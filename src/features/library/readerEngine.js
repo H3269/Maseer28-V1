@@ -729,7 +729,8 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
   if (Number(bookId) === 3) {
     openingPages.push({
       type: 'frontispiece',
-      image: '/assets/reader/book3-opening-page.png',
+      // image: '/assets/reader/book3-opening-page.png',
+      image: `${import.meta.env.BASE_URL}assets/reader/book3-opening-page.png`,
       alt: 'صفحه آغازین جلد سوم',
       sourcePage: 0,
     });
