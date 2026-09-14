@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "books": [
+    {
+      "id": "book-1",
+      "legacyId": 1,
+      "title": "از حقیقت تا واقعیت — جلد اول",
+      "author": "حسن عابدی برنجستانکی",
+      "description": "نسخه اصلی کتابخانه مسیر ۲۸ روزه",
+      "cover": "assets/covers/book1.png",
+      "file": "content/books/book1.json",
+      "order": 1
+    },
+    {
+      "id": "book-2",
+      "legacyId": 2,
+      "title": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "author": "حسن عابدی برنجستانکی",
+      "description": "نسخه اصلی کتابخانه مسیر ۲۸ روزه",
+      "cover": "assets/covers/book2.png",
+      "file": "content/books/book2.json",
+      "order": 2
+    },
+    {
+      "id": "book-3",
+      "legacyId": 3,
+      "title": "از حقیقت تا واقعیت · جلد سوم",
+      "author": "حسن عابدی برنجستانکی",
+      "description": "نسخه اصلی کتابخانه مسیر ۲۸ روزه",
+      "cover": "assets/covers/book3.png",
+      "file": "content/books/book3.json",
+      "order": 3
+    },
+    {
+      "id": "book-4",
+      "legacyId": 4,
+      "title": "کتابچه تکمیلی جلد سوم",
+      "author": "حسن عابدی برنجستانکی",
+      "description": "نسخه اصلی کتابخانه مسیر ۲۸ روزه",
+      "cover": "assets/covers/book4.png",
+      "file": "content/books/book4.json",
+      "order": 4
+    }
+  ],
+  "revision": "2026-09-14-v85-editorial-tables"
+}
