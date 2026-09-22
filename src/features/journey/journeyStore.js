@@ -3,6 +3,7 @@ import { normalizeDigits } from '../../shared/utils.js';
 export const JOURNEY_KEY = 'maseer28_state';
 export const PROFILE_KEY = 'maseer28_user_profile_v1';
 export const COPYRIGHT_KEY = 'maseer28_copyright_v60';
+export const CLOCK_GUARD_KEY = 'maseer28_clock_guard_v1';
 
 export const APP_CONFIG = {
   TEST_MODE: false,
@@ -227,15 +228,38 @@ export function burdenScoreFromAnswers(answers) {
   return Math.round((total / 16) * 10);
 }
 
+function guardedNowMs() {
+  const now = Date.now();
+  try {
+    const last = Number(localStorage.getItem(CLOCK_GUARD_KEY) || 0);
+    if (Number.isFinite(last) && last > 0 && now < last) return null;
+    localStorage.setItem(CLOCK_GUARD_KEY, String(now));
+  } catch {
+    // Storage may be unavailable; keep the app usable.
+  }
+  return now;
+}
+
 export function isDayUnlocked(state, day) {
   if (APP_CONFIG.TEST_MODE || !APP_CONFIG.TIME_LOCK_ENABLED) return true;
   const n = Number(day);
-  if ((state.completed || []).includes(n) || n === 1) return true;
-  if (!state.startedAt) return n === 1;
+  const completed = state.completed || [];
+  if (completed.includes(n)) return true;
+
+  // Only the single next required day may be opened. This prevents
+  // completing several future days on the same calendar date.
+  const required = nextRequiredDay(state);
+  if (n !== required || n > 28) return false;
+  if (n === 1 && !state.startedAt) return true;
+  if (!state.startedAt) return false;
+
   const started = new Date(state.startedAt);
-  if (Number.isNaN(started.getTime())) return n === 1;
+  if (Number.isNaN(started.getTime())) return false;
+  const nowMs = guardedNowMs();
+  if (nowMs == null) return false;
+
   const startDay = new Date(started.getFullYear(), started.getMonth(), started.getDate()).getTime();
-  const now = new Date();
+  const now = new Date(nowMs);
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const unlocked = Math.max(1, Math.floor((today - startDay) / 86400000) + 1);
   return n <= Math.min(28, unlocked);
