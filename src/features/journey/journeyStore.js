@@ -5,7 +5,7 @@ export const PROFILE_KEY = 'maseer28_user_profile_v1';
 export const COPYRIGHT_KEY = 'maseer28_copyright_v60';
 
 export const APP_CONFIG = {
-  TEST_MODE: true,
+  TEST_MODE: false,
   TIME_LOCK_ENABLED: true,
 };
 
