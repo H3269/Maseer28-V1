@@ -3,11 +3,15 @@ import { normalizeDigits } from '../../shared/utils.js';
 export const JOURNEY_KEY = 'maseer28_state';
 export const PROFILE_KEY = 'maseer28_user_profile_v1';
 export const COPYRIGHT_KEY = 'maseer28_copyright_v60';
-export const CLOCK_GUARD_KEY = 'maseer28_clock_guard_v1';
+export const CLOCK_GUARD_KEY = 'maseer28_trusted_clock_guard_v2';
+export const START_GUARD_KEY = 'maseer28_start_guard_v2';
 
 export const APP_CONFIG = {
   TEST_MODE: false,
   TIME_LOCK_ENABLED: true,
+  // Calendar days are evaluated in a fixed timezone so changing the phone
+  // timezone cannot unlock the next day early.
+  TIME_ZONE: 'Asia/Tehran',
 };
 
 export function defaultJourneyState() {
@@ -228,41 +232,177 @@ export function burdenScoreFromAnswers(answers) {
   return Math.round((total / 16) * 10);
 }
 
-function guardedNowMs() {
-  const now = Date.now();
+const DAY_MS = 86400000;
+const SERVER_CLOCK_BACKWARD_TOLERANCE_MS = 5 * 60 * 1000;
+
+function readJsonStorage(key) {
   try {
-    const last = Number(localStorage.getItem(CLOCK_GUARD_KEY) || 0);
-    if (Number.isFinite(last) && last > 0 && now < last) return null;
-    localStorage.setItem(CLOCK_GUARD_KEY, String(now));
+    const value = JSON.parse(localStorage.getItem(key) || 'null');
+    return value && typeof value === 'object' ? value : null;
   } catch {
-    // Storage may be unavailable; keep the app usable.
+    return null;
   }
-  return now;
 }
 
-export function isDayUnlocked(state, day) {
+function writeJsonStorage(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); }
+  catch { /* Storage may be unavailable. */ }
+}
+
+async function fetchServerDateMs(method = 'HEAD') {
+  if (typeof window === 'undefined' || typeof fetch !== 'function') return null;
+  const url = new URL(window.location.href);
+  url.hash = '';
+  // Cache-busting must not depend on the device clock.
+  url.searchParams.set('_m28_time', Math.random().toString(36).slice(2));
+
+  const response = await fetch(url.toString(), {
+    method,
+    cache: 'no-store',
+    credentials: 'same-origin',
+    headers: { 'Cache-Control': 'no-cache' },
+  });
+  if (!response.ok) return null;
+
+  const header = response.headers.get('date');
+  const value = header ? Date.parse(header) : NaN;
+  if (method === 'GET' && response.body?.cancel) {
+    try { await response.body.cancel(); } catch { /* no-op */ }
+  }
+  return Number.isFinite(value) ? value : null;
+}
+
+/**
+ * Returns time supplied by the same web server that serves the app.
+ * Device Date/Time and timezone are never used as the authority.
+ * A new day stays locked if a trusted server time cannot be obtained.
+ */
+export async function getTrustedNowMs() {
+  if (APP_CONFIG.TEST_MODE) return Date.now();
+
+  let serverMs = null;
+  try { serverMs = await fetchServerDateMs('HEAD'); }
+  catch { /* try GET below */ }
+  if (!Number.isFinite(serverMs)) {
+    try { serverMs = await fetchServerDateMs('GET'); }
+    catch { serverMs = null; }
+  }
+  if (!Number.isFinite(serverMs)) return null;
+
+  const guard = readJsonStorage(CLOCK_GUARD_KEY);
+  const lastServerMs = Number(guard?.serverMs || 0);
+  if (Number.isFinite(lastServerMs) && lastServerMs > 0) {
+    // A server/proxy moving backwards materially is suspicious. Small clock
+    // corrections are tolerated while keeping the local trusted clock monotonic.
+    if (serverMs + SERVER_CLOCK_BACKWARD_TOLERANCE_MS < lastServerMs) return null;
+    serverMs = Math.max(serverMs, lastServerMs);
+  }
+
+  writeJsonStorage(CLOCK_GUARD_KEY, { serverMs });
+  return serverMs;
+}
+
+export function recordTrustedStart(pathId, serverMs) {
+  const ms = Number(serverMs);
+  if (!pathId || !Number.isFinite(ms) || ms <= 0) return false;
+  writeJsonStorage(START_GUARD_KEY, {
+    pathId: String(pathId),
+    startedAt: new Date(ms).toISOString(),
+  });
+  return true;
+}
+
+function trustedStartedAtMs(state) {
+  const stateMs = Date.parse(state?.startedAt || '');
+  if (!Number.isFinite(stateMs)) return null;
+
+  const guard = readJsonStorage(START_GUARD_KEY);
+  if (!guard || guard.pathId !== state?.pathId) {
+    // Legacy migration / first run of this hardened version. Mirror the existing
+    // start time into the secondary guard. This detects later single-field edits.
+    if (state?.pathId) {
+      writeJsonStorage(START_GUARD_KEY, {
+        pathId: String(state.pathId),
+        startedAt: new Date(stateMs).toISOString(),
+      });
+    }
+    return stateMs;
+  }
+
+  const guardMs = Date.parse(guard.startedAt || '');
+  if (!Number.isFinite(guardMs)) return null;
+  // Both values must represent the same start instant.
+  if (Math.abs(guardMs - stateMs) > 1000) return null;
+  return guardMs;
+}
+
+function calendarDayNumber(ms, timeZone = APP_CONFIG.TIME_ZONE) {
+  try {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(new Date(ms));
+    const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+    const year = Number(values.year);
+    const month = Number(values.month);
+    const day = Number(values.day);
+    if (![year, month, day].every(Number.isInteger)) return null;
+    return Math.floor(Date.UTC(year, month - 1, day) / DAY_MS);
+  } catch {
+    return null;
+  }
+}
+
+export function isDayUnlockedAt(state, day, trustedNowMs) {
   if (APP_CONFIG.TEST_MODE || !APP_CONFIG.TIME_LOCK_ENABLED) return true;
   const n = Number(day);
   const completed = state.completed || [];
   if (completed.includes(n)) return true;
 
-  // Only the single next required day may be opened. This prevents
-  // completing several future days on the same calendar date.
+  // Only the single next required day may be opened.
   const required = nextRequiredDay(state);
-  if (n !== required || n > 28) return false;
-  if (n === 1 && !state.startedAt) return true;
-  if (!state.startedAt) return false;
+  if (n !== required || n > 28 || n < 1) return false;
 
-  const started = new Date(state.startedAt);
-  if (Number.isNaN(started.getTime())) return false;
-  const nowMs = guardedNowMs();
+  const nowMs = Number(trustedNowMs);
+  if (!Number.isFinite(nowMs) || nowMs <= 0) return false;
+  const today = calendarDayNumber(nowMs);
+  if (!Number.isInteger(today)) return false;
+
+  const startMs = trustedStartedAtMs(state);
+  if (!Number.isFinite(startMs) || startMs > nowMs) return false;
+  const startDay = calendarDayNumber(startMs);
+  if (!Number.isInteger(startDay) || today < startDay) return false;
+
+  // Day 1 may be completed on the trusted calendar day the path starts.
+  if (n === 1) return true;
+
+  // From day 2 onward, the previous day must have been completed on an
+  // earlier trusted calendar day. This enforces at most one NEW day per day,
+  // even when the user skipped several days before returning to the app.
+  const previousDay = n - 1;
+  if (!completed.includes(previousDay)) return false;
+  let previousCompletionMs = Date.parse(state.daily?.[previousDay]?.updatedAt || '');
+
+  // Compatibility for old saved journeys that did not have a usable daily
+  // timestamp. They may advance once; the newly completed day is stamped with
+  // trusted server time, so every following day is strictly one-per-day.
+  if (!Number.isFinite(previousCompletionMs)) previousCompletionMs = startMs;
+  if (!Number.isFinite(previousCompletionMs) || previousCompletionMs > nowMs) return false;
+
+  const previousCalendarDay = calendarDayNumber(previousCompletionMs);
+  if (!Number.isInteger(previousCalendarDay)) return false;
+  return today > previousCalendarDay;
+}
+
+export async function isDayUnlocked(state, day) {
+  if (APP_CONFIG.TEST_MODE || !APP_CONFIG.TIME_LOCK_ENABLED) return true;
+  const n = Number(day);
+  if ((state.completed || []).includes(n)) return true;
+  const nowMs = await getTrustedNowMs();
   if (nowMs == null) return false;
-
-  const startDay = new Date(started.getFullYear(), started.getMonth(), started.getDate()).getTime();
-  const now = new Date(nowMs);
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-  const unlocked = Math.max(1, Math.floor((today - startDay) / 86400000) + 1);
-  return n <= Math.min(28, unlocked);
+  return isDayUnlockedAt(state, n, nowMs);
 }
 
 export function cloneForArchive(state) {

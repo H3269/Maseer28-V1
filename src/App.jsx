@@ -12,11 +12,14 @@ import {
   createClientCode,
   createPathId,
   defaultJourneyState,
+  getTrustedNowMs,
   isDayUnlocked,
+  isDayUnlockedAt,
   loadJourneyState,
   loadUserProfile,
   migrateUserProfileFromJourney,
   nextRequiredDay,
+  recordTrustedStart,
   saveJourneyState,
   saveUserProfile,
 } from './features/journey/journeyStore.js';
@@ -161,32 +164,53 @@ function MainApp() {
     navigate('assessment');
   }
 
-  function saveAssessment(answers) {
+  async function saveAssessment(answers) {
+    const trustedNow = await getTrustedNowMs();
+    if (trustedNow == null) {
+      return showValidation(['برای شروع مسیر باید زمان معتبر از سرور دریافت شود. اتصال به سایت/سرور را بررسی کنید.'], 'زمان معتبر در دسترس نیست');
+    }
+
     const score = burdenScoreFromAnswers(answers);
+    const pathId = journey.pathId || createPathId();
+    const startedAt = journey.startedAt || new Date(trustedNow).toISOString();
+    if (!journey.startedAt) recordTrustedStart(pathId, trustedNow);
+
     patchJourney((previous) => ({
       ...previous,
       assessment: true,
       assessmentData: { ...(previous.assessmentData || {}), answers, total: answers.slice(0, 4).reduce((a, b) => a + b, 0), score, motivation: answers[4], scaleMax: 4, version: 2 },
-      pathId: previous.pathId || createPathId(),
-      startedAt: previous.startedAt || new Date().toISOString(),
+      pathId,
+      startedAt,
     }));
     setCurrentDay(1);
     navigate('dashboard');
   }
 
-  function openDay(value) {
+  async function openDay(value) {
     if (!journey.assessment) return navigate('assessment');
     const day = Number(value), required = nextRequiredDay(journey);
     const allowed = journey.completed.includes(day) || day === required;
     if (!allowed) return showValidation([`روز ${fa(required)} هنوز باید تکمیل شود.`], 'این روز هنوز فعال نشده است');
-    if (!isDayUnlocked(journey, day)) return showValidation([`روز ${fa(day)} هنوز بر اساس تقویم مسیر فعال نشده است.`], 'این روز هنوز فعال نشده است');
+    if (!(await isDayUnlocked(journey, day))) {
+      return showValidation([`روز ${fa(day)} هنوز فعال نشده است یا زمان معتبر سرور در دسترس نیست.`], 'این روز هنوز فعال نشده است');
+    }
     setCurrentDay(day);
     navigate('day');
   }
 
-  function completeDay({ answer, score, feedback }) {
+  async function completeDay({ answer, score, feedback }) {
+    const alreadyCompleted = (journey.completed || []).includes(currentDay);
+    if (!alreadyCompleted && currentDay !== nextRequiredDay(journey)) {
+      return showValidation(['روزهای مسیر باید به ترتیب تکمیل شوند.'], 'ثبت روز مجاز نیست');
+    }
+
+    const trustedNow = await getTrustedNowMs();
+    if (trustedNow == null || !isDayUnlockedAt(journey, currentDay, trustedNow)) {
+      return showValidation(['زمان معتبر سرور دریافت نشد یا این روز هنوز بر اساس تقویم مسیر فعال نشده است.'], 'ثبت روز مجاز نیست');
+    }
+
     const chosen = activeDay;
-    const record = { score: Number(score), feedback, feedbackText: makeFeedback(feedback, score), exerciseId: chosen?.id || '', updatedAt: new Date().toISOString() };
+    const record = { score: Number(score), feedback, feedbackText: makeFeedback(feedback, score), exerciseId: chosen?.id || '', updatedAt: new Date(trustedNow).toISOString() };
     patchJourney((previous) => ({ ...previous, completed: [...new Set([...(previous.completed || []), currentDay])].sort((a, b) => a - b), answers: { ...(previous.answers || {}), [currentDay]: answer }, daily: { ...(previous.daily || {}), [currentDay]: record } }));
     setResultDay(currentDay);
     navigate('dailyResult');
