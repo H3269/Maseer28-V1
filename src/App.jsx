@@ -13,7 +13,6 @@ import {
   createPathId,
   defaultJourneyState,
   getTrustedNowMs,
-  isDayUnlocked,
   isDayUnlockedAt,
   loadJourneyState,
   loadUserProfile,
@@ -167,7 +166,10 @@ function MainApp() {
   async function saveAssessment(answers) {
     const trustedNow = await getTrustedNowMs();
     if (trustedNow == null) {
-      return showValidation(['برای شروع مسیر باید زمان معتبر از سرور دریافت شود. اتصال به سایت/سرور را بررسی کنید.'], 'زمان معتبر در دسترس نیست');
+      return showValidation(
+        ['فعلاً امکان شروع مسیر وجود ندارد.', 'لطفاً چند لحظه دیگر دوباره تلاش کن.'],
+        'امکان شروع مسیر نیست'
+      );
     }
 
     const score = burdenScoreFromAnswers(answers);
@@ -191,8 +193,18 @@ function MainApp() {
     const day = Number(value), required = nextRequiredDay(journey);
     const allowed = journey.completed.includes(day) || day === required;
     if (!allowed) return showValidation([`روز ${fa(required)} هنوز باید تکمیل شود.`], 'این روز هنوز فعال نشده است');
-    if (!(await isDayUnlocked(journey, day))) {
-      return showValidation([`روز ${fa(day)} هنوز فعال نشده است یا زمان معتبر سرور در دسترس نیست.`], 'این روز هنوز فعال نشده است');
+    const trustedNow = await getTrustedNowMs();
+    if (trustedNow == null) {
+      return showValidation(
+        ['فعلاً امکان بررسی این مرحله وجود ندارد.', 'لطفاً چند لحظه دیگر دوباره تلاش کن.'],
+        'امکان ادامه مسیر نیست'
+      );
+    }
+    if (!isDayUnlockedAt(journey, day, trustedNow)) {
+      return showValidation(
+        ['هر روز فقط یک مرحله از مسیر باز می‌شود.', 'فردا دوباره برگرد و مسیرت را ادامه بده.'],
+        'این روز هنوز فعال نشده است'
+      );
     }
     setCurrentDay(day);
     navigate('day');
@@ -205,8 +217,17 @@ function MainApp() {
     }
 
     const trustedNow = await getTrustedNowMs();
-    if (trustedNow == null || !isDayUnlockedAt(journey, currentDay, trustedNow)) {
-      return showValidation(['زمان معتبر سرور دریافت نشد یا این روز هنوز بر اساس تقویم مسیر فعال نشده است.'], 'ثبت روز مجاز نیست');
+    if (trustedNow == null) {
+      return showValidation(
+        ['فعلاً امکان ثبت این مرحله وجود ندارد.', 'لطفاً چند لحظه دیگر دوباره تلاش کن.'],
+        'امکان ثبت مرحله نیست'
+      );
+    }
+    if (!isDayUnlockedAt(journey, currentDay, trustedNow)) {
+      return showValidation(
+        ['هر روز فقط یک مرحله از مسیر قابل انجام است.', 'فردا دوباره برگرد و مسیرت را ادامه بده.'],
+        'این مرحله هنوز فعال نشده است'
+      );
     }
 
     const chosen = activeDay;
