@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { libraryRepository } from './libraryRepository.js';
 import { createVersionRecord, normalizeBookContent } from './bookUtils.js';
 
-const SEED_REVISION_KEY = 'seed-content-revision';
+const SEED_REVISION_KEY = 'seed-content-revision-v86';
 const BASE = import.meta.env.BASE_URL;
 
 async function seedLibrary() {
