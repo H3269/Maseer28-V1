@@ -41,7 +41,12 @@ function bookKey(book) { return book.legacyId || book.id; }
 function saveProgress(book, page, total, source) {
   try {
     const map = progressMap();
-    map[bookKey(book)] = { page, total, source: Number(source) || 1, updatedAt: new Date().toISOString() };
+    map[bookKey(book)] = {
+      page,
+      total,
+      source: Number.isFinite(Number(source)) ? Number(source) : 1,
+      updatedAt: new Date().toISOString()
+    };
     localStorage.setItem(READER_PROGRESS_KEY, JSON.stringify(map));
   } catch { /* storage can be unavailable in embedded browsers */ }
 }
@@ -133,9 +138,17 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
       else if (Number.isFinite(explicit) && explicit > 1) nextPage = pageForSource(nextLayout, explicit);
       else if (initialPage != null && Number.isFinite(Number(initialPage))) nextPage = Math.max(0, Math.min(nextLayout.pageCount - 1, Number(initialPage)));
       else {
-        const stored = progressMap()[bookKey(book)];
-        nextPage = stored?.source ? pageForSource(nextLayout, stored.source) : 0;
-      }
+  const stored = progressMap()[bookKey(book)];
+
+  if (stored && Number.isFinite(Number(stored.page))) {
+    nextPage = Math.max(
+      0,
+      Math.min(nextLayout.pageCount - 1, Number(stored.page))
+    );
+  } else {
+    nextPage = 0;
+  }
+}
       firstLayoutRef.current = false;
     } else if (preserveSource != null && Number(preserveSource) > 0) nextPage = pageForSource(nextLayout, preserveSource);
     else nextPage = 0;
