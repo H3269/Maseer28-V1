@@ -4213,3 +4213,366 @@
   color: var(--reader-ink) !important;
   border-color: rgba(255,255,255,.18);
 }
+
+
+/* =========================================================
+   V90 · Realistic Page Turn + Page Flip Sound Control
+   ========================================================= */
+
+#bookReader .readerTools {
+  grid-template-columns: 42px minmax(0, 1fr) 42px 42px 42px;
+}
+
+#bookReader .readerSoundButton {
+  position: relative;
+  min-height: 34px;
+  width: 42px;
+  padding: 0;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+#bookReader .readerSoundButton.soundOn {
+  background: #e4eee9;
+  color: #315b52;
+}
+
+#bookReader .readerSoundButton.soundOff {
+  background: #eeeae3;
+  color: #77756e;
+  opacity: .82;
+}
+
+#bookReader.theme-night .readerSoundButton.soundOn {
+  background: #30413f;
+  color: #dcebe6;
+}
+
+#bookReader.theme-night .readerSoundButton.soundOff {
+  background: #333d3d;
+  color: #9ba5a2;
+}
+
+#bookReader .readerSoundButton:active {
+  transform: scale(.94);
+}
+
+
+/* ---------------------------------------------------------
+   Page surface
+   --------------------------------------------------------- */
+
+#bookReader .bookPage {
+  transform-style: preserve-3d;
+  transform-origin: center center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  perspective: 1400px;
+  will-change: transform, opacity, box-shadow;
+  overflow: hidden;
+}
+
+
+/* A moving light band gives the paper a physical feel. */
+#bookReader .bookPage.pageTurn-next::after,
+#bookReader .bookPage.pageTurn-prev::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,.06) 24%,
+      rgba(255,255,255,.30) 48%,
+      rgba(0,0,0,.13) 52%,
+      rgba(255,255,255,.08) 76%,
+      rgba(255,255,255,0) 100%
+    );
+}
+
+
+/* ---------------------------------------------------------
+   Page turning forward
+   --------------------------------------------------------- */
+
+#bookReader .bookPage.pageTurn-next {
+  animation: readerRealPageTurnNext 560ms cubic-bezier(.22,.61,.36,1) both;
+}
+
+#bookReader .bookPage.pageTurn-next::after {
+  animation: readerPageLightNext 560ms ease-out both;
+}
+
+
+/* ---------------------------------------------------------
+   Page turning backward
+   --------------------------------------------------------- */
+
+#bookReader .bookPage.pageTurn-prev {
+  animation: readerRealPageTurnPrev 560ms cubic-bezier(.22,.61,.36,1) both;
+}
+
+#bookReader .bookPage.pageTurn-prev::after {
+  animation: readerPageLightPrev 560ms ease-out both;
+}
+
+
+/* ---------------------------------------------------------
+   Forward: the current sheet rotates away, then the new
+   page appears during the middle of the turn.
+   --------------------------------------------------------- */
+
+@keyframes readerRealPageTurnNext {
+
+  0% {
+    transform:
+      perspective(1400px)
+      rotateY(0deg)
+      scaleX(1)
+      translateZ(0);
+    opacity: 1;
+    box-shadow: 0 8px 22px rgba(40,35,25,.08);
+  }
+
+  20% {
+    transform:
+      perspective(1400px)
+      rotateY(-28deg)
+      scaleX(.975)
+      translateZ(8px);
+    opacity: 1;
+    box-shadow: 13px 8px 30px rgba(40,35,25,.13);
+  }
+
+  43% {
+    transform:
+      perspective(1400px)
+      rotateY(-78deg)
+      scaleX(.91)
+      translateZ(18px);
+    opacity: .86;
+    box-shadow: 25px 10px 42px rgba(40,35,25,.23);
+  }
+
+  50% {
+    transform:
+      perspective(1400px)
+      rotateY(-90deg)
+      scaleX(.89)
+      translateZ(20px);
+    opacity: .18;
+    box-shadow: 30px 12px 48px rgba(40,35,25,.28);
+  }
+
+  62% {
+    transform:
+      perspective(1400px)
+      rotateY(-67deg)
+      scaleX(.95)
+      translateZ(13px);
+    opacity: .76;
+    box-shadow: 20px 9px 36px rgba(40,35,25,.18);
+  }
+
+  80% {
+    transform:
+      perspective(1400px)
+      rotateY(-22deg)
+      scaleX(.985)
+      translateZ(5px);
+    opacity: .96;
+    box-shadow: 8px 5px 22px rgba(40,35,25,.11);
+  }
+
+  100% {
+    transform:
+      perspective(1400px)
+      rotateY(0deg)
+      scaleX(1)
+      translateZ(0);
+    opacity: 1;
+    box-shadow: 0 8px 22px rgba(40,35,25,.08);
+  }
+}
+
+
+/* ---------------------------------------------------------
+   Backward: mirrored turn
+   --------------------------------------------------------- */
+
+@keyframes readerRealPageTurnPrev {
+
+  0% {
+    transform:
+      perspective(1400px)
+      rotateY(0deg)
+      scaleX(1)
+      translateZ(0);
+    opacity: 1;
+    box-shadow: 0 8px 22px rgba(40,35,25,.08);
+  }
+
+  20% {
+    transform:
+      perspective(1400px)
+      rotateY(28deg)
+      scaleX(.975)
+      translateZ(8px);
+    opacity: 1;
+    box-shadow: -13px 8px 30px rgba(40,35,25,.13);
+  }
+
+  43% {
+    transform:
+      perspective(1400px)
+      rotateY(78deg)
+      scaleX(.91)
+      translateZ(18px);
+    opacity: .86;
+    box-shadow: -25px 10px 42px rgba(40,35,25,.23);
+  }
+
+  50% {
+    transform:
+      perspective(1400px)
+      rotateY(90deg)
+      scaleX(.89)
+      translateZ(20px);
+    opacity: .18;
+    box-shadow: -30px 12px 48px rgba(40,35,25,.28);
+  }
+
+  62% {
+    transform:
+      perspective(1400px)
+      rotateY(67deg)
+      scaleX(.95)
+      translateZ(13px);
+    opacity: .76;
+    box-shadow: -20px 9px 36px rgba(40,35,25,.18);
+  }
+
+  80% {
+    transform:
+      perspective(1400px)
+      rotateY(22deg)
+      scaleX(.985)
+      translateZ(5px);
+    opacity: .96;
+    box-shadow: -8px 5px 22px rgba(40,35,25,.11);
+  }
+
+  100% {
+    transform:
+      perspective(1400px)
+      rotateY(0deg)
+      scaleX(1)
+      translateZ(0);
+    opacity: 1;
+    box-shadow: 0 8px 22px rgba(40,35,25,.08);
+  }
+}
+
+
+/* ---------------------------------------------------------
+   Paper light sweep
+   --------------------------------------------------------- */
+
+@keyframes readerPageLightNext {
+
+  0% {
+    opacity: 0;
+    transform: translateX(110%);
+  }
+
+  28% {
+    opacity: .08;
+    transform: translateX(52%);
+  }
+
+  50% {
+    opacity: .42;
+    transform: translateX(0);
+  }
+
+  70% {
+    opacity: .10;
+    transform: translateX(-48%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-110%);
+  }
+}
+
+@keyframes readerPageLightPrev {
+
+  0% {
+    opacity: 0;
+    transform: translateX(-110%);
+  }
+
+  28% {
+    opacity: .08;
+    transform: translateX(-52%);
+  }
+
+  50% {
+    opacity: .42;
+    transform: translateX(0);
+  }
+
+  70% {
+    opacity: .10;
+    transform: translateX(48%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(110%);
+  }
+}
+
+
+/* ---------------------------------------------------------
+   Very small phones
+   --------------------------------------------------------- */
+
+@media (max-width: 350px) {
+
+  #bookReader .readerTools {
+    grid-template-columns: 36px minmax(0, 1fr) 36px 36px 36px;
+    gap: 4px;
+    padding-inline: 6px;
+  }
+
+  #bookReader .readerSoundButton {
+    width: 36px;
+    min-height: 32px;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   Reduced-motion accessibility
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+  #bookReader .bookPage.pageTurn-next,
+  #bookReader .bookPage.pageTurn-prev,
+  #bookReader .bookPage.pageTurn-next::after,
+  #bookReader .bookPage.pageTurn-prev::after {
+    animation-duration: 1ms !important;
+  }
+}
+
