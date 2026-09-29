@@ -4215,19 +4215,20 @@
 }
 
 
-/* =========================================================
-   V90 · Realistic Page Turn + Page Flip Sound Control
-   ========================================================= */
+/* V2 physical page-sheet animation */
+#bookReader {
+  position: relative;
+}
 
 #bookReader .readerTools {
   grid-template-columns: 42px minmax(0, 1fr) 42px 42px 42px;
 }
 
 #bookReader .readerSoundButton {
-  position: relative;
-  min-height: 34px;
   width: 42px;
+  min-height: 34px;
   padding: 0;
+  border: 0;
   border-radius: 10px;
   display: grid;
   place-items: center;
@@ -4244,7 +4245,6 @@
 #bookReader .readerSoundButton.soundOff {
   background: #eeeae3;
   color: #77756e;
-  opacity: .82;
 }
 
 #bookReader.theme-night .readerSoundButton.soundOn {
@@ -4261,318 +4261,137 @@
   transform: scale(.94);
 }
 
-
-/* ---------------------------------------------------------
-   Page surface
-   --------------------------------------------------------- */
-
-#bookReader .bookPage {
+/* The real page stays in place; a cloned sheet is what physically turns. */
+#bookReader .readerFlipSheet {
+  position: absolute !important;
+  z-index: 40 !important;
+  margin: 0 !important;
+  pointer-events: none !important;
   transform-style: preserve-3d;
-  transform-origin: center center;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  perspective: 1400px;
-  will-change: transform, opacity, box-shadow;
+  transform-origin: 0% 50%;
+  will-change: transform, filter, box-shadow;
   overflow: hidden;
 }
 
-
-/* A moving light band gives the paper a physical feel. */
-#bookReader .bookPage.pageTurn-next::after,
-#bookReader .bookPage.pageTurn-prev::after {
+#bookReader .readerFlipSheet::before {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 30;
+  z-index: 50;
   pointer-events: none;
-  opacity: 0;
-  background:
-    linear-gradient(
-      90deg,
-      rgba(255,255,255,0) 0%,
-      rgba(255,255,255,.06) 24%,
-      rgba(255,255,255,.30) 48%,
-      rgba(0,0,0,.13) 52%,
-      rgba(255,255,255,.08) 76%,
-      rgba(255,255,255,0) 100%
-    );
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,.03) 25%,
+    rgba(255,255,255,.32) 48%,
+    rgba(0,0,0,.16) 52%,
+    rgba(255,255,255,.06) 78%,
+    rgba(255,255,255,0) 100%
+  );
+  animation: readerPaperGlint 620ms ease-out both;
 }
 
-
-/* ---------------------------------------------------------
-   Page turning forward
-   --------------------------------------------------------- */
-
-#bookReader .bookPage.pageTurn-next {
-  animation: readerRealPageTurnNext 560ms cubic-bezier(.22,.61,.36,1) both;
+#bookReader .readerFlipNext {
+  animation: readerPhysicalFlipNext 620ms cubic-bezier(.2,.72,.25,1) both;
 }
 
-#bookReader .bookPage.pageTurn-next::after {
-  animation: readerPageLightNext 560ms ease-out both;
+#bookReader .readerFlipPrev {
+  transform-origin: 100% 50%;
+  animation: readerPhysicalFlipPrev 620ms cubic-bezier(.2,.72,.25,1) both;
 }
 
-
-/* ---------------------------------------------------------
-   Page turning backward
-   --------------------------------------------------------- */
-
-#bookReader .bookPage.pageTurn-prev {
-  animation: readerRealPageTurnPrev 560ms cubic-bezier(.22,.61,.36,1) both;
-}
-
-#bookReader .bookPage.pageTurn-prev::after {
-  animation: readerPageLightPrev 560ms ease-out both;
-}
-
-
-/* ---------------------------------------------------------
-   Forward: the current sheet rotates away, then the new
-   page appears during the middle of the turn.
-   --------------------------------------------------------- */
-
-@keyframes readerRealPageTurnNext {
-
+@keyframes readerPhysicalFlipNext {
   0% {
-    transform:
-      perspective(1400px)
-      rotateY(0deg)
-      scaleX(1)
-      translateZ(0);
+    transform: perspective(1500px) rotateY(0deg) translateZ(0);
     opacity: 1;
-    box-shadow: 0 8px 22px rgba(40,35,25,.08);
+    filter: brightness(1);
+    box-shadow: 0 4px 16px rgba(35,30,22,.08);
   }
-
-  20% {
-    transform:
-      perspective(1400px)
-      rotateY(-28deg)
-      scaleX(.975)
-      translateZ(8px);
+  22% {
+    transform: perspective(1500px) rotateY(-38deg) translateZ(10px);
     opacity: 1;
-    box-shadow: 13px 8px 30px rgba(40,35,25,.13);
+    filter: brightness(1.01);
+    box-shadow: 12px 8px 28px rgba(35,30,22,.18);
   }
-
-  43% {
-    transform:
-      perspective(1400px)
-      rotateY(-78deg)
-      scaleX(.91)
-      translateZ(18px);
-    opacity: .86;
-    box-shadow: 25px 10px 42px rgba(40,35,25,.23);
-  }
-
-  50% {
-    transform:
-      perspective(1400px)
-      rotateY(-90deg)
-      scaleX(.89)
-      translateZ(20px);
-    opacity: .18;
-    box-shadow: 30px 12px 48px rgba(40,35,25,.28);
-  }
-
-  62% {
-    transform:
-      perspective(1400px)
-      rotateY(-67deg)
-      scaleX(.95)
-      translateZ(13px);
-    opacity: .76;
-    box-shadow: 20px 9px 36px rgba(40,35,25,.18);
-  }
-
-  80% {
-    transform:
-      perspective(1400px)
-      rotateY(-22deg)
-      scaleX(.985)
-      translateZ(5px);
+  48% {
+    transform: perspective(1500px) rotateY(-102deg) translateZ(18px);
     opacity: .96;
-    box-shadow: 8px 5px 22px rgba(40,35,25,.11);
+    filter: brightness(.94);
+    box-shadow: 28px 12px 42px rgba(35,30,22,.25);
   }
-
+  70% {
+    transform: perspective(1500px) rotateY(-148deg) translateZ(10px);
+    opacity: .68;
+    filter: brightness(.98);
+    box-shadow: 18px 8px 30px rgba(35,30,22,.15);
+  }
   100% {
-    transform:
-      perspective(1400px)
-      rotateY(0deg)
-      scaleX(1)
-      translateZ(0);
-    opacity: 1;
-    box-shadow: 0 8px 22px rgba(40,35,25,.08);
+    transform: perspective(1500px) rotateY(-180deg) translateZ(0);
+    opacity: 0;
+    filter: brightness(1);
+    box-shadow: 0 0 0 rgba(0,0,0,0);
   }
 }
 
-
-/* ---------------------------------------------------------
-   Backward: mirrored turn
-   --------------------------------------------------------- */
-
-@keyframes readerRealPageTurnPrev {
-
+@keyframes readerPhysicalFlipPrev {
   0% {
-    transform:
-      perspective(1400px)
-      rotateY(0deg)
-      scaleX(1)
-      translateZ(0);
+    transform: perspective(1500px) rotateY(0deg) translateZ(0);
     opacity: 1;
-    box-shadow: 0 8px 22px rgba(40,35,25,.08);
+    filter: brightness(1);
+    box-shadow: 0 4px 16px rgba(35,30,22,.08);
   }
-
-  20% {
-    transform:
-      perspective(1400px)
-      rotateY(28deg)
-      scaleX(.975)
-      translateZ(8px);
+  22% {
+    transform: perspective(1500px) rotateY(38deg) translateZ(10px);
     opacity: 1;
-    box-shadow: -13px 8px 30px rgba(40,35,25,.13);
+    filter: brightness(1.01);
+    box-shadow: -12px 8px 28px rgba(35,30,22,.18);
   }
-
-  43% {
-    transform:
-      perspective(1400px)
-      rotateY(78deg)
-      scaleX(.91)
-      translateZ(18px);
-    opacity: .86;
-    box-shadow: -25px 10px 42px rgba(40,35,25,.23);
-  }
-
-  50% {
-    transform:
-      perspective(1400px)
-      rotateY(90deg)
-      scaleX(.89)
-      translateZ(20px);
-    opacity: .18;
-    box-shadow: -30px 12px 48px rgba(40,35,25,.28);
-  }
-
-  62% {
-    transform:
-      perspective(1400px)
-      rotateY(67deg)
-      scaleX(.95)
-      translateZ(13px);
-    opacity: .76;
-    box-shadow: -20px 9px 36px rgba(40,35,25,.18);
-  }
-
-  80% {
-    transform:
-      perspective(1400px)
-      rotateY(22deg)
-      scaleX(.985)
-      translateZ(5px);
+  48% {
+    transform: perspective(1500px) rotateY(102deg) translateZ(18px);
     opacity: .96;
-    box-shadow: -8px 5px 22px rgba(40,35,25,.11);
+    filter: brightness(.94);
+    box-shadow: -28px 12px 42px rgba(35,30,22,.25);
   }
-
-  100% {
-    transform:
-      perspective(1400px)
-      rotateY(0deg)
-      scaleX(1)
-      translateZ(0);
-    opacity: 1;
-    box-shadow: 0 8px 22px rgba(40,35,25,.08);
-  }
-}
-
-
-/* ---------------------------------------------------------
-   Paper light sweep
-   --------------------------------------------------------- */
-
-@keyframes readerPageLightNext {
-
-  0% {
-    opacity: 0;
-    transform: translateX(110%);
-  }
-
-  28% {
-    opacity: .08;
-    transform: translateX(52%);
-  }
-
-  50% {
-    opacity: .42;
-    transform: translateX(0);
-  }
-
   70% {
-    opacity: .10;
-    transform: translateX(-48%);
+    transform: perspective(1500px) rotateY(148deg) translateZ(10px);
+    opacity: .68;
+    filter: brightness(.98);
+    box-shadow: -18px 8px 30px rgba(35,30,22,.15);
   }
-
   100% {
+    transform: perspective(1500px) rotateY(180deg) translateZ(0);
     opacity: 0;
-    transform: translateX(-110%);
+    filter: brightness(1);
+    box-shadow: 0 0 0 rgba(0,0,0,0);
   }
 }
 
-@keyframes readerPageLightPrev {
-
-  0% {
-    opacity: 0;
-    transform: translateX(-110%);
-  }
-
-  28% {
-    opacity: .08;
-    transform: translateX(-52%);
-  }
-
-  50% {
-    opacity: .42;
-    transform: translateX(0);
-  }
-
-  70% {
-    opacity: .10;
-    transform: translateX(48%);
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateX(110%);
-  }
+@keyframes readerPaperGlint {
+  0% { opacity: 0; transform: translateX(110%); }
+  35% { opacity: .55; transform: translateX(30%); }
+  58% { opacity: .18; transform: translateX(-20%); }
+  100% { opacity: 0; transform: translateX(-110%); }
 }
-
-
-/* ---------------------------------------------------------
-   Very small phones
-   --------------------------------------------------------- */
 
 @media (max-width: 350px) {
-
   #bookReader .readerTools {
     grid-template-columns: 36px minmax(0, 1fr) 36px 36px 36px;
     gap: 4px;
     padding-inline: 6px;
   }
-
   #bookReader .readerSoundButton {
     width: 36px;
     min-height: 32px;
   }
 }
 
-
-/* ---------------------------------------------------------
-   Reduced-motion accessibility
-   --------------------------------------------------------- */
-
 @media (prefers-reduced-motion: reduce) {
-
-  #bookReader .bookPage.pageTurn-next,
-  #bookReader .bookPage.pageTurn-prev,
-  #bookReader .bookPage.pageTurn-next::after,
-  #bookReader .bookPage.pageTurn-prev::after {
+  #bookReader .readerFlipSheet {
+    animation-duration: 1ms !important;
+  }
+  #bookReader .readerFlipSheet::before {
     animation-duration: 1ms !important;
   }
 }
-
