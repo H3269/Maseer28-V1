@@ -7,6 +7,7 @@ import {
   currentChapter,
   endsSentence,
   pageForSource,
+  pageForAnchor,
 } from './readerEngine.js';
 
 const READER_SETTINGS_KEY = 'maseer28_reader_settings_v64';
@@ -133,7 +134,7 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
   const touchRef = useRef(null);
   const suppressClickUntil = useRef(0);
   const activePointer = useRef(null);
-  const preserveSourceRef = useRef(null);
+  const preserveAnchorRef = useRef(null);
   const firstLayoutRef = useRef(true);
   const pageFlipAudioRef = useRef(null);
   const flipSheetRef = useRef(null);
@@ -151,7 +152,7 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
     return () => { alive = false; };
   }, [book]);
 
-  const rebuild = useCallback((preserveSource = null) => {
+  const rebuild = useCallback((preserveAnchor = null) => {
     if (!version?.content || !rootRef.current || !articleRef.current) return;
     const metrics = calcMetrics(rootRef.current, articleRef.current, settings.fontStep, Boolean(target));
     if (!metrics) return;
@@ -176,8 +177,11 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
         nextPage = stored?.source ? pageForSource(nextLayout, stored.source) : 0;
       }
       firstLayoutRef.current = false;
-    } else if (preserveSource != null && Number(preserveSource) > 0) nextPage = pageForSource(nextLayout, preserveSource);
-    else nextPage = 0;
+    } else if (preserveAnchor) {
+  nextPage = pageForAnchor(nextLayout, preserveAnchor);
+} else {
+  nextPage = 0;
+}
     setPageIndex(Math.max(0, Math.min(nextLayout.pageCount - 1, nextPage)));
   }, [version, settings.fontStep, target, initialSourcePage, initialPage, book]);
 
@@ -185,9 +189,10 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
   if (!version) return undefined;
 
   const frame = requestAnimationFrame(() => {
-    const preserveSource = preserveSourceRef.current;
-    preserveSourceRef.current = null;
-    rebuild(preserveSource);
+    const anchor = preserveAnchorRef.current;
+    preserveAnchorRef.current = null;
+
+    rebuild(anchor);
   });
 
   return () => cancelAnimationFrame(frame);
@@ -197,8 +202,8 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
       clearTimeout(onResize.timer);
       onResize.timer = setTimeout(() => {
         const current = layout?.pages?.[pageIndex];
-        preserveSourceRef.current = ['cover', 'frontispiece'].includes(current?.type) ? 0 : Number(current?.sourcePage) || 1;
-        rebuild(preserveSourceRef.current);
+        preserveAnchorRef.current = getReaderAnchor(current);
+rebuild(preserveAnchorRef.current);
       }, 160);
     };
     window.addEventListener('resize', onResize);
@@ -328,11 +333,41 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
     document.addEventListener('keydown', onKey, true);
     return () => document.removeEventListener('keydown', onKey, true);
   }, [next, prev]);
-
-  function changeFont(delta) {
-    preserveSourceRef.current = ['cover', 'frontispiece'].includes(current?.type) ? 0 : Number(current?.sourcePage) || 1;
-    setSettings((s) => ({ ...s, fontStep: Math.max(-2, Math.min(4, s.fontStep + Number(delta || 0))) }));
+  
+function getReaderAnchor(page) {
+  if (!page || ['cover', 'frontispiece'].includes(page.type)) {
+    return null;
   }
+
+  const lines = Array.isArray(page.lines) ? page.lines : [];
+
+  const texts = lines
+    .map((line) => String(line?.text || '').replace(/\s+/gu, ' ').trim())
+    .filter(Boolean);
+
+  if (!texts.length) {
+    return {
+      sourcePage: Number(page.sourcePage) || 1,
+      text: ''
+    };
+  }
+
+  return {
+    sourcePage: Number(page.sourcePage) || 1,
+    text: texts.slice(0, 3).join(' ').slice(0, 120)
+  };
+}
+  function changeFont(delta) {
+  preserveAnchorRef.current = getReaderAnchor(current);
+
+  setSettings((s) => ({
+    ...s,
+    fontStep: Math.max(
+      -2,
+      Math.min(4, s.fontStep + Number(delta || 0))
+    )
+  }));
+}
 
   function cycleTheme() {
     setSettings((s) => ({ ...s, theme: s.theme === 'light' ? 'sepia' : s.theme === 'sepia' ? 'night' : 'light' }));
