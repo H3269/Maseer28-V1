@@ -13,7 +13,6 @@ const READER_SETTINGS_KEY = 'maseer28_reader_settings_v64';
 const READER_PROGRESS_KEY = 'maseer28_reader_progress_v66';
 const READER_SOUND_KEY = 'maseer28_reader_sound_v2';
 const PAGE_FLIP_SOUND_PATH = 'assets/sounds/page-flip-professional.mp3';
-const PAGE_FLIP_FALLBACK_MS = 1656;
 
 const LEGACY_META = {
   1: { title: 'از حقیقت تا واقعیت', subtitle: 'جلد اول' },
@@ -241,55 +240,66 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
 
   const turnPage = useCallback((direction, targetPage) => {
     if (!layout) return;
-
     const destination = targetPage == null
       ? (direction === 'next' ? pageIndex + 1 : pageIndex - 1)
       : Math.max(0, Math.min(layout.pageCount - 1, Number(targetPage)));
-
     if (destination === pageIndex || destination < 0 || destination >= layout.pageCount) return;
 
-    // Remove a previous animation if a very fast second tap occurs.
     if (flipCleanupRef.current) flipCleanupRef.current();
 
     const article = articleRef.current;
-    const parent = article?.parentElement;
+    const root = rootRef.current;
+    let duration = 720;
 
-    if (article && parent) {
+    if (article && root) {
+      const rootRect = root.getBoundingClientRect();
+      const pageRect = article.getBoundingClientRect();
       const sheet = article.cloneNode(true);
-      const root = rootRef.current;
-      const articleRect = article.getBoundingClientRect();
-      const rootRect = root?.getBoundingClientRect();
       sheet.removeAttribute('id');
-      sheet.className = `${article.className} readerFlipSheet ${direction === 'next' ? 'readerFlipNext' : 'readerFlipPrev'}`;
+      sheet.className = `${article.className} readerFlipSheet`;
       sheet.setAttribute('aria-hidden', 'true');
-      sheet.style.top = `${Math.round((articleRect.top - (rootRect?.top || 0)) * 10) / 10}px`;
-      sheet.style.left = `${Math.round((articleRect.left - (rootRect?.left || 0)) * 10) / 10}px`;
-      sheet.style.width = `${Math.round(articleRect.width * 10) / 10}px`;
-      sheet.style.setProperty('height', `${Math.round(articleRect.height * 10) / 10}px`, 'important');
-      sheet.style.setProperty('flex', 'none', 'important');
-      sheet.style.touchAction = 'none';
       sheet.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
-      const audio = pageFlipAudioRef.current;
-      const audioDuration = Number(audio?.duration);
-      const flipDuration = Number.isFinite(audioDuration) && audioDuration > 0
-        ? Math.round(audioDuration * 1000)
-        : PAGE_FLIP_FALLBACK_MS;
-      sheet.style.setProperty('--flip-duration', `${flipDuration}ms`);
-      parent.appendChild(sheet);
+      Object.assign(sheet.style, {
+        top: `${pageRect.top - rootRect.top}px`,
+        left: `${pageRect.left - rootRect.left}px`,
+        width: `${pageRect.width}px`,
+        height: `${pageRect.height}px`,
+        margin: '0',
+        padding: getComputedStyle(article).padding,
+        zIndex: '9999',
+        position: 'absolute',
+        pointerEvents: 'none',
+        transformOrigin: direction === 'next' ? '0% 50%' : '100% 50%',
+        backfaceVisibility: 'hidden',
+        WebkitBackfaceVisibility: 'hidden'
+      });
+      root.appendChild(sheet);
       flipSheetRef.current = sheet;
 
-      let done = false;
+      const audio = pageFlipAudioRef.current;
+      if (audio && Number.isFinite(audio.duration) && audio.duration > 0) {
+        duration = Math.max(650, Math.min(1800, Math.round(audio.duration * 1000)));
+      }
+
+      const sign = direction === 'next' ? -1 : 1;
+      const animation = sheet.animate([
+        { transform: 'perspective(1600px) rotateY(0deg)', opacity: 1, filter: 'brightness(1)', boxShadow: '0 4px 14px rgba(0,0,0,.08)' },
+        { transform: `perspective(1600px) rotateY(${sign * 92}deg) translateZ(18px)`, opacity: .97, filter: 'brightness(.94)', boxShadow: `${sign * -24}px 12px 40px rgba(0,0,0,.24)`, offset: .48 },
+        { transform: `perspective(1600px) rotateY(${sign * 180}deg)`, opacity: 0, filter: 'brightness(1)', boxShadow: '0 0 0 rgba(0,0,0,0)' }
+      ], { duration, easing: 'cubic-bezier(.18,.72,.25,1)', fill: 'both' });
+
+      let finished = false;
       const cleanup = () => {
-        if (done) return;
-        done = true;
-        sheet.removeEventListener('animationend', cleanup);
+        if (finished) return;
+        finished = true;
+        try { animation.cancel(); } catch {}
         sheet.remove();
         if (flipSheetRef.current === sheet) flipSheetRef.current = null;
         if (flipCleanupRef.current === cleanup) flipCleanupRef.current = null;
       };
       flipCleanupRef.current = cleanup;
-      sheet.addEventListener('animationend', cleanup, { once: true });
-      window.setTimeout(cleanup, flipDuration + 120);
+      animation.finished.then(cleanup).catch(cleanup);
+      window.setTimeout(cleanup, duration + 100);
     }
 
     playPageFlipSound();
