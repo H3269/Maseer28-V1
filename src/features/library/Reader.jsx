@@ -13,6 +13,10 @@ const READER_SETTINGS_KEY = 'maseer28_reader_settings_v64';
 const READER_PROGRESS_KEY = 'maseer28_reader_progress_v66';
 const READER_SOUND_KEY = 'maseer28_reader_sound_v2';
 const PAGE_FLIP_SOUND_PATH = 'assets/sounds/page-flip-professional.mp3';
+// The current physical-page sound has ~304ms of leading silence and ends at ~1.645s.
+// Start at the first audible paper movement so the visual turn and sound begin together.
+const PAGE_FLIP_AUDIO_START = 0.304;
+const PAGE_FLIP_AUDIO_END = 1.645;
 
 const LEGACY_META = {
   1: { title: 'از حقیقت تا واقعیت', subtitle: 'جلد اول' },
@@ -211,7 +215,7 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
   }, [book, layout, current, pageIndex]);
 
   const playPageFlipSound = useCallback(() => {
-    if (!soundEnabled) return;
+    if (!soundEnabled) return 0;
     try {
       if (!pageFlipAudioRef.current) {
         pageFlipAudioRef.current = new Audio(pageFlipSoundUrl());
@@ -219,11 +223,13 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
         pageFlipAudioRef.current.volume = 0.58;
       }
       const audio = pageFlipAudioRef.current;
-      audio.currentTime = 0;
+      audio.pause();
+      audio.currentTime = PAGE_FLIP_AUDIO_START;
       const promise = audio.play();
       if (promise?.catch) promise.catch(() => {});
+      return (PAGE_FLIP_AUDIO_END - PAGE_FLIP_AUDIO_START) * 1000;
     } catch {
-      /* Audio must never block navigation. */
+      return 0;
     }
   }, [soundEnabled]);
 
@@ -244,12 +250,13 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
       ? (direction === 'next' ? pageIndex + 1 : pageIndex - 1)
       : Math.max(0, Math.min(layout.pageCount - 1, Number(targetPage)));
     if (destination === pageIndex || destination < 0 || destination >= layout.pageCount) return;
-
     if (flipCleanupRef.current) flipCleanupRef.current();
 
+    // Start the sound first and use its audible duration for the exact same turn.
+    const soundDuration = playPageFlipSound();
+    const duration = soundDuration || 760;
     const article = articleRef.current;
     const root = rootRef.current;
-    let duration = 720;
 
     if (article && root) {
       const rootRect = root.getBoundingClientRect();
@@ -269,22 +276,18 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
         zIndex: '9999',
         position: 'absolute',
         pointerEvents: 'none',
-        transformOrigin: direction === 'next' ? '0% 50%' : '100% 50%',
+        // Persian reader: the next sheet is turned from LEFT to RIGHT.
+        transformOrigin: direction === 'next' ? '100% 50%' : '0% 50%',
         backfaceVisibility: 'hidden',
         WebkitBackfaceVisibility: 'hidden'
       });
       root.appendChild(sheet);
       flipSheetRef.current = sheet;
 
-      const audio = pageFlipAudioRef.current;
-      if (audio && Number.isFinite(audio.duration) && audio.duration > 0) {
-        duration = Math.max(650, Math.min(1800, Math.round(audio.duration * 1000)));
-      }
-
-      const sign = direction === 'next' ? -1 : 1;
+      const sign = direction === 'next' ? 1 : -1;
       const animation = sheet.animate([
         { transform: 'perspective(1600px) rotateY(0deg)', opacity: 1, filter: 'brightness(1)', boxShadow: '0 4px 14px rgba(0,0,0,.08)' },
-        { transform: `perspective(1600px) rotateY(${sign * 92}deg) translateZ(18px)`, opacity: .97, filter: 'brightness(.94)', boxShadow: `${sign * -24}px 12px 40px rgba(0,0,0,.24)`, offset: .48 },
+        { transform: `perspective(1600px) rotateY(${sign * 92}deg) translateZ(18px)`, opacity: .97, filter: 'brightness(.94)', boxShadow: `${sign * 24}px 12px 40px rgba(0,0,0,.24)`, offset: .48 },
         { transform: `perspective(1600px) rotateY(${sign * 180}deg)`, opacity: 0, filter: 'brightness(1)', boxShadow: '0 0 0 rgba(0,0,0,0)' }
       ], { duration, easing: 'cubic-bezier(.18,.72,.25,1)', fill: 'both' });
 
@@ -302,7 +305,6 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
       window.setTimeout(cleanup, duration + 100);
     }
 
-    playPageFlipSound();
     setPageIndex(destination);
   }, [layout, pageIndex, playPageFlipSound]);
 
