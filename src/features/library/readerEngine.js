@@ -761,6 +761,76 @@ export function pageForSource(layout, source) {
   return best.page;
 }
 
+export function pageForAnchor(layout, anchor) {
+  if (!layout?.pages?.length || !anchor) return 0;
+
+  const wantedText = String(anchor.text || '')
+    .replace(/\s+/gu, ' ')
+    .trim();
+
+  const wantedSource = Number(anchor.sourcePage) || 1;
+
+  if (wantedText) {
+    const fragments = wantedText
+      .split(' ')
+      .filter(Boolean)
+      .reduce((acc, word) => {
+        if (
+          !acc.length ||
+          `${acc[acc.length - 1]} ${word}`.length > 45
+        ) {
+          acc.push(word);
+        } else {
+          acc[acc.length - 1] =
+            `${acc[acc.length - 1]} ${word}`;
+        }
+
+        return acc;
+      }, []);
+
+    let bestIndex = -1;
+    let bestScore = 0;
+
+    for (let i = 0; i < layout.pages.length; i += 1) {
+      const page = layout.pages[i];
+
+      const pageText = (Array.isArray(page?.lines) ? page.lines : [])
+        .map((line) => String(line?.text || ''))
+        .join(' ')
+        .replace(/\s+/gu, ' ')
+        .trim();
+
+      if (!pageText) continue;
+
+      let score = 0;
+
+      if (pageText.includes(wantedText)) {
+        score += 100;
+      }
+
+      for (const fragment of fragments) {
+        if (
+          fragment.length >= 8 &&
+          pageText.includes(fragment)
+        ) {
+          score += fragment.length;
+        }
+      }
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestIndex = i;
+      }
+    }
+
+    if (bestIndex >= 0) {
+      return bestIndex;
+    }
+  }
+
+  return pageForSource(layout, wantedSource);
+}
+
 export function currentChapter(layout, pageIndex) {
   let best = null;
   for (const chapter of layout?.chapterAnchors || []) {
