@@ -13,6 +13,7 @@ const READER_SETTINGS_KEY = 'maseer28_reader_settings_v64';
 const READER_PROGRESS_KEY = 'maseer28_reader_progress_v66';
 const READER_SOUND_KEY = 'maseer28_reader_sound_v2';
 const PAGE_FLIP_SOUND_PATH = 'assets/sounds/page-flip-professional.mp3';
+const PAGE_FLIP_FALLBACK_MS = 1656;
 
 const LEGACY_META = {
   1: { title: 'از حقیقت تا واقعیت', subtitle: 'جلد اول' },
@@ -255,15 +256,25 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
 
     if (article && parent) {
       const sheet = article.cloneNode(true);
+      const root = rootRef.current;
+      const articleRect = article.getBoundingClientRect();
+      const rootRect = root?.getBoundingClientRect();
       sheet.removeAttribute('id');
       sheet.className = `${article.className} readerFlipSheet ${direction === 'next' ? 'readerFlipNext' : 'readerFlipPrev'}`;
       sheet.setAttribute('aria-hidden', 'true');
-      sheet.style.top = `${article.offsetTop}px`;
-      sheet.style.left = `${article.offsetLeft}px`;
-      sheet.style.width = `${article.offsetWidth}px`;
-      sheet.style.height = `${article.offsetHeight}px`;
+      sheet.style.top = `${Math.round((articleRect.top - (rootRect?.top || 0)) * 10) / 10}px`;
+      sheet.style.left = `${Math.round((articleRect.left - (rootRect?.left || 0)) * 10) / 10}px`;
+      sheet.style.width = `${Math.round(articleRect.width * 10) / 10}px`;
+      sheet.style.setProperty('height', `${Math.round(articleRect.height * 10) / 10}px`, 'important');
+      sheet.style.setProperty('flex', 'none', 'important');
       sheet.style.touchAction = 'none';
       sheet.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
+      const audio = pageFlipAudioRef.current;
+      const audioDuration = Number(audio?.duration);
+      const flipDuration = Number.isFinite(audioDuration) && audioDuration > 0
+        ? Math.round(audioDuration * 1000)
+        : PAGE_FLIP_FALLBACK_MS;
+      sheet.style.setProperty('--flip-duration', `${flipDuration}ms`);
       parent.appendChild(sheet);
       flipSheetRef.current = sheet;
 
@@ -278,7 +289,7 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
       };
       flipCleanupRef.current = cleanup;
       sheet.addEventListener('animationend', cleanup, { once: true });
-      window.setTimeout(cleanup, 760);
+      window.setTimeout(cleanup, flipDuration + 120);
     }
 
     playPageFlipSound();
