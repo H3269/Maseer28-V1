@@ -100,7 +100,7 @@ function calcMetrics(root, article, fontStep, targetVisible) {
   });
   const target = root.querySelector('#bookTarget');
   if (targetVisible && target) fixed += target.getBoundingClientRect().height + 5;
-  const spare = Math.max(260, root.clientHeight - fixed - 14);
+  const spare = Math.max(260, root.clientHeight - fixed);
   const linePx = Math.max(20, Math.min(52, Math.floor(spare / READER_LINES_PER_PAGE)));
   const base = Math.max(15, Math.min(22, Math.round(linePx * 0.47)));
   const fontPx = Math.max(13, base + fontStep);
