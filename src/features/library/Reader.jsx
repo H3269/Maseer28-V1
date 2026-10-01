@@ -72,10 +72,17 @@ function pageFlipSoundUrl() {
   }
 }
 
-function saveProgress(book, page, total, source) {
+function saveProgress(book, page, total, source, anchor = null) {
   try {
     const map = progressMap();
-    map[bookKey(book)] = { page, total, source: Number(source) || 1, updatedAt: new Date().toISOString() };
+    const numericSource = Number(source);
+    map[bookKey(book)] = {
+      page: Math.max(0, Number(page) || 0),
+      total: Math.max(1, Number(total) || 1),
+      source: Number.isFinite(numericSource) ? numericSource : 1,
+      anchor: anchor && typeof anchor === 'object' ? anchor : null,
+      updatedAt: new Date().toISOString(),
+    };
     localStorage.setItem(READER_PROGRESS_KEY, JSON.stringify(map));
   } catch { /* storage can be unavailable in embedded browsers */ }
 }
@@ -174,7 +181,20 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
       else if (initialPage != null && Number.isFinite(Number(initialPage))) nextPage = Math.max(0, Math.min(nextLayout.pageCount - 1, Number(initialPage)));
       else {
         const stored = progressMap()[bookKey(book)];
-        nextPage = stored?.source ? pageForSource(nextLayout, stored.source) : 0;
+        if (stored) {
+          // Prefer the saved reading anchor so a font/layout change can still
+          // reopen at the same passage. Fall back to the exact reader page
+          // for the common case where the layout has not changed.
+          const anchoredPage = stored.anchor
+            ? pageForAnchor(nextLayout, stored.anchor)
+            : null;
+          const hasExactPage = Number.isFinite(Number(stored.page))
+            && Number(stored.page) >= 0
+            && Number(stored.page) < nextLayout.pageCount;
+          if (stored.anchor && anchoredPage != null) nextPage = anchoredPage;
+          else if (hasExactPage) nextPage = Number(stored.page);
+          else if (stored.source != null) nextPage = pageForSource(nextLayout, stored.source);
+        }
       }
       firstLayoutRef.current = false;
     } else if (preserveAnchor) {
@@ -220,7 +240,7 @@ rebuild(preserveAnchorRef.current);
   useEffect(() => {
     if (!layout || !current) return;
     const source = ['cover', 'frontispiece'].includes(current.type) ? 0 : Number(current.sourcePage) || 1;
-    saveProgress(book, pageIndex, layout.pageCount, source || 1);
+    saveProgress(book, pageIndex, layout.pageCount, source, getReaderAnchor(current));
   }, [book, layout, current, pageIndex]);
 
   const playPageFlipSound = useCallback(() => {
@@ -314,8 +334,22 @@ rebuild(preserveAnchorRef.current);
       window.setTimeout(cleanup, duration + 100);
     }
 
+    // Persist the destination synchronously as well as in the React effect
+    // below. This prevents the last turn from being lost if the user exits
+    // immediately after turning the page.
+    const destinationPage = layout.pages?.[destination] || null;
+    const destinationSource = ['cover', 'frontispiece'].includes(destinationPage?.type)
+      ? 0
+      : Number(destinationPage?.sourcePage) || 1;
+    saveProgress(
+      book,
+      destination,
+      layout.pageCount,
+      destinationSource,
+      getReaderAnchor(destinationPage),
+    );
     setPageIndex(destination);
-  }, [layout, pageIndex, playPageFlipSound]);
+  }, [book, layout, pageIndex, playPageFlipSound]);
 
   const next = useCallback(() => turnPage('next'), [turnPage]);
   const prev = useCallback(() => turnPage('prev'), [turnPage]);
@@ -373,8 +407,16 @@ function getReaderAnchor(page) {
     setSettings((s) => ({ ...s, theme: s.theme === 'light' ? 'sepia' : s.theme === 'sepia' ? 'night' : 'light' }));
   }
 
+  const handleClose = useCallback(() => {
+    if (layout && current) {
+      const source = ['cover', 'frontispiece'].includes(current.type) ? 0 : Number(current.sourcePage) || 1;
+      saveProgress(book, pageIndex, layout.pageCount, source, getReaderAnchor(current));
+    }
+    onClose();
+  }, [book, current, layout, onClose, pageIndex]);
+
   if (error) {
-    return <section id="bookReader" className="bookReaderFull"><div className="validationModal"><div className="validationCard"><span className="badge">خطا در کتابخانه</span><h2>خطا در کتابخانه</h2><ul><li>{error}</li></ul><button className="primary" onClick={onClose}>متوجه شدم</button></div></div></section>;
+    return <section id="bookReader" className="bookReaderFull"><div className="validationModal"><div className="validationCard"><span className="badge">خطا در کتابخانه</span><h2>خطا در کتابخانه</h2><ul><li>{error}</li></ul><button className="primary" onClick={handleClose}>متوجه شدم</button></div></div></section>;
   }
 
   const total = layout?.pageCount || 1;
@@ -397,7 +439,7 @@ function getReaderAnchor(page) {
     <section id="bookReader" ref={rootRef} className={rootClass}>
       <span id="bookReaderBadge" className="hidden">کتاب‌خوان</span>
       <div className="readerTopbar">
-        <button className="readerIcon" onClick={onClose} aria-label="خروج از مطالعه">×</button>
+        <button className="readerIcon" onClick={handleClose} aria-label="خروج از مطالعه">×</button>
         <div className="readerTitleWrap"><b id="bookReaderTitle">{title}</b><small id="bookReaderMeta">{layout ? meta : ''}</small></div>
         <button className="readerIcon" onClick={() => setTocOpen((value) => !value)} aria-label="فهرست مطالب">☰</button>
       </div>
