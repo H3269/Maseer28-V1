@@ -4183,15 +4183,16 @@
   }
 }
 
-/* V85 · Stronger Persian editorial hierarchy + independent Book 3 sections. */
+/* V86 · Conservative Persian reading hierarchy.
+   Reader content/wording remains untouched; only rendered typography is adjusted. */
 #bookReader .readerFixedLine.heading1 {
-  font-size: calc(var(--reader-font-size) * 1.32) !important;
+  font-size: calc(var(--reader-font-size) * 1.38) !important;
   font-weight: 900 !important;
   color: #244d48 !important;
 }
 
 #bookReader .readerFixedLine.heading {
-  font-size: calc(var(--reader-font-size) * 1.22) !important;
+  font-size: calc(var(--reader-font-size) * 1.25) !important;
   font-weight: 850 !important;
   color: #2b5550 !important;
 }
