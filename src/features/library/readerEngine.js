@@ -1,8 +1,8 @@
 export const READER_LINES_PER_PAGE = 16;
 
 const POEMS = {
-  1: { title: 'عشق یعنی کاهش رنج بشر', lines: ['ای که میپرسی نشان عشق چیست', 'عشق چیزی جز ظهور مهر نیست', 'عشق یعنی مشکلی آسان کنی', 'درد یک درمانده ای درمان کنی', 'در میان این همه غوغا و شر', 'عشق یعنی کاهش رنج بشر'] },
-  2: { title: '', lines: ['ننگرم کس را وگر هم بنگرم', 'او بهانه باشد و تو منظرم', 'عاشق صنع تو ام در شکر و صبر', 'عاشق مصنوع کی باشم چو گبر', 'عاشق صنع خدا بافر بود', 'عاشق مصنوع او کافر بود'] },
+  1: { title: 'عشق یعنی کاهش رنج بشر', lines: ['ای که میپرسی نشان عشق چیست', 'عشق چیزی جز ظهور مهر نیست', 'عشق یعنی مشکلی آسان کنی', 'دردی از درمانده ای درمان کنی', 'در میان این همه غوغا و شر', 'عشق یعنی کاهش رنج بشر'] },
+  2: { title: 'ننگرم کس را وگر هم بنگرم', lines: ['ننگرم کس را وگر هم بنگرم', 'او بهانه باشد و تو منظرم', 'عاشق صنع تو ام در شکر و صبر', 'عاشق مصنوع کی باشم چو گبر', 'عاشق صنع خدا بافر بود', 'عاشق مصنوع او کافر بود'] },
 };
 
 const APPENDIX_NUMS = {
@@ -227,6 +227,17 @@ function headingBlockIsNarrativeContinuation(text, previousText) {
   return /[.!؟!…]$/u.test(t) && t.length > 42;
 }
 
+function structuralHeadingFreshPage(text, block, level) {
+  const t = norm(text);
+  if (!t) return false;
+  // A heading that is explicitly structural in the source is a page opener in
+  // every volume. This is the common rule that makes books 1–4 behave alike.
+  if (level <= 2) return true;
+  if (/^(?:فصل|بخش|پیوست|ضمیمه|هفته|روز)\s+/u.test(t)) return true;
+  if (/^(?:تمرین|کاربرگ|جمع[‌ -]?بندی|نتیجه[‌ -]?گیری|سخن(?:\s+پایانی|\s+آخر)|پیام(?:\s+پایانی|\s+نویسنده)?|آخرین تمرین|پایان مسیر|یک سؤال نهایی|یادآوری)$/u.test(t)) return true;
+  return false;
+}
+
 function readerKind(text, block, context = {}) {
   const t = norm(text);
   if (!t) return { kind: 'body', level: 0 };
@@ -237,8 +248,10 @@ function readerKind(text, block, context = {}) {
   if (block?.type === 'heading' && headingBlockIsNarrativeContinuation(t, context.previousText)) return { kind: 'body', level: 0 };
   if (block?.type === 'heading') {
     const level = Math.max(1, Math.min(3, Number(block.level) || 3));
+    const freshPage = structuralHeadingFreshPage(t, block, level);
     if (level === 1) return { kind: 'heading1', level, freshPage: true };
-    if (level === 2) return { kind: 'heading', level };
+    if (level === 2) return { kind: 'heading', level, freshPage };
+    if (freshPage) return { kind: 'subheading', level, freshPage: true };
     return { kind: 'subheading', level };
   }
   if (block?.type === 'list') return { kind: 'list', level: 0 };
@@ -246,19 +259,12 @@ function readerKind(text, block, context = {}) {
   if (/^(?:فصل|پیوست)\s+/u.test(t)) return { kind: 'body', level: 0 };
   if (/^ضمیمه\s+/u.test(t)) return { kind: 'heading1', level: 1, freshPage: true, toc: Number(context.bookId) === 3 };
   if (/^اصل\s+(?:اول|دوم|سوم|چهارم|پنجم|ششم|هفتم|هشتم|نهم|دهم|یازدهم|دوازدهم|سیزدهم|چهاردهم|[۰-۹0-9]+)(?:\s*[:：]|\s|$)/u.test(t)) return { kind: 'subheading', level: 3 };
-  if (/^روز\s*[۰-۹0-9]+$/u.test(t)) return { kind: 'dayTitle', level: 2 };
-  if (/^(?:هفته\s+(?:اول|دوم|سوم|چهارم|[۰-۹0-9]+)|روش ثبت هر روز|روش استفاده(?: از کتاب)?|یک سؤال نهایی|یادآوری|جمله پایانی|سخن آخر|آخرین تمرین|سخن پایانی|پیام پایانی|دعوت به ادامه مسیر)$/u.test(t)) return { kind: 'subheading', level: 2 };
+  if (/^روز\s*[۰-۹0-9]+$/u.test(t)) return { kind: 'dayTitle', level: 2, freshPage: true };
+  if (/^(?:هفته\s+(?:اول|دوم|سوم|چهارم|[۰-۹0-9]+)|روش ثبت هر روز|روش استفاده(?: از کتاب)?|یک سؤال نهایی|یادآوری|جمله پایانی|سخن آخر|آخرین تمرین|سخن پایانی|پیام پایانی|دعوت به ادامه مسیر)$/u.test(t)) return { kind: 'subheading', level: 2, freshPage: true };
   if (LABEL_RE.test(t)) return { kind: 'label', level: 3 };
-  if (STRONG_HEADING_RE.test(t) || PREFIX_HEADING_RE.test(t)) return { kind: 'heading', level: 2 };
+  if (STRONG_HEADING_RE.test(t) || PREFIX_HEADING_RE.test(t)) return { kind: 'heading', level: 2, freshPage: true };
   if (context.knownHeadings?.has(t)) return { kind: 'subheading', level: 3, inferred: true };
   if (/^[۰-۹0-9]+[.)]\s+.{2,60}$/u.test(t)) return { kind: 'label', level: 3 };
-  // Standalone question-shaped titles in volumes 1 and 2 were flattened into
-  // plain text in the source JSON. Recover only the standalone cases: the next
-  // block must be real prose and the title must look like a section question.
-  if (context.bookId <= 2 && /؟$/u.test(t) && context.nextText && context.nextText.length >= 42
-    && t.length <= 72 && /^(?:حقیقت|واقعیت|باور|ذهن|احساس|هویت|پذیرش|تغییر|انسان|آیا|چرا|چگونه|چه|کدام|چطور)\b/u.test(t)) {
-    return { kind: 'sectionHeading', level: 2, inferred: true };
-  }
   if (shortHeadingCandidate(t, context.nextText, context.bookId)) return { kind: 'subheading', level: 3, inferred: true };
   return { kind: 'body', level: 0 };
 }
@@ -508,18 +514,14 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
   }
 
   function addHeading(text, kind, source, level = 2) {
-    const factor = kind === 'heading1' ? 1.32 : kind === 'exerciseTitle' ? 1.26 : kind === 'exerciseSubtitle' ? 1.14 : kind === 'dayTitle' ? 1.20 : kind === 'sectionHeading' ? 1.24 : kind === 'heading' ? 1.22 : kind === 'subheading' ? 1.17 : 1.03;
-    const weight = kind === 'label' ? 760 : kind === 'exerciseSubtitle' ? 800 : kind === 'subheading' ? 880 : kind === 'sectionHeading' ? 900 : kind === 'exerciseTitle' ? 900 : 950;
+    const factor = kind === 'heading1' ? 1.32 : kind === 'exerciseTitle' ? 1.26 : kind === 'exerciseSubtitle' ? 1.14 : kind === 'dayTitle' ? 1.20 : kind === 'heading' ? 1.22 : kind === 'subheading' ? 1.17 : 1.03;
+    const weight = kind === 'label' ? 760 : kind === 'exerciseSubtitle' ? 800 : kind === 'subheading' ? 880 : kind === 'exerciseTitle' ? 900 : 950;
     m.font(m.fontPx * factor, weight);
     const wrapped = wrap(editorialReaderText(text), m.available, m.ctx);
     const spacer = kind === 'label' ? 0 : 1;
     const follow = kind === 'heading1' || kind === 'exerciseTitle' ? 4 : HEADING_FOLLOW_LINES;
-    const need = Math.min(READER_LINES_PER_PAGE, wrapped.length + spacer + follow + 1);
-    // A section heading should not visually collide with the preceding paragraph.
-    // The spacer is a reader-layout token only; no authored text is changed.
-    const needsBeforeGap = lines.length > 0 && !['heading1', 'heading', 'sectionHeading', 'subheading', 'exerciseTitle', 'exerciseSubtitle', 'dayTitle', 'label'].includes(lines[lines.length - 1]?.kind);
+    const need = Math.min(READER_LINES_PER_PAGE, wrapped.length + spacer + follow);
     if (lines.length && remaining() < need) flush();
-    if (needsBeforeGap && lines.length && remaining() > 1) pushLine('', 'spacer', source, { paraStart: false, paraEnd: true });
     wrapped.forEach((line, index) => pushLine(line, kind, source, {
       paraStart: index === 0,
       paraEnd: index === wrapped.length - 1,
@@ -714,7 +716,7 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
       // printed section opener, while keeping its first subtitle and prose with it.
       if (meta.kind === 'exerciseTitle' && !lines.length) pushLine('', 'spacer', source, { paraStart: false, paraEnd: true });
       if (meta.toc) addInlineTocAnchor(visibleText, source);
-      if (['heading1', 'exerciseTitle', 'exerciseSubtitle', 'heading', 'sectionHeading', 'subheading', 'label', 'dayTitle'].includes(meta.kind)) {
+      if (['heading1', 'exerciseTitle', 'exerciseSubtitle', 'heading', 'subheading', 'label', 'dayTitle'].includes(meta.kind)) {
         addHeading(visibleText, meta.kind, source, meta.level);
         continue;
       }
