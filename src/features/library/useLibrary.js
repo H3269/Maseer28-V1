@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { libraryRepository } from './libraryRepository.js';
 import { createVersionRecord, normalizeBookContent } from './bookUtils.js';
 
-// This key stores the last checked publisher revision.  The actual book
-// fingerprints are stored per book below, so changing a JSON file is enough
-// to trigger an update even when the revision string was not bumped.
+// Published content is revalidated on every library load.  The fingerprint of
+// each book is stored separately, so changing a book JSON is enough to publish
+// a new active version even if the manifest revision was not bumped.
 const SEED_REVISION_KEY = 'seed-content-revision-v88';
 const SEED_BOOK_FINGERPRINT_PREFIX = 'seed-book-fingerprint:';
 const BASE = import.meta.env.BASE_URL;
@@ -30,9 +30,6 @@ async function fetchJson(path, cacheToken) {
 }
 
 async function seedLibrary() {
-  // Always revalidate the manifest.  This is intentional: the library is
-  // published content and must be able to receive updates without asking the
-  // user to clear browser data.
   const manifest = await fetchJson('content/library.seed.json', Date.now());
   const revision = String(manifest.revision || 'legacy');
   const previousRevision = await libraryRepository.getSetting(SEED_REVISION_KEY);
@@ -44,10 +41,9 @@ async function seedLibrary() {
     const rawFingerprint = await sha256(JSON.stringify(rawContent));
     const fingerprintKey = `${SEED_BOOK_FINGERPRINT_PREFIX}${bookId}`;
     const previousFingerprint = await libraryRepository.getSetting(fingerprintKey);
+    const existingBook = await libraryRepository.getBook(bookId);
+    let activeVersionId = existingBook?.activeVersionId;
 
-    // If the book content has not changed, keep the existing version and only
-    // refresh lightweight library metadata. This avoids unnecessary writes.
-    let activeVersionId = (await libraryRepository.getBook(bookId))?.activeVersionId;
     if (previousFingerprint !== rawFingerprint || !activeVersionId) {
       const content = normalizeBookContent(rawContent, meta.title);
       const safeFingerprint = rawFingerprint.slice(0, 16);
@@ -66,7 +62,6 @@ async function seedLibrary() {
       await libraryRepository.setSetting(fingerprintKey, rawFingerprint);
     }
 
-    const existingBook = await libraryRepository.getBook(bookId);
     await libraryRepository.putBook({
       id: bookId,
       legacyId: meta.legacyId,
@@ -104,8 +99,6 @@ export function useLibrary() {
       setError('');
     } catch (err) {
       console.error(err);
-      // If the network is temporarily unavailable, keep showing the locally
-      // cached library rather than making an already-installed app unusable.
       const cachedBooks = await libraryRepository.listBooks().catch(() => []);
       if (cachedBooks.length) {
         setBooks(cachedBooks);
