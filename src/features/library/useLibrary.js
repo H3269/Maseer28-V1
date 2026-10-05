@@ -2,9 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { libraryRepository } from './libraryRepository.js';
 import { createVersionRecord, normalizeBookContent } from './bookUtils.js';
 
-// Published content is revalidated on every library load.  The fingerprint of
-// each book is stored separately, so changing a book JSON is enough to publish
-// a new active version even if the manifest revision was not bumped.
 const SEED_REVISION_KEY = 'seed-content-revision-v88';
 const SEED_BOOK_FINGERPRINT_PREFIX = 'seed-book-fingerprint:';
 const BASE = import.meta.env.BASE_URL;
@@ -32,7 +29,6 @@ async function fetchJson(path, cacheToken) {
 async function seedLibrary() {
   const manifest = await fetchJson('content/library.seed.json', Date.now());
   const revision = String(manifest.revision || 'legacy');
-  const previousRevision = await libraryRepository.getSetting(SEED_REVISION_KEY);
   const now = new Date().toISOString();
 
   for (const meta of manifest.books || []) {
@@ -46,8 +42,7 @@ async function seedLibrary() {
 
     if (previousFingerprint !== rawFingerprint || !activeVersionId) {
       const content = normalizeBookContent(rawContent, meta.title);
-      const safeFingerprint = rawFingerprint.slice(0, 16);
-      const versionId = `seed-${bookId}-${safeFingerprint}`;
+      const versionId = `seed-${bookId}-${rawFingerprint.slice(0, 16)}`;
       const version = createVersionRecord({
         bookId,
         versionLabel: content.version || meta.versionLabel || '1.0',
