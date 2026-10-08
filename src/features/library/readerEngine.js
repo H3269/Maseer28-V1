@@ -252,6 +252,7 @@ function readerKind(text, block, context = {}) {
   if (!t) return { kind: 'body', level: 0 };
   if (Number(context.bookId) === 1 && context.source === 1 && /^(?:«از حقیقت تا واقعیت»|جلد اول|مسیرآگاهی، انتخاب و اقدام|رشدفردی ، خودشناسی ، تحول درونی و آگاهی زندگی|نویسنده:|حسن عابدی برنجستانکی|هیپنوتراپ\(PQHT\) – رواندرمانگر|تابستان ۱۴۰۵|نشر مرکز هیپنوتراپی شفا)$/u.test(t)) return { kind: 'introMeta', level: 0 };
   if (Number(context.bookId) === 1 && /^تمرین فصل سوم$/u.test(t)) return { kind: 'heading', level: 2, freshPage: true };
+  if (Number(context.bookId) === 1 && /^پیام نهایی کتاب$/u.test(t)) return { kind: 'heading', level: 2, freshPage: true };
   if (Number(context.bookId) === 1 && context.forceBody) return { kind: 'body', level: 0 };
   if (Number(context.bookId) === 1 && book1Body(t)) return { kind: 'body', level: 0 };
   if (Number(context.bookId) === 1 && book1Heading(t)) return { kind: 'heading', level: 2, freshPage: true };
