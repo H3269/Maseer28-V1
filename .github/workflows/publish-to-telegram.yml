@@ -1,1 +1,49 @@
+name: Publish approved V1 to Telegram
 
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout test version
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout Telegram version
+        uses: actions/checkout@v4
+        with:
+          repository: H3269/Maseer28
+          ref: main
+          token: ${{ secrets.PRODUCTION_TOKEN }}
+          path: production
+
+      - name: Copy approved files to Telegram version
+        run: |
+          rsync -av --delete \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='node_modules/' \
+            --exclude='dist/' \
+            ./ production/
+
+      - name: Commit and push to Telegram version
+        working-directory: production
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "No changes to publish."
+            exit 0
+          fi
+
+          git add -A
+          git commit -m "Sync approved changes from Maseer28-V1"
+          git push origin main
