@@ -22,7 +22,16 @@ const PRACTICE_PAGE_BREAK_RE = /^(?:تمرین(?:\s|\u200c)+عملی(?:\s|\u200c
 const TOC_TITLE_RE = /^فهرست مطالب\s*[:：]?$/u;
 const TOC_CHAPTER_RE = /^(?:فصل(?:\u200c|\s)*(?:اول|دوم|سوم|چهارم|پنجم|ششم|هفتم|هشتم|نهم|دهم|یازدهم|دوازدهم|سیزدهم|چهاردهم|پانزدهم|شانزدهم|هفدهم|هجدهم|نوزدهم|بیستم|پایانی|[۰-۹0-9]+)\s*[:：]?|ضمیمه(?:\s|\u200c)+|پیوست(?:\s|\u200c)+)/u;
 const TOC_PART_RE = /^(?:(?:بخش(?:\u200c|\s)+(?:اول|دوم|سوم|چهارم|پنجم|پایانی|عملی|[۰-۹0-9]+)|بخش(?:\u200c|\s)*های تکمیلی)(?:\s*[:：].*)?|بخش(?:\u200c|\s)*عملی(?:\u200c|\s)*کتاب|ضمائم(?:\u200c|\s)*کتاب|ضمائم|ضمایم(?:\u200c|\s)*کتاب|ضمایم|ضماییم)$/u;
-const TOC_HARD_STOP_RE = /^(?:دفتر کار عملی|دفتر تمرین|کاربرگ(?:\s|\u200c)|راهنمای استفاده عملی)(?:\s|$)/u;
+const TOC_HARD_STOP_RE = /^(?:دفتر تمرین|کاربرگ(?:\s|\u200c)|راهنمای استفاده عملی)(?:\s|$)/u;
+
+const BOOK1_HEADING_TEXTS = new Set([
+  'ده اصل زندگی آگاهانه','پیام اصلی کتاب','تفاوت اصلی حقیقت و واقعیت','چرا انسان گاهی حقیقت را نمی‌بیند؟','دیدن بدون قضاوت','پذیرش؛ آغاز تغییر','حقیقت درباره خود','فاصله میان دانستن و دیدن','باورهای محدودکننده','باورهای رشددهنده','چگونه باورها شکل می‌گیرند؟','تغییر برنامه‌های ذهنی','نقش تمرین و تکرار','مسئولیت انتخاب‌ها','انتخاب‌های کوچک؛ نتایج بزرگ','انتخاب میان راحتی و رشد','احساسات و رشد انسان','اقدام آگاهانه چیست؟','عبور از کمال‌گرایی','تفاوت هدف و هویت','رهایی از هویت‌های قدیمی','ساختن هویت جدید با شواهد جدید','مراقبت از گفت‌وگوی درونی','چگونه هماهنگی ایجاد کنیم؟','چرا تغییر دشوار است؟','مراحل تحول پایدار','نقش استمرار','ارزیابی مسیر','برنامه ۹۰ روزه تحول شخصی','تفاوت یادگیری و ماندن در گذشته','بخشش؛ آزاد کردن انرژی درونی','بخشش خود','تبدیل زخم به قدرت','تفاوت موفقیت و معنا','رسالت؛ جهت حرکت زندگی','خدمت و ارتباط با دیگران','تفاوت میان ذهنیت کمبود و ذهنیت رشد','فراوانی واقعی چیست؟','رابطه ارزش‌آفرینی و موفقیت','آگاهی معنوی چیست؟','شناخت خود به عنوان مسیر آگاهی','آرامش درونی','شناخت تضادهای درونی','صداقت؛ پایه یکپارچگی','هماهنگی فکر و عمل','پذیرش بخش‌های مختلف خود','چگونه عادت جدید بسازیم؟','ترک عادت‌های محدودکننده','رابطه آگاهانه چیست؟','شناخت خود پایه رابطه سالم','مرزهای سالم در روابط','بخشش و رها کردن رنج‌ها','رابطه انسان با خودش','تفاوت واکنش و پاسخ آگاهانه','مدیریت توجه','مسئولیت‌پذیری؛ نشانه قدرت','تفاوت تغییر موقت و تغییر پایدار','اهمیت محیط','آگاهی؛ چراغ مسیر','انتخاب؛ قدرت انسان','عمل؛ پلی میان حقیقت و واقعیت','انسان جدید'
+]);
+const BOOK1_BODY_TEXTS = new Set(['۶. از اشتباهات درس بگیر، نه اینکه هویت خود را بر پایه آنها تعریف کنی.','چه نوع واکنشی همیشه از من دیده می‌شود؟','چه تصمیم‌هایی را دوباره و دوباره تکرار می‌کنم؟','مرحله اول: شناخت وضعیت موجود','چه الگوهایی مرا محدود می‌کنند؟','چه چیزی در زندگی من واقعاً ارزشمند است؟','چه جایگزین سالم‌تری می‌توانم ایجاد کنم؟','چگونه معنای شخصی خود را پیدا کنیم؟','چه کاری به من احساس زنده بودن می‌دهد؟','چه چیزی در زندگی من بهتر شده است؟']);
+function book1Key(value) { return norm(value).replace(/[.؟]+$/u,'').replace(/\s+/gu,' ').trim(); }
+function book1Heading(text) { const t=norm(text); const k=book1Key(text); return BOOK1_HEADING_TEXTS.has(t) || BOOK1_HEADING_TEXTS.has(k) || /^(?:برنامه ۹۰ روزه تحول|شناخت خود به|رابطه ارزش.?آفرینی و موفقیت)$/u.test(k); }
+function book1Body(text) { const raw=norm(text); const t=book1Key(text); return BOOK1_BODY_TEXTS.has(raw) || BOOK1_BODY_TEXTS.has(t) || /^چه چیزی در زندگی من(?:\s|$)/u.test(t) || /^چه کاری به من احساس زنده بودن/u.test(t) || /^چه الگوهایی مرا محدود می‌کنند/u.test(t) || /^آیا ساختارهای من با ارزش‌های من/u.test(t); }
+
 
 function baseCleanReaderText(value) {
   return String(value ?? '')
@@ -241,6 +250,12 @@ function structuralHeadingFreshPage(text, block, level) {
 function readerKind(text, block, context = {}) {
   const t = norm(text);
   if (!t) return { kind: 'body', level: 0 };
+  if (Number(context.bookId) === 1 && context.source === 1 && /^(?:«از حقیقت تا واقعیت»|جلد اول|مسیرآگاهی، انتخاب و اقدام|رشدفردی ، خودشناسی ، تحول درونی و آگاهی زندگی|نویسنده:|حسن عابدی برنجستانکی|هیپنوتراپ\(PQHT\) – رواندرمانگر|تابستان ۱۴۰۵|نشر مرکز هیپنوتراپی شفا)$/u.test(t)) return { kind: 'introMeta', level: 0 };
+  if (Number(context.bookId) === 1 && context.forceBody) return { kind: 'body', level: 0 };
+  if (Number(context.bookId) === 1 && book1Body(t)) return { kind: 'body', level: 0 };
+  if (Number(context.bookId) === 1 && book1Heading(t)) return { kind: 'heading', level: 2, freshPage: true };
+  if (Number(context.bookId) === 1 && /^هویت\.?$/u.test(t)) return { kind: 'heading', level: 2, freshPage: true };
+  if (Number(context.bookId) === 1 && /^روش استفاده از(?: این)? کتاب$/u.test(t)) return { kind: 'heading', level: 2, freshPage: true };
 
   if (isFrontMatterTitle(t)) return { kind: 'heading1', level: 1, freshPage: true };
   if (PRACTICE_PAGE_BREAK_RE.test(t)) return { kind: 'exerciseTitle', level: 2, freshPage: true, practice: true };
@@ -383,7 +398,7 @@ function nextMeaningfulBlock(blocks, start) {
 function tocKind(text) {
   const t = norm(text);
   if (TOC_TITLE_RE.test(t)) return 'tocTitle';
-  if (TOC_PART_RE.test(t)) return 'tocPart';
+  if (TOC_PART_RE.test(t) || /^دفتر کار عملی$/u.test(t)) return 'tocPart';
   if (TOC_CHAPTER_RE.test(t)) return 'tocChapter';
   return 'tocSub';
 }
@@ -565,6 +580,7 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
     if (kind === 'tocTitle') {
       if (lines.length) flush();
     } else if (kind === 'tocPart') {
+      if (/^(?:بخش‌های تکمیلی|بخش های تکمیلی)$/u.test(visible) && lines.length) flush();
       // Persian book typography: a major part heading must not hang at page foot.
       if (lines.length && remaining() < Math.min(6, wrapped.length + 4)) flush();
       if (lines.length && lastTocKind !== 'tocTitle' && remaining() > wrapped.length + 2) pushLine('', 'tocGap', source);
@@ -591,6 +607,14 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
     insertedChapters.add(source);
   }
 
+  function addWorkbookChapter(source) {
+    flush();
+    const index = pages.length;
+    pages.push({ type: 'chapter', chapter: { eyebrow: 'بخش', title: 'دفتر کار عملی', full: 'دفتر کار عملی' }, chapterKind: 'workbook', sourcePage: source });
+    chapterAnchors.push({ title: 'دفتر کار عملی', source, page: index, kind: 'workbook' });
+    if (!sourceFirst.has(source)) sourceFirst.set(source, index);
+  }
+
   function addInlineTocAnchor(title, source) {
     const clean = editorialReaderText(title);
     if (!clean || chapterAnchors.some((x) => x.source === source && norm(x.title) === norm(clean))) return;
@@ -599,8 +623,8 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
 
   function addPoem(item, source) {
     flush();
-    if (item.title) pushLine(item.title, 'poemTitle', source, { paraStart: true, paraEnd: true });
-    item.lines.forEach((line) => pushLine(line, 'poem', source, { paraStart: true, paraEnd: true }));
+    if (item.title) pushLine(item.title, Number(bookId) === 1 ? 'poemEmphasis' : 'poemTitle', source, { paraStart: true, paraEnd: true });
+    item.lines.forEach((line) => pushLine(line, Number(bookId) === 1 && line === 'عشق یعنی کاهش رنج بشر' ? 'poemEmphasis' : 'poem', source, { paraStart: true, paraEnd: true }));
     flush();
   }
 
@@ -628,6 +652,7 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
   }
 
   const sourceRows = bookRows(book);
+  let book1ExampleBodyActive = false;
   for (const row of sourceRows) {
     const source = Number(row.source) || 1;
     if (tocActive && source >= firstChapterSource) { tocActive = false; lastTocKind = ''; }
@@ -676,6 +701,7 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
             tocSeenChapters += 1;
           }
           addTocEntry(block?.text ?? text, kind, source);
+          if (/^دفتر کار عملی$/u.test(text)) { tocActive = false; lastTocKind = ''; }
           continue;
         }
       }
@@ -710,7 +736,11 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
         continue;
       }
       const previousText = blocks.slice(0, i).reverse().map((x) => norm(x?.text)).find(Boolean) || '';
-      const meta = readerKind(text, block, { bookId, source, nextText, previousText, knownHeadings });
+      if (Number(bookId) === 1 && source < firstChapterSource && /^دفتر کار عملی$/u.test(previousText) && /^تمرین‌های کاربردی برای تبدیل آگاهی به زندگی روزمره$/u.test(text)) continue;
+      if (Number(bookId) === 1 && /^یک مثال عملی$/u.test(text)) book1ExampleBodyActive = true;
+      if (Number(bookId) === 1 && /^دفتر کار عملی(?: کتاب)?$/u.test(text)) { addWorkbookChapter(source); continue; }
+      const meta = readerKind(text, block, { bookId, source, nextText, previousText, knownHeadings, forceBody: book1ExampleBodyActive });
+      if (Number(bookId) === 1 && /^تمرین فصل سوم$/u.test(text)) book1ExampleBodyActive = false;
       if (meta.freshPage && lines.length) flush();
       // Give a major practical exercise the same visual breathing room as a
       // printed section opener, while keeping its first subtitle and prose with it.
