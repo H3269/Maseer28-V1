@@ -26,7 +26,7 @@ jobs:
 
       - name: Copy approved files to Telegram version
         run: |
-          rsync -av --delete \
+          rsync -av \
             --exclude='.git/' \
             --exclude='.github/' \
             --exclude='node_modules/' \
@@ -39,11 +39,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          if git diff --quiet && git diff --cached --quiet; then
+          git add -A
+
+          if git diff --cached --quiet; then
             echo "No changes to publish."
             exit 0
           fi
 
-          git add -A
           git commit -m "Sync approved changes from Maseer28-V1"
           git push origin main
