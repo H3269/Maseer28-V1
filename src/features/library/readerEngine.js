@@ -277,6 +277,7 @@ function readerKind(text, block, context = {}) {
   if (/^روز\s*[۰-۹0-9]+$/u.test(t)) return { kind: 'dayTitle', level: 2, freshPage: true };
   if (/^(?:هفته\s+(?:اول|دوم|سوم|چهارم|[۰-۹0-9]+)|روش ثبت هر روز|روش استفاده(?: از کتاب)?|یک سؤال نهایی|یادآوری|جمله پایانی|سخن آخر|آخرین تمرین|سخن پایانی|پیام پایانی|دعوت به ادامه مسیر)$/u.test(t)) return { kind: 'subheading', level: 2, freshPage: true };
   if (LABEL_RE.test(t)) return { kind: 'label', level: 3 };
+  if (/^تمرین فصل دوم$/u.test(t)) return { kind: 'heading', level: 2, freshPage: true };
   if (STRONG_HEADING_RE.test(t) || PREFIX_HEADING_RE.test(t)) return { kind: 'heading', level: 2, freshPage: true };
   if (context.knownHeadings?.has(t)) return { kind: 'subheading', level: 3, inferred: true };
   if (/^[۰-۹0-9]+[.)]\s+.{2,60}$/u.test(t)) return { kind: 'label', level: 3 };
