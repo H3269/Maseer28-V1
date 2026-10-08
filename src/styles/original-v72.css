@@ -4058,6 +4058,9 @@
   font-weight: 720 !important;
 }
 
+#bookReader .readerFixedLine.introMeta { color: var(--reader-muted) !important; }
+#bookReader .readerFixedLine.poemEmphasis { font-size: calc(var(--reader-font-size) * 1.12) !important; font-weight: 850 !important; color: var(--reader-muted) !important; }
+
 #bookReader .readerFixedLine.label {
   font-size: var(--reader-font-size) !important;
   font-weight: 620 !important;
@@ -4183,16 +4186,15 @@
   }
 }
 
-/* V86 · Conservative Persian reading hierarchy.
-   Reader content/wording remains untouched; only rendered typography is adjusted. */
+/* V85 · Stronger Persian editorial hierarchy + independent Book 3 sections. */
 #bookReader .readerFixedLine.heading1 {
-  font-size: calc(var(--reader-font-size) * 1.38) !important;
+  font-size: calc(var(--reader-font-size) * 1.32) !important;
   font-weight: 900 !important;
   color: #244d48 !important;
 }
 
 #bookReader .readerFixedLine.heading {
-  font-size: calc(var(--reader-font-size) * 1.25) !important;
+  font-size: calc(var(--reader-font-size) * 1.22) !important;
   font-weight: 850 !important;
   color: #2b5550 !important;
 }
