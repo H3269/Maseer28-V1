@@ -624,7 +624,7 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
   function addPoem(item, source) {
     flush();
     if (item.title) pushLine(item.title, Number(bookId) === 1 ? 'poemEmphasis' : 'poemTitle', source, { paraStart: true, paraEnd: true });
-    item.lines.forEach((line) => pushLine(line, Number(bookId) === 1 && line === 'عشق یعنی کاهش رنج بشر' ? 'poemEmphasis' : 'poem', source, { paraStart: true, paraEnd: true }));
+    item.lines.forEach((line) => pushLine(line, 'poem', source, { paraStart: true, paraEnd: true }));
     flush();
   }
 
