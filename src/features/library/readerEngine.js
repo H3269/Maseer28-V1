@@ -251,6 +251,7 @@ function readerKind(text, block, context = {}) {
   const t = norm(text);
   if (!t) return { kind: 'body', level: 0 };
   if (Number(context.bookId) === 1 && context.source === 1 && /^(?:«از حقیقت تا واقعیت»|جلد اول|مسیرآگاهی، انتخاب و اقدام|رشدفردی ، خودشناسی ، تحول درونی و آگاهی زندگی|نویسنده:|حسن عابدی برنجستانکی|هیپنوتراپ\(PQHT\) – رواندرمانگر|تابستان ۱۴۰۵|نشر مرکز هیپنوتراپی شفا)$/u.test(t)) return { kind: 'introMeta', level: 0 };
+  if (Number(context.bookId) === 1 && /^تمرین فصل سوم$/u.test(t)) return { kind: 'heading', level: 2, freshPage: true };
   if (Number(context.bookId) === 1 && context.forceBody) return { kind: 'body', level: 0 };
   if (Number(context.bookId) === 1 && book1Body(t)) return { kind: 'body', level: 0 };
   if (Number(context.bookId) === 1 && book1Heading(t)) return { kind: 'heading', level: 2, freshPage: true };
@@ -277,7 +278,6 @@ function readerKind(text, block, context = {}) {
   if (/^روز\s*[۰-۹0-9]+$/u.test(t)) return { kind: 'dayTitle', level: 2, freshPage: true };
   if (/^(?:هفته\s+(?:اول|دوم|سوم|چهارم|[۰-۹0-9]+)|روش ثبت هر روز|روش استفاده(?: از کتاب)?|یک سؤال نهایی|یادآوری|جمله پایانی|سخن آخر|آخرین تمرین|سخن پایانی|پیام پایانی|دعوت به ادامه مسیر)$/u.test(t)) return { kind: 'subheading', level: 2, freshPage: true };
   if (LABEL_RE.test(t)) return { kind: 'label', level: 3 };
-  if (/^تمرین فصل سوم$/u.test(t)) return { kind: 'heading', level: 2, freshPage: true };
   if (STRONG_HEADING_RE.test(t) || PREFIX_HEADING_RE.test(t)) return { kind: 'heading', level: 2, freshPage: true };
   if (context.knownHeadings?.has(t)) return { kind: 'subheading', level: 3, inferred: true };
   if (/^[۰-۹0-9]+[.)]\s+.{2,60}$/u.test(t)) return { kind: 'label', level: 3 };
