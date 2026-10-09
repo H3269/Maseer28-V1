@@ -3763,9 +3763,9 @@
     #bookReader .readerFixedLine.list.lineEnd,
     #bookReader .readerFixedLine.body.sentenceEnd,
     #bookReader .readerFixedLine.list.sentenceEnd {
-      text-align: right !important;
+      text-align: justify !important;
       text-align-last: right !important;
-      text-justify: auto !important;
+      text-justify: inter-word !important;
       word-spacing: normal !important;
       letter-spacing: 0 !important;
     }
