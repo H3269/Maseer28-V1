@@ -102,11 +102,23 @@ export function Dashboard({ journey, userProfile, onEditProfile, onCurrent, onBo
 }
 
 function nextRequiredDayLocal(state) { for (let i = 1; i <= 28; i += 1) if (!(state.completed || []).includes(i)) return i; return 29; }
-export function splitDayContent(d) { const titleParts = String(d?.title || 'موضوع امروز').split('·').map((part) => part.trim()); const title = titleParts[0] || 'موضوع امروز'; const category = titleParts[1] || title; const raw = String(d?.exercise || '').replace(/\{cat\}/g, category); const mark = 'اقدام اختصاصی امروز:', method = 'روش اختصاصی این مسئله:'; let exercise = String(d?.exerciseText || '').replace(/\{cat\}/g, category).trim(); if (!exercise && raw) exercise = raw.includes(mark) ? raw.split(mark)[0].trim() : raw.split(method)[0].trim(); const action = String(d?.actionText || '').replace(/\{cat\}/g, category).replace(/^مثال عینی\s*:\s*/i, '').trim() || `برای «${category}»، یک نمونه امن و مشخص از امروز انتخاب کن و آنچه رخ داد و واکنش خودت را ثبت کن.`; return { exercise, action, title }; }
+export function splitDayContent(d, problem = '') {
+  const raw = String(d?.exercise || '');
+  const mark = 'اقدام اختصاصی امروز:';
+  const method = 'روش اختصاصی این مسئله:';
+  let exercise = String(d?.exerciseText || '').trim();
+  if (!exercise && raw) exercise = raw.includes(mark) ? raw.split(mark)[0].trim() : raw.split(method)[0].trim();
+  const title = String(d?.title || 'موضوع امروز').split('·')[0].trim();
+  const category = String(problem || String(d?.title || '').split('·')[1] || title).trim();
+  const clean = (value) => String(value || '').replace(/\{\s*(?:cat|category|problem)\s*\}/gi, category).replace(/\s+/g, ' ').trim();
+  // Display the stored action directly. Do not append a generic sentence that can duplicate or break its grammar.
+  const action = clean(d?.actionText || (raw.includes(mark) ? raw.split(mark)[1].split(method)[0] : ''));
+  return { exercise: clean(exercise), action, title };
+}
 export function severityText(n) { return n <= 2 ? '۰ تا ۲ = بسیار کم یا تقریباً بدون درگیری' : n <= 4 ? '۳ تا ۴ = خفیف' : n <= 6 ? '۵ تا ۶ = متوسط' : n <= 8 ? '۷ تا ۸ = زیاد' : '۹ تا ۱۰ = بسیار شدید و درگیرکننده'; }
 
 export function DayScreen({ day, problem, data, record, savedAnswer, onDashboard, onPrevious, onComplete, onNext, completed, onValidation }) {
-  const parts = splitDayContent(data), [entryOpen, setEntryOpen] = useState(Boolean(record?.score != null || savedAnswer || record?.feedback)), [score, setScore] = useState(record?.score ?? 0), [touched, setTouched] = useState(record?.score != null), [feedback, setFeedback] = useState(record?.feedback || ''), [answer, setAnswer] = useState(savedAnswer || '');
+  const parts = splitDayContent(data, problem), [entryOpen, setEntryOpen] = useState(Boolean(record?.score != null || savedAnswer || record?.feedback)), [score, setScore] = useState(record?.score ?? 0), [touched, setTouched] = useState(record?.score != null), [feedback, setFeedback] = useState(record?.feedback || ''), [answer, setAnswer] = useState(savedAnswer || '');
   useEffect(() => { setEntryOpen(Boolean(record?.score != null || savedAnswer || record?.feedback)); setScore(record?.score ?? 0); setTouched(record?.score != null); setFeedback(record?.feedback || ''); setAnswer(savedAnswer || ''); }, [day, record, savedAnswer]);
   if (!data) return null;
   const bubblePos = Math.min(96, Math.max(4, (10 - Number(score)) * 10));
@@ -119,48 +131,47 @@ export function nextStepText(n, d, rec, nextData = null, problem = '') {
   const nextParts = String(nextData?.title || '').split('·').map((part) => part.trim());
   const category = String(problem || currentParts[1] || 'مسئله انتخاب‌شده').trim();
   const nextStage = nextParts[0] || 'تمرین بعدی';
-  const nextDay = Math.min(28, Number(n) + 1);
-  const phase = (nextDay - 1) % 7;
-  const plans = {
+  const day = Math.max(1, Math.min(28, Number(n) || 1));
+  const variants = {
     better: [
-      `فردا در «${nextStage}» درباره «${category}»، بررسی کن کدام بخش از تجربه امروز قابل مشاهده و تکرار است؛ علت را از روی یک روز قطعی فرض نکن.`,
-      `گام بعدی برای «${category}» این است که واقعیت را از برداشت جدا نگه داری. در «${nextStage}» به شواهد توجه کن، نه فقط به احساس کلی.`,
-      `اگر امروز بهتر بودی، فردا در «${nextStage}» به شرایطی توجه کن که پیش از تغییر وجود داشت؛ این کار کمک می‌کند الگو را دقیق‌تر بشناسی.`,
-      `در مرحله «${nextStage}»، تجربه امروز را با یک نمونه واقعی دیگر مقایسه کن. ببین چه چیزی مشابه بود و چه چیزی فرق داشت.`,
-      `برای ادامه مسیر «${category}»، نتیجه امروز را تضمین همیشگی ندان. در «${nextStage}» مهارت را در حد امن و متناسب با شرایط بررسی کن.`,
-      `فردا در «${nextStage}» ببین آیا کاری که امروز کمک‌کننده بود با هدف همان روز هم سازگار است؛ اگر نه، روش را متناسب کن.`,
-      `در مرحله «${nextStage}»، به جای تلاش برای حفظ حال خوب، روی یک رفتار قابل مشاهده تمرکز کن و نتیجه را بدون قضاوت ثبت کن.`
+      `در «${nextStage}»، ببین کدام رفتار یا شرایط درباره «${category}» با بهترشدن امروز همراه بود. یک روز به‌تنهایی علت را ثابت نمی‌کند.`,
+      `برای گام بعدی «${category}»، تجربه امروز را به یک نشانه قابل مشاهده تبدیل کن؛ لازم نیست حال خوب را به زور حفظ کنی.`,
+      `فردا در «${nextStage}»، همان مهارت را فقط در موقعیتی امن بررسی کن و ببین نتیجه واقعاً چه می‌شود.`,
+      `بهبود امروز را یک سرنخ بدان. در «${nextStage}» ثبت کن چه چیزی در اختیار تو بود و چه چیزی به شرایط بیرونی وابسته بود.`,
+      `در مرحله بعد، درباره «${category}» به جزئیات توجه کن: چه اتفاقی پیش از تغییر افتاد و تو چه کاری انجام دادی؟`,
+      `فردا قرار نیست نتیجه امروز را تکرار کنی؛ فقط یک رفتار قابل انجام را در «${nextStage}» تمرین و نتیجه‌اش را ثبت کن.`,
+      `در «${nextStage}»، از تجربه امروز یک نکته عملی بردار و بررسی کن آیا در موقعیت دیگری هم به کار می‌آید.`
     ],
     same: [
-      `فردا در «${nextStage}» درباره «${category}»، فقط یک نشانه مشخص را دقیق‌تر بررسی کن. نبود تغییر فوری، به‌تنهایی درباره مفیدبودن مسیر چیزی را ثابت نمی‌کند.`,
-      `در گام بعدی، یک عامل را جداگانه بررسی کن تا بدانی چه چیزی رخ داده است؛ لازم نیست برای رسیدن به نتیجه، چند روش را هم‌زمان عوض کنی.`,
-      `وقتی امروز تفاوتی دیده نشد، مرحله «${nextStage}» را فرصتی برای مشاهده دقیق‌تر بدان، نه آزمونی برای موفق یا ناموفق بودن خودت.`,
-      `فردا در «${nextStage}» به یک جزئیات قابل اندازه‌گیری توجه کن؛ ثبت دقیق از حدس‌زدن درباره علت بهتر است.`,
-      `برای «${category}»، فعلاً از نتیجه‌گیری عجولانه بپرهیز. در تمرین بعدی ببین چه چیزی در اختیار توست و چه چیزی به شرایط بیرونی وابسته است.`,
-      `گام بعدی لازم نیست سخت‌تر باشد. «${nextStage}» را با سرعتی انجام بده که امن و قابل‌تحمل است و آنچه را واقعاً رخ داده ثبت کن.`,
-      `در «${nextStage}»، هدف این است که اطلاعات روشن‌تری جمع کنی. اگر مشکل همچنان زندگی روزمره‌ات را مختل می‌کند، کمک تخصصی را نیز در نظر بگیر.`
+      `در «${nextStage}»، یک نشانه مشخص از «${category}» را دقیق‌تر مشاهده کن. نبود تغییر فوری، به‌تنهایی شکست نیست.`,
+      `برای فردا فقط یک عامل را بررسی کن؛ چند روش را هم‌زمان تغییر نده تا بتوانی نتیجه را بهتر بفهمی.`,
+      `در گام «${nextStage}»، چیزی را که واقعاً رخ می‌دهد ثبت کن، نه چیزی را که فکر می‌کنی باید رخ می‌داد.`,
+      `اگر امروز تفاوتی ندیدی، فردا اندازه تمرین را متناسب با توانت نگه دار و یک رفتار قابل مشاهده را دنبال کن.`,
+      `درباره «${category}»، هنوز نتیجه قطعی نگیر. در مرحله بعد ببین کدام بخش در اختیار توست و کدام بخش نیست.`,
+      `در «${nextStage}»، به‌جای قضاوت درباره خودت، یک جزئیات را اندازه بگیر؛ مثل تعداد دفعات، مدت درگیری یا کاری که انجام شد.`,
+      `اگر این مسئله همچنان زندگی روزمره‌ات را مختل می‌کند، کنار تمرین‌های خودیاری، کمک متخصص واجد صلاحیت را هم در نظر بگیر.`
     ],
     worse: [
-      `فردا در «${nextStage}» فشار را بیشتر نکن. برای «${category}» فقط بخش امن و قابل‌تحمل را انجام بده؛ اگر وضعیت شدید یا نگران‌کننده ماند، کمک حرفه‌ای بگیر.`,
-      `قدم بعدی باید با ایمنی شروع شود، نه با زور بیشتر. اگر «${nextStage}» ناراحتی را تشدید می‌کند، آن را متوقف کن و با فرد امن یا متخصص مشورت کن.`,
-      `یک روز سخت، نتیجه کل مسیر نیست؛ اما نشانه‌ای است که باید جدی گرفته شود. در «${nextStage}» شدت کار را کم کن و نیاز به حمایت را نادیده نگیر.`,
-      `در گام بعدی از موقعیت خطرناک یا فشار شدید دوری کن. اگر بدترشدن «${category}» ادامه دارد یا کارهای روزانه را مختل می‌کند، ارزیابی تخصصی مناسب‌تر است.`,
-      `فردا لازم نیست پیشرفت را ثابت کنی. «${nextStage}» را فقط در حدی انجام بده که امن باشد؛ در صورت احساس خطر، تمرین را کنار بگذار و کمک فوری مناسب بگیر.`,
-      `پیش از ادامه «${nextStage}»، ببین آیا به استراحت، حمایت یا تغییر اندازه تمرین نیاز داری. تشدید ناراحتی را به حساب ضعف خودت نگذار.`,
-      `برای ادامه کار روی «${category}»، اولویت با کاهش فشار و ایمنی است. اگر تمرین به بدترشدن محسوس منجر شده، بدون راهنمایی مناسب آن را تکرار نکن.`
+      `در «${nextStage}» فشار را بیشتر نکن. فقط بخش امن و قابل‌تحمل را انجام بده و اگر بدترشدن ادامه دارد از متخصص کمک بگیر.`,
+      `اولویت فردا ایمنی توست، نه کامل‌کردن تمرین. اگر «${category}» شدیدتر شد، تمرین را متوقف کن و حمایت مناسب بگیر.`,
+      `یک روز سخت کل مسیر را تعیین نمی‌کند، اما باید جدی گرفته شود. گام بعدی را سبک‌تر کن و از فشار آوردن به خودت بپرهیز.`,
+      `در مرحله «${nextStage}»، از موقعیت خطرناک یا فشار شدید دور بمان. در صورت تداوم یا اختلال جدی، ارزیابی تخصصی مناسب‌تر است.`,
+      `لازم نیست فردا پیشرفت را ثابت کنی. اگر تمرین ناراحتی را بیشتر کرده، آن را تکرار نکن تا راهنمایی مناسب بگیری.`,
+      `پیش از ادامه، بررسی کن به استراحت یا حمایت نیاز داری. بدترشدن وضعیت را نشانه ضعف شخصیت خودت ندان.`,
+      `اگر احساس خطر فوری داری، تمرین را کنار بگذار و از خدمات فوری مناسب محل زندگی‌ات کمک بگیر.`
     ],
     hard: [
-      `پیش از «${nextStage}»، گام را آن‌قدر کوچک کن که بتوانی آن را بفهمی و با امنیت انجام دهی؛ اگر باز هم بیش از حد دشوار بود، مکث کن و کمک بگیر.`,
-      `در تمرین بعدی لازم نیست همه بخش‌ها را انجام دهی. از «${nextStage}» فقط یک قسمت روشن و قابل‌تحمل را انتخاب کن و نتیجه را ببین.`,
-      `برای «${category}»، سختی امروز را بررسی کن: آیا دستور نامشخص بود، زمان مناسب نبود یا احساس شدید شد؟ فردا فقط یک مورد را تغییر بده.`,
-      `گام بعدی زمانی مفید است که قابل انجام باشد. «${nextStage}» را ساده‌تر کن؛ اگر موقعیت ناامن است، به جای مواجهه از حمایت استفاده کن.`,
-      `پیش از شروع دوباره، مشخص کن کدام بخش دشوار بود و چه کمکی آن را قابل‌تحمل‌تر می‌کند. لازم نیست تمرین را با فشار کامل کنی.`,
-      `در «${nextStage}» روی شروع کوچک تمرکز کن، نه اجرای بی‌نقص. اگر سختی ناشی از ناراحتی شدید یا خطر است، متوقف شو و راهنمایی بگیر.`,
-      `فردا روش را با توان فعلی خودت هماهنگ کن. یک قدم کوتاه و امن بهتر از ادامه‌دادن اجباری تمرینی است که فشار زیادی ایجاد می‌کند.`
+      `پیش از «${nextStage}»، تمرین را به کوچک‌ترین بخش روشن و قابل تحمل تقسیم کن؛ اگر هنوز بیش از حد دشوار است، مکث کن و راهنمایی بگیر.`,
+      `سخت بودن تمرین درباره «${category}» به معنی ناتوانی تو نیست. مشخص کن کدام بخش دشوار بود و فقط همان را ساده‌تر کن.`,
+      `فردا لازم نیست همه مراحل را انجام بدهی؛ یک بخش امن و کوتاه از «${nextStage}» کافی است.`,
+      `بررسی کن دشواری امروز از ابهام دستور، زمان نامناسب یا شدت احساس بود. برای گام بعدی فقط یک مورد را تغییر بده.`,
+      `اگر «${nextStage}» فشار زیادی ایجاد می‌کند، آن را ساده‌تر کن یا انجامش را عقب بینداز تا حمایت مناسب فراهم شود.`,
+      `در گام بعدی روی شروع کوچک تمرکز کن، نه اجرای بی‌نقص. هر بخش ناامن یا بسیار ناراحت‌کننده را متوقف کن.`,
+      `اندازه تمرین را با توان امروزت هماهنگ کن؛ ادامه‌دادن اجباری تمرینی که فشار زیادی می‌آورد هدف این مسیر نیست.`
     ]
   };
-  const choices = plans[rec?.feedback] || plans.same;
-  return choices[phase];
+  const choices = variants[rec?.feedback] || variants.same;
+  return choices[(day - 1) % choices.length];
 }
 
 export function DailyResult({ day, journey, data, nextData, problem, sourceLabel, onDashboard, onNext, onFinal, onBook }) {
