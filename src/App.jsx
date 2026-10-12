@@ -103,7 +103,6 @@ function MainApp() {
   const category = content?.categories?.[journey.profileData?.problem] || content?.categories?.['مشکل دیگر'] || null;
   const activeDay = category?.days?.find((row) => Number(row.day) === Number(currentDay)) || category?.days?.[currentDay - 1] || null;
   const resultData = category?.days?.find((row) => Number(row.day) === Number(resultDay || currentDay)) || null;
-  const nextResultData = category?.days?.find((row) => Number(row.day) === Number(resultDay || currentDay) + 1) || null;
   const headerDay = screen === 'day' ? currentDay : screen === 'dailyResult' ? (resultDay || journey.completed.length) : journey.completed.length;
 
   function showValidation(items, title = 'چند بخش هنوز نیاز به تکمیل دارد') {
@@ -337,7 +336,7 @@ function MainApp() {
       {screen === 'assessment' && <AssessmentScreen initial={journey.assessmentData?.answers} onSave={saveAssessment} onValidation={showValidation} />}
       {screen === 'dashboard' && <Dashboard journey={journey} userProfile={userProfile} onEditProfile={() => openProfileEditor('dashboard')} onCurrent={openCurrentDay} onBooks={() => openBooks('dashboard')} onArchive={() => navigate('archive')} onSupport={() => openSupport('dashboard')} onChannel={() => window.open(content.channelUrl, '_blank', 'noopener,noreferrer')} />}
       {screen === 'day' && <DayScreen day={currentDay} problem={journey.profileData?.problem || ''} data={activeDay} record={journey.daily?.[currentDay]} savedAnswer={journey.answers?.[currentDay] || ''} onDashboard={() => navigate('dashboard')} onPrevious={() => currentDay <= 1 ? navigate('dashboard') : openDay(currentDay - 1)} onComplete={completeDay} onNext={() => openDay(currentDay + 1)} completed={journey.completed.includes(currentDay)} onValidation={showValidation} />}
-      {screen === 'dailyResult' && <DailyResult day={resultDay || journey.completed.length || currentDay} journey={journey} data={resultData} nextData={nextResultData} problem={journey.profileData?.problem || ''} sourceLabel={recommendationSource} onDashboard={() => navigate('dashboard')} onNext={openDay} onFinal={() => navigate('final')} onBook={(rec) => openRecommendedBook(resultDay || currentDay, rec)} />}
+      {screen === 'dailyResult' && <DailyResult day={resultDay || journey.completed.length || currentDay} journey={journey} data={resultData} sourceLabel={recommendationSource} onDashboard={() => navigate('dashboard')} onNext={openDay} onFinal={() => navigate('final')} onBook={(rec) => openRecommendedBook(resultDay || currentDay, rec)} />}
       {screen === 'books' && <LibraryPage books={books} loading={libraryLoading} error={libraryError} onOpenBook={(book) => openBook(book)} onBack={() => navigate(libraryReturn)} />}
       {screen === 'support' && <Support content={content} onBack={() => navigate(supportReturn)} />}
       {screen === 'final' && <FinalAssessment initial={journey.final} onSave={finishFinal} onValidation={showValidation} />}
@@ -353,49 +352,15 @@ function MainApp() {
   );
 }
 
-function makeFeedback(feedback, score, dayData = null) {
-  const parts = String(dayData?.title || '').split('·').map((part) => part.trim());
-  const stage = parts[0] || 'تمرین امروز';
-  const category = parts[1] || 'مسئله انتخاب‌شده';
-  const day = Math.max(1, Math.min(28, Number(dayData?.day || 1)));
+function makeFeedback(feedback, score, chosen) {
+  const title = String(chosen?.title || chosen?.name || 'تمرین امروز').split('·')[0].trim();
+  const day = Math.max(1, Number(chosen?.day) || 1);
   const messages = {
-    better: [
-      `در «${stage}» درباره «${category}»، امروز بهبود گزارش کردی. آن را سرنخی برای بررسی بدان، نه اثبات علت؛ امتیاز درگیری ${fa(score)} از ۱۰ است.`,
-      `گزارش امروز درباره «${category}» بهتر بوده است. ببین چه چیزی واقعاً فرق داشت و برای نتیجه‌گیری قطعی عجله نکن؛ امتیاز ${fa(score)} از ۱۰.`,
-      `امروز در مسیر «${category}» احساس بهتری ثبت کردی. شرایط و رفتارهای همان روز را به خاطر بسپار تا بعداً مقایسه کنی؛ امتیاز ${fa(score)} از ۱۰.`,
-      `تغییر مثبت امروز ارزش ثبت‌کردن دارد، اما تضمین نمی‌کند هر روز همین‌طور باشد. در «${stage}» فقط به نشانه‌های واقعی توجه کن؛ امتیاز ${fa(score)} از ۱۰.`,
-      `برای «${category}» امروز بهبود حس کردی. ببین چه چیزی قابل مشاهده بود؛ لازم نیست علت را از روی یک تجربه قطعی بدانی. امتیاز ${fa(score)} از ۱۰.`,
-      `نتیجه امروز بهتر بوده است. به جای تلاش برای حفظ یک احساس خاص، رفتار یا شرایط کمک‌کننده را مشخص کن؛ امتیاز ${fa(score)} از ۱۰.`,
-      `امروز تجربه امیدوارکننده‌تری ثبت کردی. آن را با روزهای بعد مقایسه کن تا مشخص شود چه چیزی تکرارپذیر است؛ امتیاز ${fa(score)} از ۱۰.`
-    ],
-    same: [
-      `در «${stage}» درباره «${category}»، تغییر محسوسی گزارش نکردی. این به‌تنهایی شکست نیست؛ فعلاً یک نشانه را دقیق‌تر مشاهده کن. امتیاز ${fa(score)} از ۱۰.`,
-      `وضعیت امروز تقریباً مثل قبل بوده است. خودت را سرزنش نکن و چند روش را هم‌زمان تغییر نده؛ امتیاز ${fa(score)} از ۱۰.`,
-      `هنوز تفاوت روشنی در «${category}» دیده نمی‌شود. این اطلاعاتی برای ادامه بررسی است، نه حکمی درباره توانایی تو؛ امتیاز ${fa(score)} از ۱۰.`,
-      `امروز تغییر زیادی احساس نکردی. ببین چه کاری انجام شد و کدام بخش دشوار ماند؛ امتیاز ثبت‌شده ${fa(score)} از ۱۰ است.`,
-      `گزارش امروز نشان می‌دهد وضعیت تقریباً ثابت بوده است. همان را دقیق ثبت کن؛ لازم نیست پیشرفتی را که ندیده‌ای اعلام کنی. امتیاز ${fa(score)} از ۱۰.`,
-      `در مسیر «${category}» امروز تغییر قابل توجهی ثبت نشد. فعلاً هدف، جمع‌آوری اطلاعات روشن‌تر است؛ امتیاز ${fa(score)} از ۱۰.`,
-      `نتیجه امروز نزدیک به روزهای قبل است. به روند چند روز و اثر مسئله بر زندگی روزمره توجه کن، نه فقط یک روز؛ امتیاز ${fa(score)} از ۱۰.`
-    ],
-    worse: [
-      `در «${stage}» درباره «${category}»، امروز دشواری بیشتری گزارش کردی. فشار تمرین را بالا نبر و اگر وضعیت شدید یا ادامه‌دار است از متخصص کمک بگیر؛ امتیاز ${fa(score)} از ۱۰.`,
-      `امروز شرایط سخت‌تر بوده است. تمرین را فقط در حد امن و قابل‌تحمل ادامه بده؛ اگر ناراحتی به‌طور محسوسی بیشتر شد، متوقف شو و کمک بگیر. امتیاز ${fa(score)} از ۱۰.`,
-      `یک روز سخت نتیجه کل مسیر نیست، اما نباید نادیده گرفته شود. ایمنی و حمایت از خودت را در اولویت بگذار؛ امتیاز ${fa(score)} از ۱۰.`,
-      `نتیجه امروز دشوارتر بوده است. اگر تمرین ناراحتی را بیشتر کرده، آن را کنار بگذار و با فرد امن یا متخصص مشورت کن؛ امتیاز ${fa(score)} از ۱۰.`,
-      `گزارش امروز نشان می‌دهد تحمل «${category}» دشوارتر شده است. لازم نیست به‌تنهایی از پس آن بربیایی؛ امتیاز ${fa(score)} از ۱۰.`,
-      `امروز کاهش ناراحتی دیده نشد و وضعیت سخت‌تر بود. فشار را کم کن و از تمرینی که خطر یا ناراحتی شدید ایجاد می‌کند فاصله بگیر؛ امتیاز ${fa(score)} از ۱۰.`,
-      `امروز دشواری بیشتری ثبت کردی. اگر احساس خطر فوری داری، تمرین را متوقف کن و از خدمات فوری مناسب محل زندگی‌ات کمک بگیر؛ امتیاز ${fa(score)} از ۱۰.`
-    ],
-    hard: [
-      `تمرین «${stage}» درباره «${category}» برایت سخت بود. گام را کوچک‌تر کن و اگر ناامن است متوقف شو؛ امتیاز ${fa(score)} از ۱۰.`,
-      `سخت بودن تمرین به معنی ناتوانی تو نیست. مشخص کن کدام بخش دشوار بود و فقط همان بخش را ساده‌تر کن؛ امتیاز ${fa(score)} از ۱۰.`,
-      `امروز اجرای تمرین آسان نبود. لازم نیست آن را به زور کامل کنی؛ اندازه یا زمان تمرین را تغییر بده؛ امتیاز ${fa(score)} از ۱۰.`,
-      `برای «${category}»، سختی امروز اطلاعات مهمی است. ببین مانع اصلی چه بود و فقط یک تغییر کوچک بده؛ امتیاز ${fa(score)} از ۱۰.`,
-      `اگر تمرین بیش از توانت بود، ادامه‌دادن به هر قیمت هدف نیست. آن را ساده‌تر کن یا با راهنمایی مناسب پیش برو؛ امتیاز ${fa(score)} از ۱۰.`,
-      `امروز دشواری را تجربه کردی؛ این را اطلاعاتی درباره خود تمرین بدان، نه قضاوتی درباره شخصیتت. امتیاز ${fa(score)} از ۱۰.`,
-      `تمرین فشار ایجاد کرد. اگر علت را می‌دانی یادداشت کن؛ اگر نمی‌دانی حدس نزن و بخش دشوار را سبک‌تر یا متوقف کن. امتیاز ${fa(score)} از ۱۰.`
-    ]
+    better: ['بهبود امروز را با یک نشانه واقعی توضیح بده.','مشخص کن کدام انتخاب برایت مفید بود.','ببین چه عاملی می‌تواند فردا هم کمک‌کننده باشد.','رفتاری را که با نتیجه بهتر همراه بود شناسایی کن.'],
+    same: ['نتیجه مشابه هم اطلاعات می‌دهد؛ محرک یا مانع را دقیق‌تر ببین.','به‌جای قضاوت کلی، یک رفتار قابل مشاهده را بررسی کن.','ثبت کن کدام بخش تمرین آسان و کدام بخش دشوار بود.','برای تکرار بعدی یک تغییر کوچک در روش در نظر بگیر.'],
+    worse: ['امروز فشار بیشتری تجربه کردی؛ به ایمنی و مراقبت از خود اولویت بده.','اگر بدتر شدن شدید یا ادامه‌دار است، از متخصص مناسب کمک بگیر.','لازم نیست تمرین را به زور ادامه بدهی؛ آن را متوقف یا ساده‌تر کن.','اگر احساس خطر می‌کنی، از کمک فوری محلی استفاده کن.'],
+    hard: ['سخت بودن تمرین یک داده مهم است؛ می‌توانی آن را کوچک‌تر کنی.','ثبت کن کدام بخش دشوار بود تا گام بعد واقع‌بینانه‌تر شود.','اگر تمرین ناراحتی زیادی ایجاد کرد، آن را متوقف کن.','از خودت انتظار سرعت نداشته باش؛ یک قدم قابل تحمل انتخاب کن.']
   };
-  const choices = messages[feedback] || messages.same;
-  return choices[(day - 1) % choices.length];
+  const group = messages[feedback] || messages.same;
+  return `در تمرین «${title}»: ${group[(day - 1) % group.length]} امتیاز امروز: ${fa(score)} از ۱۰.`;
 }
