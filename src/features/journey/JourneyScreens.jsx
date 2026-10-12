@@ -102,23 +102,11 @@ export function Dashboard({ journey, userProfile, onEditProfile, onCurrent, onBo
 }
 
 function nextRequiredDayLocal(state) { for (let i = 1; i <= 28; i += 1) if (!(state.completed || []).includes(i)) return i; return 29; }
-export function splitDayContent(d, problem = '') {
-  const raw = String(d?.exercise || '');
-  const mark = 'اقدام اختصاصی امروز:';
-  const method = 'روش اختصاصی این مسئله:';
-  let exercise = String(d?.exerciseText || '').trim();
-  if (!exercise && raw) exercise = raw.includes(mark) ? raw.split(mark)[0].trim() : raw.split(method)[0].trim();
-  const title = String(d?.title || 'موضوع امروز').split('·')[0].trim();
-  const category = String(problem || String(d?.title || '').split('·')[1] || title).trim();
-  const clean = (value) => String(value || '').replace(/\{\s*(?:cat|category|problem)\s*\}/gi, category).replace(/\s+/g, ' ').trim();
-  // Display the stored action directly. Do not append a generic sentence that can duplicate or break its grammar.
-  const action = clean(d?.actionText || (raw.includes(mark) ? raw.split(mark)[1].split(method)[0] : ''));
-  return { exercise: clean(exercise), action, title };
-}
+export function splitDayContent(d) { const raw = String(d?.exercise || ''), mark = 'اقدام اختصاصی امروز:', method = 'روش اختصاصی این مسئله:'; let exercise = String(d?.exerciseText || '').trim(); if (!exercise && raw) exercise = raw.includes(mark) ? raw.split(mark)[0].trim() : raw.split(method)[0].trim(); const title = String(d?.title || 'موضوع امروز').split('·')[0].trim(); const action = String(d?.actionText || '').replaceAll('{cat}', title).replace(/^مثال عینی\s*:\s*/i, '').trim(); return { exercise, action, title }; }
 export function severityText(n) { return n <= 2 ? '۰ تا ۲ = بسیار کم یا تقریباً بدون درگیری' : n <= 4 ? '۳ تا ۴ = خفیف' : n <= 6 ? '۵ تا ۶ = متوسط' : n <= 8 ? '۷ تا ۸ = زیاد' : '۹ تا ۱۰ = بسیار شدید و درگیرکننده'; }
 
 export function DayScreen({ day, problem, data, record, savedAnswer, onDashboard, onPrevious, onComplete, onNext, completed, onValidation }) {
-  const parts = splitDayContent(data, problem), [entryOpen, setEntryOpen] = useState(Boolean(record?.score != null || savedAnswer || record?.feedback)), [score, setScore] = useState(record?.score ?? 0), [touched, setTouched] = useState(record?.score != null), [feedback, setFeedback] = useState(record?.feedback || ''), [answer, setAnswer] = useState(savedAnswer || '');
+  const parts = splitDayContent(data), [entryOpen, setEntryOpen] = useState(Boolean(record?.score != null || savedAnswer || record?.feedback)), [score, setScore] = useState(record?.score ?? 0), [touched, setTouched] = useState(record?.score != null), [feedback, setFeedback] = useState(record?.feedback || ''), [answer, setAnswer] = useState(savedAnswer || '');
   useEffect(() => { setEntryOpen(Boolean(record?.score != null || savedAnswer || record?.feedback)); setScore(record?.score ?? 0); setTouched(record?.score != null); setFeedback(record?.feedback || ''); setAnswer(savedAnswer || ''); }, [day, record, savedAnswer]);
   if (!data) return null;
   const bubblePos = Math.min(96, Math.max(4, (10 - Number(score)) * 10));
@@ -126,57 +114,11 @@ export function DayScreen({ day, problem, data, record, savedAnswer, onDashboard
   return <section className="card dayCard" id="day"><div className="dayTopline"><span className="badge" id="dayBadge">روز {fa(day)} از ۲۸ · {problem}</span><button aria-label="داشبورد" className="iconButton subtle" onClick={onDashboard}>⌂</button></div><h2 id="dayTitle">{parts.title}</h2><p className="muted" id="dayIntro">امروز روی «{parts.title}» تمرکز می‌کنی.</p><div className="dailyStep"><span className="stepNumber">۱</span><div className="exercise"><b>تمرین امروز</b><br/><span id="dayExercise">{parts.exercise}</span></div></div><div className="dailyStep"><span className="stepNumber">۲</span><div className="action"><b>اقدام اختصاصی امروز</b><br/><span id="dayAction">{parts.action}</span></div></div><div className="safetyNote"><span>◌</span><p className="muted" id="dayClosing">{data.closing || ''}</p></div>{!entryOpen && <button className="primary heroAction" id="openDailyEntryBtn" onClick={() => setEntryOpen(true)}>انجام دادم؛ ثبت نتیجه امروز</button>}{entryOpen && <div aria-live="polite" className="dailyEntryPanel" id="dailyEntryPanel"><div className="entryHeader"><span className="stepNumber">۳</span><div><b>ثبت نتیجه</b><small>کمتر از یک دقیقه</small></div></div><label>شدت یا میزان درگیری امروز</label><div className="severityWrap"><div className="severityValue" id="severityValue" style={{ left: `${bubblePos}%` }}>{touched ? `${fa(score)} از ۱۰` : 'انتخاب نشده'}</div><div className="severityThumb" id="severityThumb" /><input aria-label="شدت درگیری" className="severityRange" id="dayScore" max="10" min="0" step="1" type="range" value={score} data-touched={touched ? '1' : '0'} onChange={(e) => { setScore(Number(e.target.value)); setTouched(true); }} /></div><div className="stats" style={{ color: 'var(--muted)', marginTop: 0 }}><span>۰ = بدون درگیری</span><span>۵ = متوسط</span><span>۱۰ = بسیار شدید</span></div><p className="muted" id="severityText" style={{ fontSize: 11, marginTop: 5 }}>{severityText(Number(score))}</p><label>بازخورد امروز</label><SmartSelect id="dayFeedbackChoice" value={feedback} onChange={setFeedback} options={FEEDBACK_OPTIONS} /><label>پاسخ یا تجربه امروزت</label><textarea id="answer" maxLength={3000} placeholder="کوتاه و واقعی بنویس؛ چه اتفاقی افتاد و چه چیزی یاد گرفتی؟" value={answer} onChange={(e) => setAnswer(e.target.value)} /><button className="primary" onClick={submit}>{buttonLabel('ثبت امروز و دریافت نتیجه')}</button><button className="ghostButton" onClick={() => setEntryOpen(false)}>فعلاً می‌خواهم تمرین را ادامه بدهم</button></div>}<div className="feedback hidden" id="dailyFeedback"/><div className="recommendation hidden" id="dailyRecommendation"/><div className="navrow compactNav"><button className="secondary" onClick={onPrevious}>{buttonLabel('روز قبل')}</button><button className="secondary" onClick={onDashboard}>{buttonLabel('داشبورد')}</button></div><div id="nextButtonWrap">{day < 28 && completed && <button className="primary" onClick={onNext}>ادامه به روز {fa(day + 1)}</button>}</div></section>;
 }
 
-export function nextStepText(n, d, rec, nextData = null, problem = '') {
-  const currentParts = String(d?.title || '').split('·').map((part) => part.trim());
-  const nextParts = String(nextData?.title || '').split('·').map((part) => part.trim());
-  const category = String(problem || currentParts[1] || 'مسئله انتخاب‌شده').trim();
-  const nextStage = nextParts[0] || 'تمرین بعدی';
-  const day = Math.max(1, Math.min(28, Number(n) || 1));
-  const variants = {
-    better: [
-      `در «${nextStage}»، ببین کدام رفتار یا شرایط درباره «${category}» با بهترشدن امروز همراه بود. یک روز به‌تنهایی علت را ثابت نمی‌کند.`,
-      `برای گام بعدی «${category}»، تجربه امروز را به یک نشانه قابل مشاهده تبدیل کن؛ لازم نیست حال خوب را به زور حفظ کنی.`,
-      `فردا در «${nextStage}»، همان مهارت را فقط در موقعیتی امن بررسی کن و ببین نتیجه واقعاً چه می‌شود.`,
-      `بهبود امروز را یک سرنخ بدان. در «${nextStage}» ثبت کن چه چیزی در اختیار تو بود و چه چیزی به شرایط بیرونی وابسته بود.`,
-      `در مرحله بعد، درباره «${category}» به جزئیات توجه کن: چه اتفاقی پیش از تغییر افتاد و تو چه کاری انجام دادی؟`,
-      `فردا قرار نیست نتیجه امروز را تکرار کنی؛ فقط یک رفتار قابل انجام را در «${nextStage}» تمرین و نتیجه‌اش را ثبت کن.`,
-      `در «${nextStage}»، از تجربه امروز یک نکته عملی بردار و بررسی کن آیا در موقعیت دیگری هم به کار می‌آید.`
-    ],
-    same: [
-      `در «${nextStage}»، یک نشانه مشخص از «${category}» را دقیق‌تر مشاهده کن. نبود تغییر فوری، به‌تنهایی شکست نیست.`,
-      `برای فردا فقط یک عامل را بررسی کن؛ چند روش را هم‌زمان تغییر نده تا بتوانی نتیجه را بهتر بفهمی.`,
-      `در گام «${nextStage}»، چیزی را که واقعاً رخ می‌دهد ثبت کن، نه چیزی را که فکر می‌کنی باید رخ می‌داد.`,
-      `اگر امروز تفاوتی ندیدی، فردا اندازه تمرین را متناسب با توانت نگه دار و یک رفتار قابل مشاهده را دنبال کن.`,
-      `درباره «${category}»، هنوز نتیجه قطعی نگیر. در مرحله بعد ببین کدام بخش در اختیار توست و کدام بخش نیست.`,
-      `در «${nextStage}»، به‌جای قضاوت درباره خودت، یک جزئیات را اندازه بگیر؛ مثل تعداد دفعات، مدت درگیری یا کاری که انجام شد.`,
-      `اگر این مسئله همچنان زندگی روزمره‌ات را مختل می‌کند، کنار تمرین‌های خودیاری، کمک متخصص واجد صلاحیت را هم در نظر بگیر.`
-    ],
-    worse: [
-      `در «${nextStage}» فشار را بیشتر نکن. فقط بخش امن و قابل‌تحمل را انجام بده و اگر بدترشدن ادامه دارد از متخصص کمک بگیر.`,
-      `اولویت فردا ایمنی توست، نه کامل‌کردن تمرین. اگر «${category}» شدیدتر شد، تمرین را متوقف کن و حمایت مناسب بگیر.`,
-      `یک روز سخت کل مسیر را تعیین نمی‌کند، اما باید جدی گرفته شود. گام بعدی را سبک‌تر کن و از فشار آوردن به خودت بپرهیز.`,
-      `در مرحله «${nextStage}»، از موقعیت خطرناک یا فشار شدید دور بمان. در صورت تداوم یا اختلال جدی، ارزیابی تخصصی مناسب‌تر است.`,
-      `لازم نیست فردا پیشرفت را ثابت کنی. اگر تمرین ناراحتی را بیشتر کرده، آن را تکرار نکن تا راهنمایی مناسب بگیری.`,
-      `پیش از ادامه، بررسی کن به استراحت یا حمایت نیاز داری. بدترشدن وضعیت را نشانه ضعف شخصیت خودت ندان.`,
-      `اگر احساس خطر فوری داری، تمرین را کنار بگذار و از خدمات فوری مناسب محل زندگی‌ات کمک بگیر.`
-    ],
-    hard: [
-      `پیش از «${nextStage}»، تمرین را به کوچک‌ترین بخش روشن و قابل تحمل تقسیم کن؛ اگر هنوز بیش از حد دشوار است، مکث کن و راهنمایی بگیر.`,
-      `سخت بودن تمرین درباره «${category}» به معنی ناتوانی تو نیست. مشخص کن کدام بخش دشوار بود و فقط همان را ساده‌تر کن.`,
-      `فردا لازم نیست همه مراحل را انجام بدهی؛ یک بخش امن و کوتاه از «${nextStage}» کافی است.`,
-      `بررسی کن دشواری امروز از ابهام دستور، زمان نامناسب یا شدت احساس بود. برای گام بعدی فقط یک مورد را تغییر بده.`,
-      `اگر «${nextStage}» فشار زیادی ایجاد می‌کند، آن را ساده‌تر کن یا انجامش را عقب بینداز تا حمایت مناسب فراهم شود.`,
-      `در گام بعدی روی شروع کوچک تمرکز کن، نه اجرای بی‌نقص. هر بخش ناامن یا بسیار ناراحت‌کننده را متوقف کن.`,
-      `اندازه تمرین را با توان امروزت هماهنگ کن؛ ادامه‌دادن اجباری تمرینی که فشار زیادی می‌آورد هدف این مسیر نیست.`
-    ]
-  };
-  const choices = variants[rec?.feedback] || variants.same;
-  return choices[(day - 1) % choices.length];
-}
+export function nextStepText(n, d, rec) { const title = String(d?.title || 'این مرحله').split('·')[0].trim(); const phase = n <= 7 ? 'در هفته اول، شناخت الگوها مهم‌تر از تغییر فوری است.' : n <= 14 ? 'اکنون یک مهارت را در موقعیتی کوچک و امن امتحان کن.' : n <= 21 ? 'تکرار آرام و واقع‌بینانه به تثبیت مهارت کمک می‌کند.' : 'در روزهای پایانی، آنچه برایت کاربردی بوده مرور کن.'; const feedback = rec?.feedback === 'better' ? 'ثبت کن چه چیزی به بهتر شدن امروز کمک کرد.' : rec?.feedback === 'worse' ? 'فشار تمرین را بیشتر نکن؛ اگر حال بدتر ادامه دارد یا شدید است، از متخصص کمک بگیر.' : rec?.feedback === 'hard' ? 'اگر تمرین دشوار بود، آن را کوچک‌تر کن یا فعلاً متوقفش کن.' : 'نتیجه مشابه هم اطلاعات است؛ یک مانع یا محرک را دقیق‌تر بررسی کن.'; return `روز ${fa(n)} روی «${title}» متمرکز بود. ${phase} ${feedback}`; }
 
-export function DailyResult({ day, journey, data, nextData, problem, sourceLabel, onDashboard, onNext, onFinal, onBook }) {
+export function DailyResult({ day, journey, data, sourceLabel, onDashboard, onNext, onFinal, onBook }) {
   const rec = journey.daily?.[day] || {}, labels = { better: 'بهتر شدم', same: 'تقریباً مثل قبل', worse: 'بدتر شدم', hard: 'تمرین برایم سخت بود' };
-  return <section className="card" id="dailyResult"><span className="badge" id="resultBadge">نتیجه روز {fa(day)} از ۲۸</span><h2 id="resultTitle">عملکرد روز {fa(day)}</h2><div className="metric"><div className="metricBox"><strong id="resultScore">{fa(rec.score)}/۱۰</strong><span>امتیاز امروز</span></div><div className="metricBox"><strong id="resultFeedback">{labels[rec.feedback] || 'ثبت شد'}</strong><span>بازخورد</span></div></div><div className="feedback"><b>جمع‌بندی امروز</b><p className="muted" id="resultText">{rec.feedbackText}</p></div><div className="recommendation"><b>قدم بعدی</b><p className="muted" id="resultNext">{day === 28 ? '۲۸ روز این مسیر به پایان رسیده است. حالا ارزیابی نهایی را انجام بده و مشخص کن کدام تغییرها را می‌خواهی ادامه دهی.' : nextStepText(day, data, rec, nextData, problem)}</p></div><div id="resultNextWrap">{data?.bookRec && <><div className="bookRecommendationSource">{sourceLabel}</div><button className="gold" onClick={() => onBook(data.bookRec)}>📖 مطالعه پیشنهاد کتاب امروز</button></>}{day === 28 ? <button className="primary" onClick={onFinal}>رفتن به ارزیابی نهایی →</button> : <button className="primary" onClick={() => onNext(day + 1)}>رفتن به روز {fa(day + 1)} →</button>}</div><div className="navrow"><button className="secondary" onClick={onDashboard}>{buttonLabel('بازگشت به داشبورد')}</button></div></section>;
+  return <section className="card" id="dailyResult"><span className="badge" id="resultBadge">نتیجه روز {fa(day)} از ۲۸</span><h2 id="resultTitle">عملکرد روز {fa(day)}</h2><div className="metric"><div className="metricBox"><strong id="resultScore">{fa(rec.score)}/۱۰</strong><span>امتیاز امروز</span></div><div className="metricBox"><strong id="resultFeedback">{labels[rec.feedback] || 'ثبت شد'}</strong><span>بازخورد</span></div></div><div className="feedback"><b>جمع‌بندی امروز</b><p className="muted" id="resultText">{rec.feedbackText}</p></div><div className="recommendation"><b>قدم بعدی</b><p className="muted" id="resultNext">{day === 28 ? 'روز ۲۸ کامل شد. اکنون ارزیابی نهایی فعال است.' : nextStepText(day, data, rec)}</p></div><div id="resultNextWrap">{data?.bookRec && <><div className="bookRecommendationSource">{sourceLabel}</div><button className="gold" onClick={() => onBook(data.bookRec)}>📖 مطالعه پیشنهاد کتاب امروز</button></>}{day === 28 ? <button className="primary" onClick={onFinal}>رفتن به ارزیابی نهایی →</button> : <button className="primary" onClick={() => onNext(day + 1)}>رفتن به روز {fa(day + 1)} →</button>}</div><div className="navrow"><button className="secondary" onClick={onDashboard}>{buttonLabel('بازگشت به داشبورد')}</button></div></section>;
 }
 
 export function Support({ content, onBack }) {
