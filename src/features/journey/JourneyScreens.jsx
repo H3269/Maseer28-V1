@@ -111,7 +111,12 @@ export function splitDayContent(d, problem) {
     exercise = raw.includes(mark) ? raw.split(mark)[0].trim() : raw.split(method)[0].trim();
   }
   const title = String(problem || d?.title || 'موضوع امروز').trim();
-  const action = String(d?.actionText || '').trim();
+
+const categoryName = String(problem || '').trim();
+const action = String(d?.actionText || '')
+  .replace(/\{\s*cat\s*\}/g, categoryName)
+  .trim();
+
   return { exercise, action, title };
 }
 export function severityText(n) { return n <= 2 ? '۰ تا ۲ = بسیار کم یا تقریباً بدون درگیری' : n <= 4 ? '۳ تا ۴ = خفیف' : n <= 6 ? '۵ تا ۶ = متوسط' : n <= 8 ? '۷ تا ۸ = زیاد' : '۹ تا ۱۰ = بسیار شدید و درگیرکننده'; }
