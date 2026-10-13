@@ -114,8 +114,11 @@ export function splitDayContent(d, problem) {
 
 const categoryName = String(problem || '').trim();
 const action = String(d?.actionText || '')
-  .replace(/\{\s*cat\s*\}/g, categoryName)
+  .replace(/\{[^{}]*cat[^{}]*\}/gi, categoryName || 'موضوع انتخاب‌شده')
+  .replace(/&#123;\s*cat\s*&#125;/gi, categoryName || 'موضوع انتخاب‌شده')
+  .replace(/&lbrace;\s*cat\s*&rbrace;/gi, categoryName || 'موضوع انتخاب‌شده')
   .trim();
+
 
   return { exercise, action, title };
 }
