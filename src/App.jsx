@@ -231,7 +231,7 @@ function MainApp() {
     }
 
     const chosen = activeDay;
-    const record = { score: Number(score), feedback, feedbackText: makeFeedback(feedback, score, chosen), exerciseId: chosen?.id || '', updatedAt: new Date(trustedNow).toISOString() };
+    const record = { score: Number(score), feedback, feedbackText: makeFeedback(feedback, score, chosen, category?.name, currentDay), exerciseId: chosen?.id || '', updatedAt: new Date(trustedNow).toISOString() };
     patchJourney((previous) => ({ ...previous, completed: [...new Set([...(previous.completed || []), currentDay])].sort((a, b) => a - b), answers: { ...(previous.answers || {}), [currentDay]: answer }, daily: { ...(previous.daily || {}), [currentDay]: record } }));
     setResultDay(currentDay);
     navigate('dailyResult');
@@ -336,7 +336,7 @@ function MainApp() {
       {screen === 'assessment' && <AssessmentScreen initial={journey.assessmentData?.answers} onSave={saveAssessment} onValidation={showValidation} />}
       {screen === 'dashboard' && <Dashboard journey={journey} userProfile={userProfile} onEditProfile={() => openProfileEditor('dashboard')} onCurrent={openCurrentDay} onBooks={() => openBooks('dashboard')} onArchive={() => navigate('archive')} onSupport={() => openSupport('dashboard')} onChannel={() => window.open(content.channelUrl, '_blank', 'noopener,noreferrer')} />}
       {screen === 'day' && <DayScreen day={currentDay} problem={journey.profileData?.problem || ''} data={activeDay} record={journey.daily?.[currentDay]} savedAnswer={journey.answers?.[currentDay] || ''} onDashboard={() => navigate('dashboard')} onPrevious={() => currentDay <= 1 ? navigate('dashboard') : openDay(currentDay - 1)} onComplete={completeDay} onNext={() => openDay(currentDay + 1)} completed={journey.completed.includes(currentDay)} onValidation={showValidation} />}
-      {screen === 'dailyResult' && <DailyResult day={resultDay || journey.completed.length || currentDay} journey={journey} data={resultData} sourceLabel={recommendationSource} onDashboard={() => navigate('dashboard')} onNext={openDay} onFinal={() => navigate('final')} onBook={(rec) => openRecommendedBook(resultDay || currentDay, rec)} />}
+      {screen === 'dailyResult' && <DailyResult day={resultDay || journey.completed.length || currentDay} journey={journey} data={resultData} problem={category?.name} sourceLabel={recommendationSource} onDashboard={() => navigate('dashboard')} onNext={openDay} onFinal={() => navigate('final')} onBook={(rec) => openRecommendedBook(resultDay || currentDay, rec)} />}
       {screen === 'books' && <LibraryPage books={books} loading={libraryLoading} error={libraryError} onOpenBook={(book) => openBook(book)} onBack={() => navigate(libraryReturn)} />}
       {screen === 'support' && <Support content={content} onBack={() => navigate(supportReturn)} />}
       {screen === 'final' && <FinalAssessment initial={journey.final} onSave={finishFinal} onValidation={showValidation} />}
@@ -352,15 +352,21 @@ function MainApp() {
   );
 }
 
-function makeFeedback(feedback, score, chosen) {
-  const title = String(chosen?.title || chosen?.name || 'تمرین امروز').split('·')[0].trim();
-  const day = Math.max(1, Number(chosen?.day) || 1);
+function makeFeedback(feedback, score, dayData, problem, day) {
+  const topic = String(problem || 'موضوع امروز').trim();
+  const title = String(dayData?.title || 'تمرین امروز').split('·')[0].trim();
+  const stage = Number(day) <= 7
+    ? 'فعلاً هدف اصلی شناخت دقیق الگوست، نه تغییر فوری آن.'
+    : Number(day) <= 14
+      ? 'یک تغییر کوچک و قابل مشاهده را امتحان کن.'
+      : Number(day) <= 21
+        ? 'بررسی کن این مهارت در موقعیت دیگری هم به کارت می‌آید یا نه.'
+        : 'روی حفظ مهارت و برنامه‌ریزی برای روزهای دشوار تمرکز کن.';
   const messages = {
-    better: ['بهبود امروز را با یک نشانه واقعی توضیح بده.','مشخص کن کدام انتخاب برایت مفید بود.','ببین چه عاملی می‌تواند فردا هم کمک‌کننده باشد.','رفتاری را که با نتیجه بهتر همراه بود شناسایی کن.'],
-    same: ['نتیجه مشابه هم اطلاعات می‌دهد؛ محرک یا مانع را دقیق‌تر ببین.','به‌جای قضاوت کلی، یک رفتار قابل مشاهده را بررسی کن.','ثبت کن کدام بخش تمرین آسان و کدام بخش دشوار بود.','برای تکرار بعدی یک تغییر کوچک در روش در نظر بگیر.'],
-    worse: ['امروز فشار بیشتری تجربه کردی؛ به ایمنی و مراقبت از خود اولویت بده.','اگر بدتر شدن شدید یا ادامه‌دار است، از متخصص مناسب کمک بگیر.','لازم نیست تمرین را به زور ادامه بدهی؛ آن را متوقف یا ساده‌تر کن.','اگر احساس خطر می‌کنی، از کمک فوری محلی استفاده کن.'],
-    hard: ['سخت بودن تمرین یک داده مهم است؛ می‌توانی آن را کوچک‌تر کنی.','ثبت کن کدام بخش دشوار بود تا گام بعد واقع‌بینانه‌تر شود.','اگر تمرین ناراحتی زیادی ایجاد کرد، آن را متوقف کن.','از خودت انتظار سرعت نداشته باش؛ یک قدم قابل تحمل انتخاب کن.']
+    better: 'نشانه‌ای از بهبود ثبت کردی. بررسی کن چه رفتار یا شرایطی احتمالاً به آن کمک کرد؛ نتیجه را به یک علت قطعی نسبت نده.',
+    same: 'فعلاً تغییر محسوسی ثبت نشده است. یک مانع مشخص را جدا کن و ببین چه چیزی هنوز مثل قبل پیش می‌رود.',
+    worse: 'دشواری بیشتر را جدی بگیر و فشار تمرین را بالا نبر. به گام کوچک‌تر و امن‌تر برگرد؛ اگر بدترشدن ادامه دارد یا نگران‌کننده است، کمک حرفه‌ای بگیر.',
+    hard: 'شاید اندازه یا زمان تمرین مناسب نبوده است. فعلاً به مشاهده و نوشتن کوتاه بسنده کن و خودت را مجبور به موقعیت دشوار نکن.',
   };
-  const group = messages[feedback] || messages.same;
-  return `در تمرین «${title}»: ${group[(day - 1) % group.length]} امتیاز امروز: ${fa(score)} از ۱۰.`;
+  return `در مسیر «${topic}»، تمرین «${title}» را با امتیاز ${fa(score)} از ۱۰ ثبت کردی. ${messages[feedback] || 'نتیجه امروز را بدون قضاوت ثبت کن.'} ${stage}`;
 }
