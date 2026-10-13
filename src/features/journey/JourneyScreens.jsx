@@ -112,11 +112,14 @@ export function splitDayContent(d, problem) {
   }
   const title = String(problem || d?.title || 'موضوع امروز').trim();
 
-const categoryName = String(problem || '').trim();
+
+const categoryName = String(problem || '').trim() || 'موضوع انتخاب‌شده';
 const action = String(d?.actionText || '')
-  .replace(/\{[^{}]*cat[^{}]*\}/gi, categoryName || 'موضوع انتخاب‌شده')
-  .replace(/&#123;\s*cat\s*&#125;/gi, categoryName || 'موضوع انتخاب‌شده')
-  .replace(/&lbrace;\s*cat\s*&rbrace;/gi, categoryName || 'موضوع انتخاب‌شده')
+  .replace(/\{+\s*cat\s*\}+/gi, categoryName)
+  .replace(/&#123;\s*cat\s*&#125;/gi, categoryName)
+  .replace(/&lbrace;\s*cat\s*&rbrace;/gi, categoryName)
+  .replace(/\{\s*category\s*\}/gi, categoryName)
+  .replace(/\{\s*problem\s*\}/gi, categoryName)
   .trim();
 
 
