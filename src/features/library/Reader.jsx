@@ -95,7 +95,7 @@ function sourceLabel(book, content) {
   const title = legacy?.title || book.title || content?.title || 'از حقیقت تا واقعیت';
   const subtitle = legacy?.subtitle || book.subtitle || content?.subtitle || '';
   if (id >= 1 && id <= 3) return `منبع: ${title} — ${subtitle || `جلد ${fa(id)}`}`;
-  if (id === 4) return `منبع: ${title}${subtitle ? ` — ${subtitle}` : ''}`;
+  if (id === 4 || id === 5) return `منبع: ${title}${subtitle ? ` — ${subtitle}` : ''}`;
   return `منبع: ${title}`;
 }
 
