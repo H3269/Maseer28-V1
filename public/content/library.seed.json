@@ -40,7 +40,17 @@
       "cover": "assets/covers/book4.png",
       "file": "content/books/book4.json",
       "order": 4
+    },
+    {
+      "id": "book-5",
+      "legacyId": 5,
+      "title": "هنر شناخت و دگرگونی احساسات",
+      "author": "حسن عابدی برنجستانکی",
+      "description": "از واکنش‌های ناخودآگاه تا آرامش درونی",
+      "cover": "assets/covers/book5.jpg",
+      "file": "content/books/book5.json",
+      "order": 5
     }
   ],
-  "revision": "2026-10-04-v87-unified-reader-structure"
+  "revision": "2026-10-20-v89-add-book5"
 }
