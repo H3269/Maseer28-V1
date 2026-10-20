@@ -85,7 +85,7 @@ function MainApp() {
   const { books, loading: libraryLoading, error: libraryError } = useLibrary();
 
   useEffect(() => {
-    fetch(`${import.meta.env.BASE_URL}content/path-content.json?v=20261013-2`, { cache: 'no-store' })
+    fetch(`${import.meta.env.BASE_URL}content/path-content.json?v=20261020-book5`, { cache: 'no-store' })
       .then((response) => { if (!response.ok) throw new Error('فایل محتوای مسیر پیدا نشد.'); return response.json(); })
       .then(setContent)
       .catch((error) => setLoadError(error?.message || 'خطا در بارگذاری برنامه'));
