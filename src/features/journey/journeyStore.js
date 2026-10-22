@@ -107,6 +107,12 @@ export function sanitizeJourneyState(raw) {
       if (typeof value.feedbackText === 'string') rec.feedbackText = value.feedbackText.slice(0, 1000);
       if (typeof value.exerciseId === 'string') rec.exerciseId = value.exerciseId.slice(0, 200);
       if (typeof value.updatedAt === 'string') rec.updatedAt = value.updatedAt;
+      if (value.bookRec && typeof value.bookRec === 'object') {
+        const bookId = Number(value.bookRec.bookId), page = Number(value.bookRec.page);
+        if (Number.isInteger(bookId) && bookId >= 1 && bookId <= 5 && Number.isInteger(page) && page >= 1) {
+          rec.bookRec = { bookId, page, reason: String(value.bookRec.reason || '').slice(0, 500) };
+        }
+      }
       if (Object.keys(rec).length) out.daily[n] = rec;
     }
   }
