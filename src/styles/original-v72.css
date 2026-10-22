@@ -4463,3 +4463,34 @@
   padding-bottom: 7px !important;
   z-index: 100 !important;
 }
+
+/* Compact, mobile-friendly daily instructions: show the first step and let readers expand details. */
+.dailyTextPreview {
+  margin: 7px 0 0;
+  line-height: 1.95;
+  overflow-wrap: anywhere;
+}
+.dailyTextDisclosure {
+  margin-top: 8px;
+  border-top: 1px solid rgba(90, 110, 105, .18);
+  padding-top: 7px;
+}
+.dailyTextDisclosure summary {
+  cursor: pointer;
+  color: var(--accent, #477c70);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.8;
+  padding: 4px 0;
+}
+.dailyTextFull p {
+  margin: 7px 0 0;
+  line-height: 1.95;
+  overflow-wrap: anywhere;
+}
+.dailyTextFull p:last-child { margin-bottom: 0; }
+.dailyStep .exercise,
+.dailyStep .action {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
