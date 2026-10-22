@@ -137,84 +137,124 @@ function fillProblem(text, problem) {
   return String(text).replaceAll('«موضوع»', `«${problem || 'موضوع انتخاب‌شده'}»`);
 }
 
+function cleanDailyCopy(value, categoryName = '') {
+  let text = String(value || '');
+  if (categoryName) text = text.replace(/\{\s*(?:cat|category|problem)\s*\}/gi, categoryName);
+  // Internal authoring/program labels must never be visible in the daily exercise.
+  text = text
+    .replace(/نسخه\s+(?:سبک|سبک‌تر|کم‌فشار|کم فشار)(?:\s+و\s+کم‌فشار)?\s+برای\s+[^\s،؛.]+/giu, '')
+    .replace(/تمرکز\s+امروز\s*:\s*[^\n؛.]+/giu, '')
+    .replace(/اقدام\s+اختصاصی\s+امروز\s*:\s*/giu, '')
+    .replace(/روش\s+اختصاصی\s+این\s+مسئله\s*:\s*[^\n]+/giu, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/\s+([،؛.!؟])/g, '$1')
+    .replace(/([،؛.!؟])(?=\S)/g, '$1 ')
+    .replace(/[ \t]{2,}/g, ' ')
+    .trim();
+  return text;
+}
+
 export function splitDayContent(d, problem, previousRecord, history = {}) {
   const categoryName = String(problem || '').trim() || 'موضوع انتخاب‌شده';
-  const action = String(d?.actionText || '')
-    .replace(/\{+\s*cat\s*\}+/gi, categoryName)
-    .replace(/&#123;\s*cat\s*&#125;/gi, categoryName)
-    .replace(/&lbrace;\s*cat\s*&rbrace;/gi, categoryName)
-    .replace(/\{\s*category\s*\}/gi, categoryName)
-    .replace(/\{\s*problem\s*\}/gi, categoryName)
-    .trim();
   const dayNo = Math.min(28, Math.max(1, Number(d?.day) || 1));
+  const rawExercise = String(d?.exercise || '');
+  const exerciseSource = rawExercise.split(/\n\s*\n\s*(?:اقدام\s+اختصاصی\s+امروز|روش\s+اختصاصی\s+این\s+مسئله)\s*:/u)[0].trim();
   const historyRecords = Object.entries(history || {}).map(([n, rec]) => ({ day: Number(n), ...rec }))
     .filter((x) => x.day < dayNo && x.feedback).sort((a, b) => a.day - b.day);
-  let worseHighStreak = 0;
-  for (let i = historyRecords.length - 1; i >= 0; i -= 1) {
-    if (historyRecords[i].feedback === 'worse' && Number(historyRecords[i].score) >= 7) worseHighStreak += 1;
-    else break;
+  const streak = (predicate) => {
+    let count = 0;
+    for (let i = historyRecords.length - 1; i >= 0; i -= 1) {
+      if (predicate(historyRecords[i])) count += 1; else break;
+    }
+    return count;
+  };
+  const difficultStreak = streak((x) => x.feedback === 'worse' || x.feedback === 'hard' || Number(x.score) >= 8);
+  const worseningStreak = streak((x) => x.feedback === 'worse' || Number(x.score) >= 8);
+  const positiveStreak = streak((x) => x.feedback === 'better' && Number(x.score) < 8);
+  const previousDifficult = Boolean(previousRecord && (previousRecord.feedback === 'worse' || previousRecord.feedback === 'hard' || Number(previousRecord.score) >= 8));
+  const sustainedImprovement = positiveStreak >= 2;
+  let exercise = cleanDailyCopy(exerciseSource, categoryName);
+  const contextualAction = (value) => {
+    const text = cleanDailyCopy(String(value || ''), categoryName);
+    return text && !text.includes(categoryName) ? `برای مسئله «${categoryName}»، ${text.charAt(0).toLowerCase()}${text.slice(1)}` : text;
+  };
+  let action = contextualAction(d?.actionText);
+  let adaptation = '';
+  if (difficultStreak >= 2 || worseningStreak >= 2) {
+    exercise = cleanDailyCopy(d.restExerciseText || d.lightExerciseText || exercise, categoryName);
+    action = contextualAction(d.restActionText || d.lightActionText || action);
+    adaptation = 'در چند روز اخیر انجام تمرین دشوار بوده یا وضعیت سخت‌تر شده است؛ امروز فقط همین گام سبک را انجام بده. لازم نیست وارد موقعیت دشوار شوی. اگر همین گام هم فشار زیادی ایجاد می‌کند، متوقف شو و از حمایت مناسب کمک بگیر.';
+  } else if (previousDifficult) {
+    exercise = cleanDailyCopy(d.lightExerciseText || exercise, categoryName);
+    action = contextualAction(d.lightActionText || action);
+    adaptation = 'با توجه به نتیجه روز گذشته، امروز فقط بخش ساده‌تر را انجام بده. لازم نیست موقعیت دشوار را تجربه کنی؛ اگر فشار بیشتر شد، مکث کن یا تمرین را متوقف کن.';
+  } else if (sustainedImprovement) {
+    exercise = [exercise, 'چون در چند روز اخیر بهبود ثبت کرده‌ای، اگر آمادگی داری مهارت را در موقعیتی امن و کمی متفاوت بررسی کن؛ دشواری را ناگهانی افزایش نده.'].filter(Boolean).join('\n\n');
+    action = contextualAction(d.progressActionText || action);
+    adaptation = 'بهبود در چند روز اخیر دیده می‌شود؛ گام بعدی کمی متفاوت است، اما انجام آن اختیاری است و باید در محدوده امن و قابل‌تحمل بماند.';
+  } else if (previousRecord?.feedback === 'same') {
+    adaptation = 'تغییر محسوسی ثبت نشده است؛ امروز فشار را افزایش نده. به‌جای تکرار، یک مانع مشخص را بررسی کن.';
   }
-  let hardStreak = 0;
-  for (let i = historyRecords.length - 1; i >= 0; i -= 1) {
-    if (historyRecords[i].feedback === 'hard' || Number(historyRecords[i].score) >= 8) hardStreak += 1;
-    else break;
-  }
-  const improving = previousRecord && (previousRecord.feedback === 'better' || Number(previousRecord.score) <= 3);
-  let exercise;
-  const uniqueCore = DAILY_EXERCISES[dayNo - 1];
-  if (worseHighStreak >= 1 || hardStreak >= 2 || (previousRecord && (previousRecord.feedback === 'worse' || Number(previousRecord.score) >= 8))) {
-    const loadLevel = Math.max(worseHighStreak, hardStreak, 1);
-    exercise = loadLevel >= 4
-      ? 'اگر آمادگی داری، فقط یک واژه درباره نیاز فعلی‌ات بنویس. لازم نیست وارد موقعیت دشوار شوی. اگر حتی این کار هم سنگین است، تمرین را انجام نده و از فرد مورداعتماد یا متخصص مناسب کمک بگیر.'
-      : loadLevel >= 2
-        ? 'امروز فقط یک جمله کوتاه روی کاغذ بنویس. لازم نیست موقعیت را در ذهنت بازسازی کنی یا با آن روبه‌رو شوی. اگر نوشتن هم فشار زیادی ایجاد کرد، متوقف شو.'
-        : 'امروز حداکثر یک دقیقه به بخش نوشتاری و آسان تمرین اختصاص بده. لازم نیست دشواری را بیشتر کنی. اگر احساس کردی فشار بیشتر می‌شود، تمرین را متوقف کن.';
-  } else {
-    exercise = `برای موضوع «${categoryName}»: ${uniqueCore}`;
-    if (improving) exercise += ' چون روز قبل بهبود گزارش شد، فقط در صورت آمادگی این مهارت را در موقعیتی امن و اندکی متفاوت امتحان کن؛ دشواری را ناگهانی بالا نبر.';
-    else if (previousRecord?.feedback === 'same') exercise += ' امروز فقط یک متغیر کوچک را بررسی کن و در صورت بی‌تغییر ماندن وضعیت، فشار تمرین را افزایش نده.';
-    else if (previousRecord?.feedback === 'hard') exercise += ' امروز فقط بخش آسان این تمرین را انتخاب کن و در صورت سنگین شدن، متوقف شو.';
-  }
-  exercise = fillProblem(exercise, categoryName);
-  const title = fa(String(d?.title || 'موضوع امروز').replace(/\s*[·•-]?\s*روز\s*\d+\s*$/i, '').trim());
-  return { exercise, action: fillProblem(action, categoryName), title };
+  const title = cleanDailyCopy(String(d?.title || 'موضوع امروز').replace(/\s*[·•-]?\s*روز\s*\d+\s*$/i, '').trim(), categoryName);
+  return { exercise, action, title, adaptation };
 }
+
 function structuredText(value) {
-  return fa(value).split(/(?:؛\s*|(?<=[.!؟])\s+)/u).map((line) => line.trim()).filter(Boolean);
+  return fa(cleanDailyCopy(value)).split(/(?<=[.!؟])\s+/u).map((line) => line.trim()).filter(Boolean);
+}
+
+function DailyText({ id, label, value }) {
+  const lines = structuredText(value);
+  const preview = lines[0] || '';
+  const rest = lines.slice(1);
+  return <div id={id} className="dailyText"><p className="dailyTextPreview">{preview}</p>{rest.length > 0 && <details className="dailyTextDisclosure"><summary>نمایش ادامه و مراحل ({fa(rest.length)} بخش)</summary><div className="dailyTextFull">{rest.map((line, index) => <p key={index}>{line}</p>)}</div></details>}</div>;
 }
 
 export function severityText(n) { return n <= 2 ? '۰ تا ۲ = بسیار کم یا تقریباً بدون درگیری' : n <= 4 ? '۳ تا ۴ = خفیف' : n <= 6 ? '۵ تا ۶ = متوسط' : n <= 8 ? '۷ تا ۸ = زیاد' : '۹ تا ۱۰ = بسیار شدید و درگیرکننده'; }
 
 export function adaptiveGuidance(previousRecord, previousAnswer, problem, history = {}) {
   if (!previousRecord) return '';
+  const reflection = String(previousAnswer || '').trim();
+  const recent = Object.entries(history || {}).map(([day, rec]) => ({ day: Number(day), ...rec }))
+    .filter((row) => row.feedback).sort((a, b) => a.day - b.day).slice(-7);
+  const countStreak = (predicate) => {
+    let count = 0;
+    for (let i = recent.length - 1; i >= 0; i -= 1) {
+      if (predicate(recent[i])) count += 1; else break;
+    }
+    return count;
+  };
+  const difficultStreak = countStreak((row) => row.feedback === 'worse' || row.feedback === 'hard' || Number(row.score) >= 8);
+  const worseningStreak = countStreak((row) => row.feedback === 'worse' || Number(row.score) >= 8);
+  const positiveStreak = countStreak((row) => row.feedback === 'better' && Number(row.score) < 8);
   const feedback = previousRecord.feedback;
   const score = Number(previousRecord.score);
-  const reflection = String(previousAnswer || '').trim();
-  const prior = Object.values(history || {});
-  const recent = prior.slice(-7);
-  const repeatedWorse = recent.filter((x) => x?.feedback === 'worse' && Number(x?.score) >= 7).length;
-  const repeatedHard = recent.filter((x) => x?.feedback === 'hard' || Number(x?.score) >= 8).length;
-  const base = feedback === 'worse' || score >= 8
-    ? `با توجه به نتیجه روز قبل، امروز تمرین را سبک‌تر کن و فقط بخش کوتاه و امن آن را انجام بده. ${repeatedWorse >= 3 || repeatedHard >= 3 ? 'چون چند روز اخیر دشوار یا رو به بدترشدن بوده، اولویت امروز کاهش فشار، استراحت و بررسی دریافت حمایت حرفه‌ای است؛ تمرین را به مواجهه یا فشار بیشتر تبدیل نکن.' : 'اگر بدترشدن ادامه دارد، تمرین را متوقف کن و از متخصص مناسب کمک بگیر.'}`
-    : feedback === 'hard'
-      ? 'چون تمرین روز قبل دشوار بود، امروز آن را به کوچک‌ترین گام قابل‌تحمل تقسیم کن و کیفیت انجام را به‌جای شدت یا مدت در اولویت بگذار.'
-      : feedback === 'same'
-        ? 'چون تغییر محسوسی ثبت نشد، امروز به‌جای افزایش فشار، یک مانع مشخص را بررسی کن و فقط یک متغیر کوچک را تغییر بده.'
-        : feedback === 'better' || score <= 3
-          ? 'چون نتیجه روز قبل بهتر یا کم‌شدت‌تر گزارش شد، عامل کمک‌کننده را مشخص کن و همان مهارت را در یک موقعیت امن دیگر، بدون افزایش ناگهانی دشواری، امتحان کن.'
-          : 'با توجه به ثبت روز قبل، تمرین امروز را با سرعت قابل‌تحمل انجام بده و به نشانه‌های بدنی و هیجانی توجه کن.';
-  const note = reflection ? ' پاسخ قبلی‌ات را نیز در نظر بگیر و امروز یک نکته تازه به آن اضافه کن؛ لازم نیست متن دیروز را تکرار کنی.' : '';
-  return `${base}${note}`;
+  let base;
+  if (difficultStreak >= 2 || worseningStreak >= 2) {
+    base = 'چند روز اخیر دشوار بوده یا شدت درگیری بالا مانده است. امروز فشار را کمتر کن و فقط بخش ساده‌تر را انجام بده؛ لازم نیست وارد موقعیت دشوار شوی. اگر فشار همچنان زیاد است، تمرین را متوقف کن و از حمایت مناسب کمک بگیر.';
+  } else if (feedback === 'worse' || feedback === 'hard' || score >= 8) {
+    base = 'نتیجه روز گذشته نشان می‌دهد امروز بهتر است فشار را کمتر کنی. فقط بخش ساده‌تر را انجام بده و اگر فشار بیشتر شد، مکث کن یا متوقف شو.';
+  } else if (positiveStreak >= 2) {
+    base = 'در چند روز اخیر بهبود دیده می‌شود. اگر آمادگی داری، یک گام کمی متفاوت و امن را امتحان کن؛ دشواری را ناگهانی افزایش نده.';
+  } else if (feedback === 'better') {
+    base = 'یک روز بهتر ثبت شده است؛ برای نتیجه‌گیری درباره روند، به چند روز دیگر هم نیاز داریم. فعلاً همین سطح را حفظ کن و ببین چه چیزی کمک کرده است.';
+  } else if (feedback === 'same') {
+    base = 'تغییر محسوسی ثبت نشده است. فشار را افزایش نده؛ یک مانع مشخص را بررسی کن و فقط یک عامل کوچک را تغییر بده.';
+  } else {
+    base = 'تمرین را با سرعتی انجام بده که برایت قابل‌تحمل باشد. اگر شرایط یا احساس تو تغییر کرد، می‌توانی مکث کنی یا از حمایت مناسب کمک بگیری.';
+  }
+  const note = reflection ? ' پاسخ روز گذشته‌ات هم در نظر گرفته شده است؛ لازم نیست نوشته قبلی را دوباره بنویسی.' : '';
+  return cleanDailyCopy(`${base}${note}`, problem);
 }
 
 export function DayScreen({ day, problem, data, record, savedAnswer, previousRecord, previousAnswer, history = {}, onDashboard, onPrevious, onComplete, onNext, completed, onValidation }) {
-  const parts = splitDayContent(data, problem, previousRecord, history), guidance = adaptiveGuidance(previousRecord, previousAnswer, problem, history), [entryOpen, setEntryOpen] = useState(Boolean(record?.score != null || savedAnswer || record?.feedback)), [score, setScore] = useState(record?.score ?? 0), [touched, setTouched] = useState(record?.score != null), [feedback, setFeedback] = useState(record?.feedback || ''), [answer, setAnswer] = useState(savedAnswer || '');
+  const parts = splitDayContent(data, problem, previousRecord, history), guidance = parts.adaptation || adaptiveGuidance(previousRecord, previousAnswer, problem, history), [entryOpen, setEntryOpen] = useState(Boolean(record?.score != null || savedAnswer || record?.feedback)), [score, setScore] = useState(record?.score ?? 0), [touched, setTouched] = useState(record?.score != null), [feedback, setFeedback] = useState(record?.feedback || ''), [answer, setAnswer] = useState(savedAnswer || '');
   useEffect(() => { setEntryOpen(Boolean(record?.score != null || savedAnswer || record?.feedback)); setScore(record?.score ?? 0); setTouched(record?.score != null); setFeedback(record?.feedback || ''); setAnswer(savedAnswer || ''); }, [day, record, savedAnswer]);
   if (!data) return null;
   const bubblePos = Math.min(96, Math.max(4, (10 - Number(score)) * 10));
-  const guidanceLines = structuredText(guidance), exerciseLines = structuredText(parts.exercise), actionLines = structuredText(parts.action);
+  const guidanceLines = structuredText(guidance);
   function submit() { const missing = []; if (!touched || Number(score) < 0 || Number(score) > 10) missing.push('شدت یا میزان درگیری از ۰ تا ۱۰'); if (!feedback) missing.push('بازخورد امروز'); if (!validDailyAnswer(answer)) missing.push('پاسخ یا تجربه امروز (فقط کلمات فارسی و نشانه‌های مجاز)'); if (missing.length) return onValidation(missing, 'نتیجه امروز هنوز کامل نشده است'); onComplete({ answer: answer.trim(), score: Number(score), feedback }); }
-  return <section className="card dayCard" id="day"><div className="dayTopline"><span className="badge" id="dayBadge">روز {fa(day)} از ۲۸ · {problem}</span><button aria-label="داشبورد" className="iconButton subtle" onClick={onDashboard}>⌂</button></div><h2 id="dayTitle">{parts.title}</h2><p className="muted" id="dayIntro">امروز روی «{fa(parts.title)}» تمرکز می‌کنی.</p>{guidance && <div className="recommendation adaptiveGuidance"><b>چرا تمرین امروز این‌طور تنظیم شده؟</b><div className="muted">{guidanceLines.map((line, index) => <p key={index} style={{ margin: index === guidanceLines.length - 1 ? '0' : '0 0 8px' }}>{line}</p>)}</div></div>}<div className="dailyStep"><span className="stepNumber">۱</span><div className="exercise"><b>تمرین امروز</b><div id="dayExercise">{exerciseLines.map((line, index) => <p key={index} style={{ margin: index === exerciseLines.length - 1 ? '0' : '0 0 8px' }}>{line}</p>)}</div></div></div><div className="dailyStep"><span className="stepNumber">۲</span><div className="action"><b>اقدام اختصاصی امروز</b><div id="dayAction">{actionLines.map((line, index) => <p key={index} style={{ margin: index === actionLines.length - 1 ? '0' : '0 0 8px' }}>{line}</p>)}</div></div></div><div className="safetyNote"><span>◌</span><p className="muted" id="dayClosing">{fa(data.closing || '')}</p></div>{!entryOpen && <button className="primary heroAction" id="openDailyEntryBtn" onClick={() => setEntryOpen(true)}>انجام دادم؛ ثبت نتیجه امروز</button>}{entryOpen && <div aria-live="polite" className="dailyEntryPanel" id="dailyEntryPanel"><div className="entryHeader"><span className="stepNumber">۳</span><div><b>ثبت نتیجه</b><small>کمتر از یک دقیقه</small></div></div><label>شدت یا میزان درگیری امروز</label><div className="severityWrap"><div className="severityValue" id="severityValue" style={{ left: `${bubblePos}%` }}>{touched ? `${fa(score)} از ۱۰` : 'انتخاب نشده'}</div><div className="severityThumb" id="severityThumb" /><input aria-label="شدت درگیری" className="severityRange" id="dayScore" max="10" min="0" step="1" type="range" value={score} data-touched={touched ? '1' : '0'} onChange={(e) => { setScore(Number(e.target.value)); setTouched(true); }} /></div><div className="stats" style={{ color: 'var(--muted)', marginTop: 0 }}><span>۰ = بدون درگیری</span><span>۵ = متوسط</span><span>۱۰ = بسیار شدید</span></div><p className="muted" id="severityText" style={{ fontSize: 11, marginTop: 5 }}>{severityText(Number(score))}</p><label>بازخورد امروز</label><SmartSelect id="dayFeedbackChoice" value={feedback} onChange={setFeedback} options={FEEDBACK_OPTIONS} /><label>پاسخ یا تجربه امروزت</label><textarea id="answer" maxLength={3000} placeholder="کوتاه و واقعی بنویس؛ چه اتفاقی افتاد و چه چیزی یاد گرفتی؟" value={answer} onChange={(e) => setAnswer(e.target.value)} /><button className="primary" onClick={submit}>{buttonLabel('ثبت امروز و دریافت نتیجه')}</button><button className="ghostButton" onClick={() => setEntryOpen(false)}>فعلاً می‌خواهم تمرین را ادامه بدهم</button></div>}<div className="feedback hidden" id="dailyFeedback"/><div className="recommendation hidden" id="dailyRecommendation"/><div className="navrow compactNav"><button className="secondary" onClick={onDashboard}>{buttonLabel('داشبورد')}</button></div><div id="nextButtonWrap">{day < 28 && completed && <button className="primary" onClick={onNext}>ادامه به روز {fa(day + 1)}</button>}</div></section>;
+  return <section className="card dayCard" id="day"><div className="dayTopline"><span className="badge" id="dayBadge">روز {fa(day)} از ۲۸ · {problem}</span><button aria-label="داشبورد" className="iconButton subtle" onClick={onDashboard}>⌂</button></div><h2 id="dayTitle">{parts.title}</h2><p className="muted" id="dayIntro">امروز روی «{fa(parts.title)}» تمرکز می‌کنی.</p>{guidance && <div className="recommendation adaptiveGuidance"><b>چرا تمرین امروز این‌طور تنظیم شده؟</b><div className="muted">{guidanceLines.map((line, index) => <p key={index} style={{ margin: index === guidanceLines.length - 1 ? '0' : '0 0 8px' }}>{line}</p>)}</div></div>}<div className="dailyStep"><span className="stepNumber">۱</span><div className="exercise"><b>تمرین امروز</b><DailyText id="dayExercise" label="تمرین امروز" value={parts.exercise} /></div></div><div className="dailyStep"><span className="stepNumber">۲</span><div className="action"><b>اقدام اختصاصی امروز</b><DailyText id="dayAction" label="اقدام اختصاصی امروز" value={parts.action} /></div></div><div className="safetyNote"><span>◌</span><p className="muted" id="dayClosing">{fa(data.closing || '')}</p></div>{!entryOpen && <button className="primary heroAction" id="openDailyEntryBtn" onClick={() => setEntryOpen(true)}>انجام دادم؛ ثبت نتیجه امروز</button>}{entryOpen && <div aria-live="polite" className="dailyEntryPanel" id="dailyEntryPanel"><div className="entryHeader"><span className="stepNumber">۳</span><div><b>ثبت نتیجه</b><small>کمتر از یک دقیقه</small></div></div><label>شدت یا میزان درگیری امروز</label><div className="severityWrap"><div className="severityValue" id="severityValue" style={{ left: `${bubblePos}%` }}>{touched ? `${fa(score)} از ۱۰` : 'انتخاب نشده'}</div><div className="severityThumb" id="severityThumb" /><input aria-label="شدت درگیری" className="severityRange" id="dayScore" max="10" min="0" step="1" type="range" value={score} data-touched={touched ? '1' : '0'} onChange={(e) => { setScore(Number(e.target.value)); setTouched(true); }} /></div><div className="stats" style={{ color: 'var(--muted)', marginTop: 0 }}><span>۰ = بدون درگیری</span><span>۵ = متوسط</span><span>۱۰ = بسیار شدید</span></div><p className="muted" id="severityText" style={{ fontSize: 11, marginTop: 5 }}>{severityText(Number(score))}</p><label>بازخورد امروز</label><SmartSelect id="dayFeedbackChoice" value={feedback} onChange={setFeedback} options={FEEDBACK_OPTIONS} /><label>پاسخ یا تجربه امروزت</label><textarea id="answer" maxLength={3000} placeholder="کوتاه و واقعی بنویس؛ چه اتفاقی افتاد و چه چیزی یاد گرفتی؟" value={answer} onChange={(e) => setAnswer(e.target.value)} /><button className="primary" onClick={submit}>{buttonLabel('ثبت امروز و دریافت نتیجه')}</button><button className="ghostButton" onClick={() => setEntryOpen(false)}>فعلاً می‌خواهم تمرین را ادامه بدهم</button></div>}<div className="feedback hidden" id="dailyFeedback"/><div className="recommendation hidden" id="dailyRecommendation"/><div className="navrow compactNav"><button className="secondary" onClick={onDashboard}>{buttonLabel('داشبورد')}</button></div><div id="nextButtonWrap">{day < 28 && completed && <button className="primary" onClick={onNext}>ادامه به روز {fa(day + 1)}</button>}</div></section>;
 }
 
 export function nextStepText(n, d, rec, problem) {
@@ -238,8 +278,8 @@ export function nextStepText(n, d, rec, problem) {
 }
 
 export function DailyResult({ day, journey, data, problem, sourceLabel, onDashboard, onNext, onFinal, onBook }) {
-  const rec = journey.daily?.[day] || {}, recommendedBook = rec.bookRec || data?.bookRec, labels = { better: 'بهتر شدم', same: 'تقریباً مثل قبل', worse: 'بدتر شدم', hard: 'تمرین برایم سخت بود' };
-  return <section className="card" id="dailyResult"><span className="badge" id="resultBadge">نتیجه روز {fa(day)} از ۲۸</span><h2 id="resultTitle">عملکرد روز {fa(day)}</h2><div className="metric"><div className="metricBox"><strong id="resultScore">{fa(rec.score)}/۱۰</strong><span>امتیاز امروز</span></div><div className="metricBox"><strong id="resultFeedback">{labels[rec.feedback] || 'ثبت شد'}</strong><span>بازخورد</span></div></div><div className="feedback"><b>جمع‌بندی امروز</b><p className="muted" id="resultText">{rec.feedbackText}</p></div><div className="recommendation"><b>قدم بعدی</b><p className="muted" id="resultNext">{day === 28 ? 'روز ۲۸ کامل شد. اکنون ارزیابی نهایی فعال است.' : nextStepText(day, data, rec, problem)}</p></div><div id="resultNextWrap">{recommendedBook && <><div className="bookRecommendationSource">{sourceLabel}</div><button className="gold" onClick={() => onBook(recommendedBook)}>📖 مطالعه پیشنهاد کتاب امروز</button></>}{day === 28 ? <button className="primary" onClick={onFinal}>رفتن به ارزیابی نهایی →</button> : <button className="primary" onClick={() => onNext(day + 1)}>رفتن به روز {fa(day + 1)} →</button>}</div><div className="navrow"><button className="secondary" onClick={onDashboard}>{buttonLabel('بازگشت به داشبورد')}</button></div></section>;
+  const rec = journey.daily?.[day] || {}, recommendedBook = rec.bookRec || null, labels = { better: 'بهتر شدم', same: 'تقریباً مثل قبل', worse: 'بدتر شدم', hard: 'تمرین برایم سخت بود' };
+  return <section className="card" id="dailyResult"><span className="badge" id="resultBadge">نتیجه روز {fa(day)} از ۲۸</span><h2 id="resultTitle">عملکرد روز {fa(day)}</h2><div className="metric"><div className="metricBox"><strong id="resultScore">{fa(rec.score)}/۱۰</strong><span>امتیاز امروز</span></div><div className="metricBox"><strong id="resultFeedback">{labels[rec.feedback] || 'ثبت شد'}</strong><span>بازخورد</span></div></div><div className="feedback"><b>جمع‌بندی امروز</b><p className="muted" id="resultText">{rec.feedbackText}</p></div><div className="recommendation"><b>قدم بعدی</b><p className="muted" id="resultNext">{day === 28 ? 'روز ۲۸ کامل شد. اکنون ارزیابی نهایی فعال است.' : nextStepText(day, data, rec, problem)}</p></div><div id="resultNextWrap">{recommendedBook ? <><div className="bookRecommendationSource">{sourceLabel}</div><button className="gold" onClick={() => onBook(recommendedBook)}>📖 مطالعه پیشنهاد کتاب امروز</button></> : <p className="muted" id="noNewBookRecommendation">در میان بخش‌های مرتبط و استفاده‌نشده کتاب‌ها، پیشنهاد تازه‌ای پیدا نشد؛ برای جلوگیری از تکرار، پیشنهاد نامرتبط یا تکراری نمایش داده نمی‌شود.</p>}{day === 28 ? <button className="primary" onClick={onFinal}>رفتن به ارزیابی نهایی →</button> : <button className="primary" onClick={() => onNext(day + 1)}>رفتن به روز {fa(day + 1)} →</button>}</div><div className="navrow"><button className="secondary" onClick={onDashboard}>{buttonLabel('بازگشت به داشبورد')}</button></div></section>;
 }
 
 export function Support({ content, onBack }) {
