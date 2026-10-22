@@ -13,7 +13,7 @@ let trustedTimeAnchor = null;
 
 export const APP_CONFIG = {
   TEST_MODE: false,
-  TIME_LOCK_ENABLED: true,
+  TIME_LOCK_ENABLED: false,
   // Calendar days are evaluated in a fixed timezone so changing the phone
   // timezone cannot unlock the next day early.
   TIME_ZONE: 'Asia/Tehran',
@@ -289,7 +289,7 @@ async function fetchServerDateMs(method = 'HEAD') {
  * A new day stays locked if a trusted server time cannot be obtained.
  */
 export async function getTrustedNowMs() {
-  if (APP_CONFIG.TEST_MODE) return Date.now();
+  if (APP_CONFIG.TEST_MODE || !APP_CONFIG.TIME_LOCK_ENABLED) return Date.now();
 
   // Reuse a recent server-supplied anchor for at most two minutes. The device's
   // wall clock is never consulted, and the monotonic clock prevents rollback.
