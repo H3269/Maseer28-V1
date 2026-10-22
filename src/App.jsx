@@ -191,8 +191,8 @@ function MainApp() {
   async function openDay(value) {
     if (!journey.assessment) return navigate('assessment');
     const day = Number(value), required = nextRequiredDay(journey);
-    const allowed = journey.completed.includes(day) || day === required;
-    if (!allowed) return showValidation([`روز ${fa(required)} هنوز باید تکمیل شود.`], 'این روز هنوز فعال نشده است');
+    const allowed = !journey.completed.includes(day) && day === required;
+    if (!allowed) return showValidation([journey.completed.includes(day) ? 'این روز قبلاً ثبت نهایی شده و امکان ویرایش آن وجود ندارد.' : `روز ${fa(required)} هنوز باید تکمیل شود.`], 'این روز در دسترس نیست');
     const trustedNow = await getTrustedNowMs();
     if (trustedNow == null) {
       return showValidation(
@@ -210,9 +210,45 @@ function MainApp() {
     navigate('day');
   }
 
+  function normalizeSearchText(value) {
+    return String(value || '').toLowerCase().replace(/[\u0640\u200c]/g, ' ').replace(/[ي]/g, 'ی').replace(/[ك]/g, 'ک').replace(/[^\u0600-\u06ff\d\s]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  async function findRelevantBook(dayData, answer, feedback, score) {
+    // Search all five locally stored books. The user's reflection and selected topic
+    // influence relevance; no text leaves the device.
+    const stop = new Set('برای از به با که را این آن در و یا اگر اما چون تا روی یک هم من تو ما شما او آنها است بود شد می شود خیلی بیشتر کمتر امروز دیروز خود خودم'.split(' '));
+    const feedbackContext = feedback === 'better' ? 'پیشرفت عامل کمک کننده حفظ مهارت' : feedback === 'worse' ? 'فشار کاهش شدت امنیت کمک تخصصی تنظیم هیجان' : feedback === 'hard' ? 'گام کوچک تمرین تدریجی تحمل دشواری' : 'مانع تداوم تغییر مشاهده';
+    const scoreContext = score >= 8 ? 'شدت بالا تنظیم فشار آرام سازی ایمنی' : score <= 3 ? 'پایداری تعمیم مهارت پیشگیری' : 'خودمشاهده شناخت رفتار';
+    const queryText = normalizeSearchText(`${journey.profileData?.problem || ''} ${dayData?.title || ''} ${dayData?.exercise || ''} ${answer || ''} ${journey.profileData?.goal || ''} ${feedbackContext} ${scoreContext}`);
+    const tokens = [...new Set(queryText.split(' ').filter((w) => w.length >= 3 && !stop.has(w)))].slice(0, 80);
+    const candidates = [];
+    for (const book of books) {
+      try {
+        const version = await libraryRepository.getVersion(book.activeVersionId);
+        const pages = version?.content?.pages || [];
+        for (const page of pages) {
+          const text = normalizeSearchText(`${page.title || ''} ${(page.blocks || []).map((b) => `${b.text || ''} ${(b.rows || []).flat().join(' ')}`).join(' ')} ${page.text || ''}`);
+          if (text.length < 100) continue;
+          let scoreMatch = 0;
+          for (const token of tokens) if (text.includes(token)) scoreMatch += token.length >= 5 ? 2 : 1;
+          // Lightly favor pages that are focused rather than generic title/contents pages.
+          scoreMatch += Math.min(3, Math.floor(text.length / 1800));
+          if (scoreMatch > 0) candidates.push({ bookId: Number(book.legacyId), page: Number(page.sourcePage || page.page) || 1, scoreMatch, title: book.title });
+        }
+      } catch { /* A missing local book must not block daily completion. */ }
+    }
+    candidates.sort((a, b) => b.scoreMatch - a.scoreMatch || a.bookId - b.bookId);
+    const best = candidates[0];
+    if (best) return { bookId: best.bookId, page: best.page, reason: `این بخش از «${best.title}» با موضوع روز، هدف مسیر و نوشته ثبت‌شده امروز بیشترین هم‌پوشانی واژگانی را دارد. بازبینی کن که محتوای صفحه واقعاً به تجربه‌ات مرتبط باشد.` };
+    // Safe fallback to the authored recommendation when local search has no match.
+    return dayData?.bookRec || null;
+  }
+
   async function completeDay({ answer, score, feedback }) {
     const alreadyCompleted = (journey.completed || []).includes(currentDay);
-    if (!alreadyCompleted && currentDay !== nextRequiredDay(journey)) {
+    if (alreadyCompleted) return showValidation(['نتیجه این روز قبلاً ثبت نهایی شده و قابل ویرایش نیست.'], 'این روز قبلاً تکمیل شده است');
+    if (currentDay !== nextRequiredDay(journey)) {
       return showValidation(['روزهای مسیر باید به ترتیب تکمیل شوند.'], 'ثبت روز مجاز نیست');
     }
 
@@ -231,7 +267,8 @@ function MainApp() {
     }
 
     const chosen = activeDay;
-    const record = { score: Number(score), feedback, feedbackText: makeFeedback(feedback, score, chosen, category?.name, currentDay), exerciseId: chosen?.id || '', updatedAt: new Date(trustedNow).toISOString() };
+    const bookRec = await findRelevantBook(chosen, answer, feedback, Number(score));
+    const record = { score: Number(score), feedback, feedbackText: makeFeedback(feedback, score, chosen, category?.name, currentDay), exerciseId: chosen?.id || '', bookRec: bookRec || undefined, updatedAt: new Date(trustedNow).toISOString() };
     patchJourney((previous) => ({ ...previous, completed: [...new Set([...(previous.completed || []), currentDay])].sort((a, b) => a - b), answers: { ...(previous.answers || {}), [currentDay]: answer }, daily: { ...(previous.daily || {}), [currentDay]: record } }));
     setResultDay(currentDay);
     navigate('dailyResult');
@@ -324,7 +361,8 @@ function MainApp() {
   // onboarding flow. Once profile + path setup + baseline assessment exist,
   // it remains available on every app screen so the user never feels trapped.
   const navVisible = onboardingComplete;
-  const recommendationSource = resultData?.bookRec ? legacySourceLabel(resultData.bookRec.bookId) : '';
+  const resultBookRec = journey.daily?.[resultDay || currentDay]?.bookRec || resultData?.bookRec;
+  const recommendationSource = resultBookRec ? legacySourceLabel(resultBookRec.bookId) : '';
 
   return (
     <div className="app">
@@ -335,7 +373,7 @@ function MainApp() {
       {screen === 'pathSetup' && <PathSetupScreen initial={journey.profileData} problems={Object.keys(content.categories || {})} onSave={savePathSetup} onEditProfile={() => openProfileEditor('pathSetup')} onValidation={showValidation} />}
       {screen === 'assessment' && <AssessmentScreen initial={journey.assessmentData?.answers} onSave={saveAssessment} onValidation={showValidation} />}
       {screen === 'dashboard' && <Dashboard journey={journey} userProfile={userProfile} onEditProfile={() => openProfileEditor('dashboard')} onCurrent={openCurrentDay} onBooks={() => openBooks('dashboard')} onArchive={() => navigate('archive')} onSupport={() => openSupport('dashboard')} onChannel={() => window.open(content.channelUrl, '_blank', 'noopener,noreferrer')} />}
-      {screen === 'day' && <DayScreen day={currentDay} problem={journey.profileData?.problem || ''} data={activeDay} record={journey.daily?.[currentDay]} savedAnswer={journey.answers?.[currentDay] || ''} onDashboard={() => navigate('dashboard')} onPrevious={() => currentDay <= 1 ? navigate('dashboard') : openDay(currentDay - 1)} onComplete={completeDay} onNext={() => openDay(currentDay + 1)} completed={journey.completed.includes(currentDay)} onValidation={showValidation} />}
+      {screen === 'day' && <DayScreen day={currentDay} problem={journey.profileData?.problem || ''} data={activeDay} record={journey.daily?.[currentDay]} savedAnswer={journey.answers?.[currentDay] || ''} previousRecord={journey.daily?.[currentDay - 1]} previousAnswer={journey.answers?.[currentDay - 1] || ''} onDashboard={() => navigate('dashboard')} onPrevious={() => currentDay <= 1 ? navigate('dashboard') : openDay(currentDay - 1)} onComplete={completeDay} onNext={() => openDay(currentDay + 1)} completed={journey.completed.includes(currentDay)} onValidation={showValidation} />}
       {screen === 'dailyResult' && <DailyResult day={resultDay || journey.completed.length || currentDay} journey={journey} data={resultData} problem={category?.name} sourceLabel={recommendationSource} onDashboard={() => navigate('dashboard')} onNext={openDay} onFinal={() => navigate('final')} onBook={(rec) => openRecommendedBook(resultDay || currentDay, rec)} />}
       {screen === 'books' && <LibraryPage books={books} loading={libraryLoading} error={libraryError} onOpenBook={(book) => openBook(book)} onBack={() => navigate(libraryReturn)} />}
       {screen === 'support' && <Support content={content} onBack={() => navigate(supportReturn)} />}
