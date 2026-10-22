@@ -7,8 +7,8 @@ export const CLOCK_GUARD_KEY = 'maseer28_trusted_clock_guard_v2';
 export const START_GUARD_KEY = 'maseer28_start_guard_v2';
 
 export const APP_CONFIG = {
-  TEST_MODE: false,
-  TIME_LOCK_ENABLED: true,
+  TEST_MODE: true,
+  TIME_LOCK_ENABLED: false,
   // Calendar days are evaluated in a fixed timezone so changing the phone
   // timezone cannot unlock the next day early.
   TIME_ZONE: 'Asia/Tehran',
