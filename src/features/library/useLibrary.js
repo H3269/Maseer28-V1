@@ -17,23 +17,34 @@ async function sha256(value) {
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
-async function fetchJson(path, cacheToken) {
-  const response = await fetch(withCacheBust(path, cacheToken), {
-    cache: 'no-store',
-    headers: { 'Cache-Control': 'no-cache' },
-  });
+async function fetchJson(path, cacheToken, cache = 'default') {
+  const response = await fetch(withCacheBust(path, cacheToken), cache === 'no-store'
+    ? { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } }
+    : { cache });
   if (!response.ok) throw new Error(`خطا در بارگذاری ${path}`);
   return response.json();
 }
 
 async function seedLibrary() {
-  const manifest = await fetchJson('content/library.seed.json', Date.now());
+  // The tiny manifest is checked each launch; large book files are only fetched
+  // and fingerprinted when the published revision changes or a book is missing.
+  const manifest = await fetchJson('content/library.seed.json', 'manifest-check-v90', 'no-store');
   const revision = String(manifest.revision || 'legacy');
   const now = new Date().toISOString();
+  const [storedRevision, existingBooks] = await Promise.all([
+    libraryRepository.getSetting(SEED_REVISION_KEY),
+    libraryRepository.listBooks(),
+  ]);
+  const existingById = new Map(existingBooks.map((book) => [book.id, book]));
+  const manifestReady = (manifest.books || []).every((meta) => {
+    const book = existingById.get(meta.id || `book-${meta.legacyId}`);
+    return Boolean(book?.activeVersionId);
+  });
+  if (storedRevision === revision && manifestReady) return existingBooks;
 
-  for (const meta of manifest.books || []) {
+  await Promise.all((manifest.books || []).map(async (meta) => {
     const bookId = meta.id || `book-${meta.legacyId}`;
-    const rawContent = await fetchJson(meta.file, `${revision}-${Date.now()}`);
+    const rawContent = await fetchJson(meta.file, revision);
     const rawFingerprint = await sha256(JSON.stringify(rawContent));
     const fingerprintKey = `${SEED_BOOK_FINGERPRINT_PREFIX}${bookId}`;
     const previousFingerprint = await libraryRepository.getSetting(fingerprintKey);
@@ -71,7 +82,7 @@ async function seedLibrary() {
       createdAt: existingBook?.createdAt || now,
       updatedAt: previousFingerprint !== rawFingerprint ? now : (existingBook?.updatedAt || now),
     });
-  }
+  }));
 
   await libraryRepository.setSetting(SEED_REVISION_KEY, revision);
   await libraryRepository.setSetting('seed-last-checked-at', now);
@@ -89,8 +100,8 @@ export function useLibrary() {
   const refresh = useCallback(async () => {
     try {
       setLoading(true);
-      await seedLibrary();
-      setBooks(await libraryRepository.listBooks());
+      const seededBooks = await seedLibrary();
+      setBooks(seededBooks.length ? seededBooks : await libraryRepository.listBooks());
       setError('');
     } catch (err) {
       console.error(err);
