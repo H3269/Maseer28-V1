@@ -6,9 +6,14 @@ export const COPYRIGHT_KEY = 'maseer28_copyright_v60';
 export const CLOCK_GUARD_KEY = 'maseer28_trusted_clock_guard_v2';
 export const START_GUARD_KEY = 'maseer28_start_guard_v2';
 
+// A short in-memory anchor avoids repeated server-time round trips while a user
+// opens a day and submits its result. Elapsed time uses performance.now(), not device clock.
+const TRUSTED_TIME_CACHE_MS = 120000;
+let trustedTimeAnchor = null;
+
 export const APP_CONFIG = {
-  TEST_MODE: true,
-  TIME_LOCK_ENABLED: false,
+  TEST_MODE: false,
+  TIME_LOCK_ENABLED: true,
   // Calendar days are evaluated in a fixed timezone so changing the phone
   // timezone cannot unlock the next day early.
   TIME_ZONE: 'Asia/Tehran',
@@ -286,6 +291,23 @@ async function fetchServerDateMs(method = 'HEAD') {
 export async function getTrustedNowMs() {
   if (APP_CONFIG.TEST_MODE) return Date.now();
 
+  // Reuse a recent server-supplied anchor for at most two minutes. The device's
+  // wall clock is never consulted, and the monotonic clock prevents rollback.
+  if (trustedTimeAnchor && typeof performance !== 'undefined') {
+    const elapsed = performance.now() - trustedTimeAnchor.performanceMs;
+    if (elapsed >= 0 && elapsed <= TRUSTED_TIME_CACHE_MS) {
+      const estimatedServerMs = Math.floor(trustedTimeAnchor.serverMs + elapsed);
+      const guard = readJsonStorage(CLOCK_GUARD_KEY);
+      const lastServerMs = Number(guard?.serverMs || 0);
+      if (!Number.isFinite(lastServerMs) || lastServerMs <= 0 || estimatedServerMs + SERVER_CLOCK_BACKWARD_TOLERANCE_MS >= lastServerMs) {
+        const serverMs = Math.max(estimatedServerMs, Number.isFinite(lastServerMs) ? lastServerMs : 0);
+        writeJsonStorage(CLOCK_GUARD_KEY, { serverMs });
+        trustedTimeAnchor = { serverMs, performanceMs: performance.now() };
+        return serverMs;
+      }
+    }
+  }
+
   let serverMs = null;
   try { serverMs = await fetchServerDateMs('HEAD'); }
   catch { /* try GET below */ }
@@ -305,6 +327,7 @@ export async function getTrustedNowMs() {
   }
 
   writeJsonStorage(CLOCK_GUARD_KEY, { serverMs });
+  if (typeof performance !== 'undefined') trustedTimeAnchor = { serverMs, performanceMs: performance.now() };
   return serverMs;
 }
 
