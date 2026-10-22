@@ -449,8 +449,15 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
   const sourceFirst = new Map();
   const chapterAnchors = [];
   const chapters = [...(book.chapters || [])].sort((a, c) => Number(a.page) - Number(c.page));
-  const chapterMap = new Map(chapters.map((c) => [Number(c.page), c]));
-  const firstChapterSource = chapters.length ? Number(chapters[0].page) || Infinity : Infinity;
+  // Volumes 1 and 2 store chapter positions as half-pages (for example 9.5),
+  // while their source content is indexed by whole-numbered pages. Normalize
+  // only these two legacy books so chapter anchors are actually inserted and
+  // appear in the reader's existing TOC. Other books retain their old mapping.
+  const normalizeLegacyChapterPage = (page) => ([1, 2].includes(Number(bookId))
+    ? Math.floor(Number(page))
+    : Number(page));
+  const chapterMap = new Map(chapters.map((c) => [normalizeLegacyChapterPage(c.page), c]));
+  const firstChapterSource = chapters.length ? normalizeLegacyChapterPage(chapters[0].page) || Infinity : Infinity;
   const insertedChapters = new Set();
   const poem = POEMS[Number(bookId)] || null;
   let poemDone = false;
