@@ -4494,3 +4494,43 @@
   min-width: 0;
   overflow-wrap: anywhere;
 }
+
+
+/* V90: keep the three final reflection groups collapsed until requested. */
+.finalAnswerDisclosure {
+  margin-top: 10px;
+  border: 1px solid #dfe9e6;
+  border-radius: 14px;
+  background: #fbfcfc;
+  overflow: hidden;
+}
+.finalAnswerDisclosure > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 13px 14px;
+  cursor: pointer;
+  list-style: none;
+  color: #243b3c;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.8;
+}
+.finalAnswerDisclosure > summary::-webkit-details-marker { display: none; }
+.finalAnswerDisclosure > summary::after {
+  content: '＋';
+  flex: 0 0 auto;
+  color: var(--accent, #477c70);
+  font-size: 17px;
+}
+.finalAnswerDisclosure[open] > summary::after { content: '−'; }
+.finalAnswerDisclosure > summary small {
+  flex: 0 0 auto;
+  color: var(--muted, #687a76);
+  font-size: 10px;
+  font-weight: 700;
+}
+.finalAnswerFields { padding: 0 13px 13px; }
+.finalAnswerFields > p { margin: 0 0 8px; font-size: 11px; }
+.finalAnswerFields textarea { display: block; width: 100%; margin-top: 9px; }
