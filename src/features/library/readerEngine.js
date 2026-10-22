@@ -259,6 +259,13 @@ function readerKind(text, block, context = {}) {
   if (Number(context.bookId) === 1 && /^هویت\.?$/u.test(t)) return { kind: 'heading', level: 2, freshPage: true };
   if (Number(context.bookId) === 1 && /^روش استفاده از(?: این)? کتاب$/u.test(t)) return { kind: 'heading', level: 2, freshPage: true };
 
+  // Book 5: workbook titles and chapter-end exercises begin on a fresh page.
+  if (Number(context.bookId) === 5 && /^کاربرگ\s+(?:اول|دوم|سوم|چهارم|پنجم|ششم|هفتم)(?:\s*[:：]|$)/u.test(t)) return { kind: 'heading', level: 2, freshPage: true, practice: true };
+  if (Number(context.bookId) === 5 && /^تمرین\s+پایانی\s+فصل\s+/u.test(t)) return { kind: 'exerciseTitle', level: 2, freshPage: true, practice: true };
+  if (Number(context.bookId) === 5 && /^سخن\s+پایانی\s+کتاب$/u.test(t)) return { kind: 'heading', level: 2, freshPage: true };
+  // The chapter 26 summary title is styled as a heading but stays with its body.
+  if (Number(context.bookId) === 5 && /^جمع[‌\u200c -]?بندی\s+فصل\s+بیست[‌\u200c -]?و?[‌\u200c -]?ششم$/u.test(t)) return { kind: 'heading', level: 2, freshPage: false };
+
   // Book 5 front matter: keep these named sections at the top of a fresh page.
   if (Number(context.bookId) === 5 && /^(?:زندگی زیباست چشمی باز کن|پیشگفتار|مقدمه)$/u.test(t)) return { kind: 'heading1', level: 1, freshPage: true };
   // Numbered subsection titles in book 5 are headings; their following prose remains body text.
