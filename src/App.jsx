@@ -215,34 +215,98 @@ function MainApp() {
   }
 
   async function findRelevantBook(dayData, answer, feedback, score) {
-    // Search all five locally stored books. The user's reflection and selected topic
-    // influence relevance; no text leaves the device.
+    // Never recommend the same source page or a page containing a paragraph
+    // already recommended in this user's current or archived paths.
+    const usedKeys = new Set();
+    const usedParagraphs = new Set();
+    const versions = await Promise.all(books.map(async (book) => {
+      try { return await libraryRepository.getVersion(book.activeVersionId); } catch { return null; }
+    }));
+    const normalizeParagraph = (value) => normalizeSearchText(value).replace(/\s+/g, ' ').trim();
+    const pageText = (page) => normalizeParagraph(`${page?.title || ''} ${(page?.blocks || []).map((b) => `${b.text || ''} ${(b.rows || []).flat().join(' ')}`).join(' ')} ${page?.text || ''}`);
+    const addUsedRecommendation = async (recommendation) => {
+      if (!recommendation) return;
+      const bookId = Number(recommendation.bookId), pageNo = Number(recommendation.page);
+      if (!Number.isInteger(bookId) || bookId < 1 || bookId > 5 || !Number.isInteger(pageNo) || pageNo < 1) return;
+      usedKeys.add(`${bookId}:${pageNo}`);
+      const bookIndex = books.findIndex((item) => Number(item.legacyId) === bookId);
+      const version = versions[bookIndex >= 0 ? bookIndex : bookId - 1];
+      const page = version?.content?.pages?.find((row) => Number(row.sourcePage || row.page) === pageNo);
+      if (!page) return;
+      const rawParts = [page.title, page.text, ...(page.blocks || []).map((block) => block.text || ''), ...(page.blocks || []).flatMap((block) => block.rows || []).flat()];
+      for (const part of rawParts) {
+        const paragraph = normalizeParagraph(part);
+        if (paragraph.length >= 35) usedParagraphs.add(paragraph);
+      }
+    };
+    const paths = [journey, ...(journey.archive || [])];
+    for (const path of paths) {
+      const daily = path?.daily || {};
+      for (const record of Object.values(daily)) {
+        if (record?.bookRec) await addUsedRecommendation(record.bookRec);
+      }
+      // Older versions showed authored recommendations when no dynamic result
+      // existed. Include those completed days, even in legacy states with no
+      // daily record, so an old suggestion cannot reappear.
+      const problemKey = path?.profileData?.problem;
+      for (const dayNumber of path?.completed || []) {
+        if (daily[dayNumber]?.bookRec) continue;
+        const authoredDay = content?.categories?.[problemKey]?.days?.find((row) => Number(row.day) === Number(dayNumber));
+        const authored = authoredDay?.legacyBookRec || authoredDay?.bookRec;
+        if (authored) await addUsedRecommendation(authored);
+      }
+    }
+
     const stop = new Set('برای از به با که را این آن در و یا اگر اما چون تا روی یک هم من تو ما شما او آنها است بود شد می شود خیلی بیشتر کمتر امروز دیروز خود خودم'.split(' '));
     const feedbackContext = feedback === 'better' ? 'پیشرفت عامل کمک کننده حفظ مهارت' : feedback === 'worse' ? 'فشار کاهش شدت امنیت کمک تخصصی تنظیم هیجان' : feedback === 'hard' ? 'گام کوچک تمرین تدریجی تحمل دشواری' : 'مانع تداوم تغییر مشاهده';
     const scoreContext = score >= 8 ? 'شدت بالا تنظیم فشار آرام سازی ایمنی' : score <= 3 ? 'پایداری تعمیم مهارت پیشگیری' : 'خودمشاهده شناخت رفتار';
-    const queryText = normalizeSearchText(`${journey.profileData?.problem || ''} ${dayData?.title || ''} ${dayData?.exercise || ''} ${answer || ''} ${journey.profileData?.goal || ''} ${feedbackContext} ${scoreContext}`);
+    const topicText = normalizeSearchText(`${journey.profileData?.problem || ''} ${dayData?.title || ''} ${dayData?.exercise || ''}`);
+    const queryText = normalizeSearchText(`${topicText} ${answer || ''} ${journey.profileData?.goal || ''} ${feedbackContext} ${scoreContext}`);
     const tokens = [...new Set(queryText.split(' ').filter((w) => w.length >= 3 && !stop.has(w)))].slice(0, 80);
+    const topicTokens = [...new Set(topicText.split(' ').filter((w) => w.length >= 3 && !stop.has(w)))];
     const candidates = [];
-    for (const book of books) {
+    for (let bookIndex = 0; bookIndex < books.length; bookIndex += 1) {
+      const book = books[bookIndex];
       try {
-        const version = await libraryRepository.getVersion(book.activeVersionId);
+        const version = versions[bookIndex];
         const pages = version?.content?.pages || [];
         for (const page of pages) {
-          const text = normalizeSearchText(`${page.title || ''} ${(page.blocks || []).map((b) => `${b.text || ''} ${(b.rows || []).flat().join(' ')}`).join(' ')} ${page.text || ''}`);
+          const pageNo = Number(page.sourcePage || page.page) || 1;
+          const key = `${Number(book.legacyId)}:${pageNo}`;
+          if (usedKeys.has(key)) continue;
+          const text = pageText(page);
           if (text.length < 100) continue;
+          const paragraphs = [page.title, page.text, ...(page.blocks || []).map((block) => block.text || ''), ...(page.blocks || []).flatMap((block) => block.rows || []).flat()]
+            .map(normalizeParagraph).filter((part) => part.length >= 35);
+          // A source page is unavailable if it repeats any substantial paragraph
+          // that has already been offered, even when the book/page number differs.
+          const priorParagraphs = [...usedParagraphs];
+          if (paragraphs.some((paragraph) => priorParagraphs.some((prior) => paragraph === prior || paragraph.includes(prior) || prior.includes(paragraph)))) continue;
           let scoreMatch = 0;
-          for (const token of tokens) if (text.includes(token)) scoreMatch += token.length >= 5 ? 2 : 1;
-          // Lightly favor pages that are focused rather than generic title/contents pages.
-          scoreMatch += Math.min(3, Math.floor(text.length / 1800));
-          if (scoreMatch > 0) candidates.push({ bookId: Number(book.legacyId), page: Number(page.sourcePage || page.page) || 1, scoreMatch, title: book.title });
+          let matchCount = 0;
+          let topicMatchCount = 0;
+          for (const token of tokens) {
+            if (text.includes(token)) {
+              scoreMatch += token.length >= 5 ? 2 : 1;
+              matchCount += 1;
+            }
+          }
+          for (const token of topicTokens) if (text.includes(token)) topicMatchCount += 1;
+          // A long page alone is not evidence of relevance. Require a topic match
+          // and at least two distinct matching terms before considering a passage.
+          if (topicMatchCount > 0 && matchCount >= 2) {
+            scoreMatch += Math.min(3, Math.floor(text.length / 1800));
+            candidates.push({ bookId: Number(book.legacyId), page: pageNo, scoreMatch, title: book.title });
+          }
         }
       } catch { /* A missing local book must not block daily completion. */ }
     }
-    candidates.sort((a, b) => b.scoreMatch - a.scoreMatch || a.bookId - b.bookId);
+    candidates.sort((a, b) => b.scoreMatch - a.scoreMatch || a.bookId - b.bookId || a.page - b.page);
     const best = candidates[0];
-    if (best) return { bookId: best.bookId, page: best.page, reason: `این بخش از «${best.title}» با موضوع روز، هدف مسیر و نوشته ثبت‌شده امروز بیشترین هم‌پوشانی واژگانی را دارد. بازبینی کن که محتوای صفحه واقعاً به تجربه‌ات مرتبط باشد.` };
-    // Safe fallback to the authored recommendation when local search has no match.
-    return dayData?.bookRec || null;
+    if (best) return { bookId: best.bookId, page: best.page, reason: `این بخش از «${best.title}» با موضوع روز، هدف مسیر و نوشته ثبت‌شده امروز ارتباط بیشتری دارد. این پیشنهاد از بخش‌هایی انتخاب شده که قبلاً در مسیرهای ثبت‌شده به تو پیشنهاد نشده‌اند.` };
+    // No fallback to authored suggestions here: repeating a suggestion is worse
+    // than showing no book suggestion when every eligible source was used.
+    return null;
   }
 
   async function completeDay({ answer, score, feedback }) {
@@ -361,7 +425,7 @@ function MainApp() {
   // onboarding flow. Once profile + path setup + baseline assessment exist,
   // it remains available on every app screen so the user never feels trapped.
   const navVisible = onboardingComplete;
-  const resultBookRec = journey.daily?.[resultDay || currentDay]?.bookRec || resultData?.bookRec;
+  const resultBookRec = journey.daily?.[resultDay || currentDay]?.bookRec || null;
   const recommendationSource = resultBookRec ? legacySourceLabel(resultBookRec.bookId) : '';
 
   return (
