@@ -6,6 +6,7 @@ import { previewPageText } from './features/library/readerEngine.js';
 import { libraryRepository } from './features/library/libraryRepository.js';
 import { useLibrary } from './features/library/useLibrary.js';
 import {
+  APP_CONFIG,
   COPYRIGHT_KEY,
   burdenScoreFromAnswers,
   cloneForArchive,
@@ -164,7 +165,7 @@ function MainApp() {
   }
 
   async function saveAssessment(answers) {
-    const trustedNow = await getTrustedNowMs();
+    const trustedNow = APP_CONFIG.TIME_LOCK_ENABLED ? await getTrustedNowMs() : Date.now();
     if (trustedNow == null) {
       return showValidation(
         ['فعلاً امکان شروع مسیر وجود ندارد.', 'لطفاً چند لحظه دیگر دوباره تلاش کن.'],
@@ -193,7 +194,7 @@ function MainApp() {
     const day = Number(value), required = nextRequiredDay(journey);
     const allowed = !journey.completed.includes(day) && day === required;
     if (!allowed) return showValidation([journey.completed.includes(day) ? 'این روز قبلاً ثبت نهایی شده و امکان ویرایش آن وجود ندارد.' : `روز ${fa(required)} هنوز باید تکمیل شود.`], 'این روز در دسترس نیست');
-    const trustedNow = await getTrustedNowMs();
+    const trustedNow = APP_CONFIG.TIME_LOCK_ENABLED ? await getTrustedNowMs() : Date.now();
     if (trustedNow == null) {
       return showValidation(
         ['فعلاً امکان بررسی این مرحله وجود ندارد.', 'لطفاً چند لحظه دیگر دوباره تلاش کن.'],
@@ -317,7 +318,7 @@ function MainApp() {
       return showValidation(['روزهای مسیر باید به ترتیب تکمیل شوند.'], 'ثبت روز مجاز نیست');
     }
 
-    const trustedNow = await getTrustedNowMs();
+    const trustedNow = APP_CONFIG.TIME_LOCK_ENABLED ? await getTrustedNowMs() : Date.now();
     if (trustedNow == null) {
       return showValidation(
         ['فعلاً امکان ثبت این مرحله وجود ندارد.', 'لطفاً چند لحظه دیگر دوباره تلاش کن.'],
