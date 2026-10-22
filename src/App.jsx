@@ -85,7 +85,7 @@ function MainApp() {
   const { books, loading: libraryLoading, error: libraryError } = useLibrary();
 
   useEffect(() => {
-    fetch(`${import.meta.env.BASE_URL}content/path-content.json?v=20261020-book5`, { cache: 'no-store' })
+    fetch(`${import.meta.env.BASE_URL}content/path-content.json?v=20261023-fast-open`, { cache: 'default' })
       .then((response) => { if (!response.ok) throw new Error('فایل محتوای مسیر پیدا نشد.'); return response.json(); })
       .then(setContent)
       .catch((error) => setLoadError(error?.message || 'خطا در بارگذاری برنامه'));
@@ -265,6 +265,8 @@ function MainApp() {
     const tokens = [...new Set(queryText.split(' ').filter((w) => w.length >= 3 && !stop.has(w)))].slice(0, 80);
     const topicTokens = [...new Set(topicText.split(' ').filter((w) => w.length >= 3 && !stop.has(w)))];
     const candidates = [];
+    // Build this once, not once per page: the old placement multiplied work by every book page.
+    const priorParagraphs = [...usedParagraphs];
     for (let bookIndex = 0; bookIndex < books.length; bookIndex += 1) {
       const book = books[bookIndex];
       try {
@@ -280,7 +282,6 @@ function MainApp() {
             .map(normalizeParagraph).filter((part) => part.length >= 35);
           // A source page is unavailable if it repeats any substantial paragraph
           // that has already been offered, even when the book/page number differs.
-          const priorParagraphs = [...usedParagraphs];
           if (paragraphs.some((paragraph) => priorParagraphs.some((prior) => paragraph === prior || paragraph.includes(prior) || prior.includes(paragraph)))) continue;
           let scoreMatch = 0;
           let matchCount = 0;
@@ -331,11 +332,25 @@ function MainApp() {
     }
 
     const chosen = activeDay;
-    const bookRec = await findRelevantBook(chosen, answer, feedback, Number(score));
-    const record = { score: Number(score), feedback, feedbackText: makeFeedback(feedback, score, chosen, category?.name, currentDay), exerciseId: chosen?.id || '', bookRec: bookRec || undefined, updatedAt: new Date(trustedNow).toISOString() };
-    patchJourney((previous) => ({ ...previous, completed: [...new Set([...(previous.completed || []), currentDay])].sort((a, b) => a - b), answers: { ...(previous.answers || {}), [currentDay]: answer }, daily: { ...(previous.daily || {}), [currentDay]: record } }));
-    setResultDay(currentDay);
+    const completedDay = currentDay;
+    const activePathId = journey.pathId;
+    // Persist the user's result and open it immediately. Book-page matching is
+    // expensive, so it runs after the result screen is painted.
+    const record = { score: Number(score), feedback, feedbackText: makeFeedback(feedback, score, chosen, category?.name, completedDay), exerciseId: chosen?.id || '', bookRecPending: true, updatedAt: new Date(trustedNow).toISOString() };
+    patchJourney((previous) => ({ ...previous, completed: [...new Set([...(previous.completed || []), completedDay])].sort((a, b) => a - b), answers: { ...(previous.answers || {}), [completedDay]: answer }, daily: { ...(previous.daily || {}), [completedDay]: record } }));
+    setResultDay(completedDay);
     navigate('dailyResult');
+    setTimeout(() => {
+      findRelevantBook(chosen, answer, feedback, Number(score))
+        .then((bookRec) => patchJourney((previous) => {
+          if (previous.pathId !== activePathId || !previous.daily?.[completedDay]) return previous;
+          return { ...previous, daily: { ...previous.daily, [completedDay]: { ...previous.daily[completedDay], bookRec: bookRec || undefined, bookRecPending: false } } };
+        }))
+        .catch(() => patchJourney((previous) => {
+          if (previous.pathId !== activePathId || !previous.daily?.[completedDay]) return previous;
+          return { ...previous, daily: { ...previous.daily, [completedDay]: { ...previous.daily[completedDay], bookRecPending: false } } };
+        }));
+    }, 0);
   }
 
   function openCurrentDay() {
