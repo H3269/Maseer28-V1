@@ -1,5 +1,6 @@
 name: Publish tested Path28 version to Telegram
 
+
 on:
   workflow_dispatch:
     inputs:
@@ -8,9 +9,9 @@ on:
         required: true
         type: choice
         options:
-          - NO
-          - PUBLISH
-        default: NO
+          - "false"
+          - "publish"
+        default: "false"
 
 permissions:
   contents: read
