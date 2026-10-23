@@ -1,1 +1,104 @@
+name: Publish tested Path28 version to Telegram
 
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "پس از اطمینان از نسخه تست، PUBLISH را انتخاب کن"
+        required: true
+        type: choice
+        options:
+          - NO
+          - PUBLISH
+        default: NO
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-path28-telegram
+  cancel-in-progress: false
+
+jobs:
+  build-and-publish:
+    if: ${{ inputs.publish == 'PUBLISH' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tested version
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          path: test-source
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: test-source/package-lock.json
+
+      - name: Prepare production-only copy
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          root = Path("test-source")
+          journey = root / "src/features/journey/journeyStore.js"
+          vite = root / "vite.config.js"
+          if not journey.is_file() or not vite.is_file():
+              raise SystemExit("Required project files missing; publication stopped.")
+          source = journey.read_text(encoding="utf-8")
+          updated, count = re.subn(r"(\bTIME_LOCK_ENABLED\s*:\s*)(?:true|false)\b", r"\1true", source)
+          if count != 1:
+              raise SystemExit(f"Expected exactly one TIME_LOCK_ENABLED setting; found {count}.")
+          journey.write_text(updated, encoding="utf-8")
+          config = vite.read_text(encoding="utf-8")
+          config_updated, base_count = re.subn(r"base\s*:\s*['\"][^'\"]*['\"]", "base: '/Maseer28/'", config, count=1)
+          if base_count != 1:
+              raise SystemExit("Could not safely set Telegram deployment base path.")
+          vite.write_text(config_updated, encoding="utf-8")
+          if not re.search(r"\bTIME_LOCK_ENABLED\s*:\s*true\b", journey.read_text(encoding="utf-8")):
+              raise SystemExit("Daily lock is not enabled for production build.")
+          PY
+
+      - name: Install dependencies and build
+        working-directory: test-source
+        run: |
+          npm ci
+          npm run build
+
+      - name: Checkout Telegram repository
+        uses: actions/checkout@v4
+        with:
+          repository: H3269/Maseer28
+          ref: main
+          token: ${{ secrets.TELEGRAM_REPO_TOKEN }}
+          path: telegram-site
+
+      - name: Publish built files only
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s test-source/dist/index.html
+          rsync -a --delete \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='README*' \
+            test-source/dist/ telegram-site/
+
+      - name: Commit and push Telegram version
+        working-directory: telegram-site
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No built changes to publish."
+            exit 0
+          fi
+          git commit -m "Publish tested Path28 version with daily lock enabled"
+          git push origin HEAD:main
