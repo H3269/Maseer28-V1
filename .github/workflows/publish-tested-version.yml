@@ -37,6 +37,8 @@ jobs:
           cache: npm
           cache-dependency-path: test-source/package-lock.json
 
+      
+      
       - name: Prepare production-only copy
         shell: bash
         run: |
@@ -44,24 +46,53 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import re
+
           root = Path("test-source")
           journey = root / "src/features/journey/journeyStore.js"
           vite = root / "vite.config.js"
+
           if not journey.is_file() or not vite.is_file():
               raise SystemExit("Required project files missing; publication stopped.")
+
           source = journey.read_text(encoding="utf-8")
-          updated, count = re.subn(r"(\bTIME_LOCK_ENABLED\s*:\s*)(?:true|false)\b", r"\1true", source)
-          if count != 1:
-              raise SystemExit(f"Expected exactly one TIME_LOCK_ENABLED setting; found {count}.")
+
+          updated, test_count = re.subn(
+              r"(\bTEST_MODE\s*:\s*)(?:true|false)\b",
+              r"\1false",
+              source
+          )
+          if test_count != 1:
+              raise SystemExit(f"Expected one TEST_MODE setting; found {test_count}.")
+
+          updated, lock_count = re.subn(
+              r"(\bTIME_LOCK_ENABLED\s*:\s*)(?:true|false)\b",
+              r"\1true",
+              updated
+          )
+          if lock_count != 1:
+              raise SystemExit(f"Expected one TIME_LOCK_ENABLED setting; found {lock_count}.")
+
           journey.write_text(updated, encoding="utf-8")
+
           config = vite.read_text(encoding="utf-8")
-          config_updated, base_count = re.subn(r"base\s*:\s*['\"][^'\"]*['\"]", "base: '/Maseer28/'", config, count=1)
+          config_updated, base_count = re.subn(
+              r"base\s*:\s*['\"][^'\"]*['\"]",
+              "base: '/Maseer28/'",
+              config,
+              count=1
+          )
           if base_count != 1:
               raise SystemExit("Could not safely set Telegram deployment base path.")
+
           vite.write_text(config_updated, encoding="utf-8")
-          if not re.search(r"\bTIME_LOCK_ENABLED\s*:\s*true\b", journey.read_text(encoding="utf-8")):
+
+          final_source = journey.read_text(encoding="utf-8")
+          if not re.search(r"\bTEST_MODE\s*:\s*false\b", final_source):
+              raise SystemExit("Production TEST_MODE must be false.")
+          if not re.search(r"\bTIME_LOCK_ENABLED\s*:\s*true\b", final_source):
               raise SystemExit("Daily lock is not enabled for production build.")
           PY
+
 
       - name: Install dependencies and build
         working-directory: test-source
