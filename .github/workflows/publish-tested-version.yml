@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   build-and-publish:
-    if: ${{ inputs.publish == 'PUBLISH' }}
+    if: ${{ inputs.publish == 'publish' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout tested version
