@@ -23,3 +23,32 @@
     letter-spacing: 0 !important;
   }
 }
+
+
+/* Bale WebView horizontal overflow fix v2 */
+/* The reader paginates lines in JavaScript; narrow side padding prevents
+   embedded WebViews from clipping the already-laid-out Persian text. */
+@media (max-width: 600px) {
+  #bookReader,
+  #bookReader .bookPage,
+  #bookReader .readerFixedLine {
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  #bookReader .bookPage {
+    width: 100% !important;
+    margin-inline: 0 !important;
+  }
+
+  #bookReader .readerFixedLine {
+    width: 100% !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    letter-spacing: 0 !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+    text-overflow: clip !important;
+  }
+}
