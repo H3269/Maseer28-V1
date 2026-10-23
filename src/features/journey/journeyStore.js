@@ -12,7 +12,7 @@ const TRUSTED_TIME_CACHE_MS = 120000;
 let trustedTimeAnchor = null;
 
 export const APP_CONFIG = {
-  TEST_MODE: false,
+  TEST_MODE: true,
   TIME_LOCK_ENABLED: false,
   // Calendar days are evaluated in a fixed timezone so changing the phone
   // timezone cannot unlock the next day early.
