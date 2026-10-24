@@ -168,7 +168,9 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
       book: version.content,
       bookId: book.legacyId || book.id,
       cover: book.coverDataUrl || book.coverUrl || '',
-      width: metrics.width,
+      width: /bale/i.test(navigator.userAgent || '')
+  ? metrics.width * 0.94
+  : metrics.width,
       fontPx: metrics.fontPx,
       fontFamily: metrics.family,
     });
