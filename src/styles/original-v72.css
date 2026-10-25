@@ -4534,3 +4534,88 @@
 .finalAnswerFields { padding: 0 13px 13px; }
 .finalAnswerFields > p { margin: 0 0 8px; font-size: 11px; }
 .finalAnswerFields textarea { display: block; width: 100%; margin-top: 9px; }
+
+
+/* Bale-only viewport normalization for the main app header and bottom navigation.
+   Scoped to the Bale user agent so Telegram's established layout is unchanged. */
+html.bale-webview,
+body.bale-webview {
+  -webkit-text-size-adjust: 100% !important;
+  text-size-adjust: 100% !important;
+}
+
+body.bale-webview .header,
+body.bale-webview .header.compact {
+  top: 7px !important;
+  padding: 9px 12px !important;
+  border-radius: 20px !important;
+  transform: none !important;
+}
+
+body.bale-webview .header .brand {
+  gap: 9px !important;
+}
+
+body.bale-webview .header .logo {
+  width: 38px !important;
+  height: 38px !important;
+  border-width: 1.5px !important;
+}
+
+body.bale-webview .header h1 {
+  font-size: 15px !important;
+  line-height: 1.55 !important;
+  margin: 1px 0 2px !important;
+}
+
+body.bale-webview .header .subtitle {
+  font-size: 9px !important;
+}
+
+body.bale-webview .header .progress {
+  height: 4px !important;
+  margin-top: 7px !important;
+}
+
+body.bale-webview .header .stats {
+  font-size: 10px !important;
+  margin-top: 5px !important;
+}
+
+body.bale-webview .header.compact .logo {
+  width: 34px !important;
+  height: 34px !important;
+}
+
+body.bale-webview .header.compact h1 {
+  font-size: 14px !important;
+}
+
+body.bale-webview .header.compact .subtitle {
+  display: none !important;
+}
+
+body.bale-webview .bottomNav {
+  position: fixed !important;
+  right: 50% !important;
+  left: auto !important;
+  transform: translateX(50%) !important;
+  bottom: 6px !important;
+  inset-block-end: 6px !important;
+  width: min(calc(100% - 24px), 640px) !important;
+  padding: 5px !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  box-sizing: border-box !important;
+}
+
+body.bale-webview .bottomNav button {
+  min-width: 0 !important;
+  min-height: 52px !important;
+  padding: 5px 4px !important;
+  font-size: 15px !important;
+  gap: 1px !important;
+}
+
+body.bale-webview .bottomNav button b {
+  font-size: 9px !important;
+}
