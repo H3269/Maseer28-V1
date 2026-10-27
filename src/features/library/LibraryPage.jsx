@@ -1,6 +1,7 @@
 import React from 'react';
 import { fa } from '../../shared/utils.js';
 import { LEGACY_BOOK_META } from './legacyLibraryMeta.js';
+import AppIcon from '../../shared/components/AppIcon.jsx';
 
 const READER_PROGRESS_KEY = 'maseer28_reader_progress_v66';
 
@@ -26,7 +27,7 @@ export default function LibraryPage({ books, loading, error, onOpenBook, onBack 
     <section className="card libraryShell" id="books">
       <div className="libraryHeader">
         <div><span className="badge">کتابخانه اختصاصی</span><h2>کتابخانه مسیر</h2></div>
-        <div className="libraryMark">📚</div>
+        <div className="libraryMark"><AppIcon name="bookOpen" size={25} /></div>
       </div>
       {loading && <div className="muted">در حال آماده‌سازی کتابخانه…</div>}
       {error && <div className="feedback">{error}</div>}
