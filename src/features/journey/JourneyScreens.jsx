@@ -336,13 +336,9 @@ export function BottomNav({ screen, onHome, onProfile, onBooks, onSupport }) {
   return <nav className="bottomNav" id="bottomNav" aria-label="ناوبری اصلی"><button data-view="dashboard" className={active === 'dashboard' ? 'active' : ''} aria-current={active === 'dashboard' ? 'page' : undefined} onClick={onHome}><span className="navIcon"><NavIcon name="home" /></span><b>خانه</b></button><button data-view="profile" className={active === 'profile' ? 'active' : ''} aria-current={active === 'profile' ? 'page' : undefined} onClick={onProfile}><span className="navIcon"><NavIcon name="profile" /></span><b>پروفایل</b></button><button data-view="books" className={active === 'books' ? 'active' : ''} aria-current={active === 'books' ? 'page' : undefined} onClick={onBooks}><span className="navIcon"><NavIcon name="books" /></span><b>مطالعه</b></button><button data-view="support" className={active === 'support' ? 'active' : ''} aria-current={active === 'support' ? 'page' : undefined} onClick={onSupport}><span className="navIcon"><NavIcon name="support" /></span><b>ارتباط</b></button></nav>;
 }
 export function Footer() {
-  return <aside className="footerNotice" role="note" aria-label="یادآوری مهم">
-    <div className="footerNoticeTitle">
-      <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m10.3 3.9-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3.1l-8-14a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
-      <strong>یک یادآوری مهم</strong>
-    </div>
-    <p>این برنامه یک مسیر آموزشی برای خودمشاهده‌گری و تمرین روزانه است. با آرامش و به‌اندازه توان خود پیش بروید و از تمرین‌ها برای شناخت بهتر افکار، احساسات و الگوهای رفتاری خود استفاده کنید. این برنامه جایگزین تشخیص یا درمان تخصصی نیست.</p>
-  </aside>;
+  return <footer className="footerNotice" aria-label="یادآوری مهم">
+    <p><strong>یک یادآوری مهم:</strong> این برنامه یک مسیر آموزشی برای خودمشاهده‌گری و تمرین روزانه است. با آرامش و به‌اندازه توان خود پیش بروید و از تمرین‌ها برای شناخت بهتر افکار، احساسات و الگوهای رفتاری خود استفاده کنید. این برنامه جایگزین تشخیص یا درمان تخصصی نیست.</p>
+  </footer>;
 }
 
 export function CopyrightModal({ onAccept }) { return <div className="copyrightModal" id="copyrightModal"><div className="copyrightCard"><div className="copyrightIcon"><AppIcon name="lock" size={24} /></div><h2>احترام به حقوق اثر</h2><p className="muted">محتوای کتاب‌ها، تمرین‌ها و مطالب آموزشی این برنامه متعلق به مرکز هیپنوتراپی شفا و صاحب اثر است و استفاده از آن برای کاربر مجاز برنامه در نظر گرفته شده است.</p><p className="muted">کپی، انتشار، بازنشر، فروش، ارسال برای دیگران یا استفاده تجاری از محتوای کتاب‌ها و مطالب برنامه بدون اجازه صاحب اثر مجاز نیست.</p><p className="muted">برای مطالعه و استفاده قانونی از آثار، لطفاً نسخه اصلی کتاب‌ها را از مرکز هیپنوتراپی شفا تهیه کنید.</p><button className="primary" onClick={onAccept}>{buttonLabel('متوجه شدم و ورود به مسیر را ادامه می‌دهم')}</button></div></div>; }
