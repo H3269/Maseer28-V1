@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import SmartSelect from '../../shared/components/SmartSelect.jsx';
 import AppIcon from '../../shared/components/AppIcon.jsx';
-import { buttonLabel } from '../../shared/buttonLabel.js';
+import { buttonLabel } from '../../shared/buttonLabel.jsx';
 import { fa, formatDate, normalizeDigits } from '../../shared/utils.js';
 import { burdenScoreFromAnswers, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
 
