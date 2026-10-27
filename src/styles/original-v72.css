@@ -464,32 +464,24 @@
       box-sizing: border-box;
       width: 100%;
       max-width: 640px;
-      margin: 20px auto 88px;
-      padding: 14px 16px;
-      border: 1px solid #e7d8a8;
-      border-radius: 16px;
-      background: #fffaf0;
-      color: #5f563f;
-      font-size: 12px;
+      margin: 16px auto 88px;
+      padding: 0 16px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
       line-height: 1.9;
       text-align: right;
     }
 
-    .footerNoticeTitle {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
-      color: #896b1d;
-      font-size: 13px;
-    }
-
-    .footerNoticeTitle svg {
-      flex: 0 0 21px;
-    }
-
     .footerNotice p {
       margin: 0;
+    }
+
+    .footerNotice strong {
+      color: inherit;
+      font-weight: 700;
     }
 
     .exercise {
