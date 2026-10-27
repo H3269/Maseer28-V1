@@ -2084,8 +2084,11 @@
     }
 
     .bottomNav button {
+      box-sizing: border-box;
+      height: 52px;
       min-height: 52px;
-      padding: 5px 4px;
+      max-height: 52px;
+      padding: 2px 4px;
       background: transparent;
       color: #71817e;
       border-radius: 16px;
@@ -2094,21 +2097,67 @@
       align-items: center;
       justify-content: center;
       gap: 1px;
-      font-size: 15px
+      font-size: 15px;
+      overflow: hidden;
     }
 
     .bottomNav button b {
       font-size: 9px;
-      font-weight: 800
+      line-height: 11px;
+      font-weight: 800;
+      flex: 0 0 11px;
+    }
+
+    .bottomNav .navIcon {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      min-height: 32px;
+      max-width: 32px;
+      max-height: 32px;
+      flex: 0 0 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      transition: background-color .16s ease, color .16s ease;
+    }
+
+    .bottomNav .navIcon svg {
+      display: block;
+      width: 20px;
+      height: 20px;
+      flex: 0 0 20px;
+      transition: width .16s ease, height .16s ease, stroke-width .16s ease;
     }
 
     .bottomNav button.active {
-      background: #edf5f2;
-      color: #315f61
+      background: transparent;
+      color: #176b63;
     }
 
-    .bottomNav button.active span {
-      transform: translateY(-1px)
+    .bottomNav button.active .navIcon {
+      background: #176b63;
+      color: #ffffff;
+    }
+
+    .bottomNav button.active .navIcon svg {
+      width: 24px;
+      height: 24px;
+      flex-basis: 24px;
+      stroke-width: 2;
+    }
+
+    .bottomNav button.active b {
+      color: #176b63;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bottomNav .navIcon,
+      .bottomNav .navIcon svg {
+        transition: none;
+      }
     }
 
     .validationModal,
