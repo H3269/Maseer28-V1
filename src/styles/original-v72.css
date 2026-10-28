@@ -4942,15 +4942,3 @@ body.bale-webview:has(#books.libraryShell) .footerNotice {
   max-height: none !important;
   overflow: visible !important;
 }
-
-/* Archive report tools: compact, aligned with the existing teal action system. */
-#archive .archiveSummary{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 14px;margin:14px 0;background:linear-gradient(135deg,#f0f8f6,#e7f2ef);border:1px solid #d7e9e4;border-radius:14px;color:#245b55}
-#archive .archiveSummary .muted{margin:0;font-size:13px}
-#archive .archiveTools{margin:16px 0;padding:14px;background:#f7faf9;border:1px solid #dceae6;border-radius:16px;text-align:center}
-#archive .archiveTools p{font-size:13px;margin:9px 0 0}
-#archive .archiveReportButton,#archive .archiveClearButton{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;margin:0 auto 8px}
-#archive .archiveClearButton{margin:12px auto 0}
-#archive .archiveConfirm{margin:14px 0;padding:16px;border:1px solid #e4d5b8;background:#fffaf0;border-radius:14px;color:#4e4635}
-#archive .archiveConfirm p{font-size:14px;line-height:1.9}
-#archive .archiveConfirmActions{display:flex;gap:10px;flex-wrap:wrap}
-#archive .archiveConfirmActions button{flex:1;min-width:130px}
