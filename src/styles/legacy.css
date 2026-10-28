@@ -3908,7 +3908,7 @@ button > svg { vertical-align: -0.22em; }
   color: var(--muted);
   font-size: 13px;
   line-height: 1.85;
-  text-align: right;
+  text-align: center;
 }
 
 /* Render the requested four-line reminder text consistently without changing other app copy. */
