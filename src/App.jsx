@@ -436,7 +436,7 @@ function MainApp() {
   }
 
   function startNewPath(confirmedAfterWarning = false) {
-    const hasPreviousPath = Boolean(journey.started && (journey.profile || journey.assessment || journey.completed.length || journey.final));
+    const hasPreviousPath = Boolean(journey.started && (journey.pathId || journey.profile || journey.assessment || (Array.isArray(journey.completed) && journey.completed.length > 0) || journey.final));
     const isCompletePath = Array.isArray(journey.completed) && journey.completed.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => journey.completed.includes(day));
     const inTelegram = Boolean(window.Telegram?.WebApp || window.TelegramWebviewProxy || window.TelegramWebviewProxyProto);
     const inBale = Boolean(window.BaleWebApp || window.Bale?.WebApp || window.BaleWebviewProxy || window.BaleWebView);
@@ -447,17 +447,10 @@ function MainApp() {
     if (skipAcknowledgedWarning) setAcknowledgedStartNew(false);
     if (hasPreviousPath && !isCompletePath && (enforceIncompleteRule || isTestEnvironment) && !confirmedAfterWarning && !skipAcknowledgedWarning) {
       setPendingStartNewPath(true);
-      const warningText = 'مسیر قبلی هنوز کامل نشده است؛ بنابراین در آرشیو ذخیره نمی‌شود. برای شروع مسیر تازه، روی «متوجه شدم» بزن تا به آرشیو برگردی؛ سپس دوباره دکمه «شروع مسیر تازه» را بزن.';
+      const warningText = keepIncompleteForTest
+        ? 'مسیر قبلی هنوز کامل نشده است؛ در نسخهٔ تست، مسیر ناقص هم در آرشیو ذخیره می‌شود. با زدن «متوجه شدم» مسیر تازه باز خواهد شد.'
+        : 'مسیر قبلی هنوز کامل نشده است؛ این مسیر در آرشیو ذخیره نمی‌شود. اگر می‌خواهی مسیر تازه‌ای شروع کنی، «متوجه شدم» را بزن تا مسیر تازه باز شود.';
       showValidation([warningText], 'مسیر قبلی ناقص است');
-      return;
-    }
-    const relevantArchivedCount = (journey.archive || []).filter((item) => {
-      if (item.pathId === journey.pathId || !Array.isArray(item.completed)) return false;
-      return keepIncompleteForTest || (item.completed.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => item.completed.includes(day)));
-    }).length;
-    if (relevantArchivedCount >= 15) {
-      setPendingStartNewPath(true);
-      showValidation(['تا الان ۱۵ مسیر کامل را ثبت کردی. برای شروع مسیر تازه ابتدا روی دکمه پاکسازی آرشیو های قبلی بزن و بعد دوباره روی دکمه شروع مسیر تازه بزن.'], 'محدودیت آرشیو مسیرها');
       return;
     }
     const validArchived = (journey.archive || []).filter((item) => item.pathId !== journey.pathId && Array.isArray(item.completed) && (keepIncompleteForTest || (item.completed.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => item.completed.includes(day)))));
