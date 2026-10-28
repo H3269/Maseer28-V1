@@ -101,6 +101,34 @@ function MainApp() {
     return () => document.body.classList.remove('reader-mode');
   }, [screen]);
 
+  // Ask supported Android browsers to enter immersive fullscreen on the first
+  // real interaction. Installed PWAs also use display=fullscreen from manifest.
+  useEffect(() => {
+    let requested = false;
+    const enterFullscreen = () => {
+      if (requested) return;
+      requested = true;
+      const root = document.documentElement;
+      if (!document.fullscreenElement && typeof root.requestFullscreen === 'function') {
+        Promise.resolve(root.requestFullscreen({ navigationUI: 'hide' })).catch(() => {});
+      }
+      window.removeEventListener('pointerdown', enterFullscreen, true);
+      window.removeEventListener('touchstart', enterFullscreen, true);
+      window.removeEventListener('keydown', enterFullscreen, true);
+    };
+    if (window.matchMedia?.('(display-mode: fullscreen)').matches || document.fullscreenElement) requested = true;
+    else {
+      window.addEventListener('pointerdown', enterFullscreen, { capture: true, passive: true });
+      window.addEventListener('touchstart', enterFullscreen, { capture: true, passive: true });
+      window.addEventListener('keydown', enterFullscreen, true);
+    }
+    return () => {
+      window.removeEventListener('pointerdown', enterFullscreen, true);
+      window.removeEventListener('touchstart', enterFullscreen, true);
+      window.removeEventListener('keydown', enterFullscreen, true);
+    };
+  }, []);
+
   const category = content?.categories?.[journey.profileData?.problem] || content?.categories?.['مشکل دیگر'] || null;
   const activeDay = category?.days?.find((row) => Number(row.day) === Number(currentDay)) || category?.days?.[currentDay - 1] || null;
   const resultData = category?.days?.find((row) => Number(row.day) === Number(resultDay || currentDay)) || null;
@@ -460,7 +488,7 @@ function MainApp() {
       {screen === 'final' && <FinalAssessment initial={journey.final} onSave={finishFinal} onValidation={showValidation} />}
       {screen === 'done' && <Done onReport={() => navigate('report')} onBooks={() => openBooks('done')} onSupport={() => openSupport('done')} onArchive={() => navigate('archive')} onNew={startNewPath} />}
       {screen === 'report' && <Report journey={journey} content={content} onBooks={() => openBooks('report')} onSupport={() => openSupport('report')} onDashboard={() => navigate('dashboard')} onArchive={() => navigate('archive')} onNew={startNewPath} />}
-      {screen === 'archive' && <Archive journey={journey} content={content} onBack={() => navigate('dashboard')} onNew={startNewPath} />}
+      {screen === 'archive' && <Archive journey={journey} content={content} onBack={() => navigate('dashboard')} onNew={startNewPath} onExported={(exported) => { const exportedKeys = new Set(exported.map((item) => `${item.pathId || ''}|${item.archivedAt || ''}|${item.startedAt || ''}`)); patchJourney((previous) => ({ ...previous, archive: (previous.archive || []).filter((item) => !exportedKeys.has(`${item.pathId || ''}|${item.archivedAt || ''}|${item.startedAt || ''}`)) })); }} />}
       {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
       {preview && <BookPreviewModal preview={preview} onClose={() => setPreview(null)} onOpen={() => { const item = preview; setPreview(null); openBook(item.book, item.sourcePage, { day: item.day, sourcePage: item.sourcePage, reason: item.reason, sourceTitle: item.sourceTitle }); }} />}
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}
