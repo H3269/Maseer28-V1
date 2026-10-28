@@ -12,6 +12,7 @@ const shapes = {
   chevronLeft: <><path d="m15 18-6-6 6-6"/></>,
   home: <><path d="m3 10 9-7 9 7"/><path d="M5 9.5V21h14V9.5M9 21v-7h6v7"/></>,
   bookOpen: <><path d="M12 7v14"/><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3c2.5 0 5 1 6.5 3 1.5-2 4-3 6.5-3A2.5 2.5 0 0 1 21 5.5V19a2 2 0 0 1-2 2c-2.5 0-5-1-7-3-2 2-4.5 3-7 3a2 2 0 0 1-2-2z"/></>,
+  fileText: <><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5M9 12h6M9 16h6"/></>,
   archive: <><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v11h14V9M9 13h6"/></>,
   message: <><path d="M21 11.5a7.5 7.5 0 0 1-7.5 7.5H8l-5 2v-6.5A7.5 7.5 0 1 1 21 11.5Z"/><path d="M8 11h8M8 14.5h5"/></>,
   chart: <><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></>,
