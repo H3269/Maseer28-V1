@@ -464,13 +464,13 @@
       box-sizing: border-box;
       width: 100%;
       max-width: 640px;
-      margin: 16px auto 88px;
+      margin: 12px auto 20px;
       padding: 0 16px;
       border: 0;
       border-radius: 0;
       background: transparent;
       color: var(--muted);
-      font-size: 11px;
+      font-size: 12px;
       line-height: 1.9;
       text-align: right;
     }
@@ -480,8 +480,9 @@
     }
 
     .footerNotice strong {
-      color: inherit;
-      font-weight: 700;
+      color: var(--text);
+      font-size: 1.05em;
+      font-weight: 850;
     }
 
     .exercise {
