@@ -4928,3 +4928,27 @@ body.bale-webview:has(#books.libraryShell) .footerNotice {
   outline: 2px solid currentColor;
   outline-offset: 2px;
 }
+
+/* Reader recommendation drawer: expanded text scrolls inside its own bounded
+   panel, so the fixed bottom page-turn and contents controls remain visible. */
+.bookReaderFull #bookTarget.readerTarget.isExpanded {
+  max-height: min(22vh, 176px) !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  flex: 0 0 auto !important;
+  scrollbar-width: thin;
+}
+.bookReaderFull #bookTarget.readerTarget.isExpanded .readerTargetReason.isExpanded {
+  max-height: none !important;
+  overflow: visible !important;
+}
+.archiveExportBox {
+  margin: 14px 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--bg);
+}
+.archiveExportBox p { margin: 7px 0 10px; }
+.archiveExportBox button { width: 100%; }
+.archiveExportError { color: var(--danger); font-weight: 700; }
