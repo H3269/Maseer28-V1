@@ -3987,3 +3987,16 @@ body:has(#books.libraryShell) .app {
 .footerNotice p::after {
   text-align: center !important;
 }
+
+
+/* Bale-only: reduce the extra bottom gap after the reminder on the library page.
+   Telegram layout remains unchanged. */
+html.bale-webview body:has(#books.libraryShell) .app,
+body.bale-webview:has(#books.libraryShell) .app {
+  padding-bottom: calc(64px + env(safe-area-inset-bottom)) !important;
+}
+
+body.bale-webview:has(#books.libraryShell) .footerNotice {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
