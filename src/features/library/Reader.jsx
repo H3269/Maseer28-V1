@@ -462,19 +462,30 @@ function getReaderAnchor(page) {
         >{soundEnabled ? '🔊' : '🔇'}</button>
         <button id="readerThemeButton" type="button" onClick={cycleTheme} aria-label="تغییر زمینه مطالعه">{settings.theme === 'light' ? '◐' : settings.theme === 'sepia' ? '☀' : '☾'}</button>
       </div>
-      <div id="bookTarget" className={`readerTarget${target ? '' : ' hidden'}`}>
+      <div
+        id="bookTarget"
+        className={`readerTarget${target ? '' : ' hidden'}${targetReasonExpanded ? ' isExpanded' : ''}`}
+        role={target && String(target.reason || '').trim().length > 0 ? 'button' : undefined}
+        tabIndex={target && String(target.reason || '').trim().length > 0 ? 0 : undefined}
+        aria-expanded={target && String(target.reason || '').trim().length > 0 ? targetReasonExpanded : undefined}
+        onClick={() => {
+          if (String(target?.reason || '').trim().length > 0) {
+            setTargetReasonExpanded((expanded) => !expanded);
+          }
+        }}
+        onKeyDown={(event) => {
+          if ((event.key === 'Enter' || event.key === ' ') && String(target?.reason || '').trim().length > 0) {
+            event.preventDefault();
+            setTargetReasonExpanded((expanded) => !expanded);
+          }
+        }}
+      >
         {target && <>
           <span className="readerSourceTitle">{target.sourceTitle || sourceLabel(book, version?.content)}</span>
           <b className="readerTargetHeading">📌 مطالعه پیشنهادی روز {fa(target.day)}</b>
           {targetReasonExpanded && <div className="readerTargetReason isExpanded">
             {target.reason || 'این بخش برای تعمیق موضوع امروز پیشنهاد شده است.'}
           </div>}
-          {String(target.reason || '').trim().length > 0 && <button
-            type="button"
-            className="readerTargetToggle"
-            onClick={() => setTargetReasonExpanded((expanded) => !expanded)}
-            aria-expanded={targetReasonExpanded}
-          >{targetReasonExpanded ? 'بستن متن مربوطه' : 'مشاهده متن مربوطه'}</button>}
         </>}
       </div>
       <article
