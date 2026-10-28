@@ -134,6 +134,7 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
   const [layout, setLayout] = useState(null);
   const [pageIndex, setPageIndex] = useState(0);
   const [tocOpen, setTocOpen] = useState(false);
+  const [targetReasonExpanded, setTargetReasonExpanded] = useState(false);
   const [settings, setSettings] = useState(loadSettings);
   const [soundEnabled, setSoundEnabled] = useState(() => loadBookSoundEnabled(book));
   const [error, setError] = useState('');
@@ -462,7 +463,19 @@ function getReaderAnchor(page) {
         <button id="readerThemeButton" type="button" onClick={cycleTheme} aria-label="تغییر زمینه مطالعه">{settings.theme === 'light' ? '◐' : settings.theme === 'sepia' ? '☀' : '☾'}</button>
       </div>
       <div id="bookTarget" className={`readerTarget${target ? '' : ' hidden'}`}>
-        {target && <><span className="readerSourceTitle">{target.sourceTitle || sourceLabel(book, version?.content)}</span><b>📌 مطالعه پیشنهادی روز {fa(target.day)}</b> · {target.reason || 'این بخش برای تعمیق موضوع امروز پیشنهاد شده است.'}</>}
+        {target && <>
+          <span className="readerSourceTitle">{target.sourceTitle || sourceLabel(book, version?.content)}</span>
+          <b className="readerTargetHeading">📌 مطالعه پیشنهادی روز {fa(target.day)}</b>
+          <div className={`readerTargetReason${targetReasonExpanded ? ' isExpanded' : ''}`}>
+            {target.reason || 'این بخش برای تعمیق موضوع امروز پیشنهاد شده است.'}
+          </div>
+          {String(target.reason || '').trim().length > 0 && <button
+            type="button"
+            className="readerTargetToggle"
+            onClick={() => setTargetReasonExpanded((expanded) => !expanded)}
+            aria-expanded={targetReasonExpanded}
+          >{targetReasonExpanded ? 'بستن دلیل' : 'مشاهده دلیل کامل'}</button>}
+        </>}
       </div>
       <article
         id="bookReaderText"
