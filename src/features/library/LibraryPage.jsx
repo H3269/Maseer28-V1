@@ -53,7 +53,7 @@ export default function LibraryPage({ books, loading, error, onOpenBook, onBack 
           </article>;
         })}
       </div>}
-      <button className="secondary libraryBack" onClick={onBack}>{<AppIcon name="chevronLeft" size={17} className="buttonIcon" />} {' '}بازگشت</button>
+      <button className="secondary libraryBack" onClick={onBack}>بازگشت</button>
     </section>
   );
 }
