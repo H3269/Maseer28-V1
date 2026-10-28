@@ -3923,7 +3923,7 @@ button > svg { vertical-align: -0.22em; }
   content: "یک یادآوری مهم\A این برنامه یک مسیر آموزشی برای خودمشاهده‌گری و تمرین روزانه است.\A با آرامش و به‌اندازه توان خود پیش بروید و از تمرین‌ها برای شناخت بهتر افکار، احساسات و الگوهای رفتاری خود استفاده کنید.\A این برنامه جایگزین تشخیص یا درمان تخصصی نیست.";
   display: block;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   line-height: 1.85;
   white-space: pre-line;
@@ -3973,4 +3973,17 @@ button > svg { vertical-align: -0.22em; }
 body:has(#books.libraryShell),
 body:has(#books.libraryShell) .app {
   background-color: var(--bg) !important;
+}
+
+
+/* Maseer28: consistent reminder footer spacing across all app pages. */
+.footerNotice {
+  margin-top: 8px !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  text-align: center !important;
+}
+.footerNotice p,
+.footerNotice p::after {
+  text-align: center !important;
 }
