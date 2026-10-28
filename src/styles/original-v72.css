@@ -4804,3 +4804,32 @@ button > svg { vertical-align: -0.22em; }
 #books .libraryBack {
   margin-bottom: 0 !important;
 }
+
+/* Maseer28: remove the oversized empty tail below the library Back button. */
+.app:has(#books.libraryShell) {
+  min-height: 100dvh;
+  padding-bottom: calc(72px + env(safe-area-inset-bottom)) !important;
+}
+
+.app:has(#books.libraryShell) #books.libraryShell {
+  min-height: 0 !important;
+  height: auto !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 12px !important;
+}
+
+.app:has(#books.libraryShell) #books .libraryBack {
+  margin-bottom: 0 !important;
+}
+
+.app:has(#books.libraryShell) .footerNotice {
+  margin-top: 8px !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Use the app background instead of a white-looking blank tail in mobile WebViews. */
+body:has(#books.libraryShell),
+body:has(#books.libraryShell) .app {
+  background-color: var(--bg) !important;
+}
