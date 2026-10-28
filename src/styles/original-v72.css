@@ -4805,10 +4805,10 @@ button > svg { vertical-align: -0.22em; }
   margin-bottom: 0 !important;
 }
 
-/* Maseer28: remove the oversized empty tail below the library Back button. */
+/* Maseer28: keep the library page bottom spacing aligned with the other app pages. */
 .app:has(#books.libraryShell) {
   min-height: 100dvh;
-  padding-bottom: calc(72px + env(safe-area-inset-bottom)) !important;
+  padding-bottom: calc(96px + env(safe-area-inset-bottom)) !important;
 }
 
 .app:has(#books.libraryShell) #books.libraryShell {
