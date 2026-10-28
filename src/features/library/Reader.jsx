@@ -466,15 +466,15 @@ function getReaderAnchor(page) {
         {target && <>
           <span className="readerSourceTitle">{target.sourceTitle || sourceLabel(book, version?.content)}</span>
           <b className="readerTargetHeading">📌 مطالعه پیشنهادی روز {fa(target.day)}</b>
-          <div className={`readerTargetReason${targetReasonExpanded ? ' isExpanded' : ''}`}>
+          {targetReasonExpanded && <div className="readerTargetReason isExpanded">
             {target.reason || 'این بخش برای تعمیق موضوع امروز پیشنهاد شده است.'}
-          </div>
+          </div>}
           {String(target.reason || '').trim().length > 0 && <button
             type="button"
             className="readerTargetToggle"
             onClick={() => setTargetReasonExpanded((expanded) => !expanded)}
             aria-expanded={targetReasonExpanded}
-          >{targetReasonExpanded ? 'بستن دلیل' : 'مشاهده دلیل کامل'}</button>}
+          >{targetReasonExpanded ? 'بستن متن مربوطه' : 'مشاهده متن مربوطه'}</button>}
         </>}
       </div>
       <article
