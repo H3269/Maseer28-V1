@@ -434,9 +434,15 @@ function MainApp() {
   }
 
   function startNewPath() {
-    const archive = journey.started && (journey.profile || journey.assessment || journey.completed.length || journey.final)
-      ? [cloneForArchive(journey), ...(journey.archive || [])].slice(0, 20)
-      : (journey.archive || []);
+    const hasPreviousPath = Boolean(journey.started && (journey.profile || journey.assessment || journey.completed.length || journey.final));
+    const isCompletePath = Array.isArray(journey.completed) && journey.completed.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => journey.completed.includes(day));
+    if (hasPreviousPath && !isCompletePath) {
+      const accepted = window.confirm('مسیر قبلی شما ناقص است. چون تمام ۲۸ روز را تکمیل نکرده‌اید، این مسیر در آرشیو ذخیره نخواهد شد. آیا با اطلاع از این موضوع می‌خواهید مسیر تازه‌ای را شروع کنید؟');
+      if (!accepted) return;
+    }
+    const archive = hasPreviousPath && isCompletePath
+      ? [cloneForArchive(journey), ...(journey.archive || []).filter((item) => Array.isArray(item.completed) && item.completed.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => item.completed.includes(day)))].slice(0, 100)
+      : (journey.archive || []).filter((item) => Array.isArray(item.completed) && item.completed.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => item.completed.includes(day)));
     const fresh = defaultJourneyState();
     fresh.archive = archive;
     fresh.started = true;
@@ -488,7 +494,7 @@ function MainApp() {
       {screen === 'final' && <FinalAssessment initial={journey.final} onSave={finishFinal} onValidation={showValidation} />}
       {screen === 'done' && <Done onReport={() => navigate('report')} onBooks={() => openBooks('done')} onSupport={() => openSupport('done')} onArchive={() => navigate('archive')} onNew={startNewPath} />}
       {screen === 'report' && <Report journey={journey} content={content} onBooks={() => openBooks('report')} onSupport={() => openSupport('report')} onDashboard={() => navigate('dashboard')} onArchive={() => navigate('archive')} onNew={startNewPath} />}
-      {screen === 'archive' && <Archive journey={journey} content={content} onBack={() => navigate('dashboard')} onNew={startNewPath} />}
+      {screen === 'archive' && <Archive journey={journey} content={content} onBack={() => navigate('dashboard')} onNew={startNewPath} onClearArchive={() => patchJourney((previous) => ({ ...previous, archive: [] }))} />}
       {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
       {preview && <BookPreviewModal preview={preview} onClose={() => setPreview(null)} onOpen={() => { const item = preview; setPreview(null); openBook(item.book, item.sourcePage, { day: item.day, sourcePage: item.sourcePage, reason: item.reason, sourceTitle: item.sourceTitle }); }} />}
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}
