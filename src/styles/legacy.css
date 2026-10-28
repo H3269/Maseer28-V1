@@ -4013,3 +4013,50 @@ body.bale-webview:has(#books.libraryShell) .footerNotice {
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
 }
+
+
+/* Compact, expandable explanation for recommended reading — Telegram and Bale */
+.bookReaderFull #bookTarget.readerTarget {
+  max-height: none !important;
+  overflow: visible !important;
+  flex: 0 0 auto !important;
+  box-sizing: border-box;
+}
+.bookReaderFull #bookTarget.readerTarget .readerTargetHeading {
+  display: inline;
+  margin-inline-start: 4px;
+}
+.bookReaderFull #bookTarget.readerTarget .readerTargetReason {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  margin-top: 3px;
+  line-height: 1.65;
+}
+.bookReaderFull #bookTarget.readerTarget .readerTargetReason.isExpanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+.bookReaderFull #bookTarget.readerTarget .readerTargetToggle {
+  display: inline-block;
+  width: auto;
+  min-height: 0;
+  margin-top: 4px;
+  padding: 2px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--reader-muted, #52766b);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.6;
+  cursor: pointer;
+}
+.bookReaderFull #bookTarget.readerTarget .readerTargetToggle:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
