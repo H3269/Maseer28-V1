@@ -4753,3 +4753,40 @@ body:not(.bale-webview) .bottomNav button.active b {
 .buttonIcon { display: inline-block; vertical-align: -0.22em; flex: 0 0 auto; color: currentColor; }
 button > svg { vertical-align: -0.22em; }
 .quickAction > span > svg { display: block; color: #087f73; }
+
+
+/* Maseer28 targeted visual fixes: reminder readability and study reader viewport */
+.footerNotice {
+  margin: 10px auto 12px;
+  line-height: 1.85;
+  font-size: 13px;
+}
+
+.footerNotice p {
+  margin: 0;
+  font-weight: 600;
+}
+
+.footerNotice strong {
+  display: block;
+  margin: 0 0 5px;
+  color: var(--text);
+  font-size: 1.1em;
+  font-weight: 900;
+}
+
+.bookReaderFull {
+  min-height: 100vh;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+#books.libraryShell {
+  box-sizing: border-box;
+  margin-bottom: 0;
+}
+
+#books .libraryBack {
+  margin-bottom: 0;
+}
