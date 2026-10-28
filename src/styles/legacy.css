@@ -4005,7 +4005,8 @@ body.bale-webview .app:has(#books.libraryShell) {
 
 html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell,
 body.bale-webview .app:has(#books.libraryShell) #books.libraryShell {
-  padding-bottom: 0 !important;
+  /* Restore the same small breathing room below the back button as other pages. */
+  padding-bottom: 12px !important;
 }
 
 body.bale-webview:has(#books.libraryShell) .footerNotice {
