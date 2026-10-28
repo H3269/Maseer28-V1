@@ -4015,8 +4015,17 @@ body.bale-webview:has(#books.libraryShell) .footerNotice {
 }
 
 
+/* The whole recommendation card opens/closes the explanation drawer. */
+.bookReaderFull #bookTarget.readerTarget[role="button"] { cursor: pointer; }
+.bookReaderFull #bookTarget.readerTarget[role="button"]:focus-visible {
+  outline: 2px solid var(--reader-muted, #52766b);
+  outline-offset: 2px;
+}
+
 /* Compact, expandable explanation for recommended reading — Telegram and Bale */
 .bookReaderFull #bookTarget.readerTarget {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   max-height: none !important;
   overflow: visible !important;
   flex: 0 0 auto !important;
