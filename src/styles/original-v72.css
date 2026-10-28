@@ -4779,7 +4779,7 @@ button > svg { vertical-align: -0.22em; }
 }
 .footerNotice p strong { display: none; }
 .footerNotice p::after {
-  content: "این برنامه یک مسیر آموزشی برای خودمشاهده‌گری و تمرین روزانه است.\A با آرامش و به‌اندازه توان خود پیش بروید و از تمرین‌ها برای شناخت بهتر افکار، احساسات و الگوهای رفتاری خود استفاده کنید.\A این برنامه جایگزین تشخیص یا درمان تخصصی نیست.";
+  content: "یک یادآوری مهم\A این برنامه یک مسیر آموزشی برای خودمشاهده‌گری و تمرین روزانه است.\A با آرامش و به‌اندازه توان خود پیش بروید و از تمرین‌ها برای شناخت بهتر افکار، احساسات و الگوهای رفتاری خود استفاده کنید.\A این برنامه جایگزین تشخیص یا درمان تخصصی نیست.";
   display: block;
   color: var(--muted);
   font-size: 11px;
@@ -4942,13 +4942,3 @@ body.bale-webview:has(#books.libraryShell) .footerNotice {
   max-height: none !important;
   overflow: visible !important;
 }
-.archiveExportBox {
-  margin: 14px 0;
-  padding: 14px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--bg);
-}
-.archiveExportBox p { margin: 7px 0 10px; }
-.archiveExportBox button { width: 100%; }
-.archiveExportError { color: var(--danger); font-weight: 700; }
