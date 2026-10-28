@@ -436,11 +436,14 @@ function MainApp() {
   function startNewPath() {
     const hasPreviousPath = Boolean(journey.started && (journey.profile || journey.assessment || journey.completed.length || journey.final));
     const isCompletePath = Array.isArray(journey.completed) && journey.completed.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => journey.completed.includes(day));
-    if (hasPreviousPath && !isCompletePath) {
-      const accepted = window.confirm('مسیر قبلی شما ناقص است. چون تمام ۲۸ روز را تکمیل نکرده‌اید، این مسیر در آرشیو ذخیره نخواهد شد. آیا با اطلاع از این موضوع می‌خواهید مسیر تازه‌ای را شروع کنید؟');
-      if (!accepted) return;
+    const inTelegram = Boolean(window.Telegram?.WebApp || window.TelegramWebviewProxy || window.TelegramWebviewProxyProto);
+    const inBale = Boolean(window.BaleWebApp || window.Bale?.WebApp || window.BaleWebviewProxy || window.BaleWebView);
+    const enforceIncompleteRule = inTelegram || inBale;
+    if (hasPreviousPath && !isCompletePath && enforceIncompleteRule) {
+      showValidation(['مسیر قبلی هنوز کامل نشده است؛ بنابراین در آرشیو ذخیره نمی‌شود. اگر می‌خواهی مسیر تازه‌ای آغاز کنی، پس از بستن این پیام دوباره دکمه شروع مسیر تازه را بزن.'], 'مسیر قبلی ناقص است');
+      return;
     }
-    const archive = hasPreviousPath && isCompletePath
+    const archive = hasPreviousPath && (isCompletePath || !enforceIncompleteRule)
       ? [cloneForArchive(journey), ...(journey.archive || []).filter((item) => Array.isArray(item.completed) && item.completed.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => item.completed.includes(day)))].slice(0, 100)
       : (journey.archive || []).filter((item) => Array.isArray(item.completed) && item.completed.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => item.completed.includes(day)));
     const fresh = defaultJourneyState();
