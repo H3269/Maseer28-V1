@@ -316,27 +316,61 @@ export function Archive({ journey, content, onBack, onNew, onExported }) {
   const [selected, setSelected] = useState(null);
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState('');
+  const [exportStatus, setExportStatus] = useState('');
+  const [pendingExport, setPendingExport] = useState(null);
+  const [downloadAttempted, setDownloadAttempted] = useState(false);
   const list = journey.archive || [];
   const selectedArchive = selected == null ? null : list[selected];
   async function exportPreviousPaths() {
     if (list.length < 12 || exporting) return;
-    setExporting(true); setExportError('');
+    setExporting(true); setExportError(''); setExportStatus(''); setDownloadAttempted(false);
     try {
       const snapshot = list.slice(0, 12);
       const blob = await exportArchivesZip(snapshot);
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url; link.download = `مسیر۲۸-آرشیو-${new Date().toISOString().slice(0, 10)}.zip`;
-      document.body.appendChild(link); link.click(); link.remove();
-      window.setTimeout(() => URL.revokeObjectURL(url), 30000);
-      onExported?.(snapshot);
-      setSelected(null);
+      setPendingExport({ blob, snapshot, filename: `مسیر۲۸-آرشیو-${new Date().toISOString().slice(0, 10)}.zip` });
+      setExportStatus('فایل آماده شد. برای دریافت یا ذخیره‌کردن آن، دکمهٔ مرحلهٔ بعد را بزن. تا وقتی فایل را ذخیره نکرده‌ای، مسیرها را حذف نکن.');
     } catch (error) {
       setExportError('ساخت فایل آرشیو انجام نشد. مسیرهای قبلی حذف نشده‌اند؛ دوباره تلاش کن.');
     } finally { setExporting(false); }
   }
+  async function downloadPreparedArchive() {
+    if (!pendingExport) return;
+    setExportError('');
+    const file = new File([pendingExport.blob], pendingExport.filename, { type: 'application/zip' });
+    try {
+      if (typeof navigator.share === 'function' && typeof navigator.canShare === 'function' && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: 'آرشیو مسیر۲۸', text: '۱۲ مسیر قبلی به‌صورت PDF در فایل ZIP' });
+        setDownloadAttempted(true);
+        setExportStatus('پنجرهٔ اشتراک‌گذاری بسته شد. اگر فایل را در دستگاه ذخیره کرده‌ای، دکمهٔ تأیید حذف را بزن؛ در غیر این صورت دوباره دریافت را امتحان کن.');
+        return;
+      }
+    } catch (error) {
+      if (error?.name === 'AbortError') {
+        setExportStatus('دریافت یا اشتراک‌گذاری لغو شد. مسیرها حفظ شده‌اند؛ هر زمان آماده بودی دوباره تلاش کن.');
+        return;
+      }
+      // Some in-app browsers expose Web Share but reject ZIP files; try the direct download below.
+    }
+    try {
+      const url = URL.createObjectURL(pendingExport.blob);
+      const link = document.createElement('a');
+      link.href = url; link.download = pendingExport.filename; link.rel = 'noopener';
+      document.body.appendChild(link); link.click(); link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 120000);
+      setDownloadAttempted(true);
+      setExportStatus('درخواست دریافت فایل ارسال شد. اول بررسی کن فایل ZIP واقعاً در دستگاه ذخیره شده و داخل آن PDFها باز می‌شوند؛ فقط بعد از آن دکمهٔ تأیید حذف را بزن.');
+    } catch (error) {
+      setExportError('دریافت فایل در این محیط انجام نشد. مسیرهای قبلی حذف نشده‌اند؛ دوباره تلاش کن یا از گزینهٔ اشتراک‌گذاری دستگاه استفاده کن.');
+    }
+  }
+  function confirmArchiveRemoval() {
+    if (!pendingExport || !downloadAttempted) return;
+    onExported?.(pendingExport.snapshot);
+    setPendingExport(null); setDownloadAttempted(false); setSelected(null);
+    setExportStatus('۱۲ مسیر خروجی‌گرفته‌شده از فهرست آرشیو کنار رفتند.');
+  }
   return <section className="card" id="archive"><span className="badge">آرشیو مسیرها</span><h2>مسیرهای قبلی</h2><p className="muted">هر بار که مسیر تازه‌ای شروع شود، پرونده مسیر قبلی اینجا نگهداری می‌شود.</p>
-    {list.length >= 12 && !selectedArchive && <div className="archiveExportBox"><b>۱۲ مسیر یا بیشتر در آرشیو داری.</b><p className="muted">با دریافت فایل ZIP، دوازده مسیر قدیمی‌تر به‌صورت PDF ذخیره می‌شوند و سپس از فهرست این صفحه کنار می‌روند.</p><button className="primary" onClick={exportPreviousPaths} disabled={exporting}>{exporting ? 'در حال آماده‌سازی فایل…' : 'دانلود ۱۲ مسیر قبلی به‌صورت ZIP'}</button>{exportError && <p role="alert" className="archiveExportError">{exportError}</p>}</div>}
+    {list.length >= 12 && !selectedArchive && <div className="archiveExportBox"><b>۱۲ مسیر یا بیشتر در آرشیو داری.</b><p className="muted">ابتدا فایل ZIP شامل PDFهای دوازده مسیر قدیمی‌تر را بساز و ذخیره کن. مسیرها فقط پس از تأیید تو از فهرست حذف می‌شوند.</p><button className="primary" onClick={exportPreviousPaths} disabled={exporting || Boolean(pendingExport)}>{exporting ? 'در حال آماده‌سازی فایل…' : pendingExport ? 'فایل ZIP آماده است' : 'ساخت فایل ZIP از ۱۲ مسیر قبلی'}</button>{pendingExport && <button className="secondary" onClick={downloadPreparedArchive}>دریافت / ذخیره فایل ZIP</button>}{pendingExport && downloadAttempted && <button className="gold" onClick={confirmArchiveRemoval}>فایل را ذخیره کردم؛ حذف ۱۲ مسیر خروجی‌گرفته‌شده</button>}{exportStatus && <p className="muted" role="status">{exportStatus}</p>}{exportError && <p role="alert" className="archiveExportError">{exportError}</p>}</div>}
     <div id="archiveList" className={selectedArchive ? 'hidden' : ''}>{!list.length ? <div className="muted">هنوز مسیر قبلی در آرشیو وجود ندارد.</div> : list.map((a, i) => { const p = a.profileData || {}, completed = Array.isArray(a.completed) ? a.completed.length : 0; return <div className="answerItem" key={`${a.pathId}-${i}`}><b>مسیر {fa(i + 1)} · {p.problem || 'بدون عنوان'}</b><p>پیشرفت: {fa(completed)}/۲۸ · امتیاز شروع: {a.assessmentData?.score == null ? '-' : `${fa(a.assessmentData.score)}/۱۰`} · امتیاز پایان: {a.final?.score == null ? '-' : `${fa(a.final.score)}/۱۰`}<br/>تاریخ شروع: {formatDate(a.startedAt)}<br/>تاریخ بایگانی: {formatDate(a.archivedAt)}</p><button className="secondary" onClick={() => { setSelected(i); window.scrollTo({ top: 0, behavior: 'auto' }); }}><AppIcon name="eye" size={17} /> مشاهده جزئیات مسیر</button></div>; })}</div><div id="archiveDetail" className={selectedArchive ? '' : 'hidden'}>{selectedArchive && <ArchiveDetail archive={selectedArchive} content={content} onClose={() => setSelected(null)} />}</div><button className="primary" onClick={onNew}>{buttonLabel('شروع مسیر تازه →')}</button><button className="secondary" onClick={onBack}>{buttonLabel('بازگشت به داشبورد')}</button></section>;
 }
 function ArchiveDetail({ archive, content, onClose }) { const p = archive.profileData || {}, cat = content.categories?.[p.problem]; return <><div className="feedback"><b><AppIcon name="archive" size={17} /> جزئیات مسیر آرشیوشده</b><p className="muted">مسئله: {p.problem || '-'} · نام: {p.name || '-'} · کد: {p.code || '-'}</p><p className="muted">شروع: {formatDate(archive.startedAt)} · آرشیو: {formatDate(archive.archivedAt)}</p></div>{Object.entries(archive.answers || {}).sort(([x], [y]) => Number(x) - Number(y)).map(([d, ans]) => { const day = cat?.days?.find((x) => Number(x.day) === Number(d)); const daily = archive.daily?.[d]; return <div className="answerItem" key={d}><b>روز {fa(d)} · {fa(String(day?.title || '').replace(/\s*[·•-]?\s*روز\s*\d+\s*$/i, '').split('·')[0].trim())}</b><p>{fa(ans)}</p><small>شدت: {daily?.score == null ? '-' : `${fa(daily.score)} از ۱۰`} · {daily?.feedbackText || ''}</small></div>; })}<button className="secondary" onClick={onClose}><AppIcon name="chevronLeft" size={17} /> بازگشت به فهرست آرشیوها</button></>; }
