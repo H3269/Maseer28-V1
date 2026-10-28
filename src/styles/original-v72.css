@@ -4765,7 +4765,7 @@ button > svg { vertical-align: -0.22em; }
   border-radius: 0;
   background: transparent;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.85;
   text-align: center;
 }
@@ -4782,7 +4782,7 @@ button > svg { vertical-align: -0.22em; }
   content: "یک یادآوری مهم\A این برنامه یک مسیر آموزشی برای خودمشاهده‌گری و تمرین روزانه است.\A با آرامش و به‌اندازه توان خود پیش بروید و از تمرین‌ها برای شناخت بهتر افکار، احساسات و الگوهای رفتاری خود استفاده کنید.\A این برنامه جایگزین تشخیص یا درمان تخصصی نیست.";
   display: block;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1.85;
   white-space: pre-line;
