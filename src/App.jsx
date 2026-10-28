@@ -78,6 +78,7 @@ function MainApp() {
   const [currentDay, setCurrentDay] = useState(() => Math.min(28, nextRequiredDay(initial.state)));
   const [resultDay, setResultDay] = useState(() => initial.screen === 'dailyResult' ? initial.state.completed.length : null);
   const [validation, setValidation] = useState(null);
+  const [pendingStartNewPath, setPendingStartNewPath] = useState(false);
   const [copyrightOpen, setCopyrightOpen] = useState(() => {
     try { return localStorage.getItem(COPYRIGHT_KEY) !== '1'; } catch { return true; }
   });
@@ -433,19 +434,23 @@ function MainApp() {
     navigate('done');
   }
 
-  function startNewPath() {
+  function startNewPath(confirmedAfterWarning = false) {
     const hasPreviousPath = Boolean(journey.started && (journey.profile || journey.assessment || journey.completed.length || journey.final));
     const isCompletePath = Array.isArray(journey.completed) && journey.completed.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => journey.completed.includes(day));
     const inTelegram = Boolean(window.Telegram?.WebApp || window.TelegramWebviewProxy || window.TelegramWebviewProxyProto);
     const inBale = Boolean(window.BaleWebApp || window.Bale?.WebApp || window.BaleWebviewProxy || window.BaleWebView);
     const enforceIncompleteRule = inTelegram || inBale;
-    if (hasPreviousPath && !isCompletePath && enforceIncompleteRule) {
-      showValidation(['مسیر قبلی هنوز کامل نشده است؛ بنابراین در آرشیو ذخیره نمی‌شود. اگر می‌خواهی مسیر تازه‌ای آغاز کنی، پس از بستن این پیام دوباره دکمه شروع مسیر تازه را بزن.'], 'مسیر قبلی ناقص است');
+    const isTestEnvironment = /(^|\.)github\.io$/i.test(window.location.hostname) || ['localhost', '127.0.0.1'].includes(window.location.hostname) || new URLSearchParams(window.location.search).get('testMode') === '1';
+    if (hasPreviousPath && !isCompletePath && enforceIncompleteRule && !confirmedAfterWarning) {
+      setPendingStartNewPath(true);
+      showValidation(['مسیر قبلی هنوز کامل نشده است؛ این مسیر در آرشیو ذخیره نمی‌شود. اگر می‌خواهی مسیر تازه‌ای شروع کنی، «متوجه شدم» را بزن تا مسیر تازه باز شود.'], 'مسیر قبلی ناقص است');
       return;
     }
-    const archive = hasPreviousPath && (isCompletePath || !enforceIncompleteRule)
-      ? [cloneForArchive(journey), ...(journey.archive || []).filter((item) => Array.isArray(item.completed) && item.completed.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => item.completed.includes(day)))].slice(0, 100)
-      : (journey.archive || []).filter((item) => Array.isArray(item.completed) && item.completed.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => item.completed.includes(day)));
+    const keepIncompleteForTest = isTestEnvironment && !enforceIncompleteRule;
+    const validArchived = (journey.archive || []).filter((item) => Array.isArray(item.completed) && (keepIncompleteForTest || (item.completed.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => item.completed.includes(day)))));
+    const archive = hasPreviousPath && (isCompletePath || keepIncompleteForTest)
+      ? [cloneForArchive(journey), ...validArchived].slice(0, 100)
+      : validArchived;
     const fresh = defaultJourneyState();
     fresh.archive = archive;
     fresh.started = true;
@@ -501,7 +506,7 @@ function MainApp() {
       {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
       {preview && <BookPreviewModal preview={preview} onClose={() => setPreview(null)} onOpen={() => { const item = preview; setPreview(null); openBook(item.book, item.sourcePage, { day: item.day, sourcePage: item.sourcePage, reason: item.reason, sourceTitle: item.sourceTitle }); }} />}
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}
-      {validation && <ValidationModal data={validation} onClose={() => setValidation(null)} />}
+      {validation && <ValidationModal data={validation} onClose={() => { setValidation(null); if (pendingStartNewPath) { setPendingStartNewPath(false); startNewPath(true); } }} />}
       <Footer />
     </div>
   );
