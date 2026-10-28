@@ -3996,6 +3996,18 @@ body.bale-webview .app {
   padding-bottom: calc(64px + env(safe-area-inset-bottom)) !important;
 }
 
+/* Bale-only: override the more-specific library rule so its bottom gap
+   matches every other page. Keep Telegram's 96px library spacing unchanged. */
+html.bale-webview body .app:has(#books.libraryShell),
+body.bale-webview .app:has(#books.libraryShell) {
+  padding-bottom: calc(64px + env(safe-area-inset-bottom)) !important;
+}
+
+html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell,
+body.bale-webview .app:has(#books.libraryShell) #books.libraryShell {
+  padding-bottom: 0 !important;
+}
+
 body.bale-webview:has(#books.libraryShell) .footerNotice {
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
