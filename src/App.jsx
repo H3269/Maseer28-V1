@@ -79,6 +79,7 @@ function MainApp() {
   const [resultDay, setResultDay] = useState(() => initial.screen === 'dailyResult' ? initial.state.completed.length : null);
   const [validation, setValidation] = useState(null);
   const [pendingStartNewPath, setPendingStartNewPath] = useState(false);
+  const [acknowledgedStartNew, setAcknowledgedStartNew] = useState(false);
   const [copyrightOpen, setCopyrightOpen] = useState(() => {
     try { return localStorage.getItem(COPYRIGHT_KEY) !== '1'; } catch { return true; }
   });
@@ -441,13 +442,25 @@ function MainApp() {
     const inBale = Boolean(window.BaleWebApp || window.Bale?.WebApp || window.BaleWebviewProxy || window.BaleWebView);
     const enforceIncompleteRule = inTelegram || inBale;
     const isTestEnvironment = /(^|\.)github\.io$/i.test(window.location.hostname) || ['localhost', '127.0.0.1'].includes(window.location.hostname) || new URLSearchParams(window.location.search).get('testMode') === '1';
-    if (hasPreviousPath && !isCompletePath && enforceIncompleteRule && !confirmedAfterWarning) {
+    const keepIncompleteForTest = isTestEnvironment && !enforceIncompleteRule;
+    const skipAcknowledgedWarning = acknowledgedStartNew;
+    if (skipAcknowledgedWarning) setAcknowledgedStartNew(false);
+    if (hasPreviousPath && !isCompletePath && (enforceIncompleteRule || isTestEnvironment) && !confirmedAfterWarning && !skipAcknowledgedWarning) {
       setPendingStartNewPath(true);
-      showValidation(['مسیر قبلی هنوز کامل نشده است؛ این مسیر در آرشیو ذخیره نمی‌شود. اگر می‌خواهی مسیر تازه‌ای شروع کنی، «متوجه شدم» را بزن تا مسیر تازه باز شود.'], 'مسیر قبلی ناقص است');
+      const warningText = 'مسیر قبلی هنوز کامل نشده است؛ بنابراین در آرشیو ذخیره نمی‌شود. برای شروع مسیر تازه، روی «متوجه شدم» بزن تا به آرشیو برگردی؛ سپس دوباره دکمه «شروع مسیر تازه» را بزن.';
+      showValidation([warningText], 'مسیر قبلی ناقص است');
       return;
     }
-    const keepIncompleteForTest = isTestEnvironment && !enforceIncompleteRule;
-    const validArchived = (journey.archive || []).filter((item) => Array.isArray(item.completed) && (keepIncompleteForTest || (item.completed.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => item.completed.includes(day)))));
+    const relevantArchivedCount = (journey.archive || []).filter((item) => {
+      if (item.pathId === journey.pathId || !Array.isArray(item.completed)) return false;
+      return keepIncompleteForTest || (item.completed.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => item.completed.includes(day)));
+    }).length;
+    if (relevantArchivedCount >= 15) {
+      setPendingStartNewPath(true);
+      showValidation(['تا الان ۱۵ مسیر کامل را ثبت کردی. برای شروع مسیر تازه ابتدا روی دکمه پاکسازی آرشیو های قبلی بزن و بعد دوباره روی دکمه شروع مسیر تازه بزن.'], 'محدودیت آرشیو مسیرها');
+      return;
+    }
+    const validArchived = (journey.archive || []).filter((item) => item.pathId !== journey.pathId && Array.isArray(item.completed) && (keepIncompleteForTest || (item.completed.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => item.completed.includes(day)))));
     const archive = hasPreviousPath && (isCompletePath || keepIncompleteForTest)
       ? [cloneForArchive(journey), ...validArchived].slice(0, 100)
       : validArchived;
@@ -502,11 +515,11 @@ function MainApp() {
       {screen === 'final' && <FinalAssessment initial={journey.final} onSave={finishFinal} onValidation={showValidation} />}
       {screen === 'done' && <Done onReport={() => navigate('report')} onBooks={() => openBooks('done')} onSupport={() => openSupport('done')} onArchive={() => navigate('archive')} onNew={startNewPath} />}
       {screen === 'report' && <Report journey={journey} content={content} onBooks={() => openBooks('report')} onSupport={() => openSupport('report')} onDashboard={() => navigate('dashboard')} onArchive={() => navigate('archive')} onNew={startNewPath} />}
-      {screen === 'archive' && <Archive journey={journey} content={content} onBack={() => navigate('dashboard')} onNew={startNewPath} onClearArchive={() => patchJourney((previous) => ({ ...previous, archive: [] }))} />}
+      {screen === 'archive' && <Archive journey={journey} content={content} showIncomplete={(/(^|\.)github\.io$/i.test(window.location.hostname) || ['localhost', '127.0.0.1'].includes(window.location.hostname) || new URLSearchParams(window.location.search).get('testMode') === '1') && !(window.Telegram?.WebApp || window.TelegramWebviewProxy || window.TelegramWebviewProxyProto || window.BaleWebApp || window.Bale?.WebApp || window.BaleWebviewProxy || window.BaleWebView)} onBack={() => navigate('dashboard')} onNew={startNewPath} onClearArchive={() => patchJourney((previous) => ({ ...previous, archive: [] }))} />}
       {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
       {preview && <BookPreviewModal preview={preview} onClose={() => setPreview(null)} onOpen={() => { const item = preview; setPreview(null); openBook(item.book, item.sourcePage, { day: item.day, sourcePage: item.sourcePage, reason: item.reason, sourceTitle: item.sourceTitle }); }} />}
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}
-      {validation && <ValidationModal data={validation} onClose={() => { setValidation(null); if (pendingStartNewPath) { setPendingStartNewPath(false); startNewPath(true); } }} />}
+      {validation && <ValidationModal data={validation} onClose={() => { setValidation(null); if (pendingStartNewPath) { setPendingStartNewPath(false); const isTestEnvironment = /(^|\.)github\.io$/i.test(window.location.hostname) || ['localhost', '127.0.0.1'].includes(window.location.hostname) || new URLSearchParams(window.location.search).get('testMode') === '1'; const inEmbeddedApp = Boolean(window.Telegram?.WebApp || window.TelegramWebviewProxy || window.TelegramWebviewProxyProto || window.BaleWebApp || window.Bale?.WebApp || window.BaleWebviewProxy || window.BaleWebView); if (isTestEnvironment && !inEmbeddedApp && journey.started && !(journey.completed?.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => journey.completed.includes(day)))) { const archived = cloneForArchive(journey); setJourney((previous) => ({ ...previous, archive: [archived, ...(previous.archive || []).filter((item) => item.pathId !== archived.pathId)].slice(0, 100) })); } setAcknowledgedStartNew(true); navigate('archive'); } }} />}
       <Footer />
     </div>
   );
