@@ -4,7 +4,6 @@ import AppIcon from '../../shared/components/AppIcon.jsx';
 import { buttonLabel } from '../../shared/buttonLabel.jsx';
 import { fa, formatDate, normalizeDigits } from '../../shared/utils.js';
 import { burdenScoreFromAnswers, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
-import { exportArchivesZip } from './archiveExport.js';
 
 export const SCALE_QUESTIONS = [
   'این مشکل در حال حاضر چقدر شدت دارد؟',
@@ -312,130 +311,12 @@ function Recommendation({ journey }) { const p = journey.profileData || {}, r = 
 export function Report({ journey, content, onBooks, onSupport, onDashboard, onArchive, onNew }) { const p = journey.profileData || {}, a = buildFinalAnalysis(journey), start = Number(journey.assessmentData?.score || 0), end = Number(journey.final?.score || 0), diff = end - start, f = journey.final || {}, cat = content.categories?.[p.problem]; return <section className="card" id="report"><span className="badge">گزارش نهایی مسیر</span><h2>گزارش شخصی مسیر ۲۸ روزه</h2><div id="reportProfile"><div className="profile"><div className="profileBox"><span>نام</span><b>{p.name || ''}</b></div><div className="profileBox"><span>مسئله</span><b>{p.problem || ''}</b></div><div className="profileBox"><span>سن</span><b>{fa(p.age || 0)} سال</b></div></div></div><div className="metric"><div className="metricBox"><strong id="startScore">{fa(start)}/۱۰</strong><span>امتیاز شروع</span></div><div className="metricBox"><strong id="endScore">{fa(end)}/۱۰</strong><span>امتیاز پایان</span></div></div><div className="feedback"><b>نتیجه تغییر</b><p className="muted" id="scoreChange">{diff > 0 ? `امتیاز وضعیت کلی ${fa(diff)} نمره بالاتر شده است.` : diff < 0 ? `امتیاز وضعیت کلی ${fa(Math.abs(diff))} نمره پایین‌تر شده است.` : 'امتیاز وضعیت کلی تغییر نکرده است.'}</p></div><div className="recommendation"><b>جمع‌بندی مسیر</b><p className="muted" id="reportSummary">مسیر ۲۸ روزه برای «{p.problem || ''}» کامل شد. از {fa(a.count)} بازخورد ثبت‌شده، {fa(a.counts.better)} مورد «بهتر شدم»، {fa(a.counts.same)} مورد «تقریباً مثل قبل»، {fa(a.counts.worse)} مورد «بدتر شدم» و {fa(a.counts.hard)} مورد «تمرین برایم سخت بود» ثبت شده است. میانگین شدت درگیری روزانه {fa(Math.round(a.avg * 10) / 10)} از ۱۰ بوده است.</p></div><div id="hypnoReportRecommendation"><Recommendation journey={journey}/></div><hr/><ReportBlock title="سه تغییر من" id="rf1" text={fa(f.f1 || '')}/><ReportBlock title="سه آگاهی من" id="rf2" text={fa(f.f2 || '')}/><ReportBlock title="سه اقدام ۳۰ روز آینده" id="rf3" text={fa(f.f3 || '')}/><ReportBlock title="موضوع نیازمند توجه" id="rf4" text={fa(f.f4 || '')}/><hr/><h3>پاسخ‌های ثبت‌شده</h3><div id="answersList">{Object.entries(journey.answers || {}).sort(([x], [y]) => Number(x) - Number(y)).map(([d, ans]) => { const day = cat?.days?.find((x) => Number(x.day) === Number(d)); return <div className="answerItem" key={d}><b>روز {fa(d)} · {fa(String(day?.title || '').replace(/\s*[·•-]?\s*روز\s*\d+\s*$/i, ''))}</b><p>{fa(ans)}</p><small>شدت: {fa(journey.daily?.[d]?.score ?? 0)} از ۱۰ · بازخورد: {journey.daily?.[d]?.feedbackText || ''}</small></div>; })}</div><button className="gold" onClick={onBooks}><AppIcon name="bookOpen" size={17} /> کتابخانه اختصاصی</button><button className="secondary" onClick={onSupport}><AppIcon name="phone" size={17} /> پشتیبانی مرکز</button><button className="secondary" onClick={onDashboard}>{buttonLabel('بازگشت به داشبورد')}</button><button className="secondary" onClick={onArchive}><AppIcon name="archive" size={17} /> آرشیو مسیرهای قبلی</button><button className="primary" onClick={onNew}>{buttonLabel('شروع مسیر تازه →')}</button></section>; }
 function ReportBlock({ title, id, text }) { return <><h3>{title}</h3><div className="answerItem"><p id={id} style={{ whiteSpace: 'pre-wrap' }}>{fa(text || '')}</p></div></>; }
 
-export function Archive({ journey, content, onBack, onNew, onExported }) {
+export function Archive({ journey, content, onBack, onNew }) {
   const [selected, setSelected] = useState(null);
-  const [exporting, setExporting] = useState(false);
-  const [exportError, setExportError] = useState('');
-  const [exportStatus, setExportStatus] = useState('');
-  const [pendingExport, setPendingExport] = useState(null);
-  const [downloadRequested, setDownloadRequested] = useState(false);
-  const [fileVerified, setFileVerified] = useState(false);
   const list = journey.archive || [];
   const selectedArchive = selected == null ? null : list[selected];
-
-  async function exportPreviousPaths() {
-    if (list.length < 12 || exporting || pendingExport) return;
-    setExporting(true);
-    setExportError('');
-    setExportStatus('');
-    setDownloadRequested(false);
-    setFileVerified(false);
-    try {
-      const snapshot = list.slice(0, 12);
-      const blob = await exportArchivesZip(snapshot);
-      const filename = `مسیر۲۸-آرشیو-${new Date().toISOString().slice(0, 10)}.zip`;
-      setPendingExport({ blob, snapshot, filename });
-      setExportStatus('فایل ZIP آماده شد. حالا «دریافت / ذخیره فایل ZIP» را بزن. تا وقتی فایل را پیدا و بررسی نکرده‌ای، هیچ مسیری حذف نمی‌شود.');
-    } catch (error) {
-      setExportError('ساخت فایل آرشیو انجام نشد. مسیرهای قبلی حذف نشده‌اند؛ دوباره تلاش کن.');
-    } finally {
-      setExporting(false);
-    }
-  }
-
-  async function downloadPreparedArchive() {
-    if (!pendingExport) return;
-    setExportError('');
-    const file = new File([pendingExport.blob], pendingExport.filename, { type: 'application/zip' });
-    try {
-      if (typeof navigator.share === 'function' && typeof navigator.canShare === 'function' && navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: 'آرشیو مسیر۲۸', text: '۱۲ مسیر قبلی به‌صورت PDF در فایل ZIP' });
-        setDownloadRequested(true);
-        setFileVerified(false);
-        setExportStatus('پنجره اشتراک‌گذاری بسته شد؛ این به معنی ذخیره‌شدن قطعی فایل نیست. فایل را در دستگاه پیدا و بررسی کن؛ فقط بعد از تأیید تو امکان حذف مسیرها فعال می‌شود.');
-        return;
-      }
-    } catch (error) {
-      if (error?.name === 'AbortError') {
-        setExportStatus('اشتراک‌گذاری لغو شد. مسیرها محفوظ‌اند؛ می‌توانی دوباره تلاش کنی یا روش صفحه جداگانه را امتحان کنی.');
-        return;
-      }
-      // Continue with the browser download fallback.
-    }
-    try {
-      const url = URL.createObjectURL(pendingExport.blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = pendingExport.filename;
-      link.rel = 'noopener';
-      link.style.display = 'none';
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.setTimeout(() => URL.revokeObjectURL(url), 120000);
-      setDownloadRequested(true);
-      setFileVerified(false);
-      setExportStatus('درخواست دریافت ارسال شد، اما ممکن است بله یا تلگرام آن را نادیده بگیرد. فایل ZIP را در دستگاه پیدا و بازشدن PDFها را بررسی کن؛ مسیرها هنوز حذف نمی‌شوند. اگر هیچ اتفاقی نیفتاد، روش صفحه جداگانه را امتحان کن.');
-    } catch (error) {
-      setExportError('این محیط دریافت مستقیم را اجرا نکرد. مسیرهای قبلی محفوظ‌اند؛ روش «امتحان دریافت در صفحه جداگانه» یا مرورگر خارجی را امتحان کن.');
-    }
-  }
-
-  function openArchiveInExternalBrowser() {
-    setExportError('');
-    const url = window.location.href;
-    try {
-      // Telegram Mini Apps provide openLink to hand the HTTPS app URL to the external browser.
-      const telegram = window.Telegram && window.Telegram.WebApp;
-      if (telegram && typeof telegram.openLink === 'function' && /^https:\/\//i.test(url)) {
-        telegram.openLink(url);
-        setExportStatus('مسیر۲۸ برای بازشدن در مرورگر بیرونی فرستاده شد. در مرورگر، وارد آرشیو شو و ZIP را دوباره بساز و دریافت کن. تا وقتی فایل را بررسی نکرده‌ای، مسیرها حذف نمی‌شوند.');
-        return;
-      }
-      // Generic fallback for webviews that allow opening a regular HTTPS page in a new tab.
-      const opened = window.open(url, '_blank', 'noopener,noreferrer');
-      if (opened) {
-        setExportStatus('صفحه مسیر۲۸ در برگه‌ای جداگانه باز شد. اگر هنوز داخل بله باز شده، پیوند را با گزینه «بازکردن در مرورگر» باز کن؛ سپس ZIP را دوباره بساز و دریافت کن.');
-      } else {
-        setExportError('این محیط بازکردن مرورگر بیرونی را مسدود کرد. پیوند مسیر۲۸ را از منوی برنامه با گزینه «بازکردن در مرورگر» باز کن و سپس ZIP را دوباره بساز. مسیرهای آرشیو حذف نشده‌اند.');
-      }
-    } catch (error) {
-      setExportError('بازکردن مرورگر بیرونی ممکن نشد. پیوند مسیر۲۸ را از منوی برنامه با گزینه «بازکردن در مرورگر» باز کن و سپس ZIP را دوباره بساز. مسیرهای آرشیو حذف نشده‌اند.');
-    }
-  }
-
-  function openPreparedArchiveInNewTab() {
-    if (!pendingExport) return;
-    setExportError('');
-    try {
-      const url = URL.createObjectURL(pendingExport.blob);
-      const opened = window.open(url, '_blank');
-      if (opened) opened.opener = null;
-      window.setTimeout(() => URL.revokeObjectURL(url), 120000);
-      if (opened) {
-        setDownloadRequested(true);
-        setFileVerified(false);
-        setExportStatus('صفحه جداگانه باز شد. اگر فایل نمایش داده شد، از گزینه ذخیره مرورگر استفاده کن و سپس وجود ZIP و بازشدن PDFها را بررسی کن. بازشدن صفحه به معنی ذخیره‌شدن فایل نیست.');
-      } else {
-        setExportError('این محیط بازکردن صفحه جداگانه را مسدود کرد. مسیرها محفوظ‌اند؛ صفحه مسیر۲۸ را در Chrome یا Firefox باز کن و دوباره دریافت را امتحان کن.');
-      }
-    } catch (error) {
-      setExportError('بازکردن صفحه جداگانه ممکن نشد. مسیرها محفوظ‌اند؛ Chrome یا Firefox را امتحان کن.');
-    }
-  }
-
-  function confirmArchiveRemoval() {
-    if (!pendingExport || !downloadRequested || !fileVerified) return;
-    onExported?.(pendingExport.snapshot);
-    setPendingExport(null);
-    setDownloadRequested(false);
-    setFileVerified(false);
-    setSelected(null);
-    setExportStatus('۱۲ مسیر خروجی‌گرفته‌شده از فهرست آرشیو کنار رفتند.');
-  }
-
   return <section className="card" id="archive"><span className="badge">آرشیو مسیرها</span><h2>مسیرهای قبلی</h2><p className="muted">هر بار که مسیر تازه‌ای شروع شود، پرونده مسیر قبلی اینجا نگهداری می‌شود.</p>
-    {list.length >= 12 && !selectedArchive && <div className="archiveExportBox"><b>۱۲ مسیر یا بیشتر در آرشیو داری.</b><p className="muted">ابتدا فایل ZIP شامل PDFهای دوازده مسیر قدیمی‌تر را بساز. مسیرها فقط پس از اینکه فایل را پیدا و بررسی کردی و صریحاً تأیید دادی، از فهرست حذف می‌شوند.</p><button className="primary" onClick={exportPreviousPaths} disabled={exporting || Boolean(pendingExport)}>{exporting ? 'در حال آماده‌سازی فایل…' : pendingExport ? 'فایل ZIP آماده است' : 'ساخت فایل ZIP از ۱۲ مسیر قبلی'}</button>{pendingExport && <><button className="secondary" onClick={downloadPreparedArchive}>دریافت / ذخیره فایل ZIP</button><button className="secondary" onClick={openPreparedArchiveInNewTab}>امتحان دریافت در صفحه جداگانه</button><button className="secondary" onClick={openArchiveInExternalBrowser}>بازکردن مسیر۲۸ در مرورگر بیرونی</button></>}{pendingExport && downloadRequested && <div className="archiveExportVerify"><label><input type="checkbox" checked={fileVerified} onChange={(event) => setFileVerified(event.target.checked)} /> فایل ZIP را در دستگاه پیدا کردم و بازشدن PDFهای داخل آن را بررسی کردم.</label>{fileVerified && <button className="gold" onClick={confirmArchiveRemoval}>تأیید و حذف ۱۲ مسیر خروجی‌گرفته‌شده</button>}</div>}{exportStatus && <p className="muted" role="status">{exportStatus}</p>}{exportError && <p role="alert" className="archiveExportError">{exportError}</p>}</div>}
+
     <div id="archiveList" className={selectedArchive ? 'hidden' : ''}>{!list.length ? <div className="muted">هنوز مسیر قبلی در آرشیو وجود ندارد.</div> : list.map((a, i) => { const p = a.profileData || {}, completed = Array.isArray(a.completed) ? a.completed.length : 0; return <div className="answerItem" key={`${a.pathId}-${i}`}><b>مسیر {fa(i + 1)} · {p.problem || 'بدون عنوان'}</b><p>پیشرفت: {fa(completed)}/۲۸ · امتیاز شروع: {a.assessmentData?.score == null ? '-' : `${fa(a.assessmentData.score)}/۱۰`} · امتیاز پایان: {a.final?.score == null ? '-' : `${fa(a.final.score)}/۱۰`}<br/>تاریخ شروع: {formatDate(a.startedAt)}<br/>تاریخ بایگانی: {formatDate(a.archivedAt)}</p><button className="secondary" onClick={() => { setSelected(i); window.scrollTo({ top: 0, behavior: 'auto' }); }}><AppIcon name="eye" size={17} /> مشاهده جزئیات مسیر</button></div>; })}</div><div id="archiveDetail" className={selectedArchive ? '' : 'hidden'}>{selectedArchive && <ArchiveDetail archive={selectedArchive} content={content} onClose={() => setSelected(null)} />}</div><button className="primary" onClick={onNew}>{buttonLabel('شروع مسیر تازه →')}</button><button className="secondary" onClick={onBack}>{buttonLabel('بازگشت به داشبورد')}</button></section>;
 }
 
