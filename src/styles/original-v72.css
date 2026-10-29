@@ -4946,6 +4946,32 @@ body.bale-webview:has(#books.libraryShell) .footerNotice {
   max-height: none !important;
   overflow: visible !important;
 }
-.header.header-hidden {
-  display: none !important;
+/* Smooth auto-hiding app header. Keep its layout slot stable to prevent jumps. */
+.header,
+.header.compact {
+  transform: translate3d(0, 0, 0) !important;
+  opacity: 1 !important;
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease, box-shadow 150ms ease !important;
+  will-change: transform, opacity !important;
+  backface-visibility: hidden;
+}
+
+.header.header-hidden,
+.header.compact.header-hidden {
+  transform: translate3d(0, calc(-100% - 16px), 0) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* The Bale WebView had a stronger transform reset; allow the same animation there. */
+body.bale-webview .header:not(.header-hidden),
+body.bale-webview .header.compact:not(.header-hidden) {
+  transform: translate3d(0, 0, 0) !important;
+}
+
+body.bale-webview .header.header-hidden,
+body.bale-webview .header.compact.header-hidden {
+  transform: translate3d(0, calc(-100% - 16px), 0) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
