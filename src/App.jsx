@@ -78,8 +78,8 @@ function MainApp() {
   const [currentDay, setCurrentDay] = useState(() => Math.min(28, nextRequiredDay(initial.state)));
   const [resultDay, setResultDay] = useState(() => initial.screen === 'dailyResult' ? initial.state.completed.length : null);
   const [validation, setValidation] = useState(null);
-  const [pendingStartNewPath, setPendingStartNewPath] = useState(false);
-  const [acknowledgedStartNew, setAcknowledgedStartNew] = useState(false);
+  const [incompleteArchiveNoticeOpen, setIncompleteArchiveNoticeOpen] = useState(false);
+  const [allowArchiveRestartAfterNotice, setAllowArchiveRestartAfterNotice] = useState(false);
   const [copyrightOpen, setCopyrightOpen] = useState(() => {
     try { return localStorage.getItem(COPYRIGHT_KEY) !== '1'; } catch { return true; }
   });
@@ -435,28 +435,14 @@ function MainApp() {
     navigate('done');
   }
 
-  function startNewPath(confirmedAfterWarning = false) {
-    const hasPreviousPath = Boolean(journey.started && (journey.pathId || journey.profile || journey.assessment || (Array.isArray(journey.completed) && journey.completed.length > 0) || journey.final));
-    const isCompletePath = Array.isArray(journey.completed) && journey.completed.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => journey.completed.includes(day));
-    const inTelegram = Boolean(window.Telegram?.WebApp || window.TelegramWebviewProxy || window.TelegramWebviewProxyProto);
-    const inBale = Boolean(window.BaleWebApp || window.Bale?.WebApp || window.BaleWebviewProxy || window.BaleWebView);
-    const enforceIncompleteRule = inTelegram || inBale;
-    const isTestEnvironment = /(^|\.)github\.io$/i.test(window.location.hostname) || ['localhost', '127.0.0.1'].includes(window.location.hostname) || new URLSearchParams(window.location.search).get('testMode') === '1';
-    const keepIncompleteForTest = isTestEnvironment && !enforceIncompleteRule;
-    const skipAcknowledgedWarning = acknowledgedStartNew;
-    if (skipAcknowledgedWarning) setAcknowledgedStartNew(false);
-    if (hasPreviousPath && !isCompletePath && (enforceIncompleteRule || isTestEnvironment) && !confirmedAfterWarning && !skipAcknowledgedWarning) {
-      setPendingStartNewPath(true);
-      const warningText = keepIncompleteForTest
-        ? 'مسیر قبلی هنوز کامل نشده است؛ در نسخهٔ تست، مسیر ناقص هم در آرشیو ذخیره می‌شود. با زدن «متوجه شدم» مسیر تازه باز خواهد شد.'
-        : 'مسیر قبلی هنوز کامل نشده است؛ این مسیر در آرشیو ذخیره نمی‌شود. اگر می‌خواهی مسیر تازه‌ای شروع کنی، «متوجه شدم» را بزن تا مسیر تازه باز شود.';
-      showValidation([warningText], 'مسیر قبلی ناقص است');
-      return;
-    }
-    const validArchived = (journey.archive || []).filter((item) => item.pathId !== journey.pathId && Array.isArray(item.completed) && (keepIncompleteForTest || (item.completed.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => item.completed.includes(day)))));
-    const archive = hasPreviousPath && (isCompletePath || keepIncompleteForTest)
-      ? [cloneForArchive(journey), ...validArchived].slice(0, 100)
-      : validArchived;
+  function startNewPath() {
+    const hasCurrentPath = Boolean(journey.started && (journey.profile || journey.assessment || journey.completed.length || journey.final));
+    const pathIsComplete = journey.completed?.length === 28 && Boolean(journey.final);
+    // GitHub test mode may archive incomplete paths for testing. Live builds must archive completed paths only.
+    const shouldArchiveCurrentPath = hasCurrentPath && (APP_CONFIG.TEST_MODE || pathIsComplete);
+    const archive = shouldArchiveCurrentPath
+      ? [cloneForArchive(journey), ...(journey.archive || [])].slice(0, 20)
+      : (journey.archive || []);
     const fresh = defaultJourneyState();
     fresh.archive = archive;
     fresh.started = true;
@@ -467,6 +453,23 @@ function MainApp() {
     setResultDay(null);
     setProfileEditing(false);
     navigate('pathSetup');
+  }
+
+  function startNewPathFromArchive() {
+    const hasCurrentPath = Boolean(journey.started && (journey.profile || journey.assessment || journey.completed.length || journey.final));
+    const pathIsComplete = journey.completed?.length === 28 && Boolean(journey.final);
+    if (!APP_CONFIG.TEST_MODE && hasCurrentPath && !pathIsComplete && !allowArchiveRestartAfterNotice) {
+      setIncompleteArchiveNoticeOpen(true);
+      return;
+    }
+    setAllowArchiveRestartAfterNotice(false);
+    startNewPath();
+  }
+
+  function closeIncompleteArchiveNotice() {
+    setIncompleteArchiveNoticeOpen(false);
+    setAllowArchiveRestartAfterNotice(true);
+    navigate('archive');
   }
 
   function acceptCopyright() {
@@ -508,11 +511,12 @@ function MainApp() {
       {screen === 'final' && <FinalAssessment initial={journey.final} onSave={finishFinal} onValidation={showValidation} />}
       {screen === 'done' && <Done onReport={() => navigate('report')} onBooks={() => openBooks('done')} onSupport={() => openSupport('done')} onArchive={() => navigate('archive')} onNew={startNewPath} />}
       {screen === 'report' && <Report journey={journey} content={content} onBooks={() => openBooks('report')} onSupport={() => openSupport('report')} onDashboard={() => navigate('dashboard')} onArchive={() => navigate('archive')} onNew={startNewPath} />}
-      {screen === 'archive' && <Archive journey={journey} content={content} showIncomplete={(/(^|\.)github\.io$/i.test(window.location.hostname) || ['localhost', '127.0.0.1'].includes(window.location.hostname) || new URLSearchParams(window.location.search).get('testMode') === '1') && !(window.Telegram?.WebApp || window.TelegramWebviewProxy || window.TelegramWebviewProxyProto || window.BaleWebApp || window.Bale?.WebApp || window.BaleWebviewProxy || window.BaleWebView)} onBack={() => navigate('dashboard')} onNew={startNewPath} onClearArchive={() => patchJourney((previous) => ({ ...previous, archive: [] }))} />}
+      {screen === 'archive' && <Archive journey={journey} content={content} onBack={() => navigate('dashboard')} onNew={startNewPathFromArchive} />}
       {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
       {preview && <BookPreviewModal preview={preview} onClose={() => setPreview(null)} onOpen={() => { const item = preview; setPreview(null); openBook(item.book, item.sourcePage, { day: item.day, sourcePage: item.sourcePage, reason: item.reason, sourceTitle: item.sourceTitle }); }} />}
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}
-      {validation && <ValidationModal data={validation} onClose={() => { setValidation(null); if (pendingStartNewPath) { setPendingStartNewPath(false); const isTestEnvironment = /(^|\.)github\.io$/i.test(window.location.hostname) || ['localhost', '127.0.0.1'].includes(window.location.hostname) || new URLSearchParams(window.location.search).get('testMode') === '1'; const inEmbeddedApp = Boolean(window.Telegram?.WebApp || window.TelegramWebviewProxy || window.TelegramWebviewProxyProto || window.BaleWebApp || window.Bale?.WebApp || window.BaleWebviewProxy || window.BaleWebView); if (isTestEnvironment && !inEmbeddedApp && journey.started && !(journey.completed?.length === 28 && Array.from({ length: 28 }, (_, i) => i + 1).every((day) => journey.completed.includes(day)))) { const archived = cloneForArchive(journey); setJourney((previous) => ({ ...previous, archive: [archived, ...(previous.archive || []).filter((item) => item.pathId !== archived.pathId)].slice(0, 100) })); } setAcknowledgedStartNew(true); navigate('archive'); } }} />}
+      {validation && <ValidationModal data={validation} onClose={() => setValidation(null)} />}
+      {incompleteArchiveNoticeOpen && <div className="validationModal" role="dialog" aria-modal="true" aria-labelledby="incompleteArchiveNoticeTitle"><section className="validationCard"><h2 id="incompleteArchiveNoticeTitle">یادآوری مسیر ناتمام</h2><p>مسیر قبلی هنوز کامل نشده است؛ بنابراین در آرشیو ذخیره نمی‌شود. اگر می‌خواهی مسیر تازه‌ای آغاز کنی، پس از بستن این پیام دوباره دکمه شروع مسیر تازه را بزن.</p><button className="primary" onClick={closeIncompleteArchiveNotice}>متوجه شدم</button></section></div>}
       <Footer />
     </div>
   );
