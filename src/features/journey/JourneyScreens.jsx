@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import SmartSelect from '../../shared/components/SmartSelect.jsx';
 import AppIcon from '../../shared/components/AppIcon.jsx';
 import { buttonLabel } from '../../shared/buttonLabel.jsx';
@@ -21,31 +21,42 @@ export const FEEDBACK_OPTIONS = [{ value: '', label: 'انتخاب کنید' }, 
 
 export function Header({ activeDay = 0 }) {
   const n = Math.max(0, Math.min(28, Number(activeDay) || 0));
-  const progress = Math.round((n / 28) * 100);const [headerHidden, setHeaderHidden] = useState(false);
+  const progress = Math.round((n / 28) * 100);
+  const [headerHidden, setHeaderHidden] = useState(false);
+  const previousYRef = useRef(0);
 
-useEffect(() => {
-  let previousY = window.scrollY;
+  useEffect(() => {
+    previousYRef.current = window.scrollY;
 
-  const handleScroll = () => {
-    const currentY = window.scrollY;
+    let frameId = 0;
+    const handleScroll = () => {
+      if (frameId) return;
+      frameId = window.requestAnimationFrame(() => {
+        frameId = 0;
+        const currentY = Math.max(0, window.scrollY);
+        const delta = currentY - previousYRef.current;
 
-    if (currentY < 40) {
-      setHeaderHidden(false);
-    } else if (currentY < previousY - 5) {
-      setHeaderHidden(true);
-    } else if (currentY > previousY + 5) {
-      setHeaderHidden(false);
-    }
+        // Keep the header visible at the top. Scrolling down hides it;
+        // scrolling back up reveals it. Programmatic scrolls use the same path.
+        if (currentY < 40) {
+          setHeaderHidden(false);
+        } else if (delta > 3) {
+          setHeaderHidden(true);
+        } else if (delta < -3) {
+          setHeaderHidden(false);
+        }
 
-    previousY = currentY;
-  };
+        previousYRef.current = currentY;
+      });
+    };
 
-  window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (frameId) window.cancelAnimationFrame(frameId);
+    };
+  }, []);
 
-  return () => {
-    window.removeEventListener('scroll', handleScroll);
-  };
-}, []);
   return (
     <header className={`header${headerHidden ? ' header-hidden' : ''}`}>
       <div className="brand">
