@@ -140,9 +140,21 @@ function MainApp() {
     setValidation({ title, items: Array.isArray(items) ? items : [items] });
   }
 
-  function navigate(next) {
-    setScreen(next);
-    if (next !== 'bookReader') window.scrollTo({ top: 0, behavior: 'auto' });
+  
+function navigate(next) {
+  // اجازه شروع مسیر تازه فقط تا زمانی معتبر است
+  // که کاربر در صفحه آرشیو باقی مانده باشد.
+  if (screen === 'archive' && next !== 'archive') {
+    setAllowArchiveRestartAfterNotice(false);
+  }
+
+  setScreen(next);
+
+  if (next !== 'bookReader') {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }
+}
+
   }
 
   function patchJourney(updater) {
