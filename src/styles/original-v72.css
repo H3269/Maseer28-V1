@@ -4946,3 +4946,6 @@ body.bale-webview:has(#books.libraryShell) .footerNotice {
   max-height: none !important;
   overflow: visible !important;
 }
+.header.header-hidden {
+  display: none !important;
+}
