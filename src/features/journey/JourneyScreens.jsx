@@ -21,9 +21,33 @@ export const FEEDBACK_OPTIONS = [{ value: '', label: 'انتخاب کنید' }, 
 
 export function Header({ activeDay = 0 }) {
   const n = Math.max(0, Math.min(28, Number(activeDay) || 0));
-  const progress = Math.round((n / 28) * 100);
+  const progress = Math.round((n / 28) * 100);const [headerHidden, setHeaderHidden] = useState(false);
+
+useEffect(() => {
+  let previousY = window.scrollY;
+
+  const handleScroll = () => {
+    const currentY = window.scrollY;
+
+    if (currentY < 40) {
+      setHeaderHidden(false);
+    } else if (currentY < previousY - 5) {
+      setHeaderHidden(true);
+    } else if (currentY > previousY + 5) {
+      setHeaderHidden(false);
+    }
+
+    previousY = currentY;
+  };
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
+
+  return () => {
+    window.removeEventListener('scroll', handleScroll);
+  };
+}, []);
   return (
-    <header className="header">
+    <header className={`header${headerHidden ? ' header-hidden' : ''}`}>
       <div className="brand">
         <img className="logo" src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="لوگوی مرکز هیپنوتراپی شفا" />
         <div><div className="subtitle">مرکز هیپنوتراپی شفا</div><h1>مسیر ۲۸ روزه بازسازی ذهن</h1><div className="subtitle">یک قدم کوچک، هر روز</div></div>
