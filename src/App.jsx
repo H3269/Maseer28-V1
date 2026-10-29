@@ -155,8 +155,6 @@ function navigate(next) {
   }
 }
 
-  }
-
   function patchJourney(updater) {
     setJourney((previous) => typeof updater === 'function' ? updater(previous) : { ...previous, ...updater });
   }
