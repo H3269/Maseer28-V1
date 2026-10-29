@@ -400,5 +400,24 @@ export function Footer() {
 }
 
 export function CopyrightModal({ onAccept }) { return <div className="copyrightModal" id="copyrightModal"><div className="copyrightCard"><div className="copyrightIcon"><AppIcon name="lock" size={24} /></div><h2>احترام به حقوق اثر</h2><p className="muted">محتوای کتاب‌ها، تمرین‌ها و مطالب آموزشی این برنامه متعلق به مرکز هیپنوتراپی شفا و صاحب اثر است و استفاده از آن برای کاربر مجاز برنامه در نظر گرفته شده است.</p><p className="muted">کپی، انتشار، بازنشر، فروش، ارسال برای دیگران یا استفاده تجاری از محتوای کتاب‌ها و مطالب برنامه بدون اجازه صاحب اثر مجاز نیست.</p><p className="muted">برای مطالعه و استفاده قانونی از آثار، لطفاً نسخه اصلی کتاب‌ها را از مرکز هیپنوتراپی شفا تهیه کنید.</p><button className="primary" onClick={onAccept}>{buttonLabel('متوجه شدم و ورود به مسیر را ادامه می‌دهم')}</button></div></div>; }
-export function ValidationModal({ data, onClose }) { return <div className="validationModal" id="validationModal"><div className="validationCard"><span className="badge">تکمیل اطلاعات</span><h2 id="validationTitle">{data.title}</h2><p className="muted">موارد زیر را بررسی کن تا بتوانی ادامه بدهی:</p><ul id="validationList">{data.items.map((item, i) => <li key={`${item}-${i}`}>{item}</li>)}</ul><button className="primary" onClick={onClose}>{buttonLabel('متوجه شدم')}</button></div></div>; }
+export function ValidationModal({ data, onClose }) {
+  const isDailyLock = data.title === 'این روز هنوز فعال نشده است' || data.title === 'این مرحله هنوز فعال نشده است';
+
+  return <div className="validationModal" id="validationModal"><div className="validationCard">
+    <span className="badge">{isDailyLock ? 'یادآوری مهم' : 'تکمیل اطلاعات'}</span>
+    <h2 id="validationTitle">{isDailyLock ? 'هنوز زمان مرحله بعدی نرسیده است' : data.title}</h2>
+    {isDailyLock ? <>
+      <p className="muted">مسیر ۲۸ روزه برای برداشتن قدم‌های کوچک و پیوسته طراحی شده است. هر مرحله پس از تکمیل مرحله قبلی و رسیدن روز تقویمی بعد، در دسترس قرار می‌گیرد.</p>
+      <ul id="validationList">
+        <li>در هر روز فقط یک مرحله جدید از مسیر فعال می‌شود.</li>
+        <li>مرحله بعدی از روز آینده و بر اساس ساعت رسمی ایران باز خواهد شد.</li>
+      </ul>
+      <p className="muted">عجله‌ای نیست؛ به تمرین امروز فرصت بده تا در زندگی‌ات اثر بگذارد. فردا با آمادگی بیشتر، قدم بعدی را بردار.</p>
+    </> : <>
+      <p className="muted">موارد زیر را بررسی کن تا بتوانی ادامه بدهی:</p>
+      <ul id="validationList">{data.items.map((item, i) => <li key={`${item}-${i}`}>{item}</li>)}</ul>
+    </>}
+    <button className="primary" onClick={onClose}>{buttonLabel('متوجه شدم')}</button>
+  </div></div>;
+}
 export function BookPreviewModal({ preview, onClose, onOpen }) { return <div className="bookPreviewModal" id="bookPreviewModal"><div className="bookPreviewCard"><span className="badge">مطالعه پیشنهادی · اختیاری</span><h2 id="bookPreviewTitle"><AppIcon name="bookOpen" size={19} /> مطالعه پیشنهادی روز {fa(preview.day)}</h2><p className="muted" id="bookPreviewMeta">{fa(preview.meta)}</p><article className="bookPreviewText" id="bookPreviewText">{fa(preview.text)}</article><button className="primary" onClick={onOpen}><AppIcon name="bookOpen" size={17} /> رفتن به کتابخانه اختصاصی</button><button className="secondary" onClick={onClose}><AppIcon name="chevronLeft" size={17} /> فعلاً نمی‌خوانم</button></div></div>; }
