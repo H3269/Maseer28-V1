@@ -4754,7 +4754,7 @@ body:not(.bale-webview) .bottomNav button.active b {
 button > svg { vertical-align: -0.22em; }
 .quickAction > span > svg { display: block; color: #087f73; }
 
-/* Maseer28 final targeted fixes: reminder layout and reader viewport */
+/* Maseer28: show the reminder heading and paragraph only once; do not duplicate text with CSS. */
 .footerNotice {
   box-sizing: border-box;
   width: 100%;
@@ -4769,25 +4769,30 @@ button > svg { vertical-align: -0.22em; }
   line-height: 1.85;
   text-align: center;
 }
-
-/* Render the requested four-line reminder text consistently without changing other app copy. */
+.footerNoticeTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-bottom: 3px;
+  color: var(--text);
+}
+.footerNoticeTitle svg {
+  display: inline-block;
+  flex: 0 0 auto;
+  color: var(--primary, var(--text));
+}
+.footerNoticeTitle strong {
+  font-size: 1.05em;
+  font-weight: 850;
+}
 .footerNotice p {
   margin: 0;
-  font-size: 0;
-  font-weight: 600;
-  white-space: normal;
-}
-.footerNotice p strong { display: none; }
-.footerNotice p::after {
-  content: "یک یادآوری مهم\A این برنامه یک مسیر آموزشی برای خودمشاهده‌گری و تمرین روزانه است.\A با آرامش و به‌اندازه توان خود پیش بروید و از تمرین‌ها برای شناخت بهتر افکار، احساسات و الگوهای رفتاری خود استفاده کنید.\A این برنامه جایگزین تشخیص یا درمان تخصصی نیست.";
-  display: block;
-  color: var(--muted);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 500;
+  white-space: normal;
   line-height: 1.85;
-  white-space: pre-line;
 }
-.footerNotice p::after { }
 
 /* Keep the reader fitted to the visible mobile/WebView viewport. */
 .bookReaderFull {
@@ -4842,8 +4847,7 @@ body:has(#books.libraryShell) .app {
   padding-bottom: 0 !important;
   text-align: center !important;
 }
-.footerNotice p,
-.footerNotice p::after {
+.footerNotice p {
   text-align: center !important;
 }
 
