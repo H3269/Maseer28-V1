@@ -481,7 +481,6 @@ function navigate(next) {
   function closeIncompleteArchiveNotice() {
     setIncompleteArchiveNoticeOpen(false);
     setAllowArchiveRestartAfterNotice(true);
-    navigate('archive');
   }
 
   function acceptCopyright() {
