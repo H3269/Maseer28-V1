@@ -3,7 +3,7 @@ import SmartSelect from '../../shared/components/SmartSelect.jsx';
 import AppIcon from '../../shared/components/AppIcon.jsx';
 import { buttonLabel } from '../../shared/buttonLabel.jsx';
 import { fa, formatDate, normalizeDigits } from '../../shared/utils.js';
-import { burdenScoreFromAnswers, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
+import { burdenScoreFromAnswers, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
 
 export const SCALE_QUESTIONS = [
   'این مشکل در حال حاضر چقدر شدت دارد؟',
@@ -400,6 +400,99 @@ export function Footer() {
 }
 
 export function CopyrightModal({ onAccept }) { return <div className="copyrightModal" id="copyrightModal"><div className="copyrightCard"><div className="copyrightIcon"><AppIcon name="lock" size={24} /></div><h2>احترام به حقوق اثر</h2><p className="muted">محتوای کتاب‌ها، تمرین‌ها و مطالب آموزشی این برنامه متعلق به مرکز هیپنوتراپی شفا و صاحب اثر است و استفاده از آن برای کاربر مجاز برنامه در نظر گرفته شده است.</p><p className="muted">کپی، انتشار، بازنشر، فروش، ارسال برای دیگران یا استفاده تجاری از محتوای کتاب‌ها و مطالب برنامه بدون اجازه صاحب اثر مجاز نیست.</p><p className="muted">برای مطالعه و استفاده قانونی از آثار، لطفاً نسخه اصلی کتاب‌ها را از مرکز هیپنوتراپی شفا تهیه کنید.</p><button className="primary" onClick={onAccept}>{buttonLabel('متوجه شدم و ورود به مسیر را ادامه می‌دهم')}</button></div></div>; }
+function nextTehranMidnightMs(nowMs) {
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Tehran',
+    calendar: 'gregory',
+    numberingSystem: 'latn',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hourCycle: 'h23',
+  });
+  const partsToValues = (ms) => Object.fromEntries(
+    formatter.formatToParts(new Date(ms)).map(({ type, value }) => [type, Number(value)])
+  );
+  const today = partsToValues(nowMs);
+  const nextUtcMidnight = Date.UTC(today.year, today.month - 1, today.day + 1);
+  const targetParts = partsToValues(nextUtcMidnight);
+  const targetAsUtc = Date.UTC(
+    targetParts.year,
+    targetParts.month - 1,
+    targetParts.day,
+    targetParts.hour,
+    targetParts.minute,
+    targetParts.second
+  );
+  const tehranOffsetMs = targetAsUtc - nextUtcMidnight;
+  return nextUtcMidnight - tehranOffsetMs;
+}
+
+function DailyLockCountdown() {
+  const [remaining, setRemaining] = useState(null);
+
+  useEffect(() => {
+    let intervalId = null;
+    let active = true;
+
+    async function startCountdown() {
+      const trustedNowMs = await getTrustedNowMs();
+      if (!active || !Number.isFinite(trustedNowMs)) return;
+
+      const hasMonotonicClock = typeof performance !== 'undefined' && typeof performance.now === 'function';
+      const startClock = hasMonotonicClock ? performance.now() : Date.now();
+
+      const update = () => {
+        const currentClock = hasMonotonicClock ? performance.now() : Date.now();
+        const elapsed = Math.max(0, currentClock - startClock);
+        const nowMs = trustedNowMs + elapsed;
+        const remainingMs = nextTehranMidnightMs(nowMs) - nowMs;
+
+        if (remainingMs <= 0) {
+          setRemaining(null);
+          if (intervalId !== null) window.clearInterval(intervalId);
+          return;
+        }
+
+        const totalSeconds = Math.ceil(remainingMs / 1000);
+        setRemaining({
+          seconds: totalSeconds % 60,
+          minutes: Math.floor(totalSeconds / 60) % 60,
+          hours: Math.floor(totalSeconds / 3600),
+        });
+      };
+
+      update();
+      if (active) intervalId = window.setInterval(update, 1000);
+    }
+
+    startCountdown().catch(() => setRemaining(null));
+
+    return () => {
+      active = false;
+      if (intervalId !== null) window.clearInterval(intervalId);
+    };
+  }, []);
+
+  if (!remaining) return null;
+
+  return (
+    <div className="dailyLockCountdown" role="timer" aria-label="زمان باقی‌مانده تا باز شدن مرحله بعدی">
+      <p className="muted dailyLockCountdownTitle">زمان باقی‌مانده تا باز شدن مرحله بعدی</p>
+      <div className="dailyLockCountdownValues" dir="ltr">
+        <div className="dailyLockCountdownUnit"><span className="dailyLockCountdownValue">{fa(String(remaining.seconds).padStart(2, '0'))}</span><small>ثانیه</small></div>
+        <span className="dailyLockCountdownSeparator" aria-hidden="true">:</span>
+        <div className="dailyLockCountdownUnit"><span className="dailyLockCountdownValue">{fa(String(remaining.minutes).padStart(2, '0'))}</span><small>دقیقه</small></div>
+        <span className="dailyLockCountdownSeparator" aria-hidden="true">:</span>
+        <div className="dailyLockCountdownUnit"><span className="dailyLockCountdownValue">{fa(String(remaining.hours).padStart(2, '0'))}</span><small>ساعت</small></div>
+      </div>
+    </div>
+  );
+}
+
 export function ValidationModal({ data, onClose }) {
   const isDailyLock = data.title === 'این روز هنوز فعال نشده است' || data.title === 'این مرحله هنوز فعال نشده است';
 
@@ -408,10 +501,7 @@ export function ValidationModal({ data, onClose }) {
     <h2 id="validationTitle">{isDailyLock ? 'هنوز زمان مرحله بعدی نرسیده است' : data.title}</h2>
     {isDailyLock ? <>
       <p className="muted">مسیر ۲۸ روزه برای برداشتن قدم‌های کوچک و پیوسته طراحی شده است. هر مرحله پس از تکمیل مرحله قبلی و رسیدن روز تقویمی بعد، در دسترس قرار می‌گیرد.</p>
-      <ul id="validationList">
-        <li>در هر روز فقط یک مرحله جدید از مسیر فعال می‌شود.</li>
-        <li>مرحله بعدی از روز آینده و بر اساس ساعت رسمی ایران باز خواهد شد.</li>
-      </ul>
+      <DailyLockCountdown />
       <p className="muted">عجله‌ای نیست؛ به تمرین امروز فرصت بده تا در زندگی‌ات اثر بگذارد. فردا با آمادگی بیشتر، قدم بعدی را بردار.</p>
     </> : <>
       <p className="muted">موارد زیر را بررسی کن تا بتوانی ادامه بدهی:</p>
