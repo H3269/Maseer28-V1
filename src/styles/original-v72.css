@@ -5429,7 +5429,7 @@ body:not(.bale-webview) .bottomNav button.active b {
 }
 
 .app:has(#dashboard) #dashboard {
-  padding: 13px;
+  padding: 13px 13px 19px;
   margin-top: 9px;
 }
 
@@ -5540,7 +5540,7 @@ body:not(.bale-webview) .bottomNav button.active b {
   }
 
   .app:has(#dashboard) #dashboard {
-    padding: 11px;
+    padding: 11px 11px 19px;
     margin-top: 7px;
   }
 
