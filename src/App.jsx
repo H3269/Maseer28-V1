@@ -34,10 +34,10 @@ import {
   DayScreen,
   Done,
   FinalAssessment,
-  Footer,
   Header,
   Home,
   HowWorks,
+  AboutProgram,
   PathSetupScreen,
   ProfileScreen,
   Report,
@@ -489,7 +489,7 @@ function navigate(next) {
   }
 
   if (loadError) return <div className="validationModal"><div className="validationCard"><h2>خطا در بارگذاری برنامه</h2><p className="muted">{loadError}</p></div></div>;
-  if (!content) return <div className="app"><section className="card"><p className="muted">در حال بارگذاری برنامه…</p></section>{copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}</div>;
+  if (!content) return <div className="app appLoading" role="status" aria-live="polite"><div className="loadingBrand"><img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="لوگوی برنامه مسیر" /><span className="loadingPulse" aria-hidden="true" /><h1>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p></div></div>;
 
   const onboardingComplete = Boolean(userProfile && journey.profile && journey.assessment);
 
@@ -509,8 +509,9 @@ function navigate(next) {
   return (
     <div className="app">
       <Header activeDay={headerDay} />
-      {screen === 'home' && <Home onStart={start} onHow={() => navigate('howWorks')} />}
+      {screen === 'home' && <Home onStart={start} onHow={() => navigate('howWorks')} onAbout={() => navigate('about')} />}
       {screen === 'howWorks' && <HowWorks onBack={() => navigate('home')} />}
+      {screen === 'about' && <AboutProgram onBack={() => navigate('home')} />}
       {screen === 'profile' && <ProfileScreen initial={userProfile || journey.profileData} editing={profileEditing} onSave={saveProfile} onCancel={() => navigate(profileReturn || 'dashboard')} onValidation={showValidation} />}
       {screen === 'pathSetup' && <PathSetupScreen initial={journey.profileData} problems={Object.keys(content.categories || {})} onSave={savePathSetup} onEditProfile={() => openProfileEditor('pathSetup')} onValidation={showValidation} />}
       {screen === 'assessment' && <AssessmentScreen initial={journey.assessmentData?.answers} onSave={saveAssessment} onValidation={showValidation} />}
@@ -528,7 +529,6 @@ function navigate(next) {
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}
       {validation && <ValidationModal data={validation} onClose={() => setValidation(null)} />}
       {incompleteArchiveNoticeOpen && <div className="validationModal" role="dialog" aria-modal="true" aria-labelledby="incompleteArchiveNoticeTitle"><section className="validationCard"><span className="badge">یادآوری مهم</span><h2 id="incompleteArchiveNoticeTitle">مسیر ناتمام</h2><p className="muted">{APP_CONFIG.TEST_MODE ? 'مسیر قبلی هنوز کامل نشده است؛ در نسخه آزمایشی ممکن است برای بررسی در آرشیو ذخیره شود. اگر می‌خواهی مسیر تازه‌ای آغاز کنی، پس از بستن این پیام دوباره دکمه شروع مسیر تازه را بزن.' : 'مسیر قبلی هنوز کامل نشده است؛ بنابراین در آرشیو ذخیره نمی‌شود. اگر می‌خواهی مسیر تازه‌ای آغاز کنی، پس از بستن این پیام دوباره دکمه شروع مسیر تازه را بزن.'}</p><button className="primary" onClick={closeIncompleteArchiveNotice}>متوجه شدم</button></section></div>}
-      <Footer />
     </div>
   );
 }

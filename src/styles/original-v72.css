@@ -5557,3 +5557,27 @@ body:not(.bale-webview) .bottomNav button.active b {
     padding: 6px 8px;
   }
 }
+
+/* Coordinated information pages */
+.guidePage > h3 { margin: 22px 0 8px; color: #315D50; font-size: 15px; line-height: 1.7; }
+.guidePage > p, .guidePage > .introBox p { line-height: 2; }
+.guidePage > .introBox p + p { margin-top: 18px; }
+.guidePage .guideList { padding-inline-start: 22px; line-height: 2; }
+.guidePage .guideList li { margin: 7px 0; }
+.guidePage .guideClosing { margin: 20px 0; padding: 13px 15px; border-radius: 13px; background: linear-gradient(145deg,#F4F3EA,#E8EEE6); border: 1px solid #DCE4D9; color: #31584D; }
+.appLoading { min-height: 100svh; display:grid; place-items:center; padding:24px; background:radial-gradient(circle at 50% 42%,#F8F7F0 0%,#E9EEE6 72%,#DFE8E0 100%); }
+.loadingBrand { width:min(100%,360px); display:flex; flex-direction:column; align-items:center; text-align:center; color:#31584D; gap:13px; }
+.loadingBrand img { width:116px; height:116px; object-fit:contain; border-radius:50%; border:3px solid #B99A5B; padding:5px; background:#FFFDF7; box-shadow:0 7px 0 #D7C79F,0 15px 30px #294C3B20,inset 0 1px 0 #FFFFFF; animation:loadingLogoFloat 2.8s ease-in-out infinite; }
+.loadingBrand h1 { margin:5px 0 0; font-size:20px; color:#244A45; }
+.loadingBrand p { margin:0; color:#71817A; font-size:13px; }
+.loadingPulse { width:38px; height:4px; border-radius:10px; background:linear-gradient(90deg,#B99A5B 0 35%,#367D70 35% 70%,#B99A5B 70%); background-size:200% 100%; animation:loadingPulseMove 1.8s ease-in-out infinite; }
+@keyframes loadingLogoFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@keyframes loadingPulseMove { 0%,100%{background-position:100% 0;opacity:.65} 50%{background-position:0 0;opacity:1} }
+.bottomNav button, body.bale-webview .bottomNav button, body:not(.bale-webview) .bottomNav button { background:linear-gradient(145deg,#FBFCF8,#E8EEE7)!important; border:1px solid #D6E0D5!important; box-shadow:0 3px 0 #C4D0C4,0 6px 12px #314A3D12,inset 0 1px 0 #FFFFFF!important; transform:translateY(0)!important; transition:transform .16s ease,box-shadow .16s ease,background .16s ease!important; }
+.bottomNav .navIcon { transition:transform .16s ease,background-color .16s ease,box-shadow .16s ease!important; }
+.bottomNav button.active, body.bale-webview .bottomNav button.active, body:not(.bale-webview) .bottomNav button.active { background:linear-gradient(145deg,#E5EEE5,#D5E4D8)!important; border-color:#B8CCBB!important; box-shadow:0 3px 0 #A9BDAE,0 7px 14px #244A451C,inset 0 1px 0 #FFFFFF!important; }
+.bottomNav button.active .navIcon { background:linear-gradient(145deg,#367D70,#245D53)!important; color:#FFFFFF!important; box-shadow:0 2px 0 #19483F,0 4px 8px #19483F20,inset 0 1px 0 #FFFFFF38!important; }
+.bottomNav button:active, body.bale-webview .bottomNav button:active, body:not(.bale-webview) .bottomNav button:active { transform:translateY(2px)!important; box-shadow:0 1px 0 #C4D0C4,0 2px 5px #314A3D10,inset 0 1px 0 #FFFFFF!important; }
+.bottomNav button.active:active { box-shadow:0 1px 0 #A9BDAE,0 3px 7px #244A4515,inset 0 1px 0 #FFFFFF!important; }
+@media(hover:hover){.bottomNav button:not(:disabled):hover{transform:translateY(-1px)!important;filter:brightness(1.02)}}
+@media(prefers-reduced-motion:reduce){.loadingBrand img,.loadingPulse{animation:none!important}.bottomNav button,.bottomNav .navIcon{transition:none!important}}

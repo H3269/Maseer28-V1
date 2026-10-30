@@ -1,19 +1,29 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#28555b" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="color-scheme" content="light" />
-    <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="icon" href="./app-icon-192.png" />
-    <title>مسیر ۲۸ روزه بازسازی ذهن</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#28555b" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="color-scheme" content="light" />
+<link rel="manifest" href="./manifest.webmanifest" />
+<link rel="icon" href="./app-icon-192.png" />
+<title>مسیر ۲۸ روزه بازسازی ذهن</title>
+<style>
+html,body{margin:0;min-height:100%;background:#E9EEE6}#root{min-height:100svh}
+.initialSplash{min-height:100svh;display:grid;place-items:center;padding:24px;box-sizing:border-box;background:radial-gradient(circle at 50% 42%,#F8F7F0 0%,#E9EEE6 72%,#DFE8E0 100%);color:#31584D;font-family:Tahoma,sans-serif}
+.initialSplashInner{display:flex;flex-direction:column;align-items:center;gap:13px;text-align:center}
+.initialSplash img{width:116px;height:116px;object-fit:contain;border-radius:50%;border:3px solid #B99A5B;padding:5px;background:#FFFDF7;box-shadow:0 7px 0 #D7C79F,0 15px 30px #294C3B20;animation:initialLogoFloat 2.8s ease-in-out infinite}
+.initialSplash h1{margin:5px 0 0;font-size:20px}.initialSplash p{margin:0;color:#71817A;font-size:13px}
+.initialSplash i{width:38px;height:4px;border-radius:10px;background:linear-gradient(90deg,#B99A5B,#367D70,#B99A5B);animation:initialPulse 1.8s ease-in-out infinite alternate}
+@keyframes initialLogoFloat{50%{transform:translateY(-6px)}}@keyframes initialPulse{to{opacity:.45;transform:scaleX(.72)}}
+@media(prefers-reduced-motion:reduce){.initialSplash img,.initialSplash i{animation:none}}
+</style>
+</head>
+<body>
+<div id="root"><div class="initialSplash" role="status" aria-live="polite"><div class="initialSplashInner"><img src="./assets/logo.png" alt="لوگوی برنامه مسیر" /><i aria-hidden="true"></i><h1>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p></div></div></div>
+<script type="module" src="/src/main.jsx"></script>
+</body>
 </html>
