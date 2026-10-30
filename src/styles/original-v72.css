@@ -5019,3 +5019,413 @@ body.bale-webview .header.compact.header-hidden {
   font-size: 10px;
   line-height: 1.4;
 }
+
+/* Maseer28 · Calm Psychology Premium 3D visual test
+   Visual-only layer: no application logic, data, navigation, or storage changes. */
+:root {
+  --primary: #244A45;
+  --primary2: #36786D;
+  --accent: #83A99B;
+  --accent2: #DCE5DC;
+  --navy: #244A45;
+  --navy2: #315D55;
+  --gold: #C1A66B;
+  --gold2: #E4D5AF;
+  --bg: #F3F0E8;
+  --card: #FBFAF6;
+  --text: #293A36;
+  --muted: #718078;
+  --line: #E1E2D9;
+  --ok: #47765F;
+  --okbg: #E7EFE8;
+  --warn: #87683A;
+  --warnbg: #F5EEDC;
+  --danger: #A9544E;
+}
+
+body {
+  background: var(--bg) !important;
+  color: var(--text);
+}
+
+.header,
+.header.compact {
+  background: linear-gradient(142deg, #244A45 0%, #2D5B52 58%, #315D55 100%) !important;
+  color: #FBFAF6;
+  border: 1px solid #D5C49A55;
+  box-shadow: 0 10px 28px #1D40351F, inset 0 1px 0 #FFFFFF20 !important;
+}
+
+.header .subtitle,
+.header .stats {
+  color: #E2EAE3;
+}
+
+.header .progress {
+  background: #FFFFFF2B;
+  box-shadow: inset 0 1px 2px #102B251F;
+}
+
+.header .bar {
+  background: linear-gradient(90deg, #8FB7A6, #D9C18B);
+}
+
+.card {
+  background: var(--card) !important;
+  border: 1px solid #E5E3D9 !important;
+  box-shadow: 0 7px 22px #314A3D0D, 0 1px 2px #314A3D08 !important;
+}
+
+.card:nth-of-type(even) {
+  box-shadow: 0 7px 22px #314A3D0D, 0 1px 2px #314A3D08 !important;
+}
+
+h1, h2, h3,
+.libraryBookInfo h3,
+.metricBox strong {
+  color: var(--navy);
+}
+
+.subtitle,
+.muted,
+.footerNotice {
+  color: var(--muted);
+}
+
+.exercise {
+  background: linear-gradient(140deg, #EAF2EC, #F4F6EF) !important;
+  border-right-color: #7C9F8C !important;
+  box-shadow: inset 0 1px 0 #FFFFFFB8;
+}
+
+.action {
+  background: linear-gradient(140deg, #F3EFE4, #F8F5EC) !important;
+  border-right-color: #B99D68 !important;
+}
+
+.feedback {
+  background: linear-gradient(140deg, #EAF0EF, #F3F5F1) !important;
+  border-right-color: #78958D !important;
+}
+
+.recommendation {
+  background: linear-gradient(140deg, #F1EEE6, #F8F5EC) !important;
+  border-right-color: #B49A69 !important;
+}
+
+.support,
+.profileBox,
+.metricBox,
+.introBox {
+  background: #F8F7F1;
+  border-color: #E2E3D9;
+}
+
+.libraryMark {
+  background: linear-gradient(145deg, #E3ECE5, #F2EBDD);
+  border-color: #DED9C8;
+  color: #315D55;
+}
+
+#books .libraryBook {
+  background: #FBFAF6 !important;
+  border: 1px solid #E5E3D9 !important;
+  box-shadow: 0 5px 16px #314A3D10 !important;
+}
+
+#books .libraryBookInfo h3 {
+  color: #293A36;
+}
+
+.libraryProgress {
+  background: #E4E7DC;
+}
+
+.libraryProgress span {
+  background: #6E9585;
+}
+
+input,
+textarea,
+select,
+.smartSelectButton {
+  color: var(--text);
+  background-color: #FBFAF6;
+  border-color: #D9DED4;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.smartSelectButton:focus-visible {
+  border-color: #6E9889;
+  box-shadow: 0 0 0 3px #6E98891F;
+}
+
+/* Shared tactile button geometry. Navigation and reader-specific controls
+   receive scoped refinements below so their purpose and layout stay intact. */
+button {
+  border: 1px solid #FFFFFF35;
+  border-radius: 14px;
+  font-weight: 750;
+  box-shadow: 0 3px 0 #173E352B, 0 7px 14px #173E3518, inset 0 1px 0 #FFFFFF30;
+  transform: translateY(0);
+  transition: transform .14s ease, box-shadow .14s ease, filter .14s ease, background-color .14s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #173E3520, 0 3px 7px #173E3512, inset 0 1px 0 #FFFFFF18;
+}
+
+button:focus-visible,
+.support a:focus-visible {
+  outline: 2px solid #B99A5B;
+  outline-offset: 3px;
+}
+
+button:disabled,
+button[aria-disabled="true"] {
+  opacity: .52;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.primary {
+  color: #FFFFFF !important;
+  background: linear-gradient(145deg, #367D70, #245D53) !important;
+  border-color: #4D897B !important;
+  box-shadow: 0 4px 0 #19483F, 0 8px 16px #19483F20, inset 0 1px 0 #FFFFFF38 !important;
+}
+
+.secondary {
+  color: #34564D !important;
+  background: linear-gradient(145deg, #E8EEE7, #D8E4DA) !important;
+  border: 1px solid #C9D8CC !important;
+  box-shadow: 0 3px 0 #AEBFB1, 0 7px 13px #304D3C12, inset 0 1px 0 #FFFFFFB8 !important;
+}
+
+.gold {
+  color: #3B382B !important;
+  background: linear-gradient(145deg, #D4BD87, #B99A5B) !important;
+  border: 1px solid #DCC99B !important;
+  box-shadow: 0 4px 0 #927744, 0 8px 15px #80683B20, inset 0 1px 0 #FFFFFF55 !important;
+}
+
+.success {
+  color: #315D48 !important;
+  background: linear-gradient(145deg, #E5F0E7, #D1E3D5) !important;
+  border: 1px solid #C4D9C9 !important;
+  box-shadow: 0 3px 0 #B0C8B6, 0 7px 13px #315D4812, inset 0 1px 0 #FFFFFFB8 !important;
+}
+
+.danger {
+  color: #8F403B !important;
+  background: linear-gradient(145deg, #F7E9E5, #EED5D0) !important;
+  border: 1px solid #E5C4BE !important;
+  box-shadow: 0 3px 0 #D2B0A9, 0 7px 13px #8F403B12, inset 0 1px 0 #FFFFFFB8 !important;
+}
+
+.book button,
+.libraryBook button {
+  color: #FFFFFF !important;
+  background: linear-gradient(145deg, #367D70, #245D53) !important;
+  border: 1px solid #4D897B !important;
+  box-shadow: 0 3px 0 #19483F, 0 6px 12px #19483F1A, inset 0 1px 0 #FFFFFF38 !important;
+}
+
+.smartSelectButton {
+  background: linear-gradient(145deg, #FBFAF6, #E9EEE7) !important;
+  color: #31584D !important;
+  border: 1px solid #D5DED3 !important;
+  box-shadow: 0 3px 0 #C5D1C5, 0 6px 12px #314A3D10, inset 0 1px 0 #FFFFFF !important;
+}
+
+.smartSelectOption {
+  background: #FBFAF6 !important;
+  color: #354B43 !important;
+  border-color: #E0E4DA !important;
+  box-shadow: 0 2px 0 #E0E4DA, 0 3px 7px #314A3D08 !important;
+}
+
+.smartSelectOption.selected,
+.smartSelectOption:hover {
+  background: #E2EBE2 !important;
+  color: #244A45 !important;
+  border-color: #B9CDBD !important;
+}
+
+.scaleOption {
+  background: linear-gradient(145deg, #F5F5EE, #E5EAE1) !important;
+  color: #3C5A50 !important;
+  border: 1px solid #DCE3D8 !important;
+  box-shadow: 0 3px 0 #CCD7CC, 0 5px 10px #314A3D0C, inset 0 1px 0 #FFFFFF !important;
+}
+
+.scaleOption.selected {
+  background: linear-gradient(145deg, #367D70, #245D53) !important;
+  color: #FFFFFF !important;
+  border-color: #4D897B !important;
+  box-shadow: 0 3px 0 #19483F, 0 6px 12px #19483F20, inset 0 1px 0 #FFFFFF30 !important;
+  transform: translateY(-1px);
+}
+
+.daydot {
+  background: #E7EBE4;
+  color: #63736A;
+  border: 1px solid #D7DED4;
+  box-shadow: 0 2px 0 #C9D2C7, 0 3px 6px #314A3D0A;
+}
+
+.daydot.done {
+  background: #DCE9DE;
+  color: #3D7053;
+  border-color: #C5D8C8;
+}
+
+.daydot.current {
+  outline-color: #B99A5B;
+}
+
+.ghostButton {
+  background: transparent !important;
+  color: var(--muted) !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.iconButton,
+.readerIcon {
+  background: linear-gradient(145deg, #F4F3EB, #E4E7DE);
+  color: #36594E;
+  border: 1px solid #D7DED3;
+  box-shadow: 0 3px 0 #C7D1C6, 0 5px 10px #314A3D10, inset 0 1px 0 #FFFFFF !important;
+}
+
+.bookTocToggle,
+.bookTocClose {
+  background: linear-gradient(145deg, #E8EEE7, #D8E4DA) !important;
+  color: #34564D !important;
+  border: 1px solid #C9D8CC !important;
+  box-shadow: 0 3px 0 #AEBFB1, 0 6px 12px #304D3C12, inset 0 1px 0 #FFFFFFB8 !important;
+}
+
+.bookTocEntry {
+  background: #F7F7F0;
+  border-color: #E0E4DA;
+  box-shadow: 0 2px 0 #E0E4DA;
+}
+
+.readerTools button,
+.readerNav,
+.readerCenter {
+  background: linear-gradient(145deg, #F0EEE6, #E2E0D6) !important;
+  color: #485A52 !important;
+  border: 1px solid #D8D7CC !important;
+  box-shadow: 0 2px 0 #C9C8BE, 0 4px 9px #293B3510, inset 0 1px 0 #FFFFFFB8 !important;
+}
+
+.bookReaderFull.theme-night .readerIcon,
+.bookReaderFull.theme-night .readerNav,
+.bookReaderFull.theme-night .readerCenter,
+.bookReaderFull.theme-night .readerTools button {
+  background: linear-gradient(145deg, #344443, #293837) !important;
+  color: #E6ECE9 !important;
+  border-color: #465856 !important;
+  box-shadow: 0 2px 0 #1B2928, 0 4px 9px #00000030, inset 0 1px 0 #FFFFFF12 !important;
+}
+
+#bookReader .readerSoundButton.soundOn {
+  background: #DCE9DE !important;
+  color: #315D48 !important;
+  border: 1px solid #C5D8C8 !important;
+}
+
+#bookReader .readerSoundButton.soundOff {
+  background: #EAE8E0 !important;
+  color: #77756E !important;
+  border: 1px solid #DAD7CD !important;
+}
+
+#bookReader.theme-night .readerSoundButton.soundOn {
+  background: #30413F !important;
+  color: #DCEBE6 !important;
+  border-color: #465856 !important;
+}
+
+#bookReader.theme-night .readerSoundButton.soundOff {
+  background: #333D3D !important;
+  color: #9BA5A2 !important;
+  border-color: #46504F !important;
+}
+
+/* Bottom navigation stays deliberately flat: it is orientation, not an action CTA. */
+.bottomNav button,
+body.bale-webview .bottomNav button,
+body:not(.bale-webview) .bottomNav button {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: color .14s ease, opacity .14s ease !important;
+}
+
+.bottomNav button:active,
+body.bale-webview .bottomNav button:active,
+body:not(.bale-webview) .bottomNav button:active {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+body.bale-webview .bottomNav button.active,
+body:not(.bale-webview) .bottomNav button.active {
+  color: #244A45 !important;
+}
+
+body.bale-webview .bottomNav button.active .navIcon,
+body:not(.bale-webview) .bottomNav button.active .navIcon {
+  background: #244A45 !important;
+  color: #FFFFFF !important;
+}
+
+body.bale-webview .bottomNav button.active b,
+body:not(.bale-webview) .bottomNav button.active b {
+  color: #244A45 !important;
+}
+
+.support a {
+  border: 1px solid #D7E0D7;
+  box-shadow: 0 3px 0 #C7D3C8, 0 6px 12px #314A3D10, inset 0 1px 0 #FFFFFFB8;
+  transition: transform .14s ease, box-shadow .14s ease, filter .14s ease;
+}
+
+.support a:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #C7D3C8, 0 3px 6px #314A3D0C;
+}
+
+.support a.sms {
+  background: #E4EEE5;
+  color: #315D48;
+}
+
+.support a.telegram {
+  background: #E8EEEF;
+  color: #3D626B;
+}
+
+@media (hover: hover) {
+  button:not(:disabled):hover,
+  .support a:hover {
+    filter: brightness(1.025);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button,
+  .support a {
+    transition: none !important;
+  }
+}
