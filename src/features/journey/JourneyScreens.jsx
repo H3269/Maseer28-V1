@@ -483,11 +483,11 @@ function DailyLockCountdown() {
     <div className="dailyLockCountdown" role="timer" aria-label="زمان باقی‌مانده تا باز شدن مرحله بعدی">
       <p className="muted dailyLockCountdownTitle">زمان باقی‌مانده تا باز شدن مرحله بعدی</p>
       <div className="dailyLockCountdownValues" dir="ltr">
-        <div className="dailyLockCountdownUnit"><span className="dailyLockCountdownValue">{fa(String(remaining.seconds).padStart(2, '0'))}</span><small>ثانیه</small></div>
+        <div className="dailyLockCountdownUnit"><span className="dailyLockCountdownValue">{fa(String(remaining.hours).padStart(2, '0'))}</span><small>ساعت</small></div>
         <span className="dailyLockCountdownSeparator" aria-hidden="true">:</span>
         <div className="dailyLockCountdownUnit"><span className="dailyLockCountdownValue">{fa(String(remaining.minutes).padStart(2, '0'))}</span><small>دقیقه</small></div>
         <span className="dailyLockCountdownSeparator" aria-hidden="true">:</span>
-        <div className="dailyLockCountdownUnit"><span className="dailyLockCountdownValue">{fa(String(remaining.hours).padStart(2, '0'))}</span><small>ساعت</small></div>
+        <div className="dailyLockCountdownUnit"><span className="dailyLockCountdownValue">{fa(String(remaining.seconds).padStart(2, '0'))}</span><small>ثانیه</small></div>
       </div>
     </div>
   );
