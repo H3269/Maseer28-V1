@@ -4975,3 +4975,47 @@ body.bale-webview .header.compact.header-hidden {
   opacity: 0 !important;
   pointer-events: none !important;
 }
+
+/* Daily lock countdown: inline typography only, shared by Telegram and Bale WebViews. */
+.dailyLockCountdown {
+  margin: 14px 0 16px;
+  text-align: center;
+}
+.dailyLockCountdownTitle {
+  margin: 0 0 10px !important;
+  font-size: 12px;
+  line-height: 1.8;
+}
+.dailyLockCountdownValues {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: clamp(8px, 3vw, 16px);
+  direction: ltr;
+}
+.dailyLockCountdownUnit {
+  min-width: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.dailyLockCountdownValue {
+  color: #14564F;
+  font-size: clamp(26px, 7vw, 32px);
+  font-weight: 850;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.dailyLockCountdownSeparator {
+  padding-top: 1px;
+  color: #F0C65B;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1;
+}
+.dailyLockCountdownUnit small {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
