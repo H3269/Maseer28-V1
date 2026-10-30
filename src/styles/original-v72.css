@@ -5379,6 +5379,28 @@ body:not(.bale-webview) .bottomNav button.active b {
 }
 
 
+/* Keep the four dashboard shortcuts uniformly narrower than the card content. */
+#dashboard .quickGrid {
+  width: calc(100% - 20px);
+  margin-inline: auto;
+}
+
+#dashboard .quickAction {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Match the library card's bottom inset to standard cards. */
+.app:has(#books.libraryShell) #books.libraryShell {
+  padding-bottom: 20px !important;
+}
+
+@media (max-width: 390px) {
+  .app:has(#books.libraryShell) #books.libraryShell {
+    padding-bottom: 17px !important;
+  }
+}
+
 /* Paragraph-only footer disclaimer: no reminder heading or warning icon. */
 .footerNotice {
   box-sizing: border-box;
