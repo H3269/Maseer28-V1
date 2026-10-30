@@ -34,6 +34,7 @@ import {
   DayScreen,
   Done,
   FinalAssessment,
+  Footer,
   Header,
   Home,
   HowWorks,
@@ -527,6 +528,7 @@ function navigate(next) {
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}
       {validation && <ValidationModal data={validation} onClose={() => setValidation(null)} />}
       {incompleteArchiveNoticeOpen && <div className="validationModal" role="dialog" aria-modal="true" aria-labelledby="incompleteArchiveNoticeTitle"><section className="validationCard"><span className="badge">یادآوری مهم</span><h2 id="incompleteArchiveNoticeTitle">مسیر ناتمام</h2><p className="muted">{APP_CONFIG.TEST_MODE ? 'مسیر قبلی هنوز کامل نشده است؛ در نسخه آزمایشی ممکن است برای بررسی در آرشیو ذخیره شود. اگر می‌خواهی مسیر تازه‌ای آغاز کنی، پس از بستن این پیام دوباره دکمه شروع مسیر تازه را بزن.' : 'مسیر قبلی هنوز کامل نشده است؛ بنابراین در آرشیو ذخیره نمی‌شود. اگر می‌خواهی مسیر تازه‌ای آغاز کنی، پس از بستن این پیام دوباره دکمه شروع مسیر تازه را بزن.'}</p><button className="primary" onClick={closeIncompleteArchiveNotice}>متوجه شدم</button></section></div>}
+      <Footer />
     </div>
   );
 }
