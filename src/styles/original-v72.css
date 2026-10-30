@@ -460,31 +460,6 @@
       font-size: 13px
     }
 
-    .footerNotice {
-      box-sizing: border-box;
-      width: 100%;
-      max-width: 640px;
-      margin: 12px auto 20px;
-      padding: 0 16px;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.9;
-      text-align: right;
-    }
-
-    .footerNotice p {
-      margin: 0;
-    }
-
-    .footerNotice strong {
-      color: var(--text);
-      font-size: 1.05em;
-      font-weight: 850;
-    }
-
     .exercise {
       background: #eef8f6;
       border-right: 4px solid var(--primary2)
@@ -4754,46 +4729,6 @@ body:not(.bale-webview) .bottomNav button.active b {
 button > svg { vertical-align: -0.22em; }
 .quickAction > span > svg { display: block; color: #087f73; }
 
-/* Maseer28: show the reminder heading and paragraph only once; do not duplicate text with CSS. */
-.footerNotice {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 640px;
-  margin: 10px auto 12px;
-  padding: 0 16px;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.85;
-  text-align: center;
-}
-.footerNoticeTitle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  margin-bottom: 3px;
-  color: var(--text);
-}
-.footerNoticeTitle svg {
-  display: inline-block;
-  flex: 0 0 auto;
-  color: var(--primary, var(--text));
-}
-.footerNoticeTitle strong {
-  font-size: 1.05em;
-  font-weight: 850;
-}
-.footerNotice p {
-  margin: 0;
-  font-size: 11px;
-  font-weight: 500;
-  white-space: normal;
-  line-height: 1.85;
-}
-
 /* Keep the reader fitted to the visible mobile/WebView viewport. */
 .bookReaderFull {
   box-sizing: border-box;
@@ -4813,7 +4748,7 @@ button > svg { vertical-align: -0.22em; }
 /* Maseer28: keep the library page bottom spacing aligned with the other app pages. */
 .app:has(#books.libraryShell) {
   min-height: 100dvh;
-  padding-bottom: calc(96px + env(safe-area-inset-bottom)) !important;
+  padding-bottom: calc(76px + env(safe-area-inset-bottom)) !important;
 }
 
 .app:has(#books.libraryShell) #books.libraryShell {
@@ -4827,12 +4762,6 @@ button > svg { vertical-align: -0.22em; }
   margin-bottom: 0 !important;
 }
 
-.app:has(#books.libraryShell) .footerNotice {
-  margin-top: 8px !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-}
-
 /* Use the app background instead of a white-looking blank tail in mobile WebViews. */
 body:has(#books.libraryShell),
 body:has(#books.libraryShell) .app {
@@ -4840,30 +4769,18 @@ body:has(#books.libraryShell) .app {
 }
 
 
-/* Maseer28: consistent reminder footer spacing across all app pages. */
-.footerNotice {
-  margin-top: 8px !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-  text-align: center !important;
-}
-.footerNotice p {
-  text-align: center !important;
-}
-
-
 /* Bale-only: match the app-wide bottom gap to the library page.
    Telegram layout remains unchanged. */
 html.bale-webview body .app,
 body.bale-webview .app {
-  padding-bottom: calc(64px + env(safe-area-inset-bottom)) !important;
+  padding-bottom: calc(76px + env(safe-area-inset-bottom)) !important;
 }
 
 /* Bale-only: override the more-specific library rule so its bottom gap
    matches every other page. Keep Telegram's 96px library spacing unchanged. */
 html.bale-webview body .app:has(#books.libraryShell),
 body.bale-webview .app:has(#books.libraryShell) {
-  padding-bottom: calc(64px + env(safe-area-inset-bottom)) !important;
+  padding-bottom: calc(76px + env(safe-area-inset-bottom)) !important;
 }
 
 html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell,
@@ -4871,12 +4788,6 @@ body.bale-webview .app:has(#books.libraryShell) #books.libraryShell {
   /* Restore the same small breathing room below the back button as other pages. */
   padding-bottom: 12px !important;
 }
-
-body.bale-webview:has(#books.libraryShell) .footerNotice {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-}
-
 
 /* The whole recommendation card opens/closes the explanation drawer. */
 .bookReaderFull #bookTarget.readerTarget[role="button"] { cursor: pointer; }
@@ -5031,7 +4942,8 @@ body.bale-webview .header.compact.header-hidden {
   --navy2: #315D55;
   --gold: #C1A66B;
   --gold2: #E4D5AF;
-  --bg: #F8F6F0;
+  --bg: #FDFCF8;
+  --card: #FFFFFF;
   --card: #FBFAF6;
   --text: #293A36;
   --muted: #718078;
@@ -5087,8 +4999,7 @@ h1, h2, h3,
 }
 
 .subtitle,
-.muted,
-.footerNotice {
+.muted {
   color: var(--muted);
 }
 
@@ -5431,17 +5342,39 @@ body:not(.bale-webview) .bottomNav button.active b {
 }
 
 
-/* Header readability and alignment refinements; keep logo and progress metadata in place. */
+/* Center header copy against the full header width while anchoring the logo at the right. */
 .header .brand {
+  position: relative;
   direction: rtl;
+  justify-content: center;
+}
+
+.header .brand .logo {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .header .brand > div {
-  flex: 1;
+  width: 100%;
+  flex: 0 0 100%;
   min-width: 0;
+  padding-inline: 64px;
+  text-align: center;
+}
+
+.header h1,
+.header .subtitle {
   text-align: center;
 }
 
 .header h1 {
   color: #E2EAE3 !important;
+}
+
+/* Keep enough scroll clearance above the fixed bottom navigation after footer removal. */
+.app,
+.app:has(#books.libraryShell) {
+  padding-bottom: calc(76px + env(safe-area-inset-bottom)) !important;
 }
