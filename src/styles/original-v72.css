@@ -5031,7 +5031,7 @@ body.bale-webview .header.compact.header-hidden {
   --navy2: #315D55;
   --gold: #C1A66B;
   --gold2: #E4D5AF;
-  --bg: #F3F0E8;
+  --bg: #F8F6F0;
   --card: #FBFAF6;
   --text: #293A36;
   --muted: #718078;
@@ -5428,4 +5428,20 @@ body:not(.bale-webview) .bottomNav button.active b {
   .support a {
     transition: none !important;
   }
+}
+
+
+/* Header readability and alignment refinements; keep logo and progress metadata in place. */
+.header .brand {
+  direction: rtl;
+}
+
+.header .brand > div {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+.header h1 {
+  color: #E2EAE3 !important;
 }
