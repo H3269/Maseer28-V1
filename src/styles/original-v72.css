@@ -5377,3 +5377,24 @@ body:not(.bale-webview) .bottomNav button.active b {
 .app:has(#books.libraryShell) {
   padding-bottom: calc(76px + env(safe-area-inset-bottom)) !important;
 }
+
+
+/* Paragraph-only footer disclaimer: no reminder heading or warning icon. */
+.footerNotice {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 640px;
+  margin: 8px auto 0;
+  padding: 0 16px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.85;
+  text-align: center;
+}
+
+.footerNotice p {
+  margin: 0;
+  white-space: normal;
+}
