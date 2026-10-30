@@ -392,7 +392,7 @@ export function BottomNav({ screen, onHome, onProfile, onBooks, onSupport }) {
 export function Footer() {
   return <aside className="footerNotice" role="note" aria-label="یادآوری مهم">
     <div className="footerNoticeTitle">
-      <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m10.3 3.9-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3.1l-8-14a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+      <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m10.3 3.9-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3.1l-8-14a2 2 0 0 0-3.4 0Z" fill="#F0C65B" fillOpacity="0.42"/><path d="M12 9v4M12 17h.01"/></svg>
       <strong>یادآوری مهم</strong>
     </div>
     <p>این برنامه یک مسیر آموزشی برای خودمشاهده‌گری و تمرین روزانه است. با آرامش و به‌اندازه توان خود پیش بروید و از تمرین‌ها برای شناخت بهتر افکار، احساسات و الگوهای رفتاری خود استفاده کنید. این برنامه جایگزین تشخیص یا درمان تخصصی نیست.</p>
