@@ -390,6 +390,12 @@ export function BottomNav({ screen, onHome, onProfile, onBooks, onSupport }) {
   return <nav className="bottomNav" id="bottomNav" aria-label="ناوبری اصلی"><button data-view="dashboard" className={active === 'dashboard' ? 'active' : ''} aria-current={active === 'dashboard' ? 'page' : undefined} onClick={onHome}><span className="navIcon"><NavIcon name="home" /></span><b>خانه</b></button><button data-view="profile" className={active === 'profile' ? 'active' : ''} aria-current={active === 'profile' ? 'page' : undefined} onClick={onProfile}><span className="navIcon"><NavIcon name="profile" /></span><b>پروفایل</b></button><button data-view="books" className={active === 'books' ? 'active' : ''} aria-current={active === 'books' ? 'page' : undefined} onClick={onBooks}><span className="navIcon"><NavIcon name="books" /></span><b>مطالعه</b></button><button data-view="support" className={active === 'support' ? 'active' : ''} aria-current={active === 'support' ? 'page' : undefined} onClick={onSupport}><span className="navIcon"><NavIcon name="support" /></span><b>ارتباط</b></button></nav>;
 }
 
+export function Footer() {
+  return <aside className="footerNotice" role="note">
+    <p>این برنامه یک مسیر آموزشی برای خودمشاهده‌گری و تمرین روزانه است. با آرامش و به‌اندازه توان خود پیش بروید و از تمرین‌ها برای شناخت بهتر افکار، احساسات و الگوهای رفتاری خود استفاده کنید. این برنامه جایگزین تشخیص یا درمان تخصصی نیست.</p>
+  </aside>;
+}
+
 export function CopyrightModal({ onAccept }) { return <div className="copyrightModal" id="copyrightModal"><div className="copyrightCard"><div className="copyrightIcon"><AppIcon name="lock" size={24} /></div><h2>احترام به حقوق اثر</h2><p className="muted">محتوای کتاب‌ها، تمرین‌ها و مطالب آموزشی این برنامه متعلق به مرکز هیپنوتراپی شفا و صاحب اثر است و استفاده از آن برای کاربر مجاز برنامه در نظر گرفته شده است.</p><p className="muted">کپی، انتشار، بازنشر، فروش، ارسال برای دیگران یا استفاده تجاری از محتوای کتاب‌ها و مطالب برنامه بدون اجازه صاحب اثر مجاز نیست.</p><p className="muted">برای مطالعه و استفاده قانونی از آثار، لطفاً نسخه اصلی کتاب‌ها را از مرکز هیپنوتراپی شفا تهیه کنید.</p><button className="primary" onClick={onAccept}>{buttonLabel('متوجه شدم و ورود به مسیر را ادامه می‌دهم')}</button></div></div>; }
 function nextTehranMidnightMs(nowMs) {
   const formatter = new Intl.DateTimeFormat('en-US', {
