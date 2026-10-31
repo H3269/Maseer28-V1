@@ -3,7 +3,7 @@ import AppIcon from './components/AppIcon.jsx';
 
 const BUTTON_ICONS = [
   ['شروع مسیر', 'rocket'], ['متوجه شدم', 'check'], ['ادامه به ارزیابی', 'arrow'],
-  ['ثبت و شروع', 'save'], ['ادامه مسیر', 'play'], ['کتابخانه', 'book'],
+  ['ثبت و شروع', 'save'], ['ادامه مسیر', 'play'], ['کتابخانه', 'bookOpen'],
   ['عضویت درکانال', 'megaphone'], ['پشتیبانی', 'headset'], ['ثبت امروز', 'save'],
   ['ثبت ارزیابی', 'save'], ['روز قبل', 'chevronLeft'], ['داشبورد', 'home'],
   ['مطالعه جلد', 'bookOpen'], ['بازگشت', 'chevronLeft'], ['شروع مسیر تازه', 'arrow'],
