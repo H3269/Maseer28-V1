@@ -5567,7 +5567,7 @@ body:not(.bale-webview) .bottomNav button.active b {
 .guidePage .guideClosing { margin: 20px 0; padding: 13px 15px; border-radius: 13px; background: linear-gradient(145deg,#F4F3EA,#E8EEE6); border: 1px solid #DCE4D9; color: #31584D; }
 .appLoading { min-height: 100svh; display:grid; place-items:center; padding:24px; background:radial-gradient(circle at 50% 42%,#F8F7F0 0%,#E9EEE6 72%,#DFE8E0 100%); }
 .loadingBrand { width:min(100%,360px); display:flex; flex-direction:column; align-items:center; text-align:center; color:#31584D; gap:13px; }
-.loadingBrand img { width:116px; height:116px; object-fit:contain; border-radius:50%; border:3px solid #B99A5B; padding:5px; background:#FFFDF7; box-shadow:0 7px 0 #D7C79F,0 15px 30px #294C3B20,inset 0 1px 0 #FFFFFF; animation:loadingLogoEnter 1.05s cubic-bezier(.2,.8,.2,1) both; }
+.loadingBrand img { width:174px; height:174px; object-fit:contain; border-radius:50%; border:3px solid #B99A5B; padding:5px; background:#FFFDF7; box-shadow:0 7px 0 #D7C79F,0 15px 30px #294C3B20,inset 0 1px 0 #FFFFFF; animation:loadingLogoEnter 1.05s cubic-bezier(.2,.8,.2,1) both; }
 .loadingBrand h1,.loadingBrand p,.loadingPulse { opacity:0; transform:translateY(9px); animation:loadingTextReveal .55s ease-out .72s both; }
 .loadingBrand h1 { margin:5px 0 0; font-size:20px; color:#244A45; }
 .loadingBrand p { margin:0; color:#71817A; font-size:13px; }
