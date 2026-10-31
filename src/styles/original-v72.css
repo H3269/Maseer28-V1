@@ -5997,3 +5997,71 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
 .smartSelectOption {
   margin: 0 !important;
 }
+
+
+/* Maseer28: clean, frameless loading mark with a slower center-out reveal. */
+.appLoading .loadingBrand {
+  opacity: 1 !important;
+  clip-path: none !important;
+  animation: none !important;
+}
+.appLoading .loadingBrand img {
+  display: block !important;
+  width: 174px !important;
+  height: 174px !important;
+  max-width: 70vw !important;
+  object-fit: contain !important;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  clip-path: circle(75% at 50% 50%) !important;
+  opacity: 1 !important;
+  transform-origin: center !important;
+  animation: loadingLogoBloom 2.4s cubic-bezier(.18,.72,.22,1) both !important;
+}
+.appLoading .loadingBrand h1,
+.appLoading .loadingBrand p {
+  opacity: 0 !important;
+  transform: translateY(9px) !important;
+  animation: loadingTextBloomReveal .7s ease-out both !important;
+}
+.appLoading .loadingBrand h1 { animation-delay: .65s !important; }
+.appLoading .loadingBrand p { animation-delay: .9s !important; }
+.appLoading .loadingProgress {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: loadingTextBloomReveal .65s ease-out 1.15s both;
+}
+@keyframes loadingLogoBloom {
+  0% { opacity: 0; clip-path: circle(0% at 50% 50%); transform: scale(.82); }
+  70% { opacity: 1; clip-path: circle(75% at 50% 50%); transform: scale(1.035); }
+  100% { opacity: 1; clip-path: circle(75% at 50% 50%); transform: scale(1); }
+}
+@keyframes loadingTextBloomReveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .appLoading .loadingBrand,
+  .appLoading .loadingBrand img,
+  .appLoading .loadingBrand h1,
+  .appLoading .loadingBrand p,
+  .appLoading .loadingProgress,
+  .appLoading .loadingProgressSegment {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+}
+
+/* Keep all three daily-result actions on the app-wide 14px vertical rhythm. */
+.app > section.card#dailyResult .navrow {
+  margin-top: 14px !important;
+  gap: 14px !important;
+}
+.app > section.card#dailyResult .navrow > button {
+  margin-top: 0 !important;
+}
