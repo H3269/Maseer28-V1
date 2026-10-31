@@ -49,16 +49,30 @@ import {
 } from './features/journey/JourneyScreens.jsx';
 import { fa } from './shared/utils.js';
 
+function isPathSetupComplete(state) {
+  const data = state?.profileData;
+  const years = Number(data?.durationYears);
+  const months = Number(data?.durationMonths);
+  return Boolean(
+    state?.profile
+    && typeof data?.problem === 'string'
+    && data.problem.trim()
+    && typeof data?.goal === 'string'
+    && data.goal.trim()
+    && Number.isInteger(years) && years >= 0 && years <= 100
+    && Number.isInteger(months) && months >= 0 && months <= 11
+  );
+}
+
 function initialSnapshot() {
   const state = loadJourneyState();
   const user = migrateUserProfileFromJourney(state) || loadUserProfile();
   // Restart policy: after onboarding is complete, every fresh app launch opens
-  // the dashboard. Reading progress is saved per book and is restored only
-  // after the user intentionally opens that book again.
+  // the dashboard. An unfinished path setup always takes priority over baseline.
   let screen = 'dashboard';
   if (!state.started) screen = 'home';
   else if (!user) screen = 'profile';
-  else if (!state.profile) screen = 'pathSetup';
+  else if (!isPathSetupComplete(state)) screen = 'pathSetup';
   else if (!state.assessment) screen = 'assessment';
   const onboardingComplete = loadOnboardingComplete(state, user);
   return { state, user, screen, onboardingComplete };
@@ -228,14 +242,27 @@ function navigate(next) {
 
   function start() {
     const nextState = { ...journey, started: true, pathId: journey.pathId || createPathId() };
-    setJourney(nextState);
+    const nextScreen = !userProfile
+      ? 'profile'
+      : !isPathSetupComplete(nextState)
+        ? 'pathSetup'
+        : !nextState.assessment
+          ? 'assessment'
+          : 'dashboard';
+    const persistedState = { ...nextState, lastView: nextScreen };
+    try {
+      saveJourneyState(persistedState);
+    } catch {
+      return showValidation(['ذخیره وضعیت مسیر انجام نشد.', 'لطفاً فضای ذخیره‌سازی دستگاه را بررسی و دوباره تلاش کن.'], 'امکان ادامه مسیر نیست');
+    }
+    setJourney(persistedState);
     if (!userProfile) {
       setProfileEditing(false);
       setProfileReturn('pathSetup');
       navigate('profile');
-    } else if (!nextState.profile) navigate('pathSetup');
-    else if (!nextState.assessment) navigate('assessment');
-    else navigate('dashboard');
+    } else {
+      navigate(nextScreen);
+    }
   }
 
   function openProfileEditor(returnTo = 'dashboard') {
@@ -261,17 +288,32 @@ function navigate(next) {
 
   function savePathSetup(path) {
     if (!userProfile) return showValidation(['پروفایل شخصی'], 'اطلاعات مسیر هنوز کامل نشده است');
-    patchJourney((previous) => ({
-      ...previous,
+    const nextJourney = {
+      ...journey,
       started: true,
       profile: true,
-      profileData: { ...(previous.profileData || {}), ...userProfile, ...path, code: previous.profileData?.code || createClientCode() },
-      pathId: previous.pathId || createPathId(),
-    }));
+      profileData: { ...(journey.profileData || {}), ...userProfile, ...path, code: journey.profileData?.code || createClientCode() },
+      pathId: journey.pathId || createPathId(),
+      lastView: 'assessment',
+    };
+    if (!isPathSetupComplete(nextJourney)) {
+      return showValidation(['موضوع مسیر', 'مدت درگیری', 'نتیجه ارزشمند مورد انتظار'], 'اطلاعات مسیر هنوز کامل نشده است');
+    }
+    // Persist the completed path setup before allowing the baseline assessment.
+    try {
+      saveJourneyState(nextJourney);
+    } catch {
+      return showValidation(['ذخیره اطلاعات مسیر انجام نشد.', 'تا زمان ثبت موفق، ارزیابی اولیه باز نمی‌شود.'], 'ثبت انتخاب مشکل انجام نشد');
+    }
+    setJourney(nextJourney);
     navigate('assessment');
   }
 
   async function saveAssessment(answers) {
+    if (!isPathSetupComplete(journey)) {
+      navigate('pathSetup');
+      return showValidation(['ابتدا انتخاب مشکل و اطلاعات مسیر را کامل و ثبت کن.'], 'مرحله انتخاب مشکل هنوز ثبت نشده است');
+    }
     const trustedNow = APP_CONFIG.TIME_LOCK_ENABLED ? await getTrustedNowMs() : Date.now();
     if (trustedNow == null) {
       return showValidation(
@@ -538,6 +580,14 @@ function navigate(next) {
     fresh.started = true;
     fresh.pathId = createPathId();
     fresh.startedAt = null;
+    fresh.lastView = 'pathSetup';
+    // The new path must be durable before leaving the archive or showing setup.
+    try {
+      saveJourneyState(fresh);
+    } catch {
+      showValidation(['ذخیره مسیر تازه انجام نشد.', 'آرشیو و مسیر فعلی بدون تغییر باقی ماندند.'], 'شروع مسیر تازه انجام نشد');
+      return;
+    }
     setJourney(fresh);
     setCurrentDay(1);
     setResultDay(null);
