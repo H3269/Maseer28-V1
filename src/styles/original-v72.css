@@ -6214,17 +6214,30 @@ h1, h2, h3, .libraryBookInfo h3, .metricBox strong { color: var(--m28-ink); }
 .app button.secondary:hover,
 .app button.ghostButton:hover,
 .app button.libraryBack:hover { background: #F0F1E9 !important; }
-.app button:active,
 .app button.primary:active,
 .app button.secondary:active,
 .app button.gold:active,
 .app button.success:active,
-.app button.danger:active {
+.app button.danger:active,
+.app button.sms:active,
+.app button.copyAction:active,
+.app button.ghostButton:active,
+.app button.libraryBack:active,
+.app .libraryBook button:active {
   transform: none !important;
   box-shadow: none !important;
   filter: brightness(.98);
 }
-.app button:disabled {
+.app button.primary:disabled,
+.app button.secondary:disabled,
+.app button.gold:disabled,
+.app button.success:disabled,
+.app button.danger:disabled,
+.app button.sms:disabled,
+.app button.copyAction:disabled,
+.app button.ghostButton:disabled,
+.app button.libraryBack:disabled,
+.app .libraryBook button:disabled {
   opacity: .52;
   box-shadow: none !important;
   transform: none !important;
