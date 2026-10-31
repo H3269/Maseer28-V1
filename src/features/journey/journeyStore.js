@@ -32,6 +32,7 @@ export function defaultJourneyState() {
     profileData: null,
     assessmentData: null,
     archive: [],
+    archiveCleanupReady: false,
     pathId: null,
     startedAt: null,
     lastView: 'home',
@@ -186,6 +187,7 @@ export function sanitizeJourneyState(raw) {
   } else out.final = null;
 
   out.archive = Array.isArray(raw.archive) ? raw.archive.filter((x) => x && typeof x === 'object').slice(0, 20) : [];
+  out.archiveCleanupReady = Boolean(raw.archiveCleanupReady);
   out.pathId = typeof raw.pathId === 'string' ? raw.pathId.slice(0, 60) : null;
   out.startedAt = typeof raw.startedAt === 'string' ? raw.startedAt : null;
   const views = ['home', 'howWorks', 'profile', 'pathSetup', 'assessment', 'dashboard', 'day', 'dailyResult', 'books', 'support', 'final', 'done', 'report', 'bookReader', 'archive'];

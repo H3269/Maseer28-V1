@@ -17,6 +17,7 @@ const shapes = {
   message: <><path d="M21 11.5a7.5 7.5 0 0 1-7.5 7.5H8l-5 2v-6.5A7.5 7.5 0 1 1 21 11.5Z"/><path d="M8 11h8M8 14.5h5"/></>,
   chart: <><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></>,
   edit: <><path d="m4 16-.8 4.8L8 20l11-11-4-4z"/><path d="m12.5 6.5 4 4"/></>,
+  eraser: <><path d="m7 21-4.3-4.3a2.4 2.4 0 0 1 0-3.4l9.2-9.2a2.4 2.4 0 0 1 3.4 0l4.6 4.6a2.4 2.4 0 0 1 0 3.4L11 21z"/><path d="M22 21H7"/><path d="m5 11 9 9"/></>,
   dashboard: <><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 15h3v3H7zM14 7h3v11h-3zM7 7h3v4H7z"/></>,
   phone: <><path d="M5 3h4l2 5-3 2a15 15 0 0 0 6 6l2-3 5 2v4c0 1-1 2-2 2C10 20 4 14 3 5c0-1 1-2 2-2z"/></>,
   eye: <><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></>,
