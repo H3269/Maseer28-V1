@@ -5653,3 +5653,26 @@ body:not(.bale-webview) .bottomNav button {
   width: 100% !important;
   border-radius: 14px !important;
 }
+
+
+/* Normalize the bottom inset of every primary card-based screen. */
+.app > section.card {
+  padding-bottom: 20px !important;
+}
+
+/* Keep the bottom navigation compact, with consistent gaps between items. */
+.bottomNav,
+body.bale-webview .bottomNav,
+body:not(.bale-webview) .bottomNav {
+  width: min(calc(100% - 48px), 480px) !important;
+  padding: 6px 8px !important;
+  gap: 10px !important;
+  box-sizing: border-box !important;
+}
+.bottomNav button,
+body.bale-webview .bottomNav button,
+body:not(.bale-webview) .bottomNav button {
+  min-width: 0 !important;
+  width: 100% !important;
+  padding-inline: 6px !important;
+}
