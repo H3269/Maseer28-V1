@@ -6724,10 +6724,3 @@ body:not(.bale-webview) .bottomNav button.active:after {
   background: #36786D !important;
 }
 
-/* Keep the global navigation visible above the immersive reader after onboarding. */
-body.reader-mode .bookReaderFull {
-  padding-bottom: calc(76px + env(safe-area-inset-bottom)) !important;
-}
-body.reader-mode .bottomNav {
-  z-index: 600 !important;
-}
