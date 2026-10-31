@@ -5870,3 +5870,101 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   }
   .loadingProgressSegment::before { transition: none !important; }
 }
+
+
+/* Maseer28: unify action-button icon alignment and spacing without changing
+   compact navigation, scale choices, or reader-control geometry. */
+.app button.primary,
+.app button.secondary,
+.app button.gold,
+.app button.sms,
+.app button.copyAction,
+.app button.ghostButton,
+.app button.libraryBack,
+.app .libraryBook button,
+.app button.bookTocClose,
+.bookPreviewCard button,
+.support a.telegram {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.app button.primary > svg,
+.app button.secondary > svg,
+.app button.gold > svg,
+.app button.sms > svg,
+.app button.copyAction > svg,
+.app button.ghostButton > svg,
+.app button.libraryBack > svg,
+.app .libraryBook button > svg,
+.app button.bookTocClose > svg,
+.bookPreviewCard button > svg,
+.support a.telegram > svg {
+  flex: 0 0 auto;
+  vertical-align: middle;
+}
+
+.app > section.card .ghostButton {
+  margin-top: 14px !important;
+}
+
+.contactActions {
+  gap: 12px !important;
+}
+
+.contactActions > button {
+  margin-top: 0 !important;
+}
+
+.bookPreviewCard > button {
+  display: flex !important;
+  width: 100% !important;
+  margin-top: 14px !important;
+}
+
+.smartSelectButton {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.smartSelectButton::after {
+  content: none !important;
+}
+
+.smartSelectOption {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+}
+
+.scaleOption {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.readerTools button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.readerIcon,
+.readerBottomIcon,
+.readerPageArrow {
+  display: inline-grid;
+  place-items: center;
+}
+
+.readerPageCounter {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
