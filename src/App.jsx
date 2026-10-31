@@ -508,14 +508,16 @@ function navigate(next) {
     navigate('done');
   }
 
-  function startNewPath() {
+  function startNewPath(archiveOverride = null) {
     const hasCurrentPath = Boolean(journey.started && (journey.profile || journey.assessment || journey.completed.length || journey.final));
     const pathIsComplete = journey.completed?.length === 28 && Boolean(journey.final);
-    // GitHub test mode may archive incomplete paths for testing. Live builds must archive completed paths only.
+    // Test builds may archive incomplete paths; live builds archive completed paths only.
     const shouldArchiveCurrentPath = hasCurrentPath && (APP_CONFIG.TEST_MODE || pathIsComplete);
-    const archive = shouldArchiveCurrentPath
-      ? [cloneForArchive(journey), ...(journey.archive || [])].slice(0, 20)
-      : (journey.archive || []);
+    const archive = Array.isArray(archiveOverride)
+      ? archiveOverride
+      : shouldArchiveCurrentPath
+        ? [cloneForArchive(journey), ...(journey.archive || [])].slice(0, 20)
+        : (journey.archive || []);
     const fresh = defaultJourneyState();
     fresh.archive = archive;
     fresh.started = true;
@@ -539,13 +541,17 @@ function navigate(next) {
 
     const archive = journey.archive || [];
     const currentPathAlreadyArchived = Boolean(journey.pathId) && archive.some((item) => item.pathId === journey.pathId);
-    const archiveWithCurrent = pathIsComplete && !currentPathAlreadyArchived
+    const shouldArchiveCurrentPath = hasCurrentPath && (APP_CONFIG.TEST_MODE || pathIsComplete);
+    const archiveWithCurrent = shouldArchiveCurrentPath && !currentPathAlreadyArchived
       ? [cloneForArchive(journey), ...archive].slice(0, 20)
       : archive;
-    const completeCount = archiveWithCurrent.filter(isCompleteArchivedPath).length;
+    // V1 test builds count every archived record; live Telegram/Bale builds count only completed paths.
+    const cleanupCount = APP_CONFIG.TEST_MODE
+      ? archiveWithCurrent.length
+      : archiveWithCurrent.filter(isCompleteArchivedPath).length;
 
-    // The 12th completed path must be saved before showing the cleanup notice.
-    if (completeCount >= 12) {
+    // Save the 12th qualifying archive record before showing the cleanup notice.
+    if (cleanupCount >= 12) {
       patchJourney({ archive: archiveWithCurrent, archiveCleanupReady: true });
       setAllowArchiveRestartAfterNotice(false);
       navigate('archive');
@@ -554,7 +560,7 @@ function navigate(next) {
     }
 
     setAllowArchiveRestartAfterNotice(false);
-    startNewPath();
+    startNewPath(archiveWithCurrent);
   }
 
   function closeIncompleteArchiveNotice() {
@@ -600,8 +606,10 @@ function navigate(next) {
   const navVisible = onboardingComplete;
   const archiveEntries = journey.archive || [];
   const currentPathAlreadyArchived = Boolean(journey.pathId) && archiveEntries.some((item) => item.pathId === journey.pathId);
-  const completeArchiveCount = archiveEntries.filter(isCompleteArchivedPath).length
-    + (isCompleteArchivedPath(journey) && !currentPathAlreadyArchived ? 1 : 0);
+  const archiveCleanupCount = APP_CONFIG.TEST_MODE
+    ? archiveEntries.length
+    : archiveEntries.filter(isCompleteArchivedPath).length
+      + (isCompleteArchivedPath(journey) && !currentPathAlreadyArchived ? 1 : 0);
   const resultBookRec = journey.daily?.[resultDay || currentDay]?.bookRec || null;
   const recommendationSource = resultBookRec ? legacySourceLabel(resultBookRec.bookId) : '';
 
@@ -622,13 +630,13 @@ function navigate(next) {
       {screen === 'final' && <FinalAssessment initial={journey.final} onSave={finishFinal} onValidation={showValidation} />}
       {screen === 'done' && <Done onReport={() => navigate('report')} onBooks={() => openBooks('done')} onSupport={() => openSupport('done')} onArchive={() => navigate('archive')} onNew={startNewPathFromArchive} />}
       {screen === 'report' && <Report journey={journey} content={content} onBooks={() => openBooks('report')} onSupport={() => openSupport('report')} onDashboard={() => navigate('dashboard')} onArchive={() => navigate('archive')} onNew={startNewPathFromArchive} />}
-      {screen === 'archive' && <Archive journey={journey} content={content} showClearArchive={Boolean(journey.archiveCleanupReady && completeArchiveCount >= 12)} onClearArchive={clearArchiveAndCurrentPath} onBack={() => navigate('dashboard')} onNew={startNewPathFromArchive} />}
+      {screen === 'archive' && <Archive journey={journey} content={content} showClearArchive={Boolean(journey.archiveCleanupReady && archiveCleanupCount >= 12)} onClearArchive={clearArchiveAndCurrentPath} onBack={() => navigate('dashboard')} onNew={startNewPathFromArchive} />}
       {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
       {preview && <BookPreviewModal preview={preview} onClose={() => setPreview(null)} onOpen={() => { const item = preview; setPreview(null); openBook(item.book, item.sourcePage, { day: item.day, sourcePage: item.sourcePage, reason: item.reason, sourceTitle: item.sourceTitle }); }} />}
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}
       {validation && <ValidationModal data={validation} onClose={() => setValidation(null)} />}
       {incompleteArchiveNoticeOpen && <div className="validationModal" role="dialog" aria-modal="true" aria-labelledby="incompleteArchiveNoticeTitle"><section className="validationCard"><span className="badge">یادآوری مهم</span><h2 id="incompleteArchiveNoticeTitle">مسیر ناتمام</h2><p className="muted">{APP_CONFIG.TEST_MODE ? 'مسیر قبلی هنوز کامل نشده است؛ در نسخه آزمایشی ممکن است برای بررسی در آرشیو ذخیره شود. اگر می‌خواهی مسیر تازه‌ای آغاز کنی، پس از بستن این پیام دوباره دکمه شروع مسیر تازه را بزن.' : 'مسیر قبلی هنوز کامل نشده است؛ بنابراین در آرشیو ذخیره نمی‌شود. اگر می‌خواهی مسیر تازه‌ای آغاز کنی، پس از بستن این پیام دوباره دکمه شروع مسیر تازه را بزن.'}</p><button className="primary" onClick={closeIncompleteArchiveNotice}><AppIcon name="check" size={17} /> متوجه شدم</button></section></div>}
-      {archiveResetNoticeOpen && <div className="validationModal" role="dialog" aria-modal="true" aria-labelledby="archiveResetNoticeTitle"><section className="validationCard"><span className="badge">تکمیل اطلاعات</span><h2 id="archiveResetNoticeTitle">پیش از شروع مسیر سیزدهم</h2><p className="muted">۱۲ مسیر کامل تو در آرشیو ثبت شده‌اند. برای آغاز مسیر سیزدهم، ابتدا آرشیو مسیرهای قبلی را پاک‌سازی کن. با زدن «متوجه شدم» به صفحه آرشیو برمی‌گردی و آیکون پاک‌کن در بالای سمت چپ صفحه نمایش داده می‌شود. با لمس آن، تمام مسیرهای ذخیره‌شده در آرشیو پاک خواهند شد.</p><button className="primary" onClick={closeArchiveResetNotice}><AppIcon name="check" size={17} /> متوجه شدم</button></section></div>}
+      {archiveResetNoticeOpen && <div className="validationModal" role="dialog" aria-modal="true" aria-labelledby="archiveResetNoticeTitle"><section className="validationCard"><span className="badge">تکمیل اطلاعات</span><h2 id="archiveResetNoticeTitle">پیش از شروع مسیر سیزدهم</h2><p className="muted">{APP_CONFIG.TEST_MODE ? '۱۲ مسیر ذخیره‌شده، اعم از کامل یا ناقص، در آرشیو ثبت شده‌اند.' : '۱۲ مسیر کامل در آرشیو ثبت شده‌اند.'} برای آغاز مسیر سیزدهم، ابتدا آرشیو مسیرهای قبلی را پاک‌سازی کن. با زدن «متوجه شدم» به صفحه آرشیو برمی‌گردی و آیکون پاک‌کن در بالای سمت چپ صفحه نمایش داده می‌شود. با لمس آن، تمام مسیرهای ذخیره‌شده در آرشیو پاک خواهند شد.</p><button className="primary" onClick={closeArchiveResetNotice}><AppIcon name="check" size={17} /> متوجه شدم</button></section></div>}
     </div>
   );
 }
