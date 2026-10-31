@@ -5720,3 +5720,19 @@ body.bale-webview .app:has(#dashboard) #dashboard {
 body.bale-webview .app:has(#books.libraryShell) #books.libraryShell {
   padding-bottom: 12px !important;
 }
+
+/* Bale-only final override: beat the earlier html.bale-webview body .app
+   rule so the reduced scroll tail actually takes effect on every screen.
+   Telegram and regular browsers remain untouched. */
+html.bale-webview body .app {
+  padding-bottom: calc(60px + env(safe-area-inset-bottom)) !important;
+}
+
+html.bale-webview body .app > section.card {
+  padding-bottom: 12px !important;
+}
+
+html.bale-webview body .app:has(#dashboard) #dashboard,
+html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
+  padding-bottom: 12px !important;
+}
