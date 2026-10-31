@@ -5699,3 +5699,24 @@ body:not(.bale-webview) .bottomNav button {
   justify-self: center !important;
   padding-inline: 3px !important;
 }
+
+
+/* Bale-only: reduce excess scroll tail above the fixed bottom navigation.
+   Keep enough clearance for the nav (52px buttons + container padding/border + 6px offset).
+   Telegram remains unchanged. */
+body.bale-webview .app {
+  padding-bottom: calc(60px + env(safe-area-inset-bottom)) !important;
+}
+
+body.bale-webview .app > section.card {
+  padding-bottom: 12px !important;
+}
+
+body.bale-webview .app:has(#dashboard) #dashboard {
+  padding-bottom: 12px !important;
+}
+
+/* Keep the Bale library page aligned with the same bottom clearance. */
+body.bale-webview .app:has(#books.libraryShell) #books.libraryShell {
+  padding-bottom: 12px !important;
+}
