@@ -609,13 +609,8 @@ function navigate(next) {
   const onboardingComplete = Boolean(userProfile && hasCompletedOnboarding);
 
   if (screen === 'bookReader' && readerState) {
-    // Keep the global navigation available after onboarding, including while reading.
-    return (
-      <div className="app readerApp">
-        <Reader book={readerState.book} initialSourcePage={readerState.sourcePage} initialPage={readerState.initialPage} target={readerState.target} returnTo={libraryReturn} onClose={() => { setReaderState(null); navigate('books'); }} />
-        {onboardingComplete && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
-      </div>
-    );
+    // The immersive reader is the only app screen without the global bottom navigation.
+    return <Reader book={readerState.book} initialSourcePage={readerState.sourcePage} initialPage={readerState.initialPage} target={readerState.target} returnTo={libraryReturn} onClose={() => { setReaderState(null); navigate('books'); }} />;
   }
 
   // Navigation becomes available only after the first profile and baseline
