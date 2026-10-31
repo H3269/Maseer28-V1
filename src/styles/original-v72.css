@@ -5581,3 +5581,75 @@ body:not(.bale-webview) .bottomNav button.active b {
 .bottomNav button.active:active { box-shadow:0 1px 0 #A9BDAE,0 3px 7px #244A4515,inset 0 1px 0 #FFFFFF!important; }
 @media(hover:hover){.bottomNav button:not(:disabled):hover{transform:translateY(-1px)!important;filter:brightness(1.02)}}
 @media(prefers-reduced-motion:reduce){.loadingBrand img,.loadingPulse{animation:none!important}.bottomNav button,.bottomNav .navIcon{transition:none!important}}
+
+/* Restore visual balance to the dashboard without changing its content order. */
+.app:has(#dashboard) #dashboard {
+  padding: 19px 16px 27px !important;
+  margin-top: 13px !important;
+}
+#dashboard .dashboardHero { gap: 12px !important; }
+#dashboard #profileSummary .profile {
+  gap: 10px !important;
+  margin-top: 13px !important;
+}
+#dashboard #profileSummary .profileBox {
+  padding: 10px 11px !important;
+  min-height: 58px;
+}
+#dashboard .metric {
+  gap: 11px !important;
+  margin-top: 13px !important;
+}
+#dashboard .metricBox {
+  padding: 11px 12px !important;
+  min-height: 68px;
+}
+#dashboard .heroAction {
+  min-height: 49px !important;
+  margin-top: 15px !important;
+  padding: 10px 14px !important;
+}
+#dashboard .quickGrid {
+  gap: 10px !important;
+  margin-top: 13px !important;
+}
+#dashboard .quickAction {
+  min-height: 78px !important;
+  padding: 9px 10px !important;
+}
+#dashboard .quickAction > span {
+  width: 32px !important;
+  height: 32px !important;
+}
+@media (max-width: 390px) {
+  .app:has(#dashboard) #dashboard {
+    padding: 16px 13px 23px !important;
+    margin-top: 10px !important;
+  }
+  #dashboard #profileSummary .profileBox {
+    padding: 9px 9px !important;
+    min-height: 55px;
+  }
+  #dashboard .metricBox { min-height: 64px; }
+  #dashboard .quickAction {
+    min-height: 73px !important;
+    padding: 8px 9px !important;
+  }
+}
+
+/* Give the four bottom-navigation items breathing room and a narrower footprint. */
+.bottomNav,
+body.bale-webview .bottomNav,
+body:not(.bale-webview) .bottomNav {
+  width: min(calc(100% - 40px), 520px) !important;
+  padding: 6px 8px !important;
+  gap: 8px !important;
+  box-sizing: border-box !important;
+}
+.bottomNav button,
+body.bale-webview .bottomNav button,
+body:not(.bale-webview) .bottomNav button {
+  min-width: 0 !important;
+  width: 100% !important;
+  border-radius: 14px !important;
+}
