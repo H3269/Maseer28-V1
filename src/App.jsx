@@ -88,10 +88,26 @@ function MainApp() {
   const { books, loading: libraryLoading, error: libraryError } = useLibrary();
 
   useEffect(() => {
+    const loadingStartedAt = Date.now();
+    let cancelled = false;
+    let revealTimer = null;
+
     fetch(`${import.meta.env.BASE_URL}content/path-content.json?v=20261023-fast-open`, { cache: 'default' })
       .then((response) => { if (!response.ok) throw new Error('فایل محتوای مسیر پیدا نشد.'); return response.json(); })
-      .then(setContent)
-      .catch((error) => setLoadError(error?.message || 'خطا در بارگذاری برنامه'));
+      .then((data) => {
+        const remaining = Math.max(0, 2800 - (Date.now() - loadingStartedAt));
+        revealTimer = window.setTimeout(() => {
+          if (!cancelled) setContent(data);
+        }, remaining);
+      })
+      .catch((error) => {
+        if (!cancelled) setLoadError(error?.message || 'خطا در بارگذاری برنامه');
+      });
+
+    return () => {
+      cancelled = true;
+      if (revealTimer !== null) window.clearTimeout(revealTimer);
+    };
   }, []);
 
   useEffect(() => {
