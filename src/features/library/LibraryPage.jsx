@@ -48,12 +48,12 @@ export default function LibraryPage({ books, loading, error, onOpenBook, onBack 
               <h3>{title}</h3>
               <p>{subtitle}<br/>{note}</p>
               <div className="libraryProgress"><span style={{width:`${Math.max(0,Math.min(100,pct))}%`}} /></div>
-              <button onClick={() => onOpenBook(book)}>{r ? 'ادامه مطالعه' : 'شروع مطالعه'}</button>
+              <button onClick={() => onOpenBook(book)}><AppIcon name="bookOpen" size={17} /> {r ? 'ادامه مطالعه' : 'شروع مطالعه'}</button>
             </div>
           </article>;
         })}
       </div>}
-      <button className="secondary libraryBack" onClick={onBack}>بازگشت</button>
+      <button className="secondary libraryBack" onClick={onBack}><AppIcon name="chevronLeft" size={17} /> بازگشت</button>
     </section>
   );
 }
