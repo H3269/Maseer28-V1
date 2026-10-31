@@ -5840,32 +5840,15 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   content: "";
   position: absolute;
   inset: 0 auto 0 0;
-  width: 0;
+  width: var(--segment-progress, 0%);
   border-radius: 2px;
   background: #176B63 !important;
-  animation: loadingSegmentFill .28s linear forwards;
-}
-.loadingProgressSegment:nth-child(2)::before { animation-delay: .28s; }
-.loadingProgressSegment:nth-child(3)::before { animation-delay: .56s; }
-.loadingProgressSegment:nth-child(4)::before { animation-delay: .84s; }
-.loadingProgressSegment:nth-child(5)::before { animation-delay: 1.12s; }
-.loadingProgressSegment:nth-child(6)::before { animation-delay: 1.4s; }
-.loadingProgressSegment:nth-child(7)::before { animation-delay: 1.68s; }
-.loadingProgressSegment:nth-child(8)::before { animation-delay: 1.96s; }
-.loadingProgressSegment:nth-child(9)::before { animation-delay: 2.24s; }
-.loadingProgressSegment:nth-child(10)::before {
-  animation-duration: 1.4s;
-  animation-delay: 2.52s;
-}
-.loadingProgress.isComplete .loadingProgressSegment::before {
-  width: 100%;
-  animation: none;
+  transition: width 90ms linear;
 }
 @keyframes loadingLogoReveal {
   0% { clip-path: inset(49% 49% 49% 49% round 50%); opacity: 0; transform: scale(.82); }
   100% { clip-path: inset(0 0 0 0 round 50%); opacity: 1; transform: scale(1); }
 }
-@keyframes loadingSegmentFill { to { width: 100%; } }
 @media (prefers-reduced-motion: reduce) {
   .appLoading .loadingBrand img,
   .appLoading .loadingBrand h1,
@@ -5876,5 +5859,5 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
     transform: none !important;
     clip-path: none !important;
   }
-  .loadingProgressSegment::before { width: 0; animation: none !important; }
+  .loadingProgressSegment::before { transition: none !important; }
 }
