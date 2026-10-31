@@ -17,11 +17,13 @@ import {
   getTrustedNowMs,
   isDayUnlockedAt,
   loadJourneyState,
+  loadOnboardingComplete,
   loadUserProfile,
   migrateUserProfileFromJourney,
   nextRequiredDay,
   recordTrustedStart,
   saveJourneyState,
+  saveOnboardingComplete,
   saveUserProfile,
 } from './features/journey/journeyStore.js';
 import {
@@ -58,7 +60,8 @@ function initialSnapshot() {
   else if (!user) screen = 'profile';
   else if (!state.profile) screen = 'pathSetup';
   else if (!state.assessment) screen = 'assessment';
-  return { state, user, screen };
+  const onboardingComplete = loadOnboardingComplete(state, user);
+  return { state, user, screen, onboardingComplete };
 }
 
 function isCompleteArchivedPath(path) {
@@ -76,6 +79,7 @@ function MainApp() {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [journey, setJourney] = useState(initial.state);
   const [userProfile, setUserProfileState] = useState(initial.user);
+  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(initial.onboardingComplete);
   const [screen, setScreen] = useState(initial.screen);
   const [profileReturn, setProfileReturn] = useState('dashboard');
   const [profileEditing, setProfileEditing] = useState(false);
@@ -281,13 +285,24 @@ function navigate(next) {
     const startedAt = journey.startedAt || new Date(trustedNow).toISOString();
     if (!journey.startedAt) recordTrustedStart(pathId, trustedNow);
 
-    patchJourney((previous) => ({
-      ...previous,
+    const nextJourney = {
+      ...journey,
       assessment: true,
-      assessmentData: { ...(previous.assessmentData || {}), answers, total: answers.slice(0, 4).reduce((a, b) => a + b, 0), score, motivation: answers[4], scaleMax: 4, version: 2 },
+      assessmentData: { ...(journey.assessmentData || {}), answers, total: answers.slice(0, 4).reduce((a, b) => a + b, 0), score, motivation: answers[4], scaleMax: 4, version: 2 },
       pathId,
       startedAt,
-    }));
+      lastView: 'dashboard',
+    };
+    // Persist the completed baseline before setting the durable onboarding flag.
+    // This prevents a partial write from exposing navigation on an unfinished first run.
+    try {
+      saveJourneyState(nextJourney);
+    } catch {
+      return showValidation(['ذخیره اطلاعات کامل نشد.', 'لطفاً دوباره تلاش کن.'], 'ثبت ارزیابی انجام نشد');
+    }
+    setJourney(nextJourney);
+    saveOnboardingComplete();
+    setHasCompletedOnboarding(true);
     setCurrentDay(1);
     navigate('dashboard');
   }
@@ -591,7 +606,7 @@ function navigate(next) {
   if (loadError) return <div className="validationModal"><div className="validationCard"><h2>خطا در بارگذاری برنامه</h2><p className="muted">{loadError}</p></div></div>;
   if (!content) return <div className="app appLoading" role="status" aria-live="polite"><div className="loadingBrand"><img src={`${import.meta.env.BASE_URL}assets/Logo m24.png`} alt="لوگوی برنامه مسیر" style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }} /><h1 style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }}>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p><div className="loadingProgress" role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(loadingProgress)}>{Array.from({ length: 10 }, (_, index) => <span key={index} className="loadingProgressSegment" style={{ '--segment-progress': `${Math.max(0, Math.min(100, loadingProgress - index * 10))}%` }} />)}</div></div></div>;
 
-  const onboardingComplete = Boolean(userProfile && journey.profile && journey.assessment);
+  const onboardingComplete = Boolean(userProfile && hasCompletedOnboarding);
 
   if (screen === 'bookReader' && readerState) {
     // The book reader intentionally uses only its own reading controls.
