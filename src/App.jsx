@@ -91,7 +91,7 @@ function MainApp() {
 
   useEffect(() => {
     const loadingStartedAt = Date.now();
-    const minimumSplashDuration = 2800;
+    const minimumSplashDuration = 3200;
     const completionDuration = 650;
     let cancelled = false;
     let loadedData = null;
