@@ -20,6 +20,8 @@ html,body{margin:0;min-height:100%;width:100%;background:#E9EEE6}#root{width:100
 .initialProgress{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px;width:min(220px,70vw);height:8px;margin-top:3px;overflow:visible;border:0;border-radius:0;background:transparent;box-shadow:none;box-sizing:border-box}.initialProgress span{position:relative;display:block;min-width:0;height:8px;overflow:hidden;border:1px solid #AAB9AE;border-radius:3px;background:#DCE8DD !important;box-sizing:border-box}.initialProgress span::before{content:'';position:absolute;inset:0 0 0 auto;width:0;border-radius:2px;background:#176B63 !important}
 @keyframes initialLogoBloom{0%{opacity:0;clip-path:circle(0% at 50% 50%);transform:scale(.82)}70%{opacity:1;clip-path:circle(75% at 50% 50%);transform:scale(1.035)}100%{opacity:1;clip-path:circle(75% at 50% 50%);transform:scale(1)}}@keyframes initialTextBloomReveal{to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.initialSplashInner,.initialSplash img,.initialSplash h1,.initialSplash p,.initialProgress{animation:none;opacity:1;transform:none;clip-path:none}.initialProgress span{animation:none;opacity:1;transform:none;clip-path:none}.initialProgress span::before{width:0;animation:none}}
+/* Keep the static pre-React title hidden; React reveals it with the logo. */
+.initialSplash h1{opacity:0!important;clip-path:circle(0% at 50% 50%)!important;transform:none!important;animation:none!important}
 </style>
 </head>
 <body>
