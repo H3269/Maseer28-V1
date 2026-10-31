@@ -501,10 +501,10 @@ function navigate(next) {
     }
   }
 
-  function finishFinal({ answers, changes, awareness, actions, remaining }) {
+  function finishFinal({ answers, progress, changes, awareness, actions, remaining }) {
     if (journey.completed.length !== 28 || nextRequiredDay(journey) !== 29) return showValidation(['تمام ۲۸ روز باید به ترتیب کامل شده باشد.'], 'ارزیابی نهایی هنوز فعال نیست');
     const score = burdenScoreFromAnswers(answers), total = answers.slice(0, 4).reduce((a, b) => a + b, 0);
-    patchJourney((previous) => ({ ...previous, final: { score, total, answers, motivation: answers[4], scaleMax: 4, version: 2, f1: changes.join('\n---\n'), f2: awareness.join('\n---\n'), f3: actions.join('\n---\n'), f4: remaining, completedAt: new Date().toISOString() } }));
+    patchJourney((previous) => ({ ...previous, final: { score, total, answers, progress, progressScaleMax: 4, scaleMax: 4, version: 3, f1: changes.join('\n---\n'), f2: awareness.join('\n---\n'), f3: actions.join('\n---\n'), f4: remaining, completedAt: new Date().toISOString() } }));
     navigate('done');
   }
 
