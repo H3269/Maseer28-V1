@@ -238,12 +238,20 @@ export function loadOnboardingComplete(state, userProfile) {
 
   // Migrate existing users only when their saved journey proves that the
   // profile and baseline assessment were both completed before this update.
-  const legacyComplete = Boolean(
+  const completedCurrentPath = Boolean(
     state?.profile &&
     state?.assessment &&
     state?.assessmentData &&
     validScore(state.assessmentData.score)
   );
+  // A user affected by the old reset bug may now have an empty fresh path,
+  // while their completed baseline remains safely stored in the archive.
+  const completedArchivedPath = Array.isArray(state?.archive) && state.archive.some((path) => (
+    path?.profileData &&
+    path?.assessmentData &&
+    validScore(path.assessmentData.score)
+  ));
+  const legacyComplete = completedCurrentPath || completedArchivedPath;
   if (!legacyComplete) return false;
 
   saveOnboardingComplete();
