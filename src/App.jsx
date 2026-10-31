@@ -68,7 +68,7 @@ function MainApp() {
   const initial = useMemo(initialSnapshot, []);
   const [content, setContent] = useState(null);
   const [loadError, setLoadError] = useState('');
-  const [loadingReady, setLoadingReady] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
   const [journey, setJourney] = useState(initial.state);
   const [userProfile, setUserProfileState] = useState(initial.user);
   const [screen, setScreen] = useState(initial.screen);
@@ -90,30 +90,64 @@ function MainApp() {
 
   useEffect(() => {
     const loadingStartedAt = Date.now();
+    const minimumSplashDuration = 2800;
+    const completionDuration = 650;
     let cancelled = false;
-    let revealTimer = null;
-    let completionTimer = null;
+    let loadedData = null;
+    let dataReady = false;
+    let completionStartedAt = null;
+    let completionStartProgress = 0;
+    let currentProgress = 0;
+
+    const timer = window.setInterval(() => {
+      if (cancelled) return;
+      const elapsed = Date.now() - loadingStartedAt;
+
+      if (!dataReady) {
+        // Ease toward 90% while the content request is still pending.
+        // This keeps moving during slow connections without claiming completion.
+        currentProgress = Math.min(90, 90 * (1 - Math.exp(-elapsed / 1700)));
+        setLoadingProgress(currentProgress);
+        return;
+      }
+
+      if (elapsed < minimumSplashDuration) {
+        currentProgress = Math.min(90, 90 * (1 - Math.exp(-elapsed / 1700)));
+        setLoadingProgress(currentProgress);
+        return;
+      }
+
+      if (completionStartedAt === null) {
+        completionStartedAt = Date.now();
+        completionStartProgress = currentProgress;
+      }
+
+      const completionRatio = Math.min(1, (Date.now() - completionStartedAt) / completionDuration);
+      currentProgress = completionStartProgress + (100 - completionStartProgress) * completionRatio;
+      setLoadingProgress(currentProgress);
+
+      if (completionRatio >= 1) {
+        window.clearInterval(timer);
+        setContent(loadedData);
+      }
+    }, 50);
 
     fetch(`${import.meta.env.BASE_URL}content/path-content.json?v=20261023-fast-open`, { cache: 'default' })
       .then((response) => { if (!response.ok) throw new Error('فایل محتوای مسیر پیدا نشد.'); return response.json(); })
       .then((data) => {
-        const remaining = Math.max(0, 2800 - (Date.now() - loadingStartedAt));
-        revealTimer = window.setTimeout(() => {
-          if (cancelled) return;
-          setLoadingReady(true);
-          completionTimer = window.setTimeout(() => {
-            if (!cancelled) setContent(data);
-          }, 360);
-        }, remaining);
+        if (cancelled) return;
+        loadedData = data;
+        dataReady = true;
       })
       .catch((error) => {
-        if (!cancelled) setLoadError(error?.message || 'خطا در بارگذاری برنامه');
+        if (cancelled) return;
+        window.clearInterval(timer);
+        setLoadError(error?.message || 'خطا در بارگذاری برنامه');
       });
 
     return () => {
       cancelled = true;
-      if (revealTimer !== null) window.clearTimeout(revealTimer);
-      if (completionTimer !== null) window.clearTimeout(completionTimer);
+      window.clearInterval(timer);
     };
   }, []);
 
@@ -512,7 +546,7 @@ function navigate(next) {
   }
 
   if (loadError) return <div className="validationModal"><div className="validationCard"><h2>خطا در بارگذاری برنامه</h2><p className="muted">{loadError}</p></div></div>;
-  if (!content) return <div className="app appLoading" role="status" aria-live="polite"><div className="loadingBrand"><img src={`${import.meta.env.BASE_URL}assets/Logo m24.png`} alt="لوگوی برنامه مسیر" /><h1>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p><div className={`loadingProgress${loadingReady ? ' isComplete' : ''}`} role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100" aria-valuenow={loadingReady ? 100 : undefined}>{Array.from({ length: 10 }, (_, index) => <span key={index} className="loadingProgressSegment" />)}</div></div></div>;
+  if (!content) return <div className="app appLoading" role="status" aria-live="polite"><div className="loadingBrand"><img src={`${import.meta.env.BASE_URL}assets/Logo m24.png`} alt="لوگوی برنامه مسیر" /><h1>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p><div className="loadingProgress" role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(loadingProgress)}>{Array.from({ length: 10 }, (_, index) => <span key={index} className="loadingProgressSegment" style={{ '--segment-progress': `${Math.max(0, Math.min(100, loadingProgress - index * 10))}%` }} />)}</div></div></div>;
 
   const onboardingComplete = Boolean(userProfile && journey.profile && journey.assessment);
 
