@@ -545,10 +545,9 @@ function navigate(next) {
     const archiveWithCurrent = shouldArchiveCurrentPath && !currentPathAlreadyArchived
       ? [cloneForArchive(journey), ...archive].slice(0, 20)
       : archive;
-    // V1 test builds count every archived record; live Telegram/Bale builds count only completed paths.
-    const cleanupCount = APP_CONFIG.TEST_MODE
-      ? archiveWithCurrent.length
-      : archiveWithCurrent.filter(isCompleteArchivedPath).length;
+    // Count every record already in the archive in both test and production builds.
+    // The current incomplete path is still excluded from live archiving above.
+    const cleanupCount = archiveWithCurrent.length;
 
     // Save the 12th qualifying archive record before showing the cleanup notice.
     if (cleanupCount >= 12) {
@@ -606,10 +605,8 @@ function navigate(next) {
   const navVisible = onboardingComplete;
   const archiveEntries = journey.archive || [];
   const currentPathAlreadyArchived = Boolean(journey.pathId) && archiveEntries.some((item) => item.pathId === journey.pathId);
-  const archiveCleanupCount = APP_CONFIG.TEST_MODE
-    ? archiveEntries.length
-    : archiveEntries.filter(isCompleteArchivedPath).length
-      + (isCompleteArchivedPath(journey) && !currentPathAlreadyArchived ? 1 : 0);
+  const archiveCleanupCount = archiveEntries.length
+    + (isCompleteArchivedPath(journey) && !currentPathAlreadyArchived ? 1 : 0);
   const resultBookRec = journey.daily?.[resultDay || currentDay]?.bookRec || null;
   const recommendationSource = resultBookRec ? legacySourceLabel(resultBookRec.bookId) : '';
 
