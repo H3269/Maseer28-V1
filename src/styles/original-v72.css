@@ -6095,3 +6095,12 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   overscroll-behavior: contain;
   scroll-padding-bottom: 16px;
 }
+
+
+/* Keep the loading title synchronized with the logo, including reduced-motion mode. */
+.appLoading .loadingBrand h1 {
+  clip-path: circle(var(--logo-reveal, 0%) at 50% 50%) !important;
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+}
