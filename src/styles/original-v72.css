@@ -6692,3 +6692,34 @@ body:not(.bale-webview) .bottomNav button.active:after {
   background: #FFFFFF !important;
   border-radius: 2px !important;
 }
+
+
+/* Bottom navigation selected state: soft sage, matching dashboard quick-action icon tiles. */
+.bottomNav button.active,
+body.bale-webview .bottomNav button.active,
+body:not(.bale-webview) .bottomNav button.active {
+  background: #edf4f1 !important;
+  color: #244A45 !important;
+}
+.bottomNav button.active .navIcon,
+body.bale-webview .bottomNav button.active .navIcon,
+body:not(.bale-webview) .bottomNav button.active .navIcon {
+  color: #087f73 !important;
+  background: transparent !important;
+}
+.bottomNav button.active .navIcon svg,
+body.bale-webview .bottomNav button.active .navIcon svg,
+body:not(.bale-webview) .bottomNav button.active .navIcon svg {
+  color: #087f73 !important;
+  stroke: currentColor !important;
+}
+.bottomNav button.active b,
+body.bale-webview .bottomNav button.active b,
+body:not(.bale-webview) .bottomNav button.active b {
+  color: #244A45 !important;
+}
+.bottomNav button.active:after,
+body.bale-webview .bottomNav button.active:after,
+body:not(.bale-webview) .bottomNav button.active:after {
+  background: #36786D !important;
+}
