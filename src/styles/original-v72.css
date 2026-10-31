@@ -5756,6 +5756,15 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   margin-top: 0 !important;
 }
 
+/* Daily result: keep the book suggestion and next-step actions separated. */
+.app > section.card#dailyResult #resultNextWrap > button {
+  display: block !important;
+  width: 100% !important;
+}
+.app > section.card#dailyResult #resultNextWrap > button + button {
+  margin-top: 14px !important;
+}
+
 /* Keep paired support actions distinct and aligned with the same action rhythm. */
 .app > section.card .support a {
   margin-top: 12px !important;
