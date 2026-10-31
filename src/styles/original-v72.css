@@ -5736,3 +5736,40 @@ html.bale-webview body .app:has(#dashboard) #dashboard,
 html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   padding-bottom: 12px !important;
 }
+
+/* Maseer28: consistent vertical rhythm for stacked page actions in Telegram and Bale.
+   Keep compact controls (dashboard shortcuts, reader tools and bottom navigation)
+   on their own layout rules. */
+.app > section.card button:is(.primary, .secondary, .gold, .success, .danger) {
+  margin-top: 14px !important;
+}
+
+/* Flex-based vertical action groups use gap rather than competing button margins. */
+.app > section.card .navrow,
+.app > section.card .bookPageNav {
+  gap: 12px !important;
+}
+
+.app > section.card .navrow > button,
+.app > section.card .bookPageNav > button {
+  margin-top: 0 !important;
+}
+
+/* Keep paired support actions distinct and aligned with the same action rhythm. */
+.app > section.card .support a {
+  margin-top: 12px !important;
+}
+
+/* One shared bottom clearance for the fixed navigation in both WebViews.
+   The card inset leaves a clear, repeatable space after the final action. */
+.app {
+  padding-bottom: calc(76px + env(safe-area-inset-bottom)) !important;
+}
+
+.app > section.card {
+  padding-bottom: 20px !important;
+}
+
+.app:has(#books.libraryShell) #books.libraryShell {
+  padding-bottom: 20px !important;
+}
