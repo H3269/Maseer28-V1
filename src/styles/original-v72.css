@@ -5138,6 +5138,19 @@ button[aria-disabled="true"] {
   box-shadow: 0 3px 0 #D2B0A9, 0 7px 13px #8F403B12, inset 0 1px 0 #FFFFFFB8 !important;
 }
 
+/* In validation notices, danger is text-only: inherit the card's normal typography. */
+.validationCard .danger {
+  color: var(--danger) !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  font-weight: inherit !important;
+  text-decoration: none !important;
+  padding: 0 !important;
+  width: auto !important;
+  margin: 0 !important;
+}
+
 .book button,
 .libraryBook button {
   color: #FFFFFF !important;
