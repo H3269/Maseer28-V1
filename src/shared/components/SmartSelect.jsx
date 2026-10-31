@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import AppIcon from './AppIcon.jsx';
 
 const OPEN_EVENT = 'maseer28:smart-select-open';
 let smartSelectCounter = 0;
@@ -39,8 +40,8 @@ export default function SmartSelect({ value = '', onChange, options = [], id, ar
           <option key={`${option.value}-${option.label}`} value={option.value}>{option.label}</option>
         ))}
       </select>
-      <button type="button" className="smartSelectButton" onClick={toggle}>
-        {selected.label || 'انتخاب کنید'}
+      <button type="button" className="smartSelectButton" onClick={toggle} aria-expanded={open}>
+        <span>{selected.label || 'انتخاب کنید'}</span><AppIcon name="chevronDown" size={17} />
       </button>
       <div className={`smartSelectMenu ${open ? 'open' : ''}`}>
         {options.map((option, index) => (
@@ -50,7 +51,7 @@ export default function SmartSelect({ value = '', onChange, options = [], id, ar
             className={`smartSelectOption ${index === selectedIndex ? 'selected' : ''}`}
             onClick={() => { onChange(option.value); setOpen(false); }}
           >
-            {option.label}
+            <AppIcon name={index === selectedIndex ? 'checkCircle' : 'circle'} size={15} /> {option.label}
           </button>
         ))}
       </div>
