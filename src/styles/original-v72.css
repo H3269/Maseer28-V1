@@ -5812,26 +5812,52 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   animation: loadingTextReveal .55s ease-out 1.22s both;
 }
 .loadingProgress {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 3px;
   width: min(220px, 70vw);
   height: 8px;
   margin-top: 3px;
-  overflow: hidden;
-  border: 1px solid #AAB9AE;
-  border-radius: 10px;
-  background: #E4EAE4;
-  box-shadow: inset 0 1px 2px #294C3B18;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
   box-sizing: border-box;
 }
-.loadingProgress span {
+.loadingProgressSegment {
+  position: relative;
   display: block;
-  width: 0;
-  height: 100%;
-  border-radius: inherit;
-  background: #176B63;
-  animation: loadingProgressFill 2.8s cubic-bezier(.2,.75,.25,1) forwards;
-  transition: width .32s ease-out;
+  min-width: 0;
+  height: 8px;
+  overflow: hidden;
+  border: 1px solid #AAB9AE;
+  border-radius: 3px;
+  background: #E4EAE4;
+  box-sizing: border-box;
 }
-.loadingProgress.isComplete span {
+.loadingProgressSegment::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  border-radius: 2px;
+  background: #176B63;
+  animation: loadingSegmentFill .28s linear forwards;
+}
+.loadingProgressSegment:nth-child(2)::before { animation-delay: .28s; }
+.loadingProgressSegment:nth-child(3)::before { animation-delay: .56s; }
+.loadingProgressSegment:nth-child(4)::before { animation-delay: .84s; }
+.loadingProgressSegment:nth-child(5)::before { animation-delay: 1.12s; }
+.loadingProgressSegment:nth-child(6)::before { animation-delay: 1.4s; }
+.loadingProgressSegment:nth-child(7)::before { animation-delay: 1.68s; }
+.loadingProgressSegment:nth-child(8)::before { animation-delay: 1.96s; }
+.loadingProgressSegment:nth-child(9)::before { animation-delay: 2.24s; }
+.loadingProgressSegment:nth-child(10)::before {
+  animation-duration: 1.4s;
+  animation-delay: 2.52s;
+}
+.loadingProgress.isComplete .loadingProgressSegment::before {
   width: 100%;
   animation: none;
 }
@@ -5839,16 +5865,16 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   0% { clip-path: inset(49% 49% 49% 49% round 50%); opacity: 0; transform: scale(.82); }
   100% { clip-path: inset(0 0 0 0 round 50%); opacity: 1; transform: scale(1); }
 }
-@keyframes loadingProgressFill { to { width: 92%; } }
+@keyframes loadingSegmentFill { to { width: 100%; } }
 @media (prefers-reduced-motion: reduce) {
   .appLoading .loadingBrand img,
   .appLoading .loadingBrand h1,
   .appLoading .loadingBrand p,
-  .loadingProgress span {
+  .loadingProgressSegment {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
     clip-path: none !important;
   }
-  .loadingProgress span { width: 100% !important; transition: none !important; }
+  .loadingProgressSegment::before { width: 100% !important; animation: none !important; }
 }
