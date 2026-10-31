@@ -13,17 +13,17 @@
 <title>مسیر ۲۸ روزه بازسازی ذهن</title>
 <style>
 html,body{margin:0;min-height:100%;background:#E9EEE6}#root{min-height:100svh}
-.initialSplash{min-height:100svh;display:grid;place-items:center;padding:24px;box-sizing:border-box;background:radial-gradient(circle at 50% 42%,#F8F7F0 0%,#E9EEE6 72%,#DFE8E0 100%);color:#31584D;font-family:Tahoma,sans-serif}
-.initialSplashInner{display:flex;flex-direction:column;align-items:center;gap:13px;text-align:center}
-.initialSplash img{width:174px;height:174px;object-fit:contain;border-radius:50%;border:3px solid #B99A5B;padding:5px;background:#FFFDF7;box-shadow:0 7px 0 #D7C79F,0 15px 30px #294C3B20;animation:initialLogoEnter 1.05s cubic-bezier(.2,.8,.2,1) both}
-.initialSplash h1,.initialSplash p,.initialSplash i{opacity:0;transform:translateY(9px);animation:initialTextReveal .55s ease-out .72s both}.initialSplash h1{margin:5px 0 0;font-size:20px}.initialSplash p{margin:0;color:#71817A;font-size:13px}
-.initialSplash i{width:38px;height:4px;border-radius:10px;background:linear-gradient(90deg,#B99A5B,#367D70,#B99A5B);animation:initialPulse 1.8s ease-in-out infinite alternate}
-@keyframes initialLogoEnter{from{opacity:0;transform:scale(.42)}to{opacity:1;transform:scale(1)}}@keyframes initialTextReveal{to{opacity:1;transform:translateY(0)}}@keyframes initialPulse{to{opacity:.8;transform:scaleX(1)}}
-@media(prefers-reduced-motion:reduce){.initialSplash img,.initialSplash i,.initialSplash h1,.initialSplash p{animation:none;opacity:1;transform:none}}
+.initialSplash{position:fixed;inset:0;width:100%;height:100svh;min-height:100svh;display:grid;place-items:center;padding:24px;box-sizing:border-box;overflow:hidden;background:radial-gradient(circle at 50% 42%,#F8F7F0 0%,#E9EEE6 72%,#DFE8E0 100%);color:#31584D;font-family:Tahoma,sans-serif}
+.initialSplashInner{display:flex;flex-direction:column;align-items:center;gap:13px;width:100%;text-align:center}
+.initialSplash img{width:174px;height:174px;object-fit:contain;border-radius:50%;border:3px solid #B99A5B;padding:5px;background:#FFFDF7;box-shadow:0 7px 0 #D7C79F,0 15px 30px #294C3B20;clip-path:inset(49% 49% 49% 49% round 50%);opacity:0;transform:scale(.82);animation:initialLogoReveal 1.8s cubic-bezier(.2,.8,.2,1) both}
+.initialSplash h1,.initialSplash p{opacity:0;transform:translateY(9px);animation:initialTextReveal .55s ease-out 1.22s both}.initialSplash h1{margin:5px 0 0;font-size:20px}.initialSplash p{margin:0;color:#71817A;font-size:13px}
+.initialProgress{width:min(220px,70vw);height:5px;margin-top:3px;overflow:hidden;border-radius:10px;background:#D5DFD5;box-shadow:inset 0 1px 2px #294C3B18}.initialProgress span{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#B99A5B,#367D70);animation:initialProgressFill 2.4s cubic-bezier(.2,.75,.25,1) forwards}
+@keyframes initialLogoReveal{0%{clip-path:inset(49% 49% 49% 49% round 50%);opacity:0;transform:scale(.82)}100%{clip-path:inset(0 0 0 0 round 50%);opacity:1;transform:scale(1)}}@keyframes initialTextReveal{to{opacity:1;transform:translateY(0)}}@keyframes initialProgressFill{to{width:92%}}
+@media(prefers-reduced-motion:reduce){.initialSplash img,.initialSplash h1,.initialSplash p,.initialProgress span{animation:none;opacity:1;transform:none;clip-path:none}.initialProgress span{width:100%}}
 </style>
 </head>
 <body>
-<div id="root"><div class="initialSplash" role="status" aria-live="polite"><div class="initialSplashInner"><img src="./assets/Logo m24.png" alt="لوگوی برنامه مسیر" /><i aria-hidden="true"></i><h1>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p></div></div></div>
+<div id="root"><div class="initialSplash" role="status" aria-live="polite"><div class="initialSplashInner"><img src="./assets/Logo m24.png" alt="لوگوی برنامه مسیر" /><h1>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p><div class="initialProgress" role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100"><span></span></div></div></div></div>
 <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
