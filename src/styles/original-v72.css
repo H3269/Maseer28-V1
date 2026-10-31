@@ -6488,3 +6488,44 @@ body:not(.bale-webview) .bottomNav button.active {
   }
 }
 
+/* Maseer28 · visual consistency pass for remaining information surfaces. */
+.app .introBox,
+.app .sectionHint,
+.app .guidePage .guideClosing,
+.app .assessmentIntro,
+.app .dailyEntryPanel,
+.app .answerItem,
+.app .support {
+  background: #F8F7F1 !important;
+  border: 1px solid var(--m28-line) !important;
+  border-radius: 13px !important;
+  box-shadow: none !important;
+}
+.app .guidePage .guideClosing { color: #315D55 !important; }
+.app .sectionHint > span,
+.app .stepNumber {
+  background: #E4EEE6 !important;
+  border: 1px solid #D4E2D6 !important;
+  color: #315D55 !important;
+  box-shadow: none !important;
+}
+.app .profileBox,
+.app .metricBox {
+  background: #F8F7F1 !important;
+  border-color: var(--m28-line) !important;
+  box-shadow: none !important;
+}
+.app .assessmentIntro > span {
+  background: #EAF2EC !important;
+  border: 1px solid #D8E5DA !important;
+  color: #315D55 !important;
+}
+.app .assessmentSummary {
+  background: #F1F4F0 !important;
+  border: 1px solid #E0E7DF !important;
+  border-radius: 11px !important;
+  color: var(--m28-ink) !important;
+}
+.app .answerItem b { color: var(--m28-ink) !important; }
+.app .dailyEntryPanel { animation: none !important; }
+
