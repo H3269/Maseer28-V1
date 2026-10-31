@@ -5807,18 +5807,28 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
 .appLoading .loadingBrand {
   width: min(100%, 360px);
   gap: 13px;
+  opacity: 0;
+  transform: scale(.72);
+  filter: blur(5px);
+  transform-origin: center;
+  animation: loadingBloomReveal 1.55s cubic-bezier(.18,.72,.22,1) both;
 }
 .appLoading .loadingBrand img {
-  clip-path: inset(49% 49% 49% 49% round 50%);
-  opacity: 0;
-  transform: scale(.82);
-  animation: loadingLogoReveal 1.8s cubic-bezier(.2,.8,.2,1) both;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  clip-path: none;
+  opacity: 1;
+  transform: none;
+  animation: none;
 }
 .appLoading .loadingBrand h1,
 .appLoading .loadingBrand p {
-  opacity: 0;
-  transform: translateY(9px);
-  animation: loadingTextReveal .55s ease-out 1.22s both;
+  opacity: 1;
+  transform: none;
+  animation: none;
 }
 .loadingProgress {
   display: grid;
@@ -5854,11 +5864,13 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   background: #176B63 !important;
   transition: width 90ms linear;
 }
-@keyframes loadingLogoReveal {
-  0% { clip-path: inset(49% 49% 49% 49% round 50%); opacity: 0; transform: scale(.82); }
-  100% { clip-path: inset(0 0 0 0 round 50%); opacity: 1; transform: scale(1); }
+@keyframes loadingBloomReveal {
+  0% { opacity: 0; transform: scale(.72); filter: blur(5px); }
+  70% { opacity: 1; filter: blur(0); }
+  100% { opacity: 1; transform: scale(1); filter: blur(0); }
 }
 @media (prefers-reduced-motion: reduce) {
+  .appLoading .loadingBrand,
   .appLoading .loadingBrand img,
   .appLoading .loadingBrand h1,
   .appLoading .loadingBrand p,
@@ -5867,6 +5879,7 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
     opacity: 1 !important;
     transform: none !important;
     clip-path: none !important;
+    filter: none !important;
   }
   .loadingProgressSegment::before { transition: none !important; }
 }
