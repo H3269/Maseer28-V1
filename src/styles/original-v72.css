@@ -5824,7 +5824,7 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg,#B99A5B,#367D70);
-  animation: loadingProgressFill 2.4s cubic-bezier(.2,.75,.25,1) forwards;
+  animation: loadingProgressFill 2.8s cubic-bezier(.2,.75,.25,1) forwards;
   transition: width .32s ease-out;
 }
 .loadingProgress.isComplete span {
