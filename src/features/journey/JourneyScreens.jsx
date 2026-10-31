@@ -405,7 +405,7 @@ function NavIcon({ name }) {
   const paths = {
     home: <><path d="m3 10 9-7 9 7"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-7h6v7"/></>,
     profile: <><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></>,
-    books: <><path d="M12 6.5C9.5 4.8 6.5 4 3 4v14c3.5 0 6.5.8 9 2.5"/><path d="M12 6.5C14.5 4.8 17.5 4 21 4v14c-3.5 0-6.5.8-9 2.5"/><path d="M12 6.5v14"/></>,
+    books: <><path d="M12 7v14"/><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3c2.5 0 5 1 6.5 3 1.5-2 4-3 6.5-3A2.5 2.5 0 0 1 21 5.5V19a2 2 0 0 1-2 2c-2.5 0-5-1-7-3-2 2-4.5 3-7 3a2 2 0 0 1-2-2z"/></>,
     support: <><path d="M21 11.5a7.5 7.5 0 0 1-7.5 7.5H8l-5 2v-6.5A7.5 7.5 0 1 1 21 11.5Z"/><path d="M8 11h8M8 14.5h5"/></>
   };
   return <svg {...common}>{paths[name]}</svg>;
