@@ -6018,18 +6018,19 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   transform: none !important;
   animation: none !important;
 }
-.appLoading .loadingBrand h1,
-.appLoading .loadingBrand p {
-  opacity: 0;
-  transform: translateY(9px);
-  animation: loadingTextBloomReveal .7s ease-out both !important;
+/* The title shares the logo's exact progress-driven reveal.
+   Supporting status text and progress bar are visible from splash start. */
+.appLoading .loadingBrand h1 {
+  clip-path: circle(var(--logo-reveal, 0%) at 50% 50%) !important;
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
 }
-.appLoading .loadingBrand h1 { animation-delay: .65s !important; }
-.appLoading .loadingBrand p { animation-delay: .9s !important; }
+.appLoading .loadingBrand p,
 .appLoading .loadingProgress {
-  opacity: 0;
-  transform: translateY(8px);
-  animation: loadingTextBloomReveal .65s ease-out 1.15s both;
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
 }
 @keyframes loadingTextBloomReveal {
   to { opacity: 1; transform: translateY(0); }
