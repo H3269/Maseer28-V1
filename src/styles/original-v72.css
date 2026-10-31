@@ -5822,10 +5822,6 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   padding: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
-  clip-path: none !important;
-  opacity: 1 !important;
-  transform: none !important;
-  animation: none !important;
 }
 .appLoading .loadingBrand h1,
 .appLoading .loadingBrand p {
@@ -6017,9 +6013,8 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   padding: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
-  clip-path: circle(75% at 50% 50%) !important;
-  opacity: 1 !important;
-  transform-origin: center !important;
+  clip-path: circle(75% at 50% 50%);
+  transform-origin: center;
   animation: loadingLogoBloom 2.4s cubic-bezier(.18,.72,.22,1) both !important;
 }
 .appLoading .loadingBrand h1,
