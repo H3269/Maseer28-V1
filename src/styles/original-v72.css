@@ -6542,3 +6542,153 @@ body:not(.bale-webview) .bottomNav button.active {
 .app .answerItem b { color: var(--m28-ink) !important; }
 .app .dailyEntryPanel { animation: none !important; }
 
+
+
+/* Maseer28 · visual refinement pass requested after V1 identity refresh.
+   CSS-only: SmartSelect behavior, support actions, and navigation handlers stay unchanged. */
+
+/* SmartSelect: flat, calm controls matching the shared button and card system. */
+.app .smartSelectButton {
+  min-height: 48px !important;
+  box-sizing: border-box !important;
+  padding: 10px 14px !important;
+  border: 1px solid var(--m28-line) !important;
+  border-radius: 11px !important;
+  background: #F8F7F1 !important;
+  color: var(--m28-ink) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  font-weight: 650 !important;
+}
+.app .smartSelectButton:focus-visible {
+  outline: 2px solid #83A99B !important;
+  outline-offset: 2px !important;
+  border-color: #83A99B !important;
+  box-shadow: none !important;
+}
+.app .smartSelectMenu {
+  padding: 7px !important;
+  gap: 6px !important;
+  border: 1px solid var(--m28-line) !important;
+  border-radius: 13px !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 8px 22px #293A3612 !important;
+}
+.app .smartSelectOption {
+  min-height: 44px !important;
+  box-sizing: border-box !important;
+  padding: 10px 11px !important;
+  border: 1px solid transparent !important;
+  border-radius: 9px !important;
+  background: #F8F7F1 !important;
+  color: var(--m28-ink) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+.app .smartSelectOption:hover,
+.app .smartSelectOption.selected {
+  background: #EAF2EC !important;
+  border-color: #D8E5DA !important;
+  color: var(--m28-green) !important;
+  box-shadow: none !important;
+}
+
+/* Support center: equal SMS action widths and the same primary-button finish. */
+.app > section.card#support .contactActions {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+.app > section.card#support .contactActions > button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 48px !important;
+  margin: 0 !important;
+  padding-inline: 8px !important;
+  box-sizing: border-box !important;
+  border-radius: 11px !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+.app > section.card#support .contactActions > button.sms {
+  color: #FFFFFF !important;
+  background: var(--m28-green-action) !important;
+  border: 1px solid var(--m28-green-action) !important;
+}
+.app > section.card#support .contactActions > button.copyAction {
+  color: var(--m28-ink) !important;
+  background: #F8F7F1 !important;
+  border: 1px solid var(--m28-line) !important;
+}
+.app > section.card#support .support a.telegram {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  width: 100% !important;
+  min-height: 48px !important;
+  margin-top: 12px !important;
+  padding: 10px 12px !important;
+  box-sizing: border-box !important;
+  border: 1px solid var(--m28-green-action) !important;
+  border-radius: 11px !important;
+  background: var(--m28-green-action) !important;
+  color: #FFFFFF !important;
+  box-shadow: none !important;
+  transform: none !important;
+  font-weight: 700 !important;
+}
+.app > section.card#support .support a.telegram:active,
+.app > section.card#support .contactActions > button:active {
+  box-shadow: none !important;
+  transform: none !important;
+  filter: brightness(.97);
+}
+/* Preserve a little extra scroll clearance after the final support action. */
+.app > section.card#support {
+  padding-bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+}
+
+/* Bottom navigation active state: flat green pill, clear label and slim underline. */
+.bottomNav button.active,
+body.bale-webview .bottomNav button.active,
+body:not(.bale-webview) .bottomNav button.active {
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: var(--m28-green-action) !important;
+  color: #FFFFFF !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+.bottomNav button.active .navIcon,
+body.bale-webview .bottomNav button.active .navIcon,
+body:not(.bale-webview) .bottomNav button.active .navIcon {
+  background: transparent !important;
+  color: #FFFFFF !important;
+  box-shadow: none !important;
+}
+.bottomNav button.active .navIcon svg,
+body.bale-webview .bottomNav button.active .navIcon svg,
+body:not(.bale-webview) .bottomNav button.active .navIcon svg {
+  color: #FFFFFF !important;
+  stroke: currentColor !important;
+}
+.bottomNav button.active b,
+body.bale-webview .bottomNav button.active b,
+body:not(.bale-webview) .bottomNav button.active b {
+  color: #FFFFFF !important;
+  font-weight: 800 !important;
+}
+.bottomNav button.active:after,
+body.bale-webview .bottomNav button.active:after,
+body:not(.bale-webview) .bottomNav button.active:after {
+  width: 24px !important;
+  height: 2px !important;
+  bottom: 2px !important;
+  background: #FFFFFF !important;
+  border-radius: 2px !important;
+}
