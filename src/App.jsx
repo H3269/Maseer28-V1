@@ -68,6 +68,7 @@ function MainApp() {
   const initial = useMemo(initialSnapshot, []);
   const [content, setContent] = useState(null);
   const [loadError, setLoadError] = useState('');
+  const [loadingReady, setLoadingReady] = useState(false);
   const [journey, setJourney] = useState(initial.state);
   const [userProfile, setUserProfileState] = useState(initial.user);
   const [screen, setScreen] = useState(initial.screen);
@@ -91,13 +92,18 @@ function MainApp() {
     const loadingStartedAt = Date.now();
     let cancelled = false;
     let revealTimer = null;
+    let completionTimer = null;
 
     fetch(`${import.meta.env.BASE_URL}content/path-content.json?v=20261023-fast-open`, { cache: 'default' })
       .then((response) => { if (!response.ok) throw new Error('فایل محتوای مسیر پیدا نشد.'); return response.json(); })
       .then((data) => {
         const remaining = Math.max(0, 2800 - (Date.now() - loadingStartedAt));
         revealTimer = window.setTimeout(() => {
-          if (!cancelled) setContent(data);
+          if (cancelled) return;
+          setLoadingReady(true);
+          completionTimer = window.setTimeout(() => {
+            if (!cancelled) setContent(data);
+          }, 360);
         }, remaining);
       })
       .catch((error) => {
@@ -107,6 +113,7 @@ function MainApp() {
     return () => {
       cancelled = true;
       if (revealTimer !== null) window.clearTimeout(revealTimer);
+      if (completionTimer !== null) window.clearTimeout(completionTimer);
     };
   }, []);
 
@@ -505,7 +512,7 @@ function navigate(next) {
   }
 
   if (loadError) return <div className="validationModal"><div className="validationCard"><h2>خطا در بارگذاری برنامه</h2><p className="muted">{loadError}</p></div></div>;
-  if (!content) return <div className="app appLoading" role="status" aria-live="polite"><div className="loadingBrand"><img src={`${import.meta.env.BASE_URL}assets/Logo m24.png`} alt="لوگوی برنامه مسیر" /><span className="loadingPulse" aria-hidden="true" /><h1>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p></div></div>;
+  if (!content) return <div className="app appLoading" role="status" aria-live="polite"><div className="loadingBrand"><img src={`${import.meta.env.BASE_URL}assets/Logo m24.png`} alt="لوگوی برنامه مسیر" /><h1>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p><div className={`loadingProgress${loadingReady ? ' isComplete' : ''}`} role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100" aria-valuenow={loadingReady ? 100 : undefined}><span /></div></div></div>;
 
   const onboardingComplete = Boolean(userProfile && journey.profile && journey.assessment);
 
