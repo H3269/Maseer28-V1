@@ -60,7 +60,7 @@ export function Header({ activeDay = 0 }) {
   return (
     <header className={`header${headerHidden ? ' header-hidden' : ''}`}>
       <div className="brand">
-        <img className="logo" src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="لوگوی مرکز هیپنوتراپی شفا" />
+        <img className="logo" src={`${import.meta.env.BASE_URL}assets/Logo m24.png`} alt="لوگوی مرکز هیپنوتراپی شفا" />
         <div><div className="subtitle">مرکز هیپنوتراپی شفا</div><h1>مسیر ۲۸ روزه بازسازی ذهن</h1><div className="subtitle">یک قدم کوچک، هر روز</div></div>
       </div>
       <div className="progress"><div className="bar" id="bar" style={{ width: `${progress}%` }} /></div>
