@@ -505,7 +505,7 @@ function navigate(next) {
   }
 
   if (loadError) return <div className="validationModal"><div className="validationCard"><h2>خطا در بارگذاری برنامه</h2><p className="muted">{loadError}</p></div></div>;
-  if (!content) return <div className="app appLoading" role="status" aria-live="polite"><div className="loadingBrand"><img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="لوگوی برنامه مسیر" /><span className="loadingPulse" aria-hidden="true" /><h1>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p></div></div>;
+  if (!content) return <div className="app appLoading" role="status" aria-live="polite"><div className="loadingBrand"><img src={`${import.meta.env.BASE_URL}assets/logo.jpg`} alt="لوگوی برنامه مسیر" /><span className="loadingPulse" aria-hidden="true" /><h1>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p></div></div>;
 
   const onboardingComplete = Boolean(userProfile && journey.profile && journey.assessment);
 

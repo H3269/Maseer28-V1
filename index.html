@@ -15,15 +15,15 @@
 html,body{margin:0;min-height:100%;background:#E9EEE6}#root{min-height:100svh}
 .initialSplash{min-height:100svh;display:grid;place-items:center;padding:24px;box-sizing:border-box;background:radial-gradient(circle at 50% 42%,#F8F7F0 0%,#E9EEE6 72%,#DFE8E0 100%);color:#31584D;font-family:Tahoma,sans-serif}
 .initialSplashInner{display:flex;flex-direction:column;align-items:center;gap:13px;text-align:center}
-.initialSplash img{width:116px;height:116px;object-fit:contain;border-radius:50%;border:3px solid #B99A5B;padding:5px;background:#FFFDF7;box-shadow:0 7px 0 #D7C79F,0 15px 30px #294C3B20;animation:initialLogoFloat 2.8s ease-in-out infinite}
-.initialSplash h1{margin:5px 0 0;font-size:20px}.initialSplash p{margin:0;color:#71817A;font-size:13px}
+.initialSplash img{width:116px;height:116px;object-fit:contain;border-radius:50%;border:3px solid #B99A5B;padding:5px;background:#FFFDF7;box-shadow:0 7px 0 #D7C79F,0 15px 30px #294C3B20;animation:initialLogoEnter 1.05s cubic-bezier(.2,.8,.2,1) both}
+.initialSplash h1,.initialSplash p,.initialSplash i{opacity:0;transform:translateY(9px);animation:initialTextReveal .55s ease-out .72s both}.initialSplash h1{margin:5px 0 0;font-size:20px}.initialSplash p{margin:0;color:#71817A;font-size:13px}
 .initialSplash i{width:38px;height:4px;border-radius:10px;background:linear-gradient(90deg,#B99A5B,#367D70,#B99A5B);animation:initialPulse 1.8s ease-in-out infinite alternate}
-@keyframes initialLogoFloat{50%{transform:translateY(-6px)}}@keyframes initialPulse{to{opacity:.45;transform:scaleX(.72)}}
-@media(prefers-reduced-motion:reduce){.initialSplash img,.initialSplash i{animation:none}}
+@keyframes initialLogoEnter{from{opacity:0;transform:scale(.42)}to{opacity:1;transform:scale(1)}}@keyframes initialTextReveal{to{opacity:1;transform:translateY(0)}}@keyframes initialPulse{to{opacity:.8;transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){.initialSplash img,.initialSplash i,.initialSplash h1,.initialSplash p{animation:none;opacity:1;transform:none}}
 </style>
 </head>
 <body>
-<div id="root"><div class="initialSplash" role="status" aria-live="polite"><div class="initialSplashInner"><img src="./assets/logo.png" alt="لوگوی برنامه مسیر" /><i aria-hidden="true"></i><h1>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p></div></div></div>
+<div id="root"><div class="initialSplash" role="status" aria-live="polite"><div class="initialSplashInner"><img src="./assets/logo.jpg" alt="لوگوی برنامه مسیر" /><i aria-hidden="true"></i><h1>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p></div></div></div>
 <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
