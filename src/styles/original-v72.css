@@ -6117,3 +6117,374 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   transform: none !important;
   animation: none !important;
 }
+
+/* Maseer28 · unified visual identity refresh (V1). Visual-only overrides; app behavior is unchanged. */
+/* Shared palette */
+:root {
+  --m28-surface: #FDFCF8;
+  --m28-card: #FFFFFF;
+  --m28-ink: #293A36;
+  --m28-muted: #718078;
+  --m28-line: #E1E2D9;
+  --m28-green: #244A45;
+  --m28-green-action: #36786D;
+  --m28-green-soft: #83A99B;
+  --m28-gold: #C1A66B;
+}
+
+/* App frame and header: retain the existing logo and header structure. */
+body {
+  background: var(--m28-surface);
+  color: var(--m28-ink);
+}
+.header {
+  background: var(--m28-green) !important;
+  border: 1px solid #315B55 !important;
+  border-radius: 20px !important;
+  box-shadow: none !important;
+}
+.header h1 { color: #FDFCF8 !important; }
+.header .subtitle { color: #D8E4DE !important; }
+.header .progress { background: #52746C !important; }
+.header .progress .bar { background: #C1A66B !important; }
+
+/* Shared cards: calm surfaces, thin borders and no raised-card effect. */
+.card,
+.app > section.card {
+  background: var(--m28-card) !important;
+  border: 1px solid var(--m28-line) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 1px 5px #293A360A !important;
+}
+.card:nth-of-type(even) { box-shadow: 0 1px 5px #293A360A !important; }
+h1, h2, h3, .libraryBookInfo h3, .metricBox strong { color: var(--m28-ink); }
+.subtitle, .muted { color: var(--m28-muted); }
+
+/* Role-based buttons. Keep dimensions and click behavior; remove 3D styling. */
+.app button.primary,
+.app button.secondary,
+.app button.gold,
+.app button.success,
+.app button.danger,
+.app button.sms,
+.app button.copyAction,
+.app button.ghostButton,
+.app button.libraryBack,
+.app .libraryBook button,
+.bookPreviewCard button,
+.validationCard button {
+  min-height: 48px;
+  border-radius: 11px !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: background-color .16s ease, border-color .16s ease, color .16s ease !important;
+  font-weight: 700;
+}
+.app button.primary,
+.bookPreviewCard button.primary,
+.validationCard button.primary {
+  color: #FFFFFF !important;
+  background: var(--m28-green-action) !important;
+  border: 1px solid var(--m28-green-action) !important;
+}
+.app button.secondary,
+.app button.ghostButton,
+.app button.libraryBack {
+  color: var(--m28-ink) !important;
+  background: #F8F7F1 !important;
+  border: 1px solid var(--m28-line) !important;
+}
+.app button.gold {
+  color: #806B42 !important;
+  background: #F3EFE4 !important;
+  border: 1px solid #E6DDC9 !important;
+}
+.app button.success {
+  color: #315D55 !important;
+  background: #EAF2EC !important;
+  border: 1px solid #D8E5DA !important;
+}
+.app button.danger {
+  color: #A65E54 !important;
+  background: #FBF3F1 !important;
+  border: 1px solid #E8D9D5 !important;
+}
+.app button.primary:hover,
+.app button.primary:focus-visible { background: #2F6D63 !important; }
+.app button.secondary:hover,
+.app button.ghostButton:hover,
+.app button.libraryBack:hover { background: #F0F1E9 !important; }
+.app button:active,
+.app button.primary:active,
+.app button.secondary:active,
+.app button.gold:active,
+.app button.success:active,
+.app button.danger:active {
+  transform: none !important;
+  box-shadow: none !important;
+  filter: brightness(.98);
+}
+.app button:disabled {
+  opacity: .52;
+  box-shadow: none !important;
+  transform: none !important;
+  cursor: not-allowed;
+}
+
+/* The fixed 2px guide line is the shared signature beside action icons. */
+.app button.primary:has(> svg) > svg,
+.app button.secondary:has(> svg) > svg,
+.app button.gold:has(> svg) > svg,
+.app button.success:has(> svg) > svg,
+.app button.danger:has(> svg) > svg,
+.app button.libraryBack:has(> svg) > svg,
+.app .libraryBook button:has(> svg) > svg,
+.bookPreviewCard button:has(> svg) > svg {
+  box-sizing: content-box;
+  padding-inline-end: 10px;
+  margin-inline-end: 3px;
+  border-inline-end: 2px solid currentColor;
+}
+
+/* Quiet icon-only actions without changing their hit areas or handlers. */
+.app button.iconButton {
+  box-shadow: none !important;
+  transform: none !important;
+  background: #F8F7F1 !important;
+  border: 1px solid var(--m28-line) !important;
+  color: var(--m28-green) !important;
+}
+
+/* Dashboard: keep the primary next step distinct from the four shortcuts. */
+#dashboard .profileBox,
+#dashboard .metricBox {
+  background: #F8F7F1 !important;
+  border: 1px solid var(--m28-line) !important;
+  box-shadow: none !important;
+}
+#dashboard .quickAction {
+  background: #FFFFFF !important;
+  border: 1px solid var(--m28-line) !important;
+  border-radius: 13px !important;
+  box-shadow: none !important;
+  transform: none !important;
+  color: var(--m28-ink) !important;
+}
+#dashboard .quickAction > span {
+  background: #EAF2EC !important;
+  color: var(--m28-green) !important;
+  box-shadow: none !important;
+}
+#dashboard .quickAction b { color: var(--m28-ink) !important; }
+#dashboard .quickAction small { color: var(--m28-muted) !important; }
+#dashboard .dashboardNote { color: var(--m28-muted) !important; }
+
+/* Daily journey: restrained semantic tints, not competing colored panels. */
+#day .dailyStep .exercise {
+  background: #EAF2EC !important;
+  border: 1px solid #DCE8DE !important;
+  border-inline-start: 3px solid #83A99B !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+#day .dailyStep .action {
+  background: #F3EFE4 !important;
+  border: 1px solid #E9E1D0 !important;
+  border-inline-start: 3px solid #C1A66B !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+#day .recommendation,
+#dailyResult .recommendation {
+  background: #F1F4F0 !important;
+  border: 1px solid #E0E7DF !important;
+  border-inline-start: 3px solid #83A99B !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+#dailyResult .feedback {
+  background: #F1F4F0 !important;
+  border: 1px solid #E0E7DF !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+#day .safetyNote {
+  background: #F8F7F1 !important;
+  border: 1px solid var(--m28-line) !important;
+  border-radius: 12px !important;
+}
+
+/* Assessment choices: clear selection without embossed controls. */
+.assessmentCard .scaleOption {
+  box-shadow: none !important;
+  transform: none !important;
+  border: 1px solid var(--m28-line) !important;
+  background: #F8F7F1 !important;
+  color: var(--m28-ink) !important;
+}
+.assessmentCard .scaleOption.selected {
+  background: #EAF2EC !important;
+  border-color: #83A99B !important;
+  color: var(--m28-green) !important;
+}
+
+/* Library: retain book covers and warm reading identity; soften surrounding chrome. */
+.libraryShell { background: #FFFFFF !important; }
+.libraryMark {
+  background: #E3ECE5 !important;
+  border: 1px solid #DED9C8 !important;
+  border-radius: 14px !important;
+  color: #315D55 !important;
+  box-shadow: none !important;
+}
+.libraryBook { min-width: 0; }
+.libraryCoverWrap {
+  border: 1px solid #E5E3D9 !important;
+  border-radius: 11px !important;
+  box-shadow: none !important;
+}
+.libraryBookInfo h3 { color: var(--m28-ink) !important; }
+.libraryBookInfo p { color: var(--m28-muted) !important; }
+.libraryProgress { background: #E4E7DC !important; }
+.libraryProgress span { background: var(--m28-green-action) !important; }
+.app .libraryBook button {
+  min-height: 42px !important;
+  color: #FFFFFF !important;
+  background: var(--m28-green-action) !important;
+  border: 1px solid var(--m28-green-action) !important;
+}
+
+/* Reader chrome only: paper, ink, pagination, and all three themes stay intact. */
+.bookReaderFull .readerTopbar,
+.bookReaderFull .readerBottombar,
+.bookReaderFull .readerTools {
+  box-shadow: none !important;
+}
+.bookReaderFull .readerIcon,
+.bookReaderFull .readerBottomIcon,
+.bookReaderFull .readerPageCounter,
+.bookReaderFull .readerPageArrow,
+.bookReaderFull .readerTools button {
+  box-shadow: none !important;
+  transform: none !important;
+  border: 1px solid #D8D7CC !important;
+  border-radius: 9px !important;
+}
+.bookReaderFull:not(.theme-sepia):not(.theme-night) .readerIcon,
+.bookReaderFull:not(.theme-sepia):not(.theme-night) .readerBottomIcon,
+.bookReaderFull:not(.theme-sepia):not(.theme-night) .readerPageCounter,
+.bookReaderFull:not(.theme-sepia):not(.theme-night) .readerPageArrow,
+.bookReaderFull:not(.theme-sepia):not(.theme-night) .readerTools button {
+  background: #F8F7F1 !important;
+  color: #485A52 !important;
+}
+.bookReaderFull.theme-sepia .readerIcon,
+.bookReaderFull.theme-sepia .readerBottomIcon,
+.bookReaderFull.theme-sepia .readerPageCounter,
+.bookReaderFull.theme-sepia .readerPageArrow,
+.bookReaderFull.theme-sepia .readerTools button {
+  background: #F1E8D5 !important;
+  color: #5B4D3A !important;
+  border-color: #D8CDB6 !important;
+}
+.bookReaderFull.theme-night .readerIcon,
+.bookReaderFull.theme-night .readerBottomIcon,
+.bookReaderFull.theme-night .readerPageCounter,
+.bookReaderFull.theme-night .readerPageArrow,
+.bookReaderFull.theme-night .readerTools button {
+  background: #2B3738 !important;
+  color: #E6ECE9 !important;
+  border-color: #465856 !important;
+}
+.bookReaderFull .readerPageArrow:disabled { opacity: .42; }
+
+/* Bottom navigation: same four destinations and behavior, with a quiet active state. */
+.bottomNav,
+body.bale-webview .bottomNav,
+body:not(.bale-webview) .bottomNav {
+  width: min(calc(100% - 32px), 480px) !important;
+  padding: 5px 6px !important;
+  gap: 4px !important;
+  background: #FFFFFF !important;
+  border: 1px solid var(--m28-line) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 2px 10px #293A360C !important;
+  backdrop-filter: none !important;
+}
+.bottomNav button,
+body.bale-webview .bottomNav button,
+body:not(.bale-webview) .bottomNav button {
+  position: relative !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 52px !important;
+  min-height: 52px !important;
+  max-height: 52px !important;
+  padding: 2px 3px 5px !important;
+  border: 0 !important;
+  border-radius: 12px !important;
+  background: transparent !important;
+  color: var(--m28-muted) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  justify-self: stretch !important;
+  transition: color .16s ease, background-color .16s ease !important;
+}
+.bottomNav button .navIcon {
+  background: transparent !important;
+  color: var(--m28-muted) !important;
+  box-shadow: none !important;
+}
+.bottomNav button.active,
+body.bale-webview .bottomNav button.active,
+body:not(.bale-webview) .bottomNav button.active {
+  background: #F4F7F2 !important;
+  color: var(--m28-green) !important;
+}
+.bottomNav button.active .navIcon {
+  background: #E4EEE6 !important;
+  color: var(--m28-green) !important;
+  box-shadow: none !important;
+}
+.bottomNav button.active b { color: var(--m28-green) !important; }
+.bottomNav button b {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+}
+.bottomNav button:after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  background: transparent;
+  transform: translateX(-50%);
+}
+.bottomNav button.active:after { background: var(--m28-green-action); }
+.bottomNav button:active,
+.bottomNav button.active:active {
+  transform: none !important;
+  box-shadow: none !important;
+}
+@media (max-width: 360px) {
+  .bottomNav,
+  body.bale-webview .bottomNav,
+  body:not(.bale-webview) .bottomNav {
+    width: calc(100% - 20px) !important;
+    gap: 2px !important;
+    padding-inline: 4px !important;
+  }
+  .bottomNav button b { font-size: 9px !important; }
+}
+
+/* Respect reduced-motion preferences for the revised controls. */
+@media (prefers-reduced-motion: reduce) {
+  .app button,
+  .bottomNav button,
+  .bookReaderFull button {
+    transition: none !important;
+  }
+}
+
