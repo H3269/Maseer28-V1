@@ -350,6 +350,9 @@ function navigate(next) {
   }
 
   async function openDay(value) {
+    // The baseline assessment must never open until the current path setup
+    // has been completed and persisted, including when resuming from the dashboard.
+    if (!isPathSetupComplete(journey)) return navigate(userProfile ? 'pathSetup' : 'profile');
     if (!journey.assessment) return navigate('assessment');
     const day = Number(value), required = nextRequiredDay(journey);
     const allowed = !journey.completed.includes(day) && day === required;
