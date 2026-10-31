@@ -5808,21 +5808,24 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   width: min(100%, 360px);
   gap: 13px;
   opacity: 0;
-  transform: scale(.72);
-  filter: blur(5px);
+  clip-path: ellipse(0% 0% at 50% 50%);
   transform-origin: center;
-  animation: loadingBloomReveal 1.55s cubic-bezier(.18,.72,.22,1) both;
+  animation: loadingBloomReveal 1.7s cubic-bezier(.2,.72,.2,1) both;
 }
 .appLoading .loadingBrand img {
+  width: 174px !important;
+  height: 174px !important;
+  object-fit: contain !important;
   border: 0 !important;
+  outline: 0 !important;
   border-radius: 0 !important;
   padding: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
-  clip-path: none;
-  opacity: 1;
-  transform: none;
-  animation: none;
+  clip-path: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
 }
 .appLoading .loadingBrand h1,
 .appLoading .loadingBrand p {
@@ -5865,9 +5868,8 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   transition: width 90ms linear;
 }
 @keyframes loadingBloomReveal {
-  0% { opacity: 0; transform: scale(.72); filter: blur(5px); }
-  70% { opacity: 1; filter: blur(0); }
-  100% { opacity: 1; transform: scale(1); filter: blur(0); }
+  0% { opacity: 0; clip-path: ellipse(0% 0% at 50% 50%); }
+  100% { opacity: 1; clip-path: ellipse(75% 75% at 50% 50%); }
 }
 @media (prefers-reduced-motion: reduce) {
   .appLoading .loadingBrand,
