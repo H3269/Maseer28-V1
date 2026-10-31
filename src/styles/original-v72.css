@@ -6013,9 +6013,10 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   padding: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
-  clip-path: circle(75% at 50% 50%);
-  transform-origin: center;
-  animation: loadingLogoBloom 2.4s cubic-bezier(.18,.72,.22,1) both !important;
+  clip-path: circle(var(--logo-reveal, 0%) at 50% 50%) !important;
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
 }
 .appLoading .loadingBrand h1,
 .appLoading .loadingBrand p {
@@ -6029,11 +6030,6 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   opacity: 0;
   transform: translateY(8px);
   animation: loadingTextBloomReveal .65s ease-out 1.15s both;
-}
-@keyframes loadingLogoBloom {
-  0% { opacity: 0; clip-path: circle(0% at 50% 50%); transform: scale(.82); }
-  70% { opacity: 1; clip-path: circle(75% at 50% 50%); transform: scale(1.035); }
-  100% { opacity: 1; clip-path: circle(75% at 50% 50%); transform: scale(1); }
 }
 @keyframes loadingTextBloomReveal {
   to { opacity: 1; transform: translateY(0); }
@@ -6050,6 +6046,26 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
     transform: none !important;
     clip-path: none !important;
   }
+}
+
+
+/* Reveal the loading logo in lockstep with the segmented loading progress. */
+.appLoading .loadingBrand img {
+  clip-path: circle(var(--logo-reveal, 0%) at 50% 50%) !important;
+  animation: none !important;
+}
+
+/* The daily-entry actions use the standard primary/secondary button system. */
+.dailyEntryActions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+}
+.dailyEntryActions > button {
+  display: flex !important;
+  width: 100% !important;
+  margin-top: 0 !important;
 }
 
 /* Keep all three daily-result actions on the app-wide 14px vertical rhythm. */
