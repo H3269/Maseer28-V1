@@ -5968,3 +5968,17 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   justify-content: center;
   gap: 4px;
 }
+
+#dashboard .quickGrid {
+  gap: 12px !important;
+}
+
+.smartSelectMenu.open {
+  display: flex !important;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.smartSelectOption {
+  margin: 0 !important;
+}
