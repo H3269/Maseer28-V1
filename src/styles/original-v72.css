@@ -6077,18 +6077,19 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   margin-top: 0 !important;
 }
 
-/* Book recommendation preview: stay above fixed navigation and fit the real viewport. */
+/* Book recommendation preview: preserve the fixed bottom navigation and
+   reserve its full footprint below the dialog, as on the other app screens. */
 .bookPreviewModal {
-  z-index: 170 !important;
+  z-index: 150 !important;
   box-sizing: border-box !important;
   overflow-y: auto !important;
   padding-top: max(12px, env(safe-area-inset-top)) !important;
-  padding-bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  padding-bottom: calc(88px + env(safe-area-inset-bottom)) !important;
 }
 .bookPreviewCard {
   box-sizing: border-box !important;
-  max-height: calc(100vh - 36px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
-  max-height: calc(100dvh - 36px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+  max-height: calc(100vh - 112px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+  max-height: calc(100dvh - 112px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
   overflow-y: auto !important;
   overscroll-behavior: contain;
   scroll-padding-bottom: 16px;
