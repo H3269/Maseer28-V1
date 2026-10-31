@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import AppIcon from './shared/components/AppIcon.jsx';
 import LibraryPage from './features/library/LibraryPage.jsx';
 import Reader from './features/library/Reader.jsx';
 import { legacySourceLabel } from './features/library/legacyLibraryMeta.js';
@@ -585,7 +586,7 @@ function navigate(next) {
       {preview && <BookPreviewModal preview={preview} onClose={() => setPreview(null)} onOpen={() => { const item = preview; setPreview(null); openBook(item.book, item.sourcePage, { day: item.day, sourcePage: item.sourcePage, reason: item.reason, sourceTitle: item.sourceTitle }); }} />}
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}
       {validation && <ValidationModal data={validation} onClose={() => setValidation(null)} />}
-      {incompleteArchiveNoticeOpen && <div className="validationModal" role="dialog" aria-modal="true" aria-labelledby="incompleteArchiveNoticeTitle"><section className="validationCard"><span className="badge">یادآوری مهم</span><h2 id="incompleteArchiveNoticeTitle">مسیر ناتمام</h2><p className="muted">{APP_CONFIG.TEST_MODE ? 'مسیر قبلی هنوز کامل نشده است؛ در نسخه آزمایشی ممکن است برای بررسی در آرشیو ذخیره شود. اگر می‌خواهی مسیر تازه‌ای آغاز کنی، پس از بستن این پیام دوباره دکمه شروع مسیر تازه را بزن.' : 'مسیر قبلی هنوز کامل نشده است؛ بنابراین در آرشیو ذخیره نمی‌شود. اگر می‌خواهی مسیر تازه‌ای آغاز کنی، پس از بستن این پیام دوباره دکمه شروع مسیر تازه را بزن.'}</p><button className="primary" onClick={closeIncompleteArchiveNotice}>متوجه شدم</button></section></div>}
+      {incompleteArchiveNoticeOpen && <div className="validationModal" role="dialog" aria-modal="true" aria-labelledby="incompleteArchiveNoticeTitle"><section className="validationCard"><span className="badge">یادآوری مهم</span><h2 id="incompleteArchiveNoticeTitle">مسیر ناتمام</h2><p className="muted">{APP_CONFIG.TEST_MODE ? 'مسیر قبلی هنوز کامل نشده است؛ در نسخه آزمایشی ممکن است برای بررسی در آرشیو ذخیره شود. اگر می‌خواهی مسیر تازه‌ای آغاز کنی، پس از بستن این پیام دوباره دکمه شروع مسیر تازه را بزن.' : 'مسیر قبلی هنوز کامل نشده است؛ بنابراین در آرشیو ذخیره نمی‌شود. اگر می‌خواهی مسیر تازه‌ای آغاز کنی، پس از بستن این پیام دوباره دکمه شروع مسیر تازه را بزن.'}</p><button className="primary" onClick={closeIncompleteArchiveNotice}><AppIcon name="check" size={17} /> متوجه شدم</button></section></div>}
     </div>
   );
 }
