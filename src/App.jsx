@@ -608,15 +608,20 @@ function navigate(next) {
 
   const onboardingComplete = Boolean(userProfile && hasCompletedOnboarding);
 
+  const onboardingComplete = Boolean(userProfile && hasCompletedOnboarding);
+
   if (screen === 'bookReader' && readerState) {
-    // The book reader intentionally uses only its own reading controls.
-    // The app-wide bottom navigation is hidden here to preserve a distraction-free page.
-    return <Reader book={readerState.book} initialSourcePage={readerState.sourcePage} initialPage={readerState.initialPage} target={readerState.target} returnTo={libraryReturn} onClose={() => { setReaderState(null); navigate('books'); }} />;
+    // Keep the global navigation available after onboarding, including while reading.
+    return (
+      <div className="app readerApp">
+        <Reader book={readerState.book} initialSourcePage={readerState.sourcePage} initialPage={readerState.initialPage} target={readerState.target} returnTo={libraryReturn} onClose={() => { setReaderState(null); navigate('books'); }} />
+        {onboardingComplete && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
+      </div>
+    );
   }
 
-  // Main navigation is intentionally hidden only during the user's very first
-  // onboarding flow. Once profile + path setup + baseline assessment exist,
-  // it remains available on every app screen so the user never feels trapped.
+  // Navigation becomes available only after the first profile and baseline
+  // assessment are complete, then remains independent of the active journey.
   const navVisible = onboardingComplete;
   const archiveEntries = journey.archive || [];
   const currentPathAlreadyArchived = Boolean(journey.pathId) && archiveEntries.some((item) => item.pathId === journey.pathId);
