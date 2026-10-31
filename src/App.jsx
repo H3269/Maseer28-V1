@@ -608,8 +608,6 @@ function navigate(next) {
 
   const onboardingComplete = Boolean(userProfile && hasCompletedOnboarding);
 
-  const onboardingComplete = Boolean(userProfile && hasCompletedOnboarding);
-
   if (screen === 'bookReader' && readerState) {
     // Keep the global navigation available after onboarding, including while reading.
     return (
