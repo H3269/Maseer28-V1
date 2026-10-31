@@ -2,6 +2,7 @@ import { normalizeDigits } from '../../shared/utils.js';
 
 export const JOURNEY_KEY = 'maseer28_state';
 export const PROFILE_KEY = 'maseer28_user_profile_v1';
+export const ONBOARDING_COMPLETE_KEY = 'maseer28_onboarding_complete_v1';
 export const COPYRIGHT_KEY = 'maseer28_copyright_v60';
 export const CLOCK_GUARD_KEY = 'maseer28_trusted_clock_guard_v2';
 export const START_GUARD_KEY = 'maseer28_start_guard_v2';
@@ -215,6 +216,38 @@ export function loadUserProfile() {
 
 export function saveUserProfile(profile) {
   localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+}
+
+export function saveOnboardingComplete() {
+  try {
+    localStorage.setItem(ONBOARDING_COMPLETE_KEY, '1');
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function loadOnboardingComplete(state, userProfile) {
+  if (!userProfile || typeof userProfile !== 'object') return false;
+
+  try {
+    if (localStorage.getItem(ONBOARDING_COMPLETE_KEY) === '1') return true;
+  } catch {
+    // Fall through to the legacy-state check when storage cannot be read.
+  }
+
+  // Migrate existing users only when their saved journey proves that the
+  // profile and baseline assessment were both completed before this update.
+  const legacyComplete = Boolean(
+    state?.profile &&
+    state?.assessment &&
+    state?.assessmentData &&
+    validScore(state.assessmentData.score)
+  );
+  if (!legacyComplete) return false;
+
+  saveOnboardingComplete();
+  return true;
 }
 
 export function migrateUserProfileFromJourney(state = loadJourneyState()) {
