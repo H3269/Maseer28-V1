@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import AppIcon from '../../shared/components/AppIcon.jsx';
 import { fa } from '../../shared/utils.js';
 import { libraryRepository } from './libraryRepository.js';
 import {
@@ -420,7 +421,7 @@ function getReaderAnchor(page) {
   }, [book, current, layout, onClose, pageIndex]);
 
   if (error) {
-    return <section id="bookReader" className="bookReaderFull"><div className="validationModal"><div className="validationCard"><span className="badge">خطا در کتابخانه</span><h2>خطا در کتابخانه</h2><ul><li>{error}</li></ul><button className="primary" onClick={handleClose}>متوجه شدم</button></div></div></section>;
+    return <section id="bookReader" className="bookReaderFull"><div className="validationModal"><div className="validationCard"><span className="badge">خطا در کتابخانه</span><h2>خطا در کتابخانه</h2><ul><li>{error}</li></ul><button className="primary" onClick={handleClose}><AppIcon name="check" size={17} /> متوجه شدم</button></div></div></section>;
   }
 
   const total = layout?.pageCount || 1;
@@ -443,15 +444,15 @@ function getReaderAnchor(page) {
     <section id="bookReader" ref={rootRef} className={rootClass}>
       <span id="bookReaderBadge" className="hidden">کتاب‌خوان</span>
       <div className="readerTopbar">
-        <button className="readerIcon" onClick={handleClose} aria-label="خروج از مطالعه">×</button>
+        <button className="readerIcon" onClick={handleClose} aria-label="خروج از مطالعه"><AppIcon name="x" size={18} /></button>
         <div className="readerTitleWrap"><b id="bookReaderTitle">{title}</b><small id="bookReaderMeta">{layout ? meta : ''}</small></div>
-        <button className="readerIcon" onClick={() => setTocOpen((value) => !value)} aria-label="فهرست مطالب">☰</button>
+        <button className="readerIcon" onClick={() => setTocOpen((value) => !value)} aria-label="فهرست مطالب"><AppIcon name="list" size={18} /></button>
       </div>
       <div className="readerProgressTrack" aria-hidden="true"><span id="readerProgressBar" style={{ width: `${pct}%` }} /></div>
       <div className="readerTools">
-        <button type="button" onClick={() => changeFont(-1)} aria-label="کوچک کردن متن">A−</button>
+        <button type="button" onClick={() => changeFont(-1)} aria-label="کوچک کردن متن"><span>A</span><AppIcon name="minus" size={13} /></button>
         <div id="readerChapterLabel" className="readerChapterLabel">{layout ? chapterLabel : 'مطالعه'}</div>
-        <button type="button" onClick={() => changeFont(1)} aria-label="بزرگ کردن متن">A+</button>
+        <button type="button" onClick={() => changeFont(1)} aria-label="بزرگ کردن متن"><span>A</span><AppIcon name="plus" size={13} /></button>
         <button
           id="readerSoundButton"
           type="button"
@@ -459,8 +460,8 @@ function getReaderAnchor(page) {
           onClick={togglePageSound}
           aria-label={soundEnabled ? 'خاموش کردن صدای ورق زدن' : 'روشن کردن صدای ورق زدن'}
           title={soundEnabled ? 'صدای ورق زدن: روشن' : 'صدای ورق زدن: خاموش'}
-        >{soundEnabled ? '🔊' : '🔇'}</button>
-        <button id="readerThemeButton" type="button" onClick={cycleTheme} aria-label="تغییر زمینه مطالعه">{settings.theme === 'light' ? '◐' : settings.theme === 'sepia' ? '☀' : '☾'}</button>
+        ><AppIcon name={soundEnabled ? 'volume' : 'volumeX'} size={17} /></button>
+        <button id="readerThemeButton" type="button" onClick={cycleTheme} aria-label="تغییر زمینه مطالعه"><AppIcon name={settings.theme === 'light' ? 'contrast' : settings.theme === 'sepia' ? 'sun' : 'moon'} size={17} /></button>
       </div>
       <div
         id="bookTarget"
@@ -555,17 +556,17 @@ function getReaderAnchor(page) {
             setTocOpen(false);
           }}><b>{entry.title}</b><span>صفحه {fa(entry.page + 1)}</span></div>)}
         {layout && !(layout.chapterAnchors || []).length && <p className="muted">فهرست مطالب در دسترس نیست.</p>}
-        <button className="bookTocClose" onClick={() => setTocOpen(false)}>بستن فهرست</button>
+        <button className="bookTocClose" onClick={() => setTocOpen(false)}><AppIcon name="x" size={17} /> بستن فهرست</button>
       </div>}
       <div className="readerBottombar">
-        <button className="readerPageArrow readerNextArrow" type="button" onClick={next} disabled={!layout || pageIndex >= total - 1} aria-label="صفحه بعد" title="صفحه بعد">←</button>
-        <button className="readerBottomIcon" onClick={() => setTocOpen((value) => !value)} aria-label="فهرست مطالب">☷</button>
+        <button className="readerPageArrow readerNextArrow" type="button" onClick={next} disabled={!layout || pageIndex >= total - 1} aria-label="صفحه بعد" title="صفحه بعد"><AppIcon name="chevronLeft" size={18} /></button>
+        <button className="readerBottomIcon" onClick={() => setTocOpen((value) => !value)} aria-label="فهرست مطالب"><AppIcon name="list" size={17} /></button>
         <input id="readerPageRange" dir="rtl" style={{ direction: 'rtl' }} className="readerPageRange" type="range" min="1" max={Math.max(1, total)} value={Math.min(total, pageIndex + 1)} step="1" onChange={(e) => {
           const destination = Math.max(0, Math.min(total - 1, Number(e.target.value) - 1));
           turnPage(destination > pageIndex ? 'next' : 'prev', destination);
         }} aria-label="جابجایی بین صفحات" />
-        <button id="readerPageCounter" className="readerPageCounter" onClick={() => setTocOpen((value) => !value)}>{fa(pageIndex + 1)} / {fa(total)}</button>
-        <button className="readerPageArrow readerPrevArrow" type="button" onClick={prev} disabled={!layout || pageIndex <= 0} aria-label="صفحه قبل" title="صفحه قبل">→</button>
+        <button id="readerPageCounter" className="readerPageCounter" onClick={() => setTocOpen((value) => !value)}><AppIcon name="fileText" size={14} /> <span>{fa(pageIndex + 1)} / {fa(total)}</span></button>
+        <button className="readerPageArrow readerPrevArrow" type="button" onClick={prev} disabled={!layout || pageIndex <= 0} aria-label="صفحه قبل" title="صفحه قبل"><AppIcon name="chevronRight" size={18} /></button>
       </div>
     </section>
   );
