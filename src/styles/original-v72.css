@@ -6019,8 +6019,8 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
 }
 .appLoading .loadingBrand h1,
 .appLoading .loadingBrand p {
-  opacity: 0 !important;
-  transform: translateY(9px) !important;
+  opacity: 0;
+  transform: translateY(9px);
   animation: loadingTextBloomReveal .7s ease-out both !important;
 }
 .appLoading .loadingBrand h1 { animation-delay: .65s !important; }
