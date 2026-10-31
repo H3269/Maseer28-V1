@@ -39,7 +39,7 @@ const shapes = {
   circle: <><circle cx="12" cy="12" r="8"/></>,
   checkCircle: <><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16.5 9"/></>,
 };
-const aliases = { 'شروع مسیر':'rocket','متوجه شدم':'check','ادامه به ارزیابی':'arrow','ثبت و شروع':'save','ادامه مسیر':'play','کتابخانه':'book','عضویت درکانال':'megaphone','پشتیبانی':'headset','ثبت امروز':'save','ثبت ارزیابی':'save','روز قبل':'chevronLeft','داشبورد':'home','مطالعه جلد':'bookOpen','بازگشت':'chevronLeft','شروع مسیر تازه':'arrow','مشاهده گزارش':'chart','آرشیو':'archive' };
+const aliases = { 'شروع مسیر':'rocket','متوجه شدم':'check','ادامه به ارزیابی':'arrow','ثبت و شروع':'save','ادامه مسیر':'play','کتابخانه':'bookOpen','عضویت درکانال':'megaphone','پشتیبانی':'headset','ثبت امروز':'save','ثبت ارزیابی':'save','روز قبل':'chevronLeft','داشبورد':'home','مطالعه جلد':'bookOpen','بازگشت':'chevronLeft','شروع مسیر تازه':'arrow','مشاهده گزارش':'chart','آرشیو':'archive' };
 export default function AppIcon({ name, size = 20, className = '', title }) {
   const common = { viewBox: '0 0 24 24', width: size, height: size, fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': title ? undefined : true, role: title ? 'img' : undefined, className, focusable: 'false' };
   return <svg {...common}>{title && <title>{title}</title>}{shapes[aliases[name] || name] || shapes.info}</svg>;
