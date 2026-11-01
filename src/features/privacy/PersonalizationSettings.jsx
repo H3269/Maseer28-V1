@@ -19,17 +19,13 @@ const CONSENT_CONTEXT = {
 const OPTIONS = {
   response_detail: [['concise','مختصر'],['balanced','متعادل'],['detailed','مفصل']],
   communication_style: [['direct','مستقیم'],['supportive','حمایتگر'],['neutral','خنثی']],
-  step_pacing: [['one_at_a_time','یک گام در هر نوبت'],['grouped','چند گام با هم']],
   example_style: [['practical','کاربردی'],['conceptual','مفهومی'],['mixed','ترکیبی']],
-  language: [['fa','فارسی'],['en','انگلیسی'],['auto','خودکار']],
 };
 
 const LABELS = {
   response_detail: 'میزان جزئیات پاسخ',
   communication_style: 'سبک ارتباطی',
-  step_pacing: 'سرعت ارائه راهنمایی',
   example_style: 'نوع مثال‌ها',
-  language: 'زبان ترجیحی',
 };
 
 function notifyPreferencesChanged() {
@@ -128,7 +124,7 @@ export default function PersonalizationSettings() {
           </div>
         </div>}
       {!enabled && <button className="secondary" type="button" onClick={enable}>رضایت می‌دهم ترجیحات غیرحساس ذخیره شوند</button>}
-      <p className="muted">پردازش ابری، تحلیل محصول و پردازش داده حساس در این نسخه فعال نیستند و از این بخش قابل فعال‌سازی نیستند. متن گفتگو، پاسخ‌ها و اطلاعات سلامت در این حافظه ذخیره نمی‌شوند. گزینه سرعت گام‌ها فعلاً به دلیل ثابت‌بودن ترتیب ایمنی، پرسش‌ها را گروهی نمی‌کند.</p>
+      <p className="muted">پردازش ابری، تحلیل محصول و پردازش داده حساس در این نسخه فعال نیستند و از این بخش قابل فعال‌سازی نیستند. متن گفتگو، پاسخ‌ها و اطلاعات سلامت در این حافظه ذخیره نمی‌شوند. سرعت پرسش‌ها و زبان هنوز گزینه قابل تغییر نیستند، چون در موتور فعلی به‌طور کامل پشتیبانی نمی‌شوند.</p>
       {message && <p className="contactHelp" role="status" aria-live="polite">{message}</p>}
       {error && <p className="contactHelp" role="alert">{error}</p>}
     </div>
