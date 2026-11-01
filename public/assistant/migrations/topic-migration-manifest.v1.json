@@ -15,7 +15,9 @@
   "contracts": {
     "crosswalk_path": "public/assistant/migrations/topic-crosswalk.v1.json",
     "alias_registry_path": "public/assistant/migrations/topic-aliases.v1.json",
-    "schema_path": "public/assistant/migrations/topic-migration-manifest.v1.schema.json"
+    "schema_path": "public/assistant/migrations/topic-migration-manifest.v1.schema.json",
+    "crosswalk_schema_path": "public/assistant/migrations/topic-crosswalk.v1.schema.json",
+    "alias_schema_path": "public/assistant/migrations/topic-aliases.v1.schema.json"
   },
   "required_preconditions": [
     "Owner approval of taxonomy decisions",
