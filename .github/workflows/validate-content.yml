@@ -9,6 +9,8 @@ on:
       - 'tests/**'
       - 'scripts/validate-content.mjs'
       - 'scripts/validate-assistant-topics.mjs'
+      - 'scripts/generate-content-mapping-queue.mjs'
+      - 'scripts/audit-content-mappings.mjs'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/**'
@@ -22,6 +24,8 @@ on:
       - 'tests/**'
       - 'scripts/validate-content.mjs'
       - 'scripts/validate-assistant-topics.mjs'
+      - 'scripts/generate-content-mapping-queue.mjs'
+      - 'scripts/audit-content-mappings.mjs'
       - 'package.json'
       - '.github/workflows/**'
       - 'scripts/prepare-production-build.mjs'
@@ -61,6 +65,9 @@ jobs:
       - name: Validate course and library data
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:content
+      - name: Report course content mapping readiness
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run audit:content-mappings
       - name: Build application
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: |
