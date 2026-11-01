@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const readText = p => fs.readFileSync(path.join(ROOT, p), 'utf8');
 const readJson = p => JSON.parse(readText(p));
-const gitBlobSha = text => crypto.createHash('sha1').update('blob ' + Buffer.byteLength(text, 'utf8') + '\\0').update(text).digest('hex');
+const gitBlobSha = text => crypto.createHash('sha1').update('blob ' + Buffer.byteLength(text, 'utf8') + '\0').update(text).digest('hex');
 
 export function buildDryRunReport() {
   const legacyText = readText('public/content/path-content.json');
@@ -104,7 +104,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const fresh = buildDryRunReport();
   if (process.argv.includes('--write')) {
     fs.mkdirSync(path.dirname(reportPath), { recursive: true });
-    fs.writeFileSync(reportPath, JSON.stringify(fresh, null, 2) + '\\n');
+    fs.writeFileSync(reportPath, JSON.stringify(fresh, null, 2) + '\n');
     console.log('Wrote read-only dry-run report; no source content or runtime data was modified.');
   } else {
     const stored = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
