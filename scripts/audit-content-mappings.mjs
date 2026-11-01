@@ -6,11 +6,11 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
 const normalize = (value) => String(value ?? '').normalize('NFKC').replace(/\s+/g, ' ').trim();
 
-export function auditContentMappings({ content, topics, subtopics, mappingSet }) {
+export function auditContentMappings({ content, topics, subtopics, evidenceRegistry, mappingSet }) {
   const errors = [];
   const topicByName = new Map((topics.topics ?? []).map((item) => [normalize(item.name), item]));
-  const topicById = new Map((topics.topics ?? []).map((item) => [item.topic_id, item]));
   const subtopicById = new Map((subtopics.subtopics ?? []).map((item) => [item.subtopic_id, item]));
+  const evidenceById = new Map((evidenceRegistry?.evidence ?? []).map((item) => [item.evidence_id, item]));
   const expected = new Map();
 
   for (const [topicName, category] of Object.entries(content.categories ?? {})) {
@@ -62,11 +62,19 @@ export function auditContentMappings({ content, topics, subtopics, mappingSet })
       if (!review.reviewed_at || Number.isNaN(Date.parse(review.reviewed_at))) errors.push(`Approved mapping lacks valid review date: ${mapping.mapping_id}`);
       if (!String(review.rationale ?? '').trim()) errors.push(`Approved mapping lacks rationale: ${mapping.mapping_id}`);
       if (!(review.evidence_ids ?? []).length) errors.push(`Approved mapping lacks evidence IDs: ${mapping.mapping_id}`);
+      for (const evidenceId of review.evidence_ids ?? []) {
+        const evidence = evidenceById.get(evidenceId);
+        if (!evidence) errors.push(`Approved mapping references unknown evidence ${evidenceId}: ${mapping.mapping_id}`);
+        else if (evidence.review_status !== 'approved' || !evidence.reviewer_id || !evidence.reviewed_at) {
+          errors.push(`Approved mapping references unapproved evidence ${evidenceId}: ${mapping.mapping_id}`);
+        }
+      }
     }
   }
 
   const missing = [...expected.keys()].filter((id) => !seen.has(id));
   if (mappingSet.runtime_eligible !== false) errors.push('Mapping set must remain runtime_eligible=false.');
+  if (evidenceRegistry?.runtime_eligible !== false) errors.push('Evidence registry must remain runtime_eligible=false.');
   return {
     errors,
     counts: {
@@ -74,11 +82,13 @@ export function auditContentMappings({ content, topics, subtopics, mappingSet })
       mapping_records: seen.size,
       missing_records: missing.length,
       ...counts,
+      approved_evidence_records: [...evidenceById.values()].filter((item) => item.review_status === 'approved').length,
     },
     readiness: {
       structural_integrity: errors.length === 0,
       complete_source_coverage: missing.length === 0,
       all_records_reviewed: missing.length === 0 && counts.pending_review === 0 && counts.in_review === 0,
+      evidence_registry_ready: evidenceById.size > 0 && [...evidenceById.values()].every((item) => item.review_status === 'approved'),
       approved_for_runtime: false,
     },
     missing_mapping_ids: missing,
@@ -90,6 +100,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     content: readJson('public/content/path-content.json'),
     topics: readJson('public/assistant/knowledge/topics.v1.json'),
     subtopics: readJson('public/assistant/knowledge/subtopics.v1.json'),
+    evidenceRegistry: readJson('public/assistant/evidence/evidence.v1.json'),
     mappingSet: readJson('public/assistant/mappings/course-content-mappings.v1.json'),
   });
   process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
