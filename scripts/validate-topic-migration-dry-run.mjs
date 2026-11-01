@@ -66,6 +66,10 @@ export function buildDryRunReport() {
     recordResults.push({ review_id: r.review_id, source_content_id: r.source_content_id, topic_id: r.topic_id, topic_name: r.topic_name, day_number: r.day_number, draft_content_id: r.draft_content_id || null, alias_id: alias?.alias_id || null, source_exists: !!source, source_category: source?.category || null, source_day: source?.day?.day ?? null, draft_exists: !!draft, draft_subtopic_id: draft?.subtopic_id || null, draft_subtopic_valid: draft ? !!draftSubtopic && draftSubtopic.topic_id === draft.topic_id : null, classification, proposed_action: classification === 'candidate_mapped' ? (draft ? 'preserve_draft_pending_review' : 'preserve_legacy_content_pending_redesign') : 'quarantine_for_manual_review' });
   }
   const draftsNotLinked = draftRecords.filter(d => !(queue.records || []).some(r => r.draft_content_id === d.content_id)).map(d => d.content_id);
+  const subtopicMappingImpact = crosswalk.subtopic_mappings.map(mapping => {
+    const affected = draftRecords.filter(d => d.subtopic_id === mapping.source.id);
+    return { mapping_id: mapping.mapping_id, source_subtopic_id: mapping.source.id, source_label: mapping.source.label, decision_status: mapping.decision_status, proposed_targets: mapping.targets, affected_draft_count: affected.length, affected_drafts: affected.map(d => ({ content_id: d.content_id, source_content_id: d.source_content_id, topic_id: d.topic_id, day_number: d.day_number, subtopic_id: d.subtopic_id, review_status: d.review_status, runtime_eligible: d.runtime_eligible })) };
+  });
   const noDraftByDay = {};
   for (const r of queue.records || []) if (!r.draft_content_id) noDraftByDay[r.day_number] = (noDraftByDay[r.day_number] || 0) + 1;
   const categoryStats = categoryNames.map(name => { const alias = aliasByName.get(name.normalize('NFC').trim()); return { name, days: legacy.categories[name].days.length, alias: alias?.target_topic_id || null, topicNameMatch: topics.find(t => t.topic_id === alias?.target_topic_id)?.name === name }; });
@@ -84,7 +88,7 @@ export function buildDryRunReport() {
     safety: { source_files_modified: false, user_data_accessed: false, records_written_to_runtime: false, execution_allowed: false },
     source_summary: { legacy_version: legacy.version, categories: categoryNames.length, legacy_days: legacyById.size, queue_declared_total: queue.total_records, queue_actual_records: (queue.records || []).length, draft_records: draftRecords.length, legacy_days_with_book_reference: daysWithBookReference, book_reference_counts: bookReferenceCounts },
     mapping_summary: { classification_counts: counts, all_aliases_exact_match: categoryStats.every(x => !!x.alias), all_queue_topic_ids_exist: (queue.records || []).every(r => topicById.has(r.topic_id)), all_queue_source_ids_exist: (queue.records || []).every(r => legacyById.has(r.source_content_id)), all_topic_labels_match_source: (queue.records || []).every(r => legacyById.get(r.source_content_id)?.category === r.topic_name), all_day_numbers_match_source: (queue.records || []).every(r => legacyById.get(r.source_content_id)?.day.day === r.day_number), drafts_in_queue: (queue.records || []).filter(r => r.draft_content_id).length, drafts_not_in_queue: draftsNotLinked.length, queue_has_subtopic_id: queueSubtopicCount > 0, runtime_eligible_records: runtimeEligible, queue_duplicate_review_ids: anomalies.filter(x => x.type === 'duplicate_review_id').length, queue_duplicate_source_ids: anomalies.filter(x => x.type === 'duplicate_source_content_id').length, queue_duplicate_draft_ids: anomalies.filter(x => x.type === 'duplicate_draft_content_id').length },
-    category_stats: categoryStats, day_distribution_without_draft: noDraftByDay, record_results: recordResults, anomalies, draft_records_not_linked_to_queue: draftsNotLinked
+    category_stats: categoryStats, day_distribution_without_draft: noDraftByDay, subtopic_mapping_impact: subtopicMappingImpact, record_results: recordResults, anomalies, draft_records_not_linked_to_queue: draftsNotLinked
   };
 }
 
@@ -93,6 +97,7 @@ export function validateDryRunReport(report, fresh = buildDryRunReport()) {
   if (report.report_id !== fresh.report_id || report.report_version !== fresh.report_version) errors.push('Report identity/version mismatch.');
   if (JSON.stringify(report.generated_from.source_git_blob_shas) !== JSON.stringify(fresh.generated_from.source_git_blob_shas)) errors.push('Stored dry-run report is stale: source blob hashes differ.');
   if (JSON.stringify(report.mapping_summary) !== JSON.stringify(fresh.mapping_summary)) errors.push('Stored mapping summary differs from recomputed result.');
+  if (JSON.stringify(report.subtopic_mapping_impact) !== JSON.stringify(fresh.subtopic_mapping_impact)) errors.push('Stored subtopic impact differs from recomputed result.');
   if (JSON.stringify(report.record_results) !== JSON.stringify(fresh.record_results)) errors.push('Stored per-record results differ from recomputed result.');
   if (report.safety.execution_allowed !== false || report.safety.records_written_to_runtime !== false) errors.push('Dry-run safety invariant violated.');
   if (fresh.mapping_summary.runtime_eligible_records !== 0) errors.push('Unexpected runtime-eligible records in source queue.');
