@@ -76,11 +76,14 @@ test('uncertain safety response triggers clarification rather than being treated
   assert.equal(getCurrentQuestion(session).id, 'safety_clarification');
 });
 
-test('a negative direct safety answer records only non-disclosure, not a guarantee of safety', () => {
+test('a negative direct answer does not erase an initial self-harm cue', () => {
   let session = createAssessmentSession();
   session = answer(session, 'خودزنی');
   session = answer(session, 'نه');
-  assert.equal(session.safety_state, 'no_immediate_risk_disclosed');
+  assert.equal(session.safety_state, 'contextual_risk_clarification_required');
+  assert.equal(getCurrentQuestion(session).id, 'safety_context_clarification');
+  session = answer(session, 'نه');
+  assert.equal(session.safety_state, 'risk_context_present_no_immediate_risk_disclosed');
   assert.equal(getCurrentQuestion(session).id, 'impact');
 });
 
