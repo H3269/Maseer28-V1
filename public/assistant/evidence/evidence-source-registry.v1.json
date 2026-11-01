@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0.0",
+  "registry_id": "maseer28-evidence-source-registry-v1",
+  "status": "methodology_sources_only_topic_evidence_pending",
+  "reviewed_on": "2026-11-02",
+  "policy": "این رجیستری منابع روش‌شناسی ارزیابی شواهد است؛ هیچ‌یک به‌تنهایی اثربخشی یا ایمنی مداخله‌ای برای ۳۴ موضوع یا ۹۵۲ محتوای مسیر۲۸ را اثبات نمی‌کند.",
+  "sources": [
+    {
+      "evidence_id": "METH_APA_EBPP_2021",
+      "source_type": "professional_policy",
+      "publisher": "American Psychological Association",
+      "title": "Policy Statement on Evidence-Based Practice in Psychology",
+      "year": 2021,
+      "url": "https://www.apa.org/practice/guidelines/evidence-based-statement.html",
+      "supports": [
+        "ترکیب بهترین شواهد پژوهشی در دسترس با تخصص بالینی و ویژگی‌ها، فرهنگ و ترجیحات مراجع"
+      ],
+      "does_not_support": [
+        "تأیید خودکار هیچ محتوای مسیر۲۸",
+        "اثربخشی یک تمرین یا مداخله خاص بدون شواهد مستقیم"
+      ],
+      "scope": "methodology"
+    },
+    {
+      "evidence_id": "METH_WHO_EVIDENCE_2025",
+      "source_type": "international_guidance",
+      "publisher": "World Health Organization",
+      "title": "Guidance on evidence",
+      "year": 2025,
+      "url": "https://tbksp.who.int/sites/default/files/2025-04/9789240103627-eng.pdf",
+      "supports": [
+        "صورت‌بندی پرسش با PICO",
+        "ارزیابی قطعیت شواهد",
+        "پروفایل شواهد و چارچوب evidence-to-decision",
+        "موازنه منافع و زیان‌ها"
+      ],
+      "does_not_support": [
+        "اثربخشی محتوای خاص بدون تطبیق موضوع، جمعیت، مداخله و پیامد"
+      ],
+      "scope": "methodology"
+    },
+    {
+      "evidence_id": "METH_CDC_GRADE_2024",
+      "source_type": "evidence_method",
+      "publisher": "US Centers for Disease Control and Prevention",
+      "title": "ACIP GRADE Handbook — Overview of the Guideline Development Process",
+      "year": 2024,
+      "url": "https://www.cdc.gov/acip-grade-handbook/hcp/chapter-3-overview-of-the-guideline-development-process/",
+      "supports": [
+        "تعیین دامنه و پرسش پژوهش",
+        "استفاده از مرور نظام‌مند",
+        "ارزیابی قطعیت شواهد با GRADE",
+        "چارچوب تصمیم‌گیری شواهد تا توصیه"
+      ],
+      "does_not_support": [
+        "تأیید بالینی خودکار متن‌های آموزشی"
+      ],
+      "scope": "methodology"
+    },
+    {
+      "evidence_id": "METH_NHMRC_ETD",
+      "source_type": "evidence_to_decision_method",
+      "publisher": "National Health and Medical Research Council",
+      "title": "Evidence to decision and making recommendations",
+      "year": null,
+      "url": "https://www.nhmrc.gov.au/guidelinesforguidelines/develop/evidence-decision",
+      "supports": [
+        "ثبت شفاف قضاوت‌ها و پیوند مستقیم هر توصیه با شواهد",
+        "تفکیک مرور شواهد از تصمیم‌گیری و توصیه"
+      ],
+      "does_not_support": [
+        "اثربخشی مداخله مشخص بدون شواهد مربوط"
+      ],
+      "scope": "methodology"
+    },
+    {
+      "evidence_id": "METH_NICE_INTERPRETATION",
+      "source_type": "guideline_method",
+      "publisher": "National Institute for Health and Care Excellence",
+      "title": "Developing NICE guidelines: Interpreting the evidence and writing the guideline",
+      "year": null,
+      "url": "https://www.nice.org.uk/process/pmg20/chapter/interpreting-the-evidence-and-writing-the-guideline",
+      "supports": [
+        "تفسیر شواهد توسط کمیته و لحاظ داده‌های دنیای واقعی، نظر متخصصان و کاربران خدمات"
+      ],
+      "does_not_support": [
+        "جایگزینی نظر متخصص با شواهد مستقیم اثربخشی"
+      ],
+      "scope": "methodology"
+    }
+  ],
+  "evidence_quality_policy": {
+    "hierarchy": [
+      "current_high_quality_guideline_or_systematic_review",
+      "systematic_review_or_meta_analysis",
+      "well_conducted_randomized_trial",
+      "well_designed_observational_study",
+      "expert_consensus_or_professional_guidance"
+    ],
+    "caveat": "سطح شواهد باید برای هر ادعای مشخص و پیامد مشخص تعیین شود؛ این فهرست رتبه‌بندی مطلق همه طرح‌های پژوهش نیست.",
+    "mandatory_fields": [
+      "claim_supported",
+      "population",
+      "intervention_or_construct",
+      "comparator_or_context",
+      "outcome",
+      "study_design_or_guideline_type",
+      "evidence_certainty",
+      "limitations",
+      "publication_year",
+      "last_checked",
+      "url_or_doi"
+    ],
+    "reject_if": [
+      "منبع غیرقابل ردیابی",
+      "ارجاع صرفاً به صفحه اصلی سازمان",
+      "منبع نامرتبط با ادعای مورد استناد",
+      "استفاده از یک منبع عمومی برای ادعای درمانی اختصاصی",
+      "منبع قدیمی در موضوعی با راهنمای به‌روزتر در دسترس"
+    ]
+  },
+  "test_gate": {
+    "current_state": "blocked_for_public_runtime",
+    "allowed_stage": "isolated_internal_prototype_and_expert_evaluation_only_after_safety_gate",
+    "required_before_expert_test": [
+      "ثبت منابع اختصاصی هر ادعای محتوایی",
+      "بازبینی ایمنی و مسیر ارجاع",
+      "کنترل سن و گروه هدف و محدودیت‌ها",
+      "اطمینان از عدم فعال‌سازی محتوای تأییدنشده در کاربران عمومی",
+      "ثبت نسخه و تاریخ دقیق محتوای مورد آزمون"
+    ],
+    "disclaimer": "آماده‌سازی برای تست کارشناسی به معنی تأیید بالینی، اثربخشی یا مجوز عرضه عمومی نیست."
+  }
+}
