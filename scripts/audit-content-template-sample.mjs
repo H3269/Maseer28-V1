@@ -10,13 +10,24 @@ const norm=s=>String(s??'').normalize('NFKC').replace(/\s+/g,' ').trim().toLocal
 export function auditSampleDayTemplates({content,topics,days=SAMPLE_DAYS}){
  const registry=topics.topics??[], categories=content.categories??{};
  if(registry.length!==34||Object.keys(categories).length!==34) throw new Error('Expected exactly 34 topics and 34 content categories.');
- const normalizedNames=new Map(registry.map(t=>[norm(t.name),t]));
- if(Object.keys(categories).some(name=>!normalizedNames.has(norm(name)))) throw new Error('Content categories do not match topic registry.');
+ const normalizedNames=new Map();
+ for(const topic of registry){
+  const key=norm(topic.name);
+  if(!key||normalizedNames.has(key)) throw new Error('Topic registry contains missing or duplicate normalized names.');
+  normalizedNames.set(key,topic);
+ }
+ const categoryByName=new Map();
+ for(const [name,category] of Object.entries(categories)){
+  const key=norm(name);
+  if(!key||categoryByName.has(key)) throw new Error('Content categories contain missing or duplicate normalized names.');
+  categoryByName.set(key,category);
+ }
+ if([...normalizedNames.keys()].some(name=>!categoryByName.has(name))||[...categoryByName.keys()].some(name=>!normalizedNames.has(name))) throw new Error('Content categories do not match topic registry.');
  const report=[];
  for(const dayNumber of days){
   if(!Number.isInteger(dayNumber)||dayNumber<1||dayNumber>28) throw new Error(`Invalid sample day: ${dayNumber}`);
   const records=registry.map(topic=>{
-   const category=categories[topic.name];
+   const category=categoryByName.get(norm(topic.name));
    if(!Array.isArray(category?.days)||category.days.length!==28) throw new Error(`Expected 28 days for ${topic.name}.`);
    return {topic,day:category.days[dayNumber-1]};
   });
