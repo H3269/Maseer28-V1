@@ -19,6 +19,8 @@
 - `public/assistant/migrations/topic-crosswalk.v1.json`: نگاشت‌های کاندیدا؛ شامل ۳۴ تطبیق نام legacy و سه تصمیم زیرموضوعی نیازمند بازبینی.
 - `public/assistant/migrations/topic-aliases.v1.json`: ۳۴ alias فارسی برای دسته‌های قدیمی؛ فقط exact-match و candidate.
 - `public/assistant/migrations/topic-migration-manifest.v1.json`: پیش‌شرط‌ها، invariants، dry-run steps، rollback و rollout gates بسته.
+- `public/assistant/migrations/topic-crosswalk.v1.schema.json`: schema نگاشت‌ها.
+- `public/assistant/migrations/topic-aliases.v1.schema.json`: schema aliasها.
 - `public/assistant/migrations/topic-migration-manifest.v1.schema.json`: schema نسخه manifest.
 - `public/assistant/migrations/topic-migration-fixtures.v1.json`: نمونه‌های مصنوعی برای حالت‌های ۱:۱، چندبه‌یک، یک‌به‌چند، بدون مقصد و قرنطینه.
 - `scripts/validate-topic-migration-contract.mjs`: اعتبارسنج مستقل بدون وابستگی جدید.
