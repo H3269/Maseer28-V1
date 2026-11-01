@@ -11,7 +11,8 @@ on:
       - 'scripts/validate-assistant-topics.mjs'
       - 'package.json'
       - 'package-lock.json'
-      - '.github/workflows/validate-content.yml'
+      - '.github/workflows/**'
+      - 'scripts/prepare-production-build.mjs'
   push:
     branches: [main]
     paths:
@@ -22,7 +23,8 @@ on:
       - 'scripts/validate-content.mjs'
       - 'scripts/validate-assistant-topics.mjs'
       - 'package.json'
-      - '.github/workflows/validate-content.yml'
+      - '.github/workflows/**'
+      - 'scripts/prepare-production-build.mjs'
 
 permissions:
   contents: read
