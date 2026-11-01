@@ -6,7 +6,16 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const readJson = (p) => JSON.parse(fs.readFileSync(path.join(root, p), 'utf8'));
 const DIMENSIONS = ['target_specificity','psychological_mechanism','evidence_support','exercise_alignment','progression_and_difficulty','safety_and_cautions','outcome_measurement','accessibility'];
 const TEXT_FIELDS = ['title','intro','exercise','actionText','closing'];
-const normalize = (value, topic) => String(value ?? '').normalize('NFKC').split(`«${topic}»`).join('«[TOPIC]»').split(topic).join('[TOPIC]').replace(/\s+/g,' ').trim().toLocaleLowerCase('fa');
+const escapeRegExp = (value) => String(value).replace(/[.*+?^${}()|[\\]\\\\]/g, '\\const normalize = (value, topic) => String(value ?? '').normalize('NFKC').split(`«${topic}»`).join('«[TOPIC]»').split(topic).join('[TOPIC]').replace(/\s+/g,' ').trim().toLocaleLowerCase('fa');');
+export const normalizeTemplateText = (value, topic) => {
+  const text = String(value ?? '').normalize('NFKC');
+  const normalizedTopic = String(topic ?? '').normalize('NFKC').trim();
+  if (!normalizedTopic) return text.replace(/\\s+/g, ' ').trim().toLocaleLowerCase('fa');
+  const quoted = text.split('«' + normalizedTopic + '»').join('«[TOPIC]»');
+  const boundary = new RegExp('(^|[\\\\s،؛,.!?()\\\\[\\\\]{}«»])' + escapeRegExp(normalizedTopic) + '(?=$|[\\\\s،؛,.!?()\\\\[\\\\]{}«»])', 'gu');
+  return quoted.replace(boundary, '$1[TOPIC]').replace(/\\s+/g, ' ').trim().toLocaleLowerCase('fa');
+};
+const normalize = normalizeTemplateText;
 
 export function buildReviewQueue(content, topics) {
   const byName = new Map((topics.topics ?? []).map((t) => [String(t.name).normalize('NFKC').trim(), t]));
