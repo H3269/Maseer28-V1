@@ -93,6 +93,19 @@ test('user can stop and clear in-memory answers', () => {
   assert.equal(stopped.summary, null);
 });
 
+test('unmatched concerns use T34 as a clarification route, not a diagnosis', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'یک مسئله پیچیده دارم که نمی‌دانم چطور توضیح بدهم');
+  session = answer(session, 'نه');
+  session = answer(session, 'در کار و زندگی روزمره اثر گذاشته');
+  session = answer(session, 'چند هفته است');
+  session = answer(session, 'می‌خواهم بفهمم چه خبر است');
+  session = answer(session, 'هنوز نمی‌توانم نمونه مشخصی پیدا کنم');
+  const item = getAssessmentSummary(session).candidate_topics[0];
+  assert.equal(item.topic_id, 'T34');
+  assert.equal(item.status, 'needs_clarification');
+});
+
 test('cloud processing is explicitly rejected by this experimental engine', () => {
   assert.throws(() => createAssessmentSession({ localOnly: false }), /ارسال ابری/);
 });
