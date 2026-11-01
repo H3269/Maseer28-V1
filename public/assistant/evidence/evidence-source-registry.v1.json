@@ -3,7 +3,7 @@
   "registry_id": "maseer28-evidence-source-registry-v1",
   "status": "methodology_and_topic_sources_registered_pending_claim_level_review",
   "reviewed_on": "2026-11-02",
-  "policy": "این رجیستری منابع روش‌شناسی ارزیابی شواهد است؛ هیچ‌یک به‌تنهایی اثربخشی یا ایمنی مداخله‌ای برای ۳۴ موضوع یا ۹۵۲ محتوای مسیر۲۸ را اثبات نمی‌کند.",
+  "policy": "این رجیستری هم منابع روش‌شناسی ارزیابی شواهد و هم منابع موضوعی/ادعایی را نگهداری می‌کند. هر منبع فقط در دامنه صریح supports و با محدودیت‌های does_not_support قابل استناد است؛ هیچ منبعی به‌تنهایی اثربخشی یا ایمنی محتوای خاص مسیر۲۸ را ثابت نمی‌کند.",
   "sources": [
     {
       "evidence_id": "METH_APA_EBPP_2021",
@@ -224,12 +224,12 @@
       "scope": "T19; limited and mostly observational evidence"
     },
     {
-      "evidence_id": "EVID_GUILT_MEASUREMENT_2014",
+      "evidence_id": "EVID_GUILT_MEASUREMENT_2010",
       "source_type": "conceptual_clinical_review",
-      "publisher": "Authors indexed in PubMed Central",
+      "publisher": "Tilghman-Osborne, Cole & Felton",
       "title": "Definition and measurement of guilt: Implications for clinical research and practice",
-      "year": 2014,
-      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4119878/",
+      "year": 2010,
+      "url": "https://pubmed.ncbi.nlm.nih.gov/20451312/",
       "supports": [
         "اهمیت سنجش گناه در زمینه رویداد مشخص و تفکیک سرزنش رفتاری از کلی"
       ],
