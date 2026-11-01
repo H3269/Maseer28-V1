@@ -17,7 +17,7 @@ test('packet contains exactly 34 complete source-day snapshots and blank human r
 test('packet rejects mismatched registry and content categories',()=>{
  const broken=structuredClone(content);
  delete broken.categories['موضوع 1'];
- assert.throws(()=>buildFirstPassReviewPacket({content:broken,topics}),/do not match exactly/);
+ assert.throws(()=>buildFirstPassReviewPacket({content:broken,topics}),/Expected 34 content categories/);
 });
 
 test('packet rejects invalid day number and incomplete 28-day path',()=>{
