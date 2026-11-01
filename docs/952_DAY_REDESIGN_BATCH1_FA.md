@@ -14,7 +14,8 @@
 - `public/assistant/content-drafts/day01-34-topic-drafts.v1.json`: ۳۴ واحد روز اول با هدف یادگیری، تمرکز سازوکاری، تمرین، اقدام، سنجه و محدودیت ایمنی.
 - `public/assistant/content-drafts/day02-34-topic-drafts.v1.json`: ۳۴ واحد روز دوم برای تمایزگذاری زمینه و سازوکار احتمالی؛ بدون استنتاج علت قطعی.
 - `public/assistant/content-drafts/952-day-redesign-queue.v1.json`: صف کامل ۹۵۲ رکورد برای پیگیری بازنویسی و بازبینی.
-- `scripts/validate-content-redesign.mjs`: کنترل پوشش ۹۵۲ جایگاه، یکتایی شناسه‌ها، انطباق موضوع/زیرموضوع، تکمیل فیلدها و ممنوعیت فعال‌سازی زودهنگام.
+- `scripts/validate-content-redesign.mjs`: کنترل پوشش ۹۵۲ جایگاه، یکتایی شناسه‌ها و متن‌های اصلی هر دسته، انطباق موضوع/زیرموضوع، تکمیل فیلدها و ممنوعیت فعال‌سازی زودهنگام.
+- `docs/REVIEW_PACKET_DAYS01_02_68_DRAFTS_FA.md`: بسته خالی بازبینی متخصص برای هر ۶۸ پیش‌نویس؛ هیچ امتیاز یا تأییدی از پیش ثبت نشده است.
 - `tests/contentRedesignValidation.test.js`: آزمون‌های رگرسیون برای تمامیت صف و جلوگیری از ادعای شواهد ساختگی.
 
 ## قواعد طراحی دسته نخست
