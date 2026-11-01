@@ -21,6 +21,38 @@ export function auditKnowledgeGraph({ topicsRegistry, subtopicsRegistry, relatio
     }
   }
 
+  const unique = (items, key, label) => {
+    const seen = new Set();
+    for (const item of items) {
+      const value = item?.[key];
+      if (typeof value !== 'string' || !value.trim()) errors.push(`Missing ${label}.`);
+      else if (seen.has(value)) errors.push(`Duplicate ${label}: ${value}.`);
+      seen.add(value);
+    }
+  };
+  unique(topics, 'topic_id', 'topic ID');
+  unique(subtopics, 'subtopic_id', 'subtopic ID');
+  unique(definitions, 'topic_id', 'definition topic ID');
+  unique(relations, 'relation_id', 'relation ID');
+  if (topicsRegistry.registry_status !== 'draft_requires_expert_review') errors.push('Topic registry must remain draft pending expert review.');
+  if (relationsRegistry.status !== 'candidate_only_not_for_runtime') errors.push('Relation registry must remain candidate-only and unavailable to runtime.');
+  const expectedTopicIds = Array.from({ length: 34 }, (_, index) => `T${String(index + 1).padStart(2, '0')}`);
+  if (topics.length === 34 && JSON.stringify(topics.map((item) => item.topic_id)) !== JSON.stringify(expectedTopicIds)) {
+    errors.push('Topic IDs must be ordered T01 through T34.');
+  }
+  for (const definition of definitions) {
+    if (!topicById.has(definition.topic_id)) errors.push(`Definition has unknown topic: ${definition.topic_id}.`);
+    if (definition.review_status !== 'pending_expert_review') errors.push(`Definition is not pending expert review: ${definition.topic_id}.`);
+    if ((definition.evidence_ids ?? []).length) errors.push(`Unreviewed definition must not claim evidence: ${definition.topic_id}.`);
+  }
+  for (const subtopic of subtopics) {
+    if (!topicById.has(subtopic.topic_id)) errors.push(`Subtopic has unknown parent: ${subtopic.subtopic_id}.`);
+    if (subtopic.review_status !== 'draft' || subtopic.definition_status !== 'pending_expert_review') {
+      errors.push(`Subtopic must remain a draft: ${subtopic.subtopic_id}.`);
+    }
+    if ((subtopic.evidence_ids ?? []).length) errors.push(`Unreviewed subtopic must not claim evidence: ${subtopic.subtopic_id}.`);
+  }
+
   const relationById = new Map(relations.map((item) => [item.relation_id, item]));
   for (const relation of relations) {
     const source = topicById.get(relation.source_topic_id);
@@ -28,7 +60,7 @@ export function auditKnowledgeGraph({ topicsRegistry, subtopicsRegistry, relatio
     if (!source || !target) errors.push(`Unknown relation endpoint: ${relation.relation_id}.`);
     if (source && !(source.relation_ids ?? []).includes(relation.relation_id)) errors.push(`Source link missing: ${relation.relation_id}.`);
     if (target && !(target.relation_ids ?? []).includes(relation.relation_id)) errors.push(`Target link missing: ${relation.relation_id}.`);
-    if (relation.runtime_eligible !== false || relation.causal_claim !== false || relation.status !== 'candidate_unreviewed') {
+    if (relation.runtime_eligible !== false || relation.causal_claim !== false || relation.status !== 'candidate_unreviewed' || relation.evidence_grade !== 'not_assessed' || (relation.evidence_ids ?? []).length > 0) {
       errors.push(`Unsafe relation state: ${relation.relation_id}.`);
     }
   }
