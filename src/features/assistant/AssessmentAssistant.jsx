@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   createAssessmentSession,
   getCurrentQuestion,
@@ -6,6 +6,8 @@ import {
   stopAssessment,
 } from './assessmentEngine.js';
 import topicRegistry from '../../../public/assistant/knowledge/topics.v1.json';
+import { DEFAULT_PERSONALIZATION, loadPersonalizationPreferences } from '../privacy/personalizationPreferences.js';
+import { formatAssistantPrompt } from './assistantPreferences.js';
 
 const topicNames = new Map(topicRegistry.topics.map((topic) => [topic.topic_id, topic.name]));
 
@@ -15,11 +17,25 @@ export default function AssessmentAssistant() {
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
   const [error, setError] = useState('');
+  const [preferences, setPreferences] = useState({ ...DEFAULT_PERSONALIZATION });
+
+  useEffect(() => {
+    const refreshPreferences = () => {
+      try { setPreferences(loadPersonalizationPreferences()); } catch { setPreferences({ ...DEFAULT_PERSONALIZATION }); }
+    };
+    refreshPreferences();
+    window.addEventListener('maseer28:personalization-changed', refreshPreferences);
+    return () => window.removeEventListener('maseer28:personalization-changed', refreshPreferences);
+  }, []);
+
 
   function start() {
+    let currentPreferences = { ...DEFAULT_PERSONALIZATION };
+    try { currentPreferences = loadPersonalizationPreferences(); } catch { /* defaults remain local and temporary */ }
+    setPreferences(currentPreferences);
     const next = createAssessmentSession();
     setSession(next);
-    setMessages([{ role: 'assistant', text: getCurrentQuestion(next).prompt }]);
+    setMessages([{ role: 'assistant', text: formatAssistantPrompt(getCurrentQuestion(next), currentPreferences) }]);
     setDraft('');
     setError('');
     setExpanded(true);
@@ -34,7 +50,7 @@ export default function AssessmentAssistant() {
         ...previous,
         { role: 'user', text: draft.trim() },
         ...(getCurrentQuestion(updated)
-          ? [{ role: 'assistant', text: getCurrentQuestion(updated).prompt }]
+          ? [{ role: 'assistant', text: formatAssistantPrompt(getCurrentQuestion(updated), preferences) }]
           : updated.referral
             ? [{ role: 'assistant', text: updated.referral.instruction }]
             : updated.status === 'completed'
@@ -67,7 +83,7 @@ export default function AssessmentAssistant() {
     {expanded && <>
       <div className="sectionHint" role="note">
         <span> <strong>i</strong> </span>
-        <div><b>حریم خصوصی آزمایشی</b><small>پاسخ‌ها فقط در حافظه موقت همین صفحه نگهداری می‌شوند؛ در این نسخه ذخیره یا به سرور ارسال نمی‌شوند. اطلاعات شناسایی‌کننده ننویس.</small></div>
+        <div><b>حریم خصوصی آزمایشی</b><small>پاسخ‌ها فقط در حافظه موقت همین صفحه نگهداری می‌شوند؛ ذخیره یا به سرور ارسال نمی‌شوند. فقط ترجیحات غیرحساسِ شیوه تعامل، در صورت رضایت جداگانه، روی همین مرورگر اعمال می‌شوند. اطلاعات شناسایی‌کننده ننویس.</small></div>
       </div>
       <div className="assistantTranscript" aria-live="polite">
         {messages.map((message, index) => <div className={message.role === 'assistant' ? 'assistantMessage' : 'userMessage'} key={index}>
@@ -88,6 +104,9 @@ export default function AssessmentAssistant() {
       {summary && <div className="assistantSummary">
         <h3>خلاصه موقت برای بازبینی</h3>
         <p><b>آنچه گفتی:</b> {summary.user_report}</p>
+        {summary.user_correction && <p><b>اصلاح تو:</b> {summary.user_correction}</p>}
+        {summary.review_status === 'correction_requested' && <p className="muted">برداشت قبلی و موضوعات پیشنهادی کنار گذاشته شدند تا توضیح تو دریافت شود.</p>}
+        {summary.review_status === 'user_corrected_pending_confirmation' && <p className="muted">برداشت قبلی کنار گذاشته شده است. لطفاً خلاصه اصلاح‌شده را دوباره بررسی کن.</p>}
         <p><b>اثر بر زندگی روزمره:</b> {summary.impact}</p>
         <p><b>مدت و تکرار:</b> {summary.duration}</p>
         <p><b>هدفت:</b> {summary.user_goal}</p>
@@ -95,7 +114,7 @@ export default function AssessmentAssistant() {
           ? summary.candidate_topics.map((item) => topicNames.get(item.topic_id) || item.topic_id).join('، ')
           : 'با واژه‌های فعلی موضوع مشخصی قابل پیشنهاد نیست؛ این به معنی رد هیچ موضوعی نیست.'}</p>
         <ul>{summary.limitations.map((item) => <li key={item}>{item}</li>)}</ul>
-        <p className="muted">هیچ تمرین یا درمانی به‌صورت خودکار پیشنهاد نمی‌شود؛ محتوای مناسب هنوز نیازمند تأیید علمی و تخصصی است.</p>
+        <p className="muted">هیچ تمرین یا درمانی به‌صورت خودکار پیشنهاد نمی‌شود؛ محتوای مناسب هنوز نیازمند تأیید علمی و تخصصی است. ترجیحات فقط لحن، میزان توضیح و نوع راهنمایی برای مثال را تغییر می‌دهند؛ ترتیب پرسش‌های ایمنی مستقل و ثابت می‌ماند.</p>
       </div>}
       {session?.status === 'completed' && <button className="secondary" type="button" onClick={start}>شروع گفت‌وگوی تازه</button>}
       {session?.status === 'stopped_by_user' && <button className="secondary" type="button" onClick={start}>شروع دوباره</button>}

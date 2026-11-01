@@ -49,6 +49,7 @@ const QUESTION = {
   goal: { id: 'goal', stage: 'open_intent', prompt: 'از این گفتگو بیشتر چه کمکی می‌خواهی: فهمیدن مسئله، پیدا کردن راهکار، یا تصمیم‌گیری درباره کمک تخصصی؟' },
   clarify: { id: 'clarify_example', stage: 'differential_clarification', prompt: 'برای اینکه اشتباه دسته‌بندی نکنم، یک موقعیت مشخص و اخیر را تعریف می‌کنی؟ در آن لحظه چه اتفاقی افتاد، چه فکری از ذهنت گذشت و چه احساسی داشتی؟' },
   summary: { id: 'summary_confirmation', stage: 'collaborative_summary', prompt: 'این خلاصه تا چه اندازه تجربه‌ات را درست بازتاب می‌دهد؟ چه چیزی را باید اصلاح یا اضافه کنم؟' },
+  summary_revision: { id: 'summary_revision', stage: 'user_correction', prompt: 'ممنون که اصلاح کردی. لطفاً دقیق بگو کدام بخش برداشت من نادرست بود و به‌جای آن چه چیزی را باید بفهمم؟ اگر موضوعات پیشنهادی اشتباه‌اند، بگو کدام‌یک را کنار بگذارم.' },
   safety_uncertain: { id: 'safety_clarification', stage: 'safety_check', prompt: 'منظورت از پاسخ قبلی برایم روشن نیست. آیا در همین الآن قصد، برنامه یا احتمال عملی آسیب‌زدن به خودت یا دیگری وجود دارد؟ می‌توانی بگویی «بله»، «نه» یا «مطمئن نیستم».' },
 };
 
@@ -166,14 +167,37 @@ export function submitAssessmentAnswer(session, answer) {
     };
     next.current_question = QUESTION.summary;
   } else if (questionId === 'summary_confirmation') {
-    next.answers.summary_feedback = value;
-    next.status = 'completed';
-    next.current_question = null;
-    next.next_step = {
-      content_available: false,
-      reason: 'هیچ تمرین یا مداخله‌ای تا تأیید علمی و تخصصی به این موتور متصل نشده است.',
-      recommendation: 'ابتدا خلاصه را با یک متخصص یا خودت دقیق‌تر کن؛ در صورت تداوم رنج یا اختلال عملکرد، ارزیابی متخصص سلامت روان مناسب است.',
-    };
+    const accepted = normalize(value).replace(/[.!؟،,]/g, '').trim();
+    if (['بله', 'آره', 'اره', 'درسته', 'درست است', 'خلاصه درست است', 'بله درست است'].includes(accepted)) {
+      next.answers.summary_feedback = value;
+      next.summary.review_status = 'user_confirmed';
+      next.status = 'completed';
+      next.current_question = null;
+      next.next_step = {
+        content_available: false,
+        reason: 'هیچ تمرین یا مداخله‌ای تا تأیید علمی و تخصصی به این موتور متصل نشده است.',
+        recommendation: 'ابتدا خلاصه را با یک متخصص یا خودت دقیق‌تر کن؛ در صورت تداوم رنج یا اختلال عملکرد، ارزیابی متخصص سلامت روان مناسب است.',
+      };
+    } else {
+      next.summary.review_status = 'correction_requested';
+      next.summary.prior_candidate_topics = [...next.summary.candidate_topics];
+      next.summary.candidate_topics = [];
+      next.summary.topic_assessment_status = 'withdrawn_pending_reassessment';
+      next.summary.correction_request = value;
+      next.current_question = QUESTION.summary_revision;
+    }
+  } else if (questionId === 'summary_revision') {
+    next.answers.summary_revision = value;
+    next.summary.user_correction = value;
+    next.summary.review_status = 'user_corrected_pending_confirmation';
+    next.summary.topic_assessment_status = 'requires_reassessment';
+    next.summary.candidate_topics = [];
+    next.summary.limitations = [
+      ...next.summary.limitations,
+      'پس از اصلاح کاربر، فرضیه‌های موضوعی قبلی کنار گذاشته شدند؛ موتور هنوز توان بازارزیابی معتبر موضوع را ندارد و نباید آن‌ها را به‌عنوان برداشت جاری نمایش دهد.',
+      'متن اصلاح‌شده کاربر باید توسط خود کاربر یا متخصص بازبینی شود؛ این اصلاح به‌تنهایی تشخیص یا ارزیابی علمی محسوب نمی‌شود.',
+    ];
+    next.current_question = QUESTION.summary;
   }
   return next;
 }
