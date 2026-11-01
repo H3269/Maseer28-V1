@@ -9,7 +9,7 @@ function makeData(){
   const day=i+1, id='QREV_'+topic.topic_id+'_D'+String(day).padStart(2,'0');
   return {review_id:id,topic_id:topic.topic_id,day_number:day,source_content_id:topic.topic_id+'-'+String(day).padStart(2,'0'),draft_content_id:day<=2?'DRAFT_'+topic.topic_id+'_D0'+day:null,redesign_status:day<=2?'draft_created_pending_review':'not_started',review_status:'pending_review',runtime_eligible:false,scores:{dimension:null}};
  }));
- const buildDrafts=day=>topics.map(topic=>({content_id:'DRAFT_'+topic.topic_id+'_D0'+day,source_content_id:topic.topic_id+'-0'+day,topic_id:topic.topic_id,subtopic_id:topic.topic_id+(day===1?'-S01':'-S02'),day_number:day,learning_objective:'هدف مشخص',mechanism_focus:'سازوکار محدود',exercise:'تمرین مشاهده',action:'اقدام کم‌خطر',progress_measure:'سنجه مشاهده‌پذیر',safety_and_limits:'حدود ایمنی',evidence_ids:[],review_status:'draft_pending_expert_review',runtime_eligible:false}));
+ const buildDrafts=day=>topics.map(topic=>({content_id:'DRAFT_'+topic.topic_id+'_D0'+day,source_content_id:topic.topic_id+'-0'+day,topic_id:topic.topic_id,subtopic_id:topic.topic_id+(day===1?'-S01':'-S02'),day_number:day,learning_objective:'هدف مشخص '+topic.topic_id,mechanism_focus:'سازوکار محدود',exercise:'تمرین مشاهده '+topic.topic_id,action:'اقدام کم‌خطر '+topic.topic_id,progress_measure:'سنجه مشاهده‌پذیر '+topic.topic_id,safety_and_limits:'حدود ایمنی',evidence_ids:[],review_status:'draft_pending_expert_review',runtime_eligible:false}));
  return {queue:{records},day1:{records:buildDrafts(1)},day2:{records:buildDrafts(2)},topics:{topics},subtopics:{subtopics}};
 }
 test('validates full 952 queue and first two 34-topic draft batches',()=>{
