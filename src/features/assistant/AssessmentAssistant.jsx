@@ -6,6 +6,8 @@ import {
   stopAssessment,
 } from './assessmentEngine.js';
 import topicRegistry from '../../../public/assistant/knowledge/topics.v1.json';
+import { DEFAULT_PERSONALIZATION, loadPersonalizationPreferences } from '../privacy/personalizationPreferences.js';
+import { getConversationOverview, getPersonalizedQuestionText } from './personalizedPresentation.js';
 
 const topicNames = new Map(topicRegistry.topics.map((topic) => [topic.topic_id, topic.name]));
 
@@ -15,11 +17,19 @@ export default function AssessmentAssistant() {
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
   const [error, setError] = useState('');
+  const [preferences, setPreferences] = useState({ ...DEFAULT_PERSONALIZATION });
 
   function start() {
     const next = createAssessmentSession();
+    let activePreferences = { ...DEFAULT_PERSONALIZATION };
+    try { activePreferences = loadPersonalizationPreferences(); } catch { /* use safe defaults when local storage is unavailable */ }
+    setPreferences(activePreferences);
     setSession(next);
-    setMessages([{ role: 'assistant', text: getCurrentQuestion(next).prompt }]);
+    const overview = getConversationOverview(activePreferences);
+    setMessages([
+      ...(overview ? [{ role: 'assistant', text: overview }] : []),
+      { role: 'assistant', text: getPersonalizedQuestionText(getCurrentQuestion(next), activePreferences) },
+    ]);
     setDraft('');
     setError('');
     setExpanded(true);
@@ -34,7 +44,7 @@ export default function AssessmentAssistant() {
         ...previous,
         { role: 'user', text: draft.trim() },
         ...(getCurrentQuestion(updated)
-          ? [{ role: 'assistant', text: getCurrentQuestion(updated).prompt }]
+          ? [{ role: 'assistant', text: getPersonalizedQuestionText(getCurrentQuestion(updated), preferences) }]
           : updated.referral
             ? [{ role: 'assistant', text: updated.referral.instruction }]
             : updated.status === 'completed'
