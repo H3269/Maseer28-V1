@@ -10,6 +10,16 @@ const [content, topics, subtopics] = await Promise.all([
   read('../public/assistant/knowledge/topics.v1.json'),
   read('../public/assistant/knowledge/subtopics.v1.json'),
 ]);
+const emptyEvidence = { runtime_eligible: false, evidence: [] };
+const approvedEvidence = {
+  runtime_eligible: false,
+  evidence: [{
+    evidence_id: 'EVD_TEST_01',
+    review_status: 'approved',
+    reviewer_id: 'expert-1',
+    reviewed_at: '2026-11-01T12:00:00Z',
+  }],
+};
 
 test('queue creates one pending record per course day without guessing subtopics', () => {
   const queue = buildContentMappingQueue({ content, topics });
@@ -35,7 +45,7 @@ test('queue preserves existing human review and refuses silent source replacemen
 
 test('empty review ledger reports coverage gaps without inventing approvals', () => {
   const queue = buildContentMappingQueue({ content, topics });
-  const report = auditContentMappings({ content, topics, subtopics, mappingSet: { ...queue, mappings: [] } });
+  const report = auditContentMappings({ content, topics, subtopics, evidenceRegistry: emptyEvidence, mappingSet: { ...queue, mappings: [] } });
   assert.deepEqual(report.errors, []);
   assert.equal(report.counts.expected_source_days, 952);
   assert.equal(report.counts.missing_records, 952);
@@ -43,7 +53,7 @@ test('empty review ledger reports coverage gaps without inventing approvals', ()
   assert.equal(report.readiness.approved_for_runtime, false);
 });
 
-test('approved mappings require same-parent subtopic and complete review metadata', () => {
+test('approved mappings require same-parent subtopic, reviewer metadata and approved evidence', () => {
   const queue = buildContentMappingQueue({ content, topics });
   const first = queue.mappings[0];
   const validSubtopic = subtopics.subtopics.find((item) => item.topic_id === first.source_topic_id);
@@ -53,11 +63,17 @@ test('approved mappings require same-parent subtopic and complete review metadat
     reviewer_id: 'reviewer-1',
     reviewed_at: '2026-11-01T12:00:00Z',
     rationale: 'ارتباط محتوای روز با زیرموضوع با بررسی متن کامل تأیید شد.',
-    evidence_ids: ['EVIDENCE-DRAFT-01'],
+    evidence_ids: ['EVD_TEST_01'],
   };
-  const report = auditContentMappings({ content, topics, subtopics, mappingSet: queue });
+  const report = auditContentMappings({ content, topics, subtopics, evidenceRegistry: approvedEvidence, mappingSet: queue });
   assert.ok(report.errors.length === 0, report.errors.join('\n'));
+
+  const unapprovedEvidence = structuredClone(approvedEvidence);
+  unapprovedEvidence.evidence[0].review_status = 'pending_review';
+  const invalidEvidence = auditContentMappings({ content, topics, subtopics, evidenceRegistry: unapprovedEvidence, mappingSet: queue });
+  assert.ok(invalidEvidence.errors.some((item) => item.includes('unapproved evidence')));
+
   first.subtopic_ids = [subtopics.subtopics.find((item) => item.topic_id !== first.source_topic_id).subtopic_id];
-  const invalid = auditContentMappings({ content, topics, subtopics, mappingSet: queue });
-  assert.ok(invalid.errors.some((item) => item.includes('another parent topic')));
+  const invalidSubtopic = auditContentMappings({ content, topics, subtopics, evidenceRegistry: approvedEvidence, mappingSet: queue });
+  assert.ok(invalidSubtopic.errors.some((item) => item.includes('another parent topic')));
 });
