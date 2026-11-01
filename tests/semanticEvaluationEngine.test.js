@@ -16,7 +16,7 @@ test('semantic evaluator returns reproducible metrics for every synthetic case',
 
 test('safety probe is explicitly lexical and never presented as clinical validation', () => {
   const report = evaluateDataset(dataset);
-  assert.ok(report.safety_lexical_probe.interpretation.includes('نه حساسیت بالینی'));
+  assert.ok(report.safety_lexical_probe.interpretation.includes('عدم کشف عبارت به معنی ایمن‌بودن نیست'));
   assert.ok(report.limitations.some((item) => item.includes('اعتبارسنجی نمی‌کنند')));
 });
 
