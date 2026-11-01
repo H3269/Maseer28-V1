@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "validate:content": "node scripts/validate-content.mjs",
     "test": "node --test",
-    "validate:assistant-topics": "node scripts/validate-assistant-topics.mjs"
+    "validate:assistant-topics": "node scripts/validate-assistant-topics.mjs",
+    "prepare:production": "node scripts/prepare-production-build.mjs"
   },
   "dependencies": {
     "react": "18.3.1",
