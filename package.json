@@ -10,7 +10,8 @@
     "validate:content": "node scripts/validate-content.mjs",
     "test": "node --test",
     "validate:assistant-topics": "node scripts/validate-assistant-topics.mjs",
-    "prepare:production": "node scripts/prepare-production-build.mjs"
+    "prepare:production": "node scripts/prepare-production-build.mjs",
+    "audit:course-content-quality": "node scripts/audit-course-content-quality.mjs"
   },
   "dependencies": {
     "react": "18.3.1",
