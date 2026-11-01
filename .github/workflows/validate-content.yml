@@ -9,6 +9,7 @@ on:
       - 'tests/**'
       - 'scripts/validate-content.mjs'
       - 'scripts/validate-assistant-topics.mjs'
+      - 'scripts/evaluate-semantic-understanding.mjs'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/**'
@@ -58,6 +59,18 @@ jobs:
       - name: Run unit tests
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm test
+      - name: Generate synthetic semantic evaluation report
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run evaluate:semantic > semantic-evaluation-report.json
+
+      - name: Upload synthetic semantic evaluation report
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: synthetic-semantic-evaluation-report
+          path: semantic-evaluation-report.json
+          if-no-files-found: error
+
       - name: Validate course and library data
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:content
