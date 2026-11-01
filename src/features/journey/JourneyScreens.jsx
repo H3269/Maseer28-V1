@@ -4,6 +4,7 @@ import AppIcon from '../../shared/components/AppIcon.jsx';
 import { buttonLabel } from '../../shared/buttonLabel.jsx';
 import { fa, formatDate, normalizeDigits } from '../../shared/utils.js';
 import { burdenScoreFromAnswers, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
+import { readLocalUserData, deleteLocalUserData } from '../privacy/localData.js';
 
 export const SCALE_QUESTIONS = [
   'این مشکل در حال حاضر چقدر شدت دارد؟',
@@ -379,11 +380,52 @@ export function DailyResult({ day, journey, data, problem, sourceLabel, onDashbo
 
 export function Support({ content, onBack }) {
   const [help, setHelp] = useState('اگر اپ شما اجازه باز کردن مستقیم پیامک را ندهد، شماره با یک لمس کپی می‌شود.');
+  const [privacyMessage, setPrivacyMessage] = useState('');
   const number = '09190889062';
   function legacyCopy(text, done) { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done?.(); } catch { /* noop */ } ta.remove(); }
   function copySupportNumber() { const done = () => setHelp('شماره ۰۹۱۹۰۸۸۹۰۶۲ کپی شد.'); if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(number).then(done).catch(() => legacyCopy(number, done)); else legacyCopy(number, done); }
   function sendSms() { const body = 'سلام، برای نوبت‌دهی و دریافت راهنمایی پیام می‌دهم.'; try { if (window.Android && typeof window.Android.openSms === 'function') { window.Android.openSms(number, body); setHelp('برنامه پیامک باز شد.'); return; } if (window.webkit?.messageHandlers?.openSms) { window.webkit.messageHandlers.openSms.postMessage({ number, body }); setHelp('برنامه پیامک باز شد.'); return; } const ua = navigator.userAgent || '', sep = /iPhone|iPad|iPod/i.test(ua) ? '&' : '?', a = document.createElement('a'); a.href = `sms:${number}${sep}body=${encodeURIComponent(body)}`; a.style.display = 'none'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => setHelp('اگر پیامک باز نشد، «کپی شماره» را بزنید. در WebView اپ باید scheme پیامک به سیستم تحویل داده شود.'), 900); } catch { copySupportNumber(); } }
-  return <section className="card" id="support"><span className="badge">پشتیبانی مرکز</span><h2>نیاز به راهنمایی داری؟</h2><p className="muted">اگر در انجام تمرین‌ها، ادامه مسیر یا استفاده از برنامه نیاز به راهنمایی داری، می‌توانی با مرکز هیپنوتراپی شفا ارتباط بگیری.</p><div className="support"><h3><AppIcon name="phone" size={18} /> نوبت‌دهی پیامکی</h3><p className="muted">شماره مرکز: <b>۰۹۱۹۰۸۸۹۰۶۲</b></p><div className="contactActions"><button className="sms" onClick={sendSms}><AppIcon name="message" size={17} /> باز کردن پیامک</button><button className="copyAction" onClick={copySupportNumber}><AppIcon name="copy" size={17} /> کپی شماره</button></div><p className="contactHelp" id="smsHelp">{help}</p><hr/><h3><AppIcon name="message" size={18} /> نوبت‌دهی تلگرامی</h3><p className="muted">پشتیبانی و نوبت‌دهی تلگرامی مرکز</p><a className="telegram" href={content.supportUrl || content.bookSupportUrl || 'https://t.me/Hypnotherapy_admin'} rel="noopener" target="_blank" ><AppIcon name="message" size={17} /> ورود به پشتیبانی تلگرام</a></div><button className="secondary" onClick={onBack}>{buttonLabel('بازگشت')}</button></section>;
+  function exportData() {
+    try {
+      const payload = readLocalUserData();
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `maseer28-personal-data-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      setPrivacyMessage('فایل خروجی اطلاعات ذخیره‌شده در مرورگر آماده شد. آن را در محل امن نگهداری کن.');
+    } catch (error) {
+      setPrivacyMessage(error?.message || 'تهیه خروجی اطلاعات انجام نشد.');
+    }
+  }
+  function deleteData() {
+    const confirmed = window.confirm('این کار اطلاعات مسیرها، پاسخ‌ها، پروفایل و تنظیمات شخصی ذخیره‌شده در حافظه محلی همین مرورگر را حذف می‌کند و قابل بازگشت نیست. ابتدا در صورت نیاز خروجی بگیر. ادامه می‌دهی؟');
+    if (!confirmed) return;
+    try {
+      const result = deleteLocalUserData();
+      if (result.errors.length || result.removed.length !== result.attempted) {
+        setPrivacyMessage('حذف کامل انجام نشد. برخی داده‌ها ممکن است باقی مانده باشند؛ دوباره تلاش کن یا داده‌های مرورگر را بررسی کن.');
+        return;
+      }
+      setPrivacyMessage('داده‌های محلی برنامه حذف شدند؛ برنامه در حال بارگذاری مجدد است.');
+      window.setTimeout(() => window.location.reload(), 700);
+    } catch (error) {
+      setPrivacyMessage(error?.message || 'حذف اطلاعات انجام نشد.');
+    }
+  }
+  return <section className="card" id="support">
+    <span className="badge">پشتیبانی مرکز</span><h2>نیاز به راهنمایی داری؟</h2><p className="muted">اگر در انجام تمرین‌ها، ادامه مسیر یا استفاده از برنامه نیاز به راهنمایی داری، می‌توانی با مرکز هیپنوتراپی شفا ارتباط بگیری.</p>
+    <div className="support"><h3><AppIcon name="phone" size={18} /> نوبت‌دهی پیامکی</h3><p className="muted">شماره مرکز: <b>۰۹۱۹۰۸۸۹۰۶۲</b></p><div className="contactActions"><button className="sms" onClick={sendSms}><AppIcon name="message" size={17} /> باز کردن پیامک</button><button className="copyAction" onClick={copySupportNumber}><AppIcon name="copy" size={17} /> کپی شماره</button></div><p className="contactHelp" id="smsHelp">{help}</p><hr/><h3><AppIcon name="message" size={18} /> نوبت‌دهی تلگرامی</h3><p className="muted">پشتیبانی و نوبت‌دهی تلگرامی مرکز</p><a className="telegram" href={content.supportUrl || content.bookSupportUrl || 'https://t.me/Hypnotherapy_admin'} rel="noopener" target="_blank" ><AppIcon name="message" size={17} /> ورود به پشتیبانی تلگرام</a></div>
+    <hr/><div className="sectionHint"><span><AppIcon name="shield" size={18} /></span><div><b>حریم خصوصی و داده‌های من</b><small>می‌توانی نسخه‌ای از داده‌های ذخیره‌شده در این مرورگر بگیری یا آن‌ها را حذف کنی.</small></div></div>
+    <p className="muted">خروجی و حذف شامل داده‌های محلی برنامه در همین مرورگر است؛ این عملیات نسخه‌های دانلودشده، پشتیبان‌های دستگاه یا اطلاعات احتمالی نگهداری‌شده در سرورهای بیرونی را حذف نمی‌کند. محتوای کتاب‌های عمومی برنامه پاک نمی‌شود.</p>
+    <div className="contactActions"><button className="secondary" onClick={exportData}><AppIcon name="download" size={17} /> دریافت نسخه اطلاعات من</button><button className="secondary" onClick={deleteData}><AppIcon name="trash" size={17} /> حذف داده‌های محلی من</button></div>
+    {privacyMessage && <p className="contactHelp" role="status" aria-live="polite">{privacyMessage}</p>}
+    <button className="secondary" onClick={onBack}>{buttonLabel('بازگشت')}</button>
+  </section>;
 }
 
 function reflectionValues(value) { const rows = String(value || '').split('\n---\n').slice(0, 3); return [...rows, '', '', ''].slice(0, 3); }
