@@ -11,6 +11,8 @@
     "test": "node --test",
     "validate:assistant-topics": "node scripts/validate-assistant-topics.mjs",
     "prepare:production": "node scripts/prepare-production-build.mjs",
+    "generate:content-mapping-queue": "node scripts/generate-content-mapping-queue.mjs",
+    "audit:content-mappings": "node scripts/audit-content-mappings.mjs",
     "audit:course-content-quality": "node scripts/audit-course-content-quality.mjs"
   },
   "dependencies": {
