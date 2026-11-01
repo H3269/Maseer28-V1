@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const readJson=p=>JSON.parse(fs.readFileSync(path.join(root,p),'utf8'));
 export const SAMPLE_DAYS=[1,2,7,14,21,28];
-export const TEMPLATE_FIELDS=['title','intro','exercise','actionText','closing','scientific_family','lightActionText','progressActionText','lightExerciseText','restExerciseText','restActionText'];
+export const TEMPLATE_FIELDS=['title','intro','exercise','actionText','closing','scientific_family','lightActionText','progressActionText','lightExerciseText','restExerciseText','restActionText','legacyBookReason'];
 const norm=s=>String(s??'').normalize('NFKC').replace(/\s+/g,' ').trim().toLocaleLowerCase('fa');
 
 export function auditSampleDayTemplates({content,topics,days=SAMPLE_DAYS}){
