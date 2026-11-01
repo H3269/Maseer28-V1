@@ -14,3 +14,23 @@ test('content audit exposes repeated templates without treating similarity as a 
   assert.ok(Object.values(report.fields).some((field) => field.days_with_one_shared_template > 0));
   assert.ok(report.limitations.some((item) => item.includes('کیفیت علمی')));
 });
+
+
+test('normalization replaces standalone topic tokens but preserves topic-name prefixes inside words',()=>{
+ const exact={
+  categories:{
+   'اضطراب':{days:[{exercise:'تمرین اضطراب'}]},
+   'خشم':{days:[{exercise:'تمرین خشم'}]},
+  },
+ };
+ const exactReport=auditContentSpecificity(exact);
+ assert.equal(exactReport.fields.exercise.per_day[0].unique_variants,1);
+ const suffix={
+  categories:{
+   'اضطراب':{days:[{exercise:'تمرین اضطرابی'}]},
+   'خشم':{days:[{exercise:'تمرین اضطرابی'}]},
+  },
+ };
+ const suffixReport=auditContentSpecificity(suffix);
+ assert.equal(suffixReport.fields.exercise.per_day[0].unique_variants,1);
+});
