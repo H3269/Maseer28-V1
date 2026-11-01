@@ -6,6 +6,7 @@ import {
   stopAssessment,
 } from './assessmentEngine.js';
 import topicRegistry from '../../../public/assistant/knowledge/topics.v1.json';
+import { DEFAULT_PERSONALIZATION, loadPersonalizationPreferences } from '../privacy/personalizationPreferences.js';
 
 const topicNames = new Map(topicRegistry.topics.map((topic) => [topic.topic_id, topic.name]));
 
@@ -15,11 +16,33 @@ export default function AssessmentAssistant() {
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
   const [error, setError] = useState('');
+  const [preferences, setPreferences] = useState({ ...DEFAULT_PERSONALIZATION });
+
+  useEffect(() => {
+    try { setPreferences(loadPersonalizationPreferences()); } catch { setPreferences({ ...DEFAULT_PERSONALIZATION }); }
+  }, []);
+
+  function formatPrompt(question) {
+    if (!question) return '';
+    if (question.stage === 'safety_check') return question.prompt;
+    let prompt = question.prompt;
+    if (preferences.communication_style === 'supportive') prompt = `می‌توانیم با آرامش و به‌اندازه‌ای که برایت راحت است پیش برویم. ${prompt}`;
+    else if (preferences.communication_style === 'direct') prompt = `پاسخ کوتاه و مشخص هم کافی است. ${prompt}`;
+    if (question.stage === 'differential_clarification') {
+      if (preferences.example_style === 'practical') prompt += ' روی یک نمونه واقعی و مشخص تمرکز کن.';
+      else if (preferences.example_style === 'conceptual') prompt += ' اگر نمونه مشخصی نداری، الگوی کلی یا موقعیت تکرارشونده را توضیح بده.';
+    }
+    if (preferences.response_detail === 'detailed') prompt += ' اگر بخشی را نمی‌دانی یا مطمئن نیستی، همان را صریح بگو؛ لازم نیست حدس بزنی.';
+    return prompt;
+  }
 
   function start() {
+    let currentPreferences = { ...DEFAULT_PERSONALIZATION };
+    try { currentPreferences = loadPersonalizationPreferences(); } catch { /* defaults remain local and temporary */ }
+    setPreferences(currentPreferences);
     const next = createAssessmentSession();
     setSession(next);
-    setMessages([{ role: 'assistant', text: getCurrentQuestion(next).prompt }]);
+    setMessages([{ role: 'assistant', text: formatPrompt(getCurrentQuestion(next)) }]);
     setDraft('');
     setError('');
     setExpanded(true);
@@ -34,7 +57,7 @@ export default function AssessmentAssistant() {
         ...previous,
         { role: 'user', text: draft.trim() },
         ...(getCurrentQuestion(updated)
-          ? [{ role: 'assistant', text: getCurrentQuestion(updated).prompt }]
+          ? [{ role: 'assistant', text: formatPrompt(getCurrentQuestion(updated)) }]
           : updated.referral
             ? [{ role: 'assistant', text: updated.referral.instruction }]
             : updated.status === 'completed'
@@ -67,7 +90,7 @@ export default function AssessmentAssistant() {
     {expanded && <>
       <div className="sectionHint" role="note">
         <span> <strong>i</strong> </span>
-        <div><b>حریم خصوصی آزمایشی</b><small>پاسخ‌ها فقط در حافظه موقت همین صفحه نگهداری می‌شوند؛ در این نسخه ذخیره یا به سرور ارسال نمی‌شوند. اطلاعات شناسایی‌کننده ننویس.</small></div>
+        <div><b>حریم خصوصی آزمایشی</b><small>پاسخ‌ها فقط در حافظه موقت همین صفحه نگهداری می‌شوند؛ ذخیره یا به سرور ارسال نمی‌شوند. فقط ترجیحات غیرحساسِ شیوه تعامل، در صورت رضایت جداگانه، روی همین مرورگر اعمال می‌شوند. اطلاعات شناسایی‌کننده ننویس.</small></div>
       </div>
       <div className="assistantTranscript" aria-live="polite">
         {messages.map((message, index) => <div className={message.role === 'assistant' ? 'assistantMessage' : 'userMessage'} key={index}>
@@ -98,7 +121,7 @@ export default function AssessmentAssistant() {
           ? summary.candidate_topics.map((item) => topicNames.get(item.topic_id) || item.topic_id).join('، ')
           : 'با واژه‌های فعلی موضوع مشخصی قابل پیشنهاد نیست؛ این به معنی رد هیچ موضوعی نیست.'}</p>
         <ul>{summary.limitations.map((item) => <li key={item}>{item}</li>)}</ul>
-        <p className="muted">هیچ تمرین یا درمانی به‌صورت خودکار پیشنهاد نمی‌شود؛ محتوای مناسب هنوز نیازمند تأیید علمی و تخصصی است.</p>
+        <p className="muted">هیچ تمرین یا درمانی به‌صورت خودکار پیشنهاد نمی‌شود؛ محتوای مناسب هنوز نیازمند تأیید علمی و تخصصی است. ترجیحات فقط لحن، میزان توضیح و نوع راهنمایی برای مثال را تغییر می‌دهند؛ ترتیب پرسش‌های ایمنی مستقل و ثابت می‌ماند.</p>
       </div>}
       {session?.status === 'completed' && <button className="secondary" type="button" onClick={start}>شروع گفت‌وگوی تازه</button>}
       {session?.status === 'stopped_by_user' && <button className="secondary" type="button" onClick={start}>شروع دوباره</button>}
