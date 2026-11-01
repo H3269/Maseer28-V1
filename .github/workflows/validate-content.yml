@@ -17,7 +17,7 @@ on:
       - '.github/workflows/validate-content.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   validate-content:
@@ -50,6 +50,23 @@ jobs:
       - name: Build application
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run build
+
+      - name: Commit regenerated lockfile to this project PR only
+        if: ${{ always() && success() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'planning/assistant-foundation-v1' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          if git diff --cached --quiet; then
+            echo "Committed lockfile already matches dependency declarations."
+            exit 0
+          fi
+          test "$(git diff --cached --name-only | wc -l)" -eq 1
+          test "$(git diff --cached --name-only)" = "package-lock.json"
+          git commit -m "chore: refresh dependency lockfile"
+          git push origin HEAD:planning/assistant-foundation-v1
       - name: Upload candidate lockfile
         if: ${{ always() && steps.install.outcome == 'success' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
