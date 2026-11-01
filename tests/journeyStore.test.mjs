@@ -69,7 +69,7 @@ test('sanitizeJourneyState does not invent a zero score when score is missing', 
   });
 
   assert.equal(state.daily[1].score, undefined);
-  assert.equal(state.daily[2].score, undefined);
+  assert.equal(state.daily[2], undefined);
   assert.equal(state.assessmentData, null);
   assert.equal(state.assessment, false);
   assert.equal(state.final, null);
