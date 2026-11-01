@@ -8,6 +8,7 @@ export function formatAssistantPrompt(question, preferences = {}) {
     if (preferences.example_style === 'practical') prompt += ' روی یک نمونه واقعی و مشخص تمرکز کن.';
     else if (preferences.example_style === 'conceptual') prompt += ' اگر نمونه مشخصی نداری، الگوی کلی یا موقعیت تکرارشونده را توضیح بده.';
   }
-  if (preferences.response_detail === 'detailed') prompt += ' اگر بخشی را نمی‌دانی یا مطمئن نیستی، همان را صریح بگو؛ لازم نیست حدس بزنی.';
+  if (preferences.response_detail === 'balanced') prompt += ' اگر لازم است، یک نمونه کوتاه هم اضافه کن.';
+  else if (preferences.response_detail === 'detailed') prompt += ' اگر بخشی را نمی‌دانی یا مطمئن نیستی، همان را صریح بگو؛ لازم نیست حدس بزنی.';
   return prompt;
 }
