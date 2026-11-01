@@ -40,7 +40,7 @@ test('production preparation refuses ambiguous duplicate configuration', () => {
       '\nexport const TEST_OVERRIDE = { TEST_MODE: true };\n');
     assert.throws(
       () => execFileSync(process.execPath, [script], { cwd: root, encoding: 'utf8', stdio: 'pipe' }),
-      /Expected exactly one TEST_MODE setting/
+      (error) => String(error.stderr).includes('Expected exactly one TEST_MODE setting')
     );
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
