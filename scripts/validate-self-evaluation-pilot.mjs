@@ -15,7 +15,7 @@ const PHASES = {
   7: 'guided_skill_application',
   8: 'consolidation_and_review'
 };
-const norm = (value) => String(value ?? '').normalize('NFKC').replace(/\\s+/g, ' ').trim();
+const norm = (value) => String(value ?? '').normalize('NFKC').replace(/\s+/g, ' ').trim();
 const unique = (values) => new Set(values).size === values.length;
 
 export function validateSelfEvaluationPilot({ pilot, queue, evidence }) {
@@ -94,7 +94,7 @@ export function validateSelfEvaluationPilot({ pilot, queue, evidence }) {
         continue;
       }
       if (!topicRule.evidence.includes(id)) errors.push('evidence not approved for ' + topicId + ': ' + id);
-      const scopedTopics = norm(source.scope).split(/[;,\\s]+/).filter(Boolean);
+      const scopedTopics = norm(source.scope).split(/[;,\s]+/).filter(Boolean);
       if (!scopedTopics.includes(topicId)) errors.push('evidence scope mismatch for ' + topicId + ': ' + id);
     }
 
