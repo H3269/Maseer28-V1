@@ -17,7 +17,7 @@ on:
       - '.github/workflows/validate-content.yml'
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: path28-validation-${{ github.event.pull_request.number || github.ref }}
@@ -33,15 +33,9 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 22
-      - name: Regenerate lockfile from declared dependencies
-        run: npm install --package-lock-only --ignore-scripts
       - name: Install dependencies
         id: install
         run: npm ci
-      - name: Apply non-breaking dependency fixes
-        if: ${{ steps.install.outcome == 'success' }}
-        continue-on-error: true
-        run: npm audit fix
       - name: Dependency security audit
         if: ${{ steps.install.outcome == 'success' }}
         run: npm audit --audit-level=high
@@ -55,35 +49,10 @@ jobs:
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run build
 
-      - name: Commit regenerated lockfile to this project PR only
-        if: ${{ always() && success() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'planning/assistant-foundation-v1' }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          generated_manifest_hash="$(git hash-object package.json)"
-          cp package-lock.json "$RUNNER_TEMP/generated-package-lock.json"
-          git fetch origin planning/assistant-foundation-v1
-          remote_manifest_hash="$(git show FETCH_HEAD:package.json | git hash-object --stdin)"
-          test "$generated_manifest_hash" = "$remote_manifest_hash"
-          git checkout -B lockfile-sync FETCH_HEAD
-          cp "$RUNNER_TEMP/generated-package-lock.json" package-lock.json
-          git add package-lock.json
-          if git diff --cached --quiet; then
-            echo "Committed lockfile already matches dependency declarations."
-            exit 0
-          fi
-          test "$(git diff --cached --name-only | wc -l)" -eq 1
-          test "$(git diff --cached --name-only)" = "package-lock.json"
-          git commit -m "chore: refresh dependency lockfile"
-          git push origin HEAD:planning/assistant-foundation-v1
-      - name: Upload candidate lockfile
+      - name: Upload npm audit report
         if: ${{ always() && steps.install.outcome == 'success' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: package-lock-audit-fix
-          path: |
-            package-lock.json
-            npm-audit-report.json
+          name: npm-audit-report
+          path: npm-audit-report.json
           if-no-files-found: error
