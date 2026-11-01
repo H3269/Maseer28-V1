@@ -30,8 +30,10 @@ export function auditSampleDayTemplates({content,topics,days=SAMPLE_DAYS}){
    }
    report.push({day:dayNumber,field,unique_templates:groups.size,topics_with_value:records.filter(({day})=>field==='legacyBookReason'?Boolean(day.legacyBookRec?.reason):day[field]!==undefined&&day[field]!==null&&day[field]!=='').length,groups:[...groups.entries()].sort((a,b)=>b[1].length-a[1].length).map(([template,topicNames])=>({topic_count:topicNames.length,topics:topicNames,template_preview:template.slice(0,180)}))});
   }
-  const bookRefs=records.map(({day})=>day.legacyBookRec?JSON.stringify({bookId:day.legacyBookRec.bookId,page:day.legacyBookRec.page,chapter:day.legacyBookRec.chapter}):'none');
-  report.push({day:dayNumber,field:'legacyBookRec.reference_tuple',unique_templates:new Set(bookRefs).size,topics_with_value:bookRefs.filter(x=>x!=='none').length,groups:[...new Set(bookRefs)].map(value=>({topic_count:bookRefs.filter(x=>x===value).length,topics:records.filter(({day})=>JSON.stringify(day.legacyBookRec?{bookId:day.legacyBookRec.bookId,page:day.legacyBookRec.page,chapter:day.legacyBookRec.chapter}:'none')===value).map(({topic})=>topic.name),template_preview:value}))});
+  const bookRefs=records.map(({day})=>day.legacyBookRec?JSON.stringify({bookId:day.legacyBookRec.bookId,page:day.legacyBookRec.page,chapter:day.legacyBookRec.chapter}):null);
+  const bookGroups=new Map();
+  records.forEach(({topic},index)=>{const key=bookRefs[index]??'[no reference]';bookGroups.set(key,[...(bookGroups.get(key)??[]),topic.name]);});
+  report.push({day:dayNumber,field:'legacyBookRec.reference_tuple',unique_templates:bookGroups.size,topics_with_value:bookRefs.filter(Boolean).length,groups:[...bookGroups.entries()].map(([value,topicNames])=>({topic_count:topicNames.length,topics:topicNames,template_preview:value}))});
  }
  return {scope:{topic_count:registry.length,sample_days:days,record_count:registry.length*days.length},report,limitations:['این گزارش فقط شباهت قالب متنی را پس از جایگزینی نام موضوع می‌سنجد.','شباهت یا تفاوت متن، کیفیت بالینی یا تناسب واقعی تمرین را اثبات نمی‌کند.','برای داوری کیفیت، متن کامل هر رکورد و زمینه آموزشی باید توسط بازبین متخصص بررسی شود.']};
 }
@@ -41,10 +43,9 @@ export function renderSampleTemplateReport(result){
  for(const item of result.report) lines.push(`| ${item.day} | ${item.field} | ${item.unique_templates} | ${item.topics_with_value}/34 |`);
  lines.push('','## گروه‌های قالب مشترک');
  for(const item of result.report){
-  const shared=item.groups.filter(g=>g.topic_count>1);
-  if(!shared.length) continue;
+  if(!item.groups.length) continue;
   lines.push(`### روز ${item.day} — ${item.field}`);
-  for(const group of shared) lines.push(`- ${group.topic_count} موضوع: ${group.topics.join('، ')} | ${group.template_preview}`);
+  for(const group of item.groups) lines.push(`- ${group.topic_count>1?'قالب مشترک':'قالب منفرد'} (${group.topic_count} موضوع): ${group.topics.join('، ')} | ${group.template_preview}`);
  }
  lines.push('','## محدودیت‌ها',...result.limitations.map(x=>`- ${x}`),'');
  return lines.join('\n');
