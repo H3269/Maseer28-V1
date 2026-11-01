@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {auditSampleDayTemplates,renderSampleTemplateReport} from '../scripts/audit-content-template-sample.mjs';
 const topics={topics:Array.from({length:34},(_,i)=>({topic_id:`T${String(i+1).padStart(2,'0')}`,name:`موضوع ${i+1}`,display_order:i+1}))};
-const content={categories:Object.fromEntries(topics.topics.map((t,i)=>[t.name,{days:Array.from({length:28},(_,d)=>({id:`${i}-${d}`,title:'شروع',exercise:`تمرین درباره ${t.name}`,actionText:d===0?'اقدام مشترک':`اقدام ${i}`}))}]))};
+const content={categories:Object.fromEntries(topics.topics.map((t,i)=>[t.name,{days:Array.from({length:28},(_,d)=>({id:`${i}-${d}`,title:'شروع',exercise:`تمرین درباره ${t.name}`,actionText:`اقدام ${i}`}))}]))};
 
 test('sample audit detects shared templates after topic-name substitution',()=>{
  const result=auditSampleDayTemplates({content,topics,days:[1]});
