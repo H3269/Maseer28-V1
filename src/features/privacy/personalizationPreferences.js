@@ -7,17 +7,13 @@ export const DEFAULT_PERSONALIZATION = Object.freeze({
   schema_version: '1.0.0',
   response_detail: 'balanced',
   communication_style: 'neutral',
-  step_pacing: 'one_at_a_time',
   example_style: 'mixed',
-  language: 'fa',
 });
 
 const ENUMS = Object.freeze({
   response_detail: ['concise', 'balanced', 'detailed'],
   communication_style: ['direct', 'supportive', 'neutral'],
-  step_pacing: ['one_at_a_time', 'grouped'],
   example_style: ['practical', 'conceptual', 'mixed'],
-  language: ['fa', 'en', 'auto'],
 });
 
 function storageOf(storage) {
