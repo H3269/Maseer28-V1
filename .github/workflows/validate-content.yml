@@ -73,10 +73,19 @@ jobs:
         run: npm run validate:content
       - name: Audit content-to-topic mappings
         if: ${{ always() && steps.install.outcome == 'success' }}
-        run: npm run audit:content-mappings
+        run: mkdir -p artifacts && npm run audit:content-mappings > artifacts/content-mapping-audit.json
       - name: Audit course content quality and review readiness
         if: ${{ always() && steps.install.outcome == 'success' }}
-        run: npm run audit:course-content-quality
+        run: mkdir -p artifacts && npm run audit:course-content-quality > artifacts/course-content-quality-audit.json
+      - name: Upload structural audit reports
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: course-structure-audit-reports
+          path: |
+            artifacts/content-mapping-audit.json
+            artifacts/course-content-quality-audit.json
+          if-no-files-found: warn
       - name: Build application
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: |
