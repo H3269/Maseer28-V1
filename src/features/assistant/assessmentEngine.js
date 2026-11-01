@@ -43,7 +43,7 @@ const SAFETY_CUES = [
 
 const QUESTION = {
   open: { id: 'open_problem', stage: 'open_intent', prompt: 'دوست داری درباره چه مسئله‌ای صحبت کنیم؟ با زبان خودت توضیح بده؛ لازم نیست از بین موضوعات اپ چیزی انتخاب کنی.' },
-  safety: { id: 'safety_now', stage: 'safety_check', prompt: 'برای اینکه مطمئن شوم پاسخ مناسبی می‌دهم، مستقیم می‌پرسم: آیا همین الآن احتمال می‌دهی به خودت یا شخص دیگری آسیب بزنی، یا کسی در حال حاضر تو را در معرض خطر قرار داده است؟' },
+  safety: { id: 'safety_now', stage: 'safety_check', prompt: 'پیش از ادامه یک بررسی کوتاه ایمنی: آیا همین الآن احتمال می‌دهی به خودت یا شخص دیگری آسیب بزنی، یا کسی در حال حاضر تو را در معرض خطر قرار داده است؟ می‌توانی «بله»، «نه» یا «مطمئن نیستم» بگویی.' },
   impact: { id: 'impact', stage: 'context_and_impact', prompt: 'این مسئله در زندگی روزمره‌ات چه اثری گذاشته است؟ اگر می‌توانی یک نمونه واقعی و اخیر بگو.' },
   duration: { id: 'duration', stage: 'context_and_impact', prompt: 'این وضعیت از چه زمانی شروع شده و معمولاً هر چند وقت یک‌بار اتفاق می‌افتد؟' },
   goal: { id: 'goal', stage: 'open_intent', prompt: 'از این گفتگو بیشتر چه کمکی می‌خواهی: فهمیدن مسئله، پیدا کردن راهکار، یا تصمیم‌گیری درباره کمک تخصصی؟' },
@@ -94,6 +94,7 @@ export function createAssessmentSession({ localOnly = true } = {}) {
     status: 'in_progress',
     safety_state: 'not_assessed',
     current_question: QUESTION.open,
+    safety_context_flag: false,
     answers: {},
     candidate_topics: [],
     summary: null,
@@ -115,10 +116,8 @@ export function submitAssessmentAnswer(session, answer) {
   next.answers[questionId] = value;
 
   if (questionId === 'open_problem') {
-    if (detectSafetyCue(value)) {
-      next.safety_state = 'clarification_needed';
-      next.current_question = QUESTION.safety;
-    } else next.current_question = QUESTION.impact;
+    next.safety_context_flag = detectSafetyCue(value);
+    next.current_question = QUESTION.safety;
     return next;
   }
 
@@ -193,6 +192,8 @@ export const assessmentEngineMetadata = Object.freeze({
   diagnostic_use: false,
   validated_screening_tool: false,
   cloud_processing: false,
+  safety_triage_validated: false,
+  clinical_review_complete: false,
   uses_unreviewed_relation_graph: false,
   auto_recommends_interventions: false,
 });
