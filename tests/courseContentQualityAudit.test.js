@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { buildReviewQueue, auditCourseContentQuality } from '../scripts/audit-course-content-quality.mjs';
+import { buildReviewQueue, auditCourseContentQuality, normalizeTemplateText } from '../scripts/audit-course-content-quality.mjs';
 
 const read=async p=>JSON.parse(await readFile(new URL(p,import.meta.url),'utf8'));
 const [content,topics]=await Promise.all([read('../public/content/path-content.json'),read('../public/assistant/knowledge/topics.v1.json')]);
@@ -55,4 +55,10 @@ test('approved reviews cannot cite evidence that has not been reviewed',()=>{
  review.reviewer_id='expert-1';review.reviewed_at='2026-11-01T12:00:00Z';review.rationale='Reviewed against full lesson.';review.evidence_ids=['EVD_PENDING_1'];
  const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[review]},evidenceRegistry:{evidence:[{evidence_id:'EVD_PENDING_1',title:'Pending source',citation:'DOI:10.0000/pending',review_status:'pending_review',reviewer_id:null,reviewed_at:null}]}});
  assert.ok(report.errors.some(x=>x.includes('unreviewed, or untraceable')));
+});
+
+test('topic normalization replaces complete topic tokens but not substrings',()=>{
+ assert.equal(normalizeTemplateText('تمرین برای اضطراب', 'اضطراب'),'تمرین برای [topic]');
+ assert.equal(normalizeTemplateText('تمرین برای اضطرابی', 'اضطراب'),'تمرین برای اضطرابی');
+ assert.equal(normalizeTemplateText('«اضطراب» را بررسی کن', 'اضطراب'),'«[topic]» را بررسی کن');
 });
