@@ -238,3 +238,26 @@ test('standalone negative is recorded as no immediate risk disclosed, never as p
  assert.equal(session.safety_context_flag,true);
  assert.equal(session.next_step,undefined);
 });
+
+
+test('declining the safety check pauses routine intake without assuming either safety or emergency',()=>{
+ for(const response of ['رد می‌کنم','ترجیح می‌دهم پاسخ ندهم','نمی‌خواهم جواب بدهم','فعلاً نمی‌گویم']){
+  let session=answer(createAssessmentSession(),'گاهی فکر می‌کنم به خودم آسیب بزنم');
+  session=answer(session,'نه');
+  assert.equal(getCurrentQuestion(session).id,'safety_context_clarification');
+  session=answer(session,response);
+  assert.equal(session.status,'paused_for_human_support',response);
+  assert.equal(session.safety_state,'assessment_declined',response);
+  assert.equal(session.referral.priority,'human_review',response);
+  assert.equal(getCurrentQuestion(session),null);
+  assert.match(session.referral.instruction,/ارزیابی عادی را ادامه نمی‌دهد/);
+ }
+});
+
+test('declining an initial safety check also pauses without creating an urgent classification',()=>{
+ let session=answer(createAssessmentSession(),'یک موضوع شخصی دارم');
+ session=answer(session,'ترجیح می‌دهم پاسخ ندهم');
+ assert.equal(session.status,'paused_for_human_support');
+ assert.equal(session.safety_state,'assessment_declined');
+ assert.equal(session.referral.priority,'human_review');
+});
