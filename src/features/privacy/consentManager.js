@@ -1,5 +1,6 @@
 export const CONSENT_STORAGE_KEY = 'maseer28_consent_v1';
 export const CONSENT_POLICY_VERSION = '1.0.0';
+export const PERSONALIZATION_STORAGE_KEY = 'maseer28_personalization_v1';
 
 export const CONSENT_PURPOSES = Object.freeze([
   'ai_cloud_processing',
@@ -77,6 +78,7 @@ export function withdrawConsent(purpose, { now = new Date().toISOString() } = {}
   if (!CONSENT_PURPOSES.includes(purpose)) throw new Error('هدف رضایت شناخته‌شده نیست.');
   const state = readState(storage);
   state.purposes[purpose] = { granted: false, granted_at: null, withdrawn_at: now, context: null };
+  if (purpose === 'long_term_ai_memory') storageOf(storage).removeItem(PERSONALIZATION_STORAGE_KEY);
   if (purpose === 'ai_cloud_processing') {
     state.purposes.sensitive_health_data_processing = { granted: false, granted_at: null, withdrawn_at: now, context: null };
   }
