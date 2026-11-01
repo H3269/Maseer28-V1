@@ -13,7 +13,11 @@
       "definition_status": "pending_expert_review",
       "review_status": "draft",
       "review_flags": [],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T01-S01",
+        "T01-S02",
+        "T01-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -28,7 +32,11 @@
       "definition_status": "pending_expert_review",
       "review_status": "draft",
       "review_flags": [],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T02-S01",
+        "T02-S02",
+        "T02-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -43,7 +51,11 @@
       "definition_status": "pending_expert_review",
       "review_status": "draft",
       "review_flags": [],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T03-S01",
+        "T03-S02",
+        "T03-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -60,7 +72,11 @@
       "review_flags": [
         "تفکیک نفرت نسبت به دیگری از نفرت از خود؛ هم‌نامی به معنای سازه یکسان نیست"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T04-S01",
+        "T04-S02",
+        "T04-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -75,7 +91,11 @@
       "definition_status": "pending_expert_review",
       "review_status": "draft",
       "review_flags": [],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T05-S01",
+        "T05-S02",
+        "T05-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -92,7 +112,11 @@
       "review_flags": [
         "تفکیک هیجان غم از فرایند سوگ و زمینه فقدان"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T06-S01",
+        "T06-S02",
+        "T06-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -109,7 +133,11 @@
       "review_flags": [
         "تفکیک ارزیابی رفتار از ارزیابی کلی خود/شرم"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T07-S01",
+        "T07-S02",
+        "T07-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -126,7 +154,11 @@
       "review_flags": [
         "اصطلاح آموزشی؛ به‌تنهایی تشخیص بالینی نیست"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T08-S01",
+        "T08-S02",
+        "T08-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -141,7 +173,11 @@
       "definition_status": "pending_expert_review",
       "review_status": "draft",
       "review_flags": [],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T09-S01",
+        "T09-S02",
+        "T09-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -158,7 +194,11 @@
       "review_flags": [
         "تفکیک نشانه بی‌خوابی از اختلال خواب و علل پزشکی/ریتم شبانه‌روزی"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T10-S01",
+        "T10-S02",
+        "T10-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -175,7 +215,11 @@
       "review_flags": [
         "تفکیک عادت، رفتار اجباری، BFRB، تیک و رفتارهای تکراری رشدی"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T11-S01",
+        "T11-S02",
+        "T11-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -192,7 +236,11 @@
       "review_flags": [
         "در موقعیت خشونت یا کنترل اجباری، ایمنی بر قاطعیت کلامی مقدم است"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T12-S01",
+        "T12-S02",
+        "T12-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -209,7 +257,11 @@
       "review_flags": [
         "تفکیک تجربه ذهنی تنهایی از انزوای اجتماعی عینی"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T13-S01",
+        "T13-S02",
+        "T13-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -226,7 +278,11 @@
       "review_flags": [
         "هم‌پوشانی احتمالی با T32؛ پیش از ادغام، محتوای دو دوره ممیزی شود"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T14-S01",
+        "T14-S02",
+        "T14-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -243,7 +299,11 @@
       "review_flags": [
         "تفکیک اعتمادبه‌نفس/خودکارآمدی موقعیتی از عزت‌نفس/ارزشمندی کلی"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T15-S01",
+        "T15-S02",
+        "T15-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -260,7 +320,11 @@
       "review_flags": [
         "تفکیک افکار منفی خودکار، نگرانی آینده‌محور و نشخوار گذشته‌محور"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T16-S01",
+        "T16-S02",
+        "T16-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -277,7 +341,11 @@
       "review_flags": [
         "موضوع مادر؛ زیرموضوع‌ها باید زمینه و ایمنی رابطه را لحاظ کنند"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T17-S01",
+        "T17-S02",
+        "T17-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -294,7 +362,11 @@
       "review_flags": [
         "از خودسرزنشی، شرم، احساس بی‌ارزشی و خودانتقادی تفکیک شود؛ بررسی ایمنی در صورت نشانه‌های مرتبط"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T18-S01",
+        "T18-S02",
+        "T18-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -311,7 +383,11 @@
       "review_flags": [
         "تفکیک سرزنش یک رفتار از سرزنش کلی هویت/خود"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T19-S01",
+        "T19-S02",
+        "T19-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -328,7 +404,11 @@
       "review_flags": [
         "تفکیک تلاش برای استانداردهای بالا از نگرانی ناسازگارانه درباره اشتباه/ارزیابی"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T20-S01",
+        "T20-S02",
+        "T20-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -345,7 +425,11 @@
       "review_flags": [
         "اجتناب محافظتی از خطر واقعی از اجتناب ناسازگارانه تفکیک شود"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T21-S01",
+        "T21-S02",
+        "T21-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -362,7 +446,11 @@
       "review_flags": [
         "با اضطراب مترادف نیست؛ منبع فشار و پاسخ فردی باید بررسی شود"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T22-S01",
+        "T22-S02",
+        "T22-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -379,7 +467,11 @@
       "review_flags": [
         "با اعتمادبه‌نفس پایین یا تشخیص افسردگی یکسان نیست"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T23-S01",
+        "T23-S02",
+        "T23-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -396,7 +488,11 @@
       "review_flags": [
         "قابلیت/فرایند فراگیر تنظیم هیجان؛ با یک هیجان خاص یکسان نیست"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T24-S01",
+        "T24-S02",
+        "T24-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -413,7 +509,11 @@
       "review_flags": [
         "رنجش و کینه تفکیک شوند؛ بخشش نباید تحمیل شود"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T25-S01",
+        "T25-S02",
+        "T25-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -430,7 +530,11 @@
       "review_flags": [
         "تفکیک تجربه ارزیابی کلی خود از گناه متمرکز بر رفتار"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T26-S01",
+        "T26-S02",
+        "T26-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -447,7 +551,11 @@
       "review_flags": [
         "به‌تنهایی تشخیص اضطراب اجتماعی نیست"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T27-S01",
+        "T27-S02",
+        "T27-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -464,7 +572,11 @@
       "review_flags": [
         "به‌تنهایی علت اهمال‌کاری را ثابت نمی‌کند"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T28-S01",
+        "T28-S02",
+        "T28-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -481,7 +593,11 @@
       "review_flags": [
         "طرد واقعی، انتظار طرد و حساسیت به نشانه‌ها تفکیک شوند"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T29-S01",
+        "T29-S02",
+        "T29-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -498,7 +614,11 @@
       "review_flags": [
         "تفکیک شک طبیعی، عدم تحمل عدم قطعیت، دودلی و اطمینان‌خواهی"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T30-S01",
+        "T30-S02",
+        "T30-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -515,7 +635,11 @@
       "review_flags": [
         "دو زیرنوع پیشنهادی: نیاز افراطی به کنترل شخصی و کنترل‌گری بین‌فردی/محدودکننده"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T31-S01",
+        "T31-S02",
+        "T31-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -532,7 +656,11 @@
       "review_flags": [
         "هم‌پوشانی احتمالی با T14؛ بررسی انرژی، خواب، خلق و عوامل جسمی لازم است"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T32-S01",
+        "T32-S02",
+        "T32-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -549,7 +677,11 @@
       "review_flags": [
         "تفکیک خودارزیابی سازنده از خودحمله‌گری/انتقاد فراگیر"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T33-S01",
+        "T33-S02",
+        "T33-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
@@ -566,7 +698,11 @@
       "review_flags": [
         "درگاه طبقه‌بندی و هدایت؛ موضوع آموزشی یا تشخیص مستقل نیست"
       ],
-      "subtopic_ids": [],
+      "subtopic_ids": [
+        "T34-S01",
+        "T34-S02",
+        "T34-S03"
+      ],
       "relation_ids": [],
       "evidence_ids": [],
       "content_ids": [],
