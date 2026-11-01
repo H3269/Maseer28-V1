@@ -5,9 +5,11 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = JSON.parse(fs.readFileSync(path.join(root, 'public/content/path-content.json'), 'utf8'));
 const fields = ['exercise', 'actionText', 'lightExerciseText', 'lightActionText', 'progressActionText'];
 function normalize(value, topic) {
-  return String(value ?? '').normalize('NFKC')
-    .split(`«${topic}»`).join('«[TOPIC]»')
-    .split(topic).join('[TOPIC]').replace(/\s+/g, ' ').trim();
+  const text = String(value ?? '').normalize('NFKC');
+  const quoted = text.split(`«${topic}»`).join('«[TOPIC]»');
+  const escapedTopic = [...topic].map((char) => /[.*+?^$()|[\\]\\]/.test(char) || char === '{' || char === '}' ? `\\${char}` : char).join('');
+  const tokenPattern = new RegExp('(^|[^\\p{L}\\p{N}_])' + escapedTopic + '(?=$|[^\\p{L}\\p{N}_])', 'gu');
+  return quoted.replace(tokenPattern, '$1[TOPIC]').replace(/\\s+/g, ' ').trim();
 }
 export function auditContentSpecificity(data) {
   const categories = Object.entries(data.categories ?? []);
