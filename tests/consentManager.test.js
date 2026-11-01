@@ -71,3 +71,15 @@ test('unknown purposes are rejected and never treated as consented', () => {
   assert.throws(()=>grantConsent('unknown_purpose',{explicitAction:true,context:{}},storage),/شناخته‌شده/);
   assert.throws(()=>withdrawConsent('unknown_purpose',{},storage),/شناخته‌شده/);
 });
+
+
+test('preference consent is independent from long-term AI memory consent', () => {
+  const storage=memoryStorage();
+  const preferenceContext={retention_period:'until withdrawn',view_edit_delete_controls:'settings panel'};
+  grantConsent('personalization_preferences',{explicitAction:true,context:preferenceContext},storage);
+  assert.equal(hasConsent('personalization_preferences',storage),true);
+  assert.equal(hasConsent('long_term_ai_memory',storage),false);
+  assert.equal(hasConsent('ai_cloud_processing',storage),false);
+  withdrawConsent('personalization_preferences',{},storage);
+  assert.equal(hasConsent('personalization_preferences',storage),false);
+});
