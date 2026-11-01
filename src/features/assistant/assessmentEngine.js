@@ -81,8 +81,19 @@ function detectTopics(text) {
 
 function classifySafetyAnswer(text) {
   const value = normalize(text);
-  if (/^(بله|آره|اره|yes)(\b|$)/.test(value) || value.includes('قصد دارم') || value.includes('برنامه دارم')) return 'urgent_human_support_recommended';
-  if (/^(نه|خیر|no)(\b|$)/.test(value) || value.startsWith('نه،') || value.startsWith('خیر،')) return 'no_immediate_risk_disclosed';
+  const uncertaintyCues = [
+    'مطمئن نیستم', 'نمی دانم', 'نمی‌دانم', 'شاید', 'ممکن است', 'ممکنه',
+    'احتمال دارد', 'نه ولی', 'نه اما', 'خیر ولی', 'خیر اما',
+    'نمی توانم قول', 'نمی‌توانم قول', 'نمی تونم قول', 'نمی‌تونم قول',
+  ];
+  if (uncertaintyCues.some((cue) => value.includes(normalize(cue)))) return 'clarification_needed';
+  if (/^(بله|آره|اره|yes)(\b|$)/.test(value) || value.includes('قصد دارم') || value.includes('برنامه دارم')) {
+    return 'urgent_human_support_recommended';
+  }
+  // Only a clear, standalone negative answer is treated as non-disclosure.
+  // Mixed or explanatory answers require clarification rather than being
+  // silently interpreted as a negative safety response.
+  if (/^(نه|خیر|no)$/.test(value)) return 'no_immediate_risk_disclosed';
   return 'clarification_needed';
 }
 
