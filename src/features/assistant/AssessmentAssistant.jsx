@@ -88,6 +88,9 @@ export default function AssessmentAssistant() {
       {summary && <div className="assistantSummary">
         <h3>خلاصه موقت برای بازبینی</h3>
         <p><b>آنچه گفتی:</b> {summary.user_report}</p>
+        {summary.user_correction && <p><b>اصلاح تو:</b> {summary.user_correction}</p>}
+        {summary.review_status === 'correction_requested' && <p className="muted">برداشت قبلی و موضوعات پیشنهادی کنار گذاشته شدند تا توضیح تو دریافت شود.</p>}
+        {summary.review_status === 'user_corrected_pending_confirmation' && <p className="muted">برداشت قبلی کنار گذاشته شده است. لطفاً خلاصه اصلاح‌شده را دوباره بررسی کن.</p>}
         <p><b>اثر بر زندگی روزمره:</b> {summary.impact}</p>
         <p><b>مدت و تکرار:</b> {summary.duration}</p>
         <p><b>هدفت:</b> {summary.user_goal}</p>
