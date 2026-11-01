@@ -36,3 +36,18 @@ test('missing evidence and course mappings are reported as readiness gaps, not f
   assert.equal(report.readiness.content_linkage_complete, false);
   assert.equal(report.readiness.intervention_linkage_complete, false);
 });
+
+
+test('audit rejects duplicate IDs and premature evidence or runtime activation',()=>{
+ const changed=structuredClone(registries);
+ changed.topicsRegistry.topics[1].topic_id=changed.topicsRegistry.topics[0].topic_id;
+ changed.subtopicsRegistry.subtopics[1].subtopic_id=changed.subtopicsRegistry.subtopics[0].subtopic_id;
+ changed.relationsRegistry.relations[0].runtime_eligible=true;
+ changed.relationsRegistry.relations[1].evidence_grade='high';
+ changed.definitionsRegistry.definitions[0].evidence_ids=['EVD_UNVERIFIED'];
+ const report=auditKnowledgeGraph(changed);
+ assert.ok(report.errors.some(item=>item.includes('Duplicate topic ID')));
+ assert.ok(report.errors.some(item=>item.includes('Duplicate subtopic ID')));
+ assert.ok(report.errors.some(item=>item.includes('Unsafe relation state')));
+ assert.ok(report.errors.some(item=>item.includes('must not claim evidence')));
+});
