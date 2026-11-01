@@ -24,7 +24,7 @@ export function auditSampleDayTemplates({content,topics,days=SAMPLE_DAYS}){
    const groups=new Map();
    for(const {topic,day} of records){
     let value=norm(field==='legacyBookReason'?day.legacyBookRec?.reason:day[field]);
-    value=value.split(norm(topic.name)).join('[topic]');
+    value=value.split(`«${norm(topic.name)}»`).join('«[topic]»');
     if(!value) value='[empty]';
     groups.set(value,[...(groups.get(value)??[]),topic.name]);
    }
