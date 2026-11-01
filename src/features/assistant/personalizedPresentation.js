@@ -27,8 +27,8 @@ export function getPersonalizedQuestionText(question, preferences = DEFAULT_PERS
     : question.prompt;
   const tone = preferences.communication_style === 'supportive'
     ? 'هرقدر که برایت راحت است پاسخ بده؛ لازم نیست چیزی را کامل یا بی‌نقص توضیح بدهی. '
-    : preferences.communication_style === 'direct'
-      ? ''
+    : preferences.communication_style === 'neutral'
+      ? 'هر اندازه اطلاعاتی که اکنون داری کافی است. '
       : '';
   const example = question.id === 'clarify_example'
     ? preferences.example_style === 'practical'
