@@ -86,7 +86,6 @@ export function validateSelfEvaluationPilot({ pilot, queue, evidence }) {
     if (ids.length === 0) errors.push('missing evidence provenance ' + record.content_id);
     if (!unique(ids)) errors.push('duplicate evidence id ' + record.content_id);
     if (!unique(referenceIds)) errors.push('duplicate source reference id ' + record.content_id);
-    if (!unique([...ids].sort().concat([])) && ids.length === 0) errors.push('invalid evidence list ' + record.content_id);
 
     for (const id of ids) {
       const source = evidenceById.get(id);
