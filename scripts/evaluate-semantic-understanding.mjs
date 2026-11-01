@@ -17,9 +17,6 @@ function runCase(item) {
   let session = createAssessmentSession();
   session = answer(session, item.text);
   const safetyCueDetected = session.safety_context_flag === true;
-
-  // The benchmark deliberately uses a fixed negative response only to reach
-  // the topic-routing stage. This is NOT a simulation or validation of safety.
   if (session.current_question?.id === 'safety_now') session = answer(session, 'نه');
   if (session.status !== 'in_progress') {
     return { id: item.id, expected: item.expected_topics ?? [], predicted: [], safetyCueDetected, stopped: true };
