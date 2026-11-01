@@ -9,6 +9,10 @@ on:
       - 'tests/**'
       - 'scripts/validate-content.mjs'
       - 'scripts/validate-assistant-topics.mjs'
+      - 'scripts/audit-course-content-quality.mjs'
+      - 'public/assistant/reviews/**'
+      - 'public/assistant/schemas/course-content-quality-review.v1.schema.json'
+      - 'tests/courseContentQualityAudit.test.js'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/**'
@@ -61,6 +65,9 @@ jobs:
       - name: Validate course and library data
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:content
+      - name: Audit course content quality and review readiness
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run audit:course-content-quality
       - name: Build application
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: |
