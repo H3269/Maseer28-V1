@@ -12,7 +12,9 @@
     "validate:assistant-topics": "node scripts/validate-assistant-topics.mjs",
     "prepare:production": "node scripts/prepare-production-build.mjs",
     "validate:content-redesign": "node scripts/validate-content-redesign.mjs",
-    "validate:topic-migration": "node scripts/validate-topic-migration-contract.mjs"
+    "validate:topic-migration": "node scripts/validate-topic-migration-contract.mjs",
+    "dry-run:topic-migration": "node scripts/validate-topic-migration-dry-run.mjs",
+    "validate:topic-migration-dry-run": "node scripts/validate-topic-migration-dry-run.mjs"
   },
   "dependencies": {
     "react": "18.3.1",
