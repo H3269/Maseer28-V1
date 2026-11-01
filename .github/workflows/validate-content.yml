@@ -63,6 +63,10 @@ jobs:
       - name: Validate course and library data
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:content
+
+      - name: Validate 952-day redesign queue and draft gates
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:content-redesign
       - name: Build application
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: |
