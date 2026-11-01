@@ -9,6 +9,8 @@ on:
       - 'tests/**'
       - 'scripts/validate-content.mjs'
       - 'scripts/validate-assistant-topics.mjs'
+      - 'scripts/validate-topic-migration-contract.mjs'
+      - 'scripts/validate-topic-migration-dry-run.mjs'
       - 'scripts/validate-content-redesign.mjs'
       - 'package.json'
       - 'package-lock.json'
@@ -60,6 +62,9 @@ jobs:
       - name: Validate taxonomy migration contract
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:topic-migration
+      - name: Validate topic migration dry-run snapshot
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:topic-migration-dry-run
       - name: Run unit tests
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm test
