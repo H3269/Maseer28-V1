@@ -6724,3 +6724,15 @@ body:not(.bale-webview) .bottomNav button.active:after {
   background: #36786D !important;
 }
 
+
+
+/* Experimental assistant assessment panel */
+.assistantTranscript{display:grid;gap:12px;margin:16px 0}
+.assistantMessage,.userMessage{padding:12px 14px;border:1px solid var(--border,#ddd);border-radius:14px;max-width:94%;background:var(--surface,#fff)}
+.assistantMessage{justify-self:start}
+.userMessage{justify-self:end;background:var(--surface-soft,#f5f5f5)}
+.assistantMessage p,.userMessage p{margin:6px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.assistantSummary{margin:16px 0;padding:14px;border:1px solid var(--border,#ddd);border-radius:14px}
+.assistantSummary h3{margin-top:0}
+.assistantSummary li{margin:6px 0}
+#assistant-assessment-answer{width:100%;box-sizing:border-box;resize:vertical;margin:8px 0 12px}
