@@ -41,7 +41,10 @@ export function defaultJourneyState() {
 }
 
 export function validScore(value) {
-  const n = Number(normalizeDigits(value));
+  if (value === null || value === undefined) return false;
+  const normalized = normalizeDigits(value).trim();
+  if (!/^\d+$/.test(normalized)) return false;
+  const n = Number(normalized);
   return Number.isInteger(n) && n >= 0 && n <= 10;
 }
 

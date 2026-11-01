@@ -1,0 +1,76 @@
+name: Validate Path28 content
+
+on:
+  pull_request:
+    paths:
+      - 'public/content/**'
+      - 'public/assistant/**'
+      - 'src/**'
+      - 'tests/**'
+      - 'scripts/validate-content.mjs'
+      - 'scripts/validate-assistant-topics.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/**'
+      - 'scripts/prepare-production-build.mjs'
+  push:
+    branches: [main]
+    paths:
+      - 'public/content/**'
+      - 'public/assistant/**'
+      - 'src/**'
+      - 'tests/**'
+      - 'scripts/validate-content.mjs'
+      - 'scripts/validate-assistant-topics.mjs'
+      - 'package.json'
+      - '.github/workflows/**'
+      - 'scripts/prepare-production-build.mjs'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: path28-validation-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate-content:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+      - name: Install dependencies
+        id: install
+        run: npm ci
+      - name: Dependency security audit
+        if: ${{ steps.install.outcome == 'success' }}
+        run: npm audit --audit-level=high
+      - name: Capture complete npm audit report
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm audit --json > npm-audit-report.json || true
+      - name: Validate assistant topic registry
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:assistant-topics
+      - name: Run unit tests
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm test
+      - name: Validate course and library data
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:content
+      - name: Build application
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: |
+          npm run prepare:production
+          npm run build
+
+      - name: Upload npm audit report
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: npm-audit-report
+          path: npm-audit-report.json
+          if-no-files-found: error
