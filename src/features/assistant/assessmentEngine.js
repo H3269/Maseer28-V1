@@ -76,7 +76,7 @@ function detectTopics(text) {
     const matched = phrases.filter((phrase) => normalized.includes(normalize(phrase)));
     if (matched.length) hits.push({ topic_id, matched_phrases: matched });
   }
-  return hits.slice(0, 3);
+  return hits.sort((a, b) => b.matched_phrases.length - a.matched_phrases.length).slice(0, 3);
 }
 
 function classifySafetyAnswer(text) {
@@ -149,6 +149,7 @@ export function submitAssessmentAnswer(session, answer) {
     const extra = detectTopics(value);
     const merged = new Map([...next.candidate_topics, ...extra].map((item) => [item.topic_id, item]));
     next.candidate_topics = [...merged.values()].slice(0, 3);
+    if (next.candidate_topics.length === 0) next.candidate_topics = [{ topic_id: 'T34', matched_phrases: [], status: 'needs_clarification' }];
     const names = next.candidate_topics.map((item) => item.topic_id);
     next.summary = {
       user_report: next.answers.open_problem,
@@ -156,7 +157,7 @@ export function submitAssessmentAnswer(session, answer) {
       impact: next.answers.impact,
       duration: next.answers.duration,
       user_goal: next.answers.goal,
-      candidate_topics: names.map((topic_id) => ({ topic_id, status: 'tentative_hypothesis' })),
+      candidate_topics: next.candidate_topics.map((item) => ({ topic_id: item.topic_id, status: item.status || 'tentative_hypothesis' })),
       limitations: [
         'این دسته‌بندی بر پایه تطبیق واژه‌ها و گفته‌های همین گفتگو است؛ ارزیابی روان‌شناختی یا تشخیص نیست.',
         'نبودن یک موضوع در فهرست به معنی رد آن نیست.',
