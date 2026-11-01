@@ -1,9 +1,9 @@
 import fs from 'node:fs';
-export function validateContentRedesign({queue,day1,day2,topics,subtopics}) {
+export function validateContentRedesign({queue,day1,day2,day3,topics,subtopics}) {
  const errors=[];
  const topicIds=new Set((topics.topics??[]).map(x=>x.topic_id));
  const subById=new Map((subtopics.subtopics??[]).map(x=>[x.subtopic_id,x]));
- const records=queue.records??[], drafts=[...(day1.records??[]),...(day2.records??[])];
+ const records=queue.records??[], drafts=[...(day1.records??[]),...(day2.records??[]),...(day3.records??[])];
  const expected=new Set();
  for(const topic of topics.topics??[]) for(let day=1;day<=28;day++) expected.add('QREV_'+topic.topic_id+'_D'+String(day).padStart(2,'0'));
  const ids=new Set();
@@ -25,8 +25,8 @@ export function validateContentRedesign({queue,day1,day2,topics,subtopics}) {
   if(item.review_status!=='draft_pending_expert_review'||item.runtime_eligible!==false) errors.push('draft not blocked '+item.content_id);
   if((item.evidence_ids??[]).length) errors.push('unverified evidence claimed '+item.content_id);
  }
- if((day1.records??[]).length!==34||(day2.records??[]).length!==34||drafts.length!==68||draftIds.size!==68) errors.push('day one and day two batches must contain 68 unique drafts');
- for(const [batchName,batch] of [['day one',day1.records??[]],['day two',day2.records??[]]]){
+ if((day1.records??[]).length!==34||(day2.records??[]).length!==34||(day3.records??[]).length!==34||drafts.length!==102||draftIds.size!==102) errors.push('day one, day two, and day three batches must contain 102 unique drafts');
+ for(const [batchName,batch] of [['day one',day1.records??[]],['day two',day2.records??[]],['day three',day3.records??[]]]){
   for(const field of ['learning_objective','exercise','action','progress_measure']){
    const values=batch.map(item=>String(item[field]??'').normalize('NFKC').trim());
    if(new Set(values).size!==values.length) errors.push(batchName+' contains duplicate '+field+' templates across topics');
@@ -41,7 +41,7 @@ export function validateContentRedesign({queue,day1,day2,topics,subtopics}) {
 if(process.argv[1]?.endsWith('validate-content-redesign.mjs')){
  const root=process.cwd();
  const read=p=>JSON.parse(fs.readFileSync(root+'/'+p,'utf8'));
- const r=validateContentRedesign({queue:read('public/assistant/content-drafts/952-day-redesign-queue.v1.json'),day1:read('public/assistant/content-drafts/day01-34-topic-drafts.v1.json'),day2:read('public/assistant/content-drafts/day02-34-topic-drafts.v1.json'),topics:read('public/assistant/knowledge/topics.v1.json'),subtopics:read('public/assistant/knowledge/subtopics.v1.json')});
+ const r=validateContentRedesign({queue:read('public/assistant/content-drafts/952-day-redesign-queue.v1.json'),day1:read('public/assistant/content-drafts/day01-34-topic-drafts.v1.json'),day2:read('public/assistant/content-drafts/day02-34-topic-drafts.v1.json'),day3:read('public/assistant/content-drafts/day03-34-topic-drafts.v1.json'),topics:read('public/assistant/knowledge/topics.v1.json'),subtopics:read('public/assistant/knowledge/subtopics.v1.json')});
  console.log(JSON.stringify(r,null,2));
  if(!r.valid) throw new Error('Content redesign validation failed');
 }
