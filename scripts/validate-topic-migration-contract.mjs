@@ -7,6 +7,8 @@ export function validateMigrationContract({ crosswalk, aliases, manifest, fixtur
   const topicIds = new Set(topics.map(x => x.topic_id));
   const subtopicIds = new Set(subtopics.map(x => x.subtopic_id));
   const seenMappings = new Set();
+  if (crosswalk.contract_version !== '1.0.0' || crosswalk.contract_id !== 'maseer28-topic-crosswalk') errors.push('Crosswalk identity/version is invalid.');
+  if (aliases.contract_version !== '1.0.0' || aliases.alias_registry_id !== 'maseer28-topic-aliases') errors.push('Alias registry identity/version is invalid.');
   if (crosswalk.status !== 'draft_no_runtime_use') errors.push('Crosswalk must remain non-runtime.');
   if (aliases.status !== 'draft_no_runtime_use') errors.push('Aliases must remain non-runtime.');
   if (manifest.status !== 'design_only_not_executable' || manifest.execution_allowed !== false || manifest.execution_mode !== 'dry_run_fixture_only') errors.push('Manifest must be non-executable dry-run only.');
@@ -42,6 +44,7 @@ export function validateMigrationContract({ crosswalk, aliases, manifest, fixtur
     if (c.mapping_type === 'one_to_many' && n < 2) errors.push('Invalid one_to_many fixture: ' + c.case_id);
     if (c.mapping_type.startsWith('unmapped') && n !== 0) errors.push('Invalid unmapped fixture: ' + c.case_id);
   }
+  if (!manifest.contracts.crosswalk_schema_path || !manifest.contracts.alias_schema_path) errors.push('Manifest must link both crosswalk and alias schemas.');
   if (manifest.rollout_gates && Object.values(manifest.rollout_gates).some(v => v !== false)) errors.push('All rollout gates must remain closed.');
   return errors;
 }
