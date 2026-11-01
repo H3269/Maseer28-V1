@@ -37,7 +37,7 @@ test('approved educational review requires full metadata and scores',()=>{
  review.review_status='approved_for_educational_review';
  review.scores=Object.fromEntries(Object.keys(review.scores).map(k=>[k,2]));
  review.reviewer_id='expert-1';review.reviewed_at='2026-11-01T12:00:00Z';review.rationale='Reviewed against the full daily lesson.';review.evidence_ids=['EVD_TEST_01'];
- const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[review]},evidenceRegistry:{evidence:[{evidence_id:'EVD_TEST_01',title:'Verified source',citation:'DOI:10.0000/example',review_status:'approved',reviewer_id:'reviewer-1',reviewed_at:'2026-11-01T12:00:00Z'}]}});
+ const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[review]},evidenceRegistry:{runtime_eligible:false,evidence:[{evidence_id:'EVD_TEST_01',title:'Verified source',citation:'DOI:10.0000/example',review_status:'approved',reviewer_id:'reviewer-1',reviewed_at:'2026-11-01T12:00:00Z'}]}});
  assert.deepEqual(report.errors,[]);
 });
 
@@ -53,7 +53,7 @@ test('approved reviews cannot cite evidence that has not been reviewed',()=>{
  review.review_status='approved_for_educational_review';
  review.scores=Object.fromEntries(Object.keys(review.scores).map(k=>[k,2]));
  review.reviewer_id='expert-1';review.reviewed_at='2026-11-01T12:00:00Z';review.rationale='Reviewed against full lesson.';review.evidence_ids=['EVD_PENDING_1'];
- const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[review]},evidenceRegistry:{evidence:[{evidence_id:'EVD_PENDING_1',title:'Pending source',citation:'DOI:10.0000/pending',review_status:'pending_review',reviewer_id:null,reviewed_at:null}]}});
+ const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[review]},evidenceRegistry:{runtime_eligible:false,evidence:[{evidence_id:'EVD_PENDING_1',title:'Pending source',citation:'DOI:10.0000/pending',review_status:'pending_review',reviewer_id:null,reviewed_at:null}]}});
  assert.ok(report.errors.some(x=>x.includes('unreviewed, or untraceable')));
 });
 
@@ -61,4 +61,27 @@ test('topic normalization replaces complete topic tokens but not substrings',()=
  assert.equal(normalizeTemplateText('تمرین برای اضطراب', 'اضطراب'),'تمرین برای [topic]');
  assert.equal(normalizeTemplateText('تمرین برای اضطرابی', 'اضطراب'),'تمرین برای اضطرابی');
  assert.equal(normalizeTemplateText('«اضطراب» را بررسی کن', 'اضطراب'),'«[topic]» را بررسی کن');
+});
+
+test('audit rejects duplicate evidence IDs and a runtime-enabled evidence registry',()=>{
+ const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[]},evidenceRegistry:{runtime_eligible:true,evidence:[{evidence_id:'EVD_DUP',title:'A',citation:'A'},{evidence_id:'EVD_DUP',title:'B',citation:'B'}]}});
+ assert.ok(report.errors.some(x=>x.includes('runtime_eligible=false')));
+ assert.ok(report.errors.some(x=>x.includes('Duplicate evidence ID')));
+});
+
+test('audit rejects malformed score dimensions and duplicate evidence references',()=>{
+ const review=buildReviewQueue(content,topics)[0];
+ review.scores={target_specificity:2};
+ review.evidence_ids=['EVD_X','EVD_X'];
+ const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[review]},evidenceRegistry:{runtime_eligible:false,evidence:[{evidence_id:'EVD_X',title:'Source',citation:'Citation'}]}});
+ assert.ok(report.errors.some(x=>x.includes('Score dimensions mismatch')));
+ assert.ok(report.errors.some(x=>x.includes('unique array')));
+});
+
+test('queue rejects duplicate source content IDs and non-34-topic input',()=>{
+ const changed=structuredClone(content);
+ const names=Object.keys(changed.categories);
+ changed.categories[names[1]].days[0].id=changed.categories[names[0]].days[0].id;
+ assert.throws(()=>buildReviewQueue(changed,topics),/Duplicate source content ID/);
+ assert.throws(()=>buildReviewQueue(content,{topics:topics.topics.slice(1)}),/Expected 34 topic definitions/);
 });
