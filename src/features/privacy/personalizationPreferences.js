@@ -43,7 +43,7 @@ export function validatePersonalizationPreferences(input) {
 }
 
 export function loadPersonalizationPreferences(storage) {
-  if (!hasConsent('long_term_ai_memory', storage)) return { ...DEFAULT_PERSONALIZATION };
+  if (!hasConsent('personalization_preferences', storage)) return { ...DEFAULT_PERSONALIZATION };
   const raw = storageOf(storage).getItem(PERSONALIZATION_STORAGE_KEY);
   if (!raw) return { ...DEFAULT_PERSONALIZATION };
   try {
