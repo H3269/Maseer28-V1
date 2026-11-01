@@ -11,7 +11,8 @@
     "test": "node --test",
     "validate:assistant-topics": "node scripts/validate-assistant-topics.mjs",
     "prepare:production": "node scripts/prepare-production-build.mjs",
-    "validate:content-redesign": "node scripts/validate-content-redesign.mjs"
+    "validate:content-redesign": "node scripts/validate-content-redesign.mjs",
+    "validate:topic-migration": "node scripts/validate-topic-migration-contract.mjs"
   },
   "dependencies": {
     "react": "18.3.1",
