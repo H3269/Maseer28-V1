@@ -97,6 +97,8 @@ function detectTopics(text) {
 
 function classifySafetyAnswer(text) {
   const value = normalize(text);
+  const refusalCues = ['رد می کنم', 'رد می‌کنم', 'ترجیح می دهم پاسخ ندهم', 'ترجیح می‌دهم پاسخ ندهم', 'نمی خواهم جواب بدهم', 'نمی‌خواهم جواب بدهم', 'نمی توانم پاسخ بدهم', 'نمی‌توانم پاسخ بدهم', 'فعلا نمی گویم', 'فعلاً نمی‌گویم'];
+  if (refusalCues.some((cue) => value.includes(normalize(cue)))) return 'assessment_declined';
   const uncertaintyCues = [
     'مطمئن نیستم', 'نمی دانم', 'نمی‌دانم', 'شاید', 'ممکن است', 'ممکنه',
     'احتمال دارد', 'نه ولی', 'نه اما', 'خیر ولی', 'خیر اما',
@@ -160,6 +162,16 @@ export function submitAssessmentAnswer(session, answer) {
       };
       return next;
     }
+    if (next.safety_state === 'assessment_declined') {
+      next.status = 'paused_for_human_support';
+      next.current_question = null;
+      next.referral = {
+        priority: 'human_review',
+        instruction: 'چون بررسی ایمنی کامل نشد، این ابزار ارزیابی عادی را ادامه نمی‌دهد و درباره وجود یا نبود خطر نتیجه‌گیری نمی‌کند. اگر اکنون احتمال آسیب یا خطر فوری وجود دارد، تنها نمان و با خدمات اورژانسی محل زندگی یا فرد قابل اعتماد تماس بگیر. اگر خطر فوری نیست، می‌توانی بعداً با فرد متخصص یا قابل اعتماد درباره این موضوع صحبت کنی.',
+      };
+      return next;
+    }
+
     if (next.safety_state === 'clarification_needed') {
       next.current_question = questionId === 'safety_context_clarification'
         ? QUESTION.safety_context_clarify
