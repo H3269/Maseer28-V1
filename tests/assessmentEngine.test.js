@@ -170,3 +170,31 @@ test('contextual safety flag remains visible in summary and requires human revie
   session = answer(session, 'خلاصه درست است');
   assert.equal(session.next_step.human_review_recommended, true);
 });
+
+test('indirect self-harm and coercive-violence language triggers a safety check',()=>{
+ const cues=[
+  'کاش نبودم',
+  'دیگه نمی‌خوام زنده بمونم',
+  'نمی‌خواهم زنده بمانم',
+  'به خودم صدمه بزنم',
+  'می‌خوام خودمو بکشم',
+  'بهش آسیب بزنم',
+  'همسرم تهدیدم می‌کند',
+  'نمی‌گذارد از خانه بیرون بروم',
+ ];
+ for(const cue of cues){
+  const session=answer(createAssessmentSession(),cue);
+  assert.equal(getCurrentQuestion(session).id,'safety_now',cue);
+  assert.equal(session.safety_context_flag,true,cue);
+ }
+});
+
+test('a quoted or historical safety phrase is clarified without being treated as a confirmed emergency',()=>{
+ let session=createAssessmentSession();
+ session=answer(session,'در یک فیلم شنیدم «کاش نبودم»؛ خودم چنین قصدی ندارم');
+ assert.equal(getCurrentQuestion(session).id,'safety_now');
+ session=answer(session,'نه');
+ assert.equal(getCurrentQuestion(session).id,'safety_context_clarification');
+ assert.equal(session.status,'in_progress');
+ assert.equal(session.safety_context_flag,true);
+});
