@@ -78,17 +78,26 @@ export function withdrawConsent(purpose, { now = new Date().toISOString() } = {}
   if (!CONSENT_PURPOSES.includes(purpose)) throw new Error('هدف رضایت شناخته‌شده نیست.');
   const state = readState(storage);
   state.purposes[purpose] = { granted: false, granted_at: null, withdrawn_at: now, context: null };
-  if (purpose === 'long_term_ai_memory') storageOf(storage).removeItem(PERSONALIZATION_STORAGE_KEY);
   if (purpose === 'ai_cloud_processing') {
     state.purposes.sensitive_health_data_processing = { granted: false, granted_at: null, withdrawn_at: now, context: null };
   }
   storageOf(storage).setItem(CONSENT_STORAGE_KEY, JSON.stringify(state));
-  return state;
+  const erasure_errors = [];
+  if (purpose === 'long_term_ai_memory') {
+    try { storageOf(storage).removeItem(PERSONALIZATION_STORAGE_KEY); }
+    catch (error) { erasure_errors.push(String(error?.message || error)); }
+  }
+  return erasure_errors.length ? { ...state, erasure_errors } : state;
 }
 
 export function clearConsentState(storage) {
-  storageOf(storage).removeItem(CONSENT_STORAGE_KEY);
-  return structuredClone(DEFAULT_STATE);
+  const target = storageOf(storage);
+  target.removeItem(CONSENT_STORAGE_KEY);
+  const erasure_errors = [];
+  try { target.removeItem(PERSONALIZATION_STORAGE_KEY); }
+  catch (error) { erasure_errors.push(String(error?.message || error)); }
+  const state = structuredClone(DEFAULT_STATE);
+  return erasure_errors.length ? { ...state, erasure_errors } : state;
 }
 
 // This module records local choices only. It does not transmit data, enable a processor,
