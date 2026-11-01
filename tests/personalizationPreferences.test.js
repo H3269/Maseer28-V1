@@ -28,7 +28,7 @@ test('preferences are session defaults unless independent long-term memory conse
 test('only explicit, non-sensitive preference choices can be saved after consent',()=>{
  const storage=memoryStorage();
  grantConsent('long_term_ai_memory',{explicitAction:true,context:memoryConsent},storage);
- const saved=savePersonalizationPreferences({response_detail:'concise',communication_style:'direct',step_pacing:'one_at_a_time'},{explicitAction:true,now:'2026-11-02T10:00:00Z'},storage);
+ const saved=savePersonalizationPreferences({response_detail:'concise',communication_style:'direct'},{explicitAction:true,now:'2026-11-02T10:00:00Z'},storage);
  assert.equal(saved.response_detail,'concise');
  assert.equal(loadPersonalizationPreferences(storage).communication_style,'direct');
  assert.equal(JSON.parse(storage.getItem(PERSONALIZATION_STORAGE_KEY)).updated_at,'2026-11-02T10:00:00Z');
