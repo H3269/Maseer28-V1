@@ -82,7 +82,8 @@ function detectTopics(text) {
 
 function classifySafetyAnswer(text) {
   const value = normalize(text);
-  if (/^(بله|آره|اره|yes)(\\b|$)/.test(value) || value.includes('قصد دارم') || value.includes('برنامه دارم')) {
+  if (/^(بله|آره|اره|yes)(\\b|$)/.test(value) ||
+      ((value.includes('قصد دارم') || value.includes('برنامه دارم')) && detectSafetyCue(value))) {
     return 'urgent_human_support_recommended';
   }
   // A negative opening must not override risk language later in the same answer.
