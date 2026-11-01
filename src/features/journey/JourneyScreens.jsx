@@ -392,6 +392,10 @@ export function Support({ content, onBack }) {
   function exportData() {
     try {
       const payload = readLocalUserData();
+      if (!payload.complete) {
+        setPrivacyMessage('خروجی کامل تهیه نشد؛ خواندن برخی داده‌های محلی با خطا روبه‌رو شد. فایل ناقص دانلود نشد.');
+        return;
+      }
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
