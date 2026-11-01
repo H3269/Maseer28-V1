@@ -21,7 +21,7 @@ const OPTIONS = {
   communication_style: [['direct','مستقیم'],['supportive','حمایتگر'],['neutral','خنثی']],
   step_pacing: [['one_at_a_time','یک گام در هر نوبت'],['grouped','چند گام با هم']],
   example_style: [['practical','کاربردی'],['conceptual','مفهومی'],['mixed','ترکیبی']],
-  language: [['fa','فارسی'],['en','انگلیسی'],['auto','خودکار']],
+  language: [['fa','فارسی'],['auto','خودکار']],
 };
 
 const LABELS = {
@@ -48,11 +48,11 @@ export default function PersonalizationSettings() {
     }
   }, []);
 
-  const enabled = consent?.purposes?.long_term_ai_memory?.granted === true;
+  const enabled = consent?.purposes?.personalization_preferences?.granted === true;
 
   function enable() {
     try {
-      const next = grantConsent('long_term_ai_memory', {
+      const next = grantConsent('personalization_preferences', {
         explicitAction: true,
         context: CONSENT_CONTEXT,
       });
@@ -70,7 +70,7 @@ export default function PersonalizationSettings() {
       const saved = savePersonalizationPreferences(preferences, { explicitAction: true });
       setPreferences(saved);
       setError('');
-      setMessage('ترجیحات در همین مرورگر ذخیره شدند. این تنظیمات هنوز به رفتار موتور پاسخ‌گویی متصل نشده‌اند.');
+      setMessage('ترجیحات در همین مرورگر ذخیره شدند و از شروع گفت‌وگوی بعدی بر لحن، میزان جزئیات، نمونه‌ها و نمایش مراحل اثر می‌گذارند. پرسش‌های ایمنی تغییر نمی‌کنند.');
     } catch (cause) {
       setError(cause?.message || 'ذخیره ترجیحات انجام نشد.');
     }
@@ -89,7 +89,7 @@ export default function PersonalizationSettings() {
 
   function withdraw() {
     try {
-      const next = withdrawConsent('long_term_ai_memory');
+      const next = withdrawConsent('personalization_preferences');
       setConsent(getConsentState());
       setPreferences({ ...DEFAULT_PERSONALIZATION });
       setError('');
@@ -121,7 +121,7 @@ export default function PersonalizationSettings() {
           </div>
         </div>}
       {!enabled && <button className="secondary" type="button" onClick={enable}>رضایت می‌دهم ترجیحات غیرحساس ذخیره شوند</button>}
-      <p className="muted">پردازش ابری، تحلیل محصول و پردازش داده حساس در این نسخه فعال نیستند و از این بخش قابل فعال‌سازی نیستند. تنظیمات ذخیره‌شده هنوز به موتور دستیار متصل نشده‌اند.</p>
+      <p className="muted">پردازش ابری، تحلیل محصول و پردازش داده حساس در این نسخه فعال نیستند و از این بخش قابل فعال‌سازی نیستند. ترجیحات فقط بر شیوه ارائه گفت‌وگو اثر می‌گذارند؛ محتوای علمی، ارزیابی موضوع و تصمیم‌های ایمنی را تغییر نمی‌دهند.</p>
       {message && <p className="contactHelp" role="status" aria-live="polite">{message}</p>}
       {error && <p className="contactHelp" role="alert">{error}</p>}
     </div>
