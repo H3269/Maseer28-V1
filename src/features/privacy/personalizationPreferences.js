@@ -30,7 +30,8 @@ export function validatePersonalizationPreferences(input) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) {
     throw new Error('تنظیمات شخصی‌سازی باید یک شیء معتبر باشد.');
   }
-  const unknown = Object.keys(input).filter((key) => key !== 'schema_version' && !Object.hasOwn(ENUMS, key));
+  if (input.schema_version !== undefined && input.schema_version !== '1.0.0') throw new Error('نسخه تنظیمات شخصی‌سازی پشتیبانی نمی‌شود.');
+  const unknown = Object.keys(input).filter((key) => !['schema_version', 'updated_at'].includes(key) && !Object.hasOwn(ENUMS, key));
   if (unknown.length) throw new Error('ذخیره اطلاعات حساس یا فیلد ناشناخته در پروفایل شخصی‌سازی مجاز نیست.');
   const result = { ...DEFAULT_PERSONALIZATION };
   for (const [key, allowed] of Object.entries(ENUMS)) {
