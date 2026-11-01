@@ -79,3 +79,7 @@ test('clearing all consent also attempts to erase local personalization',()=>{
  assert.equal(state.purposes.long_term_ai_memory.granted,false);
  assert.equal(storage.getItem(PERSONALIZATION_STORAGE_KEY),null);
 });
+
+test('unsupported persisted preference schema versions are rejected to safe defaults',()=>{
+ assert.throws(()=>validatePersonalizationPreferences({schema_version:'9.9.9',response_detail:'detailed'}),/نسخه تنظیمات/);
+});
