@@ -152,3 +152,14 @@
 **اقدام مالک مخزن پس از merge احتمالی:** در GitHub Settings → Environments، environment با نام `production` ساخته و Required reviewers و محدودیت deployment branch روی `main` تنظیم شود. صرف نوشتن `environment: production` بدون protection rule، تأیید انسانی را تضمین نمی‌کند.
 
 **محدودیت باقی‌مانده:** workflow هنوز از `rsync --delete` روی ریشه مخزن مقصد استفاده می‌کند. قبل از فعال‌کردن مجدد انتشار باید فهرست فایل‌های مقصد، نیاز واقعی به حذف، و امکان انتشار به پوشه staging یا allowlist دقیق بررسی شود. در این PR انتشار اجرا نشده است.
+
+
+## ۱۱. وضعیت به‌روز وابستگی‌ها پس از اصلاح (2026-11-01)
+
+هشدارهای قبلی با ارتقای کنترل‌شده رفع شدند:
+- Vite `5.4.21` به `6.4.5` ارتقا یافت؛ این خط در فهرست نسخه‌های دارای پشتیبانی امنیتی Vite قرار دارد.
+- esbuild به `0.25.12` ارتقا یافت و advisory مربوط به dev server (GHSA-67mh-4wv8-2f99) از lockfile حذف شد.
+- source-map-js به `1.2.2` ارتقا یافت و advisory با شدت High (GHSA-68fv-2mgg-jv7q) رفع شد.
+- اجرای نهایی GitHub Actions شماره ۲۷: `npm ci`، `npm audit --audit-level=high`، اعتبارسنجی ۳۴ دوره و build همگی موفق شدند؛ audit مقدار صفر آسیب‌پذیری گزارش کرد.
+
+این وضعیت فقط درباره dependency graph قفل‌شده و زمان اجرای audit است؛ امنیت کل برنامه یا محیط میزبانی را اثبات نمی‌کند.
