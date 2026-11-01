@@ -61,6 +61,9 @@ jobs:
       - name: Validate course and library data
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:content
+      - name: Report course content specificity
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run audit:content-specificity
       - name: Build application
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: |
