@@ -137,3 +137,18 @@
 - `npm run build`: موفق (Vite 5.4.21؛ ۴۵ ماژول تبدیل شدند)
 
 بنابراین build سالم است، اما gate امنیت وابستگی‌ها هنوز قرمز است. این دو نتیجه نباید با هم خلط شوند.
+
+
+## ۱۰. سخت‌سازی workflow انتشار به مخزن تلگرام
+
+بازبینی فایل `.github/workflows/publish-tested-version.yml` در شاخه `main` نشان داد اجرای دستی می‌توانست `github.ref` انتخاب‌شده را checkout کند و پس از build، محتوای `dist` را با `rsync --delete` به `main` مخزن `H3269/Maseer28` push کند. این یعنی عبارت «نسخه تست‌شده» در خود workflow با کنترل فنی الزام‌آور به main محدود نشده بود.
+
+در شاخه همین PR، نسخه سخت‌شده workflow آماده شده است:
+- انتشار فقط وقتی مجاز است که `publish=publish` و ref دقیقاً `refs/heads/main` باشد.
+- یک preflight guard قبل از checkout اجرا می‌شود.
+- GitHub Actions با commit SHA pin شده‌اند.
+- job به environment با نام `production` متصل شده است.
+
+**اقدام مالک مخزن پس از merge احتمالی:** در GitHub Settings → Environments، environment با نام `production` ساخته و Required reviewers و محدودیت deployment branch روی `main` تنظیم شود. صرف نوشتن `environment: production` بدون protection rule، تأیید انسانی را تضمین نمی‌کند.
+
+**محدودیت باقی‌مانده:** workflow هنوز از `rsync --delete` روی ریشه مخزن مقصد استفاده می‌کند. قبل از فعال‌کردن مجدد انتشار باید فهرست فایل‌های مقصد، نیاز واقعی به حذف، و امکان انتشار به پوشه staging یا allowlist دقیق بررسی شود. در این PR انتشار اجرا نشده است.
