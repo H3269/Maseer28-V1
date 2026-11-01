@@ -42,6 +42,9 @@ jobs:
       - name: Capture complete npm audit report
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm audit --json > npm-audit-report.json || true
+      - name: Run unit tests
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm test
       - name: Validate course and library data
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:content
