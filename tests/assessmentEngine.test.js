@@ -198,3 +198,43 @@ test('a quoted or historical safety phrase is clarified without being treated as
  assert.equal(session.status,'in_progress');
  assert.equal(session.safety_context_flag,true);
 });
+
+test('indirect self-harm, child-directed harm, and domestic abuse phrases trigger clarification',()=>{
+ const cues=[
+  'می‌ترسم به خودم آسیب بزنم',
+  'نگرانم به خودم آسیب بزنم',
+  'ممکنه به خودم آسیب بزنم',
+  'به فرزندم آسیب بزنم',
+  'به بچه‌ام آسیب بزنم',
+  'می‌خواهم به همسرم آسیب بزنم',
+  'می‌ترسم به کسی آسیب بزنم',
+  'در خانه کتک می‌خورم',
+  'تهدیدم کرده',
+  'حبسم کرده',
+  'اجازه خروج از خانه ندارم',
+ ];
+ for(const cue of cues){
+  const session=answer(createAssessmentSession(),cue);
+  assert.equal(getCurrentQuestion(session).id,'safety_now',cue);
+  assert.equal(session.safety_context_flag,true,cue);
+ }
+});
+
+test('a current affirmative safety answer pauses regardless of explanatory text',()=>{
+ for(const response of ['بله، شاید امشب','آره، برنامه دارم','بله اما نمی‌خواهم درباره‌اش حرف بزنم']){
+  let session=answer(createAssessmentSession(),'گاهی می‌ترسم به خودم آسیب بزنم');
+  session=answer(session,response);
+  assert.equal(session.status,'paused_for_human_support',response);
+  assert.equal(session.safety_state,'urgent_human_support_recommended',response);
+ }
+});
+
+test('standalone negative is recorded as no immediate risk disclosed, never as proof of safety',()=>{
+ let session=answer(createAssessmentSession(),'نگرانم به خودم آسیب بزنم');
+ session=answer(session,'نه');
+ assert.equal(session.safety_state,'contextual_risk_clarification_required');
+ session=answer(session,'نه');
+ assert.equal(session.safety_state,'risk_context_present_no_immediate_risk_disclosed');
+ assert.equal(session.safety_context_flag,true);
+ assert.equal(session.next_step,undefined);
+});
