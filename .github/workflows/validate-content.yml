@@ -13,6 +13,8 @@ on:
       - 'public/assistant/reviews/**'
       - 'public/assistant/schemas/course-content-quality-review.v1.schema.json'
       - 'tests/courseContentQualityAudit.test.js'
+      - 'scripts/build-first-pass-review-packet.mjs'
+      - 'tests/firstPassReviewPacket.test.js'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/**'
@@ -68,12 +70,22 @@ jobs:
       - name: Audit course content quality and review readiness
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run audit:course-content-quality
+      - name: Prepare first-pass 34-topic human review packet
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run prepare:first-pass-review
       - name: Build application
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: |
           npm run prepare:production
           npm run build
 
+      - name: Upload first-pass human review packet
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: first-pass-review-34-days
+          path: artifacts/first-pass-review-34-days.md
+          if-no-files-found: error
       - name: Upload npm audit report
         if: ${{ always() && steps.install.outcome == 'success' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
