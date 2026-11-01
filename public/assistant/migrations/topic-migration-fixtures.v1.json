@@ -32,8 +32,8 @@
         "legacy:غم و سوگ"
       ],
       "target_ids": [
-        "T06",
-        "T35"
+        "candidate:grief-experience",
+        "candidate:bereavement-process"
       ],
       "expected": "manual_review_required"
     },
