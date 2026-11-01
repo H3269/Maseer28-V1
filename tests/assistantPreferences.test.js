@@ -9,6 +9,10 @@ test('supportive, direct, detail, and example preferences change non-safety prom
   assert.match(supportive, /با آرامش/);
   assert.match(supportive, /نمونه واقعی/);
   assert.match(supportive, /لازم نیست حدس بزنی/);
+  const balanced = formatAssistantPrompt(question, { response_detail: 'balanced' });
+  assert.match(balanced, /نمونه کوتاه/);
+  const concise = formatAssistantPrompt(question, { response_detail: 'concise' });
+  assert.doesNotMatch(concise, /نمونه کوتاه/);
   const direct = formatAssistantPrompt(question, { communication_style: 'direct', example_style: 'conceptual' });
   assert.match(direct, /پاسخ کوتاه/);
   assert.match(direct, /الگوی کلی/);
