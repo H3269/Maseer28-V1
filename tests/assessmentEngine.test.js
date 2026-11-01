@@ -45,7 +45,7 @@ test('ordinary concern proceeds through one question at a time and produces tent
   assert.ok(summary.candidate_topics.some((item) => item.topic_id === 'T02'));
   assert.ok(summary.candidate_topics.every((item) => item.status === 'tentative_hypothesis'));
   assert.ok(summary.limitations.length >= 3);
-  session = answer(session, 'خلاصه کلی درست است اما شدت آن را کمتر گفتم');
+  session = answer(session, 'بله');
   assert.equal(session.status, 'completed');
   assert.equal(session.next_step.content_available, false);
 });
@@ -108,4 +108,54 @@ test('unmatched concerns use T34 as a clarification route, not a diagnosis', () 
 
 test('cloud processing is explicitly rejected by this experimental engine', () => {
   assert.throws(() => createAssessmentSession({ localOnly: false }), /ارسال ابری/);
+});
+
+
+test('non-affirmative summary feedback withdraws tentative topics and asks for a correction',()=>{
+ let session=createAssessmentSession();
+ session=answer(session,'مدتی است اضطراب دارم');
+ session=answer(session,'نه');
+ session=answer(session,'در کارم اثر گذاشته');
+ session=answer(session,'چند ماه');
+ session=answer(session,'می‌خواهم بفهمم');
+ session=answer(session,'وقتی آینده نامعلوم است اضطراب می‌گیرم');
+ assert.ok(getAssessmentSummary(session).candidate_topics.some(item=>item.topic_id==='T02'));
+ session=answer(session,'نه، برداشتت اشتباه است');
+ assert.equal(getCurrentQuestion(session).id,'summary_revision');
+ assert.equal(session.summary.review_status,'correction_requested');
+ assert.equal(session.summary.candidate_topics.length,0);
+ assert.equal(session.summary.topic_assessment_status,'withdrawn_pending_reassessment');
+});
+
+test('user correction replaces the current interpretation and requires reconfirmation',()=>{
+ let session=createAssessmentSession();
+ session=answer(session,'مدتی است اضطراب دارم');
+ session=answer(session,'نه');
+ session=answer(session,'در کارم اثر گذاشته');
+ session=answer(session,'چند ماه');
+ session=answer(session,'می‌خواهم بفهمم');
+ session=answer(session,'وقتی آینده نامعلوم است اضطراب می‌گیرم');
+ session=answer(session,'خلاصه درست نیست');
+ session=answer(session,'مسئله اصلی فشار کاری است؛ اضطراب موضوع اصلی من نیست');
+ assert.equal(getCurrentQuestion(session).id,'summary_confirmation');
+ assert.equal(session.summary.user_correction,'مسئله اصلی فشار کاری است؛ اضطراب موضوع اصلی من نیست');
+ assert.equal(session.summary.candidate_topics.length,0);
+ assert.equal(session.summary.review_status,'user_corrected_pending_confirmation');
+ assert.equal(session.summary.topic_assessment_status,'requires_reassessment');
+ session=answer(session,'بله');
+ assert.equal(session.status,'completed');
+ assert.equal(session.summary.review_status,'user_confirmed');
+});
+
+test('only an explicit affirmative confirms a summary',()=>{
+ let session=createAssessmentSession();
+ session=answer(session,'یک مسئله دارم');
+ session=answer(session,'نه');
+ session=answer(session,'اثر گذاشته');
+ session=answer(session,'چند هفته');
+ session=answer(session,'می‌خواهم بفهمم');
+ session=answer(session,'یک مثال مشخص');
+ session=answer(session,'تقریباً درست است، اما یک نکته مهم جا افتاده');
+ assert.equal(session.status,'in_progress');
+ assert.equal(getCurrentQuestion(session).id,'summary_revision');
 });
