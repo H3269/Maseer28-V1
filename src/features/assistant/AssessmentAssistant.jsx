@@ -20,7 +20,12 @@ export default function AssessmentAssistant() {
   const [preferences, setPreferences] = useState({ ...DEFAULT_PERSONALIZATION });
 
   useEffect(() => {
-    try { setPreferences(loadPersonalizationPreferences()); } catch { setPreferences({ ...DEFAULT_PERSONALIZATION }); }
+    const refreshPreferences = () => {
+      try { setPreferences(loadPersonalizationPreferences()); } catch { setPreferences({ ...DEFAULT_PERSONALIZATION }); }
+    };
+    refreshPreferences();
+    window.addEventListener('maseer28:personalization-changed', refreshPreferences);
+    return () => window.removeEventListener('maseer28:personalization-changed', refreshPreferences);
   }, []);
 
 
