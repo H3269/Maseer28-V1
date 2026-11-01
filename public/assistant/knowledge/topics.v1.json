@@ -37,7 +37,12 @@
         "T02-S02",
         "T02-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T02_T03",
+        "REL_T02_T13",
+        "REL_T02_T27",
+        "REL_T02_T31"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -56,7 +61,13 @@
         "T03-S02",
         "T03-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T02_T03",
+        "REL_T03_T21",
+        "REL_T03_T28",
+        "REL_T03_T27",
+        "REL_T03_T29"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -96,7 +107,11 @@
         "T05-S02",
         "T05-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T05_T17",
+        "REL_T05_T29",
+        "REL_T05_T31"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -117,7 +132,10 @@
         "T06-S02",
         "T06-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T06_T13",
+        "REL_T06_T23"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -159,7 +177,11 @@
         "T08-S02",
         "T08-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T08_T12",
+        "REL_T08_T17",
+        "REL_T08_T29"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -178,7 +200,9 @@
         "T09-S02",
         "T09-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T09_T28"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -241,7 +265,12 @@
         "T12-S02",
         "T12-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T12_T17",
+        "REL_T08_T12",
+        "REL_T12_T31",
+        "REL_T12_T29"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -262,7 +291,12 @@
         "T13-S02",
         "T13-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T13_T17",
+        "REL_T06_T13",
+        "REL_T02_T13",
+        "REL_T13_T14"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -283,7 +317,9 @@
         "T14-S02",
         "T14-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T13_T14"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -304,7 +340,12 @@
         "T15-S02",
         "T15-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T15_T23",
+        "REL_T15_T33",
+        "REL_T15_T27",
+        "REL_T15_T28"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -325,7 +366,9 @@
         "T16-S02",
         "T16-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T16_T27"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -346,7 +389,14 @@
         "T17-S02",
         "T17-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T12_T17",
+        "REL_T13_T17",
+        "REL_T08_T17",
+        "REL_T05_T17",
+        "REL_T17_T31",
+        "REL_T17_T29"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -367,7 +417,12 @@
         "T18-S02",
         "T18-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T18_T23",
+        "REL_T18_T26",
+        "REL_T18_T19",
+        "REL_T18_T33"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -388,7 +443,9 @@
         "T19-S02",
         "T19-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T18_T19"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -409,7 +466,9 @@
         "T20-S02",
         "T20-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T20_T28"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -430,7 +489,11 @@
         "T21-S02",
         "T21-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T03_T21",
+        "REL_T21_T27",
+        "REL_T21_T28"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -472,7 +535,13 @@
         "T23-S02",
         "T23-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T15_T23",
+        "REL_T18_T23",
+        "REL_T23_T26",
+        "REL_T23_T33",
+        "REL_T06_T23"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -535,7 +604,10 @@
         "T26-S02",
         "T26-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T18_T26",
+        "REL_T23_T26"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -556,7 +628,13 @@
         "T27-S02",
         "T27-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T03_T27",
+        "REL_T15_T27",
+        "REL_T02_T27",
+        "REL_T21_T27",
+        "REL_T16_T27"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -577,7 +655,14 @@
         "T28-S02",
         "T28-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T03_T28",
+        "REL_T15_T28",
+        "REL_T09_T28",
+        "REL_T20_T28",
+        "REL_T21_T28",
+        "REL_T28_T33"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -598,7 +683,13 @@
         "T29-S02",
         "T29-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T03_T29",
+        "REL_T12_T29",
+        "REL_T17_T29",
+        "REL_T08_T29",
+        "REL_T05_T29"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -619,7 +710,9 @@
         "T30-S02",
         "T30-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T30_T31"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -640,7 +733,13 @@
         "T31-S02",
         "T31-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T12_T31",
+        "REL_T17_T31",
+        "REL_T05_T31",
+        "REL_T02_T31",
+        "REL_T30_T31"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
@@ -682,7 +781,12 @@
         "T33-S02",
         "T33-S03"
       ],
-      "relation_ids": [],
+      "relation_ids": [
+        "REL_T15_T33",
+        "REL_T18_T33",
+        "REL_T23_T33",
+        "REL_T28_T33"
+      ],
       "evidence_ids": [],
       "content_ids": [],
       "intervention_ids": [],
