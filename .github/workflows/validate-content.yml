@@ -31,6 +31,10 @@ jobs:
       - name: Install dependencies
         id: install
         run: npm ci
+      - name: Apply non-breaking dependency fixes
+        if: ${{ steps.install.outcome == 'success' }}
+        continue-on-error: true
+        run: npm audit fix
       - name: Dependency security audit
         if: ${{ steps.install.outcome == 'success' }}
         run: npm audit --audit-level=high
@@ -40,3 +44,10 @@ jobs:
       - name: Build application
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run build
+      - name: Upload candidate lockfile
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: package-lock-audit-fix
+          path: package-lock.json
+          if-no-files-found: error
