@@ -16475,5 +16475,74 @@
     }
   ],
   "anomalies": [],
-  "draft_records_not_linked_to_queue": []
+  "draft_records_not_linked_to_queue": [],
+  "subtopic_mapping_impact": [
+    {
+      "mapping_id": "XW-SUBTOPIC-T04-S02",
+      "source_subtopic_id": "T04-S02",
+      "source_label": "نفرت از خود و خودبیزاری",
+      "decision_status": "proposed_pending_content_review",
+      "proposed_targets": [
+        {
+          "entity_type": "topic",
+          "id": "T18"
+        }
+      ],
+      "affected_draft_count": 1,
+      "affected_drafts": [
+        {
+          "content_id": "DRAFT_T04_D02",
+          "source_content_id": "نفرت-02",
+          "topic_id": "T04",
+          "day_number": 2,
+          "subtopic_id": "T04-S02",
+          "review_status": "draft_pending_expert_review",
+          "runtime_eligible": false
+        }
+      ]
+    },
+    {
+      "mapping_id": "XW-SUBTOPIC-T15-S03",
+      "source_subtopic_id": "T15-S03",
+      "source_label": "عزت‌نفس کلی به‌عنوان سازه متمایز",
+      "decision_status": "proposed_pending_content_review",
+      "proposed_targets": [
+        {
+          "entity_type": "topic",
+          "id": "T23"
+        }
+      ],
+      "affected_draft_count": 1,
+      "affected_drafts": [
+        {
+          "content_id": "DRAFT_T15_D03",
+          "source_content_id": "اعتمادبه‌نفس پایین-03",
+          "topic_id": "T15",
+          "day_number": 3,
+          "subtopic_id": "T15-S03",
+          "review_status": "draft_pending_expert_review",
+          "runtime_eligible": false
+        }
+      ]
+    },
+    {
+      "mapping_id": "XW-SUBTOPIC-T18-S03",
+      "source_subtopic_id": "T18-S03",
+      "source_label": "نشانه‌های خطر و بررسی مستقیم ایمنی در صورت لزوم",
+      "decision_status": "blocked_pending_safety_review",
+      "proposed_targets": [],
+      "affected_draft_count": 1,
+      "affected_drafts": [
+        {
+          "content_id": "DRAFT_T18_D03",
+          "source_content_id": "نفرت از خود-03",
+          "topic_id": "T18",
+          "day_number": 3,
+          "subtopic_id": "T18-S03",
+          "review_status": "draft_pending_expert_review",
+          "runtime_eligible": false
+        }
+      ]
+    }
+  ]
 }
