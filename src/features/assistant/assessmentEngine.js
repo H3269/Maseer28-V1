@@ -102,10 +102,11 @@ function classifySafetyAnswer(text) {
     'احتمال دارد', 'نه ولی', 'نه اما', 'خیر ولی', 'خیر اما',
     'نمی توانم قول', 'نمی‌توانم قول', 'نمی تونم قول', 'نمی‌تونم قول',
   ];
-  if (uncertaintyCues.some((cue) => value.includes(normalize(cue)))) return 'clarification_needed';
+// An explicit affirmative takes priority over hedging: 'yes, maybe tonight' must not be downgraded.
   if (/^(بله|آره|اره|yes)(\b|$)/.test(value) || value.includes('قصد دارم') || value.includes('برنامه دارم')) {
     return 'urgent_human_support_recommended';
   }
+  if (uncertaintyCues.some((cue) => value.includes(normalize(cue)))) return 'clarification_needed';
   // Only a clear, standalone negative answer is treated as non-disclosure.
   // Mixed or explanatory answers require clarification rather than being
   // silently interpreted as a negative safety response.
