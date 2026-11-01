@@ -45,3 +45,13 @@ test('evaluator reports clarification false positives and false negatives separa
  ));
  assert.ok(report.clarification_metrics.interpretation.includes('کیفیت بالینی'));
 });
+
+
+test('current fixed clarification flow exposes six synthetic over-clarification cases',()=>{
+ const report=evaluateDataset(dataset);
+ assert.equal(report.clarification_metrics.true_positive,10);
+ assert.equal(report.clarification_metrics.false_positive,6);
+ assert.equal(report.clarification_metrics.false_negative,0);
+ assert.equal(report.clarification_metrics.precision,0.625);
+ assert.equal(report.clarification_metrics.recall,1);
+});
