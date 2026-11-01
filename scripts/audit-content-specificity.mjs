@@ -10,7 +10,7 @@ function normalize(value, topic) {
   const regexSpecials = new Set(['.', '*', '+', '?', '^', '$', '(', ')', '|', '[', ']', '{', '}']);
   const escapedTopic = [...topic].map((char) => regexSpecials.has(char) ? String.fromCharCode(92) + char : char).join('');
   const tokenPattern = new RegExp('(^|[^\\p{L}\\p{N}_])' + escapedTopic + '(?=$|[^\\p{L}\\p{N}_])', 'gu');
-  return quoted.replace(tokenPattern, '$1[TOPIC]').replace(/\\s+/g, ' ').trim();
+  return quoted.replace(tokenPattern, '$1[TOPIC]').replace(/\s+/g, ' ').trim();
 }
 export function auditContentSpecificity(data) {
   const categories = Object.entries(data.categories ?? []);
