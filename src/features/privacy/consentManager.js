@@ -6,6 +6,7 @@ export const CONSENT_PURPOSES = Object.freeze([
   'ai_cloud_processing',
   'sensitive_health_data_processing',
   'long_term_ai_memory',
+  'personalization_preferences',
   'product_analytics',
 ]);
 
@@ -44,6 +45,7 @@ function requiredContext(purpose, context) {
     ai_cloud_processing: ['processor_identity', 'processing_region', 'data_categories', 'retention_period', 'withdrawal_method'],
     sensitive_health_data_processing: ['necessity_explanation', 'exact_data_categories'],
     long_term_ai_memory: ['retention_period', 'view_edit_delete_controls'],
+    personalization_preferences: ['retention_period', 'view_edit_delete_controls'],
     product_analytics: ['purpose_limitation', 'avoid_sensitive_content'],
   }[purpose];
   return required.every((key) => {
@@ -83,7 +85,7 @@ export function withdrawConsent(purpose, { now = new Date().toISOString() } = {}
   }
   storageOf(storage).setItem(CONSENT_STORAGE_KEY, JSON.stringify(state));
   const erasure_errors = [];
-  if (purpose === 'long_term_ai_memory') {
+  if (purpose === 'long_term_ai_memory' || purpose === 'personalization_preferences') {
     try { storageOf(storage).removeItem(PERSONALIZATION_STORAGE_KEY); }
     catch (error) { erasure_errors.push(String(error?.message || error)); }
   }
