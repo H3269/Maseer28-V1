@@ -1,0 +1,156 @@
+{
+  "schema_version": "1.0.0",
+  "protocol_id": "maseer28-adaptive-intake",
+  "status": "design_only_requires_clinical_safety_review",
+  "purpose": "چارچوب ارزیابی آموزشی و هدایت مسیر؛ نه ابزار تشخیص، غربالگری معتبر یا جایگزین ارزیابی متخصص.",
+  "interaction_rules": {
+    "one_question_per_turn": true,
+    "explain_why_sensitive_questions_are_asked": true,
+    "allow_skip_or_stop": true,
+    "distinguish_user_report_from_assistant_hypothesis": true,
+    "ask_clarification_before_assigning_topic": true,
+    "max_active_topic_hypotheses": 3,
+    "do_not_force_single_primary_topic": true,
+    "summarize_and_request_user_correction": true
+  },
+  "stages": [
+    {
+      "id": "consent_and_scope",
+      "required": true,
+      "outputs": [
+        "scope_acknowledged",
+        "processing_choice"
+      ],
+      "guardrails": [
+        "توضیح محدودیت‌های دستیار",
+        "عدم ادعای درمان یا تشخیص",
+        "عدم ارسال ابری بدون رضایت مشخص"
+      ]
+    },
+    {
+      "id": "open_intent",
+      "required": true,
+      "outputs": [
+        "user_goal",
+        "user_description"
+      ],
+      "guardrails": [
+        "ابتدا مسئله با زبان خود کاربر فهمیده شود",
+        "از انتخاب اجباری یکی از ۳۴ موضوع خودداری شود"
+      ]
+    },
+    {
+      "id": "safety_check",
+      "required": "when_triggered_or_uncertain",
+      "outputs": [
+        "safety_state",
+        "support_need"
+      ],
+      "guardrails": [
+        "در صورت نشانه خطر، پرسش مستقیم و روشن درباره خطر فعلی و فوریت مطرح شود",
+        "ابهام مهم به‌عنوان نیازمند روشن‌سازی ثبت شود، نه نبود خطر",
+        "در خطر فوری، آموزش عادی متوقف و راهنمایی برای کمک انسانی/اورژانسی محلی مقدم شود",
+        "مدل به‌تنهایی تصمیم نهایی بحران نمی‌گیرد"
+      ]
+    },
+    {
+      "id": "context_and_impact",
+      "required": true,
+      "outputs": [
+        "context",
+        "onset_and_duration",
+        "frequency",
+        "functional_impact",
+        "user_goal",
+        "previous_attempts"
+      ],
+      "guardrails": [
+        "فقط اطلاعات لازم پرسیده شود",
+        "سن و زمینه رشدی در صورت ارتباط روشن شود",
+        "عوامل پزشکی، دارویی، خواب، مصرف مواد و شرایط محیطی در صورت ارتباط بررسی و به متخصص ارجاع داده شود"
+      ]
+    },
+    {
+      "id": "differential_clarification",
+      "required": "when_multiple_plausible_topics",
+      "outputs": [
+        "candidate_topics",
+        "supporting_user_report",
+        "contradicting_information",
+        "missing_information"
+      ],
+      "guardrails": [
+        "حداکثر سه فرضیه موقت",
+        "هم‌زمانی به معنی علیت نیست",
+        "ترس از قضاوت، طرد یا شکست به‌تنهایی تشخیص نیست",
+        "از پرسش‌های جهت‌دار و تأییدطلبانه پرهیز شود"
+      ]
+    },
+    {
+      "id": "collaborative_summary",
+      "required": true,
+      "outputs": [
+        "plain_language_summary",
+        "tentative_formulation",
+        "user_correction"
+      ],
+      "guardrails": [
+        "فرضیه با زبان احتمالی بیان شود",
+        "کاربر امکان رد یا اصلاح خلاصه را داشته باشد",
+        "اطمینان عددی یا برچسب تشخیصی تولید نشود"
+      ]
+    },
+    {
+      "id": "content_and_next_step",
+      "required": true,
+      "outputs": [
+        "approved_content_ids",
+        "approved_exercise_ids",
+        "referral_recommendation"
+      ],
+      "guardrails": [
+        "فقط محتوای دارای وضعیت تأییدشده استفاده شود",
+        "شدت/خطر/ابهام بالا باعث توقف پیشنهاد خودیاری به‌عنوان پاسخ کافی شود",
+        "تکمیل دوره معادل درمان یا بهبود قطعی نیست"
+      ]
+    },
+    {
+      "id": "follow_up",
+      "required": false,
+      "outputs": [
+        "user_reported_change",
+        "function_change",
+        "burden_change",
+        "adverse_effects",
+        "next_review"
+      ],
+      "guardrails": [
+        "تغییر نمره به‌تنهایی اثبات اثر درمانی نیست",
+        "بدترشدن یا عارضه تمرین باید موجب بازبینی شود"
+      ]
+    }
+  ],
+  "candidate_topic_output": {
+    "topic_id": "T01..T34",
+    "status": "user_reported|tentative_hypothesis|ruled_out_for_current_question|needs_clarification",
+    "evidence_summary": "متن کوتاه بر پایه گفته کاربر",
+    "missing_information": [],
+    "confidence": "low|moderate|high",
+    "confidence_note": "کیفی و توضیح‌پذیر؛ high فقط پس از شواهد کافی و تأیید کاربر، نه تشخیص"
+  },
+  "risk_state_values": [
+    "not_assessed",
+    "clarification_needed",
+    "no_immediate_risk_disclosed",
+    "urgent_human_support_recommended"
+  ],
+  "prohibited_outputs": [
+    "تشخیص اختلال روان‌پزشکی",
+    "پیش‌بینی قطعی خطر یا تضمین ایمنی",
+    "توصیه شروع، قطع یا تغییر دارو",
+    "توصیه مواجهه با موقعیت بالقوه خطرناک بدون بررسی ایمنی",
+    "درمان رابطه مشترک به‌عنوان پیش‌فرض در حضور خشونت یا کنترل اجباری",
+    "ادعای اثربخشی بر اساس تکمیل ۲۸ روز"
+  ],
+  "runtime_policy": "این پروتکل تا زمان بازبینی بالینی، ایمنی، حقوقی و آزمون سناریوهای شکست نباید به‌عنوان موتور تصمیم‌گیری production فعال شود."
+}
