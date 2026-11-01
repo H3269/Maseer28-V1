@@ -26,6 +26,9 @@ function runCase(item) {
       safetyCueDetected,
       expectedSafetyHandoff,
       topic_scoring_excluded: true,
+      clarification_scoring_excluded: true,
+      expectedClarification: item.must_ask_clarification === true,
+      clarificationRequested: false,
       stopped: true,
     };
   }
@@ -46,6 +49,9 @@ function runCase(item) {
     safetyCueDetected,
     expectedSafetyHandoff: false,
     topic_scoring_excluded: false,
+    clarification_scoring_excluded: false,
+    expectedClarification: item.must_ask_clarification === true,
+    clarificationRequested: session.current_question?.id === 'summary_confirmation' || Boolean(summary),
     stopped: false,
   };
 }
@@ -76,6 +82,12 @@ export function evaluateDataset(dataset) {
 
   const precision = tp.size + fp.size ? tp.size / (tp.size + fp.size) : 0;
   const recall = tp.size + fn.size ? tp.size / (tp.size + fn.size) : 0;
+  const clarificationCases = cases.filter((item) => !item.clarification_scoring_excluded);
+  const clarificationTp = clarificationCases.filter((item) => item.expectedClarification && item.clarificationRequested).length;
+  const clarificationFp = clarificationCases.filter((item) => !item.expectedClarification && item.clarificationRequested).length;
+  const clarificationFn = clarificationCases.filter((item) => item.expectedClarification && !item.clarificationRequested).length;
+  const clarificationPrecision = clarificationTp + clarificationFp ? clarificationTp / (clarificationTp + clarificationFp) : 0;
+  const clarificationRecall = clarificationTp + clarificationFn ? clarificationTp / (clarificationTp + clarificationFn) : 0;
   const safetyCases = cases.filter((item) => item.expectedSafetyHandoff);
   const safetyCueHits = safetyCases.filter((item) => item.safetyCueDetected).length;
   const topicCases = cases.filter((item) => !item.topic_scoring_excluded);
@@ -96,6 +108,18 @@ export function evaluateDataset(dataset) {
         [...new Set(item.expected)].sort().join(',') === [...new Set(item.predicted)].sort().join(',')
       ).length,
     },
+    clarification_metrics: {
+      evaluated_case_count: clarificationCases.length,
+      true_positive: clarificationTp,
+      false_positive: clarificationFp,
+      false_negative: clarificationFn,
+      precision: Number(clarificationPrecision.toFixed(4)),
+      recall: Number(clarificationRecall.toFixed(4)),
+      f1: clarificationPrecision + clarificationRecall
+        ? Number((2 * clarificationPrecision * clarificationRecall / (clarificationPrecision + clarificationRecall)).toFixed(4))
+        : 0,
+      interpretation: 'فقط تطابق با برچسب مصنوعی نیاز به پرسش تکمیلی؛ نه کیفیت بالینی یا کفایت روشن‌سازی',
+    },
     safety_lexical_probe: {
       expected_handoff_cases: safetyCases.length,
       lexical_cue_detected: safetyCueHits,
@@ -110,6 +134,7 @@ export function evaluateDataset(dataset) {
       'سناریوهای دارای اولویت ایمنی از امتیاز موضوعی کنار گذاشته می‌شوند تا توقف جریان با خطای دسته‌بندی موضوعی اشتباه نشود.',
       'موتور فعلی تطبیق عبارت‌محور است؛ خروجی آن فهم معنایی واقعی محسوب نمی‌شود.',
       'پاسخ منفی ثابت در اجرای آزمون فقط برای رسیدن به مرحله موضوعی است و هیچ نتیجه ایمنی از آن گرفته نمی‌شود.',
+      'نیاز به پرسش تکمیلی در داده مصنوعی نیز سنجیده می‌شود؛ این معیار فقط تطابق با برچسب‌های دستی مصنوعی است و کیفیت پرسش را نمی‌سنجد.',
       'هیچ آستانه پذیرش یا مجوز فعال‌سازی برای کاربران واقعی از این گزارش قابل استنتاج نیست.',
     ],
   };
