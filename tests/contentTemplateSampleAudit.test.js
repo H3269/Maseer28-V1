@@ -11,7 +11,12 @@ test('sample audit detects shared templates after topic-name substitution',()=>{
  assert.equal(exercise.groups[0].topic_count,34);
  const action=result.report.find(x=>x.field==='actionText');
  assert.equal(action.unique_templates,34);
+ assert.equal(action.groups.reduce((sum,g)=>sum+g.topic_count,0),34);
+ const refs=result.report.find(x=>x.field==='legacyBookRec.reference_tuple');
+ assert.equal(refs.topics_with_value,0);
+ assert.equal(refs.groups[0].topic_count,34);
  assert.ok(renderSampleTemplateReport(result).includes('قالب یکتا'));
+ assert.ok(renderSampleTemplateReport(result).includes('قالب منفرد'));
 });
 
 test('sample audit rejects invalid days and incomplete source paths',()=>{
