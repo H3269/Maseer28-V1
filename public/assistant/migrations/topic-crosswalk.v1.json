@@ -1,0 +1,758 @@
+{
+  "contract_version": "1.0.0",
+  "contract_id": "maseer28-topic-crosswalk",
+  "status": "draft_no_runtime_use",
+  "source_taxonomy_version": "1.0.0",
+  "target_taxonomy_version": "1.1.0-proposed",
+  "generated_from": {
+    "topics_registry": "public/assistant/knowledge/topics.v1.json",
+    "subtopics_registry": "public/assistant/knowledge/subtopics.v1.json",
+    "source_registry_status": "draft_requires_expert_review"
+  },
+  "principles": [
+    "A name match is a candidate mapping, not approval.",
+    "Never infer clinical equivalence from label similarity.",
+    "Preserve source identifiers and provenance.",
+    "One-to-one, many-to-one, and one-to-many mappings are representable.",
+    "Unresolved mappings remain explicit; no silent deletion or runtime fallback."
+  ],
+  "topic_mappings": [
+    {
+      "mapping_id": "XW-LEGACY-T01",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "خشم"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T01"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T02",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "اضطراب"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T02"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T03",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "ترس"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T03"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T04",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "نفرت"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T04"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T05",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "حسادت"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T05"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T06",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "غم و سوگ"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T06"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T07",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "احساس گناه"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T07"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T08",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "وابستگی عاطفی"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T08"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T09",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "اهمال‌کاری"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T09"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T10",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "بی‌خوابی و مشکلات خواب"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T10"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T11",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "عادت‌های تکراری"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T11"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T12",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "مرزبندی و نه گفتن"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T12"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T13",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "تنهایی"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T13"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T14",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "کمبود انگیزه"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T14"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T15",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "اعتمادبه‌نفس پایین"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T15"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T16",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "افکار منفی و نشخوار فکری"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T16"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T17",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "مشکلات رابطه"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T17"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T18",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "نفرت از خود"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T18"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T19",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "خودسرزنشی"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T19"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T20",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "کمال‌گرایی"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T20"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T21",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "اجتناب"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T21"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T22",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "استرس"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T22"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T23",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "احساس بی‌ارزشی"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T23"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T24",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "مشکل در کنترل هیجان"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T24"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T25",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "رنجش و کینه"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T25"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T26",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "شرم"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T26"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T27",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "ترس از قضاوت"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T27"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T28",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "ترس از شکست"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T28"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T29",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "ترس از طرد شدن"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T29"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T30",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "شک و تردید"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T30"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T31",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "کنترل‌گری"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T31"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T32",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "بی‌انگیزگی"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T32"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T33",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "خودانتقادی"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T33"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-LEGACY-T34",
+      "source": {
+        "system": "path-content.json",
+        "entity_type": "legacy_category",
+        "id": null,
+        "label": "مشکل دیگر"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T34"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "candidate_exact_name_match",
+      "rationale": "نام دسته قدیمی با نام موضوع رجیستری تطبیق دارد؛ این فقط تطبیق اسمی است و هم‌ارزی مفهومی/محتوایی را ثابت نمی‌کند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    }
+  ],
+  "subtopic_mappings": [
+    {
+      "mapping_id": "XW-SUBTOPIC-T04-S02",
+      "source": {
+        "system": "subtopics.v1.json",
+        "entity_type": "subtopic",
+        "id": "T04-S02",
+        "label": "نفرت از خود و خودبیزاری"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T18"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "proposed_pending_content_review",
+      "rationale": "پیشنهاد انتقال معنایی نفرت از خود از T04 به T18؛ محتوای روزها و وابستگی‌ها باید قبل از پذیرش بازبینی شوند.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-SUBTOPIC-T15-S03",
+      "source": {
+        "system": "subtopics.v1.json",
+        "entity_type": "subtopic",
+        "id": "T15-S03",
+        "label": "عزت‌نفس کلی به‌عنوان سازه متمایز"
+      },
+      "targets": [
+        {
+          "entity_type": "topic",
+          "id": "T23"
+        }
+      ],
+      "mapping_type": "one_to_one",
+      "decision_status": "proposed_pending_content_review",
+      "rationale": "پیشنهاد انتقال ارزشمندی کلی به T23؛ این نگاشت بدون بازبینی محتوای مرتبط تأییدشده نیست.",
+      "requires_human_review": true,
+      "preserve_source": true
+    },
+    {
+      "mapping_id": "XW-SUBTOPIC-T18-S03",
+      "source": {
+        "system": "subtopics.v1.json",
+        "entity_type": "subtopic",
+        "id": "T18-S03",
+        "label": "نشانه‌های خطر و بررسی مستقیم ایمنی در صورت لزوم"
+      },
+      "targets": [],
+      "mapping_type": "unmapped_pending_safety_design",
+      "decision_status": "blocked_pending_safety_review",
+      "rationale": "پیشنهاد قبلی انتقال از taxonomy آموزشی به لایه ایمنی است؛ تا طراحی و تأیید مستقل safety registry مقصد شناسه‌دار ساخته نمی‌شود.",
+      "requires_human_review": true,
+      "preserve_source": true
+    }
+  ]
+}
