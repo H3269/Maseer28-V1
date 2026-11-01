@@ -3,7 +3,7 @@ import fs from 'node:fs';
 const REQUIRED = ['learning_objective','mechanism_focus','exercise','action','progress_measure','safety_and_limits'];
 const TOPICS = ['T15','T23','T33','T19','T26'];
 const PHASES = {4:'guided_skill_building',5:'guided_skill_building',6:'guided_skill_building',7:'guided_skill_application',8:'consolidation_and_review'};
-const norm = (v) => String(v ?? '').normalize('NFKC').replace(/\\s+/g,' ').trim();
+const norm = (v) => String(v ?? '').normalize('NFKC').replace(/\s+/g,' ').trim();
 
 export function validateSelfEvaluationPilot({pilot,queue,evidence}) {
  const errors=[];
