@@ -7,6 +7,7 @@ import {
 } from './assessmentEngine.js';
 import topicRegistry from '../../../public/assistant/knowledge/topics.v1.json';
 import { DEFAULT_PERSONALIZATION, loadPersonalizationPreferences } from '../privacy/personalizationPreferences.js';
+import { formatAssistantPrompt } from './assistantPreferences.js';
 
 const topicNames = new Map(topicRegistry.topics.map((topic) => [topic.topic_id, topic.name]));
 
@@ -22,19 +23,6 @@ export default function AssessmentAssistant() {
     try { setPreferences(loadPersonalizationPreferences()); } catch { setPreferences({ ...DEFAULT_PERSONALIZATION }); }
   }, []);
 
-  function formatPrompt(question, activePreferences = preferences) {
-    if (!question) return '';
-    if (question.stage === 'safety_check') return question.prompt;
-    let prompt = question.prompt;
-    if (activePreferences.communication_style === 'supportive') prompt = `می‌توانیم با آرامش و به‌اندازه‌ای که برایت راحت است پیش برویم. ${prompt}`;
-    else if (preferences.communication_style === 'direct') prompt = `پاسخ کوتاه و مشخص هم کافی است. ${prompt}`;
-    if (question.stage === 'differential_clarification') {
-      if (activePreferences.example_style === 'practical') prompt += ' روی یک نمونه واقعی و مشخص تمرکز کن.';
-      else if (preferences.example_style === 'conceptual') prompt += ' اگر نمونه مشخصی نداری، الگوی کلی یا موقعیت تکرارشونده را توضیح بده.';
-    }
-    if (activePreferences.response_detail === 'detailed') prompt += ' اگر بخشی را نمی‌دانی یا مطمئن نیستی، همان را صریح بگو؛ لازم نیست حدس بزنی.';
-    return prompt;
-  }
 
   function start() {
     let currentPreferences = { ...DEFAULT_PERSONALIZATION };
@@ -42,7 +30,7 @@ export default function AssessmentAssistant() {
     setPreferences(currentPreferences);
     const next = createAssessmentSession();
     setSession(next);
-    setMessages([{ role: 'assistant', text: formatPrompt(getCurrentQuestion(next), currentPreferences) }]);
+    setMessages([{ role: 'assistant', text: formatAssistantPrompt(getCurrentQuestion(next), currentPreferences) }]);
     setDraft('');
     setError('');
     setExpanded(true);
@@ -57,7 +45,7 @@ export default function AssessmentAssistant() {
         ...previous,
         { role: 'user', text: draft.trim() },
         ...(getCurrentQuestion(updated)
-          ? [{ role: 'assistant', text: formatPrompt(getCurrentQuestion(updated)) }]
+          ? [{ role: 'assistant', text: formatAssistantPrompt(getCurrentQuestion(updated), preferences) }]
           : updated.referral
             ? [{ role: 'assistant', text: updated.referral.instruction }]
             : updated.status === 'completed'
