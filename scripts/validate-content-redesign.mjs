@@ -32,7 +32,7 @@ export function validateContentRedesign({queue,day1,topics,subtopics}) {
  }
  return {valid:errors.length===0,errors,summary:{queue_records:records.length,day1_drafts:drafts.length,not_started:records.filter(x=>x.redesign_status==='not_started').length,runtime_eligible:drafts.filter(x=>x.runtime_eligible===true).length}};
 }
-if(import.meta.url===new URL(process.argv[1], 'file:').href){
+if(process.argv[1]?.endsWith('validate-content-redesign.mjs')){
  const root=process.cwd();
  const read=p=>JSON.parse(fs.readFileSync(root+'/'+p,'utf8'));
  const r=validateContentRedesign({queue:read('public/assistant/content-drafts/952-day-redesign-queue.v1.json'),day1:read('public/assistant/content-drafts/day01-34-topic-drafts.v1.json'),topics:read('public/assistant/knowledge/topics.v1.json'),subtopics:read('public/assistant/knowledge/subtopics.v1.json')});
