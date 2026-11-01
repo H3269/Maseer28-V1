@@ -50,6 +50,7 @@ const QUESTION = {
   clarify: { id: 'clarify_example', stage: 'differential_clarification', prompt: 'برای اینکه اشتباه دسته‌بندی نکنم، یک موقعیت مشخص و اخیر را تعریف می‌کنی؟ در آن لحظه چه اتفاقی افتاد، چه فکری از ذهنت گذشت و چه احساسی داشتی؟' },
   summary: { id: 'summary_confirmation', stage: 'collaborative_summary', prompt: 'این خلاصه تا چه اندازه تجربه‌ات را درست بازتاب می‌دهد؟ چه چیزی را باید اصلاح یا اضافه کنم؟' },
   safety_uncertain: { id: 'safety_clarification', stage: 'safety_check', prompt: 'منظورت از پاسخ قبلی برایم روشن نیست. آیا در همین الآن قصد، برنامه یا احتمال عملی آسیب‌زدن به خودت یا دیگری وجود دارد؟ می‌توانی بگویی «بله»، «نه» یا «مطمئن نیستم».' },
+  safety_context_clarify: { id: 'safety_context_clarification', stage: 'safety_check', prompt: 'در توضیح اولیه‌ات عبارتی درباره آسیب یا خطر دیدم. ممکن است منظور تو نقل‌قول، تجربه گذشته یا موضوعی غیرمرتبط با خطر فعلی بوده باشد. برای اینکه اشتباه برداشت نکنم: آیا همین الآن قصد، برنامه یا احتمال عملی آسیب به خودت یا دیگری وجود دارد؟' },
 };
 
 function normalize(text) {
@@ -144,8 +145,18 @@ export function submitAssessmentAnswer(session, answer) {
       return next;
     }
     if (next.safety_state === 'clarification_needed') {
-      next.current_question = QUESTION.safety_uncertain;
+      next.current_question = questionId === 'safety_context_clarification'
+        ? QUESTION.safety_context_clarify
+        : QUESTION.safety_uncertain;
       return next;
+    }
+    if (next.safety_context_flag && questionId !== 'safety_context_clarification') {
+      next.safety_state = 'contextual_risk_clarification_required';
+      next.current_question = QUESTION.safety_context_clarify;
+      return next;
+    }
+    if (next.safety_context_flag) {
+      next.safety_state = 'risk_context_present_no_immediate_risk_disclosed';
     }
     next.current_question = QUESTION.impact;
     return next;
@@ -169,6 +180,8 @@ export function submitAssessmentAnswer(session, answer) {
       duration: next.answers.duration,
       user_goal: next.answers.goal,
       candidate_topics: next.candidate_topics.map((item) => ({ topic_id: item.topic_id, status: item.status || 'tentative_hypothesis' })),
+      safety_context_flag: next.safety_context_flag,
+      safety_state: next.safety_state,
       limitations: [
         'این دسته‌بندی بر پایه تطبیق واژه‌ها و گفته‌های همین گفتگو است؛ ارزیابی روان‌شناختی یا تشخیص نیست.',
         'نبودن یک موضوع در فهرست به معنی رد آن نیست.',
@@ -183,7 +196,10 @@ export function submitAssessmentAnswer(session, answer) {
     next.next_step = {
       content_available: false,
       reason: 'هیچ تمرین یا مداخله‌ای تا تأیید علمی و تخصصی به این موتور متصل نشده است.',
-      recommendation: 'ابتدا خلاصه را با یک متخصص یا خودت دقیق‌تر کن؛ در صورت تداوم رنج یا اختلال عملکرد، ارزیابی متخصص سلامت روان مناسب است.',
+      human_review_recommended: next.safety_context_flag,
+      recommendation: next.safety_context_flag
+        ? 'با توجه به اشاره اولیه به آسیب یا خطر، این دسته‌بندی و هرگونه اقدام بعدی را پیش از استفاده از تمرین یا مداخله با متخصص واجدصلاحیت مرور کن؛ پاسخ منفی فقط عدم افشای خطر فوری را نشان می‌دهد و تضمین ایمنی نیست.'
+        : 'ابتدا خلاصه را با یک متخصص یا خودت دقیق‌تر کن؛ در صورت تداوم رنج یا اختلال عملکرد، ارزیابی متخصص سلامت روان مناسب است.',
     };
   }
   return next;
