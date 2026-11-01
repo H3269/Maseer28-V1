@@ -62,7 +62,7 @@ export default function AssessmentAssistant() {
   return <section className="card" aria-labelledby="assistant-assessment-title">
     <span className="badge">نسخه آزمایشی</span>
     <h2 id="assistant-assessment-title">دستیار گفت‌وگوی مسیر۲۸</h2>
-    <p className="muted">می‌توانی مسئله‌ات را با زبان خودت توضیح بدهی. این ابزار فقط یک دسته‌بندی اولیه و غیرتشخیصی انجام می‌دهد؛ جایگزین روان‌شناس، روان‌پزشک یا خدمات فوری نیست.</p>
+    <p className="muted">می‌توانی مسئله‌ات را با زبان خودت توضیح بدهی. این ابزار فقط یک دسته‌بندی اولیه و غیرتشخیصی انجام می‌دهد. بررسی ایمنی آن اعتبارسنجی بالینی نشده و نمی‌تواند خطر را رد یا تأیید کند؛ در خطر فوری به خدمات اورژانسی محل زندگی یا فرد قابل اعتماد مراجعه کن.</p>
     {!expanded && <button className="primary" type="button" onClick={start}>شروع گفت‌وگو</button>}
     {expanded && <>
       <div className="sectionHint" role="note">
