@@ -21,7 +21,6 @@ const OPTIONS = {
   communication_style: [['direct','مستقیم'],['supportive','حمایتگر'],['neutral','خنثی']],
   step_pacing: [['one_at_a_time','یک گام در هر نوبت'],['grouped','چند گام با هم']],
   example_style: [['practical','کاربردی'],['conceptual','مفهومی'],['mixed','ترکیبی']],
-  language: [['fa','فارسی'],['auto','خودکار']],
 };
 
 const LABELS = {
@@ -29,7 +28,6 @@ const LABELS = {
   communication_style: 'سبک ارتباطی',
   step_pacing: 'سرعت ارائه راهنمایی',
   example_style: 'نوع مثال‌ها',
-  language: 'زبان ترجیحی',
 };
 
 export default function PersonalizationSettings() {
@@ -103,10 +101,10 @@ export default function PersonalizationSettings() {
 
   return <section className="sectionHint" aria-labelledby="personalization-settings-title">
     <div>
-      <b id="personalization-settings-title">ترجیحات شخصی‌سازی و کنترل حافظه</b>
+      <b id="personalization-settings-title">ترجیحات شخصی‌سازی</b>
       <p className="muted">این بخش فقط ترجیحات غیرحساسِ شیوه تعامل را نگه می‌دارد؛ نه متن گفتگو، تشخیص، نشانه‌ها یا سابقه روان‌شناختی. ذخیره‌سازی فقط در حافظه محلی همین مرورگر است.</p>
       {!enabled
-        ? <p className="muted">ذخیره بلندمدت خاموش است. تا وقتی رضایت ندهی، فقط تنظیمات پیش‌فرض موقت استفاده می‌شوند.</p>
+        ? <p className="muted">ذخیره ترجیحات خاموش است. تا وقتی رضایت جداگانه ندهی، فقط تنظیمات پیش‌فرض موقت استفاده می‌شوند.</p>
         : <div>
           {Object.entries(OPTIONS).map(([key, options]) => <label key={key} className="fieldLabel">
             {LABELS[key]}
