@@ -121,7 +121,7 @@ export default function PersonalizationSettings() {
           </div>
         </div>}
       {!enabled && <button className="secondary" type="button" onClick={enable}>رضایت می‌دهم ترجیحات غیرحساس ذخیره شوند</button>}
-      <p className="muted">پردازش ابری، تحلیل محصول و پردازش داده حساس در این نسخه فعال نیستند و از این بخش قابل فعال‌سازی نیستند. تنظیمات ذخیره‌شده هنوز به موتور دستیار متصل نشده‌اند.</p>
+      <p className="muted">پردازش ابری، تحلیل محصول و پردازش داده حساس در این نسخه فعال نیستند و از این بخش قابل فعال‌سازی نیستند. متن گفتگو، پاسخ‌ها و اطلاعات سلامت در این حافظه ذخیره نمی‌شوند. گزینه سرعت گام‌ها فعلاً به دلیل ثابت‌بودن ترتیب ایمنی، پرسش‌ها را گروهی نمی‌کند.</p>
       {message && <p className="contactHelp" role="status" aria-live="polite">{message}</p>}
       {error && <p className="contactHelp" role="alert">{error}</p>}
     </div>
