@@ -22,17 +22,26 @@ concurrency:
 
 jobs:
   build-and-publish:
-    if: ${{ inputs.publish == 'publish' }}
+    if: ${{ inputs.publish == 'publish' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
+    environment: production
     steps:
+      - name: Refuse publication from non-main refs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = "refs/heads/main"
+          test -n "${GITHUB_SHA}"
+          echo "Publishing only the exact main commit: ${GITHUB_SHA}"
+
       - name: Checkout tested version
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ github.ref }}
           path: test-source
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 20
           cache: npm
