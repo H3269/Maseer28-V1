@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maseer28.example/schemas/topic-migration-manifest.v1.schema.json",
+  "title": "Maseer28 Topic Migration Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "manifest_version",
+    "manifest_id",
+    "status",
+    "execution_mode",
+    "execution_allowed",
+    "source",
+    "contracts",
+    "required_preconditions",
+    "invariants",
+    "dry_run_steps",
+    "rollback",
+    "rollout_gates"
+  ],
+  "properties": {
+    "manifest_version": {
+      "const": "1.0.0"
+    },
+    "manifest_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "const": "design_only_not_executable"
+    },
+    "execution_mode": {
+      "const": "dry_run_fixture_only"
+    },
+    "execution_allowed": {
+      "const": false
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "repository",
+        "branch",
+        "topic_registry_path",
+        "subtopic_registry_path",
+        "legacy_content_path",
+        "legacy_queue_path"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "repository": {
+          "type": "string"
+        },
+        "branch": {
+          "type": "string"
+        },
+        "topic_registry_path": {
+          "type": "string"
+        },
+        "subtopic_registry_path": {
+          "type": "string"
+        },
+        "legacy_content_path": {
+          "type": "string"
+        },
+        "legacy_queue_path": {
+          "type": "string"
+        }
+      }
+    },
+    "contracts": {
+      "type": "object",
+      "required": [
+        "crosswalk_path",
+        "alias_registry_path",
+        "schema_path"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "crosswalk_path": {
+          "type": "string"
+        },
+        "alias_registry_path": {
+          "type": "string"
+        },
+        "schema_path": {
+          "type": "string"
+        }
+      }
+    },
+    "required_preconditions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "dry_run_steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "required": [
+        "strategy",
+        "required_artifacts"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "strategy": {
+          "type": "string"
+        },
+        "required_artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "rollout_gates": {
+      "type": "object",
+      "additionalProperties": {
+        "const": false
+      }
+    }
+  }
+}
