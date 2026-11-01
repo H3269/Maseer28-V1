@@ -109,3 +109,23 @@ test('unmatched concerns use T34 as a clarification route, not a diagnosis', () 
 test('cloud processing is explicitly rejected by this experimental engine', () => {
   assert.throws(() => createAssessmentSession({ localOnly: false }), /ارسال ابری/);
 });
+
+test('mixed negative and uncertain safety answers require clarification', () => {
+  for (const response of ['نه، اما مطمئن نیستم', 'نه ولی شاید', 'خیر، نمی‌توانم قول بدهم']) {
+    let session = createAssessmentSession();
+    session = answer(session, 'خودآسیبی');
+    session = answer(session, response);
+    assert.equal(session.safety_state, 'clarification_needed', response);
+    assert.equal(getCurrentQuestion(session).id, 'safety_clarification', response);
+  }
+});
+
+test('only a standalone negative answer is recorded as non-disclosure', () => {
+  for (const response of ['نه', 'خیر', 'no']) {
+    let session = createAssessmentSession();
+    session = answer(session, 'تهدید');
+    session = answer(session, response);
+    assert.equal(session.safety_state, 'no_immediate_risk_disclosed', response);
+    assert.equal(getCurrentQuestion(session).id, 'impact', response);
+  }
+});
