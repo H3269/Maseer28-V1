@@ -69,7 +69,10 @@ jobs:
       - name: Validate 952-day redesign queue and draft gates
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:content-redesign
-      - name: Validate five-topic self-evaluation pilot\n        if: ${{ always() && steps.install.outcome == 'success' }}\n        run: npm run validate:self-evaluation-pilot\n      - name: Build application
+      - name: Validate five-topic self-evaluation pilot
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:self-evaluation-pilot
+      - name: Build application
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: |
           npm run prepare:production
