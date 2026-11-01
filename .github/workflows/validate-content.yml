@@ -15,6 +15,8 @@ on:
       - 'tests/courseContentQualityAudit.test.js'
       - 'scripts/build-first-pass-review-packet.mjs'
       - 'tests/firstPassReviewPacket.test.js'
+      - 'scripts/audit-content-template-sample.mjs'
+      - 'tests/contentTemplateSampleAudit.test.js'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/**'
@@ -70,6 +72,9 @@ jobs:
       - name: Audit course content quality and review readiness
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run audit:course-content-quality
+      - name: Audit sampled cross-topic content templates
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run audit:content-template-sample
       - name: Prepare first-pass 34-topic human review packet
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run prepare:first-pass-review
@@ -79,6 +84,13 @@ jobs:
           npm run prepare:production
           npm run build
 
+      - name: Upload sampled content template report
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: content-template-sample-report
+          path: artifacts/content-template-sample-report.md
+          if-no-files-found: error
       - name: Upload first-pass human review packet
         if: ${{ always() && steps.install.outcome == 'success' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
