@@ -103,7 +103,7 @@ function classifySafetyAnswer(text) {
     'نمی توانم قول', 'نمی‌توانم قول', 'نمی تونم قول', 'نمی‌تونم قول',
   ];
 // An explicit affirmative takes priority over hedging: 'yes, maybe tonight' must not be downgraded.
-  if (/^(بله|آره|اره|yes)(\b|$)/.test(value) || value.includes('قصد دارم') || value.includes('برنامه دارم')) {
+  if (/^(بله|آره|اره)(?:[\s،,.!؟]|$)/.test(value) || /^yes(?:\b|$)/.test(value) || value.includes('قصد دارم') || value.includes('برنامه دارم')) {
     return 'urgent_human_support_recommended';
   }
   if (uncertaintyCues.some((cue) => value.includes(normalize(cue)))) return 'clarification_needed';
