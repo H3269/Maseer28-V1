@@ -6,7 +6,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const readJson = (p) => JSON.parse(fs.readFileSync(path.join(root, p), 'utf8'));
 const DIMENSIONS = ['target_specificity','psychological_mechanism','evidence_support','exercise_alignment','progression_and_difficulty','safety_and_cautions','outcome_measurement','accessibility'];
 const TEXT_FIELDS = ['title','intro','exercise','actionText','closing'];
-const normalize = (value, topic) => String(value ?? '').normalize('NFKC').split(`«${topic}»`).join('«[TOPIC]»').split(topic).join('[TOPIC]').replace(/\s+/g,' ').trim().toLocaleLowerCase('fa');
+const normalize = (value, topic) => String(value ?? '').normalize('NFKC').split(`«${topic}»`).join('«[TOPIC]»').replace(/\s+/g,' ').trim().toLocaleLowerCase('fa');
 
 export function buildReviewQueue(content, topics) {
   const byName = new Map((topics.topics ?? []).map((t) => [String(t.name).normalize('NFKC').trim(), t]));
