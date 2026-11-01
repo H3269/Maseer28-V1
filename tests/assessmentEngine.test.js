@@ -159,3 +159,28 @@ test('only an explicit affirmative confirms a summary',()=>{
  assert.equal(session.status,'in_progress');
  assert.equal(getCurrentQuestion(session).id,'summary_revision');
 });
+
+
+test('a negative opening cannot suppress risk language later in a safety answer', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'گاهی فکر می‌کنم به خودم آسیب بزنم');
+  session = answer(session, 'نه، گاهی هنوز به خودم آسیب می‌زنم');
+  assert.equal(session.safety_state, 'clarification_needed');
+  assert.equal(getCurrentQuestion(session).id, 'safety_clarification');
+});
+
+test('a qualified denial is clarified instead of being treated as a standalone no', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'گاهی فکر می‌کنم به خودم آسیب بزنم');
+  session = answer(session, 'نه، قصد ندارم به خودم آسیب بزنم');
+  assert.equal(session.safety_state, 'clarification_needed');
+  assert.equal(getCurrentQuestion(session).id, 'safety_clarification');
+});
+
+test('only a standalone negative answer is treated as non-disclosure', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'گاهی فکر می‌کنم به خودم آسیب بزنم');
+  session = answer(session, 'خیر');
+  assert.equal(session.safety_state, 'no_immediate_risk_disclosed');
+  assert.equal(getCurrentQuestion(session).id, 'impact');
+});
