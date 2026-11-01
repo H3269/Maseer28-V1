@@ -5,6 +5,8 @@ on:
     paths:
       - 'public/content/**'
       - 'public/assistant/**'
+      - 'src/**'
+      - 'tests/**'
       - 'scripts/validate-content.mjs'
       - 'scripts/validate-assistant-topics.mjs'
       - 'package.json'
@@ -15,6 +17,8 @@ on:
     paths:
       - 'public/content/**'
       - 'public/assistant/**'
+      - 'src/**'
+      - 'tests/**'
       - 'scripts/validate-content.mjs'
       - 'scripts/validate-assistant-topics.mjs'
       - 'package.json'
