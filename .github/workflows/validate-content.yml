@@ -63,7 +63,9 @@ jobs:
         run: npm run validate:content
       - name: Build application
         if: ${{ always() && steps.install.outcome == 'success' }}
-        run: npm run build
+        run: |
+          npm run prepare:production
+          npm run build
 
       - name: Upload npm audit report
         if: ${{ always() && steps.install.outcome == 'success' }}
