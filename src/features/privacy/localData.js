@@ -43,8 +43,10 @@ export function deleteLocalUserData(storage) {
   const removed = [];
   const errors = [];
   for (let index = 0; index < target.length; index += 1) {
-    const key = target.key(index);
-    if (key && isUserDataKey(key)) keys.push(key);
+    try {
+      const key = target.key(index);
+      if (key && isUserDataKey(key)) keys.push(key);
+    } catch (error) { errors.push({ key: null, stage: 'enumerate', message: String(error?.message || error) }); }
   }
   for (const key of keys) {
     try { target.removeItem(key); }
