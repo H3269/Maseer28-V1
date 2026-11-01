@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0.0",
+  "registry_id": "maseer28-relation-types",
+  "status": "draft_requires_expert_review",
+  "evidence_grades": [
+    "not_assessed",
+    "very_low",
+    "low",
+    "moderate",
+    "high"
+  ],
+  "relation_types": [
+    {
+      "id": "possible_association",
+      "definition": "هم‌وقوعی یا ارتباط احتمالی که هنوز نوع و جهت آن روشن نیست.",
+      "causal": false,
+      "requires": [
+        "operational_definitions",
+        "population_context",
+        "evidence_records"
+      ]
+    },
+    {
+      "id": "conceptual_overlap",
+      "definition": "دو سازه بخشی از معنا یا شاخص‌ها را مشترک دارند، اما لزوماً یکسان نیستند.",
+      "causal": false,
+      "requires": [
+        "construct_comparison",
+        "discriminant_validity_review"
+      ]
+    },
+    {
+      "id": "differential_from",
+      "definition": "برای جلوگیری از اشتباه مفهومی یا بالینی باید دو مفهوم از هم تفکیک شوند.",
+      "causal": false,
+      "requires": [
+        "clear_distinguishing_features",
+        "expert_review"
+      ]
+    },
+    {
+      "id": "may_contribute_to",
+      "definition": "یک سازه ممکن است در برخی شرایط به شکل‌گیری سازه دیگر کمک کند.",
+      "causal": true,
+      "requires": [
+        "longitudinal_or_experimental_evidence",
+        "confounder_review",
+        "population_context"
+      ]
+    },
+    {
+      "id": "may_maintain",
+      "definition": "یک سازه یا رفتار ممکن است در چرخه تداوم سازه دیگر نقش داشته باشد.",
+      "causal": true,
+      "requires": [
+        "mechanism_specification",
+        "intervention_or_longitudinal_evidence"
+      ]
+    },
+    {
+      "id": "contextual_modifier",
+      "definition": "عامل زمینه‌ای ممکن است شدت، بروز یا پیامد را تغییر دهد.",
+      "causal": false,
+      "requires": [
+        "moderation_or_contextual_evidence"
+      ]
+    },
+    {
+      "id": "safety_precedence",
+      "definition": "قاعده ایمنی بر مسیر عادی آموزش یا مداخله مقدم است.",
+      "causal": false,
+      "requires": [
+        "approved_safety_protocol",
+        "clinical_and_legal_review"
+      ]
+    }
+  ],
+  "policy": [
+    "همبستگی، هم‌زمانی، هم‌پوشانی و علیت چهار ادعای متفاوت‌اند و نباید جایگزین هم شوند.",
+    "evidence_grade=high فقط با شواهد مستقیم، متناسب با جمعیت و ارزیابی خطر سوگیری قابل ثبت است.",
+    "هیچ رابطه candidate_unreviewed در runtime یا توصیه کاربر استفاده نمی‌شود.",
+    "برای رابطه جهت‌دار، تعریف جهت و شواهد علی لازم است.",
+    "هر رابطه باید منبع، جمعیت، محدودیت‌ها، تاریخ بازبینی و نام بازبین متخصص داشته باشد."
+  ]
+}
