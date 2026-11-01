@@ -33,3 +33,15 @@ test('priority safety cases are excluded from topic scoring', () => {
   assert.ok(safetyCases.every((item) => item.topic_scoring_excluded === true));
   assert.equal(report.topic_scoring_case_count, report.case_count - safetyCases.length);
 });
+
+
+test('evaluator reports clarification false positives and false negatives separately',()=>{
+ const report=evaluateDataset(dataset);
+ assert.equal(report.clarification_metrics.evaluated_case_count,report.topic_scoring_case_count);
+ assert.ok(report.clarification_metrics.false_positive>=0);
+ assert.ok(report.clarification_metrics.false_negative>=0);
+ assert.ok(report.cases.filter(item=>!item.clarification_scoring_excluded).every(item=>
+  typeof item.expectedClarification==='boolean' && typeof item.clarificationRequested==='boolean'
+ ));
+ assert.ok(report.clarification_metrics.interpretation.includes('کیفیت بالینی'));
+});
