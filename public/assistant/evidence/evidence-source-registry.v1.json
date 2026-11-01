@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "registry_id": "maseer28-evidence-source-registry-v1",
-  "status": "methodology_sources_only_topic_evidence_pending",
+  "status": "methodology_and_topic_sources_registered_pending_claim_level_review",
   "reviewed_on": "2026-11-02",
   "policy": "این رجیستری منابع روش‌شناسی ارزیابی شواهد است؛ هیچ‌یک به‌تنهایی اثربخشی یا ایمنی مداخله‌ای برای ۳۴ موضوع یا ۹۵۲ محتوای مسیر۲۸ را اثبات نمی‌کند.",
   "sources": [
@@ -87,6 +87,186 @@
         "جایگزینی نظر متخصص با شواهد مستقیم اثربخشی"
       ],
       "scope": "methodology"
+    },
+    {
+      "evidence_id": "EVID_BANDURA_1977",
+      "source_type": "theory_foundational",
+      "publisher": "Albert Bandura",
+      "title": "Self-efficacy: Toward a unifying theory of behavioral change",
+      "year": 1977,
+      "url": "https://doi.org/10.1037/0033-295X.84.2.191",
+      "supports": [
+        "خودکارآمدی و نقش تجربه‌های عملکردی در انتظار توانستن"
+      ],
+      "does_not_support": [
+        "اثربخشی مداخله خاص مسیر۲۸؛ خودکارآمدی کلی برای همه حوزه‌ها"
+      ],
+      "scope": "T15; conceptual foundation"
+    },
+    {
+      "evidence_id": "EVID_SELF_EFFICACY_IBI_2025",
+      "source_type": "systematic_review",
+      "publisher": "Authors indexed in PubMed Central",
+      "title": "The role of self-efficacy in internet-based interventions for mental health: A systematic review and meta-analysis",
+      "year": 2025,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12002610/",
+      "supports": [
+        "مرور سنجش خودکارآمدی در مداخلات دیجیتال سلامت روان بزرگسالان"
+      ],
+      "does_not_support": [
+        "اعتبارسنجی این تمرین‌ها؛ تعمیم مستقیم به اعتمادبه‌نفس تکلیف‌ویژه؛ شواهد قطعی برای مسیر۲۸"
+      ],
+      "scope": "T15; adjacent digital-intervention evidence"
+    },
+    {
+      "evidence_id": "EVID_SELFESTEEM_CFT_2021",
+      "source_type": "systematic_review_meta_analysis",
+      "publisher": "Thomason & Moghaddam",
+      "title": "Compassion-focused therapies for self-esteem: A systematic review and meta-analysis",
+      "year": 2021,
+      "url": "https://pubmed.ncbi.nlm.nih.gov/33215861/",
+      "supports": [
+        "شواهد اولیه درباره مداخلات شفقت‌محور و عزت‌نفس"
+      ],
+      "does_not_support": [
+        "باور بی‌ارزشی به‌عنوان سازه مستقل؛ اثربخشی متن‌های روزانه مسیر۲۸؛ مطالعات دارای ناهمگنی بالینی و روش‌شناختی"
+      ],
+      "scope": "T23; adjacent self-esteem evidence"
+    },
+    {
+      "evidence_id": "EVID_SELFESTEEM_META_2021",
+      "source_type": "systematic_review_meta_analysis",
+      "publisher": "Niveau, New & Beaudoin",
+      "title": "Self-Esteem Interventions in Adults – A Systematic Review and Meta-analysis",
+      "year": 2021,
+      "url": "https://doi.org/10.1016/j.jrp.2021.104131",
+      "supports": [
+        "مرور مداخلات عزت‌نفس بزرگسالان و تفاوت رویکردها"
+      ],
+      "does_not_support": [
+        "باور بی‌ارزشی یا اثربخشی تمرین‌های مشخص این اپ؛ به‌تنهایی مجوز توصیه درمانی"
+      ],
+      "scope": "T23; adjacent construct"
+    },
+    {
+      "evidence_id": "EVID_NICE_NG222",
+      "source_type": "clinical_guideline",
+      "publisher": "National Institute for Health and Care Excellence",
+      "title": "Depression in adults: treatment and management (NG222)",
+      "year": 2022,
+      "url": "https://www.nice.org.uk/guidance/ng222/chapter/Recommendations",
+      "supports": [
+        "اهمیت زمینه بالینی، اختلال عملکرد، ناامیدی و افکار مرگ/خودکشی در ارزیابی افسردگی"
+      ],
+      "does_not_support": [
+        "تشخیص از روی یک جمله بی‌ارزشی؛ جایگزینی مسیر ارزیابی انسانی با محتوای خودیار"
+      ],
+      "scope": "T23; safety/clinical-context boundary"
+    },
+    {
+      "evidence_id": "EVID_SELFCRITICISM_CBI_2021",
+      "source_type": "systematic_review_meta_analysis",
+      "publisher": "Wakelin et al.",
+      "title": "Effectiveness of self-compassion-related interventions for reducing self-criticism: A systematic review and meta-analysis",
+      "year": 2021,
+      "url": "https://pubmed.ncbi.nlm.nih.gov/33749936/",
+      "supports": [
+        "مرور ۲۰ کارآزمایی تصادفی؛ کاهش متوسط خودانتقادی در مداخلات مرتبط با شفقت به خود"
+      ],
+      "does_not_support": [
+        "اثربخشی قطعی برای هر تمرین منفرد؛ تعمیم بدون توجه به کیفیت متوسط و ناهمگنی"
+      ],
+      "scope": "T33; intervention evidence with limitations"
+    },
+    {
+      "evidence_id": "EVID_CFT_SHAME_2025",
+      "source_type": "systematic_review",
+      "publisher": "Brown & Ashcroft",
+      "title": "The Effectiveness of Compassion Focused Therapy for the Three Flows of Compassion, Self-Criticism, and Shame in Clinical Populations: A Systematic Review",
+      "year": 2025,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12382812/",
+      "supports": [
+        "مرور ۲۱ مطالعه درباره شفقت، خودانتقادی و برخی پیامدهای شرم"
+      ],
+      "does_not_support": [
+        "شواهد قوی درباره شرم درونی؛ مرور گزارش می‌کند شواهد شرم درونی محدود/ناسازگار و کیفیت مطالعات متغیر است"
+      ],
+      "scope": "T33,T26; clinical populations; cautious interpretation"
+    },
+    {
+      "evidence_id": "EVID_SELFCRITICISM_EFT_2026",
+      "source_type": "systematic_review_meta_analysis",
+      "publisher": "Wang, Douris & Timulak",
+      "title": "Effectiveness of Emotion-Focused Therapy for Self-Criticism: A Systematic Review and Meta-Analysis",
+      "year": 2026,
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42830262/",
+      "supports": [
+        "شواهد مقدماتی از EFT برای خودانتقادی در ۱۱ مطالعه شامل RCT و پیش‌پس"
+      ],
+      "does_not_support": [
+        "تعمیم اثر درمان تخصصی به تمرین خودیار؛ محدودیت تعداد مطالعات و کیفیت/تعمیم‌پذیری"
+      ],
+      "scope": "T33; emerging evidence"
+    },
+    {
+      "evidence_id": "EVID_SELFBLAME_REVIEW_2020",
+      "source_type": "systematic_review",
+      "publisher": "Jannati et al.",
+      "title": "Self-blame Attributions of Patients: a Systematic Review Study",
+      "year": 2020,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9295847/",
+      "supports": [
+        "مرور ۱۵ مطالعه؛ بیشتر مطالعات مقطعی و تمایز خودسرزنشی رفتاری/شخصیتی"
+      ],
+      "does_not_support": [
+        "علیت؛ ابزار معتبر فارسی؛ نسخه‌نویسی برای تعیین تقصیر فردی"
+      ],
+      "scope": "T19; limited and mostly observational evidence"
+    },
+    {
+      "evidence_id": "EVID_GUILT_MEASUREMENT_2014",
+      "source_type": "conceptual_clinical_review",
+      "publisher": "Authors indexed in PubMed Central",
+      "title": "Definition and measurement of guilt: Implications for clinical research and practice",
+      "year": 2014,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4119878/",
+      "supports": [
+        "اهمیت سنجش گناه در زمینه رویداد مشخص و تفکیک سرزنش رفتاری از کلی"
+      ],
+      "does_not_support": [
+        "قاعده قطعی برای تمایز شرم/گناه در همه افراد و فرهنگ‌ها"
+      ],
+      "scope": "T19,T26; construct measurement"
+    },
+    {
+      "evidence_id": "EVID_JANOFF_BULMAN_1979",
+      "source_type": "peer_reviewed_original_study",
+      "publisher": "Ronnie Janoff-Bulman",
+      "title": "Characterological versus behavioral self-blame: inquiries into depression and rape",
+      "year": 1979,
+      "url": "https://pubmed.ncbi.nlm.nih.gov/512837/",
+      "supports": [
+        "تمایز مفهومی خودسرزنشی رفتاری و شخصیتی"
+      ],
+      "does_not_support": [
+        "تعیین مسئولیت واقعی در رویداد خاص؛ تعمیم بی‌واسطه به تمام زمینه‌ها"
+      ],
+      "scope": "T19; foundational conceptual distinction"
+    },
+    {
+      "evidence_id": "EVID_SHAME_GUILT_2018",
+      "source_type": "peer_reviewed_conceptual_review",
+      "publisher": "Miceli & Castelfranchi",
+      "title": "Reconsidering the Differences Between Shame and Guilt",
+      "year": 2018,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6143989/",
+      "supports": [
+        "بحث درباره تمایزهای پیشنهادی شرم و گناه و محدودیت دوگانه‌سازی ساده"
+      ],
+      "does_not_support": [
+        "مرز تشخیصی قطعی؛ ادعای اینکه شرم و گناه هرگز هم‌زمان نیستند"
+      ],
+      "scope": "T26; conceptual nuance"
     }
   ],
   "evidence_quality_policy": {
