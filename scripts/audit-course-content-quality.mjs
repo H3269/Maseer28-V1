@@ -33,7 +33,22 @@ const normalize = normalizeTemplateText;
 
 
 export function buildReviewQueue(content, topics) {
-  const byName = new Map((topics.topics ?? []).map((t) => [String(t.name).normalize('NFKC').trim(), t]));
+  const topicList = topics.topics ?? [];
+  const categoryEntries = Object.entries(content.categories ?? {});
+  if (topicList.length !== 34) throw new Error(`Expected 34 topic definitions, found ${topicList.length}`);
+  if (categoryEntries.length !== 34) throw new Error(`Expected 34 content categories, found ${categoryEntries.length}`);
+  const topicIds = new Set();
+  const topicNames = new Set();
+  for (const topic of topicList) {
+    const id = String(topic.topic_id ?? '');
+    const name = String(topic.name ?? '').normalize('NFKC').trim();
+    if (!id || topicIds.has(id)) throw new Error(`Missing or duplicate topic ID: ${id}`);
+    if (!name || topicNames.has(name)) throw new Error(`Missing or duplicate topic name: ${name}`);
+    topicIds.add(id);
+    topicNames.add(name);
+  }
+  const byName = new Map(topicList.map((t) => [String(t.name).normalize('NFKC').trim(), t]));
+  const seenContentIds = new Set();
   const reviews = [];
   for (const [name, category] of Object.entries(content.categories ?? {})) {
     const topic = byName.get(String(name).normalize('NFKC').trim());
@@ -41,6 +56,8 @@ export function buildReviewQueue(content, topics) {
     if (!Array.isArray(category.days) || category.days.length !== 28) throw new Error(`Expected 28 days: ${name}`);
     category.days.forEach((day,index) => {
       if (!day.id) throw new Error(`Missing content ID for ${topic.topic_id}, day ${index+1}`);
+      if (seenContentIds.has(day.id)) throw new Error(`Duplicate source content ID: ${day.id}`);
+      seenContentIds.add(day.id);
       reviews.push({
         review_id:`QREV_${topic.topic_id}_D${String(index+1).padStart(2,'0')}`,
         topic_id:topic.topic_id, day_number:index+1, content_id:day.id,
@@ -62,7 +79,12 @@ export function auditCourseContentQuality({content,topics,ledger,evidenceRegistr
     const topic=topics.topics.find(t=>t.name===name);
     for(const [i,day] of (category.days ?? []).entries()) sourceById.set(`QREV_${topic?.topic_id}_D${String(i+1).padStart(2,'0')}`,{day});
   }
-  const evidenceById=new Map((evidenceRegistry?.evidence ?? []).map(item=>[item.evidence_id,item]));
+  if (evidenceRegistry?.runtime_eligible !== false) errors.push('Evidence registry must remain runtime_eligible=false.');
+  const evidenceById=new Map();
+  for (const item of evidenceRegistry?.evidence ?? []) {
+    if (evidenceById.has(item.evidence_id)) errors.push('Duplicate evidence ID: '+item.evidence_id);
+    evidenceById.set(item.evidence_id,item);
+  }
   const seen=new Set(), statusCounts={pending_review:0,in_review:0,needs_revision:0,rejected:0,reviewed_not_approved:0,approved_for_educational_review:0};
   const repeated={};
   for(const field of TEXT_FIELDS){
@@ -86,6 +108,9 @@ export function auditCourseContentQuality({content,topics,ledger,evidenceRegistr
     if(review.topic_id!==expectedById.get(review.review_id)?.topic_id) errors.push(`Topic ID mismatch: ${review.review_id}`);
     if(!Object.hasOwn(statusCounts,review.review_status)){errors.push(`Invalid status: ${review.review_id}`);continue;}
     statusCounts[review.review_status]++;
+    const scoreKeys = Object.keys(review.scores ?? {}).sort();
+    if (scoreKeys.join('|') !== [...DIMENSIONS].sort().join('|')) errors.push(`Score dimensions mismatch: ${review.review_id}`);
+    if (!Array.isArray(review.evidence_ids) || new Set(review.evidence_ids).size !== review.evidence_ids.length) errors.push(`Evidence IDs must be a unique array: ${review.review_id}`);
     for(const dimension of DIMENSIONS){
       const score=review.scores?.[dimension];
       if(score!==null && (!Number.isInteger(score)||score<0||score>3)) errors.push(`Invalid score ${dimension}: ${review.review_id}`);
