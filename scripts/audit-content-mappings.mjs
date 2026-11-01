@@ -8,10 +8,33 @@ const normalize = (value) => String(value ?? '').normalize('NFKC').replace(/\s+/
 
 export function auditContentMappings({ content, topics, subtopics, evidenceRegistry, mappingSet }) {
   const errors = [];
-  const topicByName = new Map((topics.topics ?? []).map((item) => [normalize(item.name), item]));
-  const subtopicById = new Map((subtopics.subtopics ?? []).map((item) => [item.subtopic_id, item]));
-  const evidenceById = new Map((evidenceRegistry?.evidence ?? []).map((item) => [item.evidence_id, item]));
+  const topicList = topics.topics ?? [];
+  const subtopicList = subtopics.subtopics ?? [];
+  const categoryEntries = Object.entries(content.categories ?? {});
+  if (topicList.length !== 34) errors.push(`Expected 34 topics, found ${topicList.length}.`);
+  if (subtopicList.length !== 102) errors.push(`Expected 102 subtopics, found ${subtopicList.length}.`);
+  if (categoryEntries.length !== 34) errors.push(`Expected 34 content categories, found ${categoryEntries.length}.`);
+  const topicByName = new Map();
+  const topicIds = new Set();
+  for (const item of topicList) {
+    const name = normalize(item.name);
+    if (!name || topicByName.has(name)) errors.push(`Missing or duplicate normalized topic name: ${name}`);
+    if (!item.topic_id || topicIds.has(item.topic_id)) errors.push(`Missing or duplicate topic ID: ${item.topic_id}`);
+    topicByName.set(name, item);
+    topicIds.add(item.topic_id);
+  }
+  const subtopicById = new Map();
+  for (const item of subtopicList) {
+    if (!item.subtopic_id || subtopicById.has(item.subtopic_id)) errors.push(`Missing or duplicate subtopic ID: ${item.subtopic_id}`);
+    subtopicById.set(item.subtopic_id, item);
+  }
+  const evidenceById = new Map();
+  for (const item of evidenceRegistry?.evidence ?? []) {
+    if (!item.evidence_id || evidenceById.has(item.evidence_id)) errors.push(`Missing or duplicate evidence ID: ${item.evidence_id}`);
+    evidenceById.set(item.evidence_id, item);
+  }
   const expected = new Map();
+  const sourceContentIds = new Set();
 
   for (const [topicName, category] of Object.entries(content.categories ?? {})) {
     const topic = topicByName.get(normalize(topicName));
@@ -19,12 +42,19 @@ export function auditContentMappings({ content, topics, subtopics, evidenceRegis
       errors.push(`No exact topic match for content category: ${topicName}`);
       continue;
     }
+    if (!Array.isArray(category.days) || category.days.length !== 28) errors.push(`Expected 28 days for category: ${topicName}`);
     for (const [index, day] of (category.days ?? []).entries()) {
+      if (!day.id) errors.push(`Missing source content ID for ${topicName}, day ${index + 1}`);
+      if (sourceContentIds.has(day.id)) errors.push(`Duplicate source content ID: ${day.id}`);
+      sourceContentIds.add(day.id);
       const mappingId = `MAP_${topic.topic_id}_D${String(index + 1).padStart(2, '0')}`;
       expected.set(mappingId, { topic, topicName, dayNumber: index + 1, contentId: day.id });
     }
   }
 
+  if (!Array.isArray(mappingSet?.mappings)) errors.push('Mapping set must contain a mappings array.');
+  if (!['draft_review_queue_only','under_review','reviewed_not_runtime_approved'].includes(mappingSet?.status)) errors.push('Mapping set status is invalid or too permissive.');
+  if (!['draft_requires_expert_review','under_review','reviewed_not_runtime_approved'].includes(evidenceRegistry?.status)) errors.push('Evidence registry status is invalid or too permissive.');
   const seen = new Set();
   const counts = { pending_review: 0, in_review: 0, approved: 0, rejected: 0 };
   for (const mapping of mappingSet.mappings ?? []) {
@@ -47,6 +77,7 @@ export function auditContentMappings({ content, topics, subtopics, evidenceRegis
     }
     counts[mapping.mapping_status] += 1;
 
+    if (!Array.isArray(mapping.subtopic_ids) || new Set(mapping.subtopic_ids).size !== mapping.subtopic_ids.length) errors.push(`Subtopic IDs must be a unique array: ${mapping.mapping_id}`);
     for (const subtopicId of mapping.subtopic_ids ?? []) {
       const subtopic = subtopicById.get(subtopicId);
       if (!subtopic) errors.push(`Unknown subtopic ${subtopicId}: ${mapping.mapping_id}`);
@@ -61,14 +92,17 @@ export function auditContentMappings({ content, topics, subtopics, evidenceRegis
       if (!String(review.reviewer_id ?? '').trim()) errors.push(`Approved mapping lacks reviewer: ${mapping.mapping_id}`);
       if (!review.reviewed_at || Number.isNaN(Date.parse(review.reviewed_at))) errors.push(`Approved mapping lacks valid review date: ${mapping.mapping_id}`);
       if (!String(review.rationale ?? '').trim()) errors.push(`Approved mapping lacks rationale: ${mapping.mapping_id}`);
-      if (!(review.evidence_ids ?? []).length) errors.push(`Approved mapping lacks evidence IDs: ${mapping.mapping_id}`);
+      if (!Array.isArray(review.evidence_ids) || !review.evidence_ids.length) errors.push(`Approved mapping lacks evidence IDs: ${mapping.mapping_id}`);
+      if (new Set(review.evidence_ids ?? []).size !== (review.evidence_ids ?? []).length) errors.push(`Approved mapping evidence IDs must be unique: ${mapping.mapping_id}`);
       for (const evidenceId of review.evidence_ids ?? []) {
         const evidence = evidenceById.get(evidenceId);
         if (!evidence) errors.push(`Approved mapping references unknown evidence ${evidenceId}: ${mapping.mapping_id}`);
-        else if (evidence.review_status !== 'approved' || !evidence.reviewer_id || !evidence.reviewed_at) {
-          errors.push(`Approved mapping references unapproved evidence ${evidenceId}: ${mapping.mapping_id}`);
+        else if (evidence.review_status !== 'approved' || !evidence.reviewer_id?.trim() || !evidence.reviewed_at || Number.isNaN(Date.parse(evidence.reviewed_at)) || !evidence.title?.trim() || !evidence.citation?.trim() || !evidence.population?.trim() || !evidence.study_type?.trim()) {
+          errors.push(`Approved mapping references unapproved or untraceable evidence ${evidenceId}: ${mapping.mapping_id}`);
         }
       }
+    } else if (mapping.mapping_status === 'rejected' && !String(mapping.review?.rationale ?? '').trim()) {
+      errors.push(`Rejected mapping lacks rationale: ${mapping.mapping_id}`);
     }
   }
 
