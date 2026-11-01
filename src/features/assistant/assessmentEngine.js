@@ -3,7 +3,7 @@ const TOPIC_RULES = [
   ['T02', ['اضطراب', 'نگرانی مداوم', 'دلشوره', 'نگران آینده']],
   ['T03', ['ترس', 'میترسم', 'می ترسم', 'وحشت', 'هراس']],
   ['T04', ['نفرت', 'بیزاری از', 'متنفرم']],
-  ['T05', ['حسادت', 'حسود', 'غیرت病']],
+  ['T05', ['حسادت', 'حسود']],
   ['T06', ['سوگ', 'فقدان', 'از دست دادن عزیز', 'غمگین', 'اندوه']],
   ['T07', ['احساس گناه', 'عذاب وجدان', 'گناهکار']],
   ['T08', ['وابستگی عاطفی', 'وابسته ام', 'بدون او نمیتوانم', 'بدون او نمی توانم']],
@@ -110,7 +110,7 @@ export function submitAssessmentAnswer(session, answer) {
   if (!session.current_question) throw new Error('پرسشی برای پاسخ‌گویی وجود ندارد.');
   const value = String(answer ?? '').trim();
   if (!value) throw new Error('پاسخ خالی است؛ می‌توانی بگویی «رد می‌کنم» یا جلسه را متوقف کنی.');
-  const next = structuredClone(session);
+  const next = { ...session, answers: { ...session.answers }, candidate_topics: [...session.candidate_topics], summary: session.summary ? { ...session.summary } : null };
   const questionId = next.current_question.id;
   next.answers[questionId] = value;
 
