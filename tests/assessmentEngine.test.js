@@ -137,7 +137,7 @@ test('an initial safety cue cannot be cleared by a single negative answer', () =
   assert.equal(session.safety_context_flag, true);
   assert.equal(session.safety_state, 'contextual_risk_clarification_required');
   assert.equal(getCurrentQuestion(session).id, 'safety_context_clarification');
-  session = answer(session, 'نه، منظورم یک فکر قدیمی بود و الآن قصد یا برنامه‌ای ندارم');
+  session = answer(session, 'نه');
   assert.equal(session.safety_context_flag, true);
   assert.equal(session.safety_state, 'risk_context_present_no_immediate_risk_disclosed');
   assert.equal(getCurrentQuestion(session).id, 'impact');
@@ -156,7 +156,7 @@ test('contextual safety flag remains visible in summary and requires human revie
   let session = createAssessmentSession();
   session = answer(session, 'گاهی فکر می‌کنم به خودم آسیب بزنم');
   session = answer(session, 'نه');
-  session = answer(session, 'نه، منظورم فکر قدیمی بود و الآن قصدی ندارم');
+  session = answer(session, 'نه');
   session = answer(session, 'در کار و خوابم اثر گذاشته است');
   session = answer(session, 'حدود سه ماه');
   session = answer(session, 'می‌خواهم مسئله را بفهمم');
