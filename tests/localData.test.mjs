@@ -53,3 +53,26 @@ test('privacy helpers fail clearly when browser storage is unavailable', () => {
   assert.throws(() => readLocalUserData(null), /ذخیره‌سازی محلی/);
   assert.throws(() => deleteLocalUserData(null), /ذخیره‌سازی محلی/);
 });
+
+test('privacy export reports inaccessible keys instead of silently claiming completeness',()=>{
+ const storage=new MemoryStorage({maseer28_state:'{}'});
+ storage.getItem=(key)=>{ if(key==='maseer28_state') throw new Error('blocked'); return null; };
+ const exported=readLocalUserData(storage);
+ assert.equal(exported.complete,false);
+ assert.equal(exported.errors.length,1);
+ assert.equal(exported.errors[0].key,'maseer28_state');
+});
+
+test('privacy deletion reports removal and verification failures without throwing',()=>{
+ const storage=new MemoryStorage({maseer28_state:'{}',maseer28_profile:'{}'});
+ const originalRemove=storage.removeItem.bind(storage);
+ storage.removeItem=(key)=>{ if(key==='maseer28_state') throw new Error('blocked'); originalRemove(key); };
+ const originalGet=storage.getItem.bind(storage);
+ storage.getItem=(key)=>{ if(key==='maseer28_profile') throw new Error('verification blocked'); return originalGet(key); };
+ const result=deleteLocalUserData(storage);
+ assert.equal(result.attempted,2);
+ assert.equal(result.removed.length,0);
+ assert.equal(result.errors.length,2);
+ assert.ok(result.errors.some(item=>item.key==='maseer28_state'&&item.stage==='remove'));
+ assert.ok(result.errors.some(item=>item.key==='maseer28_profile'&&item.stage==='verify'));
+});
