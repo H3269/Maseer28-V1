@@ -43,21 +43,37 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: test-source/package-lock.json
 
-      
-      
+      - name: Install dependencies
+        working-directory: test-source
+        run: npm ci
+
+      - name: Dependency security audit
+        working-directory: test-source
+        run: npm audit --audit-level=high
+
+      - name: Validate assistant knowledge registry
+        working-directory: test-source
+        run: npm run validate:assistant-topics
+
+      - name: Run automated tests
+        working-directory: test-source
+        run: npm test
+
+      - name: Validate course and library data
+        working-directory: test-source
+        run: npm run validate:content
+
       - name: Prepare production-only copy
         working-directory: test-source
         run: npm run prepare:production
 
-      - name: Install dependencies and build
+      - name: Build production application
         working-directory: test-source
-        run: |
-          npm ci
-          npm run build
+        run: npm run build
 
       - name: Checkout Telegram repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
