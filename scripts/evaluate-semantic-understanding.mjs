@@ -17,6 +17,18 @@ function runCase(item) {
   let session = createAssessmentSession();
   session = answer(session, item.text);
   const safetyCueDetected = session.safety_context_flag === true;
+  const expectedSafetyHandoff = item.must_handoff_safety === true;
+  if (expectedSafetyHandoff) {
+    return {
+      id: item.id,
+      expected: item.expected_topics ?? [],
+      predicted: [],
+      safetyCueDetected,
+      expectedSafetyHandoff,
+      topic_scoring_excluded: true,
+      stopped: true,
+    };
+  }
   if (session.current_question?.id === 'safety_now') session = answer(session, 'نه');
   if (session.status !== 'in_progress') {
     return { id: item.id, expected: item.expected_topics ?? [], predicted: [], safetyCueDetected, stopped: true };
@@ -32,7 +44,8 @@ function runCase(item) {
     expected: item.expected_topics ?? [],
     predicted: (summary?.candidate_topics ?? []).map((candidate) => candidate.topic_id),
     safetyCueDetected,
-    expectedSafetyHandoff: item.must_handoff_safety === true,
+    expectedSafetyHandoff: false,
+    topic_scoring_excluded: false,
     stopped: false,
   };
 }
@@ -44,7 +57,7 @@ export function evaluateDataset(dataset) {
   const fn = new Set();
   const perTopic = {};
 
-  for (const result of cases) {
+  for (const result of cases.filter((item) => !item.topic_scoring_excluded)) {
     const expected = new Set(result.expected);
     const predicted = new Set(result.predicted);
     for (const id of expected) {
@@ -65,11 +78,13 @@ export function evaluateDataset(dataset) {
   const recall = tp.size + fn.size ? tp.size / (tp.size + fn.size) : 0;
   const safetyCases = cases.filter((item) => item.expectedSafetyHandoff);
   const safetyCueHits = safetyCases.filter((item) => item.safetyCueDetected).length;
+  const topicCases = cases.filter((item) => !item.topic_scoring_excluded);
 
   return {
     dataset_id: dataset.dataset_id,
     dataset_status: dataset.status,
     case_count: cases.length,
+    topic_scoring_case_count: topicCases.length,
     topic_metrics: {
       true_positive: tp.size,
       false_positive: fp.size,
@@ -77,7 +92,7 @@ export function evaluateDataset(dataset) {
       precision: Number(precision.toFixed(4)),
       recall: Number(recall.toFixed(4)),
       f1: precision + recall ? Number((2 * precision * recall / (precision + recall)).toFixed(4)) : 0,
-      exact_topic_set_match_count: cases.filter((item) =>
+      exact_topic_set_match_count: topicCases.filter((item) =>
         [...new Set(item.expected)].sort().join(',') === [...new Set(item.predicted)].sort().join(',')
       ).length,
     },
@@ -85,13 +100,14 @@ export function evaluateDataset(dataset) {
       expected_handoff_cases: safetyCases.length,
       lexical_cue_detected: safetyCueHits,
       lexical_cue_missed: safetyCases.length - safetyCueHits,
-      interpretation: 'صرف پوشش چند عبارت واژگانی در داده مصنوعی؛ نه حساسیت بالینی، نه تشخیص بحران و نه اثبات ایمنی',
+      interpretation: 'فقط پوشش چند عبارت واژگانی محدود؛ عدم کشف عبارت به معنی ایمن‌بودن نیست و این سنجه اعتبار بالینی ندارد',
     },
     per_topic: Object.fromEntries(Object.entries(perTopic).sort(([a], [b]) => a.localeCompare(b))),
     cases,
     limitations: [
       'داده‌ها مصنوعی و کوچک‌اند و نماینده کاربران فارسی‌زبان نیستند.',
       'این سنجه‌ها عملکرد بالینی، فهم معنایی، تشخیص یا ایمنی را اعتبارسنجی نمی‌کنند.',
+      'سناریوهای دارای اولویت ایمنی از امتیاز موضوعی کنار گذاشته می‌شوند تا توقف جریان با خطای دسته‌بندی موضوعی اشتباه نشود.',
       'موتور فعلی تطبیق عبارت‌محور است؛ خروجی آن فهم معنایی واقعی محسوب نمی‌شود.',
       'پاسخ منفی ثابت در اجرای آزمون فقط برای رسیدن به مرحله موضوعی است و هیچ نتیجه ایمنی از آن گرفته نمی‌شود.',
       'هیچ آستانه پذیرش یا مجوز فعال‌سازی برای کاربران واقعی از این گزارش قابل استنتاج نیست.',
