@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { grantConsent, withdrawConsent, PERSONALIZATION_STORAGE_KEY } from '../src/features/privacy/consentManager.js';
+import { grantConsent, withdrawConsent, clearConsentState, PERSONALIZATION_STORAGE_KEY } from '../src/features/privacy/consentManager.js';
 import {
   DEFAULT_PERSONALIZATION,
   clearPersonalizationPreferences,
@@ -54,5 +54,28 @@ test('users can clear saved preferences independently',()=>{
  grantConsent('long_term_ai_memory',{explicitAction:true,context:memoryConsent},storage);
  savePersonalizationPreferences({example_style:'practical'},{explicitAction:true},storage);
  clearPersonalizationPreferences(storage);
+ assert.equal(storage.getItem(PERSONALIZATION_STORAGE_KEY),null);
+});
+
+test('revocation remains recorded even if local profile erasure fails',()=>{
+ const base=memoryStorage();
+ grantConsent('long_term_ai_memory',{explicitAction:true,context:memoryConsent},base);
+ savePersonalizationPreferences({response_detail:'detailed'},{explicitAction:true},base);
+ const storage={
+  getItem:base.getItem,
+  setItem:base.setItem,
+  removeItem:(key)=>{ if(key===PERSONALIZATION_STORAGE_KEY) throw new Error('storage blocked'); base.removeItem(key); },
+ };
+ const state=withdrawConsent('long_term_ai_memory',{},storage);
+ assert.equal(state.purposes.long_term_ai_memory.granted,false);
+ assert.ok(state.erasure_errors?.length);
+});
+
+test('clearing all consent also attempts to erase local personalization',()=>{
+ const storage=memoryStorage();
+ grantConsent('long_term_ai_memory',{explicitAction:true,context:memoryConsent},storage);
+ savePersonalizationPreferences({response_detail:'concise'},{explicitAction:true},storage);
+ const state=clearConsentState(storage);
+ assert.equal(state.purposes.long_term_ai_memory.granted,false);
  assert.equal(storage.getItem(PERSONALIZATION_STORAGE_KEY),null);
 });
