@@ -57,6 +57,9 @@ jobs:
       - name: Validate assistant topic registry
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:assistant-topics
+      - name: Validate taxonomy migration contract
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:topic-migration
       - name: Run unit tests
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm test
