@@ -26,6 +26,12 @@ export function validateContentRedesign({queue,day1,day2,topics,subtopics}) {
   if((item.evidence_ids??[]).length) errors.push('unverified evidence claimed '+item.content_id);
  }
  if((day1.records??[]).length!==34||(day2.records??[]).length!==34||drafts.length!==68||draftIds.size!==68) errors.push('day one and day two batches must contain 68 unique drafts');
+ for(const [batchName,batch] of [['day one',day1.records??[]],['day two',day2.records??[]]]){
+  for(const field of ['learning_objective','exercise','action','progress_measure']){
+   const values=batch.map(item=>String(item[field]??'').normalize('NFKC').trim());
+   if(new Set(values).size!==values.length) errors.push(batchName+' contains duplicate '+field+' templates across topics');
+  }
+ }
  for(const item of drafts){
   const q=records.find(x=>x.topic_id===item.topic_id&&x.day_number===item.day_number);
   if(!q||q.draft_content_id!==item.content_id||q.source_content_id!==item.source_content_id) errors.push('queue mapping mismatch '+item.content_id);
