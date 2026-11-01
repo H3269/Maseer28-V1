@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maseer28.example/schemas/topic-aliases.v1.schema.json",
+  "title": "Maseer28 Topic Alias Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "alias_registry_id",
+    "status",
+    "aliases"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "1.0.0"
+    },
+    "alias_registry_id": {
+      "const": "maseer28-topic-aliases"
+    },
+    "status": {
+      "const": "draft_no_runtime_use"
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "alias_id",
+          "namespace",
+          "value",
+          "target_topic_id",
+          "locale",
+          "match_mode",
+          "decision_status",
+          "requires_human_review",
+          "notes"
+        ],
+        "properties": {
+          "alias_id": {
+            "type": "string"
+          },
+          "namespace": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string",
+            "minLength": 1
+          },
+          "target_topic_id": {
+            "type": "string",
+            "pattern": "^T(0[1-9]|[12][0-9]|3[0-4])$"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "match_mode": {
+            "enum": [
+              "exact_normalized_label"
+            ]
+          },
+          "decision_status": {
+            "enum": [
+              "candidate_exact_name_match",
+              "pending_expert_review",
+              "approved",
+              "rejected"
+            ]
+          },
+          "requires_human_review": {
+            "const": true
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1.0.0",
+  "manifest_id": "maseer28-taxonomy-migration-dry-run-v1",
+  "status": "design_only_not_executable",
+  "execution_mode": "dry_run_fixture_only",
+  "execution_allowed": false,
+  "source": {
+    "repository": "H3269/Maseer28-V1",
+    "branch": "feature/topic-taxonomy-audit-v1",
+    "topic_registry_path": "public/assistant/knowledge/topics.v1.json",
+    "subtopic_registry_path": "public/assistant/knowledge/subtopics.v1.json",
+    "legacy_content_path": "public/content/path-content.json",
+    "legacy_queue_path": "public/assistant/content-drafts/952-day-redesign-queue.v1.json"
+  },
+  "contracts": {
+    "crosswalk_path": "public/assistant/migrations/topic-crosswalk.v1.json",
+    "alias_registry_path": "public/assistant/migrations/topic-aliases.v1.json",
+    "schema_path": "public/assistant/migrations/topic-migration-manifest.v1.schema.json",
+    "crosswalk_schema_path": "public/assistant/migrations/topic-crosswalk.v1.schema.json",
+    "alias_schema_path": "public/assistant/migrations/topic-aliases.v1.schema.json"
+  },
+  "required_preconditions": [
+    "Owner approval of taxonomy decisions",
+    "Expert review of topic/subtopic boundaries",
+    "Content-level review of every affected day",
+    "Stable target IDs and explicit split/merge decisions",
+    "Validator support for variable subtopic counts",
+    "User-state backward-compatibility and rollback plan"
+  ],
+  "invariants": [
+    "No source record is deleted or overwritten.",
+    "No candidate mapping is treated as approved.",
+    "No one-to-many mapping is auto-expanded into duplicated learning content.",
+    "Book/source references and original content IDs remain preserved.",
+    "No draft or unreviewed content becomes runtime eligible.",
+    "Unmapped or ambiguous records are quarantined for manual review.",
+    "Safety routing takes precedence over ordinary learning-path migration."
+  ],
+  "dry_run_steps": [
+    "Load source records read-only.",
+    "Resolve exact aliases and candidate crosswalk entries.",
+    "Classify each record as mapped_candidate, ambiguous, or unmapped.",
+    "Report one-to-many and many-to-one cases without applying them.",
+    "Check duplicate targets, orphan references, and preserved provenance.",
+    "Emit before/after counts and a rollback-ready report; do not write source data."
+  ],
+  "rollback": {
+    "strategy": "No-op by design; source data is never mutated.",
+    "required_artifacts": [
+      "immutable source snapshot identifier",
+      "dry-run report",
+      "mapping decision log"
+    ]
+  },
+  "rollout_gates": {
+    "owner_approval": false,
+    "expert_review": false,
+    "content_review": false,
+    "automated_validation": false,
+    "clinical_or_safety_approval": false,
+    "runtime_activation": false
+  }
+}

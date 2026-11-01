@@ -1,0 +1,59 @@
+{
+  "fixture_version": "1.0.0",
+  "purpose": "Synthetic contract tests only; contains no user records and is not a production migration input.",
+  "cases": [
+    {
+      "case_id": "fixture-one-to-one",
+      "mapping_type": "one_to_one",
+      "source_ids": [
+        "legacy:خشم"
+      ],
+      "target_ids": [
+        "T01"
+      ],
+      "expected": "candidate_only"
+    },
+    {
+      "case_id": "fixture-many-to-one",
+      "mapping_type": "many_to_one",
+      "source_ids": [
+        "legacy:کمبود انگیزه",
+        "legacy:بی‌انگیزگی"
+      ],
+      "target_ids": [
+        "T14"
+      ],
+      "expected": "manual_review_required"
+    },
+    {
+      "case_id": "fixture-one-to-many",
+      "mapping_type": "one_to_many",
+      "source_ids": [
+        "legacy:غم و سوگ"
+      ],
+      "target_ids": [
+        "candidate:grief-experience",
+        "candidate:bereavement-process"
+      ],
+      "expected": "manual_review_required"
+    },
+    {
+      "case_id": "fixture-unmapped-safety",
+      "mapping_type": "unmapped_pending_safety_design",
+      "source_ids": [
+        "subtopic:T18-S03"
+      ],
+      "target_ids": [],
+      "expected": "blocked_pending_safety_review"
+    },
+    {
+      "case_id": "fixture-unknown-source",
+      "mapping_type": "unmapped",
+      "source_ids": [
+        "legacy:موضوع ناشناخته"
+      ],
+      "target_ids": [],
+      "expected": "quarantine"
+    }
+  ]
+}

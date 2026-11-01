@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maseer28.example/schemas/topic-crosswalk.v1.schema.json",
+  "title": "Maseer28 Topic Crosswalk",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "contract_id",
+    "status",
+    "source_taxonomy_version",
+    "target_taxonomy_version",
+    "principles",
+    "topic_mappings",
+    "subtopic_mappings"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "1.0.0"
+    },
+    "contract_id": {
+      "const": "maseer28-topic-crosswalk"
+    },
+    "status": {
+      "const": "draft_no_runtime_use"
+    },
+    "source_taxonomy_version": {
+      "type": "string"
+    },
+    "target_taxonomy_version": {
+      "type": "string"
+    },
+    "generated_from": {
+      "type": "object"
+    },
+    "principles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "topic_mappings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/mapping"
+      }
+    },
+    "subtopic_mappings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/mapping"
+      }
+    }
+  },
+  "$defs": {
+    "mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mapping_id",
+        "source",
+        "targets",
+        "mapping_type",
+        "decision_status",
+        "rationale",
+        "requires_human_review",
+        "preserve_source"
+      ],
+      "properties": {
+        "mapping_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "system",
+            "entity_type",
+            "id",
+            "label"
+          ],
+          "properties": {
+            "system": {
+              "type": "string"
+            },
+            "entity_type": {
+              "enum": [
+                "legacy_category",
+                "topic",
+                "subtopic"
+              ]
+            },
+            "id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "label": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "entity_type",
+              "id"
+            ],
+            "properties": {
+              "entity_type": {
+                "enum": [
+                  "topic",
+                  "subtopic",
+                  "safety_rule"
+                ]
+              },
+              "id": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "mapping_type": {
+          "enum": [
+            "one_to_one",
+            "many_to_one",
+            "one_to_many",
+            "unmapped",
+            "unmapped_pending_safety_design"
+          ]
+        },
+        "decision_status": {
+          "enum": [
+            "candidate_exact_name_match",
+            "proposed_pending_content_review",
+            "blocked_pending_safety_review",
+            "pending_expert_review",
+            "approved",
+            "rejected"
+          ]
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requires_human_review": {
+          "const": true
+        },
+        "preserve_source": {
+          "const": true
+        }
+      }
+    }
+  }
+}
