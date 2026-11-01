@@ -32,6 +32,10 @@ const LABELS = {
   language: 'زبان ترجیحی',
 };
 
+function notifyPreferencesChanged() {
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event('maseer28:personalization-changed'));
+}
+
 export default function PersonalizationSettings() {
   const [consent, setConsent] = useState(null);
   const [preferences, setPreferences] = useState({ ...DEFAULT_PERSONALIZATION });
@@ -69,6 +73,7 @@ export default function PersonalizationSettings() {
     try {
       const saved = savePersonalizationPreferences(preferences, { explicitAction: true });
       setPreferences(saved);
+      notifyPreferencesChanged();
       setError('');
       setMessage('ترجیحات در همین مرورگر ذخیره شدند. این تنظیمات هنوز به رفتار موتور پاسخ‌گویی متصل نشده‌اند.');
     } catch (cause) {
@@ -80,6 +85,7 @@ export default function PersonalizationSettings() {
     try {
       clearPersonalizationPreferences();
       setPreferences({ ...DEFAULT_PERSONALIZATION });
+      notifyPreferencesChanged();
       setError('');
       setMessage('ترجیحات ذخیره‌شده از حافظه محلی برنامه پاک شدند.');
     } catch (cause) {
@@ -92,6 +98,7 @@ export default function PersonalizationSettings() {
       const next = withdrawConsent('long_term_ai_memory');
       setConsent(getConsentState());
       setPreferences({ ...DEFAULT_PERSONALIZATION });
+      notifyPreferencesChanged();
       setError('');
       setMessage(next.erasure_errors?.length
         ? 'رضایت لغو شد، اما حذف ترجیحات با خطا روبه‌رو شد. حذف کامل را نمی‌توان تأیید کرد.'
