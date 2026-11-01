@@ -19,6 +19,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: path28-validation-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
 jobs:
   validate-content:
     runs-on: ubuntu-latest
@@ -58,6 +62,13 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          generated_manifest_hash="$(git hash-object package.json)"
+          cp package-lock.json "$RUNNER_TEMP/generated-package-lock.json"
+          git fetch origin planning/assistant-foundation-v1
+          remote_manifest_hash="$(git show FETCH_HEAD:package.json | git hash-object --stdin)"
+          test "$generated_manifest_hash" = "$remote_manifest_hash"
+          git checkout -B lockfile-sync FETCH_HEAD
+          cp "$RUNNER_TEMP/generated-package-lock.json" package-lock.json
           git add package-lock.json
           if git diff --cached --quiet; then
             echo "Committed lockfile already matches dependency declarations."
