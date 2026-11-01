@@ -145,7 +145,8 @@
               "type": "array",
               "uniqueItems": true,
               "items": {
-                "type": "string"
+                "type": "string",
+                "pattern": "^EVD_[A-Z0-9_-]+$"
               }
             }
           }
