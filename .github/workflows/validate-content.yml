@@ -29,10 +29,14 @@ jobs:
         with:
           node-version: 22
       - name: Install dependencies
+        id: install
         run: npm ci
       - name: Dependency security audit
+        if: ${{ steps.install.outcome == 'success' }}
         run: npm audit --audit-level=high
       - name: Validate course and library data
+        if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:content
       - name: Build application
+        if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run build
