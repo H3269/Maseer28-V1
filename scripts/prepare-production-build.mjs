@@ -7,30 +7,28 @@ if (!/^\/[A-Za-z0-9/_-]*\/$/.test(basePath)) {
   throw new Error('PATH28_DEPLOY_BASE must be a safe absolute path ending in /.');
 }
 
-function replaceExactlyOnce(filePath, pattern, replacement, label) {
+function replaceExactlyOnce(filePath, pattern, replacer, label) {
   const absolute = path.join(root, filePath);
   let source = fs.readFileSync(absolute, 'utf8');
-  let count = 0;
-  source = source.replace(pattern, (...args) => {
-    count += 1;
-    return typeof replacement === 'function' ? replacement(...args) : replacement;
-  });
-  if (count !== 1) {
-    throw new Error(`Expected exactly one ${label} setting in ${filePath}; found ${count}.`);
+  const globalPattern = new RegExp(pattern.source, pattern.flags.includes('g') ? pattern.flags : `${pattern.flags}g`);
+  const matches = [...source.matchAll(globalPattern)];
+  if (matches.length !== 1) {
+    throw new Error(`Expected exactly one ${label} setting in ${filePath}; found ${matches.length}.`);
   }
+  source = source.replace(pattern, replacer);
   fs.writeFileSync(absolute, source, 'utf8');
 }
 
 replaceExactlyOnce(
   'src/features/journey/journeyStore.js',
   /(\bTEST_MODE\s*:\s*)(?:true|false)\b/,
-  '$1false',
+  (_match, prefix) => `${prefix}false`,
   'TEST_MODE'
 );
 replaceExactlyOnce(
   'src/features/journey/journeyStore.js',
   /(\bTIME_LOCK_ENABLED\s*:\s*)(?:true|false)\b/,
-  '$1true',
+  (_match, prefix) => `${prefix}true`,
   'TIME_LOCK_ENABLED'
 );
 replaceExactlyOnce(
