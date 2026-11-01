@@ -33,12 +33,17 @@ if (JSON.stringify(topics.map((item) => item.topic_id)) !== JSON.stringify(expec
 for (const id of expectedIds) if (!definitionIds.has(id)) errors.push(`تعریف کاری ${id} وجود ندارد.`);
 (topicDefinitions.definitions || []).forEach((item) => {
   if (!topicIds.has(item.topic_id)) errors.push(`تعریف به موضوع نامعتبر ${item.topic_id} متصل است.`);
+  if (!item.working_definition?.trim()) errors.push(`تعریف کاری ${item.topic_id} خالی است.`);
+  const linkedTopic = topics.find((topic) => topic.topic_id === item.topic_id);
+  if (linkedTopic?.definition !== item.working_definition) errors.push(`تعریف کاری ${item.topic_id} با رجیستری موضوعات همگام نیست.`);
+  if (!item.scope_limit?.trim()) errors.push(`محدودیت دامنه ${item.topic_id} خالی است.`);
   if (item.review_status !== 'pending_expert_review' || item.evidence_ids?.length) errors.push(`تعریف ${item.topic_id} نباید بدون منبع و بازبینی تأیید شود.`);
 });
 
 topics.forEach((topic, index) => {
   if (typeof topic.name !== 'string' || !topic.name.trim()) errors.push(`نام موضوع ${expectedIds[index]} خالی است.`);
   if (topic.display_order !== index + 1) errors.push(`ترتیب نمایشی ${expectedIds[index]} نامعتبر است.`);
+  if (typeof topic.definition !== 'string' || !topic.definition.trim()) errors.push(`تعریف عملیاتی موضوع ${expectedIds[index]} خالی است.`);
   if (topic.definition_status !== 'pending_expert_review') errors.push(`تعریف موضوع ${expectedIds[index]} نباید پیش از بازبینی متخصص تأیید شود.`);
   for (const field of ['review_flags', 'subtopic_ids', 'relation_ids', 'evidence_ids', 'content_ids', 'intervention_ids', 'safety_rule_ids']) {
     if (!Array.isArray(topic[field])) errors.push(`فیلد ${field} باید آرایه باشد: ${expectedIds[index]}.`);
@@ -57,6 +62,7 @@ if (subtopics.length !== 102) errors.push('نسخه فعلی باید ۱۰۲ ز�
 if (new Set(subtopics.map((item) => item.subtopic_id)).size !== subtopics.length) errors.push('شناسه زیرموضوع تکراری است.');
 subtopics.forEach((item) => {
   if (!topicIds.has(item.topic_id)) errors.push(`موضوع والد برای ${item.subtopic_id} وجود ندارد.`);
+  if (typeof item.definition !== 'string' || !item.definition.trim()) errors.push(`تعریف زیرموضوع ${item.subtopic_id} خالی است.`);
   if (item.definition_status !== 'pending_expert_review' || item.review_status !== 'draft') errors.push(`زیرموضوع ${item.subtopic_id} نباید تأییدشده تلقی شود.`);
 });
 for (const topic of topics) {
