@@ -1,0 +1,27 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { evaluateDataset } from '../scripts/evaluate-semantic-understanding.mjs';
+
+const dataset = JSON.parse(await readFile(new URL('../public/assistant/evaluation/semantic-evaluation-cases.v1.json', import.meta.url), 'utf8'));
+
+test('semantic evaluator returns reproducible metrics for every synthetic case', () => {
+  const report = evaluateDataset(dataset);
+  assert.equal(report.case_count, dataset.cases.length);
+  assert.equal(report.dataset_status, 'synthetic_seed_not_a_validated_benchmark');
+  assert.ok(report.topic_metrics.precision >= 0 && report.topic_metrics.precision <= 1);
+  assert.ok(report.topic_metrics.recall >= 0 && report.topic_metrics.recall <= 1);
+  assert.equal(report.cases.length, dataset.cases.length);
+});
+
+test('safety probe is explicitly lexical and never presented as clinical validation', () => {
+  const report = evaluateDataset(dataset);
+  assert.ok(report.safety_lexical_probe.interpretation.includes('نه حساسیت بالینی'));
+  assert.ok(report.limitations.some((item) => item.includes('اعتبارسنجی نمی‌کنند')));
+});
+
+test('evaluator reports per-case topic mismatches instead of hiding them in an aggregate', () => {
+  const report = evaluateDataset(dataset);
+  assert.ok(report.cases.every((item) => Array.isArray(item.expected) && Array.isArray(item.predicted)));
+  assert.ok(Object.keys(report.per_topic).length > 0);
+});
