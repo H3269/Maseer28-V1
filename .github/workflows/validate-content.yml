@@ -61,8 +61,15 @@ jobs:
       - name: Validate course and library data
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:content
-      - name: Build application
+      - name: Build Telegram production target
         if: ${{ always() && steps.install.outcome == 'success' }}
+        run: |
+          npm run prepare:production
+          npm run build
+      - name: Build V1 Pages production target
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        env:
+          PATH28_DEPLOY_BASE: /Maseer28-V1/
         run: |
           npm run prepare:production
           npm run build
