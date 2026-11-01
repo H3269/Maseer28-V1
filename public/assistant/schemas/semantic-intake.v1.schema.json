@@ -1,0 +1,260 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maseer28.example/schemas/semantic-intake.v1.schema.json",
+  "title": "Maseer28 Semantic Intake Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "intent",
+    "semantic_summary",
+    "situational_facts",
+    "topic_candidates",
+    "uncertainties",
+    "next_question",
+    "safety_handoff",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "ambiguity"
+      ],
+      "properties": {
+        "label": {
+          "enum": [
+            "share_experience",
+            "understand_problem",
+            "request_strategy",
+            "professional_help_decision",
+            "correct_summary",
+            "general_information",
+            "other_or_unclear"
+          ]
+        },
+        "ambiguity": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        }
+      }
+    },
+    "semantic_summary": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 600
+    },
+    "situational_facts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "situation",
+        "thought",
+        "emotion",
+        "body_response",
+        "behavior",
+        "impact",
+        "duration",
+        "user_goal"
+      ],
+      "properties": {
+        "situation": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "thought": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "emotion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "body_response": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "behavior": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "impact": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "duration": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "user_goal": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "topic_candidates": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "topic_id",
+          "role",
+          "confidence_band",
+          "evidence_quotes",
+          "uncertainty_reason"
+        ],
+        "properties": {
+          "topic_id": {
+            "type": "string",
+            "pattern": "^T(0[1-9]|[12][0-9]|3[0-4])$"
+          },
+          "role": {
+            "enum": [
+              "primary",
+              "accompanying",
+              "unknown"
+            ]
+          },
+          "confidence_band": {
+            "enum": [
+              "low",
+              "moderate",
+              "high",
+              "not_assessed"
+            ]
+          },
+          "evidence_quotes": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 4,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "uncertainty_reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 300
+          }
+        }
+      }
+    },
+    "uncertainties": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 300
+      },
+      "maxItems": 10
+    },
+    "contradictions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 300
+      },
+      "maxItems": 10
+    },
+    "next_question": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "text",
+        "purpose",
+        "discriminates_between"
+      ],
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "purpose": {
+          "enum": [
+            "safety_clarification",
+            "topic_disambiguation",
+            "context",
+            "impact",
+            "duration",
+            "goal",
+            "summary_confirmation"
+          ]
+        },
+        "discriminates_between": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 3
+        }
+      }
+    },
+    "safety_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "handoff_required",
+        "trigger_evidence"
+      ],
+      "properties": {
+        "handoff_required": {
+          "type": "boolean"
+        },
+        "trigger_evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 5
+        }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 10
+    }
+  }
+}
