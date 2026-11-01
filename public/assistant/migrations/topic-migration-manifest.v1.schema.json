@@ -72,7 +72,9 @@
       "required": [
         "crosswalk_path",
         "alias_registry_path",
-        "schema_path"
+        "schema_path",
+        "crosswalk_schema_path",
+        "alias_schema_path"
       ],
       "additionalProperties": false,
       "properties": {
@@ -83,6 +85,12 @@
           "type": "string"
         },
         "schema_path": {
+          "type": "string"
+        },
+        "crosswalk_schema_path": {
+          "type": "string"
+        },
+        "alias_schema_path": {
           "type": "string"
         }
       }
