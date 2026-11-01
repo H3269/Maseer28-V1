@@ -30,6 +30,8 @@ test('empty answers are rejected without advancing the question', () => {
 test('ordinary concern proceeds through one question at a time and produces tentative topic hypotheses', () => {
   let session = createAssessmentSession();
   session = answer(session, 'مدتی است اضطراب و نگرانی مداوم دارم');
+  assert.equal(getCurrentQuestion(session).id, 'safety_now');
+  session = answer(session, 'نه');
   assert.equal(getCurrentQuestion(session).id, 'impact');
   session = answer(session, 'در کار و خوابم اثر گذاشته است');
   assert.equal(getCurrentQuestion(session).id, 'duration');
@@ -52,7 +54,8 @@ test('safety language interrupts routine intake and asks a direct current-safety
   let session = createAssessmentSession();
   session = answer(session, 'گاهی فکر می‌کنم به خودم آسیب بزنم');
   assert.equal(getCurrentQuestion(session).id, 'safety_now');
-  assert.equal(session.safety_state, 'clarification_needed');
+  assert.equal(session.safety_context_flag, true);
+  assert.equal(session.safety_state, 'not_assessed');
 });
 
 test('an affirmative current danger response pauses the assessment for human support', () => {
