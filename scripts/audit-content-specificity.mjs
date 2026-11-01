@@ -7,7 +7,8 @@ const fields = ['exercise', 'actionText', 'lightExerciseText', 'lightActionText'
 function normalize(value, topic) {
   const text = String(value ?? '').normalize('NFKC');
   const quoted = text.split(`«${topic}»`).join('«[TOPIC]»');
-  const regexSpecials = new Set(['.', '*', '+', '?', '^', '
+  const regexSpecials = new Set(['.', '*', '+', '?', '^', '$', '(', ')', '|', '[', ']', '{', '}']);
+  const escapedTopic = [...topic].map((char) => regexSpecials.has(char) ? String.fromCharCode(92) + char : char).join('');
   const tokenPattern = new RegExp('(^|[^\\p{L}\\p{N}_])' + escapedTopic + '(?=$|[^\\p{L}\\p{N}_])', 'gu');
   return quoted.replace(tokenPattern, '$1[TOPIC]').replace(/\\s+/g, ' ').trim();
 }
