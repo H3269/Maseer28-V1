@@ -6,6 +6,7 @@ on:
       - 'public/content/**'
       - 'scripts/validate-content.mjs'
       - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/validate-content.yml'
   push:
     branches: [main]
