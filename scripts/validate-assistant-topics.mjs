@@ -10,6 +10,7 @@ const relationsRegistry = readJson('public/assistant/knowledge/relations.v1.json
 const relationTypesRegistry = readJson('public/assistant/knowledge/relation-types.v1.json');
 const consentPolicy = readJson('public/assistant/privacy/consent-policy.v1.json');
 const assessmentProtocol = readJson('public/assistant/assessment/assessment-protocol.v1.json');
+const topicDefinitions = readJson('public/assistant/knowledge/topic-definitions-draft.v1.json');
 const errors = [];
 const expectedIds = Array.from({ length: 34 }, (_, index) => `T${String(index + 1).padStart(2, '0')}`);
 const topics = topicsRegistry.topics || [];
@@ -19,12 +20,21 @@ const allowedRelationTypes = new Set((relationTypesRegistry.relation_types || []
 const topicIds = new Set(topics.map((item) => item.topic_id));
 const subtopicIds = new Set(subtopics.map((item) => item.subtopic_id));
 const relationIds = new Set(relations.map((item) => item.relation_id));
+const definitionIds = new Set((topicDefinitions.definitions || []).map((item) => item.topic_id));
 
 if (topicsRegistry.registry_id !== 'maseer28-topic-registry') errors.push('شناسه رجیستری موضوعات نامعتبر است.');
 if (topicsRegistry.registry_status !== 'draft_requires_expert_review') errors.push('رجیستری موضوعات باید تا بازبینی متخصص draft باقی بماند.');
 if (topics.length !== 34) errors.push('رجیستری باید دقیقاً ۳۴ موضوع داشته باشد.');
+if (topicDefinitions.definitions?.length !== 34) errors.push('برای هر ۳۴ موضوع باید یک تعریف کاری اولیه وجود داشته باشد.');
+if (topicDefinitions.status !== 'draft_requires_expert_review') errors.push('تعریف‌های کاری باید تا بازبینی متخصص در وضعیت draft باقی بمانند.');
 if (new Set(topics.map((item) => item.topic_id)).size !== topics.length) errors.push('شناسه موضوع تکراری است.');
 if (JSON.stringify(topics.map((item) => item.topic_id)) !== JSON.stringify(expectedIds)) errors.push('شناسه‌ها باید به ترتیب T01 تا T34 باشند.');
+
+for (const id of expectedIds) if (!definitionIds.has(id)) errors.push(`تعریف کاری ${id} وجود ندارد.`);
+(topicDefinitions.definitions || []).forEach((item) => {
+  if (!topicIds.has(item.topic_id)) errors.push(`تعریف به موضوع نامعتبر ${item.topic_id} متصل است.`);
+  if (item.review_status !== 'pending_expert_review' || item.evidence_ids?.length) errors.push(`تعریف ${item.topic_id} نباید بدون منبع و بازبینی تأیید شود.`);
+});
 
 topics.forEach((topic, index) => {
   if (typeof topic.name !== 'string' || !topic.name.trim()) errors.push(`نام موضوع ${expectedIds[index]} خالی است.`);
@@ -78,5 +88,5 @@ if (errors.length) {
   errors.forEach((error) => console.error(`- ${error}`));
   process.exitCode = 1;
 } else {
-  console.log(`رجیستری دستیار معتبر است: ۳۴ موضوع، ${subtopics.length} زیرموضوع، ${relations.length} رابطه کاندیدا (غیرفعال در runtime)، پروتکل ارزیابی غیرتشخیصی و رضایت‌های پیش‌فرض خاموش.`);
+  console.log(`رجیستری دستیار معتبر است: ۳۴ موضوع، ${subtopics.length} زیرموضوع، ${relations.length} رابطه کاندیدا (غیرفعال در runtime)، ۳۴ تعریف کاری تأییدنشده، پروتکل ارزیابی غیرتشخیصی و رضایت‌های پیش‌فرض خاموش.`);
 }
