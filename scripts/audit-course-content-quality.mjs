@@ -29,7 +29,7 @@ export function buildReviewQueue(content, topics) {
   return reviews;
 }
 
-export function auditCourseContentQuality({content,topics,ledger}) {
+export function auditCourseContentQuality({content,topics,ledger,evidenceRegistry}) {
   const errors=[];
   const expected=buildReviewQueue(content,topics);
   const expectedById=new Map(expected.map(item=>[item.review_id,item]));
@@ -38,6 +38,7 @@ export function auditCourseContentQuality({content,topics,ledger}) {
     const topic=topics.topics.find(t=>t.name===name);
     for(const [i,day] of (category.days ?? []).entries()) sourceById.set(`QREV_${topic?.topic_id}_D${String(i+1).padStart(2,'0')}`,{day});
   }
+  const evidenceById=new Map((evidenceRegistry?.evidence ?? []).map(item=>[item.evidence_id,item]));
   const seen=new Set(), statusCounts={pending_review:0,in_review:0,needs_revision:0,rejected:0,reviewed_not_approved:0,approved_for_educational_review:0};
   const repeated={};
   for(const field of TEXT_FIELDS){
@@ -65,6 +66,11 @@ export function auditCourseContentQuality({content,topics,ledger}) {
       const score=review.scores?.[dimension];
       if(score!==null && (!Number.isInteger(score)||score<0||score>3)) errors.push(`Invalid score ${dimension}: ${review.review_id}`);
     }
+    for(const evidenceId of review.evidence_ids ?? []) {
+      const evidence=evidenceById.get(evidenceId);
+      if(!evidence) errors.push('Unknown evidence ID (not present in evidence registry): '+review.review_id+' -> '+evidenceId);
+      else if(!evidence.title?.trim() || !evidence.citation?.trim()) errors.push('Evidence source is not traceable: '+review.review_id+' -> '+evidenceId);
+    }
     if(review.review_status==='approved_for_educational_review'){
       if(DIMENSIONS.some(d=>!Number.isInteger(review.scores?.[d])||review.scores[d]<2)) errors.push(`Approval requires all eight scores >=2: ${review.review_id}`);
       if((review.scores?.safety_and_cautions??0)<2) errors.push(`Approval blocked by safety score: ${review.review_id}`);
@@ -72,6 +78,10 @@ export function auditCourseContentQuality({content,topics,ledger}) {
       if(!review.reviewed_at||Number.isNaN(Date.parse(review.reviewed_at))) errors.push(`Approval lacks review date: ${review.review_id}`);
       if(!review.rationale?.trim()) errors.push(`Approval lacks rationale: ${review.review_id}`);
       if(!(review.evidence_ids?.length)) errors.push(`Approval lacks evidence IDs: ${review.review_id}`);
+      for(const evidenceId of review.evidence_ids ?? []) {
+        const evidence=evidenceById.get(evidenceId);
+        if(!evidence || !['reviewed','approved'].includes(evidence.review_status) || !evidence.reviewer_id?.trim() || !evidence.reviewed_at || !evidence.citation?.trim()) errors.push('Approval cites evidence that is absent, unreviewed, or untraceable: '+review.review_id+' -> '+evidenceId);
+      }
     }
   }
   const missing=expected.filter(x=>!seen.has(x.review_id)).map(x=>x.review_id);
@@ -88,7 +98,7 @@ export function auditCourseContentQuality({content,topics,ledger}) {
 }
 
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
- const report=auditCourseContentQuality({content:readJson('public/content/path-content.json'),topics:readJson('public/assistant/knowledge/topics.v1.json'),ledger:readJson('public/assistant/reviews/course-content-quality-review.v1.json')});
+ const report=auditCourseContentQuality({content:readJson('public/content/path-content.json'),topics:readJson('public/assistant/knowledge/topics.v1.json'),ledger:readJson('public/assistant/reviews/course-content-quality-review.v1.json'),evidenceRegistry:readJson('public/assistant/evidence/evidence.v1.json')});
  process.stdout.write(`${JSON.stringify(report,null,2)}\n`);
  if(report.errors.length) process.exitCode=1;
 }
