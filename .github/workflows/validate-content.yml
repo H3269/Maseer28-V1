@@ -10,6 +10,7 @@ on:
       - 'scripts/validate-content.mjs'
       - 'scripts/validate-assistant-topics.mjs'
       - 'scripts/validate-content-redesign.mjs'
+      - 'scripts/validate-self-evaluation-pilot.mjs'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/**'
@@ -24,6 +25,7 @@ on:
       - 'scripts/validate-content.mjs'
       - 'scripts/validate-assistant-topics.mjs'
       - 'scripts/validate-content-redesign.mjs'
+      - 'scripts/validate-self-evaluation-pilot.mjs'
       - 'package.json'
       - '.github/workflows/**'
       - 'scripts/prepare-production-build.mjs'
@@ -67,7 +69,7 @@ jobs:
       - name: Validate 952-day redesign queue and draft gates
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:content-redesign
-      - name: Build application
+      - name: Validate five-topic self-evaluation pilot\n        if: ${{ always() && steps.install.outcome == 'success' }}\n        run: npm run validate:self-evaluation-pilot\n      - name: Build application
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: |
           npm run prepare:production
