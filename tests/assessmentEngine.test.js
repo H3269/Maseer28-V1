@@ -184,3 +184,20 @@ test('only a standalone negative answer is treated as non-disclosure', () => {
   assert.equal(session.safety_state, 'no_immediate_risk_disclosed');
   assert.equal(getCurrentQuestion(session).id, 'impact');
 });
+
+
+test('intent to seek ordinary support is not mistaken for intent to cause harm', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'گاهی فکر می‌کنم به خودم آسیب بزنم');
+  session = answer(session, 'قصد دارم با دوستم صحبت کنم');
+  assert.equal(session.safety_state, 'clarification_needed');
+  assert.equal(getCurrentQuestion(session).id, 'safety_clarification');
+});
+
+test('explicit harm-related intent is escalated to human support', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'گاهی فکر می‌کنم به خودم آسیب بزنم');
+  session = answer(session, 'قصد دارم به خودم آسیب بزنم');
+  assert.equal(session.safety_state, 'urgent_human_support_recommended');
+  assert.equal(session.status, 'paused_for_human_support');
+});
