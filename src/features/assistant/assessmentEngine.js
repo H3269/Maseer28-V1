@@ -82,8 +82,13 @@ function detectTopics(text) {
 
 function classifySafetyAnswer(text) {
   const value = normalize(text);
-  if (/^(بله|آره|اره|yes)(\b|$)/.test(value) || value.includes('قصد دارم') || value.includes('برنامه دارم')) return 'urgent_human_support_recommended';
-  if (/^(نه|خیر|no)(\b|$)/.test(value) || value.startsWith('نه،') || value.startsWith('خیر،')) return 'no_immediate_risk_disclosed';
+  if (/^(بله|آره|اره|yes)(\\b|$)/.test(value) || value.includes('قصد دارم') || value.includes('برنامه دارم')) {
+    return 'urgent_human_support_recommended';
+  }
+  // A negative opening must not override risk language later in the same answer.
+  // Only a standalone negative is treated as non-disclosure; qualified answers
+  // are clarified rather than interpreted as proof of safety.
+  if (/^(نه|خیر|no)[.!؟،,]*$/.test(value)) return 'no_immediate_risk_disclosed';
   return 'clarification_needed';
 }
 
