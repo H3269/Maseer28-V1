@@ -15,12 +15,16 @@ function isUserDataKey(key) {
 export function readLocalUserData(storage) {
   const target = getStorage(storage);
   const entries = {};
+  const errors = [];
   for (let index = 0; index < target.length; index += 1) {
-    const key = target.key(index);
+    let key;
+    try { key = target.key(index); } catch (error) { errors.push({ key: null, message: String(error?.message || error) }); continue; }
     if (!key || !isUserDataKey(key)) continue;
-    const raw = target.getItem(key);
-    try { entries[key] = JSON.parse(raw); }
-    catch { entries[key] = raw; }
+    try {
+      const raw = target.getItem(key);
+      try { entries[key] = JSON.parse(raw); }
+      catch { entries[key] = raw; }
+    } catch (error) { errors.push({ key, message: String(error?.message || error) }); }
   }
   return {
     schema_version: '1.0.0',
@@ -28,12 +32,15 @@ export function readLocalUserData(storage) {
     scope: 'This export contains app-owned browser localStorage data only.',
     storage: 'localStorage',
     entries,
+    complete: errors.length === 0,
+    errors,
   };
 }
 
 export function deleteLocalUserData(storage) {
   const target = getStorage(storage);
   const keys = [];
+  const removed = [];
   const errors = [];
   for (let index = 0; index < target.length; index += 1) {
     const key = target.key(index);
@@ -41,9 +48,13 @@ export function deleteLocalUserData(storage) {
   }
   for (const key of keys) {
     try { target.removeItem(key); }
-    catch (error) { errors.push({ key, message: String(error?.message || error) }); }
+    catch (error) { errors.push({ key, stage: 'remove', message: String(error?.message || error) }); continue; }
+    try {
+      if (target.getItem(key) === null) removed.push(key);
+      else errors.push({ key, stage: 'verify', message: 'کلید پس از تلاش برای حذف همچنان موجود است.' });
+    } catch (error) { errors.push({ key, stage: 'verify', message: String(error?.message || error) }); }
   }
-  return { attempted: keys.length, removed: keys.filter((key) => target.getItem(key) === null), errors };
+  return { attempted: keys.length, removed, errors };
 }
 
 export const LOCAL_USER_DATA_POLICY = Object.freeze({
