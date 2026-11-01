@@ -39,6 +39,9 @@ jobs:
       - name: Dependency security audit
         if: ${{ steps.install.outcome == 'success' }}
         run: npm audit --audit-level=high
+      - name: Capture complete npm audit report
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm audit --json > npm-audit-report.json || true
       - name: Validate course and library data
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:content
@@ -50,5 +53,7 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: package-lock-audit-fix
-          path: package-lock.json
+          path: |
+            package-lock.json
+            npm-audit-report.json
           if-no-files-found: error
