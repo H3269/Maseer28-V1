@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { validateMigrationContract } from '../scripts/validate-topic-migration-contract.mjs';
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const read = p => JSON.parse(fs.readFileSync(path.join(root, p), 'utf8'));
+const input = () => ({crosswalk:read('public/assistant/migrations/topic-crosswalk.v1.json'),aliases:read('public/assistant/migrations/topic-aliases.v1.json'),manifest:read('public/assistant/migrations/topic-migration-manifest.v1.json'),fixture:read('public/assistant/migrations/topic-migration-fixtures.v1.json'),topics:read('public/assistant/knowledge/topics.v1.json').topics,subtopics:read('public/assistant/knowledge/subtopics.v1.json').subtopics});
+test('migration contract remains candidate-only and structurally valid', () => assert.deepEqual(validateMigrationContract(input()), []));
+test('validator rejects a mapping that silently drops human review', () => { const x=input(); x.crosswalk.topic_mappings[0].requires_human_review=false; assert.ok(validateMigrationContract(x).some(e=>e.includes('require review'))); });
+test('validator rejects an unknown topic target', () => { const x=input(); x.crosswalk.topic_mappings[0].targets[0].id='T99'; assert.ok(validateMigrationContract(x).some(e=>e.includes('Unknown topic target'))); });
+test('validator rejects opening a rollout gate', () => { const x=input(); x.manifest.rollout_gates.runtime_activation=true; assert.ok(validateMigrationContract(x).some(e=>e.includes('rollout gates'))); });
+test('validator rejects malformed one-to-many fixture', () => { const x=input(); x.fixture.cases.find(c=>c.mapping_type==='one_to_many').target_ids=['T06']; assert.ok(validateMigrationContract(x).some(e=>e.includes('one_to_many fixture'))); });
