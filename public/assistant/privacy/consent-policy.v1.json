@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "maseer28-consent-policy",
+  "status": "design_only_not_active",
+  "default_consent": {
+    "ai_cloud_processing": false,
+    "sensitive_health_data_processing": false,
+    "long_term_ai_memory": false,
+    "product_analytics": false
+  },
+  "principles": [
+    "رضایت هر هدف جداگانه، آگاهانه، قابل پس‌گرفتن و بدون اجبار باشد.",
+    "رد پردازش ابری یا حافظه بلندمدت نباید دسترسی به قابلیت‌های پایه آفلاین را مسدود کند.",
+    "رضایت به پردازش AI به معنی رضایت به پردازش داده سلامت نیست؛ این دو جداگانه اخذ شوند.",
+    "رضایت به ذخیره حافظه بلندمدت، مجوز استفاده برای آموزش مدل یا تبلیغات نیست.",
+    "هیچ مقدار پیش‌فرضی نباید به true تبدیل شود."
+  ],
+  "purposes": [
+    {
+      "id": "ai_cloud_processing",
+      "label": "ارسال داده حداقلی به دستیار ابری",
+      "default": false,
+      "requires": {
+        "policy_version": true,
+        "processor_identity": true,
+        "processing_region": true,
+        "data_categories": true,
+        "retention_period": true,
+        "withdrawal_method": true
+      }
+    },
+    {
+      "id": "sensitive_health_data_processing",
+      "label": "پردازش داده سلامت/روان‌شناختی",
+      "default": false,
+      "requires": {
+        "separate_explicit_action": true,
+        "necessity_explanation": true,
+        "exact_data_categories": true
+      }
+    },
+    {
+      "id": "long_term_ai_memory",
+      "label": "ذخیره زمینه برای گفتگوهای بعدی",
+      "default": false,
+      "requires": {
+        "view_edit_delete_controls": true,
+        "retention_period": true
+      }
+    },
+    {
+      "id": "product_analytics",
+      "label": "تحلیل استفاده از محصول",
+      "default": false,
+      "requires": {
+        "purpose_limitation": true,
+        "avoid_sensitive_content": true
+      }
+    }
+  ],
+  "prohibited_implicit_consent": [
+    "پیش‌فعال‌کردن گزینه‌ها",
+    "گرفتن رضایت با ادامه استفاده یا سکوت",
+    "استفاده ثانویه برای آموزش مدل بدون رضایت/مبنای مستقل",
+    "ثبت متن خام سلامت روان در لاگ‌های عملیاتی",
+    "ادغام رضایت AI، داده سلامت، حافظه و تحلیل محصول در یک دکمه"
+  ],
+  "consent_record_required_fields": [
+    "consent_id",
+    "user_or_device_subject_id",
+    "purpose_id",
+    "decision",
+    "policy_version",
+    "timestamp",
+    "processor_identity",
+    "processing_region",
+    "data_categories",
+    "retention_period",
+    "withdrawal_timestamp"
+  ],
+  "withdrawal": {
+    "must_be_as_easy_as_grant": true,
+    "stop_future_processing": true,
+    "delete_or_schedule_deletion_of_stored_memory": true,
+    "explain_limits_for_already_transmitted_data": true
+  },
+  "note": "این فایل مشخصات طراحی است، نه رضایت حقوقی معتبر یا پیاده‌سازی فعال. پیش از استفاده واقعی باید با بازار هدف، ارائه‌دهنده، منطقه پردازش و مشاوره حقوقی تطبیق داده شود."
+}
