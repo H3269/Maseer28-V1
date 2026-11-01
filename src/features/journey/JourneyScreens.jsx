@@ -6,6 +6,7 @@ import { fa, formatDate, normalizeDigits } from '../../shared/utils.js';
 import { burdenScoreFromAnswers, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
 import { readLocalUserData, deleteLocalUserData } from '../privacy/localData.js';
 import AssessmentAssistant from '../assistant/AssessmentAssistant.jsx';
+import PersonalizationSettings from '../privacy/PersonalizationSettings.jsx';
 
 // This prototype has no clinical validation. It stays hidden unless an experimental build explicitly enables it.
 const EXPERIMENTAL_ASSISTANT_ENABLED = import.meta.env.VITE_ENABLE_EXPERIMENTAL_ASSISTANT === 'true';
@@ -429,6 +430,7 @@ export function Support({ content, onBack }) {
     <span className="badge">پشتیبانی مرکز</span><h2>نیاز به راهنمایی داری؟</h2><p className="muted">اگر در انجام تمرین‌ها، ادامه مسیر یا استفاده از برنامه نیاز به راهنمایی داری، می‌توانی با مرکز هیپنوتراپی شفا ارتباط بگیری.</p>
     <div className="support"><h3><AppIcon name="phone" size={18} /> نوبت‌دهی پیامکی</h3><p className="muted">شماره مرکز: <b>۰۹۱۹۰۸۸۹۰۶۲</b></p><div className="contactActions"><button className="sms" onClick={sendSms}><AppIcon name="message" size={17} /> باز کردن پیامک</button><button className="copyAction" onClick={copySupportNumber}><AppIcon name="copy" size={17} /> کپی شماره</button></div><p className="contactHelp" id="smsHelp">{help}</p><hr/><h3><AppIcon name="message" size={18} /> نوبت‌دهی تلگرامی</h3><p className="muted">پشتیبانی و نوبت‌دهی تلگرامی مرکز</p><a className="telegram" href={content.supportUrl || content.bookSupportUrl || 'https://t.me/Hypnotherapy_admin'} rel="noopener" target="_blank" ><AppIcon name="message" size={17} /> ورود به پشتیبانی تلگرام</a></div>
     {EXPERIMENTAL_ASSISTANT_ENABLED && <AssessmentAssistant />}
+    <hr/><PersonalizationSettings />
     <hr/><div className="sectionHint"><span><AppIcon name="lock" size={18} /></span><div><b>حریم خصوصی و داده‌های من</b><small>می‌توانی نسخه‌ای از داده‌های ذخیره‌شده در این مرورگر بگیری یا آن‌ها را حذف کنی.</small></div></div>
     <p className="muted">خروجی و حذف شامل داده‌های محلی برنامه در همین مرورگر است؛ این عملیات نسخه‌های دانلودشده، پشتیبان‌های دستگاه یا اطلاعات احتمالی نگهداری‌شده در سرورهای بیرونی را حذف نمی‌کند. محتوای کتاب‌های عمومی برنامه پاک نمی‌شود.</p>
     <div className="contactActions"><button className="secondary" onClick={exportData}><AppIcon name="fileText" size={17} /> دریافت نسخه اطلاعات من</button><button className="secondary" onClick={deleteData}><AppIcon name="eraser" size={17} /> حذف داده‌های محلی من</button></div>
