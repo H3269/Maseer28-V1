@@ -25,3 +25,11 @@ test('evaluator reports per-case topic mismatches instead of hiding them in an a
   assert.ok(report.cases.every((item) => Array.isArray(item.expected) && Array.isArray(item.predicted)));
   assert.ok(Object.keys(report.per_topic).length > 0);
 });
+
+test('priority safety cases are excluded from topic scoring', () => {
+  const report = evaluateDataset(dataset);
+  const safetyCases = report.cases.filter((item) => item.expectedSafetyHandoff);
+  assert.ok(safetyCases.length > 0);
+  assert.ok(safetyCases.every((item) => item.topic_scoring_excluded === true));
+  assert.equal(report.topic_scoring_case_count, report.case_count - safetyCases.length);
+});
