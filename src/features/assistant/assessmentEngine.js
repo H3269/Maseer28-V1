@@ -133,7 +133,7 @@ export function submitAssessmentAnswer(session, answer) {
     return next;
   }
 
-  if (questionId === 'safety_now' || questionId === 'safety_clarification') {
+  if (questionId === 'safety_now' || questionId === 'safety_clarification' || questionId === 'safety_context_clarification') {
     next.safety_state = classifySafetyAnswer(value);
     if (next.safety_state === 'urgent_human_support_recommended') {
       next.status = 'paused_for_human_support';
