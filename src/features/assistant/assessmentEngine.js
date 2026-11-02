@@ -332,7 +332,7 @@ export function submitAssessmentAnswer(session, answer) {
     next.answers.summary_feedback = value;
     const normalizedFeedback = normalize(value);
     const hasCorrectionCue = /اما|ولی|درست نیست|اشتباه|اصلاح|کمتر گفتم|بیشتر گفتم|جا افتاده|جا انداختم/.test(normalizedFeedback);
-    const explicitlyConfirmed = /^(?:بله|آره|اره)(?:[.!؟،\\s].*(?:دقیق است|درست است|همین است|موافقم|کامل است))?$/.test(normalizedFeedback) || /^(?:تایید|تایید شده|درست است|همین است|موافقم|کامل است|دقیق است|فعلا همین)[.!؟،\\s]*$/.test(normalizedFeedback);
+    const explicitlyConfirmed = /^(?:بله|آره|اره)(?:[.!؟،\s].*(?:دقیق است|درست است|همین است|موافقم|کامل است))?$/.test(normalizedFeedback) || /^(?:تایید|تایید شده|درست است|همین است|موافقم|کامل است|دقیق است|فعلا همین)[.!؟،\s]*$/.test(normalizedFeedback);
     if (explicitlyConfirmed && !hasCorrectionCue) {
       next.status = 'completed';
       next.current_question = null;
