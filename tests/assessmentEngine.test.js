@@ -22,6 +22,13 @@ test('session starts with an open question and keeps data in memory only', () =>
   assert.equal(assessmentEngineMetadata.diagnostic_use, false);
 });
 
+test('safety concern domains distinguish self-harm, harm to others, and threat from another person', () => {
+  assert.deepEqual(classifySafetyDomains('گاهی فکر می‌کنم خودم را بکشم'), ['risk_of_self_harm']);
+  assert.deepEqual(classifySafetyDomains('می‌ترسم به کسی آسیب بزنم'), ['risk_of_harm_to_others']);
+  assert.deepEqual(classifySafetyDomains('در خانه امن نیستم و او مرا تهدید می‌کند'), ['risk_from_another_person']);
+  assert.deepEqual(classifySafetyDomains('بله'), ['domain_not_yet_determined']);
+});
+
 test('empty answers are rejected without advancing the question', () => {
   const session = createAssessmentSession();
   assert.throws(() => answer(session, '   '), /پاسخ خالی/);
