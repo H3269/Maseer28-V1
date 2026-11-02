@@ -242,3 +242,13 @@ test('declining a question advances the intake without repeating it', () => {
   assert.equal(session.current_question.id, 'duration');
   assert.equal(session.semantic_intake.situational_facts.impact, null);
 });
+
+
+test('general information requests do not enter the personal assessment flow', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'من فقط برای ترجمه یک متن درباره اضطراب سؤال دارم؛ خودم چنین تجربه‌ای ندارم.');
+  assert.equal(session.status, 'information_request_not_supported');
+  assert.equal(getCurrentQuestion(session), null);
+  assert.equal(session.next_step.content_available, false);
+  assert.ok(session.next_step.message.includes('به‌جای حدس‌زدن'));
+});
