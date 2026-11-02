@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0.0",
+  "purpose": "Regression fixtures for conservative Persian clause ownership extraction; not a clinical dataset or semantic benchmark.",
+  "status": "synthetic_expert_review_pending",
+  "policy": "Only deterministic quote, attribution and meta-request exclusions are asserted. No diagnostic labels.",
+  "cases": [
+    {
+      "id": "Q01",
+      "text": "او گفت «من از خودم متنفرم»",
+      "retained": "",
+      "excluded": 1
+    },
+    {
+      "id": "Q02",
+      "text": "من از خودم متنفرم و دوستم گفت که من بی‌ارزشم",
+      "retained": "من از خودم متنفرم",
+      "excluded": 1
+    },
+    {
+      "id": "Q03",
+      "text": "دوستم گفت من بی‌ارزشم، ولی من با این حرف موافق نیستم",
+      "retained": "من با این حرف موافق نیستم",
+      "excluded": 1
+    },
+    {
+      "id": "Q04",
+      "text": "برای ترجمه جمله «من بی‌ارزشم» کمک می‌خواهم؛ اما من گاهی واقعاً احساس بی‌ارزشی دارم",
+      "retained": "اما من گاهی واقعاً احساس بی‌ارزشی دارم",
+      "excluded": 1
+    },
+    {
+      "id": "Q05",
+      "text": "مدیرم گفت من همیشه شکست می‌خورم",
+      "retained": "",
+      "excluded": 1
+    },
+    {
+      "id": "Q06",
+      "text": "من نگران آینده هستم. مادرم گفت این طبیعی است",
+      "retained": "من نگران آینده هستم",
+      "excluded": 1
+    },
+    {
+      "id": "Q07",
+      "text": "همسرم به من گفت که بی‌ارزشم؛ من این حرف را قبول ندارم",
+      "retained": "من این حرف را قبول ندارم",
+      "excluded": 1
+    },
+    {
+      "id": "Q08",
+      "text": "ترجمه این جمله را می‌خواهم؛ خودم هم مدتی مضطربم",
+      "retained": "خودم هم مدتی مضطربم",
+      "excluded": 1
+    },
+    {
+      "id": "Q09",
+      "text": "«اضطراب دارم» فقط یک مثال در کتاب بود",
+      "retained": "فقط یک مثال در کتاب بود",
+      "excluded": 1
+    },
+    {
+      "id": "Q10",
+      "text": "من اضطراب دارم و همکارم گفت که او هم نگران است",
+      "retained": "من اضطراب دارم",
+      "excluded": 1
+    },
+    {
+      "id": "Q11",
+      "text": "دوستم گفت من خسته‌ام اما من تجربه متفاوتی دارم",
+      "retained": "من تجربه متفاوتی دارم",
+      "excluded": 1
+    },
+    {
+      "id": "Q12",
+      "text": "معنی عبارت «از خودم متنفرم» چیست؟",
+      "retained": "چیست؟",
+      "excluded": 1
+    },
+    {
+      "id": "Q13",
+      "text": "من از رفتارم ناراحتم، ولی خودم را بی‌ارزش نمی‌دانم",
+      "retained": "من از رفتارم ناراحتم ؛ خودم را بی‌ارزش نمی‌دانم",
+      "excluded": 0
+    },
+    {
+      "id": "Q14",
+      "text": "دوستم گفت که ترجمه جمله من را می‌خواهد",
+      "retained": "",
+      "excluded": 1
+    },
+    {
+      "id": "Q15",
+      "text": "من واقعاً تنها هستم و مادرم گفت باید بیرون بروم",
+      "retained": "من واقعاً تنها هستم",
+      "excluded": 1
+    }
+  ]
+}
