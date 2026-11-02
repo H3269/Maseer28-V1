@@ -1,9 +1,14 @@
+import { createHash } from 'node:crypto';
+
 const DIMENSIONS = ['A','B','C','D','E','F','G','H'];
 const SEVERITIES = new Set(['P0','P1','P2','P3']);
 const DECISIONS = new Set(['rework','reject','hold','expert_reviewed','approved']);
 
 const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const nonEmpty = (value) => typeof value === 'string' && value.trim().length > 0;
+const canonical = (value) => Array.isArray(value) ? '[' + value.map(canonical).join(',') + ']' :
+  isObject(value) ? '{' + Object.keys(value).sort().map((key) => JSON.stringify(key) + ':' + canonical(value[key])).join(',') + '}' : JSON.stringify(value);
+const digest = (value) => 'sha256:' + createHash('sha256').update(canonical(value)).digest('hex');
 const hasAllScores = (scores) => isObject(scores) && DIMENSIONS.every((key) =>
   Number.isInteger(scores[key]) && scores[key] >= 0 && scores[key] <= 4);
 
@@ -84,13 +89,17 @@ export function validateIndependentReviewLedger(ledger) {
     }
   }
   let previousId = null;
+  let previousHash = 'GENESIS';
   events.forEach((event, index) => {
     if (!nonEmpty(event.event_id) || eventIds.has(event.event_id)) errors.push('event IDs must be unique');
     eventIds.add(event.event_id);
+    const { event_hash, ...hashableEvent } = event;
     if (event.sequence !== index + 1 || event.previous_event_id !== previousId ||
-        !nonEmpty(event.event_type) || !nonEmpty(event.actor_id) || !nonEmpty(event.occurred_at) ||
-        !nonEmpty(event.payload_digest)) errors.push('append-only event chain is incomplete at sequence ' + (index + 1));
+        event.previous_event_hash !== previousHash || !nonEmpty(event.event_type) ||
+        !nonEmpty(event.actor_id) || !nonEmpty(event.occurred_at) || !nonEmpty(event.payload_digest) ||
+        event_hash !== digest(hashableEvent)) errors.push('append-only hash chain is invalid at sequence ' + (index + 1));
     previousId = event.event_id;
+    previousHash = event_hash ?? null;
   });
   return { valid: errors.length === 0, errors, summary: {
     records: records.length, records_with_two_reviews: records.filter((r) => r.reviews?.length === 2).length,
