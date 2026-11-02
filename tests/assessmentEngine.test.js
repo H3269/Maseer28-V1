@@ -28,6 +28,16 @@ test('empty answers are rejected without advancing the question', () => {
   assert.equal(getCurrentQuestion(session).id, 'open_problem');
 });
 
+test('direct educational questions do not enter the personal assessment state machine', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'اضطراب چیست؟');
+  assert.equal(session.semantic_intake.intent.label, 'general_information');
+  assert.equal(session.status, 'information_request_not_supported');
+  assert.equal(getCurrentQuestion(session), null);
+  assert.equal(session.next_step.content_available, false);
+  assert.match(session.next_step.message, /درخواست اطلاعات عمومی/);
+});
+
 test('ordinary concern proceeds through one question at a time and produces tentative topic hypotheses', () => {
   let session = createAssessmentSession();
   session = answer(session, 'مدتی است اضطراب و نگرانی مداوم دارم');
