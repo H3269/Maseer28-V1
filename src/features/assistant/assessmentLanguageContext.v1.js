@@ -3,7 +3,7 @@
  * assessment prototype. This is not semantic understanding or a validated NLP
  * component. Ambiguous ownership is intentionally excluded from lexical hints.
  */
-export const ASSESSMENT_CONTEXT_VERSION = '1.0.0';
+export const ASSESSMENT_CONTEXT_VERSION = '1.1.0';
 
 const QUOTED_SPANS = [
   /«[^»]*»/gu,
@@ -20,7 +20,7 @@ export function extractConservativeAssessmentEvidence(input) {
   let text = String(input ?? '').normalize('NFKC');
   for (const quotePattern of QUOTED_SPANS) text = text.replace(quotePattern, ' ');
   const clauses = text
-    .split(/(?:[؛.!؟\n]+|،?\s+(?:اما|ولی|با\s+این\s+حال)\s+|\s+و(?=\s*(?:دوستم|مادرم|پدرم|همسرم|مدیرم|همکارم|خواهرم|برادرم|او|آنها|دیگران)\s))/u)
+    .split(/(?:[؛.!؟\n]+|،?\s+(?:اما|ولی|با\s+این\s+حال)\s+|،\s*(?=(?:دوستم|مادرم|پدرم|همسرم|مدیرم|همکارم|خواهرم|برادرم|او|آنها|دیگران|من|خودم)\s)|\s+و(?=\s*(?:دوستم|مادرم|پدرم|همسرم|مدیرم|همکارم|خواهرم|برادرم|او|آنها|دیگران)\s))/u)
     .map((clause) => clause.trim())
     .filter(Boolean);
 
