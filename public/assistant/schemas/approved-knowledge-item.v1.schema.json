@@ -84,7 +84,8 @@
         "status",
         "reviewer_role",
         "reviewed_at",
-        "version"
+        "version",
+        "review_record_id"
       ],
       "properties": {
         "status": {
@@ -105,6 +106,11 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 40
+        },
+        "review_record_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
         }
       }
     },
