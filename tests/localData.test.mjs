@@ -45,6 +45,7 @@ test('privacy deletion removes app-owned personal keys but preserves copyright a
   assert.equal(result.attempted, 4);
   assert.equal(result.removed.length, 4);
   assert.deepEqual(result.errors, []);
+  assert.deepEqual(result.remainingKeys, []);
   assert.equal(storage.getItem('maseer28_copyright_v60'), '1');
   assert.equal(storage.getItem('unrelated_site_preference'), 'keep');
   assert.equal(storage.getItem('maseer28_state'), null);
@@ -293,4 +294,32 @@ test('local deletion detects app-owned keys created after the deletion snapshot'
   assert.equal(result.removed.length, 1);
   assert.deepEqual(result.remainingKeys, ['maseer28_state_from_another_tab']);
   assert.deepEqual(result.verificationErrors, []);
+});
+
+
+test('local deletion does not verify success when final namespace enumeration fails', () => {
+  const storage = new MemoryStorage({ maseer28_state: '{}' });
+  const originalKey = storage.key.bind(storage);
+  let enumerations = 0;
+  storage.key = (index) => {
+    enumerations += 1;
+    if (enumerations > 1) throw new Error('final enumeration blocked');
+    return originalKey(index);
+  };
+
+  const plan = createLocalUserDataDeletionPlan(storage);
+  const result = deleteLocalUserData(storage, plan);
+
+  assert.equal(result.removed.length, 1);
+  assert.equal(result.remainingKeys, null);
+  assert.equal(result.verificationErrors.length, 1);
+  assert.equal(result.verificationErrors[0].phase, 'enumerate_after_delete');
+});
+
+test('local deletion returns an empty remaining-key list after complete removal', () => {
+  const storage = new MemoryStorage({ maseer28_state: '{}', maseer28_profile: '{}' });
+  const result = deleteLocalUserData(storage);
+  assert.deepEqual(result.remainingKeys, []);
+  assert.deepEqual(result.verificationErrors, []);
+  assert.equal(result.removed.length, 2);
 });
