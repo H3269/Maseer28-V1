@@ -236,3 +236,44 @@ test('IndexedDB export and deletion operate against an IndexedDB API implementat
     await removePrivacyTestDatabase();
   }
 });
+
+
+test('IndexedDB privacy helpers treat a missing database as empty without creating it', async () => {
+  await removePrivacyTestDatabase();
+  const exported = await readIndexedDbUserData();
+  assert.deepEqual(exported.stores, { books: [], versions: [], settings: [] });
+
+  const result = await deleteIndexedDbUserData();
+  assert.equal(result.attempted, 0);
+  assert.equal(result.removed, 0);
+  assert.equal(result.remaining, 0);
+
+  const databases = await indexedDB.databases();
+  assert.equal(databases.some((database) => database.name === PRIVACY_TEST_DB), false);
+});
+
+test('IndexedDB privacy deletion is a no-op for an existing database with empty stores', async () => {
+  await removePrivacyTestDatabase();
+  const openRequest = indexedDB.open(PRIVACY_TEST_DB, 1);
+  openRequest.onupgradeneeded = () => {
+    const database = openRequest.result;
+    database.createObjectStore('books', { keyPath: 'id' });
+    database.createObjectStore('versions', { keyPath: 'id' });
+    database.createObjectStore('settings', { keyPath: 'key' });
+  };
+  const db = await requestResult(openRequest);
+  db.close();
+
+  try {
+    const exported = await readIndexedDbUserData();
+    assert.deepEqual(exported.stores, { books: [], versions: [], settings: [] });
+
+    const result = await deleteIndexedDbUserData();
+    assert.equal(result.attempted, 0);
+    assert.equal(result.removed, 0);
+    assert.deepEqual(result.counts, { books: 0, versions: 0, settings: 0 });
+    assert.equal(result.remaining, 0);
+  } finally {
+    await removePrivacyTestDatabase();
+  }
+});
