@@ -9,6 +9,7 @@ const subtopicsRegistry = readJson('public/assistant/knowledge/subtopics.v1.json
 const relationsRegistry = readJson('public/assistant/knowledge/relations.v1.json');
 const relationTypesRegistry = readJson('public/assistant/knowledge/relation-types.v1.json');
 const consentPolicy = readJson('public/assistant/privacy/consent-policy.v1.json');
+const safetyDataPolicy = readJson('public/assistant/privacy/safety-data-boundaries.v1.json');
 const assessmentProtocol = readJson('public/assistant/assessment/assessment-protocol.v1.json');
 const topicDefinitions = readJson('public/assistant/knowledge/topic-definitions-draft.v1.json');
 const errors = [];
@@ -83,10 +84,22 @@ if (!assessmentProtocol.prohibited_outputs?.includes('تشخیص اختلال ر
 for (const [purpose, value] of Object.entries(consentPolicy.default_consent || {})) {
   if (value !== false) errors.push(`رضایت پیش‌فرض ${purpose} باید false باشد.`);
 }
+if (safetyDataPolicy.policy_id !== 'maseer28-safety-data-boundaries') errors.push('شناسه سیاست ایمنی و داده نامعتبر است.');
+if (safetyDataPolicy.status !== 'design_only_not_active' || safetyDataPolicy.runtime_enforcement !== false) errors.push('سیاست ایمنی/داده نباید به‌اشتباه فعال معرفی شود.');
+if (safetyDataPolicy.current_state_constraints?.cloud_assistant_is_not_implemented !== true) errors.push('وضعیت عدم پیاده‌سازی دستیار ابری باید صریح باشد.');
+if (safetyDataPolicy.current_state_constraints?.case_code_is_not_authentication !== true) errors.push('کد پرونده نباید احراز هویت تلقی شود.');
+if (safetyDataPolicy.consent_requirements?.all_purposes_default_false !== true) errors.push('تمام رضایت‌ها باید پیش‌فرض خاموش باشند.');
+if (safetyDataPolicy.data_minimization?.exclude_direct_identifiers_from_model_context !== true) errors.push('شناسه مستقیم نباید وارد زمینه مدل شود.');
+if (safetyDataPolicy.retention?.status !== 'unresolved_blocking_backend_release') errors.push('نگهداری داده حل‌نشده باید مانع انتشار Backend باشد.');
+if (safetyDataPolicy.retention?.raw_conversation_logging !== 'prohibited') errors.push('ثبت متن خام مکالمه باید ممنوع باشد.');
+if (safetyDataPolicy.prompt_and_tool_boundaries?.user_content_and_retrieved_documents_are_untrusted_data !== true) errors.push('مرز داده غیرقابل‌اعتماد برای prompt باید برقرار باشد.');
+if (safetyDataPolicy.crisis_safety?.status !== 'design_only_requires_specialist_validation') errors.push('سیاست بحران تا بازبینی متخصص باید غیرفعال بماند.');
+if (safetyDataPolicy.crisis_safety?.must_not_claim_reliable_automated_detection !== true) errors.push('نباید ادعای تشخیص خودکار قابل اتکا مطرح شود.');
+if ((safetyDataPolicy.release_gates || []).length < 7) errors.push('دروازه‌های انتشار ایمنی/حریم خصوصی ناقص‌اند.');
 if (errors.length) {
   console.error('اعتبارسنجی رجیستری دستیار ناموفق بود:');
   errors.forEach((error) => console.error(`- ${error}`));
   process.exitCode = 1;
 } else {
-  console.log(`رجیستری دستیار معتبر است: ۳۴ موضوع، ${subtopics.length} زیرموضوع، ${relations.length} رابطه کاندیدا (غیرفعال در runtime)، ۳۴ تعریف کاری تأییدنشده، پروتکل ارزیابی غیرتشخیصی و رضایت‌های پیش‌فرض خاموش.`);
+  console.log(`رجیستری دستیار معتبر است: ۳۴ موضوع، ${subtopics.length} زیرموضوع، ${relations.length} رابطه کاندیدا (غیرفعال در runtime)، ۳۴ تعریف کاری تأییدنشده، پروتکل ارزیابی غیرتشخیصی، رضایت‌های خاموش و سیاست ایمنی/داده غیرفعال.`);
 }
