@@ -134,11 +134,11 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
   if (correctionPresent) contradictions.push('کاربر احتمالاً در حال اصلاح یا دقیق‌تر کردن گفته قبلی است؛ برداشت قبلی نباید بدون بازبینی حفظ شود.');
   if (multiTopic) uncertainties.push('بیش از یک موضوع احتمالی دیده شد؛ اولویت اصلی هنوز مشخص نیست.');
   if (safetyContextPresent) uncertainties.push('عبارت بالقوه مرتبط با ایمنی دیده شد؛ این عبارت به‌تنهایی قصد یا خطر فوری را اثبات نمی‌کند و باید مستقیماً روشن شود.');
-  if (raw !== userAttributedText) uncertainties.push('عبارت ایمنی در نقل‌قول منتسب به شخص دیگری آمده است؛ وضعیت خود کاربر و شخص نقل‌شده باید از هم تفکیک شود.');
+  if (quotedSafetyMatches.length) uncertainties.push('عبارت ایمنی در نقل‌قول منتسب به شخص دیگری آمده است؛ وضعیت خود کاربر و شخص نقل‌شده باید از هم تفکیک شود.');
   if (explicitlyNegatedSafety) uncertainties.push('نشانه نفی در کنار عبارت ایمنی دیده شد؛ نتیجه‌گیری درباره سطح خطر از روی تطبیق واژگانی مجاز نیست.');
 
   let nextQuestion = null;
-  if (safetyMatches.length) {
+  if (safetyContextPresent) {
     nextQuestion = {
       text: 'آیا همین الآن خطر فوری، قصد یا برنامه عملی برای آسیب به خودت یا شخص دیگری وجود دارد؟ اگر پاسخ روشن نیست، بگو مطمئن نیستی.',
       purpose: 'safety_clarification',
@@ -158,7 +158,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
     request_id: String(requestId || 'local-request'),
     intent: {
       label: intentLabel,
-      ambiguity: (multiTopic || quotePresent || negationPresent || correctionPresent || topics.length === 0) ? 'high' : safetyMatches.length ? 'medium' : 'low',
+      ambiguity: (multiTopic || quotePresent || negationPresent || correctionPresent || topics.length === 0) ? 'high' : safetyContextPresent ? 'medium' : 'low',
     },
     semantic_summary: raw ? raw.slice(0, 600) : null,
     situational_facts: {
