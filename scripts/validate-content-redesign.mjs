@@ -5,6 +5,16 @@ const DAY_PHASES = {
   2: 'pattern_discrimination_and_context',
   3: 'functional_context_and_impact',
 };
+const ALLOW_REVIEWED_SUBTOPIC_REVISITS = new Set(['T14', 'T19', 'T23', 'T32', 'T33']);
+const REVIEWED_SUBTOPIC_MAPPINGS = new Map([
+  ['DRAFT_T14_D02', 'T14-S01'],
+  ['DRAFT_T14_D03', 'T14-S02'],
+  ['DRAFT_T19_D02', 'T19-S01'],
+  ['DRAFT_T23_D03', 'T23-S02'],
+  ['DRAFT_T32_D02', 'T32-S01'],
+  ['DRAFT_T33_D03', 'T33-S02'],
+]);
+
 const REQUIRED_DRAFT_FIELDS = [
   'learning_objective', 'mechanism_focus', 'exercise',
   'action', 'progress_measure', 'safety_and_limits',
@@ -67,6 +77,10 @@ export function validateContentRedesign({ queue, day1, day2, day3, topics, subto
       if (topicNames.has(item.topic_id) && item.topic_name !== topicNames.get(item.topic_id)) {
         errors.push('draft topic name mismatch ' + item.content_id);
       }
+      const reviewedSubtopicId = REVIEWED_SUBTOPIC_MAPPINGS.get(item.content_id);
+      if (reviewedSubtopicId && item.subtopic_id !== reviewedSubtopicId) {
+        errors.push('reviewed subtopic mapping mismatch ' + item.content_id);
+      }
       if (subById.get(item.subtopic_id)?.topic_id !== item.topic_id) {
         errors.push('subtopic parent mismatch ' + item.content_id);
       }
@@ -109,8 +123,27 @@ export function validateContentRedesign({ queue, day1, day2, day3, topics, subto
       }
     }
     const subtopicIds = topicDrafts.map((item) => item.subtopic_id);
-    if (new Set(subtopicIds).size !== subtopicIds.length) {
+    if (!ALLOW_REVIEWED_SUBTOPIC_REVISITS.has(topicId) &&
+        new Set(subtopicIds).size !== subtopicIds.length) {
       errors.push('topic ' + topicId + ' does not progress to a distinct subtopic each day');
+    }
+  }
+
+  // Guard two taxonomy/content mismatches found in the crosswalk audit.
+  const dayOneByTopic = new Map((day1.records ?? []).map((item) => [item.topic_id, item]));
+  const t04DayOne = dayOneByTopic.get('T04');
+  if (t04DayOne?.subtopic_id === 'T04-S01') {
+    const text = normalizeText([t04DayOne.learning_objective, t04DayOne.mechanism_focus, t04DayOne.exercise].join(' '));
+    const explicitlyExcluded = text.includes('خودبیزاری در این رکورد بررسی نمی‌شود');
+    if (!explicitlyExcluded && (text.includes('خودبیزاری') || text.includes('نفرت از خود'))) {
+      errors.push('T04-S01 day-one content must not classify self-hatred under hatred toward a person/group');
+    }
+  }
+  const t34DayOne = dayOneByTopic.get('T34');
+  if (t34DayOne?.subtopic_id === 'T34-S01') {
+    const text = normalizeText([t34DayOne.learning_objective, t34DayOne.mechanism_focus, t34DayOne.exercise].join(' '));
+    if (text.includes('مبهم') || text.includes('خارج از صلاحیت')) {
+      errors.push('T34-S01 day-one content must remain limited to a clear issue outside the 33-topic taxonomy');
     }
   }
 

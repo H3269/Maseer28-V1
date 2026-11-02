@@ -70,14 +70,46 @@ function detectSafetyCue(text) {
   return SAFETY_CUES.some((cue) => normalized.includes(normalize(cue)));
 }
 
+function isExplicitlyNegated(normalized, phrase) {
+  const needle = normalize(phrase);
+  const index = normalized.indexOf(needle);
+  if (index < 0) return false;
+  const before = normalized.slice(Math.max(0, index - 18), index);
+  const after = normalized.slice(index + needle.length, index + needle.length + 22);
+  return /(?:نه|هرگز|اصلاً|ابداً)\s*$/.test(before) ||
+    /^\s*(?:نیستم|نیست|نبودم|نبود|نمی\S*|ندارم|ندارد|نخواهم|نمی\s+خواهم)/.test(after);
+}
+
+function isRejectedAttribution(normalized, topicId) {
+  if (!['T18', 'T19', 'T23', 'T26', 'T33'].includes(topicId)) return false;
+  const attributed = /(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او|دیگران)\s+(?:گفت|گفته|نوشت|می\s+گوید)/.test(normalized);
+  const rejected = /(?:ولی|اما|با\s+این\s+حال).{0,45}(?:قبول\s+ندارم|موافق\s+نیستم|درست\s+نمی\s+دانم|باور\s+نمی\s+کنم)/.test(normalized);
+  return attributed && rejected;
+}
+
+function isMetaLanguageRequest(normalized) {
+  return /(?:برای\s+ترجمه|ترجمه\s+(?:این\s+)?جمله|معنی\s+(?:این\s+)?عبارت|مثال\s+(?:فرضی|از)|جمله\s+فرضی|چطور\s+می(?:شود|شه)\s+گفت)/.test(normalized);
+}
+
 function detectTopics(text) {
   const normalized = normalize(text);
+  if (isMetaLanguageRequest(normalized)) return [];
+  if (/(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او|دیگران)\s+(?:گفت|گفته|نوشت|می\s+گوید)/.test(normalized)) return [];
   const hits = [];
   for (const [topic_id, phrases] of TOPIC_RULES) {
-    const matched = phrases.filter((phrase) => normalized.includes(normalize(phrase)));
+    if (isRejectedAttribution(normalized, topic_id)) continue;
+    const uniquePhrases = [...new Map(phrases.map((phrase) => [normalize(phrase), phrase])).values()];
+    const matched = uniquePhrases.filter((phrase) =>
+      normalized.includes(normalize(phrase)) && !isExplicitlyNegated(normalized, phrase)
+    );
     if (matched.length) hits.push({ topic_id, matched_phrases: matched });
   }
-  return hits.sort((a, b) => b.matched_phrases.length - a.matched_phrases.length).slice(0, 3);
+  // T04 is a broad anger/aversion category; when the explicit self-directed
+  // construct T18 is present, do not let the generic phrase duplicate it.
+  const filteredHits = hits.some((item) => item.topic_id === 'T18')
+    ? hits.filter((item) => item.topic_id !== 'T04')
+    : hits;
+  return filteredHits.sort((a, b) => b.matched_phrases.length - a.matched_phrases.length).slice(0, 3);
 }
 
 function classifySafetyAnswer(text) {
@@ -164,7 +196,7 @@ export function submitAssessmentAnswer(session, answer) {
       impact: next.answers.impact,
       duration: next.answers.duration,
       user_goal: next.answers.goal,
-      candidate_topics: next.candidate_topics.map((item) => ({ topic_id: item.topic_id, status: item.status || 'tentative_hypothesis' })),
+      candidate_topics: next.candidate_topics.map((item) => ({ topic_id: item.topic_id, status: item.status || 'tentative_hypothesis', matched_rule_phrases: [...(item.matched_phrases || [])] })),
       limitations: [
         'این دسته‌بندی بر پایه تطبیق واژه‌ها و گفته‌های همین گفتگو است؛ ارزیابی روان‌شناختی یا تشخیص نیست.',
         'نبودن یک موضوع در فهرست به معنی رد آن نیست.',
@@ -216,6 +248,8 @@ export function stopAssessment(session) {
 export function getAssessmentSummary(session) {
   return session?.summary ?? null;
 }
+
+export const assessmentEngineTopicRuleIds = Object.freeze(TOPIC_RULES.map(([topicId]) => topicId));
 
 export const assessmentEngineMetadata = Object.freeze({
   version: '1.0.0',

@@ -201,3 +201,115 @@ test('explicit harm-related intent is escalated to human support', () => {
   assert.equal(session.safety_state, 'urgent_human_support_recommended');
   assert.equal(session.status, 'paused_for_human_support');
 });
+
+
+function completeIntakeToSummary(opening, clarification = 'یک نمونه مشخص از همین تجربه') {
+  let session = createAssessmentSession();
+  session = answer(session, opening);
+  session = answer(session, 'نه');
+  session = answer(session, 'در زندگی روزمره‌ام اثر گذاشته است');
+  session = answer(session, 'چند هفته است');
+  session = answer(session, 'می‌خواهم بهتر بفهمم چه اتفاقی می‌افتد');
+  session = answer(session, clarification);
+  return session;
+}
+
+test('a rejected attributed insult is not classified as the user belief', () => {
+  const session = completeIntakeToSummary(
+    'دوستم گفت «تو بی‌ارزشی»، ولی من با این حرف موافق نیستم.'
+  );
+  assert.equal(getCurrentQuestion(session).id, 'summary_confirmation');
+  assert.equal(
+    getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T23'),
+    false
+  );
+});
+
+test('a negated self-hatred phrase does not create a T18 hypothesis', () => {
+  const session = completeIntakeToSummary('من نفرت از خود ندارم؛ از یک رفتار مشخص ناراحتم.');
+  assert.equal(
+    getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T18'),
+    false
+  );
+});
+
+test('regret about a specific behavior is not automatically self-hatred or worthlessness', () => {
+  const session = completeIntakeToSummary('از رفتار دیروزم ناراحتم، نه از خودم.');
+  const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
+  assert.equal(ids.includes('T18'), false);
+  assert.equal(ids.includes('T23'), false);
+});
+
+test('privacy protection alone does not create a shame hypothesis', () => {
+  const session = completeIntakeToSummary('نمی‌خواهم موضوع خصوصی‌ام را برای دیگران افشا کنم.');
+  assert.equal(
+    getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T26'),
+    false
+  );
+});
+
+test('constructive self-criticism remains a tentative T33 hint, not a maladaptive conclusion', () => {
+  const session = completeIntakeToSummary(
+    'خودانتقادی من کمک می‌کند رفتارم را اصلاح کنم و قدم بعدی را مشخص کنم.'
+  );
+  const item = getAssessmentSummary(session).candidate_topics.find((candidate) => candidate.topic_id === 'T33');
+  assert.ok(item);
+  assert.equal(item.status, 'tentative_hypothesis');
+  assert.equal(session.summary.limitations.some((line) => line.includes('تشخیص نیست')), true);
+});
+
+
+test('explicit translation requests do not turn quoted example language into personal topic hypotheses', () => {
+  const session = completeIntakeToSummary('برای ترجمه جمله «من بی‌ارزشم» کمک می‌خواهم.');
+  assert.equal(
+    getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T23'),
+    false
+  );
+});
+
+test('externally attributed statements remain unclassified until the user clarifies ownership', () => {
+  const session = completeIntakeToSummary('دوستم گفت من از خودم متنفرم.');
+  const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
+  assert.equal(ids.includes('T18'), false);
+});
+
+test('multiple distinct self-evaluation experiences can coexist without forcing one primary topic', () => {
+  const session = completeIntakeToSummary(
+    'از خودم متنفرم، خودسرزنشی دارم و احساس می‌کنم بی‌ارزشم.'
+  );
+  const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
+  assert.ok(ids.includes('T18'));
+  assert.ok(ids.includes('T19'));
+  assert.ok(ids.includes('T23'));
+  assert.ok(ids.length <= 3);
+});
+
+test('a harmed person denying responsibility is not assigned self-blame from the abuse context alone', () => {
+  const session = completeIntakeToSummary(
+    'مادرم به من آسیب زد و من خودم را بابت رفتار او مقصر نمی‌دانم.'
+  );
+  assert.equal(
+    getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T19'),
+    false
+  );
+});
+
+test('corrected user text does not silently revive old topic hypotheses', () => {
+  let session = completeIntakeToSummary('مدتی است اضطراب دارم');
+  assert.ok(getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T02'));
+  session = answer(session, 'خلاصه درست نیست');
+  session = answer(session, 'موضوع من ترجمه عبارت بی‌ارزشم بود، نه تجربه شخصی');
+  assert.equal(getCurrentQuestion(session).id, 'summary_confirmation');
+  assert.equal(getAssessmentSummary(session).candidate_topics.length, 0);
+  assert.equal(getAssessmentSummary(session).topic_assessment_status, 'requires_reassessment');
+});
+
+
+test('tentative topic hypotheses preserve matched rule phrases for traceability', () => {
+  const session = completeIntakeToSummary('مدتی است اضطراب و نگرانی مداوم دارم');
+  const item = getAssessmentSummary(session).candidate_topics.find((candidate) => candidate.topic_id === 'T02');
+  assert.ok(item);
+  assert.ok(Array.isArray(item.matched_rule_phrases));
+  assert.ok(item.matched_rule_phrases.length > 0);
+  assert.equal(item.status, 'tentative_hypothesis');
+});

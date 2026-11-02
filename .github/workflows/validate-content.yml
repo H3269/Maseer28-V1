@@ -10,6 +10,8 @@ on:
       - 'scripts/validate-content.mjs'
       - 'scripts/validate-assistant-topics.mjs'
       - 'scripts/validate-content-redesign.mjs'
+      - 'scripts/validate-self-evaluation-pilot.mjs'
+      - 'scripts/validate-assessment-knowledge-consistency.mjs'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/**'
@@ -24,6 +26,8 @@ on:
       - 'scripts/validate-content.mjs'
       - 'scripts/validate-assistant-topics.mjs'
       - 'scripts/validate-content-redesign.mjs'
+      - 'scripts/validate-self-evaluation-pilot.mjs'
+      - 'scripts/validate-assessment-knowledge-consistency.mjs'
       - 'package.json'
       - '.github/workflows/**'
       - 'scripts/prepare-production-build.mjs'
@@ -67,6 +71,12 @@ jobs:
       - name: Validate 952-day redesign queue and draft gates
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:content-redesign
+      - name: Validate five-topic self-evaluation pilot
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:self-evaluation-pilot
+      - name: Validate assessment and canonical knowledge consistency
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:assessment-knowledge
       - name: Build application
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: |

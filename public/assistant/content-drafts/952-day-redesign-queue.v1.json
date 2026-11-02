@@ -10688,8 +10688,8 @@
       "topic_name": "اعتمادبه‌نفس پایین",
       "day_number": 4,
       "source_content_id": "اعتمادبه‌نفس پایین-04",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T15_D04",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -10704,9 +10704,15 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -10715,8 +10721,8 @@
       "topic_name": "اعتمادبه‌نفس پایین",
       "day_number": 5,
       "source_content_id": "اعتمادبه‌نفس پایین-05",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T15_D05",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -10731,9 +10737,15 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -10742,8 +10754,8 @@
       "topic_name": "اعتمادبه‌نفس پایین",
       "day_number": 6,
       "source_content_id": "اعتمادبه‌نفس پایین-06",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T15_D06",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -10758,9 +10770,15 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -10769,8 +10787,8 @@
       "topic_name": "اعتمادبه‌نفس پایین",
       "day_number": 7,
       "source_content_id": "اعتمادبه‌نفس پایین-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T15_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -10785,9 +10803,15 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -10796,8 +10820,8 @@
       "topic_name": "اعتمادبه‌نفس پایین",
       "day_number": 8,
       "source_content_id": "اعتمادبه‌نفس پایین-08",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T15_D08",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -10812,9 +10836,15 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -13712,8 +13742,8 @@
       "topic_name": "خودسرزنشی",
       "day_number": 4,
       "source_content_id": "خودسرزنشی-04",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T19_D04",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -13728,9 +13758,16 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -13739,8 +13776,8 @@
       "topic_name": "خودسرزنشی",
       "day_number": 5,
       "source_content_id": "خودسرزنشی-05",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T19_D05",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -13755,9 +13792,16 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -13766,8 +13810,8 @@
       "topic_name": "خودسرزنشی",
       "day_number": 6,
       "source_content_id": "خودسرزنشی-06",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T19_D06",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -13782,9 +13826,16 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -13793,8 +13844,8 @@
       "topic_name": "خودسرزنشی",
       "day_number": 7,
       "source_content_id": "خودسرزنشی-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T19_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -13809,9 +13860,16 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -13820,8 +13878,8 @@
       "topic_name": "خودسرزنشی",
       "day_number": 8,
       "source_content_id": "خودسرزنشی-08",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T19_D08",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -13836,9 +13894,16 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -16736,8 +16801,8 @@
       "topic_name": "احساس بی‌ارزشی",
       "day_number": 4,
       "source_content_id": "احساس بی‌ارزشی-04",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T23_D04",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -16752,9 +16817,16 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021",
+        "EVID_NICE_NG222"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -16763,8 +16835,8 @@
       "topic_name": "احساس بی‌ارزشی",
       "day_number": 5,
       "source_content_id": "احساس بی‌ارزشی-05",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T23_D05",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -16779,9 +16851,16 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021",
+        "EVID_NICE_NG222"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -16790,8 +16869,8 @@
       "topic_name": "احساس بی‌ارزشی",
       "day_number": 6,
       "source_content_id": "احساس بی‌ارزشی-06",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T23_D06",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -16806,9 +16885,16 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021",
+        "EVID_NICE_NG222"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -16817,8 +16903,8 @@
       "topic_name": "احساس بی‌ارزشی",
       "day_number": 7,
       "source_content_id": "احساس بی‌ارزشی-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T23_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -16833,9 +16919,16 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021",
+        "EVID_NICE_NG222"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -16844,8 +16937,8 @@
       "topic_name": "احساس بی‌ارزشی",
       "day_number": 8,
       "source_content_id": "احساس بی‌ارزشی-08",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T23_D08",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -16860,9 +16953,16 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021",
+        "EVID_NICE_NG222"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -19004,8 +19104,8 @@
       "topic_name": "شرم",
       "day_number": 4,
       "source_content_id": "شرم-04",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T26_D04",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -19020,9 +19120,15 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -19031,8 +19137,8 @@
       "topic_name": "شرم",
       "day_number": 5,
       "source_content_id": "شرم-05",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T26_D05",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -19047,9 +19153,15 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -19058,8 +19170,8 @@
       "topic_name": "شرم",
       "day_number": 6,
       "source_content_id": "شرم-06",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T26_D06",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -19074,9 +19186,15 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -19085,8 +19203,8 @@
       "topic_name": "شرم",
       "day_number": 7,
       "source_content_id": "شرم-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T26_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -19101,9 +19219,15 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -19112,8 +19236,8 @@
       "topic_name": "شرم",
       "day_number": 8,
       "source_content_id": "شرم-08",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T26_D08",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -19128,9 +19252,15 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -24296,8 +24426,8 @@
       "topic_name": "خودانتقادی",
       "day_number": 4,
       "source_content_id": "خودانتقادی-04",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T33_D04",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -24312,9 +24442,16 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -24323,8 +24460,8 @@
       "topic_name": "خودانتقادی",
       "day_number": 5,
       "source_content_id": "خودانتقادی-05",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T33_D05",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -24339,9 +24476,16 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -24350,8 +24494,8 @@
       "topic_name": "خودانتقادی",
       "day_number": 6,
       "source_content_id": "خودانتقادی-06",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T33_D06",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -24366,9 +24510,16 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -24377,8 +24528,8 @@
       "topic_name": "خودانتقادی",
       "day_number": 7,
       "source_content_id": "خودانتقادی-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T33_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -24393,9 +24544,16 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
@@ -24404,8 +24562,8 @@
       "topic_name": "خودانتقادی",
       "day_number": 8,
       "source_content_id": "خودانتقادی-08",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T33_D08",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -24420,9 +24578,16 @@
       "reviewer_id": null,
       "reviewer_qualification": null,
       "reviewed_at": null,
-      "rationale": null,
-      "evidence_ids": [],
-      "safety_notes": [],
+      "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
+      "evidence_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "safety_notes": [
+        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
+        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+      ],
       "runtime_eligible": false
     },
     {
