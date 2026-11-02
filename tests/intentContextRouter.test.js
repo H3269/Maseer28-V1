@@ -77,3 +77,23 @@ test('semantic output is deeply immutable', () => {
   assert.equal(Object.isFrozen(result.topic_candidates), true);
   assert.throws(() => result.topic_candidates.push({ topic_id: 'T34' }), TypeError);
 });
+
+
+test('informational requests do not create personal topic hypotheses', () => {
+  const result = routeSemanticIntake({ text: 'من فقط برای ترجمه یک متن درباره اضطراب سؤال دارم؛ خودم چنین تجربه‌ای ندارم.' });
+  assert.equal(result.intent.label, 'general_information');
+  assert.deepEqual(result.topic_candidates, []);
+  assert.equal(result.next_question, null);
+});
+
+test('a corrected meaning takes precedence over an earlier quoted label', () => {
+  const result = routeSemanticIntake({ text: 'وقتی می‌گویم «از خودم متنفرم»، منظورم این است که از رفتار دیروزم خجالت می‌کشم.' });
+  assert.equal(result.topic_candidates.some((item) => item.topic_id === 'T18'), false);
+  assert.equal(result.topic_candidates.some((item) => item.topic_id === 'T26'), true);
+});
+
+test('active threat at home is separated from generic topic matching', () => {
+  const result = routeSemanticIntake({ text: 'از همسرم می‌ترسم؛ دیشب تهدیدم کرد و الان هم خانه امن نیست.' });
+  assert.equal(result.safety_handoff.handoff_required, true);
+  assert.equal(result.next_question.purpose, 'safety_clarification');
+});
