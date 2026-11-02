@@ -408,7 +408,7 @@ export function Support({ content, onBack }) {
       window.setTimeout(() => URL.revokeObjectURL(url), 1000);
       setPrivacyMessage('فایل خروجی اطلاعات ذخیره‌شده در مرورگر آماده شد. آن را در محل امن نگهداری کن.');
     } catch (error) {
-      setPrivacyMessage(error?.message || 'تهیه خروجی اطلاعات انجام نشد.');
+      setPrivacyMessage('به دلیل محدودیت یا خطای ذخیره‌سازی مرورگر، تهیه خروجی کامل نشد. جزئیات فنی یا متن داده‌های شخصی در پیام نمایش داده نمی‌شود.');
     } finally { setPrivacyBusy(false); }
   }
   async function deleteData() {
@@ -428,7 +428,7 @@ export function Support({ content, onBack }) {
       setPrivacyMessage('داده‌های محلی کاربر حذف و بررسی شدند؛ پنج کتاب عمومی برنامه حفظ شده‌اند. برنامه در حال بارگذاری مجدد است.');
       window.setTimeout(() => window.location.reload(), 700);
     } catch (error) {
-      setPrivacyMessage(error?.message || 'حذف اطلاعات انجام نشد.');
+      setPrivacyMessage('عملیات حذف کامل نشد؛ ممکن است بخشی از داده‌ها باقی مانده باشند یا بخشی از مراحل انجام شده باشد. وضعیت ذخیره‌سازی را بررسی کن و در صورت نیاز دوباره تلاش کن.');
     } finally { setPrivacyBusy(false); }
   }
   return <section className="card" id="support">
