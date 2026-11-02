@@ -338,6 +338,7 @@ test('unconfirmed summary is not marked complete after two correction rounds', (
   session = answer(session, 'اثر آن روی خوابم هم هست');
   session = answer(session, 'نه، هنوز دقیق نیست');
   session = answer(session, 'هنوز اشتباه است');
+  session = answer(session, 'نه، هنوز خلاصه دقیق نیست');
   assert.equal(session.status, 'summary_needs_review');
   assert.equal(session.current_question, null);
   assert.equal(session.next_step.content_available, false);
