@@ -1,3 +1,5 @@
+import { routeSemanticIntake } from './intentContextRouter.js';
+
 const TOPIC_RULES = [
   ['T01', ['خشم', 'عصبانی', 'عصبانیت', 'از کوره', 'جوش میارم']],
   ['T02', ['اضطراب', 'نگرانی مداوم', 'دلشوره', 'نگران آینده']],
@@ -131,6 +133,7 @@ export function createAssessmentSession({ localOnly = true } = {}) {
     safety_context_flag: false,
     answers: {},
     candidate_topics: [],
+    semantic_intake: null,
     summary: null,
     processing: 'local_in_memory_only',
   };
@@ -151,6 +154,7 @@ export function submitAssessmentAnswer(session, answer) {
 
   if (questionId === 'open_problem') {
     next.safety_context_flag = detectSafetyCue(value);
+    next.semantic_intake = routeSemanticIntake({ text: value, requestId: 'assessment-open-problem' });
     next.current_question = QUESTION.safety;
     return next;
   }
@@ -177,10 +181,31 @@ export function submitAssessmentAnswer(session, answer) {
   if (questionId === 'impact') next.current_question = QUESTION.duration;
   else if (questionId === 'duration') next.current_question = QUESTION.goal;
   else if (questionId === 'goal') {
-    next.candidate_topics = detectTopics(next.answers.open_problem);
+    const routed = routeSemanticIntake({
+      text: next.answers.open_problem,
+      requestId: 'assessment-topic-routing',
+      priorContext: { situational_facts: { impact: next.answers.impact, duration: next.answers.duration, user_goal: value } },
+    });
+    next.semantic_intake = routed;
+    next.candidate_topics = routed.topic_candidates.map((item) => ({
+      topic_id: item.topic_id,
+      matched_phrases: item.evidence_quotes,
+      status: 'tentative_hypothesis',
+      confidence_band: item.confidence_band,
+    }));
     next.current_question = QUESTION.clarify;
   } else if (questionId === 'clarify_example') {
-    const extra = detectTopics(value);
+    const routed = routeSemanticIntake({
+      text: [next.answers.open_problem, value].join(' '),
+      requestId: 'assessment-topic-clarification',
+    });
+    next.semantic_intake = routed;
+    const extra = routed.topic_candidates.map((item) => ({
+      topic_id: item.topic_id,
+      matched_phrases: item.evidence_quotes,
+      status: 'tentative_hypothesis',
+      confidence_band: item.confidence_band,
+    }));
     const merged = new Map([...next.candidate_topics, ...extra].map((item) => [item.topic_id, item]));
     next.candidate_topics = [...merged.values()].slice(0, 3);
     if (next.candidate_topics.length === 0) next.candidate_topics = [{ topic_id: 'T34', matched_phrases: [], status: 'needs_clarification' }];
