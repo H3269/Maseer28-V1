@@ -49,7 +49,7 @@ export function createLocalUserDataDeletionPlan(storage) {
 export function deleteLocalUserData(storage, plan = createLocalUserDataDeletionPlan(storage)) {
   const target = getStorage(storage);
   if (plan.errors.length) {
-    return { attempted: 0, removed: [], errors: plan.errors, verificationErrors: [] };
+    return { attempted: 0, removed: [], errors: plan.errors, verificationErrors: [], remainingKeys: null };
   }
 
   const keys = [...plan.keys];
@@ -68,7 +68,26 @@ export function deleteLocalUserData(storage, plan = createLocalUserDataDeletionP
       verificationErrors.push({ key, message: String(error?.message || error) });
     }
   }
-  return { attempted: keys.length, removed, errors, verificationErrors };
+
+  // Re-enumerate the complete app-owned namespace, not only the initial snapshot.
+  // This catches keys written by another tab while the multi-store deletion was running.
+  let remainingKeys = null;
+  try {
+    remainingKeys = [];
+    const length = target.length;
+    for (let index = 0; index < length; index += 1) {
+      const key = target.key(index);
+      if (key && isUserDataKey(key)) remainingKeys.push(key);
+    }
+  } catch (error) {
+    remainingKeys = null;
+    verificationErrors.push({
+      phase: 'enumerate_after_delete',
+      message: String(error?.message || error),
+    });
+  }
+
+  return { attempted: keys.length, removed, errors, verificationErrors, remainingKeys };
 }
 
 export const LOCAL_USER_DATA_POLICY = Object.freeze({
