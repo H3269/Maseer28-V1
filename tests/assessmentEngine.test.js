@@ -65,6 +65,11 @@ test('ordinary concern proceeds through one question at a time and produces tent
   assert.ok(summary.candidate_topics.every((item) => item.status === 'tentative_hypothesis'));
   assert.ok(summary.limitations.length >= 3);
   session = answer(session, 'خلاصه کلی درست است اما شدت آن را کمتر گفتم');
+  assert.equal(getCurrentQuestion(session).id, 'summary_revision');
+  session = answer(session, 'شدت اثر روی خوابم بیشتر از چیزی است که گفتی.');
+  assert.equal(getCurrentQuestion(session).id, 'summary_confirmation');
+  assert.match(session.summary.impact, /خوابم/);
+  session = answer(session, 'بله، حالا دقیق است');
   assert.equal(session.status, 'completed');
   assert.equal(session.next_step.content_available, false);
 });
@@ -297,4 +302,41 @@ test('safety domain classification preserves self-harm and external-threat disti
   assert.ok(classifySafetyDomains('کاش نبودم و گاهی فکر آسیب زدن به خودم دارم.').includes('risk_of_self_harm'));
   assert.ok(classifySafetyDomains('همسرم تهدیدم کرد و خانه امن نیست.').includes('risk_from_another_person'));
   assert.ok(classifySafetyDomains('نمی‌دانم چه خطری وجود دارد.').includes('domain_not_yet_determined'));
+});
+
+
+test('summary topic correction replaces an earlier hypothesis and requires reconfirmation', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  session = answer(session, 'در کارم تمرکز ندارم');
+  session = answer(session, 'چند هفته است');
+  session = answer(session, 'می‌خواهم مسئله را بفهمم');
+  session = answer(session, 'وقتی آینده نامعلوم است نگران می‌شوم');
+  assert.equal(getCurrentQuestion(session).id, 'summary_confirmation');
+  session = answer(session, 'نه، موضوع اصلی من اهمال‌کاری است.');
+  assert.equal(getCurrentQuestion(session).id, 'summary_revision');
+  session = answer(session, 'موضوع اصلی من اهمال‌کاری است و کارها را عقب می‌اندازم.');
+  assert.equal(session.summary.candidate_topics.some((item) => item.topic_id === 'T09'), true);
+  assert.equal(session.summary.candidate_topics.some((item) => item.topic_id === 'T02'), false);
+  assert.equal(getCurrentQuestion(session).id, 'summary_confirmation');
+  session = answer(session, 'بله، حالا دقیق است');
+  assert.equal(session.status, 'completed');
+});
+
+test('unconfirmed summary is not marked complete after two correction rounds', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  session = answer(session, 'در کارم تمرکز ندارم');
+  session = answer(session, 'چند هفته است');
+  session = answer(session, 'می‌خواهم مسئله را بفهمم');
+  session = answer(session, 'وقتی آینده نامعلوم است نگران می‌شوم');
+  session = answer(session, 'نه، دقیق نیست');
+  session = answer(session, 'اثر آن روی خوابم هم هست');
+  session = answer(session, 'نه، هنوز دقیق نیست');
+  session = answer(session, 'هنوز اشتباه است');
+  assert.equal(session.status, 'summary_needs_review');
+  assert.equal(session.current_question, null);
+  assert.equal(session.next_step.content_available, false);
 });
