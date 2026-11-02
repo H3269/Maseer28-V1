@@ -421,7 +421,7 @@ export function Support({ content, onBack }) {
       if (localDeletionPlan.errors.length) throw new Error('پیش‌بررسی localStorage ناموفق بود؛ برای جلوگیری از حذف ناقص، هیچ داده‌ای پاک نشد.');
       const libraryResult = await deleteIndexedDbUserData();
       const result = deleteLocalUserData(undefined, localDeletionPlan);
-      if (result.errors.length || result.verificationErrors.length || result.removed.length !== result.attempted || libraryResult.remaining !== 0) {
+      if (result.errors.length || result.verificationErrors.length || result.removed.length !== result.attempted || result.remainingKeys === null || result.remainingKeys.length !== 0 || libraryResult.remaining !== 0) {
         setPrivacyMessage('حذف کامل انجام نشد. برخی داده‌ها ممکن است باقی مانده باشند؛ دوباره تلاش کن یا داده‌های مرورگر را بررسی کن.');
         return;
       }
