@@ -87,6 +87,14 @@ test('an affirmative current danger response pauses the assessment for human sup
   assert.ok(session.referral.instruction);
 });
 
+test('human handoff retains the safety domain disclosed in the current answer', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است مضطربم');
+  session = answer(session, 'بله، کسی مرا تهدید می‌کند');
+  assert.equal(session.status, 'paused_for_human_support');
+  assert.deepEqual(session.referral.safety_domains, ['risk_from_another_person']);
+});
+
 test('uncertain safety response triggers clarification rather than being treated as safe', () => {
   let session = createAssessmentSession();
   session = answer(session, 'خودکشی');
