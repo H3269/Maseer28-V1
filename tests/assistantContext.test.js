@@ -36,7 +36,8 @@ test('journey context and interaction preferences require separate independent c
   });
   assert.deepEqual(context.entries.map((item) => item.key), ['active_day', 'completed_days_count', 'current_goal']);
   assert.ok(context.entries.every((item) => item.consent_purpose === 'journey_context'));
-  assert.equal(validateAssistantContext(context, { now, consentState: consent(true, false) }).valid, true);
+  const validation = validateAssistantContext(context, { now, consentState: consent(true, false) });
+  assert.equal(validation.valid, true, validation.errors.join('; '));
 });
 
 test('saved interaction preferences are not inferred from journey consent', () => {
