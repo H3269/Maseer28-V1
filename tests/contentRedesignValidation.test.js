@@ -44,7 +44,7 @@ function makeData() {
     source_content_id: topic.topic_id + '-0' + day,
     topic_id: topic.topic_id,
     topic_name: topic.name,
-    subtopic_id: topic.topic_id + '-S0' + day,
+    subtopic_id: reviewedMappings.get('DRAFT_' + topic.topic_id + '_D0' + day) ?? topic.topic_id + '-S0' + day,
     day_number: day,
     phase: ({
       1: 'orientation_and_safe_observation',
