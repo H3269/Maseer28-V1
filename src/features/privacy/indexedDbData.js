@@ -79,7 +79,7 @@ function deleteStoreKeys(store, rows, keyField) {
 export async function deleteIndexedDbUserData(indexedDBApi = globalThis.indexedDB) {
   if (!indexedDBApi) throw new Error('IndexedDB در این مرورگر در دسترس نیست؛ پاک‌سازی کامل قابل تأیید نیست.');
   const db = await openExistingDatabase(indexedDBApi);
-  if (!db) return { database: DB_NAME, attempted: 0, removed: 0 };
+  if (!db) return { database: DB_NAME, attempted: 0, removed: 0, remaining: 0 };
   try {
     const readTx = db.transaction(STORE_NAMES, 'readonly');
     const [books, versions, settings] = await Promise.all([
