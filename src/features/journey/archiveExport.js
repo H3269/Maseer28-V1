@@ -70,7 +70,7 @@ function makePdf(archive, index) {
     y += gap;
   }
   newPage();
-  write(`نام: ${p.name || '—'}    مسئله: ${p.problem || '—'}    کد: ${p.code || '—'}`, { size: 24 });
+  write(`مسئله: ${p.problem || '—'}`, { size: 24 });
   write(`تاریخ شروع: ${dateLabel(archive.startedAt)}    تاریخ بایگانی: ${dateLabel(archive.archivedAt)}`, { size: 23, color: '#64716e' });
   write(`پیشرفت: ${(archive.completed || []).length} از ۲۸ روز    امتیاز شروع: ${archive.assessmentData?.score ?? '—'}    امتیاز پایان: ${archive.final?.score ?? '—'}`, { size: 23, color: '#64716e', gap: 22 });
   const entries = Object.entries(archive.answers || {}).sort(([a], [b]) => Number(a) - Number(b));
