@@ -129,3 +129,16 @@ test('empty or mismatched approval manifests fail closed', () => {
   mismatchedManifest.approved_items[0].review_record_id = 'REV-OTHER';
   assert.equal(retrieveApprovedKnowledge({ query: 'نگرانی', items: [item], approvalManifest: mismatchedManifest }).status, 'no_approved_content');
 });
+
+
+test('exercise retrieval requires qualified clinical review and explicit stop conditions', () => {
+  const exercise = approved({
+    content_type: 'exercise',
+    safety: { level: 'caution', stop_conditions: ['در صورت افزایش ناراحتی تمرین را متوقف کن.'] },
+    approval: { status: 'approved_for_assistant', reviewer_role: 'qualified_clinician', review_record_id: 'REV-CLIN-EX-01', reviewed_at: '2026-10-20T10:00:00Z', version: '1.0.0' },
+  });
+  const result = retrieveApprovedKnowledge({ query: 'نگرانی', items: [exercise], approvalManifest: manifestFor(exercise) });
+  assert.equal(result.status, 'results_found');
+  assert.equal(result.results[0].safety.level, 'caution');
+  assert.equal(result.results[0].safety.stop_conditions.length, 1);
+});
