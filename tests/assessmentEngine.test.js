@@ -257,3 +257,49 @@ test('constructive self-criticism remains a tentative T33 hint, not a maladaptiv
   assert.equal(item.status, 'tentative_hypothesis');
   assert.equal(session.summary.limitations.some((line) => line.includes('تشخیص نیست')), true);
 });
+
+
+test('explicit translation requests do not turn quoted example language into personal topic hypotheses', () => {
+  const session = completeIntakeToSummary('برای ترجمه جمله «من بی‌ارزشم» کمک می‌خواهم.');
+  assert.equal(
+    getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T23'),
+    false
+  );
+});
+
+test('externally attributed statements remain unclassified until the user clarifies ownership', () => {
+  const session = completeIntakeToSummary('دوستم گفت من از خودم متنفرم.');
+  const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
+  assert.equal(ids.includes('T18'), false);
+});
+
+test('multiple distinct self-evaluation experiences can coexist without forcing one primary topic', () => {
+  const session = completeIntakeToSummary(
+    'از خودم متنفرم، خودم را بابت آن اتفاق سرزنش می‌کنم و احساس می‌کنم بی‌ارزشم.'
+  );
+  const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
+  assert.ok(ids.includes('T18'));
+  assert.ok(ids.includes('T19'));
+  assert.ok(ids.includes('T23'));
+  assert.ok(ids.length <= 3);
+});
+
+test('a harmed person denying responsibility is not assigned self-blame from the abuse context alone', () => {
+  const session = completeIntakeToSummary(
+    'مادرم به من آسیب زد و من خودم را بابت رفتار او مقصر نمی‌دانم.'
+  );
+  assert.equal(
+    getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T19'),
+    false
+  );
+});
+
+test('corrected user text does not silently revive old topic hypotheses', () => {
+  let session = completeIntakeToSummary('مدتی است اضطراب دارم');
+  assert.ok(getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T02'));
+  session = answer(session, 'خلاصه درست نیست');
+  session = answer(session, 'موضوع من ترجمه عبارت بی‌ارزشم بود، نه تجربه شخصی');
+  assert.equal(getCurrentQuestion(session).id, 'summary_confirmation');
+  assert.equal(getAssessmentSummary(session).candidate_topics.length, 0);
+  assert.equal(getAssessmentSummary(session).topic_assessment_status, 'requires_reassessment');
+});
