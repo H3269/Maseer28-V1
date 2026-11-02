@@ -1,48 +1,5 @@
 import { routeSemanticIntake } from './intentContextRouter.js';
 
-const TOPIC_RULES = [
-  ['T01', ['خشم', 'عصبانی', 'عصبانیت', 'از کوره', 'جوش میارم']],
-  ['T02', ['اضطراب', 'نگرانی مداوم', 'دلشوره', 'نگران آینده']],
-  ['T03', ['ترس', 'میترسم', 'می ترسم', 'وحشت', 'هراس']],
-  ['T04', ['نفرت', 'بیزاری از', 'متنفرم']],
-  ['T05', ['حسادت', 'حسود']],
-  ['T06', ['سوگ', 'فقدان', 'از دست دادن عزیز', 'غمگین', 'اندوه']],
-  ['T07', ['احساس گناه', 'عذاب وجدان', 'گناهکار']],
-  ['T08', ['وابستگی عاطفی', 'وابسته ام', 'بدون او نمیتوانم', 'بدون او نمی توانم']],
-  ['T09', ['اهمال کاری', 'اهمال‌کاری', 'کارها را عقب', 'به تعویق می اندازم', 'شروع کار سخت']],
-  ['T10', ['بی خوابی', 'بی‌خوابی', 'خوابم نمیبرد', 'خوابم نمی برد', 'از خواب بیدار']],
-  ['T11', ['عادت تکراری', 'رفتار تکراری', 'موهایم را میکنم', 'پوستم را میکنم']],
-  ['T12', ['نه گفتن', 'مرزبندی', 'حد و مرز', 'درخواست دیگران را رد']],
-  ['T13', ['تنهایی', 'احساس تنهایی', 'انزوا', 'کسی را ندارم']],
-  ['T14', ['کمبود انگیزه', 'انگیزه ندارم', 'میل شروع ندارم']],
-  ['T15', ['اعتماد به نفس', 'اعتمادبه نفس', 'از پسش برنمیام']],
-  ['T16', ['نشخوار فکری', 'افکار منفی', 'فکرهای تکراری', 'ذهنم رها نمیکند']],
-  ['T17', ['مشکل رابطه', 'مشکلات رابطه', 'اختلاف با همسر', 'تعارض رابطه']],
-  ['T18', ['نفرت از خود', 'از خودم متنفرم', 'خودم را دوست ندارم']],
-  ['T19', ['خودسرزنشی', 'خودم را سرزنش', 'همه تقصیرها گردن من']],
-  ['T20', ['کمال گرایی', 'کمال‌گرایی', 'باید بی نقص', 'باید بی‌نقص']],
-  ['T21', ['اجتناب', 'فرار از موقعیت', 'از موقعیت دوری']],
-  ['T22', ['استرس', 'فشار روانی', 'تحت فشار']],
-  ['T23', ['بی ارزشی', 'بی‌ارزشی', 'بی ارزشم', 'بی‌ارزشم']],
-  ['T24', ['کنترل هیجان', 'تنظیم هیجان', 'احساساتم از کنترل خارج']],
-  ['T25', ['رنجش', 'کینه', 'دلخوری طولانی']],
-  ['T26', ['شرم', 'خجالت از خود', 'احساس رسوایی']],
-  ['T27', ['ترس از قضاوت', 'قضاوت دیگران', 'نگران نظر دیگران']],
-  ['T28', ['ترس از شکست', 'از شکست میترسم', 'از شکست می ترسم']],
-  ['T29', ['ترس از طرد', 'طرد شدن', 'ترک شدن', 'رد شدن از طرف']],
-  ['T30', ['شک و تردید', 'دودلی', 'تصمیم گیری سخت', 'تصمیم‌گیری سخت']],
-  ['T31', ['کنترل گری', 'کنترل‌گری', 'همه چیز باید دست من', 'رفتار کنترلی']],
-  ['T32', ['بی انگیزگی', 'بی‌انگیزگی', 'بی انرژی', 'بی‌انرژی', 'علاقه ندارم']],
-  ['T33', ['خودانتقادی', 'از خودم ایراد', 'منتقد درونی']],
-];
-
-const SAFETY_CUES = [
-  'خودکشی', 'قصد خودکشی', 'به زندگی ام پایان', 'به زندگیم پایان',
-  'خودم را بکشم', 'خودمو بکشم', 'به خودم آسیب', 'خودزنی',
-  'به کسی آسیب بزنم', 'او را بکشم', 'تهدید به قتل', 'خشونت خانگی',
-  'در خانه امن نیستم', 'خانه امن نیست', 'الان در خطرم', 'تهدیدم کرد', 'تهدیدم می‌کند', 'کاش نبودم', 'کاش بمیرم', 'نمی‌خواهم زنده باشم', 'نمی‌خوام زنده باشم', 'فکر آسیب زدن به خودم', 'آسیب زدن به خودم', 'فکر خودآسیبی', 'قصد آسیب', 'قصد خودآسیبی', 'دیگه نمی‌کشم', 'همه‌چی تمومه',
-];
-
 const QUESTION = {
   open: { id: 'open_problem', stage: 'open_intent', prompt: 'دوست داری درباره چه مسئله‌ای صحبت کنیم؟ با زبان خودت توضیح بده؛ لازم نیست از بین موضوعات اپ چیزی انتخاب کنی.' },
   safety: { id: 'safety_now', stage: 'safety_check', prompt: 'پیش از ادامه یک بررسی کوتاه ایمنی: آیا همین الآن احتمال می‌دهی به خودت یا شخص دیگری آسیب بزنی، یا کسی در حال حاضر تو را در معرض خطر قرار داده است؟ می‌توانی «بله»، «نه» یا «مطمئن نیستم» بگویی.' },
@@ -67,11 +24,6 @@ function normalize(text) {
     .toLowerCase();
 }
 
-function detectSafetyCue(text) {
-  const normalized = normalize(text);
-  return SAFETY_CUES.some((cue) => normalized.includes(normalize(cue)));
-}
-
 export function classifySafetyDomains(text) {
   const value = normalize(text);
   const domains = [];
@@ -85,16 +37,6 @@ export function classifySafetyDomains(text) {
     domains.push('risk_from_another_person');
   }
   return domains.length ? domains : ['domain_not_yet_determined'];
-}
-
-function detectTopics(text) {
-  const normalized = normalize(text);
-  const hits = [];
-  for (const [topic_id, phrases] of TOPIC_RULES) {
-    const matched = phrases.filter((phrase) => normalized.includes(normalize(phrase)));
-    if (matched.length) hits.push({ topic_id, matched_phrases: matched });
-  }
-  return hits.sort((a, b) => b.matched_phrases.length - a.matched_phrases.length).slice(0, 3);
 }
 
 export function classifySafetyAnswer(text) {
@@ -296,8 +238,8 @@ export function submitAssessmentAnswer(session, answer) {
   }
 
   if (questionId === 'open_problem') {
-    next.safety_context_flag = detectSafetyCue(value);
     next.semantic_intake = routeSemanticIntake({ text: value, requestId: 'assessment-open-problem' });
+    next.safety_context_flag = next.semantic_intake.next_question?.purpose === 'safety_clarification';
     if (next.semantic_intake.intent.label === 'general_information' && !next.semantic_intake.safety_handoff.handoff_required) {
       next.status = 'information_request_not_supported';
       next.current_question = null;
