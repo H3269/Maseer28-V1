@@ -233,6 +233,16 @@ export function submitAssessmentAnswer(session, answer) {
   if (questionId === 'open_problem') {
     next.safety_context_flag = detectSafetyCue(value);
     next.semantic_intake = routeSemanticIntake({ text: value, requestId: 'assessment-open-problem' });
+    if (next.semantic_intake.intent.label === 'general_information' && !next.semantic_intake.safety_handoff.handoff_required) {
+      next.status = 'information_request_not_supported';
+      next.current_question = null;
+      next.next_step = {
+        content_available: false,
+        reason: 'مسیر پاسخ‌گویی دانشی و بازیابی محتوای تأییدشده هنوز در runtime فعال نیست.',
+        message: 'این پرسش از نوع درخواست اطلاعات عمومی است، نه ارزیابی تجربه شخصی. در نسخه فعلی هنوز دانش تأییدشده و مسیر پاسخ‌گویی دانشی به دستیار متصل نشده است؛ بنابراین به‌جای حدس‌زدن یا تبدیل پرسش تو به ارزیابی شخصی، این گفتگو را در همین‌جا متوقف می‌کنم.',
+      };
+      return next;
+    }
     if (next.semantic_intake.safety_handoff.handoff_required) {
       next.status = 'paused_for_human_support';
       next.safety_state = 'urgent_human_support_recommended';
