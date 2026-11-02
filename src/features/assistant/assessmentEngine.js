@@ -1,3 +1,4 @@
+import { extractConservativeAssessmentEvidence } from './assessmentLanguageContext.v1.js';
 import { assessmentTopicRuleRegistry } from './assessmentTopicRuleRegistry.v1.js';
 
 const TOPIC_RULES = assessmentTopicRuleRegistry.rules.map(({ topic_id, phrases }) => [topic_id, phrases]);
@@ -60,9 +61,9 @@ function isMetaLanguageRequest(normalized) {
 }
 
 function detectTopics(text) {
-  const normalized = normalize(text);
-  if (isMetaLanguageRequest(normalized)) return [];
-  if (/(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او|دیگران)\s+(?:گفت|گفته|نوشت|می\s+گوید)/.test(normalized)) return [];
+  const context = extractConservativeAssessmentEvidence(text);
+  const normalized = normalize(context.evidence_text);
+  if (!normalized) return [];
   const hits = [];
   for (const [topic_id, phrases] of TOPIC_RULES) {
     if (isRejectedAttribution(normalized, topic_id)) continue;
