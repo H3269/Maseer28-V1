@@ -4,48 +4,168 @@
   "title": "Maseer28 Approved Knowledge Item",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "item_id", "title", "content", "topic_ids", "content_type", "source", "approval"],
+  "required": [
+    "schema_version",
+    "item_id",
+    "title",
+    "content",
+    "topic_ids",
+    "content_type",
+    "source",
+    "approval"
+  ],
   "properties": {
-    "schema_version": { "const": "1.0.0" },
-    "item_id": { "type": "string", "minLength": 1, "maxLength": 120 },
-    "title": { "type": "string", "minLength": 1, "maxLength": 240 },
-    "content": { "type": "string", "minLength": 1, "maxLength": 12000 },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "item_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "content": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 12000
+    },
     "topic_ids": {
       "type": "array",
       "minItems": 1,
       "maxItems": 5,
       "uniqueItems": true,
-      "items": { "type": "string", "pattern": "^T(0[1-9]|[12][0-9]|3[0-4])$" }
+      "items": {
+        "type": "string",
+        "pattern": "^T(0[1-9]|[12][0-9]|3[0-4])$"
+      }
     },
-    "content_type": { "enum": ["education", "self_reflection", "exercise", "safety_information"] },
+    "content_type": {
+      "enum": [
+        "education",
+        "self_reflection",
+        "exercise",
+        "safety_information"
+      ]
+    },
     "source": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["source_id", "title", "locator"],
+      "required": [
+        "source_id",
+        "title",
+        "locator"
+      ],
       "properties": {
-        "source_id": { "type": "string", "minLength": 1, "maxLength": 120 },
-        "title": { "type": "string", "minLength": 1, "maxLength": 240 },
-        "locator": { "type": "string", "minLength": 1, "maxLength": 500 }
+        "source_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
       }
     },
     "approval": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["status", "reviewer_role", "reviewed_at", "version"],
+      "required": [
+        "status",
+        "reviewer_role",
+        "reviewed_at",
+        "version"
+      ],
       "properties": {
-        "status": { "const": "approved_for_assistant" },
-        "reviewer_role": { "enum": ["qualified_clinician", "evidence_reviewer", "safety_reviewer", "legal_reviewer", "editorial_reviewer"] },
-        "reviewed_at": { "type": "string", "format": "date-time" },
-        "version": { "type": "string", "minLength": 1, "maxLength": 40 }
+        "status": {
+          "const": "approved_for_assistant"
+        },
+        "reviewer_role": {
+          "enum": [
+            "qualified_clinician",
+            "evidence_reviewer",
+            "safety_reviewer"
+          ]
+        },
+        "reviewed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        }
       }
     },
     "safety": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "level": { "enum": ["routine", "caution", "human_review_required"] },
-        "stop_conditions": { "type": "array", "items": { "type": "string", "maxLength": 300 }, "maxItems": 10 }
+        "level": {
+          "enum": [
+            "routine",
+            "caution",
+            "human_review_required"
+          ]
+        },
+        "stop_conditions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "maxItems": 10
+        }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "content_type": {
+            "const": "exercise"
+          }
+        },
+        "required": [
+          "content_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "safety"
+        ],
+        "properties": {
+          "safety": {
+            "required": [
+              "level",
+              "stop_conditions"
+            ],
+            "properties": {
+              "level": {
+                "enum": [
+                  "routine",
+                  "caution"
+                ]
+              },
+              "stop_conditions": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }
