@@ -97,3 +97,15 @@ test('runtime defaults to the repository catalog and remains closed while the ma
   assert.equal(result.retrieval_status, 'no_approved_content');
   assert.deepEqual(result.knowledge, []);
 });
+
+
+test('explicitly general strategy requests can retrieve approved source excerpts', () => {
+  const result = routeAssistantTurn({
+    text: 'چه راهکاری برای اضطراب وجود دارد؟',
+    requestScope: 'general',
+    knowledgeItems: knowledge,
+    approvalManifest,
+  });
+  assert.equal(result.status, 'approved_knowledge_available');
+  assert.equal(result.knowledge[0].source.source_id, 'SRC-T02-001');
+});
