@@ -122,6 +122,82 @@ export function classifySafetyAnswer(text) {
   return 'clarification_needed';
 }
 
+function isDeclinedAnswer(value) {
+  return /^(?:رد می‌کنم|ترجیح می‌دهم نگویم|نمی‌دانم|نمی‌خوام پاسخ بدهم|نمی‌خواهم پاسخ بدهم|فعلاً نمی‌خواهم|نامشخص است)[.!؟\s]*$/.test(normalize(value));
+}
+
+function hasDurationEvidence(value) {
+  return /(?:چند روز|چند هفته|چند ماه|چند سال|از کودکی|از بچگی|از پارسال|از سال گذشته|از ماه گذشته|هر روز|هر شب|از \d+ (?:روز|هفته|ماه|سال)|\d+ (?:روز|هفته|ماه|سال))/.test(normalize(value));
+}
+
+function hasImpactEvidence(value) {
+  return /(?:در زندگی روزمره|در کارم|در رابطه|باعث شده|اثر گذاشته|اختلال ایجاد|تمرکزم را|خوابم را|روابطم را|نمی‌توانم کار|نمی تونم کار)/.test(normalize(value));
+}
+
+function hasConcreteExample(value) {
+  return /(?:وقتی|مثلاً|برای مثال|دیروز|امروز|در جلسه|در محل کار|با همسرم|در خانه|هفته گذشته)/.test(normalize(value));
+}
+
+function updateSemanticContext(session, requestId) {
+  const opening = session.answers.open_problem || '';
+  const facts = {
+    impact: isDeclinedAnswer(session.answers.impact) ? null : (session.answers.impact || (hasImpactEvidence(opening) ? opening : null)),
+    duration: isDeclinedAnswer(session.answers.duration) ? null : (session.answers.duration || (hasDurationEvidence(opening) ? opening : null)),
+    user_goal: isDeclinedAnswer(session.answers.goal) ? null : (session.answers.goal || null),
+  };
+  session.semantic_intake = routeSemanticIntake({
+    text: opening,
+    requestId,
+    priorContext: { situational_facts: facts },
+  });
+  session.candidate_topics = session.semantic_intake.topic_candidates.map((item) => ({
+    topic_id: item.topic_id,
+    matched_phrases: item.evidence_quotes,
+    status: 'tentative_hypothesis',
+    confidence_band: item.confidence_band,
+  }));
+}
+
+function buildAssessmentSummary(session, contextExample = null) {
+  const candidates = session.candidate_topics.length
+    ? session.candidate_topics
+    : [{ topic_id: 'T34', status: 'needs_clarification' }];
+  session.candidate_topics = candidates;
+  session.summary = {
+    user_report: session.answers.open_problem,
+    context_example: contextExample,
+    impact: session.answers.impact || (hasImpactEvidence(session.answers.open_problem) ? 'در پیام آغازین اشاره شده' : 'در گفتگو مشخص نشد'),
+    duration: session.answers.duration || (hasDurationEvidence(session.answers.open_problem) ? 'در پیام آغازین اشاره شده' : 'در گفتگو مشخص نشد'),
+    user_goal: session.answers.goal || 'در گفتگو مشخص نشد',
+    candidate_topics: candidates.map((item) => ({ topic_id: item.topic_id, status: item.status || 'tentative_hypothesis' })),
+    limitations: [
+      'این دسته‌بندی بر پایه قواعد واژگانی محدود و گفته‌های همین گفتگو است؛ ارزیابی روان‌شناختی یا تشخیص نیست.',
+      'نبودن یک موضوع در فهرست به معنی رد آن نیست.',
+      'هیچ رابطه علّی میان موضوعات از این تطبیق نتیجه‌گیری نمی‌شود.',
+    ],
+  };
+}
+
+function chooseNextIntakeQuestion(session) {
+  const opening = session.answers.open_problem || '';
+  const answered = (id) => typeof session.answers[id] === 'string' && session.answers[id].trim().length > 0;
+  if (!answered('impact') && !hasImpactEvidence(opening)) return QUESTION.impact;
+  if (!answered('duration') && !hasDurationEvidence(opening)) return QUESTION.duration;
+  const intent = session.semantic_intake?.intent?.label;
+  const goalAlreadyClear = ['understand_problem', 'request_strategy', 'professional_help_decision'].includes(intent);
+  if (!answered('goal') && !goalAlreadyClear) return QUESTION.goal;
+  const topics = session.semantic_intake?.topic_candidates ?? [];
+  const ambiguous = session.semantic_intake?.intent?.ambiguity === 'high' || topics.length !== 1;
+  const needsExample = !hasConcreteExample(opening);
+  if ((ambiguous || needsExample) && (session.clarification_attempts ?? 0) < 1) {
+    const prompt = session.semantic_intake?.next_question?.purpose === 'topic_disambiguation'
+      ? session.semantic_intake.next_question.text
+      : QUESTION.clarify.prompt;
+    return { ...QUESTION.clarify, prompt };
+  }
+  return QUESTION.summary;
+}
+
 export function createAssessmentSession({ localOnly = true } = {}) {
   if (localOnly !== true) throw new Error('این موتور فقط برای پردازش محلی طراحی شده است؛ ارسال ابری در این نسخه پشتیبانی نمی‌شود.');
   return {
@@ -134,6 +210,7 @@ export function createAssessmentSession({ localOnly = true } = {}) {
     answers: {},
     candidate_topics: [],
     semantic_intake: null,
+    clarification_attempts: 0,
     summary: null,
     processing: 'local_in_memory_only',
   };
@@ -185,27 +262,18 @@ export function submitAssessmentAnswer(session, answer) {
       next.current_question = QUESTION.safety_uncertain;
       return next;
     }
-    next.current_question = QUESTION.impact;
+    updateSemanticContext(next, 'assessment-after-safety');
+    next.current_question = chooseNextIntakeQuestion(next);
+    if (next.current_question.id === 'summary_confirmation') buildAssessmentSummary(next);
     return next;
   }
 
-  if (questionId === 'impact') next.current_question = QUESTION.duration;
-  else if (questionId === 'duration') next.current_question = QUESTION.goal;
-  else if (questionId === 'goal') {
-    const routed = routeSemanticIntake({
-      text: next.answers.open_problem,
-      requestId: 'assessment-topic-routing',
-      priorContext: { situational_facts: { impact: next.answers.impact, duration: next.answers.duration, user_goal: value } },
-    });
-    next.semantic_intake = routed;
-    next.candidate_topics = routed.topic_candidates.map((item) => ({
-      topic_id: item.topic_id,
-      matched_phrases: item.evidence_quotes,
-      status: 'tentative_hypothesis',
-      confidence_band: item.confidence_band,
-    }));
-    next.current_question = QUESTION.clarify;
+  if (questionId === 'impact' || questionId === 'duration' || questionId === 'goal') {
+    updateSemanticContext(next, `assessment-after-${questionId}`);
+    next.current_question = chooseNextIntakeQuestion(next);
+    if (next.current_question.id === 'summary_confirmation') buildAssessmentSummary(next);
   } else if (questionId === 'clarify_example') {
+    next.clarification_attempts = (next.clarification_attempts ?? 0) + 1;
     const isCorrection = /منظورم|اصلاح می‌کنم|در واقع|اشتباه برداشت|نه اینکه/.test(normalize(value));
     const clarificationText = isCorrection ? value : [next.answers.open_problem, value].join(' ');
     if (isCorrection) {
@@ -231,20 +299,7 @@ export function submitAssessmentAnswer(session, answer) {
     const merged = new Map((isCorrection ? [] : next.candidate_topics).concat(extra).map((item) => [item.topic_id, item]));
     next.candidate_topics = [...merged.values()].slice(0, 3);
     if (next.candidate_topics.length === 0) next.candidate_topics = [{ topic_id: 'T34', matched_phrases: [], status: 'needs_clarification' }];
-    const names = next.candidate_topics.map((item) => item.topic_id);
-    next.summary = {
-      user_report: next.answers.open_problem,
-      context_example: isCorrection ? null : value,
-      impact: next.answers.impact,
-      duration: next.answers.duration,
-      user_goal: next.answers.goal,
-      candidate_topics: next.candidate_topics.map((item) => ({ topic_id: item.topic_id, status: item.status || 'tentative_hypothesis' })),
-      limitations: [
-        'این دسته‌بندی بر پایه تطبیق واژه‌ها و گفته‌های همین گفتگو است؛ ارزیابی روان‌شناختی یا تشخیص نیست.',
-        'نبودن یک موضوع در فهرست به معنی رد آن نیست.',
-        'هیچ رابطه علّی میان موضوعات از این تطبیق نتیجه‌گیری نمی‌شود.',
-      ],
-    };
+    buildAssessmentSummary(next, isCorrection ? null : value);
     next.current_question = QUESTION.summary;
   } else if (questionId === 'summary_confirmation') {
     next.answers.summary_feedback = value;
