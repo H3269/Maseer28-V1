@@ -143,3 +143,20 @@ test('clear negative safety disclosure can proceed without claiming guaranteed s
   assert.equal(getCurrentQuestion(session).id, 'impact');
   assert.equal(session.status, 'in_progress');
 });
+
+
+test('assessment runtime exposes semantic intent output and preserves the shared intake contract', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'من اضطراب ندارم؛ فقط نگران آینده‌ام و از قضاوت دیگران می‌ترسم.');
+  assert.equal(session.semantic_intake.schema_version, '1.0.0');
+  assert.equal(session.semantic_intake.intent.ambiguity, 'high');
+  assert.ok(session.semantic_intake.topic_candidates.some((item) => item.topic_id === 'T02'));
+  assert.ok(session.semantic_intake.topic_candidates.some((item) => item.topic_id === 'T27'));
+  session = answer(session, 'نه');
+  session = answer(session, 'در کارم تمرکز ندارم');
+  session = answer(session, 'چند هفته است');
+  session = answer(session, 'می‌خواهم بفهمم چه خبر است');
+  assert.equal(session.semantic_intake.situational_facts.impact, 'در کارم تمرکز ندارم');
+  assert.equal(session.semantic_intake.situational_facts.duration, 'چند هفته است');
+  assert.equal(session.semantic_intake.situational_facts.user_goal, 'می‌خواهم بفهمم چه خبر است');
+});
