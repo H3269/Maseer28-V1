@@ -1,7 +1,7 @@
 # وضعیت واقعی موتور دستیار مسیر۲۸ — ممیزی فنی
 
 **تاریخ ممیزی:** ۱۴۰۵/۰۸/۱۱  
-**شاخه توسعه:** `feature/assistant-decision-engine-hardening-v1`  
+**شاخه مقصد توسعه در مخزن تست V1:** `main`  
 **وضعیت انتشار:** غیرقابل انتشار عمومی به‌عنوان دستیار تخصصی یا ابزار ایمنی/بالینی  
 **دامنه این سند:** منطق اجرایی و مرزهای محصول؛ نه بازبینی یا بازنویسی محتوای ۹۵۲ روز
 
@@ -9,7 +9,7 @@
 
 - موتور ارزیابی تک‌جلسه‌ای در `src/features/assistant/assessmentEngine.js`.
 - رابط React در `src/features/assistant/AssessmentAssistant.jsx`.
-- دسترسی رابط در صفحه پشتیبانی برنامه و پشت متغیر build صریح `VITE_ENABLE_EXPERIMENTAL_ASSISTANT=true`؛ در حالت پیش‌فرض خاموش است.
+- دسترسی رابط در صفحه پشتیبانی برنامه در محیط تست (`APP_CONFIG.TEST_MODE=true`) فعال است؛ در آماده‌سازی نسخه تولید، `TEST_MODE=false` می‌شود و دستیار آزمایشی پنهان می‌ماند. فعال‌سازی صریح build با `VITE_ENABLE_EXPERIMENTAL_ASSISTANT=true` نیز پشتیبانی می‌شود.
 - نگهداری داده‌های جلسه در state حافظه صفحه؛ بدون backend، ذخیره پایدار یا ارسال ابری.
 - Router قواعدمند فارسی در `src/features/assistant/intentContextRouter.js` که خروجی را به قرارداد `semantic-intake.v1.schema.json` نزدیک و متصل می‌کند.
 - خروجی موضوعات حداکثر سه فرضیه موقت است؛ confidence در تطبیق واژگانی «low» باقی می‌ماند و اولویت موضوع از تعداد مترادف‌ها استنتاج نمی‌شود.
