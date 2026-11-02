@@ -32,7 +32,8 @@ test('unreviewed registry is disabled at the engine boundary, not only in the UI
   assert.equal(assessmentTopicRuleRegistry.runtime_eligible, false);
   assert.equal(assessmentEngineMetadata.topic_rule_runtime_authorized, false);
   assert.equal(assessmentEngineMetadata.topic_rule_runtime_status, 'disabled_fail_closed');
-  assert.deepEqual(assessmentEngineTopicRuleIds, []);
+  assert.equal(assessmentEngineTopicRuleIds.length, 33); // catalog inventory, not active runtime rules
+  assert.equal(assessmentEngineMetadata.active_topic_rule_count, 0);
 });
 
 test('lexical matches cannot produce topic candidates while registry authorization is false', () => {
