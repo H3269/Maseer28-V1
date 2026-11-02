@@ -201,3 +201,59 @@ test('explicit harm-related intent is escalated to human support', () => {
   assert.equal(session.safety_state, 'urgent_human_support_recommended');
   assert.equal(session.status, 'paused_for_human_support');
 });
+
+
+function completeIntakeToSummary(opening, clarification = 'یک نمونه مشخص از همین تجربه') {
+  let session = createAssessmentSession();
+  session = answer(session, opening);
+  session = answer(session, 'نه');
+  session = answer(session, 'در زندگی روزمره‌ام اثر گذاشته است');
+  session = answer(session, 'چند هفته است');
+  session = answer(session, 'می‌خواهم بهتر بفهمم چه اتفاقی می‌افتد');
+  session = answer(session, clarification);
+  return session;
+}
+
+test('a rejected attributed insult is not classified as the user belief', () => {
+  const session = completeIntakeToSummary(
+    'دوستم گفت «تو بی‌ارزشی»، ولی من با این حرف موافق نیستم.'
+  );
+  assert.equal(getCurrentQuestion(session).id, 'summary_confirmation');
+  assert.equal(
+    getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T23'),
+    false
+  );
+});
+
+test('a negated self-hatred phrase does not create a T18 hypothesis', () => {
+  const session = completeIntakeToSummary('من نفرت از خود ندارم؛ از یک رفتار مشخص ناراحتم.');
+  assert.equal(
+    getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T18'),
+    false
+  );
+});
+
+test('regret about a specific behavior is not automatically self-hatred or worthlessness', () => {
+  const session = completeIntakeToSummary('از رفتار دیروزم ناراحتم، نه از خودم.');
+  const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
+  assert.equal(ids.includes('T18'), false);
+  assert.equal(ids.includes('T23'), false);
+});
+
+test('privacy protection alone does not create a shame hypothesis', () => {
+  const session = completeIntakeToSummary('نمی‌خواهم موضوع خصوصی‌ام را برای دیگران افشا کنم.');
+  assert.equal(
+    getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T26'),
+    false
+  );
+});
+
+test('constructive self-criticism remains a tentative T33 hint, not a maladaptive conclusion', () => {
+  const session = completeIntakeToSummary(
+    'خودانتقادی من کمک می‌کند رفتارم را اصلاح کنم و قدم بعدی را مشخص کنم.'
+  );
+  const item = getAssessmentSummary(session).candidate_topics.find((candidate) => candidate.topic_id === 'T33');
+  assert.ok(item);
+  assert.equal(item.status, 'tentative_hypothesis');
+  assert.equal(session.summary.limitations.some((line) => line.includes('تشخیص نیست')), true);
+});
