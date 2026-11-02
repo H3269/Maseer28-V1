@@ -9,7 +9,8 @@ const canonical = new Map((registry.subtopics || []).map((item) => [item.subtopi
 const batches = [
   { file: 'public/assistant/knowledge/subtopic-operational-definitions-batch01.v1.json', topics: new Set(['T01','T02','T03','T04','T05','T06']), count: 18 },
   { file: 'public/assistant/knowledge/subtopic-operational-definitions-batch02.v1.json', topics: new Set(['T07','T08','T09','T10','T11','T12']), count: 18 },
-  { file: 'public/assistant/knowledge/subtopic-operational-definitions-batch03.v1.json', topics: new Set(['T13','T14','T15','T16','T17','T18']), count: 18 }
+  { file: 'public/assistant/knowledge/subtopic-operational-definitions-batch03.v1.json', topics: new Set(['T13','T14','T15','T16','T17','T18']), count: 18 },
+  { file: 'public/assistant/knowledge/subtopic-operational-definitions-batch04.v1.json', topics: new Set(['T19','T20','T21','T22','T23','T24']), count: 18 }
 ];
 const errors = [];
 const allSeen = new Set();
@@ -37,11 +38,11 @@ for (const batchSpec of batches) {
     if (!Array.isArray(item.evidence_ids) || item.evidence_ids.length) errors.push(`${label}: evidence_ids باید آرایه خالی بماند تا منابع ممیزی شوند: ${item.subtopic_id}`);
   }
 }
-if (allSeen.size !== 54) errors.push(`مجموع شناسه‌های یکتا باید ۵۴ باشد؛ مقدار فعلی: ${allSeen.size}`);
+if (allSeen.size !== 72) errors.push(`مجموع شناسه‌های یکتا باید ۷۲ باشد؛ مقدار فعلی: ${allSeen.size}`);
 if (errors.length) {
   console.error('اعتبارسنجی پیشنهاد تعریف زیرموضوع ناموفق بود:');
   errors.forEach((error) => console.error(`- ${error}`));
   process.exitCode = 1;
 } else {
-  console.log('سه بسته معتبرند: ۵۴ تعریف پیشنهادی برای T01 تا T18، تطبیق با رجیستری، شناسه‌های یکتا، خارج از runtime و در انتظار بازبینی مستقل.');
+  console.log('چهار بسته معتبرند: ۷۲ تعریف پیشنهادی برای T01 تا T24، تطبیق با رجیستری، شناسه‌های یکتا، خارج از runtime و در انتظار بازبینی مستقل.');
 }
