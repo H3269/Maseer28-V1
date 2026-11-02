@@ -40,7 +40,7 @@ export function routeAssistantTurn({ text, knowledgeItems = [], approvalManifest
     });
   }
 
-  const personalContextExplicit = /(?:من خودم|برای من|تجربه شخصی|تجربه دارم|در زندگی من|مشکل خودم|برای خودم|مشکلم|اضطرابم|نگرانی من|درگیرم)/.test(String(text ?? ''));
+  const personalContextExplicit = /(?:من خودم|برای من|تجربه شخصی|تجربه دارم|در زندگی من|مشکل خودم|برای خودم|مشکلم|اضطرابم|نگرانی من|درگیرم|تمرکزم|خوابم|روابطم|در محل کارم|در رابطه ام|از دست داده ام|دارم|می کنم)/.test(String(text ?? ''));
   if (['request_strategy', 'professional_help_decision'].includes(intake.intent.label) && !personalContextExplicit) {
     return deepFreeze({
       status: 'intent_scope_clarification_required',
