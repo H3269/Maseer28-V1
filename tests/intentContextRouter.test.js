@@ -29,9 +29,9 @@ test('multiple candidate topics request disambiguation rather than false priorit
   assert.equal(result.topic_candidates.every((item) => item.role === 'unknown'), true);
 });
 
-test('safety-sensitive ambiguous phrases trigger conservative handoff', () => {
+test('safety-sensitive ambiguous phrases trigger direct clarification without automatic handoff', () => {
   const result = routeSemanticIntake({ text: 'دیگه نمی‌کشم. همه‌چی تمومه.' });
-  assert.equal(result.safety_handoff.handoff_required, true);
+  assert.equal(result.safety_handoff.handoff_required, false);
   assert.equal(result.next_question.purpose, 'safety_clarification');
 });
 
