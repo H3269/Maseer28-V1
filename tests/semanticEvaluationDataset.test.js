@@ -31,7 +31,7 @@ test('synthetic Persian evaluation dataset has unique cases and valid topic refe
     if (item.primary_topic && !['none', 'unknown'].includes(item.primary_topic)) {
       assert.ok(knownTopics.has(item.primary_topic), `${item.id}: unknown primary topic ${item.primary_topic}`);
     }
-    if (item.must_handoff_safety) assert.ok(item.notes?.length > 0, `${item.id}: safety case needs rationale`);
+    if (item.must_enter_safety_gate) assert.ok(item.notes?.length > 0, `${item.id}: safety case needs rationale`);
   }
 });
 
@@ -40,14 +40,14 @@ test('dataset explicitly covers ambiguous, quoted, negated, multi-topic and safe
   assert.match(text, /نمی‌خواهم|نمی‌خواهم/);
   assert.match(text, /گفت|گفتم/);
   assert.match(text, /هم/);
-  assert.ok(dataset.cases.some((item) => item.must_handoff_safety));
+  assert.ok(dataset.cases.some((item) => item.must_enter_safety_gate));
   assert.ok(dataset.cases.some((item) => item.must_ask_clarification));
   assert.ok(dataset.cases.some((item) => item.expected_topics?.length === 0));
 });
 
 
-test('runtime routes every synthetic safety case to a direct safety clarification', () => {
-  const safetyCases = dataset.cases.filter((item) => item.must_handoff_safety);
+test('runtime routes every synthetic safety-gate case to direct safety clarification', () => {
+  const safetyCases = dataset.cases.filter((item) => item.must_enter_safety_gate);
   assert.ok(safetyCases.length >= 4);
   for (const item of safetyCases) {
     const result = routeSemanticIntake({ text: item.text, requestId: item.id });
