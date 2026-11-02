@@ -84,3 +84,23 @@ test('knowledge UI displays only returned excerpts with source and review attrib
   assert.match(assistantUi, /item\.source\.locator/);
   assert.match(assistantUi, /item\.approval\.review_record_id/);
 });
+
+
+test('assistant uses one chat surface with the composer send action inside and end action outside', () => {
+  assert.match(assistantUi, /className="assistantChatShell"/);
+  assert.match(assistantUi, /className="assistantTranscript"/);
+  assert.match(assistantUi, /className="assistantComposer"/);
+  assert.match(assistantUi, /assistantSendButton/);
+  assert.match(assistantUi, /onClick=\{stop\}>پایان گفتگو/);
+  assert.doesNotMatch(assistantUi, /پایان و پاک‌کردن گفتگو|بستن و پاک‌کردن گفتگو/);
+  assert.match(assistantUi, /scrollIntoView/);
+});
+
+test('assistant chat styling distinguishes speaker bubbles and keeps composer integrated', async () => {
+  const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
+  assert.match(css, /\.assistantChatShell\s*\{/);
+  assert.match(css, /\.assistantMessage\s*\{/);
+  assert.match(css, /\.userMessage\s*\{/);
+  assert.match(css, /\.assistantComposer\s*\{/);
+  assert.match(css, /\.assistantSendButton\s*\{/);
+});
