@@ -94,6 +94,7 @@ function isMetaLanguageRequest(normalized) {
 function detectTopics(text) {
   const normalized = normalize(text);
   if (isMetaLanguageRequest(normalized)) return [];
+  if (/(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او|دیگران)\s+(?:گفت|گفته|نوشت|می\s+گوید)/.test(normalized)) return [];
   const hits = [];
   for (const [topic_id, phrases] of TOPIC_RULES) {
     if (isRejectedAttribution(normalized, topic_id)) continue;
