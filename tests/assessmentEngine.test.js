@@ -211,3 +211,24 @@ test('ambiguous safety language still asks a direct question instead of auto-ref
   assert.equal(getCurrentQuestion(session).id, 'safety_now');
   assert.equal(session.safety_state, 'not_assessed');
 });
+
+
+test('adaptive policy skips questions already answered in the opening message', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'سه ماه است در محل کار تمرکزم را از دست داده‌ام و می‌خواهم راهکار عملی پیدا کنم.');
+  session = answer(session, 'نه');
+  assert.equal(session.current_question.id, 'summary_confirmation');
+  assert.equal(session.summary.duration, 'در پیام آغازین اشاره شده');
+  assert.equal(session.summary.impact, 'در پیام آغازین اشاره شده');
+  assert.equal(session.summary.user_goal, 'در گفتگو مشخص نشد');
+});
+
+test('declining a question advances the intake without repeating it', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  assert.equal(session.current_question.id, 'impact');
+  session = answer(session, 'ترجیح می‌دهم نگویم');
+  assert.equal(session.current_question.id, 'duration');
+  assert.equal(session.semantic_intake.situational_facts.impact, null);
+});
