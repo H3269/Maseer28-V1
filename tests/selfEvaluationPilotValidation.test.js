@@ -43,6 +43,15 @@ test('rejects a registered but out-of-scope source attached to a topic', () => {
   assert.ok(result.errors.some((error) => error.includes('evidence scope mismatch for T15')));
 });
 
+test('rejects a T19 day 6 subtopic that confuses behavior responsibility with global identity blame', () => {
+  const data = base();
+  const record = data.pilot.records.find((item) => item.topic_id === 'T19' && item.day_number === 6);
+  record.subtopic_id = 'T19-S02';
+  record.subtopic_name = 'سرزنش کلی هویت';
+  const result = validateSelfEvaluationPilot(data);
+  assert.ok(result.errors.some((error) => error.includes('T19 day 6 must map to behavior-specific responsibility T19-S01')));
+});
+
 test('rejects incomplete provenance and mismatched topic labels', () => {
   const data = base();
   data.pilot.records[0].source_reference_ids = [];
