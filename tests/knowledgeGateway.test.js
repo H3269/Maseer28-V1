@@ -104,3 +104,13 @@ test('approved item metadata is insufficient without an active manifest allowlis
   const result = retrieveApprovedKnowledge({ query: 'نگرانی', items: [approved()] });
   assert.equal(result.status, 'no_approved_content');
 });
+
+
+test('empty or mismatched approval manifests fail closed', () => {
+  const item = approved();
+  const emptyManifest = { schema_version: '1.0.0', manifest_id: 'empty', status: 'empty_pending_external_review', approved_items: [] };
+  assert.equal(retrieveApprovedKnowledge({ query: 'نگرانی', items: [item], approvalManifest: emptyManifest }).status, 'no_approved_content');
+  const mismatchedManifest = manifestFor(item);
+  mismatchedManifest.approved_items[0].review_record_id = 'REV-OTHER';
+  assert.equal(retrieveApprovedKnowledge({ query: 'نگرانی', items: [item], approvalManifest: mismatchedManifest }).status, 'no_approved_content');
+});
