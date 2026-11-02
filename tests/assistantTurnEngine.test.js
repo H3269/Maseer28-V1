@@ -83,3 +83,9 @@ test('educational questions mentioning suicide are not misrouted as personal cri
   assert.equal(result.intake.intent.label, 'general_information');
   assert.deepEqual(result.knowledge, []);
 });
+
+
+test('first-person impact markers count as explicit personal context for strategy requests', () => {
+  const result = routeAssistantTurn({ text: 'سه ماه است در محل کار به‌خاطر اضطراب تمرکزم را از دست داده‌ام و می‌خواهم راهکار عملی پیدا کنم.' });
+  assert.equal(result.status, 'personal_intake_required');
+});
