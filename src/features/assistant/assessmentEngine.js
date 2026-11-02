@@ -104,14 +104,14 @@ export function classifySafetyAnswer(text) {
     return 'urgent_human_support_recommended';
   }
 
-  if (/^(بله|آره|اره|yes)(?:[،,\\s]|$)/.test(value)) {
+  if (/^(بله|آره|اره|yes)(?:[،,\s]|$)/.test(value)) {
     return 'urgent_human_support_recommended';
   }
 
-  const directNegative = /^(نه|خیر|no)(?:[،,\\s]|$)/.test(value);
+  const directNegative = /^(نه|خیر|no)(?:[،,\s]|$)/.test(value);
   if (directNegative) {
-    const residual = value.replace(/^(نه|خیر|no)[،,\\s]*/, '').trim();
-    if (!residual || /^(?:قصد(?:\\s+[^،,]+)?\\s+ندارم|برنامه(?:\\s+[^،,]+)?\\s+ندارم|نمی خواهم|نمیخوام|هیچ قصدی ندارم)(?:[.!؟،,\\s]|$)/.test(residual)) {
+    const residual = value.replace(/^(نه|خیر|no)[،,\s]*/, '').trim();
+    if (!residual || /^(?:قصد(?:\s+[^،,]+)?\s+ندارم|برنامه(?:\s+[^،,]+)?\s+ندارم|نمی خواهم|نمیخوام|هیچ قصدی ندارم)(?:[.!؟،,\s]|$)/.test(residual)) {
       return 'no_immediate_risk_disclosed';
     }
     return 'clarification_needed';
