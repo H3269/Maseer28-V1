@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "maseer28-daily-learning-content-governance",
+  "status": "draft_design_target_not_runtime_approval",
+  "applies_to": {
+    "current_content": "public/content/path-content.json",
+    "topic_registry": "public/assistant/knowledge/topics.v1.json",
+    "subtopic_registry": "public/assistant/knowledge/subtopics.v1.json",
+    "working_definitions": "public/assistant/knowledge/topic-definitions-draft.v1.json",
+    "candidate_relations": "public/assistant/knowledge/relations.v1.json"
+  },
+  "domain_model": {
+    "unit_of_organization": "topic",
+    "expected_topic_count": 34,
+    "expected_subtopic_count": 102,
+    "expected_days_per_topic": 28,
+    "expected_daily_units": 952,
+    "identifiers": {
+      "topic": "T01..T34",
+      "subtopic": "T01-S01..T34-S03",
+      "daily_unit": "stable unique id; never derive from display title"
+    },
+    "topic_assignment": {
+      "allow_multiple_candidates": true,
+      "require_clarification_when_ambiguous": true,
+      "do_not_force_single_topic": true,
+      "distinguish_user_report_from_assistant_hypothesis": true
+    },
+    "relations": {
+      "candidate_registry_runtime_eligible": false,
+      "infer_causality_from_co_occurrence": false,
+      "require_population_context_and_evidence_for_any_future_approved_relation": true
+    }
+  },
+  "daily_unit_contract_v2": {
+    "status": "required_for_new_or_rewritten_content_only",
+    "required_fields": [
+      "id",
+      "topic_id",
+      "subtopic_ids",
+      "day",
+      "title",
+      "learning_objective",
+      "target_skill",
+      "teaching_point",
+      "exercise_type",
+      "instructions",
+      "duration_minutes",
+      "reflection_prompt",
+      "success_criterion",
+      "stop_conditions",
+      "source_ids",
+      "evidence_grade",
+      "review_status"
+    ],
+    "safety_fields": {
+      "required": [
+        "risk_level",
+        "stop_conditions",
+        "when_to_seek_human_support"
+      ],
+      "allowed_risk_levels": [
+        "routine",
+        "caution",
+        "human_review_required"
+      ],
+      "exercise_must_not_be_presented_as_treatment_without_evidence_and_review": true
+    },
+    "evidence_fields": {
+      "source_record_required": true,
+      "evidence_grade_values": [
+        "not_assessed",
+        "very_low",
+        "low",
+        "moderate",
+        "high"
+      ],
+      "evidence_grade_high_requires_direct_relevant_evidence_and_bias_review": true
+    },
+    "review_status_values": [
+      "draft",
+      "pending_expert_review",
+      "approved",
+      "rejected",
+      "retired"
+    ],
+    "approval_policy": {
+      "default_status": "draft",
+      "no_automatic_approval_by_ai": true,
+      "require_named_qualified_human_reviewer": true,
+      "require_review_record_and_timestamp": true,
+      "approved_content_only_runtime_eligible": true
+    }
+  },
+  "rewrite_policy": {
+    "preserve_existing_952_ids_until_migration_is_reviewed": true,
+    "do_not_bulk_rewrite_all_952_units_without_topic_specific_design": true,
+    "separate_general_self_observation_from_topic_specific_interventions": true,
+    "compare_similarity_across_topics_and_days": true,
+    "record_reason_for_shared_exercise": true,
+    "do_not_claim_clinical_effectiveness_from_course_completion": true
+  },
+  "audit_metrics": [
+    "topic_and_day_coverage",
+    "stable_identifier_uniqueness",
+    "cross_topic_template_similarity",
+    "within_topic_repetition",
+    "scientific_family_distribution",
+    "subtopic_linkage_coverage",
+    "learning_objective_coverage",
+    "source_and_evidence_coverage",
+    "safety_and_stop_condition_coverage",
+    "human_review_coverage"
+  ],
+  "release_rule": "This policy is a draft governance target. It does not approve existing content or activate any content for clinical decision-making."
+}
