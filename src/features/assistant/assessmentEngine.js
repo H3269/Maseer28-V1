@@ -59,6 +59,7 @@ function normalize(text) {
     .normalize('NFKC')
     .replace(/[\u064A\u0649]/g, 'ی')
     .replace(/\u0643/g, 'ک')
+    .replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
     .replace(/[\u064B-\u065F\u0670]/g, '')
     .replace(/[\u200c\u200f\u200e]/g, ' ')
     .replace(/\s+/g, ' ')
@@ -123,7 +124,16 @@ export function classifySafetyAnswer(text) {
 }
 
 function isDeclinedAnswer(value) {
-  return /^(?:رد می‌کنم|ترجیح می‌دهم نگویم|نمی‌دانم|نمی‌خوام پاسخ بدهم|نمی‌خواهم پاسخ بدهم|فعلاً نمی‌خواهم|نامشخص است)[.!؟\s]*$/.test(normalize(value));
+  const normalized = normalize(value);
+  return [
+    'رد می کنم',
+    'ترجیح می دهم نگویم',
+    'نمی دانم',
+    'نمی خوام پاسخ بدهم',
+    'نمی خواهم پاسخ بدهم',
+    'فعلا نمی خواهم',
+    'نامشخص است',
+  ].includes(normalized);
 }
 
 function hasDurationEvidence(value) {
@@ -131,7 +141,7 @@ function hasDurationEvidence(value) {
 }
 
 function hasImpactEvidence(value) {
-  return /(?:در زندگی روزمره|در کارم|در رابطه|باعث شده|اثر گذاشته|اختلال ایجاد|تمرکزم را|خوابم را|روابطم را|نمی‌توانم کار|نمی تونم کار)/.test(normalize(value));
+  return /(?:در زندگی روزمره|در کارم|در رابطه|باعث شده|اثر گذاشته|اختلال ایجاد|تمرکزم را|خوابم را|روابطم را|نمی توانم کار|نمی تونم کار)/.test(normalize(value));
 }
 
 function hasConcreteExample(value) {
