@@ -133,8 +133,9 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
   const negationPresent = /(?:ندارم|نیستم|نمی‌خواهم|نمی‌ترسم|موافق نیستم)/.test(normalized);
   const quotePresent = /[«“"].+[»”"]/.test(raw);
   const correctionPresent = /منظورم|اصلاح می‌کنم|در واقع|نه اینکه/.test(normalized);
-  const multiTopic = topics.length > 1;
   const intentLabel = classifyIntent(normalized);
+  const topicCandidates = intentLabel === 'general_information' ? [] : topics;
+  const multiTopic = topicCandidates.length > 1;
   const uncertainties = [];
   const contradictions = [];
 
@@ -157,7 +158,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
     nextQuestion = {
       text: 'برای اینکه برداشت اشتباه نکنم، کدام بخش تجربه‌ات مسئله اصلی توست؟ یک نمونه مشخص و اخیر می‌گویی؟',
       purpose: 'topic_disambiguation',
-      discriminates_between: topics.map((item) => item.topic_id),
+      discriminates_between: topicCandidates.map((item) => item.topic_id),
     };
   }
 
@@ -180,7 +181,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
       duration: situationalFacts.duration ?? null,
       user_goal: situationalFacts.user_goal ?? null,
     },
-    topic_candidates: topics,
+    topic_candidates: topicCandidates,
     uncertainties,
     contradictions,
     next_question: nextQuestion,
