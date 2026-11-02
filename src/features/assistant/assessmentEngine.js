@@ -1,4 +1,5 @@
 import { routeSemanticIntake } from './intentContextRouter.js';
+import { routeAssistantTurn } from './assistantTurnEngine.js';
 
 const QUESTION = {
   open: { id: 'open_problem', stage: 'open_intent', prompt: 'دوست داری درباره چه مسئله‌ای صحبت کنیم؟ با زبان خودت توضیح بده؛ لازم نیست از بین موضوعات اپ چیزی انتخاب کنی.' },
@@ -238,29 +239,33 @@ export function submitAssessmentAnswer(session, answer) {
   }
 
   if (questionId === 'open_problem') {
-    next.semantic_intake = routeSemanticIntake({ text: value, requestId: 'assessment-open-problem' });
-    next.safety_context_flag = next.semantic_intake.next_question?.purpose === 'safety_clarification';
-    if (next.semantic_intake.intent.label === 'general_information' && !next.semantic_intake.safety_handoff.handoff_required) {
+    const routedTurn = routeAssistantTurn({ text: value, knowledgeItems: [], requestId: 'assessment-open-problem' });
+    next.semantic_intake = routedTurn.intake;
+    next.safety_context_flag = ['safety_clarification_required', 'urgent_human_support_required'].includes(routedTurn.status);
+
+    if (routedTurn.status === 'knowledge_unavailable') {
       next.status = 'information_request_not_supported';
       next.current_question = null;
       next.next_step = {
         content_available: false,
         reason: 'مسیر پاسخ‌گویی دانشی و بازیابی محتوای تأییدشده هنوز در runtime فعال نیست.',
-        message: 'این پرسش از نوع درخواست اطلاعات عمومی است، نه ارزیابی تجربه شخصی. در نسخه فعلی هنوز دانش تأییدشده و مسیر پاسخ‌گویی دانشی به دستیار متصل نشده است؛ بنابراین به‌جای حدس‌زدن یا تبدیل پرسش تو به ارزیابی شخصی، این گفتگو را در همین‌جا متوقف می‌کنم.',
+        message: routedTurn.message,
       };
       return next;
     }
-    if (next.semantic_intake.safety_handoff.handoff_required) {
+
+    if (routedTurn.status === 'urgent_human_support_required') {
       next.status = 'paused_for_human_support';
       next.safety_state = 'urgent_human_support_recommended';
       next.current_question = null;
       next.referral = {
         priority: 'urgent',
         safety_domains: classifySafetyDomains(value),
-        instruction: 'از اینجا ارزیابی خودکار را متوقف می‌کنیم. این ابزار نوع و شدت خطر را به‌طور معتبر ارزیابی نمی‌کند. اگر خطر در همین لحظه وجود دارد، در صورت امکان به مکان امن برو و با خدمات اورژانسی محل زندگی یا فرد قابل اعتماد تماس بگیر. اگر تهدید از سوی شخص دیگری است، از مواجهه مستقیم با او خودداری کن و از یک فرد یا مرکز حمایتی امن کمک بگیر.',
+        instruction: routedTurn.message,
       };
       return next;
     }
+
     next.current_question = QUESTION.safety;
     return next;
   }
