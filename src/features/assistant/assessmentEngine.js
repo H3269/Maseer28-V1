@@ -40,7 +40,7 @@ const SAFETY_CUES = [
   'خودکشی', 'قصد خودکشی', 'به زندگی ام پایان', 'به زندگیم پایان',
   'خودم را بکشم', 'خودمو بکشم', 'به خودم آسیب', 'خودزنی',
   'به کسی آسیب بزنم', 'او را بکشم', 'تهدید به قتل', 'خشونت خانگی',
-  'در خانه امن نیستم', 'الان در خطرم',
+  'در خانه امن نیستم', 'خانه امن نیست', 'الان در خطرم', 'تهدیدم کرد', 'تهدیدم می‌کند', 'کاش نبودم', 'کاش بمیرم', 'نمی‌خواهم زنده باشم', 'نمی‌خوام زنده باشم', 'فکر آسیب زدن به خودم', 'آسیب زدن به خودم', 'فکر خودآسیبی', 'قصد آسیب', 'قصد خودآسیبی', 'دیگه نمی‌کشم', 'همه‌چی تمومه',
 ];
 
 const QUESTION = {
@@ -156,6 +156,16 @@ export function submitAssessmentAnswer(session, answer) {
   if (questionId === 'open_problem') {
     next.safety_context_flag = detectSafetyCue(value);
     next.semantic_intake = routeSemanticIntake({ text: value, requestId: 'assessment-open-problem' });
+    if (next.semantic_intake.safety_handoff.handoff_required) {
+      next.status = 'paused_for_human_support';
+      next.safety_state = 'urgent_human_support_recommended';
+      next.current_question = null;
+      next.referral = {
+        priority: 'urgent',
+        instruction: 'از اینجا ارزیابی خودکار را متوقف می‌کنیم. اگر خطر در همین لحظه وجود دارد، در صورت امکان به مکان امن برو، تنها نمان و با خدمات اورژانسی محل زندگی یا فرد قابل اعتماد تماس بگیر. اگر تهدید از سوی شخص دیگری است، از مواجهه مستقیم با او خودداری کن و از یک فرد یا مرکز حمایتی امن کمک بگیر.',
+      };
+      return next;
+    }
     next.current_question = QUESTION.safety;
     return next;
   }
