@@ -196,3 +196,19 @@ test('profile v2 normalization rejects invalid field values instead of copying t
     assert.equal(data.has(PROFILE_V2_KEY), false);
   });
 });
+
+
+test('profile v2 read-back verification is independent of JSON key order', async () => {
+  const { migrateUserProfileToV2, PROFILE_V2_KEY } =
+    await import('../src/features/journey/journeyStore.js');
+  withMemoryStorage((data) => {
+    data.set(PROFILE_V2_KEY, JSON.stringify({ phone: '09123456789' }));
+    const result = migrateUserProfileToV2({
+      profileData: { name: 'نام معتبر', age: 35, gender: 'مرد' },
+    });
+    assert.equal(result.migrated, true);
+    assert.equal(result.profile.name, 'نام معتبر');
+    assert.equal(result.profile.age, 35);
+    assert.equal(result.profile.phone, '09123456789');
+  });
+});
