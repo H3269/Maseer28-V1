@@ -126,3 +126,15 @@ test('router output conforms to nested enum and length constraints in the schema
   assert.equal(result.safety_handoff.trigger_evidence.length <= 5, true);
   assert.ok(result.limitations.length >= 1 && result.limitations.length <= 10);
 });
+
+
+test('router bounds identifiers and rejects non-string situational facts safely', () => {
+  const result = routeSemanticIntake({
+    text: 'یک تجربه نامشخص دارم',
+    requestId: '  ' + 'x'.repeat(200),
+    priorContext: { situational_facts: { impact: { untrusted: true }, duration: '  سه هفته  ' } },
+  });
+  assert.equal(result.request_id.length, 128);
+  assert.equal(result.situational_facts.impact, null);
+  assert.equal(result.situational_facts.duration, 'سه هفته');
+});
