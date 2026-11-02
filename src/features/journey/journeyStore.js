@@ -585,11 +585,20 @@ export async function isDayUnlocked(state, day) {
 }
 
 export function cloneForArchive(state) {
+  const profile = state.profileData || {};
+  const archiveProfile = {
+    name: typeof profile.name === 'string' ? profile.name.slice(0, 80) : '',
+    problem: typeof profile.problem === 'string' ? profile.problem.slice(0, 200) : '',
+    code: typeof profile.code === 'string' ? profile.code.slice(0, 50) : '',
+    durationYears: Number.isInteger(Number(profile.durationYears)) ? Number(profile.durationYears) : 0,
+    durationMonths: Number.isInteger(Number(profile.durationMonths)) ? Number(profile.durationMonths) : 0,
+    goal: typeof profile.goal === 'string' ? profile.goal.slice(0, 1000) : '',
+  };
   return JSON.parse(JSON.stringify({
     pathId: state.pathId,
     startedAt: state.startedAt,
     archivedAt: new Date().toISOString(),
-    profileData: state.profileData,
+    profileData: archiveProfile,
     assessmentData: state.assessmentData,
     completed: state.completed,
     answers: state.answers,
