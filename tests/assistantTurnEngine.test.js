@@ -1,0 +1,46 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { routeAssistantTurn } from '../src/features/assistant/assistantTurnEngine.js';
+
+const knowledge = [{
+  schema_version: '1.0.0',
+  item_id: 'K-T02-001',
+  title: 'اضطراب و نگرانی',
+  content: 'اضطراب می‌تواند با نگرانی درباره آینده و موقعیت‌های نامطمئن همراه باشد. این متن آموزشی است و تشخیص محسوب نمی‌شود.',
+  topic_ids: ['T02'],
+  content_type: 'education',
+  source: { source_id: 'SRC-T02-001', title: 'منبع آموزشی تأییدشده', locator: 'approved/education/t02#intro' },
+  approval: { status: 'approved_for_assistant', reviewer_role: 'evidence_reviewer', reviewed_at: '2026-10-20T10:00:00Z', version: '1.0.0' },
+}];
+
+test('safety gate runs before knowledge retrieval', () => {
+  const result = routeAssistantTurn({ text: 'امشب قصد دارم خودم را بکشم.', knowledgeItems: knowledge });
+  assert.equal(result.status, 'urgent_human_support_required');
+  assert.deepEqual(result.knowledge, []);
+});
+
+test('ambiguous personal experience asks for clarification instead of returning advice', () => {
+  const result = routeAssistantTurn({ text: 'هم عصبانی‌ام و هم می‌ترسم.', knowledgeItems: knowledge });
+  assert.equal(result.status, 'clarification_required');
+  assert.deepEqual(result.knowledge, []);
+});
+
+test('general information can only return approved excerpts with source attribution', () => {
+  const result = routeAssistantTurn({ text: 'اضطراب چیست؟', knowledgeItems: knowledge });
+  assert.equal(result.status, 'approved_knowledge_available');
+  assert.equal(result.knowledge[0].source.source_id, 'SRC-T02-001');
+  assert.equal(result.knowledge[0].approval.reviewer_role, 'evidence_reviewer');
+});
+
+test('general information with no approved material returns no fabricated answer', () => {
+  const result = routeAssistantTurn({ text: 'اضطراب چیست؟', knowledgeItems: [] });
+  assert.equal(result.status, 'knowledge_unavailable');
+  assert.deepEqual(result.knowledge, []);
+  assert.ok(result.message.includes('به‌جای حدس‌زدن'));
+});
+
+test('clear personal experience stays in intake rather than jumping to recommendations', () => {
+  const result = routeAssistantTurn({ text: 'مدتی است اضطراب دارم و در کارم تمرکز ندارم.' , knowledgeItems: knowledge });
+  assert.equal(result.status, 'personal_intake_required');
+  assert.deepEqual(result.knowledge, []);
+});
