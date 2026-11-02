@@ -13,7 +13,8 @@
     "prepare:production": "node scripts/prepare-production-build.mjs",
     "validate:content-redesign": "node scripts/validate-content-redesign.mjs",
     "validate:self-evaluation-pilot": "node scripts/validate-self-evaluation-pilot.mjs",
-    "validate:subtopic-definitions": "node scripts/validate-subtopic-definition-proposals.mjs"
+    "validate:subtopic-definitions": "node scripts/validate-subtopic-definition-proposals.mjs",
+    "validate:assessment-knowledge": "node scripts/validate-assessment-knowledge-consistency.mjs"
   },
   "dependencies": {
     "react": "18.3.1",
