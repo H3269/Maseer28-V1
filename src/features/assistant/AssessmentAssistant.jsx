@@ -68,6 +68,7 @@ export default function AssessmentAssistant() {
   }
 
   const summary = session?.summary;
+  const knowledgeResponse = session?.knowledge_response;
   const active = session?.status === 'in_progress' && Boolean(getCurrentQuestion(session));
 
   return <section className="card" aria-labelledby="assistant-assessment-title">
@@ -96,6 +97,18 @@ export default function AssessmentAssistant() {
         </div>
       </form>}
       {session?.status === 'paused_for_human_support' && <div className="sectionHint" role="alert"><span>!</span><div><b>اولویت با کمک انسانی است</b><small>ادامه ارزیابی خودکار متوقف شده است. از راهنمایی بالا برای دریافت کمک فوری استفاده کن و در صورت خطر قریب‌الوقوع با خدمات اورژانسی محل زندگی تماس بگیر.</small></div></div>}
+      {knowledgeResponse && <div className="assistantKnowledgeResponse">
+        <h3>پاسخ مستند از پایگاه دانش</h3>
+        <p>{knowledgeResponse.message}</p>
+        <ol>
+          {knowledgeResponse.results.map((item) => <li key={item.item_id}>
+            <b>{item.title}</b>
+            <p>{item.excerpt}</p>
+            <small>منبع: {item.source.title} | شناسه منبع: {item.source.source_id} | محل ارجاع: {item.source.locator}</small>
+            <small>بازبینی: {item.approval.reviewer_role} | شناسه بازبینی: {item.approval.review_record_id} | نسخه: {item.approval.version}</small>
+          </li>)}
+        </ol>
+      </div>}
       {summary && <div className="assistantSummary">
         <h3>خلاصه موقت برای بازبینی</h3>
         <p><b>آنچه گفتی:</b> {summary.user_report}</p>
@@ -108,7 +121,7 @@ export default function AssessmentAssistant() {
         <ul>{summary.limitations.map((item) => <li key={item}>{item}</li>)}</ul>
         <p className="muted">هیچ تمرین یا درمانی به‌صورت خودکار پیشنهاد نمی‌شود؛ محتوای مناسب هنوز نیازمند تأیید علمی و تخصصی است.</p>
       </div>}
-      {(session?.status === 'completed' || session?.status === 'information_request_not_supported' || session?.status === 'summary_needs_review' || session?.status === 'intent_scope_unclear') && <button className="secondary" type="button" onClick={start}>شروع گفت‌وگوی تازه</button>}
+      {(session?.status === 'completed' || session?.status === 'information_request_not_supported' || session?.status === 'summary_needs_review' || session?.status === 'intent_scope_unclear' || session?.status === 'information_answer_available') && <button className="secondary" type="button" onClick={start}>شروع گفت‌وگوی تازه</button>}
       {session?.status === 'stopped_by_user' && <button className="secondary" type="button" onClick={start}>شروع دوباره</button>}
       <button className="secondary" type="button" onClick={closeAndClear}>بستن و پاک‌کردن گفتگو</button>
     </>}
