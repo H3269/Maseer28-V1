@@ -111,7 +111,7 @@ export function classifySafetyAnswer(text) {
   const directNegative = /^(نه|خیر|no)(?:[،,\\s]|$)/.test(value);
   if (directNegative) {
     const residual = value.replace(/^(نه|خیر|no)[،,\\s]*/, '').trim();
-    if (!residual || /^(قصد ندارم|برنامه ندارم|نمی خواهم|نمیخوام|هیچ قصدی ندارم)$/.test(residual)) {
+    if (!residual || /^(?:قصد(?:\\s+[^،,]+)?\\s+ندارم|برنامه(?:\\s+[^،,]+)?\\s+ندارم|نمی خواهم|نمیخوام|هیچ قصدی ندارم)(?:[.!؟،,\\s]|$)/.test(residual)) {
       return 'no_immediate_risk_disclosed';
     }
     return 'clarification_needed';
