@@ -68,3 +68,10 @@ test('empty queries and result limits are handled safely', () => {
   const items = Array.from({ length: 8 }, (_, index) => approved({ item_id: `K-${index}`, title: `نگرانی ${index}` }));
   assert.equal(retrieveApprovedKnowledge({ query: 'نگرانی', items, limit: 100 }).results.length, 5);
 });
+
+
+test('invalid topic filters fail closed instead of broadening the search', () => {
+  const result = retrieveApprovedKnowledge({ query: 'نگرانی', topicIds: ['T99'], items: [approved()] });
+  assert.equal(result.status, 'invalid_topic_filter');
+  assert.deepEqual(result.results, []);
+});
