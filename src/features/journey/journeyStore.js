@@ -2,6 +2,8 @@ import { normalizeDigits } from '../../shared/utils.js';
 
 export const JOURNEY_KEY = 'maseer28_state';
 export const PROFILE_KEY = 'maseer28_user_profile_v1';
+export const PROFILE_V2_KEY = 'maseer28_user_profile_v2';
+export const PROFILE_V2_MIGRATION_KEY = 'maseer28_profile_v2_migration_v1';
 export const ONBOARDING_COMPLETE_KEY = 'maseer28_onboarding_complete_v1';
 export const COPYRIGHT_KEY = 'maseer28_copyright_v60';
 export const CLOCK_GUARD_KEY = 'maseer28_trusted_clock_guard_v2';
@@ -210,15 +212,86 @@ export function saveJourneyState(state) {
   localStorage.setItem(JOURNEY_KEY, JSON.stringify(sanitizeJourneyState(state)));
 }
 
-export function loadUserProfile() {
+function readProfileRecord(key) {
   try {
-    const profile = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');
-    return profile && typeof profile === 'object' ? profile : null;
+    const value = JSON.parse(localStorage.getItem(key) || 'null');
+    return value && typeof value === 'object' && !Array.isArray(value) ? value : null;
   } catch { return null; }
 }
 
+const PROFILE_FIELDS = [
+  'name', 'age', 'gender', 'phone',
+  'medical', 'medicalNote', 'medication', 'medicationRisk',
+];
+
+function normalizeProfileRecord(source) {
+  if (!source || typeof source !== 'object' || Array.isArray(source)) return null;
+  const result = {};
+  for (const field of PROFILE_FIELDS) {
+    const value = source[field];
+    if (value === undefined || value === null) continue;
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      result[field] = typeof value === 'string' ? value.trim().slice(0, field === 'medicalNote' ? 1000 : 100) : value;
+    }
+  }
+  return Object.keys(result).length ? result : null;
+}
+
+function isEmptyProfileValue(value) {
+  return value === undefined || value === null || value === '';
+}
+
+export function loadUserProfile() {
+  return normalizeProfileRecord(readProfileRecord(PROFILE_V2_KEY))
+    || normalizeProfileRecord(readProfileRecord(PROFILE_KEY));
+}
+
 export function saveUserProfile(profile) {
-  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+  const normalized = normalizeProfileRecord(profile);
+  if (!normalized) throw new Error('Invalid user profile');
+  localStorage.setItem(PROFILE_V2_KEY, JSON.stringify(normalized));
+  const verified = normalizeProfileRecord(readProfileRecord(PROFILE_V2_KEY));
+  if (JSON.stringify(verified) !== JSON.stringify(normalized)) {
+    throw new Error('User profile write verification failed');
+  }
+}
+
+/**
+ * Additive, verified migration. Existing v2 values win; only missing v2
+ * fields are filled from v1 and then from the legacy journey snapshot.
+ * Legacy records are intentionally retained for a later, separately tested cleanup.
+ */
+export function migrateUserProfileToV2(state = loadJourneyState()) {
+  const current = normalizeProfileRecord(readProfileRecord(PROFILE_V2_KEY)) || {};
+  const legacyIndependent = normalizeProfileRecord(readProfileRecord(PROFILE_KEY)) || {};
+  const legacyJourney = normalizeProfileRecord(state?.profileData) || {};
+  const merged = { ...current };
+
+  for (const field of PROFILE_FIELDS) {
+    if (isEmptyProfileValue(merged[field]) && !isEmptyProfileValue(legacyIndependent[field])) {
+      merged[field] = legacyIndependent[field];
+    }
+    if (isEmptyProfileValue(merged[field]) && !isEmptyProfileValue(legacyJourney[field])) {
+      merged[field] = legacyJourney[field];
+    }
+  }
+
+  if (!Object.keys(merged).length) return { migrated: false, profile: null, reason: 'no_source_data' };
+
+  try {
+    localStorage.setItem(PROFILE_V2_KEY, JSON.stringify(merged));
+    const verified = normalizeProfileRecord(readProfileRecord(PROFILE_V2_KEY));
+    if (!verified || JSON.stringify(verified) !== JSON.stringify(merged)) {
+      return { migrated: false, profile: null, reason: 'readback_mismatch' };
+    }
+    localStorage.setItem(PROFILE_V2_MIGRATION_KEY, '1');
+    if (localStorage.getItem(PROFILE_V2_MIGRATION_KEY) !== '1') {
+      return { migrated: false, profile: verified, reason: 'marker_verification_failed' };
+    }
+    return { migrated: true, profile: verified, reason: 'verified' };
+  } catch {
+    return { migrated: false, profile: null, reason: 'storage_failure' };
+  }
 }
 
 export function saveOnboardingComplete() {
