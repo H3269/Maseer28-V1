@@ -25,6 +25,7 @@ jobs:
   build-and-publish:
     if: ${{ inputs.publish == 'publish' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     environment: production
     steps:
       - name: Refuse publication from non-main refs
@@ -52,20 +53,31 @@ jobs:
 
           expected_sha = os.environ["GITHUB_SHA"]
           data = json.loads(Path("/tmp/path28-validation-runs.json").read_text())
-          successful = [
+          matching = [
               run for run in data.get("workflow_runs", [])
               if run.get("head_sha") == expected_sha
               and run.get("head_branch") == "main"
               and run.get("event") == "push"
-              and run.get("status") == "completed"
-              and run.get("conclusion") == "success"
           ]
-          if not successful:
+          if not matching:
               raise SystemExit(
-                  "Publication blocked: no successful content/security validation "
+                  "Publication blocked: no content/security validation run "
                   f"was found for exact main commit {expected_sha}."
               )
-          print(f"Validated exact main commit: {expected_sha}")
+          latest = max(
+              matching,
+              key=lambda run: (run.get("created_at", ""), run.get("run_attempt", 0))
+          )
+          if latest.get("status") != "completed" or latest.get("conclusion") != "success":
+              raise SystemExit(
+                  "Publication blocked: the latest validation run for exact main "
+                  f"commit {expected_sha} is not successful "
+                  f"(status={latest.get('status')}, conclusion={latest.get('conclusion')})."
+              )
+          print(
+              f"Latest validation run {latest.get('id')} succeeded "
+              f"for exact main commit: {expected_sha}"
+          )
           PY
 
       - name: Checkout tested version
@@ -73,6 +85,7 @@ jobs:
         with:
           ref: ${{ github.ref }}
           path: test-source
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -99,6 +112,7 @@ jobs:
           repository: H3269/Maseer28
           ref: main
           token: ${{ secrets.TELEGRAM_REPO_TOKEN }}
+          persist-credentials: true
           path: telegram-site
 
       - name: Verify build output allowlist
