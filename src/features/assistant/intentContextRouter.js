@@ -72,9 +72,10 @@ function removeAttributedQuotes(value) {
 function classifyIntent(value) {
   const normalized = normalize(value);
   const deniesPersonalExperience = /خودم چنین تجربه(?:‌ای| ای) ندارم|برای خودم نیست|صرفاً برای ترجمه|فقط برای ترجمه/.test(normalized);
-  const explicitInformationRequest = /(چیست|چیست؟|یعنی چه|چه معنایی دارد|تعریف|اطلاعات|توضیح|معنی|ترجمه)/.test(normalized);
-  const explicitPersonalContext = /(من خودم|برای من|تجربه می‌کنم|تجربه دارم|در زندگی من|مشکل خودم)/.test(normalized);
-  if (explicitInformationRequest && (deniesPersonalExperience || !explicitPersonalContext)) return 'general_information';
+  const translationRequest = /(?:برای ترجمه|ترجمه (?:این|یک) متن|متن را ترجمه)/.test(normalized);
+  const informationQuestion = /(?:چیست|چی هست|یعنی چه|چه معنایی دارد)|تعریف\s+\S+|معنی\s+\S+|اطلاعات(?:ی)?\s+(?:درباره|در مورد)|(?:درباره|در مورد).{0,35}توضیح (?:بده|دهید)/.test(normalized);
+  const explicitPersonalContext = /(من خودم|برای من|تجربه می کنم|تجربه دارم|در زندگی من|مشکل خودم)/.test(normalized);
+  if (translationRequest || (informationQuestion && (deniesPersonalExperience || !explicitPersonalContext))) return 'general_information';
   if (/چه راهکاری|راهکار|چطور حل|چه کار کنم|تمرین/.test(normalized)) return 'request_strategy';
   if (/متخصص|روانشناس|درمانگر|کمک تخصصی/.test(normalized)) return 'professional_help_decision';
   if (/خلاصه.*(اشتباه|درست نیست)|منظورم این نبود|اصلاح می کنم/.test(normalized)) return 'correct_summary';
