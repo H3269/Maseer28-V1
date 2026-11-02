@@ -1,3 +1,4 @@
+import { ASSESSMENT_CONTEXT_VERSION, extractConservativeAssessmentEvidence } from './assessmentLanguageContext.v1.js';
 import { assessmentTopicRuleRegistry } from './assessmentTopicRuleRegistry.v1.js';
 
 const TOPIC_RULES = assessmentTopicRuleRegistry.rules.map(({ topic_id, phrases }) => [topic_id, phrases]);
@@ -60,9 +61,9 @@ function isMetaLanguageRequest(normalized) {
 }
 
 function detectTopics(text) {
-  const normalized = normalize(text);
-  if (isMetaLanguageRequest(normalized)) return [];
-  if (/(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او|دیگران)\s+(?:گفت|گفته|نوشت|می\s+گوید)/.test(normalized)) return [];
+  const context = extractConservativeAssessmentEvidence(text);
+  const normalized = normalize(context.evidence_text);
+  if (!normalized) return [];
   const hits = [];
   for (const [topic_id, phrases] of TOPIC_RULES) {
     if (isRejectedAttribution(normalized, topic_id)) continue;
@@ -165,6 +166,12 @@ export function submitAssessmentAnswer(session, answer) {
       duration: next.answers.duration,
       user_goal: next.answers.goal,
       candidate_topics: next.candidate_topics.map((item) => ({ topic_id: item.topic_id, status: item.status || 'tentative_hypothesis', matched_rule_phrases: [...(item.matched_phrases || [])] })),
+      evidence_processing: {
+        context_extraction_version: ASSESSMENT_CONTEXT_VERSION,
+        matching_method: assessmentTopicRuleRegistry.matching_method,
+        semantic_understanding: false,
+        status: 'experimental_not_clinically_validated',
+      },
       limitations: [
         'این دسته‌بندی بر پایه تطبیق واژه‌ها و گفته‌های همین گفتگو است؛ ارزیابی روان‌شناختی یا تشخیص نیست.',
         'نبودن یک موضوع در فهرست به معنی رد آن نیست.',
@@ -222,6 +229,7 @@ export const assessmentEngineTopicRuleIds = Object.freeze(TOPIC_RULES.map(([topi
 export const assessmentEngineMetadata = Object.freeze({
   version: '1.0.0',
   topic_rule_registry_version: assessmentTopicRuleRegistry.registry_version,
+  context_extraction_version: ASSESSMENT_CONTEXT_VERSION,
   runtime_status: 'experimental_local_only',
   diagnostic_use: false,
   validated_screening_tool: false,
