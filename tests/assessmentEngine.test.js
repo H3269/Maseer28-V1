@@ -333,3 +333,23 @@ test('a personal correction after an attributed statement is not discarded with 
   const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
   assert.equal(ids.includes('T23'), false);
 });
+
+test('morphological negation after a self-hatred phrase suppresses the lexical hint', () => {
+  const cases = [
+    'من از خودم متنفر نیستم؛ از رفتارم ناراحتم',
+    'من نفرت از خود ندارم؛ فقط از یک تصمیم پشیمانم',
+  ];
+  for (const text of cases) {
+    const session = completeIntakeToSummary(text);
+    assert.equal(
+      getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T18'),
+      false,
+      text
+    );
+  }
+});
+
+test('the generalized self-hatred phrase still detects an affirmative personal statement', () => {
+  const session = completeIntakeToSummary('من از خودم متنفرم و این احساس آزارم می‌دهد');
+  assert.ok(getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T18'));
+});
