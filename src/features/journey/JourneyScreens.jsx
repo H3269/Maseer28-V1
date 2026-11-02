@@ -403,7 +403,7 @@ export function Support({ content, onBack }) {
       document.body.appendChild(link);
       link.click();
       link.remove();
-      URL.revokeObjectURL(url);
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
       setPrivacyMessage('فایل خروجی اطلاعات ذخیره‌شده در مرورگر آماده شد. آن را در محل امن نگهداری کن.');
     } catch (error) {
       setPrivacyMessage(error?.message || 'تهیه خروجی اطلاعات انجام نشد.');
