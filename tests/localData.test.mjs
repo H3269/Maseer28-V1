@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { deleteLocalUserData, readLocalUserData } from '../src/features/privacy/localData.js';
+import { createLocalUserDataDeletionPlan, deleteLocalUserData, readLocalUserData } from '../src/features/privacy/localData.js';
 import { selectUserOwnedLibraryData } from '../src/features/privacy/indexedDbData.js';
 
 class MemoryStorage {
@@ -123,4 +123,24 @@ test('a custom book with a legacy-looking number is not mistaken for a seeded bo
   });
   assert.deepEqual(selected.books.map((book) => book.id), ['book-custom-import']);
   assert.deepEqual(selected.versions.map((version) => version.id), ['custom-v1']);
+});
+
+
+test('privacy deletion plan snapshots app keys without deleting them', () => {
+  const storage = new MemoryStorage({ maseer28_state: '{}', maseer28_copyright_v60: '1', unrelated: 'x' });
+  const plan = createLocalUserDataDeletionPlan(storage);
+  assert.deepEqual(plan, { keys: ['maseer28_state'], errors: [] });
+  assert.equal(storage.getItem('maseer28_state'), '{}');
+  const result = deleteLocalUserData(storage, plan);
+  assert.deepEqual(result.removed, ['maseer28_state']);
+});
+
+test('failed privacy deletion preflight prevents all local deletion', () => {
+  const storage = new MemoryStorage({ maseer28_state: '{}' });
+  Object.defineProperty(storage, 'length', { get() { throw new Error('storage denied'); } });
+  const plan = createLocalUserDataDeletionPlan(storage);
+  const result = deleteLocalUserData(storage, plan);
+  assert.equal(result.attempted, 0);
+  assert.equal(result.errors.length, 1);
+  assert.equal(storage.values.has('maseer28_state'), true);
 });
