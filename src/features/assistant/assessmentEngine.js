@@ -309,7 +309,7 @@ export function submitAssessmentAnswer(session, answer) {
       next.referral = {
         priority: 'urgent',
         safety_domains: questionId === 'safety_now' || questionId === 'safety_clarification'
-          ? classifySafetyDomains(next.answers.open_problem)
+          ? classifySafetyDomains([next.answers.open_problem, value].filter(Boolean).join(' '))
           : ['domain_not_yet_determined'],
         instruction: 'این ابزار جایگزین کمک فوری نیست و پاسخ مثبت به پرسش ترکیبی، نوع خطر را به‌تنهایی مشخص نمی‌کند. اگر خطر در همین الآن وجود دارد، از موقعیت خطر فاصله بگیر، تنها نمان و با خدمات اورژانسی محل زندگی یا فرد قابل اعتماد تماس بگیر. در صورت تهدید از سوی شخص دیگر، از مواجهه مستقیم با او خودداری کن و از حمایت امن کمک بگیر.',
       };
