@@ -39,7 +39,9 @@ export default function AssessmentAssistant() {
             ? [{ role: 'assistant', text: updated.referral.instruction }]
             : updated.status === 'completed'
               ? [{ role: 'assistant', text: 'گفتگو در این مرحله کامل شد. خلاصه موقت را پایین همین بخش می‌بینی.' }]
-              : []),
+              : updated.next_step?.message
+                ? [{ role: 'assistant', text: updated.next_step.message }]
+                : []),
       ]);
       setSession(updated);
       setDraft('');
@@ -106,7 +108,7 @@ export default function AssessmentAssistant() {
         <ul>{summary.limitations.map((item) => <li key={item}>{item}</li>)}</ul>
         <p className="muted">هیچ تمرین یا درمانی به‌صورت خودکار پیشنهاد نمی‌شود؛ محتوای مناسب هنوز نیازمند تأیید علمی و تخصصی است.</p>
       </div>}
-      {session?.status === 'completed' && <button className="secondary" type="button" onClick={start}>شروع گفت‌وگوی تازه</button>}
+      {(session?.status === 'completed' || session?.status === 'information_request_not_supported') && <button className="secondary" type="button" onClick={start}>شروع گفت‌وگوی تازه</button>}
       {session?.status === 'stopped_by_user' && <button className="secondary" type="button" onClick={start}>شروع دوباره</button>}
       <button className="secondary" type="button" onClick={closeAndClear}>بستن و پاک‌کردن گفتگو</button>
     </>}
