@@ -10,7 +10,7 @@ const knowledge = [{
   topic_ids: ['T02'],
   content_type: 'education',
   source: { source_id: 'SRC-T02-001', title: 'منبع آموزشی تأییدشده', locator: 'approved/education/t02#intro' },
-  approval: { status: 'approved_for_assistant', reviewer_role: 'evidence_reviewer', reviewed_at: '2026-10-20T10:00:00Z', version: '1.0.0' },
+  approval: { status: 'approved_for_assistant', reviewer_role: 'evidence_reviewer', review_record_id: 'REV-SAMPLE-001', reviewed_at: '2026-10-20T10:00:00Z', version: '1.0.0' },
 }];
 
 test('safety gate runs before knowledge retrieval', () => {
