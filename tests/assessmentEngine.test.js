@@ -400,3 +400,13 @@ test('ambiguous scope answer stops without generating a guessed response', () =>
   assert.equal(session.current_question, null);
   assert.equal(session.next_step.content_available, false);
 });
+
+
+test('assessment engine rejects tampered or incompatible session state', () => {
+  const unknownQuestion = { ...createAssessmentSession(), current_question: { id: 'unknown_question', prompt: 'x' } };
+  assert.throws(() => submitAssessmentAnswer(unknownQuestion, 'پاسخ'), /شناسه پرسش معتبر نیست/);
+  const malformedTopics = { ...createAssessmentSession(), candidate_topics: null };
+  assert.throws(() => submitAssessmentAnswer(malformedTopics, 'پاسخ'), /داده‌های داخلی جلسه معتبر نیستند/);
+  const incompatibleVersion = { ...createAssessmentSession(), schema_version: '9.9.9' };
+  assert.throws(() => submitAssessmentAnswer(incompatibleVersion, 'پاسخ'), /شناسه پرسش معتبر نیست/);
+});
