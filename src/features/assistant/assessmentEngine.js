@@ -76,14 +76,14 @@ function isExplicitlyNegated(normalized, phrase) {
   if (index < 0) return false;
   const before = normalized.slice(Math.max(0, index - 18), index);
   const after = normalized.slice(index + needle.length, index + needle.length + 22);
-  return /(?:نه|هرگز|اصلاً|ابداً)\\s*$/.test(before) ||
-    /^\\s*(?:نیستم|نیست|نبودم|نبود|نمی\\S*|ندارم|ندارد|نخواهم|نمی\\s+خواهم)/.test(after);
+  return /(?:نه|هرگز|اصلاً|ابداً)\s*$/.test(before) ||
+    /^\s*(?:نیستم|نیست|نبودم|نبود|نمی\S*|ندارم|ندارد|نخواهم|نمی\s+خواهم)/.test(after);
 }
 
 function isRejectedAttribution(normalized, topicId) {
   if (!['T18', 'T19', 'T23', 'T26', 'T33'].includes(topicId)) return false;
-  const attributed = /(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او|دیگران)\\s+(?:گفت|گفته|نوشت|می\\s+گوید)/.test(normalized);
-  const rejected = /(?:ولی|اما|با\\s+این\\s+حال).{0,45}(?:قبول\\s+ندارم|موافق\\s+نیستم|درست\\s+نمی\\s+دانم|باور\\s+نمی\\s+کنم)/.test(normalized);
+  const attributed = /(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او|دیگران)\s+(?:گفت|گفته|نوشت|می\s+گوید)/.test(normalized);
+  const rejected = /(?:ولی|اما|با\s+این\s+حال).{0,45}(?:قبول\s+ندارم|موافق\s+نیستم|درست\s+نمی\s+دانم|باور\s+نمی\s+کنم)/.test(normalized);
   return attributed && rejected;
 }
 
