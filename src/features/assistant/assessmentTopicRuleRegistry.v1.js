@@ -9,6 +9,7 @@ export const assessmentTopicRuleRegistry = Object.freeze({
   status: 'experimental_unreviewed',
   matching_method: 'normalized_substring',
   runtime_authorization: false,
+  runtime_eligible: false,
   rules: Object.freeze([
     ['T01', ['خشم', 'عصبانی', 'عصبانیت', 'از کوره', 'جوش میارم']],
     ['T02', ['اضطراب', 'نگرانی مداوم', 'دلشوره', 'نگران آینده']],
