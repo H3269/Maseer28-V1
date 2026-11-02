@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { routeSemanticIntake } from '../src/features/assistant/intentContextRouter.js';
 import { readFile } from 'node:fs/promises';
 
 const schema = JSON.parse(await readFile(new URL('../public/assistant/schemas/semantic-intake.v1.schema.json', import.meta.url), 'utf8'));
@@ -30,7 +31,7 @@ test('synthetic Persian evaluation dataset has unique cases and valid topic refe
     if (item.primary_topic && !['none', 'unknown'].includes(item.primary_topic)) {
       assert.ok(knownTopics.has(item.primary_topic), `${item.id}: unknown primary topic ${item.primary_topic}`);
     }
-    if (item.must_handoff_safety) assert.ok(item.notes?.length > 0, `${item.id}: safety case needs rationale`);
+    if (item.must_enter_safety_gate) assert.ok(item.notes?.length > 0, `${item.id}: safety case needs rationale`);
   }
 });
 
@@ -39,7 +40,38 @@ test('dataset explicitly covers ambiguous, quoted, negated, multi-topic and safe
   assert.match(text, /نمی‌خواهم|نمی‌خواهم/);
   assert.match(text, /گفت|گفتم/);
   assert.match(text, /هم/);
-  assert.ok(dataset.cases.some((item) => item.must_handoff_safety));
+  assert.ok(dataset.cases.some((item) => item.must_enter_safety_gate));
   assert.ok(dataset.cases.some((item) => item.must_ask_clarification));
   assert.ok(dataset.cases.some((item) => item.expected_topics?.length === 0));
+});
+
+
+test('runtime routes every synthetic safety-gate case to direct safety clarification', () => {
+  const safetyCases = dataset.cases.filter((item) => item.must_enter_safety_gate);
+  assert.ok(safetyCases.length >= 4);
+  for (const item of safetyCases) {
+    const result = routeSemanticIntake({ text: item.text, requestId: item.id });
+    assert.equal(result.next_question?.purpose, 'safety_clarification', item.id);
+  }
+});
+
+test('runtime does not attribute rejected third-party language to the user', () => {
+  const item = dataset.cases.find((entry) => entry.id === 'S20');
+  const result = routeSemanticIntake({ text: item.text, requestId: item.id });
+  assert.deepEqual(result.topic_candidates, []);
+  assert.equal(result.next_question, null);
+});
+
+test('runtime treats explicit educational requests as information intent, not personal assessment', () => {
+  const item = dataset.cases.find((entry) => entry.id === 'S17');
+  const result = routeSemanticIntake({ text: item.text, requestId: item.id });
+  assert.equal(result.intent.label, 'general_information');
+  assert.deepEqual(result.topic_candidates, []);
+  assert.equal(result.next_question, null);
+});
+
+test('runtime gives the corrected meaning precedence over the quoted self-label', () => {
+  const item = dataset.cases.find((entry) => entry.id === 'S12');
+  const result = routeSemanticIntake({ text: item.text, requestId: item.id });
+  assert.equal(result.topic_candidates.some((candidate) => candidate.topic_id === 'T18'), false);
 });
