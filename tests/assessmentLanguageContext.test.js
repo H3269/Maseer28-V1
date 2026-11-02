@@ -31,3 +31,8 @@ test('ambiguous attributed content is conservatively excluded and policy is expl
   assert.equal(result.evidence_text, '');
   assert.equal(result.ambiguity_policy, 'exclude_ambiguous_attributed_or_meta_language_clause');
 });
+
+test('context extraction policy has an explicit semantic version', async () => {
+  const { ASSESSMENT_CONTEXT_VERSION } = await import('../src/features/assistant/assessmentLanguageContext.v1.js');
+  assert.equal(ASSESSMENT_CONTEXT_VERSION, '1.0.0');
+});
