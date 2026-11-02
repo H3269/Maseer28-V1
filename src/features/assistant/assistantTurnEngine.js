@@ -39,7 +39,7 @@ export function routeAssistantTurn({ text, knowledgeItems = [], requestId = 'ass
       return deepFreeze({
         status: 'knowledge_unavailable',
         intake,
-        message: 'برای این پرسش هنوز محتوای تأییدشده و قابل استناد در پایگاه دانش دستیار پیدا نشد. به‌جای حدس‌زدن، فعلاً پاسخ قطعی نمی‌دهم.',
+        message: 'این یک درخواست اطلاعات عمومی است؛ برای این پرسش هنوز محتوای تأییدشده و قابل استناد در پایگاه دانش دستیار پیدا نشد. به‌جای حدس‌زدن، فعلاً پاسخ قطعی نمی‌دهم.',
         knowledge: [],
         retrieval_status: retrieval.status,
       });
