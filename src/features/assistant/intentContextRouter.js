@@ -112,10 +112,10 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
   const contradictions = [];
 
   if (quotePresent) uncertainties.push('بخشی از متن داخل نقل‌قول است؛ انتساب آن به تجربه یا باور کاربر قطعی نیست.');
-  if (negationPresent) uncertainty.push('نشانه نفی دیده شد؛ دامنه نفی ممکن است به کل موضوع یا فقط یک برچسب اشاره کند.');
+  if (negationPresent) uncertainties.push('نشانه نفی دیده شد؛ دامنه نفی ممکن است به کل موضوع یا فقط یک برچسب اشاره کند.');
   if (correctionPresent) contradictions.push('کاربر احتمالاً در حال اصلاح یا دقیق‌تر کردن گفته قبلی است؛ برداشت قبلی نباید بدون بازبینی حفظ شود.');
-  if (multiTopic) uncertainty.push('بیش از یک موضوع احتمالی دیده شد؛ اولویت اصلی هنوز مشخص نیست.');
-  if (safetyMatches.length) uncertainty.push('عبارت بالقوه مرتبط با ایمنی دیده شد؛ قصد، فوریت و زمینه باید مستقیماً روشن شود.');
+  if (multiTopic) uncertainties.push('بیش از یک موضوع احتمالی دیده شد؛ اولویت اصلی هنوز مشخص نیست.');
+  if (safetyMatches.length) uncertainties.push('عبارت بالقوه مرتبط با ایمنی دیده شد؛ قصد، فوریت و زمینه باید مستقیماً روشن شود.');
 
   let nextQuestion = null;
   if (safetyMatches.length) {
