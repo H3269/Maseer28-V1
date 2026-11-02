@@ -34,6 +34,8 @@ const TOPIC_RULES = [
   ['T33', ['خودانتقادی', 'از خودم ایراد', 'منتقد درونی']],
 ];
 
+export const ROUTED_TOPIC_IDS = Object.freeze(TOPIC_RULES.map(([topicId]) => topicId));
+
 const SAFETY_CUES = [
   'خودکشی', 'قصد خودکشی', 'به زندگی‌ام پایان', 'به زندگیم پایان',
   'خودم را بکشم', 'خودمو بکشم', 'به خودم آسیب', 'خودزنی',
