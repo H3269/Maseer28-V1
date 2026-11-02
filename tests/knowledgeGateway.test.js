@@ -67,7 +67,7 @@ test('exercise content requiring human review is not served as a routine retriev
     safety: { level: 'human_review_required', stop_conditions: ['نیازمند بررسی انسانی'] },
     approval: { status: 'approved_for_assistant', reviewer_role: 'qualified_clinician', review_record_id: 'REV-SAMPLE-CLIN-001', reviewed_at: '2026-10-20T10:00:00Z', version: '1.0.0' },
   });
-  const result = retrieveApprovedKnowledge({ query: 'نگرانی', items: [exercise] });
+  const result = retrieveApprovedKnowledge({ query: 'نگرانی', items: [exercise], approvalManifest: manifestFor(exercise) });
   assert.equal(result.status, 'no_approved_content');
 });
 
@@ -80,7 +80,7 @@ test('invalid topic IDs and duplicate topic IDs cannot pass the approval gate', 
 });
 
 test('empty queries and result limits are handled safely', () => {
-  assert.equal(retrieveApprovedKnowledge({ query: '   ', items: [approved()] }).status, 'insufficient_query');
+  assert.equal(retrieveApprovedKnowledge({ query: '   ', items: [approved()], approvalManifest: manifestFor(approved()) }).status, 'insufficient_query');
   const items = Array.from({ length: 8 }, (_, index) => approved({ item_id: `K-${index}`, title: `نگرانی ${index}` }));
   assert.equal(retrieveApprovedKnowledge({ query: 'نگرانی', items, approvalManifest: manifestFor(items[0]), limit: 100 }).results.length, 5);
 });
