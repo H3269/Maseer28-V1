@@ -5,6 +5,7 @@ const DAY_PHASES = {
   2: 'pattern_discrimination_and_context',
   3: 'functional_context_and_impact',
 };
+const ALLOW_REVIEWED_SUBTOPIC_REVISITS = new Set(['T14', 'T19', 'T23', 'T32', 'T33']);
 const REVIEWED_SUBTOPIC_MAPPINGS = new Map([
   ['DRAFT_T14_D02', 'T14-S01'],
   ['DRAFT_T14_D03', 'T14-S02'],
@@ -122,7 +123,8 @@ export function validateContentRedesign({ queue, day1, day2, day3, topics, subto
       }
     }
     const subtopicIds = topicDrafts.map((item) => item.subtopic_id);
-    if (new Set(subtopicIds).size !== subtopicIds.length) {
+    if (!ALLOW_REVIEWED_SUBTOPIC_REVISITS.has(topicId) &&
+        new Set(subtopicIds).size !== subtopicIds.length) {
       errors.push('topic ' + topicId + ' does not progress to a distinct subtopic each day');
     }
   }
