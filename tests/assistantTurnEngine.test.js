@@ -39,7 +39,7 @@ test('ambiguous personal experience asks for clarification instead of returning 
 });
 
 test('general information can only return approved excerpts with source attribution', () => {
-  const result = routeAssistantTurn({ text: 'اضطراب چیست؟', knowledgeItems: knowledge });
+  const result = routeAssistantTurn({ text: 'اضطراب چیست؟', knowledgeItems: knowledge, approvalManifest });
   assert.equal(result.status, 'approved_knowledge_available');
   assert.equal(result.knowledge[0].source.source_id, 'SRC-T02-001');
   assert.equal(result.knowledge[0].approval.reviewer_role, 'evidence_reviewer');
@@ -53,7 +53,7 @@ test('general information with no approved material returns no fabricated answer
 });
 
 test('clear personal experience stays in intake rather than jumping to recommendations', () => {
-  const result = routeAssistantTurn({ text: 'مدتی است اضطراب دارم و در کارم تمرکز ندارم.' , knowledgeItems: knowledge });
+  const result = routeAssistantTurn({ text: 'مدتی است اضطراب دارم و در کارم تمرکز ندارم.' , knowledgeItems: knowledge, approvalManifest });
   assert.equal(result.status, 'personal_intake_required');
   assert.deepEqual(result.knowledge, []);
 });
