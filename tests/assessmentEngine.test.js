@@ -186,3 +186,10 @@ test('explicit user correction replaces rather than merges the earlier topic hyp
   assert.equal(session.candidate_topics.some((item) => item.topic_id === 'T02'), false);
   assert.equal(session.summary.user_report, session.answers.open_problem);
 });
+
+
+test('engine rejects oversized input even when called outside the UI', () => {
+  const session = createAssessmentSession();
+  assert.throws(() => answer(session, 'الف'.repeat(3001)), /حداکثر ۳۰۰۰ نویسه/);
+  assert.equal(getCurrentQuestion(session).id, 'open_problem');
+});
