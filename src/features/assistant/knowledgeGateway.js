@@ -57,6 +57,9 @@ function isApprovedItem(item) {
     && allowedReviewers[item.content_type]?.includes(item.approval.reviewer_role)
     && typeof item.approval.reviewed_at === 'string'
     && !Number.isNaN(Date.parse(item.approval.reviewed_at))
+    && typeof item.approval.review_record_id === 'string'
+    && item.approval.review_record_id.trim().length > 0
+    && item.approval.review_record_id.length <= 120
     && typeof item.approval.version === 'string'
     && item.approval.version.trim()
     && validExerciseSafety
@@ -128,6 +131,7 @@ export function retrieveApprovedKnowledge({ query, topicIds = [], items = [], li
         reviewer_role: item.approval.reviewer_role,
         reviewed_at: item.approval.reviewed_at,
         version: item.approval.version,
+        review_record_id: item.approval.review_record_id,
       },
     })),
   });
