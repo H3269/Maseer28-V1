@@ -1,5 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
 import { getLatestValidationRun } from '../scripts/assert-validation-run.mjs';
 
@@ -67,4 +72,22 @@ test('an in-progress latest validation remains ineligible', () => {
   ], 'abc123');
   assert.equal(latest.status, 'in_progress');
   assert.notEqual(latest.conclusion, 'success');
+});
+
+
+test('CLI gate executes when invoked with a relative script path', () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'path28-gate-'));
+  const reportPath = path.join(directory, 'runs.json');
+  const scriptPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../scripts/assert-validation-run.mjs');
+  fs.writeFileSync(reportPath, JSON.stringify({ workflow_runs: [successful] }));
+
+  const result = spawnSync(process.execPath, [path.relative(process.cwd(), scriptPath), reportPath], {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+    env: { ...process.env, GITHUB_SHA: 'abc123' },
+  });
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /با موفقیت/);
+  fs.rmSync(directory, { recursive: true, force: true });
 });
