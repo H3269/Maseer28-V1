@@ -6,6 +6,7 @@ import {
   assessmentEngineTopicRuleIds,
 } from '../src/features/assistant/assessmentEngine.js';
 import { assessmentTopicRuleRegistry } from '../src/features/assistant/assessmentTopicRuleRegistry.v1.js';
+import { buildAssistantContext } from '../src/features/assistant/assistantContext.v1.js';
 
 const answer = (session, value) => submitAssessmentAnswer(session, value);
 function completeIntake(opening, clarification = 'یک نمونه مشخص از همین تجربه') {
@@ -18,6 +19,36 @@ function completeIntake(opening, clarification = 'یک نمونه مشخص از 
   session = answer(session, clarification);
   return session;
 }
+
+test('session accepts only a valid, consented journey context and revalidates it on every answer', () => {
+  const now = '2026-11-02T12:00:00.000Z';
+  const consentState = { purposes: { journey_context: { granted: true } } };
+  const context = buildAssistantContext({
+    journey: { active_day: 7, completed_days_count: 6 },
+    consentState,
+    now,
+  });
+  let session = createAssessmentSession({ assistantContext: context, consentState });
+  assert.deepEqual(session.assistant_context.entries.map((entry) => entry.key), ['active_day', 'completed_days_count']);
+  session = submitAssessmentAnswer(session, 'یک توضیح', { consentState: { purposes: { journey_context: { granted: false } } } });
+  assert.equal(session.assistant_context, null);
+  assert.equal(getCurrentQuestion(session).id, 'safety_now');
+});
+
+test('session rejects context without consent and clears it when stopped', () => {
+  const context = buildAssistantContext({
+    journey: { active_day: 7, completed_days_count: 6 },
+    consentState: { purposes: { journey_context: { granted: true } } },
+    now: '2026-11-02T12:00:00.000Z',
+  });
+  const session = createAssessmentSession({ assistantContext: context, consentState: {} });
+  assert.equal(session.assistant_context, null);
+  const stopped = stopAssessment(createAssessmentSession({
+    assistantContext: context,
+    consentState: { purposes: { journey_context: { granted: true } } },
+  }));
+  assert.equal(stopped.assistant_context, null);
+});
 
 test('session starts locally with an open question', () => {
   const session = createAssessmentSession();
