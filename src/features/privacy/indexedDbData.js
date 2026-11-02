@@ -94,7 +94,7 @@ export async function deleteIndexedDbUserData(indexedDBApi = globalThis.indexedD
       settings: selected.settings.length,
     };
     const attempted = counts.books + counts.versions + counts.settings;
-    if (!attempted) return { database: DB_NAME, attempted: 0, removed: 0, counts };
+    if (!attempted) return { database: DB_NAME, attempted: 0, removed: 0, counts, remaining: 0 };
 
     await new Promise((resolve, reject) => {
       const tx = db.transaction(STORE_NAMES, 'readwrite');
