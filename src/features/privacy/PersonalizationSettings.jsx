@@ -79,6 +79,7 @@ export default function PersonalizationSettings() {
       const next = grantConsent('journey_context', { explicitAction: true, context: JOURNEY_CONTEXT_CONSENT });
       setConsent(next);
       setJourneyContextEnabled(true);
+      window.dispatchEvent(new Event('maseer28:consent-changed'));
       setError('');
       setMessage('رضایت مستقل زمینه مسیر ثبت شد. این مجوز به‌تنهایی به معنی اتصال یا ارسال اطلاعات مسیر به دستیار نیست.');
     } catch (cause) {
@@ -91,6 +92,7 @@ export default function PersonalizationSettings() {
       const next = withdrawConsent('journey_context');
       setConsent(next);
       setJourneyContextEnabled(false);
+      window.dispatchEvent(new Event('maseer28:consent-changed'));
       setError('');
       setMessage('رضایت استفاده از زمینه مسیر لغو شد. دستیار نباید این زمینه را دریافت کند.');
     } catch (cause) {
