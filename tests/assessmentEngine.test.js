@@ -125,3 +125,21 @@ test('safety answer classifier accepts clear negative disclosure but not ambiguo
   assert.equal(classifySafetyAnswer('شاید'), 'clarification_needed');
   assert.equal(classifySafetyAnswer(''), 'clarification_needed');
 });
+
+test('ambiguous negative safety response keeps the safety gate active', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است نگرانم');
+  session = answer(session, 'نه، مطمئن نیستم');
+  assert.equal(session.safety_state, 'clarification_needed');
+  assert.equal(getCurrentQuestion(session).id, 'safety_clarification');
+  assert.equal(session.status, 'in_progress');
+});
+
+test('clear negative safety disclosure can proceed without claiming guaranteed safety', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است نگرانم');
+  session = answer(session, 'نه، قصد آسیب ندارم');
+  assert.equal(session.safety_state, 'no_immediate_risk_disclosed');
+  assert.equal(getCurrentQuestion(session).id, 'impact');
+  assert.equal(session.status, 'in_progress');
+});
