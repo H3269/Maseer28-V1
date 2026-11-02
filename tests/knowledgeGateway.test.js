@@ -10,14 +10,14 @@ const approved = (overrides = {}) => ({
   topic_ids: ['T02'],
   content_type: 'education',
   source: { source_id: 'SRC-001', title: 'راهنمای آموزشی نمونه', locator: 'docs/sample-guide#section-1' },
-  approval: { status: 'approved_for_assistant', reviewer_role: 'evidence_reviewer', reviewed_at: '2026-10-20T10:00:00Z', version: '1.0.0' },
+  approval: { status: 'approved_for_assistant', reviewer_role: 'evidence_reviewer', review_record_id: 'REV-SAMPLE-001', reviewed_at: '2026-10-20T10:00:00Z', version: '1.0.0' },
   ...overrides,
 });
 
 test('draft or unreviewed knowledge is never retrieved', () => {
   const result = retrieveApprovedKnowledge({
     query: 'نگرانی درباره آینده',
-    items: [approved({ approval: { status: 'draft', reviewer_role: 'evidence_reviewer', reviewed_at: '2026-10-20T10:00:00Z', version: '1.0.0' } })],
+    items: [approved({ approval: { status: 'draft', reviewer_role: 'evidence_reviewer', review_record_id: 'REV-SAMPLE-001', reviewed_at: '2026-10-20T10:00:00Z', version: '1.0.0' } })],
   });
   assert.equal(result.status, 'no_approved_content');
   assert.deepEqual(result.results, []);
@@ -49,7 +49,7 @@ test('exercise content requiring human review is not served as a routine retriev
   const exercise = approved({
     content_type: 'exercise',
     safety: { level: 'human_review_required', stop_conditions: ['نیازمند بررسی انسانی'] },
-    approval: { status: 'approved_for_assistant', reviewer_role: 'qualified_clinician', reviewed_at: '2026-10-20T10:00:00Z', version: '1.0.0' },
+    approval: { status: 'approved_for_assistant', reviewer_role: 'qualified_clinician', review_record_id: 'REV-SAMPLE-CLIN-001', reviewed_at: '2026-10-20T10:00:00Z', version: '1.0.0' },
   });
   const result = retrieveApprovedKnowledge({ query: 'نگرانی', items: [exercise] });
   assert.equal(result.status, 'no_approved_content');
