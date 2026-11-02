@@ -176,7 +176,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
     request_id: safeRequestId,
     intent: {
       label: intentLabel,
-      ambiguity: (multiTopic || quotePresent || negationPresent || correctionPresent || topics.length === 0) ? 'high' : safetyContextPresent ? 'medium' : 'low',
+      ambiguity: intentLabel === 'general_information' || clearlyRejectedThirdPartyQuote ? 'low' : (multiTopic || quotePresent || negationPresent || correctionPresent || topics.length === 0) ? 'high' : safetyContextPresent ? 'medium' : 'low',
     },
     semantic_summary: raw ? raw.slice(0, 600) : null,
     situational_facts: {
