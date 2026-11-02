@@ -277,3 +277,20 @@ test('IndexedDB privacy deletion is a no-op for an existing database with empty 
     await removePrivacyTestDatabase();
   }
 });
+
+
+test('local deletion detects app-owned keys created after the deletion snapshot', () => {
+  const storage = new MemoryStorage({ maseer28_state: '{}' });
+  const originalRemove = storage.removeItem.bind(storage);
+  storage.removeItem = (key) => {
+    originalRemove(key);
+    storage.setItem('maseer28_state_from_another_tab', '{"late":true}');
+  };
+
+  const plan = createLocalUserDataDeletionPlan(storage);
+  const result = deleteLocalUserData(storage, plan);
+
+  assert.equal(result.removed.length, 1);
+  assert.deepEqual(result.remainingKeys, ['maseer28_state_from_another_tab']);
+  assert.deepEqual(result.verificationErrors, []);
+});
