@@ -43,6 +43,15 @@ test('rejects a registered but out-of-scope source attached to a topic', () => {
   assert.ok(result.errors.some((error) => error.includes('evidence scope mismatch for T15')));
 });
 
+test('rejects a depression guideline used as direct evidence for T23 self-worth exercises', () => {
+  const data = base();
+  const record = data.pilot.records.find((item) => item.topic_id === 'T23' && item.day_number === 4);
+  record.evidence_ids.push('EVID_NICE_NG222');
+  record.source_reference_ids.push('EVID_NICE_NG222');
+  const result = validateSelfEvaluationPilot(data);
+  assert.ok(result.errors.some((error) => error.includes('evidence not approved for T23: EVID_NICE_NG222')));
+});
+
 test('rejects a T19 day 6 subtopic that confuses behavior responsibility with global identity blame', () => {
   const data = base();
   const record = data.pilot.records.find((item) => item.topic_id === 'T19' && item.day_number === 6);
