@@ -233,7 +233,8 @@ export function getAssessmentSummary(session) {
   return session?.summary ?? null;
 }
 
-export const assessmentEngineTopicRuleIds = Object.freeze(TOPIC_RULES.map(([topicId]) => topicId));
+// Catalog IDs are exposed for consistency checks; this does not mean the rules are active.
+export const assessmentEngineTopicRuleIds = Object.freeze(assessmentTopicRuleRegistry.rules.map(({ topic_id }) => topic_id));
 
 export const assessmentEngineMetadata = Object.freeze({
   version: '1.0.0',
