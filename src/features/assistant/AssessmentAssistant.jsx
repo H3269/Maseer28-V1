@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   createAssessmentSession,
   getCurrentQuestion,
@@ -15,6 +15,11 @@ export default function AssessmentAssistant() {
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
   const [error, setError] = useState('');
+  const transcriptEndRef = useRef(null);
+
+  useEffect(() => {
+    transcriptEndRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'end' });
+  }, [messages]);
 
   function start() {
     const next = createAssessmentSession();
@@ -27,12 +32,13 @@ export default function AssessmentAssistant() {
 
   function send(event) {
     event.preventDefault();
-    if (!session) return;
+    if (!session || !draft.trim()) return;
     try {
-      const updated = submitAssessmentAnswer(session, draft);
+      const answer = draft.trim();
+      const updated = submitAssessmentAnswer(session, answer);
       setMessages((previous) => [
         ...previous,
-        { role: 'user', text: draft.trim() },
+        { role: 'user', text: answer },
         ...(getCurrentQuestion(updated)
           ? [{ role: 'assistant', text: getCurrentQuestion(updated).prompt }]
           : updated.referral
@@ -51,6 +57,13 @@ export default function AssessmentAssistant() {
     }
   }
 
+  function handleComposerKeyDown(event) {
+    if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent?.isComposing) {
+      event.preventDefault();
+      if (draft.trim() && active) send(event);
+    }
+  }
+
   function stop() {
     setSession((previous) => stopAssessment(previous));
     setMessages([]);
@@ -58,44 +71,43 @@ export default function AssessmentAssistant() {
     setError('');
   }
 
-  function closeAndClear() {
-    setSession((previous) => stopAssessment(previous));
-    setSession(null);
-    setMessages([]);
-    setDraft('');
-    setError('');
-    setExpanded(false);
-  }
-
   const summary = session?.summary;
   const knowledgeResponse = session?.knowledge_response;
   const active = session?.status === 'in_progress' && Boolean(getCurrentQuestion(session));
+  const ended = session?.status === 'stopped_by_user';
 
-  return <section className="card" aria-labelledby="assistant-assessment-title">
+  return <section className="card assistantCard" aria-labelledby="assistant-assessment-title">
     <span className="badge">نسخه آزمایشی</span>
     <h2 id="assistant-assessment-title">دستیار گفت‌وگوی مسیر۲۸</h2>
     <p className="muted">می‌توانی مسئله‌ات را با زبان خودت توضیح بدهی. این ابزار فقط یک دسته‌بندی اولیه و غیرتشخیصی انجام می‌دهد. بررسی ایمنی آن اعتبارسنجی بالینی نشده و نمی‌تواند خطر را رد یا تأیید کند؛ در خطر فوری به خدمات اورژانسی محل زندگی یا فرد قابل اعتماد مراجعه کن.</p>
     {!expanded && <button className="primary" type="button" onClick={start}>شروع گفت‌وگو</button>}
     {expanded && <>
       <div className="sectionHint" role="note">
-        <span> <strong>i</strong> </span>
+        <span><strong>i</strong></span>
         <div><b>حریم خصوصی آزمایشی</b><small>پاسخ‌ها فقط در حافظه موقت همین صفحه نگهداری می‌شوند؛ در این نسخه ذخیره یا به سرور ارسال نمی‌شوند. اطلاعات شناسایی‌کننده ننویس.</small></div>
       </div>
-      <div className="assistantTranscript" aria-live="polite">
-        {messages.map((message, index) => <div className={message.role === 'assistant' ? 'assistantMessage' : 'userMessage'} key={index}>
-          <b>{message.role === 'assistant' ? 'دستیار' : 'تو'}</b>
-          <p>{message.text}</p>
-        </div>)}
-      </div>
-      {active && <form onSubmit={send}>
-        <label htmlFor="assistant-assessment-answer">پاسخ تو</label>
-        <textarea id="assistant-assessment-answer" value={draft} onChange={(event) => setDraft(event.target.value)} rows={3} maxLength={3000} placeholder="پاسخت را اینجا بنویس..." />
-        {error && <p className="contactHelp" role="alert">{error}</p>}
-        <div className="contactActions">
-          <button className="primary" type="submit" disabled={!draft.trim()}>ارسال پاسخ</button>
-          <button className="secondary" type="button" onClick={stop}>پایان و پاک‌کردن گفتگو</button>
+      <div className="assistantChatShell" aria-label="فضای مکالمه دستیار مسیر۲۸">
+        <div className="assistantTranscript" aria-label="پیام‌های مکالمه" aria-live="polite">
+          {messages.map((message, index) => <div className={message.role === 'assistant' ? 'assistantMessage' : 'userMessage'} key={index}>
+            <b>{message.role === 'assistant' ? 'دستیار مسیر۲۸' : 'شما'}</b>
+            <p>{message.text}</p>
+          </div>)}
+          <div ref={transcriptEndRef} />
+          {!messages.length && ended && <p className="assistantEndedNotice" role="status">گفتگو پایان یافت و متن‌های این جلسه از حافظه موقت صفحه پاک شدند.</p>}
         </div>
-      </form>}
+        {active && <form className="assistantComposer" onSubmit={send}>
+          <label className="assistantSrOnly" htmlFor="assistant-assessment-answer">پیام شما</label>
+          <textarea id="assistant-assessment-answer" value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={handleComposerKeyDown} rows={2} maxLength={3000} placeholder="پیامت را بنویس..." />
+          <button className="primary assistantSendButton" type="submit" disabled={!draft.trim()} aria-label="ارسال پیام">ارسال</button>
+          {error && <p className="contactHelp assistantComposerError" role="alert">{error}</p>}
+        </form>}
+      </div>
+      {session && <div className="assistantConversationActions">
+        {active || session.status === 'paused_for_human_support' || session.status === 'completed'
+          ? <button className="secondary" type="button" onClick={stop}>پایان گفتگو</button>
+          : null}
+        {(ended || session.status === 'completed' || session.status === 'information_request_not_supported' || session.status === 'summary_needs_review' || session.status === 'intent_scope_unclear' || session.status === 'information_answer_available') && <button className="primary" type="button" onClick={start}>شروع گفت‌وگوی تازه</button>}
+      </div>}
       {session?.status === 'paused_for_human_support' && <div className="sectionHint" role="alert"><span>!</span><div><b>اولویت با کمک انسانی است</b><small>ادامه ارزیابی خودکار متوقف شده است. از راهنمایی بالا برای دریافت کمک فوری استفاده کن و در صورت خطر قریب‌الوقوع با خدمات اورژانسی محل زندگی تماس بگیر.</small></div></div>}
       {knowledgeResponse && <div className="assistantKnowledgeResponse">
         <h3>پاسخ مستند از پایگاه دانش</h3>
@@ -121,9 +133,6 @@ export default function AssessmentAssistant() {
         <ul>{summary.limitations.map((item) => <li key={item}>{item}</li>)}</ul>
         <p className="muted">هیچ تمرین یا درمانی به‌صورت خودکار پیشنهاد نمی‌شود؛ محتوای مناسب هنوز نیازمند تأیید علمی و تخصصی است.</p>
       </div>}
-      {(session?.status === 'completed' || session?.status === 'information_request_not_supported' || session?.status === 'summary_needs_review' || session?.status === 'intent_scope_unclear' || session?.status === 'information_answer_available') && <button className="secondary" type="button" onClick={start}>شروع گفت‌وگوی تازه</button>}
-      {session?.status === 'stopped_by_user' && <button className="secondary" type="button" onClick={start}>شروع دوباره</button>}
-      <button className="secondary" type="button" onClick={closeAndClear}>بستن و پاک‌کردن گفتگو</button>
     </>}
   </section>;
 }

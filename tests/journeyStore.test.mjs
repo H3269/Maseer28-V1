@@ -131,12 +131,12 @@ test('profile v2 migration is idempotent and does not overwrite existing canonic
   const { migrateUserProfileToV2, PROFILE_V2_KEY } =
     await import('../src/features/journey/journeyStore.js');
   withMemoryStorage((data) => {
-    data.set(PROFILE_V2_KEY, JSON.stringify({ name: 'canonical', age: 29 }));
+    data.set(PROFILE_V2_KEY, JSON.stringify({ name: 'نام معتبر', age: 29 }));
     const state = { profileData: { name: 'legacy', age: 45, gender: 'مرد' } };
     const first = migrateUserProfileToV2(state);
     const second = migrateUserProfileToV2({ profileData: { name: 'new legacy', age: 50 } });
-    assert.equal(first.profile.name, 'canonical');
-    assert.equal(second.profile.name, 'canonical');
+    assert.equal(first.profile.name, 'نام معتبر');
+    assert.equal(second.profile.name, 'نام معتبر');
     assert.equal(second.profile.age, 29);
     assert.equal(second.profile.gender, 'مرد');
   });
