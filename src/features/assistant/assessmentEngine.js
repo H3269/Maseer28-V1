@@ -324,8 +324,7 @@ export function submitAssessmentAnswer(session, answer) {
       status: 'tentative_hypothesis',
       confidence_band: item.confidence_band,
     }));
-    const merged = new Map((isCorrection ? [] : next.candidate_topics).concat(extra).map((item) => [item.topic_id, item]));
-    next.candidate_topics = [...merged.values()].slice(0, 3);
+    next.candidate_topics = extra.slice(0, 3);
     if (next.candidate_topics.length === 0) next.candidate_topics = [{ topic_id: 'T34', matched_phrases: [], status: 'needs_clarification' }];
     buildAssessmentSummary(next, isCorrection ? null : value);
     next.current_question = QUESTION.summary;
