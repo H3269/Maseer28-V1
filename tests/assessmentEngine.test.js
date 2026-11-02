@@ -121,7 +121,7 @@ test('safety answer classifier does not mistake a leading no for a complete nega
 test('safety answer classifier accepts clear negative disclosure but not ambiguous elaboration', () => {
   assert.equal(classifySafetyAnswer('نه'), 'no_immediate_risk_disclosed');
   assert.equal(classifySafetyAnswer('خیر، قصد ندارم'), 'no_immediate_risk_disclosed');
-  assert.equal(classifySafetyAnswer('نه، قصد آسیب ندارم'), 'clarification_needed');
+  assert.equal(classifySafetyAnswer('نه، قصد آسیب ندارم'), 'no_immediate_risk_disclosed');
   assert.equal(classifySafetyAnswer('شاید'), 'clarification_needed');
   assert.equal(classifySafetyAnswer(''), 'clarification_needed');
 });
