@@ -109,6 +109,8 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
   const userAttributedText = removeAttributedQuotes(raw);
   const userNormalized = normalize(userAttributedText);
   const safetyMatches = SAFETY_CUES.filter((cue) => userNormalized.includes(normalize(cue)));
+  const quotedSafetyMatches = raw === userAttributedText ? [] : SAFETY_CUES.filter((cue) => normalize(raw).includes(normalize(cue)));
+  const safetyContextPresent = safetyMatches.length > 0 || quotedSafetyMatches.length > 0;
   const explicitlyNegatedSafety = safetyMatches.length > 0 && safetyMatches.every((cue) => {
     const index = userNormalized.indexOf(normalize(cue));
     const before = userNormalized.slice(Math.max(0, index - 45), index);
@@ -131,7 +133,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
   if (negationPresent) uncertainties.push('نشانه نفی دیده شد؛ دامنه نفی ممکن است به کل موضوع یا فقط یک برچسب اشاره کند.');
   if (correctionPresent) contradictions.push('کاربر احتمالاً در حال اصلاح یا دقیق‌تر کردن گفته قبلی است؛ برداشت قبلی نباید بدون بازبینی حفظ شود.');
   if (multiTopic) uncertainties.push('بیش از یک موضوع احتمالی دیده شد؛ اولویت اصلی هنوز مشخص نیست.');
-  if (safetyMatches.length) uncertainties.push('عبارت بالقوه مرتبط با ایمنی دیده شد؛ این عبارت به‌تنهایی قصد یا خطر فوری را اثبات نمی‌کند و باید مستقیماً روشن شود.');
+  if (safetyContextPresent) uncertainties.push('عبارت بالقوه مرتبط با ایمنی دیده شد؛ این عبارت به‌تنهایی قصد یا خطر فوری را اثبات نمی‌کند و باید مستقیماً روشن شود.');
   if (raw !== userAttributedText) uncertainties.push('عبارت ایمنی در نقل‌قول منتسب به شخص دیگری آمده است؛ وضعیت خود کاربر و شخص نقل‌شده باید از هم تفکیک شود.');
   if (explicitlyNegatedSafety) uncertainties.push('نشانه نفی در کنار عبارت ایمنی دیده شد؛ نتیجه‌گیری درباره سطح خطر از روی تطبیق واژگانی مجاز نیست.');
 
@@ -175,7 +177,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
     next_question: nextQuestion,
     safety_handoff: {
       handoff_required: Boolean(explicitImmediateIntent && !explicitlyNegatedSafety),
-      trigger_evidence: safetyMatches.slice(0, 5),
+      trigger_evidence: [...new Set([...safetyMatches, ...quotedSafetyMatches])].slice(0, 5),
     },
     limitations: LIMITATIONS,
   };
