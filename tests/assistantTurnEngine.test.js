@@ -13,8 +13,21 @@ const knowledge = [{
   approval: { status: 'approved_for_assistant', reviewer_role: 'evidence_reviewer', review_record_id: 'REV-SAMPLE-001', reviewed_at: '2026-10-20T10:00:00Z', version: '1.0.0' },
 }];
 
+const approvalManifest = {
+  schema_version: '1.0.0',
+  manifest_id: 'test-manifest',
+  status: 'active',
+  approved_items: [{
+    item_id: 'K-T02-001',
+    review_record_id: 'REV-SAMPLE-001',
+    reviewer_role: 'evidence_reviewer',
+    reviewed_at: '2026-10-20T10:00:00Z',
+    version: '1.0.0',
+  }],
+};
+
 test('safety gate runs before knowledge retrieval', () => {
-  const result = routeAssistantTurn({ text: 'امشب قصد دارم خودم را بکشم.', knowledgeItems: knowledge });
+  const result = routeAssistantTurn({ text: 'امشب قصد دارم خودم را بکشم.', knowledgeItems: knowledge, approvalManifest });
   assert.equal(result.status, 'urgent_human_support_required');
   assert.deepEqual(result.knowledge, []);
 });
