@@ -18,7 +18,7 @@ export function extractConservativeAssessmentEvidence(input) {
   let text = String(input ?? '').normalize('NFKC');
   for (const quotePattern of QUOTED_SPANS) text = text.replace(quotePattern, ' ');
   const clauses = text
-    .split(/(?:[؛.!؟\\n]+|،?\\s+(?:اما|ولی|با\\s+این\\s+حال)\\s+|\\s+و(?=\\s*(?:دوستم|مادرم|پدرم|همسرم|مدیرم|همکارم|خواهرم|برادرم|او|آنها|دیگران)\\s))/u)
+    .split(/(?:[؛.!؟\n]+|،?\s+(?:اما|ولی|با\s+این\s+حال)\s+|\s+و(?=\s*(?:دوستم|مادرم|پدرم|همسرم|مدیرم|همکارم|خواهرم|برادرم|او|آنها|دیگران)\s))/u)
     .map((clause) => clause.trim())
     .filter(Boolean);
 
