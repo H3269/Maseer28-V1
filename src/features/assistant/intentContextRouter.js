@@ -122,7 +122,12 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
   });
   const explicitImmediateIntent = /(?:الان|همین الآن|امشب).{0,35}(?:می‌خواهم|قصد دارم|برنامه دارم).{0,35}(?:بکشم|آسیب بزنم|به خودم آسیب)/.test(userNormalized)
     || /(?:قصد|برنامه)\s+(?:قطعی\s+)?دارم.{0,35}(?:خودکشی|آسیب بزنم|بکشم)/.test(userNormalized);
-  const topics = findTopics(raw);
+  const correctionMatch = raw.match(/(?:منظورم(?:\s+این\s+است\s+که)?|در واقع|اصلاح می‌کنم)[،:؛\s]*(.*)$/);
+  const semanticEvidenceText = correctionMatch?.[1]?.trim() || userAttributedText;
+  const clearlyRejectedThirdPartyQuote = quotedSafetyMatches.length === 0
+    && /(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او)\s+گفت/.test(raw)
+    && /موافق نیستم|قبول ندارم|این حرف درست نیست/.test(normalized);
+  const topics = findTopics(semanticEvidenceText);
   const negationPresent = /(?:ندارم|نیستم|نمی‌خواهم|نمی‌ترسم|موافق نیستم)/.test(normalized);
   const quotePresent = /[«“"].+[»”"]/.test(raw);
   const correctionPresent = /منظورم|اصلاح می‌کنم|در واقع|نه اینکه/.test(normalized);
@@ -146,7 +151,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
       purpose: 'safety_clarification',
       discriminates_between: ['خطر فوری', 'فکر یا عبارت بدون قصد فعلی', 'ابهام نیازمند کمک انسانی'],
     };
-  } else if (multiTopic || quotePresent || negationPresent || correctionPresent || topics.length === 0) {
+  } else if (multiTopic || quotePresent || negationPresent || correctionPresent || (topics.length === 0 && intentLabel !== 'general_information' && !clearlyRejectedThirdPartyQuote)) {
     nextQuestion = {
       text: 'برای اینکه برداشت اشتباه نکنم، کدام بخش تجربه‌ات مسئله اصلی توست؟ یک نمونه مشخص و اخیر می‌گویی؟',
       purpose: 'topic_disambiguation',
