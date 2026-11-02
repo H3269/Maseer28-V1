@@ -80,7 +80,11 @@ function deepFreeze(value) {
  */
 export function retrieveApprovedKnowledge({ query, topicIds = [], items = [], approvalManifest = null, limit = 3 } = {}) {
   const queryTerms = tokenize(query);
-  const manifestEntries = approvalManifest?.status === 'active' && Array.isArray(approvalManifest.approved_items)
+  const manifestEntries = approvalManifest?.schema_version === '1.0.0'
+    && typeof approvalManifest.manifest_id === 'string'
+    && approvalManifest.manifest_id.trim().length > 0
+    && approvalManifest.status === 'active'
+    && Array.isArray(approvalManifest.approved_items)
     ? approvalManifest.approved_items
     : [];
   const manifestMap = new Map();
