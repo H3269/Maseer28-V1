@@ -28,6 +28,7 @@ test('approved content is returned with source and review attribution', () => {
   assert.equal(result.status, 'results_found');
   assert.equal(result.results[0].source.source_id, 'SRC-001');
   assert.equal(result.results[0].approval.reviewer_role, 'evidence_reviewer');
+  assert.equal(result.results[0].approval.review_record_id, 'REV-SAMPLE-001');
   assert.ok(result.results[0].excerpt.includes('تشخیص'));
 });
 
@@ -74,4 +75,11 @@ test('invalid topic filters fail closed instead of broadening the search', () =>
   const result = retrieveApprovedKnowledge({ query: 'نگرانی', topicIds: ['T99'], items: [approved()] });
   assert.equal(result.status, 'invalid_topic_filter');
   assert.deepEqual(result.results, []);
+});
+
+
+test('approval without a traceable review record is rejected', () => {
+  const item = approved({ approval: { status: 'approved_for_assistant', reviewer_role: 'evidence_reviewer', reviewed_at: '2026-10-20T10:00:00Z', version: '1.0.0' } });
+  const result = retrieveApprovedKnowledge({ query: 'نگرانی', items: [item] });
+  assert.equal(result.status, 'no_approved_content');
 });
