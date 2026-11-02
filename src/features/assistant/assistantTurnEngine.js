@@ -14,7 +14,7 @@ function deepFreeze(value) {
  * Local-only turn router. It does not generate clinical advice or compose new
  * factual claims; knowledge answers are limited to approved source excerpts.
  */
-export function routeAssistantTurn({ text, knowledgeItems = (knowledgeCatalog.status === 'active' ? knowledgeCatalog.items : []), approvalManifest: suppliedApprovalManifest, requestScope = 'auto', requestId = 'assistant-turn' } = {}) {
+export function routeAssistantTurn({ text, knowledgeItems = (knowledgeCatalog.schema_version === '1.0.0' && typeof knowledgeCatalog.catalog_id === 'string' && knowledgeCatalog.catalog_id.trim().length > 0 && knowledgeCatalog.status === 'active' && Array.isArray(knowledgeCatalog.items) ? knowledgeCatalog.items : []), approvalManifest: suppliedApprovalManifest, requestScope = 'auto', requestId = 'assistant-turn' } = {}) {
   const activeApprovalManifest = suppliedApprovalManifest ?? approvalManifest;
   const rawText = String(text ?? '').trim();
   if (!rawText) {
