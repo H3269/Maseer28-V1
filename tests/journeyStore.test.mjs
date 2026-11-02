@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 
 import {
   burdenScoreFromAnswers,
+  cloneForArchive,
   defaultJourneyState,
   nextRequiredDay,
   sanitizeJourneyState,
@@ -228,4 +229,39 @@ test('verified profile migration never restores fields intentionally cleared lat
     assert.equal(result.profile.age, undefined);
     assert.equal(result.profile.gender, undefined);
   });
+});
+
+
+test('new archive snapshots retain path display fields but omit copied personal and health fields', () => {
+  const archived = cloneForArchive({
+    pathId: 'path-1',
+    profileData: {
+      name: 'نام کاربر',
+      age: 42,
+      gender: 'زن',
+      phone: '09123456789',
+      medical: 'other',
+      medicalNote: 'private note',
+      medication: 'yes_fixed',
+      medicationRisk: 'unknown',
+      problem: 'anxiety',
+      code: 'M28-123456',
+      durationYears: 3,
+      durationMonths: 2,
+      goal: 'هدف مسیر',
+    },
+    assessmentData: { score: 5 },
+    completed: [1],
+    answers: { 1: 'answer' },
+    daily: { 1: { score: 5 } },
+    final: null,
+  });
+  assert.deepEqual(Object.keys(archived.profileData).sort(), [
+    'code', 'durationMonths', 'durationYears', 'goal', 'name', 'problem',
+  ]);
+  assert.equal(archived.profileData.problem, 'anxiety');
+  assert.equal(archived.profileData.name, 'نام کاربر');
+  assert.equal('medical' in archived.profileData, false);
+  assert.equal('phone' in archived.profileData, false);
+  assert.equal('age' in archived.profileData, false);
 });
