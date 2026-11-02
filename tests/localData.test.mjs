@@ -186,15 +186,14 @@ async function removePrivacyTestDatabase() {
 
 test('IndexedDB export and deletion operate against a real IndexedDB implementation', { skip: !nativeIndexedDBAvailable }, async () => {
   await removePrivacyTestDatabase();
-  const db = await requestResult(indexedDB.open(PRIVACY_TEST_DB, 1));
-  try {
-    if (!db.objectStoreNames.contains('books')) db.createObjectStore('books', { keyPath: 'id' });
-    if (!db.objectStoreNames.contains('versions')) db.createObjectStore('versions', { keyPath: 'id' });
-    if (!db.objectStoreNames.contains('settings')) db.createObjectStore('settings', { keyPath: 'key' });
-  } catch (error) {
-    db.close();
-    throw error;
-  }
+  const openRequest = indexedDB.open(PRIVACY_TEST_DB, 1);
+  openRequest.onupgradeneeded = () => {
+    const database = openRequest.result;
+    database.createObjectStore('books', { keyPath: 'id' });
+    database.createObjectStore('versions', { keyPath: 'id' });
+    database.createObjectStore('settings', { keyPath: 'key' });
+  };
+  const db = await requestResult(openRequest);
   const seedVersionId = 'seed-book-1-0123456789abcdef';
   const writeTx = db.transaction(['books', 'versions', 'settings'], 'readwrite');
   writeTx.objectStore('books').put({ id: 'book-1', legacyId: 1, activeVersionId: seedVersionId, title: 'کتاب عمومی' });
