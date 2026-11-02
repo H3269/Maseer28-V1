@@ -88,3 +88,39 @@ test('IndexedDB privacy scope does not classify seed versions as user content', 
   });
   assert.deepEqual(selected, { books: [], versions: [], settings: [] });
 });
+
+
+test('local deletion reports read-back failures instead of throwing outside its error boundary', () => {
+  const storage = new MemoryStorage({ maseer28_state: '{}' });
+  const originalGetItem = storage.getItem.bind(storage);
+  let reads = 0;
+  storage.getItem = (key) => {
+    reads += 1;
+    if (reads > 1) throw new Error('readback blocked');
+    return originalGetItem(key);
+  };
+  const result = deleteLocalUserData(storage);
+  assert.equal(result.attempted, 1);
+  assert.deepEqual(result.removed, []);
+  assert.equal(result.verificationErrors.length, 1);
+  assert.equal(result.verificationErrors[0].key, 'maseer28_state');
+});
+
+test('local deletion stops before deleting anything when key enumeration fails', () => {
+  const storage = new MemoryStorage({ maseer28_state: '{}' });
+  Object.defineProperty(storage, 'length', { get() { throw new Error('storage denied'); } });
+  const result = deleteLocalUserData(storage);
+  assert.equal(result.attempted, 0);
+  assert.equal(result.errors[0].phase, 'enumerate');
+  assert.equal(storage.values.has('maseer28_state'), true);
+});
+
+test('a custom book with a legacy-looking number is not mistaken for a seeded book', () => {
+  const selected = selectUserOwnedLibraryData({
+    books: [{ id: 'book-custom-import', legacyId: 1, title: 'کتاب واردشده' }],
+    versions: [{ id: 'custom-v1', bookId: 'book-custom-import', source: 'seed' }],
+    settings: [],
+  });
+  assert.deepEqual(selected.books.map((book) => book.id), ['book-custom-import']);
+  assert.deepEqual(selected.versions.map((version) => version.id), ['custom-v1']);
+});
