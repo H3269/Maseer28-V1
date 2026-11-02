@@ -76,3 +76,11 @@ test('knowledge catalog and approval manifest schemas are versioned and closed',
   assert.equal(approvalManifestSchema.properties.schema_version.const, '1.0.0');
   assert.ok(catalogSchema.properties.items.items.$ref.endsWith('approved-knowledge-item.v1.schema.json'));
 });
+
+
+test('knowledge UI displays only returned excerpts with source and review attribution', () => {
+  assert.match(assistantUi, /knowledgeResponse\.results\.map/);
+  assert.match(assistantUi, /item\.source\.source_id/);
+  assert.match(assistantUi, /item\.source\.locator/);
+  assert.match(assistantUi, /item\.approval\.review_record_id/);
+});
