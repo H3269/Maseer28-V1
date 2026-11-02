@@ -17,6 +17,14 @@ function tokenize(value) {
 }
 
 function isApprovedItem(item) {
+  const allowedReviewers = {
+    education: ['qualified_clinician', 'evidence_reviewer'],
+    self_reflection: ['qualified_clinician', 'evidence_reviewer'],
+    exercise: ['qualified_clinician'],
+    safety_information: ['qualified_clinician', 'safety_reviewer'],
+  };
+  const validTopics = Array.isArray(item?.topic_ids) && new Set(item.topic_ids).size === item.topic_ids.length;
+  const validExerciseSafety = item?.content_type !== 'exercise' || Boolean(item.safety && ['routine', 'caution'].includes(item.safety.level) && Array.isArray(item.safety.stop_conditions) && item.safety.stop_conditions.length > 0);
   return Boolean(
     item
     && item.schema_version === '1.0.0'
@@ -26,7 +34,7 @@ function isApprovedItem(item) {
     && item.title.trim()
     && typeof item.content === 'string'
     && item.content.trim()
-    && Array.isArray(item.topic_ids)
+    && validTopics
     && item.topic_ids.length > 0
     && item.topic_ids.length <= 5
     && item.topic_ids.every((id) => KNOWN_TOPIC.test(id))
@@ -39,11 +47,13 @@ function isApprovedItem(item) {
     && typeof item.source.locator === 'string'
     && item.source.locator.trim()
     && item.approval?.status === 'approved_for_assistant'
-    && ['qualified_clinician', 'evidence_reviewer', 'safety_reviewer', 'legal_reviewer', 'editorial_reviewer'].includes(item.approval.reviewer_role)
+    && allowedReviewers[item.content_type]?.includes(item.approval.reviewer_role)
     && typeof item.approval.reviewed_at === 'string'
     && !Number.isNaN(Date.parse(item.approval.reviewed_at))
     && typeof item.approval.version === 'string'
     && item.approval.version.trim()
+    && validExerciseSafety
+    && item.safety?.level !== 'human_review_required'
   );
 }
 
@@ -100,6 +110,7 @@ export function retrieveApprovedKnowledge({ query, topicIds = [], items = [], li
         title: item.source.title,
         locator: item.source.locator,
       },
+      safety: item.safety ? { level: item.safety.level ?? 'routine', stop_conditions: [...(item.safety.stop_conditions ?? [])] } : { level: 'routine', stop_conditions: [] },
       approval: {
         reviewer_role: item.approval.reviewer_role,
         reviewed_at: item.approval.reviewed_at,
