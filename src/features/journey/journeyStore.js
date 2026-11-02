@@ -231,7 +231,7 @@ function normalizeProfileRecord(source) {
     const value = source[field];
     if (value === undefined || value === null) continue;
     if (field === 'name') {
-      if (validName(value)) result.name = String(value).trim().replace(/\\s+/g, ' ').slice(0, 80);
+      if (validName(value)) result.name = String(value).trim().replace(/\s+/g, ' ').slice(0, 80);
     } else if (field === 'age') {
       const age = Number(normalizeDigits(value));
       if (Number.isInteger(age) && age >= 12 && age <= 100) result.age = age;
