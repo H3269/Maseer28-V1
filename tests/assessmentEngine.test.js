@@ -303,3 +303,13 @@ test('corrected user text does not silently revive old topic hypotheses', () => 
   assert.equal(getAssessmentSummary(session).candidate_topics.length, 0);
   assert.equal(getAssessmentSummary(session).topic_assessment_status, 'requires_reassessment');
 });
+
+
+test('tentative topic hypotheses preserve matched rule phrases for traceability', () => {
+  const session = completeIntakeToSummary('مدتی است اضطراب و نگرانی مداوم دارم');
+  const item = getAssessmentSummary(session).candidate_topics.find((candidate) => candidate.topic_id === 'T02');
+  assert.ok(item);
+  assert.ok(Array.isArray(item.matched_rule_phrases));
+  assert.ok(item.matched_rule_phrases.length > 0);
+  assert.equal(item.status, 'tentative_hypothesis');
+});
