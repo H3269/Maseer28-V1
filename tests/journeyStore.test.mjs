@@ -162,3 +162,37 @@ test('profile v2 migration fails closed when storage writes fail', async () => {
     else globalThis.localStorage = previous;
   }
 });
+
+
+test('profile reads and new writes use v2 while retaining the v1 fallback record', async () => {
+  const { loadUserProfile, saveUserProfile, PROFILE_KEY, PROFILE_V2_KEY } =
+    await import('../src/features/journey/journeyStore.js');
+  withMemoryStorage((data) => {
+    data.set(PROFILE_KEY, JSON.stringify({ name: 'نسخه قدیمی', age: 38 }));
+    assert.equal(loadUserProfile().name, 'نسخه قدیمی');
+
+    data.set(PROFILE_V2_KEY, JSON.stringify({ name: 'نسخه جدید', age: 39 }));
+    assert.equal(loadUserProfile().name, 'نسخه جدید');
+
+    saveUserProfile({ name: 'کاربر تازه', age: 40, gender: 'زن', phone: '09123456789' });
+    assert.equal(JSON.parse(data.get(PROFILE_V2_KEY)).name, 'کاربر تازه');
+    assert.equal(JSON.parse(data.get(PROFILE_KEY)).name, 'نسخه قدیمی');
+  });
+});
+
+test('profile v2 normalization rejects invalid field values instead of copying them', async () => {
+  const { migrateUserProfileToV2, PROFILE_KEY, PROFILE_V2_KEY } =
+    await import('../src/features/journey/journeyStore.js');
+  withMemoryStorage((data) => {
+    data.set(PROFILE_KEY, JSON.stringify({
+      name: '<script>',
+      age: 140,
+      phone: '123',
+      medical: 'unrecognized',
+      medicationRisk: 'maybe',
+    }));
+    const result = migrateUserProfileToV2({});
+    assert.equal(result.migrated, false);
+    assert.equal(data.has(PROFILE_V2_KEY), false);
+  });
+});
