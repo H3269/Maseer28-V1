@@ -148,6 +148,7 @@ export function submitAssessmentAnswer(session, answer) {
   if (!session.current_question) throw new Error('پرسشی برای پاسخ‌گویی وجود ندارد.');
   const value = String(answer ?? '').trim();
   if (!value) throw new Error('پاسخ خالی است؛ می‌توانی بگویی «رد می‌کنم» یا جلسه را متوقف کنی.');
+  if (value.length > 3000) throw new Error('پاسخ بیش از حد طولانی است؛ حداکثر ۳۰۰۰ نویسه مجاز است.');
   const next = { ...session, answers: { ...session.answers }, candidate_topics: [...session.candidate_topics], summary: session.summary ? { ...session.summary } : null };
   const questionId = next.current_question.id;
   next.answers[questionId] = value;
