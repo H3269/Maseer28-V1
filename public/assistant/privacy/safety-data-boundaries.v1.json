@@ -1,0 +1,123 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "maseer28-safety-data-boundaries",
+  "status": "design_only_not_active",
+  "runtime_enforcement": false,
+  "scope": "Design contract for the current browser app and any future assistant backend. This file does not activate cloud processing, crisis detection, account storage, or human monitoring.",
+  "data_classes": [
+    {
+      "id": "direct_identifiers",
+      "examples": ["name", "phone", "email", "government_or_account_identifier"],
+      "handling": "Do not include in model prompts, retrieval queries, analytics, or routine logs. Use a random opaque case reference only when operationally required."
+    },
+    {
+      "id": "health_and_psychological",
+      "examples": ["medical_notes", "medication_details", "assessment_answers", "free_text_reflections", "crisis_disclosures"],
+      "handling": "Treat as highly sensitive. No external processing without separate explicit consent, necessity, minimization, processor disclosure, and an approved retention/deletion plan."
+    },
+    {
+      "id": "journey_and_progress",
+      "examples": ["topic_choice", "daily_progress", "exercise_feedback", "path_history"],
+      "handling": "Treat as potentially sensitive because it may reveal health, relationships, or personal circumstances. Include only the minimum needed for the requested feature."
+    },
+    {
+      "id": "public_product_content",
+      "examples": ["approved_public_course_content", "public_book_metadata"],
+      "handling": "May be processed as public product data, subject to content approval and licensing."
+    }
+  ],
+  "current_state_constraints": {
+    "browser_storage_is_not_account_storage": true,
+    "local_storage_is_not_encrypted_by_this_application": true,
+    "profile_is_duplicated_between_journey_state_and_profile_key": true,
+    "server_side_delete_is_not_available": true,
+    "cloud_assistant_is_not_implemented": true,
+    "case_code_is_not_authentication": true
+  },
+  "consent_requirements": {
+    "all_purposes_default_false": true,
+    "separate_purposes": [
+      "ai_cloud_processing",
+      "sensitive_health_data_processing",
+      "long_term_ai_memory",
+      "product_analytics"
+    ],
+    "consent_must_be_informed_specific_granular_and_withdrawable": true,
+    "declining_cloud_or_memory_must_not_block_basic_offline_use": true,
+    "consent_does_not_authorize_model_training_or_advertising": true
+  },
+  "data_minimization": {
+    "exclude_direct_identifiers_from_model_context": true,
+    "do_not_send_full_profile_by_default": true,
+    "do_not_send_entire_journey_archive_by_default": true,
+    "send_only_turn_relevant_context": true,
+    "do_not_infer_or_store_unstated_diagnoses": true
+  },
+  "retention": {
+    "status": "unresolved_blocking_backend_release",
+    "must_define_by_data_category_before_backend": true,
+    "must_define_deletion_and_backup_expiry_before_backend": true,
+    "raw_conversation_logging": "prohibited",
+    "security_event_logging": "metadata_only_no_message_body_or_health_payload"
+  },
+  "security_controls_required_before_backend": [
+    "server_side_secret_management_and_rotation",
+    "authenticated_sessions_and_per_user_authorization",
+    "tenant_isolation_verified_by_negative_tests",
+    "rate_limits_and_abuse_controls",
+    "transport_encryption_and_at_rest_encryption_with_key_management",
+    "input_validation_and_output_encoding",
+    "csrf_protection_for_cookie_authenticated_mutations",
+    "least_privilege_service_and_database_credentials",
+    "auditable_access_and_deletion_events_without_sensitive_payloads",
+    "tested_export_correction_and_deletion_workflows",
+    "processor_region_retention_and_subprocessor_review"
+  ],
+  "prompt_and_tool_boundaries": {
+    "user_content_and_retrieved_documents_are_untrusted_data": true,
+    "instructions_inside_user_content_or_retrieved_documents_must_not_override_system_policy": true,
+    "never_disclose_other_users_data_or_secrets": true,
+    "tools_must_be_allowlisted_and_authorized_server_side": true,
+    "high_impact_actions_require_explicit_user_confirmation": true,
+    "model_output_is_not_authority_for_diagnosis_or_emergency_triage": true
+  },
+  "crisis_safety": {
+    "status": "design_only_requires_specialist_validation",
+    "must_not_claim_reliable_automated_detection": true,
+    "levels": [
+      {
+        "id": "routine",
+        "signals": "No disclosed immediate danger; ordinary educational support may continue within scope.",
+        "action": "Offer low-risk, optional educational support; do not diagnose."
+      },
+      {
+        "id": "needs_human_or_professional_review",
+        "signals": "Severe or worsening distress, impaired functioning, uncertain safety, or requests beyond educational scope.",
+        "action": "Pause confident interpretation, encourage timely contact with a qualified professional or trusted person, and ask only a concise safety clarification when appropriate."
+      },
+      {
+        "id": "immediate_danger",
+        "signals": "Credible current intent, plan, means, ongoing violence, immediate danger to another person, or medical emergency.",
+        "action": "Stop ordinary coaching. Encourage contacting local emergency services or going to the nearest emergency department now; encourage moving away from means and contacting a trusted nearby person. Do not leave the user with only an app exercise."
+      }
+    ],
+    "location_specific_numbers_must_be_verified_not_guessed": true,
+    "human_monitoring_must_not_be_implied_unless_staffed_and_operational": true,
+    "no_automated_diagnosis_or_medication_instruction": true
+  },
+  "release_gates": [
+    "privacy_and_security_specialist_review",
+    "clinical_or_crisis_specialist_review_of_crisis_language_and_test_cases",
+    "legal_review_for_target_markets_and_processors",
+    "data_flow_and_threat_model_review",
+    "retention_and_deletion_policy_approved",
+    "consent_ui_and_withdrawal_flow_implemented_and_tested",
+    "backend_authorization_and_tenant_isolation_tests_pass"
+  ],
+  "prohibited_claims": [
+    "Do not claim GDPR or other legal compliance from this design document.",
+    "Do not claim encryption of current browser localStorage.",
+    "Do not claim server-side deletion, human monitoring, or crisis detection is operational.",
+    "Do not describe the assistant as a therapist, diagnostic service, or emergency service."
+  ]
+}
