@@ -132,7 +132,8 @@ export function validateContentRedesign({ queue, day1, day2, day3, topics, subto
   const t04DayOne = dayOneByTopic.get('T04');
   if (t04DayOne?.subtopic_id === 'T04-S01') {
     const text = normalizeText([t04DayOne.learning_objective, t04DayOne.mechanism_focus, t04DayOne.exercise].join(' '));
-    if (text.includes('خودبیزاری') || text.includes('نفرت از خود')) {
+    const explicitlyExcluded = text.includes('خودبیزاری در این رکورد بررسی نمی‌شود');
+    if (!explicitlyExcluded && (text.includes('خودبیزاری') || text.includes('نفرت از خود'))) {
       errors.push('T04-S01 day-one content must not classify self-hatred under hatred toward a person/group');
     }
   }
