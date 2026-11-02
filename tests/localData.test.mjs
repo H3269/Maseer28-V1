@@ -299,13 +299,14 @@ test('local deletion detects app-owned keys created after the deletion snapshot'
 
 test('local deletion does not verify success when final namespace enumeration fails', () => {
   const storage = new MemoryStorage({ maseer28_state: '{}' });
-  const originalKey = storage.key.bind(storage);
-  let enumerations = 0;
-  storage.key = (index) => {
-    enumerations += 1;
-    if (enumerations > 1) throw new Error('final enumeration blocked');
-    return originalKey(index);
-  };
+  let lengthReads = 0;
+  Object.defineProperty(storage, 'length', {
+    get() {
+      lengthReads += 1;
+      if (lengthReads > 1) throw new Error('final enumeration blocked');
+      return storage.values.size;
+    },
+  });
 
   const plan = createLocalUserDataDeletionPlan(storage);
   const result = deleteLocalUserData(storage, plan);
