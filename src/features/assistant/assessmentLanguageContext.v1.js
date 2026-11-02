@@ -3,6 +3,8 @@
  * assessment prototype. This is not semantic understanding or a validated NLP
  * component. Ambiguous ownership is intentionally excluded from lexical hints.
  */
+export const ASSESSMENT_CONTEXT_VERSION = '1.0.0';
+
 const QUOTED_SPANS = [
   /«[^»]*»/gu,
   /“[^”]*”/gu,
