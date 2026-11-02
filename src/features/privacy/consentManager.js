@@ -6,6 +6,7 @@ export const CONSENT_PURPOSES = Object.freeze([
   'ai_cloud_processing',
   'sensitive_health_data_processing',
   'long_term_ai_memory',
+  'journey_context',
   'product_analytics',
 ]);
 
@@ -44,6 +45,7 @@ function requiredContext(purpose, context) {
     ai_cloud_processing: ['processor_identity', 'processing_region', 'data_categories', 'retention_period', 'withdrawal_method'],
     sensitive_health_data_processing: ['necessity_explanation', 'exact_data_categories'],
     long_term_ai_memory: ['retention_period', 'view_edit_delete_controls'],
+    journey_context: ['selected_data_categories', 'retention_period', 'view_edit_delete_controls'],
     product_analytics: ['purpose_limitation', 'avoid_sensitive_content'],
   }[purpose];
   return required.every((key) => {

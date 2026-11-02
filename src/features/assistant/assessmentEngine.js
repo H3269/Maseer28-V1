@@ -1,7 +1,17 @@
 import { ASSESSMENT_CONTEXT_VERSION, extractConservativeAssessmentEvidence } from './assessmentLanguageContext.v1.js';
+import { validateAssistantContext } from './assistantContext.v1.js';
 import { assessmentTopicRuleRegistry } from './assessmentTopicRuleRegistry.v1.js';
 
-const TOPIC_RULES = assessmentTopicRuleRegistry.rules.map(({ topic_id, phrases }) => [topic_id, phrases]);
+// Fail closed: lexical topic hints remain unavailable until the registry itself
+// is explicitly authorized and every rule has completed independent review.
+const TOPIC_RULES = assessmentTopicRuleRegistry.runtime_authorization === true &&
+  assessmentTopicRuleRegistry.runtime_eligible === true &&
+  assessmentTopicRuleRegistry.status === 'approved_for_runtime' &&
+  assessmentTopicRuleRegistry.rules.every((rule) =>
+    rule.runtime_eligible === true && rule.review_status === 'approved'
+  )
+  ? assessmentTopicRuleRegistry.rules.map(({ topic_id, phrases }) => [topic_id, phrases])
+  : [];
 
 const SAFETY_CUES = [
   'خودکشی', 'قصد خودکشی', 'به زندگی ام پایان', 'به زندگیم پایان',
@@ -94,8 +104,13 @@ function classifySafetyAnswer(text) {
   return 'clarification_needed';
 }
 
-export function createAssessmentSession({ localOnly = true } = {}) {
+export function createAssessmentSession({ localOnly = true, assistantContext = null, consentState = {} } = {}) {
   if (localOnly !== true) throw new Error('این موتور فقط برای پردازش محلی طراحی شده است؛ ارسال ابری در این نسخه پشتیبانی نمی‌شود.');
+  let validatedContext = null;
+  if (assistantContext) {
+    const validation = validateAssistantContext(assistantContext, { consentState });
+    if (validation.valid) validatedContext = assistantContext;
+  }
   return {
     schema_version: '1.0.0',
     protocol_id: 'maseer28-adaptive-intake',
@@ -107,6 +122,7 @@ export function createAssessmentSession({ localOnly = true } = {}) {
     candidate_topics: [],
     summary: null,
     processing: 'local_in_memory_only',
+    assistant_context: validatedContext,
   };
 }
 
@@ -114,12 +130,21 @@ export function getCurrentQuestion(session) {
   return session?.current_question ?? null;
 }
 
-export function submitAssessmentAnswer(session, answer) {
+export function submitAssessmentAnswer(session, answer, { consentState = {} } = {}) {
   if (!session || session.status !== 'in_progress') throw new Error('جلسه ارزیابی فعال نیست.');
   if (!session.current_question) throw new Error('پرسشی برای پاسخ‌گویی وجود ندارد.');
   const value = String(answer ?? '').trim();
   if (!value) throw new Error('پاسخ خالی است؛ می‌توانی بگویی «رد می‌کنم» یا جلسه را متوقف کنی.');
-  const next = { ...session, answers: { ...session.answers }, candidate_topics: [...session.candidate_topics], summary: session.summary ? { ...session.summary } : null };
+  const contextValidation = session.assistant_context
+    ? validateAssistantContext(session.assistant_context, { consentState })
+    : { valid: false };
+  const next = {
+    ...session,
+    assistant_context: contextValidation.valid ? session.assistant_context : null,
+    answers: { ...session.answers },
+    candidate_topics: [...session.candidate_topics],
+    summary: session.summary ? { ...session.summary } : null,
+  };
   const questionId = next.current_question.id;
   next.answers[questionId] = value;
 
@@ -217,18 +242,22 @@ export function submitAssessmentAnswer(session, answer) {
 
 export function stopAssessment(session) {
   if (!session) return null;
-  return { ...session, status: 'stopped_by_user', current_question: null, answers: {}, summary: null };
+  return { ...session, status: 'stopped_by_user', current_question: null, answers: {}, summary: null, assistant_context: null };
 }
 
 export function getAssessmentSummary(session) {
   return session?.summary ?? null;
 }
 
-export const assessmentEngineTopicRuleIds = Object.freeze(TOPIC_RULES.map(([topicId]) => topicId));
+// Catalog IDs are exposed for consistency checks; this does not mean the rules are active.
+export const assessmentEngineTopicRuleIds = Object.freeze(assessmentTopicRuleRegistry.rules.map(({ topic_id }) => topic_id));
 
 export const assessmentEngineMetadata = Object.freeze({
   version: '1.0.0',
   topic_rule_registry_version: assessmentTopicRuleRegistry.registry_version,
+  topic_rule_runtime_authorized: TOPIC_RULES.length > 0,
+  topic_rule_runtime_status: TOPIC_RULES.length > 0 ? 'authorized' : 'disabled_fail_closed',
+  active_topic_rule_count: TOPIC_RULES.length,
   context_extraction_version: ASSESSMENT_CONTEXT_VERSION,
   runtime_status: 'experimental_local_only',
   diagnostic_use: false,
