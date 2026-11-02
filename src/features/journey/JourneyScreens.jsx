@@ -391,9 +391,10 @@ export function Support({ content, onBack }) {
   function legacyCopy(text, done) { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done?.(); } catch { /* noop */ } ta.remove(); }
   function copySupportNumber() { const done = () => setHelp('شماره ۰۹۱۹۰۸۸۹۰۶۲ کپی شد.'); if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(number).then(done).catch(() => legacyCopy(number, done)); else legacyCopy(number, done); }
   function sendSms() { const body = 'سلام، برای نوبت‌دهی و دریافت راهنمایی پیام می‌دهم.'; try { if (window.Android && typeof window.Android.openSms === 'function') { window.Android.openSms(number, body); setHelp('برنامه پیامک باز شد.'); return; } if (window.webkit?.messageHandlers?.openSms) { window.webkit.messageHandlers.openSms.postMessage({ number, body }); setHelp('برنامه پیامک باز شد.'); return; } const ua = navigator.userAgent || '', sep = /iPhone|iPad|iPod/i.test(ua) ? '&' : '?', a = document.createElement('a'); a.href = `sms:${number}${sep}body=${encodeURIComponent(body)}`; a.style.display = 'none'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => setHelp('اگر پیامک باز نشد، «کپی شماره» را بزنید. در WebView اپ باید scheme پیامک به سیستم تحویل داده شود.'), 900); } catch { copySupportNumber(); } }
-  function exportData() {
+  async function exportData() {
     try {
-      const payload = readLocalUserData();
+      const [localStorageData, indexedDBData] = await Promise.all([Promise.resolve(readLocalUserData()), readIndexedDbUserData()]);
+      const payload = { schema_version: '2.0.0', exported_at: new Date().toISOString(), localStorage: localStorageData, indexedDB: indexedDBData };
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
