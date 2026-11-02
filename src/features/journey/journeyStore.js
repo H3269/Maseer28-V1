@@ -230,8 +230,23 @@ function normalizeProfileRecord(source) {
   for (const field of PROFILE_FIELDS) {
     const value = source[field];
     if (value === undefined || value === null) continue;
-    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-      result[field] = typeof value === 'string' ? value.trim().slice(0, field === 'medicalNote' ? 1000 : 100) : value;
+    if (field === 'name') {
+      if (validName(value)) result.name = String(value).trim().replace(/\\s+/g, ' ').slice(0, 80);
+    } else if (field === 'age') {
+      const age = Number(normalizeDigits(value));
+      if (Number.isInteger(age) && age >= 12 && age <= 100) result.age = age;
+    } else if (field === 'gender') {
+      if (['زن', 'مرد', 'ترجیح می‌دهم نگویم'].includes(value)) result.gender = value;
+    } else if (field === 'phone') {
+      if (validPhone(value)) result.phone = normalizeDigits(value);
+    } else if (field === 'medical') {
+      if (['none', 'epilepsy', 'seizure', 'panic', 'bipolar', 'speech_hearing', 'other'].includes(value)) result.medical = value;
+    } else if (field === 'medicalNote') {
+      if (typeof value === 'string') result.medicalNote = value.trim().slice(0, 1000);
+    } else if (field === 'medication') {
+      if (['no', 'yes_fixed', 'yes_flexible'].includes(value)) result.medication = value;
+    } else if (field === 'medicationRisk') {
+      if (['no', 'yes', 'unknown'].includes(value)) result.medicationRisk = value;
     }
   }
   return Object.keys(result).length ? result : null;
