@@ -29,6 +29,7 @@ on:
       - 'scripts/validate-content-redesign.mjs'
       - 'scripts/validate-self-evaluation-pilot.mjs'
       - 'scripts/validate-assessment-knowledge-consistency.mjs'
+      - 'scripts/validate-assessment-rule-registry.mjs'
       - 'package.json'
       - '.github/workflows/**'
       - 'scripts/prepare-production-build.mjs'
