@@ -108,10 +108,10 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
   const correctionPresent = /منظورم|اصلاح می‌کنم|در واقع|نه اینکه/.test(normalized);
   const multiTopic = topics.length > 1;
   const intentLabel = classifyIntent(normalized);
-  const uncertainty = [];
+  const uncertainties = [];
   const contradictions = [];
 
-  if (quotePresent) uncertainty.push('بخشی از متن داخل نقل‌قول است؛ انتساب آن به تجربه یا باور کاربر قطعی نیست.');
+  if (quotePresent) uncertainties.push('بخشی از متن داخل نقل‌قول است؛ انتساب آن به تجربه یا باور کاربر قطعی نیست.');
   if (negationPresent) uncertainty.push('نشانه نفی دیده شد؛ دامنه نفی ممکن است به کل موضوع یا فقط یک برچسب اشاره کند.');
   if (correctionPresent) contradictions.push('کاربر احتمالاً در حال اصلاح یا دقیق‌تر کردن گفته قبلی است؛ برداشت قبلی نباید بدون بازبینی حفظ شود.');
   if (multiTopic) uncertainty.push('بیش از یک موضوع احتمالی دیده شد؛ اولویت اصلی هنوز مشخص نیست.');
