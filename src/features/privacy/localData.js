@@ -31,23 +31,29 @@ export function readLocalUserData(storage) {
   };
 }
 
-export function deleteLocalUserData(storage) {
+export function createLocalUserDataDeletionPlan(storage) {
   const target = getStorage(storage);
   const keys = [];
-  const errors = [];
-
-  // Take a complete snapshot before making any destructive change.
   try {
     const length = target.length;
     for (let index = 0; index < length; index += 1) {
       const key = target.key(index);
       if (key && isUserDataKey(key)) keys.push(key);
     }
+    return { keys, errors: [] };
   } catch (error) {
-    errors.push({ phase: 'enumerate', message: String(error?.message || error) });
-    return { attempted: 0, removed: [], errors, verificationErrors: [] };
+    return { keys: [], errors: [{ phase: 'enumerate', message: String(error?.message || error) }] };
+  }
+}
+
+export function deleteLocalUserData(storage, plan = createLocalUserDataDeletionPlan(storage)) {
+  const target = getStorage(storage);
+  if (plan.errors.length) {
+    return { attempted: 0, removed: [], errors: plan.errors, verificationErrors: [] };
   }
 
+  const keys = [...plan.keys];
+  const errors = [];
   for (const key of keys) {
     try { target.removeItem(key); }
     catch (error) { errors.push({ phase: 'remove', key, message: String(error?.message || error) }); }
