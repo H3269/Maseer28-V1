@@ -114,6 +114,23 @@ export function validateContentRedesign({ queue, day1, day2, day3, topics, subto
     }
   }
 
+  // Guard two taxonomy/content mismatches found in the crosswalk audit.
+  const dayOneByTopic = new Map((day1.records ?? []).map((item) => [item.topic_id, item]));
+  const t04DayOne = dayOneByTopic.get('T04');
+  if (t04DayOne?.subtopic_id === 'T04-S01') {
+    const text = normalizeText([t04DayOne.learning_objective, t04DayOne.mechanism_focus, t04DayOne.exercise].join(' '));
+    if (text.includes('خودبیزاری') || text.includes('نفرت از خود')) {
+      errors.push('T04-S01 day-one content must not classify self-hatred under hatred toward a person/group');
+    }
+  }
+  const t34DayOne = dayOneByTopic.get('T34');
+  if (t34DayOne?.subtopic_id === 'T34-S01') {
+    const text = normalizeText([t34DayOne.learning_objective, t34DayOne.mechanism_focus, t34DayOne.exercise].join(' '));
+    if (text.includes('مبهم') || text.includes('خارج از صلاحیت')) {
+      errors.push('T34-S01 day-one content must remain limited to a clear issue outside the 33-topic taxonomy');
+    }
+  }
+
   for (const item of drafts) {
     const queueItem = queueBySlot.get(item.topic_id + ':' + item.day_number);
     if (!queueItem || queueItem.draft_content_id !== item.content_id ||
