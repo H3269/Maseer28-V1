@@ -160,3 +160,16 @@ test('one malformed approval manifest entry invalidates otherwise valid entries'
   const result = retrieveApprovedKnowledge({ query: 'نگرانی', items: [item], approvalManifest: manifest });
   assert.equal(result.status, 'no_approved_content');
 });
+
+
+test('duplicate approved catalog item IDs invalidate retrieval instead of shadowing content', () => {
+  const item = approved();
+  const conflicting = approved({ content: 'متن دیگری با همان شناسه که نباید بی‌صدا جایگزین شود.' });
+  const result = retrieveApprovedKnowledge({
+    query: 'نگرانی',
+    items: [item, conflicting],
+    approvalManifest: manifestFor(item),
+  });
+  assert.equal(result.status, 'no_approved_content');
+  assert.deepEqual(result.results, []);
+});
