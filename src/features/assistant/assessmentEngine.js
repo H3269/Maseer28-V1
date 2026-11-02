@@ -70,6 +70,8 @@ export function classifySafetyAnswer(text) {
     return 'urgent_human_support_recommended';
   }
 
+  if (/(?:اما|ولی|با این حال|از طرفی|در عین حال|ممکن است|احتمال دارد)/.test(value)) return 'clarification_needed';
+
   const directNegative = /^(نه|خیر|no)(?:[،,\s]|$)/.test(value);
   if (directNegative) {
     const residual = value.replace(/^(نه|خیر|no)[،,\s]*/, '').trim();
