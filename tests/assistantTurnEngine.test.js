@@ -75,3 +75,11 @@ test('assistant turn entrypoint rejects empty and oversized inputs before routin
   assert.equal(routeAssistantTurn({ text: '   ' }).status, 'invalid_input');
   assert.equal(routeAssistantTurn({ text: 'الف'.repeat(3001) }).status, 'input_too_long');
 });
+
+
+test('educational questions mentioning suicide are not misrouted as personal crisis disclosures', () => {
+  const result = routeAssistantTurn({ text: 'خودکشی چیست؟' });
+  assert.equal(result.status, 'knowledge_unavailable');
+  assert.equal(result.intake.intent.label, 'general_information');
+  assert.deepEqual(result.knowledge, []);
+});
