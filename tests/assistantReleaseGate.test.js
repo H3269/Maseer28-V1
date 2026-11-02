@@ -7,6 +7,7 @@ const assistantUi = await readFile(new URL('../src/features/assistant/Assessment
 const engine = await readFile(new URL('../src/features/assistant/assessmentEngine.js', import.meta.url), 'utf8');
 const turnEngine = await readFile(new URL('../src/features/assistant/assistantTurnEngine.js', import.meta.url), 'utf8');
 const knowledgeGateway = await readFile(new URL('../src/features/assistant/knowledgeGateway.js', import.meta.url), 'utf8');
+const approvalManifest = JSON.parse(await readFile(new URL('../public/assistant/knowledge/approved-items.v1.json', import.meta.url), 'utf8'));
 const publishWorkflow = await readFile(new URL('../.github/workflows/publish-tested-version.yml', import.meta.url), 'utf8');
 
 test('experimental assistant remains disabled unless explicitly enabled in a build', () => {
@@ -38,4 +39,10 @@ test('new orchestration and retrieval modules remain local-only', () => {
   for (const source of [turnEngine, knowledgeGateway]) {
     assert.doesNotMatch(source, /localStorage|sessionStorage|indexedDB|fetch\s*\(|XMLHttpRequest/);
   }
+});
+
+
+test('repository contains no approved knowledge items before external review', () => {
+  assert.equal(approvalManifest.status, 'empty_pending_external_review');
+  assert.deepEqual(approvalManifest.approved_items, []);
 });
