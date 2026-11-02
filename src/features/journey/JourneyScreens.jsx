@@ -3,12 +3,12 @@ import SmartSelect from '../../shared/components/SmartSelect.jsx';
 import AppIcon from '../../shared/components/AppIcon.jsx';
 import { buttonLabel } from '../../shared/buttonLabel.jsx';
 import { fa, formatDate, normalizeDigits } from '../../shared/utils.js';
-import { burdenScoreFromAnswers, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
+import { APP_CONFIG, burdenScoreFromAnswers, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
 import { readLocalUserData, deleteLocalUserData } from '../privacy/localData.js';
 import AssessmentAssistant from '../assistant/AssessmentAssistant.jsx';
 
 // This prototype has no clinical validation. It stays hidden unless an experimental build explicitly enables it.
-const EXPERIMENTAL_ASSISTANT_ENABLED = import.meta.env.VITE_ENABLE_EXPERIMENTAL_ASSISTANT === 'true';
+const EXPERIMENTAL_ASSISTANT_ENABLED = APP_CONFIG.TEST_MODE || import.meta.env.VITE_ENABLE_EXPERIMENTAL_ASSISTANT === 'true';
 
 export const SCALE_QUESTIONS = [
   'این مشکل در حال حاضر چقدر شدت دارد؟',

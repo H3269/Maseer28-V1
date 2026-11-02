@@ -7,6 +7,8 @@ import {
   submitAssessmentAnswer,
   stopAssessment,
   assessmentEngineMetadata,
+  classifySafetyAnswer,
+  classifySafetyDomains,
 } from '../src/features/assistant/assessmentEngine.js';
 
 function answer(session, value) {
@@ -21,10 +23,27 @@ test('session starts with an open question and keeps data in memory only', () =>
   assert.equal(assessmentEngineMetadata.diagnostic_use, false);
 });
 
+test('safety concern domains distinguish self-harm, harm to others, and threat from another person', () => {
+  assert.deepEqual(classifySafetyDomains('گاهی فکر می‌کنم خودم را بکشم'), ['risk_of_self_harm']);
+  assert.deepEqual(classifySafetyDomains('می‌ترسم به کسی آسیب بزنم'), ['risk_of_harm_to_others']);
+  assert.deepEqual(classifySafetyDomains('در خانه امن نیستم و او مرا تهدید می‌کند'), ['risk_from_another_person']);
+  assert.deepEqual(classifySafetyDomains('بله'), ['domain_not_yet_determined']);
+});
+
 test('empty answers are rejected without advancing the question', () => {
   const session = createAssessmentSession();
   assert.throws(() => answer(session, '   '), /پاسخ خالی/);
   assert.equal(getCurrentQuestion(session).id, 'open_problem');
+});
+
+test('direct educational questions do not enter the personal assessment state machine', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'اضطراب چیست؟');
+  assert.equal(session.semantic_intake.intent.label, 'general_information');
+  assert.equal(session.status, 'information_request_not_supported');
+  assert.equal(getCurrentQuestion(session), null);
+  assert.equal(session.next_step.content_available, false);
+  assert.match(session.next_step.message, /درخواست اطلاعات عمومی/);
 });
 
 test('ordinary concern proceeds through one question at a time and produces tentative topic hypotheses', () => {
@@ -46,6 +65,11 @@ test('ordinary concern proceeds through one question at a time and produces tent
   assert.ok(summary.candidate_topics.every((item) => item.status === 'tentative_hypothesis'));
   assert.ok(summary.limitations.length >= 3);
   session = answer(session, 'خلاصه کلی درست است اما شدت آن را کمتر گفتم');
+  assert.equal(getCurrentQuestion(session).id, 'summary_revision');
+  session = answer(session, 'شدت اثر روی خوابم بیشتر از چیزی است که گفتی.');
+  assert.equal(getCurrentQuestion(session).id, 'summary_confirmation');
+  assert.match(session.summary.impact, /خوابم/);
+  session = answer(session, 'بله، حالا دقیق است');
   assert.equal(session.status, 'completed');
   assert.equal(session.next_step.content_available, false);
 });
@@ -66,6 +90,14 @@ test('an affirmative current danger response pauses the assessment for human sup
   assert.equal(session.safety_state, 'urgent_human_support_recommended');
   assert.equal(getCurrentQuestion(session), null);
   assert.ok(session.referral.instruction);
+});
+
+test('human handoff retains the safety domain disclosed in the current answer', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است مضطربم');
+  session = answer(session, 'بله، کسی مرا تهدید می‌کند');
+  assert.equal(session.status, 'paused_for_human_support');
+  assert.deepEqual(session.referral.safety_domains, ['risk_from_another_person']);
 });
 
 test('uncertain safety response triggers clarification rather than being treated as safe', () => {
@@ -108,4 +140,277 @@ test('unmatched concerns use T34 as a clarification route, not a diagnosis', () 
 
 test('cloud processing is explicitly rejected by this experimental engine', () => {
   assert.throws(() => createAssessmentSession({ localOnly: false }), /ارسال ابری/);
+});
+
+test('safety answer classifier does not mistake a leading no for a complete negative answer', () => {
+  assert.equal(classifySafetyAnswer('نه، مطمئن نیستم'), 'clarification_needed');
+  assert.equal(classifySafetyAnswer('نه، شاید نتوانم کنترلش کنم'), 'clarification_needed');
+  assert.equal(classifySafetyAnswer('نه، برنامه دارم'), 'urgent_human_support_recommended');
+  assert.equal(classifySafetyAnswer('بله، ولی قصد ندارم'), 'urgent_human_support_recommended');
+});
+
+test('safety answer classifier accepts clear negative disclosure but not ambiguous elaboration', () => {
+  assert.equal(classifySafetyAnswer('نه'), 'no_immediate_risk_disclosed');
+  assert.equal(classifySafetyAnswer('خیر، قصد ندارم'), 'no_immediate_risk_disclosed');
+  assert.equal(classifySafetyAnswer('نه، قصد آسیب ندارم'), 'no_immediate_risk_disclosed');
+  assert.equal(classifySafetyAnswer('شاید'), 'clarification_needed');
+  assert.equal(classifySafetyAnswer(''), 'clarification_needed');
+});
+
+test('ambiguous negative safety response keeps the safety gate active', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است نگرانم');
+  session = answer(session, 'نه، مطمئن نیستم');
+  assert.equal(session.safety_state, 'clarification_needed');
+  assert.equal(getCurrentQuestion(session).id, 'safety_clarification');
+  assert.equal(session.status, 'in_progress');
+});
+
+test('clear negative safety disclosure can proceed without claiming guaranteed safety', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است نگرانم');
+  session = answer(session, 'نه، قصد آسیب ندارم');
+  assert.equal(session.safety_state, 'no_immediate_risk_disclosed');
+  assert.equal(getCurrentQuestion(session).id, 'impact');
+  assert.equal(session.status, 'in_progress');
+});
+
+
+test('assessment runtime exposes semantic intent output and preserves the shared intake contract', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'من اضطراب ندارم؛ فقط نگران آینده‌ام و از قضاوت دیگران می‌ترسم.');
+  assert.equal(session.semantic_intake.schema_version, '1.0.0');
+  assert.equal(session.semantic_intake.intent.ambiguity, 'high');
+  assert.ok(session.semantic_intake.topic_candidates.some((item) => item.topic_id === 'T02'));
+  assert.ok(session.semantic_intake.topic_candidates.some((item) => item.topic_id === 'T27'));
+  session = answer(session, 'نه');
+  session = answer(session, 'در کارم تمرکز ندارم');
+  session = answer(session, 'چند هفته است');
+  session = answer(session, 'می‌خواهم بفهمم چه خبر است');
+  assert.equal(session.semantic_intake.situational_facts.impact, 'در کارم تمرکز ندارم');
+  assert.equal(session.semantic_intake.situational_facts.duration, 'چند هفته است');
+  assert.equal(session.semantic_intake.situational_facts.user_goal, 'می‌خواهم بفهمم چه خبر است');
+});
+
+
+test('stopping an assessment clears semantic context and topic hypotheses too', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  const stopped = stopAssessment(session);
+  assert.deepEqual(stopped.answers, {});
+  assert.deepEqual(stopped.candidate_topics, []);
+  assert.equal(stopped.semantic_intake, null);
+  assert.equal(stopped.clarification_attempts, 0);
+  assert.equal(stopped.summary_revision_count, 0);
+  assert.equal(stopped.safety_context_flag, false);
+});
+
+test('explicit user correction replaces rather than merges the earlier topic hypothesis', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  session = answer(session, 'در کارم اثر گذاشته');
+  session = answer(session, 'چند هفته است');
+  session = answer(session, 'می‌خواهم مسئله را بفهمم');
+  session = answer(session, 'منظورم این نبود؛ در واقع مشکل اصلی من اهمال‌کاری است و کارها را عقب می‌اندازم.');
+  assert.equal(session.answers.open_problem_original, 'مدتی است اضطراب دارم');
+  assert.match(session.answers.open_problem, /اهمال‌کاری/);
+  assert.equal(session.candidate_topics.some((item) => item.topic_id === 'T09'), true);
+  assert.equal(session.candidate_topics.some((item) => item.topic_id === 'T02'), false);
+  assert.equal(session.summary.user_report, session.answers.open_problem);
+});
+
+
+test('engine rejects oversized input even when called outside the UI', () => {
+  const session = createAssessmentSession();
+  assert.throws(() => answer(session, 'الف'.repeat(3001)), /حداکثر ۳۰۰۰ نویسه/);
+  assert.equal(getCurrentQuestion(session).id, 'open_problem');
+});
+
+
+test('explicit immediate danger in the opening answer pauses before routine intake', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'امشب قصد دارم خودم را بکشم.');
+  assert.equal(session.status, 'paused_for_human_support');
+  assert.equal(session.safety_state, 'urgent_human_support_recommended');
+  assert.equal(getCurrentQuestion(session), null);
+  assert.equal(session.referral.priority, 'urgent');
+});
+
+test('ambiguous safety language still asks a direct question instead of auto-referring', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'دیگه نمی‌کشم و همه‌چی تمومه.');
+  assert.equal(session.status, 'in_progress');
+  assert.equal(getCurrentQuestion(session).id, 'safety_now');
+  assert.equal(session.safety_state, 'not_assessed');
+});
+
+
+test('adaptive policy skips questions already answered in the opening message', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'سه ماه است در محل کار به‌خاطر اضطراب تمرکزم را از دست داده‌ام و می‌خواهم راهکار عملی پیدا کنم.');
+  session = answer(session, 'نه');
+  assert.equal(session.current_question.id, 'summary_confirmation');
+  assert.equal(session.summary.duration, 'در پیام آغازین اشاره شده');
+  assert.equal(session.summary.impact, 'در پیام آغازین اشاره شده');
+  assert.equal(session.summary.user_goal, 'دریافت راهکار');
+});
+
+test('declining a question advances the intake without repeating it', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  assert.equal(session.current_question.id, 'impact');
+  session = answer(session, 'ترجیح می‌دهم نگویم');
+  assert.equal(session.current_question.id, 'duration');
+  assert.equal(session.semantic_intake.situational_facts.impact, null);
+});
+
+
+test('general information requests do not enter the personal assessment flow', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'من فقط برای ترجمه یک متن درباره اضطراب سؤال دارم؛ خودم چنین تجربه‌ای ندارم.');
+  assert.equal(session.status, 'information_request_not_supported');
+  assert.equal(getCurrentQuestion(session), null);
+  assert.equal(session.next_step.content_available, false);
+  assert.ok(session.next_step.message.includes('به‌جای حدس‌زدن'));
+});
+
+
+test('new safety context interrupts a later intake answer and returns to the safety gate', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  assert.equal(session.current_question.id, 'impact');
+  session = answer(session, 'گاهی فکر آسیب زدن به خودم می‌آید ولی نمی‌خواهم انجام بدهم.');
+  assert.equal(session.current_question.id, 'safety_now');
+  assert.equal(session.safety_state, 'not_assessed');
+  assert.equal(session.safety_context_flag, true);
+});
+
+test('explicit immediate intent disclosed at any intake stage triggers human support pause', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  session = answer(session, 'امشب قصد دارم خودم را بکشم.');
+  assert.equal(session.status, 'paused_for_human_support');
+  assert.equal(session.current_question, null);
+  assert.equal(session.safety_state, 'urgent_human_support_recommended');
+  assert.deepEqual(session.referral.safety_domains, ['risk_of_self_harm']);
+});
+
+
+test('safety domain classification preserves self-harm and external-threat distinctions', () => {
+  assert.ok(classifySafetyDomains('کاش نبودم و گاهی فکر آسیب زدن به خودم دارم.').includes('risk_of_self_harm'));
+  assert.ok(classifySafetyDomains('همسرم تهدیدم کرد و خانه امن نیست.').includes('risk_from_another_person'));
+  assert.ok(classifySafetyDomains('نمی‌دانم چه خطری وجود دارد.').includes('domain_not_yet_determined'));
+});
+
+
+test('summary topic correction replaces an earlier hypothesis and requires reconfirmation', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  session = answer(session, 'در کارم تمرکز ندارم');
+  session = answer(session, 'چند هفته است');
+  session = answer(session, 'می‌خواهم مسئله را بفهمم');
+  session = answer(session, 'وقتی آینده نامعلوم است نگران می‌شوم');
+  assert.equal(getCurrentQuestion(session).id, 'summary_confirmation');
+  session = answer(session, 'نه، موضوع اصلی من اهمال‌کاری است.');
+  assert.equal(getCurrentQuestion(session).id, 'summary_revision');
+  session = answer(session, 'موضوع اصلی من اهمال‌کاری است و کارها را عقب می‌اندازم.');
+  assert.equal(session.summary.candidate_topics.some((item) => item.topic_id === 'T09'), true);
+  assert.equal(session.summary.candidate_topics.some((item) => item.topic_id === 'T02'), false);
+  assert.equal(getCurrentQuestion(session).id, 'summary_confirmation');
+  session = answer(session, 'بله، حالا دقیق است');
+  assert.equal(session.status, 'completed');
+});
+
+test('unconfirmed summary is not marked complete after two correction rounds', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  session = answer(session, 'در کارم تمرکز ندارم');
+  session = answer(session, 'چند هفته است');
+  session = answer(session, 'می‌خواهم مسئله را بفهمم');
+  session = answer(session, 'وقتی آینده نامعلوم است نگران می‌شوم');
+  session = answer(session, 'نه، دقیق نیست');
+  session = answer(session, 'اثر آن روی خوابم هم هست');
+  session = answer(session, 'نه، هنوز دقیق نیست');
+  session = answer(session, 'هنوز اشتباه است');
+  session = answer(session, 'نه، هنوز خلاصه دقیق نیست');
+  assert.equal(session.status, 'summary_needs_review');
+  assert.equal(session.current_question, null);
+  assert.equal(session.next_step.content_available, false);
+});
+
+
+test('clarification recomputes candidates and does not retain a topic explicitly negated by the user', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  session = answer(session, 'در کارم تمرکز ندارم');
+  session = answer(session, 'چند هفته است');
+  session = answer(session, 'می‌خواهم مسئله را بفهمم');
+  session = answer(session, 'نه، اضطراب ندارم؛ مسئله اصلی من اهمال‌کاری است و کارها را عقب می‌اندازم.');
+  assert.equal(session.candidate_topics.some((item) => item.topic_id === 'T02'), false);
+  assert.equal(session.candidate_topics.some((item) => item.topic_id === 'T09'), true);
+});
+
+
+test('a negative safety answer followed by a contradictory clause is not accepted as clear', () => {
+  assert.equal(classifySafetyAnswer('نه، قصد ندارم ولی می‌ترسم کنترلم را از دست بدهم.'), 'clarification_needed');
+  assert.equal(classifySafetyAnswer('خیر، برنامه‌ای ندارم اما احتمال دارد به خودم آسیب بزنم.'), 'clarification_needed');
+  assert.equal(classifySafetyAnswer('نه، قصد ندارم به خودم آسیب بزنم.'), 'no_immediate_risk_disclosed');
+});
+
+
+test('shared question definitions are immutable and cannot leak mutations across sessions', () => {
+  const first = createAssessmentSession();
+  const second = createAssessmentSession();
+  assert.equal(Object.isFrozen(getCurrentQuestion(first)), true);
+  assert.throws(() => { getCurrentQuestion(first).prompt = 'mutated'; }, TypeError);
+  assert.equal(getCurrentQuestion(second).prompt, 'دوست داری درباره چه مسئله‌ای صحبت کنیم؟ با زبان خودت توضیح بده؛ لازم نیست از بین موضوعات اپ چیزی انتخاب کنی.');
+});
+
+
+test('general strategy request is not silently converted into a personal assessment', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'چه راهکاری برای اضطراب وجود دارد؟');
+  assert.equal(session.current_question.id, 'intent_scope');
+  session = answer(session, 'عمومی');
+  assert.equal(session.status, 'information_request_not_supported');
+  assert.equal(session.current_question, null);
+  assert.equal(session.next_step.content_available, false);
+});
+
+test('personal strategy request enters safety-gated intake only after scope confirmation', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'چه راهکاری برای اضطراب وجود دارد؟');
+  session = answer(session, 'برای تجربه شخصی خودم می‌پرسم');
+  assert.equal(session.current_question.id, 'safety_now');
+  assert.match(session.answers.open_problem, /تجربه شخصی/);
+});
+
+test('ambiguous scope answer stops without generating a guessed response', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'چه راهکاری برای اضطراب وجود دارد؟');
+  session = answer(session, 'نمی‌دانم');
+  assert.equal(session.status, 'intent_scope_unclear');
+  assert.equal(session.current_question, null);
+  assert.equal(session.next_step.content_available, false);
+});
+
+
+test('assessment engine rejects tampered or incompatible session state', () => {
+  const unknownQuestion = { ...createAssessmentSession(), current_question: { id: 'unknown_question', prompt: 'x' } };
+  assert.throws(() => submitAssessmentAnswer(unknownQuestion, 'پاسخ'), /شناسه پرسش معتبر نیست/);
+  const malformedTopics = { ...createAssessmentSession(), candidate_topics: null };
+  assert.throws(() => submitAssessmentAnswer(malformedTopics, 'پاسخ'), /داده‌های داخلی جلسه معتبر نیستند/);
+  const invalidCounter = { ...createAssessmentSession(), summary_revision_count: 9 };
+  assert.throws(() => submitAssessmentAnswer(invalidCounter, 'پاسخ'), /داده‌های داخلی جلسه معتبر نیستند/);
+  const invalidTopic = { ...createAssessmentSession(), candidate_topics: [{ topic_id: 'T99' }] };
+  assert.throws(() => submitAssessmentAnswer(invalidTopic, 'پاسخ'), /داده‌های داخلی جلسه معتبر نیستند/);
+  const incompatibleVersion = { ...createAssessmentSession(), schema_version: '9.9.9' };
+  assert.throws(() => submitAssessmentAnswer(incompatibleVersion, 'پاسخ'), /شناسه پرسش معتبر نیست/);
 });

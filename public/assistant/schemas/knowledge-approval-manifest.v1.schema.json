@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maseer28.example/schemas/knowledge-approval-manifest.v1.schema.json",
+  "title": "Maseer28 Knowledge Approval Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "manifest_id", "status", "approved_items"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "manifest_id": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "status": { "enum": ["empty_pending_external_review", "active"] },
+    "approved_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["item_id", "review_record_id", "reviewer_role", "reviewed_at", "version"],
+        "properties": {
+          "item_id": { "type": "string", "minLength": 1, "maxLength": 120 },
+          "review_record_id": { "type": "string", "minLength": 1, "maxLength": 120 },
+          "reviewer_role": { "enum": ["qualified_clinician", "evidence_reviewer", "safety_reviewer"] },
+          "reviewed_at": { "type": "string", "format": "date-time" },
+          "version": { "type": "string", "minLength": 1, "maxLength": 40 }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "empty_pending_external_review" } }, "required": ["status"] },
+      "then": { "properties": { "approved_items": { "maxItems": 0 } } }
+    },
+    {
+      "if": { "properties": { "status": { "const": "active" } }, "required": ["status"] },
+      "then": { "properties": { "approved_items": { "minItems": 1 } } }
+    }
+  ]
+}
