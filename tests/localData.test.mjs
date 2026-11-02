@@ -1,3 +1,4 @@
+import 'fake-indexeddb/auto';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
@@ -158,7 +159,7 @@ test('uncertain seed-like books and orphaned seed versions are preserved from de
 
 
 const PRIVACY_TEST_DB = 'maseer28-library';
-const nativeIndexedDBAvailable = Boolean(globalThis.indexedDB);
+
 
 function requestResult(request) {
   return new Promise((resolve, reject) => {
@@ -184,7 +185,7 @@ async function removePrivacyTestDatabase() {
   });
 }
 
-test('IndexedDB export and deletion operate against a real IndexedDB implementation', { skip: !nativeIndexedDBAvailable }, async () => {
+test('IndexedDB export and deletion operate against an IndexedDB API implementation', async () => {
   await removePrivacyTestDatabase();
   const openRequest = indexedDB.open(PRIVACY_TEST_DB, 1);
   openRequest.onupgradeneeded = () => {
