@@ -79,10 +79,44 @@ function detectTopics(text) {
   return hits.sort((a, b) => b.matched_phrases.length - a.matched_phrases.length).slice(0, 3);
 }
 
-function classifySafetyAnswer(text) {
+export function classifySafetyAnswer(text) {
   const value = normalize(text);
-  if (/^(بله|آره|اره|yes)(\b|$)/.test(value) || value.includes('قصد دارم') || value.includes('برنامه دارم')) return 'urgent_human_support_recommended';
-  if (/^(نه|خیر|no)(\b|$)/.test(value) || value.startsWith('نه،') || value.startsWith('خیر،')) return 'no_immediate_risk_disclosed';
+  if (!value) return 'clarification_needed';
+
+  const uncertainty = [
+    'مطمئن نیستم', 'نمی دانم', 'نمیدانم', 'شاید', 'احتمال دارد',
+    'احتمالش هست', 'سخت است بگویم', 'سخته بگم', 'نمی توانم بگویم',
+    'نمی تونم بگم', 'نامشخص است',
+  ];
+  if (uncertainty.some((phrase) => value.includes(normalize(phrase)))) {
+    if (value.includes('قصد دارم') || value.includes('برنامه دارم')) {
+      return 'urgent_human_support_recommended';
+    }
+    return 'clarification_needed';
+  }
+
+  const explicitIntent = [
+    'قصد دارم', 'برنامه دارم', 'تصمیم دارم', 'می خواهم به خودم آسیب',
+    'می خواهم به او آسیب', 'ممکن است به خودم آسیب بزنم',
+    'ممکن است به کسی آسیب بزنم', 'کنترلش از دستم خارج می شود',
+  ];
+  if (explicitIntent.some((phrase) => value.includes(normalize(phrase)))) {
+    return 'urgent_human_support_recommended';
+  }
+
+  if (/^(بله|آره|اره|yes)(?:[،,\\s]|$)/.test(value)) {
+    return 'urgent_human_support_recommended';
+  }
+
+  const directNegative = /^(نه|خیر|no)(?:[،,\\s]|$)/.test(value);
+  if (directNegative) {
+    const residual = value.replace(/^(نه|خیر|no)[،,\\s]*/, '').trim();
+    if (!residual || /^(قصد ندارم|برنامه ندارم|نمی خواهم|نمیخوام|هیچ قصدی ندارم)$/.test(residual)) {
+      return 'no_immediate_risk_disclosed';
+    }
+    return 'clarification_needed';
+  }
+
   return 'clarification_needed';
 }
 
