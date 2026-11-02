@@ -98,12 +98,18 @@ function detectTopics(text) {
   const hits = [];
   for (const [topic_id, phrases] of TOPIC_RULES) {
     if (isRejectedAttribution(normalized, topic_id)) continue;
-    const matched = phrases.filter((phrase) =>
+    const uniquePhrases = [...new Map(phrases.map((phrase) => [normalize(phrase), phrase])).values()];
+    const matched = uniquePhrases.filter((phrase) =>
       normalized.includes(normalize(phrase)) && !isExplicitlyNegated(normalized, phrase)
     );
     if (matched.length) hits.push({ topic_id, matched_phrases: matched });
   }
-  return hits.sort((a, b) => b.matched_phrases.length - a.matched_phrases.length).slice(0, 3);
+  // T04 is a broad anger/aversion category; when the explicit self-directed
+  // construct T18 is present, do not let the generic phrase duplicate it.
+  const filteredHits = hits.some((item) => item.topic_id === 'T18')
+    ? hits.filter((item) => item.topic_id !== 'T04')
+    : hits;
+  return filteredHits.sort((a, b) => b.matched_phrases.length - a.matched_phrases.length).slice(0, 3);
 }
 
 function classifySafetyAnswer(text) {
