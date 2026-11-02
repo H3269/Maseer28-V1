@@ -3,13 +3,21 @@ import assert from 'node:assert/strict';
 import { validateContentRedesign } from '../scripts/validate-content-redesign.mjs';
 
 function makeData() {
+  const reviewedMappings = new Map([
+    ['DRAFT_T14_D02', 'T14-S01'],
+    ['DRAFT_T14_D03', 'T14-S02'],
+    ['DRAFT_T19_D02', 'T19-S01'],
+    ['DRAFT_T23_D03', 'T23-S02'],
+    ['DRAFT_T32_D02', 'T32-S01'],
+    ['DRAFT_T33_D03', 'T33-S02'],
+  ]);
   const topics = Array.from({ length: 34 }, (_, i) => ({
     topic_id: 'T' + String(i + 1).padStart(2, '0'),
     name: 'موضوع ' + (i + 1),
   }));
   const subtopics = topics.flatMap((topic) =>
     [1, 2, 3].map((day) => ({
-      subtopic_id: topic.topic_id + '-S0' + day,
+      subtopic_id: reviewedMappings.get('DRAFT_' + topic.topic_id + '_D0' + day) ?? topic.topic_id + '-S0' + day,
       topic_id: topic.topic_id,
     })),
   );
@@ -89,6 +97,15 @@ test('allows explicit exclusion of self-hatred from T04-S01 content', () => {
   t04.mechanism_focus = 'تمرکز بر نفرت نسبت به فرد یا گروه؛ خودبیزاری در این رکورد بررسی نمی‌شود.';
   const result = validateContentRedesign(data);
   assert.equal(result.valid, true, result.errors.join('; '));
+});
+
+test('enforces reviewed subtopic mappings for six audited drafts', () => {
+  const data = makeData();
+  data.day2.records.find((item) => item.content_id === 'DRAFT_T14_D02').subtopic_id = 'T14-S02';
+  data.day3.records.find((item) => item.content_id === 'DRAFT_T23_D03').subtopic_id = 'T23-S03';
+  const result = validateContentRedesign(data);
+  assert.ok(result.errors.some((item) => item.includes('reviewed subtopic mapping mismatch DRAFT_T14_D02')));
+  assert.ok(result.errors.some((item) => item.includes('reviewed subtopic mapping mismatch DRAFT_T23_D03')));
 });
 
 test('blocks premature activation and unverified evidence claims', () => {
