@@ -154,7 +154,8 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
       purpose: 'safety_clarification',
       discriminates_between: ['خطر فوری', 'فکر یا عبارت بدون قصد فعلی', 'ابهام نیازمند کمک انسانی'],
     };
-  } else if (multiTopic || quotePresent || negationPresent || correctionPresent || (topicCandidates.length === 0 && intentLabel !== 'general_information' && !clearlyRejectedThirdPartyQuote)) {
+  } else if (intentLabel !== 'general_information' && !clearlyRejectedThirdPartyQuote &&
+      (multiTopic || quotePresent || negationPresent || correctionPresent || topicCandidates.length === 0)) {
     nextQuestion = {
       text: 'برای اینکه برداشت اشتباه نکنم، کدام بخش تجربه‌ات مسئله اصلی توست؟ یک نمونه مشخص و اخیر می‌گویی؟',
       purpose: 'topic_disambiguation',
