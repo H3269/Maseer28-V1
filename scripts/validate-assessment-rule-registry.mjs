@@ -11,6 +11,7 @@ assert.equal(registry.schema_version, '1.0.0');
 assert.equal(registry.status, 'experimental_unreviewed');
 assert.equal(registry.matching_method, 'normalized_substring');
 assert.equal(registry.runtime_authorization, false);
+assert.equal(registry.runtime_eligible, false);
 assert.equal(registry.clarification_fallback_topic_id, 'T34');
 assert.deepEqual(registry.rules.map((rule) => rule.topic_id), expectedIds);
 
