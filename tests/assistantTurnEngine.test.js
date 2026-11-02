@@ -69,3 +69,9 @@ test('professional-help questions without personal context clarify scope first',
   const result = routeAssistantTurn({ text: 'چه زمانی مراجعه به روانشناس لازم است؟' });
   assert.equal(result.status, 'intent_scope_clarification_required');
 });
+
+
+test('assistant turn entrypoint rejects empty and oversized inputs before routing', () => {
+  assert.equal(routeAssistantTurn({ text: '   ' }).status, 'invalid_input');
+  assert.equal(routeAssistantTurn({ text: 'الف'.repeat(3001) }).status, 'input_too_long');
+});
