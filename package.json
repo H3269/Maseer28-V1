@@ -15,7 +15,8 @@
     "validate:self-evaluation-pilot": "node scripts/validate-self-evaluation-pilot.mjs",
     "validate:subtopic-definitions": "node scripts/validate-subtopic-definition-proposals.mjs",
     "validate:assessment-knowledge": "node scripts/validate-assessment-knowledge-consistency.mjs",
-    "validate:assessment-rule-registry": "node scripts/validate-assessment-rule-registry.mjs"
+    "validate:assessment-rule-registry": "node scripts/validate-assessment-rule-registry.mjs",
+    "validate:quality-safety-gates": "node scripts/validate-quality-safety-gates.mjs"
   },
   "dependencies": {
     "react": "18.3.1",
