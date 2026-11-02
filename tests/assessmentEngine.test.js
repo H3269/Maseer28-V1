@@ -160,3 +160,29 @@ test('assessment runtime exposes semantic intent output and preserves the shared
   assert.equal(session.semantic_intake.situational_facts.duration, 'چند هفته است');
   assert.equal(session.semantic_intake.situational_facts.user_goal, 'می‌خواهم بفهمم چه خبر است');
 });
+
+
+test('stopping an assessment clears semantic context and topic hypotheses too', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  const stopped = stopAssessment(session);
+  assert.deepEqual(stopped.answers, {});
+  assert.deepEqual(stopped.candidate_topics, []);
+  assert.equal(stopped.semantic_intake, null);
+  assert.equal(stopped.safety_context_flag, false);
+});
+
+test('explicit user correction replaces rather than merges the earlier topic hypothesis', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  session = answer(session, 'در کارم اثر گذاشته');
+  session = answer(session, 'چند هفته است');
+  session = answer(session, 'می‌خواهم مسئله را بفهمم');
+  session = answer(session, 'منظورم این نبود؛ در واقع مشکل اصلی من اهمال‌کاری است و کارها را عقب می‌اندازم.');
+  assert.equal(session.answers.open_problem_original, 'مدتی است اضطراب دارم');
+  assert.match(session.answers.open_problem, /اهمال‌کاری/);
+  assert.equal(session.candidate_topics.some((item) => item.topic_id === 'T09'), true);
+  assert.equal(session.candidate_topics.some((item) => item.topic_id === 'T02'), false);
+  assert.equal(session.summary.user_report, session.answers.open_problem);
+});
