@@ -409,16 +409,17 @@ export function Support({ content, onBack }) {
       setPrivacyMessage(error?.message || 'تهیه خروجی اطلاعات انجام نشد.');
     }
   }
-  function deleteData() {
-    const confirmed = window.confirm('این کار اطلاعات مسیرها، پاسخ‌ها، پروفایل و تنظیمات شخصی ذخیره‌شده در حافظه محلی همین مرورگر را حذف می‌کند و قابل بازگشت نیست. ابتدا در صورت نیاز خروجی بگیر. ادامه می‌دهی؟');
+  async function deleteData() {
+    const confirmed = window.confirm('این کار اطلاعات مسیرها، پاسخ‌ها، پروفایل و تنظیمات شخصی و نیز رکوردهای ساخته‌شده توسط کاربر در کتابخانه همین مرورگر را حذف می‌کند. پنج کتاب عمومی و نسخه‌های اصلی آن‌ها حفظ می‌شوند. عملیات قابل بازگشت نیست؛ ابتدا در صورت نیاز خروجی بگیر. ادامه می‌دهی؟');
     if (!confirmed) return;
     try {
+      const libraryResult = await deleteIndexedDbUserData();
       const result = deleteLocalUserData();
-      if (result.errors.length || result.removed.length !== result.attempted) {
+      if (result.errors.length || result.removed.length !== result.attempted || libraryResult.remaining !== 0) {
         setPrivacyMessage('حذف کامل انجام نشد. برخی داده‌ها ممکن است باقی مانده باشند؛ دوباره تلاش کن یا داده‌های مرورگر را بررسی کن.');
         return;
       }
-      setPrivacyMessage('داده‌های محلی برنامه حذف شدند؛ برنامه در حال بارگذاری مجدد است.');
+      setPrivacyMessage('داده‌های محلی کاربر حذف و بررسی شدند؛ پنج کتاب عمومی برنامه حفظ شده‌اند. برنامه در حال بارگذاری مجدد است.');
       window.setTimeout(() => window.location.reload(), 700);
     } catch (error) {
       setPrivacyMessage(error?.message || 'حذف اطلاعات انجام نشد.');
