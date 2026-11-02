@@ -25,7 +25,7 @@ const TOPIC_RULES = [
   ['T24', ['کنترل هیجان', 'تنظیم هیجان', 'احساساتم از کنترل خارج', 'کنترل خشم', 'هیجانم را کنترل']],
   ['T25', ['رنجش', 'کینه', 'دلخوری طولانی']],
   ['T26', ['شرم', 'خجالت از خود', 'خجالت می‌کشم', 'احساس رسوایی']],
-  ['T27', ['ترس از قضاوت', 'قضاوت دیگران', 'نگران نظر دیگران', 'مسخره‌ام کنند']],
+  ['T27', ['ترس از قضاوت', 'از قضاوت', 'قضاوت دیگران', 'نگران نظر دیگران', 'مسخره‌ام کنند']],
   ['T28', ['ترس از شکست', 'از شکست می‌ترسم']],
   ['T29', ['ترس از طرد', 'طرد شدن', 'ترک شدن', 'ترکم می‌کند', 'ترکم می‌کنه', 'رد شدن از طرف']],
   ['T30', ['شک و تردید', 'دودلی', 'تصمیم‌گیری سخت', 'مطمئن نیستم']],
@@ -90,6 +90,17 @@ function hasNegatedTopic(value, phrase) {
   return pattern.test(value);
 }
 
+function findNegatedTopicIds(value) {
+  const normalized = normalize(removeAttributedQuotes(value));
+  const ids = [];
+  for (const [topicId, phrases] of TOPIC_RULES) {
+    if (phrases.some((phrase) => normalized.includes(normalize(phrase)) && hasNegatedTopic(normalized, normalize(phrase)))) {
+      ids.push(topicId);
+    }
+  }
+  return ids;
+}
+
 function findTopics(value) {
   const evidenceText = removeAttributedQuotes(value);
   const hits = [];
@@ -134,7 +145,8 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
     && /(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او)\s+گفت/.test(raw)
     && /موافق نیستم|قبول ندارم|این حرف درست نیست/.test(normalized);
   const topics = findTopics(semanticEvidenceText);
-  const negationPresent = /(?:ندارم|نیستم|نمی‌خواهم|نمی‌ترسم|موافق نیستم)/.test(normalized);
+  const negatedTopicIds = findNegatedTopicIds(semanticEvidenceText);
+  const negationPresent = negatedTopicIds.length > 0 || (!clearlyRejectedThirdPartyQuote && /موافق نیستم/.test(normalized));
   const quotePresent = /[«“"].+[»”"]/.test(raw);
   const correctionPresent = /منظورم|اصلاح می‌کنم|در واقع|نه اینکه/.test(normalized);
   const intentLabel = classifyIntent(normalized);
@@ -144,7 +156,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
   const contradictions = [];
 
   if (quotePresent) uncertainties.push('بخشی از متن داخل نقل‌قول است؛ انتساب آن به تجربه یا باور کاربر قطعی نیست.');
-  if (negationPresent) uncertainties.push('نشانه نفی دیده شد؛ دامنه نفی ممکن است به کل موضوع یا فقط یک برچسب اشاره کند.');
+  if (negationPresent) uncertainties.push('نفی به یکی از عبارت‌های موضوعی نزدیک است؛ باید روشن شود کاربر برچسب را رد می‌کند یا خود تجربه را.');
   if (correctionPresent) contradictions.push('کاربر احتمالاً در حال اصلاح یا دقیق‌تر کردن گفته قبلی است؛ برداشت قبلی نباید بدون بازبینی حفظ شود.');
   if (multiTopic) uncertainties.push('بیش از یک موضوع احتمالی دیده شد؛ اولویت اصلی هنوز مشخص نیست.');
   if (safetyContextPresent) uncertainties.push('عبارت بالقوه مرتبط با ایمنی دیده شد؛ این عبارت به‌تنهایی قصد یا خطر فوری را اثبات نمی‌کند و باید مستقیماً روشن شود.');
