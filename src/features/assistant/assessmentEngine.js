@@ -273,6 +273,27 @@ export function submitAssessmentAnswer(session, answer) {
   const questionId = next.current_question.id;
   next.answers[questionId] = value;
 
+  if (!['open_problem', 'safety_now', 'safety_clarification'].includes(questionId)) {
+    const safetyProbe = routeSemanticIntake({ text: value, requestId: `assessment-safety-interrupt-${questionId}` });
+    if (safetyProbe.next_question?.purpose === 'safety_clarification') {
+      next.semantic_intake = safetyProbe;
+      next.safety_context_flag = true;
+      if (safetyProbe.safety_handoff.handoff_required) {
+        next.status = 'paused_for_human_support';
+        next.safety_state = 'urgent_human_support_recommended';
+        next.current_question = null;
+        next.referral = {
+          priority: 'urgent',
+          instruction: 'از اینجا ارزیابی خودکار را متوقف می‌کنیم. اگر خطر در همین لحظه وجود دارد، در صورت امکان به مکان امن برو، تنها نمان و با خدمات اورژانسی محل زندگی یا فرد قابل اعتماد تماس بگیر. اگر تهدید از سوی شخص دیگری است، از مواجهه مستقیم با او خودداری کن و از یک فرد یا مرکز حمایتی امن کمک بگیر.',
+        };
+        return next;
+      }
+      next.safety_state = 'not_assessed';
+      next.current_question = QUESTION.safety;
+      return next;
+    }
+  }
+
   if (questionId === 'open_problem') {
     next.safety_context_flag = detectSafetyCue(value);
     next.semantic_intake = routeSemanticIntake({ text: value, requestId: 'assessment-open-problem' });
