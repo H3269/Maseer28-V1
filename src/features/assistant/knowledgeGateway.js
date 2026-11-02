@@ -78,10 +78,28 @@ function deepFreeze(value) {
  * Lexical retrieval only. This function never generates, paraphrases or recommends
  * interventions; it returns excerpts from items explicitly approved for assistant use.
  */
-export function retrieveApprovedKnowledge({ query, topicIds = [], items = [], limit = 3 } = {}) {
+export function retrieveApprovedKnowledge({ query, topicIds = [], items = [], approvalManifest = null, limit = 3 } = {}) {
   const queryTerms = tokenize(query);
+  const manifestEntries = approvalManifest?.status === 'active' && Array.isArray(approvalManifest.approved_items)
+    ? approvalManifest.approved_items
+    : [];
+  const manifestMap = new Map();
+  for (const entry of manifestEntries) {
+    if (!entry || typeof entry.item_id !== 'string' || manifestMap.has(entry.item_id)) continue;
+    manifestMap.set(entry.item_id, entry);
+  }
   const safeItems = Array.isArray(items)
-    ? [...new Map(items.filter(isApprovedItem).map((item) => [item.item_id, item])).values()]
+    ? [...new Map(items.filter((item) => {
+      if (!isApprovedItem(item)) return false;
+      const entry = manifestMap.get(item.item_id);
+      return Boolean(
+        entry
+        && entry.review_record_id === item.approval.review_record_id
+        && entry.reviewer_role === item.approval.reviewer_role
+        && entry.reviewed_at === item.approval.reviewed_at
+        && entry.version === item.approval.version
+      );
+    }).map((item) => [item.item_id, item])).values()]
     : [];
   const rawTopics = Array.isArray(topicIds) ? topicIds : [];
   if (rawTopics.some((id) => typeof id !== 'string' || !KNOWN_TOPIC.test(id))) {
