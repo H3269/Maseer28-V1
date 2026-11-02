@@ -225,7 +225,7 @@ test('ambiguous safety language still asks a direct question instead of auto-ref
 
 test('adaptive policy skips questions already answered in the opening message', () => {
   let session = createAssessmentSession();
-  session = answer(session, 'سه ماه است در محل کار تمرکزم را از دست داده‌ام و می‌خواهم راهکار عملی پیدا کنم.');
+  session = answer(session, 'سه ماه است در محل کار به‌خاطر اضطراب تمرکزم را از دست داده‌ام و می‌خواهم راهکار عملی پیدا کنم.');
   session = answer(session, 'نه');
   assert.equal(session.current_question.id, 'summary_confirmation');
   assert.equal(session.summary.duration, 'در پیام آغازین اشاره شده');
