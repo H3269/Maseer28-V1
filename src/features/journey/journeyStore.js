@@ -256,6 +256,10 @@ function isEmptyProfileValue(value) {
   return value === undefined || value === null || value === '';
 }
 
+function sameProfileRecord(left, right) {
+  return Boolean(left && right) && PROFILE_FIELDS.every((field) => Object.is(left[field], right[field]));
+}
+
 export function loadUserProfile() {
   return normalizeProfileRecord(readProfileRecord(PROFILE_V2_KEY))
     || normalizeProfileRecord(readProfileRecord(PROFILE_KEY));
@@ -266,7 +270,7 @@ export function saveUserProfile(profile) {
   if (!normalized) throw new Error('Invalid user profile');
   localStorage.setItem(PROFILE_V2_KEY, JSON.stringify(normalized));
   const verified = normalizeProfileRecord(readProfileRecord(PROFILE_V2_KEY));
-  if (JSON.stringify(verified) !== JSON.stringify(normalized)) {
+  if (!sameProfileRecord(verified, normalized)) {
     throw new Error('User profile write verification failed');
   }
 }
@@ -296,7 +300,7 @@ export function migrateUserProfileToV2(state = loadJourneyState()) {
   try {
     localStorage.setItem(PROFILE_V2_KEY, JSON.stringify(merged));
     const verified = normalizeProfileRecord(readProfileRecord(PROFILE_V2_KEY));
-    if (!verified || JSON.stringify(verified) !== JSON.stringify(merged)) {
+    if (!sameProfileRecord(verified, merged)) {
       return { migrated: false, profile: null, reason: 'readback_mismatch' };
     }
     localStorage.setItem(PROFILE_V2_MIGRATION_KEY, '1');
