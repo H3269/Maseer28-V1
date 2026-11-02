@@ -3,7 +3,7 @@ import fs from 'node:fs';
 const REQUIRED = ['learning_objective', 'mechanism_focus', 'exercise', 'action', 'progress_measure', 'safety_and_limits'];
 const TOPIC_RULES = {
   T15: { name: 'اعتمادبه‌نفس پایین', evidence: ['EVID_BANDURA_1977', 'EVID_SELF_EFFICACY_IBI_2025'] },
-  T23: { name: 'احساس بی‌ارزشی', evidence: ['EVID_SELFESTEEM_CFT_2021', 'EVID_SELFESTEEM_META_2021', 'EVID_NICE_NG222'] },
+  T23: { name: 'احساس بی‌ارزشی', evidence: ['EVID_SELFESTEEM_CFT_2021', 'EVID_SELFESTEEM_META_2021'] },
   T33: { name: 'خودانتقادی', evidence: ['EVID_SELFCRITICISM_CBI_2021', 'EVID_CFT_SHAME_2025', 'EVID_SELFCRITICISM_EFT_2026'] },
   T19: { name: 'خودسرزنشی', evidence: ['EVID_SELFBLAME_REVIEW_2020', 'EVID_GUILT_MEASUREMENT_2010', 'EVID_JANOFF_BULMAN_1979'] },
   T26: { name: 'شرم', evidence: ['EVID_SHAME_GUILT_2018', 'EVID_CFT_SHAME_2025'] }
