@@ -177,7 +177,7 @@ test('duplicate approved catalog item IDs invalidate retrieval instead of shadow
 test('general strategy wording is treated as query framing rather than a required knowledge term', () => {
   const item = approved();
   const result = retrieveApprovedKnowledge({
-    query: 'چه راهکاری برای اضطراب وجود دارد؟',
+    query: 'چه راهکاری برای نگرانی وجود دارد؟',
     items: [item],
     approvalManifest: manifestFor(item),
   });
