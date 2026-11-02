@@ -3,6 +3,7 @@ import { routeAssistantTurn } from './assistantTurnEngine.js';
 
 const QUESTION = {
   open: { id: 'open_problem', stage: 'open_intent', prompt: 'دوست داری درباره چه مسئله‌ای صحبت کنیم؟ با زبان خودت توضیح بده؛ لازم نیست از بین موضوعات اپ چیزی انتخاب کنی.' },
+  intent_scope: { id: 'intent_scope', stage: 'intent_disambiguation', prompt: 'این پرسش درباره تجربه و وضعیت شخصی خودت است یا اطلاعات عمومی می‌خواهی؟ می‌توانی «شخصی» یا «عمومی» بگویی.' },
   safety: { id: 'safety_now', stage: 'safety_check', prompt: 'پیش از ادامه یک بررسی کوتاه ایمنی: آیا همین الآن احتمال می‌دهی به خودت یا شخص دیگری آسیب بزنی، یا کسی در حال حاضر تو را در معرض خطر قرار داده است؟ می‌توانی «بله»، «نه» یا «مطمئن نیستم» بگویی.' },
   impact: { id: 'impact', stage: 'context_and_impact', prompt: 'این مسئله در زندگی روزمره‌ات چه اثری گذاشته است؟ اگر می‌توانی یک نمونه واقعی و اخیر بگو.' },
   duration: { id: 'duration', stage: 'context_and_impact', prompt: 'این وضعیت از چه زمانی شروع شده و معمولاً هر چند وقت یک‌بار اتفاق می‌افتد؟' },
@@ -261,6 +262,11 @@ export function submitAssessmentAnswer(session, answer) {
       return next;
     }
 
+    if (routedTurn.status === 'intent_scope_clarification_required') {
+      next.current_question = QUESTION.intent_scope;
+      return next;
+    }
+
     if (routedTurn.status === 'urgent_human_support_required') {
       next.status = 'paused_for_human_support';
       next.safety_state = 'urgent_human_support_recommended';
@@ -274,6 +280,34 @@ export function submitAssessmentAnswer(session, answer) {
     }
 
     next.current_question = QUESTION.safety;
+    return next;
+  }
+
+  if (questionId === 'intent_scope') {
+    const scope = normalize(value);
+    next.answers.intent_scope = value;
+    if (/(?:عمومی|اطلاعات عمومی|کلی|فقط اطلاعات)/.test(scope)) {
+      next.status = 'information_request_not_supported';
+      next.current_question = null;
+      next.next_step = {
+        content_available: false,
+        reason: 'پرسش عمومی یا راهکار کلی به محتوای تأییدشده نیاز دارد که هنوز به runtime متصل نیست.',
+        message: 'درخواستت عمومی است؛ تا وقتی محتوای تأییدشده و منبع‌دار متصل نشده، پاسخ یا تمرین حدسی ارائه نمی‌کنم.',
+      };
+      return next;
+    }
+    if (/(?:شخصی|تجربه خودم|وضعیت خودم|برای خودم|مشکل خودم)/.test(scope)) {
+      next.answers.open_problem = `${next.answers.open_problem}\nزمینه: مربوط به تجربه شخصی خودم است.`;
+      next.current_question = QUESTION.safety;
+      return next;
+    }
+    next.status = 'intent_scope_unclear';
+    next.current_question = null;
+    next.next_step = {
+      content_available: false,
+      reason: 'دامنه درخواست پس از پرسش روشن‌ساز مشخص نشد.',
+      message: 'بدون روشن شدن اینکه درخواست عمومی است یا درباره تجربه شخصی تو، پاسخ‌گویی را ادامه نمی‌دهم تا مسیر اشتباه انتخاب نشود.',
+    };
     return next;
   }
 
