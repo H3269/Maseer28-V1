@@ -195,9 +195,20 @@ export function submitAssessmentAnswer(session, answer) {
     }));
     next.current_question = QUESTION.clarify;
   } else if (questionId === 'clarify_example') {
+    const isCorrection = /منظورم|اصلاح می‌کنم|در واقع|اشتباه برداشت|نه اینکه/.test(normalize(value));
+    const clarificationText = isCorrection ? value : [next.answers.open_problem, value].join(' ');
+    if (isCorrection) {
+      next.answers.open_problem_original = next.answers.open_problem;
+      next.answers.open_problem = value;
+    }
     const routed = routeSemanticIntake({
-      text: [next.answers.open_problem, value].join(' '),
+      text: clarificationText,
       requestId: 'assessment-topic-clarification',
+      priorContext: { situational_facts: next.semantic_intake?.situational_facts ?? {
+        impact: next.answers.impact,
+        duration: next.answers.duration,
+        user_goal: next.answers.goal,
+      } },
     });
     next.semantic_intake = routed;
     const extra = routed.topic_candidates.map((item) => ({
@@ -206,13 +217,13 @@ export function submitAssessmentAnswer(session, answer) {
       status: 'tentative_hypothesis',
       confidence_band: item.confidence_band,
     }));
-    const merged = new Map([...next.candidate_topics, ...extra].map((item) => [item.topic_id, item]));
+    const merged = new Map((isCorrection ? [] : next.candidate_topics).concat(extra).map((item) => [item.topic_id, item]));
     next.candidate_topics = [...merged.values()].slice(0, 3);
     if (next.candidate_topics.length === 0) next.candidate_topics = [{ topic_id: 'T34', matched_phrases: [], status: 'needs_clarification' }];
     const names = next.candidate_topics.map((item) => item.topic_id);
     next.summary = {
       user_report: next.answers.open_problem,
-      context_example: value,
+      context_example: isCorrection ? null : value,
       impact: next.answers.impact,
       duration: next.answers.duration,
       user_goal: next.answers.goal,
@@ -239,7 +250,19 @@ export function submitAssessmentAnswer(session, answer) {
 
 export function stopAssessment(session) {
   if (!session) return null;
-  return { ...session, status: 'stopped_by_user', current_question: null, answers: {}, summary: null };
+  return {
+    ...session,
+    status: 'stopped_by_user',
+    current_question: null,
+    safety_state: 'not_assessed',
+    safety_context_flag: false,
+    answers: {},
+    candidate_topics: [],
+    semantic_intake: null,
+    summary: null,
+    referral: undefined,
+    next_step: undefined,
+  };
 }
 
 export function getAssessmentSummary(session) {
