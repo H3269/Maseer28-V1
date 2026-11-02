@@ -313,3 +313,23 @@ test('tentative topic hypotheses preserve matched rule phrases for traceability'
   assert.ok(item.matched_rule_phrases.length > 0);
   assert.equal(item.status, 'tentative_hypothesis');
 });
+
+test('a direct personal statement is retained beside a separate attributed statement', () => {
+  const session = completeIntakeToSummary('من از خودم متنفرم و دوستم گفت که من بی‌ارزشم');
+  const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
+  assert.ok(ids.includes('T18'));
+  assert.equal(ids.includes('T23'), false);
+});
+
+test('quoted self-evaluation words alone do not become personal topic hypotheses', () => {
+  const session = completeIntakeToSummary('او گفت «من از خودم متنفرم و بی‌ارزشم»');
+  const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
+  assert.equal(ids.includes('T18'), false);
+  assert.equal(ids.includes('T23'), false);
+});
+
+test('a personal correction after an attributed statement is not discarded with the attribution', () => {
+  const session = completeIntakeToSummary('دوستم گفت من بی‌ارزشم، ولی من با این حرف موافق نیستم');
+  const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
+  assert.equal(ids.includes('T23'), false);
+});
