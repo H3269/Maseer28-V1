@@ -30,7 +30,8 @@ function isApprovedItem(item) {
     item
     && item.schema_version === '1.0.0'
     && typeof item.item_id === 'string'
-    && item.item_id.trim().length <= 120
+    && item.item_id.trim().length > 0
+    && item.item_id.length <= 120
     && typeof item.title === 'string'
     && item.title.trim().length > 0
     && item.title.length <= 240
