@@ -196,7 +196,7 @@ export function submitAssessmentAnswer(session, answer) {
       impact: next.answers.impact,
       duration: next.answers.duration,
       user_goal: next.answers.goal,
-      candidate_topics: next.candidate_topics.map((item) => ({ topic_id: item.topic_id, status: item.status || 'tentative_hypothesis' })),
+      candidate_topics: next.candidate_topics.map((item) => ({ topic_id: item.topic_id, status: item.status || 'tentative_hypothesis', matched_rule_phrases: [...(item.matched_phrases || [])] })),
       limitations: [
         'این دسته‌بندی بر پایه تطبیق واژه‌ها و گفته‌های همین گفتگو است؛ ارزیابی روان‌شناختی یا تشخیص نیست.',
         'نبودن یک موضوع در فهرست به معنی رد آن نیست.',
@@ -248,6 +248,8 @@ export function stopAssessment(session) {
 export function getAssessmentSummary(session) {
   return session?.summary ?? null;
 }
+
+export const assessmentEngineTopicRuleIds = Object.freeze(TOPIC_RULES.map(([topicId]) => topicId));
 
 export const assessmentEngineMetadata = Object.freeze({
   version: '1.0.0',
