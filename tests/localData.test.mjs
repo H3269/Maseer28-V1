@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { deleteLocalUserData, readLocalUserData } from '../src/features/privacy/localData.js';
+import { selectUserOwnedLibraryData } from '../src/features/privacy/indexedDbData.js';
 
 class MemoryStorage {
   constructor(entries = {}) { this.values = new Map(Object.entries(entries)); }
@@ -52,4 +53,38 @@ test('privacy deletion removes app-owned personal keys but preserves copyright a
 test('privacy helpers fail clearly when browser storage is unavailable', () => {
   assert.throws(() => readLocalUserData(null), /ذخیره‌سازی محلی/);
   assert.throws(() => deleteLocalUserData(null), /ذخیره‌سازی محلی/);
+});
+
+
+test('IndexedDB privacy scope exports user-created records but preserves seeded public library content', () => {
+  const selected = selectUserOwnedLibraryData({
+    books: [
+      { id: 'book-1', legacyId: 1, title: 'کتاب عمومی اول' },
+      { id: 'book-5', legacyId: 5, title: 'کتاب عمومی پنجم' },
+      { id: 'book-custom-1', title: 'کتاب کاربر' },
+    ],
+    versions: [
+      { id: 'seed-v1', bookId: 'book-1', source: 'seed' },
+      { id: 'upload-v1', bookId: 'book-1', source: 'upload' },
+      { id: 'custom-v1', bookId: 'book-custom-1', source: 'seed' },
+      { id: 'seed-v5', bookId: 'book-5', source: 'seed' },
+    ],
+    settings: [
+      { key: 'seed-content-revision-v90', value: '90' },
+      { key: 'seed-book-fingerprint:book-1', value: 'hash' },
+      { key: 'reader-preference', value: 'large-text' },
+    ],
+  });
+  assert.deepEqual(selected.books.map((x) => x.id), ['book-custom-1']);
+  assert.deepEqual(selected.versions.map((x) => x.id), ['upload-v1', 'custom-v1']);
+  assert.deepEqual(selected.settings.map((x) => x.key), ['reader-preference']);
+});
+
+test('IndexedDB privacy scope does not classify seed versions as user content', () => {
+  const selected = selectUserOwnedLibraryData({
+    books: [{ id: 'book-1', legacyId: 1 }],
+    versions: [{ id: 'seed-v1', bookId: 'book-1', source: 'seed' }],
+    settings: [{ key: 'seed-last-checked-at', value: 'today' }],
+  });
+  assert.deepEqual(selected, { books: [], versions: [], settings: [] });
 });
