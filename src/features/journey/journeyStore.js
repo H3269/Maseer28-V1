@@ -281,7 +281,17 @@ export function saveUserProfile(profile) {
  * Legacy records are intentionally retained for a later, separately tested cleanup.
  */
 export function migrateUserProfileToV2(state = loadJourneyState()) {
-  const current = normalizeProfileRecord(readProfileRecord(PROFILE_V2_KEY)) || {};
+  const currentRecord = normalizeProfileRecord(readProfileRecord(PROFILE_V2_KEY));
+  try {
+    if (localStorage.getItem(PROFILE_V2_MIGRATION_KEY) === '1') {
+      return currentRecord
+        ? { migrated: true, profile: currentRecord, reason: 'already_verified' }
+        : { migrated: false, profile: null, reason: 'canonical_missing' };
+    }
+  } catch {
+    return { migrated: false, profile: null, reason: 'storage_failure' };
+  }
+  const current = currentRecord || {};
   const legacyIndependent = normalizeProfileRecord(readProfileRecord(PROFILE_KEY)) || {};
   const legacyJourney = normalizeProfileRecord(state?.profileData) || {};
   const merged = { ...current };
