@@ -52,6 +52,20 @@ test('rejects a depression guideline used as direct evidence for T23 self-worth 
   assert.ok(result.errors.some((error) => error.includes('evidence not approved for T23: EVID_NICE_NG222')));
 });
 
+test('keeps privacy choice explicit and avoids entitlement assumptions in T26 day 5', () => {
+  const data = base();
+  const record = data.pilot.records.find((item) => item.topic_id === 'T26' && item.day_number === 5);
+  assert.ok(record.action.includes('نداشتنِ تمایل به افشا نیز انتخاب معتبر است'));
+  assert.ok(!record.action.includes('حق دارد بداند'));
+});
+
+test('provides a non-comparative alternative for T33 day 6', () => {
+  const data = base();
+  const record = data.pilot.records.find((item) => item.topic_id === 'T33' && item.day_number === 6);
+  assert.ok(record.exercise.includes('معیار شخصیِ واقع‌بینانه'));
+  assert.ok(record.action.includes('تمرین مقایسه را متوقف کن'));
+});
+
 test('rejects a T19 day 6 subtopic that confuses behavior responsibility with global identity blame', () => {
   const data = base();
   const record = data.pilot.records.find((item) => item.topic_id === 'T19' && item.day_number === 6);
