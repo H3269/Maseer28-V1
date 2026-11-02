@@ -1,0 +1,178 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
+const content = readJson('public/content/path-content.json');
+const topicsRegistry = readJson('public/assistant/knowledge/topics.v1.json');
+const subtopicsRegistry = readJson('public/assistant/knowledge/subtopics.v1.json');
+const definitionsRegistry = readJson('public/assistant/knowledge/topic-definitions-draft.v1.json');
+
+const categories = Object.entries(content.categories || {});
+const topicNames = new Map((topicsRegistry.topics || []).map((topic) => [topic.topic_id, topic.name]));
+const topicDefinitions = new Map((definitionsRegistry.definitions || []).map((item) => [item.topic_id, item]));
+const subtopicsByTopic = new Map();
+for (const item of subtopicsRegistry.subtopics || []) {
+  if (!subtopicsByTopic.has(item.topic_id)) subtopicsByTopic.set(item.topic_id, []);
+  subtopicsByTopic.get(item.topic_id).push(item.subtopic_id);
+}
+
+const expectedTopics = 34;
+const expectedDays = 28;
+const expectedTotalDays = expectedTopics * expectedDays;
+const templateFields = [
+  'title',
+  'intro',
+  'exercise',
+  'actionText',
+  'closing',
+  'lightExerciseText',
+  'lightActionText',
+  'progressActionText',
+];
+const futureMetadataFields = [
+  'learning_objective',
+  'target_skill',
+  'subtopic_ids',
+  'mechanism',
+  'exercise_type',
+  'duration_minutes',
+  'contraindications',
+  'stop_conditions',
+  'source_ids',
+  'evidence_grade',
+  'review_status',
+  'review_record_id',
+];
+
+function normalizeText(value, topicName) {
+  let text = String(value ?? '').normalize('NFKC');
+  if (topicName) {
+    text = text.split(`«${topicName}»`).join('«[TOPIC]»');
+    text = text.split(topicName).join('[TOPIC]');
+  }
+  return text
+    .replace(/[يى]/g, 'ی')
+    .replace(/ك/g, 'ک')
+    .replace(/[\u064B-\u065F\u0670]/g, '')
+    .replace(/[\u200c\u200f\u202a-\u202e]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function uniqueCount(values) {
+  return new Set(values.filter((value) => value !== '')).size;
+}
+
+const topicRows = categories.map(([categoryKey, category], index) => {
+  const registryTopic = (topicsRegistry.topics || []).find((item) => item.name === categoryKey);
+  const topicId = registryTopic?.topic_id || `UNMAPPED-${index + 1}`;
+  const topicName = topicNames.get(topicId) || categoryKey;
+  const days = Array.isArray(category.days) ? category.days : [];
+  const fieldStats = {};
+  for (const field of templateFields) {
+    const values = days.map((day) => normalizeText(day[field], topicName));
+    fieldStats[field] = {
+      populated_days: values.filter(Boolean).length,
+      unique_values_within_topic: uniqueCount(values),
+      repeated_value_days: values.length - uniqueCount(values),
+    };
+  }
+  const metadataCoverage = {};
+  for (const field of futureMetadataFields) {
+    metadataCoverage[field] = days.filter((day) => {
+      const value = day[field];
+      return Array.isArray(value) ? value.length > 0 : value !== undefined && value !== null && value !== '';
+    }).length;
+  }
+  const familyCounts = {};
+  for (const day of days) {
+    const family = String(day.scientific_family || '(missing)');
+    familyCounts[family] = (familyCounts[family] || 0) + 1;
+  }
+  return {
+    category_key: categoryKey,
+    topic_id: topicId,
+    topic_name: topicName,
+    day_count: days.length,
+    expected_subtopic_ids: subtopicsByTopic.get(topicId) || [],
+    working_definition_present: Boolean(topicDefinitions.get(topicId)?.working_definition),
+    scope_limit_present: Boolean(topicDefinitions.get(topicId)?.scope_limit),
+    field_stats: fieldStats,
+    future_metadata_coverage: metadataCoverage,
+    scientific_family_counts: familyCounts,
+  };
+});
+
+const crossTopicSimilarity = {};
+for (const field of templateFields) {
+  let fullySharedDays = 0;
+  const distinctByDay = [];
+  for (let dayIndex = 0; dayIndex < expectedDays; dayIndex += 1) {
+    const values = topicRows.map((row) => {
+      const category = content.categories?.[row.category_key];
+      return normalizeText(category?.days?.[dayIndex]?.[field], row.topic_name);
+    });
+    const distinct = uniqueCount(values);
+    distinctByDay.push(distinct);
+    if (values.length === expectedTopics && values.every(Boolean) && distinct === 1) fullySharedDays += 1;
+  }
+  crossTopicSimilarity[field] = {
+    fully_shared_days_across_all_topics: fullySharedDays,
+    expected_days: expectedDays,
+    distinct_topic_variants_by_day: distinctByDay,
+  };
+}
+
+const allDays = categories.flatMap(([, category]) => Array.isArray(category.days) ? category.days : []);
+const familyDistribution = {};
+for (const day of allDays) {
+  const family = String(day.scientific_family || '(missing)');
+  familyDistribution[family] = (familyDistribution[family] || 0) + 1;
+}
+const metadataCoverage = {};
+for (const field of futureMetadataFields) {
+  metadataCoverage[field] = allDays.filter((day) => {
+    const value = day[field];
+    return Array.isArray(value) ? value.length > 0 : value !== undefined && value !== null && value !== '';
+  }).length;
+}
+
+const report = {
+  report_schema_version: '1.0.0',
+  audit_id: 'maseer28-daily-content-quality-audit',
+  status: 'static_content_audit_not_expert_or_clinical_validation',
+  content_version: content.version || content.content_version || null,
+  generated_at: new Date().toISOString(),
+  expected: { topics: expectedTopics, days_per_topic: expectedDays, total_days: expectedTotalDays },
+  observed: {
+    topics: categories.length,
+    total_days: allDays.length,
+    topic_registry_entries: (topicsRegistry.topics || []).length,
+    subtopic_registry_entries: (subtopicsRegistry.subtopics || []).length,
+    topic_definitions: (definitionsRegistry.definitions || []).length,
+  },
+  topic_rows: topicRows,
+  cross_topic_similarity: crossTopicSimilarity,
+  scientific_family_distribution: familyDistribution,
+  future_metadata_coverage: metadataCoverage,
+  interpretation: [
+    'Similarity is a review signal, not proof that an exercise is ineffective.',
+    'Structural validity does not establish clinical validity, safety, efficacy, originality, or suitability.',
+    'Draft topic definitions and subtopics must not be presented as expert-approved knowledge.',
+    'Candidate topic relations are not causal evidence and are not eligible for runtime use.',
+    'Future content metadata requirements are a design target; existing days are not silently upgraded to approved status.',
+  ],
+};
+
+const outputDir = path.join(root, 'reports', 'generated');
+fs.mkdirSync(outputDir, { recursive: true });
+const outputPath = path.join(outputDir, 'path28-content-quality-audit.json');
+fs.writeFileSync(outputPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+
+console.log(`ممیزی ایستای محتوا: ${report.observed.topics} موضوع، ${report.observed.total_days} روز، ${report.observed.subtopic_registry_entries} زیرموضوع.`);
+for (const [field, stats] of Object.entries(crossTopicSimilarity)) {
+  console.log(`- ${field}: ${stats.fully_shared_days_across_all_topics}/${expectedDays} روز با متن یکسان پس از نرمال‌سازی نام موضوع.`);
+}
+console.log(`گزارش ماشین‌خوان: ${path.relative(root, outputPath)}`);
