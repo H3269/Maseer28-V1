@@ -16,6 +16,12 @@ const CONSENT_CONTEXT = {
   view_edit_delete_controls: 'This panel provides viewing, editing, clearing, and consent withdrawal controls.',
 };
 
+const JOURNEY_CONTEXT_CONSENT = {
+  selected_data_categories: 'active journey day, completed day count, and an explicitly selected current goal only',
+  retention_period: 'context package expires within 24 hours; no journey history is stored by this consent',
+  view_edit_delete_controls: 'the user can review and withdraw this permission in this panel',
+};
+
 const OPTIONS = {
   response_detail: [['concise','مختصر'],['balanced','متعادل'],['detailed','مفصل']],
   communication_style: [['direct','مستقیم'],['supportive','حمایتگر'],['neutral','خنثی']],
@@ -35,6 +41,7 @@ function notifyPreferencesChanged() {
 export default function PersonalizationSettings() {
   const [consent, setConsent] = useState(null);
   const [preferences, setPreferences] = useState({ ...DEFAULT_PERSONALIZATION });
+  const [journeyContextEnabled, setJourneyContextEnabled] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
@@ -43,6 +50,7 @@ export default function PersonalizationSettings() {
       const state = getConsentState();
       setConsent(state);
       setPreferences(loadPersonalizationPreferences());
+      setJourneyContextEnabled(state?.purposes?.journey_context?.granted === true);
     } catch {
       setError('ذخیره‌سازی محلی در دسترس نیست؛ ترجیحات در این مرورگر ذخیره نمی‌شوند.');
     }
@@ -62,6 +70,31 @@ export default function PersonalizationSettings() {
       setMessage('رضایت ذخیره ترجیحات غیرحساس ثبت شد. هنوز هیچ متن گفتگو یا سابقه روان‌شناختی ذخیره نمی‌شود.');
     } catch (cause) {
       setError(cause?.message || 'ثبت رضایت انجام نشد.');
+    }
+  }
+
+
+  function enableJourneyContext() {
+    try {
+      const next = grantConsent('journey_context', { explicitAction: true, context: JOURNEY_CONTEXT_CONSENT });
+      setConsent(next);
+      setJourneyContextEnabled(true);
+      setError('');
+      setMessage('رضایت مستقل زمینه مسیر ثبت شد. این مجوز به‌تنهایی به معنی اتصال یا ارسال اطلاعات مسیر به دستیار نیست.');
+    } catch (cause) {
+      setError(cause?.message || 'ثبت رضایت زمینه مسیر انجام نشد.');
+    }
+  }
+
+  function withdrawJourneyContext() {
+    try {
+      const next = withdrawConsent('journey_context');
+      setConsent(next);
+      setJourneyContextEnabled(false);
+      setError('');
+      setMessage('رضایت استفاده از زمینه مسیر لغو شد. دستیار نباید این زمینه را دریافت کند.');
+    } catch (cause) {
+      setError(cause?.message || 'لغو رضایت زمینه مسیر انجام نشد.');
     }
   }
 
@@ -124,6 +157,14 @@ export default function PersonalizationSettings() {
           </div>
         </div>}
       {!enabled && <button className="secondary" type="button" onClick={enable}>رضایت می‌دهم ترجیحات غیرحساس ذخیره شوند</button>}
+      <div className="sectionHint" role="group" aria-labelledby="journey-context-consent-title">
+        <b id="journey-context-consent-title">رضایت جداگانه برای زمینه مسیر</b>
+        <p className="muted">این مجوز فقط می‌تواند روز فعال، تعداد روزهای تکمیل‌شده و هدفی را که خودت انتخاب کرده‌ای در یک بسته محلی با عمر حداکثر ۲۴ ساعت مجاز کند. پاسخ‌های روزانه، متن گفتگو، نام، تشخیص و آرشیو مسیر شامل این مجوز نیستند. در حال حاضر این داده هنوز به دستیار متصل نشده است.</p>
+        {journeyContextEnabled
+          ? <button className="secondary" type="button" onClick={withdrawJourneyContext}>لغو رضایت زمینه مسیر</button>
+          : <button className="secondary" type="button" onClick={enableJourneyContext}>رضایت می‌دهم زمینه محدود مسیر مجاز باشد</button>}
+      </div>
+
       <p className="muted">پردازش ابری، تحلیل محصول و پردازش داده حساس در این نسخه فعال نیستند و از این بخش قابل فعال‌سازی نیستند. متن گفتگو، پاسخ‌ها و اطلاعات سلامت در این حافظه ذخیره نمی‌شوند. سرعت پرسش‌ها و زبان هنوز گزینه قابل تغییر نیستند، چون در موتور فعلی به‌طور کامل پشتیبانی نمی‌شوند.</p>
       {message && <p className="contactHelp" role="status" aria-live="polite">{message}</p>}
       {error && <p className="contactHelp" role="alert">{error}</p>}
