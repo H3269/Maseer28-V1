@@ -4,7 +4,7 @@ import AppIcon from '../../shared/components/AppIcon.jsx';
 import { buttonLabel } from '../../shared/buttonLabel.jsx';
 import { fa, formatDate, normalizeDigits } from '../../shared/utils.js';
 import { APP_CONFIG, burdenScoreFromAnswers, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
-import { readLocalUserData, deleteLocalUserData } from '../privacy/localData.js';
+import { readLocalUserData, deleteLocalUserData, createLocalUserDataDeletionPlan } from '../privacy/localData.js';
 import { readIndexedDbUserData, deleteIndexedDbUserData } from '../privacy/indexedDbData.js';
 import AssessmentAssistant from '../assistant/AssessmentAssistant.jsx';
 
@@ -417,8 +417,10 @@ export function Support({ content, onBack }) {
     if (!confirmed) return;
     setPrivacyBusy(true);
     try {
+      const localDeletionPlan = createLocalUserDataDeletionPlan();
+      if (localDeletionPlan.errors.length) throw new Error('پیش‌بررسی localStorage ناموفق بود؛ برای جلوگیری از حذف ناقص، هیچ داده‌ای پاک نشد.');
       const libraryResult = await deleteIndexedDbUserData();
-      const result = deleteLocalUserData();
+      const result = deleteLocalUserData(undefined, localDeletionPlan);
       if (result.errors.length || result.verificationErrors.length || result.removed.length !== result.attempted || libraryResult.remaining !== 0) {
         setPrivacyMessage('حذف کامل انجام نشد. برخی داده‌ها ممکن است باقی مانده باشند؛ دوباره تلاش کن یا داده‌های مرورگر را بررسی کن.');
         return;
