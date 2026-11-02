@@ -289,4 +289,5 @@ test('explicit immediate intent disclosed at any intake stage triggers human sup
   assert.equal(session.status, 'paused_for_human_support');
   assert.equal(session.current_question, null);
   assert.equal(session.safety_state, 'urgent_human_support_recommended');
+  assert.deepEqual(session.referral.safety_domains, ['risk_of_self_harm']);
 });
