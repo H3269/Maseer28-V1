@@ -16,7 +16,8 @@
     "validate:subtopic-definitions": "node scripts/validate-subtopic-definition-proposals.mjs",
     "validate:assessment-knowledge": "node scripts/validate-assessment-knowledge-consistency.mjs",
     "validate:assessment-rule-registry": "node scripts/validate-assessment-rule-registry.mjs",
-    "validate:quality-safety-gates": "node scripts/validate-quality-safety-gates.mjs"
+    "validate:quality-safety-gates": "node scripts/validate-quality-safety-gates.mjs",
+    "validate:independent-review-ledger": "node scripts/validate-independent-review-ledger.mjs"
   },
   "dependencies": {
     "react": "18.3.1",
