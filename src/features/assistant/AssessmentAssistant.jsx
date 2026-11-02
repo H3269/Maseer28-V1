@@ -56,6 +56,15 @@ export default function AssessmentAssistant() {
     setError('');
   }
 
+  function closeAndClear() {
+    setSession((previous) => stopAssessment(previous));
+    setSession(null);
+    setMessages([]);
+    setDraft('');
+    setError('');
+    setExpanded(false);
+  }
+
   const summary = session?.summary;
   const active = session?.status === 'in_progress' && Boolean(getCurrentQuestion(session));
 
@@ -99,7 +108,7 @@ export default function AssessmentAssistant() {
       </div>}
       {session?.status === 'completed' && <button className="secondary" type="button" onClick={start}>شروع گفت‌وگوی تازه</button>}
       {session?.status === 'stopped_by_user' && <button className="secondary" type="button" onClick={start}>شروع دوباره</button>}
-      <button className="secondary" type="button" onClick={() => setExpanded(false)}>بستن بخش دستیار</button>
+      <button className="secondary" type="button" onClick={closeAndClear}>بستن و پاک‌کردن گفتگو</button>
     </>}
   </section>;
 }
