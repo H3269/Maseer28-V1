@@ -13,7 +13,14 @@ function deepFreeze(value) {
  * factual claims; knowledge answers are limited to approved source excerpts.
  */
 export function routeAssistantTurn({ text, knowledgeItems = [], approvalManifest = null, requestId = 'assistant-turn' } = {}) {
-  const intake = routeSemanticIntake({ text, requestId });
+  const rawText = String(text ?? '').trim();
+  if (!rawText) {
+    return deepFreeze({ status: 'invalid_input', intake: null, message: 'برای شروع، یک پرسش یا توضیح کوتاه بنویس.', knowledge: [] });
+  }
+  if (rawText.length > 3000) {
+    return deepFreeze({ status: 'input_too_long', intake: null, message: 'متن بیش از حد طولانی است؛ لطفاً آن را به حداکثر ۳۰۰۰ نویسه کاهش بده.', knowledge: [] });
+  }
+  const intake = routeSemanticIntake({ text: rawText, requestId });
 
   if (intake.safety_handoff.handoff_required) {
     return deepFreeze({
