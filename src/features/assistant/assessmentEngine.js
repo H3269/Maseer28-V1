@@ -266,6 +266,20 @@ export function submitAssessmentAnswer(session, answer) {
     next.semantic_intake = routedTurn.intake;
     next.safety_context_flag = ['safety_clarification_required', 'urgent_human_support_required'].includes(routedTurn.status);
 
+    if (routedTurn.status === 'approved_knowledge_available') {
+      next.status = 'information_answer_available';
+      next.current_question = null;
+      next.knowledge_response = {
+        message: routedTurn.message,
+        results: routedTurn.knowledge,
+      };
+      next.next_step = {
+        content_available: true,
+        message: routedTurn.message,
+      };
+      return next;
+    }
+
     if (routedTurn.status === 'knowledge_unavailable') {
       next.status = 'information_request_not_supported';
       next.current_question = null;
@@ -456,6 +470,7 @@ export function stopAssessment(session) {
     summary: null,
     referral: undefined,
     next_step: undefined,
+    knowledge_response: undefined,
   };
 }
 
