@@ -241,6 +241,7 @@ export const assessmentEngineMetadata = Object.freeze({
   topic_rule_registry_version: assessmentTopicRuleRegistry.registry_version,
   topic_rule_runtime_authorized: TOPIC_RULES.length > 0,
   topic_rule_runtime_status: TOPIC_RULES.length > 0 ? 'authorized' : 'disabled_fail_closed',
+  active_topic_rule_count: TOPIC_RULES.length,
   context_extraction_version: ASSESSMENT_CONTEXT_VERSION,
   runtime_status: 'experimental_local_only',
   diagnostic_use: false,
