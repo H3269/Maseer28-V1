@@ -7,6 +7,7 @@ import {
   submitAssessmentAnswer,
   stopAssessment,
   assessmentEngineMetadata,
+  classifySafetyAnswer,
 } from '../src/features/assistant/assessmentEngine.js';
 
 function answer(session, value) {
@@ -108,4 +109,19 @@ test('unmatched concerns use T34 as a clarification route, not a diagnosis', () 
 
 test('cloud processing is explicitly rejected by this experimental engine', () => {
   assert.throws(() => createAssessmentSession({ localOnly: false }), /ارسال ابری/);
+});
+
+test('safety answer classifier does not mistake a leading no for a complete negative answer', () => {
+  assert.equal(classifySafetyAnswer('نه، مطمئن نیستم'), 'clarification_needed');
+  assert.equal(classifySafetyAnswer('نه، شاید نتوانم کنترلش کنم'), 'clarification_needed');
+  assert.equal(classifySafetyAnswer('نه، برنامه دارم'), 'urgent_human_support_recommended');
+  assert.equal(classifySafetyAnswer('بله، ولی قصد ندارم'), 'urgent_human_support_recommended');
+});
+
+test('safety answer classifier accepts clear negative disclosure but not ambiguous elaboration', () => {
+  assert.equal(classifySafetyAnswer('نه'), 'no_immediate_risk_disclosed');
+  assert.equal(classifySafetyAnswer('خیر، قصد ندارم'), 'no_immediate_risk_disclosed');
+  assert.equal(classifySafetyAnswer('نه، قصد آسیب ندارم'), 'clarification_needed');
+  assert.equal(classifySafetyAnswer('شاید'), 'clarification_needed');
+  assert.equal(classifySafetyAnswer(''), 'clarification_needed');
 });
