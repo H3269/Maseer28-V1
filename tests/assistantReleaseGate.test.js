@@ -8,6 +8,8 @@ const engine = await readFile(new URL('../src/features/assistant/assessmentEngin
 const turnEngine = await readFile(new URL('../src/features/assistant/assistantTurnEngine.js', import.meta.url), 'utf8');
 const knowledgeGateway = await readFile(new URL('../src/features/assistant/knowledgeGateway.js', import.meta.url), 'utf8');
 const topicRegistry = JSON.parse(await readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'));
+const catalogSchema = JSON.parse(await readFile(new URL('../public/assistant/schemas/knowledge-catalog.v1.schema.json', import.meta.url), 'utf8'));
+const approvalManifestSchema = JSON.parse(await readFile(new URL('../public/assistant/schemas/knowledge-approval-manifest.v1.schema.json', import.meta.url), 'utf8'));
 const knowledgeCatalog = JSON.parse(await readFile(new URL('../public/assistant/knowledge/items.v1.json', import.meta.url), 'utf8'));
 const approvalManifest = JSON.parse(await readFile(new URL('../public/assistant/knowledge/approved-items.v1.json', import.meta.url), 'utf8'));
 const publishWorkflow = await readFile(new URL('../.github/workflows/publish-tested-version.yml', import.meta.url), 'utf8');
@@ -63,4 +65,14 @@ test('runtime knowledge catalog and approval manifest remain empty until human r
   assert.deepEqual(knowledgeCatalog.items, []);
   assert.equal(approvalManifest.status, 'empty_pending_external_review');
   assert.deepEqual(approvalManifest.approved_items, []);
+});
+
+
+test('knowledge catalog and approval manifest schemas are versioned and closed', () => {
+  assert.equal(catalogSchema.$schema, 'https://json-schema.org/draft/2020-12/schema');
+  assert.equal(catalogSchema.additionalProperties, false);
+  assert.equal(catalogSchema.properties.schema_version.const, '1.0.0');
+  assert.equal(approvalManifestSchema.additionalProperties, false);
+  assert.equal(approvalManifestSchema.properties.schema_version.const, '1.0.0');
+  assert.ok(catalogSchema.properties.items.items.$ref.endsWith('approved-knowledge-item.v1.schema.json'));
 });
