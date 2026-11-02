@@ -36,6 +36,13 @@ jobs:
           test -n "${GITHUB_SHA}"
           echo "Publishing only the exact main commit: ${GITHUB_SHA}"
 
+      - name: Checkout tested version
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.ref }}
+          path: test-source
+          persist-credentials: false
+
       - name: Require successful validation for this exact commit
         env:
           GH_TOKEN: ${{ github.token }}
@@ -47,13 +54,6 @@ jobs:
             "repos/${GITHUB_REPOSITORY}/actions/workflows/validate-content.yml/runs?head_sha=${GITHUB_SHA}&branch=main&event=push&per_page=100" \
             > /tmp/path28-validation-runs.json
           node test-source/scripts/assert-validation-run.mjs /tmp/path28-validation-runs.json
-
-      - name: Checkout tested version
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        with:
-          ref: ${{ github.ref }}
-          path: test-source
-          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
