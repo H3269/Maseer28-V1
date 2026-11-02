@@ -69,6 +69,19 @@ test('validates full 952 queue and first three 34-topic draft batches', () => {
   assert.equal(result.valid, true, result.errors.join('; '));
 });
 
+test('detects T04 self-hatred and T34 ambiguous-routing misclassification', () => {
+  const data = makeData();
+  const t04 = data.day1.records.find((item) => item.topic_id === 'T04');
+  t04.subtopic_id = 'T04-S01';
+  t04.mechanism_focus = 'تفکیک خصومت نسبت به دیگری از خودبیزاری';
+  const t34 = data.day1.records.find((item) => item.topic_id === 'T34');
+  t34.subtopic_id = 'T34-S01';
+  t34.learning_objective = 'مشخص کند مسئله روشن یا مبهم است.';
+  const result = validateContentRedesign(data);
+  assert.ok(result.errors.some((item) => item.includes('T04-S01 day-one content')));
+  assert.ok(result.errors.some((item) => item.includes('T34-S01 day-one content')));
+});
+
 test('blocks premature activation and unverified evidence claims', () => {
   const data = makeData();
   data.day3.records[0].runtime_eligible = true;
