@@ -2,9 +2,11 @@ const DB_NAME = 'maseer28-library';
 const STORE_NAMES = ['books', 'versions', 'settings'];
 
 function isSeedBook(book) {
-  return Number.isInteger(Number(book?.legacyId))
-    && Number(book.legacyId) >= 1
-    && Number(book.legacyId) <= 5;
+  const legacyId = Number(book?.legacyId);
+  return Number.isInteger(legacyId)
+    && legacyId >= 1
+    && legacyId <= 5
+    && book?.id === `book-${legacyId}`;
 }
 
 function isSeedSetting(row) {
