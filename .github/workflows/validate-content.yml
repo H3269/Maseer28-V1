@@ -9,6 +9,7 @@ on:
       - 'tests/**'
       - 'scripts/validate-content.mjs'
       - 'scripts/validate-assistant-topics.mjs'
+      - 'scripts/audit-content-quality.mjs'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/**'
@@ -61,11 +62,22 @@ jobs:
       - name: Validate course and library data
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:content
+      - name: Audit daily content quality and topic specificity
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run audit:content-quality
       - name: Build application
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: |
           npm run prepare:production
           npm run build
+
+      - name: Upload daily content quality audit
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: path28-content-quality-audit
+          path: reports/generated/path28-content-quality-audit.json
+          if-no-files-found: error
 
       - name: Upload npm audit report
         if: ${{ always() && steps.install.outcome == 'success' }}
