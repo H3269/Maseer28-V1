@@ -152,3 +152,11 @@ test('describing difficulty explaining a personal issue is not misclassified as 
   assert.equal(result.intent.label, 'share_experience');
   assert.equal(result.next_question.purpose, 'topic_disambiguation');
 });
+
+
+test('router distinguishes information, understanding, strategy and professional-help intents', () => {
+  assert.equal(routeSemanticIntake({ text: 'اضطراب چیست؟' }).intent.label, 'general_information');
+  assert.equal(routeSemanticIntake({ text: 'می‌خواهم بدانم چرا این اتفاق می‌افتد.' }).intent.label, 'understand_problem');
+  assert.equal(routeSemanticIntake({ text: 'چه کار کنم که این وضعیت بهتر شود؟' }).intent.label, 'request_strategy');
+  assert.equal(routeSemanticIntake({ text: 'آیا بهتر است به روانشناس مراجعه کنم؟' }).intent.label, 'professional_help_decision');
+});
