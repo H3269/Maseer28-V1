@@ -89,3 +89,11 @@ test('first-person impact markers count as explicit personal context for strateg
   const result = routeAssistantTurn({ text: 'سه ماه است در محل کار به‌خاطر اضطراب تمرکزم را از دست داده‌ام و می‌خواهم راهکار عملی پیدا کنم.' });
   assert.equal(result.status, 'personal_intake_required');
 });
+
+
+test('runtime defaults to the repository catalog and remains closed while the manifest is empty', () => {
+  const result = routeAssistantTurn({ text: 'اضطراب چیست؟' });
+  assert.equal(result.status, 'knowledge_unavailable');
+  assert.equal(result.retrieval_status, 'no_approved_content');
+  assert.deepEqual(result.knowledge, []);
+});
