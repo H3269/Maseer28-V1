@@ -262,7 +262,7 @@ export function submitAssessmentAnswer(session, answer) {
   }
 
   if (questionId === 'open_problem') {
-    const routedTurn = routeAssistantTurn({ text: value, knowledgeItems: [], requestId: 'assessment-open-problem' });
+    const routedTurn = routeAssistantTurn({ text: value, requestId: 'assessment-open-problem' });
     next.semantic_intake = routedTurn.intake;
     next.safety_context_flag = ['safety_clarification_required', 'urgent_human_support_required'].includes(routedTurn.status);
 
