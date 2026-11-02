@@ -96,7 +96,7 @@ test('local deletion reports read-back failures instead of throwing outside its 
   let reads = 0;
   storage.getItem = (key) => {
     reads += 1;
-    if (reads > 1) throw new Error('readback blocked');
+    if (reads >= 1) throw new Error('readback blocked');
     return originalGetItem(key);
   };
   const result = deleteLocalUserData(storage);
