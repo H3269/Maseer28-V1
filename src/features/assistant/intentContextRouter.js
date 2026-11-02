@@ -57,6 +57,7 @@ function deepFreeze(value) {
 function normalize(value) {
   return String(value ?? '').normalize('NFKC')
     .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
+    .replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
     .replace(/[\u064B-\u065F\u0670]/g, '')
     .replace(/[\u200c\u200f\u200e]/g, ' ')
     .replace(/\s+/g, ' ').trim().toLowerCase();
@@ -76,15 +77,15 @@ function classifyIntent(value) {
   if (explicitInformationRequest && (deniesPersonalExperience || !explicitPersonalContext)) return 'general_information';
   if (/چه راهکاری|راهکار|چطور حل|چه کار کنم|تمرین/.test(normalized)) return 'request_strategy';
   if (/متخصص|روانشناس|درمانگر|کمک تخصصی/.test(normalized)) return 'professional_help_decision';
-  if (/خلاصه.*(اشتباه|درست نیست)|منظورم این نبود|اصلاح می‌کنم/.test(normalized)) return 'correct_summary';
-  if (/می‌خواهم بفهمم|می‌خواهم بدانم|درک کنم/.test(normalized)) return 'understand_problem';
+  if (/خلاصه.*(اشتباه|درست نیست)|منظورم این نبود|اصلاح می کنم/.test(normalized)) return 'correct_summary';
+  if (/می خواهم بفهمم|می خواهم بدانم|درک کنم/.test(normalized)) return 'understand_problem';
   if (normalized.length > 0) return 'share_experience';
   return 'other_or_unclear';
 }
 
 function hasNegatedTopic(value, phrase) {
   const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const pattern = new RegExp('(?:من\\s+)?(?:اصلاً\\s+)?(?:' + escaped + ')(?:\\s+را)?\\s+(?:ندارم|نیستم|نمی‌خواهم|نمی‌ترسم)');
+  const pattern = new RegExp('(?:من\\s+)?(?:اصلاً\\s+)?(?:' + escaped + ')(?:\\s+را)?\\s+(?:ندارم|نیستم|نمی خواهم|نمی ترسم)');
   return pattern.test(value);
 }
 
@@ -120,7 +121,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
     const before = userNormalized.slice(Math.max(0, index - 45), index);
     const after = userNormalized.slice(index + normalize(cue).length, index + normalize(cue).length + 35);
     return /(?:قصد|برنامه|فکر)\s*(?:خودکشی|آسیب)?\s*(?:را)?\s*(?:ندارم|نیست|نمی‌خواهم)$/.test(before)
-      || /^(?:\s|را\s*)?(?:نمی‌خواهم|نمی‌توانم|نمی تونم|نمی‌زنم|نمی‌کنم|ندارم)/.test(after);
+      || /^(?:\s|را\s*)?(?:نمی خواهم|نمی توانم|نمی تونم|نمی زنم|نمی کنم|ندارم)/.test(after);
   });
   const explicitImmediateIntent = /(?:الان|همین الآن|امشب).{0,35}(?:می‌خواهم|قصد دارم|برنامه دارم).{0,35}(?:بکشم|آسیب بزنم|به خودم آسیب)/.test(userNormalized)
     || /(?:قصد|برنامه)\s+(?:قطعی\s+)?دارم.{0,35}(?:خودکشی|آسیب بزنم|بکشم)/.test(userNormalized)
