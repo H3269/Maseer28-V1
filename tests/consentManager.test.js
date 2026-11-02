@@ -65,6 +65,24 @@ test('clearing consent returns every purpose to false', () => {
   assert.equal(hasConsent('long_term_ai_memory',storage),false);
 });
 
+test('journey context consent is independent, explicit, and withdrawable', () => {
+  const storage = memoryStorage();
+  const context = {
+    selected_data_categories: 'active day and completed day count only',
+    retention_period: 'maximum 24 hours',
+    view_edit_delete_controls: 'available in settings',
+  };
+  assert.equal(hasConsent('journey_context', storage), false);
+  assert.throws(() => grantConsent('journey_context', { explicitAction: false, context }, storage), /اقدام صریح/);
+  assert.throws(() => grantConsent('journey_context', { explicitAction: true, context: { retention_period: '24 hours' } }, storage), /کامل نیست/);
+  grantConsent('journey_context', { explicitAction: true, context }, storage);
+  assert.equal(hasConsent('journey_context', storage), true);
+  assert.equal(hasConsent('long_term_ai_memory', storage), false);
+  const state = withdrawConsent('journey_context', {}, storage);
+  assert.equal(state.purposes.journey_context.granted, false);
+  assert.ok(state.purposes.journey_context.withdrawn_at);
+});
+
 test('unknown purposes are rejected and never treated as consented', () => {
   const storage=memoryStorage();
   assert.equal(hasConsent('unknown_purpose',storage),false);
