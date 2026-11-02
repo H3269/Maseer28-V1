@@ -166,7 +166,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
   if (explicitlyNegatedSafety) uncertainties.push('نشانه نفی در کنار عبارت ایمنی دیده شد؛ نتیجه‌گیری درباره سطح خطر از روی تطبیق واژگانی مجاز نیست.');
 
   let nextQuestion = null;
-  if (safetyContextPresent) {
+  if (safetyContextPresent && intentLabel !== 'general_information') {
     nextQuestion = {
       text: 'آیا همین الآن خطر فوری، قصد یا برنامه عملی برای آسیب به خودت یا شخص دیگری وجود دارد؟ اگر پاسخ روشن نیست، بگو مطمئن نیستی.',
       purpose: 'safety_clarification',
