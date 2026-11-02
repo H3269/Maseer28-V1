@@ -8,7 +8,7 @@ function getStorage(storage) {
 }
 
 function isUserDataKey(key) {
-  return key.startsWith('maseer28_') && key !== COPYRIGHT_ACCEPTANCE_KEY
+  return (key.startsWith('maseer28_') && key !== COPYRIGHT_ACCEPTANCE_KEY)
     || key === LEGACY_PROFILE_COMPLETE_KEY;
 }
 
@@ -35,15 +35,34 @@ export function deleteLocalUserData(storage) {
   const target = getStorage(storage);
   const keys = [];
   const errors = [];
-  for (let index = 0; index < target.length; index += 1) {
-    const key = target.key(index);
-    if (key && isUserDataKey(key)) keys.push(key);
+
+  // Take a complete snapshot before making any destructive change.
+  try {
+    const length = target.length;
+    for (let index = 0; index < length; index += 1) {
+      const key = target.key(index);
+      if (key && isUserDataKey(key)) keys.push(key);
+    }
+  } catch (error) {
+    errors.push({ phase: 'enumerate', message: String(error?.message || error) });
+    return { attempted: 0, removed: [], errors, verificationErrors: [] };
   }
+
   for (const key of keys) {
     try { target.removeItem(key); }
-    catch (error) { errors.push({ key, message: String(error?.message || error) }); }
+    catch (error) { errors.push({ phase: 'remove', key, message: String(error?.message || error) }); }
   }
-  return { attempted: keys.length, removed: keys.filter((key) => target.getItem(key) === null), errors };
+
+  const removed = [];
+  const verificationErrors = [];
+  for (const key of keys) {
+    try {
+      if (target.getItem(key) === null) removed.push(key);
+    } catch (error) {
+      verificationErrors.push({ key, message: String(error?.message || error) });
+    }
+  }
+  return { attempted: keys.length, removed, errors, verificationErrors };
 }
 
 export const LOCAL_USER_DATA_POLICY = Object.freeze({
