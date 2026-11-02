@@ -32,22 +32,41 @@ export function selectUserOwnedLibraryData({ books = [], versions = [], settings
 function openExistingDatabase(indexedDBApi) {
   return new Promise((resolve, reject) => {
     let createdDuringRead = false;
+    let settled = false;
     const request = indexedDBApi.open(DB_NAME);
+    const fail = (error) => {
+      if (settled) return;
+      settled = true;
+      reject(error);
+    };
     request.onupgradeneeded = (event) => {
       if (event.oldVersion === 0) {
         createdDuringRead = true;
         request.transaction.abort();
       }
     };
+    request.onblocked = () => {
+      fail(new Error('بازکردن پایگاه داده کتابخانه مسدود شده است؛ تب‌ها یا پنجره‌های دیگر را ببندید و دوباره تلاش کنید.'));
+    };
     request.onsuccess = () => {
+      // A blocked request can later succeed after another tab closes its connection.
+      // If the caller has already received the blocked error, close this late connection.
+      if (settled) {
+        request.result.close();
+        return;
+      }
+      settled = true;
       if (createdDuringRead) {
         request.result.close();
         resolve(null);
       } else resolve(request.result);
     };
     request.onerror = () => {
-      if (createdDuringRead || request.error?.name === 'AbortError') resolve(null);
-      else reject(request.error || new Error('بازکردن پایگاه داده کتابخانه ناموفق بود.'));
+      if (settled) return;
+      if (createdDuringRead || request.error?.name === 'AbortError') {
+        settled = true;
+        resolve(null);
+      } else fail(request.error || new Error('بازکردن پایگاه داده کتابخانه ناموفق بود.'));
     };
   });
 }
