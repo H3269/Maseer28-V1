@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { routeSemanticIntake } from '../src/features/assistant/intentContextRouter.js';
+import { routeSemanticIntake, ROUTED_TOPIC_IDS } from '../src/features/assistant/intentContextRouter.js';
 
 const schema = JSON.parse(await readFile(new URL('../public/assistant/schemas/semantic-intake.v1.schema.json', import.meta.url), 'utf8'));
 
@@ -159,4 +159,12 @@ test('router distinguishes information, understanding, strategy and professional
   assert.equal(routeSemanticIntake({ text: 'می‌خواهم بدانم چرا این اتفاق می‌افتد.' }).intent.label, 'understand_problem');
   assert.equal(routeSemanticIntake({ text: 'چه کار کنم که این وضعیت بهتر شود؟' }).intent.label, 'request_strategy');
   assert.equal(routeSemanticIntake({ text: 'آیا بهتر است به روانشناس مراجعه کنم؟' }).intent.label, 'professional_help_decision');
+});
+
+
+test('runtime has an explicit routing rule for each real topic and keeps T34 as fallback only', async () => {
+  const registry = JSON.parse(await readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'));
+  const expected = registry.topics.map((item) => item.topic_id).filter((id) => id !== 'T34').sort();
+  assert.deepEqual([...ROUTED_TOPIC_IDS].sort(), expected);
+  assert.equal(ROUTED_TOPIC_IDS.includes('T34'), false);
 });
