@@ -16,18 +16,6 @@ on:
       - 'scripts/prepare-production-build.mjs'
   push:
     branches: [main]
-    paths:
-      - 'public/content/**'
-      - 'public/assistant/**'
-      - 'src/**'
-      - 'tests/**'
-      - 'scripts/validate-content.mjs'
-      - 'scripts/validate-assistant-topics.mjs'
-      - 'scripts/audit-content-quality.mjs'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.github/workflows/**'
-      - 'scripts/prepare-production-build.mjs'
 
 permissions:
   contents: read
