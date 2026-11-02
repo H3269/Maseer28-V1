@@ -1,5 +1,6 @@
 const KNOWN_TOPIC = /^T(0[1-9]|[12][0-9]|3[0-4])$/;
 const MAX_RESULTS = 5;
+const STOP_WORDS = new Set(['چیست', 'چه', 'چگونه', 'درباره', 'در', 'از', 'به', 'برای', 'من', 'تو', 'این', 'آن', 'یک', 'و', 'یا', 'را', 'می', 'شود', 'است', 'هست', 'دارم', 'دارید', 'آیا', 'کنم', 'کنید']);
 
 function normalize(value) {
   return String(value ?? '').normalize('NFKC')
@@ -13,7 +14,7 @@ function normalize(value) {
 function tokenize(value) {
   return [...new Set(normalize(value)
     .split(/[^\p{L}\p{N}]+/u)
-    .filter((token) => token.length > 1))];
+    .filter((token) => token.length > 1 && !STOP_WORDS.has(token)))];
 }
 
 function isApprovedItem(item) {
@@ -29,11 +30,13 @@ function isApprovedItem(item) {
     item
     && item.schema_version === '1.0.0'
     && typeof item.item_id === 'string'
-    && item.item_id.trim()
+    && item.item_id.trim().length <= 120
     && typeof item.title === 'string'
-    && item.title.trim()
+    && item.title.trim().length > 0
+    && item.title.length <= 240
     && typeof item.content === 'string'
-    && item.content.trim()
+    && item.content.trim().length > 0
+    && item.content.length <= 12000
     && validTopics
     && item.topic_ids.length > 0
     && item.topic_ids.length <= 5
@@ -41,11 +44,14 @@ function isApprovedItem(item) {
     && ['education', 'self_reflection', 'exercise', 'safety_information'].includes(item.content_type)
     && item.source
     && typeof item.source.source_id === 'string'
-    && item.source.source_id.trim()
+    && item.source.source_id.trim().length > 0
+    && item.source.source_id.length <= 120
     && typeof item.source.title === 'string'
-    && item.source.title.trim()
+    && item.source.title.trim().length > 0
+    && item.source.title.length <= 240
     && typeof item.source.locator === 'string'
-    && item.source.locator.trim()
+    && item.source.locator.trim().length > 0
+    && item.source.locator.length <= 500
     && item.approval?.status === 'approved_for_assistant'
     && allowedReviewers[item.content_type]?.includes(item.approval.reviewer_role)
     && typeof item.approval.reviewed_at === 'string'
@@ -70,8 +76,14 @@ function deepFreeze(value) {
  */
 export function retrieveApprovedKnowledge({ query, topicIds = [], items = [], limit = 3 } = {}) {
   const queryTerms = tokenize(query);
-  const safeItems = Array.isArray(items) ? items.filter(isApprovedItem) : [];
-  const requestedTopics = Array.isArray(topicIds) ? topicIds.filter((id) => KNOWN_TOPIC.test(id)) : [];
+  const safeItems = Array.isArray(items)
+    ? [...new Map(items.filter(isApprovedItem).map((item) => [item.item_id, item])).values()]
+    : [];
+  const rawTopics = Array.isArray(topicIds) ? topicIds : [];
+  if (rawTopics.some((id) => typeof id !== 'string' || !KNOWN_TOPIC.test(id))) {
+    return deepFreeze({ status: 'invalid_topic_filter', results: [], matched_query_terms: [] });
+  }
+  const requestedTopics = [...new Set(rawTopics)];
   const cappedLimit = Math.max(1, Math.min(MAX_RESULTS, Number.isInteger(limit) ? limit : 3));
 
   if (safeItems.length === 0) {
@@ -88,7 +100,7 @@ export function retrieveApprovedKnowledge({ query, topicIds = [], items = [], li
       const matched = queryTerms.filter((term) => searchable.includes(term));
       return { item, matched, score: matched.length };
     })
-    .filter((entry) => entry.score > 0)
+    .filter((entry) => entry.score >= (queryTerms.length > 3 ? 2 : 1))
     .sort((a, b) => b.score - a.score || a.item.item_id.localeCompare(b.item.item_id));
 
   if (ranked.length === 0) {
