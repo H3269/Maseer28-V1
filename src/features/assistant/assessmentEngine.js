@@ -316,12 +316,40 @@ export function submitAssessmentAnswer(session, answer) {
     const scope = normalize(value);
     next.answers.intent_scope = value;
     if (/(?:عمومی|اطلاعات عمومی|کلی|فقط اطلاعات)/.test(scope)) {
+      const routedGeneral = routeAssistantTurn({
+        text: next.answers.open_problem,
+        requestScope: 'general',
+        requestId: 'assessment-general-scope',
+      });
+      if (routedGeneral.status === 'approved_knowledge_available') {
+        next.status = 'information_answer_available';
+        next.current_question = null;
+        next.knowledge_response = { message: routedGeneral.message, results: routedGeneral.knowledge };
+        next.next_step = { content_available: true, message: routedGeneral.message };
+        return next;
+      }
+      if (routedGeneral.status === 'safety_clarification_required') {
+        next.current_question = QUESTION.safety;
+        next.safety_context_flag = true;
+        return next;
+      }
+      if (routedGeneral.status === 'urgent_human_support_required') {
+        next.status = 'paused_for_human_support';
+        next.safety_state = 'urgent_human_support_recommended';
+        next.current_question = null;
+        next.referral = {
+          priority: 'urgent',
+          safety_domains: classifySafetyDomains(next.answers.open_problem),
+          instruction: routedGeneral.message,
+        };
+        return next;
+      }
       next.status = 'information_request_not_supported';
       next.current_question = null;
       next.next_step = {
         content_available: false,
-        reason: 'پرسش عمومی یا راهکار کلی به محتوای تأییدشده نیاز دارد که هنوز به runtime متصل نیست.',
-        message: 'درخواستت عمومی است؛ تا وقتی محتوای تأییدشده و منبع‌دار متصل نشده، پاسخ یا تمرین حدسی ارائه نمی‌کنم.',
+        reason: 'پرسش عمومی یا راهکار کلی به محتوای تأییدشده نیاز دارد که هنوز در پایگاه دانش موجود نیست.',
+        message: routedGeneral.message || 'تا وقتی محتوای تأییدشده و منبع‌دار متصل نشده، پاسخ یا تمرین حدسی ارائه نمی‌کنم.',
       };
       return next;
     }
