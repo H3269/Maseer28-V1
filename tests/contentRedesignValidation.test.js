@@ -82,6 +82,15 @@ test('detects T04 self-hatred and T34 ambiguous-routing misclassification', () =
   assert.ok(result.errors.some((item) => item.includes('T34-S01 day-one content')));
 });
 
+test('allows explicit exclusion of self-hatred from T04-S01 content', () => {
+  const data = makeData();
+  const t04 = data.day1.records.find((item) => item.topic_id === 'T04');
+  t04.subtopic_id = 'T04-S01';
+  t04.mechanism_focus = 'تمرکز بر نفرت نسبت به فرد یا گروه؛ خودبیزاری در این رکورد بررسی نمی‌شود.';
+  const result = validateContentRedesign(data);
+  assert.equal(result.valid, true, result.errors.join('; '));
+});
+
 test('blocks premature activation and unverified evidence claims', () => {
   const data = makeData();
   data.day3.records[0].runtime_eligible = true;
