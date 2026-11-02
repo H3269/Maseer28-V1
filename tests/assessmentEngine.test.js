@@ -8,6 +8,7 @@ import {
   stopAssessment,
   assessmentEngineMetadata,
   classifySafetyAnswer,
+  classifySafetyDomains,
 } from '../src/features/assistant/assessmentEngine.js';
 
 function answer(session, value) {
