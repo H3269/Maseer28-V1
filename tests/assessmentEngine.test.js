@@ -220,7 +220,7 @@ test('adaptive policy skips questions already answered in the opening message', 
   assert.equal(session.current_question.id, 'summary_confirmation');
   assert.equal(session.summary.duration, 'در پیام آغازین اشاره شده');
   assert.equal(session.summary.impact, 'در پیام آغازین اشاره شده');
-  assert.equal(session.summary.user_goal, 'در گفتگو مشخص نشد');
+  assert.equal(session.summary.user_goal, 'دریافت راهکار');
 });
 
 test('declining a question advances the intake without repeating it', () => {
