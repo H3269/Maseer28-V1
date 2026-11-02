@@ -356,3 +356,10 @@ test('clarification recomputes candidates and does not retain a topic explicitly
   assert.equal(session.candidate_topics.some((item) => item.topic_id === 'T02'), false);
   assert.equal(session.candidate_topics.some((item) => item.topic_id === 'T09'), true);
 });
+
+
+test('a negative safety answer followed by a contradictory clause is not accepted as clear', () => {
+  assert.equal(classifySafetyAnswer('نه، قصد ندارم ولی می‌ترسم کنترلم را از دست بدهم.'), 'clarification_needed');
+  assert.equal(classifySafetyAnswer('خیر، برنامه‌ای ندارم اما احتمال دارد به خودم آسیب بزنم.'), 'clarification_needed');
+  assert.equal(classifySafetyAnswer('نه، قصد ندارم به خودم آسیب بزنم.'), 'no_immediate_risk_disclosed');
+});
