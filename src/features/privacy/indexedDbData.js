@@ -1,12 +1,17 @@
 const DB_NAME = 'maseer28-library';
 const STORE_NAMES = ['books', 'versions', 'settings'];
 
-function isSeedBook(book) {
+function isSeedBook(book, versions) {
   const legacyId = Number(book?.legacyId);
-  return Number.isInteger(legacyId)
-    && legacyId >= 1
-    && legacyId <= 5
-    && book?.id === `book-${legacyId}`;
+  if (!Number.isInteger(legacyId) || legacyId < 1 || legacyId > 5) return false;
+  if (book?.id !== `book-${legacyId}`) return false;
+  const activeVersionId = String(book?.activeVersionId || '');
+  if (!activeVersionId.startsWith(`seed-book-${legacyId}-`)) return false;
+  return versions.some((version) =>
+    version?.id === activeVersionId
+    && version?.bookId === book.id
+    && version?.source === 'seed'
+  );
 }
 
 function isSeedSetting(row) {
@@ -15,9 +20,11 @@ function isSeedSetting(row) {
 }
 
 export function selectUserOwnedLibraryData({ books = [], versions = [], settings = [] } = {}) {
-  const userBooks = books.filter((book) => !isSeedBook(book));
-  const userBookIds = new Set(userBooks.map((book) => book.id));
-  const userVersions = versions.filter((version) => version?.source !== 'seed' || userBookIds.has(version?.bookId));
+  const seedBooks = books.filter((book) => isSeedBook(book, versions));
+  const seedBookIds = new Set(seedBooks.map((book) => book.id));
+  const userBooks = books.filter((book) => !seedBookIds.has(book.id));
+  // Unknown/orphaned records are preserved rather than destructively guessed.
+  const userVersions = versions.filter((version) => version?.source !== 'seed');
   const userSettings = settings.filter((setting) => !isSeedSetting(setting));
   return { books: userBooks, versions: userVersions, settings: userSettings };
 }
@@ -129,6 +136,6 @@ export async function deleteIndexedDbUserData(indexedDBApi = globalThis.indexedD
 export const INDEXED_DB_USER_DATA_POLICY = Object.freeze({
   database: DB_NAME,
   exported: 'User-created books, non-seed book versions, and non-seed settings.',
-  preserved: 'Five seeded public books, their seed versions, and seed revision/fingerprint settings.',
+  preserved: 'Verified seeded public books, all seed-source versions (including orphaned/uncertain records), and seed revision/fingerprint settings.',
   note: 'This covers this browser IndexedDB database only; it does not remove downloaded files, browser/device backups, or server-side records.',
 });
