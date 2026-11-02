@@ -193,3 +193,21 @@ test('engine rejects oversized input even when called outside the UI', () => {
   assert.throws(() => answer(session, 'الف'.repeat(3001)), /حداکثر ۳۰۰۰ نویسه/);
   assert.equal(getCurrentQuestion(session).id, 'open_problem');
 });
+
+
+test('explicit immediate danger in the opening answer pauses before routine intake', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'امشب قصد دارم خودم را بکشم.');
+  assert.equal(session.status, 'paused_for_human_support');
+  assert.equal(session.safety_state, 'urgent_human_support_recommended');
+  assert.equal(getCurrentQuestion(session), null);
+  assert.equal(session.referral.priority, 'urgent');
+});
+
+test('ambiguous safety language still asks a direct question instead of auto-referring', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'دیگه نمی‌کشم و همه‌چی تمومه.');
+  assert.equal(session.status, 'in_progress');
+  assert.equal(getCurrentQuestion(session).id, 'safety_now');
+  assert.equal(session.safety_state, 'not_assessed');
+});
