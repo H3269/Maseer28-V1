@@ -1,0 +1,272 @@
+{
+  "schema_version": "1.0.0",
+  "proposal_id": "maseer28-self-evaluation-cluster-routing",
+  "status": "proposal_only_not_runtime",
+  "runtime_eligible": false,
+  "expert_review_status": "pending_independent_expert_review",
+  "evidence_ids": [],
+  "scope": {
+    "topic_ids": [
+      "T18",
+      "T19",
+      "T23",
+      "T26",
+      "T33"
+    ],
+    "adjacent_topics": [
+      "T07",
+      "T15",
+      "T16",
+      "T20",
+      "T27",
+      "T28"
+    ],
+    "purpose": "گفتگوی روشن‌ساز و دسته‌بندی فرضیه‌ای؛ نه تشخیص، غربالگری معتبر یا انتخاب درمان"
+  },
+  "output_contract": {
+    "topic_hypothesis_status": [
+      "user_reported",
+      "tentative_hypothesis",
+      "needs_clarification",
+      "not_supported_by_current_statement",
+      "withdrawn_by_user"
+    ],
+    "max_active_hypotheses": 3,
+    "allow_multiple_topics": true,
+    "allow_unknown": true,
+    "allow_user_skip": true,
+    "require_evidence_summary": true,
+    "require_missing_information": true,
+    "confidence_format": "qualitative_with_reason_only",
+    "prohibited": [
+      "diagnosis",
+      "numeric_probability",
+      "causal_inference_without_evidence",
+      "automatic_intervention_selection",
+      "risk_prediction_from_topic_label"
+    ]
+  },
+  "shared_dimensions": [
+    {
+      "id": "referent",
+      "question": "جمله درباره خود کاربر است، رفتار مشخص است، یا نقل‌قول/گفته شخص دیگر؟"
+    },
+    {
+      "id": "scope",
+      "question": "ارزیابی به یک رفتار/موقعیت محدود است یا کل هویت/ارزش فرد را دربرمی‌گیرد؟"
+    },
+    {
+      "id": "function",
+      "question": "این گفت‌وگوی درونی به اصلاح مشخص کمک می‌کند یا به تحقیر، نشخوار، اجتناب یا تنبیه می‌انجامد؟"
+    },
+    {
+      "id": "responsibility",
+      "question": "رویداد مشخص چیست و سهم واقعی، کنترل‌پذیری و مسئولیت هر فرد چقدر است؟"
+    },
+    {
+      "id": "shame_context",
+      "question": "نگرانی از افشا بر پایه پیامد واقعی امنیتی/اجتماعی است یا بیشتر پیش‌بینی قضاوت؟"
+    },
+    {
+      "id": "time_impact",
+      "question": "شروع، تکرار، فراگیری و اثر بر عملکرد روزمره چیست؟"
+    }
+  ],
+  "topics": [
+    {
+      "topic_id": "T18",
+      "construct": "خصومت یا بیزاری فراگیر نسبت به خود",
+      "supporting_features": [
+        "گزارش مستقیم بیزاری/خصومت نسبت به خود",
+        "تداوم یا فراگیری که کاربر روشن می‌کند"
+      ],
+      "do_not_infer_from": [
+        "یک اشتباه یا پشیمانی",
+        "یک جمله خودانتقادی منفرد",
+        "نقل‌قول یا توهین شخص دیگر"
+      ],
+      "clarify": [
+        "این احساس درباره یک رفتار است یا خودت به‌طور کلی؟",
+        "چقدر تکرار می‌شود و از چه زمانی؟"
+      ],
+      "overlap": [
+        "T19",
+        "T23",
+        "T26",
+        "T33"
+      ]
+    },
+    {
+      "topic_id": "T19",
+      "construct": "تقصیر یا مسئولیت نسبت‌داده‌شده به خود درباره رویداد/رفتار",
+      "supporting_features": [
+        "رویداد یا رفتار مشخص",
+        "گزارش صریح فرد از تقصیر/مسئولیت"
+      ],
+      "do_not_infer_from": [
+        "صرف بی‌ارزشی",
+        "صرف شرم",
+        "مسئولیت تحمیلی یا فرض‌شده بدون بررسی"
+      ],
+      "clarify": [
+        "دقیقاً کدام رویداد؟",
+        "چه بخشی در کنترل تو بود و چه بخشی خارج از کنترل؟"
+      ],
+      "overlap": [
+        "T07",
+        "T18",
+        "T23",
+        "T33"
+      ]
+    },
+    {
+      "topic_id": "T23",
+      "construct": "باور یا احساس کم‌ارزشی شخصی، کلی یا وابسته به موقعیت",
+      "supporting_features": [
+        "گزارش صریح درباره ارزش شخصی",
+        "تفکیک دامنه کلی از موقعیتی"
+      ],
+      "do_not_infer_from": [
+        "نقد یک مهارت یا عملکرد خاص",
+        "نارضایتی از یک تصمیم بدون تعمیم به ارزش شخصی"
+      ],
+      "clarify": [
+        "منظورت توانایی در یک حوزه است یا ارزش خودت به‌عنوان یک فرد؟",
+        "این حس فقط بعد از رویداد خاص می‌آید یا در بیشتر موقعیت‌ها؟"
+      ],
+      "overlap": [
+        "T15",
+        "T18",
+        "T26",
+        "T33"
+      ]
+    },
+    {
+      "topic_id": "T26",
+      "construct": "شرم، احساس نقص/ناپذیرفتنی‌بودن یا تهدید افشا",
+      "supporting_features": [
+        "گزارش شرم یا احساس ناپذیرفتنی‌بودن",
+        "ترس از دیده‌شدن/افشا همراه با معنای شخصی روشن"
+      ],
+      "do_not_infer_from": [
+        "حفظ حریم خصوصی به‌تنهایی",
+        "امتناع از افشا",
+        "نگرانی مبتنی بر خطر واقعی بدون بررسی زمینه"
+      ],
+      "clarify": [
+        "از چه پیامدی و از سوی چه کسی نگران هستی؟",
+        "آیا افشا می‌تواند واقعاً خطر، تبعیض یا خشونت ایجاد کند؟"
+      ],
+      "overlap": [
+        "T18",
+        "T19",
+        "T23",
+        "T27"
+      ]
+    },
+    {
+      "topic_id": "T33",
+      "construct": "سبک، لحن و کارکرد خودارزیابی/گفت‌وگوی درونی",
+      "supporting_features": [
+        "گزارش خودگویی ارزیابانه",
+        "شواهدی درباره لحن، معیار، تکرار یا پیامد رفتاری"
+      ],
+      "do_not_infer_from": [
+        "صرف منفی‌بودن یک عبارت",
+        "استاندارد بالا بدون بررسی انعطاف و هزینه",
+        "ترس از شکست بدون خودارزیابی"
+      ],
+      "clarify": [
+        "این بازخورد مشخص و قابل اقدام است یا حکم کلی/توهین؟",
+        "بعد از آن چه می‌کنی: اصلاح، نشخوار، اجتناب یا تنبیه خود؟"
+      ],
+      "overlap": [
+        "T18",
+        "T19",
+        "T20",
+        "T23",
+        "T28"
+      ]
+    }
+  ],
+  "routing_rules": [
+    {
+      "id": "R01",
+      "rule": "ابتدا مرجع جمله را روشن کن: تجربه شخصی، نقل‌قول، مثال فرضی یا درخواست اطلاعات عمومی.",
+      "on_ambiguity": "needs_clarification"
+    },
+    {
+      "id": "R02",
+      "rule": "نفی، نقل‌قول، کنایه و اصلاح بعدی کاربر باید پیش از استفاده از واژه‌های نشانه‌ای لحاظ شوند.",
+      "on_ambiguity": "needs_clarification"
+    },
+    {
+      "id": "R03",
+      "rule": "هیچ موضوعی صرفاً با یک واژه یا عبارت منفرد تثبیت نشود؛ شواهد و اطلاعات گمشده ثبت شوند.",
+      "on_ambiguity": "unknown"
+    },
+    {
+      "id": "R04",
+      "rule": "چند موضوع می‌توانند هم‌زمان فرضیه باشند؛ انتخاب اجباری یک موضوع اصلی ممنوع است.",
+      "on_ambiguity": "retain_multiple"
+    },
+    {
+      "id": "R05",
+      "rule": "T19 فقط با رویداد/رفتار و نسبت‌دادن مسئولیت پشتیبانی می‌شود؛ T23 فقط با معنای ارزش شخصی.",
+      "on_ambiguity": "ask_distinction"
+    },
+    {
+      "id": "R06",
+      "rule": "T18 بر تجربه بیزاری/خصومت با خود تمرکز دارد؛ T33 بر لحن و کارکرد ارزیابی درونی.",
+      "on_ambiguity": "ask_distinction"
+    },
+    {
+      "id": "R07",
+      "rule": "T26 با حفاظت مشروع از حریم خصوصی یکی نیست؛ خطر واقعی افشا باید بررسی شود.",
+      "on_ambiguity": "do_not_recommend_disclosure"
+    },
+    {
+      "id": "R08",
+      "rule": "T20 کمال‌گرایی و T28 ترس از شکست با T33 ادغام نمی‌شوند.",
+      "on_ambiguity": "ask_distinction"
+    },
+    {
+      "id": "R09",
+      "rule": "پاسخ نامعلوم، امتناع یا اصلاح کاربر به‌عنوان داده معتبر برای توقف/تعلیق فرضیه پذیرفته شود.",
+      "on_ambiguity": "withdraw_or_pause"
+    },
+    {
+      "id": "R10",
+      "rule": "ارزیابی ایمنی مستقل از طبقه‌بندی این پنج موضوع باقی بماند و هیچ برچسبی جای پرسش مستقیم ایمنی را نگیرد.",
+      "on_ambiguity": "safety_protocol_required"
+    }
+  ],
+  "safety": {
+    "status": "design_only_not_an_active_protocol",
+    "independent_from_topic_classification": true,
+    "topic_label_is_risk_proxy": false,
+    "no_risk_clearance_from_negative_single_answer": true,
+    "no_automatic_crisis_diagnosis": true,
+    "require_human_review_and_local_referral_design": true
+  },
+  "content_gate": {
+    "only_approved_content_may_be_recommended": true,
+    "current_cluster_content_approved": false,
+    "current_operational_definitions_approved": false,
+    "expert_review_required": true
+  },
+  "test_requirements": [
+    "نفی صریح تجربه شخصی",
+    "نقل‌قول از شخص دیگر",
+    "جمله فرضی یا درخواست ترجمه/اطلاعات عمومی",
+    "یک خطای رفتاری بدون داوری هویتی",
+    "خودسرزنشی با رویداد و سهم مسئولیت نامشخص",
+    "بی‌ارزشی کلی در کنار خودانتقادی",
+    "شرم همراه با خطر واقعی افشا",
+    "حفظ حریم خصوصی بدون شرم گزارش‌شده",
+    "هم‌زمانی دو یا چند سازه",
+    "امتناع از پاسخ و پاسخ نامعلوم",
+    "اصلاح معنای جمله توسط کاربر",
+    "عبارت مبهم بالقوه پرخطر که باید به مسیر ایمنی مستقل برود"
+  ]
+}
