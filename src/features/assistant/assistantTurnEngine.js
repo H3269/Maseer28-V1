@@ -12,7 +12,7 @@ function deepFreeze(value) {
  * Local-only turn router. It does not generate clinical advice or compose new
  * factual claims; knowledge answers are limited to approved source excerpts.
  */
-export function routeAssistantTurn({ text, knowledgeItems = [], requestId = 'assistant-turn' } = {}) {
+export function routeAssistantTurn({ text, knowledgeItems = [], approvalManifest = null, requestId = 'assistant-turn' } = {}) {
   const intake = routeSemanticIntake({ text, requestId });
 
   if (intake.safety_handoff.handoff_required) {
@@ -34,7 +34,7 @@ export function routeAssistantTurn({ text, knowledgeItems = [], requestId = 'ass
   }
 
   if (intake.intent.label === 'general_information') {
-    const retrieval = retrieveApprovedKnowledge({ query: text, items: knowledgeItems, limit: 3 });
+    const retrieval = retrieveApprovedKnowledge({ query: text, items: knowledgeItems, approvalManifest, limit: 3 });
     if (retrieval.status !== 'results_found') {
       return deepFreeze({
         status: 'knowledge_unavailable',
