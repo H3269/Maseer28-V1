@@ -9,6 +9,7 @@ const QUESTION = {
   goal: { id: 'goal', stage: 'open_intent', prompt: 'از این گفتگو بیشتر چه کمکی می‌خواهی: فهمیدن مسئله، پیدا کردن راهکار، یا تصمیم‌گیری درباره کمک تخصصی؟' },
   clarify: { id: 'clarify_example', stage: 'differential_clarification', prompt: 'برای اینکه اشتباه دسته‌بندی نکنم، یک موقعیت مشخص و اخیر را تعریف می‌کنی؟ در آن لحظه چه اتفاقی افتاد، چه فکری از ذهنت گذشت و چه احساسی داشتی؟' },
   summary: { id: 'summary_confirmation', stage: 'collaborative_summary', prompt: 'این خلاصه تا چه اندازه تجربه‌ات را درست بازتاب می‌دهد؟ چه چیزی را باید اصلاح یا اضافه کنم؟' },
+  summary_revision: { id: 'summary_revision', stage: 'collaborative_summary', prompt: 'کدام بخش را دقیقاً اصلاح کنم: شرح مسئله، اثر، مدت، هدف یا موضوع احتمالی؟ لطفاً اصلاح را با زبان خودت بنویس.' },
   safety_uncertain: { id: 'safety_clarification', stage: 'safety_check', prompt: 'منظورت از پاسخ قبلی برایم روشن نیست. آیا در همین الآن قصد، برنامه یا احتمال عملی آسیب‌زدن به خودت یا دیگری وجود دارد؟ می‌توانی بگویی «بله»، «نه» یا «مطمئن نیستم».' },
 };
 
@@ -197,6 +198,7 @@ export function createAssessmentSession({ localOnly = true } = {}) {
     candidate_topics: [],
     semantic_intake: null,
     clarification_attempts: 0,
+    summary_revision_count: 0,
     summary: null,
     processing: 'local_in_memory_only',
   };
@@ -329,13 +331,58 @@ export function submitAssessmentAnswer(session, answer) {
     next.current_question = QUESTION.summary;
   } else if (questionId === 'summary_confirmation') {
     next.answers.summary_feedback = value;
-    next.status = 'completed';
-    next.current_question = null;
-    next.next_step = {
-      content_available: false,
-      reason: 'هیچ تمرین یا مداخله‌ای تا تأیید علمی و تخصصی به این موتور متصل نشده است.',
-      recommendation: 'ابتدا خلاصه را با یک متخصص یا خودت دقیق‌تر کن؛ در صورت تداوم رنج یا اختلال عملکرد، ارزیابی متخصص سلامت روان مناسب است.',
-    };
+    const normalizedFeedback = normalize(value);
+    const hasCorrectionCue = /اما|ولی|درست نیست|اشتباه|اصلاح|کمتر گفتم|بیشتر گفتم|جا افتاده|جا انداختم/.test(normalizedFeedback);
+    const explicitlyConfirmed = /^(?:بله|آره|اره|تایید|تایید شده|درست است|همین است|موافقم|کامل است|دقیق است|فعلا همین)[.!؟،\s]*$/.test(normalizedFeedback);
+    if (explicitlyConfirmed && !hasCorrectionCue) {
+      next.status = 'completed';
+      next.current_question = null;
+      next.next_step = {
+        content_available: false,
+        reason: 'هیچ تمرین یا مداخله‌ای تا تأیید علمی و تخصصی به این موتور متصل نشده است.',
+        recommendation: 'ابتدا خلاصه را با یک متخصص یا خودت دقیق‌تر کن؛ در صورت تداوم رنج یا اختلال عملکرد، ارزیابی متخصص سلامت روان مناسب است.',
+      };
+    } else if ((next.summary_revision_count ?? 0) < 2) {
+      next.summary_revision_count = (next.summary_revision_count ?? 0) + 1;
+      next.current_question = QUESTION.summary_revision;
+    } else {
+      next.status = 'summary_needs_review';
+      next.current_question = null;
+      next.next_step = {
+        content_available: false,
+        reason: 'خلاصه پس از دو دور اصلاح هنوز تأیید نشده است.',
+        message: 'خلاصه را تأییدشده ثبت نمی‌کنم. گفتگو برای بازبینی بیشتر متوقف شده تا برداشت نادرست به مرحله بعد منتقل نشود.',
+      };
+    }
+  } else if (questionId === 'summary_revision') {
+    next.answers.summary_revision = value;
+    const normalizedRevision = normalize(value);
+    const replacesTopic = /موضوع اصلی|منظورم|در واقع|اصلاح می کنم|به جای/.test(normalizedRevision);
+    if (replacesTopic) {
+      next.answers.open_problem_original ??= next.answers.open_problem;
+      next.answers.open_problem = value;
+      updateSemanticContext(next, 'assessment-summary-topic-correction');
+      const revisedCandidates = next.semantic_intake.topic_candidates.map((item) => ({
+        topic_id: item.topic_id,
+        status: 'tentative_hypothesis',
+      }));
+      next.candidate_topics = revisedCandidates.length ? revisedCandidates : [{ topic_id: 'T34', status: 'needs_clarification' }];
+      next.summary = {
+        ...next.summary,
+        user_report: value,
+        candidate_topics: next.candidate_topics,
+      };
+    } else {
+      const extra = `\nتوضیح تکمیلی کاربر: ${value}`;
+      next.summary = {
+        ...next.summary,
+        user_report: `${next.summary?.user_report ?? next.answers.open_problem}${extra}`.slice(0, 1200),
+        impact: /اثر|شدت|خواب|تمرکز|کار|رابطه/.test(normalizedRevision) ? value : next.summary?.impact,
+        duration: /مدت|روز|هفته|ماه|سال|از چه زمانی/.test(normalizedRevision) ? value : next.summary?.duration,
+        user_goal: /هدف|می خواهم|کمک/.test(normalizedRevision) ? value : next.summary?.user_goal,
+      };
+    }
+    next.current_question = QUESTION.summary;
   }
   return next;
 }
