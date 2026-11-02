@@ -47,6 +47,13 @@ const LIMITATIONS = [
   'وجود یا نبود یک موضوع در فهرست، وجود یا نبود مشکل روان‌شناختی را اثبات نمی‌کند.',
 ];
 
+function deepFreeze(value) {
+  if (!value || typeof value !== 'object' || Object.isFrozen(value)) return value;
+  Object.freeze(value);
+  for (const child of Object.values(value)) deepFreeze(child);
+  return value;
+}
+
 function normalize(value) {
   return String(value ?? '').normalize('NFKC')
     .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
@@ -84,12 +91,11 @@ function findTopics(value) {
     const matched = phrases.filter((phrase) => normalize(evidenceText).includes(normalize(phrase)) && !hasNegatedTopic(normalize(evidenceText), normalize(phrase)));
     if (matched.length) {
       const phrase = matched.sort((a, b) => b.length - a.length)[0];
-      const index = normalize(evidenceText).indexOf(normalize(phrase));
       hits.push({
         topic_id,
         role: 'unknown',
         confidence_band: matched.length > 1 ? 'moderate' : 'low',
-        evidence_quotes: [evidenceText.slice(Math.max(0, index), Math.max(0, index) + phrase.length) || phrase],
+        evidence_quotes: [phrase],
         uncertainty_reason: 'تطبیق واژگانی به‌تنهایی برای تعیین نقش یا اولویت موضوع کافی نیست.',
       });
     }
@@ -100,8 +106,18 @@ function findTopics(value) {
 export function routeSemanticIntake({ text, requestId = 'local-request', priorContext = {} } = {}) {
   const raw = String(text ?? '').trim();
   const normalized = normalize(raw);
-  const attributed = removeAttributedQuotes(raw);
-  const safetyMatches = SAFETY_CUES.filter((cue) => normalized.includes(normalize(cue)));
+  const userAttributedText = removeAttributedQuotes(raw);
+  const userNormalized = normalize(userAttributedText);
+  const safetyMatches = SAFETY_CUES.filter((cue) => userNormalized.includes(normalize(cue)));
+  const explicitlyNegatedSafety = safetyMatches.length > 0 && safetyMatches.every((cue) => {
+    const index = userNormalized.indexOf(normalize(cue));
+    const before = userNormalized.slice(Math.max(0, index - 45), index);
+    const after = userNormalized.slice(index + normalize(cue).length, index + normalize(cue).length + 35);
+    return /(?:قصد|برنامه|فکر)\s*(?:خودکشی|آسیب)?\s*(?:را)?\s*(?:ندارم|نیست|نمی‌خواهم)$/.test(before)
+      || /^(?:\s|را\s*)?(?:نمی‌خواهم|نمی‌توانم|نمی تونم|نمی‌زنم|نمی‌کنم|ندارم)/.test(after);
+  });
+  const explicitImmediateIntent = /(?:الان|همین الآن|امشب).{0,35}(?:می‌خواهم|قصد دارم|برنامه دارم).{0,35}(?:بکشم|آسیب بزنم|به خودم آسیب)/.test(userNormalized)
+    || /(?:قصد|برنامه)\s+(?:قطعی\s+)?دارم.{0,35}(?:خودکشی|آسیب بزنم|بکشم)/.test(userNormalized);
   const topics = findTopics(raw);
   const negationPresent = /(?:ندارم|نیستم|نمی‌خواهم|نمی‌ترسم|موافق نیستم)/.test(normalized);
   const quotePresent = /[«“"].+[»”"]/.test(raw);
@@ -115,7 +131,9 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
   if (negationPresent) uncertainties.push('نشانه نفی دیده شد؛ دامنه نفی ممکن است به کل موضوع یا فقط یک برچسب اشاره کند.');
   if (correctionPresent) contradictions.push('کاربر احتمالاً در حال اصلاح یا دقیق‌تر کردن گفته قبلی است؛ برداشت قبلی نباید بدون بازبینی حفظ شود.');
   if (multiTopic) uncertainties.push('بیش از یک موضوع احتمالی دیده شد؛ اولویت اصلی هنوز مشخص نیست.');
-  if (safetyMatches.length) uncertainties.push('عبارت بالقوه مرتبط با ایمنی دیده شد؛ قصد، فوریت و زمینه باید مستقیماً روشن شود.');
+  if (safetyMatches.length) uncertainties.push('عبارت بالقوه مرتبط با ایمنی دیده شد؛ این عبارت به‌تنهایی قصد یا خطر فوری را اثبات نمی‌کند و باید مستقیماً روشن شود.');
+  if (raw !== userAttributedText) uncertainties.push('عبارت ایمنی در نقل‌قول منتسب به شخص دیگری آمده است؛ وضعیت خود کاربر و شخص نقل‌شده باید از هم تفکیک شود.');
+  if (explicitlyNegatedSafety) uncertainties.push('نشانه نفی در کنار عبارت ایمنی دیده شد؛ نتیجه‌گیری درباره سطح خطر از روی تطبیق واژگانی مجاز نیست.');
 
   let nextQuestion = null;
   if (safetyMatches.length) {
@@ -156,11 +174,11 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
     contradictions,
     next_question: nextQuestion,
     safety_handoff: {
-      handoff_required: safetyMatches.length > 0,
+      handoff_required: Boolean(explicitImmediateIntent && !explicitlyNegatedSafety),
       trigger_evidence: safetyMatches.slice(0, 5),
     },
     limitations: LIMITATIONS,
   };
 
-  return Object.freeze(output);
+  return deepFreeze(output);
 }
