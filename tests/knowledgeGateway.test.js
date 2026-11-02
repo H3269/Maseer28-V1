@@ -14,6 +14,21 @@ const approved = (overrides = {}) => ({
   ...overrides,
 });
 
+function manifestFor(item) {
+  return {
+    schema_version: '1.0.0',
+    manifest_id: 'test-manifest',
+    status: 'active',
+    approved_items: [{
+      item_id: item.item_id,
+      review_record_id: item.approval.review_record_id,
+      reviewer_role: item.approval.reviewer_role,
+      reviewed_at: item.approval.reviewed_at,
+      version: item.approval.version,
+    }],
+  };
+}
+
 test('draft or unreviewed knowledge is never retrieved', () => {
   const result = retrieveApprovedKnowledge({
     query: 'نگرانی درباره آینده',
@@ -24,7 +39,7 @@ test('draft or unreviewed knowledge is never retrieved', () => {
 });
 
 test('approved content is returned with source and review attribution', () => {
-  const result = retrieveApprovedKnowledge({ query: 'نگرانی آینده', items: [approved()] });
+  const result = retrieveApprovedKnowledge({ query: 'نگرانی آینده', items: [approved()], approvalManifest: manifestFor(approved()) });
   assert.equal(result.status, 'results_found');
   assert.equal(result.results[0].source.source_id, 'SRC-001');
   assert.equal(result.results[0].approval.reviewer_role, 'evidence_reviewer');
@@ -33,7 +48,7 @@ test('approved content is returned with source and review attribution', () => {
 });
 
 test('topic filters prevent retrieval from unrelated topics', () => {
-  const result = retrieveApprovedKnowledge({ query: 'نگرانی آینده', topicIds: ['T03'], items: [approved()] });
+  const result = retrieveApprovedKnowledge({ query: 'نگرانی آینده', topicIds: ['T03'], items: [approved()], approvalManifest: manifestFor(approved()) });
   assert.equal(result.status, 'no_relevant_match');
 });
 
@@ -42,7 +57,7 @@ test('exercise content without qualified clinical approval and stop conditions i
     content_type: 'exercise',
     approval: { status: 'approved_for_assistant', reviewer_role: 'evidence_reviewer', reviewed_at: '2026-10-20T10:00:00Z', version: '1.0.0' },
   });
-  const result = retrieveApprovedKnowledge({ query: 'نگرانی', items: [exercise] });
+  const result = retrieveApprovedKnowledge({ query: 'نگرانی', items: [exercise], approvalManifest: manifestFor(exercise) });
   assert.equal(result.status, 'no_approved_content');
 });
 
@@ -67,12 +82,12 @@ test('invalid topic IDs and duplicate topic IDs cannot pass the approval gate', 
 test('empty queries and result limits are handled safely', () => {
   assert.equal(retrieveApprovedKnowledge({ query: '   ', items: [approved()] }).status, 'insufficient_query');
   const items = Array.from({ length: 8 }, (_, index) => approved({ item_id: `K-${index}`, title: `نگرانی ${index}` }));
-  assert.equal(retrieveApprovedKnowledge({ query: 'نگرانی', items, limit: 100 }).results.length, 5);
+  assert.equal(retrieveApprovedKnowledge({ query: 'نگرانی', items, approvalManifest: manifestFor(items[0]), limit: 100 }).results.length, 5);
 });
 
 
 test('invalid topic filters fail closed instead of broadening the search', () => {
-  const result = retrieveApprovedKnowledge({ query: 'نگرانی', topicIds: ['T99'], items: [approved()] });
+  const result = retrieveApprovedKnowledge({ query: 'نگرانی', topicIds: ['T99'], items: [approved()], approvalManifest: manifestFor(approved()) });
   assert.equal(result.status, 'invalid_topic_filter');
   assert.deepEqual(result.results, []);
 });
@@ -81,5 +96,11 @@ test('invalid topic filters fail closed instead of broadening the search', () =>
 test('approval without a traceable review record is rejected', () => {
   const item = approved({ approval: { status: 'approved_for_assistant', reviewer_role: 'evidence_reviewer', reviewed_at: '2026-10-20T10:00:00Z', version: '1.0.0' } });
   const result = retrieveApprovedKnowledge({ query: 'نگرانی', items: [item] });
+  assert.equal(result.status, 'no_approved_content');
+});
+
+
+test('approved item metadata is insufficient without an active manifest allowlist', () => {
+  const result = retrieveApprovedKnowledge({ query: 'نگرانی', items: [approved()] });
   assert.equal(result.status, 'no_approved_content');
 });
