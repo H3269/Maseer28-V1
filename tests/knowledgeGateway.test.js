@@ -142,3 +142,21 @@ test('exercise retrieval requires qualified clinical review and explicit stop co
   assert.equal(result.results[0].safety.level, 'caution');
   assert.equal(result.results[0].safety.stop_conditions.length, 1);
 });
+
+
+test('duplicate approval manifest identifiers invalidate the entire allowlist', () => {
+  const item = approved();
+  const manifest = manifestFor(item);
+  manifest.approved_items.push({ ...manifest.approved_items[0], review_record_id: 'REV-DUPLICATE' });
+  const result = retrieveApprovedKnowledge({ query: 'نگرانی', items: [item], approvalManifest: manifest });
+  assert.equal(result.status, 'no_approved_content');
+  assert.deepEqual(result.results, []);
+});
+
+test('one malformed approval manifest entry invalidates otherwise valid entries', () => {
+  const item = approved();
+  const manifest = manifestFor(item);
+  manifest.approved_items.push({ item_id: 'K-BAD', review_record_id: '', reviewer_role: 'unknown', reviewed_at: 'not-a-date', version: '' });
+  const result = retrieveApprovedKnowledge({ query: 'نگرانی', items: [item], approvalManifest: manifest });
+  assert.equal(result.status, 'no_approved_content');
+});
