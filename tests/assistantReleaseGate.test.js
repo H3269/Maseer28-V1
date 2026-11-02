@@ -5,6 +5,8 @@ import { readFile } from 'node:fs/promises';
 const journeyUi = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
 const assistantUi = await readFile(new URL('../src/features/assistant/AssessmentAssistant.jsx', import.meta.url), 'utf8');
 const engine = await readFile(new URL('../src/features/assistant/assessmentEngine.js', import.meta.url), 'utf8');
+const turnEngine = await readFile(new URL('../src/features/assistant/assistantTurnEngine.js', import.meta.url), 'utf8');
+const knowledgeGateway = await readFile(new URL('../src/features/assistant/knowledgeGateway.js', import.meta.url), 'utf8');
 const publishWorkflow = await readFile(new URL('../.github/workflows/publish-tested-version.yml', import.meta.url), 'utf8');
 
 test('experimental assistant remains disabled unless explicitly enabled in a build', () => {
