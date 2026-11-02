@@ -1,4 +1,6 @@
 import fs from 'node:fs';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 export function getLatestValidationRun(runs, expectedSha) {
   const matching = runs.filter((run) =>
@@ -41,7 +43,7 @@ function main() {
   console.log(`آخرین اعتبارسنجی با موفقیت انجام شده است: ${latest.id} — ${expectedSha}`);
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
   try {
     main();
   } catch (error) {
