@@ -57,3 +57,15 @@ test('clear personal experience stays in intake rather than jumping to recommend
   assert.equal(result.status, 'personal_intake_required');
   assert.deepEqual(result.knowledge, []);
 });
+
+
+test('general strategy requests do not get misclassified as personal assessment', () => {
+  const result = routeAssistantTurn({ text: 'چه راهکاری برای اضطراب وجود دارد؟' });
+  assert.equal(result.status, 'intent_scope_clarification_required');
+  assert.deepEqual(result.knowledge, []);
+});
+
+test('professional-help questions without personal context clarify scope first', () => {
+  const result = routeAssistantTurn({ text: 'چه زمانی مراجعه به روانشناس لازم است؟' });
+  assert.equal(result.status, 'intent_scope_clarification_required');
+});
