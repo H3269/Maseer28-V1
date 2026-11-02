@@ -398,6 +398,8 @@ export function stopAssessment(session) {
     answers: {},
     candidate_topics: [],
     semantic_intake: null,
+    clarification_attempts: 0,
+    summary_revision_count: 0,
     summary: null,
     referral: undefined,
     next_step: undefined,
