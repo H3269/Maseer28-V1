@@ -392,6 +392,8 @@ export function Support({ content, onBack }) {
   function copySupportNumber() { const done = () => setHelp('شماره ۰۹۱۹۰۸۸۹۰۶۲ کپی شد.'); if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(number).then(done).catch(() => legacyCopy(number, done)); else legacyCopy(number, done); }
   function sendSms() { const body = 'سلام، برای نوبت‌دهی و دریافت راهنمایی پیام می‌دهم.'; try { if (window.Android && typeof window.Android.openSms === 'function') { window.Android.openSms(number, body); setHelp('برنامه پیامک باز شد.'); return; } if (window.webkit?.messageHandlers?.openSms) { window.webkit.messageHandlers.openSms.postMessage({ number, body }); setHelp('برنامه پیامک باز شد.'); return; } const ua = navigator.userAgent || '', sep = /iPhone|iPad|iPod/i.test(ua) ? '&' : '?', a = document.createElement('a'); a.href = `sms:${number}${sep}body=${encodeURIComponent(body)}`; a.style.display = 'none'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => setHelp('اگر پیامک باز نشد، «کپی شماره» را بزنید. در WebView اپ باید scheme پیامک به سیستم تحویل داده شود.'), 900); } catch { copySupportNumber(); } }
   async function exportData() {
+    if (privacyBusy) return;
+    setPrivacyBusy(true);
     try {
       const [localStorageData, indexedDBData] = await Promise.all([Promise.resolve(readLocalUserData()), readIndexedDbUserData()]);
       const payload = { schema_version: '2.0.0', exported_at: new Date().toISOString(), localStorage: localStorageData, indexedDB: indexedDBData };
@@ -407,15 +409,17 @@ export function Support({ content, onBack }) {
       setPrivacyMessage('فایل خروجی اطلاعات ذخیره‌شده در مرورگر آماده شد. آن را در محل امن نگهداری کن.');
     } catch (error) {
       setPrivacyMessage(error?.message || 'تهیه خروجی اطلاعات انجام نشد.');
-    }
+    } finally { setPrivacyBusy(false); }
   }
   async function deleteData() {
+    if (privacyBusy) return;
     const confirmed = window.confirm('این کار اطلاعات مسیرها، پاسخ‌ها، پروفایل و تنظیمات شخصی و نیز رکوردهای ساخته‌شده توسط کاربر در کتابخانه همین مرورگر را حذف می‌کند. پنج کتاب عمومی و نسخه‌های اصلی آن‌ها حفظ می‌شوند. عملیات قابل بازگشت نیست؛ ابتدا در صورت نیاز خروجی بگیر. ادامه می‌دهی؟');
     if (!confirmed) return;
+    setPrivacyBusy(true);
     try {
       const libraryResult = await deleteIndexedDbUserData();
       const result = deleteLocalUserData();
-      if (result.errors.length || result.removed.length !== result.attempted || libraryResult.remaining !== 0) {
+      if (result.errors.length || result.verificationErrors.length || result.removed.length !== result.attempted || libraryResult.remaining !== 0) {
         setPrivacyMessage('حذف کامل انجام نشد. برخی داده‌ها ممکن است باقی مانده باشند؛ دوباره تلاش کن یا داده‌های مرورگر را بررسی کن.');
         return;
       }
@@ -423,7 +427,7 @@ export function Support({ content, onBack }) {
       window.setTimeout(() => window.location.reload(), 700);
     } catch (error) {
       setPrivacyMessage(error?.message || 'حذف اطلاعات انجام نشد.');
-    }
+    } finally { setPrivacyBusy(false); }
   }
   return <section className="card" id="support">
     <span className="badge">پشتیبانی مرکز</span><h2>نیاز به راهنمایی داری؟</h2><p className="muted">اگر در انجام تمرین‌ها، ادامه مسیر یا استفاده از برنامه نیاز به راهنمایی داری، می‌توانی با مرکز هیپنوتراپی شفا ارتباط بگیری.</p>
@@ -431,7 +435,7 @@ export function Support({ content, onBack }) {
     {EXPERIMENTAL_ASSISTANT_ENABLED && <AssessmentAssistant />}
     <hr/><div className="sectionHint"><span><AppIcon name="lock" size={18} /></span><div><b>حریم خصوصی و داده‌های من</b><small>می‌توانی نسخه‌ای از داده‌های ذخیره‌شده در این مرورگر بگیری یا آن‌ها را حذف کنی.</small></div></div>
     <p className="muted">خروجی و حذف شامل localStorage برنامه و رکوردهای کاربری در IndexedDB همین مرورگر است. پنج کتاب عمومی و نسخه‌های اصلی آن‌ها حفظ می‌شوند. فایل‌های دانلودشده، پشتیبان‌های دستگاه و اطلاعات احتمالی سرورهای بیرونی تحت پوشش نیستند.</p>
-    <div className="contactActions"><button className="secondary" onClick={exportData}><AppIcon name="fileText" size={17} /> دریافت نسخه اطلاعات من</button><button className="secondary" onClick={deleteData}><AppIcon name="eraser" size={17} /> حذف داده‌های محلی من</button></div>
+    <div className="contactActions"><button className="secondary" disabled={privacyBusy} onClick={exportData}><AppIcon name="fileText" size={17} /> {privacyBusy ? "در حال پردازش…" : "دریافت نسخه اطلاعات من"}</button><button className="secondary" disabled={privacyBusy} onClick={deleteData}><AppIcon name="eraser" size={17} /> {privacyBusy ? "در حال پردازش…" : "حذف داده‌های محلی من"}</button></div>
     {privacyMessage && <p className="contactHelp" role="status" aria-live="polite">{privacyMessage}</p>}
     <button className="secondary" onClick={onBack}>{buttonLabel('بازگشت')}</button>
   </section>;
