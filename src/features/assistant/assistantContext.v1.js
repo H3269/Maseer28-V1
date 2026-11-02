@@ -68,7 +68,7 @@ export function buildAssistantContext({
   });
 }
 
-export function validateAssistantContext(context, { now = new Date().toISOString() } = {}) {
+export function validateAssistantContext(context, { now = new Date().toISOString(), consentState = {} } = {}) {
   const errors = [];
   const allowedRoot = ['schema_version', 'created_at', 'expires_at', 'processing', 'entries'];
   if (!context || typeof context !== 'object' || Array.isArray(context)) {
@@ -106,6 +106,7 @@ export function validateAssistantContext(context, { now = new Date().toISOString
       if (seen.has(item.key)) errors.push(`duplicate context key: ${item.key}`);
       seen.add(item.key);
       if (item.source !== spec.source || item.consent_purpose !== spec.purpose) errors.push(`invalid provenance or consent purpose for ${item.key}`);
+      if (!consentGranted(consentState, spec.purpose)) errors.push(`missing active consent for ${item.key}`);
       if (spec.values && !spec.values.includes(item.value)) errors.push(`invalid value for ${item.key}`);
       if (item.key === 'active_day' && (!Number.isInteger(item.value) || item.value < 1 || item.value > 28)) errors.push('active_day must be an integer from 1 to 28');
       if (item.key === 'completed_days_count' && (!Number.isInteger(item.value) || item.value < 0 || item.value > 28)) errors.push('completed_days_count must be an integer from 0 to 28');
