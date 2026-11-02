@@ -200,6 +200,8 @@ test('stopping an assessment clears semantic context and topic hypotheses too', 
   assert.deepEqual(stopped.answers, {});
   assert.deepEqual(stopped.candidate_topics, []);
   assert.equal(stopped.semantic_intake, null);
+  assert.equal(stopped.clarification_attempts, 0);
+  assert.equal(stopped.summary_revision_count, 0);
   assert.equal(stopped.safety_context_flag, false);
 });
 
