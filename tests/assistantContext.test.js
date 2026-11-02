@@ -24,7 +24,7 @@ test('no consent means no personal context is included', () => {
     now,
   });
   assert.deepEqual(context.entries, []);
-  assert.equal(validateAssistantContext(context, { now }).valid, true);
+  assert.equal(validateAssistantContext(context, { now, consentState: consent() }).valid, true);
 });
 
 test('journey context and interaction preferences require separate independent consent', () => {
@@ -36,7 +36,7 @@ test('journey context and interaction preferences require separate independent c
   });
   assert.deepEqual(context.entries.map((item) => item.key), ['active_day', 'completed_days_count', 'current_goal']);
   assert.ok(context.entries.every((item) => item.consent_purpose === 'journey_context'));
-  assert.equal(validateAssistantContext(context, { now }).valid, true);
+  assert.equal(validateAssistantContext(context, { now, consentState: consent(true, false) }).valid, true);
 });
 
 test('saved interaction preferences are not inferred from journey consent', () => {
@@ -90,16 +90,23 @@ test('validator rejects unknown keys and forged provenance', () => {
       observed_at: context.created_at, expires_at: context.expires_at, consent_purpose: 'journey_context',
     }],
   };
-  const result = validateAssistantContext(forged, { now });
+  const result = validateAssistantContext(forged, { now, consentState: consent(true, false) });
   assert.equal(result.valid, false);
   assert.ok(result.errors.some((error) => error.includes('not allowlisted')));
 });
 
 test('validator rejects context older than its expiry or beyond the 24-hour maximum', () => {
   const context = buildAssistantContext({ consentState: consent(), now });
-  assert.equal(validateAssistantContext(context, { now: new Date(Date.parse(now) + ASSISTANT_CONTEXT_TTL_MS).toISOString() }).valid, false);
+  assert.equal(validateAssistantContext(context, { now: new Date(Date.parse(now) + ASSISTANT_CONTEXT_TTL_MS).toISOString(), consentState: consent() }).valid, false);
   const extended = { ...context, expires_at: new Date(Date.parse(now) + ASSISTANT_CONTEXT_TTL_MS + 1).toISOString() };
-  assert.equal(validateAssistantContext(extended, { now }).valid, false);
+  assert.equal(validateAssistantContext(extended, { now, consentState: consent() }).valid, false);
+});
+
+test('validator rejects an entry when its consent has been withdrawn or is absent', () => {
+  const context = buildAssistantContext({ journey: { active_day: 3 }, consentState: consent(true, false), now });
+  const result = validateAssistantContext(context, { now, consentState: consent(false, false) });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.includes('missing active consent')));
 });
 
 test('entries cannot outlive or claim a different observation time than the context envelope', () => {
@@ -109,5 +116,5 @@ test('entries cannot outlive or claim a different observation time than the cont
     now,
   });
   const changed = { ...context, entries: context.entries.map((item) => ({ ...item, observed_at: '2026-11-01T12:00:00.000Z' })) };
-  assert.equal(validateAssistantContext(changed, { now }).valid, false);
+  assert.equal(validateAssistantContext(changed, { now, consentState: consent(true, false) }).valid, false);
 });
