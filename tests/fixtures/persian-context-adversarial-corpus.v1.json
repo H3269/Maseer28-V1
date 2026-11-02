@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0.0",
+  "purpose": "Adversarial regression cases for conservative Persian context extraction; synthetic software tests only, not a clinical dataset or semantic benchmark.",
+  "status": "synthetic_expert_review_pending",
+  "policy": "Tests verify conservative exclusion of explicit colloquial attribution and explicit hypothetical/translation meta-language. Negation is preserved verbatim; no sentiment or diagnosis is inferred.",
+  "cases": [
+    {
+      "id": "A01",
+      "text": "اون گفت من بی‌ارزشم",
+      "retained": "",
+      "excluded": 1
+    },
+    {
+      "id": "A02",
+      "text": "اونا گفتند من همیشه شکست می‌خورم",
+      "retained": "",
+      "excluded": 1
+    },
+    {
+      "id": "A03",
+      "text": "مامانم گفت من باید قوی باشم",
+      "retained": "",
+      "excluded": 1
+    },
+    {
+      "id": "A04",
+      "text": "اگر کسی بگوید من بی‌ارزشم، منظورش چیست؟",
+      "retained": "",
+      "excluded": 1
+    },
+    {
+      "id": "A05",
+      "text": "این جمله را ترجمه کن: من افسرده‌ام",
+      "retained": "",
+      "excluded": 1
+    },
+    {
+      "id": "A06",
+      "text": "من نگران نیستم ولی از آینده می‌ترسم",
+      "retained": "من نگران نیستم ؛ از آینده می‌ترسم",
+      "excluded": 0
+    },
+    {
+      "id": "A07",
+      "text": "من مضطرب نیستم، اما خوابم نمی‌برد",
+      "retained": "من مضطرب نیستم ؛ خوابم نمی‌برد",
+      "excluded": 0
+    },
+    {
+      "id": "A08",
+      "text": "من از کارم خسته‌ام، اون گفت من بی‌عرضه‌ام",
+      "retained": "من از کارم خسته‌ام",
+      "excluded": 1
+    },
+    {
+      "id": "A09",
+      "text": "اگر کسی بگوید من بی‌ارزشم، من فقط معنی واژه را می‌پرسم",
+      "retained": "من فقط معنی واژه را می‌پرسم",
+      "excluded": 1
+    },
+    {
+      "id": "A10",
+      "text": "من واقعاً ناراحتم و دوستم گفت او هم ناراحت است",
+      "retained": "من واقعاً ناراحتم",
+      "excluded": 1
+    }
+  ]
+}
