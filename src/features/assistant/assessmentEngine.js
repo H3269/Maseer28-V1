@@ -138,6 +138,14 @@ function hasConcreteExample(value) {
   return /(?:وقتی|مثلاً|برای مثال|دیروز|امروز|در جلسه|در محل کار|با همسرم|در خانه|هفته گذشته)/.test(normalize(value));
 }
 
+function inferredGoal(intentLabel) {
+  return ({
+    understand_problem: 'فهم بهتر مسئله',
+    request_strategy: 'دریافت راهکار',
+    professional_help_decision: 'تصمیم‌گیری درباره کمک تخصصی',
+  })[intentLabel] ?? null;
+}
+
 function updateSemanticContext(session, requestId) {
   const opening = session.answers.open_problem || '';
   const facts = {
@@ -150,6 +158,16 @@ function updateSemanticContext(session, requestId) {
     requestId,
     priorContext: { situational_facts: facts },
   });
+  if (!facts.user_goal) {
+    facts.user_goal = inferredGoal(session.semantic_intake.intent.label);
+    if (facts.user_goal) {
+      session.semantic_intake = routeSemanticIntake({
+        text: opening,
+        requestId,
+        priorContext: { situational_facts: facts },
+      });
+    }
+  }
   session.candidate_topics = session.semantic_intake.topic_candidates.map((item) => ({
     topic_id: item.topic_id,
     matched_phrases: item.evidence_quotes,
@@ -168,7 +186,7 @@ function buildAssessmentSummary(session, contextExample = null) {
     context_example: contextExample,
     impact: session.answers.impact || (hasImpactEvidence(session.answers.open_problem) ? 'در پیام آغازین اشاره شده' : 'در گفتگو مشخص نشد'),
     duration: session.answers.duration || (hasDurationEvidence(session.answers.open_problem) ? 'در پیام آغازین اشاره شده' : 'در گفتگو مشخص نشد'),
-    user_goal: session.answers.goal || 'در گفتگو مشخص نشد',
+    user_goal: session.answers.goal || inferredGoal(session.semantic_intake?.intent?.label) || 'در گفتگو مشخص نشد',
     candidate_topics: candidates.map((item) => ({ topic_id: item.topic_id, status: item.status || 'tentative_hypothesis' })),
     limitations: [
       'این دسته‌بندی بر پایه قواعد واژگانی محدود و گفته‌های همین گفتگو است؛ ارزیابی روان‌شناختی یا تشخیص نیست.',
