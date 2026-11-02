@@ -111,8 +111,8 @@ export function retrieveApprovedKnowledge({ query, topicIds = [], items = [], ap
     manifestMap.set(entry.item_id, entry);
   }
   if (!manifestValid) manifestMap.clear();
-  const safeItems = Array.isArray(items)
-    ? [...new Map(items.filter((item) => {
+  const approvedCandidates = Array.isArray(items)
+    ? items.filter((item) => {
       if (!isApprovedItem(item)) return false;
       const entry = manifestMap.get(item.item_id);
       return Boolean(
@@ -122,8 +122,13 @@ export function retrieveApprovedKnowledge({ query, topicIds = [], items = [], ap
         && entry.reviewed_at === item.approval.reviewed_at
         && entry.version === item.approval.version
       );
-    }).map((item) => [item.item_id, item])).values()]
+    })
     : [];
+  const candidateIds = approvedCandidates.map((item) => item.item_id);
+  const duplicateCatalogIds = new Set(candidateIds).size !== candidateIds.length;
+  const safeItems = duplicateCatalogIds
+    ? []
+    : approvedCandidates;
   const rawTopics = Array.isArray(topicIds) ? topicIds : [];
   if (rawTopics.some((id) => typeof id !== 'string' || !KNOWN_TOPIC.test(id))) {
     return deepFreeze({ status: 'invalid_topic_filter', results: [], matched_query_terms: [] });
