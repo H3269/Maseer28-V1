@@ -280,8 +280,18 @@ function navigate(next) {
     try { localStorage.setItem('profile_completed', '1'); } catch {}
     setUserProfileState(profile);
     const wasEditing = profileEditing;
+    const currentPath = journey.profileData || {};
     const nextJourney = journey.profileData
-      ? { ...journey, profileData: { ...journey.profileData, ...profile, code: journey.profileData.code || createClientCode() } }
+      ? {
+          ...journey,
+          profileData: {
+            problem: currentPath.problem || '',
+            durationYears: currentPath.durationYears || 0,
+            durationMonths: currentPath.durationMonths || 0,
+            goal: currentPath.goal || '',
+            code: currentPath.code || createClientCode(),
+          },
+        }
       : journey;
     setJourney(nextJourney);
     setProfileEditing(false);
@@ -295,7 +305,13 @@ function navigate(next) {
       ...journey,
       started: true,
       profile: true,
-      profileData: { ...(journey.profileData || {}), ...userProfile, ...path, code: journey.profileData?.code || createClientCode() },
+      profileData: {
+        problem: path.problem || '',
+        durationYears: path.durationYears || 0,
+        durationMonths: path.durationMonths || 0,
+        goal: path.goal || '',
+        code: journey.profileData?.code || createClientCode(),
+      },
       pathId: journey.pathId || createPathId(),
       lastView: 'assessment',
     };
