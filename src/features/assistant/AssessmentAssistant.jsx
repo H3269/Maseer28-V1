@@ -108,7 +108,7 @@ export default function AssessmentAssistant() {
         <ul>{summary.limitations.map((item) => <li key={item}>{item}</li>)}</ul>
         <p className="muted">هیچ تمرین یا درمانی به‌صورت خودکار پیشنهاد نمی‌شود؛ محتوای مناسب هنوز نیازمند تأیید علمی و تخصصی است.</p>
       </div>}
-      {(session?.status === 'completed' || session?.status === 'information_request_not_supported') && <button className="secondary" type="button" onClick={start}>شروع گفت‌وگوی تازه</button>}
+      {(session?.status === 'completed' || session?.status === 'information_request_not_supported' || session?.status === 'summary_needs_review') && <button className="secondary" type="button" onClick={start}>شروع گفت‌وگوی تازه</button>}
       {session?.status === 'stopped_by_user' && <button className="secondary" type="button" onClick={start}>شروع دوباره</button>}
       <button className="secondary" type="button" onClick={closeAndClear}>بستن و پاک‌کردن گفتگو</button>
     </>}
