@@ -363,3 +363,12 @@ test('a negative safety answer followed by a contradictory clause is not accepte
   assert.equal(classifySafetyAnswer('خیر، برنامه‌ای ندارم اما احتمال دارد به خودم آسیب بزنم.'), 'clarification_needed');
   assert.equal(classifySafetyAnswer('نه، قصد ندارم به خودم آسیب بزنم.'), 'no_immediate_risk_disclosed');
 });
+
+
+test('shared question definitions are immutable and cannot leak mutations across sessions', () => {
+  const first = createAssessmentSession();
+  const second = createAssessmentSession();
+  assert.equal(Object.isFrozen(getCurrentQuestion(first)), true);
+  assert.throws(() => { getCurrentQuestion(first).prompt = 'mutated'; }, TypeError);
+  assert.equal(getCurrentQuestion(second).prompt, 'دوست داری درباره چه مسئله‌ای صحبت کنیم؟ با زبان خودت توضیح بده؛ لازم نیست از بین موضوعات اپ چیزی انتخاب کنی.');
+});
