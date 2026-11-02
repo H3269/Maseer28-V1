@@ -52,7 +52,7 @@ function readStore(store) {
 }
 
 export async function readIndexedDbUserData(indexedDBApi = globalThis.indexedDB) {
-  if (!indexedDBApi) return { database: DB_NAME, stores: { books: [], versions: [], settings: [] } };
+  if (!indexedDBApi) throw new Error('IndexedDB در این مرورگر در دسترس نیست؛ کامل بودن خروجی قابل تأیید نیست.');
   const db = await openExistingDatabase(indexedDBApi);
   if (!db) return { database: DB_NAME, stores: { books: [], versions: [], settings: [] } };
   try {
@@ -77,7 +77,7 @@ function deleteStoreKeys(store, rows, keyField) {
 }
 
 export async function deleteIndexedDbUserData(indexedDBApi = globalThis.indexedDB) {
-  if (!indexedDBApi) return { database: DB_NAME, attempted: 0, removed: 0 };
+  if (!indexedDBApi) throw new Error('IndexedDB در این مرورگر در دسترس نیست؛ پاک‌سازی کامل قابل تأیید نیست.');
   const db = await openExistingDatabase(indexedDBApi);
   if (!db) return { database: DB_NAME, attempted: 0, removed: 0 };
   try {
