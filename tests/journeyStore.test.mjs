@@ -212,3 +212,20 @@ test('profile v2 read-back verification is independent of JSON key order', async
     assert.equal(result.profile.phone, '09123456789');
   });
 });
+
+
+test('verified profile migration never restores fields intentionally cleared later', async () => {
+  const { migrateUserProfileToV2, PROFILE_KEY, PROFILE_V2_KEY, PROFILE_V2_MIGRATION_KEY } =
+    await import('../src/features/journey/journeyStore.js');
+  withMemoryStorage((data) => {
+    data.set(PROFILE_KEY, JSON.stringify({ name: 'نام قدیمی', age: 42, gender: 'مرد' }));
+    data.set(PROFILE_V2_KEY, JSON.stringify({ name: 'نام فعلی' }));
+    data.set(PROFILE_V2_MIGRATION_KEY, '1');
+    const result = migrateUserProfileToV2({ profileData: { age: 55, gender: 'زن' } });
+    assert.equal(result.migrated, true);
+    assert.equal(result.reason, 'already_verified');
+    assert.equal(result.profile.name, 'نام فعلی');
+    assert.equal(result.profile.age, undefined);
+    assert.equal(result.profile.gender, undefined);
+  });
+});
