@@ -87,8 +87,13 @@ function isRejectedAttribution(normalized, topicId) {
   return attributed && rejected;
 }
 
+function isMetaLanguageRequest(normalized) {
+  return /(?:برای\s+ترجمه|ترجمه\s+(?:این\s+)?جمله|معنی\s+(?:این\s+)?عبارت|مثال\s+(?:فرضی|از)|جمله\s+فرضی|چطور\s+می(?:شود|شه)\s+گفت)/.test(normalized);
+}
+
 function detectTopics(text) {
   const normalized = normalize(text);
+  if (isMetaLanguageRequest(normalized)) return [];
   const hits = [];
   for (const [topic_id, phrases] of TOPIC_RULES) {
     if (isRejectedAttribution(normalized, topic_id)) continue;
