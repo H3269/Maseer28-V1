@@ -69,6 +69,9 @@ export function validateSelfEvaluationPilot({ pilot, queue, evidence }) {
     if (seenContentIds.has(record.content_id)) errors.push('duplicate content id ' + record.content_id);
     seenContentIds.add(record.content_id);
     if (record.topic_name !== topicRule.name) errors.push('topic name mismatch ' + record.content_id);
+    if (topicId === 'T19' && day === 6 && record.subtopic_id !== 'T19-S01') {
+      errors.push('subtopic mismatch ' + record.content_id + ': T19 day 6 must map to behavior-specific responsibility T19-S01');
+    }
     if (record.source_content_id !== expectedSourceId) errors.push('source content id mismatch ' + record.content_id);
     if (!norm(record.subtopic_id) || !norm(record.subtopic_name)) errors.push('missing subtopic mapping ' + record.content_id);
     if (record.phase !== PHASES[day]) errors.push('phase mismatch ' + record.content_id);
