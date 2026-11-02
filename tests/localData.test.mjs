@@ -59,15 +59,15 @@ test('privacy helpers fail clearly when browser storage is unavailable', () => {
 test('IndexedDB privacy scope exports user-created records but preserves seeded public library content', () => {
   const selected = selectUserOwnedLibraryData({
     books: [
-      { id: 'book-1', legacyId: 1, title: 'کتاب عمومی اول' },
-      { id: 'book-5', legacyId: 5, title: 'کتاب عمومی پنجم' },
+      { id: 'book-1', legacyId: 1, activeVersionId: 'seed-book-1-hash1', title: 'کتاب عمومی اول' },
+      { id: 'book-5', legacyId: 5, activeVersionId: 'seed-book-5-hash5', title: 'کتاب عمومی پنجم' },
       { id: 'book-custom-1', title: 'کتاب کاربر' },
     ],
     versions: [
-      { id: 'seed-v1', bookId: 'book-1', source: 'seed' },
+      { id: 'seed-book-1-hash1', bookId: 'book-1', source: 'seed' },
       { id: 'upload-v1', bookId: 'book-1', source: 'upload' },
-      { id: 'custom-v1', bookId: 'book-custom-1', source: 'seed' },
-      { id: 'seed-v5', bookId: 'book-5', source: 'seed' },
+      { id: 'custom-v1', bookId: 'book-custom-1', source: 'upload' },
+      { id: 'seed-book-5-hash5', bookId: 'book-5', source: 'seed' },
     ],
     settings: [
       { key: 'seed-content-revision-v90', value: '90' },
@@ -82,8 +82,8 @@ test('IndexedDB privacy scope exports user-created records but preserves seeded 
 
 test('IndexedDB privacy scope does not classify seed versions as user content', () => {
   const selected = selectUserOwnedLibraryData({
-    books: [{ id: 'book-1', legacyId: 1 }],
-    versions: [{ id: 'seed-v1', bookId: 'book-1', source: 'seed' }],
+    books: [{ id: 'book-1', legacyId: 1, activeVersionId: 'seed-book-1-hash1' }],
+    versions: [{ id: 'seed-book-1-hash1', bookId: 'book-1', source: 'seed' }],
     settings: [{ key: 'seed-last-checked-at', value: 'today' }],
   });
   assert.deepEqual(selected, { books: [], versions: [], settings: [] });
@@ -118,7 +118,7 @@ test('local deletion stops before deleting anything when key enumeration fails',
 test('a custom book with a legacy-looking number is not mistaken for a seeded book', () => {
   const selected = selectUserOwnedLibraryData({
     books: [{ id: 'book-custom-import', legacyId: 1, title: 'کتاب واردشده' }],
-    versions: [{ id: 'custom-v1', bookId: 'book-custom-import', source: 'seed' }],
+    versions: [{ id: 'custom-v1', bookId: 'book-custom-import', source: 'upload' }],
     settings: [],
   });
   assert.deepEqual(selected.books.map((book) => book.id), ['book-custom-import']);
@@ -143,4 +143,15 @@ test('failed privacy deletion preflight prevents all local deletion', () => {
   assert.equal(result.attempted, 0);
   assert.equal(result.errors.length, 1);
   assert.equal(storage.values.has('maseer28_state'), true);
+});
+
+
+test('uncertain seed-like books and orphaned seed versions are preserved from destructive classification', () => {
+  const selected = selectUserOwnedLibraryData({
+    books: [{ id: 'book-2', legacyId: 2, title: 'رکورد ناقص یا واردشده' }],
+    versions: [{ id: 'seed-book-2-oldhash', bookId: 'book-2', source: 'seed' }],
+    settings: [],
+  });
+  assert.deepEqual(selected.books.map((book) => book.id), ['book-2']);
+  assert.deepEqual(selected.versions, []);
 });
