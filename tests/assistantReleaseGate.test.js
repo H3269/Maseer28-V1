@@ -32,3 +32,10 @@ test('assistant conversation remains in-memory only in this prototype', () => {
   assert.doesNotMatch(assistantUi, /localStorage|sessionStorage|indexedDB|fetch\s*\(|XMLHttpRequest/);
   assert.doesNotMatch(engine, /localStorage|sessionStorage|indexedDB|fetch\s*\(|XMLHttpRequest/);
 });
+
+
+test('new orchestration and retrieval modules remain local-only', () => {
+  for (const source of [turnEngine, knowledgeGateway]) {
+    assert.doesNotMatch(source, /localStorage|sessionStorage|indexedDB|fetch\s*\(|XMLHttpRequest/);
+  }
+});
