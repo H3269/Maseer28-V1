@@ -257,10 +257,11 @@ test('new archive snapshots retain path display fields but omit copied personal 
     final: null,
   });
   assert.deepEqual(Object.keys(archived.profileData).sort(), [
-    'code', 'durationMonths', 'durationYears', 'goal', 'name', 'problem',
+    'durationMonths', 'durationYears', 'goal', 'problem',
   ]);
   assert.equal(archived.profileData.problem, 'anxiety');
-  assert.equal(archived.profileData.name, 'نام کاربر');
+  assert.equal('name' in archived.profileData, false);
+  assert.equal('code' in archived.profileData, false);
   assert.equal('medical' in archived.profileData, false);
   assert.equal('phone' in archived.profileData, false);
   assert.equal('age' in archived.profileData, false);
