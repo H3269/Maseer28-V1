@@ -33,6 +33,16 @@ export function routeAssistantTurn({ text, knowledgeItems = [], approvalManifest
     });
   }
 
+  const personalContextExplicit = /(?:من خودم|برای من|تجربه شخصی|تجربه دارم|در زندگی من|مشکل خودم|برای خودم|مشکلم|اضطرابم|نگرانی من|درگیرم)/.test(String(text ?? ''));
+  if (['request_strategy', 'professional_help_decision'].includes(intake.intent.label) && !personalContextExplicit) {
+    return deepFreeze({
+      status: 'intent_scope_clarification_required',
+      intake,
+      message: 'برای اینکه پاسخ را در مسیر درست بدهم، این پرسش درباره تجربه و وضعیت شخصی خودت است یا اطلاعات عمومی می‌خواهی؟',
+      knowledge: [],
+    });
+  }
+
   if (intake.intent.label === 'general_information') {
     const retrieval = retrieveApprovedKnowledge({ query: text, items: knowledgeItems, approvalManifest, limit: 3 });
     if (retrieval.status !== 'results_found') {
