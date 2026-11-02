@@ -221,8 +221,15 @@ export function submitAssessmentAnswer(session, answer) {
   if (session.schema_version !== '1.0.0' || !knownQuestionIds.has(session.current_question.id)) {
     throw new Error('ساختار جلسه یا شناسه پرسش معتبر نیست؛ جلسه را از ابتدا آغاز کن.');
   }
+  const validSafetyStates = ['not_assessed', 'clarification_needed', 'no_immediate_risk_disclosed', 'urgent_human_support_recommended'];
+  const validTopicIds = /^T(0[1-9]|[12][0-9]|3[0-4])$/;
   if (!session.answers || typeof session.answers !== 'object' || Array.isArray(session.answers)
-    || !Array.isArray(session.candidate_topics)) {
+    || !Object.values(session.answers).every((value) => typeof value === 'string' && value.length <= 3000)
+    || !Array.isArray(session.candidate_topics) || session.candidate_topics.length > 3
+    || !session.candidate_topics.every((item) => item && validTopicIds.test(item.topic_id))
+    || !validSafetyStates.includes(session.safety_state)
+    || !Number.isInteger(session.clarification_attempts) || session.clarification_attempts < 0 || session.clarification_attempts > 1
+    || !Number.isInteger(session.summary_revision_count) || session.summary_revision_count < 0 || session.summary_revision_count > 2) {
     throw new Error('داده‌های داخلی جلسه معتبر نیستند؛ برای جلوگیری از ادامه با وضعیت خراب، جلسه متوقف شد.');
   }
   const value = String(answer ?? '').trim();
