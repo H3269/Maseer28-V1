@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "validate:content": "node scripts/validate-content.mjs",
+    "audit:content-quality": "node scripts/audit-content-quality.mjs",
     "test": "node --test",
     "validate:assistant-topics": "node scripts/validate-assistant-topics.mjs",
     "prepare:production": "node scripts/prepare-production-build.mjs"
