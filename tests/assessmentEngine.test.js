@@ -9,6 +9,7 @@ import {
   assessmentEngineMetadata,
   classifySafetyAnswer,
   classifySafetyDomains,
+  classifySafetyDomains,
 } from '../src/features/assistant/assessmentEngine.js';
 
 function answer(session, value) {
@@ -290,4 +291,11 @@ test('explicit immediate intent disclosed at any intake stage triggers human sup
   assert.equal(session.current_question, null);
   assert.equal(session.safety_state, 'urgent_human_support_recommended');
   assert.deepEqual(session.referral.safety_domains, ['risk_of_self_harm']);
+});
+
+
+test('safety domain classification preserves self-harm and external-threat distinctions', () => {
+  assert.ok(classifySafetyDomains('کاش نبودم و گاهی فکر آسیب زدن به خودم دارم.').includes('risk_of_self_harm'));
+  assert.ok(classifySafetyDomains('همسرم تهدیدم کرد و خانه امن نیست.').includes('risk_from_another_person'));
+  assert.ok(classifySafetyDomains('نمی‌دانم چه خطری وجود دارد.').includes('domain_not_yet_determined'));
 });
