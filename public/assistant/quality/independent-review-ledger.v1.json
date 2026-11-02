@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0.0",
+  "ledger_id": "maseer28-independent-content-review-ledger-v1",
+  "status": "empty_template_no_reviews_performed",
+  "blind_review_policy": {
+    "required_reviewers": 2,
+    "independent": true,
+    "reviewer_ids_must_differ": true,
+    "submissions_hidden_from_other_reviewer_until_both_submitted": true,
+    "no_prepopulated_scores_or_reviewer_identity": true
+  },
+  "governance": {
+    "scores": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H"
+    ],
+    "score_range": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "release_score_threshold": null,
+    "disagreement_resolution": "third_qualified_adjudicator_required_no_averaging",
+    "release_blocking_severities": [
+      "P0",
+      "P1"
+    ],
+    "runtime_requires": "approved_record_and_separate_versioned_runtime_grant",
+    "audit": "append_only_event_log_linked_by_sequence_and_previous_event_id; repository_commit_history_is_authoritative"
+  },
+  "records": [],
+  "event_log": []
+}
