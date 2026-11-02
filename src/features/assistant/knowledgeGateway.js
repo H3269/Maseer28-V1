@@ -80,18 +80,37 @@ function deepFreeze(value) {
  */
 export function retrieveApprovedKnowledge({ query, topicIds = [], items = [], approvalManifest = null, limit = 3 } = {}) {
   const queryTerms = tokenize(query);
-  const manifestEntries = approvalManifest?.schema_version === '1.0.0'
+  const manifestBaseValid = approvalManifest?.schema_version === '1.0.0'
     && typeof approvalManifest.manifest_id === 'string'
     && approvalManifest.manifest_id.trim().length > 0
+    && approvalManifest.manifest_id.length <= 120
     && approvalManifest.status === 'active'
     && Array.isArray(approvalManifest.approved_items)
-    ? approvalManifest.approved_items
-    : [];
+    && approvalManifest.approved_items.length > 0;
+  const manifestEntries = manifestBaseValid ? approvalManifest.approved_items : [];
   const manifestMap = new Map();
+  let manifestValid = manifestBaseValid;
   for (const entry of manifestEntries) {
-    if (!entry || typeof entry.item_id !== 'string' || manifestMap.has(entry.item_id)) continue;
+    const validEntry = entry
+      && typeof entry.item_id === 'string'
+      && entry.item_id.trim().length > 0
+      && entry.item_id.length <= 120
+      && typeof entry.review_record_id === 'string'
+      && entry.review_record_id.trim().length > 0
+      && entry.review_record_id.length <= 120
+      && ['qualified_clinician', 'evidence_reviewer', 'safety_reviewer'].includes(entry.reviewer_role)
+      && typeof entry.reviewed_at === 'string'
+      && !Number.isNaN(Date.parse(entry.reviewed_at))
+      && typeof entry.version === 'string'
+      && entry.version.trim().length > 0
+      && entry.version.length <= 40;
+    if (!validEntry || manifestMap.has(entry.item_id)) {
+      manifestValid = false;
+      break;
+    }
     manifestMap.set(entry.item_id, entry);
   }
+  if (!manifestValid) manifestMap.clear();
   const safeItems = Array.isArray(items)
     ? [...new Map(items.filter((item) => {
       if (!isApprovedItem(item)) return false;
