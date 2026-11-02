@@ -275,7 +275,7 @@ test('externally attributed statements remain unclassified until the user clarif
 
 test('multiple distinct self-evaluation experiences can coexist without forcing one primary topic', () => {
   const session = completeIntakeToSummary(
-    'از خودم متنفرم، خودم را بابت آن اتفاق سرزنش می‌کنم و احساس می‌کنم بی‌ارزشم.'
+    'از خودم متنفرم، خودم را سرزنش می‌کنم و احساس می‌کنم بی‌ارزشم.'
   );
   const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
   assert.ok(ids.includes('T18'));
