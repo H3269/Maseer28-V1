@@ -14,7 +14,7 @@ function deepFreeze(value) {
  * Local-only turn router. It does not generate clinical advice or compose new
  * factual claims; knowledge answers are limited to approved source excerpts.
  */
-export function routeAssistantTurn({ text, knowledgeItems = (knowledgeCatalog.status === 'active' ? knowledgeCatalog.items : []), approvalManifest: suppliedApprovalManifest, requestId = 'assistant-turn' } = {}) {
+export function routeAssistantTurn({ text, knowledgeItems = (knowledgeCatalog.status === 'active' ? knowledgeCatalog.items : []), approvalManifest: suppliedApprovalManifest, requestScope = 'auto', requestId = 'assistant-turn' } = {}) {
   const activeApprovalManifest = suppliedApprovalManifest ?? approvalManifest;
   const rawText = String(text ?? '').trim();
   if (!rawText) {
@@ -23,6 +23,7 @@ export function routeAssistantTurn({ text, knowledgeItems = (knowledgeCatalog.st
   if (rawText.length > 3000) {
     return deepFreeze({ status: 'input_too_long', intake: null, message: 'متن بیش از حد طولانی است؛ لطفاً آن را به حداکثر ۳۰۰۰ نویسه کاهش بده.', knowledge: [] });
   }
+  if (!['auto', 'general', 'personal'].includes(requestScope)) return deepFreeze({ status: 'invalid_request_scope', intake: null, message: 'دامنه درخواست معتبر نیست.', knowledge: [] });
   const intake = routeSemanticIntake({ text: rawText, requestId });
 
   if (intake.safety_handoff.handoff_required) {
@@ -44,7 +45,7 @@ export function routeAssistantTurn({ text, knowledgeItems = (knowledgeCatalog.st
   }
 
   const personalContextExplicit = /(?:من خودم|برای من|تجربه شخصی|تجربه دارم|در زندگی من|مشکل خودم|برای خودم|مشکلم|اضطرابم|نگرانی من|درگیرم|تمرکزم|خوابم|روابطم|در محل کارم|در رابطه ام|از دست داده ام|دارم|می کنم)/.test(String(text ?? ''));
-  if (['request_strategy', 'professional_help_decision'].includes(intake.intent.label) && !personalContextExplicit) {
+  if (requestScope === 'auto' && ['request_strategy', 'professional_help_decision'].includes(intake.intent.label) && !personalContextExplicit) {
     return deepFreeze({
       status: 'intent_scope_clarification_required',
       intake,
@@ -53,7 +54,7 @@ export function routeAssistantTurn({ text, knowledgeItems = (knowledgeCatalog.st
     });
   }
 
-  if (intake.intent.label === 'general_information') {
+  if (intake.intent.label === 'general_information' || (requestScope === 'general' && ['request_strategy', 'professional_help_decision'].includes(intake.intent.label))) {
     const retrieval = retrieveApprovedKnowledge({ query: text, items: knowledgeItems, approvalManifest: activeApprovalManifest, limit: 3 });
     if (retrieval.status !== 'results_found') {
       return deepFreeze({
