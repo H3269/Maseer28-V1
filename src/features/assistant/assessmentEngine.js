@@ -1,4 +1,5 @@
 import { ASSESSMENT_CONTEXT_VERSION, extractConservativeAssessmentEvidence } from './assessmentLanguageContext.v1.js';
+import { validateAssistantContext } from './assistantContext.v1.js';
 import { assessmentTopicRuleRegistry } from './assessmentTopicRuleRegistry.v1.js';
 
 // Fail closed: lexical topic hints remain unavailable until the registry itself
@@ -103,8 +104,13 @@ function classifySafetyAnswer(text) {
   return 'clarification_needed';
 }
 
-export function createAssessmentSession({ localOnly = true } = {}) {
+export function createAssessmentSession({ localOnly = true, assistantContext = null, consentState = {} } = {}) {
   if (localOnly !== true) throw new Error('این موتور فقط برای پردازش محلی طراحی شده است؛ ارسال ابری در این نسخه پشتیبانی نمی‌شود.');
+  let validatedContext = null;
+  if (assistantContext) {
+    const validation = validateAssistantContext(assistantContext, { consentState });
+    if (validation.valid) validatedContext = assistantContext;
+  }
   return {
     schema_version: '1.0.0',
     protocol_id: 'maseer28-adaptive-intake',
@@ -116,6 +122,7 @@ export function createAssessmentSession({ localOnly = true } = {}) {
     candidate_topics: [],
     summary: null,
     processing: 'local_in_memory_only',
+    assistant_context: validatedContext,
   };
 }
 
@@ -123,12 +130,21 @@ export function getCurrentQuestion(session) {
   return session?.current_question ?? null;
 }
 
-export function submitAssessmentAnswer(session, answer) {
+export function submitAssessmentAnswer(session, answer, { consentState = {} } = {}) {
   if (!session || session.status !== 'in_progress') throw new Error('جلسه ارزیابی فعال نیست.');
   if (!session.current_question) throw new Error('پرسشی برای پاسخ‌گویی وجود ندارد.');
   const value = String(answer ?? '').trim();
   if (!value) throw new Error('پاسخ خالی است؛ می‌توانی بگویی «رد می‌کنم» یا جلسه را متوقف کنی.');
-  const next = { ...session, answers: { ...session.answers }, candidate_topics: [...session.candidate_topics], summary: session.summary ? { ...session.summary } : null };
+  const contextValidation = session.assistant_context
+    ? validateAssistantContext(session.assistant_context, { consentState })
+    : { valid: false };
+  const next = {
+    ...session,
+    assistant_context: contextValidation.valid ? session.assistant_context : null,
+    answers: { ...session.answers },
+    candidate_topics: [...session.candidate_topics],
+    summary: session.summary ? { ...session.summary } : null,
+  };
   const questionId = next.current_question.id;
   next.answers[questionId] = value;
 
@@ -226,7 +242,7 @@ export function submitAssessmentAnswer(session, answer) {
 
 export function stopAssessment(session) {
   if (!session) return null;
-  return { ...session, status: 'stopped_by_user', current_question: null, answers: {}, summary: null };
+  return { ...session, status: 'stopped_by_user', current_question: null, answers: {}, summary: null, assistant_context: null };
 }
 
 export function getAssessmentSummary(session) {
