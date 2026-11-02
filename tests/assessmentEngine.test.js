@@ -372,3 +372,31 @@ test('shared question definitions are immutable and cannot leak mutations across
   assert.throws(() => { getCurrentQuestion(first).prompt = 'mutated'; }, TypeError);
   assert.equal(getCurrentQuestion(second).prompt, 'دوست داری درباره چه مسئله‌ای صحبت کنیم؟ با زبان خودت توضیح بده؛ لازم نیست از بین موضوعات اپ چیزی انتخاب کنی.');
 });
+
+
+test('general strategy request is not silently converted into a personal assessment', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'چه راهکاری برای اضطراب وجود دارد؟');
+  assert.equal(session.current_question.id, 'intent_scope');
+  session = answer(session, 'عمومی');
+  assert.equal(session.status, 'information_request_not_supported');
+  assert.equal(session.current_question, null);
+  assert.equal(session.next_step.content_available, false);
+});
+
+test('personal strategy request enters safety-gated intake only after scope confirmation', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'چه راهکاری برای اضطراب وجود دارد؟');
+  session = answer(session, 'برای تجربه شخصی خودم می‌پرسم');
+  assert.equal(session.current_question.id, 'safety_now');
+  assert.match(session.answers.open_problem, /تجربه شخصی/);
+});
+
+test('ambiguous scope answer stops without generating a guessed response', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'چه راهکاری برای اضطراب وجود دارد؟');
+  session = answer(session, 'نمی‌دانم');
+  assert.equal(session.status, 'intent_scope_unclear');
+  assert.equal(session.current_question, null);
+  assert.equal(session.next_step.content_available, false);
+});
