@@ -72,6 +72,21 @@ function detectSafetyCue(text) {
   return SAFETY_CUES.some((cue) => normalized.includes(normalize(cue)));
 }
 
+export function classifySafetyDomains(text) {
+  const value = normalize(text);
+  const domains = [];
+  if (/(خودکشی|خودم را بکشم|خودمو بکشم|به خودم آسیب|خودزنی|خودآسیبی|کاش بمیرم|نمی خواهم زنده باشم|نمی خوام زنده باشم)/.test(value)) {
+    domains.push('risk_of_self_harm');
+  }
+  if (/(به کسی آسیب|به او آسیب|او را بکشم|تهدید به قتل|می خواهم کسی را بکشم|می خواهم به دیگران آسیب)/.test(value)) {
+    domains.push('risk_of_harm_to_others');
+  }
+  if (/(خشونت خانگی|در خانه امن نیستم|خانه امن نیست|تهدیدم کرد|تهدیدم می کند|مورد ضرب و شتم|از طرف .* تهدید|کسی مرا تهدید)/.test(value)) {
+    domains.push('risk_from_another_person');
+  }
+  return domains.length ? domains : ['domain_not_yet_determined'];
+}
+
 function detectTopics(text) {
   const normalized = normalize(text);
   const hits = [];
@@ -277,7 +292,8 @@ export function submitAssessmentAnswer(session, answer) {
       next.current_question = null;
       next.referral = {
         priority: 'urgent',
-        instruction: 'از اینجا ارزیابی خودکار را متوقف می‌کنیم. اگر خطر در همین لحظه وجود دارد، در صورت امکان به مکان امن برو، تنها نمان و با خدمات اورژانسی محل زندگی یا فرد قابل اعتماد تماس بگیر. اگر تهدید از سوی شخص دیگری است، از مواجهه مستقیم با او خودداری کن و از یک فرد یا مرکز حمایتی امن کمک بگیر.',
+        safety_domains: classifySafetyDomains(value),
+        instruction: 'از اینجا ارزیابی خودکار را متوقف می‌کنیم. این ابزار نوع و شدت خطر را به‌طور معتبر ارزیابی نمی‌کند. اگر خطر در همین لحظه وجود دارد، در صورت امکان به مکان امن برو و با خدمات اورژانسی محل زندگی یا فرد قابل اعتماد تماس بگیر. اگر تهدید از سوی شخص دیگری است، از مواجهه مستقیم با او خودداری کن و از یک فرد یا مرکز حمایتی امن کمک بگیر.',
       };
       return next;
     }
@@ -292,7 +308,10 @@ export function submitAssessmentAnswer(session, answer) {
       next.current_question = null;
       next.referral = {
         priority: 'urgent',
-        instruction: 'این ابزار جایگزین کمک فوری نیست. اگر خطر در همین الآن وجود دارد، از موقعیت خطر فاصله بگیر، تنها نمان، با خدمات اورژانسی محل زندگی یا فرد قابل اعتماد تماس بگیر و در صورت امکان به نزدیک‌ترین مرکز درمانی مراجعه کن.',
+        safety_domains: questionId === 'safety_now' || questionId === 'safety_clarification'
+          ? classifySafetyDomains(next.answers.open_problem)
+          : ['domain_not_yet_determined'],
+        instruction: 'این ابزار جایگزین کمک فوری نیست و پاسخ مثبت به پرسش ترکیبی، نوع خطر را به‌تنهایی مشخص نمی‌کند. اگر خطر در همین الآن وجود دارد، از موقعیت خطر فاصله بگیر، تنها نمان و با خدمات اورژانسی محل زندگی یا فرد قابل اعتماد تماس بگیر. در صورت تهدید از سوی شخص دیگر، از مواجهه مستقیم با او خودداری کن و از حمایت امن کمک بگیر.',
       };
       return next;
     }
