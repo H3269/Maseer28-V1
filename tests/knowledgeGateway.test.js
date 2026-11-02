@@ -29,6 +29,21 @@ function manifestFor(item) {
   };
 }
 
+function manifestForMany(items) {
+  return {
+    schema_version: '1.0.0',
+    manifest_id: 'test-manifest-many',
+    status: 'active',
+    approved_items: items.map((item) => ({
+      item_id: item.item_id,
+      review_record_id: item.approval.review_record_id,
+      reviewer_role: item.approval.reviewer_role,
+      reviewed_at: item.approval.reviewed_at,
+      version: item.approval.version,
+    })),
+  };
+}
+
 test('draft or unreviewed knowledge is never retrieved', () => {
   const result = retrieveApprovedKnowledge({
     query: 'نگرانی درباره آینده',
@@ -82,7 +97,7 @@ test('invalid topic IDs and duplicate topic IDs cannot pass the approval gate', 
 test('empty queries and result limits are handled safely', () => {
   assert.equal(retrieveApprovedKnowledge({ query: '   ', items: [approved()], approvalManifest: manifestFor(approved()) }).status, 'insufficient_query');
   const items = Array.from({ length: 8 }, (_, index) => approved({ item_id: `K-${index}`, title: `نگرانی ${index}` }));
-  assert.equal(retrieveApprovedKnowledge({ query: 'نگرانی', items, approvalManifest: manifestFor(items[0]), limit: 100 }).results.length, 5);
+  assert.equal(retrieveApprovedKnowledge({ query: 'نگرانی', items, approvalManifest: manifestForMany(items), limit: 100 }).results.length, 5);
 });
 
 
