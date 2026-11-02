@@ -268,3 +268,25 @@ test('general information requests do not enter the personal assessment flow', (
   assert.equal(session.next_step.content_available, false);
   assert.ok(session.next_step.message.includes('به‌جای حدس‌زدن'));
 });
+
+
+test('new safety context interrupts a later intake answer and returns to the safety gate', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  assert.equal(session.current_question.id, 'impact');
+  session = answer(session, 'گاهی فکر آسیب زدن به خودم می‌آید ولی نمی‌خواهم انجام بدهم.');
+  assert.equal(session.current_question.id, 'safety_now');
+  assert.equal(session.safety_state, 'not_assessed');
+  assert.equal(session.safety_context_flag, true);
+});
+
+test('explicit immediate intent disclosed at any intake stage triggers human support pause', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  session = answer(session, 'امشب قصد دارم خودم را بکشم.');
+  assert.equal(session.status, 'paused_for_human_support');
+  assert.equal(session.current_question, null);
+  assert.equal(session.safety_state, 'urgent_human_support_recommended');
+});
