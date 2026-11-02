@@ -1,3 +1,5 @@
+import knowledgeCatalog from '../../../public/assistant/knowledge/items.v1.json';
+import approvalManifest from '../../../public/assistant/knowledge/approved-items.v1.json';
 import { routeSemanticIntake } from './intentContextRouter.js';
 import { retrieveApprovedKnowledge } from './knowledgeGateway.js';
 
@@ -12,7 +14,8 @@ function deepFreeze(value) {
  * Local-only turn router. It does not generate clinical advice or compose new
  * factual claims; knowledge answers are limited to approved source excerpts.
  */
-export function routeAssistantTurn({ text, knowledgeItems = [], approvalManifest = null, requestId = 'assistant-turn' } = {}) {
+export function routeAssistantTurn({ text, knowledgeItems = knowledgeCatalog.items, approvalManifest: suppliedApprovalManifest, requestId = 'assistant-turn' } = {}) {
+  const activeApprovalManifest = suppliedApprovalManifest ?? approvalManifest;
   const rawText = String(text ?? '').trim();
   if (!rawText) {
     return deepFreeze({ status: 'invalid_input', intake: null, message: 'برای شروع، یک پرسش یا توضیح کوتاه بنویس.', knowledge: [] });
@@ -51,7 +54,7 @@ export function routeAssistantTurn({ text, knowledgeItems = [], approvalManifest
   }
 
   if (intake.intent.label === 'general_information') {
-    const retrieval = retrieveApprovedKnowledge({ query: text, items: knowledgeItems, approvalManifest, limit: 3 });
+    const retrieval = retrieveApprovedKnowledge({ query: text, items: knowledgeItems, approvalManifest: activeApprovalManifest, limit: 3 });
     if (retrieval.status !== 'results_found') {
       return deepFreeze({
         status: 'knowledge_unavailable',
