@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { createLocalUserDataDeletionPlan, deleteLocalUserData, readLocalUserData } from '../src/features/privacy/localData.js';
-import { selectUserOwnedLibraryData } from '../src/features/privacy/indexedDbData.js';
+import { deleteIndexedDbUserData, readIndexedDbUserData, selectUserOwnedLibraryData } from '../src/features/privacy/indexedDbData.js';
 
 class MemoryStorage {
   constructor(entries = {}) { this.values = new Map(Object.entries(entries)); }
@@ -154,4 +154,85 @@ test('uncertain seed-like books and orphaned seed versions are preserved from de
   });
   assert.deepEqual(selected.books.map((book) => book.id), ['book-2']);
   assert.deepEqual(selected.versions, []);
+});
+
+
+const PRIVACY_TEST_DB = 'maseer28-library';
+const nativeIndexedDBAvailable = Boolean(globalThis.indexedDB);
+
+function requestResult(request) {
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error || new Error('IndexedDB test request failed'));
+  });
+}
+
+function transactionDone(transaction) {
+  return new Promise((resolve, reject) => {
+    transaction.oncomplete = resolve;
+    transaction.onerror = () => reject(transaction.error || new Error('IndexedDB test transaction failed'));
+    transaction.onabort = () => reject(transaction.error || new Error('IndexedDB test transaction aborted'));
+  });
+}
+
+async function removePrivacyTestDatabase() {
+  await new Promise((resolve, reject) => {
+    const request = indexedDB.deleteDatabase(PRIVACY_TEST_DB);
+    request.onsuccess = resolve;
+    request.onerror = () => reject(request.error);
+    request.onblocked = () => reject(new Error('IndexedDB test database deletion was blocked'));
+  });
+}
+
+test('IndexedDB export and deletion operate against a real IndexedDB implementation', { skip: !nativeIndexedDBAvailable }, async () => {
+  await removePrivacyTestDatabase();
+  const db = await requestResult(indexedDB.open(PRIVACY_TEST_DB, 1));
+  try {
+    if (!db.objectStoreNames.contains('books')) db.createObjectStore('books', { keyPath: 'id' });
+    if (!db.objectStoreNames.contains('versions')) db.createObjectStore('versions', { keyPath: 'id' });
+    if (!db.objectStoreNames.contains('settings')) db.createObjectStore('settings', { keyPath: 'key' });
+  } catch (error) {
+    db.close();
+    throw error;
+  }
+  const seedVersionId = 'seed-book-1-0123456789abcdef';
+  const writeTx = db.transaction(['books', 'versions', 'settings'], 'readwrite');
+  writeTx.objectStore('books').put({ id: 'book-1', legacyId: 1, activeVersionId: seedVersionId, title: 'کتاب عمومی' });
+  writeTx.objectStore('books').put({ id: 'book-user-1', title: 'کتاب شخصی' });
+  writeTx.objectStore('versions').put({ id: seedVersionId, bookId: 'book-1', source: 'seed' });
+  writeTx.objectStore('versions').put({ id: 'upload-book-1', bookId: 'book-1', source: 'upload' });
+  writeTx.objectStore('versions').put({ id: 'user-version-1', bookId: 'book-user-1', source: 'upload' });
+  writeTx.objectStore('settings').put({ key: 'seed-content-revision-v90', value: '90' });
+  writeTx.objectStore('settings').put({ key: 'reader-preference', value: 'large-text' });
+  await transactionDone(writeTx);
+  db.close();
+
+  try {
+    const exported = await readIndexedDbUserData();
+    assert.deepEqual(exported.stores.books.map((row) => row.id), ['book-user-1']);
+    assert.deepEqual(exported.stores.versions.map((row) => row.id).sort(), ['upload-book-1', 'user-version-1']);
+    assert.deepEqual(exported.stores.settings.map((row) => row.key), ['reader-preference']);
+
+    const result = await deleteIndexedDbUserData();
+    assert.equal(result.attempted, 4);
+    assert.equal(result.removed, 4);
+    assert.equal(result.remaining, 0);
+
+    const verifyDb = await requestResult(indexedDB.open(PRIVACY_TEST_DB));
+    try {
+      const verifyTx = verifyDb.transaction(['books', 'versions', 'settings'], 'readonly');
+      const [books, versions, settings] = await Promise.all([
+        requestResult(verifyTx.objectStore('books').getAll()),
+        requestResult(verifyTx.objectStore('versions').getAll()),
+        requestResult(verifyTx.objectStore('settings').getAll()),
+      ]);
+      assert.deepEqual(books.map((row) => row.id), ['book-1']);
+      assert.deepEqual(versions.map((row) => row.id), [seedVersionId]);
+      assert.deepEqual(settings.map((row) => row.key), ['seed-content-revision-v90']);
+    } finally {
+      verifyDb.close();
+    }
+  } finally {
+    await removePrivacyTestDatabase();
+  }
 });
