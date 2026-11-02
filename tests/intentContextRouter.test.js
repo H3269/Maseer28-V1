@@ -168,3 +168,11 @@ test('runtime has an explicit routing rule for each real topic and keeps T34 as 
   assert.deepEqual([...ROUTED_TOPIC_IDS].sort(), expected);
   assert.equal(ROUTED_TOPIC_IDS.includes('T34'), false);
 });
+
+
+test('educational questions containing safety terms do not trigger a personal safety interrogation', () => {
+  const result = routeSemanticIntake({ text: 'خودکشی چیست؟' });
+  assert.equal(result.intent.label, 'general_information');
+  assert.equal(result.next_question, null);
+  assert.equal(result.safety_handoff.handoff_required, false);
+});
