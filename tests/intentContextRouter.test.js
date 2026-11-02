@@ -97,3 +97,32 @@ test('active threat at home is separated from generic topic matching', () => {
   assert.equal(result.safety_handoff.handoff_required, true);
   assert.equal(result.next_question.purpose, 'safety_clarification');
 });
+
+
+test('router output conforms to nested enum and length constraints in the schema', () => {
+  const result = routeSemanticIntake({
+    text: 'من هم نگران آینده‌ام و هم از قضاوت دیگران می‌ترسم؛ می‌خواهم بدانم چه کار کنم.',
+    requestId: 'schema-case',
+    priorContext: { situational_facts: { impact: 'اختلال در تمرکز', duration: 'چند هفته' } },
+  });
+  assert.ok(schema.properties.intent.properties.label.enum.includes(result.intent.label));
+  assert.ok(schema.properties.intent.properties.ambiguity.enum.includes(result.intent.ambiguity));
+  assert.deepEqual(Object.keys(result.situational_facts).sort(), Object.keys(schema.properties.situational_facts.properties).sort());
+  assert.ok(result.topic_candidates.length <= schema.properties.topic_candidates.maxItems);
+  for (const item of result.topic_candidates) {
+    assert.match(item.topic_id, /^T(0[1-9]|[12][0-9]|3[0-4])$/);
+    assert.ok(['primary', 'accompanying', 'unknown'].includes(item.role));
+    assert.ok(['low', 'moderate', 'high', 'not_assessed'].includes(item.confidence_band));
+    assert.ok(item.evidence_quotes.length >= 1 && item.evidence_quotes.length <= 4);
+    assert.ok(typeof item.uncertainty_reason === 'string' || item.uncertainty_reason === null);
+  }
+  assert.ok(result.uncertainties.length <= 10);
+  assert.ok(result.contradictions.length <= 10);
+  if (result.next_question) {
+    assert.ok(schema.properties.next_question.properties.purpose.enum.includes(result.next_question.purpose));
+    assert.ok(result.next_question.text.length <= 500);
+    assert.ok(result.next_question.discriminates_between.length <= 3);
+  }
+  assert.equal(result.safety_handoff.trigger_evidence.length <= 5, true);
+  assert.ok(result.limitations.length >= 1 && result.limitations.length <= 10);
+});
