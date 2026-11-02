@@ -145,3 +145,10 @@ test('router bounds identifiers and rejects non-string situational facts safely'
   assert.equal(result.situational_facts.impact, null);
   assert.equal(result.situational_facts.duration, 'سه هفته');
 });
+
+
+test('describing difficulty explaining a personal issue is not misclassified as an information request', () => {
+  const result = routeSemanticIntake({ text: 'یک مسئله پیچیده دارم که نمی‌دانم چطور توضیح بدهم.' });
+  assert.equal(result.intent.label, 'share_experience');
+  assert.equal(result.next_question.purpose, 'topic_disambiguation');
+});
