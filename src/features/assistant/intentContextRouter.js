@@ -162,24 +162,27 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
     };
   }
 
-  const situationalFacts = priorContext.situational_facts ?? {};
+  const context = priorContext && typeof priorContext === 'object' ? priorContext : {};
+  const situationalFacts = context.situational_facts && typeof context.situational_facts === 'object' ? context.situational_facts : {};
+  const safeFact = (key) => typeof situationalFacts[key] === 'string' ? situationalFacts[key].trim().slice(0, 1000) || null : null;
+  const safeRequestId = String(requestId ?? 'local-request').trim().slice(0, 128) || 'local-request';
   const output = {
     schema_version: '1.0.0',
-    request_id: String(requestId || 'local-request'),
+    request_id: safeRequestId,
     intent: {
       label: intentLabel,
       ambiguity: (multiTopic || quotePresent || negationPresent || correctionPresent || topics.length === 0) ? 'high' : safetyContextPresent ? 'medium' : 'low',
     },
     semantic_summary: raw ? raw.slice(0, 600) : null,
     situational_facts: {
-      situation: situationalFacts.situation ?? null,
-      thought: situationalFacts.thought ?? null,
-      emotion: situationalFacts.emotion ?? null,
-      body_response: situationalFacts.body_response ?? null,
-      behavior: situationalFacts.behavior ?? null,
-      impact: situationalFacts.impact ?? null,
-      duration: situationalFacts.duration ?? null,
-      user_goal: situationalFacts.user_goal ?? null,
+      situation: safeFact('situation'),
+      thought: safeFact('thought'),
+      emotion: safeFact('emotion'),
+      body_response: safeFact('body_response'),
+      behavior: safeFact('behavior'),
+      impact: safeFact('impact'),
+      duration: safeFact('duration'),
+      user_goal: safeFact('user_goal'),
     },
     topic_candidates: topicCandidates,
     uncertainties,
