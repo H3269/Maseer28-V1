@@ -5,6 +5,7 @@ import { buttonLabel } from '../../shared/buttonLabel.jsx';
 import { fa, formatDate, normalizeDigits } from '../../shared/utils.js';
 import { APP_CONFIG, burdenScoreFromAnswers, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
 import { readLocalUserData, deleteLocalUserData } from '../privacy/localData.js';
+import { readIndexedDbUserData, deleteIndexedDbUserData } from '../privacy/indexedDbData.js';
 import AssessmentAssistant from '../assistant/AssessmentAssistant.jsx';
 
 // This prototype has no clinical validation. It stays hidden unless an experimental build explicitly enables it.
@@ -385,6 +386,7 @@ export function DailyResult({ day, journey, data, problem, sourceLabel, onDashbo
 export function Support({ content, onBack }) {
   const [help, setHelp] = useState('اگر اپ شما اجازه باز کردن مستقیم پیامک را ندهد، شماره با یک لمس کپی می‌شود.');
   const [privacyMessage, setPrivacyMessage] = useState('');
+  const [privacyBusy, setPrivacyBusy] = useState(false);
   const number = '09190889062';
   function legacyCopy(text, done) { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done?.(); } catch { /* noop */ } ta.remove(); }
   function copySupportNumber() { const done = () => setHelp('شماره ۰۹۱۹۰۸۸۹۰۶۲ کپی شد.'); if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(number).then(done).catch(() => legacyCopy(number, done)); else legacyCopy(number, done); }
