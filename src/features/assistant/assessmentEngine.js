@@ -13,6 +13,9 @@ const QUESTION = {
   safety_uncertain: { id: 'safety_clarification', stage: 'safety_check', prompt: 'منظورت از پاسخ قبلی برایم روشن نیست. آیا در همین الآن قصد، برنامه یا احتمال عملی آسیب‌زدن به خودت یا دیگری وجود دارد؟ می‌توانی بگویی «بله»، «نه» یا «مطمئن نیستم».' },
 };
 
+
+for (const question of Object.values(QUESTION)) Object.freeze(question);
+Object.freeze(QUESTION);
 function normalize(text) {
   return String(text ?? '')
     .normalize('NFKC')
