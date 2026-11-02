@@ -324,3 +324,23 @@ test('local deletion returns an empty remaining-key list after complete removal'
   assert.deepEqual(result.verificationErrors, []);
   assert.equal(result.removed.length, 2);
 });
+
+
+test('IndexedDB blocked-open fails clearly and closes a connection if it later succeeds', async () => {
+  const request = {};
+  const indexedDbApi = {
+    open(name) {
+      assert.equal(name, PRIVACY_TEST_DB);
+      return request;
+    },
+  };
+
+  const pending = readIndexedDbUserData(indexedDbApi);
+  request.onblocked();
+  await assert.rejects(pending, /مسدود شده است/);
+
+  let closed = false;
+  request.result = { close() { closed = true; } };
+  request.onsuccess();
+  assert.equal(closed, true);
+});
