@@ -5,6 +5,15 @@ const DAY_PHASES = {
   2: 'pattern_discrimination_and_context',
   3: 'functional_context_and_impact',
 };
+const REVIEWED_SUBTOPIC_MAPPINGS = new Map([
+  ['DRAFT_T14_D02', 'T14-S01'],
+  ['DRAFT_T14_D03', 'T14-S02'],
+  ['DRAFT_T19_D02', 'T19-S01'],
+  ['DRAFT_T23_D03', 'T23-S02'],
+  ['DRAFT_T32_D02', 'T32-S01'],
+  ['DRAFT_T33_D03', 'T33-S02'],
+]);
+
 const REQUIRED_DRAFT_FIELDS = [
   'learning_objective', 'mechanism_focus', 'exercise',
   'action', 'progress_measure', 'safety_and_limits',
@@ -66,6 +75,10 @@ export function validateContentRedesign({ queue, day1, day2, day3, topics, subto
       }
       if (topicNames.has(item.topic_id) && item.topic_name !== topicNames.get(item.topic_id)) {
         errors.push('draft topic name mismatch ' + item.content_id);
+      }
+      const reviewedSubtopicId = REVIEWED_SUBTOPIC_MAPPINGS.get(item.content_id);
+      if (reviewedSubtopicId && item.subtopic_id !== reviewedSubtopicId) {
+        errors.push('reviewed subtopic mapping mismatch ' + item.content_id);
       }
       if (subById.get(item.subtopic_id)?.topic_id !== item.topic_id) {
         errors.push('subtopic parent mismatch ' + item.content_id);
