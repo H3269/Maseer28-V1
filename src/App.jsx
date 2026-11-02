@@ -20,6 +20,7 @@ import {
   loadOnboardingComplete,
   loadUserProfile,
   migrateUserProfileFromJourney,
+  migrateUserProfileToV2,
   nextRequiredDay,
   recordTrustedStart,
   saveJourneyState,
@@ -66,7 +67,9 @@ function isPathSetupComplete(state) {
 
 function initialSnapshot() {
   const state = loadJourneyState();
-  const user = migrateUserProfileFromJourney(state) || loadUserProfile();
+  const legacyUser = migrateUserProfileFromJourney(state) || loadUserProfile();
+  const profileMigration = migrateUserProfileToV2(state);
+  const user = profileMigration.profile || legacyUser;
   // Restart policy: after onboarding is complete, every fresh app launch opens
   // the dashboard. An unfinished path setup always takes priority over baseline.
   let screen = 'dashboard';
