@@ -342,3 +342,16 @@ test('unconfirmed summary is not marked complete after two correction rounds', (
   assert.equal(session.current_question, null);
   assert.equal(session.next_step.content_available, false);
 });
+
+
+test('clarification recomputes candidates and does not retain a topic explicitly negated by the user', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  session = answer(session, 'در کارم تمرکز ندارم');
+  session = answer(session, 'چند هفته است');
+  session = answer(session, 'می‌خواهم مسئله را بفهمم');
+  session = answer(session, 'نه، اضطراب ندارم؛ مسئله اصلی من اهمال‌کاری است و کارها را عقب می‌اندازم.');
+  assert.equal(session.candidate_topics.some((item) => item.topic_id === 'T02'), false);
+  assert.equal(session.candidate_topics.some((item) => item.topic_id === 'T09'), true);
+});
