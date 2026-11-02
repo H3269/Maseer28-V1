@@ -9,7 +9,6 @@ import {
   assessmentEngineMetadata,
   classifySafetyAnswer,
   classifySafetyDomains,
-  classifySafetyDomains,
 } from '../src/features/assistant/assessmentEngine.js';
 
 function answer(session, value) {
