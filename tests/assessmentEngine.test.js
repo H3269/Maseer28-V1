@@ -407,6 +407,10 @@ test('assessment engine rejects tampered or incompatible session state', () => {
   assert.throws(() => submitAssessmentAnswer(unknownQuestion, 'پاسخ'), /شناسه پرسش معتبر نیست/);
   const malformedTopics = { ...createAssessmentSession(), candidate_topics: null };
   assert.throws(() => submitAssessmentAnswer(malformedTopics, 'پاسخ'), /داده‌های داخلی جلسه معتبر نیستند/);
+  const invalidCounter = { ...createAssessmentSession(), summary_revision_count: 9 };
+  assert.throws(() => submitAssessmentAnswer(invalidCounter, 'پاسخ'), /داده‌های داخلی جلسه معتبر نیستند/);
+  const invalidTopic = { ...createAssessmentSession(), candidate_topics: [{ topic_id: 'T99' }] };
+  assert.throws(() => submitAssessmentAnswer(invalidTopic, 'پاسخ'), /داده‌های داخلی جلسه معتبر نیستند/);
   const incompatibleVersion = { ...createAssessmentSession(), schema_version: '9.9.9' };
   assert.throws(() => submitAssessmentAnswer(incompatibleVersion, 'پاسخ'), /شناسه پرسش معتبر نیست/);
 });
