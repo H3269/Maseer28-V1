@@ -217,6 +217,14 @@ export function getCurrentQuestion(session) {
 export function submitAssessmentAnswer(session, answer) {
   if (!session || session.status !== 'in_progress') throw new Error('جلسه ارزیابی فعال نیست.');
   if (!session.current_question) throw new Error('پرسشی برای پاسخ‌گویی وجود ندارد.');
+  const knownQuestionIds = new Set(Object.values(QUESTION).map((question) => question.id));
+  if (session.schema_version !== '1.0.0' || !knownQuestionIds.has(session.current_question.id)) {
+    throw new Error('ساختار جلسه یا شناسه پرسش معتبر نیست؛ جلسه را از ابتدا آغاز کن.');
+  }
+  if (!session.answers || typeof session.answers !== 'object' || Array.isArray(session.answers)
+    || !Array.isArray(session.candidate_topics)) {
+    throw new Error('داده‌های داخلی جلسه معتبر نیستند؛ برای جلوگیری از ادامه با وضعیت خراب، جلسه متوقف شد.');
+  }
   const value = String(answer ?? '').trim();
   if (!value) throw new Error('پاسخ خالی است؛ می‌توانی بگویی «رد می‌کنم» یا جلسه را متوقف کنی.');
   if (value.length > 3000) throw new Error('پاسخ بیش از حد طولانی است؛ حداکثر ۳۰۰۰ نویسه مجاز است.');
