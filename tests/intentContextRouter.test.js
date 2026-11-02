@@ -86,6 +86,13 @@ test('informational requests do not create personal topic hypotheses', () => {
   assert.equal(result.next_question, null);
 });
 
+test('short direct educational questions are classified as general information', () => {
+  const result = routeSemanticIntake({ text: 'اضطراب چیست؟' });
+  assert.equal(result.intent.label, 'general_information');
+  assert.deepEqual(result.topic_candidates, []);
+  assert.equal(result.next_question, null);
+});
+
 test('a corrected meaning takes precedence over an earlier quoted label', () => {
   const result = routeSemanticIntake({ text: 'وقتی می‌گویم «از خودم متنفرم»، منظورم این است که از رفتار دیروزم خجالت می‌کشم.' });
   assert.equal(result.topic_candidates.some((item) => item.topic_id === 'T18'), false);
