@@ -51,8 +51,9 @@ export default function AssessmentAssistant({ journeyContext = {} }) {
     try { currentPreferences = loadPersonalizationPreferences(); } catch { /* defaults remain local and temporary */ }
     setPreferences(currentPreferences);
     let assistantContext = null;
+    let consentState = {};
     try {
-      const consentState = getConsentState();
+      consentState = getConsentState();
       const candidate = buildAssistantContext({
         journey: journeyContext,
         preferences: currentPreferences,
@@ -62,7 +63,7 @@ export default function AssessmentAssistant({ journeyContext = {} }) {
     } catch {
       assistantContext = null;
     }
-    const next = createAssessmentSession({ assistantContext, consentState: getConsentState() });
+    const next = createAssessmentSession({ assistantContext, consentState });
     setSession(next);
     setMessages([{ role: 'assistant', text: formatAssistantPrompt(getCurrentQuestion(next), currentPreferences) }]);
     setDraft('');
