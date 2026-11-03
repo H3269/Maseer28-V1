@@ -41,7 +41,7 @@ test('relationship safety skip records are explicit and never fabricate a score'
 test('relationship gate days in the actual T01 content have stable IDs and topic links', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const days = content.categories['خشم'].days;
-  for (const dayNumber of [10, 11, 17, 20, 21, 22]) {
+  for (const dayNumber of [10, 11, 17, 20, 21, 22, 23]) {
     const day = days.find((item) => item.day === dayNumber);
     assert.equal(day.topic_id, 'T01');
     assert.equal(getRelationshipSafetyGate(day)?.gateId, 'relationship-communication-safety-v1');
@@ -52,10 +52,14 @@ test('day screen and App wire relationship self-check, blocking, and safe skip',
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
   const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
   assert.match(ui, /getRelationshipSafetyGate\(data\)/);
+  assert.match(ui, /relationshipSafetyState\.dayKey === relationshipSafetyDayKey/);
+  assert.match(ui, /dayKey: relationshipSafetyDayKey/);
+  assert.doesNotMatch(ui, /setRelationshipSafetyResponse/);
   assert.match(ui, /isRelationshipSafetyConfirmed\(data, relationshipSafetyResponse\)/);
   assert.match(ui, /relationshipSafetyGate\.blockedMessage/);
   assert.match(ui, /onSkipRelationshipSafety\?\.\('unsafe'\)/);
   assert.match(app, /skipDayForRelationshipSafety\(response\)/);
   assert.match(app, /isRelationshipSafetyConfirmed\(activeDay, response\)/);
+  assert.match(app, /response !== 'unsafe'/);
   assert.match(app, /createRelationshipSafetySkipRecord\(activeDay/);
 });
