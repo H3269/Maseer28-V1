@@ -8,8 +8,9 @@ test('T01 day 10 provides a three-part, conditional pause plan', () => {
   assert.match(plan, /نشانه مکث/);
   assert.match(plan, /محل فاصله‌گیری/);
   assert.match(plan, /شرط بازگشت/);
-  assert.match(plan, /بازگشت فقط با تمایل آزادانه هر دو نفر/);
-  assert.match(plan, /اگر درباره مناسب‌بودن شرایط تردید داری/);
+  assert.match(plan, /ادامه گفتگو فقط با رضایت آزادانه هر دو نفر/);
+  assert.match(plan, /هیچ‌کس موظف به بازگشت فوری نیست/);
+  assert.match(plan, /اگر درباره امنیت یا رضایت آزادانه تردید داری/);
 });
 
 test('production topic name resolves T01 day 10 when runtime IDs omit topic metadata', () => {
