@@ -802,3 +802,47 @@ export function removeArchivedJourney(state, index) {
     state: { ...state, archive: archive.filter((_, itemIndex) => itemIndex !== index) },
   };
 }
+
+// Persist one archive deletion and verify the read-back before reporting success.
+// If storage fails, attempt a compensating restore of the exact original raw value.
+export function executeArchivedJourneyDeletion({
+  storage = globalThis.localStorage,
+  state,
+  index,
+} = {}) {
+  if (!storage || typeof storage.getItem !== 'function'
+    || typeof storage.setItem !== 'function' || typeof storage.removeItem !== 'function') {
+    return { removed: false, reason: 'storage_unavailable' };
+  }
+  const plan = removeArchivedJourney(state, index);
+  if (!plan.removed) return { removed: false, reason: 'invalid_index' };
+
+  let originalRaw;
+  try {
+    originalRaw = storage.getItem(JOURNEY_KEY);
+  } catch {
+    return { removed: false, reason: 'source_read_failed' };
+  }
+
+  const serialized = JSON.stringify(sanitizeJourneyState(plan.state));
+  try {
+    storage.setItem(JOURNEY_KEY, serialized);
+    const readBack = storage.getItem(JOURNEY_KEY);
+    const parsed = readBack ? JSON.parse(readBack) : null;
+    if (!parsed || JSON.stringify(sanitizeJourneyState(parsed)) !== serialized) {
+      throw new Error('archive deletion read-back mismatch');
+    }
+    return { removed: true, reason: 'verified', state: plan.state };
+  } catch {
+    try {
+      if (originalRaw === null) storage.removeItem(JOURNEY_KEY);
+      else storage.setItem(JOURNEY_KEY, originalRaw);
+      if (storage.getItem(JOURNEY_KEY) !== originalRaw) {
+        return { removed: false, reason: 'recovery_required' };
+      }
+      return { removed: false, reason: 'write_failed_rolled_back' };
+    } catch {
+      return { removed: false, reason: 'recovery_required' };
+    }
+  }
+}
