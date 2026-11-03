@@ -67,10 +67,16 @@ function isPathSetupComplete(state) {
 }
 
 function initialSnapshot() {
-  const state = loadJourneyState();
+  let state = loadJourneyState();
   const legacyUser = migrateUserProfileFromJourney(state) || loadUserProfile();
   const profileMigration = migrateUserProfileToV2(state);
   const user = profileMigration.profile || legacyUser;
+  // Execute only after the independent profile is available; failed preflight
+  // or storage verification leaves the legacy journey record untouched.
+  const privacyMigration = executeJourneyPrivacyMigration({ canonicalProfile: user });
+  if (privacyMigration.migrated && privacyMigration.reason === 'verified') {
+    state = loadJourneyState();
+  }
   // Restart policy: after onboarding is complete, every fresh app launch opens
   // the dashboard. An unfinished path setup always takes priority over baseline.
   let screen = 'dashboard';
