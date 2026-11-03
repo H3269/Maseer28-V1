@@ -79,6 +79,75 @@
         "Arousal-increasing activities were ineffective overall; findings do not support venting as an anger-management strategy."
       ],
       "limitations": "The pooled findings do not establish that a particular exercise is appropriate for every individual or clinical presentation; intervention fit and safety still require judgment."
+    },
+    {
+      "source_id": "SRC-ANXIETY-NHS-001",
+      "title": "Anxiety, fear or panic",
+      "publisher": "National Health Service (NHS)",
+      "source_type": "public_health_guidance",
+      "publication_date": null,
+      "url": "https://www.nhs.uk/mental-health/feelings-symptoms-behaviours/feelings-and-symptoms/anxiety-fear-panic/",
+      "relevant_claims": [
+        "Anxiety may affect physical sensations, thoughts, emotions and behaviour.",
+        "Small goals, calming breathing, social support and gradual re-engagement may help some people.",
+        "People should not self-diagnose; professional help is appropriate when coping is difficult or self-help is not helping."
+      ],
+      "limitations": "Public-facing guidance; symptom examples are not diagnostic criteria, and physical symptoms must not automatically be attributed to anxiety."
+    },
+    {
+      "source_id": "SRC-ANXIETY-NICE-CG113-001",
+      "title": "Generalised anxiety disorder and panic disorder in adults: management — Recommendations",
+      "publisher": "National Institute for Health and Care Excellence (NICE)",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2011-01-26",
+      "url": "https://www.nice.org.uk/guidance/cg113/chapter/Recommendations",
+      "relevant_claims": [
+        "Care should use a stepped-care approach and consider distress, functioning, comorbidity and individual circumstances.",
+        "For diagnosed GAD not improved by education and active monitoring, CBT-based self-help may be offered as a low-intensity option.",
+        "Self-help materials should be worked through systematically and are not equivalent to high-intensity clinician-delivered CBT."
+      ],
+      "limitations": "Guideline scope is adults with GAD or panic disorder in the UK; it does not validate this app's 28-day course or replace assessment and treatment planning."
+    },
+    {
+      "source_id": "SRC-ANXIETY-APA-001",
+      "title": "How psychologists help with anxiety disorders",
+      "publisher": "American Psychological Association",
+      "source_type": "professional_body_guidance",
+      "publication_date": "2023-11-30",
+      "url": "https://www.apa.org/topics/anxiety/disorders",
+      "relevant_claims": [
+        "Anxiety may interfere with work, school, relationships and everyday functioning.",
+        "CBT commonly combines understanding thought patterns with behavioural strategies.",
+        "Avoidance can reinforce anxiety; approaching feared situations should be planned collaboratively and not forced before a person has adequate skills."
+      ],
+      "limitations": "Public educational material; it describes professional treatment principles and does not authorize unsupervised exposure or diagnosis by an app."
+    },
+    {
+      "source_id": "SRC-ANXIETY-APA-UNCERTAINTY-001",
+      "title": "10 tips for dealing with the stress of uncertainty",
+      "publisher": "American Psychological Association",
+      "source_type": "professional_body_guidance",
+      "publication_date": "2026-01-06",
+      "url": "https://www.apa.org/topics/stress/uncertainty",
+      "relevant_claims": [
+        "Greater difficulty tolerating uncertainty may be associated with more anxiety and lower resilience.",
+        "Focusing on controllable actions, maintaining routines and seeking trusted support may help people respond to uncertainty."
+      ],
+      "limitations": "General stress education, not a treatment protocol or evidence that uncertainty tolerance can be changed by a fixed sequence of app exercises."
+    },
+    {
+      "source_id": "SRC-ANXIETY-CBT-GUIDELINE-001",
+      "title": "Clinical Practice Guidelines for Cognitive-Behavioral Therapies in Anxiety Disorders and Obsessive-Compulsive and Related Disorders",
+      "publisher": "Indian Journal of Psychiatry / PubMed Central",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2020-01-01",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7001348/",
+      "relevant_claims": [
+        "CBT approaches may include cognitive restructuring, self-monitoring, problem-solving and behavioural strategies.",
+        "Graded exposure and reducing excessive reassurance-seeking or over-preparation may be components of structured treatment.",
+        "Breathing retraining, relaxation or mindfulness may be adjunctive strategies rather than universal requirements."
+      ],
+      "limitations": "Guideline context and local clinical standards matter; it is not a substitute for an individualized formulation, clinician competence or supervision."
     }
   ]
 }
