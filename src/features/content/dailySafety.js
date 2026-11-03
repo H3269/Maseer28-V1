@@ -6,27 +6,29 @@ const CONTROL_CONTEXT_BY_SUBTOPIC = new Map([
   ['T31-S03', 'relationship_power_safety'],
 ]);
 
-export function getDailySafetyMode(day) {
-  if (!day || typeof day !== 'object') return 'routine';
-  const isControlTopic = (
+export function isControlTopicDay(day) {
+  return Boolean(day && typeof day === 'object' && (
     day.topic_id === 'T31'
     || LEGACY_CONTROL_TOPIC_ID.test(String(day.id || ''))
     || CANONICAL_CONTROL_TOPIC_ID.test(String(day.id || ''))
-  );
-  if (isControlTopic) {
-    const linkedContexts = (Array.isArray(day.subtopic_ids) ? day.subtopic_ids : [])
-      .map((subtopicId) => CONTROL_CONTEXT_BY_SUBTOPIC.get(subtopicId))
-      .filter(Boolean);
-    const hasSeparatedControlContext = (
-      day.review_status === 'approved'
-      && CONTROL_CONTEXT_BY_SUBTOPIC.has(day.subtopic_ids?.length === 1 ? day.subtopic_ids[0] : '')
-      && linkedContexts.length === 1
-      && linkedContexts[0] === day.control_context
-    );
+  ));
+}
+
+export function getControlContextForDay(day) {
+  if (!isControlTopicDay(day)) return null;
+  const subtopicIds = Array.isArray(day.subtopic_ids) ? day.subtopic_ids : [];
+  if (subtopicIds.length !== 1) return null;
+  const expectedContext = CONTROL_CONTEXT_BY_SUBTOPIC.get(subtopicIds[0]);
+  return expectedContext && day.control_context === expectedContext ? expectedContext : null;
+}
+
+export function getDailySafetyMode(day) {
+  if (!day || typeof day !== 'object') return 'routine';
+  if (isControlTopicDay(day)) {
     // "Control" conflates personal over-control with interpersonal coercive
     // control. Release only after an approved day is assigned to exactly one
     // explicit subtype; approval alone must not erase that distinction.
-    if (!hasSeparatedControlContext) return 'blocked';
+    if (day.review_status !== 'approved' || !getControlContextForDay(day)) return 'blocked';
   }
 
   // Risk metadata is not an approval. Any v2 record must carry an explicit
