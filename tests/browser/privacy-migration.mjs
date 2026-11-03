@@ -260,8 +260,46 @@ try {
     await page.close();
   }
 
+  // E7: a failed localStorage write must not dismiss the archive confirmation;
+  // the selected archive remains available for a safe retry.
+  {
+    const state = {
+      ...legacyJourney(),
+      archive: [{ pathId: 'archive-write-failure', profileData: { problem: 'stress' }, answers: { 1: 'KEEP-ON-FAILURE' }, completed: [1], final: { score: 4 } }],
+    };
+    const page = await openScenario('normal', state, {
+      name: 'کاربر خطای حذف', age: 33, gender: 'زن', phone: '09123456789',
+      medical: 'none', medicalNote: '', medication: 'no', medicationRisk: 'no',
+    });
+    await page.locator('#copyrightModal').waitFor({ state: 'visible' });
+    await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
+    await page.locator('#dashboard').waitFor({ state: 'visible' });
+    await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
+    await page.locator('#archiveList').waitFor({ state: 'visible' });
+    await page.locator('#archiveList .answerItem').first().getByRole('button', { name: /حذف این آرشیو/ }).click();
+    await page.evaluate(() => {
+      const nativeSetItem = Storage.prototype.setItem;
+      let failed = false;
+      Storage.prototype.setItem = function (key, value) {
+        if (key === 'maseer28_state' && !failed) {
+          failed = true;
+          throw new Error('simulated archive deletion write failure');
+        }
+        return nativeSetItem.call(this, key, value);
+      };
+    });
+    await page.locator('#archiveList .answerItem').first().getByRole('button', { name: 'بله، حذف شود' }).click();
+    await page.getByRole('heading', { name: 'حذف آرشیو تأیید نشد' }).waitFor({ state: 'visible' });
+    assert.equal(await page.locator('#archiveList .answerItem').count(), 1);
+    assert.equal(await page.locator('[aria-label="تأیید حذف آرشیو 1"]').count(), 1, 'confirmation must remain open after failed deletion');
+    const persisted = await page.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state') || '{}'));
+    assert.equal(persisted.archive[0].pathId, 'archive-write-failure');
+    assert.equal(persisted.archive[0].answers[1], 'KEEP-ON-FAILURE');
+    await page.close();
+  }
+
   assert.deepEqual(browserErrors, [], 'migration and archive deletion scenarios should not produce uncaught browser errors');
-  process.stdout.write('PASS: Chromium privacy migration, selective archive deletion, and retention-capacity scenarios E1-E6 (6 scenarios)\\n');
+  process.stdout.write('PASS: Chromium privacy migration, selective archive deletion, retention-capacity, and failure-retry scenarios E1-E7 (7 scenarios)\\n');
 } finally {
   await browser.close();
 }
