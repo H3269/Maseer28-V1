@@ -18,7 +18,7 @@ test('T01 day 10 content is consent-led and remains unapproved', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const day = content.categories['خشم'].days.find((item) => item.day === 10);
   assert.equal(day.review_status, 'pending_expert_review');
-  assert.match(day.exercise, /رضایت آزادانه هر دو نفر/);
+  assert.match(day.exercise, /هر دو نفر آزادانه رضایت دارند/);
   assert.match(day.exercise, /تعیین زمان بازگشت یا وعده ادامه گفتگو الزامی نیست/);
   assert.doesNotMatch(day.exercise, /زمان بازگشت واقع‌بینانه تعیین کن/);
   assert.match(day.actionText, /لازم نیست زمان بازگشت تعیین کنی/);
