@@ -4,10 +4,13 @@ import { readFile } from 'node:fs/promises';
 import { getDailySafetyMode, createHumanReviewSkipRecord } from '../src/features/content/dailySafety.js';
 
 test('daily safety mode distinguishes routine, caution, and human-review-only content', () => {
-  assert.equal(getDailySafetyMode({ risk_level: 'routine' }), 'routine');
-  assert.equal(getDailySafetyMode({ risk_level: 'caution' }), 'caution');
-  assert.equal(getDailySafetyMode({ risk_level: 'human_review_required' }), 'blocked');
-  assert.equal(getDailySafetyMode({ risk_level: 'unknown' }), 'blocked');
+  assert.equal(getDailySafetyMode({}), 'routine');
+  assert.equal(getDailySafetyMode({ risk_level: 'routine' }), 'blocked');
+  assert.equal(getDailySafetyMode({ risk_level: 'caution' }), 'blocked');
+  assert.equal(getDailySafetyMode({ risk_level: 'routine', review_status: 'approved' }), 'routine');
+  assert.equal(getDailySafetyMode({ risk_level: 'caution', review_status: 'approved' }), 'caution');
+  assert.equal(getDailySafetyMode({ risk_level: 'human_review_required', review_status: 'approved' }), 'blocked');
+  assert.equal(getDailySafetyMode({ risk_level: 'unknown', review_status: 'approved' }), 'blocked');
   assert.equal(getDailySafetyMode({ review_status: 'pending_expert_review' }), 'blocked');
   assert.equal(getDailySafetyMode({ risk_level: 'routine', review_status: 'pending_expert_review' }), 'blocked');
   assert.equal(getDailySafetyMode({ risk_level: 'caution', review_status: 'draft' }), 'blocked');
@@ -29,7 +32,7 @@ test('only human-review-required content can produce a non-scored skip record', 
   });
   assert.equal('score' in record, false);
   assert.equal('feedback' in record, false);
-  assert.throws(() => createHumanReviewSkipRecord({ id: 'T01-D10', risk_level: 'caution' }));
+  assert.throws(() => createHumanReviewSkipRecord({ id: 'T01-D10', risk_level: 'caution', review_status: 'approved' }));
   assert.throws(() => createHumanReviewSkipRecord({ id: 'T01-D27', risk_level: 'human_review_required' }, 'not-a-date'));
 });
 
