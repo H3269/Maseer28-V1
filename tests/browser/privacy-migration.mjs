@@ -31,15 +31,16 @@ function legacyJourney() {
   };
 }
 
-async function openScenario(mode = 'normal', state = legacyJourney(), independentProfile = null) {
+async function openScenario(mode = 'normal', state = legacyJourney(), independentProfile = null, legacyIndependentProfile = null) {
   const page = await browser.newPage();
   page.on('pageerror', (error) => browserErrors.push(String(error)));
-  await page.addInitScript(({ state, failureMode, independentProfile }) => {
+  await page.addInitScript(({ state, failureMode, independentProfile, legacyIndependentProfile }) => {
     // Seed each scenario once. addInitScript runs again on reload, so reseeding
     // here would silently restore deleted test data and invalidate persistence checks.
     if (!sessionStorage.getItem('__path28_scenario_seeded')) {
       localStorage.setItem('maseer28_state', JSON.stringify(state));
       if (independentProfile) localStorage.setItem('maseer28_user_profile_v2', JSON.stringify(independentProfile));
+      if (legacyIndependentProfile) localStorage.setItem('maseer28_user_profile_v1', JSON.stringify(legacyIndependentProfile));
       sessionStorage.setItem('__path28_scenario_seeded', '1');
     }
     const nativeSetItem = Storage.prototype.setItem;
@@ -64,7 +65,7 @@ async function openScenario(mode = 'normal', state = legacyJourney(), independen
         return nativeSetItem.call(this, key, value);
       };
     }
-  }, { state, independentProfile, failureMode: mode });
+  }, { state, independentProfile, legacyIndependentProfile, failureMode: mode });
   await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => {
     const root = document.querySelector('#root');
@@ -98,14 +99,19 @@ try {
 
   // E2/E3: migrate a legacy active profile and multiple archives; retain reports and path data.
   {
-    const page = await openScenario();
+    const page = await openScenario('normal', legacyJourney(), null, {
+      name: 'پروفایل مستقل قدیمی', age: 35, gender: 'زن', phone: '09123456789',
+      medical: 'none', medicalNote: 'TEST-PRIVATE-001', medication: 'no', medicationRisk: 'no',
+    });
     const result = await page.evaluate(() => ({
       journey: JSON.parse(localStorage.getItem('maseer28_state')),
       profile: JSON.parse(localStorage.getItem('maseer28_user_profile_v2')),
+      legacyProfile: localStorage.getItem('maseer28_user_profile_v1'),
       marker: localStorage.getItem('maseer28_profile_v2_migration_v1'),
     }));
     assert.equal(result.marker, '1');
-    assert.equal(result.profile.name, 'کاربر آزمایشی');
+    assert.equal(result.legacyProfile, null, 'superseded v1 profile data must be removed after verified migration');
+    assert.equal(result.profile.name, 'پروفایل مستقل قدیمی');
     assert.equal(result.profile.medicalNote, 'TEST-PRIVATE-001');
     assert.equal(result.journey.profileData.name, undefined);
     assert.equal(result.journey.profileData.medical, undefined);
