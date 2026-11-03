@@ -345,6 +345,35 @@ test('legacy profile cleanup requires verified v2 migration and preserves the ca
   });
 });
 
+test('legacy profile cleanup requires verified journey privacy migration before removing v1', async () => {
+  const {
+    removeLegacyUserProfileAfterVerifiedMigration,
+    JOURNEY_KEY, PROFILE_KEY, PROFILE_V2_KEY, PROFILE_V2_MIGRATION_KEY,
+  } = await import('../src/features/journey/journeyStore.js');
+  withMemoryStorage((data) => {
+    data.set(PROFILE_KEY, JSON.stringify({ name: 'نام قدیمی' }));
+    data.set(PROFILE_V2_KEY, JSON.stringify({ name: 'نام canonical' }));
+    data.set(PROFILE_V2_MIGRATION_KEY, '1');
+    data.set(JOURNEY_KEY, JSON.stringify({
+      profileData: { name: 'نام تکراری', medical: 'none', problem: 'anxiety' },
+      archive: [],
+    }));
+
+    const blocked = removeLegacyUserProfileAfterVerifiedMigration();
+    assert.deepEqual(blocked, { removed: false, reason: 'journey_privacy_migration_not_verified' });
+    assert.equal(data.has(PROFILE_KEY), true);
+
+    data.set(JOURNEY_KEY, JSON.stringify({
+      privacyMigrationVersion: 1,
+      profileData: { problem: 'anxiety' },
+      archive: [{ profileData: { problem: 'stress' } }],
+    }));
+    const result = removeLegacyUserProfileAfterVerifiedMigration();
+    assert.deepEqual(result, { removed: true, reason: 'verified' });
+    assert.equal(data.has(PROFILE_KEY), false);
+  });
+});
+
 test('legacy profile cleanup refuses to run when the verified canonical profile is missing', async () => {
   const {
     removeLegacyUserProfileAfterVerifiedMigration,
