@@ -49,6 +49,9 @@ if (new Set(evidenceSources.map((item) => item.source_id)).size !== evidenceSour
 });
 
 topics.forEach((topic, index) => {
+  for (const sourceId of topic.evidence_ids || []) {
+    if (!evidenceSourceIds.has(sourceId)) errors.push(`منبع ${sourceId} برای موضوع ${topic.topic_id} در رجیستری وجود ندارد.`);
+  }
   if (typeof topic.name !== 'string' || !topic.name.trim()) errors.push(`نام موضوع ${expectedIds[index]} خالی است.`);
   if (topic.display_order !== index + 1) errors.push(`ترتیب نمایشی ${expectedIds[index]} نامعتبر است.`);
   if (topic.definition_status !== 'pending_expert_review') errors.push(`تعریف موضوع ${expectedIds[index]} نباید پیش از بازبینی متخصص تأیید شود.`);
@@ -70,6 +73,10 @@ if (new Set(subtopics.map((item) => item.subtopic_id)).size !== subtopics.length
 subtopics.forEach((item) => {
   if (!topicIds.has(item.topic_id)) errors.push(`موضوع والد برای ${item.subtopic_id} وجود ندارد.`);
   if (item.definition_status !== 'pending_expert_review' || item.review_status !== 'draft') errors.push(`زیرموضوع ${item.subtopic_id} نباید تأییدشده تلقی شود.`);
+  if (!Array.isArray(item.evidence_ids)) errors.push(`فهرست منابع زیرموضوع ${item.subtopic_id} باید آرایه باشد.`);
+  for (const sourceId of item.evidence_ids || []) {
+    if (!evidenceSourceIds.has(sourceId)) errors.push(`منبع ${sourceId} برای زیرموضوع ${item.subtopic_id} در رجیستری وجود ندارد.`);
+  }
 });
 for (const topic of topics) {
   const linked = topic.subtopic_ids || [];
