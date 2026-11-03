@@ -170,6 +170,9 @@ try {
     assert.deepEqual(result.journey.archive, []);
     assert.equal(result.journey.archiveRecoveryRequired.legacy.profileData.name, 'هویت آرشیو قدیمی');
     assert.equal(result.journey.archiveRecoveryRequired.legacy.profileData.medical, 'other');
+    await page.getByRole('button', { name: /آرشیو مسیرهای قبلی/ }).click();
+    await page.getByText('بازیابی آرشیو لازم است').waitFor();
+    assert.equal(await page.getByRole('button', { name: /شروع مسیر تازه/ }).isDisabled(), true);
     await page.close();
   }
 
