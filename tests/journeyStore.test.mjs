@@ -289,7 +289,7 @@ test('legacy journey privacy migration strips identity and health from current a
   const result = prepareJourneyPrivacyMigration(raw, canonical);
   assert.equal(result.ready, true);
   assert.equal(result.reason, 'preflight_passed');
-  assert.deepEqual(Object.keys(result.state.profileData).sort(), ['durationMonths', 'durationYears', 'goal', 'problem']);
+  assert.deepEqual(Object.keys(result.state.profileData).sort(), ['code', 'durationMonths', 'durationYears', 'goal', 'problem']);
   assert.deepEqual(Object.keys(result.state.archive[0].profileData).sort(), ['durationMonths', 'durationYears', 'goal', 'problem']);
   assert.equal(result.state.profileData.problem, 'anxiety');
   assert.equal(result.state.archive[0].profileData.problem, 'stress');
