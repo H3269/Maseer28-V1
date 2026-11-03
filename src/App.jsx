@@ -583,6 +583,12 @@ function navigate(next) {
   }
 
   async function skipDayForRelationshipSafety(response) {
+    if (getDailySafetyMode(activeDay) === 'blocked') {
+      return showValidation(
+        ['این روز به دلیل نیاز به بازبینی انسانی باید از مسیر «عدم اجرا به دلیل بازبینی انسانی» ثبت شود، نه گیت ایمنی رابطه.'],
+        'بازبینی انسانی لازم است'
+      );
+    }
     if (!getRelationshipSafetyGate(activeDay) || response !== 'unsafe' || isRelationshipSafetyConfirmed(activeDay, response)) {
       return showValidation(['این روز شرایط ثبت عدم اجرا بر اساس دروازه ایمنی رابطه را ندارد.'], 'این روز قابل رد ایمنی نیست');
     }
