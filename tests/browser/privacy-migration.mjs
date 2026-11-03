@@ -370,13 +370,15 @@ try {
     assert.equal(await page.evaluate(() => localStorage.getItem('maseer28_restore_ui_marker')), null, 'cancel must not mutate storage');
     await picker.setInputFiles(file);
     await page.getByText('پیش‌نمایش فایل معتبر').waitFor({ state: 'visible' });
+    const reloadAfterRestore = page.waitForEvent('load', { timeout: 10000 });
     page.once('dialog', (dialog) => dialog.accept());
     await page.getByRole('button', { name: 'بازیابی نسخه پشتیبان' }).click();
     await page.waitForFunction(() => {
       try { return JSON.parse(localStorage.getItem('maseer28_restore_ui_marker') || 'null')?.marker === 'RESTORE-UI-OK'; }
       catch { return false; }
     }, null, { timeout: 10000 });
-    await page.locator('#home').waitFor({ state: 'visible', timeout: 10000 });
+    await reloadAfterRestore;
+    assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('maseer28_restore_ui_marker')).marker), 'RESTORE-UI-OK', 'restored data must persist after reload');
     await page.close();
   }
 
