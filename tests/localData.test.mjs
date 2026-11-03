@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { createLocalUserDataDeletionPlan, deleteLocalUserData, readLocalUserData } from '../src/features/privacy/localData.js';
 import { deleteIndexedDbUserData, readIndexedDbUserData, readIndexedDbSnapshot, selectUserOwnedLibraryData } from '../src/features/privacy/indexedDbData.js';
 import { createPrivacyBackup, validatePrivacyBackup, createPrivacyRestorePreview, restorePrivacyBackup, PRIVACY_BACKUP_POLICY } from '../src/features/privacy/privacyBackup.js';
+import { executeCompleteLocalDataDeletion } from '../src/features/privacy/dataDeletion.js';
 
 class MemoryStorage {
   constructor(entries = {}) { this.values = new Map(Object.entries(entries)); }
@@ -656,4 +657,137 @@ test('controlled restore reports recovery_required when localStorage compensatio
       request.onerror = () => reject(request.error);
     });
   }
+});
+
+
+async function createDeletionFixture(api) {
+  const request = api.open('maseer28-library', 1);
+  request.onupgradeneeded = () => {
+    const db = request.result;
+    db.createObjectStore('books', { keyPath: 'id' });
+    const versions = db.createObjectStore('versions', { keyPath: 'id' });
+    versions.createIndex('bookId', 'bookId', { unique: false });
+    db.createObjectStore('settings', { keyPath: 'key' });
+  };
+  const db = await new Promise((resolve, reject) => {
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+  const tx = db.transaction(['books', 'versions', 'settings'], 'readwrite');
+  tx.objectStore('books').put({ id: 'book-user-1', title: 'کتاب شخصی' });
+  tx.objectStore('versions').put({ id: 'version-user-1', bookId: 'book-user-1', source: 'upload' });
+  tx.objectStore('books').put({ id: 'book-1', legacyId: 1, activeVersionId: 'seed-book-1-v1' });
+  tx.objectStore('versions').put({ id: 'seed-book-1-v1', bookId: 'book-1', source: 'seed' });
+  tx.objectStore('settings').put({ key: 'reader-preference', value: 'large' });
+  tx.objectStore('settings').put({ key: 'seed-content-revision-v90', value: '90' });
+  await new Promise((resolve, reject) => {
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error);
+  });
+  db.close();
+}
+
+test('coordinated local deletion verifies both stores and preserves public seed and unrelated data', async () => {
+  const api = new IDBFactory();
+  await createDeletionFixture(api);
+  const storage = new MemoryStorage({
+    maseer28_state: '{"private":true}',
+    maseer28_user_profile_v2: '{"name":"نمونه"}',
+    maseer28_copyright_v60: '1',
+    unrelated: 'keep',
+  });
+  try {
+    const result = await executeCompleteLocalDataDeletion({ storage, indexedDBApi: api });
+    assert.equal(result.deleted, true);
+    assert.equal(result.status, 'complete');
+    assert.equal(result.stores.localStorage.verified, true);
+    assert.equal(result.stores.indexedDB.verified, true);
+    assert.equal(storage.getItem('maseer28_state'), null);
+    assert.equal(storage.getItem('maseer28_user_profile_v2'), null);
+    assert.equal(storage.getItem('maseer28_copyright_v60'), '1');
+    assert.equal(storage.getItem('unrelated'), 'keep');
+    const db = await new Promise((resolve, reject) => {
+      const request = api.open('maseer28-library');
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      const tx = db.transaction(['books', 'versions', 'settings'], 'readonly');
+      const [books, versions, settings] = await Promise.all([
+        new Promise((resolve, reject) => { const r=tx.objectStore('books').getAll(); r.onsuccess=()=>resolve(r.result); r.onerror=()=>reject(r.error); }),
+        new Promise((resolve, reject) => { const r=tx.objectStore('versions').getAll(); r.onsuccess=()=>resolve(r.result); r.onerror=()=>reject(r.error); }),
+        new Promise((resolve, reject) => { const r=tx.objectStore('settings').getAll(); r.onsuccess=()=>resolve(r.result); r.onerror=()=>reject(r.error); }),
+      ]);
+      assert.deepEqual(books.map((row) => row.id), ['book-1']);
+      assert.deepEqual(versions.map((row) => row.id), ['seed-book-1-v1']);
+      assert.deepEqual(settings.map((row) => row.key), ['seed-content-revision-v90']);
+    } finally { db.close(); }
+  } finally {
+    await new Promise((resolve, reject) => {
+      const request = api.deleteDatabase('maseer28-library');
+      request.onsuccess = resolve;
+      request.onerror = () => reject(request.error);
+    });
+  }
+});
+
+test('coordinated deletion reports partial_delete when localStorage retains a key but IndexedDB deletion verifies', async () => {
+  const api = new IDBFactory();
+  await createDeletionFixture(api);
+  const storage = new MemoryStorage({ maseer28_state: '{}', maseer28_profile: '{}' });
+  const originalRemove = storage.removeItem.bind(storage);
+  storage.removeItem = (key) => {
+    if (key === 'maseer28_profile') throw new Error('simulated remove denial');
+    originalRemove(key);
+  };
+  try {
+    const result = await executeCompleteLocalDataDeletion({ storage, indexedDBApi: api });
+    assert.equal(result.deleted, false);
+    assert.equal(result.status, 'partial_delete');
+    assert.equal(result.stores.localStorage.verified, false);
+    assert.deepEqual(result.stores.localStorage.remaining, 1);
+    assert.equal(result.stores.indexedDB.verified, true);
+    assert.equal(storage.getItem('maseer28_state'), null);
+    assert.equal(storage.getItem('maseer28_profile'), '{}');
+  } finally {
+    await new Promise((resolve, reject) => {
+      const request = api.deleteDatabase('maseer28-library');
+      request.onsuccess = resolve;
+      request.onerror = () => reject(request.error);
+    });
+  }
+});
+
+test('coordinated deletion aborts before mutation when IndexedDB preflight fails', async () => {
+  const storage = new MemoryStorage({ maseer28_state: '{}' });
+  const api = { open() { throw new Error('IndexedDB unavailable'); } };
+  const result = await executeCompleteLocalDataDeletion({ storage, indexedDBApi: api });
+  assert.equal(result.deleted, false);
+  assert.equal(result.status, 'preflight_failed');
+  assert.equal(storage.getItem('maseer28_state'), '{}');
+});
+
+test('coordinated deletion reports recovery_required when IndexedDB fails after localStorage was cleared', async () => {
+  const storage = new MemoryStorage({ maseer28_state: '{}' });
+  const api = new IDBFactory();
+  let opens = 0;
+  const failingAfterPreflight = {
+    open(name) {
+      opens += 1;
+      if (opens === 1) return api.open(name);
+      const request = {};
+      queueMicrotask(() => {
+        request.error = new Error('simulated IndexedDB delete-stage open failure');
+        request.onerror?.();
+      });
+      return request;
+    },
+  };
+  const result = await executeCompleteLocalDataDeletion({ storage, indexedDBApi: failingAfterPreflight });
+  assert.equal(result.deleted, false);
+  assert.equal(result.status, 'recovery_required');
+  assert.equal(result.stores.localStorage.verified, true);
+  assert.equal(result.stores.indexedDB.verified, false);
+  assert.equal(storage.getItem('maseer28_state'), null);
 });
