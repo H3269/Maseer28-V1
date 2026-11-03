@@ -255,6 +255,89 @@
         "The authors reported high between-study heterogeneity and high risk of bias in half of the included studies."
       ],
       "limitations": "The sample is women presenting to emergency departments, not a general-population sample. The findings cannot predict an individual's risk, should not be generalized to all genders or settings, and support contextualized human assessment rather than automated risk scoring."
+    },
+    {
+      "source_id": "SRC-ER-SACCARO-2024-001",
+      "title": "Interventions targeting emotion regulation: A systematic umbrella review",
+      "authors": [
+        "Luigi F. Saccaro",
+        "Alexis Giff",
+        "Maurilio Menduni De Rossi",
+        "Camille Piguet"
+      ],
+      "publisher": "Journal of Psychiatric Research",
+      "source_type": "systematic_umbrella_review",
+      "publication_date": "2024-06",
+      "epub_date": "2024-04-18",
+      "doi": "10.1016/j.jpsychires.2024.04.025",
+      "pmid": "38677089",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38677089/",
+      "relevant_claims": [
+        "The umbrella review synthesized 21 systematic reviews, including 11 meta-analyses, on psychotherapeutic interventions targeting emotion dysregulation.",
+        "CBT and DBT showed evidence of reducing emotion dysregulation across adult transdiagnostic psychiatric populations and healthy participants."
+      ],
+      "limitations": "The review reported moderate overall risk of bias. It does not validate this 28-day course, any specific daily prompt, or a stand-alone app as CBT or DBT; evidence in children and adolescents was sparse."
+    },
+    {
+      "source_id": "SRC-ANGER-MINDFULNESS-ER-2026-001",
+      "title": "The effects of mindfulness-based interventions on emotion regulation/dysregulation in people with mental health conditions: A systematic review and meta-analysis",
+      "authors": [
+        "Thomas Easdale-Cheele",
+        "George Nash",
+        "Veronika Filobokova",
+        "Chloe Westbury",
+        "Alessio Bellato"
+      ],
+      "publisher": "JCPP Advances",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2026-02-12",
+      "doi": "10.1002/jcv2.70103",
+      "url": "https://doi.org/10.1002/jcv2.70103",
+      "relevant_claims": [
+        "The review identified 19 randomized trials, with 16 studies and 988 participants included in meta-analyses of mindfulness-based interventions for diagnosed mental health conditions.",
+        "Pooled findings favored mindfulness-based interventions for cognitive reappraisal and overall emotion dysregulation; effects on expressive suppression were not statistically significant."
+      ],
+      "limitations": "The trials evaluated structured mindfulness-based interventions in diagnosed clinical populations, not a brief standalone app prompt or an anger-specific 28-day program. Study quality moderated some outcomes, and evidence for younger populations was limited."
+    },
+    {
+      "source_id": "SRC-DMHI-SAFETY-TAHER-2023-001",
+      "title": "The Safety of Digital Mental Health Interventions: Systematic Review and Recommendations",
+      "authors": [
+        "Rayan Taher",
+        "Che-Wei Hsu",
+        "Chloe Hampshire",
+        "Carolina Fialho",
+        "Clare Heaysman",
+        "Daniel Stahl",
+        "Sukhi Shergill",
+        "Jenny Yiend"
+      ],
+      "publisher": "JMIR Mental Health",
+      "source_type": "systematic_review_digital_health_safety",
+      "publication_date": "2023-10-09",
+      "doi": "10.2196/47433",
+      "pmid": "37812471",
+      "pmcid": "PMC10594135",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37812471/",
+      "relevant_claims": [
+        "The review included 23 studies of digital mental health intervention safety in adults.",
+        "Eight of 23 studies did not collect safety data; symptom deterioration was the main reported treatment-related adverse event.",
+        "The authors called for standardized adverse-event classification, consistent safety measurement, and evidence-based risk mitigation in research and post-market use."
+      ],
+      "limitations": "The review covered English-language adult clinical digital mental health interventions and does not supply a validated risk algorithm for this app. Safety processes must be adapted, tested, and monitored for the actual service and user population."
+    },
+    {
+      "source_id": "SRC-DMHI-NSQDMH-2026-001",
+      "title": "National Safety and Quality Digital Mental Health Standards",
+      "publisher": "Australian Commission on Safety and Quality in Health Care",
+      "source_type": "digital_mental_health_quality_standard",
+      "publication_date": "2026-04-29",
+      "url": "https://www.safetyandquality.gov.au/national-standards/digital-mental-health-standards",
+      "relevant_claims": [
+        "The standards describe governance and operational processes for safe, high-quality digital mental health services.",
+        "Related action guides cover information security, privacy, partnering with service users, incident management and open disclosure, and healthcare rights."
+      ],
+      "limitations": "This is an Australian service-quality standard and a useful governance benchmark, not automatic certification or legal compliance for this project in other jurisdictions. Applicability must be assessed against the actual operating model and local law."
     }
   ]
 }
