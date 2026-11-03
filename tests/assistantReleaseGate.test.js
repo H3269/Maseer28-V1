@@ -13,6 +13,7 @@ const approvalManifestSchema = JSON.parse(await readFile(new URL('../public/assi
 const knowledgeCatalog = JSON.parse(await readFile(new URL('../public/assistant/knowledge/items.v1.json', import.meta.url), 'utf8'));
 const approvalManifest = JSON.parse(await readFile(new URL('../public/assistant/knowledge/approved-items.v1.json', import.meta.url), 'utf8'));
 const publishWorkflow = await readFile(new URL('../.github/workflows/publish-tested-version.yml', import.meta.url), 'utf8');
+const pagesDeployWorkflow = await readFile(new URL('../.github/workflows/deploy.yml', import.meta.url), 'utf8');
 const productionContentGate = await readFile(new URL('../scripts/assert-production-content-approved.mjs', import.meta.url), 'utf8');
 
 test('experimental assistant remains disabled unless explicitly enabled in a build', () => {
@@ -110,4 +111,14 @@ test('assistant chat styling distinguishes speaker bubbles and keeps composer in
   assert.match(css, /\.userMessage\s*\{/);
   assert.match(css, /\.assistantComposer\s*\{/);
   assert.match(css, /\.assistantSendButton\s*\{/);
+});
+
+
+test('GitHub Pages deployment is manual, defaults to no release, and requires the production content gate', () => {
+  assert.match(pagesDeployWorkflow, /workflow_dispatch:/);
+  assert.doesNotMatch(pagesDeployWorkflow, /^\\s+push:/m);
+  assert.match(pagesDeployWorkflow, /confirm_public_release/);
+  assert.match(pagesDeployWorkflow, /default:\\s*["']no["']/);
+  assert.match(pagesDeployWorkflow, /inputs\\.confirm_public_release\\s*==\\s*'yes'/);
+  assert.match(pagesDeployWorkflow, /npm run assert:production-content/);
 });

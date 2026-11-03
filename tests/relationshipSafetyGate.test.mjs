@@ -73,4 +73,9 @@ test('day screen and App wire relationship self-check, blocking, and safe skip',
   assert.match(app, /isRelationshipSafetyConfirmed\(activeDay, response\)/);
   assert.match(app, /response !== 'unsafe'/);
   assert.match(app, /createRelationshipSafetySkipRecord\(activeDay/);
+  assert.match(ui, /relationshipSafetyConfirmed/);
+  assert.match(app, /relationshipSafetyConfirmed !== true/);
+  const humanReviewGateIndex = ui.indexOf('if (requiresHumanReview) return');
+  const relationshipGateIndex = ui.indexOf('if (relationshipSafetyGate && !relationshipSafetyConfirmed) return');
+  assert.ok(humanReviewGateIndex >= 0 && relationshipGateIndex >= 0 && humanReviewGateIndex < relationshipGateIndex, 'human-review blocking must precede the relationship self-check');
 });

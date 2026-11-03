@@ -504,7 +504,10 @@ function navigate(next) {
     return null;
   }
 
-  async function completeDay({ answer, score, feedback }) {
+  async function completeDay({ answer, score, feedback, relationshipSafetyConfirmed = false }) {
+    if (getRelationshipSafetyGate(activeDay) && relationshipSafetyConfirmed !== true) {
+      return showValidation(['برای ثبت این تمرین، تأیید صریح ایمنی در همین روز لازم است.'], 'تأیید ایمنی لازم است');
+    }
     const alreadyCompleted = (journey.completed || []).includes(currentDay);
     if (alreadyCompleted) return showValidation(['نتیجه این روز قبلاً ثبت نهایی شده و قابل ویرایش نیست.'], 'این روز قبلاً تکمیل شده است');
     if (currentDay !== nextRequiredDay(journey)) {

@@ -33,7 +33,7 @@ test('T01 day 27 is explicitly withheld for human review', async () => {
   const day = content.categories['خشم'].days.find((item) => item.day === 27);
   assert.equal(day.risk_level, 'human_review_required');
   assert.equal(day.review_status, 'pending_expert_review');
-  assert.match(day.when_to_seek_human_support, /خطر فوری/);
+  assert.match(day.when_to_seek_human_support, /فوراً از خدمات اضطراری/);
 });
 
 test('day screen wires human-review blocking and caution metadata into the interface', async () => {
