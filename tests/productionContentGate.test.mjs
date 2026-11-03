@@ -33,12 +33,16 @@ function fixture() {
     topicsRegistry: {
       topics: [{
         topic_id: 'T01', name: 'موضوع آزمایشی',
+        definition: 'تعریف آزمایشیِ تأییدشده',
+        definition_status: 'approved', review_status: 'approved',
         content_ids: ['T01-D01'], draft_content_ids: [],
       }],
     },
     subtopicsRegistry: {
       subtopics: [{
         subtopic_id: 'T01-S01', topic_id: 'T01',
+        definition: 'تعریف زیرموضوع آزمایشیِ تأییدشده',
+        definition_status: 'approved', review_status: 'approved',
         content_ids: ['T01-D01'], draft_content_ids: [],
       }],
     },
@@ -61,6 +65,26 @@ test('production content gate blocks draft daily units even when they are linked
   data.subtopicsRegistry.subtopics[0].draft_content_ids = ['T01-D01'];
   const errors = validateProductionContent(data);
   assert.ok(errors.some((item) => item.includes('not expert-approved')));
+});
+
+test('production content gate rejects approved days with unapproved topic definitions', () => {
+  const data = fixture();
+  const topic = data.topicsRegistry.topics[0];
+  topic.review_status = 'draft';
+  topic.definition_status = 'pending_expert_review';
+  topic.definition = null;
+  const errors = validateProductionContent(data);
+  assert.ok(errors.some((item) => item.includes('topic definition is not expert-approved')));
+});
+
+test('production content gate rejects approved days with unapproved subtopic definitions', () => {
+  const data = fixture();
+  const subtopic = data.subtopicsRegistry.subtopics[0];
+  subtopic.review_status = 'draft';
+  subtopic.definition_status = 'pending_expert_review';
+  subtopic.definition = null;
+  const errors = validateProductionContent(data);
+  assert.ok(errors.some((item) => item.includes('subtopic T01-S01 definition is not expert-approved')));
 });
 
 test('production content gate rejects missing evidence and reviewer attribution', () => {
