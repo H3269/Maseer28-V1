@@ -533,7 +533,8 @@ export function Archive({ journey, content, onDeleteArchive, onBack, onNew }) {
   const list = journey.archive || [];
   const selectedArchive = selected == null ? null : list[selected];
   function confirmDelete(index) {
-    onDeleteArchive?.(index);
+    const removed = onDeleteArchive?.(index);
+    if (removed === false) return;
     setSelected(null);
     setDeleteCandidate(null);
   }
