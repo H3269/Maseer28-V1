@@ -393,8 +393,12 @@ export function executeJourneyPrivacyMigration({
   } catch {
     return { migrated: false, reason: 'source_read_or_parse_failed' };
   }
-  if (rawState?.privacyMigrationVersion >= JOURNEY_PRIVACY_MIGRATION_VERSION) {
+  if (rawState?.privacyMigrationVersion === JOURNEY_PRIVACY_MIGRATION_VERSION) {
     return { migrated: true, reason: 'already_verified' };
+  }
+  if (Number.isInteger(rawState?.privacyMigrationVersion)
+    && rawState.privacyMigrationVersion > JOURNEY_PRIVACY_MIGRATION_VERSION) {
+    return { migrated: false, reason: 'unsupported_future_migration_version' };
   }
   const plan = prepareJourneyPrivacyMigration(rawState, canonicalProfile);
   if (!plan.ready) return { migrated: false, reason: plan.reason, missingCanonicalFields: plan.missingCanonicalFields };
