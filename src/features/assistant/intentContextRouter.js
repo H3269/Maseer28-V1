@@ -108,9 +108,16 @@ function findNegatedTopicIds(value) {
 
 function findTopics(value) {
   const evidenceText = removeAttributedQuotes(value);
+  const normalizedEvidence = normalize(evidenceText);
+  const selfHatredPhrases = TOPIC_RULES.find(([topicId]) => topicId === 'T18')?.[1] || [];
+  const hasExplicitSelfHatred = selfHatredPhrases.some((phrase) => normalizedEvidence.includes(normalize(phrase)));
+  const hasExplicitOtherDirectedHatred = /(?:از|نسبت به)\\s*(?:او|آنها|دیگران|همه|این گروه|آن گروه|فلانی|همکارم|همسرم|مدیرم|دوستم|اعضای گروه)\\s*(?:متنفر|بیزار|نفرت)/u.test(normalizedEvidence);
   const hits = [];
   for (const [topic_id, phrases] of TOPIC_RULES) {
-    const matched = phrases.filter((phrase) => normalize(evidenceText).includes(normalize(phrase)) && !hasNegatedTopic(normalize(evidenceText), normalize(phrase)));
+    // T18 is the dedicated route for explicit self-hatred. Keep T04 as a
+    // candidate only when the user also names an outward-directed target.
+    if (topic_id === 'T04' && hasExplicitSelfHatred && !hasExplicitOtherDirectedHatred) continue;
+    const matched = phrases.filter((phrase) => normalizedEvidence.includes(normalize(phrase)) && !hasNegatedTopic(normalizedEvidence, normalize(phrase)));
     if (matched.length) {
       const phrase = matched.sort((a, b) => b.length - a.length)[0];
       hits.push({
