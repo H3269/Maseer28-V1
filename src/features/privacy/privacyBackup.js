@@ -212,9 +212,27 @@ export async function restorePrivacyBackup(candidate, { storage, indexedDBApi = 
         if (stableStringify(verification[key]) !== stableStringify(value)) throw new Error(`راستی‌آزمایی کلید ${key} ناموفق بود.`);
       }
     } catch (localError) {
+      const localRollbackErrors = [];
+      const serializedIncoming = candidate.localStorage.entries;
       for (const key of appliedLocalKeys) {
-        try { storage.removeItem(key); } catch { /* reported through recovery status below */ }
+        try {
+          const expectedRaw = serializeStorageValue(serializedIncoming[key]);
+          const currentRaw = storage.getItem(key);
+          if (currentRaw === null) continue;
+          // Never remove a value that another tab/process changed after our write.
+          if (currentRaw !== expectedRaw) {
+            localRollbackErrors.push(new Error('یک کلید localStorage پس از نوشتن تغییر کرده و برای جلوگیری از حذف داده جدید دست‌نخورده باقی ماند.'));
+            continue;
+          }
+          storage.removeItem(key);
+          if (storage.getItem(key) !== null) {
+            localRollbackErrors.push(new Error('راستی‌آزمایی پاک‌سازی localStorage ناموفق بود.'));
+          }
+        } catch {
+          localRollbackErrors.push(new Error('پاک‌سازی یا راستی‌آزمایی localStorage ناموفق بود.'));
+        }
       }
+
       const rollbackTx = db.transaction(['books', 'versions', 'settings'], 'readwrite');
       const rollbackDone = waitForTransaction(rollbackTx);
       for (const [name, field] of [['books', 'id'], ['versions', 'id'], ['settings', 'key']]) {
@@ -231,14 +249,56 @@ export async function restorePrivacyBackup(candidate, { storage, indexedDBApi = 
             }
             store.delete(key);
           };
+          request.onerror = () => {
+            try { rollbackTx.abort(); } catch { /* transaction may already be inactive */ }
+          };
         }
       }
       try {
         await rollbackDone;
+        const verifyTx = db.transaction(['books', 'versions', 'settings'], 'readonly');
+        const verifyDone = waitForTransaction(verifyTx);
+        const remaining = [];
+        for (const [name, field] of [['books', 'id'], ['versions', 'id'], ['settings', 'key']]) {
+          const store = verifyTx.objectStore(name);
+          for (const key of importedKeys[name]) {
+            const request = store.get(key);
+            request.onsuccess = () => {
+              if (request.result !== undefined) remaining.push(name);
+            };
+            request.onerror = () => {
+              remaining.push(name);
+              try { verifyTx.abort(); } catch { /* transaction may already be inactive */ }
+            };
+          }
+        }
+        await verifyDone;
+        if (remaining.length || localRollbackErrors.length) {
+          return {
+            restored: false,
+            phase: 'recovery_required',
+            rolledBack: false,
+            errors: [
+              'بازیابی اولیه ناموفق بود و پاک‌سازی جبرانی به‌طور کامل راستی‌آزمایی نشد.',
+              ...(remaining.length ? ['بخشی از رکوردهای واردشده IndexedDB باقی مانده‌اند.'] : []),
+              ...(localRollbackErrors.length ? ['پاک‌سازی کامل localStorage تأیید نشد؛ داده‌های تغییرکرده برای جلوگیری از حذف ناخواسته حفظ شدند.'] : []),
+            ],
+          };
+        }
         indexedDbCommitted = false;
-        return { restored: false, phase: 'localStorage', rolledBack: true, errors: [String(localError?.message || localError)] };
-      } catch (rollbackError) {
-        return { restored: false, phase: 'recovery_required', rolledBack: false, errors: [String(localError?.message || localError), String(rollbackError?.message || rollbackError)] };
+        return {
+          restored: false,
+          phase: 'localStorage',
+          rolledBack: true,
+          errors: ['ثبت localStorage ناموفق بود؛ تغییرات IndexedDB و localStorage با موفقیت پاک‌سازی و راستی‌آزمایی شدند.'],
+        };
+      } catch {
+        return {
+          restored: false,
+          phase: 'recovery_required',
+          rolledBack: false,
+          errors: ['بازیابی اولیه ناموفق بود و rollback یا راستی‌آزمایی IndexedDB کامل نشد؛ بررسی دستی لازم است.'],
+        };
       }
     }
 
