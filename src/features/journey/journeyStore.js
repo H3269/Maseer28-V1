@@ -399,7 +399,15 @@ export function executeJourneyPrivacyMigration({
   } catch {
     return { migrated: false, reason: 'source_read_or_parse_failed' };
   }
-  if (rawState?.privacyMigrationVersion === JOURNEY_PRIVACY_MIGRATION_VERSION) {
+  const hasLegacySensitiveData = (profile) => LEGACY_SENSITIVE_PROFILE_FIELDS.some((field) =>
+    hasProfileValue(profile?.[field])
+  );
+  const hasUnmigratedSensitiveData = hasLegacySensitiveData(rawState?.profileData)
+    || (Array.isArray(rawState?.archive) && rawState.archive.some((entry) =>
+      hasLegacySensitiveData(entry?.profileData)
+    ));
+  if (rawState?.privacyMigrationVersion === JOURNEY_PRIVACY_MIGRATION_VERSION
+    && !hasUnmigratedSensitiveData) {
     return { migrated: true, reason: 'already_verified' };
   }
   if (Number.isInteger(rawState?.privacyMigrationVersion)
