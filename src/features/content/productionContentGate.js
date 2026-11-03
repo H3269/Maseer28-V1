@@ -1,3 +1,5 @@
+import { getControlContextForDay, isControlTopicDay } from './dailySafety.js';
+
 const VALID_REVIEWER_ROLES = new Set([
   'qualified_clinician',
   'evidence_reviewer',
@@ -114,6 +116,9 @@ export function validateProductionContent({
           || typeof topicRecord.definition !== 'string'
           || !topicRecord.definition.trim())) {
         errors.push(`${label}: topic definition is not expert-approved.`);
+      }
+      if (day?.review_status === 'approved' && isControlTopicDay(day) && !getControlContextForDay(day)) {
+        errors.push(`${label}: control topic subtype and context are not explicitly classified.`);
       }
       if (topicRecord && (!Array.isArray(topicRecord.content_ids) || !topicRecord.content_ids.includes(day.id))) {
         errors.push(`${label}: approved topic content link is missing.`);
