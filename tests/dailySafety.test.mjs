@@ -122,6 +122,13 @@ test('day screen wires human-review blocking and caution metadata into the inter
   assert.match(ui, /getDailySafetyMode\(data\) === 'blocked'/);
   assert.match(ui, /if \(requiresHumanReview\) return/);
   assert.match(app, /getDailySafetyMode\(activeDay\) === 'blocked'/, 'completion must enforce the safety gate independently of UI rendering');
+  const completeDayStart = app.indexOf('async function completeDay');
+  const completeDayEnd = app.indexOf('function openCurrentDay', completeDayStart);
+  const completionHandler = app.slice(completeDayStart, completeDayEnd);
+  assert.match(completionHandler, /if \(!activeDay \|\| getDailySafetyMode\(activeDay\) === 'blocked'\)/,
+    'missing active content and blocked content must both fail closed at completion');
+  assert.ok(completionHandler.indexOf('getDailySafetyMode(activeDay)') < completionHandler.indexOf('const record ='),
+    'safety must be checked before any scored record is created');
   assert.match(ui, /onClick=\{onSkip\}/);
   assert.match(ui, /data\.stop_conditions/);
   assert.match(ui, /data\.contraindications/);
