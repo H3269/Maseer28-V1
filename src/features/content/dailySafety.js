@@ -1,6 +1,11 @@
 export function getDailySafetyMode(day) {
-  const level = day?.risk_level;
-  if (level === null || level === undefined || level === '') return 'routine';
+  if (!day || typeof day !== 'object') return 'routine';
+  const level = day.risk_level;
+  if (level === null || level === undefined || level === '') {
+    // Legacy records have no v2 metadata. A partially migrated v2 record must
+    // fail closed rather than silently defaulting to routine.
+    return day.review_status || day.topic_id || Array.isArray(day.source_ids) ? 'blocked' : 'routine';
+  }
   if (level === 'routine') return 'routine';
   if (level === 'caution') return 'caution';
   return 'blocked';
