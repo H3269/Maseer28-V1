@@ -9,10 +9,12 @@ const T01_PAUSE_PLAN = [
 export function getT01PausePlan(day) {
   if (!day || typeof day !== 'object') return '';
 
-  // Runtime daily-content records may expose only an ID such as T01-D10.
-  const idMatch = /^([A-Z]\\d{2})-D(\\d{1,2})$/i.exec(String(day.id || ''));
-  const topicId = day.topic_id || idMatch?.[1];
-  const dayNumber = day.day ?? idMatch?.[2];
+  // The production T01 category uses IDs such as خشم-10; topic_id is optional.
+  const id = String(day.id || '');
+  const runtimeIdMatch = /^خشم-(\\d{1,2})$/u.exec(id);
+  const canonicalIdMatch = /^T01-D(\\d{1,2})$/i.exec(id);
+  const isT01 = day.topic_id === 'T01' || Boolean(runtimeIdMatch || canonicalIdMatch);
+  const dayNumber = day.day ?? runtimeIdMatch?.[1] ?? canonicalIdMatch?.[1];
 
-  return topicId === 'T01' && Number(dayNumber) === 10 ? T01_PAUSE_PLAN : '';
+  return isT01 && Number(dayNumber) === 10 ? T01_PAUSE_PLAN : '';
 }
