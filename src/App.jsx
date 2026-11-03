@@ -705,6 +705,12 @@ function navigate(next) {
   }
 
   function startNewPathFromArchive() {
+    if (journey.archiveRecoveryRequired !== undefined && journey.archiveRecoveryRequired !== null) {
+      return showValidation(
+        ['ساختار آرشیو قدیمی قابل‌خواندن نیست و داده خام آن برای جلوگیری از حذف حفظ شده است.', 'ابتدا از بخش پشتیبانی نسخه پشتیبان JSON بگیر و تا بررسی/بازیابی، مسیر تازه نساز.'],
+        'بازیابی آرشیو لازم است'
+      );
+    }
     const hasCurrentPath = Boolean(journey.started && (journey.profile || journey.assessment || journey.completed.length || journey.final));
     const pathIsComplete = journey.completed?.length === 28 && Boolean(journey.final);
     // Keep the existing incomplete-path warning and its test/live archive policy.
