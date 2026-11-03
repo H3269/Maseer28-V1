@@ -17,6 +17,17 @@ class MemoryStorage {
   removeItem(key) { this.values.delete(key); }
 }
 
+function resignPrivacyBackup(candidate) {
+  const payload = { ...candidate };
+  delete payload.integrity;
+  const stable = (value) => Array.isArray(value) ? '[' + value.map(stable).join(',') + ']'
+    : value && typeof value === 'object' ? '{' + Object.keys(value).sort().map((key) => JSON.stringify(key) + ':' + stable(value[key])).join(',') + '}'
+      : JSON.stringify(value);
+  let hash = 0x811c9dc5;
+  for (const char of stable(payload)) { hash ^= char.charCodeAt(0); hash = Math.imul(hash, 0x01000193); }
+  return { ...payload, integrity: { algorithm: 'fnv1a-32-non-cryptographic', checksum: (hash >>> 0).toString(16).padStart(8, '0') } };
+}
+
 test('privacy export includes app-owned personal data but excludes copyright and unrelated browser data', () => {
   const storage = new MemoryStorage({
     maseer28_state: JSON.stringify({ answers: { 1: 'private reflection' } }),
@@ -366,6 +377,32 @@ test('privacy backup validation detects altered content and unsupported schema v
   assert.equal(validatePrivacyBackup(corrupted).valid, false);
   const unsupported = { ...backup, schema_version: '99.0.0' };
   assert.equal(validatePrivacyBackup(unsupported).valid, false);
+});
+
+test('restore preview rejects checksummed but malformed library records before mutation', async () => {
+  const indexedDBApi = new IDBFactory();
+  const base = await createPrivacyBackup({ storage: new MemoryStorage({}), indexedDBApi });
+  const malformed = structuredClone(base);
+  malformed.indexedDB.stores.books = [{
+    id: 'user-book-1',
+    title: { injected: 'not a renderable title' },
+    activeVersionId: 'missing-version',
+  }];
+  malformed.indexedDB.stores.versions = [{
+    id: 'version-1',
+    bookId: 'user-book-1',
+    source: 'upload',
+    content: { pages: [] },
+  }];
+  const candidate = resignPrivacyBackup(malformed);
+  const storage = new MemoryStorage({});
+  const before = [...storage.values.entries()];
+  const preview = await createPrivacyRestorePreview(candidate, { storage, indexedDBApi });
+  assert.equal(preview.valid, false);
+  assert.ok(preview.errors.some((error) => /عنوان متنی معتبر/.test(error)));
+  assert.ok(preview.errors.some((error) => /نسخه فعال کتاب/.test(error)));
+  assert.ok(preview.errors.some((error) => /ساختار کتاب قابل نمایش/.test(error)));
+  assert.deepEqual([...storage.values.entries()], before);
 });
 
 test('restore preview validates backup and reports collisions without changing browser storage', async () => {
