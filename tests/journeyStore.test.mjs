@@ -5,6 +5,7 @@ import {
   burdenScoreFromAnswers,
   cloneForArchive,
   defaultJourneyState,
+  evaluatePqhtEligibility,
   nextRequiredDay,
   sanitizeJourneyState,
   migrateUserProfileToV2,
@@ -30,6 +31,29 @@ test('profile validators accept expected Persian values and reject malformed inp
   assert.equal(validPhone('۰۹۱۲۳۴۵۶۷۸۹'), true);
   assert.equal(validPhone('0912345678'), false);
   assert.equal(validPhone(''), false);
+});
+
+test('PQHT screening fails closed when required independent profile fields are missing', () => {
+  const complete = { age: 35, medical: 'none', medication: 'no', medicationRisk: 'no' };
+  assert.deepEqual(evaluatePqhtEligibility(complete), { eligible: true, reasons: [] });
+
+  for (const field of ['medical', 'medication', 'medicationRisk']) {
+    const incomplete = { ...complete };
+    delete incomplete[field];
+    const result = evaluatePqhtEligibility(incomplete);
+    assert.equal(result.eligible, false, `missing ${field} must block PQHT screening`);
+    assert.ok(result.reasons.length > 0);
+  }
+});
+
+test('PQHT screening routes unknown medical history and medication risk to specialist review', () => {
+  const base = { age: 35, medical: 'none', medication: 'no', medicationRisk: 'no' };
+  assert.equal(evaluatePqhtEligibility({ ...base, medical: 'other' }).eligible, false);
+  assert.equal(evaluatePqhtEligibility({ ...base, medical: 'panic' }).eligible, false);
+  assert.equal(evaluatePqhtEligibility({ ...base, medication: 'yes_fixed', medicationRisk: 'yes' }).eligible, false);
+  assert.equal(evaluatePqhtEligibility({ ...base, medication: 'yes_fixed', medicationRisk: 'unknown' }).eligible, false);
+  assert.equal(evaluatePqhtEligibility({ ...base, medication: 'yes_fixed', medicationRisk: 'no' }).eligible, true);
+  assert.equal(evaluatePqhtEligibility({ ...base, age: 22 }).eligible, false);
 });
 
 test('burden score uses only the first four burden questions', () => {
