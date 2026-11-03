@@ -1,9 +1,10 @@
 import 'fake-indexeddb/auto';
+import { IDBFactory } from 'fake-indexeddb';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { createLocalUserDataDeletionPlan, deleteLocalUserData, readLocalUserData } from '../src/features/privacy/localData.js';
-import { deleteIndexedDbUserData, readIndexedDbUserData, selectUserOwnedLibraryData } from '../src/features/privacy/indexedDbData.js';
+import { deleteIndexedDbUserData, readIndexedDbUserData, readIndexedDbSnapshot, selectUserOwnedLibraryData } from '../src/features/privacy/indexedDbData.js';
 import { createPrivacyBackup, validatePrivacyBackup, createPrivacyRestorePreview, PRIVACY_BACKUP_POLICY } from '../src/features/privacy/privacyBackup.js';
 
 class MemoryStorage {
@@ -389,4 +390,67 @@ test('restore preview rejects corrupted backup without touching storage', async 
   assert.equal(preview.valid, false);
   assert.ok(preview.errors.length > 0);
   assert.deepEqual([...storage.values.entries()], before);
+});
+
+
+test('restore preview detects collisions with preserved seeded IndexedDB rows and exposes the real schema', async () => {
+  await removePrivacyTestDatabase();
+  const sourceApi = new IDBFactory();
+  const sourceOpen = sourceApi.open(PRIVACY_TEST_DB, 1);
+  sourceOpen.onupgradeneeded = () => {
+    sourceOpen.result.createObjectStore('books', { keyPath: 'id' });
+    const versions = sourceOpen.result.createObjectStore('versions', { keyPath: 'id' });
+    versions.createIndex('bookId', 'bookId', { unique: false });
+    sourceOpen.result.createObjectStore('settings', { keyPath: 'key' });
+  };
+  const sourceDb = await requestResult(sourceOpen);
+  const sourceTx = sourceDb.transaction(['books', 'versions', 'settings'], 'readwrite');
+  sourceTx.objectStore('books').put({ id: 'book-1', title: 'Imported collision' });
+  await transactionDone(sourceTx);
+  sourceDb.close();
+  const backup = await createPrivacyBackup({ storage: new MemoryStorage({ maseer28_state: '{}' }), indexedDBApi: sourceApi });
+
+  const currentOpen = indexedDB.open(PRIVACY_TEST_DB, 1);
+  currentOpen.onupgradeneeded = () => {
+    currentOpen.result.createObjectStore('books', { keyPath: 'id' });
+    const versions = currentOpen.result.createObjectStore('versions', { keyPath: 'id' });
+    versions.createIndex('bookId', 'bookId', { unique: false });
+    currentOpen.result.createObjectStore('settings', { keyPath: 'key' });
+  };
+  const currentDb = await requestResult(currentOpen);
+  const currentTx = currentDb.transaction(['books', 'versions', 'settings'], 'readwrite');
+  currentTx.objectStore('books').put({ id: 'book-1', legacyId: 1, activeVersionId: 'seed-book-1-fingerprint', title: 'Public seed' });
+  currentTx.objectStore('versions').put({ id: 'seed-book-1-fingerprint', bookId: 'book-1', source: 'seed' });
+  await transactionDone(currentTx);
+  currentDb.close();
+
+  try {
+    const snapshot = await readIndexedDbSnapshot();
+    assert.equal(snapshot.schema.books.keyPath, 'id');
+    assert.equal(snapshot.schema.settings.keyPath, 'key');
+    assert.deepEqual(snapshot.schema.versions.indexes, ['bookId']);
+    assert.equal(snapshot.stores.books.length, 1);
+    const preview = await createPrivacyRestorePreview(backup, { storage: new MemoryStorage({}), indexedDBApi: indexedDB });
+    assert.equal(preview.valid, true);
+    assert.deepEqual(preview.conflicts.indexedDB.books, ['book-1']);
+    assert.equal(preview.conflicts.total, 1);
+  } finally {
+    await removePrivacyTestDatabase();
+  }
+});
+
+test('IndexedDB snapshot exposes actual store key paths and indexes', async () => {
+  await removePrivacyTestDatabase();
+  const openRequest = indexedDB.open(PRIVACY_TEST_DB, 1);
+  openRequest.onupgradeneeded = () => {
+    openRequest.result.createObjectStore('books', { keyPath: 'wrongKey' });
+    openRequest.result.createObjectStore('versions', { keyPath: 'id' });
+    openRequest.result.createObjectStore('settings', { keyPath: 'key' });
+  };
+  const db = await requestResult(openRequest);
+  db.close();
+  try {
+    const snapshot = await readIndexedDbSnapshot();
+    assert.equal(snapshot.schema.books.keyPath, 'wrongKey');
+  } finally { await removePrivacyTestDatabase(); }
 });

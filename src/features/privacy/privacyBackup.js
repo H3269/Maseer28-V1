@@ -1,5 +1,5 @@
 import { readLocalUserData } from './localData.js';
-import { readIndexedDbUserData } from './indexedDbData.js';
+import { readIndexedDbUserData, readIndexedDbSnapshot } from './indexedDbData.js';
 export const PRIVACY_BACKUP_FORMAT = 'maseer28-browser-backup';
 export const PRIVACY_BACKUP_VERSION = '3.0.0';
 function stableStringify(value) {
@@ -49,19 +49,33 @@ export async function createPrivacyRestorePreview(candidate, { storage, indexedD
       if (!row || typeof row !== 'object' || Array.isArray(row) || typeof row[field] !== 'string' || !row[field].trim()) { errors.push(`رکورد نامعتبر در بخش ${storeName} وجود دارد.`); continue; }
       if (seen.has(row[field])) errors.push(`شناسه تکراری در بخش ${storeName} وجود دارد.`);
       seen.add(row[field]);
+      if (storeName === 'versions' && row.source === 'seed') errors.push('نسخه‌های عمومی seed نباید از فایل پشتیبان کاربر بازیابی شوند.');
+      if (storeName === 'versions' && (typeof row.bookId !== 'string' || !row.bookId.trim())) errors.push('هر نسخه کتاب باید شناسه کتاب والد معتبر داشته باشد.');
+      if (storeName === 'settings' && (row.key.startsWith('seed-') || row.key.startsWith('seed-book-fingerprint:'))) errors.push('تنظیمات داخلی seed قابل بازیابی از فایل کاربر نیستند.');
     }
   }
   if (errors.length) return { valid: false, validation, errors };
   try {
     const currentLocal = readLocalUserData(storage).entries;
-    const currentLibrary = await readIndexedDbUserData(indexedDBApi);
+    const currentLibrary = await readIndexedDbSnapshot(indexedDBApi);
+    const expectedSchema = {
+      books: { keyPath: 'id', indexes: [] },
+      versions: { keyPath: 'id', indexes: ['bookId'] },
+      settings: { keyPath: 'key', indexes: [] },
+    };
+    for (const [storeName, expected] of Object.entries(expectedSchema)) {
+      const actual = currentLibrary.schema?.[storeName];
+      if (actual && (actual.keyPath !== expected.keyPath || expected.indexes.some((name) => !actual.indexes.includes(name)))) {
+        return { valid: false, validation, errors: [`ساختار مخزن ${storeName} با ساختار مورد انتظار برنامه مطابقت ندارد؛ پیش‌نمایش بازیابی متوقف شد.`] };
+      }
+    }
     const localConflicts = Object.keys(localEntries).filter((key) => Object.hasOwn(currentLocal, key));
     const indexedDbConflicts = {};
     for (const [storeName, field] of Object.entries(keyFields)) {
       const currentKeys = new Set(currentLibrary.stores[storeName].map((row) => row?.[field]));
       indexedDbConflicts[storeName] = stores[storeName].filter((row) => currentKeys.has(row[field])).map((row) => row[field]);
     }
-    return { valid: true, validation, counts: { localStorage: Object.keys(localEntries).length, books: stores.books.length, versions: stores.versions.length, settings: stores.settings.length }, conflicts: { localStorage: localConflicts, indexedDB: indexedDbConflicts, total: localConflicts.length + Object.values(indexedDbConflicts).reduce((sum, keys) => sum + keys.length, 0) }, note: 'این پیش‌نمایش فقط داده‌ها را می‌خواند و هیچ تغییری در ذخیره‌سازی مرورگر ایجاد نمی‌کند.' };
+    return { valid: true, validation, counts: { localStorage: Object.keys(localEntries).length, books: stores.books.length, versions: stores.versions.length, settings: stores.settings.length }, conflicts: { localStorage: localConflicts, indexedDB: indexedDbConflicts, total: localConflicts.length + Object.values(indexedDbConflicts).reduce((sum, keys) => sum + keys.length, 0) }, databaseSchema: currentLibrary.schema, note: 'این پیش‌نمایش فقط داده‌ها را می‌خواند و هیچ تغییری در ذخیره‌سازی مرورگر ایجاد نمی‌کند.' };
   } catch {
     return { valid: false, validation, errors: ['خواندن وضعیت فعلی مرورگر برای تهیه پیش‌نمایش کامل ممکن نشد؛ هیچ داده‌ای تغییر نکرد.'] };
   }

@@ -79,6 +79,32 @@ function readStore(store) {
   });
 }
 
+export async function readIndexedDbSnapshot(indexedDBApi = globalThis.indexedDB) {
+  if (!indexedDBApi) throw new Error('IndexedDB در این مرورگر در دسترس نیست.');
+  const db = await openExistingDatabase(indexedDBApi);
+  if (!db) return { database: DB_NAME, version: null, schema: null, stores: { books: [], versions: [], settings: [] } };
+  try {
+    const schema = {};
+    for (const name of STORE_NAMES) {
+      if (!db.objectStoreNames.contains(name)) throw new Error(`مخزن ${name} در پایگاه داده وجود ندارد.`);
+      const tx = db.transaction(name, 'readonly');
+      const store = tx.objectStore(name);
+      schema[name] = {
+        keyPath: store.keyPath,
+        autoIncrement: store.autoIncrement,
+        indexes: Array.from(store.indexNames).sort(),
+      };
+    }
+    const tx = db.transaction(STORE_NAMES, 'readonly');
+    const [books, versions, settings] = await Promise.all([
+      readStore(tx.objectStore('books')),
+      readStore(tx.objectStore('versions')),
+      readStore(tx.objectStore('settings')),
+    ]);
+    return { database: DB_NAME, version: db.version, schema, stores: { books, versions, settings } };
+  } finally { db.close(); }
+}
+
 export async function readIndexedDbUserData(indexedDBApi = globalThis.indexedDB) {
   if (!indexedDBApi) throw new Error('IndexedDB در این مرورگر در دسترس نیست؛ کامل بودن خروجی قابل تأیید نیست.');
   const db = await openExistingDatabase(indexedDBApi);
