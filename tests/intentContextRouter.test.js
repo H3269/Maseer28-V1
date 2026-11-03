@@ -21,6 +21,21 @@ test('attributed third-party quotes do not become the user topic', () => {
   assert.ok(result.uncertainties.length > 0);
 });
 
+test('explicit self-hatred routes to T18 rather than duplicating the T04 candidate', () => {
+  const result = routeSemanticIntake({ text: 'من از خودم متنفرم.' });
+  assert.deepEqual(result.topic_candidates.map((item) => item.topic_id), ['T18']);
+  assert.equal(result.next_question, null);
+});
+
+test('explicit hatred toward another person remains T04 and mixed targets remain ambiguous', () => {
+  const otherDirected = routeSemanticIntake({ text: 'من از همکارم متنفرم.' });
+  assert.deepEqual(otherDirected.topic_candidates.map((item) => item.topic_id), ['T04']);
+  const mixed = routeSemanticIntake({ text: 'من از خودم متنفرم و از همکارم هم متنفرم.' });
+  assert.ok(mixed.topic_candidates.some((item) => item.topic_id === 'T18'));
+  assert.ok(mixed.topic_candidates.some((item) => item.topic_id === 'T04'));
+  assert.equal(mixed.next_question.purpose, 'topic_disambiguation');
+});
+
 test('multiple candidate topics request disambiguation rather than false priority', () => {
   const result = routeSemanticIntake({ text: 'هم عصبانی‌ام، هم می‌ترسم.' });
   assert.ok(result.topic_candidates.some((item) => item.topic_id === 'T01'));
