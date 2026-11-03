@@ -155,7 +155,11 @@ for (const field of futureMetadataFields) {
   }).length;
 }
 
-const candidateSupportSeekingReviewQueue = topicRows.flatMap((row) => [12, 18].map((dayNumber) => {
+const candidateSupportSeekingReviewQueue = topicRows.flatMap((row) => {
+  // T02 day 24 explicitly drafts a message to a trusted person and needs the
+  // same privacy/device-monitoring review as the common support-seeking days.
+  const reviewDays = [...new Set([12, 18, ...(row.topic_id === 'T02' ? [24] : [])])];
+  return reviewDays.map((dayNumber) => {
   const category = content.categories?.[row.category_key];
   const day = category?.days?.find((item) => Number(item.day) === dayNumber);
   if (!day) return null;
@@ -179,7 +183,8 @@ const candidateSupportSeekingReviewQueue = topicRows.flatMap((row) => [12, 18].m
     when_to_seek_human_support: day.when_to_seek_human_support || '',
     source_ids: day.source_ids || [],
   };
-}).filter(Boolean));
+  }).filter(Boolean);
+});
 
 const report = {
   report_schema_version: '1.0.0',
