@@ -422,6 +422,7 @@ export function Support({ content, onBack }) {
     const file = event.target.files?.[0];
     event.target.value = '';
     setRestorePreview(null);
+    setBackupToRestore(null);
     if (!file) return;
     if (file.size > 15 * 1024 * 1024) { setPrivacyMessage('حجم فایل بیشتر از ۱۵ مگابایت است؛ پیش‌نمایش انجام نشد.'); return; }
     setPrivacyBusy(true);
@@ -429,6 +430,7 @@ export function Support({ content, onBack }) {
       const candidate = JSON.parse(await file.text());
       const preview = await createPrivacyRestorePreview(candidate);
       setRestorePreview(preview);
+      if (preview.valid) setBackupToRestore(candidate);
       setPrivacyMessage(preview.valid ? 'اعتبارسنجی و پیش‌نمایش انجام شد. هنوز هیچ داده‌ای بازیابی یا تغییر نکرده است.' : 'فایل برای بازیابی ایمن تأیید نشد؛ هیچ داده‌ای تغییر نکرده است.');
     } catch {
       setPrivacyMessage('خواندن فایل ناموفق بود یا ساختار JSON معتبر نیست؛ هیچ داده‌ای تغییر نکرده است.');
