@@ -130,6 +130,48 @@ try {
     await page.close();
   }
 
+  // E4: malformed legacy archive data must block cleanup of both legacy profile copies.
+  {
+    const malformedArchiveState = {
+      schema: 7, started: true, profile: true, assessment: true, completed: [1],
+      answers: { 1: 'KEEP-ANSWER' }, daily: { 1: { score: 4 } },
+      profileData: {
+        name: 'هویت مسیر قدیمی', age: 35, gender: 'زن', phone: '09123456789',
+        medical: 'none', medicalNote: 'KEEP-PRIVATE', medication: 'no',
+        medicationRisk: 'no', problem: 'anxiety', durationYears: 1,
+        durationMonths: 0, goal: 'هدف قدیمی',
+      },
+      archive: {
+        legacy: {
+          pathId: 'malformed-legacy-archive',
+          profileData: { name: 'هویت آرشیو قدیمی', medical: 'other' },
+          answers: { 1: 'KEEP-ARCHIVE-ANSWER' },
+        },
+      },
+      pathId: 'malformed-archive-path', startedAt: '2026-01-01T00:00:00.000Z',
+      lastView: 'dashboard',
+    };
+    const page = await openScenario('normal', malformedArchiveState, {
+      name: 'پروفایل مستقل معتبر', age: 35, gender: 'زن', phone: '09123456789',
+      medical: 'none', medicalNote: 'KEEP-PRIVATE', medication: 'no', medicationRisk: 'no',
+    }, {
+      name: 'پروفایل v1 قدیمی', age: 35, gender: 'زن', phone: '09123456789',
+      medical: 'none', medicalNote: 'KEEP-PRIVATE', medication: 'no', medicationRisk: 'no',
+    });
+    const result = await page.evaluate(() => ({
+      journey: JSON.parse(localStorage.getItem('maseer28_state')),
+      legacyProfile: localStorage.getItem('maseer28_user_profile_v1'),
+      profile: JSON.parse(localStorage.getItem('maseer28_user_profile_v2')),
+    }));
+    assert.ok(result.profile, 'the independent v2 profile remains available');
+    assert.ok(result.legacyProfile, 'v1 must not be removed when archive migration is blocked');
+    assert.equal(result.journey.privacyMigrationVersion, undefined);
+    assert.equal(result.journey.profileData.name, 'هویت مسیر قدیمی');
+    assert.equal(result.journey.archive.legacy.profileData.name, 'هویت آرشیو قدیمی');
+    assert.equal(result.journey.archive.legacy.profileData.medical, 'other');
+    await page.close();
+  }
+
   // E4: failed independent-profile persistence must not clean the legacy journey.
   {
     const page = await openScenario('profile-write-fails');
