@@ -587,3 +587,73 @@ test('controlled restore compensates IndexedDB when localStorage writing fails',
     });
   }
 });
+
+
+test('controlled restore detects a localStorage write that mutates storage before throwing and verifies rollback', async () => {
+  const api = new IDBFactory();
+  const storage = new MemoryStorage({});
+  let firstWrite = true;
+  storage.setItem = (key, value) => {
+    MemoryStorage.prototype.setItem.call(storage, key, value);
+    if (firstWrite) {
+      firstWrite = false;
+      throw new Error('write completed but adapter reported failure');
+    }
+  };
+  const backup = await createPrivacyBackup({
+    storage: new MemoryStorage({ maseer28_state: JSON.stringify({ incoming: true }) }),
+    indexedDBApi: new IDBFactory(),
+  });
+  try {
+    const result = await restorePrivacyBackup(backup, { storage, indexedDBApi: api });
+    assert.equal(result.restored, false);
+    assert.equal(result.phase, 'localStorage');
+    assert.equal(result.rolledBack, true);
+    assert.equal(storage.getItem('maseer28_state'), null);
+    const db = await requestResult(api.open(PRIVACY_TEST_DB));
+    try {
+      const tx = db.transaction(['books', 'versions', 'settings'], 'readonly');
+      const [books, versions, settings] = await Promise.all([
+        requestResult(tx.objectStore('books').getAll()),
+        requestResult(tx.objectStore('versions').getAll()),
+        requestResult(tx.objectStore('settings').getAll()),
+      ]);
+      assert.deepEqual(books, []);
+      assert.deepEqual(versions, []);
+      assert.deepEqual(settings, []);
+    } finally { db.close(); }
+  } finally {
+    await new Promise((resolve, reject) => {
+      const request = api.deleteDatabase(PRIVACY_TEST_DB);
+      request.onsuccess = resolve;
+      request.onerror = () => reject(request.error);
+    });
+  }
+});
+
+test('controlled restore reports recovery_required when localStorage compensation cannot be verified', async () => {
+  const api = new IDBFactory();
+  const storage = new MemoryStorage({});
+  storage.setItem = (key, value) => {
+    MemoryStorage.prototype.setItem.call(storage, key, value);
+    throw new Error('write reported failure');
+  };
+  storage.removeItem = () => { throw new Error('remove blocked'); };
+  const backup = await createPrivacyBackup({
+    storage: new MemoryStorage({ maseer28_state: JSON.stringify({ incoming: true }) }),
+    indexedDBApi: new IDBFactory(),
+  });
+  try {
+    const result = await restorePrivacyBackup(backup, { storage, indexedDBApi: api });
+    assert.equal(result.restored, false);
+    assert.equal(result.phase, 'recovery_required');
+    assert.equal(result.rolledBack, false);
+    assert.notEqual(storage.getItem('maseer28_state'), null);
+  } finally {
+    const request = api.deleteDatabase(PRIVACY_TEST_DB);
+    await new Promise((resolve, reject) => {
+      request.onsuccess = resolve;
+      request.onerror = () => reject(request.error);
+    });
+  }
+});
