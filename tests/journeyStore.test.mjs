@@ -435,3 +435,27 @@ test('executed privacy migration reports recovery_required when compensation can
   assert.equal(result.migrated, false);
   assert.equal(result.reason, 'recovery_required');
 });
+
+
+test('executed privacy migration never overwrites a concurrent journey update', async () => {
+  const { executeJourneyPrivacyMigration, JOURNEY_KEY } = await import('../src/features/journey/journeyStore.js');
+  const raw = { profileData: { name: 'نام کاربر', medical: 'none', problem: 'anxiety' }, archive: [] };
+  const original = JSON.stringify(raw);
+  const concurrent = JSON.stringify({ ...raw, answers: { 1: 'تغییر هم‌زمان' } });
+  const values = new Map([[JOURNEY_KEY, original]]);
+  const storage = {
+    getItem: (key) => values.get(key) ?? null,
+    setItem: (key, value) => values.set(key, String(value)),
+  };
+  const originalGet = storage.getItem;
+  let reads = 0;
+  storage.getItem = (key) => {
+    reads += 1;
+    if (reads === 2) values.set(JOURNEY_KEY, concurrent);
+    return originalGet(key);
+  };
+  const result = executeJourneyPrivacyMigration({ storage, canonicalProfile: { name: 'نام کاربر', medical: 'none' } });
+  assert.equal(result.migrated, false);
+  assert.equal(result.reason, 'source_changed_during_preflight');
+  assert.equal(values.get(JOURNEY_KEY), concurrent);
+});
