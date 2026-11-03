@@ -22,8 +22,28 @@ export function getControlContextForDay(day) {
   return expectedContext && day.control_context === expectedContext ? expectedContext : null;
 }
 
+function isRepetitiveBehaviorTopicDay(day) {
+  return Boolean(day && typeof day === 'object' && (
+    day.topic_id === 'T11'
+    || /^عادت‌های تکراری-[0-9]{1,2}$/u.test(String(day.id || ''))
+    || /^T11-D[0-9]{1,2}$/i.test(String(day.id || ''))
+  ));
+}
+
+const REPETITIVE_BEHAVIOR_SUBTOPIC_IDS = new Set(['T11-S01', 'T11-S02', 'T11-S03']);
+
+function hasApprovedRepetitiveBehaviorReview(day) {
+  return day.review_status === 'approved'
+    && Array.isArray(day.subtopic_ids)
+    && day.subtopic_ids.length === 1
+    && REPETITIVE_BEHAVIOR_SUBTOPIC_IDS.has(day.subtopic_ids[0])
+    && typeof day.review_record_id === 'string'
+    && day.review_record_id.trim().length > 0;
+}
+
 export function getDailySafetyMode(day) {
   if (!day || typeof day !== 'object') return 'routine';
+  if (isRepetitiveBehaviorTopicDay(day) && !hasApprovedRepetitiveBehaviorReview(day)) return 'blocked';
   if (isControlTopicDay(day)) {
     // "Control" conflates personal over-control with interpersonal coercive
     // control. Release only after an approved day is assigned to exactly one
