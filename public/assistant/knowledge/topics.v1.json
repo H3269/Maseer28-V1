@@ -43,7 +43,13 @@
         "REL_T02_T27",
         "REL_T02_T31"
       ],
-      "evidence_ids": [],
+      "evidence_ids": [
+        "SRC-ANXIETY-NHS-001",
+        "SRC-ANXIETY-NICE-CG113-001",
+        "SRC-ANXIETY-APA-001",
+        "SRC-ANXIETY-APA-UNCERTAINTY-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001"
+      ],
       "content_ids": [],
       "intervention_ids": [],
       "safety_rule_ids": []
