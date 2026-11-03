@@ -45,6 +45,8 @@ test('day screen wires human-review blocking and caution metadata into the inter
   assert.match(ui, /data\.contraindications/);
   assert.match(app, /onSkip=\{skipDayForHumanReview\}/);
   assert.match(app, /createHumanReviewSkipRecord\(activeDay/);
-  assert.match(archiveExport, /daily\?\.status === 'skipped_human_review'/);
+  assert.match(app, /onSkipRelationshipSafety=\{skipDayForRelationshipSafety\}/);
+  assert.match(archiveExport, /skipped_human_review/);
+  assert.match(archiveExport, /skipped_safety_gate/);
   assert.match(archiveExport, /هیچ امتیازی ثبت نشده است/);
 });
