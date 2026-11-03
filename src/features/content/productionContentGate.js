@@ -17,10 +17,10 @@ export function validateProductionContent({
   const errors = [];
   const categories = Object.entries(content?.categories || {});
   const topicByName = new Map((topicsRegistry?.topics || []).map((item) => [item.name, item]));
-  const topicById = new Map((topicsRegistry?.topics || []).map((item) => [item.topic_id, item]));
   const subtopicById = new Map((subtopicsRegistry?.subtopics || []).map((item) => [item.subtopic_id, item]));
   const sourceIds = new Set((evidenceRegistry?.sources || []).map((item) => item.source_id));
   const dayById = new Map();
+  const seenDayIds = new Set();
 
   if (categories.length !== expectedTopics) {
     errors.push(`Expected ${expectedTopics} topics; found ${categories.length}.`);
@@ -36,7 +36,18 @@ export function validateProductionContent({
     for (let index = 0; index < days.length; index += 1) {
       const day = days[index];
       const label = `${topicName} / day ${index + 1}`;
-      if (day?.id) dayById.set(day.id, { topicName, day });
+      const hasStableId = typeof day?.id === 'string' && day.id.trim().length > 0;
+      if (!hasStableId) {
+        errors.push(`${label}: stable daily content id is missing.`);
+      } else if (seenDayIds.has(day.id)) {
+        errors.push(`${label}: duplicate daily content id ${day.id}.`);
+      } else {
+        seenDayIds.add(day.id);
+        dayById.set(day.id, { topicName, day });
+      }
+      if (Number(day?.day) !== index + 1) {
+        errors.push(`${label}: day sequence is invalid.`);
+      }
       if (day?.review_status !== 'approved') {
         errors.push(`${label}: content is not expert-approved.`);
       }
