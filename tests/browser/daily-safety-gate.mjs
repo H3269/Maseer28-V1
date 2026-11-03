@@ -154,7 +154,7 @@ try {
   await solutionPage.close();
   const safeRelationshipPage = await browser.newPage();
   await seedPage(safeRelationshipPage, makeState([1, 2, 3, 4, 5, 6, 7, 8, 9]), ['خشم-10']);
-  await safeRelationshipPage.getByLabel(/بله؛ می‌توانم بدون ترس/).click({ noWaitAfter: true });
+  await safeRelationshipPage.getByLabel(/بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/).click({ noWaitAfter: true });
   await safeRelationshipPage.locator('#dayExercise').waitFor({ state: 'visible' });
   const pausePlan = safeRelationshipPage.locator('#day #t01PausePlan');
   await pausePlan.waitFor({ state: 'visible' });
