@@ -120,6 +120,37 @@ test('T01 draft days remain blocked at runtime until their review is approved', 
   }
 });
 
+test('legacy T16 repetitive negative thinking content stays blocked until safety-aware subtype review', async () => {
+  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
+  const days = content.categories['افکار منفی و نشخوار فکری'].days;
+  assert.equal(days.length, 28);
+  for (const day of days) {
+    assert.equal(getDailySafetyMode(day), 'blocked', `${day.id} must remain withheld until its RNT subtype and safety rules are reviewed`);
+  }
+  const skipped = createHumanReviewSkipRecord(days[0], new Date('2026-11-04T17:00:00.000Z'));
+  assert.equal(skipped.status, 'skipped_human_review');
+  assert.equal('score' in skipped, false);
+
+  const reviewed = (subtopic, extra = {}) => ({
+    id: 'T16-D06',
+    topic_id: 'T16',
+    risk_level: 'routine',
+    review_status: 'approved',
+    review_record_id: 'review-t16-day-06',
+    subtopic_ids: [subtopic],
+    safety_rule_ids: ['SR-T16-THOUGHT-SAFETY'],
+    ...extra,
+  });
+  assert.equal(getDailySafetyMode(reviewed('T16-S01')), 'routine');
+  assert.equal(getDailySafetyMode(reviewed('T16-S02')), 'routine');
+  assert.equal(getDailySafetyMode(reviewed('T16-S03', { safety_rule_ids: [] })), 'blocked',
+    'rumination content without an explicit safety rule must remain withheld');
+  assert.equal(getDailySafetyMode(reviewed('T16-S03', {
+    risk_level: 'caution',
+    safety_rule_ids: ['SR-T16-RNT-ESCALATION'],
+  })), 'caution');
+});
+
 test('legacy T32 low-energy content stays blocked until clinical subtype review', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const days = content.categories['بی‌انگیزگی'].days;
