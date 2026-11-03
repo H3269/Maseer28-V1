@@ -748,3 +748,24 @@ test('archive deletion reports recovery_required when compensating rollback cann
   const result = executeArchivedJourneyDeletion({ storage, state, index: 0 });
   assert.deepEqual(result, { removed: false, reason: 'recovery_required' });
 });
+
+
+test('journey state preserves safety-skip records without inventing a score or feedback', () => {
+  const state = sanitizeJourneyState({
+    ...defaultJourneyState(),
+    completed: [1],
+    daily: {
+      1: {
+        status: 'skipped_human_review',
+        feedbackText: 'تمرین به دلیل نیاز به بازبینی انسانی اجرا نشد.',
+        exerciseId: 'T01-D27',
+        updatedAt: '2026-11-03T12:00:00.000Z',
+      },
+    },
+  });
+  assert.deepEqual(state.completed, [1]);
+  assert.equal(state.daily[1].status, 'skipped_human_review');
+  assert.equal(state.daily[1].feedbackText, 'تمرین به دلیل نیاز به بازبینی انسانی اجرا نشد.');
+  assert.equal(state.daily[1].score, undefined);
+  assert.equal(state.daily[1].feedback, undefined);
+});
