@@ -174,6 +174,21 @@ test('duplicate approved catalog item IDs invalidate retrieval instead of shadow
   assert.deepEqual(result.results, []);
 });
 
+test('duplicate IDs fail closed even when only one catalog record is approved', () => {
+  const item = approved();
+  const draftDuplicate = approved({
+    content: 'نسخه پیش‌نویس با همان شناسه',
+    approval: { status: 'draft', reviewer_role: 'evidence_reviewer', review_record_id: 'REV-DRAFT', reviewed_at: '2026-10-20T10:00:00Z', version: '1.0.0' },
+  });
+  const result = retrieveApprovedKnowledge({
+    query: 'نگرانی',
+    items: [item, draftDuplicate],
+    approvalManifest: manifestFor(item),
+  });
+  assert.equal(result.status, 'no_approved_content');
+  assert.deepEqual(result.results, []);
+});
+
 test('general strategy wording is treated as query framing rather than a required knowledge term', () => {
   const item = approved();
   const result = retrieveApprovedKnowledge({
