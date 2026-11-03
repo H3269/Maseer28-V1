@@ -71,7 +71,7 @@ function removeAttributedQuotes(value) {
     .replace(/(?:گفت|گفته)\\s*[«"“]([^»"”]+)[»"”]/g, ' ')
     // Unquoted third-party reports must not be treated as the user's intent.
     // Stop at punctuation so a separate first-person disclosure is preserved.
-    .replace(/(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او)\\s+(?:گفت|گفته|می گوید|میگفت)\\s+[^،.!؟؛]*(?=[،.!؟؛]|$)/g, ' ');
+    .replace(/(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او)\\s+(?:گفت|گفته|می[‌\\s]?گوید|می[‌\\s]?گفت)\\s+[^،.!؟؛]*(?=[،.!؟؛]|$)/g, ' ');
 }
 function classifyIntent(value) {
   const normalized = normalize(value);
@@ -165,7 +165,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
   if (correctionPresent) contradictions.push('کاربر احتمالاً در حال اصلاح یا دقیق‌تر کردن گفته قبلی است؛ برداشت قبلی نباید بدون بازبینی حفظ شود.');
   if (multiTopic) uncertainties.push('بیش از یک موضوع احتمالی دیده شد؛ اولویت اصلی هنوز مشخص نیست.');
   if (safetyContextPresent) uncertainties.push('عبارت بالقوه مرتبط با ایمنی دیده شد؛ این عبارت به‌تنهایی قصد یا خطر فوری را اثبات نمی‌کند و باید مستقیماً روشن شود.');
-  if (quotedSafetyMatches.length) uncertainties.push('عبارت ایمنی در نقل‌قول منتسب به شخص دیگری آمده است؛ وضعیت خود کاربر و شخص نقل‌شده باید از هم تفکیک شود.');
+  if (quotedSafetyMatches.length) uncertainties.push('عبارت ایمنی به شخص دیگری نسبت داده شده است؛ وضعیت خود کاربر و شخص گزارش‌شده باید از هم تفکیک شود.');
   if (explicitlyNegatedSafety) uncertainties.push('نشانه نفی در کنار عبارت ایمنی دیده شد؛ نتیجه‌گیری درباره سطح خطر از روی تطبیق واژگانی مجاز نیست.');
 
   let nextQuestion = null;
