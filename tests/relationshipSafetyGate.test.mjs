@@ -63,6 +63,12 @@ test('relationship safety skip records are explicit and never fabricate a score'
   assert.equal('feedback' in record, false);
   assert.throws(() => createRelationshipSafetySkipRecord({ id: 'T02-D17', topic_id: 'T02', day: 17 }));
   assert.throws(() => createRelationshipSafetySkipRecord(day, 'not-a-date'));
+  const boundaryRecord = createRelationshipSafetySkipRecord(
+    { id: 'مرزبندی و نه گفتن-11', day: 11 },
+    '2026-11-03T12:00:00.000Z'
+  );
+  assert.equal(boundaryRecord.status, 'skipped_safety_gate');
+  assert.equal('score' in boundaryRecord, false);
 });
 
 test('relationship gate days in actual T01, T12, and T17 content have stable IDs', async () => {
@@ -77,7 +83,7 @@ test('relationship gate days in actual T01, T12, and T17 content have stable IDs
       const day = content.categories[item.category].days.find((candidate) => candidate.day === dayNumber);
       assert.ok(day, `missing ${item.category} day ${dayNumber}`);
       assert.equal(getRelationshipSafetyGate(day)?.gateId, 'relationship-communication-safety-v1');
-      assert.match(`${day.exercise || ''}\n${day.actionText || ''}`, /درخواست|گفت.?وگو|مرز|مذاکره/u);
+      assert.match(`${day.exercise || ''}\n${day.actionText || ''}`, /درخواست|گفت.?وگو|مرز|مذاکره|مکث|تقسیم وظیفه|راه.?حل|ترمیم/u);
       if (item.topicId) {
         assert.equal(day.topic_id, item.topicId);
         assert.equal(day.risk_level, item.risk);
