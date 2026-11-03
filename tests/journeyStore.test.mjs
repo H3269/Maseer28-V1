@@ -361,3 +361,77 @@ test('legacy archive migration preserves completion, assessments, reflections an
   assert.equal(migrated.daily[1].feedbackText, 'شرح');
   assert.deepEqual(Object.keys(migrated.profileData).sort(), ['durationMonths', 'durationYears', 'goal', 'problem']);
 });
+
+test('executed privacy migration writes, reads back, and preserves path/report data', async () => {
+  const { executeJourneyPrivacyMigration, JOURNEY_KEY, JOURNEY_PRIVACY_MIGRATION_VERSION } = await import('../src/features/journey/journeyStore.js');
+  const raw = {
+    schema: 7, started: true, profile: true, assessment: true,
+    profileData: { name: 'نام کاربر', age: 35, gender: 'زن', phone: '09123456789', medical: 'none', medicalNote: '', medication: 'no', medicationRisk: 'no', problem: 'anxiety', durationYears: 2, durationMonths: 3, goal: 'هدف مسیر' },
+    assessmentData: { score: 6 }, answers: { 1: 'پاسخ روز اول' }, daily: { 1: { score: 5 } },
+    final: { score: 3, f1: 'تغییر ثبت‌شده' },
+    archive: [{ pathId: 'old', profileData: { name: 'نام قدیمی', medical: 'other', problem: 'stress', durationYears: 1, durationMonths: 0, goal: 'هدف قدیمی' }, answers: { 1: 'پاسخ آرشیو' } }],
+  };
+  const values = new Map([[JOURNEY_KEY, JSON.stringify(raw)]]);
+  const storage = { getItem: (key) => values.has(key) ? values.get(key) : null, setItem: (key, value) => values.set(key, String(value)) };
+  const canonical = { name: 'نام کاربر', age: 35, gender: 'زن', phone: '09123456789', medical: 'none', medicalNote: '', medication: 'no', medicationRisk: 'no' };
+  const result = executeJourneyPrivacyMigration({ storage, canonicalProfile: canonical });
+  assert.deepEqual(result, { migrated: true, reason: 'verified', version: JOURNEY_PRIVACY_MIGRATION_VERSION });
+  const saved = JSON.parse(values.get(JOURNEY_KEY));
+  assert.equal(saved.profileData.name, undefined);
+  assert.equal(saved.archive[0].profileData.medical, undefined);
+  assert.equal(saved.profileData.problem, 'anxiety');
+  assert.equal(saved.answers[1], 'پاسخ روز اول');
+  assert.equal(saved.final.f1, 'تغییر ثبت‌شده');
+  assert.equal(saved.archive[0].answers[1], 'پاسخ آرشیو');
+});
+
+test('executed privacy migration refuses incomplete canonical profile without writing', async () => {
+  const { executeJourneyPrivacyMigration, JOURNEY_KEY } = await import('../src/features/journey/journeyStore.js');
+  const raw = { profileData: { name: 'نام کاربر', medical: 'none', problem: 'anxiety' }, archive: [] };
+  const original = JSON.stringify(raw);
+  const values = new Map([[JOURNEY_KEY, original]]);
+  const storage = { getItem: (key) => values.get(key) ?? null, setItem: (key, value) => values.set(key, String(value)) };
+  const result = executeJourneyPrivacyMigration({ storage, canonicalProfile: { name: 'نام کاربر' } });
+  assert.equal(result.migrated, false);
+  assert.equal(result.reason, 'canonical_profile_incomplete');
+  assert.equal(values.get(JOURNEY_KEY), original);
+});
+
+test('executed privacy migration compensates a write-then-throw failure and verifies the original record', async () => {
+  const { executeJourneyPrivacyMigration, JOURNEY_KEY } = await import('../src/features/journey/journeyStore.js');
+  const raw = { profileData: { name: 'نام کاربر', medical: 'none', problem: 'anxiety' }, archive: [] };
+  const original = JSON.stringify(raw);
+  const values = new Map([[JOURNEY_KEY, original]]);
+  let failOnce = true;
+  const storage = {
+    getItem: (key) => values.get(key) ?? null,
+    setItem: (key, value) => {
+      values.set(key, String(value));
+      if (failOnce) { failOnce = false; throw new Error('write completed then failed'); }
+    },
+  };
+  const result = executeJourneyPrivacyMigration({ storage, canonicalProfile: { name: 'نام کاربر', medical: 'none' } });
+  assert.equal(result.migrated, false);
+  assert.equal(result.reason, 'write_failed_rolled_back');
+  assert.equal(values.get(JOURNEY_KEY), original);
+});
+
+test('executed privacy migration reports recovery_required when compensation cannot be verified', async () => {
+  const { executeJourneyPrivacyMigration, JOURNEY_KEY } = await import('../src/features/journey/journeyStore.js');
+  const raw = { profileData: { name: 'نام کاربر', medical: 'none', problem: 'anxiety' }, archive: [] };
+  const original = JSON.stringify(raw);
+  const values = new Map([[JOURNEY_KEY, original]]);
+  let writes = 0;
+  const storage = {
+    getItem: (key) => values.get(key) ?? null,
+    setItem: (key, value) => {
+      writes += 1;
+      values.set(key, String(value));
+      if (writes === 1) throw new Error('first write failed after mutation');
+      throw new Error('compensation write failed');
+    },
+  };
+  const result = executeJourneyPrivacyMigration({ storage, canonicalProfile: { name: 'نام کاربر', medical: 'none' } });
+  assert.equal(result.migrated, false);
+  assert.equal(result.reason, 'recovery_required');
+});
