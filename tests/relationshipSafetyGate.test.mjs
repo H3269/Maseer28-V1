@@ -11,7 +11,7 @@ test('relationship safety gate covers designated direct communication days in T0
   for (const day of [10, 11, 17, 18, 19, 20, 21, 22, 23]) {
     assert.ok(getRelationshipSafetyGate({ id: `T01-D${String(day).padStart(2, '0')}`, topic_id: 'T01', day }));
   }
-  for (const topicId of ['T12', 'T17']) {
+  for (const topicId of ['T05', 'T08', 'T12', 'T17', 'T25', 'T29']) {
     for (const day of [6, 11, 15, 24]) {
       assert.ok(getRelationshipSafetyGate({ id: `${topicId}-D${String(day).padStart(2, '0')}`, topic_id: topicId, day }));
     }
@@ -26,8 +26,12 @@ test('relationship safety gate covers designated direct communication days in T0
 test('stable legacy and canonical identifiers preserve gates across relationship topics', () => {
   const topics = [
     { prefix: 'خشم', topicId: 'T01', days: [10, 11, 17, 18, 19, 20, 21, 22, 23] },
+    { prefix: 'حسادت', topicId: 'T05', days: [6, 11, 15, 24] },
+    { prefix: 'وابستگی عاطفی', topicId: 'T08', days: [6, 11, 15, 24] },
     { prefix: 'مرزبندی و نه گفتن', topicId: 'T12', days: [6, 11, 15, 24] },
     { prefix: 'مشکلات رابطه', topicId: 'T17', days: [6, 11, 15, 24] },
+    { prefix: 'رنجش و کینه', topicId: 'T25', days: [6, 11, 15, 24] },
+    { prefix: 'ترس از طرد شدن', topicId: 'T29', days: [6, 11, 15, 24] },
   ];
   for (const topic of topics) {
     for (const day of topic.days) {
@@ -75,8 +79,12 @@ test('relationship gate days in actual T01, T12, and T17 content have stable IDs
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const cases = [
     { category: 'خشم', days: [10, 11, 17, 18, 19, 20, 21, 22, 23], topicId: 'T01', risk: 'caution' },
+    { category: 'حسادت', days: [6, 11, 15, 24] },
+    { category: 'وابستگی عاطفی', days: [6, 11, 15, 24] },
     { category: 'مرزبندی و نه گفتن', days: [6, 11, 15, 24] },
     { category: 'مشکلات رابطه', days: [6, 11, 15, 24] },
+    { category: 'رنجش و کینه', days: [6, 11, 15, 24] },
+    { category: 'ترس از طرد شدن', days: [6, 11, 15, 24] },
   ];
   for (const item of cases) {
     for (const dayNumber of item.days) {
