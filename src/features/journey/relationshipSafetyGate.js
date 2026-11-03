@@ -1,7 +1,11 @@
 const GATED_DAYS_BY_TOPIC = new Map([
   ['T01', new Set([10, 11, 17, 18, 19, 20, 21, 22, 23])],
+  ['T05', new Set([6, 11, 15, 24])],
+  ['T08', new Set([6, 11, 15, 24])],
   ['T12', new Set([6, 11, 15, 24])],
   ['T17', new Set([6, 11, 15, 24])],
+  ['T25', new Set([6, 11, 15, 24])],
+  ['T29', new Set([6, 11, 15, 24])],
 ]);
 
 const RELATIONSHIP_COMMUNICATION_GATE = Object.freeze({
@@ -18,15 +22,19 @@ const RELATIONSHIP_COMMUNICATION_GATE = Object.freeze({
 
 const LEGACY_TOPIC_IDS_BY_PREFIX = new Map([
   ['خشم', 'T01'],
+  ['حسادت', 'T05'],
+  ['وابستگی عاطفی', 'T08'],
   ['مرزبندی و نه گفتن', 'T12'],
   ['مشکلات رابطه', 'T17'],
+  ['رنجش و کینه', 'T25'],
+  ['ترس از طرد شدن', 'T29'],
 ]);
 
 export function getRelationshipSafetyGate(day) {
   if (!day || typeof day !== 'object') return null;
   const id = String(day.id || '');
   const legacyIdMatch = /^(خشم|مرزبندی و نه گفتن|مشکلات رابطه)-([0-9]{1,2})$/u.exec(id);
-  const canonicalIdMatch = /^(T01|T12|T17)-D([0-9]{1,2})$/i.exec(id);
+  const canonicalIdMatch = /^(T01|T05|T08|T12|T17|T25|T29)-D([0-9]{1,2})$/i.exec(id);
   const topicIds = [
     day.topic_id,
     legacyIdMatch ? LEGACY_TOPIC_IDS_BY_PREFIX.get(legacyIdMatch[1]) : null,
