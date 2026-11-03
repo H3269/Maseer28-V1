@@ -22,11 +22,14 @@ const expectedCategoryCount = 34;
 const expectedDays = 28;
 const requiredTextFields = ['title', 'intro', 'exercise', 'actionText', 'closing'];
 const allIds = new Set();
+const dayById = new Map();
 const booksById = new Map();
 const topicsRegistry = readJson('public/assistant/knowledge/topics.v1.json');
 const subtopicsRegistry = readJson('public/assistant/knowledge/subtopics.v1.json');
 const evidenceRegistry = readJson('public/assistant/evidence/sources.v1.json');
 const topicIdByName = new Map((topicsRegistry.topics || []).map((item) => [item.name, item.topic_id]));
+const topicRecordById = new Map((topicsRegistry.topics || []).map((item) => [item.topic_id, item]));
+const subtopicRecordById = new Map((subtopicsRegistry.subtopics || []).map((item) => [item.subtopic_id, item]));
 const subtopicById = new Map((subtopicsRegistry.subtopics || []).map((item) => [item.subtopic_id, item.topic_id]));
 const evidenceSourceIds = new Set((evidenceRegistry.sources || []).map((item) => item.source_id));
 const validReviewStatuses = new Set(['draft', 'pending_expert_review', 'approved', 'rejected', 'retired']);
@@ -76,6 +79,7 @@ for (const { topic, category } of topicRows) {
       fail.push(`شناسه روز خالی یا تکراری در «${topic}»، روز ${index + 1}: ${day.id || '(خالی)'}`);
     } else {
       allIds.add(day.id);
+      dayById.set(day.id, { topic, day });
     }
 
     for (const field of requiredTextFields) {
@@ -108,6 +112,16 @@ for (const { topic, category } of topicRows) {
       }
       if (!Array.isArray(day.subtopic_ids) || day.subtopic_ids.some((id) => subtopicById.get(id) !== day.topic_id)) {
         fail.push(`زیرموضوع نامعتبر یا متعلق به موضوع دیگر در «${topic}»، روز ${index + 1}`);
+      }
+      const topicRecord = topicRecordById.get(day.topic_id);
+      if (!Array.isArray(topicRecord?.content_ids) || !topicRecord.content_ids.includes(day.id)) {
+        fail.push(`پیوند دوطرفه topic.content_ids برای روز ${index + 1} در «${topic}» ناقص است.`);
+      }
+      for (const subtopicId of day.subtopic_ids || []) {
+        const subtopicRecord = subtopicRecordById.get(subtopicId);
+        if (!Array.isArray(subtopicRecord?.content_ids) || !subtopicRecord.content_ids.includes(day.id)) {
+          fail.push(`پیوند دوطرفه subtopic.content_ids برای ${subtopicId} و روز ${index + 1} در «${topic}» ناقص است.`);
+        }
       }
       if (!Number.isInteger(day.duration_minutes) || day.duration_minutes < 1 || day.duration_minutes > 60) {
         fail.push(`duration_minutes نامعتبر در «${topic}»، روز ${index + 1}`);
@@ -153,6 +167,24 @@ for (const { topic, category } of topicRows) {
           fail.push(`فصل نامعتبر برای کتاب ${rec.bookId}؛ موضوع «${topic}»، روز ${index + 1}`);
         }
       }
+    }
+  }
+}
+
+// Reject orphaned or misassigned registry content links for all topics/subtopics.
+for (const topicRecord of topicsRegistry.topics || []) {
+  for (const contentId of topicRecord.content_ids || []) {
+    const linked = dayById.get(contentId);
+    if (!linked || linked.day.topic_id !== topicRecord.topic_id) {
+      fail.push(`content_id یتیم یا متعلق به موضوع اشتباه در ${topicRecord.topic_id}: ${contentId}`);
+    }
+  }
+}
+for (const subtopicRecord of subtopicsRegistry.subtopics || []) {
+  for (const contentId of subtopicRecord.content_ids || []) {
+    const linked = dayById.get(contentId);
+    if (!linked || !Array.isArray(linked.day.subtopic_ids) || !linked.day.subtopic_ids.includes(subtopicRecord.subtopic_id)) {
+      fail.push(`content_id یتیم یا بدون پیوند متقابل در ${subtopicRecord.subtopic_id}: ${contentId}`);
     }
   }
 }
