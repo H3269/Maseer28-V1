@@ -12,6 +12,7 @@ const consentPolicy = readJson('public/assistant/privacy/consent-policy.v1.json'
 const safetyDataPolicy = readJson('public/assistant/privacy/safety-data-boundaries.v1.json');
 const assessmentProtocol = readJson('public/assistant/assessment/assessment-protocol.v1.json');
 const topicDefinitions = readJson('public/assistant/knowledge/topic-definitions-draft.v1.json');
+const evidenceSourcesRegistry = readJson('public/assistant/evidence/sources.v1.json');
 const errors = [];
 const expectedIds = Array.from({ length: 34 }, (_, index) => `T${String(index + 1).padStart(2, '0')}`);
 const topics = topicsRegistry.topics || [];
@@ -22,6 +23,8 @@ const topicIds = new Set(topics.map((item) => item.topic_id));
 const subtopicIds = new Set(subtopics.map((item) => item.subtopic_id));
 const relationIds = new Set(relations.map((item) => item.relation_id));
 const definitionIds = new Set((topicDefinitions.definitions || []).map((item) => item.topic_id));
+const evidenceSources = evidenceSourcesRegistry.sources || [];
+const evidenceSourceIds = new Set(evidenceSources.map((item) => item.source_id));
 
 if (topicsRegistry.registry_id !== 'maseer28-topic-registry') errors.push('شناسه رجیستری موضوعات نامعتبر است.');
 if (topicsRegistry.registry_status !== 'draft_requires_expert_review') errors.push('رجیستری موضوعات باید تا بازبینی متخصص draft باقی بماند.');
@@ -32,9 +35,17 @@ if (new Set(topics.map((item) => item.topic_id)).size !== topics.length) errors.
 if (JSON.stringify(topics.map((item) => item.topic_id)) !== JSON.stringify(expectedIds)) errors.push('شناسه‌ها باید به ترتیب T01 تا T34 باشند.');
 
 for (const id of expectedIds) if (!definitionIds.has(id)) errors.push(`تعریف کاری ${id} وجود ندارد.`);
+if (evidenceSourcesRegistry.registry_id !== 'maseer28-evidence-source-registry') errors.push('شناسه رجیستری منابع شواهد نامعتبر است.');
+if (evidenceSourcesRegistry.status !== 'curated_draft_sources_pending_evidence_review') errors.push('منابع شواهد باید تا ارزیابی کیفیت و بازبینی در وضعیت draft باقی بمانند.');
+if (new Set(evidenceSources.map((item) => item.source_id)).size !== evidenceSources.length) errors.push('شناسه منبع شواهد تکراری است.');
+
 (topicDefinitions.definitions || []).forEach((item) => {
   if (!topicIds.has(item.topic_id)) errors.push(`تعریف به موضوع نامعتبر ${item.topic_id} متصل است.`);
-  if (item.review_status !== 'pending_expert_review' || item.evidence_ids?.length) errors.push(`تعریف ${item.topic_id} نباید بدون منبع و بازبینی تأیید شود.`);
+  if (item.review_status !== 'pending_expert_review') errors.push(`تعریف ${item.topic_id} نباید پیش از بازبینی متخصص تأیید شود.`);
+  if (!Array.isArray(item.evidence_ids)) errors.push(`فهرست منابع تعریف ${item.topic_id} باید آرایه باشد.`);
+  for (const sourceId of item.evidence_ids || []) {
+    if (!evidenceSourceIds.has(sourceId)) errors.push(`منبع ${sourceId} برای تعریف ${item.topic_id} در رجیستری وجود ندارد.`);
+  }
 });
 
 topics.forEach((topic, index) => {
