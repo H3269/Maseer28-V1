@@ -14,7 +14,7 @@ test('baseline and final assessment reuse the exact same first four questions', 
   );
   assert.match(
     journeyScreens,
-    /burden = complete \? burdenScoreFromAnswers\(values\.slice\(0, 4\)\)/
+    /burden = complete \? burdenScoreFromAnswers\(values\.slice\(0, 4\)\.map\(Number\)\)/
   );
 });
 
