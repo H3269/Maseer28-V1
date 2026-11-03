@@ -8,6 +8,7 @@ import { executeCompleteLocalDataDeletion } from '../privacy/dataDeletion.js';
 import { createPrivacyBackup, createPrivacyRestorePreview, restorePrivacyBackup } from '../privacy/privacyBackup.js';
 import AssessmentAssistant from '../assistant/AssessmentAssistant.jsx';
 import { exportArchivesZip, triggerBlobDownload } from './archiveExport.js';
+import { getDailySafetyMode } from '../content/dailySafety.js';
 
 // This prototype has no clinical validation. It stays hidden unless an experimental build explicitly enables it.
 const EXPERIMENTAL_ASSISTANT_ENABLED = APP_CONFIG.TEST_MODE || import.meta.env.VITE_ENABLE_EXPERIMENTAL_ASSISTANT === 'true';
@@ -353,7 +354,7 @@ export function DayScreen({ day, problem, data, record, savedAnswer, previousRec
   return () => cancelAnimationFrame(frame);
 }, [entryOpen]);
   if (!data) return null;
-  const requiresHumanReview = data.risk_level === 'human_review_required';
+  const requiresHumanReview = getDailySafetyMode(data) === 'blocked';
   if (requiresHumanReview) return <section className="card dayCard" id="day"><div className="dayTopline"><span className="badge">روز {fa(day)} از ۲۸ · {problem}</span><button aria-label="داشبورد" className="iconButton subtle" onClick={onDashboard}><AppIcon name="home" size={19} /></button></div><h2>{fa(data.title || 'تمرین امروز')}</h2><div className="safetyNote" role="alert"><b>این تمرین در نسخه فعلی فعال نیست</b><p>این بخش به بازبینی انسانی نیاز دارد و نباید به‌عنوان تمرین خودیاری اجرا شود.</p><p>{fa(data.when_to_seek_human_support || 'برای دریافت راهنمایی متناسب با شرایطت از متخصص واجد صلاحیت کمک بگیر.')}</p>{Array.isArray(data.stop_conditions) && data.stop_conditions.length > 0 && <ul>{data.stop_conditions.map((item, index) => <li key={index}>{fa(item)}</li>)}</ul>}</div><p className="muted">می‌توانی عدم اجرای این تمرین را بدون ثبت امتیاز یا بازخورد ساختگی ثبت کنی و مسیر را ادامه بدهی.</p><button className="primary" onClick={onSkip}>ثبت عدم اجرای تمرین و ادامه مسیر</button><button className="secondary" onClick={onDashboard}>بازگشت به داشبورد</button></section>;
   const bubblePos = Math.min(96, Math.max(4, (10 - Number(score)) * 10));
   const guidanceLines = structuredText(guidance);
