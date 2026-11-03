@@ -107,7 +107,7 @@ test('production content gate requires T31 subtype and matching approved context
 
   day.control_context = 'interpersonal_coercive_control';
   const mismatchErrors = validateProductionContent(data);
-  assert.ok(mismatchErrors.some((item) => item.includes('control_context matching exactly one T31 subtype')));
+  assert.ok(mismatchErrors.some((item) => item.includes('control topic subtype and context are not explicitly classified')));
 
   day.control_context = 'self_control_need';
   subtopic.review_status = 'draft';
@@ -176,28 +176,6 @@ test('evidence registry records are unique, traceable, and explicitly limited', 
     'SRC-DMHI-NSQDMH-2026-001',
   ]) assert.ok(ids.includes(id), `missing curated source ${id}`);
 });
-
-test('production content gate requires one approved T31 subtype and matching control context', () => {
-  const data = fixture();
-  const day = data.content.categories['موضوع آزمایشی'].days[0];
-  const topic = data.topicsRegistry.topics[0];
-  const subtopic = data.subtopicsRegistry.subtopics[0];
-  day.id = 'T31-D01';
-  day.topic_id = 'T31';
-  day.subtopic_ids = ['T31-S01'];
-  day.control_context = 'self_control_need';
-  topic.topic_id = 'T31';
-  topic.content_ids = ['T31-D01'];
-  subtopic.subtopic_id = 'T31-S01';
-  subtopic.topic_id = 'T31';
-  subtopic.content_ids = ['T31-D01'];
-  assert.deepEqual(validateProductionContent(data), []);
-
-  day.control_context = 'interpersonal_coercive_control';
-  const errors = validateProductionContent(data);
-  assert.ok(errors.some((item) => item.includes('control topic subtype and context are not explicitly classified')));
-});
-
 
 test('public deployment and Telegram publication retain expert approval gates', async () => {
   const [deploy, publish] = await Promise.all([
