@@ -102,3 +102,120 @@ export const PRIVACY_BACKUP_POLICY = Object.freeze({
   integrity: 'The checksum detects accidental corruption; it is not cryptographic authentication and does not prove who created the file.',
   scope: 'Only app-owned localStorage and user-owned records selected from maseer28-library are included. Downloads, browser/device backups, and server-side data are excluded.',
 });
+
+function waitForTransaction(transaction) {
+  return new Promise((resolve, reject) => {
+    transaction.oncomplete = resolve;
+    transaction.onabort = () => reject(transaction.error || new Error('تراکنش بازیابی لغو شد.'));
+    transaction.onerror = () => reject(transaction.error || new Error('تراکنش بازیابی ناموفق بود.'));
+  });
+}
+
+function serializeStorageValue(value) {
+  return typeof value === 'string' ? JSON.stringify(value) : JSON.stringify(value);
+}
+
+/**
+ * Restores only into an empty namespace. Existing keys/IDs are never overwritten.
+ * IndexedDB writes are one atomic transaction; localStorage is applied afterward
+ * and compensating rollback removes the imported IndexedDB rows if it fails.
+ */
+export async function restorePrivacyBackup(candidate, { storage, indexedDBApi = globalThis.indexedDB } = {}) {
+  const preview = await createPrivacyRestorePreview(candidate, { storage, indexedDBApi });
+  if (!preview.valid) return { restored: false, phase: 'preflight', errors: preview.errors || preview.validation?.errors || [] };
+  if (preview.conflicts.total > 0) {
+    return { restored: false, phase: 'conflict', errors: ['بازیابی بدون بازنویسی فقط در فضای خالی مجاز است؛ ابتدا تعارض‌ها را جداگانه بررسی کنید.'], conflicts: preview.conflicts };
+  }
+  if (!storage || !indexedDBApi) {
+    return { restored: false, phase: 'environment', errors: ['دسترسی هم‌زمان به localStorage و IndexedDB برای بازیابی کامل الزامی است.'] };
+  }
+
+  const stores = candidate.indexedDB.stores;
+  const importedKeys = {
+    books: stores.books.map((row) => row.id),
+    versions: stores.versions.map((row) => row.id),
+    settings: stores.settings.map((row) => row.key),
+  };
+  let db;
+  let indexedDbCommitted = false;
+  try {
+    db = await new Promise((resolve, reject) => {
+      const request = indexedDBApi.open('maseer28-library');
+      request.onupgradeneeded = (event) => {
+        if (event.oldVersion !== 0) {
+          request.transaction.abort();
+          return;
+        }
+        request.result.createObjectStore('books', { keyPath: 'id' });
+        const versions = request.result.createObjectStore('versions', { keyPath: 'id' });
+        versions.createIndex('bookId', 'bookId', { unique: false });
+        request.result.createObjectStore('settings', { keyPath: 'key' });
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error || new Error('بازکردن پایگاه داده برای بازیابی ناموفق بود.'));
+      request.onblocked = () => reject(new Error('بازکردن پایگاه داده برای بازیابی مسدود شده است.'));
+    });
+
+    const expected = {
+      books: { keyPath: 'id', indexes: [] },
+      versions: { keyPath: 'id', indexes: ['bookId'] },
+      settings: { keyPath: 'key', indexes: [] },
+    };
+    for (const [name, schema] of Object.entries(expected)) {
+      if (!db.objectStoreNames.contains(name)) throw new Error(`مخزن ${name} وجود ندارد؛ بازیابی متوقف شد.`);
+      const tx = db.transaction(name, 'readonly');
+      const store = tx.objectStore(name);
+      const indexes = Array.from(store.indexNames).sort();
+      if (store.keyPath !== schema.keyPath || store.autoIncrement || JSON.stringify(indexes) !== JSON.stringify(schema.indexes)) {
+        throw new Error(`ساختار مخزن ${name} تغییر کرده است؛ بازیابی متوقف شد.`);
+      }
+    }
+
+    const writeTx = db.transaction(['books', 'versions', 'settings'], 'readwrite');
+    const completion = waitForTransaction(writeTx);
+    for (const name of ['books', 'versions', 'settings']) {
+      for (const row of stores[name]) writeTx.objectStore(name).add(row);
+    }
+    await completion;
+    indexedDbCommitted = true;
+
+    const appliedLocalKeys = [];
+    try {
+      for (const [key, value] of Object.entries(candidate.localStorage.entries)) {
+        if (storage.getItem(key) !== null) throw new Error(`کلید ${key} هم‌زمان با بازیابی ایجاد شده است.`);
+        storage.setItem(key, serializeStorageValue(value));
+        appliedLocalKeys.push(key);
+      }
+      const verification = readLocalUserData(storage).entries;
+      for (const [key, value] of Object.entries(candidate.localStorage.entries)) {
+        if (stableStringify(verification[key]) !== stableStringify(value)) throw new Error(`راستی‌آزمایی کلید ${key} ناموفق بود.`);
+      }
+    } catch (localError) {
+      for (const key of appliedLocalKeys) {
+        try { storage.removeItem(key); } catch { /* reported through recovery status below */ }
+      }
+      const rollbackTx = db.transaction(['books', 'versions', 'settings'], 'readwrite');
+      const rollbackDone = waitForTransaction(rollbackTx);
+      for (const [name, field] of [['books', 'id'], ['versions', 'id'], ['settings', 'key']]) {
+        for (const key of importedKeys[name]) rollbackTx.objectStore(name).delete(key);
+      }
+      try {
+        await rollbackDone;
+        indexedDbCommitted = false;
+        return { restored: false, phase: 'localStorage', rolledBack: true, errors: [String(localError?.message || localError)] };
+      } catch (rollbackError) {
+        return { restored: false, phase: 'recovery_required', rolledBack: false, errors: [String(localError?.message || localError), String(rollbackError?.message || rollbackError)] };
+      }
+    }
+
+    return {
+      restored: true,
+      counts: { localStorage: Object.keys(candidate.localStorage.entries).length, books: stores.books.length, versions: stores.versions.length, settings: stores.settings.length },
+      verified: true,
+    };
+  } catch (error) {
+    return { restored: false, phase: indexedDbCommitted ? 'recovery_required' : 'indexedDB', errors: [String(error?.message || error)] };
+  } finally {
+    db?.close();
+  }
+}
