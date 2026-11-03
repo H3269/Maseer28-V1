@@ -145,7 +145,7 @@ test('cloud processing is explicitly rejected by this experimental engine', () =
 test('safety answer classifier does not mistake a leading no for a complete negative answer', () => {
   assert.equal(classifySafetyAnswer('نه، مطمئن نیستم'), 'clarification_needed');
   assert.equal(classifySafetyAnswer('نه، شاید نتوانم کنترلش کنم'), 'clarification_needed');
-  assert.equal(classifySafetyAnswer('نه، برنامه دارم'), 'urgent_human_support_recommended');
+  assert.equal(classifySafetyAnswer('نه، برنامه دارم'), 'clarification_needed');
   assert.equal(classifySafetyAnswer('بله، ولی قصد ندارم'), 'urgent_human_support_recommended');
 });
 
@@ -413,4 +413,18 @@ test('assessment engine rejects tampered or incompatible session state', () => {
   assert.throws(() => submitAssessmentAnswer(invalidTopic, 'پاسخ'), /داده‌های داخلی جلسه معتبر نیستند/);
   const incompatibleVersion = { ...createAssessmentSession(), schema_version: '9.9.9' };
   assert.throws(() => submitAssessmentAnswer(incompatibleVersion, 'پاسخ'), /شناسه پرسش معتبر نیست/);
+});
+
+
+test('generic intentions do not trigger urgent safety handoff without explicit harm language', () => {
+  assert.equal(classifySafetyAnswer('قصد دارم فردا ورزش کنم'), 'clarification_needed');
+  assert.equal(classifySafetyAnswer('برنامه دارم هفته بعد سفر بروم'), 'clarification_needed');
+  assert.equal(classifySafetyAnswer('نه، قصد دارم فردا سفر کنم'), 'clarification_needed');
+});
+
+test('explicit harmful intent remains urgent while ambiguous intent requires clarification', () => {
+  assert.equal(classifySafetyAnswer('قصد دارم خودم را بکشم'), 'urgent_human_support_recommended');
+  assert.equal(classifySafetyAnswer('امشب برنامه دارم به خودم آسیب بزنم'), 'urgent_human_support_recommended');
+  assert.equal(classifySafetyAnswer('می‌خواهم به کسی آسیب بزنم'), 'urgent_human_support_recommended');
+  assert.equal(classifySafetyAnswer('نه، برنامه دارم'), 'clarification_needed');
 });
