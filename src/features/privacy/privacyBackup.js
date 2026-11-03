@@ -31,6 +31,42 @@ export function validatePrivacyBackup(candidate) {
   if (checksum(payload) !== candidate.integrity.checksum) errors.push('محتوای فایل با مقدار کنترل سلامت آن مطابقت ندارد؛ فایل ممکن است ناقص یا تغییرکرده باشد.');
   return { valid: errors.length === 0, errors, format: candidate.format, schema_version: candidate.schema_version, exported_at: candidate.exported_at };
 }
+
+export async function createPrivacyRestorePreview(candidate, { storage, indexedDBApi } = {}) {
+  const validation = validatePrivacyBackup(candidate);
+  if (!validation.valid) return { valid: false, validation, errors: validation.errors };
+  const errors = [];
+  const localEntries = candidate.localStorage.entries;
+  for (const [key, value] of Object.entries(localEntries)) {
+    if (!(key.startsWith('maseer28_') && key !== 'maseer28_copyright_v60') && key !== 'profile_completed') errors.push(`کلید ${key} خارج از محدوده مجاز برنامه است.`);
+    if (value === undefined || typeof value === 'function' || typeof value === 'symbol') errors.push(`مقدار کلید ${key} قابل بازیابی نیست.`);
+  }
+  const stores = candidate.indexedDB.stores;
+  const keyFields = { books: 'id', versions: 'id', settings: 'key' };
+  for (const [storeName, field] of Object.entries(keyFields)) {
+    const seen = new Set();
+    for (const row of stores[storeName]) {
+      if (!row || typeof row !== 'object' || Array.isArray(row) || typeof row[field] !== 'string' || !row[field].trim()) { errors.push(`رکورد نامعتبر در بخش ${storeName} وجود دارد.`); continue; }
+      if (seen.has(row[field])) errors.push(`شناسه تکراری در بخش ${storeName} وجود دارد.`);
+      seen.add(row[field]);
+    }
+  }
+  if (errors.length) return { valid: false, validation, errors };
+  try {
+    const currentLocal = readLocalUserData(storage).entries;
+    const currentLibrary = await readIndexedDbUserData(indexedDBApi);
+    const localConflicts = Object.keys(localEntries).filter((key) => Object.hasOwn(currentLocal, key));
+    const indexedDbConflicts = {};
+    for (const [storeName, field] of Object.entries(keyFields)) {
+      const currentKeys = new Set(currentLibrary.stores[storeName].map((row) => row?.[field]));
+      indexedDbConflicts[storeName] = stores[storeName].filter((row) => currentKeys.has(row[field])).map((row) => row[field]);
+    }
+    return { valid: true, validation, counts: { localStorage: Object.keys(localEntries).length, books: stores.books.length, versions: stores.versions.length, settings: stores.settings.length }, conflicts: { localStorage: localConflicts, indexedDB: indexedDbConflicts, total: localConflicts.length + Object.values(indexedDbConflicts).reduce((sum, keys) => sum + keys.length, 0) }, note: 'این پیش‌نمایش فقط داده‌ها را می‌خواند و هیچ تغییری در ذخیره‌سازی مرورگر ایجاد نمی‌کند.' };
+  } catch {
+    return { valid: false, validation, errors: ['خواندن وضعیت فعلی مرورگر برای تهیه پیش‌نمایش کامل ممکن نشد؛ هیچ داده‌ای تغییر نکرد.'] };
+  }
+}
+
 export const PRIVACY_BACKUP_POLICY = Object.freeze({
   restore: 'This version creates and validates backup files only. It does not restore or overwrite browser data.',
   integrity: 'The checksum detects accidental corruption; it is not cryptographic authentication and does not prove who created the file.',
