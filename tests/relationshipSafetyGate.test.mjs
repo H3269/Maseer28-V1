@@ -65,14 +65,24 @@ test('relationship safety skip records are explicit and never fabricate a score'
   assert.throws(() => createRelationshipSafetySkipRecord(day, 'not-a-date'));
 });
 
-test('relationship gate days in the actual T01 content have stable IDs and topic links', async () => {
+test('relationship gate days in actual T01, T12, and T17 content have stable IDs', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
-  const days = content.categories['خشم'].days;
-  for (const dayNumber of [10, 11, 17, 18, 19, 20, 21, 22, 23]) {
-    const day = days.find((item) => item.day === dayNumber);
-    assert.equal(day.topic_id, 'T01');
-    assert.equal(day.risk_level, 'caution', `gated communication day ${dayNumber} must retain caution metadata`);
-    assert.equal(getRelationshipSafetyGate(day)?.gateId, 'relationship-communication-safety-v1');
+  const cases = [
+    { category: 'خشم', days: [10, 11, 17, 18, 19, 20, 21, 22, 23], topicId: 'T01', risk: 'caution' },
+    { category: 'مرزبندی و نه گفتن', days: [6, 11, 15, 24] },
+    { category: 'مشکلات رابطه', days: [6, 11, 15, 24] },
+  ];
+  for (const item of cases) {
+    for (const dayNumber of item.days) {
+      const day = content.categories[item.category].days.find((candidate) => candidate.day === dayNumber);
+      assert.ok(day, `missing ${item.category} day ${dayNumber}`);
+      assert.equal(getRelationshipSafetyGate(day)?.gateId, 'relationship-communication-safety-v1');
+      assert.match(`${day.exercise || ''}\n${day.actionText || ''}`, /درخواست|گفت.?وگو|مرز|مذاکره/u);
+      if (item.topicId) {
+        assert.equal(day.topic_id, item.topicId);
+        assert.equal(day.risk_level, item.risk);
+      }
+    }
   }
 });
 
