@@ -21,8 +21,16 @@ try {
       archive: [{
         pathId: 'browser-export-check',
         profileData: { problem: 'آزمون مرورگر', durationYears: 1, durationMonths: 0, goal: 'هدف آزمایشی' },
-        completed: [1, 2], answers: { 1: answer, 2: 'پاسخ دوم' },
-        daily: { 1: { score: 4, feedbackText: 'بهتر شدم' } },
+        completed: [1, 2, 27], answers: { 1: answer, 2: 'پاسخ دوم' },
+        daily: {
+          1: { score: 4, feedbackText: 'بهتر شدم' },
+          27: {
+            status: 'skipped_human_review',
+            feedbackText: 'این تمرین به دلیل نیاز به بازبینی انسانی اجرا نشد؛ هیچ امتیازی ثبت نشده است.',
+            exerciseId: 'T01-D27',
+            updatedAt: '2026-01-27T12:00:00.000Z',
+          },
+        },
         assessmentData: { score: 6 }, final: { score: 3 },
         startedAt: '2026-01-01T00:00:00.000Z', archivedAt: '2026-01-28T00:00:00.000Z',
       }],
