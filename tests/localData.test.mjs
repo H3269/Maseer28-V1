@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 
 import { createLocalUserDataDeletionPlan, deleteLocalUserData, readLocalUserData } from '../src/features/privacy/localData.js';
 import { deleteIndexedDbUserData, readIndexedDbUserData, selectUserOwnedLibraryData } from '../src/features/privacy/indexedDbData.js';
+import { createPrivacyBackup, validatePrivacyBackup, PRIVACY_BACKUP_POLICY } from '../src/features/privacy/privacyBackup.js';
 
 class MemoryStorage {
   constructor(entries = {}) { this.values = new Map(Object.entries(entries)); }
@@ -343,4 +344,24 @@ test('IndexedDB blocked-open fails clearly and closes a connection if it later s
   request.result = { close() { closed = true; } };
   request.onsuccess();
   assert.equal(closed, true);
+});
+
+test('privacy backup bundle includes both browser stores and validates integrity', async () => {
+  const storage = new MemoryStorage({ maseer28_state: JSON.stringify({ answers: { 1: 'پاسخ' } }), maseer28_copyright_v60: '1', unrelated: 'keep' });
+  const backup = await createPrivacyBackup({ storage, now: () => new Date('2026-11-03T10:00:00.000Z') });
+  assert.equal(validatePrivacyBackup(backup).valid, true);
+  assert.equal(backup.localStorage.entries.maseer28_state.answers[1], 'پاسخ');
+  assert.deepEqual(backup.indexedDB.stores, { books: [], versions: [], settings: [] });
+  assert.equal(backup.localStorage.entries.maseer28_copyright_v60, undefined);
+  assert.match(backup.integrity.checksum, /^[a-f0-9]{8}$/);
+  assert.match(PRIVACY_BACKUP_POLICY.restore, /does not restore/);
+});
+
+test('privacy backup validation detects altered content and unsupported schema versions', async () => {
+  const backup = await createPrivacyBackup({ storage: new MemoryStorage({ maseer28_state: '{}' }) });
+  const corrupted = structuredClone(backup);
+  corrupted.localStorage.entries.maseer28_state = 'tampered';
+  assert.equal(validatePrivacyBackup(corrupted).valid, false);
+  const unsupported = { ...backup, schema_version: '99.0.0' };
+  assert.equal(validatePrivacyBackup(unsupported).valid, false);
 });
