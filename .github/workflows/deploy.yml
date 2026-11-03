@@ -13,6 +13,7 @@ on:
         default: "no"
 
 permissions:
+  actions: read
   contents: read
   pages: write
   id-token: write
@@ -43,6 +44,18 @@ jobs:
 
       - name: Install
         run: npm ci
+
+      - name: Require successful validation for this exact commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api \
+            -H "Accept: application/vnd.github+json" \
+            "repos/${GITHUB_REPOSITORY}/actions/workflows/validate-content.yml/runs?head_sha=${GITHUB_SHA}&branch=main&event=push&per_page=100" \
+            > /tmp/path28-validation-runs.json
+          node scripts/assert-validation-run.mjs /tmp/path28-validation-runs.json
 
       - name: Prepare production configuration
         env:
