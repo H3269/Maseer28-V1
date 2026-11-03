@@ -750,22 +750,30 @@ test('archive deletion reports recovery_required when compensating rollback cann
 });
 
 
-test('journey state preserves safety-skip records without inventing a score or feedback', () => {
+test('journey state preserves human-review and safety-gate skips without inventing scores or feedback', () => {
   const state = sanitizeJourneyState({
     ...defaultJourneyState(),
-    completed: [1],
+    completed: [1, 2],
     daily: {
       1: {
-        status: 'skipped_safety_gate',
+        status: 'skipped_human_review',
         feedbackText: 'تمرین به دلیل نیاز به بازبینی انسانی اجرا نشد.',
         exerciseId: 'T01-D27',
         updatedAt: '2026-11-03T12:00:00.000Z',
       },
+      2: {
+        status: 'skipped_safety_gate',
+        feedbackText: 'تمرین به دلیل ملاحظه ایمنی اجرا نشد.',
+        exerciseId: 'T01-D17',
+        updatedAt: '2026-11-03T12:05:00.000Z',
+      },
     },
   });
-  assert.deepEqual(state.completed, [1]);
-  assert.equal(state.daily[1].status, 'skipped_safety_gate');
-  assert.equal(state.daily[1].feedbackText, 'تمرین به دلیل نیاز به بازبینی انسانی اجرا نشد.');
+  assert.deepEqual(state.completed, [1, 2]);
+  assert.equal(state.daily[1].status, 'skipped_human_review');
+  assert.equal(state.daily[2].status, 'skipped_safety_gate');
   assert.equal(state.daily[1].score, undefined);
+  assert.equal(state.daily[2].score, undefined);
   assert.equal(state.daily[1].feedback, undefined);
+  assert.equal(state.daily[2].feedback, undefined);
 });
