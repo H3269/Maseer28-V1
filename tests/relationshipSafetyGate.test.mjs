@@ -7,43 +7,42 @@ import {
   createRelationshipSafetySkipRecord,
 } from '../src/features/journey/relationshipSafetyGate.js';
 
-test('relationship safety gate covers designated direct communication days in T01, T12, and T17 only', () => {
-  for (const day of [10, 11, 17, 18, 19, 20, 21, 22, 23]) {
-    assert.ok(getRelationshipSafetyGate({ id: `T01-D${String(day).padStart(2, '0')}`, topic_id: 'T01', day }));
-  }
-  for (const topicId of ['T05', 'T08', 'T12', 'T17', 'T25', 'T29']) {
+test('relationship safety gate covers T01 and shared interpersonal days across T03-T34', async () => {
+  const registry = JSON.parse(await readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'));
+  const sharedTopics = registry.topics.filter((topic) => Number(topic.topic_id.slice(1)) >= 3);
+  assert.equal(sharedTopics.length, 32);
+  for (const topic of sharedTopics) {
     for (const day of [6, 11, 15, 24]) {
-      assert.ok(getRelationshipSafetyGate({ id: `${topicId}-D${String(day).padStart(2, '0')}`, topic_id: topicId, day }));
-    }
-    for (const day of [7, 12, 18, 25]) {
-      assert.equal(getRelationshipSafetyGate({ id: `${topicId}-D${String(day).padStart(2, '0')}`, topic_id: topicId, day }), null);
+      const canonicalId = topic.topic_id + '-D' + String(day).padStart(2, '0');
+      assert.ok(getRelationshipSafetyGate({ id: canonicalId, topic_id: topic.topic_id, day }),
+        topic.topic_id + ' day ' + day + ' must gate the shared interpersonal prompt');
     }
   }
-  assert.equal(getRelationshipSafetyGate({ id: 'T01-D09', topic_id: 'T01', day: 9 }), null);
+  for (const day of [10, 11, 17, 18, 19, 20, 21, 22, 23]) {
+    assert.ok(getRelationshipSafetyGate({ id: 'T01-D' + String(day).padStart(2, '0'), topic_id: 'T01', day }));
+  }
+  assert.equal(getRelationshipSafetyGate({ id: 'T02-D25', topic_id: 'T02', day: 25 }), null);
+  assert.equal(getRelationshipSafetyGate({ id: 'T03-D07', topic_id: 'T03', day: 7 }), null);
+  assert.equal(getRelationshipSafetyGate({ id: 'T03-D12', topic_id: 'T03', day: 12 }), null);
   assert.equal(getRelationshipSafetyGate({ id: 'T02-D20', topic_id: 'T02', day: 20 }), null);
 });
 
-test('stable legacy and canonical identifiers preserve gates across relationship topics', () => {
-  const topics = [
-    { prefix: 'خشم', topicId: 'T01', days: [10, 11, 17, 18, 19, 20, 21, 22, 23] },
-    { prefix: 'حسادت', topicId: 'T05', days: [6, 11, 15, 24] },
-    { prefix: 'وابستگی عاطفی', topicId: 'T08', days: [6, 11, 15, 24] },
-    { prefix: 'مرزبندی و نه گفتن', topicId: 'T12', days: [6, 11, 15, 24] },
-    { prefix: 'مشکلات رابطه', topicId: 'T17', days: [6, 11, 15, 24] },
-    { prefix: 'رنجش و کینه', topicId: 'T25', days: [6, 11, 15, 24] },
-    { prefix: 'ترس از طرد شدن', topicId: 'T29', days: [6, 11, 15, 24] },
-  ];
-  for (const topic of topics) {
-    for (const day of topic.days) {
-      assert.ok(getRelationshipSafetyGate({ id: `${topic.prefix}-${day}` }), `${topic.prefix} legacy day ${day} must remain gated`);
-      assert.ok(getRelationshipSafetyGate({ id: `${topic.topicId}-D${String(day).padStart(2, '0')}` }), `${topic.topicId} canonical day ${day} must remain gated`);
+test('legacy and canonical identifiers preserve shared-topic gates and fail closed on conflicts', async () => {
+  const registry = JSON.parse(await readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'));
+  const sharedTopics = registry.topics.filter((topic) => Number(topic.topic_id.slice(1)) >= 3);
+  for (const topic of sharedTopics) {
+    for (const day of [6, 11, 15, 24]) {
+      const legacyId = topic.name + '-' + day;
+      const canonicalId = topic.topic_id + '-D' + String(day).padStart(2, '0');
+      assert.ok(getRelationshipSafetyGate({ id: legacyId }), legacyId + ' must remain gated');
+      assert.ok(getRelationshipSafetyGate({ id: canonicalId }), canonicalId + ' must remain gated');
     }
   }
-  assert.equal(getRelationshipSafetyGate({ id: 'خشم-09' }), null);
-  assert.equal(getRelationshipSafetyGate({ id: 'غم-10' }), null);
-  assert.equal(getRelationshipSafetyGate({ id: 'T02-D10' }), null);
-  assert.ok(getRelationshipSafetyGate({ id: 'خشم-10', day: 9 }), 'a conflicting identifier must not bypass a gated day');
-  assert.ok(getRelationshipSafetyGate({ id: 'مشکلات رابطه-15', topic_id: 'T02', day: 15 }), 'a conflicting topic identifier must not bypass a gated interaction');
+  assert.equal(getRelationshipSafetyGate({ id: 'غم و سوگ-10' }), null);
+  assert.equal(getRelationshipSafetyGate({ id: 'T02-D25', topic_id: 'T02', day: 25 }), null);
+  assert.ok(getRelationshipSafetyGate({ id: 'خشم-10', day: 9 }), 'a conflicting day identifier must not bypass a gate');
+  assert.ok(getRelationshipSafetyGate({ id: 'مشکلات رابطه-15', topic_id: 'T02', day: 15 }),
+    'a conflicting topic identifier must not bypass a gated interaction');
 });
 
 test('relationship safety confirmation fails closed unless the user explicitly chooses safe', () => {
@@ -81,26 +80,32 @@ test('relationship safety skip records are explicit and never fabricate a score'
   assert.equal('score' in boundaryRecord, false);
 });
 
-test('relationship gate days in actual T01, T12, and T17 content have stable IDs', async () => {
-  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
-  const cases = [
-    { category: 'خشم', days: [10, 11, 17, 18, 19, 20, 21, 22, 23], topicId: 'T01', risk: 'caution' },
-    { category: 'حسادت', days: [6, 11, 15, 24] },
-    { category: 'وابستگی عاطفی', days: [6, 11, 15, 24] },
-    { category: 'مرزبندی و نه گفتن', days: [6, 11, 15, 24] },
-    { category: 'مشکلات رابطه', days: [6, 11, 15, 24] },
-    { category: 'رنجش و کینه', days: [6, 11, 15, 24] },
-    { category: 'ترس از طرد شدن', days: [6, 11, 15, 24] },
-  ];
-  for (const item of cases) {
-    for (const dayNumber of item.days) {
-      const day = content.categories[item.category].days.find((candidate) => candidate.day === dayNumber);
-      assert.ok(day, `missing ${item.category} day ${dayNumber}`);
-      assert.equal(getRelationshipSafetyGate(day)?.gateId, 'relationship-communication-safety-v1');
-      assert.match(`${day.exercise || ''}\n${day.actionText || ''}`, /درخواست|گفت.?وگو|مرز|مذاکره|مکث|تقسیم وظیفه|راه.?حل|مسئله|ترمیم/u);
-      if (item.topicId) {
-        assert.equal(day.topic_id, item.topicId);
-        assert.equal(day.risk_level, item.risk);
+test('actual shared interpersonal prompts across T03-T34 are gated', async () => {
+  const [content, registry] = await Promise.all([
+    readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8').then(JSON.parse),
+    readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8').then(JSON.parse),
+  ]);
+  const topicByName = new Map(registry.topics.map((topic) => [topic.name, topic]));
+  for (const [categoryName, category] of Object.entries(content.categories)) {
+    const topic = topicByName.get(categoryName);
+    if (!topic) continue;
+    const topicNumber = Number(topic.topic_id.slice(1));
+    if (topicNumber >= 3) {
+      for (const dayNumber of [6, 11, 15, 24]) {
+        const day = category.days.find((candidate) => candidate.day === dayNumber);
+        assert.ok(day, 'missing ' + categoryName + ' day ' + dayNumber);
+        assert.equal(getRelationshipSafetyGate(day)?.gateId, 'relationship-communication-safety-v1');
+        assert.match(String(day.exercise || '') + '\n' + String(day.actionText || ''),
+          /درخواست|گفت.?وگو|مرز|مذاکره|بیان کن|مطرح کن/u);
+      }
+    }
+    if (topic.topic_id === 'T01') {
+      for (const dayNumber of [10, 11, 17, 18, 19, 20, 21, 22, 23]) {
+        const day = category.days.find((candidate) => candidate.day === dayNumber);
+        assert.ok(day, 'missing T01 day ' + dayNumber);
+        assert.equal(day.topic_id, 'T01');
+        assert.equal(day.risk_level, 'caution');
+        assert.equal(getRelationshipSafetyGate(day)?.gateId, 'relationship-communication-safety-v1');
       }
     }
   }
