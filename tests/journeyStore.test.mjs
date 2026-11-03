@@ -12,6 +12,7 @@ import {
   migrateUserProfileToV2,
   removeArchivedJourney,
   PROFILE_V2_KEY,
+  MAX_ARCHIVED_JOURNEYS,
   validName,
   validPhone,
   validScore,
@@ -137,7 +138,8 @@ test('sanitizeJourneyState omits sensitive placeholders only after verified priv
   assert.equal(staleMarker.profileData.medical, 'none');
 });
 
-test('sanitizeJourneyState preserves every legacy archive instead of silently truncating at the retention limit', () => {
+test('archive retention capacity is explicit and legacy hydration never truncates older records', () => {
+  assert.equal(MAX_ARCHIVED_JOURNEYS, 20);
   const archive = Array.from({ length: 25 }, (_, index) => ({ pathId: String(index) }));
   const state = sanitizeJourneyState({ archive });
   assert.equal(state.archive.length, 25);
