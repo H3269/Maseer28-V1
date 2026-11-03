@@ -97,6 +97,7 @@ test('day screen wires human-review blocking and caution metadata into the inter
   const archiveExport = await readFile(new URL('../src/features/journey/archiveExport.js', import.meta.url), 'utf8');
   assert.match(ui, /getDailySafetyMode\(data\) === 'blocked'/);
   assert.match(ui, /if \(requiresHumanReview\) return/);
+  assert.match(app, /getDailySafetyMode\(activeDay\) === 'blocked'/, 'completion must enforce the safety gate independently of UI rendering');
   assert.match(ui, /onClick=\{onSkip\}/);
   assert.match(ui, /data\.stop_conditions/);
   assert.match(ui, /data\.contraindications/);
