@@ -53,7 +53,7 @@ import {
   ValidationModal,
 } from './features/journey/JourneyScreens.jsx';
 import { createHumanReviewSkipRecord, getDailySafetyMode } from './features/content/dailySafety.js';
-import { createRelationshipSafetySkipRecord, getRelationshipSafetyGate } from './features/journey/relationshipSafetyGate.js';
+import { createRelationshipSafetySkipRecord, getRelationshipSafetyGate, isRelationshipSafetyConfirmed } from './features/journey/relationshipSafetyGate.js';
 import { fa } from './shared/utils.js';
 
 function isPathSetupComplete(state) {
@@ -576,8 +576,8 @@ function navigate(next) {
     navigate('dailyResult');
   }
 
-  async function skipDayForRelationshipSafety() {
-    if (!getRelationshipSafetyGate(activeDay)) {
+  async function skipDayForRelationshipSafety(response) {
+    if (!getRelationshipSafetyGate(activeDay) || isRelationshipSafetyConfirmed(activeDay, response)) {
       return showValidation(['این روز شرایط ثبت عدم اجرا بر اساس دروازه ایمنی رابطه را ندارد.'], 'این روز قابل رد ایمنی نیست');
     }
     if ((journey.completed || []).includes(currentDay)) {
