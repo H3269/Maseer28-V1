@@ -1,7 +1,9 @@
 export function getDailySafetyMode(day) {
-  if (day?.risk_level === 'human_review_required') return 'blocked';
-  if (day?.risk_level === 'caution') return 'caution';
-  return 'routine';
+  const level = day?.risk_level;
+  if (level === null || level === undefined || level === '') return 'routine';
+  if (level === 'routine') return 'routine';
+  if (level === 'caution') return 'caution';
+  return 'blocked';
 }
 
 export function createHumanReviewSkipRecord(day, timestamp = new Date()) {
