@@ -120,6 +120,36 @@ test('T01 draft days remain blocked at runtime until their review is approved', 
   }
 });
 
+test('legacy T32 low-energy content stays blocked until clinical subtype review', async () => {
+  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
+  const days = content.categories['بی‌انگیزگی'].days;
+  assert.equal(days.length, 28);
+  for (const day of days) {
+    assert.equal(getDailySafetyMode(day), 'blocked', `${day.id} must remain withheld until its low-energy subtype is reviewed`);
+  }
+  const skipped = createHumanReviewSkipRecord(days[0], new Date('2026-11-04T16:00:00.000Z'));
+  assert.equal(skipped.status, 'skipped_human_review');
+  assert.equal('score' in skipped, false);
+
+  const reviewed = (subtopic, extra = {}) => ({
+    id: 'T32-D06',
+    topic_id: 'T32',
+    risk_level: 'routine',
+    review_status: 'approved',
+    review_record_id: 'review-t32-day-06',
+    subtopic_ids: [subtopic],
+    ...extra,
+  });
+  assert.equal(getDailySafetyMode(reviewed('T32-S01')), 'routine');
+  assert.equal(getDailySafetyMode(reviewed('T32-S02')), 'routine');
+  assert.equal(getDailySafetyMode(reviewed('T32-S03')), 'blocked',
+    'physical/sleep/mood-related content needs an explicit safety rule and caution classification');
+  assert.equal(getDailySafetyMode(reviewed('T32-S03', {
+    risk_level: 'caution',
+    safety_rule_ids: ['SR-T32-CLINICAL-REVIEW'],
+  })), 'caution');
+});
+
 test('T13 day 14 behavior-reduction exercise stays blocked until subtype-specific safety review', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const day = content.categories['تنهایی'].days.find((item) => item.day === 14);
