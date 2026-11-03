@@ -32,6 +32,18 @@ test('safety gate runs before knowledge retrieval', () => {
   assert.deepEqual(result.knowledge, []);
 });
 
+test('direct first-person harmful intent is handed off even without an explicit time marker', () => {
+  const result = routeAssistantTurn({ text: 'می‌خواهم خودم را بکشم.' });
+  assert.equal(result.status, 'urgent_human_support_required');
+  assert.deepEqual(result.knowledge, []);
+});
+
+test('negated first-person harmful language does not trigger an automatic handoff', () => {
+  const result = routeAssistantTurn({ text: 'نمی‌خواهم خودکشی کنم.' });
+  assert.equal(result.status, 'safety_clarification_required');
+  assert.deepEqual(result.knowledge, []);
+});
+
 test('ambiguous personal experience asks for clarification instead of returning advice', () => {
   const result = routeAssistantTurn({ text: 'هم عصبانی‌ام و هم می‌ترسم.', knowledgeItems: knowledge });
   assert.equal(result.status, 'clarification_required');
