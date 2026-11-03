@@ -73,7 +73,6 @@ try {
   const emptyErrors = [];
   emptyPage.on('pageerror', (error) => emptyErrors.push(String(error)));
   await emptyPage.addInitScript(() => {
-    localStorage.setItem('maseer28_copyright_v60', '1');
     localStorage.setItem('maseer28_onboarding_complete_v1', '1');
     localStorage.setItem('maseer28_user_profile_v2', JSON.stringify({
       version: 2, name: 'کاربر آزمایشی', age: 35, gender: 'زن', phone: '09123456789',
@@ -93,6 +92,8 @@ try {
     }));
   });
   await emptyPage.goto(baseURL, { waitUntil: 'domcontentloaded' });
+  await emptyPage.locator('#copyrightModal').waitFor({ state: 'visible' });
+  await emptyPage.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
   await emptyPage.locator('#dashboard').waitFor({ state: 'visible' });
   await emptyPage.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
   await emptyPage.locator('#archiveList').waitFor({ state: 'visible' });
