@@ -258,7 +258,9 @@ function normalizeProfileRecord(source) {
 
 export function evaluatePqhtEligibility(profile) {
   const reasons = [];
-  const age = Number(normalizeDigits(profile?.age));
+  const rawAge = profile?.age;
+  const age = rawAge === undefined || rawAge === null || String(rawAge).trim() === ''
+    ? Number.NaN : Number(normalizeDigits(rawAge));
   if (!Number.isInteger(age)) reasons.push('سن ثبت نشده یا معتبر نیست');
   else if (age < 23 || age > 63) reasons.push('سن خارج از محدوده مجاز PQHT (۲۳ تا ۶۳ سال)');
 
