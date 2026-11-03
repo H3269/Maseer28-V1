@@ -499,14 +499,22 @@ export function loadOnboardingComplete(state, userProfile) {
 }
 
 export function migrateUserProfileFromJourney(state = loadJourneyState()) {
-  if (loadUserProfile() || !state.profileData?.name) return loadUserProfile();
+  const existingProfile = loadUserProfile();
+  if (existingProfile || !state.profileData?.name) return existingProfile;
   const p = state.profileData;
   const user = {
     name: p.name || '', age: p.age || '', gender: p.gender || '', phone: p.phone || '',
     medical: p.medical || '', medicalNote: p.medicalNote || '', medication: p.medication || '', medicationRisk: p.medicationRisk || '',
   };
-  saveUserProfile(user);
-  return user;
+  try {
+    saveUserProfile(user);
+    // Never return a journey-sourced profile as canonical unless the independent
+    // storage record can be read back and normalized successfully.
+    return loadUserProfile();
+  } catch {
+    // A failed write must not crash startup or authorize legacy journey cleanup.
+    return loadUserProfile();
+  }
 }
 
 export function createPathId() {
