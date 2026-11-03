@@ -105,6 +105,26 @@ test('production content gate rejects invalid day sequencing', () => {
   assert.ok(errors.some((item) => item.includes('day sequence is invalid')));
 });
 
+test('evidence registry records are unique, traceable, and explicitly limited', async () => {
+  const registry = JSON.parse(await (await import('node:fs/promises')).readFile(
+    new URL('../public/assistant/evidence/sources.v1.json', import.meta.url), 'utf8'
+  ));
+  assert.ok(Array.isArray(registry.sources));
+  const ids = registry.sources.map((source) => source.source_id);
+  assert.ok(ids.every((id) => typeof id === 'string' && id.trim()));
+  assert.equal(new Set(ids).size, ids.length, 'evidence source IDs must be unique');
+  for (const source of registry.sources) {
+    assert.ok(source.title && source.url && source.limitations, `${source.source_id} needs title, URL, and limitations`);
+    assert.ok(Array.isArray(source.relevant_claims) && source.relevant_claims.length > 0, `${source.source_id} needs claim-level mapping`);
+  }
+  for (const id of [
+    'SRC-ER-SACCARO-2024-001',
+    'SRC-ANGER-MINDFULNESS-ER-2026-001',
+    'SRC-DMHI-SAFETY-TAHER-2023-001',
+    'SRC-DMHI-NSQDMH-2026-001',
+  ]) assert.ok(ids.includes(id), `missing curated source ${id}`);
+});
+
 test('current repository content remains blocked from production until all 952 units are reviewed', async () => {
   const readJson = async (relative) => JSON.parse(
     await (await import('node:fs/promises')).readFile(new URL(relative, import.meta.url), 'utf8')
