@@ -11,6 +11,7 @@ import {
   COPYRIGHT_KEY,
   burdenScoreFromAnswers,
   cloneForArchive,
+  removeArchivedJourney,
   createClientCode,
   createPathId,
   defaultJourneyState,
@@ -665,6 +666,12 @@ function navigate(next) {
     setArchiveResetNoticeOpen(false);
   }
 
+  function deleteSingleArchive(index) {
+    const result = removeArchivedJourney(journey, index);
+    if (!result.removed) return;
+    patchJourney(result.state);
+  }
+
   function clearArchiveAndCurrentPath() {
     // The current completed path is also represented in the archive at this point.
     // Resetting the journey prevents it from being re-added when path 13 is started.
@@ -719,7 +726,7 @@ function navigate(next) {
       {screen === 'final' && <FinalAssessment initial={journey.final} onSave={finishFinal} onValidation={showValidation} />}
       {screen === 'done' && <Done onReport={() => navigate('report')} onBooks={() => openBooks('done')} onSupport={() => openSupport('done')} onArchive={() => navigate('archive')} onNew={startNewPathFromArchive} />}
       {screen === 'report' && <Report journey={journey} userProfile={userProfile} content={content} onBooks={() => openBooks('report')} onSupport={() => openSupport('report')} onDashboard={() => navigate('dashboard')} onArchive={() => navigate('archive')} onNew={startNewPathFromArchive} />}
-      {screen === 'archive' && <Archive journey={journey} content={content} showClearArchive={Boolean(journey.archiveCleanupReady && archiveCleanupCount >= 12)} onClearArchive={clearArchiveAndCurrentPath} onBack={() => navigate('dashboard')} onNew={startNewPathFromArchive} />}
+      {screen === 'archive' && <Archive journey={journey} content={content} showClearArchive={Boolean(journey.archiveCleanupReady && archiveCleanupCount >= 12)} onClearArchive={clearArchiveAndCurrentPath} onDeleteArchive={deleteSingleArchive} onBack={() => navigate('dashboard')} onNew={startNewPathFromArchive} />}
       {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
       {preview && <BookPreviewModal preview={preview} onClose={() => setPreview(null)} onOpen={() => { const item = preview; setPreview(null); openBook(item.book, item.sourcePage, { day: item.day, sourcePage: item.sourcePage, reason: item.reason, sourceTitle: item.sourceTitle }); }} />}
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}
