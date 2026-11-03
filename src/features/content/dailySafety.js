@@ -1,5 +1,10 @@
 export function getDailySafetyMode(day) {
   if (!day || typeof day !== 'object') return 'routine';
+  // A non-approved review state must override a low risk label. Risk level
+  // describes the exercise; it does not certify that the content was reviewed.
+  if (Object.prototype.hasOwnProperty.call(day, 'review_status') && day.review_status !== 'approved') {
+    return 'blocked';
+  }
   const level = day.risk_level;
   if (level === null || level === undefined || level === '') {
     // Legacy records have no v2 metadata. A partially migrated v2 record must
