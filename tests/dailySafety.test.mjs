@@ -7,6 +7,7 @@ test('daily safety mode distinguishes routine, caution, and human-review-only co
   assert.equal(getDailySafetyMode({ risk_level: 'routine' }), 'routine');
   assert.equal(getDailySafetyMode({ risk_level: 'caution' }), 'caution');
   assert.equal(getDailySafetyMode({ risk_level: 'human_review_required' }), 'blocked');
+  assert.equal(getDailySafetyMode({ risk_level: 'unknown' }), 'blocked');
   assert.equal(getDailySafetyMode(null), 'routine');
 });
 
