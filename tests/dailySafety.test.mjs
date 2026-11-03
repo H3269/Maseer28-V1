@@ -41,6 +41,27 @@ test('unapproved review metadata cannot be overridden by a routine risk label', 
   assert.equal('feedback' in record, false);
 });
 
+test('T01 draft days remain blocked at runtime until their review is approved', async () => {
+  const [content, topics] = await Promise.all([
+    readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8').then(JSON.parse),
+    readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8').then(JSON.parse),
+  ]);
+  const days = content.categories['خشم'].days;
+  const topic = topics.topics.find((item) => item.topic_id === 'T01');
+  const dayTen = days.find((item) => item.day === 10);
+  assert.ok(topic);
+  assert.notEqual(dayTen.review_status, 'approved');
+  assert.equal(getDailySafetyMode(dayTen), 'blocked');
+  for (const day of days) {
+    if (day.review_status !== 'approved') {
+      assert.ok(topic.draft_content_ids.includes(day.id), `${day.id} must remain in draft links`);
+      assert.equal(getDailySafetyMode(day), 'blocked', `${day.id} must not run before expert approval`);
+    } else {
+      assert.ok(topic.content_ids.includes(day.id), `${day.id} must be linked as approved content`);
+    }
+  }
+});
+
 test('T01 day 27 is explicitly withheld for human review', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const day = content.categories['خشم'].days.find((item) => item.day === 27);
