@@ -11,7 +11,8 @@
     "audit:content-quality": "node scripts/audit-content-quality.mjs",
     "test": "node --test",
     "validate:assistant-topics": "node scripts/validate-assistant-topics.mjs",
-    "prepare:production": "node scripts/prepare-production-build.mjs"
+    "prepare:production": "node scripts/prepare-production-build.mjs",
+    "assert:production-content": "node scripts/assert-production-content-approved.mjs"
   },
   "dependencies": {
     "react": "18.3.1",
