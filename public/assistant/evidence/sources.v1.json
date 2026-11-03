@@ -339,6 +339,47 @@
         "Related action guides cover information security, privacy, partnering with service users, incident management and open disclosure, and healthcare rights."
       ],
       "limitations": "This is an Australian service-quality standard and a useful governance benchmark, not automatic certification or legal compliance for this project in other jurisdictions. Applicability must be assessed against the actual operating model and local law."
+    },
+    {
+      "source_id": "SRC-RELATIONSHIP-WHO-RESPECT-2025-001",
+      "title": "RESPECT women: preventing violence against women, 2nd ed.",
+      "publisher": "World Health Organization",
+      "source_type": "global_public_health_guideline",
+      "publication_date": "2025-11-19",
+      "url": "https://www.who.int/westernpacific/publications/i/item/9789240117020",
+      "relevant_claims": [
+        "The second edition updates the RESPECT framework with evidence including humanitarian settings.",
+        "The framework organizes prevention strategies around relationship skills, women's empowerment, services, poverty reduction, safe environments, prevention of child and adolescent abuse, and transforming attitudes, beliefs, and norms."
+      ],
+      "limitations": "Population-level prevention framework focused on violence against women and girls; not an individual clinical risk-assessment tool, safety-plan template, perpetrator treatment protocol, or validation of this app's relationship self-check or communication exercises. Do not generalize its population scope to all genders or use it as a substitute for local specialist services."
+    },
+    {
+      "source_id": "SRC-RELATIONSHIP-NHSE-SAFETY-2026-001",
+      "title": "Mental health personalised care framework: the modern care programme approach — Annex A: safety assessment, formulation and management planning",
+      "publisher": "NHS England",
+      "source_type": "clinical_safety_guidance",
+      "publication_date": "2026-07-17",
+      "url": "https://www.england.nhs.uk/long-read/mental-health-personalised-care-framework-the-modern-care-programme-approach-annex-a-safety-assessment-formulation-and-management-planning/",
+      "relevant_claims": [
+        "Safety formulation should consider harm to self, to others, from others, and iatrogenic harm together.",
+        "Safety assessment and planning should be dynamic, collaborative, trauma-informed, attentive to safeguarding and coercion, and revisited when circumstances or incidents change.",
+        "Clear communication, continuity, and involvement of the person and chosen support network are important enablers of relational safety."
+      ],
+      "limitations": "Guidance for mental health services in England; not a validated screening instrument or automated decision rule. It does not establish that this app's single self-report question can assess or guarantee safety, and its legal/service arrangements cannot be assumed to apply in other jurisdictions."
+    },
+    {
+      "source_id": "SRC-VIOLENCE-PSYCHOSOCIAL-LANCET-2026-001",
+      "title": "Non-specialist delivered psychosocial care after war and interpersonal violence: a systematic review and meta-analysis",
+      "publisher": "The Lancet Psychiatry",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2026-07",
+      "doi": "10.1016/S2215-0366(26)00123-9",
+      "url": "https://doi.org/10.1016/S2215-0366(26)00123-9",
+      "relevant_claims": [
+        "The review included 45 studies and 9,431 adults exposed to war-related or interpersonal violence.",
+        "Compared with control conditions, non-specialist-delivered psychosocial interventions showed pooled benefits for anxiety, depression, post-traumatic stress symptoms, and functional impairment."
+      ],
+      "limitations": "The review concerns structured psychosocial interventions delivered by trained non-specialists to violence-exposed adults; it does not validate unguided self-help, an anger-management sequence, this app, or an automated risk/referral algorithm. Intervention type, supervision, population, and local service pathways matter; pooled effects should not be presented as guaranteed individual outcomes."
     }
   ]
 }
