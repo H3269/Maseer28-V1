@@ -197,6 +197,8 @@ test('day screen and App wire relationship self-check, blocking, and safe skip',
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
   const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
   assert.match(ui, /getRelationshipSafetyGate\(data\)/);
+  assert.match(ui, /getInterpersonalPrivacyNotice\\(data\\)/);
+  assert.match(ui, /supportSeekingPrivacyNotice/);
   assert.match(ui, /relationshipSafetyState\.dayKey === relationshipSafetyDayKey/);
   assert.match(ui, /dayKey: relationshipSafetyDayKey/);
   assert.doesNotMatch(ui, /setRelationshipSafetyResponse/);
