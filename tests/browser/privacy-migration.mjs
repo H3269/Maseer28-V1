@@ -298,6 +298,39 @@ try {
     await page.close();
   }
 
+  // E8: the user-facing privacy control invokes the coordinated two-store deletion.
+  {
+    const page = await openScenario('normal', legacyJourney(), {
+      name: 'کاربر حذف نهایی', age: 32, gender: 'زن', phone: '09123456789',
+      medical: 'none', medicalNote: 'DELETE-PRIVATE-001', medication: 'no', medicationRisk: 'no',
+    });
+    await page.locator('#copyrightModal').waitFor({ state: 'visible' });
+    await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
+    await page.locator('#dashboard').waitFor({ state: 'visible' });
+    await page.evaluate(() => {
+      localStorage.setItem('maseer28_test_sensitive', JSON.stringify({ marker: 'DELETE-LOCAL-001' }));
+      localStorage.setItem('unrelated_site_preference', 'preserve-unrelated');
+    });
+    page.on('dialog', (dialog) => dialog.accept());
+    await page.locator('#bottomNav button[data-view="support"]').click();
+    await page.locator('#support').waitFor({ state: 'visible' });
+    await page.getByRole('button', { name: 'حذف داده‌های محلی من' }).click();
+    await page.waitForFunction(() => localStorage.getItem('maseer28_test_sensitive') === null, null, { timeout: 10000 });
+    await page.waitForFunction(() => location.reload, null, { timeout: 1000 });
+    await page.waitForTimeout(900);
+    const remaining = await page.evaluate(() => ({
+      appKeys: Object.keys(localStorage).filter((key) => key.startsWith('maseer28_') && key !== 'maseer28_copyright_v60'),
+      unrelated: localStorage.getItem('unrelated_site_preference'),
+      copyright: localStorage.getItem('maseer28_copyright_v60'),
+      profile: localStorage.getItem('maseer28_user_profile_v2'),
+    }));
+    assert.deepEqual(remaining.appKeys, [], 'all app-owned personal localStorage keys must be removed');
+    assert.equal(remaining.profile, null, 'independent profile must be removed');
+    assert.equal(remaining.unrelated, 'preserve-unrelated', 'unrelated browser data must remain');
+    assert.equal(remaining.copyright, '1', 'copyright acceptance is outside deletion scope');
+    await page.close();
+  }
+
   assert.deepEqual(browserErrors, [], 'migration and archive deletion scenarios should not produce uncaught browser errors');
   process.stdout.write('PASS: Chromium privacy migration, selective archive deletion, retention-capacity, and failure-retry scenarios E1-E7 (7 scenarios)\\n');
 } finally {
