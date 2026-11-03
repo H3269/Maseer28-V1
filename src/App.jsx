@@ -14,6 +14,7 @@ import {
   createClientCode,
   createPathId,
   defaultJourneyState,
+  executeJourneyPrivacyMigration,
   getTrustedNowMs,
   isDayUnlockedAt,
   loadJourneyState,
