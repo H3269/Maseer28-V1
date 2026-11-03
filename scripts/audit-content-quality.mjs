@@ -108,18 +108,34 @@ const topicRows = categories.map(([categoryKey, category], index) => {
 const crossTopicSimilarity = {};
 for (const field of templateFields) {
   let fullySharedDays = 0;
+  let majoritySharedDays = 0;
   const distinctByDay = [];
+  const largestClusterByDay = [];
+  const largestClusterTopicIdsByDay = [];
   for (let dayIndex = 0; dayIndex < expectedDays; dayIndex += 1) {
+    const groups = new Map();
     const values = topicRows.map((row) => {
       const category = content.categories?.[row.category_key];
-      return normalizeText(category?.days?.[dayIndex]?.[field], row.topic_name);
+      const normalized = normalizeText(category?.days?.[dayIndex]?.[field], row.topic_name);
+      if (normalized) {
+        if (!groups.has(normalized)) groups.set(normalized, []);
+        groups.get(normalized).push(row.topic_id);
+      }
+      return normalized;
     });
     const distinct = uniqueCount(values);
+    const largestGroup = [...groups.values()].sort((left, right) => right.length - left.length)[0] || [];
     distinctByDay.push(distinct);
+    largestClusterByDay.push(largestGroup.length);
+    largestClusterTopicIdsByDay.push(largestGroup);
     if (values.length === expectedTopics && values.every(Boolean) && distinct === 1) fullySharedDays += 1;
+    if (largestGroup.length >= Math.ceil(expectedTopics / 2)) majoritySharedDays += 1;
   }
   crossTopicSimilarity[field] = {
     fully_shared_days_across_all_topics: fullySharedDays,
+    days_with_majority_shared_template: majoritySharedDays,
+    largest_shared_topic_count_by_day: largestClusterByDay,
+    largest_shared_topic_ids_by_day: largestClusterTopicIdsByDay,
     expected_days: expectedDays,
     distinct_topic_variants_by_day: distinctByDay,
   };
@@ -173,6 +189,7 @@ fs.writeFileSync(outputPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
 
 console.log(`ممیزی ایستای محتوا: ${report.observed.topics} موضوع، ${report.observed.total_days} روز، ${report.observed.subtopic_registry_entries} زیرموضوع.`);
 for (const [field, stats] of Object.entries(crossTopicSimilarity)) {
-  console.log(`- ${field}: ${stats.fully_shared_days_across_all_topics}/${expectedDays} روز با متن یکسان پس از نرمال‌سازی نام موضوع.`);
+  const largest = Math.max(...stats.largest_shared_topic_count_by_day);
+  console.log(`- ${field}: ${stats.fully_shared_days_across_all_topics}/${expectedDays} روز کاملاً مشترک؛ بیشترین خوشه تکراری ${largest}/${expectedTopics} موضوع.`);
 }
 console.log(`گزارش ماشین‌خوان: ${path.relative(root, outputPath)}`);
