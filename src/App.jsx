@@ -548,7 +548,7 @@ function navigate(next) {
 
   async function skipDayForHumanReview() {
     if (getDailySafetyMode(activeDay) !== 'blocked') {
-      return showValidation(['ثبت عدم اجرا فقط برای روزهایی مجاز است که صریحاً نیازمند بازبینی انسانی هستند.'], 'این روز قابل رد ایمنی نیست');
+      return showValidation(['ثبت عدم اجرا فقط برای روزهایی مجاز است که سطح ایمنی آن‌ها مسدود یا نیازمند بازبینی انسانی است.'], 'این روز قابل رد ایمنی نیست');
     }
     if ((journey.completed || []).includes(currentDay)) {
       return showValidation(['نتیجه این روز قبلاً ثبت نهایی شده است.'], 'این روز قبلاً تکمیل شده است');
