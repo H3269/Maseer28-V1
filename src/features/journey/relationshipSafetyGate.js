@@ -1,4 +1,4 @@
-const GATED_T01_DAYS = new Set([10, 11, 17, 20, 21, 22, 23]);
+const GATED_T01_DAYS = new Set([10, 11, 17, 18, 19, 20, 21, 22, 23]);
 
 const RELATIONSHIP_COMMUNICATION_GATE = Object.freeze({
   gateId: 'relationship-communication-safety-v1',

@@ -109,6 +109,25 @@ try {
   assert.deepEqual(relationshipErrors, []);
   await relationshipPage.close();
 
+  const solutionPage = await browser.newPage();
+  const solutionErrors = [];
+  solutionPage.on('pageerror', (error) => solutionErrors.push(String(error)));
+  await seedPage(solutionPage, makeState(Array.from({ length: 18 }, (_, index) => index + 1)), ['خشم-19']);
+  const solutionText = await solutionPage.locator('#day').innerText();
+  assert.match(solutionText, /آیا در این رابطه می‌توانی بدون ترس/);
+  await solutionPage.getByLabel(/نه، مطمئن نیستم/).check();
+  await solutionPage.getByText(/تمرین ارتباطی امروز نمایش داده نمی‌شود/).waitFor({ state: 'visible' });
+  await solutionPage.getByRole('button', { name: 'ثبت عدم اجرای تمرین و ادامه مسیر' }).click();
+  await solutionPage.locator('#dailyResult').waitFor({ state: 'visible' });
+  await solutionPage.waitForFunction(() => JSON.parse(localStorage.getItem('maseer28_state')).daily?.[19]?.status === 'skipped_safety_gate');
+  assert.equal(await solutionPage.locator('#resultScore').innerText(), '—');
+  const solutionState = await solutionPage.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state')));
+  assert.equal(solutionState.daily[19].status, 'skipped_safety_gate');
+  assert.equal('score' in solutionState.daily[19], false);
+  assert.equal('feedback' in solutionState.daily[19], false);
+  assert.ok(solutionState.completed.includes(19));
+  assert.deepEqual(solutionErrors, []);
+  await solutionPage.close();
   const safeRelationshipPage = await browser.newPage();
   await seedPage(safeRelationshipPage, makeState([1, 2, 3, 4, 5, 6, 7, 8, 9]), ['خشم-10']);
   await safeRelationshipPage.getByLabel(/بله؛ می‌توانم بدون ترس/).click({ noWaitAfter: true });

@@ -8,7 +8,7 @@ import {
 } from '../src/features/journey/relationshipSafetyGate.js';
 
 test('relationship safety gate covers T01 pause and direct communication days only', () => {
-  for (const day of [10, 11, 17, 20, 21, 22, 23]) {
+  for (const day of [10, 11, 17, 18, 19, 20, 21, 22, 23]) {
     assert.ok(getRelationshipSafetyGate({ id: `T01-D${String(day).padStart(2, '0')}`, topic_id: 'T01', day }));
   }
   assert.equal(getRelationshipSafetyGate({ id: 'T01-D09', topic_id: 'T01', day: 9 }), null);
@@ -16,7 +16,7 @@ test('relationship safety gate covers T01 pause and direct communication days on
 });
 
 test('stable T01 identifiers preserve relationship gates when optional day metadata is absent', () => {
-  for (const day of [10, 11, 17, 20, 21, 22, 23]) {
+  for (const day of [10, 11, 17, 18, 19, 20, 21, 22, 23]) {
     assert.ok(getRelationshipSafetyGate({ id: `خشم-${day}` }), `anger ID day ${day} must remain gated`);
     assert.ok(getRelationshipSafetyGate({ id: `T01-D${String(day).padStart(2, '0')}` }), `canonical ID day ${day} must remain gated`);
   }
@@ -53,14 +53,14 @@ test('relationship safety skip records are explicit and never fabricate a score'
 test('relationship gate days in the actual T01 content have stable IDs and topic links', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const days = content.categories['خشم'].days;
-  for (const dayNumber of [10, 11, 17, 20, 21, 22, 23]) {
+  for (const dayNumber of [10, 11, 17, 18, 19, 20, 21, 22, 23]) {
     const day = days.find((item) => item.day === dayNumber);
     assert.equal(day.topic_id, 'T01');
     assert.equal(getRelationshipSafetyGate(day)?.gateId, 'relationship-communication-safety-v1');
   }
 });
 
-test('T01 safety-gated days reference the limited WHO safety source', async () => {
+test('T01 days explicitly mapped to the limited WHO safety source retain that reference', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const sources = JSON.parse(await readFile(new URL('../public/assistant/evidence/sources.v1.json', import.meta.url), 'utf8'));
   const sourceId = 'SRC-ANGER-WHO-IPV-2013-001';
