@@ -42,7 +42,7 @@ test('unapproved review metadata cannot be overridden by a routine risk label', 
   assert.equal('feedback' in record, false);
 });
 
-test('T03 day 14 remains blocked until its fear-related behavior is redesigned and expert-reviewed', () => {
+test('T03 day 14 remains blocked until its fear-related behavior is redesigned and expert-reviewed', async () => {
   for (const day of [
     { id: 'ترس-14' },
     { id: 'T03-D14' },
@@ -60,6 +60,12 @@ test('T03 day 14 remains blocked until its fear-related behavior is redesigned a
     'the targeted hold must not disable unrelated legacy fear days');
   assert.equal(getDailySafetyMode({ id: 'T03-D13' }), 'routine',
     'the targeted hold must not disable unrelated canonical fear days');
+
+  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
+  const actualDayFourteen = content.categories['ترس']?.days?.find((day) => day.day === 14);
+  assert.ok(actualDayFourteen, 'the production T03 day 14 record must exist');
+  assert.equal(getDailySafetyMode(actualDayFourteen), 'blocked',
+    'the actual legacy content record must not bypass the targeted safety hold');
 });
 
 test('T01 draft days remain blocked at runtime until their review is approved', async () => {
