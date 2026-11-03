@@ -87,6 +87,34 @@ test('production content gate rejects approved days with unapproved subtopic def
   assert.ok(errors.some((item) => item.includes('subtopic T01-S01 definition is not expert-approved')));
 });
 
+test('production content gate requires T31 subtype and matching approved context', () => {
+  const data = fixture();
+  const day = data.content.categories['موضوع آزمایشی'].days[0];
+  const topic = data.topicsRegistry.topics[0];
+  const subtopic = data.subtopicsRegistry.subtopics[0];
+  day.id = 'T31-D01';
+  day.topic_id = 'T31';
+  day.subtopic_ids = ['T31-S01'];
+  day.control_context = 'self_control_need';
+  day.review_record_id = 'REV-T31-D01';
+  topic.topic_id = 'T31';
+  topic.content_ids = ['T31-D01'];
+  subtopic.subtopic_id = 'T31-S01';
+  subtopic.topic_id = 'T31';
+  subtopic.content_ids = ['T31-D01'];
+
+  assert.deepEqual(validateProductionContent(data), []);
+
+  day.control_context = 'interpersonal_coercive_control';
+  const mismatchErrors = validateProductionContent(data);
+  assert.ok(mismatchErrors.some((item) => item.includes('control_context matching exactly one T31 subtype')));
+
+  day.control_context = 'self_control_need';
+  subtopic.review_status = 'draft';
+  const draftSubtypeErrors = validateProductionContent(data);
+  assert.ok(draftSubtypeErrors.some((item) => item.includes('subtopic T31-S01 definition is not expert-approved')));
+});
+
 test('production content gate rejects missing evidence and reviewer attribution', () => {
   const data = fixture();
   const day = data.content.categories['موضوع آزمایشی'].days[0];
