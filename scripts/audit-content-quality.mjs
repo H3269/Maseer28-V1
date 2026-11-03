@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { getSupportSeekingReviewDays } from './lib/supportSeekingReviewQueue.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
@@ -156,9 +157,10 @@ for (const field of futureMetadataFields) {
 }
 
 const candidateSupportSeekingReviewQueue = topicRows.flatMap((row) => {
-  // T02 day 24 explicitly drafts a message to a trusted person and needs the
-  // same privacy/device-monitoring review as the common support-seeking days.
-  const reviewDays = [...new Set([12, 18, ...(row.topic_id === 'T02' ? [24] : [])])];
+  // Shared legacy support-seeking prompts occur on days 12 and 18 in T03-T34.
+  // T02 day 24 is a separate message-drafting exercise; T01/T02 days 12/18
+  // are custom non-support-seeking content and are intentionally excluded.
+  const reviewDays = getSupportSeekingReviewDays(row.topic_id);
   return reviewDays.map((dayNumber) => {
   const category = content.categories?.[row.category_key];
   const day = category?.days?.find((item) => Number(item.day) === dayNumber);
