@@ -180,7 +180,22 @@ export async function restorePrivacyBackup(candidate, { storage, indexedDBApi = 
     const writeTx = db.transaction(['books', 'versions', 'settings'], 'readwrite');
     const completion = waitForTransaction(writeTx);
     for (const name of ['books', 'versions', 'settings']) {
-      for (const row of stores[name]) writeTx.objectStore(name).add(row);
+      const store = writeTx.objectStore(name);
+      const keyField = name === 'settings' ? 'key' : 'id';
+      for (const row of stores[name]) {
+        const addRequest = store.add(row);
+        addRequest.onsuccess = () => {
+          const verifyRequest = store.get(row[keyField]);
+          verifyRequest.onsuccess = () => {
+            if (stableStringify(verifyRequest.result) !== stableStringify(row)) {
+              try { writeTx.abort(); } catch { /* transaction may already be inactive */ }
+            }
+          };
+          verifyRequest.onerror = () => {
+            try { writeTx.abort(); } catch { /* transaction may already be inactive */ }
+          };
+        };
+      }
     }
     await completion;
     indexedDbCommitted = true;
