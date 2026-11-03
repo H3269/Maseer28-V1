@@ -5,6 +5,11 @@ const VALID_REVIEWER_ROLES = new Set([
 ]);
 const VALID_EVIDENCE_GRADES = new Set(['very_low', 'low', 'moderate', 'high']);
 const VALID_RISK_LEVELS = new Set(['routine', 'caution', 'human_review_required']);
+const CONTROL_CONTEXT_BY_SUBTOPIC = new Map([
+  ['T31-S01', 'self_control_need'],
+  ['T31-S02', 'interpersonal_coercive_control'],
+  ['T31-S03', 'relationship_power_safety'],
+]);
 
 export function validateProductionContent({
   content,
@@ -68,6 +73,15 @@ export function validateProductionContent({
       }
       if (!Array.isArray(day?.subtopic_ids) || day.subtopic_ids.length === 0) {
         errors.push(`${label}: subtopic_ids are missing.`);
+      }
+      if (day?.topic_id === 'T31') {
+        const linkedContexts = (day.subtopic_ids || [])
+          .map((subtopicId) => CONTROL_CONTEXT_BY_SUBTOPIC.get(subtopicId))
+          .filter(Boolean);
+        if (day.subtopic_ids?.length !== 1 || linkedContexts.length !== 1
+          || linkedContexts[0] !== day.control_context) {
+          errors.push(`${label}: T31 content must declare one control_context matching exactly one T31 subtype.`);
+        }
       }
       if (!Array.isArray(day?.source_ids) || day.source_ids.length === 0
         || day.source_ids.some((sourceId) => !sourceIds.has(sourceId))) {
