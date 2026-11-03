@@ -11,8 +11,8 @@ export function getT01PausePlan(day) {
 
   // The production T01 category uses IDs such as خشم-10; topic_id is optional.
   const id = String(day.id || '');
-  const runtimeIdMatch = /^خشم-(\\d{1,2})$/u.exec(id);
-  const canonicalIdMatch = /^T01-D(\\d{1,2})$/i.exec(id);
+  const runtimeIdMatch = /^خشم-([0-9]{1,2})$/u.exec(id);
+  const canonicalIdMatch = /^T01-D([0-9]{1,2})$/i.exec(id);
   const isT01 = day.topic_id === 'T01' || Boolean(runtimeIdMatch || canonicalIdMatch);
   const dayNumber = day.day ?? runtimeIdMatch?.[1] ?? canonicalIdMatch?.[1];
 
