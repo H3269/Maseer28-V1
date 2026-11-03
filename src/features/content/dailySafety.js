@@ -136,6 +136,32 @@ function isLonelinessDayFourteen(day) {
   ));
 }
 
+function isLowEnergyTopicDay(day) {
+  return Boolean(day && typeof day === 'object' && (
+    day.topic_id === 'T32'
+    || /^بی‌انگیزگی-[0-9]{1,2}$/u.test(String(day.id || ''))
+    || /^T32-D[0-9]{1,2}$/i.test(String(day.id || ''))
+  ));
+}
+
+const LOW_ENERGY_SUBTOPIC_IDS = new Set(['T32-S01', 'T32-S02', 'T32-S03']);
+
+function hasApprovedLowEnergyReview(day) {
+  if (day.review_status !== 'approved'
+    || !Array.isArray(day.subtopic_ids)
+    || day.subtopic_ids.length !== 1
+    || !LOW_ENERGY_SUBTOPIC_IDS.has(day.subtopic_ids[0])
+    || typeof day.review_record_id !== 'string'
+    || day.review_record_id.trim().length === 0) return false;
+
+  if (day.subtopic_ids[0] === 'T32-S03') {
+    return day.risk_level === 'caution'
+      && Array.isArray(day.safety_rule_ids)
+      && day.safety_rule_ids.length > 0;
+  }
+  return true;
+}
+
 const LONELINESS_SUBTOPIC_IDS = new Set(['T13-S01', 'T13-S02', 'T13-S03']);
 
 function hasApprovedLonelinessDayFourteenReview(day) {
@@ -177,6 +203,7 @@ export function getDailySafetyMode(day) {
   if (isBoundaryTopicDay(day) && !hasApprovedBoundaryReview(day)) return 'blocked';
   if (isSleepTopicDay(day) && !hasApprovedSleepReview(day)) return 'blocked';
   if (isLonelinessDayFourteen(day) && !hasApprovedLonelinessDayFourteenReview(day)) return 'blocked';
+  if (isLowEnergyTopicDay(day) && !hasApprovedLowEnergyReview(day)) return 'blocked';
   if (isControlTopicDay(day)) {
     // "Control" conflates personal over-control with interpersonal coercive
     // control. Release only after an approved day is assigned to exactly one
