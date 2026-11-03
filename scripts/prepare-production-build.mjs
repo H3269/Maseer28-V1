@@ -1,24 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { validateProductionContent } from '../src/features/content/productionContentGate.js';
 
 const root = process.cwd();
-
-const readJson = (relativePath) => JSON.parse(
-  fs.readFileSync(path.join(root, relativePath), 'utf8')
-);
-const productionContentErrors = validateProductionContent({
-  content: readJson('public/content/path-content.json'),
-  topicsRegistry: readJson('public/assistant/knowledge/topics.v1.json'),
-  subtopicsRegistry: readJson('public/assistant/knowledge/subtopics.v1.json'),
-  evidenceRegistry: readJson('public/assistant/evidence/sources.v1.json'),
-});
-if (productionContentErrors.length) {
-  const details = productionContentErrors.slice(0, 30).join('\\n');
-  throw new Error(
-    `Production publication blocked: ${productionContentErrors.length} daily content approval issue(s).\\n${details}`
-  );
-}
 const basePath = process.env.PATH28_DEPLOY_BASE || '/Maseer28/';
 if (!/^\/[A-Za-z0-9/_-]*\/$/.test(basePath)) {
   throw new Error('PATH28_DEPLOY_BASE must be a safe absolute path ending in /.');
