@@ -95,11 +95,14 @@ test('relationship safety skip records are explicit and never fabricate a score'
   assert.equal(boundaryRecord.status, 'skipped_human_review');
   assert.equal('score' in boundaryRecord, false);
 
-  const sharedPromptRecord = createRelationshipSafetySkipRecord(
-    { id: 'ترس-6', day: 6 },
-    '2026-11-03T12:00:00.000Z'
-  );
-  assert.equal(sharedPromptRecord.status, 'skipped_safety_gate');
+  const sharedPromptDay = { id: 'ترس-6', day: 6 };
+  assert.ok(getRelationshipSafetyGate(sharedPromptDay));
+  assert.equal(getDailySafetyMode(sharedPromptDay), 'blocked',
+    'legacy T03 content must remain withheld before the relationship safety self-check');
+  assert.throws(() => createRelationshipSafetySkipRecord(sharedPromptDay),
+    /Only an approved or legacy routine gated interpersonal exercise/);
+  const sharedPromptRecord = createHumanReviewSkipRecord(sharedPromptDay, '2026-11-03T12:00:00.000Z');
+  assert.equal(sharedPromptRecord.status, 'skipped_human_review');
   assert.equal('score' in sharedPromptRecord, false);
   assert.throws(
     () => createRelationshipSafetySkipRecord({ id: 'کنترل‌گری-06', day: 6 }),
