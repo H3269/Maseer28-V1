@@ -97,7 +97,7 @@ try {
     await page.close();
   }
 
-  // E2/E3: migrate a legacy active profile and multiple archives; retain reports and path data.
+  // E2: migrate a legacy active profile and multiple archives; retain reports and path data.
   {
     const page = await openScenario('normal', legacyJourney(), null, {
       name: 'پروفایل مستقل قدیمی', age: 35, gender: 'زن', phone: '09123456789',
@@ -130,7 +130,7 @@ try {
     await page.close();
   }
 
-  // E4: malformed legacy archive data must block cleanup of both legacy profile copies.
+  // E3: malformed legacy archive data must block cleanup of both legacy profile copies.
   {
     const malformedArchiveState = {
       schema: 7, started: true, profile: true, assessment: true, completed: [1],
@@ -194,7 +194,7 @@ try {
     await page.close();
   }
 
-  // E4: write-then-throw must roll back the candidate and preserve the original record.
+  // E5: write-then-throw must roll back the candidate and preserve the original record.
   {
     const page = await openScenario('journey-write-then-throw');
     const result = await page.evaluate(() => ({
@@ -209,7 +209,7 @@ try {
   }
 
 
-  // E5: archive deletion requires confirmation, removes only the selected archive,
+  // E6: archive deletion requires confirmation, removes only the selected archive,
   // and survives reload without touching the active path or independent profile.
   {
     const state = {
@@ -266,7 +266,7 @@ try {
   }
 
 
-  // E6: a full archive must block an additional completed-path archive without
+  // E7: a full archive must block an additional completed-path archive without
   // truncating legacy records or resetting the active path.
   {
     const fullArchiveState = {
@@ -302,7 +302,7 @@ try {
     assert.match(await page.locator('[role="dialog"]').innerText(), /هیچ آرشیوی خودکار پاک نمی‌شود|مسیر فعال و سایر آرشیوها حفظ شده‌اند/);
     await page.getByRole('button', { name: 'متوجه شدم' }).click();
 
-    // Explicitly deleting one selected archive must free exactly one slot.
+    // E7: explicitly deleting one selected archive must free exactly one slot.
     await page.locator('#archiveList .answerItem').first().getByRole('button', { name: /حذف این آرشیو/ }).click();
     await page.locator('#archiveList .answerItem').first().getByRole('button', { name: 'بله، حذف شود' }).click();
     await page.waitForFunction(() => JSON.parse(localStorage.getItem('maseer28_state') || '{}').archive?.length === 19);
@@ -316,7 +316,7 @@ try {
     await page.close();
   }
 
-  // E7: a failed localStorage write must not dismiss the archive confirmation;
+  // E8: a failed localStorage write must not dismiss the archive confirmation;
   // the selected archive remains available for a safe retry.
   {
     const state = {
@@ -354,7 +354,7 @@ try {
     await page.close();
   }
 
-  // E8: the user-facing privacy control invokes the coordinated two-store deletion.
+  // E9: the user-facing privacy control invokes the coordinated two-store deletion.
   {
     const page = await openScenario('normal', legacyJourney(), {
       name: 'کاربر حذف نهایی', age: 32, gender: 'زن', phone: '09123456789',
@@ -391,7 +391,7 @@ try {
     await page.close();
   }
 
-  // E9: preview and cancellation are read-only; explicit confirmation restores into a conflict-free namespace.
+  // E10: preview and cancellation are read-only; explicit confirmation restores into a conflict-free namespace.
   {
     const page = await openScenario('normal', legacyJourney(), {
       name: 'کاربر بازیابی', age: 31, gender: 'زن', phone: '09123456789',
@@ -445,7 +445,7 @@ try {
   }
 
   assert.deepEqual(browserErrors, [], 'migration, deletion, and restore scenarios should not produce uncaught browser errors');
-  process.stdout.write('PASS: Chromium privacy migration, selective archive deletion, retention-capacity, and failure-retry and controlled-restore scenarios E1-E9 (9 scenarios)\\n');
+  process.stdout.write('PASS: Chromium privacy migration, selective archive deletion, retention-capacity, and failure-retry and controlled-restore scenarios E1-E10 (10 scenarios)\\n');
 } finally {
   await browser.close();
 }
