@@ -145,3 +145,19 @@ test('explicitly general strategy requests can retrieve approved source excerpts
   assert.equal(result.status, 'approved_knowledge_available');
   assert.equal(result.knowledge[0].source.source_id, 'SRC-T02-001');
 });
+
+test('third-party strategy requests do not enter personal intake merely because the user offers help', () => {
+  const result = routeAssistantTurn({
+    text: 'دوستم اضطراب دارد و می‌خواهم راهکار عملی برای کمک به او پیدا کنم.',
+  });
+  assert.equal(result.status, 'intent_scope_clarification_required');
+  assert.deepEqual(result.knowledge, []);
+});
+
+test('explicit first-person impact still qualifies as personal context for a strategy request', () => {
+  const result = routeAssistantTurn({
+    text: 'سه ماه است در محل کار به‌خاطر اضطراب تمرکزم را از دست داده‌ام و می‌خواهم راهکار عملی پیدا کنم.',
+  });
+  assert.equal(result.status, 'personal_intake_required');
+  assert.deepEqual(result.knowledge, []);
+});
