@@ -148,6 +148,19 @@
         "Breathing retraining, relaxation or mindfulness may be adjunctive strategies rather than universal requirements."
       ],
       "limitations": "Guideline context and local clinical standards matter; it is not a substitute for an individualized formulation, clinician competence or supervision."
+    },
+    {
+      "source_id": "SRC-ANGER-WHO-IPV-2013-001",
+      "title": "Responding to intimate partner violence and sexual violence against women: WHO clinical and policy guidelines",
+      "publisher": "World Health Organization",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2013-06-16",
+      "url": "https://www.who.int/publications/i/item/9789241548595",
+      "relevant_claims": [
+        "When violence is disclosed, first-line support should be non-judgmental, avoid pressuring disclosure, respect autonomy, and help connect the person to safety and support resources.",
+        "Safety and privacy should be prioritized when responding to intimate partner violence or sexual violence."
+      ],
+      "limitations": "The guideline addresses health-sector responses for women subjected to intimate partner violence or sexual violence. It does not validate this app's self-check, automated risk assessment, or a 28-day anger course, and must not be generalized as a clinical protocol for all users or genders. The app uses it only as a conservative safety and referral reference."
     }
   ]
 }
