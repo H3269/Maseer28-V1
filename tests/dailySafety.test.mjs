@@ -120,6 +120,33 @@ test('T01 draft days remain blocked at runtime until their review is approved', 
   }
 });
 
+test('T13 day 14 behavior-reduction exercise stays blocked until subtype-specific safety review', async () => {
+  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
+  const day = content.categories['تنهایی'].days.find((item) => item.day === 14);
+  assert.ok(day);
+  assert.equal(day.id, 'تنهایی-14');
+  assert.equal(getDailySafetyMode(day), 'blocked');
+  const skipped = createHumanReviewSkipRecord(day, new Date('2026-11-04T15:00:00.000Z'));
+  assert.equal(skipped.status, 'skipped_human_review');
+  assert.equal('score' in skipped, false);
+
+  const reviewed = (extra = {}) => ({
+    id: 'T13-D14',
+    topic_id: 'T13',
+    day: 14,
+    risk_level: 'caution',
+    review_status: 'approved',
+    review_record_id: 'review-t13-day-14',
+    subtopic_ids: ['T13-S01'],
+    safety_rule_ids: ['SR-T13-D14-SAFETY'],
+    ...extra,
+  });
+  assert.equal(getDailySafetyMode(reviewed()), 'caution');
+  assert.equal(getDailySafetyMode(reviewed({ safety_rule_ids: [] })), 'blocked');
+  assert.equal(getDailySafetyMode(reviewed({ risk_level: 'routine' })), 'blocked');
+  assert.equal(getDailySafetyMode(reviewed({ subtopic_ids: ['T13-S01', 'T13-S02'] })), 'blocked');
+});
+
 test('legacy T10 sleep content stays blocked until sleep-specialist review', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const days = content.categories['بی‌خوابی و مشکلات خواب'].days;
