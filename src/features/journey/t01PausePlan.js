@@ -9,12 +9,23 @@ const T01_PAUSE_PLAN = [
 export function getT01PausePlan(day, topicName = '') {
   if (!day || typeof day !== 'object') return '';
 
-  // The production T01 category uses IDs such as خشم-10; topic_id is optional.
   const id = String(day.id || '');
-  const runtimeIdMatch = /^خشم-([0-9]{1,2})$/u.exec(id);
-  const canonicalIdMatch = /^T01-D([0-9]{1,2})$/i.exec(id);
-  const isT01 = day.topic_id === 'T01' || topicName === 'خشم' || Boolean(runtimeIdMatch || canonicalIdMatch);
-  const dayNumber = day.day ?? runtimeIdMatch?.[1] ?? canonicalIdMatch?.[1];
+  const angerIdMatch = /^خشم-([0-9]{1,2})$/u.exec(id);
+  const canonicalIdMatch = /^([A-Z][0-9]{2})-D([0-9]{1,2})$/i.exec(id);
+  const categoryIdMatch = /^([^-\\s]+)-([0-9]{1,2})$/u.exec(id);
 
-  return isT01 && Number(dayNumber) === 10 ? T01_PAUSE_PLAN : '';
+  // Conflicting topic/category identifiers must never attach a safety plan
+  // to the wrong content, even when another field happens to say day 10.
+  if (day.topic_id && day.topic_id !== 'T01') return '';
+  if (topicName && topicName !== 'خشم') return '';
+  if (canonicalIdMatch && canonicalIdMatch[1].toUpperCase() !== 'T01') return '';
+  if (categoryIdMatch && categoryIdMatch[1] !== 'خشم' && !canonicalIdMatch) return '';
+
+  const dayNumbers = [day.day, angerIdMatch?.[1], canonicalIdMatch?.[2], categoryIdMatch?.[2]]
+    .filter((value) => value !== undefined && value !== null && value !== '')
+    .map(Number);
+  if (!dayNumbers.length || dayNumbers.some((number) => !Number.isInteger(number) || number !== 10)) return '';
+
+  const isT01 = day.topic_id === 'T01' || topicName === 'خشم' || Boolean(angerIdMatch || canonicalIdMatch);
+  return isT01 ? T01_PAUSE_PLAN : '';
 }
