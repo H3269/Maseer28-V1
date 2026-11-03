@@ -6,7 +6,7 @@ import { fa, formatDate, normalizeDigits } from '../../shared/utils.js';
 import { APP_CONFIG, burdenScoreFromAnswers, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
 import { deleteLocalUserData, createLocalUserDataDeletionPlan } from '../privacy/localData.js';
 import { deleteIndexedDbUserData } from '../privacy/indexedDbData.js';
-import { createPrivacyBackup } from '../privacy/privacyBackup.js';
+import { createPrivacyBackup, createPrivacyRestorePreview } from '../privacy/privacyBackup.js';
 import AssessmentAssistant from '../assistant/AssessmentAssistant.jsx';
 
 // This prototype has no clinical validation. It stays hidden unless an experimental build explicitly enables it.
@@ -388,6 +388,8 @@ export function Support({ content, onBack }) {
   const [help, setHelp] = useState('اگر اپ شما اجازه باز کردن مستقیم پیامک را ندهد، شماره با یک لمس کپی می‌شود.');
   const [privacyMessage, setPrivacyMessage] = useState('');
   const [privacyBusy, setPrivacyBusy] = useState(false);
+  const [restorePreview, setRestorePreview] = useState(null);
+  const restoreFileRef = useRef(null);
   const number = '09190889062';
   function legacyCopy(text, done) { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done?.(); } catch { /* noop */ } ta.remove(); }
   function copySupportNumber() { const done = () => setHelp('شماره ۰۹۱۹۰۸۸۹۰۶۲ کپی شد.'); if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(number).then(done).catch(() => legacyCopy(number, done)); else legacyCopy(number, done); }
@@ -409,6 +411,22 @@ export function Support({ content, onBack }) {
       setPrivacyMessage('فایل خروجی اطلاعات ذخیره‌شده در مرورگر آماده شد. آن را در محل امن نگهداری کن.');
     } catch (error) {
       setPrivacyMessage('به دلیل محدودیت یا خطای ذخیره‌سازی مرورگر، تهیه خروجی کامل نشد. جزئیات فنی یا متن داده‌های شخصی در پیام نمایش داده نمی‌شود.');
+    } finally { setPrivacyBusy(false); }
+  }
+  async function previewRestoreFile(event) {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    setRestorePreview(null);
+    if (!file) return;
+    if (file.size > 15 * 1024 * 1024) { setPrivacyMessage('حجم فایل بیشتر از ۱۵ مگابایت است؛ پیش‌نمایش انجام نشد.'); return; }
+    setPrivacyBusy(true);
+    try {
+      const candidate = JSON.parse(await file.text());
+      const preview = await createPrivacyRestorePreview(candidate);
+      setRestorePreview(preview);
+      setPrivacyMessage(preview.valid ? 'اعتبارسنجی و پیش‌نمایش انجام شد. هنوز هیچ داده‌ای بازیابی یا تغییر نکرده است.' : 'فایل برای بازیابی ایمن تأیید نشد؛ هیچ داده‌ای تغییر نکرده است.');
+    } catch {
+      setPrivacyMessage('خواندن فایل ناموفق بود یا ساختار JSON معتبر نیست؛ هیچ داده‌ای تغییر نکرده است.');
     } finally { setPrivacyBusy(false); }
   }
   async function deleteData() {
@@ -438,6 +456,9 @@ export function Support({ content, onBack }) {
     <hr/><div className="sectionHint"><span><AppIcon name="lock" size={18} /></span><div><b>حریم خصوصی و داده‌های من</b><small>می‌توانی نسخه‌ای از داده‌های ذخیره‌شده در این مرورگر بگیری یا آن‌ها را حذف کنی.</small></div></div>
     <p className="muted">خروجی و حذف شامل localStorage برنامه و رکوردهای کاربری در IndexedDB همین مرورگر است. پنج کتاب عمومی و نسخه‌های اصلی آن‌ها حفظ می‌شوند. فایل‌های دانلودشده، پشتیبان‌های دستگاه و اطلاعات احتمالی سرورهای بیرونی تحت پوشش نیستند.</p>
     <div className="contactActions"><button className="secondary" disabled={privacyBusy} onClick={exportData}><AppIcon name="fileText" size={17} /> {privacyBusy ? "در حال پردازش…" : "دریافت نسخه اطلاعات من"}</button><button className="secondary" disabled={privacyBusy} onClick={deleteData}><AppIcon name="eraser" size={17} /> {privacyBusy ? "در حال پردازش…" : "حذف داده‌های محلی من"}</button></div>
+    <hr/><h3>بررسی فایل پشتیبان</h3><p className="muted">فایل پشتیبان قبلی را انتخاب کن تا فقط اعتبار و تعارض‌های احتمالی آن بررسی شود. این مرحله هیچ داده‌ای را بازیابی یا جایگزین نمی‌کند.</p>
+    <input ref={restoreFileRef} type="file" accept="application/json,.json" onChange={previewRestoreFile} disabled={privacyBusy} aria-label="انتخاب فایل پشتیبان برای پیش‌نمایش" />
+    {restorePreview && <div className="recommendation" role="status"><b>{restorePreview.valid ? 'پیش‌نمایش فایل معتبر' : 'فایل قابل تأیید نیست'}</b>{restorePreview.valid ? <><p className="muted">تعداد داده‌ها: {fa(restorePreview.counts.localStorage)} مورد مرورگر، {fa(restorePreview.counts.books)} کتاب، {fa(restorePreview.counts.versions)} نسخه و {fa(restorePreview.counts.settings)} تنظیم.</p><p className="muted">تعارض با داده‌های فعلی: {fa(restorePreview.conflicts.total)} مورد.</p></> : <ul>{restorePreview.errors.map((error, index) => <li key={index}>{error}</li>)}</ul>}</div>}
     {privacyMessage && <p className="contactHelp" role="status" aria-live="polite">{privacyMessage}</p>}
     <button className="secondary" onClick={onBack}>{buttonLabel('بازگشت')}</button>
   </section>;
