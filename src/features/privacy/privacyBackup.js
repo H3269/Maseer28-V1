@@ -59,13 +59,29 @@ export async function createPrivacyRestorePreview(candidate, { storage, indexedD
     const currentLocal = readLocalUserData(storage).entries;
     const currentLibrary = await readIndexedDbSnapshot(indexedDBApi);
     const expectedSchema = {
-      books: { keyPath: 'id', indexes: [] },
-      versions: { keyPath: 'id', indexes: ['bookId'] },
-      settings: { keyPath: 'key', indexes: [] },
+      books: { keyPath: 'id', autoIncrement: false, indexes: {} },
+      versions: {
+        keyPath: 'id',
+        autoIncrement: false,
+        indexes: { bookId: { keyPath: 'bookId', unique: false, multiEntry: false } },
+      },
+      settings: { keyPath: 'key', autoIncrement: false, indexes: {} },
     };
     for (const [storeName, expected] of Object.entries(expectedSchema)) {
       const actual = currentLibrary.schema?.[storeName];
-      if (actual && (actual.keyPath !== expected.keyPath || expected.indexes.some((name) => !actual.indexes.includes(name)))) {
+      if (!actual) continue; // A fresh install has no library database yet.
+      const actualIndexNames = Object.keys(actual.indexDetails || {}).sort();
+      const expectedIndexNames = Object.keys(expected.indexes).sort();
+      const indexesMatch = JSON.stringify(actualIndexNames) === JSON.stringify(expectedIndexNames)
+        && expectedIndexNames.every((name) => {
+          const actualIndex = actual.indexDetails?.[name];
+          const expectedIndex = expected.indexes[name];
+          return actualIndex
+            && actualIndex.keyPath === expectedIndex.keyPath
+            && actualIndex.unique === expectedIndex.unique
+            && actualIndex.multiEntry === expectedIndex.multiEntry;
+        });
+      if (actual.keyPath !== expected.keyPath || actual.autoIncrement !== expected.autoIncrement || !indexesMatch) {
         return { valid: false, validation, errors: [`ساختار مخزن ${storeName} با ساختار مورد انتظار برنامه مطابقت ندارد؛ پیش‌نمایش بازیابی متوقف شد.`] };
       }
     }
