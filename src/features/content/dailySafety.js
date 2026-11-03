@@ -20,7 +20,7 @@ export function getDailySafetyMode(day) {
 
 export function createHumanReviewSkipRecord(day, timestamp = new Date()) {
   if (getDailySafetyMode(day) !== 'blocked') {
-    throw new Error('Only human-review-required daily content can be skipped through this path.');
+    throw new Error('Only blocked or unapproved daily content can be skipped through this path.');
   }
   const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
   if (!Number.isFinite(date.getTime())) throw new Error('A valid skip timestamp is required.');
