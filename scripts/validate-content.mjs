@@ -113,14 +113,16 @@ for (const { topic, category } of topicRows) {
       if (!Array.isArray(day.subtopic_ids) || day.subtopic_ids.some((id) => subtopicById.get(id) !== day.topic_id)) {
         fail.push(`زیرموضوع نامعتبر یا متعلق به موضوع دیگر در «${topic}»، روز ${index + 1}`);
       }
+      const approvedForRuntime = day.review_status === 'approved';
+      const topicLinkField = approvedForRuntime ? 'content_ids' : 'draft_content_ids';
       const topicRecord = topicRecordById.get(day.topic_id);
-      if (!Array.isArray(topicRecord?.content_ids) || !topicRecord.content_ids.includes(day.id)) {
-        fail.push(`پیوند دوطرفه topic.content_ids برای روز ${index + 1} در «${topic}» ناقص است.`);
+      if (!Array.isArray(topicRecord?.[topicLinkField]) || !topicRecord[topicLinkField].includes(day.id)) {
+        fail.push(`پیوند دوطرفه topic.${topicLinkField} برای روز ${index + 1} در «${topic}» ناقص است.`);
       }
       for (const subtopicId of day.subtopic_ids || []) {
         const subtopicRecord = subtopicRecordById.get(subtopicId);
-        if (!Array.isArray(subtopicRecord?.content_ids) || !subtopicRecord.content_ids.includes(day.id)) {
-          fail.push(`پیوند دوطرفه subtopic.content_ids برای ${subtopicId} و روز ${index + 1} در «${topic}» ناقص است.`);
+        if (!Array.isArray(subtopicRecord?.[topicLinkField]) || !subtopicRecord[topicLinkField].includes(day.id)) {
+          fail.push(`پیوند دوطرفه subtopic.${topicLinkField} برای ${subtopicId} و روز ${index + 1} در «${topic}» ناقص است.`);
         }
       }
       if (!Number.isInteger(day.duration_minutes) || day.duration_minutes < 1 || day.duration_minutes > 60) {
@@ -171,20 +173,25 @@ for (const { topic, category } of topicRows) {
   }
 }
 
-// Reject orphaned or misassigned registry content links for all topics/subtopics.
+// Keep draft daily links separate from runtime-approved content links.
 for (const topicRecord of topicsRegistry.topics || []) {
-  for (const contentId of topicRecord.content_ids || []) {
-    const linked = dayById.get(contentId);
-    if (!linked || linked.day.topic_id !== topicRecord.topic_id) {
-      fail.push(`content_id یتیم یا متعلق به موضوع اشتباه در ${topicRecord.topic_id}: ${contentId}`);
+  for (const [field, approved] of [['content_ids', true], ['draft_content_ids', false]]) {
+    for (const contentId of topicRecord[field] || []) {
+      const linked = dayById.get(contentId);
+      if (!linked || linked.day.topic_id !== topicRecord.topic_id || (linked.day.review_status === 'approved') !== approved) {
+        fail.push(`پیوند ${field} یتیم یا ناسازگار در ${topicRecord.topic_id}: ${contentId}`);
+      }
     }
   }
 }
 for (const subtopicRecord of subtopicsRegistry.subtopics || []) {
-  for (const contentId of subtopicRecord.content_ids || []) {
-    const linked = dayById.get(contentId);
-    if (!linked || !Array.isArray(linked.day.subtopic_ids) || !linked.day.subtopic_ids.includes(subtopicRecord.subtopic_id)) {
-      fail.push(`content_id یتیم یا بدون پیوند متقابل در ${subtopicRecord.subtopic_id}: ${contentId}`);
+  for (const [field, approved] of [['content_ids', true], ['draft_content_ids', false]]) {
+    for (const contentId of subtopicRecord[field] || []) {
+      const linked = dayById.get(contentId);
+      if (!linked || !Array.isArray(linked.day.subtopic_ids) || !linked.day.subtopic_ids.includes(subtopicRecord.subtopic_id)
+        || (linked.day.review_status === 'approved') !== approved) {
+        fail.push(`پیوند ${field} یتیم یا ناسازگار در ${subtopicRecord.subtopic_id}: ${contentId}`);
+      }
     }
   }
 }
