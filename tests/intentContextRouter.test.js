@@ -36,6 +36,15 @@ test('explicit hatred toward another person remains T04 and mixed targets remain
   assert.equal(mixed.next_question.purpose, 'topic_disambiguation');
 });
 
+test('repeated calls alone require context before inferring emotional dependence', () => {
+  const result = routeSemanticIntake({ text: 'وقتی جواب نمی‌دهد، چندین بار زنگ می‌زنم.' });
+  assert.ok(result.topic_candidates.some((item) => item.topic_id === 'T08'));
+  assert.equal(result.intent.ambiguity, 'high');
+  assert.equal(result.next_question.purpose, 'topic_disambiguation');
+  assert.equal(result.next_question.text, 'وقتی چند بار تماس می‌گیری، هدف اصلی چیست؟');
+  assert.ok(result.uncertainties.some((item) => item.includes('تکرار تماس به‌تنهایی')));
+});
+
 test('explicitly rejected jealousy labels do not route as T05', () => {
   const negated = routeSemanticIntake({ text: 'این حسادت نیست؛ فقط غبطه است.' });
   assert.equal(negated.topic_candidates.some((item) => item.topic_id === 'T05'), false);
