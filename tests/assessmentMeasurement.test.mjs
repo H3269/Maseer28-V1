@@ -26,3 +26,10 @@ test('assessment screens disclose that custom scores are self-report, not valida
   assert.match(journeyScreens, /تغییر نمره به‌تنهایی اثربخشی برنامه، علت تغییر یا سطح خطر را تعیین نمی‌کند/);
   assert.doesNotMatch(journeyScreens, /بهبود در شدت مشکل ثبت شده است/);
 });
+
+test('recommendation logic does not compare different motivation and progress constructs', () => {
+  assert.doesNotMatch(journeyScreens, /motivationAttainment/);
+  assert.doesNotMatch(journeyScreens, /finalProgress\s*-\s*initialMotivation/);
+  assert.match(journeyScreens, /این تغییر به‌تنهایی علت تغییر یا اثربخشی برنامه را نشان نمی‌دهد/);
+  assert.match(journeyScreens, /ابزار تشخیص یا توصیه درمانی قطعی نیست/);
+});
