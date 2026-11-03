@@ -7,24 +7,39 @@ import {
   createRelationshipSafetySkipRecord,
 } from '../src/features/journey/relationshipSafetyGate.js';
 
-test('relationship safety gate covers T01 pause and direct communication days only', () => {
+test('relationship safety gate covers designated direct communication days in T01, T12, and T17 only', () => {
   for (const day of [10, 11, 17, 18, 19, 20, 21, 22, 23]) {
     assert.ok(getRelationshipSafetyGate({ id: `T01-D${String(day).padStart(2, '0')}`, topic_id: 'T01', day }));
+  }
+  for (const topicId of ['T12', 'T17']) {
+    for (const day of [6, 11, 15, 24]) {
+      assert.ok(getRelationshipSafetyGate({ id: `${topicId}-D${String(day).padStart(2, '0')}`, topic_id: topicId, day }));
+    }
+    for (const day of [7, 12, 18, 25]) {
+      assert.equal(getRelationshipSafetyGate({ id: `${topicId}-D${String(day).padStart(2, '0')}`, topic_id: topicId, day }), null);
+    }
   }
   assert.equal(getRelationshipSafetyGate({ id: 'T01-D09', topic_id: 'T01', day: 9 }), null);
   assert.equal(getRelationshipSafetyGate({ id: 'T02-D20', topic_id: 'T02', day: 20 }), null);
 });
 
-test('stable T01 identifiers preserve relationship gates when optional day metadata is absent', () => {
-  for (const day of [10, 11, 17, 18, 19, 20, 21, 22, 23]) {
-    assert.ok(getRelationshipSafetyGate({ id: `خشم-${day}` }), `anger ID day ${day} must remain gated`);
-    assert.ok(getRelationshipSafetyGate({ id: `T01-D${String(day).padStart(2, '0')}` }), `canonical ID day ${day} must remain gated`);
+test('stable legacy and canonical identifiers preserve gates across relationship topics', () => {
+  const topics = [
+    { prefix: 'خشم', topicId: 'T01', days: [10, 11, 17, 18, 19, 20, 21, 22, 23] },
+    { prefix: 'مرزبندی و نه گفتن', topicId: 'T12', days: [6, 11, 15, 24] },
+    { prefix: 'مشکلات رابطه', topicId: 'T17', days: [6, 11, 15, 24] },
+  ];
+  for (const topic of topics) {
+    for (const day of topic.days) {
+      assert.ok(getRelationshipSafetyGate({ id: `${topic.prefix}-${day}` }), `${topic.prefix} legacy day ${day} must remain gated`);
+      assert.ok(getRelationshipSafetyGate({ id: `${topic.topicId}-D${String(day).padStart(2, '0')}` }), `${topic.topicId} canonical day ${day} must remain gated`);
+    }
   }
   assert.equal(getRelationshipSafetyGate({ id: 'خشم-09' }), null);
   assert.equal(getRelationshipSafetyGate({ id: 'غم-10' }), null);
   assert.equal(getRelationshipSafetyGate({ id: 'T02-D10' }), null);
   assert.ok(getRelationshipSafetyGate({ id: 'خشم-10', day: 9 }), 'a conflicting identifier must not bypass a gated day');
-  assert.ok(getRelationshipSafetyGate({ id: 'T01-D09', topic_id: 'T01', day: 10 }), 'a conflicting topic day must retain the gate');
+  assert.ok(getRelationshipSafetyGate({ id: 'مشکلات رابطه-15', topic_id: 'T02', day: 15 }), 'a conflicting topic identifier must not bypass a gated interaction');
 });
 
 test('relationship safety confirmation fails closed unless the user explicitly chooses safe', () => {
