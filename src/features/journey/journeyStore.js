@@ -323,6 +323,59 @@ export function migrateUserProfileToV2(state = loadJourneyState()) {
   }
 }
 
+export const JOURNEY_PRIVACY_MIGRATION_VERSION = 1;
+const LEGACY_SENSITIVE_PROFILE_FIELDS = [
+  'name', 'age', 'gender', 'phone',
+  'medical', 'medicalNote', 'medication', 'medicationRisk',
+];
+
+function hasProfileValue(value) {
+  return value !== undefined && value !== null && value !== '';
+}
+
+/**
+ * Prepare (but do not persist) a loss-minimizing migration of legacy identity
+ * and health fields out of journey and archive snapshots. The caller must first
+ * verify that the current journey's sensitive values exist in the canonical
+ * profile. Archive identity is intentionally not copied to the current profile.
+ */
+export function prepareJourneyPrivacyMigration(rawState, canonicalProfile) {
+  if (!rawState || typeof rawState !== 'object' || Array.isArray(rawState)) {
+    return { ready: false, reason: 'invalid_journey_state', missingCanonicalFields: [], state: null };
+  }
+  const legacyProfile = rawState.profileData && typeof rawState.profileData === 'object'
+    ? rawState.profileData : {};
+  const canonical = normalizeProfileRecord(canonicalProfile) || {};
+  const missingCanonicalFields = LEGACY_SENSITIVE_PROFILE_FIELDS.filter((field) =>
+    hasProfileValue(legacyProfile[field]) && !hasProfileValue(canonical[field])
+  );
+  if (missingCanonicalFields.length) {
+    return { ready: false, reason: 'canonical_profile_incomplete', missingCanonicalFields, state: null };
+  }
+
+  const keepPathFields = (profile) => {
+    if (!profile || typeof profile !== 'object' || Array.isArray(profile)) return null;
+    const years = Number(normalizeDigits(profile.durationYears));
+    const months = Number(normalizeDigits(profile.durationMonths));
+    return {
+      problem: typeof profile.problem === 'string' ? profile.problem.slice(0, 200) : '',
+      durationYears: Number.isInteger(years) && years >= 0 && years <= 100 ? years : 0,
+      durationMonths: Number.isInteger(months) && months >= 0 && months <= 11 ? months : 0,
+      goal: typeof profile.goal === 'string' ? profile.goal.slice(0, 1000) : '',
+    };
+  };
+
+  const migrated = {
+    ...rawState,
+    profileData: keepPathFields(rawState.profileData),
+    archive: Array.isArray(rawState.archive) ? rawState.archive.map((entry) => {
+      if (!entry || typeof entry !== 'object' || Array.isArray(entry)) return entry;
+      return { ...entry, profileData: keepPathFields(entry.profileData) };
+    }) : rawState.archive,
+    privacyMigrationVersion: JOURNEY_PRIVACY_MIGRATION_VERSION,
+  };
+  return { ready: true, reason: 'preflight_passed', missingCanonicalFields: [], state: migrated };
+}
 export function saveOnboardingComplete() {
   try {
     localStorage.setItem(ONBOARDING_COMPLETE_KEY, '1');

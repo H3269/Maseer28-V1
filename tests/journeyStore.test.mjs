@@ -266,3 +266,47 @@ test('new archive snapshots retain path display fields but omit copied personal 
   assert.equal('phone' in archived.profileData, false);
   assert.equal('age' in archived.profileData, false);
 });
+
+test('legacy journey privacy migration preflight blocks when canonical profile would lose current identity or health fields', async () => {
+  const { prepareJourneyPrivacyMigration } = await import('../src/features/journey/journeyStore.js');
+  const raw = { profileData: { name: 'نام کاربر', age: 35, medical: 'none', problem: 'anxiety' }, archive: [] };
+  const result = prepareJourneyPrivacyMigration(raw, { name: 'نام کاربر', age: 35 });
+  assert.equal(result.ready, false);
+  assert.equal(result.reason, 'canonical_profile_incomplete');
+  assert.deepEqual(result.missingCanonicalFields, ['medical']);
+  assert.equal(raw.profileData.medical, 'none');
+});
+
+test('legacy journey privacy migration strips identity and health from current and archived snapshots without changing path data', async () => {
+  const { prepareJourneyPrivacyMigration, JOURNEY_PRIVACY_MIGRATION_VERSION } = await import('../src/features/journey/journeyStore.js');
+  const raw = {
+    schema: 7,
+    profileData: { name: 'نام کاربر', age: 35, gender: 'زن', phone: '09123456789', medical: 'none', medicalNote: 'private', medication: 'no', medicationRisk: 'no', code: 'M28-123', problem: 'anxiety', durationYears: 2, durationMonths: 3, goal: 'هدف' },
+    answers: { 1: 'پاسخ خصوصی' }, daily: { 1: { score: 5 } },
+    archive: [{ pathId: 'old-path', profileData: { name: 'نام قدیمی', age: 41, phone: '09111111111', medical: 'other', code: 'OLD-1', problem: 'stress', durationYears: 4, durationMonths: 1, goal: 'هدف قدیمی' }, answers: { 1: 'آرشیو قدیمی' } }],
+  };
+  const canonical = { name: 'نام کاربر', age: 35, gender: 'زن', phone: '09123456789', medical: 'none', medicalNote: 'private', medication: 'no', medicationRisk: 'no' };
+  const result = prepareJourneyPrivacyMigration(raw, canonical);
+  assert.equal(result.ready, true);
+  assert.equal(result.reason, 'preflight_passed');
+  assert.deepEqual(Object.keys(result.state.profileData).sort(), ['durationMonths', 'durationYears', 'goal', 'problem']);
+  assert.deepEqual(Object.keys(result.state.archive[0].profileData).sort(), ['durationMonths', 'durationYears', 'goal', 'problem']);
+  assert.equal(result.state.profileData.problem, 'anxiety');
+  assert.equal(result.state.archive[0].profileData.problem, 'stress');
+  assert.equal(result.state.answers[1], 'پاسخ خصوصی');
+  assert.equal(result.state.archive[0].answers[1], 'آرشیو قدیمی');
+  assert.equal(result.state.privacyMigrationVersion, JOURNEY_PRIVACY_MIGRATION_VERSION);
+  assert.equal(raw.profileData.medical, 'none');
+  assert.equal(raw.archive[0].profileData.name, 'نام قدیمی');
+});
+
+test('legacy journey privacy migration is idempotent and rejects invalid source state', async () => {
+  const { prepareJourneyPrivacyMigration } = await import('../src/features/journey/journeyStore.js');
+  assert.equal(prepareJourneyPrivacyMigration(null, {}).reason, 'invalid_journey_state');
+  const raw = { profileData: { problem: 'anxiety', durationYears: 1, durationMonths: 0, goal: 'هدف' }, archive: [] };
+  const first = prepareJourneyPrivacyMigration(raw, {});
+  const second = prepareJourneyPrivacyMigration(first.state, {});
+  assert.equal(first.ready, true);
+  assert.equal(second.ready, true);
+  assert.deepEqual(second.state, first.state);
+});
