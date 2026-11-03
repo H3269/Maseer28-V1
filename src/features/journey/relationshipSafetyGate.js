@@ -1,3 +1,5 @@
+import { getDailySafetyMode } from '../content/dailySafety.js';
+
 const GATED_DAYS_BY_TOPIC = new Map([
   ['T01', new Set([10, 11, 17, 18, 19, 20, 21, 22, 23])],
   ['T05', new Set([6, 11, 15, 24])],
@@ -67,8 +69,8 @@ export function isRelationshipSafetyConfirmed(day, response) {
 }
 
 export function createRelationshipSafetySkipRecord(day, timestamp = new Date()) {
-  if (!getRelationshipSafetyGate(day)) {
-    throw new Error('Only a gated interpersonal communication exercise can use this safety skip.');
+  if (!getRelationshipSafetyGate(day) || getDailySafetyMode(day) === 'blocked') {
+    throw new Error('Only an approved or legacy routine gated interpersonal exercise can use this safety skip.');
   }
   const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
   if (!Number.isFinite(date.getTime())) throw new Error('A valid skip timestamp is required.');
