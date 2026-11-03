@@ -63,6 +63,35 @@ test('T01 draft days remain blocked at runtime until their review is approved', 
   }
 });
 
+test('legacy T12 boundary content stays blocked until expert and safety review', async () => {
+  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
+  const days = content.categories['مرزبندی و نه گفتن'].days;
+  assert.equal(days.length, 28);
+  for (const day of days) {
+    assert.equal(getDailySafetyMode(day), 'blocked', `${day.id} must remain withheld until its boundary subtype is reviewed`);
+  }
+  const skipped = createHumanReviewSkipRecord(days[0], new Date('2026-11-04T13:00:00.000Z'));
+  assert.equal(skipped.status, 'skipped_human_review');
+  assert.equal('score' in skipped, false);
+  const approvedBoundary = (subtopic, extra = {}) => ({
+    id: 'T12-D06',
+    topic_id: 'T12',
+    risk_level: 'routine',
+    review_status: 'approved',
+    review_record_id: 'review-t12-day-06',
+    subtopic_ids: [subtopic],
+    ...extra,
+  });
+  assert.equal(getDailySafetyMode(approvedBoundary('T12-S01')), 'routine');
+  assert.equal(getDailySafetyMode(approvedBoundary('T12-S02')), 'routine');
+  assert.equal(getDailySafetyMode(approvedBoundary('T12-S03')), 'blocked',
+    'unsafe-relationship content needs an explicit safety rule and caution classification');
+  assert.equal(getDailySafetyMode(approvedBoundary('T12-S03', {
+    risk_level: 'caution',
+    safety_rule_ids: ['SR-T12-RELATIONSHIP-SAFETY'],
+  })), 'caution');
+});
+
 test('legacy T11 repetitive behavior content stays blocked until specialist subtype review', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const days = content.categories['عادت‌های تکراری'].days;
