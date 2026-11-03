@@ -55,7 +55,10 @@ test('relationship safety confirmation fails closed unless the user explicitly c
 });
 
 test('relationship safety skip records are explicit and never fabricate a score', () => {
-  const day = { id: 'T01-D17', topic_id: 'T01', day: 17 };
+  const day = {
+    id: 'T01-D17', topic_id: 'T01', day: 17,
+    risk_level: 'caution', review_status: 'approved',
+  };
   const record = createRelationshipSafetySkipRecord(day, '2026-11-03T12:00:00.000Z');
   assert.deepEqual(record, {
     status: 'skipped_safety_gate',
@@ -66,6 +69,9 @@ test('relationship safety skip records are explicit and never fabricate a score'
   assert.equal('score' in record, false);
   assert.equal('feedback' in record, false);
   assert.throws(() => createRelationshipSafetySkipRecord({ id: 'T02-D17', topic_id: 'T02', day: 17 }));
+  assert.throws(() => createRelationshipSafetySkipRecord({
+    ...day, review_status: 'pending_expert_review',
+  }), /approved or legacy routine/);
   assert.throws(() => createRelationshipSafetySkipRecord(day, 'not-a-date'));
   const boundaryRecord = createRelationshipSafetySkipRecord(
     { id: 'مرزبندی و نه گفتن-11', day: 11 },
@@ -156,6 +162,7 @@ test('day screen and App wire relationship self-check, blocking, and safe skip',
   assert.match(app, /isRelationshipSafetyConfirmed\(activeDay, response\)/);
   assert.match(app, /response !== 'unsafe'/);
   assert.match(app, /createRelationshipSafetySkipRecord\(activeDay/);
+  assert.match(app, /getDailySafetyMode\(activeDay\) === 'blocked'/);
   assert.match(ui, /relationshipSafetyConfirmed/);
   assert.match(app, /relationshipSafetyConfirmed !== true/);
   const humanReviewGateIndex = ui.indexOf('if (requiresHumanReview) return');
