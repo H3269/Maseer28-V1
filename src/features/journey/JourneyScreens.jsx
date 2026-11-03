@@ -11,6 +11,7 @@ import AssessmentAssistant from '../assistant/AssessmentAssistant.jsx';
 import { exportArchivesZip, triggerBlobDownload } from './archiveExport.js';
 import { getDailySafetyMode } from '../content/dailySafety.js';
 import { getRelationshipSafetyGate, isRelationshipSafetyConfirmed } from './relationshipSafetyGate.js';
+import { getT01PausePlan } from './t01PausePlan.js';
 
 // This prototype has no clinical validation. It stays hidden unless an experimental build explicitly enables it.
 const EXPERIMENTAL_ASSISTANT_ENABLED = APP_CONFIG.TEST_MODE || import.meta.env.VITE_ENABLE_EXPERIMENTAL_ASSISTANT === 'true';
@@ -289,6 +290,8 @@ export function splitDayContent(d, problem, previousRecord, history = {}) {
   } else if (previousRecord?.feedback === 'same') {
     adaptation = 'تغییر محسوسی ثبت نشده است؛ امروز فشار را افزایش نده. به‌جای تکرار، یک مانع مشخص را بررسی کن.';
   }
+  const pausePlan = getT01PausePlan(d);
+  if (pausePlan) exercise = [exercise, pausePlan].filter(Boolean).join('\n\n');
   const title = cleanDailyCopy(String(d?.title || 'موضوع امروز').replace(/\s*[·•-]?\s*روز\s*\d+\s*$/i, '').trim(), categoryName);
   return { exercise, action, title, adaptation };
 }
