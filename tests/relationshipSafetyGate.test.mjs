@@ -52,6 +52,8 @@ test('relationship safety check requires mutual freedom to refuse or stop commun
   assert.match(gate.safeOption, /هر دو نفر/);
   assert.match(gate.unsafeOption, /هرکدام از ما/);
   assert.match(gate.disclaimer, /آزادی انتخاب هر یک از دو نفر/);
+  assert.match(gate.disclaimer, /حافظه محلی مرورگر/);
+  assert.match(gate.disclaimer, /رمزگذاری نمی‌کند/);
   assert.match(gate.blockedMessage, /هیچ‌یک از دو نفر/);
   assert.match(gate.safeReminder, /هرکدام از دو نفر/);
 });
