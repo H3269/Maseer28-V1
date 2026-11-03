@@ -454,3 +454,42 @@ test('IndexedDB snapshot exposes actual store key paths and indexes', async () =
     assert.equal(snapshot.schema.books.keyPath, 'wrongKey');
   } finally { await removePrivacyTestDatabase(); }
 });
+
+
+test('restore preview rejects IndexedDB stores with an unexpected autoIncrement key generator', async () => {
+  await removePrivacyTestDatabase();
+  const openRequest = indexedDB.open(PRIVACY_TEST_DB, 1);
+  openRequest.onupgradeneeded = () => {
+    openRequest.result.createObjectStore('books', { keyPath: 'id', autoIncrement: true });
+    const versions = openRequest.result.createObjectStore('versions', { keyPath: 'id' });
+    versions.createIndex('bookId', 'bookId', { unique: false });
+    openRequest.result.createObjectStore('settings', { keyPath: 'key' });
+  };
+  const db = await requestResult(openRequest);
+  db.close();
+  const backup = await createPrivacyBackup({ storage: new MemoryStorage({ maseer28_state: '{}' }) });
+  try {
+    const preview = await createPrivacyRestorePreview(backup, { storage: new MemoryStorage({}), indexedDBApi: indexedDB });
+    assert.equal(preview.valid, false);
+    assert.match(preview.errors[0], /ساختار مخزن books/);
+  } finally { await removePrivacyTestDatabase(); }
+});
+
+test('restore preview rejects an index with the expected name but an incompatible keyPath', async () => {
+  await removePrivacyTestDatabase();
+  const openRequest = indexedDB.open(PRIVACY_TEST_DB, 1);
+  openRequest.onupgradeneeded = () => {
+    openRequest.result.createObjectStore('books', { keyPath: 'id' });
+    const versions = openRequest.result.createObjectStore('versions', { keyPath: 'id' });
+    versions.createIndex('bookId', 'wrongBookId', { unique: false });
+    openRequest.result.createObjectStore('settings', { keyPath: 'key' });
+  };
+  const db = await requestResult(openRequest);
+  db.close();
+  const backup = await createPrivacyBackup({ storage: new MemoryStorage({ maseer28_state: '{}' }) });
+  try {
+    const preview = await createPrivacyRestorePreview(backup, { storage: new MemoryStorage({}), indexedDBApi: indexedDB });
+    assert.equal(preview.valid, false);
+    assert.match(preview.errors[0], /ساختار مخزن versions/);
+  } finally { await removePrivacyTestDatabase(); }
+});
