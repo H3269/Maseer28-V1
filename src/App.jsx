@@ -545,6 +545,40 @@ function navigate(next) {
     }, 0);
   }
 
+  async function skipDayForHumanReview() {
+    if (activeDay?.risk_level !== 'human_review_required') {
+      return showValidation(['ثبت عدم اجرا فقط برای روزهایی مجاز است که صریحاً نیازمند بازبینی انسانی هستند.'], 'این روز قابل رد ایمنی نیست');
+    }
+    if ((journey.completed || []).includes(currentDay)) {
+      return showValidation(['نتیجه این روز قبلاً ثبت نهایی شده است.'], 'این روز قبلاً تکمیل شده است');
+    }
+    if (currentDay !== nextRequiredDay(journey)) {
+      return showValidation(['روزهای مسیر باید به ترتیب تکمیل شوند.'], 'ثبت روز مجاز نیست');
+    }
+    const trustedNow = APP_CONFIG.TIME_LOCK_ENABLED ? await getTrustedNowMs() : Date.now();
+    if (trustedNow == null || !isDayUnlockedAt(journey, currentDay, trustedNow)) {
+      return showValidation(
+        ['فعلاً امکان ثبت این مرحله وجود ندارد.', 'لطفاً زمان دیگری دوباره تلاش کن.'],
+        'امکان ثبت مرحله نیست'
+      );
+    }
+
+    const completedDay = currentDay;
+    const record = {
+      status: 'skipped_human_review',
+      feedbackText: 'این تمرین به دلیل نیاز به بازبینی انسانی اجرا نشد. هیچ امتیازی ثبت نشده و این ثبت به معنی بهبود یا بدترشدن نیست.',
+      exerciseId: activeDay?.id || '',
+      updatedAt: new Date(trustedNow).toISOString(),
+    };
+    patchJourney((previous) => ({
+      ...previous,
+      completed: [...new Set([...(previous.completed || []), completedDay])].sort((a, b) => a - b),
+      daily: { ...(previous.daily || {}), [completedDay]: record },
+    }));
+    setResultDay(completedDay);
+    navigate('dailyResult');
+  }
+
   function openCurrentDay() {
     if (journey.completed.length === 28) return navigate(journey.final ? 'report' : 'final');
     openDay(nextRequiredDay(journey));
@@ -715,7 +749,7 @@ function navigate(next) {
       {screen === 'pathSetup' && <PathSetupScreen initial={journey.profileData} problems={Object.keys(content.categories || {})} onSave={savePathSetup} onEditProfile={() => openProfileEditor('pathSetup')} onValidation={showValidation} />}
       {screen === 'assessment' && <AssessmentScreen initial={journey.assessmentData?.answers} onSave={saveAssessment} onValidation={showValidation} />}
       {screen === 'dashboard' && <Dashboard journey={journey} userProfile={userProfile} onEditProfile={() => openProfileEditor('dashboard')} onCurrent={openCurrentDay} onBooks={() => openBooks('dashboard')} onArchive={() => navigate('archive')} onSupport={() => openSupport('dashboard')} onChannel={() => window.open(content.channelUrl, '_blank', 'noopener,noreferrer')} />}
-      {screen === 'day' && <DayScreen day={currentDay} problem={journey.profileData?.problem || ''} data={activeDay} record={journey.daily?.[currentDay]} savedAnswer={journey.answers?.[currentDay] || ''} previousRecord={journey.daily?.[currentDay - 1]} previousAnswer={journey.answers?.[currentDay - 1] || ''} history={journey.daily || {}} onDashboard={() => navigate('dashboard')} onPrevious={() => currentDay <= 1 ? navigate('dashboard') : openDay(currentDay - 1)} onComplete={completeDay} onNext={() => openDay(currentDay + 1)} completed={journey.completed.includes(currentDay)} onValidation={showValidation} />}
+      {screen === 'day' && <DayScreen day={currentDay} problem={journey.profileData?.problem || ''} data={activeDay} record={journey.daily?.[currentDay]} savedAnswer={journey.answers?.[currentDay] || ''} previousRecord={journey.daily?.[currentDay - 1]} previousAnswer={journey.answers?.[currentDay - 1] || ''} history={journey.daily || {}} onDashboard={() => navigate('dashboard')} onPrevious={() => currentDay <= 1 ? navigate('dashboard') : openDay(currentDay - 1)} onComplete={completeDay} onSkip={skipDayForHumanReview} onNext={() => openDay(currentDay + 1)} completed={journey.completed.includes(currentDay)} onValidation={showValidation} />}
       {screen === 'dailyResult' && <DailyResult day={resultDay || journey.completed.length || currentDay} journey={journey} data={resultData} problem={category?.name} sourceLabel={recommendationSource} onDashboard={() => navigate('dashboard')} onNext={openDay} onFinal={() => navigate('final')} onBook={(rec) => openRecommendedBook(resultDay || currentDay, rec)} />}
       {screen === 'books' && <LibraryPage books={books} loading={libraryLoading} error={libraryError} onOpenBook={(book) => openBook(book)} onBack={() => navigate(libraryReturn)} />}
       {screen === 'support' && <Support content={content} onBack={() => navigate(supportReturn)} />}
