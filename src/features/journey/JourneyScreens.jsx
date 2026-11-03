@@ -5,7 +5,7 @@ import { buttonLabel } from '../../shared/buttonLabel.jsx';
 import { copyTextToClipboard, fa, formatDate, normalizeDigits } from '../../shared/utils.js';
 import { APP_CONFIG, burdenScoreFromAnswers, evaluatePqhtEligibility, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
 import { executeCompleteLocalDataDeletion } from '../privacy/dataDeletion.js';
-import { createPrivacyBackup, createPrivacyRestorePreview } from '../privacy/privacyBackup.js';
+import { createPrivacyBackup, createPrivacyRestorePreview, restorePrivacyBackup } from '../privacy/privacyBackup.js';
 import AssessmentAssistant from '../assistant/AssessmentAssistant.jsx';
 import { exportArchivesZip, triggerBlobDownload } from './archiveExport.js';
 
