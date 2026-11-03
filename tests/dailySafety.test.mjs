@@ -77,7 +77,31 @@ test('ambiguous control topic stays blocked until its subtypes receive expert re
     topic_id: 'T31',
     risk_level: 'routine',
     review_status: 'approved',
-  }), 'routine', 'an explicitly approved and risk-classified day may be released');
+  }), 'blocked', 'approval alone must not release an unclassified control exercise');
+  assert.equal(getDailySafetyMode({
+    id: 'T31-D06',
+    topic_id: 'T31',
+    risk_level: 'routine',
+    review_status: 'approved',
+    subtopic_ids: ['T31-S01'],
+    control_context: 'self_control_need',
+  }), 'routine', 'a reviewed day with one explicit subtype and matching context may be released');
+  assert.equal(getDailySafetyMode({
+    id: 'T31-D06',
+    topic_id: 'T31',
+    risk_level: 'routine',
+    review_status: 'approved',
+    subtopic_ids: ['T31-S01', 'T31-S02'],
+    control_context: 'self_control_need',
+  }), 'blocked', 'a day assigned to multiple control subtypes must remain blocked');
+  assert.equal(getDailySafetyMode({
+    id: 'T31-D06',
+    topic_id: 'T31',
+    risk_level: 'routine',
+    review_status: 'approved',
+    subtopic_ids: ['T31-S01'],
+    control_context: 'interpersonal_coercive_control',
+  }), 'blocked', 'control context must match the explicitly assigned subtype');
   const skipped = createHumanReviewSkipRecord(days[0], new Date('2026-11-03T12:00:00.000Z'));
   assert.equal(skipped.status, 'skipped_human_review');
   assert.equal('score' in skipped, false);
