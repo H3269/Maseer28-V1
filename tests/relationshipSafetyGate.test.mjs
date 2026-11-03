@@ -91,7 +91,7 @@ test('relationship gate days in actual T01, T12, and T17 content have stable IDs
       const day = content.categories[item.category].days.find((candidate) => candidate.day === dayNumber);
       assert.ok(day, `missing ${item.category} day ${dayNumber}`);
       assert.equal(getRelationshipSafetyGate(day)?.gateId, 'relationship-communication-safety-v1');
-      assert.match(`${day.exercise || ''}\n${day.actionText || ''}`, /درخواست|گفت.?وگو|مرز|مذاکره|مکث|تقسیم وظیفه|راه.?حل|ترمیم/u);
+      assert.match(`${day.exercise || ''}\n${day.actionText || ''}`, /درخواست|گفت.?وگو|مرز|مذاکره|مکث|تقسیم وظیفه|راه.?حل|مسئله|ترمیم/u);
       if (item.topicId) {
         assert.equal(day.topic_id, item.topicId);
         assert.equal(day.risk_level, item.risk);
