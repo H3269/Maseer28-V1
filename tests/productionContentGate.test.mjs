@@ -198,6 +198,20 @@ test('production content gate requires one approved T31 subtype and matching con
   assert.ok(errors.some((item) => item.includes('control topic subtype and context are not explicitly classified')));
 });
 
+
+test('public deployment and Telegram publication retain expert approval gates', async () => {
+  const [deploy, publish] = await Promise.all([
+    (await import('node:fs/promises')).readFile(new URL('../.github/workflows/deploy.yml', import.meta.url), 'utf8'),
+    (await import('node:fs/promises')).readFile(new URL('../.github/workflows/publish-tested-version.yml', import.meta.url), 'utf8'),
+  ]);
+  assert.match(deploy, /confirm_public_release == 'yes'/);
+  assert.match(deploy, /npm run assert:production-content/);
+  assert.match(publish, /inputs\.publish == 'publish'/);
+  assert.match(publish, /github\.ref == 'refs\/heads\/main'/);
+  assert.match(publish, /assert-validation-run\.mjs/);
+  assert.match(publish, /npm run assert:production-content/);
+});
+
 test('current repository content remains blocked from production until all 952 units are reviewed', async () => {
   const readJson = async (relative) => JSON.parse(
     await (await import('node:fs/promises')).readFile(new URL(relative, import.meta.url), 'utf8')
