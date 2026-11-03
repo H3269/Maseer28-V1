@@ -5,6 +5,7 @@ import { validateProductionContent } from '../src/features/content/productionCon
 function fixture() {
   const day = {
     id: 'T01-D01',
+    day: 1,
     topic_id: 'T01',
     subtopic_ids: ['T01-S01'],
     learning_objective: 'شناخت یک الگوی مشخص',
@@ -81,6 +82,27 @@ test('production content gate rejects orphaned approval links', () => {
   data.subtopicsRegistry.subtopics[0].content_ids = [];
   const errors = validateProductionContent(data);
   assert.ok(errors.some((item) => item.includes('approved subtopic content link is missing')));
+});
+
+test('production content gate rejects missing or duplicate daily identifiers', () => {
+  const missing = fixture();
+  missing.content.categories['موضوع آزمایشی'].days[0].id = '';
+  const missingErrors = validateProductionContent(missing);
+  assert.ok(missingErrors.some((item) => item.includes('stable daily content id is missing')));
+
+  const duplicate = fixture();
+  const second = { ...duplicate.content.categories['موضوع آزمایشی'].days[0], day: 2 };
+  duplicate.content.categories['موضوع آزمایشی'].days.push(second);
+  duplicate.expectedDays = 2;
+  const duplicateErrors = validateProductionContent(duplicate);
+  assert.ok(duplicateErrors.some((item) => item.includes('duplicate daily content id')));
+});
+
+test('production content gate rejects invalid day sequencing', () => {
+  const data = fixture();
+  data.content.categories['موضوع آزمایشی'].days[0].day = 2;
+  const errors = validateProductionContent(data);
+  assert.ok(errors.some((item) => item.includes('day sequence is invalid')));
 });
 
 test('current repository content remains blocked from production until all 952 units are reviewed', async () => {
