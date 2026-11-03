@@ -22,15 +22,56 @@ export function getControlContextForDay(day) {
   return expectedContext && day.control_context === expectedContext ? expectedContext : null;
 }
 
-function isFearTopicDayFourteen(day) {
+function isFearTopicDay(day) {
   if (!day || typeof day !== 'object') return false;
   const id = String(day.id || '');
-  // T03-D14 contains an unqualified instruction to reduce a possibly
-  // protective behavior. Block legacy and canonical identities regardless
-  // of a conflicting day field or a later routine/approved risk label.
-  return day.topic_id === 'T03' && Number(day.day) === 14
-    || /^ترس-14$/u.test(id)
-    || /^T03-D14$/i.test(id);
+  return day.topic_id === 'T03'
+    || /^ترس-[0-9]{1,2}$/u.test(id)
+    || /^T03-D[0-9]{1,2}$/i.test(id);
+}
+
+const FEAR_SUBTOPIC_IDS = new Set(['T03-S01', 'T03-S02', 'T03-S03']);
+
+function hasApprovedFearReview(day) {
+  const requiredText = [
+    'learning_objective', 'target_skill', 'teaching_point',
+    'exercise_type', 'instructions', 'reflection_prompt',
+    'success_criterion', 'when_to_seek_human_support',
+  ];
+  if (day.review_status !== 'approved'
+    || day.topic_id !== 'T03'
+    || !Array.isArray(day.subtopic_ids)
+    || day.subtopic_ids.length !== 1
+    || !FEAR_SUBTOPIC_IDS.has(day.subtopic_ids[0])
+    || !Number.isInteger(day.duration_minutes)
+    || day.duration_minutes < 1
+    || day.duration_minutes > 60
+    || !Array.isArray(day.stop_conditions)
+    || day.stop_conditions.length === 0
+    || !Array.isArray(day.contraindications)
+    || day.contraindications.length === 0
+    || !Array.isArray(day.source_ids)
+    || day.source_ids.length === 0
+    || !['not_assessed', 'very_low', 'low', 'moderate', 'high'].includes(day.evidence_grade)
+    || typeof day.review_record_id !== 'string'
+    || !day.review_record_id.trim()
+    || typeof day.reviewer_name !== 'string'
+    || !day.reviewer_name.trim()
+    || !['qualified_clinician', 'evidence_reviewer', 'safety_reviewer'].includes(day.reviewer_role)
+    || !day.reviewed_at
+    || !Number.isFinite(Date.parse(day.reviewed_at))
+    || requiredText.some((field) => typeof day[field] !== 'string' || !day[field].trim())) {
+    return false;
+  }
+
+  // Day 14's generic behavior-reduction instruction needs an explicit,
+  // reviewed safety rule and caution classification after redesign.
+  if (Number(day.day) === 14) {
+    return day.risk_level === 'caution'
+      && Array.isArray(day.safety_rule_ids)
+      && day.safety_rule_ids.length > 0;
+  }
+  return true;
 }
 
 function isRepetitiveBehaviorTopicDay(day) {
@@ -107,7 +148,7 @@ function hasApprovedSleepReview(day) {
 
 export function getDailySafetyMode(day) {
   if (!day || typeof day !== 'object') return 'routine';
-  if (isFearTopicDayFourteen(day)) return 'blocked';
+  if (isFearTopicDay(day) && !hasApprovedFearReview(day)) return 'blocked';
   if (isRepetitiveBehaviorTopicDay(day) && !hasApprovedRepetitiveBehaviorReview(day)) return 'blocked';
   if (isBoundaryTopicDay(day) && !hasApprovedBoundaryReview(day)) return 'blocked';
   if (isSleepTopicDay(day) && !hasApprovedSleepReview(day)) return 'blocked';
