@@ -95,7 +95,17 @@ test('legacy T11 repetitive behavior content stays blocked until specialist subt
     review_status: 'approved',
     review_record_id: 'review-t11-day-06',
     subtopic_ids: ['T11-S01'],
-  }), 'routine', 'a reviewed day with one explicit subtype and review record may be released');
+  }), 'routine', 'a reviewed simple habit with one explicit subtype and review record may be released');
+  for (const subtopic of ['T11-S02', 'T11-S03']) {
+    assert.equal(getDailySafetyMode({
+      id: 'T11-D06',
+      topic_id: 'T11',
+      risk_level: 'routine',
+      review_status: 'approved',
+      review_record_id: 'review-t11-day-06',
+      subtopic_ids: [subtopic],
+    }), 'blocked', `${subtopic} must remain withheld until its specialist-specific taxonomy and intervention are separated`);
+  }
 });
 
 test('ambiguous control topic stays blocked until its subtypes receive expert review', async () => {
