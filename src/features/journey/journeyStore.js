@@ -256,6 +256,41 @@ function normalizeProfileRecord(source) {
   return Object.keys(result).length ? result : null;
 }
 
+export function evaluatePqhtEligibility(profile) {
+  const reasons = [];
+  const age = Number(normalizeDigits(profile?.age));
+  if (!Number.isInteger(age)) reasons.push('سن ثبت نشده یا معتبر نیست');
+  else if (age < 23 || age > 63) reasons.push('سن خارج از محدوده مجاز PQHT (۲۳ تا ۶۳ سال)');
+
+  const medicalValues = ['none', 'epilepsy', 'seizure', 'panic', 'bipolar', 'speech_hearing', 'other'];
+  if (!medicalValues.includes(profile?.medical)) {
+    reasons.push('وضعیت پزشکی ثبت نشده یا معتبر نیست');
+  } else {
+    const blocked = {
+      epilepsy: 'صرع',
+      seizure: 'سابقه تشنج',
+      panic: 'پانیک',
+      bipolar: 'اختلال دو قطبی',
+      speech_hearing: 'مشکل گفتاری یا شنوایی',
+    };
+    if (blocked[profile.medical]) reasons.push(blocked[profile.medical]);
+    if (profile.medical === 'other') reasons.push('سابقه/وضعیت پزشکی دیگر نیازمند بررسی تخصصی است');
+  }
+
+  if (!['no', 'yes_fixed', 'yes_flexible'].includes(profile?.medication)) {
+    reasons.push('وضعیت مصرف دارو ثبت نشده یا معتبر نیست');
+  }
+  if (!['no', 'yes', 'unknown'].includes(profile?.medicationRisk)) {
+    reasons.push('خطر احتمالی داروی ساعت‌دار ثبت نشده یا معتبر نیست');
+  } else if (profile?.medication === 'yes_fixed' && profile.medicationRisk !== 'no') {
+    reasons.push(profile.medicationRisk === 'yes'
+      ? 'داروی ساعت‌دار ممکن است در صورت مصرف‌نشدن طی جلسه ۸ ساعته باعث تشدید بیماری/علائم شود'
+      : 'خطر داروی ساعت‌دار برای جلسه ۸ ساعته نامشخص است');
+  }
+
+  return { eligible: reasons.length === 0, reasons };
+}
+
 function isEmptyProfileValue(value) {
   return value === undefined || value === null || value === '';
 }
