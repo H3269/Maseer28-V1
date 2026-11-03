@@ -372,6 +372,8 @@ try {
     await page.getByText('پیش‌نمایش فایل معتبر').waitFor({ state: 'visible' });
     page.once('dialog', (dialog) => dialog.accept());
     await page.getByRole('button', { name: 'بازیابی نسخه پشتیبان' }).click();
+    await page.waitForTimeout(700);
+    process.stdout.write('RESTORE UI DEBUG: ' + (await page.locator('#support').innerText()).slice(-1200) + '\\n');
     await page.waitForFunction(() => {
       try { return JSON.parse(localStorage.getItem('maseer28_restore_ui_marker') || 'null')?.marker === 'RESTORE-UI-OK'; }
       catch { return false; }
