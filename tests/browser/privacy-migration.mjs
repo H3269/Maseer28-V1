@@ -34,7 +34,7 @@ function legacyJourney() {
 async function openScenario(mode = 'normal', state = legacyJourney(), independentProfile = null) {
   const page = await browser.newPage();
   page.on('pageerror', (error) => browserErrors.push(String(error)));
-  await page.addInitScript(({ state, failureMode }) => {
+  await page.addInitScript(({ state, failureMode, independentProfile }) => {
     localStorage.setItem('maseer28_state', JSON.stringify(state));
     if (independentProfile) localStorage.setItem('maseer28_user_profile_v2', JSON.stringify(independentProfile));
     const nativeSetItem = Storage.prototype.setItem;
