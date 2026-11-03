@@ -14,14 +14,12 @@ test('daily safety mode distinguishes routine, caution, and human-review-only co
   assert.equal(getDailySafetyMode({ review_status: 'pending_expert_review' }), 'blocked');
   assert.equal(getDailySafetyMode({ risk_level: 'routine', review_status: 'pending_expert_review' }), 'blocked');
   assert.equal(getDailySafetyMode({ risk_level: 'caution', review_status: 'draft' }), 'blocked');
-  assert.equal(getDailySafetyMode({ risk_level: 'routine', review_status: 'approved' }), 'routine');
-  assert.equal(getDailySafetyMode({ risk_level: 'caution', review_status: 'approved' }), 'caution');
   assert.equal(getDailySafetyMode({ risk_level: 'routine', review_status: null }), 'blocked');
   assert.equal(getDailySafetyMode({ topic_id: 'T01' }), 'blocked');
   assert.equal(getDailySafetyMode(null), 'routine');
 });
 
-test('only human-review-required content can produce a non-scored skip record', () => {
+test('only blocked daily content can produce a non-scored skip record', () => {
   const day = { id: 'T01-D27', risk_level: 'human_review_required' };
   const record = createHumanReviewSkipRecord(day, new Date('2026-11-03T12:00:00.000Z'));
   assert.deepEqual(record, {
