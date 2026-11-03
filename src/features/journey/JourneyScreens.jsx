@@ -2,12 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import SmartSelect from '../../shared/components/SmartSelect.jsx';
 import AppIcon from '../../shared/components/AppIcon.jsx';
 import { buttonLabel } from '../../shared/buttonLabel.jsx';
-import { fa, formatDate, normalizeDigits } from '../../shared/utils.js';
+import { copyTextToClipboard, fa, formatDate, normalizeDigits } from '../../shared/utils.js';
 import { APP_CONFIG, burdenScoreFromAnswers, evaluatePqhtEligibility, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
 import { deleteLocalUserData, createLocalUserDataDeletionPlan } from '../privacy/localData.js';
 import { deleteIndexedDbUserData } from '../privacy/indexedDbData.js';
 import { createPrivacyBackup, createPrivacyRestorePreview } from '../privacy/privacyBackup.js';
 import AssessmentAssistant from '../assistant/AssessmentAssistant.jsx';
+import { exportArchivesZip, triggerBlobDownload } from './archiveExport.js';
 
 // This prototype has no clinical validation. It stays hidden unless an experimental build explicitly enables it.
 const EXPERIMENTAL_ASSISTANT_ENABLED = APP_CONFIG.TEST_MODE || import.meta.env.VITE_ENABLE_EXPERIMENTAL_ASSISTANT === 'true';
@@ -386,13 +387,17 @@ export function DailyResult({ day, journey, data, problem, sourceLabel, onDashbo
 
 export function Support({ content, onBack }) {
   const [help, setHelp] = useState('اگر اپ شما اجازه باز کردن مستقیم پیامک را ندهد، شماره با یک لمس کپی می‌شود.');
+  const [copyFailed, setCopyFailed] = useState(false);
   const [privacyMessage, setPrivacyMessage] = useState('');
   const [privacyBusy, setPrivacyBusy] = useState(false);
   const [restorePreview, setRestorePreview] = useState(null);
   const restoreFileRef = useRef(null);
   const number = '09190889062';
-  function legacyCopy(text, done) { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done?.(); } catch { /* noop */ } ta.remove(); }
-  function copySupportNumber() { const done = () => setHelp('شماره ۰۹۱۹۰۸۸۹۰۶۲ کپی شد.'); if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(number).then(done).catch(() => legacyCopy(number, done)); else legacyCopy(number, done); }
+  async function copySupportNumber() {
+    const copied = await copyTextToClipboard(number);
+    setCopyFailed(!copied);
+    setHelp(copied ? 'مرورگر عملیات کپی را پذیرفت؛ برای اطمینان، شماره را در برنامه دیگری جای‌گذاری کن.' : 'کپی خودکار انجام نشد. شماره را از کادر زیر انتخاب و دستی کپی کن.');
+  }
   function sendSms() { const body = 'سلام، برای نوبت‌دهی و دریافت راهنمایی پیام می‌دهم.'; try { if (window.Android && typeof window.Android.openSms === 'function') { window.Android.openSms(number, body); setHelp('برنامه پیامک باز شد.'); return; } if (window.webkit?.messageHandlers?.openSms) { window.webkit.messageHandlers.openSms.postMessage({ number, body }); setHelp('برنامه پیامک باز شد.'); return; } const ua = navigator.userAgent || '', sep = /iPhone|iPad|iPod/i.test(ua) ? '&' : '?', a = document.createElement('a'); a.href = `sms:${number}${sep}body=${encodeURIComponent(body)}`; a.style.display = 'none'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => setHelp('اگر پیامک باز نشد، «کپی شماره» را بزنید. در WebView اپ باید scheme پیامک به سیستم تحویل داده شود.'), 900); } catch { copySupportNumber(); } }
   async function exportData() {
     if (privacyBusy) return;
@@ -451,7 +456,7 @@ export function Support({ content, onBack }) {
   }
   return <section className="card" id="support">
     <span className="badge">پشتیبانی مرکز</span><h2>نیاز به راهنمایی داری؟</h2><p className="muted">اگر در انجام تمرین‌ها، ادامه مسیر یا استفاده از برنامه نیاز به راهنمایی داری، می‌توانی با مرکز هیپنوتراپی شفا ارتباط بگیری.</p>
-    <div className="support"><h3><AppIcon name="phone" size={18} /> نوبت‌دهی پیامکی</h3><p className="muted">شماره مرکز: <b>۰۹۱۹۰۸۸۹۰۶۲</b></p><div className="contactActions"><button className="sms" onClick={sendSms}><AppIcon name="message" size={17} /> باز کردن پیامک</button><button className="copyAction" onClick={copySupportNumber}><AppIcon name="copy" size={17} /> کپی شماره</button></div><p className="contactHelp" id="smsHelp">{help}</p><hr/><h3><AppIcon name="message" size={18} /> نوبت‌دهی تلگرامی</h3><p className="muted">پشتیبانی و نوبت‌دهی تلگرامی مرکز</p><a className="telegram" href={content.supportUrl || content.bookSupportUrl || 'https://t.me/Hypnotherapy_admin'} rel="noopener" target="_blank" ><AppIcon name="message" size={17} /> ورود به پشتیبانی تلگرام</a></div>
+    <div className="support"><h3><AppIcon name="phone" size={18} /> نوبت‌دهی پیامکی</h3><p className="muted">شماره مرکز: <b>۰۹۱۹۰۸۸۹۰۶۲</b></p><div className="contactActions"><button className="sms" onClick={sendSms}><AppIcon name="message" size={17} /> باز کردن پیامک</button><button className="copyAction" onClick={copySupportNumber}><AppIcon name="copy" size={17} /> کپی شماره</button></div><p className="contactHelp" id="smsHelp" role="status" aria-live="polite">{help}</p>{copyFailed && <input aria-label="شماره مرکز برای کپی دستی" readOnly value={number} onFocus={(event) => event.currentTarget.select()} onClick={(event) => event.currentTarget.select()} />}<hr/><h3><AppIcon name="message" size={18} /> نوبت‌دهی تلگرامی</h3><p className="muted">پشتیبانی و نوبت‌دهی تلگرامی مرکز</p><a className="telegram" href={content.supportUrl || content.bookSupportUrl || 'https://t.me/Hypnotherapy_admin'} rel="noopener" target="_blank" ><AppIcon name="message" size={17} /> ورود به پشتیبانی تلگرام</a></div>
     {EXPERIMENTAL_ASSISTANT_ENABLED && <AssessmentAssistant />}
     <hr/><div className="sectionHint"><span><AppIcon name="lock" size={18} /></span><div><b>حریم خصوصی و داده‌های من</b><small>می‌توانی نسخه‌ای از داده‌های ذخیره‌شده در این مرورگر بگیری یا آن‌ها را حذف کنی.</small></div></div>
     <p className="muted">خروجی و حذف شامل localStorage برنامه و رکوردهای کاربری در IndexedDB همین مرورگر است. پنج کتاب عمومی و نسخه‌های اصلی آن‌ها حفظ می‌شوند. فایل‌های دانلودشده، پشتیبان‌های دستگاه و اطلاعات احتمالی سرورهای بیرونی تحت پوشش نیستند.</p>
@@ -530,6 +535,20 @@ function ReportBlock({ title, id, text }) { return <><h3>{title}</h3><div classN
 export function Archive({ journey, content, onDeleteArchive, onBack, onNew }) {
   const [selected, setSelected] = useState(null);
   const [deleteCandidate, setDeleteCandidate] = useState(null);
+  const [exportBusy, setExportBusy] = useState(false);
+  const [exportMessage, setExportMessage] = useState('');
+  async function handleExportArchives() {
+    if (exportBusy || !list.length) return;
+    setExportBusy(true);
+    setExportMessage('');
+    try {
+      const blob = await exportArchivesZip(list);
+      triggerBlobDownload(blob, `maseer28-archives-${new Date().toISOString().slice(0, 10)}.zip`);
+      setExportMessage('درخواست دریافت فایل ZIP شامل گزارش PDF آرشیوها ارسال شد. اگر فایل ذخیره نشد، WebView میزبان دانلود فایل را پشتیبانی نکرده یا مسدود کرده است.');
+    } catch {
+      setExportMessage('ساخت یا تحویل فایل آرشیو انجام نشد؛ ممکن است مرورگر از Canvas یا دانلود فایل پشتیبانی نکند. داده‌های اصلی تغییری نکرده‌اند.');
+    } finally { setExportBusy(false); }
+  }
   const list = journey.archive || [];
   const selectedArchive = selected == null ? null : list[selected];
   function confirmDelete(index) {
@@ -540,7 +559,7 @@ export function Archive({ journey, content, onDeleteArchive, onBack, onNew }) {
   }
   return <section className="card" id="archive"><div className="dashboardHero archiveHero"><div><span className="badge">آرشیو مسیرها</span><h2>مسیرهای قبلی</h2></div></div><p className="muted">هر بار که مسیر تازه‌ای شروع شود، پرونده مسیر قبلی اینجا نگهداری می‌شود. حداکثر ۲۰ مسیر نگهداری می‌شود؛ برای ساخت فضای تازه باید آرشیوهای مشخص را خودت انتخاب و جداگانه حذف کنی. هیچ آرشیوی خودکار پاک نمی‌شود.</p>
 
-    <div id="archiveList" className={selectedArchive ? 'hidden' : ''}>{!list.length ? <div className="muted">هنوز مسیر قبلی در آرشیو وجود ندارد.</div> : list.map((a, i) => { const p = a.profileData || {}, completed = Array.isArray(a.completed) ? a.completed.length : 0; return <div className="answerItem" key={`${a.pathId || 'archive'}-${i}`}><b>مسیر {fa(i + 1)} · {p.problem || 'بدون عنوان'}</b><p>پیشرفت: {fa(completed)}/۲۸ · امتیاز شروع: {a.assessmentData?.score == null ? '-' : `${fa(a.assessmentData.score)}/۱۰`} · امتیاز پایان: {a.final?.score == null ? '-' : `${fa(a.final.score)}/۱۰`}<br/>تاریخ شروع: {formatDate(a.startedAt)}<br/>تاریخ بایگانی: {formatDate(a.archivedAt)}</p><button className="secondary" onClick={() => { setSelected(i); setDeleteCandidate(null); window.scrollTo({ top: 0, behavior: 'auto' }); }}><AppIcon name="eye" size={17} /> مشاهده جزئیات مسیر</button>{deleteCandidate === i ? <div className="feedback" role="group" aria-label={`تأیید حذف آرشیو ${i + 1}`}><b>حذف دائمی این آرشیو؟</b><p className="muted">پاسخ‌ها، ارزیابی‌ها و گزارش این مسیر از ذخیره محلی برنامه حذف می‌شوند. این کار قابل بازگشت نیست.</p><button className="primary" onClick={() => confirmDelete(i)}>بله، حذف شود</button><button className="secondary" onClick={() => setDeleteCandidate(null)}>انصراف</button></div> : <button className="secondary" onClick={() => setDeleteCandidate(i)}><AppIcon name="eraser" size={17} /> حذف این آرشیو</button>}</div>; })}</div><div id="archiveDetail" className={selectedArchive ? '' : 'hidden'}>{selectedArchive && <ArchiveDetail archive={selectedArchive} content={content} onClose={() => setSelected(null)} />}</div><button className="primary" onClick={onNew}>{buttonLabel('شروع مسیر تازه →')}</button><button className="secondary" onClick={onBack}>{buttonLabel('بازگشت به داشبورد')}</button></section>;
+    <div id="archiveList" className={selectedArchive ? 'hidden' : ''}>{list.length > 0 && <><button className="secondary" type="button" disabled={exportBusy} onClick={handleExportArchives}><AppIcon name="fileText" size={17} /> {exportBusy ? 'در حال ساخت ZIP و PDF…' : 'دریافت خروجی ZIP و PDF آرشیوها'}</button>{exportMessage && <p className="contactHelp" role="status" aria-live="polite">{exportMessage}</p>}</>}{!list.length ? <div className="muted">هنوز مسیر قبلی در آرشیو وجود ندارد.</div> : list.map((a, i) => { const p = a.profileData || {}, completed = Array.isArray(a.completed) ? a.completed.length : 0; return <div className="answerItem" key={`${a.pathId || 'archive'}-${i}`}><b>مسیر {fa(i + 1)} · {p.problem || 'بدون عنوان'}</b><p>پیشرفت: {fa(completed)}/۲۸ · امتیاز شروع: {a.assessmentData?.score == null ? '-' : `${fa(a.assessmentData.score)}/۱۰`} · امتیاز پایان: {a.final?.score == null ? '-' : `${fa(a.final.score)}/۱۰`}<br/>تاریخ شروع: {formatDate(a.startedAt)}<br/>تاریخ بایگانی: {formatDate(a.archivedAt)}</p><button className="secondary" onClick={() => { setSelected(i); setDeleteCandidate(null); window.scrollTo({ top: 0, behavior: 'auto' }); }}><AppIcon name="eye" size={17} /> مشاهده جزئیات مسیر</button>{deleteCandidate === i ? <div className="feedback" role="group" aria-label={`تأیید حذف آرشیو ${i + 1}`}><b>حذف دائمی این آرشیو؟</b><p className="muted">پاسخ‌ها، ارزیابی‌ها و گزارش این مسیر از ذخیره محلی برنامه حذف می‌شوند. این کار قابل بازگشت نیست.</p><button className="primary" onClick={() => confirmDelete(i)}>بله، حذف شود</button><button className="secondary" onClick={() => setDeleteCandidate(null)}>انصراف</button></div> : <button className="secondary" onClick={() => setDeleteCandidate(i)}><AppIcon name="eraser" size={17} /> حذف این آرشیو</button>}</div>; })}</div><div id="archiveDetail" className={selectedArchive ? '' : 'hidden'}>{selectedArchive && <ArchiveDetail archive={selectedArchive} content={content} onClose={() => setSelected(null)} />}</div><button className="primary" onClick={onNew}>{buttonLabel('شروع مسیر تازه →')}</button><button className="secondary" onClick={onBack}>{buttonLabel('بازگشت به داشبورد')}</button></section>;
 }
 
 function ArchiveDetail({ archive, content, onClose }) { const p = archive.profileData || {}, cat = content.categories?.[p.problem]; return <><div className="feedback"><b><AppIcon name="archive" size={17} /> جزئیات مسیر آرشیوشده</b><p className="muted">مسئله: {p.problem || '-'}</p><p className="muted">شروع: {formatDate(archive.startedAt)} · آرشیو: {formatDate(archive.archivedAt)}</p></div>{Object.entries(archive.answers || {}).sort(([x], [y]) => Number(x) - Number(y)).map(([d, ans]) => { const day = cat?.days?.find((x) => Number(x.day) === Number(d)); const daily = archive.daily?.[d]; return <div className="answerItem" key={d}><b>روز {fa(d)} · {fa(String(day?.title || '').replace(/\s*[·•-]?\s*روز\s*\d+\s*$/i, '').split('·')[0].trim())}</b><p>{fa(ans)}</p><small>شدت: {daily?.score == null ? '-' : `${fa(daily.score)} از ۱۰`} · {daily?.feedbackText || ''}</small></div>; })}<button className="secondary" onClick={onClose}><AppIcon name="chevronLeft" size={17} /> بازگشت به فهرست آرشیوها</button></>;}
