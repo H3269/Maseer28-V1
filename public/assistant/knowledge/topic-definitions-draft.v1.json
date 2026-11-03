@@ -10,7 +10,13 @@
       "working_definition": "پاسخ هیجانی به مانع، تهدید، بی‌عدالتی یا ناکامی ادراک‌شده که می‌تواند با برانگیختگی بدنی و میل به اقدام همراه باشد.",
       "scope_limit": "خشم با پرخاشگری یا خشونت یکی نیست؛ رفتار باید جداگانه ارزیابی شود.",
       "definition_status": "draft",
-      "evidence_ids": [],
+      "evidence_ids": [
+        "SRC-ANGER-NHS-001",
+        "SRC-ANGER-APS-001",
+        "SRC-ANGER-APA-001",
+        "SRC-ANGER-ABCT-001",
+        "SRC-ANGER-KJAERVIK-2024-001"
+      ],
       "review_status": "pending_expert_review",
       "reviewer": null,
       "reviewed_at": null
