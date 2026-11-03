@@ -9,6 +9,11 @@ test('daily safety mode distinguishes routine, caution, and human-review-only co
   assert.equal(getDailySafetyMode({ risk_level: 'human_review_required' }), 'blocked');
   assert.equal(getDailySafetyMode({ risk_level: 'unknown' }), 'blocked');
   assert.equal(getDailySafetyMode({ review_status: 'pending_expert_review' }), 'blocked');
+  assert.equal(getDailySafetyMode({ risk_level: 'routine', review_status: 'pending_expert_review' }), 'blocked');
+  assert.equal(getDailySafetyMode({ risk_level: 'caution', review_status: 'draft' }), 'blocked');
+  assert.equal(getDailySafetyMode({ risk_level: 'routine', review_status: 'approved' }), 'routine');
+  assert.equal(getDailySafetyMode({ risk_level: 'caution', review_status: 'approved' }), 'caution');
+  assert.equal(getDailySafetyMode({ risk_level: 'routine', review_status: null }), 'blocked');
   assert.equal(getDailySafetyMode({ topic_id: 'T01' }), 'blocked');
   assert.equal(getDailySafetyMode(null), 'routine');
 });
@@ -26,6 +31,14 @@ test('only human-review-required content can produce a non-scored skip record', 
   assert.equal('feedback' in record, false);
   assert.throws(() => createHumanReviewSkipRecord({ id: 'T01-D10', risk_level: 'caution' }));
   assert.throws(() => createHumanReviewSkipRecord({ id: 'T01-D27', risk_level: 'human_review_required' }, 'not-a-date'));
+});
+
+test('unapproved review metadata cannot be overridden by a routine risk label', () => {
+  const day = { id: 'T01-D12', risk_level: 'routine', review_status: 'pending_expert_review' };
+  const record = createHumanReviewSkipRecord(day, new Date('2026-11-03T12:00:00.000Z'));
+  assert.equal(record.status, 'skipped_human_review');
+  assert.equal('score' in record, false);
+  assert.equal('feedback' in record, false);
 });
 
 test('T01 day 27 is explicitly withheld for human review', async () => {
