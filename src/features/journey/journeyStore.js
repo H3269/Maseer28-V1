@@ -138,7 +138,7 @@ export function sanitizeJourneyState(raw) {
       && !LEGACY_SENSITIVE_PROFILE_FIELDS.some((field) => hasProfileValue(p[field]));
     out.profileData = {
       ...(privacyMigrationVerified ? {} : {
-        name: validName(p.name) ? String(p.name).trim().replace(/\\s+/g, ' ') : String(p.name || '').slice(0, 80),
+        name: validName(p.name) ? String(p.name).trim().replace(/\s+/g, ' ') : String(p.name || '').slice(0, 80),
         age: Number.isInteger(age) && age >= 12 && age <= 100 ? age : '',
         gender: ['زن', 'مرد', 'ترجیح می‌دهم نگویم'].includes(p.gender) ? p.gender : '',
         phone: validPhone(p.phone) ? normalizeDigits(p.phone) : String(p.phone || '').slice(0, 11),
