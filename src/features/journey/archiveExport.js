@@ -73,13 +73,19 @@ function makePdf(archive, index) {
   write(`مسئله: ${p.problem || '—'}`, { size: 24 });
   write(`تاریخ شروع: ${dateLabel(archive.startedAt)}    تاریخ بایگانی: ${dateLabel(archive.archivedAt)}`, { size: 23, color: '#64716e' });
   write(`پیشرفت: ${(archive.completed || []).length} از ۲۸ روز    امتیاز شروع: ${archive.assessmentData?.score ?? '—'}    امتیاز پایان: ${archive.final?.score ?? '—'}`, { size: 23, color: '#64716e', gap: 22 });
-  const entries = Object.entries(archive.answers || {}).sort(([a], [b]) => Number(a) - Number(b));
+  const answerDays = Object.keys(archive.answers || {});
+  const dailyDays = Object.keys(archive.daily || {});
+  const entries = [...new Set([...answerDays, ...dailyDays])].sort((a, b) => Number(a) - Number(b));
   if (!entries.length) write('برای این مسیر پاسخی ثبت نشده است.', { size: 25 });
-  for (const [day, answer] of entries) {
+  for (const day of entries) {
     const daily = archive.daily?.[day];
     write(`روز ${day}`, { bold: true, size: 30, color: '#176b63', gap: 3 });
-    write(`پاسخ ثبت‌شده: ${answer || '—'}`, { size: 25, gap: 3 });
-    write(`شدت درگیری: ${daily?.score ?? '—'} از ۱۰    بازخورد: ${daily?.feedbackText || daily?.feedback || '—'}`, { size: 22, color: '#586a66', gap: 20 });
+    if (daily?.status === 'skipped_human_review') {
+      write('تمرین به دلیل نیاز به بازبینی انسانی اجرا نشد؛ هیچ امتیازی ثبت نشده است.', { size: 25, gap: 3 });
+    } else {
+      write(`پاسخ ثبت‌شده: ${archive.answers?.[day] || '—'}`, { size: 25, gap: 3 });
+      write(`شدت درگیری: ${daily?.score ?? '—'} از ۱۰    بازخورد: ${daily?.feedbackText || daily?.feedback || '—'}`, { size: 22, color: '#586a66', gap: 20 });
+    }
   }
   pages.push(canvas.toDataURL('image/jpeg', 0.88).split(',')[1]);
   return jpegPagesToPdf(pages, W, H);
