@@ -352,7 +352,7 @@ test('legacy profile cleanup requires verified journey privacy migration before 
   } = await import('../src/features/journey/journeyStore.js');
   withMemoryStorage((data) => {
     data.set(PROFILE_KEY, JSON.stringify({ name: 'نام قدیمی' }));
-    data.set(PROFILE_V2_KEY, JSON.stringify({ name: 'نام canonical' }));
+    data.set(PROFILE_V2_KEY, JSON.stringify({ name: 'نام رسمی' }));
     data.set(PROFILE_V2_MIGRATION_KEY, '1');
     data.set(JOURNEY_KEY, JSON.stringify({
       profileData: { name: 'نام تکراری', medical: 'none', problem: 'anxiety' },
