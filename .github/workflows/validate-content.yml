@@ -88,6 +88,7 @@ jobs:
         run: |
           PLAYWRIGHT_NODE_PATH="$(npx --yes --package=playwright@1.55.0 -c 'dirname "$(dirname "$(command -v playwright)")"')"
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/privacy-migration.mjs
+          NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/archive-export.mjs
 
       - name: Upload daily content quality audit
         if: ${{ always() && steps.install.outcome == 'success' }}
