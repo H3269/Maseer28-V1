@@ -322,8 +322,13 @@ try {
       unrelated: localStorage.getItem('unrelated_site_preference'),
       copyright: localStorage.getItem('maseer28_copyright_v60'),
       profile: localStorage.getItem('maseer28_user_profile_v2'),
+      freshJourney: JSON.parse(localStorage.getItem('maseer28_state') || 'null'),
+      testMarker: localStorage.getItem('maseer28_test_sensitive'),
     }));
-    assert.deepEqual(remaining.appKeys, [], 'all app-owned personal localStorage keys must be removed');
+    assert.deepEqual(remaining.appKeys, ['maseer28_state'], 'the app may initialize a fresh empty journey after reload, but no prior personal keys may remain');
+    assert.equal(remaining.freshJourney?.started, false, 'the post-deletion journey must be a fresh unstarted state');
+    assert.deepEqual(remaining.freshJourney?.archive, [], 'no prior archive may return after deletion');
+    assert.equal(remaining.testMarker, null, 'the app-owned sensitive test marker must be removed');
     assert.equal(remaining.profile, null, 'independent profile must be removed');
     assert.equal(remaining.unrelated, 'preserve-unrelated', 'unrelated browser data must remain');
     assert.equal(remaining.copyright, '1', 'copyright acceptance is outside deletion scope');
