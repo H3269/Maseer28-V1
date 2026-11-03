@@ -446,3 +446,16 @@ test('explicit harmful intent remains urgent while ambiguous intent requires cla
   assert.equal(classifySafetyAnswer('برنامه دارم خودکشی نکنم'), 'clarification_needed');
   assert.equal(classifySafetyAnswer('نه، برنامه دارم'), 'clarification_needed');
 });
+
+test('general-information wording cannot bypass the safety gate during a personal intake', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  assert.equal(getCurrentQuestion(session).id, 'impact');
+
+  session = answer(session, 'اطلاعاتی درباره اینکه تهدیدم کرد چیست؟');
+  assert.equal(session.semantic_intake.intent.label, 'general_information');
+  assert.equal(session.safety_context_flag, true);
+  assert.equal(getCurrentQuestion(session).id, 'safety_now');
+  assert.equal(session.status, 'in_progress');
+});
