@@ -4,8 +4,7 @@ import AppIcon from '../../shared/components/AppIcon.jsx';
 import { buttonLabel } from '../../shared/buttonLabel.jsx';
 import { copyTextToClipboard, fa, formatDate, normalizeDigits } from '../../shared/utils.js';
 import { APP_CONFIG, burdenScoreFromAnswers, evaluatePqhtEligibility, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
-import { deleteLocalUserData, createLocalUserDataDeletionPlan } from '../privacy/localData.js';
-import { deleteIndexedDbUserData } from '../privacy/indexedDbData.js';
+import { executeCompleteLocalDataDeletion } from '../privacy/dataDeletion.js';
 import { createPrivacyBackup, createPrivacyRestorePreview } from '../privacy/privacyBackup.js';
 import AssessmentAssistant from '../assistant/AssessmentAssistant.jsx';
 import { exportArchivesZip, triggerBlobDownload } from './archiveExport.js';
@@ -440,18 +439,21 @@ export function Support({ content, onBack }) {
     if (!confirmed) return;
     setPrivacyBusy(true);
     try {
-      const localDeletionPlan = createLocalUserDataDeletionPlan();
-      if (localDeletionPlan.errors.length) throw new Error('پیش‌بررسی localStorage ناموفق بود؛ برای جلوگیری از حذف ناقص، هیچ داده‌ای پاک نشد.');
-      const libraryResult = await deleteIndexedDbUserData();
-      const result = deleteLocalUserData(undefined, localDeletionPlan);
-      if (result.errors.length || result.verificationErrors.length || result.removed.length !== result.attempted || result.remainingKeys === null || result.remainingKeys.length !== 0 || libraryResult.remaining !== 0) {
-        setPrivacyMessage('حذف کامل انجام نشد. برخی داده‌ها ممکن است باقی مانده باشند؛ دوباره تلاش کن یا داده‌های مرورگر را بررسی کن.');
+      const result = await executeCompleteLocalDataDeletion();
+      if (!result.deleted) {
+        const messages = {
+          preflight_failed: 'بررسی اولیه یکی از مخازن ناموفق بود؛ هیچ داده‌ای حذف نشد. دسترسی ذخیره‌سازی را بررسی کن و دوباره تلاش کن.',
+          partial_delete: 'حذف فقط در بخشی از مخازن انجام شد. حذف کامل تأیید نشده است؛ پیش از استفاده مجدد، وضعیت داده‌های باقی‌مانده را بررسی کن.',
+          recovery_required: 'نتیجه حذف در یکی از مخازن قابل راستی‌آزمایی نیست. برنامه موفقیت حذف را تأیید نمی‌کند؛ برای بررسی وضعیت ذخیره‌سازی اقدام کن.',
+          failed: 'حذف انجام نشد و هیچ موفقیت کاملی تأیید نشده است. وضعیت ذخیره‌سازی را بررسی کن.',
+        };
+        setPrivacyMessage(messages[result.status] || messages.failed);
         return;
       }
-      setPrivacyMessage('داده‌های محلی کاربر حذف و بررسی شدند؛ پنج کتاب عمومی برنامه حفظ شده‌اند. برنامه در حال بارگذاری مجدد است.');
+      setPrivacyMessage('داده‌های محلی کاربر در هر دو مخزن حذف و جداگانه بررسی شدند؛ کتاب‌های عمومی برنامه حفظ شده‌اند. برنامه در حال بارگذاری مجدد است.');
       window.setTimeout(() => window.location.reload(), 700);
-    } catch (error) {
-      setPrivacyMessage('عملیات حذف کامل نشد؛ ممکن است بخشی از داده‌ها باقی مانده باشند یا بخشی از مراحل انجام شده باشد. وضعیت ذخیره‌سازی را بررسی کن و در صورت نیاز دوباره تلاش کن.');
+    } catch {
+      setPrivacyMessage('حذف کامل قابل تأیید نیست؛ ممکن است بخشی از داده‌ها باقی مانده باشند. وضعیت ذخیره‌سازی را بررسی کن.');
     } finally { setPrivacyBusy(false); }
   }
   return <section className="card" id="support">
