@@ -68,24 +68,46 @@ function parseLegacyTopicDay(id) {
   return { topicId, dayNumber };
 }
 
-export function getRelationshipSafetyGate(day) {
-  if (!day || typeof day !== 'object') return null;
+function getTopicDayIdentity(day) {
+  if (!day || typeof day !== 'object') return { topicIds: [], dayNumbers: [] };
   const id = String(day.id || '');
   const legacyId = parseLegacyTopicDay(id);
   const canonicalIdMatch = /^(T[0-9]{2})-D([0-9]{1,2})$/i.exec(id);
   const topicIds = [
     day.topic_id,
     legacyId?.topicId,
-    canonicalIdMatch?.[1]?.toUpperCase(),
-  ].filter(Boolean);
+    canonicalIdMatch?.[1],
+  ].filter(Boolean).map((topicId) => String(topicId).toUpperCase());
   const dayNumbers = [day.day, legacyId?.dayNumber, canonicalIdMatch?.[2]]
     .filter((value) => value !== undefined && value !== null && value !== '')
-    .map(Number);
+    .map(Number)
+    .filter(Number.isInteger);
+  return { topicIds, dayNumbers };
+}
+
+const SUPPORT_SEEKING_PRIVACY_NOTICE = 'پاسخ‌های روزانه، آرشیو و بخشی از پروفایل در حافظه محلی مرورگر همین دستگاه نگهداری می‌شوند و اپ آن‌ها را جداگانه رمزگذاری نمی‌کند. پیش از نوشتن نام یا جزئیات یا آماده‌کردن/ارسال پیام، بررسی کن فرد ناامن به دستگاه، مرورگر، اعلان‌ها یا حساب پیام‌رسان دسترسی ندارد. اگر احتمال نظارت، تلافی یا افشای اطلاعات هست، نام و جزئیات حساس را وارد نکن و پیام یا تماس را انجام نده؛ حمایت‌خواهی اختیاری است و می‌توانی از دستگاه یا مسیر امن و مستقل کمک بگیری.';
+
+export function getInterpersonalPrivacyNotice(day) {
+  const { topicIds, dayNumbers } = getTopicDayIdentity(day);
+  const hasSharedLegacyTopic = topicIds.some((topicId) => {
+    const match = /^T([0-9]{2})$/u.exec(topicId);
+    const topicNumber = Number(match?.[1]);
+    return Number.isInteger(topicNumber) && topicNumber >= 3 && topicNumber <= 34;
+  });
+  const hasSharedSupportSeekingDay = dayNumbers.some((number) => number === 12 || number === 18);
+  const hasAnxietySupportMessage = topicIds.includes('T02') && dayNumbers.includes(24);
+  return (hasSharedLegacyTopic && hasSharedSupportSeekingDay) || hasAnxietySupportMessage
+    ? SUPPORT_SEEKING_PRIVACY_NOTICE
+    : null;
+}
+
+export function getRelationshipSafetyGate(day) {
+  const { topicIds, dayNumbers } = getTopicDayIdentity(day);
   // Conflicting identifiers must not weaken a gate: if any trusted topic/day
   // identifier points to a gated interpersonal exercise, require the check.
   const requiresGate = topicIds.some((topicId) => {
-    const gatedDays = GATED_DAYS_BY_TOPIC.get(String(topicId).toUpperCase());
-    return gatedDays && dayNumbers.some((number) => Number.isInteger(number) && gatedDays.has(number));
+    const gatedDays = GATED_DAYS_BY_TOPIC.get(topicId);
+    return gatedDays && dayNumbers.some((number) => gatedDays.has(number));
   });
   return requiresGate ? RELATIONSHIP_COMMUNICATION_GATE : null;
 }
