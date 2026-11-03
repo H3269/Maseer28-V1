@@ -790,3 +790,15 @@ export function cloneForArchive(state) {
     final: state.final,
   }));
 }
+
+// Remove exactly one archived path without touching the active journey or user-owned library data.
+export function removeArchivedJourney(state, index) {
+  const archive = Array.isArray(state?.archive) ? state.archive : [];
+  if (!Number.isInteger(index) || index < 0 || index >= archive.length) {
+    return { removed: false, state };
+  }
+  return {
+    removed: true,
+    state: { ...state, archive: archive.filter((_, itemIndex) => itemIndex !== index) },
+  };
+}
