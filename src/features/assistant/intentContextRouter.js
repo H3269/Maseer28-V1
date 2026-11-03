@@ -72,7 +72,9 @@ function removeAttributedQuotes(value) {
     // Unquoted third-party reports must not be treated as the user's intent.
     // Stop at punctuation so a separate first-person disclosure is preserved.
     .replace(/(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او)\s+(?:گفت|گفته|می[‌\s]?گوید|می[‌\s]?گفت)\s+[^،.!؟؛]*(?=[،.!؟؛]|$)/g, ' ');
-}function classifyIntent(value) {
+}
+
+function classifyIntent(value) {
   const normalized = normalize(value);
   const deniesPersonalExperience = /خودم چنین تجربه(?:‌ای| ای) ندارم|برای خودم نیست|صرفاً برای ترجمه|فقط برای ترجمه/.test(normalized);
   const translationRequest = /(?:برای ترجمه|ترجمه (?:این|یک) متن|متن را ترجمه)/.test(normalized);
