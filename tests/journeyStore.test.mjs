@@ -366,6 +366,15 @@ test('legacy profile cleanup requires verified journey privacy migration before 
     data.set(JOURNEY_KEY, JSON.stringify({
       privacyMigrationVersion: 1,
       profileData: { problem: 'anxiety' },
+      archive: { old: { profileData: { medical: 'other' } } },
+    }));
+    const malformedArchive = removeLegacyUserProfileAfterVerifiedMigration();
+    assert.deepEqual(malformedArchive, { removed: false, reason: 'journey_privacy_migration_not_verified' });
+    assert.equal(data.has(PROFILE_KEY), true);
+
+    data.set(JOURNEY_KEY, JSON.stringify({
+      privacyMigrationVersion: 1,
+      profileData: { problem: 'anxiety' },
       archive: [{ profileData: { problem: 'stress' } }],
     }));
     const result = removeLegacyUserProfileAfterVerifiedMigration();
@@ -450,6 +459,19 @@ test('legacy journey privacy migration preflight blocks when canonical profile w
   assert.equal(result.reason, 'canonical_profile_incomplete');
   assert.deepEqual(result.missingCanonicalFields, ['medical']);
   assert.equal(raw.profileData.medical, 'none');
+});
+
+test('legacy journey privacy migration rejects a malformed archive container without changing input', async () => {
+  const { prepareJourneyPrivacyMigration } = await import('../src/features/journey/journeyStore.js');
+  const raw = {
+    profileData: { problem: 'anxiety' },
+    archive: { old: { profileData: { name: 'نام قدیمی', medical: 'none' } } },
+  };
+  const result = prepareJourneyPrivacyMigration(raw, { name: 'نام رسمی' });
+  assert.equal(result.ready, false);
+  assert.equal(result.reason, 'invalid_archive_shape');
+  assert.equal(result.state, null);
+  assert.equal(raw.archive.old.profileData.name, 'نام قدیمی');
 });
 
 test('legacy journey privacy migration strips identity and health from current and archived snapshots without changing path data', async () => {
@@ -637,6 +659,21 @@ test('executed privacy migration refuses incomplete canonical profile without wr
   const result = executeJourneyPrivacyMigration({ storage, canonicalProfile: { name: 'نام کاربر' } });
   assert.equal(result.migrated, false);
   assert.equal(result.reason, 'canonical_profile_incomplete');
+  assert.equal(values.get(JOURNEY_KEY), original);
+});
+
+test('executed privacy migration refuses malformed archive data even with a stale verified marker', async () => {
+  const { executeJourneyPrivacyMigration, JOURNEY_KEY } = await import('../src/features/journey/journeyStore.js');
+  const raw = {
+    privacyMigrationVersion: 1,
+    profileData: { problem: 'anxiety' },
+    archive: { old: { profileData: { name: 'نام قدیمی', medical: 'none' } } },
+  };
+  const original = JSON.stringify(raw);
+  const values = new Map([[JOURNEY_KEY, original]]);
+  const storage = { getItem: (key) => values.get(key) ?? null, setItem: (key, value) => values.set(key, String(value)) };
+  const result = executeJourneyPrivacyMigration({ storage, canonicalProfile: { name: 'نام رسمی' } });
+  assert.deepEqual(result, { migrated: false, reason: 'invalid_archive_shape' });
   assert.equal(values.get(JOURNEY_KEY), original);
 });
 
