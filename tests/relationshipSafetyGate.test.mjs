@@ -15,6 +15,16 @@ test('relationship safety gate covers T01 pause and direct communication days on
   assert.equal(getRelationshipSafetyGate({ id: 'T02-D20', topic_id: 'T02', day: 20 }), null);
 });
 
+test('stable T01 identifiers preserve relationship gates when optional day metadata is absent', () => {
+  for (const day of [10, 11, 17, 20, 21, 22, 23]) {
+    assert.ok(getRelationshipSafetyGate({ id: `خشم-${day}` }), `anger ID day ${day} must remain gated`);
+    assert.ok(getRelationshipSafetyGate({ id: `T01-D${String(day).padStart(2, '0')}` }), `canonical ID day ${day} must remain gated`);
+  }
+  assert.equal(getRelationshipSafetyGate({ id: 'خشم-09' }), null);
+  assert.equal(getRelationshipSafetyGate({ id: 'غم-10' }), null);
+  assert.equal(getRelationshipSafetyGate({ id: 'T02-D10' }), null);
+});
+
 test('relationship safety confirmation fails closed unless the user explicitly chooses safe', () => {
   const day = { id: 'T01-D17', topic_id: 'T01', day: 17 };
   assert.equal(isRelationshipSafetyConfirmed(day, ''), false);
