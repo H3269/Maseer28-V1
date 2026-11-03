@@ -89,9 +89,9 @@ function extractStoredZipEntries(bytes) {
   assert.equal(cursor, centralOffset + centralSize);
   return entries;
 }
-function makeCanvasEnvironment() {
+function makeCanvasEnvironment(drawnText = []) {
   const context = {
-    fillRect() {}, fillText() {}, beginPath() {}, moveTo() {}, lineTo() {}, stroke() {},
+    fillRect() {}, fillText(value) { drawnText.push(String(value)); }, beginPath() {}, moveTo() {}, lineTo() {}, stroke() {},
     measureText: (value) => ({ width: String(value).length * 10 }),
   };
   return {
@@ -139,6 +139,31 @@ test('archive export produces a structurally valid local ZIP with readable PDF s
     assert.match(secondPdf, /%PDF-1\.4/);
     assert.match(secondPdf, /^%PDF-1\.4/);
     assert.match(secondPdf, /%%EOF$/);
+  } finally {
+    if (originalDocument === undefined) delete globalThis.document;
+    else globalThis.document = originalDocument;
+  }
+});
+
+test('archive PDFs preserve distinct non-scored skip reasons', async () => {
+  const originalDocument = globalThis.document;
+  const drawnText = [];
+  globalThis.document = makeCanvasEnvironment(drawnText);
+  try {
+    const blob = await exportArchivesZip([{
+      profileData: { problem: 'آزمون وضعیت عدم اجرا' },
+      completed: [17, 27],
+      answers: {},
+      daily: {
+        17: { status: 'skipped_safety_gate' },
+        27: { status: 'skipped_human_review' },
+      },
+    }]);
+    assert.equal(blob.type, 'application/zip');
+    const rendered = drawnText.join(' ');
+    assert.match(rendered, /به دلیل ملاحظه ایمنی اجرا نشد؛ هیچ امتیازی ثبت نشده است/);
+    assert.match(rendered, /به دلیل نیاز به بازبینی انسانی اجرا نشد؛ هیچ امتیازی ثبت نشده است/);
+    assert.doesNotMatch(rendered, /پاسخ ثبت‌شده|شدت درگیری/);
   } finally {
     if (originalDocument === undefined) delete globalThis.document;
     else globalThis.document = originalDocument;
