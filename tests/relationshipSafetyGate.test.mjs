@@ -7,6 +7,7 @@ import {
   isRelationshipSafetyConfirmed,
   createRelationshipSafetySkipRecord,
 } from '../src/features/journey/relationshipSafetyGate.js';
+import { getDailySafetyMode, createHumanReviewSkipRecord } from '../src/features/content/dailySafety.js';
 
 test('relationship safety gate covers T01 and shared interpersonal days across T03-T34', async () => {
   const registry = JSON.parse(await readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'));
@@ -86,11 +87,12 @@ test('relationship safety skip records are explicit and never fabricate a score'
     ...day, review_status: 'pending_expert_review',
   }), /approved or legacy routine/);
   assert.throws(() => createRelationshipSafetySkipRecord(day, 'not-a-date'));
-  const boundaryRecord = createRelationshipSafetySkipRecord(
-    { id: 'مرزبندی و نه گفتن-11', day: 11 },
-    '2026-11-03T12:00:00.000Z'
-  );
-  assert.equal(boundaryRecord.status, 'skipped_safety_gate');
+  const boundaryDay = { id: 'مرزبندی و نه گفتن-11', day: 11 };
+  assert.ok(getRelationshipSafetyGate(boundaryDay), 'the approved T12 interaction remains subject to the relationship safety gate');
+  assert.equal(getDailySafetyMode(boundaryDay), 'blocked', 'legacy T12 content must remain withheld before the human-review gate');
+  assert.throws(() => createRelationshipSafetySkipRecord(boundaryDay), /Only an approved or legacy routine gated interpersonal exercise/);
+  const boundaryRecord = createHumanReviewSkipRecord(boundaryDay, '2026-11-03T12:00:00.000Z');
+  assert.equal(boundaryRecord.status, 'skipped_human_review');
   assert.equal('score' in boundaryRecord, false);
 
   const sharedPromptRecord = createRelationshipSafetySkipRecord(
