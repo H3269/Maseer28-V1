@@ -190,8 +190,11 @@ try {
     assert.equal(persisted.journey.answers[1], 'ACTIVE-ANSWER');
     assert.equal(persisted.profile.name, 'کاربر آرشیو');
     await page.reload({ waitUntil: 'domcontentloaded' });
-    await page.waitForFunction(() => Boolean(document.querySelector('#root')?.children.length));
+    await page.locator('#dashboard').waitFor({ state: 'visible' });
+    const afterReload = await page.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state') || '{}').archive?.map((entry) => entry.pathId) || []);
+    assert.deepEqual(afterReload, ['archive-keep-me'], 'only the retained archive should remain after reload');
     await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
+    await page.locator('#archiveList').waitFor({ state: 'visible' });
     assert.equal(await page.locator('#archiveList .answerItem').count(), 1);
     await page.locator('#archiveList .answerItem').first().getByRole('button', { name: /مشاهده جزئیات مسیر/ }).click();
     assert.match(await page.locator('#archiveDetail').innerText(), /ARCHIVE-KEEP-ME/);
