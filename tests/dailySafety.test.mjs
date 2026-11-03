@@ -63,6 +63,41 @@ test('T01 draft days remain blocked at runtime until their review is approved', 
   }
 });
 
+test('legacy T11 repetitive behavior content stays blocked until specialist subtype review', async () => {
+  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
+  const days = content.categories['عادت‌های تکراری'].days;
+  assert.equal(days.length, 28);
+  for (const day of days) {
+    assert.equal(getDailySafetyMode(day), 'blocked', `${day.id} must remain withheld until its behavior class is reviewed`);
+  }
+  const skipped = createHumanReviewSkipRecord(days[0], new Date('2026-11-04T12:00:00.000Z'));
+  assert.equal(skipped.status, 'skipped_human_review');
+  assert.equal('score' in skipped, false);
+  assert.equal(getDailySafetyMode({
+    id: 'T11-D06',
+    topic_id: 'T11',
+    risk_level: 'routine',
+    review_status: 'approved',
+    review_record_id: 'review-t11-day-06',
+  }), 'blocked', 'expert approval without exactly one reviewed subtype must not release content');
+  assert.equal(getDailySafetyMode({
+    id: 'T11-D06',
+    topic_id: 'T11',
+    risk_level: 'routine',
+    review_status: 'approved',
+    review_record_id: 'review-t11-day-06',
+    subtopic_ids: ['T11-S01', 'T11-S02'],
+  }), 'blocked', 'ambiguous multi-subtopic assignment must remain blocked');
+  assert.equal(getDailySafetyMode({
+    id: 'T11-D06',
+    topic_id: 'T11',
+    risk_level: 'routine',
+    review_status: 'approved',
+    review_record_id: 'review-t11-day-06',
+    subtopic_ids: ['T11-S01'],
+  }), 'routine', 'a reviewed day with one explicit subtype and review record may be released');
+});
+
 test('ambiguous control topic stays blocked until its subtypes receive expert review', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const days = content.categories['کنترل‌گری'].days;
