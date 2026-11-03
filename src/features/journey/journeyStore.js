@@ -353,21 +353,27 @@ export function prepareJourneyPrivacyMigration(rawState, canonicalProfile) {
     return { ready: false, reason: 'canonical_profile_incomplete', missingCanonicalFields, state: null };
   }
 
-  const keepPathFields = (profile) => {
+  const keepPathFields = (profile, { preserveClientCode = false } = {}) => {
     if (!profile || typeof profile !== 'object' || Array.isArray(profile)) return null;
     const years = Number(normalizeDigits(profile.durationYears));
     const months = Number(normalizeDigits(profile.durationMonths));
-    return {
+    const pathProfile = {
       problem: typeof profile.problem === 'string' ? profile.problem.slice(0, 200) : '',
       durationYears: Number.isInteger(years) && years >= 0 && years <= 100 ? years : 0,
       durationMonths: Number.isInteger(months) && months >= 0 && months <= 11 ? months : 0,
       goal: typeof profile.goal === 'string' ? profile.goal.slice(0, 1000) : '',
     };
+    // The active client code is still rendered by the dashboard and is not
+    // a personal/health field. Historical archive codes are intentionally omitted.
+    if (preserveClientCode && typeof profile.code === 'string') {
+      pathProfile.code = profile.code.slice(0, 50);
+    }
+    return pathProfile;
   };
 
   const migrated = {
     ...rawState,
-    profileData: keepPathFields(rawState.profileData),
+    profileData: keepPathFields(rawState.profileData, { preserveClientCode: true }),
     archive: Array.isArray(rawState.archive) ? rawState.archive.map((entry) => {
       if (!entry || typeof entry !== 'object' || Array.isArray(entry)) return entry;
       return { ...entry, profileData: keepPathFields(entry.profileData) };
