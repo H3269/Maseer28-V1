@@ -85,6 +85,7 @@ try {
   await relationshipPage.getByText(/تمرین ارتباطی امروز نمایش داده نمی‌شود/).waitFor({ state: 'visible' });
   await relationshipPage.getByRole('button', { name: 'ثبت عدم اجرای تمرین و ادامه مسیر' }).click();
   await relationshipPage.locator('#dailyResult').waitFor({ state: 'visible' });
+  await relationshipPage.waitForFunction(() => JSON.parse(localStorage.getItem('maseer28_state')).daily?.[10]?.status === 'skipped_safety_gate');
   assert.equal(await relationshipPage.locator('#resultScore').innerText(), '—');
   assert.equal(await relationshipPage.locator('#resultFeedback').innerText(), 'تمرین اجرا نشد');
   const relationshipState = await relationshipPage.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state')));
@@ -105,6 +106,7 @@ try {
   assert.doesNotMatch(humanReviewText, /فقط اگر در حال حاضر خطر فوری وجود ندارد/);
   await humanReviewPage.getByRole('button', { name: 'ثبت عدم اجرای تمرین و ادامه مسیر' }).click();
   await humanReviewPage.locator('#dailyResult').waitFor({ state: 'visible' });
+  await humanReviewPage.waitForFunction(() => JSON.parse(localStorage.getItem('maseer28_state')).daily?.[27]?.status === 'skipped_human_review');
   assert.equal(await humanReviewPage.locator('#resultScore').innerText(), '—');
   const humanReviewState = await humanReviewPage.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state')));
   assert.equal(humanReviewState.daily[27].status, 'skipped_human_review');
