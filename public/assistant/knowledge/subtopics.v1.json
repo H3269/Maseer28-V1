@@ -110,11 +110,7 @@
         "برنامه‌ریزی عملی و متناسب را با نگرانی تکراری و کم‌فایده یکی ندان.",
         "محتوای نگرانی را بدون شواهد کافی به خطر واقعی یا پیش‌بینی قطعی تبدیل نکن."
       ],
-      "evidence_ids": [
-        "SRC-ANXIETY-NHS-001",
-        "SRC-ANXIETY-NICE-CG113-001",
-        "SRC-ANXIETY-APA-001"
-      ],
+      "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
       "safety_rule_ids": [],
@@ -134,6 +130,11 @@
         "اضطراب-25",
         "اضطراب-27",
         "اضطراب-28"
+      ],
+      "draft_evidence_ids": [
+        "SRC-ANXIETY-NHS-001",
+        "SRC-ANXIETY-NICE-CG113-001",
+        "SRC-ANXIETY-APA-001"
       ]
     },
     {
@@ -149,11 +150,7 @@
         "درد قفسه سینه، تنگی نفس شدید، غش یا نشانه جدید و نگران‌کننده را صرفاً به اضطراب نسبت نده.",
         "تمرین‌های تنفسی یا آرام‌سازی باید اختیاری، ملایم و قابل توقف باشند."
       ],
-      "evidence_ids": [
-        "SRC-ANXIETY-NHS-001",
-        "SRC-ANXIETY-APA-001",
-        "SRC-ANXIETY-CBT-GUIDELINE-001"
-      ],
+      "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
       "safety_rule_ids": [],
@@ -168,6 +165,11 @@
         "اضطراب-26",
         "اضطراب-27",
         "اضطراب-28"
+      ],
+      "draft_evidence_ids": [
+        "SRC-ANXIETY-NHS-001",
+        "SRC-ANXIETY-APA-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001"
       ]
     },
     {
@@ -183,11 +185,7 @@
         "کاهش رفتارهای اطمینان‌بخش یا مواجهه باید تدریجی، انتخابی و متناسب با خطر واقعی باشد.",
         "مواجهه اجباری، ناگهانی یا در موقعیت ناامن ممنوع است."
       ],
-      "evidence_ids": [
-        "SRC-ANXIETY-APA-UNCERTAINTY-001",
-        "SRC-ANXIETY-CBT-GUIDELINE-001",
-        "SRC-ANXIETY-APA-001"
-      ],
+      "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
       "safety_rule_ids": [],
@@ -210,6 +208,11 @@
         "اضطراب-26",
         "اضطراب-27",
         "اضطراب-28"
+      ],
+      "draft_evidence_ids": [
+        "SRC-ANXIETY-APA-UNCERTAINTY-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001",
+        "SRC-ANXIETY-APA-001"
       ]
     },
     {
