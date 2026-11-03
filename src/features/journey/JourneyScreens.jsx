@@ -290,7 +290,7 @@ export function splitDayContent(d, problem, previousRecord, history = {}) {
   } else if (previousRecord?.feedback === 'same') {
     adaptation = 'تغییر محسوسی ثبت نشده است؛ امروز فشار را افزایش نده. به‌جای تکرار، یک مانع مشخص را بررسی کن.';
   }
-  const pausePlan = getT01PausePlan(d);
+  const pausePlan = getT01PausePlan(d, categoryName);
   if (pausePlan) exercise = [exercise, pausePlan].filter(Boolean).join('\n\n');
   const title = cleanDailyCopy(String(d?.title || 'موضوع امروز').replace(/\s*[·•-]?\s*روز\s*\d+\s*$/i, '').trim(), categoryName);
   return { exercise, action, title, adaptation };
