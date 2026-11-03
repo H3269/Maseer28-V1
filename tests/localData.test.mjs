@@ -660,6 +660,59 @@ test('controlled restore reports recovery_required when localStorage compensatio
 });
 
 
+test('controlled restore verifies committed IndexedDB in a fresh read and compensates on verification failure', async () => {
+  const baseApi = new IDBFactory();
+  const sourceApi = new IDBFactory();
+  const sourceOpen = sourceApi.open(PRIVACY_TEST_DB, 1);
+  sourceOpen.onupgradeneeded = () => {
+    sourceOpen.result.createObjectStore('books', { keyPath: 'id' });
+    const versions = sourceOpen.result.createObjectStore('versions', { keyPath: 'id' });
+    versions.createIndex('bookId', 'bookId', { unique: false });
+    sourceOpen.result.createObjectStore('settings', { keyPath: 'key' });
+  };
+  const sourceDb = await requestResult(sourceOpen);
+  const sourceTx = sourceDb.transaction(['books', 'versions', 'settings'], 'readwrite');
+  sourceTx.objectStore('books').put({ id: 'post-commit-book', title: 'restore check' });
+  await transactionDone(sourceTx);
+  sourceDb.close();
+  const backup = await createPrivacyBackup({
+    storage: new MemoryStorage({ maseer28_state: JSON.stringify({ restored: true }) }),
+    indexedDBApi: sourceApi,
+  });
+  let opens = 0;
+  const failingReadbackApi = {
+    open(name) {
+      opens += 1;
+      if (opens !== 3) return baseApi.open(name);
+      const request = {};
+      queueMicrotask(() => {
+        request.error = new Error('simulated post-commit readback failure');
+        request.onerror?.();
+      });
+      return request;
+    },
+  };
+  const storage = new MemoryStorage({});
+  try {
+    const result = await restorePrivacyBackup(backup, { storage, indexedDBApi: failingReadbackApi });
+    assert.equal(result.restored, false);
+    assert.equal(result.phase, 'verification');
+    assert.equal(result.rolledBack, true);
+    assert.equal(storage.getItem('maseer28_state'), null);
+    const db = await requestResult(baseApi.open(PRIVACY_TEST_DB));
+    try {
+      const tx = db.transaction(['books', 'versions', 'settings'], 'readonly');
+      assert.deepEqual(await requestResult(tx.objectStore('books').getAll()), []);
+    } finally { db.close(); }
+  } finally {
+    await new Promise((resolve, reject) => {
+      const request = baseApi.deleteDatabase(PRIVACY_TEST_DB);
+      request.onsuccess = resolve;
+      request.onerror = () => reject(request.error);
+    });
+  }
+});
+
 async function createDeletionFixture(api) {
   const request = api.open('maseer28-library', 1);
   request.onupgradeneeded = () => {
