@@ -641,7 +641,7 @@ function navigate(next) {
     const currentPathAlreadyArchived = Boolean(journey.pathId) && archive.some((item) => item.pathId === journey.pathId);
     const shouldArchiveCurrentPath = hasCurrentPath && (APP_CONFIG.TEST_MODE || pathIsComplete);
     const archiveWithCurrent = shouldArchiveCurrentPath && !currentPathAlreadyArchived
-      ? [cloneForArchive(journey), ...archive].slice(0, 20)
+      ? [cloneForArchive(journey), ...archive]
       : archive;
     // Keep the configured archive capacity. Never silently discard the oldest
     // psychological record to make room for a new path.
