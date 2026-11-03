@@ -35,7 +35,7 @@ if (new Set(topics.map((item) => item.topic_id)).size !== topics.length) errors.
 if (JSON.stringify(topics.map((item) => item.topic_id)) !== JSON.stringify(expectedIds)) errors.push('شناسه‌ها باید به ترتیب T01 تا T34 باشند.');
 
 for (const id of expectedIds) if (!definitionIds.has(id)) errors.push(`تعریف کاری ${id} وجود ندارد.`);
-if (evidenceSourcesRegistry.registry_id !== 'maseer28-evidence-source-registry') errors.push('شناسه رجیستری منابع شواهد نامعتبر است.');
+if (evidenceSourcesRegistry.registry_id !== 'maseer28-evidence-sources') errors.push('شناسه رجیستری منابع شواهد نامعتبر است.');
 if (evidenceSourcesRegistry.status !== 'curated_draft_sources_pending_evidence_review') errors.push('منابع شواهد باید تا ارزیابی کیفیت و بازبینی در وضعیت draft باقی بمانند.');
 if (new Set(evidenceSources.map((item) => item.source_id)).size !== evidenceSources.length) errors.push('شناسه منبع شواهد تکراری است.');
 
