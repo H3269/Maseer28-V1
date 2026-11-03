@@ -48,6 +48,17 @@ test('relationship gate days in the actual T01 content have stable IDs and topic
   }
 });
 
+test('T01 safety-gated days reference the limited WHO safety source', async () => {
+  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
+  const sources = JSON.parse(await readFile(new URL('../public/assistant/evidence/sources.v1.json', import.meta.url), 'utf8'));
+  const sourceId = 'SRC-ANGER-WHO-IPV-2013-001';
+  assert.ok(sources.sources.some((source) => source.source_id === sourceId));
+  for (const dayNumber of [10, 11, 17, 20, 21, 22, 23, 27]) {
+    const day = content.categories['خشم'].days.find((item) => item.day === dayNumber);
+    assert.ok(day.source_ids.includes(sourceId), `day ${dayNumber} must reference the safety source`);
+  }
+});
+
 test('day screen and App wire relationship self-check, blocking, and safe skip', async () => {
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
   const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
