@@ -71,6 +71,31 @@ test('T01 days explicitly mapped to the limited WHO safety source retain that re
   }
 });
 
+test('current violence and relationship safety sources remain contextual, not day-level approval', async () => {
+  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
+  const registry = JSON.parse(await readFile(new URL('../public/assistant/evidence/sources.v1.json', import.meta.url), 'utf8'));
+  const expected = [
+    ['SRC-RELATIONSHIP-WHO-RESPECT-2025-001', '2025-11-19', /women and girls/i],
+    ['SRC-RELATIONSHIP-NHSE-SAFETY-2026-001', '2026-07-17', /does not establish/i],
+    ['SRC-VIOLENCE-PSYCHOSOCIAL-LANCET-2026-001', '2026-07', /does not validate/i],
+  ];
+  const ids = new Set(registry.sources.map((source) => source.source_id));
+  for (const [id, date, limitation] of expected) {
+    const source = registry.sources.find((item) => item.source_id === id);
+    assert.ok(source, `missing source ${id}`);
+    assert.equal(source.publication_date, date);
+    assert.match(source.limitations, limitation);
+    assert.ok(/^https:\\/\\//u.test(source.url));
+  }
+  for (const category of Object.values(content.categories || {})) {
+    for (const day of category.days || []) {
+      assert.equal((day.source_ids || []).some((id) => expected.some(([sourceId]) => sourceId === id)), false,
+        'contextual sources must not be attached to a specific daily exercise before claim-level review');
+    }
+  }
+  assert.equal(ids.size, registry.sources.length, 'evidence source identifiers must be unique');
+});
+
 test('day screen and App wire relationship self-check, blocking, and safe skip', async () => {
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
   const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
