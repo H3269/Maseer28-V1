@@ -44,6 +44,12 @@ test('negated first-person harmful language does not trigger an automatic handof
   assert.deepEqual(result.knowledge, []);
 });
 
+test('active ongoing harm is handed off before ordinary intake', () => {
+  const result = routeAssistantTurn({ text: 'الان دارم به خودم آسیب می‌زنم.' });
+  assert.equal(result.status, 'urgent_human_support_required');
+  assert.deepEqual(result.knowledge, []);
+});
+
 test('ambiguous personal experience asks for clarification instead of returning advice', () => {
   const result = routeAssistantTurn({ text: 'هم عصبانی‌ام و هم می‌ترسم.', knowledgeItems: knowledge });
   assert.equal(result.status, 'clarification_required');
