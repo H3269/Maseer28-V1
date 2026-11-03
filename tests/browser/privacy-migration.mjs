@@ -179,6 +179,7 @@ try {
     assert.equal(await page.locator('#archiveList .answerItem').count(), 2);
     await page.locator('#archiveList .answerItem').first().getByRole('button', { name: /حذف این آرشیو/ }).click();
     await page.locator('#archiveList .answerItem').first().getByRole('button', { name: 'بله، حذف شود' }).click();
+    await page.waitForFunction(() => document.querySelectorAll('#archiveList .answerItem').length === 1);
     await page.waitForFunction(() => {
       const saved = JSON.parse(localStorage.getItem('maseer28_state') || '{}');
       return saved.archive?.length === 1 && saved.archive[0]?.pathId === 'archive-keep-me' && saved.lastView === 'archive';
