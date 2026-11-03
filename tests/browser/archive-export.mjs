@@ -10,29 +10,39 @@ try {
   const page = await browser.newPage({ acceptDownloads: true });
   const errors = [];
   page.on('pageerror', (error) => errors.push(String(error)));
-  await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
-
-  const downloadPromise = page.waitForEvent('download');
-  const generated = await page.evaluate(async () => {
-    const { exportArchivesZip, triggerBlobDownload } = await import('/src/features/journey/archiveExport.js');
+  await page.addInitScript(() => {
     const answer = 'متن آزمایشی برای بررسی خروجی PDF در مرورگر واقعی. '.repeat(90);
-    const blob = await exportArchivesZip([{
-      pathId: 'browser-export-check',
-      profileData: { problem: 'آزمون مرورگر' },
-      completed: [1, 2],
-      answers: { 1: answer, 2: 'پاسخ دوم' },
-      daily: { 1: { score: 4, feedbackText: 'بهتر شدم' } },
-      assessmentData: { score: 6 },
-      final: { score: 3 },
-      startedAt: '2026-01-01T00:00:00.000Z',
-      archivedAt: '2026-01-28T00:00:00.000Z',
-    }]);
-    triggerBlobDownload(blob, 'maseer28-archive-browser-test.zip');
-    return { size: blob.size, type: blob.type };
+    localStorage.setItem('maseer28_state', JSON.stringify({
+      schema: 7, started: true, profile: true, assessment: true,
+      completed: [1, 2], answers: { 1: answer, 2: 'پاسخ دوم' },
+      daily: { 1: { score: 4, feedback: 'better', feedbackText: 'بهتر شدم' } },
+      profileData: { problem: 'anxiety', durationYears: 1, durationMonths: 0, goal: 'هدف آزمایشی', code: 'M28-EXPORT' },
+      assessmentData: { score: 6 }, final: null,
+      archive: [{
+        pathId: 'browser-export-check',
+        profileData: { problem: 'آزمون مرورگر', durationYears: 1, durationMonths: 0, goal: 'هدف آزمایشی' },
+        completed: [1, 2], answers: { 1: answer, 2: 'پاسخ دوم' },
+        daily: { 1: { score: 4, feedbackText: 'بهتر شدم' } },
+        assessmentData: { score: 6 }, final: { score: 3 },
+        startedAt: '2026-01-01T00:00:00.000Z', archivedAt: '2026-01-28T00:00:00.000Z',
+      }],
+      pathId: 'active-browser-export-check', startedAt: '2026-01-01T00:00:00.000Z', lastView: 'dashboard',
+    }));
+    localStorage.setItem('maseer28_user_profile_v2', JSON.stringify({
+      version: 2, name: 'کاربر آزمایشی', age: 35, gender: 'زن', phone: '09123456789',
+      medical: 'none', medicalNote: '', medication: 'no', medicationRisk: 'no',
+    }));
   });
+  await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => document.querySelector('#root')?.children.length > 0);
+  await page.locator('#copyrightModal').waitFor({ state: 'visible' });
+  await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
+  await page.locator('#dashboard').waitFor({ state: 'visible' });
+  await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
+  await page.locator('#archiveList').waitFor({ state: 'visible' });
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'دریافت خروجی ZIP و PDF آرشیوها' }).click();
   const download = await downloadPromise;
-  assert.equal(generated.type, 'application/zip');
-  assert.ok(generated.size > 1000, 'real Canvas output should produce a non-empty ZIP');
   assert.equal(download.suggestedFilename(), 'maseer28-archive-browser-test.zip');
   const filePath = await download.path();
   assert.ok(filePath, 'Chromium should expose the downloaded file');
