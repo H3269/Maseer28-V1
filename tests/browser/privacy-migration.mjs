@@ -35,8 +35,13 @@ async function openScenario(mode = 'normal', state = legacyJourney(), independen
   const page = await browser.newPage();
   page.on('pageerror', (error) => browserErrors.push(String(error)));
   await page.addInitScript(({ state, failureMode, independentProfile }) => {
-    localStorage.setItem('maseer28_state', JSON.stringify(state));
-    if (independentProfile) localStorage.setItem('maseer28_user_profile_v2', JSON.stringify(independentProfile));
+    // Seed each scenario once. addInitScript runs again on reload, so reseeding
+    // here would silently restore deleted test data and invalidate persistence checks.
+    if (!sessionStorage.getItem('__path28_scenario_seeded')) {
+      localStorage.setItem('maseer28_state', JSON.stringify(state));
+      if (independentProfile) localStorage.setItem('maseer28_user_profile_v2', JSON.stringify(independentProfile));
+      sessionStorage.setItem('__path28_scenario_seeded', '1');
+    }
     const nativeSetItem = Storage.prototype.setItem;
     if (failureMode === 'profile-write-fails') {
       Storage.prototype.setItem = function (key, value) {
