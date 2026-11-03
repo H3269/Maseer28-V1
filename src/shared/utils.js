@@ -35,3 +35,39 @@ export function uid(prefix = 'id') {
 export function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
+
+
+/**
+ * Copies text with a verified Clipboard API result and a legacy fallback.
+ * Host-WebView paste must still be verified manually.
+ */
+export async function copyTextToClipboard(text, environment = globalThis) {
+  const value = String(text ?? '');
+  if (!value) return false;
+  const clipboard = environment.navigator?.clipboard;
+  if (environment.isSecureContext && typeof clipboard?.writeText === 'function') {
+    try {
+      await clipboard.writeText(value);
+      return true;
+    } catch {
+      // Try the selection-based fallback.
+    }
+  }
+  const doc = environment.document;
+  if (!doc?.body || typeof doc.createElement !== 'function' || typeof doc.execCommand !== 'function') return false;
+  let textarea;
+  try {
+    textarea = doc.createElement('textarea');
+    textarea.value = value;
+    textarea.setAttribute?.('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    doc.body.appendChild(textarea);
+    textarea.select();
+    return doc.execCommand('copy') === true;
+  } catch {
+    return false;
+  } finally {
+    try { textarea?.remove(); } catch { /* best-effort cleanup */ }
+  }
+}
