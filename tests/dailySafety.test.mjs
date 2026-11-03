@@ -63,6 +63,26 @@ test('T01 draft days remain blocked at runtime until their review is approved', 
   }
 });
 
+test('ambiguous control topic stays blocked until its subtypes receive expert review', async () => {
+  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
+  const days = content.categories['کنترل‌گری'].days;
+  assert.equal(days.length, 28);
+  for (const day of days) {
+    assert.equal(getDailySafetyMode(day), 'blocked', `${day.id} must remain withheld while personal over-control and coercive control are not separated`);
+  }
+  assert.equal(getDailySafetyMode({ id: 'کنترل‌گری-01' }), 'blocked');
+  assert.equal(getDailySafetyMode({ id: 'T31-D06', topic_id: 'T31' }), 'blocked');
+  assert.equal(getDailySafetyMode({
+    id: 'T31-D06',
+    topic_id: 'T31',
+    risk_level: 'routine',
+    review_status: 'approved',
+  }), 'routine', 'an explicitly approved and risk-classified day may be released');
+  const skipped = createHumanReviewSkipRecord(days[0], new Date('2026-11-03T12:00:00.000Z'));
+  assert.equal(skipped.status, 'skipped_human_review');
+  assert.equal('score' in skipped, false);
+});
+
 test('T01 day 27 is explicitly withheld for human review', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const day = content.categories['خشم'].days.find((item) => item.day === 27);
