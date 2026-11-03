@@ -108,6 +108,13 @@ export function validateProductionContent({
       if (!expectedTopic || day?.topic_id !== expectedTopic.topic_id) {
         errors.push(`${label}: topic_id does not match the topic registry.`);
       }
+      if (day?.review_status === 'approved' && topicRecord
+        && (topicRecord.review_status !== 'approved'
+          || topicRecord.definition_status !== 'approved'
+          || typeof topicRecord.definition !== 'string'
+          || !topicRecord.definition.trim())) {
+        errors.push(`${label}: topic definition is not expert-approved.`);
+      }
       if (topicRecord && (!Array.isArray(topicRecord.content_ids) || !topicRecord.content_ids.includes(day.id))) {
         errors.push(`${label}: approved topic content link is missing.`);
       }
@@ -120,6 +127,13 @@ export function validateProductionContent({
         if (!subtopic || subtopic.topic_id !== day.topic_id) {
           errors.push(`${label}: subtopic ${subtopicId} is invalid or belongs to another topic.`);
           continue;
+        }
+        if (day?.review_status === 'approved'
+          && (subtopic.review_status !== 'approved'
+            || subtopic.definition_status !== 'approved'
+            || typeof subtopic.definition !== 'string'
+            || !subtopic.definition.trim())) {
+          errors.push(`${label}: subtopic ${subtopicId} definition is not expert-approved.`);
         }
         if (!Array.isArray(subtopic.content_ids) || !subtopic.content_ids.includes(day.id)) {
           errors.push(`${label}: approved subtopic content link is missing for ${subtopicId}.`);
