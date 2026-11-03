@@ -237,7 +237,14 @@ export function submitAssessmentAnswer(session, answer) {
 
   if (!['open_problem', 'safety_now', 'safety_clarification'].includes(questionId)) {
     const safetyProbe = routeSemanticIntake({ text: value, requestId: `assessment-safety-interrupt-${questionId}` });
-    if (safetyProbe.next_question?.purpose === 'safety_clarification') {
+    // In an already-personal assessment, any safety evidence must interrupt
+    // the intake even when the answer is phrased as a general-information
+    // question. The semantic router intentionally suppresses follow-up prompts
+    // for general-information requests, so relying only on next_question here
+    // would let that wording bypass the safety gate.
+    const hasSafetyEvidence = (safetyProbe.safety_handoff?.trigger_evidence?.length ?? 0) > 0;
+    const requiresSafetyHandoff = safetyProbe.safety_handoff?.handoff_required === true;
+    if (hasSafetyEvidence || requiresSafetyHandoff) {
       next.semantic_intake = safetyProbe;
       next.safety_context_flag = true;
       if (safetyProbe.safety_handoff.handoff_required) {
