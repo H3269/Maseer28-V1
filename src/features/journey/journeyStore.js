@@ -134,15 +134,19 @@ export function sanitizeJourneyState(raw) {
     const age = Number(normalizeDigits(p.age));
     const years = Number(normalizeDigits(p.durationYears));
     const months = Number(normalizeDigits(p.durationMonths));
+    const privacyMigrationVerified = raw.privacyMigrationVersion === JOURNEY_PRIVACY_MIGRATION_VERSION
+      && !LEGACY_SENSITIVE_PROFILE_FIELDS.some((field) => hasProfileValue(p[field]));
     out.profileData = {
-      name: validName(p.name) ? String(p.name).trim().replace(/\s+/g, ' ') : String(p.name || '').slice(0, 80),
-      age: Number.isInteger(age) && age >= 12 && age <= 100 ? age : '',
-      gender: ['زن', 'مرد', 'ترجیح می‌دهم نگویم'].includes(p.gender) ? p.gender : '',
-      phone: validPhone(p.phone) ? normalizeDigits(p.phone) : String(p.phone || '').slice(0, 11),
-      medical: ['none', 'epilepsy', 'seizure', 'panic', 'bipolar', 'speech_hearing', 'other'].includes(p.medical) ? p.medical : '',
-      medicalNote: String(p.medicalNote || '').slice(0, 1000),
-      medication: ['no', 'yes_fixed', 'yes_flexible'].includes(p.medication) ? p.medication : '',
-      medicationRisk: ['no', 'yes', 'unknown'].includes(p.medicationRisk) ? p.medicationRisk : '',
+      ...(privacyMigrationVerified ? {} : {
+        name: validName(p.name) ? String(p.name).trim().replace(/\\s+/g, ' ') : String(p.name || '').slice(0, 80),
+        age: Number.isInteger(age) && age >= 12 && age <= 100 ? age : '',
+        gender: ['زن', 'مرد', 'ترجیح می‌دهم نگویم'].includes(p.gender) ? p.gender : '',
+        phone: validPhone(p.phone) ? normalizeDigits(p.phone) : String(p.phone || '').slice(0, 11),
+        medical: ['none', 'epilepsy', 'seizure', 'panic', 'bipolar', 'speech_hearing', 'other'].includes(p.medical) ? p.medical : '',
+        medicalNote: String(p.medicalNote || '').slice(0, 1000),
+        medication: ['no', 'yes_fixed', 'yes_flexible'].includes(p.medication) ? p.medication : '',
+        medicationRisk: ['no', 'yes', 'unknown'].includes(p.medicationRisk) ? p.medicationRisk : '',
+      }),
       problem: String(p.problem || '').slice(0, 200),
       durationYears: Number.isInteger(years) && years >= 0 && years <= 100 ? years : 0,
       durationMonths: Number.isInteger(months) && months >= 0 && months <= 11 ? months : 0,
