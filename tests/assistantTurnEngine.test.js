@@ -161,3 +161,15 @@ test('explicit first-person impact still qualifies as personal context for a str
   assert.equal(result.status, 'personal_intake_required');
   assert.deepEqual(result.knowledge, []);
 });
+
+test('plain first-person distress with a strategy request is recognized as personal context', () => {
+  const result = routeAssistantTurn({ text: 'من اضطراب دارم و چه راهکاری برای بهتر شدنش پیشنهاد می‌کنی؟' });
+  assert.equal(result.status, 'personal_intake_required');
+  assert.deepEqual(result.knowledge, []);
+});
+
+test('first-person fear with a strategy request is recognized without a scope detour', () => {
+  const result = routeAssistantTurn({ text: 'من می‌ترسم و نمی‌دانم چه کار کنم.' });
+  assert.equal(result.status, 'personal_intake_required');
+  assert.deepEqual(result.knowledge, []);
+});
