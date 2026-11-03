@@ -176,3 +176,15 @@ test('educational questions containing safety terms do not trigger a personal sa
   assert.equal(result.next_question, null);
   assert.equal(result.safety_handoff.handoff_required, false);
 });
+
+test('unquoted third-party report of suicidal intent asks for clarification without attributing intent to the user', () => {
+  const result = routeSemanticIntake({ text: 'دوستم گفت می‌خواهم خودکشی کنم.' });
+  assert.equal(result.safety_handoff.handoff_required, false);
+  assert.equal(result.next_question.purpose, 'safety_clarification');
+  assert.ok(result.uncertainties.some((item) => item.includes('باید مستقیماً روشن شود')));
+});
+
+test('a separate first-person harmful intent remains urgent after a third-party report', () => {
+  const result = routeSemanticIntake({ text: 'دوستم گفت می‌خواهم خودکشی کنم، اما من قصد دارم به خودم آسیب بزنم.' });
+  assert.equal(result.safety_handoff.handoff_required, true);
+});
