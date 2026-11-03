@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 
 import { createLocalUserDataDeletionPlan, deleteLocalUserData, readLocalUserData } from '../src/features/privacy/localData.js';
 import { deleteIndexedDbUserData, readIndexedDbUserData, readIndexedDbSnapshot, selectUserOwnedLibraryData } from '../src/features/privacy/indexedDbData.js';
-import { createPrivacyBackup, validatePrivacyBackup, createPrivacyRestorePreview, PRIVACY_BACKUP_POLICY } from '../src/features/privacy/privacyBackup.js';
+import { createPrivacyBackup, validatePrivacyBackup, createPrivacyRestorePreview, restorePrivacyBackup, PRIVACY_BACKUP_POLICY } from '../src/features/privacy/privacyBackup.js';
 
 class MemoryStorage {
   constructor(entries = {}) { this.values = new Map(Object.entries(entries)); }
@@ -492,4 +492,79 @@ test('restore preview rejects an index with the expected name but an incompatibl
     assert.equal(preview.valid, false);
     assert.match(preview.errors[0], /ساختار مخزن versions/);
   } finally { await removePrivacyTestDatabase(); }
+});
+
+
+test('controlled restore imports into an empty browser namespace and verifies both stores', async () => {
+  const api = new IDBFactory();
+  const storage = new MemoryStorage({});
+  const backup = await createPrivacyBackup({
+    storage: new MemoryStorage({ maseer28_state: JSON.stringify({ restored: true }) }),
+    indexedDBApi: new IDBFactory(),
+  });
+  const seedDb = await requestResult(api.open(PRIVACY_TEST_DB, 1));
+  seedDb.close();
+  try {
+    const result = await restorePrivacyBackup(backup, { storage, indexedDBApi: api });
+    assert.equal(result.restored, true);
+    assert.equal(result.verified, true);
+    assert.deepEqual(readLocalUserData(storage).entries.maseer28_state, { restored: true });
+    const verifyDb = await requestResult(api.open(PRIVACY_TEST_DB));
+    try {
+      const tx = verifyDb.transaction(['books', 'versions', 'settings'], 'readonly');
+      const books = await requestResult(tx.objectStore('books').getAll());
+      assert.deepEqual(books, []);
+    } finally { verifyDb.close(); }
+  } finally {
+    await new Promise((resolve, reject) => {
+      const request = api.deleteDatabase(PRIVACY_TEST_DB);
+      request.onsuccess = resolve;
+      request.onerror = () => reject(request.error);
+    });
+  }
+});
+
+test('controlled restore refuses existing localStorage conflicts without writing IndexedDB', async () => {
+  const api = new IDBFactory();
+  const storage = new MemoryStorage({ maseer28_state: 'existing' });
+  const backup = await createPrivacyBackup({ storage: new MemoryStorage({ maseer28_state: 'incoming' }), indexedDBApi: new IDBFactory() });
+  const result = await restorePrivacyBackup(backup, { storage, indexedDBApi: api });
+  assert.equal(result.restored, false);
+  assert.equal(result.phase, 'conflict');
+  assert.equal(storage.getItem('maseer28_state'), 'existing');
+  assert.equal((await api.databases()).some((entry) => entry.name === PRIVACY_TEST_DB), false);
+});
+
+test('controlled restore compensates IndexedDB when localStorage writing fails', async () => {
+  const api = new IDBFactory();
+  const storage = new MemoryStorage({});
+  storage.setItem = () => { throw new Error('quota exceeded'); };
+  const backup = await createPrivacyBackup({
+    storage: new MemoryStorage({ maseer28_state: JSON.stringify({ incoming: true }) }),
+    indexedDBApi: new IDBFactory(),
+  });
+  try {
+    const result = await restorePrivacyBackup(backup, { storage, indexedDBApi: api });
+    assert.equal(result.restored, false);
+    assert.equal(result.phase, 'localStorage');
+    assert.equal(result.rolledBack, true);
+    const db = await requestResult(api.open(PRIVACY_TEST_DB));
+    try {
+      const tx = db.transaction(['books', 'versions', 'settings'], 'readonly');
+      const [books, versions, settings] = await Promise.all([
+        requestResult(tx.objectStore('books').getAll()),
+        requestResult(tx.objectStore('versions').getAll()),
+        requestResult(tx.objectStore('settings').getAll()),
+      ]);
+      assert.deepEqual(books, []);
+      assert.deepEqual(versions, []);
+      assert.deepEqual(settings, []);
+    } finally { db.close(); }
+  } finally {
+    await new Promise((resolve, reject) => {
+      const request = api.deleteDatabase(PRIVACY_TEST_DB);
+      request.onsuccess = resolve;
+      request.onerror = () => reject(request.error);
+    });
+  }
 });
