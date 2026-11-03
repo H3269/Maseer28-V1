@@ -55,7 +55,10 @@ async function seedPage(page, state, approvedContentIds = []) {
       // It does not alter repository content or represent clinical sign-off.
       for (const category of Object.values(content.categories || {})) {
         for (const day of category.days || []) {
-          if (approvedContentIds.includes(day.id)) day.review_status = 'approved';
+          if (approvedContentIds.includes(day.id)) {
+            day.review_status = 'approved';
+            if (!day.risk_level) day.risk_level = 'caution';
+          }
         }
       }
       await route.fulfill({ response, body: JSON.stringify(content) });
@@ -108,6 +111,27 @@ try {
   assert.ok(relationshipState.completed.includes(10));
   assert.deepEqual(relationshipErrors, []);
   await relationshipPage.close();
+
+  const sharedPromptPage = await browser.newPage();
+  const sharedPromptErrors = [];
+  sharedPromptPage.on('pageerror', (error) => sharedPromptErrors.push(String(error)));
+  await seedPage(sharedPromptPage, makeState([1, 2, 3, 4, 5], 'ترس'), ['ترس-06']);
+  const sharedPromptText = await sharedPromptPage.locator('#day').innerText();
+  assert.match(sharedPromptText, /نیاز پشت واکنش/);
+  assert.match(sharedPromptText, /آیا در این رابطه یا تعامل می‌توانی بدون ترس/);
+  await sharedPromptPage.getByLabel(/نه، مطمئن نیستم/).check();
+  await sharedPromptPage.getByText(/تمرین ارتباطی امروز نمایش داده نمی‌شود/).waitFor({ state: 'visible' });
+  await sharedPromptPage.getByRole('button', { name: 'ثبت عدم اجرای تمرین و ادامه مسیر' }).click();
+  await sharedPromptPage.locator('#dailyResult').waitFor({ state: 'visible' });
+  await sharedPromptPage.waitForFunction(() => JSON.parse(localStorage.getItem('maseer28_state')).daily?.[6]?.status === 'skipped_safety_gate');
+  assert.equal(await sharedPromptPage.locator('#resultScore').innerText(), '—');
+  const sharedPromptState = await sharedPromptPage.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state')));
+  assert.equal(sharedPromptState.daily[6].status, 'skipped_safety_gate');
+  assert.equal('score' in sharedPromptState.daily[6], false);
+  assert.equal('feedback' in sharedPromptState.daily[6], false);
+  assert.ok(sharedPromptState.completed.includes(6));
+  assert.deepEqual(sharedPromptErrors, []);
+  await sharedPromptPage.close();
 
   const solutionPage = await browser.newPage();
   const solutionErrors = [];
