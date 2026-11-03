@@ -111,7 +111,11 @@ export function retrieveApprovedKnowledge({ query, topicIds = [], items = [], ap
     manifestMap.set(entry.item_id, entry);
   }
   if (!manifestValid) manifestMap.clear();
-  const approvedCandidates = Array.isArray(items)
+  const catalogIds = Array.isArray(items)
+    ? items.map((item) => item?.item_id).filter((id) => typeof id === 'string' && id.trim().length > 0)
+    : [];
+  const duplicateCatalogIds = new Set(catalogIds).size !== catalogIds.length;
+  const approvedCandidates = !duplicateCatalogIds && Array.isArray(items)
     ? items.filter((item) => {
       if (!isApprovedItem(item)) return false;
       const entry = manifestMap.get(item.item_id);
@@ -124,8 +128,6 @@ export function retrieveApprovedKnowledge({ query, topicIds = [], items = [], ap
       );
     })
     : [];
-  const candidateIds = approvedCandidates.map((item) => item.item_id);
-  const duplicateCatalogIds = new Set(candidateIds).size !== candidateIds.length;
   const safeItems = duplicateCatalogIds
     ? []
     : approvedCandidates;
