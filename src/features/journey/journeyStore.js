@@ -423,7 +423,11 @@ export function executeJourneyPrivacyMigration({
     // Compensate only if our own candidate is still present; never overwrite
     // a concurrent update from another tab or process.
     try {
-      if (storage.getItem(JOURNEY_KEY) === migratedRaw) {
+      const currentRaw = storage.getItem(JOURNEY_KEY);
+      if (currentRaw === originalRaw) {
+        return { migrated: false, reason: 'write_failed_unchanged' };
+      }
+      if (currentRaw === migratedRaw) {
         storage.setItem(JOURNEY_KEY, originalRaw);
         if (storage.getItem(JOURNEY_KEY) === originalRaw) {
           return { migrated: false, reason: 'write_failed_rolled_back' };
