@@ -52,6 +52,7 @@ import {
   Support,
   ValidationModal,
 } from './features/journey/JourneyScreens.jsx';
+import { createHumanReviewSkipRecord, getDailySafetyMode } from './features/content/dailySafety.js';
 import { fa } from './shared/utils.js';
 
 function isPathSetupComplete(state) {
@@ -546,7 +547,7 @@ function navigate(next) {
   }
 
   async function skipDayForHumanReview() {
-    if (activeDay?.risk_level !== 'human_review_required') {
+    if (getDailySafetyMode(activeDay) !== 'blocked') {
       return showValidation(['ثبت عدم اجرا فقط برای روزهایی مجاز است که صریحاً نیازمند بازبینی انسانی هستند.'], 'این روز قابل رد ایمنی نیست');
     }
     if ((journey.completed || []).includes(currentDay)) {
@@ -564,12 +565,7 @@ function navigate(next) {
     }
 
     const completedDay = currentDay;
-    const record = {
-      status: 'skipped_human_review',
-      feedbackText: 'این تمرین به دلیل نیاز به بازبینی انسانی اجرا نشد. هیچ امتیازی ثبت نشده و این ثبت به معنی بهبود یا بدترشدن نیست.',
-      exerciseId: activeDay?.id || '',
-      updatedAt: new Date(trustedNow).toISOString(),
-    };
+    const record = createHumanReviewSkipRecord(activeDay, new Date(trustedNow));
     patchJourney((previous) => ({
       ...previous,
       completed: [...new Set([...(previous.completed || []), completedDay])].sort((a, b) => a - b),
