@@ -156,7 +156,8 @@ for (const field of futureMetadataFields) {
 }
 
 const candidateSupportSeekingReviewQueue = topicRows.flatMap((row) => [12, 18].map((dayNumber) => {
-  const day = row.category.days?.find((item) => Number(item.day) === dayNumber);
+  const category = content.categories?.[row.category_key];
+  const day = category?.days?.find((item) => Number(item.day) === dayNumber);
   if (!day) return null;
   return {
     topic_id: row.topic_id,
