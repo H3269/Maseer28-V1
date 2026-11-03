@@ -197,7 +197,20 @@ export async function restorePrivacyBackup(candidate, { storage, indexedDBApi = 
       const rollbackTx = db.transaction(['books', 'versions', 'settings'], 'readwrite');
       const rollbackDone = waitForTransaction(rollbackTx);
       for (const [name, field] of [['books', 'id'], ['versions', 'id'], ['settings', 'key']]) {
-        for (const key of importedKeys[name]) rollbackTx.objectStore(name).delete(key);
+        const incomingByKey = new Map(stores[name].map((row) => [row[field], row]));
+        const store = rollbackTx.objectStore(name);
+        for (const key of importedKeys[name]) {
+          const request = store.get(key);
+          request.onsuccess = () => {
+            const current = request.result;
+            if (current === undefined) return;
+            if (stableStringify(current) !== stableStringify(incomingByKey.get(key))) {
+              try { rollbackTx.abort(); } catch { /* transaction may already be inactive */ }
+              return;
+            }
+            store.delete(key);
+          };
+        }
       }
       try {
         await rollbackDone;
