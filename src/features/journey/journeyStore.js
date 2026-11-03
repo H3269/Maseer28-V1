@@ -200,7 +200,15 @@ export function sanitizeJourneyState(raw) {
   } else out.final = null;
 
   // Never silently truncate historical psychological records during hydration.
-  // Capacity is enforced before creating a new archive, not while reading old data.
+  // Keep malformed legacy archive payloads in a recovery-only field so the
+  // normal UI can remain safe without overwriting the original data on save.
+  if (raw.archive !== undefined && raw.archive !== null && !Array.isArray(raw.archive)) {
+    out.archiveRecoveryRequired = raw.archive;
+  } else if (raw.archiveRecoveryRequired !== undefined && raw.archiveRecoveryRequired !== null) {
+    out.archiveRecoveryRequired = raw.archiveRecoveryRequired;
+  } else {
+    delete out.archiveRecoveryRequired;
+  }
   out.archive = Array.isArray(raw.archive) ? raw.archive.filter((x) => x && typeof x === 'object') : [];
   out.pathId = typeof raw.pathId === 'string' ? raw.pathId.slice(0, 60) : null;
   out.startedAt = typeof raw.startedAt === 'string' ? raw.startedAt : null;
@@ -394,8 +402,9 @@ export function removeLegacyUserProfileAfterVerifiedMigration({
       const hasLegacyFields = (profile) => LEGACY_SENSITIVE_PROFILE_FIELDS.some((field) =>
         hasProfileValue(profile?.[field])
       );
-      const hasValidArchiveShape = journey?.archive === undefined
-        || journey?.archive === null || Array.isArray(journey.archive);
+      const hasValidArchiveShape = (journey?.archive === undefined
+        || journey?.archive === null || Array.isArray(journey.archive))
+        && (journey?.archiveRecoveryRequired === undefined || journey?.archiveRecoveryRequired === null);
       const hasSensitiveJourneyData = hasLegacyFields(journey?.profileData)
         || (Array.isArray(journey?.archive) && journey.archive.some((entry) =>
           hasLegacyFields(entry?.profileData)
@@ -444,7 +453,8 @@ export function prepareJourneyPrivacyMigration(rawState, canonicalProfile) {
   if (!rawState || typeof rawState !== 'object' || Array.isArray(rawState)) {
     return { ready: false, reason: 'invalid_journey_state', missingCanonicalFields: [], state: null };
   }
-  if (rawState.archive !== undefined && rawState.archive !== null && !Array.isArray(rawState.archive)) {
+  if ((rawState.archive !== undefined && rawState.archive !== null && !Array.isArray(rawState.archive))
+    || (rawState.archiveRecoveryRequired !== undefined && rawState.archiveRecoveryRequired !== null)) {
     return { ready: false, reason: 'invalid_archive_shape', missingCanonicalFields: [], state: null };
   }
   const legacyProfile = rawState.profileData && typeof rawState.profileData === 'object'
@@ -503,7 +513,8 @@ export function executeJourneyPrivacyMigration({
   } catch {
     return { migrated: false, reason: 'source_read_or_parse_failed' };
   }
-  if (rawState?.archive !== undefined && rawState?.archive !== null && !Array.isArray(rawState.archive)) {
+  if ((rawState?.archive !== undefined && rawState?.archive !== null && !Array.isArray(rawState.archive))
+    || (rawState?.archiveRecoveryRequired !== undefined && rawState?.archiveRecoveryRequired !== null)) {
     return { migrated: false, reason: 'invalid_archive_shape' };
   }
   const hasLegacySensitiveData = (profile) => LEGACY_SENSITIVE_PROFILE_FIELDS.some((field) =>
