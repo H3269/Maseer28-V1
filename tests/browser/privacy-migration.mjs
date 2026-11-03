@@ -147,8 +147,55 @@ try {
     await page.close();
   }
 
-  assert.deepEqual(browserErrors, [], 'migration scenarios should not produce uncaught browser errors');
-  process.stdout.write('PASS: Chromium privacy migration scenarios E1/E2/E3/E4 (4 scenarios)\\n');
+
+  // E5: archive deletion requires confirmation, removes only the selected archive,
+  // and survives reload without touching the active path or independent profile.
+  {
+    const state = {
+      schema: 7, started: true, profile: true, assessment: true,
+      privacyMigrationVersion: 1, completed: [1], answers: { 1: 'ACTIVE-ANSWER' },
+      daily: { 1: { score: 4 } }, assessmentData: { score: 5 }, final: null,
+      profileData: { problem: 'anxiety', durationYears: 1, durationMonths: 2, goal: 'هدف فعال' },
+      pathId: 'active-path-preserved', lastView: 'dashboard',
+      archive: [
+        { pathId: 'archive-delete-me', profileData: { problem: 'stress' }, answers: { 1: 'ARCHIVE-DELETE-ME' }, completed: [1], assessmentData: { score: 4 }, final: { score: 3 } },
+        { pathId: 'archive-keep-me', profileData: { problem: 'sleep' }, answers: { 1: 'ARCHIVE-KEEP-ME' }, completed: [1], assessmentData: { score: 6 }, final: { score: 5 } },
+      ],
+    };
+    const profile = {
+      name: 'کاربر آرشیو', age: 34, gender: 'زن', phone: '09123456789',
+      medical: 'none', medicalNote: '', medication: 'no', medicationRisk: 'no',
+    };
+    const page = await openScenario('normal', state, profile);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
+    const firstArchive = page.locator('#archiveList .answerItem').first();
+    await firstArchive.getByRole('button', { name: /حذف این آرشیو/ }).click();
+    await firstArchive.getByRole('button', { name: 'انصراف' }).click();
+    assert.equal(await page.locator('#archiveList .answerItem').count(), 2);
+    await page.locator('#archiveList .answerItem').first().getByRole('button', { name: /حذف این آرشیو/ }).click();
+    await page.locator('#archiveList .answerItem').first().getByRole('button', { name: 'بله، حذف شود' }).click();
+    await page.waitForFunction(() => {
+      const saved = JSON.parse(localStorage.getItem('maseer28_state') || '{}');
+      return saved.archive?.length === 1 && saved.archive[0]?.pathId === 'archive-keep-me';
+    });
+    const persisted = await page.evaluate(() => ({
+      journey: JSON.parse(localStorage.getItem('maseer28_state')),
+      profile: JSON.parse(localStorage.getItem('maseer28_user_profile_v2')),
+    }));
+    assert.equal(persisted.journey.pathId, 'active-path-preserved');
+    assert.equal(persisted.journey.answers[1], 'ACTIVE-ANSWER');
+    assert.equal(persisted.profile.name, 'کاربر آرشیو');
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => Boolean(document.querySelector('#root')?.children.length));
+    await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
+    assert.equal(await page.locator('#archiveList .answerItem').count(), 1);
+    assert.match(await page.locator('#archiveList').innerText(), /archive-keep-me|مسیر/);
+    await page.close();
+  }
+
+  assert.deepEqual(browserErrors, [], 'migration and archive deletion scenarios should not produce uncaught browser errors');
+  process.stdout.write('PASS: Chromium privacy migration and selective archive deletion scenarios E1-E5 (5 scenarios)\\n');
 } finally {
   await browser.close();
 }
