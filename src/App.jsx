@@ -577,7 +577,7 @@ function navigate(next) {
   }
 
   async function skipDayForRelationshipSafety(response) {
-    if (!getRelationshipSafetyGate(activeDay) || isRelationshipSafetyConfirmed(activeDay, response)) {
+    if (!getRelationshipSafetyGate(activeDay) || response !== 'unsafe' || isRelationshipSafetyConfirmed(activeDay, response)) {
       return showValidation(['این روز شرایط ثبت عدم اجرا بر اساس دروازه ایمنی رابطه را ندارد.'], 'این روز قابل رد ایمنی نیست');
     }
     if ((journey.completed || []).includes(currentDay)) {
