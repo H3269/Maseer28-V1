@@ -438,3 +438,19 @@ test('restore preview detects collisions with preserved seeded IndexedDB rows an
     await removePrivacyTestDatabase();
   }
 });
+
+test('IndexedDB snapshot exposes actual store key paths and indexes', async () => {
+  await removePrivacyTestDatabase();
+  const openRequest = indexedDB.open(PRIVACY_TEST_DB, 1);
+  openRequest.onupgradeneeded = () => {
+    openRequest.result.createObjectStore('books', { keyPath: 'wrongKey' });
+    openRequest.result.createObjectStore('versions', { keyPath: 'id' });
+    openRequest.result.createObjectStore('settings', { keyPath: 'key' });
+  };
+  const db = await requestResult(openRequest);
+  db.close();
+  try {
+    const snapshot = await readIndexedDbSnapshot();
+    assert.equal(snapshot.schema.books.keyPath, 'wrongKey');
+  } finally { await removePrivacyTestDatabase(); }
+});
