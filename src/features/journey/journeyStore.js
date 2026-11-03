@@ -114,7 +114,7 @@ export function sanitizeJourneyState(raw) {
       const n = Number(key);
       if (!Number.isInteger(n) || n < 1 || n > 28 || !value || typeof value !== 'object') continue;
       const rec = {};
-      if (value.status === 'skipped_human_review') rec.status = 'skipped_human_review';
+      if (['skipped_human_review', 'skipped_safety_gate'].includes(value.status)) rec.status = value.status;
       if (validScore(value.score)) rec.score = Number(normalizeDigits(value.score));
       if (['better', 'same', 'worse', 'hard'].includes(value.feedback)) rec.feedback = value.feedback;
       if (typeof value.feedbackText === 'string') rec.feedbackText = value.feedbackText.slice(0, 1000);
