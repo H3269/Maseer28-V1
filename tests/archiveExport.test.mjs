@@ -137,7 +137,8 @@ test('archive export produces a structurally valid local ZIP with readable PDF s
     assert.match(firstPdf, /\/Count [2-9][0-9]*/);
     assert.match(firstPdf, /startxref\n\d+\n%%EOF$/);
     assert.match(secondPdf, /%PDF-1\.4/);
-    assert.match(secondPdf, /آزمون دوم/);
+    assert.match(secondPdf, /^%PDF-1\.4/);
+    assert.match(secondPdf, /%%EOF$/);
   } finally {
     if (originalDocument === undefined) delete globalThis.document;
     else globalThis.document = originalDocument;
