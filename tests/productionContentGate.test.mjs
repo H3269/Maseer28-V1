@@ -113,6 +113,13 @@ test('production content gate requires T31 subtype and matching approved context
   subtopic.review_status = 'draft';
   const draftSubtypeErrors = validateProductionContent(data);
   assert.ok(draftSubtypeErrors.some((item) => item.includes('subtopic T31-S01 definition is not expert-approved')));
+
+  subtopic.review_status = 'approved';
+  day.id = 'کنترل‌گری-01';
+  topic.content_ids = ['کنترل‌گری-01'];
+  subtopic.content_ids = ['کنترل‌گری-01'];
+  assert.deepEqual(validateProductionContent(data), [],
+    'legacy T31 identifiers must use the same shared subtype policy');
 });
 
 test('production content gate rejects missing evidence and reviewer attribution', () => {
