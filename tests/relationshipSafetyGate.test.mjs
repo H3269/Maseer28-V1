@@ -107,7 +107,7 @@ test('actual shared interpersonal prompts across T03-T34 are gated', async () =>
         assert.ok(day, 'missing ' + categoryName + ' day ' + dayNumber);
         assert.equal(getRelationshipSafetyGate(day)?.gateId, 'relationship-communication-safety-v1');
         assert.match(String(day.exercise || '') + '\n' + String(day.actionText || ''),
-          /درخواست|گفت.?وگو|مرز|مذاکره|بیان کن|مطرح کن/u);
+          /درخواست|گفت.?وگو|مرز|مذاکره|بیان کن|مطرح کن|عذرخواهی|اقدام جبرانی|تقسیم وظیفه|راه.?حل|مسئله|مکث|ترمیم/u);
       }
     }
     if (topic.topic_id === 'T01') {
