@@ -90,10 +90,6 @@ function initialSnapshot() {
   return { state, user, screen, onboardingComplete };
 }
 
-function isCompleteArchivedPath(path) {
-  return Array.isArray(path?.completed) && path.completed.length === 28 && Boolean(path?.final);
-}
-
 export default function App() {
   return <MainApp />;
 }
