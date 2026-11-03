@@ -137,10 +137,12 @@ test('sanitizeJourneyState omits sensitive placeholders only after verified priv
   assert.equal(staleMarker.profileData.medical, 'none');
 });
 
-test('sanitizeJourneyState limits archive retention to twenty entries', () => {
+test('sanitizeJourneyState preserves every legacy archive instead of silently truncating at the retention limit', () => {
   const archive = Array.from({ length: 25 }, (_, index) => ({ pathId: String(index) }));
   const state = sanitizeJourneyState({ archive });
-  assert.equal(state.archive.length, 20);
+  assert.equal(state.archive.length, 25);
+  assert.equal(state.archive[0].pathId, '0');
+  assert.equal(state.archive[24].pathId, '24');
 });
 
 
