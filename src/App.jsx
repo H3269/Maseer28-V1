@@ -505,7 +505,7 @@ function navigate(next) {
   }
 
   async function completeDay({ answer, score, feedback, relationshipSafetyConfirmed = false }) {
-    if (getDailySafetyMode(activeDay) === 'blocked') {
+    if (!activeDay || getDailySafetyMode(activeDay) === 'blocked') {
       return showValidation(['این تمرین تا زمان بازبینی تخصصی و تأیید سطح ایمنی قابل ثبت نیست.'], 'بازبینی انسانی لازم است');
     }
     if (getRelationshipSafetyGate(activeDay) && relationshipSafetyConfirmed !== true) {
