@@ -442,7 +442,7 @@ export function Support({ content, onBack }) {
     if (!confirmed) return;
     setPrivacyBusy(true);
     try {
-      const result = await restorePrivacyBackup(backupToRestore);
+      const result = await restorePrivacyBackup(backupToRestore, { storage: window.localStorage, indexedDBApi: window.indexedDB });
       if (result.restored === true && result.verified === true) {
         setPrivacyMessage('بازیابی انجام شد و داده‌های هر دو مخزن راستی‌آزمایی شدند. برنامه در حال بارگذاری مجدد است.');
         window.setTimeout(() => window.location.reload(), 900);
