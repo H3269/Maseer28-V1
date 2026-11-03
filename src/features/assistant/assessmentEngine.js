@@ -51,7 +51,7 @@ export function classifySafetyAnswer(text) {
 
   // An intention is urgent only when the text explicitly connects it to harm.
   // Generic plans (travel, exercise, work, etc.) must never trigger a crisis handoff.
-  const explicitHarmIntent = /(?:قصد|برنامه|تصمیم)\\s+(?:قطعی\\s+)?دارم.{0,45}(?:خودکشی|خودم را بکشم|خودمو بکشم|به خودم آسیب|به کسی آسیب|به او آسیب|او را بکشم|کسی را بکشم)/.test(value)
+  const explicitHarmIntent = /(?:قصد|برنامه|تصمیم)\s+(?:قطعی\s+)?دارم.{0,45}(?:خودکشی|خودم را بکشم|خودمو بکشم|به خودم آسیب|به کسی آسیب|به او آسیب|او را بکشم|کسی را بکشم)/.test(value)
     || /(?:می خواهم|میخوام).{0,45}(?:خودکشی کنم|خودم را بکشم|خودمو بکشم|به خودم آسیب بزنم|به کسی آسیب بزنم|به او آسیب بزنم|او را بکشم|کسی را بکشم)/.test(value)
     || /(?:ممکن است|احتمال دارد).{0,35}(?:به خودم آسیب بزنم|به کسی آسیب بزنم|خودکشی کنم)/.test(value);
   if (explicitHarmIntent) return 'urgent_human_support_recommended';
@@ -65,16 +65,16 @@ export function classifySafetyAnswer(text) {
     return 'clarification_needed';
   }
 
-  if (/^(بله|آره|اره|yes)(?:[،,\\s]|$)/.test(value)) {
+  if (/^(بله|آره|اره|yes)(?:[،,\s]|$)/.test(value)) {
     return 'urgent_human_support_recommended';
   }
 
   if (/(?:اما|ولی|با این حال|از طرفی|در عین حال|ممکن است|احتمال دارد)/.test(value)) return 'clarification_needed';
 
-  const directNegative = /^(نه|خیر|no)(?:[،,\\s]|$)/.test(value);
+  const directNegative = /^(نه|خیر|no)(?:[،,\s]|$)/.test(value);
   if (directNegative) {
-    const residual = value.replace(/^(نه|خیر|no)[،,\\s]*/, '').trim();
-    if (!residual || /^(?:قصد(?:\\s+[^،,]+)?\\s+ندارم|برنامه(?:\\s+[^،,]+)?\\s+ندارم|نمی خواهم|نمیخوام|هیچ قصدی ندارم)(?:[.!؟،,\\s]|$)/.test(residual)) {
+    const residual = value.replace(/^(نه|خیر|no)[،,\s]*/, '').trim();
+    if (!residual || /^(?:قصد(?:\s+[^،,]+)?\s+ندارم|برنامه(?:\s+[^،,]+)?\s+ندارم|نمی خواهم|نمیخوام|هیچ قصدی ندارم)(?:[.!؟،,\s]|$)/.test(residual)) {
       return 'no_immediate_risk_disclosed';
     }
     return 'clarification_needed';
