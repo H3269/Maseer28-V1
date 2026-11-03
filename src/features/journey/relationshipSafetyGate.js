@@ -1,13 +1,12 @@
 import { getDailySafetyMode } from '../content/dailySafety.js';
 
+const COMMON_INTERPERSONAL_DAYS = [6, 11, 15, 24];
 const GATED_DAYS_BY_TOPIC = new Map([
   ['T01', new Set([10, 11, 17, 18, 19, 20, 21, 22, 23])],
-  ['T05', new Set([6, 11, 15, 24])],
-  ['T08', new Set([6, 11, 15, 24])],
-  ['T12', new Set([6, 11, 15, 24])],
-  ['T17', new Set([6, 11, 15, 24])],
-  ['T25', new Set([6, 11, 15, 24])],
-  ['T29', new Set([6, 11, 15, 24])],
+  ...Array.from({ length: 32 }, (_, index) => [
+    'T' + String(index + 3).padStart(2, '0'),
+    new Set(COMMON_INTERPERSONAL_DAYS),
+  ]),
 ]);
 
 const RELATIONSHIP_COMMUNICATION_GATE = Object.freeze({
@@ -24,29 +23,56 @@ const RELATIONSHIP_COMMUNICATION_GATE = Object.freeze({
 
 const LEGACY_TOPIC_IDS_BY_PREFIX = new Map([
   ['خشم', 'T01'],
+  ['اضطراب', 'T02'],
+  ['ترس', 'T03'],
+  ['نفرت', 'T04'],
   ['حسادت', 'T05'],
+  ['غم و سوگ', 'T06'],
+  ['احساس گناه', 'T07'],
   ['وابستگی عاطفی', 'T08'],
+  ['اهمال‌کاری', 'T09'],
+  ['بی‌خوابی و مشکلات خواب', 'T10'],
+  ['عادت‌های تکراری', 'T11'],
   ['مرزبندی و نه گفتن', 'T12'],
+  ['تنهایی', 'T13'],
+  ['کمبود انگیزه', 'T14'],
+  ['اعتمادبه‌نفس پایین', 'T15'],
+  ['افکار منفی و نشخوار فکری', 'T16'],
   ['مشکلات رابطه', 'T17'],
+  ['نفرت از خود', 'T18'],
+  ['خودسرزنشی', 'T19'],
+  ['کمال‌گرایی', 'T20'],
+  ['اجتناب', 'T21'],
+  ['استرس', 'T22'],
+  ['احساس بی‌ارزشی', 'T23'],
+  ['مشکل در کنترل هیجان', 'T24'],
   ['رنجش و کینه', 'T25'],
+  ['شرم', 'T26'],
+  ['ترس از قضاوت', 'T27'],
+  ['ترس از شکست', 'T28'],
   ['ترس از طرد شدن', 'T29'],
+  ['شک و تردید', 'T30'],
+  ['کنترل‌گری', 'T31'],
+  ['بی‌انگیزگی', 'T32'],
+  ['خودانتقادی', 'T33'],
+  ['مشکل دیگر', 'T34'],
 ]);
 
 function parseLegacyTopicDay(id) {
-  for (const [prefix, topicId] of LEGACY_TOPIC_IDS_BY_PREFIX) {
-    const marker = `${prefix}-`;
-    if (!id.startsWith(marker)) continue;
-    const dayNumber = id.slice(marker.length);
-    if (/^[0-9]{1,2}$/u.test(dayNumber)) return { topicId, dayNumber };
-  }
-  return null;
+  const separator = id.lastIndexOf('-');
+  if (separator <= 0) return null;
+  const prefix = id.slice(0, separator);
+  const dayNumber = id.slice(separator + 1);
+  const topicId = LEGACY_TOPIC_IDS_BY_PREFIX.get(prefix);
+  if (!topicId || !/^[0-9]{1,2}$/u.test(dayNumber)) return null;
+  return { topicId, dayNumber };
 }
 
 export function getRelationshipSafetyGate(day) {
   if (!day || typeof day !== 'object') return null;
   const id = String(day.id || '');
   const legacyId = parseLegacyTopicDay(id);
-  const canonicalIdMatch = /^(T01|T05|T08|T12|T17|T25|T29)-D([0-9]{1,2})$/i.exec(id);
+  const canonicalIdMatch = /^(T[0-9]{2})-D([0-9]{1,2})$/i.exec(id);
   const topicIds = [
     day.topic_id,
     legacyId?.topicId,
