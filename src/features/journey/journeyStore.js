@@ -376,6 +376,66 @@ export function prepareJourneyPrivacyMigration(rawState, canonicalProfile) {
   };
   return { ready: true, reason: 'preflight_passed', missingCanonicalFields: [], state: migrated };
 }
+/** Execute the versioned legacy privacy migration with read-back and guarded compensation. */
+export function executeJourneyPrivacyMigration({
+  storage = globalThis.localStorage,
+  canonicalProfile = loadUserProfile(),
+} = {}) {
+  if (!storage || typeof storage.getItem !== 'function' || typeof storage.setItem !== 'function') {
+    return { migrated: false, reason: 'storage_unavailable' };
+  }
+  let originalRaw;
+  let rawState;
+  try {
+    originalRaw = storage.getItem(JOURNEY_KEY);
+    if (originalRaw == null) return { migrated: false, reason: 'no_source_data' };
+    rawState = JSON.parse(originalRaw);
+  } catch {
+    return { migrated: false, reason: 'source_read_or_parse_failed' };
+  }
+  if (rawState?.privacyMigrationVersion >= JOURNEY_PRIVACY_MIGRATION_VERSION) {
+    return { migrated: true, reason: 'already_verified' };
+  }
+  const plan = prepareJourneyPrivacyMigration(rawState, canonicalProfile);
+  if (!plan.ready) return { migrated: false, reason: plan.reason, missingCanonicalFields: plan.missingCanonicalFields };
+
+  const hasArchivedSensitiveData = Array.isArray(rawState.archive) && rawState.archive.some((entry) =>
+    LEGACY_SENSITIVE_PROFILE_FIELDS.some((field) => hasProfileValue(entry?.profileData?.[field]))
+  );
+  if (hasArchivedSensitiveData && !normalizeProfileRecord(canonicalProfile)) {
+    return { migrated: false, reason: 'canonical_profile_required_for_archive_cleanup' };
+  }
+
+  const migratedRaw = JSON.stringify(plan.state);
+  try {
+    // Avoid overwriting a journey that changed between preflight and commit.
+    if (storage.getItem(JOURNEY_KEY) !== originalRaw) {
+      return { migrated: false, reason: 'source_changed_during_preflight' };
+    }
+    storage.setItem(JOURNEY_KEY, migratedRaw);
+    const verifiedRaw = storage.getItem(JOURNEY_KEY);
+    const verified = verifiedRaw == null ? null : JSON.parse(verifiedRaw);
+    if (verifiedRaw !== migratedRaw || JSON.stringify(verified) !== migratedRaw) {
+      throw new Error('privacy migration read-back mismatch');
+    }
+    return { migrated: true, reason: 'verified', version: JOURNEY_PRIVACY_MIGRATION_VERSION };
+  } catch {
+    // Compensate only if our own candidate is still present; never overwrite
+    // a concurrent update from another tab or process.
+    try {
+      if (storage.getItem(JOURNEY_KEY) === migratedRaw) {
+        storage.setItem(JOURNEY_KEY, originalRaw);
+        if (storage.getItem(JOURNEY_KEY) === originalRaw) {
+          return { migrated: false, reason: 'write_failed_rolled_back' };
+        }
+      }
+    } catch {
+      // The source may require manual recovery; report this explicitly below.
+    }
+    return { migrated: false, reason: 'recovery_required' };
+  }
+}
+
 export function saveOnboardingComplete() {
   try {
     localStorage.setItem(ONBOARDING_COMPLETE_KEY, '1');
