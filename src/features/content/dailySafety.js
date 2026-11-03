@@ -22,6 +22,17 @@ export function getControlContextForDay(day) {
   return expectedContext && day.control_context === expectedContext ? expectedContext : null;
 }
 
+function isFearTopicDayFourteen(day) {
+  if (!day || typeof day !== 'object') return false;
+  const id = String(day.id || '');
+  // T03-D14 contains an unqualified instruction to reduce a possibly
+  // protective behavior. Block legacy and canonical identities regardless
+  // of a conflicting day field or a later routine/approved risk label.
+  return day.topic_id === 'T03' && Number(day.day) === 14
+    || /^ترس-14$/u.test(id)
+    || /^T03-D14$/i.test(id);
+}
+
 function isRepetitiveBehaviorTopicDay(day) {
   return Boolean(day && typeof day === 'object' && (
     day.topic_id === 'T11'
@@ -70,6 +81,7 @@ function hasApprovedBoundaryReview(day) {
 
 export function getDailySafetyMode(day) {
   if (!day || typeof day !== 'object') return 'routine';
+  if (isFearTopicDayFourteen(day)) return 'blocked';
   if (isRepetitiveBehaviorTopicDay(day) && !hasApprovedRepetitiveBehaviorReview(day)) return 'blocked';
   if (isBoundaryTopicDay(day) && !hasApprovedBoundaryReview(day)) return 'blocked';
   if (isControlTopicDay(day)) {
