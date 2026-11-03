@@ -115,7 +115,7 @@ try {
   const sharedPromptPage = await browser.newPage();
   const sharedPromptErrors = [];
   sharedPromptPage.on('pageerror', (error) => sharedPromptErrors.push(String(error)));
-  await seedPage(sharedPromptPage, makeState([1, 2, 3, 4, 5], 'ترس'), ['ترس-06']);
+  await seedPage(sharedPromptPage, makeState([1, 2, 3, 4, 5], 'وابستگی عاطفی'), ['وابستگی عاطفی-06']);
   const sharedPromptText = await sharedPromptPage.locator('#day').innerText();
   assert.match(sharedPromptText, /نیاز پشت واکنش/);
   assert.match(sharedPromptText, /آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
