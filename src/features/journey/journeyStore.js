@@ -326,7 +326,7 @@ export function migrateUserProfileToV2(state = loadJourneyState()) {
 export const JOURNEY_PRIVACY_MIGRATION_VERSION = 1;
 const LEGACY_SENSITIVE_PROFILE_FIELDS = [
   'name', 'age', 'gender', 'phone',
-  'medical', 'medicalNote', 'medication', 'medicationRisk', 'code',
+  'medical', 'medicalNote', 'medication', 'medicationRisk',
 ];
 
 function hasProfileValue(value) {
