@@ -383,6 +383,26 @@ export function removeLegacyUserProfileAfterVerifiedMigration({
     if (storage.getItem(PROFILE_V2_MIGRATION_KEY) !== '1') {
       return { removed: false, reason: 'migration_not_verified' };
     }
+    // The v2 marker alone does not prove that sensitive values were removed
+    // from the journey snapshot. Refuse legacy-profile cleanup until the
+    // journey migration marker and its read-back-safe shape are both present.
+    const journeyRaw = storage.getItem(JOURNEY_KEY);
+    if (journeyRaw !== null) {
+      let journey;
+      try { journey = JSON.parse(journeyRaw); }
+      catch { return { removed: false, reason: 'journey_privacy_migration_not_verified' }; }
+      const hasLegacyFields = (profile) => LEGACY_SENSITIVE_PROFILE_FIELDS.some((field) =>
+        hasProfileValue(profile?.[field])
+      );
+      const hasSensitiveJourneyData = hasLegacyFields(journey?.profileData)
+        || (Array.isArray(journey?.archive) && journey.archive.some((entry) =>
+          hasLegacyFields(entry?.profileData)
+        ));
+      if (journey?.privacyMigrationVersion !== JOURNEY_PRIVACY_MIGRATION_VERSION
+        || hasSensitiveJourneyData) {
+        return { removed: false, reason: 'journey_privacy_migration_not_verified' };
+      }
+    }
     const canonicalRaw = storage.getItem(PROFILE_V2_KEY);
     let canonicalValue = null;
     try { canonicalValue = canonicalRaw == null ? null : JSON.parse(canonicalRaw); }
