@@ -113,3 +113,35 @@ export async function exportArchivesZip(archives) {
   const zip = zipStore(files);
   return new Blob([zip], { type: 'application/zip' });
 }
+
+
+/**
+ * Dispatches a browser download for a locally generated Blob.
+ * This confirms only that the click was dispatched, not that a WebView saved it.
+ */
+export function triggerBlobDownload(blob, filename, environment = globalThis) {
+  if (!blob || typeof blob.size !== 'number' || blob.size === 0) throw new Error('خروجی فایل خالی است.');
+  const doc = environment.document;
+  const urlApi = environment.URL;
+  if (!doc?.body || typeof doc.createElement !== 'function' || typeof urlApi?.createObjectURL !== 'function') {
+    throw new Error('امکان تحویل فایل در این محیط وجود ندارد.');
+  }
+  const url = urlApi.createObjectURL(blob);
+  let link;
+  try {
+    link = doc.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.style.display = 'none';
+    doc.body.appendChild(link);
+    link.click();
+  } catch (error) {
+    try { urlApi.revokeObjectURL(url); } catch { /* best effort */ }
+    throw error;
+  } finally {
+    try { link?.remove(); } catch { /* best effort */ }
+  }
+  const schedule = typeof environment.setTimeout === 'function' ? environment.setTimeout.bind(environment) : setTimeout;
+  schedule(() => { try { urlApi.revokeObjectURL(url); } catch { /* best effort */ } }, 30_000);
+  return true;
+}
