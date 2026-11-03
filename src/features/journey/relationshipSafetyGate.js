@@ -30,17 +30,27 @@ const LEGACY_TOPIC_IDS_BY_PREFIX = new Map([
   ['ترس از طرد شدن', 'T29'],
 ]);
 
+function parseLegacyTopicDay(id) {
+  for (const [prefix, topicId] of LEGACY_TOPIC_IDS_BY_PREFIX) {
+    const marker = `${prefix}-`;
+    if (!id.startsWith(marker)) continue;
+    const dayNumber = id.slice(marker.length);
+    if (/^[0-9]{1,2}$/u.test(dayNumber)) return { topicId, dayNumber };
+  }
+  return null;
+}
+
 export function getRelationshipSafetyGate(day) {
   if (!day || typeof day !== 'object') return null;
   const id = String(day.id || '');
-  const legacyIdMatch = /^(خشم|مرزبندی و نه گفتن|مشکلات رابطه)-([0-9]{1,2})$/u.exec(id);
+  const legacyId = parseLegacyTopicDay(id);
   const canonicalIdMatch = /^(T01|T05|T08|T12|T17|T25|T29)-D([0-9]{1,2})$/i.exec(id);
   const topicIds = [
     day.topic_id,
-    legacyIdMatch ? LEGACY_TOPIC_IDS_BY_PREFIX.get(legacyIdMatch[1]) : null,
+    legacyId?.topicId,
     canonicalIdMatch?.[1]?.toUpperCase(),
   ].filter(Boolean);
-  const dayNumbers = [day.day, legacyIdMatch?.[2], canonicalIdMatch?.[2]]
+  const dayNumbers = [day.day, legacyId?.dayNumber, canonicalIdMatch?.[2]]
     .filter((value) => value !== undefined && value !== null && value !== '')
     .map(Number);
   // Conflicting identifiers must not weaken a gate: if any trusted topic/day
