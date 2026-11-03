@@ -161,6 +161,100 @@
         "Safety and privacy should be prioritized when responding to intimate partner violence or sexual violence."
       ],
       "limitations": "The guideline addresses health-sector responses for women subjected to intimate partner violence or sexual violence. It does not validate this app's self-check, automated risk assessment, or a 28-day anger course, and must not be generalized as a clinical protocol for all users or genders. The app uses it only as a conservative safety and referral reference."
+    },
+    {
+      "source_id": "SRC-ANGER-POP-2025-001",
+      "title": "Anger and emotion regulation strategies: a meta-analysis",
+      "authors": [
+        "Gabriela Viorela Pop",
+        "Diana-Mirela Nechita",
+        "Andrei C. Miu",
+        "Aurora Szentágotai-Tătar"
+      ],
+      "publisher": "Scientific Reports",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2025-02-26",
+      "doi": "10.1038/s41598-025-91646-0",
+      "url": "https://www.nature.com/articles/s41598-025-91646-0",
+      "relevant_claims": [
+        "The meta-analysis included 81 studies and 115 effect sizes examining anger and emotion-regulation strategies.",
+        "Anger was positively associated with avoidance, rumination, and suppression, and negatively associated with acceptance and cognitive reappraisal.",
+        "The analyses reported substantial heterogeneity and moderators including anger type, clinical status, culture, study quality, and sample composition."
+      ],
+      "limitations": "The findings concern associations between anger and habitual regulation strategies, not the efficacy of a specific intervention or app exercise. Large heterogeneity limits simple generalization; associations must not be presented as causal."
+    },
+    {
+      "source_id": "SRC-ANGER-ODEAN-2025-001",
+      "title": "The associations and effects of mindfulness on anger and aggression: A meta-analytic review",
+      "authors": [
+        "Siobhan M. O'Dean",
+        "Elizabeth Summerell",
+        "Eddie Harmon-Jones",
+        "J. David Creswell",
+        "Thomas F. Denson"
+      ],
+      "publisher": "Clinical Psychology Review",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2025-06",
+      "epub_date": "2025-04-06",
+      "doi": "10.1016/j.cpr.2025.102584",
+      "pmid": "40222147",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40222147/",
+      "relevant_claims": [
+        "The review synthesized 118 correlational and experimental studies of mindfulness, anger, and aggression.",
+        "In experimental studies, mindfulness-based interventions were associated with lower anger and aggression relative to control groups (reported effects d = -0.48 and d = -0.61).",
+        "Effects were larger when studies used passive rather than active control groups; the authors call for more rigorous controls."
+      ],
+      "limitations": "The pooled findings do not establish that a brief standalone prompt in this app is equivalent to a structured mindfulness-based intervention. Differences in intervention dose, populations, and control conditions matter; the larger effects against passive controls require cautious interpretation."
+    },
+    {
+      "source_id": "SRC-ANGER-SMITH-2026-001",
+      "title": "Emotion Regulation and Aggression: A Systematic Review and Meta-Analysis",
+      "authors": [
+        "Kimberley Smith",
+        "Andrew Jones",
+        "Natasha Daly",
+        "Helena Widdrington",
+        "Carlo Garofalo",
+        "Steven M. Gillespie"
+      ],
+      "publisher": "Aggressive Behavior",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2026-01",
+      "epub_date": "2025-12-22",
+      "doi": "10.1002/ab.70055",
+      "pmid": "41424362",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41424362/",
+      "relevant_claims": [
+        "The review included 137 articles and 171 studies, with a combined sample of 252,605 participants.",
+        "Emotion-regulation difficulties and maladaptive regulation strategies showed small-to-moderate associations with aggression.",
+        "The association between adaptive strategies and lower aggression was small and became non-significant after a publication-bias correction; heterogeneity was high."
+      ],
+      "limitations": "These are primarily associations, not proof that changing a specific strategy will prevent aggression. High heterogeneity and smaller associations for intimate-partner targets require caution; the findings do not validate individual risk prediction or a 28-day self-help program."
+    },
+    {
+      "source_id": "SRC-IPV-RASMUSSEN-2026-001",
+      "title": "Intimate Partner Violence and Suicide Risk among Women Presenting to Emergency Departments: A Systematic Review, Meta-Analysis, and Narrative Synthesis",
+      "authors": [
+        "Victoria Rasmussen",
+        "Zachary Steel",
+        "Patricia Cullen",
+        "Lauren McGillivray",
+        "Nancy Briggs",
+        "Michelle Torok"
+      ],
+      "publisher": "Trauma, Violence, & Abuse",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2026-10-17",
+      "doi": "10.1177/15248380261480165",
+      "pmid": "42891520",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42891520/",
+      "relevant_claims": [
+        "The review included 20 emergency-department studies involving 7,498 women.",
+        "Intimate-partner violence was associated with increased suicide-attempt risk in this emergency-department population.",
+        "The authors reported high between-study heterogeneity and high risk of bias in half of the included studies."
+      ],
+      "limitations": "The sample is women presenting to emergency departments, not a general-population sample. The findings cannot predict an individual's risk, should not be generalized to all genders or settings, and support contextualized human assessment rather than automated risk scoring."
     }
   ]
 }
