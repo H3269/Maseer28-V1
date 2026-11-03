@@ -36,6 +36,7 @@ test('T01 day 27 is explicitly withheld for human review', async () => {
 test('day screen wires human-review blocking and caution metadata into the interface', async () => {
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
   const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
+  const archiveExport = await readFile(new URL('../src/features/journey/archiveExport.js', import.meta.url), 'utf8');
   assert.match(ui, /getDailySafetyMode\(data\) === 'blocked'/);
   assert.match(ui, /if \(requiresHumanReview\) return/);
   assert.match(ui, /onClick=\{onSkip\}/);
@@ -43,4 +44,6 @@ test('day screen wires human-review blocking and caution metadata into the inter
   assert.match(ui, /data\.contraindications/);
   assert.match(app, /onSkip=\{skipDayForHumanReview\}/);
   assert.match(app, /createHumanReviewSkipRecord\(activeDay/);
+  assert.match(archiveExport, /daily\?\.status === 'skipped_human_review'/);
+  assert.match(archiveExport, /هیچ امتیازی ثبت نشده است/);
 });
