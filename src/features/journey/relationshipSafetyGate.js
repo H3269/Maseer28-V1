@@ -14,9 +14,12 @@ const RELATIONSHIP_COMMUNICATION_GATE = Object.freeze({
 
 export function getRelationshipSafetyGate(day) {
   if (!day || typeof day !== 'object') return null;
-  const isAngerTopic = day.topic_id === 'T01' || /^خشم-\d{2}$/.test(String(day.id || ''));
-  const dayNumber = Number(day.day);
-  if (!isAngerTopic || !GATED_T01_DAYS.has(dayNumber)) return null;
+  const id = String(day.id || '');
+  const angerIdMatch = /^خشم-([0-9]{1,2})$/u.exec(id);
+  const canonicalIdMatch = /^T01-D([0-9]{1,2})$/i.exec(id);
+  const isAngerTopic = day.topic_id === 'T01' || Boolean(angerIdMatch || canonicalIdMatch);
+  const dayNumber = Number(day.day ?? angerIdMatch?.[1] ?? canonicalIdMatch?.[1]);
+  if (!isAngerTopic || !Number.isInteger(dayNumber) || !GATED_T01_DAYS.has(dayNumber)) return null;
   return RELATIONSHIP_COMMUNICATION_GATE;
 }
 
