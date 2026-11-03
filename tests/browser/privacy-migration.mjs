@@ -31,11 +31,12 @@ function legacyJourney() {
   };
 }
 
-async function openScenario(mode = 'normal') {
+async function openScenario(mode = 'normal', state = legacyJourney(), independentProfile = null) {
   const page = await browser.newPage();
   page.on('pageerror', (error) => browserErrors.push(String(error)));
-  await page.addInitScript(({ state, failureMode }) => {
+  await page.addInitScript(({ state, failureMode, independentProfile }) => {
     localStorage.setItem('maseer28_state', JSON.stringify(state));
+    if (independentProfile) localStorage.setItem('maseer28_user_profile_v2', JSON.stringify(independentProfile));
     const nativeSetItem = Storage.prototype.setItem;
     if (failureMode === 'profile-write-fails') {
       Storage.prototype.setItem = function (key, value) {
@@ -58,7 +59,7 @@ async function openScenario(mode = 'normal') {
         return nativeSetItem.call(this, key, value);
       };
     }
-  }, { state: legacyJourney(), failureMode: mode });
+  }, { state, independentProfile, failureMode: mode });
   await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => {
     const root = document.querySelector('#root');
@@ -68,6 +69,28 @@ async function openScenario(mode = 'normal') {
 }
 
 try {
+  // E1: a new user with an already independent profile must start cleanly.
+  {
+    const freshState = {
+      schema: 7, started: false, profile: false, assessment: false,
+      completed: [], answers: {}, daily: {}, final: null, profileData: null, archive: [],
+    };
+    const independentProfile = {
+      name: 'کاربر تازه', age: 30, gender: 'مرد', phone: '09123456789',
+      medical: 'none', medicalNote: '', medication: 'no', medicationRisk: 'no',
+    };
+    const page = await openScenario('normal', freshState, independentProfile);
+    const result = await page.evaluate(() => ({
+      journey: JSON.parse(localStorage.getItem('maseer28_state')),
+      profile: JSON.parse(localStorage.getItem('maseer28_user_profile_v2')),
+      marker: localStorage.getItem('maseer28_profile_v2_migration_v1'),
+    }));
+    assert.equal(result.profile.name, 'کاربر تازه');
+    assert.equal(result.journey.profileData, null);
+    assert.equal(result.marker, '1');
+    await page.close();
+  }
+
   // E2/E3: migrate a legacy active profile and multiple archives; retain reports and path data.
   {
     const page = await openScenario();
@@ -125,7 +148,7 @@ try {
   }
 
   assert.deepEqual(browserErrors, [], 'migration scenarios should not produce uncaught browser errors');
-  process.stdout.write('PASS: Chromium privacy migration scenarios E2/E3/E4 (3 scenarios)\\n');
+  process.stdout.write('PASS: Chromium privacy migration scenarios E1/E2/E3/E4 (4 scenarios)\\n');
 } finally {
   await browser.close();
 }
