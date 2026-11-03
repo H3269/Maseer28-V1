@@ -244,6 +244,19 @@ try {
     assert.equal(saved.archive[19].pathId, 'retained-20');
     assert.equal(saved.pathId, 'active-at-capacity', 'the active path must not be reset when capacity is reached');
     assert.match(await page.locator('[role="dialog"]').innerText(), /هیچ آرشیوی خودکار پاک نمی‌شود|مسیر فعال و سایر آرشیوها حفظ شده‌اند/);
+    await page.getByRole('button', { name: 'متوجه شدم' }).click();
+
+    // Explicitly deleting one selected archive must free exactly one slot.
+    await page.locator('#archiveList .answerItem').first().getByRole('button', { name: /حذف این آرشیو/ }).click();
+    await page.locator('#archiveList .answerItem').first().getByRole('button', { name: 'بله، حذف شود' }).click();
+    await page.waitForFunction(() => JSON.parse(localStorage.getItem('maseer28_state') || '{}').archive?.length === 19);
+    await page.getByRole('button', { name: /شروع مسیر تازه/ }).click();
+    await page.locator('#pathSetup').waitFor({ state: 'visible' });
+    const afterExplicitDelete = await page.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state') || '{}'));
+    assert.equal(afterExplicitDelete.archive.length, 20, 'one explicit deletion must free exactly one slot for the completed active path');
+    assert.equal(afterExplicitDelete.archive.some((entry) => entry.pathId === 'retained-1'), false, 'only the explicitly selected archive may be removed');
+    assert.equal(afterExplicitDelete.archive.some((entry) => entry.pathId === 'active-at-capacity'), true, 'the completed active path must be archived after the user frees a slot');
+    assert.notEqual(afterExplicitDelete.pathId, 'active-at-capacity', 'a new path should start only after explicit deletion');
     await page.close();
   }
 
