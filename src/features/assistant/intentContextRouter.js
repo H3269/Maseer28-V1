@@ -166,6 +166,11 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
   const intentLabel = classifyIntent(normalized);
   const topicCandidates = intentLabel === 'general_information' ? [] : topics;
   const multiTopic = topicCandidates.length > 1;
+  const explicitDependencyCue = ['وابستگی عاطفی', 'وابسته‌ام', 'بدون او نمی‌توانم']
+    .some((phrase) => userNormalized.includes(normalize(phrase)));
+  const repeatedCallOnlyCue = topicCandidates.some((item) => item.topic_id === 'T08')
+    && userNormalized.includes(normalize('چندین بار زنگ می‌زنم'))
+    && !explicitDependencyCue;
   const uncertainties = [];
   const contradictions = [];
 
@@ -173,6 +178,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
   if (negationPresent) uncertainties.push('نفی به یکی از عبارت‌های موضوعی نزدیک است؛ باید روشن شود کاربر برچسب را رد می‌کند یا خود تجربه را.');
   if (correctionPresent) contradictions.push('کاربر احتمالاً در حال اصلاح یا دقیق‌تر کردن گفته قبلی است؛ برداشت قبلی نباید بدون بازبینی حفظ شود.');
   if (multiTopic) uncertainties.push('بیش از یک موضوع احتمالی دیده شد؛ اولویت اصلی هنوز مشخص نیست.');
+  if (repeatedCallOnlyCue) uncertainties.push('تکرار تماس به‌تنهایی برای استنباط وابستگی عاطفی کافی نیست؛ هدف، ضرورت و زمینه تماس باید روشن شود.');
   if (safetyContextPresent) uncertainties.push('عبارت بالقوه مرتبط با ایمنی دیده شد؛ این عبارت به‌تنهایی قصد یا خطر فوری را اثبات نمی‌کند و باید مستقیماً روشن شود.');
   if (quotedSafetyMatches.length) uncertainties.push('عبارت ایمنی به شخص دیگری نسبت داده شده است؛ وضعیت خود کاربر و شخص گزارش‌شده باید از هم تفکیک شود.');
   if (explicitlyNegatedSafety) uncertainties.push('نشانه نفی در کنار عبارت ایمنی دیده شد؛ نتیجه‌گیری درباره سطح خطر از روی تطبیق واژگانی مجاز نیست.');
@@ -183,6 +189,12 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
       text: 'آیا همین الآن خطر فوری، قصد یا برنامه عملی برای آسیب به خودت یا شخص دیگری وجود دارد؟ اگر پاسخ روشن نیست، بگو مطمئن نیستی.',
       purpose: 'safety_clarification',
       discriminates_between: ['خطر فوری', 'فکر یا عبارت بدون قصد فعلی', 'ابهام نیازمند کمک انسانی'],
+    };
+  } else if (intentLabel !== 'general_information' && !clearlyRejectedThirdPartyQuote && repeatedCallOnlyCue) {
+    nextQuestion = {
+      text: 'وقتی چند بار تماس می‌گیری، هدف اصلی چیست؟',
+      purpose: 'topic_disambiguation',
+      discriminates_between: ['اطمینان‌خواهی یا ترس از جدایی', 'هماهنگی یا ضرورت عملی', 'فوریت یا ایمنی'],
     };
   } else if (intentLabel !== 'general_information' && !clearlyRejectedThirdPartyQuote &&
       (multiTopic || quotePresent || negationPresent || correctionPresent || topicCandidates.length === 0)) {
@@ -202,7 +214,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
     request_id: safeRequestId,
     intent: {
       label: intentLabel,
-      ambiguity: intentLabel === 'general_information' || clearlyRejectedThirdPartyQuote ? 'low' : (multiTopic || quotePresent || negationPresent || correctionPresent || topics.length === 0) ? 'high' : safetyContextPresent ? 'medium' : 'low',
+      ambiguity: intentLabel === 'general_information' || clearlyRejectedThirdPartyQuote ? 'low' : (multiTopic || quotePresent || negationPresent || correctionPresent || topics.length === 0 || repeatedCallOnlyCue) ? 'high' : safetyContextPresent ? 'medium' : 'low',
     },
     semantic_summary: raw ? raw.slice(0, 600) : null,
     situational_facts: {
