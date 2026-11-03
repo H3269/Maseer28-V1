@@ -98,7 +98,8 @@ try {
 
   const safeRelationshipPage = await browser.newPage();
   await seedPage(safeRelationshipPage, makeState([1, 2, 3, 4, 5, 6, 7, 8, 9]));
-  await safeRelationshipPage.getByLabel(/بله؛ می‌توانم بدون ترس/).check();
+  await safeRelationshipPage.getByLabel(/بله؛ می‌توانم بدون ترس/).click({ noWaitAfter: true });
+  await safeRelationshipPage.locator('#dayExercise').waitFor({ state: 'visible' });
   const safeRelationshipText = await safeRelationshipPage.locator('#day').innerText();
   assert.match(safeRelationshipText, /یک برنامه مکث امن با سه جزء بنویس/);
   assert.match(safeRelationshipText, /بررسی اولیه ایمنی/);
