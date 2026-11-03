@@ -172,6 +172,7 @@ try {
     await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
     await page.locator('#dashboard').waitFor({ state: 'visible' });
     await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
+    await page.waitForFunction(() => JSON.parse(localStorage.getItem('maseer28_state') || '{}').lastView === 'archive');
     const firstArchive = page.locator('#archiveList .answerItem').first();
     await firstArchive.getByRole('button', { name: /حذف این آرشیو/ }).click();
     await firstArchive.getByRole('button', { name: 'انصراف' }).click();
@@ -180,7 +181,7 @@ try {
     await page.locator('#archiveList .answerItem').first().getByRole('button', { name: 'بله، حذف شود' }).click();
     await page.waitForFunction(() => {
       const saved = JSON.parse(localStorage.getItem('maseer28_state') || '{}');
-      return saved.archive?.length === 1 && saved.archive[0]?.pathId === 'archive-keep-me';
+      return saved.archive?.length === 1 && saved.archive[0]?.pathId === 'archive-keep-me' && saved.lastView === 'archive';
     });
     const persisted = await page.evaluate(() => ({
       journey: JSON.parse(localStorage.getItem('maseer28_state')),
