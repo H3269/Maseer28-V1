@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {
   burdenScoreFromAnswers,
   cloneForArchive,
+  executeArchivedJourneyDeletion,
   defaultJourneyState,
   evaluatePqhtEligibility,
   nextRequiredDay,
@@ -638,4 +639,55 @@ test('single archive deletion rejects invalid indexes without modifying state', 
     assert.equal(result.removed, false);
     assert.equal(result.state, state);
   }
+});
+
+
+test('archive deletion reports success only after storage read-back verification', () => {
+  const state = {
+    ...defaultJourneyState(), pathId: 'active-path',
+    archive: [{ pathId: 'delete-me' }, { pathId: 'keep-me' }],
+  };
+  const values = new Map([['maseer28_state', JSON.stringify(state)]]);
+  const storage = {
+    getItem: (key) => values.has(key) ? values.get(key) : null,
+    setItem: (key, value) => values.set(key, String(value)),
+    removeItem: (key) => values.delete(key),
+  };
+  const result = executeArchivedJourneyDeletion({ storage, state, index: 0 });
+  assert.deepEqual({ removed: result.removed, reason: result.reason }, { removed: true, reason: 'verified' });
+  assert.deepEqual(JSON.parse(values.get('maseer28_state')).archive.map((item) => item.pathId), ['keep-me']);
+  assert.equal(result.state.pathId, 'active-path');
+});
+
+test('archive deletion compensates a write-then-throw failure and verifies the original record', () => {
+  const state = { ...defaultJourneyState(), archive: [{ pathId: 'delete-me' }] };
+  const original = JSON.stringify(state);
+  const values = new Map([['maseer28_state', original]]);
+  let failOnce = true;
+  const storage = {
+    getItem: (key) => values.has(key) ? values.get(key) : null,
+    setItem: (key, value) => {
+      values.set(key, String(value));
+      if (failOnce) { failOnce = false; throw new Error('write completed then failed'); }
+    },
+    removeItem: (key) => values.delete(key),
+  };
+  const result = executeArchivedJourneyDeletion({ storage, state, index: 0 });
+  assert.deepEqual(result, { removed: false, reason: 'write_failed_rolled_back' });
+  assert.equal(values.get('maseer28_state'), original);
+});
+
+test('archive deletion reports recovery_required when compensating rollback cannot be verified', () => {
+  const state = { ...defaultJourneyState(), archive: [{ pathId: 'delete-me' }] };
+  const values = new Map([['maseer28_state', JSON.stringify(state)]]);
+  const storage = {
+    getItem: (key) => values.has(key) ? values.get(key) : null,
+    setItem: (key, value) => {
+      values.set(key, String(value));
+      throw new Error('all writes fail after mutation');
+    },
+    removeItem: () => { throw new Error('remove blocked'); },
+  };
+  const result = executeArchivedJourneyDeletion({ storage, state, index: 0 });
+  assert.deepEqual(result, { removed: false, reason: 'recovery_required' });
 });
