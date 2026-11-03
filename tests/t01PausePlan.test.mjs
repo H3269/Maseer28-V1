@@ -12,6 +12,11 @@ test('T01 day 10 provides a three-part, conditional pause plan', () => {
   assert.match(plan, /اگر درباره مناسب‌بودن شرایط تردید داری/);
 });
 
+test('production topic name resolves T01 day 10 when runtime IDs omit topic metadata', () => {
+  const plan = getT01PausePlan({ day: 10, instructions: 'تمرین روزانه' }, 'خشم');
+  assert.match(plan, /یک برنامه مکث امن با سه جزء بنویس/);
+});
+
 test('production anger-category ID resolves T01 day 10 without optional metadata', () => {
   const plan = getT01PausePlan({ id: 'خشم-10', day: 10, instructions: 'تمرین روزانه' });
   assert.match(plan, /یک برنامه مکث امن با سه جزء بنویس/);
