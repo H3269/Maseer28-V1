@@ -98,7 +98,7 @@ export async function createPrivacyRestorePreview(candidate, { storage, indexedD
 }
 
 export const PRIVACY_BACKUP_POLICY = Object.freeze({
-  restore: 'This version creates and validates backup files only. It does not restore or overwrite browser data.',
+  restore: 'Restore is opt-in, conflict-free only, and never overwrites existing keys. IndexedDB writes are atomic; localStorage failures trigger a guarded compensating rollback. A rollback failure is reported as recovery_required and requires manual recovery.',
   integrity: 'The checksum detects accidental corruption; it is not cryptographic authentication and does not prove who created the file.',
   scope: 'Only app-owned localStorage and user-owned records selected from maseer28-library are included. Downloads, browser/device backups, and server-side data are excluded.',
 });
@@ -112,7 +112,7 @@ function waitForTransaction(transaction) {
 }
 
 function serializeStorageValue(value) {
-  return typeof value === 'string' ? JSON.stringify(value) : JSON.stringify(value);
+  return JSON.stringify(value);
 }
 
 /**
@@ -166,7 +166,13 @@ export async function restorePrivacyBackup(candidate, { storage, indexedDBApi = 
       const tx = db.transaction(name, 'readonly');
       const store = tx.objectStore(name);
       const indexes = Array.from(store.indexNames).sort();
-      if (store.keyPath !== schema.keyPath || store.autoIncrement || JSON.stringify(indexes) !== JSON.stringify(schema.indexes)) {
+      const expectedIndexes = schema.indexes;
+      const indexesMatch = JSON.stringify(indexes) === JSON.stringify(expectedIndexes)
+        && expectedIndexes.every((indexName) => {
+          const index = store.index(indexName);
+          return index.keyPath === indexName && index.unique === false && index.multiEntry === false;
+        });
+      if (store.keyPath !== schema.keyPath || store.autoIncrement || !indexesMatch) {
         throw new Error(`ساختار مخزن ${name} تغییر کرده است؛ بازیابی متوقف شد.`);
       }
     }
