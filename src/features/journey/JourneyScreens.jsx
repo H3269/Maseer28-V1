@@ -9,6 +9,7 @@ import { createPrivacyBackup, createPrivacyRestorePreview, restorePrivacyBackup 
 import AssessmentAssistant from '../assistant/AssessmentAssistant.jsx';
 import { exportArchivesZip, triggerBlobDownload } from './archiveExport.js';
 import { getDailySafetyMode } from '../content/dailySafety.js';
+import { getRelationshipSafetyGate, isRelationshipSafetyConfirmed } from './relationshipSafetyGate.js';
 
 // This prototype has no clinical validation. It stays hidden unless an experimental build explicitly enables it.
 const EXPERIMENTAL_ASSISTANT_ENABLED = APP_CONFIG.TEST_MODE || import.meta.env.VITE_ENABLE_EXPERIMENTAL_ASSISTANT === 'true';
@@ -339,9 +340,9 @@ export function adaptiveGuidance(previousRecord, previousAnswer, problem, histor
   return cleanDailyCopy(`${base}${note}`, problem);
 }
 
-export function DayScreen({ day, problem, data, record, savedAnswer, previousRecord, previousAnswer, history = {}, onDashboard, onPrevious, onComplete, onSkip, onNext, completed, onValidation }) {
-  const parts = splitDayContent(data, problem, previousRecord, history), guidance = parts.adaptation || adaptiveGuidance(previousRecord, previousAnswer, problem, history), [entryOpen, setEntryOpen] = useState(Boolean(record?.score != null || savedAnswer || record?.feedback)), [score, setScore] = useState(record?.score ?? 0), [touched, setTouched] = useState(record?.score != null), [feedback, setFeedback] = useState(record?.feedback || ''), [answer, setAnswer] = useState(savedAnswer || '');const entryPanelRef = React.useRef(null);
-  useEffect(() => { setEntryOpen(Boolean(record?.score != null || savedAnswer || record?.feedback)); setScore(record?.score ?? 0); setTouched(record?.score != null); setFeedback(record?.feedback || ''); setAnswer(savedAnswer || ''); }, [day, record, savedAnswer]);useEffect(() => {
+export function DayScreen({ day, problem, data, record, savedAnswer, previousRecord, previousAnswer, history = {}, onDashboard, onPrevious, onComplete, onSkip, onSkipRelationshipSafety, onNext, completed, onValidation }) {
+  const parts = splitDayContent(data, problem, previousRecord, history), guidance = parts.adaptation || adaptiveGuidance(previousRecord, previousAnswer, problem, history), [entryOpen, setEntryOpen] = useState(Boolean(record?.score != null || savedAnswer || record?.feedback)), [score, setScore] = useState(record?.score ?? 0), [touched, setTouched] = useState(record?.score != null), [feedback, setFeedback] = useState(record?.feedback || ''), [answer, setAnswer] = useState(savedAnswer || ''), [relationshipSafetyResponse, setRelationshipSafetyResponse] = useState('');const entryPanelRef = React.useRef(null);
+  useEffect(() => { setEntryOpen(Boolean(record?.score != null || savedAnswer || record?.feedback)); setScore(record?.score ?? 0); setTouched(record?.score != null); setFeedback(record?.feedback || ''); setAnswer(savedAnswer || ''); }, [day, record, savedAnswer]);useEffect(() => { setRelationshipSafetyResponse(''); }, [day, data?.id]);useEffect(() => {
   if (!entryOpen) return;
 
   const frame = requestAnimationFrame(() => {
