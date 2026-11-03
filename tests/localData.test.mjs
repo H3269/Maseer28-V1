@@ -498,12 +498,25 @@ test('restore preview rejects an index with the expected name but an incompatibl
 test('controlled restore imports into an empty browser namespace and verifies both stores', async () => {
   const api = new IDBFactory();
   const storage = new MemoryStorage({});
+  const sourceApi = new IDBFactory();
+  const sourceOpen = sourceApi.open(PRIVACY_TEST_DB, 1);
+  sourceOpen.onupgradeneeded = () => {
+    sourceOpen.result.createObjectStore('books', { keyPath: 'id' });
+    const versions = sourceOpen.result.createObjectStore('versions', { keyPath: 'id' });
+    versions.createIndex('bookId', 'bookId', { unique: false });
+    sourceOpen.result.createObjectStore('settings', { keyPath: 'key' });
+  };
+  const sourceDb = await requestResult(sourceOpen);
+  const sourceTx = sourceDb.transaction(['books', 'versions', 'settings'], 'readwrite');
+  sourceTx.objectStore('books').put({ id: 'user-book-1', title: 'کتاب شخصی' });
+  sourceTx.objectStore('versions').put({ id: 'user-version-1', bookId: 'user-book-1', source: 'upload' });
+  sourceTx.objectStore('settings').put({ key: 'reader-preference', value: 'large' });
+  await transactionDone(sourceTx);
+  sourceDb.close();
   const backup = await createPrivacyBackup({
     storage: new MemoryStorage({ maseer28_state: JSON.stringify({ restored: true }) }),
-    indexedDBApi: new IDBFactory(),
+    indexedDBApi: sourceApi,
   });
-  const seedDb = await requestResult(api.open(PRIVACY_TEST_DB, 1));
-  seedDb.close();
   try {
     const result = await restorePrivacyBackup(backup, { storage, indexedDBApi: api });
     assert.equal(result.restored, true);
@@ -512,8 +525,14 @@ test('controlled restore imports into an empty browser namespace and verifies bo
     const verifyDb = await requestResult(api.open(PRIVACY_TEST_DB));
     try {
       const tx = verifyDb.transaction(['books', 'versions', 'settings'], 'readonly');
-      const books = await requestResult(tx.objectStore('books').getAll());
-      assert.deepEqual(books, []);
+      const [books, versions, settings] = await Promise.all([
+        requestResult(tx.objectStore('books').getAll()),
+        requestResult(tx.objectStore('versions').getAll()),
+        requestResult(tx.objectStore('settings').getAll()),
+      ]);
+      assert.deepEqual(books.map((row) => row.id), ['user-book-1']);
+      assert.deepEqual(versions.map((row) => row.id), ['user-version-1']);
+      assert.deepEqual(settings.map((row) => row.key), ['reader-preference']);
     } finally { verifyDb.close(); }
   } finally {
     await new Promise((resolve, reject) => {
