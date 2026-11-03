@@ -401,6 +401,28 @@ test('executed privacy migration trusts only the exact supported numeric version
   assert.equal(future.values.get(JOURNEY_KEY), future.original);
 });
 
+test('executed privacy migration preserves the active client code but omits historical archive codes', async () => {
+  const { prepareJourneyPrivacyMigration } = await import('../src/features/journey/journeyStore.js');
+  const raw = {
+    profileData: {
+      name: 'نام کاربر', medical: 'none', problem: 'anxiety',
+      durationYears: 2, durationMonths: 1, goal: 'هدف', code: 'M28-123456',
+    },
+    archive: [{
+      profileData: {
+        name: 'نام قدیمی', medical: 'other', problem: 'stress',
+        durationYears: 1, durationMonths: 0, goal: 'هدف قدیمی', code: 'M28-OLD001',
+      },
+    }],
+  };
+  const result = prepareJourneyPrivacyMigration(raw, { name: 'نام کاربر', medical: 'none' });
+  assert.equal(result.ready, true);
+  assert.equal(result.state.profileData.code, 'M28-123456');
+  assert.equal(result.state.archive[0].profileData.code, undefined);
+  assert.equal(result.state.profileData.name, undefined);
+  assert.equal(result.state.archive[0].profileData.name, undefined);
+});
+
 test('executed privacy migration writes, reads back, and preserves path/report data', async () => {
   const { executeJourneyPrivacyMigration, JOURNEY_KEY, JOURNEY_PRIVACY_MIGRATION_VERSION } = await import('../src/features/journey/journeyStore.js');
   const raw = {
