@@ -177,6 +177,27 @@ test('evidence registry records are unique, traceable, and explicitly limited', 
   ]) assert.ok(ids.includes(id), `missing curated source ${id}`);
 });
 
+test('production content gate requires one approved T31 subtype and matching control context', () => {
+  const data = fixture();
+  const day = data.content.categories['موضوع آزمایشی'].days[0];
+  const topic = data.topicsRegistry.topics[0];
+  const subtopic = data.subtopicsRegistry.subtopics[0];
+  day.id = 'T31-D01';
+  day.topic_id = 'T31';
+  day.subtopic_ids = ['T31-S01'];
+  day.control_context = 'self_control_need';
+  topic.topic_id = 'T31';
+  topic.content_ids = ['T31-D01'];
+  subtopic.subtopic_id = 'T31-S01';
+  subtopic.topic_id = 'T31';
+  subtopic.content_ids = ['T31-D01'];
+  assert.deepEqual(validateProductionContent(data), []);
+
+  day.control_context = 'interpersonal_coercive_control';
+  const errors = validateProductionContent(data);
+  assert.ok(errors.some((item) => item.includes('control topic subtype and context are not explicitly classified')));
+});
+
 test('current repository content remains blocked from production until all 952 units are reviewed', async () => {
   const readJson = async (relative) => JSON.parse(
     await (await import('node:fs/promises')).readFile(new URL(relative, import.meta.url), 'utf8')
