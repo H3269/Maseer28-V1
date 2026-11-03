@@ -1,4 +1,4 @@
-const GATED_T01_DAYS = new Set([11, 17, 20, 21, 22]);
+const GATED_T01_DAYS = new Set([10, 11, 17, 20, 21, 22]);
 
 const RELATIONSHIP_COMMUNICATION_GATE = Object.freeze({
   gateId: 'relationship-communication-safety-v1',
@@ -22,4 +22,18 @@ export function getRelationshipSafetyGate(day) {
 
 export function isRelationshipSafetyConfirmed(day, response) {
   return !getRelationshipSafetyGate(day) || response === 'safe';
+}
+
+export function createRelationshipSafetySkipRecord(day, timestamp = new Date()) {
+  if (!getRelationshipSafetyGate(day)) {
+    throw new Error('Only a gated T01 communication exercise can use this safety skip.');
+  }
+  const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
+  if (!Number.isFinite(date.getTime())) throw new Error('A valid skip timestamp is required.');
+  return {
+    status: 'skipped_safety_gate',
+    feedbackText: 'این تمرین به دلیل ملاحظه ایمنی اجرا نشد. هیچ امتیازی ثبت نشده و این ثبت به معنی بهبود یا بدترشدن نیست.',
+    exerciseId: typeof day.id === 'string' ? day.id.slice(0, 200) : '',
+    updatedAt: date.toISOString(),
+  };
 }
