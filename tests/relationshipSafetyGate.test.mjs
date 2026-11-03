@@ -151,6 +151,7 @@ test('current violence and relationship safety sources remain contextual, not da
     ['SRC-RELATIONSHIP-WHO-RESPECT-2025-001', '2025-11-19', /women and girls/i],
     ['SRC-RELATIONSHIP-NHSE-SAFETY-2026-001', '2026-07-17', /does not establish/i],
     ['SRC-VIOLENCE-PSYCHOSOCIAL-LANCET-2026-001', '2026-07', /does not validate/i],
+    ['SRC-WHO-PSYCH-SELFHELP-2026-001', '2026-06-01', /do not demonstrate the effectiveness of this app/i],
   ];
   const ids = new Set(registry.sources.map((source) => source.source_id));
   for (const [id, date, limitation] of expected) {
