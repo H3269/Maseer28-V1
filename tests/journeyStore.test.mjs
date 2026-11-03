@@ -310,3 +310,54 @@ test('legacy journey privacy migration is idempotent and rejects invalid source 
   assert.equal(second.ready, true);
   assert.deepEqual(second.state, first.state);
 });
+test('legacy journey records remain readable before migration and preserve their path-specific data after migration', async () => {
+  const { prepareJourneyPrivacyMigration, sanitizeJourneyState } = await import('../src/features/journey/journeyStore.js');
+  const legacy = {
+    started: true, profile: true, assessment: true, completed: [1, 2],
+    profileData: { name: 'نام قدیمی', age: 39, gender: 'مرد', phone: '09123456789', medical: 'none', medicalNote: '', medication: 'no', medicationRisk: 'no', problem: 'anxiety', durationYears: 2, durationMonths: 4, goal: 'هدف مسیر', code: 'M28-OLD' },
+    assessmentData: { score: 6 }, answers: { 1: 'پاسخ روز اول' }, daily: { 1: { score: 5, feedback: 'better' } },
+    final: { score: 4, f1: 'تغییر اول', completedAt: '2026-10-01T00:00:00.000Z' },
+    archive: [{ pathId: 'archive-1', profileData: { name: 'نام قدیمی', medical: 'other', problem: 'stress', durationYears: 1, durationMonths: 2, goal: 'هدف قدیمی', code: 'M28-A' }, answers: { 1: 'پاسخ آرشیو' }, completed: [1] }],
+  };
+  const before = sanitizeJourneyState(legacy);
+  assert.equal(before.profileData.name, 'نام قدیمی');
+  assert.equal(before.profileData.medical, 'none');
+  assert.equal(before.answers[1], 'پاسخ روز اول');
+  assert.equal(before.archive[0].profileData.name, 'نام قدیمی');
+  const canonical = { name: 'نام قدیمی', age: 39, gender: 'مرد', phone: '09123456789', medical: 'none', medication: 'no', medicationRisk: 'no' };
+  const plan = prepareJourneyPrivacyMigration(legacy, canonical);
+  assert.equal(plan.ready, true);
+  const after = sanitizeJourneyState(plan.state);
+  assert.equal(after.profileData.name, '');
+  assert.equal(after.profileData.medical, '');
+  assert.equal(after.profileData.problem, 'anxiety');
+  assert.equal(after.profileData.goal, 'هدف مسیر');
+  assert.equal(after.answers[1], 'پاسخ روز اول');
+  assert.equal(after.daily[1].score, 5);
+  assert.equal(after.final.f1, 'تغییر اول');
+  assert.equal(after.archive[0].profileData.name, undefined);
+  assert.equal(after.archive[0].profileData.problem, 'stress');
+  assert.equal(after.archive[0].answers[1], 'پاسخ آرشیو');
+});
+
+test('legacy archive migration preserves completion, assessments, reflections and daily results', async () => {
+  const { prepareJourneyPrivacyMigration } = await import('../src/features/journey/journeyStore.js');
+  const archive = {
+    pathId: 'archive-legacy', startedAt: '2025-01-01', archivedAt: '2025-02-01',
+    profileData: { name: 'نام', age: 30, phone: '09123456789', medical: 'none', problem: 'panic', durationYears: 3, durationMonths: 0, goal: 'هدف', code: 'CASE-1' },
+    assessmentData: { score: 7, answers: [2, 2, 2, 2, 3] },
+    final: { score: 3, f1: 'تغییر', f2: 'آگاهی', f3: 'اقدام', f4: 'ادامه' },
+    completed: Array.from({ length: 28 }, (_, i) => i + 1),
+    answers: { 1: 'متن روز یک' }, daily: { 1: { score: 8, feedback: 'worse', feedbackText: 'شرح' } },
+  };
+  const state = { profileData: { problem: 'new-path', durationYears: 0, durationMonths: 1, goal: 'هدف تازه' }, archive: [archive] };
+  const result = prepareJourneyPrivacyMigration(state, {});
+  assert.equal(result.ready, true);
+  const migrated = result.state.archive[0];
+  assert.equal(migrated.completed.length, 28);
+  assert.equal(migrated.assessmentData.score, 7);
+  assert.equal(migrated.final.f1, 'تغییر');
+  assert.equal(migrated.answers[1], 'متن روز یک');
+  assert.equal(migrated.daily[1].feedbackText, 'شرح');
+  assert.deepEqual(Object.keys(migrated.profileData).sort(), ['durationMonths', 'durationYears', 'goal', 'problem']);
+});
