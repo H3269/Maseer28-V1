@@ -85,7 +85,7 @@ test('current violence and relationship safety sources remain contextual, not da
     assert.ok(source, `missing source ${id}`);
     assert.equal(source.publication_date, date);
     assert.match(source.limitations, limitation);
-    assert.ok(/^https:\\/\\//u.test(source.url));
+    assert.ok(source.url.startsWith('https://'));
   }
   for (const category of Object.values(content.categories || {})) {
     for (const day of category.days || []) {
