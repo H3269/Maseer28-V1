@@ -23,6 +23,8 @@ test('stable T01 identifiers preserve relationship gates when optional day metad
   assert.equal(getRelationshipSafetyGate({ id: 'خشم-09' }), null);
   assert.equal(getRelationshipSafetyGate({ id: 'غم-10' }), null);
   assert.equal(getRelationshipSafetyGate({ id: 'T02-D10' }), null);
+  assert.ok(getRelationshipSafetyGate({ id: 'خشم-10', day: 9 }), 'a conflicting identifier must not bypass a gated day');
+  assert.ok(getRelationshipSafetyGate({ id: 'T01-D09', topic_id: 'T01', day: 10 }), 'a conflicting topic day must retain the gate');
 });
 
 test('relationship safety confirmation fails closed unless the user explicitly chooses safe', () => {
