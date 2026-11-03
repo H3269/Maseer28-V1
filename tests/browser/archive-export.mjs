@@ -67,21 +67,36 @@ try {
   assert.match(pdf, /^%PDF-1\.4/);
   assert.match(pdf, /\/Count [2-9][0-9]*/);
   assert.match(pdf, /startxref\n\d+\n%%EOF$/);
-  // Empty archive state: keep the export affordance visible, but never offer an empty download.
-  await page.evaluate(() => {
-    const key = 'maseer28_state';
-    const state = JSON.parse(localStorage.getItem(key));
-    state.archive = [];
-    localStorage.setItem(key, JSON.stringify(state));
+  // Empty archive state: use a fresh browser context so the assertion cannot
+  // inherit React state or storage mutations from the preceding download scenario.
+  const emptyPage = await browser.newPage();
+  const emptyErrors = [];
+  emptyPage.on('pageerror', (error) => emptyErrors.push(String(error)));
+  await emptyPage.addInitScript(() => {
+    localStorage.setItem('maseer28_copyright_v60', '1');
+    localStorage.setItem('maseer28_user_profile_v2', JSON.stringify({
+      version: 2, name: 'کاربر آزمایشی', age: 35, gender: 'زن', phone: '09123456789',
+      medical: 'none', medicalNote: '', medication: 'no', medicationRisk: 'no',
+    }));
+    localStorage.setItem('maseer28_state', JSON.stringify({
+      schema: 7, started: true, profile: true, assessment: true,
+      completed: [], answers: {}, daily: {}, profileData: {
+        problem: 'anxiety', durationYears: 1, durationMonths: 0, goal: 'هدف آزمایشی', code: 'M28-EMPTY',
+      },
+      assessmentData: { score: 6 }, final: null, archive: [],
+      pathId: 'active-empty-archive-check', startedAt: '2026-01-01T00:00:00.000Z', lastView: 'dashboard',
+    }));
   });
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.locator('#dashboard').waitFor({ state: 'visible' });
-  await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
-  await page.locator('#archiveList').waitFor({ state: 'visible' });
-  const emptyExportButton = page.getByRole('button', { name: 'دریافت خروجی ZIP و PDF آرشیوها' });
+  await emptyPage.goto(baseURL, { waitUntil: 'domcontentloaded' });
+  await emptyPage.locator('#dashboard').waitFor({ state: 'visible' });
+  await emptyPage.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
+  await emptyPage.locator('#archiveList').waitFor({ state: 'visible' });
+  const emptyExportButton = emptyPage.getByRole('button', { name: 'دریافت خروجی ZIP و PDF آرشیوها' });
   assert.equal(await emptyExportButton.isVisible(), true, 'export control remains visible for an empty archive');
   assert.equal(await emptyExportButton.isDisabled(), true, 'empty archive cannot produce an empty ZIP');
-  assert.match(await page.locator('#archiveList').innerText(), /هنوز هیچ مسیر بایگانی‌شده‌ای وجود ندارد/);
+  assert.match(await emptyPage.locator('#archiveList').innerText(), /هنوز هیچ مسیر بایگانی‌شده‌ای وجود ندارد/);
+  assert.deepEqual(emptyErrors, [], 'empty archive UI should not raise uncaught browser errors');
+  await emptyPage.close();
   assert.deepEqual(errors, [], 'archive export UI should not raise uncaught browser errors');
   process.stdout.write('PASS: Chromium generated and downloaded a real archive ZIP/PDF, and verified the visible disabled empty-archive state (WV-BROWSER-EXPORT)\\n');
 } finally {
