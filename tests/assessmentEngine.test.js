@@ -429,5 +429,7 @@ test('explicit harmful intent remains urgent while ambiguous intent requires cla
   assert.equal(classifySafetyAnswer('الان دارم به خودم آسیب می‌زنم'), 'urgent_human_support_recommended');
   assert.equal(classifySafetyAnswer('نمی‌خواهم خودکشی کنم'), 'clarification_needed');
   assert.equal(classifySafetyAnswer('نمی‌خواهم به کسی آسیب بزنم'), 'clarification_needed');
+  assert.equal(classifySafetyAnswer('امشب نمی‌خواهم خودم را بکشم'), 'clarification_needed');
+  assert.equal(classifySafetyAnswer('برنامه دارم خودکشی نکنم'), 'clarification_needed');
   assert.equal(classifySafetyAnswer('نه، برنامه دارم'), 'clarification_needed');
 });
