@@ -52,6 +52,18 @@
         "خشم-26",
         "خشم-27",
         "خشم-28"
+      ],
+      "draft_evidence_ids": [
+        "SRC-ANGER-NHS-001",
+        "SRC-ANGER-APS-001",
+        "SRC-ANGER-APA-001",
+        "SRC-ANGER-ABCT-001",
+        "SRC-ANGER-KJAERVIK-2024-001",
+        "SRC-ANGER-POP-2025-001",
+        "SRC-ANGER-ODEAN-2025-001",
+        "SRC-ANGER-SMITH-2026-001",
+        "SRC-ANGER-WHO-IPV-2013-001",
+        "SRC-IPV-RASMUSSEN-2026-001"
       ]
     },
     {
