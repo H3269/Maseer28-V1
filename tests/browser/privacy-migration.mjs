@@ -168,9 +168,8 @@ try {
     };
     const page = await openScenario('normal', state, profile);
     await page.setViewportSize({ width: 390, height: 844 });
-    if (await page.locator('#copyrightModal').count()) {
-      await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
-    }
+    await page.locator('#copyrightModal').waitFor({ state: 'visible' });
+    await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
     await page.locator('#dashboard').waitFor({ state: 'visible' });
     await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
     const firstArchive = page.locator('#archiveList .answerItem').first();
