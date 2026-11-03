@@ -374,9 +374,15 @@ try {
     page.once('dialog', (dialog) => dialog.accept());
     await page.getByRole('button', { name: 'بازیابی نسخه پشتیبان' }).click();
     await page.waitForFunction(() => {
-      try { return JSON.parse(localStorage.getItem('maseer28_restore_ui_marker') || 'null')?.marker === 'RESTORE-UI-OK'; }
-      catch { return false; }
+      const marker = (() => { try { return JSON.parse(localStorage.getItem('maseer28_restore_ui_marker') || 'null')?.marker; } catch { return null; } })();
+      const message = document.querySelector('#support')?.innerText || '';
+      return marker === 'RESTORE-UI-OK' || message.includes('بازیابی انجام شد') || message.includes('بازیابی تأیید نشد') || message.includes('راستی‌آزمایی پس از ثبت ناموفق بود') || message.includes('تعارض تازه‌ای');
     }, null, { timeout: 10000 });
+    const restoreState = await page.evaluate(() => ({
+      marker: (() => { try { return JSON.parse(localStorage.getItem('maseer28_restore_ui_marker') || 'null')?.marker; } catch { return null; } })(),
+      supportText: document.querySelector('#support')?.innerText || '',
+    }));
+    assert.equal(restoreState.marker, 'RESTORE-UI-OK', 'restore must succeed; UI diagnostic: ' + restoreState.supportText);
     await reloadAfterRestore;
     assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('maseer28_restore_ui_marker')).marker), 'RESTORE-UI-OK', 'restored data must persist after reload');
     await page.close();
