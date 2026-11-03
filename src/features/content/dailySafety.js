@@ -79,11 +79,38 @@ function hasApprovedBoundaryReview(day) {
   return true;
 }
 
+function isSleepTopicDay(day) {
+  return Boolean(day && typeof day === 'object' && (
+    day.topic_id === 'T10'
+    || /^بی‌خوابی و مشکلات خواب-[0-9]{1,2}$/u.test(String(day.id || ''))
+    || /^T10-D[0-9]{1,2}$/i.test(String(day.id || ''))
+  ));
+}
+
+const SLEEP_SUBTOPIC_IDS = new Set(['T10-S01', 'T10-S02', 'T10-S03']);
+
+function hasApprovedSleepReview(day) {
+  if (day.review_status !== 'approved'
+    || !Array.isArray(day.subtopic_ids)
+    || day.subtopic_ids.length !== 1
+    || !SLEEP_SUBTOPIC_IDS.has(day.subtopic_ids[0])
+    || typeof day.review_record_id !== 'string'
+    || day.review_record_id.trim().length === 0) return false;
+
+  if (day.subtopic_ids[0] === 'T10-S03') {
+    return day.risk_level === 'caution'
+      && Array.isArray(day.safety_rule_ids)
+      && day.safety_rule_ids.length > 0;
+  }
+  return true;
+}
+
 export function getDailySafetyMode(day) {
   if (!day || typeof day !== 'object') return 'routine';
   if (isFearTopicDayFourteen(day)) return 'blocked';
   if (isRepetitiveBehaviorTopicDay(day) && !hasApprovedRepetitiveBehaviorReview(day)) return 'blocked';
   if (isBoundaryTopicDay(day) && !hasApprovedBoundaryReview(day)) return 'blocked';
+  if (isSleepTopicDay(day) && !hasApprovedSleepReview(day)) return 'blocked';
   if (isControlTopicDay(day)) {
     // "Control" conflates personal over-control with interpersonal coercive
     // control. Release only after an approved day is assigned to exactly one
