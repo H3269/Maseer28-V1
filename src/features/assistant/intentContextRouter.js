@@ -91,7 +91,7 @@ function classifyIntent(value) {
 
 function hasNegatedTopic(value, phrase) {
   const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const pattern = new RegExp('(?:من\\s+)?(?:اصلاً\\s+)?(?:' + escaped + ')(?:\\s+را)?\\s+(?:ندارم|نیستم|نمی خواهم|نمی ترسم)');
+  const pattern = new RegExp('(?:من\s+)?(?:اصلاً\s+)?(?:' + escaped + ')(?:\s+را)?\s+(?:ندارم|نیستم|نمی خواهم|نمی ترسم)');
   return pattern.test(value);
 }
 
@@ -111,7 +111,7 @@ function findTopics(value) {
   const normalizedEvidence = normalize(evidenceText);
   const selfHatredPhrases = TOPIC_RULES.find(([topicId]) => topicId === 'T18')?.[1] || [];
   const hasExplicitSelfHatred = selfHatredPhrases.some((phrase) => normalizedEvidence.includes(normalize(phrase)));
-  const hasExplicitOtherDirectedHatred = /(?:از|نسبت به)\\s*(?:او|آنها|دیگران|همه|این گروه|آن گروه|فلانی|همکارم|همسرم|مدیرم|دوستم|اعضای گروه)(?:\\s+هم)?\\s*(?:متنفر|بیزار|نفرت)/u.test(normalizedEvidence);
+  const hasExplicitOtherDirectedHatred = /(?:از|نسبت به)\s*(?:او|آنها|دیگران|همه|این گروه|آن گروه|فلانی|همکارم|همسرم|مدیرم|دوستم|اعضای گروه)(?:\s+هم)?\s*(?:متنفر|بیزار|نفرت)/u.test(normalizedEvidence);
   const hits = [];
   for (const [topic_id, phrases] of TOPIC_RULES) {
     // T18 is the dedicated route for explicit self-hatred. Keep T04 as a
