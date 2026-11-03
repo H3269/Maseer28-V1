@@ -325,6 +325,59 @@ test('verified profile migration never restores fields intentionally cleared lat
 });
 
 
+test('legacy profile cleanup requires verified v2 migration and preserves the canonical profile', async () => {
+  const {
+    removeLegacyUserProfileAfterVerifiedMigration,
+    PROFILE_KEY, PROFILE_V2_KEY, PROFILE_V2_MIGRATION_KEY,
+  } = await import('../src/features/journey/journeyStore.js');
+  withMemoryStorage((data) => {
+    data.set(PROFILE_KEY, JSON.stringify({ name: 'نام قدیمی', phone: '09123456789' }));
+    data.set(PROFILE_V2_KEY, JSON.stringify({ name: 'نام فعلی' }));
+    const blocked = removeLegacyUserProfileAfterVerifiedMigration();
+    assert.deepEqual(blocked, { removed: false, reason: 'migration_not_verified' });
+    assert.equal(data.has(PROFILE_KEY), true);
+
+    data.set(PROFILE_V2_MIGRATION_KEY, '1');
+    const result = removeLegacyUserProfileAfterVerifiedMigration();
+    assert.deepEqual(result, { removed: true, reason: 'verified' });
+    assert.equal(data.has(PROFILE_KEY), false);
+    assert.equal(JSON.parse(data.get(PROFILE_V2_KEY)).name, 'نام فعلی');
+  });
+});
+
+test('legacy profile cleanup refuses to run when the verified canonical profile is missing', async () => {
+  const {
+    removeLegacyUserProfileAfterVerifiedMigration,
+    PROFILE_KEY, PROFILE_V2_MIGRATION_KEY,
+  } = await import('../src/features/journey/journeyStore.js');
+  withMemoryStorage((data) => {
+    data.set(PROFILE_KEY, JSON.stringify({ name: 'نام قدیمی' }));
+    data.set(PROFILE_V2_MIGRATION_KEY, '1');
+    const result = removeLegacyUserProfileAfterVerifiedMigration();
+    assert.deepEqual(result, { removed: false, reason: 'canonical_profile_missing' });
+    assert.equal(data.has(PROFILE_KEY), true);
+  });
+});
+
+test('legacy profile cleanup reports a failed read-back instead of claiming deletion', async () => {
+  const {
+    removeLegacyUserProfileAfterVerifiedMigration,
+    PROFILE_KEY, PROFILE_V2_KEY, PROFILE_V2_MIGRATION_KEY,
+  } = await import('../src/features/journey/journeyStore.js');
+  const values = new Map([
+    [PROFILE_KEY, JSON.stringify({ name: 'نام قدیمی' })],
+    [PROFILE_V2_KEY, JSON.stringify({ name: 'نام فعلی' })],
+    [PROFILE_V2_MIGRATION_KEY, '1'],
+  ]);
+  const storage = {
+    getItem: (key) => values.has(key) ? values.get(key) : null,
+    removeItem: () => {},
+  };
+  const result = removeLegacyUserProfileAfterVerifiedMigration({ storage });
+  assert.deepEqual(result, { removed: false, reason: 'readback_failed' });
+  assert.equal(values.has(PROFILE_KEY), true);
+});
+
 test('new archive snapshots retain path display fields but omit copied personal and health fields', () => {
   const archived = cloneForArchive({
     pathId: 'path-1',
