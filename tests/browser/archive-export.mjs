@@ -21,9 +21,15 @@ try {
       archive: [{
         pathId: 'browser-export-check',
         profileData: { problem: 'آزمون مرورگر', durationYears: 1, durationMonths: 0, goal: 'هدف آزمایشی' },
-        completed: [1, 2, 27], answers: { 1: answer, 2: 'پاسخ دوم' },
+        completed: [1, 2, 17, 27], answers: { 1: answer, 2: 'پاسخ دوم' },
         daily: {
           1: { score: 4, feedbackText: 'بهتر شدم' },
+          17: {
+            status: 'skipped_safety_gate',
+            feedbackText: 'این تمرین به دلیل ملاحظه ایمنی اجرا نشد؛ هیچ امتیازی ثبت نشده است.',
+            exerciseId: 'T01-D17',
+            updatedAt: '2026-01-17T12:00:00.000Z',
+          },
           27: {
             status: 'skipped_human_review',
             feedbackText: 'این تمرین به دلیل نیاز به بازبینی انسانی اجرا نشد؛ هیچ امتیازی ثبت نشده است.',
