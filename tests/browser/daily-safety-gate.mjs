@@ -118,7 +118,7 @@ try {
   await seedPage(sharedPromptPage, makeState([1, 2, 3, 4, 5], 'ترس'), ['ترس-06']);
   const sharedPromptText = await sharedPromptPage.locator('#day').innerText();
   assert.match(sharedPromptText, /نیاز پشت واکنش/);
-  assert.match(sharedPromptText, /آیا در این رابطه یا تعامل می‌توانی بدون ترس/);
+  assert.match(sharedPromptText, /آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
   await sharedPromptPage.getByLabel(/نه، مطمئن نیستم/).check();
   await sharedPromptPage.getByText(/تمرین ارتباطی امروز نمایش داده نمی‌شود/).waitFor({ state: 'visible' });
   await sharedPromptPage.getByRole('button', { name: 'ثبت عدم اجرای تمرین و ادامه مسیر' }).click();
@@ -138,7 +138,7 @@ try {
   solutionPage.on('pageerror', (error) => solutionErrors.push(String(error)));
   await seedPage(solutionPage, makeState(Array.from({ length: 18 }, (_, index) => index + 1)), ['خشم-19']);
   const solutionText = await solutionPage.locator('#day').innerText();
-  assert.match(solutionText, /آیا در این رابطه می‌توانی بدون ترس/);
+  assert.match(solutionText, /آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
   await solutionPage.getByLabel(/نه، مطمئن نیستم/).check();
   await solutionPage.getByText(/تمرین ارتباطی امروز نمایش داده نمی‌شود/).waitFor({ state: 'visible' });
   await solutionPage.getByRole('button', { name: 'ثبت عدم اجرای تمرین و ادامه مسیر' }).click();
