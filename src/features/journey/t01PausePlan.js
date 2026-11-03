@@ -12,7 +12,7 @@ export function getT01PausePlan(day, topicName = '') {
   const id = String(day.id || '');
   const angerIdMatch = /^خشم-([0-9]{1,2})$/u.exec(id);
   const canonicalIdMatch = /^([A-Z][0-9]{2})-D([0-9]{1,2})$/i.exec(id);
-  const categoryIdMatch = /^([^-\\s]+)-([0-9]{1,2})$/u.exec(id);
+  const categoryIdMatch = /^([^-]+)-([0-9]{1,2})$/u.exec(id);
 
   // Conflicting topic/category identifiers must never attach a safety plan
   // to the wrong content, even when another field happens to say day 10.
