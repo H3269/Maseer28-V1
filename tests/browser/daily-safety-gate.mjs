@@ -80,7 +80,7 @@ try {
   await seedPage(relationshipPage, makeState([1, 2, 3, 4, 5, 6, 7, 8, 9]));
   const relationshipText = await relationshipPage.locator('#day').innerText();
   assert.match(relationshipText, /آیا در این رابطه می‌توانی بدون ترس/);
-  assert.doesNotMatch(relationshipText, /برای یک موقعیت کم‌خطر بنویس/);
+  assert.doesNotMatch(relationshipText, /یک برنامه مکث امن با سه جزء بنویس/);
   await relationshipPage.getByLabel(/نه، مطمئن نیستم/).check();
   await relationshipPage.getByText(/تمرین ارتباطی امروز نمایش داده نمی‌شود/).waitFor({ state: 'visible' });
   await relationshipPage.getByRole('button', { name: 'ثبت عدم اجرای تمرین و ادامه مسیر' }).click();
@@ -95,6 +95,17 @@ try {
   assert.ok(relationshipState.completed.includes(10));
   assert.deepEqual(relationshipErrors, []);
   await relationshipPage.close();
+
+  const safeRelationshipPage = await browser.newPage();
+  await seedPage(safeRelationshipPage, makeState([1, 2, 3, 4, 5, 6, 7, 8, 9]));
+  await safeRelationshipPage.getByLabel(/بله؛ می‌توانم بدون ترس/).check();
+  const safeRelationshipText = await safeRelationshipPage.locator('#day').innerText();
+  assert.match(safeRelationshipText, /یک برنامه مکث امن با سه جزء بنویس/);
+  assert.match(safeRelationshipText, /بررسی اولیه ایمنی/);
+  const safeRelationshipState = await safeRelationshipPage.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state')));
+  assert.equal('relationshipSafetyResponse' in safeRelationshipState, false);
+  assert.equal('relationshipSafetyState' in safeRelationshipState, false);
+  await safeRelationshipPage.close();
 
   const humanReviewPage = await browser.newPage();
   const humanReviewErrors = [];
