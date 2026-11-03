@@ -410,6 +410,45 @@
         "The manual describes the specific WHO interventions Step-by-Step and Doing What Matters in Times of Stress, which WHO reports have demonstrated effectiveness in multiple randomized controlled trials."
       ],
       "limitations": "The evidence and implementation guidance concern structured WHO interventions, especially Step-by-Step and Doing What Matters in Times of Stress. They do not demonstrate the effectiveness of this app, its anger-management content, its 28-day sequence, or any isolated daily prompt, and do not constitute WHO endorsement of this product. Adaptation requires attention to intervention fidelity, cultural and service context, monitoring, and appropriate human-support and referral pathways."
+    },
+    {
+      "source_id": "SRC-ER-REENTS-2026-001",
+      "title": "Efficacy of emotion regulation strategy implementation in and across mental disorders: A systematic review and meta-analysis",
+      "authors": [
+        "Mareike F. Reents",
+        "Philipp A. Schroeder",
+        "I. Wolz",
+        "M. M. van den Hoek Ostende",
+        "M. Dolderer",
+        "M. Farshad",
+        "J. Svaldi"
+      ],
+      "publisher": "Clinical Psychology Review",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2026-04",
+      "epub_date": "2026-02-25",
+      "doi": "10.1016/j.cpr.2026.102718",
+      "pmid": "41797239",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41797239/",
+      "relevant_claims": [
+        "The preregistered review identified 109 studies; 71 studies with 566 effect sizes entered the multilevel meta-analysis.",
+        "In controlled mood-induction tasks, instructed emotion-regulation strategies had a small effect on experiential outcomes (d = -0.37) and a very small effect on physiological outcomes (d = -0.09).",
+        "No significant pooled effect was found for behavioral outcomes; cognitive-change strategies had larger effects on experiential outcomes than response-modulation or attentional-deployment strategies."
+      ],
+      "limitations": "The evidence concerns instructed strategy use in controlled mood-induction/laboratory tasks, not durable treatment effects or real-world aggression prevention. No significant behavioral effect was found, and the authors note a shortage of behavioral outcomes and risk of bias from non-validated measures. It does not validate this app, its 28-day sequence, or a brief standalone prompt; it must not be cited as proof of behavioral change."
+    },
+    {
+      "source_id": "SRC-AGGRESSION-AWMF-2026-001",
+      "title": "Verhinderung von Zwang – Prävention und Therapie aggressiven Verhaltens bei Erwachsenen",
+      "publisher": "Arbeitsgemeinschaft der Wissenschaftlichen Medizinischen Fachgesellschaften (AWMF)",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2026-06-25",
+      "url": "https://www.awmf.org/aktuelles/awmf-aktuell/verhinderung-von-zwang-praevention-und-therapie-aggressiven-verhaltens-bei-erwachsenen-1",
+      "relevant_claims": [
+        "The 2026 version 3.0 guideline addresses prevention and treatment of aggressive behavior in adults in clinical and community psychiatric settings.",
+        "It aims to reduce or avoid coercive measures and emphasizes interventions that are as brief and minimally restrictive as possible while avoiding psychological and physical trauma."
+      ],
+      "limitations": "German-language clinical practice guidance for professional services and adult clinical populations. It is not a self-help protocol, individual risk-prediction tool, or validation of this app. Its recommendations require qualified clinical interpretation and cannot be transferred to an unguided 28-day program."
     }
   ]
 }
