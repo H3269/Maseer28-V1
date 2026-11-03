@@ -109,6 +109,46 @@ function withMemoryStorage(run) {
   }
 }
 
+test('failed legacy profile persistence never returns an unpersisted journey profile', async () => {
+  const {
+    migrateUserProfileFromJourney, migrateUserProfileToV2, executeJourneyPrivacyMigration,
+    JOURNEY_KEY, PROFILE_V2_KEY,
+  } = await import('../src/features/journey/journeyStore.js');
+  const previous = globalThis.localStorage;
+  const raw = {
+    started: true,
+    profileData: { name: 'کاربر آزمایشی', age: 35, medical: 'none', problem: 'anxiety' },
+    archive: [],
+  };
+  const original = JSON.stringify(raw);
+  const data = new Map([[JOURNEY_KEY, original]]);
+  globalThis.localStorage = {
+    getItem(key) { return data.get(key) ?? null; },
+    setItem(key, value) {
+      if (key === PROFILE_V2_KEY) throw new Error('profile storage blocked');
+      data.set(key, String(value));
+    },
+    removeItem(key) { data.delete(key); },
+  };
+  try {
+    const legacyUser = migrateUserProfileFromJourney({ profileData: raw.profileData });
+    const profileMigration = migrateUserProfileToV2({ profileData: raw.profileData });
+    const canonical = profileMigration.profile || legacyUser;
+    const privacyMigration = executeJourneyPrivacyMigration({
+      storage: globalThis.localStorage,
+      canonicalProfile: canonical,
+    });
+    assert.equal(legacyUser, null);
+    assert.equal(profileMigration.migrated, false);
+    assert.equal(privacyMigration.migrated, false);
+    assert.equal(privacyMigration.reason, 'canonical_profile_incomplete');
+    assert.equal(data.get(JOURNEY_KEY), original);
+  } finally {
+    if (previous === undefined) delete globalThis.localStorage;
+    else globalThis.localStorage = previous;
+  }
+});
+
 test('profile v2 migration fills only missing fields and preserves canonical values', async () => {
   const { migrateUserProfileToV2, PROFILE_KEY, PROFILE_V2_KEY, PROFILE_V2_MIGRATION_KEY } =
     await import('../src/features/journey/journeyStore.js');
