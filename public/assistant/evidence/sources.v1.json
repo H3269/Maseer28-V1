@@ -397,6 +397,19 @@
         "Abhijit Nadkarni"
       ],
       "pmid": "42309105"
+    },
+    {
+      "source_id": "SRC-WHO-PSYCH-SELFHELP-2026-001",
+      "title": "Psychological self-help interventions: delivering self-help for individuals, featuring Step-by-Step and Doing What Matters in Times of Stress",
+      "publisher": "World Health Organization",
+      "source_type": "global_implementation_manual",
+      "publication_date": "2026-06-01",
+      "url": "https://www.who.int/publications/i/item/9789240120785",
+      "relevant_claims": [
+        "The WHO manual provides implementation guidance for individually delivered guided and unguided psychological self-help, including digital, print, and video delivery.",
+        "The manual describes the specific WHO interventions Step-by-Step and Doing What Matters in Times of Stress, which WHO reports have demonstrated effectiveness in multiple randomized controlled trials."
+      ],
+      "limitations": "The evidence and implementation guidance concern structured WHO interventions, especially Step-by-Step and Doing What Matters in Times of Stress. They do not demonstrate the effectiveness of this app, its anger-management content, its 28-day sequence, or any isolated daily prompt, and do not constitute WHO endorsement of this product. Adaptation requires attention to intervention fidelity, cultural and service context, monitoring, and appropriate human-support and referral pathways."
     }
   ]
 }
