@@ -204,8 +204,9 @@ export async function restorePrivacyBackup(candidate, { storage, indexedDBApi = 
     try {
       for (const [key, value] of Object.entries(candidate.localStorage.entries)) {
         if (storage.getItem(key) !== null) throw new Error(`کلید ${key} هم‌زمان با بازیابی ایجاد شده است.`);
-        storage.setItem(key, serializeStorageValue(value));
+        // Track the key before setItem: a storage adapter may write and then throw.
         appliedLocalKeys.push(key);
+        storage.setItem(key, serializeStorageValue(value));
       }
       const verification = readLocalUserData(storage).entries;
       for (const [key, value] of Object.entries(candidate.localStorage.entries)) {
