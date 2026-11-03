@@ -190,7 +190,9 @@ try {
     await page.waitForFunction(() => Boolean(document.querySelector('#root')?.children.length));
     await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
     assert.equal(await page.locator('#archiveList .answerItem').count(), 1);
-    assert.match(await page.locator('#archiveList').innerText(), /archive-keep-me|مسیر/);
+    await page.locator('#archiveList .answerItem').first().getByRole('button', { name: /مشاهده جزئیات مسیر/ }).click();
+    assert.match(await page.locator('#archiveDetail').innerText(), /ARCHIVE-KEEP-ME/);
+    assert.doesNotMatch(await page.locator('#archiveDetail').innerText(), /ARCHIVE-DELETE-ME/);
     await page.close();
   }
 
