@@ -42,6 +42,26 @@ test('unapproved review metadata cannot be overridden by a routine risk label', 
   assert.equal('feedback' in record, false);
 });
 
+test('T03 day 14 remains blocked until its fear-related behavior is redesigned and expert-reviewed', () => {
+  for (const day of [
+    { id: 'ترس-14' },
+    { id: 'T03-D14' },
+    { id: 'T03-D14', topic_id: 'T03', day: 14, risk_level: 'routine', review_status: 'approved' },
+    { id: 'ترس-14', day: 13, risk_level: 'routine' },
+    { id: 'T03-D13', topic_id: 'T03', day: 14, risk_level: 'routine' },
+  ]) {
+    assert.equal(getDailySafetyMode(day), 'blocked');
+    const skipped = createHumanReviewSkipRecord(day, new Date('2026-11-04T12:00:00.000Z'));
+    assert.equal(skipped.status, 'skipped_human_review');
+    assert.equal('score' in skipped, false);
+    assert.equal('feedback' in skipped, false);
+  }
+  assert.equal(getDailySafetyMode({ id: 'ترس-13' }), 'routine',
+    'the targeted hold must not disable unrelated legacy fear days');
+  assert.equal(getDailySafetyMode({ id: 'T03-D13' }), 'routine',
+    'the targeted hold must not disable unrelated canonical fear days');
+});
+
 test('T01 draft days remain blocked at runtime until their review is approved', async () => {
   const [content, topics] = await Promise.all([
     readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8').then(JSON.parse),
