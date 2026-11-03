@@ -449,6 +449,37 @@
         "It aims to reduce or avoid coercive measures and emphasizes interventions that are as brief and minimally restrictive as possible while avoiding psychological and physical trauma."
       ],
       "limitations": "German-language clinical practice guidance for professional services and adult clinical populations. It is not a self-help protocol, individual risk-prediction tool, or validation of this app. Its recommendations require qualified clinical interpretation and cannot be transferred to an unguided 28-day program."
+    },
+    {
+      "source_id": "SRC-ER-IMPAIRMENT-SLOAN-2026-001",
+      "title": "Emotion regulation impairment across psychiatric disorders: a systematic review and meta-analysis",
+      "authors": [
+        "Matthew E. Sloan",
+        "Jordan Stellern",
+        "Ke Bin Xiao",
+        "Alisa Germeyer",
+        "Kevin Gill",
+        "Viyaleta Laputsina",
+        "Benoit H. Mulsant",
+        "Anthony Ngoy",
+        "Martin Nguyen",
+        "Victor M. Tang",
+        "Marcos Sanches",
+        "Joshua L. Gowin"
+      ],
+      "publisher": "Translational Psychiatry",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2026-05-29",
+      "doi": "10.1038/s41398-026-04119-x",
+      "pmid": "42215453",
+      "pmcid": "PMC13424126",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13424126/",
+      "relevant_claims": [
+        "The review included 188 studies and 563 case-control comparisons across 15 diagnoses, with 11,201 cases and 9,609 controls.",
+        "DERS case-control differences were significant in all 12 diagnoses with sufficient data, with effect sizes ranging from 0.94 to 2.55.",
+        "ERQ cognitive reappraisal was lower in all disorders except panic disorder; expressive suppression was higher in all disorders except ADHD and OCD."
+      ],
+      "limitations": "This is a case-control meta-analysis of measured emotion-regulation differences, not an intervention meta-analysis and not evidence that a specific skill, prompt, or app changes behavior. The database search ended in September 2023 despite publication in 2026; the included sample was 66% female and the number of comparisons varied substantially by diagnosis and measure. Results are not uniform across measures or diagnoses and do not justify applying one identical intervention to all topics."
     }
   ]
 }
