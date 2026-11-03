@@ -12,8 +12,15 @@ test('T01 day 10 provides a three-part, conditional pause plan', () => {
   assert.match(plan, /اگر درباره مناسب‌بودن شرایط تردید داری/);
 });
 
+test('runtime daily-content ID resolves T01 day 10 without optional metadata', () => {
+  const plan = getT01PausePlan({ id: 'T01-D10', instructions: 'تمرین روزانه' });
+  assert.match(plan, /یک برنامه مکث امن با سه جزء بنویس/);
+});
+
 test('pause plan is not attached to other topics or days', () => {
   assert.equal(getT01PausePlan({ topic_id: 'T01', day: 9 }), '');
   assert.equal(getT01PausePlan({ topic_id: 'T02', day: 10 }), '');
+  assert.equal(getT01PausePlan({ id: 'T01-D09' }), '');
+  assert.equal(getT01PausePlan({ id: 'T02-D10' }), '');
   assert.equal(getT01PausePlan(null), '');
 });
