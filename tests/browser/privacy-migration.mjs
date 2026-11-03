@@ -167,8 +167,9 @@ try {
     assert.ok(result.legacyProfile, 'v1 must not be removed when archive migration is blocked');
     assert.equal(result.journey.privacyMigrationVersion, undefined);
     assert.equal(result.journey.profileData.name, 'هویت مسیر قدیمی');
-    assert.equal(result.journey.archive.legacy.profileData.name, 'هویت آرشیو قدیمی');
-    assert.equal(result.journey.archive.legacy.profileData.medical, 'other');
+    assert.deepEqual(result.journey.archive, []);
+    assert.equal(result.journey.archiveRecoveryRequired.legacy.profileData.name, 'هویت آرشیو قدیمی');
+    assert.equal(result.journey.archiveRecoveryRequired.legacy.profileData.medical, 'other');
     await page.close();
   }
 
