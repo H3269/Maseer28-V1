@@ -115,10 +115,10 @@ test('assistant chat styling distinguishes speaker bubbles and keeps composer in
 
 
 test('GitHub Pages deployment is manual, defaults to no release, and requires the production content gate', () => {
-  assert.match(pagesDeployWorkflow, /workflow_dispatch:/);
-  assert.doesNotMatch(pagesDeployWorkflow, /^\\s+push:/m);
-  assert.match(pagesDeployWorkflow, /confirm_public_release/);
-  assert.match(pagesDeployWorkflow, /default:\\s*["']no["']/);
-  assert.match(pagesDeployWorkflow, /inputs\\.confirm_public_release\\s*==\\s*'yes'/);
-  assert.match(pagesDeployWorkflow, /npm run assert:production-content/);
+  assert.ok(pagesDeployWorkflow.includes('workflow_dispatch:'));
+  assert.equal(/^\s+push:/m.test(pagesDeployWorkflow), false);
+  assert.ok(pagesDeployWorkflow.includes('confirm_public_release'));
+  assert.ok(pagesDeployWorkflow.includes('default: "no"'));
+  assert.ok(pagesDeployWorkflow.includes("inputs.confirm_public_release == 'yes'"));
+  assert.ok(pagesDeployWorkflow.includes('npm run assert:production-content'));
 });
