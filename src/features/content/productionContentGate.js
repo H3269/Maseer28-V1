@@ -72,7 +72,7 @@ export function validateProductionContent({
         errors.push(`${label}: subtopic_ids are missing.`);
       }
       if (isControlTopicDay(day) && !getControlContextForDay(day)) {
-        errors.push(`${label}: T31 content must declare one control_context matching exactly one T31 subtype.`);
+        errors.push(`${label}: T31 control topic subtype and context are not explicitly classified.`);
       }
       if (!Array.isArray(day?.source_ids) || day.source_ids.length === 0
         || day.source_ids.some((sourceId) => !sourceIds.has(sourceId))) {
