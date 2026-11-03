@@ -1,5 +1,18 @@
+const LEGACY_CONTROL_TOPIC_ID = /^کنترل‌گری-[0-9]{1,2}$/u;
+const CANONICAL_CONTROL_TOPIC_ID = /^T31-D[0-9]{1,2}$/i;
+
 export function getDailySafetyMode(day) {
   if (!day || typeof day !== 'object') return 'routine';
+  const isUnreviewedControlTopic = (
+    day.topic_id === 'T31'
+    || LEGACY_CONTROL_TOPIC_ID.test(String(day.id || ''))
+    || CANONICAL_CONTROL_TOPIC_ID.test(String(day.id || ''))
+  ) && day.review_status !== 'approved';
+  // "Control" currently conflates personal over-control with interpersonal
+  // coercive/restrictive control. Do not expose legacy exercises until a
+  // qualified reviewer separates the subtypes and approves day-level content.
+  if (isUnreviewedControlTopic) return 'blocked';
+
   // Risk metadata is not an approval. Any v2 record must carry an explicit
   // approved review state; missing, draft, or pending review fails closed.
   const hasReviewStatus = Object.prototype.hasOwnProperty.call(day, 'review_status');
