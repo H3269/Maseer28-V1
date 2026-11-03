@@ -64,6 +64,10 @@ jobs:
 
       
       
+      - name: Require expert approval for all daily content
+        working-directory: test-source
+        run: npm run assert:production-content
+
       - name: Prepare production-only copy
         working-directory: test-source
         run: npm run prepare:production
