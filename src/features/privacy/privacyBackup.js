@@ -54,6 +54,54 @@ export async function createPrivacyRestorePreview(candidate, { storage, indexedD
       if (storeName === 'settings' && (row.key.startsWith('seed-') || row.key.startsWith('seed-book-fingerprint:'))) errors.push('تنظیمات داخلی seed قابل بازیابی از فایل کاربر نیستند.');
     }
   }
+  // Restore accepts data that will be consumed directly by the library UI.
+  // Validate the minimum reader-facing shape here; a valid checksum alone does
+  // not make arbitrary JSON a valid application record.
+  const incomingVersions = new Map(stores.versions.map((row) => [row.id, row]));
+  for (const book of stores.books) {
+    if (typeof book?.title !== 'string' || !book.title.trim()) {
+      errors.push('هر کتاب بازیابی‌شده باید عنوان متنی معتبر داشته باشد.');
+    }
+    if (typeof book?.activeVersionId !== 'string' || !book.activeVersionId.trim()) {
+      errors.push('هر کتاب بازیابی‌شده باید نسخه فعال معتبر داشته باشد.');
+    } else {
+      const activeVersion = incomingVersions.get(book.activeVersionId);
+      if (!activeVersion || activeVersion.bookId !== book.id) {
+        errors.push(`نسخه فعال کتاب ${book.id} در فایل پشتیبان وجود ندارد یا به کتاب دیگری تعلق دارد.`);
+      }
+    }
+    for (const field of ['subtitle', 'author', 'description', 'note', 'customTitle', 'customSubtitle', 'coverUrl', 'coverDataUrl']) {
+      if (book[field] !== undefined && typeof book[field] !== 'string') {
+        errors.push(`فیلد ${field} در کتاب ${book.id} باید متن باشد.`);
+      }
+    }
+    if (book.order !== undefined && (!Number.isFinite(book.order) || typeof book.order !== 'number')) {
+      errors.push(`ترتیب نمایش کتاب ${book.id} معتبر نیست.`);
+    }
+  }
+  for (const version of stores.versions) {
+    const content = version?.content;
+    if (!content || typeof content !== 'object' || Array.isArray(content)
+      || !Array.isArray(content.pages) || content.pages.length === 0) {
+      errors.push(`محتوای نسخه ${version?.id || 'نامشخص'} ساختار کتاب قابل نمایش ندارد.`);
+      continue;
+    }
+    for (const page of content.pages) {
+      if (page !== null && typeof page === 'object' && !Array.isArray(page)) {
+        if (page.text !== undefined && typeof page.text !== 'string') {
+          errors.push(`متن یکی از صفحات نسخه ${version.id} معتبر نیست.`);
+          break;
+        }
+        if (page.blocks !== undefined && !Array.isArray(page.blocks)) {
+          errors.push(`بلوک‌های یکی از صفحات نسخه ${version.id} معتبر نیستند.`);
+          break;
+        }
+      } else if (typeof page !== 'string') {
+        errors.push(`ساختار یکی از صفحات نسخه ${version.id} معتبر نیست.`);
+        break;
+      }
+    }
+  }
   if (errors.length) return { valid: false, validation, errors };
   try {
     const currentLocal = readLocalUserData(storage).entries;
