@@ -828,8 +828,7 @@ export function executeArchivedJourneyDeletion({
   try {
     storage.setItem(JOURNEY_KEY, serialized);
     const readBack = storage.getItem(JOURNEY_KEY);
-    const parsed = readBack ? JSON.parse(readBack) : null;
-    if (!parsed || JSON.stringify(sanitizeJourneyState(parsed)) !== serialized) {
+    if (readBack !== serialized) {
       throw new Error('archive deletion read-back mismatch');
     }
     return { removed: true, reason: 'verified', state: plan.state };
