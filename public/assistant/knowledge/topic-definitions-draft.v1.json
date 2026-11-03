@@ -27,7 +27,13 @@
       "working_definition": "حالت نگرانی یا انتظار تهدید درباره پیامدهای نامطمئن آینده که ممکن است با برانگیختگی جسمانی و رفتارهای ایمنی‌بخش همراه باشد.",
       "scope_limit": "وجود اضطراب به‌تنهایی تشخیص اختلال اضطرابی نیست.",
       "definition_status": "draft",
-      "evidence_ids": [],
+      "evidence_ids": [
+        "SRC-ANXIETY-NHS-001",
+        "SRC-ANXIETY-NICE-CG113-001",
+        "SRC-ANXIETY-APA-001",
+        "SRC-ANXIETY-APA-UNCERTAINTY-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001"
+      ],
       "review_status": "pending_expert_review",
       "reviewer": null,
       "reviewed_at": null
