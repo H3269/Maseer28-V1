@@ -179,3 +179,13 @@ localStorage و IndexedDB به صورت مستقل حذف می‌شوند و ت�
 - تست جدید فایل دارای checksum صحیح اما رکوردهای کتاب مخدوش را پیش از هر mutation رد می‌کند.
 
 این اعتبارسنجی حداقل شکل مصرف‌کننده UI را پوشش می‌دهد و جایگزین ممیزی مستقل تمام فیلدهای محتوا یا رمزنگاری backup نیست. نتیجه CI روی commit نهایی پس از این تغییر باید جداگانه تأیید شود.
+
+
+## 13. CI نهایی پس از هم‌ترازسازی fixtureهای بازیابی
+
+- CI قبلی روی commit `faeb5bac27b533a2aedd8381587b588a6a92c568` به‌دلیل fixtureهای قدیمی و ناقص کتابخانه شکست خورد؛ تست‌ها کتاب‌هایی بدون `activeVersionId` و نسخه‌هایی بدون `content.pages` می‌ساختند. این داده‌ها با مدل واقعی کتابخانه و اعتبارسنجی تازه سازگار نبودند.
+- fixtureهای تست در commit `3d4052157d1145c3ec26ee9b3a4f70e51bd3a5ec` اصلاح شدند تا هر کتاب آزمایشی نسخه فعال متناظر و محتوای صفحات داشته باشد. اعتبارسنجی سخت‌گیرانه محصول حذف یا تضعیف نشد.
+- GitHub Actions Run [41652969187](https://github.com/H3269/Maseer28-V1/actions/runs/41652969187) روی همان commit: **SUCCESS**.
+- تمام مراحل موفق: dependency audit (صفر آسیب‌پذیری گزارش‌شده در npm audit)، registry validation، unit tests، content validation، content quality audit، build و Chromium privacy/archive tests.
+- سناریوهای مرورگر E1 تا E9 و خروجی واقعی PDF/ZIP موفق شدند.
+- این نتیجه فقط CI و Chromium runner را تأیید می‌کند؛ پذیرش Chrome Android و Telegram/Bale WebView هنوز باید دستی انجام شود.
