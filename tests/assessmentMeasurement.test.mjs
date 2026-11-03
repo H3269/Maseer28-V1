@@ -7,15 +7,18 @@ const journeyScreens = await readFile(
   'utf8'
 );
 
-test('baseline and final assessment reuse the exact same first four questions', () => {
+test('baseline and final assessment reuse the exact same first four questions and score only those items', () => {
   assert.match(
     journeyScreens,
     /export const FINAL_SCALE_QUESTIONS = \[\s*\.\.\.SCALE_QUESTIONS\.slice\(0, 4\)/
   );
-  assert.match(
-    journeyScreens,
-    /burden = complete \? burdenScoreFromAnswers\(values\.slice\(0, 4\)\.map\(Number\)\)/
+  assert.equal(
+    [...journeyScreens.matchAll(/burden = complete \? burdenScoreFromAnswers\(values\.slice\(0, 4\)\.map\(Number\)\)/g)].length,
+    2,
+    'baseline and final intensity scores must use the same first four questions'
   );
+  assert.match(journeyScreens, /const motivation = complete \? Number\(values\[4\]\) : null/);
+  assert.match(journeyScreens, /const progress = complete \? Number\(values\[4\]\) : null/);
 });
 
 test('assessment screens disclose that custom scores are self-report, not validated clinical measures', () => {
