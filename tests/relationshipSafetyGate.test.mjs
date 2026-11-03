@@ -45,6 +45,17 @@ test('legacy and canonical identifiers preserve shared-topic gates and fail clos
     'a conflicting topic identifier must not bypass a gated interaction');
 });
 
+test('relationship safety check requires mutual freedom to refuse or stop communication', () => {
+  const gate = getRelationshipSafetyGate({ id: 'T03-D06', topic_id: 'T03', day: 6 });
+  assert.ok(gate);
+  assert.match(gate.question, /هر دو نفر/);
+  assert.match(gate.safeOption, /هر دو نفر/);
+  assert.match(gate.unsafeOption, /هرکدام از ما/);
+  assert.match(gate.disclaimer, /آزادی انتخاب هر یک از دو نفر/);
+  assert.match(gate.blockedMessage, /هیچ‌یک از دو نفر/);
+  assert.match(gate.safeReminder, /هرکدام از دو نفر/);
+});
+
 test('relationship safety confirmation fails closed unless the user explicitly chooses safe', () => {
   const day = { id: 'T01-D17', topic_id: 'T01', day: 17 };
   assert.equal(isRelationshipSafetyConfirmed(day, ''), false);
