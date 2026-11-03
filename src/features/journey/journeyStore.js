@@ -365,6 +365,37 @@ export function migrateUserProfileToV2(state = loadJourneyState()) {
   }
 }
 
+/**
+ * Remove the superseded v1 profile only after v2 migration and the journey
+ * privacy migration have both been verified. The v2 record is authoritative
+ * once its migration marker exists; this cleanup prevents stale sensitive
+ * values from surviving in a second app-owned storage key.
+ */
+export function removeLegacyUserProfileAfterVerifiedMigration({
+  storage = globalThis.localStorage,
+} = {}) {
+  if (!storage || typeof storage.getItem !== 'function'
+    || typeof storage.removeItem !== 'function') {
+    return { removed: false, reason: 'storage_unavailable' };
+  }
+  try {
+    if (storage.getItem(PROFILE_V2_MIGRATION_KEY) !== '1') {
+      return { removed: false, reason: 'migration_not_verified' };
+    }
+    const canonical = normalizeProfileRecord(readProfileRecord(PROFILE_V2_KEY));
+    if (!canonical) return { removed: false, reason: 'canonical_profile_missing' };
+    const legacyRaw = storage.getItem(PROFILE_KEY);
+    if (legacyRaw === null) return { removed: true, reason: 'already_absent' };
+    storage.removeItem(PROFILE_KEY);
+    if (storage.getItem(PROFILE_KEY) !== null) {
+      return { removed: false, reason: 'readback_failed' };
+    }
+    return { removed: true, reason: 'verified' };
+  } catch {
+    return { removed: false, reason: 'storage_failure' };
+  }
+}
+
 export const JOURNEY_PRIVACY_MIGRATION_VERSION = 1;
 const LEGACY_SENSITIVE_PROFILE_FIELDS = [
   'name', 'age', 'gender', 'phone',
