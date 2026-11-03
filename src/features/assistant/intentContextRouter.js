@@ -91,7 +91,7 @@ function classifyIntent(value) {
 
 function hasNegatedTopic(value, phrase) {
   const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const pattern = new RegExp('(?:من\s+)?(?:اصلاً\s+)?(?:' + escaped + ')(?:\s+را)?\s+(?:ندارم|نیستم|نمی خواهم|نمی ترسم)');
+  const pattern = new RegExp('(?:من\\s+)?(?:اصلاً\\s+)?(?:' + escaped + ')(?:\\s+را)?\\s+(?:ندارم|نیستم|نیست|نبود|نبوده|نمی خواهم|نمی ترسم|نمی کنم)');
   return pattern.test(value);
 }
 
