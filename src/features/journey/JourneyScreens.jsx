@@ -390,6 +390,7 @@ export function Support({ content, onBack }) {
   const [privacyMessage, setPrivacyMessage] = useState('');
   const [privacyBusy, setPrivacyBusy] = useState(false);
   const [restorePreview, setRestorePreview] = useState(null);
+  const [backupToRestore, setBackupToRestore] = useState(null);
   const restoreFileRef = useRef(null);
   const number = '09190889062';
   async function copySupportNumber() {
