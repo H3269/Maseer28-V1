@@ -13,6 +13,7 @@ const approvalManifestSchema = JSON.parse(await readFile(new URL('../public/assi
 const knowledgeCatalog = JSON.parse(await readFile(new URL('../public/assistant/knowledge/items.v1.json', import.meta.url), 'utf8'));
 const approvalManifest = JSON.parse(await readFile(new URL('../public/assistant/knowledge/approved-items.v1.json', import.meta.url), 'utf8'));
 const publishWorkflow = await readFile(new URL('../.github/workflows/publish-tested-version.yml', import.meta.url), 'utf8');
+const productionPreparation = await readFile(new URL('../scripts/prepare-production-build.mjs', import.meta.url), 'utf8');
 
 test('experimental assistant remains disabled unless explicitly enabled in a build', () => {
   assert.match(journeyUi, /APP_CONFIG\.TEST_MODE\s*\|\|\s*import\.meta\.env\.VITE_ENABLE_EXPERIMENTAL_ASSISTANT\s*===\s*'true'/);
@@ -26,6 +27,12 @@ test('assistant runtime does not claim clinical validation or diagnostic capabil
   assert.match(engine, /safety_triage_validated:\s*false/);
   assert.match(engine, /clinical_review_complete:\s*false/);
   assert.match(engine, /cloud_processing:\s*false/);
+});
+
+test('production publication is blocked until every daily unit has expert approval', () => {
+  assert.match(productionPreparation, /validateProductionContent/);
+  assert.match(productionPreparation, /Production publication blocked/);
+  assert.match(publishWorkflow, /npm run prepare:production/);
 });
 
 test('production publish workflow cannot enable the experimental assistant accidentally', () => {
