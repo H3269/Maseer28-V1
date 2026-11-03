@@ -152,6 +152,32 @@ function isRepetitiveNegativeThinkingTopicDay(day) {
   ));
 }
 
+function isRelationshipDifficultiesTopicDay(day) {
+  return Boolean(day && typeof day === 'object' && (
+    day.topic_id === 'T17'
+    || /^مشکلات رابطه-[0-9]{1,2}$/u.test(String(day.id || ''))
+    || /^T17-D[0-9]{1,2}$/i.test(String(day.id || ''))
+  ));
+}
+
+const RELATIONSHIP_DIFFICULTIES_SUBTOPIC_IDS = new Set(['T17-S01', 'T17-S02', 'T17-S03']);
+
+function hasApprovedRelationshipDifficultiesReview(day) {
+  if (day.review_status !== 'approved'
+    || !Array.isArray(day.subtopic_ids)
+    || day.subtopic_ids.length !== 1
+    || !RELATIONSHIP_DIFFICULTIES_SUBTOPIC_IDS.has(day.subtopic_ids[0])
+    || typeof day.review_record_id !== 'string'
+    || day.review_record_id.trim().length === 0) return false;
+
+  if (day.subtopic_ids[0] === 'T17-S03') {
+    return day.risk_level === 'caution'
+      && Array.isArray(day.safety_rule_ids)
+      && day.safety_rule_ids.length > 0;
+  }
+  return true;
+}
+
 const RNT_SUBTOPIC_IDS = new Set(['T16-S01', 'T16-S02', 'T16-S03']);
 
 function hasApprovedRntReview(day) {
@@ -226,6 +252,7 @@ export function getDailySafetyMode(day) {
   if (isLonelinessDayFourteen(day) && !hasApprovedLonelinessDayFourteenReview(day)) return 'blocked';
   if (isLowEnergyTopicDay(day) && !hasApprovedLowEnergyReview(day)) return 'blocked';
   if (isRepetitiveNegativeThinkingTopicDay(day) && !hasApprovedRntReview(day)) return 'blocked';
+  if (isRelationshipDifficultiesTopicDay(day) && !hasApprovedRelationshipDifficultiesReview(day)) return 'blocked';
   if (isControlTopicDay(day)) {
     // "Control" conflates personal over-control with interpersonal coercive
     // control. Release only after an approved day is assigned to exactly one
