@@ -379,7 +379,24 @@
         "The review included 45 studies and 9,431 adults exposed to war-related or interpersonal violence.",
         "Compared with control conditions, non-specialist-delivered psychosocial interventions showed pooled benefits for anxiety, depression, post-traumatic stress symptoms, and functional impairment."
       ],
-      "limitations": "The review concerns structured psychosocial interventions delivered by trained non-specialists to violence-exposed adults; it does not validate unguided self-help, an anger-management sequence, this app, or an automated risk/referral algorithm. Intervention type, supervision, population, and local service pathways matter; pooled effects should not be presented as guaranteed individual outcomes."
+      "limitations": "Although pooled overall effects favored non-specialist-delivered care, subgroup analyses found no statistically significant depression or anxiety improvement among interpersonal-violence survivors, and no significant effects across outcomes for veterans. Heterogeneity for the main outcomes was high (I² 77–84%), and 98% of included studies had some risk of bias. The review concerns structured psychosocial interventions delivered by non-specialists to violence-exposed adults; it does not validate unguided self-help, an anger-management sequence, this app, or an automated risk/referral algorithm. Intervention type, supervision, population, and local service pathways matter; pooled effects should not be presented as guaranteed individual outcomes.",
+      "authors": [
+        "Anushka R. Patel",
+        "Ginger Ramirez",
+        "Luanna Fernandes",
+        "Aman Bariya-Sousa",
+        "Erin McGuinness",
+        "Sarah Taha",
+        "Bijayalaxmi Biswal",
+        "Astha Awasthi",
+        "Daryll Wilson",
+        "Kelly E. Dixon",
+        "Davide Papola",
+        "Anna Zettelmeyer",
+        "Vikram H. Patel",
+        "Abhijit Nadkarni"
+      ],
+      "pmid": "42309105"
     }
   ]
 }
