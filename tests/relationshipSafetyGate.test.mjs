@@ -78,6 +78,17 @@ test('relationship safety skip records are explicit and never fabricate a score'
   );
   assert.equal(boundaryRecord.status, 'skipped_safety_gate');
   assert.equal('score' in boundaryRecord, false);
+
+  const sharedPromptRecord = createRelationshipSafetySkipRecord(
+    { id: 'ترس-6', day: 6 },
+    '2026-11-03T12:00:00.000Z'
+  );
+  assert.equal(sharedPromptRecord.status, 'skipped_safety_gate');
+  assert.equal('score' in sharedPromptRecord, false);
+  assert.throws(
+    () => createRelationshipSafetySkipRecord({ id: 'کنترل‌گری-06', day: 6 }),
+    /approved or legacy routine/
+  );
 });
 
 test('actual shared interpersonal prompts across T03-T34 are gated', async () => {
