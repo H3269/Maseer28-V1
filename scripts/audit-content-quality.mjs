@@ -243,4 +243,14 @@ for (const [field, stats] of Object.entries(crossTopicSimilarity)) {
   const largest = Math.max(...stats.largest_shared_topic_count_by_day);
   console.log(`- ${field}: ${stats.fully_shared_days_across_all_topics}/${expectedDays} روز کاملاً مشترک؛ بیشترین خوشه تکراری ${largest}/${expectedTopics} موضوع.`);
 }
+console.log('پوشش فراداده علمی/بازبینی (تعداد روزهای دارای مقدار، نه تأیید تخصصی):');
+for (const field of ['learning_objective', 'target_skill', 'subtopic_ids', 'mechanism', 'exercise_type', 'duration_minutes', 'source_ids', 'evidence_grade', 'review_status', 'review_record_id']) {
+  console.log(`- ${field}: ${metadataCoverage[field] || 0}/${allDays.length}`);
+}
+const reviewStatusCounts = {};
+for (const day of allDays) {
+  const status = String(day.review_status || '(missing)');
+  reviewStatusCounts[status] = (reviewStatusCounts[status] || 0) + 1;
+}
+console.log(`توزیع وضعیت بازبینی: ${Object.entries(reviewStatusCounts).map(([status, count]) => `${status}=${count}`).join('؛ ') || '(none)'}`);
 console.log(`گزارش ماشین‌خوان: ${path.relative(root, outputPath)}`);
