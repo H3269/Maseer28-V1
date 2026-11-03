@@ -16,7 +16,22 @@
       "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
-      "safety_rule_ids": []
+      "safety_rule_ids": [],
+      "draft_content_ids": [
+        "خشم-01",
+        "خشم-02",
+        "خشم-03",
+        "خشم-05",
+        "خشم-07",
+        "خشم-15",
+        "خشم-16",
+        "خشم-17",
+        "خشم-18",
+        "خشم-19",
+        "خشم-24",
+        "خشم-25",
+        "خشم-28"
+      ]
     },
     {
       "subtopic_id": "T01-S02",
@@ -30,7 +45,22 @@
       "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
-      "safety_rule_ids": []
+      "safety_rule_ids": [],
+      "draft_content_ids": [
+        "خشم-04",
+        "خشم-05",
+        "خشم-06",
+        "خشم-07",
+        "خشم-08",
+        "خشم-09",
+        "خشم-10",
+        "خشم-12",
+        "خشم-13",
+        "خشم-14",
+        "خشم-24",
+        "خشم-25",
+        "خشم-28"
+      ]
     },
     {
       "subtopic_id": "T01-S03",
@@ -44,7 +74,28 @@
       "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
-      "safety_rule_ids": []
+      "safety_rule_ids": [],
+      "draft_content_ids": [
+        "خشم-01",
+        "خشم-02",
+        "خشم-05",
+        "خشم-06",
+        "خشم-10",
+        "خشم-11",
+        "خشم-13",
+        "خشم-14",
+        "خشم-17",
+        "خشم-18",
+        "خشم-19",
+        "خشم-20",
+        "خشم-21",
+        "خشم-22",
+        "خشم-23",
+        "خشم-25",
+        "خشم-26",
+        "خشم-27",
+        "خشم-28"
+      ]
     },
     {
       "subtopic_id": "T02-S01",
@@ -65,7 +116,9 @@
         "SRC-ANXIETY-APA-001"
       ],
       "assessment_question_ids": [],
-      "content_ids": [
+      "content_ids": [],
+      "safety_rule_ids": [],
+      "draft_content_ids": [
         "اضطراب-01",
         "اضطراب-02",
         "اضطراب-03",
@@ -81,8 +134,7 @@
         "اضطراب-25",
         "اضطراب-27",
         "اضطراب-28"
-      ],
-      "safety_rule_ids": []
+      ]
     },
     {
       "subtopic_id": "T02-S02",
@@ -103,7 +155,9 @@
         "SRC-ANXIETY-CBT-GUIDELINE-001"
       ],
       "assessment_question_ids": [],
-      "content_ids": [
+      "content_ids": [],
+      "safety_rule_ids": [],
+      "draft_content_ids": [
         "اضطراب-05",
         "اضطراب-07",
         "اضطراب-08",
@@ -114,8 +168,7 @@
         "اضطراب-26",
         "اضطراب-27",
         "اضطراب-28"
-      ],
-      "safety_rule_ids": []
+      ]
     },
     {
       "subtopic_id": "T02-S03",
@@ -136,7 +189,9 @@
         "SRC-ANXIETY-APA-001"
       ],
       "assessment_question_ids": [],
-      "content_ids": [
+      "content_ids": [],
+      "safety_rule_ids": [],
+      "draft_content_ids": [
         "اضطراب-03",
         "اضطراب-07",
         "اضطراب-12",
@@ -155,8 +210,7 @@
         "اضطراب-26",
         "اضطراب-27",
         "اضطراب-28"
-      ],
-      "safety_rule_ids": []
+      ]
     },
     {
       "subtopic_id": "T03-S01",
