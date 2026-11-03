@@ -188,3 +188,8 @@ test('a separate first-person harmful intent remains urgent after a third-party 
   const result = routeSemanticIntake({ text: 'دوستم گفت می‌خواهم خودکشی کنم، اما من قصد دارم به خودم آسیب بزنم.' });
   assert.equal(result.safety_handoff.handoff_required, true);
 });
+
+test('third-party attribution preserves a separate first-person topic after a conjunction', () => {
+  const result = routeSemanticIntake({ text: 'دوستم گفت بی‌ارزشم و من هم احساس بی‌ارزشی دارم' });
+  assert.equal(result.topic_candidates.some((item) => item.topic_id === 'T23'), true);
+});
