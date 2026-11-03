@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-03-path28-content-draft-v2",
+  "version": "2026-11-03-path28-content-draft-v3",
   "channelUrl": "https://t.me/Healing_Hypnotherapy_Center",
   "meditationUrl": "https://t.me/Healing_Hypnotherapy_Center/11",
   "supportUrl": "https://t.me/Hypnotherapy_admin",
@@ -495,7 +495,8 @@
           "source_ids": [
             "SRC-ANGER-NHS-001",
             "SRC-ANGER-APA-001",
-            "SRC-ANGER-KJAERVIK-2024-001"
+            "SRC-ANGER-KJAERVIK-2024-001",
+            "SRC-ANGER-WHO-IPV-2013-001"
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
@@ -546,7 +547,8 @@
           "source_ids": [
             "SRC-ANGER-APS-001",
             "SRC-ANGER-APA-001",
-            "SRC-ANGER-ABCT-001"
+            "SRC-ANGER-ABCT-001",
+            "SRC-ANGER-WHO-IPV-2013-001"
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
@@ -831,7 +833,8 @@
           "source_ids": [
             "SRC-ANGER-APS-001",
             "SRC-ANGER-APA-001",
-            "SRC-ANGER-ABCT-001"
+            "SRC-ANGER-ABCT-001",
+            "SRC-ANGER-WHO-IPV-2013-001"
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
@@ -974,7 +977,8 @@
           "source_ids": [
             "SRC-ANGER-APS-001",
             "SRC-ANGER-APA-001",
-            "SRC-ANGER-ABCT-001"
+            "SRC-ANGER-ABCT-001",
+            "SRC-ANGER-WHO-IPV-2013-001"
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
@@ -1019,7 +1023,8 @@
           "source_ids": [
             "SRC-ANGER-APS-001",
             "SRC-ANGER-APA-001",
-            "SRC-ANGER-ABCT-001"
+            "SRC-ANGER-ABCT-001",
+            "SRC-ANGER-WHO-IPV-2013-001"
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
@@ -1070,7 +1075,8 @@
           "source_ids": [
             "SRC-ANGER-APS-001",
             "SRC-ANGER-APA-001",
-            "SRC-ANGER-ABCT-001"
+            "SRC-ANGER-ABCT-001",
+            "SRC-ANGER-WHO-IPV-2013-001"
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
@@ -1114,7 +1120,8 @@
           ],
           "source_ids": [
             "SRC-ANGER-NHS-001",
-            "SRC-ANGER-ABCT-001"
+            "SRC-ANGER-ABCT-001",
+            "SRC-ANGER-WHO-IPV-2013-001"
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
@@ -1296,7 +1303,8 @@
           ],
           "source_ids": [
             "SRC-ANGER-NHS-001",
-            "SRC-ANGER-ABCT-001"
+            "SRC-ANGER-ABCT-001",
+            "SRC-ANGER-WHO-IPV-2013-001"
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
