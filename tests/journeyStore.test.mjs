@@ -362,6 +362,45 @@ test('legacy archive migration preserves completion, assessments, reflections an
   assert.deepEqual(Object.keys(migrated.profileData).sort(), ['durationMonths', 'durationYears', 'goal', 'problem']);
 });
 
+test('executed privacy migration trusts only the exact supported numeric version marker', async () => {
+  const { executeJourneyPrivacyMigration, JOURNEY_KEY, JOURNEY_PRIVACY_MIGRATION_VERSION } =
+    await import('../src/features/journey/journeyStore.js');
+  const canonical = { name: 'نام کاربر', medical: 'none' };
+  const makeStorage = (version) => {
+    const raw = {
+      privacyMigrationVersion: version,
+      profileData: { name: 'نام کاربر', medical: 'none', problem: 'anxiety' },
+      archive: [],
+    };
+    const original = JSON.stringify(raw);
+    const values = new Map([[JOURNEY_KEY, original]]);
+    return {
+      original,
+      values,
+      storage: {
+        getItem: (key) => values.get(key) ?? null,
+        setItem: (key, value) => values.set(key, String(value)),
+      },
+    };
+  };
+
+  const verified = makeStorage(JOURNEY_PRIVACY_MIGRATION_VERSION);
+  const already = executeJourneyPrivacyMigration({ storage: verified.storage, canonicalProfile: canonical });
+  assert.deepEqual(already, { migrated: true, reason: 'already_verified' });
+  assert.equal(verified.values.get(JOURNEY_KEY), verified.original);
+
+  const stringMarker = makeStorage(String(JOURNEY_PRIVACY_MIGRATION_VERSION));
+  const rerun = executeJourneyPrivacyMigration({ storage: stringMarker.storage, canonicalProfile: canonical });
+  assert.equal(rerun.reason, 'verified');
+  assert.equal(JSON.parse(stringMarker.values.get(JOURNEY_KEY)).privacyMigrationVersion, JOURNEY_PRIVACY_MIGRATION_VERSION);
+  assert.equal(JSON.parse(stringMarker.values.get(JOURNEY_KEY)).profileData.name, undefined);
+
+  const future = makeStorage(JOURNEY_PRIVACY_MIGRATION_VERSION + 1);
+  const unsupported = executeJourneyPrivacyMigration({ storage: future.storage, canonicalProfile: canonical });
+  assert.deepEqual(unsupported, { migrated: false, reason: 'unsupported_future_migration_version' });
+  assert.equal(future.values.get(JOURNEY_KEY), future.original);
+});
+
 test('executed privacy migration writes, reads back, and preserves path/report data', async () => {
   const { executeJourneyPrivacyMigration, JOURNEY_KEY, JOURNEY_PRIVACY_MIGRATION_VERSION } = await import('../src/features/journey/journeyStore.js');
   const raw = {
