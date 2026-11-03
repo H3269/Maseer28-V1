@@ -74,14 +74,19 @@ try {
   emptyPage.on('pageerror', (error) => emptyErrors.push(String(error)));
   await emptyPage.addInitScript(() => {
     localStorage.setItem('maseer28_copyright_v60', '1');
+    localStorage.setItem('maseer28_onboarding_complete_v1', '1');
     localStorage.setItem('maseer28_user_profile_v2', JSON.stringify({
       version: 2, name: 'کاربر آزمایشی', age: 35, gender: 'زن', phone: '09123456789',
       medical: 'none', medicalNote: '', medication: 'no', medicationRisk: 'no',
     }));
+    const answer = 'متن آزمایشی برای بررسی خروجی PDF در مرورگر واقعی. '.repeat(90);
     localStorage.setItem('maseer28_state', JSON.stringify({
       schema: 7, started: true, profile: true, assessment: true,
-      completed: [], answers: {}, daily: {}, profileData: {
-        problem: 'anxiety', durationYears: 1, durationMonths: 0, goal: 'هدف آزمایشی', code: 'M28-EMPTY',
+      completed: [1, 2], answers: { 1: answer, 2: 'پاسخ دوم' },
+      daily: { 1: { score: 4, feedback: 'better', feedbackText: 'بهتر شدم' } },
+      profileData: {
+        problem: 'anxiety', durationYears: 1, durationMonths: 0,
+        goal: 'هدف آزمایشی', code: 'M28-EXPORT',
       },
       assessmentData: { score: 6 }, final: null, archive: [],
       pathId: 'active-empty-archive-check', startedAt: '2026-01-01T00:00:00.000Z', lastView: 'dashboard',
