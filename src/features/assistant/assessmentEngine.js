@@ -51,9 +51,9 @@ export function classifySafetyAnswer(text) {
 
   // An intention is urgent only when the text explicitly connects it to harm.
   // Generic plans (travel, exercise, work, etc.) must never trigger a crisis handoff.
-  const explicitHarmIntent = /(?:قصد|برنامه|تصمیم)\s+(?:قطعی\s+)?دارم.{0,45}(?:خودکشی|خودم را بکشم|خودمو بکشم|به خودم آسیب|به کسی آسیب|به او آسیب|او را بکشم|کسی را بکشم)/.test(value)
-    || /(?:می خواهم|میخوام).{0,45}(?:خودکشی کنم|خودم را بکشم|خودمو بکشم|به خودم آسیب بزنم|به کسی آسیب بزنم|به او آسیب بزنم|او را بکشم|کسی را بکشم)/.test(value)
-    || /(?:ممکن است|احتمال دارد).{0,35}(?:به خودم آسیب بزنم|به کسی آسیب بزنم|خودکشی کنم)/.test(value);
+  const explicitHarmIntent = /(?:قصد|برنامه|تصمیم)\s+(?:قطعی\s+)?دارم.{0,45}(?:خودکشی کنم|خودم را بکشم|خودمو بکشم|به خودم آسیب بزنم|به کسی آسیب بزنم|به او آسیب بزنم|او را بکشم|کسی را بکشم)/.test(value)
+    || /(?:^|[\s،,])(?:می خواهم|میخوام).{0,45}(?:خودکشی کنم|خودم را بکشم|خودمو بکشم|به خودم آسیب بزنم|به کسی آسیب بزنم|به او آسیب بزنم|او را بکشم|کسی را بکشم)/.test(value)
+    || /(?:ممکن است|احتمال دارد|شاید).{0,35}(?:به خودم آسیب بزنم|به کسی آسیب بزنم|به او آسیب بزنم|خودکشی کنم)/.test(value);
   if (explicitHarmIntent) return 'urgent_human_support_recommended';
 
   const uncertainty = [
