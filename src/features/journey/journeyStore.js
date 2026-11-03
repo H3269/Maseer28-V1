@@ -382,7 +382,11 @@ export function removeLegacyUserProfileAfterVerifiedMigration({
     if (storage.getItem(PROFILE_V2_MIGRATION_KEY) !== '1') {
       return { removed: false, reason: 'migration_not_verified' };
     }
-    const canonical = normalizeProfileRecord(readProfileRecord(PROFILE_V2_KEY));
+    const canonicalRaw = storage.getItem(PROFILE_V2_KEY);
+    let canonicalValue = null;
+    try { canonicalValue = canonicalRaw == null ? null : JSON.parse(canonicalRaw); }
+    catch { return { removed: false, reason: 'canonical_profile_missing' }; }
+    const canonical = normalizeProfileRecord(canonicalValue);
     if (!canonical) return { removed: false, reason: 'canonical_profile_missing' };
     const legacyRaw = storage.getItem(PROFILE_KEY);
     if (legacyRaw === null) return { removed: true, reason: 'already_absent' };
