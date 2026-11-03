@@ -6,14 +6,14 @@ const T01_PAUSE_PLAN = [
   'اگر درباره مناسب‌بودن شرایط تردید داری، این برنامه را اجرا نکن و از یک فرد قابل اعتماد یا متخصص واجد صلاحیت کمک بگیر.',
 ].join(String.fromCharCode(10, 10));
 
-export function getT01PausePlan(day) {
+export function getT01PausePlan(day, topicName = '') {
   if (!day || typeof day !== 'object') return '';
 
   // The production T01 category uses IDs such as خشم-10; topic_id is optional.
   const id = String(day.id || '');
   const runtimeIdMatch = /^خشم-([0-9]{1,2})$/u.exec(id);
   const canonicalIdMatch = /^T01-D([0-9]{1,2})$/i.exec(id);
-  const isT01 = day.topic_id === 'T01' || Boolean(runtimeIdMatch || canonicalIdMatch);
+  const isT01 = day.topic_id === 'T01' || topicName === 'خشم' || Boolean(runtimeIdMatch || canonicalIdMatch);
   const dayNumber = day.day ?? runtimeIdMatch?.[1] ?? canonicalIdMatch?.[1];
 
   return isT01 && Number(dayNumber) === 10 ? T01_PAUSE_PLAN : '';
