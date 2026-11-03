@@ -88,6 +88,29 @@ test('sanitizeJourneyState normalizes valid five-item assessment answers', () =>
   assert.equal(state.assessment, true);
 });
 
+test('sanitizeJourneyState omits sensitive placeholders only after verified privacy migration', () => {
+  const verified = sanitizeJourneyState({
+    privacyMigrationVersion: 1,
+    profileData: {
+      name: '', age: '', gender: '', phone: '', medical: '', medicalNote: '',
+      medication: '', medicationRisk: '', problem: 'anxiety', code: 'M28-123456',
+    },
+  });
+  assert.equal(verified.privacyMigrationVersion, 1);
+  for (const field of ['name', 'age', 'gender', 'phone', 'medical', 'medicalNote', 'medication', 'medicationRisk']) {
+    assert.equal(verified.profileData[field], undefined, `expected ${field} to stay absent after migration`);
+  }
+  assert.equal(verified.profileData.problem, 'anxiety');
+  assert.equal(verified.profileData.code, 'M28-123456');
+
+  const staleMarker = sanitizeJourneyState({
+    privacyMigrationVersion: 1,
+    profileData: { name: 'legacy identity', medical: 'none', problem: 'anxiety' },
+  });
+  assert.equal(staleMarker.profileData.name, 'legacy identity');
+  assert.equal(staleMarker.profileData.medical, 'none');
+});
+
 test('sanitizeJourneyState limits archive retention to twenty entries', () => {
   const archive = Array.from({ length: 25 }, (_, index) => ({ pathId: String(index) }));
   const state = sanitizeJourneyState({ archive });
