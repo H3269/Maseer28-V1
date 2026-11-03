@@ -366,10 +366,12 @@ test('executed privacy migration trusts only the exact supported numeric version
   const { executeJourneyPrivacyMigration, JOURNEY_KEY, JOURNEY_PRIVACY_MIGRATION_VERSION } =
     await import('../src/features/journey/journeyStore.js');
   const canonical = { name: 'نام کاربر', medical: 'none' };
-  const makeStorage = (version) => {
+  const makeStorage = (version, includeLegacySensitiveData = true) => {
     const raw = {
       privacyMigrationVersion: version,
-      profileData: { name: 'نام کاربر', medical: 'none', problem: 'anxiety' },
+      profileData: includeLegacySensitiveData
+        ? { name: 'نام کاربر', medical: 'none', problem: 'anxiety' }
+        : { problem: 'anxiety' },
       archive: [],
     };
     const original = JSON.stringify(raw);
@@ -384,10 +386,15 @@ test('executed privacy migration trusts only the exact supported numeric version
     };
   };
 
-  const verified = makeStorage(JOURNEY_PRIVACY_MIGRATION_VERSION);
+  const verified = makeStorage(JOURNEY_PRIVACY_MIGRATION_VERSION, false);
   const already = executeJourneyPrivacyMigration({ storage: verified.storage, canonicalProfile: canonical });
   assert.deepEqual(already, { migrated: true, reason: 'already_verified' });
   assert.equal(verified.values.get(JOURNEY_KEY), verified.original);
+
+  const staleNumericMarker = makeStorage(JOURNEY_PRIVACY_MIGRATION_VERSION);
+  const revalidated = executeJourneyPrivacyMigration({ storage: staleNumericMarker.storage, canonicalProfile: canonical });
+  assert.equal(revalidated.reason, 'verified');
+  assert.equal(JSON.parse(staleNumericMarker.values.get(JOURNEY_KEY)).profileData.name, undefined);
 
   const stringMarker = makeStorage(String(JOURNEY_PRIVACY_MIGRATION_VERSION));
   const rerun = executeJourneyPrivacyMigration({ storage: stringMarker.storage, canonicalProfile: canonical });
