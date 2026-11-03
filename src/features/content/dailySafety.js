@@ -30,7 +30,8 @@ function isRepetitiveBehaviorTopicDay(day) {
   ));
 }
 
-const REPETITIVE_BEHAVIOR_SUBTOPIC_IDS = new Set(['T11-S01', 'T11-S02', 'T11-S03']);
+// Only simple context-dependent habits can use the generic daily path. BFRB/OCD/tic/developmental patterns stay withheld until their taxonomy and interventions are separated.
+const REPETITIVE_BEHAVIOR_SUBTOPIC_IDS = new Set(['T11-S01']);
 
 function hasApprovedRepetitiveBehaviorReview(day) {
   return day.review_status === 'approved'
