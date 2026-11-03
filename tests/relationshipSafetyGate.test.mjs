@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import {
+  getInterpersonalPrivacyNotice,
   getRelationshipSafetyGate,
   isRelationshipSafetyConfirmed,
   createRelationshipSafetySkipRecord,
@@ -179,6 +180,17 @@ test('current violence and relationship safety sources remain contextual, not da
     }
   }
   assert.equal(ids.size, registry.sources.length, 'evidence source identifiers must be unique');
+});
+
+test('support-seeking privacy notice covers shared legacy days and T02 message day only', () => {
+  const day12Notice = getInterpersonalPrivacyNotice({ id: 'ترس-12', day: 12 });
+  assert.match(day12Notice, /حافظه محلی مرورگر/);
+  assert.match(day12Notice, /رمزگذاری نمی‌کند/);
+  assert.match(getInterpersonalPrivacyNotice({ id: 'مشکلات رابطه-18', day: 18 }), /نظارت/);
+  assert.match(getInterpersonalPrivacyNotice({ id: 'T02-D24', topic_id: 'T02', day: 24 }), /اعلان‌ها/);
+  assert.equal(getInterpersonalPrivacyNotice({ id: 'خشم-12', topic_id: 'T01', day: 12 }), null);
+  assert.equal(getInterpersonalPrivacyNotice({ id: 'اضطراب-18', topic_id: 'T02', day: 18 }), null);
+  assert.equal(getInterpersonalPrivacyNotice({ id: 'ترس-15', day: 15 }), null);
 });
 
 test('day screen and App wire relationship self-check, blocking, and safe skip', async () => {
