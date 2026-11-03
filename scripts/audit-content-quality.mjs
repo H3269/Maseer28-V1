@@ -155,6 +155,31 @@ for (const field of futureMetadataFields) {
   }).length;
 }
 
+const candidateSupportSeekingReviewQueue = topicRows.flatMap((row) => [12, 18].map((dayNumber) => {
+  const day = row.category.days?.find((item) => Number(item.day) === dayNumber);
+  if (!day) return null;
+  return {
+    topic_id: row.topic_id,
+    topic_name: row.topic_name,
+    day: dayNumber,
+    content_id: day.id || null,
+    is_legacy_record: day.topic_id === undefined && day.review_status === undefined,
+    review_status: day.review_status ?? null,
+    risk_level: day.risk_level ?? null,
+    title: day.title || '',
+    exercise: day.exercise || '',
+    action: day.actionText || '',
+    light_exercise: day.lightExerciseText || '',
+    light_action: day.lightActionText || '',
+    progress_action: day.progressActionText || '',
+    closing: day.closing || '',
+    stop_conditions: day.stop_conditions || [],
+    contraindications: day.contraindications || [],
+    when_to_seek_human_support: day.when_to_seek_human_support || '',
+    source_ids: day.source_ids || [],
+  };
+}).filter(Boolean));
+
 const report = {
   report_schema_version: '1.0.0',
   audit_id: 'maseer28-daily-content-quality-audit',
@@ -170,6 +195,7 @@ const report = {
     topic_definitions: (definitionsRegistry.definitions || []).length,
   },
   topic_rows: topicRows,
+  candidate_support_seeking_review_queue: candidateSupportSeekingReviewQueue,
   cross_topic_similarity: crossTopicSimilarity,
   scientific_family_distribution: familyDistribution,
   future_metadata_coverage: metadataCoverage,
