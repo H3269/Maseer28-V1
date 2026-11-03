@@ -49,7 +49,10 @@ if (new Set(evidenceSources.map((item) => item.source_id)).size !== evidenceSour
 });
 
 topics.forEach((topic, index) => {
-  for (const sourceId of topic.evidence_ids || []) {
+  if (topic.review_status === 'draft' && (topic.evidence_ids || []).length) {
+    errors.push(`موضوع draft نباید منبع تأییدشده داشته باشد: ${topic.topic_id}`);
+  }
+  for (const sourceId of [...(topic.evidence_ids || []), ...(topic.draft_evidence_ids || [])]) {
     if (!evidenceSourceIds.has(sourceId)) errors.push(`منبع ${sourceId} برای موضوع ${topic.topic_id} در رجیستری وجود ندارد.`);
   }
   if (typeof topic.name !== 'string' || !topic.name.trim()) errors.push(`نام موضوع ${expectedIds[index]} خالی است.`);
@@ -74,7 +77,10 @@ subtopics.forEach((item) => {
   if (!topicIds.has(item.topic_id)) errors.push(`موضوع والد برای ${item.subtopic_id} وجود ندارد.`);
   if (item.definition_status !== 'pending_expert_review' || item.review_status !== 'draft') errors.push(`زیرموضوع ${item.subtopic_id} نباید تأییدشده تلقی شود.`);
   if (!Array.isArray(item.evidence_ids)) errors.push(`فهرست منابع زیرموضوع ${item.subtopic_id} باید آرایه باشد.`);
-  for (const sourceId of item.evidence_ids || []) {
+  if (item.review_status === 'draft' && (item.evidence_ids || []).length) {
+    errors.push(`زیرموضوع draft نباید منبع تأییدشده داشته باشد: ${item.subtopic_id}`);
+  }
+  for (const sourceId of [...(item.evidence_ids || []), ...(item.draft_evidence_ids || [])]) {
     if (!evidenceSourceIds.has(sourceId)) errors.push(`منبع ${sourceId} برای زیرموضوع ${item.subtopic_id} در رجیستری وجود ندارد.`);
   }
 });
