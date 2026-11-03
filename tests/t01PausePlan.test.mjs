@@ -24,6 +24,16 @@ test('T01 day 10 content is consent-led and remains unapproved', async () => {
   assert.match(day.actionText, /لازم نیست زمان بازگشت تعیین کنی/);
 });
 
+test('T01 day 11 does not impose a return obligation after a pause', async () => {
+  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
+  const day = content.categories['خشم'].days.find((item) => item.day === 11);
+  assert.equal(day.review_status, 'pending_expert_review');
+  assert.match(day.exercise, /اگر یکی از شما نمی‌خواهد ادامه دهد/);
+  assert.match(day.actionText, /اگر یکی از شما آمادگی ندارد، ادامه نده/);
+  assert.match(day.teaching_point, /مکث به‌خودی‌خود تعهد به بازگشت نیست/);
+  assert.doesNotMatch(day.exercise, /چه زمانی می‌توانی به گفت‌وگو برگردی/);
+});
+
 test('production topic name resolves T01 day 10 when runtime IDs omit topic metadata', () => {
   const plan = getT01PausePlan({ day: 10, instructions: 'تمرین روزانه' }, 'خشم');
   assert.match(plan, /یک برنامه مکث امن با سه جزء بنویس/);
