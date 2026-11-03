@@ -44,6 +44,18 @@ test('negated first-person harmful language does not trigger an automatic handof
   assert.deepEqual(result.knowledge, []);
 });
 
+test('time markers do not turn negated harmful intent into an automatic handoff', () => {
+  const result = routeAssistantTurn({ text: 'امشب نمی‌خواهم خودم را بکشم.' });
+  assert.equal(result.status, 'safety_clarification_required');
+  assert.deepEqual(result.knowledge, []);
+});
+
+test('a stated plan not to self-harm is not treated as a harmful plan', () => {
+  const result = routeAssistantTurn({ text: 'برنامه دارم خودکشی نکنم.' });
+  assert.equal(result.status, 'safety_clarification_required');
+  assert.deepEqual(result.knowledge, []);
+});
+
 test('active ongoing harm is handed off before ordinary intake', () => {
   const result = routeAssistantTurn({ text: 'الان دارم به خودم آسیب می‌زنم.' });
   assert.equal(result.status, 'urgent_human_support_required');
