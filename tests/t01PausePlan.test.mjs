@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { getT01PausePlan } from '../src/features/journey/t01PausePlan.js';
 
 test('T01 day 10 provides a three-part, conditional pause plan', () => {
@@ -7,10 +8,20 @@ test('T01 day 10 provides a three-part, conditional pause plan', () => {
   assert.match(plan, /یک برنامه مکث امن با سه جزء بنویس/);
   assert.match(plan, /نشانه مکث/);
   assert.match(plan, /محل فاصله‌گیری/);
-  assert.match(plan, /شرط بازگشت/);
-  assert.match(plan, /ادامه گفتگو فقط با رضایت آزادانه هر دو نفر/);
-  assert.match(plan, /هیچ‌کس موظف به بازگشت فوری نیست/);
+  assert.match(plan, /شرط ادامه گفتگو/);
+  assert.match(plan, /ادامه فقط با رضایت آزادانه هر دو نفر/);
+  assert.match(plan, /تعیین زمان بازگشت یا وعده ادامه گفتگو الزامی نیست/);
   assert.match(plan, /اگر درباره امنیت یا رضایت آزادانه تردید داری/);
+});
+
+test('T01 day 10 content is consent-led and remains unapproved', async () => {
+  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
+  const day = content.categories['خشم'].days.find((item) => item.day === 10);
+  assert.equal(day.review_status, 'pending_expert_review');
+  assert.match(day.exercise, /رضایت آزادانه هر دو نفر/);
+  assert.match(day.exercise, /تعیین زمان بازگشت یا وعده ادامه گفتگو الزامی نیست/);
+  assert.doesNotMatch(day.exercise, /زمان بازگشت واقع‌بینانه تعیین کن/);
+  assert.match(day.actionText, /لازم نیست زمان بازگشت تعیین کنی/);
 });
 
 test('production topic name resolves T01 day 10 when runtime IDs omit topic metadata', () => {
