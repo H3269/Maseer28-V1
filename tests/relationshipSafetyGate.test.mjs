@@ -88,6 +88,12 @@ test('current violence and relationship safety sources remain contextual, not da
     assert.match(source.limitations, limitation);
     assert.ok(source.url.startsWith('https://'));
   }
+  const violenceCare = registry.sources.find((item) => item.source_id === 'SRC-VIOLENCE-PSYCHOSOCIAL-LANCET-2026-001');
+  assert.ok(violenceCare.authors?.includes('Anushka R. Patel'));
+  assert.equal(violenceCare.pmid, '42309105');
+  assert.match(violenceCare.limitations, /interpersonal-violence survivors/i);
+  assert.match(violenceCare.limitations, /I² 77–84%/u);
+  assert.match(violenceCare.limitations, /98% of included studies/i);
   for (const category of Object.values(content.categories || {})) {
     for (const day of category.days || []) {
       assert.equal((day.source_ids || []).some((id) => expected.some(([sourceId]) => sourceId === id)), false,
