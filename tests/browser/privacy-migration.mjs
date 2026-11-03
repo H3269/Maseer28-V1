@@ -335,8 +335,53 @@ try {
     await page.close();
   }
 
-  assert.deepEqual(browserErrors, [], 'migration and archive deletion scenarios should not produce uncaught browser errors');
-  process.stdout.write('PASS: Chromium privacy migration, selective archive deletion, retention-capacity, and failure-retry scenarios E1-E7 (7 scenarios)\\n');
+  // E9: preview and cancellation are read-only; explicit confirmation restores into a conflict-free namespace.
+  {
+    const page = await openScenario('normal', legacyJourney(), {
+      name: 'کاربر بازیابی', age: 31, gender: 'زن', phone: '09123456789',
+      medical: 'none', medicalNote: '', medication: 'no', medicationRisk: 'no',
+    });
+    await page.locator('#copyrightModal').waitFor({ state: 'visible' });
+    await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
+    await page.locator('#dashboard').waitFor({ state: 'visible' });
+    await page.locator('#bottomNav button[data-view="support"]').click();
+    await page.locator('#support').waitFor({ state: 'visible' });
+    const payload = {
+      format: 'maseer28-browser-backup', schema_version: '3.0.0',
+      exported_at: '2026-11-03T12:00:00.000Z', scope: 'browser test',
+      localStorage: { storage: 'localStorage', entries: { maseer28_restore_ui_marker: { marker: 'RESTORE-UI-OK' } } },
+      indexedDB: { database: 'maseer28-library', stores: { books: [], versions: [], settings: [] } },
+    };
+    const stable = (value) => Array.isArray(value) ? '[' + value.map(stable).join(',') + ']' :
+      value && typeof value === 'object' ? '{' + Object.keys(value).sort().map((key) => JSON.stringify(key) + ':' + stable(value[key])).join(',') + '}' :
+      JSON.stringify(value);
+    let hash = 0x811c9dc5;
+    for (const char of stable(payload)) { hash ^= char.charCodeAt(0); hash = Math.imul(hash, 0x01000193); }
+    const backup = { ...payload, integrity: { algorithm: 'fnv1a-32-non-cryptographic', checksum: (hash >>> 0).toString(16).padStart(8, '0') } };
+    const file = { name: 'restore-ui-test.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(backup)) };
+    const picker = page.getByLabel('انتخاب فایل پشتیبان برای پیش‌نمایش');
+    await picker.setInputFiles(file);
+    await page.getByText('پیش‌نمایش فایل معتبر').waitFor({ state: 'visible' });
+    const restoreButton = page.getByRole('button', { name: 'بازیابی نسخه پشتیبان' });
+    await restoreButton.waitFor({ state: 'visible' });
+    assert.equal(await page.evaluate(() => localStorage.getItem('maseer28_restore_ui_marker')), null);
+    page.once('dialog', (dialog) => dialog.dismiss());
+    await restoreButton.click();
+    assert.equal(await page.evaluate(() => localStorage.getItem('maseer28_restore_ui_marker')), null, 'cancel must not mutate storage');
+    await picker.setInputFiles(file);
+    await page.getByText('پیش‌نمایش فایل معتبر').waitFor({ state: 'visible' });
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.getByRole('button', { name: 'بازیابی نسخه پشتیبان' }).click();
+    await page.waitForFunction(() => {
+      try { return JSON.parse(localStorage.getItem('maseer28_restore_ui_marker') || 'null')?.marker === 'RESTORE-UI-OK'; }
+      catch { return false; }
+    }, null, { timeout: 10000 });
+    await page.locator('#home').waitFor({ state: 'visible', timeout: 10000 });
+    await page.close();
+  }
+
+  assert.deepEqual(browserErrors, [], 'migration, deletion, and restore scenarios should not produce uncaught browser errors');
+  process.stdout.write('PASS: Chromium privacy migration, selective archive deletion, retention-capacity, and failure-retry and controlled-restore scenarios E1-E9 (9 scenarios)\\n');
 } finally {
   await browser.close();
 }
