@@ -38,7 +38,7 @@ function makeState(completedDays, problem = 'خشم') {
   };
 }
 
-async function seedPage(page, state) {
+async function seedPage(page, state, approvedContentIds = []) {
   await page.route('**/*', async (route) => {
     const url = new URL(route.request().url());
     if (url.searchParams.has('_m28_time')) {
@@ -46,6 +46,19 @@ async function seedPage(page, state) {
         status: 200,
         headers: { date: new Date().toUTCString() },
       });
+      return;
+    }
+    if (approvedContentIds.length > 0 && url.pathname.endsWith('/content/path-content.json')) {
+      const response = await route.fetch();
+      const content = await response.json();
+      // Synthetic approval is used only to exercise the visible UI branch.
+      // It does not alter repository content or represent clinical sign-off.
+      for (const category of Object.values(content.categories || {})) {
+        for (const day of category.days || []) {
+          if (approvedContentIds.includes(day.id)) day.review_status = 'approved';
+        }
+      }
+      await route.fulfill({ response, body: JSON.stringify(content) });
       return;
     }
     await route.continue();
@@ -77,7 +90,7 @@ try {
   const relationshipPage = await browser.newPage();
   const relationshipErrors = [];
   relationshipPage.on('pageerror', (error) => relationshipErrors.push(String(error)));
-  await seedPage(relationshipPage, makeState([1, 2, 3, 4, 5, 6, 7, 8, 9]));
+  await seedPage(relationshipPage, makeState([1, 2, 3, 4, 5, 6, 7, 8, 9]), ['خشم-10']);
   const relationshipText = await relationshipPage.locator('#day').innerText();
   assert.match(relationshipText, /آیا در این رابطه می‌توانی بدون ترس/);
   assert.doesNotMatch(relationshipText, /یک برنامه مکث امن با سه جزء بنویس/);
@@ -97,7 +110,7 @@ try {
   await relationshipPage.close();
 
   const safeRelationshipPage = await browser.newPage();
-  await seedPage(safeRelationshipPage, makeState([1, 2, 3, 4, 5, 6, 7, 8, 9]));
+  await seedPage(safeRelationshipPage, makeState([1, 2, 3, 4, 5, 6, 7, 8, 9]), ['خشم-10']);
   await safeRelationshipPage.getByLabel(/بله؛ می‌توانم بدون ترس/).click({ noWaitAfter: true });
   await safeRelationshipPage.locator('#dayExercise').waitFor({ state: 'visible' });
   const pausePlan = safeRelationshipPage.locator('#t01PausePlan');
