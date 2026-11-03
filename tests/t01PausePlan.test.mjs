@@ -56,5 +56,10 @@ test('pause plan is not attached to other topics or days', () => {
   assert.equal(getT01PausePlan({ id: 'T02-D10' }), '');
   assert.equal(getT01PausePlan({ id: 'خشم-09', day: 9 }), '');
   assert.equal(getT01PausePlan({ id: 'غم-10', day: 10 }), '');
+  assert.equal(getT01PausePlan({ id: 'غم-10', day: 10 }, 'خشم'), '');
+  assert.equal(getT01PausePlan({ id: 'خشم-09', day: 10 }, 'خشم'), '');
+  assert.equal(getT01PausePlan({ topic_id: 'T02', id: 'T02-D10', day: 10 }, 'خشم'), '');
+  assert.equal(getT01PausePlan({ topic_id: 'T01', id: 'T01-D09', day: 10 }), '');
+  assert.equal(getT01PausePlan({ topic_id: 'T02', id: 'خشم-10', day: 10 }), '');
   assert.equal(getT01PausePlan(null), '');
 });
