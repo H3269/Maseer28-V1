@@ -71,7 +71,7 @@ function removeAttributedQuotes(value) {
     .replace(/(?:گفت|گفته)\s*[«"“]([^»"”]+)[»"”]/g, ' ')
     // Unquoted third-party reports must not be treated as the user's intent.
     // Stop at punctuation so a separate first-person disclosure is preserved.
-    .replace(/(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او)\s+(?:گفت|گفته|می[‌\s]?گوید|می[‌\s]?گفت)\s+[^،.!؟؛]*?(?=[،.!؟؛]|(?:اما|ولی|و)\s+(?:من|خودم)\b|$)/g, ' ');
+    .replace(/(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او)\s+(?:گفت|گفته|می[‌\s]?گوید|می[‌\s]?گفت)\s+[^،.!؟؛]*?(?=[،.!؟؛]|(?:اما|ولی|و)\s+(?:من|خودم)(?=\s|$)|$)/g, ' ');
 }
 
 function classifyIntent(value) {
