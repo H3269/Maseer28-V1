@@ -8,7 +8,7 @@ import {
 } from '../src/features/journey/relationshipSafetyGate.js';
 
 test('relationship safety gate covers T01 pause and direct communication days only', () => {
-  for (const day of [10, 11, 17, 20, 21, 22]) {
+  for (const day of [10, 11, 17, 20, 21, 22, 23]) {
     assert.ok(getRelationshipSafetyGate({ id: `T01-D${String(day).padStart(2, '0')}`, topic_id: 'T01', day }));
   }
   assert.equal(getRelationshipSafetyGate({ id: 'T01-D09', topic_id: 'T01', day: 9 }), null);
