@@ -69,10 +69,10 @@ jobs:
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npx --yes --package=playwright@1.55.0 playwright install --with-deps chromium
 
-      - name: Start Vite for browser migration tests
+      - name: Start production preview for browser migration tests
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: |
-          nohup npm run dev -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/path28-vite.log 2>&1 &
+          nohup npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/path28-vite.log 2>&1 &
           echo $! > /tmp/path28-vite.pid
           for attempt in {1..30}; do
             if curl -fsS http://127.0.0.1:4173/ > /dev/null; then exit 0; fi
