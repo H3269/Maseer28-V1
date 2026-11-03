@@ -181,7 +181,7 @@
         "Anger was positively associated with avoidance, rumination, and suppression, and negatively associated with acceptance and cognitive reappraisal.",
         "The analyses reported substantial heterogeneity and moderators including anger type, clinical status, culture, study quality, and sample composition."
       ],
-      "limitations": "The findings concern associations between anger and habitual regulation strategies, not the efficacy of a specific intervention or app exercise. Large heterogeneity limits simple generalization; associations must not be presented as causal."
+      "limitations": "The findings concern associations between anger and habitual regulation strategies, not the efficacy of a specific intervention or app exercise. Most included studies were cross-sectional (93.82%), and study quality was mostly poor (56 poor, 23 fair, 2 good); causal direction and intervention efficacy cannot be inferred. Large heterogeneity limits simple generalization."
     },
     {
       "source_id": "SRC-ANGER-ODEAN-2025-001",
@@ -254,7 +254,7 @@
         "Intimate-partner violence was associated with increased suicide-attempt risk in this emergency-department population.",
         "The authors reported high between-study heterogeneity and high risk of bias in half of the included studies."
       ],
-      "limitations": "The sample is women presenting to emergency departments, not a general-population sample. The findings cannot predict an individual's risk, should not be generalized to all genders or settings, and support contextualized human assessment rather than automated risk scoring."
+      "limitations": "The sample is women presenting to emergency departments, not a general-population sample. Overall certainty was rated low; heterogeneity exceeded 75% across models and half of studies had high risk of bias. The final search covered evidence through 30 August 2025. The findings cannot predict an individual's risk, should not be generalized to all genders or settings, and support contextualized human assessment rather than automated risk scoring."
     },
     {
       "source_id": "SRC-ER-SACCARO-2024-001",
@@ -290,14 +290,15 @@
       ],
       "publisher": "JCPP Advances",
       "source_type": "systematic_review_meta_analysis",
-      "publication_date": "2026-02-12",
+      "publication_date": "2026-09",
       "doi": "10.1002/jcv2.70103",
       "url": "https://doi.org/10.1002/jcv2.70103",
       "relevant_claims": [
         "The review identified 19 randomized trials, with 16 studies and 988 participants included in meta-analyses of mindfulness-based interventions for diagnosed mental health conditions.",
         "Pooled findings favored mindfulness-based interventions for cognitive reappraisal and overall emotion dysregulation; effects on expressive suppression were not statistically significant."
       ],
-      "limitations": "The trials evaluated structured mindfulness-based interventions in diagnosed clinical populations, not a brief standalone app prompt or an anger-specific 28-day program. Study quality moderated some outcomes, and evidence for younger populations was limited."
+      "limitations": "The trials evaluated structured mindfulness-based interventions in diagnosed clinical populations, not a brief standalone app prompt or an anger-specific 28-day program. Study quality moderated some outcomes, and evidence for younger populations was limited.",
+      "epub_date": "2026-02-12"
     },
     {
       "source_id": "SRC-DMHI-SAFETY-TAHER-2023-001",
