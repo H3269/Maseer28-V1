@@ -144,6 +144,27 @@ function isLowEnergyTopicDay(day) {
   ));
 }
 
+function isRepetitiveNegativeThinkingTopicDay(day) {
+  return Boolean(day && typeof day === 'object' && (
+    day.topic_id === 'T16'
+    || /^افکار منفی و نشخوار فکری-[0-9]{1,2}$/u.test(String(day.id || ''))
+    || /^T16-D[0-9]{1,2}$/i.test(String(day.id || ''))
+  ));
+}
+
+const RNT_SUBTOPIC_IDS = new Set(['T16-S01', 'T16-S02', 'T16-S03']);
+
+function hasApprovedRntReview(day) {
+  return day.review_status === 'approved'
+    && Array.isArray(day.subtopic_ids)
+    && day.subtopic_ids.length === 1
+    && RNT_SUBTOPIC_IDS.has(day.subtopic_ids[0])
+    && typeof day.review_record_id === 'string'
+    && day.review_record_id.trim().length > 0
+    && Array.isArray(day.safety_rule_ids)
+    && day.safety_rule_ids.length > 0;
+}
+
 const LOW_ENERGY_SUBTOPIC_IDS = new Set(['T32-S01', 'T32-S02', 'T32-S03']);
 
 function hasApprovedLowEnergyReview(day) {
@@ -204,6 +225,7 @@ export function getDailySafetyMode(day) {
   if (isSleepTopicDay(day) && !hasApprovedSleepReview(day)) return 'blocked';
   if (isLonelinessDayFourteen(day) && !hasApprovedLonelinessDayFourteenReview(day)) return 'blocked';
   if (isLowEnergyTopicDay(day) && !hasApprovedLowEnergyReview(day)) return 'blocked';
+  if (isRepetitiveNegativeThinkingTopicDay(day) && !hasApprovedRntReview(day)) return 'blocked';
   if (isControlTopicDay(day)) {
     // "Control" conflates personal over-control with interpersonal coercive
     // control. Release only after an approved day is assigned to exactly one
