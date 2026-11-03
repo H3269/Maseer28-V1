@@ -89,10 +89,19 @@ export async function readIndexedDbSnapshot(indexedDBApi = globalThis.indexedDB)
       if (!db.objectStoreNames.contains(name)) throw new Error(`مخزن ${name} در پایگاه داده وجود ندارد.`);
       const tx = db.transaction(name, 'readonly');
       const store = tx.objectStore(name);
+      const indexes = Array.from(store.indexNames).sort();
       schema[name] = {
         keyPath: store.keyPath,
         autoIncrement: store.autoIncrement,
-        indexes: Array.from(store.indexNames).sort(),
+        indexes,
+        indexDetails: Object.fromEntries(indexes.map((indexName) => {
+          const index = store.index(indexName);
+          return [indexName, {
+            keyPath: index.keyPath,
+            unique: index.unique,
+            multiEntry: index.multiEntry,
+          }];
+        })),
       };
     }
     const tx = db.transaction(STORE_NAMES, 'readonly');
