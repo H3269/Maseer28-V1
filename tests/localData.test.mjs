@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 
 import { createLocalUserDataDeletionPlan, deleteLocalUserData, readLocalUserData } from '../src/features/privacy/localData.js';
 import { deleteIndexedDbUserData, readIndexedDbUserData, selectUserOwnedLibraryData } from '../src/features/privacy/indexedDbData.js';
-import { createPrivacyBackup, validatePrivacyBackup, PRIVACY_BACKUP_POLICY } from '../src/features/privacy/privacyBackup.js';
+import { createPrivacyBackup, validatePrivacyBackup, createPrivacyRestorePreview, PRIVACY_BACKUP_POLICY } from '../src/features/privacy/privacyBackup.js';
 
 class MemoryStorage {
   constructor(entries = {}) { this.values = new Map(Object.entries(entries)); }
@@ -364,4 +364,29 @@ test('privacy backup validation detects altered content and unsupported schema v
   assert.equal(validatePrivacyBackup(corrupted).valid, false);
   const unsupported = { ...backup, schema_version: '99.0.0' };
   assert.equal(validatePrivacyBackup(unsupported).valid, false);
+});
+
+test('restore preview validates backup and reports collisions without changing browser storage', async () => {
+  const storage = new MemoryStorage({ maseer28_state: JSON.stringify({ current: true }), unrelated_site_preference: 'preserve-me' });
+  const backup = await createPrivacyBackup({ storage: new MemoryStorage({ maseer28_state: JSON.stringify({ restored: true }), maseer28_user_profile_v2: JSON.stringify({ name: 'نمونه' }) }) });
+  const before = [...storage.values.entries()];
+  const preview = await createPrivacyRestorePreview(backup, { storage });
+  assert.equal(preview.valid, true);
+  assert.equal(preview.counts.localStorage, 2);
+  assert.deepEqual(preview.conflicts.localStorage, ['maseer28_state']);
+  assert.equal(preview.conflicts.total, 1);
+  assert.deepEqual([...storage.values.entries()], before);
+  assert.match(preview.note, /هیچ تغییری/);
+});
+
+test('restore preview rejects corrupted backup without touching storage', async () => {
+  const storage = new MemoryStorage({ maseer28_state: '{}' });
+  const backup = await createPrivacyBackup({ storage: new MemoryStorage({ maseer28_state: '{"safe":true}' }) });
+  const corrupted = structuredClone(backup);
+  corrupted.indexedDB.stores.books.push({ title: 'missing primary key' });
+  const before = [...storage.values.entries()];
+  const preview = await createPrivacyRestorePreview(corrupted, { storage });
+  assert.equal(preview.valid, false);
+  assert.ok(preview.errors.length > 0);
+  assert.deepEqual([...storage.values.entries()], before);
 });
