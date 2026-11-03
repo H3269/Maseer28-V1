@@ -201,6 +201,7 @@ export async function restorePrivacyBackup(candidate, { storage, indexedDBApi = 
     indexedDbCommitted = true;
 
     const appliedLocalKeys = [];
+    let localStorageVerified = false;
     try {
       for (const [key, value] of Object.entries(candidate.localStorage.entries)) {
         if (storage.getItem(key) !== null) throw new Error(`کلید ${key} هم‌زمان با بازیابی ایجاد شده است.`);
@@ -211,6 +212,17 @@ export async function restorePrivacyBackup(candidate, { storage, indexedDBApi = 
       const verification = readLocalUserData(storage).entries;
       for (const [key, value] of Object.entries(candidate.localStorage.entries)) {
         if (stableStringify(verification[key]) !== stableStringify(value)) throw new Error(`راستی‌آزمایی کلید ${key} ناموفق بود.`);
+      }
+      localStorageVerified = true;
+      // Verify the committed IndexedDB rows in a new transaction after commit.
+      const committedSnapshot = await readIndexedDbSnapshot(indexedDBApi);
+      for (const [name, field] of [['books', 'id'], ['versions', 'id'], ['settings', 'key']]) {
+        const committedByKey = new Map(committedSnapshot.stores[name].map((row) => [row[field], row]));
+        for (const row of stores[name]) {
+          if (stableStringify(committedByKey.get(row[field])) !== stableStringify(row)) {
+            throw new Error(`راستی‌آزمایی نهایی مخزن ${name} پس از ثبت ناموفق بود.`);
+          }
+        }
       }
     } catch (localError) {
       const localRollbackErrors = [];
@@ -289,9 +301,11 @@ export async function restorePrivacyBackup(candidate, { storage, indexedDBApi = 
         indexedDbCommitted = false;
         return {
           restored: false,
-          phase: 'localStorage',
+          phase: localStorageVerified ? 'verification' : 'localStorage',
           rolledBack: true,
-          errors: ['ثبت localStorage ناموفق بود؛ تغییرات IndexedDB و localStorage با موفقیت پاک‌سازی و راستی‌آزمایی شدند.'],
+          errors: [localStorageVerified
+            ? 'راستی‌آزمایی نهایی پس از ثبت ناموفق بود؛ تغییرات بازیابی‌شده در هر دو مخزن پاک‌سازی و بررسی شدند.'
+            : 'ثبت localStorage ناموفق بود؛ تغییرات IndexedDB و localStorage با موفقیت پاک‌سازی و راستی‌آزمایی شدند.'],
         };
       } catch {
         return {
