@@ -95,7 +95,7 @@ try {
   relationshipPage.on('pageerror', (error) => relationshipErrors.push(String(error)));
   await seedPage(relationshipPage, makeState([1, 2, 3, 4, 5, 6, 7, 8, 9]), ['خشم-10']);
   const relationshipText = await relationshipPage.locator('#day').innerText();
-  assert.match(relationshipText, /آیا در این رابطه می‌توانی بدون ترس/);
+  assert.match(relationshipText, /آیا در این رابطه یا تعامل می‌توانی بدون ترس/);
   assert.doesNotMatch(relationshipText, /یک برنامه مکث امن با سه جزء بنویس/);
   await relationshipPage.getByLabel(/نه، مطمئن نیستم/).check();
   await relationshipPage.getByText(/تمرین ارتباطی امروز نمایش داده نمی‌شود/).waitFor({ state: 'visible' });
