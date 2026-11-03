@@ -11,7 +11,7 @@ import {
   COPYRIGHT_KEY,
   burdenScoreFromAnswers,
   cloneForArchive,
-  removeArchivedJourney,
+  executeArchivedJourneyDeletion,
   createClientCode,
   createPathId,
   defaultJourneyState,
@@ -667,9 +667,16 @@ function navigate(next) {
   }
 
   function deleteSingleArchive(index) {
-    const result = removeArchivedJourney(journey, index);
-    if (!result.removed) return;
-    patchJourney(result.state);
+    const result = executeArchivedJourneyDeletion({ state: journey, index });
+    if (!result.removed) {
+      const message = result.reason === 'recovery_required'
+        ? 'تأیید حذف ناموفق بود و بازگردانی خودکار نیز تأیید نشد. پیش از ادامه، وضعیت ذخیره محلی باید بررسی شود.'
+        : 'حذف آرشیو در حافظه دستگاه تأیید نشد؛ هیچ موفقیتی ثبت نشده است.';
+      showValidation([message], 'حذف آرشیو تأیید نشد');
+      return false;
+    }
+    setJourney(result.state);
+    return true;
   }
 
   function clearArchiveAndCurrentPath() {
