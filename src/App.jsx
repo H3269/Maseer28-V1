@@ -24,6 +24,7 @@ import {
   loadUserProfile,
   migrateUserProfileFromJourney,
   migrateUserProfileToV2,
+  removeLegacyUserProfileAfterVerifiedMigration,
   nextRequiredDay,
   recordTrustedStart,
   saveJourneyState,
@@ -76,8 +77,11 @@ function initialSnapshot() {
   // Execute only after the independent profile is available; failed preflight
   // or storage verification leaves the legacy journey record untouched.
   const privacyMigration = executeJourneyPrivacyMigration({ canonicalProfile: user });
-  if (privacyMigration.migrated && privacyMigration.reason === 'verified') {
-    state = loadJourneyState();
+  if (privacyMigration.migrated) {
+    if (privacyMigration.reason === 'verified') state = loadJourneyState();
+    // The v1 profile is removed only after the v2 record and the journey
+    // privacy cleanup have both passed their read-back verification.
+    removeLegacyUserProfileAfterVerifiedMigration();
   }
   // Restart policy: after onboarding is complete, every fresh app launch opens
   // the dashboard. An unfinished path setup always takes priority over baseline.
