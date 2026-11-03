@@ -8,5 +8,11 @@ const T01_PAUSE_PLAN = [
 
 export function getT01PausePlan(day) {
   if (!day || typeof day !== 'object') return '';
-  return day.topic_id === 'T01' && Number(day.day) === 10 ? T01_PAUSE_PLAN : '';
+
+  // Runtime daily-content records may expose only an ID such as T01-D10.
+  const idMatch = /^([A-Z]\\d{2})-D(\\d{1,2})$/i.exec(String(day.id || ''));
+  const topicId = day.topic_id || idMatch?.[1];
+  const dayNumber = day.day ?? idMatch?.[2];
+
+  return topicId === 'T01' && Number(dayNumber) === 10 ? T01_PAUSE_PLAN : '';
 }
