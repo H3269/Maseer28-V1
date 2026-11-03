@@ -38,6 +38,12 @@ test('direct first-person harmful intent is handed off even without an explicit 
   assert.deepEqual(result.knowledge, []);
 });
 
+test('explicit intent to harm other people is handed off before ordinary intake', () => {
+  const result = routeAssistantTurn({ text: 'می‌خواهم به دیگران آسیب بزنم.' });
+  assert.equal(result.status, 'urgent_human_support_required');
+  assert.deepEqual(result.knowledge, []);
+});
+
 test('negated first-person harmful language does not trigger an automatic handoff', () => {
   const result = routeAssistantTurn({ text: 'نمی‌خواهم خودکشی کنم.' });
   assert.equal(result.status, 'safety_clarification_required');
