@@ -391,8 +391,8 @@ test('legacy journey records remain readable before migration and preserve their
   const plan = prepareJourneyPrivacyMigration(legacy, canonical);
   assert.equal(plan.ready, true);
   const after = sanitizeJourneyState(plan.state);
-  assert.equal(after.profileData.name, '');
-  assert.equal(after.profileData.medical, '');
+  assert.equal(after.profileData.name, undefined);
+  assert.equal(after.profileData.medical, undefined);
   assert.equal(after.profileData.problem, 'anxiety');
   assert.equal(after.profileData.goal, 'هدف مسیر');
   assert.equal(after.answers[1], 'پاسخ روز اول');
