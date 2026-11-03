@@ -443,7 +443,8 @@ test('restore preview detects collisions with preserved seeded IndexedDB rows an
   };
   const sourceDb = await requestResult(sourceOpen);
   const sourceTx = sourceDb.transaction(['books', 'versions', 'settings'], 'readwrite');
-  sourceTx.objectStore('books').put({ id: 'book-1', title: 'Imported collision' });
+  sourceTx.objectStore('books').put({ id: 'book-1', title: 'Imported collision', activeVersionId: 'upload-version-1' });
+  sourceTx.objectStore('versions').put({ id: 'upload-version-1', bookId: 'book-1', source: 'upload', content: { title: 'Imported collision', pages: [{ page: 1, text: 'صفحه آزمایشی' }] } });
   await transactionDone(sourceTx);
   sourceDb.close();
   const backup = await createPrivacyBackup({ storage: new MemoryStorage({ maseer28_state: '{}' }), indexedDBApi: sourceApi });
@@ -546,8 +547,8 @@ test('controlled restore imports into an empty browser namespace and verifies bo
   };
   const sourceDb = await requestResult(sourceOpen);
   const sourceTx = sourceDb.transaction(['books', 'versions', 'settings'], 'readwrite');
-  sourceTx.objectStore('books').put({ id: 'user-book-1', title: 'کتاب شخصی' });
-  sourceTx.objectStore('versions').put({ id: 'user-version-1', bookId: 'user-book-1', source: 'upload' });
+  sourceTx.objectStore('books').put({ id: 'user-book-1', title: 'کتاب شخصی', activeVersionId: 'user-version-1' });
+  sourceTx.objectStore('versions').put({ id: 'user-version-1', bookId: 'user-book-1', source: 'upload', content: { title: 'کتاب شخصی', pages: [{ page: 1, text: 'متن آزمایشی کتاب' }] } });
   sourceTx.objectStore('settings').put({ key: 'reader-preference', value: 'large' });
   await transactionDone(sourceTx);
   sourceDb.close();
@@ -709,7 +710,8 @@ test('controlled restore verifies committed IndexedDB in a fresh read and compen
   };
   const sourceDb = await requestResult(sourceOpen);
   const sourceTx = sourceDb.transaction(['books', 'versions', 'settings'], 'readwrite');
-  sourceTx.objectStore('books').put({ id: 'post-commit-book', title: 'restore check' });
+  sourceTx.objectStore('books').put({ id: 'post-commit-book', title: 'restore check', activeVersionId: 'post-commit-version' });
+  sourceTx.objectStore('versions').put({ id: 'post-commit-version', bookId: 'post-commit-book', source: 'upload', content: { title: 'restore check', pages: [{ page: 1, text: 'verification fixture' }] } });
   await transactionDone(sourceTx);
   sourceDb.close();
   const backup = await createPrivacyBackup({
