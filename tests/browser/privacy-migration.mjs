@@ -209,8 +209,46 @@ try {
     await page.close();
   }
 
+
+  // E6: a full archive must block an additional completed-path archive without
+  // truncating legacy records or resetting the active path.
+  {
+    const fullArchiveState = {
+      ...legacyJourney(),
+      completed: Array.from({ length: 28 }, (_, index) => index + 1),
+      final: { score: 5, f1: 'ACTIVE-FINAL-REPORT', f2: '', f3: '', f4: '' },
+      archive: Array.from({ length: 20 }, (_, index) => ({
+        pathId: `retained-${index + 1}`,
+        profileData: { problem: 'stress' },
+        answers: { 1: `RETAINED-ANSWER-${index + 1}` },
+        completed: [1],
+        final: { score: 4, f1: `RETAINED-REPORT-${index + 1}` },
+      })),
+      pathId: 'active-at-capacity',
+      lastView: 'dashboard',
+    };
+    const page = await openScenario('normal', fullArchiveState, {
+      name: 'کاربر ظرفیت', age: 35, gender: 'زن', phone: '09123456789',
+      medical: 'none', medicalNote: '', medication: 'no', medicationRisk: 'no',
+    });
+    await page.locator('#copyrightModal').waitFor({ state: 'visible' });
+    await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
+    await page.locator('#dashboard').waitFor({ state: 'visible' });
+    await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
+    await page.locator('#archiveList').waitFor({ state: 'visible' });
+    await page.getByRole('button', { name: /شروع مسیر تازه/ }).click();
+    await page.getByRole('heading', { name: 'ظرفیت آرشیو تکمیل شده است' }).waitFor({ state: 'visible' });
+    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state') || '{}'));
+    assert.equal(saved.archive.length, 20, 'all 20 existing archive records must remain intact');
+    assert.equal(saved.archive[0].pathId, 'retained-1');
+    assert.equal(saved.archive[19].pathId, 'retained-20');
+    assert.equal(saved.pathId, 'active-at-capacity', 'the active path must not be reset when capacity is reached');
+    assert.match(await page.locator('[role="dialog"]').innerText(), /هیچ آرشیوی خودکار پاک نمی‌شود|مسیر فعال و سایر آرشیوها حفظ شده‌اند/);
+    await page.close();
+  }
+
   assert.deepEqual(browserErrors, [], 'migration and archive deletion scenarios should not produce uncaught browser errors');
-  process.stdout.write('PASS: Chromium privacy migration and selective archive deletion scenarios E1-E5 (5 scenarios)\\n');
+  process.stdout.write('PASS: Chromium privacy migration, selective archive deletion, and retention-capacity scenarios E1-E6 (6 scenarios)\\n');
 } finally {
   await browser.close();
 }
