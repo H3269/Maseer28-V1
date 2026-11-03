@@ -82,3 +82,18 @@ test('production content gate rejects orphaned approval links', () => {
   const errors = validateProductionContent(data);
   assert.ok(errors.some((item) => item.includes('approved subtopic content link is missing')));
 });
+
+test('current repository content remains blocked from production until all 952 units are reviewed', async () => {
+  const readJson = async (relative) => JSON.parse(
+    await (await import('node:fs/promises')).readFile(new URL(relative, import.meta.url), 'utf8')
+  );
+  const [content, topicsRegistry, subtopicsRegistry, evidenceRegistry] = await Promise.all([
+    readJson('../public/content/path-content.json'),
+    readJson('../public/assistant/knowledge/topics.v1.json'),
+    readJson('../public/assistant/knowledge/subtopics.v1.json'),
+    readJson('../public/assistant/evidence/sources.v1.json'),
+  ]);
+  const errors = validateProductionContent({ content, topicsRegistry, subtopicsRegistry, evidenceRegistry });
+  assert.ok(errors.length > 0);
+  assert.ok(errors.some((item) => item.includes('not expert-approved')));
+});
