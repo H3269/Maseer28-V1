@@ -4,8 +4,9 @@ import AppIcon from '../../shared/components/AppIcon.jsx';
 import { buttonLabel } from '../../shared/buttonLabel.jsx';
 import { fa, formatDate, normalizeDigits } from '../../shared/utils.js';
 import { APP_CONFIG, burdenScoreFromAnswers, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
-import { readLocalUserData, deleteLocalUserData, createLocalUserDataDeletionPlan } from '../privacy/localData.js';
-import { readIndexedDbUserData, deleteIndexedDbUserData } from '../privacy/indexedDbData.js';
+import { deleteLocalUserData, createLocalUserDataDeletionPlan } from '../privacy/localData.js';
+import { deleteIndexedDbUserData } from '../privacy/indexedDbData.js';
+import { createPrivacyBackup } from '../privacy/privacyBackup.js';
 import AssessmentAssistant from '../assistant/AssessmentAssistant.jsx';
 
 // This prototype has no clinical validation. It stays hidden unless an experimental build explicitly enables it.
@@ -395,8 +396,7 @@ export function Support({ content, onBack }) {
     if (privacyBusy) return;
     setPrivacyBusy(true);
     try {
-      const [localStorageData, indexedDBData] = await Promise.all([Promise.resolve(readLocalUserData()), readIndexedDbUserData()]);
-      const payload = { schema_version: '2.0.0', exported_at: new Date().toISOString(), localStorage: localStorageData, indexedDB: indexedDBData };
+      const payload = await createPrivacyBackup();
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
