@@ -46,6 +46,17 @@ test('direct educational questions do not enter the personal assessment state ma
   assert.match(session.next_step.message, /درخواست اطلاعات عمومی/);
 });
 
+
+test('numeric duration in the opening message prevents a repeated duration question', () => {
+  let session = createAssessmentSession();
+  session = answer(session, '۳ ماه است اضطراب دارم');
+  assert.equal(getCurrentQuestion(session).id, 'safety_now');
+  session = answer(session, 'نه');
+  assert.equal(getCurrentQuestion(session).id, 'impact');
+  session = answer(session, 'در کارم اثر گذاشته است');
+  assert.equal(getCurrentQuestion(session).id, 'goal');
+});
+
 test('ordinary concern proceeds through one question at a time and produces tentative topic hypotheses', () => {
   let session = createAssessmentSession();
   session = answer(session, 'مدتی است اضطراب و نگرانی مداوم دارم');
