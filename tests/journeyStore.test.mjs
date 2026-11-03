@@ -9,6 +9,7 @@ import {
   nextRequiredDay,
   sanitizeJourneyState,
   migrateUserProfileToV2,
+  removeArchivedJourney,
   PROFILE_V2_KEY,
   validName,
   validPhone,
@@ -613,4 +614,28 @@ test('executed privacy migration never overwrites a concurrent journey update', 
   assert.equal(result.migrated, false);
   assert.equal(result.reason, 'source_changed_during_preflight');
   assert.equal(values.get(JOURNEY_KEY), concurrent);
+});
+
+
+test('single archive deletion removes only the selected path and preserves active journey data', () => {
+  const state = {
+    pathId: 'active-path', answers: { 1: 'active answer' }, final: { score: 4 },
+    archive: [{ pathId: 'old-1' }, { pathId: 'old-2' }, { pathId: 'old-3' }],
+  };
+  const result = removeArchivedJourney(state, 1);
+  assert.equal(result.removed, true);
+  assert.deepEqual(result.state.archive.map((entry) => entry.pathId), ['old-1', 'old-3']);
+  assert.equal(result.state.pathId, 'active-path');
+  assert.deepEqual(result.state.answers, { 1: 'active answer' });
+  assert.deepEqual(result.state.final, { score: 4 });
+  assert.equal(state.archive.length, 3, 'input state must remain immutable');
+});
+
+test('single archive deletion rejects invalid indexes without modifying state', () => {
+  const state = { archive: [{ pathId: 'only' }], pathId: 'active' };
+  for (const index of [-1, 1, 0.5, '0', NaN]) {
+    const result = removeArchivedJourney(state, index);
+    assert.equal(result.removed, false);
+    assert.equal(result.state, state);
+  }
 });
