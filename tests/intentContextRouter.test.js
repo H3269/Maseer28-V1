@@ -36,6 +36,15 @@ test('explicit hatred toward another person remains T04 and mixed targets remain
   assert.equal(mixed.next_question.purpose, 'topic_disambiguation');
 });
 
+test('explicitly rejected jealousy labels do not route as T05', () => {
+  const negated = routeSemanticIntake({ text: 'این حسادت نیست؛ فقط غبطه است.' });
+  assert.equal(negated.topic_candidates.some((item) => item.topic_id === 'T05'), false);
+  assert.ok(negated.uncertainties.some((item) => item.includes('نفی')));
+  assert.equal(negated.next_question.purpose, 'topic_disambiguation');
+  const denied = routeSemanticIntake({ text: 'من حسادت ندارم.' });
+  assert.equal(denied.topic_candidates.some((item) => item.topic_id === 'T05'), false);
+});
+
 test('multiple candidate topics request disambiguation rather than false priority', () => {
   const result = routeSemanticIntake({ text: 'هم عصبانی‌ام، هم می‌ترسم.' });
   assert.ok(result.topic_candidates.some((item) => item.topic_id === 'T01'));
