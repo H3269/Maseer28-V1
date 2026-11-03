@@ -536,44 +536,30 @@ function Recommendation({ journey, userProfile }) {
   const screening = evaluatePqhtEligibility(profile);
   const baselineScore = Number(journey.assessmentData?.score);
   const finalScore = Number(journey.final?.score);
-  const initialMotivation = Number(journey.assessmentData?.motivation);
-  const finalProgress = Number(journey.final?.progress);
   const hasValidScores = Number.isFinite(baselineScore) && baselineScore >= 0 && baselineScore <= 10
     && Number.isFinite(finalScore) && finalScore >= 0 && finalScore <= 10;
-  const hasValidMotivationProgress = Number.isInteger(initialMotivation) && initialMotivation >= 0 && initialMotivation <= 4
-    && Number.isInteger(finalProgress) && finalProgress >= 0 && finalProgress <= 4;
   const severityChange = hasValidScores ? finalScore - baselineScore : null;
-  // The baseline motivation and final self-reported progress are compared on
-  // their shared 0–4 response scale; this is a program rule, not a clinical measure.
-  const motivationAttainment = hasValidMotivationProgress ? finalProgress - initialMotivation : null;
 
   let recommendation;
   if (!screening.eligible) {
-    recommendation = 'با توجه به اطلاعات ثبت‌شده در پرونده و غربالگری، در حال حاضر جلسات مشاوره آنلاین پیشنهاد می‌شود. درباره هرگونه مداخله دیگر، از جمله PQHT، باید پس از بررسی تخصصی تصمیم‌گیری شود.';
-  } else if (severityChange == null || motivationAttainment == null) {
-    recommendation = 'برای تعیین گام بعدی، جلسات مشاوره آنلاین و تکمیل ارزیابی تخصصی پیشنهاد می‌شود. تصمیم درباره امکان استفاده از PQHT به نتیجه آن ارزیابی وابسته است.';
-  } else if (severityChange < 0 && motivationAttainment >= 0) {
-    recommendation = 'با توجه به تغییر خودگزارش‌شده در امتیاز شدت مشکل و پیشرفت ادراک‌شده در مسیر تغییر، ادامه مسیر با جلسات مشاوره آنلاین و بررسی امکان PQHT پس از ارزیابی تخصصی پیشنهاد می‌شود.';
-  } else if (severityChange < 0 && motivationAttainment < 0) {
-    recommendation = 'با وجود کاهش امتیاز خودگزارشی شدت مشکل، پیشرفت ادراک‌شده هنوز به سطح انگیزه اولیه نرسیده است. جلسات مشاوره آنلاین برای بررسی موانع و تعیین گام بعدی پیشنهاد می‌شود؛ تصمیم درباره PQHT به ارزیابی تخصصی موکول می‌شود.';
-  } else if (severityChange === 0 && motivationAttainment >= 0) {
-    recommendation = 'با وجود پیشرفت ادراک‌شده در مسیر تغییر، امتیاز خودگزارشی شدت مشکل تغییر نکرده است. مشاوره آنلاین و بازبینی تخصصی روند پیشنهاد می‌شود تا مناسب‌ترین گام بعدی مشخص شود.';
-  } else if (severityChange > 0 && motivationAttainment >= 0) {
-    recommendation = 'با وجود پیشرفت ادراک‌شده در مسیر تغییر، امتیاز خودگزارشی شدت مشکل افزایش یافته است. پیش از پیشنهاد هر مداخله دیگر، بررسی تخصصی وضعیت و بازبینی برنامه در جلسات مشاوره ضروری است.';
+    recommendation = 'با توجه به اطلاعات ثبت‌شده در پرونده و غربالگری، در حال حاضر جلسات مشاوره آنلاین پیشنهاد می‌شود. درباره هرگونه مداخله دیگر، از جمله PQHT، فقط پس از بررسی تخصصی تصمیم‌گیری شود.';
+  } else if (severityChange == null) {
+    recommendation = 'برای تعیین گام بعدی، مرور تجربه‌های ثبت‌شده و تکمیل ارزیابی تخصصی پیشنهاد می‌شود. تصمیم درباره امکان استفاده از PQHT به نتیجه آن ارزیابی وابسته است.';
+  } else if (severityChange < 0) {
+    recommendation = 'امتیاز خودگزارشی شدت مشکل نسبت به آغاز مسیر کاهش یافته است. این تغییر به‌تنهایی علت تغییر یا اثربخشی برنامه را نشان نمی‌دهد؛ برای تعیین گام بعدی، نتیجه را با متخصص مرور کن. امکان PQHT فقط پس از ارزیابی تخصصی بررسی می‌شود.';
   } else if (severityChange === 0) {
-    recommendation = 'امتیاز خودگزارشی شدت مشکل تغییر نکرده و پیشرفت ادراک‌شده هنوز به سطح انگیزه اولیه نرسیده است. در حال حاضر جلسات مشاوره آنلاین و بازبینی برنامه پیشنهاد می‌شود.';
+    recommendation = 'امتیاز خودگزارشی شدت مشکل در ابتدا و انتهای مسیر تغییر نکرده است. برای بررسی موانع و تعیین گام بعدی، مشاوره آنلاین و بازبینی تخصصی پیشنهاد می‌شود.';
   } else {
-    recommendation = 'امتیاز خودگزارشی شدت مشکل افزایش یافته و پیشرفت ادراک‌شده هنوز به سطح انگیزه اولیه نرسیده است. جلسات مشاوره آنلاین و ارزیابی تخصصی برای بازبینی وضعیت پیشنهاد می‌شود؛ فعلاً PQHT بدون بررسی تخصصی پیشنهاد نمی‌شود.';
+    recommendation = 'امتیاز خودگزارشی شدت مشکل نسبت به آغاز مسیر افزایش یافته است. برای بازبینی وضعیت و انتخاب گام بعدی، ارزیابی تخصصی پیشنهاد می‌شود؛ هیچ مداخله‌ای از جمله PQHT نباید بدون بررسی تخصصی آغاز شود.';
   }
 
   return <div className="recommendation">
     <b>🎯 پیشنهاد ادامه مسیر</b><br/>
     <span>{recommendation}</span><br/>
     {!screening.eligible && <><b>نیازمند بررسی:</b> {screening.reasons.join('، ')}<br/></>}
-    <small>این پیشنهاد بر پایه اطلاعات خودگزارشی و قواعد داخلی برنامه است؛ تشخیص یا توصیه درمانی قطعی نیست. تصمیم نهایی درباره امکان انجام جلسه PQHT فقط پس از ارزیابی متخصص واجد صلاحیت گرفته می‌شود.</small>
+    <small>این پیشنهاد بر پایه غربالگری پرونده و امتیازهای خودگزارشی اختصاصی برنامه است؛ ابزار تشخیص یا توصیه درمانی قطعی نیست. تصمیم نهایی درباره امکان انجام جلسه PQHT فقط پس از ارزیابی متخصص واجد صلاحیت گرفته می‌شود.</small>
   </div>;
 }
-
 export function Report({ journey, userProfile, content, onBooks, onSupport, onDashboard, onArchive, onNew }) { const p = journey.profileData || {}, person = userProfile || {}, a = buildFinalAnalysis(journey, userProfile), start = Number(journey.assessmentData?.score || 0), end = Number(journey.final?.score || 0), diff = end - start, f = journey.final || {}, cat = content.categories?.[p.problem]; return <section className="card" id="report"><span className="badge">گزارش نهایی مسیر</span><h2>گزارش شخصی مسیر ۲۸ روزه</h2><div id="reportProfile"><div className="profile"><div className="profileBox"><span>نام</span><b>{person.name || 'اطلاعات پروفایل در دسترس نیست'}</b></div><div className="profileBox"><span>مسئله</span><b>{p.problem || ''}</b></div><div className="profileBox"><span>سن</span><b>{person.age ? `${fa(person.age)} سال` : 'ثبت نشده'}</b></div></div></div><div className="metric"><div className="metricBox"><strong id="startScore">{fa(start)}/۱۰</strong><span>امتیاز خودگزارشی شروع</span></div><div className="metricBox"><strong id="endScore">{fa(end)}/۱۰</strong><span>امتیاز خودگزارشی پایان</span></div></div><div className="feedback"><b>نتیجه تغییر</b><p className="muted" id="measurementNote">امتیازهای شروع و پایان بر پایه چهار پرسش اختصاصی برنامه و پاسخ‌های خودگزارشی هستند؛ این پرسش‌ها مقیاس روان‌سنجی اعتبارسنجی‌شده یا ابزار تشخیص نیستند. تغییر نمره به‌تنهایی اثربخشی برنامه، علت تغییر یا سطح خطر را تعیین نمی‌کند.</p><p className="muted" id="scoreChange">{diff > 0 ? `امتیاز خودگزارشی شدت مشکل ${fa(diff)} نمره افزایش یافته است.` : diff < 0 ? `امتیاز خودگزارشی شدت مشکل ${fa(Math.abs(diff))} نمره کاهش یافته است.` : 'امتیاز خودگزارشی شدت مشکل در ابتدا و انتهای مسیر تغییر نکرده است.'}</p><p className="muted" id="progressChange">میزان پیشرفت ادراک‌شده در تغییر انتخاب‌شده: {f.progress == null ? 'ثبت نشده' : `${fa(f.progress)} از ۴`} · انگیزه خودگزارشی آغاز مسیر: {journey.assessmentData?.motivation == null ? 'ثبت نشده' : `${fa(journey.assessmentData.motivation)} از ۴`}</p></div><div className="recommendation"><b>جمع‌بندی مسیر</b><p className="muted" id="reportSummary">گزارش مسیر ۲۸ روزه برای «{p.problem || ''}» آماده شد. از {fa(a.completedCount)} روز ثبت‌شده، {fa(a.count)} بازخورد خودگزارشی دارای امتیاز، {fa(a.counts.better)} مورد «بهتر شدم»، {fa(a.counts.same)} مورد «تقریباً مثل قبل»، {fa(a.counts.worse)} مورد «بدتر شدم» و {fa(a.counts.hard)} مورد «تمرین برایم سخت بود» ثبت شده است. {a.skippedCount > 0 ? `تعداد ${fa(a.skippedCount)} روز بدون اجرای تمرین و به دلایل ایمنی یا نیاز به بازبینی انسانی ثبت شد.` : ''} {a.count > 0 ? `میانگین امتیاز خودگزارشی شدت روزانه ${fa(Math.round(a.avg * 10) / 10)} از ۱۰ بوده است.` : 'امتیاز روزانه‌ای برای محاسبه میانگین ثبت نشده است.'}</p></div><div id="hypnoReportRecommendation"><Recommendation journey={journey} userProfile={userProfile}/></div><hr/><ReportBlock title="سه تغییر من" id="rf1" text={fa(f.f1 || '')}/><ReportBlock title="سه آگاهی من" id="rf2" text={fa(f.f2 || '')}/><ReportBlock title="سه اقدام ۳۰ روز آینده" id="rf3" text={fa(f.f3 || '')}/><ReportBlock title="موضوع نیازمند توجه" id="rf4" text={fa(f.f4 || '')}/><hr/><h3>پاسخ‌های ثبت‌شده</h3><div id="answersList">{Object.entries(journey.answers || {}).sort(([x], [y]) => Number(x) - Number(y)).map(([d, ans]) => { const day = cat?.days?.find((x) => Number(x.day) === Number(d)); return <div className="answerItem" key={d}><b>روز {fa(d)} · {fa(String(day?.title || '').replace(/\s*[·•-]?\s*روز\s*\d+\s*$/i, ''))}</b><p>{fa(ans)}</p><small>شدت: {journey.daily?.[d]?.score == null ? 'ثبت نشده' : `${fa(journey.daily[d].score)} از ۱۰`} · بازخورد: {journey.daily?.[d]?.feedbackText || ''}</small></div>; })}</div><button className="gold" onClick={onBooks}><AppIcon name="bookOpen" size={17} /> کتابخانه اختصاصی</button><button className="secondary" onClick={onSupport}><AppIcon name="phone" size={17} /> پشتیبانی مرکز</button><button className="secondary" onClick={onDashboard}>{buttonLabel('بازگشت به داشبورد')}</button><button className="secondary" onClick={onArchive}><AppIcon name="archive" size={17} /> آرشیو مسیرهای قبلی</button><button className="primary" onClick={onNew}>{buttonLabel('شروع مسیر تازه →')}</button></section>; }
 function ReportBlock({ title, id, text }) { return <><h3>{title}</h3><div className="answerItem"><p id={id} style={{ whiteSpace: 'pre-wrap' }}>{fa(text || '')}</p></div></>; }
 
