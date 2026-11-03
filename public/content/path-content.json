@@ -58,7 +58,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "افزایش آگاهی از هیجان و ایجاد فاصله میان احساس و واکنش"
         },
         {
           "id": "خشم-02",
@@ -108,7 +109,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "تفکیک هیجان از رفتار برای تقویت مسئولیت‌پذیری"
         },
         {
           "id": "خشم-03",
@@ -157,7 +159,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "شناسایی محرک‌ها و عوامل زمینه‌ای قابل مشاهده"
         },
         {
           "id": "خشم-04",
@@ -206,7 +209,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "تشخیص نشانه‌های بدنی زودهنگام پیش از تشدید واکنش"
         },
         {
           "id": "خشم-05",
@@ -257,7 +261,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "شناخت زنجیره موقعیت، فکر، هیجان، تکانه، رفتار و پیامد"
         },
         {
           "id": "خشم-06",
@@ -307,7 +312,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "پایش شدت شخصی برای انتخاب زمان مکث ایمن"
         },
         {
           "id": "خشم-07",
@@ -351,7 +357,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "مرور الگوها بدون تعمیم یا برچسب‌زنی"
         },
         {
           "id": "خشم-08",
@@ -395,7 +402,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "کاهش ملایم برانگیختگی بدنی با تنفس اختیاری"
         },
         {
           "id": "خشم-09",
@@ -439,7 +447,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "انتقال توجه از تکانه به محیط حاضر"
         },
         {
           "id": "خشم-10",
@@ -490,7 +499,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "ایجاد وقفه امن برای جلوگیری از تشدید تعارض"
         },
         {
           "id": "خشم-11",
@@ -540,7 +550,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "بازگشت مسئولانه و زمان‌بندی‌شده به گفت‌وگوی امن"
         },
         {
           "id": "خشم-12",
@@ -584,7 +595,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "کاهش تنش عضلانی بدون درد یا فشار"
         },
         {
           "id": "خشم-13",
@@ -629,7 +641,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "جایگزینی تخلیه برانگیزاننده با راهبردهای آرام‌ساز"
         },
         {
           "id": "خشم-14",
@@ -680,7 +693,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "تثبیت مهارت‌های تنظیم هیجان و انتخاب ابزار مناسب"
         },
         {
           "id": "خشم-15",
@@ -730,7 +744,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "بازبینی برداشت‌ها با تفکیک شواهد و تفسیر"
         },
         {
           "id": "خشم-16",
@@ -774,7 +789,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "کاهش قطعیت‌های شناختی و افزایش دقت در ارزیابی موقعیت"
         },
         {
           "id": "خشم-17",
@@ -819,7 +835,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "تبدیل انتظار مبهم به درخواست روشن و قابل مذاکره"
         },
         {
           "id": "خشم-18",
@@ -864,7 +881,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "تعریف مسئله به جای سرزنش کلی افراد"
         },
         {
           "id": "خشم-19",
@@ -909,7 +927,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "تولید گزینه‌های کم‌خطر و انتخاب راه‌حل واقع‌بینانه"
         },
         {
           "id": "خشم-20",
@@ -959,7 +978,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "بیان نیاز و مرز بدون حمله یا تهدید"
         },
         {
           "id": "خشم-21",
@@ -1003,7 +1023,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "کاهش پاسخ‌دهی تکانشی از طریق گوش‌دادن و مکث"
         },
         {
           "id": "خشم-22",
@@ -1053,7 +1074,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "ارزیابی امکان مذاکره در روابط امن و حفظ مرزها"
         },
         {
           "id": "خشم-23",
@@ -1096,7 +1118,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "تقویت مسئولیت‌پذیری و پیشگیری از تکرار آسیب"
         },
         {
           "id": "خشم-24",
@@ -1140,7 +1163,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "شناسایی فشارهای زمینه‌ای برای پیشگیری زودهنگام"
         },
         {
           "id": "خشم-25",
@@ -1188,7 +1212,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "یکپارچه‌سازی مهارت‌ها در یک نقشه شخصی قابل اصلاح"
         },
         {
           "id": "خشم-26",
@@ -1231,7 +1256,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "شناسایی محدودیت خودیاری و تسهیل کمک‌خواهی"
         },
         {
           "id": "خشم-27",
@@ -1274,7 +1300,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "آمادگی مقدماتی برای فاصله‌گیری و اقدام ایمن در زمان خطر"
         },
         {
           "id": "خشم-28",
@@ -1328,7 +1355,8 @@
           ],
           "evidence_grade": "not_assessed",
           "review_status": "pending_expert_review",
-          "review_record_id": null
+          "review_record_id": null,
+          "mechanism": "تثبیت مهارت‌ها و برنامه‌ریزی ادامه مسیر بدون ادعای درمان"
         }
       ]
     },
