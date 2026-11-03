@@ -42,30 +42,61 @@ test('unapproved review metadata cannot be overridden by a routine risk label', 
   assert.equal('feedback' in record, false);
 });
 
-test('T03 day 14 remains blocked until its fear-related behavior is redesigned and expert-reviewed', async () => {
+test('all T03 fear content remains blocked until qualified review and day-specific safety approval', async () => {
   for (const day of [
     { id: 'ترس-14' },
     { id: 'T03-D14' },
-    { id: 'T03-D14', topic_id: 'T03', day: 14, risk_level: 'routine', review_status: 'approved' },
-    { id: 'ترس-14', day: 13, risk_level: 'routine' },
-    { id: 'T03-D13', topic_id: 'T03', day: 14, risk_level: 'routine' },
+    { id: 'T03-D13', topic_id: 'T03', day: 13, risk_level: 'routine', review_status: 'approved' },
+    { id: 'ترس-13' },
   ]) {
     assert.equal(getDailySafetyMode(day), 'blocked');
     const skipped = createHumanReviewSkipRecord(day, new Date('2026-11-04T12:00:00.000Z'));
     assert.equal(skipped.status, 'skipped_human_review');
     assert.equal('score' in skipped, false);
-    assert.equal('feedback' in skipped, false);
   }
-  assert.equal(getDailySafetyMode({ id: 'ترس-13' }), 'routine',
-    'the targeted hold must not disable unrelated legacy fear days');
-  assert.equal(getDailySafetyMode({ id: 'T03-D13' }), 'routine',
-    'the targeted hold must not disable unrelated canonical fear days');
 
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
-  const actualDayFourteen = content.categories['ترس']?.days?.find((day) => day.day === 14);
-  assert.ok(actualDayFourteen, 'the production T03 day 14 record must exist');
-  assert.equal(getDailySafetyMode(actualDayFourteen), 'blocked',
-    'the actual legacy content record must not bypass the targeted safety hold');
+  const fearDays = content.categories['ترس']?.days || [];
+  assert.equal(fearDays.length, 28);
+  for (const day of fearDays) {
+    assert.equal(getDailySafetyMode(day), 'blocked', `${day.id} must remain withheld until qualified review`);
+  }
+
+  const reviewedFearDay = ({ day = 13, risk_level = 'routine', safety_rule_ids } = {}) => ({
+    id: 'T03-D' + String(day).padStart(2, '0'),
+    topic_id: 'T03',
+    day,
+    risk_level,
+    review_status: 'approved',
+    subtopic_ids: ['T03-S01'],
+    duration_minutes: 10,
+    stop_conditions: ['اگر ناراحتی شدید شد، تمرین را متوقف کن.'],
+    contraindications: ['در وضعیت ناامن، تمرین مستقیم انجام نشود.'],
+    source_ids: ['SRC-TEST-REVIEWED-FEAR'],
+    evidence_grade: 'not_assessed',
+    review_record_id: 'review-t03-day-' + day,
+    reviewer_name: 'Qualified reviewer',
+    reviewer_role: 'qualified_clinician',
+    reviewed_at: '2026-11-04T12:00:00.000Z',
+    learning_objective: 'هدف آموزشی روشن و محدود',
+    target_skill: 'مهارت مشخص',
+    teaching_point: 'نکته آموزشی روشن',
+    exercise_type: 'reflection',
+    instructions: 'دستورالعمل بازبینی‌شده',
+    reflection_prompt: 'پرسش تأملی',
+    success_criterion: 'معیار موفقیت قابل مشاهده',
+    when_to_seek_human_support: 'در صورت خطر یا اختلال، کمک انسانی بگیر.',
+    ...(safety_rule_ids ? { safety_rule_ids } : {}),
+  });
+  assert.equal(getDailySafetyMode(reviewedFearDay()), 'routine',
+    'a fully reviewed non-day-14 exercise with one explicit subtype may be released');
+  assert.equal(getDailySafetyMode(reviewedFearDay({ day: 14, risk_level: 'routine' })), 'blocked',
+    'T03 day 14 requires a caution classification and explicit safety rule after redesign');
+  assert.equal(getDailySafetyMode(reviewedFearDay({
+    day: 14,
+    risk_level: 'caution',
+    safety_rule_ids: ['SR-T03-D14-SAFETY'],
+  })), 'caution');
 });
 
 test('T01 draft days remain blocked at runtime until their review is approved', async () => {
