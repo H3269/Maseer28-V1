@@ -355,7 +355,7 @@ test('privacy backup bundle includes both browser stores and validates integrity
   assert.deepEqual(backup.indexedDB.stores, { books: [], versions: [], settings: [] });
   assert.equal(backup.localStorage.entries.maseer28_copyright_v60, undefined);
   assert.match(backup.integrity.checksum, /^[a-f0-9]{8}$/);
-  assert.match(PRIVACY_BACKUP_POLICY.restore, /does not restore/);
+  assert.match(PRIVACY_BACKUP_POLICY.restore, /conflict-free only/);
 });
 
 test('privacy backup validation detects altered content and unsupported schema versions', async () => {
