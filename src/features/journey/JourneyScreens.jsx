@@ -454,8 +454,8 @@ export function Support({ content, onBack }) {
         setBackupToRestore(null);
       } else if (result.phase === 'recovery_required') {
         setPrivacyMessage('بازیابی کامل تأیید نشد و پاک‌سازی جبرانی نیز قابل تأیید نیست. از تلاش مجدد خودداری کن؛ ممکن است بخشی از داده‌ها وارد شده باشند و بررسی دستی لازم است.');
-      } else if (result.phase === 'localStorage' && result.rolledBack === true) {
-        setPrivacyMessage('ثبت اطلاعات مرورگر ناموفق بود؛ تغییرات جبرانی در هر دو مخزن پاک‌سازی و بررسی شدند. بازیابی انجام نشد.');
+      } else if (['localStorage', 'verification'].includes(result.phase) && result.rolledBack === true) {
+        setPrivacyMessage(result.phase === 'verification' ? 'راستی‌آزمایی پس از ثبت ناموفق بود؛ داده‌های واردشده در هر دو مخزن پاک‌سازی و بررسی شدند. بازیابی انجام نشد.' : 'ثبت اطلاعات مرورگر ناموفق بود؛ تغییرات جبرانی در هر دو مخزن پاک‌سازی و بررسی شدند. بازیابی انجام نشد.');
       } else {
         setPrivacyMessage('پیش‌بررسی یا نوشتن در یکی از مخازن ناموفق بود؛ بازیابی تأیید نشد. ' + (result.errors?.[0] || ''));
       }
