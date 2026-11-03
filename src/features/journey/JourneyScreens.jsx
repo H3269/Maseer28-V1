@@ -436,6 +436,33 @@ export function Support({ content, onBack }) {
       setPrivacyMessage('خواندن فایل ناموفق بود یا ساختار JSON معتبر نیست؛ هیچ داده‌ای تغییر نکرده است.');
     } finally { setPrivacyBusy(false); }
   }
+  async function restoreData() {
+    if (privacyBusy || !restorePreview?.valid || restorePreview.conflicts?.total !== 0 || !backupToRestore) return;
+    const confirmed = window.confirm('بازیابی فقط در فضای بدون تعارض انجام می‌شود و هیچ داده موجودی بازنویسی نمی‌شود. فایل پشتیبان رمزگذاری نشده و ممکن است شامل نام، شماره تماس، اطلاعات غربالگری پزشکی، پاسخ‌ها و نوشته‌های خصوصی مسیر و داده‌های کتابخانه باشد. فقط اگر فایل را می‌شناسی و دستگاه در اختیار خودت است ادامه بده. پس از تأیید، داده‌ها به ذخیره‌سازی محلی همین مرورگر افزوده می‌شوند. ادامه می‌دهی؟');
+    if (!confirmed) return;
+    setPrivacyBusy(true);
+    try {
+      const result = await restorePrivacyBackup(backupToRestore);
+      if (result.restored === true && result.verified === true) {
+        setPrivacyMessage('بازیابی انجام شد و داده‌های هر دو مخزن راستی‌آزمایی شدند. برنامه در حال بارگذاری مجدد است.');
+        window.setTimeout(() => window.location.reload(), 900);
+        return;
+      }
+      if (result.phase === 'conflict') {
+        setPrivacyMessage('پس از پیش‌نمایش، تعارض تازه‌ای شناسایی شد؛ هیچ داده موجودی بازنویسی نشد. فایل را دوباره بررسی کن.');
+        setRestorePreview(null);
+        setBackupToRestore(null);
+      } else if (result.phase === 'recovery_required') {
+        setPrivacyMessage('بازیابی کامل تأیید نشد و پاک‌سازی جبرانی نیز قابل تأیید نیست. از تلاش مجدد خودداری کن؛ ممکن است بخشی از داده‌ها وارد شده باشند و بررسی دستی لازم است.');
+      } else if (result.phase === 'localStorage' && result.rolledBack === true) {
+        setPrivacyMessage('ثبت اطلاعات مرورگر ناموفق بود؛ تغییرات جبرانی در هر دو مخزن پاک‌سازی و بررسی شدند. بازیابی انجام نشد.');
+      } else {
+        setPrivacyMessage('پیش‌بررسی یا نوشتن در یکی از مخازن ناموفق بود؛ بازیابی تأیید نشد. ' + (result.errors?.[0] || ''));
+      }
+    } catch {
+      setPrivacyMessage('بازیابی قابل تأیید نیست. ممکن است وضعیت بخشی از داده‌ها نامشخص باشد؛ از تکرار فوری عملیات خودداری کن.');
+    } finally { setPrivacyBusy(false); }
+  }
   async function deleteData() {
     if (privacyBusy) return;
     const confirmed = window.confirm('این کار اطلاعات مسیرها، پاسخ‌ها، پروفایل و تنظیمات شخصی و نیز رکوردهای ساخته‌شده توسط کاربر در کتابخانه همین مرورگر را حذف می‌کند. پنج کتاب عمومی و نسخه‌های اصلی آن‌ها حفظ می‌شوند. عملیات قابل بازگشت نیست؛ ابتدا در صورت نیاز خروجی بگیر. ادامه می‌دهی؟');
