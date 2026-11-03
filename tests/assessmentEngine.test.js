@@ -26,6 +26,7 @@ test('session starts with an open question and keeps data in memory only', () =>
 test('safety concern domains distinguish self-harm, harm to others, and threat from another person', () => {
   assert.deepEqual(classifySafetyDomains('گاهی فکر می‌کنم خودم را بکشم'), ['risk_of_self_harm']);
   assert.deepEqual(classifySafetyDomains('می‌ترسم به کسی آسیب بزنم'), ['risk_of_harm_to_others']);
+  assert.deepEqual(classifySafetyDomains('می‌خواهم به دیگران آسیب بزنم'), ['risk_of_harm_to_others']);
   assert.deepEqual(classifySafetyDomains('در خانه امن نیستم و او مرا تهدید می‌کند'), ['risk_from_another_person']);
   assert.deepEqual(classifySafetyDomains('بله'), ['domain_not_yet_determined']);
 });
@@ -437,6 +438,7 @@ test('explicit harmful intent remains urgent while ambiguous intent requires cla
   assert.equal(classifySafetyAnswer('قصد دارم خودم را بکشم'), 'urgent_human_support_recommended');
   assert.equal(classifySafetyAnswer('امشب برنامه دارم به خودم آسیب بزنم'), 'urgent_human_support_recommended');
   assert.equal(classifySafetyAnswer('می‌خواهم به کسی آسیب بزنم'), 'urgent_human_support_recommended');
+  assert.equal(classifySafetyAnswer('می‌خواهم به دیگران آسیب بزنم'), 'urgent_human_support_recommended');
   assert.equal(classifySafetyAnswer('الان دارم به خودم آسیب می‌زنم'), 'urgent_human_support_recommended');
   assert.equal(classifySafetyAnswer('نمی‌خواهم خودکشی کنم'), 'clarification_needed');
   assert.equal(classifySafetyAnswer('نمی‌خواهم به کسی آسیب بزنم'), 'clarification_needed');
