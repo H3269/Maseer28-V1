@@ -394,11 +394,14 @@ export function removeLegacyUserProfileAfterVerifiedMigration({
       const hasLegacyFields = (profile) => LEGACY_SENSITIVE_PROFILE_FIELDS.some((field) =>
         hasProfileValue(profile?.[field])
       );
+      const hasValidArchiveShape = journey?.archive === undefined
+        || journey?.archive === null || Array.isArray(journey.archive);
       const hasSensitiveJourneyData = hasLegacyFields(journey?.profileData)
         || (Array.isArray(journey?.archive) && journey.archive.some((entry) =>
           hasLegacyFields(entry?.profileData)
         ));
-      if (journey?.privacyMigrationVersion !== JOURNEY_PRIVACY_MIGRATION_VERSION
+      if (!hasValidArchiveShape
+        || journey?.privacyMigrationVersion !== JOURNEY_PRIVACY_MIGRATION_VERSION
         || hasSensitiveJourneyData) {
         return { removed: false, reason: 'journey_privacy_migration_not_verified' };
       }
@@ -440,6 +443,9 @@ function hasProfileValue(value) {
 export function prepareJourneyPrivacyMigration(rawState, canonicalProfile) {
   if (!rawState || typeof rawState !== 'object' || Array.isArray(rawState)) {
     return { ready: false, reason: 'invalid_journey_state', missingCanonicalFields: [], state: null };
+  }
+  if (rawState.archive !== undefined && rawState.archive !== null && !Array.isArray(rawState.archive)) {
+    return { ready: false, reason: 'invalid_archive_shape', missingCanonicalFields: [], state: null };
   }
   const legacyProfile = rawState.profileData && typeof rawState.profileData === 'object'
     ? rawState.profileData : {};
@@ -496,6 +502,9 @@ export function executeJourneyPrivacyMigration({
     rawState = JSON.parse(originalRaw);
   } catch {
     return { migrated: false, reason: 'source_read_or_parse_failed' };
+  }
+  if (rawState?.archive !== undefined && rawState?.archive !== null && !Array.isArray(rawState.archive)) {
+    return { migrated: false, reason: 'invalid_archive_shape' };
   }
   const hasLegacySensitiveData = (profile) => LEGACY_SENSITIVE_PROFILE_FIELDS.some((field) =>
     hasProfileValue(profile?.[field])
