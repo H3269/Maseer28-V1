@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0.0",
+  "registry_id": "maseer28-evidence-sources",
+  "status": "curated_draft_sources_pending_evidence_review",
+  "access_date": "2026-11-03",
+  "sources": [
+    {
+      "source_id": "SRC-ANGER-NHS-001",
+      "title": "Get help with anger",
+      "publisher": "National Health Service (NHS)",
+      "source_type": "public_health_guidance",
+      "publication_date": null,
+      "url": "https://www.nhs.uk/mental-health/feelings-symptoms-behaviours/feelings-and-symptoms/anger/",
+      "relevant_claims": [
+        "Anger can include physical, cognitive, and behavioral signs.",
+        "Early recognition, pausing, calming breathing, mindfulness, and CBT-informed self-help may help some people.",
+        "People who cannot cope, whose self-help is not working, or who act abusively or violently should seek professional help."
+      ],
+      "limitations": "Public-facing guidance; not an individualized treatment protocol or proof that every listed technique is suitable for every person."
+    },
+    {
+      "source_id": "SRC-ANGER-APS-001",
+      "title": "Managing your anger — Treatment",
+      "publisher": "Australian Psychological Society",
+      "source_type": "professional_body_guidance",
+      "publication_date": null,
+      "url": "https://psychology.org.au/for-the-public/psychology-topics/managing-your-anger/why-manage-anger",
+      "relevant_claims": [
+        "CBT, relaxation-skills training, and life-skills training are common approaches to problem anger.",
+        "Cognitive reappraisal, problem-solving, and communication-skills training may support calmer responses and conflict resolution."
+      ],
+      "limitations": "Public information page; individual intervention selection and treatment require qualified assessment."
+    },
+    {
+      "source_id": "SRC-ANGER-APA-001",
+      "title": "Strategies for controlling your anger: Keeping anger in check",
+      "publisher": "American Psychological Association",
+      "source_type": "professional_body_guidance",
+      "publication_date": "2011-10-01",
+      "url": "https://www.apa.org/topics/anger/strategies-controlling",
+      "relevant_claims": [
+        "Recognizing early warning signs and triggers can help prevent escalation.",
+        "Cognitive restructuring, slow breathing, relaxation imagery, and communication skills are practical anger-management strategies.",
+        "A planned pause can be followed by returning to a conversation when calmer."
+      ],
+      "limitations": "General public education; not a substitute for clinical assessment or violence-risk intervention."
+    },
+    {
+      "source_id": "SRC-ANGER-ABCT-001",
+      "title": "Anger",
+      "publisher": "Association for Behavioral and Cognitive Therapies",
+      "source_type": "professional_association_fact_sheet",
+      "publication_date": null,
+      "url": "https://www.abct.org/fact-sheets/anger/",
+      "relevant_claims": [
+        "Anger is a common emotion and is distinct from aggressive or violent behavior.",
+        "CBT-oriented anger treatment may include self-monitoring, time-out, relaxation, cognitive change, and problem-solving skills.",
+        "Frequent, intense, or enduring anger and behavior that risks harm warrant professional assessment."
+      ],
+      "limitations": "Fact sheet describes therapy approaches; the app must not present its self-help exercises as clinician-delivered treatment."
+    },
+    {
+      "source_id": "SRC-ANGER-KJAERVIK-2024-001",
+      "title": "A meta-analytic review of anger management activities that increase or decrease arousal: What fuels or douses rage?",
+      "authors": [
+        "Sophie L. Kjærvik",
+        "Brad J. Bushman"
+      ],
+      "publisher": "Clinical Psychology Review",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2024-04",
+      "epub_date": "2024-03-11",
+      "doi": "10.1016/j.cpr.2024.102414",
+      "pmid": "38518585",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38518585/",
+      "relevant_claims": [
+        "The meta-analysis included 154 studies, 184 independent samples, and 10,189 participants.",
+        "Arousal-decreasing activities reduced anger and aggression in the pooled analysis.",
+        "Arousal-increasing activities were ineffective overall; findings do not support venting as an anger-management strategy."
+      ],
+      "limitations": "The pooled findings do not establish that a particular exercise is appropriate for every individual or clinical presentation; intervention fit and safety still require judgment."
+    }
+  ]
+}
