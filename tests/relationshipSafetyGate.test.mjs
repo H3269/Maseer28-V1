@@ -56,6 +56,7 @@ test('relationship gate days in the actual T01 content have stable IDs and topic
   for (const dayNumber of [10, 11, 17, 18, 19, 20, 21, 22, 23]) {
     const day = days.find((item) => item.day === dayNumber);
     assert.equal(day.topic_id, 'T01');
+    assert.equal(day.risk_level, 'caution', `gated communication day ${dayNumber} must retain caution metadata`);
     assert.equal(getRelationshipSafetyGate(day)?.gateId, 'relationship-communication-safety-v1');
   }
 });
