@@ -316,8 +316,7 @@ try {
     await page.locator('#support').waitFor({ state: 'visible' });
     await page.getByRole('button', { name: 'حذف داده‌های محلی من' }).click();
     await page.waitForFunction(() => localStorage.getItem('maseer28_test_sensitive') === null, null, { timeout: 10000 });
-    await page.waitForFunction(() => location.reload, null, { timeout: 1000 });
-    await page.waitForTimeout(900);
+    await page.locator('#home').waitFor({ state: 'visible', timeout: 10000 });
     const remaining = await page.evaluate(() => ({
       appKeys: Object.keys(localStorage).filter((key) => key.startsWith('maseer28_') && key !== 'maseer28_copyright_v60'),
       unrelated: localStorage.getItem('unrelated_site_preference'),
