@@ -1,0 +1,4 @@
+name = "maseer28-semantic-conversation-integration"
+main = "./semanticConversationWorker.js"
+compatibility_date = "2026-11-04"
+workers_dev = false
