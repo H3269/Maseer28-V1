@@ -2,12 +2,12 @@
 
 هدف: ساخت دستیار مکالمه‌ای هوشمند داخل اپ مسیر۲۸. فقط مخزن H3269/Maseer28-V1 و شاخه main. بخش موجود اپ، ۳۴ موضوع و ۹۵۲ تمرین خارج از دامنه تغییرند.
 
-آخرین HEAD فعلی شاخه main: 0b6041f803a282d70b48b19249a7d1f6e672d838. آخرین HEAD کد دستیار آزموده‌شده: a43cc709a802e2f41e43b87ec57cccad28f4f09c.
+آخرین HEAD شاخه main: a9ae12cac9789f923246081e699bb937ed6fcc6c (ثبت مستندات مرحله adapter). آخرین HEAD کد/تست دستیار با CI کامل موفق: b6d2495c86ec6f1d9086c3d5e0b3b626908dc1a8.
 
-تغییرات: sessionBootstrap.js اضافه شد؛ platformAuth.js پنجره اعتبار initData را export می‌کند؛ tests/sessionBootstrap.test.js آزمون‌های failure-mode و ترکیب Telegram verifier و session token را دارد. Fingerprint با HMAC کلیددار، canonicalization پارامترها، رد فیلد تکراری، استقلال secretها و expiry مبتنی بر auth_date پیاده شده است.
+مرحله تکمیل‌شده: Durable Object replay adapter مستقل در workers/assistant-api/src/replayMarkerDurableObject.js شامل ReplayMarkerDurableObject و createReplayMarkerConsumer(namespace). تست واحد tests/replayMarkerDurableObject.test.js و تست runtime محلی Cloudflare Workers با کلاس تولیدی از طریق subclass مخصوص تست در tests/workers/ اضافه شد. فایل‌های اصلی اپ/journey/محتوای ۳۴ موضوع و ۹۵۲ تمرین تغییر نکردند.
 
-CI: run 41819437285 روی SHA 9283601575b4be647ce62c3f55e623911eaeb871 کاملاً موفق بود. سپس run 41819518273 روی SHA ec948201fa22c9b75b675871bce93749a534bf42 و run 41819541782 روی SHA a43cc709a802e2f41e43b87ec57cccad28f4f09c هر دو با نتیجه success پایان یافتند. دو commit مستندسازی 2f75b0c و 0b6041f فقط همین دفتر تداوم را ایجاد و به‌روزرسانی کرده‌اند.
+CI run 41821256597 روی SHA b6d2495c86ec6f1d9086c3d5e0b3b626908dc1a8 با نتیجه success: npm audit بدون آسیب‌پذیری، Wrangler deploy dry-run، versions upload dry-run، Cloudflare Workers local runtime integration، npm test با ۳۴۸ passed و صفر failed، اعتبارسنجی registry/محتوا، audit کیفیت، build و تست‌های Chromium همگی موفق شدند. تست runtime شامل SQLite transaction، ۱۲ درخواست هم‌زمان با دقیقاً یک مصرف موفق، Alarm scheduling و cleanup بود.
 
-محدودیت: replay adapter واقعی هنوز به Durable Object namespace متصل نشده؛ route، binding/migration تولیدی، secret واقعی، provider، consent و UI integration وجود ندارد؛ endpoint مکالمه همچنان 503 و fail-closed است. هیچ deploy یا promote انجام نشده.
+محدودیت‌های باقی‌مانده: adapter هنوز به namespace عملیاتی Worker اصلی وصل نیست؛ route bootstrap/turn، binding/migration عملیاتی، secrets، consent/privacy، session persistence، provider/LLM، موتور مکالمه معنایی و UI وجود ندارند. endpoint مکالمه همچنان 503 و fail-closed است. Prefix دو رقم hex (۲۵۶ shard بالقوه) آزمایشی است و باید پیش از بار عملیاتی از نظر ظرفیت/هزینه بررسی شود. token پیش از consume فقط در حافظه آماده می‌شود و تنها پس از موفقیت consume برگردانده می‌شود. هیچ deploy، upload واقعی Version، promote یا تغییر ترافیک Production انجام نشده است.
 
-گام بعدی: وضعیت CI پس از commit مستندسازی را در صورت وجود بررسی کن؛ سپس adapter واقعی Durable Object را مستقل و تست‌پذیر بساز؛ پس از bootstrap محلی end-to-end به اتصال موتور مکالمه معنایی و UI دستیار برگرد. زیرساخت هدف محصول نیست.
+وضعیت مرحله replay adapter: automated_tests_passed؛ اکنون منتظر بررسی انسانی مالک پروژه روی commit کد b6d2495c86ec6f1d9086c3d5e0b3b626908dc1a8 هستیم. پس از بازخورد، گام بعدی bootstrap end-to-end محلی است؛ سپس باید به موتور مکالمه معنایی و UI دستیار برگشت و از توسعه زیرساخت بدون پیشرفت محصول پرهیز کرد.
