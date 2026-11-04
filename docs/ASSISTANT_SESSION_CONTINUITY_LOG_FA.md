@@ -3,35 +3,47 @@
 هدف: ساخت دستیار مکالمه‌ای هوشمند، زمینه‌محور و ایمن داخل اپ مسیر۲۸. مخزن مرجع `H3269/Maseer28-V1` و شاخه مجاز فقط `main` است. بخش موجود اپ، journey، پروفایل، ۳۴ موضوع و ۹۵۲ تمرین خارج از دامنه تغییرند.
 
 ## وضعیت زنده مخزن
-- آخرین HEAD ثبت‌شده پیش از این به‌روزرسانی: `6e42e71694c757669328f4461e7cc208d29f57d0` (ثبت نتایج bootstrap محلی).
-- آخرین commit کد/تست با CI کامل موفق: `fb3eabe7a2e6b1d8de3ef0b53da12e93270627d0`.
-- CI run `41823268749`: نتیجه نهایی `success`.
+- آخرین commit ثبت نتایج کد/تست semantic orchestration: `751b9196da863958738743b690c136683603193e`.
+- CI run `41825332984` روی همین SHA: `success`.
+- آخرین commit مستندات وضعیت: `8932467fe71d3545ec43739c03e2d190a8323a83`.
 - برای شروع هر نشست بعدی، HEAD و CI را دوباره از GitHub بررسی کن؛ این دفتر جای بررسی زنده را نمی‌گیرد.
 
-## آخرین بخش تکمیل‌شده: bootstrap end-to-end محلی
-در runtime محلی Cloudflare Workers، مسیر کامل Telegram initData verification → keyed replay fingerprint → SQLite Durable Object consume-once → signed session token با harness مستقل آزموده شد. فایل‌های تست:
-- `tests/workers/assistantBootstrapWorker.js`
-- `tests/workers/assistant-bootstrap.wrangler.toml`
-- `tests/workers/assistantBootstrap.integration.mjs`
-و workflow برای اجرای این آزمون به‌روزرسانی شد.
+## بخش تکمیل‌شده قبلی: bootstrap end-to-end محلی
+در runtime محلی Cloudflare Workers، مسیر Telegram initData verification → keyed replay fingerprint → SQLite Durable Object consume-once → signed session token با harness مستقل آزموده شد. ۱۲ درخواست هم‌زمان با یک initData معتبر، دقیقاً یک token موفق و ۱۱ پاسخ replay با 409 داشتند؛ token معتبر بود؛ امضای نامعتبر و initData منقضی با 401 رد شدند. credentialها و داده‌ها مصنوعی بودند. جزئیات در بخش ۱۸ سند `docs/PROJECT_EXECUTION_STATE_FA.md` ثبت شده است.
 
-نتیجه: ۱۲ درخواست هم‌زمان برای یک initData معتبر، دقیقاً یک token موفق و ۱۱ پاسخ replay با 409؛ token با verifier واقعی معتبر؛ امضای نامعتبر و initData منقضی با 401 رد شدند؛ initData مستقل پذیرفته شد. تمام credentialها و داده‌ها مصنوعی و test-only بودند.
+## آخرین بخش تکمیل‌شده: semantic conversation orchestrator و Workers AI adapter با mock
+فایل‌های اصلی:
+- `workers/assistant-api/src/semanticConversation.js`
+- `workers/assistant-api/src/workersAiProvider.js`
+- `tests/semanticConversation.test.js`
+- `tests/workersAiProvider.test.js`
+- `tests/workers/semanticConversationWorker.js`
+- `tests/workers/semantic-conversation.wrangler.toml`
+- `tests/workers/semanticConversation.integration.mjs`
+- به‌روزرسانی `.github/workflows/validate-content.yml`
 
-CI روی SHA `fb3eabe7a2e6b1d8de3ef0b53da12e93270627d0` با run `41823268749` موفق شد: audit صفر آسیب‌پذیری، Wrangler dry-runها، دو integration محلی Worker، ۳۴۸ unit test بدون شکست، اعتبارسنجی topic/content، ممیزی کیفیت، build و آزمون‌های Chromium شامل ۱۰ سناریوی privacy migration، archive export و safety browser scenarios.
+ارکستراتور provider-neutral است: تاریخچه کوتاه و محدود را می‌پذیرد، متن را به‌عنوان داده غیرقابل‌اعتماد بسته‌بندی می‌کند، موضوع‌ها را فقط از registry واقعی T01–T34 می‌پذیرد، برای ابهام سؤال می‌پرسد و هیچ موضوعی را بدون تأیید کاربر انتخاب نمی‌کند. گیت ایمنی مستقل پیش از مدل اجرا می‌شود؛ خروجی مدل فقط می‌تواند هشدار را تشدید کند. اطلاعات عمومی بدون محتوای تأییدشده پاسخ factual نمی‌گیرد.
 
-ثبت نتایج در `docs/PROJECT_EXECUTION_STATE_FA.md`، بخش ۱۸ انجام شده است. آخرین commit مستندات این ثبت: `6e42e71694c757669328f4461e7cc208d29f57d0`.
+آداپتور Workers AI فقط مدل‌های دارای JSON Mode مستندشده را می‌پذیرد. در تست‌ها از AI.run ساختگی استفاده شده؛ هیچ inference واقعی یا هزینه AI ایجاد نشده است. consent gate به نتیجه server-side با دو هدف cloud AI و sensitive data و policy version نیاز دارد. redaction الگوهای رایج شناسه مستقیم را حذف می‌کند اما ناشناس‌سازی کامل نیست.
+
+CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` موفق شد: audit صفر آسیب‌پذیری، Worker/Wrangler dry-runها، سه integration محلی Worker، ۳۶۶ تست واحد بدون شکست، اعتبارسنجی topic/content، ممیزی کیفیت، build و آزمون‌های Chromium شامل ۱۰ سناریوی privacy migration، archive export و safety browser scenarios.
+
+جزئیات، محدودیت‌ها و تصمیم‌های باز در بخش ۱۹ سند `docs/PROJECT_EXECUTION_STATE_FA.md` و بررسی provider در `docs/AI_PROVIDER_SELECTION_AND_DATA_BOUNDARY_FA.md` ثبت شده‌اند.
 
 ## محدودیت‌های قطعی فعلی
-- bootstrap فقط در harness تست محلی است؛ route و binding عملیاتی Worker اصلی اضافه نشده‌اند.
 - endpoint `/v1/assistant/turn` همچنان 503 و fail-closed است.
-- هیچ provider/LLM، رضایت ابری فعال، session persistence، conversation storage، rate limit عملیاتی یا حذف داده سروری پیاده‌سازی نشده است.
-- Telegram مسیر آزمون‌شده است؛ Bale هنوز با مستندات رسمی/آزمون مرجع مستقل راستی‌آزمایی نشده و نباید پشتیبانی امن آن ادعا شود.
-- محتوای دانش تأییدشده خالی است؛ مدل نباید پاسخ علمی/درمانی یا پیشنهاد تمرین بدون منبع و تأیید بسازد.
+- `workers/assistant-api/wrangler.toml` فاقد AI binding است؛ آداپتور هنوز به Worker اصلی وصل نیست.
+- هیچ model ID واقعی انتخاب نشده و هیچ inference واقعی اجرا نشده است.
+- محل دقیق inference، شرایط منطقه‌ای، هزینه/سهمیه حساب و مجوز ارسال داده حساس تعیین نشده‌اند.
+- consent verifier، session/auth برای مرورگر و mini-app، rate limit و کنترل هزینه عملیاتی هنوز وجود ندارند.
+- UI موجود هنوز به orchestrator وصل نشده است؛ نسخه قابل تعامل مرورگری آماده نیست.
+- Telegram bootstrap آزموده شده؛ Bale هنوز با مستندات رسمی/آزمون مرجع مستقل راستی‌آزمایی نشده و نباید پشتیبانی امن آن ادعا شود.
+- محتوای دانش تأییدشده هنوز برای پاسخ factual آماده نیست.
 - هیچ deploy، upload واقعی Version، promote یا تغییر ترافیک Production انجام نشده است.
-- بخش اصلی اپ و فایل‌های journey/profile/content تغییر نکرده‌اند.
+- فایل‌های journey/profile/content و داده‌های ۳۴ موضوع و ۹۵۲ تمرین تغییر نکرده‌اند.
 
 ## گام بعدی
-از زیرساخت به محصول برگرد: طراحی و پیاده‌سازی لایه مکالمه معنایی چندمرحله‌ای با قرارداد provider-neutral، خروجی ساختاریافته، حفظ زمینه کوتاه‌مدت و گیت ایمنی مستقل. ابتدا با آزمون‌های مصنوعی و provider mock؛ هیچ متن واقعی کاربر به provider ارسال نشود تا رضایت آگاهانه، پردازشگر/منطقه، دسته داده، مدت نگهداری، پس‌گرفتن رضایت و حذف داده روشن و پیاده‌سازی شوند. برای provider واقعی باید مدل فارسی مناسب و هزینه/تاخیر/حریم خصوصی بررسی شود. بعد از اثبات engine، آن را به رابط دستیار موجود متصل کن؛ هیچ تغییر خارج از محدوده assistant-only مجاز نیست.
+پیش از هر اتصال مدل واقعی، consent verifier سمت سرور و هویت/نشست مناسب برای مرورگر و mini-app، rate limit، سقف هزینه و کنترل withdrawal طراحی و آزموده شوند. سپس مدل فارسی با مجموعه مصنوعی و معیارهای ثابت ارزیابی شود؛ اجرای inference واقعی به دلیل هزینه و ارسال داده به Cloudflare نیازمند مجوز صریح است. بعد از آن route و UI در Preview محدود و قابل مشاهده در مرورگر به هم متصل شوند.
 
 ## قاعده گزارش‌دهی به مالک
 مالک برنامه‌نویس نیست و صریحاً خواسته تا وقتی یک بخش خروجی واقعی و قابل مشاهده در مرورگر ندارد، از او تست فنی، بازبینی فایل، کد یا تنظیمات نخواهیم. فقط وقتی نسخه مشخصی واقعاً در مرورگر قابل مشاهده و تعامل شد، با دستورالعمل ساده و یک گام روشن اطلاع بده. موفقیت CI یا local runtime به‌تنهایی «آماده مرورگر» نیست. هیچ Production deploy/activate بدون اجازه صریح مالک انجام نشود.
