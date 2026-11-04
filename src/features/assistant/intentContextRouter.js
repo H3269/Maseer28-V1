@@ -69,11 +69,11 @@ const ATTRIBUTION_SUBJECTS = '(?:یکی از دوستانم|یکی از همکا
 
 function removeAttributedQuotes(value) {
   const attributedSpeech = new RegExp(
-    ATTRIBUTION_SUBJECTS + '\\s+(?:به\\s+من\\s+)?(?:گفت|گفته|می[‌\\s]?گوید|می[‌\\s]?گفت)\\s*(?:(?:که)\\s+|[:،]\\s*)?[«"“]([^»"”]+)[»"”]',
+    ATTRIBUTION_SUBJECTS + '\\s+(?:به\\s+من\\s+)?(?:گفت(?!م)|گفته|می[‌\\s]?گوید|می[‌\\s]?گفت)\\s*(?:(?:که)\\s+|[:،]\\s*)?[«"“]([^»"”]+)[»"”]',
     'gu',
   );
   const unquotedReport = new RegExp(
-    ATTRIBUTION_SUBJECTS + '\\s+(?:به\\s+من\\s+)?(?:گفت|گفته|می[‌\\s]?گوید|می[‌\\s]?گفت)\\s*(?:(?:که)\\s+|[:،]\\s*)?[^،.!؟؛]*?(?=[،.!؟؛]|(?:اما|ولی|و)\\s+(?:من|خودم)(?=\\s|$)|$)',
+    ATTRIBUTION_SUBJECTS + '\\s+(?:به\\s+من\\s+)?(?:گفت(?!م)|گفته|می[‌\\s]?گوید|می[‌\\s]?گفت)\\s*(?:(?:که)\\s+|[:،]\\s*)?[^،.!؟؛]*?(?=[،.!؟؛]|(?:اما|ولی|و)\\s+(?:من|خودم)(?=\\s|$)|$)',
     'gu',
   );
   // Only remove speech attributed to another person. A user's own quoted
