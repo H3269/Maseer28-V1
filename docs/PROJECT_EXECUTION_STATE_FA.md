@@ -778,3 +778,45 @@
 - صدور token هنوز پیش از consume marker فقط در حافظه آماده می‌شود و تنها پس از موفقیت consume برگردانده می‌شود؛ این تصمیم برای جلوگیری از سوختن marker هنگام خطای signing است و نباید به‌اشتباه «صدور پس از ذخیره پایدار» توصیف شود.
 - هیچ deploy، upload واقعی Version، promote یا تغییر ترافیک Production انجام نشده است.
 - وضعیت این بخش: `automated_tests_passed`; اکنون برای بررسی انسانی محدودِ همین مرحله از مالک پروژه درخواست می‌شود مخزن را روی commit بالا مرور/تست کند. پس از بازخورد، به مرحله bootstrap end-to-end محلی و سپس بازگشت به هدف محصولیِ موتور مکالمه و UI دستیار می‌رویم.
+
+
+## ۱۸. آزمون end-to-end محلی Bootstrap نشست دستیار (2026-11-04)
+
+### دامنه و هدف
+هدف این بخش اثبات اتصال واقعی اجزای مستقل احراز initData، fingerprint کلیددار، Durable Object ضدبازپخش و صدور token در یک درخواست end-to-end داخل runtime محلی Cloudflare Workers بود؛ بدون اتصال route یا binding به Worker عملیاتی.
+
+### فایل‌های افزوده/تغییریافته
+- `tests/workers/assistantBootstrapWorker.js`: harness محلی و مستقل که از `bootstrapAssistantSession` و adapter واقعی `createReplayMarkerConsumer` استفاده می‌کند و کلاس Durable Object تولیدی را از طریق subclass تستی اجرا می‌کند.
+- `tests/workers/assistant-bootstrap.wrangler.toml`: binding و migration فقط برای runtime محلی آزمون، با مقادیر ساختگی و صریحاً test-only.
+- `tests/workers/assistantBootstrap.integration.mjs`: تولید initData مصنوعی با امضای Telegram، اجرای Wrangler محلی و آزمون هم‌زمانی/خطا.
+- `.github/workflows/validate-content.yml`: اجرای integration جدید در CI، پس از آزمون replay marker محلی.
+- هیچ فایل runtime اصلی Worker، frontend، journey، profile، داده مسیر، ۳۴ موضوع یا ۹۵۲ تمرین تغییر نکرد.
+
+### رفتارهای اثبات‌شده در runtime محلی
+- ۱۲ درخواست هم‌زمان با یک initData معتبر: دقیقاً یک درخواست با پاسخ موفق و صدور token؛ ۱۱ درخواست دیگر با پاسخ 409 و بدون token.
+- token صادرشده با verifier واقعی `verifyAssistantSessionToken` معتبر و scope آن فقط `assistant:turn` بود.
+- امضای نامعتبر و initData منقضی‌شده هر دو با 401 و بدون token رد شدند.
+- initData معتبرِ مستقل با query_id متفاوت پذیرفته شد.
+- آزمون از HMAC واقعی Telegram و Durable Object/SQLite runtime محلی استفاده کرد؛ داده‌ها و credentialها مصنوعی و مخصوص تست بودند.
+- آزمون replay marker مستقل قبلی نیز در همان CI موفق ماند.
+
+### CI نهایی
+- HEAD آزموده‌شده روی `main`: `fb3eabe7a2e6b1d8de3ef0b53da12e93270627d0`.
+- GitHub Actions run: `41823268749` — نتیجه نهایی `success`.
+- `npm audit --audit-level=high`: صفر آسیب‌پذیری.
+- Wrangler Worker bundle dry-run و `versions upload --dry-run`: موفق، بدون انتشار یا upload واقعی.
+- replay-marker local runtime integration و assistant-bootstrap local runtime integration: موفق.
+- `npm test`: ۳۴۸ تست، صفر شکست.
+- اعتبارسنجی registry دستیار، اعتبارسنجی محتوا، ممیزی کیفیت محتوا و build: موفق.
+- آزمون‌های Chromium: ۱۰ سناریوی privacy migration، آزمون واقعی ZIP/PDF archive export و سناریوهای browser safety برای T01/T17: موفق.
+
+### محدودیت‌ها و موارد باز
+- این اثبات فقط برای مسیر Telegram و fixtureهای مصنوعی است؛ اعتبارسنجی امضای Bale هنوز به‌طور مستقل با مستندات رسمی/آزمون مرجع تأیید نشده و نباید پشتیبانی امن Bale ادعا شود.
+- harness جدید فقط در `tests/workers` است؛ به `workers/assistant-api/src/index.js`، route عمومی، Worker binding/migration عملیاتی یا frontend متصل نشده است.
+- هیچ secret واقعی، رضایت ابری، provider/LLM، نگهداری نشست/مکالمه، rate limit عملیاتی یا فرایند حذف داده فعال نشده است.
+- endpoint مکالمه همچنان 503 و fail-closed است؛ دستیار ابری در مرورگر قابل استفاده نیست.
+- هیچ deploy، upload واقعی Version، promote یا تغییر ترافیک Production انجام نشده است.
+
+**وضعیت این بخش:** `automated_tests_passed` برای bootstrap end-to-end محلی؛ این بخش به‌تنهایی خروجی قابل استفاده در مرورگر نیست.
+
+**گام بعدی محصولی:** بازگشت از زیرساخت به موتور مکالمه معنایی؛ طراحی قرارداد provider-neutral برای تحلیل مکالمه چندمرحله‌ای و خروجی ساختاریافته، با گیت ایمنی مستقل و بدون ارسال متن واقعی کاربر به provider تا تعیین و پیاده‌سازی رضایت، منطقه پردازش، نگهداری و حذف داده. مسیر Bale نیز تا راستی‌آزمایی رسمی جداگانه مسدود بماند.
