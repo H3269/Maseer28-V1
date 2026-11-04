@@ -200,9 +200,12 @@ function groundedSection(label, value) {
     const firstQuote = source.indexOf('«');
     const lead = firstQuote > 0 ? source.slice(0, firstQuote).trim() : '';
     const prefix = /دو ستون/u.test(source) ? 'ستون ' : /دو پرسش/u.test(source) ? 'پرسش ' : 'بخش ';
+    const lastQuoteEnd = source.lastIndexOf('»') + 1;
+    const trailing = source.slice(lastQuoteEnd).replace(/^[،؛.：:\\s]+/u, '').trim();
     steps = [
       ...(lead ? [lead] : []),
       ...quoted.map((item, index) => prefix + (index + 1) + ': «' + item + '»'),
+      ...(trailing ? splitGroundedSentences(trailing) : []),
     ];
   }
   const notes = [];
