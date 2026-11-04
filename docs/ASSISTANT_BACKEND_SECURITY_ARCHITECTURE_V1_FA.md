@@ -267,3 +267,25 @@ TTL پنج‌دقیقه‌ای فعلاً یک مقدار محافظه‌کار�
 - هیچ تستی نباید از داده واقعی کاربر، bot token واقعی یا initData واقعی استفاده کند.
 
 **تصمیم:** هنوز کد Durable Object، migration، binding، route bootstrap یا تغییر frontend نوشته/فعال نمی‌شود. ابتدا این failure-modeها باید در طراحی قابل آزمون به قرارداد روشن تبدیل شوند؛ سپس کلاس DO به‌صورت مستقل و بدون اتصال به Worker route در محیط تست پیاده‌سازی شود.
+
+
+## ۱۵. پیاده‌سازی ایزوله SQLite Replay Marker Shard (2026-11-04)
+
+فایل `workers/assistant-api/src/replayMarkerShard.js` اکنون یک کلاس مستقل `ReplayMarkerShard` ارائه می‌کند؛ این کلاس هنوز از Worker اصلی export/import نشده و به هیچ route یا binding متصل نیست.
+
+### رفتار اجرایی
+- جدول `replay_markers` فقط `fingerprint` keyed با قالب ۶۴ رقم hex و `expires_at` عددی را نگه می‌دارد؛ raw initData، hash امضای پلتفرم، user ID، شناسه پرونده یا متن گفتگو در این کلاس پذیرفته/ذخیره نمی‌شود.
+- ایجاد schema در constructor همگام است و عمداً هیچ Alarm را زمان‌بندی نمی‌کند.
+- `consumeOnce` فقط fingerprint و expiry می‌گیرد؛ زمان جاری را داخل DO می‌خواند و ورودی زمان از caller نمی‌پذیرد.
+- پیش از درج marker، Alarm cleanup با موعدی حداکثر برابر زودترِ «expiry خود marker» یا «۶۰ ثانیه بعد» تضمین می‌شود. اگر get/set Alarm شکست بخورد، درج انجام نمی‌شود و caller باید session issuance را متوقف کند.
+- عملیات حذف منقضی‌ها، خواندن marker و درج یکتا در `transactionSync` اجرا می‌شود؛ cursorها قبل از هر await به آرایه تبدیل می‌شوند.
+- رکورد معتبر موجود، duplicate را رد می‌کند؛ رکورد منقضی‌شده در همان transaction حذف و قابل جایگزینی است.
+- پاک‌سازی opportunistic در هر مصرف، batch محدود ۱۰۰ رکوردی دارد. Alarm نیز batch پاک‌سازی می‌کند و برای رکوردهای منقضی باقی‌مانده، موعد کوتاه بعدی می‌گذارد.
+- عملیات تغییر Alarm در هر instance صف‌بندی شده تا race بین get/set/delete، موعد زودتر را با موعد دیرتر جابه‌جا نکند.
+- خطای SQL، transaction یا Alarm به caller منتقل می‌شود؛ کلاس هیچ fallback permissive ندارد.
+
+### مرز ادعا
+- این کد یک پیاده‌سازی ایزوله و واحدتست‌شده است، نه اثبات عملکرد روی Cloudflare edge.
+- آزمون‌ها از SQLite داخلی Node 22 و fake Storage/Alarm استفاده می‌کنند؛ هنوز integration test با runtime واقعی Durable Objects، namespace یا migration انجام نشده است.
+- sharding key derivation، namespace binding، Wrangler migration و route bootstrap عمداً خارج از این مرحله باقی مانده‌اند.
+- caller آینده باید fingerprint را با HMAC secret مستقل در Worker بسازد و expiry را از `auth_date + MAX_AUTH_AGE + MAX_FUTURE_SKEW` مشتق کند؛ هرگز fingerprint خام/غیرکلیددار یا زمان دلخواه کلاینت را به این کلاس ندهد.
