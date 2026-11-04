@@ -76,7 +76,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false }) {
       const turn = makePageAssistantTurn({ screen, text: message });
       setMessages((current) => [
         ...current,
-        { role: 'user', text: message },
+        { role: 'user', text: message, knowledge: [] },
         { role: 'assistant', text: turn.message, knowledge: turn.knowledge || [] },
       ]);
       setDraft('');
@@ -157,7 +157,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false }) {
                   <div className={item.role === 'user' ? 'userMessage' : 'assistantMessage'} key={index}>
                     <b>{item.role === 'user' ? 'شما' : 'دستیار مسیر۲۸'}</b>
                     <p>{item.text}</p>
-                    {item.knowledge.map((entry) => (
+                    {(item.knowledge || []).map((entry) => (
                       <div className="globalAssistantKnowledge" key={entry.item_id}>
                         <b>{entry.title}</b>
                         <p>{entry.excerpt}</p>
