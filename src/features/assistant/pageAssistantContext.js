@@ -104,15 +104,15 @@ export function answerPageAssistantQuestion({ screen, message } = {}) {
 
   // Accept only standalone page-navigation questions. Extra clauses must
   // fall through to the safety-first router instead of being masked by UI help.
-  const asksActions = /^(?:(?:اینجا|در این صفحه|در این بخش)\\s+)?(?:چه کارهایی|چه کاری|چه گزینه هایی|چه امکاناتی)\\s*(?:می توانم انجام بدهم|می توانم انجام دهم|می تونم انجام بدم|وجود دارد|دارم)?$/u.test(text);
+  const asksActions = /^(?:(?:اینجا|در این صفحه|در این بخش)\s+)?(?:چه کارهایی|چه کاری|چه گزینه هایی|چه امکاناتی)\s*(?:می توانم انجام بدهم|می توانم انجام دهم|می تونم انجام بدم|وجود دارد|دارم)?$/u.test(text);
   if (asksActions) {
     return `در صفحه «${context.label}» می‌توانی: ${context.actions.join('، ')}.`;
   }
 
-  const asksPurpose = /^(?:این صفحه|این بخش|اینجا)\\s*(?:برای چیست|چیه|چه کاربردی دارد|چه کاربردی داره|چه کاری می کند|چه کاری انجام می دهد)$/u.test(text);
+  const asksPurpose = /^(?:این صفحه|این بخش|اینجا)\s*(?:برای چیست|چیه|چه کاربردی دارد|چه کاربردی داره|چه کاری می کند|چه کاری انجام می دهد)$/u.test(text);
   if (asksPurpose) return context.purpose;
 
-  const asksReturn = /^(?:(?:چطور|چگونه)\\s*(?:به خانه\\s*)?(?:برگردم|بازگردم|بازگشت کنم)|راه بازگشت به خانه|(?:می خواهم|می خوام)\\s*(?:به خانه بروم|برگردم))$/u.test(text);
+  const asksReturn = /^(?:(?:چطور|چگونه)\s*(?:به خانه\s*)?(?:برگردم|بازگردم|بازگشت کنم)|راه بازگشت به خانه|(?:می خواهم|می خوام)\s*(?:به خانه بروم|برگردم))$/u.test(text);
   if (asksReturn) return context.returnHint;
 
   return null;
