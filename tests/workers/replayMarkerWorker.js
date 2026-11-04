@@ -6,6 +6,10 @@ export class ReplayMarkerTestDO {
     this.shard = new ReplayMarkerShard(ctx);
   }
 
+  async alarm() {
+    await this.shard.alarm();
+  }
+
   async fetch(request) {
     const url = new URL(request.url);
 
@@ -34,7 +38,7 @@ export class ReplayMarkerTestDO {
         "UPDATE replay_markers SET expires_at = ?",
         Date.now() - 1,
       );
-      await this.shard.alarm();
+      await this.alarm();
       const count = this.ctx.storage.sql
         .exec("SELECT COUNT(*) AS count FROM replay_markers")
         .toArray()[0].count;
