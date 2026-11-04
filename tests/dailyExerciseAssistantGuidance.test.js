@@ -299,3 +299,53 @@ test('an example request asks which prior sentence needs an illustrative example
   assert.match(second.response, /کدام جمله یا مرحله/);
 });
 
+
+
+test('colloquial first and second references resolve to the labelled day-content items', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'چطور انجامش بدم؟', dayData, problem: 'اضطراب', day: 4 });
+  const firstItem = makeDailyExerciseGuidanceTurn({
+    message: 'اولی رو بگو',
+    dayData,
+    problem: 'اضطراب',
+    day: 4,
+    conversationState: first.nextState,
+  });
+  assert.match(firstItem.response, /متن تمرین همین روز: سه موقعیت اخیر/);
+
+  const secondItem = makeDailyExerciseGuidanceTurn({
+    message: 'دومی رو بگو',
+    dayData,
+    problem: 'اضطراب',
+    day: 4,
+    conversationState: first.nextState,
+  });
+  assert.match(secondItem.response, /راهکار اختصاصی همین روز: امروز فقط یک موقعیت/);
+  assert.doesNotMatch(secondItem.response, /متن تمرین همین روز/);
+});
+
+test('ambiguous colloquial references ask for clarification instead of guessing', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'چطور انجامش بدم؟', dayData, problem: 'اضطراب', day: 4 });
+  for (const message of ['همون قبلی', 'همون قبلی رو بگو', 'اون قسمت رو بگو']) {
+    const followUp = makeDailyExerciseGuidanceTurn({
+      message,
+      dayData,
+      problem: 'اضطراب',
+      day: 4,
+      conversationState: first.nextState,
+    });
+    assert.match(followUp.response, /کدام مورد است: متن تمرین، راهکار اختصاصی/u, message);
+  }
+});
+
+test('explicit prior-action references still retrieve only the dedicated action', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'چطور انجامش بدم؟', dayData, problem: 'اضطراب', day: 4 });
+  const followUp = makeDailyExerciseGuidanceTurn({
+    message: 'راهکار قبلی رو بگو',
+    dayData,
+    problem: 'اضطراب',
+    day: 4,
+    conversationState: first.nextState,
+  });
+  assert.match(followUp.response, /راهکار اختصاصی همین روز: امروز فقط یک موقعیت/);
+  assert.doesNotMatch(followUp.response, /متن تمرین همین روز/);
+});
