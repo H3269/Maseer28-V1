@@ -3,9 +3,10 @@
 هدف: ساخت دستیار مکالمه‌ای هوشمند، زمینه‌محور و ایمن داخل اپ مسیر۲۸. مخزن مرجع `H3269/Maseer28-V1` و شاخه مجاز فقط `main` است. بخش موجود اپ، journey، پروفایل، ۳۴ موضوع و ۹۵۲ تمرین خارج از دامنه تغییرند.
 
 ## وضعیت زنده مخزن
-- آخرین commit ثبت نتایج کد/تست semantic orchestration: `751b9196da863958738743b690c136683603193e`.
+- آخرین commit کد/تست semantic orchestration: `751b9196da863958738743b690c136683603193e`.
 - CI run `41825332984` روی همین SHA: `success`.
-- آخرین commit مستندات وضعیت: `8932467fe71d3545ec43739c03e2d190a8323a83`.
+- آخرین commit ثبت وضعیت/راهبرد Preview: `18356ca8e93d4dc3c982b34436cdf6fee366b52a`.
+- بررسی provider و Preview در `docs/AI_PROVIDER_SELECTION_AND_DATA_BOUNDARY_FA.md`، commit `e8001a6a4795069912e9c5b26095908c152d2130`.
 - برای شروع هر نشست بعدی، HEAD و CI را دوباره از GitHub بررسی کن؛ این دفتر جای بررسی زنده را نمی‌گیرد.
 
 ## بخش تکمیل‌شده قبلی: bootstrap end-to-end محلی
@@ -22,28 +23,34 @@
 - `tests/workers/semanticConversation.integration.mjs`
 - به‌روزرسانی `.github/workflows/validate-content.yml`
 
-ارکستراتور provider-neutral است: تاریخچه کوتاه و محدود را می‌پذیرد، متن را به‌عنوان داده غیرقابل‌اعتماد بسته‌بندی می‌کند، موضوع‌ها را فقط از registry واقعی T01–T34 می‌پذیرد، برای ابهام سؤال می‌پرسد و هیچ موضوعی را بدون تأیید کاربر انتخاب نمی‌کند. گیت ایمنی مستقل پیش از مدل اجرا می‌شود؛ خروجی مدل فقط می‌تواند هشدار را تشدید کند. اطلاعات عمومی بدون محتوای تأییدشده پاسخ factual نمی‌گیرد.
+ارکستراتور provider-neutral است: تاریخچه کوتاه و محدود را می‌پذیرد، متن را به‌عنوان داده غیرقابل‌اعتماد بسته‌بندی می‌کند، topic ID را فقط از رجیستری T01–T34 می‌پذیرد، برای ابهام سؤال می‌پرسد و هیچ موضوعی را بدون تأیید کاربر انتخاب نمی‌کند. گیت ایمنی مستقل پیش از مدل اجرا می‌شود؛ خروجی مدل فقط می‌تواند هشدار را تشدید کند. اطلاعات عمومی بدون محتوای تأییدشده پاسخ factual نمی‌گیرد.
 
-آداپتور Workers AI فقط مدل‌های دارای JSON Mode مستندشده را می‌پذیرد. در تست‌ها از AI.run ساختگی استفاده شده؛ هیچ inference واقعی یا هزینه AI ایجاد نشده است. consent gate به نتیجه server-side با دو هدف cloud AI و sensitive data و policy version نیاز دارد. redaction الگوهای رایج شناسه مستقیم را حذف می‌کند اما ناشناس‌سازی کامل نیست.
+آداپتور Workers AI فقط مدل‌های دارای JSON Mode مستندشده را می‌پذیرد. در تست‌ها از AI.run ساختگی استفاده شده؛ هیچ inference واقعی یا هزینه AI ایجاد نشده است. consent gate به نتیجه server-side با هر دو هدف cloud AI و sensitive data و policy version نیاز دارد. redaction الگوهای رایج شناسه مستقیم را حذف می‌کند اما ناشناس‌سازی کامل نیست. تاریخچه کلاینت با نقش‌های جعلی به‌صورت بسته داده untrusted ارسال می‌شود.
 
 CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` موفق شد: audit صفر آسیب‌پذیری، Worker/Wrangler dry-runها، سه integration محلی Worker، ۳۶۶ تست واحد بدون شکست، اعتبارسنجی topic/content، ممیزی کیفیت، build و آزمون‌های Chromium شامل ۱۰ سناریوی privacy migration، archive export و safety browser scenarios.
 
-جزئیات، محدودیت‌ها و تصمیم‌های باز در بخش ۱۹ سند `docs/PROJECT_EXECUTION_STATE_FA.md` و بررسی provider در `docs/AI_PROVIDER_SELECTION_AND_DATA_BOUNDARY_FA.md` ثبت شده‌اند.
+جزئیات و محدودیت‌ها در بخش ۱۹ سند `docs/PROJECT_EXECUTION_STATE_FA.md` و بررسی provider در `docs/AI_PROVIDER_SELECTION_AND_DATA_BOUNDARY_FA.md` ثبت شده‌اند.
+
+## تصمیم Preview مرورگری
+چون Worker از Durable Objects استفاده می‌کند، Cloudflare برای آن Version URL نمی‌سازد. مسیر درست، Worker Previews با `wrangler preview --name assistant-preview` است. این Preview namespace/storage مستقل Durable Object می‌گیرد و Production را فعال نمی‌کند. تنظیمات Preview باید در بخش `[previews]` فایل Wrangler تعریف شوند.
+
+هیچ Preview واقعی ساخته نشده است. Build config فعلی هنوز root directory برابر `/workers/assistant-api` و deploy command برابر `wrangler versions upload` دارد. برای میزبانی UI در همان Worker Preview باید build از ریشه مخزن و assets پیکربندی شود. هیچ تنظیم Cloudflare Dashboard تغییر نکرده است. جزئیات در بخش ۲۰ سند وضعیت ثبت شده است.
 
 ## محدودیت‌های قطعی فعلی
 - endpoint `/v1/assistant/turn` همچنان 503 و fail-closed است.
 - `workers/assistant-api/wrangler.toml` فاقد AI binding است؛ آداپتور هنوز به Worker اصلی وصل نیست.
 - هیچ model ID واقعی انتخاب نشده و هیچ inference واقعی اجرا نشده است.
 - محل دقیق inference، شرایط منطقه‌ای، هزینه/سهمیه حساب و مجوز ارسال داده حساس تعیین نشده‌اند.
-- consent verifier، session/auth برای مرورگر و mini-app، rate limit و کنترل هزینه عملیاتی هنوز وجود ندارند.
+- consent verifier، session/auth مناسب برای مرورگر و mini-app، rate limit و کنترل هزینه عملیاتی هنوز وجود ندارند.
 - UI موجود هنوز به orchestrator وصل نشده است؛ نسخه قابل تعامل مرورگری آماده نیست.
+- Preview URL عمومی خواهد بود؛ کنترل دسترسی و رضایت قبل از داده واقعی لازم است.
 - Telegram bootstrap آزموده شده؛ Bale هنوز با مستندات رسمی/آزمون مرجع مستقل راستی‌آزمایی نشده و نباید پشتیبانی امن آن ادعا شود.
 - محتوای دانش تأییدشده هنوز برای پاسخ factual آماده نیست.
 - هیچ deploy، upload واقعی Version، promote یا تغییر ترافیک Production انجام نشده است.
 - فایل‌های journey/profile/content و داده‌های ۳۴ موضوع و ۹۵۲ تمرین تغییر نکرده‌اند.
 
 ## گام بعدی
-پیش از هر اتصال مدل واقعی، consent verifier سمت سرور و هویت/نشست مناسب برای مرورگر و mini-app، rate limit، سقف هزینه و کنترل withdrawal طراحی و آزموده شوند. سپس مدل فارسی با مجموعه مصنوعی و معیارهای ثابت ارزیابی شود؛ اجرای inference واقعی به دلیل هزینه و ارسال داده به Cloudflare نیازمند مجوز صریح است. بعد از آن route و UI در Preview محدود و قابل مشاهده در مرورگر به هم متصل شوند.
+پیاده‌سازی consent verifier سمت سرور، نشست و دسترسی preview، rate limit و سقف هزینه؛ سپس تکمیل build/static assets در Worker Preview و اتصال route/UI. مدل فارسی با مجموعه مصنوعی و معیارهای ثابت ارزیابی شود؛ اجرای inference واقعی به دلیل هزینه و ارسال داده به Cloudflare نیازمند مجوز صریح است.
 
 ## قاعده گزارش‌دهی به مالک
 مالک برنامه‌نویس نیست و صریحاً خواسته تا وقتی یک بخش خروجی واقعی و قابل مشاهده در مرورگر ندارد، از او تست فنی، بازبینی فایل، کد یا تنظیمات نخواهیم. فقط وقتی نسخه مشخصی واقعاً در مرورگر قابل مشاهده و تعامل شد، با دستورالعمل ساده و یک گام روشن اطلاع بده. موفقیت CI یا local runtime به‌تنهایی «آماده مرورگر» نیست. هیچ Production deploy/activate بدون اجازه صریح مالک انجام نشود.
