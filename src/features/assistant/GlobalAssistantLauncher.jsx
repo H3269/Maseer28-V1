@@ -3,6 +3,8 @@ import AppIcon from '../../shared/components/AppIcon.jsx';
 
 const SCREEN_LABELS = {
   dashboard: 'خانه',
+  profile: 'پروفایل',
+  pathSetup: 'تنظیم مسیر',
   day: 'تمرین روزانه',
   dailyResult: 'نتیجه تمرین',
   books: 'کتابخانه',
