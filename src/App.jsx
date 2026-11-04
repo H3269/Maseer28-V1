@@ -57,6 +57,7 @@ import { createHumanReviewSkipRecord, getDailySafetyMode } from './features/cont
 import { createRelationshipSafetySkipRecord, getRelationshipSafetyGate, isRelationshipSafetyConfirmed } from './features/journey/relationshipSafetyGate.js';
 import { fa } from './shared/utils.js';
 import DailyExerciseAssistant from './features/assistant/DailyExerciseAssistant.jsx';
+import GlobalAssistantLauncher from './features/assistant/GlobalAssistantLauncher.jsx';
 
 function isPathSetupComplete(state) {
   const data = state?.profileData;
@@ -807,6 +808,7 @@ function navigate(next) {
       {screen === 'report' && <Report journey={journey} userProfile={userProfile} content={content} onBooks={() => openBooks('report')} onSupport={() => openSupport('report')} onDashboard={() => navigate('dashboard')} onArchive={() => navigate('archive')} onNew={startNewPathFromArchive} />}
       {screen === 'archive' && <Archive journey={journey} content={content} onDeleteArchive={deleteSingleArchive} onBack={() => navigate('dashboard')} onNew={startNewPathFromArchive} />}
       {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
+      <GlobalAssistantLauncher screen={screen} visible={navVisible} />
       {preview && <BookPreviewModal preview={preview} onClose={() => setPreview(null)} onOpen={() => { const item = preview; setPreview(null); openBook(item.book, item.sourcePage, { day: item.day, sourcePage: item.sourcePage, reason: item.reason, sourceTitle: item.sourceTitle }); }} />}
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}
       {validation && <ValidationModal data={validation} onClose={() => setValidation(null)} />}
