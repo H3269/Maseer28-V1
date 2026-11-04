@@ -86,11 +86,11 @@ function hasRequiredVerifiedConsent(value) {
 export function redactDirectIdentifiers(value) {
   if (typeof value !== "string") return "";
   return value
-    .replace(/https?:\\/\\/[^\\s]+/giu, "[پیوند حذف شد]")
-    .replace(/\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\b/giu, "[ایمیل حذف شد]")
-    .replace(/(?<!\\d)\\+?\\d(?:[\\s().-]*\\d){7,}(?!\\d)/gu, "[شماره یا شناسه عددی حذف شد]")
+    .replace(/https?:\/\/\S+/giu, "[پیوند حذف شد]")
+    .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/giu, "[ایمیل حذف شد]")
+    .replace(/(?<!\d)\+?\d(?:[\s().-]*\d){7,}(?!\d)/gu, "[شماره یا شناسه عددی حذف شد]")
     .replace(/@[A-Za-z0-9_]{3,}/gu, "[شناسه کاربری حذف شد]")
-    .replace(/(نام من|اسم من|نامم|اسمم)\\s*[:：]?\\s*[\\p{L}‌-]+/gu, "$1 [نام حذف شد]");
+    .replace(/(نام من|اسم من|نامم|اسمم)\s*[:：]?\s*[\p{L}‌-]+/gu, "$1 [نام حذف شد]");
 }
 
 function normalizeHistory(history) {
