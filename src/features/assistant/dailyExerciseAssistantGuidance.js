@@ -19,7 +19,7 @@ function normalize(value) {
 
 function classifySafetyReply(message) {
   const value = normalize(message);
-  const possibleOrUncertain = /(?:^|[\\s،,])(?:بله|آره|اره|دارم)(?:$|[\\s،,])|(?:ممکنه|ممکن است|احتمالش هست|مطمئن نیستم|نمی دانم|نمی دونم|شاید|قصد دارم|برنامه دارم|اما|ولی)/u.test(value);
+  const possibleOrUncertain = /(?:^|[\s،,])(?:بله|آره|اره|دارم)(?:$|[\s،,])|(?:ممکنه|ممکن است|احتمالش هست|مطمئن نیستم|نمی دانم|نمی دونم|شاید|قصد دارم|برنامه دارم|اما|ولی)/u.test(value);
   if (possibleOrUncertain) return 'possible_or_uncertain_danger';
 
   if (value === 'نه' || value === 'خیر'
