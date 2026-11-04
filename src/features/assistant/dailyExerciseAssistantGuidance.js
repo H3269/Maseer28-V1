@@ -129,6 +129,31 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
   const followUp = followUpResponse(text, state);
   if (followUp) return result(followUp, state, text);
 
+  // Handle common exercise barriers and completion reports without inventing
+  // an alternative exercise or assuming the user completed it successfully.
+  const normalizedMessage = normalize(text);
+  if (/(?:سخت(?:ه| است)?|از پسش برنمی آیم|نمی توانم انجام|نمی تونم انجام|وقت ندارم|فرصت ندارم|یادم رفت|انجام ندادم|نشد انجام)/u.test(normalizedMessage)) {
+    return result(
+      'لازم نیست خودت را مجبور کنی یا تمرین را خودسرانه تغییر بدهی. برای اینکه درست راهنمایی‌ات کنم، مانع اصلی کدام بود: نامفهوم بودن دستور، کمبود وقت، شدت ناراحتی، یا یک مانع عملی دیگر؟',
+      { ...state, lastTopic: currentTopic },
+      text,
+    );
+  }
+  if (/(?:انجامش دادم|تمرین را انجام دادم|تمرین رو انجام دادم|تمومش کردم|تمامش کردم|ثبت کردم)/u.test(normalizedMessage)) {
+    return result(
+      'متوجه شدم که می‌گویی تمرین را انجام داده‌ای. برای اینکه تجربه‌ات را درست دنبال کنم، هنگام انجام آن چه چیزی مشاهده کردی یا چه بخشی برایت برجسته بود؟',
+      { ...state, lastTopic: currentTopic },
+      text,
+    );
+  }
+  if (/(?:درست انجام دادم|درست انجامش دادم|اشتباه انجام دادم|نمی دانم درست)/u.test(normalizedMessage)) {
+    return result(
+      'نمی‌خواهم بدون دیدن کاری که انجام داده‌ای قضاوت کنم. لطفاً کوتاه بگو دقیقاً چه مراحلی را انجام دادی تا آن را با متن تمرین همین روز مقایسه کنیم.',
+      { ...state, lastTopic: currentTopic },
+      text,
+    );
+  }
+
   // The current day already supplies a topic. Only ask topic disambiguation
   // when the user's message contains multiple actual topic candidates.
   if (routed.next_question?.purpose === 'topic_disambiguation' && routed.topic_candidates.length > 0) {
