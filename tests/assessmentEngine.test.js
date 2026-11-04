@@ -88,6 +88,8 @@ test('topic evidence from earlier context answers survives the clarification tur
   session = answer(session, 'حدود دو ماه است.');
   session = answer(session, 'می‌خواهم مسئله را بهتر بفهمم.');
   session = answer(session, 'وقتی در محل کار با همکارم اختلاف پیدا می‌کنم، تمرکزم هم به هم می‌ریزد.');
+  assert.equal(getCurrentQuestion(session).id, 'clarify_example');
+  session = answer(session, 'نگرانی از آینده هم جداگانه وجود دارد و اختلاف با همکارم باعث عصبانیت من می‌شود.');
   const topicIds = session.summary.candidate_topics.map((item) => item.topic_id);
   assert.ok(topicIds.includes('T02'));
   assert.ok(topicIds.includes('T01'));
@@ -116,6 +118,8 @@ test('ordinary concern proceeds through one question at a time and produces tent
   session = answer(session, 'می‌خواهم مسئله را بهتر بفهمم');
   assert.equal(getCurrentQuestion(session).id, 'clarify_example');
   session = answer(session, 'وقتی آینده نامعلوم است نگران می‌شوم و مدام فکر می‌کنم');
+  assert.equal(getCurrentQuestion(session).id, 'clarify_example');
+  session = answer(session, 'در موقعیت‌های مختلف، نامعلوم بودن آینده باعث نگرانی و فکرهای تکراری من می‌شود.');
   assert.equal(getCurrentQuestion(session).id, 'summary_confirmation');
   const summary = getAssessmentSummary(session);
   assert.ok(summary.candidate_topics.some((item) => item.topic_id === 'T02'));
@@ -190,6 +194,8 @@ test('unmatched concerns use T34 as a clarification route, not a diagnosis', () 
   session = answer(session, 'چند هفته است');
   session = answer(session, 'می‌خواهم بفهمم چه خبر است');
   session = answer(session, 'هنوز نمی‌توانم نمونه مشخصی پیدا کنم');
+  assert.equal(getCurrentQuestion(session).id, 'clarify_example');
+  session = answer(session, 'هنوز هم نمی‌توانم این مسئله را به یکی از موضوعات مشخص ربط بدهم.');
   const item = getAssessmentSummary(session).candidate_topics[0];
   assert.equal(item.topic_id, 'T34');
   assert.equal(item.status, 'needs_clarification');
