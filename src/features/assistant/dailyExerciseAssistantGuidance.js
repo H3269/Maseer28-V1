@@ -5,7 +5,14 @@ const SAFETY_HANDOFF = 'راهنمایی تمرین را متوقف می‌کن�
 const MAX_CONTEXT_TEXT = 1200;
 
 export function selectDailyExerciseGuidanceData({ guidanceData, data } = {}) {
-  return guidanceData || data;
+  if (!guidanceData) return data;
+  return {
+    ...(data && typeof data === 'object' ? data : {}),
+    ...guidanceData,
+    exercise: guidanceData.exercise || data?.exercise || data?.instructions || '',
+    actionText: guidanceData.action || guidanceData.actionText || data?.actionText || data?.action || '',
+    adaptation: guidanceData.adaptation || data?.adaptation || '',
+  };
 }
 
 function normalize(value) {
@@ -176,7 +183,7 @@ function followUpResponse(message, state) {
 
 
 function splitGroundedSentences(value) {
-  return String(value || '').split(/(?<=[.!؟?])\\s+/u).map((part) => part.trim()).filter(Boolean);
+  return String(value || '').split(/(?<=[.!؟?])\s+/u).map((part) => part.trim()).filter(Boolean);
 }
 
 function extractQuotedItems(value) {
@@ -217,7 +224,7 @@ function blankResponseTemplate(exercise) {
     return 'قالب خالی برای نوشتن پاسخ خودت (نه مثال ساخته‌شده):\n'
       + quoted.map((item, index) => (index + 1) + ') ' + item + ' → [پاسخ خودت]').join('\n');
   }
-  const match = source.match(/(?:در سه خط|در سه بخش|دو پرسش|دو سؤال)\\s*بنویس\\s*[:：]\\s*([\\s\\S]+)/u);
+  const match = source.match(/(?:در سه خط|در سه بخش|دو پرسش|دو سؤال)\s*بنویس\s*[:：]\s*([\s\S]+)/u);
   if (match) {
     const prompts = match[1].split(/[؟?]/u).map((item) => item.trim()).filter(Boolean).slice(0, 5);
     if (prompts.length >= 2) {
