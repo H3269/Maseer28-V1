@@ -424,3 +424,41 @@
 
 ### گام بعدی واحد
 شناسایی نوع میزبان واقعی اپ و assertion هویتی موجود در frontend، سپس طراحی آزمون اعتبارسنجی آن در Worker؛ تا آن زمان پیاده‌سازی auth واقعی یا بازکردن endpoint مکالمه متوقف می‌ماند.
+
+
+## 2026-11-04 — افزودن primitive اعتبارسنجی Mini App برای Telegram و Bale
+
+### مبنای فنی
+مستندات رسمی Bale و Telegram بررسی شدند. هر دو `initData` خام را برای اعتبارسنجی سمت Backend ارائه می‌کنند و از HMAC-SHA-256 با کلید ثابت `WebAppData` و توکن محرمانه همان پلتفرم استفاده می‌کنند. مستندات Bale صریحاً `Bale.WebApp.initData` را معرفی می‌کند؛ Telegram نیز `Telegram.WebApp.initData` را. این دو باید با secret مستقل بررسی شوند.
+
+### تغییرات واقعی در main
+- `workers/assistant-api/src/platformAuth.js`:
+  - تابع مستقل `verifyMiniAppInitData` برای پلتفرم‌های `telegram` و `bale`.
+  - رد ورودی بزرگ‌تر از ۸ KiB، فیلدهای تکراری، hash نامعتبر، auth_date منقضی/بیش از حد آینده و user.id نامعتبر.
+  - اعتبارسنجی HMAC با Web Crypto و `crypto.subtle.verify`.
+  - خروجی موفق فقط شامل وضعیت، پلتفرم و auth_date است؛ هیچ user ID، نام، پروفایل یا raw initData برگردانده نمی‌شود.
+  - secretهای مورد انتظار در آینده `TELEGRAM_BOT_TOKEN` و `BALE_BOT_TOKEN` هستند؛ هنوز هیچ secret در Cloudflare یا Git ثبت نشده است.
+- `tests/platformAuth.test.js`:
+  - آزمون امضای معتبر Telegram و Bale با توکن‌های ساختگی مخصوص تست.
+  - آزمون کلید پلتفرم اشتباه، دستکاری داده، انقضا، زمان آینده، فیلد تکراری، ورودی ناقص/بزرگ، secret مفقود و user نامعتبر.
+- `docs/ASSISTANT_BACKEND_SECURITY_ARCHITECTURE_V1_FA.md`:
+  - نتیجه مستندات رسمی و محدوده دقیق پیاده‌سازی ثبت شد.
+
+### Commitها
+- `b5daff761105fd35364609598aefe8da0797e3be` — افزودن primitive اعتبارسنجی.
+- `d441fb8e82a4d73d99aebdfdbb7763dc5d20188a` — افزودن آزمون‌های Telegram/Bale.
+- `333257e5fc2b0e6d25f0c3ed475627b022a76fd5` — ثبت مستندات رسمی و محدودیت‌های این مرحله.
+
+### وضعیت آزمون و انتشار
+- CI قبلی معماری: runs `41775725473` و `41775745056` هر دو `success` شدند.
+- CI برای commit آزمون‌ها: run `41776758222` با SHA `d441fb8e82a4d73d99aebdfdbb7763dc5d20188a` در آخرین مشاهده هنوز `pending` بود؛ نتیجه موفق اعلام نمی‌شود تا status نهایی دیده شود.
+- این verifier هنوز به route یا frontend متصل نشده؛ session token، replay protection و محدودسازی نرخ پیاده‌سازی نشده‌اند.
+- endpoint مکالمه همچنان 503 و fail-closed است؛ هیچ متن کاربر یا داده واقعی ارسال نمی‌شود.
+- هیچ secret، DO binding، provider، Deploy یا انتشار اضافه نشده است.
+- فقط فایل‌های دستیار/Backend، تست و مستندات تغییر کرده‌اند؛ محتوای ۳۴ موضوع/۹۵۲ روز، journey و منطق بخش اول اپ دست‌نخورده مانده است.
+
+### گام بعدی
+1. دریافت نتیجه CI برای کد verifier و تست‌ها.
+2. بررسی دقیق چرخه عمر `auth_date` در تجربه واقعی و طراحی ضد replay پیش از صدور session.
+3. طراحی خواندن `initData` از SDK میزبان فقط هنگام ورود به دستیار، بدون بارگذاری SDKهای خارجی برای همه کاربران و بدون ارسال متن مکالمه.
+4. سپس اتصال کنترل‌شده verifier به endpoint bootstrap آزمایشی، در حالی که `/turn` همچنان غیرفعال می‌ماند.
