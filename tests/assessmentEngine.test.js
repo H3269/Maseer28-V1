@@ -586,3 +586,28 @@ test('additive clarification preserves both topic hypotheses after the second cl
   assert.ok(topicIds.includes('T02'));
   assert.ok(topicIds.includes('T27'));
 });
+
+
+test('uncertainty at the explicit priority step preserves all candidates without choosing one', () => {
+  let session = createUnresolvedMultiTopicSession();
+  session = answer(session, 'هر دو موضوع در زندگی من وجود دارد و نمی‌دانم کدام مهم‌تر است.');
+  session = answer(session, 'هر دو تقریباً به یک اندازه آزارم می‌دهند.');
+  session = answer(session, 'بله، خلاصه درست است');
+  assert.equal(getCurrentQuestion(session).id, 'topic_priority');
+  session = answer(session, 'نمی‌دانم کدام مهم‌تر است.');
+  assert.equal(session.status, 'topic_priority_unresolved');
+  assert.equal(session.next_step.content_available, false);
+  assert.ok(session.candidate_topics.length > 1);
+});
+
+test('the user may explicitly retain both topics without the engine selecting a primary one', () => {
+  let session = createUnresolvedMultiTopicSession();
+  session = answer(session, 'هر دو موضوع در زندگی من وجود دارد و نمی‌دانم کدام مهم‌تر است.');
+  session = answer(session, 'هر دو تقریباً به یک اندازه آزارم می‌دهند.');
+  session = answer(session, 'بله، خلاصه درست است');
+  session = answer(session, 'هر دو به یک اندازه مهم‌اند');
+  assert.equal(session.status, 'completed_with_multiple_topics');
+  assert.equal(session.current_question, null);
+  assert.ok(session.candidate_topics.length > 1);
+  assert.ok(session.candidate_topics.every((item) => item.status === 'user_confirmed_relevant'));
+});
