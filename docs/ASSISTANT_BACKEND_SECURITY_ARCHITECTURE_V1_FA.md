@@ -179,3 +179,55 @@ TTL پنج‌دقیقه‌ای فعلاً یک مقدار محافظه‌کار�
 - هیچ deploy یا انتشار انجام نشده و محتوای اصلی ۳۴ موضوع/۹۵۲ روز و مسیر اصلی اپ تغییر نکرده است.
 
 **گام بعدی:** بررسی lifecycle و عمر عملی `auth_date` و طراحی ضد replay/session پیش از هر route bootstrap؛ سپس تعیین روش SDK با تست انسانی محدود در پلتفرم واقعی.
+
+## ۱۳. طراحی پیشنهادی ضدبازپخش، نشست و محدودسازی (بازبینی 2026-11-04)
+
+این بخش تصمیم معماری برای پیاده‌سازی بعدی است؛ هنوز هیچ کد اجرایی، binding یا namespace ساخته نشده است.
+
+### ۱۳.۱ جریان bootstrap
+1. کلاینت فقط هنگام ورود کاربر به دستیار، `platform` و `initData` خام را به `POST /v1/session/bootstrap` می‌فرستد؛ هیچ پیام مکالمه‌ای در این درخواست وجود ندارد.
+2. Worker اندازه و schema درخواست را محدود می‌کند، پلتفرم را allowlist می‌کند و HMAC را با bot token همان پلتفرم اعتبارسنجی می‌کند.
+3. پس از موفقیت HMAC و بررسی تازگی `auth_date`، Worker یک fingerprint keyed (HMAC سمت سرور از پلتفرم و داده امضاشده) می‌سازد؛ نه raw initData و نه شناسه کاربر.
+4. Worker عملیات اتمیک `consumeOnce` را در SQLite Durable Object مناسب shard اجرا می‌کند. کلید یکتا مانع مصرف دوباره همان fingerprint می‌شود. فقط درخواست برنده مجاز به ادامه است.
+5. فقط پس از موفقیت ذخیره پایدار، Worker bearer session امضاشده HMAC-SHA-256 صادر می‌کند. اگر binding غایب، storage خراب یا Durable Object در دسترس نباشد، bootstrap fail-closed می‌شود و token صادر نمی‌شود.
+
+### ۱۳.۲ ذخیره replay و پاک‌سازی
+- یک کلاس SQLite-backed Durable Object با شناسه‌های shard‌شده بر اساس prefix fingerprint استفاده شود تا یک object مرکزی bottleneck نشود؛ یک fingerprint مشخص همیشه به همان shard برسد.
+- جدول replay فقط fingerprint keyed و زمان انقضای مجاز را نگه می‌دارد؛ هیچ raw initData، hash امضای خام، user ID، پرونده یا متن گفتگو ذخیره نمی‌شود.
+- قید `PRIMARY KEY` و درج اتمیک، رقابت دو درخواست هم‌زمان را حل می‌کند: فقط یکی درج موفق دارد.
+- marker باید تا پایان آخرین لحظه‌ای که verifier ممکن است همان initData را معتبر بداند باقی بماند؛ زمان حذف بر اساس `auth_date + MAX_AUTH_AGE + MAX_FUTURE_SKEW` محاسبه می‌شود، نه صرفاً چند دقیقه پس از اولین درخواست.
+- برای پاک‌سازی قطعی از یک Alarm برای هر shard استفاده شود: نزدیک‌ترین expiry زمان alarm است؛ handler رکوردهای منقضی را batch-delete می‌کند و alarm بعدی را برای نزدیک‌ترین expiry باقی‌مانده تنظیم می‌کند. خطای پاک‌سازی باید retry و قابل پایش باشد.
+- shard count، batch size و تعداد عملیات باید با آزمون بار و سهمیه‌های واقعی تعیین شوند؛ مقدار اولیه در این سند قطعی نیست.
+
+### ۱۳.۳ نشست امضاشده
+- claimهای مجاز حداقلی: `iss`, `aud`, `iat`, `exp`, `jti`, `scope` و شناسه تصادفی نشست `sid`.
+- `sid` و `jti` از مولد رمزنگاری امن تولید شوند؛ token با HMAC-SHA-256 و secret مستقل از bot tokenها امضا شود.
+- هیچ user ID، شناسه پرونده، نام، شماره تماس، مشخصات پزشکی یا متن گفتگو داخل token قرار نگیرد.
+- scope فقط `assistant:turn` باشد؛ عمر اولیه حداکثر ۱۰ دقیقه (پیشنهادی، نه نهایی). token فقط در حافظه runtime کلاینت نگهداری شود و هرگز در URL، query string یا localStorage دائمی قرار نگیرد.
+- هر درخواست turn باید امضا، issuer، audience، زمان، scope و ساختار claimها را بررسی کند.
+- در نسخه اول refresh token صادر نشود. تمدید نشست فقط پس از bootstrap جدید با initData تازه و یک‌بارمصرف مجاز است؛ بنابراین انقضای نشست ممکن است کاربر را ملزم به بستن و بازکردن Mini App کند. این هزینه UX باید در تست واقعی اندازه‌گیری شود.
+- revocation فوری و withdrawal رضایت به state سروری جداگانه نیاز دارند و پیش‌نیاز فعال‌سازی پردازش ابری هستند؛ token کوتاه‌عمر به‌تنهایی جایگزین withdrawal نیست.
+
+### ۱۳.۴ محدودسازی نرخ
+- bootstrap و turn هر دو در سمت سرور محدود شوند؛ محدودیت UI یا CORS کنترل سوءاستفاده نیست.
+- محدودیت اولیه turn بر مبنای HMAC مستعارشده `sid` و پنجره زمانی اتمیک در Durable Object باشد؛ سقف ۲۰ درخواست در ۱۰ دقیقه فقط نقطه شروع آزمون است، نه سقف نهایی محصول.
+- bootstrap باید پیش از عملیات رمزنگاری سنگین، محدودیت شبکه‌ای داشته باشد. اگر از `CF-Connecting-IP` استفاده شود، فقط مقدار تأییدشده در مرز Cloudflare خوانده و بلافاصله با secret سرور HMAC شود؛ IP خام هرگز ذخیره یا log نشود. سقف شبکه نباید کاربران پشت NAT را بی‌دلیل محروم کند.
+- در فاز پیاده‌سازی هزینه تعداد RPCهای DO در هر درخواست محاسبه شود. هر RPC session/HTTP request/alarm invocation یک DO request قابل صورتحساب است؛ free tier فعلی ۱۰۰٬۰۰۰ request در روز است و عبور از سقف رایگان می‌تواند عملیات همان نوع را متوقف کند.
+- در خطای DO، رسیدن به سهمیه، شکست storage یا ابهام در شمارنده، مسیر حساس باید fail-closed باشد.
+
+### ۱۳.۵ تصمیم‌های باز و شروط ورود به کدنویسی
+- TTL پنج‌دقیقه‌ای فعلی `auth_date` هنوز provisional است. افزایش آن بدون اندازه‌گیری UX و threat review مجاز نیست؛ تست واقعی باید فاصله زمانی بازشدن Mini App تا ورود به دستیار را نشان دهد.
+- روش بارگذاری SDK Bale هنوز به دلیل توصیه رسمی بارگذاری در ابتدای `<head>` و تفاوت با lazy-load فعلی حل نشده است.
+- کلیدهای HMAC باید جدا باشند: bot token پلتفرم برای verify، session signing secret برای token، و replay-fingerprint secret برای pseudonymous storage. هیچ‌کدام در Git یا frontend قرار نمی‌گیرند.
+- قبل از افزودن migration/binding باید نوع پلن حساب، namespace/migration و هزینه/سهمیه در داشبورد به‌صورت read-only تأیید شود. ساخت namespace یا deploy بدون اجازه صریح ممنوع است.
+- ابتدا کلاس DO و منطق replay در تست‌های محلی/CI با شبیه‌سازی concurrency، duplicate، expiry، alarm cleanup و storage failure آزموده شوند. سپس route bootstrap فقط پس از تأیید انسانی برای آزمون میزبان اضافه شود.
+- `/v1/assistant/turn` تا تکمیل رضایت، privacy, safety, schema و provider review همچنان 503 باقی می‌ماند.
+
+### منابع فنی Cloudflare
+- Pricing و سهمیه DO: https://developers.cloudflare.com/durable-objects/platform/pricing/
+- Limits: https://developers.cloudflare.com/durable-objects/platform/limits/
+- SQLite storage و تراکنش: https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/
+- TTL و Alarm cleanup: https://developers.cloudflare.com/durable-objects/examples/durable-object-ttl/
+- Web Crypto در Workers: https://developers.cloudflare.com/workers/runtime-apis/web-crypto/
+
+**نتیجه:** معماری مناسب برای ادامه، replay cache اتمیک و shard‌شده در SQLite Durable Objects به‌همراه نشست stateless کوتاه‌عمر است؛ اما تا تعیین TTL واقعی `auth_date`، تست concurrency/cleanup و تأیید طرح rate limit، نباید route یا binding را فعال کنیم.
