@@ -117,6 +117,7 @@ function MainApp() {
   const [libraryReturn, setLibraryReturn] = useState('dashboard');
   const [supportReturn, setSupportReturn] = useState('dashboard');
   const [currentDay, setCurrentDay] = useState(() => Math.min(28, nextRequiredDay(initial.state)));
+  const [relationshipSafetyState, setRelationshipSafetyState] = useState({ dayKey: null, response: '' });
   const [resultDay, setResultDay] = useState(() => initial.screen === 'dailyResult' ? initial.state.completed.length : null);
   const [validation, setValidation] = useState(null);
   const [incompleteArchiveNoticeOpen, setIncompleteArchiveNoticeOpen] = useState(false);
@@ -231,6 +232,9 @@ function MainApp() {
 
   const category = content?.categories?.[journey.profileData?.problem] || content?.categories?.['مشکل دیگر'] || null;
   const activeDay = category?.days?.find((row) => Number(row.day) === Number(currentDay)) || category?.days?.[currentDay - 1] || null;
+  const relationshipSafetyDayKey = `${activeDay?.topic_id || ''}:${activeDay?.id || activeDay?.day || currentDay}`;
+  const relationshipSafetyResponse = relationshipSafetyState.dayKey === relationshipSafetyDayKey ? relationshipSafetyState.response : '';
+  const relationshipSafetyConfirmed = isRelationshipSafetyConfirmed(activeDay, relationshipSafetyResponse);
   const resultData = category?.days?.find((row) => Number(row.day) === Number(resultDay || currentDay)) || null;
   const headerDay = screen === 'day' ? currentDay : screen === 'dailyResult' ? (resultDay || journey.completed.length) : journey.completed.length;
 
@@ -797,8 +801,8 @@ function navigate(next) {
       {screen === 'assessment' && <AssessmentScreen initial={journey.assessmentData?.answers} onSave={saveAssessment} onValidation={showValidation} />}
       {screen === 'dashboard' && <Dashboard journey={journey} userProfile={userProfile} onEditProfile={() => openProfileEditor('dashboard')} onCurrent={openCurrentDay} onBooks={() => openBooks('dashboard')} onArchive={() => navigate('archive')} onSupport={() => openSupport('dashboard')} onChannel={() => window.open(content.channelUrl, '_blank', 'noopener,noreferrer')} />}
       {screen === 'day' && <>
-        <DayScreen day={currentDay} problem={journey.profileData?.problem || ''} data={activeDay} record={journey.daily?.[currentDay]} savedAnswer={journey.answers?.[currentDay] || ''} previousRecord={journey.daily?.[currentDay - 1]} previousAnswer={journey.answers?.[currentDay - 1] || ''} history={journey.daily || {}} onDashboard={() => navigate('dashboard')} onPrevious={() => currentDay <= 1 ? navigate('dashboard') : openDay(currentDay - 1)} onComplete={completeDay} onSkip={skipDayForHumanReview} onSkipRelationshipSafety={skipDayForRelationshipSafety} onNext={() => openDay(currentDay + 1)} completed={journey.completed.includes(currentDay)} onValidation={showValidation} />
-        <DailyExerciseAssistant day={currentDay} problem={journey.profileData?.problem || ''} data={activeDay} guidanceData={splitDayContent(activeDay, journey.profileData?.problem || '', journey.daily?.[currentDay - 1], journey.daily || {})} />
+        <DayScreen day={currentDay} problem={journey.profileData?.problem || ''} data={activeDay} relationshipSafetyResponse={relationshipSafetyResponse} onRelationshipSafetyResponse={(response) => setRelationshipSafetyState({ dayKey: relationshipSafetyDayKey, response })} record={journey.daily?.[currentDay]} savedAnswer={journey.answers?.[currentDay] || ''} previousRecord={journey.daily?.[currentDay - 1]} previousAnswer={journey.answers?.[currentDay - 1] || ''} history={journey.daily || {}} onDashboard={() => navigate('dashboard')} onPrevious={() => currentDay <= 1 ? navigate('dashboard') : openDay(currentDay - 1)} onComplete={completeDay} onSkip={skipDayForHumanReview} onSkipRelationshipSafety={skipDayForRelationshipSafety} onNext={() => openDay(currentDay + 1)} completed={journey.completed.includes(currentDay)} onValidation={showValidation} />
+        <DailyExerciseAssistant day={currentDay} problem={journey.profileData?.problem || ''} data={activeDay} relationshipSafetyConfirmed={relationshipSafetyConfirmed} guidanceData={splitDayContent(activeDay, journey.profileData?.problem || '', journey.daily?.[currentDay - 1], journey.daily || {})} />
       </>}
       {screen === 'dailyResult' && <DailyResult day={resultDay || journey.completed.length || currentDay} journey={journey} data={resultData} problem={category?.name} sourceLabel={recommendationSource} onDashboard={() => navigate('dashboard')} onNext={openDay} onFinal={() => navigate('final')} onBook={(rec) => openRecommendedBook(resultDay || currentDay, rec)} />}
       {screen === 'books' && <LibraryPage books={books} loading={libraryLoading} error={libraryError} onOpenBook={(book) => openBook(book)} onBack={() => navigate(libraryReturn)} />}
