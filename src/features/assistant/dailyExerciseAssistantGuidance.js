@@ -63,18 +63,29 @@ function splitPriorAssistantText(text) {
 }
 
 function ordinalIndex(token, count) {
-  if (/^(?:اول|اولین|یک|1)$/u.test(token)) return 0;
-  if (/^(?:دوم|دومین|دو|2)$/u.test(token)) return 1;
-  if (/^(?:سوم|سومین|سه|3)$/u.test(token)) return 2;
+  const ordinals = new Map([
+    ['اول', 0], ['اولین', 0], ['یک', 0], ['1', 0],
+    ['دوم', 1], ['دومین', 1], ['دو', 1], ['2', 1],
+    ['سوم', 2], ['سومین', 2], ['سه', 2], ['3', 2],
+    ['چهارم', 3], ['چهار', 3], ['4', 3],
+    ['پنجم', 4], ['پنج', 4], ['5', 4],
+    ['ششم', 5], ['شش', 5], ['6', 5],
+    ['هفتم', 6], ['هفت', 6], ['7', 6],
+    ['هشتم', 7], ['هشت', 7], ['8', 7],
+    ['نهم', 8], ['نه', 8], ['9', 8],
+    ['دهم', 9], ['ده', 9], ['10', 9],
+  ]);
   if (/^(?:آخر|آخرین)$/u.test(token)) return count - 1;
-  return -1;
+  return ordinals.get(token) ?? -1;
 }
+
+const ORDINAL_PATTERN = 'اول|اولین|یک|1|دوم|دومین|دو|2|سوم|سومین|سه|3|چهارم|چهار|4|پنجم|پنج|5|ششم|شش|6|هفتم|هفت|7|هشتم|هشت|8|نهم|نه|9|دهم|ده|10|آخر|آخرین';
 
 function priorTextReference(message, state) {
   const value = normalize(message);
   const blocks = splitPriorAssistantText(state.lastAssistantMessage);
   const sentences = blocks.flatMap((block) => block.sentences);
-  const sentenceMatch = value.match(/^جمله\s*(اول|اولین|یک|1|دوم|دومین|دو|2|سوم|سومین|سه|3|آخر|آخرین)(?:\s+(?:رو|را))?(?:\s+بگو)?$/u);
+  const sentenceMatch = value.match(new RegExp('^جمله\\s*(' + ORDINAL_PATTERN + ')(?:\\s+(?:رو|را))?(?:\\s+بگو)?$', 'u'));
   if (sentenceMatch) {
     const index = ordinalIndex(sentenceMatch[1], sentences.length);
     return index >= 0 && sentences[index]
@@ -82,7 +93,7 @@ function priorTextReference(message, state) {
       : { clarification: 'در پاسخ قبلی به‌اندازه کافی جمله برای این ارجاع وجود ندارد. لطفاً چند کلمه از جمله موردنظرت را بنویس.' };
   }
 
-  const paragraphMatch = value.match(/^(?:بند|پاراگراف|قسمت|بخش)\s*(اول|اولین|یک|1|دوم|دومین|دو|2|سوم|سومین|سه|3|آخر|آخرین)(?:\s+(?:رو|را))?(?:\s+بگو)?$/u);
+  const paragraphMatch = value.match(new RegExp('^(?:بند|پاراگراف|قسمت|بخش)\\s*(' + ORDINAL_PATTERN + ')(?:\\s+(?:رو|را))?(?:\\s+بگو)?$', 'u'));
   if (paragraphMatch) {
     const index = ordinalIndex(paragraphMatch[1], blocks.length);
     return index >= 0 && blocks[index]
@@ -131,8 +142,6 @@ function followUpResponse(message, state) {
     selected = paragraphs.find((part) => /^متن تمرین همین روز:/u.test(part));
     label = 'متن تمرین';
   } else {
-    // Standalone colloquial ordinals refer to the two explicitly labelled
-    // day-content items, not to the introductory sentence of the reply.
     const colloquialOrdinal = value.match(/^(?:همون\s+)?(اولی|دومی|سومی)(?:\s+(?:رو|را|بگو|رو\s+بگو|را\s+بگو))?$/u);
     if (colloquialOrdinal) {
       const index = /اولی/u.test(colloquialOrdinal[1]) ? 0 : /دومی/u.test(colloquialOrdinal[1]) ? 1 : 2;
@@ -156,7 +165,7 @@ function followUpResponse(message, state) {
   }
 
   if (selected) {
-    return `این ${label} از پاسخ قبلی است:\n\n${selected}\n\nاگر هنوز مبهم است، مشخص کن کدام جمله یا واژه‌اش را بیشتر باز کنم.`;
+    return `این ${label} از پاسخ قبلی است:\\n\\n${selected}\\n\\nاگر هنوز مبهم است، مشخص کن کدام جمله یا واژه‌اش را بیشتر باز کنم.`;
   }
   if (/(?:بیشتر توضیح|واضح تر|روشن تر|متوجه نشدم|نفهمیدم|همین بخش|بیشتر باز کن|منظورم)/u.test(value)) {
     const topic = state.lastTopic ? ` درباره «${state.lastTopic}»` : '';
@@ -172,7 +181,6 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
   const currentDay = String(day ?? '').slice(0, 20);
   if ((state.contextDay && state.contextDay !== currentDay)
       || (state.contextTopic && state.contextTopic !== currentTopic)) {
-    // Discard stale conversational references, but never clear an active safety state.
     state = { ...state, lastUserMessage: '', lastAssistantMessage: '', lastTopic: '' };
   }
   state = { ...state, contextDay: currentDay, contextTopic: currentTopic };
@@ -192,7 +200,7 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
       state = { ...state, safetyStatus: 'cleared' };
       return result('ممنون که روشن کردی. از پاسخ تو برداشت می‌کنم که در همین لحظه خطر فوری یا قصد و برنامه عملی نداری. اگر این وضعیت تغییر کرد، راهنمایی تمرین را متوقف کن و از یک فرد امن یا خدمات فوری کمک بگیر. اگر مایل هستی، حالا می‌توانیم به خود تمرین امروز برگردیم.', state, text);
     }
-    return result(`${SAFETY_QUESTION}\n\nاگر مطمئن نیستی، همین را بگو تا به‌جای ادامه تمرین، کمک انسانی را در اولویت بگذاریم.`, state, text);
+    return result(`${SAFETY_QUESTION}\\n\\nاگر مطمئن نیستی، همین را بگو تا به‌جای ادامه تمرین، کمک انسانی را در اولویت بگذاریم.`, state, text);
   }
 
   if (state.safetyStatus === 'cleared' && /(?:خودکشی|آسیب به خود|خودزنی|آسیب به دیگران|در خطرم|تهدیدم می کند)/u.test(normalize(text))) {
@@ -212,8 +220,6 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
   const followUp = followUpResponse(text, state);
   if (followUp) return result(followUp, state, text);
 
-  // Handle common exercise barriers and completion reports without inventing
-  // an alternative exercise or assuming the user completed it successfully.
   const normalizedMessage = normalize(text);
   if (/(?:سخت(?:ه| است)?|از پسش برنمی آیم|نمی توانم انجام|نمی تونم انجام|وقت ندارم|فرصت ندارم|یادم رفت|انجام ندادم|نشد انجام)/u.test(normalizedMessage)) {
     return result(
@@ -237,8 +243,6 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
     );
   }
 
-  // The current day already supplies a topic. Only ask topic disambiguation
-  // when the user's message contains multiple actual topic candidates.
   if (routed.next_question?.purpose === 'topic_disambiguation' && routed.topic_candidates.length > 0) {
     return result(routed.next_question.text, { ...state, lastTopic: String(problem || '').slice(0, 100) }, text);
   }
@@ -257,16 +261,15 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
       exercise ? `متن تمرین همین روز: ${exercise}` : '',
       action ? `راهکار اختصاصی همین روز: ${action}` : '',
       'برای اینکه دقیقاً همان چیزی را که لازم داری روشن کنم، لطفاً جمله یا مرحله‌ای از متن بالا را که مبهم است مشخص کن. من نباید بدون فهمیدن بخش مبهم، روش دیگری را جای تمرین اصلی جا بزنم.',
-    ].filter(Boolean).join('\n\n');
+    ].filter(Boolean).join('\\n\\n');
     return result(response, { ...state, lastTopic: topic.slice(0, 100) }, text);
   }
   const response = [
     `پیامت را در زمینه «${topic}»، روز ${day} بررسی کردم.`,
     'برای اینکه پاسخ دقیقاً به تمرین امروز مربوط باشد، بگو پرسشت درباره کدام بخش است: فهم متن تمرین، مراحل انجام آن، یا منظور راهکار اختصاصی؟',
-  ].join('\n\n');
+  ].join('\\n\\n');
   return result(response, { ...state, lastTopic: topic.slice(0, 100) }, text);
 }
-
 export function makeDailyExerciseGuidance(options = {}) {
   return makeDailyExerciseGuidanceTurn(options).response;
 }
