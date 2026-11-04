@@ -928,3 +928,11 @@ Worker پروژه از Durable Objects استفاده می‌کند. Cloudflare 
 3. ایجاد Preview واقعی فقط پس از تکمیل کنترل‌های لازم و مجوز صریح برای ایجاد deployment در محیط Preview. Production activation همچنان نیازمند تأیید صریح و جداگانه است.
 
 **وضعیت بخش:** `automated_tests_passed` برای ماژول نشست Preview و harness محلی؛ هنوز `browser_ready` نیست و هیچ نسخه قابل مشاهده در URL اپ ارائه نشده است.
+
+
+### تکمیل ممیزی مسیر انتشار رابط اصلی اپ
+- فایل `.github/workflows/deploy.yml` نشان می‌دهد رابط React/Vite از مسیر GitHub Pages منتشر می‌شود، نه از Worker `workers.dev`. Workflow فقط با `workflow_dispatch` اجرا می‌شود و ورودی `confirm_public_release=yes` می‌خواهد.
+- پیش از ساخت و انتشار Pages، Workflow اجرای موفق validation برای همان SHA را مطالبه می‌کند و سپس `npm run assert:production-content` را اجرا می‌کند.
+- `scripts/assert-production-content-approved.mjs` با `validateProductionContent` همه ۳۴ موضوع × ۲۸ روز (۹۵۲ واحد روزانه) را بررسی می‌کند؛ هر روز باید `review_status=approved`، reviewer واجد صلاحیت، تاریخ و رکورد بازبینی، منابع، شروط توقف/منع و نگاشت‌های تأییدشده داشته باشد. T16 و T17 در سند وضعیت جاری ۰/۲۸ روز تأییدشده دارند؛ بنابراین گیت انتشار فعلی قطعاً حداقل ۵۶ روز را رد می‌کند. تغییر این گیت یا تأیید ساختگی محتوا خارج از محدوده و ممنوع است.
+- پس Worker Preview فقط می‌تواند backend را جداگانه بررسی کند؛ به‌تنهایی نمی‌تواند UI را در همان GitHub Pages app URL به‌روز کند. برای رعایت شرط «همان آدرس»، باید راه انتشار رابط مستقل و مجاز پیدا شود؛ دور زدن گیت موجود یا تغییر رفتار/محتوای بخش اصلی مجاز نیست.
+- URL دقیق GitHub Pages در اسناد یا اطلاعات قابل بازیابی این نشست پیدا نشد. URL شناخته‌شده `still-firefly-9435maseer28-archive.has-ab3269.workers.dev` فقط Worker/API است؛ نباید آن را آدرس رابط اپ معرفی کرد. وضعیت فعال Pages و Worker در Dashboard هنوز مستقل تأیید نشده است.
