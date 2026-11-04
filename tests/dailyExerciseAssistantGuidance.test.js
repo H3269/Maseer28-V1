@@ -384,7 +384,7 @@ test('paragraph references retrieve the requested prior paragraph without crossi
     conversationState: first.nextState,
   });
   assert.match(lastParagraph.response, /بند آخر از پاسخ قبلی/);
-  assert.match(lastParagraph.response, /لطفاً جمله یا مرحله‌ای از متن بالا/);
+  assert.match(lastParagraph.response, /برای اینکه دقیقاً همان چیزی را که لازم داری روشن کنم/);
   assert.doesNotMatch(lastParagraph.response, /راهکار اختصاصی همین روز/);
 });
 
@@ -406,7 +406,7 @@ test('ambiguous same-sentence and other-one references ask for clarification ins
 test('out-of-range sentence references request clarification rather than selecting a different sentence', () => {
   const first = makeDailyExerciseGuidanceTurn({ message: 'بله', dayData, problem: 'اضطراب', day: 4 });
   const followUp = makeDailyExerciseGuidanceTurn({
-    message: 'جمله دهم',
+    message: 'جمله سوم',
     dayData,
     problem: 'اضطراب',
     day: 4,
