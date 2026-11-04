@@ -250,6 +250,7 @@ function navigate(next) {
     setAllowArchiveRestartAfterNotice(false);
   }
 
+  if (next !== 'day') setRelationshipSafetyState({ dayKey: null, response: '' });
   setScreen(next);
 
   if (next !== 'bookReader') {
