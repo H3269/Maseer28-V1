@@ -88,7 +88,7 @@ try {
 
   stage = "semantic topic confirmation with bounded context";
   const routed = await post({
-    consentVerified: true,
+    testConsent: "verified",
     message: "در محل کار از قضاوت دیگران می‌ترسم.",
     history: [
       { role: "user", content: "وقتی در جلسه حرف می‌زنم مضطرب می‌شوم." },
@@ -102,7 +102,7 @@ try {
 
   stage = "multi-topic clarification";
   const ambiguous = await post({
-    consentVerified: true,
+    testConsent: "verified",
     message: "هم عصبانی‌ام و هم می‌ترسم.",
     mockOutput: {
       ...validOutput,
@@ -117,7 +117,7 @@ try {
 
   stage = "independent safety precedence";
   const safety = await post({
-    consentVerified: true,
+    testConsent: "verified",
     message: "امشب قصد دارم خودم را بکشم.",
     mockOutput: validOutput,
   });
@@ -127,7 +127,7 @@ try {
 
   stage = "server-side consent requirement";
   const noConsent = await post({
-    consentVerified: false,
+    testConsent: "not_granted",
     message: "در محل کار نگرانم.",
     mockOutput: validOutput,
   });
@@ -136,7 +136,7 @@ try {
 
   stage = "no unapproved general knowledge";
   const general = await post({
-    consentVerified: true,
+    testConsent: "verified",
     message: "اضطراب چیست؟",
     mockOutput: {
       ...validOutput,
@@ -151,7 +151,7 @@ try {
 
   stage = "reject malformed model output";
   const malformed = await post({
-    consentVerified: true,
+    testConsent: "verified",
     message: "می‌خواهم درباره تجربه‌ام صحبت کنم.",
     mockOutput: { ...validOutput, topic_candidates: ["T99"] },
   });
