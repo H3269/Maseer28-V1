@@ -13,7 +13,7 @@ class SqlCursor {
   }
 }
 
-function createHarness({ failSetAlarm = false, failSql = false } = {}) {
+function createHarness({ failSetAlarm = false } = {}) {
   const database = new DatabaseSync(":memory:");
   let alarmAt = null;
   let shouldFailSetAlarm = failSetAlarm;
@@ -123,14 +123,12 @@ test("different fingerprints are accepted and an earlier alarm is never postpone
   assert.equal(await harness.shard.consumeOnce({
     fingerprint: fingerprint("c"),
     expiresAt: now + 300_000,
-    now,
   }), true);
   const firstAlarm = harness.alarmAt;
 
   assert.equal(await harness.shard.consumeOnce({
     fingerprint: fingerprint("d"),
     expiresAt: now + 400_000,
-    now: now + 1,
   }), true);
   assert.equal(harness.alarmAt, firstAlarm);
 });
@@ -141,18 +139,20 @@ test("an expired marker can be replaced after the verifier expiry window", async
 
   assert.equal(await harness.shard.consumeOnce({
     fingerprint: id,
-    expiresAt: 1_100,
-    now: 1_000,
+    expiresAt: Date.now() + 120_000,
   }), true);
 
+  harness.database.prepare("UPDATE replay_markers SET expires_at = ? WHERE fingerprint = ?")
+    .run(Date.now() - 1, id);
+
+  const replacementExpiry = Date.now() + 180_000;
   assert.equal(await harness.shard.consumeOnce({
     fingerprint: id,
-    expiresAt: 2_000,
-    now: 1_200,
+    expiresAt: replacementExpiry,
   }), true);
   assert.equal(
     harness.database.prepare("SELECT expires_at FROM replay_markers WHERE fingerprint = ?").get(id).expires_at,
-    2_000,
+    replacementExpiry,
   );
 });
 
@@ -226,4 +226,42 @@ test("alarm handler failure is surfaced so Cloudflare can retry it", async () =>
   };
 
   await assert.rejects(harness.shard.alarm(), /simulated_reschedule_failure/);
+});
+
+
+test("constructor does not schedule an alarm and invalid inputs are rejected", async () => {
+  const harness = createHarness();
+  assert.equal(harness.alarmAt, null);
+  await assert.rejects(
+    harness.shard.consumeOnce({ fingerprint: "not-a-fingerprint", expiresAt: Date.now() + 1000 }),
+    /invalid_fingerprint/,
+  );
+  await assert.rejects(
+    harness.shard.consumeOnce({ fingerprint: fingerprint("5"), expiresAt: Date.now() - 1 }),
+    /invalid_expiry/,
+  );
+  assert.equal(harness.alarmAt, null);
+});
+
+test("expired cleanup is bounded and schedules a short follow-up when rows remain", async () => {
+  const harness = createHarness();
+  const expiry = Date.now() + 120_000;
+
+  for (let index = 0; index < 101; index += 1) {
+    const id = index.toString(16).padStart(64, "0");
+    assert.equal(await harness.shard.consumeOnce({
+      fingerprint: id,
+      expiresAt: expiry,
+    }), true);
+  }
+
+  harness.database.prepare("UPDATE replay_markers SET expires_at = ?").run(Date.now() - 1);
+  await harness.shard.alarm();
+
+  assert.equal(
+    harness.database.prepare("SELECT COUNT(*) AS count FROM replay_markers").get().count,
+    1,
+  );
+  assert.ok(harness.alarmAt > Date.now());
+  assert.ok(harness.alarmAt <= Date.now() + 2_000);
 });
