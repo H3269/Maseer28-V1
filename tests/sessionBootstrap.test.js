@@ -201,3 +201,23 @@ test("fails closed when the replay adapter is absent", async () => {
   assert.deepEqual(result, { ok: false, error: "assistant_bootstrap_unavailable", status: 503 });
   assert.deepEqual(deps.events, []);
 });
+
+test("rejects reused secrets across fingerprint, session signing, and platform credentials", async () => {
+  const reused = [
+    { ...ENV, SESSION_SIGNING_SECRET: ENV.REPLAY_FINGERPRINT_SECRET },
+    { ...ENV, REPLAY_FINGERPRINT_SECRET: ENV.TELEGRAM_BOT_TOKEN },
+    { ...ENV, SESSION_SIGNING_SECRET: ENV.TELEGRAM_BOT_TOKEN },
+  ];
+  for (const env of reused) {
+    const deps = dependencies();
+    const result = await bootstrapAssistantSession({
+      platform: "telegram",
+      initData: INIT_DATA,
+      env,
+      nowSeconds: NOW,
+      ...deps,
+    });
+    assert.deepEqual(result, { ok: false, error: "assistant_bootstrap_unavailable", status: 503 });
+    assert.deepEqual(deps.events, []);
+  }
+});
