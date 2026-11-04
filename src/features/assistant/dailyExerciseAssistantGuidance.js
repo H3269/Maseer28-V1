@@ -4,8 +4,24 @@ const SAFETY_QUESTION = 'آیا همین الآن خطر فوری، قصد یا 
 const SAFETY_HANDOFF = 'راهنمایی تمرین را متوقف می‌کنم. اگر احتمال خطر فوری وجود دارد یا مطمئن نیستی، همین الآن با خدمات اورژانسی محل زندگی یا یک فرد امن و قابل اعتماد تماس بگیر و تنها نمان. این گفت‌وگو جای کمک فوری انسانی را نمی‌گیرد.';
 const MAX_CONTEXT_TEXT = 2400;
 
+function hasDailySourceIdentityConflict(guidanceData, data) {
+  if (!guidanceData || !data || typeof guidanceData !== 'object' || typeof data !== 'object') return false;
+  for (const key of ['id', 'topic_id', 'day']) {
+    const adaptedValue = guidanceData[key];
+    const sourceValue = data[key];
+    if (adaptedValue === undefined || adaptedValue === null || sourceValue === undefined || sourceValue === null) continue;
+    const normalizeIdentity = (value) => key === 'day'
+      ? (Number.isInteger(Number(value)) ? String(Number(value)) : String(value).trim())
+      : String(value).trim();
+    if (normalizeIdentity(adaptedValue) !== normalizeIdentity(sourceValue)) return true;
+  }
+  return false;
+}
+
 export function selectDailyExerciseGuidanceData({ guidanceData, data } = {}) {
   if (!guidanceData) return data;
+  // Never combine an adapted copy with a different canonical day/topic record.
+  if (hasDailySourceIdentityConflict(guidanceData, data)) return data;
   return {
     ...(data && typeof data === 'object' ? data : {}),
     ...guidanceData,
@@ -283,6 +299,12 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
   if (routed.next_question?.purpose === 'safety_clarification') {
     state = { ...state, safetyStatus: 'pending' };
     return result(routed.next_question.text || SAFETY_QUESTION, state, text);
+  }
+
+  const sourceDay = Number(dayData?.day);
+  const requestedDay = Number(day);
+  if (Number.isInteger(sourceDay) && Number.isInteger(requestedDay) && sourceDay !== requestedDay) {
+    return result('شناسه روزِ محتوای دریافتی با روز فعال یکسان نیست؛ برای جلوگیری از راهنمایی اشتباه، فعلاً به این محتوا پاسخ نمی‌دهم.', state, text);
   }
 
   const followUp = followUpResponse(text, state, dayData);

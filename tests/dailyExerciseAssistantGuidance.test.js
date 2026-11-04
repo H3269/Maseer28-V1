@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { makeDailyExerciseGuidance, selectDailyExerciseGuidanceData } from '../src/features/assistant/dailyExerciseAssistantGuidance.js';
+import { splitDayContent } from '../src/features/journey/JourneyScreens.jsx';
 
 const dayData = {
   exercise: 'سه موقعیت اخیر را که در آن مضطرب شدی، بدون قضاوت یادداشت کن.',
@@ -647,4 +648,56 @@ test('adapted daily content retains original review metadata', () => {
   assert.equal(selected.exercise, 'تمرین سبک‌شده');
   assert.equal(selected.actionText, 'اقدام سبک‌شده');
   assert.equal(selected.adaptation, 'امروز فقط گام سبک را انجام بده.');
+});
+
+test('rejects adapted guidance when its source day or topic differs from the canonical record', () => {
+  const raw = {
+    id: 'T01-D04',
+    topic_id: 'T01',
+    day: 4,
+    exercise: 'تمرین معتبر روز چهارم',
+    actionText: 'راهکار معتبر روز چهارم',
+  };
+  const wrongTopic = {
+    id: 'T02-D04',
+    topic_id: 'T02',
+    day: 4,
+    exercise: 'تمرین موضوع دیگر',
+    action: 'راهکار موضوع دیگر',
+  };
+  const wrongDay = {
+    id: 'T01-D05',
+    topic_id: 'T01',
+    day: 5,
+    exercise: 'تمرین روز پنجم',
+    action: 'راهکار روز پنجم',
+  };
+
+  assert.equal(selectDailyExerciseGuidanceData({ guidanceData: wrongTopic, data: raw }), raw);
+  assert.equal(selectDailyExerciseGuidanceData({ guidanceData: wrongDay, data: raw }), raw);
+});
+
+test('refuses guidance when the source record day differs from the active day', () => {
+  const response = makeDailyExerciseGuidance({
+    message: 'چطور انجامش بدم؟',
+    dayData: {
+      ...dayData,
+      day: 5,
+      exercise: 'تمرین متعلق به روز پنجم',
+      actionText: 'راهکار متعلق به روز پنجم',
+    },
+    problem: 'اضطراب',
+    day: 4,
+  });
+
+  assert.match(response, /روزِ محتوای دریافتی با روز فعال یکسان نیست/u);
+  assert.doesNotMatch(response, /تمرین متعلق به روز پنجم|راهکار متعلق به روز پنجم/u);
+});
+
+test('split day guidance preserves source id, topic, and day identity', () => {
+  const source = { id: 'T03-D07', topic_id: 'T03', day: 7, instructions: 'متن تمرین روز هفتم', actionText: 'راهکار روز هفتم' };
+  const adapted = splitDayContent(source, 'اضطراب', null, {});
+  assert.equal(adapted.id, source.id);
+  assert.equal(adapted.topic_id, source.topic_id);
+  assert.equal(adapted.day, source.day);
 });

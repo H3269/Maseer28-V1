@@ -289,7 +289,17 @@ export function splitDayContent(d, problem, previousRecord, history = {}) {
   }
   const pausePlan = getT01PausePlan(d, categoryName);
   const title = cleanDailyCopy(String(d?.title || 'موضوع امروز').replace(/\s*[·•-]?\s*روز\s*\d+\s*$/i, '').trim(), categoryName);
-  return { exercise, action, title, adaptation, pausePlan };
+  return {
+    // Preserve canonical source identity through local adaptation for mismatch checks.
+    id: d?.id ?? null,
+    topic_id: d?.topic_id ?? null,
+    day: Number.isInteger(Number(d?.day)) ? Number(d.day) : null,
+    exercise,
+    action,
+    title,
+    adaptation,
+    pausePlan,
+  };
 }
 
 function structuredText(value) {
