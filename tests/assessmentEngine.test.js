@@ -70,6 +70,16 @@ test('assistant retains topic evidence introduced in later context answers', () 
   assert.ok(topicIds.includes('T01'), 'a second topic disclosed in the impact answer must not be discarded');
 });
 
+test('additive wording with «در واقع» does not erase the opening topic from context', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  session = answer(session, 'در واقع در محل کار هم به‌خاطر خشم و عصبانیت با همکارم درگیر می‌شوم.');
+  const topicIds = session.semantic_intake.topic_candidates.map((item) => item.topic_id);
+  assert.ok(topicIds.includes('T02'));
+  assert.ok(topicIds.includes('T01'));
+});
+
 test('an explicit topic correction in a later context answer replaces earlier topic evidence', () => {
   let session = createAssessmentSession();
   session = answer(session, 'مدتی است اضطراب دارم');
