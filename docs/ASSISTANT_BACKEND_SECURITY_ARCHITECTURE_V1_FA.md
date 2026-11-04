@@ -231,3 +231,39 @@ TTL پنج‌دقیقه‌ای فعلاً یک مقدار محافظه‌کار�
 - Web Crypto در Workers: https://developers.cloudflare.com/workers/runtime-apis/web-crypto/
 
 **نتیجه:** معماری مناسب برای ادامه، replay cache اتمیک و shard‌شده در SQLite Durable Objects به‌همراه نشست stateless کوتاه‌عمر است؛ اما تا تعیین TTL واقعی `auth_date`، تست concurrency/cleanup و تأیید طرح rate limit، نباید route یا binding را فعال کنیم.
+
+
+## ۱۴. تکمیل تحلیل failure-mode برای replay marker و Alarm (2026-11-04)
+
+### ۱۴.۱ مرز اعتبار auth_date
+- مستندات رسمی Telegram، `auth_date` را زمان صدور/بازشدن داده Mini App معرفی می‌کند و توصیه می‌کند داده قدیمی رد شود؛ اما TTL عددی اجباری یا توصیه‌شده مشخصی تعیین نمی‌کند.
+- مقدار ۵ دقیقه در `platformAuth.js` فعلاً یک سیاست محلی محافظه‌کارانه و hard-coded است؛ نباید به‌عنوان محدودیت رسمی Telegram یا Bale معرفی شود.
+- این مقدار تا آزمون انسانی زمان واقعی «بازشدن Mini App تا ورود به دستیار» و بررسی UX/امنیت provisional باقی می‌ماند. افزایش آن بدون آزمون و threat review مجاز نیست.
+- expiry مربوط به replay marker باید حداقل برابر `auth_date + MAX_AUTH_AGE_SECONDS + MAX_FUTURE_SKEW_SECONDS` باشد تا marker تا پایان تمام پنجره‌ای که verifier ممکن است داده را معتبر بداند باقی بماند.
+
+### ۱۴.۲ اصل مهم: Alarm ابزار پاک‌سازی است، نه مرجع تصمیم replay
+- تصمیم قبول/رد replay باید در هر `consumeOnce` از روی رکورد SQLite و زمان جاری گرفته شود؛ صحت امنیتی نباید به اجرای به‌موقع Alarm وابسته باشد.
+- رکوردی با `expires_at > now` همیشه replay محسوب می‌شود و باید رد شود، حتی اگر Alarm عقب افتاده یا شکست خورده باشد.
+- رکورد منقضی را می‌توان فقط در همان عملیات اتمیک حذف و fingerprint را دوباره درج کرد. این کار مانع می‌شود رکورد منقضیِ مانده از Alarm ناموفق، برای همیشه همان initData را مسدود کند.
+- پاک‌سازی Alarm صرفاً برای حذف batch رکوردهای منقضی و کنترل رشد storage است؛ تأخیر Alarm نباید راه عبور از anti-replay ایجاد کند.
+
+### ۱۴.۳ ترتیب پیشنهادی و بازیابی شکست Alarm
+1. اعتبارسنجی HMAC و محاسبه fingerprint/expiry در Worker انجام شود؛ هیچ داده خام به DO ارسال نشود.
+2. در DO، عملیات SQL اتمیک انجام شود: رکورد موجود با همان fingerprint خوانده شود؛ اگر هنوز معتبر است، duplicate رد شود؛ اگر منقضی است حذف شود؛ سپس درج یکتا انجام شود. transaction/cursor باید کاملاً synchronous مصرف شود و هیچ `await` درون transaction قرار نگیرد.
+3. پس از درج موفق، Alarm برای نزدیک‌ترین expiry تنظیم یا در صورت وجود Alarm زودتر حفظ شود. Alarm فقط یک زمان برای هر DO دارد؛ تنظیم Alarm دیرتر نباید موعد زودتر موجود را عقب بیندازد.
+4. اگر درج یا storage شکست خورد، هیچ session صادر نشود. اگر تنظیم Alarm پس از درج شکست خورد، درخواست باید fail-closed بماند و هیچ token صادر نشود؛ marker نباید به‌اشتباه مجوز صدور token ایجاد کند. مسیر بازیابی باید در درخواست بعدی ابتدا Alarm موجود را بررسی/ترمیم کند و پاک‌سازی منقضی‌ها را به‌صورت opportunistic و batch محدود انجام دهد.
+5. برای کاهش احتمال marker orphan، پیاده‌سازی می‌تواند درج marker را در صورت شکست قطعی Alarm با یک حذف شرطی و اتمیک rollback کند؛ اما rollback فقط وقتی مجاز است که ثابت باشد همان درخواست marker را درج کرده و هیچ session صادر نشده است. شکست rollback نیز باید fail-closed بماند و در مسیر بعدی پاک‌سازی شود.
+6. Alarm handler رکوردهای منقضی را با batch محدود حذف کند، نزدیک‌ترین expiry باقی‌مانده را محاسبه کند و Alarm بعدی را تنظیم کند. اگر storage یا setAlarm شکست خورد، خطا نباید نادیده گرفته شود؛ retry کنترل‌شده و پاک‌سازی opportunistic در فراخوانی بعدی لازم است.
+7. constructor نباید Alarm را تنظیم/تمدید کند. Alarm باید فقط در مسیرهای عملیاتی و پس از بررسی وضعیت موجود مدیریت شود.
+
+### ۱۴.۴ شروط تست قبل از افزودن binding یا route
+- دو درخواست هم‌زمان با fingerprint یکسان: دقیقاً یک برنده و حداکثر یک session قابل صدور.
+- دو fingerprint متفاوت در یک shard: هر دو قابل مصرف، بدون overwrite شدن موعد زودتر Alarm.
+- duplicate پیش از expiry رد شود؛ همان fingerprint پس از expiry فقط مطابق سیاست verifier قابل مصرف مجدد باشد.
+- شکست درج SQL، شکست setAlarm، شکست delete/rollback، شکست alarm handler و نبود binding همگی fail-closed باشند.
+- Alarm دیرهنگام یا حذف‌نشده نباید replay را مجاز کند؛ مصرف بعدی باید رکورد منقضی را پاک/جایگزین کند.
+- Alarm cleanup با batch بزرگ و چندین expiry، cursor و transaction را بدون await ناامن مصرف کند.
+- آزمون retry/recovery ثابت کند markerهای موقت باقی‌مانده به‌صورت محدود و قابل پیش‌بینی پاک می‌شوند.
+- هیچ تستی نباید از داده واقعی کاربر، bot token واقعی یا initData واقعی استفاده کند.
+
+**تصمیم:** هنوز کد Durable Object، migration، binding، route bootstrap یا تغییر frontend نوشته/فعال نمی‌شود. ابتدا این failure-modeها باید در طراحی قابل آزمون به قرارداد روشن تبدیل شوند؛ سپس کلاس DO به‌صورت مستقل و بدون اتصال به Worker route در محیط تست پیاده‌سازی شود.
