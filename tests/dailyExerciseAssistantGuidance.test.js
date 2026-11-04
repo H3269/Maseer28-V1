@@ -122,7 +122,7 @@ import { makeDailyExerciseGuidanceTurn } from '../src/features/assistant/dailyEx
 test('safety clarification state persists across turns and does not fall through to exercise guidance', () => {
   const first = makeDailyExerciseGuidanceTurn({ message: 'دیگه نمی‌کشم. همه‌چی تمومه.', dayData, problem: 'اضطراب', day: 4 });
   assert.equal(first.nextState.safetyStatus, 'pending');
-  const second = makeDailyExerciseGuidanceTurn({ message: 'نمی‌دانم', dayData, problem: 'اضطراب', day: 4, conversationState: first.nextState });
+  const second = makeDailyExerciseGuidanceTurn({ message: 'متوجه نشدم', dayData, problem: 'اضطراب', day: 4, conversationState: first.nextState });
   assert.equal(second.nextState.safetyStatus, 'pending');
   assert.match(second.response, /خطر فوری/);
   assert.doesNotMatch(second.response, /سه موقعیت اخیر/);
@@ -151,7 +151,7 @@ test('a clear yes or uncertain answer to a safety check moves to human-help hand
 test('follow-up references use bounded prior-turn context and can identify the second paragraph', () => {
   const first = makeDailyExerciseGuidanceTurn({ message: 'چطور انجامش بدم؟', dayData, problem: 'اضطراب', day: 4 });
   const second = makeDailyExerciseGuidanceTurn({ message: 'قسمت دوم را بیشتر توضیح بده', dayData, problem: 'اضطراب', day: 4, conversationState: first.nextState });
-  assert.match(second.response, /راهکار اختصاصی همین روز/);
+  assert.match(second.response, /متن تمرین همین روز/);
   assert.match(second.response, /جمله یا واژه‌اش را بیشتر باز کنم/);
   assert.ok(second.nextState.lastAssistantMessage.length <= 1200);
 });
