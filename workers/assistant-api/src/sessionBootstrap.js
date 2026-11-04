@@ -76,9 +76,16 @@ export async function bootstrapAssistantSession({
   consumeReplayMarker,
   issueToken = createAssistantSessionToken,
 } = {}) {
+  const platformSecrets = [env.TELEGRAM_BOT_TOKEN, env.BALE_BOT_TOKEN]
+    .filter((value) => typeof value === "string" && value.length > 0);
+  const secretsAreIndependent = env.REPLAY_FINGERPRINT_SECRET !== env.SESSION_SIGNING_SECRET
+    && !platformSecrets.includes(env.REPLAY_FINGERPRINT_SECRET)
+    && !platformSecrets.includes(env.SESSION_SIGNING_SECRET);
+
   if (
     !hasStrongSecret(env.REPLAY_FINGERPRINT_SECRET, FINGERPRINT_SECRET_MIN_BYTES)
     || !hasStrongSecret(env.SESSION_SIGNING_SECRET, SESSION_SECRET_MIN_BYTES)
+    || !secretsAreIndependent
     || typeof consumeReplayMarker !== "function"
   ) {
     return failure("assistant_bootstrap_unavailable", 503);
