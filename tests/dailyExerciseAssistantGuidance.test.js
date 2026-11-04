@@ -459,3 +459,59 @@ test('extended paragraph ordinals retrieve existing paragraphs and clarify missi
   });
   assert.match(missingParagraph.response, /چنین بندی وجود ندارد/u);
 });
+
+
+import { getDailyAssistantAccess } from '../src/features/assistant/dailyAssistantAccess.js';
+
+test('daily assistant remains unavailable when the day content is blocked for safety review', () => {
+  const blockedDay = {
+    id: 'T03-D01',
+    topic_id: 'T03',
+    day: 1,
+    review_status: 'draft',
+    risk_level: 'routine',
+    instructions: 'متن مصنوعی که نباید به دستیار برسد',
+    actionText: 'اقدام مصنوعی',
+  };
+  const access = getDailyAssistantAccess({ day: blockedDay, relationshipSafetyConfirmed: true });
+  assert.equal(access.available, false);
+  assert.equal(access.reason, 'daily_content_blocked');
+});
+
+test('relationship-gated daily guidance stays closed until the day-specific safety check is confirmed', () => {
+  const gatedDay = {
+    id: 'T01-D10',
+    topic_id: 'T01',
+    day: 10,
+    review_status: 'approved',
+    risk_level: 'routine',
+    instructions: 'متن مصنوعی تمرین',
+  };
+  const pending = getDailyAssistantAccess({ day: gatedDay, relationshipSafetyConfirmed: false });
+  assert.equal(pending.available, false);
+  assert.equal(pending.reason, 'relationship_safety_unconfirmed');
+
+  const confirmed = getDailyAssistantAccess({ day: gatedDay, relationshipSafetyConfirmed: true });
+  assert.equal(confirmed.available, true);
+  assert.equal(confirmed.safetyMode, 'routine');
+});
+
+test('caution-level daily guidance is available but explicitly marked for cautious handling', () => {
+  const cautionDay = {
+    id: 'T01-D01',
+    topic_id: 'T01',
+    day: 1,
+    review_status: 'approved',
+    risk_level: 'caution',
+    instructions: 'متن مصنوعی تمرین',
+  };
+  const access = getDailyAssistantAccess({ day: cautionDay });
+  assert.equal(access.available, true);
+  assert.equal(access.requiresCaution, true);
+});
+
+test('missing day data never enables the daily assistant', () => {
+  const access = getDailyAssistantAccess({ day: null });
+  assert.equal(access.available, false);
+  assert.equal(access.reason, 'day_unavailable');
+});
