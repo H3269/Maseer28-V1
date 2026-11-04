@@ -341,7 +341,7 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
   if (/(?:چقدر زمان|چند دقیقه|مدت زمان|مدتش چقدر)/u.test(normalized)) {
     const duration = reviewed && Number.isInteger(dayData?.duration_minutes) ? dayData.duration_minutes : null;
     return result(duration
-      ? 'مدت ثبت‌شده و بازبینی‌شده برای این روز ' + duration + ' دقیقه است. لازم نیست بیشتر از حد قابل‌تحمل ادامه بدهی.'
+      ? 'مدت ثبت‌شده و بازبینی‌شده برای این روز ' + String(duration).replace(/[0-9]/g, (digit) => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]) + ' دقیقه است. لازم نیست بیشتر از حد قابل‌تحمل ادامه بدهی.'
       : 'برای این روز مدت زمان تأییدشده‌ای در داده قابل استفاده دستیار وجود ندارد؛ بنابراین عددی تعیین نمی‌کنم. فقط متن اصلی را در حدی که برایت قابل‌تحمل است بخوان و اگر درباره خود دستور ابهام داری همان بخش را بپرس.',
     state, text);
   }
@@ -366,9 +366,12 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
   if (asksHow) {
     const parts = [
       'داریم درباره «' + topic + '»، روز ' + day + ' صحبت می‌کنیم.',
-      groundedSection('تمرین روز، بر اساس ترتیب متن اصلی', exercise),
-      groundedSection('راهکار اختصاصی روز، بر اساس ترتیب متن اصلی', action),
-      dayData?.adaptation ? 'تطبیق ثبت‌شده برای امروز:\n' + String(dayData.adaptation) : '',
+      exercise ? 'متن تمرین همین روز: ' + exercise : '',
+      action ? 'راهکار اختصاصی همین روز: ' + action : '',
+      'برای اینکه دقیقاً همان چیزی را که لازم داری روشن کنم، لطفاً جمله یا مرحله‌ای از متن بالا را که مبهم است مشخص کن. من نباید بدون فهمیدن بخش مبهم، روش دیگری را جای تمرین اصلی جا بزنم.',
+      groundedSection('گام‌بندی تمرین روز، فقط بر اساس متن اصلی', exercise),
+      groundedSection('گام‌بندی راهکار اختصاصی روز، فقط بر اساس متن اصلی', action),
+      dayData?.adaptation ? 'تطبیق ثبت‌شده برای امروز:\\n' + String(dayData.adaptation) : '',
       'این گام‌ها فقط به بخش‌های موجود در متن اصلی شکسته شده‌اند؛ دستور تازه‌ای به تمرین اضافه نشده است. اگر یکی از گام‌ها مبهم است، شماره آن یا چند کلمه از همان جمله را بفرست تا فقط همان قسمت را باز کنم.',
     ].filter(Boolean);
     return result(parts.join('\n\n'), { ...state, lastTopic: topic.slice(0, 100) }, text);
