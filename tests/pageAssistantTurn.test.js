@@ -45,3 +45,31 @@ test('empty and overlong messages preserve the router input guards', () => {
   assert.equal(makePageAssistantTurn({ screen: 'books', text: '   ' }).status, 'invalid_input');
   assert.equal(makePageAssistantTurn({ screen: 'books', text: 'x'.repeat(3001) }).status, 'input_too_long');
 });
+
+
+test('a personal disclosure cannot be overridden by a page-purpose question', () => {
+  const result = makePageAssistantTurn({
+    screen: 'dashboard',
+    text: 'من اضطراب دارم؛ این صفحه برای چیست؟',
+  });
+  assert.equal(result.status, 'personal_intake_required');
+  assert.deepEqual(result.knowledge, []);
+});
+
+test('ambiguous personal topics cannot be overridden by page guidance', () => {
+  const result = makePageAssistantTurn({
+    screen: 'dashboard',
+    text: 'هم عصبانی‌ام و هم می‌ترسم؛ این صفحه برای چیست؟',
+  });
+  assert.equal(result.status, 'clarification_required');
+  assert.deepEqual(result.knowledge, []);
+});
+
+test('general strategy scope clarification cannot be overridden by page guidance', () => {
+  const result = makePageAssistantTurn({
+    screen: 'dashboard',
+    text: 'چه راهکاری برای اضطراب وجود دارد؟ این صفحه برای چیست؟',
+  });
+  assert.equal(result.status, 'intent_scope_clarification_required');
+  assert.deepEqual(result.knowledge, []);
+});
