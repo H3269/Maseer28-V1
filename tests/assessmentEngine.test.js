@@ -80,6 +80,19 @@ test('additive wording with «در واقع» does not erase the opening topic f
   assert.ok(topicIds.includes('T01'));
 });
 
+test('topic evidence from earlier context answers survives the clarification turn', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  session = answer(session, 'در محل کار به‌خاطر خشم و عصبانیت با همکارم درگیر می‌شوم.');
+  session = answer(session, 'حدود دو ماه است.');
+  session = answer(session, 'می‌خواهم مسئله را بهتر بفهمم.');
+  session = answer(session, 'وقتی در محل کار با همکارم اختلاف پیدا می‌کنم، تمرکزم هم به هم می‌ریزد.');
+  const topicIds = session.summary.candidate_topics.map((item) => item.topic_id);
+  assert.ok(topicIds.includes('T02'));
+  assert.ok(topicIds.includes('T01'));
+});
+
 test('an explicit topic correction in a later context answer replaces earlier topic evidence', () => {
   let session = createAssessmentSession();
   session = answer(session, 'مدتی است اضطراب دارم');
