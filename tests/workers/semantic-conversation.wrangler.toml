@@ -2,3 +2,11 @@ name = "maseer28-semantic-conversation-integration"
 main = "./semanticConversationWorker.js"
 compatibility_date = "2026-11-04"
 workers_dev = false
+
+[[durable_objects.bindings]]
+name = "PREVIEW_SESSION_GUARD"
+class_name = "AssistantPreviewSessionGuardTestDO"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["AssistantPreviewSessionGuardTestDO"]
