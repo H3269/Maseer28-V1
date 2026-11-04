@@ -515,7 +515,22 @@ export function submitAssessmentAnswer(session, answer) {
     }
     const selected = routeSemanticIntake({ text: value, requestId: 'assessment-explicit-topic-priority' });
     const existingIds = new Set(next.candidate_topics.map((item) => item.topic_id));
-    const selectedIds = [...new Set(selected.topic_candidates.map((item) => item.topic_id).filter((id) => existingIds.has(id)))];
+    const selectedCandidates = selected.topic_candidates.filter((item) => existingIds.has(item.topic_id));
+    // Prefer a specifically named topic over a generic lexical parent when
+    // the generic evidence phrase is wholly contained in the specific phrase
+    // (e.g. "ترس" inside "ترس از قضاوت"). This only resolves the user's
+    // explicit priority answer; it does not alter ordinary topic routing.
+    const specificCandidates = selectedCandidates.filter((candidate) => {
+      const candidateQuotes = (candidate.evidence_quotes ?? []).map(normalize);
+      return !selectedCandidates.some((other) => other.topic_id !== candidate.topic_id
+        && (other.evidence_quotes ?? []).some((otherQuote) => {
+          const normalizedOtherQuote = normalize(otherQuote);
+          return candidateQuotes.some((candidateQuote) =>
+            normalizedOtherQuote.length > candidateQuote.length
+            && normalizedOtherQuote.includes(candidateQuote));
+        }));
+    });
+    const selectedIds = [...new Set(specificCandidates.map((item) => item.topic_id))];
     if (selectedIds.length === 1) {
       next.candidate_topics = next.candidate_topics.filter((item) => item.topic_id === selectedIds[0]).map((item) => ({ ...item, status: 'user_selected_priority' }));
       next.semantic_intake = { ...next.semantic_intake, topic_candidates: next.semantic_intake.topic_candidates.filter((item) => item.topic_id === selectedIds[0]) };
