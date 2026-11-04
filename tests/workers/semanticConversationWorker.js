@@ -1,6 +1,10 @@
 import { runSemanticConversationTurn } from "../../workers/assistant-api/src/semanticConversation.js";
 import { createWorkersAiStructuredGenerator } from "../../workers/assistant-api/src/workersAiProvider.js";
 import {
+  AssistantPreviewAccessRateLimitDurableObject,
+  createPreviewAccessRateLimiter,
+} from "../../workers/assistant-api/src/previewAccessRateLimit.js";
+import {
   AssistantPreviewSessionGuardDurableObject,
   createPreviewSessionGuard,
 } from "../../workers/assistant-api/src/previewSessionGuard.js";
@@ -13,7 +17,8 @@ const TEST_ENV = Object.freeze({
   ASSISTANT_PREVIEW_ENABLED: "true",
   ASSISTANT_PREVIEW_ACCESS_CODE: "local-preview-access-code-32-bytes-minimum",
   PREVIEW_SESSION_SIGNING_SECRET: "local-preview-session-signing-secret-32-bytes",
-  ASSISTANT_CONSENT_POLICY_VERSION: "test-consent-v1",\n  PREVIEW_ACCESS_RATE_LIMIT_SECRET: "local-preview-rate-limit-secret-32-bytes",
+  ASSISTANT_CONSENT_POLICY_VERSION: "test-consent-v1",
+  PREVIEW_ACCESS_RATE_LIMIT_SECRET: "local-preview-rate-limit-secret-32-bytes",
 });
 
 function json(payload, status = 200) {
@@ -39,7 +44,8 @@ async function readInput(request) {
  * Local-only harness. The access code, signing secret, and mock AI binding are
  * synthetic fixtures and must never be wired into the production Worker.
  */
-export class AssistantPreviewSessionGuardTestDO extends AssistantPreviewSessionGuardDurableObject {}\nexport class AssistantPreviewAccessRateLimitTestDO extends AssistantPreviewAccessRateLimitDurableObject {}
+export class AssistantPreviewSessionGuardTestDO extends AssistantPreviewSessionGuardDurableObject {}
+export class AssistantPreviewAccessRateLimitTestDO extends AssistantPreviewAccessRateLimitDurableObject {}
 
 export default {
   async fetch(request, env) {
@@ -52,6 +58,17 @@ export default {
     const sessionGuard = createPreviewSessionGuard(env.PREVIEW_SESSION_GUARD);
 
     if (url.pathname === "/session") {
+      const accessLimiter = createPreviewAccessRateLimiter(
+        env.PREVIEW_ACCESS_RATE_LIMIT,
+        TEST_ENV.PREVIEW_ACCESS_RATE_LIMIT_SECRET,
+      );
+      const limit = await accessLimiter.consume(request.headers.get("CF-Connecting-IP"));
+      if (!limit.allowed) {
+        return json(
+          { error: limit.reason },
+          limit.reason === "preview_access_rate_limited" ? 429 : 503,
+        );
+      }
       const input = await readInput(request);
       if (!input) return json({ error: "invalid_request" }, 400);
       const result = await createAssistantPreviewSession({
