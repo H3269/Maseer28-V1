@@ -162,3 +162,42 @@ test('conversation context is cleared when the day or topic changes in the UI li
   assert.equal(fresh.nextState.lastTopic, 'خشم');
   assert.notEqual(fresh.nextState.lastAssistantMessage, first.nextState.lastAssistantMessage);
 });
+
+
+test('follow-up can explicitly retrieve the exercise or the dedicated action from prior context', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'چطور انجامش بدم؟', dayData, problem: 'اضطراب', day: 4 });
+  const exercise = makeDailyExerciseGuidanceTurn({ message: 'نه، منظورم خود تمرینه', dayData, problem: 'اضطراب', day: 4, conversationState: first.nextState });
+  assert.match(exercise.response, /متن تمرین همین روز: سه موقعیت اخیر/);
+  const action = makeDailyExerciseGuidanceTurn({ message: 'راهکار اختصاصی رو بگو', dayData, problem: 'اضطراب', day: 4, conversationState: first.nextState });
+  assert.match(action.response, /راهکار اختصاصی همین روز: امروز فقط یک موقعیت/);
+  assert.doesNotMatch(action.response, /متن تمرین همین روز/);
+});
+
+test('changing day or topic discards stale chat references but preserves a pending safety gate', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'دیگه نمی‌کشم.', dayData, problem: 'اضطراب', day: 4 });
+  assert.equal(first.nextState.safetyStatus, 'pending');
+  const changed = makeDailyExerciseGuidanceTurn({
+    message: 'چطور انجامش بدم؟',
+    dayData,
+    problem: 'خشم',
+    day: 5,
+    conversationState: { ...first.nextState, contextDay: '4', contextTopic: 'اضطراب' },
+  });
+  assert.equal(changed.nextState.safetyStatus, 'pending');
+  assert.match(changed.response, /آیا همین الآن خطر فوری/);
+  assert.doesNotMatch(changed.response, /سه موقعیت اخیر/);
+});
+
+test('changing day or topic prevents follow-up from quoting an unrelated previous exercise', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'چطور انجامش بدم؟', dayData, problem: 'اضطراب', day: 4 });
+  const changed = makeDailyExerciseGuidanceTurn({
+    message: 'راهکار رو بیشتر توضیح بده',
+    dayData: { exercise: 'تمرین روز جدید', actionText: 'اقدام روز جدید' },
+    problem: 'خشم',
+    day: 5,
+    conversationState: first.nextState,
+  });
+  assert.doesNotMatch(changed.response, /سه موقعیت اخیر|فقط یک موقعیت/);
+  assert.equal(changed.nextState.contextDay, '5');
+  assert.equal(changed.nextState.contextTopic, 'خشم');
+});

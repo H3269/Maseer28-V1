@@ -35,6 +35,8 @@ function boundedState(state = {}) {
     lastUserMessage: String(state.lastUserMessage || '').slice(0, 400),
     lastAssistantMessage: String(state.lastAssistantMessage || '').slice(0, MAX_CONTEXT_TEXT),
     lastTopic: String(state.lastTopic || '').slice(0, 100),
+    contextDay: String(state.contextDay ?? '').slice(0, 20),
+    contextTopic: String(state.contextTopic || '').slice(0, 100),
   };
 }
 
@@ -52,14 +54,29 @@ function result(response, state, userMessage = '') {
 function followUpResponse(message, state) {
   const value = normalize(message);
   if (!state.lastAssistantMessage) return null;
-  if (/(?:قسمت|بخش|مرحله)\s*(?:دوم|2|۲)/u.test(value)) {
-    const paragraphs = state.lastAssistantMessage.split(/\n\s*\n/u).map((part) => part.trim()).filter(Boolean);
-    const selected = paragraphs[1];
-    if (selected) {
-      return `منظورت بخش دوم پاسخ قبلی است؟\n\n${selected}\n\nاگر همین بخش را می‌گویی، مشخص کن کدام جمله یا واژه‌اش را بیشتر باز کنم.`;
+  const paragraphs = state.lastAssistantMessage.split(/\n\s*\n/u).map((part) => part.trim()).filter(Boolean);
+  let selected = null;
+  let label = '';
+
+  if (/(?:راهکار|اقدام اختصاصی|اقدام امروز)/u.test(value)) {
+    selected = paragraphs.find((part) => /^راهکار اختصاصی همین روز:/u.test(part));
+    label = 'راهکار اختصاصی';
+  } else if (/(?:تمرین|دستورالعمل|مراحل انجام)/u.test(value)) {
+    selected = paragraphs.find((part) => /^متن تمرین همین روز:/u.test(part));
+    label = 'متن تمرین';
+  } else {
+    const ordinal = value.match(/(?:قسمت|بخش|مرحله)\s*(اول|یک|1|۱|دوم|دو|2|۲|سوم|سه|3|۳)/u);
+    if (ordinal) {
+      const number = /اول|یک|1|۱/u.test(ordinal[1]) ? 0 : /دوم|دو|2|۲/u.test(ordinal[1]) ? 1 : 2;
+      selected = paragraphs[number];
+      label = `بخش ${number + 1}`;
     }
   }
-  if (/(?:بیشتر توضیح|واضح تر|روشن تر|متوجه نشدم|نفهمیدم|همین بخش|بیشتر باز کن)/u.test(value)) {
+
+  if (selected) {
+    return `این ${label} از پاسخ قبلی است:\n\n${selected}\n\nاگر هنوز مبهم است، همان جمله یا واژه را مشخص کن تا دقیق‌تر توضیح بدهم.`;
+  }
+  if (/(?:بیشتر توضیح|واضح تر|روشن تر|متوجه نشدم|نفهمیدم|همین بخش|بیشتر باز کن|منظورم)/u.test(value)) {
     const topic = state.lastTopic ? ` درباره «${state.lastTopic}»` : '';
     return `در ادامه همان گفت‌وگوی قبلی${topic} هستیم. نمی‌خواهم منظور تو را حدس بزنم؛ لطفاً جمله یا واژه‌ای از پاسخ قبلی را که مبهم است عیناً بنویس.`;
   }
@@ -69,6 +86,14 @@ function followUpResponse(message, state) {
 export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, conversationState } = {}) {
   const text = String(message || '').trim();
   let state = boundedState(conversationState);
+  const currentTopic = String(problem || 'موضوع انتخاب‌شده').trim().slice(0, 100);
+  const currentDay = String(day ?? '').slice(0, 20);
+  if ((state.contextDay && state.contextDay !== currentDay)
+      || (state.contextTopic && state.contextTopic !== currentTopic)) {
+    // Discard stale conversational references, but never clear an active safety state.
+    state = { ...state, lastUserMessage: '', lastAssistantMessage: '', lastTopic: '' };
+  }
+  state = { ...state, contextDay: currentDay, contextTopic: currentTopic };
   if (!text) return result('پیامت خالی است؛ لطفاً پرسشت را بنویس.', state);
 
   if (state.safetyStatus === 'handoff') {

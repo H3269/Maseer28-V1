@@ -12,7 +12,15 @@ export default function DailyExerciseAssistant({ day, problem, data, guidanceDat
     setMessages([]);
     setDraft('');
     setError('');
-    setConversationState({ safetyStatus: 'none' });
+    // A day/topic change clears ordinary chat references, not an unresolved safety gate.
+    setConversationState((current) => ({
+      safetyStatus: current.safetyStatus,
+      lastUserMessage: '',
+      lastAssistantMessage: '',
+      lastTopic: '',
+      contextDay: String(day ?? ''),
+      contextTopic: String(problem || 'موضوع انتخاب‌شده').trim().slice(0, 100),
+    }));
   }, [day, problem]);
 
   useEffect(() => {
