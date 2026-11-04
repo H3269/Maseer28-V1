@@ -145,8 +145,18 @@ for (const { topic, category } of topicRows) {
         fail.push(`قواعد توقف/موارد احتیاط ناقص در «${topic}»، روز ${index + 1}`);
       }
       if (day.review_status === 'approved') {
-        if (day.topic_id === 'T17' && day.reviewer_role !== 'relationship_safety_reviewer') {
-          fail.push(`بازبین محتوای T17 باید متخصص روابط و ایمنی باشد: «${topic}»، روز ${index + 1}`);
+        if (day.topic_id === 'T17') {
+          if (day.reviewer_role !== 'relationship_safety_reviewer') {
+            fail.push(`بازبین محتوای T17 باید متخصص روابط و ایمنی باشد: «${topic}»، روز ${index + 1}`);
+          }
+          if (!Array.isArray(day.subtopic_ids) || day.subtopic_ids.length !== 1) {
+            fail.push(`هر روز T17 باید دقیقاً به یک زیرموضوع نگاشت شود: «${topic}»، روز ${index + 1}`);
+          } else if (day.subtopic_ids[0] === 'T17-S03'
+            && (day.risk_level !== 'caution'
+              || !Array.isArray(day.safety_rule_ids)
+              || day.safety_rule_ids.length === 0)) {
+            fail.push(`T17-S03 به طبقه‌بندی caution و قاعده ایمنی صریح نیاز دارد: «${topic}»، روز ${index + 1}`);
+          }
         }
         if (!day.review_record_id || !day.reviewer_name
           || !['qualified_clinician', 'evidence_reviewer', 'safety_reviewer', 'relationship_safety_reviewer'].includes(day.reviewer_role)
