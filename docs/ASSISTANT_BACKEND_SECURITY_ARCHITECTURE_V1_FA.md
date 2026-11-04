@@ -115,3 +115,41 @@
 - Workers pricing: https://developers.cloudflare.com/workers/platform/pricing/
 - Durable Objects limits: https://developers.cloudflare.com/durable-objects/platform/limits/
 - Durable Objects pricing: https://developers.cloudflare.com/durable-objects/platform/pricing/
+
+
+## ۱۱. احراز اصالت Mini App در Telegram و Bale — نتیجه بررسی رسمی و وضعیت کد
+
+بررسی مستقیم مستندات رسمی هر دو پلتفرم نشان داد که هر دو `initData` خام و قابل اعتبارسنجی در سمت Backend ارائه می‌کنند و از الگوی HMAC-SHA-256 با کلید `WebAppData` و توکن بازوی/ربات استفاده می‌کنند:
+- **Bale:** `Bale.WebApp.initData`، ارسال رشته خام به Backend، ساخت data-check-string از فیلدهای مرتب‌شده و اعتبارسنجی `hash` با HMAC-SHA-256؛ بررسی تازگی `auth_date` نیز توصیه شده است.
+- **Telegram:** `Telegram.WebApp.initData` و همان روش HMAC برای Backend خود ربات. امضای Ed25519 در بخش «third-party validation» مسیر جداگانه‌ای است و برای اعتبارسنجی مستقیم توسط Backend خود ربات لازم نیست.
+- هر پلتفرم باید با **توکن محرمانه مستقل خودش** اعتبارسنجی شود؛ نام پلتفرم ارسالی کلاینت به‌تنهایی معتبر نیست و فقط تعیین می‌کند کدام کلید سرور برای بررسی استفاده شود.
+
+منابع رسمی:
+- Bale Mini Apps: https://docs.bale.ai/miniapp (بخش‌های WebApp و اعتبارسنجی داده‌های دریافتی، خطوط ۸۱–۹۱ و ۲۴۵–۲۶۰)
+- Telegram Mini Apps: https://core.telegram.org/bots/webapps (بخش Initializing Mini Apps و Validating data received via the Mini App)
+
+### پیاده‌سازی محدود انجام‌شده
+
+- فایل `workers/assistant-api/src/platformAuth.js` افزوده شد.
+- تابع `verifyMiniAppInitData` برای Telegram و Bale:
+  - ورودی را از نظر اندازه محدود می‌کند؛
+  - فیلدهای تکراری را رد می‌کند؛
+  - وجود `hash`، `auth_date` و `user.id` معتبر را بررسی می‌کند؛
+  - تازگی ۵ دقیقه‌ای و حداکثر اختلاف آینده ۳۰ ثانیه را فعلاً اعمال می‌کند؛
+  - HMAC را با Web Crypto و مقایسه امن `crypto.subtle.verify` می‌سنجد؛
+  - فقط `valid`, `platform`, `authDate` برمی‌گرداند و شناسه/نام/پروفایل کاربر یا متن خام را بازنمی‌گرداند.
+- متغیرهای secret مورد انتظار در آینده: `TELEGRAM_BOT_TOKEN` و `BALE_BOT_TOKEN`؛ هیچ‌کدام در Cloudflare تنظیم نشده‌اند و هیچ توکنی در مخزن ثبت نشده است.
+- آزمون‌های `tests/platformAuth.test.js` برای امضای معتبر هر دو پلتفرم، کلید اشتباه، دستکاری داده، انقضا، زمان آینده، فیلد تکراری، ورودی بزرگ/ناقص، secret مفقود و user نامعتبر اضافه شده‌اند.
+
+### محدودیت صریح این مرحله
+
+این کد فقط **primitive اعتبارسنجی** است؛ هنوز به Worker route یا frontend متصل نشده است. هنوز:
+- هیچ session token صادر نمی‌شود؛
+- replay protection/nonce storage پیاده‌سازی نشده است؛
+- `initData` از SDK در frontend خوانده یا ارسال نمی‌شود؛
+- هیچ consent یا متن مکالمه ارسال نمی‌شود؛
+- endpoint `/v1/assistant/turn` همچنان 503 و fail-closed است.
+
+TTL پنج‌دقیقه‌ای فعلاً یک مقدار محافظه‌کارانه برای آزمون است، نه تصمیم UX نهایی؛ چون `auth_date` زمان بازشدن Mini App است، باید پیش از اتصال frontend سناریوی کاربری که اپ را مدت بیشتری باز نگه می‌دارد و راهکار refresh/replay protection بررسی شود. اعتبار امضای پلتفرم به‌هیچ‌وجه معادل رضایت پردازش ابری نیست.
+
+**وضعیت:** primitive کدنویسی شده؛ عبور از CI و بازبینی نهایی هنوز لازم است؛ اتصال runtime و تست واقعی Telegram/Bale انجام نشده است.
