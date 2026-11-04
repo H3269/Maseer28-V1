@@ -6753,3 +6753,71 @@ body:not(.bale-webview) .bottomNav button.active:after {
 .dailyAssistantContext{padding:12px 14px;border:1px solid var(--border,#d9e0e8);border-radius:12px;background:var(--surface-soft,#f8fafc);margin:12px 0}
 .dailyAssistantContext p{margin:6px 0 0;line-height:1.8}
 .dailyExerciseAssistant .assistantTranscript{max-height:50vh}
+
+/* Global assistant entry point preview: stays above bottom navigation and respects device safe areas. */
+.globalAssistantLauncher {
+  position: fixed;
+  right: max(20px, calc((100vw - 680px) / 2 + 20px));
+  bottom: calc(82px + env(safe-area-inset-bottom));
+  z-index: 155;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 17px;
+  border: 1px solid #245c55;
+  border-radius: 999px;
+  background: #245c55;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(20, 65, 59, .24);
+  font-weight: 800;
+}
+.globalAssistantLauncher svg { width: 20px; height: 20px; flex: 0 0 20px; }
+.globalAssistantLauncher:focus-visible,
+.globalAssistantDialog button:focus-visible {
+  outline: 3px solid #d6a84b;
+  outline-offset: 3px;
+}
+.globalAssistantBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  background: rgba(20, 35, 34, .48);
+}
+.globalAssistantDialog {
+  width: min(100%, 440px);
+  box-sizing: border-box;
+  padding: 22px;
+  border: 1px solid #dfe8e5;
+  border-radius: 22px;
+  background: #fff;
+  color: #243b3c;
+  box-shadow: 0 22px 70px rgba(0, 0, 0, .22);
+  text-align: right;
+}
+.globalAssistantDialogTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.globalAssistantDialog h2 { margin: 12px 0 8px; }
+.globalAssistantPageContext {
+  margin: 8px 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f1f6f3;
+}
+.globalAssistantDialog p { line-height: 1.9; }
+.globalAssistantPrivacyNote { font-size: .9rem; }
+.globalAssistantCloseAction { width: 100%; margin-top: 8px; }
+@media (max-width: 380px) {
+  .globalAssistantLauncher { right: 14px; min-height: 46px; padding-inline: 14px; }
+  .globalAssistantDialog { padding: 18px; }
+}
+
