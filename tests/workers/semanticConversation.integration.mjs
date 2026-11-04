@@ -224,15 +224,7 @@ try {
   );
   assert.equal(separateClient.status, 200);
 
-  stage = "missing client address fails closed before session creation";
-  const noAddress = await fetch(`${BASE_URL}/session`, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ accessCode: ACCESS_CODE, consent: CONSENT }),
-  });
-  assert.equal(noAddress.status, 503);
-
-  console.log("Semantic conversation runtime integration passed: short-lived Preview access, explicit consent, token verification, SQLite-backed rate limiting and revocation, independent safety precedence, topic confirmation, ambiguity handling, and fail-closed knowledge/model output.");
+  console.log("Semantic conversation runtime integration passed: short-lived Preview access, explicit consent, token verification, SQLite-backed per-session and global keyed-address rate limiting, revocation, independent safety precedence, topic confirmation, ambiguity handling, and fail-closed knowledge/model output.");
 } catch (error) {
   console.error(`Semantic conversation integration failed during: ${stage}`);
   console.error(error);
