@@ -19,16 +19,15 @@ function normalize(value) {
 
 function classifySafetyReply(message) {
   const value = normalize(message);
-  if (/^(?:نه|خیر)(?:\s|$)/u.test(value)
-      || /(?:خطر فوری ندارم|قصدی ندارم|برنامه ای ندارم|برنامه ندارم|الان امن هستم|الان در خطر نیستم)/u.test(value)) {
+  const possibleOrUncertain = /(?:^|[\\s،,])(?:بله|آره|اره|دارم)(?:$|[\\s،,])|(?:ممکنه|ممکن است|احتمالش هست|مطمئن نیستم|نمی دانم|نمی دونم|شاید|قصد دارم|برنامه دارم|اما|ولی)/u.test(value);
+  if (possibleOrUncertain) return 'possible_or_uncertain_danger';
+
+  if (value === 'نه' || value === 'خیر'
+      || /(?:خطر فوری ندارم|قصد(?: آسیب)? ندارم|قصدی ندارم|برنامه(?: ای)? ندارم|الان امن هستم|الان در خطر نیستم)/u.test(value)) {
     return 'no_immediate_danger';
-  }
-  if (/(?:بله|آره|اره|دارم|ممکنه|ممکن است|احتمالش هست|مطمئن نیستم|نمی دانم|نمی دونم|شاید|قصد دارم|برنامه دارم)/u.test(value)) {
-    return 'possible_or_uncertain_danger';
   }
   return 'unclear';
 }
-
 function boundedState(state = {}) {
   return {
     safetyStatus: ['pending', 'handoff', 'cleared'].includes(state.safetyStatus) ? state.safetyStatus : 'none',
