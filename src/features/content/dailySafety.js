@@ -163,17 +163,45 @@ function isRelationshipDifficultiesTopicDay(day) {
 const RELATIONSHIP_DIFFICULTIES_SUBTOPIC_IDS = new Set(['T17-S01', 'T17-S02', 'T17-S03']);
 
 function hasApprovedRelationshipDifficultiesReview(day) {
-  if (day.review_status !== 'approved'
+  const requiredText = [
+    'learning_objective', 'target_skill', 'teaching_point',
+    'exercise_type', 'instructions', 'reflection_prompt',
+    'success_criterion', 'when_to_seek_human_support',
+  ];
+  if (day.topic_id !== 'T17'
+    || !Number.isInteger(Number(day.day))
+    || Number(day.day) < 1
+    || Number(day.day) > 28
+    || day.review_status !== 'approved'
     || !Array.isArray(day.subtopic_ids)
     || day.subtopic_ids.length !== 1
     || !RELATIONSHIP_DIFFICULTIES_SUBTOPIC_IDS.has(day.subtopic_ids[0])
+    || !Number.isInteger(day.duration_minutes)
+    || day.duration_minutes < 1
+    || day.duration_minutes > 60
+    || !Array.isArray(day.stop_conditions)
+    || day.stop_conditions.length === 0
+    || !Array.isArray(day.contraindications)
+    || day.contraindications.length === 0
+    || !Array.isArray(day.source_ids)
+    || day.source_ids.length === 0
+    || !['not_assessed', 'very_low', 'low', 'moderate', 'high'].includes(day.evidence_grade)
     || typeof day.review_record_id !== 'string'
-    || day.review_record_id.trim().length === 0) return false;
+    || !day.review_record_id.trim()
+    || typeof day.reviewer_name !== 'string'
+    || !day.reviewer_name.trim()
+    || !['qualified_clinician', 'evidence_reviewer', 'safety_reviewer', 'relationship_safety_reviewer'].includes(day.reviewer_role)
+    || !day.reviewed_at
+    || !Number.isFinite(Date.parse(day.reviewed_at))
+    || requiredText.some((field) => typeof day[field] !== 'string' || !day[field].trim())) {
+    return false;
+  }
 
   if (day.subtopic_ids[0] === 'T17-S03') {
     return day.risk_level === 'caution'
       && Array.isArray(day.safety_rule_ids)
-      && day.safety_rule_ids.length > 0;
+      && day.safety_rule_ids.length > 0
+      && ['safety_reviewer', 'relationship_safety_reviewer'].includes(day.reviewer_role);
   }
   return true;
 }
