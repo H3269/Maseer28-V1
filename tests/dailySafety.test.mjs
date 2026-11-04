@@ -145,7 +145,7 @@ test('legacy T17 relationship content stays blocked until complete expert and sa
     source_ids: ['SRC-TEST-T17-REVIEWED'],
     evidence_grade: 'not_assessed',
     reviewer_name: 'Synthetic test reviewer',
-    reviewer_role: 'qualified_clinician',
+    reviewer_role: 'relationship_safety_reviewer',
     reviewed_at: '2026-11-04T12:00:00.000Z',
     learning_objective: 'هدف آموزشی محدود',
     target_skill: 'مهارت مشخص',
@@ -172,6 +172,7 @@ test('legacy T17 relationship content stays blocked until complete expert and sa
     { review_record_id: '' },
     { reviewer_name: '' },
     { reviewer_role: 'content_editor' },
+    { reviewer_role: 'qualified_clinician' },
     { reviewed_at: 'not-a-date' },
     { source_ids: [] },
     { stop_conditions: [] },
@@ -189,8 +190,8 @@ test('legacy T17 relationship content stays blocked until complete expert and sa
   assert.equal(getDailySafetyMode(reviewed('T17-S03', {
     risk_level: 'caution',
     safety_rule_ids: ['SR-T17-COERCIVE-CONTROL-SAFETY'],
-    reviewer_role: 'qualified_clinician',
-  })), 'blocked', 'T17-S03 requires an explicitly designated safety reviewer');
+    reviewer_role: 'safety_reviewer',
+  })), 'blocked', 'T17-S03 requires a relationship-specific safety reviewer');
   assert.equal(getDailySafetyMode(reviewed('T17-S01', { id: 'T16-D06' })), 'blocked',
     'an approved record must not be transferable to a different topic/day identifier');
   assert.equal(getDailySafetyMode(reviewed('T17-S01', { day: 7 })), 'blocked',
