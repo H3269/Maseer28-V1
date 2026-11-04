@@ -1,0 +1,151 @@
+diff --git a/.github/workflows/validate-content.yml b/.github/workflows/validate-content.yml
+@@ -13,6 +13,8 @@ on:
+       - 'public/assistant/reviews/**'
+       - 'public/assistant/schemas/course-content-quality-review.v1.schema.json'
+       - 'tests/courseContentQualityAudit.test.js'
++      - 'scripts/build-first-pass-review-packet.mjs'
++      - 'tests/firstPassReviewPacket.test.js'
+       - 'package.json'
+       - 'package-lock.json'
+       - '.github/workflows/**'
+@@ -68,12 +70,22 @@ jobs:
+       - name: Audit course content quality and review readiness
+         if: ${{ always() && steps.install.outcome == 'success' }}
+         run: npm run audit:course-content-quality
++      - name: Prepare first-pass 34-topic human review packet
++        if: ${{ always() && steps.install.outcome == 'success' }}
++        run: npm run prepare:first-pass-review
+       - name: Build application
+         if: ${{ always() && steps.install.outcome == 'success' }}
+         run: |
+           npm run prepare:production
+           npm run build
+ 
++      - name: Upload first-pass human review packet
++        if: ${{ always() && steps.install.outcome == 'success' }}
++        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
++        with:
++          name: first-pass-review-34-days
++          path: artifacts/first-pass-review-34-days.md
++          if-no-files-found: error
+       - name: Upload npm audit report
+         if: ${{ always() && steps.install.outcome == 'success' }}
+         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+diff --git a/package.json b/package.json
+@@ -11,7 +11,8 @@
+     "test": "node --test",
+     "validate:assistant-topics": "node scripts/validate-assistant-topics.mjs",
+     "prepare:production": "node scripts/prepare-production-build.mjs",
+-    "audit:course-content-quality": "node scripts/audit-course-content-quality.mjs"
++    "audit:course-content-quality": "node scripts/audit-course-content-quality.mjs",
++    "prepare:first-pass-review": "node scripts/build-first-pass-review-packet.mjs"
+   },
+   "dependencies": {
+     "react": "18.3.1",
+diff --git a/scripts/build-first-pass-review-packet.mjs b/scripts/build-first-pass-review-packet.mjs
+@@ -0,0 +1,75 @@
++import fs from 'node:fs';
++import path from 'node:path';
++import { fileURLToPath } from 'node:url';
++
++const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
++const readJson=(p)=>JSON.parse(fs.readFileSync(path.join(root,p),'utf8'));
++const DIMENSIONS=[
++ ['target_specificity','اختصاصی‌بودن هدف'],
++ ['psychological_mechanism','دقت سازوکار روان‌شناختی'],
++ ['evidence_support','پشتوانه شواهد'],
++ ['exercise_alignment','تناسب تمرین'],
++ ['progression_and_difficulty','توالی و دشواری'],
++ ['safety_and_cautions','ایمنی و احتیاط'],
++ ['outcome_measurement','سنجش نتیجه'],
++ ['accessibility','دسترس‌پذیری']
++];
++const escapeHeading=(s)=>String(s).replace(/[\r\n#]/g,' ').trim();
++
++export function buildFirstPassReviewPacket({content,topics,dayNumber=1}){
++ if(!Number.isInteger(dayNumber)||dayNumber<1||dayNumber>28) throw new Error('dayNumber must be an integer from 1 to 28.');
++ const registry=topics.topics??[];
++ const categories=content.categories??{};
++ if(registry.length!==34) throw new Error(`Expected 34 registered topics, found ${registry.length}.`);
++ const byName=new Map(registry.map(t=>[String(t.name).normalize('NFKC').trim(),t]));
++ const categoryNames=Object.keys(categories);
++ if(categoryNames.length!==34) throw new Error(`Expected 34 content categories, found ${categoryNames.length}.`);
++ const missing=registry.filter(t=>!Object.hasOwn(categories,t.name));
++ const unknown=categoryNames.filter(n=>!byName.has(String(n).normalize('NFKC').trim()));
++ if(missing.length||unknown.length) throw new Error('Topic registry and content categories do not match exactly.');
++ const records=registry.slice().sort((a,b)=>a.display_order-b.display_order).map(topic=>{
++  const days=categories[topic.name].days;
++  if(!Array.isArray(days)||days.length!==28) throw new Error(`Expected 28 days for ${topic.name}.`);
++  const day=days[dayNumber-1];
++  if(!day?.id) throw new Error(`Missing content id for ${topic.name}, day ${dayNumber}.`);
++  return {topic_id:topic.topic_id,topic_name:topic.name,display_order:topic.display_order,day_number:dayNumber,content_id:day.id,source_day:day};
++ });
++ const lines=[
++ '# بسته بازبینی انسانی محتوای مسیر۲۸',
++ '',
++ `نسخه منبع: ${content.version??'نامشخص'}`,
++ `روز نمونه: ${dayNumber} از ۲۸ | تعداد رکورد: ${records.length}`,
++ '',
++ '> این بسته صرفاً مواد خام را برای بازبینی انسانی کنار هم قرار می‌دهد. هیچ امتیاز، تأیید، تشخیص، یا نتیجه بالینی به‌صورت خودکار تولید نشده است. بازبین باید متن کامل و زمینه هر روز را بررسی کند.',
++ '',
++ '## راهنمای بازبین',
++ '',
++ 'برای هر موضوع، تمام فیلدهای رکورد منبع را بخوانید. در هر بُعد از ۰ تا ۳ امتیاز دهید یا «نیازمند اطلاعات بیشتر» ثبت کنید. امتیاز ۰ یا ۱ در ایمنی، تأیید را متوقف می‌کند. تأیید آموزشی، اثربخشی درمانی یا مجوز استفاده خودکار نیست.',
++ '',
++ '| بُعد | امتیاز ۰ تا ۳ | دلیل/نقص مشخص |',
++ '|---|---:|---|',
++ ...DIMENSIONS.map(([key,label])=>`| ${label} (${key}) | ____ | ____ |`),
++ '| تصمیم | pending / revision / reject / educational review | ____ |',
++ '| بازبین و تخصص مرتبط | ____ | ____ |',
++ '| شناسه شواهد | ____ | ____ |',
++ '| ملاحظات ایمنی و معیار توقف | ____ | ____ |',
++ '',
++ '---',
++ ''
++ ];
++ for(const record of records){
++  lines.push(`## ${String(record.display_order).padStart(2,'0')}. ${escapeHeading(record.topic_name)} — ${record.topic_id}`,'');
++  lines.push(`شناسه محتوا: \`${record.content_id}\` | روز: ${record.day_number}`,'');
++  lines.push('### رکورد کامل منبع','', '```json',JSON.stringify(record.source_day,null,2),'```','');
++  lines.push('### یادداشت بازبین','','- هدف آموزشی دقیق:','- سازوکار هدف:','- تناسب تمرین با سازوکار:','- ادعاهای نیازمند منبع:','- خطرها، موارد منع و معیار توقف:','- اصلاح پیشنهادی:','- تصمیم و دلیل:','','---','');
++ }
++ return lines.join('\n')+'\n';
++}
++
++if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
++ const packet=buildFirstPassReviewPacket({content:readJson('public/content/path-content.json'),topics:readJson('public/assistant/knowledge/topics.v1.json'),dayNumber:Number(process.env.REVIEW_DAY??1)});
++ const output=path.join(root,'artifacts','first-pass-review-34-days.md');
++ fs.mkdirSync(path.dirname(output),{recursive:true});
++ fs.writeFileSync(output,packet,'utf8');
++ process.stdout.write(`Created ${output} with 34 source-day records. No scores were generated.\\n`);
++}
+diff --git a/tests/firstPassReviewPacket.test.js b/tests/firstPassReviewPacket.test.js
+@@ -0,0 +1,28 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { buildFirstPassReviewPacket } from '../scripts/build-first-pass-review-packet.mjs';
++
++const topics={topics:Array.from({length:34},(_,i)=>({topic_id:`T${String(i+1).padStart(2,'0')}`,name:`موضوع ${i+1}`,display_order:i+1}))};
++const content={version:'test',categories:Object.fromEntries(topics.topics.map(t=>[t.name,{days:Array.from({length:28},(_,i)=>({id:`${t.topic_id}-D${i+1}`,title:`عنوان ${i+1}`,exercise:`تمرین ${i+1}`,safety_notes:['review me']}))}]))};
++
++test('packet contains exactly 34 complete source-day snapshots and blank human review fields',()=>{
++ const packet=buildFirstPassReviewPacket({content,topics,dayNumber:1});
++ assert.equal((packet.match(/### رکورد کامل منبع/g)||[]).length,34);
++ assert.ok(packet.includes('"safety_notes"'));
++ assert.ok(packet.includes('اختصاصی‌بودن هدف'));
++ assert.ok(packet.includes('هیچ امتیاز، تأیید'));
++ assert.ok(packet.includes('موضوع 34'));
++});
++
++test('packet rejects mismatched registry and content categories',()=>{
++ const broken=structuredClone(content);
++ delete broken.categories['موضوع 1'];
++ assert.throws(()=>buildFirstPassReviewPacket({content:broken,topics}),/Expected 34 content categories/);
++});
++
++test('packet rejects invalid day number and incomplete 28-day path',()=>{
++ assert.throws(()=>buildFirstPassReviewPacket({content,topics,dayNumber:29}),/dayNumber/);
++ const broken=structuredClone(content);
++ broken.categories['موضوع 1'].days.pop();
++ assert.throws(()=>buildFirstPassReviewPacket({content:broken,topics}),/Expected 28 days/);
++});

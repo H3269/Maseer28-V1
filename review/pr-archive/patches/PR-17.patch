@@ -1,0 +1,144 @@
+diff --git a/.github/workflows/validate-content.yml b/.github/workflows/validate-content.yml
+@@ -9,6 +9,7 @@ on:
+       - 'tests/**'
+       - 'scripts/validate-content.mjs'
+       - 'scripts/validate-assistant-topics.mjs'
++      - 'scripts/audit-content-specificity.mjs'
+       - 'package.json'
+       - 'package-lock.json'
+       - '.github/workflows/**'
+@@ -22,6 +23,7 @@ on:
+       - 'tests/**'
+       - 'scripts/validate-content.mjs'
+       - 'scripts/validate-assistant-topics.mjs'
++      - 'scripts/audit-content-specificity.mjs'
+       - 'package.json'
+       - '.github/workflows/**'
+       - 'scripts/prepare-production-build.mjs'
+@@ -61,6 +63,9 @@ jobs:
+       - name: Validate course and library data
+         if: ${{ always() && steps.install.outcome == 'success' }}
+         run: npm run validate:content
++      - name: Report course content specificity
++        if: ${{ always() && steps.install.outcome == 'success' }}
++        run: npm run audit:content-specificity
+       - name: Build application
+         if: ${{ always() && steps.install.outcome == 'success' }}
+         run: |
+diff --git a/docs/CONTENT_SPECIFICITY_AUDIT_FA.md b/docs/CONTENT_SPECIFICITY_AUDIT_FA.md
+@@ -0,0 +1,12 @@
++# ممیزی اختصاصی‌بودن محتوای ۲۸ روزه
++
++## اجرا
++`npm run audit:content-specificity`
++
++گزارش برای هر فیلد و هر روز تعداد نسخه‌های متنی متمایز و روزهایی را که متن پس از جایگزینی نام موضوع بین مسیرها یکسان است نشان می‌دهد.
++
++## محدودیت
++متفاوت‌بودن متن به‌تنهایی تناسب روان‌شناختی یا اعتبار علمی را اثبات نمی‌کند؛ شباهت معنایی نیز با مقایسه رشته‌ای قابل رد یا تأیید قطعی نیست. این ابزار فقط هشدار بازبینی می‌دهد و هیچ محتوایی را خودکار بازنویسی نمی‌کند.
++
++## سیاست پذیرش
++هر تمرین باید از نظر هدف رفتاری، سازوکار هدف، تناسب با موضوع/زیرموضوع، دشواری، خطر و احتیاط، معیار توقف و شاخص پیشرفت ارزیابی شود. تنوع ظاهری متن معیار پذیرش نیست.
+diff --git a/package.json b/package.json
+@@ -10,7 +10,8 @@
+     "validate:content": "node scripts/validate-content.mjs",
+     "test": "node --test",
+     "validate:assistant-topics": "node scripts/validate-assistant-topics.mjs",
+-    "prepare:production": "node scripts/prepare-production-build.mjs"
++    "prepare:production": "node scripts/prepare-production-build.mjs",
++    "audit:content-specificity": "node scripts/audit-content-specificity.mjs"
+   },
+   "dependencies": {
+     "react": "18.3.1",
+diff --git a/scripts/audit-content-specificity.mjs b/scripts/audit-content-specificity.mjs
+@@ -0,0 +1,51 @@
++import fs from 'node:fs';
++import path from 'node:path';
++import { fileURLToPath } from 'node:url';
++const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
++const source = JSON.parse(fs.readFileSync(path.join(root, 'public/content/path-content.json'), 'utf8'));
++const fields = ['exercise', 'actionText', 'lightExerciseText', 'lightActionText', 'progressActionText'];
++function normalize(value, topic) {
++  const text = String(value ?? '').normalize('NFKC');
++  const quoted = text.split(`«${topic}»`).join('«[TOPIC]»');
++  const regexSpecials = new Set(['.', '*', '+', '?', '^', '$', '(', ')', '|', '[', ']', '{', '}']);
++  const escapedTopic = [...topic].map((char) => regexSpecials.has(char) ? String.fromCharCode(92) + char : char).join('');
++  const tokenPattern = new RegExp('(^|[^\\p{L}\\p{N}_])' + escapedTopic + '(?=$|[^\\p{L}\\p{N}_])', 'gu');
++  return quoted.replace(tokenPattern, '$1[TOPIC]').replace(/\s+/g, ' ').trim();
++}
++export function auditContentSpecificity(data) {
++  const categories = Object.entries(data.categories ?? []);
++  const days = Math.max(0, ...categories.map(([, category]) => category.days?.length ?? 0));
++  const results = {};
++  for (const field of fields) {
++    const perDay = [];
++    for (let index = 0; index < days; index += 1) {
++      const values = categories.map(([topic, category]) => normalize(category.days?.[index]?.[field], topic));
++      const counts = new Map();
++      for (const value of values) if (value) counts.set(value, (counts.get(value) ?? 0) + 1);
++      perDay.push({
++        day: index + 1,
++        unique_variants: counts.size,
++        empty_count: values.filter((value) => !value).length,
++        fully_shared_across_topics: values.length > 0 && counts.size === 1 && values.every(Boolean),
++      });
++    }
++    results[field] = {
++      days_with_one_shared_template: perDay.filter((item) => item.fully_shared_across_topics).length,
++      days_with_two_or_fewer_variants: perDay.filter((item) => item.unique_variants <= 2).length,
++      per_day: perDay,
++    };
++  }
++  return {
++    topic_count: categories.length,
++    expected_days: days,
++    fields: results,
++    limitations: [
++      'تفاوت متنی به‌تنهایی کیفیت علمی یا تناسب تمرین را ثابت نمی‌کند.',
++      'شباهت معنایی بدون بازبینی انسانی قابل سنجش قطعی نیست.',
++      'این گزارش محتوا را تغییر نمی‌دهد و فقط اولویت‌های بازبینی را نشان می‌دهد.',
++    ],
++  };
++}
++if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
++  process.stdout.write(`${JSON.stringify(auditContentSpecificity(source), null, 2)}\n`);
++}
+\ No newline at end of file
+diff --git a/tests/contentSpecificityAudit.test.js b/tests/contentSpecificityAudit.test.js
+@@ -0,0 +1,36 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { readFile } from 'node:fs/promises';
++import { auditContentSpecificity } from '../scripts/audit-content-specificity.mjs';
++const source = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
++test('content specificity audit covers all topic paths and daily slots', () => {
++  const report = auditContentSpecificity(source);
++  assert.equal(report.topic_count, 34);
++  assert.equal(report.expected_days, 28);
++  for (const field of Object.values(report.fields)) assert.equal(field.per_day.length, 28);
++});
++test('content audit exposes repeated templates without treating similarity as a build failure', () => {
++  const report = auditContentSpecificity(source);
++  assert.ok(Object.values(report.fields).some((field) => field.days_with_one_shared_template > 0));
++  assert.ok(report.limitations.some((item) => item.includes('کیفیت علمی')));
++});
++
++
++test('normalization replaces standalone topic tokens but preserves topic-name prefixes inside words',()=>{
++ const exact={
++  categories:{
++   'اضطراب':{days:[{exercise:'تمرین اضطراب'}]},
++   'خشم':{days:[{exercise:'تمرین خشم'}]},
++  },
++ };
++ const exactReport=auditContentSpecificity(exact);
++ assert.equal(exactReport.fields.exercise.per_day[0].unique_variants,1);
++ const suffix={
++  categories:{
++   'اضطراب':{days:[{exercise:'تمرین اضطرابی'}]},
++   'خشم':{days:[{exercise:'تمرین اضطرابی'}]},
++  },
++ };
++ const suffixReport=auditContentSpecificity(suffix);
++ assert.equal(suffixReport.fields.exercise.per_day[0].unique_variants,1);
++});

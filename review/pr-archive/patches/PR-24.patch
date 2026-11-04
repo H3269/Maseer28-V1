@@ -1,0 +1,651 @@
+diff --git a/docs/PRIVACY_CONSENT_CONTROLS_V1_FA.md b/docs/PRIVACY_CONSENT_CONTROLS_V1_FA.md
+@@ -0,0 +1,64 @@
++# کنترل رضایت محلی مسیر۲۸ — نسخه آزمایشی
++
++## دامنه
++این ماژول فقط انتخاب‌های رضایت را به‌صورت محلی ثبت می‌کند. هیچ متن گفتگو یا داده سلامت را ارسال نمی‌کند و به‌تنهایی هیچ سرویس ابری، حافظه بلندمدت یا تحلیل محصولی را فعال نمی‌کند.
++
++## اصول اجرایی
++- هر چهار هدف مستقل‌اند: پردازش ابری، داده حساس سلامت، حافظه بلندمدت و تحلیل محصول.
++- پیش‌فرض همه هدف‌ها خاموش است.
++- ثبت رضایت به اقدام صریح نیاز دارد؛ سکوت، ادامه استفاده یا فعال‌بودن یک هدف، رضایت هدف دیگر نیست.
++- رضایت پردازش داده حساس علاوه بر رضایت ابری، اقدام جداگانه و توضیح دسته داده را می‌خواهد.
++- پس‌گرفتن رضایت ابری، رضایت پردازش داده حساس را نیز خاموش می‌کند.
++- رضایت حافظه و تحلیل مستقل از رضایت ابری باقی می‌ماند.
++- پاک‌کردن رکورد رضایت، همه هدف‌ها را به حالت خاموش برمی‌گرداند.
++
++## محدودیت‌ها و مانع انتشار
++- این پیاده‌سازی localStorage است و در برابر دسترسی محلی دستگاه، پاک‌شدن داده مرورگر یا XSS محافظت رمزنگارانه فراهم نمی‌کند.
++- رابط کاربری رضایت، اتصال به پردازشگر، کنترل واقعی نگهداری/حذف نزد ارائه‌دهنده، اثبات هویت پردازشگر و ارزیابی حقوقی هنوز پیاده‌سازی نشده‌اند.
++- ماژول فعلاً در جریان runtime برای مجازکردن ارسال داده فراخوانی نمی‌شود؛ تا زمان تکمیل UI، بررسی امنیتی، حقوقی و آزمون end-to-end، پردازش ابری و حافظه بلندمدت باید خاموش بمانند.
++- این ماژول به‌تنهایی رضایت حقوقی معتبر یا انطباق با GDPR/قوانین دیگر را اثبات نمی‌کند.
++
++
++## محدودیت‌های امنیتیِ مهم‌تر
++
++- فیلد `explicitAction` فقط یک شرط قراردادی در API ماژول است؛ به‌تنهایی ثابت نمی‌کند که کاربر واقعاً روی دکمه رضایت کلیک کرده است. رابط باید آن را فقط از رویداد مستقیم و قابل‌ردیابی کاربر فراخوانی کند.
++- رکورد رضایت در `localStorage` قابل تغییر توسط کاربر یا اسکریپت مخرب است؛ بنابراین مدرک رمزنگاری‌شده، امضاشده یا مرجع امنیتی برای مجازکردن پردازش سمت سرور نیست.
++- `withdrawConsent` فقط وضعیت رضایت ثبت‌شده را تغییر می‌دهد. این تابع داده‌های قبلاً ذخیره‌شده در حافظه، گزارش‌ها یا سامانه ارائه‌دهنده را حذف نمی‌کند.
++- پس از اتصال واقعی هر پردازش، لغو رضایت باید در همان لحظه جلوی پردازش بعدی را بگیرد و جریان مستقل حذف/نگهداری داده را اجرا کند. این رفتار هنوز ساخته نشده است.
++- این ماژول در نسخه فعلی اپ فراخوانی نمی‌شود و نباید هیچ تصمیمی درباره ارسال داده بر مبنای آن گرفته شود.
++
++
++## پروفایل ترجیحات شخصی‌سازی — نسخه اولیه
++
++ماژول `src/features/privacy/personalizationPreferences.js` فقط ترجیحات غیرحساسِ شیوه تعامل را می‌پذیرد:
++- میزان جزئیات پاسخ؛
++- سبک ارتباطی؛
++- سرعت/تقسیم‌بندی گام‌ها؛
++- نوع مثال؛
++- زبان پاسخ.
++
++این ماژول عمداً فیلدهایی مانند تشخیص، نشانه‌ها، سابقه خطر، متن گفتگو، خلق یا برداشت روان‌شناختی را نمی‌پذیرد. بدون رضایت مستقل `long_term_ai_memory`، تنظیمات ذخیره نمی‌شوند و مقدار پیش‌فرض جلسه‌ای برگردانده می‌شود. ذخیره‌سازی نیازمند اقدام صریح است. با پس‌گرفتن رضایت حافظه، کلید محلی پروفایل ترجیحات بلافاصله حذف می‌شود.
++
++**محدودیت:** این لایه هنوز به رابط تنظیمات یا موتور پاسخ‌گویی متصل نشده است؛ بنابراین در نسخه فعلی ترجیحات ذخیره‌شده رفتار دستیار را تغییر نمی‌دهند. پیش از ادعای شخصی‌سازی فعال، باید UI مشاهده/ویرایش/حذف، نمایش رضایت و آزمون یکپارچه‌سازی ساخته شود.
++
++در صورت خطا هنگام حذف محلی، رضایت ابتدا به حالت لغوشده ثبت می‌شود و ماژول خطای پاک‌سازی را در `erasure_errors` برمی‌گرداند؛ تا رفع خطا نباید ادعای حذف کامل داده شود.
++
++
++## تکمیل کنترل خطا در خروجی و حذف داده محلی
++
++ماژول `localData.js` اکنون خطاهای خواندن، حذف و راستی‌آزمایی را به تفکیک کلید و مرحله گزارش می‌کند. خروجی دارای فیلد `complete` است؛ رابط کاربری از دانلود خروجی ناقص به‌عنوان نسخه کامل جلوگیری می‌کند. حذف نیز فقط کلیدهایی را «حذف‌شده» گزارش می‌کند که پس از عملیات، نبود آن‌ها قابل راستی‌آزمایی باشد.
++
++این تغییر همچنان فقط `localStorage` همین مرورگر را پوشش می‌دهد. خطای دسترسی به مرورگر، داده‌های دانلودشده، IndexedDB، نسخه‌های پشتیبان یا داده‌های خارج از این مرورگر را پوشش نمی‌دهد؛ بنابراین عبارت «حذف همه داده‌های کاربر» مجاز نیست.
++
++
++## رابط کاربری ترجیحات محلی
++
++کامپوننت `PersonalizationSettings.jsx` به صفحه پشتیبانی/حریم خصوصی متصل شده است. کاربر می‌تواند:
++- ذخیره ترجیحات غیرحساس را جداگانه فعال کند؛
++- پنج ترجیح شیوه تعامل را مشاهده و تغییر دهد؛
++- ترجیحات را بدون لغو رضایت پاک کند؛
++- رضایت را لغو کند و پاک‌سازی محلی را درخواست دهد.
++
++این رابط هیچ کنترل فعالی برای رضایت ابری، داده حساس یا تحلیل محصول نشان نمی‌دهد؛ چون هیچ پردازشگر یا اتصال مربوطه در این نسخه پیاده‌سازی نشده است. عبارت «حافظه» در این صفحه فقط به ذخیره ترجیحات غیرحساس اشاره دارد، نه ذخیره متن گفتگو یا تاریخچه روان‌شناختی.
++
++**محدودیت عملکردی:** ترجیحات ذخیره می‌شوند و قابل مدیریت‌اند، اما هنوز به موتور پاسخ‌گویی وصل نشده‌اند؛ پس در این نسخه بر پاسخ‌های دستیار اثر نمی‌گذارند. همچنین حذف فقط در localStorage قابل راستی‌آزمایی است.
+diff --git a/src/features/journey/JourneyScreens.jsx b/src/features/journey/JourneyScreens.jsx
+@@ -6,6 +6,7 @@ import { fa, formatDate, normalizeDigits } from '../../shared/utils.js';
+ import { burdenScoreFromAnswers, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
+ import { readLocalUserData, deleteLocalUserData } from '../privacy/localData.js';
+ import AssessmentAssistant from '../assistant/AssessmentAssistant.jsx';
++import PersonalizationSettings from '../privacy/PersonalizationSettings.jsx';
+ 
+ // This prototype has no clinical validation. It stays hidden unless an experimental build explicitly enables it.
+ const EXPERIMENTAL_ASSISTANT_ENABLED = import.meta.env.VITE_ENABLE_EXPERIMENTAL_ASSISTANT === 'true';
+@@ -392,6 +393,10 @@ export function Support({ content, onBack }) {
+   function exportData() {
+     try {
+       const payload = readLocalUserData();
++      if (!payload.complete) {
++        setPrivacyMessage('خروجی کامل تهیه نشد؛ خواندن برخی داده‌های محلی با خطا روبه‌رو شد. فایل ناقص دانلود نشد.');
++        return;
++      }
+       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+       const url = URL.createObjectURL(blob);
+       const link = document.createElement('a');
+@@ -425,6 +430,7 @@ export function Support({ content, onBack }) {
+     <span className="badge">پشتیبانی مرکز</span><h2>نیاز به راهنمایی داری؟</h2><p className="muted">اگر در انجام تمرین‌ها، ادامه مسیر یا استفاده از برنامه نیاز به راهنمایی داری، می‌توانی با مرکز هیپنوتراپی شفا ارتباط بگیری.</p>
+     <div className="support"><h3><AppIcon name="phone" size={18} /> نوبت‌دهی پیامکی</h3><p className="muted">شماره مرکز: <b>۰۹۱۹۰۸۸۹۰۶۲</b></p><div className="contactActions"><button className="sms" onClick={sendSms}><AppIcon name="message" size={17} /> باز کردن پیامک</button><button className="copyAction" onClick={copySupportNumber}><AppIcon name="copy" size={17} /> کپی شماره</button></div><p className="contactHelp" id="smsHelp">{help}</p><hr/><h3><AppIcon name="message" size={18} /> نوبت‌دهی تلگرامی</h3><p className="muted">پشتیبانی و نوبت‌دهی تلگرامی مرکز</p><a className="telegram" href={content.supportUrl || content.bookSupportUrl || 'https://t.me/Hypnotherapy_admin'} rel="noopener" target="_blank" ><AppIcon name="message" size={17} /> ورود به پشتیبانی تلگرام</a></div>
+     {EXPERIMENTAL_ASSISTANT_ENABLED && <AssessmentAssistant />}
++    <hr/><PersonalizationSettings />
+     <hr/><div className="sectionHint"><span><AppIcon name="lock" size={18} /></span><div><b>حریم خصوصی و داده‌های من</b><small>می‌توانی نسخه‌ای از داده‌های ذخیره‌شده در این مرورگر بگیری یا آن‌ها را حذف کنی.</small></div></div>
+     <p className="muted">خروجی و حذف شامل داده‌های محلی برنامه در همین مرورگر است؛ این عملیات نسخه‌های دانلودشده، پشتیبان‌های دستگاه یا اطلاعات احتمالی نگهداری‌شده در سرورهای بیرونی را حذف نمی‌کند. محتوای کتاب‌های عمومی برنامه پاک نمی‌شود.</p>
+     <div className="contactActions"><button className="secondary" onClick={exportData}><AppIcon name="fileText" size={17} /> دریافت نسخه اطلاعات من</button><button className="secondary" onClick={deleteData}><AppIcon name="eraser" size={17} /> حذف داده‌های محلی من</button></div>
+diff --git a/src/features/privacy/PersonalizationSettings.jsx b/src/features/privacy/PersonalizationSettings.jsx
+@@ -0,0 +1,129 @@
++import React, { useEffect, useState } from 'react';
++import {
++  getConsentState,
++  grantConsent,
++  withdrawConsent,
++} from './consentManager.js';
++import {
++  DEFAULT_PERSONALIZATION,
++  clearPersonalizationPreferences,
++  loadPersonalizationPreferences,
++  savePersonalizationPreferences,
++} from './personalizationPreferences.js';
++
++const CONSENT_CONTEXT = {
++  retention_period: 'Until the user withdraws consent; only non-sensitive interaction preferences are stored.',
++  view_edit_delete_controls: 'This panel provides viewing, editing, clearing, and consent withdrawal controls.',
++};
++
++const OPTIONS = {
++  response_detail: [['concise','مختصر'],['balanced','متعادل'],['detailed','مفصل']],
++  communication_style: [['direct','مستقیم'],['supportive','حمایتگر'],['neutral','خنثی']],
++  step_pacing: [['one_at_a_time','یک گام در هر نوبت'],['grouped','چند گام با هم']],
++  example_style: [['practical','کاربردی'],['conceptual','مفهومی'],['mixed','ترکیبی']],
++  language: [['fa','فارسی'],['en','انگلیسی'],['auto','خودکار']],
++};
++
++const LABELS = {
++  response_detail: 'میزان جزئیات پاسخ',
++  communication_style: 'سبک ارتباطی',
++  step_pacing: 'سرعت ارائه راهنمایی',
++  example_style: 'نوع مثال‌ها',
++  language: 'زبان ترجیحی',
++};
++
++export default function PersonalizationSettings() {
++  const [consent, setConsent] = useState(null);
++  const [preferences, setPreferences] = useState({ ...DEFAULT_PERSONALIZATION });
++  const [message, setMessage] = useState('');
++  const [error, setError] = useState('');
++
++  useEffect(() => {
++    try {
++      const state = getConsentState();
++      setConsent(state);
++      setPreferences(loadPersonalizationPreferences());
++    } catch {
++      setError('ذخیره‌سازی محلی در دسترس نیست؛ ترجیحات در این مرورگر ذخیره نمی‌شوند.');
++    }
++  }, []);
++
++  const enabled = consent?.purposes?.long_term_ai_memory?.granted === true;
++
++  function enable() {
++    try {
++      const next = grantConsent('long_term_ai_memory', {
++        explicitAction: true,
++        context: CONSENT_CONTEXT,
++      });
++      setConsent(next);
++      setPreferences(loadPersonalizationPreferences());
++      setError('');
++      setMessage('رضایت ذخیره ترجیحات غیرحساس ثبت شد. هنوز هیچ متن گفتگو یا سابقه روان‌شناختی ذخیره نمی‌شود.');
++    } catch (cause) {
++      setError(cause?.message || 'ثبت رضایت انجام نشد.');
++    }
++  }
++
++  function save() {
++    try {
++      const saved = savePersonalizationPreferences(preferences, { explicitAction: true });
++      setPreferences(saved);
++      setError('');
++      setMessage('ترجیحات در همین مرورگر ذخیره شدند. این تنظیمات هنوز به رفتار موتور پاسخ‌گویی متصل نشده‌اند.');
++    } catch (cause) {
++      setError(cause?.message || 'ذخیره ترجیحات انجام نشد.');
++    }
++  }
++
++  function clear() {
++    try {
++      clearPersonalizationPreferences();
++      setPreferences({ ...DEFAULT_PERSONALIZATION });
++      setError('');
++      setMessage('ترجیحات ذخیره‌شده از حافظه محلی برنامه پاک شدند.');
++    } catch (cause) {
++      setError(cause?.message || 'پاک‌کردن ترجیحات انجام نشد.');
++    }
++  }
++
++  function withdraw() {
++    try {
++      const next = withdrawConsent('long_term_ai_memory');
++      setConsent(getConsentState());
++      setPreferences({ ...DEFAULT_PERSONALIZATION });
++      setError('');
++      setMessage(next.erasure_errors?.length
++        ? 'رضایت لغو شد، اما حذف ترجیحات با خطا روبه‌رو شد. حذف کامل را نمی‌توان تأیید کرد.'
++        : 'رضایت لغو شد و ترجیحات ذخیره‌شده برای حذف محلی ارسال شدند.');
++    } catch (cause) {
++      setError(cause?.message || 'لغو رضایت انجام نشد.');
++    }
++  }
++
++  return <section className="sectionHint" aria-labelledby="personalization-settings-title">
++    <div>
++      <b id="personalization-settings-title">ترجیحات شخصی‌سازی و کنترل حافظه</b>
++      <p className="muted">این بخش فقط ترجیحات غیرحساسِ شیوه تعامل را نگه می‌دارد؛ نه متن گفتگو، تشخیص، نشانه‌ها یا سابقه روان‌شناختی. ذخیره‌سازی فقط در حافظه محلی همین مرورگر است.</p>
++      {!enabled
++        ? <p className="muted">ذخیره بلندمدت خاموش است. تا وقتی رضایت ندهی، فقط تنظیمات پیش‌فرض موقت استفاده می‌شوند.</p>
++        : <div>
++          {Object.entries(OPTIONS).map(([key, options]) => <label key={key} className="fieldLabel">
++            {LABELS[key]}
++            <select className="small" value={preferences[key]} onChange={(event) => setPreferences((current) => ({ ...current, [key]: event.target.value }))}>
++              {options.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
++            </select>
++          </label>)}
++          <div className="contactActions">
++            <button className="primary" type="button" onClick={save}>ذخیره ترجیحات</button>
++            <button className="secondary" type="button" onClick={clear}>پاک‌کردن ترجیحات</button>
++            <button className="secondary" type="button" onClick={withdraw}>لغو رضایت و پاک‌سازی</button>
++          </div>
++        </div>}
++      {!enabled && <button className="secondary" type="button" onClick={enable}>رضایت می‌دهم ترجیحات غیرحساس ذخیره شوند</button>}
++      <p className="muted">پردازش ابری، تحلیل محصول و پردازش داده حساس در این نسخه فعال نیستند و از این بخش قابل فعال‌سازی نیستند. تنظیمات ذخیره‌شده هنوز به موتور دستیار متصل نشده‌اند.</p>
++      {message && <p className="contactHelp" role="status" aria-live="polite">{message}</p>}
++      {error && <p className="contactHelp" role="alert">{error}</p>}
++    </div>
++  </section>;
++}
+diff --git a/src/features/privacy/consentManager.js b/src/features/privacy/consentManager.js
+@@ -0,0 +1,104 @@
++export const CONSENT_STORAGE_KEY = 'maseer28_consent_v1';
++export const CONSENT_POLICY_VERSION = '1.0.0';
++export const PERSONALIZATION_STORAGE_KEY = 'maseer28_personalization_v1';
++
++export const CONSENT_PURPOSES = Object.freeze([
++  'ai_cloud_processing',
++  'sensitive_health_data_processing',
++  'long_term_ai_memory',
++  'product_analytics',
++]);
++
++const DEFAULT_STATE = Object.freeze({
++  schema_version: '1.0.0',
++  policy_version: CONSENT_POLICY_VERSION,
++  purposes: Object.fromEntries(CONSENT_PURPOSES.map((id) => [id, { granted: false, granted_at: null, withdrawn_at: null, context: null }])),
++});
++
++function storageOf(storage) {
++  const target = storage ?? globalThis.localStorage;
++  if (!target) throw new Error('ذخیره‌سازی محلی رضایت در دسترس نیست.');
++  return target;
++}
++
++function readState(storage) {
++  const raw = storageOf(storage).getItem(CONSENT_STORAGE_KEY);
++  if (!raw) return structuredClone(DEFAULT_STATE);
++  try {
++    const parsed = JSON.parse(raw);
++    if (parsed?.schema_version !== '1.0.0' || !parsed.purposes) return structuredClone(DEFAULT_STATE);
++    const purposes = Object.fromEntries(CONSENT_PURPOSES.map((id) => {
++      const item = parsed.purposes[id];
++      return [id, item && item.granted === true
++        ? { granted: true, granted_at: item.granted_at ?? null, withdrawn_at: null, context: item.context ?? null }
++        : { granted: false, granted_at: null, withdrawn_at: item?.withdrawn_at ?? null, context: null }];
++    }));
++    return { schema_version: '1.0.0', policy_version: parsed.policy_version ?? CONSENT_POLICY_VERSION, purposes };
++  } catch {
++    return structuredClone(DEFAULT_STATE);
++  }
++}
++
++function requiredContext(purpose, context) {
++  const required = {
++    ai_cloud_processing: ['processor_identity', 'processing_region', 'data_categories', 'retention_period', 'withdrawal_method'],
++    sensitive_health_data_processing: ['necessity_explanation', 'exact_data_categories'],
++    long_term_ai_memory: ['retention_period', 'view_edit_delete_controls'],
++    product_analytics: ['purpose_limitation', 'avoid_sensitive_content'],
++  }[purpose];
++  return required.every((key) => {
++    const value = context?.[key];
++    return typeof value === 'boolean' ? value === true : typeof value === 'string' && value.trim().length > 0;
++  });
++}
++
++export function getConsentState(storage) {
++  return readState(storage);
++}
++
++export function hasConsent(purpose, storage) {
++  if (!CONSENT_PURPOSES.includes(purpose)) return false;
++  return readState(storage).purposes[purpose].granted === true;
++}
++
++export function grantConsent(purpose, { explicitAction, context = {}, now = new Date().toISOString() } = {}, storage) {
++  if (!CONSENT_PURPOSES.includes(purpose)) throw new Error('هدف رضایت شناخته‌شده نیست.');
++  if (explicitAction !== true) throw new Error('رضایت فقط با اقدام صریح کاربر ثبت می‌شود.');
++  if (!requiredContext(purpose, context)) throw new Error('اطلاعات لازم برای رضایت آگاهانه کامل نیست.');
++  if (purpose === 'sensitive_health_data_processing' && !hasConsent('ai_cloud_processing', storage)) {
++    throw new Error('پردازش داده حساس بدون رضایت جداگانه پردازش ابری مجاز نیست.');
++  }
++  const state = readState(storage);
++  state.purposes[purpose] = { granted: true, granted_at: now, withdrawn_at: null, context: structuredClone(context) };
++  storageOf(storage).setItem(CONSENT_STORAGE_KEY, JSON.stringify(state));
++  return state;
++}
++
++export function withdrawConsent(purpose, { now = new Date().toISOString() } = {}, storage) {
++  if (!CONSENT_PURPOSES.includes(purpose)) throw new Error('هدف رضایت شناخته‌شده نیست.');
++  const state = readState(storage);
++  state.purposes[purpose] = { granted: false, granted_at: null, withdrawn_at: now, context: null };
++  if (purpose === 'ai_cloud_processing') {
++    state.purposes.sensitive_health_data_processing = { granted: false, granted_at: null, withdrawn_at: now, context: null };
++  }
++  storageOf(storage).setItem(CONSENT_STORAGE_KEY, JSON.stringify(state));
++  const erasure_errors = [];
++  if (purpose === 'long_term_ai_memory') {
++    try { storageOf(storage).removeItem(PERSONALIZATION_STORAGE_KEY); }
++    catch (error) { erasure_errors.push(String(error?.message || error)); }
++  }
++  return erasure_errors.length ? { ...state, erasure_errors } : state;
++}
++
++export function clearConsentState(storage) {
++  const target = storageOf(storage);
++  target.removeItem(CONSENT_STORAGE_KEY);
++  const erasure_errors = [];
++  try { target.removeItem(PERSONALIZATION_STORAGE_KEY); }
++  catch (error) { erasure_errors.push(String(error?.message || error)); }
++  const state = structuredClone(DEFAULT_STATE);
++  return erasure_errors.length ? { ...state, erasure_errors } : state;
++}
++
++// This module records local choices only. It does not transmit data, enable a processor,
++// implement retention/deletion at a provider, or constitute legal consent validation.
+diff --git a/src/features/privacy/localData.js b/src/features/privacy/localData.js
+@@ -15,35 +15,48 @@ function isUserDataKey(key) {
+ export function readLocalUserData(storage) {
+   const target = getStorage(storage);
+   const entries = {};
++  const errors = [];
+   for (let index = 0; index < target.length; index += 1) {
+-    const key = target.key(index);
++    let key;
++    try { key = target.key(index); } catch (error) { errors.push({ key: null, message: String(error?.message || error) }); continue; }
+     if (!key || !isUserDataKey(key)) continue;
+-    const raw = target.getItem(key);
+-    try { entries[key] = JSON.parse(raw); }
+-    catch { entries[key] = raw; }
++    try {
++      const raw = target.getItem(key);
++      try { entries[key] = JSON.parse(raw); }
++      catch { entries[key] = raw; }
++    } catch (error) { errors.push({ key, message: String(error?.message || error) }); }
+   }
+   return {
+     schema_version: '1.0.0',
+     exported_at: new Date().toISOString(),
+     scope: 'This export contains app-owned browser localStorage data only.',
+     storage: 'localStorage',
+     entries,
++    complete: errors.length === 0,
++    errors,
+   };
+ }
+ 
+ export function deleteLocalUserData(storage) {
+   const target = getStorage(storage);
+   const keys = [];
++  const removed = [];
+   const errors = [];
+   for (let index = 0; index < target.length; index += 1) {
+-    const key = target.key(index);
+-    if (key && isUserDataKey(key)) keys.push(key);
++    try {
++      const key = target.key(index);
++      if (key && isUserDataKey(key)) keys.push(key);
++    } catch (error) { errors.push({ key: null, stage: 'enumerate', message: String(error?.message || error) }); }
+   }
+   for (const key of keys) {
+     try { target.removeItem(key); }
+-    catch (error) { errors.push({ key, message: String(error?.message || error) }); }
++    catch (error) { errors.push({ key, stage: 'remove', message: String(error?.message || error) }); continue; }
++    try {
++      if (target.getItem(key) === null) removed.push(key);
++      else errors.push({ key, stage: 'verify', message: 'کلید پس از تلاش برای حذف همچنان موجود است.' });
++    } catch (error) { errors.push({ key, stage: 'verify', message: String(error?.message || error) }); }
+   }
+-  return { attempted: keys.length, removed: keys.filter((key) => target.getItem(key) === null), errors };
++  return { attempted: keys.length, removed, errors };
+ }
+ 
+ export const LOCAL_USER_DATA_POLICY = Object.freeze({
+diff --git a/src/features/privacy/personalizationPreferences.js b/src/features/privacy/personalizationPreferences.js
+@@ -0,0 +1,70 @@
++import {
++  hasConsent,
++  PERSONALIZATION_STORAGE_KEY,
++} from './consentManager.js';
++
++export const DEFAULT_PERSONALIZATION = Object.freeze({
++  schema_version: '1.0.0',
++  response_detail: 'balanced',
++  communication_style: 'neutral',
++  step_pacing: 'one_at_a_time',
++  example_style: 'mixed',
++  language: 'fa',
++});
++
++const ENUMS = Object.freeze({
++  response_detail: ['concise', 'balanced', 'detailed'],
++  communication_style: ['direct', 'supportive', 'neutral'],
++  step_pacing: ['one_at_a_time', 'grouped'],
++  example_style: ['practical', 'conceptual', 'mixed'],
++  language: ['fa', 'en', 'auto'],
++});
++
++function storageOf(storage) {
++  const target = storage ?? globalThis.localStorage;
++  if (!target) throw new Error('ذخیره‌سازی محلی در این محیط در دسترس نیست.');
++  return target;
++}
++
++export function validatePersonalizationPreferences(input) {
++  if (!input || typeof input !== 'object' || Array.isArray(input)) {
++    throw new Error('تنظیمات شخصی‌سازی باید یک شیء معتبر باشد.');
++  }
++  if (input.schema_version !== undefined && input.schema_version !== '1.0.0') throw new Error('نسخه تنظیمات شخصی‌سازی پشتیبانی نمی‌شود.');
++  const unknown = Object.keys(input).filter((key) => !['schema_version', 'updated_at'].includes(key) && !Object.hasOwn(ENUMS, key));
++  if (unknown.length) throw new Error('ذخیره اطلاعات حساس یا فیلد ناشناخته در پروفایل شخصی‌سازی مجاز نیست.');
++  const result = { ...DEFAULT_PERSONALIZATION };
++  for (const [key, allowed] of Object.entries(ENUMS)) {
++    if (input[key] === undefined) continue;
++    if (!allowed.includes(input[key])) throw new Error('مقدار تنظیم شخصی‌سازی معتبر نیست: ' + key);
++    result[key] = input[key];
++  }
++  return result;
++}
++
++export function loadPersonalizationPreferences(storage) {
++  if (!hasConsent('long_term_ai_memory', storage)) return { ...DEFAULT_PERSONALIZATION };
++  const raw = storageOf(storage).getItem(PERSONALIZATION_STORAGE_KEY);
++  if (!raw) return { ...DEFAULT_PERSONALIZATION };
++  try {
++    const parsed = JSON.parse(raw);
++    if (parsed?.schema_version !== '1.0.0') return { ...DEFAULT_PERSONALIZATION };
++    return validatePersonalizationPreferences(parsed);
++  } catch {
++    return { ...DEFAULT_PERSONALIZATION };
++  }
++}
++
++export function savePersonalizationPreferences(input, { explicitAction, now = new Date().toISOString() } = {}, storage) {
++  if (explicitAction !== true) throw new Error('ذخیره تنظیمات به اقدام صریح کاربر نیاز دارد.');
++  if (!hasConsent('long_term_ai_memory', storage)) throw new Error('برای ذخیره بلندمدت تنظیمات، رضایت مستقل حافظه لازم است.');
++  const preferences = validatePersonalizationPreferences(input);
++  const persisted = { ...preferences, updated_at: now };
++  storageOf(storage).setItem(PERSONALIZATION_STORAGE_KEY, JSON.stringify(persisted));
++  return preferences;
++}
++
++export function clearPersonalizationPreferences(storage) {
++  storageOf(storage).removeItem(PERSONALIZATION_STORAGE_KEY);
++  return { ...DEFAULT_PERSONALIZATION };
++}
+diff --git a/tests/consentManager.test.js b/tests/consentManager.test.js
+@@ -0,0 +1,73 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { CONSENT_STORAGE_KEY, getConsentState, hasConsent, grantConsent, withdrawConsent, clearConsentState } from '../src/features/privacy/consentManager.js';
++
++function memoryStorage() {
++  const values = new Map();
++  return {
++    getItem: (key) => values.has(key) ? values.get(key) : null,
++    setItem: (key, value) => values.set(key, String(value)),
++    removeItem: (key) => values.delete(key),
++  };
++}
++const cloud = { processor_identity:'Provider A', processing_region:'EU', data_categories:'prompt text only', retention_period:'30 days', withdrawal_method:'in-app control' };
++const sensitive = { necessity_explanation:'Explicit user-requested processing only', exact_data_categories:'user-provided wellbeing text' };
++const memory = { retention_period:'30 days', view_edit_delete_controls:'available in app' };
++const analytics = { purpose_limitation:'aggregate feature usage', avoid_sensitive_content:true };
++
++test('all consent purposes default to false and no implicit consent is inferred', () => {
++  const storage=memoryStorage();
++  const state=getConsentState(storage);
++  for (const item of Object.values(state.purposes)) assert.equal(item.granted,false);
++  assert.equal(hasConsent('ai_cloud_processing',storage),false);
++});
++
++test('grant requires explicit action and complete purpose-specific context', () => {
++  const storage=memoryStorage();
++  assert.throws(()=>grantConsent('ai_cloud_processing',{explicitAction:false,context:cloud},storage),/اقدام صریح/);
++  assert.throws(()=>grantConsent('ai_cloud_processing',{explicitAction:true,context:{processor_identity:'Provider A'}},storage),/کامل نیست/);
++  assert.equal(hasConsent('ai_cloud_processing',storage),false);
++});
++
++test('health-data consent is separate and requires cloud consent first', () => {
++  const storage=memoryStorage();
++  assert.throws(()=>grantConsent('sensitive_health_data_processing',{explicitAction:true,context:sensitive},storage),/رضایت جداگانه/);
++  grantConsent('ai_cloud_processing',{explicitAction:true,context:cloud},storage);
++  grantConsent('sensitive_health_data_processing',{explicitAction:true,context:sensitive},storage);
++  assert.equal(hasConsent('ai_cloud_processing',storage),true);
++  assert.equal(hasConsent('sensitive_health_data_processing',storage),true);
++});
++
++test('withdrawing cloud consent also withdraws sensitive processing consent', () => {
++  const storage=memoryStorage();
++  grantConsent('ai_cloud_processing',{explicitAction:true,context:cloud},storage);
++  grantConsent('sensitive_health_data_processing',{explicitAction:true,context:sensitive},storage);
++  const state=withdrawConsent('ai_cloud_processing',{},storage);
++  assert.equal(state.purposes.ai_cloud_processing.granted,false);
++  assert.equal(state.purposes.sensitive_health_data_processing.granted,false);
++  assert.ok(state.purposes.ai_cloud_processing.withdrawn_at);
++});
++
++test('memory and analytics consent remain independent from cloud and health consent', () => {
++  const storage=memoryStorage();
++  grantConsent('long_term_ai_memory',{explicitAction:true,context:memory},storage);
++  grantConsent('product_analytics',{explicitAction:true,context:analytics},storage);
++  assert.equal(hasConsent('long_term_ai_memory',storage),true);
++  assert.equal(hasConsent('product_analytics',storage),true);
++  assert.equal(hasConsent('ai_cloud_processing',storage),false);
++});
++
++test('clearing consent returns every purpose to false', () => {
++  const storage=memoryStorage();
++  grantConsent('long_term_ai_memory',{explicitAction:true,context:memory},storage);
++  clearConsentState(storage);
++  assert.equal(storage.getItem(CONSENT_STORAGE_KEY),null);
++  assert.equal(hasConsent('long_term_ai_memory',storage),false);
++});
++
++test('unknown purposes are rejected and never treated as consented', () => {
++  const storage=memoryStorage();
++  assert.equal(hasConsent('unknown_purpose',storage),false);
++  assert.throws(()=>grantConsent('unknown_purpose',{explicitAction:true,context:{}},storage),/شناخته‌شده/);
++  assert.throws(()=>withdrawConsent('unknown_purpose',{},storage),/شناخته‌شده/);
++});
+diff --git a/tests/localData.test.mjs b/tests/localData.test.mjs
+@@ -53,3 +53,26 @@ test('privacy helpers fail clearly when browser storage is unavailable', () => {
+   assert.throws(() => readLocalUserData(null), /ذخیره‌سازی محلی/);
+   assert.throws(() => deleteLocalUserData(null), /ذخیره‌سازی محلی/);
+ });
++
++test('privacy export reports inaccessible keys instead of silently claiming completeness',()=>{
++ const storage=new MemoryStorage({maseer28_state:'{}'});
++ storage.getItem=(key)=>{ if(key==='maseer28_state') throw new Error('blocked'); return null; };
++ const exported=readLocalUserData(storage);
++ assert.equal(exported.complete,false);
++ assert.equal(exported.errors.length,1);
++ assert.equal(exported.errors[0].key,'maseer28_state');
++});
++
++test('privacy deletion reports removal and verification failures without throwing',()=>{
++ const storage=new MemoryStorage({maseer28_state:'{}',maseer28_profile:'{}'});
++ const originalRemove=storage.removeItem.bind(storage);
++ storage.removeItem=(key)=>{ if(key==='maseer28_state') throw new Error('blocked'); originalRemove(key); };
++ const originalGet=storage.getItem.bind(storage);
++ storage.getItem=(key)=>{ if(key==='maseer28_profile') throw new Error('verification blocked'); return originalGet(key); };
++ const result=deleteLocalUserData(storage);
++ assert.equal(result.attempted,2);
++ assert.equal(result.removed.length,0);
++ assert.equal(result.errors.length,2);
++ assert.ok(result.errors.some(item=>item.key==='maseer28_state'&&item.stage==='remove'));
++ assert.ok(result.errors.some(item=>item.key==='maseer28_profile'&&item.stage==='verify'));
++});
+diff --git a/tests/personalizationPreferences.test.js b/tests/personalizationPreferences.test.js
+@@ -0,0 +1,85 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { grantConsent, withdrawConsent, clearConsentState, PERSONALIZATION_STORAGE_KEY } from '../src/features/privacy/consentManager.js';
++import {
++  DEFAULT_PERSONALIZATION,
++  clearPersonalizationPreferences,
++  loadPersonalizationPreferences,
++  savePersonalizationPreferences,
++  validatePersonalizationPreferences,
++} from '../src/features/privacy/personalizationPreferences.js';
++
++function memoryStorage() {
++  const values = new Map();
++  return {
++    getItem: (key) => values.has(key) ? values.get(key) : null,
++    setItem: (key, value) => values.set(key, String(value)),
++    removeItem: (key) => values.delete(key),
++  };
++}
++const memoryConsent = { retention_period:'until withdrawn', view_edit_delete_controls:'available in settings' };
++
++test('preferences are session defaults unless independent long-term memory consent exists',()=>{
++ const storage=memoryStorage();
++ assert.deepEqual(loadPersonalizationPreferences(storage),{...DEFAULT_PERSONALIZATION});
++ assert.throws(()=>savePersonalizationPreferences({response_detail:'concise'},{explicitAction:true},storage),/رضایت مستقل حافظه/);
++});
++
++test('only explicit, non-sensitive preference choices can be saved after consent',()=>{
++ const storage=memoryStorage();
++ grantConsent('long_term_ai_memory',{explicitAction:true,context:memoryConsent},storage);
++ const saved=savePersonalizationPreferences({response_detail:'concise',communication_style:'direct',step_pacing:'one_at_a_time'},{explicitAction:true,now:'2026-11-02T10:00:00Z'},storage);
++ assert.equal(saved.response_detail,'concise');
++ assert.equal(loadPersonalizationPreferences(storage).communication_style,'direct');
++ assert.equal(JSON.parse(storage.getItem(PERSONALIZATION_STORAGE_KEY)).updated_at,'2026-11-02T10:00:00Z');
++});
++
++test('memory withdrawal immediately erases the persisted personalization profile',()=>{
++ const storage=memoryStorage();
++ grantConsent('long_term_ai_memory',{explicitAction:true,context:memoryConsent},storage);
++ savePersonalizationPreferences({response_detail:'detailed'},{explicitAction:true},storage);
++ withdrawConsent('long_term_ai_memory',{},storage);
++ assert.equal(storage.getItem(PERSONALIZATION_STORAGE_KEY),null);
++ assert.deepEqual(loadPersonalizationPreferences(storage),{...DEFAULT_PERSONALIZATION});
++});
++
++test('sensitive content and unknown profile fields are rejected',()=>{
++ assert.throws(()=>validatePersonalizationPreferences({diagnosis:'anxiety'}),/ذخیره اطلاعات حساس/);
++ assert.throws(()=>validatePersonalizationPreferences({risk_history:'private'}),/ذخیره اطلاعات حساس/);
++ assert.throws(()=>validatePersonalizationPreferences({response_detail:'extreme'}),/مقدار تنظیم/);
++});
++
++test('users can clear saved preferences independently',()=>{
++ const storage=memoryStorage();
++ grantConsent('long_term_ai_memory',{explicitAction:true,context:memoryConsent},storage);
++ savePersonalizationPreferences({example_style:'practical'},{explicitAction:true},storage);
++ clearPersonalizationPreferences(storage);
++ assert.equal(storage.getItem(PERSONALIZATION_STORAGE_KEY),null);
++});
++
++test('revocation remains recorded even if local profile erasure fails',()=>{
++ const base=memoryStorage();
++ grantConsent('long_term_ai_memory',{explicitAction:true,context:memoryConsent},base);
++ savePersonalizationPreferences({response_detail:'detailed'},{explicitAction:true},base);
++ const storage={
++  getItem:base.getItem,
++  setItem:base.setItem,
++  removeItem:(key)=>{ if(key===PERSONALIZATION_STORAGE_KEY) throw new Error('storage blocked'); base.removeItem(key); },
++ };
++ const state=withdrawConsent('long_term_ai_memory',{},storage);
++ assert.equal(state.purposes.long_term_ai_memory.granted,false);
++ assert.ok(state.erasure_errors?.length);
++});
++
++test('clearing all consent also attempts to erase local personalization',()=>{
++ const storage=memoryStorage();
++ grantConsent('long_term_ai_memory',{explicitAction:true,context:memoryConsent},storage);
++ savePersonalizationPreferences({response_detail:'concise'},{explicitAction:true},storage);
++ const state=clearConsentState(storage);
++ assert.equal(state.purposes.long_term_ai_memory.granted,false);
++ assert.equal(storage.getItem(PERSONALIZATION_STORAGE_KEY),null);
++});
++
++test('unsupported persisted preference schema versions are rejected to safe defaults',()=>{
++ assert.throws(()=>validatePersonalizationPreferences({schema_version:'9.9.9',response_detail:'detailed'}),/نسخه تنظیمات/);
++});

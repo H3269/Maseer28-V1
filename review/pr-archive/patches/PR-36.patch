@@ -1,0 +1,170 @@
+diff --git a/src/features/assistant/assessmentEngine.js b/src/features/assistant/assessmentEngine.js
+@@ -1,3 +1,4 @@
++import { ASSESSMENT_CONTEXT_VERSION, extractConservativeAssessmentEvidence } from './assessmentLanguageContext.v1.js';
+ import { assessmentTopicRuleRegistry } from './assessmentTopicRuleRegistry.v1.js';
+ 
+ const TOPIC_RULES = assessmentTopicRuleRegistry.rules.map(({ topic_id, phrases }) => [topic_id, phrases]);
+@@ -60,9 +61,9 @@ function isMetaLanguageRequest(normalized) {
+ }
+ 
+ function detectTopics(text) {
+-  const normalized = normalize(text);
+-  if (isMetaLanguageRequest(normalized)) return [];
+-  if (/(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او|دیگران)\s+(?:گفت|گفته|نوشت|می\s+گوید)/.test(normalized)) return [];
++  const context = extractConservativeAssessmentEvidence(text);
++  const normalized = normalize(context.evidence_text);
++  if (!normalized) return [];
+   const hits = [];
+   for (const [topic_id, phrases] of TOPIC_RULES) {
+     if (isRejectedAttribution(normalized, topic_id)) continue;
+@@ -165,6 +166,12 @@ export function submitAssessmentAnswer(session, answer) {
+       duration: next.answers.duration,
+       user_goal: next.answers.goal,
+       candidate_topics: next.candidate_topics.map((item) => ({ topic_id: item.topic_id, status: item.status || 'tentative_hypothesis', matched_rule_phrases: [...(item.matched_phrases || [])] })),
++      evidence_processing: {
++        context_extraction_version: ASSESSMENT_CONTEXT_VERSION,
++        matching_method: assessmentTopicRuleRegistry.matching_method,
++        semantic_understanding: false,
++        status: 'experimental_not_clinically_validated',
++      },
+       limitations: [
+         'این دسته‌بندی بر پایه تطبیق واژه‌ها و گفته‌های همین گفتگو است؛ ارزیابی روان‌شناختی یا تشخیص نیست.',
+         'نبودن یک موضوع در فهرست به معنی رد آن نیست.',
+@@ -222,6 +229,7 @@ export const assessmentEngineTopicRuleIds = Object.freeze(TOPIC_RULES.map(([topi
+ export const assessmentEngineMetadata = Object.freeze({
+   version: '1.0.0',
+   topic_rule_registry_version: assessmentTopicRuleRegistry.registry_version,
++  context_extraction_version: ASSESSMENT_CONTEXT_VERSION,
+   runtime_status: 'experimental_local_only',
+   diagnostic_use: false,
+   validated_screening_tool: false,
+diff --git a/src/features/assistant/assessmentLanguageContext.v1.js b/src/features/assistant/assessmentLanguageContext.v1.js
+@@ -0,0 +1,33 @@
++/**
++ * Conservative Persian text-context preprocessing for the experimental
++ * assessment prototype. This is not semantic understanding or a validated NLP
++ * component. Ambiguous ownership is intentionally excluded from lexical hints.
++ */
++export const ASSESSMENT_CONTEXT_VERSION = '1.0.0';
++
++const QUOTED_SPANS = [
++  /«[^»]*»/gu,
++  /“[^”]*”/gu,
++  /"[^"]*"/gu,
++  /‘[^’]*’/gu,
++  /'[^']*'/gu,
++];
++
++const ATTRIBUTION = /(?:دوستم|مادرم|پدرم|همسرم|مدیرم|همکارم|خواهرم|برادرم|او|آنها|دیگران)\s+(?:(?:به\s+من|بهم)\s+)?(?:گفت|گفته|نوشت|می\s+گوید|میگه|گفتند)/u;
++const META_REQUEST = /(?:برای\s+ترجمه|ترجمه\s+(?:این\s+)?جمله|معنی\s+(?:این\s+)?عبارت|مثال\s+(?:فرضی|از)|جمله\s+فرضی|چطور\s+می(?:شود|شه)\s+گفت)/u;
++
++export function extractConservativeAssessmentEvidence(input) {
++  let text = String(input ?? '').normalize('NFKC');
++  for (const quotePattern of QUOTED_SPANS) text = text.replace(quotePattern, ' ');
++  const clauses = text
++    .split(/(?:[؛.!؟\n]+|،?\s+(?:اما|ولی|با\s+این\s+حال)\s+|\s+و(?=\s*(?:دوستم|مادرم|پدرم|همسرم|مدیرم|همکارم|خواهرم|برادرم|او|آنها|دیگران)\s))/u)
++    .map((clause) => clause.trim())
++    .filter(Boolean);
++
++  const retained = clauses.filter((clause) => !ATTRIBUTION.test(clause) && !META_REQUEST.test(clause));
++  return {
++    evidence_text: retained.join(' ؛ '),
++    excluded_clause_count: clauses.length - retained.length,
++    ambiguity_policy: 'exclude_ambiguous_attributed_or_meta_language_clause',
++  };
++}
+diff --git a/src/features/assistant/assessmentTopicRuleRegistry.v1.js b/src/features/assistant/assessmentTopicRuleRegistry.v1.js
+@@ -27,7 +27,7 @@ export const assessmentTopicRuleRegistry = Object.freeze({
+     ['T15', ['اعتماد به نفس', 'اعتمادبه نفس', 'از پسش برنمیام']],
+     ['T16', ['نشخوار فکری', 'افکار منفی', 'فکرهای تکراری', 'ذهنم رها نمیکند']],
+     ['T17', ['مشکل رابطه', 'مشکلات رابطه', 'اختلاف با همسر', 'تعارض رابطه']],
+-    ['T18', ['نفرت از خود', 'از خودم متنفرم', 'خودم را دوست ندارم']],
++    ['T18', ['نفرت از خود', 'از خودم متنفر', 'خودم را دوست ندارم']],
+     ['T19', ['خودسرزنشی', 'خودم را سرزنش', 'همه تقصیرها گردن من']],
+     ['T20', ['کمال گرایی', 'کمال‌گرایی', 'باید بی نقص', 'باید بی‌نقص']],
+     ['T21', ['اجتناب', 'فرار از موقعیت', 'از موقعیت دوری']],
+diff --git a/tests/assessmentEngine.test.js b/tests/assessmentEngine.test.js
+@@ -313,3 +313,43 @@ test('tentative topic hypotheses preserve matched rule phrases for traceability'
+   assert.ok(item.matched_rule_phrases.length > 0);
+   assert.equal(item.status, 'tentative_hypothesis');
+ });
++
++test('a direct personal statement is retained beside a separate attributed statement', () => {
++  const session = completeIntakeToSummary('من از خودم متنفرم و دوستم گفت که من بی‌ارزشم');
++  const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
++  assert.ok(ids.includes('T18'));
++  assert.equal(ids.includes('T23'), false);
++});
++
++test('quoted self-evaluation words alone do not become personal topic hypotheses', () => {
++  const session = completeIntakeToSummary('او گفت «من از خودم متنفرم و بی‌ارزشم»');
++  const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
++  assert.equal(ids.includes('T18'), false);
++  assert.equal(ids.includes('T23'), false);
++});
++
++test('a personal correction after an attributed statement is not discarded with the attribution', () => {
++  const session = completeIntakeToSummary('دوستم گفت من بی‌ارزشم، ولی من با این حرف موافق نیستم');
++  const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
++  assert.equal(ids.includes('T23'), false);
++});
++
++test('morphological negation after a self-hatred phrase suppresses the lexical hint', () => {
++  const cases = [
++    'من از خودم متنفر نیستم؛ از رفتارم ناراحتم',
++    'من نفرت از خود ندارم؛ فقط از یک تصمیم پشیمانم',
++  ];
++  for (const text of cases) {
++    const session = completeIntakeToSummary(text);
++    assert.equal(
++      getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T18'),
++      false,
++      text
++    );
++  }
++});
++
++test('the generalized self-hatred phrase still detects an affirmative personal statement', () => {
++  const session = completeIntakeToSummary('من از خودم متنفرم و این احساس آزارم می‌دهد');
++  assert.ok(getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T18'));
++});
+diff --git a/tests/assessmentLanguageContext.test.js b/tests/assessmentLanguageContext.test.js
+@@ -0,0 +1,38 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { extractConservativeAssessmentEvidence } from '../src/features/assistant/assessmentLanguageContext.v1.js';
++
++test('quoted phrases are excluded from lexical assessment evidence', () => {
++  const result = extractConservativeAssessmentEvidence('او گفت «من از خودم متنفرم»');
++  assert.equal(result.evidence_text.trim(), '');
++  assert.equal(result.excluded_clause_count, 1);
++});
++
++test('externally attributed clauses are excluded without discarding a separate personal clause', () => {
++  const result = extractConservativeAssessmentEvidence('من از خودم متنفرم و دوستم گفت که من بی‌ارزشم');
++  assert.match(result.evidence_text, /من از خودم متنفرم/u);
++  assert.doesNotMatch(result.evidence_text, /دوستم گفت/u);
++});
++
++test('adversative personal correction is retained after an attributed statement', () => {
++  const result = extractConservativeAssessmentEvidence('دوستم گفت من بی‌ارزشم، ولی من با این حرف موافق نیستم');
++  assert.match(result.evidence_text, /من با این حرف موافق نیستم/u);
++  assert.doesNotMatch(result.evidence_text, /دوستم گفت/u);
++});
++
++test('meta-language request clauses are excluded while separate personal experience is retained', () => {
++  const result = extractConservativeAssessmentEvidence('برای ترجمه جمله «من بی‌ارزشم» کمک می‌خواهم؛ اما من گاهی واقعاً احساس بی‌ارزشی دارم');
++  assert.match(result.evidence_text, /واقعاً احساس بی‌ارزشی دارم/u);
++  assert.doesNotMatch(result.evidence_text, /برای ترجمه/u);
++});
++
++test('ambiguous attributed content is conservatively excluded and policy is explicit', () => {
++  const result = extractConservativeAssessmentEvidence('مدیرم گفت من همیشه شکست می‌خورم');
++  assert.equal(result.evidence_text, '');
++  assert.equal(result.ambiguity_policy, 'exclude_ambiguous_attributed_or_meta_language_clause');
++});
++
++test('context extraction policy has an explicit semantic version', async () => {
++  const { ASSESSMENT_CONTEXT_VERSION } = await import('../src/features/assistant/assessmentLanguageContext.v1.js');
++  assert.equal(ASSESSMENT_CONTEXT_VERSION, '1.0.0');
++});

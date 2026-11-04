@@ -1,0 +1,1512 @@
+diff --git a/docs/assistant-integration-audit-v1.md b/docs/assistant-integration-audit-v1.md
+@@ -0,0 +1,133 @@
++# ممیزی معماری اتصال دستیار مسیر۲۸ — نسخه ۱
++
++تاریخ ممیزی: 2026-11-02  
++دامنه: شاخه `feature/persian-context-golden-corpus-v1` و مقایسه با `main`  
++وضعیت: ممیزی ایستا بر اساس کد؛ بدون تأیید بالینی یا تست نفوذ
++
++## 1) نتیجه اجرایی
++
++**دستیار فعلی یک دستیار هوشمند یکپارچه با کل اپ نیست.** یک نمونه گفت‌وگوی آزمایشی و محلی است که در صفحه پشتیبانی جاسازی شده و با متغیر ساخت `VITE_ENABLE_EXPERIMENTAL_ASSISTANT=true` نمایش داده می‌شود. در شاخه `main` نمونه قدیمی‌تر این دستیار و اتصال آن به صفحه پشتیبانی وجود دارد؛ سخت‌سازی‌های extractor، رجیستری، corpus و اتصال محدود زمینه که در این سند آمده‌اند هنوز فقط در شاخه آزمایشی/PR هستند.
++
++در وضعیت فعلی، این مؤلفه:
++- در نسخه فعلی این شاخه، فقط روز فعالِ بعدی و تعداد روزهای تکمیل‌شده، آن هم با رضایت مستقل `journey_context`، به‌صورت allowlist به session محلی منتقل می‌شوند. پروفایل، مسئله مسیر، سابقه روزانه، پاسخ‌های ۲۸ روز و آرشیو همچنان متصل نیستند.
++- از محتوای روزانه، کتابخانه یا محتوای مداخله‌ای برای پاسخ‌سازی بازیابی انجام نمی‌دهد.
++- از یک موتور پرسش‌نامه مرحله‌ای و تطبیق واژگانی آزمایشی استفاده می‌کند؛ مدل زبانی/درک معنایی در آن وجود ندارد.
++- فقط ترجیحات تعامل را در ساخت متن پرسش‌ها به‌کار می‌برد؛ موتور پاسخ‌گویی مولد یا انتخاب محتوای تخصصی وجود ندارد.
++
++بنابراین نام «دستیار هوشمند کارشناس تمام موضوعات» هنوز توصیف فنی درستی برای محصول موجود نیست.
++
++## 2) مسیر واقعی اجرا و محل نمایش
++
++1. `src/features/journey/JourneyScreens.jsx`، کامپوننت `Support` را به `AssessmentAssistant` متصل می‌کند.
++2. رندر آن فقط در صورت برقرار بودن `import.meta.env.VITE_ENABLE_EXPERIMENTAL_ASSISTANT === 'true'` انجام می‌شود.
++3. `src/App.jsx` صفحه پشتیبانی را در مسیر `screen === 'support'` نمایش می‌دهد و دسترسی آن از `BottomNav` و مسیرهای بازگشت پشتیبانی است.
++4. در `main` نمونه قدیمی‌تر `AssessmentAssistant.jsx` و `assessmentEngine.js` در صفحه پشتیبانی وجود دارد؛ اما نسخه جدید extractor، رجیستری نسخه‌دار، corpusها و سخت‌سازی‌های PR هنوز در `main` ادغام نشده‌اند.
++
++## 3) جریان داده فعلی
++
++```text
++کاربر
++  -> صفحه پشتیبانی (فقط در build آزمایشی)
++  -> AssessmentAssistant.jsx
++  -> createAssessmentSession()
++  -> submitAssessmentAnswer()
++  -> assessmentEngine.js
++       -> assessmentLanguageContext.v1.js
++       -> assessmentTopicRuleRegistry.v1.js
++  -> خلاصه موقت در state کامپوننت
++```
++
++- پاسخ‌ها در state حافظه همان کامپوننت نگهداری می‌شوند.
++- `stopAssessment` پاسخ‌ها و خلاصه را از session پاک می‌کند.
++- ایجاد session با `localOnly: false` رد می‌شود.
++- هیچ درخواست شبکه‌ای، API مدل، پایگاه داده گفتگو یا ذخیره‌سازی تاریخچه در این جریان مشاهده نشد.
++- بسته‌شدن/بازشدن بخش یا بارگذاری مجدد صفحه، تاریخچه گفت‌وگو را بازیابی نمی‌کند.
++
++## 4) ممیزی دانش ۳۴ موضوع
++
++بررسی `public/assistant/knowledge/topics.v1.json` نشان داد:
++- ۳۴ موضوع ثبت شده‌اند.
++- هر ۳۴ موضوع در وضعیت `draft` و تعریف‌ها در وضعیت `pending_expert_review` هستند.
++- تعداد تعریف‌های موجود: صفر.
++- تعداد موضوعات دارای evidence، content، intervention یا safety rule متصل: صفر.
++- ۱۰۲ ارجاع زیرموضوع ثبت شده‌اند.
++- ۲۴ موضوع رابطه‌های پیشنهادی دارند؛ وجود رابطه به‌تنهایی اعتبار علمی یا قابلیت استفاده عملی ایجاد نمی‌کند.
++
++در نتیجه این فایل فعلاً رجیستری هویتی/ساختاری موضوعات است، نه پایگاه دانش کامل قابل بازیابی برای پاسخ تخصصی.
++
++## 5) شخصی‌سازی و رضایت
++
++ماژول‌های `consentManager.js` و `personalizationPreferences.js` کنترل‌های محلی و محدود دارند:
++- رضایت حافظه بلندمدت برای ذخیره سه ترجیح غیرحساس لازم است.
++- فیلدهای مجاز: میزان جزئیات، سبک ارتباطی و نوع مثال.
++- اعتبارسنجی فیلدهای ناشناخته را رد می‌کند.
++- لغو رضایت حافظه بلندمدت، حذف محلی ترجیحات را تلاش می‌کند.
++- ترجیحات از طریق `formatAssistantPrompt` روی متن بعضی پرسش‌ها اثر می‌گذارند؛ پرسش ایمنی از این تغییر مستثناست.
++- این ترجیحات به محتوای ۹۵۲ روز، پروفایل بالینی، انتخاب مداخله یا پاسخ مولد متصل نیستند.
++- رضایت‌های ثبت‌شده در این ماژول به‌خودی‌خود پردازش ابری یا ارائه‌دهنده خارجی را فعال نمی‌کنند.
++
++## 6) یافته‌های مهم و ریسک‌ها
++
++### P0 — شکاف مجوز اجرای قواعد بسته شد؛ هنوز در main ادغام نشده است
++در commit `c9340b31` موتور اجرای قواعد را fail-closed کرد: فعال‌سازی فقط با مجوز رجیستری، وضعیت تأیید runtime و تأیید تک‌تک قواعد ممکن است. در وضعیت فعلی، تعداد قواعد فعال صفر است. شناسه‌های ۳۳ قاعده فقط برای کنترل پوشش رجیستری در دسترس‌اند و نباید با قواعد فعال اشتباه شوند. CI اجرای `41442954568` شامل تست‌های واحد، اعتبارسنجی‌ها و build بود و موفق شد.
++
++این رفع نقص فقط در شاخه آزمایشی ثبت شده و تا ادغام PR به `main` منتقل نشده است. پرچم نمایش UI نیز همچنان مجوز اجرای موتور محسوب نمی‌شود.
++
++### P1 — ارزیابی ایمنی اعتبارسنجی نشده
++موتور دارای واژه‌نامه نشانه‌های ایمنی و پرسش مستقیم است، اما metadata خودش اعلام می‌کند `safety_triage_validated: false`. این منطق نباید به‌عنوان غربالگری خطر، تشخیص یا تضمین نبود خطر معرفی شود. نبود واژه کلیدی نیز خطر را رد نمی‌کند. مسیر ارجاع باید با متخصص و بر اساس کشور/منطقه و منابع واقعی بازبینی شود.
++
++### P1 — دانش موضوعی هنوز قابل بازیابی نیست
++شناسه‌ها و پیوندهای پیشنهادی موجودند، اما تعریف، شواهد، محتوای تأییدشده، مداخله و قواعد ایمنی متصل نیستند. ساخت پاسخ تخصصی از این رجیستری در حال حاضر ممکن نیست.
++
++### P1 — اتصال زمینه شخصی فقط در حداقل سطح آغاز شده است
++در شاخه آزمایشی، `App.jsx` فقط `nextRequiredDay(journey)` و `journey.completed.length` را به صفحه پشتیبانی می‌دهد؛ این مقادیر تنها پس از شروع مسیر و تکمیل ارزیابی اولیه، و فقط با رضایت مستقل `journey_context`، در `AssessmentAssistant` به بسته محلی وارد می‌شوند. بسته در `createAssessmentSession` اعتبارسنجی می‌شود و در هر پاسخ مجدداً با وضعیت رضایت جاری بررسی می‌شود؛ در لغو رضایت، انقضا یا نامعتبر بودن، context از session حذف می‌شود. `stopAssessment` نیز آن را پاک می‌کند.
++ 
++منبع روز فعال، تابع `nextRequiredDay` و منبع تعداد روزهای تکمیل‌شده، `journey.completed.length` از وضعیت `journeyStore` است. هدف فعلی کاربر عملاً یک متن آزاد در `profileData.goal` است، نه یکی از enumهای قرارداد؛ بنابراین عمداً به `current_goal` نگاشت نشده است. پاسخ‌های روزانه، مسئله مسیر، اطلاعات پروفایل، داده‌های سلامت و آرشیو به session تزریق نمی‌شوند.
++ 
++این اتصال فعلاً فقط زمینه را در session محلی نگه می‌دارد و در رابط دستیار به‌صورت یک یادداشت محدود نمایش می‌دهد؛ موتور هنوز از آن برای استدلال تخصصی یا تولید پاسخ متناسب استفاده نمی‌کند. این یک پل داده کنترل‌شده است، نه شخصی‌سازی کامل.
++
++### P2 — ادعای شخصی‌سازی بیش از دامنه واقعی
++ترجیحات تعاملِ دارای رضایت، قالب بعضی پرسش‌ها را تغییر می‌دهند. زمینه مسیر نیز در حد نمایش روز فعال و پیشرفت محدود به session محلی متصل شده است؛ «پاسخ متناسب با سابقه و نیاز کاربر» و شخصی‌سازی محتوایی/تخصصی هنوز پیاده‌سازی نشده‌اند.
++
++## 7) معماری هدف پیشنهادی — بدون فعال‌سازی فعلی
++
++```text
++رابط دستیار
++  -> کنترل رضایت، دامنه و حداقل‌سازی داده
++  -> ساخت context مجاز از مسیر جاری و ترجیحات
++  -> طبقه‌بندی intent و تشخیص ابهام (با abstain)
++  -> بازیابی فقط از محتوای نسخه‌دار و تأییدشده
++  -> تولید پاسخ با ارجاع داخلی به منبع و محدودیت‌ها
++  -> کنترل ایمنی مستقل از شخصی‌سازی
++  -> نمایش پاسخ + امکان اصلاح/گزارش خطا
++```
++
++قواعد غیرقابل مذاکره:
++1. داده خام سلامت یا گفت‌وگو بدون رضایت مشخص به سرویس بیرونی ارسال نشود.
++2. محتوای پیش‌نویس یا تأییدنشده در پاسخ به‌عنوان دانش معتبر عرضه نشود.
++3. ابهام باعث پرسش روشن‌کننده شود، نه حدس.
++4. پاسخ‌های حساس به منبع، نسخه و تاریخ بازبینی متصل باشند.
++5. دستیار جایگزین متخصص، تشخیص یا خدمات بحران معرفی نشود.
++6. ترجیحات لحن هرگز ترتیب/محتوای کنترل‌های ایمنی را تغییر ندهند.
++7. تاریخچه و پروفایل فقط در حد ضرورت و با کنترل مستقل کاربر استفاده شوند.
++
++## 8) قرارداد زمینه دستیار و ترتیب کار لازم
++
++قرارداد `assistantContext.v1.js` در شاخه آزمایشی به session محلی دستیار متصل شده است: روز فعال و تعداد روزهای تکمیل‌شده از وضعیت واقعی مسیر، و سه ترجیح تعامل از منبع مستقل رضایت حافظه. هدف مسیر به‌دلیل آزادمتن بودن و نبود نگاشت معتبر وارد نمی‌شود. بسته دارای provenance، زمان مشاهده و انقضای حداکثر ۲۴ ساعت است؛ متن خام پاسخ‌ها، نام، تشخیص، سابقه خطر و آرشیو مسیر در آن مجاز نیستند. session در آغاز و هر بار ارسال پاسخ اعتبارسنجی می‌شود؛ لغو رضایت با رویداد رابط و نیز اعتبارسنجی مجدد در مرز موتور باعث حذف context می‌شود. این داده فعلاً فقط برای نمایش زمینه محدود در همان جلسه استفاده می‌شود، نه برای استدلال یا تولید پاسخ تخصصی. آزمون‌های موتور و قرارداد، نبود رضایت، لغو رضایت، انقضا و مسیر ایمنی مستقل را پوشش می‌دهند.
++
++ترتیب کار باقی‌مانده:
++1. بازبینی امنیتی/حریم خصوصی اتصال حداقلی context و بررسی رفتار لغو رضایت در زمان اجرای واقعی اپ؛ بدون اتصال مستقیم کل پروفایل.
++3. ساخت لایه بازیابی دانش با وضعیت‌های `draft / expert_reviewed / approved / retired` و جلوگیری از بازیابی هر وضعیت غیرمجاز.
++4. تکمیل محتوای ۳۴ موضوع با تعریف، تمایزها، شواهد، محدودیت، منابع و بازبینی متخصص.
++5. پس از بازبینی مستقل، بررسی اینکه آیا داده غیرحساس دیگری از مسیر واقعاً ارزش اتصال دارد؛ پاسخ‌های روزانه و بازخورد آزاد تا زمان تعریف هدف، رضایت و کنترل حذف مستقل خارج از scope باقی بمانند.
++6. ارزیابی مستقل safety، حریم خصوصی، خطاهای فارسی و سناریوهای بحران.
++7. سپس طراحی محل دسترسی پایدار دستیار در ناوبری اصلی؛ نه جاسازی دائمی در صفحه پشتیبانی.
++
++## 9) معیار عبور از این ممیزی
++
++تا زمانی که موارد P1 حل و تست نشده‌اند و قرارداد زمینه و رضایت به‌صورت یکپارچه بازبینی نشده‌اند:
++- این نمونه فقط آزمایشی و خاموش در build عادی بماند.
++- PRها ادغام نشوند.
++- هیچ ادعای «دستیار کارشناس»، «شخصی‌سازی کامل» یا «ارزیابی معتبر» در رابط محصول منتشر نشود.
++
++این سند ممیزی معماری است، نه تأیید علمی/بالینی یا مجوز انتشار.
+diff --git a/scripts/validate-assessment-rule-registry.mjs b/scripts/validate-assessment-rule-registry.mjs
+@@ -1,25 +1,26 @@
+ import assert from 'node:assert/strict';
+ import { assessmentTopicRuleRegistry as registry } from '../src/features/assistant/assessmentTopicRuleRegistry.v1.js';
+ 
+-const expectedIds = Array.from({ length: 33 }, (_, index) => `T${String(index + 1).padStart(2, '0')}`);
++const expectedIds = Array.from({ length: 33 }, (_, index) => 'T' + String(index + 1).padStart(2, '0'));
+ const normalize = (value) => String(value).normalize('NFKC')
+-  .replace(/[\\u064A\\u0649]/g, 'ی').replace(/\\u0643/g, 'ک')
+-  .replace(/[\\u064B-\\u065F\\u0670]/g, '')
+-  .replace(/[\\u200c\\u200f\\u200e]/g, ' ').replace(/\\s+/g, ' ').trim().toLowerCase();
++  .replace(/[\u064A\u0649]/g, 'ی').replace(/\u0643/g, 'ک')
++  .replace(/[\u064B-\u065F\u0670]/g, '')
++  .replace(/[\u200c\u200f\u200e]/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+ 
+ assert.equal(registry.schema_version, '1.0.0');
+ assert.equal(registry.status, 'experimental_unreviewed');
+ assert.equal(registry.matching_method, 'normalized_substring');
+ assert.equal(registry.runtime_authorization, false);
++assert.equal(registry.runtime_eligible, false);
+ assert.equal(registry.clarification_fallback_topic_id, 'T34');
+ assert.deepEqual(registry.rules.map((rule) => rule.topic_id), expectedIds);
+ 
+ for (const rule of registry.rules) {
+-  assert.ok(Array.isArray(rule.phrases) && rule.phrases.length > 0, `${rule.topic_id}: phrases required`);
++  assert.ok(Array.isArray(rule.phrases) && rule.phrases.length > 0, rule.topic_id + ': phrases required');
+   assert.equal(rule.review_status, 'pending_independent_expert_review');
+   assert.equal(rule.runtime_eligible, false);
+   const normalized = rule.phrases.map(normalize);
+-  assert.ok(normalized.every(Boolean), `${rule.topic_id}: empty phrase`);
+-  assert.equal(new Set(normalized).size, normalized.length, `${rule.topic_id}: duplicate normalized phrase`);
++  assert.ok(normalized.every(Boolean), rule.topic_id + ': empty phrase');
++  assert.equal(new Set(normalized).size, normalized.length, rule.topic_id + ': duplicate normalized phrase');
+ }
+ console.log('Assessment rule registry valid: 33 experimental topic hints; T34 remains clarification-only.');
+diff --git a/src/App.jsx b/src/App.jsx
+@@ -689,7 +689,10 @@ function navigate(next) {
+       {screen === 'day' && <DayScreen day={currentDay} problem={journey.profileData?.problem || ''} data={activeDay} record={journey.daily?.[currentDay]} savedAnswer={journey.answers?.[currentDay] || ''} previousRecord={journey.daily?.[currentDay - 1]} previousAnswer={journey.answers?.[currentDay - 1] || ''} history={journey.daily || {}} onDashboard={() => navigate('dashboard')} onPrevious={() => currentDay <= 1 ? navigate('dashboard') : openDay(currentDay - 1)} onComplete={completeDay} onNext={() => openDay(currentDay + 1)} completed={journey.completed.includes(currentDay)} onValidation={showValidation} />}
+       {screen === 'dailyResult' && <DailyResult day={resultDay || journey.completed.length || currentDay} journey={journey} data={resultData} problem={category?.name} sourceLabel={recommendationSource} onDashboard={() => navigate('dashboard')} onNext={openDay} onFinal={() => navigate('final')} onBook={(rec) => openRecommendedBook(resultDay || currentDay, rec)} />}
+       {screen === 'books' && <LibraryPage books={books} loading={libraryLoading} error={libraryError} onOpenBook={(book) => openBook(book)} onBack={() => navigate(libraryReturn)} />}
+-      {screen === 'support' && <Support content={content} onBack={() => navigate(supportReturn)} />}
++      {screen === 'support' && <Support content={content} journeyContext={{
++        active_day: journey.started && journey.assessment && nextRequiredDay(journey) <= 28 ? nextRequiredDay(journey) : undefined,
++        completed_days_count: journey.started && journey.assessment ? journey.completed.length : undefined,
++      }} onBack={() => navigate(supportReturn)} />}
+       {screen === 'final' && <FinalAssessment initial={journey.final} onSave={finishFinal} onValidation={showValidation} />}
+       {screen === 'done' && <Done onReport={() => navigate('report')} onBooks={() => openBooks('done')} onSupport={() => openSupport('done')} onArchive={() => navigate('archive')} onNew={startNewPathFromArchive} />}
+       {screen === 'report' && <Report journey={journey} content={content} onBooks={() => openBooks('report')} onSupport={() => openSupport('report')} onDashboard={() => navigate('dashboard')} onArchive={() => navigate('archive')} onNew={startNewPathFromArchive} />}
+diff --git a/src/features/assistant/AssessmentAssistant.jsx b/src/features/assistant/AssessmentAssistant.jsx
+@@ -8,10 +8,12 @@ import {
+ import topicRegistry from '../../../public/assistant/knowledge/topics.v1.json';
+ import { DEFAULT_PERSONALIZATION, loadPersonalizationPreferences } from '../privacy/personalizationPreferences.js';
+ import { formatAssistantPrompt } from './assistantPreferences.js';
++import { buildAssistantContext, validateAssistantContext } from './assistantContext.v1.js';
++import { getConsentState } from '../privacy/consentManager.js';
+ 
+ const topicNames = new Map(topicRegistry.topics.map((topic) => [topic.topic_id, topic.name]));
+ 
+-export default function AssessmentAssistant() {
++export default function AssessmentAssistant({ journeyContext = {} }) {
+   const [expanded, setExpanded] = useState(false);
+   const [session, setSession] = useState(null);
+   const [messages, setMessages] = useState([]);
+@@ -25,15 +27,43 @@ export default function AssessmentAssistant() {
+     };
+     refreshPreferences();
+     window.addEventListener('maseer28:personalization-changed', refreshPreferences);
+-    return () => window.removeEventListener('maseer28:personalization-changed', refreshPreferences);
++    const refreshContextConsent = () => {
++      setSession((previous) => {
++        if (!previous?.assistant_context) return previous;
++        try {
++          const validation = validateAssistantContext(previous.assistant_context, { consentState: getConsentState() });
++          return validation.valid ? previous : { ...previous, assistant_context: null };
++        } catch {
++          return { ...previous, assistant_context: null };
++        }
++      });
++    };
++    window.addEventListener('maseer28:consent-changed', refreshContextConsent);
++    return () => {
++      window.removeEventListener('maseer28:personalization-changed', refreshPreferences);
++      window.removeEventListener('maseer28:consent-changed', refreshContextConsent);
++    };
+   }, []);
+ 
+ 
+   function start() {
+     let currentPreferences = { ...DEFAULT_PERSONALIZATION };
+     try { currentPreferences = loadPersonalizationPreferences(); } catch { /* defaults remain local and temporary */ }
+     setPreferences(currentPreferences);
+-    const next = createAssessmentSession();
++    let assistantContext = null;
++    let consentState = {};
++    try {
++      consentState = getConsentState();
++      const candidate = buildAssistantContext({
++        journey: journeyContext,
++        preferences: currentPreferences,
++        consentState,
++      });
++      if (validateAssistantContext(candidate, { consentState }).valid) assistantContext = candidate;
++    } catch {
++      assistantContext = null;
++    }
++    const next = createAssessmentSession({ assistantContext, consentState });
+     setSession(next);
+     setMessages([{ role: 'assistant', text: formatAssistantPrompt(getCurrentQuestion(next), currentPreferences) }]);
+     setDraft('');
+@@ -45,7 +75,7 @@ export default function AssessmentAssistant() {
+     event.preventDefault();
+     if (!session) return;
+     try {
+-      const updated = submitAssessmentAnswer(session, draft);
++      const updated = submitAssessmentAnswer(session, draft, { consentState: getConsentState() });
+       setMessages((previous) => [
+         ...previous,
+         { role: 'user', text: draft.trim() },
+@@ -85,6 +115,13 @@ export default function AssessmentAssistant() {
+         <span> <strong>i</strong> </span>
+         <div><b>حریم خصوصی آزمایشی</b><small>پاسخ‌ها فقط در حافظه موقت همین صفحه نگهداری می‌شوند؛ ذخیره یا به سرور ارسال نمی‌شوند. فقط ترجیحات غیرحساسِ شیوه تعامل، در صورت رضایت جداگانه، روی همین مرورگر اعمال می‌شوند. اطلاعات شناسایی‌کننده ننویس.</small></div>
+       </div>
++      {session?.assistant_context?.entries?.length > 0 && <p className="muted" role="note">
++        زمینه محدود مسیر: {session.assistant_context.entries
++          .filter((item) => item.key === 'active_day' || item.key === 'completed_days_count')
++          .map((item) => item.key === 'active_day' ? `روز فعال ${item.value} از ۲۸` : `${item.value} روز تکمیل‌شده`)
++          .join(' · ')}
++        . این اطلاعات فقط برای نمایش زمینه در همین جلسه محلی استفاده می‌شود.
++      </p>}
+       <div className="assistantTranscript" aria-live="polite">
+         {messages.map((message, index) => <div className={message.role === 'assistant' ? 'assistantMessage' : 'userMessage'} key={index}>
+           <b>{message.role === 'assistant' ? 'دستیار' : 'تو'}</b>
+diff --git a/src/features/assistant/assessmentEngine.js b/src/features/assistant/assessmentEngine.js
+@@ -1,7 +1,17 @@
+ import { ASSESSMENT_CONTEXT_VERSION, extractConservativeAssessmentEvidence } from './assessmentLanguageContext.v1.js';
++import { validateAssistantContext } from './assistantContext.v1.js';
+ import { assessmentTopicRuleRegistry } from './assessmentTopicRuleRegistry.v1.js';
+ 
+-const TOPIC_RULES = assessmentTopicRuleRegistry.rules.map(({ topic_id, phrases }) => [topic_id, phrases]);
++// Fail closed: lexical topic hints remain unavailable until the registry itself
++// is explicitly authorized and every rule has completed independent review.
++const TOPIC_RULES = assessmentTopicRuleRegistry.runtime_authorization === true &&
++  assessmentTopicRuleRegistry.runtime_eligible === true &&
++  assessmentTopicRuleRegistry.status === 'approved_for_runtime' &&
++  assessmentTopicRuleRegistry.rules.every((rule) =>
++    rule.runtime_eligible === true && rule.review_status === 'approved'
++  )
++  ? assessmentTopicRuleRegistry.rules.map(({ topic_id, phrases }) => [topic_id, phrases])
++  : [];
+ 
+ const SAFETY_CUES = [
+   'خودکشی', 'قصد خودکشی', 'به زندگی ام پایان', 'به زندگیم پایان',
+@@ -94,8 +104,13 @@ function classifySafetyAnswer(text) {
+   return 'clarification_needed';
+ }
+ 
+-export function createAssessmentSession({ localOnly = true } = {}) {
++export function createAssessmentSession({ localOnly = true, assistantContext = null, consentState = {} } = {}) {
+   if (localOnly !== true) throw new Error('این موتور فقط برای پردازش محلی طراحی شده است؛ ارسال ابری در این نسخه پشتیبانی نمی‌شود.');
++  let validatedContext = null;
++  if (assistantContext) {
++    const validation = validateAssistantContext(assistantContext, { consentState });
++    if (validation.valid) validatedContext = assistantContext;
++  }
+   return {
+     schema_version: '1.0.0',
+     protocol_id: 'maseer28-adaptive-intake',
+@@ -107,19 +122,29 @@ export function createAssessmentSession({ localOnly = true } = {}) {
+     candidate_topics: [],
+     summary: null,
+     processing: 'local_in_memory_only',
++    assistant_context: validatedContext,
+   };
+ }
+ 
+ export function getCurrentQuestion(session) {
+   return session?.current_question ?? null;
+ }
+ 
+-export function submitAssessmentAnswer(session, answer) {
++export function submitAssessmentAnswer(session, answer, { consentState = {} } = {}) {
+   if (!session || session.status !== 'in_progress') throw new Error('جلسه ارزیابی فعال نیست.');
+   if (!session.current_question) throw new Error('پرسشی برای پاسخ‌گویی وجود ندارد.');
+   const value = String(answer ?? '').trim();
+   if (!value) throw new Error('پاسخ خالی است؛ می‌توانی بگویی «رد می‌کنم» یا جلسه را متوقف کنی.');
+-  const next = { ...session, answers: { ...session.answers }, candidate_topics: [...session.candidate_topics], summary: session.summary ? { ...session.summary } : null };
++  const contextValidation = session.assistant_context
++    ? validateAssistantContext(session.assistant_context, { consentState })
++    : { valid: false };
++  const next = {
++    ...session,
++    assistant_context: contextValidation.valid ? session.assistant_context : null,
++    answers: { ...session.answers },
++    candidate_topics: [...session.candidate_topics],
++    summary: session.summary ? { ...session.summary } : null,
++  };
+   const questionId = next.current_question.id;
+   next.answers[questionId] = value;
+ 
+@@ -217,18 +242,22 @@ export function submitAssessmentAnswer(session, answer) {
+ 
+ export function stopAssessment(session) {
+   if (!session) return null;
+-  return { ...session, status: 'stopped_by_user', current_question: null, answers: {}, summary: null };
++  return { ...session, status: 'stopped_by_user', current_question: null, answers: {}, summary: null, assistant_context: null };
+ }
+ 
+ export function getAssessmentSummary(session) {
+   return session?.summary ?? null;
+ }
+ 
+-export const assessmentEngineTopicRuleIds = Object.freeze(TOPIC_RULES.map(([topicId]) => topicId));
++// Catalog IDs are exposed for consistency checks; this does not mean the rules are active.
++export const assessmentEngineTopicRuleIds = Object.freeze(assessmentTopicRuleRegistry.rules.map(({ topic_id }) => topic_id));
+ 
+ export const assessmentEngineMetadata = Object.freeze({
+   version: '1.0.0',
+   topic_rule_registry_version: assessmentTopicRuleRegistry.registry_version,
++  topic_rule_runtime_authorized: TOPIC_RULES.length > 0,
++  topic_rule_runtime_status: TOPIC_RULES.length > 0 ? 'authorized' : 'disabled_fail_closed',
++  active_topic_rule_count: TOPIC_RULES.length,
+   context_extraction_version: ASSESSMENT_CONTEXT_VERSION,
+   runtime_status: 'experimental_local_only',
+   diagnostic_use: false,
+diff --git a/src/features/assistant/assessmentLanguageContext.v1.js b/src/features/assistant/assessmentLanguageContext.v1.js
+@@ -3,7 +3,7 @@
+  * assessment prototype. This is not semantic understanding or a validated NLP
+  * component. Ambiguous ownership is intentionally excluded from lexical hints.
+  */
+-export const ASSESSMENT_CONTEXT_VERSION = '1.0.0';
++export const ASSESSMENT_CONTEXT_VERSION = '1.1.0';
+ 
+ const QUOTED_SPANS = [
+   /«[^»]*»/gu,
+@@ -13,14 +13,14 @@ const QUOTED_SPANS = [
+   /'[^']*'/gu,
+ ];
+ 
+-const ATTRIBUTION = /(?:دوستم|مادرم|پدرم|همسرم|مدیرم|همکارم|خواهرم|برادرم|او|آنها|دیگران)\s+(?:(?:به\s+من|بهم)\s+)?(?:گفت|گفته|نوشت|می\s+گوید|میگه|گفتند)/u;
+-const META_REQUEST = /(?:برای\s+ترجمه|ترجمه\s+(?:این\s+)?جمله|معنی\s+(?:این\s+)?عبارت|مثال\s+(?:فرضی|از)|جمله\s+فرضی|چطور\s+می(?:شود|شه)\s+گفت)/u;
++const ATTRIBUTION = /(?:دوستم|دوستام|مادرم|مامانم|پدرم|بابام|همسرم|مدیرم|همکارم|خواهرم|برادرم|دکترم|درمانگرم|روان\s*شناس(?:م)?|معلمم|او|اون|آنها|اونا|دیگران)\s+(?:(?:به\s+من|بهم)\s+)?(?:گفت|گفته|نوشت|می\s+گوید|میگه|گفتند)/u;
++const META_REQUEST = /(?:برای\s+ترجمه|ترجمه\s+(?:این\s+)?جمله|این\s+جمله\s+را\s+ترجمه\s+کن|معنی\s+(?:این\s+)?عبارت|مثال\s+(?:فرضی|از)|جمله\s+فرضی|اگر\s+(?:کسی|فردی)\s+بگوید|فرض\s+کن\s+(?:کسی|فردی)\s+بگوید|چطور\s+می(?:شود|شه)\s+گفت)/u;
+ 
+ export function extractConservativeAssessmentEvidence(input) {
+   let text = String(input ?? '').normalize('NFKC');
+   for (const quotePattern of QUOTED_SPANS) text = text.replace(quotePattern, ' ');
+   const clauses = text
+-    .split(/(?:[؛.!؟\n]+|،?\s+(?:اما|ولی|با\s+این\s+حال)\s+|\s+و(?=\s*(?:دوستم|مادرم|پدرم|همسرم|مدیرم|همکارم|خواهرم|برادرم|او|آنها|دیگران)\s))/u)
++    .split(/(?:[؛.!؟\n]+|،?\s+(?:اما|ولی|با\s+این\s+حال)\s+|،\s*(?=(?:دوستم|دوستام|مادرم|مامانم|پدرم|بابام|همسرم|مدیرم|همکارم|خواهرم|برادرم|دکترم|درمانگرم|روان\s*شناس(?:م)?|معلمم|او|اون|آنها|اونا|دیگران|من|خودم)\s)|\s+و(?=\s*(?:دوستم|دوستام|مادرم|مامانم|پدرم|بابام|همسرم|مدیرم|همکارم|خواهرم|برادرم|دکترم|درمانگرم|روان\s*شناس(?:م)?|معلمم|او|اون|آنها|اونا|دیگران)\s))/u)
+     .map((clause) => clause.trim())
+     .filter(Boolean);
+ 
+diff --git a/src/features/assistant/assessmentTopicRuleRegistry.v1.js b/src/features/assistant/assessmentTopicRuleRegistry.v1.js
+@@ -9,6 +9,7 @@ export const assessmentTopicRuleRegistry = Object.freeze({
+   status: 'experimental_unreviewed',
+   matching_method: 'normalized_substring',
+   runtime_authorization: false,
++  runtime_eligible: false,
+   rules: Object.freeze([
+     ['T01', ['خشم', 'عصبانی', 'عصبانیت', 'از کوره', 'جوش میارم']],
+     ['T02', ['اضطراب', 'نگرانی مداوم', 'دلشوره', 'نگران آینده']],
+@@ -18,8 +19,8 @@ export const assessmentTopicRuleRegistry = Object.freeze({
+     ['T06', ['سوگ', 'فقدان', 'از دست دادن عزیز', 'غمگین', 'اندوه']],
+     ['T07', ['احساس گناه', 'عذاب وجدان', 'گناهکار']],
+     ['T08', ['وابستگی عاطفی', 'وابسته ام', 'بدون او نمیتوانم', 'بدون او نمی توانم']],
+-    ['T09', ['اهمال کاری', 'اهمال‌کاری', 'کارها را عقب', 'به تعویق می اندازم', 'شروع کار سخت']],
+-    ['T10', ['بی خوابی', 'بی‌خوابی', 'خوابم نمیبرد', 'خوابم نمی برد', 'از خواب بیدار']],
++    ['T09', ['اهمال کاری', 'کارها را عقب', 'به تعویق می اندازم', 'شروع کار سخت']],
++    ['T10', ['بی خوابی', 'خوابم نمیبرد', 'خوابم نمی برد', 'از خواب بیدار']],
+     ['T11', ['عادت تکراری', 'رفتار تکراری', 'موهایم را میکنم', 'پوستم را میکنم']],
+     ['T12', ['نه گفتن', 'مرزبندی', 'حد و مرز', 'درخواست دیگران را رد']],
+     ['T13', ['تنهایی', 'احساس تنهایی', 'انزوا', 'کسی را ندارم']],
+@@ -29,19 +30,19 @@ export const assessmentTopicRuleRegistry = Object.freeze({
+     ['T17', ['مشکل رابطه', 'مشکلات رابطه', 'اختلاف با همسر', 'تعارض رابطه']],
+     ['T18', ['نفرت از خود', 'از خودم متنفر', 'خودم را دوست ندارم']],
+     ['T19', ['خودسرزنشی', 'خودم را سرزنش', 'همه تقصیرها گردن من']],
+-    ['T20', ['کمال گرایی', 'کمال‌گرایی', 'باید بی نقص', 'باید بی‌نقص']],
++    ['T20', ['کمال گرایی', 'باید بی نقص']],
+     ['T21', ['اجتناب', 'فرار از موقعیت', 'از موقعیت دوری']],
+     ['T22', ['استرس', 'فشار روانی', 'تحت فشار']],
+-    ['T23', ['بی ارزشی', 'بی‌ارزشی', 'بی ارزشم', 'بی‌ارزشم']],
++    ['T23', ['بی ارزشی', 'بی ارزشم']],
+     ['T24', ['کنترل هیجان', 'تنظیم هیجان', 'احساساتم از کنترل خارج']],
+     ['T25', ['رنجش', 'کینه', 'دلخوری طولانی']],
+     ['T26', ['شرم', 'خجالت از خود', 'احساس رسوایی']],
+     ['T27', ['ترس از قضاوت', 'قضاوت دیگران', 'نگران نظر دیگران']],
+     ['T28', ['ترس از شکست', 'از شکست میترسم', 'از شکست می ترسم']],
+     ['T29', ['ترس از طرد', 'طرد شدن', 'ترک شدن', 'رد شدن از طرف']],
+-    ['T30', ['شک و تردید', 'دودلی', 'تصمیم گیری سخت', 'تصمیم‌گیری سخت']],
+-    ['T31', ['کنترل گری', 'کنترل‌گری', 'همه چیز باید دست من', 'رفتار کنترلی']],
+-    ['T32', ['بی انگیزگی', 'بی‌انگیزگی', 'بی انرژی', 'بی‌انرژی', 'علاقه ندارم']],
++    ['T30', ['شک و تردید', 'دودلی', 'تصمیم گیری سخت']],
++    ['T31', ['کنترل گری', 'همه چیز باید دست من', 'رفتار کنترلی']],
++    ['T32', ['بی انگیزگی', 'بی انرژی', 'علاقه ندارم']],
+     ['T33', ['خودانتقادی', 'از خودم ایراد', 'منتقد درونی']],
+   ].map(([topic_id, phrases]) => Object.freeze({
+     topic_id,
+diff --git a/src/features/assistant/assistantContext.v1.js b/src/features/assistant/assistantContext.v1.js
+@@ -0,0 +1,117 @@
++/**
++ * Minimal, consent-gated context contract for the experimental assistant.
++ * This module deliberately excludes free text, identity fields, clinical labels,
++ * risk history, raw answers, and archived journey records.
++ */
++export const ASSISTANT_CONTEXT_VERSION = '1.0.0';
++export const ASSISTANT_CONTEXT_TTL_MS = 24 * 60 * 60 * 1000;
++
++const GOALS = Object.freeze(['understand', 'practical_steps', 'reflection', 'professional_support']);
++const DETAILS = Object.freeze(['concise', 'balanced', 'detailed']);
++const STYLES = Object.freeze(['direct', 'supportive', 'neutral']);
++const EXAMPLES = Object.freeze(['practical', 'conceptual', 'mixed']);
++
++function consentGranted(consentState, purpose) {
++  return consentState?.purposes?.[purpose]?.granted === true;
++}
++
++function iso(value, label) {
++  const date = new Date(value);
++  if (!Number.isFinite(date.getTime())) throw new Error(`Invalid ${label} timestamp.`);
++  return date.toISOString();
++}
++
++function entry(key, value, source, observedAt, expiresAt, consentPurpose) {
++  return Object.freeze({ key, value, source, observed_at: observedAt, expires_at: expiresAt, consent_purpose: consentPurpose });
++}
++
++export function buildAssistantContext({
++  journey = {},
++  preferences = {},
++  consentState = {},
++  now = new Date().toISOString(),
++} = {}) {
++  const observedAt = iso(now, 'now');
++  const expiresAt = new Date(new Date(observedAt).getTime() + ASSISTANT_CONTEXT_TTL_MS).toISOString();
++  const entries = [];
++
++  if (consentGranted(consentState, 'journey_context')) {
++    if (Number.isInteger(journey.active_day) && journey.active_day >= 1 && journey.active_day <= 28) {
++      entries.push(entry('active_day', journey.active_day, 'app_journey_state', observedAt, expiresAt, 'journey_context'));
++    }
++    if (Number.isInteger(journey.completed_days_count) && journey.completed_days_count >= 0 && journey.completed_days_count <= 28) {
++      entries.push(entry('completed_days_count', journey.completed_days_count, 'app_journey_state', observedAt, expiresAt, 'journey_context'));
++    }
++    if (GOALS.includes(journey.current_goal)) {
++      entries.push(entry('current_goal', journey.current_goal, 'user_selected_app_goal', observedAt, expiresAt, 'journey_context'));
++    }
++  }
++
++  if (consentGranted(consentState, 'long_term_ai_memory')) {
++    if (DETAILS.includes(preferences.response_detail)) {
++      entries.push(entry('response_detail', preferences.response_detail, 'saved_interaction_preference', observedAt, expiresAt, 'long_term_ai_memory'));
++    }
++    if (STYLES.includes(preferences.communication_style)) {
++      entries.push(entry('communication_style', preferences.communication_style, 'saved_interaction_preference', observedAt, expiresAt, 'long_term_ai_memory'));
++    }
++    if (EXAMPLES.includes(preferences.example_style)) {
++      entries.push(entry('example_style', preferences.example_style, 'saved_interaction_preference', observedAt, expiresAt, 'long_term_ai_memory'));
++    }
++  }
++
++  return Object.freeze({
++    schema_version: ASSISTANT_CONTEXT_VERSION,
++    created_at: observedAt,
++    expires_at: expiresAt,
++    processing: 'local_ephemeral_only',
++    entries: Object.freeze(entries),
++  });
++}
++
++export function validateAssistantContext(context, { now = new Date().toISOString(), consentState = {} } = {}) {
++  const errors = [];
++  const allowedRoot = ['schema_version', 'created_at', 'expires_at', 'processing', 'entries'];
++  if (!context || typeof context !== 'object' || Array.isArray(context)) {
++    return { valid: false, errors: ['context must be an object'] };
++  }
++  for (const key of Object.keys(context)) if (!allowedRoot.includes(key)) errors.push(`unknown context field: ${key}`);
++  if (context.schema_version !== ASSISTANT_CONTEXT_VERSION) errors.push('unsupported context schema version');
++  if (context.processing !== 'local_ephemeral_only') errors.push('context processing must remain local and ephemeral');
++  const createdAt = Date.parse(context.created_at);
++  const expiresAt = Date.parse(context.expires_at);
++  const current = Date.parse(now);
++  if (![createdAt, expiresAt, current].every(Number.isFinite)) errors.push('context timestamps must be valid');
++  else {
++    if (expiresAt <= createdAt) errors.push('context expiry must be after creation');
++    if (expiresAt - createdAt > ASSISTANT_CONTEXT_TTL_MS) errors.push('context retention exceeds the 24-hour maximum');
++    if (current >= expiresAt) errors.push('context has expired');
++  }
++  if (!Array.isArray(context.entries)) errors.push('context entries must be an array');
++  else {
++    const seen = new Set();
++    const allowed = {
++      active_day: { values: null, source: 'app_journey_state', purpose: 'journey_context' },
++      completed_days_count: { values: null, source: 'app_journey_state', purpose: 'journey_context' },
++      current_goal: { values: GOALS, source: 'user_selected_app_goal', purpose: 'journey_context' },
++      response_detail: { values: DETAILS, source: 'saved_interaction_preference', purpose: 'long_term_ai_memory' },
++      communication_style: { values: STYLES, source: 'saved_interaction_preference', purpose: 'long_term_ai_memory' },
++      example_style: { values: EXAMPLES, source: 'saved_interaction_preference', purpose: 'long_term_ai_memory' },
++    };
++    for (const item of context.entries) {
++      if (!item || typeof item !== 'object' || Array.isArray(item)) { errors.push('entry must be an object'); continue; }
++      const keys = ['key', 'value', 'source', 'observed_at', 'expires_at', 'consent_purpose'];
++      for (const key of Object.keys(item)) if (!keys.includes(key)) errors.push(`unknown entry field: ${key}`);
++      const spec = allowed[item.key];
++      if (!spec) { errors.push(`context key is not allowlisted: ${item.key}`); continue; }
++      if (seen.has(item.key)) errors.push(`duplicate context key: ${item.key}`);
++      seen.add(item.key);
++      if (item.source !== spec.source || item.consent_purpose !== spec.purpose) errors.push(`invalid provenance or consent purpose for ${item.key}`);
++      if (!consentGranted(consentState, spec.purpose)) errors.push(`missing active consent for ${item.key}`);
++      if (spec.values && !spec.values.includes(item.value)) errors.push(`invalid value for ${item.key}`);
++      if (item.key === 'active_day' && (!Number.isInteger(item.value) || item.value < 1 || item.value > 28)) errors.push('active_day must be an integer from 1 to 28');
++      if (item.key === 'completed_days_count' && (!Number.isInteger(item.value) || item.value < 0 || item.value > 28)) errors.push('completed_days_count must be an integer from 0 to 28');
++      if (Date.parse(item.observed_at) !== createdAt || Date.parse(item.expires_at) !== expiresAt) errors.push(`entry timestamps must match context envelope for ${item.key}`);
++    }
++  }
++  return { valid: errors.length === 0, errors };
++}
+diff --git a/src/features/journey/JourneyScreens.jsx b/src/features/journey/JourneyScreens.jsx
+@@ -383,7 +383,7 @@ export function DailyResult({ day, journey, data, problem, sourceLabel, onDashbo
+   return <section className="card" id="dailyResult"><span className="badge" id="resultBadge">نتیجه روز {fa(day)} از ۲۸</span><h2 id="resultTitle">عملکرد روز {fa(day)}</h2><div className="metric"><div className="metricBox"><strong id="resultScore">{fa(rec.score)}/۱۰</strong><span>امتیاز امروز</span></div><div className="metricBox"><strong id="resultFeedback">{labels[rec.feedback] || 'ثبت شد'}</strong><span>بازخورد</span></div></div><div className="feedback"><b>جمع‌بندی امروز</b><p className="muted" id="resultText">{rec.feedbackText}</p></div><div className="recommendation"><b>قدم بعدی</b><p className="muted" id="resultNext">{day === 28 ? 'روز ۲۸ کامل شد. اکنون ارزیابی نهایی فعال است.' : nextStepText(day, data, rec, problem)}</p></div><div id="resultNextWrap">{recommendedBook ? <><div className="bookRecommendationSource">{sourceLabel}</div><button className="gold" onClick={() => onBook(recommendedBook)}><AppIcon name="bookOpen" size={17} /> مطالعه پیشنهاد کتاب امروز</button></> : rec.bookRecPending ? <p className="muted" id="bookRecommendationPending" aria-live="polite">نتیجه ثبت شد؛ در حال بررسی پیشنهاد مطالعه مرتبط…</p> : <p className="muted" id="noNewBookRecommendation">در میان بخش‌های مرتبط و استفاده‌نشده کتاب‌ها، پیشنهاد تازه‌ای پیدا نشد؛ برای جلوگیری از تکرار، پیشنهاد نامرتبط یا تکراری نمایش داده نمی‌شود.</p>}{day === 28 ? <button className="primary" onClick={onFinal}><AppIcon name="checkCircle" size={17} /> رفتن به ارزیابی نهایی →</button> : <button className="primary" onClick={() => onNext(day + 1)}><AppIcon name="arrow" size={17} /> رفتن به روز {fa(day + 1)} →</button>}</div><div className="navrow"><button className="secondary" onClick={onDashboard}>{buttonLabel('بازگشت به داشبورد')}</button></div></section>;
+ }
+ 
+-export function Support({ content, onBack }) {
++export function Support({ content, journeyContext, onBack }) {
+   const [help, setHelp] = useState('اگر اپ شما اجازه باز کردن مستقیم پیامک را ندهد، شماره با یک لمس کپی می‌شود.');
+   const [privacyMessage, setPrivacyMessage] = useState('');
+   const number = '09190889062';
+@@ -429,7 +429,7 @@ export function Support({ content, onBack }) {
+   return <section className="card" id="support">
+     <span className="badge">پشتیبانی مرکز</span><h2>نیاز به راهنمایی داری؟</h2><p className="muted">اگر در انجام تمرین‌ها، ادامه مسیر یا استفاده از برنامه نیاز به راهنمایی داری، می‌توانی با مرکز هیپنوتراپی شفا ارتباط بگیری.</p>
+     <div className="support"><h3><AppIcon name="phone" size={18} /> نوبت‌دهی پیامکی</h3><p className="muted">شماره مرکز: <b>۰۹۱۹۰۸۸۹۰۶۲</b></p><div className="contactActions"><button className="sms" onClick={sendSms}><AppIcon name="message" size={17} /> باز کردن پیامک</button><button className="copyAction" onClick={copySupportNumber}><AppIcon name="copy" size={17} /> کپی شماره</button></div><p className="contactHelp" id="smsHelp">{help}</p><hr/><h3><AppIcon name="message" size={18} /> نوبت‌دهی تلگرامی</h3><p className="muted">پشتیبانی و نوبت‌دهی تلگرامی مرکز</p><a className="telegram" href={content.supportUrl || content.bookSupportUrl || 'https://t.me/Hypnotherapy_admin'} rel="noopener" target="_blank" ><AppIcon name="message" size={17} /> ورود به پشتیبانی تلگرام</a></div>
+-    {EXPERIMENTAL_ASSISTANT_ENABLED && <AssessmentAssistant />}
++    {EXPERIMENTAL_ASSISTANT_ENABLED && <AssessmentAssistant journeyContext={journeyContext} />}
+     <hr/><PersonalizationSettings />
+     <hr/><div className="sectionHint"><span><AppIcon name="lock" size={18} /></span><div><b>حریم خصوصی و داده‌های من</b><small>می‌توانی نسخه‌ای از داده‌های ذخیره‌شده در این مرورگر بگیری یا آن‌ها را حذف کنی.</small></div></div>
+     <p className="muted">خروجی و حذف شامل داده‌های محلی برنامه در همین مرورگر است؛ این عملیات نسخه‌های دانلودشده، پشتیبان‌های دستگاه یا اطلاعات احتمالی نگهداری‌شده در سرورهای بیرونی را حذف نمی‌کند. محتوای کتاب‌های عمومی برنامه پاک نمی‌شود.</p>
+diff --git a/src/features/privacy/PersonalizationSettings.jsx b/src/features/privacy/PersonalizationSettings.jsx
+@@ -16,6 +16,12 @@ const CONSENT_CONTEXT = {
+   view_edit_delete_controls: 'This panel provides viewing, editing, clearing, and consent withdrawal controls.',
+ };
+ 
++const JOURNEY_CONTEXT_CONSENT = {
++  selected_data_categories: 'active journey day, completed day count, and an explicitly selected current goal only',
++  retention_period: 'context package expires within 24 hours; no journey history is stored by this consent',
++  view_edit_delete_controls: 'the user can review and withdraw this permission in this panel',
++};
++
+ const OPTIONS = {
+   response_detail: [['concise','مختصر'],['balanced','متعادل'],['detailed','مفصل']],
+   communication_style: [['direct','مستقیم'],['supportive','حمایتگر'],['neutral','خنثی']],
+@@ -35,6 +41,7 @@ function notifyPreferencesChanged() {
+ export default function PersonalizationSettings() {
+   const [consent, setConsent] = useState(null);
+   const [preferences, setPreferences] = useState({ ...DEFAULT_PERSONALIZATION });
++  const [journeyContextEnabled, setJourneyContextEnabled] = useState(false);
+   const [message, setMessage] = useState('');
+   const [error, setError] = useState('');
+ 
+@@ -43,6 +50,7 @@ export default function PersonalizationSettings() {
+       const state = getConsentState();
+       setConsent(state);
+       setPreferences(loadPersonalizationPreferences());
++      setJourneyContextEnabled(state?.purposes?.journey_context?.granted === true);
+     } catch {
+       setError('ذخیره‌سازی محلی در دسترس نیست؛ ترجیحات در این مرورگر ذخیره نمی‌شوند.');
+     }
+@@ -65,6 +73,33 @@ export default function PersonalizationSettings() {
+     }
+   }
+ 
++
++  function enableJourneyContext() {
++    try {
++      const next = grantConsent('journey_context', { explicitAction: true, context: JOURNEY_CONTEXT_CONSENT });
++      setConsent(next);
++      setJourneyContextEnabled(true);
++      window.dispatchEvent(new Event('maseer28:consent-changed'));
++      setError('');
++      setMessage('رضایت مستقل زمینه مسیر ثبت شد. این مجوز به‌تنهایی به معنی اتصال یا ارسال اطلاعات مسیر به دستیار نیست.');
++    } catch (cause) {
++      setError(cause?.message || 'ثبت رضایت زمینه مسیر انجام نشد.');
++    }
++  }
++
++  function withdrawJourneyContext() {
++    try {
++      const next = withdrawConsent('journey_context');
++      setConsent(next);
++      setJourneyContextEnabled(false);
++      window.dispatchEvent(new Event('maseer28:consent-changed'));
++      setError('');
++      setMessage('رضایت استفاده از زمینه مسیر لغو شد. دستیار نباید این زمینه را دریافت کند.');
++    } catch (cause) {
++      setError(cause?.message || 'لغو رضایت زمینه مسیر انجام نشد.');
++    }
++  }
++
+   function save() {
+     try {
+       const saved = savePersonalizationPreferences(preferences, { explicitAction: true });
+@@ -124,6 +159,14 @@ export default function PersonalizationSettings() {
+           </div>
+         </div>}
+       {!enabled && <button className="secondary" type="button" onClick={enable}>رضایت می‌دهم ترجیحات غیرحساس ذخیره شوند</button>}
++      <div className="sectionHint" role="group" aria-labelledby="journey-context-consent-title">
++        <b id="journey-context-consent-title">رضایت جداگانه برای زمینه مسیر</b>
++        <p className="muted">این مجوز فقط می‌تواند روز فعال، تعداد روزهای تکمیل‌شده و هدفی را که خودت انتخاب کرده‌ای در یک بسته محلی با عمر حداکثر ۲۴ ساعت مجاز کند. پاسخ‌های روزانه، متن گفتگو، نام، تشخیص و آرشیو مسیر شامل این مجوز نیستند. در حال حاضر این داده هنوز به دستیار متصل نشده است.</p>
++        {journeyContextEnabled
++          ? <button className="secondary" type="button" onClick={withdrawJourneyContext}>لغو رضایت زمینه مسیر</button>
++          : <button className="secondary" type="button" onClick={enableJourneyContext}>رضایت می‌دهم زمینه محدود مسیر مجاز باشد</button>}
++      </div>
++
+       <p className="muted">پردازش ابری، تحلیل محصول و پردازش داده حساس در این نسخه فعال نیستند و از این بخش قابل فعال‌سازی نیستند. متن گفتگو، پاسخ‌ها و اطلاعات سلامت در این حافظه ذخیره نمی‌شوند. سرعت پرسش‌ها و زبان هنوز گزینه قابل تغییر نیستند، چون در موتور فعلی به‌طور کامل پشتیبانی نمی‌شوند.</p>
+       {message && <p className="contactHelp" role="status" aria-live="polite">{message}</p>}
+       {error && <p className="contactHelp" role="alert">{error}</p>}
+diff --git a/src/features/privacy/consentManager.js b/src/features/privacy/consentManager.js
+@@ -6,6 +6,7 @@ export const CONSENT_PURPOSES = Object.freeze([
+   'ai_cloud_processing',
+   'sensitive_health_data_processing',
+   'long_term_ai_memory',
++  'journey_context',
+   'product_analytics',
+ ]);
+ 
+@@ -44,6 +45,7 @@ function requiredContext(purpose, context) {
+     ai_cloud_processing: ['processor_identity', 'processing_region', 'data_categories', 'retention_period', 'withdrawal_method'],
+     sensitive_health_data_processing: ['necessity_explanation', 'exact_data_categories'],
+     long_term_ai_memory: ['retention_period', 'view_edit_delete_controls'],
++    journey_context: ['selected_data_categories', 'retention_period', 'view_edit_delete_controls'],
+     product_analytics: ['purpose_limitation', 'avoid_sensitive_content'],
+   }[purpose];
+   return required.every((key) => {
+diff --git a/tests/assessmentEngine.test.js b/tests/assessmentEngine.test.js
+@@ -1,355 +1,163 @@
+ import test from 'node:test';
+ import assert from 'node:assert/strict';
+ import {
+-  createAssessmentSession,
+-  getAssessmentSummary,
+-  getCurrentQuestion,
+-  submitAssessmentAnswer,
+-  stopAssessment,
+-  assessmentEngineMetadata,
++  createAssessmentSession, getAssessmentSummary, getCurrentQuestion,
++  submitAssessmentAnswer, stopAssessment, assessmentEngineMetadata,
++  assessmentEngineTopicRuleIds,
+ } from '../src/features/assistant/assessmentEngine.js';
++import { assessmentTopicRuleRegistry } from '../src/features/assistant/assessmentTopicRuleRegistry.v1.js';
++import { buildAssistantContext } from '../src/features/assistant/assistantContext.v1.js';
+ 
+-function answer(session, value) {
+-  return submitAssessmentAnswer(session, value);
++const answer = (session, value) => submitAssessmentAnswer(session, value);
++function completeIntake(opening, clarification = 'یک نمونه مشخص از همین تجربه') {
++  let session = createAssessmentSession();
++  session = answer(session, opening);
++  session = answer(session, 'نه');
++  session = answer(session, 'در زندگی روزمره‌ام اثر گذاشته است');
++  session = answer(session, 'چند هفته است');
++  session = answer(session, 'می‌خواهم بهتر بفهمم چه اتفاقی می‌افتد');
++  session = answer(session, clarification);
++  return session;
+ }
+ 
+-test('session starts with an open question and keeps data in memory only', () => {
++test('session accepts only a valid, consented journey context and revalidates it on every answer', () => {
++  const now = '2026-11-02T12:00:00.000Z';
++  const consentState = { purposes: { journey_context: { granted: true } } };
++  const context = buildAssistantContext({
++    journey: { active_day: 7, completed_days_count: 6 },
++    consentState,
++    now,
++  });
++  let session = createAssessmentSession({ assistantContext: context, consentState });
++  assert.deepEqual(session.assistant_context.entries.map((entry) => entry.key), ['active_day', 'completed_days_count']);
++  session = submitAssessmentAnswer(session, 'یک توضیح', { consentState: { purposes: { journey_context: { granted: false } } } });
++  assert.equal(session.assistant_context, null);
++  assert.equal(getCurrentQuestion(session).id, 'safety_now');
++});
++
++test('session rejects context without consent and clears it when stopped', () => {
++  const context = buildAssistantContext({
++    journey: { active_day: 7, completed_days_count: 6 },
++    consentState: { purposes: { journey_context: { granted: true } } },
++    now: '2026-11-02T12:00:00.000Z',
++  });
++  const session = createAssessmentSession({ assistantContext: context, consentState: {} });
++  assert.equal(session.assistant_context, null);
++  const stopped = stopAssessment(createAssessmentSession({
++    assistantContext: context,
++    consentState: { purposes: { journey_context: { granted: true } } },
++  }));
++  assert.equal(stopped.assistant_context, null);
++});
++
++test('session starts locally with an open question', () => {
+   const session = createAssessmentSession();
+   assert.equal(getCurrentQuestion(session).id, 'open_problem');
+   assert.equal(session.processing, 'local_in_memory_only');
+   assert.equal(assessmentEngineMetadata.cloud_processing, false);
+   assert.equal(assessmentEngineMetadata.diagnostic_use, false);
+ });
+ 
+-test('empty answers are rejected without advancing the question', () => {
+-  const session = createAssessmentSession();
+-  assert.throws(() => answer(session, '   '), /پاسخ خالی/);
+-  assert.equal(getCurrentQuestion(session).id, 'open_problem');
++test('unreviewed registry is disabled at the engine boundary, not only in the UI', () => {
++  assert.equal(assessmentTopicRuleRegistry.runtime_authorization, false);
++  assert.equal(assessmentTopicRuleRegistry.runtime_eligible, false);
++  assert.equal(assessmentEngineMetadata.topic_rule_runtime_authorized, false);
++  assert.equal(assessmentEngineMetadata.topic_rule_runtime_status, 'disabled_fail_closed');
++  assert.equal(assessmentEngineTopicRuleIds.length, 33); // catalog inventory, not active runtime rules
++  assert.equal(assessmentEngineMetadata.active_topic_rule_count, 0);
+ });
+ 
+-test('ordinary concern proceeds through one question at a time and produces tentative topic hypotheses', () => {
+-  let session = createAssessmentSession();
+-  session = answer(session, 'مدتی است اضطراب و نگرانی مداوم دارم');
+-  assert.equal(getCurrentQuestion(session).id, 'safety_now');
+-  session = answer(session, 'نه');
+-  assert.equal(getCurrentQuestion(session).id, 'impact');
+-  session = answer(session, 'در کار و خوابم اثر گذاشته است');
+-  assert.equal(getCurrentQuestion(session).id, 'duration');
+-  session = answer(session, 'حدود سه ماه، بیشتر روزها');
+-  assert.equal(getCurrentQuestion(session).id, 'goal');
+-  session = answer(session, 'می‌خواهم مسئله را بهتر بفهمم');
+-  assert.equal(getCurrentQuestion(session).id, 'clarify_example');
+-  session = answer(session, 'وقتی آینده نامعلوم است نگران می‌شوم و مدام فکر می‌کنم');
+-  assert.equal(getCurrentQuestion(session).id, 'summary_confirmation');
+-  const summary = getAssessmentSummary(session);
+-  assert.ok(summary.candidate_topics.some((item) => item.topic_id === 'T02'));
+-  assert.ok(summary.candidate_topics.every((item) => item.status === 'tentative_hypothesis'));
+-  assert.ok(summary.limitations.length >= 3);
+-  session = answer(session, 'بله');
+-  assert.equal(session.status, 'completed');
+-  assert.equal(session.next_step.content_available, false);
++test('lexical matches cannot produce topic candidates while registry authorization is false', () => {
++  const session = completeIntake('مدتی است اضطراب، نگرانی مداوم و بی‌خوابی دارم');
++  const topics = getAssessmentSummary(session).candidate_topics;
++  assert.deepEqual(topics.map((item) => item.topic_id), ['T34']);
++  assert.equal(topics[0].status, 'needs_clarification');
++});
++
++test('quoted, attributed, translated, or negated phrases also cannot activate disabled rules', () => {
++  const examples = [
++    'او گفت «من بی‌ارزشم»',
++    'برای ترجمه جمله «من از خودم متنفرم» کمک می‌خواهم',
++    'من از خودم متنفر نیستم',
++    'دوستم گفت من اضطراب دارم',
++  ];
++  for (const example of examples) {
++    const session = completeIntake(example);
++    assert.deepEqual(
++      getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id),
++      ['T34'],
++      example
++    );
++  }
+ });
+ 
+-test('safety language interrupts routine intake and asks a direct current-safety question', () => {
++test('safety question path remains independent of topic-rule authorization', () => {
+   let session = createAssessmentSession();
+   session = answer(session, 'گاهی فکر می‌کنم به خودم آسیب بزنم');
+   assert.equal(getCurrentQuestion(session).id, 'safety_now');
+   assert.equal(session.safety_context_flag, true);
+-  assert.equal(session.safety_state, 'not_assessed');
+-});
+-
+-test('an affirmative current danger response pauses the assessment for human support', () => {
+-  let session = createAssessmentSession();
+-  session = answer(session, 'خودم را بکشم');
+-  session = answer(session, 'بله');
++  session = answer(session, 'قصد دارم به خودم آسیب بزنم');
+   assert.equal(session.status, 'paused_for_human_support');
+   assert.equal(session.safety_state, 'urgent_human_support_recommended');
+-  assert.equal(getCurrentQuestion(session), null);
+-  assert.ok(session.referral.instruction);
+ });
+ 
+-test('uncertain safety response triggers clarification rather than being treated as safe', () => {
++test('uncertain safety response is clarified, not treated as safe', () => {
+   let session = createAssessmentSession();
+   session = answer(session, 'خودکشی');
+   session = answer(session, 'مطمئن نیستم');
+   assert.equal(session.safety_state, 'clarification_needed');
+   assert.equal(getCurrentQuestion(session).id, 'safety_clarification');
+ });
+ 
+-test('a negative direct safety answer records only non-disclosure, not a guarantee of safety', () => {
++test('only a standalone negative safety answer records non-disclosure', () => {
+   let session = createAssessmentSession();
+-  session = answer(session, 'خودزنی');
++  session = answer(session, 'گاهی فکر می‌کنم به خودم آسیب بزنم');
+   session = answer(session, 'نه');
+   assert.equal(session.safety_state, 'no_immediate_risk_disclosed');
+   assert.equal(getCurrentQuestion(session).id, 'impact');
+ });
+ 
+-test('user can stop and clear in-memory answers', () => {
+-  let session = createAssessmentSession();
+-  session = answer(session, 'احساس تنهایی دارم');
+-  const stopped = stopAssessment(session);
+-  assert.equal(stopped.status, 'stopped_by_user');
+-  assert.deepEqual(stopped.answers, {});
+-  assert.equal(stopped.summary, null);
+-});
+-
+-test('unmatched concerns use T34 as a clarification route, not a diagnosis', () => {
+-  let session = createAssessmentSession();
+-  session = answer(session, 'یک مسئله پیچیده دارم که نمی‌دانم چطور توضیح بدهم');
+-  session = answer(session, 'نه');
+-  session = answer(session, 'در کار و زندگی روزمره اثر گذاشته');
+-  session = answer(session, 'چند هفته است');
+-  session = answer(session, 'می‌خواهم بفهمم چه خبر است');
+-  session = answer(session, 'هنوز نمی‌توانم نمونه مشخصی پیدا کنم');
+-  const item = getAssessmentSummary(session).candidate_topics[0];
+-  assert.equal(item.topic_id, 'T34');
+-  assert.equal(item.status, 'needs_clarification');
+-});
+-
+-test('cloud processing is explicitly rejected by this experimental engine', () => {
+-  assert.throws(() => createAssessmentSession({ localOnly: false }), /ارسال ابری/);
+-});
+-
+-
+-test('non-affirmative summary feedback withdraws tentative topics and asks for a correction',()=>{
+- let session=createAssessmentSession();
+- session=answer(session,'مدتی است اضطراب دارم');
+- session=answer(session,'نه');
+- session=answer(session,'در کارم اثر گذاشته');
+- session=answer(session,'چند ماه');
+- session=answer(session,'می‌خواهم بفهمم');
+- session=answer(session,'وقتی آینده نامعلوم است اضطراب می‌گیرم');
+- assert.ok(getAssessmentSummary(session).candidate_topics.some(item=>item.topic_id==='T02'));
+- session=answer(session,'نه، برداشتت اشتباه است');
+- assert.equal(getCurrentQuestion(session).id,'summary_revision');
+- assert.equal(session.summary.review_status,'correction_requested');
+- assert.equal(session.summary.candidate_topics.length,0);
+- assert.equal(session.summary.topic_assessment_status,'withdrawn_pending_reassessment');
+-});
+-
+-test('user correction replaces the current interpretation and requires reconfirmation',()=>{
+- let session=createAssessmentSession();
+- session=answer(session,'مدتی است اضطراب دارم');
+- session=answer(session,'نه');
+- session=answer(session,'در کارم اثر گذاشته');
+- session=answer(session,'چند ماه');
+- session=answer(session,'می‌خواهم بفهمم');
+- session=answer(session,'وقتی آینده نامعلوم است اضطراب می‌گیرم');
+- session=answer(session,'خلاصه درست نیست');
+- session=answer(session,'مسئله اصلی فشار کاری است؛ اضطراب موضوع اصلی من نیست');
+- assert.equal(getCurrentQuestion(session).id,'summary_confirmation');
+- assert.equal(session.summary.user_correction,'مسئله اصلی فشار کاری است؛ اضطراب موضوع اصلی من نیست');
+- assert.equal(session.summary.candidate_topics.length,0);
+- assert.equal(session.summary.review_status,'user_corrected_pending_confirmation');
+- assert.equal(session.summary.topic_assessment_status,'requires_reassessment');
+- session=answer(session,'بله');
+- assert.equal(session.status,'completed');
+- assert.equal(session.summary.review_status,'user_confirmed');
+-});
+-
+-test('only an explicit affirmative confirms a summary',()=>{
+- let session=createAssessmentSession();
+- session=answer(session,'یک مسئله دارم');
+- session=answer(session,'نه');
+- session=answer(session,'اثر گذاشته');
+- session=answer(session,'چند هفته');
+- session=answer(session,'می‌خواهم بفهمم');
+- session=answer(session,'یک مثال مشخص');
+- session=answer(session,'تقریباً درست است، اما یک نکته مهم جا افتاده');
+- assert.equal(session.status,'in_progress');
+- assert.equal(getCurrentQuestion(session).id,'summary_revision');
+-});
+-
+-
+-test('a negative opening cannot suppress risk language later in a safety answer', () => {
+-  let session = createAssessmentSession();
+-  session = answer(session, 'گاهی فکر می‌کنم به خودم آسیب بزنم');
+-  session = answer(session, 'نه، گاهی هنوز به خودم آسیب می‌زنم');
+-  assert.equal(session.safety_state, 'clarification_needed');
+-  assert.equal(getCurrentQuestion(session).id, 'safety_clarification');
+-});
+-
+-test('a qualified denial is clarified instead of being treated as a standalone no', () => {
++test('qualified denial is clarified rather than interpreted as a guarantee', () => {
+   let session = createAssessmentSession();
+   session = answer(session, 'گاهی فکر می‌کنم به خودم آسیب بزنم');
+   session = answer(session, 'نه، قصد ندارم به خودم آسیب بزنم');
+   assert.equal(session.safety_state, 'clarification_needed');
+   assert.equal(getCurrentQuestion(session).id, 'safety_clarification');
+ });
+ 
+-test('only a standalone negative answer is treated as non-disclosure', () => {
+-  let session = createAssessmentSession();
+-  session = answer(session, 'گاهی فکر می‌کنم به خودم آسیب بزنم');
+-  session = answer(session, 'خیر');
+-  assert.equal(session.safety_state, 'no_immediate_risk_disclosed');
+-  assert.equal(getCurrentQuestion(session).id, 'impact');
+-});
+-
+-
+-test('intent to seek ordinary support is not mistaken for intent to cause harm', () => {
+-  let session = createAssessmentSession();
+-  session = answer(session, 'گاهی فکر می‌کنم به خودم آسیب بزنم');
+-  session = answer(session, 'قصد دارم با دوستم صحبت کنم');
+-  assert.equal(session.safety_state, 'clarification_needed');
+-  assert.equal(getCurrentQuestion(session).id, 'safety_clarification');
+-});
+-
+-test('explicit harm-related intent is escalated to human support', () => {
+-  let session = createAssessmentSession();
+-  session = answer(session, 'گاهی فکر می‌کنم به خودم آسیب بزنم');
+-  session = answer(session, 'قصد دارم به خودم آسیب بزنم');
+-  assert.equal(session.safety_state, 'urgent_human_support_recommended');
+-  assert.equal(session.status, 'paused_for_human_support');
+-});
+-
+-
+-function completeIntakeToSummary(opening, clarification = 'یک نمونه مشخص از همین تجربه') {
+-  let session = createAssessmentSession();
+-  session = answer(session, opening);
+-  session = answer(session, 'نه');
+-  session = answer(session, 'در زندگی روزمره‌ام اثر گذاشته است');
+-  session = answer(session, 'چند هفته است');
+-  session = answer(session, 'می‌خواهم بهتر بفهمم چه اتفاقی می‌افتد');
+-  session = answer(session, clarification);
+-  return session;
+-}
+-
+-test('a rejected attributed insult is not classified as the user belief', () => {
+-  const session = completeIntakeToSummary(
+-    'دوستم گفت «تو بی‌ارزشی»، ولی من با این حرف موافق نیستم.'
+-  );
++test('ordinary intake continues and requests clarification when no authorized topic exists', () => {
++  const session = completeIntake('یک مسئله پیچیده دارم');
+   assert.equal(getCurrentQuestion(session).id, 'summary_confirmation');
+-  assert.equal(
+-    getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T23'),
+-    false
+-  );
+-});
+-
+-test('a negated self-hatred phrase does not create a T18 hypothesis', () => {
+-  const session = completeIntakeToSummary('من نفرت از خود ندارم؛ از یک رفتار مشخص ناراحتم.');
+-  assert.equal(
+-    getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T18'),
+-    false
+-  );
+-});
+-
+-test('regret about a specific behavior is not automatically self-hatred or worthlessness', () => {
+-  const session = completeIntakeToSummary('از رفتار دیروزم ناراحتم، نه از خودم.');
+-  const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
+-  assert.equal(ids.includes('T18'), false);
+-  assert.equal(ids.includes('T23'), false);
+-});
+-
+-test('privacy protection alone does not create a shame hypothesis', () => {
+-  const session = completeIntakeToSummary('نمی‌خواهم موضوع خصوصی‌ام را برای دیگران افشا کنم.');
+-  assert.equal(
+-    getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T26'),
+-    false
+-  );
++  assert.deepEqual(getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id), ['T34']);
++  assert.equal(getAssessmentSummary(session).evidence_processing.semantic_understanding, false);
+ });
+ 
+-test('constructive self-criticism remains a tentative T33 hint, not a maladaptive conclusion', () => {
+-  const session = completeIntakeToSummary(
+-    'خودانتقادی من کمک می‌کند رفتارم را اصلاح کنم و قدم بعدی را مشخص کنم.'
+-  );
+-  const item = getAssessmentSummary(session).candidate_topics.find((candidate) => candidate.topic_id === 'T33');
+-  assert.ok(item);
+-  assert.equal(item.status, 'tentative_hypothesis');
+-  assert.equal(session.summary.limitations.some((line) => line.includes('تشخیص نیست')), true);
+-});
+-
+-
+-test('explicit translation requests do not turn quoted example language into personal topic hypotheses', () => {
+-  const session = completeIntakeToSummary('برای ترجمه جمله «من بی‌ارزشم» کمک می‌خواهم.');
+-  assert.equal(
+-    getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T23'),
+-    false
+-  );
+-});
+-
+-test('externally attributed statements remain unclassified until the user clarifies ownership', () => {
+-  const session = completeIntakeToSummary('دوستم گفت من از خودم متنفرم.');
+-  const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
+-  assert.equal(ids.includes('T18'), false);
+-});
+-
+-test('multiple distinct self-evaluation experiences can coexist without forcing one primary topic', () => {
+-  const session = completeIntakeToSummary(
+-    'از خودم متنفرم، خودسرزنشی دارم و احساس می‌کنم بی‌ارزشم.'
+-  );
+-  const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
+-  assert.ok(ids.includes('T18'));
+-  assert.ok(ids.includes('T19'));
+-  assert.ok(ids.includes('T23'));
+-  assert.ok(ids.length <= 3);
+-});
+-
+-test('a harmed person denying responsibility is not assigned self-blame from the abuse context alone', () => {
+-  const session = completeIntakeToSummary(
+-    'مادرم به من آسیب زد و من خودم را بابت رفتار او مقصر نمی‌دانم.'
+-  );
+-  assert.equal(
+-    getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T19'),
+-    false
+-  );
+-});
+-
+-test('corrected user text does not silently revive old topic hypotheses', () => {
+-  let session = completeIntakeToSummary('مدتی است اضطراب دارم');
+-  assert.ok(getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T02'));
++test('summary correction withdraws the provisional clarification route', () => {
++  let session = completeIntake('مدتی است اضطراب دارم');
+   session = answer(session, 'خلاصه درست نیست');
+-  session = answer(session, 'موضوع من ترجمه عبارت بی‌ارزشم بود، نه تجربه شخصی');
++  assert.equal(getCurrentQuestion(session).id, 'summary_revision');
++  assert.equal(getAssessmentSummary(session).candidate_topics.length, 0);
++  session = answer(session, 'منظورم فقط فشار کاری بود');
+   assert.equal(getCurrentQuestion(session).id, 'summary_confirmation');
+   assert.equal(getAssessmentSummary(session).candidate_topics.length, 0);
+   assert.equal(getAssessmentSummary(session).topic_assessment_status, 'requires_reassessment');
+ });
+ 
+-
+-test('tentative topic hypotheses preserve matched rule phrases for traceability', () => {
+-  const session = completeIntakeToSummary('مدتی است اضطراب و نگرانی مداوم دارم');
+-  const item = getAssessmentSummary(session).candidate_topics.find((candidate) => candidate.topic_id === 'T02');
+-  assert.ok(item);
+-  assert.ok(Array.isArray(item.matched_rule_phrases));
+-  assert.ok(item.matched_rule_phrases.length > 0);
+-  assert.equal(item.status, 'tentative_hypothesis');
+-});
+-
+-test('a direct personal statement is retained beside a separate attributed statement', () => {
+-  const session = completeIntakeToSummary('من از خودم متنفرم و دوستم گفت که من بی‌ارزشم');
+-  const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
+-  assert.ok(ids.includes('T18'));
+-  assert.equal(ids.includes('T23'), false);
+-});
+-
+-test('quoted self-evaluation words alone do not become personal topic hypotheses', () => {
+-  const session = completeIntakeToSummary('او گفت «من از خودم متنفرم و بی‌ارزشم»');
+-  const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
+-  assert.equal(ids.includes('T18'), false);
+-  assert.equal(ids.includes('T23'), false);
+-});
+-
+-test('a personal correction after an attributed statement is not discarded with the attribution', () => {
+-  const session = completeIntakeToSummary('دوستم گفت من بی‌ارزشم، ولی من با این حرف موافق نیستم');
+-  const ids = getAssessmentSummary(session).candidate_topics.map((item) => item.topic_id);
+-  assert.equal(ids.includes('T23'), false);
++test('empty answers are rejected without advancing', () => {
++  const session = createAssessmentSession();
++  assert.throws(() => answer(session, '   '), /پاسخ خالی/);
++  assert.equal(getCurrentQuestion(session).id, 'open_problem');
+ });
+ 
+-test('morphological negation after a self-hatred phrase suppresses the lexical hint', () => {
+-  const cases = [
+-    'من از خودم متنفر نیستم؛ از رفتارم ناراحتم',
+-    'من نفرت از خود ندارم؛ فقط از یک تصمیم پشیمانم',
+-  ];
+-  for (const text of cases) {
+-    const session = completeIntakeToSummary(text);
+-    assert.equal(
+-      getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T18'),
+-      false,
+-      text
+-    );
+-  }
++test('cloud processing is rejected', () => {
++  assert.throws(() => createAssessmentSession({ localOnly: false }), /ارسال ابری/);
+ });
+ 
+-test('the generalized self-hatred phrase still detects an affirmative personal statement', () => {
+-  const session = completeIntakeToSummary('من از خودم متنفرم و این احساس آزارم می‌دهد');
+-  assert.ok(getAssessmentSummary(session).candidate_topics.some((item) => item.topic_id === 'T18'));
++test('user can stop and clear in-memory answers', () => {
++  let session = createAssessmentSession();
++  session = answer(session, 'احساس تنهایی دارم');
++  const stopped = stopAssessment(session);
++  assert.equal(stopped.status, 'stopped_by_user');
++  assert.deepEqual(stopped.answers, {});
++  assert.equal(stopped.summary, null);
+ });
+diff --git a/tests/assessmentLanguageContext.test.js b/tests/assessmentLanguageContext.test.js
+@@ -34,5 +34,5 @@ test('ambiguous attributed content is conservatively excluded and policy is expl
+ 
+ test('context extraction policy has an explicit semantic version', async () => {
+   const { ASSESSMENT_CONTEXT_VERSION } = await import('../src/features/assistant/assessmentLanguageContext.v1.js');
+-  assert.equal(ASSESSMENT_CONTEXT_VERSION, '1.0.0');
++  assert.equal(ASSESSMENT_CONTEXT_VERSION, '1.1.0');
+ });
+diff --git a/tests/assessmentPersianAdversarialCorpus.test.js b/tests/assessmentPersianAdversarialCorpus.test.js
+@@ -0,0 +1,21 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { readFile } from 'node:fs/promises';
++import { extractConservativeAssessmentEvidence } from '../src/features/assistant/assessmentLanguageContext.v1.js';
++
++const corpus = JSON.parse(await readFile(new URL('./fixtures/persian-context-adversarial-corpus.v1.json', import.meta.url), 'utf8'));
++
++test('Persian adversarial corpus is synthetic and non-clinical', () => {
++  assert.equal(corpus.schema_version, '1.0.0');
++  assert.equal(corpus.status, 'synthetic_expert_review_pending');
++  assert.match(corpus.purpose, /not a clinical dataset/u);
++  assert.equal(new Set(corpus.cases.map((item) => item.id)).size, corpus.cases.length);
++});
++
++for (const item of corpus.cases) {
++  test(`Persian adversarial case ${item.id}: conservative evidence extraction`, () => {
++    const actual = extractConservativeAssessmentEvidence(item.text);
++    assert.equal(actual.evidence_text, item.retained, JSON.stringify(actual));
++    assert.equal(actual.excluded_clause_count, item.excluded);
++  });
++}
+diff --git a/tests/assessmentPersianGoldenCorpus.test.js b/tests/assessmentPersianGoldenCorpus.test.js
+@@ -0,0 +1,22 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { readFile } from 'node:fs/promises';
++import { ASSESSMENT_CONTEXT_VERSION, extractConservativeAssessmentEvidence } from '../src/features/assistant/assessmentLanguageContext.v1.js';
++
++const corpus = JSON.parse(await readFile(new URL('./fixtures/persian-context-golden-corpus.v1.json', import.meta.url), 'utf8'));
++
++test('Persian context golden corpus metadata is explicitly non-clinical', () => {
++  assert.equal(corpus.schema_version, '1.0.0');
++  assert.equal(ASSESSMENT_CONTEXT_VERSION, '1.1.0');
++  assert.equal(corpus.status, 'synthetic_expert_review_pending');
++  assert.match(corpus.purpose, /not a clinical dataset/u);
++  assert.equal(new Set(corpus.cases.map((item) => item.id)).size, corpus.cases.length);
++});
++
++for (const item of corpus.cases) {
++  test(`Persian context corpus ${item.id}: retained clause and exclusion count`, () => {
++    const actual = extractConservativeAssessmentEvidence(item.text);
++    assert.equal(actual.evidence_text, item.retained, JSON.stringify(actual));
++    assert.equal(actual.excluded_clause_count, item.excluded);
++  });
++}
+diff --git a/tests/assistantContext.test.js b/tests/assistantContext.test.js
+@@ -0,0 +1,121 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {
++  ASSISTANT_CONTEXT_TTL_MS,
++  buildAssistantContext,
++  validateAssistantContext,
++} from '../src/features/assistant/assistantContext.v1.js';
++
++const now = '2026-11-02T12:00:00.000Z';
++const journeyConsent = { granted: true };
++const memoryConsent = { granted: true };
++const consent = (journey = false, memory = false) => ({
++  purposes: {
++    journey_context: journey ? journeyConsent : { granted: false },
++    long_term_ai_memory: memory ? memoryConsent : { granted: false },
++  },
++});
++
++test('no consent means no personal context is included', () => {
++  const context = buildAssistantContext({
++    journey: { active_day: 9, completed_days_count: 8, current_goal: 'understand' },
++    preferences: { response_detail: 'detailed', communication_style: 'supportive', example_style: 'practical' },
++    consentState: consent(),
++    now,
++  });
++  assert.deepEqual(context.entries, []);
++  assert.equal(validateAssistantContext(context, { now, consentState: consent() }).valid, true);
++});
++
++test('journey context and interaction preferences require separate independent consent', () => {
++  const context = buildAssistantContext({
++    journey: { active_day: 9, completed_days_count: 8, current_goal: 'understand' },
++    preferences: { response_detail: 'detailed', communication_style: 'supportive', example_style: 'practical' },
++    consentState: consent(true, false),
++    now,
++  });
++  assert.deepEqual(context.entries.map((item) => item.key), ['active_day', 'completed_days_count', 'current_goal']);
++  assert.ok(context.entries.every((item) => item.consent_purpose === 'journey_context'));
++  const validation = validateAssistantContext(context, { now, consentState: consent(true, false) });
++  assert.equal(validation.valid, true, validation.errors.join('; '));
++});
++
++test('saved interaction preferences are not inferred from journey consent', () => {
++  const context = buildAssistantContext({
++    journey: { active_day: 9 },
++    preferences: { response_detail: 'detailed', communication_style: 'supportive' },
++    consentState: consent(false, true),
++    now,
++  });
++  assert.deepEqual(context.entries.map((item) => item.key), ['response_detail', 'communication_style']);
++  assert.ok(context.entries.every((item) => item.consent_purpose === 'long_term_ai_memory'));
++});
++
++test('unapproved, malformed, or out-of-range values are omitted by the builder', () => {
++  const context = buildAssistantContext({
++    journey: { active_day: 29, completed_days_count: -1, current_goal: 'diagnosis' },
++    preferences: { response_detail: 'extreme', communication_style: 'clinical', example_style: 'mixed' },
++    consentState: consent(true, true),
++    now,
++  });
++  assert.deepEqual(context.entries.map((item) => item.key), ['example_style']);
++});
++
++test('context excludes raw text, identity, diagnosis, risk and archive fields', () => {
++  const context = buildAssistantContext({
++    journey: {
++      active_day: 3,
++      user_name: 'نام',
++      raw_answers: ['متن خصوصی'],
++      diagnosis: 'anxiety',
++      risk_history: 'private',
++      archive: [{ id: 'old-path' }],
++    },
++    consentState: consent(true, false),
++    now,
++  });
++  assert.deepEqual(context.entries.map((item) => item.key), ['active_day']);
++  assert.equal(JSON.stringify(context).includes('متن خصوصی'), false);
++});
++
++test('validator rejects unknown keys and forged provenance', () => {
++  const context = buildAssistantContext({
++    journey: { active_day: 3 },
++    consentState: consent(true, false),
++    now,
++  });
++  const forged = {
++    ...context,
++    entries: [...context.entries, {
++      key: 'diagnosis', value: 'anxiety', source: 'app_journey_state',
++      observed_at: context.created_at, expires_at: context.expires_at, consent_purpose: 'journey_context',
++    }],
++  };
++  const result = validateAssistantContext(forged, { now, consentState: consent(true, false) });
++  assert.equal(result.valid, false);
++  assert.ok(result.errors.some((error) => error.includes('not allowlisted')));
++});
++
++test('validator rejects context older than its expiry or beyond the 24-hour maximum', () => {
++  const context = buildAssistantContext({ consentState: consent(), now });
++  assert.equal(validateAssistantContext(context, { now: new Date(Date.parse(now) + ASSISTANT_CONTEXT_TTL_MS).toISOString(), consentState: consent() }).valid, false);
++  const extended = { ...context, expires_at: new Date(Date.parse(now) + ASSISTANT_CONTEXT_TTL_MS + 1).toISOString() };
++  assert.equal(validateAssistantContext(extended, { now, consentState: consent() }).valid, false);
++});
++
++test('validator rejects an entry when its consent has been withdrawn or is absent', () => {
++  const context = buildAssistantContext({ journey: { active_day: 3 }, consentState: consent(true, false), now });
++  const result = validateAssistantContext(context, { now, consentState: consent(false, false) });
++  assert.equal(result.valid, false);
++  assert.ok(result.errors.some((error) => error.includes('missing active consent')));
++});
++
++test('entries cannot outlive or claim a different observation time than the context envelope', () => {
++  const context = buildAssistantContext({
++    journey: { active_day: 3 },
++    consentState: consent(true, false),
++    now,
++  });
++  const changed = { ...context, entries: context.entries.map((item) => ({ ...item, observed_at: '2026-11-01T12:00:00.000Z' })) };
++  assert.equal(validateAssistantContext(changed, { now, consentState: consent(true, false) }).valid, false);
++});
+diff --git a/tests/consentManager.test.js b/tests/consentManager.test.js
+@@ -65,6 +65,24 @@ test('clearing consent returns every purpose to false', () => {
+   assert.equal(hasConsent('long_term_ai_memory',storage),false);
+ });
+ 
++test('journey context consent is independent, explicit, and withdrawable', () => {
++  const storage = memoryStorage();
++  const context = {
++    selected_data_categories: 'active day and completed day count only',
++    retention_period: 'maximum 24 hours',
++    view_edit_delete_controls: 'available in settings',
++  };
++  assert.equal(hasConsent('journey_context', storage), false);
++  assert.throws(() => grantConsent('journey_context', { explicitAction: false, context }, storage), /اقدام صریح/);
++  assert.throws(() => grantConsent('journey_context', { explicitAction: true, context: { retention_period: '24 hours' } }, storage), /کامل نیست/);
++  grantConsent('journey_context', { explicitAction: true, context }, storage);
++  assert.equal(hasConsent('journey_context', storage), true);
++  assert.equal(hasConsent('long_term_ai_memory', storage), false);
++  const state = withdrawConsent('journey_context', {}, storage);
++  assert.equal(state.purposes.journey_context.granted, false);
++  assert.ok(state.purposes.journey_context.withdrawn_at);
++});
++
+ test('unknown purposes are rejected and never treated as consented', () => {
+   const storage=memoryStorage();
+   assert.equal(hasConsent('unknown_purpose',storage),false);
+diff --git a/tests/fixtures/persian-context-adversarial-corpus.v1.json b/tests/fixtures/persian-context-adversarial-corpus.v1.json
+@@ -0,0 +1,68 @@
++{
++  "schema_version": "1.0.0",
++  "purpose": "Adversarial regression cases for conservative Persian context extraction; synthetic software tests only, not a clinical dataset or semantic benchmark.",
++  "status": "synthetic_expert_review_pending",
++  "policy": "Tests verify conservative exclusion of explicit colloquial attribution and explicit hypothetical/translation meta-language. Negation is preserved verbatim; no sentiment or diagnosis is inferred.",
++  "cases": [
++    {
++      "id": "A01",
++      "text": "اون گفت من بی‌ارزشم",
++      "retained": "",
++      "excluded": 1
++    },
++    {
++      "id": "A02",
++      "text": "اونا گفتند من همیشه شکست می‌خورم",
++      "retained": "",
++      "excluded": 1
++    },
++    {
++      "id": "A03",
++      "text": "مامانم گفت من باید قوی باشم",
++      "retained": "",
++      "excluded": 1
++    },
++    {
++      "id": "A04",
++      "text": "اگر کسی بگوید من بی‌ارزشم، منظورش چیست؟",
++      "retained": "",
++      "excluded": 1
++    },
++    {
++      "id": "A05",
++      "text": "این جمله را ترجمه کن: من افسرده‌ام",
++      "retained": "",
++      "excluded": 1
++    },
++    {
++      "id": "A06",
++      "text": "من نگران نیستم ولی از آینده می‌ترسم",
++      "retained": "من نگران نیستم ؛ از آینده می‌ترسم",
++      "excluded": 0
++    },
++    {
++      "id": "A07",
++      "text": "من مضطرب نیستم، اما خوابم نمی‌برد",
++      "retained": "من مضطرب نیستم ؛ خوابم نمی‌برد",
++      "excluded": 0
++    },
++    {
++      "id": "A08",
++      "text": "من از کارم خسته‌ام، اون گفت من بی‌عرضه‌ام",
++      "retained": "من از کارم خسته‌ام",
++      "excluded": 1
++    },
++    {
++      "id": "A09",
++      "text": "اگر کسی بگوید من بی‌ارزشم، من فقط معنی واژه را می‌پرسم",
++      "retained": "من فقط معنی واژه را می‌پرسم",
++      "excluded": 1
++    },
++    {
++      "id": "A10",
++      "text": "من واقعاً ناراحتم و دوستم گفت او هم ناراحت است",
++      "retained": "من واقعاً ناراحتم",
++      "excluded": 1
++    }
++  ]
++}
+diff --git a/tests/fixtures/persian-context-golden-corpus.v1.json b/tests/fixtures/persian-context-golden-corpus.v1.json
+@@ -0,0 +1,110 @@
++{
++  "schema_version": "1.0.0",
++  "purpose": "Regression fixtures for conservative Persian clause ownership extraction; not a clinical dataset or semantic benchmark.",
++  "status": "synthetic_expert_review_pending",
++  "policy": "Only deterministic quote, attribution and meta-request exclusions are asserted. No diagnostic labels.",
++  "cases": [
++    {
++      "id": "Q01",
++      "text": "او گفت «من از خودم متنفرم»",
++      "retained": "",
++      "excluded": 1
++    },
++    {
++      "id": "Q02",
++      "text": "من از خودم متنفرم و دوستم گفت که من بی‌ارزشم",
++      "retained": "من از خودم متنفرم",
++      "excluded": 1
++    },
++    {
++      "id": "Q03",
++      "text": "دوستم گفت من بی‌ارزشم، ولی من با این حرف موافق نیستم",
++      "retained": "من با این حرف موافق نیستم",
++      "excluded": 1
++    },
++    {
++      "id": "Q04",
++      "text": "برای ترجمه جمله «من بی‌ارزشم» کمک می‌خواهم؛ اما من گاهی واقعاً احساس بی‌ارزشی دارم",
++      "retained": "من گاهی واقعاً احساس بی‌ارزشی دارم",
++      "excluded": 1
++    },
++    {
++      "id": "Q05",
++      "text": "مدیرم گفت من همیشه شکست می‌خورم",
++      "retained": "",
++      "excluded": 1
++    },
++    {
++      "id": "Q06",
++      "text": "من نگران آینده هستم. مادرم گفت این طبیعی است",
++      "retained": "من نگران آینده هستم",
++      "excluded": 1
++    },
++    {
++      "id": "Q07",
++      "text": "همسرم به من گفت که بی‌ارزشم؛ من این حرف را قبول ندارم",
++      "retained": "من این حرف را قبول ندارم",
++      "excluded": 1
++    },
++    {
++      "id": "Q08",
++      "text": "ترجمه این جمله را می‌خواهم؛ خودم هم مدتی مضطربم",
++      "retained": "خودم هم مدتی مضطربم",
++      "excluded": 1
++    },
++    {
++      "id": "Q09",
++      "text": "«اضطراب دارم» فقط یک مثال در کتاب بود",
++      "retained": "فقط یک مثال در کتاب بود",
++      "excluded": 0
++    },
++    {
++      "id": "Q10",
++      "text": "من اضطراب دارم و همکارم گفت که او هم نگران است",
++      "retained": "من اضطراب دارم",
++      "excluded": 1
++    },
++    {
++      "id": "Q11",
++      "text": "دوستم گفت من خسته‌ام اما من تجربه متفاوتی دارم",
++      "retained": "من تجربه متفاوتی دارم",
++      "excluded": 1
++    },
++    {
++      "id": "Q12",
++      "text": "معنی عبارت «از خودم متنفرم» چیست؟",
++      "retained": "",
++      "excluded": 1
++    },
++    {
++      "id": "Q13",
++      "text": "من از رفتارم ناراحتم، ولی خودم را بی‌ارزش نمی‌دانم",
++      "retained": "من از رفتارم ناراحتم ؛ خودم را بی‌ارزش نمی‌دانم",
++      "excluded": 0
++    },
++    {
++      "id": "Q14",
++      "text": "دوستم گفت که ترجمه جمله من را می‌خواهد",
++      "retained": "",
++      "excluded": 1
++    },
++    {
++      "id": "Q15",
++      "text": "من واقعاً تنها هستم و مادرم گفت باید بیرون بروم",
++      "retained": "من واقعاً تنها هستم",
++      "excluded": 1
++    },
++    {
++      "id": "Q16",
++      "text": "من اضطراب دارم، دوستم گفت که او هم نگران است",
++      "retained": "من اضطراب دارم",
++      "excluded": 1
++    },
++    {
++      "id": "Q17",
++      "text": "دوستم گفت من بی‌ارزشم، من این حرف را قبول ندارم",
++      "retained": "من این حرف را قبول ندارم",
++      "excluded": 1
++    }
++  ]
++}

@@ -1,0 +1,280 @@
+diff --git a/.github/workflows/validate-content.yml b/.github/workflows/validate-content.yml
+@@ -9,6 +9,7 @@ on:
+       - 'tests/**'
+       - 'scripts/validate-content.mjs'
+       - 'scripts/validate-assistant-topics.mjs'
++      - 'scripts/evaluate-semantic-understanding.mjs'
+       - 'package.json'
+       - 'package-lock.json'
+       - '.github/workflows/**'
+@@ -58,6 +59,18 @@ jobs:
+       - name: Run unit tests
+         if: ${{ always() && steps.install.outcome == 'success' }}
+         run: npm test
++      - name: Generate synthetic semantic evaluation report
++        if: ${{ always() && steps.install.outcome == 'success' }}
++        run: npm run evaluate:semantic > semantic-evaluation-report.json
++
++      - name: Upload synthetic semantic evaluation report
++        if: ${{ always() && steps.install.outcome == 'success' }}
++        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
++        with:
++          name: synthetic-semantic-evaluation-report
++          path: semantic-evaluation-report.json
++          if-no-files-found: error
++
+       - name: Validate course and library data
+         if: ${{ always() && steps.install.outcome == 'success' }}
+         run: npm run validate:content
+diff --git a/docs/SEMANTIC_EVALUATION_REPORT_FA.md b/docs/SEMANTIC_EVALUATION_REPORT_FA.md
+@@ -0,0 +1,31 @@
++# گزارش‌ساز ارزیابی فهم موضوعی — نسخه آزمایشی
++
++## هدف
++این ابزار خط پایه فعلیِ تطبیق عبارت‌محور را روی مجموعه مصنوعی فارسی اجرا می‌کند و خطاها را در سطح هر سناریو و هر موضوع آشکار می‌سازد. هدف، پنهان‌نکردن ضعف‌ها پشت یک میانگین کلی و فراهم‌کردن نقطه شروع برای ارزیابی‌های بعدی است.
++
++## اجرا
++`npm run evaluate:semantic`
++
++خروجی JSON شامل precision، recall، F1، تطابق دقیق مجموعه موضوعات، خطاهای هر سناریو، جزئیات هر موضوع و یک بررسی واژگانی محدود برای سناریوهای علامت‌گذاری‌شده ایمنی است.
++
++## محدودیت‌های غیرقابل‌چشم‌پوشی
++- مجموعه فعلی ۲۰ سناریوی مصنوعی است و benchmark معتبر یا نمونه نماینده کاربران نیست.
++- موتور فعلی تطبیق عبارت‌هاست، نه فهم معنایی واقعی.
++- سناریوهای دارای اولویت ایمنی از امتیازدهی موضوعی کنار گذاشته می‌شوند. بررسی واژگانی آن‌ها فقط نشان می‌دهد چند عبارت از پیش تعریف‌شده دیده شده‌اند؛ عدم کشف عبارت به معنی ایمن‌بودن نیست و این سنجه حساسیت بالینی یا توان تشخیص بحران نیست.
++- برای سناریوهای موضوعی، پاسخ منفی ثابت فقط یک ابزار کنترل‌شده برای رسیدن به مرحله دسته‌بندی است و هیچ نتیجه‌ای درباره ایمنی کاربر نمی‌دهد.
++- برای عبور از مرحله آزمایشی، باید داده فارسی متنوع و دارای رضایت، برچسب‌گذاری مستقل، داوری اختلاف، آزمون adversarial و پروتکل تخصصی ایمنی فراهم شود.
++- هیچ عددی در این گزارش مجوز اتصال مدل، توصیه درمانی یا فعال‌سازی عمومی دستیار نیست.
++
++## معیارهای لازم برای مرحله بعد
++1. گسترش داده به نمونه‌های واقعیِ بی‌هویت و دارای رضایت، با پوشش گونه‌های زبانی و موقعیت‌های متنوع.
++2. ارزیابی جداگانه هر یک از ۳۴ موضوع و نقش اصلی/همراه/نامشخص.
++3. اندازه‌گیری نفی، نقل‌قول، طعنه، چندمعنایی، اصلاح کاربر و abstention.
++4. بازبینی تخصصی مستقل برای هر مسیر ایمنی؛ شکست در یک سناریوی پرخطر نباید با میانگین کلی پوشانده شود.
++5. تعیین معیارهای پذیرش توسط متخصصان واجد صلاحیت، نه انتخاب دلخواه تیم فنی.
++
++
++## سنجش پرسش تکمیلی
++
++گزارش علاوه بر موضوعات، اکنون میزان تطابق رفتار پرسش تکمیلی را با برچسب مصنوعی `must_ask_clarification` محاسبه می‌کند و مثبت/منفی کاذب را جداگانه نشان می‌دهد. این معیار می‌تواند نشان دهد موتور فعلی برای مواردی که داده مصنوعی نیاز به روشن‌سازی ندارد نیز پرسش اضافه می‌کند یا در موارد مبهم از روشن‌سازی بازمی‌ماند.
++
++این سنجه فقط انطباق با برچسب‌های همین مجموعه کوچک را اندازه می‌گیرد؛ کیفیت، تناسب، لحن یا کفایت بالینی پرسش را نمی‌سنجد. سناریوهای handoff ایمنی از این معیار کنار گذاشته می‌شوند.
+diff --git a/package.json b/package.json
+@@ -10,7 +10,8 @@
+     "validate:content": "node scripts/validate-content.mjs",
+     "test": "node --test",
+     "validate:assistant-topics": "node scripts/validate-assistant-topics.mjs",
+-    "prepare:production": "node scripts/prepare-production-build.mjs"
++    "prepare:production": "node scripts/prepare-production-build.mjs",
++    "evaluate:semantic": "node scripts/evaluate-semantic-understanding.mjs"
+   },
+   "dependencies": {
+     "react": "18.3.1",
+diff --git a/scripts/evaluate-semantic-understanding.mjs b/scripts/evaluate-semantic-understanding.mjs
+@@ -0,0 +1,147 @@
++import { readFile } from 'node:fs/promises';
++import { fileURLToPath } from 'node:url';
++import path from 'node:path';
++import {
++  createAssessmentSession,
++  submitAssessmentAnswer,
++} from '../src/features/assistant/assessmentEngine.js';
++
++const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
++const datasetPath = path.join(root, 'public/assistant/evaluation/semantic-evaluation-cases.v1.json');
++
++function answer(session, value) {
++  return submitAssessmentAnswer(session, value);
++}
++
++function runCase(item) {
++  let session = createAssessmentSession();
++  session = answer(session, item.text);
++  const safetyCueDetected = session.safety_context_flag === true;
++  const expectedSafetyHandoff = item.must_handoff_safety === true;
++  if (expectedSafetyHandoff) {
++    return {
++      id: item.id,
++      expected: item.expected_topics ?? [],
++      predicted: [],
++      safetyCueDetected,
++      expectedSafetyHandoff,
++      topic_scoring_excluded: true,
++      clarification_scoring_excluded: true,
++      expectedClarification: item.must_ask_clarification === true,
++      clarificationRequested: false,
++      stopped: true,
++    };
++  }
++  if (session.current_question?.id === 'safety_now') session = answer(session, 'نه');
++  if (session.status !== 'in_progress') {
++    return { id: item.id, expected: item.expected_topics ?? [], predicted: [], safetyCueDetected, stopped: true };
++  }
++
++  session = answer(session, 'در زندگی روزمره‌ام اثر گذاشته است');
++  session = answer(session, 'چند هفته یا چند ماه است؛ بسته به مورد');
++  session = answer(session, 'می‌خواهم مسئله‌ام را بهتر بفهمم');
++  session = answer(session, item.text);
++  const summary = session.summary;
++  return {
++    id: item.id,
++    expected: item.expected_topics ?? [],
++    predicted: (summary?.candidate_topics ?? []).map((candidate) => candidate.topic_id),
++    safetyCueDetected,
++    expectedSafetyHandoff: false,
++    topic_scoring_excluded: false,
++    clarification_scoring_excluded: false,
++    expectedClarification: item.must_ask_clarification === true,
++    clarificationRequested: session.current_question?.id === 'summary_confirmation' || Boolean(summary),
++    stopped: false,
++  };
++}
++
++export function evaluateDataset(dataset) {
++  const cases = dataset.cases.map(runCase);
++  const tp = new Set();
++  const fp = new Set();
++  const fn = new Set();
++  const perTopic = {};
++
++  for (const result of cases.filter((item) => !item.topic_scoring_excluded)) {
++    const expected = new Set(result.expected);
++    const predicted = new Set(result.predicted);
++    for (const id of expected) {
++      if (predicted.has(id)) tp.add(`${result.id}:${id}`);
++      else fn.add(`${result.id}:${id}`);
++      perTopic[id] ??= { expected: 0, predicted: 0, true_positive: 0 };
++      perTopic[id].expected += 1;
++    }
++    for (const id of predicted) {
++      perTopic[id] ??= { expected: 0, predicted: 0, true_positive: 0 };
++      perTopic[id].predicted += 1;
++      if (expected.has(id)) perTopic[id].true_positive += 1;
++      else fp.add(`${result.id}:${id}`);
++    }
++  }
++
++  const precision = tp.size + fp.size ? tp.size / (tp.size + fp.size) : 0;
++  const recall = tp.size + fn.size ? tp.size / (tp.size + fn.size) : 0;
++  const clarificationCases = cases.filter((item) => !item.clarification_scoring_excluded);
++  const clarificationTp = clarificationCases.filter((item) => item.expectedClarification && item.clarificationRequested).length;
++  const clarificationFp = clarificationCases.filter((item) => !item.expectedClarification && item.clarificationRequested).length;
++  const clarificationFn = clarificationCases.filter((item) => item.expectedClarification && !item.clarificationRequested).length;
++  const clarificationPrecision = clarificationTp + clarificationFp ? clarificationTp / (clarificationTp + clarificationFp) : 0;
++  const clarificationRecall = clarificationTp + clarificationFn ? clarificationTp / (clarificationTp + clarificationFn) : 0;
++  const safetyCases = cases.filter((item) => item.expectedSafetyHandoff);
++  const safetyCueHits = safetyCases.filter((item) => item.safetyCueDetected).length;
++  const topicCases = cases.filter((item) => !item.topic_scoring_excluded);
++
++  return {
++    dataset_id: dataset.dataset_id,
++    dataset_status: dataset.status,
++    case_count: cases.length,
++    topic_scoring_case_count: topicCases.length,
++    topic_metrics: {
++      true_positive: tp.size,
++      false_positive: fp.size,
++      false_negative: fn.size,
++      precision: Number(precision.toFixed(4)),
++      recall: Number(recall.toFixed(4)),
++      f1: precision + recall ? Number((2 * precision * recall / (precision + recall)).toFixed(4)) : 0,
++      exact_topic_set_match_count: topicCases.filter((item) =>
++        [...new Set(item.expected)].sort().join(',') === [...new Set(item.predicted)].sort().join(',')
++      ).length,
++    },
++    clarification_metrics: {
++      evaluated_case_count: clarificationCases.length,
++      true_positive: clarificationTp,
++      false_positive: clarificationFp,
++      false_negative: clarificationFn,
++      precision: Number(clarificationPrecision.toFixed(4)),
++      recall: Number(clarificationRecall.toFixed(4)),
++      f1: clarificationPrecision + clarificationRecall
++        ? Number((2 * clarificationPrecision * clarificationRecall / (clarificationPrecision + clarificationRecall)).toFixed(4))
++        : 0,
++      interpretation: 'فقط تطابق با برچسب مصنوعی نیاز به پرسش تکمیلی؛ نه کیفیت بالینی یا کفایت روشن‌سازی',
++    },
++    safety_lexical_probe: {
++      expected_handoff_cases: safetyCases.length,
++      lexical_cue_detected: safetyCueHits,
++      lexical_cue_missed: safetyCases.length - safetyCueHits,
++      interpretation: 'فقط پوشش چند عبارت واژگانی محدود؛ عدم کشف عبارت به معنی ایمن‌بودن نیست و این سنجه اعتبار بالینی ندارد',
++    },
++    per_topic: Object.fromEntries(Object.entries(perTopic).sort(([a], [b]) => a.localeCompare(b))),
++    cases,
++    limitations: [
++      'داده‌ها مصنوعی و کوچک‌اند و نماینده کاربران فارسی‌زبان نیستند.',
++      'این سنجه‌ها عملکرد بالینی، فهم معنایی، تشخیص یا ایمنی را اعتبارسنجی نمی‌کنند.',
++      'سناریوهای دارای اولویت ایمنی از امتیاز موضوعی کنار گذاشته می‌شوند تا توقف جریان با خطای دسته‌بندی موضوعی اشتباه نشود.',
++      'موتور فعلی تطبیق عبارت‌محور است؛ خروجی آن فهم معنایی واقعی محسوب نمی‌شود.',
++      'پاسخ منفی ثابت در اجرای آزمون فقط برای رسیدن به مرحله موضوعی است و هیچ نتیجه ایمنی از آن گرفته نمی‌شود.',
++      'نیاز به پرسش تکمیلی در داده مصنوعی نیز سنجیده می‌شود؛ این معیار فقط تطابق با برچسب‌های دستی مصنوعی است و کیفیت پرسش را نمی‌سنجد.',
++      'هیچ آستانه پذیرش یا مجوز فعال‌سازی برای کاربران واقعی از این گزارش قابل استنتاج نیست.',
++    ],
++  };
++}
++
++if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
++  const dataset = JSON.parse(await readFile(datasetPath, 'utf8'));
++  const report = evaluateDataset(dataset);
++  process.stdout.write(`${JSON.stringify(report, null, 2)}\\n`);
++}
+diff --git a/tests/semanticEvaluationEngine.test.js b/tests/semanticEvaluationEngine.test.js
+@@ -0,0 +1,57 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { readFile } from 'node:fs/promises';
++import { evaluateDataset } from '../scripts/evaluate-semantic-understanding.mjs';
++
++const dataset = JSON.parse(await readFile(new URL('../public/assistant/evaluation/semantic-evaluation-cases.v1.json', import.meta.url), 'utf8'));
++
++test('semantic evaluator returns reproducible metrics for every synthetic case', () => {
++  const report = evaluateDataset(dataset);
++  assert.equal(report.case_count, dataset.cases.length);
++  assert.equal(report.dataset_status, 'synthetic_seed_not_a_validated_benchmark');
++  assert.ok(report.topic_metrics.precision >= 0 && report.topic_metrics.precision <= 1);
++  assert.ok(report.topic_metrics.recall >= 0 && report.topic_metrics.recall <= 1);
++  assert.equal(report.cases.length, dataset.cases.length);
++});
++
++test('safety probe is explicitly lexical and never presented as clinical validation', () => {
++  const report = evaluateDataset(dataset);
++  assert.ok(report.safety_lexical_probe.interpretation.includes('عدم کشف عبارت به معنی ایمن‌بودن نیست'));
++  assert.ok(report.limitations.some((item) => item.includes('اعتبارسنجی نمی‌کنند')));
++});
++
++test('evaluator reports per-case topic mismatches instead of hiding them in an aggregate', () => {
++  const report = evaluateDataset(dataset);
++  assert.ok(report.cases.every((item) => Array.isArray(item.expected) && Array.isArray(item.predicted)));
++  assert.ok(Object.keys(report.per_topic).length > 0);
++});
++
++test('priority safety cases are excluded from topic scoring', () => {
++  const report = evaluateDataset(dataset);
++  const safetyCases = report.cases.filter((item) => item.expectedSafetyHandoff);
++  assert.ok(safetyCases.length > 0);
++  assert.ok(safetyCases.every((item) => item.topic_scoring_excluded === true));
++  assert.equal(report.topic_scoring_case_count, report.case_count - safetyCases.length);
++});
++
++
++test('evaluator reports clarification false positives and false negatives separately',()=>{
++ const report=evaluateDataset(dataset);
++ assert.equal(report.clarification_metrics.evaluated_case_count,report.topic_scoring_case_count);
++ assert.ok(report.clarification_metrics.false_positive>=0);
++ assert.ok(report.clarification_metrics.false_negative>=0);
++ assert.ok(report.cases.filter(item=>!item.clarification_scoring_excluded).every(item=>
++  typeof item.expectedClarification==='boolean' && typeof item.clarificationRequested==='boolean'
++ ));
++ assert.ok(report.clarification_metrics.interpretation.includes('کیفیت بالینی'));
++});
++
++
++test('current fixed clarification flow exposes six synthetic over-clarification cases',()=>{
++ const report=evaluateDataset(dataset);
++ assert.equal(report.clarification_metrics.true_positive,10);
++ assert.equal(report.clarification_metrics.false_positive,6);
++ assert.equal(report.clarification_metrics.false_negative,0);
++ assert.equal(report.clarification_metrics.precision,0.625);
++ assert.equal(report.clarification_metrics.recall,1);
++});

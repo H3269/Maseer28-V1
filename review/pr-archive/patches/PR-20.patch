@@ -1,0 +1,1255 @@
+diff --git a/.github/workflows/validate-content.yml b/.github/workflows/validate-content.yml
+@@ -9,6 +9,16 @@ on:
+       - 'tests/**'
+       - 'scripts/validate-content.mjs'
+       - 'scripts/validate-assistant-topics.mjs'
++      - 'scripts/audit-course-content-quality.mjs'
++      - 'scripts/audit-content-mappings.mjs'
++      - 'scripts/generate-content-mapping-queue.mjs'
++      - 'public/assistant/mappings/**'
++      - 'public/assistant/evidence/**'
++      - 'public/assistant/schemas/content-mapping.v1.schema.json'
++      - 'tests/contentMappingWorkflow.test.js'
++      - 'public/assistant/reviews/**'
++      - 'public/assistant/schemas/course-content-quality-review.v1.schema.json'
++      - 'tests/courseContentQualityAudit.test.js'
+       - 'package.json'
+       - 'package-lock.json'
+       - '.github/workflows/**'
+@@ -61,6 +71,21 @@ jobs:
+       - name: Validate course and library data
+         if: ${{ always() && steps.install.outcome == 'success' }}
+         run: npm run validate:content
++      - name: Audit content-to-topic mappings
++        if: ${{ always() && steps.install.outcome == 'success' }}
++        run: mkdir -p artifacts && npm run --silent audit:content-mappings > artifacts/content-mapping-audit.json
++      - name: Audit course content quality and review readiness
++        if: ${{ always() && steps.install.outcome == 'success' }}
++        run: mkdir -p artifacts && npm run --silent audit:course-content-quality > artifacts/course-content-quality-audit.json
++      - name: Upload structural audit reports
++        if: ${{ always() && steps.install.outcome == 'success' }}
++        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
++        with:
++          name: course-structure-audit-reports
++          path: |
++            artifacts/content-mapping-audit.json
++            artifacts/course-content-quality-audit.json
++          if-no-files-found: warn
+       - name: Build application
+         if: ${{ always() && steps.install.outcome == 'success' }}
+         run: |
+diff --git a/docs/COURSE_CONTENT_MAPPING_REVIEW_V1_FA.md b/docs/COURSE_CONTENT_MAPPING_REVIEW_V1_FA.md
+@@ -0,0 +1,55 @@
++# گردش‌کار بازبینی نگاشت محتوای مسیر۲۸ — نسخه ۱
++
++## هدف و مرز
++
++این گردش‌کار برای نگاشت انسانی و قابل‌ردیابیِ ۹۵۲ روز آموزشی (۳۴ مسیر × ۲۸ روز) به زیرموضوع‌های شبکه دانش است. نگاشت خودکار بر اساس نام مسیر فقط می‌تواند **موضوع والد** را مشخص کند؛ انتخاب زیرموضوع، هدف روان‌شناختی یا مداخله از روی عنوان/متن به‌صورت خودکار انجام نمی‌شود.
++
++این داده‌ها تا تأیید متخصص و اعتبارسنجی مستقل صرفاً داده بازبینی‌اند و در runtime دستیار قابل استفاده نیستند.
++
++## فرمان‌ها
++
++- `npm run generate:content-mapping-queue`: ایجاد/به‌روزرسانی صف بازبینی برای همه روزهای موجود.
++- `npm run audit:content-mappings`: ممیزی شناسه‌ها، پوشش، وضعیت بازبینی و پیوندهای زیرموضوع.
++
++تولید صف باید غیرمخرب باشد: رکوردهای موجود و یادداشت‌های بازبین حفظ می‌شوند؛ اگر شناسه محتوای منبع برای یک رکورد موجود تغییر کرده باشد، ابزار باید متوقف شود تا تغییر با بازبینی انسانی حل شود.
++
++## چرخه وضعیت
++
++1. `pending_review`: رکورد تولید شده؛ هنوز بررسی نشده.
++2. `in_review`: بازبین کار را شروع کرده؛ هیچ استفاده‌ای در محصول مجاز نیست.
++3. `approved`: بازبین مجاز، دلیل نگاشت، تاریخ و شناسه شواهد را ثبت کرده و حداقل یک زیرموضوع معتبر از همان موضوع والد انتخاب کرده است.
++4. `rejected`: نگاشت پیشنهادی رد شده؛ دلیل رد باید در rationale ثبت شود.
++
++تغییر وضعیت به `approved` صرفاً پس از بازبینی محتوای کامل روز، نه فقط عنوان یا تمرین، مجاز است.
++
++## حداقل معیار تأیید
++
++بازبین باید برای هر روز ثبت کند:
++- زیرموضوع(های) دقیق و دلیل ارتباط هرکدام با محتوای روز؛
++- شناسه شواهد/منبعی که در رجیستری مستقل `public/assistant/evidence/evidence.v1.json` ثبت شده و وضعیت آن پس از بازبینی متخصص `approved` است؛
++- هدف رفتاری یا یادگیریِ واقعی تمرین و تناسب آن با موضوع؛
++- خطرها، احتیاط‌ها، موارد منع یا نیاز به توقف/ارجاع، در صورت وجود؛
++- هرگونه محدودیت جمعیت، سن، وضعیت یا زمینه که برای استفاده لازم است.
++
++اگر تمرین عمومی، نامرتبط، مبهم یا فاقد پشتوانه باشد، بازبین نباید برای پرکردن فیلدها یک زیرموضوع حدس بزند؛ رکورد باید در حالت بازبینی بماند یا رد شود.
++
++## ساختار و ایمنی
++
++- `source_topic_id` فقط از تطبیق دقیق نام دسته محتوایی با ثبت رسمی موضوعات ساخته می‌شود.
++- `subtopic_ids` در صف اولیه عمداً خالی است.
++- وضعیت پیش‌فرض همه رکوردها `pending_review` است.
++- `runtime_eligible` در این نسخه همواره `false` است؛ حتی رکوردهای تأییدشده به‌تنهایی مجوز انتخاب مداخله یا نمایش خودکار نیستند.
++- شناسه شواهد آزاد و دلخواه پذیرفته نمی‌شود؛ هر شناسه باید به رکورد موجود و تأییدشده در رجیستری شواهد وصل شود. رجیستری اولیه عمداً خالی است.
++- تکمیل پوشش عددی معادل اعتبار علمی نیست.
++- یک روز می‌تواند بیش از یک زیرموضوع داشته باشد، اما هر انتخاب باید دلیل مستقل و قابل دفاع داشته باشد.
++- رابطه موضوعی، شواهد اثربخشی تمرین و ایمنی تمرین سه نوع ادعای جداگانه‌اند و نباید با یک شناسه evidence مبهم جایگزین شوند.
++
++## معیار خروج از مرحله
++
++این مرحله فقط وقتی برای بازبینی تخصصی آماده است که:
++- صف دقیقاً ۹۵۲ رکورد منطبق با روزهای منبع داشته باشد؛
++- هیچ شناسه تکراری، موضوع والد نامعتبر یا زیرموضوع متعلق به موضوع دیگر وجود نداشته باشد؛
++- همه رکوردهای approved دارای بازبین، تاریخ، rationale، شواهد و زیرموضوع معتبر باشند؛
++- بازبینی مستقل نمونه‌ای و سپس کل مجموعه توسط متخصصان انجام شده باشد.
++
++این ابزار **اعتبارسنجی بالینی، تأیید اثربخشی تمرین، یا مجوز انتشار عمومی ایجاد نمی‌کند**.
+diff --git a/docs/COURSE_CONTENT_QUALITY_REVIEW_V1_FA.md b/docs/COURSE_CONTENT_QUALITY_REVIEW_V1_FA.md
+@@ -0,0 +1,66 @@
++# استاندارد بازبینی کیفیت محتوای آموزشی مسیر۲۸ — نسخه ۱
++
++## هدف
++وجود ۳۴ مسیر و ۲۸ روز برای هر مسیر، به‌تنهایی کیفیت یا اختصاصی‌بودن آموزش را ثابت نمی‌کند. این استاندارد برای بررسی انسانی محتوای کامل هر روز طراحی شده است؛ تفاوت ظاهری متن امتیاز کیفیت محسوب نمی‌شود.
++
++## واحد بازبینی
++هر رکورد، یک روز از یک مسیر است و باید با متن کامل آن روز بررسی شود: عنوان، مقدمه، تمرین، اقدام، جمع‌بندی، پیوند کتاب/منبع و هر متن کمکی موجود. بازبین نباید فقط عنوان یا یک جمله را مبنای قضاوت قرار دهد.
++
++## ابعاد امتیازدهی
++هر بُعد از ۰ تا ۳ امتیاز می‌گیرد. مقدار null یعنی هنوز ارزیابی نشده است.
++
++| بُعد | پرسش اصلی |
++|---|---|
++| هدف اختصاصی | آیا روشن است این روز دقیقاً چه مهارت یا دانشی را برای کدام مسئله هدف می‌گیرد؟ |
++| سازوکار روان‌شناختی | آیا سازوکار هدف دقیق و غیرتقلیل‌گرایانه تعریف شده است؟ |
++| پشتوانه شواهد | آیا ادعاها و پیشنهادها به شواهد معتبر و متناسب با جمعیت هدف متصل‌اند؟ |
++| تناسب تمرین | آیا تمرین همان سازوکار را هدف می‌گیرد و صرفاً توصیه عمومی نیست؟ |
++| توالی و دشواری | آیا سطح دشواری و ترتیب روز با پیش‌نیازها سازگار است؟ |
++| ایمنی و احتیاط | آیا خطر، موارد منع، محدودیت‌ها، معیار توقف و مسیر ارجاع بررسی شده‌اند؟ |
++| سنجش نتیجه | آیا پیامد قابل مشاهده و واقع‌بینانه قابل ثبت است، بدون وعده درمان؟ |
++| دسترس‌پذیری | آیا زبان، بار شناختی و شیوه اجرا برای مخاطب هدف روشن و قابل انجام است؟ |
++
++### لنگرهای امتیاز
++- ۰ — مردود/خطرناک: نادرست، گمراه‌کننده، نامتناسب یا دارای خطر جدی حل‌نشده.
++- ۱ — نیازمند بازنویسی اساسی: نقص مهم؛ برای استفاده آموزشی فعلی پذیرفتنی نیست.
++- ۲ — قابل قبول با اصلاح محدود یا قید روشن.
++- ۳ — قوی و مستدل: دقیق، منسجم، متناسب و دارای پشتوانه و احتیاط روشن.
++
++امتیاز ۲ یا ۳ به‌تنهایی اثربخشی بالینی را ثابت نمی‌کند. امتیاز ایمنی ۰ یا ۱ باید تأیید را متوقف کند.
++
++## وضعیت‌ها
++`pending_review`، `in_review`، `needs_revision`، `rejected`، `reviewed_not_approved` و `approved_for_educational_review`.
++
++برای عبور از دروازه کیفیت، هر هشت بُعد باید امتیاز ۲ یا ۳ داشته باشند، امتیاز ایمنی حداقل ۲ باشد، و rationale، بازبین، تاریخ و شناسه شواهد ثبت شوند. هیچ امتیاز یا تصمیمی توسط ابزار به‌صورت خودکار تولید نمی‌شود.
++
++## قواعد سخت‌گیرانه
++1. تمرین تنفس، نوشتن، خودگویی مثبت یا ثبت احساسات فقط به‌دلیل رایج‌بودن، برای همه موضوعات مناسب فرض نمی‌شود.
++2. خشم با پرخاشگری، غم با اختلال، شرم با گناه، ترس با اضطراب و اجتناب با رفتار ناسازگار یکسان نیستند.
++3. تمرین مواجهه، افشای تجربه آسیب‌زا، مواجهه با شریک خشونت‌گر یا قطع ناگهانی رفتارهای مقابله‌ای بدون ارزیابی زمینه و ایمنی ممنوع است.
++4. محتوای مربوط به خواب، سوگ، روابط، خودآسیبی، خشونت و سلامت نیازمند بررسی تخصصی متناسب است.
++5. ادعای درمان، تشخیص، تضمین نتیجه یا جایگزینی درمانگر قابل قبول نیست.
++6. تفاوت متنی یا تنوع تمرین، بدون تناسب سازه‌ای و شواهد، کیفیت محسوب نمی‌شود.
++
++## خروجی ممیزی ماشینی
++ابزار فقط پوشش رکوردها، شناسه‌های منبع، متن‌های خالی یا کوتاه، قالب‌های عیناً تکراری پس از حذف نام موضوع، وضعیت بازبینی و نقص metadata را گزارش می‌کند. ابزار درباره کیفیت بالینی، معنای متن، تناسب واقعی تمرین یا اعتبار شواهد حکم صادر نمی‌کند. این قضاوت‌ها فقط با بازبینی متخصص ممکن‌اند.
++
++
++## یافته‌های اجرای ممیزی ساختاری ۹۵۲ رکورد
++
++**منبع اجرا:** GitHub Actions، اجرای اعتبارسنجی PR20 در ۱ نوامبر ۲۰۲۶؛ گزارش‌های ماشینی در artifact با نام `course-structure-audit-reports` ثبت شده‌اند.
++
++| شاخص | نتیجه |
++|---|---:|
++| روزهای مورد انتظار | ۹۵۲ |
++| رکوردهای صف بازبینی کیفیت | ۰ |
++| رکوردهای فاقد بازبینی | ۹۵۲ |
++| نگاشت موضوع/زیرموضوع ثبت‌شده | ۰ |
++| روزهای فاقد نگاشت | ۹۵۲ |
++| خطاهای ساختاری گزارش‌شده در دو ممیزی | ۰ |
++| منبع ثبت‌شده در رجیستری شواهد | ۰ |
++
++در هر یک از ۲۸ روز، برای هر پنج فیلد اصلیِ `title`، `intro`، `exercise`، `actionText` و `closing`، پس از جایگزینی دقیق نام موضوع، یک قالب متنی مشترک بین هر ۳۴ موضوع مشاهده شد؛ یعنی هر گروه مشترک شامل ۳۴ موضوع بود. این نتیجه فقط درباره برابری قالب متنی این پنج فیلد است و به‌تنهایی معنای کامل، کیفیت، تناسب یا اثر آموزشی را تعیین نمی‌کند.
++
++**تفسیر درست «صفر خطا»:** صفر خطا یعنی رکوردهای موجود در ساختار و قواعدی که ابزار بررسی می‌کند ناسازگاری ثبت‌شده‌ای نداشته‌اند. این عدد به معنی تأیید کیفیت نیست؛ پوشش بازبینی همچنان صفر و همه ۹۵۲ روز فاقد بررسی انسانی‌اند. رجیستری شواهد نیز خالی است و هیچ نگاشتی برای فعال‌سازی در دستیار وجود ندارد.
++
++**تصمیم محصولی:** تا تکمیل بازبینی انسانی، این ۳۴ مسیر نباید به‌عنوان ۳۴ برنامه آموزشی اختصاصی و تأییدشده معرفی شوند. محتوای مشترک فقط در صورت نام‌گذاری صریح به‌عنوان «هسته مشترک» و توجیه آموزشی می‌تواند حفظ شود. هیچ محتوایی از این ممیزی به‌صورت خودکار تأیید یا وارد runtime نمی‌شود.
+diff --git a/package.json b/package.json
+@@ -10,7 +10,10 @@
+     "validate:content": "node scripts/validate-content.mjs",
+     "test": "node --test",
+     "validate:assistant-topics": "node scripts/validate-assistant-topics.mjs",
+-    "prepare:production": "node scripts/prepare-production-build.mjs"
++    "prepare:production": "node scripts/prepare-production-build.mjs",
++    "generate:content-mapping-queue": "node scripts/generate-content-mapping-queue.mjs",
++    "audit:content-mappings": "node scripts/audit-content-mappings.mjs",
++    "audit:course-content-quality": "node scripts/audit-course-content-quality.mjs"
+   },
+   "dependencies": {
+     "react": "18.3.1",
+diff --git a/public/assistant/evidence/evidence.v1.json b/public/assistant/evidence/evidence.v1.json
+@@ -0,0 +1,7 @@
++{
++  "schema_version": "1.0.0",
++  "registry_id": "maseer28-evidence-registry-v1",
++  "status": "draft_requires_expert_review",
++  "runtime_eligible": false,
++  "evidence": []
++}
+diff --git a/public/assistant/mappings/course-content-mappings.v1.json b/public/assistant/mappings/course-content-mappings.v1.json
+@@ -0,0 +1,13 @@
++{
++  "schema_version": "1.0.0",
++  "mapping_set_id": "maseer28-course-content-mappings-v1",
++  "status": "draft_review_queue_only",
++  "runtime_eligible": false,
++  "source": {
++    "content_registry": "public/content/path-content.json",
++    "topic_registry": "public/assistant/knowledge/topics.v1.json",
++    "subtopic_registry": "public/assistant/knowledge/subtopics.v1.json"
++  },
++  "policy": "Parent topic is assigned only by exact category-name match. Subtopic assignments require human review.",
++  "mappings": []
++}
+diff --git a/public/assistant/reviews/course-content-quality-review.v1.json b/public/assistant/reviews/course-content-quality-review.v1.json
+@@ -0,0 +1,17 @@
++{
++  "schema_version": "1.0.0",
++  "ledger_id": "maseer28-course-content-quality-review-v1",
++  "status": "draft_review_queue_only",
++  "runtime_eligible": false,
++  "review_dimensions": [
++    "target_specificity",
++    "psychological_mechanism",
++    "evidence_support",
++    "exercise_alignment",
++    "progression_and_difficulty",
++    "safety_and_cautions",
++    "outcome_measurement",
++    "accessibility"
++  ],
++  "reviews": []
++}
+diff --git a/public/assistant/schemas/course-content-mapping.v1.schema.json b/public/assistant/schemas/course-content-mapping.v1.schema.json
+@@ -0,0 +1,163 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "https://maseer28.invalid/schemas/course-content-mapping.v1.schema.json",
++  "title": "Maseer28 Course Content Mapping Set v1",
++  "type": "object",
++  "additionalProperties": false,
++  "required": [
++    "schema_version",
++    "mapping_set_id",
++    "status",
++    "runtime_eligible",
++    "source",
++    "mappings"
++  ],
++  "properties": {
++    "schema_version": {
++      "const": "1.0.0"
++    },
++    "mapping_set_id": {
++      "type": "string",
++      "minLength": 1
++    },
++    "status": {
++      "enum": [
++        "draft_review_queue_only",
++        "under_review",
++        "reviewed_not_runtime_approved"
++      ]
++    },
++    "runtime_eligible": {
++      "const": false
++    },
++    "source": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": [
++        "content_registry",
++        "topic_registry",
++        "subtopic_registry"
++      ],
++      "properties": {
++        "content_registry": {
++          "type": "string"
++        },
++        "topic_registry": {
++          "type": "string"
++        },
++        "subtopic_registry": {
++          "type": "string"
++        }
++      }
++    },
++    "policy": {
++      "type": "string"
++    },
++    "mappings": {
++      "type": "array",
++      "items": {
++        "$ref": "#/$defs/mapping"
++      }
++    }
++  },
++  "$defs": {
++    "mapping": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": [
++        "mapping_id",
++        "source_topic_id",
++        "source_topic_name",
++        "day_number",
++        "content_id",
++        "subtopic_ids",
++        "mapping_status",
++        "review"
++      ],
++      "properties": {
++        "mapping_id": {
++          "type": "string",
++          "pattern": "^MAP_T[0-9]{2}_D[0-9]{2}$"
++        },
++        "source_topic_id": {
++          "type": "string",
++          "pattern": "^T[0-9]{2}$"
++        },
++        "source_topic_name": {
++          "type": "string",
++          "minLength": 1
++        },
++        "day_number": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 28
++        },
++        "content_id": {
++          "type": "string",
++          "minLength": 1
++        },
++        "subtopic_ids": {
++          "type": "array",
++          "uniqueItems": true,
++          "items": {
++            "type": "string",
++            "pattern": "^T[0-9]{2}-S[0-9]{2}$"
++          }
++        },
++        "mapping_status": {
++          "enum": [
++            "pending_review",
++            "in_review",
++            "approved",
++            "rejected"
++          ]
++        },
++        "review": {
++          "type": "object",
++          "additionalProperties": false,
++          "required": [
++            "reviewer_id",
++            "reviewed_at",
++            "rationale",
++            "evidence_ids"
++          ],
++          "properties": {
++            "reviewer_id": {
++              "type": [
++                "string",
++                "null"
++              ]
++            },
++            "reviewed_at": {
++              "type": [
++                "string",
++                "null"
++              ],
++              "format": "date-time"
++            },
++            "rationale": {
++              "type": [
++                "string",
++                "null"
++              ]
++            },
++            "evidence_ids": {
++              "type": "array",
++              "uniqueItems": true,
++              "items": {
++                "type": "string",
++                "pattern": "^EVD_[A-Z0-9_-]+$"
++              }
++            }
++          }
++        },
++        "notes": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        }
++      }
++    }
++  }
++}
+diff --git a/public/assistant/schemas/course-content-quality-review.v1.schema.json b/public/assistant/schemas/course-content-quality-review.v1.schema.json
+@@ -0,0 +1,217 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "title": "Maseer28 Course Content Quality Review Ledger v1",
++  "type": "object",
++  "additionalProperties": false,
++  "required": [
++    "schema_version",
++    "ledger_id",
++    "status",
++    "runtime_eligible",
++    "review_dimensions",
++    "reviews"
++  ],
++  "properties": {
++    "schema_version": {
++      "const": "1.0.0"
++    },
++    "ledger_id": {
++      "const": "maseer28-course-content-quality-review-v1"
++    },
++    "status": {
++      "enum": [
++        "draft_review_queue_only",
++        "under_review",
++        "reviewed_not_runtime_approved"
++      ]
++    },
++    "runtime_eligible": {
++      "const": false
++    },
++    "review_dimensions": {
++      "type": "array",
++      "minItems": 8,
++      "maxItems": 8,
++      "uniqueItems": true,
++      "items": {
++        "enum": [
++          "target_specificity",
++          "psychological_mechanism",
++          "evidence_support",
++          "exercise_alignment",
++          "progression_and_difficulty",
++          "safety_and_cautions",
++          "outcome_measurement",
++          "accessibility"
++        ]
++      }
++    },
++    "reviews": {
++      "type": "array",
++      "items": {
++        "$ref": "#/$defs/review"
++      }
++    }
++  },
++  "$defs": {
++    "review": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": [
++        "review_id",
++        "topic_id",
++        "day_number",
++        "content_id",
++        "review_status",
++        "scores",
++        "reviewer_id",
++        "reviewed_at",
++        "rationale",
++        "evidence_ids",
++        "safety_notes"
++      ],
++      "properties": {
++        "review_id": {
++          "type": "string",
++          "pattern": "^QREV_T[0-9]{2}_D[0-9]{2}$"
++        },
++        "topic_id": {
++          "type": "string",
++          "pattern": "^T[0-9]{2}$"
++        },
++        "day_number": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 28
++        },
++        "content_id": {
++          "type": "string",
++          "minLength": 1
++        },
++        "review_status": {
++          "enum": [
++            "pending_review",
++            "in_review",
++            "needs_revision",
++            "rejected",
++            "reviewed_not_approved",
++            "approved_for_educational_review"
++          ]
++        },
++        "scores": {
++          "type": "object",
++          "additionalProperties": false,
++          "required": [
++            "target_specificity",
++            "psychological_mechanism",
++            "evidence_support",
++            "exercise_alignment",
++            "progression_and_difficulty",
++            "safety_and_cautions",
++            "outcome_measurement",
++            "accessibility"
++          ],
++          "properties": {
++            "target_specificity": {
++              "type": [
++                "integer",
++                "null"
++              ],
++              "minimum": 0,
++              "maximum": 3
++            },
++            "psychological_mechanism": {
++              "type": [
++                "integer",
++                "null"
++              ],
++              "minimum": 0,
++              "maximum": 3
++            },
++            "evidence_support": {
++              "type": [
++                "integer",
++                "null"
++              ],
++              "minimum": 0,
++              "maximum": 3
++            },
++            "exercise_alignment": {
++              "type": [
++                "integer",
++                "null"
++              ],
++              "minimum": 0,
++              "maximum": 3
++            },
++            "progression_and_difficulty": {
++              "type": [
++                "integer",
++                "null"
++              ],
++              "minimum": 0,
++              "maximum": 3
++            },
++            "safety_and_cautions": {
++              "type": [
++                "integer",
++                "null"
++              ],
++              "minimum": 0,
++              "maximum": 3
++            },
++            "outcome_measurement": {
++              "type": [
++                "integer",
++                "null"
++              ],
++              "minimum": 0,
++              "maximum": 3
++            },
++            "accessibility": {
++              "type": [
++                "integer",
++                "null"
++              ],
++              "minimum": 0,
++              "maximum": 3
++            }
++          }
++        },
++        "reviewer_id": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "reviewed_at": {
++          "type": [
++            "string",
++            "null"
++          ],
++          "format": "date-time"
++        },
++        "rationale": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "evidence_ids": {
++          "type": "array",
++          "uniqueItems": true,
++          "items": {
++            "type": "string",
++            "pattern": "^EVD_[A-Z0-9_-]+$"
++          }
++        },
++        "safety_notes": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        }
++      }
++    }
++  }
++}
+diff --git a/public/assistant/schemas/evidence.v1.schema.json b/public/assistant/schemas/evidence.v1.schema.json
+@@ -0,0 +1,117 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "https://maseer28.invalid/schemas/evidence.v1.schema.json",
++  "title": "Maseer28 Evidence Registry v1",
++  "type": "object",
++  "additionalProperties": false,
++  "required": [
++    "schema_version",
++    "registry_id",
++    "status",
++    "runtime_eligible",
++    "evidence"
++  ],
++  "properties": {
++    "schema_version": {
++      "const": "1.0.0"
++    },
++    "registry_id": {
++      "type": "string",
++      "minLength": 1
++    },
++    "status": {
++      "enum": [
++        "draft_requires_expert_review",
++        "under_review",
++        "reviewed_not_runtime_approved"
++      ]
++    },
++    "runtime_eligible": {
++      "const": false
++    },
++    "evidence": {
++      "type": "array",
++      "items": {
++        "$ref": "#/$defs/evidence"
++      }
++    }
++  },
++  "$defs": {
++    "evidence": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": [
++        "evidence_id",
++        "source_type",
++        "title",
++        "citation",
++        "population",
++        "study_type",
++        "limitations",
++        "review_status",
++        "reviewer_id",
++        "reviewed_at"
++      ],
++      "properties": {
++        "evidence_id": {
++          "type": "string",
++          "pattern": "^EVD_[A-Z0-9_-]+$"
++        },
++        "source_type": {
++          "enum": [
++            "clinical_guideline",
++            "systematic_review",
++            "meta_analysis",
++            "randomized_trial",
++            "observational_study",
++            "textbook",
++            "other"
++          ]
++        },
++        "title": {
++          "type": "string",
++          "minLength": 1
++        },
++        "citation": {
++          "type": "string",
++          "minLength": 1
++        },
++        "population": {
++          "type": "string",
++          "minLength": 1
++        },
++        "study_type": {
++          "type": "string",
++          "minLength": 1
++        },
++        "limitations": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "review_status": {
++          "enum": [
++            "pending_review",
++            "reviewed",
++            "approved",
++            "rejected"
++          ]
++        },
++        "reviewer_id": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "reviewed_at": {
++          "type": [
++            "string",
++            "null"
++          ],
++          "format": "date-time"
++        }
++      }
++    }
++  }
++}
+diff --git a/scripts/audit-content-mappings.mjs b/scripts/audit-content-mappings.mjs
+@@ -0,0 +1,142 @@
++import fs from 'node:fs';
++import path from 'node:path';
++import { fileURLToPath } from 'node:url';
++
++const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
++const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
++const normalize = (value) => String(value ?? '').normalize('NFKC').replace(/\s+/g, ' ').trim();
++
++export function auditContentMappings({ content, topics, subtopics, evidenceRegistry, mappingSet }) {
++  const errors = [];
++  const topicList = topics.topics ?? [];
++  const subtopicList = subtopics.subtopics ?? [];
++  const categoryEntries = Object.entries(content.categories ?? {});
++  if (topicList.length !== 34) errors.push(`Expected 34 topics, found ${topicList.length}.`);
++  if (subtopicList.length !== 102) errors.push(`Expected 102 subtopics, found ${subtopicList.length}.`);
++  if (categoryEntries.length !== 34) errors.push(`Expected 34 content categories, found ${categoryEntries.length}.`);
++  const topicByName = new Map();
++  const topicIds = new Set();
++  for (const item of topicList) {
++    const name = normalize(item.name);
++    if (!name || topicByName.has(name)) errors.push(`Missing or duplicate normalized topic name: ${name}`);
++    if (!item.topic_id || topicIds.has(item.topic_id)) errors.push(`Missing or duplicate topic ID: ${item.topic_id}`);
++    topicByName.set(name, item);
++    topicIds.add(item.topic_id);
++  }
++  const subtopicById = new Map();
++  for (const item of subtopicList) {
++    if (!item.subtopic_id || subtopicById.has(item.subtopic_id)) errors.push(`Missing or duplicate subtopic ID: ${item.subtopic_id}`);
++    subtopicById.set(item.subtopic_id, item);
++  }
++  const evidenceById = new Map();
++  for (const item of evidenceRegistry?.evidence ?? []) {
++    if (!item.evidence_id || evidenceById.has(item.evidence_id)) errors.push(`Missing or duplicate evidence ID: ${item.evidence_id}`);
++    evidenceById.set(item.evidence_id, item);
++  }
++  const expected = new Map();
++  const sourceContentIds = new Set();
++
++  for (const [topicName, category] of Object.entries(content.categories ?? {})) {
++    const topic = topicByName.get(normalize(topicName));
++    if (!topic) {
++      errors.push(`No exact topic match for content category: ${topicName}`);
++      continue;
++    }
++    if (!Array.isArray(category.days) || category.days.length !== 28) errors.push(`Expected 28 days for category: ${topicName}`);
++    for (const [index, day] of (category.days ?? []).entries()) {
++      if (!day.id) errors.push(`Missing source content ID for ${topicName}, day ${index + 1}`);
++      if (sourceContentIds.has(day.id)) errors.push(`Duplicate source content ID: ${day.id}`);
++      sourceContentIds.add(day.id);
++      const mappingId = `MAP_${topic.topic_id}_D${String(index + 1).padStart(2, '0')}`;
++      expected.set(mappingId, { topic, topicName, dayNumber: index + 1, contentId: day.id });
++    }
++  }
++
++  if (!Array.isArray(mappingSet?.mappings)) errors.push('Mapping set must contain a mappings array.');
++  if (!['draft_review_queue_only','under_review','reviewed_not_runtime_approved'].includes(mappingSet?.status)) errors.push('Mapping set status is invalid or too permissive.');
++  if (!['draft_requires_expert_review','under_review','reviewed_not_runtime_approved'].includes(evidenceRegistry?.status)) errors.push('Evidence registry status is invalid or too permissive.');
++  const seen = new Set();
++  const counts = { pending_review: 0, in_review: 0, approved: 0, rejected: 0 };
++  for (const mapping of mappingSet.mappings ?? []) {
++    const expectedRecord = expected.get(mapping.mapping_id);
++    if (seen.has(mapping.mapping_id)) errors.push(`Duplicate mapping id: ${mapping.mapping_id}`);
++    seen.add(mapping.mapping_id);
++    if (!expectedRecord) {
++      errors.push(`Unknown mapping id: ${mapping.mapping_id}`);
++      continue;
++    }
++    if (mapping.source_topic_id !== expectedRecord.topic.topic_id ||
++        mapping.source_topic_name !== expectedRecord.topicName ||
++        Number(mapping.day_number) !== expectedRecord.dayNumber ||
++        mapping.content_id !== expectedRecord.contentId) {
++      errors.push(`Source identity mismatch: ${mapping.mapping_id}`);
++    }
++    if (!Object.hasOwn(counts, mapping.mapping_status)) {
++      errors.push(`Invalid mapping status: ${mapping.mapping_id}`);
++      continue;
++    }
++    counts[mapping.mapping_status] += 1;
++
++    if (!Array.isArray(mapping.subtopic_ids) || new Set(mapping.subtopic_ids).size !== mapping.subtopic_ids.length) errors.push(`Subtopic IDs must be a unique array: ${mapping.mapping_id}`);
++    for (const subtopicId of mapping.subtopic_ids ?? []) {
++      const subtopic = subtopicById.get(subtopicId);
++      if (!subtopic) errors.push(`Unknown subtopic ${subtopicId}: ${mapping.mapping_id}`);
++      else if (subtopic.topic_id !== mapping.source_topic_id) {
++        errors.push(`Subtopic belongs to another parent topic: ${mapping.mapping_id} -> ${subtopicId}`);
++      }
++    }
++
++    if (mapping.mapping_status === 'approved') {
++      const review = mapping.review ?? {};
++      if (!(mapping.subtopic_ids ?? []).length) errors.push(`Approved mapping has no subtopic: ${mapping.mapping_id}`);
++      if (!String(review.reviewer_id ?? '').trim()) errors.push(`Approved mapping lacks reviewer: ${mapping.mapping_id}`);
++      if (!review.reviewed_at || Number.isNaN(Date.parse(review.reviewed_at))) errors.push(`Approved mapping lacks valid review date: ${mapping.mapping_id}`);
++      if (!String(review.rationale ?? '').trim()) errors.push(`Approved mapping lacks rationale: ${mapping.mapping_id}`);
++      if (!Array.isArray(review.evidence_ids) || !review.evidence_ids.length) errors.push(`Approved mapping lacks evidence IDs: ${mapping.mapping_id}`);
++      if (new Set(review.evidence_ids ?? []).size !== (review.evidence_ids ?? []).length) errors.push(`Approved mapping evidence IDs must be unique: ${mapping.mapping_id}`);
++      for (const evidenceId of review.evidence_ids ?? []) {
++        const evidence = evidenceById.get(evidenceId);
++        if (!evidence) errors.push(`Approved mapping references unknown evidence ${evidenceId}: ${mapping.mapping_id}`);
++        else if (evidence.review_status !== 'approved' || !evidence.reviewer_id?.trim() || !evidence.reviewed_at || Number.isNaN(Date.parse(evidence.reviewed_at)) || !evidence.title?.trim() || !evidence.citation?.trim() || !evidence.population?.trim() || !evidence.study_type?.trim()) {
++          errors.push(`Approved mapping references unapproved or untraceable evidence ${evidenceId}: ${mapping.mapping_id}`);
++        }
++      }
++    } else if (mapping.mapping_status === 'rejected' && !String(mapping.review?.rationale ?? '').trim()) {
++      errors.push(`Rejected mapping lacks rationale: ${mapping.mapping_id}`);
++    }
++  }
++
++  const missing = [...expected.keys()].filter((id) => !seen.has(id));
++  if (mappingSet.runtime_eligible !== false) errors.push('Mapping set must remain runtime_eligible=false.');
++  if (evidenceRegistry?.runtime_eligible !== false) errors.push('Evidence registry must remain runtime_eligible=false.');
++  return {
++    errors,
++    counts: {
++      expected_source_days: expected.size,
++      mapping_records: seen.size,
++      missing_records: missing.length,
++      ...counts,
++      approved_evidence_records: [...evidenceById.values()].filter((item) => item.review_status === 'approved').length,
++    },
++    readiness: {
++      structural_integrity: errors.length === 0,
++      complete_source_coverage: missing.length === 0,
++      all_records_reviewed: missing.length === 0 && counts.pending_review === 0 && counts.in_review === 0,
++      evidence_registry_ready: evidenceById.size > 0 && [...evidenceById.values()].every((item) => item.review_status === 'approved'),
++      approved_for_runtime: false,
++    },
++    missing_mapping_ids: missing,
++  };
++}
++
++if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
++  const report = auditContentMappings({
++    content: readJson('public/content/path-content.json'),
++    topics: readJson('public/assistant/knowledge/topics.v1.json'),
++    subtopics: readJson('public/assistant/knowledge/subtopics.v1.json'),
++    evidenceRegistry: readJson('public/assistant/evidence/evidence.v1.json'),
++    mappingSet: readJson('public/assistant/mappings/course-content-mappings.v1.json'),
++  });
++  process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
++  if (report.errors.length) process.exitCode = 1;
++}
+diff --git a/scripts/audit-course-content-quality.mjs b/scripts/audit-course-content-quality.mjs
+@@ -0,0 +1,153 @@
++import fs from 'node:fs';
++import path from 'node:path';
++import { fileURLToPath } from 'node:url';
++
++const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
++const readJson = (p) => JSON.parse(fs.readFileSync(path.join(root, p), 'utf8'));
++const DIMENSIONS = ['target_specificity','psychological_mechanism','evidence_support','exercise_alignment','progression_and_difficulty','safety_and_cautions','outcome_measurement','accessibility'];
++const TEXT_FIELDS = ['title','intro','exercise','actionText','closing'];
++const isTextBoundary = (character) => !character || /[\s،؛,.!?()[\]{}«»]/u.test(character);
++function replaceTopicToken(text, topic) {
++  let cursor = 0;
++  let result = '';
++  let index = text.indexOf(topic, cursor);
++  while (index !== -1) {
++    const before = index === 0 ? '' : text[index - 1];
++    const afterIndex = index + topic.length;
++    const after = afterIndex >= text.length ? '' : text[afterIndex];
++    result += text.slice(cursor, index);
++    result += isTextBoundary(before) && isTextBoundary(after) ? '[TOPIC]' : topic;
++    cursor = afterIndex;
++    index = text.indexOf(topic, cursor);
++  }
++  return result + text.slice(cursor);
++}
++export const normalizeTemplateText = (value, topic) => {
++  const text = String(value ?? '').normalize('NFKC');
++  const normalizedTopic = String(topic ?? '').normalize('NFKC').trim();
++  if (!normalizedTopic) return text.replace(/\s+/g, ' ').trim().toLocaleLowerCase('fa');
++  const quoted = text.split('«' + normalizedTopic + '»').join('«[TOPIC]»');
++  return replaceTopicToken(quoted, normalizedTopic).replace(/\s+/g, ' ').trim().toLocaleLowerCase('fa');
++};
++const normalize = normalizeTemplateText;
++
++
++export function buildReviewQueue(content, topics) {
++  const topicList = topics.topics ?? [];
++  const categoryEntries = Object.entries(content.categories ?? {});
++  if (topicList.length !== 34) throw new Error(`Expected 34 topic definitions, found ${topicList.length}`);
++  if (categoryEntries.length !== 34) throw new Error(`Expected 34 content categories, found ${categoryEntries.length}`);
++  const topicIds = new Set();
++  const topicNames = new Set();
++  for (const topic of topicList) {
++    const id = String(topic.topic_id ?? '');
++    const name = String(topic.name ?? '').normalize('NFKC').trim();
++    if (!id || topicIds.has(id)) throw new Error(`Missing or duplicate topic ID: ${id}`);
++    if (!name || topicNames.has(name)) throw new Error(`Missing or duplicate topic name: ${name}`);
++    topicIds.add(id);
++    topicNames.add(name);
++  }
++  const byName = new Map(topicList.map((t) => [String(t.name).normalize('NFKC').trim(), t]));
++  const seenContentIds = new Set();
++  const reviews = [];
++  for (const [name, category] of Object.entries(content.categories ?? {})) {
++    const topic = byName.get(String(name).normalize('NFKC').trim());
++    if (!topic) throw new Error(`No exact topic registry match: ${name}`);
++    if (!Array.isArray(category.days) || category.days.length !== 28) throw new Error(`Expected 28 days: ${name}`);
++    category.days.forEach((day,index) => {
++      if (!day.id) throw new Error(`Missing content ID for ${topic.topic_id}, day ${index+1}`);
++      if (seenContentIds.has(day.id)) throw new Error(`Duplicate source content ID: ${day.id}`);
++      seenContentIds.add(day.id);
++      reviews.push({
++        review_id:`QREV_${topic.topic_id}_D${String(index+1).padStart(2,'0')}`,
++        topic_id:topic.topic_id, day_number:index+1, content_id:day.id,
++        review_status:'pending_review',
++        scores:Object.fromEntries(DIMENSIONS.map((d)=>[d,null])),
++        reviewer_id:null, reviewed_at:null, rationale:null, evidence_ids:[], safety_notes:[]
++      });
++    });
++  }
++  return reviews;
++}
++
++export function auditCourseContentQuality({content,topics,ledger,evidenceRegistry}) {
++  const errors=[];
++  const expected=buildReviewQueue(content,topics);
++  const expectedById=new Map(expected.map(item=>[item.review_id,item]));
++  const sourceById=new Map();
++  for(const [name,category] of Object.entries(content.categories ?? {})){
++    const topic=topics.topics.find(t=>t.name===name);
++    for(const [i,day] of (category.days ?? []).entries()) sourceById.set(`QREV_${topic?.topic_id}_D${String(i+1).padStart(2,'0')}`,{day});
++  }
++  if (evidenceRegistry?.runtime_eligible !== false) errors.push('Evidence registry must remain runtime_eligible=false.');
++  const evidenceById=new Map();
++  for (const item of evidenceRegistry?.evidence ?? []) {
++    if (evidenceById.has(item.evidence_id)) errors.push('Duplicate evidence ID: '+item.evidence_id);
++    evidenceById.set(item.evidence_id,item);
++  }
++  const seen=new Set(), statusCounts={pending_review:0,in_review:0,needs_revision:0,rejected:0,reviewed_not_approved:0,approved_for_educational_review:0};
++  const repeated={};
++  for(const field of TEXT_FIELDS){
++    const perDay=[];
++    for(let day=0;day<28;day++){
++      const groups=new Map();
++      for(const [topic,category] of Object.entries(content.categories ?? {})){
++        const value=normalize(category.days?.[day]?.[field],topic);
++        if(value) groups.set(value,[...(groups.get(value)??[]),topic]);
++      }
++      perDay.push({day:day+1,shared_templates:[...groups.values()].filter(v=>v.length>1).map(names=>({topic_count:names.length,topics:names}))});
++    }
++    repeated[field]=perDay;
++  }
++  for(const review of ledger.reviews ?? []){
++    if(seen.has(review.review_id)) errors.push(`Duplicate review id: ${review.review_id}`);
++    seen.add(review.review_id);
++    const source=sourceById.get(review.review_id);
++    if(!source) {errors.push(`Unknown review id: ${review.review_id}`);continue;}
++    if(review.content_id!==source.day.id) errors.push(`Source content ID mismatch: ${review.review_id}`);
++    if(review.topic_id!==expectedById.get(review.review_id)?.topic_id) errors.push(`Topic ID mismatch: ${review.review_id}`);
++    if(!Object.hasOwn(statusCounts,review.review_status)){errors.push(`Invalid status: ${review.review_id}`);continue;}
++    statusCounts[review.review_status]++;
++    const scoreKeys = Object.keys(review.scores ?? {}).sort();
++    if (scoreKeys.join('|') !== [...DIMENSIONS].sort().join('|')) errors.push(`Score dimensions mismatch: ${review.review_id}`);
++    if (!Array.isArray(review.evidence_ids) || new Set(review.evidence_ids).size !== review.evidence_ids.length) errors.push(`Evidence IDs must be a unique array: ${review.review_id}`);
++    for(const dimension of DIMENSIONS){
++      const score=review.scores?.[dimension];
++      if(score!==null && (!Number.isInteger(score)||score<0||score>3)) errors.push(`Invalid score ${dimension}: ${review.review_id}`);
++    }
++    for(const evidenceId of review.evidence_ids ?? []) {
++      const evidence=evidenceById.get(evidenceId);
++      if(!evidence) errors.push('Unknown evidence ID (not present in evidence registry): '+review.review_id+' -> '+evidenceId);
++      else if(!evidence.title?.trim() || !evidence.citation?.trim()) errors.push('Evidence source is not traceable: '+review.review_id+' -> '+evidenceId);
++    }
++    if(review.review_status==='approved_for_educational_review'){
++      if(DIMENSIONS.some(d=>!Number.isInteger(review.scores?.[d])||review.scores[d]<2)) errors.push(`Approval requires all eight scores >=2: ${review.review_id}`);
++      if((review.scores?.safety_and_cautions??0)<2) errors.push(`Approval blocked by safety score: ${review.review_id}`);
++      if(!review.reviewer_id?.trim()) errors.push(`Approval lacks reviewer: ${review.review_id}`);
++      if(!review.reviewed_at||Number.isNaN(Date.parse(review.reviewed_at))) errors.push(`Approval lacks review date: ${review.review_id}`);
++      if(!review.rationale?.trim()) errors.push(`Approval lacks rationale: ${review.review_id}`);
++      if(!(review.evidence_ids?.length)) errors.push(`Approval lacks evidence IDs: ${review.review_id}`);
++      for(const evidenceId of review.evidence_ids ?? []) {
++        const evidence=evidenceById.get(evidenceId);
++        if(!evidence || !['reviewed','approved'].includes(evidence.review_status) || !evidence.reviewer_id?.trim() || !evidence.reviewed_at || !evidence.citation?.trim()) errors.push('Approval cites evidence that is absent, unreviewed, or untraceable: '+review.review_id+' -> '+evidenceId);
++      }
++    }
++  }
++  const missing=expected.filter(x=>!seen.has(x.review_id)).map(x=>x.review_id);
++  if(ledger.runtime_eligible!==false) errors.push('Quality review ledger must remain runtime_eligible=false.');
++  return {
++    errors,
++    coverage:{expected_days:expected.length,review_records:seen.size,missing_reviews:missing.length,...statusCounts},
++    text_template_warnings:Object.fromEntries(Object.entries(repeated).map(([field,days])=>[field,days.filter(d=>d.shared_templates.length>0).length])),
++    repeated_templates_by_field:repeated,
++    readiness:{structural_integrity:errors.length===0,complete_review_coverage:missing.length===0,all_reviewed:missing.length===0&&statusCounts.pending_review===0&&statusCounts.in_review===0,approved_for_educational_review:errors.length===0&&missing.length===0&&statusCounts.approved_for_educational_review===expected.length,runtime_eligible:false},
++    missing_review_ids:missing,
++    limitations:['این ابزار معنای بالینی یا تناسب واقعی تمرین را ارزیابی نمی‌کند.','تفاوت متنی به‌تنهایی اختصاصی‌بودن آموزشی را ثابت نمی‌کند.','تأیید آموزشی معادل اثربخشی درمانی یا مجوز توصیه خودکار نیست.']
++  };
++}
++
++if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
++ const report=auditCourseContentQuality({content:readJson('public/content/path-content.json'),topics:readJson('public/assistant/knowledge/topics.v1.json'),ledger:readJson('public/assistant/reviews/course-content-quality-review.v1.json'),evidenceRegistry:readJson('public/assistant/evidence/evidence.v1.json')});
++ process.stdout.write(`${JSON.stringify(report,null,2)}\n`);
++ if(report.errors.length) process.exitCode=1;
++}
+diff --git a/scripts/generate-content-mapping-queue.mjs b/scripts/generate-content-mapping-queue.mjs
+@@ -0,0 +1,67 @@
++import fs from 'node:fs';
++import path from 'node:path';
++import { fileURLToPath } from 'node:url';
++
++const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
++const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
++const normalize = (value) => String(value ?? '').normalize('NFKC').replace(/\s+/g, ' ').trim();
++
++export function buildContentMappingQueue({ content, topics, existing = null }) {
++  const topicByName = new Map((topics.topics ?? []).map((topic) => [normalize(topic.name), topic]));
++  const oldMappings = new Map((existing?.mappings ?? []).map((item) => [item.mapping_id, item]));
++  const mappings = [];
++
++  for (const [topicName, category] of Object.entries(content.categories ?? {})) {
++    const topic = topicByName.get(normalize(topicName));
++    if (!topic) throw new Error(`No exact topic registry match for content category: ${topicName}`);
++    if (!Array.isArray(category.days) || category.days.length !== 28) {
++      throw new Error(`Expected exactly 28 days for category: ${topicName}`);
++    }
++
++    category.days.forEach((day, index) => {
++      const dayNumber = index + 1;
++      const mappingId = `MAP_${topic.topic_id}_D${String(dayNumber).padStart(2, '0')}`;
++      if (!day.id) throw new Error(`Missing content day id: ${mappingId}`);
++      const previous = oldMappings.get(mappingId);
++      if (previous && previous.content_id !== day.id) {
++        throw new Error(`Source content changed for ${mappingId}; manual reconciliation required.`);
++      }
++      mappings.push(previous ?? {
++        mapping_id: mappingId,
++        source_topic_id: topic.topic_id,
++        source_topic_name: topicName,
++        day_number: dayNumber,
++        content_id: day.id,
++        subtopic_ids: [],
++        mapping_status: 'pending_review',
++        review: { reviewer_id: null, reviewed_at: null, rationale: null, evidence_ids: [] },
++        notes: [],
++      });
++    });
++  }
++
++  if (oldMappings.size > mappings.length) throw new Error('Existing mapping ledger contains records not present in the current course registry.');
++  return {
++    schema_version: '1.0.0',
++    mapping_set_id: 'maseer28-course-content-mappings-v1',
++    status: 'draft_review_queue_only',
++    runtime_eligible: false,
++    source: {
++      content_registry: 'public/content/path-content.json',
++      topic_registry: 'public/assistant/knowledge/topics.v1.json',
++      subtopic_registry: 'public/assistant/knowledge/subtopics.v1.json',
++    },
++    policy: 'Parent topic is assigned only by exact category-name match. Subtopic assignments require human review.',
++    mappings,
++  };
++}
++
++if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
++  const outputPath = path.join(root, 'public/assistant/mappings/course-content-mappings.v1.json');
++  const content = readJson('public/content/path-content.json');
++  const topics = readJson('public/assistant/knowledge/topics.v1.json');
++  const existing = fs.existsSync(outputPath) ? readJson('public/assistant/mappings/course-content-mappings.v1.json') : null;
++  const queue = buildContentMappingQueue({ content, topics, existing });
++  fs.writeFileSync(outputPath, `${JSON.stringify(queue, null, 2)}\n`);
++  process.stdout.write(`Generated ${queue.mappings.length} review records; subtopic assignments remain empty and runtime_eligible=false.\n`);
++}
+diff --git a/tests/contentMappingAudit.test.js b/tests/contentMappingAudit.test.js
+@@ -0,0 +1,72 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { readFile } from 'node:fs/promises';
++import { buildContentMappingQueue } from '../scripts/generate-content-mapping-queue.mjs';
++import { auditContentMappings } from '../scripts/audit-content-mappings.mjs';
++
++const read = async (path) => JSON.parse(await readFile(new URL(path, import.meta.url), 'utf8'));
++const [content, topics, subtopics] = await Promise.all([
++  read('../public/content/path-content.json'),
++  read('../public/assistant/knowledge/topics.v1.json'),
++  read('../public/assistant/knowledge/subtopics.v1.json'),
++]);
++const evidenceRegistry = { schema_version:'1.0.0', registry_id:'test', status:'draft_requires_expert_review', runtime_eligible:false, evidence:[] };
++
++test('queue creates 952 pending mappings without guessing subtopics',()=>{
++ const queue=buildContentMappingQueue({content,topics});
++ assert.equal(queue.mappings.length,952);
++ assert.equal(queue.runtime_eligible,false);
++ assert.ok(queue.mappings.every(item=>item.mapping_status==='pending_review'));
++ assert.ok(queue.mappings.every(item=>item.subtopic_ids.length===0));
++});
++
++test('audit reports complete expected source coverage and 952 unreviewed mappings',()=>{
++ const queue=buildContentMappingQueue({content,topics});
++ const report=auditContentMappings({content,topics,subtopics,evidenceRegistry,mappingSet:queue});
++ assert.deepEqual(report.errors,[]);
++ assert.equal(report.counts.expected_source_days,952);
++ assert.equal(report.counts.mapping_records,952);
++ assert.equal(report.counts.pending_review,952);
++ assert.equal(report.readiness.complete_source_coverage,true);
++ assert.equal(report.readiness.all_records_reviewed,false);
++ assert.equal(report.readiness.approved_for_runtime,false);
++});
++
++test('audit rejects a subtopic attached to the wrong parent topic',()=>{
++ const queue=buildContentMappingQueue({content,topics});
++ queue.mappings[0].subtopic_ids=[subtopics.subtopics.find(item=>item.topic_id==='T02').subtopic_id];
++ const report=auditContentMappings({content,topics,subtopics,evidenceRegistry,mappingSet:queue});
++ assert.ok(report.errors.some(error=>error.includes('another parent topic')));
++});
++
++test('approved mapping requires reviewer rationale and fully traceable approved evidence',()=>{
++ const queue=buildContentMappingQueue({content,topics});
++ const mapping=queue.mappings[0];
++ mapping.mapping_status='approved';
++ mapping.subtopic_ids=[subtopics.subtopics.find(item=>item.topic_id===mapping.source_topic_id).subtopic_id];
++ mapping.review={reviewer_id:'expert-1',reviewed_at:'2026-11-02T10:00:00Z',rationale:'Full-day review',evidence_ids:['EVD_VALID_1']};
++ const evidence={evidence_id:'EVD_VALID_1',title:'Guideline',citation:'DOI:10.0000/example',population:'Adults',study_type:'Clinical guideline',review_status:'approved',reviewer_id:'reviewer-1',reviewed_at:'2026-11-02T09:00:00Z'};
++ const report=auditContentMappings({content,topics,subtopics,evidenceRegistry:{...evidenceRegistry,evidence:[evidence]},mappingSet:queue});
++ assert.deepEqual(report.errors,[]);
++});
++
++test('audit rejects duplicate evidence IDs and incomplete evidence metadata',()=>{
++ const queue=buildContentMappingQueue({content,topics});
++ queue.mappings[0].mapping_status='approved';
++ queue.mappings[0].subtopic_ids=[subtopics.subtopics.find(item=>item.topic_id==='T01').subtopic_id];
++ queue.mappings[0].review={reviewer_id:'expert-1',reviewed_at:'2026-11-02T10:00:00Z',rationale:'Reviewed',evidence_ids:['EVD_DUP']};
++ const evidence={evidence_id:'EVD_DUP',title:'Title',citation:'Citation',population:'Adults',study_type:'Trial',review_status:'approved',reviewer_id:'reviewer-1',reviewed_at:'2026-11-02T09:00:00Z'};
++ const report=auditContentMappings({content,topics,subtopics,evidenceRegistry:{...evidenceRegistry,evidence:[evidence,evidence]},mappingSet:queue});
++ assert.ok(report.errors.some(error=>error.includes('duplicate evidence ID')));
++});
++
++test('audit rejects duplicate source content IDs and non-draft runtime flags',()=>{
++ const changed=structuredClone(content);
++ const names=Object.keys(changed.categories);
++ changed.categories[names[1]].days[0].id=changed.categories[names[0]].days[0].id;
++ const queue=buildContentMappingQueue({content:changed,topics});
++ queue.runtime_eligible=true;
++ const report=auditContentMappings({content:changed,topics,subtopics,evidenceRegistry,mappingSet:queue});
++ assert.ok(report.errors.some(error=>error.includes('Duplicate source content ID')));
++ assert.ok(report.errors.some(error=>error.includes('runtime_eligible=false')));
++});
+diff --git a/tests/courseContentQualityAudit.test.js b/tests/courseContentQualityAudit.test.js
+@@ -0,0 +1,87 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { readFile } from 'node:fs/promises';
++import { buildReviewQueue, auditCourseContentQuality, normalizeTemplateText } from '../scripts/audit-course-content-quality.mjs';
++
++const read=async p=>JSON.parse(await readFile(new URL(p,import.meta.url),'utf8'));
++const [content,topics]=await Promise.all([read('../public/content/path-content.json'),read('../public/assistant/knowledge/topics.v1.json')]);
++
++test('review queue covers every source day without pre-scoring',()=>{
++ const queue=buildReviewQueue(content,topics);
++ assert.equal(queue.length,952);
++ assert.ok(queue.every(r=>r.review_status==='pending_review'));
++ assert.ok(queue.every(r=>Object.values(r.scores).every(v=>v===null)));
++});
++
++test('audit reports missing reviews and template warnings without claiming quality',()=>{
++ const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[]}});
++ assert.equal(report.coverage.expected_days,952);
++ assert.equal(report.coverage.missing_reviews,952);
++ assert.equal(report.readiness.approved_for_educational_review,false);
++ assert.ok(Object.keys(report.text_template_warnings).includes('exercise'));
++ assert.ok(report.limitations.some(x=>x.includes('معنای بالینی')));
++});
++
++test('educational approval is blocked by incomplete or low scores',()=>{
++ const review=buildReviewQueue(content,topics)[0];
++ review.review_status='approved_for_educational_review';
++ review.scores={target_specificity:3,psychological_mechanism:3,evidence_support:3,exercise_alignment:3,progression_and_difficulty:3,safety_and_cautions:1,outcome_measurement:3,accessibility:3};
++ review.reviewer_id='expert-1';review.reviewed_at='2026-11-01T12:00:00Z';review.rationale='Reviewed';review.evidence_ids=['EVD_TEST_01'];
++ const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[review]}});
++ assert.ok(report.errors.some(x=>x.includes('safety score')));
++ assert.ok(report.errors.some(x=>x.includes('all eight scores')));
++});
++
++test('approved educational review requires full metadata and scores',()=>{
++ const review=buildReviewQueue(content,topics)[0];
++ review.review_status='approved_for_educational_review';
++ review.scores=Object.fromEntries(Object.keys(review.scores).map(k=>[k,2]));
++ review.reviewer_id='expert-1';review.reviewed_at='2026-11-01T12:00:00Z';review.rationale='Reviewed against the full daily lesson.';review.evidence_ids=['EVD_TEST_01'];
++ const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[review]},evidenceRegistry:{runtime_eligible:false,evidence:[{evidence_id:'EVD_TEST_01',title:'Verified source',citation:'DOI:10.0000/example',review_status:'approved',reviewer_id:'reviewer-1',reviewed_at:'2026-11-01T12:00:00Z'}]}});
++ assert.deepEqual(report.errors,[]);
++});
++
++test('syntactically valid but unregistered evidence IDs are rejected',()=>{
++ const review=buildReviewQueue(content,topics)[0];
++ review.evidence_ids=['EVD_TEST_01'];
++ const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[review]},evidenceRegistry:{evidence:[]}});
++ assert.ok(report.errors.some(x=>x.includes('Unknown evidence ID')));
++});
++
++test('approved reviews cannot cite evidence that has not been reviewed',()=>{
++ const review=buildReviewQueue(content,topics)[0];
++ review.review_status='approved_for_educational_review';
++ review.scores=Object.fromEntries(Object.keys(review.scores).map(k=>[k,2]));
++ review.reviewer_id='expert-1';review.reviewed_at='2026-11-01T12:00:00Z';review.rationale='Reviewed against full lesson.';review.evidence_ids=['EVD_PENDING_1'];
++ const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[review]},evidenceRegistry:{runtime_eligible:false,evidence:[{evidence_id:'EVD_PENDING_1',title:'Pending source',citation:'DOI:10.0000/pending',review_status:'pending_review',reviewer_id:null,reviewed_at:null}]}});
++ assert.ok(report.errors.some(x=>x.includes('unreviewed, or untraceable')));
++});
++
++test('topic normalization replaces complete topic tokens but not substrings',()=>{
++ assert.equal(normalizeTemplateText('تمرین برای اضطراب', 'اضطراب'),'تمرین برای [topic]');
++ assert.equal(normalizeTemplateText('تمرین برای اضطرابی', 'اضطراب'),'تمرین برای اضطرابی');
++ assert.equal(normalizeTemplateText('«اضطراب» را بررسی کن', 'اضطراب'),'«[topic]» را بررسی کن');
++});
++
++test('audit rejects duplicate evidence IDs and a runtime-enabled evidence registry',()=>{
++ const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[]},evidenceRegistry:{runtime_eligible:true,evidence:[{evidence_id:'EVD_DUP',title:'A',citation:'A'},{evidence_id:'EVD_DUP',title:'B',citation:'B'}]}});
++ assert.ok(report.errors.some(x=>x.includes('runtime_eligible=false')));
++ assert.ok(report.errors.some(x=>x.includes('Duplicate evidence ID')));
++});
++
++test('audit rejects malformed score dimensions and duplicate evidence references',()=>{
++ const review=buildReviewQueue(content,topics)[0];
++ review.scores={target_specificity:2};
++ review.evidence_ids=['EVD_X','EVD_X'];
++ const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[review]},evidenceRegistry:{runtime_eligible:false,evidence:[{evidence_id:'EVD_X',title:'Source',citation:'Citation'}]}});
++ assert.ok(report.errors.some(x=>x.includes('Score dimensions mismatch')));
++ assert.ok(report.errors.some(x=>x.includes('unique array')));
++});
++
++test('queue rejects duplicate source content IDs and non-34-topic input',()=>{
++ const changed=structuredClone(content);
++ const names=Object.keys(changed.categories);
++ changed.categories[names[1]].days[0].id=changed.categories[names[0]].days[0].id;
++ assert.throws(()=>buildReviewQueue(changed,topics),/Duplicate source content ID/);
++ assert.throws(()=>buildReviewQueue(content,{topics:topics.topics.slice(1)}),/Expected 34 topic definitions/);
++});

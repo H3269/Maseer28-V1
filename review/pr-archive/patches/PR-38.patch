@@ -1,0 +1,805 @@
+diff --git a/.github/workflows/validate-content.yml b/.github/workflows/validate-content.yml
+@@ -13,6 +13,9 @@ on:
+       - 'scripts/validate-self-evaluation-pilot.mjs'
+       - 'scripts/validate-assessment-knowledge-consistency.mjs'
+       - 'scripts/validate-assessment-rule-registry.mjs'
++      - 'scripts/validate-quality-safety-gates.mjs'
++      - 'scripts/validate-independent-review-ledger.mjs'
++      - 'public/assistant/quality/**'
+       - 'package.json'
+       - 'package-lock.json'
+       - '.github/workflows/**'
+@@ -82,6 +85,12 @@ jobs:
+       - name: Validate versioned assessment rule registry
+         if: ${{ always() && steps.install.outcome == 'success' }}
+         run: npm run validate:assessment-rule-registry
++      - name: Validate content quality and safety release gates
++        if: ${{ always() && steps.install.outcome == 'success' }}
++        run: npm run validate:quality-safety-gates
++      - name: Validate independent expert review ledger
++        if: ${{ always() && steps.install.outcome == 'success' }}
++        run: npm run validate:independent-review-ledger
+       - name: Build application
+         if: ${{ always() && steps.install.outcome == 'success' }}
+         run: |
+diff --git a/docs/content-quality-safety-gates-v1.md b/docs/content-quality-safety-gates-v1.md
+@@ -0,0 +1,160 @@
++# استاندارد کنترل کیفیت و ایمنی محتوای مسیر۲۸ — نسخه ۱
++
++وضعیت: پیشنهاد اجرایی برای بازبینی مستقل؛ این سند به‌تنهایی مجوز انتشار یا ادعای اعتبار بالینی نیست.
++دامنه: محتوای آموزشی روزانه، بسته‌های تمرینی، محتوای بازیابی‌شونده توسط دستیار و صف بازطراحی ۹۵۲ روزه.
++اصل پایه: عبور از اعتبارسنج ساختاری یا CI هرگز معادل تأیید علمی، روان‌شناختی، ایمنی یا اثربخشی نیست.
++
++## 1. دروازه‌های اجباری انتشار
++
++هر رکورد باید به‌ترتیب از این دروازه‌ها عبور کند. شکست در هر دروازه، وضعیت را به «مسدود» می‌برد؛ امتیاز خوب در دروازه‌های دیگر نمی‌تواند شکست را جبران کند.
++
++1. **هویت و نسخه:** شناسه یکتا، موضوع/زیرموضوع معتبر، روز و مرحله مسیر، نسخه محتوا، تاریخ آخرین تغییر و مالک بازبینی مشخص باشد.
++2. **ردیابی ادعا و منبع:** هر ادعای علمی/درمانی/اثربخشی به منبع دقیق و دامنه‌ای که واقعاً پشتیبانی می‌کند متصل باشد. عنوان یا وجود منبع، شاهد پشتیبان بودن آن نیست.
++3. **صحت و مرزبندی مفهومی:** تعریف‌ها، تمایز مفاهیم نزدیک، جمعیت هدف، محدودیت‌ها و موارد نامعلوم روشن باشند.
++4. **ایمنی و تناسب:** خطرهای قابل پیش‌بینی، گزینه رد/توقف، جایگزین کم‌فشار و مسیر ارجاع مناسب تعیین شده باشند.
++5. **کیفیت آموزشی:** هدف، توضیح، تمرین، اقدام و سنجه پیشرفت با هم سازگار و برای کاربر قابل فهم باشند.
++6. **پیوستگی مسیر:** محتوای روز با پیش‌نیازها، روز قبل و روز بعد تناسب داشته باشد؛ پیشرفت صرفاً با عوض شدن عبارت‌ها اثبات نمی‌شود.
++7. **دسترس‌پذیری و زبان:** زبان روشن، غیرتحقیرآمیز و قابل استفاده با محدودیت‌های رایج باشد؛ اصطلاح تخصصی توضیح داده شود و جایگزین ساده‌تر ارائه شود.
++8. **کنترل محصول و runtime:** فقط محتوای وضعیت approved و دارای مجوز صریح نسخه‌ای می‌تواند در بازیابی یا runtime ظاهر شود. draft، pending، rejected و retired باید fail-closed مسدود بمانند.
++9. **پس از انتشار:** نسخه، تصمیم‌ها، گزارش خطا، تاریخ بازبینی بعدی و سازوکار بازگشت نسخه ثبت شود.
++
++## 2. ماتریس امتیازدهی انسانی
++
++دو بازبین مستقل باید هر بُعد را از ۰ تا ۴ امتیاز دهند. امتیازها توصیفی‌اند و نباید بدون داده کالیبراسیون به یک «نمره علمی» یا احتمال اثربخشی تبدیل شوند.
++
++| امتیاز | تعریف |
++|---|---|
++| 0 | غایب، نادرست، گمراه‌کننده یا بالقوه آسیب‌زا |
++| 1 | ضعف اساسی؛ برای استفاده قابل قبول نیست |
++| 2 | بخشی قابل قبول، اما اصلاح اساسی لازم است |
++| 3 | مناسب با اصلاح محدود و مستند |
++| 4 | روشن، مستدل، متناسب و مستند در محدوده ادعا |
++
++ابعاد امتیازدهی:
++- A. صحت علمی و دقت ادعا
++- B. کیفیت و تناسب شواهد
++- C. مرزبندی مفهومی و پرهیز از تعمیم
++- D. ایمنی، اختیار کاربر و مدیریت خطر
++- E. کیفیت آموزشی و قابلیت اجرا
++- F. پیشرفت و پیوستگی روزانه
++- G. زبان، فرهنگ و دسترس‌پذیری
++- H. قابلیت ردیابی، نسخه و قابلیت نگهداری
++
++**قاعده مهم:** میانگین یا مجموع امتیازها، دروازه سخت را دور نمی‌زند. هر بُعد با امتیاز ۰ یا ۱، یا هر پرچم توقف قطعی، مانع تأیید است. حداقل نمره نهایی برای انتشار تا زمان اجرای مطالعه کالیبراسیون و تصویب کمیته بازبینی تعیین نمی‌شود.
++
++## 3. پرچم‌های توقف قطعی
++
++هر مورد زیر به‌تنهایی وضعیت را به blocked/rework می‌برد:
++
++- توصیه‌ای که خطر جسمی، روانی، مالی، حقوقی یا رابطه‌ای قابل پیش‌بینی ایجاد کند، بدون کنترل و مرزبندی کافی.
++- تشویق به افشا، مواجهه، تماس، آشتی، عذرخواهی یا جبران در شرایطی که رضایت، امنیت یا مرز طرف مقابل روشن نیست.
++- انتقال مسئولیت خشونت، اجبار یا سوءاستفاده به فرد آسیب‌دیده.
++- تبدیل احساس گناه/شرم/ترس به اثبات تقصیر یا تشخیص.
++- ادعای تشخیص، درمان، پیشگیری یا اثربخشی بدون شواهد مستقیم و دامنه مناسب.
++- منبع غیرقابل ردیابی، منبع نامرتبط با ادعا، یا ادعای فراتر از جمعیت/مداخله/پیامد مطالعه.
++- فقدان گزینه رد یا توقف برای تمرینی که می‌تواند آشفتگی ایجاد کند.
++- نبود مسیر جایگزین امن برای تمرین حساس، یا نبود مسیر کمک انسانی در موقعیت نیازمند ارجاع.
++- دسترسی runtime به محتوای پیش‌نویس، فاقد بازبین، یا فاقد مجوز نسخه‌ای.
++- جمع‌آوری داده حساس غیرضروری یا ارسال آن خارج از دامنه رضایت معتبر.
++
++پرچم‌های توقف باید با شناسه، شرح، شدت، شواهد و اقدام اصلاحی ثبت شوند؛ متن هشدار عمومی جایگزین کنترل خطر نیست.
++
++## 4. طبقه‌بندی شدت یافته‌ها
++
++- **P0 — بحرانی:** خطر فوری یا نقض جدی حریم خصوصی/مجوز؛ توقف انتشار و در صورت لزوم خاموش‌سازی قابلیت.
++- **P1 — بالا:** خطای علمی مهم، خطر قابل پیش‌بینی یا نقص جدی مسیر ارجاع؛ انتشار مسدود تا رفع و بازبینی مجدد.
++- **P2 — متوسط:** نقص کیفیت، ابهام، ضعف دسترس‌پذیری یا شکاف آموزشی؛ اصلاح پیش از تأیید نهایی.
++- **P3 — پایین:** بهبود نگارشی/تجربه کاربری بدون اثر شناخته‌شده بر صحت یا ایمنی؛ ثبت در backlog.
++
++شدت باید بر اساس پیامد محتمل و زمینه کاربر تعیین شود، نه تعداد ایرادها یا سلیقه بازبین.
++
++## 5. الزامات بازبینی شواهد
++
++برای هر ادعای قابل بررسی، این فیلدها لازم‌اند:
++- claim_id و متن دقیق ادعا
++- evidence_id و URL/DOI دقیق
++- جمعیت و زمینه
++- سازه/مداخله و مقایسه‌گر، در صورت وجود
++- پیامد مورد سنجش
++- نوع مطالعه/راهنما
++- کیفیت یا قطعیت شواهد و روش ارزیابی آن
++- محدودیت‌ها و تعارض منافع شناخته‌شده
++- تاریخ انتشار و تاریخ آخرین راستی‌آزمایی
++- عبارت مجاز برای استفاده در محتوا
++- عبارت‌ها/برداشت‌هایی که منبع پشتیبانی نمی‌کند
++
++منابع نظری یا مفهومی نباید به‌عنوان اثبات اثربخشی تمرین معرفی شوند. شواهد مربوط به یک سازه نزدیک، خودبه‌خود شاهد مستقیم برای سازه دیگر نیست. ادعاهای درمانی باید جداگانه و با منبع متناسب بررسی شوند.
++
++## 6. بازبینی مستقل و حل اختلاف
++
++1. دو ارزیاب واجد صلاحیت، محتوا را مستقل و بدون مشاهده امتیاز یکدیگر ارزیابی کنند.
++2. هر امتیاز ۰ یا ۱ و هر پرچم توقف باید با دلیل و محل دقیق متن مستند شود.
++3. اختلاف درباره ایمنی، صحت ادعا یا وضعیت انتشار به ارزیاب سوم/مسئول تخصصی ارجاع شود؛ میانگین‌گیری اختلاف را حل نمی‌کند.
++4. هویت و صلاحیت بازبین، تعارض منافع، تاریخ، نسخه محتوا و تصمیم نهایی ثبت شود.
++5. تغییر محتوای تأییدشده، بازبینی مجدد بخش‌های متاثر و کنترل نسخه را الزامی می‌کند.
++
++پیش از استفاده عملی از امتیازها، نمونه‌های لنگر (anchor examples)، آموزش ارزیابان، توافق بین ارزیابان و تحلیل اختلاف‌ها باید اجرا شود. معیار آماری توافق و حد پذیرش باید پیش از مطالعه کالیبراسیون و با توجیه روش‌شناختی تعیین شود؛ در این نسخه عدد دلخواه تعیین نمی‌شود.
++
++## 7. الزامات ویژه مسیر روزانه
++
++برای هر زنجیره روزانه، بازبین باید جداگانه پاسخ دهد:
++- پیش‌نیاز واقعی هر روز چیست؟
++- مهارت یا فهم جدید نسبت به روز قبل کدام است؟
++- بار شناختی/هیجانی چگونه افزایش یا کاهش می‌یابد؟
++- کاربر می‌تواند تمرین را رد کند، ساده کند یا بعداً انجام دهد؟
++- اگر کاربر تمرین را انجام نداد، آیا متن او را سرزنش می‌کند؟
++- سنجه پیشرفت رفتار/فهم را می‌سنجد یا صرفاً رضایت و احساس خوب را؟
++- آیا روز پایانی جمع‌بندی واقع‌بینانه دارد و وعده نتیجه نمی‌دهد؟
++- آیا برای کاربر بدون حمایت اجتماعی/منابع بیرونی جایگزین وجود دارد؟
++
++تکرار واژه‌ها یا متفاوت بودن متن‌ها معیار کافی برای progression نیست. باید پیوند هدف، سازوکار، تمرین، اقدام و سنجه در کل زنجیره بررسی شود.
++
++## 8. کنترل وضعیت و دسترسی runtime
++
++چرخه پیشنهادی وضعیت:
++- draft
++- pending_review
++- rework_required
++- expert_reviewed
++- approved
++- retired
++- rejected
++
++فقط approved می‌تواند واجد شرایط runtime باشد؛ آن هم فقط با مجوز نسخه‌ای مستقل، تاریخ اعتبار و کنترل ایمنی. expert_reviewed به‌تنهایی مجوز انتشار نیست. تغییر نسخه یا منبع کلیدی، مجوز قبلی را خودکار معتبر نگه نمی‌دارد.
++
++اعتبارسنج خودکار باید دست‌کم این موارد را کنترل کند:
++- وجود و یکتایی شناسه‌ها و نسخه‌ها
++- کامل بودن فیلدهای بازبینی و provenance
++- تطبیق ادعا با شناسه منابع ثبت‌شده
++- عدم وجود runtime flag برای وضعیت‌های غیرمجاز
++- وجود پرچم‌های توقف حل‌نشده
++- یکتایی و صحت نگاشت صف ۹۵۲ روزه
++- ثبت گزارش machine-readable از خطاها
++
++اعتبارسنج خودکار نباید وانمود کند که می‌تواند صحت بالینی، کیفیت درمانی، فهم ظرافت‌های فارسی یا ایمنی زمینه‌ای را به‌تنهایی تأیید کند.
++
++## 9. الگوی خروجی بازبینی هر محتوا
++
++هر بررسی باید حداقل این خروجی را داشته باشد:
++- content_id، topic_id، day_number، version
++- وضعیت در هر دروازه
++- امتیاز A تا H از هر بازبین
++- یافته‌ها با severity، محل متن و rationale
++- پرچم‌های توقف و وضعیت رفع
++- تصمیم: approve / rework / reject / hold
++- محدودیت استفاده و گروه هدف
++- نام/شناسه و صلاحیت بازبین، تعارض منافع، تاریخ
++- بازبین adjudication در صورت اختلاف
++- نسخه قبلی و نسخه جایگزین
++
++## 10. اعمال اولیه بر پایلوت ۲۵ محتوایی PR34
++
++این استاندارد ابتدا باید روی ۲۵ محتوای T15، T23، T33، T19 و T26 در روزهای ۰۴ تا ۰۸ به‌صورت آزمایشی اعمال شود. تا تکمیل دو بازبینی مستقل، رفع P0/P1، تأیید منابع و کنترل runtime:
++- تمام ۲۵ رکورد draft باقی می‌مانند.
++- امتیازهای صف null باقی می‌مانند.
++- هیچ رکوردی runtime_eligible=true نمی‌شود.
++- هیچ تغییری به main یا ادغام PRها انجام نمی‌شود.
++
++## 11. محدودیت این سند
++
++این سند یک چارچوب حاکمیت کیفیت و کنترل انتشار است؛ ابزار تشخیص، پروتکل درمان، تضمین ایمنی یا گواهی اثربخشی نیست. لازم است پیش از تصویب نهایی توسط متخصصان مرتبط، مسئول حریم خصوصی/امنیت و مالک محصول بررسی شود.
+diff --git a/package.json b/package.json
+@@ -15,7 +15,9 @@
+     "validate:self-evaluation-pilot": "node scripts/validate-self-evaluation-pilot.mjs",
+     "validate:subtopic-definitions": "node scripts/validate-subtopic-definition-proposals.mjs",
+     "validate:assessment-knowledge": "node scripts/validate-assessment-knowledge-consistency.mjs",
+-    "validate:assessment-rule-registry": "node scripts/validate-assessment-rule-registry.mjs"
++    "validate:assessment-rule-registry": "node scripts/validate-assessment-rule-registry.mjs",
++    "validate:quality-safety-gates": "node scripts/validate-quality-safety-gates.mjs",
++    "validate:independent-review-ledger": "node scripts/validate-independent-review-ledger.mjs"
+   },
+   "dependencies": {
+     "react": "18.3.1",
+diff --git a/public/assistant/quality/content-quality-safety-gates.v1.json b/public/assistant/quality/content-quality-safety-gates.v1.json
+@@ -0,0 +1,234 @@
++{
++  "schema_version": "1.0.0",
++  "policy_id": "maseer28-content-quality-safety-gates-v1",
++  "status": "proposed_pending_independent_review",
++  "scope": [
++    "daily_learning_content",
++    "952_day_redesign_queue",
++    "assistant_retrieval_content"
++  ],
++  "core_rule": "automated_validation_is_not_expert_or_clinical_approval",
++  "review_dimensions": [
++    {
++      "id": "A",
++      "name": "scientific_accuracy_and_claim_precision",
++      "scale": [
++        0,
++        1,
++        2,
++        3,
++        4
++      ]
++    },
++    {
++      "id": "B",
++      "name": "evidence_quality_and_relevance",
++      "scale": [
++        0,
++        1,
++        2,
++        3,
++        4
++      ]
++    },
++    {
++      "id": "C",
++      "name": "conceptual_boundaries_and_non_overgeneralization",
++      "scale": [
++        0,
++        1,
++        2,
++        3,
++        4
++      ]
++    },
++    {
++      "id": "D",
++      "name": "safety_user_agency_and_risk_controls",
++      "scale": [
++        0,
++        1,
++        2,
++        3,
++        4
++      ]
++    },
++    {
++      "id": "E",
++      "name": "instructional_quality_and_actionability",
++      "scale": [
++        0,
++        1,
++        2,
++        3,
++        4
++      ]
++    },
++    {
++      "id": "F",
++      "name": "sequence_progression_and_continuity",
++      "scale": [
++        0,
++        1,
++        2,
++        3,
++        4
++      ]
++    },
++    {
++      "id": "G",
++      "name": "language_culture_and_accessibility",
++      "scale": [
++        0,
++        1,
++        2,
++        3,
++        4
++      ]
++    },
++    {
++      "id": "H",
++      "name": "provenance_versioning_and_maintainability",
++      "scale": [
++        0,
++        1,
++        2,
++        3,
++        4
++      ]
++    }
++  ],
++  "score_anchors": {
++    "0": "missing_incorrect_misleading_or_potentially_harmful",
++    "1": "major_deficiency_not_acceptable_for_use",
++    "2": "partially_acceptable_major_revision_required",
++    "3": "acceptable_with_limited_documented_revision",
++    "4": "clear_supported_proportionate_within_claim_scope"
++  },
++  "scoring_policy": {
++    "reviewers_required": 2,
++    "independent_reviews": true,
++    "minimum_score_for_release": null,
++    "minimum_score_policy": "not_set_pending_calibration_and_governance_approval",
++    "hard_stop_overrides_aggregate_score": true,
++    "scores_are_not_efficacy_or_clinical_validity_estimates": true
++  },
++  "hard_stop_flags": [
++    "foreseeable_material_harm_without_adequate_controls",
++    "coerced_disclosure_exposure_contact_reconciliation_or_repair",
++    "victim_blame_or_transfer_of_abuser_responsibility",
++    "equating_emotion_with_fault_or_diagnosis",
++    "unsupported_diagnostic_treatment_prevention_or_efficacy_claim",
++    "untraceable_or_claim_mismatched_source",
++    "sensitive_exercise_without_refusal_or_stop_option",
++    "no_safe_alternative_or_required_human_referral_path",
++    "runtime_access_for_unapproved_or_unversioned_content",
++    "unnecessary_sensitive_data_collection_or_processing_outside_consent"
++  ],
++  "severity_levels": [
++    {
++      "id": "P0",
++      "meaning": "critical_immediate_risk_or_serious_privacy_or_authorization_breach",
++      "release_block": true
++    },
++    {
++      "id": "P1",
++      "meaning": "high_scientific_or_safety_risk_or_serious_referral_gap",
++      "release_block": true
++    },
++    {
++      "id": "P2",
++      "meaning": "moderate_quality_clarity_accessibility_or_learning_gap",
++      "release_block": false
++    },
++    {
++      "id": "P3",
++      "meaning": "low_impact_editorial_or_experience_improvement",
++      "release_block": false
++    }
++  ],
++  "workflow_statuses": [
++    "draft",
++    "pending_review",
++    "rework_required",
++    "expert_reviewed",
++    "approved",
++    "retired",
++    "rejected"
++  ],
++  "runtime_policy": {
++    "eligible_statuses": [
++      "approved"
++    ],
++    "require_separate_versioned_runtime_grant": true,
++    "fail_closed": true,
++    "expert_reviewed_is_not_release_approval": true,
++    "draft_pending_review_rework_required_rejected_retired_runtime_eligible": false
++  },
++  "required_review_record_fields": [
++    "content_id",
++    "topic_id",
++    "day_number",
++    "content_version",
++    "gate_results",
++    "reviewer_scores",
++    "findings",
++    "hard_stop_flags",
++    "decision",
++    "target_population",
++    "usage_limits",
++    "reviewer_qualification",
++    "conflict_of_interest",
++    "reviewed_at",
++    "adjudicator_if_needed",
++    "previous_version",
++    "replacement_version"
++  ],
++  "evidence_claim_fields": [
++    "claim_id",
++    "claim_text",
++    "evidence_id",
++    "url_or_doi",
++    "population",
++    "construct_or_intervention",
++    "comparator_or_context",
++    "outcome",
++    "study_design_or_guideline_type",
++    "evidence_certainty",
++    "limitations",
++    "publication_year",
++    "last_checked",
++    "permitted_wording",
++    "unsupported_interpretations"
++  ],
++  "calibration": {
++    "anchor_examples_required": true,
++    "reviewer_training_required": true,
++    "inter_rater_agreement_required": true,
++    "numeric_acceptance_threshold": null,
++    "threshold_policy": "set_before_calibration_study_with_methodological_justification"
++  },
++  "initial_pilot": {
++    "pull_request": 34,
++    "content_count": 25,
++    "topic_ids": [
++      "T15",
++      "T23",
++      "T33",
++      "T19",
++      "T26"
++    ],
++    "day_range": [
++      4,
++      8
++    ],
++    "require_two_independent_reviews": true,
++    "keep_runtime_blocked_until_all_gates_pass": true,
++    "keep_queue_scores_null_until_review_complete": true
++  },
++  "limitations": [
++    "This policy is a governance and release-control framework, not a diagnostic or treatment protocol.",
++    "Automated validators cannot independently establish clinical accuracy, contextual safety, Persian pragmatic understanding, or efficacy.",
++    "Passing CI does not constitute expert approval or permission for public release."
++  ]
++}
+diff --git a/public/assistant/quality/independent-review-ledger.v1.json b/public/assistant/quality/independent-review-ledger.v1.json
+@@ -0,0 +1,41 @@
++{
++  "schema_version": "1.0.0",
++  "ledger_id": "maseer28-independent-content-review-ledger-v1",
++  "status": "empty_template_no_reviews_performed",
++  "blind_review_policy": {
++    "required_reviewers": 2,
++    "independent": true,
++    "reviewer_ids_must_differ": true,
++    "submissions_hidden_from_other_reviewer_until_both_submitted": true,
++    "no_prepopulated_scores_or_reviewer_identity": true
++  },
++  "governance": {
++    "scores": [
++      "A",
++      "B",
++      "C",
++      "D",
++      "E",
++      "F",
++      "G",
++      "H"
++    ],
++    "score_range": [
++      0,
++      1,
++      2,
++      3,
++      4
++    ],
++    "release_score_threshold": null,
++    "disagreement_resolution": "third_qualified_adjudicator_required_no_averaging",
++    "release_blocking_severities": [
++      "P0",
++      "P1"
++    ],
++    "runtime_requires": "approved_record_and_separate_versioned_runtime_grant",
++    "audit": "append_only_event_log_linked_by_sequence_and_previous_event_id; repository_commit_history_is_authoritative"
++  },
++  "records": [],
++  "event_log": []
++}
+diff --git a/scripts/validate-independent-review-ledger.mjs b/scripts/validate-independent-review-ledger.mjs
+@@ -0,0 +1,110 @@
++import { createHash } from 'node:crypto';
++
++const DIMENSIONS = ['A','B','C','D','E','F','G','H'];
++const SEVERITIES = new Set(['P0','P1','P2','P3']);
++const DECISIONS = new Set(['rework','reject','hold','expert_reviewed','approved']);
++
++const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
++const nonEmpty = (value) => typeof value === 'string' && value.trim().length > 0;
++const canonical = (value) => Array.isArray(value) ? '[' + value.map(canonical).join(',') + ']' :
++  isObject(value) ? '{' + Object.keys(value).sort().map((key) => JSON.stringify(key) + ':' + canonical(value[key])).join(',') + '}' : JSON.stringify(value);
++const digest = (value) => 'sha256:' + createHash('sha256').update(canonical(value)).digest('hex');
++const hasAllScores = (scores) => isObject(scores) && DIMENSIONS.every((key) =>
++  Number.isInteger(scores[key]) && scores[key] >= 0 && scores[key] <= 4);
++
++export function validateIndependentReviewLedger(ledger) {
++  const errors = [];
++  const records = Array.isArray(ledger?.records) ? ledger.records : [];
++  const events = Array.isArray(ledger?.event_log) ? ledger.event_log : [];
++  if (ledger?.schema_version !== '1.0.0') errors.push('ledger schema_version must be 1.0.0');
++  if (ledger?.ledger_id !== 'maseer28-independent-content-review-ledger-v1') errors.push('ledger identity is invalid');
++  const blind = ledger?.blind_review_policy;
++  if (blind?.required_reviewers !== 2 || blind?.independent !== true ||
++      blind?.reviewer_ids_must_differ !== true ||
++      blind?.submissions_hidden_from_other_reviewer_until_both_submitted !== true ||
++      blind?.no_prepopulated_scores_or_reviewer_identity !== true) errors.push('blind independent review policy is weakened');
++  if (ledger?.governance?.release_score_threshold !== null ||
++      ledger?.governance?.disagreement_resolution !== 'third_qualified_adjudicator_required_no_averaging' ||
++      ledger?.governance?.runtime_requires !== 'approved_record_and_separate_versioned_runtime_grant') {
++    errors.push('review governance or fail-closed runtime policy is weakened');
++  }
++  const recordIds = new Set();
++  const eventIds = new Set();
++  for (const record of records) {
++    if (!isObject(record) || !nonEmpty(record.content_id) || recordIds.has(record.content_id)) {
++      errors.push('review record has missing or duplicate content_id'); continue;
++    }
++    recordIds.add(record.content_id);
++    if (!nonEmpty(record.content_version) || !nonEmpty(record.topic_id) ||
++        !Number.isInteger(record.day_number) || record.day_number < 1) errors.push('record identity/version fields are incomplete: ' + record.content_id);
++    const reviews = Array.isArray(record.reviews) ? record.reviews : [];
++    if (reviews.length > 2) errors.push('at most two first-line independent reviews are allowed: ' + record.content_id);
++    const reviewers = new Set();
++    for (const review of reviews) {
++      if (!nonEmpty(review.reviewer_id) || reviewers.has(review.reviewer_id)) errors.push('reviewer IDs must be present and distinct: ' + record.content_id);
++      reviewers.add(review.reviewer_id);
++      if (review.status !== 'submitted') errors.push('only submitted immutable reviews belong in the ledger: ' + record.content_id);
++      if (!hasAllScores(review.scores)) errors.push('submitted review must contain A-H scores from 0 to 4: ' + record.content_id);
++      if (!isObject(review.reviewer_qualification) || !nonEmpty(review.reviewer_qualification.credential_basis) ||
++          !nonEmpty(review.reviewer_qualification.scope) || !nonEmpty(review.reviewer_qualification.verified_by)) {
++        errors.push('reviewer qualification must be documented and independently verified: ' + record.content_id);
++      }
++      if (typeof review.conflict_of_interest?.declared !== 'boolean' ||
++          (review.conflict_of_interest.declared === true && !nonEmpty(review.conflict_of_interest.details))) {
++        errors.push('conflict-of-interest declaration is incomplete: ' + record.content_id);
++      }
++      if (!nonEmpty(review.submitted_at) || !Array.isArray(review.findings) ||
++          !Array.isArray(review.hard_stop_flags) || !Array.isArray(review.evidence_claim_reviews)) {
++        errors.push('review findings, evidence checks, safety flags and timestamp are required: ' + record.content_id);
++      }
++      for (const finding of review.findings ?? []) {
++        if (!SEVERITIES.has(finding.severity) || !nonEmpty(finding.finding_id) ||
++            !nonEmpty(finding.location) || !nonEmpty(finding.rationale) ||
++            typeof finding.resolved !== 'boolean') errors.push('finding schema invalid: ' + record.content_id);
++      }
++    }
++    const adjudication = record.adjudication;
++    const disagreement = reviews.length === 2 && DIMENSIONS.some((key) => reviews[0].scores?.[key] !== reviews[1].scores?.[key]);
++    if (record.decision === 'approved' || record.decision === 'expert_reviewed') {
++      if (reviews.length !== 2) errors.push('two submitted independent reviews are required before expert decision: ' + record.content_id);
++      if (disagreement && (!isObject(adjudication) || !nonEmpty(adjudication.adjudicator_id) ||
++          !nonEmpty(adjudication.qualification) || !nonEmpty(adjudication.rationale) ||
++          !nonEmpty(adjudication.decided_at))) errors.push('score disagreement requires qualified third-party adjudication: ' + record.content_id);
++      if (reviews.some((r) => r.hard_stop_flags.length > 0 ||
++          r.findings.some((f) => ['P0','P1'].includes(f.severity) && f.resolved !== true))) {
++        errors.push('open hard-stop/P0/P1 finding blocks expert decision: ' + record.content_id);
++      }
++      if (reviews.some((r) => DIMENSIONS.some((key) => r.scores[key] <= 1))) errors.push('score 0 or 1 blocks approval pending rework and review: ' + record.content_id);
++      if (!nonEmpty(record.decision_rationale) || !nonEmpty(record.decided_at)) errors.push('decision rationale and timestamp are required: ' + record.content_id);
++    }
++    if (!DECISIONS.has(record.decision)) errors.push('record decision is missing or invalid: ' + record.content_id);
++    if (record.runtime_eligible === true) {
++      const grant = record.runtime_grant;
++      if (record.decision !== 'approved' || !isObject(grant) ||
++          !nonEmpty(grant.grant_id) || !nonEmpty(grant.content_version) ||
++          grant.content_version !== record.content_version || !nonEmpty(grant.approved_by) ||
++          !nonEmpty(grant.issued_at) || !nonEmpty(grant.expires_at)) {
++        errors.push('runtime requires approved exact-version record and separate time-bounded grant: ' + record.content_id);
++      }
++    }
++  }
++  let previousId = null;
++  let previousHash = 'GENESIS';
++  events.forEach((event, index) => {
++    if (!nonEmpty(event.event_id) || eventIds.has(event.event_id)) errors.push('event IDs must be unique');
++    eventIds.add(event.event_id);
++    const { event_hash, ...hashableEvent } = event;
++    if (event.sequence !== index + 1 || event.previous_event_id !== previousId ||
++        event.previous_event_hash !== previousHash || !nonEmpty(event.event_type) ||
++        !nonEmpty(event.actor_id) || !nonEmpty(event.occurred_at) || !nonEmpty(event.payload_digest) ||
++        event_hash !== digest(hashableEvent)) errors.push('append-only hash chain is invalid at sequence ' + (index + 1));
++    previousId = event.event_id;
++    previousHash = event_hash ?? null;
++  });
++  return { valid: errors.length === 0, errors, summary: {
++    records: records.length, records_with_two_reviews: records.filter((r) => r.reviews?.length === 2).length,
++    approved_records: records.filter((r) => r.decision === 'approved').length,
++    runtime_eligible_records: records.filter((r) => r.runtime_eligible === true).length,
++    audit_events: events.length
++  }};
++}
+diff --git a/scripts/validate-quality-safety-gates.mjs b/scripts/validate-quality-safety-gates.mjs
+@@ -0,0 +1,145 @@
++import fs from 'node:fs';
++
++const REQUIRED_DIMENSIONS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
++const REQUIRED_EVIDENCE_FIELDS = [
++  'population', 'construct_or_intervention', 'outcome',
++  'study_design_or_guideline_type', 'evidence_certainty',
++  'limitations', 'last_checked'
++];
++
++export function validateQualitySafetyGates({ policy, queue, pilot, evidence }) {
++  const errors = [];
++  const warnings = [];
++  const dimensions = policy?.review_dimensions ?? [];
++  const sources = Array.isArray(evidence?.sources) ? evidence.sources : [];
++  const sourceById = new Map(sources.map((source) => [source.evidence_id, source]));
++  const queueRecords = Array.isArray(queue?.records) ? queue.records : [];
++  const pilotRecords = Array.isArray(pilot?.records) ? pilot.records : [];
++
++  if (policy?.schema_version !== '1.0.0') errors.push('quality policy schema_version must be 1.0.0');
++  if (policy?.status !== 'proposed_pending_independent_review') errors.push('policy must remain pending independent review');
++  if (policy?.core_rule !== 'automated_validation_is_not_expert_or_clinical_approval') errors.push('missing non-equivalence rule');
++  if (dimensions.length !== 8 || !REQUIRED_DIMENSIONS.every((id) => dimensions.some((item) => item.id === id))) {
++    errors.push('policy must define all eight review dimensions A-H');
++  }
++  for (const dimension of dimensions) {
++    if (JSON.stringify(dimension.scale) !== JSON.stringify([0, 1, 2, 3, 4])) {
++      errors.push('invalid score scale for dimension ' + dimension.id);
++    }
++  }
++  if (policy?.scoring_policy?.reviewers_required !== 2 || policy?.scoring_policy?.independent_reviews !== true) {
++    errors.push('two independent reviewers are mandatory');
++  }
++  if (policy?.scoring_policy?.minimum_score_for_release !== null) {
++    errors.push('release threshold must remain unset pending calibration');
++  }
++  if (policy?.scoring_policy?.hard_stop_overrides_aggregate_score !== true) {
++    errors.push('hard-stop flags must override aggregate scores');
++  }
++  if (!Array.isArray(policy?.hard_stop_flags) || policy.hard_stop_flags.length < 1) {
++    errors.push('hard-stop flag registry is missing');
++  }
++  const severity = new Map((policy?.severity_levels ?? []).map((item) => [item.id, item]));
++  for (const id of ['P0', 'P1']) {
++    if (severity.get(id)?.release_block !== true) errors.push(id + ' must block release');
++  }
++  const runtime = policy?.runtime_policy;
++  if (JSON.stringify(runtime?.eligible_statuses) !== JSON.stringify(['approved']) ||
++      runtime?.require_separate_versioned_runtime_grant !== true ||
++      runtime?.fail_closed !== true ||
++      runtime?.expert_reviewed_is_not_release_approval !== true ||
++      runtime?.draft_pending_review_rework_required_rejected_retired_runtime_eligible !== false) {
++    errors.push('runtime policy must fail closed and require approved status plus a separate versioned grant');
++  }
++
++  if (queue?.total_records !== 952 || queueRecords.length !== 952) {
++    errors.push('redesign queue must contain exactly 952 records');
++  }
++  const queueIds = new Set();
++  const queueSlots = new Set();
++  for (const item of queueRecords) {
++    if (!item || typeof item !== 'object') { errors.push('queue record must be an object'); continue; }
++    if (!item.review_id || queueIds.has(item.review_id)) errors.push('missing or duplicate queue review_id');
++    queueIds.add(item.review_id);
++    const slot = item.topic_id + ':' + item.day_number;
++    if (queueSlots.has(slot)) errors.push('duplicate queue slot ' + slot);
++    queueSlots.add(slot);
++    if (item.review_status !== 'pending_review' || item.runtime_eligible !== false) {
++      errors.push('queue item must remain pending and runtime-blocked: ' + item.review_id);
++    }
++    if (!item.scores || Object.values(item.scores).some((score) => score !== null)) {
++      errors.push('unreviewed queue scores must all remain null: ' + item.review_id);
++    }
++  }
++
++  if (pilotRecords.length !== 25) errors.push('pilot must contain exactly 25 records');
++  const pilotIds = new Set();
++  const pilotSlots = new Set();
++  for (const item of pilotRecords) {
++    if (!item || typeof item !== 'object') { errors.push('pilot record must be an object'); continue; }
++    if (!item.content_id || pilotIds.has(item.content_id)) errors.push('missing or duplicate pilot content_id');
++    pilotIds.add(item.content_id);
++    const slot = item.topic_id + ':' + item.day_number;
++    if (pilotSlots.has(slot)) errors.push('duplicate pilot slot ' + slot);
++    pilotSlots.add(slot);
++    if (item.review_status !== 'draft_pending_expert_review' ||
++        item.runtime_eligible !== false ||
++        item.reviewer !== null ||
++        item.reviewed_at !== null) {
++      errors.push('pilot draft must remain unreviewed and runtime-blocked: ' + item.content_id);
++    }
++    const ids = Array.isArray(item.evidence_ids) ? item.evidence_ids : [];
++    const refs = Array.isArray(item.source_reference_ids) ? item.source_reference_ids : [];
++    if (!ids.length || [...ids].sort().join('|') !== [...refs].sort().join('|')) {
++      errors.push('evidence_ids and source_reference_ids must be non-empty and identical: ' + item.content_id);
++    }
++    for (const id of ids) {
++      const source = sourceById.get(id);
++      if (!source) {
++        errors.push('unknown evidence source ' + id + ' in ' + item.content_id);
++        continue;
++      }
++      for (const field of REQUIRED_EVIDENCE_FIELDS) {
++        if (source[field] === undefined || source[field] === null || source[field] === '') {
++          warnings.push('claim-level evidence metadata missing ' + field + ' for ' + id);
++        }
++      }
++    }
++    const queueMatches = queueRecords.filter((q) => q.topic_id === item.topic_id && q.day_number === item.day_number);
++    if (queueMatches.length !== 1 ||
++        queueMatches[0].draft_content_id !== item.content_id ||
++        queueMatches[0].source_content_id !== item.source_content_id) {
++      errors.push('pilot-to-queue mapping mismatch: ' + slot);
++    }
++  }
++
++  if (evidence?.registry_id !== 'maseer28-evidence-source-registry-v1' || !sources.length) {
++    errors.push('evidence registry identity or sources are missing');
++  }
++  return {
++    valid: errors.length === 0,
++    errors,
++    warnings: [...new Set(warnings)],
++    summary: {
++      policy_dimensions: dimensions.length,
++      hard_stop_flags: policy?.hard_stop_flags?.length ?? 0,
++      queue_records: queueRecords.length,
++      pilot_records: pilotRecords.length,
++      evidence_sources: sources.length,
++      runtime_eligible_pilot_records: pilotRecords.filter((item) => item?.runtime_eligible === true).length,
++      claim_metadata_warnings: new Set(warnings).size
++    }
++  };
++}
++
++if (process.argv[1]?.endsWith('validate-quality-safety-gates.mjs')) {
++  const read = (file) => JSON.parse(fs.readFileSync(file, 'utf8'));
++  const result = validateQualitySafetyGates({
++    policy: read('public/assistant/quality/content-quality-safety-gates.v1.json'),
++    queue: read('public/assistant/content-drafts/952-day-redesign-queue.v1.json'),
++    pilot: read('public/assistant/content-drafts/day04-08-self-evaluation-cluster-pilot.v1.json'),
++    evidence: read('public/assistant/evidence/evidence-source-registry.v1.json')
++  });
++  console.log(JSON.stringify(result, null, 2));
++  if (!result.valid) throw new Error('Quality and safety gate validation failed');
++}
+diff --git a/tests/independent-review-ledger.test.mjs b/tests/independent-review-ledger.test.mjs
+@@ -0,0 +1,20 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { validateIndependentReviewLedger } from '../scripts/validate-independent-review-ledger.mjs';
++
++const base = {
++ schema_version:'1.0.0', ledger_id:'maseer28-independent-content-review-ledger-v1',
++ blind_review_policy:{required_reviewers:2,independent:true,reviewer_ids_must_differ:true,submissions_hidden_from_other_reviewer_until_both_submitted:true,no_prepopulated_scores_or_reviewer_identity:true},
++ governance:{release_score_threshold:null,disagreement_resolution:'third_qualified_adjudicator_required_no_averaging',runtime_requires:'approved_record_and_separate_versioned_runtime_grant'},
++ records:[],event_log:[]
++};
++const mkReview=(id,score=3)=>({reviewer_id:id,status:'submitted',scores:Object.fromEntries('ABCDEFGH'.split('').map(k=>[k,score])),reviewer_qualification:{credential_basis:'verified professional qualification',scope:'relevant content domain',verified_by:'independent verifier'},conflict_of_interest:{declared:false},submitted_at:'2026-11-02T10:00:00Z',findings:[],hard_stop_flags:[],evidence_claim_reviews:[]});
++const mkRecord=(reviews,extra={})=>({content_id:'DRAFT_T15_D04',content_version:'1.0.0',topic_id:'T15',day_number:4,reviews,decision:'hold',runtime_eligible:false,...extra});
++
++test('empty template is valid and contains no fabricated reviews',()=>{const r=validateIndependentReviewLedger(base);assert.equal(r.valid,true,r.errors.join('\n'));assert.equal(r.summary.records,0);});
++test('one reviewer cannot advance a record to expert decision',()=>{const l=structuredClone(base);l.records=[mkRecord([mkReview('reviewer-a')],{decision:'expert_reviewed'})];const r=validateIndependentReviewLedger(l);assert.ok(r.errors.some(x=>x.includes('two submitted independent reviews')));});
++test('same reviewer cannot submit two independent reviews',()=>{const l=structuredClone(base);l.records=[mkRecord([mkReview('reviewer-a'),mkReview('reviewer-a')])];const r=validateIndependentReviewLedger(l);assert.ok(r.errors.some(x=>x.includes('distinct')));});
++test('disagreement requires third-party adjudication and cannot be averaged',()=>{const l=structuredClone(base);l.records=[mkRecord([mkReview('reviewer-a',2),mkReview('reviewer-b',3)],{decision:'approved',decision_rationale:'approved',decided_at:'2026-11-02T12:00:00Z'})];const r=validateIndependentReviewLedger(l);assert.ok(r.errors.some(x=>x.includes('third-party adjudication')));});
++test('open P1 or hard stop blocks approval',()=>{const l=structuredClone(base);const a=mkReview('reviewer-a'),b=mkReview('reviewer-b');a.findings=[{finding_id:'F1',severity:'P1',location:'exercise',rationale:'risk',resolved:false}];l.records=[mkRecord([a,b],{decision:'approved',decision_rationale:'approved',decided_at:'2026-11-02T12:00:00Z'})];const r=validateIndependentReviewLedger(l);assert.ok(r.errors.some(x=>x.includes('blocks expert decision')));});
++test('runtime cannot be enabled without a separate exact-version grant',()=>{const l=structuredClone(base);l.records=[mkRecord([mkReview('reviewer-a'),mkReview('reviewer-b')],{decision:'approved',decision_rationale:'approved',decided_at:'2026-11-02T12:00:00Z',runtime_eligible:true})];const r=validateIndependentReviewLedger(l);assert.ok(r.errors.some(x=>x.includes('separate time-bounded grant')));});
++test('audit events must be append-only linked and uniquely sequenced',()=>{const l=structuredClone(base);l.event_log=[{event_id:'e1',sequence:2,previous_event_id:'wrong',event_type:'review_submitted',actor_id:'reviewer-a',occurred_at:'2026-11-02T10:00:00Z',payload_digest:'sha256:abc'}];const r=validateIndependentReviewLedger(l);assert.ok(r.errors.some(x=>x.includes('append-only hash chain')));});
+diff --git a/tests/quality-safety-gates.test.mjs b/tests/quality-safety-gates.test.mjs
+@@ -0,0 +1,45 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import fs from 'node:fs';
++import { validateQualitySafetyGates } from '../scripts/validate-quality-safety-gates.mjs';
++
++const read = (file) => JSON.parse(fs.readFileSync(new URL(file, import.meta.url), 'utf8'));
++const fixtures = {
++  policy: read('../public/assistant/quality/content-quality-safety-gates.v1.json'),
++  queue: read('../public/assistant/content-drafts/952-day-redesign-queue.v1.json'),
++  pilot: read('../public/assistant/content-drafts/day04-08-self-evaluation-cluster-pilot.v1.json'),
++  evidence: read('../public/assistant/evidence/evidence-source-registry.v1.json')
++};
++
++test('quality and safety policy validates current draft-only pilot and 952-day queue', () => {
++  const result = validateQualitySafetyGates(fixtures);
++  assert.equal(result.valid, true, result.errors.join('\n'));
++  assert.equal(result.summary.policy_dimensions, 8);
++  assert.equal(result.summary.queue_records, 952);
++  assert.equal(result.summary.pilot_records, 25);
++  assert.equal(result.summary.runtime_eligible_pilot_records, 0);
++});
++
++test('validator rejects any pilot draft activated in runtime', () => {
++  const pilot = structuredClone(fixtures.pilot);
++  pilot.records[0].runtime_eligible = true;
++  const result = validateQualitySafetyGates({ ...fixtures, pilot });
++  assert.equal(result.valid, false);
++  assert.ok(result.errors.some((error) => error.includes('must remain unreviewed and runtime-blocked')));
++});
++
++test('validator rejects a queue score entered before review', () => {
++  const queue = structuredClone(fixtures.queue);
++  queue.records[0].scores.safety_and_cautions = 4;
++  const result = validateQualitySafetyGates({ ...fixtures, queue });
++  assert.equal(result.valid, false);
++  assert.ok(result.errors.some((error) => error.includes('scores must all remain null')));
++});
++
++test('validator rejects a runtime policy that permits expert-reviewed without approval', () => {
++  const policy = structuredClone(fixtures.policy);
++  policy.runtime_policy.eligible_statuses = ['expert_reviewed', 'approved'];
++  const result = validateQualitySafetyGates({ ...fixtures, policy });
++  assert.equal(result.valid, false);
++  assert.ok(result.errors.some((error) => error.includes('runtime policy must fail closed')));
++});

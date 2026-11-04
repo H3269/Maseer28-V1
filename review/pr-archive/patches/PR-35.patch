@@ -1,0 +1,185 @@
+diff --git a/.github/workflows/validate-content.yml b/.github/workflows/validate-content.yml
+@@ -12,6 +12,7 @@ on:
+       - 'scripts/validate-content-redesign.mjs'
+       - 'scripts/validate-self-evaluation-pilot.mjs'
+       - 'scripts/validate-assessment-knowledge-consistency.mjs'
++      - 'scripts/validate-assessment-rule-registry.mjs'
+       - 'package.json'
+       - 'package-lock.json'
+       - '.github/workflows/**'
+@@ -28,6 +29,7 @@ on:
+       - 'scripts/validate-content-redesign.mjs'
+       - 'scripts/validate-self-evaluation-pilot.mjs'
+       - 'scripts/validate-assessment-knowledge-consistency.mjs'
++      - 'scripts/validate-assessment-rule-registry.mjs'
+       - 'package.json'
+       - '.github/workflows/**'
+       - 'scripts/prepare-production-build.mjs'
+@@ -77,6 +79,9 @@ jobs:
+       - name: Validate assessment and canonical knowledge consistency
+         if: ${{ always() && steps.install.outcome == 'success' }}
+         run: npm run validate:assessment-knowledge
++      - name: Validate versioned assessment rule registry
++        if: ${{ always() && steps.install.outcome == 'success' }}
++        run: npm run validate:assessment-rule-registry
+       - name: Build application
+         if: ${{ always() && steps.install.outcome == 'success' }}
+         run: |
+diff --git a/package.json b/package.json
+@@ -14,7 +14,8 @@
+     "validate:content-redesign": "node scripts/validate-content-redesign.mjs",
+     "validate:self-evaluation-pilot": "node scripts/validate-self-evaluation-pilot.mjs",
+     "validate:subtopic-definitions": "node scripts/validate-subtopic-definition-proposals.mjs",
+-    "validate:assessment-knowledge": "node scripts/validate-assessment-knowledge-consistency.mjs"
++    "validate:assessment-knowledge": "node scripts/validate-assessment-knowledge-consistency.mjs",
++    "validate:assessment-rule-registry": "node scripts/validate-assessment-rule-registry.mjs"
+   },
+   "dependencies": {
+     "react": "18.3.1",
+diff --git a/scripts/validate-assessment-rule-registry.mjs b/scripts/validate-assessment-rule-registry.mjs
+@@ -0,0 +1,25 @@
++import assert from 'node:assert/strict';
++import { assessmentTopicRuleRegistry as registry } from '../src/features/assistant/assessmentTopicRuleRegistry.v1.js';
++
++const expectedIds = Array.from({ length: 33 }, (_, index) => `T${String(index + 1).padStart(2, '0')}`);
++const normalize = (value) => String(value).normalize('NFKC')
++  .replace(/[\\u064A\\u0649]/g, 'ی').replace(/\\u0643/g, 'ک')
++  .replace(/[\\u064B-\\u065F\\u0670]/g, '')
++  .replace(/[\\u200c\\u200f\\u200e]/g, ' ').replace(/\\s+/g, ' ').trim().toLowerCase();
++
++assert.equal(registry.schema_version, '1.0.0');
++assert.equal(registry.status, 'experimental_unreviewed');
++assert.equal(registry.matching_method, 'normalized_substring');
++assert.equal(registry.runtime_authorization, false);
++assert.equal(registry.clarification_fallback_topic_id, 'T34');
++assert.deepEqual(registry.rules.map((rule) => rule.topic_id), expectedIds);
++
++for (const rule of registry.rules) {
++  assert.ok(Array.isArray(rule.phrases) && rule.phrases.length > 0, `${rule.topic_id}: phrases required`);
++  assert.equal(rule.review_status, 'pending_independent_expert_review');
++  assert.equal(rule.runtime_eligible, false);
++  const normalized = rule.phrases.map(normalize);
++  assert.ok(normalized.every(Boolean), `${rule.topic_id}: empty phrase`);
++  assert.equal(new Set(normalized).size, normalized.length, `${rule.topic_id}: duplicate normalized phrase`);
++}
++console.log('Assessment rule registry valid: 33 experimental topic hints; T34 remains clarification-only.');
+diff --git a/src/features/assistant/assessmentEngine.js b/src/features/assistant/assessmentEngine.js
+@@ -1,38 +1,6 @@
+-const TOPIC_RULES = [
+-  ['T01', ['خشم', 'عصبانی', 'عصبانیت', 'از کوره', 'جوش میارم']],
+-  ['T02', ['اضطراب', 'نگرانی مداوم', 'دلشوره', 'نگران آینده']],
+-  ['T03', ['ترس', 'میترسم', 'می ترسم', 'وحشت', 'هراس']],
+-  ['T04', ['نفرت', 'بیزاری از', 'متنفرم']],
+-  ['T05', ['حسادت', 'حسود']],
+-  ['T06', ['سوگ', 'فقدان', 'از دست دادن عزیز', 'غمگین', 'اندوه']],
+-  ['T07', ['احساس گناه', 'عذاب وجدان', 'گناهکار']],
+-  ['T08', ['وابستگی عاطفی', 'وابسته ام', 'بدون او نمیتوانم', 'بدون او نمی توانم']],
+-  ['T09', ['اهمال کاری', 'اهمال‌کاری', 'کارها را عقب', 'به تعویق می اندازم', 'شروع کار سخت']],
+-  ['T10', ['بی خوابی', 'بی‌خوابی', 'خوابم نمیبرد', 'خوابم نمی برد', 'از خواب بیدار']],
+-  ['T11', ['عادت تکراری', 'رفتار تکراری', 'موهایم را میکنم', 'پوستم را میکنم']],
+-  ['T12', ['نه گفتن', 'مرزبندی', 'حد و مرز', 'درخواست دیگران را رد']],
+-  ['T13', ['تنهایی', 'احساس تنهایی', 'انزوا', 'کسی را ندارم']],
+-  ['T14', ['کمبود انگیزه', 'انگیزه ندارم', 'میل شروع ندارم']],
+-  ['T15', ['اعتماد به نفس', 'اعتمادبه نفس', 'از پسش برنمیام']],
+-  ['T16', ['نشخوار فکری', 'افکار منفی', 'فکرهای تکراری', 'ذهنم رها نمیکند']],
+-  ['T17', ['مشکل رابطه', 'مشکلات رابطه', 'اختلاف با همسر', 'تعارض رابطه']],
+-  ['T18', ['نفرت از خود', 'از خودم متنفرم', 'خودم را دوست ندارم']],
+-  ['T19', ['خودسرزنشی', 'خودم را سرزنش', 'همه تقصیرها گردن من']],
+-  ['T20', ['کمال گرایی', 'کمال‌گرایی', 'باید بی نقص', 'باید بی‌نقص']],
+-  ['T21', ['اجتناب', 'فرار از موقعیت', 'از موقعیت دوری']],
+-  ['T22', ['استرس', 'فشار روانی', 'تحت فشار']],
+-  ['T23', ['بی ارزشی', 'بی‌ارزشی', 'بی ارزشم', 'بی‌ارزشم']],
+-  ['T24', ['کنترل هیجان', 'تنظیم هیجان', 'احساساتم از کنترل خارج']],
+-  ['T25', ['رنجش', 'کینه', 'دلخوری طولانی']],
+-  ['T26', ['شرم', 'خجالت از خود', 'احساس رسوایی']],
+-  ['T27', ['ترس از قضاوت', 'قضاوت دیگران', 'نگران نظر دیگران']],
+-  ['T28', ['ترس از شکست', 'از شکست میترسم', 'از شکست می ترسم']],
+-  ['T29', ['ترس از طرد', 'طرد شدن', 'ترک شدن', 'رد شدن از طرف']],
+-  ['T30', ['شک و تردید', 'دودلی', 'تصمیم گیری سخت', 'تصمیم‌گیری سخت']],
+-  ['T31', ['کنترل گری', 'کنترل‌گری', 'همه چیز باید دست من', 'رفتار کنترلی']],
+-  ['T32', ['بی انگیزگی', 'بی‌انگیزگی', 'بی انرژی', 'بی‌انرژی', 'علاقه ندارم']],
+-  ['T33', ['خودانتقادی', 'از خودم ایراد', 'منتقد درونی']],
+-];
++import { assessmentTopicRuleRegistry } from './assessmentTopicRuleRegistry.v1.js';
++
++const TOPIC_RULES = assessmentTopicRuleRegistry.rules.map(({ topic_id, phrases }) => [topic_id, phrases]);
+ 
+ const SAFETY_CUES = [
+   'خودکشی', 'قصد خودکشی', 'به زندگی ام پایان', 'به زندگیم پایان',
+@@ -253,6 +221,7 @@ export const assessmentEngineTopicRuleIds = Object.freeze(TOPIC_RULES.map(([topi
+ 
+ export const assessmentEngineMetadata = Object.freeze({
+   version: '1.0.0',
++  topic_rule_registry_version: assessmentTopicRuleRegistry.registry_version,
+   runtime_status: 'experimental_local_only',
+   diagnostic_use: false,
+   validated_screening_tool: false,
+diff --git a/src/features/assistant/assessmentTopicRuleRegistry.v1.js b/src/features/assistant/assessmentTopicRuleRegistry.v1.js
+@@ -0,0 +1,53 @@
++/**
++ * Experimental lexical hints for the local assessment prototype.
++ * These are not canonical definitions, validated classifiers, or clinical rules.
++ * Any change requires versioning and independent expert review before promotion.
++ */
++export const assessmentTopicRuleRegistry = Object.freeze({
++  schema_version: '1.0.0',
++  registry_version: '1.0.0',
++  status: 'experimental_unreviewed',
++  matching_method: 'normalized_substring',
++  runtime_authorization: false,
++  rules: Object.freeze([
++    ['T01', ['خشم', 'عصبانی', 'عصبانیت', 'از کوره', 'جوش میارم']],
++    ['T02', ['اضطراب', 'نگرانی مداوم', 'دلشوره', 'نگران آینده']],
++    ['T03', ['ترس', 'میترسم', 'می ترسم', 'وحشت', 'هراس']],
++    ['T04', ['نفرت', 'بیزاری از', 'متنفرم']],
++    ['T05', ['حسادت', 'حسود']],
++    ['T06', ['سوگ', 'فقدان', 'از دست دادن عزیز', 'غمگین', 'اندوه']],
++    ['T07', ['احساس گناه', 'عذاب وجدان', 'گناهکار']],
++    ['T08', ['وابستگی عاطفی', 'وابسته ام', 'بدون او نمیتوانم', 'بدون او نمی توانم']],
++    ['T09', ['اهمال کاری', 'اهمال‌کاری', 'کارها را عقب', 'به تعویق می اندازم', 'شروع کار سخت']],
++    ['T10', ['بی خوابی', 'بی‌خوابی', 'خوابم نمیبرد', 'خوابم نمی برد', 'از خواب بیدار']],
++    ['T11', ['عادت تکراری', 'رفتار تکراری', 'موهایم را میکنم', 'پوستم را میکنم']],
++    ['T12', ['نه گفتن', 'مرزبندی', 'حد و مرز', 'درخواست دیگران را رد']],
++    ['T13', ['تنهایی', 'احساس تنهایی', 'انزوا', 'کسی را ندارم']],
++    ['T14', ['کمبود انگیزه', 'انگیزه ندارم', 'میل شروع ندارم']],
++    ['T15', ['اعتماد به نفس', 'اعتمادبه نفس', 'از پسش برنمیام']],
++    ['T16', ['نشخوار فکری', 'افکار منفی', 'فکرهای تکراری', 'ذهنم رها نمیکند']],
++    ['T17', ['مشکل رابطه', 'مشکلات رابطه', 'اختلاف با همسر', 'تعارض رابطه']],
++    ['T18', ['نفرت از خود', 'از خودم متنفرم', 'خودم را دوست ندارم']],
++    ['T19', ['خودسرزنشی', 'خودم را سرزنش', 'همه تقصیرها گردن من']],
++    ['T20', ['کمال گرایی', 'کمال‌گرایی', 'باید بی نقص', 'باید بی‌نقص']],
++    ['T21', ['اجتناب', 'فرار از موقعیت', 'از موقعیت دوری']],
++    ['T22', ['استرس', 'فشار روانی', 'تحت فشار']],
++    ['T23', ['بی ارزشی', 'بی‌ارزشی', 'بی ارزشم', 'بی‌ارزشم']],
++    ['T24', ['کنترل هیجان', 'تنظیم هیجان', 'احساساتم از کنترل خارج']],
++    ['T25', ['رنجش', 'کینه', 'دلخوری طولانی']],
++    ['T26', ['شرم', 'خجالت از خود', 'احساس رسوایی']],
++    ['T27', ['ترس از قضاوت', 'قضاوت دیگران', 'نگران نظر دیگران']],
++    ['T28', ['ترس از شکست', 'از شکست میترسم', 'از شکست می ترسم']],
++    ['T29', ['ترس از طرد', 'طرد شدن', 'ترک شدن', 'رد شدن از طرف']],
++    ['T30', ['شک و تردید', 'دودلی', 'تصمیم گیری سخت', 'تصمیم‌گیری سخت']],
++    ['T31', ['کنترل گری', 'کنترل‌گری', 'همه چیز باید دست من', 'رفتار کنترلی']],
++    ['T32', ['بی انگیزگی', 'بی‌انگیزگی', 'بی انرژی', 'بی‌انرژی', 'علاقه ندارم']],
++    ['T33', ['خودانتقادی', 'از خودم ایراد', 'منتقد درونی']],
++  ].map(([topic_id, phrases]) => Object.freeze({
++    topic_id,
++    phrases: Object.freeze(phrases),
++    review_status: 'pending_independent_expert_review',
++    runtime_eligible: false,
++  }))),
++  clarification_fallback_topic_id: 'T34',
++});
+diff --git a/tests/assessmentRuleRegistry.test.js b/tests/assessmentRuleRegistry.test.js
+@@ -0,0 +1,12 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { assessmentTopicRuleRegistry } from '../src/features/assistant/assessmentTopicRuleRegistry.v1.js';
++import { assessmentEngineMetadata, assessmentEngineTopicRuleIds } from '../src/features/assistant/assessmentEngine.js';
++
++test('assessment engine consumes the versioned experimental registry without runtime authorization', () => {
++  assert.equal(assessmentEngineMetadata.topic_rule_registry_version, assessmentTopicRuleRegistry.registry_version);
++  assert.deepEqual(assessmentEngineTopicRuleIds, assessmentTopicRuleRegistry.rules.map((rule) => rule.topic_id));
++  assert.equal(assessmentTopicRuleRegistry.runtime_authorization, false);
++  assert.ok(assessmentTopicRuleRegistry.rules.every((rule) => rule.runtime_eligible === false));
++  assert.equal(assessmentTopicRuleRegistry.clarification_fallback_topic_id, 'T34');
++});

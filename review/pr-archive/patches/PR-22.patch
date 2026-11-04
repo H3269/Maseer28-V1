@@ -1,0 +1,684 @@
+diff --git a/.github/workflows/validate-content.yml b/.github/workflows/validate-content.yml
+@@ -15,6 +15,8 @@ on:
+       - 'tests/courseContentQualityAudit.test.js'
+       - 'scripts/build-first-pass-review-packet.mjs'
+       - 'tests/firstPassReviewPacket.test.js'
++      - 'scripts/audit-content-template-sample.mjs'
++      - 'tests/contentTemplateSampleAudit.test.js'
+       - 'package.json'
+       - 'package-lock.json'
+       - '.github/workflows/**'
+@@ -70,6 +72,9 @@ jobs:
+       - name: Audit course content quality and review readiness
+         if: ${{ always() && steps.install.outcome == 'success' }}
+         run: npm run audit:course-content-quality
++      - name: Audit sampled cross-topic content templates
++        if: ${{ always() && steps.install.outcome == 'success' }}
++        run: npm run audit:content-template-sample
+       - name: Prepare first-pass 34-topic human review packet
+         if: ${{ always() && steps.install.outcome == 'success' }}
+         run: npm run prepare:first-pass-review
+@@ -79,6 +84,13 @@ jobs:
+           npm run prepare:production
+           npm run build
+ 
++      - name: Upload sampled content template report
++        if: ${{ always() && steps.install.outcome == 'success' }}
++        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
++        with:
++          name: content-template-sample-report
++          path: artifacts/content-template-sample-report.md
++          if-no-files-found: error
+       - name: Upload first-pass human review packet
+         if: ${{ always() && steps.install.outcome == 'success' }}
+         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+diff --git a/docs/FIRST_PASS_34_TOPIC_DAY1_REVIEW_FINDINGS_FA.md b/docs/FIRST_PASS_34_TOPIC_DAY1_REVIEW_FINDINGS_FA.md
+@@ -0,0 +1,98 @@
++# یافته‌های بررسی اولیه ۳۴ روز نخست مسیر۲۸
++
++**وضعیت:** بررسی مقدماتی محتوایی با کمک ابزار؛ نیازمند تأیید متخصص انسانی  
++**دامنه:** فقط روز اول هر یک از ۳۴ مسیر  
++**منبع:** بسته CI شماره ۱۰۵، نسخه محتوای `2026-10-22-content-rebuild-1`  
++**محدودیت:** این گزارش ارزیابی بالینی، داوری اثربخشی یا امتیازدهی رسمی هشت‌بعدی نیست. دفتر بازبینی انسانی دست‌نخورده و خالی باقی می‌ماند.
++
++## ۱. نتیجه اصلی
++
++در ۳۴ رکورد روز اول، پس از جایگزینی نام موضوع با یک نشانه ثابت، تمام متن‌های اصلی و کمکی بررسی‌شده به یک قالب مشترک می‌رسند. بنابراین تفاوت عمده رکوردها در این نمونه، درج نام موضوع در متن عمومی است؛ نه تفاوت در هدف آموزشی، سازوکار، تمرین یا اقدام.
++
++این نتیجه به‌تنهایی ثابت نمی‌کند که کل ۹۵۲ روز از نظر معنا یکسان‌اند؛ اما با ممیزی ساختاری قبلی درباره تکرار بالای قالب تمرین و اقدام در روزهای مسیرها هم‌راستاست و فرض «اختصاصی‌بودن آموزش» را به‌شدت زیر سؤال می‌برد.
++
++## ۲. شواهد قابل بازتولید
++
++در ۳۴ رکورد روز اول، شمار قالب‌های یکتا پس از جایگزینی نام موضوع:
++
++| فیلد | قالب یکتا | مشاهده |
++|---|---:|---|
++| `title` | ۱ | عنوان شروع در همه مسیرها یکسان است |
++| `intro` | ۱ | فقط نام موضوع در جمله عمومی تغییر می‌کند |
++| `exercise` | ۱ | تمرین ثبت موقعیت، فکر و نشانه آغاز در همه مسیرها یکسان است |
++| `actionText` | ۱ | اقدام سه نفس آرام و مکث در همه مسیرها یکسان است |
++| `closing` | ۱ | هشدار توقف و کمک‌گرفتن در همه مسیرها یکسان است |
++| `scientific_family` | ۱ | هر ۳۴ رکورد مقدار `general` دارند |
++| `lightActionText` | ۱ | یکسان |
++| `progressActionText` | ۱ | یکسان |
++| `lightExerciseText` | ۱ | یکسان |
++| `restExerciseText` | ۱ | یکسان |
++| `restActionText` | ۱ | یکسان |
++| مشخصات ارجاع کتاب | ۱ | هر ۳۴ مورد به کتاب ۳، صفحه ۲۶۸، فصل ۱۴ اشاره دارند؛ دلیل ارجاع فقط نام موضوع را جایگزین می‌کند |
++
++این جدول شمار قالب‌های متنی را گزارش می‌کند؛ شمار قالب یکتا معیار کیفیت علمی نیست و جایگزین بازبینی معنایی نمی‌شود.
++
++## ۳. نقد محتوایی اولیه
++
++### یافته A — تمرین روز اول موضوع‌ویژه نیست
++تمرین از کاربر می‌خواهد یک موقعیت مرتبط را انتخاب کند و اتفاق، فکر و نشانه شروع مسئله را ثبت کند. این می‌تواند یک فعالیت خودپایش عمومی باشد؛ اما در متن فعلی تفاوتی میان سازوکارهای خشم، سوگ، بی‌خوابی، مرزبندی، اهمال‌کاری، شرم، مشکلات رابطه یا ترس از طرد دیده نمی‌شود.
++
++**ریسک محصولی:** کاربر ممکن است تصور کند یک مداخله اختصاصی برای مسئله خود دریافت کرده، در حالی که محتوای ارائه‌شده یک قالب عمومی است.
++
++### یافته B — اقدام تنفسی برای همه موضوعات توجیه نشده است
++اقدام روز اول در همه مسیرها بر سه نفس آرام و سپس مکث تکیه دارد. تنفس آرام می‌تواند برای برخی افراد و موقعیت‌ها ابزار تنظیم کوتاه‌مدت باشد؛ اما به‌تنهایی پاسخ اختصاصی به بی‌خوابی، مرزبندی، سوگ، اهمال‌کاری، کنترل‌گری یا مشکلات رابطه نیست. برای بعضی کاربران نیز تمرکز بر تنفس ممکن است خوشایند یا کمک‌کننده نباشد.
++
++**ریسک محصولی:** ابزار عمومی به‌جای مداخله متناسب با هدف آموزشی نشانده شده است. لازم است گزینه توقف و جایگزین غیرتنفسی، در صورت نیاز، با دلیل مشخص طراحی شود.
++
++### یافته C — توالی آموزشی و پیامد قابل سنجش روشن نیست
++در رکورد روز اول، هدف قابل مشاهده‌ای که نشان دهد کاربر چه مهارتی را یاد گرفته یا چه تغییری را می‌سنجد، تعریف نشده است. ثبت یک موقعیت به‌تنهایی معیار پیشرفت یا پیامد معتبر نیست.
++
++### یافته D — طبقه‌بندی علمی بیش از حد کلی است
++قرار گرفتن همه ۳۴ روز در خانواده علمی `general` هیچ اطلاعاتی درباره سازوکار، نوع شواهد یا مداخله فراهم نمی‌کند. این مقدار نباید به‌عنوان نشانه پشتوانه علمی تلقی شود.
++
++### یافته E — ارجاع کتاب نیازمند راستی‌آزمایی مستقل است
++یک ارجاع یکسان برای هر ۳۴ موضوع ثبت شده است. باید متن واقعی کتاب، صفحه، فصل و ارتباط ادعاشده با هر موضوع بررسی شود. وجود شناسه کتاب/صفحه به‌تنهایی اعتبار یا تناسب منبع را ثابت نمی‌کند.
++
++## ۴. چه چیزی هنوز نمی‌توان نتیجه گرفت؟
++
++- نمی‌توان از روز اول درباره کیفیت همه ۲۸ روز هر مسیر حکم قطعی داد.
++- نمی‌توان گفت تمرین عمومی الزاماً مضر است؛ ممکن است به‌عنوان مرحله مشترک آشنایی طراحی شده باشد.
++- نمی‌توان از متن به‌تنهایی اثربخشی یا عدم اثربخشی بالینی را تعیین کرد.
++- نمی‌توان بدون بررسی منبع، درباره صحت ارجاع کتاب حکم داد.
++- هیچ امتیاز رسمی یا تأیید تخصصی برای این ۳۴ رکورد ثبت نشده است.
++
++## ۵. تصمیم پیشنهادی
++
++**تصمیم فعلی: نیازمند بازطراحی یا توجیه روشنِ روز مشترک؛ نه تأیید.**
++
++مالک محصول باید یکی از دو تصمیم را شفاف کند:
++
++1. اگر روز اول عمداً یک آشنایی مشترک است، آن را به‌عنوان «روز شروع مشترک» معرفی کند، ادعای اختصاصی‌بودن آن را حذف کند و از آن برای سنجش مهارت اختصاصی موضوع استفاده نکند.
++2. اگر قرار است روز اول واقعاً اختصاصی باشد، برای هر موضوع هدف، سازوکار، تمرین و پیامد متناسب طراحی شود؛ صرف جایگزینی نام موضوع کافی نیست.
++
++برای روزهای ۲ تا ۲۸، معیار پیشنهادی این است که هر روز دست‌کم یک هدف یادگیری مشخص، یک سازوکار روشن، یک تمرین متناسب و یک شاخص مشاهده‌پذیر داشته باشد. موارد پرخطر یا نیازمند ارجاع باید قواعد ایمنی اختصاصی خود را داشته باشند.
++
++
++## ۶. نتیجه نمونه‌برداری تکمیلی از شش روز
++
++پس از رفع یک خطای نرمال‌سازی که می‌توانست نام موضوع کوتاه را داخل واژه دیگری جایگزین کند، ممیزی دوباره با قاعده محافظه‌کارانه‌تری اجرا شد: فقط نام موضوعی که صریحاً داخل گیومه فارسی آمده جایگزین می‌شود. خروجی نهایی CI شماره ۱۱۰ برای ۲۰۴ رکورد (روزهای ۱، ۲، ۷، ۱۴، ۲۱ و ۲۸ از هر ۳۴ مسیر) چنین است:
++
++- در هر شش روز، هر ۱۱ فیلد متنی/طبقه‌بندی‌شده اصلی، پس از جایگزینی نام موضوع، فقط **یک قالب یکتا** بین ۳۴ مسیر دارند.
++- دلیل ارجاع کتاب در همه این روزها نیز در ممیزی تکمیلی گنجانده شده است؛ وجود یا نبود ارجاع باید جداگانه بررسی شود.
++- در روز ۱۴، شناسه ترکیبی کتاب/صفحه/فصل به شش گروه تقسیم می‌شود؛ در روزهای ۱، ۲ و ۲۸ یک گروه مشترک دیده می‌شود؛ در روزهای ۷ و ۲۱ ارجاعی ثبت نشده است.
++
++این نتیجه نشان می‌دهد شباهت قالب فقط محدود به روز اول نیست و در نقاط نمونه‌گیری‌شده از ابتدا تا پایان دوره هم دیده می‌شود. با این حال، چون روزهای نمونه‌گیری‌شده انتخابی و محدودند، هنوز نمی‌توان گفت تمام ۹۵۲ رکورد یکسان‌اند. برای چنین ادعایی باید ممیزی همه روزها اجرا شود.
++
++### پیامد برای طراحی محصول
++
++در این وضعیت، معرفی ۳۴ مسیر به‌عنوان ۳۴ برنامه آموزشی اختصاصی قابل دفاع نیست. ممکن است چارچوب مشترک برای بعضی روزها مفید باشد، اما باید صریحاً «هسته مشترک» نام‌گذاری شود. مسیرهای موضوعی باید علاوه بر هسته مشترک، هدف، تمرین، مثال، شاخص پیشرفت و احتیاط متناسب با موضوع داشته باشند. تغییر نام موضوع در یک متن مشترک، شخصی‌سازی محسوب نمی‌شود.
++
++## ۷. گام بعدی ممیزی
++
++1. ممیزی ساختاری قالب‌ها برای تمام ۹۵۲ روز اجرا شود تا دامنه تکرار دقیق مشخص شود.
++2. رکوردها بر اساس نوع هدف، سازوکار ادعاشده، تمرین، شاخص پیامد و سطح احتیاط به صف‌های بازبینی تقسیم شوند؛ ابزار نباید این مفاهیم را از متن حدس بزند.
++3. متخصصان واجد صلاحیت ابتدا محتواهای پرخطر و سپس نمونه‌های نماینده را مستقل بررسی کنند.
++4. مالک محصول تصمیم بگیرد کدام بخش‌ها هسته مشترک آموزشی‌اند و کدام باید واقعاً اختصاصی باشند.
++5. بازنویسی ۹۵۲ روز فقط پس از تأیید ساختار آموزشی و معیارهای علمی آغاز شود.
++
++**قاعده حاکم:** تا زمانی که بازبینی انسانی و شواهد معتبر ثبت نشده‌اند، این گزارش صرفاً یک هشدار کیفی مقدماتی است و نباید برای فعال‌سازی موتور انتخاب مداخله یا توصیه خودکار استفاده شود.
+diff --git a/package.json b/package.json
+@@ -12,7 +12,8 @@
+     "validate:assistant-topics": "node scripts/validate-assistant-topics.mjs",
+     "prepare:production": "node scripts/prepare-production-build.mjs",
+     "audit:course-content-quality": "node scripts/audit-course-content-quality.mjs",
+-    "prepare:first-pass-review": "node scripts/build-first-pass-review-packet.mjs"
++    "prepare:first-pass-review": "node scripts/build-first-pass-review-packet.mjs",
++    "audit:content-template-sample": "node scripts/audit-content-template-sample.mjs"
+   },
+   "dependencies": {
+     "react": "18.3.1",
+diff --git a/public/assistant/evidence/evidence.v1.json b/public/assistant/evidence/evidence.v1.json
+@@ -0,0 +1,7 @@
++{
++  "schema_version": "1.0.0",
++  "registry_id": "maseer28-evidence-registry-v1",
++  "status": "draft_requires_expert_review",
++  "runtime_eligible": false,
++  "evidence": []
++}
+diff --git a/public/assistant/mappings/course-content-mappings.v1.json b/public/assistant/mappings/course-content-mappings.v1.json
+@@ -0,0 +1,13 @@
++{
++  "schema_version": "1.0.0",
++  "mapping_set_id": "maseer28-course-content-mappings-v1",
++  "status": "draft_review_queue_only",
++  "runtime_eligible": false,
++  "source": {
++    "content_registry": "public/content/path-content.json",
++    "topic_registry": "public/assistant/knowledge/topics.v1.json",
++    "subtopic_registry": "public/assistant/knowledge/subtopics.v1.json"
++  },
++  "policy": "Parent topic is assigned only by exact category-name match. Subtopic assignments require human review.",
++  "mappings": []
++}
+diff --git a/scripts/audit-content-mappings.mjs b/scripts/audit-content-mappings.mjs
+@@ -0,0 +1,142 @@
++import fs from 'node:fs';
++import path from 'node:path';
++import { fileURLToPath } from 'node:url';
++
++const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
++const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
++const normalize = (value) => String(value ?? '').normalize('NFKC').replace(/\s+/g, ' ').trim();
++
++export function auditContentMappings({ content, topics, subtopics, evidenceRegistry, mappingSet }) {
++  const errors = [];
++  const topicList = topics.topics ?? [];
++  const subtopicList = subtopics.subtopics ?? [];
++  const categoryEntries = Object.entries(content.categories ?? {});
++  if (topicList.length !== 34) errors.push(`Expected 34 topics, found ${topicList.length}.`);
++  if (subtopicList.length !== 102) errors.push(`Expected 102 subtopics, found ${subtopicList.length}.`);
++  if (categoryEntries.length !== 34) errors.push(`Expected 34 content categories, found ${categoryEntries.length}.`);
++  const topicByName = new Map();
++  const topicIds = new Set();
++  for (const item of topicList) {
++    const name = normalize(item.name);
++    if (!name || topicByName.has(name)) errors.push(`Missing or duplicate normalized topic name: ${name}`);
++    if (!item.topic_id || topicIds.has(item.topic_id)) errors.push(`Missing or duplicate topic ID: ${item.topic_id}`);
++    topicByName.set(name, item);
++    topicIds.add(item.topic_id);
++  }
++  const subtopicById = new Map();
++  for (const item of subtopicList) {
++    if (!item.subtopic_id || subtopicById.has(item.subtopic_id)) errors.push(`Missing or duplicate subtopic ID: ${item.subtopic_id}`);
++    subtopicById.set(item.subtopic_id, item);
++  }
++  const evidenceById = new Map();
++  for (const item of evidenceRegistry?.evidence ?? []) {
++    if (!item.evidence_id || evidenceById.has(item.evidence_id)) errors.push(`Missing or duplicate evidence ID: ${item.evidence_id}`);
++    evidenceById.set(item.evidence_id, item);
++  }
++  const expected = new Map();
++  const sourceContentIds = new Set();
++
++  for (const [topicName, category] of Object.entries(content.categories ?? {})) {
++    const topic = topicByName.get(normalize(topicName));
++    if (!topic) {
++      errors.push(`No exact topic match for content category: ${topicName}`);
++      continue;
++    }
++    if (!Array.isArray(category.days) || category.days.length !== 28) errors.push(`Expected 28 days for category: ${topicName}`);
++    for (const [index, day] of (category.days ?? []).entries()) {
++      if (!day.id) errors.push(`Missing source content ID for ${topicName}, day ${index + 1}`);
++      if (sourceContentIds.has(day.id)) errors.push(`Duplicate source content ID: ${day.id}`);
++      sourceContentIds.add(day.id);
++      const mappingId = `MAP_${topic.topic_id}_D${String(index + 1).padStart(2, '0')}`;
++      expected.set(mappingId, { topic, topicName, dayNumber: index + 1, contentId: day.id });
++    }
++  }
++
++  if (!Array.isArray(mappingSet?.mappings)) errors.push('Mapping set must contain a mappings array.');
++  if (!['draft_review_queue_only','under_review','reviewed_not_runtime_approved'].includes(mappingSet?.status)) errors.push('Mapping set status is invalid or too permissive.');
++  if (!['draft_requires_expert_review','under_review','reviewed_not_runtime_approved'].includes(evidenceRegistry?.status)) errors.push('Evidence registry status is invalid or too permissive.');
++  const seen = new Set();
++  const counts = { pending_review: 0, in_review: 0, approved: 0, rejected: 0 };
++  for (const mapping of mappingSet.mappings ?? []) {
++    const expectedRecord = expected.get(mapping.mapping_id);
++    if (seen.has(mapping.mapping_id)) errors.push(`Duplicate mapping id: ${mapping.mapping_id}`);
++    seen.add(mapping.mapping_id);
++    if (!expectedRecord) {
++      errors.push(`Unknown mapping id: ${mapping.mapping_id}`);
++      continue;
++    }
++    if (mapping.source_topic_id !== expectedRecord.topic.topic_id ||
++        mapping.source_topic_name !== expectedRecord.topicName ||
++        Number(mapping.day_number) !== expectedRecord.dayNumber ||
++        mapping.content_id !== expectedRecord.contentId) {
++      errors.push(`Source identity mismatch: ${mapping.mapping_id}`);
++    }
++    if (!Object.hasOwn(counts, mapping.mapping_status)) {
++      errors.push(`Invalid mapping status: ${mapping.mapping_id}`);
++      continue;
++    }
++    counts[mapping.mapping_status] += 1;
++
++    if (!Array.isArray(mapping.subtopic_ids) || new Set(mapping.subtopic_ids).size !== mapping.subtopic_ids.length) errors.push(`Subtopic IDs must be a unique array: ${mapping.mapping_id}`);
++    for (const subtopicId of mapping.subtopic_ids ?? []) {
++      const subtopic = subtopicById.get(subtopicId);
++      if (!subtopic) errors.push(`Unknown subtopic ${subtopicId}: ${mapping.mapping_id}`);
++      else if (subtopic.topic_id !== mapping.source_topic_id) {
++        errors.push(`Subtopic belongs to another parent topic: ${mapping.mapping_id} -> ${subtopicId}`);
++      }
++    }
++
++    if (mapping.mapping_status === 'approved') {
++      const review = mapping.review ?? {};
++      if (!(mapping.subtopic_ids ?? []).length) errors.push(`Approved mapping has no subtopic: ${mapping.mapping_id}`);
++      if (!String(review.reviewer_id ?? '').trim()) errors.push(`Approved mapping lacks reviewer: ${mapping.mapping_id}`);
++      if (!review.reviewed_at || Number.isNaN(Date.parse(review.reviewed_at))) errors.push(`Approved mapping lacks valid review date: ${mapping.mapping_id}`);
++      if (!String(review.rationale ?? '').trim()) errors.push(`Approved mapping lacks rationale: ${mapping.mapping_id}`);
++      if (!Array.isArray(review.evidence_ids) || !review.evidence_ids.length) errors.push(`Approved mapping lacks evidence IDs: ${mapping.mapping_id}`);
++      if (new Set(review.evidence_ids ?? []).size !== (review.evidence_ids ?? []).length) errors.push(`Approved mapping evidence IDs must be unique: ${mapping.mapping_id}`);
++      for (const evidenceId of review.evidence_ids ?? []) {
++        const evidence = evidenceById.get(evidenceId);
++        if (!evidence) errors.push(`Approved mapping references unknown evidence ${evidenceId}: ${mapping.mapping_id}`);
++        else if (evidence.review_status !== 'approved' || !evidence.reviewer_id?.trim() || !evidence.reviewed_at || Number.isNaN(Date.parse(evidence.reviewed_at)) || !evidence.title?.trim() || !evidence.citation?.trim() || !evidence.population?.trim() || !evidence.study_type?.trim()) {
++          errors.push(`Approved mapping references unapproved or untraceable evidence ${evidenceId}: ${mapping.mapping_id}`);
++        }
++      }
++    } else if (mapping.mapping_status === 'rejected' && !String(mapping.review?.rationale ?? '').trim()) {
++      errors.push(`Rejected mapping lacks rationale: ${mapping.mapping_id}`);
++    }
++  }
++
++  const missing = [...expected.keys()].filter((id) => !seen.has(id));
++  if (mappingSet.runtime_eligible !== false) errors.push('Mapping set must remain runtime_eligible=false.');
++  if (evidenceRegistry?.runtime_eligible !== false) errors.push('Evidence registry must remain runtime_eligible=false.');
++  return {
++    errors,
++    counts: {
++      expected_source_days: expected.size,
++      mapping_records: seen.size,
++      missing_records: missing.length,
++      ...counts,
++      approved_evidence_records: [...evidenceById.values()].filter((item) => item.review_status === 'approved').length,
++    },
++    readiness: {
++      structural_integrity: errors.length === 0,
++      complete_source_coverage: missing.length === 0,
++      all_records_reviewed: missing.length === 0 && counts.pending_review === 0 && counts.in_review === 0,
++      evidence_registry_ready: evidenceById.size > 0 && [...evidenceById.values()].every((item) => item.review_status === 'approved'),
++      approved_for_runtime: false,
++    },
++    missing_mapping_ids: missing,
++  };
++}
++
++if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
++  const report = auditContentMappings({
++    content: readJson('public/content/path-content.json'),
++    topics: readJson('public/assistant/knowledge/topics.v1.json'),
++    subtopics: readJson('public/assistant/knowledge/subtopics.v1.json'),
++    evidenceRegistry: readJson('public/assistant/evidence/evidence.v1.json'),
++    mappingSet: readJson('public/assistant/mappings/course-content-mappings.v1.json'),
++  });
++  process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
++  if (report.errors.length) process.exitCode = 1;
++}
+diff --git a/scripts/audit-content-template-sample.mjs b/scripts/audit-content-template-sample.mjs
+@@ -0,0 +1,70 @@
++import fs from 'node:fs';
++import path from 'node:path';
++import {fileURLToPath} from 'node:url';
++const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
++const readJson=p=>JSON.parse(fs.readFileSync(path.join(root,p),'utf8'));
++export const SAMPLE_DAYS=[1,2,7,14,21,28];
++export const TEMPLATE_FIELDS=['title','intro','exercise','actionText','closing','scientific_family','lightActionText','progressActionText','lightExerciseText','restExerciseText','restActionText','legacyBookReason'];
++const norm=s=>String(s??'').normalize('NFKC').replace(/\s+/g,' ').trim().toLocaleLowerCase('fa');
++
++export function auditSampleDayTemplates({content,topics,days=SAMPLE_DAYS}){
++ const registry=topics.topics??[], categories=content.categories??{};
++ if(registry.length!==34||Object.keys(categories).length!==34) throw new Error('Expected exactly 34 topics and 34 content categories.');
++ const normalizedNames=new Map();
++ for(const topic of registry){
++  const key=norm(topic.name);
++  if(!key||normalizedNames.has(key)) throw new Error('Topic registry contains missing or duplicate normalized names.');
++  normalizedNames.set(key,topic);
++ }
++ const categoryByName=new Map();
++ for(const [name,category] of Object.entries(categories)){
++  const key=norm(name);
++  if(!key||categoryByName.has(key)) throw new Error('Content categories contain missing or duplicate normalized names.');
++  categoryByName.set(key,category);
++ }
++ if([...normalizedNames.keys()].some(name=>!categoryByName.has(name))||[...categoryByName.keys()].some(name=>!normalizedNames.has(name))) throw new Error('Content categories do not match topic registry.');
++ const report=[];
++ for(const dayNumber of days){
++  if(!Number.isInteger(dayNumber)||dayNumber<1||dayNumber>28) throw new Error(`Invalid sample day: ${dayNumber}`);
++  const records=registry.map(topic=>{
++   const category=categoryByName.get(norm(topic.name));
++   if(!Array.isArray(category?.days)||category.days.length!==28) throw new Error(`Expected 28 days for ${topic.name}.`);
++   return {topic,day:category.days[dayNumber-1]};
++  });
++  for(const field of TEMPLATE_FIELDS){
++   const groups=new Map();
++   for(const {topic,day} of records){
++    let value=norm(field==='legacyBookReason'?day.legacyBookRec?.reason:day[field]);
++    value=value.split(`«${norm(topic.name)}»`).join('«[topic]»');
++    if(!value) value='[empty]';
++    groups.set(value,[...(groups.get(value)??[]),topic.name]);
++   }
++   report.push({day:dayNumber,field,unique_templates:groups.size,topics_with_value:records.filter(({day})=>field==='legacyBookReason'?Boolean(day.legacyBookRec?.reason):day[field]!==undefined&&day[field]!==null&&day[field]!=='').length,groups:[...groups.entries()].sort((a,b)=>b[1].length-a[1].length).map(([template,topicNames])=>({topic_count:topicNames.length,topics:topicNames,template_preview:template.slice(0,180)}))});
++  }
++  const bookRefs=records.map(({day})=>day.legacyBookRec?JSON.stringify({bookId:day.legacyBookRec.bookId,page:day.legacyBookRec.page,chapter:day.legacyBookRec.chapter}):null);
++  const bookGroups=new Map();
++  records.forEach(({topic},index)=>{const key=bookRefs[index]??'[no reference]';bookGroups.set(key,[...(bookGroups.get(key)??[]),topic.name]);});
++  report.push({day:dayNumber,field:'legacyBookRec.reference_tuple',unique_templates:bookGroups.size,topics_with_value:bookRefs.filter(Boolean).length,groups:[...bookGroups.entries()].map(([value,topicNames])=>({topic_count:topicNames.length,topics:topicNames,template_preview:value}))});
++ }
++ return {scope:{topic_count:registry.length,sample_days:days,record_count:registry.length*days.length},report,limitations:['این گزارش فقط شباهت قالب متنی را پس از جایگزینی نام موضوع می‌سنجد.','شباهت یا تفاوت متن، کیفیت بالینی یا تناسب واقعی تمرین را اثبات نمی‌کند.','برای داوری کیفیت، متن کامل هر رکورد و زمینه آموزشی باید توسط بازبین متخصص بررسی شود.']};
++}
++
++export function renderSampleTemplateReport(result){
++ const lines=['# گزارش نمونه‌برداری قالب محتوای مسیر۲۸','',`تعداد موضوع: ${result.scope.topic_count} | روزهای نمونه: ${result.scope.sample_days.join('، ')} | تعداد رکوردها: ${result.scope.record_count}`,'','> این گزارش ابزار غربالگری ساختاری است؛ امتیازدهی روان‌شناختی یا داوری کیفیت انجام نمی‌دهد.','','| روز | فیلد | قالب یکتا بین ۳۴ موضوع | پوشش فیلد |','|---:|---|---:|---:|'];
++ for(const item of result.report) lines.push(`| ${item.day} | ${item.field} | ${item.unique_templates} | ${item.topics_with_value}/34 |`);
++ lines.push('','## گروه‌های قالب مشترک');
++ for(const item of result.report){
++  if(!item.groups.length) continue;
++  lines.push(`### روز ${item.day} — ${item.field}`);
++  for(const group of item.groups) lines.push(`- ${group.topic_count>1?'قالب مشترک':'قالب منفرد'} (${group.topic_count} موضوع): ${group.topics.join('، ')} | ${group.template_preview}`);
++ }
++ lines.push('','## محدودیت‌ها',...result.limitations.map(x=>`- ${x}`),'');
++ return lines.join('\n');
++}
++if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
++ const result=auditSampleDayTemplates({content:readJson('public/content/path-content.json'),topics:readJson('public/assistant/knowledge/topics.v1.json')});
++ const output=path.join(root,'artifacts','content-template-sample-report.md');
++ fs.mkdirSync(path.dirname(output),{recursive:true});
++ fs.writeFileSync(output,renderSampleTemplateReport(result)+'\n','utf8');
++ process.stdout.write(`Audited ${result.scope.record_count} sampled records across ${result.scope.sample_days.length} days.\\n`);
++}
+diff --git a/scripts/audit-course-content-quality.mjs b/scripts/audit-course-content-quality.mjs
+@@ -6,17 +6,58 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+ const readJson = (p) => JSON.parse(fs.readFileSync(path.join(root, p), 'utf8'));
+ const DIMENSIONS = ['target_specificity','psychological_mechanism','evidence_support','exercise_alignment','progression_and_difficulty','safety_and_cautions','outcome_measurement','accessibility'];
+ const TEXT_FIELDS = ['title','intro','exercise','actionText','closing'];
+-const normalize = (value, topic) => String(value ?? '').normalize('NFKC').split(`«${topic}»`).join('«[TOPIC]»').split(topic).join('[TOPIC]').replace(/\s+/g,' ').trim().toLocaleLowerCase('fa');
++const isTextBoundary = (character) => !character || /[\s،؛,.!?()[\]{}«»]/u.test(character);
++function replaceTopicToken(text, topic) {
++  let cursor = 0;
++  let result = '';
++  let index = text.indexOf(topic, cursor);
++  while (index !== -1) {
++    const before = index === 0 ? '' : text[index - 1];
++    const afterIndex = index + topic.length;
++    const after = afterIndex >= text.length ? '' : text[afterIndex];
++    result += text.slice(cursor, index);
++    result += isTextBoundary(before) && isTextBoundary(after) ? '[TOPIC]' : topic;
++    cursor = afterIndex;
++    index = text.indexOf(topic, cursor);
++  }
++  return result + text.slice(cursor);
++}
++export const normalizeTemplateText = (value, topic) => {
++  const text = String(value ?? '').normalize('NFKC');
++  const normalizedTopic = String(topic ?? '').normalize('NFKC').trim();
++  if (!normalizedTopic) return text.replace(/\s+/g, ' ').trim().toLocaleLowerCase('fa');
++  const quoted = text.split('«' + normalizedTopic + '»').join('«[TOPIC]»');
++  return replaceTopicToken(quoted, normalizedTopic).replace(/\s+/g, ' ').trim().toLocaleLowerCase('fa');
++};
++const normalize = normalizeTemplateText;
++
+ 
+ export function buildReviewQueue(content, topics) {
+-  const byName = new Map((topics.topics ?? []).map((t) => [String(t.name).normalize('NFKC').trim(), t]));
++  const topicList = topics.topics ?? [];
++  const categoryEntries = Object.entries(content.categories ?? {});
++  if (topicList.length !== 34) throw new Error(`Expected 34 topic definitions, found ${topicList.length}`);
++  if (categoryEntries.length !== 34) throw new Error(`Expected 34 content categories, found ${categoryEntries.length}`);
++  const topicIds = new Set();
++  const topicNames = new Set();
++  for (const topic of topicList) {
++    const id = String(topic.topic_id ?? '');
++    const name = String(topic.name ?? '').normalize('NFKC').trim();
++    if (!id || topicIds.has(id)) throw new Error(`Missing or duplicate topic ID: ${id}`);
++    if (!name || topicNames.has(name)) throw new Error(`Missing or duplicate topic name: ${name}`);
++    topicIds.add(id);
++    topicNames.add(name);
++  }
++  const byName = new Map(topicList.map((t) => [String(t.name).normalize('NFKC').trim(), t]));
++  const seenContentIds = new Set();
+   const reviews = [];
+   for (const [name, category] of Object.entries(content.categories ?? {})) {
+     const topic = byName.get(String(name).normalize('NFKC').trim());
+     if (!topic) throw new Error(`No exact topic registry match: ${name}`);
+     if (!Array.isArray(category.days) || category.days.length !== 28) throw new Error(`Expected 28 days: ${name}`);
+     category.days.forEach((day,index) => {
+       if (!day.id) throw new Error(`Missing content ID for ${topic.topic_id}, day ${index+1}`);
++      if (seenContentIds.has(day.id)) throw new Error(`Duplicate source content ID: ${day.id}`);
++      seenContentIds.add(day.id);
+       reviews.push({
+         review_id:`QREV_${topic.topic_id}_D${String(index+1).padStart(2,'0')}`,
+         topic_id:topic.topic_id, day_number:index+1, content_id:day.id,
+@@ -29,7 +70,7 @@ export function buildReviewQueue(content, topics) {
+   return reviews;
+ }
+ 
+-export function auditCourseContentQuality({content,topics,ledger}) {
++export function auditCourseContentQuality({content,topics,ledger,evidenceRegistry}) {
+   const errors=[];
+   const expected=buildReviewQueue(content,topics);
+   const expectedById=new Map(expected.map(item=>[item.review_id,item]));
+@@ -38,6 +79,12 @@ export function auditCourseContentQuality({content,topics,ledger}) {
+     const topic=topics.topics.find(t=>t.name===name);
+     for(const [i,day] of (category.days ?? []).entries()) sourceById.set(`QREV_${topic?.topic_id}_D${String(i+1).padStart(2,'0')}`,{day});
+   }
++  if (evidenceRegistry?.runtime_eligible !== false) errors.push('Evidence registry must remain runtime_eligible=false.');
++  const evidenceById=new Map();
++  for (const item of evidenceRegistry?.evidence ?? []) {
++    if (evidenceById.has(item.evidence_id)) errors.push('Duplicate evidence ID: '+item.evidence_id);
++    evidenceById.set(item.evidence_id,item);
++  }
+   const seen=new Set(), statusCounts={pending_review:0,in_review:0,needs_revision:0,rejected:0,reviewed_not_approved:0,approved_for_educational_review:0};
+   const repeated={};
+   for(const field of TEXT_FIELDS){
+@@ -61,17 +108,29 @@ export function auditCourseContentQuality({content,topics,ledger}) {
+     if(review.topic_id!==expectedById.get(review.review_id)?.topic_id) errors.push(`Topic ID mismatch: ${review.review_id}`);
+     if(!Object.hasOwn(statusCounts,review.review_status)){errors.push(`Invalid status: ${review.review_id}`);continue;}
+     statusCounts[review.review_status]++;
++    const scoreKeys = Object.keys(review.scores ?? {}).sort();
++    if (scoreKeys.join('|') !== [...DIMENSIONS].sort().join('|')) errors.push(`Score dimensions mismatch: ${review.review_id}`);
++    if (!Array.isArray(review.evidence_ids) || new Set(review.evidence_ids).size !== review.evidence_ids.length) errors.push(`Evidence IDs must be a unique array: ${review.review_id}`);
+     for(const dimension of DIMENSIONS){
+       const score=review.scores?.[dimension];
+       if(score!==null && (!Number.isInteger(score)||score<0||score>3)) errors.push(`Invalid score ${dimension}: ${review.review_id}`);
+     }
++    for(const evidenceId of review.evidence_ids ?? []) {
++      const evidence=evidenceById.get(evidenceId);
++      if(!evidence) errors.push('Unknown evidence ID (not present in evidence registry): '+review.review_id+' -> '+evidenceId);
++      else if(!evidence.title?.trim() || !evidence.citation?.trim()) errors.push('Evidence source is not traceable: '+review.review_id+' -> '+evidenceId);
++    }
+     if(review.review_status==='approved_for_educational_review'){
+       if(DIMENSIONS.some(d=>!Number.isInteger(review.scores?.[d])||review.scores[d]<2)) errors.push(`Approval requires all eight scores >=2: ${review.review_id}`);
+       if((review.scores?.safety_and_cautions??0)<2) errors.push(`Approval blocked by safety score: ${review.review_id}`);
+       if(!review.reviewer_id?.trim()) errors.push(`Approval lacks reviewer: ${review.review_id}`);
+       if(!review.reviewed_at||Number.isNaN(Date.parse(review.reviewed_at))) errors.push(`Approval lacks review date: ${review.review_id}`);
+       if(!review.rationale?.trim()) errors.push(`Approval lacks rationale: ${review.review_id}`);
+       if(!(review.evidence_ids?.length)) errors.push(`Approval lacks evidence IDs: ${review.review_id}`);
++      for(const evidenceId of review.evidence_ids ?? []) {
++        const evidence=evidenceById.get(evidenceId);
++        if(!evidence || !['reviewed','approved'].includes(evidence.review_status) || !evidence.reviewer_id?.trim() || !evidence.reviewed_at || !evidence.citation?.trim()) errors.push('Approval cites evidence that is absent, unreviewed, or untraceable: '+review.review_id+' -> '+evidenceId);
++      }
+     }
+   }
+   const missing=expected.filter(x=>!seen.has(x.review_id)).map(x=>x.review_id);
+@@ -88,7 +147,7 @@ export function auditCourseContentQuality({content,topics,ledger}) {
+ }
+ 
+ if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
+- const report=auditCourseContentQuality({content:readJson('public/content/path-content.json'),topics:readJson('public/assistant/knowledge/topics.v1.json'),ledger:readJson('public/assistant/reviews/course-content-quality-review.v1.json')});
++ const report=auditCourseContentQuality({content:readJson('public/content/path-content.json'),topics:readJson('public/assistant/knowledge/topics.v1.json'),ledger:readJson('public/assistant/reviews/course-content-quality-review.v1.json'),evidenceRegistry:readJson('public/assistant/evidence/evidence.v1.json')});
+  process.stdout.write(`${JSON.stringify(report,null,2)}\n`);
+  if(report.errors.length) process.exitCode=1;
+ }
+diff --git a/scripts/generate-content-mapping-queue.mjs b/scripts/generate-content-mapping-queue.mjs
+@@ -0,0 +1,67 @@
++import fs from 'node:fs';
++import path from 'node:path';
++import { fileURLToPath } from 'node:url';
++
++const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
++const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
++const normalize = (value) => String(value ?? '').normalize('NFKC').replace(/\s+/g, ' ').trim();
++
++export function buildContentMappingQueue({ content, topics, existing = null }) {
++  const topicByName = new Map((topics.topics ?? []).map((topic) => [normalize(topic.name), topic]));
++  const oldMappings = new Map((existing?.mappings ?? []).map((item) => [item.mapping_id, item]));
++  const mappings = [];
++
++  for (const [topicName, category] of Object.entries(content.categories ?? {})) {
++    const topic = topicByName.get(normalize(topicName));
++    if (!topic) throw new Error(`No exact topic registry match for content category: ${topicName}`);
++    if (!Array.isArray(category.days) || category.days.length !== 28) {
++      throw new Error(`Expected exactly 28 days for category: ${topicName}`);
++    }
++
++    category.days.forEach((day, index) => {
++      const dayNumber = index + 1;
++      const mappingId = `MAP_${topic.topic_id}_D${String(dayNumber).padStart(2, '0')}`;
++      if (!day.id) throw new Error(`Missing content day id: ${mappingId}`);
++      const previous = oldMappings.get(mappingId);
++      if (previous && previous.content_id !== day.id) {
++        throw new Error(`Source content changed for ${mappingId}; manual reconciliation required.`);
++      }
++      mappings.push(previous ?? {
++        mapping_id: mappingId,
++        source_topic_id: topic.topic_id,
++        source_topic_name: topicName,
++        day_number: dayNumber,
++        content_id: day.id,
++        subtopic_ids: [],
++        mapping_status: 'pending_review',
++        review: { reviewer_id: null, reviewed_at: null, rationale: null, evidence_ids: [] },
++        notes: [],
++      });
++    });
++  }
++
++  if (oldMappings.size > mappings.length) throw new Error('Existing mapping ledger contains records not present in the current course registry.');
++  return {
++    schema_version: '1.0.0',
++    mapping_set_id: 'maseer28-course-content-mappings-v1',
++    status: 'draft_review_queue_only',
++    runtime_eligible: false,
++    source: {
++      content_registry: 'public/content/path-content.json',
++      topic_registry: 'public/assistant/knowledge/topics.v1.json',
++      subtopic_registry: 'public/assistant/knowledge/subtopics.v1.json',
++    },
++    policy: 'Parent topic is assigned only by exact category-name match. Subtopic assignments require human review.',
++    mappings,
++  };
++}
++
++if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
++  const outputPath = path.join(root, 'public/assistant/mappings/course-content-mappings.v1.json');
++  const content = readJson('public/content/path-content.json');
++  const topics = readJson('public/assistant/knowledge/topics.v1.json');
++  const existing = fs.existsSync(outputPath) ? readJson('public/assistant/mappings/course-content-mappings.v1.json') : null;
++  const queue = buildContentMappingQueue({ content, topics, existing });
++  fs.writeFileSync(outputPath, `${JSON.stringify(queue, null, 2)}\n`);
++  process.stdout.write(`Generated ${queue.mappings.length} review records; subtopic assignments remain empty and runtime_eligible=false.\n`);
++}
+diff --git a/tests/contentTemplateSampleAudit.test.js b/tests/contentTemplateSampleAudit.test.js
+@@ -0,0 +1,42 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {auditSampleDayTemplates,renderSampleTemplateReport} from '../scripts/audit-content-template-sample.mjs';
++const topics={topics:Array.from({length:34},(_,i)=>({topic_id:`T${String(i+1).padStart(2,'0')}`,name:`موضوع ${i+1}`,display_order:i+1}))};
++const content={categories:Object.fromEntries(topics.topics.map((t,i)=>[t.name,{days:Array.from({length:28},(_,d)=>({id:`${i}-${d}`,title:'شروع',exercise:`تمرین درباره «${t.name}»`,actionText:`اقدام ${i}`}))}]))};
++
++test('sample audit detects shared templates after topic-name substitution',()=>{
++ const result=auditSampleDayTemplates({content,topics,days:[1]});
++ const exercise=result.report.find(x=>x.field==='exercise');
++ assert.equal(exercise.unique_templates,1);
++ assert.equal(exercise.groups[0].topic_count,34);
++ const action=result.report.find(x=>x.field==='actionText');
++ assert.equal(action.unique_templates,34);
++ assert.equal(action.groups.reduce((sum,g)=>sum+g.topic_count,0),34);
++ const refs=result.report.find(x=>x.field==='legacyBookRec.reference_tuple');
++ assert.equal(refs.topics_with_value,0);
++ assert.equal(refs.groups[0].topic_count,34);
++ assert.ok(renderSampleTemplateReport(result).includes('قالب یکتا'));
++ assert.ok(renderSampleTemplateReport(result).includes('قالب منفرد'));
++});
++
++test('sample audit rejects invalid days and incomplete source paths',()=>{
++ assert.throws(()=>auditSampleDayTemplates({content,topics,days:[29]}),/Invalid sample day/);
++ const broken=structuredClone(content);broken.categories['موضوع 1'].days.pop();
++ assert.throws(()=>auditSampleDayTemplates({content:broken,topics,days:[1]}),/Expected 28 days/);
++});
++
++
++test('topic normalization does not replace an unquoted substring inside an unrelated word',()=>{
++ const collisionTopics=structuredClone(topics);
++ collisionTopics.topics[0].name='ترس';
++ const collisionContent=structuredClone(content);
++ const firstName=topics.topics[0].name;
++ const firstCategory=collisionContent.categories[firstName];
++ delete collisionContent.categories[firstName];
++ firstCategory.days[0].exercise='ترس از نتیجه';
++ collisionContent.categories['ترس']=firstCategory;
++ const result=auditSampleDayTemplates({content:collisionContent,topics:collisionTopics,days:[1]});
++ const exercise=result.report.find(x=>x.field==='exercise');
++ assert.equal(exercise.unique_templates,2);
++ assert.ok(exercise.groups.some(g=>g.topics.includes('ترس')&&g.template_preview.includes('ترس از نتیجه')));
++});
+diff --git a/tests/courseContentQualityAudit.test.js b/tests/courseContentQualityAudit.test.js
+@@ -1,7 +1,7 @@
+ import test from 'node:test';
+ import assert from 'node:assert/strict';
+ import { readFile } from 'node:fs/promises';
+-import { buildReviewQueue, auditCourseContentQuality } from '../scripts/audit-course-content-quality.mjs';
++import { buildReviewQueue, auditCourseContentQuality, normalizeTemplateText } from '../scripts/audit-course-content-quality.mjs';
+ 
+ const read=async p=>JSON.parse(await readFile(new URL(p,import.meta.url),'utf8'));
+ const [content,topics]=await Promise.all([read('../public/content/path-content.json'),read('../public/assistant/knowledge/topics.v1.json')]);
+@@ -37,6 +37,51 @@ test('approved educational review requires full metadata and scores',()=>{
+  review.review_status='approved_for_educational_review';
+  review.scores=Object.fromEntries(Object.keys(review.scores).map(k=>[k,2]));
+  review.reviewer_id='expert-1';review.reviewed_at='2026-11-01T12:00:00Z';review.rationale='Reviewed against the full daily lesson.';review.evidence_ids=['EVD_TEST_01'];
+- const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[review]}});
++ const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[review]},evidenceRegistry:{runtime_eligible:false,evidence:[{evidence_id:'EVD_TEST_01',title:'Verified source',citation:'DOI:10.0000/example',review_status:'approved',reviewer_id:'reviewer-1',reviewed_at:'2026-11-01T12:00:00Z'}]}});
+  assert.deepEqual(report.errors,[]);
+ });
++
++test('syntactically valid but unregistered evidence IDs are rejected',()=>{
++ const review=buildReviewQueue(content,topics)[0];
++ review.evidence_ids=['EVD_TEST_01'];
++ const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[review]},evidenceRegistry:{evidence:[]}});
++ assert.ok(report.errors.some(x=>x.includes('Unknown evidence ID')));
++});
++
++test('approved reviews cannot cite evidence that has not been reviewed',()=>{
++ const review=buildReviewQueue(content,topics)[0];
++ review.review_status='approved_for_educational_review';
++ review.scores=Object.fromEntries(Object.keys(review.scores).map(k=>[k,2]));
++ review.reviewer_id='expert-1';review.reviewed_at='2026-11-01T12:00:00Z';review.rationale='Reviewed against full lesson.';review.evidence_ids=['EVD_PENDING_1'];
++ const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[review]},evidenceRegistry:{runtime_eligible:false,evidence:[{evidence_id:'EVD_PENDING_1',title:'Pending source',citation:'DOI:10.0000/pending',review_status:'pending_review',reviewer_id:null,reviewed_at:null}]}});
++ assert.ok(report.errors.some(x=>x.includes('unreviewed, or untraceable')));
++});
++
++test('topic normalization replaces complete topic tokens but not substrings',()=>{
++ assert.equal(normalizeTemplateText('تمرین برای اضطراب', 'اضطراب'),'تمرین برای [topic]');
++ assert.equal(normalizeTemplateText('تمرین برای اضطرابی', 'اضطراب'),'تمرین برای اضطرابی');
++ assert.equal(normalizeTemplateText('«اضطراب» را بررسی کن', 'اضطراب'),'«[topic]» را بررسی کن');
++});
++
++test('audit rejects duplicate evidence IDs and a runtime-enabled evidence registry',()=>{
++ const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[]},evidenceRegistry:{runtime_eligible:true,evidence:[{evidence_id:'EVD_DUP',title:'A',citation:'A'},{evidence_id:'EVD_DUP',title:'B',citation:'B'}]}});
++ assert.ok(report.errors.some(x=>x.includes('runtime_eligible=false')));
++ assert.ok(report.errors.some(x=>x.includes('Duplicate evidence ID')));
++});
++
++test('audit rejects malformed score dimensions and duplicate evidence references',()=>{
++ const review=buildReviewQueue(content,topics)[0];
++ review.scores={target_specificity:2};
++ review.evidence_ids=['EVD_X','EVD_X'];
++ const report=auditCourseContentQuality({content,topics,ledger:{runtime_eligible:false,reviews:[review]},evidenceRegistry:{runtime_eligible:false,evidence:[{evidence_id:'EVD_X',title:'Source',citation:'Citation'}]}});
++ assert.ok(report.errors.some(x=>x.includes('Score dimensions mismatch')));
++ assert.ok(report.errors.some(x=>x.includes('unique array')));
++});
++
++test('queue rejects duplicate source content IDs and non-34-topic input',()=>{
++ const changed=structuredClone(content);
++ const names=Object.keys(changed.categories);
++ changed.categories[names[1]].days[0].id=changed.categories[names[0]].days[0].id;
++ assert.throws(()=>buildReviewQueue(changed,topics),/Duplicate source content ID/);
++ assert.throws(()=>buildReviewQueue(content,{topics:topics.topics.slice(1)}),/Expected 34 topic definitions/);
++});

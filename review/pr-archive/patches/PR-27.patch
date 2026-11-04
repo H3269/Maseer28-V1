@@ -1,0 +1,311 @@
+diff --git a/scripts/validate-content-redesign.mjs b/scripts/validate-content-redesign.mjs
+@@ -1,47 +1,150 @@
+ import fs from 'node:fs';
+-export function validateContentRedesign({queue,day1,day2,day3,topics,subtopics}) {
+- const errors=[];
+- const topicIds=new Set((topics.topics??[]).map(x=>x.topic_id));
+- const subById=new Map((subtopics.subtopics??[]).map(x=>[x.subtopic_id,x]));
+- const records=queue.records??[], drafts=[...(day1.records??[]),...(day2.records??[]),...(day3.records??[])];
+- const expected=new Set();
+- for(const topic of topics.topics??[]) for(let day=1;day<=28;day++) expected.add('QREV_'+topic.topic_id+'_D'+String(day).padStart(2,'0'));
+- const ids=new Set();
+- for(const item of records){
+-  if(ids.has(item.review_id)) errors.push('duplicate queue id '+item.review_id);
+-  ids.add(item.review_id);
+-  if(!topicIds.has(item.topic_id)) errors.push('unknown queue topic '+item.topic_id);
+-  if(item.runtime_eligible!==false||item.review_status!=='pending_review') errors.push('queue item activated or reviewed prematurely '+item.review_id);
+-  if(Object.values(item.scores??{}).some(x=>x!==null)) errors.push('queue score is not null '+item.review_id);
+- }
+- if(records.length!==952||ids.size!==expected.size||[...expected].some(x=>!ids.has(x))) errors.push('queue must cover all 952 topic-day slots');
+- const draftIds=new Set();
+- for(const item of drafts){
+-  if(draftIds.has(item.content_id)) errors.push('duplicate draft id '+item.content_id);
+-  draftIds.add(item.content_id);
+-  if(!topicIds.has(item.topic_id)) errors.push('unknown draft topic '+item.topic_id);
+-  if(subById.get(item.subtopic_id)?.topic_id!==item.topic_id) errors.push('subtopic parent mismatch '+item.content_id);
+-  for(const field of ['learning_objective','mechanism_focus','exercise','action','progress_measure','safety_and_limits']) if(!String(item[field]??'').trim()) errors.push('missing '+field+' '+item.content_id);
+-  if(item.review_status!=='draft_pending_expert_review'||item.runtime_eligible!==false) errors.push('draft not blocked '+item.content_id);
+-  if((item.evidence_ids??[]).length) errors.push('unverified evidence claimed '+item.content_id);
+- }
+- if((day1.records??[]).length!==34||(day2.records??[]).length!==34||(day3.records??[]).length!==34||drafts.length!==102||draftIds.size!==102) errors.push('day one, day two, and day three batches must contain 102 unique drafts');
+- for(const [batchName,batch] of [['day one',day1.records??[]],['day two',day2.records??[]],['day three',day3.records??[]]]){
+-  for(const field of ['learning_objective','exercise','action','progress_measure']){
+-   const values=batch.map(item=>String(item[field]??'').normalize('NFKC').trim());
+-   if(new Set(values).size!==values.length) errors.push(batchName+' contains duplicate '+field+' templates across topics');
+-  }
+- }
+- for(const item of drafts){
+-  const q=records.find(x=>x.topic_id===item.topic_id&&x.day_number===item.day_number);
+-  if(!q||q.draft_content_id!==item.content_id||q.source_content_id!==item.source_content_id) errors.push('queue mapping mismatch '+item.content_id);
+- }
+- return {valid:errors.length===0,errors,summary:{queue_records:records.length,drafts_created:drafts.length,not_started:records.filter(x=>x.redesign_status==='not_started').length,runtime_eligible:drafts.filter(x=>x.runtime_eligible===true).length}};
++
++const DAY_PHASES = {
++  1: 'orientation_and_safe_observation',
++  2: 'pattern_discrimination_and_context',
++  3: 'functional_context_and_impact',
++};
++const REQUIRED_DRAFT_FIELDS = [
++  'learning_objective', 'mechanism_focus', 'exercise',
++  'action', 'progress_measure', 'safety_and_limits',
++];
++const PROGRESSION_FIELDS = [
++  'learning_objective', 'mechanism_focus', 'exercise',
++  'action', 'progress_measure',
++];
++const normalizeText = (value) => String(value ?? '').normalize('NFKC').replace(/\\s+/g, ' ').trim();
++
++export function validateContentRedesign({ queue, day1, day2, day3, topics, subtopics }) {
++  const errors = [];
++  const topicList = topics.topics ?? [];
++  const topicIds = new Set(topicList.map((item) => item.topic_id));
++  const topicNames = new Map(topicList.map((item) => [item.topic_id, item.name]));
++  const subById = new Map((subtopics.subtopics ?? []).map((item) => [item.subtopic_id, item]));
++  const records = queue.records ?? [];
++  const batches = [[1, day1.records ?? []], [2, day2.records ?? []], [3, day3.records ?? []]];
++  const drafts = batches.flatMap(([, items]) => items);
++  const expected = new Set();
++
++  for (const topic of topicList) {
++    for (let day = 1; day <= 28; day++) {
++      expected.add('QREV_' + topic.topic_id + '_D' + String(day).padStart(2, '0'));
++    }
++  }
++
++  const queueBySlot = new Map();
++  const queueIds = new Set();
++  for (const item of records) {
++    if (queueIds.has(item.review_id)) errors.push('duplicate queue id ' + item.review_id);
++    queueIds.add(item.review_id);
++    if (!topicIds.has(item.topic_id)) errors.push('unknown queue topic ' + item.topic_id);
++    if (item.runtime_eligible !== false || item.review_status !== 'pending_review') {
++      errors.push('queue item activated or reviewed prematurely ' + item.review_id);
++    }
++    if (Object.values(item.scores ?? {}).some((value) => value !== null)) {
++      errors.push('queue score is not null ' + item.review_id);
++    }
++    const slot = item.topic_id + ':' + item.day_number;
++    if (queueBySlot.has(slot)) errors.push('duplicate queue topic/day slot ' + slot);
++    queueBySlot.set(slot, item);
++  }
++  if (records.length !== 952 || queueIds.size !== expected.size || [...expected].some((id) => !queueIds.has(id))) {
++    errors.push('queue must cover all 952 topic-day slots');
++  }
++
++  const draftIds = new Set();
++  const draftBySlot = new Map();
++  for (const [expectedDay, batch] of batches) {
++    if (batch.length !== 34) errors.push('day ' + expectedDay + ' must contain exactly 34 drafts');
++    for (const item of batch) {
++      if (draftIds.has(item.content_id)) errors.push('duplicate draft id ' + item.content_id);
++      draftIds.add(item.content_id);
++      if (!topicIds.has(item.topic_id)) errors.push('unknown draft topic ' + item.topic_id);
++      if (item.day_number !== expectedDay) errors.push('wrong day number for ' + item.content_id);
++      if (item.content_id !== 'DRAFT_' + item.topic_id + '_D' + String(expectedDay).padStart(2, '0')) {
++        errors.push('draft id does not match topic/day ' + item.content_id);
++      }
++      if (topicNames.has(item.topic_id) && item.topic_name !== topicNames.get(item.topic_id)) {
++        errors.push('draft topic name mismatch ' + item.content_id);
++      }
++      if (subById.get(item.subtopic_id)?.topic_id !== item.topic_id) {
++        errors.push('subtopic parent mismatch ' + item.content_id);
++      }
++      for (const field of REQUIRED_DRAFT_FIELDS) {
++        if (!normalizeText(item[field])) errors.push('missing ' + field + ' ' + item.content_id);
++      }
++      if (item.review_status !== 'draft_pending_expert_review' || item.runtime_eligible !== false) {
++        errors.push('draft not blocked ' + item.content_id);
++      }
++      if ((item.evidence_ids ?? []).length || (item.source_reference_ids ?? []).length) {
++        errors.push('unverified evidence claimed ' + item.content_id);
++      }
++      if (item.phase !== DAY_PHASES[expectedDay]) {
++        errors.push('phase/day progression mismatch ' + item.content_id);
++      }
++      const slot = item.topic_id + ':' + expectedDay;
++      if (draftBySlot.has(slot)) errors.push('duplicate draft topic/day slot ' + slot);
++      draftBySlot.set(slot, item);
++    }
++  }
++  if (drafts.length !== 102 || draftIds.size !== 102) {
++    errors.push('day one, day two, and day three batches must contain 102 unique drafts');
++  }
++
++  for (const [day, batch] of batches) {
++    for (const field of ['learning_objective', 'exercise', 'action', 'progress_measure']) {
++      const values = batch.map((item) => normalizeText(item[field]));
++      if (new Set(values).size !== values.length) {
++        errors.push('day ' + day + ' contains duplicate ' + field + ' templates across topics');
++      }
++    }
++  }
++
++  for (const topicId of topicIds) {
++    const topicDrafts = [1, 2, 3].map((day) => draftBySlot.get(topicId + ':' + day)).filter(Boolean);
++    for (const field of PROGRESSION_FIELDS) {
++      const values = topicDrafts.map((item) => normalizeText(item[field]));
++      if (new Set(values).size !== values.length) {
++        errors.push('topic ' + topicId + ' repeats ' + field + ' across consecutive days');
++      }
++    }
++    const subtopicIds = topicDrafts.map((item) => item.subtopic_id);
++    if (new Set(subtopicIds).size !== subtopicIds.length) {
++      errors.push('topic ' + topicId + ' does not progress to a distinct subtopic each day');
++    }
++  }
++
++  for (const item of drafts) {
++    const queueItem = queueBySlot.get(item.topic_id + ':' + item.day_number);
++    if (!queueItem || queueItem.draft_content_id !== item.content_id ||
++        queueItem.source_content_id !== item.source_content_id) {
++      errors.push('queue mapping mismatch ' + item.content_id);
++    }
++  }
++
++  return {
++    valid: errors.length === 0,
++    errors,
++    summary: {
++      queue_records: records.length,
++      drafts_created: drafts.length,
++      not_started: records.filter((item) => item.redesign_status === 'not_started').length,
++      runtime_eligible: drafts.filter((item) => item.runtime_eligible === true).length,
++    },
++  };
+ }
+-if(process.argv[1]?.endsWith('validate-content-redesign.mjs')){
+- const root=process.cwd();
+- const read=p=>JSON.parse(fs.readFileSync(root+'/'+p,'utf8'));
+- const r=validateContentRedesign({queue:read('public/assistant/content-drafts/952-day-redesign-queue.v1.json'),day1:read('public/assistant/content-drafts/day01-34-topic-drafts.v1.json'),day2:read('public/assistant/content-drafts/day02-34-topic-drafts.v1.json'),day3:read('public/assistant/content-drafts/day03-34-topic-drafts.v1.json'),topics:read('public/assistant/knowledge/topics.v1.json'),subtopics:read('public/assistant/knowledge/subtopics.v1.json')});
+- console.log(JSON.stringify(r,null,2));
+- if(!r.valid) throw new Error('Content redesign validation failed');
++
++if (process.argv[1]?.endsWith('validate-content-redesign.mjs')) {
++  const root = process.cwd();
++  const read = (path) => JSON.parse(fs.readFileSync(root + '/' + path, 'utf8'));
++  const result = validateContentRedesign({
++    queue: read('public/assistant/content-drafts/952-day-redesign-queue.v1.json'),
++    day1: read('public/assistant/content-drafts/day01-34-topic-drafts.v1.json'),
++    day2: read('public/assistant/content-drafts/day02-34-topic-drafts.v1.json'),
++    day3: read('public/assistant/content-drafts/day03-34-topic-drafts.v1.json'),
++    topics: read('public/assistant/knowledge/topics.v1.json'),
++    subtopics: read('public/assistant/knowledge/subtopics.v1.json'),
++  });
++  console.log(JSON.stringify(result, null, 2));
++  if (!result.valid) throw new Error('Content redesign validation failed');
+ }
+diff --git a/tests/contentRedesignValidation.test.js b/tests/contentRedesignValidation.test.js
+@@ -2,25 +2,94 @@ import test from 'node:test';
+ import assert from 'node:assert/strict';
+ import { validateContentRedesign } from '../scripts/validate-content-redesign.mjs';
+ 
+-function makeData(){
+- const topics=Array.from({length:34},(_,i)=>({topic_id:'T'+String(i+1).padStart(2,'0')}));
+- const subtopics=topics.flatMap(x=>[1,2,3].map(n=>({subtopic_id:x.topic_id+'-S0'+n,topic_id:x.topic_id})));
+- const records=topics.flatMap(topic=>Array.from({length:28},(_,i)=>{
+-  const day=i+1, id='QREV_'+topic.topic_id+'_D'+String(day).padStart(2,'0');
+-  return {review_id:id,topic_id:topic.topic_id,day_number:day,source_content_id:topic.topic_id+'-'+String(day).padStart(2,'0'),draft_content_id:day<=3?'DRAFT_'+topic.topic_id+'_D0'+day:null,redesign_status:day<=3?'draft_created_pending_review':'not_started',review_status:'pending_review',runtime_eligible:false,scores:{dimension:null}};
+- }));
+- const buildDrafts=day=>topics.map(topic=>({content_id:'DRAFT_'+topic.topic_id+'_D0'+day,source_content_id:topic.topic_id+'-0'+day,topic_id:topic.topic_id,subtopic_id:topic.topic_id+'-S0'+day,day_number:day,learning_objective:'هدف مشخص '+topic.topic_id,mechanism_focus:'سازوکار محدود',exercise:'تمرین مشاهده '+topic.topic_id,action:'اقدام کم‌خطر '+topic.topic_id,progress_measure:'سنجه مشاهده‌پذیر '+topic.topic_id,safety_and_limits:'حدود ایمنی',evidence_ids:[],review_status:'draft_pending_expert_review',runtime_eligible:false}));
+- return {queue:{records},day1:{records:buildDrafts(1)},day2:{records:buildDrafts(2)},day3:{records:buildDrafts(3)},topics:{topics},subtopics:{subtopics}};
++function makeData() {
++  const topics = Array.from({ length: 34 }, (_, i) => ({
++    topic_id: 'T' + String(i + 1).padStart(2, '0'),
++    name: 'موضوع ' + (i + 1),
++  }));
++  const subtopics = topics.flatMap((topic) =>
++    [1, 2, 3].map((day) => ({
++      subtopic_id: topic.topic_id + '-S0' + day,
++      topic_id: topic.topic_id,
++    })),
++  );
++  const records = topics.flatMap((topic) =>
++    Array.from({ length: 28 }, (_, i) => {
++      const day = i + 1;
++      return {
++        review_id: 'QREV_' + topic.topic_id + '_D' + String(day).padStart(2, '0'),
++        topic_id: topic.topic_id,
++        day_number: day,
++        source_content_id: topic.topic_id + '-' + String(day).padStart(2, '0'),
++        draft_content_id: day <= 3
++          ? 'DRAFT_' + topic.topic_id + '_D0' + day
++          : null,
++        redesign_status: day <= 3 ? 'draft_created_pending_review' : 'not_started',
++        review_status: 'pending_review',
++        runtime_eligible: false,
++        scores: { dimension: null },
++      };
++    }),
++  );
++  const buildDrafts = (day) => topics.map((topic) => ({
++    content_id: 'DRAFT_' + topic.topic_id + '_D0' + day,
++    source_content_id: topic.topic_id + '-0' + day,
++    topic_id: topic.topic_id,
++    topic_name: topic.name,
++    subtopic_id: topic.topic_id + '-S0' + day,
++    day_number: day,
++    phase: ({
++      1: 'orientation_and_safe_observation',
++      2: 'pattern_discrimination_and_context',
++      3: 'functional_context_and_impact',
++    })[day],
++    learning_objective: 'هدف روز ' + day + ' برای ' + topic.topic_id,
++    mechanism_focus: 'سازوکار روز ' + day + ' برای ' + topic.topic_id,
++    exercise: 'تمرین روز ' + day + ' برای ' + topic.topic_id,
++    action: 'اقدام روز ' + day + ' برای ' + topic.topic_id,
++    progress_measure: 'سنجه روز ' + day + ' برای ' + topic.topic_id,
++    safety_and_limits: 'حدود ایمنی',
++    evidence_ids: [],
++    source_reference_ids: [],
++    review_status: 'draft_pending_expert_review',
++    runtime_eligible: false,
++  }));
++  return {
++    queue: { records },
++    day1: { records: buildDrafts(1) },
++    day2: { records: buildDrafts(2) },
++    day3: { records: buildDrafts(3) },
++    topics: { topics },
++    subtopics: { subtopics },
++  };
+ }
+-test('validates full 952 queue and first three 34-topic draft batches',()=>{
+- const result=validateContentRedesign(makeData());
+- assert.equal(result.valid,true,result.errors.join('; '));
++
++test('validates full 952 queue and first three 34-topic draft batches', () => {
++  const result = validateContentRedesign(makeData());
++  assert.equal(result.valid, true, result.errors.join('; '));
++});
++
++test('blocks premature activation and unverified evidence claims', () => {
++  const data = makeData();
++  data.day3.records[0].runtime_eligible = true;
++  data.day3.records[0].evidence_ids = ['EVD_FAKE'];
++  const result = validateContentRedesign(data);
++  assert.ok(result.errors.some((item) => item.includes('draft not blocked')));
++  assert.ok(result.errors.some((item) => item.includes('unverified evidence claimed')));
+ });
+-test('blocks premature activation and unverified evidence claims',()=>{
+- const data=makeData();
+- data.day3.records[0].runtime_eligible=true;
+- data.day3.records[0].evidence_ids=['EVD_FAKE'];
+- const result=validateContentRedesign(data);
+- assert.ok(result.errors.some(x=>x.includes('draft not blocked')));
+- assert.ok(result.errors.some(x=>x.includes('unverified evidence claimed')));
++
++test('detects repeated exercises across consecutive days for the same topic', () => {
++  const data = makeData();
++  data.day2.records[0].exercise = data.day1.records[0].exercise;
++  const result = validateContentRedesign(data);
++  assert.ok(result.errors.some((item) => item.includes('repeats exercise across consecutive days')));
++});
++
++test('detects incorrect day phase and repeated subtopic progression', () => {
++  const data = makeData();
++  data.day3.records[1].phase = 'orientation_and_safe_observation';
++  data.day3.records[2].subtopic_id = data.day2.records[2].subtopic_id;
++  const result = validateContentRedesign(data);
++  assert.ok(result.errors.some((item) => item.includes('phase/day progression mismatch')));
++  assert.ok(result.errors.some((item) => item.includes('distinct subtopic each day')));
+ });

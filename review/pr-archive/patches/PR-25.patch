@@ -1,0 +1,144 @@
+diff --git a/docs/ADAPTIVE_ASSESSMENT_ENGINE_V1_FA.md b/docs/ADAPTIVE_ASSESSMENT_ENGINE_V1_FA.md
+@@ -64,3 +64,12 @@
+ 6. تست کاربردپذیری و دسترس‌پذیری در Android WebView.
+ 7. پس از این مراحل، تصمیم جداگانه برای اتصال مدل زبانی و backend.
+ 
++
++
++### چرخه اصلاح برداشت توسط کاربر
++
++تأیید خلاصه فقط با پاسخ مثبت صریح انجام می‌شود. هر پاسخ غیرمثبت یا اصلاحی، از جمله «نه» یا «تقریباً درست است، اما…»، به‌عنوان درخواست اصلاح تلقی می‌شود و موتور خلاصه را نهایی نمی‌کند.
++
++درخواست اصلاح باعث می‌شود فرضیه‌های موضوعی قبلی از خلاصه جاری کنار گذاشته شوند؛ سپس یک پرسش برای دریافت توضیح دقیق‌تر نمایش داده می‌شود. متن اصلاح کاربر جداگانه ثبت می‌شود و خلاصه برای تأیید دوباره ارائه می‌گردد.
++
++موتور از متن اصلاح‌شده به‌تنهایی موضوع جدید استنتاج نمی‌کند؛ چون تطبیق واژگانی ساده ممکن است نفی، نقل‌قول یا تفاوت معنایی را اشتباه بفهمد. در این مرحله وضعیت موضوعی `requires_reassessment` است و فرضیه‌های قبلی نباید به‌عنوان نتیجه جاری نمایش داده شوند. این چرخه اصلاح برداشت مشارکتی است، نه حافظه بلندمدت یا بازارزیابی بالینی.
+diff --git a/src/features/assistant/AssessmentAssistant.jsx b/src/features/assistant/AssessmentAssistant.jsx
+@@ -88,6 +88,9 @@ export default function AssessmentAssistant() {
+       {summary && <div className="assistantSummary">
+         <h3>خلاصه موقت برای بازبینی</h3>
+         <p><b>آنچه گفتی:</b> {summary.user_report}</p>
++        {summary.user_correction && <p><b>اصلاح تو:</b> {summary.user_correction}</p>}
++        {summary.review_status === 'correction_requested' && <p className="muted">برداشت قبلی و موضوعات پیشنهادی کنار گذاشته شدند تا توضیح تو دریافت شود.</p>}
++        {summary.review_status === 'user_corrected_pending_confirmation' && <p className="muted">برداشت قبلی کنار گذاشته شده است. لطفاً خلاصه اصلاح‌شده را دوباره بررسی کن.</p>}
+         <p><b>اثر بر زندگی روزمره:</b> {summary.impact}</p>
+         <p><b>مدت و تکرار:</b> {summary.duration}</p>
+         <p><b>هدفت:</b> {summary.user_goal}</p>
+diff --git a/src/features/assistant/assessmentEngine.js b/src/features/assistant/assessmentEngine.js
+@@ -49,6 +49,7 @@ const QUESTION = {
+   goal: { id: 'goal', stage: 'open_intent', prompt: 'از این گفتگو بیشتر چه کمکی می‌خواهی: فهمیدن مسئله، پیدا کردن راهکار، یا تصمیم‌گیری درباره کمک تخصصی؟' },
+   clarify: { id: 'clarify_example', stage: 'differential_clarification', prompt: 'برای اینکه اشتباه دسته‌بندی نکنم، یک موقعیت مشخص و اخیر را تعریف می‌کنی؟ در آن لحظه چه اتفاقی افتاد، چه فکری از ذهنت گذشت و چه احساسی داشتی؟' },
+   summary: { id: 'summary_confirmation', stage: 'collaborative_summary', prompt: 'این خلاصه تا چه اندازه تجربه‌ات را درست بازتاب می‌دهد؟ چه چیزی را باید اصلاح یا اضافه کنم؟' },
++  summary_revision: { id: 'summary_revision', stage: 'user_correction', prompt: 'ممنون که اصلاح کردی. لطفاً دقیق بگو کدام بخش برداشت من نادرست بود و به‌جای آن چه چیزی را باید بفهمم؟ اگر موضوعات پیشنهادی اشتباه‌اند، بگو کدام‌یک را کنار بگذارم.' },
+   safety_uncertain: { id: 'safety_clarification', stage: 'safety_check', prompt: 'منظورت از پاسخ قبلی برایم روشن نیست. آیا در همین الآن قصد، برنامه یا احتمال عملی آسیب‌زدن به خودت یا دیگری وجود دارد؟ می‌توانی بگویی «بله»، «نه» یا «مطمئن نیستم».' },
+ };
+ 
+@@ -166,14 +167,37 @@ export function submitAssessmentAnswer(session, answer) {
+     };
+     next.current_question = QUESTION.summary;
+   } else if (questionId === 'summary_confirmation') {
+-    next.answers.summary_feedback = value;
+-    next.status = 'completed';
+-    next.current_question = null;
+-    next.next_step = {
+-      content_available: false,
+-      reason: 'هیچ تمرین یا مداخله‌ای تا تأیید علمی و تخصصی به این موتور متصل نشده است.',
+-      recommendation: 'ابتدا خلاصه را با یک متخصص یا خودت دقیق‌تر کن؛ در صورت تداوم رنج یا اختلال عملکرد، ارزیابی متخصص سلامت روان مناسب است.',
+-    };
++    const accepted = normalize(value).replace(/[.!؟،,]/g, '').trim();
++    if (['بله', 'آره', 'اره', 'درسته', 'درست است', 'خلاصه درست است', 'بله درست است'].includes(accepted)) {
++      next.answers.summary_feedback = value;
++      next.summary.review_status = 'user_confirmed';
++      next.status = 'completed';
++      next.current_question = null;
++      next.next_step = {
++        content_available: false,
++        reason: 'هیچ تمرین یا مداخله‌ای تا تأیید علمی و تخصصی به این موتور متصل نشده است.',
++        recommendation: 'ابتدا خلاصه را با یک متخصص یا خودت دقیق‌تر کن؛ در صورت تداوم رنج یا اختلال عملکرد، ارزیابی متخصص سلامت روان مناسب است.',
++      };
++    } else {
++      next.summary.review_status = 'correction_requested';
++      next.summary.prior_candidate_topics = [...next.summary.candidate_topics];
++      next.summary.candidate_topics = [];
++      next.summary.topic_assessment_status = 'withdrawn_pending_reassessment';
++      next.summary.correction_request = value;
++      next.current_question = QUESTION.summary_revision;
++    }
++  } else if (questionId === 'summary_revision') {
++    next.answers.summary_revision = value;
++    next.summary.user_correction = value;
++    next.summary.review_status = 'user_corrected_pending_confirmation';
++    next.summary.topic_assessment_status = 'requires_reassessment';
++    next.summary.candidate_topics = [];
++    next.summary.limitations = [
++      ...next.summary.limitations,
++      'پس از اصلاح کاربر، فرضیه‌های موضوعی قبلی کنار گذاشته شدند؛ موتور هنوز توان بازارزیابی معتبر موضوع را ندارد و نباید آن‌ها را به‌عنوان برداشت جاری نمایش دهد.',
++      'متن اصلاح‌شده کاربر باید توسط خود کاربر یا متخصص بازبینی شود؛ این اصلاح به‌تنهایی تشخیص یا ارزیابی علمی محسوب نمی‌شود.',
++    ];
++    next.current_question = QUESTION.summary;
+   }
+   return next;
+ }
+diff --git a/tests/assessmentEngine.test.js b/tests/assessmentEngine.test.js
+@@ -45,7 +45,7 @@ test('ordinary concern proceeds through one question at a time and produces tent
+   assert.ok(summary.candidate_topics.some((item) => item.topic_id === 'T02'));
+   assert.ok(summary.candidate_topics.every((item) => item.status === 'tentative_hypothesis'));
+   assert.ok(summary.limitations.length >= 3);
+-  session = answer(session, 'خلاصه کلی درست است اما شدت آن را کمتر گفتم');
++  session = answer(session, 'بله');
+   assert.equal(session.status, 'completed');
+   assert.equal(session.next_step.content_available, false);
+ });
+@@ -109,3 +109,53 @@ test('unmatched concerns use T34 as a clarification route, not a diagnosis', ()
+ test('cloud processing is explicitly rejected by this experimental engine', () => {
+   assert.throws(() => createAssessmentSession({ localOnly: false }), /ارسال ابری/);
+ });
++
++
++test('non-affirmative summary feedback withdraws tentative topics and asks for a correction',()=>{
++ let session=createAssessmentSession();
++ session=answer(session,'مدتی است اضطراب دارم');
++ session=answer(session,'نه');
++ session=answer(session,'در کارم اثر گذاشته');
++ session=answer(session,'چند ماه');
++ session=answer(session,'می‌خواهم بفهمم');
++ session=answer(session,'وقتی آینده نامعلوم است اضطراب می‌گیرم');
++ assert.ok(getAssessmentSummary(session).candidate_topics.some(item=>item.topic_id==='T02'));
++ session=answer(session,'نه، برداشتت اشتباه است');
++ assert.equal(getCurrentQuestion(session).id,'summary_revision');
++ assert.equal(session.summary.review_status,'correction_requested');
++ assert.equal(session.summary.candidate_topics.length,0);
++ assert.equal(session.summary.topic_assessment_status,'withdrawn_pending_reassessment');
++});
++
++test('user correction replaces the current interpretation and requires reconfirmation',()=>{
++ let session=createAssessmentSession();
++ session=answer(session,'مدتی است اضطراب دارم');
++ session=answer(session,'نه');
++ session=answer(session,'در کارم اثر گذاشته');
++ session=answer(session,'چند ماه');
++ session=answer(session,'می‌خواهم بفهمم');
++ session=answer(session,'وقتی آینده نامعلوم است اضطراب می‌گیرم');
++ session=answer(session,'خلاصه درست نیست');
++ session=answer(session,'مسئله اصلی فشار کاری است؛ اضطراب موضوع اصلی من نیست');
++ assert.equal(getCurrentQuestion(session).id,'summary_confirmation');
++ assert.equal(session.summary.user_correction,'مسئله اصلی فشار کاری است؛ اضطراب موضوع اصلی من نیست');
++ assert.equal(session.summary.candidate_topics.length,0);
++ assert.equal(session.summary.review_status,'user_corrected_pending_confirmation');
++ assert.equal(session.summary.topic_assessment_status,'requires_reassessment');
++ session=answer(session,'بله');
++ assert.equal(session.status,'completed');
++ assert.equal(session.summary.review_status,'user_confirmed');
++});
++
++test('only an explicit affirmative confirms a summary',()=>{
++ let session=createAssessmentSession();
++ session=answer(session,'یک مسئله دارم');
++ session=answer(session,'نه');
++ session=answer(session,'اثر گذاشته');
++ session=answer(session,'چند هفته');
++ session=answer(session,'می‌خواهم بفهمم');
++ session=answer(session,'یک مثال مشخص');
++ session=answer(session,'تقریباً درست است، اما یک نکته مهم جا افتاده');
++ assert.equal(session.status,'in_progress');
++ assert.equal(getCurrentQuestion(session).id,'summary_revision');
++});

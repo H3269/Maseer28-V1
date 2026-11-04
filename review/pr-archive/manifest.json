@@ -1,0 +1,175 @@
+{
+  "schema_version": "1.0.0",
+  "purpose": "Isolated review archive. These are patch snapshots, not merged application code.",
+  "source_main_sha": "c18e1d4543c33bc0e5efb30bdc85d4c2df0702a2",
+  "branch": "review/selected-pr-capabilities-2026-11-04",
+  "included_prs": [
+    {
+      "number": 15,
+      "patch": "patches/PR-15.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/15"
+    },
+    {
+      "number": 16,
+      "patch": "patches/PR-16.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/16"
+    },
+    {
+      "number": 17,
+      "patch": "patches/PR-17.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/17"
+    },
+    {
+      "number": 19,
+      "patch": "patches/PR-19.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/19"
+    },
+    {
+      "number": 20,
+      "patch": "patches/PR-20.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/20"
+    },
+    {
+      "number": 21,
+      "patch": "patches/PR-21.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/21"
+    },
+    {
+      "number": 22,
+      "patch": "patches/PR-22.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/22"
+    },
+    {
+      "number": 23,
+      "patch": "patches/PR-23.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/23"
+    },
+    {
+      "number": 24,
+      "patch": "patches/PR-24.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/24"
+    },
+    {
+      "number": 25,
+      "patch": "patches/PR-25.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/25"
+    },
+    {
+      "number": 26,
+      "patch": "patches/PR-26.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/26"
+    },
+    {
+      "number": 27,
+      "patch": "patches/PR-27.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/27"
+    },
+    {
+      "number": 28,
+      "patch": "patches/PR-28.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/28"
+    },
+    {
+      "number": 29,
+      "patch": "patches/PR-29.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/29"
+    },
+    {
+      "number": 30,
+      "patch": "patches/PR-30.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/30"
+    },
+    {
+      "number": 31,
+      "patch": "patches/PR-31.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/31"
+    },
+    {
+      "number": 32,
+      "patch": "patches/PR-32.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/32"
+    },
+    {
+      "number": 33,
+      "patch": "patches/PR-33.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/33"
+    },
+    {
+      "number": 34,
+      "patch": "patches/PR-34.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/34"
+    },
+    {
+      "number": 35,
+      "patch": "patches/PR-35.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/35"
+    },
+    {
+      "number": 36,
+      "patch": "patches/PR-36.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/36"
+    },
+    {
+      "number": 37,
+      "patch": "patches/PR-37.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/37"
+    },
+    {
+      "number": 38,
+      "patch": "patches/PR-38.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/38"
+    },
+    {
+      "number": 39,
+      "patch": "patches/PR-39.patch",
+      "source": "https://github.com/H3269/Maseer28-V1/pull/39"
+    }
+  ],
+  "excluded_for_now": [
+    {
+      "number": 5,
+      "reason": "Outdated Dependabot update; regenerate against current main."
+    },
+    {
+      "number": 6,
+      "reason": "Outdated Dependabot update; regenerate against current main."
+    },
+    {
+      "number": 7,
+      "reason": "Outdated Dependabot update; regenerate against current main."
+    },
+    {
+      "number": 8,
+      "reason": "Outdated Dependabot update; regenerate against current main."
+    },
+    {
+      "number": 9,
+      "reason": "Major React upgrade; regenerate and test against current main."
+    },
+    {
+      "number": 10,
+      "reason": "Outdated Pages deployment workflow; not a fix for Cloudflare Worker builds."
+    },
+    {
+      "number": 11,
+      "reason": "Major Vite plugin update; regenerate with Vite compatibility review."
+    },
+    {
+      "number": 12,
+      "reason": "Major Vite upgrade; regenerate with plugin compatibility review."
+    },
+    {
+      "number": 13,
+      "reason": "Major React DOM upgrade; regenerate and test with React."
+    },
+    {
+      "number": 14,
+      "reason": "Production deployment workflow; not required for current Cloudflare build issue."
+    },
+    {
+      "number": 18,
+      "reason": "Overlaps with existing safety handling and PR #28/#39; not preserved as a separate candidate."
+    }
+  ],
+  "handling": "No source files from the PRs were applied to main or to this review branch. Full unified patch snapshots are stored for later selection. PR #39 is included only as a review patch, not endorsed for wholesale application."
+}
