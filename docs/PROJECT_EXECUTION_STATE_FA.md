@@ -594,3 +594,25 @@
 
 ### گام بعدی واحد
 پیاده‌سازی مستقل SQLite Durable Object و تست‌های deterministic برای concurrency، duplicate/expiry، alarm scheduling failure، cleanup/recovery و storage failure؛ بدون افزودن binding یا route و بدون اتصال به frontend. پیش از هر write، HEAD و هر دو فایل هدف دوباره بررسی شوند.
+
+
+## ۱۳. پیاده‌سازی مستقل Replay Marker و آزمون‌های اولیه (2026-11-04)
+
+### تغییرات روی main
+- `workers/assistant-api/src/replayMarkerShard.js` اضافه شد: SQLite-backed `ReplayMarkerShard` با transaction همگام، marker یکتا، رد duplicate، جایگزینی marker منقضی، Alarm cleanup و پاک‌سازی opportunistic محدود.
+- `tests/replayMarkerShard.test.js` اضافه شد: آزمون SQLite واقعی Node 22 برای مصرف تکراری، رقابت هم‌زمان، fingerprintهای متفاوت، انقضا، شکست زمان‌بندی Alarm، شکست SQL، cleanup و retry خطای Alarm.
+- در بازبینی دوم، ورودی زمان جاری از API متد حذف شد و Alarm پیش از درج، موعدی حداکثر تا expiry همان marker می‌گیرد. آزمون batch بیش از ۱۰۰ رکورد و ورودی نامعتبر هم اضافه شد.
+- فایل runtime اصلی `index.js`، frontend، محتوای مسیر و Wrangler config تغییر نکرده‌اند؛ هیچ export، binding، migration، route یا secret جدیدی ایجاد نشده است.
+
+### CI و اصلاح خطا
+- اجرای `41784847972` برای commit `5d1210b...` شکست خورد: ۳۱۸ تست از ۳۱۹ موفق بودند؛ یک آزمون به علت تزریق SQL failure پیش از schema setup fail می‌شد.
+- علت از log واقعی استخراج شد؛ تزریق خطا به بعد از ساخت schema منتقل شد.
+- اجرای `41784863454` برای commit `6abde6e...` با نتیجه `success` تمام شد.
+- اجرای `41785090604` برای HEAD شامل اصلاح نهایی زمان/Alarm و آزمون batch، در مرحله Chromium privacy migration قرار دارد؛ نتیجه نهایی هنوز اعلام نمی‌شود. مرحله Unit Tests آن موفق است.
+- Wrangler dry-run فقط bundle Worker فعلی را build می‌کند و اجرای واقعی کلاس DO را روی edge اثبات نمی‌کند.
+
+### محدودیت‌ها و گام بعد
+- هنوز integration test روی Miniflare/Workers runtime انجام نشده؛ Node SQLite به‌تنهایی تضمین‌کننده سازگاری کامل API و Alarm Cloudflare نیست.
+- کلاس هنوز از Worker اصلی قابل دسترسی نیست و عمداً route یا binding ندارد.
+- پیش از اتصال باید runtime integration test، تست alarm retry/cleanup واقعی، sharding strategy و budget سهمیه DO تکمیل شود.
+- هیچ deployment، انتشار یا تست انسانی میزبان انجام نشده است؛ کاربر فعلاً اقدامی لازم ندارد.
