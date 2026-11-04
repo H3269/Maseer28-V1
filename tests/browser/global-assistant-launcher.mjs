@@ -77,8 +77,20 @@ try {
   await page.keyboard.press('Tab');
   assert.equal(await closeButton.evaluate((element) => element === document.activeElement), true, 'Tab from the last control must wrap to the first');
   assert.match(await dialog.innerText(), /صفحه فعلی: خانه/);
-  assert.match(await dialog.innerText(), /هنوز محتوای این بخش به موتور پاسخ‌گویی متصل نیست/);
-  assert.equal(await dialog.getByRole('textbox').count(), 0, 'unsupported pages must not display a misleading chat composer');
+  assert.match(await dialog.innerText(), /پردازش این نسخه در مرورگر انجام می‌شود/);
+  assert.equal(await dialog.getByRole('textbox').count(), 1, 'the limited local page assistant must expose its message composer');
+  assert.equal((await dialog.innerText()).includes('09123456789'), false, 'private profile data must not be exposed to the page assistant');
+  await dialog.getByRole('textbox').fill('اینجا چه کارهایی می‌توانم انجام بدهم؟');
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => document.querySelector('.globalAssistantDialog')?.innerText.includes('ادامه مسیر امروز'));
+  const firstAssistantReply = dialog.locator('.assistantMessage').last();
+  assert.match(await firstAssistantReply.innerText(), /در صفحه «خانه» می‌توانی/);
+  await dialog.getByRole('textbox').fill('من اضطراب دارم؛ این صفحه برای چیست؟');
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('موضوع فعلاً فقط')));
+  const personalReply = dialog.locator('.assistantMessage').last();
+  assert.match(await personalReply.innerText(), /موضوع فعلاً فقط یک فرضیه اولیه است/);
+  assert.doesNotMatch(await personalReply.innerText(), /در صفحه «خانه» می‌توانی/);
   await closeButton.click();
   await dialog.waitFor({ state: 'detached' });
   assert.equal(await launcher.getAttribute('aria-expanded'), 'false');
@@ -104,6 +116,9 @@ try {
   dialog = page.getByRole('dialog', { name: 'دستیار مسیر۲۸' });
   await dialog.waitFor({ state: 'visible' });
   assert.match(await dialog.innerText(), /صفحه فعلی: کتابخانه/);
+  await dialog.getByRole('textbox').fill('این صفحه برای چیست؟');
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('برای مرور کتاب‌های موجود')));
   await dialog.getByRole('button', { name: 'متوجه شدم' }).click();
   await dialog.waitFor({ state: 'detached' });
 
@@ -113,6 +128,9 @@ try {
   dialog = page.getByRole('dialog', { name: 'دستیار مسیر۲۸' });
   await dialog.waitFor({ state: 'visible' });
   assert.match(await dialog.innerText(), /صفحه فعلی: پشتیبانی/);
+  await dialog.getByRole('textbox').fill('این صفحه برای چیست؟');
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('راه‌های ارتباط با مرکز')));
   await page.keyboard.press('Escape');
   await dialog.waitFor({ state: 'detached' });
 
