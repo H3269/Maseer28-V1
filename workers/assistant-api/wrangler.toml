@@ -19,3 +19,12 @@ class_name = "AssistantPreviewSessionGuardDurableObject"
 [[migrations]]
 tag = "assistant-preview-session-guard-v1"
 new_sqlite_classes = ["AssistantPreviewSessionGuardDurableObject"]
+
+# Preview-only global throttle for failed and successful session-creation attempts.
+[[durable_objects.bindings]]
+name = "PREVIEW_ACCESS_RATE_LIMIT"
+class_name = "AssistantPreviewAccessRateLimitDurableObject"
+
+[[migrations]]
+tag = "assistant-preview-access-rate-limit-v1"
+new_sqlite_classes = ["AssistantPreviewAccessRateLimitDurableObject"]
