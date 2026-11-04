@@ -92,9 +92,18 @@ export function validateProductionContent({
       if (!VALID_REVIEWER_ROLES.has(day?.reviewer_role)) {
         errors.push(`${label}: reviewer_role is not an allowed qualified role.`);
       }
-      if (day?.review_status === 'approved' && day?.topic_id === 'T17'
-        && day?.reviewer_role !== 'relationship_safety_reviewer') {
-        errors.push(`${label}: T17 content requires a relationship safety specialist reviewer.`);
+      if (day?.review_status === 'approved' && day?.topic_id === 'T17') {
+        if (day?.reviewer_role !== 'relationship_safety_reviewer') {
+          errors.push(`${label}: T17 content requires a relationship safety specialist reviewer.`);
+        }
+        if (!Array.isArray(day?.subtopic_ids) || day.subtopic_ids.length !== 1) {
+          errors.push(`${label}: T17 content must map to exactly one reviewed subtype.`);
+        } else if (day.subtopic_ids[0] === 'T17-S03'
+          && (day?.risk_level !== 'caution'
+            || !Array.isArray(day?.safety_rule_ids)
+            || day.safety_rule_ids.length === 0)) {
+          errors.push(`${label}: T17-S03 requires caution classification and explicit safety rules.`);
+        }
       }
       if (!Number.isFinite(Date.parse(day?.reviewed_at || ''))) {
         errors.push(`${label}: reviewed_at is invalid.`);
