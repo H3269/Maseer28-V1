@@ -107,7 +107,7 @@ function followUpResponse(message, state) {
   const reference = priorTextReference(value, state);
   if (reference?.clarification) return reference.clarification;
   if (reference?.text) {
-    return \`این \${reference.label} از پاسخ قبلی است:\n\n«\${reference.text}»\n\nمی‌خواهی همین بخش را توضیح بدهم یا درباره‌اش مثال بزنم؟\`;
+    return 'این ' + reference.label + ' از پاسخ قبلی است:\n\n«' + reference.text + '»\n\nمی‌خواهی همین بخش را توضیح بدهم یا درباره‌اش مثال بزنم؟';;
   }
 
   if (/(?:خلاصه|کوتاه تر|مختصرتر)/u.test(value)) {
