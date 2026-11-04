@@ -289,3 +289,23 @@ TTL پنج‌دقیقه‌ای فعلاً یک مقدار محافظه‌کار�
 - آزمون‌ها از SQLite داخلی Node 22 و fake Storage/Alarm استفاده می‌کنند؛ هنوز integration test با runtime واقعی Durable Objects، namespace یا migration انجام نشده است.
 - sharding key derivation، namespace binding، Wrangler migration و route bootstrap عمداً خارج از این مرحله باقی مانده‌اند.
 - caller آینده باید fingerprint را با HMAC secret مستقل در Worker بسازد و expiry را از `auth_date + MAX_AUTH_AGE + MAX_FUTURE_SKEW` مشتق کند؛ هرگز fingerprint خام/غیرکلیددار یا زمان دلخواه کلاینت را به این کلاس ندهد.
+
+
+## ۱۶. primitive مستقل توکن نشست کوتاه‌عمر (2026-11-04)
+
+فایل `workers/assistant-api/src/sessionToken.js` یک primitive مستقل برای صدور و اعتبارسنجی توکن نشست stateless اضافه می‌کند. این مرحله فقط زیرساخت رمزنگاری را می‌سازد؛ هیچ route، binding، secret واقعی یا provider به Worker متصل نشده است.
+
+### قرارداد توکن
+- امضا با HMAC-SHA-256 و Web Crypto انجام می‌شود؛ الگوریتم و نوع توکن به‌صورت صریح به `HS256` و `JWT` محدودند.
+- secret امضای نشست باید مستقل از bot tokenهای Telegram/Bale، کلید fingerprint ضدبازپخش و کلید هر provider باشد؛ حداقل ۳۲ بایت UTF-8 لازم است.
+- شناسه نشست از ۲۴ بایت تصادفی رمزنگارانه ساخته می‌شود؛ هیچ user ID، شماره پرونده، پروفایل، متن مکالمه، داده پزشکی یا شناسه پلتفرم در claimها قرار نمی‌گیرد.
+- claimها دقیقاً به نسخه، issuer، audience، scope ثابت `assistant:turn`، شناسه opaque نشست، زمان صدور و انقضا محدودند؛ claim اضافی رد می‌شود.
+- عمر پیش‌فرض ۱۰ دقیقه و سقف سخت حداکثر ۱۰ دقیقه است؛ این مقدار فعلاً تصمیم فنی اولیه است و پیش از route واقعی باید با lifecycle میزبان و بازبینی امنیت/UX نهایی شود.
+- اعتبارسنجی، امضا را با `crypto.subtle.verify` بررسی می‌کند، زمان صدور با skew حداکثر ۳۰ ثانیه را کنترل می‌کند و توکن منقضی یا با claim/دامنه نامعتبر را رد می‌کند.
+- توکن refresh نمی‌شود و هیچ نشست یا transcriptی ذخیره نمی‌شود.
+
+### مرزهای صریح
+- این ماژول هنوز از `index.js` فراخوانی نمی‌شود و هیچ endpointی توکن صادر یا مصرف نمی‌کند.
+- این توکن به‌تنهایی احراز هویت اولیه Mini App، anti-replay، رضایت، مجوز دسترسی، rate limit یا safety gate نیست؛ همه این لایه‌ها باید پیش از route turn مستقل اجرا شوند.
+- نبود secret یا Web Crypto باید fail-closed باشد؛ secret واقعی در Git، fixture یا چت قرار نمی‌گیرد.
+- هیچ تغییر در frontend، مسیر تمرین، ۳۴ موضوع، ۹۵۲ روز، profile یا journey انجام نشده است.
