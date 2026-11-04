@@ -350,3 +350,30 @@
 2. ممیزی مسیر استقرار و اتصال واقعی GitHub/Cloudflare، بدون Deploy.
 3. تکمیل طراحی consent/data-flow و threat model پیش از هرگونه پردازش متن کاربر.
 4. فقط پس از عبور از دروازه‌ها، طراحی Model Gateway provider-neutral و انتخاب مدل با benchmark فارسی.
+
+
+## 2026-11-04 — ممیزی اتصال Cloudflare و سیاست استقرار Worker
+
+**Commit سند سیاست:** `43327865835199b8db5a1b5e7f0e16178a62178a`  
+**فایل:** `docs/CLOUDFLARE_WORKER_DEPLOYMENT_POLICY_FA.md`
+
+### یافته‌ها
+- در فهرست workflowهای `.github/workflows`، workflow انتشار Cloudflare وجود ندارد؛ workflowهای فعلی مربوط به validation، GitHub Pages دستی و Telegram دستی‌اند.
+- Worker فعلی در Cloudflare قبلاً به‌صورت دستی از Dashboard منتشر شده است؛ اتصال GitHub از شواهد فعلی تأیید نشده.
+- Cloudflare Workers Builds با اتصال Git repository می‌تواند روی push به شاخه انتخابی، build و deploy را خودکار اجرا کند.
+- با توجه به اینکه سیاست پروژه فقط شاخه `main` را مجاز می‌داند، اتصال مستقیم خودکار می‌تواند هر commit توسعه‌ای را منتشر کند؛ بنابراین فعلاً ممنوع شد.
+- هیچ اتصال GitHub/Cloudflare و هیچ Deployment در این مرحله انجام نشده است.
+
+### تصمیم
+- مسیر پیشنهادی: GitHub Actions دستی با ورودی تأیید صریح، الزام CI موفق برای همان SHA، smoke test و secretهای محدود.
+- قبل از طراحی نهایی workflow، وضعیت read-only بخش `Settings > Builds` در Dashboard باید مشخص شود.
+- هیچ API token یا مقدار secret نباید در گفتگو یا مخزن ثبت شود.
+
+### CI
+- اجرای workflow برای commit کد Backend `6a122baa6bff0fe2333e08d30f0e43d33dc00a3d` با نتیجه `success` تأیید شده است.
+- اجرای مربوط به commit مستندسازی `fd8ba9db740b2b8c3c3e7e0f0e9596bc3d2ec48d` در آخرین مشاهده هنوز `in_progress` بود؛ اجرای Chromium به‌عنوان مرحله جاری گزارش شده است. نتیجه نهایی آن هنوز تأیید نشده است.
+
+### گام بعد
+1. مشاهده وضعیت فعلی `Settings > Builds` بدون زدن Connect.
+2. تعیین طراحی workflow دستی و تأییدشده.
+3. ادامه دروازه‌های حریم خصوصی و امنیت پیش از فعال‌سازی مدل.
