@@ -90,9 +90,27 @@ function classifyIntent(value) {
 }
 
 function hasNegatedTopic(value, phrase) {
-  const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const pattern = new RegExp('(?:من\\s+)?(?:اصلاً\\s+)?(?:' + escaped + ')(?:\\s+را)?\\s+(?:ندارم|نیستم|نیست|نبود|نبوده|نمی خواهم|نمی ترسم|نمی کنم)');
-  return pattern.test(value);
+  const positions = [];
+  let offset = value.indexOf(phrase);
+  while (offset !== -1) {
+    positions.push(offset);
+    offset = value.indexOf(phrase, offset + Math.max(1, phrase.length));
+  }
+  if (positions.length === 0) return false;
+
+  const isNegatedAt = (index) => {
+    const before = value.slice(Math.max(0, index - 18), index);
+    const after = value.slice(index + phrase.length);
+    // Persian negative present-tense verbs can place «ن» before «می»
+    // (e.g. «نمی‌ترسم»), so the matched phrase may begin inside that word.
+    if (/(?:^|\s)ن$/.test(before)) return true;
+    // Other negative verbs follow the topic phrase (e.g. «حسادت نمی‌کنم»).
+    return /^\s*(?:را\s+)?(?:ندارم|نیستم|نیست|نبود|نبوده|نمی\s+\S+)/.test(after);
+  };
+
+  // A phrase repeated in both a negated and an affirmative clause must not
+  // be discarded merely because its first occurrence was negated.
+  return positions.every(isNegatedAt);
 }
 
 function findNegatedTopicIds(value) {
