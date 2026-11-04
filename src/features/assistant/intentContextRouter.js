@@ -103,9 +103,10 @@ function hasNegatedTopic(value, phrase) {
     const after = value.slice(index + phrase.length);
     // Persian negative present-tense verbs can place «ن» before «می»
     // (e.g. «نمی‌ترسم»), so the matched phrase may begin inside that word.
-    if (/(?:^|\s)ن$/.test(before)) return true;
+    if (/(?:^|\s)ن$/.test(before) || /(?:^|\s)نمی\s+$/.test(before)) return true;
     // Other negative verbs follow the topic phrase (e.g. «حسادت نمی‌کنم»).
-    return /^\s*(?:را\s+)?(?:ندارم|نیستم|نیست|نبود|نبوده|نمی\s+\S+)/.test(after);
+    // Allow short modifiers such as «از قضاوت دیگران نمی‌ترسم».
+    return /^\s*(?:را\s+)?(?:ندارم|نیستم|نیست|نبود|نبوده|(?:\S+\s+){0,2}نمی\s+\S+)/.test(after);
   };
 
   // A phrase repeated in both a negated and an affirmative clause must not
