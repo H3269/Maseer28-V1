@@ -4,6 +4,12 @@ import { setTimeout as delay } from "node:timers/promises";
 
 const BASE_URL = "http://127.0.0.1:8790";
 const REQUEST_TIMEOUT_MS = 10_000;
+const ACCESS_CODE = "local-preview-access-code-32-bytes-minimum";
+const CONSENT = {
+  cloudAiProcessing: true,
+  sensitiveDataProcessing: true,
+  policyVersion: "test-consent-v1",
+};
 const child = spawn(
   "npx",
   [
@@ -31,10 +37,12 @@ child.on("error", (error) => { spawnError = error; });
 child.stdout.setEncoding("utf8").on("data", (chunk) => { serverOutput += chunk; });
 child.stderr.setEncoding("utf8").on("data", (chunk) => { serverOutput += chunk; });
 
-async function post(input) {
-  const response = await fetch(`${BASE_URL}/turn`, {
+async function post(path, input, token) {
+  const headers = { "content-type": "application/json" };
+  if (token) headers.authorization = `Bearer ${token}`;
+  const response = await fetch(`${BASE_URL}${path}`, {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    headers,
     body: JSON.stringify(input),
     signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   });
@@ -86,23 +94,52 @@ const validOutput = {
 try {
   await waitForServer();
 
+  stage = "Preview access and explicit consent issuance";
+  const session = await post("/session", { accessCode: ACCESS_CODE, consent: CONSENT });
+  assert.equal(session.status, 200);
+  assert.equal(session.body.ok, true);
+  assert.equal(session.body.expiresInSeconds, 900);
+  assert.equal(typeof session.body.token, "string");
+  const token = session.body.token;
+
+  stage = "reject incorrect Preview access code";
+  const wrongCode = await post("/session", {
+    accessCode: "wrong-preview-access-code",
+    consent: CONSENT,
+  });
+  assert.equal(wrongCode.status, 401);
+  assert.equal(wrongCode.body.error, "preview_access_denied");
+
+  stage = "reject missing sensitive-data consent";
+  const partialConsent = await post("/session", {
+    accessCode: ACCESS_CODE,
+    consent: { cloudAiProcessing: true, sensitiveDataProcessing: false, policyVersion: "test-consent-v1" },
+  });
+  assert.equal(partialConsent.status, 403);
+  assert.equal(partialConsent.body.error, "cloud_consent_required");
+
+  stage = "reject missing Preview bearer token";
+  const noToken = await post("/turn", {
+    message: "در محل کار نگرانم.",
+    mockOutput: validOutput,
+  });
+  assert.equal(noToken.status, 401);
+
   stage = "semantic topic confirmation with bounded context";
-  const routed = await post({
-    testConsent: "verified",
+  const routed = await post("/turn", {
     message: "در محل کار از قضاوت دیگران می‌ترسم.",
     history: [
       { role: "user", content: "وقتی در جلسه حرف می‌زنم مضطرب می‌شوم." },
       { role: "assistant", content: "در چه موقعیتی بیشتر این اتفاق می‌افتد؟" },
     ],
     mockOutput: validOutput,
-  });
+  }, token);
   assert.equal(routed.status, 200);
   assert.equal(routed.body.status, "topic_confirmation_required");
   assert.equal(routed.body.topic_candidates[0].topic_id, "T27");
 
   stage = "multi-topic clarification";
-  const ambiguous = await post({
-    testConsent: "verified",
+  const ambiguous = await post("/turn", {
     message: "هم عصبانی‌ام و هم می‌ترسم.",
     mockOutput: {
       ...validOutput,
@@ -110,33 +147,22 @@ try {
       needs_clarification: true,
       clarifying_question: "کدام موضوع در موقعیت اخیر برایت پررنگ‌تر بود؟",
     },
-  });
+  }, token);
   assert.equal(ambiguous.status, 200);
   assert.equal(ambiguous.body.status, "clarification_required");
   assert.equal(ambiguous.body.topic_candidates.length, 2);
 
   stage = "independent safety precedence";
-  const safety = await post({
-    testConsent: "verified",
+  const safety = await post("/turn", {
     message: "امشب قصد دارم خودم را بکشم.",
     mockOutput: validOutput,
-  });
+  }, token);
   assert.equal(safety.status, 200);
   assert.equal(safety.body.status, "urgent_human_support_required");
   assert.equal(safety.body.model_called, false);
 
-  stage = "server-side consent requirement";
-  const noConsent = await post({
-    testConsent: "not_granted",
-    message: "در محل کار نگرانم.",
-    mockOutput: validOutput,
-  });
-  assert.equal(noConsent.status, 403);
-  assert.equal(noConsent.body.error, "cloud_consent_required");
-
   stage = "no unapproved general knowledge";
-  const general = await post({
-    testConsent: "verified",
+  const general = await post("/turn", {
     message: "اضطراب چیست؟",
     mockOutput: {
       ...validOutput,
@@ -144,21 +170,20 @@ try {
       summary: "کاربر تعریف اضطراب را می‌خواهد.",
       topic_candidates: ["T02"],
     },
-  });
+  }, token);
   assert.equal(general.status, 200);
   assert.equal(general.body.status, "knowledge_unavailable");
   assert.equal(general.body.topic_candidates.length, 0);
 
   stage = "reject malformed model output";
-  const malformed = await post({
-    testConsent: "verified",
+  const malformed = await post("/turn", {
     message: "می‌خواهم درباره تجربه‌ام صحبت کنم.",
     mockOutput: { ...validOutput, topic_candidates: ["T99"] },
-  });
+  }, token);
   assert.equal(malformed.status, 502);
   assert.equal(malformed.body.error, "assistant_model_output_invalid");
 
-  console.log("Semantic conversation runtime integration passed: Worker module loading, consent gate, independent safety precedence, topic confirmation, ambiguity handling, and rejection of unapproved knowledge/malformed output.");
+  console.log("Semantic conversation runtime integration passed: short-lived Preview access, explicit consent, token verification, independent safety precedence, topic confirmation, ambiguity handling, and fail-closed knowledge/model output.");
 } catch (error) {
   console.error(`Semantic conversation integration failed during: ${stage}`);
   console.error(error);
