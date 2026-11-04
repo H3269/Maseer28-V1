@@ -133,9 +133,12 @@
    - هدف، مهارت، نکته آموزشی، نوع تمرین، دستورالعمل، پرسش تأملی، معیار موفقیت و زمان دریافت حمایت انسانی باید غیرخالی باشند.
    - مدت ۱ تا ۶۰ دقیقه، stop conditions، contraindications، source_ids و evidence_grade معتبر لازم‌اند.
    - شناسه رکورد، نام بازبین، نقش مجاز و تاریخ بازبینی قابل‌تجزیه لازم‌اند.
-   - برای T17-S03 علاوه بر caution و safety_rule_ids، نقش تخصصی `relationship_safety_reviewer` برای تمام روزهای T17 الزامی است؛ برای T17-S03 علاوه بر آن caution و safety_rule_ids نیز لازم‌اند.
-2. `tests/dailySafety.test.mjs`:
-   - fixture مثبت فقط با metadata کامل مجاز است.
+   - نقش تخصصی `relationship_safety_reviewer` برای تمام روزهای T17 الزامی است؛ برای T17-S03 علاوه بر آن caution و safety_rule_ids نیز لازم‌اند.
+2. `scripts/validate-content.mjs` و `src/features/content/productionContentGate.js`:
+   - نقش `relationship_safety_reviewer` به نقش‌های معتبر افزوده شد، اما برای T17 الزام اختصاصی است.
+   - هر روز تأییدشده T17 باید دقیقاً یک زیرموضوع داشته باشد؛ T17-S03 باید caution و safety_rule_ids داشته باشد.
+3. `tests/dailySafety.test.mjs` و `tests/productionContentGate.test.mjs`:
+   - fixture مثبت فقط با metadata کامل مجاز است؛ نقش نامعتبر، زیرموضوع چندگانه و نبود طبقه‌بندی/قاعده ایمنی T17-S03 رد می‌شوند.
    - آزمون‌های منفی برای metadata ناقص، نقش نامعتبر، تاریخ نامعتبر، شناسه/روز متناقض و T17-S03 بدون بازبین ایمنی افزوده شد.
 
 ### Commitهای این نشست
@@ -154,7 +157,7 @@
 ### آزمون و شواهد
 - تست‌های جدید نوشته و در مخزن ثبت شده‌اند؛ در این نشست هنوز اجرای `npm test`، build یا تست مرورگر توسط runner تأیید نشده است.
 - workflow `.github/workflows/validate-content.yml` روی push به `main` تنظیم شده و شامل `npm test`، اعتبارسنجی محتوا، build و تست مرورگر Chromium است.
-- بررسی status برای HEAD `5d3983e05d8c9c28faf3d13a5a94a929e361296a` در لحظه ثبت، هیچ status check بازگشتی نداشت؛ بنابراین نتیجه CI فعلاً **نامشخص/تأییدنشده** است، نه موفق.
+- بررسی status برای آخرین commit کد و سپس HEAD مستندسازی‌شده `442c06624750925eda3f5945d37027f4bb866c7a` هیچ status check بازگشتی نداشت؛ بنابراین نتیجه CI فعلاً **نامشخص/تأییدنشده** است، نه موفق.
 - محتوای فعلی ۲۸ روز T17 همچنان بدون metadata بازبینی و باید مسدود بماند. هیچ محتوایی تأیید یا منتشر نشده است.
 
 ### موارد باز و گام بعدی
