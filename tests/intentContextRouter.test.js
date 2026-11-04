@@ -194,6 +194,11 @@ test('describing difficulty explaining a personal issue is not misclassified as 
 });
 
 
+test('future-oriented worry phrasing is routed to T02', () => {
+  const result = routeSemanticIntake({ text: 'موضوع اصلی من نگرانی از آینده است.' });
+  assert.ok(result.topic_candidates.some((item) => item.topic_id === 'T02'));
+});
+
 test('router distinguishes information, understanding, strategy and professional-help intents', () => {
   assert.equal(routeSemanticIntake({ text: 'اضطراب چیست؟' }).intent.label, 'general_information');
   assert.equal(routeSemanticIntake({ text: 'می‌خواهم بدانم چرا این اتفاق می‌افتد.' }).intent.label, 'understand_problem');
