@@ -86,3 +86,11 @@ CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` مو�
 - چند شکست میانی به‌ترتیب از syntax در harness، فرض نادرست درباره هدر IP در Wrangler localhost و تغییر padding bits به‌جای بیت امضا بود؛ همگی اصلاح شدند و فقط اجرای نهایی بالا مبنای پذیرش است.
 - هیچ inference واقعی، deployment Preview، Production activation یا تغییر ترافیک انجام نشده است؛ API اصلی همچنان 503 و fail-closed است؛ UI مرورگری هنوز ساخته نشده است.
 - گام بعدی: رابط مستقل assistant-only و مسیر Preview؛ بدون تغییر App/journey و بدون دور زدن گیت انتشار Pages. هر نیاز به تغییر App یا workflow اصلی قبل از اقدام برای اجازه صریح مالک متوقف می‌شود.
+
+
+## ادامه 2026-11-04 — ممیزی منطقه inference و retention
+- مستند رسمی Cloudflare نشان می‌دهد Workers AI inference در شبکه جهانی انجام می‌شود و در ماتریس Data Localization Suite، Regional Services برای Workers AI پشتیبانی نمی‌شود؛ منطقه‌ای‌کردن اجرای Worker به‌تنهایی inference را منطقه‌ای نمی‌کند.
+- OpenAI API گزینه EU data residency/regional processing برای endpointها و مدل‌های واجد شرایط دارد؛ اما پروژه EU جدید، تأیید کنترل‌های abuse monitoring، Modified Retention amendment و بررسی eligibility/هزینه لازم است. retention پیش‌فرض abuse logs می‌تواند تا ۳۰ روز باشد؛ ZDR/MAM خودکار یا تضمین‌شده نیست.
+- سند مقایسه: `docs/ASSISTANT_PROVIDER_PRIVACY_DECISION_FA.md` (commit `3c4e840f49148a19b2fddba16a26f4baa748e9ca`).
+- تا تصمیم مالک درباره پردازش جهانی در برابر منطقه مشخص، provider، eligibility و سقف هزینه، consent UI و inference فعال نمی‌شوند. Worker اصلی همچنان 503 و fail-closed است؛ هیچ داده کاربر به مدل ارسال نشده است.
+- کار مستقل بعدی: آزمون‌های عمیق‌تر intent/context و طراحی UI مستقل بدون ارسال داده و بدون تغییر App/journey. هیچ deploy یا تغییر Production انجام نشده است.
