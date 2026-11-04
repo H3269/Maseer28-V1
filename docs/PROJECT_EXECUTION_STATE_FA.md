@@ -936,3 +936,46 @@ Worker پروژه از Durable Objects استفاده می‌کند. Cloudflare 
 - `scripts/assert-production-content-approved.mjs` با `validateProductionContent` همه ۳۴ موضوع × ۲۸ روز (۹۵۲ واحد روزانه) را بررسی می‌کند؛ هر روز باید `review_status=approved`، reviewer واجد صلاحیت، تاریخ و رکورد بازبینی، منابع، شروط توقف/منع و نگاشت‌های تأییدشده داشته باشد. T16 و T17 در سند وضعیت جاری ۰/۲۸ روز تأییدشده دارند؛ بنابراین گیت انتشار فعلی قطعاً حداقل ۵۶ روز را رد می‌کند. تغییر این گیت یا تأیید ساختگی محتوا خارج از محدوده و ممنوع است.
 - پس Worker Preview فقط می‌تواند backend را جداگانه بررسی کند؛ به‌تنهایی نمی‌تواند UI را در همان GitHub Pages app URL به‌روز کند. برای رعایت شرط «همان آدرس»، باید راه انتشار رابط مستقل و مجاز پیدا شود؛ دور زدن گیت موجود یا تغییر رفتار/محتوای بخش اصلی مجاز نیست.
 - URL دقیق GitHub Pages در اسناد یا اطلاعات قابل بازیابی این نشست پیدا نشد. URL شناخته‌شده `still-firefly-9435maseer28-archive.has-ab3269.workers.dev` فقط Worker/API است؛ نباید آن را آدرس رابط اپ معرفی کرد. وضعیت فعال Pages و Worker در Dashboard هنوز مستقل تأیید نشده است.
+
+
+## ۲۲. کنترل نشست Preview با Durable Object — 2026-11-04
+
+### هدف و تغییرات
+برای تکمیل محدودیت‌های بخش ۲۱، نشست Preview از توکن صرفاً stateless به رسید کوتاه‌عمرِ متصل به وضعیت سمت سرور ارتقا یافت. همه تغییرات فقط در ماژول دستیار، تنظیمات Worker دستیار، harness و تست‌های اختصاصی دستیار هستند.
+
+فایل‌های تغییرکرده/افزوده‌شده در این مرحله:
+- افزوده شد: `workers/assistant-api/src/previewSessionGuard.js` — کلاس `AssistantPreviewSessionGuardDurableObject` و adapter خصوصی namespace؛ هر نشست یک Durable Object مجزا دارد.
+- تغییر کرد: `workers/assistant-api/src/previewSession.js` — صدور token فقط پس از ثبت قطعی نشست در guard؛ اعتبارسنجی هر token با guard؛ در صورت نبود/خطای guard یا ثبت ناموفق، fail-closed.
+- تغییر کرد: `workers/assistant-api/src/index.js` — export کلاس Durable Object برای Wrangler؛ route اصلی بدون تغییر و همچنان 503.
+- تغییر کرد: `workers/assistant-api/wrangler.toml` — تعریف binding و migration SQLite برای محیطی که بعداً صریحاً Preview شود؛ این تغییر هنوز در هیچ محیط Cloudflare deploy نشده است.
+- تغییر کرد: `tests/previewSession.test.js` — آزمون ثبت سمت سرور، لغو نشست و سقف نرخ.
+- تغییر کرد: `tests/workers/semanticConversationWorker.js` و `tests/workers/semantic-conversation.wrangler.toml` — اتصال harness محلی به SQLite Durable Object.
+- تغییر کرد: `tests/workers/semanticConversation.integration.mjs` — آزمون end-to-end محدودیت نرخ و لغو فوری.
+
+### رفتار guard
+- عمر نشست حداکثر ۱۵ دقیقه است؛ شناسه تصادفی نشست فقط در سمت سرور به Durable Object مختص همان نشست متصل می‌شود.
+- حداکثر ۲۰ درخواست مجاز در هر پنجره ۵ دقیقه‌ای برای هر نشست؛ درخواست بیست‌ویکم رد می‌شود.
+- لغو نشست بلافاصله از طریق token معتبر ممکن است؛ درخواست‌های بعدی با همان token رد می‌شوند.
+- Alarm پس از پایان عمر نشست رکورد SQLite را پاک می‌کند. در صورت خطای storage/guard هیچ پاسخ موفق یا capability صادر نمی‌شود.
+- داده ذخیره‌شده در DO محدود به شناسه نشست، انقضا، نسخه سیاست، وضعیت لغو و شمارنده نرخ است؛ transcript یا پیام کاربر ذخیره نمی‌شود.
+
+### آزمون‌ها و شواهد
+- Commit کد و تست‌های اصلی: `410d86aa324e94518b6c737bec4aec739c274660`، GitHub Actions run `41828667148` — نتیجه نهایی `success`.
+- در آن اجرا: `npm test` تعداد ۳۷۶ تست، ۳۷۶ موفق و صفر شکست؛ `npm audit` صفر آسیب‌پذیری؛ Wrangler Worker bundle و `versions upload --dry-run` موفق؛ replay-marker، bootstrap و semantic conversation local Workers runtime integration موفق؛ build و Chromium privacy migration scenarios موفق.
+- semantic runtime integration به‌طور مشخص SQLite-backed rate limit و revoke را در کنار consent، token verification، safety precedence، topic confirmation، ambiguity و fail-closed knowledge/model output پاس کرد.
+- Commit بعدی `4fc00c04387fb0522732958788486154b7253b68` یک کنترل fail-closed دیگر اضافه کرد: صدور token فقط در صورت بازگشت صریح `{created:true}` از guard. اجرای CI آن `41828926831` در زمان ثبت این سند هنوز در حال اجرا بود؛ تا نتیجه نهایی، این commit را سبز قطعی تلقی نکن.
+
+### محدودیت‌ها و منع انتشار
+- این guard در harness محلی به‌صورت end-to-end فعال است؛ binding در فایل Worker اصلی فقط تعریف و export شده و route اصلی از آن استفاده نمی‌کند. endpoint `/v1/assistant/turn` همچنان 503 و fail-closed است.
+- محدودیت ۲۰ درخواست در هر نشست، به‌تنهایی محدودیت جهانی بر تلاش‌های access code یا ساخت نشست‌های متعدد نیست؛ access code قوی و مخفی لازم است. قبل از Preview عمومی باید throttling تلاش‌های ناموفق/ساخت نشست و کنترل سوءاستفاده در لایه edge نیز طراحی و آزموده شود.
+- این سازوکار احراز هویت حساب کاربری نیست؛ access code مشترک است. consent ledger پایدار، مدیریت هویت، نشست چنددستگاهی و مالکیت حساب هنوز وجود ندارد.
+- هیچ AI inference واقعی اجرا نشده؛ AI binding و provider production فعال نیستند؛ mock فقط در harness محلی است.
+- هیچ upload واقعی، Preview deployment، Production deploy، promote یا تغییر ترافیک انجام نشده است. فقط dry-run اجرا شده است.
+- هیچ فایل/رفتار journey، ثبت‌نام، پروفایل، ۳۴ موضوع و ۹۵۲ تمرین تغییر نکرده است.
+
+**وضعیت بخش:** `in_progress` تا تکمیل CI روی commit `4fc00c0`. شواهد اجرای کامل commit پیشین `410d86a` موفق‌اند. این بخش browser-ready نیست.
+
+### گام بعدی
+1. تکمیل CI commit `4fc00c0` و ثبت نتیجه قطعی.
+2. ساخت رابط مستقل دستیار در محدوده فایل‌های assistant، با مکالمه موقت، صفحه رضایت، مدیریت token در حافظه نشست و اتصال فقط به Preview API؛ بدون تغییر در App/journey فعلی.
+3. پیش از نمایش در URL اصلی، تصمیم روشن درباره نقطه اتصال و مسیر انتشار لازم است: GitHub Pages workflow فعلی به تأیید عمومی و گیت محتوای ۹۵۲ روز وابسته است؛ دور زدن گیت یا تغییر بخش اصلی بدون اجازه مجاز نیست. اگر افزودن لینک/route در App لازم شود، پیش از آن اجازه صریح مالک گرفته می‌شود.
