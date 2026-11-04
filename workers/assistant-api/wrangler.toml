@@ -9,3 +9,13 @@ workers_dev = true
 # Configure ALLOWED_ORIGINS as a comma-separated exact-origin allowlist
 # in the Cloudflare dashboard before enabling browser access.
 # Do not add provider API keys until the privacy and consent gates are approved.
+
+# Private per-session guard for the isolated assistant Preview.
+# This binding is inert until a Preview-only route explicitly consumes it.
+[[durable_objects.bindings]]
+name = "PREVIEW_SESSION_GUARD"
+class_name = "AssistantPreviewSessionGuardDurableObject"
+
+[[migrations]]
+tag = "assistant-preview-session-guard-v1"
+new_sqlite_classes = ["AssistantPreviewSessionGuardDurableObject"]
