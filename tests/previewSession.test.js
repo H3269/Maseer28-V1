@@ -21,14 +21,57 @@ const CONSENT = Object.freeze({
 });
 const NOW = 1_800_000_000;
 
+const SESSION_RECORDS = new Map();
+const TEST_GUARD = Object.freeze({
+  async create({ sessionId, expiresAt, policyVersion, nowSeconds }) {
+    if (SESSION_RECORDS.has(sessionId)) throw new Error("duplicate_session");
+    SESSION_RECORDS.set(sessionId, {
+      expiresAt, policyVersion, revoked: false,
+      windowStartedAt: nowSeconds, requestCount: 0,
+    });
+    return { created: true };
+  },
+  async authorize({ sessionId, expiresAt, policyVersion, nowSeconds }) {
+    const row = SESSION_RECORDS.get(sessionId);
+    if (!row) return { allowed: false, reason: "preview_session_unknown" };
+    if (row.revoked) return { allowed: false, reason: "preview_session_revoked" };
+    if (row.expiresAt !== expiresAt || row.expiresAt <= nowSeconds) {
+      return { allowed: false, reason: "preview_session_expired" };
+    }
+    if (row.policyVersion !== policyVersion) {
+      return { allowed: false, reason: "preview_session_policy_changed" };
+    }
+    if (nowSeconds >= row.windowStartedAt + 300) {
+      row.windowStartedAt = nowSeconds;
+      row.requestCount = 0;
+    }
+    if (row.requestCount >= 20) {
+      return { allowed: false, reason: "preview_session_rate_limited" };
+    }
+    row.requestCount += 1;
+    return { allowed: true, remaining: 20 - row.requestCount };
+  },
+  async revoke({ sessionId }) {
+    const row = SESSION_RECORDS.get(sessionId);
+    if (!row || row.revoked) return { revoked: false };
+    row.revoked = true;
+    return { revoked: true };
+  },
+});
+
 async function issue(overrides = {}) {
   return createAssistantPreviewSession({
     accessCode: ACCESS_CODE,
     consent: CONSENT,
     env: ENV,
     nowSeconds: NOW,
+    sessionGuard: TEST_GUARD,
     ...overrides,
   });
+}
+
+async function verify(options) {
+  return verifyAssistantPreviewSession({ ...options, sessionGuard: TEST_GUARD });
 }
 
 test("preview session is unavailable unless preview mode is explicitly enabled", async () => {
@@ -137,4 +180,33 @@ test("refuses tokens when Preview mode is disabled after issuance", async () => 
   });
   assert.equal(verified.valid, false);
   assert.equal(verified.reason, "preview_not_available");
+});
+
+
+test("rejects a revoked Preview session immediately", async () => {
+  const issued = await issue();
+  const [header, payload] = issued.token.split(".");
+  const claims = JSON.parse(Buffer.from(payload.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8"));
+  const revoked = await TEST_GUARD.revoke({ sessionId: claims.sid });
+  assert.equal(revoked.revoked, true);
+  const verified = await verify({
+    token: issued.token, env: ENV, nowSeconds: NOW + 1,
+  });
+  assert.equal(verified.valid, false);
+  assert.equal(verified.reason, "preview_session_revoked");
+});
+
+test("enforces a bounded per-session request rate", async () => {
+  const issued = await issue();
+  for (let index = 0; index < 20; index += 1) {
+    const result = await verify({
+      token: issued.token, env: ENV, nowSeconds: NOW + 1,
+    });
+    assert.equal(result.valid, true);
+  }
+  const limited = await verify({
+    token: issued.token, env: ENV, nowSeconds: NOW + 1,
+  });
+  assert.equal(limited.valid, false);
+  assert.equal(limited.reason, "preview_session_rate_limited");
 });
