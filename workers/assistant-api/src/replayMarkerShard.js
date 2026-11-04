@@ -84,25 +84,30 @@ export class ReplayMarkerShard {
   }
 
   async alarm() {
-    const now = Date.now();
-    const nextExpiry = this.ctx.storage.transactionSync(() => {
-      consumeExpiredBatch(this.sql, now);
-      const row = this.sql
-        .exec("SELECT MIN(expires_at) AS next_expiry FROM replay_markers")
-        .toArray()[0];
-      return row?.next_expiry ?? null;
+    // Serialize the SQL snapshot and alarm replacement with consumeOnce()
+    // scheduling. Otherwise a concurrent consume could insert a marker after
+    // this snapshot and have its newly scheduled alarm deleted as stale.
+    return this.#enqueueAlarmOperation(async () => {
+      const now = Date.now();
+      const nextExpiry = this.ctx.storage.transactionSync(() => {
+        consumeExpiredBatch(this.sql, now);
+        const row = this.sql
+          .exec("SELECT MIN(expires_at) AS next_expiry FROM replay_markers")
+          .toArray()[0];
+        return row?.next_expiry ?? null;
+      });
+
+      if (nextExpiry === null) {
+        await this.ctx.storage.deleteAlarm();
+        return;
+      }
+
+      // If a bounded batch left already-expired rows, continue shortly.
+      const nextAlarm = nextExpiry <= now
+        ? now + ALARM_RETRY_INTERVAL_MS
+        : nextExpiry;
+      await this.ctx.storage.setAlarm(nextAlarm);
     });
-
-    if (nextExpiry === null) {
-      await this.#replaceAlarm(null);
-      return;
-    }
-
-    // If a bounded batch left already-expired rows, continue shortly.
-    const nextAlarm = nextExpiry <= now
-      ? now + ALARM_RETRY_INTERVAL_MS
-      : nextExpiry;
-    await this.#replaceAlarm(nextAlarm);
   }
 
   #enqueueAlarmOperation(operation) {
@@ -120,12 +125,4 @@ export class ReplayMarkerShard {
     });
   }
 
-  #replaceAlarm(target) {
-    return this.#enqueueAlarmOperation(async () => {
-      await this.ctx.storage.deleteAlarm();
-      if (target !== null) {
-        await this.ctx.storage.setAlarm(target);
-      }
-    });
-  }
 }
