@@ -68,6 +68,13 @@ test('safety-sensitive ambiguous phrases trigger direct clarification without au
   assert.equal(result.next_question.purpose, 'safety_clarification');
 });
 
+test('additive «در واقع» wording preserves earlier semantic evidence', () => {
+  const result = routeSemanticIntake({ text: 'مدتی است اضطراب دارم. در واقع در محل کار هم با خشم و عصبانیت درگیر می‌شوم.' });
+  const ids = result.topic_candidates.map((item) => item.topic_id);
+  assert.ok(ids.includes('T02'));
+  assert.ok(ids.includes('T01'));
+});
+
 test('correction and negation remain explicit uncertainties', () => {
   const result = routeSemanticIntake({ text: 'من اضطراب ندارم؛ فقط نگران آینده‌ام.' });
   assert.ok(result.uncertainties.some((item) => item.includes('نفی')));
