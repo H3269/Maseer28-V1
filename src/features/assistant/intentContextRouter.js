@@ -153,7 +153,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
     || /(?:الان|همین الآن).{0,30}(?:خانه امن نیست|در خطرم|تهدیدم می‌کند)/.test(userNormalized)
     || /تهدیدم کرد.{0,25}(?:الان|همین الآن).{0,20}خانه امن نیست/.test(userNormalized)
     || /(?:با چاقو تهدیدم می کند|الان مرا می زند|الان دارد مرا می زند|الان منو می زند|الان داره منو می زند|الان داره منو می زنه|در حال ضرب و شتم من است|الان خفه ام می کند)/.test(userNormalized);
-  const correctionMatch = raw.match(/(?:منظورم(?:\s+این\s+است\s+که)?|در واقع|اصلاح می‌کنم)[،:؛\s]*(.*)$/);
+  const correctionMatch = raw.match(/(?:منظورم(?:\s+این\s+است\s+که)?|اصلاح می‌کنم)[،:؛\s]*(.*)$/);
   const semanticEvidenceText = correctionMatch?.[1]?.trim() || userAttributedText;
   const clearlyRejectedThirdPartyQuote = quotedSafetyMatches.length === 0
     && /(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او)\s+گفت/.test(raw)
@@ -162,7 +162,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
   const negatedTopicIds = findNegatedTopicIds(semanticEvidenceText);
   const negationPresent = negatedTopicIds.length > 0 || (!clearlyRejectedThirdPartyQuote && /موافق نیستم/.test(normalized));
   const quotePresent = /[«“"].+[»”"]/.test(raw);
-  const correctionPresent = /منظورم|اصلاح می‌کنم|در واقع|نه اینکه/.test(normalized);
+  const correctionPresent = /منظورم|اصلاح می‌کنم|نه اینکه/.test(normalized);
   const intentLabel = classifyIntent(normalized);
   const topicCandidates = intentLabel === 'general_information' ? [] : topics;
   const multiTopic = topicCandidates.length > 1;
