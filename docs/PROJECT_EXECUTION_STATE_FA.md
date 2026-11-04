@@ -695,3 +695,42 @@
 **گام بعدی واحد:** مالک مخزن را با تنظیمات غیرانتشاری سند سیاست به Worker موجود در Cloudflare متصل کند و فقط نتیجه اتصال/Build را گزارش دهد؛ هیچ نسخه‌ای را فعال یا منتشر نکند. این بخش تا آن زمان در وضعیت «آماده اتصال، بدون انتشار» باقی می‌ماند.
 
 > این بخش، گام بعدی موقت ثبت‌شده در بخش ۱۴ را به‌روزرسانی می‌کند؛ dry-run فرمان `versions upload` اکنون در CI موفق شده است.
+
+
+## ۱۶. توکن نشست کوتاه‌عمر دستیار — primitive مستقل و آزمون‌شده (2026-11-04)
+
+### مبنای شروع و دامنه
+- HEAD شاخه `main` پیش از تغییر: `11f9c958ee1ad53b68bb5f2c8d25f83cc19226d9`.
+- فقط شاخه `main` استفاده شد؛ هیچ شاخه جدیدی ساخته یا PR باز ادغام نشد.
+- محدوده تغییر به backend مستقل دستیار، تست اختصاصی و سند معماری محدود ماند؛ هیچ فایل frontend، journey، profile، مسیر تمرین، ۳۴ موضوع یا ۹۵۲ روز تغییر نکرد.
+
+### تغییرات ثبت‌شده
+- commit پیاده‌سازی: `173d78f02357cfb6656b7428fe38287c2f9c0ef9`.
+- `workers/assistant-api/src/sessionToken.js`:
+  - صدور و اعتبارسنجی توکن stateless با HMAC-SHA-256 و Web Crypto.
+  - شناسه opaque نشست با ۲۴ بایت تصادفی رمزنگارانه.
+  - claimهای محدود و دقیق: نسخه، issuer، audience، scope ثابت `assistant:turn`، شناسه نشست، زمان صدور و انقضا.
+  - سقف سخت عمر توکن ۶۰۰ ثانیه؛ skew زمانی آینده حداکثر ۳۰ ثانیه.
+  - secret امضا حداقل ۳۲ بایت و باید از bot token، کلید fingerprint و کلید provider مستقل باشد.
+  - claim اضافی، scope نامعتبر، الگوریتم غیر HS256، امضای نامعتبر، توکن منقضی و زمان صدور نامعتبر رد می‌شوند.
+  - هیچ PII، user ID، پرونده، پروفایل، متن مکالمه یا داده پزشکی در token قرار نمی‌گیرد.
+- `tests/sessionToken.test.js`: آزمون صدور/اعتبارسنجی، secret اشتباه، دستکاری claim، انقضا، زمان آینده، قالب/اندازه نامعتبر، الگوریتم اشتباه، claim اضافی، scope نامعتبر، عمر بیش از حد و نبود پیکربندی.
+- `docs/ASSISTANT_BACKEND_SECURITY_ARCHITECTURE_V1_FA.md`: قرارداد و مرزهای این primitive در بخش ۱۶ ثبت شد.
+
+### شواهد آزمون
+- آزمون محلی Node.js v22 روی نسخه توسعه: ۹ تست، ۹ موفق، صفر شکست.
+- GitHub Actions run `41817175561` برای commit `173d78f...`: نتیجه نهایی `success`.
+- در CI، dependency audit، Wrangler bundle dry-run، Wrangler versions upload dry-run، integration test محلی Replay Marker، topic registry، unit tests، اعتبارسنجی محتوا، ممیزی کیفیت، build و سناریوهای Chromium موفق شدند.
+- موفقیت CI معادل تست انسانی Telegram/Bale، بازبینی امنیتی مستقل یا فعال‌سازی سرویس نیست.
+
+### مرز امنیت و انتشار
+- این primitive هنوز به `index.js` یا هیچ route متصل نیست؛ هیچ token واقعی برای کاربر صادر نشده است.
+- هیچ session storage، refresh token، provider، مدل زبانی، consent، secret واقعی، DO binding یا migration تولیدی اضافه/فعال نشده است.
+- endpoint `/v1/assistant/turn` همچنان 503 و fail-closed است.
+- Build و نسخه‌های Cloudflare نباید با Deployment فعال اشتباه گرفته شوند؛ هیچ Deploy/Promote یا تغییر ترافیک Production مجاز یا انجام‌شده نیست.
+- اتصال مخزن به Cloudflare در Dashboard طبق متن ارسالی مالک برقرار است؛ Version جدید Build در صفحه Deployments دیده شده، اما از متن صفحه به‌تنهایی نمی‌توان وضعیت توزیع ترافیک را قطعی تعیین کرد.
+
+### وضعیت بخش
+`automated_tests_passed` برای primitive مستقل توکن نشست. این primitive به‌تنهایی احراز هویت اولیه، anti-replay، رضایت، authorization، rate limiting یا safety gate نیست.
+
+**گام بعدی واحد:** ساخت و آزمون یک bootstrap orchestrator مستقل که به‌ترتیب verifier پلتفرم، fingerprint کلیددار، Replay Marker shard و صدور token را هماهنگ کند؛ ابتدا فقط با fake/local bindings و آزمون‌های failure-mode. تا عبور آزمون‌ها، route، Wrangler binding/migration، secret و اتصال به provider اضافه نشود.
