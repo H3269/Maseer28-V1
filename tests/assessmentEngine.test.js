@@ -58,6 +58,28 @@ test('numeric duration in the opening message prevents a repeated duration quest
   assert.equal(getCurrentQuestion(session).id, 'goal');
 });
 
+test('assistant retains topic evidence introduced in later context answers', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  assert.equal(getCurrentQuestion(session).id, 'impact');
+
+  session = answer(session, 'در محل کار به‌خاطر خشم و عصبانیت با همکارم درگیر می‌شوم.');
+  const topicIds = session.semantic_intake.topic_candidates.map((item) => item.topic_id);
+  assert.ok(topicIds.includes('T02'), 'the opening concern should remain in context');
+  assert.ok(topicIds.includes('T01'), 'a second topic disclosed in the impact answer must not be discarded');
+});
+
+test('an explicit topic correction in a later context answer replaces earlier topic evidence', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  session = answer(session, 'منظورم این است که موضوع اصلی من اهمال‌کاری است و کارها را عقب می‌اندازم.');
+  const topicIds = session.semantic_intake.topic_candidates.map((item) => item.topic_id);
+  assert.ok(topicIds.includes('T09'));
+  assert.equal(topicIds.includes('T02'), false);
+});
+
 test('ordinary concern proceeds through one question at a time and produces tentative topic hypotheses', () => {
   let session = createAssessmentSession();
   session = answer(session, 'مدتی است اضطراب و نگرانی مداوم دارم');
