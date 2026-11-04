@@ -120,7 +120,7 @@ test('T01 draft days remain blocked at runtime until their review is approved', 
   }
 });
 
-test('legacy T17 relationship content stays blocked until safety-aware subtype review', async () => {
+test('legacy T17 relationship content stays blocked until complete expert and safety review', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const days = content.categories['مشکلات رابطه'].days;
   assert.equal(days.length, 28);
@@ -134,20 +134,63 @@ test('legacy T17 relationship content stays blocked until safety-aware subtype r
   const reviewed = (subtopic, extra = {}) => ({
     id: 'T17-D06',
     topic_id: 'T17',
+    day: 6,
     risk_level: 'routine',
     review_status: 'approved',
     review_record_id: 'review-t17-day-06',
     subtopic_ids: [subtopic],
+    duration_minutes: 10,
+    stop_conditions: ['در صورت فشار یا ناامنی تمرین را متوقف کن.'],
+    contraindications: ['در رابطه ناایمن گفت‌وگوی مستقیم انجام نشود.'],
+    source_ids: ['SRC-TEST-T17-REVIEWED'],
+    evidence_grade: 'not_assessed',
+    reviewer_name: 'Synthetic test reviewer',
+    reviewer_role: 'qualified_clinician',
+    reviewed_at: '2026-11-04T12:00:00.000Z',
+    learning_objective: 'هدف آموزشی محدود',
+    target_skill: 'مهارت مشخص',
+    teaching_point: 'نکته آموزشی',
+    exercise_type: 'reflection',
+    instructions: 'دستورالعمل بازبینی‌شده',
+    reflection_prompt: 'پرسش تأملی',
+    success_criterion: 'معیار قابل مشاهده',
+    when_to_seek_human_support: 'در صورت نگرانی از ایمنی از متخصص واجد صلاحیت کمک بگیر.',
     ...extra,
   });
+
   assert.equal(getDailySafetyMode(reviewed('T17-S01')), 'routine');
   assert.equal(getDailySafetyMode(reviewed('T17-S02')), 'routine');
   assert.equal(getDailySafetyMode(reviewed('T17-S03')), 'blocked',
-    'power/control/safety content needs an explicit safety rule and caution classification');
+    'power/control/safety content needs explicit safety rules, caution classification, and a safety reviewer');
   assert.equal(getDailySafetyMode(reviewed('T17-S03', {
     risk_level: 'caution',
     safety_rule_ids: ['SR-T17-COERCIVE-CONTROL-SAFETY'],
+    reviewer_role: 'relationship_safety_reviewer',
   })), 'caution');
+
+  const incompleteCases = [
+    { review_record_id: '' },
+    { reviewer_name: '' },
+    { reviewer_role: 'content_editor' },
+    { reviewed_at: 'not-a-date' },
+    { source_ids: [] },
+    { stop_conditions: [] },
+    { contraindications: [] },
+    { subtopic_ids: ['T17-S01', 'T17-S02'] },
+    { topic_id: 'T16' },
+    { day: 0 },
+    { instructions: '' },
+  ];
+  for (const extra of incompleteCases) {
+    assert.equal(getDailySafetyMode(reviewed('T17-S01', extra)), 'blocked',
+      'incomplete review metadata must fail closed: ' + JSON.stringify(extra));
+  }
+
+  assert.equal(getDailySafetyMode(reviewed('T17-S03', {
+    risk_level: 'caution',
+    safety_rule_ids: ['SR-T17-COERCIVE-CONTROL-SAFETY'],
+    reviewer_role: 'qualified_clinician',
+  })), 'blocked', 'T17-S03 requires an explicitly designated safety reviewer');
 });
 
 test('legacy T16 repetitive negative thinking content stays blocked until safety-aware subtype review', async () => {
