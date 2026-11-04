@@ -207,6 +207,7 @@ test('day screen and App wire relationship self-check, blocking, and safe skip',
   assert.equal((ui.match(/id="supportSeekingPrivacyNotice"/g) || []).length, 2, 'privacy notice must be visible on both blocked and routine support-seeking days');
   assert.match(app, /relationshipSafetyState\.dayKey === relationshipSafetyDayKey/);
   assert.match(app, /dayKey: relationshipSafetyDayKey/);
+  assert.match(app, /if \(next !== 'day'\) setRelationshipSafetyState/);
   assert.match(ui, /relationshipSafetyResponse = ''/);
   assert.match(ui, /onRelationshipSafetyResponse/);
   assert.doesNotMatch(ui, /setRelationshipSafetyState/);
