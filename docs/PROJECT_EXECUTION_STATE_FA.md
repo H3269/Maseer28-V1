@@ -979,3 +979,52 @@ Worker پروژه از Durable Objects استفاده می‌کند. Cloudflare 
 1. تکمیل CI commit `4fc00c0` و ثبت نتیجه قطعی.
 2. ساخت رابط مستقل دستیار در محدوده فایل‌های assistant، با مکالمه موقت، صفحه رضایت، مدیریت token در حافظه نشست و اتصال فقط به Preview API؛ بدون تغییر در App/journey فعلی.
 3. پیش از نمایش در URL اصلی، تصمیم روشن درباره نقطه اتصال و مسیر انتشار لازم است: GitHub Pages workflow فعلی به تأیید عمومی و گیت محتوای ۹۵۲ روز وابسته است؛ دور زدن گیت یا تغییر بخش اصلی بدون اجازه مجاز نیست. اگر افزودن لینک/route در App لازم شود، پیش از آن اجازه صریح مالک گرفته می‌شود.
+
+
+## ۲۳. محدودسازی سراسری تلاش‌های ورود Preview — 2026-11-04
+
+### هدف و پیاده‌سازی
+برای بستن شکاف rate limit صرفاً per-session، ماژول مستقل workers/assistant-api/src/previewAccessRateLimit.js اضافه شد:
+- یک Durable Object سراسری برای محیط Preview، با شمارنده اتمیک SQLite.
+- سقف ۵ تلاش ایجاد نشست در هر ۱۵ دقیقه برای هر مبدأ شبکه؛ تلاش ناموفق، موفق و درخواست نامعتبر هم پیش از بررسی کد دسترسی شمرده می‌شوند.
+- کلید مبدأ با HMAC-SHA256 و secret سمت سرور مشتق می‌شود؛ فقط digest با طول ثابت ذخیره می‌شود و IP خام در SQLite ثبت نمی‌شود.
+- ردیف‌های غیرفعال پس از ۲۴ ساعت با Alarm پاک‌سازی می‌شوند.
+- در نبود مبدأ قابل اعتماد، secret قوی یا binding، عملیات fail-closed است.
+- binding و migration مخصوص این DO به workers/assistant-api/wrangler.toml افزوده شد؛ هنوز deploy یا migrate نشده است.
+- harness محلی semanticConversationWorker.js این limiter را روی مسیر /session مصرف می‌کند. این مسیر تستی است و route اصلی Worker همچنان 503 می‌دهد؛ limiter هنوز به endpoint عمومی/Production متصل نشده است.
+
+### سخت‌گیری تکمیلی توکن
+در ممیزی آزمون توکن مشخص شد تغییر بیت‌های padding در آخرین نویسه Base64URL می‌تواند رشته‌ای متفاوت با همان بایت‌های امضا بسازد. decoder اکنون canonical encoding را الزام می‌کند و تست tampering نیز یک بیت مؤثر امضا را تغییر می‌دهد؛ امضای دستکاری‌شده باید رد شود.
+
+### فایل‌ها
+- افزوده شد: workers/assistant-api/src/previewAccessRateLimit.js
+- افزوده شد: tests/previewAccessRateLimit.test.js
+- تغییر کرد: workers/assistant-api/src/index.js، workers/assistant-api/wrangler.toml
+- تغییر کرد: tests/workers/semanticConversationWorker.js، tests/workers/semantic-conversation.wrangler.toml، tests/workers/semanticConversation.integration.mjs
+- تغییر کرد: workers/assistant-api/src/previewSession.js و tests/previewSession.test.js
+
+### آزمون و شواهد
+- آخرین commit کد/تست پیش از ثبت این سند: 37a823a1300bce62ff9faa4dffceb0560bacacd4.
+- GitHub Actions run 41830911814: success.
+- npm test: ۳۷۹/۳۷۹ موفق، صفر شکست.
+- npm audit --audit-level=high: صفر آسیب‌پذیری.
+- Wrangler Worker bundle و versions upload --dry-run: موفق؛ هیچ upload واقعی انجام نشد.
+- سه runtime integration محلی Cloudflare Workers موفق؛ semantic integration شامل limiter سراسری، شمارش تلاش‌های ناموفق/موفق، جداسازی دو مبدأ، limiter نشست، لغو نشست، رضایت، ایمنی مستقل، ابهام و topic confirmation.
+- اعتبارسنجی topic/content، ممیزی کیفیت، build و سه سناریوی Chromium workflow موفق.
+
+### شکست‌های میانی و اصلاح آن‌ها
+- چند CI میانی شکست خوردند و موفقیت محسوب نمی‌شوند: یک خطای نحوی ناشی از درج literal newline در harness، یک آزمون نامناسب که فرض می‌کرد Wrangler در درخواست localhost هدر CF-Connecting-IP را حذف می‌کند، و یک آزمون امضا که آخرین نویسه Base64URL را تغییر می‌داد و ممکن بود فقط padding bits را دستکاری کند.
+- harness بازنویسی و اصلاح شد؛ آزمون نبود مبدأ به unit test انتقال یافت؛ تغییر امضا به بیت مؤثر منتقل شد و decoder نیز canonical encoding را الزام کرد.
+- فقط اجرای نهایی 41830911814 روی commit کد بالا مبنای تأیید است.
+
+### محدودیت‌ها و وضعیت انتشار
+- limiter سراسری فعلاً فقط در harness محلی متصل است؛ binding اصلی صرفاً تعریف شده و route اصلی از آن استفاده نمی‌کند.
+- نرخ ۵ تلاش/۱۵ دقیقه برای هر مبدأ شبکه، کاربران پشت NAT مشترک را نیز در یک سهمیه قرار می‌دهد؛ برای Preview محدود قابل قبولِ موقت است، اما پیش از Preview عمومی باید با مدل دسترسی و تعداد آزمون‌گران تطبیق داده شود.
+- دسترسی مشترک با access code همچنان احراز هویت حساب نیست.
+- هیچ secret واقعی، inference واقعی، Preview deployment، upload، Production deploy، promote یا تغییر ترافیک انجام نشده است.
+- هیچ فایل یا رفتار journey، ثبت‌نام، پروفایل، ۳۴ موضوع و ۹۵۲ تمرین تغییر نکرده است.
+
+**وضعیت بخش:** automated_tests_passed برای ماژول limiter و harness محلی؛ هنوز browser-ready نیست و برای انتشار Preview به تصمیم/مجوز جداگانه نیاز دارد.
+
+### گام بعدی
+ساخت رابط مستقل و ایستا/قابل اتصال دستیار در محدوده فایل‌های اختصاصی assistant، سپس تکمیل routeهای Preview با دسترسی محدود، رضایت شفاف و provider غیرفعال تا زمان تصمیم صریح درباره هزینه و پردازش inference. هرگونه نیاز به تغییر App اصلی یا گیت انتشار Pages پیش از اقدام برای اجازه صریح مالک متوقف می‌شود.
