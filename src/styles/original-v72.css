@@ -6745,3 +6745,11 @@ body:not(.bale-webview) .bottomNav button.active:after {
 .assistantSummary h3{margin-top:0}
 .assistantSummary li{margin:6px 0}
 @media(max-width:480px){.assistantTranscript{max-height:55vh;min-height:160px;padding:12px}.assistantMessage,.userMessage{max-width:96%;padding:11px 12px}.assistantComposer{gap:7px;padding:9px}.assistantSendButton{min-width:62px;padding-inline:10px}}
+
+
+/* Day-scoped assistant panel: explicitly local and non-generative until a reviewed provider is enabled. */
+.dailyExerciseAssistant{margin:18px 0 28px}
+.dailyExerciseAssistant h2{margin:10px 0 8px}
+.dailyAssistantContext{padding:12px 14px;border:1px solid var(--border,#d9e0e8);border-radius:12px;background:var(--surface-soft,#f8fafc);margin:12px 0}
+.dailyAssistantContext p{margin:6px 0 0;line-height:1.8}
+.dailyExerciseAssistant .assistantTranscript{max-height:50vh}
