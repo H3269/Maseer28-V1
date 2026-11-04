@@ -106,7 +106,7 @@ function hasNegatedTopic(value, phrase) {
     if (/(?:^|\s)ن$/.test(before) || /(?:^|\s)نمی\s+$/.test(before)) return true;
     // Other negative verbs follow the topic phrase (e.g. «حسادت نمی‌کنم»).
     // Allow short modifiers such as «از قضاوت دیگران نمی‌ترسم».
-    return /^\s*(?:را\s+)?(?:ندارم|نیستم|نیست|نبود|نبوده|(?:\S+\s+){0,2}نمی\s+\S+)/.test(after);
+    return /^\s*(?:را\s+)?(?:ندارم|نیستم|نیست|نبود|نبوده|(?:\S+\s+){0,2}نمی\s+(?:ترسم|ترسد|ترسند|ترسی|کنم|کنی|کند|کنیم|کنید|کنند|شوم|شوی|شود|شویم|شوید|شوند|خواهم|خواهی|خواهد|خواهیم|خواهید|خواهند|توانم|توانی|تواند|توانیم|توانید|توانند))/.test(after);
   };
 
   // The latest occurrence resolves an earlier statement when the user
