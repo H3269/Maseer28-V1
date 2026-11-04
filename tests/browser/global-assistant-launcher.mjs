@@ -82,6 +82,8 @@ try {
   assert.equal((await dialog.innerText()).includes('09123456789'), false, 'private profile data must not be exposed to the page assistant');
   await dialog.getByRole('textbox').fill('اینجا چه کارهایی می‌توانم انجام بدهم؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForTimeout(250);
+  process.stdout.write(`DEBUG GLOBAL ASSISTANT AFTER PAGE QUESTION: ${(await dialog.innerText()).slice(-1800)}\\n`);
   await page.waitForFunction(() => document.querySelector('.globalAssistantDialog')?.innerText.includes('ادامه مسیر امروز'));
   const firstAssistantReply = dialog.locator('.assistantMessage').last();
   assert.match(await firstAssistantReply.innerText(), /در صفحه «خانه» می‌توانی/);
