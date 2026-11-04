@@ -169,12 +169,17 @@ export class AssistantPreviewSessionGuardDurableObject {
 
   #revoke(input) {
     const changed = this.ctx.storage.transactionSync(() => {
-      const result = this.sql.exec(
-        "UPDATE preview_session SET revoked_at = ? WHERE session_id = ? AND revoked_at IS NULL",
+      const row = this.sql.exec(
+        "SELECT revoked_at FROM preview_session WHERE session_id = ?",
+        input.sessionId,
+      ).toArray()[0];
+      if (!row || row.revoked_at !== null) return false;
+      this.sql.exec(
+        "UPDATE preview_session SET revoked_at = ? WHERE session_id = ?",
         Number.isSafeInteger(input.nowSeconds) ? input.nowSeconds : Math.floor(Date.now() / 1000),
         input.sessionId,
       );
-      return result.rowsWritten > 0;
+      return true;
     });
     return Response.json({ revoked: changed });
   }
