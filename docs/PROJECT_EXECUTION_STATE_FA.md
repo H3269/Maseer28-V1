@@ -892,3 +892,39 @@ Worker پروژه از Durable Objects استفاده می‌کند. Cloudflare 
 منابع رسمی بررسی‌شده در `docs/AI_PROVIDER_SELECTION_AND_DATA_BOUNDARY_FA.md`، بخش ۷ ثبت شده‌اند.
 
 **وضعیت:** راهبرد Preview تعیین شده؛ هنوز browser-ready نیست و از مالک اقدامی درخواست نمی‌شود.
+
+
+## ۲۱. نشست کوتاه‌عمر و رضایت مخصوص Preview — 2026-11-04
+
+### وضعیت واقعی main و آزمون‌ها
+- آخرین HEAD هنگام ثبت این بخش: `d8024690a51684e798b8edbd5fdf75c66bacbe06`؛ پیام: `test(assistant): verify Preview session and consent in local runtime`.
+- فایل تغییریافته در آخرین commit: `tests/workers/semanticConversation.integration.mjs`. در commitهای بلافاصله پیش از آن، ماژول `workers/assistant-api/src/previewSession.js`، تست‌های `tests/previewSession.test.js` و harness محلی معنایی به‌روزرسانی شده‌اند.
+- اجرای CI روی همین HEAD: `41826402818`، نتیجه `success`. اجرای قبلی `41826362333` به علت آن‌که integration test بدون دریافت و ارسال Bearer token به endpoint محافظت‌شده درخواست می‌داد، در مرحله semantic runtime با 401 شکست خورد؛ harness اصلاح شد تا ابتدا نشست Preview بگیرد و سپس token را در درخواست turn بفرستد. اجرای بعدی سبز شد.
+- نتایج CI: ۳۷۴ تست واحد، ۳۷۴ موفق و صفر شکست؛ `npm audit` صفر آسیب‌پذیری؛ Worker bundle و `wrangler versions upload --dry-run` موفق؛ replay-marker، Telegram bootstrap و semantic conversation runtime integration موفق؛ آزمون‌های Chromium موجود در workflow نیز موفق.
+
+### آنچه واقعاً پیاده‌سازی شده
+- `previewSession.js` فقط برای Preview است: access code و signing secret حداقل ۳۲ بایت، رضایت صریح هر دو scope، policy version مطابق، token امضاشده HMAC با عمر ۱۵ دقیقه و اعتبارسنجی issuer/audience/scope/expiry.
+- تست محلی مسیر صدور نشست، رد access code نادرست، رد رضایت ناقص، رد token غایب/نامعتبر، تقدم گیت ایمنی، تأیید موضوع و ابهام را پوشش می‌دهد.
+- تمام access codeها، signing secretها و خروجی مدل در harness فعلی ساختگی‌اند. AI.run در integration mock است؛ هیچ inference واقعی، هزینه AI یا ارسال متن واقعی کاربر رخ نداده است.
+
+### محدودیت‌های مهم امنیتی و محصولی
+- این نشست، احراز هویت حساب واقعی نیست؛ access code مشترک است، token stateless است، revoke فوری، rate limit، ثبت/پس‌گرفتن رضایت، مالکیت حساب، و مدیریت نشست چنددستگاهی ندارد. تا تکمیل این موارد، فقط برای Preview محدود با داده مصنوعی/غیرحساس مناسب است.
+- endpoint اصلی Worker در `workers/assistant-api/src/index.js` هنوز `/v1/assistant/turn` را با 503 و fail-closed پاسخ می‌دهد. `previewSession.js` و orchestrator به route اصلی وصل نشده‌اند؛ binding واقعی AI وجود ندارد؛ UI دستیار هنوز ساخته/متصل نشده است.
+- آخرین commit فقط یک فایل تست را تغییر داده است؛ سند وضعیت پیشین تا این commit به‌روز نبود.
+
+### اصلاح تصمیم فنی Preview (جایگزین برداشت ناقص بخش ۲۰)
+- بخش ۲۰، محدودیت Version URLهای کلاسیک را با قابلیت جدید Worker Previews یکی گرفته بود. مستندات رسمی Cloudflare در سپتامبر ۲۰۲۶ می‌گویند Worker Previews با Wrangler `4.135.0+` از طریق `npx wrangler preview` ایجاد می‌شوند و برای هر Preview namespace و storage مستقل Durable Objects provision می‌کنند؛ بنابراین وجود Durable Object به‌تنهایی مانع Preview جدید نیست.
+- Wrangler پروژه `4.157.0` است و از نظر نسخه حداقل لازم را دارد. بااین‌حال، Preview واقعی هنوز ساخته نشده است. Cloudflare Builds preview builds در تنظیمات گزارش‌شده قبلی خاموش بوده‌اند و اجرای Preview نیازمند اقدام upload/deploy به محیط Preview و تنظیمات مستقل آن است.
+- منابع رسمی: https://developers.cloudflare.com/workers/previews/ ، https://developers.cloudflare.com/workers/previews/get-started/ ، https://developers.cloudflare.com/workers/previews/resources/ ، https://developers.cloudflare.com/workers/ci-cd/builds/configuration/ .
+
+### وضعیت همان آدرس اپ و انتشار
+- آدرس Worker قبلاً گزارش‌شده: `https://still-firefly-9435maseer28-archive.has-ab3269.workers.dev`.
+- در این نشست، دسترسی مستقیم به Cloudflare Dashboard/API برای خواندن deployment فعال در دسترس نبود؛ درخواست مستقیم شبکه نیز از محیط اجرا به علت محدودیت DNS قابل انجام نشد. بنابراین وضعیت فعلی همان URL را نمی‌توانم مستقلاً تأیید کنم. آخرین مشاهده تاریخیِ در دسترس، نسخه فعال `6aa849b2` با ۱۰۰٪ ترافیک در Production بود؛ این داده قدیمی است و وضعیت امروز محسوب نمی‌شود.
+- GitHub Actions فقط dry-run انجام داده است؛ هیچ upload واقعی Version، Preview deployment، Production deploy، promote یا تغییر ترافیک انجام نشده است. بنابراین نباید ادعا شود که URL اپ به‌روزرسانی شده است.
+
+### گام بعدی
+1. طراحی و آزمون کنترل دسترسی Preview با rate limit، امکان لغو/انقضای رضایت و جداسازی کامل secrets؛ عدم استفاده از داده حساس واقعی.
+2. ساخت صفحه مستقل دستیار و بررسی مسیر میزبانی آن بدون تغییر فایل‌ها/رفتار journey موجود؛ ابتدا معماری استقرار UI و Worker باید روشن شود.
+3. ایجاد Preview واقعی فقط پس از تکمیل کنترل‌های لازم و مجوز صریح برای ایجاد deployment در محیط Preview. Production activation همچنان نیازمند تأیید صریح و جداگانه است.
+
+**وضعیت بخش:** `automated_tests_passed` برای ماژول نشست Preview و harness محلی؛ هنوز `browser_ready` نیست و هیچ نسخه قابل مشاهده در URL اپ ارائه نشده است.
