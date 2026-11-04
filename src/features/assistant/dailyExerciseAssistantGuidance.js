@@ -126,7 +126,7 @@ function followUpResponse(message, state) {
     const action = paragraphs.find((part) => /^راهکار اختصاصی همین روز:/u.test(part));
     const summaryParts = [exercise, action].filter(Boolean);
     if (summaryParts.length) {
-      return `خلاصه محتوای همان روز، بدون افزودن مطلب تازه:\\n\\n${summaryParts.join('\\n\\n')}`;
+      return `خلاصه محتوای همان روز، بدون افزودن مطلب تازه:\n\n${summaryParts.join('\n\n')}`;
     }
   }
   if (/^(?:چرا|چطور|یعنی چی|منظورت چیه|مثال بزن|یه مثال بزن|مثالی بزن)[؟?]?$/u.test(value)) {
@@ -165,7 +165,7 @@ function followUpResponse(message, state) {
   }
 
   if (selected) {
-    return `این ${label} از پاسخ قبلی است:\\n\\n${selected}\\n\\nاگر هنوز مبهم است، مشخص کن کدام جمله یا واژه‌اش را بیشتر باز کنم.`;
+    return `این ${label} از پاسخ قبلی است:\n\n${selected}\n\nاگر هنوز مبهم است، مشخص کن کدام جمله یا واژه‌اش را بیشتر باز کنم.`;
   }
   if (/(?:بیشتر توضیح|واضح تر|روشن تر|متوجه نشدم|نفهمیدم|همین بخش|بیشتر باز کن|منظورم)/u.test(value)) {
     const topic = state.lastTopic ? ` درباره «${state.lastTopic}»` : '';
@@ -200,7 +200,7 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
       state = { ...state, safetyStatus: 'cleared' };
       return result('ممنون که روشن کردی. از پاسخ تو برداشت می‌کنم که در همین لحظه خطر فوری یا قصد و برنامه عملی نداری. اگر این وضعیت تغییر کرد، راهنمایی تمرین را متوقف کن و از یک فرد امن یا خدمات فوری کمک بگیر. اگر مایل هستی، حالا می‌توانیم به خود تمرین امروز برگردیم.', state, text);
     }
-    return result(`${SAFETY_QUESTION}\\n\\nاگر مطمئن نیستی، همین را بگو تا به‌جای ادامه تمرین، کمک انسانی را در اولویت بگذاریم.`, state, text);
+    return result(`${SAFETY_QUESTION}\n\nاگر مطمئن نیستی، همین را بگو تا به‌جای ادامه تمرین، کمک انسانی را در اولویت بگذاریم.`, state, text);
   }
 
   if (state.safetyStatus === 'cleared' && /(?:خودکشی|آسیب به خود|خودزنی|آسیب به دیگران|در خطرم|تهدیدم می کند)/u.test(normalize(text))) {
@@ -261,13 +261,13 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
       exercise ? `متن تمرین همین روز: ${exercise}` : '',
       action ? `راهکار اختصاصی همین روز: ${action}` : '',
       'برای اینکه دقیقاً همان چیزی را که لازم داری روشن کنم، لطفاً جمله یا مرحله‌ای از متن بالا را که مبهم است مشخص کن. من نباید بدون فهمیدن بخش مبهم، روش دیگری را جای تمرین اصلی جا بزنم.',
-    ].filter(Boolean).join('\\n\\n');
+    ].filter(Boolean).join('\n\n');
     return result(response, { ...state, lastTopic: topic.slice(0, 100) }, text);
   }
   const response = [
     `پیامت را در زمینه «${topic}»، روز ${day} بررسی کردم.`,
     'برای اینکه پاسخ دقیقاً به تمرین امروز مربوط باشد، بگو پرسشت درباره کدام بخش است: فهم متن تمرین، مراحل انجام آن، یا منظور راهکار اختصاصی؟',
-  ].join('\\n\\n');
+  ].join('\n\n');
   return result(response, { ...state, lastTopic: topic.slice(0, 100) }, text);
 }
 export function makeDailyExerciseGuidance(options = {}) {
