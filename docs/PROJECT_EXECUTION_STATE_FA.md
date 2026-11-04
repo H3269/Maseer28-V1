@@ -734,3 +734,47 @@
 `automated_tests_passed` برای primitive مستقل توکن نشست. این primitive به‌تنهایی احراز هویت اولیه، anti-replay، رضایت، authorization، rate limiting یا safety gate نیست.
 
 **گام بعدی واحد:** ساخت و آزمون یک bootstrap orchestrator مستقل که به‌ترتیب verifier پلتفرم، fingerprint کلیددار، Replay Marker shard و صدور token را هماهنگ کند؛ ابتدا فقط با fake/local bindings و آزمون‌های failure-mode. تا عبور آزمون‌ها، route، Wrangler binding/migration، secret و اتصال به provider اضافه نشود.
+
+
+## ۱۱. ادامه دستیار — Durable Object replay adapter (2026-11-04)
+
+### دامنه و نتیجه
+- دامنه این مرحله فقط adapter مستقل ضدبازپخش برای bootstrap دستیار است؛ هیچ route عمومی bootstrap/turn، binding یا migration عملیاتی به Worker اصلی اضافه نشد.
+- ماژول جدید `workers/assistant-api/src/replayMarkerDurableObject.js`:
+  - کلاس `ReplayMarkerDurableObject`، پیاده‌سازی Durable Object متکی بر `ReplayMarkerShard`؛
+  - endpoint داخلی محدود به `POST /consume`؛
+  - اعتبارسنجی ورودی و پاسخ‌های fail-closed؛
+  - factory با نام `createReplayMarkerConsumer(namespace)` برای اتصال namespace به قرارداد تزریقی `consumeReplayMarker` در bootstrap؛
+  - shard name قطعی و اعتبارسنجی‌شده، بدون ذخیره یا بازگرداندن fingerprint خام.
+- تست واحد جدید `tests/replayMarkerDurableObject.test.js`، شامل routing، نتیجه duplicate، ورودی نامعتبر، خطای storage/HTTP، پاسخ malformed و محدودیت endpoint.
+- تست محلی Cloudflare Workers به‌روزرسانی شد تا کلاس واقعی Durable Object تولیدی را از طریق subclass مخصوص تست اجرا کند؛ مسیر adapter namespace نیز در مسیر واقعی local runtime قرار دارد:
+  - `tests/workers/replayMarkerWorker.js`
+  - `tests/workers/replay-marker.wrangler.toml`
+  - `tests/workers/replayMarker.integration.mjs`
+
+### HEAD و commitهای مرحله
+- HEAD کد/تست نهایی این مرحله: `b6d2495c86ec6f1d9086c3d5e0b3b626908dc1a8`
+- commitها:
+  - `91cd36d2b34099dbba408bffe0584fc841c5d316` — افزودن Durable Object adapter و namespace consumer.
+  - `bcba6c5089726e225f9d98eab10d0308641f8117` — آزمون واحد adapter و endpoint.
+  - `94f4a4b36969b2e6af29b4ae9f8ec124e8d03bd5` — استفاده از کلاس تولیدی در تست runtime محلی.
+  - `291718faf10d91f4618797eb40c9c551b0741a6f` — اتصال Wrangler test binding به کلاس تستی مشتق‌شده از کلاس تولیدی.
+  - `b6d2495c86ec6f1d9086c3d5e0b3b626908dc1a8` — اصلاح assertion مسیر/متد تست.
+- تنها فایل‌های دست‌کاری‌شده در این مرحله، ماژول جدید دستیار، تست‌های اختصاصی دستیار و harness تست محلی‌اند؛ بخش اصلی اپ، journey، محتوای ۳۴ موضوع و ۹۵۲ تمرین تغییر نکردند.
+
+### آزمون‌ها و شواهد
+- GitHub Actions run `41821256597` روی SHA نهایی `b6d2495...`: **success**.
+- `npm audit --audit-level=high`: موفق؛ صفر آسیب‌پذیری گزارش‌شده.
+- Wrangler Worker bundle dry-run: موفق؛ بدون deployment.
+- Wrangler `versions upload --dry-run`: موفق؛ بدون upload.
+- تست runtime واقعی محلی Cloudflare Workers: موفق؛ SQLite transaction، ۱۲ درخواست هم‌زمان برای یک fingerprint با دقیقاً یک برنده، shard دوم، Alarm scheduling و cleanup.
+- `npm test`: ۳۴۸ passed، صفر failed.
+- اعتبارسنجی assistant topic registry، اعتبارسنجی محتوا، audit کیفیت محتوا، build و آزمون‌های مرورگر Chromium: همگی موفق.
+- اجرای CI قبلی روی commit تست واحد پیش از اصلاح assertion شکست داشت؛ علت، انتظار 404 برای درخواست GET بود درحالی‌که endpoint به‌درستی ابتدا 405 برای متد غیرمجاز می‌دهد. assertion اصلاح شد و run نهایی بالا تمام مراحل را با موفقیت گذراند.
+
+### محدودیت‌ها و گام بعدی
+- این مرحله adapter را به‌صورت مستقل و با runtime محلی اثبات می‌کند؛ هنوز در Worker اصلی namespace binding/migration عملیاتی، secrets، route bootstrap، consent/privacy، session persistence، provider/LLM، مکالمه معنایی و UI وجود ندارد.
+- طول prefix دو رقم hex (۲۵۶ shard ممکن) فعلاً انتخاب آزمایشی باقی می‌ماند؛ پیش از بار عملیاتی باید ظرفیت، توزیع، هزینه و quota بررسی شود.
+- صدور token هنوز پیش از consume marker فقط در حافظه آماده می‌شود و تنها پس از موفقیت consume برگردانده می‌شود؛ این تصمیم برای جلوگیری از سوختن marker هنگام خطای signing است و نباید به‌اشتباه «صدور پس از ذخیره پایدار» توصیف شود.
+- هیچ deploy، upload واقعی Version، promote یا تغییر ترافیک Production انجام نشده است.
+- وضعیت این بخش: `automated_tests_passed`; اکنون برای بررسی انسانی محدودِ همین مرحله از مالک پروژه درخواست می‌شود مخزن را روی commit بالا مرور/تست کند. پس از بازخورد، به مرحله bootstrap end-to-end محلی و سپس بازگشت به هدف محصولیِ موتور مکالمه و UI دستیار می‌رویم.
