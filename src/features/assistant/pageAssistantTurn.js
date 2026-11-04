@@ -8,18 +8,20 @@ const SAFETY_STATUSES = new Set([
 
 /**
  * Routes one non-daily page turn locally.
- * Page help may answer only fixed UI questions; all other requests fall back
- * to the existing safety-first, approved-knowledge assistant turn engine.
+ * Only fixed UI questions without detected personal-topic evidence may use
+ * page guidance. Safety and personal-intake routes always retain precedence.
  */
 export function makePageAssistantTurn({ screen, text } = {}) {
   const message = String(text ?? '').trim();
   const routed = routeAssistantTurn({ text: message });
 
-  // Safety, empty-input and input-bound outcomes always take precedence.
+  // Never let page guidance override safety, input guards, or personal intake.
   if (
     SAFETY_STATUSES.has(routed.status)
     || routed.status === 'invalid_input'
     || routed.status === 'input_too_long'
+    || routed.status === 'intent_scope_clarification_required'
+    || (Array.isArray(routed.intake?.topic_candidates) && routed.intake.topic_candidates.length > 0)
   ) {
     return routed;
   }
