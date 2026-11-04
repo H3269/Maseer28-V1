@@ -240,6 +240,19 @@ test('third-party attribution preserves a separate first-person topic after a co
 });
 
 
+
+test('third-party attributed questions do not become the user intent', () => {
+  const reportedOnly = routeSemanticIntake({ text: 'دوستم گفت چه راهکاری پیشنهاد می‌کنی؟' });
+  assert.equal(reportedOnly.intent.label, 'other_or_unclear');
+  assert.equal(reportedOnly.topic_candidates.length, 0);
+
+  const userFollowUp = routeSemanticIntake({
+    text: 'دوستم گفت من اضطراب دارم. حالا برای خودم چه راهکاری پیشنهاد می‌کنی؟',
+  });
+  assert.equal(userFollowUp.intent.label, 'request_strategy');
+  assert.ok(userFollowUp.topic_candidates.some((item) => item.topic_id === 'T02'));
+});
+
 test('colloquial third-party attribution removes friends and family speech before topic routing', () => {
   const cases = [
     ['دوستام گفتن من از خودم متنفرم', 'T18'],

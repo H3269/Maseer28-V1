@@ -197,7 +197,8 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
   const negationPresent = negatedTopicIds.length > 0 || (!clearlyRejectedThirdPartyQuote && /موافق نیستم/.test(normalized));
   const quotePresent = /[«“"].+[»”"]/.test(raw);
   const correctionPresent = /منظورم|اصلاح می‌کنم|نه اینکه/.test(normalized);
-  const intentLabel = classifyIntent(normalized);
+  // Ignore third-party attributed speech when classifying the user's intent.
+  const intentLabel = classifyIntent(userNormalized);
   const topicCandidates = intentLabel === 'general_information' ? [] : topics;
   const multiTopic = topicCandidates.length > 1;
   const explicitDependencyCue = ['وابستگی عاطفی', 'وابسته‌ام', 'بدون او نمی‌توانم']
