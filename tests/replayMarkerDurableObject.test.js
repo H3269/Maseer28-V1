@@ -98,7 +98,7 @@ test("Durable Object endpoint accepts only POST /consume with valid JSON", async
   instance.shard = fakeShard;
 
   assert.equal((await instance.fetch(new Request("https://do.invalid/consume"))).status, 405);
-  assert.equal((await instance.fetch(new Request("https://do.invalid/private"))).status, 404);
+  assert.equal((await instance.fetch(new Request("https://do.invalid/private", { method: "POST" }))).status, 404);
   assert.equal((await instance.fetch(new Request("https://do.invalid/consume", {
     method: "POST",
     body: "{",
