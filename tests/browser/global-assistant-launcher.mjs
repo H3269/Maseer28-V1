@@ -68,11 +68,21 @@ try {
   await launcher.click();
   let dialog = page.getByRole('dialog', { name: 'دستیار مسیر۲۸' });
   await dialog.waitFor({ state: 'visible' });
+  const closeButton = dialog.getByRole('button', { name: 'بستن پنجره دستیار' });
+  const acknowledgeButton = dialog.getByRole('button', { name: 'متوجه شدم' });
+  await page.waitForFunction(() => document.activeElement?.getAttribute('aria-label') === 'بستن پنجره دستیار');
+  assert.equal(await launcher.getAttribute('aria-expanded'), 'true');
+  await page.keyboard.press('Shift+Tab');
+  assert.equal(await acknowledgeButton.evaluate((element) => element === document.activeElement), true, 'Shift+Tab from the first control must wrap to the last');
+  await page.keyboard.press('Tab');
+  assert.equal(await closeButton.evaluate((element) => element === document.activeElement), true, 'Tab from the last control must wrap to the first');
   assert.match(await dialog.innerText(), /صفحه فعلی: خانه/);
   assert.match(await dialog.innerText(), /هنوز محتوای این بخش به موتور پاسخ‌گویی متصل نیست/);
   assert.equal(await dialog.getByRole('textbox').count(), 0, 'unsupported pages must not display a misleading chat composer');
-  await dialog.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
+  await closeButton.click();
   await dialog.waitFor({ state: 'detached' });
+  assert.equal(await launcher.getAttribute('aria-expanded'), 'false');
+  assert.equal(await launcher.evaluate((element) => element === document.activeElement), true, 'closing the dialog must restore focus to the launcher');
 
   await page.locator('#dashboard .heroAction').click();
   await page.locator('#day').waitFor({ state: 'visible' });
