@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import AppIcon from '../../shared/components/AppIcon.jsx';
+import { makePageAssistantTurn } from './pageAssistantTurn.js';
 
 const SCREEN_LABELS = {
   dashboard: 'خانه',
@@ -18,11 +19,21 @@ const SCREEN_LABELS = {
 
 export default function GlobalAssistantLauncher({ screen, visible = false }) {
   const [open, setOpen] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [draft, setDraft] = useState('');
+  const [error, setError] = useState('');
   const launcherRef = useRef(null);
   const closeButtonRef = useRef(null);
   const dialogRef = useRef(null);
+  const endRef = useRef(null);
   const isDailyExercise = screen === 'day';
   const pageLabel = SCREEN_LABELS[screen] || 'صفحه جاری';
+
+  useEffect(() => {
+    setMessages([]);
+    setDraft('');
+    setError('');
+  }, [screen]);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -40,6 +51,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false }) {
     };
   }, [open]);
 
+  useEffect(() => {
+    endRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'end' });
+  }, [messages]);
+
   if (!visible || screen === 'bookReader') return null;
 
   function activate() {
@@ -51,6 +66,24 @@ export default function GlobalAssistantLauncher({ screen, visible = false }) {
       }
     }
     setOpen(true);
+  }
+
+  function send(event) {
+    event.preventDefault();
+    const message = draft.trim();
+    if (!message) return;
+    try {
+      const turn = makePageAssistantTurn({ screen, text: message });
+      setMessages((current) => [
+        ...current,
+        { role: 'user', text: message },
+        { role: 'assistant', text: turn.message, knowledge: turn.knowledge || [] },
+      ]);
+      setDraft('');
+      setError('');
+    } catch {
+      setError('پاسخ آماده نشد. دوباره تلاش کن.');
+    }
   }
 
   function containDialogTab(event) {
@@ -99,7 +132,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false }) {
             onKeyDown={containDialogTab}
           >
             <div className="globalAssistantDialogTop">
-              <span className="badge">دسترسی آزمایشی</span>
+              <span className="badge">راهنمای محلی محدود</span>
               <button ref={closeButtonRef} type="button" className="iconButton" onClick={() => setOpen(false)} aria-label="بستن پنجره دستیار">
                 <AppIcon name="x" size={18} />
               </button>
@@ -107,12 +140,48 @@ export default function GlobalAssistantLauncher({ screen, visible = false }) {
             <h2 id="global-assistant-title">دستیار مسیر۲۸</h2>
             <p className="globalAssistantPageContext">صفحه فعلی: <b>{pageLabel}</b></p>
             <p id="global-assistant-description">
-              دکمه دستیار در این صفحه قرار گرفته است، اما هنوز محتوای این بخش به موتور پاسخ‌گویی متصل نیست.
-              در حال حاضر راهنمای متنی محلی فقط داخل صفحه تمرین روزانه فعال است؛ بنابراین این پنجره فعلاً پیام دریافت نمی‌کند و پاسخی حدس نمی‌زند.
+              این نسخه فقط به پرسش‌های ثابت درباره کاربرد صفحه، گزینه‌های همان صفحه و راه بازگشت پاسخ می‌دهد. درخواست‌های شخصی به موتور محدود فعلی ارجاع می‌شوند؛ پاسخ آن تشخیص یا توصیه درمانی نیست. هنوز مدل هوش مصنوعی یا گفت‌وگوی پیوسته فعال نشده است.
             </p>
             <p className="muted globalAssistantPrivacyNote">
-              هیچ پیام یا محتوایی از این صفحه به سرویس ابری ارسال نمی‌شود.
+              پردازش این نسخه در مرورگر انجام می‌شود؛ پیام‌ها به سرویس ابری ارسال نمی‌شوند و با تغییر صفحه، گفت‌وگوی این پنجره پاک می‌شود.
             </p>
+            <div className="assistantChatShell globalAssistantChat" aria-label="گفت‌وگوی دستیار در صفحه جاری">
+              <div className="assistantTranscript" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
+                {!messages.length && (
+                  <div className="assistantMessage">
+                    <b>دستیار مسیر۲۸</b>
+                    <p>می‌توانی بپرسی «اینجا چه کارهایی می‌توانم انجام بدهم؟» یا «این صفحه برای چیست؟»</p>
+                  </div>
+                )}
+                {messages.map((item, index) => (
+                  <div className={item.role === 'user' ? 'userMessage' : 'assistantMessage'} key={index}>
+                    <b>{item.role === 'user' ? 'شما' : 'دستیار مسیر۲۸'}</b>
+                    <p>{item.text}</p>
+                    {item.knowledge.map((entry) => (
+                      <div className="globalAssistantKnowledge" key={entry.item_id}>
+                        <b>{entry.title}</b>
+                        <p>{entry.excerpt}</p>
+                        <small>منبع: {entry.source?.title || 'منبع تأییدشده'} · {entry.source?.locator || ''}</small>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+                <div ref={endRef} />
+              </div>
+              <form className="assistantComposer" onSubmit={send}>
+                <label className="assistantSrOnly" htmlFor="global-assistant-message">پیام شما</label>
+                <textarea
+                  id="global-assistant-message"
+                  rows={2}
+                  maxLength={3000}
+                  value={draft}
+                  onChange={(event) => setDraft(event.target.value)}
+                  placeholder="درباره همین صفحه بپرس..."
+                />
+                <button className="primary assistantSendButton" type="submit" disabled={!draft.trim()}>ارسال</button>
+                {error && <p className="contactHelp assistantComposerError" role="alert">{error}</p>}
+              </form>
+            </div>
             <button type="button" className="primary globalAssistantCloseAction" onClick={() => setOpen(false)}>
               متوجه شدم
             </button>
