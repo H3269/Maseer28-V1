@@ -86,7 +86,7 @@ function classifyIntent(value) {
   const deniesPersonalExperience = /خودم چنین تجربه(?:‌ای| ای) ندارم|برای خودم نیست|صرفاً برای ترجمه|فقط برای ترجمه/.test(normalized);
   const translationRequest = /(?:برای ترجمه|ترجمه (?:این|یک) متن|متن را ترجمه)/.test(normalized);
   const informationQuestion = /(?:چیست|چی هست|یعنی چه|چه معنایی دارد)|تعریف\s+\S+|معنی\s+\S+|اطلاعات(?:ی)?\s+(?:درباره|در مورد)|(?:درباره|در مورد).{0,35}توضیح (?:بده|دهید)/.test(normalized);
-  const explicitPersonalContext = /(?:من خودم|برای من|تجربه می کنم|تجربه دارم|در زندگی من|مشکل خودم|(?:^|\\s)من\\s+(?:اضطراب|استرس|نگرانی|ترس|خشم|عصبانیت|تنهایی|بی خوابی)\\s*(?:دارم|هستم)|مضطربم|نگرانم|عصبانی\\s*ام|می\\s*ترسم|تنهایم|بی\\s*خوابم)/u.test(normalized);
+  const explicitPersonalContext = /(?:من خودم|برای من|تجربه می کنم|تجربه دارم|در زندگی من|مشکل خودم|(?:^|\s)من\s+(?:اضطراب|استرس|نگرانی|ترس|خشم|عصبانیت|تنهایی|بی خوابی)\s*(?:دارم|هستم)|مضطربم|نگرانم|عصبانی\s*ام|می\s*ترسم|تنهایم|بی\s*خوابم)/u.test(normalized);
   if (translationRequest) return 'general_information';
   // A request for strategies takes precedence over an incidental "چیست"
   // elsewhere in a multi-clause message.
