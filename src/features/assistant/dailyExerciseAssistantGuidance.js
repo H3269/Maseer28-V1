@@ -2,7 +2,7 @@ import { routeSemanticIntake } from './intentContextRouter.js';
 
 const SAFETY_QUESTION = 'آیا همین الآن خطر فوری، قصد یا برنامه عملی برای آسیب به خودت یا شخص دیگری وجود دارد؟ اگر پاسخ روشن نیست، بگو مطمئن نیستی.';
 const SAFETY_HANDOFF = 'راهنمایی تمرین را متوقف می‌کنم. اگر احتمال خطر فوری وجود دارد یا مطمئن نیستی، همین الآن با خدمات اورژانسی محل زندگی یا یک فرد امن و قابل اعتماد تماس بگیر و تنها نمان. این گفت‌وگو جای کمک فوری انسانی را نمی‌گیرد.';
-const MAX_CONTEXT_TEXT = 1200;
+const MAX_CONTEXT_TEXT = 2400;
 
 export function selectDailyExerciseGuidanceData({ guidanceData, data } = {}) {
   if (!guidanceData) return data;
