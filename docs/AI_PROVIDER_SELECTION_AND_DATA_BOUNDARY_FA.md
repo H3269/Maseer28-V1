@@ -80,3 +80,24 @@ Cloudflare JSON Mode و `response_format.type = json_schema` را برای مد�
 - انتخاب نهایی provider/model، محل پردازش و مجوز هزینه همچنان باز است.
 
 **تصمیم:** Workers AI فعلاً یک آداپتور آماده‌سازی‌شده و گزینه نامزد است؛ نه provider فعال یا تأییدشده برای داده حساس کاربران.
+
+
+## 7. مسیر Preview مرورگری بدون فعال‌سازی Production
+
+Worker این پروژه از Durable Objects استفاده می‌کند. طبق محدودیت مستند Cloudflare، برای Workerهایی که Durable Object پیاده‌سازی می‌کنند Version URL تولید نمی‌شود؛ بنابراین `wrangler versions upload` به‌تنهایی URL قابل آزمایش مرورگری نمی‌دهد.
+
+راه درست برای این پروژه، Worker Previews است:
+- `npx wrangler preview --name assistant-preview` یک Preview مستقل ایجاد/به‌روزرسانی می‌کند.
+- هر Preview برای Durable Objects namespace و storage مستقل می‌گیرد؛ داده و state آن با Production یا Previewهای دیگر مشترک نیست.
+- تنظیمات Preview از Production به ارث نمی‌رسند؛ باید در بخش `[previews]` تعریف شوند.
+- Wrangler مورد استفاده پروژه `4.157.0` است و از حداقل نسخه لازم برای Previews (`4.135.0`) جدیدتر است.
+- URL Preview روی `workers.dev` عمومی است؛ برای داده واقعی باید کنترل دسترسی جداگانه (ترجیحاً Cloudflare Access روی hostname مناسب) و consent پیاده‌سازی شود.
+- چون مالک فقط شاخه `main` را مجاز دانسته، نباید برای Preview شاخه جدید ساخت. مسیر قابل بررسی، اجرای دستی `wrangler preview --name assistant-preview` از همان main پس از آماده‌شدن UI/API است؛ این فرمان Production را deploy یا promote نمی‌کند.
+
+منابع:
+- https://developers.cloudflare.com/workers/versions-and-deployments/version-urls/
+- https://developers.cloudflare.com/workers/previews/get-started/
+- https://developers.cloudflare.com/workers/previews/resources/
+- https://developers.cloudflare.com/workers/previews/configuration/
+
+**وضعیت فعلی:** هیچ Preview واقعی ایجاد نشده است. Build configuration فعلی کاربر هنوز روی root directory `/workers/assistant-api` و deploy command `wrangler versions upload` است؛ تغییر آن تا آماده‌شدن Preview مرورگری انجام نمی‌شود.
