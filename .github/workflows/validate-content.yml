@@ -137,6 +137,7 @@ jobs:
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/archive-export.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/daily-safety-gate.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/daily-assistant-guidance.mjs
+          NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/global-assistant-launcher.mjs
 
       - name: Upload daily content quality audit
         if: ${{ always() && steps.install.outcome == 'success' }}
