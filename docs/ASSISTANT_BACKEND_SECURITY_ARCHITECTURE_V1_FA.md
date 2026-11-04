@@ -153,3 +153,29 @@
 TTL پنج‌دقیقه‌ای فعلاً یک مقدار محافظه‌کارانه برای آزمون است، نه تصمیم UX نهایی؛ چون `auth_date` زمان بازشدن Mini App است، باید پیش از اتصال frontend سناریوی کاربری که اپ را مدت بیشتری باز نگه می‌دارد و راهکار refresh/replay protection بررسی شود. اعتبار امضای پلتفرم به‌هیچ‌وجه معادل رضایت پردازش ابری نیست.
 
 **وضعیت:** primitive کدنویسی شده؛ عبور از CI و بازبینی نهایی هنوز لازم است؛ اتصال runtime و تست واقعی Telegram/Bale انجام نشده است.
+
+
+## ۱۲. پل میزبان Mini App — وضعیت کد و محدودیت بارگذاری SDK (2026-11-04)
+
+### تغییرات در main
+- `workers/assistant-api/src/hostBridge.js` تابع `loadMiniAppInitData` را اضافه می‌کند؛ فقط `initData` خام را از `Bale.WebApp` یا `Telegram.WebApp` می‌خواند و در صورت نبود SDK، بر اساس نشانه‌های میزبان SDK رسمی را به‌صورت lazy بارگذاری می‌کند.
+- این helper هیچ داده‌ای را ارسال، ذخیره، log یا parse نمی‌کند. `initDataUnsafe` خوانده نمی‌شود و User-Agent صرفاً برای انتخاب SDK است، نه احراز هویت.
+- `tests/hostBridge.test.js` مسیر SDK موجود، lazy-load هر دو پلتفرم، مرورگر عادی، داده خالی، globals مبهم و script tag با وضعیت نامعلوم را پوشش می‌دهد.
+
+### نتیجه CI
+- Run `41778131447` برای commit `e72423b00678be767b4402c4af85d6be563878f1`: `success`.
+- Run `41778143211` برای HEAD شامل تست‌های hostBridge، یعنی `430c91bf3f2f647c4ccbec22138886f4e0ab1838`: `success`.
+- در اجرای دوم، مراحل unit tests، Wrangler dry-run، build و Chromium privacy/browser scenarios همگی موفق شدند.
+- این‌ها آزمون‌های CI هستند؛ تست واقعی داخل Telegram یا Bale انجام نشده است.
+
+### محدودیت حل‌نشده — SDK در Bale
+مستندات رسمی Bale توصیه می‌کند `https://tapi.bale.ai/miniapp.js` در ابتدای `<head>` و پیش از سایر scriptها بارگذاری شود. پیاده‌سازی فعلی lazy-load است و این تفاوت هنوز در محیط واقعی Bale آزموده نشده؛ بنابراین نباید آن را سازگار و قطعی اعلام کرد. پیش از اتصال به رابط دستیار باید رفتار lifecycle در Telegram/Bale واقعی بررسی و راهکار بارگذاری انتخاب شود، با توجه به اینکه بارگذاری static برای همه کاربران نیز وابستگی third-party غیرضروری ایجاد می‌کند.
+
+### مرزهای اجرایی
+- `hostBridge` هنوز به رابط دستیار یا Worker متصل نیست.
+- verifier در `platformAuth.js` هنوز route bootstrap، session issuance یا replay protection ندارد؛ TTL پنج‌دقیقه‌ای همچنان موقت و نیازمند تصمیم UX/امنیتی است.
+- `/v1/assistant/turn` همچنان 503 و fail-closed است.
+- هیچ متن مکالمه، رضایت، secret، Durable Object یا provider متصل/ارسال نشده است.
+- هیچ deploy یا انتشار انجام نشده و محتوای اصلی ۳۴ موضوع/۹۵۲ روز و مسیر اصلی اپ تغییر نکرده است.
+
+**گام بعدی:** بررسی lifecycle و عمر عملی `auth_date` و طراحی ضد replay/session پیش از هر route bootstrap؛ سپس تعیین روش SDK با تست انسانی محدود در پلتفرم واقعی.
