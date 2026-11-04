@@ -265,3 +265,39 @@ test("expired cleanup is bounded and schedules a short follow-up when rows remai
   assert.ok(harness.alarmAt > Date.now());
   assert.ok(harness.alarmAt <= Date.now() + 2_000);
 });
+
+
+test("alarm cleanup cannot erase a concurrently scheduled marker alarm", async () => {
+  const harness = createHarness();
+  const originalGetAlarm = harness.storage.getAlarm.bind(harness.storage);
+  let releaseGetAlarm;
+  let signalGetAlarm;
+  const gate = new Promise((resolve) => { releaseGetAlarm = resolve; });
+  const entered = new Promise((resolve) => { signalGetAlarm = resolve; });
+
+  harness.storage.getAlarm = async () => {
+    signalGetAlarm();
+    await gate;
+    return originalGetAlarm();
+  };
+
+  const consume = harness.shard.consumeOnce({
+    fingerprint: fingerprint("6"),
+    expiresAt: Date.now() + 120_000,
+  });
+  await entered;
+
+  // The alarm event is queued while consumeOnce is waiting on alarm storage.
+  // Its SQL snapshot must run after the queued schedule operation.
+  const alarm = harness.shard.alarm();
+  releaseGetAlarm();
+
+  assert.equal(await consume, true);
+  await alarm;
+
+  assert.equal(
+    harness.database.prepare("SELECT COUNT(*) AS count FROM replay_markers").get().count,
+    1,
+  );
+  assert.ok(Number.isFinite(harness.alarmAt));
+});
