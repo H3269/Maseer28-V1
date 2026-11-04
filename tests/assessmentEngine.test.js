@@ -504,3 +504,36 @@ test('general-information wording cannot bypass the safety gate during a persona
   assert.equal(getCurrentQuestion(session).id, 'safety_now');
   assert.equal(session.status, 'in_progress');
 });
+
+
+test('additive clarification beginning with «در واقع» retains earlier and later topic evidence', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  session = answer(session, 'در کارم اثر گذاشته');
+  session = answer(session, 'چند هفته است');
+  session = answer(session, 'می‌خواهم مسئله را بفهمم');
+  assert.equal(getCurrentQuestion(session).id, 'clarify_example');
+  session = answer(session, 'در واقع در محل کار به‌خاطر خشم و عصبانیت با همکارم درگیر می‌شوم.');
+  const topicIds = session.semantic_intake.topic_candidates.map((item) => item.topic_id);
+  assert.ok(topicIds.includes('T02'), 'the opening concern must remain in context');
+  assert.ok(topicIds.includes('T01'), 'the additive concern must also be retained');
+});
+
+test('additive summary revision beginning with «در واقع» does not replace the existing topic evidence', () => {
+  let session = createAssessmentSession();
+  session = answer(session, 'مدتی است اضطراب دارم');
+  session = answer(session, 'نه');
+  session = answer(session, 'در کارم اثر گذاشته');
+  session = answer(session, 'چند هفته است');
+  session = answer(session, 'می‌خواهم مسئله را بفهمم');
+  session = answer(session, 'وقتی آینده نامعلوم است نگران می‌شوم.');
+  assert.equal(getCurrentQuestion(session).id, 'summary_confirmation');
+  session = answer(session, 'نه، خلاصه دقیق نیست.');
+  assert.equal(getCurrentQuestion(session).id, 'summary_revision');
+  session = answer(session, 'در واقع در محل کار هم به‌خاطر خشم و عصبانیت با همکارم درگیر می‌شوم.');
+  assert.equal(session.summary.candidate_topics.some((item) => item.topic_id === 'T02'), true);
+  assert.equal(session.summary.candidate_topics.some((item) => item.topic_id === 'T01'), true);
+  assert.match(session.summary.user_report, /اضطراب/);
+  assert.match(session.summary.user_report, /خشم/);
+});
