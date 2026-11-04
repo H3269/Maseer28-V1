@@ -562,6 +562,7 @@ test('a second clarification that remains multi-topic cannot be completed by sum
   session = answer(session, 'هر دو موضوع در زندگی من وجود دارد و نمی‌دانم کدام مهم‌تر است.');
   session = answer(session, 'هر دو تقریباً به یک اندازه آزارم می‌دهند.');
   assert.equal(session.clarification_attempts, 2);
+  assert.deepEqual(session.clarification_history, ['هر دو موضوع در زندگی من وجود دارد و نمی‌دانم کدام مهم‌تر است.']);
   assert.ok(session.summary.candidate_topics.length > 1);
   session = answer(session, 'بله، خلاصه درست است');
   assert.notEqual(session.status, 'completed');
@@ -610,4 +611,16 @@ test('the user may explicitly retain both topics without the engine selecting a 
   assert.equal(session.current_question, null);
   assert.ok(session.candidate_topics.length > 1);
   assert.ok(session.candidate_topics.every((item) => item.status === 'user_confirmed_relevant'));
+});
+
+
+test('an explicit selection of one existing topic is honored without retaining the rejected alternative', () => {
+  let session = createUnresolvedMultiTopicSession();
+  session = answer(session, 'هر دو موضوع در زندگی من وجود دارد و نمی‌دانم کدام مهم‌تر است.');
+  session = answer(session, 'هر دو تقریباً به یک اندازه آزارم می‌دهند.');
+  session = answer(session, 'بله، خلاصه درست است');
+  session = answer(session, 'موضوع اصلی من ترس از قضاوت دیگران است');
+  assert.equal(session.status, 'completed');
+  assert.deepEqual(session.candidate_topics.map((item) => item.topic_id), ['T27']);
+  assert.equal(session.candidate_topics[0].status, 'user_selected_priority');
 });
