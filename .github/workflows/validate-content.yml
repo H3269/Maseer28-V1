@@ -48,6 +48,9 @@ jobs:
       - name: Validate Cloudflare Worker bundle (dry-run; no deployment)
         if: ${{ steps.install.outcome == 'success' }}
         run: npx --yes wrangler@4.157.0 deploy --dry-run --config workers/assistant-api/wrangler.toml
+      - name: Validate non-deploying Cloudflare version upload (dry-run; no upload)
+        if: ${{ steps.install.outcome == 'success' }}
+        run: npx --yes wrangler@4.157.0 versions upload --dry-run --config workers/assistant-api/wrangler.toml
       - name: Exercise replay marker in local Cloudflare Workers runtime
         if: ${{ steps.install.outcome == 'success' }}
         timeout-minutes: 3

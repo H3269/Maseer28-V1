@@ -1,55 +1,82 @@
-# سیاست اتصال و استقرار Worker دستیار مسیر۲۸
+# سیاست اتصال GitHub به Cloudflare برای Worker دستیار مسیر۲۸
 
-**تاریخ بررسی:** 2026-11-04  
+**تاریخ بازبینی:** 2026-11-04  
 **Worker موجود:** `still-firefly-9435maseer28-archive`  
 **مخزن:** `H3269/Maseer28-V1`  
-**شاخه مجاز:** فقط `main`
+**شاخه مجاز:** فقط `main`  
+**مسیر Worker در مخزن:** `workers/assistant-api`
 
-## نتیجه ممیزی فعلی
+## تصمیم نهایی اتصال
 
-- نسخه‌ای که کاربر در Dashboard دیده، از نوع انتشار دستی Dashboard بوده است.
-- در مخزن فعلی هیچ GitHub Actions workflow برای انتشار Cloudflare Worker وجود ندارد.
-- workflowهای موجود فقط اعتبارسنجی، انتشار GitHub Pages با تأیید صریح ورودی، و انتشار Telegram با ورودی دستی را پوشش می‌دهند.
-- فایل Wrangler موجود در `workers/assistant-api/wrangler.toml` نام Worker فعلی را هدف می‌گیرد.
-- در این مرحله اتصال GitHub به Cloudflare انجام نشده و هیچ Deployment صورت نگرفته است.
+اتصال GitHub به Worker موجود مجاز است، اما فقط با تنظیمی که در هر push یک **نسخه غیرفعال** بارگذاری کند و آن را به ترافیک Production ارتقا ندهد.
 
-## چرا اتصال مستقیم Workers Builds فعلاً ممنوع است؟
+اتصال پیش‌فرض Cloudflare Workers Builds امن نیست: فرمان پیش‌فرض `wrangler deploy` پس از push نسخه را فعال می‌کند. طبق مستندات رسمی Cloudflare، فرمان `wrangler versions upload` نسخه را بارگذاری می‌کند ولی آن را فوراً deploy نمی‌کند. بنابراین فرمان دوم برای این پروژه انتخاب شده است.
 
-اتصال Git repository به Cloudflare Workers Builds به‌طور پیش‌فرض build و deploy را با push به شاخه انتخاب‌شده فعال می‌کند. چون سیاست پروژه استفاده انحصاری از `main` است و commitهای توسعه روی همین شاخه انجام می‌شوند، اتصال مستقیم می‌تواند هر commit عادی را به انتشار Worker در Production تبدیل کند.
+**ممنوع:** استفاده از `wrangler deploy`، `wrangler versions deploy`، انتشار تدریجی یا هر گزینه‌ای که نسخه را به Active Deployment تبدیل کند. ارتقای نسخه به Production باید تصمیم جداگانه و با اجازه صریح مالک باشد.
 
-تا وقتی یک سازوکار قابل اتکای توقف خودکار انتشار و تأیید دستیِ جداگانه طراحی و آزمون نشده، گزینه Connect در Cloudflare Dashboard نباید فعال شود.
+## تنظیمات دقیق Cloudflare Dashboard
 
-## مسیر پیشنهادی امن
+در Worker موجود برو به `Settings > Builds` و GitHub repository را به همین Worker وصل کن. در صفحه تنظیمات Build، مقادیر زیر را دقیقاً وارد کن:
 
-مسیر پیشنهادی، GitHub Actions با workflow دستی و قفل‌های صریح است؛ نه auto-deploy مستقیم Workers Builds.
+| فیلد | مقدار |
+|---|---|
+| Git account | حساب GitHub مالک مخزن |
+| Git repository | `H3269/Maseer28-V1` |
+| Production branch | `main` |
+| Root directory | `workers/assistant-api` |
+| Build command | خالی |
+| Deploy command | `npx --yes wrangler@4.157.0 versions upload --config wrangler.toml` |
+| Preview builds | خاموش |
+| Build watch paths — Include | `workers/assistant-api/*` |
+| Build watch paths — Exclude | خالی |
 
-شرایط لازم پیش از ساخت و استفاده از workflow انتشار:
-1. فقط `workflow_dispatch` و فقط ref برابر `refs/heads/main`.
-2. ورودی تأیید انتشار با مقدار پیش‌فرض `no` و اجرای job فقط در صورت انتخاب صریح `yes`.
-3. الزام موفقیت CI برای همان SHA دقیق، نه صرفاً آخرین اجرای شاخه.
-4. الزام اجرای smoke tests روی build/artifact همان SHA.
-5. محدود کردن GitHub Environment با approval gate، در صورت پشتیبانی تنظیمات حساب.
-6. استفاده از secrets با حداقل دسترسی لازم؛ هرگز ذخیره token در مخزن یا فایل‌های کد.
-7. اجرای Wrangler با config صریح `workers/assistant-api/wrangler.toml` و تأیید تطابق نام Worker و حساب Cloudflare.
-8. عدم انتشار خودکار Preview یا Production در اثر push.
-9. امکان rollback به نسخه قبلی و ثبت شناسه deployment.
+نکات مهم:
 
-این workflow تا زمان دریافت مجوز صریح مالک برای انتشار نباید اجرا شود. ایجاد workflow نیز باید جدا از اجرای آن تلقی شود.
+1. نام Worker در Dashboard باید دقیقاً با `name` داخل `workers/assistant-api/wrangler.toml` برابر باشد: `still-firefly-9435maseer28-archive`.
+2. Root directory نسبت به ریشه مخزن است؛ چون فایل `wrangler.toml` داخل آن قرار دارد، فرمان بالا باید همان فایل را بخواند.
+3. الگوی include فقط تغییرات پوشه Worker را build می‌کند؛ تغییرات UI، محتوا، مستندات و تست‌های بیرون آن نباید build Worker ایجاد کند.
+4. فقط شاخه `main` انتخاب شود. هیچ شاخه دیگری نساز یا متصل نکن.
+5. Preview builds خاموش بماند؛ پروژه فعلاً به preview branch نیاز ندارد.
+6. اگر Cloudflare فرمان Deploy را به `wrangler deploy` برگرداند، تنظیم را ذخیره نکن و ادامه نده.
+7. اگر Dashboard پیش از امکان تعیین Deploy command، گزینه‌ای مانند `Save and Deploy` یا انتشار فعال را اجبار کرد، متوقف شو و از صفحه خارج شو؛ انتشار ناخواسته مجاز نیست.
+8. Cloudflare ممکن است برای Workers Builds یک API token داخلی بسازد. مقدار token را در گفتگو یا مخزن قرار نده. هیچ متغیر runtime، secret یا provider key در این مرحله اضافه نکن.
 
-## اقدام لازم در Cloudflare Dashboard
+## رفتار مورد انتظار پس از اتصال
 
-در Worker موجود، مسیر `Settings > Builds` را فقط برای مشاهده وضعیت Git integration باز کنید. اگر دکمه `Connect` یا بخش Git Repository دیده می‌شود، فعلاً آن را انتخاب نکنید. فقط وجود/عدم وجود اتصال و متن وضعیت فعلی را ثبت کنید.
+- push به `main` که فایل‌های زیر `workers/assistant-api/` را تغییر دهد، یک Build ایجاد می‌کند.
+- خروجی باید یک Worker Version جدید باشد، نه Active Deployment.
+- ترافیک Production باید روی نسخه فعال قبلی باقی بماند.
+- هیچ نسخه‌ای را در Version History ارتقا نده و هیچ گزینه Deploy/Promote را انتخاب نکن، مگر پس از درخواست و تأیید صریح مالک.
+- اگر نتیجه Build نشان داد نسخه به Active Deployment ارتقا یافته، اتصال/Build را متوقف کن و فوراً از Dashboard وضعیت را بررسی کن؛ این نتیجه خلاف سیاست است.
 
-هیچ API token یا secret را در گفتگو ارسال نکنید. اگر بعداً نیاز به secret باشد، فقط نام secret و دستور تنظیم آن مطرح می‌شود، نه مقدار آن.
+## اعتبارسنجی داخل مخزن
+
+CI باید هر دو فرمان زیر را فقط در حالت dry-run اجرا کند؛ هیچ‌کدام به Cloudflare متصل نمی‌شوند و چیزی upload/deploy نمی‌کنند:
+
+- `wrangler deploy --dry-run`
+- `wrangler versions upload --dry-run`
+
+تست دوم، سازگاری فرمان غیرانتشاری پیشنهادی با فایل Wrangler همین Worker را کنترل می‌کند.
+
+## محدوده‌ای که هنوز فعال نشده است
+
+- این اتصال، خودِ مدل زبانی نیست.
+- endpoint مکالمه همچنان 503 و fail-closed است.
+- هیچ API provider، secret، consent، session، Durable Object binding یا متن مکالمه‌ای به سرویس بیرونی متصل نشده است.
+- Replay Marker فقط در تست محلی Workers runtime اجرا شده؛ هنوز به Worker تولیدی متصل یا deploy نشده است.
+- اتصال GitHub و ساخت Version به معنی انتشار یا آماده‌بودن دستیار برای کاربران نیست.
 
 ## منابع رسمی
 
-- Cloudflare Workers Builds: اتصال مخزن و رفتار build/deploy روی push.
-- Cloudflare Workers Git integration: مدیریت اتصال از مسیر Settings > Builds.
-- Cloudflare Workers build configuration: فرمان deploy و تنظیمات build.
+- Workers Builds و رفتار نسخه/انتشار: https://developers.cloudflare.com/workers/ci-cd/builds/
+- تنظیم Deploy command و Root directory: https://developers.cloudflare.com/workers/ci-cd/builds/configuration/
+- Build watch paths: https://developers.cloudflare.com/workers/ci-cd/builds/build-watch-paths/
+- فرمان‌های `versions upload` و `versions deploy`: https://developers.cloudflare.com/workers/wrangler/commands/workers/
+- مجوزهای API Token: https://developers.cloudflare.com/fundamentals/api/reference/permissions/
 
 ## وضعیت
 
-**تصمیم:** اتصال مستقیم auto-deploy فعلاً رد شده است.  
-**انتشار:** انجام نشده.  
-**گام بعد:** بررسی read-only وضعیت `Settings > Builds` در Dashboard و سپس طراحی workflow دستیِ fail-closed. 
+**تصمیم:** اتصال مخزن مجاز است، مشروط به تنظیم غیرانتشاری فوق.  
+**اتصال واقعی در Dashboard:** هنوز انجام نشده است.  
+**نسخه فعال Production:** تغییر داده نشده است.  
+**انتشار:** انجام نشده و بدون مجوز صریح ممنوع است.

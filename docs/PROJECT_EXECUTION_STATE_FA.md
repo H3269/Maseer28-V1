@@ -616,3 +616,54 @@
 - کلاس هنوز از Worker اصلی قابل دسترسی نیست و عمداً route یا binding ندارد.
 - پیش از اتصال باید runtime integration test، تست alarm retry/cleanup واقعی، sharding strategy و budget سهمیه DO تکمیل شود.
 - هیچ deployment، انتشار یا تست انسانی میزبان انجام نشده است؛ کاربر فعلاً اقدامی لازم ندارد.
+
+
+## ۱۴. تأیید آزمون Replay Marker در Cloudflare Workers runtime محلی و آماده‌سازی اتصال کنترل‌شده (2026-11-04)
+
+### مبنای تغییر و HEAD
+- HEAD شاخه `main` پیش از این ثبت: `af0b43d87fe5fbe29543c004a2dbc9e1144bcb30`.
+- همه تغییرات در همان شاخه `main` انجام شده‌اند؛ شاخه فرعی ساخته نشده است.
+- فایل‌های اپ، مسیر تمرین، آرشیو و محتوای ۳۴ موضوع/۹۵۲ روز در این بخش تغییر نکرده‌اند.
+
+### نتیجه آزمون کامل CI
+- GitHub Actions run: `41800496156`.
+- SHA آزموده‌شده: `af0b43d87fe5fbe29543c004a2dbc9e1144bcb30`.
+- نتیجه نهایی: `success`؛ تمام ۱۸ مرحله اصلی workflow و cleanup موفق بودند.
+- Dependency audit با آستانه high موفق شد.
+- Wrangler Worker bundle dry-run موفق شد؛ این آزمون اتصال به حساب Cloudflare یا انتشار را اثبات نمی‌کند.
+- آزمون محلی Cloudflare Workers runtime موفق شد: SQLite Durable Object، ۱۲ درخواست هم‌زمان با fingerprint یکسان و دقیقاً یک برنده، fingerprint مستقل، زمان‌بندی Alarm و پاک‌سازی markerهای منقضی.
+- Unit tests: ۳۲۲ تست، صفر شکست.
+- رجیستری دستیار: ۳۴ موضوع و ۱۰۲ زیرموضوع معتبر.
+- اعتبارسنجی محتوا: ۳۴ موضوع، ۹۵۲ روز، ۹۵۲ شناسه یکتا و ۴۴۲ ارجاع کتاب معتبر.
+- ممیزی ایستای کیفیت محتوا و build تولیدی موفق شدند.
+- نصب Chromium و سه سناریوی مرورگرِ مهاجرت حریم خصوصی موفق شدند.
+
+### اشکال کشف‌شده و اصلاح‌شده در آزمون runtime
+- نخستین اجرای Workers runtime نشان داد Durable Object آزمایشی باید handler عمومی `alarm()` داشته باشد؛ صرف وجود متد Alarm در helper کافی نیست.
+- handler در wrapper آزمایشی اضافه شد و مسیر واقعی Alarm اکنون از entrypoint کلاس Durable Object عبور می‌کند.
+- اجرای بعدی آزمون عملکرد را موفق کرد، اما processهای فرزند Wrangler به‌دلیل pipeهای باز، اجرای CI را تا timeout باز نگه می‌داشتند.
+- cleanup اسکریپت آزمون اصلاح شد تا process group را متوقف کند و pipeهای فرزند را ببندد.
+- اجرای نهایی `41800496156` بدون timeout و با موفقیت کامل پایان یافت.
+
+### فایل‌ها و commitهای مرتبط
+- `tests/workers/replayMarkerWorker.js`: wrapper آزمایشی با handler عمومی Alarm.
+- `tests/workers/replayMarker.integration.mjs`: آزمون واقعی محلی Wrangler و cleanup فرایندها.
+- `.github/workflows/validate-content.yml`: اجرای integration test با timeout محدود.
+- commit نهایی آزموده‌شده: `af0b43d87fe5fbe29543c004a2dbc9e1144bcb30`.
+- سیاست اتصال GitHub/Cloudflare در `docs/CLOUDFLARE_WORKER_DEPLOYMENT_POLICY_FA.md` به‌روزرسانی شده است.
+
+### وضعیت Cloudflare واقعی
+- Worker موجود در Dashboard هنوز به GitHub متصل نشده است.
+- هیچ Version جدیدی در Cloudflare بارگذاری نشده و هیچ Deployment انجام نشده است.
+- هیچ Durable Object binding/migration تولیدی، API secret، provider، consent یا session فعال نشده است.
+- endpoint مکالمه همچنان 503 و fail-closed است؛ دستیار ابری برای کاربر فعال نیست.
+
+### تصمیم اتصال کنترل‌شده
+- بررسی مستندات رسمی جاری Cloudflare نشان می‌دهد Workers Builds به‌طور پیش‌فرض با push به شاخه متصل‌شده build و deploy می‌کند.
+- سیاست امن انتخاب‌شده: اتصال مخزن به Worker موجود با فرمان `npx --yes wrangler@4.157.0 versions upload --config wrangler.toml`؛ این فرمان فقط Version جدید می‌سازد و آن را فعال نمی‌کند.
+- شاخه `main`، Root directory برابر `workers/assistant-api`، Preview خاموش و Build watch include برابر `workers/assistant-api/*` است.
+- فرمان `wrangler deploy` یا `wrangler versions deploy` ممنوع است.
+- CI در commit بعدی فرمان `versions upload --dry-run` را هم اعتبارسنجی می‌کند؛ تا موفقیت آن، اتصال Dashboard آغاز نشود.
+
+### گام بعدی واحد
+تکمیل dry-run فرمان `versions upload` در CI؛ پس از موفقیت آن، از مالک خواسته می‌شود فقط اتصال مخزن `H3269/Maseer28-V1` شاخه `main` را با تنظیمات دقیق سند سیاست در Cloudflare Dashboard انجام دهد. هیچ انتشار/ارتقای نسخه‌ای انجام ندهد.
