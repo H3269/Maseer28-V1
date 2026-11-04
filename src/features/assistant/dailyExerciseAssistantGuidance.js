@@ -78,12 +78,28 @@ function followUpResponse(message, state) {
     selected = paragraphs.find((part) => /^متن تمرین همین روز:/u.test(part));
     label = 'متن تمرین';
   } else {
-    const ordinal = value.match(/(?:قسمت|بخش|مرحله)\s*(اول|یک|1|۱|دوم|دو|2|۲|سوم|سه|3|۳)/u);
-    if (ordinal) {
-      const number = /اول|یک|1|۱/u.test(ordinal[1]) ? 0 : /دوم|دو|2|۲/u.test(ordinal[1]) ? 1 : 2;
-      selected = paragraphs[number];
-      label = `بخش ${number + 1}`;
+    // Standalone colloquial ordinals refer to the two explicitly labelled
+    // day-content items, not to the introductory sentence of the reply.
+    const colloquialOrdinal = value.match(/^(?:همون\s+)?(اولی|دومی|سومی)(?:\s+(?:رو|را|بگو|رو\s+بگو|را\s+بگو))?$/u);
+    if (colloquialOrdinal) {
+      const index = /اولی/u.test(colloquialOrdinal[1]) ? 0 : /دومی/u.test(colloquialOrdinal[1]) ? 1 : 2;
+      const labelled = paragraphs.filter((part) =>
+        /^(?:متن تمرین همین روز:|راهکار اختصاصی همین روز:)/u.test(part));
+      selected = labelled[index] || null;
+      label = index === 0 ? 'بخش اول' : index === 1 ? 'بخش دوم' : 'بخش سوم';
+    } else {
+      const ordinal = value.match(/(?:قسمت|بخش|مرحله)\s*(اول|یک|1|۱|دوم|دو|2|۲|سوم|سه|3|۳)/u);
+      if (ordinal) {
+        const number = /اول|یک|1|۱/u.test(ordinal[1]) ? 0 : /دوم|دو|2|۲/u.test(ordinal[1]) ? 1 : 2;
+        selected = paragraphs[number];
+        label = `بخش ${number + 1}`;
+      }
     }
+  }
+
+  if (/(?:همون\s+قبلی|همان\s+قبلی|قبلی\s+رو\s+بگو|قبلی\s+را\s+بگو|اون\s+قسمت|آن\s+قسمت|همون\s+بخش|همان\s+بخش|اون\s+یکی|آن\s+یکی)/u.test(value)
+      && !/(?:راهکار|اقدام|تمرین|اولی|دومی|سومی)/u.test(value)) {
+    return 'منظورت از «قبلی» یا «اون قسمت» دقیقاً کدام مورد است: متن تمرین، راهکار اختصاصی، یا جمله‌ای از توضیح قبلی؟ نمی‌خواهم بخش اشتباهی را به تو نسبت بدهم.';
   }
 
   if (selected) {
