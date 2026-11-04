@@ -55,6 +55,10 @@ jobs:
         if: ${{ steps.install.outcome == 'success' }}
         timeout-minutes: 3
         run: node tests/workers/replayMarker.integration.mjs
+      - name: Exercise complete assistant bootstrap in local Cloudflare Workers runtime
+        if: ${{ steps.install.outcome == 'success' }}
+        timeout-minutes: 3
+        run: node tests/workers/assistantBootstrap.integration.mjs
       - name: Capture complete npm audit report
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm audit --json > npm-audit-report.json || true
