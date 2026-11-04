@@ -4,6 +4,7 @@ import {
   bootstrapAssistantSession,
   fingerprintMiniAppInitData,
 } from "../workers/assistant-api/src/sessionBootstrap.js";
+import { verifyAssistantSessionToken } from "../workers/assistant-api/src/sessionToken.js";
 
 const NOW = 1_800_000_000;
 const INIT_DATA = "signed-init-data-fixture-never-persist-this";
@@ -220,4 +221,61 @@ test("rejects reused secrets across fingerprint, session signing, and platform c
     assert.deepEqual(result, { ok: false, error: "assistant_bootstrap_unavailable", status: 503 });
     assert.deepEqual(deps.events, []);
   }
+});
+
+async function hmac(keyBytes, message) {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    keyBytes,
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  return new Uint8Array(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(message)));
+}
+
+function toHex(bytes) {
+  return [...bytes].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+async function makeTelegramInitData() {
+  const fields = new URLSearchParams({
+    auth_date: String(NOW),
+    query_id: "bootstrap-integration-fixture",
+    user: JSON.stringify({ id: 987654321, first_name: "Fixture" }),
+  });
+  const platformSecret = await hmac(new TextEncoder().encode("WebAppData"), ENV.TELEGRAM_BOT_TOKEN);
+  const checkString = [...fields.entries()]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([key, value]) => `${key}=${value}`)
+    .join("\n");
+  fields.set("hash", toHex(await hmac(platformSecret, checkString)));
+  return fields.toString();
+}
+
+test("integrates real Telegram verification, keyed replay fingerprint, and signed session token", async () => {
+  const initData = await makeTelegramInitData();
+  let replayInput;
+  const result = await bootstrapAssistantSession({
+    platform: "telegram",
+    initData,
+    env: ENV,
+    nowSeconds: NOW,
+    consumeReplayMarker: async (input) => {
+      replayInput = input;
+      return true;
+    },
+  });
+
+  assert.equal(result.ok, true);
+  const token = await verifyAssistantSessionToken({
+    token: result.token,
+    secret: ENV.SESSION_SIGNING_SECRET,
+    nowSeconds: NOW + 1,
+  });
+  assert.equal(token.valid, true);
+  assert.equal(token.session.scope, "assistant:turn");
+  assert.match(replayInput.fingerprint, /^[a-f0-9]{64}$/);
+  assert.equal(replayInput.expiresAt, (NOW + 300 + 30) * 1000);
+  assert.equal(JSON.stringify(replayInput).includes(initData), false);
 });
