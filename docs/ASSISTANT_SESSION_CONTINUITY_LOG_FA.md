@@ -63,3 +63,6 @@ CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` مو�
 - Worker اصلی همچنان 503 و fail-closed است؛ UI دستیار هنوز ساخته یا متصل نشده؛ هیچ انتشار واقعی یا تغییر ترافیک انجام نشده.
 - آدرس قبلاً گزارش‌شده Worker: `https://still-firefly-9435maseer28-archive.has-ab3269.workers.dev`. وضعیت deployment فعلی در این نشست از Cloudflare قابل خواندن نبود؛ آخرین مشاهده تاریخی 6aa849b2/100% Production قدیمی است و نباید به‌عنوان وضعیت امروز بیان شود.
 - جزئیات و اصلاح برداشت قدیمی Preview در بخش ۲۱ سند `docs/PROJECT_EXECUTION_STATE_FA.md` ثبت شد. گام بعدی: hardening دسترسی/لغو رضایت/rate limit برای Preview، سپس UI مستقل دستیار و مسیر Preview؛ بدون تغییر بخش موجود اپ و بدون Production activation.
+
+- ممیزی workflow انتشار نشان داد رابط اصلی React/Vite با GitHub Pages منتشر می‌شود و انتشار دستی با `confirm_public_release=yes` و گیت تأیید تخصصی تمام ۹۵۲ روز انجام می‌شود. T16 و T17 هرکدام ۰/۲۸ روز تأییدشده دارند؛ پس گیت فعلی حداقل ۵۶ روز را رد می‌کند. تغییر گیت یا تأیید جعلی خارج از دامنه است.
+- Worker URL شناخته‌شده فقط API است، نه آدرس رابط React. URL دقیق Pages در دسترس نشست نیست و وضعیت Pages/Worker از Dashboard قابل تأیید نشد. Worker Preview به‌تنهایی رابط را در همان URL Pages منتشر نمی‌کند.
