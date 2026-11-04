@@ -31,3 +31,8 @@ test('attributed third-party negation does not become the user topic', () => {
   const result = routeSemanticIntake({ text: 'دوستم گفت «من از آینده نمی‌ترسم».' });
   assert.equal(result.topic_candidates.some((item) => item.topic_id === 'T03'), false);
 });
+
+test('a separate «نمی‌دانم» clause does not negate a stated fear', () => {
+  const result = routeSemanticIntake({ text: 'من می‌ترسم و نمی‌دانم چه کار کنم.' });
+  assert.equal(result.topic_candidates.some((item) => item.topic_id === 'T03'), true);
+});
