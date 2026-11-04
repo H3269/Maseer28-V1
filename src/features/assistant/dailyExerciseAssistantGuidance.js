@@ -16,8 +16,8 @@ export function makeDailyExerciseGuidance({ message, dayData, problem, day }) {
     return routed.next_question.text;
   }
 
-  const exercise = String(dayData?.exercise || '').trim();
-  const action = String(dayData?.actionText || '').trim();
+  const exercise = String(dayData?.exercise || dayData?.instructions || '').trim();
+  const action = String(dayData?.actionText || dayData?.action || '').trim();
   const topic = String(problem || 'موضوع انتخاب‌شده').trim();
   const asksHow = /چطور|چگونه|از کجا|چه جوری|نمی فهمم|متوجه نمی شوم|توضیح|منظور|سخته|سخت است|انجام بدم|انجام دهم/u.test(text);
 

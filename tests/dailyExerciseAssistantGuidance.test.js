@@ -72,3 +72,32 @@ test('empty messages do not produce contextual guidance', () => {
   });
   assert.match(response, /پیامت خالی است/);
 });
+
+test('uses the exact normalized instructions and adapted action passed by the day screen', () => {
+  const response = makeDailyExerciseGuidance({
+    message: 'چطور انجامش بدم؟',
+    dayData: {
+      instructions: 'امروز فقط یک موقعیت امن را انتخاب کن.',
+      action: 'شدت احساس را از صفر تا ده ثبت کن.',
+      title: 'تمرین متناسب‌شده امروز',
+    },
+    problem: 'اضطراب',
+    day: 9,
+  });
+  assert.match(response, /فقط یک موقعیت امن/);
+  assert.match(response, /شدت احساس را از صفر تا ده/);
+  assert.match(response, /روز 9/);
+});
+
+test('uses adapted day content instead of stale raw content when supplied', () => {
+  const response = makeDailyExerciseGuidance({
+    message: 'چطور انجامش بدم؟',
+    dayData: {
+      exercise: 'تمرین خام و سخت‌تر',
+      actionText: 'اقدام خام',
+    },
+    problem: 'اضطراب',
+    day: 9,
+  });
+  assert.match(response, /تمرین خام و سخت‌تر/);
+});

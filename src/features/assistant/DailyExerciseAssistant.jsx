@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { makeDailyExerciseGuidance } from './dailyExerciseAssistantGuidance.js';
 
-export default function DailyExerciseAssistant({ day, problem, data }) {
+export default function DailyExerciseAssistant({ day, problem, data, guidanceData }) {
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
   const [error, setError] = useState('');
@@ -22,7 +22,7 @@ export default function DailyExerciseAssistant({ day, problem, data }) {
     const message = draft.trim();
     if (!message) return;
     try {
-      const response = makeDailyExerciseGuidance({ message, dayData: data, problem, day });
+      const response = makeDailyExerciseGuidance({ message, dayData: guidanceData || data, problem, day });
       setMessages((current) => [...current, { role: 'user', text: message }, { role: 'assistant', text: response }]);
       setDraft('');
       setError('');
@@ -38,7 +38,7 @@ export default function DailyExerciseAssistant({ day, problem, data }) {
       <p className="muted">می‌توانی درباره تمرین و راهکار همین روز سؤال کنی. این نسخه از متن روز جاری و قواعد محدود استفاده می‌کند؛ هنوز مدل هوش مصنوعی متصل نیست و پاسخ آن تشخیص یا توصیه درمانی نیست.</p>
       <div className="dailyAssistantContext">
         <b>موضوع: {problem || 'موضوع انتخاب‌شده'} · روز {day}</b>
-        {data?.title && <p>{data.title}</p>}
+        {(guidanceData?.title || data?.title) && <p>{guidanceData?.title || data.title}</p>}
       </div>
       <div className="assistantChatShell" aria-label="گفت‌وگوی راهنمای تمرین">
         <div className="assistantTranscript" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
