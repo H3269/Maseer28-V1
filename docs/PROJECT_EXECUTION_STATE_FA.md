@@ -515,3 +515,41 @@
 - هیچ فایل journey یا محتوای اصلی ۳۴ موضوع/۹۵۲ روز تغییر نکرده است.
 
 **گام بعدی واحد:** تکمیل طراحی anti-replay و session با بررسی سهمیه/هزینه Durable Objects و lifecycle واقعی `auth_date`؛ سپس فقط در صورت نیاز، آزمون انسانی کوتاه در Telegram/Bale. فعلاً اقدام انسانی از مالک لازم نیست.
+
+## 2026-11-04 — بازبینی CI و طراحی ضدبازپخش/نشست (بدون پیاده‌سازی اجرایی)
+
+### CI مستندات مرحله قبلی
+- Run `41779632433` برای commit `df79e9d06f45bffe05bc409adc91f6b5a1af293a`: `success`.
+- Run `41779636754` برای commit `6e304267fceb0ece39f83fadc8c3e4a6dbd5b30d`: `success`.
+- هر دو job اصلی workflow کامل شدند؛ این موفقیت فقط validation مستندات و کد موجود در همان SHAهاست، نه تست Telegram/Bale واقعی یا deployment.
+
+### یافته‌های جدید Cloudflare
+- Durable Objects در پلن Free از SQLite-backed namespaces پشتیبانی می‌کنند.
+- سهمیه جاری مستندشده: ۱۰۰٬۰۰۰ DO request/day، ۱۳٬۰۰۰ GB-s/day، ۵ میلیون row reads/day، ۱۰۰٬۰۰۰ row writes/day و ۵ GB SQLite storage در سطح حساب Free. سقف‌های روزانه در ۰۰:۰۰ UTC reset می‌شوند؛ عبور از هر سقف رایگان می‌تواند عملیات همان نوع را fail کند.
+- هر RPC session/HTTP request/alarm invocation یک DO request محسوب می‌شود؛ setAlarm و delete نیز در ردیف‌های نوشته‌شده محاسبه می‌شوند.
+- Alarm می‌تواند برای حذف batch رکوردهای منقضی استفاده شود؛ نباید به TTL فرضی یا پاک‌سازی صرفاً حافظه‌ای اتکا کرد.
+- منابع رسمی در سند معماری ثبت شده‌اند؛ سهمیه و هزینه باید پیش از ساخت binding مجدداً بررسی شوند.
+
+### تصمیم طراحی
+- مسیر bootstrap ابتدا HMAC پلتفرم و تازگی initData را بررسی می‌کند، سپس fingerprint مستعارشده را در یک shard از SQLite DO به‌صورت اتمیک یک‌بارمصرف می‌کند و فقط بعد از موفقیت، token امضاشده صادر می‌کند.
+- fingerprint باید keyed HMAC باشد؛ raw initData، hash خام، user ID، پرونده و متن مکالمه ذخیره نشوند.
+- shard key از prefix fingerprint ساخته شود تا یک DO مرکزی bottleneck نشود؛ unique key و transaction رقابت درخواست‌های هم‌زمان را کنترل می‌کنند.
+- پاک‌سازی replay marker با Alarm و batch delete انجام شود و expiry بر مبنای آخرین لحظه اعتبار initData محاسبه شود.
+- session token stateless با HMAC-SHA-256، claimهای حداقلی و بدون PII/پرونده/داده پزشکی؛ scope فقط `assistant:turn` و عمر اولیه حداکثر ۱۰ دقیقه (پیشنهادی و هنوز نیازمند UX/security review).
+- refresh token در نسخه نخست صادر نشود؛ نشست تازه به initData تازه نیاز دارد.
+- rate limiting در سمت سرور بر مبنای sid مستعارشده انجام شود؛ محدودیت bootstrap شبکه‌ای نیز باید با IP HMAC‌شده و بدون ذخیره IP خام طراحی شود.
+- در هر خطای DO/storage/quota، bootstrap و turn باید fail-closed باشند.
+
+### موارد باز پیش از کدنویسی
+- TTL پنج‌دقیقه‌ای `auth_date` فعلی موقت است و باید با اندازه‌گیری عمر واقعی Mini App و تست انسانی در Telegram/Bale تعیین شود.
+- lifecycle و روش بارگذاری SDK در Bale حل نشده است.
+- concurrency، duplicate replay، expiry، Alarm cleanup، storage failure و rate-limit edge cases باید در تست‌های محلی/CI پوشش داده شوند.
+- تأیید read-only پلن و تنظیمات Cloudflare قبل از ساخت namespace/binding لازم است؛ ایجاد binding یا deploy بدون اجازه صریح ممنوع است.
+
+### وضعیت دامنه و ایمنی
+- در این مرحله فقط مستندات معماری و وضعیت اجرایی به‌روزرسانی می‌شوند؛ هیچ کد runtime، frontend، journey یا محتوای ۳۴ موضوع/۹۵۲ روز تغییر نکرده است.
+- هیچ Durable Object، migration، binding، secret، session endpoint، provider یا مدل ساخته/متصل نشده است.
+- `/v1/assistant/turn` همچنان 503 و fail-closed است؛ هیچ متن مکالمه یا داده واقعی به سرویس بیرونی ارسال نمی‌شود.
+- هیچ Deploy یا انتشار انجام نشده است.
+
+**گام بعدی:** پیاده‌سازی کلاس SQLite DO و منطق اتمیک replay/rate-limit در محیط تست و CI، فقط پس از تثبیت TTL و قرارداد دقیق storage؛ سپس بررسی نتایج تست concurrency و cleanup. آزمون واقعی میزبان زمانی از مالک درخواست می‌شود که واقعاً لازم باشد.
