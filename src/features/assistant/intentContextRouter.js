@@ -65,7 +65,7 @@ function normalize(value) {
     .replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
-const ATTRIBUTION_SUBJECTS = '(?:یکی از دوستانم|یکی از همکارانم|دوستم|مادرم|پدرم|خواهرم|برادرم|همسرم|نامزدم|شریکم|مدیرم|رئیسم|همکارم|معلمم|پزشکم|درمانگرم|مشاورم|فرزندم|دخترم|پسرم|او|آنها|آن‌ها)';
+const ATTRIBUTION_SUBJECTS = '(?:یکی از دوستانم|یکی از همکارانم|دوستم|مادرم|پدرم|خواهرم|برادرم|همسرم|نامزدم|شریکم|مدیرم|رئیسم|همکارم|معلمم|استاد راهنمایم|استاد دانشگاه‌ام|استادم|پزشکم|درمانگرم|مشاورم|فرزندم|دخترم|پسرم|او|آنها|آن‌ها)';
 
 function removeAttributedQuotes(value) {
   const attributedSpeech = new RegExp(
@@ -179,12 +179,12 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
     || /(?:الان|همین الآن).{0,30}(?:خانه امن نیست|در خطرم|تهدیدم می‌کند)/.test(userNormalized)
     || /تهدیدم کرد.{0,25}(?:الان|همین الآن).{0,20}خانه امن نیست/.test(userNormalized)
     || /(?:با چاقو تهدیدم می کند|الان مرا می زند|الان دارد مرا می زند|الان منو می زند|الان داره منو می زند|الان داره منو می زنه|در حال ضرب و شتم من است|الان خفه ام می کند)/.test(userNormalized);
-  const correctionMarkers = [...raw.matchAll(/(?:منظورم(?:\s+این\s+(?:است|بود|نبود)(?:\s+که)?)?|اصلاح می‌کنم|اصلاح می کنم|نه\s+اینکه)/gu)];
+  const correctionMarkers = [...raw.matchAll(/(?:منظورم(?:\s+این\s+(?:است|بود|نبود|نیست)(?:\s+که)?)?|اصلاح می‌کنم|اصلاح می کنم|نه\s+اینکه)/gu)];
   const lastCorrection = correctionMarkers.at(-1);
   let correctedRemainder = lastCorrection
     ? raw.slice(lastCorrection.index + lastCorrection[0].length).replace(/^[،:؛\s]+/, '').trim()
     : null;
-  if (lastCorrection && (lastCorrection[0].includes('این نبود که') || lastCorrection[0].startsWith('نه'))) {
+  if (lastCorrection && (lastCorrection[0].includes('این نبود که') || lastCorrection[0].includes('این نیست که') || lastCorrection[0].startsWith('نه'))) {
     // The clause explicitly introduced as rejected is not current evidence.
     correctedRemainder = correctedRemainder.replace(/^[^،؛.!؟]*[،؛.!؟]?\s*/u, '').trim();
   }
