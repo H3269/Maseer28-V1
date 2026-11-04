@@ -115,7 +115,7 @@ function priorTextReference(message, state) {
   return null;
 }
 
-function followUpResponse(message, state) {
+function followUpResponse(message, state, dayData) {
   const value = normalize(message);
   if (!state.lastAssistantMessage) return null;
   const paragraphs = state.lastAssistantMessage.split(/\n\s*\n/u).map((part) => part.trim()).filter(Boolean);
@@ -138,7 +138,7 @@ function followUpResponse(message, state) {
   }
   if (/^(?:چرا|چطور|یعنی چی|منظورت چیه|مثال بزن|یه مثال بزن|مثالی بزن)[؟?]?$/u.test(value)) {
     if (/مثال/u.test(value)) {
-      return 'می‌توانم یک مثال فرضی و غیرشخصی را فقط برای روشن‌شدن یک مرحله توضیح بدهم. کدام جمله یا مرحله از پاسخ قبلی برایت مثال می‌خواهد؟';
+      return blankResponseTemplate(dayData?.exercise || dayData?.instructions);
     }
     return 'منظورت دلیل یا توضیح کدام جمله از پاسخ قبلی است؟ همان جمله یا چند کلمه‌اش را بنویس تا درباره همان بخش پاسخ بدهم، نه اینکه حدس بزنم.';
   }
@@ -285,7 +285,7 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
     return result(routed.next_question.text || SAFETY_QUESTION, state, text);
   }
 
-  const followUp = followUpResponse(text, state);
+  const followUp = followUpResponse(text, state, dayData);
   if (followUp) return result(followUp, state, text);
 
   const normalizedMessage = normalize(text);
@@ -328,9 +328,12 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
 
   if (/(?:چرا|علت|دلیل)/u.test(normalized)) {
     const rationale = reviewed && String(dayData?.teaching_point || dayData?.learning_objective || '').trim();
+    const intro = String(dayData?.intro || '').trim();
     const response = rationale
       ? 'توضیح ثبت‌شده و بازبینی‌شده برای این روز:\n' + rationale
-      : 'برای این روز توضیح تأییدشده‌ای درباره چرایی تمرین در داده قابل استفاده دستیار ثبت نشده است. نمی‌خواهم دلیل روان‌شناختی را حدس بزنم. اگر بگویی کدام جمله یا بخش برایت سؤال‌برانگیز است، می‌توانم ساختار و منظور صریح همان متن را روشن‌تر کنم.';
+      : intro
+        ? 'در معرفی همین روز آمده است:\n' + intro + '\n\nاین متن، هدف کلی روز را بیان می‌کند؛ دلیل تخصصی یا درمانی جداگانه‌ای در داده قابل استفاده دستیار ثبت نشده است و من آن را حدس نمی‌زنم.'
+        : 'برای این روز توضیح تأییدشده‌ای درباره چرایی تمرین در داده قابل استفاده دستیار ثبت نشده است. نمی‌خواهم دلیل روان‌شناختی را حدس بزنم. اگر بگویی کدام جمله یا بخش برایت سؤال‌برانگیز است، می‌توانم ساختار و منظور صریح همان متن را روشن‌تر کنم.';
     return result(response, { ...state, lastTopic: topic.slice(0, 100) }, text);
   }
 
@@ -356,10 +359,13 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
 
   if (/(?:شرایط توقف|کی متوقف|چه وقت متوقف|توقف تمرین)/u.test(normalized)) {
     const conditions = reviewed && Array.isArray(dayData?.stop_conditions) ? dayData.stop_conditions.filter(Boolean) : [];
-    return result(conditions.length
-      ? 'شرایط توقف ثبت‌شده و بازبینی‌شده برای این روز:\n' + conditions.map((item, index) => (index + 1) + ') ' + item).join('\n')
-      : 'شرایط توقف اختصاصی و تأییدشده‌ای برای این روز در داده قابل استفاده دستیار موجود نیست. اگر همین حالا احساس خطر، فشار شدید یا ناایمنی داری، تمرین را ادامه نده و از حمایت انسانی مناسب کمک بگیر.',
-    state, text);
+    const closing = String(dayData?.closing || '').trim();
+    const response = conditions.length
+      ? 'شرایط توقف ثبت‌شده و بازبینی‌شده برای این روز:\n' + conditions.map((item, index) => (index + 1) + ') ' + item).join('\n') + (closing ? '\n\nیادآوری پایانی متن روز:\n' + closing : '')
+      : closing
+        ? 'یادآوری پایانی متن همین روز:\n' + closing
+        : 'شرایط توقف اختصاصی برای این روز در داده موجود نیست. اگر همین حالا احساس خطر، فشار شدید یا ناایمنی داری، تمرین را ادامه نده و از حمایت انسانی مناسب کمک بگیر.';
+    return result(response, state, text);
   }
 
   const asksHow = /چطور|چگونه|از کجا|چه جوری|نمی فهمم|متوجه نمی شوم|توضیح|منظور|سخته|سخت است|انجام بدم|انجام دهم|مرحله|گام/u.test(normalized);
@@ -372,6 +378,7 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
       groundedSection('گام‌بندی تمرین روز، فقط بر اساس متن اصلی', exercise),
       groundedSection('گام‌بندی راهکار اختصاصی روز، فقط بر اساس متن اصلی', action),
       dayData?.adaptation ? 'تطبیق ثبت‌شده برای امروز:\\n' + String(dayData.adaptation) : '',
+      dayData?.closing ? 'یادآوری پایانی متن روز:\\n' + String(dayData.closing) : '',
       'این گام‌ها فقط به بخش‌های موجود در متن اصلی شکسته شده‌اند؛ دستور تازه‌ای به تمرین اضافه نشده است. اگر یکی از گام‌ها مبهم است، شماره آن یا چند کلمه از همان جمله را بفرست تا فقط همان قسمت را باز کنم.',
     ].filter(Boolean);
     return result(parts.join('\n\n'), { ...state, lastTopic: topic.slice(0, 100) }, text);

@@ -295,11 +295,16 @@ test('a summary follow-up retrieves only the exercise and action already supplie
   assert.doesNotMatch(second.response, /نتیجه می‌گیری|احتمالاً مشکل تو/);
 });
 
-test('an example request asks which prior sentence needs an illustrative example', () => {
-  const first = makeDailyExerciseGuidanceTurn({ message: 'چطور انجامش بدم؟', dayData, problem: 'اضطراب', day: 4 });
-  const second = makeDailyExerciseGuidanceTurn({ message: 'مثال بزن', dayData, problem: 'اضطراب', day: 4, conversationState: first.nextState });
-  assert.match(second.response, /مثال فرضی و غیرشخصی/);
-  assert.match(second.response, /کدام جمله یا مرحله/);
+test('a follow-up example request uses only a source-derived blank template', () => {
+  const exampleDay = {
+    ...dayData,
+    exercise: 'دو ستون بکش: «چه احساسی داشتم؟» و «چه کاری انجام دادم؟».',
+  };
+  const first = makeDailyExerciseGuidanceTurn({ message: 'چطور انجامش بدم؟', dayData: exampleDay, problem: 'اضطراب', day: 4 });
+  const second = makeDailyExerciseGuidanceTurn({ message: 'مثال بزن', dayData: exampleDay, problem: 'اضطراب', day: 4, conversationState: first.nextState });
+  assert.match(second.response, /قالب خالی/);
+  assert.match(second.response, /چه احساسی داشتم/u);
+  assert.doesNotMatch(second.response, /مثال فرضی و غیرشخصی|موقعیت ساختگی/u);
 });
 
 
@@ -571,6 +576,43 @@ test('legacy day guidance does not invent rationale, duration, or success criter
   assert.match(makeDailyExerciseGuidance({ ...options, message: 'چرا این تمرین را انجام بدهم؟' }), /توضیح تأییدشده‌ای درباره چرایی/u);
   assert.match(makeDailyExerciseGuidance({ ...options, message: 'چند دقیقه طول می‌کشد؟' }), /مدت زمان تأییدشده‌ای/u);
   assert.match(makeDailyExerciseGuidance({ ...options, message: 'معیار انجام درست چیست؟' }), /معیار موفقیتِ تأییدشده‌ای/u);
+});
+
+test('legacy day introduction is quoted as the day purpose without inventing a clinical rationale', () => {
+  const response = makeDailyExerciseGuidance({
+    message: 'چرا این تمرین را انجام بدهم؟',
+    dayData: { ...dayData, intro: 'امروز هدف شناخت تجربه اضطراب است.' },
+    problem: 'اضطراب',
+    day: 4,
+  });
+  assert.match(response, /در معرفی همین روز آمده است/u);
+  assert.match(response, /هدف شناخت تجربه اضطراب/u);
+  assert.match(response, /دلیل تخصصی یا درمانی جداگانه/u);
+});
+
+test('stop guidance includes the exact closing safety reminder from the current day', () => {
+  const closing = 'اگر نشانه‌های جسمانی جدید یا شدید داری، آن را خودکار به اضطراب نسبت نده و ارزیابی پزشکی بگیر.';
+  const response = makeDailyExerciseGuidance({
+    message: 'شرایط توقف تمرین چیست؟',
+    dayData: { ...dayData, closing },
+    problem: 'اضطراب',
+    day: 4,
+  });
+  assert.match(response, /یادآوری پایانی متن همین روز/u);
+  assert.match(response, new RegExp(closing));
+});
+
+test('how-to guidance retains the day closing reminder after source-ordered steps', () => {
+  const closing = 'اگر فشار شدید شد، تمرین را متوقف کن و به فعالیت عادی برگرد.';
+  const response = makeDailyExerciseGuidance({
+    message: 'چطور انجامش بدهم؟',
+    dayData: { ...dayData, closing },
+    problem: 'اضطراب',
+    day: 4,
+  });
+  assert.match(response, /گام‌بندی تمرین روز/u);
+  assert.match(response, /یادآوری پایانی متن روز/u);
+  assert.match(response, new RegExp(closing));
 });
 
 test('approved day metadata supplies its reviewed rationale, duration, and success criterion', () => {
