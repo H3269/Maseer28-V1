@@ -78,7 +78,7 @@ function priorTextReference(message, state) {
   if (sentenceMatch) {
     const index = ordinalIndex(sentenceMatch[1], sentences.length);
     return index >= 0 && sentences[index]
-      ? { label: sentenceMatch[1].startsWith('آخر') ? 'جمله آخر' : \`جمله \${index + 1}\`, text: sentences[index] }
+      ? { label: sentenceMatch[1].startsWith('آخر') ? 'جمله آخر' : 'جمله ' + (index + 1), text: sentences[index] }
       : { clarification: 'در پاسخ قبلی به‌اندازه کافی جمله برای این ارجاع وجود ندارد. لطفاً چند کلمه از جمله موردنظرت را بنویس.' };
   }
 
@@ -86,7 +86,7 @@ function priorTextReference(message, state) {
   if (paragraphMatch) {
     const index = ordinalIndex(paragraphMatch[1], blocks.length);
     return index >= 0 && blocks[index]
-      ? { label: paragraphMatch[1].startsWith('آخر') ? 'بند آخر' : \`بند \${index + 1}\`, text: blocks[index].paragraph }
+      ? { label: paragraphMatch[1].startsWith('آخر') ? 'بند آخر' : 'بند ' + (index + 1), text: blocks[index].paragraph }
       : { clarification: 'در پاسخ قبلی چنین بندی وجود ندارد. لطفاً چند کلمه از بخش موردنظرت را بنویس.' };
   }
 
