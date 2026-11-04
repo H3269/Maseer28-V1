@@ -131,7 +131,10 @@ test('ordinary concern proceeds through one question at a time and produces tent
   assert.equal(getCurrentQuestion(session).id, 'summary_confirmation');
   assert.match(session.summary.impact, /خوابم/);
   session = answer(session, 'بله، حالا دقیق است');
+  assert.equal(getCurrentQuestion(session).id, 'topic_priority');
+  session = answer(session, 'موضوع اصلی من نگرانی از آینده است');
   assert.equal(session.status, 'completed');
+  assert.deepEqual(session.candidate_topics.map((item) => item.topic_id), ['T02']);
   assert.equal(session.next_step.content_available, false);
 });
 
