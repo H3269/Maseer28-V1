@@ -40,6 +40,16 @@ export async function fingerprintMiniAppInitData({
   }
   if (!cryptoImpl?.subtle) throw new TypeError("web_crypto_unavailable");
 
+  const params = new URLSearchParams(initData);
+  const entries = [...params.entries()];
+  const seenKeys = new Set();
+  for (const [name] of entries) {
+    if (seenKeys.has(name)) throw new TypeError("duplicate_init_data_fields");
+    seenKeys.add(name);
+  }
+  entries.sort(([left], [right]) => left.localeCompare(right));
+  const canonicalData = entries.map(([name, value]) => `${name}=${value}`).join("\n");
+
   const key = await cryptoImpl.subtle.importKey(
     "raw",
     encoder.encode(secret),
@@ -47,7 +57,7 @@ export async function fingerprintMiniAppInitData({
     false,
     ["sign"],
   );
-  const message = encoder.encode(`maseer28:init-data-fingerprint:v1\n${platform}\n${initData}`);
+  const message = encoder.encode(`maseer28:init-data-fingerprint:v1\n${platform}\n${canonicalData}`);
   const digest = await cryptoImpl.subtle.sign("HMAC", key, message);
   return bytesToHex(new Uint8Array(digest));
 }
