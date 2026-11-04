@@ -29,7 +29,7 @@ function makeState(completedDays, problem = 'خشم') {
       goal: 'هدف آزمایشی',
       code: 'M28-SAFETY',
     },
-    assessmentData: { score: 4 },
+    assessmentData: { answers: [2, 2, 2, 2, 2], total: 8, score: 4, motivation: 2, scaleMax: 4, version: 2 },
     final: null,
     archive: [],
     pathId: `safety-gate-${completedDays.length}`,
