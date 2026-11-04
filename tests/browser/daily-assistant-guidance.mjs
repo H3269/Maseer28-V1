@@ -87,7 +87,7 @@ try {
   await composer.fill(`چطور انجامش بدم؟ ${privateMarker}`);
   assert.equal(await send.isDisabled(), false);
   await send.click();
-  await page.waitForFunction(() => document.querySelectorAll('.dailyExerciseAssistant .assistantMessage').length >= 2);
+  await page.waitForFunction(() => document.querySelectorAll('.dailyExerciseAssistant .assistantMessage').length >= 1);
 
   let assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /خشم/);
@@ -97,7 +97,7 @@ try {
 
   await composer.fill('تمرین را بیشتر توضیح بده');
   await send.click();
-  await page.waitForFunction(() => document.querySelectorAll('.dailyExerciseAssistant .assistantMessage').length >= 3);
+  await page.waitForFunction(() => document.querySelectorAll('.dailyExerciseAssistant .assistantMessage').length >= 2);
   assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /متن تمرین همین روز/);
   assert.match(assistantReply, /جمله یا واژه‌اش را بیشتر باز کنم/);
@@ -108,21 +108,21 @@ try {
   assert.equal(boundedValue.length, 2000, 'composer must enforce its 2000-character limit');
   await composer.fill('دیگه نمی‌کشم. همه‌چی تمومه.');
   await send.click();
-  await page.waitForFunction(() => { const replies = document.querySelectorAll('.dailyExerciseAssistant .assistantMessage'); return replies.length >= 4 && /آیا همین الآن خطر فوری/.test(replies[replies.length - 1]?.innerText || ''); });
+  await page.waitForFunction(() => { const replies = document.querySelectorAll('.dailyExerciseAssistant .assistantMessage'); return replies.length >= 3 && /آیا همین الآن خطر فوری/.test(replies[replies.length - 1]?.innerText || ''); });
   assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /آیا همین الآن خطر فوری/);
   assert.doesNotMatch(assistantReply, /متن تمرین همین روز/);
 
   await composer.fill('شاید، مطمئن نیستم');
   await send.click();
-  await page.waitForFunction(() => { const replies = document.querySelectorAll('.dailyExerciseAssistant .assistantMessage'); return replies.length >= 5 && /کمک فوری انسانی/.test(replies[replies.length - 1]?.innerText || ''); });
+  await page.waitForFunction(() => { const replies = document.querySelectorAll('.dailyExerciseAssistant .assistantMessage'); return replies.length >= 4 && /کمک فوری انسانی/.test(replies[replies.length - 1]?.innerText || ''); });
   assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /کمک فوری انسانی/);
   assert.doesNotMatch(assistantReply, /متن تمرین همین روز/);
 
   await composer.fill('حالا تمرین امروز را توضیح بده');
   await send.click();
-  await page.waitForFunction(() => document.querySelectorAll('.dailyExerciseAssistant .assistantMessage').length >= 6);
+  await page.waitForFunction(() => document.querySelectorAll('.dailyExerciseAssistant .assistantMessage').length >= 5);
   assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /کمک فوری انسانی/);
   assert.doesNotMatch(assistantReply, /متن تمرین همین روز/);
