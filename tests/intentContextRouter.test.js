@@ -238,3 +238,45 @@ test('third-party attribution preserves a separate first-person topic after a co
   const result = routeSemanticIntake({ text: 'دوستم گفت بی‌ارزشم و من هم احساس بی‌ارزشی دارم' });
   assert.equal(result.topic_candidates.some((item) => item.topic_id === 'T23'), true);
 });
+
+
+test('colloquial third-party attribution removes friends and family speech before topic routing', () => {
+  const cases = [
+    ['دوستام گفتن من از خودم متنفرم', 'T18'],
+    ['مامانم گفت که من بی‌ارزشم', 'T23'],
+    ['بابام گفت من همیشه مضطربم', 'T02'],
+    ['اون گفت «من از خودم متنفرم»', 'T18'],
+    ['اونا گفتن من بی‌ارزشم', 'T23'],
+  ];
+  for (const [text] of cases) {
+    const result = routeSemanticIntake({ text });
+    assert.equal(result.topic_candidates.length, 0, text);
+  }
+});
+
+test('doctor and psychologist reports are attributed to the professional, not the user', () => {
+  for (const text of [
+    'دکترم گفت من بی‌ارزشم',
+    'روان‌شناسم گفت که من از خودم متنفرم',
+    'روانشناسم گفت من مضطربم',
+  ]) {
+    const result = routeSemanticIntake({ text });
+    assert.equal(result.topic_candidates.length, 0, text);
+  }
+});
+
+test('the user saying something to a doctor is not removed as third-party speech', () => {
+  const result = routeSemanticIntake({ text: 'من به دکترم گفتم من بی‌ارزشم.' });
+  assert.ok(result.topic_candidates.some((item) => item.topic_id === 'T23'));
+});
+
+test('the user quoted speech to a psychologist remains attributed to the user', () => {
+  const result = routeSemanticIntake({ text: 'من به روان‌شناسم گفتم «از خودم متنفرم».' });
+  assert.ok(result.topic_candidates.some((item) => item.topic_id === 'T18'));
+});
+
+test('colloquial third-party suicidal quote requests clarification without assigning intent to the user', () => {
+  const result = routeSemanticIntake({ text: 'دوستام گفتن «می‌خوام خودکشی کنم».' });
+  assert.equal(result.safety_handoff.handoff_required, false);
+  assert.equal(result.next_question.purpose, 'safety_clarification');
+});
