@@ -66,7 +66,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false }) {
             <div className="globalAssistantDialogTop">
               <span className="badge">دسترسی آزمایشی</span>
               <button type="button" className="iconButton" onClick={() => setOpen(false)} aria-label="بستن پنجره دستیار">
-                <AppIcon name="close" size={18} />
+                <AppIcon name="x" size={18} />
               </button>
             </div>
             <h2 id="global-assistant-title">دستیار مسیر۲۸</h2>
