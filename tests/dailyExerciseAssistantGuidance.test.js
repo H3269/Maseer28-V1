@@ -414,3 +414,48 @@ test('out-of-range sentence references request clarification rather than selecti
   });
   assert.match(followUp.response, /به‌اندازه کافی جمله/);
 });
+
+
+test('extended sentence ordinals retrieve the exact requested sentence and reject out-of-range values', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'چطور انجامش بدم؟', dayData, problem: 'اضطراب', day: 4 });
+  const fourthSentence = makeDailyExerciseGuidanceTurn({
+    message: 'جمله چهارم رو بگو',
+    dayData,
+    problem: 'اضطراب',
+    day: 4,
+    conversationState: first.nextState,
+  });
+  assert.match(fourthSentence.response, /جمله 4 از پاسخ قبلی/u);
+  assert.match(fourthSentence.response, /لطفاً جمله یا مرحله‌ای از متن بالا/u);
+
+  const missingSentence = makeDailyExerciseGuidanceTurn({
+    message: 'جمله ششم',
+    dayData,
+    problem: 'اضطراب',
+    day: 4,
+    conversationState: first.nextState,
+  });
+  assert.match(missingSentence.response, /به‌اندازه کافی جمله/u);
+});
+
+test('extended paragraph ordinals retrieve existing paragraphs and clarify missing ones', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'چطور انجامش بدم؟', dayData, problem: 'اضطراب', day: 4 });
+  const fourthParagraph = makeDailyExerciseGuidanceTurn({
+    message: 'بند چهارم',
+    dayData,
+    problem: 'اضطراب',
+    day: 4,
+    conversationState: first.nextState,
+  });
+  assert.match(fourthParagraph.response, /بند 4 از پاسخ قبلی/u);
+  assert.match(fourthParagraph.response, /برای اینکه دقیقاً همان چیزی/u);
+
+  const missingParagraph = makeDailyExerciseGuidanceTurn({
+    message: 'بند پنجم',
+    dayData,
+    problem: 'اضطراب',
+    day: 4,
+    conversationState: first.nextState,
+  });
+  assert.match(missingParagraph.response, /چنین بندی وجود ندارد/u);
+});
