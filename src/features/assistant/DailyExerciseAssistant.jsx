@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { makeDailyExerciseGuidance } from './dailyExerciseAssistantGuidance.js';
+import { makeDailyExerciseGuidance, selectDailyExerciseGuidanceData } from './dailyExerciseAssistantGuidance.js';
 
 export default function DailyExerciseAssistant({ day, problem, data, guidanceData }) {
   const [messages, setMessages] = useState([]);
@@ -22,7 +22,7 @@ export default function DailyExerciseAssistant({ day, problem, data, guidanceDat
     const message = draft.trim();
     if (!message) return;
     try {
-      const response = makeDailyExerciseGuidance({ message, dayData: guidanceData || data, problem, day });
+      const response = makeDailyExerciseGuidance({ message, dayData: selectDailyExerciseGuidanceData({ guidanceData, data }), problem, day });
       setMessages((current) => [...current, { role: 'user', text: message }, { role: 'assistant', text: response }]);
       setDraft('');
       setError('');

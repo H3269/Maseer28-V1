@@ -1,5 +1,9 @@
 import { routeSemanticIntake } from './intentContextRouter.js';
 
+export function selectDailyExerciseGuidanceData({ guidanceData, data } = {}) {
+  return guidanceData || data;
+}
+
 export function makeDailyExerciseGuidance({ message, dayData, problem, day }) {
   const text = String(message || '').trim();
   if (!text) return 'پیامت خالی است؛ لطفاً پرسشت را بنویس.';

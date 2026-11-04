@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { makeDailyExerciseGuidance } from '../src/features/assistant/dailyExerciseAssistantGuidance.js';
+import { makeDailyExerciseGuidance, selectDailyExerciseGuidanceData } from '../src/features/assistant/dailyExerciseAssistantGuidance.js';
 
 const dayData = {
   exercise: 'سه موقعیت اخیر را که در آن مضطرب شدی، بدون قضاوت یادداشت کن.',
@@ -89,15 +89,30 @@ test('uses the exact normalized instructions and adapted action passed by the da
   assert.match(response, /روز 9/);
 });
 
-test('uses adapted day content instead of stale raw content when supplied', () => {
+test('prefers the adapted day content over the raw day content', () => {
+  const raw = {
+    exercise: 'تمرین خام و سخت‌تر',
+    actionText: 'اقدام خام',
+  };
+  const adapted = {
+    exercise: 'تمرین متناسب‌شده و امن‌تر',
+    actionText: 'اقدام متناسب‌شده امروز',
+  };
+  const selected = selectDailyExerciseGuidanceData({ guidanceData: adapted, data: raw });
+  assert.equal(selected, adapted);
+
   const response = makeDailyExerciseGuidance({
     message: 'چطور انجامش بدم؟',
-    dayData: {
-      exercise: 'تمرین خام و سخت‌تر',
-      actionText: 'اقدام خام',
-    },
+    dayData: selected,
     problem: 'اضطراب',
     day: 9,
   });
-  assert.match(response, /تمرین خام و سخت‌تر/);
+  assert.match(response, /تمرین متناسب‌شده و امن‌تر/);
+  assert.match(response, /اقدام متناسب‌شده امروز/);
+  assert.doesNotMatch(response, /تمرین خام و سخت‌تر|اقدام خام/);
+});
+
+test('falls back to raw day content only when adapted content is unavailable', () => {
+  const raw = { exercise: 'تمرین خام', actionText: 'اقدام خام' };
+  assert.equal(selectDailyExerciseGuidanceData({ guidanceData: null, data: raw }), raw);
 });
