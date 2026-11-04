@@ -38,9 +38,19 @@ export default {
     const result = await runSemanticConversationTurn({
       message: input.message,
       history: input.history,
-      // This is a test-only harness; production must inject a server-verified
-      // consent result and must never trust a client boolean.
-      consentVerified: input.consentVerified === true,
+      // Test-only fixture: production must inject the result of a server-side
+      // consent lookup and must never trust consent fields from the client.
+      consentVerified: input.testConsent === "verified"
+        ? {
+          cloudAiProcessing: true,
+          sensitiveDataProcessing: true,
+          policyVersion: "test-consent-v1",
+        }
+        : {
+          cloudAiProcessing: true,
+          sensitiveDataProcessing: false,
+          policyVersion: "test-consent-v1",
+        },
       generateStructuredTurn: createWorkersAiStructuredGenerator({
         model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
         ai: {
