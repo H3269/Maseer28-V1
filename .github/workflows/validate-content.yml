@@ -44,6 +44,10 @@ jobs:
       - name: Dependency security audit
         if: ${{ steps.install.outcome == 'success' }}
         run: npm audit --audit-level=high
+
+      - name: Validate Cloudflare Worker bundle (dry-run; no deployment)
+        if: ${{ steps.install.outcome == 'success' }}
+        run: npx --yes wrangler@4.157.0 deploy --dry-run --config workers/assistant-api/wrangler.toml
       - name: Capture complete npm audit report
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm audit --json > npm-audit-report.json || true
