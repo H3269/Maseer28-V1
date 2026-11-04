@@ -220,3 +220,58 @@ test('an unclear negative elaboration keeps the safety gate pending', () => {
   assert.match(second.response, /آیا همین الآن خطر فوری/);
   assert.doesNotMatch(second.response, /سه موقعیت اخیر/);
 });
+
+test('exercise barriers ask one focused question instead of repeating the whole exercise', () => {
+  const response = makeDailyExerciseGuidanceTurn({
+    message: 'این تمرین خیلی سخته و نمی‌تونم انجامش بدم.',
+    dayData,
+    problem: 'اضطراب',
+    day: 4,
+  });
+  assert.match(response.response, /مانع اصلی کدام بود/);
+  assert.match(response.response, /کمبود وقت/);
+  assert.match(response.response, /شدت ناراحتی/);
+  assert.doesNotMatch(response.response, /سه موقعیت اخیر را که/);
+});
+
+test('exercise completion is acknowledged without assuming success or inventing outcomes', () => {
+  const response = makeDailyExerciseGuidanceTurn({
+    message: 'تمرین را انجام دادم.',
+    dayData,
+    problem: 'اضطراب',
+    day: 4,
+  });
+  assert.match(response.response, /چه چیزی مشاهده کردی/);
+  assert.doesNotMatch(response.response, /نتیجه عالی|حتماً بهتر شدی/);
+});
+
+test('the assistant asks for the actual steps before judging whether an exercise was done correctly', () => {
+  const response = makeDailyExerciseGuidanceTurn({
+    message: 'نمی‌دانم درست انجام دادم یا نه.',
+    dayData,
+    problem: 'اضطراب',
+    day: 4,
+  });
+  assert.match(response.response, /دقیقاً چه مراحلی را انجام دادی/);
+  assert.doesNotMatch(response.response, /درست انجام دادی|اشتباه انجام دادی/);
+});
+
+test('exercise barrier handling never overrides an unresolved safety clarification', () => {
+  const first = makeDailyExerciseGuidanceTurn({
+    message: 'دیگه نمی‌کشم.',
+    dayData,
+    problem: 'اضطراب',
+    day: 4,
+  });
+  const second = makeDailyExerciseGuidanceTurn({
+    message: 'تمرین خیلی سخته و نمی‌تونم انجامش بدم.',
+    dayData,
+    problem: 'اضطراب',
+    day: 4,
+    conversationState: first.nextState,
+  });
+  assert.equal(second.nextState.safetyStatus, 'pending');
+  assert.match(second.response, /آیا همین الآن خطر فوری/);
+  assert.doesNotMatch(second.response, /مانع اصلی کدام بود/);
+});
+
