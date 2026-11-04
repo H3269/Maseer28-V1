@@ -17,7 +17,7 @@ function createHarness({ failSetAlarm = false, failSql = false } = {}) {
   const database = new DatabaseSync(":memory:");
   let alarmAt = null;
   let shouldFailSetAlarm = failSetAlarm;
-  let shouldFailSql = failSql;
+  let shouldFailSql = false;
 
   const storage = {
     sql: {
@@ -71,6 +71,9 @@ function createHarness({ failSetAlarm = false, failSql = false } = {}) {
     shard: new ReplayMarkerShard({ storage }),
     storage,
     database,
+    enableSqlFailure() {
+      shouldFailSql = true;
+    },
     get alarmAt() {
       return alarmAt;
     },
@@ -170,7 +173,8 @@ test("alarm scheduling failure fails closed before any marker is inserted", asyn
 });
 
 test("SQL failure fails closed and does not return a successful consume result", async () => {
-  const harness = createHarness({ failSql: true });
+  const harness = createHarness();
+  harness.enableSqlFailure();
 
   await assert.rejects(
     harness.shard.consumeOnce({
