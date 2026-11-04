@@ -275,3 +275,27 @@ test('exercise barrier handling never overrides an unresolved safety clarificati
   assert.doesNotMatch(second.response, /مانع اصلی کدام بود/);
 });
 
+test('a short why follow-up stays anchored to the previous answer and asks what needs explaining', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'چطور انجامش بدم؟', dayData, problem: 'اضطراب', day: 4 });
+  const second = makeDailyExerciseGuidanceTurn({ message: 'چرا؟', dayData, problem: 'اضطراب', day: 4, conversationState: first.nextState });
+  assert.match(second.response, /کدام جمله از پاسخ قبلی/);
+  assert.doesNotMatch(second.response, /کدام بخش تجربه‌ات مسئله اصلی توست/);
+  assert.equal(second.nextState.contextTopic, 'اضطراب');
+});
+
+test('a summary follow-up retrieves only the exercise and action already supplied for that day', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'چطور انجامش بدم؟', dayData, problem: 'اضطراب', day: 4 });
+  const second = makeDailyExerciseGuidanceTurn({ message: 'خلاصه کن', dayData, problem: 'اضطراب', day: 4, conversationState: first.nextState });
+  assert.match(second.response, /خلاصه محتوای همان روز/);
+  assert.match(second.response, /سه موقعیت اخیر/);
+  assert.match(second.response, /فقط یک موقعیت/);
+  assert.doesNotMatch(second.response, /نتیجه می‌گیری|احتمالاً مشکل تو/);
+});
+
+test('an example request asks which prior sentence needs an illustrative example', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'چطور انجامش بدم؟', dayData, problem: 'اضطراب', day: 4 });
+  const second = makeDailyExerciseGuidanceTurn({ message: 'مثال بزن', dayData, problem: 'اضطراب', day: 4, conversationState: first.nextState });
+  assert.match(second.response, /مثال فرضی و غیرشخصی/);
+  assert.match(second.response, /کدام جمله یا مرحله/);
+});
+
