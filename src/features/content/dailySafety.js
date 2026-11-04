@@ -163,12 +163,21 @@ function isRelationshipDifficultiesTopicDay(day) {
 const RELATIONSHIP_DIFFICULTIES_SUBTOPIC_IDS = new Set(['T17-S01', 'T17-S02', 'T17-S03']);
 
 function hasApprovedRelationshipDifficultiesReview(day) {
+  const legacyIdMatch = /^مشکلات رابطه-([0-9]{1,2})$/u.exec(String(day.id || ''));
+  const canonicalIdMatch = /^T17-D([0-9]{1,2})$/i.exec(String(day.id || ''));
+  const idDay = Number(legacyIdMatch?.[1] || canonicalIdMatch?.[1]);
+  const dayNumber = Number(day.day);
+  const identityMatches = Number.isInteger(idDay)
+    && idDay >= 1
+    && idDay <= 28
+    && idDay === dayNumber;
   const requiredText = [
     'learning_objective', 'target_skill', 'teaching_point',
     'exercise_type', 'instructions', 'reflection_prompt',
     'success_criterion', 'when_to_seek_human_support',
   ];
   if (day.topic_id !== 'T17'
+    || !identityMatches
     || !Number.isInteger(Number(day.day))
     || Number(day.day) < 1
     || Number(day.day) > 28
