@@ -38,7 +38,7 @@ async function openDay(page) {
       name: 'کاربر مصنوعی آزمون',
       age: 35,
       gender: 'ترجیح می‌دهم نگویم',
-      phone: '00000000000',
+      phone: '09123456789',
       medical: 'none',
       medicalNote: '',
       medication: 'no',
