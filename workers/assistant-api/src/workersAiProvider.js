@@ -1,3 +1,10 @@
+const JSON_MODELS_SUPPORTED_BY_WORKERS_AI = new Set([
+  "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+  "@cf/meta/llama-3.1-8b-instruct",
+  "@cf/meta/llama-3-8b-instruct",
+  "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b",
+]);
+
 function isRecord(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
