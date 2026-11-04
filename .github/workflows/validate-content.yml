@@ -48,6 +48,9 @@ jobs:
       - name: Validate Cloudflare Worker bundle (dry-run; no deployment)
         if: ${{ steps.install.outcome == 'success' }}
         run: npx --yes wrangler@4.157.0 deploy --dry-run --config workers/assistant-api/wrangler.toml
+      - name: Exercise replay marker in local Cloudflare Workers runtime
+        if: ${{ steps.install.outcome == 'success' }}
+        run: node tests/workers/replayMarker.integration.mjs
       - name: Capture complete npm audit report
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm audit --json > npm-audit-report.json || true
