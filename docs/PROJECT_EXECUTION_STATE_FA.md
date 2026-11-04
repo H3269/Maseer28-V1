@@ -868,3 +868,27 @@
 **وضعیت این بخش:** `automated_tests_passed` برای orchestrator و آداپتور با mock؛ هنوز browser-ready نیست.
 
 **گام بعدی:** پیاده‌سازی واقعی consent verifier و نشست/هویت مناسب برای مرورگر و mini-app، محدودیت نرخ/هزینه و انتخاب مدل بر اساس آزمون مصنوعی فارسی؛ سپس اتصال route و UI در محیط Preview محدود. پیش از اولین inference واقعی، باید محل پردازش، شرایط حساب/هزینه و مجوز ارسال داده به‌صورت صریح تعیین شود.
+
+
+## ۲۰. تصمیم مسیر Preview مرورگری ایزوله (2026-11-04)
+
+### یافته
+Worker پروژه از Durable Objects استفاده می‌کند. Cloudflare برای Workerهایی که Durable Objects پیاده‌سازی می‌کنند Version URL تولید نمی‌کند؛ بنابراین `wrangler versions upload` به‌تنهایی URL مرورگری قابل استفاده برای این Worker فراهم نمی‌کند.
+
+### مسیر فنی منتخب
+- استفاده از Worker Previews با `wrangler preview --name assistant-preview`، نه Version URL.
+- Preview برای هر محیط namespace و storage مستقل Durable Object ایجاد می‌کند؛ state آن با Production یا Preview دیگر مشترک نیست.
+- تنظیمات Preview باید صریحاً در `[previews]` فایل Wrangler تعریف شوند؛ تنظیمات Production خودکار به Preview منتقل نمی‌شوند.
+- Wrangler فعلی پروژه `4.157.0` است و حداقل نسخه مورد نیاز Cloudflare Previews را دارد.
+- چون فقط شاخه `main` مجاز است، Preview باید به‌صورت دستی از main با نام ثابت ایجاد شود؛ شاخه جدید ساخته نمی‌شود.
+- Preview URL عمومی است؛ قبل از آزمون داده واقعی باید کنترل دسترسی، رضایت آگاهانه و جداسازی منابع تأیید شوند.
+
+### محدودیت عملیاتی فعلی
+- هیچ Preview واقعی ساخته نشده است.
+- Cloudflare Builds فعلی همچنان root directory برابر `/workers/assistant-api` و deploy command برابر `npx --yes wrangler@4.157.0 versions upload --config wrangler.toml` دارد.
+- ساخت UI در Worker Preview نیازمند build از ریشه مخزن و تنظیم assets است؛ این تغییرات هنوز انجام نشده‌اند.
+- هیچ تنظیم Cloudflare Dashboard تغییر نکرده و هیچ upload/deploy واقعی، promote یا تغییر Production انجام نشده است.
+
+منابع رسمی بررسی‌شده در `docs/AI_PROVIDER_SELECTION_AND_DATA_BOUNDARY_FA.md`، بخش ۷ ثبت شده‌اند.
+
+**وضعیت:** راهبرد Preview تعیین شده؛ هنوز browser-ready نیست و از مالک اقدامی درخواست نمی‌شود.
