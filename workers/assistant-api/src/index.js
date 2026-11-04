@@ -1,4 +1,5 @@
 export { AssistantPreviewSessionGuardDurableObject } from "./previewSessionGuard.js";
+export { AssistantPreviewAccessRateLimitDurableObject } from "./previewAccessRateLimit.js";
 
 const SERVICE = "maseer28-assistant-api";
 const API_VERSION = "v1";
