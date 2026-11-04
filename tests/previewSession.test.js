@@ -134,7 +134,7 @@ test("issues a short-lived stateless token and verifies the consent capability",
 test("rejects tampered, malformed, and expired Preview tokens", async () => {
   const issued = await issue();
   const [header, payload, signature] = issued.token.split(".");
-  const tampered = `${header}.${payload}.${signature.slice(0, -1)}${signature.endsWith("A") ? "B" : "A"}`;
+  const tampered = `${header}.${payload}.${signature[0] === "A" ? "B" : "A"}${signature.slice(1)}`;
 
   const invalidSignature = await verify({
     token: tampered,
