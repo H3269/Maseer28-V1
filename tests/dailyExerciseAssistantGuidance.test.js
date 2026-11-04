@@ -201,3 +201,22 @@ test('changing day or topic prevents follow-up from quoting an unrelated previou
   assert.equal(changed.nextState.contextDay, '5');
   assert.equal(changed.nextState.contextTopic, 'خشم');
 });
+
+
+test('contradictory negative safety replies cannot clear the safety gate', () => {
+  for (const reply of ['نه، ولی شاید به خودم آسیب بزنم', 'نه، برنامه دارم', 'نه، مطمئن نیستم']) {
+    const first = makeDailyExerciseGuidanceTurn({ message: 'دیگه نمی‌کشم.', dayData, problem: 'اضطراب', day: 4 });
+    const second = makeDailyExerciseGuidanceTurn({ message: reply, dayData, problem: 'اضطراب', day: 4, conversationState: first.nextState });
+    assert.equal(second.nextState.safetyStatus, 'handoff', reply);
+    assert.match(second.response, /کمک فوری انسانی/);
+    assert.doesNotMatch(second.response, /سه موقعیت اخیر/);
+  }
+});
+
+test('an unclear negative elaboration keeps the safety gate pending', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'دیگه نمی‌کشم.', dayData, problem: 'اضطراب', day: 4 });
+  const second = makeDailyExerciseGuidanceTurn({ message: 'نه، حالم خوب نیست', dayData, problem: 'اضطراب', day: 4, conversationState: first.nextState });
+  assert.equal(second.nextState.safetyStatus, 'pending');
+  assert.match(second.response, /آیا همین الآن خطر فوری/);
+  assert.doesNotMatch(second.response, /سه موقعیت اخیر/);
+});
