@@ -83,7 +83,6 @@ try {
   await dialog.getByRole('textbox').fill('اینجا چه کارهایی می‌توانم انجام بدهم؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForTimeout(250);
-  process.stdout.write(`DEBUG GLOBAL ASSISTANT AFTER PAGE QUESTION: ${JSON.stringify({ url: page.url(), body: (await page.locator('body').innerText()).slice(-2600), errors })}\\n`);
   await page.waitForFunction(() => document.querySelector('.globalAssistantDialog')?.innerText.includes('ادامه مسیر امروز'));
   const firstAssistantReply = dialog.locator('.assistantMessage').last();
   assert.match(await firstAssistantReply.innerText(), /در صفحه «خانه» می‌توانی/);
