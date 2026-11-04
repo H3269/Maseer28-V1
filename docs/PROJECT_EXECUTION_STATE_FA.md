@@ -553,3 +553,44 @@
 - هیچ Deploy یا انتشار انجام نشده است.
 
 **گام بعدی:** پیاده‌سازی کلاس SQLite DO و منطق اتمیک replay/rate-limit در محیط تست و CI، فقط پس از تثبیت TTL و قرارداد دقیق storage؛ سپس بررسی نتایج تست concurrency و cleanup. آزمون واقعی میزبان زمانی از مالک درخواست می‌شود که واقعاً لازم باشد.
+
+
+## ۱۲. ادامه ممیزی Backend دستیار — تأیید CI و failure-mode ضدبازپخش (2026-11-04)
+
+### مبنای شروع
+- HEAD شاخه `main` پیش از این ثبت دوباره از GitHub خوانده شد: `878619306a5a368a7ce58733b9aeefa2b82ea89e`.
+- فایل‌های معماری امنیتی، دفتر وضعیت، `platformAuth.js`، تست‌های آن، `hostBridge.js`، تست‌های میزبان، `index.js` و workflow اعتبارسنجی مجدداً بررسی شدند.
+- هیچ branch فرعی ساخته نشد.
+
+### نتیجه CI مرحله قبل
+- Run `41781782862` برای commit `b9b5fbdea1b78dbfed8d9e4da09813837f73e525`: `success`.
+- Run `41781786411` برای commit `878619306a5a368a7ce58733b9aeefa2b82ea89e`: `success`.
+- در هر دو اجرا، dependency audit، Wrangler dry-run، topic registry، unit tests، اعتبارسنجی محتوا، audit کیفیت، build، نصب Chromium و تست‌های مرورگر کامل و موفق بودند.
+- Wrangler dry-run صرفاً bundle را می‌سازد؛ هیچ اتصال به حساب Cloudflare یا deployment را اثبات نمی‌کند.
+
+### یافته‌های مهم در بازخوانی کد
+- `platformAuth.js` مقدار `MAX_AUTH_AGE_SECONDS = 5 * 60` را hard-code کرده است؛ این مقدار در حال حاضر سیاست محلی موقت است، نه TTL رسمی Telegram/Bale.
+- `hostBridge.js` همچنان SDK را lazy-load می‌کند؛ توصیه رسمی Bale برای قرارگیری SDK در ابتدای `<head>` با این رفتار هنوز در محیط واقعی حل نشده است.
+- `index.js` فقط health و endpoint مکالمه 503 را ارائه می‌کند؛ verifier و host bridge هنوز به route یا UI متصل نیستند.
+- هیچ Durable Object، migration، binding، secret، session، provider یا ارسال متن کاربر وجود ندارد.
+
+### تکمیل تحلیل failure-mode
+- تصمیم replay باید مستقیماً از SQLite و زمان جاری در عملیات اتمیک گرفته شود؛ Alarm صرفاً پاک‌سازی storage است و نباید مرجع اجازه/رد replay باشد.
+- marker با `expires_at > now` حتی در صورت تأخیر یا شکست Alarm باید replay تلقی شود.
+- درج یکتا باید در برابر درخواست‌های هم‌زمان اتمیک باشد؛ cursorها پیش از هر await مصرف و transactionها بدون await اجرا شوند.
+- شکست storage یا setAlarm به معنی عدم صدور session است. مسیر recovery باید Alarm را ترمیم و پاک‌سازی batch/opportunistic را انجام دهد؛ rollback شرطی marker فقط در صورت اثبات درج توسط همان درخواست و عدم صدور token مجاز است.
+- constructor نباید Alarm تنظیم کند؛ Alarm هر DO واحد است و موعد زودتر نباید با زمان دیرتر جایگزین شود.
+- جزئیات و ماتریس آزمون در بخش ۱۴ سند `ASSISTANT_BACKEND_SECURITY_ARCHITECTURE_V1_FA.md` ثبت شد.
+
+### فایل‌های تغییرکرده در این بخش
+- `docs/ASSISTANT_BACKEND_SECURITY_ARCHITECTURE_V1_FA.md` — افزودن تحلیل lifecycle و failure-modeهای replay marker و Alarm.
+- `docs/PROJECT_EXECUTION_STATE_FA.md` — ثبت نتیجه CI و وضعیت اجرایی این بازبینی.
+- هیچ فایل runtime، frontend، journey، محتوای ۳۴ موضوع/۹۵۲ روز یا تنظیمات Cloudflare تغییر نکرد.
+
+### آزمون‌ها و انتشار
+- فقط خواندن مخزن و بازبینی مستندات/کد انجام شد؛ پس از این بازبینی هنوز commit جدیدی ایجاد نشده و تست جدیدی اجرا نشده است.
+- دو run بالا مربوط به HEADهای ثبت‌شده خودشان و هر دو موفق‌اند؛ آن‌ها آزمون failure-mode جدید یا پیاده‌سازی DO محسوب نمی‌شوند.
+- هیچ deploy، انتشار، secret، binding یا migration انجام نشده است.
+
+### گام بعدی واحد
+پیاده‌سازی مستقل SQLite Durable Object و تست‌های deterministic برای concurrency، duplicate/expiry، alarm scheduling failure، cleanup/recovery و storage failure؛ بدون افزودن binding یا route و بدون اتصال به frontend. پیش از هر write، HEAD و هر دو فایل هدف دوباره بررسی شوند.
