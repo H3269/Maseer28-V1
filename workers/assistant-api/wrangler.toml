@@ -3,6 +3,9 @@ main = "src/index.js"
 compatibility_date = "2026-11-04"
 workers_dev = true
 
+# Workers Builds must use `wrangler versions upload` from the Dashboard deploy command.
+# Never replace it with `wrangler deploy` or `wrangler versions deploy` without explicit owner approval.
+
 # Configure ALLOWED_ORIGINS as a comma-separated exact-origin allowlist
 # in the Cloudflare dashboard before enabling browser access.
 # Do not add provider API keys until the privacy and consent gates are approved.
