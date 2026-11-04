@@ -22,7 +22,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: path28-validation-${{ github.event.pull_request.number || github.ref }}
+  group: path28-validation-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: false
 
 jobs:
