@@ -65,13 +65,20 @@ function normalize(value) {
     .replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
+const ATTRIBUTION_SUBJECTS = '(?:یکی از دوستانم|یکی از همکارانم|دوستم|مادرم|پدرم|خواهرم|برادرم|همسرم|نامزدم|شریکم|مدیرم|رئیسم|همکارم|معلمم|پزشکم|درمانگرم|مشاورم|فرزندم|دخترم|پسرم|او|آنها|آن‌ها)';
+
 function removeAttributedQuotes(value) {
-  return value
-    .replace(/(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او)\s+گفت\s*[«"“]([^»"”]+)[»"”]/g, ' ')
-    .replace(/(?:گفت|گفته)\s*[«"“]([^»"”]+)[»"”]/g, ' ')
-    // Unquoted third-party reports must not be treated as the user's intent.
-    // Stop at punctuation so a separate first-person disclosure is preserved.
-    .replace(/(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او)\s+(?:گفت|گفته|می[‌\s]?گوید|می[‌\s]?گفت)\s+[^،.!؟؛]*?(?=[،.!؟؛]|(?:اما|ولی|و)\s+(?:من|خودم)(?=\s|$)|$)/g, ' ');
+  const attributedSpeech = new RegExp(
+    ATTRIBUTION_SUBJECTS + '\\s+(?:به\\s+من\\s+)?(?:گفت|گفته|می[‌\\s]?گوید|می[‌\\s]?گفت)\\s*(?:(?:که)\\s+|[:،]\\s*)?[«"“]([^»"”]+)[»"”]',
+    'gu',
+  );
+  const unquotedReport = new RegExp(
+    ATTRIBUTION_SUBJECTS + '\\s+(?:به\\s+من\\s+)?(?:گفت|گفته|می[‌\\s]?گوید|می[‌\\s]?گفت)\\s*(?:(?:که)\\s+|[:،]\\s*)?[^،.!؟؛]*?(?=[،.!؟؛]|(?:اما|ولی|و)\\s+(?:من|خودم)(?=\\s|$)|$)',
+    'gu',
+  );
+  // Only remove speech attributed to another person. A user's own quoted
+  // words (e.g. «من گفتم ...») remain evidence about the user's experience.
+  return value.replace(attributedSpeech, ' ').replace(unquotedReport, ' ');
 }
 
 function classifyIntent(value) {
@@ -172,8 +179,11 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
     || /(?:الان|همین الآن).{0,30}(?:خانه امن نیست|در خطرم|تهدیدم می‌کند)/.test(userNormalized)
     || /تهدیدم کرد.{0,25}(?:الان|همین الآن).{0,20}خانه امن نیست/.test(userNormalized)
     || /(?:با چاقو تهدیدم می کند|الان مرا می زند|الان دارد مرا می زند|الان منو می زند|الان داره منو می زند|الان داره منو می زنه|در حال ضرب و شتم من است|الان خفه ام می کند)/.test(userNormalized);
-  const correctionMatch = raw.match(/(?:منظورم(?:\s+این\s+است\s+که)?|اصلاح می‌کنم)[،:؛\s]*(.*)$/);
-  const semanticEvidenceText = correctionMatch?.[1]?.trim() || userAttributedText;
+  const correctionMarkers = [...raw.matchAll(/(?:منظورم(?:\s+این\s+(?:است|بود)(?:\s+که)?)?|اصلاح می‌کنم|اصلاح می کنم)/gu)];
+  const lastCorrection = correctionMarkers.at(-1);
+  const semanticEvidenceText = lastCorrection
+    ? raw.slice(lastCorrection.index + lastCorrection[0].length).replace(/^[،:؛\s]+/, '').trim()
+    : userAttributedText;
   const clearlyRejectedThirdPartyQuote = quotedSafetyMatches.length === 0
     && /(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او)\s+گفت/.test(raw)
     && /موافق نیستم|قبول ندارم|این حرف درست نیست/.test(normalized);
