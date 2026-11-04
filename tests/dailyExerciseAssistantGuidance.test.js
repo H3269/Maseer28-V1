@@ -561,3 +561,44 @@ test('example requests create a blank template without inventing a personal scen
   assert.match(response, /چه احساسی داشتم/u);
   assert.match(response, /پاسخ خودت/u);
 });
+
+test('legacy day guidance does not invent rationale, duration, or success criteria', () => {
+  const options = { dayData, problem: 'اضطراب', day: 4 };
+  assert.match(makeDailyExerciseGuidance({ ...options, message: 'چرا این تمرین را انجام بدهم؟' }), /توضیح تأییدشده‌ای درباره چرایی/u);
+  assert.match(makeDailyExerciseGuidance({ ...options, message: 'چند دقیقه طول می‌کشد؟' }), /مدت زمان تأییدشده‌ای/u);
+  assert.match(makeDailyExerciseGuidance({ ...options, message: 'معیار انجام درست چیست؟' }), /معیار موفقیتِ تأییدشده‌ای/u);
+});
+
+test('approved day metadata supplies its reviewed rationale, duration, and success criterion', () => {
+  const reviewedDay = {
+    ...dayData,
+    review_status: 'approved',
+    teaching_point: 'هیجان و رفتار دو چیز جدا هستند.',
+    duration_minutes: 8,
+    success_criterion: 'یک تفاوت روشن میان احساس و رفتار نوشته شود.',
+  };
+  assert.match(makeDailyExerciseGuidance({ message: 'چرا این تمرین؟', dayData: reviewedDay, problem: 'خشم', day: 2 }), /هیجان و رفتار دو چیز جدا/u);
+  assert.match(makeDailyExerciseGuidance({ message: 'چند دقیقه؟', dayData: reviewedDay, problem: 'خشم', day: 2 }), /۸ دقیقه/u);
+  assert.match(makeDailyExerciseGuidance({ message: 'معیار موفقیت چیست؟', dayData: reviewedDay, problem: 'خشم', day: 2 }), /یک تفاوت روشن/u);
+});
+
+test('adapted daily content retains original review metadata', () => {
+  const raw = {
+    review_status: 'approved',
+    duration_minutes: 8,
+    success_criterion: 'یک تفاوت روشن ثبت شود.',
+    exercise: 'تمرین اصلی',
+    actionText: 'اقدام اصلی',
+  };
+  const adapted = {
+    exercise: 'تمرین سبک‌شده',
+    action: 'اقدام سبک‌شده',
+    adaptation: 'امروز فقط گام سبک را انجام بده.',
+  };
+  const selected = selectDailyExerciseGuidanceData({ guidanceData: adapted, data: raw });
+  assert.equal(selected.review_status, 'approved');
+  assert.equal(selected.duration_minutes, 8);
+  assert.equal(selected.exercise, 'تمرین سبک‌شده');
+  assert.equal(selected.actionText, 'اقدام سبک‌شده');
+  assert.equal(selected.adaptation, 'امروز فقط گام سبک را انجام بده.');
+});
