@@ -4,6 +4,7 @@ const VALID_REVIEWER_ROLES = new Set([
   'qualified_clinician',
   'evidence_reviewer',
   'safety_reviewer',
+  'relationship_safety_reviewer',
 ]);
 const VALID_EVIDENCE_GRADES = new Set(['very_low', 'low', 'moderate', 'high']);
 const VALID_RISK_LEVELS = new Set(['routine', 'caution', 'human_review_required']);
@@ -90,6 +91,10 @@ export function validateProductionContent({
       }
       if (!VALID_REVIEWER_ROLES.has(day?.reviewer_role)) {
         errors.push(`${label}: reviewer_role is not an allowed qualified role.`);
+      }
+      if (day?.review_status === 'approved' && day?.topic_id === 'T17'
+        && day?.reviewer_role !== 'relationship_safety_reviewer') {
+        errors.push(`${label}: T17 content requires a relationship safety specialist reviewer.`);
       }
       if (!Number.isFinite(Date.parse(day?.reviewed_at || ''))) {
         errors.push(`${label}: reviewed_at is invalid.`);
