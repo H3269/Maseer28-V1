@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import AppIcon from '../../shared/components/AppIcon.jsx';
 
 const SCREEN_LABELS = {
@@ -18,16 +18,26 @@ const SCREEN_LABELS = {
 
 export default function GlobalAssistantLauncher({ screen, visible = false }) {
   const [open, setOpen] = useState(false);
+  const launcherRef = useRef(null);
+  const closeButtonRef = useRef(null);
+  const dialogRef = useRef(null);
   const isDailyExercise = screen === 'day';
   const pageLabel = SCREEN_LABELS[screen] || 'صفحه جاری';
 
   useEffect(() => {
     if (!open) return undefined;
+    closeButtonRef.current?.focus();
     const closeOnEscape = (event) => {
-      if (event.key === 'Escape') setOpen(false);
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setOpen(false);
+      }
     };
     window.addEventListener('keydown', closeOnEscape);
-    return () => window.removeEventListener('keydown', closeOnEscape);
+    return () => {
+      window.removeEventListener('keydown', closeOnEscape);
+      launcherRef.current?.focus();
+    };
   }, [open]);
 
   if (!visible || screen === 'bookReader') return null;
@@ -43,9 +53,30 @@ export default function GlobalAssistantLauncher({ screen, visible = false }) {
     setOpen(true);
   }
 
+  function containDialogTab(event) {
+    if (event.key !== 'Tab') return;
+    const focusable = dialogRef.current?.querySelectorAll(
+      'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    if (!focusable?.length) {
+      event.preventDefault();
+      return;
+    }
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
   return (
     <>
       <button
+        ref={launcherRef}
         className="globalAssistantLauncher"
         type="button"
         onClick={activate}
@@ -59,15 +90,17 @@ export default function GlobalAssistantLauncher({ screen, visible = false }) {
       {open && (
         <div className="globalAssistantBackdrop">
           <section
+            ref={dialogRef}
             className="globalAssistantDialog"
             role="dialog"
             aria-modal="true"
             aria-labelledby="global-assistant-title"
             aria-describedby="global-assistant-description"
+            onKeyDown={containDialogTab}
           >
             <div className="globalAssistantDialogTop">
               <span className="badge">دسترسی آزمایشی</span>
-              <button type="button" className="iconButton" onClick={() => setOpen(false)} aria-label="بستن پنجره دستیار">
+              <button ref={closeButtonRef} type="button" className="iconButton" onClick={() => setOpen(false)} aria-label="بستن پنجره دستیار">
                 <AppIcon name="x" size={18} />
               </button>
             </div>
