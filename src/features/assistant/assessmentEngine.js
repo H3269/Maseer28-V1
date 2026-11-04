@@ -127,7 +127,7 @@ function buildConversationEvidenceText(session) {
   // Otherwise, retain the user's separate statements so new topics mentioned
   // while describing impact, duration, or goals are not silently discarded.
   const correction = [...contextAnswers].reverse().find((value) =>
-    /(?:منظورم|اصلاح می‌کنم|اصلاح می کنم|در واقع|موضوع اصلی من)/u.test(normalize(value))
+    /(?:منظورم|اصلاح می‌کنم|اصلاح می کنم|موضوع اصلی من)/u.test(normalize(value))
   );
   if (correction) return correction.trim();
   return [answers.open_problem, ...contextAnswers]
