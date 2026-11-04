@@ -527,7 +527,7 @@ test('additive summary revision beginning with «در واقع» does not replac
   session = answer(session, 'در کارم اثر گذاشته');
   session = answer(session, 'چند هفته است');
   session = answer(session, 'می‌خواهم مسئله را بفهمم');
-  session = answer(session, 'وقتی آینده نامعلوم است نگران می‌شوم.');
+  session = answer(session, 'وقتی کارها زیاد می‌شود مضطرب می‌شوم.');
   assert.equal(getCurrentQuestion(session).id, 'summary_confirmation');
   session = answer(session, 'نه، خلاصه دقیق نیست.');
   assert.equal(getCurrentQuestion(session).id, 'summary_revision');
