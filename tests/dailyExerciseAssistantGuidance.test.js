@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { makeDailyExerciseGuidance, selectDailyExerciseGuidanceData } from '../src/features/assistant/dailyExerciseAssistantGuidance.js';
-import { splitDayContent } from '../src/features/journey/JourneyScreens.jsx';
+import { preserveDailyGuidanceSourceIdentity } from '../src/features/assistant/dailyGuidanceSourceIdentity.js';
 
 const dayData = {
   exercise: 'سه موقعیت اخیر را که در آن مضطرب شدی، بدون قضاوت یادداشت کن.',
@@ -696,7 +696,7 @@ test('refuses guidance when the source record day differs from the active day', 
 
 test('split day guidance preserves source id, topic, and day identity', () => {
   const source = { id: 'T03-D07', topic_id: 'T03', day: 7, instructions: 'متن تمرین روز هفتم', actionText: 'راهکار روز هفتم' };
-  const adapted = splitDayContent(source, 'اضطراب', null, {});
+  const adapted = preserveDailyGuidanceSourceIdentity(source, { exercise: 'تمرین روز هفتم', action: 'راهکار روز هفتم' });
   assert.equal(adapted.id, source.id);
   assert.equal(adapted.topic_id, source.topic_id);
   assert.equal(adapted.day, source.day);

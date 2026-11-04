@@ -1,3 +1,4 @@
+import { preserveDailyGuidanceSourceIdentity } from '../assistant/dailyGuidanceSourceIdentity.js';
 import React, { useEffect, useRef, useState } from 'react';
 import SmartSelect from '../../shared/components/SmartSelect.jsx';
 import AppIcon from '../../shared/components/AppIcon.jsx';
@@ -289,17 +290,7 @@ export function splitDayContent(d, problem, previousRecord, history = {}) {
   }
   const pausePlan = getT01PausePlan(d, categoryName);
   const title = cleanDailyCopy(String(d?.title || 'موضوع امروز').replace(/\s*[·•-]?\s*روز\s*\d+\s*$/i, '').trim(), categoryName);
-  return {
-    // Preserve canonical source identity through local adaptation for mismatch checks.
-    id: d?.id ?? null,
-    topic_id: d?.topic_id ?? null,
-    day: Number.isInteger(Number(d?.day)) ? Number(d.day) : null,
-    exercise,
-    action,
-    title,
-    adaptation,
-    pausePlan,
-  };
+  return preserveDailyGuidanceSourceIdentity(d, { exercise, action, title, adaptation, pausePlan });
 }
 
 function structuredText(value) {
