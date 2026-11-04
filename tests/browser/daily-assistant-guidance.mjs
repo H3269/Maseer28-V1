@@ -29,7 +29,7 @@ const journey = {
   lastView: 'dashboard',
 };
 
-async function openDay(page) {
+async function openDay(page, { assistantDayMode = 'routine' } = {}) {
   await page.addInitScript((state) => {
     localStorage.setItem('maseer28_onboarding_complete_v1', '1');
     localStorage.setItem('maseer28_state', JSON.stringify(state));
@@ -48,6 +48,21 @@ async function openDay(page) {
 
   await page.route('**/*', async (route) => {
     const url = new URL(route.request().url());
+    if (url.pathname.endsWith('/content/path-content.json')) {
+      const response = await route.fetch();
+      const payload = await response.json();
+      const day = payload.categories?.['خشم']?.days?.find((item) => Number(item.day) === 1);
+      assert.ok(day, 'the deterministic browser fixture must contain the selected topic day');
+      Object.assign(day, {
+        id: assistantDayMode === 'relationship' ? 'T01-D10' : 'T01-D01',
+        topic_id: 'T01',
+        day: 1,
+        review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
+        risk_level: 'routine',
+      });
+      await route.fulfill({ response, json: payload });
+      return;
+    }
     if (url.searchParams.has('_m28_time')) {
       await route.fulfill({ status: 200, headers: { date: new Date().toUTCString() } });
       return;
@@ -133,7 +148,42 @@ try {
   assert.deepEqual(errors, [], 'assistant browser flow should not raise uncaught page errors');
 
   await page.close();
-  process.stdout.write('PASS: Chromium daily assistant guidance, follow-up context, input bounds, persistent safety handoff, local-only privacy, and no Worker requests (WV-BROWSER-ASSISTANT)\\n');
+
+  const blockedPage = await browser.newPage();
+  await openDay(blockedPage, { assistantDayMode: 'blocked' });
+  const blockedPanel = blockedPage.locator('.dailyExerciseAssistant');
+  await blockedPanel.waitFor({ state: 'visible' });
+  assert.match(await blockedPanel.innerText(), /بازبینی ایمنی/);
+  assert.equal(await blockedPanel.locator('#daily-exercise-assistant-message').count(), 0,
+    'human-review-blocked day must not expose the assistant composer');
+  await blockedPage.close();
+
+  const gatedPage = await browser.newPage();
+  await openDay(gatedPage, { assistantDayMode: 'relationship' });
+  const gatedPanel = gatedPage.locator('.dailyExerciseAssistant');
+  await gatedPanel.waitFor({ state: 'visible' });
+  const safeChoice = gatedPage.getByLabel('بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.');
+  assert.equal(await safeChoice.isChecked(), false);
+  assert.equal(await gatedPanel.locator('#daily-exercise-assistant-message').count(), 0,
+    'relationship-gated day must not expose guidance before the explicit safety check');
+  await safeChoice.check();
+  await gatedPanel.locator('#daily-exercise-assistant-message').waitFor({ state: 'visible' });
+  await gatedPage.getByRole('button', { name: /شرایط امن نیست یا پاسخ من تغییر کرده است/ }).click();
+  assert.equal(await gatedPanel.locator('#daily-exercise-assistant-message').count(), 0,
+    'changing the safety answer to unsafe must immediately close the assistant');
+  await gatedPage.getByLabel('بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.').check();
+  await gatedPanel.locator('#daily-exercise-assistant-message').waitFor({ state: 'visible' });
+  await gatedPage.locator('#day button[aria-label="داشبورد"]').click();
+  await gatedPage.locator('#dashboard').waitFor({ state: 'visible' });
+  await gatedPage.locator('#dashboard .heroAction').click();
+  await gatedPage.locator('#day').waitFor({ state: 'visible' });
+  assert.equal(await gatedPage.getByLabel('بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.').isChecked(), false,
+    'leaving and re-entering the day must require a fresh safety confirmation');
+  assert.equal(await gatedPanel.locator('#daily-exercise-assistant-message').count(), 0,
+    'assistant must remain closed after re-entry until safety is confirmed again');
+  await gatedPage.close();
+
+  process.stdout.write('PASS: Chromium daily assistant guidance, follow-up context, input bounds, persistent safety handoff, local-only privacy, blocked-day denial, relationship gate, and confirmation reset (WV-BROWSER-ASSISTANT)\\n');
 } finally {
   await browser.close();
 }
