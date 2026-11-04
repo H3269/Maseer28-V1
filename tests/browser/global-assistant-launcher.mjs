@@ -88,7 +88,7 @@ try {
 
   await page.getByRole('button', { name: 'خانه' }).click();
   await page.locator('#dashboard').waitFor({ state: 'visible' });
-  await page.getByRole('button', { name: 'مطالعه' }).click();
+  await page.getByRole('button', { name: 'مطالعه', exact: true }).click();
   await page.locator('.bottomNav button[data-view="books"].active').waitFor({ state: 'visible' });
   await launcher.click();
   dialog = page.getByRole('dialog', { name: 'دستیار مسیر۲۸' });
