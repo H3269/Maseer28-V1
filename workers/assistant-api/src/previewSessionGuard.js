@@ -95,9 +95,12 @@ export class AssistantPreviewSessionGuardDurableObject {
     } catch {
       return Response.json({ error: "invalid_json" }, { status: 400 });
     }
-    if (!validSessionInput(input)
-      || (path !== "/revoke" && !Number.isSafeInteger(input.nowSeconds))
-      || (path === "/revoke" && input.nowSeconds !== undefined && !Number.isSafeInteger(input.nowSeconds))) {
+    const validBase = input && typeof input === "object" && !Array.isArray(input)
+      && SESSION_ID_PATTERN.test(input.sessionId ?? "");
+    const validAction = path === "/revoke"
+      ? (input.nowSeconds === undefined || Number.isSafeInteger(input.nowSeconds))
+      : (validSessionInput(input) && Number.isSafeInteger(input.nowSeconds));
+    if (!validBase || !validAction) {
       return Response.json({ error: "invalid_session_guard_request" }, { status: 400 });
     }
 
