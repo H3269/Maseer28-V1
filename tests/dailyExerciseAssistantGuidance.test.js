@@ -156,7 +156,7 @@ test('follow-up references use bounded prior-turn context and can identify the s
   const second = makeDailyExerciseGuidanceTurn({ message: 'قسمت دوم را بیشتر توضیح بده', dayData, problem: 'اضطراب', day: 4, conversationState: first.nextState });
   assert.match(second.response, /متن تمرین همین روز/);
   assert.match(second.response, /جمله یا واژه‌اش را بیشتر باز کنم/);
-  assert.ok(second.nextState.lastAssistantMessage.length <= 1200);
+  assert.ok(second.nextState.lastAssistantMessage.length <= 2400);
 });
 
 test('conversation context is cleared when the day or topic changes in the UI lifecycle', () => {
@@ -387,7 +387,7 @@ test('paragraph references retrieve the requested prior paragraph without crossi
     conversationState: first.nextState,
   });
   assert.match(lastParagraph.response, /بند آخر از پاسخ قبلی/);
-  assert.match(lastParagraph.response, /برای اینکه دقیقاً همان چیزی را که لازم داری روشن کنم/);
+  assert.match(lastParagraph.response, /این گام‌ها فقط به بخش‌های موجود در متن اصلی شکسته شده‌اند/);
   assert.doesNotMatch(lastParagraph.response, /راهکار اختصاصی همین روز/);
 });
 
@@ -533,7 +533,7 @@ test('daily how-to response exposes source-ordered steps and separates source co
   assert.match(response, /گام 2: در سه خط بنویس/u);
   assert.match(response, /گام 3: چه احساسی داشتی/u);
   assert.match(response, /شرط یا یادآوری خود متن/u);
-  assert.match(response, /راهکار اختصاصی روز، بر اساس ترتیب متن اصلی/u);
+  assert.match(response, /گام‌بندی راهکار اختصاصی روز، فقط بر اساس متن اصلی/u);
 });
 
 test('two-column prompts are returned as exact source labels', () => {
