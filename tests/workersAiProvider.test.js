@@ -21,6 +21,10 @@ test("requires an AI binding and a trusted Cloudflare model identifier", () => {
     ai: { run: async () => ({ response: {} }) },
     model: "https://attacker.invalid/model",
   }), /invalid_workers_ai_model/);
+  assert.throws(() => createWorkersAiStructuredGenerator({
+    ai: { run: async () => ({ response: {} }) },
+    model: "@cf/qwen/qwen3-30b-a3b-fp8",
+  }), /unsupported_workers_ai_json_model/);
 });
 
 test("uses Workers AI JSON Schema mode with bounded generation settings", async () => {
@@ -91,7 +95,7 @@ test("rejects malformed generation input before calling the AI binding", async (
   assert.equal(calls, 0);
 });
 
-test("does not expose provider errors through its return value", async () => {
+test("propagates provider failures for the orchestration layer to sanitize", async () => {
   const generate = createWorkersAiStructuredGenerator({
     ai: { run: async () => { throw new Error("provider-internal-error"); } },
     model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
