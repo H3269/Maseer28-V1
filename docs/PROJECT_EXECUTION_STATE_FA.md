@@ -667,3 +667,31 @@
 
 ### گام بعدی واحد
 تکمیل dry-run فرمان `versions upload` در CI؛ پس از موفقیت آن، از مالک خواسته می‌شود فقط اتصال مخزن `H3269/Maseer28-V1` شاخه `main` را با تنظیمات دقیق سند سیاست در Cloudflare Dashboard انجام دهد. هیچ انتشار/ارتقای نسخه‌ای انجام ندهد.
+
+
+## ۱۵. تأیید نهایی فرمان بارگذاری نسخه غیرفعال و آمادگی اتصال مخزن (2026-11-04)
+
+### CI نهایی بخش Cloudflare
+- HEAD آزموده‌شده: `986d37cea1f58e2ed90f0ccb5f6b48c226f197f3`.
+- GitHub Actions run: `41801009543`.
+- نتیجه: `success`؛ تمام مراحل workflow موفق شدند.
+- آزمون جدید `wrangler versions upload --dry-run --config workers/assistant-api/wrangler.toml` موفق شد؛ هیچ نسخه‌ای upload نشد.
+- آزمون `wrangler deploy --dry-run`، integration test محلی Durable Object، ۳۲۲ unit test، اعتبارسنجی محتوا و topic registry، audit کیفیت، build تولیدی و سناریوهای Chromium نیز موفق شدند.
+- این run به حساب Cloudflare متصل نشد و هیچ تغییری در Production نداد.
+
+### آمادگی اقدام مالک
+- سیاست اتصال در `docs/CLOUDFLARE_WORKER_DEPLOYMENT_POLICY_FA.md` نهایی و با فرمان غیرانتشاری `versions upload` ثبت شده است.
+- اتصال مجاز است فقط با تنظیمات همان سند: مخزن `H3269/Maseer28-V1`، شاخه `main`، ریشه `workers/assistant-api`، Preview خاموش، watch path محدود و Deploy command برابر `npx --yes wrangler@4.157.0 versions upload --config wrangler.toml`.
+- تنظیم باید پیش از ذخیره بازبینی شود؛ اگر Dashboard فرمان `wrangler deploy` را نگه می‌دارد یا انتشار فعال را اجبار می‌کند، ذخیره/ادامه ممنوع است.
+- نتیجه `versions upload` باید فقط Version جدید و غیرفعال باشد. هیچ گزینه Deploy/Promote نباید انتخاب شود.
+
+### وضعیت واقعی پس از آزمون
+- اتصال GitHub به Cloudflare هنوز توسط مالک انجام نشده است.
+- هیچ Version واقعی در Cloudflare ایجاد نشده و هیچ Production Deployment انجام نشده است.
+- هیچ binding، migration، secret، provider، consent یا session فعال نشده است.
+- endpoint مکالمه همچنان 503 و fail-closed است؛ دستیار ابری هنوز برای کاربران فعال نیست.
+- بخش آماده‌سازی اتصال Cloudflare برای اقدام مالک آماده است؛ بخش فعال‌سازی دستیار/مدل، مرحله‌ای مستقل و هنوز انجام‌نشده است.
+
+**گام بعدی واحد:** مالک مخزن را با تنظیمات غیرانتشاری سند سیاست به Worker موجود در Cloudflare متصل کند و فقط نتیجه اتصال/Build را گزارش دهد؛ هیچ نسخه‌ای را فعال یا منتشر نکند. این بخش تا آن زمان در وضعیت «آماده اتصال، بدون انتشار» باقی می‌ماند.
+
+> این بخش، گام بعدی موقت ثبت‌شده در بخش ۱۴ را به‌روزرسانی می‌کند؛ dry-run فرمان `versions upload` اکنون در CI موفق شده است.
