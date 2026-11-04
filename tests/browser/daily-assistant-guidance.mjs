@@ -107,14 +107,14 @@ try {
   assert.equal(await composer.inputValue().then((value) => value.length), 2000, 'composer must enforce its 2000-character limit');
   await composer.fill('دیگه نمی‌کشم. همه‌چی تمومه.');
   await send.click();
-  await page.waitForFunction(() => /آیا همین الآن خطر فوری/.test(document.querySelector('.dailyExerciseAssistant .assistantMessage:last-of-type')?.innerText || ''));
+  await page.waitForFunction(() => { const replies = document.querySelectorAll('.dailyExerciseAssistant .assistantMessage'); return replies.length >= 4 && /آیا همین الآن خطر فوری/.test(replies[replies.length - 1]?.innerText || ''); });
   assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /آیا همین الآن خطر فوری/);
   assert.doesNotMatch(assistantReply, /متن تمرین همین روز/);
 
   await composer.fill('شاید، مطمئن نیستم');
   await send.click();
-  await page.waitForFunction(() => /کمک فوری انسانی/.test(document.querySelector('.dailyExerciseAssistant .assistantMessage:last-of-type')?.innerText || ''));
+  await page.waitForFunction(() => { const replies = document.querySelectorAll('.dailyExerciseAssistant .assistantMessage'); return replies.length >= 5 && /کمک فوری انسانی/.test(replies[replies.length - 1]?.innerText || ''); });
   assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /کمک فوری انسانی/);
   assert.doesNotMatch(assistantReply, /متن تمرین همین روز/);
