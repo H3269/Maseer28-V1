@@ -371,7 +371,7 @@ test('explicit sentence references retrieve the matching sentence from the prior
     conversationState: first.nextState,
   });
   assert.match(lastSentence.response, /جمله آخر از پاسخ قبلی/);
-  assert.match(lastSentence.response, /جمله یا مرحله‌ای از متن بالا/);
+  assert.match(lastSentence.response, /می‌خواهی همین بخش را توضیح بدهم/);
 });
 
 test('paragraph references retrieve the requested prior paragraph without crossing day content', () => {
