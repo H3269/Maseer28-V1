@@ -432,7 +432,7 @@ test('extended sentence ordinals retrieve the exact requested sentence and rejec
   assert.match(fourthSentence.response, /لطفاً جمله یا مرحله‌ای از متن بالا/u);
 
   const missingSentence = makeDailyExerciseGuidanceTurn({
-    message: 'جمله ششم',
+    message: 'جمله دهم',
     dayData,
     problem: 'اضطراب',
     day: 4,
@@ -454,7 +454,7 @@ test('extended paragraph ordinals retrieve existing paragraphs and clarify missi
   assert.match(fourthParagraph.response, /برای اینکه دقیقاً همان چیزی/u);
 
   const missingParagraph = makeDailyExerciseGuidanceTurn({
-    message: 'بند پنجم',
+    message: 'بند دهم',
     dayData,
     problem: 'اضطراب',
     day: 4,
