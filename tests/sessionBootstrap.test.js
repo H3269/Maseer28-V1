@@ -279,3 +279,21 @@ test("integrates real Telegram verification, keyed replay fingerprint, and signe
   assert.equal(replayInput.expiresAt, (NOW + 300 + 30) * 1000);
   assert.equal(JSON.stringify(replayInput).includes(initData), false);
 });
+
+test("fingerprint canonicalization prevents query-parameter reordering replay bypass", async () => {
+  const ordered = "auth_date=1800000000&query_id=abc&user=%7B%22id%22%3A1%7D&hash=" + "a".repeat(64);
+  const reordered = "hash=" + "a".repeat(64) + "&user=%7B%22id%22%3A1%7D&query_id=abc&auth_date=1800000000";
+  const first = await fingerprintMiniAppInitData({
+    platform: "telegram", initData: ordered, secret: ENV.REPLAY_FINGERPRINT_SECRET,
+  });
+  const second = await fingerprintMiniAppInitData({
+    platform: "telegram", initData: reordered, secret: ENV.REPLAY_FINGERPRINT_SECRET,
+  });
+
+  assert.equal(first, second);
+  await assert.rejects(() => fingerprintMiniAppInitData({
+    platform: "telegram",
+    initData: ordered + "&auth_date=1800000000",
+    secret: ENV.REPLAY_FINGERPRINT_SECRET,
+  }), /duplicate_init_data_fields/);
+});
