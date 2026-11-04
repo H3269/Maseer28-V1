@@ -59,6 +59,10 @@ jobs:
         if: ${{ steps.install.outcome == 'success' }}
         timeout-minutes: 3
         run: node tests/workers/assistantBootstrap.integration.mjs
+      - name: Exercise semantic conversation in local Cloudflare Workers runtime
+        if: ${{ steps.install.outcome == 'success' }}
+        timeout-minutes: 3
+        run: node tests/workers/semanticConversation.integration.mjs
       - name: Capture complete npm audit report
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm audit --json > npm-audit-report.json || true
