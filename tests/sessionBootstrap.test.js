@@ -98,7 +98,6 @@ test("fails closed for missing or weak secrets and missing replay binding adapte
     { env: { ...ENV, REPLAY_FINGERPRINT_SECRET: "short" } },
     { env: { ...ENV, SESSION_SIGNING_SECRET: "short" } },
     { env: { TELEGRAM_BOT_TOKEN: ENV.TELEGRAM_BOT_TOKEN } },
-    { env: ENV, consumeReplayMarker: undefined },
   ]) {
     const deps = dependencies();
     const result = await bootstrapAssistantSession({
@@ -186,4 +185,19 @@ test("fingerprinting rejects unsupported platforms, oversized data, and weak sec
   await assert.rejects(() => fingerprintMiniAppInitData({
     platform: "telegram", initData: INIT_DATA, secret: "weak",
   }), /invalid_replay_fingerprint_secret/);
+});
+
+test("fails closed when the replay adapter is absent", async () => {
+  const deps = dependencies();
+  const result = await bootstrapAssistantSession({
+    platform: "telegram",
+    initData: INIT_DATA,
+    env: ENV,
+    nowSeconds: NOW,
+    verifyInitData: deps.verifyInitData,
+    issueToken: deps.issueToken,
+  });
+
+  assert.deepEqual(result, { ok: false, error: "assistant_bootstrap_unavailable", status: 503 });
+  assert.deepEqual(deps.events, []);
 });
