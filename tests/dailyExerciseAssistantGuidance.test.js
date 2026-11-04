@@ -545,6 +545,7 @@ test('two-column prompts are returned as exact source labels', () => {
   });
   assert.match(response, /ستون 1: «چه احساسی داشتم/u);
   assert.match(response, /ستون 2: «چه کاری انجام دادم/u);
+  assert.match(response, /فقط نمونه امن انتخاب کن/u);
 });
 
 test('example requests create a blank template without inventing a personal scenario', () => {
