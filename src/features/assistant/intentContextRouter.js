@@ -181,9 +181,12 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
     || /(?:با چاقو تهدیدم می کند|الان مرا می زند|الان دارد مرا می زند|الان منو می زند|الان داره منو می زند|الان داره منو می زنه|در حال ضرب و شتم من است|الان خفه ام می کند)/.test(userNormalized);
   const correctionMarkers = [...raw.matchAll(/(?:منظورم(?:\s+این\s+(?:است|بود)(?:\s+که)?)?|اصلاح می‌کنم|اصلاح می کنم)/gu)];
   const lastCorrection = correctionMarkers.at(-1);
-  const semanticEvidenceText = lastCorrection
+  const correctedRemainder = lastCorrection
     ? raw.slice(lastCorrection.index + lastCorrection[0].length).replace(/^[،:؛\s]+/, '').trim()
-    : userAttributedText;
+    : null;
+  const semanticEvidenceText = correctedRemainder === null
+    ? userAttributedText
+    : correctedRemainder.replace(/^(?:این\s+نبود(?:\s+که)?|نه\s+اینکه)\s*[^،؛.!؟]*[،؛.!؟]?\s*/u, '').trim();
   const clearlyRejectedThirdPartyQuote = quotedSafetyMatches.length === 0
     && /(?:دوستم|مادرم|پدرم|همسرم|مدیرم|او)\s+گفت/.test(raw)
     && /موافق نیستم|قبول ندارم|این حرف درست نیست/.test(normalized);
