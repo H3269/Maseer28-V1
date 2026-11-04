@@ -184,7 +184,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
   let correctedRemainder = lastCorrection
     ? raw.slice(lastCorrection.index + lastCorrection[0].length).replace(/^[،:؛\s]+/, '').trim()
     : null;
-  if (lastCorrection && (lastCorrection[0].includes('این نبود') || lastCorrection[0].startsWith('نه'))) {
+  if (lastCorrection && (lastCorrection[0].includes('این نبود که') || lastCorrection[0].startsWith('نه'))) {
     // The clause explicitly introduced as rejected is not current evidence.
     correctedRemainder = correctedRemainder.replace(/^[^،؛.!؟]*[،؛.!؟]?\s*/u, '').trim();
   }
