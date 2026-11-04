@@ -99,7 +99,10 @@ test('prefers the adapted day content over the raw day content', () => {
     actionText: 'اقدام متناسب‌شده امروز',
   };
   const selected = selectDailyExerciseGuidanceData({ guidanceData: adapted, data: raw });
-  assert.equal(selected, adapted);
+  assert.notEqual(selected, adapted);
+  assert.equal(selected.exercise, adapted.exercise);
+  assert.equal(selected.actionText, adapted.actionText);
+  assert.equal(selected.adaptation, '');
 
   const response = makeDailyExerciseGuidance({
     message: 'چطور انجامش بدم؟',
