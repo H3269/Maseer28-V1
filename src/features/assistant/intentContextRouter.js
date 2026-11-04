@@ -109,9 +109,9 @@ function hasNegatedTopic(value, phrase) {
     return /^\s*(?:را\s+)?(?:ندارم|نیستم|نیست|نبود|نبوده|(?:\S+\s+){0,2}نمی\s+\S+)/.test(after);
   };
 
-  // A phrase repeated in both a negated and an affirmative clause must not
-  // be discarded merely because its first occurrence was negated.
-  return positions.every(isNegatedAt);
+  // The latest occurrence resolves an earlier statement when the user
+  // explicitly corrects or reverses it; a later affirmative occurrence wins.
+  return isNegatedAt(positions[positions.length - 1]);
 }
 
 function findNegatedTopicIds(value) {
