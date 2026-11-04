@@ -13,7 +13,7 @@ const TEST_ENV = Object.freeze({
   ASSISTANT_PREVIEW_ENABLED: "true",
   ASSISTANT_PREVIEW_ACCESS_CODE: "local-preview-access-code-32-bytes-minimum",
   PREVIEW_SESSION_SIGNING_SECRET: "local-preview-session-signing-secret-32-bytes",
-  ASSISTANT_CONSENT_POLICY_VERSION: "test-consent-v1",
+  ASSISTANT_CONSENT_POLICY_VERSION: "test-consent-v1",\n  PREVIEW_ACCESS_RATE_LIMIT_SECRET: "local-preview-rate-limit-secret-32-bytes",
 });
 
 function json(payload, status = 200) {
@@ -39,7 +39,7 @@ async function readInput(request) {
  * Local-only harness. The access code, signing secret, and mock AI binding are
  * synthetic fixtures and must never be wired into the production Worker.
  */
-export class AssistantPreviewSessionGuardTestDO extends AssistantPreviewSessionGuardDurableObject {}
+export class AssistantPreviewSessionGuardTestDO extends AssistantPreviewSessionGuardDurableObject {}\nexport class AssistantPreviewAccessRateLimitTestDO extends AssistantPreviewAccessRateLimitDurableObject {}
 
 export default {
   async fetch(request, env) {
