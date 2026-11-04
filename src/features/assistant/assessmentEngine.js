@@ -117,15 +117,34 @@ function inferredGoal(intentLabel) {
   })[intentLabel] ?? null;
 }
 
+function buildConversationEvidenceText(session) {
+  const answers = session.answers || {};
+  const contextAnswers = ['impact', 'duration', 'goal']
+    .map((id) => answers[id])
+    .filter((value) => typeof value === 'string' && value.trim());
+
+  // A clearly signalled correction supersedes the earlier topic wording.
+  // Otherwise, retain the user's separate statements so new topics mentioned
+  // while describing impact, duration, or goals are not silently discarded.
+  const correction = [...contextAnswers].reverse().find((value) =>
+    /(?:منظورم|اصلاح می‌کنم|اصلاح می کنم|در واقع|موضوع اصلی من)/u.test(normalize(value))
+  );
+  if (correction) return correction.trim();
+  return [answers.open_problem, ...contextAnswers]
+    .filter((value) => typeof value === 'string' && value.trim())
+    .join('\n');
+}
+
 function updateSemanticContext(session, requestId) {
   const opening = session.answers.open_problem || '';
+  const evidenceText = buildConversationEvidenceText(session);
   const facts = {
     impact: isDeclinedAnswer(session.answers.impact) ? null : (session.answers.impact || (hasImpactEvidence(opening) ? opening : null)),
     duration: isDeclinedAnswer(session.answers.duration) ? null : (session.answers.duration || (hasDurationEvidence(opening) ? opening : null)),
     user_goal: isDeclinedAnswer(session.answers.goal) ? null : (session.answers.goal || null),
   };
   session.semantic_intake = routeSemanticIntake({
-    text: opening,
+    text: evidenceText,
     requestId,
     priorContext: { situational_facts: facts },
   });
@@ -133,7 +152,7 @@ function updateSemanticContext(session, requestId) {
     facts.user_goal = inferredGoal(session.semantic_intake.intent.label);
     if (facts.user_goal) {
       session.semantic_intake = routeSemanticIntake({
-        text: opening,
+        text: evidenceText,
         requestId,
         priorContext: { situational_facts: facts },
       });
