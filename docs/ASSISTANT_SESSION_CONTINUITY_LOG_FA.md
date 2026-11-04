@@ -75,3 +75,14 @@ CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` مو�
 - commit بعدی `4fc00c0` صدور token را به پاسخ صریح `created:true` محدود کرد؛ CI run `41828926831` هنگام ثبت در حال اجرا بود.
 - محدودیت: rate limit فعلی per-session است و تلاش‌های ناموفق برای access code یا ساخت چند نشست را globally محدود نمی‌کند. احراز هویت واقعی/consent ledger وجود ندارد. AI واقعی وصل نیست. هیچ deployment یا تغییر Production انجام نشده است.
 - جزئیات در بخش ۲۲ `docs/PROJECT_EXECUTION_STATE_FA.md` ثبت شد. گام بعدی: تکمیل CI، سپس رابط مستقل دستیار؛ عدم تغییر App/journey تا دریافت مجوز صریح در صورت نیاز به نقطه اتصال.
+
+
+## ادامه 2026-11-04 — limiter سراسری Preview و تأیید CI
+- HEAD کد/تست پیش از مستندسازی: 37a823a1300bce62ff9faa4dffceb0560bacacd4.
+- ماژول previewAccessRateLimit.js و SQLite Durable Object مشترک افزوده شد: حداکثر ۵ تلاش ایجاد نشست در ۱۵ دقیقه برای هر مبدأ؛ تلاش ناموفق نیز شمرده می‌شود؛ فقط HMAC-SHA256 digest ذخیره می‌شود و IP خام ذخیره نمی‌شود؛ پاک‌سازی پس از ۲۴ ساعت.
+- limiter در harness محلی مسیر /session وصل است، اما route اصلی Worker از آن استفاده نمی‌کند. binding/migration فقط در پیکربندی تعریف شده و deploy نشده است.
+- decoder نشست Preview اکنون Base64URL canonical را الزام می‌کند؛ آزمون tampering با تغییر بیت مؤثر امضا اجرا می‌شود.
+- CI run 41830911814 روی SHA بالا موفق: ۳۷۹/۳۷۹ تست، صفر vulnerability در npm audit، Wrangler dry-runs، سه runtime integration، validation موضوع/محتوا، ممیزی کیفیت، build و Chromium scenarios موفق.
+- چند شکست میانی به‌ترتیب از syntax در harness، فرض نادرست درباره هدر IP در Wrangler localhost و تغییر padding bits به‌جای بیت امضا بود؛ همگی اصلاح شدند و فقط اجرای نهایی بالا مبنای پذیرش است.
+- هیچ inference واقعی، deployment Preview، Production activation یا تغییر ترافیک انجام نشده است؛ API اصلی همچنان 503 و fail-closed است؛ UI مرورگری هنوز ساخته نشده است.
+- گام بعدی: رابط مستقل assistant-only و مسیر Preview؛ بدون تغییر App/journey و بدون دور زدن گیت انتشار Pages. هر نیاز به تغییر App یا workflow اصلی قبل از اقدام برای اجازه صریح مالک متوقف می‌شود.
