@@ -11,6 +11,7 @@ const QUESTION = {
   clarify: { id: 'clarify_example', stage: 'differential_clarification', prompt: 'برای اینکه اشتباه دسته‌بندی نکنم، یک موقعیت مشخص و اخیر را تعریف می‌کنی؟ در آن لحظه چه اتفاقی افتاد، چه فکری از ذهنت گذشت و چه احساسی داشتی؟' },
   summary: { id: 'summary_confirmation', stage: 'collaborative_summary', prompt: 'این خلاصه تا چه اندازه تجربه‌ات را درست بازتاب می‌دهد؟ چه چیزی را باید اصلاح یا اضافه کنم؟' },
   summary_revision: { id: 'summary_revision', stage: 'collaborative_summary', prompt: 'کدام بخش را دقیقاً اصلاح کنم: شرح مسئله، اثر، مدت، هدف یا موضوع احتمالی؟ لطفاً اصلاح را با زبان خودت بنویس.' },
+  topic_priority: { id: 'topic_priority', stage: 'topic_disambiguation', prompt: 'خلاصه را تأیید کردی، اما هنوز چند موضوع محتمل داریم. کدام‌یک در حال حاضر مسئله اصلی توست؟ اگر هر دو مهم‌اند یا مطمئن نیستی، همان را بگو؛ من خودم اولویت را انتخاب نمی‌کنم.' },
   safety_uncertain: { id: 'safety_clarification', stage: 'safety_check', prompt: 'منظورت از پاسخ قبلی برایم روشن نیست. آیا در همین الآن قصد، برنامه یا احتمال عملی آسیب‌زدن به خودت یا دیگری وجود دارد؟ می‌توانی بگویی «بله»، «نه» یا «مطمئن نیستم».' },
 };
 
@@ -129,8 +130,11 @@ function buildConversationEvidenceText(session) {
   // later answers remain part of the context and can add further evidence.
   const isExplicitCorrection = (value) =>
     /(?:منظورم|اصلاح می‌کنم|اصلاح می کنم|موضوع اصلی من)/u.test(normalize(value));
-  const correctionIndex = evidence.findLastIndex(([, value]) => isExplicitCorrection(value));
-  const relevantEvidence = correctionIndex >= 0 ? evidence.slice(correctionIndex) : evidence;
+  const expandedEvidence = evidence.flatMap(([id, value]) => id === 'clarify_example'
+    ? [...(session.clarification_history ?? []).map((item) => ['clarify_example', item]), [id, value]]
+    : [[id, value]]);
+  const correctionIndex = expandedEvidence.findLastIndex(([, value]) => isExplicitCorrection(value));
+  const relevantEvidence = correctionIndex >= 0 ? expandedEvidence.slice(correctionIndex) : expandedEvidence;
   return relevantEvidence.map(([, value]) => value.trim()).join('\n');
 }
 
@@ -196,7 +200,7 @@ function chooseNextIntakeQuestion(session) {
   const topics = session.semantic_intake?.topic_candidates ?? [];
   const ambiguous = session.semantic_intake?.intent?.ambiguity === 'high' || topics.length !== 1;
   const needsExample = !hasConcreteExample(opening);
-  if ((ambiguous || needsExample) && (session.clarification_attempts ?? 0) < 1) {
+  if ((ambiguous || needsExample) && (session.clarification_attempts ?? 0) < 2) {
     const prompt = session.semantic_intake?.next_question?.purpose === 'topic_disambiguation'
       ? session.semantic_intake.next_question.text
       : QUESTION.clarify.prompt;
@@ -218,6 +222,7 @@ export function createAssessmentSession({ localOnly = true } = {}) {
     candidate_topics: [],
     semantic_intake: null,
     clarification_attempts: 0,
+    clarification_history: [],
     summary_revision_count: 0,
     summary: null,
     processing: 'local_in_memory_only',
@@ -242,14 +247,16 @@ export function submitAssessmentAnswer(session, answer) {
     || !Array.isArray(session.candidate_topics) || session.candidate_topics.length > 3
     || !session.candidate_topics.every((item) => item && validTopicIds.test(item.topic_id))
     || !validSafetyStates.includes(session.safety_state)
-    || !Number.isInteger(session.clarification_attempts) || session.clarification_attempts < 0 || session.clarification_attempts > 1
+    || !Number.isInteger(session.clarification_attempts) || session.clarification_attempts < 0 || session.clarification_attempts > 2
+    || !Array.isArray(session.clarification_history ?? []) || (session.clarification_history ?? []).length > 1
+    || !(session.clarification_history ?? []).every((item) => typeof item === 'string' && item.length <= 3000)
     || !Number.isInteger(session.summary_revision_count) || session.summary_revision_count < 0 || session.summary_revision_count > 2) {
     throw new Error('داده‌های داخلی جلسه معتبر نیستند؛ برای جلوگیری از ادامه با وضعیت خراب، جلسه متوقف شد.');
   }
   const value = String(answer ?? '').trim();
   if (!value) throw new Error('پاسخ خالی است؛ می‌توانی بگویی «رد می‌کنم» یا جلسه را متوقف کنی.');
   if (value.length > 3000) throw new Error('پاسخ بیش از حد طولانی است؛ حداکثر ۳۰۰۰ نویسه مجاز است.');
-  const next = { ...session, answers: { ...session.answers }, candidate_topics: [...session.candidate_topics], summary: session.summary ? { ...session.summary } : null };
+  const next = { ...session, answers: { ...session.answers }, candidate_topics: [...session.candidate_topics], clarification_history: [...(session.clarification_history ?? [])], summary: session.summary ? { ...session.summary } : null };
   const questionId = next.current_question.id;
   next.answers[questionId] = value;
 
@@ -418,6 +425,9 @@ export function submitAssessmentAnswer(session, answer) {
     next.current_question = chooseNextIntakeQuestion(next);
     if (next.current_question.id === 'summary_confirmation') buildAssessmentSummary(next);
   } else if (questionId === 'clarify_example') {
+    if (session.answers.clarify_example) {
+      next.clarification_history = [...(session.clarification_history ?? []), session.answers.clarify_example].slice(-1);
+    }
     next.clarification_attempts = (next.clarification_attempts ?? 0) + 1;
     const isCorrection = /منظورم|اصلاح می‌کنم|اصلاح می کنم|اشتباه برداشت|نه اینکه/.test(normalize(value));
     const clarificationText = isCorrection ? value : buildConversationEvidenceText(next);
@@ -443,6 +453,16 @@ export function submitAssessmentAnswer(session, answer) {
     }));
     next.candidate_topics = extra.slice(0, 3);
     if (next.candidate_topics.length === 0) next.candidate_topics = [{ topic_id: 'T34', matched_phrases: [], status: 'needs_clarification' }];
+    const unresolvedTopics = next.candidate_topics.length !== 1
+      || next.candidate_topics[0]?.status === 'needs_clarification'
+      || (next.semantic_intake.intent.ambiguity === 'high' && !isCorrection);
+    if (unresolvedTopics && next.clarification_attempts < 2) {
+      next.current_question = {
+        ...QUESTION.clarify,
+        prompt: 'هنوز بیش از یک برداشت یا ابهام باقی است. کدام موقعیت یا پیامد مشخص‌تر نشان می‌دهد کدام موضوع برایت مهم‌تر است؟ اگر واقعاً نمی‌دانی یا هر دو به یک اندازه مهم‌اند، صریح بگو.',
+      };
+      return next;
+    }
     buildAssessmentSummary(next, isCorrection ? null : value);
     next.current_question = QUESTION.summary;
   } else if (questionId === 'summary_confirmation') {
@@ -451,6 +471,13 @@ export function submitAssessmentAnswer(session, answer) {
     const hasCorrectionCue = /اما|ولی|درست نیست|اشتباه|اصلاح|کمتر گفتم|بیشتر گفتم|جا افتاده|جا انداختم/.test(normalizedFeedback);
     const explicitlyConfirmed = /^(?:بله|آره|اره)(?:[.!؟،\s].*(?:دقیق است|درست است|همین است|موافقم|کامل است))?$/.test(normalizedFeedback) || /^(?:تایید|تایید شده|درست است|همین است|موافقم|کامل است|دقیق است|فعلا همین)[.!؟،\s]*$/.test(normalizedFeedback);
     if (explicitlyConfirmed && !hasCorrectionCue) {
+      const unresolvedTopics = next.semantic_intake?.intent?.ambiguity === 'high'
+        || next.candidate_topics.length !== 1
+        || next.candidate_topics[0]?.status === 'needs_clarification';
+      if (unresolvedTopics) {
+        next.current_question = QUESTION.topic_priority;
+        return next;
+      }
       next.status = 'completed';
       next.current_question = null;
       next.next_step = {
@@ -470,6 +497,45 @@ export function submitAssessmentAnswer(session, answer) {
         message: 'خلاصه را تأییدشده ثبت نمی‌کنم. گفتگو برای بازبینی بیشتر متوقف شده تا برداشت نادرست به مرحله بعد منتقل نشود.',
       };
     }
+  } else if (questionId === 'topic_priority') {
+    next.answers.topic_priority = value;
+    const normalizedPriority = normalize(value);
+    const explicitBoth = /(?:هر دو|هرکدام|هر کدام|به یک اندازه|همزمان هر دو)/.test(normalizedPriority);
+    if (explicitBoth && next.candidate_topics.length > 1) {
+      next.candidate_topics = next.candidate_topics.map((item) => ({ ...item, status: 'user_confirmed_relevant' }));
+      next.summary = { ...next.summary, candidate_topics: next.candidate_topics.map(({ topic_id, status }) => ({ topic_id, status })) };
+      next.status = 'completed_with_multiple_topics';
+      next.current_question = null;
+      next.next_step = {
+        content_available: false,
+        reason: 'کاربر چند موضوع را مرتبط دانسته، اما موضوع واحدی را به‌عنوان اولویت انتخاب نکرده است.',
+        message: 'هر دو موضوع را به‌عنوان موارد مرتبط نگه می‌دارم و هیچ‌کدام را خودکار اولویت‌بندی نمی‌کنم. تا وقتی اولویت یا مسیر مناسب روشن نشود، تمرین یا مداخله‌ای پیشنهاد نمی‌دهم.',
+      };
+      return next;
+    }
+    const selected = routeSemanticIntake({ text: value, requestId: 'assessment-explicit-topic-priority' });
+    const existingIds = new Set(next.candidate_topics.map((item) => item.topic_id));
+    const selectedIds = [...new Set(selected.topic_candidates.map((item) => item.topic_id).filter((id) => existingIds.has(id)))];
+    if (selectedIds.length === 1) {
+      next.candidate_topics = next.candidate_topics.filter((item) => item.topic_id === selectedIds[0]).map((item) => ({ ...item, status: 'user_selected_priority' }));
+      next.semantic_intake = { ...next.semantic_intake, topic_candidates: next.semantic_intake.topic_candidates.filter((item) => item.topic_id === selectedIds[0]) };
+      next.summary = { ...next.summary, candidate_topics: next.candidate_topics.map(({ topic_id, status }) => ({ topic_id, status })) };
+      next.status = 'completed';
+      next.current_question = null;
+      next.next_step = {
+        content_available: false,
+        reason: 'موضوع اولویت‌دار را خود کاربر صریحاً مشخص کرده است؛ محتوای تمرین تأییدشده هنوز متصل نیست.',
+        recommendation: 'اولویت فقط بر اساس انتخاب صریح کاربر ثبت شده و به معنی تشخیص یا تأیید علمی نیست.',
+      };
+      return next;
+    }
+    next.status = 'topic_priority_unresolved';
+    next.current_question = null;
+    next.next_step = {
+      content_available: false,
+      reason: 'اولویت موضوعی پس از دو دور روشن‌سازی و پرسش مستقیم مشخص نشد.',
+      message: 'موضوعی را حدس نمی‌زنم یا انتخاب نمی‌کنم. هر دو فرضیه حفظ می‌شوند و برای تعیین اولویت به گفت‌وگوی بیشتر نیاز است.',
+    };
   } else if (questionId === 'summary_revision') {
     next.answers.summary_revision = value;
     const normalizedRevision = normalize(value);
@@ -517,6 +583,7 @@ export function stopAssessment(session) {
     candidate_topics: [],
     semantic_intake: null,
     clarification_attempts: 0,
+    clarification_history: [],
     summary_revision_count: 0,
     summary: null,
     referral: undefined,
