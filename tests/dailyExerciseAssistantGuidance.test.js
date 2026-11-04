@@ -116,3 +116,49 @@ test('falls back to raw day content only when adapted content is unavailable', (
   const raw = { exercise: 'تمرین خام', actionText: 'اقدام خام' };
   assert.equal(selectDailyExerciseGuidanceData({ guidanceData: null, data: raw }), raw);
 });
+
+import { makeDailyExerciseGuidanceTurn } from '../src/features/assistant/dailyExerciseAssistantGuidance.js';
+
+test('safety clarification state persists across turns and does not fall through to exercise guidance', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'دیگه نمی‌کشم. همه‌چی تمومه.', dayData, problem: 'اضطراب', day: 4 });
+  assert.equal(first.nextState.safetyStatus, 'pending');
+  const second = makeDailyExerciseGuidanceTurn({ message: 'نمی‌دانم', dayData, problem: 'اضطراب', day: 4, conversationState: first.nextState });
+  assert.equal(second.nextState.safetyStatus, 'pending');
+  assert.match(second.response, /خطر فوری/);
+  assert.doesNotMatch(second.response, /سه موقعیت اخیر/);
+  const third = makeDailyExerciseGuidanceTurn({ message: 'شاید، مطمئن نیستم', dayData, problem: 'اضطراب', day: 4, conversationState: second.nextState });
+  assert.equal(third.nextState.safetyStatus, 'handoff');
+  assert.match(third.response, /کمک انسانی/);
+  const fourth = makeDailyExerciseGuidanceTurn({ message: 'حالا تمرین را توضیح بده', dayData, problem: 'اضطراب', day: 4, conversationState: third.nextState });
+  assert.equal(fourth.nextState.safetyStatus, 'handoff');
+  assert.doesNotMatch(fourth.response, /سه موقعیت اخیر/);
+});
+
+test('a clear negative answer resolves the pending immediate-danger check without inventing facts', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'دیگه نمی‌کشم.', dayData, problem: 'اضطراب', day: 4 });
+  const second = makeDailyExerciseGuidanceTurn({ message: 'نه، الان خطر فوری ندارم', dayData, problem: 'اضطراب', day: 4, conversationState: first.nextState });
+  assert.equal(second.nextState.safetyStatus, 'cleared');
+  assert.match(second.response, /خطر فوری یا قصد و برنامه عملی نداری/);
+});
+
+test('a clear yes or uncertain answer to a safety check moves to human-help handoff', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'دیگه نمی‌کشم.', dayData, problem: 'اضطراب', day: 4 });
+  const second = makeDailyExerciseGuidanceTurn({ message: 'بله، قصد دارم', dayData, problem: 'اضطراب', day: 4, conversationState: first.nextState });
+  assert.equal(second.nextState.safetyStatus, 'handoff');
+  assert.match(second.response, /کمک فوری انسانی/);
+});
+
+test('follow-up references use bounded prior-turn context and can identify the second paragraph', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'چطور انجامش بدم؟', dayData, problem: 'اضطراب', day: 4 });
+  const second = makeDailyExerciseGuidanceTurn({ message: 'قسمت دوم را بیشتر توضیح بده', dayData, problem: 'اضطراب', day: 4, conversationState: first.nextState });
+  assert.match(second.response, /راهکار اختصاصی همین روز/);
+  assert.match(second.response, /جمله یا واژه‌اش را بیشتر باز کنم/);
+  assert.ok(second.nextState.lastAssistantMessage.length <= 1200);
+});
+
+test('conversation context is cleared when the day or topic changes in the UI lifecycle', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'چطور انجامش بدم؟', dayData, problem: 'اضطراب', day: 4 });
+  const fresh = makeDailyExerciseGuidanceTurn({ message: 'بیشتر توضیح بده', dayData, problem: 'خشم', day: 5, conversationState: { safetyStatus: 'none' } });
+  assert.equal(fresh.nextState.lastTopic, 'خشم');
+  assert.notEqual(fresh.nextState.lastAssistantMessage, first.nextState.lastAssistantMessage);
+});
