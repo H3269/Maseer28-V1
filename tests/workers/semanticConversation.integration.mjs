@@ -183,7 +183,36 @@ try {
   assert.equal(malformed.status, 502);
   assert.equal(malformed.body.error, "assistant_model_output_invalid");
 
-  console.log("Semantic conversation runtime integration passed: short-lived Preview access, explicit consent, token verification, independent safety precedence, topic confirmation, ambiguity handling, and fail-closed knowledge/model output.");
+
+  stage = "per-session rate limit in SQLite Durable Object";
+  const limitedSession = await post("/session", { accessCode: ACCESS_CODE, consent: CONSENT });
+  assert.equal(limitedSession.status, 200);
+  for (let index = 0; index < 20; index += 1) {
+    const allowed = await post("/turn", {
+      message: "در محل کار از قضاوت دیگران می‌ترسم.",
+      mockOutput: validOutput,
+    }, limitedSession.body.token);
+    assert.equal(allowed.status, 200);
+  }
+  const blocked = await post("/turn", {
+    message: "در محل کار از قضاوت دیگران می‌ترسم.",
+    mockOutput: validOutput,
+  }, limitedSession.body.token);
+  assert.equal(blocked.status, 401);
+
+  stage = "immediate session revocation";
+  const revocableSession = await post("/session", { accessCode: ACCESS_CODE, consent: CONSENT });
+  assert.equal(revocableSession.status, 200);
+  const revoked = await post("/revoke", {}, revocableSession.body.token);
+  assert.equal(revoked.status, 200);
+  assert.equal(revoked.body.revoked, true);
+  const afterRevoke = await post("/turn", {
+    message: "در محل کار از قضاوت دیگران می‌ترسم.",
+    mockOutput: validOutput,
+  }, revocableSession.body.token);
+  assert.equal(afterRevoke.status, 401);
+
+  console.log("Semantic conversation runtime integration passed: short-lived Preview access, explicit consent, token verification, SQLite-backed rate limiting and revocation, independent safety precedence, topic confirmation, ambiguity handling, and fail-closed knowledge/model output.");
 } catch (error) {
   console.error(`Semantic conversation integration failed during: ${stage}`);
   console.error(error);
