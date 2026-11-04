@@ -51,7 +51,7 @@ function result(response, state, userMessage = '') {
 }
 
 function splitPriorAssistantText(text) {
-  return String(text || '').split(/\\n\\s*\\n/u)
+  return String(text || '').split(/\n\s*\n/u)
     .map((paragraph) => paragraph.trim())
     .filter(Boolean)
     .map((paragraph) => ({
@@ -74,24 +74,24 @@ function priorTextReference(message, state) {
   const value = normalize(message);
   const blocks = splitPriorAssistantText(state.lastAssistantMessage);
   const sentences = blocks.flatMap((block) => block.sentences);
-  const sentenceMatch = value.match(/^(?:جمله)\\s*(اول|اولین|یک|1|دوم|دومین|دو|2|سوم|سومین|سه|3|آخر|آخرین)(?:\\s+(?:رو|را))?(?:\\s+بگو)?$/u);
+  const sentenceMatch = value.match(/^جمله\s*(اول|اولین|یک|1|دوم|دومین|دو|2|سوم|سومین|سه|3|آخر|آخرین)(?:\s+(?:رو|را))?(?:\s+بگو)?$/u);
   if (sentenceMatch) {
     const index = ordinalIndex(sentenceMatch[1], sentences.length);
     return index >= 0 && sentences[index]
-      ? { label: sentenceMatch[1].startsWith('آخر') ? 'جمله آخر' : `جمله ${index + 1}`, text: sentences[index] }
+      ? { label: sentenceMatch[1].startsWith('آخر') ? 'جمله آخر' : \`جمله \${index + 1}\`, text: sentences[index] }
       : { clarification: 'در پاسخ قبلی به‌اندازه کافی جمله برای این ارجاع وجود ندارد. لطفاً چند کلمه از جمله موردنظرت را بنویس.' };
   }
 
-  const paragraphMatch = value.match(/^(?:بند|پاراگراف|قسمت|بخش)\\s*(اول|اولین|یک|1|دوم|دومین|دو|2|سوم|سومین|سه|3|آخر|آخرین)(?:\\s+(?:رو|را))?(?:\\s+بگو)?$/u);
+  const paragraphMatch = value.match(/^(?:بند|پاراگراف|قسمت|بخش)\s*(اول|اولین|یک|1|دوم|دومین|دو|2|سوم|سومین|سه|3|آخر|آخرین)(?:\s+(?:رو|را))?(?:\s+بگو)?$/u);
   if (paragraphMatch) {
     const index = ordinalIndex(paragraphMatch[1], blocks.length);
     return index >= 0 && blocks[index]
-      ? { label: paragraphMatch[1].startsWith('آخر') ? 'بند آخر' : `بند ${index + 1}`, text: blocks[index].paragraph }
+      ? { label: paragraphMatch[1].startsWith('آخر') ? 'بند آخر' : \`بند \${index + 1}\`, text: blocks[index].paragraph }
       : { clarification: 'در پاسخ قبلی چنین بندی وجود ندارد. لطفاً چند کلمه از بخش موردنظرت را بنویس.' };
   }
 
-  if (/^(?:همون|همان)\\s+جمله(?:\\s+(?:قبلی|رو\\s+بگو|را\\s+بگو))?$/u.test(value)
-      || /^(?:اون|آن)\\s+یکی(?:\\s+(?:رو\\s+بگو|را\\s+بگو))?$/u.test(value)) {
+  if (/^(?:همون|همان)\s+جمله(?:\s+(?:قبلی|رو\s+بگو|را\s+بگو))?$/u.test(value)
+      || /^(?:اون|آن)\s+یکی(?:\s+(?:رو\s+بگو|را\s+بگو))?$/u.test(value)) {
     return { clarification: 'منظورت از «همون جمله» یا «اون یکی» دقیقاً کدام جمله است؟ چند کلمه از آن را بنویس یا بگو جمله اول، دوم یا آخر.' };
   }
   return null;
