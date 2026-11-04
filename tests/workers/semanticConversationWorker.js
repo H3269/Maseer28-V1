@@ -1,4 +1,5 @@
 import { runSemanticConversationTurn } from "../../workers/assistant-api/src/semanticConversation.js";
+import { createWorkersAiStructuredGenerator } from "../../workers/assistant-api/src/workersAiProvider.js";
 
 function json(payload, status = 200) {
   return new Response(JSON.stringify(payload), {
@@ -40,7 +41,12 @@ export default {
       // This is a test-only harness; production must inject a server-verified
       // consent result and must never trust a client boolean.
       consentVerified: input.consentVerified === true,
-      generateStructuredTurn: async () => input.mockOutput,
+      generateStructuredTurn: createWorkersAiStructuredGenerator({
+        model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+        ai: {
+          run: async () => ({ response: input.mockOutput }),
+        },
+      }),
     });
     return json(result, result.ok ? 200 : result.status);
   },
