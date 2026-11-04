@@ -99,6 +99,8 @@ test("redacts common direct identifiers from current text, history, and model su
     consentVerified: verifiedConsent,
     generateStructuredTurn: generator(validModelResult({
       summary: "ایمیل ali@example.com و شماره 09123456789 در متن بود.",
+      needs_clarification: true,
+      clarifying_question: "می‌توانی یک نمونه مشخص بگویی؟",
     }), calls),
   });
   const sentText = calls[0].messages.map((item) => item.content).join("\\n");
