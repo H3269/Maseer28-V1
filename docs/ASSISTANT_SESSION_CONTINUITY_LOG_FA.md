@@ -1,13 +1,37 @@
 # دفتر تداوم جلسات دستیار مسیر۲۸
 
-هدف: ساخت دستیار مکالمه‌ای هوشمند داخل اپ مسیر۲۸. فقط مخزن H3269/Maseer28-V1 و شاخه main. بخش موجود اپ، ۳۴ موضوع و ۹۵۲ تمرین خارج از دامنه تغییرند.
+هدف: ساخت دستیار مکالمه‌ای هوشمند، زمینه‌محور و ایمن داخل اپ مسیر۲۸. مخزن مرجع `H3269/Maseer28-V1` و شاخه مجاز فقط `main` است. بخش موجود اپ، journey، پروفایل، ۳۴ موضوع و ۹۵۲ تمرین خارج از دامنه تغییرند.
 
-آخرین HEAD شاخه main: a9ae12cac9789f923246081e699bb937ed6fcc6c (ثبت مستندات مرحله adapter). آخرین HEAD کد/تست دستیار با CI کامل موفق: b6d2495c86ec6f1d9086c3d5e0b3b626908dc1a8.
+## وضعیت زنده مخزن
+- آخرین HEAD ثبت‌شده پیش از این به‌روزرسانی: `6e42e71694c757669328f4461e7cc208d29f57d0` (ثبت نتایج bootstrap محلی).
+- آخرین commit کد/تست با CI کامل موفق: `fb3eabe7a2e6b1d8de3ef0b53da12e93270627d0`.
+- CI run `41823268749`: نتیجه نهایی `success`.
+- برای شروع هر نشست بعدی، HEAD و CI را دوباره از GitHub بررسی کن؛ این دفتر جای بررسی زنده را نمی‌گیرد.
 
-مرحله تکمیل‌شده: Durable Object replay adapter مستقل در workers/assistant-api/src/replayMarkerDurableObject.js شامل ReplayMarkerDurableObject و createReplayMarkerConsumer(namespace). تست واحد tests/replayMarkerDurableObject.test.js و تست runtime محلی Cloudflare Workers با کلاس تولیدی از طریق subclass مخصوص تست در tests/workers/ اضافه شد. فایل‌های اصلی اپ/journey/محتوای ۳۴ موضوع و ۹۵۲ تمرین تغییر نکردند.
+## آخرین بخش تکمیل‌شده: bootstrap end-to-end محلی
+در runtime محلی Cloudflare Workers، مسیر کامل Telegram initData verification → keyed replay fingerprint → SQLite Durable Object consume-once → signed session token با harness مستقل آزموده شد. فایل‌های تست:
+- `tests/workers/assistantBootstrapWorker.js`
+- `tests/workers/assistant-bootstrap.wrangler.toml`
+- `tests/workers/assistantBootstrap.integration.mjs`
+و workflow برای اجرای این آزمون به‌روزرسانی شد.
 
-CI run 41821256597 روی SHA b6d2495c86ec6f1d9086c3d5e0b3b626908dc1a8 با نتیجه success: npm audit بدون آسیب‌پذیری، Wrangler deploy dry-run، versions upload dry-run، Cloudflare Workers local runtime integration، npm test با ۳۴۸ passed و صفر failed، اعتبارسنجی registry/محتوا، audit کیفیت، build و تست‌های Chromium همگی موفق شدند. تست runtime شامل SQLite transaction، ۱۲ درخواست هم‌زمان با دقیقاً یک مصرف موفق، Alarm scheduling و cleanup بود.
+نتیجه: ۱۲ درخواست هم‌زمان برای یک initData معتبر، دقیقاً یک token موفق و ۱۱ پاسخ replay با 409؛ token با verifier واقعی معتبر؛ امضای نامعتبر و initData منقضی با 401 رد شدند؛ initData مستقل پذیرفته شد. تمام credentialها و داده‌ها مصنوعی و test-only بودند.
 
-محدودیت‌های باقی‌مانده: adapter هنوز به namespace عملیاتی Worker اصلی وصل نیست؛ route bootstrap/turn، binding/migration عملیاتی، secrets، consent/privacy، session persistence، provider/LLM، موتور مکالمه معنایی و UI وجود ندارند. endpoint مکالمه همچنان 503 و fail-closed است. Prefix دو رقم hex (۲۵۶ shard بالقوه) آزمایشی است و باید پیش از بار عملیاتی از نظر ظرفیت/هزینه بررسی شود. token پیش از consume فقط در حافظه آماده می‌شود و تنها پس از موفقیت consume برگردانده می‌شود. هیچ deploy، upload واقعی Version، promote یا تغییر ترافیک Production انجام نشده است.
+CI روی SHA `fb3eabe7a2e6b1d8de3ef0b53da12e93270627d0` با run `41823268749` موفق شد: audit صفر آسیب‌پذیری، Wrangler dry-runها، دو integration محلی Worker، ۳۴۸ unit test بدون شکست، اعتبارسنجی topic/content، ممیزی کیفیت، build و آزمون‌های Chromium شامل ۱۰ سناریوی privacy migration، archive export و safety browser scenarios.
 
-وضعیت مرحله replay adapter: automated_tests_passed؛ اکنون منتظر بررسی انسانی مالک پروژه روی commit کد b6d2495c86ec6f1d9086c3d5e0b3b626908dc1a8 هستیم. پس از بازخورد، گام بعدی bootstrap end-to-end محلی است؛ سپس باید به موتور مکالمه معنایی و UI دستیار برگشت و از توسعه زیرساخت بدون پیشرفت محصول پرهیز کرد.
+ثبت نتایج در `docs/PROJECT_EXECUTION_STATE_FA.md`، بخش ۱۸ انجام شده است. آخرین commit مستندات این ثبت: `6e42e71694c757669328f4461e7cc208d29f57d0`.
+
+## محدودیت‌های قطعی فعلی
+- bootstrap فقط در harness تست محلی است؛ route و binding عملیاتی Worker اصلی اضافه نشده‌اند.
+- endpoint `/v1/assistant/turn` همچنان 503 و fail-closed است.
+- هیچ provider/LLM، رضایت ابری فعال، session persistence، conversation storage، rate limit عملیاتی یا حذف داده سروری پیاده‌سازی نشده است.
+- Telegram مسیر آزمون‌شده است؛ Bale هنوز با مستندات رسمی/آزمون مرجع مستقل راستی‌آزمایی نشده و نباید پشتیبانی امن آن ادعا شود.
+- محتوای دانش تأییدشده خالی است؛ مدل نباید پاسخ علمی/درمانی یا پیشنهاد تمرین بدون منبع و تأیید بسازد.
+- هیچ deploy، upload واقعی Version، promote یا تغییر ترافیک Production انجام نشده است.
+- بخش اصلی اپ و فایل‌های journey/profile/content تغییر نکرده‌اند.
+
+## گام بعدی
+از زیرساخت به محصول برگرد: طراحی و پیاده‌سازی لایه مکالمه معنایی چندمرحله‌ای با قرارداد provider-neutral، خروجی ساختاریافته، حفظ زمینه کوتاه‌مدت و گیت ایمنی مستقل. ابتدا با آزمون‌های مصنوعی و provider mock؛ هیچ متن واقعی کاربر به provider ارسال نشود تا رضایت آگاهانه، پردازشگر/منطقه، دسته داده، مدت نگهداری، پس‌گرفتن رضایت و حذف داده روشن و پیاده‌سازی شوند. برای provider واقعی باید مدل فارسی مناسب و هزینه/تاخیر/حریم خصوصی بررسی شود. بعد از اثبات engine، آن را به رابط دستیار موجود متصل کن؛ هیچ تغییر خارج از محدوده assistant-only مجاز نیست.
+
+## قاعده گزارش‌دهی به مالک
+مالک برنامه‌نویس نیست و صریحاً خواسته تا وقتی یک بخش خروجی واقعی و قابل مشاهده در مرورگر ندارد، از او تست فنی، بازبینی فایل، کد یا تنظیمات نخواهیم. فقط وقتی نسخه مشخصی واقعاً در مرورگر قابل مشاهده و تعامل شد، با دستورالعمل ساده و یک گام روشن اطلاع بده. موفقیت CI یا local runtime به‌تنهایی «آماده مرورگر» نیست. هیچ Production deploy/activate بدون اجازه صریح مالک انجام نشود.
