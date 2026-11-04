@@ -191,6 +191,10 @@ test('legacy T17 relationship content stays blocked until complete expert and sa
     safety_rule_ids: ['SR-T17-COERCIVE-CONTROL-SAFETY'],
     reviewer_role: 'qualified_clinician',
   })), 'blocked', 'T17-S03 requires an explicitly designated safety reviewer');
+  assert.equal(getDailySafetyMode(reviewed('T17-S01', { id: 'T16-D06' })), 'blocked',
+    'an approved record must not be transferable to a different topic/day identifier');
+  assert.equal(getDailySafetyMode(reviewed('T17-S01', { day: 7 })), 'blocked',
+    'canonical day number and identifier must agree');
 });
 
 test('legacy T16 repetitive negative thinking content stays blocked until safety-aware subtype review', async () => {
