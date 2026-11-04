@@ -92,6 +92,7 @@ export async function createAssistantPreviewSession({
   env = {},
   nowSeconds = Math.floor(Date.now() / 1000),
   cryptoImpl = globalThis.crypto,
+  sessionGuard,
 } = {}) {
   if (env.ASSISTANT_PREVIEW_ENABLED !== "true") {
     return failure("preview_not_available", 404);
@@ -104,6 +105,7 @@ export async function createAssistantPreviewSession({
     || !Number.isSafeInteger(nowSeconds) || nowSeconds <= 0
     || !cryptoImpl?.subtle
     || typeof cryptoImpl.getRandomValues !== "function"
+    || typeof sessionGuard?.create !== "function"
   ) {
     return failure("preview_session_not_configured", 503);
   }
@@ -147,6 +149,17 @@ export async function createAssistantPreviewSession({
     return failure("preview_session_not_configured", 503);
   }
 
+  try {
+    await sessionGuard.create({
+      sessionId: claims.sid,
+      expiresAt: claims.exp,
+      policyVersion: claims.policyVersion,
+      nowSeconds,
+    });
+  } catch {
+    return failure("preview_session_guard_unavailable", 503);
+  }
+
   return Object.freeze({
     ok: true,
     token,
@@ -165,11 +178,13 @@ export async function verifyAssistantPreviewSession({
   env = {},
   nowSeconds = Math.floor(Date.now() / 1000),
   cryptoImpl = globalThis.crypto,
+  sessionGuard,
 } = {}) {
   if (env.ASSISTANT_PREVIEW_ENABLED !== "true") {
     return Object.freeze({ valid: false, reason: "preview_not_available" });
   }
-  if (!strongSecret(env.PREVIEW_SESSION_SIGNING_SECRET)) {
+  if (!strongSecret(env.PREVIEW_SESSION_SIGNING_SECRET)
+    || typeof sessionGuard?.authorize !== "function") {
     return Object.freeze({ valid: false, reason: "preview_session_not_configured" });
   }
   if (!Number.isSafeInteger(nowSeconds) || nowSeconds <= 0 || !cryptoImpl?.subtle) {
@@ -240,6 +255,26 @@ export async function verifyAssistantPreviewSession({
   }
   if (claims.exp <= nowSeconds) {
     return Object.freeze({ valid: false, reason: "preview_session_expired" });
+  }
+
+  let guardResult;
+  try {
+    guardResult = await sessionGuard.authorize({
+      sessionId: claims.sid,
+      expiresAt: claims.exp,
+      policyVersion: claims.policyVersion,
+      nowSeconds,
+    });
+  } catch {
+    return Object.freeze({ valid: false, reason: "preview_session_guard_unavailable" });
+  }
+  if (guardResult?.allowed !== true) {
+    return Object.freeze({
+      valid: false,
+      reason: typeof guardResult?.reason === "string"
+        ? guardResult.reason
+        : "preview_session_guard_unavailable",
+    });
   }
 
   return Object.freeze({
