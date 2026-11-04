@@ -145,8 +145,11 @@ for (const { topic, category } of topicRows) {
         fail.push(`قواعد توقف/موارد احتیاط ناقص در «${topic}»، روز ${index + 1}`);
       }
       if (day.review_status === 'approved') {
+        if (day.topic_id === 'T17' && day.reviewer_role !== 'relationship_safety_reviewer') {
+          fail.push(`بازبین محتوای T17 باید متخصص روابط و ایمنی باشد: «${topic}»، روز ${index + 1}`);
+        }
         if (!day.review_record_id || !day.reviewer_name
-          || !['qualified_clinician', 'evidence_reviewer', 'safety_reviewer'].includes(day.reviewer_role)
+          || !['qualified_clinician', 'evidence_reviewer', 'safety_reviewer', 'relationship_safety_reviewer'].includes(day.reviewer_role)
           || !day.reviewed_at || Number.isNaN(Date.parse(day.reviewed_at))) {
           fail.push(`محتوای approved بدون بازبین واجد صلاحیت و رکورد بازبینی در «${topic}»، روز ${index + 1}`);
         }
