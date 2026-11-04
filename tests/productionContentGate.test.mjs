@@ -122,6 +122,39 @@ test('production content gate requires T31 subtype and matching approved context
     'legacy T31 identifiers must use the same shared subtype policy');
 });
 
+test('production content gate enforces relationship specialist review and T17-S03 safety classification', () => {
+  const data = fixture();
+  const day = data.content.categories['موضوع آزمایشی'].days[0];
+  const topic = data.topicsRegistry.topics[0];
+  const subtopic = data.subtopicsRegistry.subtopics[0];
+  day.id = 'T17-D01';
+  day.topic_id = 'T17';
+  day.subtopic_ids = ['T17-S01'];
+  day.reviewer_role = 'relationship_safety_reviewer';
+  topic.topic_id = 'T17';
+  topic.content_ids = ['T17-D01'];
+  subtopic.subtopic_id = 'T17-S01';
+  subtopic.topic_id = 'T17';
+  subtopic.content_ids = ['T17-D01'];
+  assert.deepEqual(validateProductionContent(data), []);
+
+  day.reviewer_role = 'qualified_clinician';
+  assert.ok(validateProductionContent(data).some((item) => item.includes('relationship safety specialist reviewer')));
+
+  day.reviewer_role = 'relationship_safety_reviewer';
+  day.subtopic_ids = ['T17-S01', 'T17-S02'];
+  assert.ok(validateProductionContent(data).some((item) => item.includes('exactly one reviewed subtype')));
+
+  day.subtopic_ids = ['T17-S03'];
+  subtopic.subtopic_id = 'T17-S03';
+  day.risk_level = 'routine';
+  assert.ok(validateProductionContent(data).some((item) => item.includes('T17-S03 requires caution classification')));
+
+  day.risk_level = 'caution';
+  day.safety_rule_ids = ['SR-T17-COERCIVE-CONTROL-SAFETY'];
+  assert.deepEqual(validateProductionContent(data), []);
+});
+
 test('production content gate rejects missing evidence and reviewer attribution', () => {
   const data = fixture();
   const day = data.content.categories['موضوع آزمایشی'].days[0];
