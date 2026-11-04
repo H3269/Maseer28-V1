@@ -1,0 +1,47 @@
+import { runSemanticConversationTurn } from "../../workers/assistant-api/src/semanticConversation.js";
+
+function json(payload, status = 200) {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "no-store",
+    },
+  });
+}
+
+/**
+ * Local-only harness. The mock generator is supplied by the test request and
+ * must never be wired into the production Worker or a public endpoint.
+ */
+export default {
+  async fetch(request) {
+    const url = new URL(request.url);
+    if (request.method === "GET" && url.pathname === "/health") {
+      return json({ status: "ok" });
+    }
+    if (request.method !== "POST" || url.pathname !== "/turn") {
+      return json({ error: "not_found" }, 404);
+    }
+
+    let input;
+    try {
+      input = await request.json();
+    } catch {
+      return json({ error: "invalid_json" }, 400);
+    }
+    if (!input || typeof input !== "object" || Array.isArray(input)) {
+      return json({ error: "invalid_request" }, 400);
+    }
+
+    const result = await runSemanticConversationTurn({
+      message: input.message,
+      history: input.history,
+      // This is a test-only harness; production must inject a server-verified
+      // consent result and must never trust a client boolean.
+      consentVerified: input.consentVerified === true,
+      generateStructuredTurn: async () => input.mockOutput,
+    });
+    return json(result, result.ok ? 200 : result.status);
+  },
+};
