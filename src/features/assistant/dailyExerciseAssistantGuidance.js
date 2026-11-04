@@ -174,7 +174,64 @@ function followUpResponse(message, state) {
   return null;
 }
 
-export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, conversationState } = {}) {
+
+function splitGroundedSentences(value) {
+  return String(value || '').split(/(?<=[.!؟?])\\s+/u).map((part) => part.trim()).filter(Boolean);
+}
+
+function extractQuotedItems(value) {
+  return [...String(value || '').matchAll(/«([^»]+)»/gu)].map((match) => match[1].trim()).filter(Boolean);
+}
+
+function groundedSection(label, value) {
+  const source = String(value || '').trim();
+  if (!source) return '';
+  const sentences = splitGroundedSentences(source);
+  const quoted = extractQuotedItems(source);
+  let steps = sentences;
+  if (quoted.length >= 2 && /دو ستون|دو پرسش|دو بخش|سه خط|سه بخش/u.test(source)) {
+    const firstQuote = source.indexOf('«');
+    const lead = firstQuote > 0 ? source.slice(0, firstQuote).trim() : '';
+    const prefix = /دو ستون/u.test(source) ? 'ستون ' : /دو پرسش/u.test(source) ? 'پرسش ' : 'بخش ';
+    steps = [
+      ...(lead ? [lead] : []),
+      ...quoted.map((item, index) => prefix + (index + 1) + ': «' + item + '»'),
+    ];
+  }
+  const notes = [];
+  const instructions = [];
+  for (const step of steps) {
+    if (/^(?:اگر|در صورتی که|چنانچه|لازم نیست|ضرورتی ندارد|در صورت)/u.test(step)) notes.push(step);
+    else instructions.push(step);
+  }
+  const lines = [label + ':'];
+  instructions.forEach((step, index) => lines.push('گام ' + (index + 1) + ': ' + step));
+  if (notes.length) lines.push('شرط یا یادآوری خود متن:\n' + notes.map((item) => '• ' + item).join('\n'));
+  return lines.join('\n');
+}
+
+function blankResponseTemplate(exercise) {
+  const source = String(exercise || '');
+  const quoted = extractQuotedItems(source);
+  if (quoted.length >= 2) {
+    return 'قالب خالی برای نوشتن پاسخ خودت (نه مثال ساخته‌شده):\n'
+      + quoted.map((item, index) => (index + 1) + ') ' + item + ' → [پاسخ خودت]').join('\n');
+  }
+  const match = source.match(/(?:در سه خط|در سه بخش|دو پرسش|دو سؤال)\\s*بنویس\\s*[:：]\\s*([\\s\\S]+)/u);
+  if (match) {
+    const prompts = match[1].split(/[؟?]/u).map((item) => item.trim()).filter(Boolean).slice(0, 5);
+    if (prompts.length >= 2) {
+      return 'قالب خالی برای نوشتن پاسخ خودت (نه مثال ساخته‌شده):\n'
+        + prompts.map((item, index) => (index + 1) + ') ' + item + '؟ → [پاسخ خودت]').join('\n');
+    }
+  }
+  return 'برای ساختن قالب دقیق، لازم است جمله یا مرحله‌ای را که می‌خواهی برایش نمونه ببینی مشخص کنی؛ از خودم موقعیت یا پاسخ شخصی نمی‌سازم.';
+}
+
+function hasApprovedDayMetadata(dayData) {
+  return dayData?.review_status === 'approved';
+}
+\nexport function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, conversationState } = {}) {
   const text = String(message || '').trim();
   let state = boundedState(conversationState);
   const currentTopic = String(problem || 'موضوع انتخاب‌شده').trim().slice(0, 100);
@@ -247,26 +304,68 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
     return result(routed.next_question.text, { ...state, lastTopic: String(problem || '').slice(0, 100) }, text);
   }
 
+
   const exercise = String(dayData?.exercise || dayData?.instructions || '').trim();
   const action = String(dayData?.actionText || dayData?.action || '').trim();
   const topic = String(problem || 'موضوع انتخاب‌شده').trim();
-  const asksHow = /چطور|چگونه|از کجا|چه جوری|نمی فهمم|متوجه نمی شوم|توضیح|منظور|سخته|سخت است|انجام بدم|انجام دهم/u.test(text);
+  const normalized = normalize(text);
+  const reviewed = hasApprovedDayMetadata(dayData);
 
   if (!exercise && !action) {
     return result('متن تمرین و راهکار این روز در دسترس نیست؛ نمی‌خواهم چیزی را حدس بزنم. از صفحه روز خارج نشو و بعداً دوباره تلاش کن.', state, text);
   }
-  if (asksHow) {
-    const response = [
-      `داریم درباره «${topic}»، روز ${day} صحبت می‌کنیم.`,
-      exercise ? `متن تمرین همین روز: ${exercise}` : '',
-      action ? `راهکار اختصاصی همین روز: ${action}` : '',
-      'برای اینکه دقیقاً همان چیزی را که لازم داری روشن کنم، لطفاً جمله یا مرحله‌ای از متن بالا را که مبهم است مشخص کن. من نباید بدون فهمیدن بخش مبهم، روش دیگری را جای تمرین اصلی جا بزنم.',
-    ].filter(Boolean).join('\n\n');
+
+  if (/(?:چرا|علت|دلیل)/u.test(normalized)) {
+    const rationale = reviewed && String(dayData?.teaching_point || dayData?.learning_objective || '').trim();
+    const response = rationale
+      ? 'توضیح ثبت‌شده و بازبینی‌شده برای این روز:\n' + rationale
+      : 'برای این روز توضیح تأییدشده‌ای درباره چرایی تمرین در داده قابل استفاده دستیار ثبت نشده است. نمی‌خواهم دلیل روان‌شناختی را حدس بزنم. اگر بگویی کدام جمله یا بخش برایت سؤال‌برانگیز است، می‌توانم ساختار و منظور صریح همان متن را روشن‌تر کنم.';
     return result(response, { ...state, lastTopic: topic.slice(0, 100) }, text);
   }
+
+  if (/(?:مثال|نمونه)/u.test(normalized)) {
+    return result(blankResponseTemplate(exercise), { ...state, lastTopic: topic.slice(0, 100) }, text);
+  }
+
+  if (/(?:چقدر زمان|چند دقیقه|مدت زمان|مدتش چقدر)/u.test(normalized)) {
+    const duration = reviewed && Number.isInteger(dayData?.duration_minutes) ? dayData.duration_minutes : null;
+    return result(duration
+      ? 'مدت ثبت‌شده و بازبینی‌شده برای این روز ' + duration + ' دقیقه است. لازم نیست بیشتر از حد قابل‌تحمل ادامه بدهی.'
+      : 'برای این روز مدت زمان تأییدشده‌ای در داده قابل استفاده دستیار وجود ندارد؛ بنابراین عددی تعیین نمی‌کنم. فقط متن اصلی را در حدی که برایت قابل‌تحمل است بخوان و اگر درباره خود دستور ابهام داری همان بخش را بپرس.',
+    state, text);
+  }
+
+  if (/(?:معیار|درست انجام|موفقیت)/u.test(normalized)) {
+    const criterion = reviewed ? String(dayData?.success_criterion || '').trim() : '';
+    return result(criterion
+      ? 'معیار ثبت‌شده و بازبینی‌شده برای این روز:\n' + criterion
+      : 'برای این روز معیار موفقیتِ تأییدشده‌ای در داده قابل استفاده دستیار ثبت نشده است. از روی متن می‌توانیم فقط بررسی کنیم چه چیزی خواسته شده؛ اما معیار تازه‌ای از خودمان نمی‌سازیم.',
+    state, text);
+  }
+
+  if (/(?:شرایط توقف|کی متوقف|چه وقت متوقف|توقف تمرین)/u.test(normalized)) {
+    const conditions = reviewed && Array.isArray(dayData?.stop_conditions) ? dayData.stop_conditions.filter(Boolean) : [];
+    return result(conditions.length
+      ? 'شرایط توقف ثبت‌شده و بازبینی‌شده برای این روز:\n' + conditions.map((item, index) => (index + 1) + ') ' + item).join('\n')
+      : 'شرایط توقف اختصاصی و تأییدشده‌ای برای این روز در داده قابل استفاده دستیار موجود نیست. اگر همین حالا احساس خطر، فشار شدید یا ناایمنی داری، تمرین را ادامه نده و از حمایت انسانی مناسب کمک بگیر.',
+    state, text);
+  }
+
+  const asksHow = /چطور|چگونه|از کجا|چه جوری|نمی فهمم|متوجه نمی شوم|توضیح|منظور|سخته|سخت است|انجام بدم|انجام دهم|مرحله|گام/u.test(normalized);
+  if (asksHow) {
+    const parts = [
+      'داریم درباره «' + topic + '»، روز ' + day + ' صحبت می‌کنیم.',
+      groundedSection('تمرین روز، بر اساس ترتیب متن اصلی', exercise),
+      groundedSection('راهکار اختصاصی روز، بر اساس ترتیب متن اصلی', action),
+      dayData?.adaptation ? 'تطبیق ثبت‌شده برای امروز:\n' + String(dayData.adaptation) : '',
+      'این گام‌ها فقط به بخش‌های موجود در متن اصلی شکسته شده‌اند؛ دستور تازه‌ای به تمرین اضافه نشده است. اگر یکی از گام‌ها مبهم است، شماره آن یا چند کلمه از همان جمله را بفرست تا فقط همان قسمت را باز کنم.',
+    ].filter(Boolean);
+    return result(parts.join('\n\n'), { ...state, lastTopic: topic.slice(0, 100) }, text);
+  }
+
   const response = [
-    `پیامت را در زمینه «${topic}»، روز ${day} بررسی کردم.`,
-    'برای اینکه پاسخ دقیقاً به تمرین امروز مربوط باشد، بگو پرسشت درباره کدام بخش است: فهم متن تمرین، مراحل انجام آن، یا منظور راهکار اختصاصی؟',
+    'پیامت را در زمینه «' + topic + '»، روز ' + day + ' بررسی کردم.',
+    'برای اینکه دقیقاً به محتوای امروز پاسخ بدهم، بگو پرسشت درباره کدام بخش است: فهم متن تمرین، ترتیب گام‌ها، راهکار اختصاصی، دلیل تمرین یا معیار انجام آن؟',
   ].join('\n\n');
   return result(response, { ...state, lastTopic: topic.slice(0, 100) }, text);
 }
