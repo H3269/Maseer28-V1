@@ -1,7 +1,7 @@
 const encoder = new TextEncoder();
 const MAX_INIT_DATA_LENGTH = 8 * 1024;
-const MAX_AUTH_AGE_SECONDS = 5 * 60;
-const MAX_FUTURE_SKEW_SECONDS = 30;
+export const MAX_AUTH_AGE_SECONDS = 5 * 60;
+export const MAX_FUTURE_SKEW_SECONDS = 30;
 
 const PLATFORM_TOKEN_ENV = Object.freeze({
   telegram: "TELEGRAM_BOT_TOKEN",
