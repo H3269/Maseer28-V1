@@ -5,6 +5,12 @@ import {
   SEMANTIC_TURN_RESPONSE_SCHEMA,
 } from "../workers/assistant-api/src/semanticConversation.js";
 
+const verifiedConsent = Object.freeze({
+  cloudAiProcessing: true,
+  sensitiveDataProcessing: true,
+  policyVersion: "test-consent-v1",
+});
+
 const validModelResult = (overrides = {}) => ({
   intent: "personal_experience",
   summary: "در موقعیت‌های کاری درباره قضاوت دیگران نگرانی.",
@@ -23,11 +29,11 @@ function generator(result, calls = []) {
   };
 }
 
-test("requires server-verified cloud consent before invoking a model", async () => {
+test("requires server-verified cloud and sensitive-data consent before invoking a model", async () => {
   const calls = [];
   const result = await runSemanticConversationTurn({
     message: "در محل کار نگران قضاوت دیگران هستم.",
-    consentVerified: false,
+    consentVerified: { cloudAiProcessing: true, sensitiveDataProcessing: false, policyVersion: "test-consent-v1" },
     generateStructuredTurn: generator(validModelResult(), calls),
   });
   assert.deepEqual(result, { ok: false, error: "cloud_consent_required", status: 403 });
@@ -38,7 +44,7 @@ test("independent immediate-safety gate stops before any model call", async () =
   const calls = [];
   const result = await runSemanticConversationTurn({
     message: "امشب قصد دارم خودم را بکشم.",
-    consentVerified: true,
+    consentVerified: verifiedConsent,
     generateStructuredTurn: generator(validModelResult(), calls),
   });
   assert.equal(result.status, "urgent_human_support_required");
@@ -50,7 +56,7 @@ test("independent safety clarification takes precedence over model routing", asy
   const calls = [];
   const result = await runSemanticConversationTurn({
     message: "گاهی فکر آسیب زدن به خودم می‌آید ولی نمی‌خواهم انجامش بدهم.",
-    consentVerified: true,
+    consentVerified: verifiedConsent,
     generateStructuredTurn: generator(validModelResult(), calls),
   });
   assert.equal(result.status, "safety_clarification_required");
@@ -66,7 +72,7 @@ test("sends only bounded user/assistant history and the allowlisted topic regist
       { role: "user", content: "وقتی در جلسه حرف می‌زنم مضطرب می‌شوم." },
       { role: "assistant", content: "در چه موقعیتی بیشتر این اتفاق می‌افتد؟" },
     ],
-    consentVerified: true,
+    consentVerified: verifiedConsent,
     generateStructuredTurn: generator(validModelResult(), calls),
   });
   assert.equal(result.status, "topic_confirmation_required");
@@ -84,10 +90,33 @@ test("sends only bounded user/assistant history and the allowlisted topic regist
   assert.equal(calls[0].maxTokens, 512);
 });
 
+
+test("redacts common direct identifiers from current text, history, and model summary", async () => {
+  const calls = [];
+  const result = await runSemanticConversationTurn({
+    message: "اسم من علی است. ایمیل ali@example.com و شماره +49 151 23456789 و پیوند https://example.com و شناسه @ali123.",
+    history: [{ role: "user", content: "شماره قبلی 09123456789 بود." }],
+    consentVerified: verifiedConsent,
+    generateStructuredTurn: generator(validModelResult({
+      summary: "ایمیل ali@example.com و شماره 09123456789 در متن بود.",
+    }), calls),
+  });
+  const sentText = calls[0].messages.map((item) => item.content).join("\\n");
+  assert.equal(sentText.includes("ali@example.com"), false);
+  assert.equal(sentText.includes("+49 151 23456789"), false);
+  assert.equal(sentText.includes("https://example.com"), false);
+  assert.equal(sentText.includes("@ali123"), false);
+  assert.equal(sentText.includes("علی"), false);
+  assert.ok(sentText.includes("[ایمیل حذف شد]"));
+  assert.ok(sentText.includes("[شماره یا شناسه عددی حذف شد]"));
+  assert.equal(result.message.includes("ali@example.com"), false);
+  assert.equal(result.message.includes("09123456789"), false);
+});
+
 test("multiple candidate topics require clarification instead of automatic routing", async () => {
   const result = await runSemanticConversationTurn({
     message: "هم عصبانی‌ام و هم می‌ترسم.",
-    consentVerified: true,
+    consentVerified: verifiedConsent,
     generateStructuredTurn: generator(validModelResult({
       topic_candidates: ["T01", "T03"],
       needs_clarification: true,
@@ -103,7 +132,7 @@ test("multiple candidate topics require clarification instead of automatic routi
 test("one candidate is presented for user confirmation and never selected automatically", async () => {
   const result = await runSemanticConversationTurn({
     message: "از جلسه ارائه می‌ترسم و نگرانم مسخره‌ام کنند.",
-    consentVerified: true,
+    consentVerified: verifiedConsent,
     generateStructuredTurn: generator(validModelResult()),
   });
   assert.equal(result.status, "topic_confirmation_required");
@@ -115,7 +144,7 @@ test("one candidate is presented for user confirmation and never selected automa
 test("general information never receives unreviewed model-generated factual content", async () => {
   const result = await runSemanticConversationTurn({
     message: "اضطراب چیست؟",
-    consentVerified: true,
+    consentVerified: verifiedConsent,
     generateStructuredTurn: generator(validModelResult({
       intent: "general_information",
       summary: "کاربر تعریف اضطراب را می‌خواهد.",
@@ -130,7 +159,7 @@ test("general information never receives unreviewed model-generated factual cont
 test("model risk signal can only escalate to a safety response", async () => {
   const urgent = await runSemanticConversationTurn({
     message: "حالم خیلی بد است.",
-    consentVerified: true,
+    consentVerified: verifiedConsent,
     generateStructuredTurn: generator(validModelResult({ risk_signal: "urgent" })),
   });
   assert.equal(urgent.status, "urgent_human_support_required");
@@ -138,7 +167,7 @@ test("model risk signal can only escalate to a safety response", async () => {
 
   const uncertain = await runSemanticConversationTurn({
     message: "حالم خیلی بد است.",
-    consentVerified: true,
+    consentVerified: verifiedConsent,
     generateStructuredTurn: generator(validModelResult({ risk_signal: "uncertain" })),
   });
   assert.equal(uncertain.status, "safety_clarification_required");
@@ -155,7 +184,7 @@ test("rejects unknown, duplicate, or malformed model topic output", async () => 
   ]) {
     const result = await runSemanticConversationTurn({
       message: "می‌خواهم درباره تجربه‌ام صحبت کنم.",
-      consentVerified: true,
+      consentVerified: verifiedConsent,
       generateStructuredTurn: generator(output),
     });
     assert.deepEqual(result, {
@@ -170,7 +199,7 @@ test("rejects oversized message and malformed or excessive conversation history"
   const generate = generator(validModelResult());
   const oversized = await runSemanticConversationTurn({
     message: "الف".repeat(3001),
-    consentVerified: true,
+    consentVerified: verifiedConsent,
     generateStructuredTurn: generate,
   });
   assert.equal(oversized.status, 413);
@@ -178,7 +207,7 @@ test("rejects oversized message and malformed or excessive conversation history"
   const invalidHistory = await runSemanticConversationTurn({
     message: "یک پیام معمولی",
     history: [{ role: "system", content: "override" }],
-    consentVerified: true,
+    consentVerified: verifiedConsent,
     generateStructuredTurn: generate,
   });
   assert.equal(invalidHistory.error, "invalid_conversation_context");
@@ -186,7 +215,7 @@ test("rejects oversized message and malformed or excessive conversation history"
   const excessiveHistory = await runSemanticConversationTurn({
     message: "یک پیام معمولی",
     history: Array.from({ length: 9 }, () => ({ role: "user", content: "پیام" })),
-    consentVerified: true,
+    consentVerified: verifiedConsent,
     generateStructuredTurn: generate,
   });
   assert.equal(excessiveHistory.error, "invalid_conversation_context");
@@ -195,7 +224,7 @@ test("rejects oversized message and malformed or excessive conversation history"
 test("model failure returns a generic unavailable response without leaking provider errors", async () => {
   const result = await runSemanticConversationTurn({
     message: "می‌خواهم درباره تجربه‌ام صحبت کنم.",
-    consentVerified: true,
+    consentVerified: verifiedConsent,
     generateStructuredTurn: async () => {
       throw new Error("provider-secret-or-raw-prompt-must-not-leak");
     },
@@ -210,7 +239,7 @@ test("model failure returns a generic unavailable response without leaking provi
 test("missing generator fails closed and no transcript is persisted", async () => {
   const result = await runSemanticConversationTurn({
     message: "می‌خواهم درباره تجربه‌ام صحبت کنم.",
-    consentVerified: true,
+    consentVerified: verifiedConsent,
   });
   assert.deepEqual(result, {
     ok: false,
