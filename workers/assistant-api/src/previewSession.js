@@ -150,12 +150,15 @@ export async function createAssistantPreviewSession({
   }
 
   try {
-    await sessionGuard.create({
+    const registration = await sessionGuard.create({
       sessionId: claims.sid,
       expiresAt: claims.exp,
       policyVersion: claims.policyVersion,
       nowSeconds,
     });
+    if (registration?.created !== true) {
+      return failure("preview_session_guard_unavailable", 503);
+    }
   } catch {
     return failure("preview_session_guard_unavailable", 503);
   }
