@@ -1028,3 +1028,35 @@ Worker پروژه از Durable Objects استفاده می‌کند. Cloudflare 
 
 ### گام بعدی
 ساخت رابط مستقل و ایستا/قابل اتصال دستیار در محدوده فایل‌های اختصاصی assistant، سپس تکمیل routeهای Preview با دسترسی محدود، رضایت شفاف و provider غیرفعال تا زمان تصمیم صریح درباره هزینه و پردازش inference. هرگونه نیاز به تغییر App اصلی یا گیت انتشار Pages پیش از اقدام برای اجازه صریح مالک متوقف می‌شود.
+
+
+## ۲۴. ممیزی محل پردازش و نگهداری ارائه‌دهنده — 2026-11-04
+
+### یافته اصلی
+بررسی مستندات رسمی به یک تعارض مهم رسید: Workers AI از inference در شبکه جهانی Cloudflare استفاده می‌کند و جدول سازگاری Data Localization Suite، پشتیبانی Regional Services را برای Workers AI نشان نمی‌دهد. Regional Services مربوط به اجرای Worker روی hostname منطقه‌ای، محل inference خود Workers AI را محدود نمی‌کند. بنابراین وعده «پردازش صرفاً در اروپا» با این معماری قابل اثبات نیست.
+
+### گزینه جایگزین بررسی‌شده
+OpenAI API مسیر مستند EU data residency و regional processing برای endpointها/مدل‌های واجد شرایط دارد؛ اما پروژه EU باید جدید باشد، برای منطقه غیرآمریکا کنترل‌های abuse monitoring و Modified Retention amendment لازم است، و ZDR/MAM نیازمند تأیید قبلی است. نگهداری پیش‌فرض abuse logs ممکن است تا ۳۰ روز باشد. eligibility حساب و هزینه هنوز مشخص نیست.
+
+### مستند جدید
+- `docs/ASSISTANT_PROVIDER_PRIVACY_DECISION_FA.md` — مقایسه فنی Cloudflare Workers AI و OpenAI API، محل پردازش، retention، محدودیت‌ها و تصمیم‌های لازم از مالک محصول.
+- منابع رسمی در همان سند درج شده‌اند.
+
+### وضعیت اجرایی
+- هیچ ارائه‌دهنده‌ای انتخاب یا فعال نشده است.
+- هیچ consent UI ساخته یا نمایش داده نشده است؛ رضایت ناقص/گمراه‌کننده ممنوع است.
+- endpoint اصلی همچنان 503 و fail-closed است؛ هیچ پیام کاربر به سرویس بیرونی ارسال نمی‌شود.
+- هنوز نیاز به تصمیم مالک درباره پذیرش inference جهانی یا الزام EU/منطقه مشخص، انتخاب ارائه‌دهنده، eligibility و سقف هزینه وجود دارد.
+- این بررسی هیچ فایل App، journey، ۳۴ موضوع یا ۹۵۲ تمرین را تغییر نداده است.
+
+### شواهد و منابع
+- Cloudflare Workers AI Data usage و JSON Mode: مستندات رسمی جاری.
+- Cloudflare Data Localization Suite compatibility و Workers Regional Services: مستندات رسمی جاری.
+- OpenAI API Data controls و EU data residency: مستندات رسمی جاری.
+- Commit سند تصمیم: `3c4e840f49148a19b2fddba16a26f4baa748e9ca`.
+- HEAD زمان ثبت وضعیت: `3c4e840f49148a19b2fddba16a26f4baa748e9ca`.
+
+**وضعیت بخش:** `blocked_on_owner_decision` برای اتصال inference و رضایت ابری؛ کار مستقل و آفلاین دستیار می‌تواند ادامه یابد. این تصمیم، مانع تست یا توسعه ماژول‌های مستقل نیست.
+
+### گام بعدی
+تا روشن‌شدن سیاست پردازش، از فعال‌سازی AI provider و consent خودداری شود. کار مستقل بعدی: تقویت آزمون‌های intent/context و طراحی اجزای رابط مستقل بدون ارسال داده، بدون تغییر App اصلی و بدون انتشار.
