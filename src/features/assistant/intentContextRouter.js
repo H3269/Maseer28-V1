@@ -179,7 +179,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
     || /(?:الان|همین الآن).{0,30}(?:خانه امن نیست|در خطرم|تهدیدم می‌کند)/.test(userNormalized)
     || /تهدیدم کرد.{0,25}(?:الان|همین الآن).{0,20}خانه امن نیست/.test(userNormalized)
     || /(?:با چاقو تهدیدم می کند|الان مرا می زند|الان دارد مرا می زند|الان منو می زند|الان داره منو می زند|الان داره منو می زنه|در حال ضرب و شتم من است|الان خفه ام می کند)/.test(userNormalized);
-  const correctionMarkers = [...raw.matchAll(/(?:منظورم(?:\s+این\s+(?:است|بود)(?:\s+که)?)?|اصلاح می‌کنم|اصلاح می کنم|نه\s+اینکه)/gu)];
+  const correctionMarkers = [...raw.matchAll(/(?:منظورم(?:\s+این\s+(?:است|بود|نبود)(?:\s+که)?)?|اصلاح می‌کنم|اصلاح می کنم|نه\s+اینکه)/gu)];
   const lastCorrection = correctionMarkers.at(-1);
   let correctedRemainder = lastCorrection
     ? raw.slice(lastCorrection.index + lastCorrection[0].length).replace(/^[،:؛\s]+/, '').trim()
