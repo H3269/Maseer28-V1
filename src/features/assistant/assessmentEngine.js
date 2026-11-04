@@ -490,9 +490,11 @@ export function submitAssessmentAnswer(session, answer) {
       };
     } else {
       const extra = `\nتوضیح تکمیلی کاربر: ${value}`;
+      updateSemanticContext(next, 'assessment-summary-additive-context');
       next.summary = {
         ...next.summary,
         user_report: `${next.summary?.user_report ?? next.answers.open_problem}${extra}`.slice(0, 1200),
+        candidate_topics: next.candidate_topics,
         impact: /اثر|شدت|خواب|تمرکز|کار|رابطه/.test(normalizedRevision) ? value : next.summary?.impact,
         duration: /مدت|روز|هفته|ماه|سال|از چه زمانی/.test(normalizedRevision) ? value : next.summary?.duration,
         user_goal: /هدف|می خواهم|کمک/.test(normalizedRevision) ? value : next.summary?.user_goal,
