@@ -116,6 +116,9 @@ export async function bootstrapAssistantSession({
   const expiresAt = (
     verified.authDate + MAX_AUTH_AGE_SECONDS + MAX_FUTURE_SKEW_SECONDS
   ) * 1000;
+  if (!Number.isSafeInteger(expiresAt) || expiresAt <= nowSeconds * 1000) {
+    return failure("platform_auth_failed", 401);
+  }
 
   let token;
   try {
