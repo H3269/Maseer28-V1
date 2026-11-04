@@ -199,7 +199,7 @@ function hasApprovedRelationshipDifficultiesReview(day) {
     || !day.review_record_id.trim()
     || typeof day.reviewer_name !== 'string'
     || !day.reviewer_name.trim()
-    || !['qualified_clinician', 'evidence_reviewer', 'safety_reviewer', 'relationship_safety_reviewer'].includes(day.reviewer_role)
+    || day.reviewer_role !== 'relationship_safety_reviewer'
     || !day.reviewed_at
     || !Number.isFinite(Date.parse(day.reviewed_at))
     || requiredText.some((field) => typeof day[field] !== 'string' || !day[field].trim())) {
@@ -210,7 +210,7 @@ function hasApprovedRelationshipDifficultiesReview(day) {
     return day.risk_level === 'caution'
       && Array.isArray(day.safety_rule_ids)
       && day.safety_rule_ids.length > 0
-      && ['safety_reviewer', 'relationship_safety_reviewer'].includes(day.reviewer_role);
+      && day.reviewer_role === 'relationship_safety_reviewer';
   }
   return true;
 }
