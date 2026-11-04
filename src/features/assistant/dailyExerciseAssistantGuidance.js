@@ -238,7 +238,8 @@ function blankResponseTemplate(exercise) {
 function hasApprovedDayMetadata(dayData) {
   return dayData?.review_status === 'approved';
 }
-\nexport function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, conversationState } = {}) {
+
+export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, conversationState } = {}) {
   const text = String(message || '').trim();
   let state = boundedState(conversationState);
   const currentTopic = String(problem || 'موضوع انتخاب‌شده').trim().slice(0, 100);
