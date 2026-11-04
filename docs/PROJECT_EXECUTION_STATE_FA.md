@@ -820,3 +820,51 @@
 **وضعیت این بخش:** `automated_tests_passed` برای bootstrap end-to-end محلی؛ این بخش به‌تنهایی خروجی قابل استفاده در مرورگر نیست.
 
 **گام بعدی محصولی:** بازگشت از زیرساخت به موتور مکالمه معنایی؛ طراحی قرارداد provider-neutral برای تحلیل مکالمه چندمرحله‌ای و خروجی ساختاریافته، با گیت ایمنی مستقل و بدون ارسال متن واقعی کاربر به provider تا تعیین و پیاده‌سازی رضایت، منطقه پردازش، نگهداری و حذف داده. مسیر Bale نیز تا راستی‌آزمایی رسمی جداگانه مسدود بماند.
+
+
+## ۱۹. موتور مکالمه معنایی و آداپتور مدل ساختاریافته — 2026-11-04
+
+### هدف
+ساخت لایه‌ای مستقل از UI برای فهم چندمرحله‌ای متن فارسی، خلاصه بی‌طرفانه، نگاشت موقت به موضوع‌های واقعی T01–T34 و پرسش روشن‌کننده؛ بدون تشخیص، درمان، توصیه دارویی، پیشنهاد تمرین یا انتخاب خودکار موضوع.
+
+### فایل‌های افزوده/تغییریافته
+- `workers/assistant-api/src/semanticConversation.js`: ارکستراتور provider-neutral، اعتبارسنجی ورودی/تاریخچه، اجرای گیت ایمنی مستقل پیش از مدل، schema سخت‌گیرانه، اعتبارسنجی topic ID با رجیستری واقعی، الزام تأیید کاربر پیش از انتخاب موضوع و امتناع از پاسخ عمومی بدون دانش تأییدشده.
+- `workers/assistant-api/src/workersAiProvider.js`: آداپتور Cloudflare Workers AI JSON Mode با اعتبارسنجی binding، شناسه مدل مجاز، schema، سقف token و پاسخ ساختاریافته. فقط مدل‌های دارای JSON Mode مستندشده پذیرفته می‌شوند.
+- `tests/semanticConversation.test.js` و `tests/workersAiProvider.test.js`: آزمون قرارداد، consent gate، ایمنی، ابهام، خروجی نامعتبر، redaction و provider adapter.
+- `tests/workers/semanticConversationWorker.js`، `tests/workers/semantic-conversation.wrangler.toml` و `tests/workers/semanticConversation.integration.mjs`: اجرای ماژول و آداپتور در runtime محلی Cloudflare با mock؛ هیچ inference واقعی انجام نمی‌شود.
+- `.github/workflows/validate-content.yml`: اجرای integration معنایی محلی در CI.
+- `docs/AI_PROVIDER_SELECTION_AND_DATA_BOUNDARY_FA.md`: ثبت بررسی گزینه Workers AI، JSON Mode، هزینه، zero-retention اعلام‌شده و ابهام محل inference.
+
+### کنترل‌های اصلی پیاده‌سازی‌شده
+- ارسال به مدل فقط در صورت دریافت نتیجه رضایت تأییدشده سمت سرور با هر دو هدف `cloudAiProcessing` و `sensitiveDataProcessing` و نسخه سیاست مجاز است؛ صرف boolean کلاینت پذیرفته نمی‌شود.
+- متن جاری و حداکثر ۸ پیام تاریخچه با سقف طول مشخص می‌شوند؛ تاریخچه به‌صورت یک بسته داده غیرقابل‌اعتماد ارسال می‌شود تا پیام جعلی با نقش assistant نتواند نقش دستوری معتبر بگیرد.
+- الگوهای آشکار ایمیل، URL، شماره/شناسه عددی، @username و نامی که پس از برچسب «اسم من/نام من» آمده باشد پیش از ارسال حذف می‌شوند؛ این redaction کامل یا ناشناس‌سازی تضمین‌شده نیست و نام‌های دیگر ممکن است شناسایی نشوند.
+- گیت ایمنی مستقل موجود پیش از مدل اجرا می‌شود؛ خروجی مدل فقط می‌تواند هشدار را تشدید کند و حق خنثی‌کردن گیت مستقل را ندارد. این منطق ابزار تشخیص بحران معتبر یا بازبینی بالینی‌شده نیست.
+- موضوع پیشنهادی صرفاً فرضیه مسیریابی است و انتخاب نهایی بدون تأیید کاربر انجام نمی‌شود.
+- برای اطلاعات عمومی، چون محتوای تأییدشده آماده نیست، سیستم از تولید پاسخ factual خودداری می‌کند.
+- هیچ مکالمه‌ای در Backend ذخیره نمی‌شود؛ تاریخچه فقط در payload همان درخواست قرار می‌گیرد.
+
+### CI نهایی
+- commit کد/تست آزموده‌شده: `751b9196da863958738743b690c136683603193e`.
+- GitHub Actions run: `41825332984` — نتیجه نهایی `success`.
+- `npm audit --audit-level=high`: صفر آسیب‌پذیری.
+- Worker bundle و Wrangler versions upload dry-run: موفق؛ بدون deploy یا upload واقعی.
+- replay-marker، bootstrap و semantic conversation local Workers runtime integration: موفق.
+- `npm test`: ۳۶۶ تست، ۳۶۶ موفق، صفر شکست.
+- اعتبارسنجی registry/محتوا، ممیزی کیفیت محتوا و build: موفق.
+- آزمون‌های Chromium حریم خصوصی E1–E10، archive export و safety browser scenarios: موفق.
+
+### محدودیت‌ها و موارد باز
+- آداپتور Workers AI به Worker اصلی وصل نیست؛ binding `AI` در `wrangler.toml` وجود ندارد؛ هیچ inference واقعی اجرا نشده و هیچ هزینه AI ایجاد نشده است.
+- مدل فارسی انتخاب یا ارزیابی نشده است. مدل استفاده‌شده در تست فقط fixture است.
+- Cloudflare برای inference استاندارد stateless zero data retention و عدم استفاده برای آموزش را اعلام می‌کند؛ با این حال محل دقیق inference برای این حساب/مدل هنوز اثبات نشده و metadata عملیاتی ممکن است نگهداری شود. AI Gateway logging/caching فعال نشده است.
+- احراز هویت نشست، verifier واقعی consent، ذخیره/پس‌گرفتن رضایت، rate limit، کنترل هزینه و route عملیاتی هنوز پیاده‌سازی نشده‌اند.
+- تاریخچه از سمت کلاینت می‌آید و فقط محدود/به‌صورت untrusted بسته‌بندی می‌شود؛ session persistence و مالکیت سروری ندارد.
+- گیت ایمنی lexical و غیرتشخیصی است؛ مدل نیز جایگزین تشخیص بحران یا بازبینی متخصص نیست.
+- UI موجود هنوز به این orchestrator وصل نشده است؛ endpoint `/v1/assistant/turn` در Worker اصلی همچنان 503 و fail-closed است.
+- بخش فعلی خروجی زنده قابل تعامل در مرورگر نیست؛ تست runtime محلی و CI جایگزین آن نیست.
+- هیچ فایل journey/profile/محتوای اصلی اپ، ۳۴ موضوع یا ۹۵۲ تمرین تغییر نکرده است. هیچ deploy، promote یا تغییر ترافیک Production انجام نشده است.
+
+**وضعیت این بخش:** `automated_tests_passed` برای orchestrator و آداپتور با mock؛ هنوز browser-ready نیست.
+
+**گام بعدی:** پیاده‌سازی واقعی consent verifier و نشست/هویت مناسب برای مرورگر و mini-app، محدودیت نرخ/هزینه و انتخاب مدل بر اساس آزمون مصنوعی فارسی؛ سپس اتصال route و UI در محیط Preview محدود. پیش از اولین inference واقعی، باید محل پردازش، شرایط حساب/هزینه و مجوز ارسال داده به‌صورت صریح تعیین شود.
