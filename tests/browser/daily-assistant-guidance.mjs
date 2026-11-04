@@ -102,9 +102,10 @@ try {
   assert.match(assistantReply, /متن تمرین همین روز/);
   assert.match(assistantReply, /جمله یا واژه‌اش را بیشتر باز کنم/);
 
-  const boundedInput = 'آ'.repeat(2400);
-  await composer.fill(boundedInput);
-  assert.equal(await composer.inputValue().then((value) => value.length), 2000, 'composer must enforce its 2000-character limit');
+  await composer.click();
+  await composer.pressSequentially('آ'.repeat(2001));
+  const boundedValue = await composer.inputValue();
+  assert.equal(boundedValue.length, 2000, 'composer must enforce its 2000-character limit');
   await composer.fill('دیگه نمی‌کشم. همه‌چی تمومه.');
   await send.click();
   await page.waitForFunction(() => { const replies = document.querySelectorAll('.dailyExerciseAssistant .assistantMessage'); return replies.length >= 4 && /آیا همین الآن خطر فوری/.test(replies[replies.length - 1]?.innerText || ''); });
