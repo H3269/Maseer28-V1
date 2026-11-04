@@ -419,7 +419,7 @@ export function submitAssessmentAnswer(session, answer) {
     if (next.current_question.id === 'summary_confirmation') buildAssessmentSummary(next);
   } else if (questionId === 'clarify_example') {
     next.clarification_attempts = (next.clarification_attempts ?? 0) + 1;
-    const isCorrection = /منظورم|اصلاح می‌کنم|در واقع|اشتباه برداشت|نه اینکه/.test(normalize(value));
+    const isCorrection = /منظورم|اصلاح می‌کنم|اصلاح می کنم|اشتباه برداشت|نه اینکه/.test(normalize(value));
     const clarificationText = isCorrection ? value : buildConversationEvidenceText(next);
     if (isCorrection) {
       next.answers.open_problem_original = next.answers.open_problem;
@@ -473,7 +473,7 @@ export function submitAssessmentAnswer(session, answer) {
   } else if (questionId === 'summary_revision') {
     next.answers.summary_revision = value;
     const normalizedRevision = normalize(value);
-    const replacesTopic = /موضوع اصلی|منظورم|در واقع|اصلاح می کنم|به جای/.test(normalizedRevision);
+    const replacesTopic = /موضوع اصلی|منظورم|اصلاح می‌کنم|اصلاح می کنم|اشتباه برداشت|به جای/.test(normalizedRevision);
     if (replacesTopic) {
       next.answers.open_problem_original ??= next.answers.open_problem;
       next.answers.open_problem = value;
