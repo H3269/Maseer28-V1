@@ -165,7 +165,7 @@ test("fails closed when platform credentials are missing or platform is unknown"
 });
 
 test("rejects missing or invalid user identity", async () => {
-  const noUser = await makeInitData({ token: TELEGRAM_TOKEN, user: undefined });
+  const noUser = await makeInitData({ token: TELEGRAM_TOKEN, user: null });
   const invalidUser = await makeInitData({ token: TELEGRAM_TOKEN, user: { id: 0 } });
   const env = { TELEGRAM_BOT_TOKEN: TELEGRAM_TOKEN };
   const first = await verifyMiniAppInitData({
