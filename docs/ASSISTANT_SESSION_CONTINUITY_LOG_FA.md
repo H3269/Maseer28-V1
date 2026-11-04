@@ -66,3 +66,12 @@ CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` مو�
 
 - ممیزی workflow انتشار نشان داد رابط اصلی React/Vite با GitHub Pages منتشر می‌شود و انتشار دستی با `confirm_public_release=yes` و گیت تأیید تخصصی تمام ۹۵۲ روز انجام می‌شود. T16 و T17 هرکدام ۰/۲۸ روز تأییدشده دارند؛ پس گیت فعلی حداقل ۵۶ روز را رد می‌کند. تغییر گیت یا تأیید جعلی خارج از دامنه است.
 - Worker URL شناخته‌شده فقط API است، نه آدرس رابط React. URL دقیق Pages در دسترس نشست نیست و وضعیت Pages/Worker از Dashboard قابل تأیید نشد. Worker Preview به‌تنهایی رابط را در همان URL Pages منتشر نمی‌کند.
+
+
+## ادامه 2026-11-04 — Durable Object برای کنترل نشست Preview
+- ماژول `previewSessionGuard.js` اضافه شد: یک DO مجزا برای هر نشست، سقف ۲۰ درخواست در ۵ دقیقه، لغو فوری و پاکسازی رکورد پس از انقضا با Alarm. transcript ذخیره نمی‌شود.
+- `previewSession.js` اکنون ثبت سمت سرور و authorization guard را الزامی می‌کند؛ نبود guard یا ثبت ناموفق fail-closed است. Worker entrypoint کلاس DO را export و wrangler config binding/migration را تعریف می‌کند، ولی route اصلی هنوز از آن استفاده نمی‌کند و 503 باقی است.
+- harness محلی به SQLite DO وصل شد. روی commit `410d86a` CI run `41828667148` موفق: ۳۷۶/۳۷۶ تست، صفر آسیب‌پذیری، سه runtime integration، build و Chromium privacy scenarios موفق.
+- commit بعدی `4fc00c0` صدور token را به پاسخ صریح `created:true` محدود کرد؛ CI run `41828926831` هنگام ثبت در حال اجرا بود.
+- محدودیت: rate limit فعلی per-session است و تلاش‌های ناموفق برای access code یا ساخت چند نشست را globally محدود نمی‌کند. احراز هویت واقعی/consent ledger وجود ندارد. AI واقعی وصل نیست. هیچ deployment یا تغییر Production انجام نشده است.
+- جزئیات در بخش ۲۲ `docs/PROJECT_EXECUTION_STATE_FA.md` ثبت شد. گام بعدی: تکمیل CI، سپس رابط مستقل دستیار؛ عدم تغییر App/journey تا دریافت مجوز صریح در صورت نیاز به نقطه اتصال.
