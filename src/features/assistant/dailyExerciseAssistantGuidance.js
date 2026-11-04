@@ -74,7 +74,7 @@ function followUpResponse(message, state) {
   }
 
   if (selected) {
-    return `این ${label} از پاسخ قبلی است:\n\n${selected}\n\nاگر هنوز مبهم است، همان جمله یا واژه را مشخص کن تا دقیق‌تر توضیح بدهم.`;
+    return `این ${label} از پاسخ قبلی است:\n\n${selected}\n\nاگر هنوز مبهم است، مشخص کن کدام جمله یا واژه‌اش را بیشتر باز کنم.`;
   }
   if (/(?:بیشتر توضیح|واضح تر|روشن تر|متوجه نشدم|نفهمیدم|همین بخش|بیشتر باز کن|منظورم)/u.test(value)) {
     const topic = state.lastTopic ? ` درباره «${state.lastTopic}»` : '';
