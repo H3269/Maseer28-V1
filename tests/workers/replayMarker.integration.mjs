@@ -20,11 +20,13 @@ const child = spawn(
     "--log-level",
     "error",
   ],
-  { stdio: ["ignore", "pipe", "pipe"] },
+  { stdio: ["ignore", "pipe", "pipe"], detached: true },
 );
 
 let serverOutput = "";
 let spawnError = null;
+let stage = "starting Wrangler";
+const childClosed = new Promise((resolve) => child.once("close", resolve));
 child.on("error", (error) => { spawnError = error; });
 child.stdout.setEncoding("utf8").on("data", (chunk) => { serverOutput += chunk; });
 child.stderr.setEncoding("utf8").on("data", (chunk) => { serverOutput += chunk; });
@@ -68,9 +70,21 @@ async function waitForServer() {
   throw new Error(`Wrangler did not become ready within 45 seconds: ${serverOutput}`);
 }
 
+function signalProcessGroup(signal) {
+  if (!child.pid) return;
+  try {
+    // npx starts Wrangler as a descendant. Kill the detached process group,
+    // not just the npm shim, or orphaned workerd pipes can keep Node alive.
+    process.kill(-child.pid, signal);
+  } catch (error) {
+    if (error?.code !== "ESRCH") throw error;
+  }
+}
+
 try {
   await waitForServer();
 
+  stage = "concurrent replay-marker requests";
   const fingerprint = "a".repeat(64);
   const expiresAt = Date.now() + 180_000;
   const duplicateResults = await Promise.all(
@@ -84,6 +98,7 @@ try {
     "exactly one concurrent request must consume a fingerprint",
   );
 
+  stage = "distinct fingerprint and Alarm state";
   const second = await request("/consume", {
     fingerprint: "b".repeat(64),
     expiresAt: expiresAt + 60_000,
@@ -95,19 +110,25 @@ try {
   assert.ok(Number.isFinite(stateBeforeCleanup.alarmAt));
   assert.ok(stateBeforeCleanup.alarmAt <= expiresAt);
 
+  stage = "expired marker cleanup";
   const cleaned = await request("/expire-and-alarm");
   assert.equal(cleaned.count, 0);
   assert.equal(cleaned.alarmAt, null);
 
   console.log("Cloudflare Workers runtime integration passed: SQLite transaction, concurrent consume-once, Alarm scheduling and cleanup.");
 } catch (error) {
+  console.error(`Integration test failed during: ${stage}`);
   console.error(error);
   console.error(serverOutput);
   process.exitCode = 1;
 } finally {
-  child.kill("SIGTERM");
-  await Promise.race([
-    new Promise((resolve) => child.once("exit", resolve)),
-    delay(5_000),
+  signalProcessGroup("SIGTERM");
+  const exitedGracefully = await Promise.race([
+    childClosed.then(() => true),
+    delay(3_000).then(() => false),
   ]);
+  if (!exitedGracefully) {
+    signalProcessGroup("SIGKILL");
+    await Promise.race([childClosed, delay(2_000)]);
+  }
 }
