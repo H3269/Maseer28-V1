@@ -79,10 +79,13 @@ test("sends only bounded user/assistant history and the allowlisted topic regist
   assert.equal(result.topic_candidates[0].topic_id, "T27");
   assert.equal(result.topic_candidates[0].name, "ترس از قضاوت");
   assert.equal(calls.length, 1);
-  assert.deepEqual(calls[0].messages.slice(-3), [
-    { role: "user", content: "وقتی در جلسه حرف می‌زنم مضطرب می‌شوم." },
-    { role: "assistant", content: "در چه موقعیتی بیشتر این اتفاق می‌افتد؟" },
-    { role: "user", content: "در محل کار از قضاوت دیگران می‌ترسم." },
+  assert.equal(calls[0].messages.length, 3);
+  assert.equal(calls[0].messages[2].role, "user");
+  const transcript = JSON.parse(calls[0].messages[2].content).untrusted_conversation;
+  assert.deepEqual(transcript, [
+    { speaker: "prior_user_text", text: "وقتی در جلسه حرف می‌زنم مضطرب می‌شوم." },
+    { speaker: "prior_assistant_text", text: "در چه موقعیتی بیشتر این اتفاق می‌افتد؟" },
+    { speaker: "current_user", text: "در محل کار از قضاوت دیگران می‌ترسم." },
   ]);
   assert.ok(calls[0].messages[0].content.includes("داده غیرقابل‌اعتماد"));
   assert.ok(calls[0].messages[1].content.includes('"T27"'));
