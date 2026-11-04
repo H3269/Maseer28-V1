@@ -247,7 +247,7 @@ test('third-party attributed questions do not become the user intent', () => {
   assert.equal(reportedOnly.topic_candidates.length, 0);
 
   const userFollowUp = routeSemanticIntake({
-    text: 'دوستم گفت من اضطراب دارم. حالا برای خودم چه راهکاری پیشنهاد می‌کنی؟',
+    text: 'دوستم گفت من اضطراب دارم. من هم اضطراب دارم؛ حالا برای خودم چه راهکاری پیشنهاد می‌کنی؟',
   });
   assert.equal(userFollowUp.intent.label, 'request_strategy');
   assert.ok(userFollowUp.topic_candidates.some((item) => item.topic_id === 'T02'));
