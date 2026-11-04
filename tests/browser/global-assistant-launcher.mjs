@@ -116,9 +116,30 @@ try {
   await page.keyboard.press('Escape');
   await dialog.waitFor({ state: 'detached' });
 
+  for (const viewport of [{ width: 390, height: 844 }, { width: 320, height: 568 }]) {
+    await page.setViewportSize(viewport);
+    const launcherBox = await launcher.boundingBox();
+    const navigationBox = await page.locator('.bottomNav').boundingBox();
+    assert.ok(launcherBox && navigationBox, 'launcher and bottom navigation must remain measurable on mobile');
+    assert.ok(
+      launcherBox.y + launcherBox.height <= navigationBox.y,
+      `launcher must not overlap bottom navigation at ${viewport.width}x${viewport.height}`,
+    );
+
+    await launcher.click();
+    dialog = page.getByRole('dialog', { name: 'دستیار مسیر۲۸' });
+    await dialog.waitFor({ state: 'visible' });
+    const dialogBox = await dialog.boundingBox();
+    assert.ok(dialogBox, 'mobile dialog must have a visible layout box');
+    assert.ok(dialogBox.x >= 0 && dialogBox.x + dialogBox.width <= viewport.width, 'mobile dialog must fit horizontally');
+    assert.ok(dialogBox.y >= 0 && dialogBox.y + dialogBox.height <= viewport.height, 'mobile dialog must fit vertically');
+    await dialog.getByRole('button', { name: 'متوجه شدم' }).click();
+    await dialog.waitFor({ state: 'detached' });
+  }
+
   assert.deepEqual(errors, [], 'global assistant navigation must not raise uncaught page errors');
   await page.close();
-  process.stdout.write('PASS: Chromium global assistant placement, daily-page shortcut, page-context disclosure, unsupported-page guard, dialog close and Escape handling (WV-BROWSER-GLOBAL-ASSISTANT)\\n');
+  process.stdout.write('PASS: Chromium global assistant placement, daily-page shortcut, page-context disclosure, unsupported-page guard, dialog close, Escape, focus management and mobile layout (WV-BROWSER-GLOBAL-ASSISTANT)\\n');
 } finally {
   await browser.close();
 }
