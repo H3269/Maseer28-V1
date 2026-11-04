@@ -20,6 +20,9 @@ export function createWorkersAiStructuredGenerator({ ai, model } = {}) {
   if (typeof model !== "string" || !/^@cf\/[a-z0-9._/-]{3,160}$/i.test(model)) {
     throw new TypeError("invalid_workers_ai_model");
   }
+  if (!JSON_MODELS_SUPPORTED_BY_WORKERS_AI.has(model)) {
+    throw new TypeError("unsupported_workers_ai_json_model");
+  }
 
   return async ({
     messages,
