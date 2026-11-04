@@ -515,3 +515,49 @@ test('missing day data never enables the daily assistant', () => {
   assert.equal(access.available, false);
   assert.equal(access.reason, 'day_unavailable');
 });
+
+test('daily how-to response exposes source-ordered steps and separates source conditions', () => {
+  const response = makeDailyExerciseGuidance({
+    message: 'چطور انجامش بدم؟',
+    dayData: {
+      exercise: 'یک موقعیت امن را انتخاب کن. در سه خط بنویس: چه اتفاقی افتاد؟ چه احساسی داشتی؟ چه رفتاری انجام دادی؟ اگر نمونه‌ای پیدا نکردی، مثال نساز.',
+      actionText: 'امروز فقط یک بار نام احساس را مشخص کن. اگر فشار بیشتر شد، مکث کن.',
+    },
+    problem: 'خشم',
+    day: 2,
+  });
+  assert.match(response, /گام 1: یک موقعیت امن را انتخاب کن/u);
+  assert.match(response, /گام 2: در سه خط بنویس/u);
+  assert.match(response, /گام 3: چه احساسی داشتی/u);
+  assert.match(response, /شرط یا یادآوری خود متن/u);
+  assert.match(response, /راهکار اختصاصی روز، بر اساس ترتیب متن اصلی/u);
+});
+
+test('two-column prompts are returned as exact source labels', () => {
+  const response = makeDailyExerciseGuidance({
+    message: 'چطور انجامش بدم؟',
+    dayData: {
+      exercise: 'دو ستون بکش: «چه احساسی داشتم؟» و «چه کاری انجام دادم؟». فقط نمونه امن انتخاب کن.',
+      actionText: 'پیش از پاسخ، احساس را نام ببر.',
+    },
+    problem: 'خشم',
+    day: 2,
+  });
+  assert.match(response, /ستون 1: «چه احساسی داشتم/u);
+  assert.match(response, /ستون 2: «چه کاری انجام دادم/u);
+});
+
+test('example requests create a blank template without inventing a personal scenario', () => {
+  const response = makeDailyExerciseGuidance({
+    message: 'مثال بزن',
+    dayData: {
+      exercise: 'دو ستون بکش: «چه احساسی داشتم؟» و «چه کاری انجام دادم؟».',
+      actionText: 'یک بار احساس را نام ببر.',
+    },
+    problem: 'خشم',
+    day: 2,
+  });
+  assert.match(response, /قالب خالی/u);
+  assert.match(response, /چه احساسی داشتم/u);
+  assert.match(response, /پاسخ خودت/u);
+});
