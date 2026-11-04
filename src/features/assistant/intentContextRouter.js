@@ -82,7 +82,7 @@ function removeAttributedQuotes(value) {
 }
 
 function classifyIntent(value) {
-  const normalized = normalize(value);
+  const normalized = normalize(value).replace(/[؟?!.,،؛:]+/g, ' ').trim();
   const deniesPersonalExperience = /خودم چنین تجربه(?:‌ای| ای) ندارم|برای خودم نیست|صرفاً برای ترجمه|فقط برای ترجمه/.test(normalized);
   const translationRequest = /(?:برای ترجمه|ترجمه (?:این|یک) متن|متن را ترجمه)/.test(normalized);
   const informationQuestion = /(?:چیست|چی هست|یعنی چه|چه معنایی دارد)|تعریف\s+\S+|معنی\s+\S+|اطلاعات(?:ی)?\s+(?:درباره|در مورد)|(?:درباره|در مورد).{0,35}توضیح (?:بده|دهید)/.test(normalized);
