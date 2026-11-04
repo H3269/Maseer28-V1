@@ -119,7 +119,7 @@ test("issues a short-lived stateless token and verifies the consent capability",
   assert.equal(issued.policyVersion, POLICY_VERSION);
   assert.equal(issued.token.includes(ACCESS_CODE), false);
 
-  const verified = await verifyAssistantPreviewSession({
+  const verified = await verify({
     token: issued.token,
     env: ENV,
     nowSeconds: NOW + 1,
@@ -136,7 +136,7 @@ test("rejects tampered, malformed, and expired Preview tokens", async () => {
   const [header, payload, signature] = issued.token.split(".");
   const tampered = `${header}.${payload}.${signature.slice(0, -1)}${signature.endsWith("A") ? "B" : "A"}`;
 
-  const invalidSignature = await verifyAssistantPreviewSession({
+  const invalidSignature = await verify({
     token: tampered,
     env: ENV,
     nowSeconds: NOW + 1,
@@ -144,14 +144,14 @@ test("rejects tampered, malformed, and expired Preview tokens", async () => {
   assert.equal(invalidSignature.valid, false);
   assert.equal(invalidSignature.reason, "invalid_preview_session_signature");
 
-  const malformed = await verifyAssistantPreviewSession({
+  const malformed = await verify({
     token: "not.a.jwt",
     env: ENV,
     nowSeconds: NOW + 1,
   });
   assert.equal(malformed.valid, false);
 
-  const expired = await verifyAssistantPreviewSession({
+  const expired = await verify({
     token: issued.token,
     env: ENV,
     nowSeconds: NOW + 900,
@@ -162,7 +162,7 @@ test("rejects tampered, malformed, and expired Preview tokens", async () => {
 
 test("policy changes invalidate existing Preview consent tokens", async () => {
   const issued = await issue();
-  const verified = await verifyAssistantPreviewSession({
+  const verified = await verify({
     token: issued.token,
     env: { ...ENV, ASSISTANT_CONSENT_POLICY_VERSION: "new-policy-version" },
     nowSeconds: NOW + 1,
@@ -173,7 +173,7 @@ test("policy changes invalidate existing Preview consent tokens", async () => {
 
 test("refuses tokens when Preview mode is disabled after issuance", async () => {
   const issued = await issue();
-  const verified = await verifyAssistantPreviewSession({
+  const verified = await verify({
     token: issued.token,
     env: { ...ENV, ASSISTANT_PREVIEW_ENABLED: "false" },
     nowSeconds: NOW + 1,
