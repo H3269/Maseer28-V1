@@ -1,0 +1,17 @@
+name = "maseer28-assistant-bootstrap-integration"
+main = "./assistantBootstrapWorker.js"
+compatibility_date = "2026-11-04"
+workers_dev = false
+
+[vars]
+TELEGRAM_BOT_TOKEN = "test-only-telegram-bot-token-not-a-secret"
+REPLAY_FINGERPRINT_SECRET = "test-only-replay-fingerprint-secret-32-bytes"
+SESSION_SIGNING_SECRET = "test-only-session-signing-secret-32-bytes"
+
+[[durable_objects.bindings]]
+name = "REPLAY_MARKERS"
+class_name = "ReplayMarkerBootstrapTestDO"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ReplayMarkerBootstrapTestDO"]
