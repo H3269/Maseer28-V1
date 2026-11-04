@@ -1,6 +1,10 @@
 import { runSemanticConversationTurn } from "../../workers/assistant-api/src/semanticConversation.js";
 import { createWorkersAiStructuredGenerator } from "../../workers/assistant-api/src/workersAiProvider.js";
 import {
+  AssistantPreviewSessionGuardDurableObject,
+  createPreviewSessionGuard,
+} from "../../workers/assistant-api/src/previewSessionGuard.js";
+import {
   createAssistantPreviewSession,
   verifyAssistantPreviewSession,
 } from "../../workers/assistant-api/src/previewSession.js";
@@ -35,13 +39,17 @@ async function readInput(request) {
  * Local-only harness. The access code, signing secret, and mock AI binding are
  * synthetic fixtures and must never be wired into the production Worker.
  */
+export class AssistantPreviewSessionGuardTestDO extends AssistantPreviewSessionGuardDurableObject {}
+
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const url = new URL(request.url);
     if (request.method === "GET" && url.pathname === "/health") {
       return json({ status: "ok" });
     }
     if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405);
+
+    const sessionGuard = createPreviewSessionGuard(env.PREVIEW_SESSION_GUARD);
 
     if (url.pathname === "/session") {
       const input = await readInput(request);
@@ -50,8 +58,25 @@ export default {
         accessCode: input.accessCode,
         consent: input.consent,
         env: TEST_ENV,
+        sessionGuard,
       });
       return json(result, result.ok ? 200 : result.status);
+    }
+
+    if (url.pathname === "/revoke") {
+      const authorization = request.headers.get("Authorization") || "";
+      const match = authorization.match(/^Bearer (.+)$/);
+      const verified = await verifyAssistantPreviewSession({
+        token: match?.[1],
+        env: TEST_ENV,
+        sessionGuard,
+      });
+      if (!verified.valid) return json({ error: "invalid_preview_session" }, 401);
+      const result = await sessionGuard.revoke({
+        sessionId: verified.session.sessionId,
+        nowSeconds: Math.floor(Date.now() / 1000),
+      });
+      return json(result);
     }
 
     if (url.pathname !== "/turn") return json({ error: "not_found" }, 404);
@@ -63,6 +88,7 @@ export default {
     const verified = await verifyAssistantPreviewSession({
       token: match?.[1],
       env: TEST_ENV,
+      sessionGuard,
     });
     if (!verified.valid) return json({ error: "invalid_preview_session" }, 401);
 
