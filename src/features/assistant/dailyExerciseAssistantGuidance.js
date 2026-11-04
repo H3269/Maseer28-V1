@@ -57,6 +57,20 @@ function followUpResponse(message, state) {
   let selected = null;
   let label = '';
 
+  if (/(?:خلاصه|کوتاه تر|مختصرتر)/u.test(value)) {
+    const exercise = paragraphs.find((part) => /^متن تمرین همین روز:/u.test(part));
+    const action = paragraphs.find((part) => /^راهکار اختصاصی همین روز:/u.test(part));
+    const summaryParts = [exercise, action].filter(Boolean);
+    if (summaryParts.length) {
+      return `خلاصه محتوای همان روز، بدون افزودن مطلب تازه:\\n\\n${summaryParts.join('\\n\\n')}`;
+    }
+  }
+  if (/^(?:چرا|چطور|یعنی چی|منظورت چیه|مثال بزن|یه مثال بزن|مثالی بزن)[؟?]?$/u.test(value)) {
+    if (/مثال/u.test(value)) {
+      return 'می‌توانم یک مثال فرضی و غیرشخصی را فقط برای روشن‌شدن یک مرحله توضیح بدهم. کدام جمله یا مرحله از پاسخ قبلی برایت مثال می‌خواهد؟';
+    }
+    return 'منظورت دلیل یا توضیح کدام جمله از پاسخ قبلی است؟ همان جمله یا چند کلمه‌اش را بنویس تا درباره همان بخش پاسخ بدهم، نه اینکه حدس بزنم.';
+  }
   if (/(?:راهکار|اقدام اختصاصی|اقدام امروز)/u.test(value)) {
     selected = paragraphs.find((part) => /^راهکار اختصاصی همین روز:/u.test(part));
     label = 'راهکار اختصاصی';
