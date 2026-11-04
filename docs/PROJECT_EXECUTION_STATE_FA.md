@@ -482,3 +482,36 @@
 - فقط تست دستیار و دفتر وضعیت پروژه در این ثبت تغییر می‌کنند؛ بخش اصلی اپ، محتوای ۳۴ موضوع/۹۵۲ روز و مسیرهای journey دست‌نخورده‌اند.
 - هیچ secret، session endpoint، Durable Object، provider، deployment یا انتشار فعال نشده است.
 - گام بعد از CI: بازبینی طراحی anti-replay و عمر initData، سپس adapter خواندن SDK میزبان به‌صورت lazy و فقط هنگام ورود به دستیار؛ هیچ متن مکالمه‌ای ارسال نمی‌شود.
+
+
+## 2026-11-04 — تکمیل پل خواندن initData میزبان و تأیید CI
+
+### وضعیت شاخه و تغییرات
+- شاخه مجاز: فقط `main`.
+- HEAD بررسی‌شده: `430c91bf3f2f647c4ccbec22138886f4e0ab1838`.
+- فایل‌های افزوده‌شده:
+  - `workers/assistant-api/src/hostBridge.js` — خواندن initData خام از SDK میزبان یا lazy-load SDK رسمی.
+  - `tests/hostBridge.test.js` — آزمون‌های واحد پل میزبان.
+- این دو فایل مستقل‌اند و هنوز به UI دستیار یا routeهای Worker متصل نشده‌اند.
+
+### شواهد CI
+- Run `41778131447` روی commit `e72423b00678be767b4402c4af85d6be563878f1`: `success`.
+- Run `41778143211` روی commit `430c91bf3f2f647c4ccbec22138886f4e0ab1838`: `success`.
+- در run دوم، unit tests، Wrangler dry-run، build و Chromium privacy/browser scenarios موفق بودند.
+- اجرای unit tests از طریق `npm test` انجام می‌شود و فایل `tests/hostBridge.test.js` در مجموعه تست قرار دارد.
+- موفقیت CI معادل تست واقعی Telegram/Bale یا صحت runtime SDK درون اپ میزبان نیست.
+
+### محدودیت و ریسک باز
+- مستندات رسمی Bale بارگذاری SDK در ابتدای `<head>` و پیش از سایر scriptها را توصیه می‌کند؛ کد فعلی lazy-load می‌کند. این اختلاف تا تست واقعی Bale حل‌شده تلقی نمی‌شود.
+- helper از User-Agent صرفاً برای انتخاب SDK استفاده می‌کند؛ User-Agent هویت معتبر نیست.
+- verifier هنوز به route متصل نشده و session/replay protection پیاده‌سازی نشده است.
+- TTL پنج‌دقیقه‌ای `auth_date` تصمیم نهایی نیست و باید همراه چرخه عمر Mini App و تمدید امن بررسی شود.
+
+### وضعیت امنیت و انتشار
+- هیچ initData واقعی خوانده یا به سرور ارسال نشده است.
+- هیچ session صادر نشده؛ endpoint مکالمه همچنان 503 و fail-closed است.
+- هیچ consent، متن مکالمه، API secret، Durable Object یا provider اضافه/متصل نشده است.
+- هیچ Deploy یا انتشار انجام نشده است.
+- هیچ فایل journey یا محتوای اصلی ۳۴ موضوع/۹۵۲ روز تغییر نکرده است.
+
+**گام بعدی واحد:** تکمیل طراحی anti-replay و session با بررسی سهمیه/هزینه Durable Objects و lifecycle واقعی `auth_date`؛ سپس فقط در صورت نیاز، آزمون انسانی کوتاه در Telegram/Bale. فعلاً اقدام انسانی از مالک لازم نیست.
