@@ -349,3 +349,68 @@ test('explicit prior-action references still retrieve only the dedicated action'
   assert.match(followUp.response, /راهکار اختصاصی همین روز: امروز فقط یک موقعیت/);
   assert.doesNotMatch(followUp.response, /متن تمرین همین روز/);
 });
+
+
+test('explicit sentence references retrieve the matching sentence from the prior assistant turn', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'چطور انجامش بدم؟', dayData, problem: 'اضطراب', day: 4 });
+  const secondSentence = makeDailyExerciseGuidanceTurn({
+    message: 'جمله دوم رو بگو',
+    dayData,
+    problem: 'اضطراب',
+    day: 4,
+    conversationState: first.nextState,
+  });
+  assert.match(secondSentence.response, /متن تمرین همین روز: سه موقعیت اخیر/);
+  assert.match(secondSentence.response, /جمله 2 از پاسخ قبلی/);
+
+  const lastSentence = makeDailyExerciseGuidanceTurn({
+    message: 'جمله آخر',
+    dayData,
+    problem: 'اضطراب',
+    day: 4,
+    conversationState: first.nextState,
+  });
+  assert.match(lastSentence.response, /جمله آخر از پاسخ قبلی/);
+  assert.match(lastSentence.response, /جمله یا مرحله‌ای از متن بالا/);
+});
+
+test('paragraph references retrieve the requested prior paragraph without crossing day content', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'چطور انجامش بدم؟', dayData, problem: 'اضطراب', day: 4 });
+  const lastParagraph = makeDailyExerciseGuidanceTurn({
+    message: 'بند آخر رو بگو',
+    dayData,
+    problem: 'اضطراب',
+    day: 4,
+    conversationState: first.nextState,
+  });
+  assert.match(lastParagraph.response, /بند آخر از پاسخ قبلی/);
+  assert.match(lastParagraph.response, /لطفاً جمله یا مرحله‌ای از متن بالا/);
+  assert.doesNotMatch(lastParagraph.response, /راهکار اختصاصی همین روز/);
+});
+
+test('ambiguous same-sentence and other-one references ask for clarification instead of guessing', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'چطور انجامش بدم؟', dayData, problem: 'اضطراب', day: 4 });
+  for (const message of ['همون جمله', 'همون جمله قبلی', 'اون یکی']) {
+    const followUp = makeDailyExerciseGuidanceTurn({
+      message,
+      dayData,
+      problem: 'اضطراب',
+      day: 4,
+      conversationState: first.nextState,
+    });
+    assert.match(followUp.response, /کدام جمله است/u, message);
+    assert.doesNotMatch(followUp.response, /این جمله از پاسخ قبلی است/u);
+  }
+});
+
+test('out-of-range sentence references request clarification rather than selecting a different sentence', () => {
+  const first = makeDailyExerciseGuidanceTurn({ message: 'بله', dayData, problem: 'اضطراب', day: 4 });
+  const followUp = makeDailyExerciseGuidanceTurn({
+    message: 'جمله دهم',
+    dayData,
+    problem: 'اضطراب',
+    day: 4,
+    conversationState: first.nextState,
+  });
+  assert.match(followUp.response, /به‌اندازه کافی جمله/);
+});
