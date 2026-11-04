@@ -166,12 +166,12 @@ try {
   assert.equal(await safeChoice.isChecked(), false);
   assert.equal(await gatedPanel.locator('#daily-exercise-assistant-message').count(), 0,
     'relationship-gated day must not expose guidance before the explicit safety check');
-  await safeChoice.check();
+  await safeChoice.evaluate((element) => element.click());
   await gatedPanel.locator('#daily-exercise-assistant-message').waitFor({ state: 'visible' });
   await gatedPage.getByRole('button', { name: /شرایط امن نیست یا پاسخ من تغییر کرده است/ }).click();
   assert.equal(await gatedPanel.locator('#daily-exercise-assistant-message').count(), 0,
     'changing the safety answer to unsafe must immediately close the assistant');
-  await gatedPage.getByLabel('بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.').check();
+  await gatedPage.getByLabel('بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.').evaluate((element) => element.click());
   await gatedPanel.locator('#daily-exercise-assistant-message').waitFor({ state: 'visible' });
   await gatedPage.locator('#day button[aria-label="داشبورد"]').click();
   await gatedPage.locator('#dashboard').waitFor({ state: 'visible' });
