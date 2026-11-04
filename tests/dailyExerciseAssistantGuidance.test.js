@@ -128,7 +128,7 @@ test('safety clarification state persists across turns and does not fall through
   assert.doesNotMatch(second.response, /سه موقعیت اخیر/);
   const third = makeDailyExerciseGuidanceTurn({ message: 'شاید، مطمئن نیستم', dayData, problem: 'اضطراب', day: 4, conversationState: second.nextState });
   assert.equal(third.nextState.safetyStatus, 'handoff');
-  assert.match(third.response, /کمک انسانی/);
+  assert.match(third.response, /کمک فوری انسانی/);
   const fourth = makeDailyExerciseGuidanceTurn({ message: 'حالا تمرین را توضیح بده', dayData, problem: 'اضطراب', day: 4, conversationState: third.nextState });
   assert.equal(fourth.nextState.safetyStatus, 'handoff');
   assert.doesNotMatch(fourth.response, /سه موقعیت اخیر/);
