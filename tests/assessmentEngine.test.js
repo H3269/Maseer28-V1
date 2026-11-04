@@ -537,3 +537,52 @@ test('additive summary revision beginning with «در واقع» does not replac
   assert.match(session.summary.user_report, /اضطراب/);
   assert.match(session.summary.user_report, /خشم/);
 });
+
+
+function createUnresolvedMultiTopicSession() {
+  let session = createAssessmentSession();
+  session = answer(session, 'من اضطراب ندارم؛ فقط نگران آینده‌ام و از قضاوت دیگران می‌ترسم.');
+  session = answer(session, 'نه');
+  session = answer(session, 'در کار و رابطه‌ام اثر گذاشته است');
+  session = answer(session, 'چند هفته است');
+  session = answer(session, 'می‌خواهم مسئله را بهتر بفهمم');
+  return session;
+}
+
+test('an unresolved first clarification asks a second question instead of summarizing prematurely', () => {
+  let session = createUnresolvedMultiTopicSession();
+  assert.equal(getCurrentQuestion(session).id, 'clarify_example');
+  session = answer(session, 'هر دو موضوع در زندگی من وجود دارد و نمی‌دانم کدام مهم‌تر است.');
+  assert.equal(session.clarification_attempts, 1);
+  assert.equal(getCurrentQuestion(session).id, 'clarify_example');
+});
+
+test('a second clarification that remains multi-topic cannot be completed by summary approval alone', () => {
+  let session = createUnresolvedMultiTopicSession();
+  session = answer(session, 'هر دو موضوع در زندگی من وجود دارد و نمی‌دانم کدام مهم‌تر است.');
+  session = answer(session, 'هر دو تقریباً به یک اندازه آزارم می‌دهند.');
+  assert.equal(session.clarification_attempts, 2);
+  assert.ok(session.summary.candidate_topics.length > 1);
+  session = answer(session, 'بله، خلاصه درست است');
+  assert.notEqual(session.status, 'completed');
+  assert.notEqual(getCurrentQuestion(session), null);
+  assert.equal(getCurrentQuestion(session).id, 'topic_priority');
+});
+
+test('an explicit topic switch during clarification replaces the earlier topic hypothesis', () => {
+  let session = createUnresolvedMultiTopicSession();
+  session = answer(session, 'منظورم این نیست که اضطراب دارم؛ مسئله اصلی من اهمال‌کاری است و کارها را عقب می‌اندازم.');
+  const topicIds = session.semantic_intake.topic_candidates.map((item) => item.topic_id);
+  assert.ok(topicIds.includes('T09'));
+  assert.equal(topicIds.includes('T02'), false);
+  assert.equal(topicIds.includes('T27'), false);
+});
+
+test('additive clarification preserves both topic hypotheses after the second clarification turn', () => {
+  let session = createUnresolvedMultiTopicSession();
+  session = answer(session, 'هر دو موضوع وجود دارد و در موقعیت‌های متفاوت خودشان را نشان می‌دهند.');
+  session = answer(session, 'در واقع، نگرانی آینده و ترس از قضاوت دیگران هر دو همچنان مسئله من هستند.');
+  const topicIds = session.semantic_intake.topic_candidates.map((item) => item.topic_id);
+  assert.ok(topicIds.includes('T02'));
+  assert.ok(topicIds.includes('T27'));
+});
