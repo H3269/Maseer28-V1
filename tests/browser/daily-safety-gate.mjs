@@ -192,7 +192,40 @@ try {
   assert.deepEqual(humanReviewErrors, []);
   await humanReviewPage.close();
 
-  process.stdout.write('PASS: Chromium blocks unsafe T01 communication and human-review-only exercises, records non-scored skips, and preserves progression (WV-BROWSER-SAFETY)\n');
+  const relationshipTopicDayOnePage = await browser.newPage();
+  const relationshipTopicDayOneErrors = [];
+  relationshipTopicDayOnePage.on('pageerror', (error) => relationshipTopicDayOneErrors.push(String(error)));
+  await seedPage(relationshipTopicDayOnePage, makeState([], 'مشکلات رابطه'));
+  const relationshipTopicDayOneText = await relationshipTopicDayOnePage.locator('#day').innerText();
+  assert.match(relationshipTopicDayOneText, /این تمرین در نسخه فعلی فعال نیست/);
+  assert.match(relationshipTopicDayOneText, /نیازمند بازبینی انسانی/);
+  assert.doesNotMatch(relationshipTopicDayOneText, /آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
+  assert.equal(await relationshipTopicDayOnePage.locator('#dayExercise').count(), 0);
+  assert.equal(await relationshipTopicDayOnePage.locator('#dailyEntryPanel').count(), 0);
+  await relationshipTopicDayOnePage.getByRole('button', { name: 'ثبت عدم اجرای تمرین و ادامه مسیر' }).click();
+  await relationshipTopicDayOnePage.locator('#dailyResult').waitFor({ state: 'visible' });
+  await relationshipTopicDayOnePage.waitForFunction(() => JSON.parse(localStorage.getItem('maseer28_state')).daily?.[1]?.status === 'skipped_human_review');
+  const relationshipTopicDayOneState = await relationshipTopicDayOnePage.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state')));
+  assert.equal(await relationshipTopicDayOnePage.locator('#resultScore').innerText(), '—');
+  assert.equal('score' in relationshipTopicDayOneState.daily[1], false);
+  assert.equal('feedback' in relationshipTopicDayOneState.daily[1], false);
+  assert.ok(relationshipTopicDayOneState.completed.includes(1));
+  assert.deepEqual(relationshipTopicDayOneErrors, []);
+  await relationshipTopicDayOnePage.close();
+
+  const relationshipTopicDaySixPage = await browser.newPage();
+  const relationshipTopicDaySixErrors = [];
+  relationshipTopicDaySixPage.on('pageerror', (error) => relationshipTopicDaySixErrors.push(String(error)));
+  await seedPage(relationshipTopicDaySixPage, makeState([1, 2, 3, 4, 5], 'مشکلات رابطه'));
+  const relationshipTopicDaySixText = await relationshipTopicDaySixPage.locator('#day').innerText();
+  assert.match(relationshipTopicDaySixText, /این تمرین در نسخه فعلی فعال نیست/);
+  assert.equal(await relationshipTopicDaySixPage.locator('#dayExercise').count(), 0);
+  assert.equal(await relationshipTopicDaySixPage.locator('#dailyEntryPanel').count(), 0);
+  assert.doesNotMatch(relationshipTopicDaySixText, /آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
+  assert.deepEqual(relationshipTopicDaySixErrors, []);
+  await relationshipTopicDaySixPage.close();
+
+  process.stdout.write('PASS: Chromium blocks unsafe T01 communication, human-review-only exercises, and all tested T17 access paths; skips remain unscored (WV-BROWSER-SAFETY)\\n');
 } finally {
   await browser.close();
 }
