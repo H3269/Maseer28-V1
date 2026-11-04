@@ -119,20 +119,19 @@ function inferredGoal(intentLabel) {
 
 function buildConversationEvidenceText(session) {
   const answers = session.answers || {};
-  const contextAnswers = ['impact', 'duration', 'goal']
-    .map((id) => answers[id])
-    .filter((value) => typeof value === 'string' && value.trim());
+  const semanticAnswerIds = new Set([
+    'open_problem', 'impact', 'duration', 'goal', 'clarify_example', 'summary_revision',
+  ]);
+  const evidence = Object.entries(answers)
+    .filter(([id, value]) => semanticAnswerIds.has(id) && typeof value === 'string' && value.trim());
 
-  // A clearly signalled correction supersedes the earlier topic wording.
-  // Otherwise, retain the user's separate statements so new topics mentioned
-  // while describing impact, duration, or goals are not silently discarded.
-  const correction = [...contextAnswers].reverse().find((value) =>
-    /(?:منظورم|اصلاح می‌کنم|اصلاح می کنم|موضوع اصلی من)/u.test(normalize(value))
-  );
-  if (correction) return correction.trim();
-  return [answers.open_problem, ...contextAnswers]
-    .filter((value) => typeof value === 'string' && value.trim())
-    .join('\n');
+  // A clearly signalled correction supersedes earlier topic wording, while
+  // later answers remain part of the context and can add further evidence.
+  const isExplicitCorrection = (value) =>
+    /(?:منظورم|اصلاح می‌کنم|اصلاح می کنم|موضوع اصلی من)/u.test(normalize(value));
+  const correctionIndex = evidence.findLastIndex(([, value]) => isExplicitCorrection(value));
+  const relevantEvidence = correctionIndex >= 0 ? evidence.slice(correctionIndex) : evidence;
+  return relevantEvidence.map(([, value]) => value.trim()).join('\n');
 }
 
 function updateSemanticContext(session, requestId) {
@@ -421,7 +420,7 @@ export function submitAssessmentAnswer(session, answer) {
   } else if (questionId === 'clarify_example') {
     next.clarification_attempts = (next.clarification_attempts ?? 0) + 1;
     const isCorrection = /منظورم|اصلاح می‌کنم|در واقع|اشتباه برداشت|نه اینکه/.test(normalize(value));
-    const clarificationText = isCorrection ? value : [next.answers.open_problem, value].join(' ');
+    const clarificationText = isCorrection ? value : buildConversationEvidenceText(next);
     if (isCorrection) {
       next.answers.open_problem_original = next.answers.open_problem;
       next.answers.open_problem = value;
