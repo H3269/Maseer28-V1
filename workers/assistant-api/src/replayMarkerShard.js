@@ -36,7 +36,8 @@ export class ReplayMarkerShard {
     `);
   }
 
-  async consumeOnce({ fingerprint, expiresAt, now = Date.now() }) {
+  async consumeOnce({ fingerprint, expiresAt }) {
+    const now = Date.now();
     if (typeof fingerprint !== "string" || !FINGERPRINT_PATTERN.test(fingerprint)) {
       throw new TypeError("invalid_fingerprint");
     }
@@ -46,7 +47,9 @@ export class ReplayMarkerShard {
 
     // Establish cleanup before inserting. If alarm storage fails, no marker
     // is written and the caller must not issue a session.
-    await this.#scheduleAlarmNoLaterThan(now + ALARM_SAFETY_INTERVAL_MS);
+    await this.#scheduleAlarmNoLaterThan(
+      Math.min(expiresAt, now + ALARM_SAFETY_INTERVAL_MS),
+    );
 
     return this.ctx.storage.transactionSync(() => {
       // Opportunistic bounded cleanup makes progress even after Alarm retries
