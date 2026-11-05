@@ -1,6 +1,6 @@
 import knowledgeCatalog from '../../../public/assistant/knowledge/items.v1.json' with { type: 'json' };
 import approvalManifest from '../../../public/assistant/knowledge/approved-items.v1.json' with { type: 'json' };
-import { routeSemanticIntake } from './intentContextRouter.js';
+import { hasExplicitPersonalContext, routeSemanticIntake } from './intentContextRouter.js';
 import { retrieveApprovedKnowledge } from './knowledgeGateway.js';
 
 function deepFreeze(value) {
@@ -44,7 +44,7 @@ export function routeAssistantTurn({ text, knowledgeItems = (knowledgeCatalog.sc
     });
   }
 
-  const personalContextExplicit = /(?:من خودم|برای من|تجربه شخصی|تجربه دارم|در زندگی من|مشکل خودم|برای خودم|مشکلم|اضطرابم|نگرانی من|درگیرم|تمرکزم|خوابم|روابطم|در محل کارم|در رابطه ام|از دست داده ام|من\s+(?:اضطراب|استرس|نگرانی|ترس|خشم|عصبانیت|تنهایی|بی خوابی)\s*(?:دارم|هستم)|من\s+می[‌\s]?ترسم|(?:مضطربم|نگرانم|عصبانی[‌\s]?ام|تنهایم|بی خوابم))/u.test(String(text ?? ''));
+  const personalContextExplicit = hasExplicitPersonalContext(text);
   if (requestScope === 'auto' && ['request_strategy', 'professional_help_decision'].includes(intake.intent.label) && !personalContextExplicit) {
     return deepFreeze({
       status: 'intent_scope_clarification_required',

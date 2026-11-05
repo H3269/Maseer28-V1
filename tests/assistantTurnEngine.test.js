@@ -162,6 +162,24 @@ test('explicit first-person impact still qualifies as personal context for a str
   assert.deepEqual(result.knowledge, []);
 });
 
+test('first-person distress phrased as suffering from anxiety is recognized as personal context', () => {
+  const result = routeAssistantTurn({ text: 'من از اضطراب رنج می‌برم و چه راهکاری پیشنهاد می‌کنی؟' });
+  assert.equal(result.status, 'personal_intake_required');
+  assert.deepEqual(result.knowledge, []);
+});
+
+test('first-person words inside another person attributed quotation do not count as the user context', () => {
+  const result = routeAssistantTurn({ text: 'دوستم گفت «من از اضطراب رنج می‌برم»؛ چه راهکاری برای کمک به او پیشنهاد می‌کنی؟' });
+  assert.equal(result.status, 'intent_scope_clarification_required');
+  assert.deepEqual(result.knowledge, []);
+});
+
+test('negated first-person anxiety does not count as an affirmative personal disclosure', () => {
+  const result = routeAssistantTurn({ text: 'من از اضطراب رنج نمی‌برم و چه راهکاری برای اضطراب وجود دارد؟' });
+  assert.equal(result.status, 'intent_scope_clarification_required');
+  assert.deepEqual(result.knowledge, []);
+});
+
 test('plain first-person distress with a strategy request is recognized as personal context', () => {
   const result = routeAssistantTurn({ text: 'من اضطراب دارم و چه راهکاری برای بهتر شدنش پیشنهاد می‌کنی؟' });
   assert.equal(result.status, 'personal_intake_required');
