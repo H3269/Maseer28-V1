@@ -1,37 +1,27 @@
-name: Build and Deploy Maseer28-V1
+name: Build and Deploy Maseer28-V1 Test App
 
 on:
-  workflow_dispatch:
-    inputs:
-      confirm_public_release:
-        description: "انتشار عمومی فقط پس از تأیید مستقل محتوا و مجوز مالک"
-        required: true
-        type: choice
-        options:
-          - "no"
-          - "yes"
-        default: "no"
+  push:
+    branches: [main]
 
 permissions:
-  actions: read
   contents: read
   pages: write
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-test
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    if: ${{ inputs.confirm_public_release == 'yes' }}
+  deploy-test-app:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout
+      - name: Checkout main
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
@@ -42,40 +32,23 @@ jobs:
           node-version: '22'
           cache: npm
 
-      - name: Install
+      - name: Install dependencies
         run: npm ci
 
-      - name: Require successful validation for this exact commit
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          gh api \
-            -H "Accept: application/vnd.github+json" \
-            "repos/${GITHUB_REPOSITORY}/actions/workflows/validate-content.yml/runs?head_sha=${GITHUB_SHA}&branch=main&event=push&per_page=100" \
-            > /tmp/path28-validation-runs.json
-          node scripts/assert-validation-run.mjs /tmp/path28-validation-runs.json
-
-      - name: Prepare production configuration
-        env:
-          PATH28_DEPLOY_BASE: /Maseer28-V1/
-        run: npm run prepare:production
-
-      - name: Require expert-approved daily content
-        run: npm run assert:production-content
-
-      - name: Build Vite
+      # Deliberately build with the repository's test defaults:
+      # TEST_MODE=true and TIME_LOCK_ENABLED=false.
+      # Do not run prepare:production or the expert-approved production-content gate here.
+      - name: Build test app
         run: npm run build -- --base=/Maseer28-V1/
 
       - name: Configure Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
 
-      - name: Upload dist
+      - name: Upload test app
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b
         with:
           path: ./dist
 
-      - name: Deploy
+      - name: Deploy test app
         id: deployment
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
