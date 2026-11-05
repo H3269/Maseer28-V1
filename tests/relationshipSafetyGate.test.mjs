@@ -198,30 +198,15 @@ test('support-seeking privacy notice covers shared legacy days and T02 message d
   assert.equal(getInterpersonalPrivacyNotice({ id: 'ترس-15', day: 15 }), null);
 });
 
-test('day screen and App wire relationship self-check, blocking, and safe skip', async () => {
+test('relationship safety helpers remain available to the assistant, not the Path28 daily screen', async () => {
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
   const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
-  assert.match(ui, /getRelationshipSafetyGate\(data\)/);
-  assert.match(ui, /getInterpersonalPrivacyNotice\(data\)/);
-  assert.match(ui, /supportSeekingPrivacyNotice/);
-  assert.equal((ui.match(/id="supportSeekingPrivacyNotice"/g) || []).length, 2, 'privacy notice must be visible on both blocked and routine support-seeking days');
-  assert.match(app, /relationshipSafetyState\.dayKey === relationshipSafetyDayKey/);
-  assert.match(app, /dayKey: relationshipSafetyDayKey/);
-  assert.match(app, /if \(next !== 'day'\) setRelationshipSafetyState/);
-  assert.match(ui, /relationshipSafetyResponse = ''/);
-  assert.match(ui, /onRelationshipSafetyResponse/);
-  assert.doesNotMatch(ui, /setRelationshipSafetyState/);
-  assert.match(ui, /isRelationshipSafetyConfirmed\(data, relationshipSafetyResponse\)/);
-  assert.match(ui, /relationshipSafetyGate\.blockedMessage/);
-  assert.match(ui, /onSkipRelationshipSafety\?\.\('unsafe'\)/);
-  assert.match(app, /skipDayForRelationshipSafety\(response\)/);
-  assert.match(app, /isRelationshipSafetyConfirmed\(activeDay, response\)/);
-  assert.match(app, /response !== 'unsafe'/);
-  assert.match(app, /createRelationshipSafetySkipRecord\(activeDay/);
-  assert.match(app, /getDailySafetyMode\(activeDay\) === 'blocked'/);
-  assert.match(ui, /relationshipSafetyConfirmed/);
-  assert.match(app, /relationshipSafetyConfirmed !== true/);
-  const humanReviewGateIndex = ui.indexOf('if (requiresHumanReview) return');
-  const relationshipGateIndex = ui.indexOf('if (relationshipSafetyGate && !relationshipSafetyConfirmed) return');
-  assert.ok(humanReviewGateIndex >= 0 && relationshipGateIndex >= 0 && humanReviewGateIndex < relationshipGateIndex, 'human-review blocking must precede the relationship self-check');
+  assert.doesNotMatch(ui, /getRelationshipSafetyGate|getInterpersonalPrivacyNotice|isRelationshipSafetyConfirmed|relationshipSafetyGate|supportSeekingPrivacyNotice/);
+  assert.doesNotMatch(app, /getDailySafetyMode|getRelationshipSafetyGate|isRelationshipSafetyConfirmed|skipDayForHumanReview|skipDayForRelationshipSafety|relationshipSafetyState/);
+  assert.match(ui, /export function DayScreen/);
+  assert.match(ui, /id="dayExercise"/);
+  assert.match(ui, /id="dayAction"/);
+  assert.match(ui, /id="openDailyEntryBtn"/);
+  assert.match(app, /category\?\.days\?\.find/);
+  assert.match(app, /function completeDay/);
 });
