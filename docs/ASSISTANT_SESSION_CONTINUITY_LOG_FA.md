@@ -989,3 +989,15 @@ CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` مو�
 - run #575 برای commit مستنداتی `ce418cc` هنگام آخرین مشاهده در حال اجرا بود؛ commit فعلی آزمون و این ثبت دفتر باید runهای تازه خود را نیز ایجاد کنند. به‌دلیل `cancel-in-progress`، اجراهای قدیمی Pages ممکن است هنگام رسیدن commit جدید لغو شوند؛ آخرین run روی HEAD ملاک نهایی است.
 - هیچ تغییر در Workflow تلگرام/بله، کد محتوای ۹۵۲ روز، گیت تأیید Production، Cloudflare یا تنظیمات ترافیک انجام نشده است.
 - HEAD هنگام ثبت: `25b497af99ef15d0e1c995185a20bb032da0735d`. نتیجهٔ نهایی اپ فقط پس از مشاهدهٔ run Pages مربوط به HEAD و تأیید موفق مرحله Deploy گزارش خواهد شد.
+
+
+## اصلاح assertionهای گیت آزمایشی و وضعیت انتشار Pages — 2026-11-05
+
+- CI run `42057052473` روی commit `25b497af99ef15d0e1c995185a20bb032da0735d` آزمون build را موفق اجرا کرد، اما دو assertion جدید به‌اشتباه وجود نام گیت در توضیح comment فایل workflow را با اجرای واقعی آن اشتباه گرفتند.
+- علت دقیق: workflow برای مستندسازی روشن نوشته بود که `prepare:production` و گیت محتوای Production را اجرا نمی‌کند؛ آزمون با `doesNotMatch` کل متن workflow را بررسی می‌کرد و همان comment را نیز رد می‌کرد.
+- اصلاح در commit `da7b0b1d081fe429e0589d7fe59609866b5d13e5`: آزمون‌ها اکنون فقط وجود فرمان اجرایی `run: npm run prepare:production` یا `run: npm run assert:production-content` را رد می‌کنند، نه اشارهٔ توضیحی به آن‌ها. گیت واقعی Production همچنان در workflow تلگرام حفظ می‌شود.
+- Pages run `42056866471` (#575) برای commit `ce418cc` با conclusion `success` پایان یافت. Pages run `42057052494` (#576) برای commit `25b497af` در سطح کل run به‌علت concurrency پس از رسیدن push بعدی `cancelled` شد، اما مرحلهٔ `Deploy test app` در همان run صریحاً `success` ثبت شده است.
+- Pages run `42057091916` (#577) برای commit `3f194ca` در زمان مشاهده در حال اجرا بود. commit فعلی `da7b0b1` نیز run تازه‌ای ایجاد می‌کند؛ نتیجهٔ آخرین run باید پس از تکمیل بررسی شود.
+- validate run `42057052473` در commit `25b497af` به‌دلیل assertionهای بیش‌ازحد گسترده شکست خورد؛ این شکست به build برنامه مربوط نبود و build مرحلهٔ validate نیز موفق بود. نتیجهٔ CI روی commit اصلاح‌شده `da7b0b1` هنوز pending است.
+- هیچ تغییری در فایل Workflow انتشار Telegram/Bale، محتوای canonical، گیت Production، Cloudflare یا Production traffic ایجاد نشده است.
+- HEAD هنگام ثبت: `da7b0b1d081fe429e0589d7fe59609866b5d13e5`. نتیجهٔ نهایی تست‌ها و Pages برای HEAD باید از Actions خوانده شود؛ تا آن زمان وضعیت این مرحله `in_progress` است.
