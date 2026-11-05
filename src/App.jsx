@@ -57,6 +57,7 @@ import { createHumanReviewSkipRecord, getDailySafetyMode } from './features/cont
 import { createRelationshipSafetySkipRecord, getRelationshipSafetyGate, isRelationshipSafetyConfirmed } from './features/journey/relationshipSafetyGate.js';
 import { fa } from './shared/utils.js';
 import DailyExerciseAssistant from './features/assistant/DailyExerciseAssistant.jsx';
+import { selectDailyContentCategory, selectCanonicalDailyRecord } from './features/content/dailyContentSelector.js';
 import GlobalAssistantLauncher from './features/assistant/GlobalAssistantLauncher.jsx';
 
 function isPathSetupComplete(state) {
@@ -230,12 +231,12 @@ function MainApp() {
     };
   }, []);
 
-  const category = content?.categories?.[journey.profileData?.problem] || content?.categories?.['مشکل دیگر'] || null;
-  const activeDay = category?.days?.find((row) => Number(row.day) === Number(currentDay)) || category?.days?.[currentDay - 1] || null;
+  const category = selectDailyContentCategory(content?.categories, journey.profileData?.problem);
+  const activeDay = selectCanonicalDailyRecord(category, currentDay);
   const relationshipSafetyDayKey = `${activeDay?.topic_id || ''}:${activeDay?.id || activeDay?.day || currentDay}`;
   const relationshipSafetyResponse = relationshipSafetyState.dayKey === relationshipSafetyDayKey ? relationshipSafetyState.response : '';
   const relationshipSafetyConfirmed = isRelationshipSafetyConfirmed(activeDay, relationshipSafetyResponse);
-  const resultData = category?.days?.find((row) => Number(row.day) === Number(resultDay || currentDay)) || null;
+  const resultData = selectCanonicalDailyRecord(category, resultDay || currentDay);
   const headerDay = screen === 'day' ? currentDay : screen === 'dailyResult' ? (resultDay || journey.completed.length) : journey.completed.length;
 
   function showValidation(items, title = 'چند بخش هنوز نیاز به تکمیل دارد') {
@@ -801,10 +802,10 @@ function navigate(next) {
       {screen === 'pathSetup' && <PathSetupScreen initial={journey.profileData} problems={Object.keys(content.categories || {})} onSave={savePathSetup} onEditProfile={() => openProfileEditor('pathSetup')} onValidation={showValidation} />}
       {screen === 'assessment' && <AssessmentScreen initial={journey.assessmentData?.answers} onSave={saveAssessment} onValidation={showValidation} />}
       {screen === 'dashboard' && <Dashboard journey={journey} userProfile={userProfile} onEditProfile={() => openProfileEditor('dashboard')} onCurrent={openCurrentDay} onBooks={() => openBooks('dashboard')} onArchive={() => navigate('archive')} onSupport={() => openSupport('dashboard')} onChannel={() => window.open(content.channelUrl, '_blank', 'noopener,noreferrer')} />}
-      {screen === 'day' && <>
+      {screen === 'day' && (activeDay ? <>
         <DayScreen day={currentDay} problem={journey.profileData?.problem || ''} data={activeDay} relationshipSafetyResponse={relationshipSafetyResponse} onRelationshipSafetyResponse={(response) => setRelationshipSafetyState({ dayKey: relationshipSafetyDayKey, response })} record={journey.daily?.[currentDay]} savedAnswer={journey.answers?.[currentDay] || ''} previousRecord={journey.daily?.[currentDay - 1]} previousAnswer={journey.answers?.[currentDay - 1] || ''} history={journey.daily || {}} onDashboard={() => navigate('dashboard')} onPrevious={() => currentDay <= 1 ? navigate('dashboard') : openDay(currentDay - 1)} onComplete={completeDay} onSkip={skipDayForHumanReview} onSkipRelationshipSafety={skipDayForRelationshipSafety} onNext={() => openDay(currentDay + 1)} completed={journey.completed.includes(currentDay)} onValidation={showValidation} />
         <DailyExerciseAssistant day={currentDay} problem={journey.profileData?.problem || ''} data={activeDay} relationshipSafetyConfirmed={relationshipSafetyConfirmed} guidanceData={splitDayContent(activeDay, journey.profileData?.problem || '', journey.daily?.[currentDay - 1], journey.daily || {})} />
-      </>}
+      </> : <section className="card dayCard" role="alert"><h2>محتوای دقیق این روز در دسترس نیست</h2><p>موضوع یا شماره روز با داده اصلی تطبیق قطعی ندارد؛ برای جلوگیری از نمایش تمرین اشتباه، راهنمایی این روز متوقف شده است.</p><button className="secondary" onClick={() => navigate('dashboard')}>بازگشت به داشبورد</button></section>)}
       {screen === 'dailyResult' && <DailyResult day={resultDay || journey.completed.length || currentDay} journey={journey} data={resultData} problem={category?.name} sourceLabel={recommendationSource} onDashboard={() => navigate('dashboard')} onNext={openDay} onFinal={() => navigate('final')} onBook={(rec) => openRecommendedBook(resultDay || currentDay, rec)} />}
       {screen === 'books' && <LibraryPage books={books} loading={libraryLoading} error={libraryError} onOpenBook={(book) => openBook(book)} onBack={() => navigate(libraryReturn)} />}
       {screen === 'support' && <Support content={content} onBack={() => navigate(supportReturn)} />}
