@@ -441,32 +441,56 @@ test('T01 day 27 is explicitly withheld for human review', async () => {
   assert.match(day.when_to_seek_human_support, /فوراً از خدمات اضطراری/);
 });
 
-test('day screen wires human-review blocking and caution metadata into the interface', async () => {
+test('Path28 daily screen displays every canonical record directly without assistant review gates', async () => {
+  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
   const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
-  const archiveExport = await readFile(new URL('../src/features/journey/archiveExport.js', import.meta.url), 'utf8');
-  assert.match(ui, /getDailySafetyMode\(data\) === 'blocked'/);
-  assert.match(ui, /if \(requiresHumanReview\) return/);
-  assert.match(app, /getDailySafetyMode\(activeDay\) === 'blocked'/, 'completion must enforce the safety gate independently of UI rendering');
-  const completeDayStart = app.indexOf('async function completeDay');
-  const completeDayEnd = app.indexOf('function openCurrentDay', completeDayStart);
-  const completionHandler = app.slice(completeDayStart, completeDayEnd);
-  assert.match(completionHandler, /if \(!activeDay \|\| getDailySafetyMode\(activeDay\) === 'blocked'\)/,
-    'missing active content and blocked content must both fail closed at completion');
-  assert.ok(completionHandler.indexOf('getDailySafetyMode(activeDay)') < completionHandler.indexOf('const record ='),
-    'safety must be checked before any scored record is created');
-  assert.match(ui, /onClick=\{onSkip\}/);
-  assert.match(ui, /data\.stop_conditions/);
-  assert.match(ui, /data\.contraindications/);
-  assert.match(app, /onSkip=\{skipDayForHumanReview\}/);
-  assert.match(app, /createHumanReviewSkipRecord\(activeDay/);
-  assert.match(app, /onSkipRelationshipSafety=\{skipDayForRelationshipSafety\}/);
-  assert.match(archiveExport, /skipped_human_review/);
-  assert.match(archiveExport, /skipped_safety_gate/);
-  assert.match(archiveExport, /هیچ امتیازی ثبت نشده است/);
+  const categories = Object.values(content.categories || {});
+  assert.equal(categories.length, 34);
+  assert.equal(categories.reduce((sum, category) => sum + (category.days || []).length, 0), 952);
+  for (const category of categories) {
+    assert.equal(category.days.length, 28);
+    for (const day of category.days) {
+      assert.equal(typeof day.exercise, 'string');
+      assert.ok(day.exercise.trim().length > 0);
+      assert.equal(typeof day.actionText, 'string');
+      assert.ok(day.actionText.trim().length > 0);
+    }
+  }
+  assert.match(ui, /export function DayScreen\(\{ day, problem, data, record, savedAnswer, previousRecord, previousAnswer, history = \{\}, onDashboard/);
+  assert.match(ui, /value=\{parts\.exercise\}/);
+  assert.match(ui, /value=\{parts\.action\}/);
+  assert.match(ui, /id="openDailyEntryBtn"/);
+  assert.doesNotMatch(ui, /getDailySafetyMode|getRelationshipSafetyGate|requiresHumanReview|relationshipSafetyGate/);
+  assert.doesNotMatch(app, /getDailySafetyMode|getRelationshipSafetyGate|skipDayForHumanReview|skipDayForRelationshipSafety|relationshipSafetyConfirmed/);
+  assert.match(app, /category\?\.days\?\.find\(\(record\) => Number\(record\?\.day\) === Number\(currentDay\)\) \|\| category\?\.days\?\.\[currentDay - 1\]/);
+  const completionStart = app.indexOf('async function completeDay');
+  const completionEnd = app.indexOf('function openCurrentDay', completionStart);
+  const completion = app.slice(completionStart, completionEnd);
+  assert.doesNotMatch(completion, /getDailySafetyMode|getRelationshipSafetyGate|relationshipSafetyConfirmed/);
 });
-
-
+ 
+test('all 34 topics and 952 exercise/action pairs retain their canonical daily slots', async () => {
+  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
+  const categories = Object.values(content.categories || {});
+  assert.equal(categories.length, 34);
+  let total = 0;
+  for (const category of categories) {
+    assert.equal(category.days.length, 28);
+    const ids = new Set();
+    for (let index = 0; index < 28; index += 1) {
+      const day = category.days[index];
+      assert.equal(day.day, index + 1);
+      assert.equal(day.id, category.name + '-' + String(index + 1).padStart(2, '0'));
+      assert.ok(!ids.has(day.id));
+      ids.add(day.id);
+      assert.ok(day.exercise?.trim());
+      assert.ok(day.actionText?.trim());
+      total += 1;
+    }
+  }
+  assert.equal(total, 952);
+});
 test('all 34 topics render blocked and relationship safety notices as stacked readable content', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
