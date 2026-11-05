@@ -641,6 +641,9 @@ test('adapted daily content retains original review metadata', () => {
     actionText: 'اقدام اصلی',
   };
   const adapted = {
+    id: 'T01-D04',
+    topic_id: 'T01',
+    day: 4,
     exercise: 'تمرین سبک‌شده',
     action: 'اقدام سبک‌شده',
     adaptation: 'امروز فقط گام سبک را انجام بده.',
