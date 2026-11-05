@@ -674,3 +674,15 @@ CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` مو�
 - هر دو CI تمام شش اسکریپت مرورگر را با پیام PASS ثبت کرده‌اند: privacy migration (E1–E10)، archive export، daily safety gate، daily assistant guidance، global assistant launcher و invalid path recovery. build، ممیزی محتوا، audit وابستگی، dry-runهای بدون deploy/upload و سه آزمون runtime محلی Worker نیز موفق‌اند.
 - این تأیید فقط رفتار محدود router و UI محلی در محیط CI را ثابت می‌کند؛ مدل زبانی on-device، گفت‌وگوی آزاد و فهم معنایی عمیق هنوز وجود ندارد. آزمون مرورگر CI معادل تست روی گوشی کاربر یا Preview زنده نیست.
 - HEAD شاخه `main` هنگام ثبت این بخش `60e6ada6898386ce0eb815df4dad07032f1cbe49` بود. هیچ Preview زنده، deploy، upload واقعی Worker، cloud inference، انتشار عمومی یا فعال‌سازی Production انجام نشده است.
+
+
+## اصلاح اولویت قصد صریح فوری آسیب به خود پس از نفی قبلی — 2026-11-05
+
+- مبنای کد: commit `703524ccb33659a2e8eb248e8e2229e75a9eb689` روی شاخه `main`.
+- نقص: در یک پیام مرکب مانند «من قصد خودکشی ندارم، اما امشب خودکشی می‌کنم»، پرچم نفی کلی می‌توانست اعلام قصد مثبت و صریح بعدی را خنثی کند.
+- اصلاح در `src/features/assistant/intentContextRouter.js`: تصمیم `handoff_required` اکنون مستقیماً بر وجود `explicitImmediateIntent` متکی است؛ نفی قبلی به‌تنهایی قصد مثبت و صریح بعدی را لغو نمی‌کند.
+- آزمون مرزی در `tests/intentContextRouter.test.js`: سناریوی «من قصد خودکشی ندارم، اما امشب خودکشی می‌کنم» باید `handoff_required === true` و هدف پرسش بعدی `safety_clarification` را تولید کند.
+- CI run `41992987224` برای همین commit با وضعیت نهایی `completed / success` تأیید شد. job اصلی `validate-content` و تمام ۲۳ مرحله آن موفق شدند؛ از جمله unit tests، build، audit وابستگی، اعتبارسنجی محتوا/registry، سه runtime integration محلی Worker و شش آزمون Chromium. لاگ Chromium صریحاً PASS برای privacy migration E1–E10، archive export، daily safety gate، daily assistant guidance، global assistant launcher و invalid-path recovery ثبت می‌کند.
+- این نتیجه فقط رفتار آزموده‌شده در CI را تأیید می‌کند؛ اثبات‌کننده ارزیابی بالینی، تشخیص کامل خطر یا تکمیل مدل زبانی on-device نیست. متن handoff صرفاً راهنمای تماس با کمک انسانی/اورژانسی است و هیچ تماس یا ارجاع واقعی را خودکار انجام نمی‌دهد.
+- هیچ Preview زنده، deploy، Worker upload واقعی، cloud inference، انتشار عمومی، Production activation یا تغییر ترافیک انجام نشده است. معماری محلی و مرز عدم ارسال داده کاربر به inference ابری بدون تغییر باقی ماند.
+- گام بعدی: ممیزی هدفمند intent/context فارسی و اتصال آن به راهنمای واقعی تمرین روز؛ هر نقص باید با آزمون مرزی بازتولید شود. از توسعه ویژگی جدید پیش از اثبات نقص و بررسی قراردادهای privacy و روزمحور خودداری شود.
