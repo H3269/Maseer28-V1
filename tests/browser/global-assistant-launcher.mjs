@@ -50,6 +50,20 @@ try {
   }, journey);
   await page.route('**/*', async (route) => {
     const url = new URL(route.request().url());
+    if (url.pathname.endsWith('/content/path-content.json')) {
+      const response = await route.fetch();
+      const payload = await response.json();
+      const day = payload.categories?.['خشم']?.days?.find((item) => Number(item.day) === 1);
+      assert.ok(day, 'the global assistant fixture must contain anger day 1');
+      Object.assign(day, {
+        topic_id: 'T01',
+        day: 1,
+        review_status: 'approved',
+        risk_level: 'routine',
+      });
+      await route.fulfill({ response, json: payload });
+      return;
+    }
     if (url.searchParams.has('_m28_time')) {
       await route.fulfill({ status: 200, headers: { date: new Date().toUTCString() } });
       return;
