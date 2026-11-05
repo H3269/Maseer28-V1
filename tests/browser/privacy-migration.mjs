@@ -355,99 +355,50 @@ try {
     await page.close();
   }
 
-  // E9: the user-facing privacy control invokes the coordinated two-store deletion.
+  // E9: Support intentionally exposes no privacy/deletion controls; opening it is read-only.
   {
     const page = await openScenario('normal', legacyJourney(), {
-      name: 'کاربر حذف نهایی', age: 32, gender: 'زن', phone: '09123456789',
-      medical: 'none', medicalNote: 'DELETE-PRIVATE-001', medication: 'no', medicationRisk: 'no',
+      name: 'کاربر داده محلی', age: 32, gender: 'زن', phone: '09123456789',
+      medical: 'none', medicalNote: 'LOCAL-ONLY-PRIVATE-001', medication: 'no', medicationRisk: 'no',
+    });
+    const externalAssistantRequests = [];
+    page.on('request', request => {
+      if (/\\/v1\\/assistant\\/turn|assistant-api|workers\\.dev|cloudflareworkers\\.com/u.test(request.url())) {
+        externalAssistantRequests.push(request.url());
+      }
     });
     await page.locator('#copyrightModal').waitFor({ state: 'visible' });
     await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
     await page.locator('#dashboard').waitFor({ state: 'visible' });
     await page.evaluate(() => {
-      localStorage.setItem('maseer28_test_sensitive', JSON.stringify({ marker: 'DELETE-LOCAL-001' }));
+      localStorage.setItem('maseer28_test_sensitive', JSON.stringify({ marker: 'KEEP-LOCAL-001' }));
       localStorage.setItem('unrelated_site_preference', 'preserve-unrelated');
     });
-    page.on('dialog', (dialog) => dialog.accept());
-    await page.locator('#bottomNav button[data-view="support"]').click();
-    await page.locator('#support').waitFor({ state: 'visible' });
-    await page.getByRole('button', { name: 'حذف داده‌های محلی من' }).click();
-    await page.waitForFunction(() => localStorage.getItem('maseer28_test_sensitive') === null, null, { timeout: 10000 });
-    await page.locator('#home').waitFor({ state: 'visible', timeout: 10000 });
-    const remaining = await page.evaluate(() => ({
-      appKeys: Object.keys(localStorage).filter((key) => key.startsWith('maseer28_') && key !== 'maseer28_copyright_v60'),
-      unrelated: localStorage.getItem('unrelated_site_preference'),
-      copyright: localStorage.getItem('maseer28_copyright_v60'),
+    const before = await page.evaluate(() => ({
+      journey: localStorage.getItem('maseer28_state'),
       profile: localStorage.getItem('maseer28_user_profile_v2'),
-      freshJourney: JSON.parse(localStorage.getItem('maseer28_state') || 'null'),
-      testMarker: localStorage.getItem('maseer28_test_sensitive'),
+      marker: localStorage.getItem('maseer28_test_sensitive'),
     }));
-    assert.deepEqual(remaining.appKeys, ['maseer28_state'], 'the app may initialize a fresh empty journey after reload, but no prior personal keys may remain');
-    assert.equal(remaining.freshJourney?.started, false, 'the post-deletion journey must be a fresh unstarted state');
-    assert.deepEqual(remaining.freshJourney?.archive, [], 'no prior archive may return after deletion');
-    assert.equal(remaining.testMarker, null, 'the app-owned sensitive test marker must be removed');
-    assert.equal(remaining.profile, null, 'independent profile must be removed');
-    assert.equal(remaining.unrelated, 'preserve-unrelated', 'unrelated browser data must remain');
-    assert.equal(remaining.copyright, '1', 'copyright acceptance is outside deletion scope');
-    await page.close();
-  }
-
-  // E10: preview and cancellation are read-only; explicit confirmation restores into a conflict-free namespace.
-  {
-    const page = await openScenario('normal', legacyJourney(), {
-      name: 'کاربر بازیابی', age: 31, gender: 'زن', phone: '09123456789',
-      medical: 'none', medicalNote: '', medication: 'no', medicationRisk: 'no',
-    });
-    await page.locator('#copyrightModal').waitFor({ state: 'visible' });
-    await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
-    await page.locator('#dashboard').waitFor({ state: 'visible' });
     await page.locator('#bottomNav button[data-view="support"]').click();
     await page.locator('#support').waitFor({ state: 'visible' });
-    const payload = {
-      format: 'maseer28-browser-backup', schema_version: '3.0.0',
-      exported_at: '2026-11-03T12:00:00.000Z', scope: 'browser test',
-      localStorage: { storage: 'localStorage', entries: { maseer28_restore_ui_marker: { marker: 'RESTORE-UI-OK' } } },
-      indexedDB: { database: 'maseer28-library', stores: { books: [], versions: [], settings: [] } },
-    };
-    const stable = (value) => Array.isArray(value) ? '[' + value.map(stable).join(',') + ']' :
-      value && typeof value === 'object' ? '{' + Object.keys(value).sort().map((key) => JSON.stringify(key) + ':' + stable(value[key])).join(',') + '}' :
-      JSON.stringify(value);
-    let hash = 0x811c9dc5;
-    for (const char of stable(payload)) { hash ^= char.charCodeAt(0); hash = Math.imul(hash, 0x01000193); }
-    const backup = { ...payload, integrity: { algorithm: 'fnv1a-32-non-cryptographic', checksum: (hash >>> 0).toString(16).padStart(8, '0') } };
-    const file = { name: 'restore-ui-test.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(backup)) };
-    const picker = page.getByLabel('انتخاب فایل پشتیبان برای پیش‌نمایش');
-    await picker.setInputFiles(file);
-    await page.getByText('پیش‌نمایش فایل معتبر').waitFor({ state: 'visible' });
-    const restoreButton = page.getByRole('button', { name: 'بازیابی نسخه پشتیبان' });
-    await restoreButton.waitFor({ state: 'visible' });
-    assert.equal(await page.evaluate(() => localStorage.getItem('maseer28_restore_ui_marker')), null);
-    page.once('dialog', (dialog) => dialog.dismiss());
-    await restoreButton.click();
-    assert.equal(await page.evaluate(() => localStorage.getItem('maseer28_restore_ui_marker')), null, 'cancel must not mutate storage');
-    await picker.setInputFiles(file);
-    await page.getByText('پیش‌نمایش فایل معتبر').waitFor({ state: 'visible' });
-    const reloadAfterRestore = page.waitForEvent('load', { timeout: 10000 });
-    page.once('dialog', (dialog) => dialog.accept());
-    await page.getByRole('button', { name: 'بازیابی نسخه پشتیبان' }).click();
-    await page.waitForFunction(() => {
-      const marker = (() => { try { return JSON.parse(localStorage.getItem('maseer28_restore_ui_marker') || 'null')?.marker; } catch { return null; } })();
-      const message = document.querySelector('#support')?.innerText || '';
-      return marker === 'RESTORE-UI-OK' || message.includes('بازیابی انجام شد') || message.includes('بازیابی تأیید نشد') || message.includes('راستی‌آزمایی پس از ثبت ناموفق بود') || message.includes('تعارض تازه‌ای');
-    }, null, { timeout: 10000 });
-    const restoreState = await page.evaluate(() => ({
-      marker: (() => { try { return JSON.parse(localStorage.getItem('maseer28_restore_ui_marker') || 'null')?.marker; } catch { return null; } })(),
-      supportText: document.querySelector('#support')?.innerText || '',
+    const supportText = await page.locator('#support').innerText();
+    assert.doesNotMatch(supportText, /حذف داده‌های محلی من|دریافت نسخه اطلاعات من|انتخاب فایل پشتیبان|بازیابی نسخه پشتیبان|دستیار آزمایشی|حریم خصوصی/u,
+      'Support must not expose removed privacy, backup, restore, or standalone assistant UI');
+    const after = await page.evaluate(() => ({
+      journey: localStorage.getItem('maseer28_state'),
+      profile: localStorage.getItem('maseer28_user_profile_v2'),
+      marker: localStorage.getItem('maseer28_test_sensitive'),
+      unrelated: localStorage.getItem('unrelated_site_preference'),
     }));
-    assert.equal(restoreState.marker, 'RESTORE-UI-OK', 'restore must succeed; UI diagnostic: ' + restoreState.supportText);
-    await reloadAfterRestore;
-    assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('maseer28_restore_ui_marker')).marker), 'RESTORE-UI-OK', 'restored data must persist after reload');
+    assert.equal(after.journey, before.journey, 'opening Support must not mutate the local journey');
+    assert.equal(after.profile, before.profile, 'opening Support must not mutate the independent local profile');
+    assert.equal(after.marker, before.marker, 'opening Support must not delete local app data');
+    assert.equal(after.unrelated, 'preserve-unrelated', 'unrelated browser data must remain untouched');
+    assert.deepEqual(externalAssistantRequests, [], 'opening Support must not send assistant data to a cloud Worker');
     await page.close();
   }
 
-  // E11: export a quarantined archive through Support, inspect the downloaded
-  // JSON, clear the app-owned namespace, then explicitly restore and verify it
-  // remains quarantined after a full page reload.
+  // E10: removing backup/restore controls from Support must not alter local archive state.
   {
     const malformedArchive = [
       { pathId: 'recoverable-entry', profileData: { problem: 'آرشیو قابل بازیابی' }, answers: { 1: 'پاسخ قدیمی' } },
@@ -455,9 +406,9 @@ try {
       'legacy-unparsed-entry',
       ['unexpected-nested-array'],
     ];
-    const quarantinedJourney = { ...legacyJourney(), archive: malformedArchive };
-    const page = await openScenario('normal', quarantinedJourney, null, {
-      name: 'پروفایل مستقل بازیابی', age: 35, gender: 'زن', phone: '09123456789',
+    const state = { ...legacyJourney(), archive: malformedArchive };
+    const page = await openScenario('normal', state, {
+      name: 'پروفایل مستقل محلی', age: 35, gender: 'زن', phone: '09123456789',
       medical: 'none', medicalNote: '', medication: 'no', medicationRisk: 'no',
     });
     await page.locator('#copyrightModal').waitFor({ state: 'visible' });
@@ -465,66 +416,35 @@ try {
     await page.locator('#dashboard').waitFor({ state: 'visible' });
     await page.locator('#bottomNav button[data-view="support"]').click();
     await page.locator('#support').waitFor({ state: 'visible' });
+    const supportText = await page.locator('#support').innerText();
+    assert.doesNotMatch(supportText, /دریافت نسخه اطلاعات من|انتخاب فایل پشتیبان|بازیابی نسخه پشتیبان/u);
+    const persisted = await page.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state') || '{}'));
+    assert.deepEqual(persisted.archive, malformedArchive, 'hidden Support backup controls must not rewrite or discard quarantined archive data');
+    assert.equal((await page.evaluate(() => JSON.parse(localStorage.getItem('maseer28_user_profile_v2') || 'null')))?.name,
+      'پروفایل مستقل محلی', 'the independent local profile must remain intact');
+    await page.close();
+  }
 
-    const downloadPromise = page.waitForEvent('download');
-    await page.getByRole('button', { name: 'دریافت نسخه اطلاعات من' }).click();
-    const download = await downloadPromise;
-    const downloadPath = await download.path();
-    assert.ok(downloadPath, 'Chromium must expose the downloaded JSON backup');
-    const backupBuffer = await readFile(downloadPath);
-    const backup = JSON.parse(backupBuffer.toString('utf8'));
-    const backedUpJourney = backup.localStorage.entries.maseer28_state;
-    assert.deepEqual(backedUpJourney.archive, [], 'the ordinary archive list must not contain malformed entries');
-    assert.deepEqual(backedUpJourney.archiveRecoveryRequired, malformedArchive,
-      'the downloaded backup must contain the complete quarantined archive payload');
-
-    // Restore is allowed only into an empty app-owned namespace. Keep the live
-    // Support screen mounted while clearing persisted keys for this isolated test.
-    await page.evaluate(() => {
-      for (const key of Object.keys(localStorage)) {
-        if (key.startsWith('maseer28_') || key === 'profile_completed') localStorage.removeItem(key);
+  // E11: local-only assistant and Support navigation never create cloud transcript/storage traffic.
+  {
+    const page = await openScenario('normal', legacyJourney());
+    const cloudRequests = [];
+    page.on('request', request => {
+      if (/assistant-api|workers\\.dev|cloudflareworkers\\.com|\\/v1\\/assistant\\/turn/u.test(request.url())) {
+        cloudRequests.push(request.url());
       }
     });
-    assert.equal(await page.evaluate(() => localStorage.getItem('maseer28_state')), null);
-
-    const picker = page.getByLabel('انتخاب فایل پشتیبان برای پیش‌نمایش');
-    const file = { name: download.suggestedFilename(), mimeType: 'application/json', buffer: backupBuffer };
-    await picker.setInputFiles(file);
-    await page.getByText('پیش‌نمایش فایل معتبر').waitFor({ state: 'visible' });
-    const restoreButton = page.getByRole('button', { name: 'بازیابی نسخه پشتیبان' });
-    await restoreButton.waitFor({ state: 'visible' });
-    assert.equal(await restoreButton.isDisabled(), false, 'a valid, conflict-free backup should permit explicit restore');
-    assert.equal(await page.evaluate(() => localStorage.getItem('maseer28_state')), null,
-      'preview must not write the quarantined state');
-
-    page.once('dialog', dialog => dialog.dismiss());
-    await restoreButton.click();
-    assert.equal(await page.evaluate(() => localStorage.getItem('maseer28_state')), null,
-      'cancel must leave the empty namespace unchanged');
-
-    await picker.setInputFiles(file);
-    await page.getByText('پیش‌نمایش فایل معتبر').waitFor({ state: 'visible' });
-    const reloadAfterRestore = page.waitForEvent('load', { timeout: 15000 });
-    page.once('dialog', dialog => dialog.accept());
-    await page.getByRole('button', { name: 'بازیابی نسخه پشتیبان' }).click();
-    await reloadAfterRestore;
     await page.locator('#copyrightModal').waitFor({ state: 'visible' });
     await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
-    await page.locator('#dashboard').waitFor({ state: 'visible', timeout: 15000 });
-    await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
-    await page.locator('#archive').getByRole('alert').waitFor({ state: 'visible' });
-
-    const restoredState = await page.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state')));
-    assert.deepEqual(restoredState.archive, []);
-    assert.deepEqual(restoredState.archiveRecoveryRequired, malformedArchive,
-      'restored app state must preserve the complete archive quarantine payload');
-    assert.equal(await page.locator('#archive').getByRole('button', { name: /شروع مسیر تازه/ }).isDisabled(), true,
-      'a restored quarantined archive must continue blocking new-path creation');
+    await page.locator('#dashboard').waitFor({ state: 'visible' });
+    await page.locator('#bottomNav button[data-view="support"]').click();
+    await page.locator('#support').waitFor({ state: 'visible' });
+    assert.deepEqual(cloudRequests, [], 'Support navigation must not contact a cloud assistant or transcript store');
     await page.close();
   }
 
   assert.deepEqual(browserErrors, [], 'migration, deletion, and restore scenarios should not produce uncaught browser errors');
-  process.stdout.write('PASS: Chromium privacy migration, selective archive deletion, retention-capacity, failure-retry, controlled-restore, and quarantined-archive UI backup/restore scenarios E1-E11 (11 scenarios)\\n');
+  process.stdout.write('PASS: Chromium privacy migration, selective archive deletion, retention-capacity, failure-retry, read-only Support navigation, hidden privacy/backup/restore UI, local-data preservation, and no cloud assistant traffic (E1-E11)\\n');
 } finally {
   await browser.close();
 }
