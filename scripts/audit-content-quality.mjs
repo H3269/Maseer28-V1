@@ -108,41 +108,53 @@ const topicRows = categories.map(([categoryKey, category], index) => {
   };
 });
 
-const crossTopicSimilarity = {};
-for (const field of templateFields) {
-  let fullySharedDays = 0;
-  let majoritySharedDays = 0;
-  const distinctByDay = [];
-  const largestClusterByDay = [];
-  const largestClusterTopicIdsByDay = [];
-  for (let dayIndex = 0; dayIndex < expectedDays; dayIndex += 1) {
-    const groups = new Map();
-    const values = topicRows.map((row) => {
-      const category = content.categories?.[row.category_key];
-      const normalized = normalizeText(category?.days?.[dayIndex]?.[field], row.topic_name);
-      if (normalized) {
-        if (!groups.has(normalized)) groups.set(normalized, []);
-        groups.get(normalized).push(row.topic_id);
-      }
-      return normalized;
-    });
-    const distinct = uniqueCount(values);
-    const largestGroup = [...groups.values()].sort((left, right) => right.length - left.length)[0] || [];
-    distinctByDay.push(distinct);
-    largestClusterByDay.push(largestGroup.length);
-    largestClusterTopicIdsByDay.push(largestGroup);
-    if (values.length === expectedTopics && values.every(Boolean) && distinct === 1) fullySharedDays += 1;
-    if (largestGroup.length >= Math.ceil(expectedTopics / 2)) majoritySharedDays += 1;
+function calculateCrossTopicSimilarity(rows) {
+  const result = {};
+  for (const field of templateFields) {
+    let fullySharedDays = 0;
+    let majoritySharedDays = 0;
+    const distinctByDay = [];
+    const largestClusterByDay = [];
+    const largestClusterTopicIdsByDay = [];
+    for (let dayIndex = 0; dayIndex < expectedDays; dayIndex += 1) {
+      const groups = new Map();
+      const values = rows.map((row) => {
+        const category = content.categories?.[row.category_key];
+        const normalized = normalizeText(category?.days?.[dayIndex]?.[field], row.topic_name);
+        if (normalized) {
+          if (!groups.has(normalized)) groups.set(normalized, []);
+          groups.get(normalized).push(row.topic_id);
+        }
+        return normalized;
+      });
+      const distinct = uniqueCount(values);
+      const largestGroup = [...groups.values()].sort((left, right) => right.length - left.length)[0] || [];
+      distinctByDay.push(distinct);
+      largestClusterByDay.push(largestGroup.length);
+      largestClusterTopicIdsByDay.push(largestGroup);
+      if (values.length === rows.length && values.length > 0 && values.every(Boolean) && distinct === 1) fullySharedDays += 1;
+      if (rows.length > 0 && largestGroup.length >= Math.ceil(rows.length / 2)) majoritySharedDays += 1;
+    }
+    result[field] = {
+      fully_shared_days_across_all_topics: fullySharedDays,
+      days_with_majority_shared_template: majoritySharedDays,
+      largest_shared_topic_count_by_day: largestClusterByDay,
+      largest_shared_topic_ids_by_day: largestClusterTopicIdsByDay,
+      expected_days: expectedDays,
+      cohort_topics: rows.length,
+      distinct_topic_variants_by_day: distinctByDay,
+    };
   }
-  crossTopicSimilarity[field] = {
-    fully_shared_days_across_all_topics: fullySharedDays,
-    days_with_majority_shared_template: majoritySharedDays,
-    largest_shared_topic_count_by_day: largestClusterByDay,
-    largest_shared_topic_ids_by_day: largestClusterTopicIdsByDay,
-    expected_days: expectedDays,
-    distinct_topic_variants_by_day: distinctByDay,
-  };
+  return result;
 }
+
+const crossTopicSimilarity = calculateCrossTopicSimilarity(topicRows);
+const legacyTopicRows = topicRows.filter((row) => /^T(?:0[3-9]|[12][0-9]|3[0-4])$/.test(row.topic_id));
+const v2TopicRows = topicRows.filter((row) => /^T0[12]$/.test(row.topic_id));
+const crossTopicSimilarityByCohort = {
+  legacy_t03_t34: calculateCrossTopicSimilarity(legacyTopicRows),
+  v2_t01_t02: calculateCrossTopicSimilarity(v2TopicRows),
+};
 
 const allDays = categories.flatMap(([, category]) => Array.isArray(category.days) ? category.days : []);
 const familyDistribution = {};
@@ -224,6 +236,7 @@ const report = {
   topic_rows: topicRows,
   candidate_support_seeking_review_queue: candidateSupportSeekingReviewQueue,
   cross_topic_similarity: crossTopicSimilarity,
+  cross_topic_similarity_by_cohort: crossTopicSimilarityByCohort,
   scientific_family_distribution: familyDistribution,
   future_metadata_coverage: metadataCoverage,
   interpretation: [
@@ -244,6 +257,14 @@ console.log(`ممیزی ایستای محتوا: ${report.observed.topics} مو�
 for (const [field, stats] of Object.entries(crossTopicSimilarity)) {
   const largest = Math.max(...stats.largest_shared_topic_count_by_day);
   console.log(`- ${field}: ${stats.fully_shared_days_across_all_topics}/${expectedDays} روز کاملاً مشترک؛ بیشترین خوشه تکراری ${largest}/${expectedTopics} موضوع.`);
+}
+for (const [cohort, fields] of Object.entries(crossTopicSimilarityByCohort)) {
+  const cohortSize = cohort === 'legacy_t03_t34' ? legacyTopicRows.length : v2TopicRows.length;
+  console.log(`شباهت بین‌موضوعی گروه ${cohort} (${cohortSize} موضوع):`);
+  for (const [field, stats] of Object.entries(fields)) {
+    const largest = Math.max(...stats.largest_shared_topic_count_by_day);
+    console.log(`- ${field}: ${stats.fully_shared_days_across_all_topics}/${expectedDays} روز کاملاً مشترک؛ بیشترین خوشه ${largest}/${cohortSize} موضوع.`);
+  }
 }
 console.log('پوشش فراداده علمی/بازبینی (تعداد روزهای دارای مقدار، نه تأیید تخصصی):');
 for (const field of ['learning_objective', 'target_skill', 'subtopic_ids', 'mechanism', 'exercise_type', 'duration_minutes', 'source_ids', 'evidence_grade', 'review_status', 'review_record_id']) {
