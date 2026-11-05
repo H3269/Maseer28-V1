@@ -30,12 +30,14 @@ const journey = {
 };
 
 async function openDay(page, { assistantDayMode = 'routine', problem = null } = {}) {
-  const dayNumber = assistantDayMode === 'relationship' ? 10 : assistantDayMode === 'legacy' ? 2 : 1;
-  const topicKey = problem || (assistantDayMode === 'legacy' ? 'غم و سوگ' : 'خشم');
+  const isLegacyMode = assistantDayMode === 'legacy' || assistantDayMode === 'adaptedLegacy';
+  const dayNumber = assistantDayMode === 'relationship' ? 10 : isLegacyMode ? 2 : 1;
+  const topicKey = problem || (isLegacyMode ? 'غم و سوگ' : 'خشم');
   const testJourney = dayNumber === 1 ? journey : {
     ...journey,
     profileData: { ...journey.profileData, problem: topicKey },
     completed: Array.from({ length: dayNumber - 1 }, (_, index) => index + 1),
+    daily: assistantDayMode === 'adaptedLegacy' ? { 1: { feedback: 'hard', score: 8 } } : {},
     startedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
   };
   await page.addInitScript((state) => {
@@ -61,7 +63,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null } = 
       const payload = await response.json();
       const day = payload.categories?.[topicKey]?.days?.find((item) => Number(item.day) === dayNumber);
       assert.ok(day, 'the deterministic browser fixture must contain the selected topic day');
-      if (assistantDayMode === 'legacy') {
+      if (isLegacyMode) {
         assert.equal(Object.hasOwn(day, 'topic_id'), false);
         assert.equal(Object.hasOwn(day, 'review_status'), false);
         assert.equal(Object.hasOwn(day, 'risk_level'), false);
@@ -181,6 +183,25 @@ try {
     assert.deepEqual(legacyErrors, [], `real legacy day content for ${problem} must not raise browser errors`);
     await legacyPage.close();
   }
+
+  const adaptedLegacyPage = await browser.newPage();
+  const adaptedLegacyErrors = [];
+  adaptedLegacyPage.on('pageerror', error => adaptedLegacyErrors.push(String(error)));
+  await openDay(adaptedLegacyPage, { assistantDayMode: 'adaptedLegacy' });
+  const adaptedLegacyPanel = adaptedLegacyPage.locator('.dailyExerciseAssistant');
+  await adaptedLegacyPanel.waitFor({ state: 'visible' });
+  await adaptedLegacyPanel.locator('#daily-exercise-assistant-message').fill('چطور انجامش بدم؟');
+  await adaptedLegacyPanel.getByRole('button', { name: 'ارسال' }).click();
+  await adaptedLegacyPage.waitForFunction(() => document.querySelectorAll('.dailyExerciseAssistant .assistantMessage').length >= 1);
+  const adaptedLegacyReply = await adaptedLegacyPanel.locator('.assistantMessage').last().innerText();
+  assert.match(adaptedLegacyReply, /با توجه به نتیجه روز گذشته/,
+    'the assistant must receive the adaptation produced from the actual previous-day result');
+  assert.match(adaptedLegacyReply, /متن تمرین همین روز/);
+  assert.match(adaptedLegacyReply, /راهکار اختصاصی همین روز/);
+  assert.match(adaptedLegacyReply, /غم و سوگ/);
+  assert.match(adaptedLegacyReply, /روز 2/);
+  assert.deepEqual(adaptedLegacyErrors, [], 'adapted legacy daily guidance must not raise browser errors');
+  await adaptedLegacyPage.close();
 
   const blockedPage = await browser.newPage();
   await openDay(blockedPage, { assistantDayMode: 'blocked' });
