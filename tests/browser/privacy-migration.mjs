@@ -363,7 +363,7 @@ try {
     });
     const externalAssistantRequests = [];
     page.on('request', request => {
-      if (/\\/v1\\/assistant\\/turn|assistant-api|workers\\.dev|cloudflareworkers\\.com/u.test(request.url())) {
+      if (/\/v1\/assistant\/turn|assistant-api|workers\.dev|cloudflareworkers\.com/u.test(request.url())) {
         externalAssistantRequests.push(request.url());
       }
     });

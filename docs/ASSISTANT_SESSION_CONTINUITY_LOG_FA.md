@@ -1148,3 +1148,11 @@ CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` مو�
 - اصلاح محدود: state اولیه روزانه اکنون یک شیء خالی است؛ این همان ورودی امن مورد انتظار موتور است و وضعیت مکالمه همچنان فقط در حافظه موقت نگهداری می‌شود.
 - build برنامه در run یادشده موفق بود؛ اجرای Chromium به‌دلیل شکست unit-test به مرحله بعد نرسید. پس از commit اصلاحی، Validation کامل باید دوباره اجرا شود.
 - هیچ تغییر در Reader، داده‌های مسیر، cloud storage/inference، Worker، Telegram/Bale یا Production انجام نشده است.
+
+
+## اصلاح syntax در فیلتر درخواست‌های ابری آزمون E9 — 2026-11-05
+
+- Validation run `42095133641` (#1622) روی commit `4c9bb01`: همهٔ ۵۳۲ تست واحد موفق شدند؛ اعتبارسنجی محتوا و build نیز موفق بودند. مرحله Chromium شروع شد اما پیش از اجرای سناریوها، parser جاوااسکریپت به یک regular expression با escape اضافی در listener درخواست E9 برخورد کرد.
+- خطا در فیلتر URL درخواست Worker بود، نه در رفتار برنامه یا حریم خصوصی: `SyntaxError: Invalid regular expression flags` در `tests/browser/privacy-migration.mjs:366`.
+- فقط escapeهای regex E9 به شکل معتبر `/\/v1\/assistant\/turn/` اصلاح شدند. E11 از قبل regex معتبر داشت.
+- پس از ثبت این اصلاح، Validation باید دوباره تا پایان Chromium اجرا شود. هنوز CI کامل سبز نیست.
