@@ -57,7 +57,7 @@ import { createHumanReviewSkipRecord, getDailySafetyMode } from './features/cont
 import { createRelationshipSafetySkipRecord, getRelationshipSafetyGate, isRelationshipSafetyConfirmed } from './features/journey/relationshipSafetyGate.js';
 import { fa } from './shared/utils.js';
 import DailyExerciseAssistant from './features/assistant/DailyExerciseAssistant.jsx';
-import { selectDailyContentCategory, selectCanonicalDailyRecord } from './features/content/dailyContentSelector.js';
+import { isCompleteDailyContentCategory, selectDailyContentCategory, selectCanonicalDailyRecord } from './features/content/dailyContentSelector.js';
 import GlobalAssistantLauncher from './features/assistant/GlobalAssistantLauncher.jsx';
 
 function isPathSetupComplete(state) {
@@ -267,7 +267,7 @@ function navigate(next) {
     const nextState = { ...journey, started: true, pathId: journey.pathId || createPathId() };
     const nextScreen = !userProfile
       ? 'profile'
-      : !isPathSetupComplete(nextState)
+      : (!isPathSetupComplete(nextState) || !isCompleteDailyContentCategory(content?.categories, nextState.profileData?.problem))
         ? 'pathSetup'
         : !nextState.assessment
           ? 'assessment'
@@ -321,6 +321,9 @@ function navigate(next) {
 
   function savePathSetup(path) {
     if (!userProfile) return showValidation(['پروفایل شخصی'], 'اطلاعات مسیر هنوز کامل نشده است');
+    if (!isCompleteDailyContentCategory(content?.categories, path?.problem)) {
+      return showValidation(['موضوع انتخاب‌شده معتبر نیست یا محتوای کامل ۲۸ روز آن در دسترس نیست.', 'یک موضوع معتبر را دوباره انتخاب کن.'], 'ثبت موضوع مسیر ممکن نیست');
+    }
     const nextJourney = {
       ...journey,
       started: true,
@@ -349,9 +352,9 @@ function navigate(next) {
   }
 
   async function saveAssessment(answers) {
-    if (!isPathSetupComplete(journey)) {
+    if (!isPathSetupComplete(journey) || !isCompleteDailyContentCategory(content?.categories, journey.profileData?.problem)) {
       navigate('pathSetup');
-      return showValidation(['ابتدا انتخاب مشکل و اطلاعات مسیر را کامل و ثبت کن.'], 'مرحله انتخاب مشکل هنوز ثبت نشده است');
+      return showValidation(['ابتدا یک موضوع معتبر با محتوای کامل ۲۸ روز انتخاب و ثبت کن.'], 'مرحله انتخاب موضوع هنوز معتبر نیست');
     }
     const trustedNow = APP_CONFIG.TIME_LOCK_ENABLED ? await getTrustedNowMs() : Date.now();
     if (trustedNow == null) {
@@ -391,7 +394,10 @@ function navigate(next) {
   async function openDay(value) {
     // The baseline assessment must never open until the current path setup
     // has been completed and persisted, including when resuming from the dashboard.
-    if (!isPathSetupComplete(journey)) return navigate(userProfile ? 'pathSetup' : 'profile');
+    if (!isPathSetupComplete(journey) || !isCompleteDailyContentCategory(content?.categories, journey.profileData?.problem)) {
+      navigate(userProfile ? 'pathSetup' : 'profile');
+      return showValidation(['موضوع مسیر معتبر نیست یا محتوای کامل ۲۸ روز آن موجود نیست.'], 'ادامه مسیر ممکن نیست');
+    }
     if (!journey.assessment) return navigate('assessment');
     const day = Number(value), required = nextRequiredDay(journey);
     const allowed = !journey.completed.includes(day) && day === required;

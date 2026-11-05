@@ -24,3 +24,16 @@ export function selectCanonicalDailyRecord(category, requestedDay) {
   if (!record || typeof record !== 'object' || typeof record.id !== 'string' || !record.id.trim()) return null;
   return record;
 }
+
+
+export function isCompleteDailyContentCategory(categories, problem) {
+  const category = selectDailyContentCategory(categories, problem);
+  if (!category) return false;
+  const ids = new Set();
+  for (let day = 1; day <= 28; day += 1) {
+    const record = selectCanonicalDailyRecord(category, day);
+    if (!record || ids.has(record.id)) return false;
+    ids.add(record.id);
+  }
+  return category.days.length === 28;
+}
