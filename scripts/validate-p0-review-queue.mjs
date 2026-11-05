@@ -5,18 +5,24 @@ import { fileURLToPath } from 'node:url';
 import { validateP0ReviewQueue } from './lib/p0ReviewQueueValidation.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const canonicalRaw = fs.readFileSync(path.join(root, 'public/content/path-content.json'), 'utf8');
-const canonicalBlobSha = createHash('sha1')
-  .update(`blob ${Buffer.byteLength(canonicalRaw)}\0`)
-  .update(canonicalRaw)
+const readRaw = (p) => fs.readFileSync(path.join(root, p), 'utf8');
+const gitBlobSha = (raw) => createHash('sha1')
+  .update(`blob ${Buffer.byteLength(raw)}\0`)
+  .update(raw)
   .digest('hex');
+const canonicalRaw = readRaw('public/content/path-content.json');
+const topicRegistryRaw = readRaw('public/assistant/knowledge/topics.v1.json');
+const subtopicRegistryRaw = readRaw('public/assistant/knowledge/subtopics.v1.json');
+const canonicalBlobSha = gitBlobSha(canonicalRaw);
 const read = (p) => JSON.parse(fs.readFileSync(path.join(root, p), 'utf8'));
 const errors = validateP0ReviewQueue({
   ledger: read('docs/review-data/P0_DAILY_CONTENT_REVIEW_QUEUE_V1.json'),
   canonicalContent: JSON.parse(canonicalRaw),
-  topicRegistry: read('public/assistant/knowledge/topics.v1.json'),
-  subtopicRegistry: read('public/assistant/knowledge/subtopics.v1.json'),
+  topicRegistry: JSON.parse(topicRegistryRaw),
+  subtopicRegistry: JSON.parse(subtopicRegistryRaw),
   canonicalBlobSha,
+  topicRegistryBlobSha: gitBlobSha(topicRegistryRaw),
+  subtopicRegistryBlobSha: gitBlobSha(subtopicRegistryRaw),
 });
 if (errors.length) {
   console.error('P0 review queue validation failed:');
