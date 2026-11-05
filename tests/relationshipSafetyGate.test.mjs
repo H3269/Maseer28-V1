@@ -209,7 +209,10 @@ test('relationship safety helpers remain available to the assistant, not the Pat
   assert.match(ui, /id="dayExercise"/);
   assert.match(ui, /id="dayAction"/);
   assert.match(ui, /id="openDailyEntryBtn"/);
-  assert.match(app, /category\?\.days\?\.find/);
+  assert.match(app, /selectDailyContentCategory\(content\?\.categories, problemKey\)/);
+  assert.match(app, /isCompleteDailyContentCategory\(content\?\.categories, problemKey\)/);
+  assert.match(app, /selectCanonicalDailyRecord\(category, Number\(currentDay\)\)/);
+  assert.doesNotMatch(app, /category\?\.days\?\.\[currentDay - 1\]/);
   const completeStart = app.indexOf('async function completeDay');
   const completeEnd = app.indexOf('function openCurrentDay', completeStart);
   assert.doesNotMatch(app.slice(completeStart, completeEnd), /getRelationshipSafetyGate|isRelationshipSafetyConfirmed|relationshipSafetyConfirmed/);
