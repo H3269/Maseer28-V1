@@ -486,6 +486,12 @@ test('all 34 topics render blocked and relationship safety notices as stacked re
   assert.ok(blockedDays > 0, 'the audit must exercise the human-review layout');
   assert.match(ui, /className="safetyNote safetyNoteStacked" role="alert"><b>این تمرین در نسخه فعلی فعال نیست/);
   assert.match(ui, /className="safetyNote safetyNoteStacked" role="alert"><b>\{relationshipSafetyGate\.title\}/);
+  assert.match(ui, /className="safetyNote safetyNoteStacked" id="supportSeekingPrivacyNotice"/,
+    'privacy notices must not inherit horizontal flex layout');
+  assert.match(ui, /className="safetyNote safetyNoteStacked" role="note"><b>پیش از تمرین، ایمنی را بررسی کن/,
+    'caution notices with multiple paragraphs must stay vertically stacked');
+  assert.match(ui, /className="safetyNote safetyNoteStacked"><b>بررسی اولیه ایمنی/,
+    'confirmed relationship safety reminders with controls must stay vertically stacked');
   assert.match(css, /#day \.safetyNoteStacked\s*\{[^}]*display:\s*block\s*!important/s);
   assert.match(css, /#day \.safetyNoteStacked p\s*\{[^}]*font-size:\s*13px/s);
 });
