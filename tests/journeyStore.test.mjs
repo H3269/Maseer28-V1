@@ -98,6 +98,22 @@ test('sanitizeJourneyState preserves malformed archive payload in a recovery-onl
   assert.equal(state.archiveRecoveryRequired.legacy.profileData.name, 'نام آرشیو');
 });
 
+test('sanitizeJourneyState quarantines an entire archive array when any entry is malformed', () => {
+  const originalArchive = [
+    { pathId: 'valid-looking-entry', answers: { 1: 'پاسخ حفظ‌شده' } },
+    null,
+    'legacy-unparsed-entry',
+    ['unexpected-nested-array'],
+  ];
+  const state = sanitizeJourneyState({ archive: originalArchive });
+  assert.deepEqual(state.archive, []);
+  assert.deepEqual(state.archiveRecoveryRequired, originalArchive,
+    'no valid-looking or malformed entry may be silently dropped');
+  const rehydrated = sanitizeJourneyState(JSON.parse(JSON.stringify(state)));
+  assert.deepEqual(rehydrated.archiveRecoveryRequired, originalArchive,
+    'the quarantined payload must survive a save-and-reload round trip');
+});
+
 test('sanitizeJourneyState does not invent a zero score when score is missing', () => {
   const state = sanitizeJourneyState({
     daily: { 1: { feedback: 'better' }, 2: { score: '' } },

@@ -202,14 +202,19 @@ export function sanitizeJourneyState(raw) {
   // Never silently truncate historical psychological records during hydration.
   // Keep malformed legacy archive payloads in a recovery-only field so the
   // normal UI can remain safe without overwriting the original data on save.
-  if (raw.archive !== undefined && raw.archive !== null && !Array.isArray(raw.archive)) {
+  const malformedArchiveArray = Array.isArray(raw.archive)
+    && raw.archive.some((entry) => !entry || typeof entry !== 'object' || Array.isArray(entry));
+  if ((raw.archive !== undefined && raw.archive !== null && !Array.isArray(raw.archive))
+    || malformedArchiveArray) {
+    // Quarantine the complete original payload. Filtering individual entries
+    // would silently discard records and make later recovery impossible.
     out.archiveRecoveryRequired = raw.archive;
   } else if (raw.archiveRecoveryRequired !== undefined && raw.archiveRecoveryRequired !== null) {
     out.archiveRecoveryRequired = raw.archiveRecoveryRequired;
   } else {
     delete out.archiveRecoveryRequired;
   }
-  out.archive = Array.isArray(raw.archive) ? raw.archive.filter((x) => x && typeof x === 'object') : [];
+  out.archive = Array.isArray(raw.archive) && !malformedArchiveArray ? raw.archive : [];
   out.pathId = typeof raw.pathId === 'string' ? raw.pathId.slice(0, 60) : null;
   out.startedAt = typeof raw.startedAt === 'string' ? raw.startedAt : null;
   const views = ['home', 'howWorks', 'profile', 'pathSetup', 'assessment', 'dashboard', 'day', 'dailyResult', 'books', 'support', 'final', 'done', 'report', 'bookReader', 'archive'];
