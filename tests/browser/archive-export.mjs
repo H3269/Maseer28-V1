@@ -16,7 +16,7 @@ try {
       schema: 7, started: true, profile: true, assessment: true,
       completed: [1, 2], answers: { 1: answer, 2: 'پاسخ دوم' },
       daily: { 1: { score: 4, feedback: 'better', feedbackText: 'بهتر شدم' } },
-      profileData: { problem: 'anxiety', durationYears: 1, durationMonths: 0, goal: 'هدف آزمایشی', code: 'M28-EXPORT' },
+      profileData: { problem: 'خشم', durationYears: 1, durationMonths: 0, goal: 'هدف آزمایشی', code: 'M28-EXPORT' },
       assessmentData: { score: 6 }, final: null,
       archive: [{
         pathId: 'browser-export-check',
@@ -98,7 +98,7 @@ try {
       completed: [1, 2], answers: { 1: answer, 2: 'پاسخ دوم' },
       daily: { 1: { score: 4, feedback: 'better', feedbackText: 'بهتر شدم' } },
       profileData: {
-        problem: 'anxiety', durationYears: 1, durationMonths: 0,
+        problem: 'خشم', durationYears: 1, durationMonths: 0,
         goal: 'هدف آزمایشی', code: 'M28-EXPORT',
       },
       assessmentData: { score: 6 }, final: null, archive: [],
