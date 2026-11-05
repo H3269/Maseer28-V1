@@ -168,7 +168,7 @@ try {
   await composer.fill(`چطور انجامش بدم؟ ${privateMarker}`);
   assert.equal(await send.isDisabled(), false);
   await send.click();
-  await page.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 6);
+  await page.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 3);
 
   let assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /خشم/);
@@ -190,21 +190,21 @@ try {
   assert.equal(boundedValue.length, 2000, 'composer must enforce its 2000-character limit');
   await composer.fill('دیگه نمی‌کشم. همه‌چی تمومه.');
   await send.click();
-  await page.waitForFunction(() => { const replies = document.querySelectorAll('.globalAssistantDialog .assistantMessage'); return replies.length >= 3 && /آیا همین الآن خطر فوری/.test(replies[replies.length - 1]?.innerText || ''); });
+  await page.waitForFunction(() => { const replies = document.querySelectorAll('.globalAssistantDialog .assistantMessage'); return replies.length >= 4 && /آیا همین الآن خطر فوری/.test(replies[replies.length - 1]?.innerText || ''); });
   assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /آیا همین الآن خطر فوری/);
   assert.doesNotMatch(assistantReply, /متن تمرین همین روز/);
 
   await composer.fill('شاید، مطمئن نیستم');
   await send.click();
-  await page.waitForFunction(() => { const replies = document.querySelectorAll('.globalAssistantDialog .assistantMessage'); return replies.length >= 4 && /کمک فوری انسانی/.test(replies[replies.length - 1]?.innerText || ''); });
+  await page.waitForFunction(() => { const replies = document.querySelectorAll('.globalAssistantDialog .assistantMessage'); return replies.length >= 5 && /کمک فوری انسانی/.test(replies[replies.length - 1]?.innerText || ''); });
   assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /کمک فوری انسانی/);
   assert.doesNotMatch(assistantReply, /متن تمرین همین روز/);
 
   await composer.fill('حالا تمرین امروز را توضیح بده');
   await send.click();
-  await page.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 5);
+  await page.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 6);
   assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /کمک فوری انسانی/);
   assert.doesNotMatch(assistantReply, /متن تمرین همین روز/);
@@ -226,7 +226,7 @@ try {
     const legacyComposer = legacyPanel.locator('#global-assistant-message');
     await legacyComposer.fill('چطور انجامش بدم؟');
     await legacyPanel.getByRole('button', { name: 'ارسال' }).click();
-    await legacyPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
+    await legacyPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 2);
     const legacyReply = await legacyPanel.locator('.assistantMessage').last().innerText();
     assert.ok(legacyReply.includes(problem), `legacy assistant reply must retain selected topic ${problem}`);
     assert.match(legacyReply, /روز 2/);
