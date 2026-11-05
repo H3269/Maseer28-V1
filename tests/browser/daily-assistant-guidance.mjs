@@ -30,6 +30,12 @@ const journey = {
 };
 
 async function openDay(page, { assistantDayMode = 'routine' } = {}) {
+  const dayNumber = assistantDayMode === 'relationship' ? 10 : 1;
+  const testJourney = dayNumber === 1 ? journey : {
+    ...journey,
+    completed: Array.from({ length: dayNumber - 1 }, (_, index) => index + 1),
+    startedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+  };
   await page.addInitScript((state) => {
     localStorage.setItem('maseer28_onboarding_complete_v1', '1');
     localStorage.setItem('maseer28_state', JSON.stringify(state));
@@ -44,19 +50,18 @@ async function openDay(page, { assistantDayMode = 'routine' } = {}) {
       medication: 'no',
       medicationRisk: 'no',
     }));
-  }, journey);
+  }, testJourney);
 
   await page.route('**/*', async (route) => {
     const url = new URL(route.request().url());
     if (url.pathname.endsWith('/content/path-content.json')) {
       const response = await route.fetch();
       const payload = await response.json();
-      const day = payload.categories?.['خشم']?.days?.find((item) => Number(item.day) === 1);
+      const day = payload.categories?.['خشم']?.days?.find((item) => Number(item.day) === dayNumber);
       assert.ok(day, 'the deterministic browser fixture must contain the selected topic day');
       Object.assign(day, {
-        id: assistantDayMode === 'relationship' ? 'T01-D10' : 'T01-D01',
         topic_id: 'T01',
-        day: 1,
+        day: dayNumber,
         review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
         risk_level: 'routine',
       });
