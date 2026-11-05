@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import SmartSelect from '../../shared/components/SmartSelect.jsx';
 import AppIcon from '../../shared/components/AppIcon.jsx';
+import { preserveDailyGuidanceSourceIdentity } from '../assistant/dailyGuidanceSourceIdentity.js';
 import { buttonLabel } from '../../shared/buttonLabel.jsx';
 import { getJourneyProgressCounts } from './progress.js';
 import { copyTextToClipboard, fa, formatDate, normalizeDigits } from '../../shared/utils.js';
@@ -280,7 +281,7 @@ export function splitDayContent(d, problem, previousRecord, history = {}) {
     adaptation = 'تغییر محسوسی ثبت نشده است؛ امروز فشار را افزایش نده. به‌جای تکرار، یک مانع مشخص را بررسی کن.';
   }
   const title = cleanDailyCopy(String(d?.title || 'موضوع امروز').replace(/\s*[·•-]?\s*روز\s*\d+\s*$/i, '').trim(), categoryName);
-  return { exercise, action, title, adaptation };
+  return preserveDailyGuidanceSourceIdentity(d, { exercise, action, title, adaptation });
 }
 
 function structuredText(value) {
