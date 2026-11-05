@@ -3,7 +3,7 @@ import { makeDailyExerciseGuidanceTurn, selectDailyExerciseGuidanceData } from '
 import { getDailyAssistantAccess } from './dailyAssistantAccess.js';
 
 export default function DailyExerciseAssistant({ day, problem, data, guidanceData, relationshipSafetyConfirmed = false }) {
-  const access = getDailyAssistantAccess({ day: data, relationshipSafetyConfirmed });
+  const access = getDailyAssistantAccess({ day: data, problem, relationshipSafetyConfirmed });
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
   const [error, setError] = useState('');
