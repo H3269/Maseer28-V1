@@ -303,6 +303,8 @@ try {
   await gatedPanel.locator('#global-assistant-message').fill('چطور انجامش بدم؟');
   await gatedPanel.getByRole('button', { name: 'ارسال' }).click();
   await gatedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some(node => /بررسی ایمنی همین روز/.test(node.innerText)));
+  await gatedPanel.getByRole('button', { name: 'متوجه شدم' }).click();
+  await gatedPanel.waitFor({ state: 'detached' });
   await gatedPage.locator('#day button[aria-label="داشبورد"]').click();
   await gatedPage.locator('#dashboard').waitFor({ state: 'visible' });
   await gatedPage.locator('#dashboard .heroAction').click();
