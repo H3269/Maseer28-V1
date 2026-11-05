@@ -85,6 +85,11 @@ function getTopicDayIdentity(day) {
   return { topicIds, dayNumbers };
 }
 
+export function getCanonicalTopicIdForCategory(categoryKey) {
+  const key = typeof categoryKey === 'string' ? categoryKey.trim() : '';
+  return LEGACY_TOPIC_IDS_BY_PREFIX.get(key) || null;
+}
+
 const SUPPORT_SEEKING_PRIVACY_NOTICE = 'پاسخ‌های روزانه، آرشیو و بخشی از پروفایل در حافظه محلی مرورگر همین دستگاه نگهداری می‌شوند و اپ آن‌ها را جداگانه رمزگذاری نمی‌کند. پیش از نوشتن نام یا جزئیات یا آماده‌کردن/ارسال پیام، بررسی کن فرد ناامن به دستگاه، مرورگر، اعلان‌ها یا حساب پیام‌رسان دسترسی ندارد. اگر احتمال نظارت، تلافی یا افشای اطلاعات هست، نام و جزئیات حساس را وارد نکن و پیام یا تماس را انجام نده؛ حمایت‌خواهی اختیاری است و می‌توانی از دستگاه یا مسیر امن و مستقل کمک بگیری.';
 
 export function getInterpersonalPrivacyNotice(day) {
