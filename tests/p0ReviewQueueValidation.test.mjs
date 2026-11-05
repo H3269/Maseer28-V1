@@ -26,12 +26,13 @@ function fixture() {
   return {
     ledger: {
       schema_version: '1.0.0', status: 'working_queue_not_approved_content',
-      generated_from: { canonical_blob_sha: 'abc123' },
+      generated_from: { canonical_blob_sha: 'abc123', topic_registry_blob_sha: 'topics123', subtopic_registry_blob_sha: 'subtopics123' },
       scope: { topic_ids: [...P0_TOPIC_IDS], topic_count: 9, days_per_topic: 28, entry_count: 252 },
       policy: { runtime_eligibility: false, no_automatic_subtopic_assignment: true, no_ai_approval: true },
       entries,
     },
     canonicalContent, topicRegistry: { topics }, subtopicRegistry: { subtopics }, canonicalBlobSha: 'abc123',
+    topicRegistryBlobSha: 'topics123', subtopicRegistryBlobSha: 'subtopics123',
   };
 }
 
@@ -61,4 +62,17 @@ test('requires evidence and learning fields for topic-specific mapping', () => {
 test('never permits runtime activation through the review queue', () => {
   const d = fixture(); d.ledger.policy.runtime_eligibility = true;
   assert.ok(validateP0ReviewQueue(d).some((e) => e.includes('runtime eligibility')));
+});
+
+test('rejects stale topic registry fingerprints', () => {
+  const d = fixture(); d.topicRegistryBlobSha = 'different-topics';
+  assert.ok(validateP0ReviewQueue(d).some((e) => e.includes('topic registry fingerprint is stale')));
+});
+test('rejects stale subtopic registry fingerprints', () => {
+  const d = fixture(); d.subtopicRegistryBlobSha = 'different-subtopics';
+  assert.ok(validateP0ReviewQueue(d).some((e) => e.includes('subtopic registry fingerprint is stale')));
+});
+test('rejects incorrect P0 scope counts', () => {
+  const d = fixture(); d.ledger.scope.days_per_topic = 27;
+  assert.ok(validateP0ReviewQueue(d).some((e) => e.includes('scope counts')));
 });
