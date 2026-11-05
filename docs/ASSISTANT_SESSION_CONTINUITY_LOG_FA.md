@@ -686,3 +686,14 @@ CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` مو�
 - این نتیجه فقط رفتار آزموده‌شده در CI را تأیید می‌کند؛ اثبات‌کننده ارزیابی بالینی، تشخیص کامل خطر یا تکمیل مدل زبانی on-device نیست. متن handoff صرفاً راهنمای تماس با کمک انسانی/اورژانسی است و هیچ تماس یا ارجاع واقعی را خودکار انجام نمی‌دهد.
 - هیچ Preview زنده، deploy، Worker upload واقعی، cloud inference، انتشار عمومی، Production activation یا تغییر ترافیک انجام نشده است. معماری محلی و مرز عدم ارسال داده کاربر به inference ابری بدون تغییر باقی ماند.
 - گام بعدی: ممیزی هدفمند intent/context فارسی و اتصال آن به راهنمای واقعی تمرین روز؛ هر نقص باید با آزمون مرزی بازتولید شود. از توسعه ویژگی جدید پیش از اثبات نقص و بررسی قراردادهای privacy و روزمحور خودداری شود.
+
+
+## اصلاح تشخیص تجربه شخصی اول‌شخص و تأیید کامل CI — 2026-11-05
+
+- commit کد/تست: `436cd6d5835c40248340c5ce4dd4f5354c5ccfc1`؛ اصلاح escaping الگوی Regex در `src/features/assistant/intentContextRouter.js` پس از شکست پنج آزمون در commit قبلی `f992d05e1d8b1fea4ac666a3c7c790901e6add73`.
+- CI run `41995316491` با وضعیت نهایی `completed / success` تأیید شد. job اصلی `validate-content` و job گزارش نتیجه commit هر دو موفق شدند.
+- مراحل موفق شامل dependency security audit، Worker bundle dry-run، version-upload dry-run بدون upload، سه runtime integration محلی Worker، topic registry، unit tests، اعتبارسنجی course/library، ممیزی کیفیت محتوای روزانه، build و همه سناریوهای Chromium privacy migration است.
+- آزمون مرورگر پس از اجرای کامل موفق شد؛ نتیجه قبلی queued/in_progress بود و اکنون نتیجه نهایی success است.
+- هیچ deploy، upload واقعی، Preview زنده، cloud inference، انتشار عمومی یا Production activation انجام نشد.
+- این نتیجه فقط آزمون‌های خودکار موجود را تأیید می‌کند؛ مدل زبانی on-device و مکالمه آزاد عمیق هنوز تکمیل نشده‌اند.
+- گام بعدی: ادامه ممیزی سخت‌گیرانه intent/context و اتصال امن آن به محتوای canonical روز؛ پیش از توسعه تازه، قراردادهای صفحه، داده روز و حریم خصوصی بررسی شوند.
