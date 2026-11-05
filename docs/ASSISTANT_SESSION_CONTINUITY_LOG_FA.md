@@ -664,3 +664,13 @@ CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` مو�
 - سایر مراحل job نیز موفق شدند: dependency security audit، Worker bundle dry-run، non-deploying version-upload dry-run، سه آزمون runtime محلی Worker، topic registry، unit tests، course/library validation، audit کیفیت محتوای روزانه و build اپ.
 - این نتیجه، CI خودکار روی commit `67006d5` است؛ نه Preview زنده یا تست روی دستگاه کاربر. dry-runها upload/deploy انجام نداده‌اند. هیچ انتشار عمومی، cloud inference، Production activation یا تغییر ترافیک انجام نشده است.
 - نتیجه CI به‌عنوان تأیید این مجموعه آزمون‌ها ثبت می‌شود؛ این نتیجه به‌تنهایی اثبات‌کننده تکمیل موتور زبانی on-device یا آمادگی انتشار محصول نیست.
+
+
+## تأیید آزمون مکالمه محلی و اتصال پاسخ روشن‌ساز — 2026-11-05
+
+- هر دو اجرای CI مربوط به اصلاح گفت‌وگوی یک‌مرحله‌ای محلی با وضعیت نهایی `completed / success` تأیید شدند: run `41990672829` برای commit `42773f441e1eac431d95a592e2ef48bc8c7a4bb3` و run `41990816112` برای commit `60e6ada6898386ce0eb815df4dad07032f1cbe49`. برای هر دو، combined status شاخه `path28/validate-content` نیز `success` است.
+- لاگ آزمون واحد هر دو اجرا `499` تست موفق و `0` شکست را ثبت می‌کند؛ از جمله آزمون‌های پاسخ شخصی/عمومی به روشن‌سازی scope، پاسخ مبهم بدون حدس، اولویت safety، و پاک‌شدن context با تغییر صفحه.
+- فایل `tests/browser/global-assistant-launcher.mjs` در مرورگر Chromium سناریوی واقعی UI را اجرا می‌کند: سؤال درباره راهکار اضطراب، نمایش پرسش روشن‌ساز، پاسخ «برای خودم»، و دریافت `personal_intake_required` برای همان پرسش؛ سپس بررسی می‌کند که پاسخ به راهنمای ثابت صفحه خانه تبدیل نشده باشد. اجرای کامل اسکریپت در هر دو run موفق است.
+- هر دو CI تمام شش اسکریپت مرورگر را با پیام PASS ثبت کرده‌اند: privacy migration (E1–E10)، archive export، daily safety gate، daily assistant guidance، global assistant launcher و invalid path recovery. build، ممیزی محتوا، audit وابستگی، dry-runهای بدون deploy/upload و سه آزمون runtime محلی Worker نیز موفق‌اند.
+- این تأیید فقط رفتار محدود router و UI محلی در محیط CI را ثابت می‌کند؛ مدل زبانی on-device، گفت‌وگوی آزاد و فهم معنایی عمیق هنوز وجود ندارد. آزمون مرورگر CI معادل تست روی گوشی کاربر یا Preview زنده نیست.
+- HEAD شاخه `main` هنگام ثبت این بخش `60e6ada6898386ce0eb815df4dad07032f1cbe49` بود. هیچ Preview زنده، deploy، upload واقعی Worker، cloud inference، انتشار عمومی یا فعال‌سازی Production انجام نشده است.
