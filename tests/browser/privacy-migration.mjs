@@ -435,7 +435,7 @@ try {
     const page = await openScenario('normal', legacyJourney());
     const cloudRequests = [];
     page.on('request', request => {
-      if (/assistant-api|workers\\.dev|cloudflareworkers\\.com|\\/v1\\/assistant\\/turn/u.test(request.url())) {
+      if (/assistant-api|workers\.dev|cloudflareworkers\.com|\/v1\/assistant\/turn/u.test(request.url())) {
         cloudRequests.push(request.url());
       }
     });
