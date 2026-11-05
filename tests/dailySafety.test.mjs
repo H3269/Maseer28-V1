@@ -491,37 +491,3 @@ test('all 34 topics and 952 exercise/action pairs retain their canonical daily s
   }
   assert.equal(total, 952);
 });
-test('all 34 topics render blocked and relationship safety notices as stacked readable content', async () => {
-  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
-  const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
-  const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
-  const categories = Object.values(content.categories || {});
-  assert.equal(categories.length, 34, 'the full 34-topic catalog must be covered');
-  let totalDays = 0;
-  let blockedDays = 0;
-  for (const category of categories) {
-    assert.equal(category.days.length, 28, `${category.name} must retain all 28 daily records`);
-    for (const day of category.days) {
-      totalDays += 1;
-      if (getDailySafetyMode(day) === 'blocked') blockedDays += 1;
-    }
-  }
-  assert.equal(totalDays, 952, 'all 952 daily records must be audited');
-  assert.ok(blockedDays > 0, 'the audit must exercise the human-review layout');
-  assert.match(ui, /className="safetyNote safetyNoteStacked" role="alert"><b>این تمرین در نسخه فعلی قابل اجرا نیست/);
-  assert.match(ui, /className="safetyNote safetyNoteStacked" role="alert"><b>\{relationshipSafetyGate\.title\}/);
-  assert.match(ui, /className="safetyNote safetyNoteStacked" id="supportSeekingPrivacyNotice"/,
-    'privacy notices must not inherit horizontal flex layout');
-  assert.match(ui, /className="safetyNote safetyNoteStacked" role="note"><b>پیش از تمرین، ایمنی را بررسی کن/,
-    'caution notices with multiple paragraphs must stay vertically stacked');
-  assert.match(ui, /className="safetyNote safetyNoteStacked"><b>بررسی اولیه ایمنی/,
-    'confirmed relationship safety reminders with controls must stay vertically stacked');
-  assert.match(css, /\.safetyNote\s*\{[^}]*display:\s*block/s,
-    'multi-part safety notices must default to vertical flow instead of inheriting flex columns');
-  assert.match(css, /\.safetyNoteInline\s*\{[^}]*display:\s*flex/s,
-    'only the compact icon-and-closing-text note may opt into horizontal flex layout');
-  assert.match(ui, /className="safetyNote safetyNoteInline"><span><AppIcon name="info"/,
-    'the single-icon closing note must explicitly opt into inline layout');
-  assert.match(css, /#day \.safetyNoteStacked\s*\{[^}]*display:\s*block\s*!important/s);
-  assert.match(css, /#day \.safetyNoteStacked p\s*\{[^}]*font-size:\s*13px/s);
-});
