@@ -273,7 +273,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
     contradictions,
     next_question: nextQuestion,
     safety_handoff: {
-      handoff_required: Boolean(explicitImmediateIntent && !explicitlyNegatedSafety),
+      handoff_required: Boolean(explicitImmediateIntent),
       trigger_evidence: [...new Set([...safetyMatches, ...quotedSafetyMatches])].slice(0, 5),
     },
     limitations: LIMITATIONS,

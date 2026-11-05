@@ -110,6 +110,12 @@ test('explicit immediate intent is distinguished from a generic safety keyword',
   assert.equal(result.next_question.purpose, 'safety_clarification');
 });
 
+test('a later direct affirmative safety declaration is not cancelled by an earlier denial', () => {
+  const result = routeSemanticIntake({ text: 'من قصد خودکشی ندارم، اما امشب خودکشی می‌کنم.' });
+  assert.equal(result.safety_handoff.handoff_required, true);
+  assert.equal(result.next_question.purpose, 'safety_clarification');
+});
+
 test('direct first-person future and ongoing harm declarations trigger the urgent safety route', () => {
   for (const text of ['امشب خودکشی می‌کنم.', 'من امشب خودم را می‌کشم.', 'به خودم آسیب می‌زنم.']) {
     const result = routeSemanticIntake({ text });
