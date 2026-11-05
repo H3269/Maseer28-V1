@@ -86,6 +86,15 @@ try {
   await page.waitForFunction(() => document.querySelector('.globalAssistantDialog')?.innerText.includes('ادامه مسیر امروز'));
   const firstAssistantReply = dialog.locator('.assistantMessage').last();
   assert.match(await firstAssistantReply.innerText(), /در صفحه «خانه» می‌توانی/);
+  await dialog.getByRole('textbox').fill('چه راهکاری برای اضطراب وجود دارد؟');
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('این پرسش درباره تجربه و وضعیت شخصی خودت است')));
+  await dialog.getByRole('textbox').fill('برای خودم');
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('موضوع فعلاً فقط یک فرضیه اولیه است')));
+  const scopedReply = dialog.locator('.assistantMessage').last();
+  assert.match(await scopedReply.innerText(), /موضوع فعلاً فقط یک فرضیه اولیه است/);
+  assert.doesNotMatch(await scopedReply.innerText(), /در صفحه «خانه» می‌توانی/);
   await dialog.getByRole('textbox').fill('من اضطراب دارم؛ این صفحه برای چیست؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('موضوع فعلاً فقط')));
