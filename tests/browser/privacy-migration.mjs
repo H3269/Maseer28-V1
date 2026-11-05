@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
@@ -441,6 +442,83 @@ try {
     assert.equal(restoreState.marker, 'RESTORE-UI-OK', 'restore must succeed; UI diagnostic: ' + restoreState.supportText);
     await reloadAfterRestore;
     assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('maseer28_restore_ui_marker')).marker), 'RESTORE-UI-OK', 'restored data must persist after reload');
+    await page.close();
+  }
+
+  // E11: export a quarantined archive through Support, inspect the downloaded
+  // JSON, clear the app-owned namespace, then explicitly restore and verify it
+  // remains quarantined after a full page reload.
+  {
+    const malformedArchive = [
+      { pathId: 'recoverable-entry', profileData: { problem: 'آرشیو قابل بازیابی' }, answers: { 1: 'پاسخ قدیمی' } },
+      null,
+      'legacy-unparsed-entry',
+      ['unexpected-nested-array'],
+    ];
+    const quarantinedJourney = { ...legacyJourney(), archive: malformedArchive };
+    const page = await openScenario('normal', quarantinedJourney, null, {
+      name: 'پروفایل مستقل بازیابی', age: 35, gender: 'زن', phone: '09123456789',
+      medical: 'none', medicalNote: '', medication: 'no', medicationRisk: 'no',
+    });
+    await page.locator('#copyrightModal').waitFor({ state: 'visible' });
+    await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
+    await page.locator('#dashboard').waitFor({ state: 'visible' });
+    await page.locator('#bottomNav button[data-view="support"]').click();
+    await page.locator('#support').waitFor({ state: 'visible' });
+
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'دریافت نسخه اطلاعات من' }).click();
+    const download = await downloadPromise;
+    const downloadPath = await download.path();
+    assert.ok(downloadPath, 'Chromium must expose the downloaded JSON backup');
+    const backupBuffer = await readFile(downloadPath);
+    const backup = JSON.parse(backupBuffer.toString('utf8'));
+    const backedUpJourney = backup.localStorage.entries.maseer28_state;
+    assert.deepEqual(backedUpJourney.archive, [], 'the ordinary archive list must not contain malformed entries');
+    assert.deepEqual(backedUpJourney.archiveRecoveryRequired, malformedArchive,
+      'the downloaded backup must contain the complete quarantined archive payload');
+
+    // Restore is allowed only into an empty app-owned namespace. Keep the live
+    // Support screen mounted while clearing persisted keys for this isolated test.
+    await page.evaluate(() => {
+      for (const key of Object.keys(localStorage)) {
+        if (key.startsWith('maseer28_') || key === 'profile_completed') localStorage.removeItem(key);
+      }
+    });
+    assert.equal(await page.evaluate(() => localStorage.getItem('maseer28_state')), null);
+
+    const picker = page.getByLabel('انتخاب فایل پشتیبان برای پیش‌نمایش');
+    const file = { name: download.suggestedFilename(), mimeType: 'application/json', buffer: backupBuffer };
+    await picker.setInputFiles(file);
+    await page.getByText('پیش‌نمایش فایل معتبر').waitFor({ state: 'visible' });
+    const restoreButton = page.getByRole('button', { name: 'بازیابی نسخه پشتیبان' });
+    await restoreButton.waitFor({ state: 'visible' });
+    assert.equal(await page.evaluate(() => localStorage.getItem('maseer28_state')), null,
+      'preview must not write the quarantined state');
+
+    page.once('dialog', dialog => dialog.dismiss());
+    await restoreButton.click();
+    assert.equal(await page.evaluate(() => localStorage.getItem('maseer28_state')), null,
+      'cancel must leave the empty namespace unchanged');
+
+    await picker.setInputFiles(file);
+    await page.getByText('پیش‌نمایش فایل معتبر').waitFor({ state: 'visible' });
+    const reloadAfterRestore = page.waitForEvent('load', { timeout: 15000 });
+    page.once('dialog', dialog => dialog.accept());
+    await page.getByRole('button', { name: 'بازیابی نسخه پشتیبان' }).click();
+    await reloadAfterRestore;
+    await page.locator('#copyrightModal').waitFor({ state: 'visible' });
+    await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
+    await page.locator('#dashboard').waitFor({ state: 'visible', timeout: 15000 });
+    await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
+    await page.locator('#archive').getByRole('alert').waitFor({ state: 'visible' });
+
+    const restoredState = await page.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state')));
+    assert.deepEqual(restoredState.archive, []);
+    assert.deepEqual(restoredState.archiveRecoveryRequired, malformedArchive,
+      'restored app state must preserve the complete archive quarantine payload');
+    assert.equal(await page.locator('#archive').getByRole('button', { name: /شروع مسیر تازه/ }).isDisabled(), true,
+      'a restored quarantined archive must continue blocking new-path creation');
     await page.close();
   }
 
