@@ -1756,10 +1756,15 @@
     }
 
     .safetyNote {
+      display: block;
+      padding: 8px 4px 2px
+    }
+
+    /* Only the compact closing note opts into horizontal icon/text alignment. */
+    .safetyNoteInline {
       display: flex;
       gap: 8px;
       align-items: flex-start;
-      padding: 8px 4px 2px
     }
 
     .safetyNote>span {

@@ -492,6 +492,12 @@ test('all 34 topics render blocked and relationship safety notices as stacked re
     'caution notices with multiple paragraphs must stay vertically stacked');
   assert.match(ui, /className="safetyNote safetyNoteStacked"><b>بررسی اولیه ایمنی/,
     'confirmed relationship safety reminders with controls must stay vertically stacked');
+  assert.match(css, /\.safetyNote\s*\\{[^}]*display:\\s*block/s,
+    'multi-part safety notices must default to vertical flow instead of inheriting flex columns');
+  assert.match(css, /\.safetyNoteInline\s*\\{[^}]*display:\\s*flex/s,
+    'only the compact icon-and-closing-text note may opt into horizontal flex layout');
+  assert.match(ui, /className="safetyNote safetyNoteInline"><span><AppIcon name="info"/,
+    'the single-icon closing note must explicitly opt into inline layout');
   assert.match(css, /#day \.safetyNoteStacked\s*\{[^}]*display:\s*block\s*!important/s);
   assert.match(css, /#day \.safetyNoteStacked p\s*\{[^}]*font-size:\s*13px/s);
 });
