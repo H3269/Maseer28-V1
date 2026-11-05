@@ -1,0 +1,6355 @@
+{
+  "schema_version": "1.0.0",
+  "ledger_id": "maseer28-p0-daily-content-review",
+  "status": "working_queue_not_approved_content",
+  "generated_from": {
+    "canonical_path": "public/content/path-content.json",
+    "canonical_blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f",
+    "topic_registry_blob_sha": "f41e573f62833bfaba1879651138189948130810",
+    "subtopic_registry_blob_sha": "0bc6f62f6b06e7d1f9289a0b5f6eb2ac08a69508"
+  },
+  "scope": {
+    "topic_ids": [
+      "T04",
+      "T06",
+      "T10",
+      "T11",
+      "T12",
+      "T17",
+      "T18",
+      "T31",
+      "T34"
+    ],
+    "topic_count": 9,
+    "days_per_topic": 28,
+    "entry_count": 252
+  },
+  "policy": {
+    "no_automatic_subtopic_assignment": true,
+    "no_ai_approval": true,
+    "empty_fields_mean_not_reviewed": true,
+    "runtime_eligibility": false,
+    "canonical_content_must_not_be_modified_by_this_ledger": true,
+    "allowed_triage_statuses": [
+      "unassigned_pending_review",
+      "topic_specific",
+      "general_support",
+      "needs_clarification",
+      "out_of_scope"
+    ],
+    "allowed_review_decisions": [
+      "accept",
+      "revise",
+      "hold_for_safety_review",
+      "needs_more_context"
+    ],
+    "allowed_safety_gate_statuses": [
+      "not_reviewed",
+      "pending_specialist_review",
+      "reviewed_with_conditions",
+      "hold"
+    ]
+  },
+  "entries": [
+    {
+      "id": "نفرت-01",
+      "topic_id": "T04",
+      "day": 1,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-02",
+      "topic_id": "T04",
+      "day": 2,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-03",
+      "topic_id": "T04",
+      "day": 3,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-04",
+      "topic_id": "T04",
+      "day": 4,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-05",
+      "topic_id": "T04",
+      "day": 5,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-06",
+      "topic_id": "T04",
+      "day": 6,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-07",
+      "topic_id": "T04",
+      "day": 7,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-08",
+      "topic_id": "T04",
+      "day": 8,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-09",
+      "topic_id": "T04",
+      "day": 9,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-10",
+      "topic_id": "T04",
+      "day": 10,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-11",
+      "topic_id": "T04",
+      "day": 11,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-12",
+      "topic_id": "T04",
+      "day": 12,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-13",
+      "topic_id": "T04",
+      "day": 13,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-14",
+      "topic_id": "T04",
+      "day": 14,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-15",
+      "topic_id": "T04",
+      "day": 15,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-16",
+      "topic_id": "T04",
+      "day": 16,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-17",
+      "topic_id": "T04",
+      "day": 17,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-18",
+      "topic_id": "T04",
+      "day": 18,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-19",
+      "topic_id": "T04",
+      "day": 19,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-20",
+      "topic_id": "T04",
+      "day": 20,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-21",
+      "topic_id": "T04",
+      "day": 21,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-22",
+      "topic_id": "T04",
+      "day": 22,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-23",
+      "topic_id": "T04",
+      "day": 23,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-24",
+      "topic_id": "T04",
+      "day": 24,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-25",
+      "topic_id": "T04",
+      "day": 25,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-26",
+      "topic_id": "T04",
+      "day": 26,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-27",
+      "topic_id": "T04",
+      "day": 27,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت-28",
+      "topic_id": "T04",
+      "day": 28,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-01",
+      "topic_id": "T06",
+      "day": 1,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-02",
+      "topic_id": "T06",
+      "day": 2,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-03",
+      "topic_id": "T06",
+      "day": 3,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-04",
+      "topic_id": "T06",
+      "day": 4,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-05",
+      "topic_id": "T06",
+      "day": 5,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-06",
+      "topic_id": "T06",
+      "day": 6,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-07",
+      "topic_id": "T06",
+      "day": 7,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-08",
+      "topic_id": "T06",
+      "day": 8,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-09",
+      "topic_id": "T06",
+      "day": 9,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-10",
+      "topic_id": "T06",
+      "day": 10,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-11",
+      "topic_id": "T06",
+      "day": 11,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-12",
+      "topic_id": "T06",
+      "day": 12,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-13",
+      "topic_id": "T06",
+      "day": 13,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-14",
+      "topic_id": "T06",
+      "day": 14,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-15",
+      "topic_id": "T06",
+      "day": 15,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-16",
+      "topic_id": "T06",
+      "day": 16,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-17",
+      "topic_id": "T06",
+      "day": 17,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-18",
+      "topic_id": "T06",
+      "day": 18,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-19",
+      "topic_id": "T06",
+      "day": 19,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-20",
+      "topic_id": "T06",
+      "day": 20,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-21",
+      "topic_id": "T06",
+      "day": 21,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-22",
+      "topic_id": "T06",
+      "day": 22,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-23",
+      "topic_id": "T06",
+      "day": 23,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-24",
+      "topic_id": "T06",
+      "day": 24,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-25",
+      "topic_id": "T06",
+      "day": 25,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-26",
+      "topic_id": "T06",
+      "day": 26,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-27",
+      "topic_id": "T06",
+      "day": 27,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "غم و سوگ-28",
+      "topic_id": "T06",
+      "day": 28,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-01",
+      "topic_id": "T10",
+      "day": 1,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-02",
+      "topic_id": "T10",
+      "day": 2,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-03",
+      "topic_id": "T10",
+      "day": 3,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-04",
+      "topic_id": "T10",
+      "day": 4,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-05",
+      "topic_id": "T10",
+      "day": 5,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-06",
+      "topic_id": "T10",
+      "day": 6,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-07",
+      "topic_id": "T10",
+      "day": 7,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-08",
+      "topic_id": "T10",
+      "day": 8,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-09",
+      "topic_id": "T10",
+      "day": 9,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-10",
+      "topic_id": "T10",
+      "day": 10,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-11",
+      "topic_id": "T10",
+      "day": 11,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-12",
+      "topic_id": "T10",
+      "day": 12,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-13",
+      "topic_id": "T10",
+      "day": 13,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-14",
+      "topic_id": "T10",
+      "day": 14,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-15",
+      "topic_id": "T10",
+      "day": 15,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-16",
+      "topic_id": "T10",
+      "day": 16,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-17",
+      "topic_id": "T10",
+      "day": 17,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-18",
+      "topic_id": "T10",
+      "day": 18,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-19",
+      "topic_id": "T10",
+      "day": 19,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-20",
+      "topic_id": "T10",
+      "day": 20,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-21",
+      "topic_id": "T10",
+      "day": 21,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-22",
+      "topic_id": "T10",
+      "day": 22,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-23",
+      "topic_id": "T10",
+      "day": 23,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-24",
+      "topic_id": "T10",
+      "day": 24,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-25",
+      "topic_id": "T10",
+      "day": 25,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-26",
+      "topic_id": "T10",
+      "day": 26,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-27",
+      "topic_id": "T10",
+      "day": 27,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "بی‌خوابی و مشکلات خواب-28",
+      "topic_id": "T10",
+      "day": 28,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-01",
+      "topic_id": "T11",
+      "day": 1,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-02",
+      "topic_id": "T11",
+      "day": 2,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-03",
+      "topic_id": "T11",
+      "day": 3,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-04",
+      "topic_id": "T11",
+      "day": 4,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-05",
+      "topic_id": "T11",
+      "day": 5,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-06",
+      "topic_id": "T11",
+      "day": 6,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-07",
+      "topic_id": "T11",
+      "day": 7,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-08",
+      "topic_id": "T11",
+      "day": 8,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-09",
+      "topic_id": "T11",
+      "day": 9,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-10",
+      "topic_id": "T11",
+      "day": 10,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-11",
+      "topic_id": "T11",
+      "day": 11,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-12",
+      "topic_id": "T11",
+      "day": 12,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-13",
+      "topic_id": "T11",
+      "day": 13,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-14",
+      "topic_id": "T11",
+      "day": 14,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-15",
+      "topic_id": "T11",
+      "day": 15,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-16",
+      "topic_id": "T11",
+      "day": 16,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-17",
+      "topic_id": "T11",
+      "day": 17,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-18",
+      "topic_id": "T11",
+      "day": 18,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-19",
+      "topic_id": "T11",
+      "day": 19,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-20",
+      "topic_id": "T11",
+      "day": 20,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-21",
+      "topic_id": "T11",
+      "day": 21,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-22",
+      "topic_id": "T11",
+      "day": 22,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-23",
+      "topic_id": "T11",
+      "day": 23,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-24",
+      "topic_id": "T11",
+      "day": 24,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-25",
+      "topic_id": "T11",
+      "day": 25,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-26",
+      "topic_id": "T11",
+      "day": 26,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-27",
+      "topic_id": "T11",
+      "day": 27,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "عادت‌های تکراری-28",
+      "topic_id": "T11",
+      "day": 28,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-01",
+      "topic_id": "T12",
+      "day": 1,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-02",
+      "topic_id": "T12",
+      "day": 2,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-03",
+      "topic_id": "T12",
+      "day": 3,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-04",
+      "topic_id": "T12",
+      "day": 4,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-05",
+      "topic_id": "T12",
+      "day": 5,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-06",
+      "topic_id": "T12",
+      "day": 6,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-07",
+      "topic_id": "T12",
+      "day": 7,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-08",
+      "topic_id": "T12",
+      "day": 8,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-09",
+      "topic_id": "T12",
+      "day": 9,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-10",
+      "topic_id": "T12",
+      "day": 10,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-11",
+      "topic_id": "T12",
+      "day": 11,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-12",
+      "topic_id": "T12",
+      "day": 12,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-13",
+      "topic_id": "T12",
+      "day": 13,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-14",
+      "topic_id": "T12",
+      "day": 14,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-15",
+      "topic_id": "T12",
+      "day": 15,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-16",
+      "topic_id": "T12",
+      "day": 16,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-17",
+      "topic_id": "T12",
+      "day": 17,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-18",
+      "topic_id": "T12",
+      "day": 18,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-19",
+      "topic_id": "T12",
+      "day": 19,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-20",
+      "topic_id": "T12",
+      "day": 20,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-21",
+      "topic_id": "T12",
+      "day": 21,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-22",
+      "topic_id": "T12",
+      "day": 22,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-23",
+      "topic_id": "T12",
+      "day": 23,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-24",
+      "topic_id": "T12",
+      "day": 24,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-25",
+      "topic_id": "T12",
+      "day": 25,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-26",
+      "topic_id": "T12",
+      "day": 26,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-27",
+      "topic_id": "T12",
+      "day": 27,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مرزبندی و نه گفتن-28",
+      "topic_id": "T12",
+      "day": 28,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-01",
+      "topic_id": "T17",
+      "day": 1,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-02",
+      "topic_id": "T17",
+      "day": 2,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-03",
+      "topic_id": "T17",
+      "day": 3,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-04",
+      "topic_id": "T17",
+      "day": 4,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-05",
+      "topic_id": "T17",
+      "day": 5,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-06",
+      "topic_id": "T17",
+      "day": 6,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-07",
+      "topic_id": "T17",
+      "day": 7,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-08",
+      "topic_id": "T17",
+      "day": 8,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-09",
+      "topic_id": "T17",
+      "day": 9,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-10",
+      "topic_id": "T17",
+      "day": 10,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-11",
+      "topic_id": "T17",
+      "day": 11,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-12",
+      "topic_id": "T17",
+      "day": 12,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-13",
+      "topic_id": "T17",
+      "day": 13,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-14",
+      "topic_id": "T17",
+      "day": 14,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-15",
+      "topic_id": "T17",
+      "day": 15,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-16",
+      "topic_id": "T17",
+      "day": 16,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-17",
+      "topic_id": "T17",
+      "day": 17,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-18",
+      "topic_id": "T17",
+      "day": 18,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-19",
+      "topic_id": "T17",
+      "day": 19,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-20",
+      "topic_id": "T17",
+      "day": 20,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-21",
+      "topic_id": "T17",
+      "day": 21,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-22",
+      "topic_id": "T17",
+      "day": 22,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-23",
+      "topic_id": "T17",
+      "day": 23,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-24",
+      "topic_id": "T17",
+      "day": 24,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-25",
+      "topic_id": "T17",
+      "day": 25,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-26",
+      "topic_id": "T17",
+      "day": 26,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-27",
+      "topic_id": "T17",
+      "day": 27,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکلات رابطه-28",
+      "topic_id": "T17",
+      "day": 28,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-01",
+      "topic_id": "T18",
+      "day": 1,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-02",
+      "topic_id": "T18",
+      "day": 2,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-03",
+      "topic_id": "T18",
+      "day": 3,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-04",
+      "topic_id": "T18",
+      "day": 4,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-05",
+      "topic_id": "T18",
+      "day": 5,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-06",
+      "topic_id": "T18",
+      "day": 6,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-07",
+      "topic_id": "T18",
+      "day": 7,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-08",
+      "topic_id": "T18",
+      "day": 8,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-09",
+      "topic_id": "T18",
+      "day": 9,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-10",
+      "topic_id": "T18",
+      "day": 10,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-11",
+      "topic_id": "T18",
+      "day": 11,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-12",
+      "topic_id": "T18",
+      "day": 12,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-13",
+      "topic_id": "T18",
+      "day": 13,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-14",
+      "topic_id": "T18",
+      "day": 14,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-15",
+      "topic_id": "T18",
+      "day": 15,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-16",
+      "topic_id": "T18",
+      "day": 16,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-17",
+      "topic_id": "T18",
+      "day": 17,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-18",
+      "topic_id": "T18",
+      "day": 18,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-19",
+      "topic_id": "T18",
+      "day": 19,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-20",
+      "topic_id": "T18",
+      "day": 20,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-21",
+      "topic_id": "T18",
+      "day": 21,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-22",
+      "topic_id": "T18",
+      "day": 22,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-23",
+      "topic_id": "T18",
+      "day": 23,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-24",
+      "topic_id": "T18",
+      "day": 24,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-25",
+      "topic_id": "T18",
+      "day": 25,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-26",
+      "topic_id": "T18",
+      "day": 26,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-27",
+      "topic_id": "T18",
+      "day": 27,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "نفرت از خود-28",
+      "topic_id": "T18",
+      "day": 28,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-01",
+      "topic_id": "T31",
+      "day": 1,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-02",
+      "topic_id": "T31",
+      "day": 2,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-03",
+      "topic_id": "T31",
+      "day": 3,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-04",
+      "topic_id": "T31",
+      "day": 4,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-05",
+      "topic_id": "T31",
+      "day": 5,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-06",
+      "topic_id": "T31",
+      "day": 6,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-07",
+      "topic_id": "T31",
+      "day": 7,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-08",
+      "topic_id": "T31",
+      "day": 8,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-09",
+      "topic_id": "T31",
+      "day": 9,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-10",
+      "topic_id": "T31",
+      "day": 10,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-11",
+      "topic_id": "T31",
+      "day": 11,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-12",
+      "topic_id": "T31",
+      "day": 12,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-13",
+      "topic_id": "T31",
+      "day": 13,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-14",
+      "topic_id": "T31",
+      "day": 14,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-15",
+      "topic_id": "T31",
+      "day": 15,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-16",
+      "topic_id": "T31",
+      "day": 16,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-17",
+      "topic_id": "T31",
+      "day": 17,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-18",
+      "topic_id": "T31",
+      "day": 18,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-19",
+      "topic_id": "T31",
+      "day": 19,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-20",
+      "topic_id": "T31",
+      "day": 20,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-21",
+      "topic_id": "T31",
+      "day": 21,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-22",
+      "topic_id": "T31",
+      "day": 22,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-23",
+      "topic_id": "T31",
+      "day": 23,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-24",
+      "topic_id": "T31",
+      "day": 24,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-25",
+      "topic_id": "T31",
+      "day": 25,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-26",
+      "topic_id": "T31",
+      "day": 26,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-27",
+      "topic_id": "T31",
+      "day": 27,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "کنترل‌گری-28",
+      "topic_id": "T31",
+      "day": 28,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-01",
+      "topic_id": "T34",
+      "day": 1,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-02",
+      "topic_id": "T34",
+      "day": 2,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-03",
+      "topic_id": "T34",
+      "day": 3,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-04",
+      "topic_id": "T34",
+      "day": 4,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-05",
+      "topic_id": "T34",
+      "day": 5,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-06",
+      "topic_id": "T34",
+      "day": 6,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-07",
+      "topic_id": "T34",
+      "day": 7,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-08",
+      "topic_id": "T34",
+      "day": 8,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-09",
+      "topic_id": "T34",
+      "day": 9,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-10",
+      "topic_id": "T34",
+      "day": 10,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-11",
+      "topic_id": "T34",
+      "day": 11,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-12",
+      "topic_id": "T34",
+      "day": 12,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-13",
+      "topic_id": "T34",
+      "day": 13,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-14",
+      "topic_id": "T34",
+      "day": 14,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-15",
+      "topic_id": "T34",
+      "day": 15,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-16",
+      "topic_id": "T34",
+      "day": 16,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-17",
+      "topic_id": "T34",
+      "day": 17,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-18",
+      "topic_id": "T34",
+      "day": 18,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-19",
+      "topic_id": "T34",
+      "day": 19,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-20",
+      "topic_id": "T34",
+      "day": 20,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-21",
+      "topic_id": "T34",
+      "day": 21,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-22",
+      "topic_id": "T34",
+      "day": 22,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-23",
+      "topic_id": "T34",
+      "day": 23,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-24",
+      "topic_id": "T34",
+      "day": 24,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-25",
+      "topic_id": "T34",
+      "day": 25,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-26",
+      "topic_id": "T34",
+      "day": 26,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-27",
+      "topic_id": "T34",
+      "day": 27,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    },
+    {
+      "id": "مشکل دیگر-28",
+      "topic_id": "T34",
+      "day": 28,
+      "source": {
+        "path": "public/content/path-content.json",
+        "blob_sha": "5e469b334657ab472501ef20eda574fb6f9dc22f"
+      },
+      "triage_status": "unassigned_pending_review",
+      "subtopic_ids": [],
+      "learning_objective": null,
+      "target_skill": null,
+      "teaching_point": null,
+      "review_decision": null,
+      "safety_gate_status": "not_reviewed",
+      "evidence_refs": [],
+      "reviewer": {
+        "name": null,
+        "qualification": null,
+        "organization": null
+      },
+      "review_record_id": null,
+      "reviewed_at": null,
+      "notes": null
+    }
+  ]
+}
