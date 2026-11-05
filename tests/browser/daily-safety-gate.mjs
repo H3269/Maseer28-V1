@@ -96,7 +96,10 @@ try {
   await seedPage(relationshipPage, makeState([1, 2, 3, 4, 5, 6, 7, 8, 9]), ['خشم-10']);
   const relationshipText = await relationshipPage.locator('#day').innerText();
   assert.match(relationshipText, /آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
-  assert.doesNotMatch(relationshipText, /یک برنامه مکث امن با سه جزء بنویس/);
+  assert.equal(await relationshipPage.locator('#dayExercise').count(), 1, 'relationship-gated source text must remain visible in read-only mode');
+  assert.equal(await relationshipPage.locator('#dayAction').count(), 1, 'relationship-gated action text must remain visible in read-only mode');
+  assert.equal(await relationshipPage.locator('#dailyEntryPanel').count(), 0, 'relationship-gated content must not expose execution or scoring controls');
+  assert.equal(await relationshipPage.locator('#t01PausePlan').count(), 0, 'interactive pause-plan adaptation remains unavailable before safety confirmation');
   await relationshipPage.getByLabel(/نه، مطمئن نیستم/).check();
   await relationshipPage.getByText(/تمرین ارتباطی امروز نمایش داده نمی‌شود/).waitFor({ state: 'visible' });
   await relationshipPage.getByRole('button', { name: 'ثبت عدم اجرای تمرین و ادامه مسیر' }).click();
