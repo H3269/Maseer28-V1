@@ -251,7 +251,7 @@ try {
     await adaptedPanel.waitFor({ state: 'visible' });
     await adaptedPanel.locator('#global-assistant-message').fill('چطور انجامش بدم؟');
     await adaptedPanel.getByRole('button', { name: 'ارسال' }).click();
-    await adaptedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
+    await adaptedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 2);
     const adaptedReply = await adaptedPanel.locator('.assistantMessage').last().innerText();
     assert.ok(adaptedReply.includes(scenario.expected),
       `assistant must expose the expected source-derived adaptation for ${scenario.mode}`);
