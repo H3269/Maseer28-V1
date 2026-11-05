@@ -60,7 +60,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       dayData,
       problem: dailyContext?.problem,
       day: dailyContext?.day,
-      conversationState: conversationState?.dailyState || null,
+      conversationState: conversationState?.dailyState || {},
     });
     return Object.freeze({
       status: 'daily_guidance_available',
