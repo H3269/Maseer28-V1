@@ -55,14 +55,18 @@ async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumb
   assert.ok(assistantContext.includes(normalizeVisibleDailyText(topic)), 'assistant context must show the selected topic');
   assert.ok(assistantContext.includes('روز ' + dayNumber), 'assistant context must show the selected day');
 
+  const reply = normalizeVisibleDailyText(await panel.locator('.assistantMessage').last().innerText());
+  await panel.getByRole('button', { name: 'متوجه شدم' }).click();
+  await panel.waitFor({ state: 'detached' });
   const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
   const visibleAction = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayAction'));
-  const reply = normalizeVisibleDailyText(await panel.locator('.assistantMessage').last().innerText());
   for (const [label, source] of [['exercise', visibleExercise], ['action', visibleAction]]) {
     assert.ok(source.length > 20, `visible ${label} source must be substantial`);
     assert.ok(reply.includes(source),
       `assistant response must preserve the exact visible daily ${label} text for ${topic}, day ${dayNumber}`);
   }
+  await page.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
+  await panel.waitFor({ state: 'visible' });
 }
 
 async function openDay(page, { assistantDayMode = 'routine', problem = null } = {}) {
