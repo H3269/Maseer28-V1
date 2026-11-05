@@ -597,6 +597,61 @@ test('legacy day introduction is quoted as the day purpose without inventing a c
   assert.match(response, /دلیل تخصصی یا درمانی جداگانه/u);
 });
 
+
+test('an example request for the dedicated action uses only that action source', () => {
+  const response = makeDailyExerciseGuidance({
+    message: 'برای راهکار اختصاصی مثال بزن',
+    dayData: {
+      exercise: 'تمرین: دو پرسش «چه احساسی دارم؟» و «چه چیزی دیدم؟» را پاسخ بده.',
+      actionText: 'اقدام امروز: دو مورد «موقعیت انتخاب‌شده» و «شدت احساس» را ثبت کن.',
+    },
+    problem: 'اضطراب',
+    day: 4,
+  });
+  assert.match(response, /موقعیت انتخاب‌شده/);
+  assert.match(response, /شدت احساس/);
+  assert.doesNotMatch(response, /چه احساسی دارم|چه چیزی دیدم/);
+});
+
+test('an ambiguous example request asks which daily content source is intended', () => {
+  const response = makeDailyExerciseGuidance({
+    message: 'برای تمرین و راهکار مثال بزن',
+    dayData: {
+      exercise: 'تمرین: «یک موقعیت» و «یک احساس» را بنویس.',
+      actionText: 'اقدام: «یک اقدام» و «یک نتیجه» را ثبت کن.',
+    },
+    problem: 'اضطراب',
+    day: 4,
+  });
+  assert.match(response, /متن تمرین یا راهکار اختصاصی/u);
+  assert.doesNotMatch(response, /یک موقعیت|یک اقدام/);
+});
+
+test('a follow-up example request can target the dedicated action instead of the exercise', () => {
+  const first = makeDailyExerciseGuidanceTurn({
+    message: 'چطور انجامش بدهم؟',
+    dayData: {
+      exercise: 'تمرین: «یک موقعیت» و «یک احساس» را بنویس.',
+      actionText: 'اقدام: «یک اقدام» و «یک نتیجه» را ثبت کن.',
+    },
+    problem: 'اضطراب',
+    day: 4,
+  });
+  const second = makeDailyExerciseGuidanceTurn({
+    message: 'برای راهکار مثال بزن',
+    dayData: {
+      exercise: 'تمرین: «یک موقعیت» و «یک احساس» را بنویس.',
+      actionText: 'اقدام: «یک اقدام» و «یک نتیجه» را ثبت کن.',
+    },
+    problem: 'اضطراب',
+    day: 4,
+    conversationState: first.nextState,
+  });
+  assert.match(second.response, /یک اقدام/);
+  assert.match(second.response, /یک نتیجه/);
+  assert.doesNotMatch(second.response, /یک موقعیت|یک احساس/);
+});
+
 test('stop guidance includes the exact closing safety reminder from the current day', () => {
   const closing = 'اگر نشانه‌های جسمانی جدید یا شدید داری، آن را خودکار به اضطراب نسبت نده و ارزیابی پزشکی بگیر.';
   const response = makeDailyExerciseGuidance({
