@@ -5,7 +5,7 @@ const SAFETY = new Set(['not_reviewed', 'pending_specialist_review', 'reviewed_w
 const text = (v) => typeof v === 'string' && v.trim().length > 0;
 const date = (v) => typeof v === 'string' && !Number.isNaN(Date.parse(v));
 
-export function validateP0ReviewQueue({ ledger, canonicalContent, topicRegistry, subtopicRegistry, canonicalBlobSha }) {
+export function validateP0ReviewQueue({ ledger, canonicalContent, topicRegistry, subtopicRegistry, canonicalBlobSha, topicRegistryBlobSha, subtopicRegistryBlobSha }) {
   const errors = [];
   const topics = new Map((topicRegistry.topics || []).map((t) => [t.topic_id, t]));
   const subtopics = new Map();
@@ -19,8 +19,11 @@ export function validateP0ReviewQueue({ ledger, canonicalContent, topicRegistry,
   if (ledger?.policy?.no_automatic_subtopic_assignment !== true) errors.push('automatic subtopic assignment must be disabled');
   if (ledger?.policy?.no_ai_approval !== true) errors.push('AI approval must be disabled');
   if (ledger?.generated_from?.canonical_blob_sha !== canonicalBlobSha) errors.push('canonical source fingerprint is stale');
+  if (ledger?.generated_from?.topic_registry_blob_sha !== topicRegistryBlobSha) errors.push('topic registry fingerprint is stale');
+  if (ledger?.generated_from?.subtopic_registry_blob_sha !== subtopicRegistryBlobSha) errors.push('subtopic registry fingerprint is stale');
   const scope = ledger?.scope?.topic_ids || [];
   if (scope.length !== 9 || P0_TOPIC_IDS.some((id, i) => scope[i] !== id)) errors.push('scope must contain the exact nine P0 topics');
+  if (ledger?.scope?.topic_count !== 9 || ledger?.scope?.days_per_topic !== 28) errors.push('scope counts must remain 9 topics by 28 days');
   if (ledger?.scope?.entry_count !== 252 || !Array.isArray(ledger?.entries) || ledger.entries.length !== 252) errors.push('queue must contain exactly 252 entries');
 
   const canonical = new Map();
