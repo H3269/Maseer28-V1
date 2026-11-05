@@ -133,7 +133,7 @@ function calculateCrossTopicSimilarity(rows) {
       largestClusterByDay.push(largestGroup.length);
       largestClusterTopicIdsByDay.push(largestGroup);
       if (values.length === rows.length && values.length > 0 && values.every(Boolean) && distinct === 1) fullySharedDays += 1;
-      if (rows.length > 0 && largestGroup.length >= Math.ceil(rows.length / 2)) majoritySharedDays += 1;
+      if (rows.length > 0 && largestGroup.length >= Math.floor(rows.length / 2) + 1) majoritySharedDays += 1;
     }
     result[field] = {
       fully_shared_days_across_all_topics: fullySharedDays,
