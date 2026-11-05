@@ -117,7 +117,7 @@ try {
   sharedPromptPage.on('pageerror', (error) => sharedPromptErrors.push(String(error)));
   await seedPage(sharedPromptPage, makeState([1, 2, 3, 4, 5], 'ترس'));
   const sharedPromptText = await sharedPromptPage.locator('#day').innerText();
-  assert.match(sharedPromptText, /این تمرین در نسخه فعلی فعال نیست/);
+  assert.match(sharedPromptText, /این تمرین در نسخه فعلی قابل اجرا نیست/);
   assert.match(sharedPromptText, /نیازمند بازبینی انسانی/);
   assert.doesNotMatch(sharedPromptText, /آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
   await sharedPromptPage.getByRole('button', { name: 'ثبت عدم اجرای تمرین و ادامه مسیر' }).click();
@@ -177,7 +177,7 @@ try {
   humanReviewPage.on('pageerror', (error) => humanReviewErrors.push(String(error)));
   await seedPage(humanReviewPage, makeState(Array.from({ length: 26 }, (_, index) => index + 1)));
   const humanReviewText = await humanReviewPage.locator('#day').innerText();
-  assert.match(humanReviewText, /این تمرین در نسخه فعلی فعال نیست/);
+  assert.match(humanReviewText, /این تمرین در نسخه فعلی قابل اجرا نیست/);
   assert.match(humanReviewText, /نیازمند بازبینی انسانی/);
   assert.equal(await humanReviewPage.locator('#dayExercise').count(), 1, 'human-review content text must remain visible for inspection');
   assert.equal(await humanReviewPage.locator('#dayAction').count(), 1, 'human-review action text must remain visible for inspection');
@@ -199,7 +199,7 @@ try {
   relationshipTopicDayOnePage.on('pageerror', (error) => relationshipTopicDayOneErrors.push(String(error)));
   await seedPage(relationshipTopicDayOnePage, makeState([], 'مشکلات رابطه'));
   const relationshipTopicDayOneText = await relationshipTopicDayOnePage.locator('#day').innerText();
-  assert.match(relationshipTopicDayOneText, /این تمرین در نسخه فعلی فعال نیست/);
+  assert.match(relationshipTopicDayOneText, /این تمرین در نسخه فعلی قابل اجرا نیست/);
   assert.match(relationshipTopicDayOneText, /نیازمند بازبینی انسانی/);
   assert.doesNotMatch(relationshipTopicDayOneText, /آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
   assert.equal(await relationshipTopicDayOnePage.locator('#dayExercise').count(), 1, 'blocked content text remains visible in read-only mode');
@@ -221,7 +221,7 @@ try {
   relationshipTopicDaySixPage.on('pageerror', (error) => relationshipTopicDaySixErrors.push(String(error)));
   await seedPage(relationshipTopicDaySixPage, makeState([1, 2, 3, 4, 5], 'مشکلات رابطه'));
   const relationshipTopicDaySixText = await relationshipTopicDaySixPage.locator('#day').innerText();
-  assert.match(relationshipTopicDaySixText, /این تمرین در نسخه فعلی فعال نیست/);
+  assert.match(relationshipTopicDaySixText, /این تمرین در نسخه فعلی قابل اجرا نیست/);
   assert.equal(await relationshipTopicDaySixPage.locator('#dayExercise').count(), 1, 'blocked content text remains visible in read-only mode');
   assert.equal(await relationshipTopicDaySixPage.locator('#dayAction').count(), 1);
   assert.equal(await relationshipTopicDaySixPage.locator('#dailyEntryPanel').count(), 0);
