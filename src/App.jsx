@@ -54,6 +54,7 @@ import {
   ValidationModal,
 } from './features/journey/JourneyScreens.jsx';
 import { getRelationshipSafetyGate, isRelationshipSafetyConfirmed } from './features/journey/relationshipSafetyGate.js';
+import { isCompleteDailyContentCategory, selectCanonicalDailyRecord, selectDailyContentCategory } from './features/content/dailyContentSelector.js';
 import { fa } from './shared/utils.js';
 import GlobalAssistantLauncher from './features/assistant/GlobalAssistantLauncher.jsx';
 
@@ -228,13 +229,15 @@ function MainApp() {
     };
   }, []);
 
-  const category = content?.categories?.[journey.profileData?.problem] || null;
-  const activeDay = category?.days?.find((record) => Number(record?.day) === Number(currentDay)) || category?.days?.[currentDay - 1] || null;
+  const problemKey = journey.profileData?.problem;
+  const categoryCandidate = selectDailyContentCategory(content?.categories, problemKey);
+  const category = categoryCandidate && isCompleteDailyContentCategory(content?.categories, problemKey) ? categoryCandidate : null;
+  const activeDay = selectCanonicalDailyRecord(category, Number(currentDay));
   const relationshipSafetyDayKey = `${activeDay?.topic_id || ''}:${activeDay?.id || activeDay?.day || currentDay}`;
   const relationshipSafetyResponse = relationshipSafetyState.dayKey === relationshipSafetyDayKey ? relationshipSafetyState.response : '';
   const relationshipSafetyConfirmed = isRelationshipSafetyConfirmed(activeDay, relationshipSafetyResponse);
   const resultNumber = Number(resultDay || currentDay);
-  const resultData = category?.days?.find((record) => Number(record?.day) === resultNumber) || category?.days?.[resultNumber - 1] || null;
+  const resultData = selectCanonicalDailyRecord(category, resultNumber);
   const headerDay = screen === 'day' ? currentDay : screen === 'dailyResult' ? (resultDay || journey.completed.length) : journey.completed.length;
 
   function showValidation(items, title = 'چند بخش هنوز نیاز به تکمیل دارد') {
