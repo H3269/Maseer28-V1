@@ -31,8 +31,10 @@ const journey = {
 
 async function openDay(page, { assistantDayMode = 'routine' } = {}) {
   const dayNumber = assistantDayMode === 'relationship' ? 10 : assistantDayMode === 'legacy' ? 2 : 1;
+  const topicKey = assistantDayMode === 'legacy' ? 'غم و سوگ' : 'خشم';
   const testJourney = dayNumber === 1 ? journey : {
     ...journey,
+    profileData: { ...journey.profileData, problem: topicKey },
     completed: Array.from({ length: dayNumber - 1 }, (_, index) => index + 1),
     startedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
   };
@@ -57,7 +59,7 @@ async function openDay(page, { assistantDayMode = 'routine' } = {}) {
     if (url.pathname.endsWith('/content/path-content.json')) {
       const response = await route.fetch();
       const payload = await response.json();
-      const day = payload.categories?.['خشم']?.days?.find((item) => Number(item.day) === dayNumber);
+      const day = payload.categories?.[topicKey]?.days?.find((item) => Number(item.day) === dayNumber);
       assert.ok(day, 'the deterministic browser fixture must contain the selected topic day');
       if (assistantDayMode === 'legacy') {
         assert.equal(Object.hasOwn(day, 'topic_id'), false);
@@ -171,7 +173,7 @@ try {
   await legacyPanel.getByRole('button', { name: 'ارسال' }).click();
   await legacyPage.waitForFunction(() => document.querySelectorAll('.dailyExerciseAssistant .assistantMessage').length >= 1);
   const legacyReply = await legacyPanel.locator('.assistantMessage').last().innerText();
-  assert.match(legacyReply, /خشم/);
+  assert.match(legacyReply, /غم و سوگ/);
   assert.match(legacyReply, /روز 2/);
   assert.match(legacyReply, /متن تمرین همین روز/);
   assert.match(legacyReply, /راهکار اختصاصی همین روز/);
