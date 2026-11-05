@@ -7,7 +7,7 @@ import { validateP0ReviewQueue } from './lib/p0ReviewQueueValidation.js';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const canonicalRaw = fs.readFileSync(path.join(root, 'public/content/path-content.json'), 'utf8');
 const canonicalBlobSha = createHash('sha1')
-  .update(`blob ${Buffer.byteLength(canonicalRaw)}\\0`)
+  .update(`blob ${Buffer.byteLength(canonicalRaw)}\0`)
   .update(canonicalRaw)
   .digest('hex');
 const read = (p) => JSON.parse(fs.readFileSync(path.join(root, p), 'utf8'));
