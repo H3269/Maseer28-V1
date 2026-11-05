@@ -1,3 +1,9 @@
+export function getCanonicalDailyRecordId(categoryKey, dayNumber) {
+  if (typeof categoryKey !== 'string' || !categoryKey.trim()) return null;
+  if (!Number.isInteger(dayNumber) || dayNumber < 1 || dayNumber > 28) return null;
+  return `${categoryKey.trim()}-${String(dayNumber).padStart(2, '0')}`;
+}
+
 export function selectDailyContentCategory(categories, problem) {
   if (!categories || typeof categories !== 'object' || Array.isArray(categories)) return null;
   if (typeof problem !== 'string' || !problem.trim()) return null;

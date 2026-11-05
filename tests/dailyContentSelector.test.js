@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { isCompleteDailyContentCategory, selectCanonicalDailyRecord, selectDailyContentCategory } from '../src/features/content/dailyContentSelector.js';
+import { getCanonicalDailyRecordId, isCompleteDailyContentCategory, selectCanonicalDailyRecord, selectDailyContentCategory } from '../src/features/content/dailyContentSelector.js';
 
 const dayOne = { id: 'اضطراب-01', day: 1, exercise: 'تمرین روز اول' };
 const dayFour = { id: 'اضطراب-04', day: 4, exercise: 'تمرین روز چهارم' };
@@ -64,4 +64,14 @@ test('accepts only a complete 28-day category with unique stable record identiti
   assert.equal(isCompleteDailyContentCategory({ 'موضوع معتبر': { days: [...completeDays.slice(0, 27), { ...completeDays[27], id: completeDays[0].id }] } }, 'موضوع معتبر'), false);
   assert.equal(isCompleteDailyContentCategory({ 'موضوع معتبر': { days: [...completeDays.slice(0, 27), { ...completeDays[27], day: 27 }] } }, 'موضوع معتبر'), false);
   assert.equal(isCompleteDailyContentCategory({ 'موضوع نامعتبر': { days: completeDays } }, 'موضوع دیگر'), false);
+});
+
+
+test('builds one canonical category/day ID for both legacy and versioned daily records', () => {
+  assert.equal(getCanonicalDailyRecordId('خشم', 1), 'خشم-01');
+  assert.equal(getCanonicalDailyRecordId('اضطراب', 10), 'اضطراب-10');
+  assert.equal(getCanonicalDailyRecordId('موضوع', 28), 'موضوع-28');
+  for (const [category, day] of [['', 1], ['  ', 1], [null, 1], ['خشم', 0], ['خشم', 1.5], ['خشم', 29], ['خشم', '1']]) {
+    assert.equal(getCanonicalDailyRecordId(category, day), null);
+  }
 });

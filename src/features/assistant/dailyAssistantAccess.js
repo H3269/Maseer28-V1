@@ -1,4 +1,5 @@
 import { getDailySafetyMode } from '../content/dailySafety.js';
+import { getCanonicalDailyRecordId } from '../content/dailyContentSelector.js';
 import { getCanonicalTopicIdForCategory, getRelationshipSafetyGate } from '../journey/relationshipSafetyGate.js';
 
 export function getDailyAssistantAccess({ day, problem, relationshipSafetyConfirmed = false } = {}) {
@@ -18,8 +19,8 @@ export function getDailyAssistantAccess({ day, problem, relationshipSafetyConfir
   const dayNumber = Number(day.day);
   const hasValidDayNumber = Number.isInteger(dayNumber) && dayNumber >= 1 && dayNumber <= 28;
   const legacyTopic = typeof problem === 'string' ? problem.trim() : '';
-  const expectedId = legacyTopic && hasValidDayNumber
-    ? `${legacyTopic}-${String(dayNumber).padStart(2, '0')}`
+  const expectedId = hasValidDayNumber
+    ? getCanonicalDailyRecordId(legacyTopic, dayNumber)
     : null;
   const hasCanonicalId = typeof day.id === 'string' && expectedId !== null && day.id === expectedId;
   const expectedTopicId = getCanonicalTopicIdForCategory(legacyTopic);

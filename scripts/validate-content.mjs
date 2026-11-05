@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const readJson = (relativePath) => {
@@ -75,14 +76,11 @@ for (const { topic, category } of topicRows) {
     if (Number(day.day) !== index + 1) {
       fail.push(`شماره روز نامرتب در «${topic}»: موقعیت ${index + 1}، مقدار ${day.day}`);
     }
-    // Legacy daily records have no v2 topic_id. Their canonical identity is
-    // still verifiable from the exact category key and zero-padded day ID.
-    // Keep this check read-only: never rewrite historical content IDs.
-    if (day.topic_id === undefined && day.review_status === undefined) {
-      const expectedLegacyId = `${topic}-${String(index + 1).padStart(2, '0')}`;
-      if (day.id !== expectedLegacyId) {
-        fail.push(`شناسه legacy روز ${index + 1} در «${topic}» باید دقیقاً ${expectedLegacyId} باشد؛ مقدار فعلی ${day.id || '(خالی)'}`);
-      }
+    // Every canonical record, legacy or v2, must retain the same
+    // category-key/day identity. This validates without rewriting content.
+    const expectedCanonicalId = getCanonicalDailyRecordId(topic, index + 1);
+    if (day.id !== expectedCanonicalId) {
+      fail.push(`شناسه canonical روز ${index + 1} در «${topic}» باید دقیقاً ${expectedCanonicalId} باشد؛ مقدار فعلی ${day.id || '(خالی)'}`);
     }
     if (!day.id || allIds.has(day.id)) {
       fail.push(`شناسه روز خالی یا تکراری در «${topic}»، روز ${index + 1}: ${day.id || '(خالی)'}`);
