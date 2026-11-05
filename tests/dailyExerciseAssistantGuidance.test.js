@@ -480,8 +480,8 @@ import { getDailyAssistantAccess } from '../src/features/assistant/dailyAssistan
 
 test('daily assistant fails closed when canonical day identity is incomplete or invalid', () => {
   const valid = {
-    id: 'T03-D01',
-    topic_id: 'T03',
+    id: 'T01-D01',
+    topic_id: 'T01',
     day: 1,
     review_status: 'approved',
     risk_level: 'routine',
