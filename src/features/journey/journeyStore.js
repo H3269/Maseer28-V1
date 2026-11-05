@@ -202,8 +202,7 @@ export function sanitizeJourneyState(raw) {
   // Never silently truncate historical psychological records during hydration.
   // Keep malformed legacy archive payloads in a recovery-only field so the
   // normal UI can remain safe without overwriting the original data on save.
-  const malformedArchiveArray = Array.isArray(raw.archive)
-    && raw.archive.some((entry) => !entry || typeof entry !== 'object' || Array.isArray(entry));
+  const malformedArchiveArray = Array.isArray(raw.archive) && !hasValidArchiveContainer(raw.archive);
   if ((raw.archive !== undefined && raw.archive !== null && !Array.isArray(raw.archive))
     || malformedArchiveArray) {
     // Quarantine the complete original payload. Filtering individual entries
@@ -407,8 +406,7 @@ export function removeLegacyUserProfileAfterVerifiedMigration({
       const hasLegacyFields = (profile) => LEGACY_SENSITIVE_PROFILE_FIELDS.some((field) =>
         hasProfileValue(profile?.[field])
       );
-      const hasValidArchiveShape = (journey?.archive === undefined
-        || journey?.archive === null || Array.isArray(journey.archive))
+      const hasValidArchiveShape = hasValidArchiveContainer(journey?.archive)
         && (journey?.archiveRecoveryRequired === undefined || journey?.archiveRecoveryRequired === null);
       const hasSensitiveJourneyData = hasLegacyFields(journey?.profileData)
         || (Array.isArray(journey?.archive) && journey.archive.some((entry) =>
@@ -448,6 +446,13 @@ function hasProfileValue(value) {
   return value !== undefined && value !== null && value !== '';
 }
 
+function hasValidArchiveContainer(archive) {
+  return archive === undefined || archive === null
+    || (Array.isArray(archive) && archive.every((entry) =>
+      Boolean(entry) && typeof entry === 'object' && !Array.isArray(entry)
+    ));
+}
+
 /**
  * Prepare (but do not persist) a loss-minimizing migration of legacy identity
  * and health fields out of journey and archive snapshots. The caller must first
@@ -458,7 +463,7 @@ export function prepareJourneyPrivacyMigration(rawState, canonicalProfile) {
   if (!rawState || typeof rawState !== 'object' || Array.isArray(rawState)) {
     return { ready: false, reason: 'invalid_journey_state', missingCanonicalFields: [], state: null };
   }
-  if ((rawState.archive !== undefined && rawState.archive !== null && !Array.isArray(rawState.archive))
+  if (!hasValidArchiveContainer(rawState.archive)
     || (rawState.archiveRecoveryRequired !== undefined && rawState.archiveRecoveryRequired !== null)) {
     return { ready: false, reason: 'invalid_archive_shape', missingCanonicalFields: [], state: null };
   }

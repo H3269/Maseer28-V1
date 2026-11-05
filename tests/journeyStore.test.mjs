@@ -399,6 +399,15 @@ test('legacy profile cleanup requires verified journey privacy migration before 
     data.set(JOURNEY_KEY, JSON.stringify({
       privacyMigrationVersion: 1,
       profileData: { problem: 'anxiety' },
+      archive: [{ pathId: 'valid', profileData: { problem: 'stress' } }, null],
+    }));
+    const malformedArray = removeLegacyUserProfileAfterVerifiedMigration();
+    assert.deepEqual(malformedArray, { removed: false, reason: 'journey_privacy_migration_not_verified' });
+    assert.equal(data.has(PROFILE_KEY), true);
+
+    data.set(JOURNEY_KEY, JSON.stringify({
+      privacyMigrationVersion: 1,
+      profileData: { problem: 'anxiety' },
       archive: [],
       archiveRecoveryRequired: { legacy: { profileData: { medical: 'other' } } },
     }));
@@ -506,6 +515,23 @@ test('legacy journey privacy migration rejects a malformed archive container wit
   assert.equal(result.reason, 'invalid_archive_shape');
   assert.equal(result.state, null);
   assert.equal(raw.archive.old.profileData.name, 'نام قدیمی');
+});
+
+test('legacy journey privacy migration refuses malformed archive array members without transforming any entry', async () => {
+  const { prepareJourneyPrivacyMigration } = await import('../src/features/journey/journeyStore.js');
+  const rawArchive = [
+    { pathId: 'old', profileData: { name: 'نام آرشیو', problem: 'stress' }, answers: { 1: 'پاسخ' } },
+    null, 'unparsed', ['nested'],
+  ];
+  const raw = {
+    profileData: { name: 'نام فعال', problem: 'anxiety' },
+    archive: rawArchive,
+  };
+  const result = prepareJourneyPrivacyMigration(raw, { name: 'نام فعال' });
+  assert.equal(result.ready, false);
+  assert.equal(result.reason, 'invalid_archive_shape');
+  assert.equal(result.state, null);
+  assert.deepEqual(raw.archive, rawArchive, 'preflight must leave every original archive entry untouched');
 });
 
 test('legacy journey privacy migration blocks a previously quarantined archive payload', async () => {
@@ -720,6 +746,23 @@ test('executed privacy migration refuses malformed archive data even with a stal
   const result = executeJourneyPrivacyMigration({ storage, canonicalProfile: { name: 'نام رسمی' } });
   assert.deepEqual(result, { migrated: false, reason: 'invalid_archive_shape' });
   assert.equal(values.get(JOURNEY_KEY), original);
+});
+
+test('executed privacy migration refuses malformed archive arrays and preserves the exact source value', async () => {
+  const { executeJourneyPrivacyMigration, JOURNEY_KEY } = await import('../src/features/journey/journeyStore.js');
+  const raw = {
+    profileData: { name: 'نام فعال', medical: 'none', problem: 'anxiety' },
+    archive: [
+      { pathId: 'old', profileData: { name: 'نام آرشیو', medical: 'other', problem: 'stress' }, answers: { 1: 'پاسخ' } },
+      null, 'unparsed', ['nested'],
+    ],
+  };
+  const original = JSON.stringify(raw);
+  const values = new Map([[JOURNEY_KEY, original]]);
+  const storage = { getItem: (key) => values.get(key) ?? null, setItem: (key, value) => values.set(key, String(value)) };
+  const result = executeJourneyPrivacyMigration({ storage, canonicalProfile: { name: 'نام فعال', medical: 'none' } });
+  assert.deepEqual(result, { migrated: false, reason: 'invalid_archive_shape' });
+  assert.equal(values.get(JOURNEY_KEY), original, 'privacy migration must not partially rewrite a malformed archive');
 });
 
 test('executed privacy migration blocks quarantined archive payload despite a verified marker', async () => {
