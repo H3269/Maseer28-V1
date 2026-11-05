@@ -168,7 +168,7 @@ try {
   await composer.fill(`چطور انجامش بدم؟ ${privateMarker}`);
   assert.equal(await send.isDisabled(), false);
   await send.click();
-  await page.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 3);
+  await page.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 2);
 
   let assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /خشم/);
@@ -179,7 +179,7 @@ try {
 
   await composer.fill('تمرین را بیشتر توضیح بده');
   await send.click();
-  await page.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 2);
+  await page.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 3);
   assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /متن تمرین همین روز/);
   assert.match(assistantReply, /جمله یا واژه‌اش را بیشتر باز کنم/);
