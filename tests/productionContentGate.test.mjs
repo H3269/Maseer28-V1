@@ -220,19 +220,17 @@ test('evidence registry records are unique, traceable, and explicitly limited', 
   ]) assert.ok(ids.includes(id), `missing curated source ${id}`);
 });
 
-test('public deployment and Telegram publication retain expert approval gates', async () => {
+test('Pages test deployment is automatic while Telegram production publication keeps expert approval gates', async () => {
   const [deploy, publish] = await Promise.all([
     (await import('node:fs/promises')).readFile(new URL('../.github/workflows/deploy.yml', import.meta.url), 'utf8'),
     (await import('node:fs/promises')).readFile(new URL('../.github/workflows/publish-tested-version.yml', import.meta.url), 'utf8'),
   ]);
-  assert.match(deploy, /confirm_public_release == 'yes'/);
-  assert.match(deploy, /actions: read/);
-  assert.match(deploy, /head_sha=\$\{GITHUB_SHA\}/);
-  assert.match(deploy, /assert-validation-run\.mjs/);
-  assert.match(deploy, /npm run assert:production-content/);
-  assert.match(publish, /inputs\.publish == 'publish'/);
-  assert.match(publish, /github\.ref == 'refs\/heads\/main'/);
-  assert.match(publish, /assert-validation-run\.mjs/);
+  assert.match(deploy, /on:\\s+push:\\s+branches:\\s+\\[main\\]/);
+  assert.doesNotMatch(deploy, /workflow_dispatch|confirm_public_release|assert:production-content|prepare:production/);
+  assert.match(deploy, /npm run build -- --base=\\/Maseer28-V1\\//);
+  assert.match(publish, /inputs\\.publish == 'publish'/);
+  assert.match(publish, /github\\.ref == 'refs\\/heads\\/main'/);
+  assert.match(publish, /assert-validation-run\\.mjs/);
   assert.match(publish, /npm run assert:production-content/);
 });
 
