@@ -20,6 +20,8 @@ for (const item of subtopicsRegistry.subtopics || []) {
 }
 
 const expectedTopics = 34;
+const expectedLegacyTopics = 32;
+const expectedV2Topics = 2;
 const expectedDays = 28;
 const expectedTotalDays = expectedTopics * expectedDays;
 const templateFields = [
@@ -151,6 +153,14 @@ function calculateCrossTopicSimilarity(rows) {
 const crossTopicSimilarity = calculateCrossTopicSimilarity(topicRows);
 const legacyTopicRows = topicRows.filter((row) => /^T(?:0[3-9]|[12][0-9]|3[0-4])$/.test(row.topic_id));
 const v2TopicRows = topicRows.filter((row) => /^T0[12]$/.test(row.topic_id));
+if (legacyTopicRows.length !== expectedLegacyTopics || v2TopicRows.length !== expectedV2Topics) {
+  throw new Error(
+    `Unexpected content cohorts: legacy=${legacyTopicRows.length}/${expectedLegacyTopics}, v2=${v2TopicRows.length}/${expectedV2Topics}.`,
+  );
+}
+if (legacyTopicRows.length + v2TopicRows.length !== topicRows.length) {
+  throw new Error('Some topics are not assigned to a recognized content cohort.');
+}
 const crossTopicSimilarityByCohort = {
   legacy_t03_t34: calculateCrossTopicSimilarity(legacyTopicRows),
   v2_t01_t02: calculateCrossTopicSimilarity(v2TopicRows),
