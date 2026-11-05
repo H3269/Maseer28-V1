@@ -56,10 +56,15 @@ test('rejects invalid category containers', () => {
 
 
 test('accepts only a complete 28-day category with unique stable record identities', () => {
+  const topicKey = 'موضوع معتبر';
   const completeDays = Array.from({ length: 28 }, (_, index) => ({
-    id: 'topic-day-' + (index + 1), day: index + 1, exercise: 'exercise ' + (index + 1),
+    id: getCanonicalDailyRecordId(topicKey, index + 1), day: index + 1, exercise: 'exercise ' + (index + 1),
   }));
-  assert.equal(isCompleteDailyContentCategory({ 'موضوع معتبر': { days: completeDays } }, 'موضوع معتبر'), true);
+  assert.equal(isCompleteDailyContentCategory({ [topicKey]: { days: completeDays } }, topicKey), true);
+  const wrongIdentity = [...completeDays];
+  wrongIdentity[9] = { ...wrongIdentity[9], id: 'موضوع معتبر-09' };
+  assert.equal(isCompleteDailyContentCategory({ [topicKey]: { days: wrongIdentity } }, topicKey), false,
+    'a complete category with a unique but non-canonical day ID must be rejected');
   assert.equal(isCompleteDailyContentCategory({ 'موضوع معتبر': { days: completeDays.slice(0, 27) } }, 'موضوع معتبر'), false);
   assert.equal(isCompleteDailyContentCategory({ 'موضوع معتبر': { days: [...completeDays.slice(0, 27), { ...completeDays[27], id: completeDays[0].id }] } }, 'موضوع معتبر'), false);
   assert.equal(isCompleteDailyContentCategory({ 'موضوع معتبر': { days: [...completeDays.slice(0, 27), { ...completeDays[27], day: 27 }] } }, 'موضوع معتبر'), false);

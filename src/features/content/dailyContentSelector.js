@@ -38,7 +38,7 @@ export function isCompleteDailyContentCategory(categories, problem) {
   const ids = new Set();
   for (let day = 1; day <= 28; day += 1) {
     const record = selectCanonicalDailyRecord(category, day);
-    if (!record || ids.has(record.id)) return false;
+    if (!record || record.id !== getCanonicalDailyRecordId(problem, day) || ids.has(record.id)) return false;
     ids.add(record.id);
   }
   return category.days.length === 28;
