@@ -7,6 +7,7 @@ import { createLocalUserDataDeletionPlan, deleteLocalUserData, readLocalUserData
 import { deleteIndexedDbUserData, readIndexedDbUserData, readIndexedDbSnapshot, selectUserOwnedLibraryData } from '../src/features/privacy/indexedDbData.js';
 import { createPrivacyBackup, validatePrivacyBackup, createPrivacyRestorePreview, restorePrivacyBackup, PRIVACY_BACKUP_POLICY } from '../src/features/privacy/privacyBackup.js';
 import { executeCompleteLocalDataDeletion } from '../src/features/privacy/dataDeletion.js';
+import { sanitizeJourneyState } from '../src/features/journey/journeyStore.js';
 
 class MemoryStorage {
   constructor(entries = {}) { this.values = new Map(Object.entries(entries)); }
@@ -377,6 +378,38 @@ test('privacy backup validation detects altered content and unsupported schema v
   assert.equal(validatePrivacyBackup(corrupted).valid, false);
   const unsupported = { ...backup, schema_version: '99.0.0' };
   assert.equal(validatePrivacyBackup(unsupported).valid, false);
+});
+
+test('privacy backup and controlled restore preserve a quarantined archive payload without rewriting it', async () => {
+  const malformedArchive = [
+    { pathId: 'recoverable-entry', profileData: { problem: 'خشم' }, answers: { 1: 'پاسخ آرشیوشده' } },
+    null,
+    'legacy-unparsed-entry',
+    ['unexpected-nested-array'],
+  ];
+  const quarantinedState = { schema: 7, archive: [], archiveRecoveryRequired: malformedArchive };
+  const sourceStorage = new MemoryStorage({ maseer28_state: JSON.stringify(quarantinedState) });
+  const sourceApi = new IDBFactory();
+  const backup = await createPrivacyBackup({ storage: sourceStorage, indexedDBApi: sourceApi });
+  assert.equal(validatePrivacyBackup(backup).valid, true);
+  assert.deepEqual(backup.localStorage.entries.maseer28_state, quarantinedState,
+    'backup must carry the complete quarantine payload without filtering entries');
+
+  const targetStorage = new MemoryStorage({});
+  const targetApi = new IDBFactory();
+  const preview = await createPrivacyRestorePreview(backup, { storage: targetStorage, indexedDBApi: targetApi });
+  assert.equal(preview.valid, true);
+  assert.equal(preview.conflicts.total, 0);
+  assert.deepEqual([...targetStorage.values.entries()], [], 'preview must remain read-only');
+
+  const restored = await restorePrivacyBackup(backup, { storage: targetStorage, indexedDBApi: targetApi });
+  assert.deepEqual({ restored: restored.restored, verified: restored.verified }, { restored: true, verified: true });
+  const restoredState = readLocalUserData(targetStorage).entries.maseer28_state;
+  assert.deepEqual(restoredState, quarantinedState, 'restore must preserve the exact quarantined state');
+  const hydrated = sanitizeJourneyState(restoredState);
+  assert.deepEqual(hydrated.archive, []);
+  assert.deepEqual(hydrated.archiveRecoveryRequired, malformedArchive,
+    'the restored application state must remain quarantined and recoverable');
 });
 
 test('restore preview rejects checksummed but malformed library records before mutation', async () => {
