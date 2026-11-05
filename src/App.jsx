@@ -53,6 +53,7 @@ import {
   Support,
   ValidationModal,
 } from './features/journey/JourneyScreens.jsx';
+import { getRelationshipSafetyGate, isRelationshipSafetyConfirmed } from './features/journey/relationshipSafetyGate.js';
 import { fa } from './shared/utils.js';
 import GlobalAssistantLauncher from './features/assistant/GlobalAssistantLauncher.jsx';
 
@@ -114,6 +115,7 @@ function MainApp() {
   const [libraryReturn, setLibraryReturn] = useState('dashboard');
   const [supportReturn, setSupportReturn] = useState('dashboard');
   const [currentDay, setCurrentDay] = useState(() => Math.min(28, nextRequiredDay(initial.state)));
+  const [relationshipSafetyState, setRelationshipSafetyState] = useState({ dayKey: null, response: '' });
   const [resultDay, setResultDay] = useState(() => initial.screen === 'dailyResult' ? initial.state.completed.length : null);
   const [validation, setValidation] = useState(null);
   const [incompleteArchiveNoticeOpen, setIncompleteArchiveNoticeOpen] = useState(false);
@@ -228,6 +230,9 @@ function MainApp() {
 
   const category = content?.categories?.[journey.profileData?.problem] || null;
   const activeDay = category?.days?.find((record) => Number(record?.day) === Number(currentDay)) || category?.days?.[currentDay - 1] || null;
+  const relationshipSafetyDayKey = `${activeDay?.topic_id || ''}:${activeDay?.id || activeDay?.day || currentDay}`;
+  const relationshipSafetyResponse = relationshipSafetyState.dayKey === relationshipSafetyDayKey ? relationshipSafetyState.response : '';
+  const relationshipSafetyConfirmed = isRelationshipSafetyConfirmed(activeDay, relationshipSafetyResponse);
   const resultNumber = Number(resultDay || currentDay);
   const resultData = category?.days?.find((record) => Number(record?.day) === resultNumber) || category?.days?.[resultNumber - 1] || null;
   const headerDay = screen === 'day' ? currentDay : screen === 'dailyResult' ? (resultDay || journey.completed.length) : journey.completed.length;
@@ -244,6 +249,7 @@ function navigate(next) {
     setAllowArchiveRestartAfterNotice(false);
   }
 
+  if (next !== 'day') setRelationshipSafetyState({ dayKey: null, response: '' });
   setScreen(next);
 
   if (next !== 'bookReader') {
