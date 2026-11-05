@@ -110,6 +110,20 @@ test('explicit immediate intent is distinguished from a generic safety keyword',
   assert.equal(result.next_question.purpose, 'safety_clarification');
 });
 
+test('direct first-person future and ongoing harm declarations trigger the urgent safety route', () => {
+  for (const text of ['امشب خودکشی می‌کنم.', 'من امشب خودم را می‌کشم.', 'به خودم آسیب می‌زنم.']) {
+    const result = routeSemanticIntake({ text });
+    assert.equal(result.safety_handoff.handoff_required, true, text);
+  }
+
+  const negated = routeSemanticIntake({ text: 'امشب خودکشی نمی‌کنم.' });
+  assert.equal(negated.safety_handoff.handoff_required, false);
+  assert.equal(negated.next_question.purpose, 'safety_clarification');
+
+  const thirdParty = routeSemanticIntake({ text: 'دوستم امشب خودکشی می‌کند.' });
+  assert.equal(thirdParty.safety_handoff.handoff_required, false);
+});
+
 test('semantic output is deeply immutable', () => {
   const result = routeSemanticIntake({ text: 'مدتی است اضطراب دارم' });
   assert.equal(Object.isFrozen(result), true);
