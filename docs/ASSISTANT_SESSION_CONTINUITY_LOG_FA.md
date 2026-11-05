@@ -655,3 +655,12 @@ CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` مو�
 - در commit `67006d56eb08a7c120f6b910a03f296262b6742b` هر دو fixture مسیر فعال (سناریوی دارای آرشیو و سناریوی آرشیو خالی) به کلید canonical موجود `خشم` تغییر یافتند. هیچ منطق محصول، محتوای آموزشی یا داده واقعی کاربر تغییر نکرد.
 - آزمون مهاجرت E1 تا E10 سبز است؛ آزمون خروجی آرشیو و آزمون‌های بعدی job هنوز نیازمند اجرای مجدد و تأیید CI هستند.
 - این اجرا Preview محلی در محیط CI بود، نه Preview زنده در دسترس کاربر. هیچ deploy، انتشار، Worker upload واقعی، inference ابری یا فعال‌سازی Production انجام نشده است.
+
+
+## تأیید کامل CI پس از اصلاح fixtureهای خروجی آرشیو — 2026-11-05
+
+- CI run `41989092117` برای commit آزمون `67006d56eb08a7c120f6b910a03f296262b6742b` با وضعیت نهایی `completed / success` خاتمه یافت؛ job اصلی `validate-content` نیز موفق است.
+- لاگ job بررسی شد و اجرای واقعی هر شش اسکریپت Chromium را تأیید می‌کند: `privacy-migration.mjs` (تمام E1 تا E10)، `archive-export.mjs` (دانلود واقعی ZIP/PDF و حالت آرشیو خالی)، `daily-safety-gate.mjs`، `daily-assistant-guidance.mjs`، `global-assistant-launcher.mjs` و `invalid-path-recovery.mjs`. هر شش مورد پیام PASS ثبت کرده‌اند.
+- سایر مراحل job نیز موفق شدند: dependency security audit، Worker bundle dry-run، non-deploying version-upload dry-run، سه آزمون runtime محلی Worker، topic registry، unit tests، course/library validation، audit کیفیت محتوای روزانه و build اپ.
+- این نتیجه، CI خودکار روی commit `67006d5` است؛ نه Preview زنده یا تست روی دستگاه کاربر. dry-runها upload/deploy انجام نداده‌اند. هیچ انتشار عمومی، cloud inference، Production activation یا تغییر ترافیک انجام نشده است.
+- نتیجه CI به‌عنوان تأیید این مجموعه آزمون‌ها ثبت می‌شود؛ این نتیجه به‌تنهایی اثبات‌کننده تکمیل موتور زبانی on-device یا آمادگی انتشار محصول نیست.
