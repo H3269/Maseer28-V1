@@ -478,6 +478,32 @@ test('extended paragraph ordinals retrieve existing paragraphs and clarify missi
 
 import { getDailyAssistantAccess } from '../src/features/assistant/dailyAssistantAccess.js';
 
+test('daily assistant fails closed when canonical day identity is incomplete or invalid', () => {
+  const valid = {
+    id: 'T03-D01',
+    topic_id: 'T03',
+    day: 1,
+    review_status: 'approved',
+    risk_level: 'routine',
+    instructions: 'متن تمرین',
+  };
+  for (const invalid of [
+    { ...valid, id: '' },
+    { ...valid, topic_id: 'T99' },
+    { ...valid, topic_id: null },
+    { ...valid, day: null },
+    { ...valid, day: 0 },
+    { ...valid, day: 29 },
+    { ...valid, day: 'نامشخص' },
+  ]) {
+    const access = getDailyAssistantAccess({ day: invalid, relationshipSafetyConfirmed: true });
+    assert.equal(access.available, false);
+    assert.equal(access.reason, 'daily_source_identity_unverified');
+  }
+  const accepted = getDailyAssistantAccess({ day: valid, relationshipSafetyConfirmed: true });
+  assert.equal(accepted.available, true);
+});
+
 test('daily assistant remains unavailable when the day content is blocked for safety review', () => {
   const blockedDay = {
     id: 'T03-D01',
