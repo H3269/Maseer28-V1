@@ -30,7 +30,7 @@ const journey = {
 };
 
 async function openDay(page, { assistantDayMode = 'routine' } = {}) {
-  const dayNumber = assistantDayMode === 'relationship' ? 10 : 1;
+  const dayNumber = assistantDayMode === 'relationship' ? 10 : assistantDayMode === 'legacy' ? 2 : 1;
   const testJourney = dayNumber === 1 ? journey : {
     ...journey,
     completed: Array.from({ length: dayNumber - 1 }, (_, index) => index + 1),
@@ -59,12 +59,18 @@ async function openDay(page, { assistantDayMode = 'routine' } = {}) {
       const payload = await response.json();
       const day = payload.categories?.['خشم']?.days?.find((item) => Number(item.day) === dayNumber);
       assert.ok(day, 'the deterministic browser fixture must contain the selected topic day');
-      Object.assign(day, {
-        topic_id: 'T01',
-        day: dayNumber,
-        review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
-        risk_level: 'routine',
-      });
+      if (assistantDayMode === 'legacy') {
+        assert.equal(Object.hasOwn(day, 'topic_id'), false);
+        assert.equal(Object.hasOwn(day, 'review_status'), false);
+        assert.equal(Object.hasOwn(day, 'risk_level'), false);
+      } else {
+        Object.assign(day, {
+          topic_id: 'T01',
+          day: dayNumber,
+          review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
+          risk_level: 'routine',
+        });
+      }
       await route.fulfill({ response, json: payload });
       return;
     }
@@ -154,6 +160,24 @@ try {
 
   await page.close();
 
+  const legacyPage = await browser.newPage();
+  const legacyErrors = [];
+  legacyPage.on('pageerror', error => legacyErrors.push(String(error)));
+  await openDay(legacyPage, { assistantDayMode: 'legacy' });
+  const legacyPanel = legacyPage.locator('.dailyExerciseAssistant');
+  await legacyPanel.waitFor({ state: 'visible' });
+  const legacyComposer = legacyPanel.locator('#daily-exercise-assistant-message');
+  await legacyComposer.fill('چطور انجامش بدم؟');
+  await legacyPanel.getByRole('button', { name: 'ارسال' }).click();
+  await legacyPage.waitForFunction(() => document.querySelectorAll('.dailyExerciseAssistant .assistantMessage').length >= 1);
+  const legacyReply = await legacyPanel.locator('.assistantMessage').last().innerText();
+  assert.match(legacyReply, /خشم/);
+  assert.match(legacyReply, /روز 2/);
+  assert.match(legacyReply, /متن تمرین همین روز/);
+  assert.match(legacyReply, /راهکار اختصاصی همین روز/);
+  assert.deepEqual(legacyErrors, [], 'real legacy day content must reach the daily assistant without browser errors');
+  await legacyPage.close();
+
   const blockedPage = await browser.newPage();
   await openDay(blockedPage, { assistantDayMode: 'blocked' });
   const blockedPanel = blockedPage.locator('.dailyExerciseAssistant');
@@ -188,7 +212,7 @@ try {
     'assistant must remain closed after re-entry until safety is confirmed again');
   await gatedPage.close();
 
-  process.stdout.write('PASS: Chromium daily assistant guidance, follow-up context, input bounds, persistent safety handoff, local-only privacy, blocked-day denial, relationship gate, and confirmation reset (WV-BROWSER-ASSISTANT)\\n');
+  process.stdout.write('PASS: Chromium daily assistant guidance, real legacy day retrieval, follow-up context, input bounds, persistent safety handoff, local-only privacy, blocked-day denial, relationship gate, and confirmation reset (WV-BROWSER-ASSISTANT)\\n');
 } finally {
   await browser.close();
 }
