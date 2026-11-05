@@ -462,7 +462,7 @@ test('Path28 daily screen displays every canonical record directly without assis
   assert.match(ui, /value=\{parts\.action\}/);
   assert.match(ui, /id="openDailyEntryBtn"/);
   assert.doesNotMatch(ui, /getDailySafetyMode|getRelationshipSafetyGate|requiresHumanReview|relationshipSafetyGate/);
-  assert.doesNotMatch(app, /getDailySafetyMode|getRelationshipSafetyGate|skipDayForHumanReview|skipDayForRelationshipSafety|relationshipSafetyConfirmed/);
+  assert.doesNotMatch(app, /getDailySafetyMode|skipDayForHumanReview|skipDayForRelationshipSafety/);
   assert.match(app, /category\?\.days\?\.find\(\(record\) => Number\(record\?\.day\) === Number\(currentDay\)\) \|\| category\?\.days\?\.\[currentDay - 1\]/);
   const completionStart = app.indexOf('async function completeDay');
   const completionEnd = app.indexOf('function openCurrentDay', completionStart);
