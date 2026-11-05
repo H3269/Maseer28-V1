@@ -1025,3 +1025,18 @@ CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` مو�
 - این build با تنظیمات آزمایش موجود انجام شد؛ نه `prepare:production` اجرا شد و نه گیت تأیید تخصصی Production دور زده/حذف شد. گیت فقط از مسیر آزمایشی Pages جداست.
 - validate run #1606 روی commit قبلی دفتر و #1607 روی همین HEAD در آخرین مشاهده هنوز `in_progress` بودند؛ بنابراین نتیجه کل CI همچنان نهایی نشده است. unit tests، content checks و build در run #1606 قبلاً success گزارش شده‌اند؛ مرحله Chromium در حال اجراست.
 - این آخرین ثبت درباره انتشار آزمایشی است؛ انتشار تلگرام/بله، Worker Production، promote و تغییر ترافیک انجام نشده‌اند. Workflow انتشار Telegram همچنان manual و gated باقی مانده است.
+
+## ثبت تکمیلی پیش از ادامه کار — تأیید HEAD، Pages و CI — 2026-11-05
+
+- بنا به دستور مالک، پیش از آغاز هر کار جدید، این دفتر و منشور هفت‌شرطی از شاخه `main` بازخوانی شد. منشور «هفت شرط قطعی پروژه» همچنان در همین فایل وجود دارد؛ هیچ شرطی در این مرحله تغییر یا حذف نشد.
+- HEAD شاخه `main` در زمان بررسی: `1c98239c9ffc176751ace0ac89694ad553be2f9c`. commit والد آن `533244a41e9b8072c26149c7cbf5884db3977e49` است.
+- آخرین commit پیش از این ثبت، `docs(log): confirm latest HEAD Pages deployment` بود و فقط دفتر ثبت وقایع را تکمیل می‌کرد.
+- GitHub Actions برای دقیقاً همین HEAD دو نتیجه قطعی دارد:
+  - Pages run #581، شناسه `42057812013`، رویداد `push`، نتیجه `completed / success`. job `deploy-test-app` و مراحل checkout، نصب وابستگی‌ها، Build test app، Configure Pages، Upload test app و Deploy test app همگی موفق‌اند.
+  - Validation run #1608، شناسه `42057811793`، رویداد `push`، نتیجه `completed / success`. همه jobها و مراحل گزارش‌شده از جمله audit، Wrangler dry-runها، runtime integrationهای محلی، آزمون‌های واحد، اعتبارسنجی محتوا، build و Chromium privacy migration scenarios موفق‌اند.
+- Workflow موجود `.github/workflows/deploy.yml` از روی `main` بازخوانی شد: trigger آن `push` به شاخه `main` است؛ build آزمایشی با `npm run build -- --base=/Maseer28-V1/` انجام می‌شود. این Workflow برای GitHub Pages آزمایشی به اجرای دستی نیاز ندارد.
+- URL محیط آزمایشی: `https://h3269.github.io/Maseer28-V1/`. موفقیت run #581 روی SHA دقیق HEAD، انتشار همان نسخه آزمایشی را تأیید می‌کند.
+- این تأیید فقط درباره GitHub Pages آزمایشی است. انتشار خودکار تلگرام و بله همچنان ممنوع است؛ Workflow عملیاتی انتشار، گیت‌های آن، Production، Worker deploy/activation، promote و تغییر ترافیک در این مرحله اجرا یا تغییر داده نشدند.
+- هیچ کد محصولی، محتوای ۳۴ موضوع، تمرین‌ها یا راهکارهای روزانه در این مرحله تغییر نکرد. تنها اقدام این مرحله، بازخوانی دفتر/منشور و ثبت وضعیت قطعی GitHub Actions در همین دفتر است.
+- وضعیت ثبت: `pages_deployment_verified` و `validation_ci_passed` برای SHA بالا.
+- قاعده ادامه: پیش از هر تغییر بعدی، HEAD و فایل هدف دوباره خوانده شود؛ تغییرات مجاز فقط مستقیم روی `main`، در commitهای کوچک و قابل ردیابی انجام شوند؛ پس از هر تغییر معنادار، همین دفتر با نتیجه واقعی به‌روزرسانی شود. هیچ نتیجه‌ای بدون اجرای واقعی موفق اعلام نشود.
