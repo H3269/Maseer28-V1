@@ -749,3 +749,14 @@ CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` مو�
 - این نتیجه آزمون خودکار گیت دسترسی و مسیرهای CI را تأیید می‌کند؛ به‌تنهایی ثابت نمی‌کند همه ۸۹۶ رکورد در رابط واقعی با همه نام‌های موضوعی نمایش‌داده‌شده به دستیار متصل می‌شوند. تطابق واقعی کلیدهای موضوع با نام‌های UI و آزمون end-to-end روزمحور همچنان باید جداگانه ممیزی شود.
 - هیچ Preview زنده، آزمون دستگاه کاربر، deploy، upload واقعی Worker، cloud inference، انتشار عمومی، Production activation یا تغییر ترافیک انجام نشده است.
 - گام بعدی: ممیزی سازگاری کلید موضوع در مسیر انتخاب موضوع UI تا `splitDayContent` و `DailyExerciseAssistant`، سپس آزمون end-to-end برای رکورد legacy و v2؛ متن ۹۵۲ تمرین/راهکار و گیت‌های تخصصی ایمنی نباید تغییر کنند.
+
+
+## ممیزی هویت canonical برای تمام ۹۵۲ روز و تأیید کامل CI — 2026-11-05
+
+- ممیزی داده‌های canonical در `public/content/path-content.json` و رجیستری `public/assistant/knowledge/topics.v1.json`: ۳۴ موضوع و ۹۵۲ رکورد؛ همه روزها integer در بازه ۱ تا ۲۸، همه IDها دقیقاً مطابق `<categoryKey>-<day دو رقمی>`، بدون ID یا روز تکراری در هر موضوع.
+- ۸۹۶ رکورد legacy فاقد metadata نسخه v2 هستند و ۵۶ رکورد v2 دارند. هر ۵۶ `topic_id` با نام canonical موضوع در رجیستری تطبیق داشت. این ممیزی متن تمرین‌ها و راهکارها را تغییر نداد.
+- نگاشت رسمی موضوع در `src/features/journey/relationshipSafetyGate.js` با تابع `getCanonicalTopicIdForCategory(categoryKey)` در دسترس قرار گرفت (commit `1e7c74a6082d9d09523c7dae1a57df537b25ce2d`). گیت `src/features/assistant/dailyAssistantAccess.js` اکنون برای v2، ID روز و topic_id را با category key و نگاشت رسمی تطبیق می‌دهد؛ برای legacy فقط ID دقیق موضوع/روز را می‌پذیرد و metadata ساختگی تولید نمی‌کند (commit `8b3b3192ef8545f73b748c62e64f773d6183577d`).
+- آزمون‌های واحد برای تعارض ID، روز و topic_id افزوده/اصلاح شدند (commit `73dd9382d04d2e69e8e589264de031e6092ea5bd`). سناریوی مرورگری نیز برای روز ۱۰ از رکورد واقعی canonical و state سفر معتبر استفاده می‌کند، نه fixture با هویت ناسازگار.
+- CI run `42008824879` روی HEAD `55b57c37ca113ac0db2e21c4f3996f8f2d507dab` با وضعیت نهایی `completed / success` تأیید شد. jobهای `validate-content`، اعلام وضعیت و گزارش نتیجه commit همگی موفق‌اند؛ شامل unit tests، audit امنیت وابستگی، سه runtime integration محلی Worker، اعتبارسنجی registry و محتوا، ممیزی کیفیت روزانه، build و تمام سناریوهای Chromium privacy migration. combined commit status نیز `success` است.
+- این نتیجه آزمون‌های خودکار CI را تأیید می‌کند، نه تست روی گوشی کاربر، Preview زنده یا کیفیت معنایی/بالینی. هیچ deploy، upload واقعی Worker، cloud inference، انتشار عمومی، Production activation یا تغییر ترافیک انجام نشده است.
+- گام بعدی: ممیزی خودکار/CI برای enforce کردن سازگاری canonical ID تمام ۹۵۲ رکورد و دنبال‌کردن category key از انتخاب UI تا `splitDayContent`، `DailyExerciseAssistant` و retrieval؛ بدون بازنویسی محتوای آموزشی.
