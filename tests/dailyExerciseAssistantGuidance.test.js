@@ -631,6 +631,9 @@ test('approved day metadata supplies its reviewed rationale, duration, and succe
 
 test('adapted daily content retains original review metadata', () => {
   const raw = {
+    id: 'T01-D04',
+    topic_id: 'T01',
+    day: 4,
     review_status: 'approved',
     duration_minutes: 8,
     success_criterion: 'یک تفاوت روشن ثبت شود.',
@@ -675,6 +678,30 @@ test('rejects adapted guidance when its source day or topic differs from the can
 
   assert.equal(selectDailyExerciseGuidanceData({ guidanceData: wrongTopic, data: raw }), raw);
   assert.equal(selectDailyExerciseGuidanceData({ guidanceData: wrongDay, data: raw }), raw);
+});
+
+test('rejects adapted guidance when any canonical identity field is missing from the adapted copy', () => {
+  const raw = {
+    id: 'T01-D04',
+    topic_id: 'T01',
+    day: 4,
+    exercise: 'تمرین معتبر روز چهارم',
+    actionText: 'راهکار معتبر روز چهارم',
+  };
+  const missingTopic = { id: 'T01-D04', day: 4, exercise: 'متن نامطمئن' };
+  const missingDay = { id: 'T01-D04', topic_id: 'T01', exercise: 'متن نامطمئن' };
+  const nullIdentity = { id: 'T01-D04', topic_id: 'T01', day: null, exercise: 'متن نامطمئن' };
+
+  assert.equal(selectDailyExerciseGuidanceData({ guidanceData: missingTopic, data: raw }), raw);
+  assert.equal(selectDailyExerciseGuidanceData({ guidanceData: missingDay, data: raw }), raw);
+  assert.equal(selectDailyExerciseGuidanceData({ guidanceData: nullIdentity, data: raw }), raw);
+});
+
+test('rejects adapted guidance when the canonical record has no verifiable identity', () => {
+  const canonical = { exercise: 'تمرین اصلی', actionText: 'راهکار اصلی' };
+  const adapted = { exercise: 'تمرین تغییر یافته', action: 'راهکار تغییر یافته' };
+  assert.equal(selectDailyExerciseGuidanceData({ guidanceData: adapted, data: canonical }), canonical);
+  assert.equal(selectDailyExerciseGuidanceData({ guidanceData: adapted, data: null }), null);
 });
 
 test('refuses guidance when the source record day differs from the active day', () => {
