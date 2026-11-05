@@ -1014,3 +1014,14 @@ CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` مو�
 - validate run #1606، شناسه `42057376569`، برای همین SHA هنوز `in_progress` است؛ ۱۹ مرحله از job اصلی success شده‌اند، از جمله npm audit، سه runtime integration محلی، topic registry، P0 review queue، unit tests، content validation، content audit و build. مرحلهٔ Chromium privacy migration scenarios در آخرین مشاهده در حال اجرا بود؛ تا تکمیل آن، کل CI را success اعلام نکن.
 - دو شکست پیشین آزمون‌های release-policy به‌ترتیب از assertionهای قدیمی و سپس بررسی بیش‌ازحد گستردهٔ commentها ناشی شده بودند؛ در commit `da7b0b1` منطق assertion به فرمان اجرایی محدود شد. نتیجهٔ نهایی run #1606 ملاک پذیرش این اصلاح است.
 - این ثبت، وضعیت واقعی Pages را تأیید می‌کند؛ هیچ شرط انتشار تلگرام/بله حذف نشده است. گام بعدی فقط رصد پایان validate run #1606 و ثبت نتیجهٔ قطعی آن است.
+
+
+## تأیید نهایی انتشار HEAD جاری در محیط آزمایشی Pages — 2026-11-05
+
+- HEAD پیش از این ثبت: `533244a41e9b8072c26149c7cbf5884db3977e49`.
+- Pages run #580، شناسه `42057658576`، برای همین SHA با `completed / success` پایان یافت.
+- job `deploy-test-app` و تمام مراحل checkout، نصب، build آزمایشی، configure، upload و deploy موفق شدند.
+- لاگ GitHub Actions: `Created deployment for 533244a41e9b8072c26149c7cbf5884db3977e49`، `Reported success!`، URL برابر `https://h3269.github.io/Maseer28-V1/`. این URL اکنون نسخه آزمایشی متناظر با HEAD ثبت‌شده را ارائه می‌کند.
+- این build با تنظیمات آزمایش موجود انجام شد؛ نه `prepare:production` اجرا شد و نه گیت تأیید تخصصی Production دور زده/حذف شد. گیت فقط از مسیر آزمایشی Pages جداست.
+- validate run #1606 روی commit قبلی دفتر و #1607 روی همین HEAD در آخرین مشاهده هنوز `in_progress` بودند؛ بنابراین نتیجه کل CI همچنان نهایی نشده است. unit tests، content checks و build در run #1606 قبلاً success گزارش شده‌اند؛ مرحله Chromium در حال اجراست.
+- این آخرین ثبت درباره انتشار آزمایشی است؛ انتشار تلگرام/بله، Worker Production، promote و تغییر ترافیک انجام نشده‌اند. Workflow انتشار Telegram همچنان manual و gated باقی مانده است.
