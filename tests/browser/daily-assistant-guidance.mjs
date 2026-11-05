@@ -140,6 +140,8 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null } = 
   await page.locator('#dashboard').waitFor({ state: 'visible' });
   await page.locator('#dashboard .heroAction').click();
   await page.locator('#day').waitFor({ state: 'visible' });
+  await page.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
+  await page.getByRole('dialog', { name: 'دستیار مسیر۲۸' }).waitFor({ state: 'visible' });
 }
 
 try {
@@ -155,9 +157,9 @@ try {
   });
 
   await openDay(page);
-  const panel = page.locator('.dailyExerciseAssistant');
+  const panel = page.locator('.globalAssistantDialog');
   await panel.waitFor({ state: 'visible' });
-  const composer = panel.locator('#daily-exercise-assistant-message');
+  const composer = panel.locator('#global-assistant-message');
   const send = panel.getByRole('button', { name: 'ارسال' });
 
   assert.equal(await composer.getAttribute('maxlength'), '2000');
@@ -166,7 +168,7 @@ try {
   await composer.fill(`چطور انجامش بدم؟ ${privateMarker}`);
   assert.equal(await send.isDisabled(), false);
   await send.click();
-  await page.waitForFunction(() => document.querySelectorAll('.dailyExerciseAssistant .assistantMessage').length >= 1);
+  await page.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 6);
 
   let assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /خشم/);
@@ -177,7 +179,7 @@ try {
 
   await composer.fill('تمرین را بیشتر توضیح بده');
   await send.click();
-  await page.waitForFunction(() => document.querySelectorAll('.dailyExerciseAssistant .assistantMessage').length >= 2);
+  await page.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 2);
   assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /متن تمرین همین روز/);
   assert.match(assistantReply, /جمله یا واژه‌اش را بیشتر باز کنم/);
@@ -188,21 +190,21 @@ try {
   assert.equal(boundedValue.length, 2000, 'composer must enforce its 2000-character limit');
   await composer.fill('دیگه نمی‌کشم. همه‌چی تمومه.');
   await send.click();
-  await page.waitForFunction(() => { const replies = document.querySelectorAll('.dailyExerciseAssistant .assistantMessage'); return replies.length >= 3 && /آیا همین الآن خطر فوری/.test(replies[replies.length - 1]?.innerText || ''); });
+  await page.waitForFunction(() => { const replies = document.querySelectorAll('.globalAssistantDialog .assistantMessage'); return replies.length >= 3 && /آیا همین الآن خطر فوری/.test(replies[replies.length - 1]?.innerText || ''); });
   assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /آیا همین الآن خطر فوری/);
   assert.doesNotMatch(assistantReply, /متن تمرین همین روز/);
 
   await composer.fill('شاید، مطمئن نیستم');
   await send.click();
-  await page.waitForFunction(() => { const replies = document.querySelectorAll('.dailyExerciseAssistant .assistantMessage'); return replies.length >= 4 && /کمک فوری انسانی/.test(replies[replies.length - 1]?.innerText || ''); });
+  await page.waitForFunction(() => { const replies = document.querySelectorAll('.globalAssistantDialog .assistantMessage'); return replies.length >= 4 && /کمک فوری انسانی/.test(replies[replies.length - 1]?.innerText || ''); });
   assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /کمک فوری انسانی/);
   assert.doesNotMatch(assistantReply, /متن تمرین همین روز/);
 
   await composer.fill('حالا تمرین امروز را توضیح بده');
   await send.click();
-  await page.waitForFunction(() => document.querySelectorAll('.dailyExerciseAssistant .assistantMessage').length >= 5);
+  await page.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 5);
   assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /کمک فوری انسانی/);
   assert.doesNotMatch(assistantReply, /متن تمرین همین روز/);
@@ -219,12 +221,12 @@ try {
     const legacyErrors = [];
     legacyPage.on('pageerror', error => legacyErrors.push(String(error)));
     await openDay(legacyPage, { assistantDayMode: 'legacy', problem });
-    const legacyPanel = legacyPage.locator('.dailyExerciseAssistant');
+    const legacyPanel = legacyPage.locator('.globalAssistantDialog');
     await legacyPanel.waitFor({ state: 'visible' });
-    const legacyComposer = legacyPanel.locator('#daily-exercise-assistant-message');
+    const legacyComposer = legacyPanel.locator('#global-assistant-message');
     await legacyComposer.fill('چطور انجامش بدم؟');
     await legacyPanel.getByRole('button', { name: 'ارسال' }).click();
-    await legacyPage.waitForFunction(() => document.querySelectorAll('.dailyExerciseAssistant .assistantMessage').length >= 1);
+    await legacyPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
     const legacyReply = await legacyPanel.locator('.assistantMessage').last().innerText();
     assert.ok(legacyReply.includes(problem), `legacy assistant reply must retain selected topic ${problem}`);
     assert.match(legacyReply, /روز 2/);
@@ -245,11 +247,11 @@ try {
     const adaptedErrors = [];
     adaptedPage.on('pageerror', error => adaptedErrors.push(String(error)));
     await openDay(adaptedPage, { assistantDayMode: scenario.mode });
-    const adaptedPanel = adaptedPage.locator('.dailyExerciseAssistant');
+    const adaptedPanel = adaptedPage.locator('.globalAssistantDialog');
     await adaptedPanel.waitFor({ state: 'visible' });
-    await adaptedPanel.locator('#daily-exercise-assistant-message').fill('چطور انجامش بدم؟');
+    await adaptedPanel.locator('#global-assistant-message').fill('چطور انجامش بدم؟');
     await adaptedPanel.getByRole('button', { name: 'ارسال' }).click();
-    await adaptedPage.waitForFunction(() => document.querySelectorAll('.dailyExerciseAssistant .assistantMessage').length >= 1);
+    await adaptedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
     const adaptedReply = await adaptedPanel.locator('.assistantMessage').last().innerText();
     assert.ok(adaptedReply.includes(scenario.expected),
       `assistant must expose the expected source-derived adaptation for ${scenario.mode}`);
@@ -264,36 +266,54 @@ try {
 
   const blockedPage = await browser.newPage();
   await openDay(blockedPage, { assistantDayMode: 'blocked' });
-  const blockedPanel = blockedPage.locator('.dailyExerciseAssistant');
+  const blockedPanel = blockedPage.locator('.globalAssistantDialog');
   await blockedPanel.waitFor({ state: 'visible' });
-  assert.match(await blockedPanel.innerText(), /بازبینی ایمنی/);
-  assert.equal(await blockedPanel.locator('#daily-exercise-assistant-message').count(), 0,
-    'human-review-blocked day must not expose the assistant composer');
+  const blockedComposer = blockedPanel.locator('#global-assistant-message');
+  assert.equal(await blockedComposer.count(), 1, 'the global launcher remains available, but the blocked day must deny guidance');
+  await blockedComposer.fill('چطور انجامش بدم؟');
+  await blockedPanel.getByRole('button', { name: 'ارسال' }).click();
+  await blockedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some(node => /بازبینی ایمنی/.test(node.innerText)));
+  const blockedReply = await blockedPanel.locator('.assistantMessage').last().innerText();
+  assert.match(blockedReply, /بازبینی ایمنی/);
+  assert.doesNotMatch(blockedReply, /متن تمرین همین روز|راهکار اختصاصی همین روز/);
   await blockedPage.close();
 
   const gatedPage = await browser.newPage();
   await openDay(gatedPage, { assistantDayMode: 'relationship' });
-  const gatedPanel = gatedPage.locator('.dailyExerciseAssistant');
+  const gatedPanel = gatedPage.locator('.globalAssistantDialog');
   await gatedPanel.waitFor({ state: 'visible' });
   const safeChoice = gatedPage.getByLabel('بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.');
   assert.equal(await safeChoice.isChecked(), false);
-  assert.equal(await gatedPanel.locator('#daily-exercise-assistant-message').count(), 0,
-    'relationship-gated day must not expose guidance before the explicit safety check');
+  const gatedComposer = gatedPanel.locator('#global-assistant-message');
+  await gatedComposer.fill('چطور انجامش بدم؟');
+  await gatedPanel.getByRole('button', { name: 'ارسال' }).click();
+  await gatedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some(node => /بررسی ایمنی همین روز/.test(node.innerText)));
+  assert.match(await gatedPanel.locator('.assistantMessage').last().innerText(), /بررسی ایمنی همین روز/);
   await safeChoice.evaluate((element) => element.click());
-  await gatedPanel.locator('#daily-exercise-assistant-message').waitFor({ state: 'visible' });
+  await gatedPanel.waitFor({ state: 'detached' });
+  await gatedPage.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
+  await gatedPanel.waitFor({ state: 'visible' });
+  await gatedPanel.locator('#global-assistant-message').fill('چطور انجامش بدم؟');
+  await gatedPanel.getByRole('button', { name: 'ارسال' }).click();
+  await gatedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some(node => /متن تمرین همین روز/.test(node.innerText)));
   await gatedPage.getByRole('button', { name: /شرایط امن نیست یا پاسخ من تغییر کرده است/ }).click();
-  assert.equal(await gatedPanel.locator('#daily-exercise-assistant-message').count(), 0,
-    'changing the safety answer to unsafe must immediately close the assistant');
-  await gatedPage.getByLabel('بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.').evaluate((element) => element.click());
-  await gatedPanel.locator('#daily-exercise-assistant-message').waitFor({ state: 'visible' });
+  await gatedPanel.waitFor({ state: 'detached' });
+  await gatedPage.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
+  await gatedPanel.waitFor({ state: 'visible' });
+  await gatedPanel.locator('#global-assistant-message').fill('چطور انجامش بدم؟');
+  await gatedPanel.getByRole('button', { name: 'ارسال' }).click();
+  await gatedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some(node => /بررسی ایمنی همین روز/.test(node.innerText)));
   await gatedPage.locator('#day button[aria-label="داشبورد"]').click();
   await gatedPage.locator('#dashboard').waitFor({ state: 'visible' });
   await gatedPage.locator('#dashboard .heroAction').click();
   await gatedPage.locator('#day').waitFor({ state: 'visible' });
   assert.equal(await gatedPage.getByLabel('بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.').isChecked(), false,
     'leaving and re-entering the day must require a fresh safety confirmation');
-  assert.equal(await gatedPanel.locator('#daily-exercise-assistant-message').count(), 0,
-    'assistant must remain closed after re-entry until safety is confirmed again');
+  await gatedPage.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
+  await gatedPanel.waitFor({ state: 'visible' });
+  await gatedPanel.locator('#global-assistant-message').fill('چطور انجامش بدم؟');
+  await gatedPanel.getByRole('button', { name: 'ارسال' }).click();
+  await gatedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some(node => /بررسی ایمنی همین روز/.test(node.innerText)));
   await gatedPage.close();
 
   process.stdout.write('PASS: Chromium daily assistant guidance, real legacy retrieval across three topics, four source-derived adaptation branches, follow-up context, input bounds, persistent safety handoff, local-only privacy, blocked-day denial, relationship gate, and confirmation reset (WV-BROWSER-ASSISTANT)\\n');

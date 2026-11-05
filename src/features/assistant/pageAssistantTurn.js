@@ -31,7 +31,7 @@ function resolveRequestScopeReply(value) {
 export function makePageAssistantTurn({ screen, text, conversationState = null, dailyContext = null, libraryContext = null } = {}) {
   const message = String(text ?? '').trim();
   const inputProbe = routeAssistantTurn({ text: message });
-  if (SAFETY_STATUSES.has(inputProbe.status)
+  if ((screen !== 'day' && SAFETY_STATUSES.has(inputProbe.status))
     || inputProbe.status === 'invalid_input'
     || inputProbe.status === 'input_too_long') {
     return Object.freeze({ ...inputProbe, conversationState: null });

@@ -124,13 +124,21 @@ try {
   await page.locator('#day').waitFor({ state: 'visible' });
   await launcher.waitFor({ state: 'visible' });
   await launcher.click();
-  await page.waitForFunction(() => {
-    const target = document.querySelector('.dailyExerciseAssistant');
-    if (!target) return false;
-    const rect = target.getBoundingClientRect();
-    return rect.top < window.innerHeight && rect.bottom > 0;
-  });
-  assert.equal(await page.getByRole('dialog').count(), 0, 'daily shortcut should jump to the existing day-scoped assistant instead of opening an empty chat');
+  dialog = page.getByRole('dialog', { name: 'دستیار مسیر۲۸' });
+  await dialog.waitFor({ state: 'visible' });
+  assert.match(await dialog.innerText(), /صفحه فعلی: تمرین روزانه/);
+  assert.match(await dialog.innerText(), /موضوع: خشم · روز 1/);
+  assert.equal(await page.locator('.dailyExerciseAssistant').count(), 0, 'the standalone daily assistant panel must be removed');
+  await dialog.getByRole('textbox').fill('چطور انجامش بدم؟');
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some(node => /متن تمرین همین روز/.test(node.innerText)));
+  const dailyReply = dialog.locator('.assistantMessage').last();
+  assert.match(await dailyReply.innerText(), /خشم/);
+  assert.match(await dailyReply.innerText(), /روز 1/);
+  assert.match(await dailyReply.innerText(), /متن تمرین همین روز/);
+  assert.match(await dailyReply.innerText(), /راهکار اختصاصی همین روز/);
+  await dialog.getByRole('button', { name: 'متوجه شدم' }).click();
+  await dialog.waitFor({ state: 'detached' });
 
   await page.getByRole('button', { name: 'خانه' }).click();
   await page.locator('#dashboard').waitFor({ state: 'visible' });

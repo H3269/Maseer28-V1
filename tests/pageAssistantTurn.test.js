@@ -185,21 +185,24 @@ test('daily page uses the local canonical day guidance engine with the selected 
   assert.ok(result.conversationState?.dailyState);
 });
 
-test('daily assistant refuses guidance while the relationship safety gate is unconfirmed', () => {
+test('daily assistant refuses content whose canonical review gate is blocked', () => {
   const dayData = {
-    id: getCanonicalDailyRecordId('مشکلات رابطه', 10),
-    day: 10,
-    exercise: 'تمرین حساس روز دهم.',
-    actionText: 'راهکار حساس روز دهم.',
+    id: getCanonicalDailyRecordId('خشم', 1),
+    topic_id: 'T01',
+    day: 1,
+    review_status: 'draft',
+    risk_level: 'routine',
+    exercise: 'تمرین مسدود روز اول.',
+    actionText: 'راهکار مسدود روز اول.',
   };
   const result = makePageAssistantTurn({
     screen: 'day',
     text: 'چطور انجامش بدم؟',
-    dailyContext: { day: 10, problem: 'مشکلات رابطه', data: dayData, relationshipSafetyConfirmed: false },
+    dailyContext: { day: 1, problem: 'خشم', data: dayData, relationshipSafetyConfirmed: true },
   });
   assert.equal(result.status, 'daily_guidance_unavailable');
-  assert.match(result.message, /بررسی ایمنی همین روز/);
-  assert.doesNotMatch(result.message, /تمرین حساس روز دهم|راهکار حساس روز دهم/);
+  assert.match(result.message, /بازبینی ایمنی/);
+  assert.doesNotMatch(result.message, /تمرین مسدود روز اول|راهکار مسدود روز اول/);
 });
 
 test('library book-list questions use only the currently available local titles', () => {
