@@ -195,6 +195,16 @@ function MainApp() {
   }, []);
 
   useEffect(() => {
+    if (!content || !journey.started || !journey.profile || !isPathSetupComplete(journey)) return;
+    // Revalidate restored active paths only after the canonical content is ready.
+    const activeJourneyScreens = new Set(['dashboard', 'assessment', 'day', 'dailyResult', 'final', 'done', 'report']);
+    if (!activeJourneyScreens.has(screen)) return;
+    if (!isCompleteDailyContentCategory(content.categories, journey.profileData?.problem)) {
+      setScreen('pathSetup');
+    }
+  }, [content, journey, screen]);
+
+  useEffect(() => {
     saveJourneyState({ ...journey, lastView: screen });
   }, [journey, screen]);
 
