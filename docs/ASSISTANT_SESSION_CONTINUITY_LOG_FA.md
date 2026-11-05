@@ -1001,3 +1001,16 @@ CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` مو�
 - validate run `42057052473` در commit `25b497af` به‌دلیل assertionهای بیش‌ازحد گسترده شکست خورد؛ این شکست به build برنامه مربوط نبود و build مرحلهٔ validate نیز موفق بود. نتیجهٔ CI روی commit اصلاح‌شده `da7b0b1` هنوز pending است.
 - هیچ تغییری در فایل Workflow انتشار Telegram/Bale، محتوای canonical، گیت Production، Cloudflare یا Production traffic ایجاد نشده است.
 - HEAD هنگام ثبت: `da7b0b1d081fe429e0589d7fe59609866b5d13e5`. نتیجهٔ نهایی تست‌ها و Pages برای HEAD باید از Actions خوانده شود؛ تا آن زمان وضعیت این مرحله `in_progress` است.
+
+
+## تأیید انتشار خودکار نسخه آزمایشی روی GitHub Pages — 2026-11-05
+
+- HEAD پیش از این ثبت: `6614237ae2afdecb7b6529dbff49a5d68efcb71d`.
+- Pages run #579، شناسه `42057376686`، روی دقیقاً همین SHA با `completed / success` پایان یافت.
+- مراحل واقعی run: checkout، setup Node، نصب وابستگی‌ها، `Build test app`، `Configure Pages`، `Upload test app` و `Deploy test app` همگی success هستند.
+- لاگ deploy صریحاً ثبت می‌کند: `Created deployment for 6614237ae2afdecb7b6529dbff49a5d68efcb71d`، سپس `Reported success!` و URL محیط: `https://h3269.github.io/Maseer28-V1/`. بنابراین آخرین HEAD ثبت‌شده در این دفتر به‌صورت اپ آزمایشی روی Pages منتشر شده است.
+- build بدون `prepare:production` انجام شد و پیش‌فرض‌های آزمایش مخزن حفظ شدند: `TEST_MODE=true` و `TIME_LOCK_ENABLED=false`. این URL عمومی است، نه Preview خصوصی؛ از داده واقعی کاربران برای تست استفاده نشود.
+- Workflow انتشار عملیاتی `.github/workflows/publish-tested-version.yml` در این تغییرات دست‌نخورده است و همچنان شروط دستی/شاخه مجاز/validation و `assert:production-content` را دارد. هیچ اجرای Telegram/Bale، Worker deployment، Production activation یا تغییر ترافیک انجام نشده است.
+- validate run #1606، شناسه `42057376569`، برای همین SHA هنوز `in_progress` است؛ ۱۹ مرحله از job اصلی success شده‌اند، از جمله npm audit، سه runtime integration محلی، topic registry، P0 review queue، unit tests، content validation، content audit و build. مرحلهٔ Chromium privacy migration scenarios در آخرین مشاهده در حال اجرا بود؛ تا تکمیل آن، کل CI را success اعلام نکن.
+- دو شکست پیشین آزمون‌های release-policy به‌ترتیب از assertionهای قدیمی و سپس بررسی بیش‌ازحد گستردهٔ commentها ناشی شده بودند؛ در commit `da7b0b1` منطق assertion به فرمان اجرایی محدود شد. نتیجهٔ نهایی run #1606 ملاک پذیرش این اصلاح است.
+- این ثبت، وضعیت واقعی Pages را تأیید می‌کند؛ هیچ شرط انتشار تلگرام/بله حذف نشده است. گام بعدی فقط رصد پایان validate run #1606 و ثبت نتیجهٔ قطعی آن است.
