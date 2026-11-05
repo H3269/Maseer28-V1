@@ -12,7 +12,7 @@ function legacyJourney() {
   const profileData = {
     name: 'کاربر آزمایشی', age: 35, gender: 'زن', phone: '09123456789',
     medical: 'none', medicalNote: 'TEST-PRIVATE-001', medication: 'no',
-    medicationRisk: 'no', problem: 'anxiety', durationYears: 2,
+    medicationRisk: 'no', problem: 'خشم', durationYears: 2,
     durationMonths: 3, goal: 'هدف آزمایشی', code: 'M28-123456',
   };
   return {
