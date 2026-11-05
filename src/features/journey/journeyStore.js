@@ -523,7 +523,7 @@ export function executeJourneyPrivacyMigration({
   } catch {
     return { migrated: false, reason: 'source_read_or_parse_failed' };
   }
-  if ((rawState?.archive !== undefined && rawState?.archive !== null && !Array.isArray(rawState.archive))
+  if (!hasValidArchiveContainer(rawState?.archive)
     || (rawState?.archiveRecoveryRequired !== undefined && rawState?.archiveRecoveryRequired !== null)) {
     return { migrated: false, reason: 'invalid_archive_shape' };
   }
