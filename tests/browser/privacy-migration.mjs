@@ -138,7 +138,7 @@ try {
       profileData: {
         name: 'هویت مسیر قدیمی', age: 35, gender: 'زن', phone: '09123456789',
         medical: 'none', medicalNote: 'KEEP-PRIVATE', medication: 'no',
-        medicationRisk: 'no', problem: 'anxiety', durationYears: 1,
+        medicationRisk: 'no', problem: 'خشم', durationYears: 1,
         durationMonths: 0, goal: 'هدف قدیمی',
       },
       archive: {
