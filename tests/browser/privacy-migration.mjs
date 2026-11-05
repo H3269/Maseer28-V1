@@ -493,6 +493,7 @@ try {
     await page.getByText('پیش‌نمایش فایل معتبر').waitFor({ state: 'visible' });
     const restoreButton = page.getByRole('button', { name: 'بازیابی نسخه پشتیبان' });
     await restoreButton.waitFor({ state: 'visible' });
+    assert.equal(await restoreButton.isDisabled(), false, 'a valid, conflict-free backup should permit explicit restore');
     assert.equal(await page.evaluate(() => localStorage.getItem('maseer28_state')), null,
       'preview must not write the quarantined state');
 
@@ -523,7 +524,7 @@ try {
   }
 
   assert.deepEqual(browserErrors, [], 'migration, deletion, and restore scenarios should not produce uncaught browser errors');
-  process.stdout.write('PASS: Chromium privacy migration, selective archive deletion, retention-capacity, and failure-retry and controlled-restore scenarios E1-E10 (10 scenarios)\\n');
+  process.stdout.write('PASS: Chromium privacy migration, selective archive deletion, retention-capacity, failure-retry, controlled-restore, and quarantined-archive UI backup/restore scenarios E1-E11 (11 scenarios)\\n');
 } finally {
   await browser.close();
 }
