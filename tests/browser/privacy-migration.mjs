@@ -390,7 +390,10 @@ try {
       marker: localStorage.getItem('maseer28_test_sensitive'),
       unrelated: localStorage.getItem('unrelated_site_preference'),
     }));
-    assert.equal(after.journey, before.journey, 'opening Support must not mutate the local journey');
+    const beforeJourney = JSON.parse(before.journey || '{}');
+    const afterJourney = JSON.parse(after.journey || '{}');
+    assert.deepEqual({ ...afterJourney, lastView: beforeJourney.lastView }, beforeJourney,
+      'opening Support may update only the navigation marker, not journey content');
     assert.equal(after.profile, before.profile, 'opening Support must not mutate the independent local profile');
     assert.equal(after.marker, before.marker, 'opening Support must not delete local app data');
     assert.equal(after.unrelated, 'preserve-unrelated', 'unrelated browser data must remain untouched');
@@ -419,7 +422,9 @@ try {
     const supportText = await page.locator('#support').innerText();
     assert.doesNotMatch(supportText, /دریافت نسخه اطلاعات من|انتخاب فایل پشتیبان|بازیابی نسخه پشتیبان/u);
     const persisted = await page.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state') || '{}'));
-    assert.deepEqual(persisted.archive, malformedArchive, 'hidden Support backup controls must not rewrite or discard quarantined archive data');
+    assert.deepEqual(persisted.archive, [], 'malformed archive records must remain outside the ordinary archive list');
+    assert.deepEqual(persisted.archiveRecoveryRequired, malformedArchive,
+      'opening Support must preserve the complete quarantined archive payload without exposing backup UI');
     assert.equal((await page.evaluate(() => JSON.parse(localStorage.getItem('maseer28_user_profile_v2') || 'null')))?.name,
       'پروفایل مستقل محلی', 'the independent local profile must remain intact');
     await page.close();
