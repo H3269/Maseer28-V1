@@ -402,11 +402,6 @@ export function DailyResult({ day, journey, data, problem, sourceLabel, onDashbo
 export function Support({ content, onBack }) {
   const [help, setHelp] = useState('اگر اپ شما اجازه باز کردن مستقیم پیامک را ندهد، شماره با یک لمس کپی می‌شود.');
   const [copyFailed, setCopyFailed] = useState(false);
-  const [privacyMessage, setPrivacyMessage] = useState('');
-  const [privacyBusy, setPrivacyBusy] = useState(false);
-  const [restorePreview, setRestorePreview] = useState(null);
-  const [backupToRestore, setBackupToRestore] = useState(null);
-  const restoreFileRef = useRef(null);
   const number = '09190889062';
   async function copySupportNumber() {
     const copied = await copyTextToClipboard(number);
@@ -414,105 +409,9 @@ export function Support({ content, onBack }) {
     setHelp(copied ? 'مرورگر عملیات کپی را پذیرفت؛ برای اطمینان، شماره را در برنامه دیگری جای‌گذاری کن.' : 'کپی خودکار انجام نشد. شماره را از کادر زیر انتخاب و دستی کپی کن.');
   }
   function sendSms() { const body = 'سلام، برای نوبت‌دهی و دریافت راهنمایی پیام می‌دهم.'; try { if (window.Android && typeof window.Android.openSms === 'function') { window.Android.openSms(number, body); setHelp('برنامه پیامک باز شد.'); return; } if (window.webkit?.messageHandlers?.openSms) { window.webkit.messageHandlers.openSms.postMessage({ number, body }); setHelp('برنامه پیامک باز شد.'); return; } const ua = navigator.userAgent || '', sep = /iPhone|iPad|iPod/i.test(ua) ? '&' : '?', a = document.createElement('a'); a.href = `sms:${number}${sep}body=${encodeURIComponent(body)}`; a.style.display = 'none'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => setHelp('اگر پیامک باز نشد، «کپی شماره» را بزنید. در WebView اپ باید scheme پیامک به سیستم تحویل داده شود.'), 900); } catch { copySupportNumber(); } }
-  async function exportData() {
-    if (privacyBusy) return;
-    setPrivacyBusy(true);
-    try {
-      const payload = await createPrivacyBackup();
-      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `maseer28-personal-data-${new Date().toISOString().slice(0, 10)}.json`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-      setPrivacyMessage('فایل خروجی اطلاعات ذخیره‌شده در مرورگر آماده شد. آن را در محل امن نگهداری کن.');
-    } catch (error) {
-      setPrivacyMessage('به دلیل محدودیت یا خطای ذخیره‌سازی مرورگر، تهیه خروجی کامل نشد. جزئیات فنی یا متن داده‌های شخصی در پیام نمایش داده نمی‌شود.');
-    } finally { setPrivacyBusy(false); }
-  }
-  async function previewRestoreFile(event) {
-    const file = event.target.files?.[0];
-    event.target.value = '';
-    setRestorePreview(null);
-    setBackupToRestore(null);
-    if (!file) return;
-    if (file.size > 15 * 1024 * 1024) { setPrivacyMessage('حجم فایل بیشتر از ۱۵ مگابایت است؛ پیش‌نمایش انجام نشد.'); return; }
-    setPrivacyBusy(true);
-    try {
-      const candidate = JSON.parse(await file.text());
-      const preview = await createPrivacyRestorePreview(candidate);
-      setRestorePreview(preview);
-      if (preview.valid) setBackupToRestore(candidate);
-      setPrivacyMessage(preview.valid ? 'اعتبارسنجی و پیش‌نمایش انجام شد. هنوز هیچ داده‌ای بازیابی یا تغییر نکرده است.' : 'فایل برای بازیابی ایمن تأیید نشد؛ هیچ داده‌ای تغییر نکرده است.');
-    } catch {
-      setPrivacyMessage('خواندن فایل ناموفق بود یا ساختار JSON معتبر نیست؛ هیچ داده‌ای تغییر نکرده است.');
-    } finally { setPrivacyBusy(false); }
-  }
-  async function restoreData() {
-    if (privacyBusy || !restorePreview?.valid || restorePreview.conflicts?.total !== 0 || !backupToRestore) return;
-    const confirmed = window.confirm('بازیابی فقط در فضای بدون تعارض انجام می‌شود و هیچ داده موجودی بازنویسی نمی‌شود. فایل پشتیبان رمزگذاری نشده و ممکن است شامل نام، شماره تماس، اطلاعات غربالگری پزشکی، پاسخ‌ها و نوشته‌های خصوصی مسیر و داده‌های کتابخانه باشد. فقط اگر فایل را می‌شناسی و دستگاه در اختیار خودت است ادامه بده. پس از تأیید، داده‌ها به ذخیره‌سازی محلی همین مرورگر افزوده می‌شوند. ادامه می‌دهی؟');
-    if (!confirmed) return;
-    setPrivacyBusy(true);
-    try {
-      const result = await restorePrivacyBackup(backupToRestore, { storage: window.localStorage, indexedDBApi: window.indexedDB });
-      if (result.restored === true && result.verified === true) {
-        setPrivacyMessage('بازیابی انجام شد و داده‌های هر دو مخزن راستی‌آزمایی شدند. برنامه در حال بارگذاری مجدد است.');
-        window.setTimeout(() => window.location.reload(), 900);
-        return;
-      }
-      if (result.phase === 'conflict') {
-        setPrivacyMessage('پس از پیش‌نمایش، تعارض تازه‌ای شناسایی شد؛ هیچ داده موجودی بازنویسی نشد. فایل را دوباره بررسی کن.');
-        setRestorePreview(null);
-        setBackupToRestore(null);
-      } else if (result.phase === 'recovery_required') {
-        setPrivacyMessage('بازیابی کامل تأیید نشد و پاک‌سازی جبرانی نیز قابل تأیید نیست. از تلاش مجدد خودداری کن؛ ممکن است بخشی از داده‌ها وارد شده باشند و بررسی دستی لازم است.');
-      } else if (['localStorage', 'verification'].includes(result.phase) && result.rolledBack === true) {
-        setPrivacyMessage(result.phase === 'verification' ? 'راستی‌آزمایی پس از ثبت ناموفق بود؛ داده‌های واردشده در هر دو مخزن پاک‌سازی و بررسی شدند. بازیابی انجام نشد.' : 'ثبت اطلاعات مرورگر ناموفق بود؛ تغییرات جبرانی در هر دو مخزن پاک‌سازی و بررسی شدند. بازیابی انجام نشد.');
-      } else {
-        setPrivacyMessage('پیش‌بررسی یا نوشتن در یکی از مخازن ناموفق بود؛ بازیابی تأیید نشد. ' + (result.errors?.[0] || ''));
-      }
-    } catch {
-      setPrivacyMessage('بازیابی قابل تأیید نیست. ممکن است وضعیت بخشی از داده‌ها نامشخص باشد؛ از تکرار فوری عملیات خودداری کن.');
-    } finally { setPrivacyBusy(false); }
-  }
-  async function deleteData() {
-    if (privacyBusy) return;
-    const confirmed = window.confirm('این کار اطلاعات مسیرها، پاسخ‌ها، پروفایل و تنظیمات شخصی و نیز رکوردهای ساخته‌شده توسط کاربر در کتابخانه همین مرورگر را حذف می‌کند. پنج کتاب عمومی و نسخه‌های اصلی آن‌ها حفظ می‌شوند. عملیات قابل بازگشت نیست؛ ابتدا در صورت نیاز خروجی بگیر. ادامه می‌دهی؟');
-    if (!confirmed) return;
-    setPrivacyBusy(true);
-    try {
-      const result = await executeCompleteLocalDataDeletion();
-      if (!result.deleted) {
-        const messages = {
-          preflight_failed: 'بررسی اولیه یکی از مخازن ناموفق بود؛ هیچ داده‌ای حذف نشد. دسترسی ذخیره‌سازی را بررسی کن و دوباره تلاش کن.',
-          partial_delete: 'حذف فقط در بخشی از مخازن انجام شد. حذف کامل تأیید نشده است؛ پیش از استفاده مجدد، وضعیت داده‌های باقی‌مانده را بررسی کن.',
-          recovery_required: 'نتیجه حذف در یکی از مخازن قابل راستی‌آزمایی نیست. برنامه موفقیت حذف را تأیید نمی‌کند؛ برای بررسی وضعیت ذخیره‌سازی اقدام کن.',
-          failed: 'حذف انجام نشد و هیچ موفقیت کاملی تأیید نشده است. وضعیت ذخیره‌سازی را بررسی کن.',
-        };
-        setPrivacyMessage(messages[result.status] || messages.failed);
-        return;
-      }
-      setPrivacyMessage('داده‌های محلی کاربر در هر دو مخزن حذف و جداگانه بررسی شدند؛ کتاب‌های عمومی برنامه حفظ شده‌اند. برنامه در حال بارگذاری مجدد است.');
-      window.setTimeout(() => window.location.reload(), 700);
-    } catch {
-      setPrivacyMessage('حذف کامل قابل تأیید نیست؛ ممکن است بخشی از داده‌ها باقی مانده باشند. وضعیت ذخیره‌سازی را بررسی کن.');
-    } finally { setPrivacyBusy(false); }
-  }
   return <section className="card" id="support">
-    <span className="badge">پشتیبانی مرکز</span><h2>نیاز به راهنمایی داری؟</h2><p className="muted">اگر در انجام تمرین‌ها، ادامه مسیر یا استفاده از برنامه نیاز به راهنمایی داری، می‌توانی با مرکز هیپنوتراپی شفا ارتباط بگیری.</p>
-    <div className="support"><h3><AppIcon name="phone" size={18} /> نوبت‌دهی پیامکی</h3><p className="muted">شماره مرکز: <b>۰۹۱۹۰۸۸۹۰۶۲</b></p><div className="contactActions"><button className="sms" onClick={sendSms}><AppIcon name="message" size={17} /> باز کردن پیامک</button><button className="copyAction" onClick={copySupportNumber}><AppIcon name="copy" size={17} /> کپی شماره</button></div><p className="contactHelp" id="smsHelp" role="status" aria-live="polite">{help}</p>{copyFailed && <input aria-label="شماره مرکز برای کپی دستی" readOnly value={number} onFocus={(event) => event.currentTarget.select()} onClick={(event) => event.currentTarget.select()} />}<hr/><h3><AppIcon name="message" size={18} /> نوبت‌دهی تلگرامی</h3><p className="muted">پشتیبانی و نوبت‌دهی تلگرامی مرکز</p><a className="telegram" href={content.supportUrl || content.bookSupportUrl || 'https://t.me/Hypnotherapy_admin'} rel="noopener" target="_blank" ><AppIcon name="message" size={17} /> ورود به پشتیبانی تلگرام</a></div>
-    {EXPERIMENTAL_ASSISTANT_ENABLED && <AssessmentAssistant />}
-    <hr/><div className="sectionHint"><span><AppIcon name="lock" size={18} /></span><div><b>حریم خصوصی و داده‌های من</b><small>می‌توانی نسخه‌ای از داده‌های ذخیره‌شده در این مرورگر بگیری یا آن‌ها را حذف کنی.</small></div></div>
-    <p className="muted">خروجی و حذف شامل localStorage برنامه و رکوردهای کاربری در IndexedDB همین مرورگر است. پنج کتاب عمومی و نسخه‌های اصلی آن‌ها حفظ می‌شوند. فایل‌های دانلودشده، پشتیبان‌های دستگاه و اطلاعات احتمالی سرورهای بیرونی تحت پوشش نیستند.</p>
-    <div className="contactActions"><button className="secondary" disabled={privacyBusy} onClick={exportData}><AppIcon name="fileText" size={17} /> {privacyBusy ? "در حال پردازش…" : "دریافت نسخه اطلاعات من"}</button><button className="secondary" disabled={privacyBusy} onClick={deleteData}><AppIcon name="eraser" size={17} /> {privacyBusy ? "در حال پردازش…" : "حذف داده‌های محلی من"}</button></div>
-    <hr/><h3>بررسی و بازیابی فایل پشتیبان</h3><p className="muted">ابتدا فایل JSON را بررسی کن. پیش‌نمایش هیچ داده‌ای را تغییر نمی‌دهد. بازیابی فقط وقتی فعال می‌شود که هیچ تعارضی با داده‌های فعلی وجود نداشته باشد؛ هیچ داده موجودی بازنویسی نمی‌شود.</p><p className="muted">هشدار: فایل پشتیبان رمزگذاری نشده است و می‌تواند شامل اطلاعات هویتی، تماس، غربالگری پزشکی و نوشته‌های خصوصی باشد. checksum فقط خرابی تصادفی را تشخیص می‌دهد و اصالت فایل را ثابت نمی‌کند. آن را فقط از منبع مطمئن انتخاب کن و در دستگاه مشترک بازیابی نکن.</p>
-    <input ref={restoreFileRef} type="file" accept="application/json,.json" onChange={previewRestoreFile} disabled={privacyBusy} aria-label="انتخاب فایل پشتیبان برای پیش‌نمایش" />
-    {restorePreview && <div className="recommendation" role="status"><b>{restorePreview.valid ? 'پیش‌نمایش فایل معتبر' : 'فایل قابل تأیید نیست'}</b>{restorePreview.valid ? <><p className="muted">تعداد داده‌ها: {fa(restorePreview.counts.localStorage)} مورد مرورگر، {fa(restorePreview.counts.books)} کتاب، {fa(restorePreview.counts.versions)} نسخه و {fa(restorePreview.counts.settings)} تنظیم.</p><p className="muted">تعارض با داده‌های فعلی: {fa(restorePreview.conflicts.total)} مورد.</p>{restorePreview.conflicts.total > 0 ? <p className="muted">به دلیل وجود تعارض، بازیابی غیرفعال است. این ابزار تعارض‌ها را ادغام یا بازنویسی نمی‌کند.</p> : <p className="muted">تعارضی شناسایی نشد. با تأیید جداگانه می‌توان داده‌ها را به فضای خالی افزود.</p>}</> : <ul>{restorePreview.errors.map((error, index) => <li key={index}>{error}</li>)}</ul>}</div>}
-    {restorePreview?.valid && <button className="primary" type="button" disabled={privacyBusy || restorePreview.conflicts.total !== 0 || !backupToRestore} onClick={restoreData}>{privacyBusy ? "در حال بازیابی و بررسی…" : "بازیابی نسخه پشتیبان"}</button>}
-    {privacyMessage && <p className="contactHelp" role="status" aria-live="polite">{privacyMessage}</p>}
+    <span className="badge">پشتیبانی مرکز</span><h2>نیاز به راهنمایی داری؟</h2><p className="muted">اگر برای نوبت‌دهی یا ارتباط با مرکز نیاز به راهنمایی داری، می‌توانی از راه‌های زیر استفاده کنی.</p>
+    <div className="support"><h3><AppIcon name="phone" size={18} /> نوبت‌دهی پیامکی</h3><p className="muted">شماره مرکز: <b>۰۹۱۹۰۸۸۹۰۶۲</b></p><div className="contactActions"><button className="sms" onClick={sendSms}><AppIcon name="message" size={17} /> باز کردن پیامک</button><button className="copyAction" onClick={copySupportNumber}><AppIcon name="copy" size={17} /> کپی شماره</button></div><p className="contactHelp" id="smsHelp" role="status" aria-live="polite">{help}</p>{copyFailed && <input aria-label="شماره مرکز برای کپی دستی" readOnly value={number} onFocus={(event) => event.currentTarget.select()} onClick={(event) => event.currentTarget.select()} />}<hr/><h3><AppIcon name="message" size={18} /> نوبت‌دهی تلگرامی</h3><p className="muted">پشتیبانی و نوبت‌دهی تلگرامی مرکز</p><a className="telegram" href={content.supportUrl || content.bookSupportUrl || 'https://t.me/Hypnotherapy_admin'} rel="noopener" target="_blank"><AppIcon name="message" size={17} /> ورود به پشتیبانی تلگرام</a></div>
     <button className="secondary" onClick={onBack}>{buttonLabel('بازگشت')}</button>
   </section>;
 }
