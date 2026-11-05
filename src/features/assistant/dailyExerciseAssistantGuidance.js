@@ -157,10 +157,10 @@ function followUpResponse(message, state, dayData) {
       return `خلاصه محتوای همان روز، بدون افزودن مطلب تازه:\n\n${summaryParts.join('\n\n')}`;
     }
   }
-  if (/^(?:چرا|چطور|یعنی چی|منظورت چیه|مثال بزن|یه مثال بزن|مثالی بزن)[؟?]?$/u.test(value)) {
-    if (/مثال/u.test(value)) {
-      return blankResponseTemplate(dayData?.exercise || dayData?.instructions);
-    }
+  if (/(?:مثال|نمونه)/u.test(value)) {
+    return exampleTemplateForMessage(message, dayData);
+  }
+  if (/^(?:چرا|چطور|یعنی چی|منظورت چیه)[؟?]?$/u.test(value)) {
     return 'منظورت دلیل یا توضیح کدام جمله از پاسخ قبلی است؟ همان جمله یا چند کلمه‌اش را بنویس تا درباره همان بخش پاسخ بدهم، نه اینکه حدس بزنم.';
   }
   if (/(?:راهکار|اقدام اختصاصی|اقدام امروز)/u.test(value)) {
@@ -257,6 +257,19 @@ function blankResponseTemplate(exercise) {
     }
   }
   return 'برای ساختن قالب دقیق، لازم است جمله یا مرحله‌ای را که می‌خواهی برایش نمونه ببینی مشخص کنی؛ از خودم موقعیت یا پاسخ شخصی نمی‌سازم.';
+}
+
+function exampleTemplateForMessage(message, dayData) {
+  const normalized = normalize(message);
+  const asksAction = /(?:راهکار|اقدام اختصاصی|اقدام امروز)/u.test(normalized);
+  const asksExercise = /(?:تمرین|متن تمرین)/u.test(normalized);
+  if (asksAction && asksExercise) {
+    return 'منظورت مثال برای کدام بخش است: متن تمرین یا راهکار اختصاصی؟ نمی‌خواهم مثال یک بخش را به بخش دیگر نسبت بدهم.';
+  }
+  const source = asksAction
+    ? (dayData?.actionText || dayData?.action || '')
+    : (dayData?.exercise || dayData?.instructions || '');
+  return blankResponseTemplate(source);
 }
 
 function hasApprovedDayMetadata(dayData) {
@@ -365,7 +378,7 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
   }
 
   if (/(?:مثال|نمونه)/u.test(normalized)) {
-    return result(blankResponseTemplate(exercise), { ...state, lastTopic: topic.slice(0, 100) }, text);
+    return result(exampleTemplateForMessage(text, dayData), { ...state, lastTopic: topic.slice(0, 100) }, text);
   }
 
   if (/(?:چقدر زمان|چند دقیقه|مدت زمان|مدتش چقدر)/u.test(normalized)) {
