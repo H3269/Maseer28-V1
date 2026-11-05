@@ -5,17 +5,22 @@ const SAFETY_HANDOFF = 'راهنمایی تمرین را متوقف می‌کن�
 const MAX_CONTEXT_TEXT = 2400;
 
 function hasDailySourceIdentityConflict(guidanceData, data) {
-  if (!guidanceData || !data || typeof guidanceData !== 'object' || typeof data !== 'object') return false;
+  if (!guidanceData || !data || typeof guidanceData !== 'object' || typeof data !== 'object') return true;
+  let hasCanonicalIdentity = false;
   for (const key of ['id', 'topic_id', 'day']) {
-    const adaptedValue = guidanceData[key];
     const sourceValue = data[key];
-    if (adaptedValue === undefined || adaptedValue === null || sourceValue === undefined || sourceValue === null) continue;
+    if (sourceValue === undefined || sourceValue === null || String(sourceValue).trim() === '') continue;
+    hasCanonicalIdentity = true;
+    const adaptedValue = guidanceData[key];
+    // Adapted content must carry every identity field available on its canonical source.
+    if (adaptedValue === undefined || adaptedValue === null || String(adaptedValue).trim() === '') return true;
     const normalizeIdentity = (value) => key === 'day'
       ? (Number.isInteger(Number(value)) ? String(Number(value)) : String(value).trim())
       : String(value).trim();
     if (normalizeIdentity(adaptedValue) !== normalizeIdentity(sourceValue)) return true;
   }
-  return false;
+  // Without a canonical identity there is no safe basis for merging adapted text.
+  return !hasCanonicalIdentity;
 }
 
 export function selectDailyExerciseGuidanceData({ guidanceData, data } = {}) {
