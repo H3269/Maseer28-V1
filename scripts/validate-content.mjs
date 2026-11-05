@@ -75,6 +75,15 @@ for (const { topic, category } of topicRows) {
     if (Number(day.day) !== index + 1) {
       fail.push(`شماره روز نامرتب در «${topic}»: موقعیت ${index + 1}، مقدار ${day.day}`);
     }
+    // Legacy daily records have no v2 topic_id. Their canonical identity is
+    // still verifiable from the exact category key and zero-padded day ID.
+    // Keep this check read-only: never rewrite historical content IDs.
+    if (day.topic_id === undefined && day.review_status === undefined) {
+      const expectedLegacyId = `${topic}-${String(index + 1).padStart(2, '0')}`;
+      if (day.id !== expectedLegacyId) {
+        fail.push(`شناسه legacy روز ${index + 1} در «${topic}» باید دقیقاً ${expectedLegacyId} باشد؛ مقدار فعلی ${day.id || '(خالی)'}`);
+      }
+    }
     if (!day.id || allIds.has(day.id)) {
       fail.push(`شناسه روز خالی یا تکراری در «${topic}»، روز ${index + 1}: ${day.id || '(خالی)'}`);
     } else {
