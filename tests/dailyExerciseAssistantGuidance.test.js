@@ -1,5 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { getDailyAssistantAccess } from '../src/features/assistant/dailyAssistantAccess.js';
+import { getDailySafetyMode } from '../src/features/content/dailySafety.js';
+import { getCanonicalDailyRecordId, selectDailyContentCategory, selectCanonicalDailyRecord, isCompleteDailyContentCategory } from '../src/features/content/dailyContentSelector.js';
+import { getCanonicalTopicIdForCategory } from '../src/features/journey/relationshipSafetyGate.js';
 import { makeDailyExerciseGuidance, selectDailyExerciseGuidanceData } from '../src/features/assistant/dailyExerciseAssistantGuidance.js';
 import { preserveDailyGuidanceSourceIdentity } from '../src/features/assistant/dailyGuidanceSourceIdentity.js';
 
@@ -476,8 +481,6 @@ test('extended paragraph ordinals retrieve existing paragraphs and clarify missi
 });
 
 
-import { getDailyAssistantAccess } from '../src/features/assistant/dailyAssistantAccess.js';
-
 test('daily assistant fails closed when canonical day identity is incomplete or invalid', () => {
   const valid = {
     id: 'خشم-01',
@@ -857,3 +860,86 @@ test('legacy identity verification does not bypass specialized safety blocks', (
   assert.equal(access.available, false);
   assert.equal(access.reason, 'daily_content_blocked');
 });
+
+test('all 952 canonical daily records pass exact category/day selection and only their safety-approved assistant gates', async () => {
+  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
+  const categories = content.categories;
+  assert.equal(Object.keys(categories).length, 34);
+
+  let total = 0;
+  let legacyCount = 0;
+  let v2Count = 0;
+  let blockedCount = 0;
+  let availableCount = 0;
+  let blockedV2Count = 0;
+
+  for (const categoryKey of Object.keys(categories)) {
+    const category = selectDailyContentCategory(categories, categoryKey);
+    assert.ok(category, `category ${categoryKey} must be selectable by its exact UI key`);
+    assert.equal(isCompleteDailyContentCategory(categories, categoryKey), true,
+      `category ${categoryKey} must expose all 28 canonical days`);
+
+    for (let dayNumber = 1; dayNumber <= 28; dayNumber += 1) {
+      const record = selectCanonicalDailyRecord(category, dayNumber);
+      assert.ok(record, `${categoryKey} day ${dayNumber} must resolve to exactly one source record`);
+      assert.equal(record.id, getCanonicalDailyRecordId(categoryKey, dayNumber));
+      assert.equal(typeof record.exercise, 'string');
+      assert.ok(record.exercise.trim().length > 0);
+      assert.equal(typeof record.actionText, 'string');
+      assert.ok(record.actionText.trim().length > 0);
+
+      const isLegacy = !Object.hasOwn(record, 'topic_id')
+        && !Object.hasOwn(record, 'review_status')
+        && !Object.hasOwn(record, 'risk_level');
+      if (isLegacy) {
+        legacyCount += 1;
+      } else {
+        v2Count += 1;
+        assert.equal(record.topic_id, getCanonicalTopicIdForCategory(categoryKey),
+          `${categoryKey} day ${dayNumber} must use its registry topic_id`);
+        assert.equal(record.review_status, 'pending_expert_review',
+          'v2 records remain unavailable until an explicit expert approval is recorded');
+      }
+
+      const adapted = preserveDailyGuidanceSourceIdentity(record, {
+        exercise: record.exercise,
+        action: record.actionText,
+      });
+      const selectedGuidance = selectDailyExerciseGuidanceData({ guidanceData: adapted, data: record });
+      assert.equal(selectedGuidance.id, record.id);
+      assert.equal(selectedGuidance.day, record.day);
+      assert.equal(selectedGuidance.exercise, record.exercise);
+      assert.equal(selectedGuidance.actionText, record.actionText);
+      if (!isLegacy) assert.equal(selectedGuidance.topic_id, record.topic_id);
+
+      const safetyMode = getDailySafetyMode(record);
+      const access = getDailyAssistantAccess({
+        day: record,
+        problem: categoryKey,
+        relationshipSafetyConfirmed: true,
+      });
+      if (safetyMode === 'blocked') {
+        blockedCount += 1;
+        if (!isLegacy) blockedV2Count += 1;
+        assert.equal(access.available, false,
+          `${categoryKey} day ${dayNumber} must remain unavailable while safety review blocks it`);
+        assert.equal(access.reason, 'daily_content_blocked');
+      } else {
+        availableCount += 1;
+        assert.equal(access.available, true,
+          `${categoryKey} day ${dayNumber} must pass canonical identity and safety checks`);
+        assert.equal(access.safetyMode, safetyMode);
+        assert.equal(access.requiresCaution, safetyMode === 'caution');
+      }
+      total += 1;
+    }
+  }
+
+  assert.equal(total, 952);
+  assert.equal(legacyCount, 896);
+  assert.equal(v2Count, 56);
+  assert.equal(blockedV2Count, 56,
+    'all 56 v2 records are pending expert review and must remain blocked');
+  assert.equal(availableCount + blockedCount, total);
+});
+
