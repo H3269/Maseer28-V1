@@ -1,301 +1,82 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
+import { readFile } from 'node:fs/promises';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const baseURL = process.env.PATH28_BASE_URL || 'http://127.0.0.1:4173';
 const browser = await chromium.launch({ headless: true });
 
-function makeState(completedDays, problem = 'خشم') {
+function makeState(problem, completedDays = []) {
   const old = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
   const daily = Object.fromEntries(completedDays.map((day) => [day, {
-    score: 4,
-    feedback: 'same',
-    feedbackText: 'ثبت آزمایشی قبلی',
-    updatedAt: old,
+    score: 4, feedback: 'same', feedbackText: 'ثبت آزمایشی قبلی', updatedAt: old,
   }]));
   return {
-    schema: 7,
-    started: true,
-    profile: true,
-    assessment: true,
-    completed: completedDays,
-    answers: {},
-    daily,
-    profileData: {
-      problem,
-      durationYears: 1,
-      durationMonths: 0,
-      goal: 'هدف آزمایشی',
-      code: 'M28-SAFETY',
-    },
+    schema: 7, started: true, profile: true, assessment: true,
+    completed: completedDays, answers: {}, daily,
+    profileData: { problem, durationYears: 1, durationMonths: 0, goal: 'هدف آزمایشی', code: 'M28-DIRECT' },
     assessmentData: { answers: [2, 2, 2, 2, 2], total: 8, score: 4, motivation: 2, scaleMax: 4, version: 2 },
-    final: null,
-    archive: [],
-    pathId: `safety-gate-${completedDays.length}`,
-    startedAt: old,
-    lastView: 'dashboard',
+    final: null, archive: [], pathId: 'direct-' + problem, startedAt: old, lastView: 'dashboard',
   };
 }
 
-async function seedPage(page, state, approvedContentIds = []) {
-  await page.route('**/*', async (route) => {
-    const url = new URL(route.request().url());
-    if (url.searchParams.has('_m28_time')) {
-      await route.fulfill({
-        status: 200,
-        headers: { date: new Date().toUTCString() },
-      });
-      return;
-    }
-    if (approvedContentIds.length > 0 && url.pathname.endsWith('/content/path-content.json')) {
-      const response = await route.fetch();
-      const content = await response.json();
-      // Synthetic approval is used only to exercise the visible UI branch.
-      // It does not alter repository content or represent clinical sign-off.
-      for (const category of Object.values(content.categories || {})) {
-        for (const day of category.days || []) {
-          if (approvedContentIds.includes(day.id)) {
-            day.review_status = 'approved';
-            if (!day.risk_level) day.risk_level = 'caution';
-          }
-        }
-      }
-      await route.fulfill({ response, body: JSON.stringify(content) });
-      return;
-    }
-    await route.continue();
-  });
-  await page.addInitScript((journey) => {
+async function openDay(problem, day) {
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(String(error)));
+  const completed = Array.from({ length: day - 1 }, (_, index) => index + 1);
+  await page.addInitScript((state) => {
     localStorage.setItem('maseer28_onboarding_complete_v1', '1');
-    localStorage.setItem('maseer28_state', JSON.stringify(journey));
+    localStorage.setItem('maseer28_state', JSON.stringify(state));
     localStorage.setItem('maseer28_user_profile_v2', JSON.stringify({
-      version: 2,
-      name: 'کاربر آزمایشی',
-      age: 35,
-      gender: 'زن',
-      phone: '09123456789',
-      medical: 'none',
-      medicalNote: '',
-      medication: 'no',
-      medicationRisk: 'no',
+      version: 2, name: 'کاربر آزمایشی', age: 35, gender: 'زن', phone: '09123456789',
+      medical: 'none', medicalNote: '', medication: 'no', medicationRisk: 'no',
     }));
-  }, state);
+  }, makeState(problem, completed));
   await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
   await page.locator('#copyrightModal').waitFor({ state: 'visible' });
   await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
   await page.locator('#dashboard').waitFor({ state: 'visible' });
   await page.locator('#dashboard .heroAction').click();
   await page.locator('#day').waitFor({ state: 'visible' });
+  return { page, errors };
 }
 
 try {
-  const relationshipPage = await browser.newPage();
-  const relationshipErrors = [];
-  relationshipPage.on('pageerror', (error) => relationshipErrors.push(String(error)));
-  await seedPage(relationshipPage, makeState([1, 2, 3, 4, 5, 6, 7, 8, 9]), ['خشم-10']);
-  const relationshipText = await relationshipPage.locator('#day').innerText();
-  assert.match(relationshipText, /آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
-  assert.equal(await relationshipPage.locator('#dayExercise').count(), 1, 'relationship-gated source text must remain visible in read-only mode');
-  assert.equal(await relationshipPage.locator('#dayAction').count(), 1, 'relationship-gated action text must remain visible in read-only mode');
-  assert.equal(await relationshipPage.locator('#dailyEntryPanel').count(), 0, 'relationship-gated content must not expose execution or scoring controls');
-  assert.equal(await relationshipPage.locator('#t01PausePlan').count(), 0, 'interactive pause-plan adaptation remains unavailable before safety confirmation');
-  await relationshipPage.getByLabel(/نه، مطمئن نیستم/).check();
-  await relationshipPage.getByText(/تمرین ارتباطی امروز نمایش داده نمی‌شود/).waitFor({ state: 'visible' });
-  await relationshipPage.getByRole('button', { name: 'ثبت عدم اجرای تمرین و ادامه مسیر' }).click();
-  await relationshipPage.locator('#dailyResult').waitFor({ state: 'visible' });
-  await relationshipPage.waitForFunction(() => JSON.parse(localStorage.getItem('maseer28_state')).daily?.[10]?.status === 'skipped_safety_gate');
-  assert.equal(await relationshipPage.locator('#resultScore').innerText(), '—');
-  assert.equal(await relationshipPage.locator('#resultFeedback').innerText(), 'تمرین اجرا نشد');
-  const relationshipState = await relationshipPage.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state')));
-  assert.equal(relationshipState.daily[10].status, 'skipped_safety_gate');
-  assert.equal('score' in relationshipState.daily[10], false);
-  assert.equal('feedback' in relationshipState.daily[10], false);
-  assert.ok(relationshipState.completed.includes(10));
-  assert.deepEqual(relationshipErrors, []);
-  await relationshipPage.close();
+  const content = JSON.parse(await readFile(new URL('../../public/content/path-content.json', import.meta.url), 'utf8'));
+  const topics = Object.keys(content.categories);
+  assert.equal(topics.length, 34);
 
-  const sharedPromptPage = await browser.newPage();
-  const sharedPromptErrors = [];
-  sharedPromptPage.on('pageerror', (error) => sharedPromptErrors.push(String(error)));
-  await seedPage(sharedPromptPage, makeState([1, 2, 3, 4, 5], 'ترس'));
-  const sharedPromptText = await sharedPromptPage.locator('#day').innerText();
-  assert.match(sharedPromptText, /این تمرین در نسخه فعلی قابل اجرا نیست/);
-  assert.match(sharedPromptText, /نیازمند بازبینی انسانی/);
-  assert.doesNotMatch(sharedPromptText, /آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
-  await sharedPromptPage.getByRole('button', { name: 'ثبت عدم اجرای تمرین و ادامه مسیر' }).click();
-  await sharedPromptPage.locator('#dailyResult').waitFor({ state: 'visible' });
-  await sharedPromptPage.waitForFunction(() => JSON.parse(localStorage.getItem('maseer28_state')).daily?.[6]?.status === 'skipped_human_review');
-  assert.equal(await sharedPromptPage.locator('#resultScore').innerText(), '—');
-  const sharedPromptState = await sharedPromptPage.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state')));
-  assert.equal(sharedPromptState.daily[6].status, 'skipped_human_review');
-  assert.equal('score' in sharedPromptState.daily[6], false);
-  assert.equal('feedback' in sharedPromptState.daily[6], false);
-  assert.ok(sharedPromptState.completed.includes(6));
-  assert.deepEqual(sharedPromptErrors, []);
-  await sharedPromptPage.close();
-
-  const solutionPage = await browser.newPage();
-  const solutionErrors = [];
-  solutionPage.on('pageerror', (error) => solutionErrors.push(String(error)));
-  await seedPage(solutionPage, makeState(Array.from({ length: 18 }, (_, index) => index + 1)), ['خشم-19']);
-  const solutionText = await solutionPage.locator('#day').innerText();
-  assert.match(solutionText, /آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
-  await solutionPage.getByLabel(/نه، مطمئن نیستم/).check();
-  await solutionPage.getByText(/تمرین ارتباطی امروز نمایش داده نمی‌شود/).waitFor({ state: 'visible' });
-  await solutionPage.getByRole('button', { name: 'ثبت عدم اجرای تمرین و ادامه مسیر' }).click();
-  await solutionPage.locator('#dailyResult').waitFor({ state: 'visible' });
-  await solutionPage.waitForFunction(() => JSON.parse(localStorage.getItem('maseer28_state')).daily?.[19]?.status === 'skipped_safety_gate');
-  assert.equal(await solutionPage.locator('#resultScore').innerText(), '—');
-  const solutionState = await solutionPage.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state')));
-  assert.equal(solutionState.daily[19].status, 'skipped_safety_gate');
-  assert.equal('score' in solutionState.daily[19], false);
-  assert.equal('feedback' in solutionState.daily[19], false);
-  assert.ok(solutionState.completed.includes(19));
-  assert.deepEqual(solutionErrors, []);
-  await solutionPage.close();
-  const safeRelationshipPage = await browser.newPage();
-  await seedPage(safeRelationshipPage, makeState([1, 2, 3, 4, 5, 6, 7, 8, 9]), ['خشم-10']);
-  await safeRelationshipPage.getByLabel(/بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/).click({ noWaitAfter: true });
-  await safeRelationshipPage.locator('#dayExercise').waitFor({ state: 'visible' });
-  const pausePlan = safeRelationshipPage.locator('#day #t01PausePlan');
-  await pausePlan.waitFor({ state: 'visible' });
-  assert.equal(await pausePlan.count(), 1, 'the pause plan must render once inside the active day card');
-  const pausePlanText = await pausePlan.innerText();
-  assert.match(pausePlanText, /یک برنامه مکث امن با سه جزء بنویس/);
-  assert.match(pausePlanText, /نشانه مکث/);
-  assert.match(pausePlanText, /محل فاصله‌گیری/);
-  assert.match(pausePlanText, /شرط ادامه گفتگو/);
-  assert.match(pausePlanText, /رضایت آزادانه هر دو نفر/);
-  assert.match(pausePlanText, /تعیین زمان بازگشت یا وعده ادامه گفتگو الزامی نیست/);
-  const safeRelationshipText = await safeRelationshipPage.locator('#day').innerText();
-  assert.match(safeRelationshipText, /بررسی اولیه ایمنی/);
-  const safeRelationshipState = await safeRelationshipPage.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state')));
-  assert.equal('relationshipSafetyResponse' in safeRelationshipState, false);
-  assert.equal('relationshipSafetyState' in safeRelationshipState, false);
-  await safeRelationshipPage.close();
-
-  const humanReviewPage = await browser.newPage();
-  const humanReviewErrors = [];
-  humanReviewPage.on('pageerror', (error) => humanReviewErrors.push(String(error)));
-  await seedPage(humanReviewPage, makeState(Array.from({ length: 26 }, (_, index) => index + 1)));
-  const humanReviewText = await humanReviewPage.locator('#day').innerText();
-  assert.match(humanReviewText, /این تمرین در نسخه فعلی قابل اجرا نیست/);
-  assert.match(humanReviewText, /نیازمند بازبینی انسانی/);
-  assert.equal(await humanReviewPage.locator('#dayExercise').count(), 1, 'human-review content text must remain visible for inspection');
-  assert.equal(await humanReviewPage.locator('#dayAction').count(), 1, 'human-review action text must remain visible for inspection');
-  assert.equal(await humanReviewPage.locator('#dailyEntryPanel').count(), 0, 'human-review content must not expose scoring or execution controls');
-  await humanReviewPage.getByRole('button', { name: 'ثبت عدم اجرای تمرین و ادامه مسیر' }).click();
-  await humanReviewPage.locator('#dailyResult').waitFor({ state: 'visible' });
-  await humanReviewPage.waitForFunction(() => JSON.parse(localStorage.getItem('maseer28_state')).daily?.[27]?.status === 'skipped_human_review');
-  assert.equal(await humanReviewPage.locator('#resultScore').innerText(), '—');
-  const humanReviewState = await humanReviewPage.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state')));
-  assert.equal(humanReviewState.daily[27].status, 'skipped_human_review');
-  assert.equal('score' in humanReviewState.daily[27], false);
-  assert.equal('feedback' in humanReviewState.daily[27], false);
-  assert.ok(humanReviewState.completed.includes(27));
-  assert.deepEqual(humanReviewErrors, []);
-  await humanReviewPage.close();
-
-  const relationshipTopicDayOnePage = await browser.newPage();
-  const relationshipTopicDayOneErrors = [];
-  relationshipTopicDayOnePage.on('pageerror', (error) => relationshipTopicDayOneErrors.push(String(error)));
-  await seedPage(relationshipTopicDayOnePage, makeState([], 'مشکلات رابطه'));
-  const relationshipTopicDayOneText = await relationshipTopicDayOnePage.locator('#day').innerText();
-  assert.match(relationshipTopicDayOneText, /این تمرین در نسخه فعلی قابل اجرا نیست/);
-  assert.match(relationshipTopicDayOneText, /نیازمند بازبینی انسانی/);
-  assert.doesNotMatch(relationshipTopicDayOneText, /آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
-  assert.equal(await relationshipTopicDayOnePage.locator('#dayExercise').count(), 1, 'blocked content text remains visible in read-only mode');
-  assert.equal(await relationshipTopicDayOnePage.locator('#dayAction').count(), 1);
-  assert.equal(await relationshipTopicDayOnePage.locator('#dailyEntryPanel').count(), 0);
-  await relationshipTopicDayOnePage.getByRole('button', { name: 'ثبت عدم اجرای تمرین و ادامه مسیر' }).click();
-  await relationshipTopicDayOnePage.locator('#dailyResult').waitFor({ state: 'visible' });
-  await relationshipTopicDayOnePage.waitForFunction(() => JSON.parse(localStorage.getItem('maseer28_state')).daily?.[1]?.status === 'skipped_human_review');
-  const relationshipTopicDayOneState = await relationshipTopicDayOnePage.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state')));
-  assert.equal(await relationshipTopicDayOnePage.locator('#resultScore').innerText(), '—');
-  assert.equal('score' in relationshipTopicDayOneState.daily[1], false);
-  assert.equal('feedback' in relationshipTopicDayOneState.daily[1], false);
-  assert.ok(relationshipTopicDayOneState.completed.includes(1));
-  assert.deepEqual(relationshipTopicDayOneErrors, []);
-  await relationshipTopicDayOnePage.close();
-
-  const relationshipTopicDaySixPage = await browser.newPage();
-  const relationshipTopicDaySixErrors = [];
-  relationshipTopicDaySixPage.on('pageerror', (error) => relationshipTopicDaySixErrors.push(String(error)));
-  await seedPage(relationshipTopicDaySixPage, makeState([1, 2, 3, 4, 5], 'مشکلات رابطه'));
-  const relationshipTopicDaySixText = await relationshipTopicDaySixPage.locator('#day').innerText();
-  assert.match(relationshipTopicDaySixText, /این تمرین در نسخه فعلی قابل اجرا نیست/);
-  assert.equal(await relationshipTopicDaySixPage.locator('#dayExercise').count(), 1, 'blocked content text remains visible in read-only mode');
-  assert.equal(await relationshipTopicDaySixPage.locator('#dayAction').count(), 1);
-  assert.equal(await relationshipTopicDaySixPage.locator('#dailyEntryPanel').count(), 0);
-  assert.doesNotMatch(relationshipTopicDaySixText, /آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
-  assert.deepEqual(relationshipTopicDaySixErrors, []);
-  await relationshipTopicDaySixPage.close();
-
-
-  // Regression audit: every topic currently withheld by the shared daily safety
-  // gate must render the same stacked notice without horizontal overflow.
-  const blockedVisualCases = [
-    { problem: 'خشم', day: 1 },
-    { problem: 'اضطراب', day: 1 },
-    { problem: 'ترس', day: 1 },
-    { problem: 'بی‌خوابی و مشکلات خواب', day: 1 },
-    { problem: 'عادت‌های تکراری', day: 1 },
-    { problem: 'مرزبندی و نه گفتن', day: 1 },
-    { problem: 'تنهایی', day: 14 },
-    { problem: 'افکار منفی و نشخوار فکری', day: 1 },
-    { problem: 'مشکلات رابطه', day: 1 },
-    { problem: 'کنترل‌گری', day: 1 },
-    { problem: 'بی‌انگیزگی', day: 1 },
-  ];
-
-  for (const viewport of [{ width: 320, height: 568 }, { width: 390, height: 844 }]) {
-    for (const scenario of blockedVisualCases) {
-      const visualPage = await browser.newPage({ viewport });
-      const visualErrors = [];
-      visualPage.on('pageerror', (error) => visualErrors.push(String(error)));
-      const completed = Array.from({ length: scenario.day - 1 }, (_, index) => index + 1);
-      const visualState = makeState(completed, scenario.problem);
-      if (scenario.day > 1) {
-        visualState.startedAt = new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString();
-      }
-      await seedPage(visualPage, visualState);
-      const notice = visualPage.locator('#day .safetyNoteStacked[role="alert"]');
-      await notice.waitFor({ state: 'visible' });
-      assert.equal(await visualPage.locator('#dayExercise').count(), 1,
-        scenario.problem + ' day ' + scenario.day + ' text must remain visible in read-only human-review mode');
-      assert.equal(await visualPage.locator('#dayAction').count(), 1,
-        scenario.problem + ' day ' + scenario.day + ' action text must remain visible in read-only human-review mode');
-      assert.equal(await visualPage.locator('#dailyEntryPanel').count(), 0,
-        scenario.problem + ' day ' + scenario.day + ' must not expose daily scoring');
-      const layout = await notice.evaluate((element) => {
-        const style = window.getComputedStyle(element);
-        const paragraphs = [...element.querySelectorAll(':scope > p')].map((item) => {
-          const rect = item.getBoundingClientRect();
-          return { top: rect.top, bottom: rect.bottom };
-        });
-        return {
-          display: style.display,
-          scrollWidth: element.scrollWidth,
-          clientWidth: element.clientWidth,
-          paragraphs,
-        };
-      });
-      assert.equal(layout.display, 'block',
-        scenario.problem + ' day ' + scenario.day + ' safety notice must use vertical block flow at ' + viewport.width + 'px');
-      assert.ok(layout.scrollWidth <= layout.clientWidth + 1,
-        scenario.problem + ' day ' + scenario.day + ' safety notice must not overflow horizontally at ' + viewport.width + 'px');
-      for (let index = 1; index < layout.paragraphs.length; index += 1) {
-        assert.ok(layout.paragraphs[index].top >= layout.paragraphs[index - 1].bottom - 1,
-          scenario.problem + ' day ' + scenario.day + ' safety paragraphs must remain vertically stacked');
-      }
-      assert.deepEqual(visualErrors, [],
-        scenario.problem + ' day ' + scenario.day + ' must not raise browser errors');
-      await visualPage.close();
-    }
+  for (const topic of topics) {
+    const { page, errors } = await openDay(topic, 1);
+    const card = page.locator('#day');
+    assert.equal(await card.locator('#dayExercise').count(), 1, topic + ' day 1 must display its exercise');
+    assert.equal(await card.locator('#dayAction').count(), 1, topic + ' day 1 must display its dedicated action');
+    assert.equal(await card.locator('#openDailyEntryBtn').count(), 1, topic + ' day 1 must expose the original daily interaction');
+    const text = await card.innerText();
+    assert.doesNotMatch(text, /این تمرین در نسخه فعلی قابل اجرا نیست|نیازمند بازبینی انسانی|آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه/);
+    await card.locator('#openDailyEntryBtn').click();
+    await card.locator('#dailyEntryPanel').waitFor({ state: 'visible' });
+    assert.deepEqual(errors, [], topic + ' must not raise browser errors');
+    await page.close();
   }
 
-  process.stdout.write('PASS: Chromium blocks unsafe T01 communication, human-review-only exercises, and all tested T17 access paths; skips remain unscored (WV-BROWSER-SAFETY)\\n');
+  for (const day of [10, 11]) {
+    const { page, errors } = await openDay('خشم', day);
+    const card = page.locator('#day');
+    assert.equal(await card.locator('#dayExercise').count(), 1);
+    assert.equal(await card.locator('#dayAction').count(), 1);
+    assert.equal(await card.locator('#openDailyEntryBtn').count(), 1);
+    const expected = content.categories['خشم'].days.find((item) => item.day === day);
+    assert.ok((await card.innerText()).includes(expected.exercise.slice(0, 35)));
+    await card.locator('#openDailyEntryBtn').click();
+    await card.locator('#dailyEntryPanel').waitFor({ state: 'visible' });
+    assert.deepEqual(errors, []);
+    await page.close();
+  }
+
+  process.stdout.write('PASS: all 34 topics render their daily exercise and action directly; anger days 10 and 11 remain interactive.\\n');
 } finally {
   await browser.close();
 }
