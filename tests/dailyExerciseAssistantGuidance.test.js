@@ -480,7 +480,7 @@ import { getDailyAssistantAccess } from '../src/features/assistant/dailyAssistan
 
 test('daily assistant fails closed when canonical day identity is incomplete or invalid', () => {
   const valid = {
-    id: 'T01-D01',
+    id: 'خشم-01',
     topic_id: 'T01',
     day: 1,
     review_status: 'approved',
@@ -489,24 +489,26 @@ test('daily assistant fails closed when canonical day identity is incomplete or 
   };
   for (const invalid of [
     { ...valid, id: '' },
+    { ...valid, id: 'خشم-02' },
     { ...valid, topic_id: 'T99' },
+    { ...valid, topic_id: 'T02' },
     { ...valid, topic_id: null },
     { ...valid, day: null },
     { ...valid, day: 0 },
     { ...valid, day: 29 },
     { ...valid, day: 'نامشخص' },
   ]) {
-    const access = getDailyAssistantAccess({ day: invalid, relationshipSafetyConfirmed: true });
+    const access = getDailyAssistantAccess({ day: invalid, problem: 'خشم', relationshipSafetyConfirmed: true });
     assert.equal(access.available, false);
     assert.equal(access.reason, 'daily_source_identity_unverified');
   }
-  const accepted = getDailyAssistantAccess({ day: valid, relationshipSafetyConfirmed: true });
+  const accepted = getDailyAssistantAccess({ day: valid, problem: 'خشم', relationshipSafetyConfirmed: true });
   assert.equal(accepted.available, true);
 });
 
 test('daily assistant remains unavailable when the day content is blocked for safety review', () => {
   const blockedDay = {
-    id: 'T03-D01',
+    id: 'ترس-01',
     topic_id: 'T03',
     day: 1,
     review_status: 'draft',
@@ -514,39 +516,39 @@ test('daily assistant remains unavailable when the day content is blocked for sa
     instructions: 'متن مصنوعی که نباید به دستیار برسد',
     actionText: 'اقدام مصنوعی',
   };
-  const access = getDailyAssistantAccess({ day: blockedDay, relationshipSafetyConfirmed: true });
+  const access = getDailyAssistantAccess({ day: blockedDay, problem: 'ترس', relationshipSafetyConfirmed: true });
   assert.equal(access.available, false);
   assert.equal(access.reason, 'daily_content_blocked');
 });
 
 test('relationship-gated daily guidance stays closed until the day-specific safety check is confirmed', () => {
   const gatedDay = {
-    id: 'T01-D10',
+    id: 'خشم-10',
     topic_id: 'T01',
     day: 10,
     review_status: 'approved',
     risk_level: 'routine',
     instructions: 'متن مصنوعی تمرین',
   };
-  const pending = getDailyAssistantAccess({ day: gatedDay, relationshipSafetyConfirmed: false });
+  const pending = getDailyAssistantAccess({ day: gatedDay, problem: 'خشم', relationshipSafetyConfirmed: false });
   assert.equal(pending.available, false);
   assert.equal(pending.reason, 'relationship_safety_unconfirmed');
 
-  const confirmed = getDailyAssistantAccess({ day: gatedDay, relationshipSafetyConfirmed: true });
+  const confirmed = getDailyAssistantAccess({ day: gatedDay, problem: 'خشم', relationshipSafetyConfirmed: true });
   assert.equal(confirmed.available, true);
   assert.equal(confirmed.safetyMode, 'routine');
 });
 
 test('caution-level daily guidance is available but explicitly marked for cautious handling', () => {
   const cautionDay = {
-    id: 'T01-D01',
+    id: 'خشم-01',
     topic_id: 'T01',
     day: 1,
     review_status: 'approved',
     risk_level: 'caution',
     instructions: 'متن مصنوعی تمرین',
   };
-  const access = getDailyAssistantAccess({ day: cautionDay });
+  const access = getDailyAssistantAccess({ day: cautionDay, problem: 'خشم' });
   assert.equal(access.available, true);
   assert.equal(access.requiresCaution, true);
 });
