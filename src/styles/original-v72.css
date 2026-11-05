@@ -6850,3 +6850,27 @@ body:not(.bale-webview) .bottomNav button.active:after {
   line-height: 1.7;
   overflow-wrap: anywhere;
 }
+
+
+/* Safety gates contain several paragraphs, lists and controls: keep them stacked, not flex columns. */
+#day .safetyNoteStacked {
+  display: block !important;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  line-height: 1.9;
+}
+#day .safetyNoteStacked > * + * { margin-top: 8px; }
+#day .safetyNoteStacked p {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+#day .safetyNoteStacked ul {
+  margin: 8px 0 0;
+  padding-inline-start: 22px;
+  line-height: 1.9;
+}
+#day .safetyNoteStacked li { margin: 4px 0; }
+#day .safetyNoteStacked .safetyChoice { display: block; margin-top: 8px; }

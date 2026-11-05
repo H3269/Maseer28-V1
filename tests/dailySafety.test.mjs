@@ -465,3 +465,27 @@ test('day screen wires human-review blocking and caution metadata into the inter
   assert.match(archiveExport, /skipped_safety_gate/);
   assert.match(archiveExport, /هیچ امتیازی ثبت نشده است/);
 });
+
+
+test('all 34 topics render blocked and relationship safety notices as stacked readable content', async () => {
+  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
+  const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
+  const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
+  const categories = Object.values(content.categories || {});
+  assert.equal(categories.length, 34, 'the full 34-topic catalog must be covered');
+  let totalDays = 0;
+  let blockedDays = 0;
+  for (const category of categories) {
+    assert.equal(category.days.length, 28, `${category.name} must retain all 28 daily records`);
+    for (const day of category.days) {
+      totalDays += 1;
+      if (getDailySafetyMode(day) === 'blocked') blockedDays += 1;
+    }
+  }
+  assert.equal(totalDays, 952, 'all 952 daily records must be audited');
+  assert.ok(blockedDays > 0, 'the audit must exercise the human-review layout');
+  assert.match(ui, /className="safetyNote safetyNoteStacked" role="alert"><b>این تمرین در نسخه فعلی فعال نیست/);
+  assert.match(ui, /className="safetyNote safetyNoteStacked" role="alert"><b>\{relationshipSafetyGate\.title\}/);
+  assert.match(css, /#day \.safetyNoteStacked\s*\{[^}]*display:\s*block\s*!important/s);
+  assert.match(css, /#day \.safetyNoteStacked p\s*\{[^}]*font-size:\s*13px/s);
+});
