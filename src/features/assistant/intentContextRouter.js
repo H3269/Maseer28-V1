@@ -184,7 +184,7 @@ export function routeSemanticIntake({ text, requestId = 'local-request', priorCo
     || /(?:با چاقو تهدیدم می کند|الان مرا می زند|الان دارد مرا می زند|الان منو می زند|الان داره منو می زند|الان داره منو می زنه|در حال ضرب و شتم من است|الان خفه ام می کند)/.test(userNormalized)
     // Direct first-person future/ongoing declarations are explicit intent even
     // when the user omits «قصد دارم» or «می‌خواهم».
-    || /(?:^|[\\s،,])(?:(?:من\\s+)?(?:امشب\\s+)?)?(?:خودکشی\\s+می\\s+کنم|خودم\\s+را\\s+می\\s+کشم|خودمو\\s+می\\s+کشم|به\\s+خودم\\s+آسیب\\s+می\\s+زنم)(?=$|[\\s،,.!?؛])/u.test(userNormalized);
+    || /(?:^|[\s،,])(?:(?:من\s+)?(?:امشب\s+)?)?(?:خودکشی\s+می\s+کنم|خودم\s+را\s+می\s+کشم|خودمو\s+می\s+کشم|به\s+خودم\s+آسیب\s+می\s+زنم)(?=$|[\s،,.!?؛])/u.test(userNormalized);
   const correctionMarkers = [...raw.matchAll(/(?:منظورم(?:\s+این\s+(?:است|بود|نبود|نیست)(?:\s+که)?)?|اصلاح می‌کنم|اصلاح می کنم|نه\s+اینکه)/gu)];
   const lastCorrection = correctionMarkers.at(-1);
   let correctedRemainder = lastCorrection
