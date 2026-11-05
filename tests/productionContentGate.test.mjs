@@ -227,7 +227,7 @@ test('Pages test deployment is automatic while Telegram production publication k
   ]);
   assert.match(deploy, /on:\s+push:\s+branches:\s+\[main\]/);
   assert.doesNotMatch(deploy, /workflow_dispatch|confirm_public_release|assert:production-content|prepare:production/);
-  assert.match(deploy, /npm run build -- --base=\/Maseer28-V1\//);
+  assert.ok(deploy.includes('npm run build -- --base=/Maseer28-V1/'));
   assert.match(publish, /inputs\.publish == 'publish'/);
   assert.match(publish, /github\.ref == 'refs\/heads\/main'/);
   assert.match(publish, /assert-validation-run\.mjs/);

@@ -119,7 +119,7 @@ test('GitHub Pages tracks main as a test app without production-release gates', 
   assert.match(pagesDeployWorkflow, /on:\s+push:\s+branches:\s+\[main\]/);
   assert.doesNotMatch(pagesDeployWorkflow, /workflow_dispatch|confirm_public_release/);
   assert.doesNotMatch(pagesDeployWorkflow, /prepare:production|assert:production-content/);
-  assert.match(pagesDeployWorkflow, /npm run build -- --base=\/Maseer28-V1\//);
+  assert.ok(pagesDeployWorkflow.includes('npm run build -- --base=/Maseer28-V1/'));
   assert.match(journeyStore, /TEST_MODE:\s*true/);
   assert.match(journeyStore, /TIME_LOCK_ENABLED:\s*false/);
 });
