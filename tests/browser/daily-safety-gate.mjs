@@ -225,6 +225,67 @@ try {
   assert.deepEqual(relationshipTopicDaySixErrors, []);
   await relationshipTopicDaySixPage.close();
 
+
+  // Regression audit: every topic currently withheld by the shared daily safety
+  // gate must render the same stacked notice without horizontal overflow.
+  const blockedVisualCases = [
+    { problem: 'خشم', day: 1 },
+    { problem: 'اضطراب', day: 1 },
+    { problem: 'ترس', day: 1 },
+    { problem: 'بی‌خوابی و مشکلات خواب', day: 1 },
+    { problem: 'عادت‌های تکراری', day: 1 },
+    { problem: 'مرزبندی و نه گفتن', day: 1 },
+    { problem: 'تنهایی', day: 14 },
+    { problem: 'افکار منفی و نشخوار فکری', day: 1 },
+    { problem: 'مشکلات رابطه', day: 1 },
+    { problem: 'کنترل‌گری', day: 1 },
+    { problem: 'بی‌انگیزگی', day: 1 },
+  ];
+
+  for (const viewport of [{ width: 320, height: 568 }, { width: 390, height: 844 }]) {
+    for (const scenario of blockedVisualCases) {
+      const visualPage = await browser.newPage({ viewport });
+      const visualErrors = [];
+      visualPage.on('pageerror', (error) => visualErrors.push(String(error)));
+      const completed = Array.from({ length: scenario.day - 1 }, (_, index) => index + 1);
+      const visualState = makeState(completed, scenario.problem);
+      if (scenario.day > 1) {
+        visualState.startedAt = new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString();
+      }
+      await seedPage(visualPage, visualState);
+      const notice = visualPage.locator('#day .safetyNoteStacked[role="alert"]');
+      await notice.waitFor({ state: 'visible' });
+      assert.equal(await visualPage.locator('#dayExercise').count(), 0,
+        scenario.problem + ' day ' + scenario.day + ' must remain on the human-review branch');
+      assert.equal(await visualPage.locator('#dailyEntryPanel').count(), 0,
+        scenario.problem + ' day ' + scenario.day + ' must not expose daily scoring');
+      const layout = await notice.evaluate((element) => {
+        const style = window.getComputedStyle(element);
+        const paragraphs = [...element.querySelectorAll(':scope > p')].map((item) => {
+          const rect = item.getBoundingClientRect();
+          return { top: rect.top, bottom: rect.bottom };
+        });
+        return {
+          display: style.display,
+          scrollWidth: element.scrollWidth,
+          clientWidth: element.clientWidth,
+          paragraphs,
+        };
+      });
+      assert.equal(layout.display, 'block',
+        scenario.problem + ' day ' + scenario.day + ' safety notice must use vertical block flow at ' + viewport.width + 'px');
+      assert.ok(layout.scrollWidth <= layout.clientWidth + 1,
+        scenario.problem + ' day ' + scenario.day + ' safety notice must not overflow horizontally at ' + viewport.width + 'px');
+      for (let index = 1; index < layout.paragraphs.length; index += 1) {
+        assert.ok(layout.paragraphs[index].top >= layout.paragraphs[index - 1].bottom - 1,
+          scenario.problem + ' day ' + scenario.day + ' safety paragraphs must remain vertically stacked');
+      }
+      assert.deepEqual(visualErrors, [],
+        scenario.problem + ' day ' + scenario.day + ' must not raise browser errors');
+      await visualPage.close();
+    }
+  }
+
   process.stdout.write('PASS: Chromium blocks unsafe T01 communication, human-review-only exercises, and all tested T17 access paths; skips remain unscored (WV-BROWSER-SAFETY)\\n');
 } finally {
   await browser.close();
