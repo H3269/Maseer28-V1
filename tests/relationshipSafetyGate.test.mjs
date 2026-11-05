@@ -202,11 +202,15 @@ test('relationship safety helpers remain available to the assistant, not the Pat
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
   const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
   assert.doesNotMatch(ui, /getRelationshipSafetyGate|getInterpersonalPrivacyNotice|isRelationshipSafetyConfirmed|relationshipSafetyGate|supportSeekingPrivacyNotice/);
-  assert.doesNotMatch(app, /getDailySafetyMode|getRelationshipSafetyGate|isRelationshipSafetyConfirmed|skipDayForHumanReview|skipDayForRelationshipSafety|relationshipSafetyState/);
+  assert.doesNotMatch(app, /getDailySafetyMode|skipDayForHumanReview|skipDayForRelationshipSafety/);
+  assert.match(app, /relationshipSafetyConfirmed,/,
+    'the independent assistant context keeps its own relationship-safety signal');
   assert.match(ui, /export function DayScreen/);
   assert.match(ui, /id="dayExercise"/);
   assert.match(ui, /id="dayAction"/);
   assert.match(ui, /id="openDailyEntryBtn"/);
   assert.match(app, /category\?\.days\?\.find/);
-  assert.match(app, /function completeDay/);
+  const completeStart = app.indexOf('async function completeDay');
+  const completeEnd = app.indexOf('function openCurrentDay', completeStart);
+  assert.doesNotMatch(app.slice(completeStart, completeEnd), /getRelationshipSafetyGate|isRelationshipSafetyConfirmed|relationshipSafetyConfirmed/);
 });
