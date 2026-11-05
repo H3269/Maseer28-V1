@@ -179,7 +179,9 @@ try {
   const humanReviewText = await humanReviewPage.locator('#day').innerText();
   assert.match(humanReviewText, /این تمرین در نسخه فعلی فعال نیست/);
   assert.match(humanReviewText, /نیازمند بازبینی انسانی/);
-  assert.doesNotMatch(humanReviewText, /فقط اگر در حال حاضر خطر فوری وجود ندارد/);
+  assert.equal(await humanReviewPage.locator('#dayExercise').count(), 1, 'human-review content text must remain visible for inspection');
+  assert.equal(await humanReviewPage.locator('#dayAction').count(), 1, 'human-review action text must remain visible for inspection');
+  assert.equal(await humanReviewPage.locator('#dailyEntryPanel').count(), 0, 'human-review content must not expose scoring or execution controls');
   await humanReviewPage.getByRole('button', { name: 'ثبت عدم اجرای تمرین و ادامه مسیر' }).click();
   await humanReviewPage.locator('#dailyResult').waitFor({ state: 'visible' });
   await humanReviewPage.waitForFunction(() => JSON.parse(localStorage.getItem('maseer28_state')).daily?.[27]?.status === 'skipped_human_review');
@@ -200,7 +202,8 @@ try {
   assert.match(relationshipTopicDayOneText, /این تمرین در نسخه فعلی فعال نیست/);
   assert.match(relationshipTopicDayOneText, /نیازمند بازبینی انسانی/);
   assert.doesNotMatch(relationshipTopicDayOneText, /آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
-  assert.equal(await relationshipTopicDayOnePage.locator('#dayExercise').count(), 0);
+  assert.equal(await relationshipTopicDayOnePage.locator('#dayExercise').count(), 1, 'blocked content text remains visible in read-only mode');
+  assert.equal(await relationshipTopicDayOnePage.locator('#dayAction').count(), 1);
   assert.equal(await relationshipTopicDayOnePage.locator('#dailyEntryPanel').count(), 0);
   await relationshipTopicDayOnePage.getByRole('button', { name: 'ثبت عدم اجرای تمرین و ادامه مسیر' }).click();
   await relationshipTopicDayOnePage.locator('#dailyResult').waitFor({ state: 'visible' });
@@ -219,7 +222,8 @@ try {
   await seedPage(relationshipTopicDaySixPage, makeState([1, 2, 3, 4, 5], 'مشکلات رابطه'));
   const relationshipTopicDaySixText = await relationshipTopicDaySixPage.locator('#day').innerText();
   assert.match(relationshipTopicDaySixText, /این تمرین در نسخه فعلی فعال نیست/);
-  assert.equal(await relationshipTopicDaySixPage.locator('#dayExercise').count(), 0);
+  assert.equal(await relationshipTopicDaySixPage.locator('#dayExercise').count(), 1, 'blocked content text remains visible in read-only mode');
+  assert.equal(await relationshipTopicDaySixPage.locator('#dayAction').count(), 1);
   assert.equal(await relationshipTopicDaySixPage.locator('#dailyEntryPanel').count(), 0);
   assert.doesNotMatch(relationshipTopicDaySixText, /آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
   assert.deepEqual(relationshipTopicDaySixErrors, []);
@@ -255,8 +259,10 @@ try {
       await seedPage(visualPage, visualState);
       const notice = visualPage.locator('#day .safetyNoteStacked[role="alert"]');
       await notice.waitFor({ state: 'visible' });
-      assert.equal(await visualPage.locator('#dayExercise').count(), 0,
-        scenario.problem + ' day ' + scenario.day + ' must remain on the human-review branch');
+      assert.equal(await visualPage.locator('#dayExercise').count(), 1,
+        scenario.problem + ' day ' + scenario.day + ' text must remain visible in read-only human-review mode');
+      assert.equal(await visualPage.locator('#dayAction').count(), 1,
+        scenario.problem + ' day ' + scenario.day + ' action text must remain visible in read-only human-review mode');
       assert.equal(await visualPage.locator('#dailyEntryPanel').count(), 0,
         scenario.problem + ' day ' + scenario.day + ' must not expose daily scoring');
       const layout = await notice.evaluate((element) => {
