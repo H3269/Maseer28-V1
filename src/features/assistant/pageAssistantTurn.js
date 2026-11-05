@@ -6,13 +6,46 @@ const SAFETY_STATUSES = new Set([
   'safety_clarification_required',
 ]);
 
+function resolveRequestScopeReply(value) {
+  const normalized = String(value ?? '').normalize('NFKC')
+    .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
+    .replace(/[\u064B-\u065F\u0670]/g, '')
+    .replace(/[\u200c\u200f\u200e]/g, ' ')
+    .replace(/[.!؟?،؛:]+/g, ' ')
+    .replace(/\s+/g, ' ').trim().toLowerCase();
+
+  if (/^(?:برای )?(?:خودم|وضعیت شخصی خودم|تجربه شخصی خودم)(?: (?:است|هست|می خواهم|میخوام))?$/.test(normalized)
+    || /^(?:شخصی|تجربه شخصی)(?: است| هست)?$/.test(normalized)) return 'personal';
+  if (/^(?:اطلاعات عمومی|عمومی|برای آگاهی عمومی|صرفا اطلاعات عمومی|برای اطلاعات عمومی)(?: (?:می خواهم|میخوام|است|هست))?$/.test(normalized)) return 'general';
+  return null;
+}
+
 /**
  * Routes one non-daily page turn locally.
- * Only fixed UI questions without detected personal-topic evidence may use
- * page guidance. Safety and personal-intake routes always retain precedence.
+ * A single scope clarification may carry the original question for one turn;
+ * the pending text stays in volatile component memory and is never persisted.
+ * Safety and personal-intake routes always retain precedence over page help.
  */
-export function makePageAssistantTurn({ screen, text } = {}) {
+export function makePageAssistantTurn({ screen, text, conversationState = null } = {}) {
   const message = String(text ?? '').trim();
+  const pending = conversationState?.pendingScope;
+
+  if (pending?.screen === screen && typeof pending.text === 'string') {
+    const safetyProbe = routeAssistantTurn({ text: message });
+    if (SAFETY_STATUSES.has(safetyProbe.status)) {
+      return Object.freeze({ ...safetyProbe, conversationState: null });
+    }
+    if (safetyProbe.status === 'invalid_input' || safetyProbe.status === 'input_too_long') {
+      return Object.freeze({ ...safetyProbe, conversationState: null });
+    }
+
+    const scope = resolveRequestScopeReply(message);
+    if (scope) {
+      const resumed = routeAssistantTurn({ text: pending.text, requestScope: scope });
+      return Object.freeze({ ...resumed, conversationState: null, scope_resolution: scope });
+    }
+  }
+
   const routed = routeAssistantTurn({ text: message });
 
   // Never let page guidance override safety, input guards, or personal intake.
@@ -23,11 +56,14 @@ export function makePageAssistantTurn({ screen, text } = {}) {
     || routed.status === 'intent_scope_clarification_required'
     || (Array.isArray(routed.intake?.topic_candidates) && routed.intake.topic_candidates.length > 0)
   ) {
-    return routed;
+    const nextState = routed.status === 'intent_scope_clarification_required'
+      ? Object.freeze({ pendingScope: Object.freeze({ screen, text: message }) })
+      : null;
+    return Object.freeze({ ...routed, conversationState: nextState });
   }
 
   const pageReply = answerPageAssistantQuestion({ screen, message });
-  if (!pageReply) return routed;
+  if (!pageReply) return Object.freeze({ ...routed, conversationState: null });
 
   const context = getPageAssistantContext(screen);
   return Object.freeze({
@@ -35,5 +71,6 @@ export function makePageAssistantTurn({ screen, text } = {}) {
     message: pageReply,
     knowledge: Object.freeze([]),
     page_context: context.screen,
+    conversationState: null,
   });
 }
