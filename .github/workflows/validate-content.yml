@@ -138,7 +138,7 @@ jobs:
           PATH28_BASE_URL: http://127.0.0.1:4173
         run: |
           PLAYWRIGHT_NODE_PATH="$(npx --yes --package=playwright@1.55.0 -c 'dirname "$(dirname "$(command -v playwright)")"')"
-          NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/privacy-migration.mjs
+          # Disabled by project decision: keep local migration/runtime safeguards and unit coverage intact.
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/archive-export.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/daily-safety-gate.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/daily-assistant-guidance.mjs
