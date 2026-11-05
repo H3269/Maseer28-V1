@@ -29,6 +29,33 @@ const journey = {
   lastView: 'dashboard',
 };
 
+
+function normalizeVisibleDailyText(value) {
+  return String(value || '').normalize('NFKC')
+    .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
+    .replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
+    .replace(/[^\\p{L}\\p{N}\\s]/gu, ' ')
+    .replace(/\\s+/g, ' ').trim().toLowerCase();
+}
+
+async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumber) {
+  const dayBadge = normalizeVisibleDailyText(await page.locator('#dayBadge').innerText());
+  const assistantContext = normalizeVisibleDailyText(await panel.locator('.dailyAssistantContext').innerText());
+  assert.ok(dayBadge.includes(normalizeVisibleDailyText(topic)), 'day UI must show the selected canonical topic');
+  assert.ok(dayBadge.includes('روز ' + dayNumber), 'day UI must show the selected canonical day');
+  assert.ok(assistantContext.includes(normalizeVisibleDailyText(topic)), 'assistant context must show the selected topic');
+  assert.ok(assistantContext.includes('روز ' + dayNumber), 'assistant context must show the selected day');
+
+  const visibleExercise = normalizeVisibleDailyText(await page.locator('#dayExercise').innerText());
+  const visibleAction = normalizeVisibleDailyText(await page.locator('#dayAction').innerText());
+  const reply = normalizeVisibleDailyText(await panel.locator('.assistantMessage').last().innerText());
+  for (const [label, source] of [['exercise', visibleExercise], ['action', visibleAction]]) {
+    assert.ok(source.length > 20, `visible ${label} source must be substantial`);
+    assert.ok(reply.includes(source),
+      `assistant response must preserve the exact visible daily ${label} text for ${topic}, day ${dayNumber}`);
+  }
+}
+
 async function openDay(page, { assistantDayMode = 'routine', problem = null } = {}) {
   const isLegacyMode = assistantDayMode === 'legacy' || assistantDayMode === 'adaptedLegacy';
   const dayNumber = assistantDayMode === 'relationship' ? 10 : isLegacyMode ? 2 : 1;
@@ -124,6 +151,7 @@ try {
   assert.match(assistantReply, /روز 1/);
   assert.match(assistantReply, /متن تمرین همین روز/);
   assert.match(assistantReply, /راهکار اختصاصی همین روز/);
+  await assertAssistantUsesVisibleDailySource(page, panel, 'خشم', 1);
 
   await composer.fill('تمرین را بیشتر توضیح بده');
   await send.click();
@@ -180,6 +208,7 @@ try {
     assert.match(legacyReply, /روز 2/);
     assert.match(legacyReply, /متن تمرین همین روز/);
     assert.match(legacyReply, /راهکار اختصاصی همین روز/);
+    await assertAssistantUsesVisibleDailySource(legacyPage, legacyPanel, problem, 2);
     assert.deepEqual(legacyErrors, [], `real legacy day content for ${problem} must not raise browser errors`);
     await legacyPage.close();
   }
@@ -198,6 +227,7 @@ try {
     'the assistant must receive the adaptation produced from the actual previous-day result');
   assert.match(adaptedLegacyReply, /متن تمرین همین روز/);
   assert.match(adaptedLegacyReply, /راهکار اختصاصی همین روز/);
+  await assertAssistantUsesVisibleDailySource(adaptedLegacyPage, adaptedLegacyPanel, 'غم و سوگ', 2);
   assert.match(adaptedLegacyReply, /غم و سوگ/);
   assert.match(adaptedLegacyReply, /روز 2/);
   assert.deepEqual(adaptedLegacyErrors, [], 'adapted legacy daily guidance must not raise browser errors');
