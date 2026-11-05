@@ -16,10 +16,21 @@ const publishWorkflow = await readFile(new URL('../.github/workflows/publish-tes
 const pagesDeployWorkflow = await readFile(new URL('../.github/workflows/deploy.yml', import.meta.url), 'utf8');
 const productionContentGate = await readFile(new URL('../scripts/assert-production-content-approved.mjs', import.meta.url), 'utf8');
 
-test('experimental assistant remains disabled unless explicitly enabled in a build', () => {
-  assert.match(journeyUi, /APP_CONFIG\.TEST_MODE\s*\|\|\s*import\.meta\.env\.VITE_ENABLE_EXPERIMENTAL_ASSISTANT\s*===\s*'true'/);
-  assert.match(journeyUi, /EXPERIMENTAL_ASSISTANT_ENABLED\s*&&\s*<AssessmentAssistant\s*\/>/);
-  assert.match(assistantUi, /نسخه آزمایشی/);
+test('global assistant launcher is mounted across navigable screens, including support', async () => {
+  const appUi = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
+  const launcherUi = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
+  const supportStart = journeyUi.indexOf('export function Support');
+  const supportEnd = journeyUi.indexOf('function reflectionValues', supportStart);
+  assert.ok(supportStart >= 0 && supportEnd > supportStart, 'support screen source must be identifiable');
+  const supportUi = journeyUi.slice(supportStart, supportEnd);
+
+  assert.match(appUi, /import GlobalAssistantLauncher from ['"].*GlobalAssistantLauncher\.jsx['"]/);
+  assert.match(appUi, /<GlobalAssistantLauncher screen=\{screen\} visible=\{navVisible\} \/>/);
+  assert.match(launcherUi, /support:\s*'پشتیبانی'/);
+  assert.match(launcherUi, /className="globalAssistantLauncher"/);
+  assert.match(launcherUi, /aria-label="باز کردن دستیار مسیر۲۸"/);
+  assert.match(launcherUi, /if \(!visible \|\| screen === 'bookReader'\) return null/);
+  assert.doesNotMatch(supportUi, /AssessmentAssistant|حریم خصوصی|بازیابی فایل پشتیبان|دستیار آزمایشی/);
 });
 
 test('assistant runtime does not claim clinical validation or diagnostic capability', () => {
