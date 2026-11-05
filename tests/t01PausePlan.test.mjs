@@ -14,24 +14,16 @@ test('T01 day 10 provides a three-part, conditional pause plan', () => {
   assert.match(plan, /اگر درباره امنیت یا رضایت آزادانه تردید داری/);
 });
 
-test('T01 day 10 content is consent-led and remains unapproved', async () => {
+test('T01 days 10 and 11 retain the exact reference-app exercise and action text', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
-  const day = content.categories['خشم'].days.find((item) => item.day === 10);
-  assert.equal(day.review_status, 'pending_expert_review');
-  assert.match(day.exercise, /هر دو نفر آزادانه رضایت دارند/);
-  assert.match(day.exercise, /تعیین زمان بازگشت یا وعده ادامه گفتگو الزامی نیست/);
-  assert.doesNotMatch(day.exercise, /زمان بازگشت واقع‌بینانه تعیین کن/);
-  assert.match(day.actionText, /لازم نیست زمان بازگشت تعیین کنی/);
-});
-
-test('T01 day 11 does not impose a return obligation after a pause', async () => {
-  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
-  const day = content.categories['خشم'].days.find((item) => item.day === 11);
-  assert.equal(day.review_status, 'pending_expert_review');
-  assert.match(day.exercise, /اگر یکی از شما نمی‌خواهد ادامه دهد/);
-  assert.match(day.actionText, /اگر یکی از شما آمادگی ندارد، ادامه نده/);
-  assert.match(day.teaching_point, /مکث به‌خودی‌خود تعهد به بازگشت نیست/);
-  assert.doesNotMatch(day.exercise, /چه زمانی می‌توانی به گفت‌وگو برگردی/);
+  const day10 = content.categories['خشم'].days.find((item) => item.day === 10);
+  const day11 = content.categories['خشم'].days.find((item) => item.day === 11);
+  assert.equal(day10.exercise, 'یک کاری را که به‌خاطر «خشم» دشوار شده، انتخاب کن. آن را به کوچک‌ترین گام امنی تقسیم کن که حداکثر چند دقیقه زمان می‌برد و معیار پایان آن را مشخص کن. اگر گام هنوز بزرگ است، دوباره آن را کوچک‌تر کن تا دقیقاً بدانی از کجا شروع می‌شود.');
+  assert.equal(day10.actionText, 'فقط همان گام کوچک را انجام بده، نه کل کار را. پس از پایان، علامت بزن که انجام شد؛ کیفیت یا نتیجه کامل شرط موفقیت این مرحله نیست. پس از انجام گام، بنویس چه چیزی شروع را آسان‌تر کرد تا برای گام‌های بعدی استفاده کنی.');
+  assert.equal(day11.exercise, 'در موقعیتی مرتبط با «خشم»، بنویس چه چیزی در اختیار توست و چه چیزی در اختیار تو نیست. یک مرز سالم یا محدودیت واقعی خود را هم مشخص کن. مرز باید با شرایط واقعی و امنیت تو سازگار باشد؛ مسئولیت رفتار دیگران بر عهده تو نیست.');
+  assert.equal(day11.actionText, 'در یک موقعیت کم‌خطر، یک مرز یا محدودیت را با جمله‌ای کوتاه و محترمانه بیان کن؛ اگر بیان مستقیم امن یا مناسب نیست، آن را برای گفت‌وگو با فرد قابل اعتماد آماده کن. پس از گفتن جمله، لازم نیست واکنش دیگران را کنترل کنی؛ فقط روشن بودن پیام خودت را بررسی کن.');
+  const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
+  assert.doesNotMatch(ui, /getT01PausePlan|t01PausePlan/);
 });
 
 test('production topic name resolves T01 day 10 when runtime IDs omit topic metadata', () => {
