@@ -707,3 +707,12 @@ CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` مو�
 - CI run `41996954702` با وضعیت نهایی `completed / success` تأیید شد. jobهای `validate-content` و گزارش نتیجه commit همگی موفق‌اند؛ هر ۲۱ مرحله اصلی، از audit امنیت وابستگی و dry-runهای بدون deploy/upload تا سه runtime integration محلی، unit tests، اعتبارسنجی محتوا، build و آزمون Chromium privacy migration موفق شدند.
 - این تغییر فقط روشن‌سازی scope را مقاوم‌تر می‌کند؛ مدل زبانی on-device، مکالمه آزاد عمیق و فهم معنایی کامل ایجاد نمی‌کند. هیچ Preview زنده، deploy، upload واقعی Worker، cloud inference، انتشار عمومی یا Production activation انجام نشده است.
 - گام بعدی: ممیزی و تکمیل مسیر روزمحور و بازیابی زمینه canonical تمرین/راهکار، با حفظ fail-closed در داده ناقص و بدون ساختن اطلاعات آموزشی غایب.
+
+
+## سخت‌گیری هویت محتوای تطبیق‌یافته روز و تأیید کامل CI — 2026-11-05
+
+- اصلاح در commit `c1bf8f5e3e89ff6b83d3e1d17d4cf42b9c24f7f6`: محتوای adapted فقط وقتی پذیرفته می‌شود که تمام شناسه‌های موجود در منبع canonical (`id`, `topic_id`, `day`) را با مقدار هم‌خوان داشته باشد. نبود هر شناسه در adapted، تعارض مقدار، یا نبود هرگونه هویت قابل‌اتکا در canonical باعث رد adapted و بازگشت به داده canonical می‌شود؛ ادغام متن بی‌هویت fail-closed است.
+- آزمون‌های رگرسیون در commit `eef24f53f8520e3c8b596ee77738048bc248314e` افزوده شدند. اجرای نخست به‌درستی fixtureهای قدیمیِ فاقد شناسه را رد کرد؛ دو commit بعدی `07c0485202f5a07d315482e35bbf8dd293ea73bd` و `1596b61ca5144bb4e7543f8d697c81ec34787ef3` fixtureهای adapted مربوط را با شناسه‌های canonical هم‌تراز کردند. این شکست‌های میانی نقص fixture آزمون بودند، نه مجوزی برای تضعیف قاعده fail-closed.
+- CI نهایی run `41999752923` روی HEAD `1596b61ca5144bb4e7543f8d697c81ec34787ef3` با وضعیت `completed / success` تأیید شد. هر سه job موفق‌اند: `validate-content`، اعلام وضعیت در حال اجرا و گزارش نتیجه commit. تمام مراحل job اصلی موفق‌اند؛ از جمله audit وابستگی، Worker bundle و version-upload dry-run، سه runtime integration محلی، topic registry، unit tests، اعتبارسنجی course/library، ممیزی کیفیت محتوای روزانه، build و آزمون‌های Chromium privacy migration.
+- نتیجه فقط CI خودکار را تأیید می‌کند؛ Preview زنده، آزمون روی دستگاه کاربر، مدل زبانی on-device یا کیفیت معنایی/بالینی را اثبات نمی‌کند. هیچ deploy، upload واقعی Worker، cloud inference، انتشار عمومی، Production activation یا تغییر ترافیک انجام نشده است.
+- گام بعدی: ادامه ممیزی قراردادهای روزمحور و رفتار retrieval؛ داده‌های legacy فاقد metadata نباید با حدس یا محتوای ساختگی تکمیل شوند.
