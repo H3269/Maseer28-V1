@@ -225,12 +225,12 @@ test('Pages test deployment is automatic while Telegram production publication k
     (await import('node:fs/promises')).readFile(new URL('../.github/workflows/deploy.yml', import.meta.url), 'utf8'),
     (await import('node:fs/promises')).readFile(new URL('../.github/workflows/publish-tested-version.yml', import.meta.url), 'utf8'),
   ]);
-  assert.match(deploy, /on:\\s+push:\\s+branches:\\s+\\[main\\]/);
+  assert.match(deploy, /on:\s+push:\s+branches:\s+\[main\]/);
   assert.doesNotMatch(deploy, /workflow_dispatch|confirm_public_release|assert:production-content|prepare:production/);
-  assert.match(deploy, /npm run build -- --base=\\/Maseer28-V1\\//);
-  assert.match(publish, /inputs\\.publish == 'publish'/);
-  assert.match(publish, /github\\.ref == 'refs\\/heads\\/main'/);
-  assert.match(publish, /assert-validation-run\\.mjs/);
+  assert.match(deploy, /npm run build -- --base=\/Maseer28-V1\//);
+  assert.match(publish, /inputs\.publish == 'publish'/);
+  assert.match(publish, /github\.ref == 'refs\/heads\/main'/);
+  assert.match(publish, /assert-validation-run\.mjs/);
   assert.match(publish, /npm run assert:production-content/);
 });
 

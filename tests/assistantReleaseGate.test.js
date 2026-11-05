@@ -116,10 +116,10 @@ test('assistant chat styling distinguishes speaker bubbles and keeps composer in
 
 test('GitHub Pages tracks main as a test app without production-release gates', async () => {
   const journeyStore = await readFile(new URL('../src/features/journey/journeyStore.js', import.meta.url), 'utf8');
-  assert.match(pagesDeployWorkflow, /on:\\s+push:\\s+branches:\\s+\\[main\\]/);
+  assert.match(pagesDeployWorkflow, /on:\s+push:\s+branches:\s+\[main\]/);
   assert.doesNotMatch(pagesDeployWorkflow, /workflow_dispatch|confirm_public_release/);
   assert.doesNotMatch(pagesDeployWorkflow, /prepare:production|assert:production-content/);
-  assert.match(pagesDeployWorkflow, /npm run build -- --base=\\/Maseer28-V1\\//);
-  assert.match(journeyStore, /TEST_MODE:\\s*true/);
-  assert.match(journeyStore, /TIME_LOCK_ENABLED:\\s*false/);
+  assert.match(pagesDeployWorkflow, /npm run build -- --base=\/Maseer28-V1\//);
+  assert.match(journeyStore, /TEST_MODE:\s*true/);
+  assert.match(journeyStore, /TIME_LOCK_ENABLED:\s*false/);
 });
