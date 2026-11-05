@@ -92,10 +92,16 @@ test('uses the exact normalized instructions and adapted action passed by the da
 
 test('prefers the adapted day content over the raw day content', () => {
   const raw = {
+    id: 'T01-D09',
+    topic_id: 'T01',
+    day: 9,
     exercise: 'تمرین خام و سخت‌تر',
     actionText: 'اقدام خام',
   };
   const adapted = {
+    id: 'T01-D09',
+    topic_id: 'T01',
+    day: 9,
     exercise: 'تمرین متناسب‌شده و امن‌تر',
     actionText: 'اقدام متناسب‌شده امروز',
   };
