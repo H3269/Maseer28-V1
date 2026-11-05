@@ -44,6 +44,18 @@ export function makePageAssistantTurn({ screen, text, conversationState = null }
       const resumed = routeAssistantTurn({ text: pending.text, requestScope: scope });
       return Object.freeze({ ...resumed, conversationState: null, scope_resolution: scope });
     }
+
+    // Allow one explicit retry, then discard the pending question to prevent loops.
+    if ((pending.clarificationAttempts || 0) < 1) {
+      return Object.freeze({
+        status: 'intent_scope_clarification_required',
+        message: 'برای ادامه، فقط مشخص کن منظورت تجربه و وضعیت شخصی خودت است یا اطلاعات عمومی می‌خواهی. اگر هنوز مطمئن نیستی، می‌توانی پرسش را از نو مطرح کنی.',
+        knowledge: Object.freeze([]),
+        conversationState: Object.freeze({
+          pendingScope: Object.freeze({ ...pending, clarificationAttempts: 1 }),
+        }),
+      });
+    }
   }
 
   const routed = routeAssistantTurn({ text: message });

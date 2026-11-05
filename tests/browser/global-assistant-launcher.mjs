@@ -95,6 +95,20 @@ try {
   const scopedReply = dialog.locator('.assistantMessage').last();
   assert.match(await scopedReply.innerText(), /موضوع فعلاً فقط یک فرضیه اولیه است/);
   assert.doesNotMatch(await scopedReply.innerText(), /در صفحه «خانه» می‌توانی/);
+
+  await dialog.getByRole('textbox').fill('چه راهکاری برای اضطراب وجود دارد؟');
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('این پرسش درباره تجربه و وضعیت شخصی خودت است')));
+  await dialog.getByRole('textbox').fill('شاید بعداً');
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('فقط مشخص کن منظورت تجربه و وضعیت شخصی خودت است یا اطلاعات عمومی')));
+  await dialog.getByRole('textbox').fill('برای خودم');
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('موضوع فعلاً فقط یک فرضیه اولیه است')));
+  const retriedScopedReply = dialog.locator('.assistantMessage').last();
+  assert.match(await retriedScopedReply.innerText(), /موضوع فعلاً فقط یک فرضیه اولیه است/);
+  assert.doesNotMatch(await retriedScopedReply.innerText(), /در صفحه «خانه» می‌توانی/);
+
   await dialog.getByRole('textbox').fill('من اضطراب دارم؛ این صفحه برای چیست؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('موضوع فعلاً فقط')));

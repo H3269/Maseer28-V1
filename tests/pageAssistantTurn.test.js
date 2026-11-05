@@ -113,16 +113,43 @@ test('an unsafe scope reply is handed off before the original question is resume
   assert.deepEqual(second.knowledge, []);
 });
 
-test('unrecognized replies do not get guessed as a scope answer', () => {
+test('one unrecognized scope reply preserves the original question for one explicit retry', () => {
   const first = makePageAssistantTurn({ screen: 'dashboard', text: 'چه راهکاری برای اضطراب وجود دارد؟' });
   const second = makePageAssistantTurn({
     screen: 'dashboard',
     text: 'شاید بعداً',
     conversationState: first.conversationState,
   });
-  assert.notEqual(second.scope_resolution, 'personal');
-  assert.notEqual(second.scope_resolution, 'general');
-  assert.equal(second.status, 'clarification_required');
+  assert.equal(second.status, 'intent_scope_clarification_required');
+  assert.match(second.message, /تجربه و وضعیت شخصی خودت است یا اطلاعات عمومی/);
+  assert.equal(second.conversationState.pendingScope.text, 'چه راهکاری برای اضطراب وجود دارد؟');
+  assert.equal(second.conversationState.pendingScope.clarificationAttempts, 1);
+
+  const third = makePageAssistantTurn({
+    screen: 'dashboard',
+    text: 'برای خودم',
+    conversationState: second.conversationState,
+  });
+  assert.equal(third.status, 'personal_intake_required');
+  assert.equal(third.scope_resolution, 'personal');
+  assert.equal(third.conversationState, null);
+});
+
+test('a second unrecognized scope reply clears pending context and prevents a clarification loop', () => {
+  const first = makePageAssistantTurn({ screen: 'dashboard', text: 'چه راهکاری برای اضطراب وجود دارد؟' });
+  const second = makePageAssistantTurn({
+    screen: 'dashboard',
+    text: 'شاید بعداً',
+    conversationState: first.conversationState,
+  });
+  const third = makePageAssistantTurn({
+    screen: 'dashboard',
+    text: 'نمی‌دانم',
+    conversationState: second.conversationState,
+  });
+  assert.equal(third.status, 'clarification_required');
+  assert.equal(third.conversationState, null);
+  assert.equal(third.scope_resolution, undefined);
 });
 
 test('pending scope context is discarded when the user changes screens', () => {
