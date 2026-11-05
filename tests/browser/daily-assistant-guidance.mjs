@@ -66,14 +66,27 @@ async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumb
 }
 
 async function openDay(page, { assistantDayMode = 'routine', problem = null } = {}) {
-  const isLegacyMode = assistantDayMode === 'legacy' || assistantDayMode === 'adaptedLegacy';
-  const dayNumber = assistantDayMode === 'relationship' ? 10 : isLegacyMode ? 2 : 1;
+  const isLegacyMode = assistantDayMode === 'legacy' || assistantDayMode.startsWith('adaptedLegacy');
+  const dayNumber = assistantDayMode === 'relationship'
+    ? 10
+    : assistantDayMode === 'adaptedLegacyStreak' || assistantDayMode === 'adaptedLegacyImprovement'
+      ? 3
+      : isLegacyMode ? 2 : 1;
   const topicKey = problem || (isLegacyMode ? 'غم و سوگ' : 'خشم');
+  const adaptationHistory = assistantDayMode === 'adaptedLegacy'
+    ? { 1: { feedback: 'hard', score: 8 } }
+    : assistantDayMode === 'adaptedLegacyStreak'
+      ? { 1: { feedback: 'hard', score: 8 }, 2: { feedback: 'worse', score: 9 } }
+      : assistantDayMode === 'adaptedLegacyImprovement'
+        ? { 1: { feedback: 'better', score: 3 }, 2: { feedback: 'better', score: 4 } }
+        : assistantDayMode === 'adaptedLegacySame'
+          ? { 1: { feedback: 'same', score: 5 } }
+          : {};
   const testJourney = dayNumber === 1 ? journey : {
     ...journey,
     profileData: { ...journey.profileData, problem: topicKey },
     completed: Array.from({ length: dayNumber - 1 }, (_, index) => index + 1),
-    daily: assistantDayMode === 'adaptedLegacy' ? { 1: { feedback: 'hard', score: 8 } } : {},
+    daily: adaptationHistory,
     startedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
   };
   await page.addInitScript((state) => {
@@ -222,25 +235,32 @@ try {
     await legacyPage.close();
   }
 
-  const adaptedLegacyPage = await browser.newPage();
-  const adaptedLegacyErrors = [];
-  adaptedLegacyPage.on('pageerror', error => adaptedLegacyErrors.push(String(error)));
-  await openDay(adaptedLegacyPage, { assistantDayMode: 'adaptedLegacy' });
-  const adaptedLegacyPanel = adaptedLegacyPage.locator('.dailyExerciseAssistant');
-  await adaptedLegacyPanel.waitFor({ state: 'visible' });
-  await adaptedLegacyPanel.locator('#daily-exercise-assistant-message').fill('چطور انجامش بدم؟');
-  await adaptedLegacyPanel.getByRole('button', { name: 'ارسال' }).click();
-  await adaptedLegacyPage.waitForFunction(() => document.querySelectorAll('.dailyExerciseAssistant .assistantMessage').length >= 1);
-  const adaptedLegacyReply = await adaptedLegacyPanel.locator('.assistantMessage').last().innerText();
-  assert.match(adaptedLegacyReply, /با توجه به نتیجه روز گذشته/,
-    'the assistant must receive the adaptation produced from the actual previous-day result');
-  assert.match(adaptedLegacyReply, /متن تمرین همین روز/);
-  assert.match(adaptedLegacyReply, /راهکار اختصاصی همین روز/);
-  await assertAssistantUsesVisibleDailySource(adaptedLegacyPage, adaptedLegacyPanel, 'غم و سوگ', 2);
-  assert.match(adaptedLegacyReply, /غم و سوگ/);
-  assert.match(adaptedLegacyReply, /روز 2/);
-  assert.deepEqual(adaptedLegacyErrors, [], 'adapted legacy daily guidance must not raise browser errors');
-  await adaptedLegacyPage.close();
+  for (const scenario of [
+    { mode: 'adaptedLegacy', day: 2, expected: 'با توجه به نتیجه روز گذشته' },
+    { mode: 'adaptedLegacyStreak', day: 3, expected: 'در چند روز اخیر انجام تمرین دشوار بوده' },
+    { mode: 'adaptedLegacyImprovement', day: 3, expected: 'بهبود در چند روز اخیر دیده می‌شود' },
+    { mode: 'adaptedLegacySame', day: 2, expected: 'تغییر محسوسی ثبت نشده است' },
+  ]) {
+    const adaptedPage = await browser.newPage();
+    const adaptedErrors = [];
+    adaptedPage.on('pageerror', error => adaptedErrors.push(String(error)));
+    await openDay(adaptedPage, { assistantDayMode: scenario.mode });
+    const adaptedPanel = adaptedPage.locator('.dailyExerciseAssistant');
+    await adaptedPanel.waitFor({ state: 'visible' });
+    await adaptedPanel.locator('#daily-exercise-assistant-message').fill('چطور انجامش بدم؟');
+    await adaptedPanel.getByRole('button', { name: 'ارسال' }).click();
+    await adaptedPage.waitForFunction(() => document.querySelectorAll('.dailyExerciseAssistant .assistantMessage').length >= 1);
+    const adaptedReply = await adaptedPanel.locator('.assistantMessage').last().innerText();
+    assert.ok(adaptedReply.includes(scenario.expected),
+      `assistant must expose the expected source-derived adaptation for ${scenario.mode}`);
+    assert.match(adaptedReply, /متن تمرین همین روز/);
+    assert.match(adaptedReply, /راهکار اختصاصی همین روز/);
+    await assertAssistantUsesVisibleDailySource(adaptedPage, adaptedPanel, 'غم و سوگ', scenario.day);
+    assert.match(adaptedReply, /غم و سوگ/);
+    assert.match(adaptedReply, new RegExp('روز ' + scenario.day));
+    assert.deepEqual(adaptedErrors, [], `adapted legacy daily guidance ${scenario.mode} must not raise browser errors`);
+    await adaptedPage.close();
+  }
 
   const blockedPage = await browser.newPage();
   await openDay(blockedPage, { assistantDayMode: 'blocked' });
@@ -276,7 +296,7 @@ try {
     'assistant must remain closed after re-entry until safety is confirmed again');
   await gatedPage.close();
 
-  process.stdout.write('PASS: Chromium daily assistant guidance, real legacy retrieval across three topics, follow-up context, input bounds, persistent safety handoff, local-only privacy, blocked-day denial, relationship gate, and confirmation reset (WV-BROWSER-ASSISTANT)\\n');
+  process.stdout.write('PASS: Chromium daily assistant guidance, real legacy retrieval across three topics, four source-derived adaptation branches, follow-up context, input bounds, persistent safety handoff, local-only privacy, blocked-day denial, relationship gate, and confirmation reset (WV-BROWSER-ASSISTANT)\\n');
 } finally {
   await browser.close();
 }
