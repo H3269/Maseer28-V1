@@ -17,7 +17,7 @@ const SCREEN_LABELS = {
   archive: 'آرشیو',
 };
 
-export default function GlobalAssistantLauncher({ screen, visible = false }) {
+export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
@@ -29,13 +29,16 @@ export default function GlobalAssistantLauncher({ screen, visible = false }) {
   const endRef = useRef(null);
   const isDailyExercise = screen === 'day';
   const pageLabel = SCREEN_LABELS[screen] || 'صفحه جاری';
+  const dailyTopic = String(dailyContext?.problem || '').trim();
+  const dailyDay = dailyContext?.day;
 
   useEffect(() => {
     setMessages([]);
     setDraft('');
     setError('');
     conversationStateRef.current = null;
-  }, [screen]);
+    setOpen(false);
+  }, [screen, dailyContext?.day, dailyContext?.problem, dailyContext?.relationshipSafetyConfirmed]);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -60,13 +63,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false }) {
   if (!visible || screen === 'bookReader') return null;
 
   function activate() {
-    if (isDailyExercise) {
-      const target = document.querySelector('.dailyExerciseAssistant');
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
-      }
-    }
     setOpen(true);
   }
 
@@ -75,7 +71,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false }) {
     const message = draft.trim();
     if (!message) return;
     try {
-      const turn = makePageAssistantTurn({ screen, text: message, conversationState: conversationStateRef.current });
+      const turn = makePageAssistantTurn({ screen, text: message, conversationState: conversationStateRef.current, dailyContext, libraryContext });
       conversationStateRef.current = turn.conversationState || null;
       setMessages((current) => [
         ...current,
@@ -117,8 +113,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false }) {
         type="button"
         onClick={activate}
         aria-label="باز کردن دستیار مسیر۲۸"
-        aria-haspopup={isDailyExercise ? undefined : 'dialog'}
-        aria-expanded={isDailyExercise ? undefined : open}
+        aria-haspopup="dialog"
+        aria-expanded={open}
       >
         <AppIcon name="message" size={20} />
         <span>دستیار</span>
@@ -142,8 +138,13 @@ export default function GlobalAssistantLauncher({ screen, visible = false }) {
             </div>
             <h2 id="global-assistant-title">دستیار مسیر۲۸</h2>
             <p className="globalAssistantPageContext">صفحه فعلی: <b>{pageLabel}</b></p>
+            {isDailyExercise && <p className="dailyAssistantContext"><b>موضوع: {dailyTopic || 'موضوع انتخاب‌شده'} · روز {dailyDay ?? 'نامشخص'}</b></p>}
             <p id="global-assistant-description">
-              این نسخه فقط به پرسش‌های ثابت درباره کاربرد صفحه، گزینه‌های همان صفحه و راه بازگشت پاسخ می‌دهد. درخواست‌های شخصی به موتور محدود فعلی ارجاع می‌شوند؛ پاسخ آن تشخیص یا توصیه درمانی نیست. پرسش روشن‌سازی عمومی/شخصی فقط برای یک تلاشِ روشن‌سازی دوباره در حافظه موقت مرورگر نگه داشته می‌شود؛ مدل زبانی یا گفت‌وگوی آزاد پیوسته فعال نیست.
+              {screen === 'dashboard'
+                ? 'در خانه می‌توانی پرسش عمومی یا شخصی خود را مطرح کنی. پاسخ‌ها محلی و محدود به منابع و قواعد موجودند؛ این دستیار تشخیص یا توصیه درمانی ارائه نمی‌کند.'
+                : isDailyExercise
+                  ? 'در این صفحه پاسخ‌ها بر اساس موضوع انتخاب‌شده، روز جاری، متن واقعی تمرین و راهکار اختصاصی همان روز و گفت‌وگوی جاری ساخته می‌شوند. اگر گیت ایمنی روز بسته باشد، راهنمایی متوقف می‌شود.'
+                  : 'در این صفحه فقط درباره محتوای همین صفحه پاسخ می‌دهم. اگر پرسشت خارج از محدوده صفحه باشد، آن را حدس نمی‌زنم و برای پرسش عمومی باید به خانه برگردی.'}
             </p>
             <p className="muted globalAssistantPrivacyNote">
               پردازش این نسخه در مرورگر انجام می‌شود؛ پیام‌ها به سرویس ابری ارسال نمی‌شوند و با تغییر صفحه، گفت‌وگوی این پنجره پاک می‌شود.
@@ -176,10 +177,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false }) {
                 <textarea
                   id="global-assistant-message"
                   rows={2}
-                  maxLength={3000}
+                  maxLength={isDailyExercise ? 2000 : 3000}
                   value={draft}
                   onChange={(event) => setDraft(event.target.value)}
-                  placeholder="درباره همین صفحه بپرس..."
+                  placeholder={isDailyExercise ? "درباره تمرین یا راهکار همین روز بپرس..." : screen === "dashboard" ? "هر پرسشی داری بنویس..." : "درباره همین صفحه بپرس..."}
                 />
                 <button className="primary assistantSendButton" type="submit" disabled={!draft.trim()}>ارسال</button>
                 {error && <p className="contactHelp assistantComposerError" role="alert">{error}</p>}

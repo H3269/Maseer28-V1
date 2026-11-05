@@ -1,5 +1,7 @@
 import { routeAssistantTurn } from './assistantTurnEngine.js';
 import { answerPageAssistantQuestion, getPageAssistantContext } from './pageAssistantContext.js';
+import { getDailyAssistantAccess } from './dailyAssistantAccess.js';
+import { makeDailyExerciseGuidanceTurn, selectDailyExerciseGuidanceData } from './dailyExerciseAssistantGuidance.js';
 
 const SAFETY_STATUSES = new Set([
   'urgent_human_support_required',
@@ -26,8 +28,48 @@ function resolveRequestScopeReply(value) {
  * the pending text stays in volatile component memory and is never persisted.
  * Safety and personal-intake routes always retain precedence over page help.
  */
-export function makePageAssistantTurn({ screen, text, conversationState = null } = {}) {
+export function makePageAssistantTurn({ screen, text, conversationState = null, dailyContext = null, libraryContext = null } = {}) {
   const message = String(text ?? '').trim();
+  const inputProbe = routeAssistantTurn({ text: message });
+  if (SAFETY_STATUSES.has(inputProbe.status)
+    || inputProbe.status === 'invalid_input'
+    || inputProbe.status === 'input_too_long') {
+    return Object.freeze({ ...inputProbe, conversationState: null });
+  }
+
+  if (screen === 'day') {
+    if (message.length > 2000) {
+      return Object.freeze({ status: 'input_too_long', message: 'پیام بیش از حد طولانی است؛ لطفاً آن را کوتاه‌تر کن.', knowledge: Object.freeze([]), conversationState: null });
+    }
+    const access = getDailyAssistantAccess({
+      day: dailyContext?.data,
+      problem: dailyContext?.problem,
+      relationshipSafetyConfirmed: dailyContext?.relationshipSafetyConfirmed === true,
+    });
+    if (!access.available) {
+      const messageText = access.reason === 'daily_content_blocked'
+        ? 'این محتوای روز به‌دلیل نیاز به بازبینی ایمنی برای راهنمایی دستیار فعال نیست. لطفاً این محدودیت را دور نزن.'
+        : access.reason === 'relationship_safety_unconfirmed'
+          ? 'پیش از راهنمایی این تمرین، بررسی ایمنی همین روز را در بخش تمرین کامل کن. تا آن زمان متن تمرین و راهکار را از این مسیر توضیح نمی‌دهم.'
+          : 'محتوای معتبر روز جاری در دسترس نیست؛ برای جلوگیری از راهنمایی اشتباه، فعلاً پاسخ روزمحور نمی‌دهم.';
+      return Object.freeze({ status: 'daily_guidance_unavailable', message: messageText, knowledge: Object.freeze([]), conversationState: null });
+    }
+    const dayData = selectDailyExerciseGuidanceData({ guidanceData: dailyContext?.guidanceData, data: dailyContext?.data });
+    const dailyTurn = makeDailyExerciseGuidanceTurn({
+      message,
+      dayData,
+      problem: dailyContext?.problem,
+      day: dailyContext?.day,
+      conversationState: conversationState?.dailyState || null,
+    });
+    return Object.freeze({
+      status: 'daily_guidance_available',
+      message: dailyTurn.response,
+      knowledge: Object.freeze([]),
+      page_context: 'day',
+      conversationState: Object.freeze({ dailyState: dailyTurn.nextState }),
+    });
+  }
   const pending = conversationState?.pendingScope;
 
   if (pending?.screen === screen && typeof pending.text === 'string') {
@@ -58,9 +100,30 @@ export function makePageAssistantTurn({ screen, text, conversationState = null }
     }
   }
 
-  const routed = routeAssistantTurn({ text: message });
+  const routed = inputProbe;
 
-  // Never let page guidance override safety, input guards, or personal intake.
+  if (screen !== 'dashboard') {
+    const pageReply = answerPageAssistantQuestion({ screen, message, libraryContext });
+    const context = getPageAssistantContext(screen);
+    if (pageReply) {
+      return Object.freeze({
+        status: 'page_guidance_available',
+        message: pageReply,
+        knowledge: Object.freeze([]),
+        page_context: context.screen,
+        conversationState: null,
+      });
+    }
+    return Object.freeze({
+      status: 'page_scope_required',
+      message: `در صفحه «${context.label}» فقط درباره محتوای همین صفحه راهنمایی می‌دهم. پرسش تو در اطلاعات قابل‌دسترسی این صفحه نیست؛ برای پرسش عمومی به خانه برگرد.`,
+      knowledge: Object.freeze([]),
+      page_context: context.screen,
+      conversationState: null,
+    });
+  }
+
+  // On the dashboard only, preserve the general assistant router and its scope clarification.
   if (
     SAFETY_STATUSES.has(routed.status)
     || routed.status === 'invalid_input'
@@ -74,7 +137,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null }
     return Object.freeze({ ...routed, conversationState: nextState });
   }
 
-  const pageReply = answerPageAssistantQuestion({ screen, message });
+  const pageReply = answerPageAssistantQuestion({ screen, message, libraryContext });
   if (!pageReply) return Object.freeze({ ...routed, conversationState: null });
 
   const context = getPageAssistantContext(screen);

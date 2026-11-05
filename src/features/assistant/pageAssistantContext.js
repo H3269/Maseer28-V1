@@ -97,10 +97,19 @@ export function getPageAssistantContext(screen) {
   });
 }
 
-export function answerPageAssistantQuestion({ screen, message } = {}) {
+export function answerPageAssistantQuestion({ screen, message, libraryContext } = {}) {
   const context = getPageAssistantContext(screen);
   const text = normalize(message);
   if (!text || context.screen === 'unknown') return null;
+
+  if (screen === 'books' && /(?:چه کتاب(?: هایی|‌هایی)|فهرست کتاب|لیست کتاب|کتاب(?: های|‌های) موجود|چه کتابی داریم)/u.test(text)) {
+    const titles = Array.isArray(libraryContext?.titles)
+      ? libraryContext.titles.map((title) => String(title || '').trim()).filter(Boolean)
+      : [];
+    return titles.length
+      ? 'کتاب‌های موجود در کتابخانه:\\n' + titles.map((title, index) => (index + 1) + ') ' + title).join('\\n')
+      : 'عنوان کتاب‌های کتابخانه هنوز بارگذاری نشده است؛ پس از آماده‌شدن فهرست دوباره بپرس.';
+  }
 
   // Accept only standalone page-navigation questions. Extra clauses must
   // fall through to the safety-first router instead of being masked by UI help.

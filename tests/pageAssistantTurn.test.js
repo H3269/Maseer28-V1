@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
+import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
 
 test('page-specific UI guidance is selected for the current screen', () => {
   const result = makePageAssistantTurn({
@@ -32,13 +33,13 @@ test('personal requests do not become page instructions or invented advice', () 
   assert.deepEqual(result.knowledge, []);
 });
 
-test('unsupported page questions fall back to the existing assistant router', () => {
+test('unsupported non-dashboard questions stay inside the current page scope', () => {
   const result = makePageAssistantTurn({
     screen: 'report',
     text: 'آیا وضعیت من در این مسیر بهتر شده است؟',
   });
-  assert.notEqual(result.status, 'page_guidance_available');
-  assert.ok(typeof result.message === 'string' && result.message.length > 0);
+  assert.equal(result.status, 'page_scope_required');
+  assert.match(result.message, /فقط درباره محتوای همین صفحه/);
 });
 
 test('empty and overlong messages preserve the router input guards', () => {
@@ -161,4 +162,53 @@ test('pending scope context is discarded when the user changes screens', () => {
   });
   assert.notEqual(second.scope_resolution, 'personal');
   assert.equal(second.conversationState, null);
+});
+
+
+test('daily page uses the local canonical day guidance engine with the selected topic and day', () => {
+  const dayData = {
+    id: getCanonicalDailyRecordId('خشم', 1),
+    day: 1,
+    exercise: 'سه موقعیت اخیر را که در آن عصبانی شدی، بدون قضاوت یادداشت کن.',
+    actionText: 'امروز فقط یک موقعیت را انتخاب کن و شدت احساس را از صفر تا ده ثبت کن.',
+  };
+  const result = makePageAssistantTurn({
+    screen: 'day',
+    text: 'چطور انجامش بدم؟',
+    dailyContext: { day: 1, problem: 'خشم', data: dayData, relationshipSafetyConfirmed: true },
+  });
+  assert.equal(result.status, 'daily_guidance_available');
+  assert.match(result.message, /خشم/);
+  assert.match(result.message, /روز 1/);
+  assert.match(result.message, /سه موقعیت اخیر/);
+  assert.match(result.message, /فقط یک موقعیت/);
+  assert.ok(result.conversationState?.dailyState);
+});
+
+test('daily assistant refuses guidance while the relationship safety gate is unconfirmed', () => {
+  const dayData = {
+    id: getCanonicalDailyRecordId('مشکلات رابطه', 10),
+    day: 10,
+    exercise: 'تمرین حساس روز دهم.',
+    actionText: 'راهکار حساس روز دهم.',
+  };
+  const result = makePageAssistantTurn({
+    screen: 'day',
+    text: 'چطور انجامش بدم؟',
+    dailyContext: { day: 10, problem: 'مشکلات رابطه', data: dayData, relationshipSafetyConfirmed: false },
+  });
+  assert.equal(result.status, 'daily_guidance_unavailable');
+  assert.match(result.message, /بررسی ایمنی همین روز/);
+  assert.doesNotMatch(result.message, /تمرین حساس روز دهم|راهکار حساس روز دهم/);
+});
+
+test('library book-list questions use only the currently available local titles', () => {
+  const result = makePageAssistantTurn({
+    screen: 'books',
+    text: 'چه کتاب‌هایی در کتابخانه داریم؟',
+    libraryContext: { titles: ['کتاب اول', 'کتاب دوم'] },
+  });
+  assert.equal(result.status, 'page_guidance_available');
+  assert.match(result.message, /کتاب اول/);
+  assert.match(result.message, /کتاب دوم/);
 });

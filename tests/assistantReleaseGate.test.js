@@ -19,13 +19,19 @@ const productionContentGate = await readFile(new URL('../scripts/assert-producti
 test('global assistant launcher is mounted across navigable screens, including support', async () => {
   const appUi = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
   const launcherUi = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
+  const readerUi = await readFile(new URL('../src/features/library/Reader.jsx', import.meta.url), 'utf8');
   const supportStart = journeyUi.indexOf('export function Support');
   const supportEnd = journeyUi.indexOf('function reflectionValues', supportStart);
   assert.ok(supportStart >= 0 && supportEnd > supportStart, 'support screen source must be identifiable');
   const supportUi = journeyUi.slice(supportStart, supportEnd);
 
   assert.match(appUi, /import GlobalAssistantLauncher from ['"].*GlobalAssistantLauncher\.jsx['"]/);
-  assert.match(appUi, /<GlobalAssistantLauncher screen=\{screen\} visible=\{navVisible\} \/>/);
+  assert.match(appUi, /<GlobalAssistantLauncher/);
+  assert.match(appUi, /dailyContext=\{screen === 'day'/);
+  assert.match(appUi, /libraryContext=\{screen === 'books'/);
+  assert.doesNotMatch(appUi, /DailyExerciseAssistant/);
+  assert.doesNotMatch(readerUi, /GlobalAssistantLauncher/);
+  assert.match(appUi, /if \(screen === 'bookReader' && readerState\)\s*\{\s*return <Reader/);
   assert.match(launcherUi, /support:\s*'پشتیبانی'/);
   assert.match(launcherUi, /className="globalAssistantLauncher"/);
   assert.match(launcherUi, /aria-label="باز کردن دستیار مسیر۲۸"/);
