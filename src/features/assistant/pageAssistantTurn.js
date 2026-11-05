@@ -50,7 +50,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       const messageText = access.reason === 'daily_content_blocked'
         ? 'این محتوای روز به‌دلیل نیاز به بازبینی ایمنی برای راهنمایی دستیار فعال نیست. لطفاً این محدودیت را دور نزن.'
         : access.reason === 'relationship_safety_unconfirmed'
-          ? 'پیش از راهنمایی این تمرین، بررسی ایمنی همین روز را در بخش تمرین کامل کن. تا آن زمان متن تمرین و راهکار را از این مسیر توضیح نمی‌دهم.'
+          ? 'برای راهنمایی این تمرین، پنجره دستیار را ببند و بررسی ایمنی همین روز را در بخش تمرین کامل کن. تا آن زمان متن تمرین و راهکار را از این مسیر توضیح نمی‌دهم.'
           : 'محتوای معتبر روز جاری در دسترس نیست؛ برای جلوگیری از راهنمایی اشتباه، فعلاً پاسخ روزمحور نمی‌دهم.';
       return Object.freeze({ status: 'daily_guidance_unavailable', message: messageText, knowledge: Object.freeze([]), conversationState: null });
     }
