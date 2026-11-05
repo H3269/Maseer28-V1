@@ -286,45 +286,38 @@ try {
   await openDay(gatedPage, { assistantDayMode: 'relationship' });
   const gatedPanel = gatedPage.locator('.globalAssistantDialog');
   await gatedPanel.waitFor({ state: 'visible' });
-  const safeChoice = gatedPage.getByLabel('بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.');
-  assert.equal(await safeChoice.isChecked(), false);
+  assert.equal(await gatedPage.locator('#dayExercise').count(), 1,
+    'the Path28 daily screen must display the exercise without an assistant safety gate');
+  assert.equal(await gatedPage.locator('#dayAction').count(), 1,
+    'the Path28 daily screen must display the dedicated action without an assistant safety gate');
+  assert.equal(await gatedPage.getByLabel('بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.').count(), 0,
+    'the original daily screen must not add a relationship confirmation prerequisite');
+
   const gatedComposer = gatedPanel.locator('#global-assistant-message');
   await gatedComposer.fill('چطور انجامش بدم؟');
   await gatedPanel.getByRole('button', { name: 'ارسال' }).click();
   await gatedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some(node => /بررسی ایمنی همین روز/.test(node.innerText)));
   assert.match(await gatedPanel.locator('.assistantMessage').last().innerText(), /بررسی ایمنی همین روز/);
-  await gatedPanel.getByRole('button', { name: 'متوجه شدم' }).click();
-  await gatedPanel.waitFor({ state: 'detached' });
-  await safeChoice.click();
-  await gatedPage.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
-  await gatedPanel.waitFor({ state: 'visible' });
-  await gatedPanel.locator('#global-assistant-message').fill('چطور انجامش بدم؟');
-  await gatedPanel.getByRole('button', { name: 'ارسال' }).click();
-  await gatedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some(node => /متن تمرین همین روز/.test(node.innerText)));
-  await gatedPanel.getByRole('button', { name: 'متوجه شدم' }).click();
-  await gatedPanel.waitFor({ state: 'detached' });
-  await gatedPage.getByRole('button', { name: /شرایط امن نیست یا پاسخ من تغییر کرده است/ }).click();
-  await gatedPage.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
-  await gatedPanel.waitFor({ state: 'visible' });
-  await gatedPanel.locator('#global-assistant-message').fill('چطور انجامش بدم؟');
-  await gatedPanel.getByRole('button', { name: 'ارسال' }).click();
-  await gatedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some(node => /بررسی ایمنی همین روز/.test(node.innerText)));
+  assert.doesNotMatch(await gatedPanel.locator('.assistantMessage').last().innerText(), /متن تمرین همین روز|راهکار اختصاصی همین روز/);
+
   await gatedPanel.getByRole('button', { name: 'متوجه شدم' }).click();
   await gatedPanel.waitFor({ state: 'detached' });
   await gatedPage.locator('#day button[aria-label="داشبورد"]').click();
   await gatedPage.locator('#dashboard').waitFor({ state: 'visible' });
   await gatedPage.locator('#dashboard .heroAction').click();
   await gatedPage.locator('#day').waitFor({ state: 'visible' });
-  assert.equal(await gatedPage.getByLabel('بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.').isChecked(), false,
-    'leaving and re-entering the day must require a fresh safety confirmation');
+  assert.equal(await gatedPage.locator('#dayExercise').count(), 1,
+    're-entering the day must continue to show its original exercise');
+  assert.equal(await gatedPage.getByLabel('بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.').count(), 0);
   await gatedPage.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
   await gatedPanel.waitFor({ state: 'visible' });
   await gatedPanel.locator('#global-assistant-message').fill('چطور انجامش بدم؟');
   await gatedPanel.getByRole('button', { name: 'ارسال' }).click();
   await gatedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some(node => /بررسی ایمنی همین روز/.test(node.innerText)));
+  assert.match(await gatedPanel.locator('.assistantMessage').last().innerText(), /بررسی ایمنی همین روز/);
   await gatedPage.close();
 
-  process.stdout.write('PASS: Chromium daily assistant guidance, real legacy retrieval across three topics, four source-derived adaptation branches, follow-up context, input bounds, persistent safety handoff, local-only privacy, blocked-day denial, relationship gate, and confirmation reset (WV-BROWSER-ASSISTANT)\\n');
+  process.stdout.write('PASS: Chromium daily assistant guidance, real legacy retrieval across three topics, four source-derived adaptation branches, follow-up context, input bounds, persistent safety handoff, local-only privacy, blocked-day denial, and assistant-only relationship gate (WV-BROWSER-ASSISTANT)\\n');
 } finally {
   await browser.close();
 }
