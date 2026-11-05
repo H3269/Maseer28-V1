@@ -216,7 +216,7 @@ try {
       schema: 7, started: true, profile: true, assessment: true,
       privacyMigrationVersion: 1, completed: [1], answers: { 1: 'ACTIVE-ANSWER' },
       daily: { 1: { score: 4 } }, assessmentData: { score: 5 }, final: null,
-      profileData: { problem: 'anxiety', durationYears: 1, durationMonths: 2, goal: 'هدف فعال' },
+      profileData: { problem: 'خشم', durationYears: 1, durationMonths: 2, goal: 'هدف فعال' },
       pathId: 'active-path-preserved', lastView: 'dashboard',
       archive: [
         { pathId: 'archive-delete-me', profileData: { problem: 'stress' }, answers: { 1: 'ARCHIVE-DELETE-ME' }, completed: [1], assessmentData: { score: 4 }, final: { score: 3 } },
