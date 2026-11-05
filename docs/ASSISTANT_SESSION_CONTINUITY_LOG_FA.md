@@ -964,3 +964,16 @@ CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` مو�
 - اجرای validate مربوط به commit قبلی دفتر، run `42055983098` (شماره ۱۵۹۷) در آخرین مشاهده `in_progress` بود؛ این اجرا مربوط به SHA `d4b51a0` است، نه commit جدید workflow.
 - هیچ Workflow انتشار تلگرام/بله اجرا یا تغییر نکرد؛ هیچ Worker deploy/promote یا تغییر Production انجام نشد.
 - قاعده ادامه: قبل از هر تغییر، HEAD و همین دفتر و شروط ۷گانه بررسی شوند؛ پس از هر تغییر معنادار، دفتر با SHA، فایل‌ها، runهای واقعی و نتیجهٔ قابل مشاهده به‌روزرسانی شود.
+
+
+## هم‌راستاسازی آزمون‌های انتشار با تفکیک Pages آزمایشی و انتشار عملیاتی — 2026-11-05
+
+- پس از تغییر Workflow Pages، CI run `42056372785` (validate run #1598) روی commit `1d651756956b3886fadc3eba0c21adf36be9730d` با شکست دو آزمون قدیمی پایان یافت؛ علت، شکست کد build نبود، بلکه assertionهای آزمون هنوز سیاست قدیمی «Pages دستی و دارای گیت Production» را الزام می‌کردند.
+- آزمون اول در `tests/assistantReleaseGate.test.js` انتظار `workflow_dispatch`، `confirm_public_release` و `assert:production-content` در Pages داشت؛ آزمون دوم در `tests/productionContentGate.test.mjs` همان سیاست قدیمی را برای Pages و انتشار Telegram یکجا الزام می‌کرد.
+- این دو آزمون اصلاح شدند تا Pages را به‌عنوان build آزمایشی خودکار از main بررسی کنند و هم‌زمان گیت‌های انتشار عملیاتی Telegram را حفظ کنند. فایل‌های تغییرکرده: `tests/assistantReleaseGate.test.js` و `tests/productionContentGate.test.mjs`.
+- commit نخست آزمون‌ها `679b463167d3e534d445ebfd650a35b48d72be31` بود؛ بازبینی دقیق متن regexهای آزمون، escape اضافی را آشکار کرد و در commit بعدی `b08cee1be6fcb1d87650d76c5347aea4fe7daac4` اصلاح شد. commit دوم نسخه نهایی آزمون‌هاست.
+- نتیجه آزمون‌های جدید هنوز در زمان ثبت این یادداشت از Actions دریافت نشده است؛ بنابراین این اصلاحات هنوز `automated_tests_passed` اعلام نمی‌شوند.
+- Pages run #571 با شناسه `42056372621` برای commit `1d651756` build، Configure Pages و upload را با موفقیت گذرانده بود، اما مرحله Deploy هنوز در حال اجرا بود. run #572 برای commit مستنداتی `54dad72` و run مربوط به commit آزمون `b08cee1` نیز باید تا نتیجه نهایی رصد شوند؛ تا پایان Deploy، URL به‌روز را تأییدشده تلقی نکن.
+- شکست validate روی commit `1d651756` به‌تنهایی مانع build آزمایشی Pages نشد؛ این جداسازی طبق دستور مالک عمدی است. build آزمایشی باید مستقل از نتیجه validate به‌روزرسانی شود، اما خطای واقعی npm build همچنان مانع deploy خواهد بود.
+- انتشار Telegram/Bale، Worker و هر اقدام Production در این تغییرات اجرا یا اصلاح نشده‌اند. گیت Production در `publish-tested-version.yml` حفظ شده است.
+- HEAD هنگام ثبت این یادداشت: `b08cee1be6fcb1d87650d76c5347aea4fe7daac4`. دفتر به‌روزرسانی‌شده در commit بعدی خود ثبت می‌شود؛ وضعیت runهای همان commit باید جداگانه از GitHub خوانده شود و نباید از وضعیت run والد نتیجه‌گیری شود.
