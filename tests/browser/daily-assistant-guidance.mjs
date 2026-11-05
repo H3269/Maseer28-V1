@@ -38,6 +38,15 @@ function normalizeVisibleDailyText(value) {
     .replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
+async function readExpandedDailyText(page, selector) {
+  const section = page.locator(selector);
+  const disclosure = section.locator('details.dailyTextDisclosure');
+  if (await disclosure.count()) await disclosure.locator('summary').click();
+  const preview = await section.locator('.dailyTextPreview').innerText();
+  const remaining = await section.locator('.dailyTextFull p').allInnerTexts();
+  return [preview, ...remaining].join(' ');
+}
+
 async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumber) {
   const dayBadge = normalizeVisibleDailyText(await page.locator('#dayBadge').innerText());
   const assistantContext = normalizeVisibleDailyText(await panel.locator('.dailyAssistantContext').innerText());
@@ -46,8 +55,8 @@ async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumb
   assert.ok(assistantContext.includes(normalizeVisibleDailyText(topic)), 'assistant context must show the selected topic');
   assert.ok(assistantContext.includes('روز ' + dayNumber), 'assistant context must show the selected day');
 
-  const visibleExercise = normalizeVisibleDailyText(await page.locator('#dayExercise').innerText());
-  const visibleAction = normalizeVisibleDailyText(await page.locator('#dayAction').innerText());
+  const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
+  const visibleAction = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayAction'));
   const reply = normalizeVisibleDailyText(await panel.locator('.assistantMessage').last().innerText());
   for (const [label, source] of [['exercise', visibleExercise], ['action', visibleAction]]) {
     assert.ok(source.length > 20, `visible ${label} source must be substantial`);
