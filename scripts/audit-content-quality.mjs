@@ -31,6 +31,8 @@ const templateFields = [
   'lightExerciseText',
   'lightActionText',
   'progressActionText',
+  'restExerciseText',
+  'restActionText',
 ];
 const futureMetadataFields = [
   'learning_objective',
