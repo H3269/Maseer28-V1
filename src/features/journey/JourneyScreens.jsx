@@ -5,18 +5,12 @@ import AppIcon from '../../shared/components/AppIcon.jsx';
 import { buttonLabel } from '../../shared/buttonLabel.jsx';
 import { getJourneyProgressCounts } from './progress.js';
 import { copyTextToClipboard, fa, formatDate, normalizeDigits } from '../../shared/utils.js';
-import { APP_CONFIG, burdenScoreFromAnswers, evaluatePqhtEligibility, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
-import { executeCompleteLocalDataDeletion } from '../privacy/dataDeletion.js';
-import { createPrivacyBackup, createPrivacyRestorePreview, restorePrivacyBackup } from '../privacy/privacyBackup.js';
-import AssessmentAssistant from '../assistant/AssessmentAssistant.jsx';
+import { burdenScoreFromAnswers, evaluatePqhtEligibility, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
 import { exportArchivesZip, triggerBlobDownload } from './archiveExport.js';
 import { getDailySafetyMode } from '../content/dailySafety.js';
 import { selectCanonicalDailyRecord, selectDailyContentCategory } from '../content/dailyContentSelector.js';
 import { getInterpersonalPrivacyNotice, getRelationshipSafetyGate, isRelationshipSafetyConfirmed } from './relationshipSafetyGate.js';
 import { getT01PausePlan } from './t01PausePlan.js';
-
-// This prototype has no clinical validation. It stays hidden unless an experimental build explicitly enables it.
-const EXPERIMENTAL_ASSISTANT_ENABLED = APP_CONFIG.TEST_MODE || import.meta.env.VITE_ENABLE_EXPERIMENTAL_ASSISTANT === 'true';
 
 export const SCALE_QUESTIONS = [
   'این مشکل در حال حاضر چقدر شدت دارد؟',
