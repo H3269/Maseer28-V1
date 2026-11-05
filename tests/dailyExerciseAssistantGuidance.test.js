@@ -818,3 +818,40 @@ test('split day guidance preserves source id, topic, and day identity', () => {
   assert.equal(adapted.topic_id, source.topic_id);
   assert.equal(adapted.day, source.day);
 });
+
+
+test('legacy daily assistant access requires exact selected topic and zero-padded day identity', () => {
+  const legacy = {
+    id: 'خشم-01',
+    day: 1,
+    exercise: 'متن تمرین legacy',
+    actionText: 'راهکار legacy',
+  };
+  const accepted = getDailyAssistantAccess({ day: legacy, problem: 'خشم' });
+  assert.equal(accepted.available, true);
+  assert.equal(accepted.safetyMode, 'routine');
+
+  for (const invalid of [
+    { day: legacy, problem: 'اضطراب' },
+    { day: { ...legacy, id: 'خشم-02' }, problem: 'خشم' },
+    { day: { ...legacy, day: 0 }, problem: 'خشم' },
+    { day: { ...legacy, day: 29, id: 'خشم-29' }, problem: 'خشم' },
+    { day: { ...legacy, topic_id: null }, problem: 'خشم' },
+  ]) {
+    const access = getDailyAssistantAccess(invalid);
+    assert.equal(access.available, false);
+    assert.equal(access.reason, 'daily_source_identity_unverified');
+  }
+});
+
+test('legacy identity verification does not bypass specialized safety blocks', () => {
+  const legacyFearDay = {
+    id: 'ترس-01',
+    day: 1,
+    exercise: 'متن تمرین legacy',
+    actionText: 'راهکار legacy',
+  };
+  const access = getDailyAssistantAccess({ day: legacyFearDay, problem: 'ترس' });
+  assert.equal(access.available, false);
+  assert.equal(access.reason, 'daily_content_blocked');
+});
