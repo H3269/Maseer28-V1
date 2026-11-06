@@ -265,7 +265,7 @@ test('dashboard can answer app topic index questions without depending on the em
     text: 'فهرست موضوعات مسیر چیست؟',
   });
   assert.equal(result.status, 'page_guidance_available');
-  assert.match(result.message, /۳۴ مورد/);
+  assert.match(result.message, /34 مورد/);
   assert.match(result.message, /پیش‌نویس/);
 });
 
