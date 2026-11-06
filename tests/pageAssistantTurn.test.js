@@ -215,3 +215,22 @@ test('library book-list questions use only the currently available local titles'
   assert.match(result.message, /کتاب اول/);
   assert.match(result.message, /کتاب دوم/);
 });
+
+test('app-wide factual guidance is available from non-dashboard screens', () => {
+  const result = makePageAssistantTurn({
+    screen: 'profile',
+    text: 'امکانات برنامه چیست؟',
+  });
+  assert.equal(result.status, 'page_guidance_available');
+  assert.match(result.message, /تمرین روزانه/);
+  assert.match(result.message, /کتابخانه/);
+});
+
+test('onboarding screen IDs resolve to their own grounded assistant guidance', () => {
+  const result = makePageAssistantTurn({
+    screen: 'howWorks',
+    text: 'این صفحه برای چیست؟',
+  });
+  assert.equal(result.status, 'page_guidance_available');
+  assert.match(result.message, /روند استفاده از مسیر ۲۸ روزه/);
+});
