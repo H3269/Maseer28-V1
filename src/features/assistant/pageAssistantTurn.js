@@ -123,6 +123,22 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     });
   }
 
+  // Deterministic app facts (such as the registered topic/subtopic index) are
+  // served locally before the empty approved-knowledge catalog can reject them.
+  // Personal-intake, ambiguity, safety and scope-clarification routes keep precedence.
+  if (['knowledge_unavailable', 'approved_knowledge_available'].includes(routed.status)) {
+    const appKnowledgeReply = answerPageAssistantQuestion({ screen, message, libraryContext });
+    if (appKnowledgeReply) {
+      return Object.freeze({
+        status: 'page_guidance_available',
+        message: appKnowledgeReply,
+        knowledge: Object.freeze([]),
+        page_context: 'dashboard',
+        conversationState: null,
+      });
+    }
+  }
+
   // On the dashboard only, preserve the general assistant router and its scope clarification.
   if (
     SAFETY_STATUSES.has(routed.status)
