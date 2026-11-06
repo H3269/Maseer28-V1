@@ -43,7 +43,7 @@
 | T18 | نفرت از خود | [پیش‌نویس](T18_SELF_HATRED_28DAY_REDESIGN_DRAFT_B2_BH_FA.md) |
 | T19 | خودسرزنشی | [پیش‌نویس](T19_SELF_BLAME_28DAY_REDESIGN_DRAFT_B2_BI_FA.md) |
 | T20 | کمال‌گرایی | [پیش‌نویس](T20_PERFECTIONISM_28DAY_REDESIGN_DRAFT_B2_BJ_FA.md) |
-| T21 | اجتناب | [پیش‌نویس](T21_AVOIDANCE_28DAY_REDESIGN_DRAFT_B2_BK_FA.md) |
+| T21 | اجتناب | [پیش‌نویس](CONTENT_T21_AVOIDANCE_28_DAY_REDESIGN_DRAFT_B2AI_FA.md) |
 | T22 | استرس | [پیش‌نویس](T22_STRESS_28DAY_REDESIGN_DRAFT_B2_BL_FA.md) |
 | T23 | احساس بی‌ارزشی | [پیش‌نویس](T23_WORTHLESSNESS_28DAY_REDESIGN_DRAFT_B2_BM_FA.md) |
 | T24 | مشکل در کنترل هیجان | [پیش‌نویس](T24_EMOTION_REGULATION_28DAY_REDESIGN_DRAFT_B2_BN_FA.md) |
