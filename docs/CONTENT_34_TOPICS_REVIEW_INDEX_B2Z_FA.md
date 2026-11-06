@@ -64,6 +64,7 @@
 - [ممیزی هدفمند هم‌پوشانی T13 تا T34](CONTENT_T13_T34_TARGETED_SEMANTIC_OVERLAP_AUDIT_B2Z_FA.md)
 - [گزارش کلی ممیزی ساختار و تکرار ۹۵۲ ماژول](CONTENT_952_GLOBAL_DUPLICATION_AUDIT_B2Y_FA.md)
 - [غربال شباهت و اصلاح‌های هدفمند اجرایی B2-Z72](CONTENT_TARGETED_SEMANTIC_CLUSTER_AUDIT_B2Z72_FA.md)
+- [بازبینی خوشه‌های معنایی و اصلاح‌های اختصاصی B2-Z74](CONTENT_TARGETED_SEMANTIC_CLUSTER_AUDIT_B2Z74_FA.md)
 
 ## محدودیت‌های باز
 1. نگاشت زیرموضوع روزانه در برخی نسخه‌های قدیمی‌تر هنوز پیشنهادی یا نیازمند تطبیق با رجیستری است؛ در موارد فاقد شناسه صریح، شناسه جعل نشده است.
