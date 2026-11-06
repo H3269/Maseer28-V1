@@ -3,6 +3,10 @@ import AppIcon from '../../shared/components/AppIcon.jsx';
 import { makePageAssistantTurn } from './pageAssistantTurn.js';
 
 const SCREEN_LABELS = {
+  home: 'معرفی و شروع',
+  howWorks: 'نحوه کار برنامه',
+  about: 'درباره برنامه',
+  assessment: 'ارزیابی اولیه',
   dashboard: 'خانه',
   profile: 'پروفایل',
   pathSetup: 'تنظیم مسیر',
