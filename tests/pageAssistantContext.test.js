@@ -114,6 +114,14 @@ test('answers app-wide product questions from the stable feature map on any supp
   assert.match(overview, /۲۸ روزه/);
   assert.match(overview, /تمرین‌های روزانه/);
 
+  const features = answerPageAssistantQuestion({
+    screen: 'day',
+    message: 'امکانات برنامه چیست؟',
+  });
+  assert.match(features, /تمرین روزانه/);
+  assert.match(features, /کتابخانه/);
+  assert.match(features, /پشتیبانی/);
+
   const duration = answerPageAssistantQuestion({
     screen: 'books',
     message: 'برنامه چند روزه است؟',
