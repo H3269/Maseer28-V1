@@ -234,3 +234,27 @@ test('onboarding screen IDs resolve to their own grounded assistant guidance', (
   assert.equal(result.status, 'page_guidance_available');
   assert.match(result.message, /روند استفاده از مسیر ۲۸ روزه/);
 });
+
+test('app-wide topic registry is searchable from a non-dashboard page and reports draft status', () => {
+  const result = makePageAssistantTurn({
+    screen: 'profile',
+    text: 'فهرست ۳۴ موضوع مسیر چیست؟',
+  });
+  assert.equal(result.status, 'page_guidance_available');
+  assert.match(result.message, /خشم/);
+  assert.match(result.message, /ترس از طرد شدن/);
+  assert.match(result.message, /پیش‌نویس/);
+  assert.match(result.message, /بازبینی تخصصی/);
+});
+
+test('topic subtopic lookup returns names but never presents draft definitions as approved facts', () => {
+  const result = makePageAssistantTurn({
+    screen: 'support',
+    text: 'زیرموضوع‌های خشم چیست؟',
+  });
+  assert.equal(result.status, 'page_guidance_available');
+  assert.match(result.message, /محرک‌ها و ارزیابی موقعیت/);
+  assert.match(result.message, /نشانه‌های بدنی و برانگیختگی/);
+  assert.match(result.message, /پیش‌نویس/);
+  assert.doesNotMatch(result.message, /تعریف قطعی/);
+});
