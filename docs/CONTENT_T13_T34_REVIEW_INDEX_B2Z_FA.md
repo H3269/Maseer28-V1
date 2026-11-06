@@ -1,4 +1,4 @@
-# فهرست بازبینی پیش‌نویس‌های ساختاریافته — T13 تا T34
+# فهرست بازبینی پیش‌نویس‌های ساختاریافته — T12 تا T34
 
 **مخزن:** `H3269/Maseer28-V1`  
 **شاخه:** `main`  
@@ -7,6 +7,7 @@
 
 | کد | موضوع | فایل بازبینی |
 |---|---|---|
+| T12 | مرزبندی و نه گفتن | [بازکردن نسخه کامل B2-CU](T12_BOUNDARIES_AND_SAYING_NO_28DAY_REDESIGN_DRAFT_B2_CU_FA.md) |
 | T13 | تنهایی | [بازکردن پیش‌نویس](T13_LONELINESS_28DAY_REDESIGN_DRAFT_B2_BC_FA.md) |
 | T14 | کمبود انگیزه | [بازکردن پیش‌نویس](T14_LOW_MOTIVATION_28DAY_REDESIGN_DRAFT_B2_BD_FA.md) |
 | T15 | اعتمادبه‌نفس پایین | [بازکردن پیش‌نویس](T15_LOW_SELF_CONFIDENCE_28DAY_REDESIGN_DRAFT_B2_BE_FA.md) |
@@ -29,6 +30,9 @@
 | T32 | بی‌انگیزگی | [بازکردن پیش‌نویس](T32_APATHY_LOW_DRIVE_28DAY_REDESIGN_DRAFT_B2_BV_FA.md) |
 | T33 | خودانتقادی | [بازکردن پیش‌نویس](T33_SELF_CRITICISM_28DAY_REDESIGN_DRAFT_B2_BW_FA.md) |
 | T34 | مشکل دیگر | [بازکردن پیش‌نویس](T34_OTHER_CONCERN_28DAY_REDESIGN_DRAFT_B2_BX_FA.md) |
+
+## ممیزی هدفمند هم‌پوشانی
+[گزارش ممیزی هدفمند T13 تا T34](CONTENT_T13_T34_TARGETED_SEMANTIC_OVERLAP_AUDIT_B2Z_FA.md)
 
 ## نکات بازبینی
 1. نگاشت زیرموضوع در این نسخه‌ها پیشنهادی است و باید با taxonomy نهایی تطبیق داده شود.
