@@ -8,7 +8,7 @@
 
 ## ۱. یافته اصلی
 
-در T01 و T02، فیلدهای metadata برای هر ۲۸ روز پر هستند: `learning_objective`, `target_skill`, `mechanism`, `exercise_type`, `duration_minutes`, `reflection_prompt`, `success_criterion`, `stop_conditions`, `contraindications`, `source_ids` و `evidence_grade`. در هر دو موضوع، `review_record_id` در ۰/۲۸ رکورد خالی نیست؛ یعنی در واقع در هر ۲۸ رکورد خالی است.
+در T01 و T02، فیلدهای metadata برای هر ۲۸ روز پر هستند: `learning_objective`, `target_skill`, `mechanism`, `exercise_type`, `duration_minutes`, `reflection_prompt`, `success_criterion`, `stop_conditions`, `contraindications`, `source_ids` و `evidence_grade`. در هر دو موضوع، `review_record_id` در ۰/۲۸ رکورد مقدار دارد؛ یعنی در هر ۲۸ رکورد خالی است.
 
 اما متن `exercise` و `actionText` و پنج نسخه سبک/پیشرفت/استراحت، پس از جایگزینی صرفاً برچسب موضوع در گیومه، همان قالب مشترک ۲۸ روزه‌ای است که در ۳۴ موضوع دیده می‌شود. بنابراین پر بودن metadata به معنی هم‌ترازی متن تمرین با هدف آموزشی نیست.
 
