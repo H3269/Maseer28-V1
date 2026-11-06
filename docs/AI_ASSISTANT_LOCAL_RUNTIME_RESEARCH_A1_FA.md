@@ -116,3 +116,43 @@
 
 
 **نسخه‌های میزبان آزمون (گزارش کاربر، 2026-11-06):** Telegram Android `13.1.1`؛ Bale Android `10.05.08` (شناسه/بیلد `180792`). همراه با Chrome Android `156.0.8078.75` و Android System WebView `156.0.8078.47` روی Samsung SM-A307FN / Android 11. نسخه‌ها ثبت شده‌اند، اما آزمون فیزیکی هنوز اجرا نشده است.
+
+## ارزیابی سازگاری اولیه با دستگاه مرجع — تکمیل بررسی رومیزی، 2026-11-06
+
+### یافته تعیین‌کننده WebGPU
+
+مستند رسمی Chrome اعلام می‌کند WebGPU در Chrome 121 روی Android برای دستگاه‌های دارای Android 12 یا بالاتر و GPUهای Qualcomm/ARM فعال شده است. راهنمای رسمی عیب‌یابی نیز Android را از Chrome 121 به بعد ذکر می‌کند؛ اما وجود نسخه جدید Chrome به‌تنهایی کافی نیست و سیستم‌عامل/سخت‌افزار باید واجد شرایط باشد.
+
+دستگاه مرجع پروژه Samsung SM-A307FN با Android 11 است. مشخصات منتشرشده برای خانواده Galaxy A30s، GPU از خانواده Mali-G71 MP2 و پیکربندی‌های 4GB RAM را نشان می‌دهد؛ مشخصات دقیق SKU باید از خود دستگاه/اطلاعات سیستم تأیید شود.
+
+**نتیجه مهندسی:** WebGPU در این دستگاه، بر اساس پیش‌نیاز رسمی Android 12+، گزینه قابل اتکای پایه نیست. Chrome 156 و WebView 156 این مانع سیستم‌عامل را برطرف نمی‌کنند. بنابراین:
+- WebLLM/هر LLM وابسته به WebGPU نباید مبنای محصول یا مسیر اجباری باشد.
+- مسیر WASM/CPU باید به‌عنوان مسیر اصلی قابل‌آزمایش روی دستگاه فعلی بررسی شود؛ این به معنی اثبات سرعت یا کیفیت قابل قبول نیست.
+- ارتقای Android یا تغییر دستگاه را فرض نمی‌کنیم و تا تصمیم مالک، شرط سخت‌افزار را تغییر نمی‌دهیم.
+- WebGPU همچنان می‌تواند روی دستگاه‌های جدیدتر/سازگار در ماتریس توسعه‌ای بررسی شود، اما قبولی Chrome روی دستگاه دیگر، قبولی Telegram/Bale را اثبات نمی‌کند.
+
+### نتیجه تصمیم‌گیری نامزدها
+
+| گزینه | تصمیم فعلی برای دستگاه مرجع |
+|---|---|
+| WebLLM / MLC با WebGPU | از مسیر پایه خارج؛ پیش‌نیاز رسمی Android 12+ با Android 11 فعلی منطبق نیست |
+| Transformers.js / ONNX Runtime Web با WASM/CPU | نامزد اصلی مرحله prototype؛ عملکرد و حافظه هنوز اندازه‌گیری نشده |
+| Transformers.js / ONNX Runtime Web با WebGPU | فقط مسیر مشروط و غیرقابل اتکا تا آزمون واقعی |
+| LiteRT-LM JS | به علت وابستگی به WebGPU و وضعیت preview، نامزد ثانویه |
+| LiteRT-LM Kotlin | خارج از معماری فعلی مینی‌اپ؛ نیازمند bridge بومی و مجوز مستقل مالک |
+| sherpa-onnx WASM/Android برای ASR/TTS | نامزد مستقل؛ باید اندازه بسته، کیفیت فارسی و مصرف منابع جداگانه سنجیده شود |
+
+### شکاف آزمون باقی‌مانده
+
+بدون اجرای کد در origin واقعی اپ و داخل WebView هر میزبان، نمی‌توان دسترسی عملی به WebGPU، Worker، IndexedDB، Cache Storage، میکروفون یا پایداری پس‌زمینه را تأیید کرد. نسخه‌های Chrome و Android System WebView به‌تنهایی جایگزین آزمون درون Telegram و Bale نیستند. در وضعیت فعلی دسترسی مستقیم به DevTools دستگاه نیز فراهم نیست؛ بنابراین این موارد «تأییدنشده» می‌مانند و نباید با آزمون CI مرورگر دسکتاپ اشتباه گرفته شوند.
+
+**قاعده ادامه A1:** هیچ dependency، مدل یا کد محصولی تا پیش از اثبات مسیر WASM/CPU، اندازه‌گیری منابع و آزمون حریم خصوصی اضافه نمی‌شود. هیچ UI آزمایشی/جدیدی در اپ ساخته نمی‌شود.
+
+### منابع رسمی و مشخصات مرجع
+
+- Chrome for Developers, What's New in WebGPU (Chrome 121), بخش Android: https://developer.chrome.com/blog/new-in-webgpu-121
+- Chrome for Developers, WebGPU troubleshooting: https://developer.chrome.com/docs/web-platform/webgpu/troubleshooting-tips
+- Chrome for Developers, WebGPU overview: https://developer.chrome.com/docs/web-platform/webgpu/overview
+- Samsung Galaxy A30s / SM-A307FN specifications (third-party device reference): https://www.phonemore.com/specs/samsung/galaxy-a30s/sm-a307fn/
+- Google AI Edge, LiteRT-LM JavaScript: https://developers.google.com/edge/litert-lm/js
+- Transformers.js documentation: https://huggingface.co/docs/transformers.js
