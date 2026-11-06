@@ -128,7 +128,7 @@ export function answerPageAssistantQuestion({ screen, message, libraryContext } 
 
   // Cross-page questions about the product itself are answerable from the
   // app's stable, non-personal feature map regardless of the current screen.
-  if (/^(?:این برنامه چیست|مسیر ?۲۸ چیست|برنامه مسیر ?۲۸ چیست|این اپلیکیشن چیست)$/u.test(text)) {
+  if (/^(?:این برنامه چیست|مسیر ?28 چیست|برنامه مسیر ?28 چیست|این اپلیکیشن چیست)$/u.test(text)) {
     return 'مسیر۲۸ یک برنامه مرحله‌ای ۲۸ روزه است که کاربر در آن موضوع مسیر را انتخاب می‌کند، تمرین‌های روزانه را انجام می‌دهد و پاسخ‌ها و بازخوردهای خودگزارشی را مرور می‌کند. این برنامه جایگزین تشخیص یا درمان تخصصی نیست.';
   }
   if (/^(?:برنامه چند روزه است|مسیر چند روز طول می کشد|چند روز باید ادامه بدهم)$/u.test(text)) {
