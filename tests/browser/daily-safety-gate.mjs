@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
+import { mergeDailyTextOverrides } from '../../src/features/content/dailyTextOverrides.js';
 const baseURL = process.env.PATH28_BASE_URL || 'http://127.0.0.1:4173';
 const browser = await chromium.launch({ headless: true });
 
@@ -44,7 +45,11 @@ async function openDay(problem, day) {
 }
 
 try {
-  const content = JSON.parse(await readFile(new URL('../../public/content/path-content.json', import.meta.url), 'utf8'));
+  const [baseContent, overrides] = await Promise.all([
+    readFile(new URL('../../public/content/path-content.json', import.meta.url), 'utf8').then(JSON.parse),
+    readFile(new URL('../../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8').then(JSON.parse),
+  ]);
+  const content = mergeDailyTextOverrides(baseContent, overrides);
   const topics = Object.keys(content.categories);
   assert.equal(topics.length, 34);
 
