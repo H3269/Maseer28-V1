@@ -20,6 +20,13 @@ test('the 34-topic daily text overlay replaces only exercise and action text for
   let total = 0;
   let changedExercise = 0;
   let changedAction = 0;
+  const normalized = (value) => String(value ?? '').normalize('NFKC')
+    .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
+    .replace(/[\u064B-\u065F\u0670]/g, '')
+    .replace(/[\u200c\u200f\u202a-\u202e]/g, '')
+    .replace(/\s+/g, ' ').trim();
+  const exerciseTexts = new Set();
+  const actionTexts = new Set();
   for (const topic of topicNames) {
     const originalDays = base.categories[topic]?.days || [];
     const overrideDays = overrides.categories[topic]?.days || [];
@@ -41,6 +48,12 @@ test('the 34-topic daily text overlay replaces only exercise and action text for
       assert.equal(actual.closing, original.closing, 'daily closing must remain unchanged');
       assert.equal(actual.exercise, replacement.exercise);
       assert.equal(actual.actionText, replacement.actionText);
+      const normalizedExercise = normalized(actual.exercise);
+      const normalizedAction = normalized(actual.actionText);
+      assert.ok(!exerciseTexts.has(normalizedExercise), topic + ' day ' + (index + 1) + ' exercise must not duplicate another topic/day');
+      assert.ok(!actionTexts.has(normalizedAction), topic + ' day ' + (index + 1) + ' action must not duplicate another topic/day');
+      exerciseTexts.add(normalizedExercise);
+      actionTexts.add(normalizedAction);
       if (actual.exercise !== original.exercise) changedExercise += 1;
       if (actual.actionText !== original.actionText) changedAction += 1;
       total += 1;
@@ -48,6 +61,8 @@ test('the 34-topic daily text overlay replaces only exercise and action text for
   }
 
   assert.equal(total, 952);
-  assert.ok(changedExercise > 0);
-  assert.ok(changedAction > 0);
+  assert.equal(changedExercise, 952);
+  assert.equal(changedAction, 952);
+  assert.equal(exerciseTexts.size, 952);
+  assert.equal(actionTexts.size, 952);
 });

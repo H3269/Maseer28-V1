@@ -2,10 +2,24 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getSupportSeekingReviewDays } from './lib/supportSeekingReviewQueue.js';
+import { mergeDailyTextOverrides } from '../src/features/content/dailyTextOverrides.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
-const content = readJson('public/content/path-content.json');
+const baseContent = readJson('public/content/path-content.json');
+const dailyTextOverrides = readJson('public/content/daily-text-overrides.v1.json');
+const content = mergeDailyTextOverrides(baseContent, dailyTextOverrides);
+const dailyTextOverlayStats = Object.entries(dailyTextOverrides.categories || {}).reduce((stats, [topic, category]) => {
+  const baseDays = baseContent.categories?.[topic]?.days || [];
+  for (const day of category.days || []) {
+    const baseDay = baseDays.find((item) => Number(item.day) === Number(day.day));
+    if (!baseDay) continue;
+    stats.days += 1;
+    if (day.exercise !== baseDay.exercise) stats.exercise_replacements += 1;
+    if (day.actionText !== baseDay.actionText) stats.action_replacements += 1;
+  }
+  return stats;
+}, { days: 0, exercise_replacements: 0, action_replacements: 0 });
 const topicsRegistry = readJson('public/assistant/knowledge/topics.v1.json');
 const subtopicsRegistry = readJson('public/assistant/knowledge/subtopics.v1.json');
 const definitionsRegistry = readJson('public/assistant/knowledge/topic-definitions-draft.v1.json');
@@ -243,6 +257,12 @@ const report = {
     subtopic_registry_entries: (subtopicsRegistry.subtopics || []).length,
     topic_definitions: (definitionsRegistry.definitions || []).length,
   },
+  daily_text_overlay: {
+    file: 'public/content/daily-text-overrides.v1.json',
+    schema_version: dailyTextOverrides.schema_version || null,
+    topics: Object.keys(dailyTextOverrides.categories || {}).length,
+    ...dailyTextOverlayStats,
+  },
   topic_rows: topicRows,
   candidate_support_seeking_review_queue: candidateSupportSeekingReviewQueue,
   cross_topic_similarity: crossTopicSimilarity,
@@ -263,7 +283,8 @@ fs.mkdirSync(outputDir, { recursive: true });
 const outputPath = path.join(outputDir, 'path28-content-quality-audit.json');
 fs.writeFileSync(outputPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
 
-console.log(`ممیزی ایستای محتوا: ${report.observed.topics} موضوع، ${report.observed.total_days} روز، ${report.observed.subtopic_registry_entries} زیرموضوع.`);
+console.log(`ممیزی ایستای محتوای مؤثر runtime: ${report.observed.topics} موضوع، ${report.observed.total_days} روز، ${report.observed.subtopic_registry_entries} زیرموضوع.`);
+console.log(`لایه متن روزانه: ${report.daily_text_overlay.topics} موضوع، ${report.daily_text_overlay.days} روز، ${report.daily_text_overlay.exercise_replacements} تمرین و ${report.daily_text_overlay.action_replacements} اقدام جایگزین‌شده.`);
 for (const [field, stats] of Object.entries(crossTopicSimilarity)) {
   const largest = Math.max(...stats.largest_shared_topic_count_by_day);
   console.log(`- ${field}: ${stats.fully_shared_days_across_all_topics}/${expectedDays} روز کاملاً مشترک؛ بیشترین خوشه تکراری ${largest}/${expectedTopics} موضوع.`);

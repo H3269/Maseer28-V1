@@ -60,6 +60,9 @@ try {
     assert.equal(await card.locator('#dayAction').count(), 1, topic + ' day 1 must display its dedicated action');
     assert.equal(await card.locator('#openDailyEntryBtn').count(), 1, topic + ' day 1 must expose the original daily interaction');
     const text = await card.innerText();
+    const expected = content.categories[topic].days.find((item) => item.day === 1);
+    assert.ok(text.includes(expected.exercise), topic + ' day 1 must render its exact overlay exercise');
+    assert.ok(text.includes(expected.actionText), topic + ' day 1 must render its exact overlay action');
     assert.doesNotMatch(text, /این تمرین در نسخه فعلی قابل اجرا نیست|نیازمند بازبینی انسانی|آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه/);
     await card.locator('#openDailyEntryBtn').click();
     await card.locator('#dailyEntryPanel').waitFor({ state: 'visible' });
@@ -74,7 +77,9 @@ try {
     assert.equal(await card.locator('#dayAction').count(), 1);
     assert.equal(await card.locator('#openDailyEntryBtn').count(), 1);
     const expected = content.categories['خشم'].days.find((item) => item.day === day);
-    assert.ok((await card.innerText()).includes(expected.exercise.slice(0, 35)));
+    const visibleText = await card.innerText();
+    assert.ok(visibleText.includes(expected.exercise), 'anger day ' + day + ' must render its exact overlay exercise');
+    assert.ok(visibleText.includes(expected.actionText), 'anger day ' + day + ' must render its exact overlay action');
     await card.locator('#openDailyEntryBtn').click();
     await card.locator('#dailyEntryPanel').waitFor({ state: 'visible' });
     assert.deepEqual(errors, []);
