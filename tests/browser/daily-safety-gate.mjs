@@ -12,8 +12,8 @@ function normalizeVisibleDailyText(value) {
   return String(value || '').normalize('NFKC')
     .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
     .replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
-    .replace(/[^\\p{L}\\p{N}\\s]/gu, ' ')
-    .replace(/\\s+/g, ' ').trim().toLowerCase();
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+    .replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
 async function readExpandedDailyText(page, selector) {
