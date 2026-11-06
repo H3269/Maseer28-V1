@@ -8,7 +8,7 @@ import {
 
 test('page context is a fixed allowlist and excludes journey or profile records', () => {
   assert.deepEqual(PAGE_ASSISTANT_CONTEXT_SCREENS, [
-    'dashboard', 'profile', 'pathSetup', 'day', 'dailyResult',
+    'home', 'howWorks', 'about', 'assessment', 'dashboard', 'profile', 'pathSetup', 'day', 'dailyResult',
     'books', 'support', 'final', 'done', 'report', 'archive',
   ]);
   const context = getPageAssistantContext('report');
@@ -24,6 +24,10 @@ test('page context is a fixed allowlist and excludes journey or profile records'
 
 test('page context describes only fixed visible capabilities for each supported screen', () => {
   const cases = [
+    ['home', 'شروع مسیر'],
+    ['howWorks', 'ترتیب مراحل'],
+    ['about', 'هدف و چارچوب'],
+    ['assessment', 'خودگزارشی'],
     ['dashboard', 'ادامه مسیر امروز'],
     ['profile', 'ذخیره تغییرات'],
     ['pathSetup', 'انتخاب موضوع مسیر'],
@@ -100,4 +104,37 @@ test('extra personal data passed by a caller is ignored and never enters page co
   assert.equal(serialized.includes('اطلاعات آزمایشی'), false);
   assert.equal(serialized.includes('پاسخ آزمایشی'), false);
   assert.equal(serialized.includes('موضوع آزمایشی'), false);
+});
+
+test('answers app-wide product questions from the stable feature map on any supported screen', () => {
+  const overview = answerPageAssistantQuestion({
+    screen: 'profile',
+    message: 'مسیر ۲۸ چیست؟',
+  });
+  assert.match(overview, /۲۸ روزه/);
+  assert.match(overview, /تمرین‌های روزانه/);
+
+  const duration = answerPageAssistantQuestion({
+    screen: 'books',
+    message: 'برنامه چند روزه است؟',
+  });
+  assert.match(duration, /۲۸ روزه/);
+
+  const start = answerPageAssistantQuestion({
+    screen: 'home',
+    message: 'از کجا شروع کنم؟',
+  });
+  assert.match(start, /دکمه «شروع»/);
+  assert.match(start, /ارزیابی اولیه/);
+});
+
+test('onboarding screens have grounded page-specific guidance', () => {
+  assert.match(answerPageAssistantQuestion({
+    screen: 'howWorks',
+    message: 'این صفحه برای چیست؟',
+  }), /روند استفاده از مسیر ۲۸ روزه/);
+  assert.match(answerPageAssistantQuestion({
+    screen: 'assessment',
+    message: 'این صفحه برای چیست؟',
+  }), /خط مبنای شخصی/);
 });
