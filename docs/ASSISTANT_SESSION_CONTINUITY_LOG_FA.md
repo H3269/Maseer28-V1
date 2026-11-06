@@ -2902,3 +2902,11 @@ CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` مو�
 - گزارش جامع `docs/CONTENT_34_TOPICS_GLOBAL_SEMANTIC_SCREEN_B2Z63_FA.md` به B2-Z68 به‌روزرسانی شد؛ Commit گزارش `7dc1cadccd209416cddefa917837892c2f994975`; Commit شاخص `dd215cdf58bde7c078566a7bfc48e53830933e9b`.
 - کنترل ساختاری ۱۱ فیلد و همگام‌سازی exercise/action با overlay کامل شد؛ این نتیجه به معنی ممیزی معنایی انسانی تک‌تک ۱۱ فیلد نیست.
 - نقطه ادامه: اجرای CI کامل روی HEAD فعلی، بررسی گیت‌های content/assistant/P0، آزمون مرورگر Chromium و راستی‌آزمایی اینکه preview واقعاً overlay با cache key جدید را بارگذاری می‌کند؛ پس از آن، ممیزی انسانی نامزدهای میانه و تثبیت ۱۰۲ نگاشت زیرموضوع.
+
+## وضعیت گیت CI و preview — 2026-11-06
+
+- روی HEAD مشاهده‌شده `1ca2be4d878a3b374a587983d6cb2508bfe68c4a`، endpoint وضعیت commit هیچ status check برنگرداند؛ فهرست workflow run در دسترس ابزار فقط runهای PR را پوشش می‌دهد و برای این SHA موردی برنگرداند.
+- workflow `validate-content.yml` روی push به main و pull request تعریف شده است؛ اما از داده قابل مشاهده فعلی نمی‌توان اجرای موفق یا شکست آن را تأیید کرد. وضعیت CI بنابراین **نامشخص/تأییدنشده** است، نه سبز.
+- اجرای محلی نیز ممکن نشد: clone مخزن از محیط اجرا به‌علت خطای DNS برای github.com انجام نشد؛ در نتیجه `npm ci`، آزمون‌های Node/Chromium و build محلی اجرا نشده‌اند.
+- `src/App.jsx` نسخه کش overlay را روی `20261106-b2z67` دارد؛ blob overlay snapshot ثبت‌شده در B2-Z68 برابر `016de9b6c83b26855c1b9c58822a30757026f87c` است.
+- هیچ ادعای موفقیت CI یا preview در این مرحله ثبت نمی‌شود. نقطه ادامه: مشاهده run واقعی Actions روی HEAD فعلی و دریافت نتیجه jobها؛ سپس اجرای آزمون‌های content، assistant topics، P0، audit کیفیت، Node و Chromium و بررسی بارگذاری overlay در preview.
