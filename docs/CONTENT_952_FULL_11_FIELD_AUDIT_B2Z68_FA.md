@@ -49,3 +49,15 @@
 - تعیین مسیر فنی جداگانه برای هرگونه انتقال ۹ فیلد غیر اجرایی، بدون تغییر ناخواسته در UI یا schema.
 
 **وضعیت:** `full_952_day_11_field_structural_audit_passed_overlay_aligned_exact_duplicates_zero_T03_S03_taxonomy_pending_CI_pending`
+
+
+## کنترل تکمیلی رجیستری و مسیر نمایش — B2-Z69
+
+- کنترل دستی رجیستری دستیار بدون خطا: ۳۴ موضوع، ۱۰۲ زیرموضوع، ۳۴ تعریف کاری، ۲۶ منبع شواهد، ۴۰ رابطه کاندیدا و ۷ نوع رابطه.
+- وضعیت‌ها دست‌نخورده و غیرتأییدشده‌اند: موضوع/زیرموضوع/تعریف در draft؛ رابطه‌ها candidate و غیرفعال در runtime؛ سیاست رضایت، ارزیابی و ایمنی/داده در حالت design-only.
+- ۳۴ نام موضوع رجیستری با ۳۴ کلید overlay دقیقاً یکسان‌اند؛ تابع merge فقط exercise و actionText را جایگزین می‌کند.
+- `src/App.jsx` لایه overlay را با cache key برابر `20261106-b2z67` بارگذاری می‌کند.
+- آزمون وضعیت CI برای HEAD `a95a3a1a85032912f88cf979f00746c8d56ce50c` هیچ status/check قابل مشاهده‌ای برنگرداند؛ داده اجرای push workflow نیز از ابزار متصل در دسترس نبود. بنابراین قبولی CI یا deploy جدید ادعا نمی‌شود.
+- workflow تست GitHub Pages روی push به `main` تعریف شده و نشانی محیط تست در پروتکل پروژه `https://h3269.github.io/Maseer28-V1/` ثبت شده است؛ نسخه مستقر فعلی از اینجا قابل راستی‌آزمایی نبود.
+
+**وضعیت تکمیلی:** `registry_manual_checks_passed_overlay_loader_and_cache_verified_CI_and_live_deploy_unverified`
