@@ -2910,3 +2910,11 @@ CI run `41825332984` روی SHA `751b9196da863958738743b690c136683603193e` مو�
 - اجرای محلی نیز ممکن نشد: clone مخزن از محیط اجرا به‌علت خطای DNS برای github.com انجام نشد؛ در نتیجه `npm ci`، آزمون‌های Node/Chromium و build محلی اجرا نشده‌اند.
 - `src/App.jsx` نسخه کش overlay را روی `20261106-b2z67` دارد؛ blob overlay snapshot ثبت‌شده در B2-Z68 برابر `016de9b6c83b26855c1b9c58822a30757026f87c` است.
 - هیچ ادعای موفقیت CI یا preview در این مرحله ثبت نمی‌شود. نقطه ادامه: مشاهده run واقعی Actions روی HEAD فعلی و دریافت نتیجه jobها؛ سپس اجرای آزمون‌های content، assistant topics، P0، audit کیفیت، Node و Chromium و بررسی بارگذاری overlay در preview.
+
+## تفکیک ممیزی ساختاری از تأیید runtime/انتشار — 2026-11-06
+
+- `public/assistant/knowledge/daily-content-governance.v1.json` هنوز با وضعیت `draft_design_target_not_runtime_approval` است. قرارداد `daily_unit_contract_v2` برای محتوای جدید/بازنویسی‌شده، شناسه/موضوع/زیرموضوع، هدف، مهارت، سازوکار، دستورالعمل، مدت، منبع، درجه شواهد، سطح خطر، شروط توقف و وضعیت/رکورد بازبینی انسانی را مطالبه می‌کند.
+- تکمیل ۱۱ فیلد در پیش‌نویس‌های ۹۵۲ روز، جایگزین مهاجرت به قرارداد runtime v2 یا تأیید انسانی نیست. در validator، محتوای v2 باید دارای پیوند رجیستری و وضعیت بازبینی معتبر باشد؛ production gate فقط محتوای expert-approved را می‌پذیرد.
+- overlay فعلی فقط `exercise` و `actionText` را روی محتوای canonical جایگزین می‌کند؛ شناسه‌ها، عنوان، مقدمه، closing و سایر فیلدهای canonical حفظ می‌شوند. deploy.yml عمداً Test App با TEST_MODE فعال و بدون production gate می‌سازد؛ این با انتشار Production متفاوت است.
+- URL/وضعیت انتشار GitHub Pages از ابزارهای فعلی قابل تأیید نبود؛ workflow status روی HEAD خالی بود و clone محلی به‌علت DNS انجام نشد. هیچ URL منتشرشده‌ای حدس زده یا CI سبز اعلام نشود.
+- نقطه ادامه: دسترسی به نتیجه واقعی Actions/Pages و اجرای آزمون‌های validate-content، audit:content-quality، validate:assistant-topics، validate:p0-review-queue، node --test، build و سناریوهای Chromium؛ سپس بازبینی انسانی نامزدهای واژگانی میانه و تعیین تکلیف قرارداد runtime v2/تأیید تخصصی.
