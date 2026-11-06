@@ -51,3 +51,8 @@
 پیش‌نویس و این گزارش در `docs/` هستند. Overlay اجرایی، canonical، رجیستری، صف P0، منطق مسیر/تطبیقی و UI تغییر نکرده‌اند. هیچ تأیید تخصصی ادعا نمی‌شود.
 
 **وضعیت:** `T12_daily_mapping_reviewed; day26_action_refined; safety_boundaries_preserved`
+
+
+## اصلاح تکمیلی پس از ثبت گزارش — روز ۱۸ overlay
+
+پس از گزارش اولیه، واژه انگلیسی ناخواسته در تمرین روز ۱۸ از overlay نیز حذف و با «بدنام یا اهریمنی جلوه‌دادن» جایگزین شد. اکنون پیش‌نویس و overlay در ۲۸/۲۸ روز منطبق‌اند. Commit overlay: `a3ea8cd19acb969695fc5dcce2ae3c3e3d8b83ee`.
