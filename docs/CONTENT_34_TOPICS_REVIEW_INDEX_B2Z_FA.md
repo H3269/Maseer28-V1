@@ -50,6 +50,9 @@
 | T34 | مشکل دیگر | [پیش‌نویس](T34_OTHER_CONCERN_28DAY_REDESIGN_DRAFT_B2_BX_FA.md) |
 
 ## گزارش‌های ممیزی مرتبط
+
+- [ممیزی هدفمند مرزهای موضوعی T01 تا T12](CONTENT_T01_T12_TARGETED_SEMANTIC_OVERLAP_AUDIT_B2Z_FA.md)
+- [ممیزی هدفمند هم‌پوشانی T13 تا T34](CONTENT_T13_T34_TARGETED_SEMANTIC_OVERLAP_AUDIT_B2Z_FA.md)
 - [ممیزی هدفمند هم‌پوشانی T13 تا T34](CONTENT_T13_T34_TARGETED_SEMANTIC_OVERLAP_AUDIT_B2Z_FA.md)
 - [گزارش کلی ممیزی ساختار و تکرار ۹۵۲ ماژول](CONTENT_952_GLOBAL_DUPLICATION_AUDIT_B2Y_FA.md)
 
