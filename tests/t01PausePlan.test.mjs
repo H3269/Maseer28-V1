@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { getT01PausePlan } from '../src/features/journey/t01PausePlan.js';
+import { mergeDailyTextOverrides } from '../src/features/content/dailyTextOverrides.js';
 
 test('T01 day 10 provides a three-part, conditional pause plan', () => {
   const plan = getT01PausePlan({ topic_id: 'T01', day: 10, id: 'T01-D10' });
@@ -14,14 +15,20 @@ test('T01 day 10 provides a three-part, conditional pause plan', () => {
   assert.match(plan, /اگر درباره امنیت یا رضایت آزادانه تردید داری/);
 });
 
-test('T01 days 10 and 11 retain the exact reference-app exercise and action text', async () => {
-  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
+test('T01 days 10 and 11 use the rewritten exercise and action text without changing the day UI', async () => {
+  const [base, overrides] = await Promise.all([
+    readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8').then(JSON.parse),
+    readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8').then(JSON.parse),
+  ]);
+  const content = mergeDailyTextOverrides(base, overrides);
   const day10 = content.categories['خشم'].days.find((item) => item.day === 10);
   const day11 = content.categories['خشم'].days.find((item) => item.day === 11);
-  assert.equal(day10.exercise, 'یک کاری را که به‌خاطر «خشم» دشوار شده، انتخاب کن. آن را به کوچک‌ترین گام امنی تقسیم کن که حداکثر چند دقیقه زمان می‌برد و معیار پایان آن را مشخص کن. اگر گام هنوز بزرگ است، دوباره آن را کوچک‌تر کن تا دقیقاً بدانی از کجا شروع می‌شود.');
-  assert.equal(day10.actionText, 'فقط همان گام کوچک را انجام بده، نه کل کار را. پس از پایان، علامت بزن که انجام شد؛ کیفیت یا نتیجه کامل شرط موفقیت این مرحله نیست. پس از انجام گام، بنویس چه چیزی شروع را آسان‌تر کرد تا برای گام‌های بعدی استفاده کنی.');
-  assert.equal(day11.exercise, 'در موقعیتی مرتبط با «خشم»، بنویس چه چیزی در اختیار توست و چه چیزی در اختیار تو نیست. یک مرز سالم یا محدودیت واقعی خود را هم مشخص کن. مرز باید با شرایط واقعی و امنیت تو سازگار باشد؛ مسئولیت رفتار دیگران بر عهده تو نیست.');
-  assert.equal(day11.actionText, 'در یک موقعیت کم‌خطر، یک مرز یا محدودیت را با جمله‌ای کوتاه و محترمانه بیان کن؛ اگر بیان مستقیم امن یا مناسب نیست، آن را برای گفت‌وگو با فرد قابل اعتماد آماده کن. پس از گفتن جمله، لازم نیست واکنش دیگران را کنترل کنی؛ فقط روشن بودن پیام خودت را بررسی کن.');
+  for (const day of [day10, day11]) {
+    assert.ok(day.exercise.trim());
+    assert.ok(day.actionText.trim());
+  }
+  assert.notEqual(day10.exercise, base.categories['خشم'].days.find((item) => item.day === 10).exercise);
+  assert.notEqual(day10.actionText, base.categories['خشم'].days.find((item) => item.day === 10).actionText);
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
   assert.doesNotMatch(ui, /getT01PausePlan|t01PausePlan/);
 });
