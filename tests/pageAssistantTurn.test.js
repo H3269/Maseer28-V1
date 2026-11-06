@@ -258,3 +258,22 @@ test('topic subtopic lookup returns names but never presents draft definitions a
   assert.match(result.message, /پیش‌نویس/);
   assert.doesNotMatch(result.message, /تعریف قطعی/);
 });
+
+test('dashboard can answer app topic index questions without depending on the empty approved-content catalog', () => {
+  const result = makePageAssistantTurn({
+    screen: 'dashboard',
+    text: 'فهرست موضوعات مسیر چیست؟',
+  });
+  assert.equal(result.status, 'page_guidance_available');
+  assert.match(result.message, /۳۴ مورد/);
+  assert.match(result.message, /پیش‌نویس/);
+});
+
+test('personal-intake and ambiguity routes still take precedence over app topic lookup', () => {
+  const result = makePageAssistantTurn({
+    screen: 'dashboard',
+    text: 'برای اضطراب خودم چه کار کنم؟',
+  });
+  assert.equal(result.status, 'personal_intake_required');
+  assert.deepEqual(result.knowledge, []);
+});
