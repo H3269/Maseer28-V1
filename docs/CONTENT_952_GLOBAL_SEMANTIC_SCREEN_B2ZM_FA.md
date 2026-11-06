@@ -64,3 +64,9 @@
 - تا موفقیت آزمون‌ها، این مرحله را تأیید نهایی انتشار تلقی نکن.
 
 **وضعیت:** `B2ZM_global_879648_pair_lexical_screen_completed_exact_duplicates_zero_targeted_semantic_review_continues_ci_pending`
+
+
+## یادداشت نسخه و ارجاع
+
+- این سند snapshot میانی B2-ZM است و شناسه overlay درج‌شده در سربرگ آن، شناسه همان snapshot تاریخی است؛ پس از آن، گزارش تلفیقی رسمی در `CONTENT_34_TOPICS_GLOBAL_SEMANTIC_SCREEN_B2Z63_FA.md` تا B2-Z68 به‌روزرسانی شد.
+- برای وضعیت جاری، نتایج ۹۵۲/۹۵۲ همگام‌سازی و ممیزی ۱۱ فیلد به گزارش B2-Z68 و شاخص ۳۴ موضوع مراجعه شود. این سند به‌تنهایی مبنای اعلام آمادگی انتشار نیست.
