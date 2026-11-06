@@ -272,7 +272,7 @@ test('dashboard can answer app topic index questions without depending on the em
 test('personal-intake and ambiguity routes still take precedence over app topic lookup', () => {
   const result = makePageAssistantTurn({
     screen: 'dashboard',
-    text: 'برای اضطراب خودم چه کار کنم؟',
+    text: 'من برای اضطرابم چه راهکاری انجام بدهم؟',
   });
   assert.equal(result.status, 'personal_intake_required');
   assert.deepEqual(result.knowledge, []);
