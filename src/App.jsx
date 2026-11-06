@@ -55,6 +55,7 @@ import {
 } from './features/journey/JourneyScreens.jsx';
 import { getRelationshipSafetyGate, isRelationshipSafetyConfirmed } from './features/journey/relationshipSafetyGate.js';
 import { isCompleteDailyContentCategory, selectCanonicalDailyRecord, selectDailyContentCategory } from './features/content/dailyContentSelector.js';
+import { mergeDailyTextOverrides } from './features/content/dailyTextOverrides.js';
 import { fa } from './shared/utils.js';
 import GlobalAssistantLauncher from './features/assistant/GlobalAssistantLauncher.jsx';
 
@@ -177,8 +178,14 @@ function MainApp() {
       .then((response) => { if (!response.ok) throw new Error('فایل محتوای مسیر پیدا نشد.'); return response.json(); })
       .then((data) => {
         if (cancelled) return;
-        loadedData = data;
-        dataReady = true;
+        return fetch(`${import.meta.env.BASE_URL}content/daily-text-overrides.v1.json?v=20261106-t34`, { cache: 'default' })
+          .then((response) => response.ok ? response.json() : null)
+          .catch(() => null)
+          .then((overrides) => {
+            if (cancelled) return;
+            loadedData = mergeDailyTextOverrides(data, overrides);
+            dataReady = true;
+          });
       })
       .catch((error) => {
         if (cancelled) return;
