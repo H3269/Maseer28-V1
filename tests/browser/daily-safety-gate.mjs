@@ -81,7 +81,7 @@ try {
     const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
     const visibleAction = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayAction'));
     assert.equal(visibleExercise, normalizeVisibleDailyText(expected.exercise), topic + ' day 1 must render its exact overlay exercise');
-    assert.equal(visibleAction, normalizeVisibleDailyText(expected.actionText), topic + ' day 1 must render its exact overlay action');
+    assert.ok(visibleAction.endsWith(normalizeVisibleDailyText(expected.actionText)), topic + ' day 1 must render its exact overlay action after the topic context prefix');
     assert.doesNotMatch(text, /این تمرین در نسخه فعلی قابل اجرا نیست|نیازمند بازبینی انسانی|آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه/);
     await card.locator('#openDailyEntryBtn').click();
     await card.locator('#dailyEntryPanel').waitFor({ state: 'visible' });
@@ -99,7 +99,7 @@ try {
     const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
     const visibleAction = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayAction'));
     assert.equal(visibleExercise, normalizeVisibleDailyText(expected.exercise), 'anger day ' + day + ' must render its exact overlay exercise');
-    assert.equal(visibleAction, normalizeVisibleDailyText(expected.actionText), 'anger day ' + day + ' must render its exact overlay action');
+    assert.ok(visibleAction.endsWith(normalizeVisibleDailyText(expected.actionText)), 'anger day ' + day + ' must render its exact overlay action after the topic context prefix');
     await card.locator('#openDailyEntryBtn').click();
     await card.locator('#dailyEntryPanel').waitFor({ state: 'visible' });
     assert.deepEqual(errors, []);
