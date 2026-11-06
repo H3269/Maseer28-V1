@@ -1,3 +1,6 @@
+import topicRegistry from '../../../public/assistant/knowledge/topics.v1.json' with { type: 'json' };
+import subtopicRegistry from '../../../public/assistant/knowledge/subtopics.v1.json' with { type: 'json' };
+
 const PAGE_CONTEXTS = Object.freeze({
   home: {
     label: 'معرفی و شروع',
@@ -141,6 +144,44 @@ export function answerPageAssistantQuestion({ screen, message, libraryContext } 
     return screen === 'home'
       ? 'از دکمه «شروع» در همین صفحه استفاده کن؛ سپس مراحل پروفایل، تنظیم موضوع و هدف مسیر و ارزیابی اولیه را به‌ترتیب تکمیل کن.'
       : 'برای شروع مسیر تازه یا نخستین ورود، به صفحه آغاز برنامه برگرد و دکمه «شروع» را بزن. برنامه سپس مراحل پروفایل، تنظیم مسیر و ارزیابی اولیه را نمایش می‌دهد.';
+  }
+
+  const topicRows = Array.isArray(topicRegistry.topics) ? topicRegistry.topics : [];
+  const subtopicRows = Array.isArray(subtopicRegistry.subtopics) ? subtopicRegistry.subtopics : [];
+  const registryIsDraft = topicRegistry.registry_status !== 'active'
+    || subtopicRegistry.registry_status !== 'active'
+    || topicRows.some((topic) => topic.review_status !== 'approved');
+
+  const asksSubtopics = /(?:زیر ?موضوع|زیرموضوع|زیر موضوع)/u.test(text)
+    && /(?:چیست|چیستند|کدام|چه|فهرست|دار[یی]د|هست)/u.test(text);
+  if (asksSubtopics) {
+    const matchedTopic = topicRows.find((topic) => {
+      const topicName = normalize(topic.name);
+      return topicName.length > 2 && (text.includes(topicName) || text.includes(normalize(topic.topic_id)));
+    });
+    if (matchedTopic) {
+      const names = subtopicRows
+        .filter((item) => item.topic_id === matchedTopic.topic_id)
+        .sort((a, b) => String(a.subtopic_id).localeCompare(String(b.subtopic_id), 'en'))
+        .map((item) => item.name);
+      if (names.length) {
+        const reviewNote = registryIsDraft
+          ? '\\n\\nوضعیت اعتبار: این فهرست پیش‌نویس است و زیرموضوع‌ها هنوز بازبینی تخصصی و تأیید نهایی نشده‌اند؛ نام‌ها را نباید تعریف یا تشخیص قطعی تلقی کرد.'
+          : '';
+        return `زیرموضوع‌های ثبت‌شده برای «${matchedTopic.name}»:\\n${names.map((name, index) => (index + 1) + ') ' + name).join('\\n')}${reviewNote}`;
+      }
+    }
+  }
+
+  const asksTopicList = /(?:چه موضوع(?:ات|هایی)|فهرست موضوع(?:ات|ها)|موضوع(?:ات|های) مسیر|۳۴ موضوع|34 موضوع|موضوعات قابل انتخاب)/u.test(text);
+  if (asksTopicList && topicRows.length) {
+    const names = [...topicRows]
+      .sort((a, b) => Number(a.display_order || 0) - Number(b.display_order || 0))
+      .map((topic) => topic.name);
+    const reviewNote = registryIsDraft
+      ? '\\n\\nنکته مهم: این‌ها نام‌های ثبت‌شده در فهرست پیش‌نویس اپ هستند. رجیستری هنوز در وضعیت نیازمند بازبینی تخصصی است؛ بنابراین این فهرست به‌معنای تأیید علمی تعریف‌ها یا مناسب‌بودن هر موضوع برای همه افراد نیست.'
+      : '';
+    return `فهرست موضوعات ثبت‌شده مسیر۲۸ (${names.length} مورد):\\n${names.map((name, index) => (index + 1) + ') ' + name).join('\\n')}${reviewNote}`;
   }
 
   if (screen === 'books' && /(?:چه کتاب(?: هایی|‌هایی)|فهرست کتاب|لیست کتاب|کتاب(?: های|‌های) موجود|چه کتابی داریم)/u.test(text)) {
