@@ -174,3 +174,30 @@ A1 زمانی قابل قبول است که برای طبقات دستگاه و 
 - Samsung Galaxy A30s / SM-A307FN specifications (third-party device reference): https://www.phonemore.com/specs/samsung/galaxy-a30s/sm-a307fn/
 - Google AI Edge, LiteRT-LM JavaScript: https://developers.google.com/edge/litert-lm/js
 - Transformers.js documentation: https://huggingface.co/docs/transformers.js
+
+
+## ممیزی اجرایی کد موجود برای امکان‌سنجی محلی — 2026-11-06
+
+این بخش بر پایه فایل‌های واقعی شاخه `main` نوشته شده و از پژوهش رومیزی جداست.
+
+### یافته‌های قطعی مخزن
+- `package.json` فقط React/React DOM را در وابستگی‌های اجرایی دارد؛ هیچ runtime شناخته‌شده LLM محلی، موتور ONNX، بسته WebAssembly مدل‌محور یا کتابخانه STT/TTS در dependencies فعلی ثبت نشده است.
+- در درخت فایل‌های شاخه، فایل مدل وزن‌دار، فایل `.wasm`، پیاده‌سازی Service Worker/Workbox یا کد ثبت Service Worker پیدا نشد. این یعنی زیرساخت قابل مشاهده‌ای برای cache آفلاین مدل و مدیریت چرخه دانلود مدل هنوز در اپ موجود نیست؛ ادعای آفلاین‌بودن مدل قابل طرح نیست.
+- `vite.config.js` فقط React plugin، build target برابر ES2020 و base path را تنظیم می‌کند؛ تنظیم ویژه‌ای برای WASM، Worker، COOP/COEP، SharedArrayBuffer یا بسته‌بندی مدل دیده نشد.
+- `src/features/assistant/GlobalAssistantLauncher.jsx` پیام را مستقیماً به `makePageAssistantTurn` می‌دهد؛ در این مسیر UI درخواست شبکه‌ای برای مدل نمی‌فرستد. موتور فعلی یک پاسخ‌ساز LLM نیست.
+- `src/features/assistant/assistantTurnEngine.js` یک موتور محلی قواعدمند/واژگانی است و دانش را فقط از کاتالوگ تأییدشده می‌خواند. فایل‌های کاتالوگ و manifest در وضعیت فعلی خالی‌اند؛ بنابراین این موتور پاسخ‌گوی مولد عمومی نیست.
+- `src/features/privacy/indexedDbData.js` IndexedDB با نام `maseer28-library` را برای مخازن کتاب‌ها، نسخه‌ها و تنظیمات مدیریت می‌کند. این زیرساخت به‌خودی‌خود cache مدل، quota management یا نگهداری امن مدل AI را پیاده نمی‌کند.
+- در Worker، `workers/assistant-api/src/index.js` مسیر مکالمه را عمداً با پاسخ `503 assistant_not_configured` می‌بندد و تصریح می‌کند که بدنه درخواست را تا تکمیل رضایت/حریم خصوصی/ایمنی/provider نمی‌خواند. `workersAiProvider.js` صرفاً آداپتور آزمایشی است و در Worker فعال/متصل نیست. این API در وضعیت فعلی مسیر اجرای مدل محلی محسوب نمی‌شود.
+- `public/manifest.webmanifest` مشخصات PWA را دارد، اما وجود manifest به معنی وجود Service Worker یا پشتیبانی آفلاین کامل نیست.
+
+### نتیجه فنی
+1. وضعیت فعلی دستیار در اپ: **موتور قواعدمند محلی، بدون LLM محلی و بدون STT/TTS محلی**.
+2. وضعیت cache/offline مدل: **پیاده‌سازی نشده و اثبات نشده**.
+3. وضعیت cloud assistant API: **غیرفعال؛ endpoint مکالمه 503 می‌دهد**. این وضعیت با مسیر محلی آینده اشتباه گرفته نشود.
+4. بنابراین در این مرحله هیچ runtime یا مدل محلی را نمی‌توان «موجود» یا «آماده اجرا» اعلام کرد. مرحله بعد باید prototypeهای جداگانه و قابل اندازه‌گیری برای inference، ذخیره‌سازی، بازیابی آفلاین، STT و TTS باشد.
+5. نبود Service Worker در کد فعلی به معنی ناممکن بودن راهکار آفلاین نیست؛ اما باید طراحی و پیاده‌سازی شود و در هر میزبان واقعی جداگانه آزموده شود.
+
+### اثر بر ماتریس میزبان‌ها
+- قابلیت‌های استاندارد مرورگر، WebAssembly، Worker، IndexedDB و میکروفون باید در Chrome Android، Telegram Android و Bale Android به‌صورت مستقل feature-detect و سپس عملیاتی آزموده شوند.
+- قابلیت یکسان API در Chrome تضمین نمی‌کند WebView داخلی تلگرام یا بله همان رفتار، quota، مجوز میکروفون یا lifecycle را داشته باشد.
+- هیچ صفحه تست، UI جدید، dependency، مدل یا تغییر رفتاری در این ممیزی اضافه نشده است.
