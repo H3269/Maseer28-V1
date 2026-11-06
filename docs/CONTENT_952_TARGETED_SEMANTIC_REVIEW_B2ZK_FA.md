@@ -59,3 +59,8 @@
 - تغییرات روی `main` ثبت شده‌اند تا پس از موفقیت workflow انتشار تست، در نسخه اپ قابل مشاهده باشند.
 
 **وضعیت:** `runtime_overlay_updated_exact_duplicate_checks_clear_semantic_review_continues`
+
+
+## به‌روزرسانی کش مرورگر
+
+پس از تغییر overlay، مقدار query نسخه در درخواست `daily-text-overrides.v1.json` در `src/App.jsx` به `20261106-b2zk1` تغییر کرد. این فقط برای جلوگیری از استفاده مرورگر از پاسخ کش‌شده قدیمی است و منطق ادغام یا نمایش محتوا را تغییر نمی‌دهد.
