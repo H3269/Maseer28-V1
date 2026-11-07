@@ -7127,3 +7127,32 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
   direction: rtl !important;
   text-align: right !important;
 }
+
+
+/* V94: remove individual message cards; keep both turns as plain rows in the single chat surface. */
+.globalAssistantChat .assistantMessage,
+.globalAssistantChat .userMessage {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  align-self: stretch !important;
+  margin: 0 !important;
+  padding: 12px 2px !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.globalAssistantChat .userMessage {
+  border-bottom: 1px solid var(--border, #d9e0e8) !important;
+}
+.globalAssistantChat .userMessage > b {
+  color: var(--primary, #28555b) !important;
+}
+.globalAssistantChat .assistantMessage > b {
+  color: var(--navy, #124b4a) !important;
+}
+.globalAssistantChat .assistantMessage p,
+.globalAssistantChat .userMessage p {
+  margin-top: 6px;
+}
