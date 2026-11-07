@@ -102,3 +102,47 @@ test('the local engine does not claim to generate a new example or exercise', ()
   const response = answerLibraryBookQuestion({ books: sampleBooks, message: 'در کتاب اول درباره احساسات چه تمرینی پیشنهاد می‌شود؟' });
   assert.match(response, /هنوز مثال شخصی‌سازی‌شده یا برنامه تمرینی تازه تولید نمی‌کند/);
 });
+
+
+test('recommendations explain their limited basis instead of pretending to know the reader', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'برای اینکه خودم را بهتر بشناسم از کدام کتاب شروع کنم؟' });
+  assert.match(response, /پیشنهاد شروع مطالعه/);
+  assert.match(response, /بر پایه موضوع و ساختار ثبت‌شده/);
+  assert.match(response, /نه شناخت وضعیت شخصی تو/);
+  assert.match(response, /هنر شناخت و دگرگونی احساسات/);
+});
+
+test('scientific validity questions distinguish book excerpts from scientific evidence', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم آیا این دیدگاه از نظر روان‌شناسی علمی قابل دفاع است؟' });
+  assert.match(response, /به‌تنهایی.*اعتبار علمی/u);
+  assert.match(response, /پژوهش‌های معتبر و مستقل/u);
+  assert.match(response, /منبع:/);
+});
+
+test('the assistant does not fabricate an opposing scientific view', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم آیا دیدگاه مخالفی هم وجود دارد؟' });
+  assert.match(response, /نمی‌توانم وجود یا محتوای یک دیدگاه مخالف مشخص را اثبات کنم/u);
+  assert.match(response, /نباید به نویسنده نسبت داد/u);
+});
+
+test('generated examples and weekly plans are explicitly attributed to the assistant', () => {
+  const example = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم درباره احساسات یک مثال بزن' });
+  assert.match(example, /مثال فرضی و تمرین پیشنهادی دستیار/u);
+  assert.match(example, /ساخته دستیارند/u);
+  const plan = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم برای شناخت احساسات برنامه هفت روزه بده' });
+  assert.match(plan, /برنامه هفت‌روزه پیشنهادی دستیار/u);
+  assert.match(plan, /نقل قول یا برنامه تألیفی کتاب نیست/u);
+});
+
+test('contextual follow-ups retain the selected book even when the wording is not a fixed follow-up phrase', () => {
+  const first = answerLibraryBookTurn({ books, message: 'در کتاب پنجم درباره چرخه احساسات چه نوشته؟' });
+  const second = answerLibraryBookTurn({ books, message: 'چه محدودیت‌هایی دارد؟', conversationState: first.conversationState });
+  assert.match(second.message, /هنر شناخت و دگرگونی احساسات/u);
+  assert.match(second.message, /محدودیت/u);
+});
+
+test('progress guidance uses observable behavior and avoids clinical claims', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم از کجا بفهمم در این توصیه پیشرفت کرده‌ام؟' });
+  assert.match(response, /رفتارهای قابل مشاهده/u);
+  assert.match(response, /نه معیار تشخیصی یا درمانی/u);
+});
