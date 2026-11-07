@@ -495,14 +495,16 @@ test('five-turn follow-up path stays grounded in each of the five real seeded bo
     const sourceBlock = sourcePage.blocks.find((block) =>
       block.type !== 'heading' && String(block.text || '').trim().length > 100
     );
-    const keyword = String(sourceBlock.text).split(/\s+/u)
+    const queryTerms = String(sourceBlock.text).split(/\s+/u)
       .map((word) => word.replace(/[^\p{L}\p{N}]/gu, ''))
-      .find((word) => word.length >= 5);
-    assert.ok(keyword, book.title + ' must provide a searchable source term');
+      .filter((word) => word.length >= 4 && !['اگر', 'برای', 'این', 'آنها', 'انسان'].includes(word))
+      .slice(0, 5);
+    assert.ok(queryTerms.length >= 2, book.title + ' must provide multiple searchable source terms');
+    const sourceQuery = queryTerms.join(' ');
 
     let turn = answerLibraryBookTurn({
       books,
-      message: 'در کتاب ' + ordinals[book.legacyId - 1] + ' درباره ' + keyword + ' چه نوشته شده؟',
+      message: 'در کتاب ' + ordinals[book.legacyId - 1] + ' درباره ' + sourceQuery + ' چه نوشته شده؟',
     });
     assert.equal(turn.conversationState.bookId, book.legacyId);
     assert.ok(turn.conversationState.lastSources?.length, book.title + ' first turn must retain source locators');
