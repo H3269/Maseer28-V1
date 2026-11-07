@@ -4,25 +4,6 @@ import { makePageAssistantTurn } from './pageAssistantTurn.js';
 import { libraryRepository } from '../library/libraryRepository.js';
 import { answerLibraryBookQuestion } from './libraryBookAssistant.js';
 
-const SCREEN_LABELS = {
-  home: 'معرفی و شروع',
-  howWorks: 'نحوه کار برنامه',
-  about: 'درباره برنامه',
-  assessment: 'ارزیابی اولیه',
-  dashboard: 'خانه',
-  profile: 'پروفایل',
-  pathSetup: 'تنظیم مسیر',
-  day: 'تمرین روزانه',
-  dailyResult: 'نتیجه تمرین',
-  books: 'کتابخانه',
-  bookReader: 'مطالعه کتاب',
-  support: 'پشتیبانی',
-  final: 'ارزیابی پایانی',
-  done: 'پایان مسیر',
-  report: 'گزارش مسیر',
-  archive: 'آرشیو',
-};
-
 export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -34,10 +15,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const closeButtonRef = useRef(null);
   const dialogRef = useRef(null);
   const endRef = useRef(null);
-  const isDailyExercise = screen === 'day';
-  const pageLabel = SCREEN_LABELS[screen] || 'صفحه جاری';
-  const dailyTopic = String(dailyContext?.problem || '').trim();
-  const dailyDay = dailyContext?.day;
 
   useEffect(() => {
     setMessages([]);
