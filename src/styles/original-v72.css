@@ -7154,11 +7154,33 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 .globalAssistantChat .userMessage {
   border-bottom: 1px solid var(--border, #d9e0e8) !important;
 }
-.globalAssistantChat .userMessage > b {
-  color: var(--primary, #28555b) !important;
+.globalAssistantChat .globalAssistantSpeakerIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  font-size: inherit;
+  line-height: 1;
+  vertical-align: -0.08em;
 }
-.globalAssistantChat .assistantMessage > b {
-  color: var(--navy, #124b4a) !important;
+.globalAssistantChat .globalAssistantSpeakerIcon svg {
+  display: block;
+  width: 1em;
+  height: 1em;
+  overflow: visible;
+}
+.globalAssistantChat .userMessage > .globalAssistantSpeakerIcon {
+  color: var(--primary, #176b63) !important;
+}
+.globalAssistantChat .userMessage > .globalAssistantSpeakerIcon svg {
+  fill: currentColor;
+}
+.globalAssistantChat .assistantMessage > .globalAssistantSpeakerIcon {
+  color: var(--muted, #637674) !important;
+}
+.globalAssistantChat .assistantMessage > .globalAssistantSpeakerIcon svg {
+  fill: currentColor;
 }
 .globalAssistantChat .assistantMessage p,
 .globalAssistantChat .userMessage p {

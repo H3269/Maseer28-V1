@@ -171,7 +171,18 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
               <div className="assistantTranscript" dir="rtl" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
                 {messages.map((item, index) => (
                   <div className={item.role === 'user' ? 'userMessage' : 'assistantMessage'} key={index}>
-                    <b>{item.role === 'user' ? 'شما' : 'دستیار مسیر۲۸'}</b>
+                    <b className="globalAssistantSpeakerIcon" aria-label={item.role === 'user' ? 'شما' : 'دستیار مسیر۲۸'}>
+                      {item.role === 'user' ? (
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                          <circle cx="12" cy="12" r="9" />
+                        </svg>
+                      ) : (
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                          <path fillRule="evenodd" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 3.1a6.9 6.9 0 1 1 0 13.8 6.9 6.9 0 0 1 0-13.8Z" />
+                          <path d="M10.65 1.5h2.7v21h-2.7zM1.5 10.65h21v2.7h-21z" />
+                        </svg>
+                      )}
+                    </b>
                     <p>{item.text}</p>
                     {(item.knowledge || []).map((entry) => (
                       <div className="globalAssistantKnowledge" key={entry.item_id}>
