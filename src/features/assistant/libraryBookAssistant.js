@@ -173,17 +173,19 @@ function chooseDiverse(ranked, limit) {
 
 function pickBook(books, text, state) {
   const normalized = normalizeLibraryText(text);
+  // Resolve a full book title before ordinal words: "کتابچه تکمیلی جلد سوم"
+  // is book four, not book three.
+  const exact = books.find((book) => {
+    const title = normalizeLibraryText(book.title);
+    return title.length > 4 && normalized.includes(title);
+  });
+  if (exact) return exact;
   const ordinal = normalized.match(/(?:جلد|کتاب) (اول|دوم|سوم|چهارم|پنجم|1|2|3|4|5)/u)?.[1];
   const ids = { اول: 1, دوم: 2, سوم: 3, چهارم: 4, پنجم: 5, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5 };
   if (ordinal && ids[ordinal]) {
     const selected = books.find((book) => Number(book.legacyId) === ids[ordinal]);
     if (selected) return selected;
   }
-  const exact = books.find((book) => {
-    const title = normalizeLibraryText(book.title);
-    return title.length > 4 && normalized.includes(title);
-  });
-  if (exact) return exact;
   if (normalized.includes('از حقیقت تا واقعیت')) {
     const first = books.find((book) => Number(book.legacyId) === 1);
     if (first) return first;
