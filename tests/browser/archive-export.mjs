@@ -58,7 +58,17 @@ try {
   });
   await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => document.querySelector('#root')?.children.length > 0);
-  await page.locator('#copyrightModal').waitFor({ state: 'visible' });
+  await page.waitForFunction(() => {
+    const copyright = document.querySelector('#copyrightModal');
+    const startupError = document.querySelector('.validationModal');
+    return Boolean(copyright || startupError);
+  }, null, { timeout: 30000 });
+  const startupErrorText = await page.locator('.validationModal').innerText().catch(() => '');
+  assert.equal(
+    await page.locator('#copyrightModal').isVisible().catch(() => false),
+    true,
+    `App did not reach the copyright acceptance gate. Startup screen: ${startupErrorText || 'no visible startup error'}; browser errors: ${errors.join(' | ')}`
+  );
   await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
   await page.locator('#dashboard').waitFor({ state: 'visible' });
   await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();

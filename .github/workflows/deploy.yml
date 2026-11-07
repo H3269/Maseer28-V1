@@ -7,7 +7,6 @@ on:
 permissions:
   contents: read
   pages: write
-  deployments: write
   id-token: write
 
 concurrency:
@@ -49,63 +48,6 @@ jobs:
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b
         with:
           path: ./dist
-
-      # One-time recovery for the Pages deployment left in progress by the timed-out run on 10047cfa.
-      # GitHub rejects a new deployment while that stale deployment remains active.
-      - name: Cancel stale Pages deployment from timed-out run
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          stale_sha="10047cfa83dd51598ddbc387db0a8e2718bc8ff4"
-          if gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/deployments/${stale_sha}/cancel" >/tmp/pages-cancel.out 2>/tmp/pages-cancel.err; then
-            echo "Cancellation request accepted for stale Pages deployment."
-          elif grep -Eqi 'Not Found|404' /tmp/pages-cancel.err; then
-            echo "Stale Pages deployment was already cleared."
-            exit 0
-          else
-            cat /tmp/pages-cancel.err
-            exit 1
-          fi
-          for attempt in $(seq 1 15); do
-            status="$(gh api "repos/${GITHUB_REPOSITORY}/pages/deployments/${stale_sha}" --jq '.status')"
-            echo "Stale Pages deployment status: ${status}"
-            if [ "${status}" != "in_progress" ]; then
-              echo "Waiting briefly for GitHub Pages to release the cancelled deployment lock."
-              sleep 8
-              exit 0
-            fi
-            sleep 2
-          done
-          echo "Stale Pages deployment is still active after cancellation; refusing to overlap deployments."
-          exit 1
-
-      - name: Retire stale GitHub deployment record
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          stale_sha="10047cfa83dd51598ddbc387db0a8e2718bc8ff4"
-          deployment_ids="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/deployments?environment=github-pages&per_page=100" --jq ".[] | select(.sha == \"${stale_sha}\") | .id")"
-          if [ -z "${deployment_ids}" ]; then
-            echo "No generic github-pages deployment record found for the stale SHA."
-            exit 0
-          fi
-          while IFS= read -r deployment_id; do
-            [ -n "${deployment_id}" ] || continue
-            latest_state="$(gh api "repos/${GITHUB_REPOSITORY}/deployments/${deployment_id}/statuses?per_page=1" --jq '.[0].state // "none"')"
-            echo "Stale deployment ${deployment_id} latest state: ${latest_state}"
-            if [ "${latest_state}" = "in_progress" ]; then
-              gh api --method POST "repos/${GITHUB_REPOSITORY}/deployments/${deployment_id}/statuses" \
-                -f state=inactive \
-                -f description="Retired stale Pages deployment after its timed-out run." \
-                -F auto_inactive=false
-              echo "Marked only stale deployment ${deployment_id} inactive."
-            fi
-          done <<< "${deployment_ids}"
-          sleep 5
 
       - name: Deploy test app
         id: deployment
