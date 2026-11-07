@@ -12,6 +12,7 @@ const books = await Promise.all(manifest.books.map(async (meta) => ({
 
 const globalIntents = new Set(['inventory', 'recommend_self_knowledge', 'recommend_start', 'compare_books']);
 const generatedIntents = new Set(['example', 'habit', 'exercise', 'seven_day_plan', 'alternative_exercise', 'progress']);
+const clarificationPattern = /عنوان فصل|شماره صفحه|چند واژه|ادعا یا توصیه مشخص/u;
 const report = [];
 for (const book of books) {
   for (const item of matrix.questions) {
@@ -38,7 +39,8 @@ for (const book of books) {
       returned: response.length > 0,
       identifiesBook: global || response.includes(book.title),
       citesSource: global || /منبع:/.test(response),
-      labelsAssistantContent: !generatedIntents.has(item.intent) || /پیشنهاد دستیار|ساخته دستیار|دستیار/u.test(response),
+      clarifiesInsteadOfGuessing: clarificationPattern.test(response),
+      labelsAssistantContent: !generatedIntents.has(item.intent) || /پیشنهاد دستیار|ساخته دستیار|دستیار/u.test(response) || clarificationPattern.test(response),
       responseLength: response.length,
       response,
     });
@@ -54,6 +56,7 @@ const byBook = books.map((book) => {
     returned: rows.filter((row) => row.returned).length,
     identifiesBook: rows.filter((row) => row.identifiesBook).length,
     citesSource: rows.filter((row) => row.citesSource).length,
+    clarifiesInsteadOfGuessing: rows.filter((row) => row.clarifiesInsteadOfGuessing).length,
     labelsAssistantContent: rows.filter((row) => row.labelsAssistantContent).length,
   };
 });
@@ -63,6 +66,7 @@ const output = {
   returned: count((row) => row.returned),
   identifiesBook: count((row) => row.identifiesBook),
   citesSource: count((row) => row.citesSource),
+  clarifiesInsteadOfGuessing: count((row) => row.clarifiesInsteadOfGuessing),
   labelsAssistantContent: count((row) => row.labelsAssistantContent),
   byBook,
   note: 'These are routing/source/attribution checks only. They do NOT score semantic correctness, completeness, author-intent interpretation, scientific validity, or answer quality. Human review against the 0–2 rubric remains mandatory.',
