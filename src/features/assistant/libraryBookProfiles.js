@@ -147,6 +147,6 @@ function normalizeProfileTitle(value) {
 
 export function formatLibraryProfileItems(items) {
   return items.map(([heading, description, page], index) =>
-    (index + 1) + ') ' + heading + '\\n' + description + '\\nمنبع ساختاری: صفحه ' + page
-  ).join('\\n\\n');
+    (index + 1) + ') ' + heading + '\n' + description + '\nمنبع ساختاری: صفحه ' + page
+  ).join('\n\n');
 }
