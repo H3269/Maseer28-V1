@@ -209,7 +209,7 @@ function bookHeadings(book) {
 }
 
 function summaryReply(book, passages) {
-  const headings = bookHeadings(book);
+  const headings = mainBookHeadings(book);
   const selected = [];
   const targets = [0, 0.2, 0.4, 0.6, 0.8, 1].map((ratio) => Math.round((passages.length - 1) * ratio));
   for (const target of targets) {
@@ -236,7 +236,7 @@ function listBooksReply(books) {
 function compareBooksReply(books) {
   return 'مقایسه ساختاری کتابخانه بر اساس عنوان، توضیح ثبت‌شده و تیترهای واقعی متن:\n\n' +
     books.map((book) => {
-      const headings = bookHeadings(book).slice(0, 4);
+      const headings = mainBookHeadings(book).slice(0, 6);
       const subject = book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است';
       return '• ' + book.title + '\nموضوع ثبت‌شده: ' + subject +
         (headings.length ? '\nمحورهای قابل مشاهده در تیترها: ' + headings.map((item) => item.text).join('؛ ') : '');
@@ -245,8 +245,15 @@ function compareBooksReply(books) {
 }
 
 
+function mainBookHeadings(book) {
+  return bookHeadings(book).filter((item) =>
+    /فصل|بخش|تمرین|پیوست|هفته|روز|اصل|مرحله|جمع بندی/u.test(normalizeLibraryText(item.text))
+    && !/تقدیم نامه|سپاسگزاری|پیشگفتار|فهرست مطالب|یک نکته مهم|یادداشتی درباره این مجموعه/u.test(normalizeLibraryText(item.text))
+  );
+}
+
 function bookSubject(book) {
-  const headings = bookHeadings(book).slice(0, 8).map((item) => item.text);
+  const headings = mainBookHeadings(book).slice(0, 8).map((item) => item.text);
   return [book.content?.subtitle, book.content?.description, ...headings].filter(Boolean).join('؛ ');
 }
 
@@ -258,7 +265,7 @@ function recommendBooks(books, message) {
   const chosen = candidates.length ? candidates : books;
   return 'پیشنهاد شروع مطالعه بر اساس اطلاعات ثبت‌شده و تیترهای واقعی کتاب‌ها:\n\n' +
     chosen.slice(0, 3).map((book, index) => {
-      const headings = bookHeadings(book).slice(0, 3);
+      const headings = mainBookHeadings(book).slice(0, 3);
       return (index + 1) + ') «' + book.title + '»\nموضوع ثبت‌شده: ' +
         (book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است') +
         (headings.length ? '\nبخش‌های قابل مشاهده: ' + headings.map((item) => item.text + (item.page ? '، صفحه ' + item.page : '')).join('؛ ') : '');
@@ -307,11 +314,11 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     return { message: 'برای توضیح دقیق منظور نویسنده، لطفاً عنوان فصل، شماره صفحه یا چند کلمه از همان بخش را مشخص کن. هنوز معلوم نیست «این بخش» به کدام قسمت کتاب اشاره دارد؛ نمی‌خواهم نیت نویسنده را حدس بزنم.', conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message } };
   }
   if (CONCEPT_COMPARE.test(normalized)) {
-    const headings = bookHeadings(book).slice(0, 14);
+    const headings = mainBookHeadings(book).slice(0, 14);
     return { message: 'برای مقایسه، لطفاً دو مفهوم مشخص را انتخاب کن. این‌ها چند عنوان واقعی از ساختار کتاب هستند:\\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\\n'), conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message } };
   }
   if (BOOK_SUBJECT.test(normalized)) {
-    const headings = bookHeadings(book).slice(0, 10);
+    const headings = mainBookHeadings(book).slice(0, 10);
     return { message: 'بر اساس توضیح ثبت‌شده و تیترهای قابل مشاهده، موضوع «' + book.title + '» چنین معرفی شده است:\\n' +
       (book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است') +
       (headings.length ? '\\n\\nمحورهای قابل مشاهده:\\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\\n') : '') +
@@ -347,7 +354,7 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
         : PROGRESS.test(normalized)
           ? 'برای سنجش پیشرفت می‌توانی رفتارهای قابل مشاهده را ثبت کنی: تشخیص زودتر موقعیت، مکث پیش از واکنش، انتخاب آگاهانه‌تر و بازگشت به تمرین پس از دشواری. این شاخص‌ها پیشنهاد عمومی دستیارند، نه معیار تشخیصی یا درمانی؛ چون شاهد مشخصی از کتاب بازیابی نشد، آن‌ها را به نویسنده نسبت نمی‌دهم.'
           : 'در متن بازیابی‌شده شاهد کافی برای ارزیابی محدودیت همین توصیه پیدا نکردم. اگر فصل یا توصیه مشخص را نام ببری، می‌توانم محدودیت‌های متن و محدودیت کاربرد آن را جداگانه بررسی کنم.';
-    return { message: reply, conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery } };
+    return { message: 'در «' + book.title + '»: ' + reply, conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery } };
   }
   if (!asksSummary && !selected.length) {
     return {
