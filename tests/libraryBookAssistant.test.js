@@ -552,3 +552,22 @@ test('curated book profile summary and key-point citations resolve to substantiv
     }
   }
 });
+
+
+test('an unspecified concept comparison selects a grounded core pair for each reviewed book', () => {
+  for (const book of books) {
+    const profile = getLibraryBookProfile(book);
+    assert.ok(profile?.conceptPair?.length === 2, book.title + ' must define two reviewed core concepts');
+    const result = answerLibraryBookTurn({
+      books,
+      message: 'دو مفهوم مهم این کتاب را با هم مقایسه می‌کنی؟',
+      conversationState: { bookId: book.legacyId, bookTitle: book.title },
+    });
+    assert.equal(result.conversationState.bookId, book.legacyId);
+    assert.equal(result.conversationState.pendingConceptCompare, false);
+    assert.ok(result.message.includes(profile.conceptPair[0]), book.title + ' must name the first selected concept');
+    assert.ok(result.message.includes(profile.conceptPair[1]), book.title + ' must name the second selected concept');
+    assert.match(result.message, /منبع:/u, book.title + ' comparison must cite book passages');
+    assert.match(result.message, /مقایسه/u, book.title + ' must explicitly compare the selected concepts');
+  }
+});
