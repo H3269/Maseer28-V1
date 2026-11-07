@@ -107,6 +107,13 @@ jobs:
       - name: Run 125 library assistant acceptance scenarios (routing and source coverage only)
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run audit:library-assistant
+      - name: Upload 125-scenario library assistant acceptance report
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: library-assistant-acceptance
+          path: reports/generated/library-assistant-acceptance.json
+          if-no-files-found: error
       - name: Validate course and library data
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:content
