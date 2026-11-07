@@ -33,7 +33,7 @@ test('global assistant launcher is mounted across navigable screens, including s
   assert.doesNotMatch(readerUi, /GlobalAssistantLauncher/);
   assert.match(appUi, /screen === 'bookReader' && readerState/);
   assert.match(appUi, /return <Reader book=/);
-  assert.match(launcherUi, /support:\s*'پشتیبانی'/);
+  assert.doesNotMatch(launcherUi, /support:\s*'پشتیبانی'/, 'launcher must not reintroduce screen-context helper labels');
   assert.match(launcherUi, /className="globalAssistantLauncher"/);
   assert.match(launcherUi, /aria-label="باز کردن دستیار مسیر۲۸"/);
   assert.match(launcherUi, /if \(!visible \|\| screen === 'bookReader'\) return null/);
