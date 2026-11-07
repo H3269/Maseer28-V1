@@ -597,3 +597,29 @@ test('book profile and summary responses use real line breaks, never leaked slas
     assert.doesNotMatch(response, /\\n/u, book.title + ' must not leak escaped newline markers');
   }
 });
+
+test('curated theme and simple explanation include cited content rather than metadata alone', () => {
+  const theme = answerLibraryBookQuestion({ books, message: 'موضوع اصلی کتاب اول چیست؟' });
+  assert.match(theme, /سه محور محتوایی با ارجاع صفحه/u);
+  assert.match(theme, /شاهد از متن صفحه/u);
+  const simple = answerLibraryBookQuestion({ books, message: 'می‌توانی مفهوم اصلی کتاب اول را ساده و قابل فهم توضیح بدهی؟' });
+  assert.match(simple, /دو محور متنی مرتبط/u);
+  assert.match(simple, /شاهد از متن صفحه/u);
+});
+
+test('key-point answers expose the actual cited page evidence for every curated point', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'مهم‌ترین نکات کتاب پنجم کدام‌اند؟' });
+  assert.match(response, /نکته‌های محوری/u);
+  assert.match(response, /شاهد از متن صفحه/u);
+  assert.match(response, /منبع: صفحه/u);
+  assert.doesNotMatch(response, /\\\\n/u);
+});
+
+test('five-book comparison uses book-specific conceptual pairs and states its limits', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'تفاوت موضوعی این پنج کتاب چیست؟' });
+  for (const book of books) assert.ok(response.includes(book.title));
+  assert.match(response, /نمونه تمایز مفهومی/u);
+  assert.match(response, /کتابچه چهارم ابزار اجرایی مکمل جلد سوم/u);
+  assert.match(response, /نه رتبه‌بندی علمی/u);
+});
+
