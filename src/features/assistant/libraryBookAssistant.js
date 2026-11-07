@@ -434,7 +434,7 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     return { message: 'متن قابل‌جست‌وجوی «' + book.title + '» در نسخه فعلی بارگذاری نشده است؛ بنابراین پاسخ یا خلاصه حدسی ارائه نمی‌کنم.', conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: '' } };
   }
 
-  const unresolvedReference = /(?:این بخش|این مفهوم|این مطالب|این توصیه|این موضوع|این دیدگاه|همین تمرین)/u.test(normalized);
+  const unresolvedReference = /(?:این بخش|این مفهوم|این مطالب|این توصیه|این موضوع|این دیدگاه|این تمرین|همین تمرین)/u.test(normalized);
   if (unresolvedReference && !SCIENCE.test(normalized) && !ALTERNATIVE_VIEW.test(normalized) && !LIMITATIONS.test(normalized)
     && !conversationState?.lastSources?.length) {
     return {
@@ -445,14 +445,14 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   if ((SCIENCE.test(normalized) || ALTERNATIVE_VIEW.test(normalized) || LIMITATIONS.test(normalized))
     && !conversationState?.lastSources?.length) {
     return {
-      message: 'برای بررسی علمی، دیدگاه مخالف یا محدودیت‌ها باید ادعا یا توصیه مشخص باشد. لطفاً جمله، عنوان فصل یا صفحه‌ای را که درباره‌اش می‌پرسی مشخص کن. بدون دانستن ادعای موردنظر، آوردن چند گزیده نامرتبط می‌تواند گمراه‌کننده باشد.',
+      message: 'در «' + book.title + '»، برای بررسی علمی، دیدگاه مخالف یا محدودیت‌ها باید ادعا یا توصیه مشخص باشد. لطفاً جمله، عنوان فصل یا صفحه‌ای را که درباره‌اش می‌پرسی مشخص کن. بدون دانستن ادعای موردنظر، آوردن چند گزیده نامرتبط می‌تواند گمراه‌کننده باشد.',
       conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message, awaitingClaim: true },
     };
   }
   if (SIMPLE_EXPLAIN.test(normalized) && /مفهوم اصلی/u.test(normalized)
     && !conversationState?.lastSources?.length) {
     return {
-      message: 'برای توضیح ساده اما دقیق، باید یک مفهوم یا فصل مشخص را انتخاب کنیم. «مفهوم اصلی کتاب» به‌تنهایی خیلی گسترده است و یک توضیح کوتاه ممکن است چند بخش متفاوت را با هم خلط کند. نام فصل یا چند واژه از مفهوم را بفرست تا متن همان قسمت را ساده‌سازی کنم.',
+      message: 'در «' + book.title + '»، برای توضیح ساده اما دقیق باید یک مفهوم یا فصل مشخص را انتخاب کنیم. «مفهوم اصلی کتاب» به‌تنهایی خیلی گسترده است و یک توضیح کوتاه ممکن است چند بخش متفاوت را با هم خلط کند. نام فصل یا چند واژه از مفهوم را بفرست تا متن همان قسمت را ساده‌سازی کنم.',
       conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message, awaitingSection: true },
     };
   }
