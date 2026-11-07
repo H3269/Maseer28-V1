@@ -9,9 +9,9 @@ export function normalizeDigits(value) {
 export function formatDate(value) {
   if (!value) return '-';
   try {
-    return new Intl.DateTimeFormat('fa-IR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(value));
+    return fa(new Intl.DateTimeFormat('fa-IR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(value)));
   } catch {
-    return String(value);
+    return fa(value);
   }
 }
 
