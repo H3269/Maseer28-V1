@@ -520,7 +520,7 @@ test('five-turn follow-up path stays grounded in each of the five real seeded bo
         conversationState: turn.conversationState,
       });
       assert.equal(turn.conversationState.bookId, book.legacyId, book.title + ' must remain selected');
-      assert.match(turn.message, new RegExp(book.title.replace(/[.*+?^${}()|[\\]\\\\]/gu, '\\\\$&'), 'u'));
+      assert.ok(turn.message.includes(book.title), book.title + ' must remain visible in the reply');
       assert.match(turn.message, /منبع:/u, book.title + ' follow-up must preserve cited book evidence');
       assert.ok(turn.conversationState.lastSources?.length, book.title + ' follow-up must preserve source locators');
       assert.match(turn.message, followUp.expected, book.title + ' follow-up must use its requested response mode');
