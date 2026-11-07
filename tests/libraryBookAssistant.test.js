@@ -146,7 +146,7 @@ test('contextual follow-ups retain the selected book even when the wording is no
 
 test('progress questions about an unspecified recommendation request the referenced section first', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم از کجا بفهمم در این توصیه پیشرفت کرده‌ام؟' });
-  assert.match(response, /عنوان فصل یا چند کلمه از همان بخش/u);
+  assert.match(response, /عنوان فصل، شماره صفحه یا چند واژه/u);
   assert.doesNotMatch(response, /رفتارهای قابل مشاهده/u);
 });
 
