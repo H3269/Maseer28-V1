@@ -85,9 +85,10 @@ try {
   const closeButton = dialog.getByRole('button', { name: 'بستن پنجره دستیار' });
   await page.waitForFunction(() => document.activeElement?.getAttribute('aria-label') === 'بستن پنجره دستیار');
   assert.equal(await launcher.getAttribute('aria-expanded'), 'true');
-  // A disabled send button is correctly excluded from keyboard tab order.
-  // Enable it temporarily to test the complete first/last focus trap.
+  // DOM order is close button, message field, then enabled send button.
+  // Start from the actual first control to verify Shift+Tab wraps to the last.
   await dialog.getByRole('textbox').fill('آزمون گردش فوکوس');
+  await closeButton.focus();
   await page.keyboard.press('Shift+Tab');
   assert.equal(await dialog.getByRole('button', { name: 'ارسال' }).evaluate((element) => element === document.activeElement), true, 'Shift+Tab from the first control must wrap to the last enabled control');
   await page.keyboard.press('Tab');
