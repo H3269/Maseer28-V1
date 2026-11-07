@@ -194,3 +194,31 @@ test('confidence guidance distinguishes assistant suggestion from author text', 
   assert.match(response, /متن نویسنده نیست/u);
   assert.match(response, /منبع:/u);
 });
+
+
+test('key-point requests do not fall through to the generic book overview', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'در کتاب اول مهم‌ترین نکات کدام‌اند؟' });
+  assert.match(response, /نکته‌های قابل استخراج از بخش‌های بازیابی‌شده/u);
+  assert.doesNotMatch(response, /نمای کلی مستند/u);
+  assert.match(response, /منبع:/u);
+});
+
+test('a contextual follow-up searches the new limitation question while retaining the selected topic', () => {
+  const sampleBooks = [{
+    title: 'کتاب آزمایشی',
+    legacyId: 1,
+    content: { pages: [
+      { page: 1, sourcePage: 1, blocks: [{ type: 'heading', text: 'شناخت خشم' }, { type: 'paragraph', text: 'شناخت نشانه‌های عصبانیت به فرد کمک می‌کند پیش از واکنش مکث کند.' }] },
+      { page: 2, sourcePage: 2, blocks: [{ type: 'heading', text: 'محدودیت‌های تمرین' }, { type: 'paragraph', text: 'این تمرین در شرایط خطر فوری یا هنگام شدت بسیار بالای هیجان کافی نیست و باید از حمایت مناسب استفاده کرد.' }] },
+    ] },
+  }];
+  const first = answerLibraryBookTurn({ books: sampleBooks, message: 'در کتاب اول درباره خشم چه نوشته؟' });
+  const second = answerLibraryBookTurn({
+    books: sampleBooks,
+    message: 'چه محدودیت‌هایی دارد؟',
+    conversationState: first.conversationState,
+  });
+  assert.match(second.message, /محدودیت‌های تمرین/u);
+  assert.match(second.message, /صفحه 2/u);
+  assert.equal(second.conversationState.bookId, 1);
+});
