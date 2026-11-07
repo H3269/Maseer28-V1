@@ -111,7 +111,7 @@ try {
   assert.equal(await dialog.getByRole('textbox').count(), 1, 'the limited local page assistant must expose its message composer');
   const composerInput = dialog.getByRole('textbox');
   const emptyInputWidth = (await composerInput.boundingBox()).width;
-  await composerInput.fill('سلام');
+  await composerInput.fill('می‌خواهم یک سؤال بپرسم');
   const shortInputWidth = (await composerInput.boundingBox()).width;
   assert.ok(shortInputWidth > emptyInputWidth + 2, 'the empty composer must start compact and expand while a short question is typed');
   await composerInput.fill('پرسش طولانی '.repeat(28));

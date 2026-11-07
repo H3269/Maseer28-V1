@@ -15,7 +15,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const closeButtonRef = useRef(null);
   const dialogRef = useRef(null);
   const endRef = useRef(null);
-  const composerRef = useRef(null);
   const messageInputRef = useRef(null);
 
   useEffect(() => {
@@ -202,7 +201,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
-              <form ref={composerRef} className="assistantComposer" dir="rtl" onSubmit={send}>
+              <form className="assistantComposer" dir="rtl" onSubmit={send}>
                 <label className="assistantSrOnly" htmlFor="global-assistant-message">پیام شما</label>
                 <textarea
                   id="global-assistant-message"
