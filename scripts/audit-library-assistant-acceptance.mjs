@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { answerLibraryBookTurn } from '../src/features/assistant/libraryBookAssistant.js';
 
 const root = new URL('../public/', import.meta.url);
@@ -57,7 +57,7 @@ const byBook = books.map((book) => {
     labelsAssistantContent: rows.filter((row) => row.labelsAssistantContent).length,
   };
 });
-console.log(JSON.stringify({
+const output = {
   title: 'Library assistant 25-question × 5-book automated coverage',
   scenarios: total,
   returned: count((row) => row.returned),
@@ -67,4 +67,7 @@ console.log(JSON.stringify({
   byBook,
   note: 'These are routing/source/attribution checks only. They do NOT score semantic correctness, completeness, author-intent interpretation, scientific validity, or answer quality. Human review against the 0–2 rubric remains mandatory.',
   scenariosDetail: report,
-}, null, 2));
+};
+await mkdir(new URL('../reports/generated/', import.meta.url), { recursive: true });
+await writeFile(new URL('../reports/generated/library-assistant-acceptance.json', import.meta.url), JSON.stringify(output, null, 2) + '\\n');
+console.log(JSON.stringify({ ...output, scenariosDetail: undefined }, null, 2));
