@@ -420,7 +420,7 @@ function structuredGuidance(intent, book, passages, message) {
   if (ANXIETY.test(intent)) return 'بخش‌های زیر از نظر شناخت احساسات، نگرانی یا واکنش‌های مرتبط با پرسش تو قابل بررسی‌اند. این‌ها اطلاعات کتابی و خودآگاهی عمومی‌اند، نه تشخیص یا درمان اضطراب:\n\n' + source + '\n\nاگر اضطراب شدید، مداوم یا مختل‌کننده زندگی است، این متن جای ارزیابی متخصص را نمی‌گیرد.';
   if (ANGER.test(intent)) {
     const angerEvidence = normalizeLibraryText(passages.map((item) => item.text + ' ' + item.heading).join(' '));
-    const supportsAlternative = /پاسخ جایگزین|راه سالم تر|بیان سالم تر|پاسخ دیگری را انتخاب/u.test(angerEvidence);
+    const supportsAlternative = /پاسخ جایگزین|راه(?: های)? سالم تر(?:ی)?|بیان سالم تر|پاسخ دیگری را انتخاب/u.test(angerEvidence);
     const scope = supportsAlternative
       ? 'گزیده‌های بازیابی‌شده به شناخت احساس‌های زیرین خشم و امکان انتخاب شیوه سالم‌تری برای بیان آن اشاره می‌کنند.'
       : 'در گزیده حاضر فقط اهمیت مشاهده آنچه هنگام عصبانیت رخ می‌دهد دیده می‌شود؛ برای نشانه‌های اولیه یا پاسخ جایگزین مشخص، شاهد کافی در این کتاب پیدا نکردم.';
