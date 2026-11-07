@@ -321,6 +321,52 @@ function structuredGuidance(intent, book, passages, message) {
   return evidence;
 }
 
+function extractConceptPair(message) {
+  const normalized = normalizeLibraryText(message)
+    .replace(/(?:در )?(?:کتاب|جلد) (?:اول|دوم|سوم|چهارم|پنجم|1|2|3|4|5) /u, '')
+    .trim();
+  const patterns = [
+    /(?:مقایسه|تفاوت|فرق)(?: بین)?\s+(.{2,48}?)\s+(?:و|با)\s+(.{2,48}?)(?=\s+(?:را|رو|در|برای|چیست|کدام|با هم|کن|بده|می کنی)|$)/u,
+    /(?:مفهوم )?(.{2,40}?)\s+و\s+(.{2,40}?)\s+(?:را )?با هم مقایسه/u,
+  ];
+  for (const pattern of patterns) {
+    const match = normalized.match(pattern);
+    if (!match) continue;
+    const clean = (value) => value.replace(/^(?:مفهوم|مفاهیم|دو مفهوم) /u, '').replace(/^(?:موضوع|اصل) /u, '').trim();
+    const first = clean(match[1]);
+    const second = clean(match[2]);
+    if (first.length >= 2 && second.length >= 2 && first !== second) return [first, second];
+  }
+  return null;
+}
+
+function retrieveConceptEvidence(passages, concept, limit = 3) {
+  const weights = expandedQueryTerms(concept);
+  const frequency = buildFrequencyIndex(passages);
+  const phrase = normalizeLibraryText(concept);
+  return chooseDiverse(passages.map((passage, index) => ({
+    ...passage,
+    index,
+    score: scorePassage(passage, weights, frequency, passages.length, phrase),
+  })).filter((passage) => passage.score > 0)
+    .sort((a, b) => b.score - a.score || a.index - b.index), limit);
+}
+
+function compareConceptEvidenceReply(book, concepts, passages) {
+  const [first, second] = concepts;
+  const firstEvidence = retrieveConceptEvidence(passages, first);
+  const secondEvidence = retrieveConceptEvidence(passages, second);
+  if (!firstEvidence.length || !secondEvidence.length) {
+    const missing = [!firstEvidence.length ? first : null, !secondEvidence.length ? second : null].filter(Boolean);
+    return 'در «' + book.title + '» برای مفهوم ' + missing.map((item) => '«' + item + '»').join(' و ') +
+      ' شاهد متنی کافی پیدا نکردم. برای مقایسه قابل اتکا، لطفاً اصطلاح دقیق‌تر، عنوان فصل یا شماره صفحه را مشخص کن. از روی حدس، تعریف یا تفاوتی نمی‌سازم.';
+  }
+  return 'مقایسه مستند دو مفهوم در «' + book.title + '»' +
+    '\n\nمفهوم اول: «' + first + '»\n' + formatPassages(firstEvidence) +
+    '\n\nمفهوم دوم: «' + second + '»\n' + formatPassages(secondEvidence) +
+    '\n\nجمع‌بندی دقیق: گزیده‌های بالا نشان می‌دهند هر مفهوم در چه بافتی از کتاب مطرح شده است. چون موتور فعلی قاعده‌محور است، از هم‌پوشانی چند واژه به‌تنهایی شباهت یا تفاوت معنایی قطعی نتیجه نمی‌گیرم؛ این خروجی مقایسه شواهد متنی است، نه تحلیل نهایی استدلال نویسنده.';
+}
+
 export function answerLibraryBookTurn({ books = [], message = '', conversationState = null } = {}) {
   const available = books.filter((book) => book?.content && Array.isArray(book.content.pages));
   if (!available.length) return null;
@@ -342,8 +388,17 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     return { message: 'در «' + book.title + '»، برای توضیح دقیق منظور نویسنده لطفاً عنوان فصل، شماره صفحه یا چند کلمه از همان بخش را مشخص کن. هنوز معلوم نیست «این بخش» به کدام قسمت کتاب اشاره دارد؛ نمی‌خواهم نیت نویسنده را حدس بزنم.', conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message } };
   }
   if (CONCEPT_COMPARE.test(normalized)) {
+    const concepts = extractConceptPair(message);
+    if (concepts) {
+      const passages = passagesForBook(book);
+      const reply = compareConceptEvidenceReply(book, concepts, passages);
+      return {
+        message: reply,
+        conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message, comparedConcepts: concepts },
+      };
+    }
     const headings = mainBookHeadings(book).slice(0, 14);
-    return { message: 'در «' + book.title + '»، برای مقایسه لطفاً دو مفهوم مشخص را انتخاب کن. این‌ها چند عنوان واقعی از ساختار کتاب هستند:\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\n'), conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message } };
+    return { message: 'در «' + book.title + '»، برای مقایسه لطفاً نام دو مفهوم را مشخص کن. نمونه قالب: «مفهوم باور و احساس را با هم مقایسه کن». این‌ها چند عنوان واقعی از ساختار کتاب هستند:\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\n'), conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message, pendingConceptCompare: true } };
   }
   if (BOOK_SUBJECT.test(normalized)) {
     const headings = mainBookHeadings(book).slice(0, 10);
