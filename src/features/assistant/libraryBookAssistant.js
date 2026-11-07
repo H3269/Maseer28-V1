@@ -275,17 +275,29 @@ function chapterRepresentativePassages(passages, limit = 6) {
 }
 
 function formatProfileItemsWithEvidence(book, items) {
-  const passages = passagesForBook(book);
   return items.map(([heading, description, page], index) => {
-    const source = passages.find((item) =>
-      Number(item.page) === Number(page) && String(item.text || '').trim().length > 80
+    const sourcePage = (book.content?.pages || []).find((candidate) =>
+      Number(candidate.sourcePage || candidate.page) === Number(page)
     );
-    const excerpt = source
-      ? String(source.text).trim().slice(0, 120) + (String(source.text).trim().length > 120 ? '…' : '')
+    const blocks = Array.isArray(sourcePage?.blocks) ? sourcePage.blocks : [];
+    const sourceText = blocks
+      .filter((block) => block.type !== 'heading')
+      .map((block) => String(block.text || (Array.isArray(block.rows) ? block.rows.flat().join(' ') : '')).trim())
+      .filter(Boolean)
+      .join(' ')
+      .trim();
+    const sourceHeading = blocks
+      .filter((block) => block.type === 'heading')
+      .map((block) => String(block.text || '').trim())
+      .filter(Boolean)
+      .join(' / ');
+    const hasEvidence = sourceText.length > 80;
+    const excerpt = hasEvidence
+      ? sourceText.slice(0, 120) + (sourceText.length > 120 ? '…' : '')
       : 'در صفحه ارجاع‌شده گزیده متنیِ کافی برای نمایش پیدا نشد.';
     return (index + 1) + ') ' + heading + '\n' + description +
       '\nشاهد کوتاه متن: ' + excerpt +
-      '\nمنبع: ' + (source ? sourceLabel(source) : 'صفحه ' + page);
+      '\nمنبع: ' + (hasEvidence ? [sourceHeading, 'صفحه ' + page].filter(Boolean).join(' · ') : 'صفحه ' + page);
   }).join('\n\n');
 }
 
