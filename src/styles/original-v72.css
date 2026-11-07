@@ -7024,3 +7024,27 @@ html body .app:not(.appLoading) > section.card :is(button, input, textarea, sele
     bottom: calc(112px + env(safe-area-inset-bottom)) !important;
   }
 }
+
+/* V92: the library had legacy high-specificity padding rules that bypassed
+   the shared page-end clearance. Explicitly bind its app wrapper to the
+   same scroll tail used by every other regular screen. */
+html body .app:not(.appLoading):has(#books.libraryShell),
+html.bale-webview body .app:not(.appLoading):has(#books.libraryShell),
+body.bale-webview .app:not(.appLoading):has(#books.libraryShell) {
+  box-sizing: border-box !important;
+  padding-bottom: var(--m28-page-end-clearance) !important;
+}
+
+html body .app:not(.appLoading):has(#books.libraryShell) > #books.libraryShell,
+html.bale-webview body .app:not(.appLoading):has(#books.libraryShell) > #books.libraryShell,
+body.bale-webview .app:not(.appLoading):has(#books.libraryShell) > #books.libraryShell {
+  box-sizing: border-box !important;
+  padding-bottom: var(--m28-page-card-end-inset) !important;
+  margin-bottom: 0 !important;
+}
+
+html body .app:not(.appLoading):has(#books.libraryShell) #books.libraryShell > .libraryBack,
+html.bale-webview body .app:not(.appLoading):has(#books.libraryShell) #books.libraryShell > .libraryBack,
+body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryShell > .libraryBack {
+  margin-bottom: 0 !important;
+}
