@@ -17,10 +17,7 @@ test('visible digit formatter handles numeric and empty values safely', () => {
 });
 
 test('app entrypoint imports and installs the Persian digit display observer', async () => {
-  const entrypoint = await (await import('node:fs/promises')).readFile(
-    new URL('../src/main.jsx', import.meta.url),
-    'utf8',
-  );
-  assert.match(entrypoint, /import\s*\{\s*installPersianDigitDisplay\s*\}\s*from\s*['"]\.\.\/src\/shared\/persianDigitDisplay\.js['"]/);
+  const entrypoint = await readFile(new URL('../src/main.jsx', import.meta.url), 'utf8');
+  assert.match(entrypoint, /import\s*\{\s*installPersianDigitDisplay\s*\}\s*from\s*['"]\.\/shared\/persianDigitDisplay\.js['"]/);
   assert.match(entrypoint, /installPersianDigitDisplay\(appRoot\)/);
 });
