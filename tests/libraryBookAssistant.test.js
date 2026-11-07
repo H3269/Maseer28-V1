@@ -302,11 +302,11 @@ test('book overviews exclude dedication and contents pages from representative e
         { type: 'heading', text: 'تقدیم‌نامه' },
         { type: 'paragraph', text: 'این متن فقط تقدیم‌نامه است و نباید در خلاصه محتوایی بیاید.' },
       ] },
-      { page: 2, sourcePage: 2, blocks: [
+      { page: 9, sourcePage: 9, blocks: [
         { type: 'heading', text: 'فصل اول: شناخت باورها' },
         { type: 'paragraph', text: 'باورها برداشت‌هایی هستند که بر انتخاب و رفتار انسان اثر می‌گذارند.' },
       ] },
-      { page: 3, sourcePage: 3, blocks: [
+      { page: 10, sourcePage: 10, blocks: [
         { type: 'heading', text: 'فصل دوم: انتخاب آگاهانه' },
         { type: 'paragraph', text: 'انتخاب آگاهانه به بررسی پیامدها و هماهنگی رفتار با هدف کمک می‌کند.' },
       ] },
