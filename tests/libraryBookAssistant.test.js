@@ -476,7 +476,7 @@ test('five-turn book conversation keeps topic, source evidence, and assistant at
   assert.match(second.message, /پیشنهاد دستیار/u);
   assert.match(second.message, /صفحه 21/u);
   assert.match(third.message, /جایگزین ساده پیشنهادی دستیار/u);
-  assert.match(fourth.message, /شاخص‌های دستیار/u);
+  assert.match(fourth.message, /پیشنهاد سنجش دستیار/u);
   assert.match(fifth.message, /محدودیت/u);
   assert.match(fifth.message, /صفحه 22/u);
   assert.equal(fifth.conversationState.bookId, 5);
