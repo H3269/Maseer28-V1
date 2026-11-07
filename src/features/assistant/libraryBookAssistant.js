@@ -292,7 +292,7 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   const normalized = normalizeLibraryText(message);
   if (LIST.test(normalized)) return { message: listBooksReply(available), conversationState: null };
   if (RECOMMEND.test(normalized)) return { message: recommendBooks(available, normalized), conversationState: null };
-  if (COMPARE.test(normalized) && /(?:کتاب|پنج|همه)/u.test(normalized)) {
+  if (COMPARE.test(normalized) && !CONCEPT_COMPARE.test(normalized) && /(?:کتاب|پنج|همه)/u.test(normalized)) {
     return { message: compareBooksReply(available), conversationState: null };
   }
 
@@ -359,13 +359,15 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   let reply;
   if (asksSummary) {
     reply = summaryReply(book, allPassages);
+  } else if (SCIENCE.test(normalized) || ALTERNATIVE_VIEW.test(normalized) || LIMITATIONS.test(normalized)
+    || WEEK_PLAN.test(normalized) || PROGRESS.test(normalized) || EXAMPLE_OR_EXERCISE.test(normalized)
+    || DAILY_APPLICATION.test(normalized) || SIMPLE_EXPLAIN.test(normalized) || KEY_POINTS.test(normalized)
+    || ALTERNATIVE_EXERCISE.test(normalized) || AUTHOR_MEANING.test(normalized) || AUTHOR_REASON.test(normalized)) {
+    reply = structuredGuidance(normalized, book, selected, normalized);
   } else {
     reply = (followUp ? 'ادامه بررسی همان موضوع در «' + book.title + '» بر اساس متن کتاب:' : 'بخش‌های مرتبط با پرسش تو در «' + book.title + '»:') +
       '\n\n' + formatPassages(selected) +
       '\n\nیادآوری: این‌ها گزیده‌های واقعی از متن نسخه بارگذاری‌شده‌اند؛ تفسیر یا توصیه‌ای که صریحاً در متن نیامده باشد به نویسنده نسبت داده نمی‌شود.';
-    if (EXAMPLE_OR_EXERCISE.test(normalized)) {
-      reply += '\n\nمرز پاسخ: این نسخه موتور، متن مرتبط را پیدا می‌کند اما هنوز مثال شخصی‌سازی‌شده یا برنامه تمرینی تازه تولید نمی‌کند. برای جلوگیری از ساختن مطلب و نسبت‌دادن آن به کتاب، فعلاً فقط منبع مرتبط را نشان می‌دهم.';
-    }
   }
 
   return {
