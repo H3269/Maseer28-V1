@@ -313,7 +313,7 @@ test('book overviews exclude dedication and contents pages from representative e
       ] },
     ] },
   }];
-  const response = answerLibraryBookQuestion({ books: sampleBooks, message: 'خلاصه کتاب اول' });
+  const response = answerLibraryBookQuestion({ books: sampleBooks, message: 'خلاصه کتاب آزمایشی' });
   assert.match(response, /خلاصه راهنمای محتوایی|مرور محتواییِ ساختاری/u);
   assert.match(response, /باورها برداشت‌هایی هستند/u);
   assert.doesNotMatch(response, /این متن فقط تقدیم‌نامه است/u);
