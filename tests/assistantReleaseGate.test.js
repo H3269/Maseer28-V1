@@ -152,6 +152,7 @@ test('global assistant conversation is one right-to-left transcript', async () =
   assert.match(launcher, /className="assistantComposer" dir="rtl"/);
   assert.match(css, /\.globalAssistantChat \.assistantMessage,\s*\.globalAssistantChat \.userMessage\s*\{[^}]*align-self:\s*flex-start/);
   assert.match(css, /direction:\s*rtl !important;\s*text-align:\s*right !important;/);
+  assert.match(css, /\.globalAssistantChat \.assistantMessage,\s*\.globalAssistantChat \.userMessage\s*\{[^}]*background:\s*transparent !important;[^}]*box-shadow:\s*none !important;/);
 });
 
 test('GitHub Pages tracks main as a test app without production-release gates', async () => {
