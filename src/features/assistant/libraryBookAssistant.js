@@ -618,7 +618,8 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     [CONFIDENCE, /اعتماد به نفس|اعتمادبه نفس|خودباور|عزت نفس|ارزشمند/u, 'برای اعتمادبه‌نفس'],
   ];
   for (const [intentPattern, evidencePattern, label] of directTopicChecks) {
-    if (!intentPattern.test(intentText)) continue;
+    // Apply topic-specific evidence filtering only when the current turn asks about that topic. A follow-up about limitations or alternatives must be allowed to retrieve its own evidence from the same conversation context.
+    if (!intentPattern.test(normalized)) continue;
     const topicEvidence = selected.filter((passage) => {
       const textEvidence = normalizeLibraryText(passage.text);
       const headingEvidence = normalizeLibraryText(passage.heading);
