@@ -1,3 +1,4 @@
+import { fa } from '../../shared/utils.js';
 const encoder = new TextEncoder();
 
 function crc32(bytes) {
@@ -34,7 +35,7 @@ function safeName(value) { return String(value || 'مسیر').replace(/[\\/:*?"<
 function dateLabel(value) {
   if (!value) return 'ثبت نشده';
   const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? 'ثبت نشده' : date.toLocaleDateString('fa-IR');
+  return Number.isNaN(date.getTime()) ? 'ثبت نشده' : fa(date.toLocaleDateString('fa-IR'));
 }
 function wrapText(ctx, text, maxWidth) {
   const words = String(text || '—').split(/\s+/); const lines = []; let line = '';
@@ -55,12 +56,13 @@ function makePdf(archive, index) {
     if (y) pages.push(canvas.toDataURL('image/jpeg', 0.88).split(',')[1]);
     ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H); ctx.direction = 'rtl'; ctx.textAlign = 'right';
     ctx.fillStyle = '#174e49'; ctx.font = 'bold 40px sans-serif'; ctx.fillText('آرشیو مسیر ۲۸ روزه', W - margin, 100);
-    ctx.fillStyle = '#64716e'; ctx.font = '24px sans-serif'; ctx.fillText(`مسیر ${index + 1} · ${p.problem || 'بدون عنوان'}`, W - margin, 148);
+    ctx.fillStyle = '#64716e'; ctx.font = '24px sans-serif'; ctx.fillText(`مسیر ${fa(index + 1)} · ${p.problem || 'بدون عنوان'}`, W - margin, 148);
     ctx.strokeStyle = '#d8e5e1'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(margin, 180); ctx.lineTo(W - margin, 180); ctx.stroke();
     y = 230;
   }
   function write(text, options = {}) {
     const { bold = false, size = 27, color = '#243b38', gap = 10 } = options;
+    text = fa(text);
     ctx.font = `${bold ? 'bold ' : ''}${size}px sans-serif`; ctx.fillStyle = color;
     const lines = wrapText(ctx, text, W - margin * 2);
     for (const line of lines) {
@@ -79,7 +81,7 @@ function makePdf(archive, index) {
   if (!entries.length) write('برای این مسیر پاسخی ثبت نشده است.', { size: 25 });
   for (const day of entries) {
     const daily = archive.daily?.[day];
-    write(`روز ${day}`, { bold: true, size: 30, color: '#176b63', gap: 3 });
+    write(`روز ${fa(day)}`, { bold: true, size: 30, color: '#176b63', gap: 3 });
     if (daily?.status === 'skipped_safety_gate') {
       write('این تمرین به دلیل ملاحظه ایمنی اجرا نشد؛ هیچ امتیازی ثبت نشده است.', { size: 25, gap: 3 });
     } else if (daily?.status === 'skipped_human_review') {
@@ -116,7 +118,7 @@ export async function exportArchivesZip(archives) {
   const files = [];
   for (let i = 0; i < archives.length; i += 1) {
     const archive = archives[i];
-    files.push({ name: `${String(i + 1).padStart(2, '0')}-${safeName(archive.profileData?.problem)}.pdf`, data: makePdf(archive, i) });
+    files.push({ name: `${fa(String(i + 1).padStart(2, '0'))}-${safeName(archive.profileData?.problem)}.pdf`, data: makePdf(archive, i) });
   }
   const zip = zipStore(files);
   return new Blob([zip], { type: 'application/zip' });
