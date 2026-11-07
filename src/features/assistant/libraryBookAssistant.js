@@ -471,7 +471,7 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     })).filter((passage) => passage.score > 0)
       .sort((a, b) => b.score - a.score || a.index - b.index);
 
-  const selected = asksSummary
+  let selected = asksSummary
     ? []
     : KEY_POINTS.test(normalized) && !ranked.length
       ? representativePassages(allPassages, 5)
@@ -499,7 +499,11 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     [CONFIDENCE, /اعتماد به نفس|اعتمادبه نفس|خودباور|عزت نفس|ارزشمند/u, 'برای اعتمادبه‌نفس'],
   ];
   for (const [intentPattern, evidencePattern, label] of directTopicChecks) {
-    if (intentPattern.test(normalized) && !hasTopicEvidence(selected, evidencePattern)) {
+    if (!intentPattern.test(normalized)) continue;
+    const topicEvidence = selected.filter((passage) =>
+      evidencePattern.test(normalizeLibraryText(passage.text + ' ' + passage.heading))
+    );
+    if (!topicEvidence.length) {
       return {
         message: 'در «' + book.title + '»، در گزیده‌های بازیابی‌شده شاهد مستقیم و کافی ' + label + ' پیدا نکردم. نمی‌خواهم بخش‌های عمومی کتاب را به‌اشتباه مرتبط معرفی کنم. اگر فصل یا اصطلاح مشخصی مدنظرت است، آن را بگو تا همان بخش را بررسی کنم.',
         conversationState: {
@@ -510,6 +514,9 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
         },
       };
     }
+    // Do not pad a topic-specific answer with generic passages that merely
+    // matched other words in the query; only directly relevant evidence stays.
+    selected = topicEvidence;
   }
 
   let reply;
