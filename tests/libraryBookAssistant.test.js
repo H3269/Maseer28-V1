@@ -599,3 +599,17 @@ test('book profile and summary responses use real line breaks, never leaked slas
     assert.doesNotMatch(response, /\\n/u, book.title + ' must not leak escaped newline markers');
   }
 });
+
+
+test('curated summaries and key points include short excerpts from their cited source pages', () => {
+  for (const book of books) {
+    const ordinal = ['اول', 'دوم', 'سوم', 'چهارم', 'پنجم'][book.legacyId - 1];
+    const summary = answerLibraryBookQuestion({ books, message: 'خلاصه کتاب ' + ordinal });
+    const keyPoints = answerLibraryBookQuestion({ books, message: 'مهم‌ترین نکات کتاب ' + ordinal + ' کدام‌اند؟' });
+    assert.match(summary, /شاهد کوتاه متن:/u, book.title + ' summary must include a source excerpt');
+    assert.match(summary, /منبع:/u, book.title + ' summary must cite its source page');
+    assert.match(keyPoints, /شاهد کوتاه متن:/u, book.title + ' key points must include a source excerpt');
+    assert.match(keyPoints, /منبع:/u, book.title + ' key points must cite their source pages');
+    assert.doesNotMatch(summary, /\\n/u, book.title + ' summary must not leak escaped newline markers');
+  }
+});
