@@ -115,6 +115,7 @@ try {
   const composerBox = await dialog.locator('.assistantComposer').boundingBox();
   const sendBox = await dialog.getByRole('button', { name: 'ارسال' }).boundingBox();
   assert.ok(emptyInputBox && composerBox && sendBox, 'the composer controls must have measurable layout boxes');
+  assert.ok(Math.abs(emptyInputBox.y - sendBox.y) <= Math.abs(emptyInputBox.height - sendBox.height) + 2, 'the send button must remain beside the input, not wrap below it');
   const composerMetrics = await dialog.locator('.assistantComposer').evaluate((element) => { const style = getComputedStyle(element); return { padding: parseFloat(style.paddingInlineStart) + parseFloat(style.paddingInlineEnd), gap: parseFloat(style.columnGap || style.gap || '0') }; });
   const expectedFullWidth = composerBox.width - composerMetrics.padding - sendBox.width - composerMetrics.gap;
   assert.ok(Math.abs(emptyInputBox.width - expectedFullWidth) <= 2, 'the composer input must use the maximum available horizontal width from the start');

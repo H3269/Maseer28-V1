@@ -7051,7 +7051,7 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 }
 .globalAssistantChat .assistantComposer textarea {
   box-sizing: border-box; flex: 1 1 auto; width: 100%; min-width: 0;
-  max-width: 100%; min-height: 54px; height: 54px; max-height: 128px;
+  max-width: calc(100% - 44px); min-height: 54px; height: 54px; max-height: 128px;
   margin: 0; resize: none; overflow-y: auto;
 }
 .globalAssistantChat .assistantComposerError { flex: 1 0 100%; }
