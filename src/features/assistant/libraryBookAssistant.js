@@ -524,6 +524,21 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
         conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery, comparedConcepts: concepts, pendingConceptCompare: false },
       };
     }
+    const profile = getLibraryBookProfile(book);
+    if (profile?.conceptPair?.length === 2) {
+      const suggestedPair = profile.conceptPair;
+      const passages = passagesForBook(book);
+      const evidenceReply = compareConceptEvidenceReply(book, suggestedPair, passages);
+      const comparison = profile.conceptComparison
+        ? 'مقایسه محوریِ بازنویسی‌شده توسط دستیار:\n' + profile.conceptComparison + '\n\n'
+        : '';
+      return {
+        message: 'دو مفهوم محوری برای مقایسه در «' + book.title + '»:\n' +
+          '۱) ' + suggestedPair[0] + '\n۲) ' + suggestedPair[1] + '\n\n' +
+          comparison + evidenceReply,
+        conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery, comparedConcepts: suggestedPair, pendingConceptCompare: false },
+      };
+    }
     const headings = mainBookHeadings(book).slice(0, 14);
     return { message: 'در «' + book.title + '»، برای مقایسه لطفاً نام دو مفهوم را مشخص کن. نمونه قالب: «مفهوم باور و احساس را با هم مقایسه کن». این‌ها چند عنوان واقعی از ساختار کتاب هستند:\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\n'), conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery, pendingConceptCompare: true } };
   }
