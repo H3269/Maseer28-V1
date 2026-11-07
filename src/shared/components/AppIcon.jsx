@@ -4,7 +4,7 @@ const shapes = {
   rocket: <><path d="M4.5 15.5c-1.5 1.2-2 4-2 4s2.8-.5 4-2l2-2-2-2z"/><path d="M12 15l-3-3c1.2-4.5 5.3-8.2 11-9-0.8 5.7-4.5 9.8-9 11Z"/><path d="M13 7h.01"/><path d="M9 12l-4 1 2-4"/></>,
   check: <><path d="m5 12 4 4L19 6"/></>,
   arrow: <><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></>,
-  arrowUp: <><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></>,
+  arrowUp: <><path d="m5 14 7-7 7 7"/></>,
   save: <><path d="M5 3h12l4 4v14H3V3z"/><path d="M7 3v6h10V3M7 21v-7h10v7"/></>,
   play: <><path d="m8 5 11 7-11 7z"/></>,
   book: <><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3H21v17H5.5A2.5 2.5 0 0 1 3 17.5z"/><path d="M3 5.5v12M7 7h10M7 11h10M7 15h7"/></>,
