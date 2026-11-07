@@ -115,15 +115,15 @@ test('recommendations explain their limited basis instead of pretending to know 
 
 test('scientific validity questions distinguish book excerpts from scientific evidence', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم آیا این دیدگاه از نظر روان‌شناسی علمی قابل دفاع است؟' });
-  assert.match(response, /به‌تنهایی.*اعتبار علمی/u);
-  assert.match(response, /پژوهش‌های معتبر و مستقل/u);
-  assert.match(response, /منبع:/);
+  assert.match(response, /باید ادعا یا توصیه مشخص باشد/u);
+  assert.match(response, /چند گزیده نامرتبط می‌تواند گمراه‌کننده باشد/u);
+  assert.doesNotMatch(response, /منبع:/);
 });
 
 test('the assistant does not fabricate an opposing scientific view', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم آیا دیدگاه مخالفی هم وجود دارد؟' });
-  assert.match(response, /نمی‌توانم وجود یا محتوای یک دیدگاه مخالف مشخص را اثبات کنم/u);
-  assert.match(response, /نباید به نویسنده نسبت داد/u);
+  assert.match(response, /باید ادعا یا توصیه مشخص باشد/u);
+  assert.doesNotMatch(response, /منبع:/);
 });
 
 test('generated examples and weekly plans are explicitly attributed to the assistant', () => {
@@ -299,4 +299,22 @@ test('book overviews exclude dedication and contents pages from representative e
   assert.match(response, /مرور ساختاری مستند/u);
   assert.match(response, /باورها برداشت‌هایی هستند/u);
   assert.doesNotMatch(response, /این متن فقط تقدیم‌نامه است/u);
+});
+
+test('vague references do not trigger generic exercises or plans without a prior cited section', () => {
+  for (const question of [
+    'در کتاب پنجم با توجه به این بخش چه تمرینی انجام بدهم؟',
+    'در کتاب پنجم برای تمرین این موضوع برنامه هفت‌روزه بده',
+    'در کتاب پنجم چطور این توصیه را به عادت تبدیل کنم؟',
+  ]) {
+    const response = answerLibraryBookQuestion({ books, message: question });
+    assert.match(response, /عنوان فصل، شماره صفحه یا چند واژه/u);
+    assert.doesNotMatch(response, /برنامه هفت‌روزه پیشنهادی دستیار|تمرین کم‌فشار:/u);
+  }
+});
+
+test('a simple explanation of an unspecified main book concept asks for the exact section', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم مفهوم اصلی را به زبان ساده توضیح بده' });
+  assert.match(response, /باید یک مفهوم یا فصل مشخص را انتخاب کنیم/u);
+  assert.doesNotMatch(response, /برداشت ساده و محتاطانه/u);
 });
