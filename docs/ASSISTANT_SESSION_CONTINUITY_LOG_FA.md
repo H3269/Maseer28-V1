@@ -3817,3 +3817,17 @@ undefined
 - هیچ محتوای اجرایی، UI، route یا منطق اپ تغییر نکرد؛ این دور فقط ممیزی و ثبت گزارش بود. انتشار عمومی/Production انجام نشده است.
 
 **وضعیت:** `34X28_COUNT_PASS_CROSS_TOPIC_EXERCISE_AND_ACTION_DUPLICATION_FAIL_SEMANTIC_REVIEW_INTRA_TOPIC_PENDING_NO_RUNTIME_CONTENT_CHANGE_NO_PUBLIC_RELEASE`
+
+## ادامه 2026-11-07 — تأیید استقرار نسخه آزمایشی برای بازبینی مالک
+
+- شاخه `main` روی commit `a6328c79b07813a63e1caae1ec53ac37324885e2` بررسی شد؛ این commit پیام `docs: log 34x28 content duplication recheck` دارد.
+- اجرای workflow `Build and Deploy Maseer28-V1 Test App` با run ID `42371954423` دقیقاً روی همین SHA انجام شد؛ وضعیت نهایی `completed / success` است.
+- job استقرار `deploy-test-app` و مراحل Checkout، نصب وابستگی‌ها، Build، Configure Pages، Upload artifact و Deploy Pages همگی موفق شدند. گزارش اجرای Pages صریحاً `Reported success!` را ثبت کرده و `pages_build_version` برابر همان SHA است.
+- build با دستور `npm run build -- --base=/Maseer28-V1/` موفق شد؛ artifact شامل `content/path-content.json` و `content/daily-text-overrides.v1.json` بود.
+- آدرس Pages که خود workflow در انتهای اجرا گزارش کرده: `https://h3269.github.io/Maseer28-V1/`. این لینک برای تست زنده مالک ارائه شد.
+- وضعیت محتوای متصل: فایل `public/content/daily-text-overrides.v1.json` در build وجود دارد و کد runtime آن را برای جایگزینی فیلدهای تمرین و اقدام روزانه بارگذاری می‌کند. آزمون‌های موجود در مخزن کنترل شمارش/ساختار ۳۴×۲۸، غیرخالی‌بودن و یکتایی متون و حفظ برخی فیلدهای canonical را تعریف کرده‌اند؛ در این ثبت، اجرای مستقل دوباره این آزمون‌ها ادعا نمی‌شود. همچنین صرف موفقیت build/deploy به معنی تأیید تخصصی/بالینی یا نبود شباهت معنایی نیست.
+- دامنهٔ قابل مشاهده فعلی محدود به overlay تمرین و اقدام است؛ تمام فیلدهای پیش‌نویس‌های توسعه‌یافته (از جمله هدف، مهارت، سازوکار، نسخه‌های سبک/پیشرفت/استراحت، معیار موفقیت و تأمل) به‌عنوان مجموعه کامل به UI متصل نشده‌اند.
+- این استقرار فقط GitHub Pages نسخه آزمایشی است. هیچ workflow انتشار دستی، انتشار Telegram/Bale یا Production activation اجرا نشده است. تست انسانی مرورگر و تأیید محتوایی مالک/متخصص هنوز در انتظار است.
+- **نقطه ادامه:** مالک نسخه آزمایشی را در مرورگر بررسی کند و موارد نیازمند اصلاح را گزارش دهد؛ سپس اصلاحات مشخص، آزمون و ثبت در همین دفتر انجام شود. تا دریافت مجوز جداگانه مالک، هیچ انتشار عمومی انجام نشود.
+
+**وضعیت:** `TEST_APP_PAGES_DEPLOYED_SUCCESS_ON_A6328C79_OWNER_BROWSER_REVIEW_PENDING_OVERLAY_EXERCISE_ACTION_ONLY_NO_EXPERT_APPROVAL_NO_PUBLIC_RELEASE`
