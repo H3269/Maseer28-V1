@@ -216,9 +216,9 @@ test('confidence guidance refuses to invent book-specific advice without direct 
 
 test('key-point requests do not fall through to the generic book overview', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب اول مهم‌ترین نکات کدام‌اند؟' });
-  assert.match(response, /نکته‌های محوری/u);
+  assert.match(response, /نکته‌های کلیدی منتخب/u);
   assert.doesNotMatch(response, /نمای کلی مستند/u);
-  assert.match(response, /منبع ساختاری:/u);
+  assert.match(response, /شاهد کوتاه متن:/u);
 });
 
 test('a contextual follow-up searches the new limitation question while retaining the selected topic', () => {
