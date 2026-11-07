@@ -571,3 +571,17 @@ test('an unspecified concept comparison selects a grounded core pair for each re
     assert.match(result.message, /مقایسه/u, book.title + ' must explicitly compare the selected concepts');
   }
 });
+
+
+test('main-theme answers explain the reviewed book thesis rather than only listing metadata', () => {
+  for (const book of books) {
+    const profile = getLibraryBookProfile(book);
+    const response = answerLibraryBookQuestion({
+      books,
+      message: 'موضوع اصلی کتاب ' + ['اول', 'دوم', 'سوم', 'چهارم', 'پنجم'][book.legacyId - 1] + ' چیست؟',
+    });
+    assert.ok(profile?.plain && response.includes(profile.plain), book.title + ' must explain its reviewed central thesis');
+    assert.match(response, /حوزه‌های اصلی کتاب/u);
+    assert.match(response, /بازنویسی دستیار/u);
+  }
+});
