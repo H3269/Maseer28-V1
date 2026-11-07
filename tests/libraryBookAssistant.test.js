@@ -660,7 +660,7 @@ test('anger guidance refuses weak evidence and uses stronger book-specific passa
     books,
     message: 'در کتاب دوم برای مدیریت خشم چه نکته‌ای وجود دارد؟',
   });
-  assert.match(bookTwoResponse, /راه‌های سالم‌تر برای بیان/u);
+  assert.match(bookTwoResponse, /شیوه سالم‌تری برای بیان/u);
   assert.match(bookTwoResponse, /منبع:/u);
 
   const bookFiveResponse = answerLibraryBookQuestion({
