@@ -110,8 +110,29 @@ export const BOOK_PROFILES = {
   }
 };
 
+const PROFILE_TITLE_MATCHERS = {
+  1: /از حقیقت تا واقعیت.*جلد اول/u,
+  2: /از حقیقت تا واقعیت.*جلد دوم/u,
+  3: /از حقیقت تا واقعیت.*جلد سوم/u,
+  4: /کتابچه تکمیلی جلد سوم/u,
+  5: /هنر شناخت و دگرگونی احساسات/u,
+};
+
 export function getLibraryBookProfile(book) {
-  return BOOK_PROFILES[Number(book?.legacyId)] || null;
+  const id = Number(book?.legacyId);
+  const profile = BOOK_PROFILES[id];
+  const title = normalizeProfileTitle(book?.title);
+  const expectedTitle = PROFILE_TITLE_MATCHERS[id];
+  // A legacy ID alone is not enough: test fixtures, imported books, or a
+  // changed seed could otherwise inherit an unrelated curated summary.
+  return profile && expectedTitle?.test(title) ? profile : null;
+}
+
+function normalizeProfileTitle(value) {
+  return String(value ?? '').normalize('NFKC')
+    .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
+    .replace(/[—–-]/g, ' ')
+    .replace(/\s+/g, ' ').trim();
 }
 
 export function formatLibraryProfileItems(items) {
