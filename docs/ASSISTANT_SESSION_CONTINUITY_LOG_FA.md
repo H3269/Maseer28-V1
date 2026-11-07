@@ -3791,3 +3791,16 @@ undefined
 - **نقطه ادامه:** تدوین و تصویب طراحی محصولی دو مرحله‌ای: triage پیش از ورود + بازبینی روز ۸، همراه با حذف فرض «T34=مسیر خودیاری ۲۸روزه» تا زمان اعتبارسنجی تخصصی؛ سپس پیاده‌سازی تست‌محور در main و اجرای CI/Chromium. پس از آن گیت UI روزانه مستقل رفع شود.
 
 **وضعیت:** `T34_RUNTIME_CHANGE_HELD_FOR_SAFETY_T34_28DAY_FIT_UNVALIDATED_PREENTRY_AND_DAY8_GATE_DESIGN_REQUIRED_NO_RUNTIME_CHANGE_DAILY_UI_SAFETY_GATE_OPEN_NO_PUBLIC_RELEASE`
+
+
+## ادامه 2026-11-07 — ثبت قرارداد ایمنی گیت پیش از ورود و روز هشتم
+
+- سند طراحی اجرایی جدید در شاخه main ثبت شد: `docs/PREENTRY_FIT_AND_DAY8_REVIEW_GATE_DESIGN_FA.md`؛ commit: `75a8d7cbf7172e61dcdf5c624b5e79207f8c7a06`.
+- قرارداد طراحی، سه خروجی fail-closed را مشخص می‌کند: MATCH_CANDIDATE (صرفاً انتخاب/تأیید خود کاربر، نه تشخیص)، NEEDS_CLARIFICATION (توقف ورود تا روشن‌شدن مسئله)، و SPECIALIST_OR_URGENT (توقف خودیاری و هدایت به متخصص واجد صلاحیت/فوریت‌های محلی در خطر فوری).
+- تأکید شد که T34 درگاه هدایت است و نباید تا زمان تأیید تخصصی به تقویم خودیاری ۲۸روزه متصل شود. خوداظهاری منفی هرگز رد خطر یا مجوز ورود محسوب نمی‌شود.
+- بازبینی روز ۸ فقط برای مسیرهایی مجاز است که دامنه و محتوای آن‌ها تأیید شده باشد؛ این مرحله جایگزین گیت پیش از ورود نیست.
+- الزامات حریم خصوصی ثبت شد: پاسخ خام خطر/پزشکی و متن آزاد حساس در route، profileData، localStorage یا archive ذخیره نشود؛ وضعیت حداقلی و غیرحساس، فقط پس از طراحی migration و آزمون سازگاری.
+- **محدودیت وضعیت:** این commit فقط سند طراحی است. هیچ کد runtime، UI، route، taxonomy یا محتوای روزانه تغییر نکرده؛ CI/Chromium یا Preview برای این سند اجرا نشده است. تأیید متخصص برای تعریف موضوعات/قواعد ایمنی هنوز موجود نیست.
+- **گام بعدی:** پیاده‌سازی گیت غیرتشخیصی و توقف/روشن‌سازی در جریان onboarding، بدون فعال‌کردن مسیر T34؛ سپس تست واحد و Chromium برای bypass، reload، route manipulation، خطای storage و روز ۸. گیت UI ایمنی صفحه روزانه مستقل و انتشار عمومی همچنان متوقف/باز باقی می‌ماند.
+
+**وضعیت:** `PREENTRY_DAY8_GATE_DESIGN_COMMITTED_RUNTIME_NOT_YET_IMPLEMENTED_EXPERT_VALIDATION_PENDING_DAILY_UI_SAFETY_GATE_OPEN_NO_PUBLIC_RELEASE`
