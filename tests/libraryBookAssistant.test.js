@@ -23,7 +23,7 @@ test('all five seeded books return grounded overviews with source page locators'
     assert.ok(response.includes(book.title));
     assert.match(response, /منبع:/);
     assert.match(response, /صفحه/);
-    assert.match(response, /نمای کلی مستند/);
+    assert.match(response, /مرور ساختاری مستند/);
   }
 });
 
@@ -274,4 +274,29 @@ test('explicitly named concept comparisons retrieve separate evidence and cite b
   assert.match(response, /منبع: باورهای بنیادی · صفحه 1/u);
   assert.match(response, /منبع: شناخت احساسات · صفحه 2/u);
   assert.match(response, /تحلیل نهایی استدلال نویسنده/u);
+});
+
+test('book overviews exclude dedication and contents pages from representative excerpts', () => {
+  const sampleBooks = [{
+    title: 'کتاب آزمایشی',
+    legacyId: 1,
+    content: { pages: [
+      { page: 1, sourcePage: 1, blocks: [
+        { type: 'heading', text: 'تقدیم‌نامه' },
+        { type: 'paragraph', text: 'این متن فقط تقدیم‌نامه است و نباید در خلاصه محتوایی بیاید.' },
+      ] },
+      { page: 2, sourcePage: 2, blocks: [
+        { type: 'heading', text: 'فصل اول: شناخت باورها' },
+        { type: 'paragraph', text: 'باورها برداشت‌هایی هستند که بر انتخاب و رفتار انسان اثر می‌گذارند.' },
+      ] },
+      { page: 3, sourcePage: 3, blocks: [
+        { type: 'heading', text: 'فصل دوم: انتخاب آگاهانه' },
+        { type: 'paragraph', text: 'انتخاب آگاهانه به بررسی پیامدها و هماهنگی رفتار با هدف کمک می‌کند.' },
+      ] },
+    ] },
+  }];
+  const response = answerLibraryBookQuestion({ books: sampleBooks, message: 'خلاصه کتاب اول' });
+  assert.match(response, /مرور ساختاری مستند/u);
+  assert.match(response, /باورها برداشت‌هایی هستند/u);
+  assert.doesNotMatch(response, /این متن فقط تقدیم‌نامه است/u);
 });
