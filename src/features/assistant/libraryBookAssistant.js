@@ -571,9 +571,16 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   }
   // The previous turn supplies context; the new turn still contributes fresh retrieval terms.
   const asksSummary = SUMMARY.test(intentText);
-  const queryWeights = asksSummary ? new Map() : expandedQueryTerms(effectiveQuery);
+  // For a follow-up that introduces a new analytical intent (for example,
+  // asking for limitations), rank evidence against that new request first.
+  // Keep the previous topic in intentText/state, but do not let its older
+  // keywords drown out the evidence sought in the latest turn.
+  const freshIntent = LIMITATIONS.test(message) || SCIENCE.test(message)
+    || ALTERNATIVE_VIEW.test(message) || PROGRESS.test(message);
+  const retrievalQuery = followUp && freshIntent ? message : effectiveQuery;
+  const queryWeights = asksSummary ? new Map() : expandedQueryTerms(retrievalQuery);
   const frequency = buildFrequencyIndex(allPassages);
-  const phrase = normalizeLibraryText(effectiveQuery);
+  const phrase = normalizeLibraryText(retrievalQuery);
   const ranked = asksSummary
     ? allPassages
     : allPassages.map((passage, index) => ({
