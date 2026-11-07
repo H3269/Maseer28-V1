@@ -339,12 +339,12 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
       .sort((a, b) => b.score - a.score || a.index - b.index);
 
   const selected = asksSummary ? [] : chooseDiverse(ranked, 5);
-  if (!asksSummary && !selected.length && (SCIENCE.test(normalized) || ALTERNATIVE_VIEW.test(normalized) || LIMITATIONS.test(normalized))) {
+  if (!asksSummary && !selected.length && (SCIENCE.test(normalized) || ALTERNATIVE_VIEW.test(normalized) || LIMITATIONS.test(normalized) || PROGRESS.test(normalized))) {
     const reply = SCIENCE.test(normalized)
-      ? 'از متن در دسترس این کتاب شاهد کافی برای داوری علمی این ادعا پیدا نکردم. اعتبار علمی را نمی‌توان از خود کتاب نتیجه گرفت؛ برای پاسخ دقیق باید ادعای مشخص را با پژوهش‌های معتبر و مستقل بررسی کرد. این پاسخ عمداً از تأیید یا رد بی‌منبع خودداری می‌کند.'
+      ? 'از متن در دسترس این کتاب شاهد کافی برای داوری علمی این ادعا پیدا نکردم. از متن کتاب به‌تنهایی نمی‌توان اعتبار علمی یک دیدگاه را تأیید کرد؛ برای پاسخ دقیق باید ادعای مشخص را با پژوهش‌های معتبر و مستقل بررسی کرد. این پاسخ عمداً از تأیید یا رد بی‌منبع خودداری می‌کند.'
       : ALTERNATIVE_VIEW.test(normalized)
         ? 'در متن بازیابی‌شده شاهد کافی برای معرفی یک دیدگاه مخالف مشخص پیدا نکردم. دیدگاه بیرونی را حدس نمی‌زنم و به نویسنده نسبت نمی‌دهم؛ برای این کار باید منابع مستقل بررسی شوند.'
-        : 'در متن بازیابی‌شده شاهد کافی برای ارزیابی محدودیت همین توصیه پیدا نکردم. اگر فصل یا توصیه مشخص را نام ببری، می‌توانم محدودیت‌های متن و محدودیت کاربرد آن را جداگانه بررسی کنم.';
+        : PROGRESS.test(normalized)\n          ? 'برای سنجش پیشرفت می‌توانی رفتارهای قابل مشاهده را ثبت کنی: تشخیص زودتر موقعیت، مکث پیش از واکنش، انتخاب آگاهانه‌تر و بازگشت به تمرین پس از دشواری. این شاخص‌ها پیشنهاد عمومی دستیارند، نه معیار تشخیصی یا درمانی؛ چون شاهد مشخصی از کتاب بازیابی نشد، آن‌ها را به نویسنده نسبت نمی‌دهم.'\n          : 'در متن بازیابی‌شده شاهد کافی برای ارزیابی محدودیت همین توصیه پیدا نکردم. اگر فصل یا توصیه مشخص را نام ببری، می‌توانم محدودیت‌های متن و محدودیت کاربرد آن را جداگانه بررسی کنم.';
     return { message: reply, conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery } };
   }
   if (!asksSummary && !selected.length) {
