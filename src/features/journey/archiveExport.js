@@ -118,7 +118,7 @@ export async function exportArchivesZip(archives) {
   const files = [];
   for (let i = 0; i < archives.length; i += 1) {
     const archive = archives[i];
-    files.push({ name: `${fa(String(i + 1).padStart(2, '0'))}-${safeName(archive.profileData?.problem)}.pdf`, data: makePdf(archive, i) });
+    files.push({ name: `${fa(String(i + 1).padStart(2, '0'))}-${fa(safeName(archive.profileData?.problem))}.pdf`, data: makePdf(archive, i) });
   }
   const zip = zipStore(files);
   return new Blob([zip], { type: 'application/zip' });
