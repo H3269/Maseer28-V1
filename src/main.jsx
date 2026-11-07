@@ -10,4 +10,6 @@ if (typeof navigator !== 'undefined' && /bale/i.test(navigator.userAgent || ''))
   document.body.classList.add('bale-webview');
 }
 
-createRoot(document.getElementById('root')).render(<App />);
+const appRoot = document.getElementById('root');
+installPersianDigitDisplay(appRoot);
+createRoot(appRoot).render(<App />);
