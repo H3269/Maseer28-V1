@@ -559,13 +559,13 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
       // text, require repeated topic evidence so an incidental mention cannot
       // be presented as topic-specific guidance.
       const body = String(passage.text || '').trim();
-      const contextualSupport = CONFIDENCE.test(normalized)
-        ? /افزایش|تقویت|کاهش|محدود|ساختن/u.test(textEvidence)
+      const proximityEvidence = CONFIDENCE.test(normalized)
+        ? /(?:اعتماد به نفس|اعتمادبه نفس).{0,80}(?:افزایش|تقویت|کاهش|محدود|ساخت)|(?:افزایش|تقویت|کاهش|محدود|ساخت).{0,80}(?:اعتماد به نفس|اعتمادبه نفس)/u.test(textEvidence)
         : ANXIETY.test(normalized)
-          ? /مدیریت|تنظیم|کاهش|اجتناب|استرس/u.test(textEvidence)
-          : /واکنش|رفتار|مکث|پاسخ|احساس|مرز|تحقیر|بی احترامی/u.test(textEvidence);
+          ? /(?:اضطراب|استرس|نگرانی|دلشوره).{0,80}(?:مدیریت|تنظیم|کاهش|اجتناب|بدن|واکنش|مداخله)|(?:مدیریت|تنظیم|کاهش|اجتناب|بدن|واکنش|مداخله).{0,80}(?:اضطراب|استرس|نگرانی|دلشوره)/u.test(textEvidence)
+          : /(?:خشم|عصب|پرخاش|غضب).{0,80}(?:واکنش|رفتار|مکث|پاسخ|احساس|مرز|تحقیر|بی احترامی|عمل)|(?:واکنش|رفتار|مکث|پاسخ|احساس|مرز|تحقیر|بی احترامی|عمل).{0,80}(?:خشم|عصب|پرخاش|غضب)/u.test(textEvidence);
       return evidencePattern.test(headingEvidence)
-        || (body.length >= 80 && (occurrences.length >= 2 || contextualSupport));
+        || (body.length >= 80 && occurrences.length > 0 && proximityEvidence);
     });
     if (!topicEvidence.length) {
       return {
