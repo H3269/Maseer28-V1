@@ -7048,9 +7048,12 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 .globalAssistantChat .assistantComposer { flex: 0 0 auto; }
 .globalAssistantChat .assistantComposer textarea { min-height: 54px; }
 .globalAssistantChat .assistantSendButton {
-  box-sizing: border-box; flex: 0 0 36px; min-width: 36px; width: 36px;
-  min-height: 36px; height: 36px; aspect-ratio: 1; padding: 0; margin: 0;
+  box-sizing: border-box !important; flex: 0 0 36px !important;
+  min-width: 36px !important; max-width: 36px !important; width: 36px !important;
+  min-height: 36px !important; max-height: 36px !important; height: 36px !important;
+  aspect-ratio: 1 / 1; padding: 0 !important; margin: 0 !important;
   border-radius: 11px; display: inline-flex; align-items: center; justify-content: center;
+  justify-self: end; align-self: center; overflow: hidden;
   color: var(--on-primary, #fff);
   background: var(--primary, #28555b);
   border: 1px solid var(--primary, #28555b);
@@ -7068,7 +7071,13 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
   background: var(--primary2, #3b7777);
   border-color: var(--primary2, #3b7777);
 }
-.globalAssistantChat .assistantSendButton svg { width: 19px; height: 19px; }
+/* Only the assistant send icon opts out of the app-wide icon divider. */
+.globalAssistantChat .assistantSendButton > svg {
+  box-sizing: border-box; display: block; flex: 0 0 19px;
+  width: 19px !important; height: 19px !important;
+  padding: 0 !important; margin: 0 !important;
+  border: 0 !important; border-inline: 0 !important;
+}
 .globalAssistantChat .assistantMessage {
   background: color-mix(in srgb, var(--accent2, #e6f1ee) 72%, var(--surface, #fff));
   border: 1px solid color-mix(in srgb, var(--accent, #79aaa1) 48%, var(--border, #d9e0e8));
