@@ -87,7 +87,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       }
     })();
     return () => { active = false; };
-  }, [screen]);
+  }, [screen, libraryContext?.titles?.length]);
 
   if (!visible || screen === 'bookReader') return null;
 
