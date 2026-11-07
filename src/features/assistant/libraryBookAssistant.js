@@ -558,8 +558,14 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
       // A heading that directly names the topic is strong evidence. In body
       // text, require repeated topic evidence so an incidental mention cannot
       // be presented as topic-specific guidance.
+      const body = String(passage.text || '').trim();
+      const contextualSupport = CONFIDENCE.test(normalized)
+        ? /افزایش|تقویت|کاهش|محدود|ساختن/u.test(textEvidence)
+        : ANXIETY.test(normalized)
+          ? /مدیریت|تنظیم|کاهش|اجتناب|استرس/u.test(textEvidence)
+          : /واکنش|رفتار|مکث|پاسخ|احساس|مرز|تحقیر|بی احترامی/u.test(textEvidence);
       return evidencePattern.test(headingEvidence)
-        || (String(passage.text || '').trim().length >= 80 && occurrences.length >= 2);
+        || (body.length >= 80 && (occurrences.length >= 2 || contextualSupport));
     });
     if (!topicEvidence.length) {
       return {
