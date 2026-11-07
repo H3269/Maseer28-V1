@@ -248,3 +248,30 @@ test('the assistant does not label generic passages as anxiety-specific book gui
   assert.match(response, /شاهد مستقیم و کافی برای اضطراب/u);
   assert.doesNotMatch(response, /از نظر شناخت احساسات، نگرانی/u);
 });
+
+test('explicitly named concept comparisons retrieve separate evidence and cite both concepts', () => {
+  const sampleBooks = [{
+    title: 'کتاب آزمایشی',
+    legacyId: 1,
+    content: { pages: [
+      { page: 1, sourcePage: 1, blocks: [
+        { type: 'heading', text: 'باورهای بنیادی' },
+        { type: 'paragraph', text: 'باورها برداشت‌هایی هستند که فرد درباره خود و جهان می‌سازد و بر انتخاب‌های او اثر می‌گذارند.' },
+      ] },
+      { page: 2, sourcePage: 2, blocks: [
+        { type: 'heading', text: 'شناخت احساسات' },
+        { type: 'paragraph', text: 'احساسات تجربه‌های درونی هستند که با واکنش‌های بدنی و گرایش به رفتار همراه می‌شوند.' },
+      ] },
+    ] },
+  }];
+  const response = answerLibraryBookQuestion({
+    books: sampleBooks,
+    message: 'در کتاب اول مفهوم باور و احساس را با هم مقایسه کن',
+  });
+  assert.match(response, /مقایسه مستند دو مفهوم/u);
+  assert.match(response, /مفهوم اول: «باور»/u);
+  assert.match(response, /مفهوم دوم: «احساس»/u);
+  assert.match(response, /منبع: باورهای بنیادی · صفحه 1/u);
+  assert.match(response, /منبع: شناخت احساسات · صفحه 2/u);
+  assert.match(response, /تحلیل نهایی استدلال نویسنده نیست/u);
+});
