@@ -4269,8 +4269,8 @@ undefined
 - پنجره دستیار به‌صورت صریح RTL شد؛ transcript، حباب هر دو گوینده و کادر نوشتن راست‌چین هستند و هر دو نوع پیام در یک transcript مشترک قرار دارند.
 - تولید PDF آرشیو اکنون متن‌های روی صفحه، شماره مسیر/روز، امتیازها و تاریخ‌ها را با ارقام فارسی ترسیم می‌کند؛ نام PDFهای داخل ZIP و نام فایل ZIP نیز ارقام فارسی دارند.
 - آزمون‌های رگرسیون برای تبدیل ارقام، ساختار یکپارچه و RTL دستیار، نام فایل ZIP/PDF و متن ترسیم‌شده PDF اضافه/به‌روزرسانی شدند.
-- فایل‌های اصلی تغییرکرده: `src/shared/persianDigitDisplay.js`، `src/main.jsx`، `src/features/assistant/GlobalAssistantLauncher.jsx`، `src/styles/original-v72.css`، `src/features/journey/archiveExport.js`، `src/features/journey/JourneyScreens.jsx`، آزمون‌های `tests/persianDigitDisplay.test.mjs`، `tests/archiveExport.test.mjs`، `tests/assistantReleaseGate.test.js` و دو آزمون مرورگر دستیار/آرشیو.
-- آخرین commit این مجموعه هنگام ثبت: `00a341249037149d418bc7feb157cc07183b3f2c`.
+- فایل‌های اصلی تغییرکرده: `src/shared/persianDigitDisplay.js`، `src/main.jsx`، `src/features/assistant/GlobalAssistantLauncher.jsx`، `src/styles/original-v72.css`، `src/features/journey/archiveExport.js`، `src/features/journey/JourneyScreens.jsx`، `src/shared/utils.js` (قالب‌بندی تاریخ مشترک)، آزمون‌های `tests/persianDigitDisplay.test.mjs`، `tests/archiveExport.test.mjs`، `tests/assistantReleaseGate.test.js` و دو آزمون مرورگر دستیار/آرشیو.
+- آخرین commit کد و آزمون‌های این مجموعه: `ddd74c2bd14f32fd4d28fe8580d8b299e9ee846b`؛ پس از آن، همین دفتر ثبت وقایع نیز با نتیجه و محدودیت‌های آزمون به‌روزرسانی می‌شود.
 
 ### محدودیت و وضعیت راستی‌آزمایی
 - داده‌های ساختاری و شناسه‌ها، مقادیر قابل‌ویرایش فرم‌ها و محتوای خام نسخه پشتیبان JSON به‌عنوان داده ماشینی تغییر نمی‌کنند؛ تبدیل آن‌ها می‌تواند شناسه، شماره تماس، مقدار عددی یا قابلیت بازیابی را مخدوش کند. قاعده ارقام فارسی برای خروجی متنی قابل‌مشاهده و PDF اعمال شده است.
@@ -4278,3 +4278,5 @@ undefined
 - هیچ Telegram Actions، انتشار عمومی، فعال‌سازی پردازش ابری یا ارسال داده کاربر انجام نشده است. نسخه مرورگری پس از تکمیل استقرار آزمایشی و تأیید آزمون‌ها باید توسط مالک بازبینی شود.
 
 **وضعیت:** GLOBAL_PERSIAN_DIGIT_DISPLAY_AND_RTL_ASSISTANT_PATCHED_MAIN_CI_AND_OWNER_BROWSER_ACCEPTANCE_PENDING_NO_PUBLIC_RELEASE
+
+- قالب‌بندی تاریخ مشترک نیز به‌صورت مستقیم ارقام فارسی را برمی‌گرداند؛ این اصلاح در commit `ddd74c2bd14f32fd4d28fe8580d8b299e9ee846b` ثبت شد.
