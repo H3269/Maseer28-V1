@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import AppIcon from '../../shared/components/AppIcon.jsx';
 import { makePageAssistantTurn } from './pageAssistantTurn.js';
+import { libraryRepository } from '../library/libraryRepository.js';
+import { answerLibraryBookQuestion } from './libraryBookAssistant.js';
 
 const SCREEN_LABELS = {
   home: 'معرفی و شروع',
@@ -26,6 +28,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
   const [error, setError] = useState('');
+  const [loadedLibraryBooks, setLoadedLibraryBooks] = useState([]);
   const conversationStateRef = useRef(null);
   const launcherRef = useRef(null);
   const closeButtonRef = useRef(null);
@@ -64,18 +67,48 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     endRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'end' });
   }, [messages]);
 
+  useEffect(() => {
+    let active = true;
+    if (screen !== 'books') {
+      setLoadedLibraryBooks([]);
+      return undefined;
+    }
+    (async () => {
+      try {
+        const rows = await libraryRepository.listBooks();
+        const hydrated = await Promise.all(rows.map(async (book) => {
+          if (!book.activeVersionId) return null;
+          const version = await libraryRepository.getVersion(book.activeVersionId);
+          return version?.content ? { title: book.title, legacyId: book.legacyId, content: version.content } : null;
+        }));
+        if (active) setLoadedLibraryBooks(hydrated.filter(Boolean));
+      } catch {
+        if (active) setLoadedLibraryBooks([]);
+      }
+    })();
+    return () => { active = false; };
+  }, [screen]);
+
   if (!visible || screen === 'bookReader') return null;
 
   function activate() {
     setOpen(true);
   }
 
-  function send(event) {
+  async function send(event) {
     event.preventDefault();
     const message = draft.trim();
     if (!message) return;
     try {
-      const turn = makePageAssistantTurn({ screen, text: message, conversationState: conversationStateRef.current, dailyContext, libraryContext });
+      let turn;
+      const libraryReply = screen === 'books'
+        ? answerLibraryBookQuestion({ books: loadedLibraryBooks, message })
+        : null;
+      if (libraryReply) {
+        turn = { message: libraryReply, knowledge: [], conversationState: null };
+      } else {
+        turn = makePageAssistantTurn({ screen, text: message, conversationState: conversationStateRef.current, dailyContext, libraryContext });
+      }
       conversationStateRef.current = turn.conversationState || null;
       setMessages((current) => [
         ...current,
