@@ -69,5 +69,5 @@ const output = {
   scenariosDetail: report,
 };
 await mkdir(new URL('../reports/generated/', import.meta.url), { recursive: true });
-await writeFile(new URL('../reports/generated/library-assistant-acceptance.json', import.meta.url), JSON.stringify(output, null, 2) + '\\n');
+await writeFile(new URL('../reports/generated/library-assistant-acceptance.json', import.meta.url), JSON.stringify(output, null, 2) + '\n');
 console.log(JSON.stringify({ ...output, scenariosDetail: undefined }, null, 2));
