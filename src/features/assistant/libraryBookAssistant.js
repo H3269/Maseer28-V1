@@ -39,7 +39,7 @@ const ANXIETY = /(?:اضطراب|استرس|دلشوره|نگرانی)/u;
 const ANGER = /(?:خشم|عصبانیت|عصبانی|پرخاش)/u;
 const CONFIDENCE = /(?:اعتماد به نفس|اعتمادبه نفس|خودباوری|عزت نفس)/u;
 const KEY_POINTS = /(?:مهم ترین نکات|نکات اصلی|نکات کلیدی)/u;
-const SIMPLE_EXPLAIN = /(?:به زبان ساده|ساده و قابل فهم|توضیح ساده)/u;
+const SIMPLE_EXPLAIN = /(?:به زبان ساده|ساده و قابل فهم|توضیح ساده|بیشتر توضیح|جزئیات بیشتر|بیشتر باز کن)/u;
 
 export function normalizeLibraryText(value) {
   return String(value ?? '').normalize('NFKC')
@@ -538,6 +538,12 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     ? conversationState.lastQuery + ' ' + message
     : message;
   const intentText = normalizeLibraryText(effectiveQuery);
+  const currentTurnHasGuidanceIntent = [
+    SCIENCE, ALTERNATIVE_VIEW, LIMITATIONS, WEEK_PLAN, PROGRESS,
+    EXAMPLE_OR_EXERCISE, DAILY_APPLICATION, SIMPLE_EXPLAIN, KEY_POINTS,
+    ANXIETY, ANGER, CONFIDENCE, ALTERNATIVE_EXERCISE, AUTHOR_MEANING, AUTHOR_REASON,
+  ].some((pattern) => pattern.test(normalized));
+  const responseIntent = currentTurnHasGuidanceIntent ? normalized : intentText;
   const hasSectionReference = hasExplicitSectionReference(message) || Boolean(conversationState?.lastSources?.length);
   const hasClaimReference = hasExplicitClaimReference(message) || Boolean(conversationState?.lastSources?.length);
 
@@ -705,12 +711,12 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   let reply;
   if (asksSummary) {
     reply = summaryReply(book, allPassages);
-  } else if (SCIENCE.test(intentText) || ALTERNATIVE_VIEW.test(intentText) || LIMITATIONS.test(intentText)
-    || WEEK_PLAN.test(intentText) || PROGRESS.test(intentText) || EXAMPLE_OR_EXERCISE.test(intentText)
-    || DAILY_APPLICATION.test(intentText) || SIMPLE_EXPLAIN.test(intentText) || KEY_POINTS.test(intentText)
-    || ANXIETY.test(intentText) || ANGER.test(intentText) || CONFIDENCE.test(intentText)
-    || ALTERNATIVE_EXERCISE.test(intentText) || AUTHOR_MEANING.test(intentText) || AUTHOR_REASON.test(intentText)) {
-    reply = 'در «' + book.title + '»:\n\n' + structuredGuidance(intentText, book, selected, intentText);
+  } else if (SCIENCE.test(responseIntent) || ALTERNATIVE_VIEW.test(responseIntent) || LIMITATIONS.test(responseIntent)
+    || WEEK_PLAN.test(responseIntent) || PROGRESS.test(responseIntent) || EXAMPLE_OR_EXERCISE.test(responseIntent)
+    || DAILY_APPLICATION.test(responseIntent) || SIMPLE_EXPLAIN.test(responseIntent) || KEY_POINTS.test(responseIntent)
+    || ANXIETY.test(responseIntent) || ANGER.test(responseIntent) || CONFIDENCE.test(responseIntent)
+    || ALTERNATIVE_EXERCISE.test(responseIntent) || AUTHOR_MEANING.test(responseIntent) || AUTHOR_REASON.test(responseIntent)) {
+    reply = 'در «' + book.title + '»:\n\n' + structuredGuidance(responseIntent, book, selected, responseIntent);
   } else {
     reply = (followUp ? 'ادامه بررسی همان موضوع در «' + book.title + '» بر اساس متن کتاب:' : 'بخش‌های مرتبط با پرسش تو در «' + book.title + '»:') +
       '\n\n' + formatPassages(selected) +
