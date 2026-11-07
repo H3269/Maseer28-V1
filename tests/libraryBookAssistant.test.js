@@ -613,3 +613,16 @@ test('curated summaries and key points include short excerpts from their cited s
     assert.doesNotMatch(summary, /\\n/u, book.title + ' summary must not leak escaped newline markers');
   }
 });
+
+
+test('book theme and simple explanation include supporting excerpts from the selected book', () => {
+  for (const book of books) {
+    const ordinal = ['اول', 'دوم', 'سوم', 'چهارم', 'پنجم'][book.legacyId - 1];
+    const theme = answerLibraryBookQuestion({ books, message: 'موضوع اصلی کتاب ' + ordinal + ' چیست؟' });
+    const simple = answerLibraryBookQuestion({ books, message: 'مفهوم اصلی کتاب ' + ordinal + ' را ساده توضیح بده' });
+    assert.match(theme, /شواهد متنی از کتاب/u, book.title + ' theme must include book evidence');
+    assert.match(theme, /منبع:/u, book.title + ' theme must cite source pages');
+    assert.match(simple, /شواهد متنی برای این توضیح/u, book.title + ' simple explanation must include book evidence');
+    assert.match(simple, /منبع:/u, book.title + ' simple explanation must cite source pages');
+  }
+});
