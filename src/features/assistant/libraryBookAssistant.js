@@ -200,10 +200,16 @@ function sourceLabel(item) {
   return [item.heading, item.page ? 'صفحه ' + item.page : ''].filter(Boolean).join(' · ') || 'متن کتاب';
 }
 
+function formatOrdinalPrefix(index) {
+  const ordinal = String(index + 1).replace(/\d/g, (digit) => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
+  // Isolate the ordinal and its closing parenthesis from adjacent RTL/LTR text.
+  return '\u2066' + ordinal + ')\u2069 ';
+}
+
 function formatPassages(passages) {
   return passages.map((item, index) => {
     const excerpt = item.text.length > 560 ? item.text.slice(0, 557).trimEnd() + '…' : item.text;
-    return (index + 1) + ') ' + excerpt + '\nمنبع: ' + sourceLabel(item);
+    return formatOrdinalPrefix(index) + excerpt + '\nمنبع: ' + sourceLabel(item);
   }).join('\n\n');
 }
 
@@ -295,7 +301,7 @@ function formatProfileItemsWithEvidence(book, items) {
     const excerpt = hasEvidence
       ? sourceText.slice(0, 120) + (sourceText.length > 120 ? '…' : '')
       : 'در صفحه ارجاع‌شده گزیده متنیِ کافی برای نمایش پیدا نشد.';
-    return (index + 1) + ') ' + heading + '\n' + description +
+    return formatOrdinalPrefix(index) + heading + '\n' + description +
       '\nشاهد کوتاه متن: ' + excerpt +
       '\nمنبع: ' + (hasEvidence ? [sourceHeading, 'صفحه ' + page].filter(Boolean).join(' · ') : 'صفحه ' + page);
   }).join('\n\n');
