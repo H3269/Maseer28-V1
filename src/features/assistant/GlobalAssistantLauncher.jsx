@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import AppIcon from '../../shared/components/AppIcon.jsx';
 import { makePageAssistantTurn } from './pageAssistantTurn.js';
 import { libraryRepository } from '../library/libraryRepository.js';
-import { answerLibraryBookQuestion } from './libraryBookAssistant.js';
+import { answerLibraryBookTurn } from './libraryBookAssistant.js';
 
 export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null }) {
   const [open, setOpen] = useState(false);
@@ -81,11 +81,11 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       if (screen === 'books' && !loadedLibraryBooks.length) {
         turn = { message: 'متن کتاب‌ها هنوز بارگذاری نشده است. چند لحظه صبر کن و دوباره پرسشت را بفرست.', knowledge: [], conversationState: null };
       } else {
-        const libraryReply = screen === 'books'
-          ? answerLibraryBookQuestion({ books: loadedLibraryBooks, message })
+        const libraryTurn = screen === 'books'
+          ? answerLibraryBookTurn({ books: loadedLibraryBooks, message, conversationState: conversationStateRef.current })
           : null;
-        if (libraryReply) {
-        turn = { message: libraryReply, knowledge: [], conversationState: null };
+        if (libraryTurn) {
+          turn = { ...libraryTurn, knowledge: [] };
         } else {
           turn = makePageAssistantTurn({ screen, text: message, conversationState: conversationStateRef.current, dailyContext, libraryContext });
         }
