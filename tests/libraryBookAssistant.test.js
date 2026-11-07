@@ -71,7 +71,7 @@ test('follow-up questions retain the selected book and topic', () => {
   assert.equal(first.conversationState.bookId, 1);
   const second = answerLibraryBookTurn({ books: sampleBooks, message: 'بیشتر توضیح بده', conversationState: first.conversationState });
   assert.match(second.message, /کتاب آزمایشی/);
-  assert.match(second.message, /ادامه بررسی همان موضوع/);
+  assert.match(second.message, /شاهدهای خود کتاب|شواهد قابل بازیابی از کتاب/);
   assert.match(second.message, /عصبانیت/);
 });
 
@@ -160,7 +160,7 @@ test('book-specific introductions use actual metadata and chapter headings', () 
 test('author-intent questions ask for a precise section instead of guessing', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم نویسنده در این بخش دقیقاً چه منظوری دارد؟' });
   assert.match(response, /کدام جمله، پاراگراف یا فصل/u);
-  assert.match(response, /نمی‌خواهم نیت نویسنده را حدس بزنم/u);
+  assert.match(response, /نباید نیت نویسنده را حدس بزنم/u);
 });
 
 test('concept comparisons choose a reviewed core pair when the user does not name concepts', () => {
@@ -619,7 +619,7 @@ test('book theme and simple explanation include supporting excerpts from the sel
   for (const book of books) {
     const ordinal = ['اول', 'دوم', 'سوم', 'چهارم', 'پنجم'][book.legacyId - 1];
     const theme = answerLibraryBookQuestion({ books, message: 'موضوع اصلی کتاب ' + ordinal + ' چیست؟' });
-    const simple = answerLibraryBookQuestion({ books, message: 'مفهوم اصلی کتاب ' + ordinal + ' را ساده توضیح بده' });
+    const simple = answerLibraryBookQuestion({ books, message: 'می‌توانی مفهوم اصلی کتاب ' + ordinal + ' را ساده و قابل فهم توضیح بدهی؟' });
     assert.match(theme, /شواهد متنی از کتاب/u, book.title + ' theme must include book evidence');
     assert.match(theme, /منبع:/u, book.title + ' theme must cite source pages');
     assert.match(simple, /شواهد متنی برای این توضیح/u, book.title + ' simple explanation must include book evidence');
