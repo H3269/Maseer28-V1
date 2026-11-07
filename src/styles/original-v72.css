@@ -7048,8 +7048,9 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 .globalAssistantChat .assistantComposer { flex: 0 0 auto; }
 .globalAssistantChat .assistantComposer textarea { min-height: 54px; }
 .globalAssistantChat .assistantSendButton {
-  min-width: 40px; width: 40px; height: 40px; min-height: 40px; padding: 0; margin: 0;
-  border-radius: 12px; display: inline-flex; align-items: center; justify-content: center;
+  box-sizing: border-box; flex: 0 0 36px; min-width: 36px; width: 36px;
+  min-height: 36px; height: 36px; aspect-ratio: 1; padding: 0; margin: 0;
+  border-radius: 11px; display: inline-flex; align-items: center; justify-content: center;
   color: var(--on-primary, #fff);
   background: var(--primary, #28555b);
   border: 1px solid var(--primary, #28555b);
