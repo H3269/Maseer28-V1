@@ -23,7 +23,7 @@ test('all five seeded books return grounded overviews with source page locators'
     assert.ok(response.includes(book.title));
     assert.match(response, /منبع:/);
     assert.match(response, /صفحه/);
-    assert.match(response, /مرور ساختاری مستند/);
+    assert.match(response, /مرور محتواییِ ساختاری/);
   }
 });
 
@@ -223,7 +223,7 @@ test('a contextual follow-up searches the new limitation question while retainin
     title: 'کتاب آزمایشی',
     legacyId: 1,
     content: { pages: [
-      { page: 1, sourcePage: 1, blocks: [{ type: 'heading', text: 'شناخت خشم' }, { type: 'paragraph', text: 'شناخت نشانه‌های عصبانیت به فرد کمک می‌کند پیش از واکنش مکث کند.' }] },
+      { page: 1, sourcePage: 1, blocks: [{ type: 'heading', text: 'شناخت خشم' }, { type: 'paragraph', text: 'شناخت نشانه‌های عصبانیت به فرد کمک می‌کند پیش از واکنش مکث کند و محرک، احساس، میل فوری و پاسخ انتخاب‌شده را جداگانه مشاهده کند تا امکان انتخاب آگاهانه‌تری داشته باشد.' }] },
       { page: 2, sourcePage: 2, blocks: [{ type: 'heading', text: 'محدودیت‌های تمرین' }, { type: 'paragraph', text: 'این تمرین در شرایط خطر فوری یا هنگام شدت بسیار بالای هیجان کافی نیست و باید از حمایت مناسب استفاده کرد.' }] },
     ] },
   }];
@@ -313,7 +313,7 @@ test('book overviews exclude dedication and contents pages from representative e
     ] },
   }];
   const response = answerLibraryBookQuestion({ books: sampleBooks, message: 'خلاصه کتاب اول' });
-  assert.match(response, /مرور ساختاری مستند/u);
+  assert.match(response, /مرور محتواییِ ساختاری/u);
   assert.match(response, /باورها برداشت‌هایی هستند/u);
   assert.doesNotMatch(response, /این متن فقط تقدیم‌نامه است/u);
 });
