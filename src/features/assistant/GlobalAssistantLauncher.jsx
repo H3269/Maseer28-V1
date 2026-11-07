@@ -168,38 +168,16 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
             role="dialog"
             aria-modal="true"
             aria-labelledby="global-assistant-title"
-            aria-describedby="global-assistant-description"
             onKeyDown={containDialogTab}
           >
             <div className="globalAssistantDialogTop">
-              <span className="badge">راهنمای محلی محدود</span>
               <button ref={closeButtonRef} type="button" className="iconButton" onClick={() => setOpen(false)} aria-label="بستن پنجره دستیار">
                 <AppIcon name="x" size={18} />
               </button>
             </div>
             <h2 id="global-assistant-title">دستیار مسیر۲۸</h2>
-            <p className="globalAssistantPageContext">صفحه فعلی: <b>{pageLabel}</b></p>
-            {isDailyExercise && <p className="dailyAssistantContext"><b>موضوع: {dailyTopic || 'موضوع انتخاب‌شده'} · روز {dailyDay ?? 'نامشخص'}</b></p>}
-            <p id="global-assistant-description">
-              {screen === 'dashboard'
-                ? 'در خانه می‌توانی پرسش عمومی یا شخصی خود را مطرح کنی. پاسخ‌ها محلی و محدود به منابع و قواعد موجودند؛ این دستیار تشخیص یا توصیه درمانی ارائه نمی‌کند.'
-                : isDailyExercise
-                  ? 'در این صفحه پاسخ‌ها بر اساس موضوع انتخاب‌شده، روز جاری، متن واقعی تمرین و راهکار اختصاصی همان روز و گفت‌وگوی جاری ساخته می‌شوند. اگر گیت ایمنی روز بسته باشد، راهنمایی متوقف می‌شود.'
-                  : screen === 'books'
-                    ? 'در کتابخانه می‌توانی درباره متن واقعی پنج کتاب سؤال کنی یا مرور فشرده بخواهی. پاسخ‌ها از نسخه بارگذاری‌شده کتاب‌ها استخراج می‌شوند و نام کتاب و شماره صفحه منبع را نشان می‌دهند؛ اگر متن مرتبط پیدا نشود، حدس نمی‌زنم.'
-                    : 'در این صفحه درباره محتوای همین صفحه و اطلاعات ساختاری ثبت‌شده در برنامه، مانند فهرست موضوعات و زیرموضوع‌ها، راهنمایی می‌دهم. مواردی که در منابع معتبر و قابل‌دسترسی اپ نیستند را حدس نمی‌زنم.'}
-            </p>
-            <p className="muted globalAssistantPrivacyNote">
-              پردازش این نسخه در مرورگر انجام می‌شود؛ پیام‌ها به سرویس ابری ارسال نمی‌شوند و با تغییر صفحه، گفت‌وگوی این پنجره پاک می‌شود.
-            </p>
             <div className="assistantChatShell globalAssistantChat" aria-label="گفت‌وگوی دستیار در صفحه جاری">
               <div className="assistantTranscript" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
-                {!messages.length && (
-                  <div className="assistantMessage">
-                    <b>دستیار مسیر۲۸</b>
-                    <p>می‌توانی بپرسی «اینجا چه کارهایی می‌توانم انجام بدهم؟» یا «این صفحه برای چیست؟»</p>
-                  </div>
-                )}
                 {messages.map((item, index) => (
                   <div className={item.role === 'user' ? 'userMessage' : 'assistantMessage'} key={index}>
                     <b>{item.role === 'user' ? 'شما' : 'دستیار مسیر۲۸'}</b>
@@ -223,15 +201,12 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                   maxLength={isDailyExercise ? 2000 : 3000}
                   value={draft}
                   onChange={(event) => setDraft(event.target.value)}
-                  placeholder={isDailyExercise ? "درباره تمرین یا راهکار همین روز بپرس..." : screen === "dashboard" ? "هر پرسشی داری بنویس..." : screen === "books" ? "نام کتاب را بنویس و درباره متنش بپرس..." : "درباره همین صفحه بپرس..."}
+                  placeholder="چطور میتونم کمکت کنم؟"
                 />
-                <button className="primary assistantSendButton" type="submit" disabled={!draft.trim()}>ارسال</button>
+                <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال پیام" disabled={!draft.trim()}><AppIcon name="arrow" size={21} /></button>
                 {error && <p className="contactHelp assistantComposerError" role="alert">{error}</p>}
               </form>
             </div>
-            <button type="button" className="primary globalAssistantCloseAction" onClick={() => setOpen(false)}>
-              متوجه شدم
-            </button>
           </section>
         </div>
       )}
