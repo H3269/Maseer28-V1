@@ -252,6 +252,24 @@ function representativePassages(passages, limit = 5) {
   return selected;
 }
 
+function chapterRepresentativePassages(passages, limit = 6) {
+  const byHeading = new Map();
+  for (const item of passages) {
+    const heading = String(item.heading || '').trim();
+    const normalizedHeading = normalizeLibraryText(heading);
+    const page = Number(item.page || item.pageIndex || 0);
+    if (page > 0 && page <= 8) continue;
+    if (!/(فصل|بخش|پیوست)/u.test(normalizedHeading)) continue;
+    if (/(تمرین|کاربرگ|جمع بندی|روز [۰-۹0-9]+)/u.test(normalizedHeading)) continue;
+    if (String(item.text || '').trim().length < 90) continue;
+    if (!byHeading.has(normalizedHeading)) byHeading.set(normalizedHeading, item);
+  }
+  const chapters = [...byHeading.values()];
+  return chapters.length
+    ? representativePassages(chapters, Math.min(limit, chapters.length))
+    : representativePassages(passages.filter((item) => String(item.text || '').trim().length >= 90), limit);
+}
+
 function summaryReply(book, passages) {
   const headings = mainBookHeadings(book);
   const substantive = passages.filter((item) => {
@@ -362,7 +380,7 @@ function structuredGuidance(intent, book, passages, message) {
   if (EXAMPLE_OR_EXERCISE.test(intent)) return 'یک نمونه فرضی و تمرین پیشنهادی دستیار بر پایه موضوع متن:\n\nمثال فرضی: اگر در یک گفت‌وگو متوجه شوی واکنشت سریع و شدید شده، می‌توانی پیش از پاسخ چند لحظه مکث کنی و نام احساست را مشخص کنی.\n\nتمرین کم‌فشار: در پایان روز فقط یک موقعیت را ثبت کن: چه اتفاقی افتاد؟ چه احساسی داشتم؟ چه واکنشی نشان دادم؟ دفعه بعد چه انتخاب کوچکی دارم؟\n\nاین مثال و تمرین ساخته دستیارند، نه نقل قول کتاب و نه توصیه درمانی.\n\n' + evidence;
   if (DAILY_APPLICATION.test(intent)) return 'برای تبدیل مفهوم به عمل، آن را به یک رفتار کوچک و قابل مشاهده محدود کن:\n۱) یک موقعیت مشخص انتخاب کن.\n۲) پیش از واکنش، نشانه یا احساس خود را نام ببر.\n۳) یک پاسخ کوچک و ایمن را امتحان کن.\n۴) نتیجه را کوتاه ثبت کن و بر اساس تجربه اصلاح کن.\n\nاین گام‌ها پیشنهاد کاربردی دستیارند؛ پایه کتابی آن‌ها در گزیده‌های زیر آمده است.\n\n' + evidence;
   if (SIMPLE_EXPLAIN.test(intent)) return 'می‌توانم متن مرتبط را ساده‌سازی کنم، اما برای جلوگیری از تحریف، ابتدا شاهدهای خود کتاب را نشان می‌دهم. برداشت ساده و محتاطانه از این گزیده‌ها این است که باید میان آنچه رخ می‌دهد، برداشتی که از آن می‌کنیم و واکنشی که نشان می‌دهیم تمایز بگذاریم. این برداشت فقط در صورتی معتبر است که با بخش انتخاب‌شده منطبق باشد؛ برای توضیح دقیق‌تر، نام فصل یا پاراگراف را مشخص کن.\n\n' + evidence;
-  if (KEY_POINTS.test(intent)) return 'نکته‌های قابل استخراج از بخش‌های بازیابی‌شده (نه لزوماً تمام نکات مهم کتاب):\n\n' + source + '\n\nبرای تهیه فهرست کامل و اولویت‌بندی‌شده باید فصل‌های کتاب را به‌صورت کامل مرور کرد.';
+  if (KEY_POINTS.test(intent)) return 'محورهای قابل مشاهده در بخش‌های اصلی کتاب (نه رتبه‌بندی قطعی مهم‌ترین نکات):\n\n' + source + '\n\nاین گزیده‌ها برای آشنایی با چند فصل‌اند؛ تعیین اهمیت و اولویت نکات به تحلیل کامل استدلال هر فصل نیاز دارد.';
   return evidence;
 }
 
@@ -506,8 +524,8 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
 
   let selected = asksSummary
     ? []
-    : KEY_POINTS.test(normalized) && !ranked.length
-      ? representativePassages(allPassages, 5)
+    : KEY_POINTS.test(normalized)
+      ? chapterRepresentativePassages(allPassages, 6)
       : chooseDiverse(ranked, 5);
   if (!asksSummary && !selected.length && (SCIENCE.test(normalized) || ALTERNATIVE_VIEW.test(normalized) || LIMITATIONS.test(normalized) || PROGRESS.test(normalized))) {
     const reply = SCIENCE.test(normalized)
