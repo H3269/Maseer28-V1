@@ -49,6 +49,23 @@ jobs:
         with:
           path: ./dist
 
+      # One-time recovery for the Pages deployment left in progress by the timed-out run on 10047cfa.
+      # GitHub rejects a new deployment while that stale deployment remains active.
+      - name: Cancel stale Pages deployment from timed-out run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/deployments/10047cfa83dd51598ddbc387db0a8e2718bc8ff4/cancel" >/tmp/pages-cancel.out 2>/tmp/pages-cancel.err; then
+            echo "Cancelled stale Pages deployment."
+          elif grep -Eqi 'Not Found|404' /tmp/pages-cancel.err; then
+            echo "Stale Pages deployment was already cleared."
+          else
+            cat /tmp/pages-cancel.err
+            exit 1
+          fi
+
       - name: Deploy test app
         id: deployment
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
