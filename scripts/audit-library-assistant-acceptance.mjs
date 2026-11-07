@@ -31,7 +31,7 @@ for (const book of books) {
     });
     const response = String(result?.message || '');
     const global = globalIntents.has(item.intent);
-    const referencedPages = [...new Set([...response.matchAll(/صفحه\\s*(\\d+)/gu)].map((match) => Number(match[1])))].slice(0, 12);
+    const referencedPages = [...new Set([...response.matchAll(/صفحه\s*(\d+)/gu)].map((match) => Number(match[1])))].slice(0, 12);
     const sourceEvidence = referencedPages.map((pageNumber) => {
       const page = book.content.pages.find((candidate) => Number(candidate.sourcePage || candidate.page) === pageNumber);
       return page ? {
