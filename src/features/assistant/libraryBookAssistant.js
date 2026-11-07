@@ -355,14 +355,21 @@ function listBooksReply(books) {
 }
 
 function compareBooksReply(books) {
-  return 'مقایسه محتوایی پنج کتاب کتابخانه مسیر ۲۸:\n\n' +
-    books.map((book) => {
-      const profile = getLibraryBookProfile(book);
-      const subject = profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است';
-      const focus = profile?.comparison || 'برای این کتاب هنوز جمع‌بندی مقایسه‌ایِ بازبینی‌شده ثبت نشده است.';
-      return '• «' + book.title + '»\nمحور اصلی: ' + subject + '\nجایگاه در مجموعه: ' + focus;
-    }).join('\n\n') +
-    '\n\nتفاوت کاربردی کتاب‌ها: جلد اول برای ساختن پایه خودشناسی؛ جلد دوم برای فهم سازوکارهای شناختی و تغییر؛ جلد سوم برای موانع اجرای تغییر؛ کتابچه چهارم برای کار عملی و ثبت تجربه؛ و کتاب پنجم برای سواد هیجانی و تنظیم احساسات مناسب‌تر است. این دسته‌بندی، راهنمای مطالعه بر اساس محتوای بررسی‌شده است، نه رتبه‌بندی علمی یا درمانی.';
+  const rows = books.map((book) => {
+    const profile = getLibraryBookProfile(book);
+    const subject = profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است';
+    const focus = profile?.comparison || 'برای این کتاب هنوز جمع‌بندی مقایسه‌ایِ بازبینی‌شده ثبت نشده است.';
+    const concept = profile?.conceptPair?.length === 2 && profile?.conceptComparison
+      ? '\nنمونه تمایز مفهومی: ' + profile.conceptPair.join(' در برابر ') + ' — ' + profile.conceptComparison
+      : '';
+    return '• «' + book.title + '»\nمحور اصلی: ' + subject + '\nجایگاه در مجموعه: ' + focus + concept;
+  });
+  return [
+    'مقایسه محتوایی پنج کتاب کتابخانه مسیر ۲۸',
+    rows.join('\n\n'),
+    'جمع‌بندی مسیر مطالعه: جلد اول پایه عمومی خودشناسی را می‌سازد؛ جلد دوم سازوکارهای شناخت و یادگیری را عمیق‌تر بررسی می‌کند؛ جلد سوم موانع تبدیل آگاهی به رفتار را می‌کاود؛ کتابچه چهارم ابزار اجرایی مکمل جلد سوم است؛ و کتاب پنجم بر سواد هیجانی و شناخت و تنظیم احساسات تمرکز دارد.',
+    'این نقشه مطالعه بر اساس پروفایل‌های محتوایی ثبت‌شده است؛ نه رتبه‌بندی علمی، اثربخشی درمانی یا نظر قطعی نویسندگان.'
+  ].join('\n\n');
 }
 
 
@@ -389,6 +396,7 @@ function recommendBooks(books, message) {
     const profile = getLibraryBookProfile(first);
     return 'پیشنهاد روشن برای شروع: «' + first.title + '».\n' +
       (profile?.beginner || 'این کتاب برای شروع مسیر مناسب‌تر به نظر می‌رسد.') +
+      (profile?.summary?.length ? '\n\nدلیل محتوایی پیشنهاد:\n' + formatProfileItemsWithEvidence(first, profile.summary.slice(0, 2)) : '') +
       (emotions ? '\n\nاگر مسئله اصلی‌ات شناخت و تنظیم احساسات است، «' + emotions.title + '» گزینه شروعِ موضوعی مناسبی است.' : '') +
       (workbook ? '\n\n«' + workbook.title + '» را به‌عنوان کتاب اول پیشنهاد نمی‌کنم؛ این کتابچه ابزار اجرایی است و در کنار جلد سوم بیشترین فایده را دارد.' : '') +
       '\n\nاین پیشنهاد بر اساس ساختار و محتوای کتاب‌هاست؛ اگر هدفت را مشخص کنی، ترتیب مطالعه را دقیق‌تر می‌کنم.';
@@ -585,6 +593,7 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     return { message: 'موضوع اصلی «' + book.title + '»\n\n' +
       (profile?.plain || profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است') +
       (profile?.subject ? '\n\nحوزه‌های اصلی کتاب: ' + profile.subject : '') +
+      (profile?.summary?.length ? '\n\nسه محور مستند از متن:\n' + formatProfileItemsWithEvidence(book, profile.summary.slice(0, 3)) : '') +
       (headings.length ? '\n\nبخش‌های راهنما:\n' + headings.slice(0, 5).map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\n') : '') +
       (subjectEvidence.length ? '\n\nشواهد متنی از کتاب:\n' + formatPassages(subjectEvidence) : '') +
       '\n\nاین توضیح، بازنویسی دستیار بر پایه پروفایل محتوایی و متن کتاب است؛ نقل قول مستقیم نویسنده نیست.',
@@ -619,6 +628,7 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     return {
       message: 'توضیح ساده مفهوم اصلی «' + book.title + '»\n\n' +
         (profile?.plain || 'موضوع معرفی‌شده: ' + subject) +
+        (profile?.summary?.length ? '\n\nدو شاهد از فصل‌های مرتبط:\n' + formatProfileItemsWithEvidence(book, profile.summary.slice(0, 2)) : '') +
         (headings.length ? '\n\nبرای مطالعه جزئی‌تر، این بخش‌ها نقطه شروع مناسبی‌اند:\n' + headings.slice(0, 5).map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\n') : '') +
         (simpleEvidence.length ? '\n\nشواهد متنی برای این توضیح:\n' + formatPassages(simpleEvidence) : '') +
         '\n\nاین توضیح، بازنویسی دستیار بر پایه ساختار و متن بررسی‌شده است؛ نقل قول مستقیم نویسنده نیست.',

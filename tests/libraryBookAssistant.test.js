@@ -646,3 +646,24 @@ test('a user can answer a section clarification and continue the original exerci
     assert.doesNotMatch(second.message, /عنوان فصل، شماره صفحه یا چند واژه از همان قسمت را بفرست/u);
   }
 });
+
+test('recommendations and main-theme/simple answers show source excerpts from the selected book', () => {
+  const recommendation = answerLibraryBookQuestion({ books, message: 'اگر تازه می‌خواهم مطالعه را شروع کنم، کدام کتاب مناسب‌تر است؟' });
+  assert.match(recommendation, /دلیل محتوایی پیشنهاد/u);
+  assert.match(recommendation, /شاهد کوتاه متن:/u);
+  const theme = answerLibraryBookQuestion({ books, message: 'موضوع اصلی کتاب اول چیست؟' });
+  assert.match(theme, /سه محور مستند از متن/u);
+  assert.match(theme, /شاهد کوتاه متن:/u);
+  const simple = answerLibraryBookQuestion({ books, message: 'می‌توانی مفهوم اصلی کتاب اول را ساده و قابل فهم توضیح بدهی؟' });
+  assert.match(simple, /دو شاهد از فصل‌های مرتبط/u);
+  assert.match(simple, /شاهد کوتاه متن:/u);
+});
+
+test('five-book comparison includes book-specific concept distinctions and its epistemic limits', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'تفاوت موضوعی این پنج کتاب چیست؟' });
+  for (const book of books) assert.ok(response.includes(book.title));
+  assert.match(response, /نمونه تمایز مفهومی/u);
+  assert.match(response, /کتابچه چهارم ابزار اجرایی مکمل جلد سوم/u);
+  assert.match(response, /نه رتبه‌بندی علمی/u);
+});
+
