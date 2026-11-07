@@ -7050,7 +7050,7 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 }
 
 /* Minimal global assistant chat: let the conversation and composer use the dialog space. */
-.globalAssistantDialog { display: flex; flex-direction: column; }
+.globalAssistantDialog { display: flex; flex-direction: column; height: min(82dvh, 760px); }
 .globalAssistantDialog h2 { margin: 8px 0 12px; }
 .globalAssistantChat { display: flex; flex: 1 1 auto; min-height: 0; flex-direction: column; }
 .globalAssistantChat .assistantTranscript { flex: 1 1 auto; max-height: none; min-height: 180px; }
