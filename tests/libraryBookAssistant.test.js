@@ -163,7 +163,7 @@ test('author-intent questions ask for a precise section instead of guessing', ()
 
 test('concept comparisons request two named concepts and offer real book headings', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم دو مفهوم مهم را با هم مقایسه می‌کنی؟' });
-  assert.match(response, /دو مفهوم مشخص را انتخاب کن/u);
+  assert.match(response, /نام دو مفهوم را مشخص کن/u);
   assert.match(response, /فصل/u);
 });
 
