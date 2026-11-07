@@ -142,10 +142,10 @@ test('contextual follow-ups retain the selected book even when the wording is no
   assert.match(second.message, /محدودیت/u);
 });
 
-test('progress guidance uses observable behavior and avoids clinical claims', () => {
+test('progress questions about an unspecified recommendation request the referenced section first', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم از کجا بفهمم در این توصیه پیشرفت کرده‌ام؟' });
-  assert.match(response, /رفتارهای قابل مشاهده/u);
-  assert.match(response, /نه معیار تشخیصی یا درمانی/u);
+  assert.match(response, /عنوان فصل، شماره صفحه یا چند واژه/u);
+  assert.doesNotMatch(response, /رفتارهای قابل مشاهده/u);
 });
 
 
