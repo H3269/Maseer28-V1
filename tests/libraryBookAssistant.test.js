@@ -163,10 +163,12 @@ test('author-intent questions ask for a precise section instead of guessing', ()
   assert.match(response, /نمی‌خواهم نیت نویسنده را حدس بزنم/u);
 });
 
-test('concept comparisons request two named concepts and offer real book headings', () => {
+test('concept comparisons choose a reviewed core pair when the user does not name concepts', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم دو مفهوم مهم را با هم مقایسه می‌کنی؟' });
-  assert.match(response, /نام دو مفهوم را مشخص کن/u);
-  assert.match(response, /فصل/u);
+  assert.match(response, /احساس/u);
+  assert.match(response, /هیجان/u);
+  assert.match(response, /مقایسه/u);
+  assert.match(response, /منبع:/u);
 });
 
 test('a low-pressure alternative asks for the exercise source when no prior section is known', () => {
