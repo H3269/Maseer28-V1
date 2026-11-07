@@ -317,7 +317,7 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   }
 
   if ((AUTHOR_MEANING.test(normalized) || AUTHOR_REASON.test(normalized)) && !conversationState?.lastSources?.length) {
-    return { message: 'برای توضیح دقیق منظور نویسنده، لطفاً عنوان فصل، شماره صفحه یا چند کلمه از همان بخش را مشخص کن. هنوز معلوم نیست «این بخش» به کدام قسمت کتاب اشاره دارد؛ نمی‌خواهم نیت نویسنده را حدس بزنم.', conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message } };
+    return { message: 'در «' + book.title + '»، برای توضیح دقیق منظور نویسنده لطفاً عنوان فصل، شماره صفحه یا چند کلمه از همان بخش را مشخص کن. هنوز معلوم نیست «این بخش» به کدام قسمت کتاب اشاره دارد؛ نمی‌خواهم نیت نویسنده را حدس بزنم.', conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message } };
   }
   if (CONCEPT_COMPARE.test(normalized)) {
     const headings = mainBookHeadings(book).slice(0, 14);
