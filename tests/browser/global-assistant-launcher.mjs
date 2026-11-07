@@ -103,6 +103,13 @@ try {
   assert.equal(await dialog.getByRole('button', { name: 'متوجه شدم' }).count(), 0, 'the redundant bottom close action must be removed');
   assert.equal(await dialog.getByPlaceholder('چطور میتونم کمکت کنم؟').count(), 1, 'the composer must show the concise prompt');
   assert.equal(await dialog.getByRole('textbox').count(), 1, 'the limited local page assistant must expose its message composer');
+  assert.equal(await sendButton.isDisabled(), true, 'send must start disabled while the composer is empty');
+  await dialog.getByRole('textbox').fill('   ');
+  assert.equal(await sendButton.isDisabled(), true, 'whitespace alone must not enable sending');
+  await dialog.getByRole('textbox').fill('آزمون فعال شدن دکمه');
+  assert.equal(await sendButton.isEnabled(), true, 'typing a non-empty question must enable sending');
+  await dialog.getByRole('textbox').fill('');
+  assert.equal(await sendButton.isDisabled(), true, 'clearing the question must disable sending again');
   assert.equal((await dialog.innerText()).includes('09123456789'), false, 'private profile data must not be exposed to the page assistant');
   await dialog.getByRole('textbox').fill('اینجا چه کارهایی می‌توانم انجام بدهم؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
@@ -110,6 +117,18 @@ try {
   await page.waitForFunction(() => document.querySelector('.globalAssistantDialog')?.innerText.includes('ادامه مسیر امروز'));
   const firstAssistantReply = dialog.locator('.assistantMessage').last();
   assert.match(await firstAssistantReply.innerText(), /در صفحه «خانه» می‌توانی/);
+  const userBubbleStyle = await dialog.locator('.userMessage').last().evaluate((node) => {
+    const style = getComputedStyle(node);
+    return { background: style.backgroundColor, border: style.borderColor };
+  });
+  const assistantBubbleStyle = await firstAssistantReply.evaluate((node) => {
+    const style = getComputedStyle(node);
+    return { background: style.backgroundColor, border: style.borderColor };
+  });
+  assert.notEqual(userBubbleStyle.background, 'rgba(0, 0, 0, 0)', 'user bubble must have a themed background');
+  assert.notEqual(assistantBubbleStyle.background, 'rgba(0, 0, 0, 0)', 'assistant bubble must have a themed background');
+  assert.notEqual(userBubbleStyle.border, 'rgba(0, 0, 0, 0)', 'user bubble must have a themed border');
+  assert.notEqual(assistantBubbleStyle.border, 'rgba(0, 0, 0, 0)', 'assistant bubble must have a themed border');
   await dialog.getByRole('textbox').fill('چه راهکاری برای اضطراب وجود دارد؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('این پرسش درباره تجربه و وضعیت شخصی خودت است')));
