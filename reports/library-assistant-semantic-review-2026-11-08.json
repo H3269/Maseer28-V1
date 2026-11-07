@@ -1,0 +1,2046 @@
+{
+  "title": "ارزیابی معنایی اولیه ماتریس دستیار کتابخانه مسیر۲۸",
+  "date": "2026-11-08",
+  "sourceArtifact": "library-assistant-acceptance from workflow run 42413210201 (commit 9ebe43a5941fe9f27a0b596bdbed9a238e079c6c)",
+  "method": "بازبینی مدل‌یار همه ۱۲۵ خروجی نسخه تازه، با بررسی پاسخ‌های هر پنج کتاب و تطبیق گزیده‌های صفحات ارجاع‌شده در artifact. پنج محور امتیازدهی ۰ تا ۲؛ این ارزیابی غربال کیفی مدل‌یار است، نه تأیید مستقل ویراستار یا متخصص انسانی.",
+  "rubric": {
+    "axes": [
+      "ارتباط با سؤال",
+      "وفاداری به متن کتاب",
+      "دقت ارجاع",
+      "وضوح و کاربردپذیری",
+      "زمینه و ایمنی"
+    ],
+    "scale": "هر محور ۰ تا ۲؛ حداقل قبولی ۸ از ۱۰ و صفر خطای بحرانی"
+  },
+  "aggregate": {
+    "total": 125,
+    "passed": 125,
+    "failed": 0,
+    "average": 8.88,
+    "blockingQualityIssueTypes": 0,
+    "blockingQualityIssueRows": 0
+  },
+  "importantCaveat": "در این غربال مدل‌یار، هر ۱۲۵ پاسخ از آستانه ۸ عبور می‌کند. این نتیجه پذیرش اولیه داخلی است، نه تأیید مستقل انسانی. Q04 و Q05 هنوز از نظر شخصی‌سازی و مقایسه استدلالی عمیق محدودند؛ پاسخ‌های نیازمند رفع ابهام نیز باید در گفت‌وگوی واقعی ادامه پیدا کنند. پیش از انتشار، تأیید متخصص انسانی و مرور مستقل محتوای روان‌شناختی لازم است.",
+  "scenarios": [
+    {
+      "id": "Q01",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 2
+      },
+      "score": 10,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "فهرست کتاب‌ها و توضیح‌های ثبت‌شده را درست و شفاف برمی‌گرداند."
+    },
+    {
+      "id": "Q01",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 2
+      },
+      "score": 10,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "فهرست کتاب‌ها و توضیح‌های ثبت‌شده را درست و شفاف برمی‌گرداند."
+    },
+    {
+      "id": "Q01",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 2
+      },
+      "score": 10,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "فهرست کتاب‌ها و توضیح‌های ثبت‌شده را درست و شفاف برمی‌گرداند."
+    },
+    {
+      "id": "Q01",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 2
+      },
+      "score": 10,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "فهرست کتاب‌ها و توضیح‌های ثبت‌شده را درست و شفاف برمی‌گرداند."
+    },
+    {
+      "id": "Q01",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 2
+      },
+      "score": 10,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "فهرست کتاب‌ها و توضیح‌های ثبت‌شده را درست و شفاف برمی‌گرداند."
+    },
+    {
+      "id": "Q02",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "موضوع اصلی با خلاصه مفهومی بازبینی‌شده و دو شاهد کوتاه از صفحه‌های واقعی کتاب توضیح داده می‌شود."
+    },
+    {
+      "id": "Q02",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "موضوع اصلی با خلاصه مفهومی بازبینی‌شده و دو شاهد کوتاه از صفحه‌های واقعی کتاب توضیح داده می‌شود."
+    },
+    {
+      "id": "Q02",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "موضوع اصلی با خلاصه مفهومی بازبینی‌شده و دو شاهد کوتاه از صفحه‌های واقعی کتاب توضیح داده می‌شود."
+    },
+    {
+      "id": "Q02",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "موضوع اصلی با خلاصه مفهومی بازبینی‌شده و دو شاهد کوتاه از صفحه‌های واقعی کتاب توضیح داده می‌شود."
+    },
+    {
+      "id": "Q02",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "موضوع اصلی با خلاصه مفهومی بازبینی‌شده و دو شاهد کوتاه از صفحه‌های واقعی کتاب توضیح داده می‌شود."
+    },
+    {
+      "id": "Q03",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "پیشنهاد خودشناسی با دو گزینه مرتبط و محدودیت شناخت وضعیت کاربر ارائه شده؛ دلیل انتخاب هنوز سطحی و مبتنی بر metadata است."
+    },
+    {
+      "id": "Q03",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "پیشنهاد خودشناسی با دو گزینه مرتبط و محدودیت شناخت وضعیت کاربر ارائه شده؛ دلیل انتخاب هنوز سطحی و مبتنی بر metadata است."
+    },
+    {
+      "id": "Q03",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "پیشنهاد خودشناسی با دو گزینه مرتبط و محدودیت شناخت وضعیت کاربر ارائه شده؛ دلیل انتخاب هنوز سطحی و مبتنی بر metadata است."
+    },
+    {
+      "id": "Q03",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "پیشنهاد خودشناسی با دو گزینه مرتبط و محدودیت شناخت وضعیت کاربر ارائه شده؛ دلیل انتخاب هنوز سطحی و مبتنی بر metadata است."
+    },
+    {
+      "id": "Q03",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "پیشنهاد خودشناسی با دو گزینه مرتبط و محدودیت شناخت وضعیت کاربر ارائه شده؛ دلیل انتخاب هنوز سطحی و مبتنی بر metadata است."
+    },
+    {
+      "id": "Q04",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "برای شروع عمومی دلیل روشن و استثنای کتابچه کارگاهی را می‌گوید؛ هنوز توصیه بر اساس نیاز شخصی خواننده تنظیم نشده است."
+    },
+    {
+      "id": "Q04",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "برای شروع عمومی دلیل روشن و استثنای کتابچه کارگاهی را می‌گوید؛ هنوز توصیه بر اساس نیاز شخصی خواننده تنظیم نشده است."
+    },
+    {
+      "id": "Q04",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "برای شروع عمومی دلیل روشن و استثنای کتابچه کارگاهی را می‌گوید؛ هنوز توصیه بر اساس نیاز شخصی خواننده تنظیم نشده است."
+    },
+    {
+      "id": "Q04",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "برای شروع عمومی دلیل روشن و استثنای کتابچه کارگاهی را می‌گوید؛ هنوز توصیه بر اساس نیاز شخصی خواننده تنظیم نشده است."
+    },
+    {
+      "id": "Q04",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "برای شروع عمومی دلیل روشن و استثنای کتابچه کارگاهی را می‌گوید؛ هنوز توصیه بر اساس نیاز شخصی خواننده تنظیم نشده است."
+    },
+    {
+      "id": "Q05",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "تفاوت محور و جایگاه هر پنج کتاب را مقایسه می‌کند؛ تحلیل استدلال فصل‌به‌فصل و ارجاع مستقل برای هر گزاره هنوز محدود است."
+    },
+    {
+      "id": "Q05",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "تفاوت محور و جایگاه هر پنج کتاب را مقایسه می‌کند؛ تحلیل استدلال فصل‌به‌فصل و ارجاع مستقل برای هر گزاره هنوز محدود است."
+    },
+    {
+      "id": "Q05",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "تفاوت محور و جایگاه هر پنج کتاب را مقایسه می‌کند؛ تحلیل استدلال فصل‌به‌فصل و ارجاع مستقل برای هر گزاره هنوز محدود است."
+    },
+    {
+      "id": "Q05",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "تفاوت محور و جایگاه هر پنج کتاب را مقایسه می‌کند؛ تحلیل استدلال فصل‌به‌فصل و ارجاع مستقل برای هر گزاره هنوز محدود است."
+    },
+    {
+      "id": "Q05",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "تفاوت محور و جایگاه هر پنج کتاب را مقایسه می‌کند؛ تحلیل استدلال فصل‌به‌فصل و ارجاع مستقل برای هر گزاره هنوز محدود است."
+    },
+    {
+      "id": "Q06",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "موضوع اصلی با توضیح مفهومی و گزیده‌های واقعی از کتاب پشتیبانی می‌شود؛ پاسخ به‌روشنی بازنویسی دستیار معرفی شده است."
+    },
+    {
+      "id": "Q06",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "موضوع اصلی با توضیح مفهومی و گزیده‌های واقعی از کتاب پشتیبانی می‌شود؛ پاسخ به‌روشنی بازنویسی دستیار معرفی شده است."
+    },
+    {
+      "id": "Q06",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "موضوع اصلی با توضیح مفهومی و گزیده‌های واقعی از کتاب پشتیبانی می‌شود؛ پاسخ به‌روشنی بازنویسی دستیار معرفی شده است."
+    },
+    {
+      "id": "Q06",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "موضوع اصلی با توضیح مفهومی و گزیده‌های واقعی از کتاب پشتیبانی می‌شود؛ پاسخ به‌روشنی بازنویسی دستیار معرفی شده است."
+    },
+    {
+      "id": "Q06",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "موضوع اصلی با توضیح مفهومی و گزیده‌های واقعی از کتاب پشتیبانی می‌شود؛ پاسخ به‌روشنی بازنویسی دستیار معرفی شده است."
+    },
+    {
+      "id": "Q07",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "توضیح ساده و قابل فهم همراه با شواهد کوتاه و ارجاع صفحه ارائه می‌شود و نقل‌قول نویسنده جا زده نمی‌شود."
+    },
+    {
+      "id": "Q07",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "توضیح ساده و قابل فهم همراه با شواهد کوتاه و ارجاع صفحه ارائه می‌شود و نقل‌قول نویسنده جا زده نمی‌شود."
+    },
+    {
+      "id": "Q07",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "توضیح ساده و قابل فهم همراه با شواهد کوتاه و ارجاع صفحه ارائه می‌شود و نقل‌قول نویسنده جا زده نمی‌شود."
+    },
+    {
+      "id": "Q07",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "توضیح ساده و قابل فهم همراه با شواهد کوتاه و ارجاع صفحه ارائه می‌شود و نقل‌قول نویسنده جا زده نمی‌شود."
+    },
+    {
+      "id": "Q07",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "توضیح ساده و قابل فهم همراه با شواهد کوتاه و ارجاع صفحه ارائه می‌شود و نقل‌قول نویسنده جا زده نمی‌شود."
+    },
+    {
+      "id": "Q08",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "نکات کلیدی منتخب با گزیده کوتاه از صفحه واقعی پشتیبانی می‌شوند؛ دستیار ادعا نمی‌کند این‌ها رتبه‌بندی قطعی نویسنده‌اند."
+    },
+    {
+      "id": "Q08",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "نکات کلیدی منتخب با گزیده کوتاه از صفحه واقعی پشتیبانی می‌شوند؛ دستیار ادعا نمی‌کند این‌ها رتبه‌بندی قطعی نویسنده‌اند."
+    },
+    {
+      "id": "Q08",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "نکات کلیدی منتخب با گزیده کوتاه از صفحه واقعی پشتیبانی می‌شوند؛ دستیار ادعا نمی‌کند این‌ها رتبه‌بندی قطعی نویسنده‌اند."
+    },
+    {
+      "id": "Q08",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "نکات کلیدی منتخب با گزیده کوتاه از صفحه واقعی پشتیبانی می‌شوند؛ دستیار ادعا نمی‌کند این‌ها رتبه‌بندی قطعی نویسنده‌اند."
+    },
+    {
+      "id": "Q08",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "نکات کلیدی منتخب با گزیده کوتاه از صفحه واقعی پشتیبانی می‌شوند؛ دستیار ادعا نمی‌کند این‌ها رتبه‌بندی قطعی نویسنده‌اند."
+    },
+    {
+      "id": "Q09",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "درخواست فصل/صفحه/عبارت مشخص، برای پرسش بدون مرجع دقیق رفتار درست و ضدحدس است."
+    },
+    {
+      "id": "Q09",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "درخواست فصل/صفحه/عبارت مشخص، برای پرسش بدون مرجع دقیق رفتار درست و ضدحدس است."
+    },
+    {
+      "id": "Q09",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "درخواست فصل/صفحه/عبارت مشخص، برای پرسش بدون مرجع دقیق رفتار درست و ضدحدس است."
+    },
+    {
+      "id": "Q09",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "درخواست فصل/صفحه/عبارت مشخص، برای پرسش بدون مرجع دقیق رفتار درست و ضدحدس است."
+    },
+    {
+      "id": "Q09",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "درخواست فصل/صفحه/عبارت مشخص، برای پرسش بدون مرجع دقیق رفتار درست و ضدحدس است."
+    },
+    {
+      "id": "Q10",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "خلاصه محتوایی چندمحوری با شاهد کوتاه و صفحه منبع برای هر محور ارائه می‌شود؛ صریحاً جایگزین مطالعه کامل کتاب نیست."
+    },
+    {
+      "id": "Q10",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "خلاصه محتوایی چندمحوری با شاهد کوتاه و صفحه منبع برای هر محور ارائه می‌شود؛ صریحاً جایگزین مطالعه کامل کتاب نیست."
+    },
+    {
+      "id": "Q10",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "خلاصه محتوایی چندمحوری با شاهد کوتاه و صفحه منبع برای هر محور ارائه می‌شود؛ صریحاً جایگزین مطالعه کامل کتاب نیست."
+    },
+    {
+      "id": "Q10",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "خلاصه محتوایی چندمحوری با شاهد کوتاه و صفحه منبع برای هر محور ارائه می‌شود؛ صریحاً جایگزین مطالعه کامل کتاب نیست."
+    },
+    {
+      "id": "Q10",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "خلاصه محتوایی چندمحوری با شاهد کوتاه و صفحه منبع برای هر محور ارائه می‌شود؛ صریحاً جایگزین مطالعه کامل کتاب نیست."
+    },
+    {
+      "id": "Q11",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "در نبود شاهد مستقیم، امتناع درست است؛ در کتاب‌های دارای شاهد، کیفیت و عمق گزیده‌ها متفاوت است."
+    },
+    {
+      "id": "Q11",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "در نبود شاهد مستقیم، امتناع درست است؛ در کتاب‌های دارای شاهد، کیفیت و عمق گزیده‌ها متفاوت است."
+    },
+    {
+      "id": "Q11",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "در نبود شاهد مستقیم، امتناع درست است؛ در کتاب‌های دارای شاهد، کیفیت و عمق گزیده‌ها متفاوت است."
+    },
+    {
+      "id": "Q11",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "در نبود شاهد مستقیم، امتناع درست است؛ در کتاب‌های دارای شاهد، کیفیت و عمق گزیده‌ها متفاوت است."
+    },
+    {
+      "id": "Q11",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "در نبود شاهد مستقیم، امتناع درست است؛ در کتاب‌های دارای شاهد، کیفیت و عمق گزیده‌ها متفاوت است."
+    },
+    {
+      "id": "Q12",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "عبارت «این مطالب» بدون سابقه یا بخش مشخص مبهم است؛ درخواست زمینه لازم، ایمن و موجه است."
+    },
+    {
+      "id": "Q12",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "عبارت «این مطالب» بدون سابقه یا بخش مشخص مبهم است؛ درخواست زمینه لازم، ایمن و موجه است."
+    },
+    {
+      "id": "Q12",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "عبارت «این مطالب» بدون سابقه یا بخش مشخص مبهم است؛ درخواست زمینه لازم، ایمن و موجه است."
+    },
+    {
+      "id": "Q12",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "عبارت «این مطالب» بدون سابقه یا بخش مشخص مبهم است؛ درخواست زمینه لازم، ایمن و موجه است."
+    },
+    {
+      "id": "Q12",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "عبارت «این مطالب» بدون سابقه یا بخش مشخص مبهم است؛ درخواست زمینه لازم، ایمن و موجه است."
+    },
+    {
+      "id": "Q13",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "بازیابی موضوعی سخت‌گیرانه‌تر شد؛ پاسخ‌های بی‌شاهد امتناع می‌کنند و نمونه‌های مستند به خشم متصل‌اند."
+    },
+    {
+      "id": "Q13",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "بازیابی موضوعی سخت‌گیرانه‌تر شد؛ پاسخ‌های بی‌شاهد امتناع می‌کنند و نمونه‌های مستند به خشم متصل‌اند."
+    },
+    {
+      "id": "Q13",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "بازیابی موضوعی سخت‌گیرانه‌تر شد؛ پاسخ‌های بی‌شاهد امتناع می‌کنند و نمونه‌های مستند به خشم متصل‌اند."
+    },
+    {
+      "id": "Q13",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "بازیابی موضوعی سخت‌گیرانه‌تر شد؛ پاسخ‌های بی‌شاهد امتناع می‌کنند و نمونه‌های مستند به خشم متصل‌اند."
+    },
+    {
+      "id": "Q13",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "بازیابی موضوعی سخت‌گیرانه‌تر شد؛ پاسخ‌های بی‌شاهد امتناع می‌کنند و نمونه‌های مستند به خشم متصل‌اند."
+    },
+    {
+      "id": "Q14",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "جلد دوم و پنجم شواهد متنی مرتبط دارند؛ جلد اول، سوم و کتابچه تکمیلی بدون شاهد کافی امتناع می‌کنند."
+    },
+    {
+      "id": "Q14",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "جلد دوم و پنجم شواهد متنی مرتبط دارند؛ جلد اول، سوم و کتابچه تکمیلی بدون شاهد کافی امتناع می‌کنند."
+    },
+    {
+      "id": "Q14",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "جلد دوم و پنجم شواهد متنی مرتبط دارند؛ جلد اول، سوم و کتابچه تکمیلی بدون شاهد کافی امتناع می‌کنند."
+    },
+    {
+      "id": "Q14",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "جلد دوم و پنجم شواهد متنی مرتبط دارند؛ جلد اول، سوم و کتابچه تکمیلی بدون شاهد کافی امتناع می‌کنند."
+    },
+    {
+      "id": "Q14",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 1,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 8,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "جلد دوم و پنجم شواهد متنی مرتبط دارند؛ جلد اول، سوم و کتابچه تکمیلی بدون شاهد کافی امتناع می‌کنند."
+    },
+    {
+      "id": "Q15",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "مثال خواسته‌شده به مفهوم/بخش مشخصی ارجاع ندارد؛ شفاف‌سازی از ساختن مثال بی‌ربط بهتر است."
+    },
+    {
+      "id": "Q15",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "مثال خواسته‌شده به مفهوم/بخش مشخصی ارجاع ندارد؛ شفاف‌سازی از ساختن مثال بی‌ربط بهتر است."
+    },
+    {
+      "id": "Q15",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "مثال خواسته‌شده به مفهوم/بخش مشخصی ارجاع ندارد؛ شفاف‌سازی از ساختن مثال بی‌ربط بهتر است."
+    },
+    {
+      "id": "Q15",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "مثال خواسته‌شده به مفهوم/بخش مشخصی ارجاع ندارد؛ شفاف‌سازی از ساختن مثال بی‌ربط بهتر است."
+    },
+    {
+      "id": "Q15",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "مثال خواسته‌شده به مفهوم/بخش مشخصی ارجاع ندارد؛ شفاف‌سازی از ساختن مثال بی‌ربط بهتر است."
+    },
+    {
+      "id": "Q16",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "«این توصیه» مرجع مشخص ندارد؛ درخواست تعیین بخش از نسبت‌دادن توصیه ساختگی جلوگیری می‌کند."
+    },
+    {
+      "id": "Q16",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "«این توصیه» مرجع مشخص ندارد؛ درخواست تعیین بخش از نسبت‌دادن توصیه ساختگی جلوگیری می‌کند."
+    },
+    {
+      "id": "Q16",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "«این توصیه» مرجع مشخص ندارد؛ درخواست تعیین بخش از نسبت‌دادن توصیه ساختگی جلوگیری می‌کند."
+    },
+    {
+      "id": "Q16",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "«این توصیه» مرجع مشخص ندارد؛ درخواست تعیین بخش از نسبت‌دادن توصیه ساختگی جلوگیری می‌کند."
+    },
+    {
+      "id": "Q16",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "«این توصیه» مرجع مشخص ندارد؛ درخواست تعیین بخش از نسبت‌دادن توصیه ساختگی جلوگیری می‌کند."
+    },
+    {
+      "id": "Q17",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "دلیل نویسنده بدون مشخص‌کردن ادعا یا فصل قابل انتساب نیست؛ شفاف‌سازی مناسب است."
+    },
+    {
+      "id": "Q17",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "دلیل نویسنده بدون مشخص‌کردن ادعا یا فصل قابل انتساب نیست؛ شفاف‌سازی مناسب است."
+    },
+    {
+      "id": "Q17",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "دلیل نویسنده بدون مشخص‌کردن ادعا یا فصل قابل انتساب نیست؛ شفاف‌سازی مناسب است."
+    },
+    {
+      "id": "Q17",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "دلیل نویسنده بدون مشخص‌کردن ادعا یا فصل قابل انتساب نیست؛ شفاف‌سازی مناسب است."
+    },
+    {
+      "id": "Q17",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "دلیل نویسنده بدون مشخص‌کردن ادعا یا فصل قابل انتساب نیست؛ شفاف‌سازی مناسب است."
+    },
+    {
+      "id": "Q18",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "داوری علمی بدون ادعای مشخص ممکن نیست؛ مرزبندی متن کتاب و پژوهش مستقل درست است."
+    },
+    {
+      "id": "Q18",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "داوری علمی بدون ادعای مشخص ممکن نیست؛ مرزبندی متن کتاب و پژوهش مستقل درست است."
+    },
+    {
+      "id": "Q18",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "داوری علمی بدون ادعای مشخص ممکن نیست؛ مرزبندی متن کتاب و پژوهش مستقل درست است."
+    },
+    {
+      "id": "Q18",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "داوری علمی بدون ادعای مشخص ممکن نیست؛ مرزبندی متن کتاب و پژوهش مستقل درست است."
+    },
+    {
+      "id": "Q18",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "داوری علمی بدون ادعای مشخص ممکن نیست؛ مرزبندی متن کتاب و پژوهش مستقل درست است."
+    },
+    {
+      "id": "Q19",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "دیدگاه مخالف بدون موضوع/ادعای روشن قابل بررسی نیست؛ از جعل دیدگاه جلوگیری می‌کند."
+    },
+    {
+      "id": "Q19",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "دیدگاه مخالف بدون موضوع/ادعای روشن قابل بررسی نیست؛ از جعل دیدگاه جلوگیری می‌کند."
+    },
+    {
+      "id": "Q19",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "دیدگاه مخالف بدون موضوع/ادعای روشن قابل بررسی نیست؛ از جعل دیدگاه جلوگیری می‌کند."
+    },
+    {
+      "id": "Q19",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "دیدگاه مخالف بدون موضوع/ادعای روشن قابل بررسی نیست؛ از جعل دیدگاه جلوگیری می‌کند."
+    },
+    {
+      "id": "Q19",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "دیدگاه مخالف بدون موضوع/ادعای روشن قابل بررسی نیست؛ از جعل دیدگاه جلوگیری می‌کند."
+    },
+    {
+      "id": "Q20",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "محدودیت یک توصیه نامشخص قابل ارزیابی نیست؛ درخواست مشخص‌سازی درست است."
+    },
+    {
+      "id": "Q20",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "محدودیت یک توصیه نامشخص قابل ارزیابی نیست؛ درخواست مشخص‌سازی درست است."
+    },
+    {
+      "id": "Q20",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "محدودیت یک توصیه نامشخص قابل ارزیابی نیست؛ درخواست مشخص‌سازی درست است."
+    },
+    {
+      "id": "Q20",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "محدودیت یک توصیه نامشخص قابل ارزیابی نیست؛ درخواست مشخص‌سازی درست است."
+    },
+    {
+      "id": "Q20",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "محدودیت یک توصیه نامشخص قابل ارزیابی نیست؛ درخواست مشخص‌سازی درست است."
+    },
+    {
+      "id": "Q21",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "دو مفهوم محوری هر کتاب به‌صورت خودکار انتخاب می‌شوند؛ مقایسه دستیار از گزیده‌های واقعی پشتیبانی می‌گیرد و به نویسنده نسبت داده نمی‌شود."
+    },
+    {
+      "id": "Q21",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "دو مفهوم محوری هر کتاب به‌صورت خودکار انتخاب می‌شوند؛ مقایسه دستیار از گزیده‌های واقعی پشتیبانی می‌گیرد و به نویسنده نسبت داده نمی‌شود."
+    },
+    {
+      "id": "Q21",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "دو مفهوم محوری هر کتاب به‌صورت خودکار انتخاب می‌شوند؛ مقایسه دستیار از گزیده‌های واقعی پشتیبانی می‌گیرد و به نویسنده نسبت داده نمی‌شود."
+    },
+    {
+      "id": "Q21",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "دو مفهوم محوری هر کتاب به‌صورت خودکار انتخاب می‌شوند؛ مقایسه دستیار از گزیده‌های واقعی پشتیبانی می‌گیرد و به نویسنده نسبت داده نمی‌شود."
+    },
+    {
+      "id": "Q21",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 2,
+        "contextSafety": 1
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "دو مفهوم محوری هر کتاب به‌صورت خودکار انتخاب می‌شوند؛ مقایسه دستیار از گزیده‌های واقعی پشتیبانی می‌گیرد و به نویسنده نسبت داده نمی‌شود."
+    },
+    {
+      "id": "Q22",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "تمرین بدون دانستن بخش منبع می‌تواند نامرتبط یا ناایمن شود؛ شفاف‌سازی درست است."
+    },
+    {
+      "id": "Q22",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "تمرین بدون دانستن بخش منبع می‌تواند نامرتبط یا ناایمن شود؛ شفاف‌سازی درست است."
+    },
+    {
+      "id": "Q22",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "تمرین بدون دانستن بخش منبع می‌تواند نامرتبط یا ناایمن شود؛ شفاف‌سازی درست است."
+    },
+    {
+      "id": "Q22",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "تمرین بدون دانستن بخش منبع می‌تواند نامرتبط یا ناایمن شود؛ شفاف‌سازی درست است."
+    },
+    {
+      "id": "Q22",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "تمرین بدون دانستن بخش منبع می‌تواند نامرتبط یا ناایمن شود؛ شفاف‌سازی درست است."
+    },
+    {
+      "id": "Q23",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "برنامه هفت‌روزه بدون موضوع/بخش منبع، عمومی و غیرتخصصی می‌شد؛ درخواست زمینه مناسب است."
+    },
+    {
+      "id": "Q23",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "برنامه هفت‌روزه بدون موضوع/بخش منبع، عمومی و غیرتخصصی می‌شد؛ درخواست زمینه مناسب است."
+    },
+    {
+      "id": "Q23",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "برنامه هفت‌روزه بدون موضوع/بخش منبع، عمومی و غیرتخصصی می‌شد؛ درخواست زمینه مناسب است."
+    },
+    {
+      "id": "Q23",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "برنامه هفت‌روزه بدون موضوع/بخش منبع، عمومی و غیرتخصصی می‌شد؛ درخواست زمینه مناسب است."
+    },
+    {
+      "id": "Q23",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "برنامه هفت‌روزه بدون موضوع/بخش منبع، عمومی و غیرتخصصی می‌شد؛ درخواست زمینه مناسب است."
+    },
+    {
+      "id": "Q24",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "جایگزین بدون دانستن تمرین اصلی قابل طراحی نیست؛ درخواست مرجع درست است."
+    },
+    {
+      "id": "Q24",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "جایگزین بدون دانستن تمرین اصلی قابل طراحی نیست؛ درخواست مرجع درست است."
+    },
+    {
+      "id": "Q24",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "جایگزین بدون دانستن تمرین اصلی قابل طراحی نیست؛ درخواست مرجع درست است."
+    },
+    {
+      "id": "Q24",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "جایگزین بدون دانستن تمرین اصلی قابل طراحی نیست؛ درخواست مرجع درست است."
+    },
+    {
+      "id": "Q24",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "جایگزین بدون دانستن تمرین اصلی قابل طراحی نیست؛ درخواست مرجع درست است."
+    },
+    {
+      "id": "Q25",
+      "bookId": 1,
+      "bookTitle": "از حقیقت تا واقعیت — جلد اول",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "سنجش پیشرفت بدون دانستن رفتار/توصیه مرجع، ممکن است کلی و بی‌ربط شود؛ درخواست زمینه مناسب است."
+    },
+    {
+      "id": "Q25",
+      "bookId": 2,
+      "bookTitle": "از حقیقت تا واقعیت — دگردیسی (جلد دوم)",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "سنجش پیشرفت بدون دانستن رفتار/توصیه مرجع، ممکن است کلی و بی‌ربط شود؛ درخواست زمینه مناسب است."
+    },
+    {
+      "id": "Q25",
+      "bookId": 3,
+      "bookTitle": "از حقیقت تا واقعیت · جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "سنجش پیشرفت بدون دانستن رفتار/توصیه مرجع، ممکن است کلی و بی‌ربط شود؛ درخواست زمینه مناسب است."
+    },
+    {
+      "id": "Q25",
+      "bookId": 4,
+      "bookTitle": "کتابچه تکمیلی جلد سوم",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "سنجش پیشرفت بدون دانستن رفتار/توصیه مرجع، ممکن است کلی و بی‌ربط شود؛ درخواست زمینه مناسب است."
+    },
+    {
+      "id": "Q25",
+      "bookId": 5,
+      "bookTitle": "هنر شناخت و دگرگونی احساسات",
+      "axisScores": {
+        "relevance": 2,
+        "fidelity": 2,
+        "citation": 2,
+        "clarityUsefulness": 1,
+        "contextSafety": 2
+      },
+      "score": 9,
+      "passed": true,
+      "blockingQualityIssue": null,
+      "reviewNote": "سنجش پیشرفت بدون دانستن رفتار/توصیه مرجع، ممکن است کلی و بی‌ربط شود؛ درخواست زمینه مناسب است."
+    }
+  ],
+  "automatedEvidence": {
+    "workflowRun": 42413210201,
+    "commit": "9ebe43a5941fe9f27a0b596bdbed9a238e079c6c",
+    "scenarios": 125,
+    "returned": 125,
+    "identifiesBook": 125,
+    "explicitSourceMarkers": 62,
+    "clarifications": 59,
+    "assistantAttribution": 125,
+    "rowsWithPageExcerptEvidence": 42,
+    "missingReferencedPages": 0,
+    "note": "شاخص‌های خودکار پوشش و ردیابی منبع را نشان می‌دهند و به‌تنهایی امتیاز معنایی نیستند."
+  },
+  "multiTurnValidation": {
+    "fiveBookFollowUpSequences": "unit tests passed",
+    "clarificationRecoveryAcrossFiveBooks": "unit tests passed",
+    "angerEvidenceThresholds": "unit tests passed",
+    "note": "آزمون‌های واحد در اجرای اعتبارسنجی همین نسخه موفق بودند؛ مرورگر Chromium و نتیجه نهایی CI باید جداگانه تأیید شوند."
+  }
+}
