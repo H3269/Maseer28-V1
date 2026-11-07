@@ -129,18 +129,12 @@ try {
   assert.equal(await dialog.locator('.assistantTranscript').count(), 1, 'user and assistant messages must share one transcript');
   const rtlLayout = await dialog.locator('.assistantTranscript, .userMessage, .assistantMessage, .assistantComposer textarea').evaluateAll((nodes) => nodes.map((node) => ({ direction: getComputedStyle(node).direction, align: getComputedStyle(node).textAlign })));
   assert.ok(rtlLayout.every((item) => item.direction === 'rtl' && item.align === 'right'), 'the transcript, both speaker bubbles and composer must be right-to-left and right-aligned');
-  const userBubbleStyle = await dialog.locator('.userMessage').last().evaluate((node) => {
+  const messageRows = await dialog.locator('.userMessage, .assistantMessage').evaluateAll((nodes) => nodes.map((node) => {
     const style = getComputedStyle(node);
-    return { background: style.backgroundColor, border: style.borderColor };
-  });
-  const assistantBubbleStyle = await firstAssistantReply.evaluate((node) => {
-    const style = getComputedStyle(node);
-    return { background: style.backgroundColor, border: style.borderColor };
-  });
-  assert.notEqual(userBubbleStyle.background, 'rgba(0, 0, 0, 0)', 'user bubble must have a themed background');
-  assert.notEqual(assistantBubbleStyle.background, 'rgba(0, 0, 0, 0)', 'assistant bubble must have a themed background');
-  assert.notEqual(userBubbleStyle.border, 'rgba(0, 0, 0, 0)', 'user bubble must have a themed border');
-  assert.notEqual(assistantBubbleStyle.border, 'rgba(0, 0, 0, 0)', 'assistant bubble must have a themed border');
+    return { background: style.backgroundColor, borderStyle: style.borderTopStyle, labelColor: getComputedStyle(node.querySelector('b')).color };
+  }));
+  assert.ok(messageRows.every((row) => row.background === 'rgba(0, 0, 0, 0)' && row.borderStyle === 'none'), 'individual user and assistant message cards must be removed');
+  assert.notEqual(messageRows[0].labelColor, messageRows[1].labelColor, 'speaker labels should remain visually distinct without separate cards');
   await dialog.getByRole('textbox').fill('چه راهکاری برای اضطراب وجود دارد؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('این پرسش درباره تجربه و وضعیت شخصی خودت است')));
