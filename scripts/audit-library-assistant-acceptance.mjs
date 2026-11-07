@@ -31,9 +31,20 @@ for (const book of books) {
     });
     const response = String(result?.message || '');
     const global = globalIntents.has(item.intent);
+    const referencedPages = [...new Set([...response.matchAll(/صفحه\\s*(\\d+)/gu)].map((match) => Number(match[1])))].slice(0, 12);
+    const sourceEvidence = referencedPages.map((pageNumber) => {
+      const page = book.content.pages.find((candidate) => Number(candidate.sourcePage || candidate.page) === pageNumber);
+      return page ? {
+        page: pageNumber,
+        headings: (page.blocks || []).filter((block) => block.type === 'heading').map((block) => String(block.text || '').trim()).filter(Boolean),
+        excerpt: (page.blocks || []).filter((block) => block.type !== 'heading').map((block) => String(block.text || '').trim()).filter(Boolean).join(' ').slice(0, 900),
+      } : { page: pageNumber, missing: true };
+    });
     report.push({
       id: item.id,
       bookId: book.legacyId,
+      referencedPages,
+      sourceEvidence,
       intent: item.intent,
       prompt,
       returned: response.length > 0,
@@ -68,6 +79,8 @@ const output = {
   citesSource: count((row) => row.citesSource),
   clarifiesInsteadOfGuessing: count((row) => row.clarifiesInsteadOfGuessing),
   labelsAssistantContent: count((row) => row.labelsAssistantContent),
+  sourceEvidenceRows: count((row) => row.sourceEvidence?.some((source) => source.excerpt?.length >= 90)),
+  missingReferencedPages: report.flatMap((row) => row.sourceEvidence || []).filter((source) => source.missing).length,
   byBook,
   note: 'These are routing/source/attribution checks only. They do NOT score semantic correctness, completeness, author-intent interpretation, scientific validity, or answer quality. Human review against the 0–2 rubric remains mandatory.',
   scenariosDetail: report,
