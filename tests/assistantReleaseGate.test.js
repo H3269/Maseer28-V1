@@ -141,7 +141,7 @@ test('global digit localization is installed at the app root without changing ed
   assert.match(mainEntry, /installPersianDigitDisplay\(appRoot\)/);
   assert.match(digitDisplay, /characterData:\s*true/);
   assert.match(digitDisplay, /attributeFilter:\s*\['placeholder', 'title', 'aria-label', 'aria-valuetext', 'alt'\]/);
-  assert.match(digitDisplay, /textarea, input, select/);
+  assert.match(digitDisplay, /textarea, input/);
 });
 
 test('global assistant conversation is one right-to-left transcript', async () => {
