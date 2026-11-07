@@ -451,8 +451,12 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   }
   if (SIMPLE_EXPLAIN.test(normalized) && /مفهوم اصلی/u.test(normalized)
     && !conversationState?.lastSources?.length) {
+    const headings = mainBookHeadings(book).slice(0, 8);
+    const subject = book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است';
     return {
-      message: 'در «' + book.title + '»، برای توضیح ساده اما دقیق باید یک مفهوم یا فصل مشخص را انتخاب کنیم. «مفهوم اصلی کتاب» به‌تنهایی خیلی گسترده است و یک توضیح کوتاه ممکن است چند بخش متفاوت را با هم خلط کند. نام فصل یا چند واژه از مفهوم را بفرست تا متن همان قسمت را ساده‌سازی کنم.',
+      message: 'مرور ساده و ساختاری «' + book.title + '» بر پایه اطلاعات ثبت‌شده کتاب:\\n\\nموضوع معرفی‌شده: ' + subject +
+        (headings.length ? '\\n\\nمحورهایی که کتاب به آن‌ها می‌پردازد:\\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\\n') : '') +
+        '\\n\\nاین مرور، توضیح ساده‌شده ساختار و موضوعات قابل مشاهده است؛ هنوز بازنویسی معنایی همه فصل‌ها نیست. اگر یک فصل را انتخاب کنی، می‌توانم همان بخش را دقیق‌تر و با ارجاع بررسی کنم.',
       conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message, awaitingSection: true },
     };
   }
