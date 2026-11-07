@@ -11,6 +11,12 @@ try {
   const errors = [];
   page.on('pageerror', (error) => errors.push(String(error)));
   await page.addInitScript(() => {
+    window.__archiveDrawnText = [];
+    const originalFillText = CanvasRenderingContext2D.prototype.fillText;
+    CanvasRenderingContext2D.prototype.fillText = function (value, ...args) {
+      window.__archiveDrawnText.push(String(value));
+      return originalFillText.call(this, value, ...args);
+    };
     const answer = 'متن آزمایشی برای بررسی خروجی PDF در مرورگر واقعی. '.repeat(90);
     localStorage.setItem('maseer28_state', JSON.stringify({
       schema: 7, started: true, profile: true, assessment: true,
@@ -70,7 +76,10 @@ try {
   assert.equal(u32(centralOffset), 0x02014b50, 'central directory');
   const nameLength = u16(centralOffset + 28);
   const name = new TextDecoder().decode(bytes.slice(centralOffset + 46, centralOffset + 46 + nameLength));
-  assert.equal(name, '01-آزمون-مرورگر.pdf');
+  assert.equal(name, '۰۱-آزمون-مرورگر.pdf');
+  const drawnText = await page.evaluate(() => window.__archiveDrawnText.join(' '));
+  assert.doesNotMatch(drawnText, /[0-9]/, 'all text drawn into the archive PDF must use Persian digits');
+  assert.match(drawnText, /۲۸/);
   const localOffset = u32(centralOffset + 42);
   assert.equal(u32(localOffset), 0x04034b50, 'local file header');
   const localNameLength = u16(localOffset + 26);
