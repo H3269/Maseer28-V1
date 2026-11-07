@@ -213,7 +213,7 @@ test('confidence guidance refuses to invent book-specific advice without direct 
 
 test('key-point requests do not fall through to the generic book overview', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب اول مهم‌ترین نکات کدام‌اند؟' });
-  assert.match(response, /نکته‌های قابل استخراج از بخش‌های بازیابی‌شده/u);
+  assert.match(response, /محورهای قابل مشاهده در بخش‌های اصلی کتاب/u);
   assert.doesNotMatch(response, /نمای کلی مستند/u);
   assert.match(response, /منبع:/u);
 });
