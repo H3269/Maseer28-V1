@@ -50,8 +50,8 @@ for (const book of books) {
       returned: response.length > 0,
       identifiesBook: global || response.includes(book.title),
       citesSource: global || /منبع:/.test(response),
-      clarifiesInsteadOfGuessing: clarificationPattern.test(response),
-      labelsAssistantContent: !generatedIntents.has(item.intent) || /پیشنهاد دستیار|ساخته دستیار|دستیار/u.test(response) || clarificationPattern.test(response),
+      clarifiesInsteadOfGuessing: clarificationPattern.test(response.slice(0, 700)),
+      labelsAssistantContent: !generatedIntents.has(item.intent) || /پیشنهاد دستیار|ساخته دستیار|دستیار/u.test(response) || clarificationPattern.test(response.slice(0, 700)),
       responseLength: response.length,
       response,
     });
