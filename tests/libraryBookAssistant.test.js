@@ -172,3 +172,25 @@ test('a low-pressure alternative is available when a suggested exercise is diffi
   assert.match(response, /جایگزین ساده پیشنهادی دستیار/u);
   assert.match(response, /لازم نیست به خودت فشار بیاوری/u);
 });
+
+
+test('anxiety guidance points to retrieved passages and avoids treatment claims', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم کدام بخش‌ها برای مدیریت اضطراب مفید هستند؟' });
+  assert.match(response, /اطلاعات کتابی و خودآگاهی عمومی/u);
+  assert.match(response, /منبع:/u);
+  assert.match(response, /جای ارزیابی متخصص را نمی‌گیرد/u);
+});
+
+test('anger guidance connects a practical step to sourced text without promising control', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم اگر هنگام عصبانیت کنترل واکنشم سخت باشد چه چیزی کمک می‌کند؟' });
+  assert.match(response, /پیشنهاد عملی دستیار/u);
+  assert.match(response, /منبع:/u);
+  assert.match(response, /سرکوب احساس/u);
+});
+
+test('confidence guidance distinguishes assistant suggestion from author text', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'در کتاب اول برای تقویت اعتمادبه‌نفس چه نکته‌ای وجود دارد؟' });
+  assert.match(response, /پیشنهاد تکمیلی دستیار/u);
+  assert.match(response, /متن نویسنده نیست/u);
+  assert.match(response, /منبع:/u);
+});
