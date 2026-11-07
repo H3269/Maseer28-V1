@@ -188,11 +188,10 @@ test('anger guidance connects a practical step to sourced text without promising
   assert.match(response, /سرکوب احساس/u);
 });
 
-test('confidence guidance distinguishes assistant suggestion from author text', () => {
+test('confidence guidance refuses to invent book-specific advice without direct evidence', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب اول برای تقویت اعتمادبه‌نفس چه نکته‌ای وجود دارد؟' });
-  assert.match(response, /پیشنهاد تکمیلی دستیار/u);
-  assert.match(response, /متن نویسنده نیست/u);
-  assert.match(response, /منبع:/u);
+  assert.match(response, /شاهد مستقیم و کافی برای اعتمادبه‌نفس/u);
+  assert.doesNotMatch(response, /پیشنهاد تکمیلی دستیار/u);
 });
 
 
