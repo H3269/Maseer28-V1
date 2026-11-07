@@ -199,6 +199,29 @@ try {
   await dialog.getByRole('textbox').fill('این صفحه برای چیست؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('برای مرور کتاب‌های موجود')));
+
+  // Exercise the actual library-book assistant path, not only the generic page helper.
+  await dialog.getByRole('textbox').fill('خلاصه کتاب پنجم را بگو');
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('خلاصه راهنمای محتوایی')));
+  const librarySummary = dialog.locator('.assistantMessage').last();
+  const librarySummaryText = await librarySummary.innerText();
+  assert.match(librarySummaryText, /هنر شناخت و دگرگونی احساسات/u);
+  assert.match(librarySummaryText, /شاهد کوتاه متن/u);
+  assert.match(librarySummaryText, /منبع:/u);
+  assert.match(librarySummaryText, /صفحه \d+/u);
+
+  // The second turn must retain the selected book and answer the new question.
+  await dialog.getByRole('textbox').fill('چه محدودیت‌هایی دارد؟');
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => {
+    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+    return replies.length >= 3 && /محدودیت/u.test(replies.at(-1)?.innerText || '');
+  });
+  const libraryFollowUp = dialog.locator('.assistantMessage').last();
+  assert.match(await libraryFollowUp.innerText(), /هنر شناخت و دگرگونی احساسات/u);
+  assert.match(await libraryFollowUp.innerText(), /محدودیت/u);
+
   await closeButton.click();
   await dialog.waitFor({ state: 'detached' });
 
