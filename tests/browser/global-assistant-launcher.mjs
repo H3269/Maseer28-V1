@@ -97,7 +97,7 @@ try {
   assert.ok(titleBox && closeBox && Math.abs(titleBox.y - closeBox.y) < 8, 'title and close control must share one header row');
   const sendButton = dialog.getByRole('button', { name: 'ارسال' });
   const sendButtonBox = await sendButton.boundingBox();
-  assert.ok(sendButtonBox && sendButtonBox.width <= 44 && sendButtonBox.height <= 44, 'send control must be compact');
+  assert.ok(sendButtonBox && Math.abs(sendButtonBox.width - 36) <= 1 && Math.abs(sendButtonBox.height - 36) <= 1 && Math.abs(sendButtonBox.width - sendButtonBox.height) <= 1, 'send control must be a compact 36px square');
   assert.equal(await sendButton.locator('svg path').first().getAttribute('d'), 'M12 19V5', 'send arrow must point upward');
   assert.doesNotMatch(await dialog.innerText(), /پردازش این نسخه|می‌توانی بپرسی/);
   assert.equal(await dialog.getByRole('button', { name: 'متوجه شدم' }).count(), 0, 'the redundant bottom close action must be removed');
