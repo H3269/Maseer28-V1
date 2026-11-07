@@ -6971,3 +6971,46 @@ html.bale-webview body .appBottomDock .bottomNav {
     padding-inline: 6px;
   }
 }
+
+
+/* V91: identical end-of-page clearance across every regular app screen. */
+/*
+ * Reserve one shared scroll tail for the combined bottom navigation + release dock.
+ * The 136px value covers the dock, its safe-area inset and a breathing gap, so
+ * the final page actions remain above it on every screen and in both WebViews.
+ */
+:root {
+  --m28-page-end-clearance: calc(136px + env(safe-area-inset-bottom));
+  --m28-page-card-end-inset: 20px;
+}
+
+html body .app:not(.appLoading),
+html.bale-webview body .app:not(.appLoading),
+body.bale-webview .app:not(.appLoading) {
+  box-sizing: border-box !important;
+  padding-bottom: var(--m28-page-end-clearance) !important;
+}
+
+html body .app:not(.appLoading) > section.card,
+html.bale-webview body .app:not(.appLoading) > section.card,
+body.bale-webview .app:not(.appLoading) > section.card {
+  box-sizing: border-box !important;
+  padding-bottom: var(--m28-page-card-end-inset) !important;
+}
+
+/* The library is a direct app page too; remove its historical special-case tail. */
+html body .app:not(.appLoading):has(#books.libraryShell) #books.libraryShell,
+html.bale-webview body .app:not(.appLoading):has(#books.libraryShell) #books.libraryShell,
+body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryShell {
+  padding-bottom: var(--m28-page-card-end-inset) !important;
+  margin-bottom: 0 !important;
+}
+
+/* Keyboard/focus scrolling must also leave the bottom dock unobstructed. */
+html {
+  scroll-padding-bottom: var(--m28-page-end-clearance);
+}
+
+html body .app:not(.appLoading) > section.card :is(button, input, textarea, select, [tabindex]):last-child {
+  scroll-margin-bottom: 18px;
+}
