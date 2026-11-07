@@ -6891,7 +6891,7 @@ body:not(.bale-webview) .bottomNav button.active:after {
   left: 50%;
   bottom: max(6px, env(safe-area-inset-bottom));
   transform: translateX(-50%);
-  z-index: 160;
+  z-index: 90;
   width: min(calc(100% - 24px), 520px);
   display: flex;
   flex-direction: column;
