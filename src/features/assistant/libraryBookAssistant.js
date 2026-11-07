@@ -33,6 +33,9 @@ const ALTERNATIVE_EXERCISE = /(?:جایگزین|نتوانم.*تمرین|نمی 
 const AUTHOR_MEANING = /(?:نویسنده.*منظور|منظور نویسنده|دقیقاً چه منظوری)/u;
 const AUTHOR_REASON = /(?:چرا نویسنده|دلیل نویسنده)/u;
 const CONCEPT_COMPARE = /(?:دو مفهوم|مقایسه.*مفهوم|مفهوم.*با هم)/u;
+const ANXIETY = /(?:اضطراب|استرس|دلشوره|نگرانی)/u;
+const ANGER = /(?:خشم|عصبانیت|عصبانی|پرخاش)/u;
+const CONFIDENCE = /(?:اعتماد به نفس|اعتمادبه نفس|خودباوری|عزت نفس)/u;
 const KEY_POINTS = /(?:مهم ترین نکات|نکات اصلی|نکات کلیدی)/u;
 const SIMPLE_EXPLAIN = /(?:به زبان ساده|ساده و قابل فهم|توضیح ساده)/u;
 
@@ -279,6 +282,9 @@ function structuredGuidance(intent, book, passages, message) {
   const evidence = 'شواهد قابل بازیابی از کتاب:\n\n' + source;
   if (SCIENCE.test(intent)) return 'از متن این کتاب به‌تنهایی نمی‌توان اعتبار علمی یک دیدگاه را تأیید کرد. برای چنین داوری‌ای باید ادعا را دقیق مشخص کنیم و آن را با پژوهش‌های معتبر و مستقل بسنجیم.\n\n' + evidence + '\n\nمرزبندی: گزیده‌های بالا نشان می‌دهند کتاب چه می‌گوید؛ آن‌ها به‌تنهایی اثبات علمی درستی ادعا نیستند.';
   if (ALTERNATIVE_VIEW.test(intent)) return 'ممکن است درباره این موضوع دیدگاه‌های دیگری وجود داشته باشد، اما از متن در دسترس این کتاب نمی‌توانم وجود یا محتوای یک دیدگاه مخالف مشخص را اثبات کنم. دیدگاه بیرونی را نباید به نویسنده نسبت داد.\n\n' + evidence + '\n\nاگر بخواهی، پرسش را به یک ادعای مشخص تبدیل می‌کنیم تا جداگانه با منابع علمی مستقل بررسی شود.';
+  if (ANXIETY.test(intent)) return 'بخش‌های زیر از نظر شناخت احساسات، نگرانی یا واکنش‌های مرتبط با پرسش تو قابل بررسی‌اند. این‌ها اطلاعات کتابی و خودآگاهی عمومی‌اند، نه تشخیص یا درمان اضطراب:\\n\\n' + source + '\\n\\nاگر اضطراب شدید، مداوم یا مختل‌کننده زندگی است، این متن جای ارزیابی متخصص را نمی‌گیرد.';
+  if (ANGER.test(intent)) return 'در متن بازیابی‌شده، محورهای مرتبط با شناخت خشم، نشانه‌های اولیه و انتخاب پاسخ جایگزین دیده می‌شود. پیشنهاد عملی دستیار این است که در یک موقعیت کم‌تنش، محرک، احساس، میل فوری و پاسخ انتخاب‌شده را جداگانه ثبت کنی. این پیشنهاد نقل قول کتاب نیست و هدفش سرکوب احساس یا توجیه آسیب به خود/دیگران نیست.\\n\\n' + evidence;
+  if (CONFIDENCE.test(intent)) return 'در بخش‌های بازیابی‌شده، فقط نکته‌هایی را می‌توان به کتاب نسبت داد که شاهد متنی دارند. برای تقویت اعتمادبه‌نفس، پیشنهاد تکمیلی دستیار این است که یک اقدام کوچک و قابل انجام انتخاب کنی و شواهد انجام آن را ثبت کنی؛ این توصیه، متن نویسنده نیست.\\n\\n' + evidence;
   if (LIMITATIONS.test(intent)) return 'برای ارزیابی محدودیت‌ها باید میان محدودیت متن کتاب و محدودیت کاربرد توصیه در زندگی واقعی فرق بگذاریم. از همین متن می‌توان گفت این گزیده‌ها به‌تنهایی همه شرایط فردی، تفاوت‌های زمینه‌ای یا شواهد علمی بیرونی را پوشش نمی‌دهند.\n\n' + evidence + '\n\nاین ارزیابی، تحلیل محتاطانه دستیار است و نه نقل قول از نویسنده.';
   if (WEEK_PLAN.test(intent)) return 'برنامه هفت‌روزه پیشنهادی دستیار بر پایه موضوع بازیابی‌شده از ' + title + ' است؛ این برنامه نقل قول یا برنامه تألیفی کتاب نیست:\n\n' +
     'روز ۱: مفهوم یا موقعیت مرتبط را بخوان و یک نمونه شخصیِ کم‌تنش ثبت کن.\nروز ۲: فقط نشانه‌ها و شرایط پیش از آن را مشاهده کن.\nروز ۳: فکر، احساس و رفتار را جداگانه یادداشت کن.\nروز ۴: یک پاسخ جایگزین کوچک و ایمن انتخاب کن.\nروز ۵: آن پاسخ را در موقعیتی آسان امتحان کن.\nروز ۶: نتیجه را بدون سرزنش بررسی و در صورت نیاز ساده‌ترش کن.\nروز ۷: شواهد رفتاری، دشواری‌ها و قدم بعدی را مرور کن.\n\nمعیار موفقیت، انجام کامل و بی‌نقص نیست؛ مشاهده و ثبت یک تغییر کوچک است. اگر تمرین فشار روانی را بیشتر کرد، متوقفش کن و از نسخه ساده‌تر استفاده کن.\n\n' + evidence;
@@ -368,7 +374,7 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     reply = summaryReply(book, allPassages);
   } else if (SCIENCE.test(normalized) || ALTERNATIVE_VIEW.test(normalized) || LIMITATIONS.test(normalized)
     || WEEK_PLAN.test(normalized) || PROGRESS.test(normalized) || EXAMPLE_OR_EXERCISE.test(normalized)
-    || DAILY_APPLICATION.test(normalized) || SIMPLE_EXPLAIN.test(normalized) || KEY_POINTS.test(normalized)
+    || DAILY_APPLICATION.test(normalized) || SIMPLE_EXPLAIN.test(normalized) || KEY_POINTS.test(normalized)\n    || ANXIETY.test(normalized) || ANGER.test(normalized) || CONFIDENCE.test(normalized)
     || ALTERNATIVE_EXERCISE.test(normalized) || AUTHOR_MEANING.test(normalized) || AUTHOR_REASON.test(normalized)) {
     reply = 'در «' + book.title + '»:\n\n' + structuredGuidance(normalized, book, selected, normalized);
   } else {
