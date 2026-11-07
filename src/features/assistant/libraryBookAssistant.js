@@ -545,10 +545,11 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   if (BOOK_SUBJECT.test(normalized)) {
     const profile = getLibraryBookProfile(book);
     const headings = mainBookHeadings(book).slice(0, 8);
-    return { message: 'موضوع «' + book.title + '»\\n\\n' +
-      (profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است') +
+    return { message: 'موضوع اصلی «' + book.title + '»\\n\\n' +
+      (profile?.plain || profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است') +
+      (profile?.subject ? '\\n\\nحوزه‌های اصلی کتاب: ' + profile.subject : '') +
       (headings.length ? '\\n\\nبخش‌های راهنما:\\n' + headings.slice(0, 5).map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\\n') : '') +
-      '\\n\\nاین معرفی، جمع‌بندی دستیار از موضوع و ساختار کتاب است؛ برای بررسی یک ادعای مشخص باید متن همان بخش را دید.',
+      '\\n\\nاین توضیح، بازنویسی دستیار بر پایه پروفایل محتوایی و ساختار کتاب است؛ نقل قول مستقیم نویسنده نیست.',
       conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery } };
   }
   const allPassages = passagesForBook(book);
