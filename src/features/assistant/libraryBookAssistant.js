@@ -370,7 +370,7 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     || WEEK_PLAN.test(normalized) || PROGRESS.test(normalized) || EXAMPLE_OR_EXERCISE.test(normalized)
     || DAILY_APPLICATION.test(normalized) || SIMPLE_EXPLAIN.test(normalized) || KEY_POINTS.test(normalized)
     || ALTERNATIVE_EXERCISE.test(normalized) || AUTHOR_MEANING.test(normalized) || AUTHOR_REASON.test(normalized)) {
-    reply = structuredGuidance(normalized, book, selected, normalized);
+    reply = 'در «' + book.title + '»:\n\n' + structuredGuidance(normalized, book, selected, normalized);
   } else {
     reply = (followUp ? 'ادامه بررسی همان موضوع در «' + book.title + '» بر اساس متن کتاب:' : 'بخش‌های مرتبط با پرسش تو در «' + book.title + '»:') +
       '\n\n' + formatPassages(selected) +
