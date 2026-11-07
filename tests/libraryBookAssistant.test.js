@@ -648,13 +648,25 @@ test('a user can answer a section clarification and continue the original exerci
 });
 
 
-test('anger guidance does not overstate evidence when the book only supports observation', () => {
-  const response = answerLibraryBookQuestion({
+test('anger guidance refuses weak evidence and uses stronger book-specific passages only', () => {
+  const bookThreeResponse = answerLibraryBookQuestion({
     books,
     message: 'در کتاب سوم برای مدیریت خشم چه نکته‌ای وجود دارد؟',
   });
-  assert.match(response, /فقط اهمیت مشاهده آنچه هنگام عصبانیت رخ می‌دهد/u);
-  assert.match(response, /برای نشانه‌های اولیه یا پاسخ جایگزین مشخص، شاهد کافی/u);
-  assert.match(response, /پیشنهاد عملی دستیار/u);
-  assert.match(response, /منبع:/u);
+  assert.match(bookThreeResponse, /شاهد مستقیم و کافی برای خشم و عصبانیت پیدا نکردم/u);
+  assert.doesNotMatch(bookThreeResponse, /پیشنهاد عملی دستیار/u);
+
+  const bookTwoResponse = answerLibraryBookQuestion({
+    books,
+    message: 'در کتاب دوم برای مدیریت خشم چه نکته‌ای وجود دارد؟',
+  });
+  assert.match(bookTwoResponse, /راه‌های سالم‌تر برای بیان/u);
+  assert.match(bookTwoResponse, /منبع:/u);
+
+  const bookFiveResponse = answerLibraryBookQuestion({
+    books,
+    message: 'در کتاب پنجم برای مدیریت خشم چه نکته‌ای وجود دارد؟',
+  });
+  assert.match(bookFiveResponse, /پاسخ جایگزین/u);
+  assert.match(bookFiveResponse, /منبع:/u);
 });
