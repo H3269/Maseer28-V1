@@ -42,3 +42,11 @@
 - CI commitهای جدید T32، تست مرورگر زنده مالک و تأیید متخصص باید جداگانه انجام شوند. هیچ انتشار عمومی یا انتشار Telegram/Bale انجام نشده است.
 
 **وضعیت:** `B2Z108_T32_FULL_11_FIELD_AUDIT_COMPLETE_28_MECHANISMS_REWRITTEN_ALL_FIELDS_EXACT_UNIQUE_OVERLAY_ALIGNED_28_OF_28_NO_CROSS_TOPIC_EXACT_DUPLICATES_EXPERT_SEMANTIC_T14_BOUNDARY_CI_BROWSER_GATES_PENDING_NO_PUBLIC_RELEASE`
+
+
+## الحاقیه گیت ایمنی و اصلاح روز ۱۶ — B2-Z109 (2026-11-07)
+
+- متن تمرین و اقدام روز ۱۶ اکنون هر دو شروع فعالیت را به ظرفیت جسمی/روانی مشروط می‌کنند و توقف در صورت تشدید درد یا خستگی را صریح می‌گویند؛ overlay نیز همگام شد.
+- کنترل مجدد پس از این اصلاح: ۲۸/۲۸ روز، ۳۳۶/۳۳۶ خانه، ۱۱ فیلد یکتا در ۲۸/۲۸ روز و تطبیق تمرین/اقدام با overlay در ۲۸/۲۸ روز. مقایسه عینی با ۳۳ موضوع دیگر همچنان هیچ تکرار عینی هم‌نوعی برای تمرین/اقدام T32 نشان نداد.
+- کد `src/features/content/dailySafety.js` و تست `tests/dailySafety.test.mjs` نشان می‌دهند هر ۲۸ رکورد legacy T32 در `public/content/path-content.json` تا زمان بازبینی بالینی/زیرموضوعی مسدود می‌مانند. برای S03، علاوه بر `review_status: approved` و یک زیرموضوع مشخص و `review_record_id`، طبقه‌بندی `caution` و `safety_rule_ids` نیز لازم است. تست، حالت‌های routine/caution و رد حالت ناقص را پوشش می‌دهد.
+- تغییرات پیش‌نویس و overlay این گیت را دور نمی‌زنند؛ هیچ رکورد legacy تأیید نشده و هیچ محتوای T32 به‌واسطه این ممیزی مجاز به انتشار نشده است.
