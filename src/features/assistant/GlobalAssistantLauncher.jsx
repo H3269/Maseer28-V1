@@ -69,25 +69,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
 
   if (!visible || screen === 'bookReader') return null;
 
-  function resizeComposerInput(element, value) {
+  function resizeComposerInput(element) {
     if (!element) return;
-    const composer = element.closest('.assistantComposer');
-    const sendButton = composer?.querySelector('.assistantSendButton');
-    if (!composer || !sendButton) return;
-    const composerStyle = window.getComputedStyle(composer);
-    const horizontalPadding = parseFloat(composerStyle.paddingInlineStart || '0') + parseFloat(composerStyle.paddingInlineEnd || '0');
-    const gap = parseFloat(composerStyle.columnGap || composerStyle.gap || '0');
-    const availableWidth = Math.max(116, composer.clientWidth - horizontalPadding - sendButton.offsetWidth - gap);
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    const inputStyle = window.getComputedStyle(element);
-    if (context) {
-      context.font = inputStyle.font;
-      const lines = String(value || '').split(String.fromCharCode(10));
-      const measuredText = Math.max(0, ...lines.map((line) => context.measureText(line || ' ').width));
-      const desiredWidth = Math.max(116, Math.ceil(measuredText) + 34);
-      element.style.width = `${Math.min(availableWidth, desiredWidth)}px`;
-    }
     element.style.height = 'auto';
     element.style.height = `${Math.min(128, Math.max(54, element.scrollHeight))}px`;
   }
@@ -95,7 +78,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   function updateDraft(event) {
     const nextValue = event.target.value;
     setDraft(nextValue);
-    resizeComposerInput(event.currentTarget, nextValue);
+    resizeComposerInput(event.currentTarget);
   }
 
   function activate() {
@@ -127,7 +110,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         { role: 'assistant', text: turn.message, knowledge: turn.knowledge || [] },
       ]);
       setDraft('');
-      resizeComposerInput(messageInputRef.current, '');
+      resizeComposerInput(messageInputRef.current);
       setError('');
     } catch {
       setError('پاسخ آماده نشد. دوباره تلاش کن.');
