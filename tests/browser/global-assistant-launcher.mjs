@@ -182,7 +182,7 @@ try {
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some(node => /متن تمرین همین روز/.test(node.innerText)));
   const dailyReply = dialog.locator('.assistantMessage').last();
   assert.match(await dailyReply.innerText(), /خشم/);
-  assert.match(await dailyReply.innerText(), /روز 1/);
+  assert.match(await dailyReply.innerText(), /روز ۱/);
   assert.match(await dailyReply.innerText(), /متن تمرین همین روز/);
   assert.match(await dailyReply.innerText(), /راهکار اختصاصی همین روز/);
   await closeButton.click();
