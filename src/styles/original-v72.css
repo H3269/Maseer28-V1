@@ -7048,3 +7048,15 @@ html.bale-webview body .app:not(.appLoading):has(#books.libraryShell) #books.lib
 body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryShell > .libraryBack {
   margin-bottom: 0 !important;
 }
+
+/* Minimal global assistant chat: let the conversation and composer use the dialog space. */
+.globalAssistantDialog { display: flex; flex-direction: column; }
+.globalAssistantDialog h2 { margin: 8px 0 12px; }
+.globalAssistantChat { display: flex; flex: 1 1 auto; min-height: 0; flex-direction: column; }
+.globalAssistantChat .assistantTranscript { flex: 1 1 auto; max-height: none; min-height: 180px; }
+.globalAssistantChat .assistantComposer textarea { min-height: 54px; }
+.globalAssistantChat .assistantSendButton { min-width: 48px; width: 48px; height: 48px; padding: 0; display: inline-flex; align-items: center; justify-content: center; color: var(--on-primary, #fff); }
+@media (max-width: 480px) {
+  .globalAssistantDialog { max-height: calc(100dvh - 24px); }
+  .globalAssistantChat .assistantTranscript { min-height: 150px; }
+}
