@@ -17,7 +17,7 @@
     "total": 125,
     "passed": 91,
     "failed": 34,
-    "criticalIssues": 5,
+    "blockingQualityIssues": 5,
     "average": 8.01
   },
   "importantCaveat": "امتیازهای این مرحله برای غربال و اولویت‌بندی اصلاحات‌اند. تا بررسی مستقل انسانی همه ارجاعات و محتوای منبع، این امتیازها گواه پذیرش نهایی محصول نیستند.",
@@ -35,7 +35,7 @@
       },
       "score": 10,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "فهرست کتاب‌ها و توضیح‌های ثبت‌شده را درست و شفاف برمی‌گرداند."
     },
     {
@@ -51,7 +51,7 @@
       },
       "score": 10,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "فهرست کتاب‌ها و توضیح‌های ثبت‌شده را درست و شفاف برمی‌گرداند."
     },
     {
@@ -67,7 +67,7 @@
       },
       "score": 10,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "فهرست کتاب‌ها و توضیح‌های ثبت‌شده را درست و شفاف برمی‌گرداند."
     },
     {
@@ -83,7 +83,7 @@
       },
       "score": 10,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "فهرست کتاب‌ها و توضیح‌های ثبت‌شده را درست و شفاف برمی‌گرداند."
     },
     {
@@ -99,7 +99,7 @@
       },
       "score": 10,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "فهرست کتاب‌ها و توضیح‌های ثبت‌شده را درست و شفاف برمی‌گرداند."
     },
     {
@@ -115,7 +115,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "معرفی بر پایه metadata و تیترهاست؛ به‌درستی ادعای شرح کامل فصل ندارد، اما ارجاع دقیق و توضیح محتوایی محدود است."
     },
     {
@@ -131,7 +131,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "معرفی بر پایه metadata و تیترهاست؛ به‌درستی ادعای شرح کامل فصل ندارد، اما ارجاع دقیق و توضیح محتوایی محدود است."
     },
     {
@@ -147,7 +147,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "معرفی بر پایه metadata و تیترهاست؛ به‌درستی ادعای شرح کامل فصل ندارد، اما ارجاع دقیق و توضیح محتوایی محدود است."
     },
     {
@@ -163,7 +163,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "معرفی بر پایه metadata و تیترهاست؛ به‌درستی ادعای شرح کامل فصل ندارد، اما ارجاع دقیق و توضیح محتوایی محدود است."
     },
     {
@@ -179,7 +179,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "معرفی بر پایه metadata و تیترهاست؛ به‌درستی ادعای شرح کامل فصل ندارد، اما ارجاع دقیق و توضیح محتوایی محدود است."
     },
     {
@@ -195,7 +195,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "پیشنهاد خودشناسی با دو گزینه مرتبط و محدودیت شناخت وضعیت کاربر ارائه شده؛ دلیل انتخاب هنوز سطحی و مبتنی بر metadata است."
     },
     {
@@ -211,7 +211,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "پیشنهاد خودشناسی با دو گزینه مرتبط و محدودیت شناخت وضعیت کاربر ارائه شده؛ دلیل انتخاب هنوز سطحی و مبتنی بر metadata است."
     },
     {
@@ -227,7 +227,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "پیشنهاد خودشناسی با دو گزینه مرتبط و محدودیت شناخت وضعیت کاربر ارائه شده؛ دلیل انتخاب هنوز سطحی و مبتنی بر metadata است."
     },
     {
@@ -243,7 +243,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "پیشنهاد خودشناسی با دو گزینه مرتبط و محدودیت شناخت وضعیت کاربر ارائه شده؛ دلیل انتخاب هنوز سطحی و مبتنی بر metadata است."
     },
     {
@@ -259,7 +259,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "پیشنهاد خودشناسی با دو گزینه مرتبط و محدودیت شناخت وضعیت کاربر ارائه شده؛ دلیل انتخاب هنوز سطحی و مبتنی بر metadata است."
     },
     {
@@ -275,7 +275,7 @@
       },
       "score": 7,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "پیشنهاد شروع مطالعه ارائه شده، اما معیار «مناسب تازه‌کار» و ترتیب آموزشی از متن اثبات نشده است."
     },
     {
@@ -291,7 +291,7 @@
       },
       "score": 7,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "پیشنهاد شروع مطالعه ارائه شده، اما معیار «مناسب تازه‌کار» و ترتیب آموزشی از متن اثبات نشده است."
     },
     {
@@ -307,7 +307,7 @@
       },
       "score": 7,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "پیشنهاد شروع مطالعه ارائه شده، اما معیار «مناسب تازه‌کار» و ترتیب آموزشی از متن اثبات نشده است."
     },
     {
@@ -323,7 +323,7 @@
       },
       "score": 7,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "پیشنهاد شروع مطالعه ارائه شده، اما معیار «مناسب تازه‌کار» و ترتیب آموزشی از متن اثبات نشده است."
     },
     {
@@ -339,7 +339,7 @@
       },
       "score": 7,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "پیشنهاد شروع مطالعه ارائه شده، اما معیار «مناسب تازه‌کار» و ترتیب آموزشی از متن اثبات نشده است."
     },
     {
@@ -355,7 +355,7 @@
       },
       "score": 7,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "مقایسه ساختاری پنج کتاب مفید و محتاطانه است؛ مقایسه مفهومی/استدلالی انجام نمی‌دهد."
     },
     {
@@ -371,7 +371,7 @@
       },
       "score": 7,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "مقایسه ساختاری پنج کتاب مفید و محتاطانه است؛ مقایسه مفهومی/استدلالی انجام نمی‌دهد."
     },
     {
@@ -387,7 +387,7 @@
       },
       "score": 7,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "مقایسه ساختاری پنج کتاب مفید و محتاطانه است؛ مقایسه مفهومی/استدلالی انجام نمی‌دهد."
     },
     {
@@ -403,7 +403,7 @@
       },
       "score": 7,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "مقایسه ساختاری پنج کتاب مفید و محتاطانه است؛ مقایسه مفهومی/استدلالی انجام نمی‌دهد."
     },
     {
@@ -419,7 +419,7 @@
       },
       "score": 7,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "مقایسه ساختاری پنج کتاب مفید و محتاطانه است؛ مقایسه مفهومی/استدلالی انجام نمی‌دهد."
     },
     {
@@ -435,7 +435,7 @@
       },
       "score": 7,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "پاسخ عملاً معرفی metadata و تیترهاست، نه جمع‌بندی مستند از محتوای چند فصل."
     },
     {
@@ -451,7 +451,7 @@
       },
       "score": 7,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "پاسخ عملاً معرفی metadata و تیترهاست، نه جمع‌بندی مستند از محتوای چند فصل."
     },
     {
@@ -467,7 +467,7 @@
       },
       "score": 7,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "پاسخ عملاً معرفی metadata و تیترهاست، نه جمع‌بندی مستند از محتوای چند فصل."
     },
     {
@@ -483,7 +483,7 @@
       },
       "score": 7,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "پاسخ عملاً معرفی metadata و تیترهاست، نه جمع‌بندی مستند از محتوای چند فصل."
     },
     {
@@ -499,7 +499,7 @@
       },
       "score": 7,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "پاسخ عملاً معرفی metadata و تیترهاست، نه جمع‌بندی مستند از محتوای چند فصل."
     },
     {
@@ -515,7 +515,7 @@
       },
       "score": 5,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "به‌جای توضیح ساده مفهوم، عمدتاً ساختار و تیترها را فهرست می‌کند."
     },
     {
@@ -531,7 +531,7 @@
       },
       "score": 5,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "به‌جای توضیح ساده مفهوم، عمدتاً ساختار و تیترها را فهرست می‌کند."
     },
     {
@@ -547,7 +547,7 @@
       },
       "score": 5,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "به‌جای توضیح ساده مفهوم، عمدتاً ساختار و تیترها را فهرست می‌کند."
     },
     {
@@ -563,7 +563,7 @@
       },
       "score": 5,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "به‌جای توضیح ساده مفهوم، عمدتاً ساختار و تیترها را فهرست می‌کند."
     },
     {
@@ -579,7 +579,7 @@
       },
       "score": 5,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "به‌جای توضیح ساده مفهوم، عمدتاً ساختار و تیترها را فهرست می‌کند."
     },
     {
@@ -595,7 +595,7 @@
       },
       "score": 5,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "گزیده‌ها واقعی‌اند اما اولویت‌بندی و نمایندگی نکات کلیدی ثابت نشده؛ بعضی نتایج به فرم/تمرین یا متن نامرتبط نزدیک‌اند."
     },
     {
@@ -611,7 +611,7 @@
       },
       "score": 5,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "گزیده‌ها واقعی‌اند اما اولویت‌بندی و نمایندگی نکات کلیدی ثابت نشده؛ بعضی نتایج به فرم/تمرین یا متن نامرتبط نزدیک‌اند."
     },
     {
@@ -627,7 +627,7 @@
       },
       "score": 5,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "گزیده‌ها واقعی‌اند اما اولویت‌بندی و نمایندگی نکات کلیدی ثابت نشده؛ بعضی نتایج به فرم/تمرین یا متن نامرتبط نزدیک‌اند."
     },
     {
@@ -643,7 +643,7 @@
       },
       "score": 5,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "گزیده‌ها واقعی‌اند اما اولویت‌بندی و نمایندگی نکات کلیدی ثابت نشده؛ بعضی نتایج به فرم/تمرین یا متن نامرتبط نزدیک‌اند."
     },
     {
@@ -659,7 +659,7 @@
       },
       "score": 6,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "گزیده‌ها واقعی‌اند اما اولویت‌بندی و نمایندگی نکات کلیدی ثابت نشده؛ بعضی نتایج به فرم/تمرین یا متن نامرتبط نزدیک‌اند."
     },
     {
@@ -675,7 +675,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "درخواست فصل/صفحه/عبارت مشخص، برای پرسش بدون مرجع دقیق رفتار درست و ضدحدس است."
     },
     {
@@ -691,7 +691,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "درخواست فصل/صفحه/عبارت مشخص، برای پرسش بدون مرجع دقیق رفتار درست و ضدحدس است."
     },
     {
@@ -707,7 +707,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "درخواست فصل/صفحه/عبارت مشخص، برای پرسش بدون مرجع دقیق رفتار درست و ضدحدس است."
     },
     {
@@ -723,7 +723,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "درخواست فصل/صفحه/عبارت مشخص، برای پرسش بدون مرجع دقیق رفتار درست و ضدحدس است."
     },
     {
@@ -739,7 +739,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "درخواست فصل/صفحه/عبارت مشخص، برای پرسش بدون مرجع دقیق رفتار درست و ضدحدس است."
     },
     {
@@ -755,7 +755,7 @@
       },
       "score": 4,
       "passed": false,
-      "criticalIssue": "گزیده‌ای از صفحه آغازین/اطلاعات کتاب در کنار گزیده‌های محتوایی ظاهر شد؛ فیلتر صفحات مقدماتی کامل نیست.",
+      "blockingQualityIssue": "گزیده‌ای از صفحه آغازین/اطلاعات کتاب در کنار گزیده‌های محتوایی ظاهر شد؛ فیلتر صفحات مقدماتی کامل نیست.",
       "reviewNote": "نقشه ساختاری و گزیده است، نه خلاصه منسجم؛ در برخی کتاب‌ها صفحه جلد/متادیتا نیز وارد شواهد شده است."
     },
     {
@@ -771,7 +771,7 @@
       },
       "score": 4,
       "passed": false,
-      "criticalIssue": "خلاصه، نقشه فصل و نمونه‌گزیده است؛ نه خلاصه معنایی و منسجم کل کتاب.",
+      "blockingQualityIssue": "خلاصه، نقشه فصل و نمونه‌گزیده است؛ نه خلاصه معنایی و منسجم کل کتاب.",
       "reviewNote": "نقشه ساختاری و گزیده است، نه خلاصه منسجم؛ در برخی کتاب‌ها صفحه جلد/متادیتا نیز وارد شواهد شده است."
     },
     {
@@ -787,7 +787,7 @@
       },
       "score": 4,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "نقشه ساختاری و گزیده است، نه خلاصه منسجم؛ در برخی کتاب‌ها صفحه جلد/متادیتا نیز وارد شواهد شده است."
     },
     {
@@ -803,7 +803,7 @@
       },
       "score": 4,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "نقشه ساختاری و گزیده است، نه خلاصه منسجم؛ در برخی کتاب‌ها صفحه جلد/متادیتا نیز وارد شواهد شده است."
     },
     {
@@ -819,7 +819,7 @@
       },
       "score": 4,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "نقشه ساختاری و گزیده است، نه خلاصه منسجم؛ در برخی کتاب‌ها صفحه جلد/متادیتا نیز وارد شواهد شده است."
     },
     {
@@ -835,7 +835,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "در نبود شاهد مستقیم، امتناع درست است؛ در کتاب‌های دارای شاهد، کیفیت و عمق گزیده‌ها متفاوت است."
     },
     {
@@ -851,7 +851,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "در نبود شاهد مستقیم، امتناع درست است؛ در کتاب‌های دارای شاهد، کیفیت و عمق گزیده‌ها متفاوت است."
     },
     {
@@ -867,7 +867,7 @@
       },
       "score": 6,
       "passed": false,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "در نبود شاهد مستقیم، امتناع درست است؛ در کتاب‌های دارای شاهد، کیفیت و عمق گزیده‌ها متفاوت است."
     },
     {
@@ -883,7 +883,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "در نبود شاهد مستقیم، امتناع درست است؛ در کتاب‌های دارای شاهد، کیفیت و عمق گزیده‌ها متفاوت است."
     },
     {
@@ -899,7 +899,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "در نبود شاهد مستقیم، امتناع درست است؛ در کتاب‌های دارای شاهد، کیفیت و عمق گزیده‌ها متفاوت است."
     },
     {
@@ -915,7 +915,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "عبارت «این مطالب» بدون سابقه یا بخش مشخص مبهم است؛ درخواست زمینه لازم، ایمن و موجه است."
     },
     {
@@ -931,7 +931,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "عبارت «این مطالب» بدون سابقه یا بخش مشخص مبهم است؛ درخواست زمینه لازم، ایمن و موجه است."
     },
     {
@@ -947,7 +947,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "عبارت «این مطالب» بدون سابقه یا بخش مشخص مبهم است؛ درخواست زمینه لازم، ایمن و موجه است."
     },
     {
@@ -963,7 +963,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "عبارت «این مطالب» بدون سابقه یا بخش مشخص مبهم است؛ درخواست زمینه لازم، ایمن و موجه است."
     },
     {
@@ -979,7 +979,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "عبارت «این مطالب» بدون سابقه یا بخش مشخص مبهم است؛ درخواست زمینه لازم، ایمن و موجه است."
     },
     {
@@ -995,7 +995,7 @@
       },
       "score": 4,
       "passed": false,
-      "criticalIssue": "شاهد بازیابی‌شده فقط اشاره‌ای کوتاه به عصبانیت داشت؛ متن پاسخ ادعای محورهای شناخت خشم و پاسخ جایگزین را بیش از شواهد بیان می‌کرد.",
+      "blockingQualityIssue": "شاهد بازیابی‌شده فقط اشاره‌ای کوتاه به عصبانیت داشت؛ متن پاسخ ادعای محورهای شناخت خشم و پاسخ جایگزین را بیش از شواهد بیان می‌کرد.",
       "reviewNote": "کیفیت بین کتاب‌ها متفاوت است؛ در جلد اول و سوم یک اشاره کوتاه به خشم برای ادعای راهنمایی موضوعی کافی نیست."
     },
     {
@@ -1011,7 +1011,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "کیفیت بین کتاب‌ها متفاوت است؛ در جلد اول و سوم یک اشاره کوتاه به خشم برای ادعای راهنمایی موضوعی کافی نیست."
     },
     {
@@ -1027,7 +1027,7 @@
       },
       "score": 6,
       "passed": false,
-      "criticalIssue": "شاهد محدود به یک جمله درباره مشاهده هنگام عصبانیت بود؛ برای توصیه عملی و تعمیم، کافی نیست.",
+      "blockingQualityIssue": "شاهد محدود به یک جمله درباره مشاهده هنگام عصبانیت بود؛ برای توصیه عملی و تعمیم، کافی نیست.",
       "reviewNote": "کیفیت بین کتاب‌ها متفاوت است؛ در جلد اول و سوم یک اشاره کوتاه به خشم برای ادعای راهنمایی موضوعی کافی نیست."
     },
     {
@@ -1043,7 +1043,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "کیفیت بین کتاب‌ها متفاوت است؛ در جلد اول و سوم یک اشاره کوتاه به خشم برای ادعای راهنمایی موضوعی کافی نیست."
     },
     {
@@ -1059,7 +1059,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "کیفیت بین کتاب‌ها متفاوت است؛ در جلد اول و سوم یک اشاره کوتاه به خشم برای ادعای راهنمایی موضوعی کافی نیست."
     },
     {
@@ -1075,7 +1075,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "جلد دوم و پنجم شواهد مرتبط دارند؛ جلد اول و سوم درست امتناع می‌کنند؛ کتابچه تکمیلی فقط یک خوداظهاری کوتاه دارد و شاهد توصیه‌ای کافی نیست."
     },
     {
@@ -1091,7 +1091,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "جلد دوم و پنجم شواهد مرتبط دارند؛ جلد اول و سوم درست امتناع می‌کنند؛ کتابچه تکمیلی فقط یک خوداظهاری کوتاه دارد و شاهد توصیه‌ای کافی نیست."
     },
     {
@@ -1107,7 +1107,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "جلد دوم و پنجم شواهد مرتبط دارند؛ جلد اول و سوم درست امتناع می‌کنند؛ کتابچه تکمیلی فقط یک خوداظهاری کوتاه دارد و شاهد توصیه‌ای کافی نیست."
     },
     {
@@ -1123,7 +1123,7 @@
       },
       "score": 5,
       "passed": false,
-      "criticalIssue": "عبارت «چون اعتمادبه‌نفس ندارم» خوداظهاری در یک کاربرگ است، نه شاهد کافی برای توصیه اختصاصی درباره افزایش اعتمادبه‌نفس.",
+      "blockingQualityIssue": "عبارت «چون اعتمادبه‌نفس ندارم» خوداظهاری در یک کاربرگ است، نه شاهد کافی برای توصیه اختصاصی درباره افزایش اعتمادبه‌نفس.",
       "reviewNote": "جلد دوم و پنجم شواهد مرتبط دارند؛ جلد اول و سوم درست امتناع می‌کنند؛ کتابچه تکمیلی فقط یک خوداظهاری کوتاه دارد و شاهد توصیه‌ای کافی نیست."
     },
     {
@@ -1139,7 +1139,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "جلد دوم و پنجم شواهد مرتبط دارند؛ جلد اول و سوم درست امتناع می‌کنند؛ کتابچه تکمیلی فقط یک خوداظهاری کوتاه دارد و شاهد توصیه‌ای کافی نیست."
     },
     {
@@ -1155,7 +1155,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "مثال خواسته‌شده به مفهوم/بخش مشخصی ارجاع ندارد؛ شفاف‌سازی از ساختن مثال بی‌ربط بهتر است."
     },
     {
@@ -1171,7 +1171,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "مثال خواسته‌شده به مفهوم/بخش مشخصی ارجاع ندارد؛ شفاف‌سازی از ساختن مثال بی‌ربط بهتر است."
     },
     {
@@ -1187,7 +1187,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "مثال خواسته‌شده به مفهوم/بخش مشخصی ارجاع ندارد؛ شفاف‌سازی از ساختن مثال بی‌ربط بهتر است."
     },
     {
@@ -1203,7 +1203,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "مثال خواسته‌شده به مفهوم/بخش مشخصی ارجاع ندارد؛ شفاف‌سازی از ساختن مثال بی‌ربط بهتر است."
     },
     {
@@ -1219,7 +1219,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "مثال خواسته‌شده به مفهوم/بخش مشخصی ارجاع ندارد؛ شفاف‌سازی از ساختن مثال بی‌ربط بهتر است."
     },
     {
@@ -1235,7 +1235,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "«این توصیه» مرجع مشخص ندارد؛ درخواست تعیین بخش از نسبت‌دادن توصیه ساختگی جلوگیری می‌کند."
     },
     {
@@ -1251,7 +1251,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "«این توصیه» مرجع مشخص ندارد؛ درخواست تعیین بخش از نسبت‌دادن توصیه ساختگی جلوگیری می‌کند."
     },
     {
@@ -1267,7 +1267,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "«این توصیه» مرجع مشخص ندارد؛ درخواست تعیین بخش از نسبت‌دادن توصیه ساختگی جلوگیری می‌کند."
     },
     {
@@ -1283,7 +1283,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "«این توصیه» مرجع مشخص ندارد؛ درخواست تعیین بخش از نسبت‌دادن توصیه ساختگی جلوگیری می‌کند."
     },
     {
@@ -1299,7 +1299,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "«این توصیه» مرجع مشخص ندارد؛ درخواست تعیین بخش از نسبت‌دادن توصیه ساختگی جلوگیری می‌کند."
     },
     {
@@ -1315,7 +1315,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "دلیل نویسنده بدون مشخص‌کردن ادعا یا فصل قابل انتساب نیست؛ شفاف‌سازی مناسب است."
     },
     {
@@ -1331,7 +1331,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "دلیل نویسنده بدون مشخص‌کردن ادعا یا فصل قابل انتساب نیست؛ شفاف‌سازی مناسب است."
     },
     {
@@ -1347,7 +1347,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "دلیل نویسنده بدون مشخص‌کردن ادعا یا فصل قابل انتساب نیست؛ شفاف‌سازی مناسب است."
     },
     {
@@ -1363,7 +1363,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "دلیل نویسنده بدون مشخص‌کردن ادعا یا فصل قابل انتساب نیست؛ شفاف‌سازی مناسب است."
     },
     {
@@ -1379,7 +1379,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "دلیل نویسنده بدون مشخص‌کردن ادعا یا فصل قابل انتساب نیست؛ شفاف‌سازی مناسب است."
     },
     {
@@ -1395,7 +1395,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "داوری علمی بدون ادعای مشخص ممکن نیست؛ مرزبندی متن کتاب و پژوهش مستقل درست است."
     },
     {
@@ -1411,7 +1411,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "داوری علمی بدون ادعای مشخص ممکن نیست؛ مرزبندی متن کتاب و پژوهش مستقل درست است."
     },
     {
@@ -1427,7 +1427,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "داوری علمی بدون ادعای مشخص ممکن نیست؛ مرزبندی متن کتاب و پژوهش مستقل درست است."
     },
     {
@@ -1443,7 +1443,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "داوری علمی بدون ادعای مشخص ممکن نیست؛ مرزبندی متن کتاب و پژوهش مستقل درست است."
     },
     {
@@ -1459,7 +1459,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "داوری علمی بدون ادعای مشخص ممکن نیست؛ مرزبندی متن کتاب و پژوهش مستقل درست است."
     },
     {
@@ -1475,7 +1475,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "دیدگاه مخالف بدون موضوع/ادعای روشن قابل بررسی نیست؛ از جعل دیدگاه جلوگیری می‌کند."
     },
     {
@@ -1491,7 +1491,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "دیدگاه مخالف بدون موضوع/ادعای روشن قابل بررسی نیست؛ از جعل دیدگاه جلوگیری می‌کند."
     },
     {
@@ -1507,7 +1507,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "دیدگاه مخالف بدون موضوع/ادعای روشن قابل بررسی نیست؛ از جعل دیدگاه جلوگیری می‌کند."
     },
     {
@@ -1523,7 +1523,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "دیدگاه مخالف بدون موضوع/ادعای روشن قابل بررسی نیست؛ از جعل دیدگاه جلوگیری می‌کند."
     },
     {
@@ -1539,7 +1539,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "دیدگاه مخالف بدون موضوع/ادعای روشن قابل بررسی نیست؛ از جعل دیدگاه جلوگیری می‌کند."
     },
     {
@@ -1555,7 +1555,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "محدودیت یک توصیه نامشخص قابل ارزیابی نیست؛ درخواست مشخص‌سازی درست است."
     },
     {
@@ -1571,7 +1571,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "محدودیت یک توصیه نامشخص قابل ارزیابی نیست؛ درخواست مشخص‌سازی درست است."
     },
     {
@@ -1587,7 +1587,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "محدودیت یک توصیه نامشخص قابل ارزیابی نیست؛ درخواست مشخص‌سازی درست است."
     },
     {
@@ -1603,7 +1603,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "محدودیت یک توصیه نامشخص قابل ارزیابی نیست؛ درخواست مشخص‌سازی درست است."
     },
     {
@@ -1619,7 +1619,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "محدودیت یک توصیه نامشخص قابل ارزیابی نیست؛ درخواست مشخص‌سازی درست است."
     },
     {
@@ -1635,7 +1635,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "نام دو مفهوم مطالبه می‌شود؛ برای دور اول مناسب است، اما توان مقایسه واقعی فقط در دور دوم سنجیده می‌شود."
     },
     {
@@ -1651,7 +1651,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "نام دو مفهوم مطالبه می‌شود؛ برای دور اول مناسب است، اما توان مقایسه واقعی فقط در دور دوم سنجیده می‌شود."
     },
     {
@@ -1667,7 +1667,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "نام دو مفهوم مطالبه می‌شود؛ برای دور اول مناسب است، اما توان مقایسه واقعی فقط در دور دوم سنجیده می‌شود."
     },
     {
@@ -1683,7 +1683,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "نام دو مفهوم مطالبه می‌شود؛ برای دور اول مناسب است، اما توان مقایسه واقعی فقط در دور دوم سنجیده می‌شود."
     },
     {
@@ -1699,7 +1699,7 @@
       },
       "score": 8,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "نام دو مفهوم مطالبه می‌شود؛ برای دور اول مناسب است، اما توان مقایسه واقعی فقط در دور دوم سنجیده می‌شود."
     },
     {
@@ -1715,7 +1715,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "تمرین بدون دانستن بخش منبع می‌تواند نامرتبط یا ناایمن شود؛ شفاف‌سازی درست است."
     },
     {
@@ -1731,7 +1731,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "تمرین بدون دانستن بخش منبع می‌تواند نامرتبط یا ناایمن شود؛ شفاف‌سازی درست است."
     },
     {
@@ -1747,7 +1747,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "تمرین بدون دانستن بخش منبع می‌تواند نامرتبط یا ناایمن شود؛ شفاف‌سازی درست است."
     },
     {
@@ -1763,7 +1763,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "تمرین بدون دانستن بخش منبع می‌تواند نامرتبط یا ناایمن شود؛ شفاف‌سازی درست است."
     },
     {
@@ -1779,7 +1779,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "تمرین بدون دانستن بخش منبع می‌تواند نامرتبط یا ناایمن شود؛ شفاف‌سازی درست است."
     },
     {
@@ -1795,7 +1795,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "برنامه هفت‌روزه بدون موضوع/بخش منبع، عمومی و غیرتخصصی می‌شد؛ درخواست زمینه مناسب است."
     },
     {
@@ -1811,7 +1811,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "برنامه هفت‌روزه بدون موضوع/بخش منبع، عمومی و غیرتخصصی می‌شد؛ درخواست زمینه مناسب است."
     },
     {
@@ -1827,7 +1827,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "برنامه هفت‌روزه بدون موضوع/بخش منبع، عمومی و غیرتخصصی می‌شد؛ درخواست زمینه مناسب است."
     },
     {
@@ -1843,7 +1843,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "برنامه هفت‌روزه بدون موضوع/بخش منبع، عمومی و غیرتخصصی می‌شد؛ درخواست زمینه مناسب است."
     },
     {
@@ -1859,7 +1859,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "برنامه هفت‌روزه بدون موضوع/بخش منبع، عمومی و غیرتخصصی می‌شد؛ درخواست زمینه مناسب است."
     },
     {
@@ -1875,7 +1875,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "جایگزین بدون دانستن تمرین اصلی قابل طراحی نیست؛ درخواست مرجع درست است."
     },
     {
@@ -1891,7 +1891,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "جایگزین بدون دانستن تمرین اصلی قابل طراحی نیست؛ درخواست مرجع درست است."
     },
     {
@@ -1907,7 +1907,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "جایگزین بدون دانستن تمرین اصلی قابل طراحی نیست؛ درخواست مرجع درست است."
     },
     {
@@ -1923,7 +1923,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "جایگزین بدون دانستن تمرین اصلی قابل طراحی نیست؛ درخواست مرجع درست است."
     },
     {
@@ -1939,7 +1939,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "جایگزین بدون دانستن تمرین اصلی قابل طراحی نیست؛ درخواست مرجع درست است."
     },
     {
@@ -1955,7 +1955,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "سنجش پیشرفت بدون دانستن رفتار/توصیه مرجع، ممکن است کلی و بی‌ربط شود؛ درخواست زمینه مناسب است."
     },
     {
@@ -1971,7 +1971,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "سنجش پیشرفت بدون دانستن رفتار/توصیه مرجع، ممکن است کلی و بی‌ربط شود؛ درخواست زمینه مناسب است."
     },
     {
@@ -1987,7 +1987,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "سنجش پیشرفت بدون دانستن رفتار/توصیه مرجع، ممکن است کلی و بی‌ربط شود؛ درخواست زمینه مناسب است."
     },
     {
@@ -2003,7 +2003,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "سنجش پیشرفت بدون دانستن رفتار/توصیه مرجع، ممکن است کلی و بی‌ربط شود؛ درخواست زمینه مناسب است."
     },
     {
@@ -2019,7 +2019,7 @@
       },
       "score": 9,
       "passed": true,
-      "criticalIssue": null,
+      "blockingQualityIssue": null,
       "reviewNote": "سنجش پیشرفت بدون دانستن رفتار/توصیه مرجع، ممکن است کلی و بی‌ربط شود؛ درخواست زمینه مناسب است."
     }
   ]
