@@ -321,7 +321,7 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   }
   if (CONCEPT_COMPARE.test(normalized)) {
     const headings = mainBookHeadings(book).slice(0, 14);
-    return { message: 'برای مقایسه، لطفاً دو مفهوم مشخص را انتخاب کن. این‌ها چند عنوان واقعی از ساختار کتاب هستند:\\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\\n'), conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message } };
+    return { message: 'در «' + book.title + '»، برای مقایسه لطفاً دو مفهوم مشخص را انتخاب کن. این‌ها چند عنوان واقعی از ساختار کتاب هستند:\\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\\n'), conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message } };
   }
   if (BOOK_SUBJECT.test(normalized)) {
     const headings = mainBookHeadings(book).slice(0, 10);
