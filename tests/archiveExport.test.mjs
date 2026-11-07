@@ -152,7 +152,7 @@ test('archive PDF canvas output and ZIP names contain Persian digits only', asyn
   globalThis.document = makeCanvasEnvironment(drawnText);
   try {
     const blob = await exportArchivesZip([{
-      profileData: { problem: 'آزمون اعداد' },
+      profileData: { problem: 'آزمون اعداد 28' },
       completed: [1, 28],
       answers: { 1: 'پاسخ روز 1' },
       daily: { 1: { score: 7, feedbackText: 'امتیاز 7 از 10' } },
@@ -162,7 +162,7 @@ test('archive PDF canvas output and ZIP names contain Persian digits only', asyn
       archivedAt: '2026-01-28T00:00:00.000Z',
     }]);
     const entries = extractStoredZipEntries(new Uint8Array(await blob.arrayBuffer()));
-    assert.equal(entries[0].name, '۰۱-آزمون-اعداد.pdf');
+    assert.equal(entries[0].name, '۰۱-آزمون-اعداد-۲۸.pdf');
     assert.doesNotMatch(drawnText.join(' '), /[0-9]/, 'every user-visible PDF canvas string must use Persian digits');
     assert.match(drawnText.join(' '), /۲۸/);
     assert.match(drawnText.join(' '), /امتیاز ۷ از ۱۰/);
