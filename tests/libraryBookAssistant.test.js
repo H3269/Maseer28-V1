@@ -100,7 +100,7 @@ test('the local engine does not claim to generate a new example or exercise', ()
     content: { pages: [{ page: 1, sourcePage: 1, blocks: [{ type: 'paragraph', text: 'شناخت احساسات و ثبت روزانه آن‌ها به افزایش آگاهی کمک می‌کند.' }] }] },
   }];
   const response = answerLibraryBookQuestion({ books: sampleBooks, message: 'در کتاب اول درباره احساسات چه تمرینی پیشنهاد می‌شود؟' });
-  assert.match(response, /مثال فرضی و تمرین پیشنهادی دستیار/u);
+  assert.match(response, /یک نمونه فرضی و تمرین پیشنهادی دستیار/u);
   assert.match(response, /ساخته دستیارند/u);
 });
 
@@ -128,7 +128,7 @@ test('the assistant does not fabricate an opposing scientific view', () => {
 
 test('generated examples and weekly plans are explicitly attributed to the assistant', () => {
   const example = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم درباره احساسات یک مثال بزن' });
-  assert.match(example, /مثال فرضی و تمرین پیشنهادی دستیار/u);
+  assert.match(example, /یک نمونه فرضی و تمرین پیشنهادی دستیار/u);
   assert.match(example, /ساخته دستیارند/u);
   const plan = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم برای شناخت احساسات برنامه هفت روزه بده' });
   assert.match(plan, /برنامه هفت‌روزه پیشنهادی دستیار/u);
