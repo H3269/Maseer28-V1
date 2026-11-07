@@ -100,7 +100,8 @@ test('the local engine does not claim to generate a new example or exercise', ()
     content: { pages: [{ page: 1, sourcePage: 1, blocks: [{ type: 'paragraph', text: 'شناخت احساسات و ثبت روزانه آن‌ها به افزایش آگاهی کمک می‌کند.' }] }] },
   }];
   const response = answerLibraryBookQuestion({ books: sampleBooks, message: 'در کتاب اول درباره احساسات چه تمرینی پیشنهاد می‌شود؟' });
-  assert.match(response, /مثال فرضی و تمرین پیشنهادی دستیار/u);\n  assert.match(response, /ساخته دستیارند/u);
+  assert.match(response, /مثال فرضی و تمرین پیشنهادی دستیار/u);
+  assert.match(response, /ساخته دستیارند/u);
 });
 
 
