@@ -452,10 +452,11 @@ function structuredGuidance(intent, book, passages, message) {
 function hasExplicitSectionReference(value) {
   const raw = String(value || '');
   const normalized = normalizeLibraryText(raw);
-  return /(?:فصل|بخش|پیوست)\s+(?:اول|دوم|سوم|چهارم|پنجم|ششم|هفتم|هشتم|نهم|دهم|یازدهم|دوازدهم|[0-9]+|(?!این\b|همین\b|دقیقاً\b|مورد\b|خاص\b|مربوط\b|فعلی\b|بالا\b|پایین\b)[\p{L}]{3,})/u.test(normalized)
+  const numberedSection = /(?:فصل|بخش|پیوست)\s+(?:اول|دوم|سوم|چهارم|پنجم|ششم|هفتم|هشتم|نهم|دهم|یازدهم|دوازدهم|[0-9]+)/u;
+  const namedSection = /(?:عنوان فصل|عنوان بخش)\s+[\p{L}]{3,}/u;
+  return numberedSection.test(normalized)
     || /صفحه\s*[0-9]+/u.test(normalized)
-    || /(?:عنوان فصل|شماره صفحه)/u.test(normalized)
-    || /(?:در فصل|در بخش)\s+(?:اول|دوم|سوم|چهارم|پنجم|[0-9]+|[\p{L}]{3,})/u.test(normalized);
+    || namedSection.test(normalized);
 }
 
 function hasExplicitClaimReference(value) {
