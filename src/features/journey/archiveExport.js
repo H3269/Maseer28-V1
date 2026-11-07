@@ -56,7 +56,7 @@ function makePdf(archive, index) {
     if (y) pages.push(canvas.toDataURL('image/jpeg', 0.88).split(',')[1]);
     ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H); ctx.direction = 'rtl'; ctx.textAlign = 'right';
     ctx.fillStyle = '#174e49'; ctx.font = 'bold 40px sans-serif'; ctx.fillText('آرشیو مسیر ۲۸ روزه', W - margin, 100);
-    ctx.fillStyle = '#64716e'; ctx.font = '24px sans-serif'; ctx.fillText(`مسیر ${fa(index + 1)} · ${p.problem || 'بدون عنوان'}`, W - margin, 148);
+    ctx.fillStyle = '#64716e'; ctx.font = '24px sans-serif'; ctx.fillText(`مسیر ${fa(index + 1)} · ${fa(p.problem || 'بدون عنوان')}`, W - margin, 148);
     ctx.strokeStyle = '#d8e5e1'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(margin, 180); ctx.lineTo(W - margin, 180); ctx.stroke();
     y = 230;
   }
