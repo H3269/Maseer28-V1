@@ -17,7 +17,7 @@ export function nextReleaseVersion(packageVersion, previousVersion) {
   const base = parseVersion(packageVersion);
   if (!base) throw new TypeError('package_version_must_be_semver');
   const previous = parseVersion(previousVersion);
-  if (!previous || compareVersions(base, previous) >= 0) return packageVersion;
+  if (!previous || compareVersions(base, previous) > 0) return packageVersion;
   return `${previous[0]}.${previous[1]}.${previous[2] + 1}`;
 }
 
