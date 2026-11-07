@@ -98,7 +98,8 @@ try {
   const sendButton = dialog.getByRole('button', { name: 'ارسال' });
   const sendButtonBox = await sendButton.boundingBox();
   assert.ok(sendButtonBox && Math.abs(sendButtonBox.width - 36) <= 1 && Math.abs(sendButtonBox.height - 36) <= 1 && Math.abs(sendButtonBox.width - sendButtonBox.height) <= 1, 'send control must be a compact 36px square');
-  assert.equal(await sendButton.locator('svg path').first().getAttribute('d'), 'M12 19V5', 'send arrow must point upward');
+  assert.equal(await sendButton.locator('svg path').count(), 1, 'send icon must contain only the arrowhead without a shaft');
+  assert.equal(await sendButton.locator('svg path').first().getAttribute('d'), 'm5 14 7-7 7 7', 'send arrowhead must point upward without an inner line');
   assert.doesNotMatch(await dialog.innerText(), /پردازش این نسخه|می‌توانی بپرسی/);
   assert.equal(await dialog.getByRole('button', { name: 'متوجه شدم' }).count(), 0, 'the redundant bottom close action must be removed');
   assert.equal(await dialog.getByPlaceholder('چطور میتونم کمکت کنم؟').count(), 1, 'the composer must show the concise prompt');
