@@ -646,3 +646,15 @@ test('a user can answer a section clarification and continue the original exerci
     assert.doesNotMatch(second.message, /عنوان فصل، شماره صفحه یا چند واژه از همان قسمت را بفرست/u);
   }
 });
+
+
+test('anger guidance does not overstate evidence when the book only supports observation', () => {
+  const response = answerLibraryBookQuestion({
+    books,
+    message: 'در کتاب سوم برای مدیریت خشم چه نکته‌ای وجود دارد؟',
+  });
+  assert.match(response, /فقط اهمیت مشاهده آنچه هنگام عصبانیت رخ می‌دهد/u);
+  assert.match(response, /برای نشانه‌های اولیه یا پاسخ جایگزین مشخص، شاهد کافی/u);
+  assert.match(response, /پیشنهاد عملی دستیار/u);
+  assert.match(response, /منبع:/u);
+});
