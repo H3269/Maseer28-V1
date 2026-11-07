@@ -7186,3 +7186,11 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 .globalAssistantChat .userMessage p {
   margin-top: 6px;
 }
+
+/* V95: render transcript text directly on the main assistant chat surface. */
+.globalAssistantChat .assistantTranscript {
+  background: transparent !important;
+}
+.globalAssistantChat .userMessage {
+  border-bottom: 0 !important;
+}
