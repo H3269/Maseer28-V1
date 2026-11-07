@@ -137,9 +137,14 @@ jobs:
           nohup npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/path28-vite.log 2>&1 &
           echo $! > /tmp/path28-vite.pid
           for attempt in {1..30}; do
-            if curl -fsS http://127.0.0.1:4173/ > /dev/null; then exit 0; fi
+            # The first connection can race Vite startup; keep expected retries quiet.
+            if curl --silent --fail http://127.0.0.1:4173/ > /dev/null; then
+              echo "Production preview is ready on 127.0.0.1:4173"
+              exit 0
+            fi
             sleep 1
           done
+          echo "Production preview did not become ready within 30 seconds."
           cat /tmp/path28-vite.log
           exit 1
 
