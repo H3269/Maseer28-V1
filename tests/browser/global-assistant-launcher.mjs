@@ -85,10 +85,14 @@ try {
   const closeButton = dialog.getByRole('button', { name: 'بستن پنجره دستیار' });
   await page.waitForFunction(() => document.activeElement?.getAttribute('aria-label') === 'بستن پنجره دستیار');
   assert.equal(await launcher.getAttribute('aria-expanded'), 'true');
+  // A disabled send button is correctly excluded from keyboard tab order.
+  // Enable it temporarily to test the complete first/last focus trap.
+  await dialog.getByRole('textbox').fill('آزمون گردش فوکوس');
   await page.keyboard.press('Shift+Tab');
-  assert.equal(await dialog.getByRole('button', { name: 'ارسال' }).evaluate((element) => element === document.activeElement), true, 'Shift+Tab from the first control must wrap to the last');
+  assert.equal(await dialog.getByRole('button', { name: 'ارسال' }).evaluate((element) => element === document.activeElement), true, 'Shift+Tab from the first control must wrap to the last enabled control');
   await page.keyboard.press('Tab');
-  assert.equal(await closeButton.evaluate((element) => element === document.activeElement), true, 'Tab from the last control must wrap to the first');
+  assert.equal(await closeButton.evaluate((element) => element === document.activeElement), true, 'Tab from the last enabled control must wrap to the first');
+  await dialog.getByRole('textbox').fill('');
   assert.match(await dialog.innerText(), /دستیار هوشمند مسیر ۲۸/);
   const dialogBoxForLayout = await dialog.boundingBox();
   assert.ok(dialogBoxForLayout.width >= 500, 'assistant dialog should use a wider desktop layout');
