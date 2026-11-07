@@ -83,6 +83,8 @@ export function answerLibraryBookQuestion({ books = [], message = '' } = {}) {
 
   const book = pickBook(available, message);
   if (!book) {
+    const isBookRequest = /(?:کتاب|جلد|خلاصه|چکیده|متن کتاب|فصل|نویسنده)/u.test(normalized);
+    if (!isBookRequest) return null;
     return 'برای اینکه متن اشتباهی را خلاصه نکنم، نام یکی از کتاب‌ها را در پرسشت بنویس. پنج کتاب موجود در کتابخانه را می‌توانم بررسی کنم.';
   }
 
