@@ -318,3 +318,26 @@ test('a simple explanation of an unspecified main book concept asks for the exac
   assert.match(response, /باید یک مفهوم یا فصل مشخص را انتخاب کنیم/u);
   assert.doesNotMatch(response, /برداشت ساده و محتاطانه/u);
 });
+
+test('topic-specific guidance excludes passages that only match unrelated query terms', () => {
+  const sampleBooks = [{
+    title: 'کتاب آزمایشی',
+    legacyId: 1,
+    content: { pages: [
+      { page: 1, sourcePage: 1, blocks: [
+        { type: 'heading', text: 'اعتمادبه‌نفس و تجربه' },
+        { type: 'paragraph', text: 'اعتمادبه‌نفس می‌تواند با تجربه اقدام‌های کوچک و مشاهده توانایی‌های خود تقویت شود.' },
+      ] },
+      { page: 2, sourcePage: 2, blocks: [
+        { type: 'heading', text: 'زیست‌شناسی مغز' },
+        { type: 'paragraph', text: 'انتقال‌دهنده عصبی در ارتباط میان سلول‌های عصبی نقش دارد.' },
+      ] },
+    ] },
+  }];
+  const response = answerLibraryBookQuestion({
+    books: sampleBooks,
+    message: 'در کتاب اول برای تقویت اعتمادبه‌نفس چه نکته‌ای وجود دارد؟',
+  });
+  assert.match(response, /اعتمادبه‌نفس می‌تواند با تجربه اقدام‌های کوچک/u);
+  assert.doesNotMatch(response, /انتقال‌دهنده عصبی/u);
+});
