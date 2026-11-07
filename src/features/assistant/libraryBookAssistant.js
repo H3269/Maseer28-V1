@@ -15,8 +15,8 @@ const SYNONYM_GROUPS = [
   ['هدف', 'مقصود', 'غایت'],
 ];
 
-const FOLLOW_UP = /^(?:بیشتر|ادامه|بیشتر توضیح|توضیح بده|مثال بزن|یک مثال|تمرین بده|چه تمرینی|همین|همان|اون|این|منظورم|در موردش|درباره اش)/u;
-const SUMMARY = /(?:خلاصه|چکیده|مرور کلی|مهم ترین نکات|نکات اصلی|موضوع اصلی)/u;
+const FOLLOW_UP = /^(?:بیشتر|ادامه|بیشتر توضیح|توضیح بده|مثال بزن|یک مثال|تمرین بده|چه تمرینی|همین|همان|اون|این|منظورم|در موردش|درباره اش|چه محدودیت|چه تفاوت|چرا|چطور|چگونه|اگر|پس|این توصیه|این مفهوم|این موضوع)/u;
+const SUMMARY = /(?:خلاصه|چکیده|مرور کلی)/u;
 const LIST = /(?:چه کتاب|فهرست کتاب|کتاب های موجود|کتابخانه چه کتاب)/u;
 const BOOK_SUBJECT = /(?:کتاب .*درباره چه|موضوع اصلی کتاب|موضوع کتاب چیست)/u;
 const COMPARE = /(?:تفاوت|مقایسه|فرق|چه فرقی)/u;
@@ -211,6 +211,24 @@ function bookHeadings(book) {
   });
 }
 
+function representativePassages(passages, limit = 5) {
+  if (!passages.length) return [];
+  const targets = Array.from({ length: limit }, (_, index) =>
+    Math.round(index * (passages.length - 1) / Math.max(1, limit - 1))
+  );
+  const selected = [];
+  const seenPages = new Set();
+  for (const target of targets) {
+    const item = passages[target];
+    if (!item) continue;
+    const page = item.page ?? item.pageIndex;
+    if (seenPages.has(page)) continue;
+    selected.push(item);
+    seenPages.add(page);
+  }
+  return selected;
+}
+
 function summaryReply(book, passages) {
   const headings = mainBookHeadings(book);
   const selected = [];
@@ -321,14 +339,14 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   }
   if (CONCEPT_COMPARE.test(normalized)) {
     const headings = mainBookHeadings(book).slice(0, 14);
-    return { message: 'در «' + book.title + '»، برای مقایسه لطفاً دو مفهوم مشخص را انتخاب کن. این‌ها چند عنوان واقعی از ساختار کتاب هستند:\\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\\n'), conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message } };
+    return { message: 'در «' + book.title + '»، برای مقایسه لطفاً دو مفهوم مشخص را انتخاب کن. این‌ها چند عنوان واقعی از ساختار کتاب هستند:\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\n'), conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message } };
   }
   if (BOOK_SUBJECT.test(normalized)) {
     const headings = mainBookHeadings(book).slice(0, 10);
-    return { message: 'بر اساس توضیح ثبت‌شده و تیترهای قابل مشاهده، موضوع «' + book.title + '» چنین معرفی شده است:\\n' +
+    return { message: 'بر اساس توضیح ثبت‌شده و تیترهای قابل مشاهده، موضوع «' + book.title + '» چنین معرفی شده است:\n' +
       (book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است') +
-      (headings.length ? '\\n\\nمحورهای قابل مشاهده:\\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\\n') : '') +
-      '\\n\\nاین معرفی بر پایه متادیتا و تیترهاست؛ برای شرح محتوای هر فصل باید متن همان فصل بررسی شود.',
+      (headings.length ? '\n\nمحورهای قابل مشاهده:\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\n') : '') +
+      '\n\nاین معرفی بر پایه متادیتا و تیترهاست؛ برای شرح محتوای هر فصل باید متن همان فصل بررسی شود.',
       conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message } };
   }
   const allPassages = passagesForBook(book);
@@ -351,7 +369,11 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     })).filter((passage) => passage.score > 0)
       .sort((a, b) => b.score - a.score || a.index - b.index);
 
-  const selected = asksSummary ? [] : chooseDiverse(ranked, 5);
+  const selected = asksSummary
+    ? []
+    : KEY_POINTS.test(normalized) && !ranked.length
+      ? representativePassages(allPassages, 5)
+      : chooseDiverse(ranked, 5);
   if (!asksSummary && !selected.length && (SCIENCE.test(normalized) || ALTERNATIVE_VIEW.test(normalized) || LIMITATIONS.test(normalized) || PROGRESS.test(normalized))) {
     const reply = SCIENCE.test(normalized)
       ? 'از متن در دسترس این کتاب شاهد کافی برای داوری علمی این ادعا پیدا نکردم. از متن کتاب به‌تنهایی نمی‌توان اعتبار علمی یک دیدگاه را تأیید کرد؛ برای پاسخ دقیق باید ادعای مشخص را با پژوهش‌های معتبر و مستقل بررسی کرد. این پاسخ عمداً از تأیید یا رد بی‌منبع خودداری می‌کند.'
@@ -389,7 +411,7 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     conversationState: {
       bookId: book.legacyId,
       bookTitle: book.title,
-      lastQuery: followUp ? (conversationState.lastQuery || effectiveQuery) : message,
+      lastQuery: followUp ? effectiveQuery : message,
       lastSources: (asksSummary ? [] : selected).map((item) => ({ page: item.page, heading: item.heading })),
     },
   };
