@@ -4280,3 +4280,5 @@ undefined
 **وضعیت:** GLOBAL_PERSIAN_DIGIT_DISPLAY_AND_RTL_ASSISTANT_PATCHED_MAIN_CI_AND_OWNER_BROWSER_ACCEPTANCE_PENDING_NO_PUBLIC_RELEASE
 
 - قالب‌بندی تاریخ مشترک نیز به‌صورت مستقیم ارقام فارسی را برمی‌گرداند؛ این اصلاح در commit `ddd74c2bd14f32fd4d28fe8580d8b299e9ee846b` ثبت شد.
+
+- تکمیل عیب‌یابی: شکست تست به علت عنوان مسیر با عدد ASCII در سربرگ PDF بود؛ در commit `cf7367f5d59fc71df25f11896b2463a49d5b0bd0` پیش از رسم سربرگ تبدیل فارسی اضافه شد. اجرای CI روی همین SHA با شناسه `42418181765` در حال اجراست؛ Pages هنوز تأیید نشده است.
