@@ -7051,8 +7051,35 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
   min-width: 40px; width: 40px; height: 40px; min-height: 40px; padding: 0; margin: 0;
   border-radius: 12px; display: inline-flex; align-items: center; justify-content: center;
   color: var(--on-primary, #fff);
+  background: var(--primary, #28555b);
+  border: 1px solid var(--primary, #28555b);
+  transition: background-color .18s ease, opacity .18s ease, border-color .18s ease;
+}
+.globalAssistantChat .assistantSendButton:disabled {
+  color: var(--text-secondary, #64748b);
+  background: var(--surface-soft, #eef2f4);
+  border-color: var(--border, #d9e0e8);
+  opacity: .58;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.globalAssistantChat .assistantSendButton:not(:disabled):hover {
+  background: var(--primary2, #3b7777);
+  border-color: var(--primary2, #3b7777);
 }
 .globalAssistantChat .assistantSendButton svg { width: 19px; height: 19px; }
+.globalAssistantChat .assistantMessage {
+  background: color-mix(in srgb, var(--accent2, #e6f1ee) 72%, var(--surface, #fff));
+  border: 1px solid color-mix(in srgb, var(--accent, #79aaa1) 48%, var(--border, #d9e0e8));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #79aaa1) 12%, transparent),
+    0 7px 20px color-mix(in srgb, var(--primary, #28555b) 10%, transparent);
+}
+.globalAssistantChat .userMessage {
+  background: color-mix(in srgb, var(--primary, #28555b) 11%, var(--surface, #fff));
+  border: 1px solid color-mix(in srgb, var(--primary2, #3b7777) 42%, var(--border, #d9e0e8));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary, #28555b) 9%, transparent),
+    0 7px 20px color-mix(in srgb, var(--primary, #28555b) 9%, transparent);
+}
 @media (max-width: 480px) {
   .globalAssistantDialog { height: 92dvh; max-height: calc(100dvh - 16px); }
   .globalAssistantChat .assistantTranscript { min-height: 0; }
