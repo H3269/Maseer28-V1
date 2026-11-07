@@ -705,12 +705,12 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   let reply;
   if (asksSummary) {
     reply = summaryReply(book, allPassages);
-  } else if (SCIENCE.test(normalized) || ALTERNATIVE_VIEW.test(normalized) || LIMITATIONS.test(normalized)
-    || WEEK_PLAN.test(normalized) || PROGRESS.test(normalized) || EXAMPLE_OR_EXERCISE.test(normalized)
-    || DAILY_APPLICATION.test(normalized) || SIMPLE_EXPLAIN.test(normalized) || KEY_POINTS.test(normalized)
-    || ANXIETY.test(normalized) || ANGER.test(normalized) || CONFIDENCE.test(normalized)
-    || ALTERNATIVE_EXERCISE.test(normalized) || AUTHOR_MEANING.test(normalized) || AUTHOR_REASON.test(normalized)) {
-    reply = 'در «' + book.title + '»:\n\n' + structuredGuidance(normalized, book, selected, normalized);
+  } else if (SCIENCE.test(intentText) || ALTERNATIVE_VIEW.test(intentText) || LIMITATIONS.test(intentText)
+    || WEEK_PLAN.test(intentText) || PROGRESS.test(intentText) || EXAMPLE_OR_EXERCISE.test(intentText)
+    || DAILY_APPLICATION.test(intentText) || SIMPLE_EXPLAIN.test(intentText) || KEY_POINTS.test(intentText)
+    || ANXIETY.test(intentText) || ANGER.test(intentText) || CONFIDENCE.test(intentText)
+    || ALTERNATIVE_EXERCISE.test(intentText) || AUTHOR_MEANING.test(intentText) || AUTHOR_REASON.test(intentText)) {
+    reply = 'در «' + book.title + '»:\n\n' + structuredGuidance(intentText, book, selected, intentText);
   } else {
     reply = (followUp ? 'ادامه بررسی همان موضوع در «' + book.title + '» بر اساس متن کتاب:' : 'بخش‌های مرتبط با پرسش تو در «' + book.title + '»:') +
       '\n\n' + formatPassages(selected) +
