@@ -80,7 +80,7 @@ try {
   await launcher.waitFor({ state: 'visible' });
   assert.equal(await launcher.isVisible(), true, 'global assistant launcher must appear on the dashboard');
   await launcher.click();
-  let dialog = page.getByRole('dialog', { name: 'دستیار مسیر۲۸' });
+  let dialog = page.getByRole('dialog', { name: 'دستیار هوشمند مسیر ۲۸' });
   await dialog.waitFor({ state: 'visible' });
   const closeButton = dialog.getByRole('button', { name: 'بستن پنجره دستیار' });
   await page.waitForFunction(() => document.activeElement?.getAttribute('aria-label') === 'بستن پنجره دستیار');
@@ -89,7 +89,16 @@ try {
   assert.equal(await dialog.getByRole('button', { name: 'ارسال' }).evaluate((element) => element === document.activeElement), true, 'Shift+Tab from the first control must wrap to the last');
   await page.keyboard.press('Tab');
   assert.equal(await closeButton.evaluate((element) => element === document.activeElement), true, 'Tab from the last control must wrap to the first');
-  assert.match(await dialog.innerText(), /دستیار مسیر۲۸/);
+  assert.match(await dialog.innerText(), /دستیار هوشمند مسیر ۲۸/);
+  const dialogBoxForLayout = await dialog.boundingBox();
+  assert.ok(dialogBoxForLayout.width >= 500, 'assistant dialog should use a wider desktop layout');
+  const titleBox = await dialog.locator('#global-assistant-title').boundingBox();
+  const closeBox = await closeButton.boundingBox();
+  assert.ok(titleBox && closeBox && Math.abs(titleBox.y - closeBox.y) < 8, 'title and close control must share one header row');
+  const sendButton = dialog.getByRole('button', { name: 'ارسال' });
+  const sendButtonBox = await sendButton.boundingBox();
+  assert.ok(sendButtonBox && sendButtonBox.width <= 44 && sendButtonBox.height <= 44, 'send control must be compact');
+  assert.equal(await sendButton.locator('svg path').first().getAttribute('d'), 'M12 19V5', 'send arrow must point upward');
   assert.doesNotMatch(await dialog.innerText(), /پردازش این نسخه|می‌توانی بپرسی/);
   assert.equal(await dialog.getByRole('button', { name: 'متوجه شدم' }).count(), 0, 'the redundant bottom close action must be removed');
   assert.equal(await dialog.getByPlaceholder('چطور میتونم کمکت کنم؟').count(), 1, 'the composer must show the concise prompt');
@@ -139,7 +148,7 @@ try {
   await page.locator('#day').waitFor({ state: 'visible' });
   await launcher.waitFor({ state: 'visible' });
   await launcher.click();
-  dialog = page.getByRole('dialog', { name: 'دستیار مسیر۲۸' });
+  dialog = page.getByRole('dialog', { name: 'دستیار هوشمند مسیر ۲۸' });
   await dialog.waitFor({ state: 'visible' });
   assert.doesNotMatch(await dialog.innerText(), /صفحه فعلی:|موضوع: خشم/);
   assert.equal(await page.locator('.dailyExerciseAssistant').count(), 0, 'the standalone daily assistant panel must be removed');
@@ -159,7 +168,7 @@ try {
   await page.getByRole('button', { name: 'مطالعه', exact: true }).click();
   await page.locator('.bottomNav button[data-view="books"].active').waitFor({ state: 'visible' });
   await launcher.click();
-  dialog = page.getByRole('dialog', { name: 'دستیار مسیر۲۸' });
+  dialog = page.getByRole('dialog', { name: 'دستیار هوشمند مسیر ۲۸' });
   await dialog.waitFor({ state: 'visible' });
   assert.match(await dialog.innerText(), /دستیار مسیر۲۸/);
   await dialog.getByRole('textbox').fill('این صفحه برای چیست؟');
@@ -171,7 +180,7 @@ try {
   await page.getByRole('button', { name: 'ارتباط' }).click();
   await page.locator('.bottomNav button[data-view="support"].active').waitFor({ state: 'visible' });
   await launcher.click();
-  dialog = page.getByRole('dialog', { name: 'دستیار مسیر۲۸' });
+  dialog = page.getByRole('dialog', { name: 'دستیار هوشمند مسیر ۲۸' });
   await dialog.waitFor({ state: 'visible' });
   assert.match(await dialog.innerText(), /دستیار مسیر۲۸/);
   await dialog.getByRole('textbox').fill('این صفحه برای چیست؟');
@@ -191,7 +200,7 @@ try {
     );
 
     await launcher.click();
-    dialog = page.getByRole('dialog', { name: 'دستیار مسیر۲۸' });
+    dialog = page.getByRole('dialog', { name: 'دستیار هوشمند مسیر ۲۸' });
     await dialog.waitFor({ state: 'visible' });
     const dialogBox = await dialog.boundingBox();
     assert.ok(dialogBox, 'mobile dialog must have a visible layout box');
