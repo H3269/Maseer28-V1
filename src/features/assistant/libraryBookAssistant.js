@@ -92,10 +92,20 @@ function passagesForBook(book) {
   const rows = [];
   for (const page of Array.isArray(book?.content?.pages) ? book.content.pages : []) {
     const blocks = pageBlocks(page);
-    const heading = blocks.filter((b) => b.type === 'heading').map((b) => b.text).join(' · ')
-      || String(page.title || '').trim();
+    let heading = String(page.title || '').trim();
+    const substantive = blocks.filter((block) => block.type !== 'heading');
+    const pageHeadingCount = blocks.filter((block) => block.type === 'heading').length;
+    const normalizedPageText = normalizeLibraryText(blocks.map((block) => block.text).join(' '));
+    const frontMatter = /فهرست مطالب|تقدیم نامه|سپاسگزاری|پیشگفتار|یادداشتی درباره این مجموعه|شناسنامه/u.test(normalizedPageText);
+    // Contents/front-matter pages often pack dozens of unrelated headings together.
+    // They are not reliable evidence for topical retrieval or book summaries.
+    if (frontMatter && Number(page.sourcePage || page.page) <= 12) continue;
     for (const block of blocks) {
-      if (block.type === 'heading') continue;
+      if (block.type === 'heading') {
+        heading = block.text;
+        continue;
+      }
+      if (pageHeadingCount > 4 && Number(page.sourcePage || page.page) <= 12 && !substantive.length) continue;
       rows.push({
         text: block.text,
         page: Number(page.sourcePage || page.page) || null,
@@ -231,20 +241,22 @@ function representativePassages(passages, limit = 5) {
 
 function summaryReply(book, passages) {
   const headings = mainBookHeadings(book);
-  const selected = [];
-  const targets = [0, 0.2, 0.4, 0.6, 0.8, 1].map((ratio) => Math.round((passages.length - 1) * ratio));
-  for (const target of targets) {
-    const item = passages[target];
-    if (item && !selected.some((row) => row.page === item.page)) selected.push(item);
-  }
+  const substantive = passages.filter((item) => {
+    const heading = normalizeLibraryText(item.heading);
+    const text = normalizeLibraryText(item.text);
+    return !/(تقدیم نامه|سپاسگزاری|فهرست مطالب|پیشگفتار|یادداشتی درباره این مجموعه|شناسنامه)/u.test(heading)
+      && !/(تقدیم نامه|سپاسگزاری|فهرست مطالب|پیشگفتار)/u.test(text)
+      && !(Number(item.page) > 0 && Number(item.page) <= 5);
+  });
+  const selected = representativePassages(substantive, 6);
   const chapterText = headings.length
-    ? '\n\nساختار قابل مشاهده کتاب:\n' + headings.slice(0, 22).map((item) => '- ' + item.text + (item.page ? ' (صفحه ' + item.page + ')' : '')).join('\n')
+    ? '\\n\\nساختار قابل مشاهده کتاب:\\n' + headings.slice(0, 22).map((item) => '- ' + item.text + (item.page ? ' (صفحه ' + item.page + ')' : '')).join('\\n')
     : '';
-  return 'نمای کلی مستند «' + book.title + '»\n' +
-    'این مرور از تیترهای ثبت‌شده و گزیده‌های متن در نسخه بارگذاری‌شده ساخته شده است؛ چکیده تألیفیِ کامل یا ارزیابی علمی کتاب نیست.' +
+  return 'مرور ساختاری مستند «' + book.title + '»\\n' +
+    'این خروجی چکیده معناییِ تألیفی نیست؛ نقشه‌ای از محورهای کتاب و گزیده‌های نماینده از متن اصلی است. بخش‌های مقدماتی و فهرست مطالب به‌عنوان شاهد محتوایی انتخاب نشده‌اند.' +
     chapterText +
-    (selected.length ? '\n\nگزیده‌های متنی از بخش‌های مختلف کتاب:\n' + formatPassages(selected) : '') +
-    '\n\nمحدودیت: تیترها و گزیده‌های بالا نمایی از ساختار و متن در دسترس می‌دهند؛ ادعای پوشش کامل همه استدلال‌های کتاب ندارند.';
+    (selected.length ? '\\n\\nگزیده‌های متنی از بخش‌های محتوایی کتاب:\\n' + formatPassages(selected) : '') +
+    '\\n\\nمحدودیت: برای خلاصه‌سازی معنایی کامل باید استدلال هر فصل تحلیل و به زبان تازه بازنویسی شود؛ موتور فعلی چنین تحلیلی را تضمین نمی‌کند.';
 }
 
 function listBooksReply(books) {
