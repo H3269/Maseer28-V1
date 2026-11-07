@@ -159,8 +159,9 @@ test('book-specific introductions use actual metadata and chapter headings', () 
 
 test('author-intent questions ask for a precise section instead of guessing', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم نویسنده در این بخش دقیقاً چه منظوری دارد؟' });
-  assert.match(response, /عنوان فصل، شماره صفحه یا چند کلمه/u);
+  assert.match(response, /عنوان فصل، شماره صفحه یا چند واژه/u);
   assert.match(response, /نمی‌خواهم نیت نویسنده را حدس بزنم/u);
+  assert.doesNotMatch(response, /نزدیک‌ترین شواهد|منبع:/u);
 });
 
 test('concept comparisons choose a reviewed core pair when the user does not name concepts', () => {
