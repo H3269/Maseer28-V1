@@ -257,19 +257,39 @@ function summaryReply(book, passages) {
   const substantive = passages.filter((item) => {
     const heading = normalizeLibraryText(item.heading);
     const text = normalizeLibraryText(item.text);
-    return !/(تقدیم نامه|سپاسگزاری|فهرست مطالب|پیشگفتار|یادداشتی درباره این مجموعه|شناسنامه)/u.test(heading)
+    const page = Number(item.page || item.pageIndex || 0);
+    const earlyCoverPages = book.legacyId !== 4 && page > 0 && page <= 8;
+    return !earlyCoverPages
+      && !/(تقدیم نامه|سپاسگزاری|فهرست مطالب|پیشگفتار|یادداشتی درباره این مجموعه|شناسنامه|تمرین|کاربرگ|جمع بندی|روز [۰-۹0-9]+)/u.test(heading)
       && !/(تقدیم نامه|سپاسگزاری|فهرست مطالب|پیشگفتار)/u.test(text)
-;
+      && item.text.length >= 90;
   });
-  const selected = representativePassages(substantive, 6);
+
+  // Build a chapter-spread reading map instead of selecting arbitrary pages
+  // from the beginning, middle and end of the entire book.
+  const byHeading = new Map();
+  for (const item of substantive) {
+    const heading = String(item.heading || '').trim();
+    if (!heading || !/(فصل|بخش|پیوست)/u.test(normalizeLibraryText(heading))) continue;
+    const key = normalizeLibraryText(heading);
+    if (!byHeading.has(key)) byHeading.set(key, item);
+  }
+  const chapterPassages = [...byHeading.values()];
+  const selected = chapterPassages.length
+    ? representativePassages(chapterPassages, Math.min(12, chapterPassages.length))
+    : representativePassages(substantive, 6);
   const chapterText = headings.length
-    ? '\\n\\nساختار قابل مشاهده کتاب:\\n' + headings.slice(0, 22).map((item) => '- ' + item.text + (item.page ? ' (صفحه ' + item.page + ')' : '')).join('\\n')
+    ? '\\n\\nنقشه فصل‌ها و بخش‌های اصلی:\\n' + headings
+      .filter((item) => !/(تمرین|کاربرگ|جمع بندی|روز [۰-۹0-9]+)/u.test(normalizeLibraryText(item.text)))
+      .slice(0, 24)
+      .map((item) => '- ' + item.text + (item.page ? ' (صفحه ' + item.page + ')' : ''))
+      .join('\\n')
     : '';
-  return 'مرور ساختاری مستند «' + book.title + '»\\n' +
-    'این خروجی چکیده معناییِ تألیفی نیست؛ نقشه‌ای از محورهای کتاب و گزیده‌های نماینده از متن اصلی است. بخش‌های مقدماتی و فهرست مطالب به‌عنوان شاهد محتوایی انتخاب نشده‌اند.' +
+  return 'مرور محتواییِ ساختاری «' + book.title + '»\\n' +
+    'این پاسخ، خلاصه تفسیریِ کامل یا جایگزین مطالعه کتاب نیست؛ نقشه‌ای از فصل‌ها همراه با گزیده‌ای از متن واقعی هر بخش است. برداشت یا نتیجه‌ای که مستقیماً در متن نیامده باشد به نویسنده نسبت داده نمی‌شود.' +
     chapterText +
-    (selected.length ? '\\n\\nگزیده‌های متنی از بخش‌های محتوایی کتاب:\\n' + formatPassages(selected) : '') +
-    '\\n\\nمحدودیت: برای خلاصه‌سازی معنایی کامل باید استدلال هر فصل تحلیل و به زبان تازه بازنویسی شود؛ موتور فعلی چنین تحلیلی را تضمین نمی‌کند.';
+    (selected.length ? '\\n\\nگزیده‌های نماینده از فصل‌ها و بخش‌ها:\\n' + formatPassages(selected) : '') +
+    '\\n\\nمحدودیت: موتور محلی فعلی توان تحلیل و بازنویسی استدلال همه فصل‌ها را ندارد؛ برای خلاصه معنایی دقیق باید هر فصل جداگانه تحلیل شود.';
 }
 
 function listBooksReply(books) {
@@ -465,7 +485,12 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     };
   }
   const followUp = Boolean(conversationState?.bookId && !/(?:جلد|کتاب) (?:اول|دوم|سوم|چهارم|پنجم|1|2|3|4|5)/u.test(normalized));
-  const effectiveQuery = followUp && conversationState.lastQuery ? conversationState.lastQuery : message;
+  // Keep the prior topic as context, but always search the user's NEW turn too.
+  // Previously the old lastQuery replaced the new message, so follow-up intents
+  // such as "چه محدودیت‌هایی دارد؟" repeated the previous retrieval.
+  const effectiveQuery = followUp && conversationState.lastQuery
+    ? conversationState.lastQuery + ' ' + message
+    : message;
   const asksSummary = SUMMARY.test(normalized);
   const queryWeights = asksSummary ? new Map() : expandedQueryTerms(effectiveQuery);
   const frequency = buildFrequencyIndex(allPassages);
@@ -508,9 +533,12 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   ];
   for (const [intentPattern, evidencePattern, label] of directTopicChecks) {
     if (!intentPattern.test(normalized)) continue;
-    const topicEvidence = selected.filter((passage) =>
-      evidencePattern.test(normalizeLibraryText(passage.text + ' ' + passage.heading))
-    );
+    const topicEvidence = selected.filter((passage) => {
+      const evidenceText = normalizeLibraryText(passage.text + ' ' + passage.heading);
+      // A single incidental word in a generic paragraph is not enough to
+      // present a passage as topic-specific guidance.
+      return evidencePattern.test(evidenceText) && String(passage.text || '').trim().length >= 80;
+    });
     if (!topicEvidence.length) {
       return {
         message: 'در «' + book.title + '»، در گزیده‌های بازیابی‌شده شاهد مستقیم و کافی ' + label + ' پیدا نکردم. نمی‌خواهم بخش‌های عمومی کتاب را به‌اشتباه مرتبط معرفی کنم. اگر فصل یا اصطلاح مشخصی مدنظرت است، آن را بگو تا همان بخش را بررسی کنم.',
