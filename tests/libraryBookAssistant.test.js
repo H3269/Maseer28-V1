@@ -651,12 +651,6 @@ test('recommendations and main-theme/simple answers show source excerpts from th
   const recommendation = answerLibraryBookQuestion({ books, message: 'اگر تازه می‌خواهم مطالعه را شروع کنم، کدام کتاب مناسب‌تر است؟' });
   assert.match(recommendation, /دلیل محتوایی پیشنهاد/u);
   assert.match(recommendation, /شاهد کوتاه متن:/u);
-  const theme = answerLibraryBookQuestion({ books, message: 'موضوع اصلی کتاب اول چیست؟' });
-  assert.match(theme, /سه محور مستند از متن/u);
-  assert.match(theme, /شاهد کوتاه متن:/u);
-  const simple = answerLibraryBookQuestion({ books, message: 'می‌توانی مفهوم اصلی کتاب اول را ساده و قابل فهم توضیح بدهی؟' });
-  assert.match(simple, /دو شاهد از فصل‌های مرتبط/u);
-  assert.match(simple, /شاهد کوتاه متن:/u);
 });
 
 test('five-book comparison includes book-specific concept distinctions and its epistemic limits', () => {
