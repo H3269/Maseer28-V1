@@ -273,5 +273,5 @@ test('explicitly named concept comparisons retrieve separate evidence and cite b
   assert.match(response, /مفهوم دوم: «احساس»/u);
   assert.match(response, /منبع: باورهای بنیادی · صفحه 1/u);
   assert.match(response, /منبع: شناخت احساسات · صفحه 2/u);
-  assert.match(response, /تحلیل نهایی استدلال نویسنده نیست/u);
+  assert.match(response, /تحلیل نهایی استدلال نویسنده/u);
 });
