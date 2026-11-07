@@ -71,6 +71,8 @@ jobs:
             status="$(gh api "repos/${GITHUB_REPOSITORY}/pages/deployments/${stale_sha}" --jq '.status')"
             echo "Stale Pages deployment status: ${status}"
             if [ "${status}" != "in_progress" ]; then
+              echo "Waiting briefly for GitHub Pages to release the cancelled deployment lock."
+              sleep 8
               exit 0
             fi
             sleep 2
