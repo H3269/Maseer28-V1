@@ -115,6 +115,7 @@ test('recommendations explain their limited basis instead of pretending to know 
 
 test('scientific validity questions distinguish book excerpts from scientific evidence', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم آیا این دیدگاه از نظر روان‌شناسی علمی قابل دفاع است؟' });
+  assert.match(response, /هنر شناخت و دگرگونی احساسات/u);
   assert.match(response, /باید ادعا یا توصیه مشخص باشد/u);
   assert.match(response, /چند گزیده نامرتبط می‌تواند گمراه‌کننده باشد/u);
   assert.doesNotMatch(response, /منبع:/);
@@ -228,6 +229,7 @@ test('alternative-view questions are not mistaken for a comparison of all librar
     books,
     message: 'در کتاب پنجم آیا درباره این موضوع دیدگاه متفاوت یا مخالفی هم وجود دارد؟',
   });
+  assert.match(response, /هنر شناخت و دگرگونی احساسات/u);
   assert.match(response, /برای بررسی علمی، دیدگاه مخالف یا محدودیت‌ها باید ادعا یا توصیه مشخص باشد/u);
   assert.doesNotMatch(response, /مقایسه ساختاری کتابخانه|منبع:/u);
 });
@@ -315,6 +317,7 @@ test('vague references do not trigger generic exercises or plans without a prior
 
 test('a simple explanation of an unspecified main book concept asks for the exact section', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم مفهوم اصلی را به زبان ساده توضیح بده' });
+  assert.match(response, /هنر شناخت و دگرگونی احساسات/u);
   assert.match(response, /باید یک مفهوم یا فصل مشخص را انتخاب کنیم/u);
   assert.doesNotMatch(response, /برداشت ساده و محتاطانه/u);
 });
@@ -340,4 +343,14 @@ test('topic-specific guidance excludes passages that only match unrelated query 
   });
   assert.match(response, /اعتمادبه‌نفس می‌تواند با تجربه اقدام‌های کوچک/u);
   assert.doesNotMatch(response, /انتقال‌دهنده عصبی/u);
+});
+
+test('an unspecified exercise cannot receive a generic alternative before its source is known', () => {
+  const response = answerLibraryBookQuestion({
+    books,
+    message: 'در کتاب پنجم اگر نتوانم این تمرین را انجام بدهم چه جایگزینی دارم؟',
+  });
+  assert.match(response, /هنر شناخت و دگرگونی احساسات/u);
+  assert.match(response, /عنوان فصل، شماره صفحه یا چند واژه/u);
+  assert.doesNotMatch(response, /جایگزین ساده پیشنهادی دستیار/u);
 });
