@@ -7094,3 +7094,36 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
   .globalAssistantDialog { height: 92dvh; max-height: calc(100dvh - 16px); }
   .globalAssistantChat .assistantTranscript { min-height: 0; }
 }
+
+
+/* V93: the assistant is one continuous RTL transcript; both speakers align to the right. */
+.globalAssistantChat,
+.globalAssistantChat .assistantTranscript,
+.globalAssistantChat .assistantComposer {
+  direction: rtl !important;
+  text-align: right !important;
+}
+.globalAssistantChat .assistantTranscript {
+  align-items: stretch;
+}
+.globalAssistantChat .assistantMessage,
+.globalAssistantChat .userMessage {
+  direction: rtl !important;
+  text-align: right !important;
+  align-self: flex-start !important;
+  margin-inline: 0 auto !important;
+  unicode-bidi: plaintext;
+}
+.globalAssistantChat .assistantMessage p,
+.globalAssistantChat .userMessage p,
+.globalAssistantChat .globalAssistantKnowledge,
+.globalAssistantChat .globalAssistantKnowledge p,
+.globalAssistantChat .globalAssistantKnowledge small {
+  direction: rtl !important;
+  text-align: right !important;
+  unicode-bidi: plaintext;
+}
+.globalAssistantChat .assistantComposer textarea {
+  direction: rtl !important;
+  text-align: right !important;
+}
