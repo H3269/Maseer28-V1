@@ -148,11 +148,11 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
             onKeyDown={containDialogTab}
           >
             <div className="globalAssistantDialogTop">
+              <h2 id="global-assistant-title">دستیار هوشمند مسیر ۲۸</h2>
               <button ref={closeButtonRef} type="button" className="iconButton" onClick={() => setOpen(false)} aria-label="بستن پنجره دستیار">
                 <AppIcon name="x" size={18} />
               </button>
             </div>
-            <h2 id="global-assistant-title">دستیار مسیر۲۸</h2>
             <div className="assistantChatShell globalAssistantChat" aria-label="گفت‌وگوی دستیار در صفحه جاری">
               <div className="assistantTranscript" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
                 {messages.map((item, index) => (
@@ -180,7 +180,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                   onChange={(event) => setDraft(event.target.value)}
                   placeholder="چطور میتونم کمکت کنم؟"
                 />
-                <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال پیام" disabled={!draft.trim()}><AppIcon name="arrow" size={21} /></button>
+                <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال پیام" disabled={!draft.trim()}><AppIcon name="arrowUp" size={19} /></button>
                 {error && <p className="contactHelp assistantComposerError" role="alert">{error}</p>}
               </form>
             </div>
