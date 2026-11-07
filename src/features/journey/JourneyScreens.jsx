@@ -460,7 +460,7 @@ export function Archive({ journey, content, onDeleteArchive, onBack, onNew }) {
     setExportMessage('');
     try {
       const blob = await exportArchivesZip(list);
-      triggerBlobDownload(blob, `maseer28-archives-${fa(new Date().toISOString().slice(0, 10))}.zip`);
+      triggerBlobDownload(blob, `maseer۲۸-archives-${fa(new Date().toISOString().slice(0, 10))}.zip`);
       setExportMessage('درخواست دریافت فایل ZIP شامل گزارش PDF آرشیوها ارسال شد. اگر فایل ذخیره نشد، WebView میزبان دانلود فایل را پشتیبانی نکرده یا مسدود کرده است.');
     } catch {
       setExportMessage('ساخت یا تحویل فایل آرشیو انجام نشد؛ ممکن است مرورگر از Canvas یا دانلود فایل پشتیبانی نکند. داده‌های اصلی تغییری نکرده‌اند.');
