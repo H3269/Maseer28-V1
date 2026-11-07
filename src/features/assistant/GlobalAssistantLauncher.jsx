@@ -175,7 +175,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 <textarea
                   id="global-assistant-message"
                   rows={2}
-                  maxLength={isDailyExercise ? 2000 : 3000}
+                  maxLength={3000}
                   value={draft}
                   onChange={(event) => setDraft(event.target.value)}
                   placeholder="چطور میتونم کمکت کنم؟"
