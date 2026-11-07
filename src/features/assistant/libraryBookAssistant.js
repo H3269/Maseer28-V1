@@ -274,12 +274,27 @@ function chapterRepresentativePassages(passages, limit = 6) {
     : representativePassages(passages.filter((item) => String(item.text || '').trim().length >= 90), limit);
 }
 
+function formatProfileItemsWithEvidence(book, items) {
+  const passages = passagesForBook(book);
+  return items.map(([heading, description, page], index) => {
+    const source = passages.find((item) =>
+      Number(item.page) === Number(page) && String(item.text || '').trim().length > 80
+    );
+    const excerpt = source
+      ? String(source.text).trim().slice(0, 120) + (String(source.text).trim().length > 120 ? '…' : '')
+      : 'در صفحه ارجاع‌شده گزیده متنیِ کافی برای نمایش پیدا نشد.';
+    return (index + 1) + ') ' + heading + '\n' + description +
+      '\nشاهد کوتاه متن: ' + excerpt +
+      '\nمنبع: ' + (source ? sourceLabel(source) : 'صفحه ' + page);
+  }).join('\n\n');
+}
+
 function summaryReply(book, passages) {
   const profile = getLibraryBookProfile(book);
   if (profile) {
     return 'خلاصه راهنمای محتوایی «' + book.title + '»\n\n' +
       'این جمع‌بندی، بازنویسی دستیار بر پایه موضوع‌ها و بخش‌های قابل بررسی متن است؛ نقل قول مستقیم نویسنده نیست و جای مطالعه کامل کتاب را نمی‌گیرد.\n\n' +
-      formatLibraryProfileItems(profile.summary) +
+      formatProfileItemsWithEvidence(book, profile.summary) +
       '\n\nخط اصلی کتاب: ' + profile.plain +
       '\n\nبرای مطالعه دقیق‌تر، هر محور را با صفحه منبع در خود کتاب دنبال کن.';
   }
@@ -406,8 +421,8 @@ function structuredGuidance(intent, book, passages, message) {
   if (KEY_POINTS.test(intent)) {
     const profile = getLibraryBookProfile(book);
     if (profile?.keyPoints?.length) {
-      return 'نکته‌های محوری «' + book.title + '» بر پایه فصل‌های بررسی‌شده (راهنمای مطالعه، نه رتبه‌بندی قطعی نویسنده):\n\n' +
-        formatLibraryProfileItems(profile.keyPoints.map(([point, page]) => [point, 'این نکته از محور محتوایی فصل مربوط استخراج و به زبان ساده بازنویسی شده است.', page])) +
+      return 'نکته‌های کلیدی منتخب «' + book.title + '» (راهنمای مطالعه، نه رتبه‌بندی قطعی نویسنده):\n\n' +
+        formatProfileItemsWithEvidence(book, profile.keyPoints.map(([point, page]) => [point, 'این نکته، بازنویسی دستیار از محور محتوایی فصل است؛ شاهد کوتاه متن در ادامه آمده است.', page])) +
         '\n\nاین‌ها بازنویسی دستیارند؛ برای فهم کامل استدلال، متن فصل‌های ارجاع‌شده را بخوان.';
     }
     return 'محورهای قابل مشاهده در بخش‌های اصلی کتاب (نه رتبه‌بندی قطعی مهم‌ترین نکات):\n\n' + source + '\n\nاین گزیده‌ها برای آشنایی با چند فصل‌اند؛ تعیین اهمیت و اولویت نکات به تحلیل کامل استدلال هر فصل نیاز دارد.';
