@@ -228,8 +228,8 @@ test('alternative-view questions are not mistaken for a comparison of all librar
     books,
     message: 'در کتاب پنجم آیا درباره این موضوع دیدگاه متفاوت یا مخالفی هم وجود دارد؟',
   });
-  assert.match(response, /نمی‌توانم وجود یا محتوای یک دیدگاه مخالف مشخص را اثبات کنم/u);
-  assert.doesNotMatch(response, /مقایسه ساختاری کتابخانه/u);
+  assert.match(response, /برای بررسی علمی، دیدگاه مخالف یا محدودیت‌ها باید ادعا یا توصیه مشخص باشد/u);
+  assert.doesNotMatch(response, /مقایسه ساختاری کتابخانه|منبع:/u);
 });
 
 test('the assistant does not label generic passages as anxiety-specific book guidance', () => {
