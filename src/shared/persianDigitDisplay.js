@@ -6,7 +6,7 @@ export function faDigits(value) {
 
 function localizeTextNode(node) {
   const parent = node.parentElement;
-  if (!parent || parent.closest('script, style, textarea, input, select, [contenteditable="true"]')) return;
+  if (!parent || parent.closest('script, style, textarea, input, [contenteditable="true"]')) return;
   const localized = faDigits(node.nodeValue);
   if (localized !== node.nodeValue) node.nodeValue = localized;
 }
