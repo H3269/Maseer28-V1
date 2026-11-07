@@ -637,7 +637,7 @@ test('a user can answer a section clarification and continue the original exerci
     assert.ok(first.conversationState?.awaitingSection, book.title + ' must request a missing section');
     const second = answerLibraryBookTurn({
       books,
-      message: 'فصل اول',
+      message: book.legacyId === 4 ? 'پیوست اول' : 'فصل اول',
       conversationState: first.conversationState,
     });
     assert.equal(second.conversationState.bookId, book.legacyId);
