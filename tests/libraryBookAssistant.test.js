@@ -626,3 +626,23 @@ test('book theme and simple explanation include supporting excerpts from the sel
     assert.match(simple, /منبع:/u, book.title + ' simple explanation must cite source pages');
   }
 });
+
+
+test('a user can answer a section clarification and continue the original exercise request', () => {
+  for (const book of books) {
+    const first = answerLibraryBookTurn({
+      books,
+      message: 'در «' + book.title + '» برای این موضوع یک تمرین عملی بده',
+    });
+    assert.ok(first.conversationState?.awaitingSection, book.title + ' must request a missing section');
+    const second = answerLibraryBookTurn({
+      books,
+      message: 'فصل اول',
+      conversationState: first.conversationState,
+    });
+    assert.equal(second.conversationState.bookId, book.legacyId);
+    assert.match(second.message, /تمرین|پیشنهاد عملی دستیار/u, book.title + ' must continue the original exercise intent');
+    assert.match(second.message, /منبع:/u, book.title + ' must ground the recovered answer in the book');
+    assert.doesNotMatch(second.message, /عنوان فصل، شماره صفحه یا چند واژه از همان قسمت را بفرست/u);
+  }
+});
