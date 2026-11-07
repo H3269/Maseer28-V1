@@ -83,7 +83,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     const inputStyle = window.getComputedStyle(element);
     if (context) {
       context.font = inputStyle.font;
-      const lines = String(value || '').split('\\n');
+      const lines = String(value || '').split(String.fromCharCode(10));
       const measuredText = Math.max(0, ...lines.map((line) => context.measureText(line || ' ').width));
       const desiredWidth = Math.max(116, Math.ceil(measuredText) + 34);
       element.style.width = `${Math.min(availableWidth, desiredWidth)}px`;
