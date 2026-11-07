@@ -12,6 +12,8 @@ try {
   page.on('pageerror', (error) => errors.push(String(error)));
   await page.addInitScript(() => {
     localStorage.setItem('maseer28_onboarding_complete_v1', '1');
+    // Keep the first-run copyright gate deterministic in each isolated browser context.
+    localStorage.removeItem('maseer28_copyright_v60');
     window.__archiveDrawnText = [];
     const originalFillText = CanvasRenderingContext2D.prototype.fillText;
     CanvasRenderingContext2D.prototype.fillText = function (value, ...args) {
@@ -98,6 +100,8 @@ try {
   emptyPage.on('pageerror', (error) => emptyErrors.push(String(error)));
   await emptyPage.addInitScript(() => {
     localStorage.setItem('maseer28_onboarding_complete_v1', '1');
+    // Keep the first-run copyright gate deterministic in each isolated browser context.
+    localStorage.removeItem('maseer28_copyright_v60');
     localStorage.setItem('maseer28_user_profile_v2', JSON.stringify({
       version: 2, name: 'کاربر آزمایشی', age: 35, gender: 'زن', phone: '09123456789',
       medical: 'none', medicalNote: '', medication: 'no', medicationRisk: 'no',

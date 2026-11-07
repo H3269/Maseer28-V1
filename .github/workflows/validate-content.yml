@@ -123,7 +123,7 @@ jobs:
       - name: Build application
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: |
-          npm run prepare:production
+          PATH28_DEPLOY_BASE=/Maseer28/ npm run prepare:production
           npm run build
 
       - name: Install Chromium for remaining browser regression tests
@@ -138,7 +138,7 @@ jobs:
           echo $! > /tmp/path28-vite.pid
           for attempt in {1..30}; do
             # The first connection can race Vite startup; keep expected retries quiet.
-            if curl --silent --fail http://127.0.0.1:4173/ > /dev/null; then
+            if curl --silent --fail http://127.0.0.1:4173/Maseer28/ > /dev/null; then
               echo "Production preview is ready on 127.0.0.1:4173"
               exit 0
             fi
@@ -151,7 +151,7 @@ jobs:
       - name: Run remaining Chromium app regression scenarios
         if: ${{ steps.install.outcome == 'success' && steps.chromium.outcome == 'success' }}
         env:
-          PATH28_BASE_URL: http://127.0.0.1:4173
+          PATH28_BASE_URL: http://127.0.0.1:4173/Maseer28/
         run: |
           PLAYWRIGHT_NODE_PATH="$(npx --yes --package=playwright@1.55.0 -c 'dirname "$(dirname "$(command -v playwright)")"')"
           # Disabled by project decision: keep local migration/runtime safeguards and unit coverage intact.
