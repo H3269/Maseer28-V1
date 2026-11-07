@@ -18,6 +18,7 @@ const SYNONYM_GROUPS = [
 const FOLLOW_UP = /^(?:بیشتر|ادامه|بیشتر توضیح|توضیح بده|مثال بزن|یک مثال|تمرین بده|چه تمرینی|همین|همان|اون|این|منظورم|در موردش|درباره اش)/u;
 const SUMMARY = /(?:خلاصه|چکیده|مرور کلی|مهم ترین نکات|نکات اصلی|موضوع اصلی)/u;
 const LIST = /(?:چه کتاب|فهرست کتاب|کتاب های موجود|کتابخانه چه کتاب)/u;
+const BOOK_SUBJECT = /(?:کتاب .*درباره چه|موضوع اصلی کتاب|موضوع کتاب چیست)/u;
 const COMPARE = /(?:تفاوت|مقایسه|فرق|چه فرقی)/u;
 const EXAMPLE_OR_EXERCISE = /(?:مثال بزن|یک مثال|تمرین|برنامه هفت|عادت روزانه)/u;
 const RECOMMEND = /(?:کدام کتاب|چه کتابی|از کدام کتاب|برای شروع مطالعه|از کجا شروع|پیشنهاد.*کتاب|کتاب مناسب)/u;
@@ -302,6 +303,21 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     return { message: 'برای اینکه متن اشتباهی را به تو نسبت ندهم، نام یکی از کتاب‌ها یا شماره جلد را مشخص کن. پنج کتاب موجود در کتابخانه را می‌توانم بررسی کنم.', conversationState: null };
   }
 
+  if ((AUTHOR_MEANING.test(normalized) || AUTHOR_REASON.test(normalized)) && !conversationState?.lastSources?.length) {
+    return { message: 'برای توضیح دقیق منظور نویسنده، لطفاً عنوان فصل، شماره صفحه یا چند کلمه از همان بخش را مشخص کن. هنوز معلوم نیست «این بخش» به کدام قسمت کتاب اشاره دارد؛ نمی‌خواهم نیت نویسنده را حدس بزنم.', conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message } };
+  }
+  if (CONCEPT_COMPARE.test(normalized)) {
+    const headings = bookHeadings(book).slice(0, 14);
+    return { message: 'برای مقایسه، لطفاً دو مفهوم مشخص را انتخاب کن. این‌ها چند عنوان واقعی از ساختار کتاب هستند:\\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\\n'), conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message } };
+  }
+  if (BOOK_SUBJECT.test(normalized)) {
+    const headings = bookHeadings(book).slice(0, 10);
+    return { message: 'بر اساس توضیح ثبت‌شده و تیترهای قابل مشاهده، موضوع «' + book.title + '» چنین معرفی شده است:\\n' +
+      (book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است') +
+      (headings.length ? '\\n\\nمحورهای قابل مشاهده:\\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\\n') : '') +
+      '\\n\\nاین معرفی بر پایه متادیتا و تیترهاست؛ برای شرح محتوای هر فصل باید متن همان فصل بررسی شود.',
+      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message } };
+  }
   const allPassages = passagesForBook(book);
   if (!allPassages.length) {
     return { message: 'متن قابل‌جست‌وجوی «' + book.title + '» در نسخه فعلی بارگذاری نشده است؛ بنابراین پاسخ یا خلاصه حدسی ارائه نمی‌کنم.', conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: '' } };
@@ -323,6 +339,14 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
       .sort((a, b) => b.score - a.score || a.index - b.index);
 
   const selected = asksSummary ? [] : chooseDiverse(ranked, 5);
+  if (!asksSummary && !selected.length && (SCIENCE.test(normalized) || ALTERNATIVE_VIEW.test(normalized) || LIMITATIONS.test(normalized))) {
+    const reply = SCIENCE.test(normalized)
+      ? 'از متن در دسترس این کتاب شاهد کافی برای داوری علمی این ادعا پیدا نکردم. اعتبار علمی را نمی‌توان از خود کتاب نتیجه گرفت؛ برای پاسخ دقیق باید ادعای مشخص را با پژوهش‌های معتبر و مستقل بررسی کرد. این پاسخ عمداً از تأیید یا رد بی‌منبع خودداری می‌کند.'
+      : ALTERNATIVE_VIEW.test(normalized)
+        ? 'در متن بازیابی‌شده شاهد کافی برای معرفی یک دیدگاه مخالف مشخص پیدا نکردم. دیدگاه بیرونی را حدس نمی‌زنم و به نویسنده نسبت نمی‌دهم؛ برای این کار باید منابع مستقل بررسی شوند.'
+        : 'در متن بازیابی‌شده شاهد کافی برای ارزیابی محدودیت همین توصیه پیدا نکردم. اگر فصل یا توصیه مشخص را نام ببری، می‌توانم محدودیت‌های متن و محدودیت کاربرد آن را جداگانه بررسی کنم.';
+    return { message: reply, conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery } };
+  }
   if (!asksSummary && !selected.length) {
     return {
       message: 'در متن قابل‌دسترسی «' + book.title + '» برای این پرسش شاهد قابل اتکایی پیدا نکردم. ممکن است موضوع با واژه‌های دیگری بیان شده باشد؛ اگر نام فصل یا اصطلاح کتاب را می‌دانی، بگو تا دقیق‌تر بررسی کنم.',
