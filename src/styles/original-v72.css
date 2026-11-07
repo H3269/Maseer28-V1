@@ -6881,26 +6881,56 @@ body:not(.bale-webview) .bottomNav button.active:after {
 #day .safetyNoteStacked .safetyChoice { display: block; margin-top: 8px; }
 
 
-/* Compact fixed release information, positioned above the existing bottom navigation. */
+/* Shared bottom dock: navigation and release metadata occupy separate rows. */
 .app:not(.appLoading) {
-  padding-bottom: 136px;
+  padding-bottom: 136px !important;
 }
 
-.releaseFooter {
+.appBottomDock {
   position: fixed;
   left: 50%;
+  bottom: max(6px, env(safe-area-inset-bottom));
   transform: translateX(-50%);
-  z-index: 90;
-  width: min(calc(100% - 28px), 620px);
+  z-index: 160;
+  width: min(calc(100% - 24px), 520px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.appBottomDock .bottomNav {
+  position: relative !important;
+  inset: auto !important;
+  right: auto !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  align-self: center;
+  width: 100% !important;
+  max-width: none !important;
+  z-index: auto !important;
+  pointer-events: auto;
+}
+
+.appBottomDock .releaseFooter {
+  position: relative;
+  inset: auto;
+  left: auto;
+  bottom: auto;
+  transform: none;
+  z-index: auto;
+  width: 100%;
+  min-height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 26px;
   padding: 5px 10px;
   border: 1px solid #dce9e4;
   border-radius: 10px;
-  background: rgba(255, 255, 255, .94);
+  background: rgba(255, 255, 255, .96);
   color: #49635d;
   box-shadow: 0 3px 12px rgba(24, 64, 54, .08);
   backdrop-filter: blur(10px);
@@ -6911,24 +6941,31 @@ body:not(.bale-webview) .bottomNav button.active:after {
   pointer-events: none;
 }
 
-.releaseFooter.with-nav {
-  bottom: calc(72px + env(safe-area-inset-bottom));
-}
-
-.releaseFooter.without-nav {
-  bottom: max(8px, env(safe-area-inset-bottom));
-}
-
-.releaseFooterDivider {
+.appBottomDock .releaseFooterDivider {
   color: #9aaca5;
 }
 
-body.reader-mode .releaseFooter {
+.appBottomDock .releaseFooter.without-nav {
+  margin-bottom: 0;
+}
+
+body.reader-mode .appBottomDock .releaseFooter {
   display: none !important;
 }
 
+html.bale-webview body .appBottomDock .bottomNav {
+  position: relative !important;
+  inset: auto !important;
+  right: auto !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+
 @media (max-width: 360px) {
-  .releaseFooter {
+  .appBottomDock .releaseFooter {
     gap: 5px;
     font-size: 9px;
     padding-inline: 6px;
