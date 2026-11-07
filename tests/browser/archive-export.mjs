@@ -9,7 +9,10 @@ const browser = await chromium.launch({ headless: true });
 try {
   const page = await browser.newPage({ acceptDownloads: true });
   const errors = [];
+  const networkFailures = [];
   page.on('pageerror', (error) => errors.push(String(error)));
+  page.on('requestfailed', (request) => networkFailures.push(`${request.method()} ${request.url()}: ${request.failure()?.errorText || 'failed'}`));
+  page.on('response', (response) => { if (response.status() >= 400) networkFailures.push(`${response.status()} ${response.url()}`); });
   await page.addInitScript(() => {
     localStorage.setItem('maseer28_onboarding_complete_v1', '1');
     // Keep the first-run copyright gate deterministic in each isolated browser context.
@@ -58,16 +61,26 @@ try {
   });
   await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => document.querySelector('#root')?.children.length > 0);
-  await page.waitForFunction(() => {
-    const copyright = document.querySelector('#copyrightModal');
-    const startupError = document.querySelector('.validationModal');
-    return Boolean(copyright || startupError);
-  }, null, { timeout: 30000 });
+  try {
+    await page.waitForFunction(() => {
+      const copyright = document.querySelector('#copyrightModal');
+      const startupError = document.querySelector('.validationModal');
+      return Boolean(copyright || startupError);
+    }, null, { timeout: 12000 });
+  } catch {
+    const snapshot = await page.evaluate(() => ({
+      bodyText: document.body.innerText.slice(0, 1800),
+      rootHtml: document.querySelector('#root')?.innerHTML.slice(0, 1200) || '',
+      resources: performance.getEntriesByType('resource').map((entry) => entry.name).filter((name) => /content|assets|\.js|\.json/.test(name)).slice(-30),
+      storageKeys: Object.keys(localStorage),
+    }));
+    throw new Error(`App startup did not reach a modal within 12 seconds. Snapshot: ${JSON.stringify(snapshot)}; browser errors: ${errors.join(' | ')}; network failures: ${networkFailures.join(' | ')}`);
+  }
   const startupErrorText = await page.locator('.validationModal').innerText().catch(() => '');
   assert.equal(
     await page.locator('#copyrightModal').isVisible().catch(() => false),
     true,
-    `App did not reach the copyright acceptance gate. Startup screen: ${startupErrorText || 'no visible startup error'}; browser errors: ${errors.join(' | ')}`
+    `App did not reach the copyright acceptance gate. Startup screen: ${startupErrorText || 'no visible startup error'}; browser errors: ${errors.join(' | ')}; network failures: ${networkFailures.join(' | ')}`
   );
   await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
   await page.locator('#dashboard').waitFor({ state: 'visible' });
