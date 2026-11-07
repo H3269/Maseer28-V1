@@ -146,3 +146,28 @@ test('progress guidance uses observable behavior and avoids clinical claims', ()
   assert.match(response, /رفتارهای قابل مشاهده/u);
   assert.match(response, /نه معیار تشخیصی یا درمانی/u);
 });
+
+
+test('book-specific introductions use actual metadata and chapter headings', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'کتاب اول درباره چه موضوعی است؟' });
+  assert.match(response, /رشد فردی، خودشناسی، تحول درونی/u);
+  assert.match(response, /محورهای قابل مشاهده/u);
+});
+
+test('author-intent questions ask for a precise section instead of guessing', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم نویسنده در این بخش دقیقاً چه منظوری دارد؟' });
+  assert.match(response, /عنوان فصل، شماره صفحه یا چند کلمه/u);
+  assert.match(response, /نمی‌خواهم نیت نویسنده را حدس بزنم/u);
+});
+
+test('concept comparisons request two named concepts and offer real book headings', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم دو مفهوم مهم را با هم مقایسه می‌کنی؟' });
+  assert.match(response, /دو مفهوم مشخص را انتخاب کن/u);
+  assert.match(response, /فصل/u);
+});
+
+test('a low-pressure alternative is available when a suggested exercise is difficult', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم اگر نتوانم این تمرین را انجام بدهم چه جایگزینی دارم؟' });
+  assert.match(response, /جایگزین ساده پیشنهادی دستیار/u);
+  assert.match(response, /لازم نیست به خودت فشار بیاوری/u);
+});
