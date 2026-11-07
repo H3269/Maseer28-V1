@@ -207,7 +207,7 @@ try {
   await launcher.click();
   dialog = page.getByRole('dialog', { name: 'دستیار هوشمند مسیر ۲۸' });
   await dialog.waitFor({ state: 'visible' });
-  assert.match(await dialog.innerText(), /دستیار مسیر۲۸/);
+  assert.match(await dialog.innerText(), /دستیار هوشمند مسیر ۲۸/);
   await dialog.getByRole('textbox').fill('این صفحه برای چیست؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('راه‌های ارتباط با مرکز')));
