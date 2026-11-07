@@ -294,6 +294,10 @@ function recommendBooks(books, message) {
     '\n\nاین پیشنهاد فقط بر پایه موضوع و ساختار ثبت‌شده است، نه شناخت وضعیت شخصی تو. اگر بگویی بیشتر دنبال خودشناسی، شناخت احساسات یا تغییر عادت‌ها هستی، می‌توانم پیشنهاد را دقیق‌تر کنم.';
 }
 
+function hasTopicEvidence(passages, pattern) {
+  return passages.some((passage) => pattern.test(normalizeLibraryText(passage.text + ' ' + passage.heading)));
+}
+
 function structuredGuidance(intent, book, passages, message) {
   const source = formatPassages(passages.slice(0, 4));
   const title = '«' + book.title + '»';
@@ -323,7 +327,7 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   const normalized = normalizeLibraryText(message);
   if (LIST.test(normalized)) return { message: listBooksReply(available), conversationState: null };
   if (RECOMMEND.test(normalized)) return { message: recommendBooks(available, normalized), conversationState: null };
-  if (COMPARE.test(normalized) && !CONCEPT_COMPARE.test(normalized) && /(?:کتاب|پنج|همه)/u.test(normalized)) {
+  if (COMPARE.test(normalized) && !CONCEPT_COMPARE.test(normalized) && !ALTERNATIVE_VIEW.test(normalized) && /(?:کتاب|پنج|همه)/u.test(normalized)) {
     return { message: compareBooksReply(available), conversationState: null };
   }
 
@@ -389,6 +393,25 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
       message: 'در متن قابل‌دسترسی «' + book.title + '» برای این پرسش شاهد قابل اتکایی پیدا نکردم. ممکن است موضوع با واژه‌های دیگری بیان شده باشد؛ اگر نام فصل یا اصطلاح کتاب را می‌دانی، بگو تا دقیق‌تر بررسی کنم.',
       conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery },
     };
+  }
+
+  const directTopicChecks = [
+    [ANXIETY, /اضطراب|استرس|نگران|دلشوره|تشویش|بی قرار|تنش/u, 'برای اضطراب'],
+    [ANGER, /خشم|عصب|پرخاش|غضب/u, 'برای خشم و عصبانیت'],
+    [CONFIDENCE, /اعتماد به نفس|اعتمادبه نفس|خودباور|عزت نفس|ارزشمند/u, 'برای اعتمادبه‌نفس'],
+  ];
+  for (const [intentPattern, evidencePattern, label] of directTopicChecks) {
+    if (intentPattern.test(normalized) && !hasTopicEvidence(selected, evidencePattern)) {
+      return {
+        message: 'در «' + book.title + '»، در گزیده‌های بازیابی‌شده شاهد مستقیم و کافی ' + label + ' پیدا نکردم. نمی‌خواهم بخش‌های عمومی کتاب را به‌اشتباه مرتبط معرفی کنم. اگر فصل یا اصطلاح مشخصی مدنظرت است، آن را بگو تا همان بخش را بررسی کنم.',
+        conversationState: {
+          bookId: book.legacyId,
+          bookTitle: book.title,
+          lastQuery: followUp ? effectiveQuery : message,
+          lastSources: [],
+        },
+      };
+    }
   }
 
   let reply;
