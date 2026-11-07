@@ -264,7 +264,8 @@ try {
     assert.match(adaptedReply, /راهکار اختصاصی همین روز/);
     await assertAssistantUsesVisibleDailySource(adaptedPage, adaptedPanel, 'غم و سوگ', scenario.day);
     assert.match(adaptedReply, /غم و سوگ/);
-    assert.match(adaptedReply, new RegExp('روز ' + scenario.day));
+    const visibleScenarioDay = String(scenario.day).replace(/[0-9]/g, digit => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
+    assert.match(adaptedReply, new RegExp('روز ' + visibleScenarioDay));
     assert.deepEqual(adaptedErrors, [], `adapted legacy daily guidance ${scenario.mode} must not raise browser errors`);
     await adaptedPage.close();
   }
