@@ -34,7 +34,7 @@ test('global assistant launcher is mounted across navigable screens, including s
   assert.match(appUi, /screen === 'bookReader' && readerState/);
   assert.match(appUi, /return <Reader book=/);
   assert.doesNotMatch(launcherUi, /support:\s*'پشتیبانی'/, 'launcher must not reintroduce screen-context helper labels');
-  assert.match(launcherUi, /maxLength=\{3000\}/, 'assistant composer must render without removed context state');
+  assert.match(launcherUi, /maxLength=\{dailyContext \? 2000 : 3000\}/, 'assistant composer must render without removed context state');
   assert.doesNotMatch(launcherUi, /isDailyExercise/, 'assistant launcher must not reference removed daily-context state');
   assert.match(launcherUi, /className="globalAssistantLauncher"/);
   assert.match(launcherUi, /aria-label="باز کردن دستیار مسیر۲۸"/);
