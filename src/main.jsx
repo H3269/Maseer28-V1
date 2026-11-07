@@ -1,6 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
+import { installPersianDigitDisplay } from './shared/persianDigitDisplay.js';
 import './styles/original-v72.css';
 
 // Apply layout compatibility rules only inside Bale's Android WebView.
