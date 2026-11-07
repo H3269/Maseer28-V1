@@ -56,10 +56,22 @@ function scorePassage(passage, queryTerms, corpusFrequency) {
 
 function pickBook(books, text) {
   const normalized = normalizeLibraryText(text);
-  return books.find((book) => {
+  const ordinal = normalized.match(/(?:جلد|کتاب) (اول|دوم|سوم|چهارم|پنجم|1|2|3|4|5)/u)?.[1];
+  const ordinalIds = { 'اول': 1, 'دوم': 2, 'سوم': 3, 'چهارم': 4, 'پنجم': 5, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 };
+  if (ordinal && ordinalIds[ordinal]) {
+    const selected = books.find((book) => Number(book.legacyId) === ordinalIds[ordinal]);
+    if (selected) return selected;
+  }
+  const exact = books.find((book) => {
     const title = normalizeLibraryText(book.title);
     return title.length > 4 && normalized.includes(title);
-  }) || null;
+  });
+  if (exact) return exact;
+  if (normalized.includes('از حقیقت تا واقعیت')) {
+    const volume = books.find((book) => Number(book.legacyId) === 1);
+    if (volume) return volume;
+  }
+  return null;
 }
 
 export function answerLibraryBookQuestion({ books = [], message = '' } = {}) {
