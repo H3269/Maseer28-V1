@@ -177,7 +177,7 @@ try {
 
   let assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /خشم/);
-  assert.match(assistantReply, /روز 1/);
+  assert.match(assistantReply, /روز ۱/);
   assert.match(assistantReply, /متن تمرین همین روز/);
   assert.match(assistantReply, /راهکار اختصاصی همین روز/);
   await assertAssistantUsesVisibleDailySource(page, panel, 'خشم', 1);
@@ -234,7 +234,7 @@ try {
     await legacyPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
     const legacyReply = await legacyPanel.locator('.assistantMessage').last().innerText();
     assert.ok(legacyReply.includes(problem), `legacy assistant reply must retain selected topic ${problem}`);
-    assert.match(legacyReply, /روز 2/);
+    assert.match(legacyReply, /روز ۲/);
     assert.match(legacyReply, /متن تمرین همین روز/);
     assert.match(legacyReply, /راهکار اختصاصی همین روز/);
     await assertAssistantUsesVisibleDailySource(legacyPage, legacyPanel, problem, 2);
