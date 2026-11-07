@@ -83,15 +83,16 @@ try {
   let dialog = page.getByRole('dialog', { name: 'دستیار مسیر۲۸' });
   await dialog.waitFor({ state: 'visible' });
   const closeButton = dialog.getByRole('button', { name: 'بستن پنجره دستیار' });
-  const acknowledgeButton = dialog.getByRole('button', { name: 'متوجه شدم' });
   await page.waitForFunction(() => document.activeElement?.getAttribute('aria-label') === 'بستن پنجره دستیار');
   assert.equal(await launcher.getAttribute('aria-expanded'), 'true');
   await page.keyboard.press('Shift+Tab');
-  assert.equal(await acknowledgeButton.evaluate((element) => element === document.activeElement), true, 'Shift+Tab from the first control must wrap to the last');
+  assert.equal(await dialog.getByRole('button', { name: 'ارسال' }).evaluate((element) => element === document.activeElement), true, 'Shift+Tab from the first control must wrap to the last');
   await page.keyboard.press('Tab');
   assert.equal(await closeButton.evaluate((element) => element === document.activeElement), true, 'Tab from the last control must wrap to the first');
-  assert.match(await dialog.innerText(), /صفحه فعلی: خانه/);
-  assert.match(await dialog.innerText(), /پردازش این نسخه در مرورگر انجام می‌شود/);
+  assert.match(await dialog.innerText(), /دستیار مسیر۲۸/);
+  assert.doesNotMatch(await dialog.innerText(), /پردازش این نسخه|می‌توانی بپرسی/);
+  assert.equal(await dialog.getByRole('button', { name: 'متوجه شدم' }).count(), 0, 'the redundant bottom close action must be removed');
+  assert.equal(await dialog.getByPlaceholder('چطور میتونم کمکت کنم؟').count(), 1, 'the composer must show the concise prompt');
   assert.equal(await dialog.getByRole('textbox').count(), 1, 'the limited local page assistant must expose its message composer');
   assert.equal((await dialog.innerText()).includes('09123456789'), false, 'private profile data must not be exposed to the page assistant');
   await dialog.getByRole('textbox').fill('اینجا چه کارهایی می‌توانم انجام بدهم؟');
@@ -140,8 +141,7 @@ try {
   await launcher.click();
   dialog = page.getByRole('dialog', { name: 'دستیار مسیر۲۸' });
   await dialog.waitFor({ state: 'visible' });
-  assert.match(await dialog.innerText(), /صفحه فعلی: تمرین روزانه/);
-  assert.match(await dialog.innerText(), /موضوع: خشم · روز 1/);
+  assert.doesNotMatch(await dialog.innerText(), /صفحه فعلی:|موضوع: خشم/);
   assert.equal(await page.locator('.dailyExerciseAssistant').count(), 0, 'the standalone daily assistant panel must be removed');
   await dialog.getByRole('textbox').fill('چطور انجامش بدم؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
@@ -151,7 +151,7 @@ try {
   assert.match(await dailyReply.innerText(), /روز 1/);
   assert.match(await dailyReply.innerText(), /متن تمرین همین روز/);
   assert.match(await dailyReply.innerText(), /راهکار اختصاصی همین روز/);
-  await dialog.getByRole('button', { name: 'متوجه شدم' }).click();
+  await closeButton.click();
   await dialog.waitFor({ state: 'detached' });
 
   await page.getByRole('button', { name: 'خانه' }).click();
@@ -161,11 +161,11 @@ try {
   await launcher.click();
   dialog = page.getByRole('dialog', { name: 'دستیار مسیر۲۸' });
   await dialog.waitFor({ state: 'visible' });
-  assert.match(await dialog.innerText(), /صفحه فعلی: کتابخانه/);
+  assert.match(await dialog.innerText(), /دستیار مسیر۲۸/);
   await dialog.getByRole('textbox').fill('این صفحه برای چیست؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('برای مرور کتاب‌های موجود')));
-  await dialog.getByRole('button', { name: 'متوجه شدم' }).click();
+  await closeButton.click();
   await dialog.waitFor({ state: 'detached' });
 
   await page.getByRole('button', { name: 'ارتباط' }).click();
@@ -173,7 +173,7 @@ try {
   await launcher.click();
   dialog = page.getByRole('dialog', { name: 'دستیار مسیر۲۸' });
   await dialog.waitFor({ state: 'visible' });
-  assert.match(await dialog.innerText(), /صفحه فعلی: پشتیبانی/);
+  assert.match(await dialog.innerText(), /دستیار مسیر۲۸/);
   await dialog.getByRole('textbox').fill('این صفحه برای چیست؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('راه‌های ارتباط با مرکز')));
@@ -197,13 +197,13 @@ try {
     assert.ok(dialogBox, 'mobile dialog must have a visible layout box');
     assert.ok(dialogBox.x >= 0 && dialogBox.x + dialogBox.width <= viewport.width, 'mobile dialog must fit horizontally');
     assert.ok(dialogBox.y >= 0 && dialogBox.y + dialogBox.height <= viewport.height, 'mobile dialog must fit vertically');
-    await dialog.getByRole('button', { name: 'متوجه شدم' }).click();
+    await closeButton.click();
     await dialog.waitFor({ state: 'detached' });
   }
 
   assert.deepEqual(errors, [], 'global assistant navigation must not raise uncaught page errors');
   await page.close();
-  process.stdout.write('PASS: Chromium global assistant placement, daily-page shortcut, page-context disclosure, unsupported-page guard, dialog close, Escape, focus management and mobile layout (WV-BROWSER-GLOBAL-ASSISTANT)\\n');
+  process.stdout.write('PASS: Chromium global assistant placement, minimal chat UI, icon send control, daily-page shortcut, unsupported-page guard, X/Escape close, focus management and mobile layout (WV-BROWSER-GLOBAL-ASSISTANT)\\n');
 } finally {
   await browser.close();
 }
