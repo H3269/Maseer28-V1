@@ -128,7 +128,7 @@ test('archive export produces a structurally valid local ZIP with readable PDF s
     const bytes = new Uint8Array(await blob.arrayBuffer());
     const entries = extractStoredZipEntries(bytes);
     assert.equal(entries.length, 2);
-    assert.deepEqual(entries.map((entry) => entry.name), ['01-آزمون-اول.pdf', '02-آزمون-دوم.pdf']);
+    assert.deepEqual(entries.map((entry) => entry.name), ['۰۱-آزمون-اول.pdf', '۰۲-آزمون-دوم.pdf']);
 
     const firstPdf = new TextDecoder().decode(entries[0].data);
     const secondPdf = new TextDecoder().decode(entries[1].data);
@@ -139,6 +139,33 @@ test('archive export produces a structurally valid local ZIP with readable PDF s
     assert.match(secondPdf, /%PDF-1\.4/);
     assert.match(secondPdf, /^%PDF-1\.4/);
     assert.match(secondPdf, /%%EOF$/);
+  } finally {
+    if (originalDocument === undefined) delete globalThis.document;
+    else globalThis.document = originalDocument;
+  }
+});
+
+
+test('archive PDF canvas output and ZIP names contain Persian digits only', async () => {
+  const originalDocument = globalThis.document;
+  const drawnText = [];
+  globalThis.document = makeCanvasEnvironment(drawnText);
+  try {
+    const blob = await exportArchivesZip([{
+      profileData: { problem: 'آزمون اعداد' },
+      completed: [1, 28],
+      answers: { 1: 'پاسخ روز 1' },
+      daily: { 1: { score: 7, feedbackText: 'امتیاز 7 از 10' } },
+      assessmentData: { score: 6 },
+      final: { score: 3 },
+      startedAt: '2026-01-01T00:00:00.000Z',
+      archivedAt: '2026-01-28T00:00:00.000Z',
+    }]);
+    const entries = extractStoredZipEntries(new Uint8Array(await blob.arrayBuffer()));
+    assert.equal(entries[0].name, '۰۱-آزمون-اعداد.pdf');
+    assert.doesNotMatch(drawnText.join(' '), /[0-9]/, 'every user-visible PDF canvas string must use Persian digits');
+    assert.match(drawnText.join(' '), /۲۸/);
+    assert.match(drawnText.join(' '), /امتیاز ۷ از ۱۰/);
   } finally {
     if (originalDocument === undefined) delete globalThis.document;
     else globalThis.document = originalDocument;
