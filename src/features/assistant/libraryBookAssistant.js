@@ -445,10 +445,10 @@ function structuredGuidance(intent, book, passages, message) {
 function hasExplicitSectionReference(value) {
   const raw = String(value || '');
   const normalized = normalizeLibraryText(raw);
-  const numberedSection = /(?:فصل|بخش|پیوست)\\s+(?:اول|دوم|سوم|چهارم|پنجم|ششم|هفتم|هشتم|نهم|دهم|یازدهم|دوازدهم|[0-9]+)/u;
-  const namedSection = /(?:فصل|بخش|پیوست)\\s+(?!(?:این|همین|دقیقاً|مورد|خاص|مربوط|فعلی|بالا|پایین)(?=\\s|$))[\\p{L}]{3,}/u;
+  const numberedSection = /(?:فصل|بخش|پیوست)\s+(?:اول|دوم|سوم|چهارم|پنجم|ششم|هفتم|هشتم|نهم|دهم|یازدهم|دوازدهم|[0-9]+)/u;
+  const namedSection = /(?:فصل|بخش|پیوست)\s+(?!(?:این|همین|دقیقاً|مورد|خاص|مربوط|فعلی|بالا|پایین)(?=\s|$))[\p{L}]{3,}/u;
   return numberedSection.test(normalized)
-    || /صفحه\\s*[0-9]+/u.test(normalized)
+    || /صفحه\s*[0-9]+/u.test(normalized)
     || /(?:عنوان فصل|عنوان بخش|شماره صفحه)/u.test(normalized)
     || namedSection.test(normalized);
 }
