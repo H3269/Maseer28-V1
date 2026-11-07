@@ -168,10 +168,25 @@ test('concept comparisons request two named concepts and offer real book heading
   assert.match(response, /فصل/u);
 });
 
-test('a low-pressure alternative is available when a suggested exercise is difficult', () => {
+test('a low-pressure alternative asks for the exercise source when no prior section is known', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم اگر نتوانم این تمرین را انجام بدهم چه جایگزینی دارم؟' });
-  assert.match(response, /جایگزین ساده پیشنهادی دستیار/u);
-  assert.match(response, /لازم نیست به خودت فشار بیاوری/u);
+  assert.match(response, /عنوان فصل، شماره صفحه یا چند واژه/u);
+  assert.doesNotMatch(response, /جایگزین ساده پیشنهادی دستیار/u);
+});
+
+test('a low-pressure alternative is available when the exercise section is already in context', () => {
+  const response = answerLibraryBookTurn({
+    books,
+    message: 'اگر نتوانم این تمرین را انجام بدهم چه جایگزینی دارم؟',
+    conversationState: {
+      bookId: 5,
+      bookTitle: books[4].title,
+      lastQuery: 'در کتاب پنجم تمرین پایانی فصل پنجم را توضیح بده',
+      lastSources: [{ page: 44, heading: 'تمرین پایانی فصل پنجم: یافتن نقطه تغییر' }],
+    },
+  });
+  assert.match(response.message, /جایگزین ساده پیشنهادی دستیار/u);
+  assert.match(response.message, /لازم نیست به خودت فشار بیاوری/u);
 });
 
 
