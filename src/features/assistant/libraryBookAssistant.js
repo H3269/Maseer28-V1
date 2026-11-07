@@ -220,7 +220,7 @@ function bookHeadings(book) {
       const next = blocks[index + 1];
       // Some book pages store the section name as a short paragraph immediately
       // after a structural heading such as "بخش اول:".
-      if (/^(?:فصل|بخش|پیوست|مرحله|هفته)\\s+[^:：]{1,24}[:：]$/u.test(title)
+      if (/^(?:فصل|بخش|پیوست|مرحله|هفته)\s+[^:：]{1,24}[:：]$/u.test(title)
         && next?.type !== 'heading' && next?.text?.trim().length > 2 && next.text.trim().length <= 100) {
         title += ' ' + next.text.trim();
       }
@@ -416,8 +416,8 @@ function structuredGuidance(intent, book, passages, message) {
 function hasExplicitSectionReference(value) {
   const raw = String(value || '');
   const normalized = normalizeLibraryText(raw);
-  return /(?:فصل|بخش|پیوست)\\s+(?:اول|دوم|سوم|چهارم|پنجم|ششم|هفتم|هشتم|نهم|دهم|یازدهم|دوازدهم|[0-9]+|[\\p{L}]{3,})/u.test(normalized)
-    || /صفحه\\s*[0-9]+/u.test(normalized)
+  return /(?:فصل|بخش|پیوست)\s+(?:اول|دوم|سوم|چهارم|پنجم|ششم|هفتم|هشتم|نهم|دهم|یازدهم|دوازدهم|[0-9]+|[\p{L}]{3,})/u.test(normalized)
+    || /صفحه\s*[0-9]+/u.test(normalized)
     || /(?:عنوان فصل|شماره صفحه|در فصل|در بخش)/u.test(normalized);
 }
 
@@ -425,16 +425,16 @@ function hasExplicitClaimReference(value) {
   const raw = String(value || '');
   const normalized = normalizeLibraryText(raw);
   return hasExplicitSectionReference(raw)
-    || /(?:ادعا|جمله|عبارت|توصیه)\\s*(?:مشخص|این است|که|:)/u.test(normalized)
+    || /(?:ادعا|جمله|عبارت|توصیه)\s*(?:مشخص|این است|که|:)/u.test(normalized)
     || /[«"][^»"]{8,}[»"]/u.test(raw);
 }
 
 function extractSimpleConceptPair(message) {
   const normalized = normalizeLibraryText(message)
-    .replace(/^(?:منظورم|مفهوم ها|دو مفهوم|این دو مفهوم|مقایسه این دو)\\s*/u, '')
-    .replace(/\\s+(?:را|رو|با هم|هستند|است)$/u, '')
+    .replace(/^(?:منظورم|مفهوم ها|دو مفهوم|این دو مفهوم|مقایسه این دو)\s*/u, '')
+    .replace(/\s+(?:را|رو|با هم|هستند|است)$/u, '')
     .trim();
-  const parts = normalized.split(/\\s+(?:و|با)\\s+/u).map((part) => part.trim()).filter(Boolean);
+  const parts = normalized.split(/\s+(?:و|با)\s+/u).map((part) => part.trim()).filter(Boolean);
   if (parts.length !== 2) return null;
   const valid = parts.every((part) => part.length >= 2 && part.split(' ').length <= 4);
   return valid && parts[0] !== parts[1] ? parts : null;
