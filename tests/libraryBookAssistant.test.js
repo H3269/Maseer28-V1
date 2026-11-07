@@ -481,3 +481,49 @@ test('five-turn book conversation keeps topic, source evidence, and assistant at
   assert.match(fifth.message, /صفحه 22/u);
   assert.equal(fifth.conversationState.bookId, 5);
 });
+
+
+test('five-turn follow-up path stays grounded in each of the five real seeded books', () => {
+  const ordinals = ['اول', 'دوم', 'سوم', 'چهارم', 'پنجم'];
+  for (const book of books) {
+    const sourcePage = book.content.pages.find((page) =>
+      (page.blocks || []).some((block) => block.type !== 'heading' && String(block.text || '').trim().length > 100)
+    );
+    assert.ok(sourcePage, book.title + ' must contain a substantive source paragraph');
+    const sourceBlock = sourcePage.blocks.find((block) =>
+      block.type !== 'heading' && String(block.text || '').trim().length > 100
+    );
+    const keyword = String(sourceBlock.text).split(/\\s+/u)
+      .map((word) => word.replace(/[^\\p{L}\\p{N}]/gu, ''))
+      .find((word) => word.length >= 5);
+    assert.ok(keyword, book.title + ' must provide a searchable source term');
+
+    let turn = answerLibraryBookTurn({
+      books,
+      message: 'در کتاب ' + ordinals[book.legacyId - 1] + ' درباره ' + keyword + ' چه نوشته شده؟',
+    });
+    assert.equal(turn.conversationState.bookId, book.legacyId);
+    assert.ok(turn.conversationState.lastSources?.length, book.title + ' first turn must retain source locators');
+    assert.match(turn.message, /منبع:/u, book.title + ' first turn must cite a source');
+
+    const followUps = [
+      { message: 'این موضوع را به زبان ساده توضیح بده', expected: /شاهدهای خود کتاب|گزیده/u },
+      { message: 'برای همین موضوع یک مثال ملموس بزن', expected: /مثال فرضی|پیشنهادی دستیار/u },
+      { message: 'اگر انجام این تمرین برایم سخت بود، چه جایگزینی دارم؟', expected: /جایگزین ساده پیشنهادی دستیار/u },
+      { message: 'از کجا بفهمم در اجرای این توصیه پیشرفت کرده‌ام؟', expected: /پیشنهاد سنجش دستیار/u },
+    ];
+
+    for (const followUp of followUps) {
+      turn = answerLibraryBookTurn({
+        books,
+        message: followUp.message,
+        conversationState: turn.conversationState,
+      });
+      assert.equal(turn.conversationState.bookId, book.legacyId, book.title + ' must remain selected');
+      assert.match(turn.message, new RegExp(book.title.replace(/[.*+?^${}()|[\\]\\\\]/gu, '\\\\$&'), 'u'));
+      assert.match(turn.message, /منبع:/u, book.title + ' follow-up must preserve cited book evidence');
+      assert.ok(turn.conversationState.lastSources?.length, book.title + ' follow-up must preserve source locators');
+      assert.match(turn.message, followUp.expected, book.title + ' follow-up must use its requested response mode');
+    }
+  }
+});
