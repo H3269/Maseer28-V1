@@ -657,7 +657,10 @@ test('five-book comparison includes book-specific concept distinctions and its e
   const response = answerLibraryBookQuestion({ books, message: 'تفاوت موضوعی این پنج کتاب چیست؟' });
   for (const book of books) assert.ok(response.includes(book.title));
   assert.match(response, /نمونه تمایز مفهومی/u);
+  assert.match(response, /شاهدهای صفحه‌ای برای دو مفهوم/u);
+  assert.match(response, /منبع:/u);
   assert.match(response, /کتابچه چهارم ابزار اجرایی مکمل جلد سوم/u);
   assert.match(response, /نه رتبه‌بندی علمی/u);
+  assert.ok((response.match(/منبع:/gu) || []).length >= 8, 'comparison should cite source passages for most book-specific concept pairs');
 });
 
