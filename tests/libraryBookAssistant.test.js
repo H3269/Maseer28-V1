@@ -304,11 +304,11 @@ test('book overviews exclude dedication and contents pages from representative e
       ] },
       { page: 9, sourcePage: 9, blocks: [
         { type: 'heading', text: 'فصل اول: شناخت باورها' },
-        { type: 'paragraph', text: 'باورها برداشت‌هایی هستند که بر انتخاب و رفتار انسان اثر می‌گذارند.' },
+        { type: 'paragraph', text: 'باورها برداشت‌هایی هستند که فرد درباره خود و جهان می‌سازد و می‌توانند بر انتخاب‌ها، رفتارهای روزمره و شیوه تفسیر رویدادهای زندگی او اثر بگذارند.' },
       ] },
       { page: 10, sourcePage: 10, blocks: [
         { type: 'heading', text: 'فصل دوم: انتخاب آگاهانه' },
-        { type: 'paragraph', text: 'انتخاب آگاهانه به بررسی پیامدها و هماهنگی رفتار با هدف کمک می‌کند.' },
+        { type: 'paragraph', text: 'انتخاب آگاهانه یعنی پیش از اقدام، گزینه‌ها و پیامدهای احتمالی را بررسی کنیم و یک قدم کوچک و مشخص متناسب با هدف خود برداریم.' },
       ] },
     ] },
   }];
@@ -406,7 +406,7 @@ test('topic-specific guidance rejects a short incidental mention as insufficient
     content: { pages: [
       { page: 1, sourcePage: 1, blocks: [
         { type: 'heading', text: 'برنامه‌ریزی روزانه' },
-        { type: 'paragraph', text: 'برنامه‌ریزی روزانه به سامان دادن کارهای معمول کمک می‌کند. در یک مثال کوتاه به عصبانیت اشاره شده است، اما این بخش درباره شناخت یا مدیریت خشم نیست و راهکاری در این زمینه ارائه نمی‌کند.' },
+        { type: 'paragraph', text: 'برنامه‌ریزی روزانه به سامان دادن کارهای معمول کمک می‌کند. در یک مثال کوتاه به عصبانیت اشاره شده است، اما این بخش درباره شناخت یا مدیریت این موضوع نیست و راهکاری در این زمینه ارائه نمی‌کند.' },
       ] },
     ] },
   }];
@@ -473,7 +473,7 @@ test('five-turn book conversation keeps topic, source evidence, and assistant at
   const fourth = answerLibraryBookTurn({ books: sampleBooks, message: 'چطور پیشرفتم را بسنجم؟', conversationState: third.conversationState });
   const fifth = answerLibraryBookTurn({ books: sampleBooks, message: 'این توصیه چه محدودیتی دارد؟', conversationState: fourth.conversationState });
   assert.match(first.message, /صفحه 20/u);
-  assert.match(second.message, /پیشنهاد دستیار/u);
+  assert.match(second.message, /پیشنهادی دستیار/u);
   assert.match(second.message, /صفحه 21/u);
   assert.match(third.message, /جایگزین ساده پیشنهادی دستیار/u);
   assert.match(fourth.message, /پیشنهاد سنجش دستیار/u);
