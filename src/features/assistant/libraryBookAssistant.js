@@ -575,11 +575,13 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   if (BOOK_SUBJECT.test(normalized)) {
     const profile = getLibraryBookProfile(book);
     const headings = mainBookHeadings(book).slice(0, 8);
+    const subjectEvidence = chapterRepresentativePassages(passagesForBook(book), 2);
     return { message: 'موضوع اصلی «' + book.title + '»\n\n' +
       (profile?.plain || profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است') +
       (profile?.subject ? '\n\nحوزه‌های اصلی کتاب: ' + profile.subject : '') +
       (headings.length ? '\n\nبخش‌های راهنما:\n' + headings.slice(0, 5).map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\n') : '') +
-      '\n\nاین توضیح، بازنویسی دستیار بر پایه پروفایل محتوایی و ساختار کتاب است؛ نقل قول مستقیم نویسنده نیست.',
+      (subjectEvidence.length ? '\n\nشواهد متنی از کتاب:\n' + formatPassages(subjectEvidence) : '') +
+      '\n\nاین توضیح، بازنویسی دستیار بر پایه پروفایل محتوایی و متن کتاب است؛ نقل قول مستقیم نویسنده نیست.',
       conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery } };
   }
   const allPassages = passagesForBook(book);
@@ -607,10 +609,12 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     const profile = getLibraryBookProfile(book);
     const headings = mainBookHeadings(book).slice(0, 8);
     const subject = profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است';
+    const simpleEvidence = chapterRepresentativePassages(passagesForBook(book), 2);
     return {
       message: 'توضیح ساده مفهوم اصلی «' + book.title + '»\n\n' +
         (profile?.plain || 'موضوع معرفی‌شده: ' + subject) +
         (headings.length ? '\n\nبرای مطالعه جزئی‌تر، این بخش‌ها نقطه شروع مناسبی‌اند:\n' + headings.slice(0, 5).map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\n') : '') +
+        (simpleEvidence.length ? '\n\nشواهد متنی برای این توضیح:\n' + formatPassages(simpleEvidence) : '') +
         '\n\nاین توضیح، بازنویسی دستیار بر پایه ساختار و متن بررسی‌شده است؛ نقل قول مستقیم نویسنده نیست.',
       conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery, awaitingSection: true },
     };
