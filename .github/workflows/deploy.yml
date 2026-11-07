@@ -57,14 +57,26 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/deployments/10047cfa83dd51598ddbc387db0a8e2718bc8ff4/cancel" >/tmp/pages-cancel.out 2>/tmp/pages-cancel.err; then
-            echo "Cancelled stale Pages deployment."
+          stale_sha="10047cfa83dd51598ddbc387db0a8e2718bc8ff4"
+          if gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/deployments/${stale_sha}/cancel" >/tmp/pages-cancel.out 2>/tmp/pages-cancel.err; then
+            echo "Cancellation request accepted for stale Pages deployment."
           elif grep -Eqi 'Not Found|404' /tmp/pages-cancel.err; then
             echo "Stale Pages deployment was already cleared."
+            exit 0
           else
             cat /tmp/pages-cancel.err
             exit 1
           fi
+          for attempt in $(seq 1 15); do
+            status="$(gh api "repos/${GITHUB_REPOSITORY}/pages/deployments/${stale_sha}" --jq '.status')"
+            echo "Stale Pages deployment status: ${status}"
+            if [ "${status}" != "in_progress" ]; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Stale Pages deployment is still active after cancellation; refusing to overlap deployments."
+          exit 1
 
       - name: Deploy test app
         id: deployment
