@@ -1,3 +1,5 @@
+import { getLibraryBookProfile, formatLibraryProfileItems } from './libraryBookProfiles.js';
+
 const STOP = new Set('از به با در برای که این آن را و یا یک های هایش هست است شود می کند کردن درباره چگونه چیست چه اگر اما زیرا تا پس روی خود انسان زندگی من تو شما کتاب جلد'.split(' '));
 
 const SYNONYM_GROUPS = [
@@ -271,6 +273,14 @@ function chapterRepresentativePassages(passages, limit = 6) {
 }
 
 function summaryReply(book, passages) {
+  const profile = getLibraryBookProfile(book);
+  if (profile) {
+    return 'خلاصه راهنمای محتوایی «' + book.title + '»\\n\\n' +
+      'این جمع‌بندی، بازنویسی دستیار بر پایه موضوع‌ها و بخش‌های قابل بررسی متن است؛ نقل قول مستقیم نویسنده نیست و جای مطالعه کامل کتاب را نمی‌گیرد.\\n\\n' +
+      formatLibraryProfileItems(profile.summary) +
+      '\\n\\nخط اصلی کتاب: ' + profile.plain +
+      '\\n\\nبرای مطالعه دقیق‌تر، هر محور را با صفحه منبع در خود کتاب دنبال کن.';
+  }
   const headings = mainBookHeadings(book);
   const substantive = passages.filter((item) => {
     const heading = normalizeLibraryText(item.heading);
@@ -282,9 +292,6 @@ function summaryReply(book, passages) {
       && !/(تقدیم نامه|سپاسگزاری|فهرست مطالب|پیشگفتار)/u.test(text)
       && item.text.length >= 90;
   });
-
-  // Build a chapter-spread reading map instead of selecting arbitrary pages
-  // from the beginning, middle and end of the entire book.
   const byHeading = new Map();
   for (const item of substantive) {
     const heading = String(item.heading || '').trim();
@@ -304,11 +311,12 @@ function summaryReply(book, passages) {
       .join('\\n')
     : '';
   return 'مرور محتواییِ ساختاری «' + book.title + '»\\n' +
-    'این پاسخ، خلاصه تفسیریِ کامل یا جایگزین مطالعه کتاب نیست؛ نقشه‌ای از فصل‌ها همراه با گزیده‌ای از متن واقعی هر بخش است. برداشت یا نتیجه‌ای که مستقیماً در متن نیامده باشد به نویسنده نسبت داده نمی‌شود.' +
+    'این پاسخ، خلاصه تفسیریِ کامل یا جایگزین مطالعه کتاب نیست؛ نقشه‌ای از فصل‌ها همراه با گزیده‌ای از متن واقعی هر بخش است.' +
     chapterText +
     (selected.length ? '\\n\\nگزیده‌های نماینده از فصل‌ها و بخش‌ها:\\n' + formatPassages(selected) : '') +
-    '\\n\\nمحدودیت: موتور محلی فعلی توان تحلیل و بازنویسی استدلال همه فصل‌ها را ندارد؛ برای خلاصه معنایی دقیق باید هر فصل جداگانه تحلیل شود.';
+    '\\n\\nمحدودیت: برای کتابی که پروفایل محتواییِ بازبینی‌شده ندارد، این خروجی فقط مرور ساختاری است.';
 }
+
 
 function listBooksReply(books) {
   return 'کتاب‌های موجود در کتابخانه:\n' + books.map((book, index) => {
@@ -318,14 +326,14 @@ function listBooksReply(books) {
 }
 
 function compareBooksReply(books) {
-  return 'مقایسه ساختاری کتابخانه بر اساس عنوان، توضیح ثبت‌شده و تیترهای واقعی متن:\n\n' +
+  return 'مقایسه محتوایی پنج کتاب کتابخانه مسیر ۲۸:\\n\\n' +
     books.map((book) => {
-      const headings = mainBookHeadings(book).slice(0, 6);
-      const subject = book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است';
-      return '• ' + book.title + '\nموضوع ثبت‌شده: ' + subject +
-        (headings.length ? '\nمحورهای قابل مشاهده در تیترها: ' + headings.map((item) => item.text).join('؛ ') : '');
-    }).join('\n\n') +
-    '\n\nاین مقایسه ساختاری است؛ برای نتیجه‌گیری درباره تفاوت استدلال‌ها باید فصل‌های مرتبط هر دو کتاب جداگانه بررسی شوند.';
+      const profile = getLibraryBookProfile(book);
+      const subject = profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است';
+      const focus = profile?.comparison || 'برای این کتاب هنوز جمع‌بندی مقایسه‌ایِ بازبینی‌شده ثبت نشده است.';
+      return '• «' + book.title + '»\\nمحور اصلی: ' + subject + '\\nجایگاه در مجموعه: ' + focus;
+    }).join('\\n\\n') +
+    '\\n\\nتفاوت کاربردی کتاب‌ها: جلد اول برای ساختن پایه خودشناسی؛ جلد دوم برای فهم سازوکارهای شناختی و تغییر؛ جلد سوم برای موانع اجرای تغییر؛ کتابچه چهارم برای کار عملی و ثبت تجربه؛ و کتاب پنجم برای سواد هیجانی و تنظیم احساسات مناسب‌تر است. این دسته‌بندی، راهنمای مطالعه بر اساس محتوای بررسی‌شده است، نه رتبه‌بندی علمی یا درمانی.';
 }
 
 
@@ -337,25 +345,38 @@ function mainBookHeadings(book) {
 }
 
 function bookSubject(book) {
+  const profile = getLibraryBookProfile(book);
   const headings = mainBookHeadings(book).slice(0, 8).map((item) => item.text);
-  return [book.content?.subtitle, book.content?.description, ...headings].filter(Boolean).join('؛ ');
+  return [profile?.subject, book.content?.subtitle, book.content?.description, ...headings].filter(Boolean).join('؛ ');
 }
 
 function recommendBooks(books, message) {
   const normalized = normalizeLibraryText(message);
+  const beginner = /(?:تازه|مبتدی|اولین بار|شروع مطالعه|از کجا شروع)/u.test(normalized);
+  if (beginner) {
+    const first = books.find((book) => Number(book.legacyId) === 1) || books[0];
+    const emotions = books.find((book) => Number(book.legacyId) === 5);
+    const workbook = books.find((book) => Number(book.legacyId) === 4);
+    const profile = getLibraryBookProfile(first);
+    return 'پیشنهاد روشن برای شروع: «' + first.title + '».\\n' +
+      (profile?.beginner || 'این کتاب برای شروع مسیر مناسب‌تر به نظر می‌رسد.') +
+      (emotions ? '\\n\\nاگر مسئله اصلی‌ات شناخت و تنظیم احساسات است، «' + emotions.title + '» گزینه شروعِ موضوعی مناسبی است.' : '') +
+      (workbook ? '\\n\\n«' + workbook.title + '» را به‌عنوان کتاب اول پیشنهاد نمی‌کنم؛ این کتابچه ابزار اجرایی است و در کنار جلد سوم بیشترین فایده را دارد.' : '') +
+      '\\n\\nاین پیشنهاد بر اساس ساختار و محتوای کتاب‌هاست؛ اگر هدفت را مشخص کنی، ترتیب مطالعه را دقیق‌تر می‌کنم.';
+  }
   const candidates = SELF_KNOWLEDGE.test(normalized)
     ? books.filter((book) => /خودشناسی|شناخت احساس|شناخت خود|احساسات/u.test(normalizeLibraryText(bookSubject(book))))
     : books;
   const chosen = candidates.length ? candidates : books;
-  return 'پیشنهاد شروع مطالعه بر اساس اطلاعات ثبت‌شده و تیترهای واقعی کتاب‌ها:\n\n' +
+  return 'پیشنهاد مطالعه بر اساس موضوع ثبت‌شده و محتوای بررسی‌شده:\\n\\n' +
     chosen.slice(0, 3).map((book, index) => {
-      const headings = mainBookHeadings(book).slice(0, 3);
-      return (index + 1) + ') «' + book.title + '»\nموضوع ثبت‌شده: ' +
-        (book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است') +
-        (headings.length ? '\nبخش‌های قابل مشاهده: ' + headings.map((item) => item.text + (item.page ? '، صفحه ' + item.page : '')).join('؛ ') : '');
-    }).join('\n\n') +
-    '\n\nاین پیشنهاد فقط بر پایه موضوع و ساختار ثبت‌شده است، نه شناخت وضعیت شخصی تو. اگر بگویی بیشتر دنبال خودشناسی، شناخت احساسات یا تغییر عادت‌ها هستی، می‌توانم پیشنهاد را دقیق‌تر کنم.';
+      const profile = getLibraryBookProfile(book);
+      return (index + 1) + ') «' + book.title + '»\\n' +
+        (profile?.beginner || profile?.subject || book.content?.subtitle || 'توضیح موضوعی مستقل ثبت نشده است');
+    }).join('\\n\\n') +
+    '\\n\\nاین پیشنهاد بر پایه محتوای کتاب‌هاست، نه شناخت وضعیت شخصی تو.';
 }
+
 
 function hasTopicEvidence(passages, pattern) {
   return passages.some((passage) => pattern.test(normalizeLibraryText(passage.text + ' ' + passage.heading)));
@@ -380,8 +401,43 @@ function structuredGuidance(intent, book, passages, message) {
   if (EXAMPLE_OR_EXERCISE.test(intent)) return 'یک نمونه فرضی و تمرین پیشنهادی دستیار بر پایه موضوع متن:\n\nمثال فرضی: اگر در یک گفت‌وگو متوجه شوی واکنشت سریع و شدید شده، می‌توانی پیش از پاسخ چند لحظه مکث کنی و نام احساست را مشخص کنی.\n\nتمرین کم‌فشار: در پایان روز فقط یک موقعیت را ثبت کن: چه اتفاقی افتاد؟ چه احساسی داشتم؟ چه واکنشی نشان دادم؟ دفعه بعد چه انتخاب کوچکی دارم؟\n\nاین مثال و تمرین ساخته دستیارند، نه نقل قول کتاب و نه توصیه درمانی.\n\n' + evidence;
   if (DAILY_APPLICATION.test(intent)) return 'برای تبدیل مفهوم به عمل، آن را به یک رفتار کوچک و قابل مشاهده محدود کن:\n۱) یک موقعیت مشخص انتخاب کن.\n۲) پیش از واکنش، نشانه یا احساس خود را نام ببر.\n۳) یک پاسخ کوچک و ایمن را امتحان کن.\n۴) نتیجه را کوتاه ثبت کن و بر اساس تجربه اصلاح کن.\n\nاین گام‌ها پیشنهاد کاربردی دستیارند؛ پایه کتابی آن‌ها در گزیده‌های زیر آمده است.\n\n' + evidence;
   if (SIMPLE_EXPLAIN.test(intent)) return 'می‌توانم متن مرتبط را ساده‌سازی کنم، اما برای جلوگیری از تحریف، ابتدا شاهدهای خود کتاب را نشان می‌دهم. برداشت ساده و محتاطانه از این گزیده‌ها این است که باید میان آنچه رخ می‌دهد، برداشتی که از آن می‌کنیم و واکنشی که نشان می‌دهیم تمایز بگذاریم. این برداشت فقط در صورتی معتبر است که با بخش انتخاب‌شده منطبق باشد؛ برای توضیح دقیق‌تر، نام فصل یا پاراگراف را مشخص کن.\n\n' + evidence;
-  if (KEY_POINTS.test(intent)) return 'محورهای قابل مشاهده در بخش‌های اصلی کتاب (نه رتبه‌بندی قطعی مهم‌ترین نکات):\n\n' + source + '\n\nاین گزیده‌ها برای آشنایی با چند فصل‌اند؛ تعیین اهمیت و اولویت نکات به تحلیل کامل استدلال هر فصل نیاز دارد.';
+  if (KEY_POINTS.test(intent)) {
+    const profile = getLibraryBookProfile(book);
+    if (profile?.keyPoints?.length) {
+      return 'نکته‌های محوری «' + book.title + '» بر پایه فصل‌های بررسی‌شده (راهنمای مطالعه، نه رتبه‌بندی قطعی نویسنده):\\n\\n' +
+        formatLibraryProfileItems(profile.keyPoints.map(([point, page]) => [point, 'این نکته از محور محتوایی فصل مربوط استخراج و به زبان ساده بازنویسی شده است.', page])) +
+        '\\n\\nاین‌ها بازنویسی دستیارند؛ برای فهم کامل استدلال، متن فصل‌های ارجاع‌شده را بخوان.';
+    }
+    return 'محورهای قابل مشاهده در بخش‌های اصلی کتاب (نه رتبه‌بندی قطعی مهم‌ترین نکات):\\n\\n' + source + '\\n\\nاین گزیده‌ها برای آشنایی با چند فصل‌اند؛ تعیین اهمیت و اولویت نکات به تحلیل کامل استدلال هر فصل نیاز دارد.';
+  }
   return evidence;
+}
+
+function hasExplicitSectionReference(value) {
+  const raw = String(value || '');
+  const normalized = normalizeLibraryText(raw);
+  return /(?:فصل|بخش|پیوست)\\s+(?:اول|دوم|سوم|چهارم|پنجم|ششم|هفتم|هشتم|نهم|دهم|یازدهم|دوازدهم|[0-9]+|[\\p{L}]{3,})/u.test(normalized)
+    || /صفحه\\s*[0-9]+/u.test(normalized)
+    || /(?:عنوان فصل|شماره صفحه|در فصل|در بخش)/u.test(normalized);
+}
+
+function hasExplicitClaimReference(value) {
+  const raw = String(value || '');
+  const normalized = normalizeLibraryText(raw);
+  return hasExplicitSectionReference(raw)
+    || /(?:ادعا|جمله|عبارت|توصیه)\\s*(?:مشخص|این است|که|:)/u.test(normalized)
+    || /[«"][^»"]{8,}[»"]/u.test(raw);
+}
+
+function extractSimpleConceptPair(message) {
+  const normalized = normalizeLibraryText(message)
+    .replace(/^(?:منظورم|مفهوم ها|دو مفهوم|این دو مفهوم|مقایسه این دو)\\s*/u, '')
+    .replace(/\\s+(?:را|رو|با هم|هستند|است)$/u, '')
+    .trim();
+  const parts = normalized.split(/\\s+(?:و|با)\\s+/u).map((part) => part.trim()).filter(Boolean);
+  if (parts.length !== 2) return null;
+  const valid = parts.every((part) => part.length >= 2 && part.split(' ').length <= 4);
+  return valid && parts[0] !== parts[1] ? parts : null;
 }
 
 function extractConceptPair(message) {
@@ -447,18 +503,71 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     return { message: 'برای اینکه متن اشتباهی را به تو نسبت ندهم، نام یکی از کتاب‌ها یا شماره جلد را مشخص کن. پنج کتاب موجود در کتابخانه را می‌توانم بررسی کنم.', conversationState: null };
   }
 
-  if ((AUTHOR_MEANING.test(normalized) || AUTHOR_REASON.test(normalized)) && !conversationState?.lastSources?.length) {
+  const followUp = Boolean(conversationState?.bookId && !/(?:جلد|کتاب) (?:اول|دوم|سوم|چهارم|پنجم|1|2|3|4|5)/u.test(normalized));
+  const effectiveQuery = followUp && conversationState.lastQuery
+    ? conversationState.lastQuery + ' ' + message
+    : message;
+  const intentText = normalizeLibraryText(effectiveQuery);
+  const hasSectionReference = hasExplicitSectionReference(message) || Boolean(conversationState?.lastSources?.length);
+  const hasClaimReference = hasExplicitClaimReference(message) || Boolean(conversationState?.lastSources?.length);
+
+  if ((AUTHOR_MEANING.test(intentText) || AUTHOR_REASON.test(intentText)) && !hasSectionReference) {
     return { message: 'در «' + book.title + '»، برای توضیح دقیق منظور نویسنده لطفاً عنوان فصل، شماره صفحه یا چند کلمه از همان بخش را مشخص کن. هنوز معلوم نیست «این بخش» به کدام قسمت کتاب اشاره دارد؛ نمی‌خواهم نیت نویسنده را حدس بزنم.', conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message } };
   }
-  if (CONCEPT_COMPARE.test(normalized)) {
-    const concepts = extractConceptPair(message);
+  if (CONCEPT_COMPARE.test(intentText) || conversationState?.pendingConceptCompare) {
+    const concepts = extractConceptPair(message) || (conversationState?.pendingConceptCompare ? extractSimpleConceptPair(message) : null);
     if (concepts) {
       const passages = passagesForBook(book);
       const reply = compareConceptEvidenceReply(book, concepts, passages);
       return {
         message: reply,
-        conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message, comparedConcepts: concepts },
+        conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery, comparedConcepts: concepts, pendingConceptCompare: false },
       };
+    }
+    const headings = mainBookHeadings(book).slice(0, 14);
+    return { message: 'در «' + book.title + '»، برای مقایسه لطفاً نام دو مفهوم را مشخص کن. نمونه قالب: «مفهوم باور و احساس را با هم مقایسه کن». این‌ها چند عنوان واقعی از ساختار کتاب هستند:\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\n'), conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery, pendingConceptCompare: true } };
+  }
+  if (BOOK_SUBJECT.test(normalized)) {
+    const profile = getLibraryBookProfile(book);
+    const headings = mainBookHeadings(book).slice(0, 8);
+    return { message: 'موضوع «' + book.title + '»\\n\\n' +
+      (profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است') +
+      (headings.length ? '\\n\\nبخش‌های راهنما:\\n' + headings.slice(0, 5).map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\\n') : '') +
+      '\\n\\nاین معرفی، جمع‌بندی دستیار از موضوع و ساختار کتاب است؛ برای بررسی یک ادعای مشخص باید متن همان بخش را دید.',
+      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message } };
+  }
+  const allPassages = passagesForBook(book);
+  if (!allPassages.length) {
+    return { message: 'متن قابل‌جست‌وجوی «' + book.title + '» در نسخه فعلی بارگذاری نشده است؛ بنابراین پاسخ یا خلاصه حدسی ارائه نمی‌کنم.', conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: '' } };
+  }
+
+  const unresolvedReference = /(?:این بخش|این مفهوم|این مطالب|این توصیه|این موضوع|این دیدگاه|این تمرین|همین تمرین)/u.test(intentText);
+  if (unresolvedReference && !SCIENCE.test(intentText) && !ALTERNATIVE_VIEW.test(intentText) && !LIMITATIONS.test(intentText)
+    && !hasSectionReference) {
+    return {
+      message: 'برای اینکه تمرین، مثال یا تحلیل نامرتبط نسازم، لازم است بدانم منظورت کدام بخش از «' + book.title + '» است. عنوان فصل، شماره صفحه یا چند واژه از همان قسمت را بفرست؛ بعد پاسخ را به همان متن وصل می‌کنم و پیشنهاد خودم را از گفته نویسنده جدا می‌نویسم.',
+      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message, awaitingSection: true },
+    };
+  }
+  if ((SCIENCE.test(intentText) || ALTERNATIVE_VIEW.test(intentText) || LIMITATIONS.test(intentText))
+    && !hasClaimReference) {
+    return {
+      message: 'در «' + book.title + '»، برای بررسی علمی، دیدگاه مخالف یا محدودیت‌ها باید ادعا یا توصیه مشخص باشد. لطفاً جمله، عنوان فصل یا صفحه‌ای را که درباره‌اش می‌پرسی مشخص کن. بدون دانستن ادعای موردنظر، آوردن چند گزیده نامرتبط می‌تواند گمراه‌کننده باشد.',
+      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message, awaitingClaim: true },
+    };
+  }
+  if (SIMPLE_EXPLAIN.test(normalized) && /مفهوم اصلی/u.test(normalized)
+    && !conversationState?.lastSources?.length) {
+    const profile = getLibraryBookProfile(book);
+    const headings = mainBookHeadings(book).slice(0, 8);
+    const subject = profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است';
+    return {
+      message: 'توضیح ساده مفهوم اصلی «' + book.title + '»\\n\\n' +
+        (profile?.plain || 'موضوع معرفی‌شده: ' + subject) +
+        (headings.length ? '\\n\\nبرای مطالعه جزئی‌تر، این بخش‌ها نقطه شروع مناسبی‌اند:\\n' + headings.slice(0, 5).map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\\n') : '') +
+        '\\n\\nاین توضیح، بازنویسی دستیار بر پایه ساختار و متن بررسی‌شده است؛ نقل قول مستقیم نویسنده نیست.',
+      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message, awaitingSection: true },
+    };
     }
     const headings = mainBookHeadings(book).slice(0, 14);
     return { message: 'در «' + book.title + '»، برای مقایسه لطفاً نام دو مفهوم را مشخص کن. نمونه قالب: «مفهوم باور و احساس را با هم مقایسه کن». این‌ها چند عنوان واقعی از ساختار کتاب هستند:\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\n'), conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message, pendingConceptCompare: true } };
@@ -502,14 +611,8 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
       conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message, awaitingSection: true },
     };
   }
-  const followUp = Boolean(conversationState?.bookId && !/(?:جلد|کتاب) (?:اول|دوم|سوم|چهارم|پنجم|1|2|3|4|5)/u.test(normalized));
-  // Keep the prior topic as context, but always search the user's NEW turn too.
-  // Previously the old lastQuery replaced the new message, so follow-up intents
-  // such as "چه محدودیت‌هایی دارد؟" repeated the previous retrieval.
-  const effectiveQuery = followUp && conversationState.lastQuery
-    ? conversationState.lastQuery + ' ' + message
-    : message;
-  const asksSummary = SUMMARY.test(normalized);
+  // The previous turn supplies context; the new turn still contributes fresh retrieval terms.
+  const asksSummary = SUMMARY.test(intentText);
   const queryWeights = asksSummary ? new Map() : expandedQueryTerms(effectiveQuery);
   const frequency = buildFrequencyIndex(allPassages);
   const phrase = normalizeLibraryText(effectiveQuery);
@@ -527,12 +630,12 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     : KEY_POINTS.test(normalized)
       ? chapterRepresentativePassages(allPassages, 6)
       : chooseDiverse(ranked, 5);
-  if (!asksSummary && !selected.length && (SCIENCE.test(normalized) || ALTERNATIVE_VIEW.test(normalized) || LIMITATIONS.test(normalized) || PROGRESS.test(normalized))) {
-    const reply = SCIENCE.test(normalized)
+  if (!asksSummary && !selected.length && (SCIENCE.test(intentText) || ALTERNATIVE_VIEW.test(intentText) || LIMITATIONS.test(intentText) || PROGRESS.test(intentText))) {
+    const reply = SCIENCE.test(intentText)
       ? 'از متن در دسترس این کتاب شاهد کافی برای داوری علمی این ادعا پیدا نکردم. از متن کتاب به‌تنهایی نمی‌توان اعتبار علمی یک دیدگاه را تأیید کرد؛ برای پاسخ دقیق باید ادعای مشخص را با پژوهش‌های معتبر و مستقل بررسی کرد. این پاسخ عمداً از تأیید یا رد بی‌منبع خودداری می‌کند.'
-      : ALTERNATIVE_VIEW.test(normalized)
+      : ALTERNATIVE_VIEW.test(intentText)
         ? 'در متن بازیابی‌شده شاهد کافی برای معرفی یک دیدگاه مخالف مشخص پیدا نکردم؛ نمی‌توانم وجود یا محتوای یک دیدگاه مخالف مشخص را اثبات کنم. دیدگاه بیرونی را حدس نمی‌زنم و نباید به نویسنده نسبت دهم؛ برای این کار باید منابع مستقل بررسی شوند.'
-        : PROGRESS.test(normalized)
+        : PROGRESS.test(intentText)
           ? 'برای سنجش پیشرفت می‌توانی رفتارهای قابل مشاهده را ثبت کنی: تشخیص زودتر موقعیت، مکث پیش از واکنش، انتخاب آگاهانه‌تر و بازگشت به تمرین پس از دشواری. این شاخص‌ها پیشنهاد عمومی دستیارند، نه معیار تشخیصی یا درمانی؛ چون شاهد مشخصی از کتاب بازیابی نشد، آن‌ها را به نویسنده نسبت نمی‌دهم.'
           : 'در متن بازیابی‌شده شاهد کافی برای ارزیابی محدودیت همین توصیه پیدا نکردم. اگر فصل یا توصیه مشخص را نام ببری، می‌توانم محدودیت‌های متن و محدودیت کاربرد آن را جداگانه بررسی کنم.';
     return { message: 'در «' + book.title + '»: ' + reply, conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery } };
@@ -550,7 +653,7 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     [CONFIDENCE, /اعتماد به نفس|اعتمادبه نفس|خودباور|عزت نفس|ارزشمند/u, 'برای اعتمادبه‌نفس'],
   ];
   for (const [intentPattern, evidencePattern, label] of directTopicChecks) {
-    if (!intentPattern.test(normalized)) continue;
+    if (!intentPattern.test(intentText)) continue;
     const topicEvidence = selected.filter((passage) => {
       const textEvidence = normalizeLibraryText(passage.text);
       const headingEvidence = normalizeLibraryText(passage.heading);
@@ -559,9 +662,9 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
       // text, require repeated topic evidence so an incidental mention cannot
       // be presented as topic-specific guidance.
       const body = String(passage.text || '').trim();
-      const proximityEvidence = CONFIDENCE.test(normalized)
+      const proximityEvidence = CONFIDENCE.test(intentText)
         ? /(?:اعتماد به نفس|اعتمادبه نفس).{0,80}(?:افزایش|تقویت|کاهش|محدود|ساخت)|(?:افزایش|تقویت|کاهش|محدود|ساخت).{0,80}(?:اعتماد به نفس|اعتمادبه نفس)/u.test(textEvidence)
-        : ANXIETY.test(normalized)
+        : ANXIETY.test(intentText)
           ? /(?:اضطراب|استرس|نگرانی|دلشوره).{0,80}(?:مدیریت|تنظیم|کاهش|اجتناب|بدن|واکنش|مداخله)|(?:مدیریت|تنظیم|کاهش|اجتناب|بدن|واکنش|مداخله).{0,80}(?:اضطراب|استرس|نگرانی|دلشوره)/u.test(textEvidence)
           : /(?:خشم|عصب|پرخاش|غضب).{0,80}(?:واکنش|رفتار|مکث|پاسخ|احساس|مرز|تحقیر|بی احترامی|عمل)|(?:واکنش|رفتار|مکث|پاسخ|احساس|مرز|تحقیر|بی احترامی|عمل).{0,80}(?:خشم|عصب|پرخاش|غضب)/u.test(textEvidence);
       return evidencePattern.test(headingEvidence)
