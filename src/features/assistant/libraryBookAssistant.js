@@ -272,14 +272,32 @@ function chapterRepresentativePassages(passages, limit = 6) {
     : representativePassages(passages.filter((item) => String(item.text || '').trim().length >= 90), limit);
 }
 
+function profileEvidenceExcerpt(book, pageNumber) {
+  const page = (book.content?.pages || []).find((item) => Number(item.sourcePage || item.page) === Number(pageNumber));
+  if (!page) return '';
+  const text = pageBlocks(page).filter((block) => block.type !== 'heading').map((block) => block.text).join(' ').replace(/\s+/gu, ' ').trim();
+  return text.length > 280 ? text.slice(0, 277).trimEnd() + '…' : text;
+}
+
+function formatProfileEvidenceItems(book, items) {
+  return items.map(([heading, description, pageNumber], index) => {
+    const excerpt = profileEvidenceExcerpt(book, pageNumber);
+    return (index + 1) + ') ' + heading + '\n' + description
+      + (excerpt ? '\nشاهد از متن صفحه: «' + excerpt + '»' : '')
+      + '\nمنبع: صفحه ' + pageNumber;
+  }).join('\n\n');
+}
+
 function summaryReply(book, passages) {
   const profile = getLibraryBookProfile(book);
   if (profile) {
-    return 'خلاصه راهنمای محتوایی «' + book.title + '»\n\n' +
-      'این جمع‌بندی، بازنویسی دستیار بر پایه موضوع‌ها و بخش‌های قابل بررسی متن است؛ نقل قول مستقیم نویسنده نیست و جای مطالعه کامل کتاب را نمی‌گیرد.\n\n' +
-      formatLibraryProfileItems(profile.summary) +
-      '\n\nخط اصلی کتاب: ' + profile.plain +
-      '\n\nبرای مطالعه دقیق‌تر، هر محور را با صفحه منبع در خود کتاب دنبال کن.';
+    return [
+      'خلاصه راهنمای محتوایی «' + book.title + '»',
+      'این جمع‌بندی، بازنویسی دستیار از محورهای محتوایی ثبت‌شده است؛ نقل‌قول مستقیم نویسنده یا جایگزین مطالعه کامل کتاب نیست.',
+      formatProfileEvidenceItems(book, profile.summary),
+      'خط اصلی کتاب: ' + profile.plain,
+      'برای بررسی استدلال کامل، شاهدهای صفحه‌ای را در متن اصلی دنبال کن.'
+    ].join('\n\n');
   }
   const headings = mainBookHeadings(book);
   const substantive = passages.filter((item) => {
@@ -326,14 +344,21 @@ function listBooksReply(books) {
 }
 
 function compareBooksReply(books) {
-  return 'مقایسه محتوایی پنج کتاب کتابخانه مسیر ۲۸:\n\n' +
-    books.map((book) => {
-      const profile = getLibraryBookProfile(book);
-      const subject = profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است';
-      const focus = profile?.comparison || 'برای این کتاب هنوز جمع‌بندی مقایسه‌ایِ بازبینی‌شده ثبت نشده است.';
-      return '• «' + book.title + '»\nمحور اصلی: ' + subject + '\nجایگاه در مجموعه: ' + focus;
-    }).join('\n\n') +
-    '\n\nتفاوت کاربردی کتاب‌ها: جلد اول برای ساختن پایه خودشناسی؛ جلد دوم برای فهم سازوکارهای شناختی و تغییر؛ جلد سوم برای موانع اجرای تغییر؛ کتابچه چهارم برای کار عملی و ثبت تجربه؛ و کتاب پنجم برای سواد هیجانی و تنظیم احساسات مناسب‌تر است. این دسته‌بندی، راهنمای مطالعه بر اساس محتوای بررسی‌شده است، نه رتبه‌بندی علمی یا درمانی.';
+  const rows = books.map((book) => {
+    const profile = getLibraryBookProfile(book);
+    const subject = profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است';
+    const focus = profile?.comparison || 'برای این کتاب هنوز جمع‌بندی مقایسه‌ایِ بازبینی‌شده ثبت نشده است.';
+    const concept = profile?.conceptPair?.length === 2 && profile?.conceptComparison
+      ? '\nنمونه تمایز مفهومی: ' + profile.conceptPair.join(' در برابر ') + ' — ' + profile.conceptComparison
+      : '';
+    return '• «' + book.title + '»\nمحور اصلی: ' + subject + '\nجایگاه در مجموعه: ' + focus + concept;
+  });
+  return [
+    'مقایسه محتوایی پنج کتاب کتابخانه مسیر ۲۸',
+    rows.join('\n\n'),
+    'جمع‌بندی مسیر مطالعه: جلد اول پایه عمومی خودشناسی را می‌سازد؛ جلد دوم سازوکارهای شناخت و یادگیری را عمیق‌تر بررسی می‌کند؛ جلد سوم موانع تبدیل آگاهی به رفتار را می‌کاود؛ کتابچه چهارم ابزار اجرایی مکمل جلد سوم است؛ و کتاب پنجم بر سواد هیجانی و شناخت و تنظیم احساسات تمرکز دارد.',
+    'این نقشه مطالعه بر اساس پروفایل‌های محتوایی ثبت‌شده است؛ نه رتبه‌بندی علمی، اثربخشی درمانی یا نظر قطعی نویسندگان.'
+  ].join('\n\n');
 }
 
 
@@ -360,6 +385,7 @@ function recommendBooks(books, message) {
     const profile = getLibraryBookProfile(first);
     return 'پیشنهاد روشن برای شروع: «' + first.title + '».\n' +
       (profile?.beginner || 'این کتاب برای شروع مسیر مناسب‌تر به نظر می‌رسد.') +
+      (profile?.summary?.length ? '\n\nدلیل محتوایی پیشنهاد:\n' + formatProfileEvidenceItems(first, profile.summary.slice(0, 2)) : '') +
       (emotions ? '\n\nاگر مسئله اصلی‌ات شناخت و تنظیم احساسات است، «' + emotions.title + '» گزینه شروعِ موضوعی مناسبی است.' : '') +
       (workbook ? '\n\n«' + workbook.title + '» را به‌عنوان کتاب اول پیشنهاد نمی‌کنم؛ این کتابچه ابزار اجرایی است و در کنار جلد سوم بیشترین فایده را دارد.' : '') +
       '\n\nاین پیشنهاد بر اساس ساختار و محتوای کتاب‌هاست؛ اگر هدفت را مشخص کنی، ترتیب مطالعه را دقیق‌تر می‌کنم.';
@@ -404,9 +430,11 @@ function structuredGuidance(intent, book, passages, message) {
   if (KEY_POINTS.test(intent)) {
     const profile = getLibraryBookProfile(book);
     if (profile?.keyPoints?.length) {
-      return 'نکته‌های محوری «' + book.title + '» بر پایه فصل‌های بررسی‌شده (راهنمای مطالعه، نه رتبه‌بندی قطعی نویسنده):\n\n' +
-        formatLibraryProfileItems(profile.keyPoints.map(([point, page]) => [point, 'این نکته از محور محتوایی فصل مربوط استخراج و به زبان ساده بازنویسی شده است.', page])) +
-        '\n\nاین‌ها بازنویسی دستیارند؛ برای فهم کامل استدلال، متن فصل‌های ارجاع‌شده را بخوان.';
+      return [
+        'نکته‌های محوری «' + book.title + '» بر پایه فصل‌های بررسی‌شده (راهنمای مطالعه، نه رتبه‌بندی قطعی نویسنده):',
+        formatProfileEvidenceItems(book, profile.keyPoints.map(([point, page]) => [point, 'این نکته بازنویسی دستیار از محور صفحه ارجاع‌شده است؛ برای بررسی جزئیات، متن کامل همان بخش را بخوان.', page])),
+        'این‌ها بازنویسی دستیارند؛ برای فهم کامل استدلال، متن فصل‌های ارجاع‌شده را بخوان.'
+      ].join('\n\n');
     }
     return 'محورهای قابل مشاهده در بخش‌های اصلی کتاب (نه رتبه‌بندی قطعی مهم‌ترین نکات):\n\n' + source + '\n\nاین گزیده‌ها برای آشنایی با چند فصل‌اند؛ تعیین اهمیت و اولویت نکات به تحلیل کامل استدلال هر فصل نیاز دارد.';
   }
@@ -545,12 +573,18 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   if (BOOK_SUBJECT.test(normalized)) {
     const profile = getLibraryBookProfile(book);
     const headings = mainBookHeadings(book).slice(0, 8);
-    return { message: 'موضوع اصلی «' + book.title + '»\n\n' +
-      (profile?.plain || profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است') +
-      (profile?.subject ? '\n\nحوزه‌های اصلی کتاب: ' + profile.subject : '') +
-      (headings.length ? '\n\nبخش‌های راهنما:\n' + headings.slice(0, 5).map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\n') : '') +
-      '\n\nاین توضیح، بازنویسی دستیار بر پایه پروفایل محتوایی و ساختار کتاب است؛ نقل قول مستقیم نویسنده نیست.',
-      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery } };
+    const overview = profile?.plain || profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است';
+    const evidence = profile?.summary?.length
+      ? '\n\nسه محور محتوایی با ارجاع صفحه:\n' + formatProfileEvidenceItems(book, profile.summary.slice(0, 3))
+      : '';
+    return { message: [
+      'موضوع اصلی «' + book.title + '»',
+      overview,
+      evidence,
+      headings.length ? 'بخش‌های راهنما:\n' + headings.slice(0, 5).map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\n') : '',
+      'این توضیح، بازنویسی دستیار بر پایه پروفایل و متن کتاب است؛ نقل‌قول مستقیم نویسنده نیست.'
+    ].filter(Boolean).join('\n\n'),
+    conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery } };
   }
   const allPassages = passagesForBook(book);
   if (!allPassages.length) {
@@ -578,10 +612,13 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     const headings = mainBookHeadings(book).slice(0, 8);
     const subject = profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است';
     return {
-      message: 'توضیح ساده مفهوم اصلی «' + book.title + '»\n\n' +
-        (profile?.plain || 'موضوع معرفی‌شده: ' + subject) +
-        (headings.length ? '\n\nبرای مطالعه جزئی‌تر، این بخش‌ها نقطه شروع مناسبی‌اند:\n' + headings.slice(0, 5).map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\n') : '') +
-        '\n\nاین توضیح، بازنویسی دستیار بر پایه ساختار و متن بررسی‌شده است؛ نقل قول مستقیم نویسنده نیست.',
+      message: [
+        'توضیح ساده مفهوم اصلی «' + book.title + '»',
+        profile?.plain || 'موضوع معرفی‌شده: ' + subject,
+        profile?.summary?.length ? 'دو محور متنی مرتبط:\n' + formatProfileEvidenceItems(book, profile.summary.slice(0, 2)) : '',
+        headings.length ? 'برای مطالعه جزئی‌تر:\n' + headings.slice(0, 5).map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\n') : '',
+        'این توضیح، بازنویسی دستیار بر پایه ساختار و متن بررسی‌شده است؛ نقل‌قول مستقیم نویسنده نیست.'
+      ].filter(Boolean).join('\n\n'),
       conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery, awaitingSection: true },
     };
   }
