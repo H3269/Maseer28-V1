@@ -49,14 +49,12 @@ async function readExpandedDailyText(page, selector) {
 
 async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumber) {
   const dayBadge = normalizeVisibleDailyText(await page.locator('#dayBadge').innerText());
-  const assistantContext = normalizeVisibleDailyText(await panel.locator('.dailyAssistantContext').innerText());
   assert.ok(dayBadge.includes(normalizeVisibleDailyText(topic)), 'day UI must show the selected canonical topic');
   assert.ok(dayBadge.includes('روز ' + dayNumber), 'day UI must show the selected canonical day');
-  assert.ok(assistantContext.includes(normalizeVisibleDailyText(topic)), 'assistant context must show the selected topic');
-  assert.ok(assistantContext.includes('روز ' + dayNumber), 'assistant context must show the selected day');
-
   const reply = normalizeVisibleDailyText(await panel.locator('.assistantMessage').last().innerText());
-  await panel.getByRole('button', { name: 'متوجه شدم' }).click();
+  assert.ok(reply.includes(normalizeVisibleDailyText(topic)), 'assistant answer must identify the selected topic');
+  assert.ok(reply.includes('روز ' + dayNumber), 'assistant answer must identify the selected day');
+  await panel.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await panel.waitFor({ state: 'detached' });
   const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
   const visibleAction = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayAction'));
@@ -145,7 +143,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null } = 
   await page.locator('#dashboard .heroAction').click();
   await page.locator('#day').waitFor({ state: 'visible' });
   await page.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
-  await page.getByRole('dialog', { name: 'دستیار مسیر۲۸' }).waitFor({ state: 'visible' });
+  await page.getByRole('dialog', { name: 'دستیار هوشمند مسیر ۲۸' }).waitFor({ state: 'visible' });
 }
 
 try {
@@ -300,7 +298,7 @@ try {
   assert.match(await gatedPanel.locator('.assistantMessage').last().innerText(), /بررسی ایمنی همین روز/);
   assert.doesNotMatch(await gatedPanel.locator('.assistantMessage').last().innerText(), /متن تمرین همین روز|راهکار اختصاصی همین روز/);
 
-  await gatedPanel.getByRole('button', { name: 'متوجه شدم' }).click();
+  await gatedPanel.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await gatedPanel.waitFor({ state: 'detached' });
   await gatedPage.locator('#day button[aria-label="داشبورد"]').click();
   await gatedPage.locator('#dashboard').waitFor({ state: 'visible' });
