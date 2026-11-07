@@ -20,6 +20,16 @@ const SUMMARY = /(?:خلاصه|چکیده|مرور کلی|مهم ترین نکا
 const LIST = /(?:چه کتاب|فهرست کتاب|کتاب های موجود|کتابخانه چه کتاب)/u;
 const COMPARE = /(?:تفاوت|مقایسه|فرق|چه فرقی)/u;
 const EXAMPLE_OR_EXERCISE = /(?:مثال بزن|یک مثال|تمرین|برنامه هفت|عادت روزانه)/u;
+const RECOMMEND = /(?:کدام کتاب|چه کتابی|از کدام کتاب|برای شروع مطالعه|از کجا شروع|پیشنهاد.*کتاب|کتاب مناسب)/u;
+const SELF_KNOWLEDGE = /(?:خودشناسی|خودم را بهتر بشناسم|شناخت خود)/u;
+const SCIENCE = /(?:از نظر روان شناسی|علمی قابل دفاع|پشتوانه علمی|شواهد علمی)/u;
+const ALTERNATIVE_VIEW = /(?:دیدگاه متفاوت|دیدگاه مخالف|نظر مخالف|نقد دیگری)/u;
+const LIMITATIONS = /(?:محدودیت|نقطه ضعف|ضعف این دیدگاه|چه ایرادی)/u;
+const WEEK_PLAN = /(?:برنامه هفت|هفت روز|۷ روز|هفت روزه)/u;
+const PROGRESS = /(?:پیشرفت|از کجا بفهمم|چطور بفهمم.*بهتر)/u;
+const DAILY_APPLICATION = /(?:زندگی روزمره|به کار ببرم|کاربرد.*زندگی)/u;
+const KEY_POINTS = /(?:مهم ترین نکات|نکات اصلی|نکات کلیدی)/u;
+const SIMPLE_EXPLAIN = /(?:به زبان ساده|ساده و قابل فهم|توضیح ساده)/u;
 
 export function normalizeLibraryText(value) {
   return String(value ?? '').normalize('NFKC')
@@ -158,7 +168,7 @@ function pickBook(books, text, state) {
     const first = books.find((book) => Number(book.legacyId) === 1);
     if (first) return first;
   }
-  if (state?.bookId && FOLLOW_UP.test(normalized)) {
+  if (state?.bookId) {
     return books.find((book) => String(book.legacyId) === String(state.bookId)) || null;
   }
   return null;
@@ -229,11 +239,51 @@ function compareBooksReply(books) {
     '\n\nاین مقایسه ساختاری است؛ برای نتیجه‌گیری درباره تفاوت استدلال‌ها باید فصل‌های مرتبط هر دو کتاب جداگانه بررسی شوند.';
 }
 
+
+function bookSubject(book) {
+  const headings = bookHeadings(book).slice(0, 8).map((item) => item.text);
+  return [book.content?.subtitle, book.content?.description, ...headings].filter(Boolean).join('؛ ');
+}
+
+function recommendBooks(books, message) {
+  const normalized = normalizeLibraryText(message);
+  const candidates = SELF_KNOWLEDGE.test(normalized)
+    ? books.filter((book) => /خودشناسی|شناخت احساس|شناخت خود|احساسات/u.test(normalizeLibraryText(bookSubject(book))))
+    : books;
+  const chosen = candidates.length ? candidates : books;
+  return 'پیشنهاد شروع مطالعه بر اساس اطلاعات ثبت‌شده و تیترهای واقعی کتاب‌ها:\n\n' +
+    chosen.slice(0, 3).map((book, index) => {
+      const headings = bookHeadings(book).slice(0, 3);
+      return (index + 1) + ') «' + book.title + '»\nموضوع ثبت‌شده: ' +
+        (book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است') +
+        (headings.length ? '\nبخش‌های قابل مشاهده: ' + headings.map((item) => item.text + (item.page ? '، صفحه ' + item.page : '')).join('؛ ') : '');
+    }).join('\n\n') +
+    '\n\nاین پیشنهاد فقط بر پایه موضوع و ساختار ثبت‌شده است، نه شناخت وضعیت شخصی تو. اگر بگویی بیشتر دنبال خودشناسی، شناخت احساسات یا تغییر عادت‌ها هستی، می‌توانم پیشنهاد را دقیق‌تر کنم.';
+}
+
+function structuredGuidance(intent, book, passages, message) {
+  const source = formatPassages(passages.slice(0, 4));
+  const title = '«' + book.title + '»';
+  const evidence = 'شواهد قابل بازیابی از کتاب:\n\n' + source;
+  if (SCIENCE.test(intent)) return 'از متن این کتاب به‌تنهایی نمی‌توان اعتبار علمی یک دیدگاه را تأیید کرد. برای چنین داوری‌ای باید ادعا را دقیق مشخص کنیم و آن را با پژوهش‌های معتبر و مستقل بسنجیم.\n\n' + evidence + '\n\nمرزبندی: گزیده‌های بالا نشان می‌دهند کتاب چه می‌گوید؛ آن‌ها به‌تنهایی اثبات علمی درستی ادعا نیستند.';
+  if (ALTERNATIVE_VIEW.test(intent)) return 'ممکن است درباره این موضوع دیدگاه‌های دیگری وجود داشته باشد، اما از متن در دسترس این کتاب نمی‌توانم وجود یا محتوای یک دیدگاه مخالف مشخص را اثبات کنم. دیدگاه بیرونی را نباید به نویسنده نسبت داد.\n\n' + evidence + '\n\nاگر بخواهی، پرسش را به یک ادعای مشخص تبدیل می‌کنیم تا جداگانه با منابع علمی مستقل بررسی شود.';
+  if (LIMITATIONS.test(intent)) return 'برای ارزیابی محدودیت‌ها باید میان محدودیت متن کتاب و محدودیت کاربرد توصیه در زندگی واقعی فرق بگذاریم. از همین متن می‌توان گفت این گزیده‌ها به‌تنهایی همه شرایط فردی، تفاوت‌های زمینه‌ای یا شواهد علمی بیرونی را پوشش نمی‌دهند.\n\n' + evidence + '\n\nاین ارزیابی، تحلیل محتاطانه دستیار است و نه نقل قول از نویسنده.';
+  if (WEEK_PLAN.test(intent)) return 'برنامه هفت‌روزه پیشنهادی دستیار بر پایه موضوع بازیابی‌شده از ' + title + ' است؛ این برنامه نقل قول یا برنامه تألیفی کتاب نیست:\n\n' +
+    'روز ۱: مفهوم یا موقعیت مرتبط را بخوان و یک نمونه شخصیِ کم‌تنش ثبت کن.\nروز ۲: فقط نشانه‌ها و شرایط پیش از آن را مشاهده کن.\nروز ۳: فکر، احساس و رفتار را جداگانه یادداشت کن.\nروز ۴: یک پاسخ جایگزین کوچک و ایمن انتخاب کن.\nروز ۵: آن پاسخ را در موقعیتی آسان امتحان کن.\nروز ۶: نتیجه را بدون سرزنش بررسی و در صورت نیاز ساده‌ترش کن.\nروز ۷: شواهد رفتاری، دشواری‌ها و قدم بعدی را مرور کن.\n\nمعیار موفقیت، انجام کامل و بی‌نقص نیست؛ مشاهده و ثبت یک تغییر کوچک است. اگر تمرین فشار روانی را بیشتر کرد، متوقفش کن و از نسخه ساده‌تر استفاده کن.\n\n' + evidence;
+  if (PROGRESS.test(intent)) return 'برای سنجش پیشرفت، به رفتارهای قابل مشاهده توجه کن، نه اینکه انتظار داشته باشی همیشه احساس خاصی داشته باشی:\n- چند بار توانستی موقعیت یا احساس را زودتر تشخیص بدهی؟\n- آیا پیش از واکنش مکث کوتاهی ایجاد شد؟\n- آیا یک انتخاب آگاهانه‌تر انجام دادی؟\n- بعد از دشواری، چقدر سریع‌تر به تمرین برگشتی؟\n\nاین شاخص‌ها پیشنهاد سنجش دستیارند، نه معیار تشخیصی یا درمانی.\n\n' + evidence;
+  if (EXAMPLE_OR_EXERCISE.test(intent)) return 'یک نمونه فرضی و تمرین پیشنهادی دستیار بر پایه موضوع متن:\n\nمثال فرضی: اگر در یک گفت‌وگو متوجه شوی واکنشت سریع و شدید شده، می‌توانی پیش از پاسخ چند لحظه مکث کنی و نام احساست را مشخص کنی.\n\nتمرین کم‌فشار: در پایان روز فقط یک موقعیت را ثبت کن: چه اتفاقی افتاد؟ چه احساسی داشتم؟ چه واکنشی نشان دادم؟ دفعه بعد چه انتخاب کوچکی دارم؟\n\nاین مثال و تمرین ساخته دستیارند، نه نقل قول کتاب و نه توصیه درمانی.\n\n' + evidence;
+  if (DAILY_APPLICATION.test(intent)) return 'برای تبدیل مفهوم به عمل، آن را به یک رفتار کوچک و قابل مشاهده محدود کن:\n۱) یک موقعیت مشخص انتخاب کن.\n۲) پیش از واکنش، نشانه یا احساس خود را نام ببر.\n۳) یک پاسخ کوچک و ایمن را امتحان کن.\n۴) نتیجه را کوتاه ثبت کن و بر اساس تجربه اصلاح کن.\n\nاین گام‌ها پیشنهاد کاربردی دستیارند؛ پایه کتابی آن‌ها در گزیده‌های زیر آمده است.\n\n' + evidence;
+  if (SIMPLE_EXPLAIN.test(intent)) return 'می‌توانم متن مرتبط را ساده‌سازی کنم، اما برای جلوگیری از تحریف، ابتدا شاهدهای خود کتاب را نشان می‌دهم. برداشت ساده و محتاطانه از این گزیده‌ها این است که باید میان آنچه رخ می‌دهد، برداشتی که از آن می‌کنیم و واکنشی که نشان می‌دهیم تمایز بگذاریم. این برداشت فقط در صورتی معتبر است که با بخش انتخاب‌شده منطبق باشد؛ برای توضیح دقیق‌تر، نام فصل یا پاراگراف را مشخص کن.\n\n' + evidence;
+  if (KEY_POINTS.test(intent)) return 'نکته‌های قابل استخراج از بخش‌های بازیابی‌شده (نه لزوماً تمام نکات مهم کتاب):\n\n' + source + '\n\nبرای تهیه فهرست کامل و اولویت‌بندی‌شده باید فصل‌های کتاب را به‌صورت کامل مرور کرد.';
+  return evidence;
+}
+
 export function answerLibraryBookTurn({ books = [], message = '', conversationState = null } = {}) {
   const available = books.filter((book) => book?.content && Array.isArray(book.content.pages));
   if (!available.length) return null;
   const normalized = normalizeLibraryText(message);
   if (LIST.test(normalized)) return { message: listBooksReply(available), conversationState: null };
+  if (RECOMMEND.test(normalized)) return { message: recommendBooks(available, normalized), conversationState: null };
   if (COMPARE.test(normalized) && /(?:کتاب|پنج|همه)/u.test(normalized)) {
     return { message: compareBooksReply(available), conversationState: null };
   }
@@ -250,7 +300,7 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     return { message: 'متن قابل‌جست‌وجوی «' + book.title + '» در نسخه فعلی بارگذاری نشده است؛ بنابراین پاسخ یا خلاصه حدسی ارائه نمی‌کنم.', conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: '' } };
   }
 
-  const followUp = Boolean(FOLLOW_UP.test(normalized) && conversationState?.bookId);
+  const followUp = Boolean(conversationState?.bookId && !/(?:جلد|کتاب) (?:اول|دوم|سوم|چهارم|پنجم|1|2|3|4|5)/u.test(normalized));
   const effectiveQuery = followUp && conversationState.lastQuery ? conversationState.lastQuery : message;
   const asksSummary = SUMMARY.test(normalized);
   const queryWeights = asksSummary ? new Map() : expandedQueryTerms(effectiveQuery);
