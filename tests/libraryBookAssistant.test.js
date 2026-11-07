@@ -493,8 +493,8 @@ test('five-turn follow-up path stays grounded in each of the five real seeded bo
     const sourceBlock = sourcePage.blocks.find((block) =>
       block.type !== 'heading' && String(block.text || '').trim().length > 100
     );
-    const keyword = String(sourceBlock.text).split(/\\s+/u)
-      .map((word) => word.replace(/[^\\p{L}\\p{N}]/gu, ''))
+    const keyword = String(sourceBlock.text).split(/\s+/u)
+      .map((word) => word.replace(/[^\p{L}\p{N}]/gu, ''))
       .find((word) => word.length >= 5);
     assert.ok(keyword, book.title + ' must provide a searchable source term');
 
