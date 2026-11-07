@@ -255,7 +255,7 @@ function summaryReply(book, passages) {
     const text = normalizeLibraryText(item.text);
     return !/(تقدیم نامه|سپاسگزاری|فهرست مطالب|پیشگفتار|یادداشتی درباره این مجموعه|شناسنامه)/u.test(heading)
       && !/(تقدیم نامه|سپاسگزاری|فهرست مطالب|پیشگفتار)/u.test(text)
-      && !(Number(item.page) > 0 && Number(item.page) <= 5);
+;
   });
   const selected = representativePassages(substantive, 6);
   const chapterText = headings.length
