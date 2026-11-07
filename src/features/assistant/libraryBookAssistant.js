@@ -534,11 +534,11 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
       (profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است') +
       (headings.length ? '\\n\\nبخش‌های راهنما:\\n' + headings.slice(0, 5).map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\\n') : '') +
       '\\n\\nاین معرفی، جمع‌بندی دستیار از موضوع و ساختار کتاب است؛ برای بررسی یک ادعای مشخص باید متن همان بخش را دید.',
-      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message } };
+      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery } };
   }
   const allPassages = passagesForBook(book);
   if (!allPassages.length) {
-    return { message: 'متن قابل‌جست‌وجوی «' + book.title + '» در نسخه فعلی بارگذاری نشده است؛ بنابراین پاسخ یا خلاصه حدسی ارائه نمی‌کنم.', conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: '' } };
+    return { message: 'متن قابل‌جست‌وجوی «' + book.title + '» در نسخه فعلی بارگذاری نشده است؛ بنابراین پاسخ یا خلاصه حدسی ارائه نمی‌کنم.', conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery } };
   }
 
   const unresolvedReference = /(?:این بخش|این مفهوم|این مطالب|این توصیه|این موضوع|این دیدگاه|این تمرین|همین تمرین)/u.test(intentText);
@@ -546,18 +546,18 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     && !hasSectionReference) {
     return {
       message: 'برای اینکه تمرین، مثال یا تحلیل نامرتبط نسازم، لازم است بدانم منظورت کدام بخش از «' + book.title + '» است. عنوان فصل، شماره صفحه یا چند واژه از همان قسمت را بفرست؛ بعد پاسخ را به همان متن وصل می‌کنم و پیشنهاد خودم را از گفته نویسنده جدا می‌نویسم.',
-      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message, awaitingSection: true },
+      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery, awaitingSection: true },
     };
   }
   if ((SCIENCE.test(intentText) || ALTERNATIVE_VIEW.test(intentText) || LIMITATIONS.test(intentText))
     && !hasClaimReference) {
     return {
       message: 'در «' + book.title + '»، برای بررسی علمی، دیدگاه مخالف یا محدودیت‌ها باید ادعا یا توصیه مشخص باشد. لطفاً جمله، عنوان فصل یا صفحه‌ای را که درباره‌اش می‌پرسی مشخص کن. بدون دانستن ادعای موردنظر، آوردن چند گزیده نامرتبط می‌تواند گمراه‌کننده باشد.',
-      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message, awaitingClaim: true },
+      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery, awaitingClaim: true },
     };
   }
-  if (SIMPLE_EXPLAIN.test(normalized) && /مفهوم اصلی/u.test(normalized)
-    && !conversationState?.lastSources?.length) {
+  if (SIMPLE_EXPLAIN.test(intentText) && /مفهوم اصلی/u.test(intentText)
+    && !hasSectionReference && !conversationState?.lastSources?.length) {
     const profile = getLibraryBookProfile(book);
     const headings = mainBookHeadings(book).slice(0, 8);
     const subject = profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است';
@@ -566,49 +566,7 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
         (profile?.plain || 'موضوع معرفی‌شده: ' + subject) +
         (headings.length ? '\\n\\nبرای مطالعه جزئی‌تر، این بخش‌ها نقطه شروع مناسبی‌اند:\\n' + headings.slice(0, 5).map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\\n') : '') +
         '\\n\\nاین توضیح، بازنویسی دستیار بر پایه ساختار و متن بررسی‌شده است؛ نقل قول مستقیم نویسنده نیست.',
-      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message, awaitingSection: true },
-    };
-    }
-    const headings = mainBookHeadings(book).slice(0, 14);
-    return { message: 'در «' + book.title + '»، برای مقایسه لطفاً نام دو مفهوم را مشخص کن. نمونه قالب: «مفهوم باور و احساس را با هم مقایسه کن». این‌ها چند عنوان واقعی از ساختار کتاب هستند:\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\n'), conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message, pendingConceptCompare: true } };
-  }
-  if (BOOK_SUBJECT.test(normalized)) {
-    const headings = mainBookHeadings(book).slice(0, 10);
-    return { message: 'بر اساس توضیح ثبت‌شده و تیترهای قابل مشاهده، موضوع «' + book.title + '» چنین معرفی شده است:\n' +
-      (book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است') +
-      (headings.length ? '\n\nمحورهای قابل مشاهده:\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\n') : '') +
-      '\n\nاین معرفی بر پایه متادیتا و تیترهاست؛ برای شرح محتوای هر فصل باید متن همان فصل بررسی شود.',
-      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message } };
-  }
-  const allPassages = passagesForBook(book);
-  if (!allPassages.length) {
-    return { message: 'متن قابل‌جست‌وجوی «' + book.title + '» در نسخه فعلی بارگذاری نشده است؛ بنابراین پاسخ یا خلاصه حدسی ارائه نمی‌کنم.', conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: '' } };
-  }
-
-  const unresolvedReference = /(?:این بخش|این مفهوم|این مطالب|این توصیه|این موضوع|این دیدگاه|این تمرین|همین تمرین)/u.test(normalized);
-  if (unresolvedReference && !SCIENCE.test(normalized) && !ALTERNATIVE_VIEW.test(normalized) && !LIMITATIONS.test(normalized)
-    && !conversationState?.lastSources?.length) {
-    return {
-      message: 'برای اینکه تمرین، مثال یا تحلیل نامرتبط نسازم، لازم است بدانم منظورت کدام بخش از «' + book.title + '» است. عنوان فصل، شماره صفحه یا چند واژه از همان قسمت را بفرست؛ بعد پاسخ را به همان متن وصل می‌کنم و پیشنهاد خودم را از گفته نویسنده جدا می‌نویسم.',
-      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message, awaitingSection: true },
-    };
-  }
-  if ((SCIENCE.test(normalized) || ALTERNATIVE_VIEW.test(normalized) || LIMITATIONS.test(normalized))
-    && !conversationState?.lastSources?.length) {
-    return {
-      message: 'در «' + book.title + '»، برای بررسی علمی، دیدگاه مخالف یا محدودیت‌ها باید ادعا یا توصیه مشخص باشد. لطفاً جمله، عنوان فصل یا صفحه‌ای را که درباره‌اش می‌پرسی مشخص کن. بدون دانستن ادعای موردنظر، آوردن چند گزیده نامرتبط می‌تواند گمراه‌کننده باشد.',
-      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message, awaitingClaim: true },
-    };
-  }
-  if (SIMPLE_EXPLAIN.test(normalized) && /مفهوم اصلی/u.test(normalized)
-    && !conversationState?.lastSources?.length) {
-    const headings = mainBookHeadings(book).slice(0, 8);
-    const subject = book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است';
-    return {
-      message: 'مرور ساده و ساختاری «' + book.title + '» بر پایه اطلاعات ثبت‌شده کتاب:\\n\\nموضوع معرفی‌شده: ' + subject +
-        (headings.length ? '\\n\\nمحورهایی که کتاب به آن‌ها می‌پردازد:\\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\\n') : '') +
-        '\\n\\nاین مرور، توضیح ساده‌شده ساختار و موضوعات قابل مشاهده است؛ هنوز بازنویسی معنایی همه فصل‌ها نیست. اگر یک فصل را انتخاب کنی، می‌توانم همان بخش را دقیق‌تر و با ارجاع بررسی کنم.',
-      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: message, awaitingSection: true },
+      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery, awaitingSection: true },
     };
   }
   // The previous turn supplies context; the new turn still contributes fresh retrieval terms.
