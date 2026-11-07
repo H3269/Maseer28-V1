@@ -109,7 +109,7 @@ test('the local engine does not claim to generate a new example or exercise', ()
 test('recommendations explain their limited basis instead of pretending to know the reader', () => {
   const response = answerLibraryBookQuestion({ books, message: 'برای اینکه خودم را بهتر بشناسم از کدام کتاب شروع کنم؟' });
   assert.match(response, /پیشنهاد مطالعه/);
-  assert.match(response, /بر پایه موضوع و ساختار ثبت‌شده/);
+  assert.match(response, /بر اساس موضوع ثبت‌شده و محتوای بررسی‌شده/);
   assert.match(response, /نه شناخت وضعیت شخصی تو/);
   assert.match(response, /هنر شناخت و دگرگونی احساسات/);
 });
@@ -154,7 +154,7 @@ test('progress questions about an unspecified recommendation request the referen
 test('book-specific introductions use actual metadata and chapter headings', () => {
   const response = answerLibraryBookQuestion({ books, message: 'کتاب اول درباره چه موضوعی است؟' });
   assert.match(response, /رشد فردی و خودشناسی/u);
-  assert.match(response, /محورهای قابل مشاهده/u);
+  assert.match(response, /بخش‌های راهنما/u);
 });
 
 test('author-intent questions ask for a precise section instead of guessing', () => {
@@ -216,7 +216,7 @@ test('key-point requests do not fall through to the generic book overview', () =
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب اول مهم‌ترین نکات کدام‌اند؟' });
   assert.match(response, /نکته‌های محوری/u);
   assert.doesNotMatch(response, /نمای کلی مستند/u);
-  assert.match(response, /منبع:/u);
+  assert.match(response, /منبع ساختاری:/u);
 });
 
 test('a contextual follow-up searches the new limitation question while retaining the selected topic', () => {
