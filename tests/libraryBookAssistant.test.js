@@ -50,7 +50,16 @@ test('book questions do not invent a source when the requested book is unavailab
   assert.equal(response, null);
 });
 
-test('an unspecified book is clarified instead of selecting an arbitrary title', () => {
+
+test('general library page questions fall back to the page assistant', () => {
+  const response = answerLibraryBookQuestion({
+    books,
+    message: 'این صفحه برای چیست؟',
+  });
+  assert.equal(response, null);
+});
+
+test('book-related requests without a title ask the user to choose a book', () => {
   const response = answerLibraryBookQuestion({
     books,
     message: 'لطفاً خلاصه کتاب را بگو',
