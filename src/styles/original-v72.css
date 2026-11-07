@@ -6785,37 +6785,28 @@ body:not(.bale-webview) .bottomNav button.active:after {
   outline-offset: 3px;
 }
 .globalAssistantBackdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 500;
-  display: grid;
-  place-items: center;
-  padding: 20px;
-  box-sizing: border-box;
-  background: rgba(20, 35, 34, .48);
+  position: fixed; inset: 0; z-index: 500; display: grid; place-items: center;
+  padding: 10px; box-sizing: border-box; background: rgba(20, 35, 34, .48);
 }
 .globalAssistantDialog {
-  width: min(100%, 440px);
-  max-height: calc(100vh - 40px);
-  max-height: calc(100dvh - 40px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  box-sizing: border-box;
-  padding: 22px;
-  border: 1px solid #dfe8e5;
-  border-radius: 22px;
-  background: #fff;
-  color: #243b3c;
-  box-shadow: 0 22px 70px rgba(0, 0, 0, .22);
+  display: flex; flex-direction: column; width: min(100%, 620px);
+  height: min(88vh, 820px); height: min(88dvh, 820px);
+  min-height: min(420px, calc(100dvh - 20px)); max-height: calc(100dvh - 20px);
+  overflow: hidden; overscroll-behavior: contain; box-sizing: border-box;
+  padding: 16px; border: 1px solid #dfe8e5; border-radius: 22px;
+  background: #fff; color: #243b3c; box-shadow: 0 22px 70px rgba(0, 0, 0, .22);
   text-align: right;
 }
 .globalAssistantDialogTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between;
+  gap: 12px; direction: rtl; margin-bottom: 12px;
 }
-.globalAssistantDialog h2 { margin: 12px 0 8px; }
+.globalAssistantDialogTop h2 { flex: 1 1 auto; min-width: 0; margin: 0; font-size: 18px; line-height: 1.5; }
+.globalAssistantDialogTop .iconButton {
+  flex: 0 0 40px; width: 40px; height: 40px; min-width: 40px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.globalAssistantDialog h2 { margin: 0; }
 .globalAssistantPageContext {
   margin: 8px 0;
   padding: 10px 12px;
@@ -6827,7 +6818,7 @@ body:not(.bale-webview) .bottomNav button.active:after {
 .globalAssistantCloseAction { width: 100%; margin-top: 8px; }
 @media (max-width: 380px) {
   .globalAssistantLauncher { right: 14px; min-height: 46px; padding-inline: 14px; }
-  .globalAssistantDialog { padding: 18px; }
+  .globalAssistantDialog { padding: 12px; }
 }
 
 
@@ -7053,10 +7044,16 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 .globalAssistantDialog { display: flex; flex-direction: column; height: min(82dvh, 760px); }
 .globalAssistantDialog h2 { margin: 8px 0 12px; }
 .globalAssistantChat { display: flex; flex: 1 1 auto; min-height: 0; flex-direction: column; }
-.globalAssistantChat .assistantTranscript { flex: 1 1 auto; max-height: none; min-height: 180px; }
+.globalAssistantChat .assistantTranscript { flex: 1 1 auto; max-height: none; min-height: 0; }
+.globalAssistantChat .assistantComposer { flex: 0 0 auto; }
 .globalAssistantChat .assistantComposer textarea { min-height: 54px; }
-.globalAssistantChat .assistantSendButton { min-width: 48px; width: 48px; height: 48px; padding: 0; display: inline-flex; align-items: center; justify-content: center; color: var(--on-primary, #fff); }
+.globalAssistantChat .assistantSendButton {
+  min-width: 40px; width: 40px; height: 40px; min-height: 40px; padding: 0; margin: 0;
+  border-radius: 12px; display: inline-flex; align-items: center; justify-content: center;
+  color: var(--on-primary, #fff);
+}
+.globalAssistantChat .assistantSendButton svg { width: 19px; height: 19px; }
 @media (max-width: 480px) {
-  .globalAssistantDialog { max-height: calc(100dvh - 24px); }
-  .globalAssistantChat .assistantTranscript { min-height: 150px; }
+  .globalAssistantDialog { height: 92dvh; max-height: calc(100dvh - 16px); }
+  .globalAssistantChat .assistantTranscript { min-height: 0; }
 }
