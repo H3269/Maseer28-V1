@@ -7014,3 +7014,13 @@ html {
 html body .app:not(.appLoading) > section.card :is(button, input, textarea, select, [tabindex]):last-child {
   scroll-margin-bottom: 18px;
 }
+
+/* Keep the global assistant launcher clear of the combined navigation + release dock. */
+.globalAssistantLauncher {
+  bottom: calc(112px + env(safe-area-inset-bottom)) !important;
+}
+@media (max-width: 380px) {
+  .globalAssistantLauncher {
+    bottom: calc(112px + env(safe-area-inset-bottom)) !important;
+  }
+}
