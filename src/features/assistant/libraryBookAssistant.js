@@ -208,17 +208,21 @@ function bookHeadings(book) {
   for (const page of book.content?.pages || []) {
     const blocks = pageBlocks(page);
     const pageNumber = Number(page.sourcePage || page.page) || 0;
-    const headingCount = blocks.filter((block) => block.type === 'heading').length;
     const pageText = normalizeLibraryText(blocks.map((block) => block.text).join(' '));
     const frontMatter = /فهرست مطالب|تقدیم نامه|سپاسگزاری|پیشگفتار|یادداشتی درباره این مجموعه|شناسنامه/u.test(pageText);
     if (frontMatter && pageNumber <= 12) continue;
-    // A cluster of headings on an early page is usually a table of contents,
-    // not evidence that all those sections occur on that single page.
-    if (headingCount >= 5 && pageNumber > 0 && pageNumber <= 12) continue;
-    for (const block of blocks) {
-      if (block.type === 'heading' || (block.text.length < 150 && /^(?:فصل|بخش|پیوست|مقدمه|نتیجه گیری)/u.test(normalizeLibraryText(block.text)))) {
-        rows.push({ text: block.text, page: pageNumber || null });
+    for (let index = 0; index < blocks.length; index += 1) {
+      const block = blocks[index];
+      if (block.type !== 'heading' && !/^(?:فصل|بخش|پیوست|مقدمه|نتیجه گیری)/u.test(normalizeLibraryText(block.text))) continue;
+      let title = block.text.trim();
+      const next = blocks[index + 1];
+      // Some book pages store the section name as a short paragraph immediately
+      // after a structural heading such as "بخش اول:".
+      if (/^(?:فصل|بخش|پیوست|مرحله|هفته)\\s+[^:：]{1,24}[:：]$/u.test(title)
+        && next?.type !== 'heading' && next?.text?.trim().length > 2 && next.text.trim().length <= 100) {
+        title += ' ' + next.text.trim();
       }
+      rows.push({ text: title, page: pageNumber || null });
     }
   }
   const seen = new Set();
