@@ -446,3 +446,38 @@ test('book summaries exclude cover and front-matter pages from content evidence'
   assert.doesNotMatch(response, /صفحه روی جلد/u);
   assert.doesNotMatch(response, /این متن پیشگفتار است/u);
 });
+
+
+test('five-turn book conversation keeps topic, source evidence, and assistant attribution', () => {
+  const sampleBooks = [{
+    title: 'کتاب احساسات',
+    legacyId: 5,
+    content: { pages: [
+      { page: 20, sourcePage: 20, blocks: [
+        { type: 'heading', text: 'چرخه شکل‌گیری احساسات' },
+        { type: 'paragraph', text: 'شناخت احساسات با مشاهده موقعیت، تفسیر ذهنی، واکنش بدنی و میل رفتاری آغاز می‌شود. ثبت این چهار بخش کمک می‌کند فرد میان اتفاق و برداشت خود تمایز بگذارد و پیش از واکنش، پاسخ دیگری را انتخاب کند.' },
+      ] },
+      { page: 21, sourcePage: 21, blocks: [
+        { type: 'heading', text: 'تمرین مشاهده احساسات' },
+        { type: 'paragraph', text: 'یک موقعیت کم‌تنش را انتخاب کنید و موقعیت، فکر، احساس، نشانه بدنی و رفتار خود را ثبت کنید. این تمرین برای مشاهده است و قرار نیست احساس ناخوشایند را حذف کند.' },
+      ] },
+      { page: 22, sourcePage: 22, blocks: [
+        { type: 'heading', text: 'محدودیت تمرین' },
+        { type: 'paragraph', text: 'این تمرین جای ارزیابی تخصصی را نمی‌گیرد و در شرایط خطر فوری یا فشار شدید نباید تنها راه حمایت فرد باشد.' },
+      ] },
+    ] },
+  }];
+  const first = answerLibraryBookTurn({ books: sampleBooks, message: 'در کتاب پنجم چرخه شکل‌گیری احساسات چیست؟' });
+  const second = answerLibraryBookTurn({ books: sampleBooks, message: 'چه تمرینی برای این موضوع دارم؟', conversationState: first.conversationState });
+  const third = answerLibraryBookTurn({ books: sampleBooks, message: 'اگر انجامش برایم سخت بود چه جایگزینی دارم؟', conversationState: second.conversationState });
+  const fourth = answerLibraryBookTurn({ books: sampleBooks, message: 'چطور پیشرفتم را بسنجم؟', conversationState: third.conversationState });
+  const fifth = answerLibraryBookTurn({ books: sampleBooks, message: 'این توصیه چه محدودیتی دارد؟', conversationState: fourth.conversationState });
+  assert.match(first.message, /صفحه 20/u);
+  assert.match(second.message, /پیشنهاد دستیار/u);
+  assert.match(second.message, /صفحه 21/u);
+  assert.match(third.message, /جایگزین ساده پیشنهادی دستیار/u);
+  assert.match(fourth.message, /شاخص‌های دستیار/u);
+  assert.match(fifth.message, /محدودیت/u);
+  assert.match(fifth.message, /صفحه 22/u);
+  assert.equal(fifth.conversationState.bookId, 5);
+});
