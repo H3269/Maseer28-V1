@@ -585,3 +585,15 @@ test('main-theme answers explain the reviewed book thesis rather than only listi
     assert.match(response, /بازنویسی دستیار/u);
   }
 });
+
+
+test('book profile and summary responses use real line breaks, never leaked slash-n text', () => {
+  for (const book of books) {
+    const response = answerLibraryBookQuestion({
+      books,
+      message: 'خلاصه کتاب ' + ['اول', 'دوم', 'سوم', 'چهارم', 'پنجم'][book.legacyId - 1],
+    });
+    assert.ok(response.includes('\n'), book.title + ' summary should be readable across lines');
+    assert.doesNotMatch(response, /\\n/u, book.title + ' must not leak escaped newline markers');
+  }
+});
