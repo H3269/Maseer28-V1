@@ -63,7 +63,7 @@ try {
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: 'دریافت خروجی ZIP و PDF آرشیوها' }).click();
   const download = await downloadPromise;
-  assert.match(download.suggestedFilename(), /^maseer28-archives-[۰-۹]{4}-[۰-۹]{2}-[۰-۹]{2}\.zip$/);
+  assert.match(download.suggestedFilename(), /^maseer۲۸-archives-[۰-۹]{4}-[۰-۹]{2}-[۰-۹]{2}\.zip$/);
   const filePath = await download.path();
   assert.ok(filePath, 'Chromium should expose the downloaded file');
   const bytes = new Uint8Array(await readFile(filePath));
