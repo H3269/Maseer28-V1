@@ -153,8 +153,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 <AppIcon name="x" size={18} />
               </button>
             </div>
-            <div className="assistantChatShell globalAssistantChat" aria-label="گفت‌وگوی دستیار در صفحه جاری">
-              <div className="assistantTranscript" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
+            <div className="assistantChatShell globalAssistantChat" dir="rtl" aria-label="گفت‌وگوی دستیار در صفحه جاری">
+              <div className="assistantTranscript" dir="rtl" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
                 {messages.map((item, index) => (
                   <div className={item.role === 'user' ? 'userMessage' : 'assistantMessage'} key={index}>
                     <b>{item.role === 'user' ? 'شما' : 'دستیار مسیر۲۸'}</b>
@@ -170,10 +170,11 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
-              <form className="assistantComposer" onSubmit={send}>
+              <form className="assistantComposer" dir="rtl" onSubmit={send}>
                 <label className="assistantSrOnly" htmlFor="global-assistant-message">پیام شما</label>
                 <textarea
                   id="global-assistant-message"
+                  dir="rtl"
                   rows={2}
                   maxLength={dailyContext ? 2000 : 3000}
                   value={draft}
