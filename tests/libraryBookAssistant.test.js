@@ -222,3 +222,30 @@ test('a contextual follow-up searches the new limitation question while retainin
   assert.match(second.message, /صفحه 2/u);
   assert.equal(second.conversationState.bookId, 1);
 });
+
+
+test('alternative-view questions are not mistaken for a comparison of all library books', () => {
+  const response = answerLibraryBookQuestion({
+    books,
+    message: 'در کتاب پنجم آیا درباره این موضوع دیدگاه متفاوت یا مخالفی هم وجود دارد؟',
+  });
+  assert.match(response, /نمی‌توانم وجود یا محتوای یک دیدگاه مخالف مشخص را اثبات کنم/u);
+  assert.doesNotMatch(response, /مقایسه ساختاری کتابخانه/u);
+});
+
+test('the assistant does not label generic passages as anxiety-specific book guidance', () => {
+  const sampleBooks = [{
+    title: 'کتاب آزمایشی',
+    legacyId: 1,
+    content: { pages: [{ page: 1, sourcePage: 1, blocks: [
+      { type: 'heading', text: 'برنامه‌ریزی روزانه' },
+      { type: 'paragraph', text: 'مدیریت زمان و برنامه‌ریزی روزانه به سامان دادن کارهای معمول کمک می‌کند.' },
+    ] }] },
+  }];
+  const response = answerLibraryBookQuestion({
+    books: sampleBooks,
+    message: 'در کتاب اول کدام بخش‌ها برای مدیریت اضطراب مفید هستند؟',
+  });
+  assert.match(response, /شاهد مستقیم و کافی برای اضطراب/u);
+  assert.doesNotMatch(response, /از نظر شناخت احساسات، نگرانی/u);
+});
