@@ -11,6 +11,7 @@ try {
   const errors = [];
   page.on('pageerror', (error) => errors.push(String(error)));
   await page.addInitScript(() => {
+    localStorage.setItem('maseer28_onboarding_complete_v1', '1');
     window.__archiveDrawnText = [];
     const originalFillText = CanvasRenderingContext2D.prototype.fillText;
     CanvasRenderingContext2D.prototype.fillText = function (value, ...args) {
