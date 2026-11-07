@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
+import { readFile } from 'node:fs/promises';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const baseURL = process.env.PATH28_BASE_URL || 'http://127.0.0.1:4173';
+const canonicalPathContent = JSON.parse(await readFile(new URL('../../public/content/path-content.json', import.meta.url), 'utf8'));
 const browser = await chromium.launch({ headless: true });
 
 const journey = {
@@ -110,8 +112,9 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null } = 
   await page.route('**/*', async (route) => {
     const url = new URL(route.request().url());
     if (url.pathname.endsWith('/content/path-content.json')) {
-      const response = await route.fetch();
-      const payload = await response.json();
+      // Use the checked-in fixture directly: repeatedly proxying the large path JSON
+      // through Chromium's route.fetch caused intermittent preview-server socket resets.
+      const payload = structuredClone(canonicalPathContent);
       const day = payload.categories?.[topicKey]?.days?.find((item) => Number(item.day) === dayNumber);
       assert.ok(day, 'the deterministic browser fixture must contain the selected topic day');
       if (isLegacyMode) {
@@ -126,7 +129,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null } = 
           risk_level: 'routine',
         });
       }
-      await route.fulfill({ response, json: payload });
+      await route.fulfill({ status: 200, contentType: 'application/json; charset=utf-8', body: JSON.stringify(payload) });
       return;
     }
     if (url.searchParams.has('_m28_time')) {
