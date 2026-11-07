@@ -370,3 +370,79 @@ test('an unspecified exercise cannot receive a generic alternative before its so
   assert.match(response, /عنوان فصل، شماره صفحه یا چند واژه/u);
   assert.doesNotMatch(response, /جایگزین ساده پیشنهادی دستیار/u);
 });
+
+
+test('follow-up retrieval combines the previous topic with the new user question', () => {
+  const sampleBooks = [{
+    title: 'کتاب آزمایشی',
+    legacyId: 1,
+    content: { pages: [
+      { page: 1, sourcePage: 1, blocks: [
+        { type: 'heading', text: 'شناخت خشم' },
+        { type: 'paragraph', text: 'شناخت نشانه‌های عصبانیت به فرد کمک می‌کند پیش از واکنش، مکث کند و محرک را از پاسخ خود جدا سازد.' },
+      ] },
+      { page: 2, sourcePage: 2, blocks: [
+        { type: 'heading', text: 'محدودیت‌های تمرین' },
+        { type: 'paragraph', text: 'این تمرین در شرایط خطر فوری یا هنگام شدت بسیار بالای هیجان کافی نیست و باید از حمایت مناسب استفاده کرد.' },
+      ] },
+    ] },
+  }];
+  const first = answerLibraryBookTurn({ books: sampleBooks, message: 'در کتاب اول درباره خشم چه نوشته؟' });
+  const second = answerLibraryBookTurn({
+    books: sampleBooks,
+    message: 'چه محدودیت‌هایی دارد؟',
+    conversationState: first.conversationState,
+  });
+  assert.match(second.message, /محدودیت‌های تمرین/u);
+  assert.match(second.message, /صفحه 2/u);
+  assert.equal(second.conversationState.bookId, 1);
+  assert.match(second.conversationState.lastQuery, /چه محدودیت‌هایی دارد/u);
+});
+
+test('topic-specific guidance rejects a short incidental mention as insufficient evidence', () => {
+  const sampleBooks = [{
+    title: 'کتاب آزمایشی',
+    legacyId: 1,
+    content: { pages: [
+      { page: 1, sourcePage: 1, blocks: [
+        { type: 'heading', text: 'برنامه‌ریزی روزانه' },
+        { type: 'paragraph', text: 'برنامه‌ریزی روزانه به سامان دادن کارهای معمول کمک می‌کند. در یک مثال کوتاه به عصبانیت اشاره شده است، اما این بخش درباره شناخت یا مدیریت خشم نیست و راهکاری در این زمینه ارائه نمی‌کند.' },
+      ] },
+    ] },
+  }];
+  const response = answerLibraryBookQuestion({
+    books: sampleBooks,
+    message: 'در کتاب اول برای مدیریت خشم چه نکته‌ای وجود دارد؟',
+  });
+  assert.match(response, /شاهد مستقیم و کافی برای خشم و عصبانیت/u);
+  assert.doesNotMatch(response, /پیشنهاد عملی دستیار/u);
+});
+
+test('book summaries exclude cover and front-matter pages from content evidence', () => {
+  const sampleBooks = [{
+    title: 'کتاب آزمایشی',
+    legacyId: 1,
+    content: { pages: [
+      { page: 1, sourcePage: 1, blocks: [
+        { type: 'paragraph', text: 'عنوان و مشخصات کتاب آزمایشی؛ این متن فقط صفحه روی جلد است و نباید شاهد محتوایی باشد.' },
+      ] },
+      { page: 2, sourcePage: 2, blocks: [
+        { type: 'heading', text: 'پیشگفتار' },
+        { type: 'paragraph', text: 'این متن پیشگفتار است و نباید به عنوان محتوای فصل در خلاصه استفاده شود.' },
+      ] },
+      { page: 9, sourcePage: 9, blocks: [
+        { type: 'heading', text: 'فصل اول: شناخت باورها' },
+        { type: 'paragraph', text: 'باورها برداشت‌هایی هستند که فرد درباره خود و جهان می‌سازد و می‌توانند بر انتخاب‌ها و رفتارهای روزمره او اثر بگذارند.' },
+      ] },
+      { page: 10, sourcePage: 10, blocks: [
+        { type: 'heading', text: 'فصل دوم: انتخاب آگاهانه' },
+        { type: 'paragraph', text: 'انتخاب آگاهانه یعنی پیش از اقدام، گزینه‌ها و پیامدهای احتمالی را بررسی کنیم و یک قدم کوچک متناسب با هدف برداریم.' },
+      ] },
+    ] },
+  }];
+  const response = answerLibraryBookQuestion({ books: sampleBooks, message: 'خلاصه کتاب اول' });
+  assert.match(response, /فصل اول: شناخت باورها/u);
+  assert.match(response, /فصل دوم: انتخاب آگاهانه/u);
+  assert.doesNotMatch(response, /صفحه روی جلد/u);
+  assert.doesNotMatch(response, /این متن پیشگفتار است/u);
+});
