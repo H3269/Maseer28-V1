@@ -374,7 +374,8 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     reply = summaryReply(book, allPassages);
   } else if (SCIENCE.test(normalized) || ALTERNATIVE_VIEW.test(normalized) || LIMITATIONS.test(normalized)
     || WEEK_PLAN.test(normalized) || PROGRESS.test(normalized) || EXAMPLE_OR_EXERCISE.test(normalized)
-    || DAILY_APPLICATION.test(normalized) || SIMPLE_EXPLAIN.test(normalized) || KEY_POINTS.test(normalized)\n    || ANXIETY.test(normalized) || ANGER.test(normalized) || CONFIDENCE.test(normalized)
+    || DAILY_APPLICATION.test(normalized) || SIMPLE_EXPLAIN.test(normalized) || KEY_POINTS.test(normalized)
+    || ANXIETY.test(normalized) || ANGER.test(normalized) || CONFIDENCE.test(normalized)
     || ALTERNATIVE_EXERCISE.test(normalized) || AUTHOR_MEANING.test(normalized) || AUTHOR_REASON.test(normalized)) {
     reply = 'در «' + book.title + '»:\n\n' + structuredGuidance(normalized, book, selected, normalized);
   } else {
