@@ -117,12 +117,18 @@ try {
   await dialog.getByRole('textbox').fill('');
   assert.equal(await sendButton.isDisabled(), true, 'clearing the question must disable sending again');
   assert.equal((await dialog.innerText()).includes('09123456789'), false, 'private profile data must not be exposed to the page assistant');
-  await dialog.getByRole('textbox').fill('اینجا چه کارهایی می‌توانم انجام بدهم؟');
+  await dialog.getByRole('textbox').fill('اینجا چه کارهایی می‌توانم انجام بدهم؟ 28');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForTimeout(250);
   await page.waitForFunction(() => document.querySelector('.globalAssistantDialog')?.innerText.includes('ادامه مسیر امروز'));
   const firstAssistantReply = dialog.locator('.assistantMessage').last();
   assert.match(await firstAssistantReply.innerText(), /در صفحه «خانه» می‌توانی/);
+  assert.match(await dialog.locator('.userMessage').last().innerText(), /۲۸/, 'visible user messages must localize typed ASCII digits');
+  assert.doesNotMatch(await dialog.locator('.userMessage').last().innerText(), /[0-9]/, 'visible user messages must not expose ASCII digits');
+  assert.equal(await dialog.locator('.assistantChatShell').count(), 1, 'the assistant must use one continuous chat surface');
+  assert.equal(await dialog.locator('.assistantTranscript').count(), 1, 'user and assistant messages must share one transcript');
+  const rtlLayout = await dialog.locator('.assistantTranscript, .userMessage, .assistantMessage, .assistantComposer textarea').evaluateAll((nodes) => nodes.map((node) => ({ direction: getComputedStyle(node).direction, align: getComputedStyle(node).textAlign })));
+  assert.ok(rtlLayout.every((item) => item.direction === 'rtl' && item.align === 'right'), 'the transcript, both speaker bubbles and composer must be right-to-left and right-aligned');
   const userBubbleStyle = await dialog.locator('.userMessage').last().evaluate((node) => {
     const style = getComputedStyle(node);
     return { background: style.backgroundColor, border: style.borderColor };
