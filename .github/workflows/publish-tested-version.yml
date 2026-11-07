@@ -1,4 +1,4 @@
-name: Publish tested Path28 version to Telegram
+name: Publish tested Path28 version to Telegram and verify Pages deployment
 
 
 on:
@@ -87,6 +87,15 @@ jobs:
           persist-credentials: true
           path: telegram-site
 
+      - name: Prepare version and publication date
+        shell: bash
+        run: |
+          set -euo pipefail
+          node test-source/scripts/write-release-metadata.mjs \
+            test-source/package.json \
+            telegram-site/version.json \
+            test-source/dist/version.json
+
       - name: Verify build output allowlist
         shell: bash
         run: |
@@ -95,8 +104,8 @@ jobs:
           from pathlib import Path
 
           dist = Path("test-source/dist")
-          allowed = {"assets", "content", "assistant", "index.html", "manifest.webmanifest", "Label.png"}
-          required = {"assets", "content", "assistant", "index.html", "manifest.webmanifest", "Label.png"}
+          allowed = {"assets", "content", "assistant", "index.html", "manifest.webmanifest", "Label.png", "version.json"}
+          required = {"assets", "content", "assistant", "index.html", "manifest.webmanifest", "Label.png", "version.json"}
           if not dist.is_dir():
               raise SystemExit("Build output directory is missing.")
           actual = {item.name for item in dist.iterdir()}
@@ -109,7 +118,7 @@ jobs:
           for name in ("assets", "content", "assistant"):
               if not (dist / name).is_dir():
                   raise SystemExit(f"Expected build directory missing: {name}")
-          for name in ("index.html", "manifest.webmanifest", "Label.png"):
+          for name in ("index.html", "manifest.webmanifest", "Label.png", "version.json"):
               if not (dist / name).is_file() or (dist / name).stat().st_size == 0:
                   raise SystemExit(f"Required build file missing or empty: {name}")
           PY
@@ -125,22 +134,52 @@ jobs:
           install -m 0644 test-source/dist/index.html telegram-site/index.html
           install -m 0644 test-source/dist/manifest.webmanifest telegram-site/manifest.webmanifest
           install -m 0644 test-source/dist/Label.png telegram-site/Label.png
+          install -m 0644 test-source/dist/version.json telegram-site/version.json
           test -s telegram-site/index.html
           test -s telegram-site/.github/workflows/deploy.yml
           test -s telegram-site/production/README-FA.md
           test -s telegram-site/README-FA.md
 
       - name: Commit and push Telegram version
+        id: publish
         working-directory: telegram-site
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- index.html manifest.webmanifest Label.png assets content assistant
+          git add -- index.html manifest.webmanifest Label.png assets content assistant version.json
           if git diff --cached --quiet; then
-            echo "No built changes to publish."
-            exit 0
+            echo "Release metadata did not produce a change; refusing to report a publication."
+            exit 1
           fi
-          git commit -m "Publish tested Path28 version with daily lock enabled"
+          git commit -m "Publish Path28 version with daily lock enabled"
           git push origin HEAD:main
+          echo "published_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for the exact GitHub Pages deployment
+        env:
+          PUBLISHED_SHA: ${{ steps.publish.outputs.published_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/H3269/Maseer28/actions/workflows/deploy.yml/runs?branch=main&per_page=30"
+          for attempt in $(seq 1 60); do
+            response="$(curl --fail --silent --show-error --retry 2 "$api")"
+            matching_run="$(printf '%s' "$response" | jq -c --arg sha "$PUBLISHED_SHA" '[.workflow_runs[] | select(.head_sha == $sha)] | sort_by(.run_number) | last // empty')"
+            if [ -n "$matching_run" ]; then
+              status="$(printf '%s' "$matching_run" | jq -r '.status')"
+              conclusion="$(printf '%s' "$matching_run" | jq -r '.conclusion // empty')"
+              if [ "$status" = "completed" ]; then
+                if [ "$conclusion" != "success" ]; then
+                  echo "GitHub Pages deployment for $PUBLISHED_SHA ended with: $conclusion"
+                  exit 1
+                fi
+                echo "GitHub Pages deployment succeeded for $PUBLISHED_SHA"
+                exit 0
+              fi
+            fi
+            sleep 10
+          done
+          echo "Timed out waiting for GitHub Pages deployment for $PUBLISHED_SHA"
+          exit 1

@@ -6879,3 +6879,58 @@ body:not(.bale-webview) .bottomNav button.active:after {
 }
 #day .safetyNoteStacked li { margin: 4px 0; }
 #day .safetyNoteStacked .safetyChoice { display: block; margin-top: 8px; }
+
+
+/* Compact fixed release information, positioned above the existing bottom navigation. */
+.app {
+  padding-bottom: 136px;
+}
+
+.releaseFooter {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 150;
+  width: min(calc(100% - 28px), 620px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 26px;
+  padding: 5px 10px;
+  border: 1px solid #dce9e4;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .94);
+  color: #49635d;
+  box-shadow: 0 3px 12px rgba(24, 64, 54, .08);
+  backdrop-filter: blur(10px);
+  font-size: 10px;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.releaseFooter.with-nav {
+  bottom: calc(72px + env(safe-area-inset-bottom));
+}
+
+.releaseFooter.without-nav {
+  bottom: max(8px, env(safe-area-inset-bottom));
+}
+
+.releaseFooterDivider {
+  color: #9aaca5;
+}
+
+body.reader-mode .releaseFooter {
+  display: none !important;
+}
+
+@media (max-width: 360px) {
+  .releaseFooter {
+    gap: 5px;
+    font-size: 9px;
+    padding-inline: 6px;
+  }
+}

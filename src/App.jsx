@@ -58,6 +58,7 @@ import { isCompleteDailyContentCategory, selectCanonicalDailyRecord, selectDaily
 import { mergeDailyTextOverrides } from './features/content/dailyTextOverrides.js';
 import { fa } from './shared/utils.js';
 import GlobalAssistantLauncher from './features/assistant/GlobalAssistantLauncher.jsx';
+import VersionFooter from './shared/components/VersionFooter.jsx';
 
 function isPathSetupComplete(state) {
   const data = state?.profileData;
@@ -766,6 +767,7 @@ function navigate(next) {
         } : null}
         libraryContext={screen === 'books' ? { titles: books.map((book) => book.title).filter(Boolean) } : null}
       />
+      <VersionFooter navVisible={navVisible} />
       {preview && <BookPreviewModal preview={preview} onClose={() => setPreview(null)} onOpen={() => { const item = preview; setPreview(null); openBook(item.book, item.sourcePage, { day: item.day, sourcePage: item.sourcePage, reason: item.reason, sourceTitle: item.sourceTitle }); }} />}
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}
       {validation && <ValidationModal data={validation} onClose={() => setValidation(null)} />}
