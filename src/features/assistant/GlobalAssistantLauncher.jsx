@@ -101,13 +101,17 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     if (!message) return;
     try {
       let turn;
-      const libraryReply = screen === 'books'
-        ? answerLibraryBookQuestion({ books: loadedLibraryBooks, message })
-        : null;
-      if (libraryReply) {
-        turn = { message: libraryReply, knowledge: [], conversationState: null };
+      if (screen === 'books' && !loadedLibraryBooks.length) {
+        turn = { message: 'متن کتاب‌ها هنوز بارگذاری نشده است. چند لحظه صبر کن و دوباره پرسشت را بفرست.', knowledge: [], conversationState: null };
       } else {
-        turn = makePageAssistantTurn({ screen, text: message, conversationState: conversationStateRef.current, dailyContext, libraryContext });
+        const libraryReply = screen === 'books'
+          ? answerLibraryBookQuestion({ books: loadedLibraryBooks, message })
+          : null;
+        if (libraryReply) {
+        turn = { message: libraryReply, knowledge: [], conversationState: null };
+        } else {
+          turn = makePageAssistantTurn({ screen, text: message, conversationState: conversationStateRef.current, dailyContext, libraryContext });
+        }
       }
       conversationStateRef.current = turn.conversationState || null;
       setMessages((current) => [
