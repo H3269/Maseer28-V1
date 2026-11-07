@@ -15,6 +15,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const closeButtonRef = useRef(null);
   const dialogRef = useRef(null);
   const endRef = useRef(null);
+  const composerRef = useRef(null);
+  const messageInputRef = useRef(null);
 
   useEffect(() => {
     setMessages([]);
@@ -68,6 +70,35 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
 
   if (!visible || screen === 'bookReader') return null;
 
+  function resizeComposerInput(element, value) {
+    if (!element) return;
+    const composer = element.closest('.assistantComposer');
+    const sendButton = composer?.querySelector('.assistantSendButton');
+    if (!composer || !sendButton) return;
+    const composerStyle = window.getComputedStyle(composer);
+    const horizontalPadding = parseFloat(composerStyle.paddingInlineStart || '0') + parseFloat(composerStyle.paddingInlineEnd || '0');
+    const gap = parseFloat(composerStyle.columnGap || composerStyle.gap || '0');
+    const availableWidth = Math.max(116, composer.clientWidth - horizontalPadding - sendButton.offsetWidth - gap);
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    const inputStyle = window.getComputedStyle(element);
+    if (context) {
+      context.font = inputStyle.font;
+      const lines = String(value || '').split('\\n');
+      const measuredText = Math.max(0, ...lines.map((line) => context.measureText(line || ' ').width));
+      const desiredWidth = Math.max(116, Math.ceil(measuredText) + 34);
+      element.style.width = `${Math.min(availableWidth, desiredWidth)}px`;
+    }
+    element.style.height = 'auto';
+    element.style.height = `${Math.min(128, Math.max(54, element.scrollHeight))}px`;
+  }
+
+  function updateDraft(event) {
+    const nextValue = event.target.value;
+    setDraft(nextValue);
+    resizeComposerInput(event.currentTarget, nextValue);
+  }
+
   function activate() {
     setOpen(true);
   }
@@ -97,6 +128,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         { role: 'assistant', text: turn.message, knowledge: turn.knowledge || [] },
       ]);
       setDraft('');
+      resizeComposerInput(messageInputRef.current, '');
       setError('');
     } catch {
       setError('پاسخ آماده نشد. دوباره تلاش کن.');
@@ -170,15 +202,16 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
-              <form className="assistantComposer" dir="rtl" onSubmit={send}>
+              <form ref={composerRef} className="assistantComposer" dir="rtl" onSubmit={send}>
                 <label className="assistantSrOnly" htmlFor="global-assistant-message">پیام شما</label>
                 <textarea
                   id="global-assistant-message"
+                  ref={messageInputRef}
                   dir="rtl"
-                  rows={2}
+                  rows={1}
                   maxLength={dailyContext ? 2000 : 3000}
                   value={draft}
-                  onChange={(event) => setDraft(event.target.value)}
+                  onChange={updateDraft}
                   placeholder="چطور میتونم کمکت کنم؟"
                 />
                 <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال پیام" disabled={!draft.trim()}><AppIcon name="arrowUp" size={19} /></button>

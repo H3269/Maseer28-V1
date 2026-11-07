@@ -7045,8 +7045,16 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 .globalAssistantDialog h2 { margin: 8px 0 12px; }
 .globalAssistantChat { display: flex; flex: 1 1 auto; min-height: 0; flex-direction: column; }
 .globalAssistantChat .assistantTranscript { flex: 1 1 auto; max-height: none; min-height: 0; }
-.globalAssistantChat .assistantComposer { flex: 0 0 auto; }
-.globalAssistantChat .assistantComposer textarea { min-height: 54px; }
+.globalAssistantChat .assistantComposer {
+  display: flex; flex: 0 0 auto; flex-wrap: wrap; align-items: flex-end;
+  justify-content: flex-start; gap: 8px;
+}
+.globalAssistantChat .assistantComposer textarea {
+  box-sizing: border-box; flex: 0 1 auto; width: 116px; min-width: 116px;
+  max-width: calc(100% - 48px); min-height: 54px; height: 54px; max-height: 128px;
+  margin: 0; resize: none; overflow-y: auto; transition: width .12s ease;
+}
+.globalAssistantChat .assistantComposerError { flex: 1 0 100%; }
 .globalAssistantChat .assistantSendButton {
   box-sizing: border-box !important; flex: 0 0 36px !important;
   min-width: 36px !important; max-width: 36px !important; width: 36px !important;
