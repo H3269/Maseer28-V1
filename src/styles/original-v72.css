@@ -6882,7 +6882,7 @@ body:not(.bale-webview) .bottomNav button.active:after {
 
 
 /* Compact fixed release information, positioned above the existing bottom navigation. */
-.app {
+.app:not(.appLoading) {
   padding-bottom: 136px;
 }
 
@@ -6890,7 +6890,7 @@ body:not(.bale-webview) .bottomNav button.active:after {
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 150;
+  z-index: 90;
   width: min(calc(100% - 28px), 620px);
   display: flex;
   align-items: center;
