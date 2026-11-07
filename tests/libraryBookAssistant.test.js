@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { answerLibraryBookQuestion, answerLibraryBookTurn } from '../src/features/assistant/libraryBookAssistant.js';
+import { getLibraryBookProfile } from '../src/features/assistant/libraryBookProfiles.js';
 
 const root = new URL('../public/', import.meta.url);
 const manifest = JSON.parse(await readFile(new URL('content/library.seed.json', root), 'utf8'));
@@ -21,9 +22,9 @@ test('all five seeded books return grounded overviews with source page locators'
     });
     assert.ok(response, book.title + ' should return an overview');
     assert.ok(response.includes(book.title));
-    assert.match(response, /منبع:/);
+    assert.match(response, /منبع(?: ساختاری)?:/);
     assert.match(response, /صفحه/);
-    assert.match(response, /مرور محتواییِ ساختاری/);
+    assert.match(response, /خلاصه راهنمای محتوایی|مرور محتواییِ ساختاری/u);
   }
 });
 
@@ -77,7 +78,7 @@ test('follow-up questions retain the selected book and topic', () => {
 test('a comparison request uses recorded metadata and actual chapter headings', () => {
   const response = answerLibraryBookQuestion({ books, message: 'تفاوت موضوعی این پنج کتاب چیست؟' });
   for (const book of books) assert.ok(response.includes(book.title));
-  assert.match(response, /مقایسه ساختاری/);
+  assert.match(response, /مقایسه محتوایی پنج کتاب/);
 });
 
 test('no answer is invented when the requested book is unavailable', () => {
@@ -107,7 +108,7 @@ test('the local engine does not claim to generate a new example or exercise', ()
 
 test('recommendations explain their limited basis instead of pretending to know the reader', () => {
   const response = answerLibraryBookQuestion({ books, message: 'برای اینکه خودم را بهتر بشناسم از کدام کتاب شروع کنم؟' });
-  assert.match(response, /پیشنهاد شروع مطالعه/);
+  assert.match(response, /پیشنهاد مطالعه/);
   assert.match(response, /بر پایه موضوع و ساختار ثبت‌شده/);
   assert.match(response, /نه شناخت وضعیت شخصی تو/);
   assert.match(response, /هنر شناخت و دگرگونی احساسات/);
@@ -152,7 +153,7 @@ test('progress questions about an unspecified recommendation request the referen
 
 test('book-specific introductions use actual metadata and chapter headings', () => {
   const response = answerLibraryBookQuestion({ books, message: 'کتاب اول درباره چه موضوعی است؟' });
-  assert.match(response, /رشد فردی، خودشناسی، تحول درونی/u);
+  assert.match(response, /رشد فردی و خودشناسی/u);
   assert.match(response, /محورهای قابل مشاهده/u);
 });
 
@@ -213,7 +214,7 @@ test('confidence guidance refuses to invent book-specific advice without direct 
 
 test('key-point requests do not fall through to the generic book overview', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب اول مهم‌ترین نکات کدام‌اند؟' });
-  assert.match(response, /محورهای قابل مشاهده در بخش‌های اصلی کتاب/u);
+  assert.match(response, /نکته‌های محوری/u);
   assert.doesNotMatch(response, /نمای کلی مستند/u);
   assert.match(response, /منبع:/u);
 });
@@ -313,7 +314,7 @@ test('book overviews exclude dedication and contents pages from representative e
     ] },
   }];
   const response = answerLibraryBookQuestion({ books: sampleBooks, message: 'خلاصه کتاب اول' });
-  assert.match(response, /مرور محتواییِ ساختاری/u);
+  assert.match(response, /خلاصه راهنمای محتوایی|مرور محتواییِ ساختاری/u);
   assert.match(response, /باورها برداشت‌هایی هستند/u);
   assert.doesNotMatch(response, /این متن فقط تقدیم‌نامه است/u);
 });
@@ -333,8 +334,8 @@ test('vague references do not trigger generic exercises or plans without a prior
 test('a broad main-concept question gets a grounded plain-language structural overview', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم مفهوم اصلی را به زبان ساده توضیح بده' });
   assert.match(response, /هنر شناخت و دگرگونی احساسات/u);
-  assert.match(response, /مرور ساده و ساختاری/u);
-  assert.match(response, /شناخت جهان احساسات/u);
+  assert.match(response, /توضیح ساده مفهوم اصلی/u);
+  assert.match(response, /پیام ساده کتاب/u);
   assert.doesNotMatch(response, /برداشت ساده و محتاطانه/u);
 });
 
@@ -421,7 +422,7 @@ test('topic-specific guidance rejects a short incidental mention as insufficient
 test('book summaries exclude cover and front-matter pages from content evidence', () => {
   const sampleBooks = [{
     title: 'کتاب آزمایشی',
-    legacyId: 1,
+    legacyId: 99,
     content: { pages: [
       { page: 1, sourcePage: 1, blocks: [
         { type: 'paragraph', text: 'عنوان و مشخصات کتاب آزمایشی؛ این متن فقط صفحه روی جلد است و نباید شاهد محتوایی باشد.' },
@@ -487,6 +488,7 @@ test('five-turn follow-up path stays grounded in each of the five real seeded bo
   const ordinals = ['اول', 'دوم', 'سوم', 'چهارم', 'پنجم'];
   for (const book of books) {
     const sourcePage = book.content.pages.find((page) =>
+      Number(page.sourcePage || page.page) > 12 &&
       (page.blocks || []).some((block) => block.type !== 'heading' && String(block.text || '').trim().length > 100)
     );
     assert.ok(sourcePage, book.title + ' must contain a substantive source paragraph');
@@ -524,6 +526,27 @@ test('five-turn follow-up path stays grounded in each of the five real seeded bo
       assert.match(turn.message, /منبع:/u, book.title + ' follow-up must preserve cited book evidence');
       assert.ok(turn.conversationState.lastSources?.length, book.title + ' follow-up must preserve source locators');
       assert.match(turn.message, followUp.expected, book.title + ' follow-up must use its requested response mode');
+    }
+  }
+});
+
+
+test('curated book profile summary and key-point citations resolve to substantive source pages', () => {
+  for (const book of books) {
+    const profile = getLibraryBookProfile(book);
+    assert.ok(profile, book.title + ' must have a reviewed profile');
+    for (const [heading, description, pageNumber] of profile.summary) {
+      const page = book.content.pages.find((item) => Number(item.sourcePage || item.page) === pageNumber);
+      assert.ok(page, book.title + ' summary item "' + heading + '" must cite an existing page');
+      const sourceText = (page.blocks || []).map((block) => block.text || '').join(' ').trim();
+      assert.ok(sourceText.length >= 90, book.title + ' page ' + pageNumber + ' must contain substantive text');
+      assert.ok(description.length >= 30, book.title + ' summary item "' + heading + '" must explain its claim');
+    }
+    for (const [point, pageNumber] of profile.keyPoints) {
+      const page = book.content.pages.find((item) => Number(item.sourcePage || item.page) === pageNumber);
+      assert.ok(page, book.title + ' key point "' + point + '" must cite an existing page');
+      const sourceText = (page.blocks || []).map((block) => block.text || '').join(' ').trim();
+      assert.ok(sourceText.length >= 90, book.title + ' key-point page ' + pageNumber + ' must contain substantive text');
     }
   }
 });
