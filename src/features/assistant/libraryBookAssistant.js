@@ -359,10 +359,20 @@ function compareBooksReply(books) {
     const profile = getLibraryBookProfile(book);
     const subject = profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است';
     const focus = profile?.comparison || 'برای این کتاب هنوز جمع‌بندی مقایسه‌ایِ بازبینی‌شده ثبت نشده است.';
-    const concept = profile?.conceptPair?.length === 2 && profile?.conceptComparison
-      ? '\nنمونه تمایز مفهومی: ' + profile.conceptPair.join(' در برابر ') + ' — ' + profile.conceptComparison
+    const pair = profile?.conceptPair?.length === 2 ? profile.conceptPair : null;
+    const concept = pair && profile?.conceptComparison
+      ? '\nنمونه تمایز مفهومی: ' + pair.join(' در برابر ') + ' — ' + profile.conceptComparison
       : '';
-    return '• «' + book.title + '»\nمحور اصلی: ' + subject + '\nجایگاه در مجموعه: ' + focus + concept;
+    let evidence = '';
+    if (pair) {
+      const passages = passagesForBook(book);
+      const first = retrieveConceptEvidence(passages, pair[0], 1);
+      const second = retrieveConceptEvidence(passages, pair[1], 1);
+      evidence = first.length && second.length
+        ? '\nشاهدهای صفحه‌ای برای دو مفهوم:\n' + formatPassages([...first, ...second])
+        : '\nبرای هر دو مفهوم شاهد صفحه‌ای کافی پیدا نشد؛ این تمایز را باید پیش از نتیجه‌گیری در متن اصلی بازبینی کرد.';
+    }
+    return '• «' + book.title + '»\nمحور اصلی: ' + subject + '\nجایگاه در مجموعه: ' + focus + concept + evidence;
   });
   return [
     'مقایسه محتوایی پنج کتاب کتابخانه مسیر ۲۸',
@@ -399,7 +409,7 @@ function recommendBooks(books, message) {
       (profile?.summary?.length ? '\n\nدلیل محتوایی پیشنهاد:\n' + formatProfileItemsWithEvidence(first, profile.summary.slice(0, 2)) : '') +
       (emotions ? '\n\nاگر مسئله اصلی‌ات شناخت و تنظیم احساسات است، «' + emotions.title + '» گزینه شروعِ موضوعی مناسبی است.' : '') +
       (workbook ? '\n\n«' + workbook.title + '» را به‌عنوان کتاب اول پیشنهاد نمی‌کنم؛ این کتابچه ابزار اجرایی است و در کنار جلد سوم بیشترین فایده را دارد.' : '') +
-      '\n\nاین پیشنهاد بر اساس ساختار و محتوای کتاب‌هاست؛ اگر هدفت را مشخص کنی، ترتیب مطالعه را دقیق‌تر می‌کنم.';
+      '\n\nمرزبندی پیشنهاد: این انتخاب تحریریه بر اساس تقدم مفاهیم پایه در متن است؛ خود کتاب معیار آزمون‌شده‌ای برای «مبتدی بودن» ارائه نمی‌کند. اگر هدفت را مشخص کنی، ترتیب مطالعه را دقیق‌تر می‌کنم.';
   }
   const candidates = SELF_KNOWLEDGE.test(normalized)
     ? books.filter((book) => /خودشناسی|شناخت احساس|شناخت خود|احساسات/u.test(normalizeLibraryText(bookSubject(book))))
