@@ -552,10 +552,14 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   for (const [intentPattern, evidencePattern, label] of directTopicChecks) {
     if (!intentPattern.test(normalized)) continue;
     const topicEvidence = selected.filter((passage) => {
-      const evidenceText = normalizeLibraryText(passage.text + ' ' + passage.heading);
-      // A single incidental word in a generic paragraph is not enough to
-      // present a passage as topic-specific guidance.
-      return evidencePattern.test(evidenceText) && String(passage.text || '').trim().length >= 80;
+      const textEvidence = normalizeLibraryText(passage.text);
+      const headingEvidence = normalizeLibraryText(passage.heading);
+      const occurrences = textEvidence.match(new RegExp(evidencePattern.source, 'gu')) || [];
+      // A heading that directly names the topic is strong evidence. In body
+      // text, require repeated topic evidence so an incidental mention cannot
+      // be presented as topic-specific guidance.
+      return evidencePattern.test(headingEvidence)
+        || (String(passage.text || '').trim().length >= 80 && occurrences.length >= 2);
     });
     if (!topicEvidence.length) {
       return {
