@@ -134,6 +134,26 @@ test('assistant chat styling distinguishes speaker bubbles and keeps composer in
 });
 
 
+
+test('global digit localization is installed at the app root without changing editable input values', async () => {
+  const mainEntry = await readFile(new URL('../src/main.jsx', import.meta.url), 'utf8');
+  const digitDisplay = await readFile(new URL('../src/shared/persianDigitDisplay.js', import.meta.url), 'utf8');
+  assert.match(mainEntry, /installPersianDigitDisplay\(appRoot\)/);
+  assert.match(digitDisplay, /characterData:\s*true/);
+  assert.match(digitDisplay, /attributeFilter:\s*\['placeholder', 'title', 'aria-label', 'aria-valuetext', 'alt'\]/);
+  assert.match(digitDisplay, /textarea, input, select/);
+});
+
+test('global assistant conversation is one right-to-left transcript', async () => {
+  const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
+  const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
+  assert.equal((launcher.match(/className="assistantChatShell globalAssistantChat"/g) || []).length, 1);
+  assert.match(launcher, /className="assistantTranscript" dir="rtl"/);
+  assert.match(launcher, /className="assistantComposer" dir="rtl"/);
+  assert.match(css, /\.globalAssistantChat \.assistantMessage,\s*\.globalAssistantChat \.userMessage\s*\{[^}]*align-self:\s*flex-start/);
+  assert.match(css, /direction:\s*rtl !important;\s*text-align:\s*right !important;/);
+});
+
 test('GitHub Pages tracks main as a test app without production-release gates', async () => {
   const journeyStore = await readFile(new URL('../src/features/journey/journeyStore.js', import.meta.url), 'utf8');
   assert.match(pagesDeployWorkflow, /on:\s+push:\s+branches:\s+\[main\]/);
