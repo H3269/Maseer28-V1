@@ -422,7 +422,7 @@ test('topic-specific guidance rejects a short incidental mention as insufficient
 test('book summaries exclude cover and front-matter pages from content evidence', () => {
   const sampleBooks = [{
     title: 'کتاب آزمایشی',
-    legacyId: 99,
+    legacyId: 1,
     content: { pages: [
       { page: 1, sourcePage: 1, blocks: [
         { type: 'paragraph', text: 'عنوان و مشخصات کتاب آزمایشی؛ این متن فقط صفحه روی جلد است و نباید شاهد محتوایی باشد.' },
@@ -504,7 +504,7 @@ test('five-turn follow-up path stays grounded in each of the five real seeded bo
 
     let turn = answerLibraryBookTurn({
       books,
-      message: 'در کتاب ' + ordinals[book.legacyId - 1] + ' درباره ' + sourceQuery + ' چه نوشته شده؟',
+      message: 'در «' + book.title + '» درباره ' + sourceQuery + ' چه نوشته شده؟',
     });
     assert.equal(turn.conversationState.bookId, book.legacyId);
     assert.ok(turn.conversationState.lastSources?.length, book.title + ' first turn must retain source locators');
