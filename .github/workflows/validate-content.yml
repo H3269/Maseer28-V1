@@ -11,6 +11,7 @@ on:
       - 'scripts/validate-content.mjs'
       - 'scripts/validate-assistant-topics.mjs'
       - 'scripts/audit-content-quality.mjs'
+      - 'scripts/audit-library-assistant-acceptance.mjs'
       - 'scripts/assert-validation-run.mjs'
       - 'package.json'
       - 'package-lock.json'
@@ -103,6 +104,9 @@ jobs:
       - name: Run unit tests
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm test
+      - name: Run 125 library assistant acceptance scenarios (routing and source coverage only)
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run audit:library-assistant
       - name: Validate course and library data
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:content
