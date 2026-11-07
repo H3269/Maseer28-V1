@@ -330,10 +330,11 @@ test('vague references do not trigger generic exercises or plans without a prior
   }
 });
 
-test('a simple explanation of an unspecified main book concept asks for the exact section', () => {
+test('a broad main-concept question gets a grounded plain-language structural overview', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم مفهوم اصلی را به زبان ساده توضیح بده' });
   assert.match(response, /هنر شناخت و دگرگونی احساسات/u);
-  assert.match(response, /باید یک مفهوم یا فصل مشخص را انتخاب کنیم/u);
+  assert.match(response, /مرور ساده و ساختاری/u);
+  assert.match(response, /شناخت جهان احساسات/u);
   assert.doesNotMatch(response, /برداشت ساده و محتاطانه/u);
 });
 
