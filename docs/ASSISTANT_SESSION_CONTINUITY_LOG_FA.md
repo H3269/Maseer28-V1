@@ -4300,3 +4300,14 @@ undefined
 - هیچ Telegram Actions، انتشار Telegram/Bale، فعال‌سازی inference ابری یا انتقال داده کاربر انجام نشده است.
 
 **وضعیت:** LOCAL_NEURAL_LLM_A1_NOT_IMPLEMENTED_RUNTIME_AND_MODEL_SELECTION_PENDING_OWNER_MAIN_BRANCH_RULE_RECONFIRMED_NO_CLOUD_INFERENCE_NO_PUBLIC_RELEASE
+
+
+
+## غربال نامزد مدل برای prototype A1 — 2026-11-08
+
+- نامزد اولیه مناسب‌تر از گزینه‌های انگلیسی‌محور در این غربال: `onnx-community/Qwen3-0.6B-Instruct-ONNX`؛ کارت مدل آن را برای Transformers.js و text-generation معرفی می‌کند و مدل پایه Qwen3 از ۱۱۹ زبان، از جمله فارسی، پشتیبانی اعلام کرده است.
+- artifactهای ONNX منتشرشده برای این خانواده شامل `model_q4f16.onnx` با اندازه حدود ۵۷۰ MB و `model_q4.onnx` با اندازه حدود ۹۱۹ MB هستند. این اندازه‌ها فقط وزن مدل‌اند و tokenizer، runtime، cache و حافظه موقت inference را شامل نمی‌شوند.
+- این مدل صرفاً نامزد prototype است؛ نسخه منتشرشده یک تبدیل ONNX از مدل fine-tuned شخص ثالث است و کیفیت فارسی، قالب مکالمه، دقت، پایداری و مجوز/منشأ دقیق باید روی نسخه ثابت و hash مشخص بررسی شوند. پشتیبانی فارسی مدل پایه، تضمین کیفیت پاسخ این checkpoint کوچک نیست.
+- نتیجه غربال: Qwen3-0.6B برای نمونه اولیه مناسب‌تر از SmolLM2-360M انگلیسی‌محور است، اما هنوز برای دستگاه کم‌منبع و WebView محصول تأیید نشده؛ مسیر WASM/CPU و WebGPU باید جداگانه benchmark شوند. هیچ وزن یا dependency دانلود/ثبت نشده است.
+- منابع بررسی: https://huggingface.co/onnx-community/Qwen3-0.6B-Instruct-ONNX ، https://huggingface.co/onnx-community/Qwen3-0.6B-Instruct-ONNX/tree/main/onnx ، https://qwenlm.github.io/blog/qwen3/
+- گام بعد: تثبیت revision و checksum مدل، بررسی license و chat template، ساخت smoke test واقعی generation با Transformers.js، سپس آزمون مصرف RAM/زمان روی دستگاه و میزبان‌های Telegram/Bale. اگر WASM/CPU روی دستگاه‌های پایین‌رده غیرقابل استفاده باشد، باید حداقل سخت‌افزار پشتیبانی یا مدل کوچک‌تر با کیفیت فارسی قابل قبول تعیین شود؛ fallback ابری مجاز نیست.
