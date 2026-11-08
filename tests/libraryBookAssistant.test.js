@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { answerLibraryBookQuestion, answerLibraryBookTurn } from '../src/features/assistant/libraryBookAssistant.js';
 import { getLibraryBookProfile } from '../src/features/assistant/libraryBookProfiles.js';
+import { LIBRARY_ASSISTANT_PROMPT_GROUPS, LIBRARY_ASSISTANT_PROMPTS } from '../src/features/assistant/libraryAssistantPrompts.js';
 
 const root = new URL('../public/', import.meta.url);
 const manifest = JSON.parse(await readFile(new URL('content/library.seed.json', root), 'utf8'));
@@ -724,4 +725,16 @@ test('explicit reading-start questions still receive book recommendations', () =
   const response = answerLibraryBookQuestion({ books, message: 'برای شروع مطالعه از کدام کتاب شروع کنم؟' });
   assert.match(response, /پیشنهاد روشن برای شروع/u);
   assert.match(response, /شاهدهای مرتبط از متن کتاب/u);
+});
+
+
+test('every guided base-mode library prompt returns a grounded supported answer', () => {
+  assert.equal(LIBRARY_ASSISTANT_PROMPT_GROUPS.length, 6);
+  assert.equal(LIBRARY_ASSISTANT_PROMPTS.length, 28);
+  for (const prompt of LIBRARY_ASSISTANT_PROMPTS) {
+    const turn = answerLibraryBookTurn({ books, message: prompt.value });
+    assert.ok(turn?.message?.length > 80, 'prompt must receive a substantive response: ' + prompt.value);
+    assert.doesNotMatch(turn.message, /نام یکی از کتاب‌ها یا شماره جلد را مشخص کن/u, 'prompt must identify its target book: ' + prompt.value);
+    assert.doesNotMatch(turn.message, /متن اشتباهی را به تو نسبت ندهم/u, 'prompt must not fall into a missing-book clarification loop: ' + prompt.value);
+  }
 });
