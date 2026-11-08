@@ -13,6 +13,56 @@ const books = await Promise.all(manifest.books.map(async (meta) => ({
 const globalIntents = new Set(['inventory', 'recommend_self_knowledge', 'recommend_start', 'compare_books']);
 const generatedIntents = new Set(['example', 'habit', 'exercise', 'seven_day_plan', 'alternative_exercise', 'progress']);
 const clarificationPattern = /عنوان فصل|شماره صفحه|چند واژه|ادعا یا توصیه مشخص/u;
+const citationIntentSet = new Set([
+  'book_subject', 'recommend_self_knowledge', 'recommend_start', 'compare_books',
+  'main_theme', 'simple_explanation', 'key_points', 'summary', 'topic_relevance',
+  'daily_application', 'anger', 'confidence', 'example', 'habit', 'exercise',
+  'seven_day_plan', 'alternative_exercise', 'progress', 'concept_compare',
+  'scientific_validity', 'alternative_view', 'limitations', 'author_reason',
+]);
+function collectSourceEvidence(response, fallbackBook) {
+  const matches = [...response.matchAll(/منبع:\\s*(.*?)\\s*(?:·\\s*)?صفحه\\s*(\\d+)/gu)];
+  return matches.map((match) => {
+    const pageNumber = Number(match[2]);
+    const precedingBooks = books.map((candidate) => ({
+      book: candidate,
+      index: response.lastIndexOf(candidate.title, match.index),
+    })).filter((candidate) => candidate.index >= 0)
+      .sort((a, b) => b.index - a.index);
+    const sourceBook = precedingBooks[0]?.book || fallbackBook;
+    const page = sourceBook.content.pages.find((candidate) =>
+      Number(candidate.sourcePage || candidate.page) === pageNumber
+    );
+    const headings = (page?.blocks || [])
+      .filter((block) => block.type === 'heading')
+      .map((block) => String(block.text || '').trim())
+      .filter(Boolean);
+    const citationHeading = String(match[1] || '').trim();
+    const headingMatches = !citationHeading || headings.some((heading) =>
+      citationHeading.includes(heading) || heading.includes(citationHeading)
+    );
+    return page ? {
+      bookId: sourceBook.legacyId,
+      bookTitle: sourceBook.title,
+      page: pageNumber,
+      citationHeading,
+      headings,
+      headingMatches,
+      excerpt: (page.blocks || [])
+        .filter((block) => block.type !== 'heading')
+        .map((block) => String(block.text || (Array.isArray(block.rows) ? block.rows.flat().join(' ') : '')).trim())
+        .filter(Boolean).join(' ').slice(0, 900),
+    } : {
+      bookId: sourceBook.legacyId,
+      bookTitle: sourceBook.title,
+      page: pageNumber,
+      citationHeading,
+      headings: [],
+      headingMatches: false,
+      missing: true,
+    };
+  });
+}
 const report = [];
 for (const book of books) {
   for (const item of matrix.questions) {
@@ -31,15 +81,12 @@ for (const book of books) {
     });
     const response = String(result?.message || '');
     const global = globalIntents.has(item.intent);
-    const referencedPages = [...new Set([...response.matchAll(/صفحه\s*(\d+)/gu)].map((match) => Number(match[1])))].slice(0, 12);
-    const sourceEvidence = referencedPages.map((pageNumber) => {
-      const page = book.content.pages.find((candidate) => Number(candidate.sourcePage || candidate.page) === pageNumber);
-      return page ? {
-        page: pageNumber,
-        headings: (page.blocks || []).filter((block) => block.type === 'heading').map((block) => String(block.text || '').trim()).filter(Boolean),
-        excerpt: (page.blocks || []).filter((block) => block.type !== 'heading').map((block) => String(block.text || '').trim()).filter(Boolean).join(' ').slice(0, 900),
-      } : { page: pageNumber, missing: true };
-    });
+    const sourceEvidence = collectSourceEvidence(response, book);
+    const referencedPages = [...new Set(sourceEvidence.map((source) => source.page))].slice(0, 12);
+    const clarifiesInsteadOfGuessing = clarificationPattern.test(response.slice(0, 700));
+    const citationExpected = citationIntentSet.has(item.intent) && !clarifiesInsteadOfGuessing;
+    const citesSource = sourceEvidence.length > 0;
+    const citationSatisfied = !citationExpected || (citesSource && sourceEvidence.every((source) => !source.missing && source.headingMatches));
     report.push({
       id: item.id,
       bookId: book.legacyId,
@@ -48,9 +95,11 @@ for (const book of books) {
       intent: item.intent,
       prompt,
       returned: response.length > 0,
-      identifiesBook: global || response.includes(book.title),
-      citesSource: global || /منبع:/.test(response),
-      clarifiesInsteadOfGuessing: clarificationPattern.test(response.slice(0, 700)),
+      identifiesBook: global ? books.some((candidate) => response.includes(candidate.title)) : response.includes(book.title),
+      citesSource,
+      citationExpected,
+      citationSatisfied,
+      clarifiesInsteadOfGuessing,
       labelsAssistantContent: !generatedIntents.has(item.intent) || /پیشنهاد دستیار|ساخته دستیار|دستیار/u.test(response) || clarificationPattern.test(response.slice(0, 700)),
       responseLength: response.length,
       response,
@@ -79,8 +128,12 @@ const output = {
   citesSource: count((row) => row.citesSource),
   clarifiesInsteadOfGuessing: count((row) => row.clarifiesInsteadOfGuessing),
   labelsAssistantContent: count((row) => row.labelsAssistantContent),
-  sourceEvidenceRows: count((row) => row.sourceEvidence?.some((source) => source.excerpt?.length >= 90)),
+  sourceEvidenceRows: report.flatMap((row) => row.sourceEvidence || []).filter((source) => source.excerpt?.length >= 90).length,
   missingReferencedPages: report.flatMap((row) => row.sourceEvidence || []).filter((source) => source.missing).length,
+  sourceHeadingMismatches: report.flatMap((row) => row.sourceEvidence || []).filter((source) => !source.missing && !source.headingMatches).length,
+  citationRequiredScenarios: count((row) => row.citationExpected),
+  citationSatisfiedScenarios: count((row) => row.citationExpected && row.citationSatisfied),
+  missingRequiredCitations: count((row) => row.citationExpected && !row.citationSatisfied),
   byBook,
   note: 'These are routing/source/attribution checks only. They do NOT score semantic correctness, completeness, author-intent interpretation, scientific validity, or answer quality. Human review against the 0–2 rubric remains mandatory.',
   scenariosDetail: report,
