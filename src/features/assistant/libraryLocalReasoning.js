@@ -161,6 +161,11 @@ export function rankLibraryPassages(passages, query, limit = 5) {
   const averageLength = totalLength / documents.length;
   const queryTerms = [...analysis.weights.keys()];
   const hasDirectEvidence = documents.some((document) => [...analysis.weights].some(([term, weight]) => weight >= 0.7 && (document.counts.has(term) || document.headingTokens.includes(term))));
+  // Generic task words must not let a related-but-distinct concept masquerade
+  // as direct evidence for the concept explicitly requested by the user.
+  const directAnchorGroups = RELATED_CONCEPTS.filter((relation) =>
+    relation.terms.some((phrase) => phrasePresent(analysis.normalized, normalize(phrase)))
+  );
   const matchedConceptGroups = CLOSE_EQUIVALENTS.filter((group) => group.some((phrase) => phrasePresent(analysis.normalized, normalize(phrase))));
   // Multiword concept families require phrase-level evidence; broad single-word
   // concepts still need an exact term or a vetted strong equivalent.
@@ -175,6 +180,9 @@ export function rankLibraryPassages(passages, query, limit = 5) {
     let matched = 0;
     let directMatches = 0;
     const normalizedDocument = normalize(body + ' ' + heading);
+    const directAnchorMatches = directAnchorGroups.filter((group) =>
+      group.terms.some((phrase) => phrasePresent(normalizedDocument, normalize(phrase)))
+    ).length;
     const directConceptMatches = strictConceptGroups.filter((group) => group.some((phrase) => phrasePresent(normalizedDocument, normalize(phrase)))).length;
     for (const [term, weight] of analysis.weights) {
       const tf = counts.get(term) || 0;
@@ -210,11 +218,13 @@ export function rankLibraryPassages(passages, query, limit = 5) {
       retrievalIndex: index,
       intent: analysis.intent,
       directMatches,
-      directConceptMatches
+      directConceptMatches,
+      directAnchorMatches
     };
   }).filter((passage) => passage.score > 0
     && hasDirectEvidence
     && passage.directMatches > 0
+    && (!directAnchorGroups.length || passage.directAnchorMatches > 0)
     && (!strictConceptGroups.length || (hasDirectConceptEvidence && passage.directConceptMatches > 0)))
     .sort((a, b) => b.score - a.score || a.retrievalIndex - b.retrievalIndex);
 
