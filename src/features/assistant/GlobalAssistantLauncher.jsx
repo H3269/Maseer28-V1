@@ -174,7 +174,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       const reason = installError?.code === 'MODEL_DOWNLOAD_OFFLINE'
         ? 'برای نصب اولیه، اتصال اینترنت لازم است. دستیار پایه همچنان فعال است و می‌توانی به پرسش‌هایت ادامه بدهی.'
         : installError?.code === 'CACHE_UNAVAILABLE' || installError?.code === 'STORAGE_QUOTA_LOW'
-          ? LOCAL_MODEL_CACHE_MESSAGE
+          ? LOCAL_MODEL_CACHE_MESSAGE + ' دستیار پایه همچنان فعال است و می‌توانی به پرسش‌هایت ادامه بدهی.'
           : 'این گوشی یا مرورگر فعلاً نتوانست مدل محلی را اجرا کند. دستیار پایه همچنان فعال است و می‌توانی بدون نصب مدل به پرسش‌هایت ادامه بدهی.';
       setMessages((current) => current.map((item) => item.id === `assistant-model-install-${turnId}`
         ? { ...item, text: reason }
