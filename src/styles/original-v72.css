@@ -7224,8 +7224,12 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 .libraryAssistantPromptCard button:focus-visible {
   outline: 3px solid #d6a84b; outline-offset: 2px;
 }
+.globalAssistantDialog { position: relative; }
 .libraryAssistantPromptModal {
+  position: absolute !important;
+  inset: 0 !important;
   z-index: 700 !important;
+  padding: 12px !important;
   background: #0d39383d !important;
 }
 .libraryAssistantPromptCard {
@@ -7287,7 +7291,7 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 .globalAssistantChat .libraryAssistantPromptRow .assistantSendButton { flex: 0 0 36px !important; }
 @media (max-width: 380px) {
   .globalAssistantChat .libraryAssistantPromptRow { gap: 6px; }
-  .globalAssistantChat .libraryAssistantPromptRow select { padding-inline: 9px; font-size: 13px; }
+  .globalAssistantChat .libraryAssistantPromptTrigger { padding-inline: 9px; font-size: 13px; }
 }
 
 /* The library preset list now uses the shared validation-card visual pattern. */
