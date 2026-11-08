@@ -264,7 +264,7 @@ try {
   assert.match(librarySummaryText, /هنر شناخت و دگرگونی احساسات/u);
   assert.match(librarySummaryText, /شاهد کوتاه متن/u);
   assert.match(librarySummaryText, /منبع:/u);
-  assert.match(librarySummaryText, /صفحه \d+/u);
+  assert.match(librarySummaryText, /صفحه [0-9۰-۹٠-٩]+/u);
 
   // A second guided question must continue to work without exposing a text box.
   const previousReplyCount = await dialog.locator('.assistantMessage').count();
