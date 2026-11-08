@@ -82,6 +82,7 @@ test('a comparison request uses recorded metadata and actual chapter headings', 
   assert.match(response, /نه تحلیل فصل‌به‌فصل استدلال/u);
   assert.equal((response.match(/شاهد کوتاه متن:/gu) || []).length, 5, 'each book comparison must include a source excerpt');
   assert.equal((response.match(/منبع:/gu) || []).length, 5, 'each book comparison must include a source locator');
+  assert.doesNotMatch(response, /گزیده متنیِ کافی برای نمایش پیدا نشد/u, 'a curated comparison must not silently cite an empty source excerpt');
 });
 
 test('no answer is invented when the requested book is unavailable', () => {
@@ -127,6 +128,7 @@ test('beginner recommendations include page evidence for the primary book and al
   assert.match(response, /شاهدهای مرتبط از متن کتاب/u);
   assert.ok((response.match(/شاهد کوتاه متن:/gu) || []).length >= 2);
   assert.ok((response.match(/منبع:/gu) || []).length >= 2);
+  assert.doesNotMatch(response, /گزیده متنیِ کافی برای نمایش پیدا نشد/u, 'recommended books must show usable page evidence');
 });
 
 test('profile evidence selection prefers the paragraph semantically related to the curated claim', () => {
