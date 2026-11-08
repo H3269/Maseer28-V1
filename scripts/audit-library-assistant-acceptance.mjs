@@ -38,7 +38,7 @@ function collectSourceEvidence(response, fallbackBook) {
       .map((block) => String(block.text || '').trim())
       .filter(Boolean);
     const citationHeading = String(match[1] || '').trim();
-    const headingMatches = !citationHeading || headings.some((heading) =>
+    const headingMatches = !citationHeading || citationHeading === 'متن کتاب' || headings.some((heading) =>
       citationHeading.includes(heading) || heading.includes(citationHeading)
     );
     return page ? {
