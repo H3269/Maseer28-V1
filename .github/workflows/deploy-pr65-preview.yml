@@ -1,0 +1,80 @@
+name: Deploy isolated PR65 browser preview
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-test
+  cancel-in-progress: false
+
+jobs:
+  deploy-pr65-preview:
+    if: ${{ github.event.pull_request.head.ref == 'test/pr65-library-assistant' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment:
+      name: github-pages
+      url: https://h3269.github.io/Maseer28-V1/pr65-preview/
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          path: main-source
+          persist-credentials: false
+
+      - name: Checkout isolated PR65 test branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: preview-source
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            main-source/package-lock.json
+            preview-source/package-lock.json
+
+      - name: Build unchanged current main site
+        working-directory: main-source
+        run: |
+          npm ci
+          npm run build -- --base=/Maseer28-V1/
+
+      - name: Build PR65 preview under a separate URL path
+        working-directory: preview-source
+        run: |
+          npm ci
+          npm run build -- --base=/Maseer28-V1/pr65-preview/
+
+      - name: Combine current main and isolated preview without replacing the main app path
+        run: |
+          set -euo pipefail
+          mkdir -p site/pr65-preview
+          cp -a main-source/dist/. site/
+          cp -a preview-source/dist/. site/pr65-preview/
+          test -s site/index.html
+          test -s site/pr65-preview/index.html
+
+      - name: Configure Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d
+
+      - name: Upload combined Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9
+        with:
+          path: site
+
+      - name: Deploy isolated browser preview
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346
