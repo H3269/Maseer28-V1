@@ -149,7 +149,11 @@ test('global assistant conversation is one right-to-left transcript', async () =
   const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
   assert.equal((launcher.match(/className="assistantChatShell globalAssistantChat"/g) || []).length, 1);
   assert.match(launcher, /className="assistantTranscript" dir="rtl"/);
-  assert.match(launcher, /className="assistantComposer" dir="rtl"/);
+  // The composer now conditionally switches between guided library mode and free typing.
+  assert.match(launcher, /className=\{['"]assistantComposer['"]\s*\+/);
+  assert.match(launcher, /<form[^>]*dir="rtl"[^>]*onSubmit=\{send\}/);
+  assert.match(launcher, /libraryAssistantPromptRow/);
+  assert.match(launcher, /<textarea[\s\S]*?id="global-assistant-message"/);
   assert.match(css, /\.globalAssistantChat \.assistantMessage,\s*\.globalAssistantChat \.userMessage\s*\{[^}]*align-self:\s*flex-start/);
   assert.match(css, /direction:\s*rtl !important;\s*text-align:\s*right !important;/);
   assert.match(css, /\.globalAssistantChat \.assistantMessage,\s*\.globalAssistantChat \.userMessage\s*\{[^}]*background:\s*transparent !important;[^}]*box-shadow:\s*none !important;/);
