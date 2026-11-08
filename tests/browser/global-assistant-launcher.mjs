@@ -263,12 +263,12 @@ try {
   await dialog.getByRole('button', { name: 'بله، شروع نصب' }).waitFor({ state: 'visible' });
   await dialog.getByRole('button', { name: 'بله، شروع نصب' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /دستیار پایه همچنان فعال است/u.test(node.innerText)));
+  const fallbackPromptPicker = dialog.getByRole('combobox', { name: 'سؤال آماده دستیار کتابخانه' });
+  await fallbackPromptPicker.waitFor({ state: 'visible' });
   await fallbackPromptPicker.selectOption('خلاصه کتاب چهارم را بگو');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /خلاصه راهنمای محتوایی/u.test(node.innerText)));
   const fallbackAfterInstallFailure = dialog.locator('.assistantMessage').last();
-  const fallbackPromptPicker = dialog.getByRole('combobox', { name: 'سؤال آماده دستیار کتابخانه' });
-  await fallbackPromptPicker.waitFor({ state: 'visible' });
   assert.equal(await fallbackPromptPicker.isVisible(), true, 'failed installation must retain the guided base-mode question list');
   assert.equal(await dialog.getByRole('textbox').count(), 0, 'failed installation must keep free typing hidden');
   assert.match(await fallbackAfterInstallFailure.innerText(), /شاهد کوتاه متن|منبع:/u, 'the book assistant must continue returning a grounded base answer after model installation fails');
