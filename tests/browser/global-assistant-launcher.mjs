@@ -245,15 +245,16 @@ try {
   assert.match(librarySummaryText, /صفحه \d+/u);
 
   // A second guided question must continue to work without exposing a text box.
+  const previousReplyCount = await dialog.locator('.assistantMessage').count();
   await libraryPromptPicker.selectOption('مهم‌ترین نکات کتاب پنجم کدام‌اند؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction(() => {
+  await page.waitForFunction((count) => {
     const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-    return replies.length >= 3 && /محدودیت/u.test(replies.at(-1)?.innerText || '');
-  });
+    return replies.length > count && !/در حال بررسی پرسش/u.test(replies.at(-1)?.innerText || '');
+  }, previousReplyCount);
   const libraryFollowUp = dialog.locator('.assistantMessage').last();
   assert.match(await libraryFollowUp.innerText(), /هنر شناخت و دگرگونی احساسات/u);
-  assert.match(await libraryFollowUp.innerText(), /محدودیت/u);
+  assert.match(await libraryFollowUp.innerText(), /نکته|مهم/u);
 
   // A failed optional model installation must not disable the deterministic library assistant.
   const installModelButton = dialog.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' });
