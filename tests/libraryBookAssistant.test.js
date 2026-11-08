@@ -188,7 +188,7 @@ test('contextual follow-ups retain the selected book even when the wording is no
 
 test('progress questions about an unspecified recommendation request the referenced section first', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم از کجا بفهمم در این توصیه پیشرفت کرده‌ام؟' });
-  assert.match(response, /عنوان فصل، شماره صفحه یا چند واژه/u);
+  assert.match(response, /عنوان فصل، شماره صفحه یا چند (?:کلمه|واژه)/u);
   assert.doesNotMatch(response, /رفتارهای قابل مشاهده/u);
 });
 
@@ -201,7 +201,7 @@ test('book-specific introductions use actual metadata and chapter headings', () 
 
 test('author-intent questions ask for a precise section instead of guessing', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم نویسنده در این بخش دقیقاً چه منظوری دارد؟' });
-  assert.match(response, /عنوان فصل، شماره صفحه یا چند واژه/u);
+  assert.match(response, /عنوان فصل، شماره صفحه یا چند (?:کلمه|واژه)/u);
   assert.match(response, /نمی‌خواهم نیت نویسنده را حدس بزنم/u);
   assert.doesNotMatch(response, /نزدیک‌ترین شواهد|منبع:/u);
 });
@@ -216,7 +216,7 @@ test('concept comparisons choose a reviewed core pair when the user does not nam
 
 test('a low-pressure alternative asks for the exercise source when no prior section is known', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم اگر نتوانم این تمرین را انجام بدهم چه جایگزینی دارم؟' });
-  assert.match(response, /عنوان فصل، شماره صفحه یا چند واژه/u);
+  assert.match(response, /عنوان فصل، شماره صفحه یا چند (?:کلمه|واژه)/u);
   assert.doesNotMatch(response, /جایگزین ساده پیشنهادی دستیار/u);
 });
 
@@ -371,7 +371,7 @@ test('vague references do not trigger generic exercises or plans without a prior
     'در کتاب پنجم چطور این توصیه را به عادت تبدیل کنم؟',
   ]) {
     const response = answerLibraryBookQuestion({ books, message: question });
-    assert.match(response, /عنوان فصل، شماره صفحه یا چند واژه/u);
+    assert.match(response, /عنوان فصل، شماره صفحه یا چند (?:کلمه|واژه)/u);
     assert.doesNotMatch(response, /برنامه هفت‌روزه پیشنهادی دستیار|تمرین کم‌فشار:/u);
   }
 });
@@ -413,7 +413,7 @@ test('an unspecified exercise cannot receive a generic alternative before its so
     message: 'در کتاب پنجم اگر نتوانم این تمرین را انجام بدهم چه جایگزینی دارم؟',
   });
   assert.match(response, /هنر شناخت و دگرگونی احساسات/u);
-  assert.match(response, /عنوان فصل، شماره صفحه یا چند واژه/u);
+  assert.match(response, /عنوان فصل، شماره صفحه یا چند (?:کلمه|واژه)/u);
   assert.doesNotMatch(response, /جایگزین ساده پیشنهادی دستیار/u);
 });
 
@@ -859,6 +859,6 @@ test('five-book comparison uses book-specific concept distinctions and only avai
 
 test('ambiguous author wording never becomes a fabricated section reference', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم این بخش دقیقاً چه می‌گوید؟' });
-  assert.match(response, /عنوان فصل، شماره صفحه یا چند واژه/u);
+  assert.match(response, /عنوان فصل، شماره صفحه یا چند (?:کلمه|واژه)/u);
   assert.doesNotMatch(response, /منبع:/u);
 });
