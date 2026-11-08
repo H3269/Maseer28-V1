@@ -31,14 +31,28 @@ function collectSourceEvidence(response, fallbackBook) {
     })).filter((candidate) => candidate.index >= 0)
       .sort((a, b) => b.index - a.index);
     const sourceBook = precedingBooks[0]?.book || fallbackBook;
-    const page = sourceBook.content.pages.find((candidate) =>
+    const citationHeading = String(match[1] || '').trim();
+    const matchingPages = sourceBook.content.pages.filter((candidate) =>
       Number(candidate.sourcePage || candidate.page) === pageNumber
     );
-    const headings = [String(page?.title || '').trim(), ...(page?.blocks || [])
-      .filter((block) => block.type === 'heading')
-      .map((block) => String(block.text || '').trim())]
-      .filter(Boolean);
-    const citationHeading = String(match[1] || '').trim();
+    const pageHeadings = (candidate) => [
+      String(candidate?.title || '').trim(),
+      ...(candidate?.blocks || [])
+        .filter((block) => block.type === 'heading')
+        .map((block) => String(block.text || '').trim()),
+    ].filter(Boolean);
+    const page = matchingPages.find((candidate) => {
+      const headings = pageHeadings(candidate);
+      return citationHeading && headings.some((heading) =>
+        citationHeading.includes(heading) || heading.includes(citationHeading)
+      );
+    }) || matchingPages.sort((a, b) => {
+      const textLength = (candidate) => (candidate.blocks || [])
+        .filter((block) => block.type !== 'heading')
+        .reduce((sum, block) => sum + String(block.text || '').length, 0);
+      return textLength(b) - textLength(a);
+    })[0];
+    const headings = pageHeadings(page);
     const headingMatches = !citationHeading || citationHeading === 'متن کتاب' || headings.some((heading) =>
       citationHeading.includes(heading) || heading.includes(citationHeading)
     );
