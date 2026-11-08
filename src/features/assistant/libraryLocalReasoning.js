@@ -159,7 +159,10 @@ export function rankLibraryPassages(passages, query, limit = 5) {
   const queryTerms = [...analysis.weights.keys()];
   const hasDirectEvidence = documents.some((document) => [...analysis.weights].some(([term, weight]) => weight >= 0.7 && (document.counts.has(term) || document.headingTokens.includes(term))));
   const matchedConceptGroups = CLOSE_EQUIVALENTS.filter((group) => group.some((phrase) => phrasePresent(analysis.normalized, normalize(phrase))));
-  const hasDirectConceptEvidence = matchedConceptGroups.length > 0 && documents.some((document) => {
+  // Apply phrase-level exclusion only to multiword concepts. A single broad
+  // term such as «تغییر» must still be able to retrieve useful context passages.
+  const strictConceptGroups = matchedConceptGroups.filter((group) => group.some((phrase) => normalize(phrase).split(' ').length > 1));
+  const hasDirectConceptEvidence = strictConceptGroups.length > 0 && documents.some((document) => {
     const text = normalize(document.body + ' ' + document.heading);
     return matchedConceptGroups.some((group) => group.some((phrase) => phrasePresent(text, normalize(phrase))));
   });
@@ -169,7 +172,7 @@ export function rankLibraryPassages(passages, query, limit = 5) {
     let matched = 0;
     let directMatches = 0;
     const normalizedDocument = normalize(body + ' ' + heading);
-    const directConceptMatches = matchedConceptGroups.filter((group) => group.some((phrase) => phrasePresent(normalizedDocument, normalize(phrase)))).length;
+    const directConceptMatches = strictConceptGroups.filter((group) => group.some((phrase) => phrasePresent(normalizedDocument, normalize(phrase)))).length;
     for (const [term, weight] of analysis.weights) {
       const tf = counts.get(term) || 0;
       const inHeading = headingTokens.includes(term);
