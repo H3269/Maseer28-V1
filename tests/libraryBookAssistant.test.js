@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { answerLibraryBookQuestion, answerLibraryBookTurn } from '../src/features/assistant/libraryBookAssistant.js';
 import { getLibraryBookProfile } from '../src/features/assistant/libraryBookProfiles.js';
+import { analyzeLibraryQuery, rankLibraryPassages, synthesizeLibraryEvidence } from '../src/features/assistant/libraryLocalReasoning.js';
 
 const root = new URL('../public/', import.meta.url);
 const manifest = JSON.parse(await readFile(new URL('content/library.seed.json', root), 'utf8'));
@@ -669,4 +670,56 @@ test('anger guidance refuses weak evidence and uses stronger book-specific passa
   });
   assert.match(bookFiveResponse, /پاسخ جایگزین/u);
   assert.match(bookFiveResponse, /منبع:/u);
+});
+
+
+test('local query understanding detects question intent and preserves meaningful Persian focus terms', () => {
+  const analysis = analyzeLibraryQuery('چرا تغییر رفتار بعد از شناخت یک باور دشوار است؟');
+  assert.equal(analysis.intent, 'why');
+  assert.ok(analysis.terms.includes('تغییر'));
+  assert.ok(analysis.terms.includes('رفتار'));
+  assert.ok(analysis.terms.includes('باور'));
+});
+
+test('hybrid local retrieval ranks direct heading and phrase evidence above incidental mentions', () => {
+  const passages = [
+    { page: 1, heading: 'تغییر عادت و رفتار', text: 'تغییر رفتار با تمرین تدریجی و تکرار آگاهانه آسان‌تر می‌شود.' },
+    { page: 2, heading: 'خاطرات روزمره', text: 'در این بخش از یک رفتار روزانه و تجربه‌های عمومی زندگی نام برده می‌شود.' },
+    { page: 3, heading: 'آشنایی با کتاب', text: 'این متن درباره موضوع‌های گوناگون است و ارتباط مستقیمی با پرسش ندارد.' },
+  ];
+  const ranked = rankLibraryPassages(passages, 'چگونه تغییر رفتار را پایدار کنم؟', 3);
+  assert.equal(ranked[0].page, 1);
+  assert.ok(ranked[0].score > ranked[1].score);
+});
+
+test('related but distinct concepts do not displace direct evidence', () => {
+  const passages = [
+    { page: 1, heading: 'اعتماد به نفس', text: 'اعتمادبه‌نفس به باور فرد درباره توانایی انجام یک کار مشخص مربوط است.' },
+    { page: 2, heading: 'عزت نفس', text: 'عزت نفس به احساس ارزشمندی و احترام فرد نسبت به خود اشاره دارد.' },
+  ];
+  const ranked = rankLibraryPassages(passages, 'اعتماد به نفس', 5);
+  assert.deepEqual(ranked.map((item) => item.page), [1]);
+});
+
+test('why questions synthesize relevant causal sentences without inventing a cloud-generated answer', () => {
+  const passages = [
+    { page: 12, heading: 'چرا تغییر دشوار است', text: 'تغییر رفتار دشوار می‌شود زیرا عادت‌های قدیمی در کوتاه‌مدت انرژی کمتری می‌گیرند. تجربه تازه با تمرین و تکرار به‌تدریج تقویت می‌شود.' },
+    { page: 20, heading: 'انتخاب آگاهانه', text: 'برای انتخاب تازه باید موقعیت را مشاهده کرد و پیامدهای احتمالی را سنجید.' },
+  ];
+  const synthesis = synthesizeLibraryEvidence(passages, 'چرا تغییر رفتار دشوار است؟');
+  assert.equal(synthesis.intent, 'why');
+  assert.ok(synthesis.sentences.some((item) => item.sentence.includes('زیرا عادت‌های قدیمی')));
+  const response = answerLibraryBookQuestion({
+    books: [{ title: 'کتاب آزمایشی', legacyId: 1, content: { pages: passages.map((item) => ({ page: item.page, sourcePage: item.page, blocks: [{ type: 'heading', text: item.heading }, { type: 'paragraph', text: item.text }] })) } }],
+    message: 'چرا در کتاب اول تغییر رفتار دشوار است؟',
+  });
+  assert.match(response, /پاسخ مستند به چرایی پرسش/u);
+  assert.match(response, /زیرا عادت‌های قدیمی/u);
+  assert.match(response, /منبع:.*صفحه 12/u);
+  assert.match(response, /بدون اتصال ابری/u);
+});
+
+test('the local reasoning module contains no network or cloud transport dependency', async () => {
+  const source = await readFile(new URL('../src/features/assistant/libraryLocalReasoning.js', import.meta.url), 'utf8');
+  assert.doesNotMatch(source, /fetch\s*\(|XMLHttpRequest|WebSocket|https?:\/\//u);
 });
