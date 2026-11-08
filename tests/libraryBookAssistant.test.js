@@ -710,3 +710,18 @@ test('anger guidance refuses weak evidence and uses stronger book-specific passa
   assert.match(bookFiveResponse, /پاسخ جایگزین/u);
   assert.match(bookFiveResponse, /منبع:/u);
 });
+
+
+test('general motivation questions are not misrouted into book recommendations', () => {
+  const response = answerLibraryBookTurn({
+    books,
+    message: 'من چند روز است انگیزه انجام کارهایم را از دست داده‌ام. کمکم کن بفهمم از کجا شروع کنم.',
+  });
+  assert.equal(response, null, 'a general personal-support request must continue to the stateful page assistant');
+});
+
+test('explicit reading-start questions still receive book recommendations', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'برای شروع مطالعه از کدام کتاب شروع کنم؟' });
+  assert.match(response, /پیشنهاد روشن برای شروع/u);
+  assert.match(response, /شاهدهای مرتبط از متن کتاب/u);
+});
