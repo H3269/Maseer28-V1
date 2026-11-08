@@ -4,7 +4,6 @@ let workerInstance = null;
 let nextRequestId = 0;
 const pendingRequests = new Map();
 let localModelCacheStatus = 'unknown';
-let localModelCacheStatus = 'unknown';
 
 function rejectPending(error) {
   for (const pending of pendingRequests.values()) pending.reject(error);
@@ -78,12 +77,6 @@ export async function requestLocalNeuralModel(action, payload = {}, onProgress) 
   return new Promise((resolve, reject) => {
     let worker;
     try { worker = getWorker(); } catch (error) { reject(error); return; }
-    if (action === 'load' && payload.allowDownload !== true && localModelCacheStatus === 'missing') {
-      const error = new Error('The local model is not installed in this browser cache.');
-      error.code = 'MODEL_NOT_INSTALLED';
-      reject(error);
-      return;
-    }
     const id = ++nextRequestId;
     pendingRequests.set(id, { resolve, reject, onProgress, action, allowDownload: payload.allowDownload === true });
     try { worker.postMessage({ id, action, ...payload }); }
