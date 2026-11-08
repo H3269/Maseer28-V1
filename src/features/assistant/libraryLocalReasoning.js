@@ -256,9 +256,15 @@ function sentenceScore(sentence, analysis, intent) {
   const tokens = tokenize(sentence);
   const tokenSet = new Set(tokens);
   let score = 0;
+  let directMatches = 0;
   for (const [term, weight] of analysis.weights) {
-    if (tokenSet.has(term)) score += weight;
+    if (!tokenSet.has(term)) continue;
+    score += weight;
+    if (weight >= 0.7) directMatches += 1;
   }
+  // Intent markers alone (e.g. "زیرا" or "در مقابل") are not evidence.
+  // A sentence must first match at least one strong query term/equivalent.
+  if (directMatches === 0) return 0;
   if (intent === 'why' && /(زیرا|چون|به دلیل|علت|سبب|در نتیجه|باعث)/u.test(normalize(sentence))) score += 1.8;
   if (intent === 'how' && /(ابتدا|سپس|بعد|مرحله|روش|تمرین|انجام|انتخاب)/u.test(normalize(sentence))) score += 1.3;
   if (intent === 'definition' && /(یعنی|عبارت است|به معنای|تعریف)/u.test(normalize(sentence))) score += 1.6;
