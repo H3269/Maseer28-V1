@@ -1,5 +1,5 @@
-import knowledgeCatalog from '../../../public/assistant/knowledge/items.v1.json';
-import approvalManifest from '../../../public/assistant/knowledge/approved-items.v1.json';
+import knowledgeCatalog from '../../../public/assistant/knowledge/items.v1.json' with { type: 'json' };
+import approvalManifest from '../../../public/assistant/knowledge/approved-items.v1.json' with { type: 'json' };
 import { routeSemanticIntake } from './intentContextRouter.js';
 import { retrieveApprovedKnowledge } from './knowledgeGateway.js';
 
