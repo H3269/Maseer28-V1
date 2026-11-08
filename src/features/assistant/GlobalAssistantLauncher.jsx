@@ -440,6 +440,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       ref={libraryPromptTriggerRef}
                       className="libraryAssistantPromptTrigger"
                       type="button"
+                      aria-label="باز کردن سؤال‌های آماده دستیار کتابخانه"
                       aria-haspopup="dialog"
                       aria-expanded={libraryPromptOpen}
                       aria-controls="library-assistant-prompt-dialog"
