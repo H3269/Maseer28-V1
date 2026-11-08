@@ -1,4 +1,5 @@
 import { getLibraryBookProfile, formatLibraryProfileItems } from './libraryBookProfiles.js';
+import { rankLibraryPassages, formatLocalSynthesis } from './libraryLocalReasoning.js';
 
 const STOP = new Set('از به با در برای که این آن را و یا یک های هایش هست است شود می کند کردن درباره چگونه چیست چه اگر اما زیرا تا پس روی خود انسان زندگی من تو شما کتاب جلد'.split(' '));
 
@@ -411,15 +412,34 @@ function listBooksReply(books) {
 }
 
 function compareBooksReply(books) {
-  return 'مقایسه ساختاری و موضوعی پنج کتاب کتابخانه مسیر ۲۸:\n\n' +
-    books.map((book) => {
-      const profile = getLibraryBookProfile(book);
-      const subject = profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است';
-      const focus = profile?.comparison || 'برای این کتاب هنوز جمع‌بندی مقایسه‌ایِ بازبینی‌شده ثبت نشده است.';
-      return '• «' + book.title + '»\nمحور اصلی: ' + subject + '\nجایگاه در مجموعه: ' + focus +
-        (profile?.summary?.length ? '\nشاهد ساختاری از متن:\n' + formatProfileItemsWithEvidence(book, profile.summary.slice(0, 1)) : recommendationEvidence(book, 1));
-    }).join('\n\n') +
-    '\n\nتفاوت کاربردی کتاب‌ها: جلد اول برای ساختن پایه خودشناسی؛ جلد دوم برای فهم سازوکارهای شناختی و تغییر؛ جلد سوم برای موانع اجرای تغییر؛ کتابچه چهارم برای کار عملی و ثبت تجربه؛ و کتاب پنجم برای سواد هیجانی و تنظیم احساسات مناسب‌تر است. این خروجی مقایسه موضوع و جایگاه کتاب‌هاست، نه تحلیل فصل‌به‌فصل استدلال نویسندگان یا رتبه‌بندی علمی/درمانی.';
+  const rows = books.map((book) => {
+    const profile = getLibraryBookProfile(book);
+    const subject = profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است';
+    const focus = profile?.comparison || 'برای این کتاب هنوز جمع‌بندی مقایسه‌ایِ بازبینی‌شده ثبت نشده است.';
+    const pair = profile?.conceptPair?.length === 2 ? profile.conceptPair : null;
+    const concept = pair && profile?.conceptComparison
+      ? '\nنمونه تمایز مفهومی: ' + pair.join(' در برابر ') + ' — ' + profile.conceptComparison
+      : '';
+    const baselineEvidence = profile?.summary?.length
+      ? formatProfileItemsWithEvidence(book, profile.summary.slice(0, 1))
+      : recommendationEvidence(book, 1);
+    let evidence = '';
+    if (pair) {
+      const passages = passagesForBook(book);
+      const first = retrieveConceptEvidence(passages, pair[0], 1);
+      const second = retrieveConceptEvidence(passages, pair[1], 1);
+      evidence = first.length && second.length
+        ? '\nشاهدهای صفحه‌ای برای دو مفهوم:\n' + formatPassages([...first, ...second])
+        : '\nبرای هر دو مفهوم شاهد صفحه‌ای کافی پیدا نشد؛ این تمایز را باید پیش از نتیجه‌گیری در متن اصلی بازبینی کرد.';
+    }
+    return '• «' + book.title + '»\nمحور اصلی: ' + subject + '\nجایگاه در مجموعه: ' + focus + concept + baselineEvidence + evidence;
+  });
+  return [
+    'مقایسه ساختاری و موضوعی پنج کتاب کتابخانه مسیر ۲۸',
+    rows.join('\n\n'),
+    'جمع‌بندی مسیر مطالعه: جلد اول پایه عمومی خودشناسی را می‌سازد؛ جلد دوم سازوکارهای شناخت و یادگیری را عمیق‌تر بررسی می‌کند؛ جلد سوم موانع تبدیل آگاهی به رفتار را می‌کاود؛ کتابچه چهارم ابزار اجرایی مکمل جلد سوم است؛ و کتاب پنجم بر سواد هیجانی و شناخت و تنظیم احساسات تمرکز دارد.',
+    'این خروجی مقایسه موضوع و جایگاه کتاب‌هاست، نه تحلیل فصل‌به‌فصل استدلال نویسندگان یا رتبه‌بندی علمی/درمانی. این نقشه مطالعه بر اساس پروفایل‌های محتوایی ثبت‌شده است؛ نه رتبه‌بندی علمی، اثربخشی درمانی یا نظر قطعی نویسندگان.'
+  ].join('\n\n');
 }
 
 
@@ -511,12 +531,12 @@ function structuredGuidance(intent, book, passages, message) {
 }
 
 function hasExplicitSectionReference(value) {
-  const raw = String(value || '');
-  const normalized = normalizeLibraryText(raw);
-  return /(?:فصل|بخش|پیوست)\s+(?:اول|دوم|سوم|چهارم|پنجم|ششم|هفتم|هشتم|نهم|دهم|یازدهم|دوازدهم|[0-9]+|(?!این\b|همین\b|دقیقاً\b|مورد\b|خاص\b|مربوط\b|فعلی\b|بالا\b|پایین\b)[\p{L}]{3,})/u.test(normalized)
+  const normalized = normalizeLibraryText(String(value || ''));
+  const numberedSection = /(?:فصل|بخش|پیوست)\s+(?:اول|دوم|سوم|چهارم|پنجم|ششم|هفتم|هشتم|نهم|دهم|یازدهم|دوازدهم|[0-9]+)/u;
+  const namedSection = /(?:عنوان فصل|عنوان بخش)\s+[\p{L}]{3,}/u;
+  return numberedSection.test(normalized)
     || /صفحه\s*[0-9]+/u.test(normalized)
-    || /(?:عنوان فصل|شماره صفحه)/u.test(normalized)
-    || /(?:در فصل|در بخش)\s+(?:اول|دوم|سوم|چهارم|پنجم|[0-9]+|[\p{L}]{3,})/u.test(normalized);
+    || namedSection.test(normalized);
 }
 
 function hasExplicitClaimReference(value) {
@@ -558,15 +578,7 @@ function extractConceptPair(message) {
 }
 
 function retrieveConceptEvidence(passages, concept, limit = 3) {
-  const weights = expandedQueryTerms(concept);
-  const frequency = buildFrequencyIndex(passages);
-  const phrase = normalizeLibraryText(concept);
-  return chooseDiverse(passages.map((passage, index) => ({
-    ...passage,
-    index,
-    score: scorePassage(passage, weights, frequency, passages.length, phrase),
-  })).filter((passage) => passage.score > 0)
-    .sort((a, b) => b.score - a.score || a.index - b.index), limit);
+  return rankLibraryPassages(passages, concept, limit);
 }
 
 function compareConceptEvidenceReply(book, concepts, passages) {
@@ -725,17 +737,11 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   const freshIntent = LIMITATIONS.test(message) || SCIENCE.test(message)
     || ALTERNATIVE_VIEW.test(message) || PROGRESS.test(message);
   const retrievalQuery = followUp && freshIntent ? message : effectiveQuery;
-  const queryWeights = asksSummary ? new Map() : expandedQueryTerms(retrievalQuery);
-  const frequency = buildFrequencyIndex(allPassages);
-  const phrase = normalizeLibraryText(retrievalQuery);
+  // Local hybrid retrieval combines BM25-style term weights, heading boosts,
+  // phrase/proximity signals and conservative Persian concept expansion.
   const ranked = asksSummary
     ? allPassages
-    : allPassages.map((passage, index) => ({
-      ...passage,
-      index,
-      score: scorePassage(passage, queryWeights, frequency, allPassages.length, phrase),
-    })).filter((passage) => passage.score > 0)
-      .sort((a, b) => b.score - a.score || a.index - b.index);
+    : rankLibraryPassages(allPassages, retrievalQuery, 16);
 
   let selected = asksSummary
     ? []
@@ -751,6 +757,17 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
           ? 'برای سنجش پیشرفت می‌توانی رفتارهای قابل مشاهده را ثبت کنی: تشخیص زودتر موقعیت، مکث پیش از واکنش، انتخاب آگاهانه‌تر و بازگشت به تمرین پس از دشواری. این شاخص‌ها پیشنهاد عمومی دستیارند، نه معیار تشخیصی یا درمانی؛ چون شاهد مشخصی از کتاب بازیابی نشد، آن‌ها را به نویسنده نسبت نمی‌دهم.'
           : 'در متن بازیابی‌شده شاهد کافی برای ارزیابی محدودیت همین توصیه پیدا نکردم. اگر فصل یا توصیه مشخص را نام ببری، می‌توانم محدودیت‌های متن و محدودیت کاربرد آن را جداگانه بررسی کنم.';
     return { message: 'در «' + book.title + '»: ' + reply, conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery } };
+  }
+  const noEvidenceTopic = [
+    [ANXIETY, 'اضطراب'],
+    [ANGER, 'خشم و عصبانیت'],
+    [CONFIDENCE, 'اعتمادبه‌نفس'],
+  ].find(([pattern]) => pattern.test(normalized));
+  if (!asksSummary && !selected.length && noEvidenceTopic) {
+    return {
+      message: 'در «' + book.title + '»، برای این پرسش شاهد مستقیم و کافی برای ' + noEvidenceTopic[1] + ' پیدا نکردم. نمی‌خواهم گزیده‌های مربوط به مفاهیم نزدیک اما متمایز را به‌جای شاهد مستقیم معرفی کنم. اگر عنوان فصل یا اصطلاح دقیق‌تری مدنظرت است، بگو تا همان بخش را بررسی کنم.',
+      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery, lastSources: [] },
+    };
   }
   if (!asksSummary && !selected.length) {
     return {
@@ -809,9 +826,12 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     || ALTERNATIVE_EXERCISE.test(responseIntent) || AUTHOR_MEANING.test(responseIntent) || AUTHOR_REASON.test(responseIntent)) {
     reply = 'در «' + book.title + '»:\n\n' + structuredGuidance(responseIntent, book, selected, responseIntent);
   } else {
-    reply = (followUp ? 'ادامه بررسی همان موضوع در «' + book.title + '» بر اساس متن کتاب:' : 'بخش‌های مرتبط با پرسش تو در «' + book.title + '»:') +
-      '\n\n' + formatPassages(selected) +
-      '\n\nیادآوری: این‌ها گزیده‌های واقعی از متن نسخه بارگذاری‌شده‌اند؛ تفسیر یا توصیه‌ای که صریحاً در متن نیامده باشد به نویسنده نسبت داده نمی‌شود.';
+    const synthesized = formatLocalSynthesis(book.title, retrievalQuery, selected);
+    reply = synthesized
+      ? synthesized + '\n\nشواهد قابل بازیابی از کتاب:\n' + formatPassages(selected.slice(0, 3))
+      : (followUp ? 'ادامه بررسی همان موضوع در «' + book.title + '» بر اساس متن کتاب:' : 'بخش‌های مرتبط با پرسش تو در «' + book.title + '»:') +
+        '\n\n' + formatPassages(selected) +
+        '\n\nیادآوری: این‌ها گزیده‌های واقعی از متن نسخه بارگذاری‌شده‌اند؛ تفسیر یا توصیه‌ای که صریحاً در متن نیامده باشد به نویسنده نسبت داده نمی‌شود.';
   }
 
   return {
