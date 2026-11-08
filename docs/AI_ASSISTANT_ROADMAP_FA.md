@@ -408,3 +408,13 @@
 - معیار خروج A1: inference واقعی و قابل تکرار در سه میزبان هدف، عملکرد حداقلی مصوب در طبقات دستگاه، آفلاین‌بودن پس از آماده‌سازی، عدم خروج prompt در capture شبکه، مجوز و منشأ وزن مدل ثبت‌شده، و گزارش benchmark قابل بازبینی.
 
 **وضعیت A1:** OPEN_LOCAL_MODEL_AND_RUNTIME_PROOF_REQUIRED_NO_MODEL_SELECTED_NO_INFERENCE_INTEGRATED
+
+
+### غربال نامزد اولیه مدل A1 (2026-11-08)
+
+- نامزد prototype: `onnx-community/Qwen3-0.6B-Instruct-ONNX` برای Transformers.js؛ مدل پایه Qwen3 پشتیبانی زبانی ۱۱۹ زبان از جمله فارسی را اعلام می‌کند.
+- وزن‌های ONNX فشرده منتشرشده: حدود ۵۷۰ MB برای Q4F16 و ۹۱۹ MB برای Q4؛ این ارقام tokenizer، runtime، حافظه موقت و cache را شامل نمی‌شوند.
+- این فقط shortlist است، نه انتخاب نهایی. کیفیت فارسی checkpoint تبدیل‌شده، مجوز/منشأ، chat template، اجرای واقعی ONNX و سازگاری WebView باید بررسی شود.
+- SmolLM2-360M به‌علت تمرکز عمده بر انگلیسی برای این محصول فارسی‌محور گزینه اصلی نیست.
+- A1 تا اجرای generation واقعی، benchmark WASM/CPU و WebGPU، تست آفلاین و network capture روی دستگاه/میزبان‌های هدف باز می‌ماند. fallback ابری ممنوع است.
+- منابع: https://huggingface.co/onnx-community/Qwen3-0.6B-Instruct-ONNX ، https://huggingface.co/onnx-community/Qwen3-0.6B-Instruct-ONNX/tree/main/onnx ، https://qwenlm.github.io/blog/qwen3/
