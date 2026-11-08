@@ -699,6 +699,8 @@ test('related but distinct concepts do not displace direct evidence', () => {
   ];
   const ranked = rankLibraryPassages(passages, 'اعتماد به نفس', 5);
   assert.deepEqual(ranked.map((item) => item.page), [1]);
+  const selfEsteem = rankLibraryPassages(passages, 'عزت نفس', 5);
+  assert.deepEqual(selfEsteem.map((item) => item.page), [2]);
 });
 
 test('why questions synthesize relevant causal sentences without inventing a cloud-generated answer', () => {
