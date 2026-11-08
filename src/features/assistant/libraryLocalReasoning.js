@@ -8,19 +8,16 @@ const STOP_WORDS = new Set([
 // concepts (e.g. confidence/self-esteem, fear/anxiety) are intentionally not
 // merged, because doing so creates false evidence matches.
 const CLOSE_EQUIVALENTS = [
-  ['اضطراب','دلشوره','تشویش','بی قراری'],
+  ['اضطراب','دلشوره','تشویش'],
   ['استرس','تنش','فشار روانی'],
   ['خشم','عصبانیت','غضب'],
   ['اعتماد به نفس','اعتمادبه نفس','خودباوری'],
   ['عزت نفس','احترام به خود','احساس ارزشمندی'],
   ['خودشناسی','شناخت خود','خویشتن شناسی','آگاهی از خود'],
-  ['احساس','هیجان','عاطفه'],
   ['تغییر','دگرگونی','تحول'],
   ['باور','اعتقاد'],
-  ['نگرش','ذهنیت'],
   ['عادت','رفتار تکراری'],
   ['ترس','هراس','وحشت'],
-  ['رابطه','ارتباط','تعامل'],
   ['آرامش','آسودگی'],
   ['هدف','مقصود']
 ];
@@ -28,10 +25,16 @@ const CLOSE_EQUIVALENTS = [
 const RELATED_CONCEPTS = [
   { terms: ['اعتماد به نفس','اعتمادبه نفس','خودباوری'], related: ['عزت نفس','احساس ارزشمندی'], weight: 0.28 },
   { terms: ['عزت نفس','احترام به خود','احساس ارزشمندی'], related: ['اعتماد به نفس','خودباوری'], weight: 0.22 },
-  { terms: ['اضطراب','دلشوره','تشویش'], related: ['ترس','نگرانی'], weight: 0.32 },
+  { terms: ['اضطراب','دلشوره','تشویش'], related: ['ترس','نگرانی','بی قراری'], weight: 0.32 },
   { terms: ['ترس','هراس','وحشت'], related: ['اضطراب','نگرانی'], weight: 0.22 },
   { terms: ['باور','اعتقاد'], related: ['نگرش','ذهنیت'], weight: 0.28 },
-  { terms: ['نگرش','ذهنیت'], related: ['باور','اعتقاد'], weight: 0.24 }
+  { terms: ['نگرش','ذهنیت'], related: ['باور','اعتقاد'], weight: 0.24 },
+  { terms: ['احساس'], related: ['هیجان','عاطفه'], weight: 0.26 },
+  { terms: ['هیجان','عاطفه'], related: ['احساس'], weight: 0.22 },
+  { terms: ['نگرش'], related: ['ذهنیت'], weight: 0.24 },
+  { terms: ['ذهنیت'], related: ['نگرش'], weight: 0.22 },
+  { terms: ['رابطه'], related: ['ارتباط','تعامل'], weight: 0.25 },
+  { terms: ['ارتباط','تعامل'], related: ['رابطه'], weight: 0.22 }
 ];
 
 function normalize(value) {
@@ -159,12 +162,12 @@ export function rankLibraryPassages(passages, query, limit = 5) {
   const queryTerms = [...analysis.weights.keys()];
   const hasDirectEvidence = documents.some((document) => [...analysis.weights].some(([term, weight]) => weight >= 0.7 && (document.counts.has(term) || document.headingTokens.includes(term))));
   const matchedConceptGroups = CLOSE_EQUIVALENTS.filter((group) => group.some((phrase) => phrasePresent(analysis.normalized, normalize(phrase))));
-  // Apply phrase-level exclusion only to multiword concepts. A single broad
-  // term such as «تغییر» must still be able to retrieve useful context passages.
+  // Multiword concept families require phrase-level evidence; broad single-word
+  // concepts still need an exact term or a vetted strong equivalent.
   const strictConceptGroups = matchedConceptGroups.filter((group) => group.some((phrase) => normalize(phrase).split(' ').length > 1));
   const hasDirectConceptEvidence = strictConceptGroups.length > 0 && documents.some((document) => {
     const text = normalize(document.body + ' ' + document.heading);
-    return matchedConceptGroups.some((group) => group.some((phrase) => phrasePresent(text, normalize(phrase))));
+    return strictConceptGroups.some((group) => group.some((phrase) => phrasePresent(text, normalize(phrase))));
   });
   const ranked = documents.map((document) => {
     const { passage, index, body, heading, bodyTokens, headingTokens, counts, length } = document;
@@ -210,8 +213,9 @@ export function rankLibraryPassages(passages, query, limit = 5) {
       directConceptMatches
     };
   }).filter((passage) => passage.score > 0
-    && (!hasDirectEvidence || passage.directMatches > 0)
-    && (!hasDirectConceptEvidence || passage.directConceptMatches > 0))
+    && hasDirectEvidence
+    && passage.directMatches > 0
+    && (!strictConceptGroups.length || (hasDirectConceptEvidence && passage.directConceptMatches > 0)))
     .sort((a, b) => b.score - a.score || a.retrievalIndex - b.retrievalIndex);
 
   const selected = [];
