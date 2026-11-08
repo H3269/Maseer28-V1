@@ -202,9 +202,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
 
       const intentGate = routeAssistantTurn({ text: message });
       const restrictedStatuses = new Set([
+        // Safety handoff must always precede book retrieval. Ordinary ambiguity
+        // and personal-intake clarification must not pre-empt the library engine:
+        // doing so discards its pending context and blocks explicit book questions.
         'urgent_human_support_required', 'safety_clarification_required',
-        'intent_scope_clarification_required', 'clarification_required',
-        'personal_intake_required', 'invalid_input', 'input_too_long',
       ]);
       let turn;
       let isLibraryTurn = false;
