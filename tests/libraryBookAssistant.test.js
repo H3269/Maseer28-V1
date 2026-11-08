@@ -833,8 +833,9 @@ test('related-only passages never become direct answers without matching source 
   const selfEsteemOnly = [
     { page: 4, heading: 'عزت نفس', text: 'عزت نفس به احساس ارزشمندی و احترام فرد نسبت به خود اشاره دارد.' },
   ];
-  assert.deepEqual(rankLibraryPassages(selfEsteemOnly, 'اعتماد به نفس', 5), []);
-  assert.equal(formatLocalSynthesis('کتاب آزمایشی', 'اعتماد به نفس', selfEsteemOnly), null);
+  const selfEsteemOnlyRanked = rankLibraryPassages(selfEsteemOnly, 'اعتماد به نفس', 5);
+  assert.deepEqual(selfEsteemOnlyRanked, []);
+  assert.equal(formatLocalSynthesis('کتاب آزمایشی', 'اعتماد به نفس', selfEsteemOnlyRanked), null);
 
   const emotionOnly = [
     { page: 5, heading: 'هیجان', text: 'هیجان می‌تواند با تغییرهای بدنی و رفتاری همراه باشد و شدت‌های متفاوتی داشته باشد.' },
