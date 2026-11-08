@@ -4462,3 +4462,11 @@ undefined
 - هیچ Telegram Actions، انتشار عمومی تلگرام/بله یا inference ابری در این بازبینی اجرا نشده است.
 
 **وضعیت:** 30_DAY_MAIN_AUDIT_RECORDED_CONFIRMED_CI_AND_CHROMIUM_SUCCESSES_SEPARATED_FROM_PENDING_LOCAL_MODEL_AND_LATEST_CHROMIUM_FAILURE_NO_PUBLIC_RELEASE
+
+
+### جزئیات فنی شکست آخرین Chromium — تکمیل ثبت همان روز
+
+- در run `42495870976`، همه ۶۲۳ آزمون واحد موفق بوده‌اند (pass=623, fail=0).
+- شکست فقط در مرحله Chromium و سناریوی لانچر دستیار عمومی رخ داده است: انتظار صفحه در `tests/browser/global-assistant-launcher.mjs:147` پس از ۳۰ ثانیه timeout شده است.
+- در همان اجرای مرورگر، سناریوهای خروجی واقعی ZIP/PDF، نمایش تمرین و اقدام هر ۳۴ موضوع و بخش عمده سناریوهای دستیار روزانه موفق گزارش شده‌اند؛ با این حال چون سناریوی لانچر عمومی timeout شده، کل validation شکست‌خورده محسوب می‌شود.
+- این مانع به‌عنوان شکست آزمون ثبت می‌شود، نه اثبات خرابی قابلیت‌های کتابخانه. باید علت timeout در آزمون مرورگر عمومی جداگانه بررسی شود و نتیجه مجدد روی SHA نهایی ثبت گردد.
