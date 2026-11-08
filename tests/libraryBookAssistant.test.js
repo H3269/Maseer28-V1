@@ -834,12 +834,21 @@ test('related-only passages never become direct answers without matching source 
     { page: 3, heading: 'ترس', text: 'ترس می‌تواند واکنشی به خطر ادراک‌شده باشد و با نشانه‌های بدنی همراه شود.' },
   ];
   assert.deepEqual(rankLibraryPassages(fearOnly, 'اضطراب', 5), []);
+  // Generic task words must not turn a related concept into direct evidence.
+  const fearWithGenericTaskWords = [
+    { page: 7, heading: 'مدیریت ترس', text: 'برای مدیریت ترس می‌توان نشانه‌های بدنی را مشاهده کرد و تمرین مکث را انجام داد.' },
+  ];
+  assert.deepEqual(rankLibraryPassages(fearWithGenericTaskWords, 'برای مدیریت اضطراب چه تمرینی انجام دهم؟', 5), []);
 
   const selfEsteemOnly = [
     { page: 4, heading: 'عزت نفس', text: 'عزت نفس به احساس ارزشمندی و احترام فرد نسبت به خود اشاره دارد.' },
   ];
   const selfEsteemOnlyRanked = rankLibraryPassages(selfEsteemOnly, 'اعتماد به نفس', 5);
   assert.deepEqual(selfEsteemOnlyRanked, []);
+  const selfEsteemWithGenericTaskWords = [
+    { page: 8, heading: 'تمرین عزت نفس', text: 'تمرین تقویت عزت نفس می‌تواند با ثبت توانایی‌ها و احترام به خود همراه باشد.' },
+  ];
+  assert.deepEqual(rankLibraryPassages(selfEsteemWithGenericTaskWords, 'برای تقویت اعتماد به نفس چه تمرینی پیشنهاد می‌شود؟', 5), []);
   assert.equal(formatLocalSynthesis('کتاب آزمایشی', 'اعتماد به نفس', selfEsteemOnlyRanked), null);
 
   const emotionOnly = [
