@@ -21,7 +21,7 @@ const citationIntentSet = new Set([
   'scientific_validity', 'alternative_view', 'limitations', 'author_reason',
 ]);
 function collectSourceEvidence(response, fallbackBook) {
-  const matches = [...response.matchAll(/منبع:\\s*(.*?)\\s*(?:·\\s*)?صفحه\\s*(\\d+)/gu)];
+  const matches = [...response.matchAll(/منبع:\s*(.*?)\s*(?:·\s*)?صفحه\s*(\d+)/gu)];
   return matches.map((match) => {
     const pageNumber = Number(match[2]);
     const precedingBooks = books.map((candidate) => ({
