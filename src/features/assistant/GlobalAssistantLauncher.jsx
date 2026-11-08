@@ -92,8 +92,29 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     setOpen(true);
   }
 
+  function requestModelInstall() {
+    if (sending) return;
+    const turnId = ++turnSequenceRef.current;
+    setMessages((current) => [...current, {
+      id: `assistant-model-consent-${turnId}`,
+      role: 'assistant',
+      text: 'مدل محلی یک ارتقای اختیاری است، نه شرط استفاده از دستیار. بارگیری اولیه حدود ۶۵۰ تا ۷۵۰ مگابایت به‌علاوه فایل‌های جانبی حجم دارد و به اینترنت و فضای خالی کافی نیاز دارد. پس از نصب، پاسخ‌سازی روی همین دستگاه انجام می‌شود و پرسش‌ها به سرویس هوش مصنوعی بیرونی فرستاده نمی‌شوند. اگر گوشی نتواند مدل را اجرا کند، دستیار پایه همچنان در دسترس می‌ماند. آیا نصب را شروع کنیم؟',
+      knowledge: [],
+      modelInstallPrompt: true,
+    }]);
+  }
+
+  function cancelModelInstall(promptId) {
+    setMessages((current) => current.map((item) => item.id === promptId
+      ? { ...item, modelInstallPrompt: false, text: 'نصب مدل انجام نمی‌شود. می‌توانی بدون نصب، مثل قبل از دستیار کتابخانه استفاده کنی.' }
+      : item));
+  }
+
   async function installLocalModel() {
     if (sending) return;
+    setMessages((current) => current.map((item) => item.modelInstallPrompt
+      ? { ...item, modelInstallPrompt: false, text: 'درخواست نصب تأیید شد؛ آماده‌سازی آغاز می‌شود...' }
+      : item));
     const turnId = ++turnSequenceRef.current;
     setMessages((current) => [...current, {
       id: `assistant-model-install-${turnId}`,
@@ -273,7 +294,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
           >
             <div className="globalAssistantDialogTop">
               <h2 id="global-assistant-title">دستیار هوشمند مسیر ۲۸</h2>
-              <button type="button" className="globalAssistantModelButton" onClick={installLocalModel} disabled={sending} aria-label="نصب مدل هوش مصنوعی محلی" title="نصب اختیاری مدل هوش مصنوعی روی همین دستگاه">نصب مدل محلی</button>
+              <button type="button" className="globalAssistantModelButton" onClick={requestModelInstall} disabled={sending} aria-label="نصب مدل هوش مصنوعی محلی" title="نصب اختیاری مدل هوش مصنوعی روی همین دستگاه">نصب مدل محلی</button>
               <button ref={closeButtonRef} type="button" className="iconButton" onClick={() => setOpen(false)} aria-label="بستن پنجره دستیار">
                 <AppIcon name="x" size={18} />
               </button>
@@ -295,6 +316,12 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       )}
                     </b>
                     <p>{item.text}</p>
+                    {item.modelInstallPrompt && (
+                      <div className="globalAssistantModelActions">
+                        <button type="button" onClick={installLocalModel} disabled={sending}>بله، شروع نصب</button>
+                        <button type="button" onClick={() => cancelModelInstall(item.id)} disabled={sending}>فعلاً نه</button>
+                      </div>
+                    )}
                     {(item.knowledge || []).map((entry) => (
                       <div className="globalAssistantKnowledge" key={entry.item_id}>
                         <b>{entry.title}</b>
