@@ -222,7 +222,7 @@ try {
   assert.match(await dialog.innerText(), /دستیار هوشمند مسیر ۲۸/);
 
   // Before successful local-model installation, only the guided picker is shown.
-  const libraryPromptPicker = dialog.getByRole('combobox', { name: 'سؤال آماده دستیار کتابخانه' });
+  const libraryPromptPicker = dialog.getByRole('button', { name: 'باز کردن سؤال‌های آماده دستیار کتابخانه' });
   await libraryPromptPicker.waitFor({ state: 'visible' });
   assert.equal(await libraryPromptPicker.isVisible(), true, 'base library mode must expose guided questions');
   assert.equal(await dialog.getByRole('textbox').count(), 0, 'free typing must remain hidden before local-model installation');
@@ -230,7 +230,26 @@ try {
   const promptBox = await libraryPromptPicker.boundingBox();
   const promptSendBox = await dialog.getByRole('button', { name: 'ارسال' }).boundingBox();
   assert.ok(promptBox && promptSendBox && Math.abs((promptBox.y + promptBox.height / 2) - (promptSendBox.y + promptSendBox.height / 2)) <= 2, 'the send button must sit beside the prompt picker on the same row');
-  await libraryPromptPicker.selectOption('خلاصه کتاب پنجم را بگو');
+  await libraryPromptPicker.click();
+  let promptDialog = page.getByRole('dialog', { name: 'سؤال آماده دستیار کتابخانه' });
+  await promptDialog.waitFor({ state: 'visible' });
+  assert.equal(await promptDialog.locator('.libraryAssistantPromptCard.validationCard').count(), 1, 'the preset picker must reuse the archive reminder card structure');
+  assert.equal(await promptDialog.getByRole('button', { name: 'متوجه شدم' }).count(), 0, 'the preset picker must not add a redundant acknowledgement button');
+  const promptOptions = promptDialog.locator('[data-prompt-option]');
+  assert.ok(await promptOptions.count() >= 25, 'the full grouped preset question list must be available');
+  const firstPromptOption = promptOptions.first();
+  const lastPromptOption = promptOptions.last();
+  await lastPromptOption.focus();
+  await page.keyboard.press('Tab');
+  assert.equal(await firstPromptOption.evaluate((element) => element === document.activeElement), true, 'Tab from the final preset must wrap to the first preset');
+  await page.keyboard.press('Shift+Tab');
+  assert.equal(await lastPromptOption.evaluate((element) => element === document.activeElement), true, 'Shift+Tab from the first preset must wrap to the final preset');
+  await page.keyboard.press('Escape');
+  await promptDialog.waitFor({ state: 'detached' });
+  assert.equal(await libraryPromptPicker.evaluate((element) => element === document.activeElement), true, 'closing the preset picker must restore focus to its trigger');
+  await libraryPromptPicker.click();
+  promptDialog = page.getByRole('dialog', { name: 'سؤال آماده دستیار کتابخانه' });
+  await promptDialog.getByRole('button', { name: 'خلاصه کتاب پنجم را بگو.' }).click();
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('خلاصه راهنمای محتوایی')));
   const guidedLibrarySummary = dialog.locator('.assistantMessage').last();
@@ -246,7 +265,9 @@ try {
 
   // A second guided question must continue to work without exposing a text box.
   const previousReplyCount = await dialog.locator('.assistantMessage').count();
-  await libraryPromptPicker.selectOption('مهم‌ترین نکات کتاب پنجم کدام‌اند؟');
+  await libraryPromptPicker.click();
+  promptDialog = page.getByRole('dialog', { name: 'سؤال آماده دستیار کتابخانه' });
+  await promptDialog.getByRole('button', { name: 'مهم‌ترین نکات کتاب پنجم کدام‌اند؟' }).click();
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction((count) => {
     const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
@@ -264,9 +285,11 @@ try {
   await dialog.getByRole('button', { name: 'بله، شروع نصب' }).waitFor({ state: 'visible' });
   await dialog.getByRole('button', { name: 'بله، شروع نصب' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /دستیار پایه همچنان فعال است/u.test(node.innerText)));
-  const fallbackPromptPicker = dialog.getByRole('combobox', { name: 'سؤال آماده دستیار کتابخانه' });
+  const fallbackPromptPicker = dialog.getByRole('button', { name: 'باز کردن سؤال‌های آماده دستیار کتابخانه' });
   await fallbackPromptPicker.waitFor({ state: 'visible' });
-  await fallbackPromptPicker.selectOption('خلاصه کتاب چهارم را بگو');
+  await fallbackPromptPicker.click();
+  promptDialog = page.getByRole('dialog', { name: 'سؤال آماده دستیار کتابخانه' });
+  await promptDialog.getByRole('button', { name: 'خلاصه کتاب چهارم را بگو.' }).click();
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /خلاصه راهنمای محتوایی/u.test(node.innerText)));
   const fallbackAfterInstallFailure = dialog.locator('.assistantMessage').last();
@@ -297,7 +320,7 @@ try {
   await dialog.waitFor({ state: 'visible' });
   await page.getByPlaceholder('سؤال پیشرفته‌ات را اینجا بنویس...').waitFor({ state: 'visible' });
   assert.equal(await dialog.getByRole('textbox').count(), 1, 'successful local-model installation must reveal free typing');
-  assert.equal(await dialog.getByRole('combobox', { name: 'سؤال آماده دستیار کتابخانه' }).count(), 0, 'installed local mode must hide the guided list');
+  assert.equal(await dialog.getByRole('button', { name: 'باز کردن سؤال‌های آماده دستیار کتابخانه' }).count(), 0, 'installed local mode must hide the guided list');
   await closeButton.click();
   await dialog.waitFor({ state: 'detached' });
 
