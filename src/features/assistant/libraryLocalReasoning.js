@@ -157,14 +157,19 @@ export function rankLibraryPassages(passages, query, limit = 5) {
   }
   const averageLength = totalLength / documents.length;
   const queryTerms = [...analysis.weights.keys()];
+  const hasDirectEvidence = documents.some((document) => [...analysis.weights].some(([term, weight]) => weight >= 0.7 && (document.counts.has(term) || document.headingTokens.includes(term))));
   const ranked = documents.map((document) => {
     const { passage, index, body, heading, bodyTokens, headingTokens, counts, length } = document;
     let score = 0;
     let matched = 0;
+    let directMatches = 0;
     for (const [term, weight] of analysis.weights) {
       const tf = counts.get(term) || 0;
       const inHeading = headingTokens.includes(term);
-      if (tf || inHeading) matched += 1;
+      if (tf || inHeading) {
+        matched += 1;
+        if (weight >= 0.7) directMatches += 1;
+      }
       if (!tf && !inHeading) continue;
       const df = frequency.get(term) || 0;
       const idf = Math.log(1 + (documents.length - df + 0.5) / (df + 0.5));
@@ -190,9 +195,10 @@ export function rankLibraryPassages(passages, query, limit = 5) {
       score,
       relevance: Math.min(1, coverage),
       retrievalIndex: index,
-      intent: analysis.intent
+      intent: analysis.intent,
+      directMatches
     };
-  }).filter((passage) => passage.score > 0)
+  }).filter((passage) => passage.score > 0 && (!hasDirectEvidence || passage.directMatches > 0))
     .sort((a, b) => b.score - a.score || a.retrievalIndex - b.retrievalIndex);
 
   const selected = [];
