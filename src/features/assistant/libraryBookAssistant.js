@@ -286,12 +286,16 @@ function formatProfileItemsWithEvidence(book, items) {
       Number(candidate.sourcePage || candidate.page) === Number(page)
     );
     const blocks = Array.isArray(sourcePage?.blocks) ? sourcePage.blocks : [];
-    const sourceText = blocks
+    const sourceBlocks = blocks
       .filter((block) => block.type !== 'heading')
       .map((block) => String(block.text || (Array.isArray(block.rows) ? block.rows.flat().join(' ') : '')).trim())
-      .filter(Boolean)
-      .join(' ')
-      .trim();
+      .filter((text) => text.length > 40);
+    const targetTerms = new Set(terms(heading + ' ' + description));
+    const rankedBlocks = sourceBlocks.map((text) => ({
+      text,
+      score: terms(text).reduce((score, term) => score + (targetTerms.has(term) ? 1 : 0), 0),
+    })).sort((a, b) => b.score - a.score || b.text.length - a.text.length);
+    const sourceText = (rankedBlocks[0]?.text || sourceBlocks.join(' ')).trim();
     const sourceHeading = blocks
       .filter((block) => block.type === 'heading')
       .map((block) => String(block.text || '').trim())
@@ -299,12 +303,24 @@ function formatProfileItemsWithEvidence(book, items) {
       .join(' / ');
     const hasEvidence = sourceText.length > 80;
     const excerpt = hasEvidence
-      ? sourceText.slice(0, 120) + (sourceText.length > 120 ? '…' : '')
+      ? sourceText.slice(0, 160) + (sourceText.length > 160 ? '…' : '')
       : 'در صفحه ارجاع‌شده گزیده متنیِ کافی برای نمایش پیدا نشد.';
     return formatOrdinalPrefix(index) + heading + '\n' + description +
       '\nشاهد کوتاه متن: ' + excerpt +
       '\nمنبع: ' + (hasEvidence ? [sourceHeading, 'صفحه ' + page].filter(Boolean).join(' · ') : 'صفحه ' + page);
   }).join('\n\n');
+}
+
+function recommendationEvidence(book, limit = 1) {
+  const profile = getLibraryBookProfile(book);
+  if (profile?.summary?.length) {
+    return '\nشاهدهای مرتبط از متن کتاب:\n' +
+      formatProfileItemsWithEvidence(book, profile.summary.slice(0, limit));
+  }
+  const passages = chapterRepresentativePassages(passagesForBook(book), limit);
+  return passages.length
+    ? '\nگزیده‌های مرتبط از متن کتاب:\n' + formatPassages(passages)
+    : '\nبرای این پیشنهاد، شاهد متنیِ قابل نمایش در نسخه فعلی پیدا نشد.';
 }
 
 function summaryReply(book, passages) {
@@ -361,14 +377,15 @@ function listBooksReply(books) {
 }
 
 function compareBooksReply(books) {
-  return 'مقایسه محتوایی پنج کتاب کتابخانه مسیر ۲۸:\n\n' +
+  return 'مقایسه ساختاری و موضوعی پنج کتاب کتابخانه مسیر ۲۸:\n\n' +
     books.map((book) => {
       const profile = getLibraryBookProfile(book);
       const subject = profile?.subject || book.content?.subtitle || book.content?.description || 'توضیح موضوعی مستقل ثبت نشده است';
       const focus = profile?.comparison || 'برای این کتاب هنوز جمع‌بندی مقایسه‌ایِ بازبینی‌شده ثبت نشده است.';
-      return '• «' + book.title + '»\nمحور اصلی: ' + subject + '\nجایگاه در مجموعه: ' + focus;
+      return '• «' + book.title + '»\nمحور اصلی: ' + subject + '\nجایگاه در مجموعه: ' + focus +
+        (profile?.summary?.length ? '\nشاهد ساختاری از متن:\n' + formatProfileItemsWithEvidence(book, profile.summary.slice(0, 1)) : recommendationEvidence(book, 1));
     }).join('\n\n') +
-    '\n\nتفاوت کاربردی کتاب‌ها: جلد اول برای ساختن پایه خودشناسی؛ جلد دوم برای فهم سازوکارهای شناختی و تغییر؛ جلد سوم برای موانع اجرای تغییر؛ کتابچه چهارم برای کار عملی و ثبت تجربه؛ و کتاب پنجم برای سواد هیجانی و تنظیم احساسات مناسب‌تر است. این دسته‌بندی، راهنمای مطالعه بر اساس محتوای بررسی‌شده است، نه رتبه‌بندی علمی یا درمانی.';
+    '\n\nتفاوت کاربردی کتاب‌ها: جلد اول برای ساختن پایه خودشناسی؛ جلد دوم برای فهم سازوکارهای شناختی و تغییر؛ جلد سوم برای موانع اجرای تغییر؛ کتابچه چهارم برای کار عملی و ثبت تجربه؛ و کتاب پنجم برای سواد هیجانی و تنظیم احساسات مناسب‌تر است. این خروجی مقایسه موضوع و جایگاه کتاب‌هاست، نه تحلیل فصل‌به‌فصل استدلال نویسندگان یا رتبه‌بندی علمی/درمانی.';
 }
 
 
@@ -395,8 +412,9 @@ function recommendBooks(books, message) {
     const profile = getLibraryBookProfile(first);
     return 'پیشنهاد روشن برای شروع: «' + first.title + '».\n' +
       (profile?.beginner || 'این کتاب برای شروع مسیر مناسب‌تر به نظر می‌رسد.') +
-      (emotions ? '\n\nاگر مسئله اصلی‌ات شناخت و تنظیم احساسات است، «' + emotions.title + '» گزینه شروعِ موضوعی مناسبی است.' : '') +
-      (workbook ? '\n\n«' + workbook.title + '» را به‌عنوان کتاب اول پیشنهاد نمی‌کنم؛ این کتابچه ابزار اجرایی است و در کنار جلد سوم بیشترین فایده را دارد.' : '') +
+      recommendationEvidence(first, 1) +
+      (emotions ? '\n\nاگر مسئله اصلی‌ات شناخت و تنظیم احساسات است، «' + emotions.title + '» گزینه شروعِ موضوعی مناسبی است.' + recommendationEvidence(emotions, 1) : '') +
+      (workbook ? '\n\n«' + workbook.title + '» را به‌عنوان کتاب اول پیشنهاد نمی‌کنم؛ این کتابچه ابزار اجرایی است و در کنار جلد سوم بیشترین فایده را دارد.' + recommendationEvidence(workbook, 1) : '') +
       '\n\nاین پیشنهاد بر اساس ساختار و محتوای کتاب‌هاست؛ اگر هدفت را مشخص کنی، ترتیب مطالعه را دقیق‌تر می‌کنم.';
   }
   const candidates = SELF_KNOWLEDGE.test(normalized)
@@ -407,7 +425,8 @@ function recommendBooks(books, message) {
     chosen.slice(0, 3).map((book, index) => {
       const profile = getLibraryBookProfile(book);
       return (index + 1) + ') «' + book.title + '»\n' +
-        (profile?.beginner || profile?.subject || book.content?.subtitle || 'توضیح موضوعی مستقل ثبت نشده است');
+        (profile?.beginner || profile?.subject || book.content?.subtitle || 'توضیح موضوعی مستقل ثبت نشده است') +
+        recommendationEvidence(book, 1);
     }).join('\n\n') +
     '\n\nاین پیشنهاد بر پایه محتوای کتاب‌هاست، نه شناخت وضعیت شخصی تو.';
 }
