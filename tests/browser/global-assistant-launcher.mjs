@@ -138,12 +138,14 @@ try {
   await dialog.getByRole('textbox').fill('');
   assert.equal(await sendButton.isDisabled(), true, 'clearing the question must disable sending again');
   assert.equal((await dialog.innerText()).includes('09123456789'), false, 'private profile data must not be exposed to the page assistant');
-  await dialog.getByRole('textbox').fill('اینجا چه کارهایی می‌توانم انجام بدهم؟ 28');
+  await dialog.getByRole('textbox').fill('اینجا چه کارهایی می‌توانم انجام بدهم؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForTimeout(250);
   await page.waitForFunction(() => document.querySelector('.globalAssistantDialog')?.innerText.includes('ادامه مسیر امروز'));
   const firstAssistantReply = dialog.locator('.assistantMessage').last();
   assert.match(await firstAssistantReply.innerText(), /در صفحه «خانه» می‌توانی/);
+  await dialog.getByRole('textbox').fill('روز 28');
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .userMessage')].some((node) => node.innerText.includes('۲۸')));
   assert.match(await dialog.locator('.userMessage').last().innerText(), /۲۸/, 'visible user messages must localize typed ASCII digits');
   assert.doesNotMatch(await dialog.locator('.userMessage').last().innerText(), /[0-9]/, 'visible user messages must not expose ASCII digits');
   assert.equal(await dialog.locator('.assistantChatShell').count(), 1, 'the assistant must use one continuous chat surface');
