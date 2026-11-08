@@ -758,6 +758,17 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
           : 'در متن بازیابی‌شده شاهد کافی برای ارزیابی محدودیت همین توصیه پیدا نکردم. اگر فصل یا توصیه مشخص را نام ببری، می‌توانم محدودیت‌های متن و محدودیت کاربرد آن را جداگانه بررسی کنم.';
     return { message: 'در «' + book.title + '»: ' + reply, conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery } };
   }
+  const noEvidenceTopic = [
+    [ANXIETY, 'اضطراب'],
+    [ANGER, 'خشم و عصبانیت'],
+    [CONFIDENCE, 'اعتمادبه‌نفس'],
+  ].find(([pattern]) => pattern.test(normalized));
+  if (!asksSummary && !selected.length && noEvidenceTopic) {
+    return {
+      message: 'در «' + book.title + '»، برای این پرسش شاهد مستقیم و کافی برای ' + noEvidenceTopic[1] + ' پیدا نکردم. نمی‌خواهم گزیده‌های مربوط به مفاهیم نزدیک اما متمایز را به‌جای شاهد مستقیم معرفی کنم. اگر عنوان فصل یا اصطلاح دقیق‌تری مدنظرت است، بگو تا همان بخش را بررسی کنم.',
+      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery, lastSources: [] },
+    };
+  }
   if (!asksSummary && !selected.length) {
     return {
       message: 'در متن قابل‌دسترسی «' + book.title + '» برای این پرسش شاهد قابل اتکایی پیدا نکردم. ممکن است موضوع با واژه‌های دیگری بیان شده باشد؛ اگر نام فصل یا اصطلاح کتاب را می‌دانی، بگو تا دقیق‌تر بررسی کنم.',
