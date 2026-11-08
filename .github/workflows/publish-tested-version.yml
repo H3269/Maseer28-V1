@@ -37,7 +37,7 @@ jobs:
           echo "Publishing only the exact main commit: ${GITHUB_SHA}"
 
       - name: Checkout tested version
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: ${{ github.ref }}
           path: test-source
@@ -79,7 +79,7 @@ jobs:
           npm run build
 
       - name: Checkout Telegram repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: H3269/Maseer28
           ref: main
