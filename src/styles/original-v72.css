@@ -7211,39 +7211,83 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
   display: flex; flex-wrap: nowrap; align-items: center; direction: rtl;
   gap: 8px; width: 100%; min-width: 0;
 }
-.globalAssistantChat .libraryAssistantPromptRow select {
+.globalAssistantChat .libraryAssistantPromptTrigger {
   box-sizing: border-box; flex: 1 1 auto; width: 100%; min-width: 0;
   min-height: 54px; height: 54px; margin: 0; padding: 10px 13px;
   border: 1px solid var(--border, #d5dde7); border-radius: 14px;
   background: var(--surface-soft, #f8fafc); color: var(--text, #243b3c);
   font: inherit; font-size: 14px; line-height: 1.8;
-  text-align: right; direction: rtl;
+  text-align: right; direction: rtl; cursor: pointer;
 }
-.globalAssistantChat .libraryAssistantPromptRow select:disabled { opacity: .7; cursor: wait; }
+.globalAssistantChat .libraryAssistantPromptTrigger:disabled { opacity: .7; cursor: wait; }
+.globalAssistantChat .libraryAssistantPromptTrigger:focus-visible,
+.libraryAssistantPromptCard button:focus-visible {
+  outline: 3px solid #d6a84b; outline-offset: 2px;
+}
+.libraryAssistantPromptModal {
+  z-index: 700 !important;
+  background: #0d39383d !important;
+}
+.libraryAssistantPromptCard {
+  display: flex;
+  flex-direction: column;
+  max-height: min(82vh, 680px);
+  overflow: hidden;
+  color: var(--text, #243b3c);
+  text-align: right;
+}
+.libraryAssistantPromptCard h2 {
+  margin: 12px 0 6px;
+  font-size: 18px;
+  line-height: 1.7;
+}
+.libraryAssistantPromptCard > .muted {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.95;
+}
+.libraryAssistantPromptOptions {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-inline: 2px;
+}
+.libraryAssistantPromptGroup h3 {
+  margin: 14px 0 5px;
+  color: var(--text, #243b3c);
+  font-size: 13px;
+  line-height: 1.9;
+}
+.libraryAssistantPromptGroup:first-child h3 { margin-top: 4px; }
+.libraryAssistantPromptGroup button {
+  display: block;
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 2px;
+  border: 0;
+  border-bottom: 1px solid var(--border, #d9e0e8);
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted, #637674);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.95;
+  text-align: right;
+  direction: rtl;
+  cursor: pointer;
+}
+.libraryAssistantPromptGroup button:last-child { border-bottom: 0; }
+.libraryAssistantPromptGroup button:hover {
+  background: var(--surface-soft, #f8fafc);
+}
+@media (max-width: 480px) {
+  .libraryAssistantPromptCard { max-height: min(84dvh, 720px); padding: 18px; }
+}
 .globalAssistantChat .libraryAssistantPromptRow .assistantSendButton { flex: 0 0 36px !important; }
 @media (max-width: 380px) {
   .globalAssistantChat .libraryAssistantPromptRow { gap: 6px; }
   .globalAssistantChat .libraryAssistantPromptRow select { padding-inline: 9px; font-size: 13px; }
 }
 
-/* Library assistant: match preset-question text to the archive reminder message typography. */
-.globalAssistantChat #library-assistant-prompt,
-.globalAssistantChat #library-assistant-prompt option,
-.globalAssistantChat #library-assistant-prompt optgroup {
-  font-family: inherit !important;
-  font-size: 13px !important;
-  font-weight: 400 !important;
-  line-height: 1.95 !important;
-  color: var(--muted, #637674) !important;
-  text-align: right !important;
-  direction: rtl !important;
-}
-.globalAssistantChat #library-assistant-prompt {
-  background-color: var(--surface, #fff) !important;
-  border-color: var(--border, #d9e0e8) !important;
-  color-scheme: light;
-}
-.globalAssistantChat #library-assistant-prompt option,
-.globalAssistantChat #library-assistant-prompt optgroup {
-  background-color: var(--surface, #fff) !important;
-}
+/* The library preset list now uses the shared validation-card visual pattern. */
