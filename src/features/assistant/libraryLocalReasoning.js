@@ -158,11 +158,18 @@ export function rankLibraryPassages(passages, query, limit = 5) {
   const averageLength = totalLength / documents.length;
   const queryTerms = [...analysis.weights.keys()];
   const hasDirectEvidence = documents.some((document) => [...analysis.weights].some(([term, weight]) => weight >= 0.7 && (document.counts.has(term) || document.headingTokens.includes(term))));
+  const matchedConceptGroups = CLOSE_EQUIVALENTS.filter((group) => group.some((phrase) => phrasePresent(analysis.normalized, normalize(phrase))));
+  const hasDirectConceptEvidence = matchedConceptGroups.length > 0 && documents.some((document) => {
+    const text = normalize(document.body + ' ' + document.heading);
+    return matchedConceptGroups.some((group) => group.some((phrase) => phrasePresent(text, normalize(phrase))));
+  });
   const ranked = documents.map((document) => {
     const { passage, index, body, heading, bodyTokens, headingTokens, counts, length } = document;
     let score = 0;
     let matched = 0;
     let directMatches = 0;
+    const normalizedDocument = normalize(body + ' ' + heading);
+    const directConceptMatches = matchedConceptGroups.filter((group) => group.some((phrase) => phrasePresent(normalizedDocument, normalize(phrase)))).length;
     for (const [term, weight] of analysis.weights) {
       const tf = counts.get(term) || 0;
       const inHeading = headingTokens.includes(term);
@@ -196,9 +203,12 @@ export function rankLibraryPassages(passages, query, limit = 5) {
       relevance: Math.min(1, coverage),
       retrievalIndex: index,
       intent: analysis.intent,
-      directMatches
+      directMatches,
+      directConceptMatches
     };
-  }).filter((passage) => passage.score > 0 && (!hasDirectEvidence || passage.directMatches > 0))
+  }).filter((passage) => passage.score > 0
+    && (!hasDirectEvidence || passage.directMatches > 0)
+    && (!hasDirectConceptEvidence || passage.directConceptMatches > 0))
     .sort((a, b) => b.score - a.score || a.retrievalIndex - b.retrievalIndex);
 
   const selected = [];
