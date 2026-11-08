@@ -767,3 +767,26 @@ test('new book-audience prompts return book-specific guidance and source evidenc
     assert.match(response, /بر پایه ساختار و محتوای کتاب/u);
   }
 });
+
+
+test('cross-book guidance explains a practical reading order without asking for a book number', () => {
+  const response = answerLibraryBookQuestion({
+    books,
+    message: 'چطور از کتاب‌ها و کتابچه تمرین در کنار هم استفاده کنم؟',
+  });
+  assert.match(response, /جلد اول/u);
+  assert.match(response, /جلد سوم/u);
+  assert.match(response, /کتابچه تکمیلی جلد سوم/u);
+  assert.match(response, /جایگزین مطالعه نظری نیست/u);
+});
+
+test('a reader stuck in behavior change is directed to the barrier-focused books', () => {
+  const response = answerLibraryBookQuestion({
+    books,
+    message: 'اگر در تغییر رفتارم گیر کرده باشم، از کدام کتاب شروع کنم؟',
+  });
+  assert.match(response, /پیشنهاد مطالعه/u);
+  assert.match(response, /کتاب سوم|جلد سوم/u);
+  assert.match(response, /کتابچه تکمیلی جلد سوم/u);
+  assert.doesNotMatch(response, /هنر شناخت و دگرگونی احساسات/u);
+});
