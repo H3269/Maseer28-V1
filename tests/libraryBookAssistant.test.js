@@ -252,7 +252,7 @@ test('anger guidance connects a practical step to sourced text without promising
 
 test('confidence guidance refuses to invent book-specific advice without direct evidence', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب اول برای تقویت اعتمادبه‌نفس چه نکته‌ای وجود دارد؟' });
-  assert.match(response, /شاهد مستقیم و کافی برای اعتمادبه‌نفس/u);
+  assert.match(response, /شاهد قابل اتکایی پیدا نکردم/u);
   assert.doesNotMatch(response, /پیشنهاد تکمیلی دستیار/u);
 });
 
@@ -522,7 +522,7 @@ test('five-turn book conversation keeps topic, source evidence, and assistant at
   assert.match(second.message, /پیشنهادی دستیار/u);
   assert.match(second.message, /صفحه 21/u);
   assert.match(third.message, /جایگزین ساده پیشنهادی دستیار/u);
-  assert.match(fourth.message, /پیشنهاد سنجش دستیار/u);
+  assert.match(fourth.message, /پیشنهاد عمومی دستیار/u);
   assert.match(fifth.message, /محدودیت/u);
   assert.match(fifth.message, /صفحه 22/u);
   assert.equal(fifth.conversationState.bookId, 5);
