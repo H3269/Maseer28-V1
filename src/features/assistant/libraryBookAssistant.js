@@ -1,4 +1,5 @@
 import { getLibraryBookProfile, formatLibraryProfileItems } from './libraryBookProfiles.js';
+import { rankLibraryPassages, formatLocalSynthesis } from './libraryLocalReasoning.js';
 
 const STOP = new Set('از به با در برای که این آن را و یا یک های هایش هست است شود می کند کردن درباره چگونه چیست چه اگر اما زیرا تا پس روی خود انسان زندگی من تو شما کتاب جلد'.split(' '));
 
@@ -503,15 +504,7 @@ function extractConceptPair(message) {
 }
 
 function retrieveConceptEvidence(passages, concept, limit = 3) {
-  const weights = expandedQueryTerms(concept);
-  const frequency = buildFrequencyIndex(passages);
-  const phrase = normalizeLibraryText(concept);
-  return chooseDiverse(passages.map((passage, index) => ({
-    ...passage,
-    index,
-    score: scorePassage(passage, weights, frequency, passages.length, phrase),
-  })).filter((passage) => passage.score > 0)
-    .sort((a, b) => b.score - a.score || a.index - b.index), limit);
+  return rankLibraryPassages(passages, concept, limit);
 }
 
 function compareConceptEvidenceReply(book, concepts, passages) {
@@ -647,17 +640,11 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   const freshIntent = LIMITATIONS.test(message) || SCIENCE.test(message)
     || ALTERNATIVE_VIEW.test(message) || PROGRESS.test(message);
   const retrievalQuery = followUp && freshIntent ? message : effectiveQuery;
-  const queryWeights = asksSummary ? new Map() : expandedQueryTerms(retrievalQuery);
-  const frequency = buildFrequencyIndex(allPassages);
-  const phrase = normalizeLibraryText(retrievalQuery);
+  // On-device hybrid retrieval: BM25-style term weighting, heading boosts,
+  // phrase/proximity signals and conservative Persian concept expansion.
   const ranked = asksSummary
     ? allPassages
-    : allPassages.map((passage, index) => ({
-      ...passage,
-      index,
-      score: scorePassage(passage, queryWeights, frequency, allPassages.length, phrase),
-    })).filter((passage) => passage.score > 0)
-      .sort((a, b) => b.score - a.score || a.index - b.index);
+    : rankLibraryPassages(allPassages, retrievalQuery, 16);
 
   let selected = asksSummary
     ? []
@@ -731,9 +718,12 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     || ALTERNATIVE_EXERCISE.test(responseIntent) || AUTHOR_MEANING.test(responseIntent) || AUTHOR_REASON.test(responseIntent)) {
     reply = 'در «' + book.title + '»:\n\n' + structuredGuidance(responseIntent, book, selected, responseIntent);
   } else {
-    reply = (followUp ? 'ادامه بررسی همان موضوع در «' + book.title + '» بر اساس متن کتاب:' : 'بخش‌های مرتبط با پرسش تو در «' + book.title + '»:') +
-      '\n\n' + formatPassages(selected) +
-      '\n\nیادآوری: این‌ها گزیده‌های واقعی از متن نسخه بارگذاری‌شده‌اند؛ تفسیر یا توصیه‌ای که صریحاً در متن نیامده باشد به نویسنده نسبت داده نمی‌شود.';
+    const synthesized = formatLocalSynthesis(book.title, retrievalQuery, selected);
+    reply = synthesized
+      ? synthesized + '\n\nشواهد قابل بازیابی از کتاب:\n' + formatPassages(selected.slice(0, 3))
+      : (followUp ? 'ادامه بررسی همان موضوع در «' + book.title + '» بر اساس متن کتاب:' : 'بخش‌های مرتبط با پرسش تو در «' + book.title + '»:') +
+        '\n\n' + formatPassages(selected) +
+        '\n\nیادآوری: این‌ها گزیده‌های واقعی از متن نسخه بارگذاری‌شده‌اند؛ تفسیر یا توصیه‌ای که صریحاً در متن نیامده باشد به نویسنده نسبت داده نمی‌شود.';
   }
 
   return {
