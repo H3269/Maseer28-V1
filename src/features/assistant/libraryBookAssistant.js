@@ -420,6 +420,9 @@ function compareBooksReply(books) {
     const concept = pair && profile?.conceptComparison
       ? '\nنمونه تمایز مفهومی: ' + pair.join(' در برابر ') + ' — ' + profile.conceptComparison
       : '';
+    const baselineEvidence = profile?.summary?.length
+      ? formatProfileItemsWithEvidence(book, profile.summary.slice(0, 1))
+      : recommendationEvidence(book, 1);
     let evidence = '';
     if (pair) {
       const passages = passagesForBook(book);
@@ -429,7 +432,7 @@ function compareBooksReply(books) {
         ? '\nشاهدهای صفحه‌ای برای دو مفهوم:\n' + formatPassages([...first, ...second])
         : '\nبرای هر دو مفهوم شاهد صفحه‌ای کافی پیدا نشد؛ این تمایز را باید پیش از نتیجه‌گیری در متن اصلی بازبینی کرد.';
     }
-    return '• «' + book.title + '»\nمحور اصلی: ' + subject + '\nجایگاه در مجموعه: ' + focus + concept + evidence;
+    return '• «' + book.title + '»\nمحور اصلی: ' + subject + '\nجایگاه در مجموعه: ' + focus + concept + baselineEvidence + evidence;
   });
   return [
     'مقایسه ساختاری و موضوعی پنج کتاب کتابخانه مسیر ۲۸',
