@@ -353,32 +353,18 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
-              <form className="assistantComposer" dir="rtl" onSubmit={send}>
-                <label className="assistantSrOnly" htmlFor="global-assistant-message">پیام شما</label>
-                <textarea
-                  id="global-assistant-message"
-                  ref={messageInputRef}
-                  dir="rtl"
-                  rows={1}
-                  maxLength={dailyContext ? 2000 : 3000}
-                  value={draft}
-                  onChange={updateDraft}
-                  disabled={sending}
-                  placeholder={screen === 'books' && localModelStatusChecked && localModelInstalled
-                    ? 'سؤال پیشرفته‌ات را اینجا بنویس...'
-                    : 'چطور میتونم کمکت کنم؟'}
-                />
-                {screen === 'books' && localModelStatusChecked && !localModelInstalled && (
-                  <div className="libraryAssistantPromptGuide">
-                    <label htmlFor="library-assistant-prompt">سؤال آماده را انتخاب کن</label>
+              <form className={'assistantComposer' + (screen === 'books' && !localModelInstalled ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" onSubmit={send}>
+                {screen === 'books' && !localModelInstalled ? (
+                  <div className="libraryAssistantPromptRow">
+                    <label className="assistantSrOnly" htmlFor="library-assistant-prompt">سؤال آماده دستیار کتابخانه</label>
                     <select
                       id="library-assistant-prompt"
                       aria-label="سؤال آماده دستیار کتابخانه"
-                      value=""
-                      disabled={sending}
+                      value={draft}
+                      disabled={sending || !localModelStatusChecked}
                       onChange={(event) => setDraft(event.target.value)}
                     >
-                      <option value="">انتخاب سؤال از فهرست راهنما...</option>
+                      <option value="">انتخاب سؤال موردنظر...</option>
                       {LIBRARY_ASSISTANT_PROMPT_GROUPS.map((group) => (
                         <optgroup key={group.label} label={group.label}>
                           {group.questions.map((question) => (
@@ -387,13 +373,25 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                         </optgroup>
                       ))}
                     </select>
-                    <small>این سؤال‌ها برای شروع‌اند؛ می‌توانی سؤال دلخواهت را هم مستقیماً تایپ کنی.</small>
+                    <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال سؤال انتخاب‌شده" disabled={!localModelStatusChecked || !draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
                   </div>
+                ) : (
+                  <>
+                    <label className="assistantSrOnly" htmlFor="global-assistant-message">پیام شما</label>
+                    <textarea
+                      id="global-assistant-message"
+                      ref={messageInputRef}
+                      dir="rtl"
+                      rows={1}
+                      maxLength={dailyContext ? 2000 : 3000}
+                      value={draft}
+                      onChange={updateDraft}
+                      disabled={sending}
+                      placeholder={screen === 'books' ? 'سؤال پیشرفته‌ات را اینجا بنویس...' : 'چطور میتونم کمکت کنم؟'}
+                    />
+                    <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال پیام" disabled={!draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
+                  </>
                 )}
-                {screen === 'books' && localModelStatusChecked && localModelInstalled && (
-                  <p className="libraryAssistantAdvancedHint">مدل محلی فعال است؛ سؤال‌های آزاد و پیشرفته‌ات را بنویس.</p>
-                )}
-                <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال پیام" disabled={!draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
                 {error && <p className="contactHelp assistantComposerError" role="alert">{error}</p>}
               </form>
             </div>
