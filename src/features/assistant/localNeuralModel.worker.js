@@ -85,21 +85,11 @@ async function clearInstalledModelMarker() {
 }
 
 async function selectExecutionBackend() {
-  let timeoutId;
   try {
-    // Some headless/mobile GPU stacks leave requestAdapter pending indefinitely.
-    // Bound capability detection so optional model installation can fall back to WASM.
-    const adapter = await Promise.race([
-      Promise.resolve(self.navigator?.gpu?.requestAdapter?.()),
-      new Promise((resolve) => {
-        timeoutId = setTimeout(() => resolve(null), 1500);
-      }),
-    ]);
+    const adapter = await self.navigator?.gpu?.requestAdapter();
     if (adapter?.features?.has('shader-f16')) return { device: 'webgpu', dtype: 'q4f16' };
   } catch {
     // Unsupported or unavailable WebGPU is not fatal; use the WASM CPU path.
-  } finally {
-    clearTimeout(timeoutId);
   }
   return { device: 'wasm', dtype: 'q8' };
 }
