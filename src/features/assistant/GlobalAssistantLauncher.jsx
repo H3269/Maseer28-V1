@@ -162,6 +162,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         updateAssistantMessage('درخواست بارگیری دریافت شد. مدل فقط روی همین دستگاه آماده می‌شود...');
         try {
           await requestLocalNeuralModel('load', { allowDownload: true }, updateProgress);
+          setLocalModelUnavailable(false);
           updateAssistantMessage('مدل زبانی عصبی محلی با موفقیت روی این دستگاه آماده شد. برای دریافت پاسخ، پرسش اصلی‌ات را دوباره بفرست.');
         } catch (installError) {
           if (installError?.code === 'MODEL_DOWNLOAD_OFFLINE') {
