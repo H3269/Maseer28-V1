@@ -23,6 +23,18 @@ async function checkInstalledModelMarker() {
   try { return isLocalModelCacheMarkerValid(await response.json()); } catch { return false; }
 }
 
+// The Library UI uses this read-only check to choose between guided prompts and
+// free-form input. A marker is written only after a successful local model load.
+export async function isLocalNeuralModelInstalled() {
+  try {
+    const installed = await checkInstalledModelMarker();
+    localModelCacheStatus = installed ? 'ready' : 'missing';
+    return installed;
+  } catch {
+    return false;
+  }
+}
+
 function getWorker() {
   if (workerInstance) return workerInstance;
   if (typeof Worker === 'undefined') {
