@@ -4,7 +4,8 @@ import { makePageAssistantTurn } from './pageAssistantTurn.js';
 import { libraryRepository } from '../library/libraryRepository.js';
 import { answerLibraryBookTurn } from './libraryBookAssistant.js';
 import { routeAssistantTurn } from './assistantTurnEngine.js';
-import { requestLocalNeuralModel } from './localNeuralModelClient.js';
+import { isLocalNeuralModelInstalled, requestLocalNeuralModel } from './localNeuralModelClient.js';
+import { LIBRARY_ASSISTANT_PROMPT_GROUPS } from './libraryAssistantPrompts.js';
 import { appendLocalSourceReferences, buildLocalAssistantMessages, isLocalModelInstallCommand, LOCAL_MODEL_CACHE_MESSAGE, LOCAL_MODEL_FAILURE_MESSAGE, LOCAL_MODEL_INSTALL_MESSAGE, shouldUseLocalNeuralModel } from './localNeuralAssistant.js';
 
 export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null }) {
@@ -14,6 +15,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
   const [localModelUnavailable, setLocalModelUnavailable] = useState(false);
+  const [localModelInstalled, setLocalModelInstalled] = useState(false);
+  const [localModelStatusChecked, setLocalModelStatusChecked] = useState(false);
   const turnSequenceRef = useRef(0);
   const [loadedLibraryBooks, setLoadedLibraryBooks] = useState([]);
   const conversationStateRef = useRef(null);
@@ -56,8 +59,17 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     let active = true;
     if (screen !== 'books') {
       setLoadedLibraryBooks([]);
+      setLocalModelInstalled(false);
+      setLocalModelStatusChecked(false);
       return undefined;
     }
+    setLocalModelStatusChecked(false);
+    isLocalNeuralModelInstalled().then((installed) => {
+      if (active) {
+        setLocalModelInstalled(installed);
+        setLocalModelStatusChecked(true);
+      }
+    });
     (async () => {
       try {
         const rows = await libraryRepository.listBooks();
@@ -131,11 +143,13 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
           : item));
       });
       setLocalModelUnavailable(false);
+      setLocalModelInstalled(true);
       setMessages((current) => current.map((item) => item.id === `assistant-model-install-${turnId}`
         ? { ...item, text: 'مدل هوش مصنوعی محلی با موفقیت آماده شد. از این پس پرسش‌های واجد شرایط می‌توانند با کمک همین گوشی پاسخ داده شوند.' }
         : item));
     } catch (installError) {
       setLocalModelUnavailable(true);
+      setLocalModelInstalled(false);
       const reason = installError?.code === 'MODEL_DOWNLOAD_OFFLINE'
         ? 'برای نصب اولیه، اتصال اینترنت لازم است. دستیار پایه همچنان فعال است و می‌توانی به پرسش‌هایت ادامه بدهی.'
         : installError?.code === 'CACHE_UNAVAILABLE' || installError?.code === 'STORAGE_QUOTA_LOW'
@@ -184,16 +198,20 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         try {
           await requestLocalNeuralModel('load', { allowDownload: true }, updateProgress);
           setLocalModelUnavailable(false);
+          setLocalModelInstalled(true);
           updateAssistantMessage('مدل زبانی عصبی محلی با موفقیت روی این دستگاه آماده شد. برای دریافت پاسخ، پرسش اصلی‌ات را دوباره بفرست.');
         } catch (installError) {
           if (installError?.code === 'MODEL_DOWNLOAD_OFFLINE') {
             updateAssistantMessage('برای دریافت اولیه فایل مدل، اتصال اینترنت لازم است. پس از ذخیره مدل، تولید پاسخ به اینترنت نیاز ندارد و هیچ پرسشی به سرویس بیرونی ارسال نمی‌شود.');
             setLocalModelUnavailable(true);
+            setLocalModelInstalled(false);
           } else if (installError?.code === 'CACHE_UNAVAILABLE' || installError?.code === 'STORAGE_QUOTA_LOW') {
             setLocalModelUnavailable(true);
+            setLocalModelInstalled(false);
             updateAssistantMessage(LOCAL_MODEL_CACHE_MESSAGE + ' دستیار پایه همچنان فعال است و می‌توانی به پرسش‌هایت ادامه بدهی.');
           } else {
             setLocalModelUnavailable(true);
+            setLocalModelInstalled(false);
             updateAssistantMessage('این گوشی یا مرورگر نتوانست مدل محلی را اجرا کند. دستیار پایه همچنان فعال است و می‌توانی به پرسش‌هایت ادامه بدهی.');
           }
         }
@@ -236,6 +254,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
           finalMessage = appendLocalSourceReferences(generated.text, turn.message);
         } catch (modelError) {
           setLocalModelUnavailable(true);
+          setLocalModelInstalled(false);
           if (modelError?.code === 'MODEL_NOT_INSTALLED') finalMessage += `\n\nبرای ارتقای اختیاری پاسخ‌ها، از گزینه «نصب مدل محلی» در بالای پنجره استفاده کن. پاسخ پایه همین حالا در دسترس است.`;
           else if (modelError?.code === 'CACHE_UNAVAILABLE' || modelError?.code === 'STORAGE_QUOTA_LOW') finalMessage += `\n\n${LOCAL_MODEL_CACHE_MESSAGE} پاسخ‌گویی پایه همچنان فعال است.`;
           else finalMessage += '\n\nمدل محلی روی این دستگاه اجرا نشد؛ پاسخ بالا از دستیار پایه است و می‌توانی به پرسش‌هایت ادامه بدهی.';
@@ -345,8 +364,35 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                   value={draft}
                   onChange={updateDraft}
                   disabled={sending}
-                  placeholder="چطور میتونم کمکت کنم؟"
+                  placeholder={screen === 'books' && localModelStatusChecked && localModelInstalled
+                    ? 'سؤال پیشرفته‌ات را اینجا بنویس...'
+                    : 'چطور میتونم کمکت کنم؟'}
                 />
+                {screen === 'books' && localModelStatusChecked && !localModelInstalled && (
+                  <div className="libraryAssistantPromptGuide">
+                    <label htmlFor="library-assistant-prompt">سؤال آماده را انتخاب کن</label>
+                    <select
+                      id="library-assistant-prompt"
+                      aria-label="سؤال آماده دستیار کتابخانه"
+                      value=""
+                      disabled={sending}
+                      onChange={(event) => setDraft(event.target.value)}
+                    >
+                      <option value="">انتخاب سؤال از فهرست راهنما...</option>
+                      {LIBRARY_ASSISTANT_PROMPT_GROUPS.map((group) => (
+                        <optgroup key={group.label} label={group.label}>
+                          {group.questions.map((question) => (
+                            <option key={question.value} value={question.value}>{question.label}</option>
+                          ))}
+                        </optgroup>
+                      ))}
+                    </select>
+                    <small>این سؤال‌ها برای شروع‌اند؛ می‌توانی سؤال دلخواهت را هم مستقیماً تایپ کنی.</small>
+                  </div>
+                )}
+                {screen === 'books' && localModelStatusChecked && localModelInstalled && (
+                  <p className="libraryAssistantAdvancedHint">مدل محلی فعال است؛ سؤال‌های آزاد و پیشرفته‌ات را بنویس.</p>
+                )}
                 <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال پیام" disabled={!draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
                 {error && <p className="contactHelp assistantComposerError" role="alert">{error}</p>}
               </form>
