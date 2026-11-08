@@ -881,6 +881,18 @@ test('why questions synthesize relevant causal sentences without inventing a clo
   assert.match(response, /بدون اتصال ابری/u);
 });
 
+test('intent markers cannot promote unrelated sentences into synthesized evidence', () => {
+  const passages = [{
+    page: 18,
+    heading: 'تغییر رفتار',
+    text: 'تغییر رفتار دشوار است زیرا عادت‌های قدیمی به‌تدریج شکل گرفته‌اند. این برنامه عمومی مفید است زیرا به نظم روزانه کمک می‌کند.',
+  }];
+  const synthesis = synthesizeLibraryEvidence(passages, 'چرا تغییر رفتار دشوار است؟', 3);
+  assert.equal(synthesis.sentences.length, 1);
+  assert.match(synthesis.sentences[0].sentence, /تغییر رفتار/u);
+  assert.doesNotMatch(synthesis.sentences[0].sentence, /این برنامه عمومی/u);
+});
+
 test('the local reasoning module contains no network or cloud transport dependency', async () => {
   const source = await readFile(new URL('../src/features/assistant/libraryLocalReasoning.js', import.meta.url), 'utf8');
   assert.doesNotMatch(source, /fetch\s*\(|XMLHttpRequest|WebSocket|https?:\/\//u);
