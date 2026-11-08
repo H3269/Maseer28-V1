@@ -402,3 +402,7 @@
 - هیچ inference ابری، ارسال داده کاربر، انتشار عمومی یا Telegram Actions انجام نشده است.
 
 **وضعیت:** LIBRARY_RECOMMENDATION_AND_COMPARISON_EVIDENCE_GROUNDED_125_SCENARIO_CITATION_AUDIT_51_OF_51_VALID_UNIT_TESTS_AND_BUILD_GREEN_CHROMIUM_PENDING_DEVICE_MODEL_BENCHMARK_PENDING_NO_PUBLIC_RELEASE
+
+### هم‌پایه‌سازی شاخه و وضعیت اعتبارسنجی — 2026-11-08
+- شاخه اصلاحی با حفظ commit قبلی PR و ادغام تاریخچه‌ای آخرین main در commit `539924c9ca55650eb02bdb05f7b72e4a4aaa4c50` هم‌پایه شد؛ درخت فایل‌ها شامل نسخه فعلی main به‌علاوه اصلاح محدود ارجاع فصل و آزمون آن است.
+- اجرای CI روی شاخه هم‌پایه‌شده هنوز باید کامل شود؛ تا ثبت نتیجه سبز، این اصلاح تأییدشده یا قابل ادغام اعلام نمی‌شود.
