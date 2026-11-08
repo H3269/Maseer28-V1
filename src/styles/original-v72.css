@@ -7225,3 +7225,40 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
   .globalAssistantChat .libraryAssistantPromptRow { gap: 6px; }
   .globalAssistantChat .libraryAssistantPromptRow select { padding-inline: 9px; font-size: 13px; }
 }
+
+/* Library assistant: style the native preset-question menu to match app message surfaces. */
+.globalAssistantChat #library-assistant-prompt {
+  font-family: inherit !important;
+  font-size: 15px !important;
+  font-weight: 500;
+  color: var(--text, #243b3c) !important;
+  background-color: var(--surface, #fff) !important;
+  border-color: var(--border, #d9e0e8) !important;
+  color-scheme: light;
+}
+.globalAssistantChat #library-assistant-prompt option,
+.globalAssistantChat #library-assistant-prompt optgroup {
+  font-family: inherit !important;
+  font-size: 15px !important;
+  font-weight: 400;
+  color: var(--text, #243b3c) !important;
+  background-color: var(--surface, #fff) !important;
+  text-align: right;
+  direction: rtl;
+}
+.globalAssistantChat #library-assistant-prompt optgroup {
+  font-weight: 700;
+  color: var(--text-secondary, #526174) !important;
+}
+.globalAssistantChat #library-assistant-prompt option:checked {
+  color: var(--text, #243b3c) !important;
+  background: var(--surface-soft, #eef3f4) !important;
+}
+@media (max-width: 380px) {
+  .globalAssistantChat #library-assistant-prompt,
+  .globalAssistantChat #library-assistant-prompt option,
+  .globalAssistantChat #library-assistant-prompt optgroup {
+    font-size: 14px !important;
+  }
+}
+
