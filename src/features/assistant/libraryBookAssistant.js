@@ -289,13 +289,26 @@ function formatProfileItemsWithEvidence(book, items) {
     const sourceBlocks = blocks
       .filter((block) => block.type !== 'heading')
       .map((block) => String(block.text || (Array.isArray(block.rows) ? block.rows.flat().join(' ') : '')).trim())
-      .filter((text) => text.length > 40);
+      .filter((text) => text.length > 24);
     const targetTerms = new Set(terms(heading + ' ' + description));
-    const rankedBlocks = sourceBlocks.map((text) => ({
+    const rankedBlocks = sourceBlocks.map((text, sourceIndex) => ({
       text,
+      sourceIndex,
       score: terms(text).reduce((score, term) => score + (targetTerms.has(term) ? 1 : 0), 0),
     })).sort((a, b) => b.score - a.score || b.text.length - a.text.length);
-    const sourceText = (rankedBlocks[0]?.text || sourceBlocks.join(' ')).trim();
+    const bestBlock = rankedBlocks[0];
+    let sourceText = bestBlock?.text || sourceBlocks.join(' ');
+    // Short labels and workbook prompts can be the most relevant match but are
+    // not meaningful evidence alone; extend them with adjacent text from the
+    // same cited page instead of incorrectly declaring the page unsupported.
+    if (sourceText.length < 80 && bestBlock) {
+      const start = bestBlock.sourceIndex;
+      const adjacent = sourceBlocks.slice(start, Math.min(sourceBlocks.length, start + 5));
+      sourceText = adjacent.join(' ').trim();
+      if (sourceText.length < 80 && start > 0) {
+        sourceText = sourceBlocks.slice(Math.max(0, start - 2), start).concat(adjacent).join(' ').trim();
+      }
+    }
     const sourceHeading = blocks
       .filter((block) => block.type === 'heading')
       .map((block) => String(block.text || '').trim())
