@@ -839,6 +839,7 @@ test('related-only passages never become direct answers without matching source 
     { page: 7, heading: 'مدیریت ترس', text: 'برای مدیریت ترس می‌توان نشانه‌های بدنی را مشاهده کرد و تمرین مکث را انجام داد.' },
   ];
   assert.deepEqual(rankLibraryPassages(fearWithGenericTaskWords, 'برای مدیریت اضطراب چه تمرینی انجام دهم؟', 5), []);
+  assert.deepEqual(rankLibraryPassages(fearWithGenericTaskWords, 'اضطراب و ترس را چگونه مدیریت کنم؟', 5), []);
 
   const selfEsteemOnly = [
     { page: 4, heading: 'عزت نفس', text: 'عزت نفس به احساس ارزشمندی و احترام فرد نسبت به خود اشاره دارد.' },
