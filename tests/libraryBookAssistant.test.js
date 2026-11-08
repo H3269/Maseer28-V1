@@ -524,7 +524,12 @@ test('five-turn book conversation keeps topic, source evidence, and assistant at
   assert.match(third.message, /جایگزین ساده پیشنهادی دستیار/u);
   assert.match(fourth.message, /پیشنهاد عمومی دستیار/u);
   assert.match(fifth.message, /محدودیت/u);
-  assert.match(fifth.message, /صفحه 22/u);
+  // The fourth turn returns a general progress suggestion because no
+  // directly relevant progress evidence was retrieved. It therefore carries
+  // no source reference; the fifth turn must ask which recommendation/page
+  // is meant rather than inventing page 22 as support for that suggestion.
+  assert.match(fifth.message, /لطفاً جمله، عنوان فصل یا صفحه‌ای/u);
+  assert.doesNotMatch(fifth.message, /صفحه 22/u);
   assert.equal(fifth.conversationState.bookId, 5);
 });
 
