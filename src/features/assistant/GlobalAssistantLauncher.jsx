@@ -12,6 +12,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
+  const [libraryPromptOpen, setLibraryPromptOpen] = useState(false);
+  const libraryPromptTriggerRef = useRef(null);
+  const libraryPromptDialogRef = useRef(null);
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
   const [localModelUnavailable, setLocalModelUnavailable] = useState(false);
@@ -54,6 +57,22 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   useEffect(() => {
     endRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'end' });
   }, [messages]);
+
+  useEffect(() => {
+    if (!libraryPromptOpen) return undefined;
+    libraryPromptDialogRef.current?.querySelector('[data-prompt-option]')?.focus();
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setLibraryPromptOpen(false);
+      }
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => {
+      window.removeEventListener('keydown', closeOnEscape);
+      libraryPromptTriggerRef.current?.focus();
+    };
+  }, [libraryPromptOpen]);
 
   useEffect(() => {
     let active = true;
@@ -302,6 +321,47 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         <AppIcon name="message" size={20} />
         <span>دستیار</span>
       </button>
+      {libraryPromptOpen && screen === 'books' && (
+        <div
+          className="validationModal libraryAssistantPromptModal"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) setLibraryPromptOpen(false);
+          }}
+        >
+          <section
+            ref={libraryPromptDialogRef}
+            id="library-assistant-prompt-dialog"
+            className="validationCard libraryAssistantPromptCard"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="library-assistant-prompt-title"
+          >
+            <span className="badge">پرسش‌های پیشنهادی</span>
+            <h2 id="library-assistant-prompt-title">سؤال آماده دستیار کتابخانه</h2>
+            <p className="muted">برای انتخاب، روی سؤال موردنظرت بزن.</p>
+            <div className="libraryAssistantPromptOptions">
+              {LIBRARY_ASSISTANT_PROMPT_GROUPS.map((group) => (
+                <section className="libraryAssistantPromptGroup" key={group.label}>
+                  <h3>{group.label}</h3>
+                  {group.questions.map((question) => (
+                    <button
+                      key={question.value}
+                      type="button"
+                      data-prompt-option
+                      onClick={() => {
+                        setDraft(question.value);
+                        setLibraryPromptOpen(false);
+                      }}
+                    >
+                      {question.label}
+                    </button>
+                  ))}
+                </section>
+              ))}
+            </div>
+          </section>
+        </div>
+      )}
       {open && (
         <div className="globalAssistantBackdrop">
           <section
@@ -356,23 +416,18 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
               <form className={'assistantComposer' + (screen === 'books' && !localModelInstalled ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" onSubmit={send}>
                 {screen === 'books' && !localModelInstalled ? (
                   <div className="libraryAssistantPromptRow">
-                    <label className="assistantSrOnly" htmlFor="library-assistant-prompt">سؤال آماده دستیار کتابخانه</label>
-                    <select
-                      id="library-assistant-prompt"
-                      aria-label="سؤال آماده دستیار کتابخانه"
-                      value={draft}
+                    <button
+                      ref={libraryPromptTriggerRef}
+                      className="libraryAssistantPromptTrigger"
+                      type="button"
+                      aria-haspopup="dialog"
+                      aria-expanded={libraryPromptOpen}
+                      aria-controls="library-assistant-prompt-dialog"
                       disabled={sending || !localModelStatusChecked}
-                      onChange={(event) => setDraft(event.target.value)}
+                      onClick={() => setLibraryPromptOpen(true)}
                     >
-                      <option value="">انتخاب سؤال موردنظر...</option>
-                      {LIBRARY_ASSISTANT_PROMPT_GROUPS.map((group) => (
-                        <optgroup key={group.label} label={group.label}>
-                          {group.questions.map((question) => (
-                            <option key={question.value} value={question.value}>{question.label}</option>
-                          ))}
-                        </optgroup>
-                      ))}
-                    </select>
+                      {draft.trim() || 'انتخاب سؤال آماده...'}
+                    </button>
                     <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال سؤال انتخاب‌شده" disabled={!localModelStatusChecked || !draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
                   </div>
                 ) : (
