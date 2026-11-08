@@ -13,6 +13,7 @@ const books = await Promise.all(manifest.books.map(async (meta) => ({
 const globalIntents = new Set(['inventory', 'recommend_self_knowledge', 'recommend_start', 'compare_books']);
 const generatedIntents = new Set(['example', 'habit', 'exercise', 'seven_day_plan', 'alternative_exercise', 'progress']);
 const clarificationPattern = /عنوان فصل|شماره صفحه|چند واژه|ادعا یا توصیه مشخص/u;
+const noEvidencePattern = /شاهد (?:مستقیم و کافی|کافی|قابل اتکا) .{0,100}پیدا نکردم/u;
 const citationIntentSet = new Set([
   'book_subject', 'recommend_self_knowledge', 'recommend_start', 'compare_books',
   'main_theme', 'simple_explanation', 'key_points', 'summary', 'topic_relevance',
@@ -33,9 +34,9 @@ function collectSourceEvidence(response, fallbackBook) {
     const page = sourceBook.content.pages.find((candidate) =>
       Number(candidate.sourcePage || candidate.page) === pageNumber
     );
-    const headings = (page?.blocks || [])
+    const headings = [String(page?.title || '').trim(), ...(page?.blocks || [])
       .filter((block) => block.type === 'heading')
-      .map((block) => String(block.text || '').trim())
+      .map((block) => String(block.text || '').trim())]
       .filter(Boolean);
     const citationHeading = String(match[1] || '').trim();
     const headingMatches = !citationHeading || citationHeading === 'متن کتاب' || headings.some((heading) =>
@@ -84,7 +85,9 @@ for (const book of books) {
     const sourceEvidence = collectSourceEvidence(response, book);
     const referencedPages = [...new Set(sourceEvidence.map((source) => source.page))].slice(0, 12);
     const clarifiesInsteadOfGuessing = clarificationPattern.test(response.slice(0, 700));
-    const citationExpected = citationIntentSet.has(item.intent) && !clarifiesInsteadOfGuessing;
+    const citationExpected = citationIntentSet.has(item.intent)
+      && !clarifiesInsteadOfGuessing
+      && !noEvidencePattern.test(response);
     const citesSource = sourceEvidence.length > 0;
     const citationSatisfied = !citationExpected || (citesSource && sourceEvidence.every((source) => !source.missing && source.headingMatches));
     report.push({
