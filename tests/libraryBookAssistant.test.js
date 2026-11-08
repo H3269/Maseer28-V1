@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { answerLibraryBookQuestion, answerLibraryBookTurn } from '../src/features/assistant/libraryBookAssistant.js';
 import { getLibraryBookProfile } from '../src/features/assistant/libraryBookProfiles.js';
+import { analyzeLibraryQuery, formatLocalSynthesis, rankLibraryPassages, synthesizeLibraryEvidence } from '../src/features/assistant/libraryLocalReasoning.js';
 import { LIBRARY_ASSISTANT_PROMPT_GROUPS, LIBRARY_ASSISTANT_PROMPTS } from '../src/features/assistant/libraryAssistantPrompts.js';
 
 const root = new URL('../public/', import.meta.url);
@@ -81,8 +82,8 @@ test('a comparison request uses recorded metadata and actual chapter headings', 
   for (const book of books) assert.ok(response.includes(book.title));
   assert.match(response, /مقایسه ساختاری و موضوعی پنج کتاب/u);
   assert.match(response, /نه تحلیل فصل‌به‌فصل استدلال/u);
-  assert.equal((response.match(/شاهد کوتاه متن:/gu) || []).length, 5, 'each book comparison must include a source excerpt');
-  assert.equal((response.match(/منبع:/gu) || []).length, 5, 'each book comparison must include a source locator');
+  assert.ok((response.match(/شاهد کوتاه متن:/gu) || []).length >= 5, 'each book comparison must include a source excerpt');
+  assert.ok((response.match(/منبع:/gu) || []).length >= 5, 'each book comparison must include a source locator');
   assert.doesNotMatch(response, /گزیده متنیِ کافی برای نمایش پیدا نشد/u, 'a curated comparison must not silently cite an empty source excerpt');
 });
 
@@ -187,7 +188,7 @@ test('contextual follow-ups retain the selected book even when the wording is no
 
 test('progress questions about an unspecified recommendation request the referenced section first', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم از کجا بفهمم در این توصیه پیشرفت کرده‌ام؟' });
-  assert.match(response, /عنوان فصل، شماره صفحه یا چند واژه/u);
+  assert.match(response, /عنوان فصل، شماره صفحه یا چند (?:کلمه|واژه)/u);
   assert.doesNotMatch(response, /رفتارهای قابل مشاهده/u);
 });
 
@@ -200,8 +201,9 @@ test('book-specific introductions use actual metadata and chapter headings', () 
 
 test('author-intent questions ask for a precise section instead of guessing', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم نویسنده در این بخش دقیقاً چه منظوری دارد؟' });
-  assert.match(response, /کدام جمله، پاراگراف یا فصل/u);
-  assert.match(response, /نباید نیت نویسنده را حدس بزنم/u);
+  assert.match(response, /عنوان فصل، شماره صفحه یا چند (?:کلمه|واژه)/u);
+  assert.match(response, /نمی‌خواهم نیت نویسنده را حدس بزنم/u);
+  assert.doesNotMatch(response, /نزدیک‌ترین شواهد|منبع:/u);
 });
 
 test('concept comparisons choose a reviewed core pair when the user does not name concepts', () => {
@@ -214,7 +216,7 @@ test('concept comparisons choose a reviewed core pair when the user does not nam
 
 test('a low-pressure alternative asks for the exercise source when no prior section is known', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم اگر نتوانم این تمرین را انجام بدهم چه جایگزینی دارم؟' });
-  assert.match(response, /عنوان فصل، شماره صفحه یا چند واژه/u);
+  assert.match(response, /عنوان فصل، شماره صفحه یا چند (?:کلمه|واژه)/u);
   assert.doesNotMatch(response, /جایگزین ساده پیشنهادی دستیار/u);
 });
 
@@ -250,7 +252,7 @@ test('anger guidance connects a practical step to sourced text without promising
 
 test('confidence guidance refuses to invent book-specific advice without direct evidence', () => {
   const response = answerLibraryBookQuestion({ books, message: 'در کتاب اول برای تقویت اعتمادبه‌نفس چه نکته‌ای وجود دارد؟' });
-  assert.match(response, /شاهد مستقیم و کافی برای اعتمادبه‌نفس/u);
+  assert.match(response, /شاهد مستقیم و کافی برای اعتمادبه‌نفس پیدا نکردم/u);
   assert.doesNotMatch(response, /پیشنهاد تکمیلی دستیار/u);
 });
 
@@ -369,7 +371,7 @@ test('vague references do not trigger generic exercises or plans without a prior
     'در کتاب پنجم چطور این توصیه را به عادت تبدیل کنم؟',
   ]) {
     const response = answerLibraryBookQuestion({ books, message: question });
-    assert.match(response, /عنوان فصل، شماره صفحه یا چند واژه/u);
+    assert.match(response, /عنوان فصل، شماره صفحه یا چند (?:کلمه|واژه)/u);
     assert.doesNotMatch(response, /برنامه هفت‌روزه پیشنهادی دستیار|تمرین کم‌فشار:/u);
   }
 });
@@ -411,7 +413,7 @@ test('an unspecified exercise cannot receive a generic alternative before its so
     message: 'در کتاب پنجم اگر نتوانم این تمرین را انجام بدهم چه جایگزینی دارم؟',
   });
   assert.match(response, /هنر شناخت و دگرگونی احساسات/u);
-  assert.match(response, /عنوان فصل، شماره صفحه یا چند واژه/u);
+  assert.match(response, /عنوان فصل، شماره صفحه یا چند (?:کلمه|واژه)/u);
   assert.doesNotMatch(response, /جایگزین ساده پیشنهادی دستیار/u);
 });
 
@@ -520,9 +522,14 @@ test('five-turn book conversation keeps topic, source evidence, and assistant at
   assert.match(second.message, /پیشنهادی دستیار/u);
   assert.match(second.message, /صفحه 21/u);
   assert.match(third.message, /جایگزین ساده پیشنهادی دستیار/u);
-  assert.match(fourth.message, /پیشنهاد سنجش دستیار/u);
+  assert.match(fourth.message, /پیشنهاد عمومی دستیار/u);
   assert.match(fifth.message, /محدودیت/u);
-  assert.match(fifth.message, /صفحه 22/u);
+  // The fourth turn returns a general progress suggestion because no
+  // directly relevant progress evidence was retrieved. It therefore carries
+  // no source reference; the fifth turn must ask which recommendation/page
+  // is meant rather than inventing page 22 as support for that suggestion.
+  assert.match(fifth.message, /لطفاً جمله، عنوان فصل یا صفحه‌ای/u);
+  assert.doesNotMatch(fifth.message, /صفحه 22/u);
   assert.equal(fifth.conversationState.bookId, 5);
 });
 
@@ -789,4 +796,108 @@ test('a reader stuck in behavior change is directed to the barrier-focused books
   assert.match(response, /کتاب سوم|جلد سوم/u);
   assert.match(response, /کتابچه تکمیلی جلد سوم/u);
   assert.doesNotMatch(response, /هنر شناخت و دگرگونی احساسات/u);
+});
+
+
+test('local query understanding detects question intent and preserves meaningful Persian focus terms', () => {
+  const analysis = analyzeLibraryQuery('چرا تغییر رفتار بعد از شناخت یک باور دشوار است؟');
+  assert.equal(analysis.intent, 'why');
+  assert.ok(analysis.terms.includes('تغییر'));
+  assert.ok(analysis.terms.includes('رفتار'));
+  assert.ok(analysis.terms.includes('باور'));
+});
+
+test('hybrid local retrieval ranks direct heading and phrase evidence above incidental mentions', () => {
+  const passages = [
+    { page: 1, heading: 'تغییر عادت و رفتار', text: 'تغییر رفتار با تمرین تدریجی و تکرار آگاهانه آسان‌تر می‌شود.' },
+    { page: 2, heading: 'خاطرات روزمره', text: 'در این بخش از یک رفتار روزانه و تجربه‌های عمومی زندگی نام برده می‌شود.' },
+    { page: 3, heading: 'آشنایی با کتاب', text: 'این متن درباره موضوع‌های گوناگون است و ارتباط مستقیمی با پرسش ندارد.' },
+  ];
+  const ranked = rankLibraryPassages(passages, 'چگونه تغییر رفتار را پایدار کنم؟', 3);
+  assert.equal(ranked[0].page, 1);
+  assert.ok(ranked[0].score > ranked[1].score);
+});
+
+test('related but distinct concepts do not displace direct evidence', () => {
+  const passages = [
+    { page: 1, heading: 'اعتماد به نفس', text: 'اعتمادبه‌نفس به باور فرد درباره توانایی انجام یک کار مشخص مربوط است.' },
+    { page: 2, heading: 'عزت نفس', text: 'عزت نفس به احساس ارزشمندی و احترام فرد نسبت به خود اشاره دارد.' },
+  ];
+  const ranked = rankLibraryPassages(passages, 'اعتماد به نفس', 5);
+  assert.deepEqual(ranked.map((item) => item.page), [1]);
+  const selfEsteem = rankLibraryPassages(passages, 'عزت نفس', 5);
+  assert.deepEqual(selfEsteem.map((item) => item.page), [2]);
+});
+
+test('related-only passages never become direct answers without matching source evidence', () => {
+  const fearOnly = [
+    { page: 3, heading: 'ترس', text: 'ترس می‌تواند واکنشی به خطر ادراک‌شده باشد و با نشانه‌های بدنی همراه شود.' },
+  ];
+  assert.deepEqual(rankLibraryPassages(fearOnly, 'اضطراب', 5), []);
+  // Generic task words must not turn a related concept into direct evidence.
+  const fearWithGenericTaskWords = [
+    { page: 7, heading: 'مدیریت ترس', text: 'برای مدیریت ترس می‌توان نشانه‌های بدنی را مشاهده کرد و تمرین مکث را انجام داد.' },
+  ];
+  assert.deepEqual(rankLibraryPassages(fearWithGenericTaskWords, 'برای مدیریت اضطراب چه تمرینی انجام دهم؟', 5), []);
+  assert.deepEqual(rankLibraryPassages(fearWithGenericTaskWords, 'اضطراب و ترس را چگونه مدیریت کنم؟', 5), []);
+
+  const selfEsteemOnly = [
+    { page: 4, heading: 'عزت نفس', text: 'عزت نفس به احساس ارزشمندی و احترام فرد نسبت به خود اشاره دارد.' },
+  ];
+  const selfEsteemOnlyRanked = rankLibraryPassages(selfEsteemOnly, 'اعتماد به نفس', 5);
+  assert.deepEqual(selfEsteemOnlyRanked, []);
+  const selfEsteemWithGenericTaskWords = [
+    { page: 8, heading: 'تمرین عزت نفس', text: 'تمرین تقویت عزت نفس می‌تواند با ثبت توانایی‌ها و احترام به خود همراه باشد.' },
+  ];
+  assert.deepEqual(rankLibraryPassages(selfEsteemWithGenericTaskWords, 'برای تقویت اعتماد به نفس چه تمرینی پیشنهاد می‌شود؟', 5), []);
+  assert.equal(formatLocalSynthesis('کتاب آزمایشی', 'اعتماد به نفس', selfEsteemOnlyRanked), null);
+
+  const emotionOnly = [
+    { page: 5, heading: 'هیجان', text: 'هیجان می‌تواند با تغییرهای بدنی و رفتاری همراه باشد و شدت‌های متفاوتی داشته باشد.' },
+  ];
+  assert.deepEqual(rankLibraryPassages(emotionOnly, 'احساس', 5), []);
+
+  const interactionOnly = [
+    { page: 6, heading: 'تعامل', text: 'تعامل میان افراد از راه پاسخ متقابل و رفتارهای قابل مشاهده شکل می‌گیرد.' },
+  ];
+  assert.deepEqual(rankLibraryPassages(interactionOnly, 'رابطه', 5), []);
+});
+
+test('why questions synthesize relevant causal sentences without inventing a cloud-generated answer', () => {
+  const passages = [
+    { page: 12, heading: 'چرا تغییر دشوار است', text: 'تغییر رفتار دشوار می‌شود زیرا عادت‌های قدیمی در کوتاه‌مدت انرژی کمتری می‌گیرند. تجربه تازه با تمرین و تکرار به‌تدریج تقویت می‌شود.' },
+    { page: 20, heading: 'انتخاب آگاهانه', text: 'برای انتخاب تازه باید موقعیت را مشاهده کرد و پیامدهای احتمالی را سنجید.' },
+  ];
+  const synthesis = synthesizeLibraryEvidence(passages, 'چرا تغییر رفتار دشوار است؟');
+  assert.equal(synthesis.intent, 'why');
+  assert.ok(synthesis.sentences.some((item) => item.sentence.includes('زیرا عادت‌های قدیمی')));
+  const response = answerLibraryBookQuestion({
+    books: [{ title: 'کتاب آزمایشی', legacyId: 1, content: { pages: passages.map((item) => ({ page: item.page, sourcePage: item.page, blocks: [{ type: 'heading', text: item.heading }, { type: 'paragraph', text: item.text }] })) } }],
+    message: 'چرا در کتاب اول تغییر رفتار دشوار است؟',
+  });
+  assert.match(response, /پاسخ مستند به چرایی پرسش/u);
+  assert.match(response, /زیرا عادت‌های قدیمی/u);
+  assert.match(response, /منبع:.*صفحه 12/u);
+  assert.match(response, /بدون اتصال ابری/u);
+});
+
+test('the local reasoning module contains no network or cloud transport dependency', async () => {
+  const source = await readFile(new URL('../src/features/assistant/libraryLocalReasoning.js', import.meta.url), 'utf8');
+  assert.doesNotMatch(source, /fetch\s*\(|XMLHttpRequest|WebSocket|https?:\/\//u);
+});
+
+
+test('five-book comparison uses book-specific concept distinctions and only available page evidence', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'تفاوت موضوعی این پنج کتاب چیست؟' });
+  for (const book of books) assert.ok(response.includes(book.title));
+  assert.match(response, /نمونه تمایز مفهومی/u);
+  assert.match(response, /شاهدهای صفحه‌ای برای دو مفهوم|شاهد صفحه‌ای کافی پیدا نشد/u);
+  assert.match(response, /کتابچه چهارم ابزار اجرایی مکمل جلد سوم/u);
+  assert.match(response, /نه رتبه‌بندی علمی/u);
+});
+
+test('ambiguous author wording never becomes a fabricated section reference', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'در کتاب پنجم این بخش دقیقاً چه می‌گوید؟' });
+  assert.match(response, /عنوان فصل، شماره صفحه یا چند (?:کلمه|واژه)/u);
+  assert.doesNotMatch(response, /منبع:/u);
 });

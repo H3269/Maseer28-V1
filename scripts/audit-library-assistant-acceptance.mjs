@@ -12,8 +12,8 @@ const books = await Promise.all(manifest.books.map(async (meta) => ({
 
 const globalIntents = new Set(['inventory', 'recommend_self_knowledge', 'recommend_start', 'compare_books']);
 const generatedIntents = new Set(['example', 'habit', 'exercise', 'seven_day_plan', 'alternative_exercise', 'progress']);
-const clarificationPattern = /عنوان فصل|شماره صفحه|چند واژه|ادعا یا توصیه مشخص/u;
-const noEvidencePattern = /شاهد (?:مستقیم و کافی|کافی|قابل اتکا) .{0,100}پیدا نکردم/u;
+const clarificationPattern = /عنوان فصل|نام فصل|شماره صفحه|چند واژه|اصطلاح کتاب|ادعا یا توصیه مشخص/u;
+const noEvidencePattern = /شاهد (?:مستقیم و کافی|کافی|قابل اتکا(?:یی)?) .{0,100}پیدا نکردم/u;
 const citationIntentSet = new Set([
   'book_subject', 'recommend_self_knowledge', 'recommend_start', 'compare_books',
   'main_theme', 'simple_explanation', 'key_points', 'summary', 'topic_relevance',
