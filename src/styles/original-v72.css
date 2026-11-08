@@ -7205,20 +7205,23 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 }
 
 
-/* Library assistant: guided question picker for the deterministic base mode. */
-.libraryAssistantPromptGuide {
-  grid-column: 1 / -1; display: grid; gap: 5px; min-width: 0;
-  padding: 10px 12px; border: 1px solid var(--border, #dce4e8);
-  border-radius: 12px; background: var(--surface-soft, #f8fafc);
+/* Library base mode: one compact question row, visually aligned with chat typography. */
+.globalAssistantChat .libraryAssistantGuidedComposer { display: block; }
+.globalAssistantChat .libraryAssistantPromptRow {
+  display: flex; flex-wrap: nowrap; align-items: center; direction: rtl;
+  gap: 8px; width: 100%; min-width: 0;
 }
-.libraryAssistantPromptGuide label { font-size: 12px; font-weight: 700; color: var(--text-secondary, #526174); }
-.libraryAssistantPromptGuide select {
-  width: 100%; min-width: 0; min-height: 40px; padding: 8px 10px;
-  border: 1px solid var(--border, #d5dde7); border-radius: 9px;
-  background: var(--surface, #fff); color: var(--text, #243b3c);
-  font: inherit; font-size: 13px;
+.globalAssistantChat .libraryAssistantPromptRow select {
+  box-sizing: border-box; flex: 1 1 auto; width: 100%; min-width: 0;
+  min-height: 54px; height: 54px; margin: 0; padding: 10px 13px;
+  border: 1px solid var(--border, #d5dde7); border-radius: 14px;
+  background: var(--surface-soft, #f8fafc); color: var(--text, #243b3c);
+  font: inherit; font-size: 14px; line-height: 1.8;
+  text-align: right; direction: rtl;
 }
-.libraryAssistantPromptGuide small, .libraryAssistantAdvancedHint {
-  margin: 0; color: var(--text-secondary, #64748b); font-size: 11px; line-height: 1.7;
+.globalAssistantChat .libraryAssistantPromptRow select:disabled { opacity: .7; cursor: wait; }
+.globalAssistantChat .libraryAssistantPromptRow .assistantSendButton { flex: 0 0 36px !important; }
+@media (max-width: 380px) {
+  .globalAssistantChat .libraryAssistantPromptRow { gap: 6px; }
+  .globalAssistantChat .libraryAssistantPromptRow select { padding-inline: 9px; font-size: 13px; }
 }
-.libraryAssistantAdvancedHint { grid-column: 1 / -1; padding: 7px 10px; }
