@@ -202,8 +202,8 @@ function sourceLabel(item) {
 
 function formatOrdinalPrefix(index) {
   const ordinal = String(index + 1).replace(/\d/g, (digit) => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
-  // LRM marks keep the closing parenthesis visually after the Persian numeral in RTL text.
-  return '\u200E' + ordinal + ')\u200E ';
+  // RLM anchors the ordinal at the RTL line start while preserving number-then-close-paren order.
+  return '\u200F' + ordinal + ')\u200F ';
 }
 
 function formatPassages(passages) {
