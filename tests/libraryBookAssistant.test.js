@@ -78,7 +78,10 @@ test('follow-up questions retain the selected book and topic', () => {
 test('a comparison request uses recorded metadata and actual chapter headings', () => {
   const response = answerLibraryBookQuestion({ books, message: 'تفاوت موضوعی این پنج کتاب چیست؟' });
   for (const book of books) assert.ok(response.includes(book.title));
-  assert.match(response, /مقایسه محتوایی پنج کتاب/);
+  assert.match(response, /مقایسه ساختاری و موضوعی پنج کتاب/u);
+  assert.match(response, /نه تحلیل فصل‌به‌فصل استدلال/u);
+  assert.equal((response.match(/شاهد کوتاه متن:/gu) || []).length, 5, 'each book comparison must include a source excerpt');
+  assert.equal((response.match(/منبع:/gu) || []).length, 5, 'each book comparison must include a source locator');
 });
 
 test('no answer is invented when the requested book is unavailable', () => {
@@ -112,6 +115,41 @@ test('recommendations explain their limited basis instead of pretending to know 
   assert.match(response, /بر اساس موضوع ثبت‌شده و محتوای بررسی‌شده/);
   assert.match(response, /نه شناخت وضعیت شخصی تو/);
   assert.match(response, /هنر شناخت و دگرگونی احساسات/);
+  assert.match(response, /شاهدهای مرتبط از متن کتاب/u);
+  assert.match(response, /شاهد کوتاه متن:/u);
+  assert.match(response, /منبع:/u);
+});
+
+
+test('beginner recommendations include page evidence for the primary book and alternatives', () => {
+  const response = answerLibraryBookQuestion({ books, message: 'اگر تازه می‌خواهم شروع کنم از کدام کتاب شروع کنم؟' });
+  assert.match(response, /پیشنهاد روشن برای شروع/u);
+  assert.match(response, /شاهدهای مرتبط از متن کتاب/u);
+  assert.ok((response.match(/شاهد کوتاه متن:/gu) || []).length >= 2);
+  assert.ok((response.match(/منبع:/gu) || []).length >= 2);
+});
+
+test('profile evidence selection prefers the paragraph semantically related to the curated claim', () => {
+  const sampleBook = {
+    title: 'از حقیقت تا واقعیت — جلد اول',
+    legacyId: 1,
+    content: { pages: [{
+      page: 9,
+      sourcePage: 9,
+      blocks: [
+        { type: 'paragraph', text: 'این پاراگراف درباره موضوعی عمومی و نامرتبط است و فقط برای آزمودن انتخاب شاهد در صفحه قرار گرفته است. متن باید به اندازه کافی بلند باشد تا بتوان آن را به عنوان یک شاهد احتمالی در نظر گرفت.' },
+        { type: 'heading', text: 'حقیقت و واقعیت' },
+        { type: 'paragraph', text: 'واقعیت بیرونی با برداشت ذهنی یکی نیست. برای دیدن حقیقت باید رویداد، شواهد و تفسیر شخصی را از هم جدا کنیم؛ برداشت ما ممکن است بر واکنش اثر بگذارد اما خود واقعیت نیست.' },
+      ],
+    }] },
+  };
+  const response = answerLibraryBookQuestion({
+    books: [sampleBook],
+    message: 'برای خودشناسی از کدام کتاب شروع کنم؟',
+  });
+  assert.match(response, /شاهد کوتاه متن: واقعیت بیرونی با برداشت ذهنی یکی نیست/u);
+  assert.match(response, /منبع: حقیقت و واقعیت · صفحه 9/u);
+  assert.doesNotMatch(response, /این پاراگراف درباره موضوعی عمومی/u);
 });
 
 test('scientific validity questions distinguish book excerpts from scientific evidence', () => {
