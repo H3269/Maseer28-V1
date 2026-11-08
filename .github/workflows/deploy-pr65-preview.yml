@@ -1,6 +1,8 @@
 name: Deploy isolated PR65 browser preview
 
 on:
+  push:
+    branches: [test/pr65-library-assistant]
   pull_request:
     branches: [main]
     types: [opened, synchronize, reopened, ready_for_review]
@@ -16,7 +18,7 @@ concurrency:
 
 jobs:
   deploy-pr65-preview:
-    if: ${{ github.event.pull_request.head.ref == 'test/pr65-library-assistant' }}
+    if: github.ref == 'refs/heads/test/pr65-library-assistant' || github.event.pull_request.head.ref == 'test/pr65-library-assistant'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     environment:
@@ -33,7 +35,7 @@ jobs:
       - name: Checkout isolated PR65 test branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.sha }}
           path: preview-source
           persist-credentials: false
 
