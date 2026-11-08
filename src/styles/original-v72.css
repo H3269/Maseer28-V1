@@ -7224,7 +7224,7 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 .libraryAssistantPromptCard button:focus-visible {
   outline: 3px solid #d6a84b; outline-offset: 2px;
 }
-.globalAssistantDialog { position: relative; }
+.globalAssistantDialog:has(.libraryAssistantPromptModal) { position: relative; }
 .libraryAssistantPromptModal {
   position: absolute !important;
   inset: 0 !important;
