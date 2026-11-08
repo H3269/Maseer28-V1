@@ -224,7 +224,19 @@ try {
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('برای مرور کتاب‌های موجود')));
 
-  // Exercise the actual library-book assistant path, not only the generic page helper.
+  // The base library mode exposes a curated question list, and selecting an item
+  // places the exact prompt into the composer for the user to send.
+  const libraryPromptPicker = dialog.getByRole('combobox', { name: 'سؤال آماده دستیار کتابخانه' });
+  assert.equal(await libraryPromptPicker.isVisible(), true, 'base library mode must expose guided questions');
+  await libraryPromptPicker.selectOption('خلاصه کتاب پنجم را بگو');
+  assert.equal(await dialog.getByRole('textbox').inputValue(), 'خلاصه کتاب پنجم را بگو');
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('خلاصه راهنمای محتوایی')));
+  const guidedLibrarySummary = dialog.locator('.assistantMessage').last();
+  assert.match(await guidedLibrarySummary.innerText(), /هنر شناخت و دگرگونی احساسات/u);
+  assert.match(await guidedLibrarySummary.innerText(), /منبع:/u);
+
+  // Exercise free typing in the same base-mode composer as well.
   await dialog.getByRole('textbox').fill('خلاصه کتاب پنجم را بگو');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('خلاصه راهنمای محتوایی')));
@@ -258,6 +270,7 @@ try {
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /خلاصه راهنمای محتوایی/u.test(node.innerText)));
   const fallbackAfterInstallFailure = dialog.locator('.assistantMessage').last();
+  assert.equal(await dialog.getByRole('combobox', { name: 'سؤال آماده دستیار کتابخانه' }).isVisible(), true, 'failed installation must retain the guided base-mode question list');
   assert.match(await fallbackAfterInstallFailure.innerText(), /شاهد کوتاه متن|منبع:/u, 'the book assistant must continue returning a grounded base answer after model installation fails');
   assert.doesNotMatch(await fallbackAfterInstallFailure.innerText(), /این گوشی یا مرورگر نتوانست مدل محلی را اجرا کند/u, 'the installation failure must not replace later answers');
 
