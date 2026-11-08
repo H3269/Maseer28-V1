@@ -893,6 +893,18 @@ test('intent markers cannot promote unrelated sentences into synthesized evidenc
   assert.doesNotMatch(synthesis.sentences[0].sentence, /این برنامه عمومی/u);
 });
 
+test('generic task words cannot select unrelated sentences from a concept-grounded passage', () => {
+  const passages = [{
+    page: 19,
+    heading: 'اضطراب و راه‌های مواجهه',
+    text: 'اضطراب می‌تواند با نگرانی و نشانه‌های بدنی همراه باشد. تمرین روزانه به نظم و پیگیری کمک می‌کند.',
+  }];
+  const synthesis = synthesizeLibraryEvidence(passages, 'برای مدیریت اضطراب چه تمرینی پیشنهاد می‌شود؟', 3);
+  assert.equal(synthesis.sentences.length, 1);
+  assert.match(synthesis.sentences[0].sentence, /اضطراب/u);
+  assert.doesNotMatch(synthesis.sentences[0].sentence, /تمرین روزانه/u);
+});
+
 test('the local reasoning module contains no network or cloud transport dependency', async () => {
   const source = await readFile(new URL('../src/features/assistant/libraryLocalReasoning.js', import.meta.url), 'utf8');
   assert.doesNotMatch(source, /fetch\s*\(|XMLHttpRequest|WebSocket|https?:\/\//u);
