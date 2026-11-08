@@ -243,6 +243,19 @@ try {
   assert.match(await libraryFollowUp.innerText(), /هنر شناخت و دگرگونی احساسات/u);
   assert.match(await libraryFollowUp.innerText(), /محدودیت/u);
 
+  // A failed optional model installation must not disable the deterministic library assistant.
+  const installModelButton = dialog.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' });
+  assert.equal(await installModelButton.isVisible(), true, 'model installation must be discoverable without memorizing a command');
+  await page.route('https://huggingface.co/**', (route) => route.fulfill({ status: 503, body: 'blocked for deterministic browser test' }));
+  await installModelButton.click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /دستیار پایه همچنان فعال است/u.test(node.innerText)));
+  await dialog.getByRole('textbox').fill('خلاصه کتاب چهارم را بگو');
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /خلاصه راهنمای محتوایی/u.test(node.innerText)));
+  const fallbackAfterInstallFailure = dialog.locator('.assistantMessage').last();
+  assert.match(await fallbackAfterInstallFailure.innerText(), /شاهد کوتاه متن|منبع:/u, 'the book assistant must continue returning a grounded base answer after model installation fails');
+  assert.doesNotMatch(await fallbackAfterInstallFailure.innerText(), /این گوشی یا مرورگر نتوانست مدل محلی را اجرا کند/u, 'the installation failure must not replace later answers');
+
   await closeButton.click();
   await dialog.waitFor({ state: 'detached' });
 
