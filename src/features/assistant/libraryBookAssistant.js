@@ -438,7 +438,7 @@ function bookSubject(book) {
 
 function recommendBooks(books, message) {
   const normalized = normalizeLibraryText(message);
-  const beginner = /(?:تازه|مبتدی|اولین بار|شروع مطالعه|از کجا شروع)/u.test(normalized);
+  const beginner = /(?:تازه|مبتدی|اولین بار|شروع مطالعه|از کجا شروع)/u.test(normalized) && !CHANGE_BARRIER.test(normalized);
   if (beginner) {
     const first = books.find((book) => Number(book.legacyId) === 1) || books[0];
     const emotions = books.find((book) => Number(book.legacyId) === 5);
@@ -597,7 +597,8 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     };
   }
   if (LIST.test(normalized)) return { message: listBooksReply(available), conversationState: null };
-  if (RECOMMEND.test(normalized) && !BOOK_AUDIENCE.test(normalized)) return { message: recommendBooks(available, normalized), conversationState: null };
+  const audienceBook = BOOK_AUDIENCE.test(normalized) ? pickBook(available, message, conversationState) : null;
+  if (RECOMMEND.test(normalized) && !audienceBook) return { message: recommendBooks(available, normalized), conversationState: null };
   if (COMPARE.test(normalized) && !CONCEPT_COMPARE.test(normalized) && !ALTERNATIVE_VIEW.test(normalized) && /(?:کتاب|پنج|همه)/u.test(normalized)) {
     return { message: compareBooksReply(available), conversationState: null };
   }
