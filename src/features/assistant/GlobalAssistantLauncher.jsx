@@ -36,6 +36,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     setSending(false);
     conversationStateRef.current = null;
     setOpen(false);
+    setLibraryPromptOpen(false);
   }, [screen, dailyContext?.day, dailyContext?.problem, dailyContext?.relationshipSafetyConfirmed]);
 
   useEffect(() => {
@@ -321,7 +322,24 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         <AppIcon name="message" size={20} />
         <span>دستیار</span>
       </button>
-      {libraryPromptOpen && screen === 'books' && (
+      {open && (
+        <div className="globalAssistantBackdrop">
+          <section
+            ref={dialogRef}
+            className="globalAssistantDialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="global-assistant-title"
+            onKeyDown={containDialogTab}
+          >
+            <div className="globalAssistantDialogTop">
+              <h2 id="global-assistant-title">دستیار هوشمند مسیر ۲۸</h2>
+              <button type="button" className="globalAssistantModelButton" onClick={requestModelInstall} disabled={sending} aria-label="نصب مدل هوش مصنوعی محلی" title="نصب اختیاری مدل هوش مصنوعی روی همین دستگاه">نصب مدل محلی</button>
+              <button ref={closeButtonRef} type="button" className="iconButton" onClick={() => setOpen(false)} aria-label="بستن پنجره دستیار">
+                <AppIcon name="x" size={18} />
+              </button>
+            </div>
+      {open && libraryPromptOpen && screen === 'books' && (
         <div
           className="validationModal libraryAssistantPromptModal"
           onClick={(event) => {
@@ -362,23 +380,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
           </section>
         </div>
       )}
-      {open && (
-        <div className="globalAssistantBackdrop">
-          <section
-            ref={dialogRef}
-            className="globalAssistantDialog"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="global-assistant-title"
-            onKeyDown={containDialogTab}
-          >
-            <div className="globalAssistantDialogTop">
-              <h2 id="global-assistant-title">دستیار هوشمند مسیر ۲۸</h2>
-              <button type="button" className="globalAssistantModelButton" onClick={requestModelInstall} disabled={sending} aria-label="نصب مدل هوش مصنوعی محلی" title="نصب اختیاری مدل هوش مصنوعی روی همین دستگاه">نصب مدل محلی</button>
-              <button ref={closeButtonRef} type="button" className="iconButton" onClick={() => setOpen(false)} aria-label="بستن پنجره دستیار">
-                <AppIcon name="x" size={18} />
-              </button>
-            </div>
             <div className="assistantChatShell globalAssistantChat" dir="rtl" aria-label="گفت‌وگوی دستیار در صفحه جاری">
               <div className="assistantTranscript" dir="rtl" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
                 {messages.map((item, index) => (
