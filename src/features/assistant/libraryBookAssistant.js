@@ -513,6 +513,7 @@ function structuredGuidance(intent, book, passages, message) {
 function hasExplicitSectionReference(value) {
   const raw = String(value || '');
   const normalized = normalizeLibraryText(raw);
+  // Deictic phrases such as «این بخش» are not explicit source references.
   const numberedSection = /(?:فصل|بخش|پیوست)\s+(?:اول|دوم|سوم|چهارم|پنجم|ششم|هفتم|هشتم|نهم|دهم|یازدهم|دوازدهم|[0-9]+)/u;
   const namedSection = /(?:عنوان فصل|عنوان بخش)\s+[\p{L}]{3,}/u;
   return numberedSection.test(normalized)
