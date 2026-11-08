@@ -220,27 +220,23 @@ try {
   dialog = page.getByRole('dialog', { name: 'دستیار هوشمند مسیر ۲۸' });
   await dialog.waitFor({ state: 'visible' });
   assert.match(await dialog.innerText(), /دستیار هوشمند مسیر ۲۸/);
-  await dialog.getByRole('textbox').fill('این صفحه برای چیست؟');
-  await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('برای مرور کتاب‌های موجود')));
 
-  // The base library mode exposes a curated question list, and selecting an item
-  // places the exact prompt into the composer for the user to send.
+  // Before successful local-model installation, only the guided picker is shown.
   const libraryPromptPicker = dialog.getByRole('combobox', { name: 'سؤال آماده دستیار کتابخانه' });
   await libraryPromptPicker.waitFor({ state: 'visible' });
   assert.equal(await libraryPromptPicker.isVisible(), true, 'base library mode must expose guided questions');
+  assert.equal(await dialog.getByRole('textbox').count(), 0, 'free typing must remain hidden before local-model installation');
+  assert.equal(await dialog.locator('.libraryAssistantPromptGuide small, .libraryAssistantAdvancedHint').count(), 0, 'the helper text below the picker must not be shown');
+  const promptBox = await libraryPromptPicker.boundingBox();
+  const promptSendBox = await dialog.getByRole('button', { name: 'ارسال' }).boundingBox();
+  assert.ok(promptBox && promptSendBox && Math.abs((promptBox.y + promptBox.height / 2) - (promptSendBox.y + promptSendBox.height / 2)) <= 2, 'the send button must sit beside the prompt picker on the same row');
   await libraryPromptPicker.selectOption('خلاصه کتاب پنجم را بگو');
-  assert.equal(await dialog.getByRole('textbox').inputValue(), 'خلاصه کتاب پنجم را بگو');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('خلاصه راهنمای محتوایی')));
   const guidedLibrarySummary = dialog.locator('.assistantMessage').last();
   assert.match(await guidedLibrarySummary.innerText(), /هنر شناخت و دگرگونی احساسات/u);
   assert.match(await guidedLibrarySummary.innerText(), /منبع:/u);
 
-  // Exercise free typing in the same base-mode composer as well.
-  await dialog.getByRole('textbox').fill('خلاصه کتاب پنجم را بگو');
-  await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('خلاصه راهنمای محتوایی')));
   const librarySummary = dialog.locator('.assistantMessage').last();
   const librarySummaryText = await librarySummary.innerText();
   assert.match(librarySummaryText, /هنر شناخت و دگرگونی احساسات/u);
@@ -248,8 +244,8 @@ try {
   assert.match(librarySummaryText, /منبع:/u);
   assert.match(librarySummaryText, /صفحه \d+/u);
 
-  // The second turn must retain the selected book and answer the new question.
-  await dialog.getByRole('textbox').fill('چه محدودیت‌هایی دارد؟');
+  // A second guided question must continue to work without exposing a text box.
+  await libraryPromptPicker.selectOption('مهم‌ترین نکات کتاب پنجم کدام‌اند؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => {
     const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
@@ -267,13 +263,14 @@ try {
   await dialog.getByRole('button', { name: 'بله، شروع نصب' }).waitFor({ state: 'visible' });
   await dialog.getByRole('button', { name: 'بله، شروع نصب' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /دستیار پایه همچنان فعال است/u.test(node.innerText)));
-  await dialog.getByRole('textbox').fill('خلاصه کتاب چهارم را بگو');
+  await fallbackPromptPicker.selectOption('خلاصه کتاب چهارم را بگو');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /خلاصه راهنمای محتوایی/u.test(node.innerText)));
   const fallbackAfterInstallFailure = dialog.locator('.assistantMessage').last();
   const fallbackPromptPicker = dialog.getByRole('combobox', { name: 'سؤال آماده دستیار کتابخانه' });
   await fallbackPromptPicker.waitFor({ state: 'visible' });
   assert.equal(await fallbackPromptPicker.isVisible(), true, 'failed installation must retain the guided base-mode question list');
+  assert.equal(await dialog.getByRole('textbox').count(), 0, 'failed installation must keep free typing hidden');
   assert.match(await fallbackAfterInstallFailure.innerText(), /شاهد کوتاه متن|منبع:/u, 'the book assistant must continue returning a grounded base answer after model installation fails');
   assert.doesNotMatch(await fallbackAfterInstallFailure.innerText(), /این گوشی یا مرورگر نتوانست مدل محلی را اجرا کند/u, 'the installation failure must not replace later answers');
 
@@ -298,6 +295,7 @@ try {
   dialog = page.getByRole('dialog', { name: 'دستیار هوشمند مسیر ۲۸' });
   await dialog.waitFor({ state: 'visible' });
   await page.getByPlaceholder('سؤال پیشرفته‌ات را اینجا بنویس...').waitFor({ state: 'visible' });
+  assert.equal(await dialog.getByRole('textbox').count(), 1, 'successful local-model installation must reveal free typing');
   assert.equal(await dialog.getByRole('combobox', { name: 'سؤال آماده دستیار کتابخانه' }).count(), 0, 'installed local mode must hide the guided list');
   await closeButton.click();
   await dialog.waitFor({ state: 'detached' });
