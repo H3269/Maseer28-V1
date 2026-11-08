@@ -95,7 +95,9 @@ for (const book of books) {
       intent: item.intent,
       prompt,
       returned: response.length > 0,
-      identifiesBook: global ? books.some((candidate) => response.includes(candidate.title)) : response.includes(book.title),
+      identifiesBook: ['inventory', 'compare_books'].includes(item.intent)
+        ? books.every((candidate) => response.includes(candidate.title))
+        : global ? books.some((candidate) => response.includes(candidate.title)) : response.includes(book.title),
       citesSource,
       citationExpected,
       citationSatisfied,
