@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { answerLibraryBookQuestion, answerLibraryBookTurn } from '../src/features/assistant/libraryBookAssistant.js';
 import { getLibraryBookProfile } from '../src/features/assistant/libraryBookProfiles.js';
-import { analyzeLibraryQuery, rankLibraryPassages, synthesizeLibraryEvidence } from '../src/features/assistant/libraryLocalReasoning.js';
+import { analyzeLibraryQuery, formatLocalSynthesis, rankLibraryPassages, synthesizeLibraryEvidence } from '../src/features/assistant/libraryLocalReasoning.js';
 import { LIBRARY_ASSISTANT_PROMPT_GROUPS, LIBRARY_ASSISTANT_PROMPTS } from '../src/features/assistant/libraryAssistantPrompts.js';
 
 const root = new URL('../public/', import.meta.url);
@@ -822,6 +822,29 @@ test('related but distinct concepts do not displace direct evidence', () => {
   assert.deepEqual(ranked.map((item) => item.page), [1]);
   const selfEsteem = rankLibraryPassages(passages, 'عزت نفس', 5);
   assert.deepEqual(selfEsteem.map((item) => item.page), [2]);
+});
+
+test('related-only passages never become direct answers without matching source evidence', () => {
+  const fearOnly = [
+    { page: 3, heading: 'ترس', text: 'ترس می‌تواند واکنشی به خطر ادراک‌شده باشد و با نشانه‌های بدنی همراه شود.' },
+  ];
+  assert.deepEqual(rankLibraryPassages(fearOnly, 'اضطراب', 5), []);
+
+  const selfEsteemOnly = [
+    { page: 4, heading: 'عزت نفس', text: 'عزت نفس به احساس ارزشمندی و احترام فرد نسبت به خود اشاره دارد.' },
+  ];
+  assert.deepEqual(rankLibraryPassages(selfEsteemOnly, 'اعتماد به نفس', 5), []);
+  assert.equal(formatLocalSynthesis('کتاب آزمایشی', 'اعتماد به نفس', selfEsteemOnly), null);
+
+  const emotionOnly = [
+    { page: 5, heading: 'هیجان', text: 'هیجان می‌تواند با تغییرهای بدنی و رفتاری همراه باشد و شدت‌های متفاوتی داشته باشد.' },
+  ];
+  assert.deepEqual(rankLibraryPassages(emotionOnly, 'احساس', 5), []);
+
+  const interactionOnly = [
+    { page: 6, heading: 'تعامل', text: 'تعامل میان افراد از راه پاسخ متقابل و رفتارهای قابل مشاهده شکل می‌گیرد.' },
+  ];
+  assert.deepEqual(rankLibraryPassages(interactionOnly, 'رابطه', 5), []);
 });
 
 test('why questions synthesize relevant causal sentences without inventing a cloud-generated answer', () => {
