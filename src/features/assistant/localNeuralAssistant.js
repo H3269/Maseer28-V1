@@ -1,6 +1,6 @@
 export const LOCAL_MODEL_ID = 'onnx-community/Qwen3-0.6B-Instruct-ONNX';
 export const LOCAL_MODEL_REVISION = '54250909aca286a05b9d013c8af7a21859ee6ead';
-export const LOCAL_MODEL_APPROX_MB = '۶۵۰';
+export const LOCAL_MODEL_APPROX_MB = '۶۵۰ تا ۷۵۰';
 export const LOCAL_MODEL_INSTALL_COMMAND = 'بارگیری مدل محلی';
 
 const BLOCKED_STATUSES = new Set([
@@ -87,6 +87,8 @@ export function isAllowedLocalModelFetch({ requestUrl, method = 'GET', hasBody =
 
 export const LOCAL_MODEL_MARKER_CACHE = 'maseer28-local-model-state-v1';
 
-export function isLocalModelCacheMarkerValid(marker) {
-  return marker?.modelId === LOCAL_MODEL_ID && marker?.revision === LOCAL_MODEL_REVISION;
+export function isLocalModelCacheMarkerValid(marker, execution) {
+  const sameModel = marker?.modelId === LOCAL_MODEL_ID && marker?.revision === LOCAL_MODEL_REVISION;
+  if (!sameModel || !execution) return sameModel;
+  return marker?.device === execution.device && marker?.dtype === execution.dtype;
 }

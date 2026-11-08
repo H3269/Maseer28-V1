@@ -54,6 +54,7 @@ test('source references are preserved exactly and deduplicated', () => {
 });
 test('first-use disclosure states download size and local-only inference', () => {
   assert.match(LOCAL_MODEL_INSTALL_MESSAGE, /۶۵۰/u);
+  assert.match(LOCAL_MODEL_INSTALL_MESSAGE, /۷۵۰/u);
   assert.match(LOCAL_MODEL_INSTALL_MESSAGE, /هیچ پرسش/u);
   assert.match(LOCAL_MODEL_INSTALL_MESSAGE, /بدون اینترنت/u);
 });
@@ -78,6 +79,8 @@ test('worker network allowlist blocks prompts and all non-model remote endpoints
 test('the installed-model marker is version-bound and never accepts a different model revision', () => {
   assert.equal(LOCAL_MODEL_MARKER_CACHE, 'maseer28-local-model-state-v1');
   assert.equal(isLocalModelCacheMarkerValid({ modelId: LOCAL_MODEL_ID, revision: LOCAL_MODEL_REVISION }), true);
+  assert.equal(isLocalModelCacheMarkerValid({ modelId: LOCAL_MODEL_ID, revision: LOCAL_MODEL_REVISION, device: 'wasm', dtype: 'q8' }, { device: 'wasm', dtype: 'q8' }), true);
+  assert.equal(isLocalModelCacheMarkerValid({ modelId: LOCAL_MODEL_ID, revision: LOCAL_MODEL_REVISION, device: 'webgpu', dtype: 'q4f16' }, { device: 'wasm', dtype: 'q8' }), false);
   assert.equal(isLocalModelCacheMarkerValid({ modelId: LOCAL_MODEL_ID, revision: 'main' }), false);
   assert.equal(isLocalModelCacheMarkerValid({ modelId: 'other/model', revision: LOCAL_MODEL_REVISION }), false);
   assert.equal(isLocalModelCacheMarkerValid(null), false);

@@ -3,7 +3,7 @@ import { isAllowedLocalModelFetch, isLocalModelCacheMarkerValid, LOCAL_MODEL_MAR
 
 const MODEL_ID = 'onnx-community/Qwen3-0.6B-Instruct-ONNX';
 const MODEL_REVISION = '54250909aca286a05b9d013c8af7a21859ee6ead';
-const MODEL_BYTES_REQUIRED = 700 * 1024 * 1024;
+const MODEL_BYTES_REQUIRED = 850 * 1024 * 1024;
 const BASE_URL = import.meta.env.BASE_URL;
 const runtimeUrl = new URL(`${BASE_URL}ort/`, self.location.origin);
 const modelMarkerUrl = new URL(`${BASE_URL}local-model/qwen3-0.6b-ready.json`, self.location.origin);
@@ -32,7 +32,7 @@ function createRestrictedFetch(allowModelDownload) {
   };
 }
 
-async function configureRuntime(allowModelDownload) {
+async function configureRuntime(allowModelDownload, execution) {
   if (!('caches' in self)) {
     const error = new Error('Browser Cache Storage is unavailable.');
     error.code = 'CACHE_UNAVAILABLE';
@@ -48,12 +48,14 @@ async function configureRuntime(allowModelDownload) {
   const restrictedFetch = createRestrictedFetch(allowModelDownload);
   globalThis.fetch = restrictedFetch;
   env.fetch = restrictedFetch;
-  env.backends.onnx.wasm.wasmPaths = runtimeUrl.href;
-  env.backends.onnx.wasm.numThreads = 1;
-  env.backends.onnx.wasm.proxy = false;
+  if (execution.device === 'wasm') {
+    env.backends.onnx.wasm.wasmPaths = runtimeUrl.href;
+    env.backends.onnx.wasm.numThreads = 1;
+    env.backends.onnx.wasm.proxy = false;
+  }
 }
 
-async function hasInstalledModelMarker() {
+async function hasInstalledModelMarker(execution) {
   if (!('caches' in self)) {
     const error = new Error('Browser Cache Storage is unavailable.');
     error.code = 'CACHE_UNAVAILABLE';
@@ -62,14 +64,16 @@ async function hasInstalledModelMarker() {
   const cache = await caches.open(LOCAL_MODEL_MARKER_CACHE);
   const response = await cache.match(modelMarkerUrl.href);
   if (!response) return false;
-  try { return isLocalModelCacheMarkerValid(await response.json()); } catch { return false; }
+  try { return isLocalModelCacheMarkerValid(await response.json(), execution); } catch { return false; }
 }
 
-async function writeInstalledModelMarker() {
+async function writeInstalledModelMarker(execution) {
   const cache = await caches.open(LOCAL_MODEL_MARKER_CACHE);
   await cache.put(modelMarkerUrl.href, new Response(JSON.stringify({
     modelId: MODEL_ID,
     revision: MODEL_REVISION,
+    device: execution.device,
+    dtype: execution.dtype,
     installedAt: new Date().toISOString(),
   }), { headers: { 'content-type': 'application/json' } }));
 }
@@ -80,10 +84,21 @@ async function clearInstalledModelMarker() {
   await cache.delete(modelMarkerUrl.href);
 }
 
+async function selectExecutionBackend() {
+  try {
+    const adapter = await self.navigator?.gpu?.requestAdapter();
+    if (adapter?.features?.has('shader-f16')) return { device: 'webgpu', dtype: 'q4f16' };
+  } catch {
+    // Unsupported or unavailable WebGPU is not fatal; use the WASM CPU path.
+  }
+  return { device: 'wasm', dtype: 'q8' };
+}
+
 async function loadModel(allowDownload, requestId) {
   if (loaded && generator) return;
-  if (!allowDownload && !(await hasInstalledModelMarker())) {
-    const error = new Error('The local model has not been installed in this browser cache.');
+  const execution = await selectExecutionBackend();
+  if (!allowDownload && !(await hasInstalledModelMarker(execution))) {
+    const error = new Error('The local model has not been installed for this device/backend.');
     error.code = 'MODEL_NOT_INSTALLED';
     throw error;
   }
@@ -101,12 +116,12 @@ async function loadModel(allowDownload, requestId) {
       throw error;
     }
   }
-  await configureRuntime(allowDownload);
+  await configureRuntime(allowDownload, execution);
   try {
     generator = await pipeline('text-generation', MODEL_ID, {
       revision: MODEL_REVISION,
-      dtype: 'q4f16',
-      device: 'wasm',
+      dtype: execution.dtype,
+      device: execution.device,
       progress_callback: (progress) => sendProgress(requestId, {
         stage: 'model', status: progress?.status || 'loading', file: progress?.file || '',
         progress: Number.isFinite(progress?.progress) ? progress.progress : null,
@@ -115,7 +130,7 @@ async function loadModel(allowDownload, requestId) {
       }),
     });
     loaded = true;
-    await writeInstalledModelMarker();
+    await writeInstalledModelMarker(execution);
     env.allowRemoteModels = false;
     const offlineFetch = createRestrictedFetch(false);
     globalThis.fetch = offlineFetch;
