@@ -7203,3 +7203,22 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 .globalAssistantChat .userMessage {
   border-bottom: 0 !important;
 }
+
+
+/* Library assistant: guided question picker for the deterministic base mode. */
+.libraryAssistantPromptGuide {
+  grid-column: 1 / -1; display: grid; gap: 5px; min-width: 0;
+  padding: 10px 12px; border: 1px solid var(--border, #dce4e8);
+  border-radius: 12px; background: var(--surface-soft, #f8fafc);
+}
+.libraryAssistantPromptGuide label { font-size: 12px; font-weight: 700; color: var(--text-secondary, #526174); }
+.libraryAssistantPromptGuide select {
+  width: 100%; min-width: 0; min-height: 40px; padding: 8px 10px;
+  border: 1px solid var(--border, #d5dde7); border-radius: 9px;
+  background: var(--surface, #fff); color: var(--text, #243b3c);
+  font: inherit; font-size: 13px;
+}
+.libraryAssistantPromptGuide small, .libraryAssistantAdvancedHint {
+  margin: 0; color: var(--text-secondary, #64748b); font-size: 11px; line-height: 1.7;
+}
+.libraryAssistantAdvancedHint { grid-column: 1 / -1; padding: 7px 10px; }
