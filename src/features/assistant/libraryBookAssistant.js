@@ -41,6 +41,25 @@ const CONFIDENCE = /(?:اعتماد به نفس|اعتمادبه نفس|خودب
 const KEY_POINTS = /(?:مهم ترین نکات|نکات اصلی|نکات کلیدی)/u;
 const SIMPLE_EXPLAIN = /(?:به زبان ساده|ساده و قابل فهم|توضیح ساده|بیشتر توضیح|جزئیات بیشتر|بیشتر باز کن)/u;
 
+const READER_TOC_HELP = /(?:فهرست فصل|فهرست مطالب|صفحه موردنظر|پیدا کنم)/u;
+const READER_DISPLAY_HELP = /(?:اندازه نوشته|اندازه متن|زمینه مطالعه|رنگ زمینه)/u;
+const READER_PROGRESS_HELP = /(?:ادامه مطالعه|ادامه بدهم|بین صفحه ها|جابجا شوم|جابجایی بین صفحه)/u;
+const BOOK_AUDIENCE = /(?:برای چه هدف|برای چه کسی|چه خواننده ای|مناسب تر است|مناسب چه کسانی)/u;
+
+function libraryReaderHelp(message) {
+  const normalized = normalizeLibraryText(message);
+  if (READER_TOC_HELP.test(normalized)) {
+    return 'برای پیدا کردن فصل یا صفحه در کتاب‌خوان کتابخانه:\n۱) دکمه «فهرست مطالب» را در نوار بالای کتاب‌خوان یا دکمه فهرست در پایین صفحه بزن.\n۲) عنوان فصل یا بخش موردنظرت را در فهرست پیدا کن.\n۳) با انتخاب عنوان، کتاب‌خوان به همان بخش می‌رود.\n\nاگر شماره صفحه مشخصی را می‌خواهی، از کنترل جابه‌جایی صفحه در پایین کتاب‌خوان استفاده کن. عنوان‌ها و شماره صفحه‌ها ممکن است با توجه به نسخه کتاب متفاوت باشند.';
+  }
+  if (READER_DISPLAY_HELP.test(normalized)) {
+    return 'برای تنظیم ظاهر مطالعه:\n- برای بزرگ‌تر کردن نوشته، دکمه «A+» را در نوار بالای کتاب‌خوان بزن.\n- برای کوچک‌تر کردن نوشته، دکمه «A−» را بزن.\n- برای تغییر زمینه مطالعه، دکمه تغییر زمینه را در همان نوار انتخاب کن؛ با هر بار زدن، حالت زمینه عوض می‌شود.\n\nاین تنظیم‌ها برای راحتی خواندن‌اند و محتوای کتاب را تغییر نمی‌دهند.';
+  }
+  if (READER_PROGRESS_HELP.test(normalized)) {
+    return 'برای ادامه مطالعه و جابه‌جایی بین صفحه‌ها:\n- با دکمه «ادامه مطالعه» روی کارت کتاب، مطالعه را از محل ذخیره‌شده ادامه بده.\n- در خود کتاب‌خوان، از پیکان‌های صفحه بعد و قبل برای جابه‌جایی استفاده کن.\n- نوار جابه‌جایی پایین صفحه نیز امکان حرکت میان صفحه‌ها را می‌دهد.\n\nپیشرفت مطالعه برای هر کتاب ذخیره می‌شود؛ اگر کتاب را از ابتدا باز کنی، می‌توانی از فهرست مطالب به بخش دلخواه بروی.';
+  }
+  return null;
+}
+
 export function normalizeLibraryText(value) {
   return String(value ?? '').normalize('NFKC')
     .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
@@ -565,6 +584,8 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   const available = books.filter((book) => book?.content && Array.isArray(book.content.pages));
   if (!available.length) return null;
   const normalized = normalizeLibraryText(message);
+  const readerHelp = libraryReaderHelp(normalized);
+  if (readerHelp) return { message: readerHelp, conversationState: null };
   if (LIST.test(normalized)) return { message: listBooksReply(available), conversationState: null };
   if (RECOMMEND.test(normalized)) return { message: recommendBooks(available, normalized), conversationState: null };
   if (COMPARE.test(normalized) && !CONCEPT_COMPARE.test(normalized) && !ALTERNATIVE_VIEW.test(normalized) && /(?:کتاب|پنج|همه)/u.test(normalized)) {
@@ -622,6 +643,20 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     }
     const headings = mainBookHeadings(book).slice(0, 14);
     return { message: 'در «' + book.title + '»، برای مقایسه لطفاً نام دو مفهوم را مشخص کن. نمونه قالب: «مفهوم باور و احساس را با هم مقایسه کن». این‌ها چند عنوان واقعی از ساختار کتاب هستند:\n' + headings.map((item) => '• ' + item.text + (item.page ? '، صفحه ' + item.page : '')).join('\n'), conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery, pendingConceptCompare: true } };
+  }
+  if (BOOK_AUDIENCE.test(normalized)) {
+    const profile = getLibraryBookProfile(book);
+    const headings = mainBookHeadings(book).slice(0, 5);
+    const evidence = chapterRepresentativePassages(passagesForBook(book), 2);
+    return {
+      message: 'این کتاب برای چه هدف و خواننده‌ای مناسب‌تر است؟\n\n' +
+        (profile?.beginner || profile?.comparison || profile?.subject || 'برای این کتاب توضیح مخاطب مستقلی ثبت نشده است.') +
+        (profile?.subject ? '\n\nموضوع‌هایی که پوشش می‌دهد: ' + profile.subject : '') +
+        (headings.length ? '\n\nبخش‌های مرتبط برای شروع: ' + headings.map((item) => item.text + (item.page ? '، صفحه ' + item.page : '')).join('؛ ') : '') +
+        (evidence.length ? '\n\nشواهد از متن کتاب:\n' + formatPassages(evidence) : '') +
+        '\n\nاین راهنمای انتخاب بر پایه ساختار و محتوای کتاب است و به معنی ارزیابی یا شناخت وضعیت شخصی خواننده نیست.',
+      conversationState: { bookId: book.legacyId, bookTitle: book.title, lastQuery: effectiveQuery },
+    };
   }
   if (BOOK_SUBJECT.test(normalized)) {
     const profile = getLibraryBookProfile(book);
