@@ -84,3 +84,9 @@ export function isAllowedLocalModelFetch({ requestUrl, method = 'GET', hasBody =
     && url.origin === 'https://huggingface.co'
     && url.pathname.startsWith(`/${LOCAL_MODEL_ID}/resolve/${LOCAL_MODEL_REVISION}/`);
 }
+
+export const LOCAL_MODEL_MARKER_CACHE = 'maseer28-local-model-state-v1';
+
+export function isLocalModelCacheMarkerValid(marker) {
+  return marker?.modelId === LOCAL_MODEL_ID && marker?.revision === LOCAL_MODEL_REVISION;
+}

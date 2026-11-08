@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  LOCAL_MODEL_ID, LOCAL_MODEL_REVISION, LOCAL_MODEL_INSTALL_COMMAND, LOCAL_MODEL_INSTALL_MESSAGE,
+  LOCAL_MODEL_ID, LOCAL_MODEL_REVISION, LOCAL_MODEL_INSTALL_COMMAND, LOCAL_MODEL_INSTALL_MESSAGE, LOCAL_MODEL_MARKER_CACHE, isLocalModelCacheMarkerValid,
   appendLocalSourceReferences, buildLocalAssistantMessages, extractLocalSourceReferences,
   isLocalModelInstallCommand, isAllowedLocalModelFetch, shouldUseLocalNeuralModel,
 } from '../src/features/assistant/localNeuralAssistant.js';
@@ -73,4 +73,12 @@ test('worker network allowlist blocks prompts and all non-model remote endpoints
   assert.equal(isAllowedLocalModelFetch({ ...base, requestUrl: modelFile.replace(LOCAL_MODEL_REVISION, 'main'), allowModelDownload: true }), false);
   assert.equal(isAllowedLocalModelFetch({ ...base, requestUrl: modelFile, allowModelDownload: true, method: 'POST' }), false);
   assert.equal(isAllowedLocalModelFetch({ ...base, requestUrl: modelFile, allowModelDownload: true, hasBody: true }), false);
+});
+
+test('the installed-model marker is version-bound and never accepts a different model revision', () => {
+  assert.equal(LOCAL_MODEL_MARKER_CACHE, 'maseer28-local-model-state-v1');
+  assert.equal(isLocalModelCacheMarkerValid({ modelId: LOCAL_MODEL_ID, revision: LOCAL_MODEL_REVISION }), true);
+  assert.equal(isLocalModelCacheMarkerValid({ modelId: LOCAL_MODEL_ID, revision: 'main' }), false);
+  assert.equal(isLocalModelCacheMarkerValid({ modelId: 'other/model', revision: LOCAL_MODEL_REVISION }), false);
+  assert.equal(isLocalModelCacheMarkerValid(null), false);
 });

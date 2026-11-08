@@ -1,11 +1,12 @@
 import { env, pipeline } from '@huggingface/transformers';
-import { isAllowedLocalModelFetch } from './localNeuralAssistant.js';
+import { isAllowedLocalModelFetch, isLocalModelCacheMarkerValid, LOCAL_MODEL_MARKER_CACHE } from './localNeuralAssistant.js';
 
 const MODEL_ID = 'onnx-community/Qwen3-0.6B-Instruct-ONNX';
 const MODEL_REVISION = '54250909aca286a05b9d013c8af7a21859ee6ead';
 const MODEL_BYTES_REQUIRED = 700 * 1024 * 1024;
 const BASE_URL = import.meta.env.BASE_URL;
 const runtimeUrl = new URL(`${BASE_URL}ort/`, self.location.origin);
+const modelMarkerUrl = new URL(`${BASE_URL}local-model/qwen3-0.6b-ready.json`, self.location.origin);
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let generator = null;
 let loaded = false;
@@ -52,8 +53,40 @@ async function configureRuntime(allowModelDownload) {
   env.backends.onnx.wasm.proxy = false;
 }
 
+async function hasInstalledModelMarker() {
+  if (!('caches' in self)) {
+    const error = new Error('Browser Cache Storage is unavailable.');
+    error.code = 'CACHE_UNAVAILABLE';
+    throw error;
+  }
+  const cache = await caches.open(LOCAL_MODEL_MARKER_CACHE);
+  const response = await cache.match(modelMarkerUrl.href);
+  if (!response) return false;
+  try { return isLocalModelCacheMarkerValid(await response.json()); } catch { return false; }
+}
+
+async function writeInstalledModelMarker() {
+  const cache = await caches.open(LOCAL_MODEL_MARKER_CACHE);
+  await cache.put(modelMarkerUrl.href, new Response(JSON.stringify({
+    modelId: MODEL_ID,
+    revision: MODEL_REVISION,
+    installedAt: new Date().toISOString(),
+  }), { headers: { 'content-type': 'application/json' } }));
+}
+
+async function clearInstalledModelMarker() {
+  if (!('caches' in self)) return;
+  const cache = await caches.open(LOCAL_MODEL_MARKER_CACHE);
+  await cache.delete(modelMarkerUrl.href);
+}
+
 async function loadModel(allowDownload, requestId) {
   if (loaded && generator) return;
+  if (!allowDownload && !(await hasInstalledModelMarker())) {
+    const error = new Error('The local model has not been installed in this browser cache.');
+    error.code = 'MODEL_NOT_INSTALLED';
+    throw error;
+  }
   if (allowDownload && self.navigator?.onLine === false) {
     const error = new Error('برای بارگیری اولیه مدل، اتصال اینترنت لازم است.');
     error.code = 'MODEL_DOWNLOAD_OFFLINE';
@@ -82,6 +115,7 @@ async function loadModel(allowDownload, requestId) {
       }),
     });
     loaded = true;
+    await writeInstalledModelMarker();
     env.allowRemoteModels = false;
     const offlineFetch = createRestrictedFetch(false);
     globalThis.fetch = offlineFetch;
@@ -89,6 +123,7 @@ async function loadModel(allowDownload, requestId) {
   } catch (cause) {
     generator = null;
     loaded = false;
+    await clearInstalledModelMarker().catch(() => {});
     const error = new Error(cause?.message || 'Local model loading failed.');
     error.code = allowDownload ? 'MODEL_LOAD_FAILED' : 'MODEL_NOT_INSTALLED';
     throw error;
