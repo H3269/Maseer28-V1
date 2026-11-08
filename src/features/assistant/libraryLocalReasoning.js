@@ -4,6 +4,14 @@ const STOP_WORDS = new Set([
   'لطفا','میشه','میشود','میتوانی','میتونه','بگو','توضیح','بده','نوشته','گفته','مطرح','میگوید','میکند','مورد','هم','همه','کدام'
 ]);
 
+// Task words can locate a passage, but cannot independently ground a synthesized sentence.
+const SYNTHESIS_GENERIC_TERMS = new Set([
+  'مدیریت','تمرین','اقدام','برنامه','پیشنهاد','راهکار','روش','مراحل','مرحله','انجام',
+  'مفید','تقویت','بهبود','کمک','نکته','نکات','مثال','نمونه','توضیح','توضیحات',
+  'کدام','بهترین','چند','کتاب','صفحه','فصل','پاسخ','سوال','پرسش','موضوع','مفهوم',
+  'دشوار','سخت','مهم','ضروری'
+]);
+
 // Only close lexical equivalents are expanded strongly. Related-but-distinct
 // concepts (e.g. confidence/self-esteem, fear/anxiety) are intentionally not
 // merged, because doing so creates false evidence matches.
@@ -102,11 +110,23 @@ export function analyzeLibraryQuery(value) {
     }
   }
   const focusTerms = terms.filter((term) => term.length > 2);
+  const anchorTerms = new Set(terms.filter((term) => !SYNTHESIS_GENERIC_TERMS.has(term)));
+  for (const group of CLOSE_EQUIVALENTS) {
+    if (group.some((phrase) => phrasePresent(normalized, normalize(phrase)))) {
+      for (const phrase of group) for (const term of tokenize(phrase)) anchorTerms.add(term);
+    }
+  }
+  for (const relation of RELATED_CONCEPTS) {
+    if (relation.terms.some((phrase) => phrasePresent(normalized, normalize(phrase)))) {
+      for (const phrase of relation.terms) for (const term of tokenize(phrase)) anchorTerms.add(term);
+    }
+  }
   return Object.freeze({
     normalized,
     intent: intentOf(normalized),
     terms: Object.freeze(terms),
     focusTerms: Object.freeze(focusTerms),
+    anchorTerms: Object.freeze([...anchorTerms]),
     weights: expansions,
   });
 }
@@ -257,13 +277,14 @@ function sentenceScore(sentence, analysis, intent) {
   const tokenSet = new Set(tokens);
   let score = 0;
   let directMatches = 0;
+  const anchorTerms = new Set(analysis.anchorTerms || []);
   for (const [term, weight] of analysis.weights) {
-    if (!tokenSet.has(term)) continue;
+    if (!anchorTerms.has(term) || !tokenSet.has(term)) continue;
     score += weight;
     if (weight >= 0.7) directMatches += 1;
   }
-  // Intent markers alone (e.g. "زیرا" or "در مقابل") are not evidence.
-  // A sentence must first match at least one strong query term/equivalent.
+  // Generic task words (e.g. management, exercise, suggestion) cannot ground a sentence.
+  // Intent markers alone (e.g. "زیرا" or "در مقابل") are not evidence either.
   if (directMatches === 0) return 0;
   if (intent === 'why' && /(زیرا|چون|به دلیل|علت|سبب|در نتیجه|باعث)/u.test(normalize(sentence))) score += 1.8;
   if (intent === 'how' && /(ابتدا|سپس|بعد|مرحله|روش|تمرین|انجام|انتخاب)/u.test(normalize(sentence))) score += 1.3;
