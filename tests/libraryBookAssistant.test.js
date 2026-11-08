@@ -729,12 +729,41 @@ test('explicit reading-start questions still receive book recommendations', () =
 
 
 test('every guided base-mode library prompt returns a grounded supported answer', () => {
-  assert.equal(LIBRARY_ASSISTANT_PROMPT_GROUPS.length, 6);
-  assert.equal(LIBRARY_ASSISTANT_PROMPTS.length, 28);
+  assert.equal(LIBRARY_ASSISTANT_PROMPT_GROUPS.length, 7);
+  assert.equal(LIBRARY_ASSISTANT_PROMPTS.length, 44);
+  assert.equal(new Set(LIBRARY_ASSISTANT_PROMPTS.map((prompt) => prompt.value)).size, 44, 'guided questions must not be duplicated');
   for (const prompt of LIBRARY_ASSISTANT_PROMPTS) {
     const turn = answerLibraryBookTurn({ books, message: prompt.value });
     assert.ok(turn?.message?.length > 80, 'prompt must receive a substantive response: ' + prompt.value);
     assert.doesNotMatch(turn.message, /نام یکی از کتاب‌ها یا شماره جلد را مشخص کن/u, 'prompt must identify its target book: ' + prompt.value);
     assert.doesNotMatch(turn.message, /متن اشتباهی را به تو نسبت ندهم/u, 'prompt must not fall into a missing-book clarification loop: ' + prompt.value);
+  }
+});
+
+
+test('new reader-help prompts explain only controls that exist in the Library reader', () => {
+  const toc = answerLibraryBookQuestion({ books, message: 'در کتاب‌خوان چطور فهرست فصل‌ها و صفحه موردنظرم را پیدا کنم؟' });
+  assert.match(toc, /فهرست مطالب/u);
+  assert.match(toc, /انتخاب عنوان/u);
+  const display = answerLibraryBookQuestion({ books, message: 'در کتاب‌خوان چطور اندازه نوشته و زمینه مطالعه را تغییر بدهم؟' });
+  assert.match(display, /A\+/u);
+  assert.match(display, /A−/u);
+  assert.match(display, /تغییر زمینه/u);
+  const progress = answerLibraryBookQuestion({ books, message: 'در کتاب‌خوان چطور مطالعه را ادامه بدهم و بین صفحه‌ها جابه‌جا شوم؟' });
+  assert.match(progress, /ادامه مطالعه/u);
+  assert.match(progress, /پیشرفت مطالعه/u);
+});
+
+test('new book-audience prompts return book-specific guidance and source evidence', () => {
+  for (const book of books) {
+    const ordinal = ['اول', 'دوم', 'سوم', 'چهارم', 'پنجم'][book.legacyId - 1];
+    const response = answerLibraryBookQuestion({
+      books,
+      message: 'کتاب ' + ordinal + ' برای چه هدف یا خواننده‌ای مناسب‌تر است؟',
+    });
+    assert.ok(response.includes(book.title), book.title + ' must be named in its audience guidance');
+    assert.match(response, /برای چه هدف و خواننده‌ای مناسب‌تر است/u);
+    assert.match(response, /منبع:/u);
+    assert.match(response, /بر پایه ساختار و محتوای کتاب/u);
   }
 });
