@@ -1,4 +1,5 @@
 import { env, pipeline } from '@huggingface/transformers';
+import { isAllowedLocalModelFetch } from './localNeuralAssistant.js';
 
 const MODEL_ID = 'onnx-community/Qwen3-0.6B-Instruct-ONNX';
 const MODEL_REVISION = '54250909aca286a05b9d013c8af7a21859ee6ead';
@@ -15,15 +16,18 @@ function sendProgress(id, detail = {}) { self.postMessage({ id, type: 'progress'
 function createRestrictedFetch(allowModelDownload) {
   return async (input, init = {}) => {
     const rawUrl = input instanceof Request ? input.url : String(input);
-    const url = new URL(rawUrl, self.location.href);
     const method = String(init.method || input?.method || 'GET').toUpperCase();
     const hasBody = Boolean(init.body || input?.body);
-    const localRuntime = url.origin === self.location.origin && url.pathname.startsWith(runtimeUrl.pathname);
-    const pinnedModelFile = allowModelDownload && url.origin === 'https://huggingface.co'
-      && url.pathname.startsWith(`/${MODEL_ID}/resolve/${MODEL_REVISION}/`) && method === 'GET' && !hasBody;
-    if (localRuntime && method === 'GET' && !hasBody) return nativeFetch(input, init);
-    if (pinnedModelFile) return nativeFetch(input, init);
-    throw new Error('LOCAL_MODEL_NETWORK_POLICY_BLOCKED');
+    const allowed = isAllowedLocalModelFetch({
+      requestUrl: rawUrl,
+      method,
+      hasBody,
+      allowModelDownload,
+      appOrigin: self.location.origin,
+      runtimePath: runtimeUrl.pathname,
+    });
+    if (!allowed) throw new Error('LOCAL_MODEL_NETWORK_POLICY_BLOCKED');
+    return nativeFetch(input, init);
   };
 }
 
@@ -40,7 +44,9 @@ async function configureRuntime(allowModelDownload) {
   env.remotePathTemplate = '{model}/resolve/{revision}/';
   env.allowLocalModels = false;
   env.allowRemoteModels = allowModelDownload;
-  env.fetch = createRestrictedFetch(allowModelDownload);
+  const restrictedFetch = createRestrictedFetch(allowModelDownload);
+  globalThis.fetch = restrictedFetch;
+  env.fetch = restrictedFetch;
   env.backends.onnx.wasm.wasmPaths = runtimeUrl.href;
   env.backends.onnx.wasm.numThreads = 1;
   env.backends.onnx.wasm.proxy = false;
@@ -77,7 +83,9 @@ async function loadModel(allowDownload, requestId) {
     });
     loaded = true;
     env.allowRemoteModels = false;
-    env.fetch = createRestrictedFetch(false);
+    const offlineFetch = createRestrictedFetch(false);
+    globalThis.fetch = offlineFetch;
+    env.fetch = offlineFetch;
   } catch (cause) {
     generator = null;
     loaded = false;

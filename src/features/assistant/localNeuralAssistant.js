@@ -74,3 +74,13 @@ export const LOCAL_MODEL_INSTALL_MESSAGE =
 
 export const LOCAL_MODEL_CACHE_MESSAGE = 'ذخیره‌سازی محلی مدل در این مرورگر پشتیبانی نمی‌شود یا مجوز/فضای کافی ندارد. برای جلوگیری از ارسال داده به سرویس بیرونی، دستیار به حالت ابری منتقل نمی‌شود.';
 export const LOCAL_MODEL_FAILURE_MESSAGE = 'مدل عصبی محلی در این دستگاه بارگذاری نشد. احتمال کمبود RAM، فضای ذخیره‌سازی یا ناسازگاری WebAssembly وجود دارد. هیچ مسیر ابری جایگزینی فعال نشده است.';
+
+export function isAllowedLocalModelFetch({ requestUrl, method = 'GET', hasBody = false, allowModelDownload = false, appOrigin, runtimePath } = {}) {
+  if (!appOrigin || !runtimePath || String(method).toUpperCase() !== 'GET' || hasBody) return false;
+  let url;
+  try { url = new URL(String(requestUrl), appOrigin); } catch { return false; }
+  if (url.origin === appOrigin && url.pathname.startsWith(runtimePath)) return true;
+  return allowModelDownload
+    && url.origin === 'https://huggingface.co'
+    && url.pathname.startsWith(`/${LOCAL_MODEL_ID}/resolve/${LOCAL_MODEL_REVISION}/`);
+}

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   LOCAL_MODEL_ID, LOCAL_MODEL_REVISION, LOCAL_MODEL_INSTALL_COMMAND, LOCAL_MODEL_INSTALL_MESSAGE,
   appendLocalSourceReferences, buildLocalAssistantMessages, extractLocalSourceReferences,
-  isLocalModelInstallCommand, shouldUseLocalNeuralModel,
+  isLocalModelInstallCommand, isAllowedLocalModelFetch, shouldUseLocalNeuralModel,
 } from '../src/features/assistant/localNeuralAssistant.js';
 
 test('model identity is pinned to an immutable revision', () => {
@@ -56,4 +56,21 @@ test('first-use disclosure states download size and local-only inference', () =>
   assert.match(LOCAL_MODEL_INSTALL_MESSAGE, /۶۵۰/u);
   assert.match(LOCAL_MODEL_INSTALL_MESSAGE, /هیچ پرسش/u);
   assert.match(LOCAL_MODEL_INSTALL_MESSAGE, /بدون اینترنت/u);
+});
+
+test('worker network allowlist blocks prompts and all non-model remote endpoints', () => {
+  const base = {
+    appOrigin: 'https://h3269.github.io',
+    runtimePath: '/Maseer28-V1/ort/',
+    method: 'GET',
+    hasBody: false,
+  };
+  assert.equal(isAllowedLocalModelFetch({ ...base, requestUrl: 'https://h3269.github.io/Maseer28-V1/ort/ort-wasm-simd-threaded.wasm' }), true);
+  const modelFile = `https://huggingface.co/${LOCAL_MODEL_ID}/resolve/${LOCAL_MODEL_REVISION}/onnx/model_q4f16.onnx`;
+  assert.equal(isAllowedLocalModelFetch({ ...base, requestUrl: modelFile, allowModelDownload: true }), true);
+  assert.equal(isAllowedLocalModelFetch({ ...base, requestUrl: modelFile, allowModelDownload: false }), false);
+  assert.equal(isAllowedLocalModelFetch({ ...base, requestUrl: 'https://api.openai.com/v1/chat/completions', allowModelDownload: true }), false);
+  assert.equal(isAllowedLocalModelFetch({ ...base, requestUrl: modelFile.replace(LOCAL_MODEL_REVISION, 'main'), allowModelDownload: true }), false);
+  assert.equal(isAllowedLocalModelFetch({ ...base, requestUrl: modelFile, allowModelDownload: true, method: 'POST' }), false);
+  assert.equal(isAllowedLocalModelFetch({ ...base, requestUrl: modelFile, allowModelDownload: true, hasBody: true }), false);
 });

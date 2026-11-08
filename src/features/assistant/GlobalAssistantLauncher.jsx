@@ -123,8 +123,18 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     try {
       if (screen !== 'day' && isLocalModelInstallCommand(message)) {
         updateAssistantMessage('درخواست بارگیری دریافت شد. مدل فقط روی همین دستگاه آماده می‌شود...');
-        await requestLocalNeuralModel('load', { allowDownload: true }, updateProgress);
-        updateAssistantMessage('مدل زبانی عصبی محلی با موفقیت روی این دستگاه آماده شد. برای دریافت پاسخ، پرسش اصلی‌ات را دوباره بفرست.');
+        try {
+          await requestLocalNeuralModel('load', { allowDownload: true }, updateProgress);
+          updateAssistantMessage('مدل زبانی عصبی محلی با موفقیت روی این دستگاه آماده شد. برای دریافت پاسخ، پرسش اصلی‌ات را دوباره بفرست.');
+        } catch (installError) {
+          if (installError?.code === 'MODEL_DOWNLOAD_OFFLINE') {
+            updateAssistantMessage('برای دریافت اولیه فایل مدل، اتصال اینترنت لازم است. پس از ذخیره مدل، تولید پاسخ به اینترنت نیاز ندارد و هیچ پرسشی به سرویس بیرونی ارسال نمی‌شود.');
+          } else if (installError?.code === 'CACHE_UNAVAILABLE' || installError?.code === 'STORAGE_QUOTA_LOW') {
+            updateAssistantMessage(LOCAL_MODEL_CACHE_MESSAGE);
+          } else {
+            updateAssistantMessage(LOCAL_MODEL_FAILURE_MESSAGE);
+          }
+        }
         return;
       }
 
