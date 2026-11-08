@@ -589,7 +589,12 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
   const readerHelp = libraryReaderHelp(normalized);
   if (readerHelp) return { message: readerHelp, conversationState: null };
   if (BOOKS_COMBINED_HELP.test(normalized)) {
-    return {\n      message: 'برای استفاده پیوسته از کتابخانه، می‌توانی این ترتیب را در نظر بگیری:\\n۱) جلد اول برای آشنایی پایه با خودشناسی، باورها، انتخاب و اقدام.\\n۲) جلد دوم برای فهم عمیق‌تر ادراک، حافظه، عادت و سازوکارهای یادگیری.\\n۳) جلد سوم برای بررسی موانع اجرای تغییر و طراحی پاسخ جایگزین.\\n۴) کتابچه تکمیلی جلد سوم را همراه جلد سوم به کار ببر؛ این کتابچه ابزار ثبت زنجیره رفتار، سنجش فایده و هزینه و طراحی پاسخ تازه است، نه جایگزین مطالعه نظری.\\n۵) جلد پنجم برای شناخت و تنظیم احساسات، به‌عنوان مسیر موضوعی مکمل قابل استفاده است.\\n\\nلازم نیست همه کتاب‌ها را پشت سر هم بخوانی؛ از هدف فعلی‌ات شروع کن و کتابچه را زمانی بردار که می‌خواهی یک رفتار مشخص را ثبت و بررسی کنی.',\n      conversationState: null,\n    };\n  }\n  if (LIST.test(normalized)) return { message: listBooksReply(available), conversationState: null };
+    return {
+      message: 'برای استفاده پیوسته از کتابخانه، می‌توانی این ترتیب را در نظر بگیری:\n۱) جلد اول برای آشنایی پایه با خودشناسی، باورها، انتخاب و اقدام.\n۲) جلد دوم برای فهم عمیق‌تر ادراک، حافظه، عادت و سازوکارهای یادگیری.\n۳) جلد سوم برای بررسی موانع اجرای تغییر و طراحی پاسخ جایگزین.\n۴) کتابچه تکمیلی جلد سوم را همراه جلد سوم به کار ببر؛ این کتابچه ابزار ثبت زنجیره رفتار، سنجش فایده و هزینه و طراحی پاسخ تازه است، نه جایگزین مطالعه نظری.\n۵) جلد پنجم برای شناخت و تنظیم احساسات، به‌عنوان مسیر موضوعی مکمل قابل استفاده است.\n\nلازم نیست همه کتاب‌ها را پشت سر هم بخوانی؛ از هدف فعلی‌ات شروع کن و کتابچه را زمانی بردار که می‌خواهی یک رفتار مشخص را ثبت و بررسی کنی.',
+      conversationState: null,
+    };
+  }
+  if (LIST.test(normalized)) return { message: listBooksReply(available), conversationState: null };
   if (RECOMMEND.test(normalized)) return { message: recommendBooks(available, normalized), conversationState: null };
   if (COMPARE.test(normalized) && !CONCEPT_COMPARE.test(normalized) && !ALTERNATIVE_VIEW.test(normalized) && /(?:کتاب|پنج|همه)/u.test(normalized)) {
     return { message: compareBooksReply(available), conversationState: null };
