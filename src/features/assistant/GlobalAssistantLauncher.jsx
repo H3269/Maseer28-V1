@@ -13,6 +13,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const [draft, setDraft] = useState('');
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
+  const [localModelUnavailable, setLocalModelUnavailable] = useState(false);
   const turnSequenceRef = useRef(0);
   const [loadedLibraryBooks, setLoadedLibraryBooks] = useState([]);
   const conversationStateRef = useRef(null);
@@ -91,6 +92,42 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     setOpen(true);
   }
 
+  async function installLocalModel() {
+    if (sending) return;
+    const turnId = ++turnSequenceRef.current;
+    setMessages((current) => [...current, {
+      id: `assistant-model-install-${turnId}`,
+      role: 'assistant',
+      text: 'برای نصب اختیاری مدل هوش مصنوعی روی همین گوشی، ابتدا سازگاری و فضای ذخیره‌سازی بررسی می‌شود...',
+      knowledge: [],
+    }]);
+    setSending(true);
+    try {
+      await requestLocalNeuralModel('load', { allowDownload: true }, (progress) => {
+        const percent = Number.isFinite(progress?.progress) ? Math.max(0, Math.min(100, Math.round(progress.progress))) : null;
+        setMessages((current) => current.map((item) => item.id === `assistant-model-install-${turnId}`
+          ? { ...item, text: percent === null ? 'در حال آماده‌سازی مدل محلی روی همین گوشی...' : `در حال بارگیری مدل روی همین گوشی: ${percent}٪` }
+          : item));
+      });
+      setLocalModelUnavailable(false);
+      setMessages((current) => current.map((item) => item.id === `assistant-model-install-${turnId}`
+        ? { ...item, text: 'مدل هوش مصنوعی محلی با موفقیت آماده شد. از این پس پرسش‌های واجد شرایط می‌توانند با کمک همین گوشی پاسخ داده شوند.' }
+        : item));
+    } catch (installError) {
+      setLocalModelUnavailable(true);
+      const reason = installError?.code === 'MODEL_DOWNLOAD_OFFLINE'
+        ? 'برای نصب اولیه، اتصال اینترنت لازم است.'
+        : installError?.code === 'CACHE_UNAVAILABLE' || installError?.code === 'STORAGE_QUOTA_LOW'
+          ? LOCAL_MODEL_CACHE_MESSAGE
+          : 'این گوشی یا مرورگر فعلاً نتوانست مدل محلی را اجرا کند. دستیار پایه همچنان فعال است و می‌توانی بدون نصب مدل به پرسش‌هایت ادامه بدهی.';
+      setMessages((current) => current.map((item) => item.id === `assistant-model-install-${turnId}`
+        ? { ...item, text: reason }
+        : item));
+    } finally {
+      setSending(false);
+    }
+  }
+
   async function send(event) {
     event.preventDefault();
     const message = draft.trim();
@@ -129,10 +166,13 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         } catch (installError) {
           if (installError?.code === 'MODEL_DOWNLOAD_OFFLINE') {
             updateAssistantMessage('برای دریافت اولیه فایل مدل، اتصال اینترنت لازم است. پس از ذخیره مدل، تولید پاسخ به اینترنت نیاز ندارد و هیچ پرسشی به سرویس بیرونی ارسال نمی‌شود.');
+            setLocalModelUnavailable(true);
           } else if (installError?.code === 'CACHE_UNAVAILABLE' || installError?.code === 'STORAGE_QUOTA_LOW') {
-            updateAssistantMessage(LOCAL_MODEL_CACHE_MESSAGE);
+            setLocalModelUnavailable(true);
+            updateAssistantMessage(LOCAL_MODEL_CACHE_MESSAGE + ' دستیار پایه همچنان فعال است و می‌توانی به پرسش‌هایت ادامه بدهی.');
           } else {
-            updateAssistantMessage(LOCAL_MODEL_FAILURE_MESSAGE);
+            setLocalModelUnavailable(true);
+            updateAssistantMessage('این گوشی یا مرورگر نتوانست مدل محلی را اجرا کند. دستیار پایه همچنان فعال است و می‌توانی به پرسش‌هایت ادامه بدهی.');
           }
         }
         return;
@@ -164,7 +204,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
 
       conversationStateRef.current = turn.conversationState || null;
       let finalMessage = turn.message || 'برای این پرسش پاسخ قابل اتکایی در دسترس نیست.';
-      if (shouldUseLocalNeuralModel({ screen, turn, intentStatus: intentGate.status, isLibraryTurn })) {
+      if (!localModelUnavailable && shouldUseLocalNeuralModel({ screen, turn, intentStatus: intentGate.status, isLibraryTurn })) {
         try {
           await requestLocalNeuralModel('load', { allowDownload: false }, updateProgress);
           updateAssistantMessage('در حال تولید پاسخ با مدل زبانی عصبی محلی...', turn.knowledge || []);
@@ -172,9 +212,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
           const generated = await requestLocalNeuralModel('generate', { messages: modelMessages });
           finalMessage = appendLocalSourceReferences(generated.text, turn.message);
         } catch (modelError) {
-          if (modelError?.code === 'MODEL_NOT_INSTALLED') finalMessage += `\n\n${LOCAL_MODEL_INSTALL_MESSAGE}`;
-          else if (modelError?.code === 'CACHE_UNAVAILABLE' || modelError?.code === 'STORAGE_QUOTA_LOW') finalMessage += `\n\n${LOCAL_MODEL_CACHE_MESSAGE}`;
-          else finalMessage += `\n\n${LOCAL_MODEL_FAILURE_MESSAGE}`;
+          setLocalModelUnavailable(true);
+          if (modelError?.code === 'MODEL_NOT_INSTALLED') finalMessage += `\n\nبرای ارتقای اختیاری پاسخ‌ها، از گزینه «نصب مدل محلی» در بالای پنجره استفاده کن. پاسخ پایه همین حالا در دسترس است.`;
+          else if (modelError?.code === 'CACHE_UNAVAILABLE' || modelError?.code === 'STORAGE_QUOTA_LOW') finalMessage += `\n\n${LOCAL_MODEL_CACHE_MESSAGE} پاسخ‌گویی پایه همچنان فعال است.`;
+          else finalMessage += '\n\nمدل محلی روی این دستگاه اجرا نشد؛ پاسخ بالا از دستیار پایه است و می‌توانی به پرسش‌هایت ادامه بدهی.';
         }
       }
       updateAssistantMessage(finalMessage, turn.knowledge || []);
@@ -231,6 +272,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
           >
             <div className="globalAssistantDialogTop">
               <h2 id="global-assistant-title">دستیار هوشمند مسیر ۲۸</h2>
+              <button type="button" className="secondary" onClick={installLocalModel} disabled={sending} aria-label="نصب مدل هوش مصنوعی محلی" title="نصب اختیاری مدل هوش مصنوعی روی همین دستگاه">نصب مدل محلی</button>
               <button ref={closeButtonRef} type="button" className="iconButton" onClick={() => setOpen(false)} aria-label="بستن پنجره دستیار">
                 <AppIcon name="x" size={18} />
               </button>
