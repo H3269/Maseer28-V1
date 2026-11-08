@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node scripts/copy-local-llm-runtime-assets.mjs && vite build",
     "preview": "vite preview",
     "validate:content": "node scripts/validate-content.mjs",
     "audit:content-quality": "node scripts/audit-content-quality.mjs",

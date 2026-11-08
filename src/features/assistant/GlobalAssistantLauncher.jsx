@@ -3,12 +3,17 @@ import AppIcon from '../../shared/components/AppIcon.jsx';
 import { makePageAssistantTurn } from './pageAssistantTurn.js';
 import { libraryRepository } from '../library/libraryRepository.js';
 import { answerLibraryBookTurn } from './libraryBookAssistant.js';
+import { routeAssistantTurn } from './assistantTurnEngine.js';
+import { requestLocalNeuralModel } from './localNeuralModelClient.js';
+import { appendLocalSourceReferences, buildLocalAssistantMessages, isLocalModelInstallCommand, LOCAL_MODEL_CACHE_MESSAGE, LOCAL_MODEL_FAILURE_MESSAGE, LOCAL_MODEL_INSTALL_MESSAGE, shouldUseLocalNeuralModel } from './localNeuralAssistant.js';
 
 export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
   const [error, setError] = useState('');
+  const [sending, setSending] = useState(false);
+  const turnSequenceRef = useRef(0);
   const [loadedLibraryBooks, setLoadedLibraryBooks] = useState([]);
   const conversationStateRef = useRef(null);
   const launcherRef = useRef(null);
@@ -21,6 +26,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     setMessages([]);
     setDraft('');
     setError('');
+    setSending(false);
     conversationStateRef.current = null;
     setOpen(false);
   }, [screen, dailyContext?.day, dailyContext?.problem, dailyContext?.relationshipSafetyConfirmed]);
@@ -88,32 +94,84 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   async function send(event) {
     event.preventDefault();
     const message = draft.trim();
-    if (!message) return;
+    if (!message || sending) return;
+    const turnId = ++turnSequenceRef.current;
+    const responseId = `assistant-${turnId}`;
+    const updateAssistantMessage = (text, knowledge = []) => {
+      setMessages((current) => current.map((item) => item.id === responseId ? { ...item, text, knowledge } : item));
+    };
+    setMessages((current) => [...current,
+      { id: `user-${turnId}`, role: 'user', text: message, knowledge: [] },
+      { id: responseId, role: 'assistant', text: 'در حال بررسی پرسش...', knowledge: [] },
+    ]);
+    setDraft('');
+    resizeComposerInput(messageInputRef.current);
+    setError('');
+    setSending(true);
+
+    const updateProgress = (progress) => {
+      if (progress?.stage === 'generation') {
+        updateAssistantMessage('در حال تولید پاسخ با مدل زبانی عصبی محلی...');
+        return;
+      }
+      const percent = Number.isFinite(progress?.progress) ? Math.max(0, Math.min(100, Math.round(progress.progress))) : null;
+      updateAssistantMessage(percent === null
+        ? 'در حال آماده‌سازی فایل‌های مدل محلی...'
+        : `در حال بارگیری مدل محلی روی همین دستگاه: ${percent}٪`);
+    };
+
     try {
+      if (screen !== 'day' && isLocalModelInstallCommand(message)) {
+        updateAssistantMessage('درخواست بارگیری دریافت شد. مدل فقط روی همین دستگاه آماده می‌شود...');
+        await requestLocalNeuralModel('load', { allowDownload: true }, updateProgress);
+        updateAssistantMessage('مدل زبانی عصبی محلی با موفقیت روی این دستگاه آماده شد. برای دریافت پاسخ، پرسش اصلی‌ات را دوباره بفرست.');
+        return;
+      }
+
+      const intentGate = routeAssistantTurn({ text: message });
+      const restrictedStatuses = new Set([
+        'urgent_human_support_required', 'safety_clarification_required',
+        'intent_scope_clarification_required', 'clarification_required',
+        'personal_intake_required', 'invalid_input', 'input_too_long',
+      ]);
       let turn;
-      if (screen === 'books' && !loadedLibraryBooks.length) {
+      let isLibraryTurn = false;
+      if (screen === 'books' && restrictedStatuses.has(intentGate.status)) {
+        turn = { ...intentGate, conversationState: null };
+      } else if (screen === 'books' && !loadedLibraryBooks.length) {
         turn = { message: 'متن کتاب‌ها هنوز بارگذاری نشده است. چند لحظه صبر کن و دوباره پرسشت را بفرست.', knowledge: [], conversationState: null };
-      } else {
-        const libraryTurn = screen === 'books'
-          ? answerLibraryBookTurn({ books: loadedLibraryBooks, message, conversationState: conversationStateRef.current })
-          : null;
+      } else if (screen === 'books') {
+        const libraryTurn = answerLibraryBookTurn({ books: loadedLibraryBooks, message, conversationState: conversationStateRef.current });
         if (libraryTurn) {
           turn = { ...libraryTurn, knowledge: [] };
+          isLibraryTurn = true;
         } else {
           turn = makePageAssistantTurn({ screen, text: message, conversationState: conversationStateRef.current, dailyContext, libraryContext });
         }
+      } else {
+        turn = makePageAssistantTurn({ screen, text: message, conversationState: conversationStateRef.current, dailyContext, libraryContext });
       }
+
       conversationStateRef.current = turn.conversationState || null;
-      setMessages((current) => [
-        ...current,
-        { role: 'user', text: message, knowledge: [] },
-        { role: 'assistant', text: turn.message, knowledge: turn.knowledge || [] },
-      ]);
-      setDraft('');
-      resizeComposerInput(messageInputRef.current);
-      setError('');
+      let finalMessage = turn.message || 'برای این پرسش پاسخ قابل اتکایی در دسترس نیست.';
+      if (shouldUseLocalNeuralModel({ screen, turn, intentStatus: intentGate.status, isLibraryTurn })) {
+        try {
+          await requestLocalNeuralModel('load', { allowDownload: false }, updateProgress);
+          updateAssistantMessage('در حال تولید پاسخ با مدل زبانی عصبی محلی...', turn.knowledge || []);
+          const modelMessages = buildLocalAssistantMessages({ question: message, context: turn.message, knowledge: turn.knowledge || [] });
+          const generated = await requestLocalNeuralModel('generate', { messages: modelMessages });
+          finalMessage = appendLocalSourceReferences(generated.text, turn.message);
+        } catch (modelError) {
+          if (modelError?.code === 'MODEL_NOT_INSTALLED') finalMessage += `\n\n${LOCAL_MODEL_INSTALL_MESSAGE}`;
+          else if (modelError?.code === 'CACHE_UNAVAILABLE' || modelError?.code === 'STORAGE_QUOTA_LOW') finalMessage += `\n\n${LOCAL_MODEL_CACHE_MESSAGE}`;
+          else finalMessage += `\n\n${LOCAL_MODEL_FAILURE_MESSAGE}`;
+        }
+      }
+      updateAssistantMessage(finalMessage, turn.knowledge || []);
     } catch {
-      setError('پاسخ آماده نشد. دوباره تلاش کن.');
+      updateAssistantMessage('پاسخ آماده نشد. دوباره تلاش کن.');
+    } finally {
+      setSending(false);
     }
   }
 
@@ -170,7 +228,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
             <div className="assistantChatShell globalAssistantChat" dir="rtl" aria-label="گفت‌وگوی دستیار در صفحه جاری">
               <div className="assistantTranscript" dir="rtl" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
                 {messages.map((item, index) => (
-                  <div className={item.role === 'user' ? 'userMessage' : 'assistantMessage'} key={index}>
+                  <div className={item.role === 'user' ? 'userMessage' : 'assistantMessage'} key={item.id || index}>
                     <b className="globalAssistantSpeakerIcon" aria-label={item.role === 'user' ? 'شما' : 'دستیار مسیر۲۸'}>
                       {item.role === 'user' ? (
                         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -205,9 +263,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                   maxLength={dailyContext ? 2000 : 3000}
                   value={draft}
                   onChange={updateDraft}
+                  disabled={sending}
                   placeholder="چطور میتونم کمکت کنم؟"
                 />
-                <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال پیام" disabled={!draft.trim()}><AppIcon name="arrowUp" size={19} /></button>
+                <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال پیام" disabled={!draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
                 {error && <p className="contactHelp assistantComposerError" role="alert">{error}</p>}
               </form>
             </div>

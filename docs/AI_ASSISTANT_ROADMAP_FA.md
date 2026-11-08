@@ -418,3 +418,16 @@
 - SmolLM2-360M به‌علت تمرکز عمده بر انگلیسی برای این محصول فارسی‌محور گزینه اصلی نیست.
 - A1 تا اجرای generation واقعی، benchmark WASM/CPU و WebGPU، تست آفلاین و network capture روی دستگاه/میزبان‌های هدف باز می‌ماند. fallback ابری ممنوع است.
 - منابع: https://huggingface.co/onnx-community/Qwen3-0.6B-Instruct-ONNX ، https://huggingface.co/onnx-community/Qwen3-0.6B-Instruct-ONNX/tree/main/onnx ، https://qwenlm.github.io/blog/qwen3/
+
+
+## 2.0.14 اجرای prototype واقعی LLM محلی — 2026-11-08
+
+- prototype در `main`: Transformers.js 4.3.2 + ONNX Runtime Web، Qwen3-0.6B-Instruct-ONNX با revision ثابت، اجرای WASM در Worker.
+- نصب مدل فقط با فرمان صریح کاربر انجام می‌شود؛ وزن اصلی حدود 650 MB است و در repository/bundle قرار نمی‌گیرد؛ Cache Storage محلی آن را نگه می‌دارد. نبود cache باعث درخواست نصب می‌شود، نه fallback ابری.
+- runtime WASM از همان مبدأ برنامه سرو می‌شود. Worker درخواست‌ها را به فایل‌های revision ثابت محدود می‌کند و پس از load دسترسی remote را می‌بندد.
+- مدل فقط برای پاسخ‌های منبع‌محور/راهنمای صفحه فعال است؛ گیت‌های safety، personal intake، daily exercise و P3 مقدم باقی می‌مانند.
+- معیارهای باز: generation واقعی، حجم و زمان بارگیری، RAM اوج، tokens/sec، cache persistence، اجرای آفلاین، network capture، سازگاری Chrome/Telegram/Bale و کیفیت فارسی.
+- برای نصب اولیه باید در همان چت عبارت «بارگیری مدل محلی» ارسال شود. هیچ دانلود بزرگی بدون این فرمان آغاز نمی‌شود.
+- انتشار Telegram/Bale و Actions بدون اجازه جداگانه مالک ممنوع است.
+
+**وضعیت A1:** LOCAL_ONNX_WASM_PROTOTYPE_COMMITTED_TO_MAIN_DEVICE_AND_OFFLINE_TESTS_PENDING

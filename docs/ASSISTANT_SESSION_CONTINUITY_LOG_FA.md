@@ -4311,3 +4311,19 @@ undefined
 - نتیجه غربال: Qwen3-0.6B برای نمونه اولیه مناسب‌تر از SmolLM2-360M انگلیسی‌محور است، اما هنوز برای دستگاه کم‌منبع و WebView محصول تأیید نشده؛ مسیر WASM/CPU و WebGPU باید جداگانه benchmark شوند. هیچ وزن یا dependency دانلود/ثبت نشده است.
 - منابع بررسی: https://huggingface.co/onnx-community/Qwen3-0.6B-Instruct-ONNX ، https://huggingface.co/onnx-community/Qwen3-0.6B-Instruct-ONNX/tree/main/onnx ، https://qwenlm.github.io/blog/qwen3/
 - گام بعد: تثبیت revision و checksum مدل، بررسی license و chat template، ساخت smoke test واقعی generation با Transformers.js، سپس آزمون مصرف RAM/زمان روی دستگاه و میزبان‌های Telegram/Bale. اگر WASM/CPU روی دستگاه‌های پایین‌رده غیرقابل استفاده باشد، باید حداقل سخت‌افزار پشتیبانی یا مدل کوچک‌تر با کیفیت فارسی قابل قبول تعیین شود؛ fallback ابری مجاز نیست.
+
+
+## اجرای prototype مدل زبانی عصبی محلی روی main — 2026-11-08
+
+- بنا به دستور مالک، تغییرات اجرایی این مرحله مستقیماً روی `main` ثبت شد.
+- dependency دقیق `@huggingface/transformers@4.3.2` و درخت کامل lockfile افزوده شد.
+- Worker برای اجرای `onnx-community/Qwen3-0.6B-Instruct-ONNX` با revision ثابت `54250909aca286a05b9d013c8af7a21859ee6ead`، dtype `q4f16` و backend `wasm` اضافه شد. این مسیر کد inference عصبی واقعی است؛ تا اجرای موفق pipeline در مرورگر، تأییدشده محسوب نمی‌شود.
+- وزن مدل در repository/bundle نیست. نصب فقط با فرمان صریح «بارگیری مدل محلی» شروع می‌شود؛ حجم فایل اصلی حدود 650 MB است. Cache Storage برای مدل و WASM فعال است و WASM از همان مبدأ برنامه سرو می‌شود.
+- سیاست شبکه Worker فقط GET فایل‌های revision ثابت مدل را هنگام نصب مجاز می‌کند؛ درخواست دارای body یا مسیر دیگر رد می‌شود. پس از load، `allowRemoteModels=false` و fetch خارجی مسدود می‌شود. پرسش فقط به Worker محلی داده می‌شود و در URL/body شبکه قرار نمی‌گیرد.
+- اگر مدل cache نشده باشد، پاسخ محلی/مستند موجود حفظ و دستور نصب نمایش داده می‌شود. پس از نصب، تولید متن از مدل ONNX انجام می‌شود. هیچ fallback ابری وجود ندارد.
+- گیت‌های روزانه، ایمنی، شفاف‌سازی دامنه و ورود اطلاعات شخصی از تولید مدل خارج مانده‌اند؛ مدل فقط برای راهنمایی صفحه و پاسخ دارای شواهد/کتابخانه فراخوانی می‌شود.
+- فایل‌های اجرایی: `package.json`, `package-lock.json`, `src/features/assistant/GlobalAssistantLauncher.jsx`, `src/features/assistant/localNeuralAssistant.js`, `src/features/assistant/localNeuralModelClient.js`, `src/features/assistant/localNeuralModel.worker.js`, `scripts/copy-local-llm-runtime-assets.mjs`, `tests/localNeuralAssistant.test.js`, `docs/LOCAL_NEURAL_LLM_IMPLEMENTATION_A1_FA.md`.
+- محدودیت: RAM اوج و سرعت WASM روی Android 11 و WebViewهای Telegram/Bale اندازه‌گیری نشده‌اند؛ کیفیت فارسی checkpoint نیز نیازمند ارزیابی واقعی است. CI و تست واحد، اجرای واقعی مدل یا آفلاین‌بودن دستگاه را اثبات نمی‌کنند.
+- معیار مرحله بعد: CI روی SHA نهایی، تست مرورگر با نصب مدل، قطع اینترنت و network capture؛ سپس benchmark دستگاه و میزبان‌ها. هیچ انتشار عمومی یا inference ابری انجام نشده است.
+
+**وضعیت:** LOCAL_QWEN3_ONNX_WASM_PROTOTYPE_CODE_ADDED_MAIN_RUNTIME_DEVICE_AND_OFFLINE_VALIDATION_PENDING_NO_CLOUD_INFERENCE_NO_PUBLIC_RELEASE
