@@ -4483,3 +4483,16 @@ undefined
 - هیچ انتشار عمومی تلگرام/بله، Telegram Actions یا تغییر در دستیار عمومیِ runtime انجام نشده است.
 
 **وضعیت:** GLOBAL_ASSISTANT_CHROMIUM_TIMEOUT_ROOT_CAUSE_IDENTIFIED_TEST_FIX_COMMITTED_CI_PENDING_NO_PUBLIC_RELEASE
+
+
+## تکمیل رفع خطاهای Chromium و تأیید کامل اعتبارسنجی — 2026-11-08
+
+- پس از اصلاح fixture پرسش نامعتبر لانچر دستیار عمومی، اجرای بعدی در run 42498695594 به مرحله بررسی متن خلاصه منبع رسید و شکست دوم نشان داد assertion شماره صفحه فقط ارقام ASCII را می‌پذیرفت، در حالی که رابط متن فارسی را با رقم فارسی نمایش می‌دهد.
+- علت شکست دوم، محدودیت regex آزمون بود، نه خرابی runtime یا پنجره دستیار. assertion در tests/browser/global-assistant-launcher.mjs اصلاح شد تا ارقام فارسی، عربی و انگلیسی را بپذیرد.
+- اصلاح دوم روی main در commit 7664e291bf8e732b0a9c1ec367089f00695fc637 ثبت شد.
+- اجرای کامل اعتبارسنجی برای همین SHA: run 42499434241 با نتیجه success؛ مرحله «Run remaining Chromium app regression scenarios» نیز صریحاً success شد. تمام مراحل دیگر همان job از جمله آزمون‌های واحد، ۱۲۵ سناریوی پذیرش دستیار کتابخانه، ممیزی کیفیت محتوای روزانه، build و آزمون‌های محلی Worker نیز موفق‌اند.
+- اجرای deploy نسخه آزمایشی برای همین SHA: run 42499434352 با نتیجه success؛ ساخت و انتشار GitHub Pages آزمایشی کامل شد.
+- بنابراین commit 7664e291 از نظر workflow اعتبارسنجی کامل و آزمون Chromium سبز است و نسخه آزمایشی مرورگر برای تست زنده مالک آماده است: https://h3269.github.io/Maseer28-V1/
+- این تأیید CI جایگزین تست انسانی روی دستگاه و مرورگر مالک نیست. هیچ Telegram Actions یا انتشار عمومی در تلگرام/بله انجام نشده است.
+
+**وضعیت:** GLOBAL_ASSISTANT_CHROMIUM_GREEN_FULL_VALIDATION_SUCCESS_TEST_DEPLOY_SUCCESS_OWNER_BROWSER_TEST_READY_NO_PUBLIC_RELEASE
