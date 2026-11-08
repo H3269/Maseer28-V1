@@ -96,12 +96,8 @@ async function selectExecutionBackend() {
 
 async function loadModel(allowDownload, requestId) {
   if (loaded && generator) return;
-  const execution = await selectExecutionBackend();
-  if (!allowDownload && !(await hasInstalledModelMarker(execution))) {
-    const error = new Error('The local model has not been installed for this device/backend.');
-    error.code = 'MODEL_NOT_INSTALLED';
-    throw error;
-  }
+  // Fail fast before probing GPU/WASM or touching the network when installation
+  // cannot proceed. This keeps the base assistant responsive in offline mode.
   if (allowDownload && self.navigator?.onLine === false) {
     const error = new Error('برای بارگیری اولیه مدل، اتصال اینترنت لازم است.');
     error.code = 'MODEL_DOWNLOAD_OFFLINE';
@@ -115,6 +111,12 @@ async function loadModel(allowDownload, requestId) {
       error.code = 'STORAGE_QUOTA_LOW';
       throw error;
     }
+  }
+  const execution = await selectExecutionBackend();
+  if (!allowDownload && !(await hasInstalledModelMarker(execution))) {
+    const error = new Error('The local model has not been installed for this device/backend.');
+    error.code = 'MODEL_NOT_INSTALLED';
+    throw error;
   }
   await configureRuntime(allowDownload, execution);
   try {
