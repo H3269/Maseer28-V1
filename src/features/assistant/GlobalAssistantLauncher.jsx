@@ -273,7 +273,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
           >
             <div className="globalAssistantDialogTop">
               <h2 id="global-assistant-title">دستیار هوشمند مسیر ۲۸</h2>
-              <button type="button" className="secondary" onClick={installLocalModel} disabled={sending} aria-label="نصب مدل هوش مصنوعی محلی" title="نصب اختیاری مدل هوش مصنوعی روی همین دستگاه">نصب مدل محلی</button>
+              <button type="button" className="globalAssistantModelButton" onClick={installLocalModel} disabled={sending} aria-label="نصب مدل هوش مصنوعی محلی" title="نصب اختیاری مدل هوش مصنوعی روی همین دستگاه">نصب مدل محلی</button>
               <button ref={closeButtonRef} type="button" className="iconButton" onClick={() => setOpen(false)} aria-label="بستن پنجره دستیار">
                 <AppIcon name="x" size={18} />
               </button>
