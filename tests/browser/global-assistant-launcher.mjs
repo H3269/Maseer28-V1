@@ -283,11 +283,13 @@ try {
   // A failed optional model installation must not disable the deterministic library assistant.
   const installModelButton = dialog.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' });
   assert.equal(await installModelButton.isVisible(), true, 'model installation must be discoverable without memorizing a command');
-  await page.route('https://huggingface.co/**', (route) => route.fulfill({ status: 503, body: 'blocked for deterministic browser test' }));
+  // Force a deterministic offline error in the dedicated model worker; do not depend on external CDN routing or cache state.
+  await page.context().setOffline(true);
   await installModelButton.click();
   await dialog.getByRole('button', { name: 'بله، شروع نصب' }).waitFor({ state: 'visible' });
   await dialog.getByRole('button', { name: 'بله، شروع نصب' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /دستیار پایه همچنان فعال است/u.test(node.innerText)));
+  await page.context().setOffline(false);
   const fallbackPromptPicker = dialog.getByRole('button', { name: 'باز کردن سؤال‌های آماده دستیار کتابخانه' });
   await fallbackPromptPicker.waitFor({ state: 'visible' });
   await fallbackPromptPicker.click();
