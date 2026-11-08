@@ -44,6 +44,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     closeButtonRef.current?.focus();
     const closeOnEscape = (event) => {
       if (event.key === 'Escape') {
+        if (document.getElementById('library-assistant-prompt-dialog')) return;
         event.preventDefault();
         setOpen(false);
       }
