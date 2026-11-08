@@ -227,6 +227,7 @@ try {
   // The base library mode exposes a curated question list, and selecting an item
   // places the exact prompt into the composer for the user to send.
   const libraryPromptPicker = dialog.getByRole('combobox', { name: 'سؤال آماده دستیار کتابخانه' });
+  await libraryPromptPicker.waitFor({ state: 'visible' });
   assert.equal(await libraryPromptPicker.isVisible(), true, 'base library mode must expose guided questions');
   await libraryPromptPicker.selectOption('خلاصه کتاب پنجم را بگو');
   assert.equal(await dialog.getByRole('textbox').inputValue(), 'خلاصه کتاب پنجم را بگو');
@@ -270,10 +271,34 @@ try {
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /خلاصه راهنمای محتوایی/u.test(node.innerText)));
   const fallbackAfterInstallFailure = dialog.locator('.assistantMessage').last();
-  assert.equal(await dialog.getByRole('combobox', { name: 'سؤال آماده دستیار کتابخانه' }).isVisible(), true, 'failed installation must retain the guided base-mode question list');
+  const fallbackPromptPicker = dialog.getByRole('combobox', { name: 'سؤال آماده دستیار کتابخانه' });
+  await fallbackPromptPicker.waitFor({ state: 'visible' });
+  assert.equal(await fallbackPromptPicker.isVisible(), true, 'failed installation must retain the guided base-mode question list');
   assert.match(await fallbackAfterInstallFailure.innerText(), /شاهد کوتاه متن|منبع:/u, 'the book assistant must continue returning a grounded base answer after model installation fails');
   assert.doesNotMatch(await fallbackAfterInstallFailure.innerText(), /این گوشی یا مرورگر نتوانست مدل محلی را اجرا کند/u, 'the installation failure must not replace later answers');
 
+  // A valid installed-model marker switches only the Library composer to free-form mode.
+  await page.evaluate(async () => {
+    const cache = await caches.open('maseer28-local-model-state-v1');
+    const markerUrl = new URL('local-model/qwen3-0.6b-ready.json', location.href);
+    await cache.put(markerUrl.href, new Response(JSON.stringify({
+      modelId: 'onnx-community/Qwen3-0.6B-Instruct-ONNX',
+      revision: '54250909aca286a05b9d013c8af7a21859ee6ead',
+    }), { headers: { 'content-type': 'application/json' } }));
+  });
+  await closeButton.click();
+  await dialog.waitFor({ state: 'detached' });
+  await page.getByRole('button', { name: 'ارتباط' }).click();
+  await page.locator('.bottomNav button[data-view="support"].active').waitFor({ state: 'visible' });
+  await page.getByRole('button', { name: 'خانه' }).click();
+  await page.locator('#dashboard').waitFor({ state: 'visible' });
+  await page.getByRole('button', { name: 'مطالعه', exact: true }).click();
+  await page.locator('.bottomNav button[data-view="books"].active').waitFor({ state: 'visible' });
+  await launcher.click();
+  dialog = page.getByRole('dialog', { name: 'دستیار هوشمند مسیر ۲۸' });
+  await dialog.waitFor({ state: 'visible' });
+  await page.getByPlaceholder('سؤال پیشرفته‌ات را اینجا بنویس...').waitFor({ state: 'visible' });
+  assert.equal(await dialog.getByRole('combobox', { name: 'سؤال آماده دستیار کتابخانه' }).count(), 0, 'installed local mode must hide the guided list');
   await closeButton.click();
   await dialog.waitFor({ state: 'detached' });
 
