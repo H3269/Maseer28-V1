@@ -85,14 +85,17 @@ try {
   const closeButton = dialog.getByRole('button', { name: 'بستن پنجره دستیار' });
   await page.waitForFunction(() => document.activeElement?.getAttribute('aria-label') === 'بستن پنجره دستیار');
   assert.equal(await launcher.getAttribute('aria-expanded'), 'true');
-  // DOM order is close button, message field, then enabled send button.
-  // Start from the actual first control to verify Shift+Tab wraps to the last.
+  // The visible model-install button is the first focusable control in DOM order;
+  // the enabled send button is last. Test the actual order rather than assuming
+  // the close button is first (the install action was added to the header later).
   await dialog.getByRole('textbox').fill('آزمون گردش فوکوس');
-  await closeButton.focus();
+  const firstDialogControl = dialog.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' });
+  const lastDialogControl = dialog.getByRole('button', { name: 'ارسال' });
+  await firstDialogControl.focus();
   await page.keyboard.press('Shift+Tab');
-  assert.equal(await dialog.getByRole('button', { name: 'ارسال' }).evaluate((element) => element === document.activeElement), true, 'Shift+Tab from the first control must wrap to the last enabled control');
+  assert.equal(await lastDialogControl.evaluate((element) => element === document.activeElement), true, 'Shift+Tab from the actual first control must wrap to the last enabled control');
   await page.keyboard.press('Tab');
-  assert.equal(await closeButton.evaluate((element) => element === document.activeElement), true, 'Tab from the last enabled control must wrap to the first');
+  assert.equal(await firstDialogControl.evaluate((element) => element === document.activeElement), true, 'Tab from the actual last control must wrap to the first');
   await dialog.getByRole('textbox').fill('');
   assert.match(await dialog.innerText(), /دستیار هوشمند مسیر ۲۸/);
   const dialogBoxForLayout = await dialog.boundingBox();
