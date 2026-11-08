@@ -453,7 +453,9 @@ function recommendBooks(books, message) {
   }
   const candidates = SELF_KNOWLEDGE.test(normalized)
     ? books.filter((book) => /خودشناسی|شناخت احساس|شناخت خود|احساسات/u.test(normalizeLibraryText(bookSubject(book))))
-    : books;
+    : CHANGE_BARRIER.test(normalized)
+      ? books.filter((book) => [3, 4].includes(Number(book.legacyId)))
+      : books;
   const chosen = candidates.length ? candidates : books;
   return 'پیشنهاد مطالعه بر اساس موضوع ثبت‌شده و محتوای بررسی‌شده:\n\n' +
     chosen.slice(0, 3).map((book, index) => {
@@ -595,7 +597,7 @@ export function answerLibraryBookTurn({ books = [], message = '', conversationSt
     };
   }
   if (LIST.test(normalized)) return { message: listBooksReply(available), conversationState: null };
-  if (RECOMMEND.test(normalized)) return { message: recommendBooks(available, normalized), conversationState: null };
+  if (RECOMMEND.test(normalized) && !BOOK_AUDIENCE.test(normalized)) return { message: recommendBooks(available, normalized), conversationState: null };
   if (COMPARE.test(normalized) && !CONCEPT_COMPARE.test(normalized) && !ALTERNATIVE_VIEW.test(normalized) && /(?:کتاب|پنج|همه)/u.test(normalized)) {
     return { message: compareBooksReply(available), conversationState: null };
   }
