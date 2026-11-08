@@ -1,6 +1,6 @@
 export const LOCAL_MODEL_ID = 'onnx-community/Qwen3-0.6B-Instruct-ONNX';
 export const LOCAL_MODEL_REVISION = '54250909aca286a05b9d013c8af7a21859ee6ead';
-export const LOCAL_MODEL_APPROX_MB = 650;
+export const LOCAL_MODEL_APPROX_MB = '۶۵۰';
 export const LOCAL_MODEL_INSTALL_COMMAND = 'بارگیری مدل محلی';
 
 const BLOCKED_STATUSES = new Set([
