@@ -233,9 +233,10 @@ try {
   const promptSendBox = await dialog.getByRole('button', { name: 'ارسال' }).boundingBox();
   assert.ok(promptBox && promptSendBox && Math.abs((promptBox.y + promptBox.height / 2) - (promptSendBox.y + promptSendBox.height / 2)) <= 2, 'the send button must sit beside the prompt picker on the same row');
   await libraryPromptPicker.click();
-  let promptDialog = page.getByRole('dialog', { name: 'سؤال آماده دستیار کتابخانه' });
+  let promptDialog = page.locator('#library-assistant-prompt-dialog');
   await promptDialog.waitFor({ state: 'visible' });
-  assert.equal(await promptDialog.locator('.libraryAssistantPromptCard.validationCard').count(), 1, 'the preset picker must reuse the archive reminder card structure');
+  assert.equal(await promptDialog.getAttribute('role'), 'dialog', 'the preset picker must expose a semantic dialog');
+  assert.equal(await promptDialog.evaluate((element) => element.classList.contains('libraryAssistantPromptCard') && element.classList.contains('validationCard')), true, 'the preset picker must reuse the archive reminder card structure');
   assert.equal(await promptDialog.getByRole('button', { name: 'متوجه شدم' }).count(), 0, 'the preset picker must not add a redundant acknowledgement button');
   const promptOptions = promptDialog.locator('[data-prompt-option]');
   assert.ok(await promptOptions.count() >= 25, 'the full grouped preset question list must be available');
