@@ -353,6 +353,25 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
             role="dialog"
             aria-modal="true"
             aria-labelledby="library-assistant-prompt-title"
+            onKeyDown={(event) => {
+              if (event.key !== 'Tab') return;
+              const options = libraryPromptDialogRef.current?.querySelectorAll('[data-prompt-option]');
+              if (!options?.length) {
+                event.preventDefault();
+                event.stopPropagation();
+                return;
+              }
+              const first = options[0];
+              const last = options[options.length - 1];
+              if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+              } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+              }
+              event.stopPropagation();
+            }}
           >
             <span className="badge">پرسش‌های پیشنهادی</span>
             <h2 id="library-assistant-prompt-title">سؤال آماده دستیار کتابخانه</h2>
