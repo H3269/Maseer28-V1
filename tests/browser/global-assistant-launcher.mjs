@@ -248,6 +248,8 @@ try {
   assert.equal(await installModelButton.isVisible(), true, 'model installation must be discoverable without memorizing a command');
   await page.route('https://huggingface.co/**', (route) => route.fulfill({ status: 503, body: 'blocked for deterministic browser test' }));
   await installModelButton.click();
+  await dialog.getByRole('button', { name: 'بله، شروع نصب' }).waitFor({ state: 'visible' });
+  await dialog.getByRole('button', { name: 'بله، شروع نصب' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /دستیار پایه همچنان فعال است/u.test(node.innerText)));
   await dialog.getByRole('textbox').fill('خلاصه کتاب چهارم را بگو');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
