@@ -224,7 +224,7 @@ export function rankLibraryPassages(passages, query, limit = 5) {
   }).filter((passage) => passage.score > 0
     && hasDirectEvidence
     && passage.directMatches > 0
-    && (!directAnchorGroups.length || passage.directAnchorMatches > 0)
+    && (!directAnchorGroups.length || passage.directAnchorMatches === directAnchorGroups.length)
     && (!strictConceptGroups.length || (hasDirectConceptEvidence && passage.directConceptMatches > 0)))
     .sort((a, b) => b.score - a.score || a.retrievalIndex - b.retrievalIndex);
 
