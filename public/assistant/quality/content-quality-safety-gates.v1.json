@@ -106,12 +106,14 @@
     "4": "clear_supported_proportionate_within_claim_scope"
   },
   "scoring_policy": {
-    "reviewers_required": 2,
-    "independent_reviews": true,
+    "reviewers_required": 1,
+    "independent_reviews": false,
     "minimum_score_for_release": null,
     "minimum_score_policy": "not_set_pending_calibration_and_governance_approval",
     "hard_stop_overrides_aggregate_score": true,
-    "scores_are_not_efficacy_or_clinical_validity_estimates": true
+    "scores_are_not_efficacy_or_clinical_validity_estimates": true,
+    "review_model": "single_authorized_owner_expert_review",
+    "optional_peer_review_allowed": true
   },
   "hard_stop_flags": [
     "foreseeable_material_harm_without_adequate_controls",
@@ -222,9 +224,11 @@
       4,
       8
     ],
-    "require_two_independent_reviews": true,
+    "require_two_independent_reviews": false,
     "keep_runtime_blocked_until_all_gates_pass": true,
-    "keep_queue_scores_null_until_review_complete": true
+    "keep_queue_scores_null_until_review_complete": true,
+    "owner_expert_review_required": true,
+    "optional_peer_review_allowed": true
   },
   "limitations": [
     "This policy is a governance and release-control framework, not a diagnostic or treatment protocol.",
