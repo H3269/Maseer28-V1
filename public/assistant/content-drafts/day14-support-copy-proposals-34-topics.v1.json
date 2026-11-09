@@ -21,13 +21,14 @@
       "topic_id": "T01",
       "topic_name": "خشم",
       "day_number": 14,
-      "lightExerciseText": "نشانه بدنیِ پیش از بالا رفتن صدا را پیدا کن و نقطه امن مکث را مشخص کن.",
-      "lightActionText": "جمله اعلام وقفه و زمان تقریبی بازگشت را آماده بگذار؛ هنگام خطر فاصله بگیر.",
-      "progressActionText": "در موقعیت کم‌تنش، سه بار مکث پیش از پاسخ تند را تمرین و پیامدش را ثبت کن.",
-      "restExerciseText": "اگر ظرفیتت کم است، فقط مسیر خروج امن را مرور کن؛ تحلیل تعارض را عقب بینداز.",
-      "restActionText": "در احتمال آسیب، از موقعیت فاصله بگیر و از فرد مطمئن یا خدمات فوری کمک بخواه.",
+      "lightExerciseText": "فقط یک روش را در یکی از سه ستون قرار بده.",
+      "lightActionText": "یک روش را «مناسب»، «خنثی» یا «نامناسب» علامت بزن؛ ارزیابی بیشتر لازم نیست.",
+      "progressActionText": "برای روش منتخب، نشانه‌ای تعیین کن که بفهمی چه زمانی باید آن را متوقف کنی.",
+      "restExerciseText": "ارزیابی روش‌ها را به بعد موکول کن.",
+      "restActionText": "امروز روش‌ها را ارزیابی نکن؛ تصمیم را به زمان مناسب‌تری موکول کن.",
       "review_status": "draft_pending_expert_review",
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1"
     },
     {
       "content_id": "DRAFT_T02_D14",
