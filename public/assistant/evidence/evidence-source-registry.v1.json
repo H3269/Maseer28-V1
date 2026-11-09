@@ -2,8 +2,8 @@
   "schema_version": "1.0.0",
   "registry_id": "maseer28-evidence-source-registry-v1",
   "status": "methodology_and_topic_sources_registered_pending_claim_level_review",
-  "reviewed_on": "2026-11-02",
-  "policy": "این رجیستری هم منابع روش‌شناسی ارزیابی شواهد و هم منابع موضوعی/ادعایی را نگهداری می‌کند. هر منبع فقط در دامنه صریح supports و با محدودیت‌های does_not_support قابل استناد است؛ هیچ منبعی به‌تنهایی اثربخشی یا ایمنی محتوای خاص مسیر۲۸ را ثابت نمی‌کند.",
+  "reviewed_on": "2026-11-09",
+  "policy": "این رجیستری هم منابع روش‌شناسی ارزیابی شواهد و هم منابع موضوعی/ادعایی را نگهداری می‌کند. هر منبع فقط در دامنه صریح supports و با محدودیت‌های does_not_support قابل استناد است؛ هیچ منبعی به‌تنهایی اثربخشی یا ایمنی محتوای خاص مسیر۲۸ را ثابت نمی‌کند. منابع جدید در ۲۰۲۶/۱۱/۰۹ ثبت شده‌اند؛ ثبت منبع به‌تنهایی اتصال ادعای محتوایی یا تأیید بالینی نیست. برای هر ادعا باید تناسب موضوع، جمعیت، مداخله، پیامد، کیفیت و محدودیت‌ها مستند شود.",
   "sources": [
     {
       "evidence_id": "METH_APA_EBPP_2021",
@@ -267,6 +267,89 @@
         "مرز تشخیصی قطعی؛ ادعای اینکه شرم و گناه هرگز هم‌زمان نیستند"
       ],
       "scope": "T26; conceptual nuance"
+    },
+    {
+      "evidence_id": "EVID_WHO_MHGAP_2025",
+      "source_type": "international_clinical_guideline",
+      "publisher": "World Health Organization",
+      "title": "Mental Health Gap Action Programme (mhGAP) guideline for mental, neurological and substance use disorders: executive summary",
+      "year": 2025,
+      "url": "https://www.who.int/publications/i/item/B09329",
+      "supports": [
+        "وجود ۴۸ توصیه جدید یا به‌روزشده مبتنی بر شواهد برای طیفی از وضعیت‌های سلامت روان و عصبی؛ مرجع راهنمایی برای خدمات سلامت در سطوح غیرتخصصی با حدود صلاحیت مشخص"
+      ],
+      "does_not_support": [
+        "تجویز یکسان مداخله برای همه کاربران اپ",
+        "جایگزینی قضاوت بالینی یا ارزیابی فردی",
+        "اثربخشی تمرین‌های اختصاصی مسیر۲۸ بدون تطبیق دقیق جمعیت، مداخله و پیامد"
+      ],
+      "scope": "cross-topic guideline context; claim-level mapping required"
+    },
+    {
+      "evidence_id": "EVID_APA_PTSD_2025",
+      "source_type": "professional_clinical_practice_guideline",
+      "publisher": "American Psychological Association",
+      "title": "Clinical Practice Guideline for the Treatment of Posttraumatic Stress Disorder (PTSD) in Adults",
+      "year": 2025,
+      "url": "https://www.apa.org/ptsd-guideline/",
+      "supports": [
+        "توصیه‌های درمان PTSD بزرگسالان بر پایه مرور نظام‌مند شواهد، موازنه منافع و زیان‌ها و توجه به ترجیحات و تفاوت‌های جمعیتی"
+      ],
+      "does_not_support": [
+        "مداخله خودیار عمومی برای پردازش تروما بدون ارزیابی",
+        "تعمیم توصیه‌های درمان PTSD به ترس یا اضطراب روزمره",
+        "مواجهه خودسرانه یا بازگویی اجباری تجربه آسیب‌زا"
+      ],
+      "scope": "T03,T21,T22,T34 only when PTSD/trauma-specific claims are explicitly made; clinician-led treatment context"
+    },
+    {
+      "evidence_id": "EVID_VADOD_INSOMNIA_2025",
+      "source_type": "government_clinical_practice_guideline",
+      "publisher": "U.S. Department of Veterans Affairs and Department of Defense",
+      "title": "The Management of Chronic Insomnia Disorder and Obstructive Sleep Apnea (2025)",
+      "year": 2025,
+      "url": "https://healthquality.va.gov/healthquality/guidelines/CD/insomnia/index.asp",
+      "supports": [
+        "راهنمای بالینی ۲۰۲۵ برای تصمیم‌گیری درباره بی‌خوابی مزمن و آپنه انسدادی خواب؛ تفکیک غربالگری اختلال خواب از مدیریت بالینی"
+      ],
+      "does_not_support": [
+        "تشخیص یا درمان خودکار اختلال خواب توسط اپ",
+        "تعمیم توصیه‌های بالینی به هر مشکل خواب گذرا",
+        "جایگزینی ارزیابی پزشکی در علائم هشدار یا احتمال آپنه"
+      ],
+      "scope": "T10; adult chronic insomnia/OSA clinical context"
+    },
+    {
+      "evidence_id": "EVID_NICE_PTSD_NG116_REVIEW_2025",
+      "source_type": "national_clinical_guideline",
+      "publisher": "National Institute for Health and Care Excellence",
+      "title": "Post-traumatic stress disorder (NG116)",
+      "year": 2025,
+      "url": "https://www.nice.org.uk/guidance/ng116",
+      "supports": [
+        "راهنمای شناسایی، ارزیابی و درمان PTSD در کودکان، نوجوانان و بزرگسالان؛ آخرین بازبینی ثبت‌شده ۸ آوریل ۲۰۲۵ بدون شواهد جدید تغییردهنده توصیه‌ها"
+      ],
+      "does_not_support": [
+        "تفسیر واکنش طبیعی به رویداد دشوار به‌عنوان PTSD بدون ارزیابی",
+        "خوددرمانی تروما یا مواجهه مستقل بدون ملاحظات ایمنی"
+      ],
+      "scope": "T03,T21,T22,T34; trauma-specific only"
+    },
+    {
+      "evidence_id": "EVID_WHO_PSYCH_INTERVENTIONS",
+      "source_type": "international_evidence_resource",
+      "publisher": "World Health Organization",
+      "title": "Psychological interventions",
+      "year": 2026,
+      "url": "https://www.who.int/teams/mental-health-and-substance-use/treatment-care/Psychological-interventions",
+      "supports": [
+        "وجود راهنماها و منابع مداخلات روان‌شناختی مبتنی بر شواهد برای برخی وضعیت‌ها از جمله افسردگی و اضطراب و ضرورت توجه به آموزش و نظارت ارائه‌دهندگان"
+      ],
+      "does_not_support": [
+        "تأیید هر تمرین عمومی یا نسخه دیجیتال بدون بررسی راهنمای اختصاصی",
+        "ادعای درمان یا پیشگیری قطعی با محتوای اپ"
+      ],
+      "scope": "methodological resource; topic-specific source selection remains mandatory"
     }
   ],
   "evidence_quality_policy": {
