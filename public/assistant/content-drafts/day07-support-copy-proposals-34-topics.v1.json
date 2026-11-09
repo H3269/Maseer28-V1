@@ -22,13 +22,14 @@
       "topic_id": "T01",
       "topic_name": "خشم",
       "day_number": 7,
-      "lightExerciseText": "موقعیتی را تصور کن که اختلاف هنوز کم‌تنش است؛ اولین نشانه‌ای که به تو می‌گوید مکث لازم است چیست؟",
-      "lightActionText": "برای همان نشانه، یک جمله کوتاهِ توقف گفت‌وگو و مسیر فاصله امن آماده کن.",
-      "progressActionText": "در یک گفت‌وگوی کم‌تنش، مکث را پیش از بالا رفتن صدا اجرا کن و زمان بازگشت امن را ثبت کن.",
-      "restExerciseText": "امروز فقط زمان خروج از موقعیت را در ذهن مرور کن؛ گفت‌وگو را لازم نیست تمرین کنی.",
-      "restActionText": "اگر احتمال صدمه وجود دارد، گفت‌وگو را رها کن، فاصله امن بگیر و کمک فوری بخواه.",
+      "lightExerciseText": "یک نکته از هفته را انتخاب کن.",
+      "lightActionText": "یک آموخته از هفته را انتخاب کن؛ مرور کامل همه یادداشت‌ها ضروری نیست.",
+      "progressActionText": "یک الگوی تکرارشونده و یک استثنا را کنار هم بنویس.",
+      "restExerciseText": "مرور را به زمان دیگری موکول کن؛ وقفه به معنی شکست نیست.",
+      "restActionText": "مرور هفته را به زمان دیگری موکول کن؛ وقفه به معنی شکست نیست.",
       "review_status": "draft_pending_expert_review",
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1"
     },
     {
       "content_id": "DRAFT_T02_D07",
