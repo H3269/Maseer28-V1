@@ -21,13 +21,14 @@
       "topic_id": "T01",
       "topic_name": "خشم",
       "day_number": 16,
-      "lightExerciseText": "در یک نمونه، نشانه‌ای را که پیش از واکنش تند نادیده ماند نام ببر.",
-      "lightActionText": "همان نشانه را به علامت مکث و فاصله امن تبدیل کن.",
-      "progressActionText": "در موقعیت کم‌تنش، پاسخ جایگزین را اجرا و زمان بازیابی را مقایسه کن.",
-      "restExerciseText": "امروز فقط نشانه هشدار را به یاد بسپار.",
-      "restActionText": "اگر احتمال آسیب هست، فاصله و کمک فوری مقدم است.",
+      "lightExerciseText": "فقط واژه مطلق را پیدا کن و علامت بزن.",
+      "lightActionText": "فقط یک واژه مطلق را پیدا کن؛ مجبور به بازنویسی جمله نیستی.",
+      "progressActionText": "جمله را با شواهد موافق و مخالف بازبینی کن.",
+      "restExerciseText": "بازنویسی را کنار بگذار و از موقعیت فاصله بگیر.",
+      "restActionText": "بازنویسی فکر را کنار بگذار؛ شواهد واقعی تهدید یا بی‌عدالتی را نادیده نگیر.",
       "review_status": "draft_pending_expert_review",
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1"
     },
     {
       "content_id": "DRAFT_T02_D16",
