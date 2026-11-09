@@ -22,13 +22,14 @@
       "topic_id": "T01",
       "topic_name": "خشم",
       "day_number": 9,
-      "lightExerciseText": "دو موقعیت خشم را از نظر نشانه اولیه و شدت واکنش مقایسه کن.",
-      "lightActionText": "تفاوتی را که زودتر می‌توانستی تشخیص بدهی مشخص کن.",
-      "progressActionText": "برای همان زمینه پرتکرار، یادآور توقف را در محیط امن قرار بده.",
-      "restExerciseText": "امروز موقعیت‌های خشم را مرور نکن؛ محرک را کاهش بده.",
-      "restActionText": "در خطر آسیب، فاصله امن و کمک فوری مقدم است.",
+      "lightExerciseText": "فقط یک شیء را توصیف کن.",
+      "lightActionText": "یک شیء را با یک ویژگی عینی توصیف کن؛ تمرین را طولانی نکن.",
+      "progressActionText": "یک صدا یا نشانه دیداری دیگر را اضافه کن، بدون اینکه تمرین را طولانی کنی.",
+      "restExerciseText": "تمرین را انجام نده؛ به فعالیت عادی و امن برگرد.",
+      "restActionText": "تمرین توجه را انجام نده؛ به فعالیت عادی و امن برگرد.",
       "review_status": "draft_pending_expert_review",
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1"
     },
     {
       "content_id": "DRAFT_T02_D09",
