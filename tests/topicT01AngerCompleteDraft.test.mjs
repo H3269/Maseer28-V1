@@ -1,0 +1,87 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const pack = JSON.parse(fs.readFileSync(path.join(root,
+  'public/assistant/content-drafts/topic-T01-anger-complete-draft.v1.json'), 'utf8'));
+const SUPPORT_FIELDS = [
+  'lightExerciseText',
+  'lightActionText',
+  'progressActionText',
+  'restExerciseText',
+  'restActionText',
+];
+const normalize = (value) => String(value ?? '').normalize('NFKC')
+  .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
+  .replace(/[\u064B-\u065F\u0670]/g, '')
+  .replace(/[\u200c\u200f\u200e]/g, '')
+  .replace(/[،؛.!؟?,]/g, ' ')
+  .replace(/\s+/g, ' ').trim().toLowerCase();
+
+test('T01 anger package covers exactly 28 unique canonical days', () => {
+  assert.equal(pack.topic_id, 'T01');
+  assert.equal(pack.records.length, 28);
+  assert.deepEqual(pack.records.map((record) => record.day_number).sort((a, b) => a - b),
+    Array.from({ length: 28 }, (_, index) => index + 1));
+  assert.equal(new Set(pack.records.map((record) => record.content_id)).size, 28);
+  assert.equal(new Set(pack.records.map((record) => record.source_content_id)).size, 28);
+});
+
+test('every T01 day has complete main content, traceability, and five support variants', () => {
+  for (const record of pack.records) {
+    for (const field of [
+      'title', 'learning_objective', 'target_skill', 'mechanism_focus',
+      'exercise', 'action', 'progress_measure', 'reflection_prompt',
+      'success_criterion', 'safety_and_limits', 'when_to_seek_human_support',
+    ]) {
+      assert.equal(typeof record[field], 'string', record.day_number + ':' + field);
+      assert.ok(record[field].trim(), record.day_number + ':' + field);
+    }
+    assert.ok(Array.isArray(record.subtopic_ids) && record.subtopic_ids.length > 0);
+    assert.ok(record.subtopic_ids.every((id) => /^T01-S0[123]$/.test(id)));
+    assert.ok(record.source_content_id);
+    assert.ok(record.source_runtime_exercise);
+    assert.ok(record.source_runtime_action);
+    assert.ok(Array.isArray(record.source_ids) && record.source_ids.length > 0);
+    for (const field of SUPPORT_FIELDS) {
+      assert.equal(typeof record.support_variants?.[field], 'string', record.day_number + ':' + field);
+      assert.ok(record.support_variants[field].trim(), record.day_number + ':' + field);
+    }
+  }
+});
+
+test('main and support text fields have no exact duplicates across the 28-day T01 sequence', () => {
+  const fields = [
+    'title', 'exercise', 'action', 'progress_measure',
+    ...SUPPORT_FIELDS.map((field) => 'support_variants.' + field),
+  ];
+  for (const field of fields) {
+    const seen = new Set();
+    for (const record of pack.records) {
+      const value = field.startsWith('support_variants.')
+        ? record.support_variants[field.split('.')[1]]
+        : record[field];
+      const key = normalize(value);
+      assert.ok(key, record.day_number + ':' + field);
+      assert.ok(!seen.has(key), 'duplicate ' + field + ' on day ' + record.day_number);
+      seen.add(key);
+    }
+  }
+});
+
+test('all T01 drafts remain non-approved and non-runtime; high-risk day 27 is human-review gated', () => {
+  assert.equal(pack.status, 'draft_pending_expert_review');
+  for (const record of pack.records) {
+    assert.equal(record.review_status, 'draft_pending_expert_review');
+    assert.equal(record.runtime_eligible, false);
+    assert.equal(record.reviewer, null);
+    assert.equal(record.reviewed_at, null);
+    assert.equal(record.evidence_grade, 'not_assessed');
+    assert.deepEqual(record.evidence_ids, []);
+  }
+  assert.equal(pack.records.find((record) => record.day_number === 27).risk_level,
+    'human_review_required');
+});
