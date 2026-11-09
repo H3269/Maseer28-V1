@@ -204,3 +204,14 @@ test('rejects candidate evidence identifiers absent from the registry', () => {
   const result = validateContentRedesign(data);
   assert.ok(result.errors.some((item) => item.includes('unknown candidate evidence reference EVID_NOT_REGISTERED')));
 });
+
+
+test('reports high-similarity exercise/action pairs for human review without auto-rejecting them', () => {
+  const data = makeFullData();
+  data.allDays[0].records[0].exercise = 'تمرین بررسی نشانه های اضطراب در موقعیت روزمره و ثبت پاسخ قابل مشاهده برای یک موقعیت کم خطر';
+  data.allDays[1].records[1].exercise = 'تمرین بررسی نشانه های اضطراب در موقعیت اجتماعی و ثبت پاسخ قابل مشاهده برای یک موقعیت کم خطر';
+  const result = validateContentRedesign(data);
+  assert.equal(result.valid, true, result.errors.join('; '));
+  assert.ok(result.summary.near_duplicate_candidate_count > 0);
+  assert.ok(result.summary.near_duplicate_candidates.some((item) => item.field === 'exercise'));
+});
