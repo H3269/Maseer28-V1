@@ -14,7 +14,7 @@ test('anger assistant guide covers all 28 days with fourteen day-scoped prepared
   for (const guide of ANGER_DAILY_ASSISTANT_GUIDES) {
     assert.equal(guide.topicId, 'T01');
     assert.equal(guide.questions.length, 14, `day ${guide.day}`);
-    assert.equal(new Set(guide.questions.map((item) => item.value)).size, 8, `day ${guide.day}`);
+    assert.equal(new Set(guide.questions.map((item) => item.value)).size, 14, `day ${guide.day}`);
     assert.ok(guide.exercise && guide.action && guide.exerciseExample && guide.actionExample);
     assert.ok(guide.lightVersion && guide.successCriterion && guide.stopCondition);
   }
