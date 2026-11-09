@@ -289,3 +289,10 @@
 - کنترل ساختاری: پوشش ۳۴/۳۴، یکتایی دقیق پنج فیلد، صفر رکورد runtime-eligible.
 - مجموع روزهای ۴ تا ۹: ۲۰۴ رکورد و ۱۰۲۰ متن پشتیبان بازنویسی‌شده.
 - فایل: `public/assistant/content-drafts/day09-support-copy-proposals-34-topics.v1.json`؛ commit: `1322dceabe302800be97ff6b133572e9751ae170`.
+
+
+## پیشرفت تازه — گونه‌های پشتیبان روز دهم
+- تکمیل شد: ۳۴ موضوع × پنج گونه پشتیبان = ۱۷۰ متن روز دهم.
+- کنترل ساختاری: پوشش ۳۴/۳۴، یکتایی دقیق پنج فیلد، صفر رکورد runtime-eligible.
+- مجموع روزهای ۴ تا ۱۰: ۲۳۸ رکورد و ۱۱۹۰ متن پشتیبان بازنویسی‌شده.
+- فایل: `public/assistant/content-drafts/day10-support-copy-proposals-34-topics.v1.json`؛ commit: `c25ffe78d550755f98cd6f9a154286e9667de6b2`.
