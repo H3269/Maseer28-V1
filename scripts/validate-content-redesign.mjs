@@ -25,7 +25,7 @@ const PROGRESSION_FIELDS = [
 ];
 const normalizeText = (value) => String(value ?? '').normalize('NFKC').replace(/\\s+/g, ' ').trim();
 
-export function validateContentRedesign({ queue, day1, day2, day3, topics, subtopics }) {
+export function validateContentRedesign({ queue, day1, day2, day3, allDays = null, topics, subtopics }) {
   const errors = [];
   const topicList = topics.topics ?? [];
   const topicIds = new Set(topicList.map((item) => item.topic_id));
@@ -155,6 +155,90 @@ export function validateContentRedesign({ queue, day1, day2, day3, topics, subto
     }
   }
 
+  if (Array.isArray(allDays)) {
+    const completeDrafts = allDays.flatMap((batch) => batch?.records ?? []);
+    if (allDays.length !== 28 || completeDrafts.length !== 952) {
+      errors.push('complete draft audit must include 28 batches and 952 records');
+    }
+    const allDraftIds = new Set();
+    const globalExercises = new Map();
+    const globalActions = new Map();
+    for (let day = 1; day <= 28; day++) {
+      const batch = allDays[day - 1]?.records ?? [];
+      if (batch.length !== 34) errors.push('complete day ' + day + ' must contain exactly 34 drafts');
+      const topicDaySeen = new Set();
+      const normalizedObjectives = new Map();
+      const normalizedProgress = new Map();
+      for (const item of batch) {
+        const expectedId = 'DRAFT_' + item.topic_id + '_D' + String(day).padStart(2, '0');
+        if (item.day_number !== day || item.content_id !== expectedId) {
+          errors.push('complete draft topic/day id mismatch ' + item.content_id);
+        }
+        if (allDraftIds.has(item.content_id)) errors.push('duplicate complete draft id ' + item.content_id);
+        allDraftIds.add(item.content_id);
+        if (!topicIds.has(item.topic_id)) errors.push('unknown complete draft topic ' + item.topic_id);
+        if (topicNames.has(item.topic_id) && item.topic_name !== topicNames.get(item.topic_id)) {
+          errors.push('complete draft topic name mismatch ' + item.content_id);
+        }
+        if (subById.get(item.subtopic_id)?.topic_id !== item.topic_id) {
+          errors.push('complete draft subtopic parent mismatch ' + item.content_id);
+        }
+        for (const field of REQUIRED_DRAFT_FIELDS) {
+          if (!normalizeText(item[field])) errors.push('complete draft missing ' + field + ' ' + item.content_id);
+        }
+        if (item.review_status !== 'draft_pending_expert_review' || item.runtime_eligible !== false) {
+          errors.push('complete draft not blocked ' + item.content_id);
+        }
+        if ((item.evidence_ids ?? []).length || (item.source_reference_ids ?? []).length) {
+          errors.push('complete draft claims unverified evidence ' + item.content_id);
+        }
+        const slot = item.topic_id + ':' + day;
+        if (topicDaySeen.has(slot)) errors.push('duplicate complete draft slot ' + slot);
+        topicDaySeen.add(slot);
+        const queueItem = queueBySlot.get(slot);
+        if (!queueItem || queueItem.draft_content_id !== item.content_id ||
+            queueItem.source_content_id !== item.source_content_id) {
+          errors.push('complete queue mapping mismatch ' + item.content_id);
+        }
+        const topicName = topicNames.get(item.topic_id) ?? item.topic_name ?? '';
+        const normalizeTopicCopy = (value) => normalizeText(value)
+          .replaceAll(topicName, '<topic>')
+          .replace(/«[^»]+»/g, '«topic»');
+        for (const [field, map] of [
+          ['learning_objective', normalizedObjectives],
+          ['progress_measure', normalizedProgress],
+        ]) {
+          const value = normalizeTopicCopy(item[field]);
+          if (!map.has(value)) map.set(value, []);
+          map.get(value).push(item.content_id);
+        }
+        for (const [field, map] of [['exercise', globalExercises], ['action', globalActions]]) {
+          const value = normalizeText(item[field]);
+          if (!map.has(value)) map.set(value, []);
+          map.get(value).push(item.content_id);
+        }
+      }
+      for (const [field, map] of [
+        ['learning_objective', normalizedObjectives],
+        ['progress_measure', normalizedProgress],
+      ]) {
+        for (const [value, ids] of map) {
+          if (value && ids.length > 1) {
+            errors.push('day ' + day + ' contains normalized duplicate ' + field + ' across topics: ' + ids.join(', '));
+          }
+        }
+      }
+    }
+    for (const [field, map] of [['exercise', globalExercises], ['action', globalActions]]) {
+      for (const [value, ids] of map) {
+        if (value && ids.length > 1) {
+          errors.push('global duplicate ' + field + ' across 952 drafts: ' + ids.join(', '));
+        }
+      }
+    }
+    if (allDraftIds.size !== 952) errors.push('complete draft ids must be 952 unique records');
+  }
+
   return {
     valid: errors.length === 0,
     errors,
@@ -175,6 +259,7 @@ if (process.argv[1]?.endsWith('validate-content-redesign.mjs')) {
     day1: read('public/assistant/content-drafts/day01-34-topic-drafts.v1.json'),
     day2: read('public/assistant/content-drafts/day02-34-topic-drafts.v1.json'),
     day3: read('public/assistant/content-drafts/day03-34-topic-drafts.v1.json'),
+    allDays: Array.from({ length: 28 }, (_, index) => read('public/assistant/content-drafts/day' + String(index + 1).padStart(2, '0') + '-34-topic-drafts.v1.json')),
     topics: read('public/assistant/knowledge/topics.v1.json'),
     subtopics: read('public/assistant/knowledge/subtopics.v1.json'),
   });
