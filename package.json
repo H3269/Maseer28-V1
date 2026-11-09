@@ -19,7 +19,8 @@
     "generate:content-mapping-queue": "node scripts/generate-content-mapping-queue.mjs",
     "audit:course-content-quality": "node scripts/audit-course-content-quality.mjs",
     "prepare:first-pass-review": "node scripts/build-first-pass-review-packet.mjs",
-    "audit:content-template-sample": "node scripts/audit-content-template-sample.mjs"
+    "audit:content-template-sample": "node scripts/audit-content-template-sample.mjs",
+    "generate:course-content-review-queue": "node scripts/generate-course-content-quality-review-queue.mjs"
   },
   "dependencies": {
     "react": "18.3.1",
