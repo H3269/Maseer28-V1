@@ -52,6 +52,6 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     topics: readJson('public/assistant/knowledge/topics.v1.json'),
     existing,
   });
-  fs.writeFileSync(outputPath, `${JSON.stringify(ledger, null, 2)}\\n`);
-  process.stdout.write(`Generated ${ledger.reviews.length} pending quality review records; all remain runtime_eligible=false.\\n`);
+  fs.writeFileSync(outputPath, `${JSON.stringify(ledger, null, 2)}\n`);
+  process.stdout.write(`Generated ${ledger.reviews.length} pending quality review records; all remain runtime_eligible=false.\n`);
 }
