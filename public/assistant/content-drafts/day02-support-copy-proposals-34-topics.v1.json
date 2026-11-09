@@ -22,13 +22,14 @@
       "topic_id": "T01",
       "topic_name": "خشم",
       "day_number": 2,
-      "lightExerciseText": "فقط یک تغییر بدنی را نام ببر؛ لازم نیست شدت خشم را دوباره تجربه کنی.",
-      "lightActionText": "یک نشانهٔ بدنی را ثبت کن و از هر واکنش فوری فاصله بگیر.",
-      "progressActionText": "اگر امن است، نشانهٔ بدنی را با میلی که پس از آن آمد مقایسه کن.",
-      "restExerciseText": "امروز به بدن فرصت آرام‌شدن بده؛ بررسی جزئیات برانگیختگی لازم نیست.",
-      "restActionText": "اگر تنش بالاست، فقط نیاز به فاصلهٔ امن را ثبت کن.",
+      "lightExerciseText": "فقط یک رفتار آسیب‌زا و یک جایگزین امن را مشخص کن.",
+      "lightActionText": "یک جایگزین غیرآسیب‌زا را نام ببر؛ لازم نیست آن را در تعامل واقعی اجرا کنی.",
+      "progressActionText": "برای هر پاسخ، اثر احتمالی کوتاه‌مدت و بلندمدت را مقایسه کن.",
+      "restExerciseText": "امروز هیچ گفت‌وگویی را تمرین یا اجرا نکن؛ فقط تفاوت احساس و رفتار را به خاطر بسپار.",
+      "restActionText": "امروز هیچ پاسخ یا گفت‌وگویی را تمرین نکن؛ فاصله امن را حفظ کن.",
       "review_status": "draft_pending_expert_review",
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1"
     },
     {
       "content_id": "DRAFT_T02_D02",
