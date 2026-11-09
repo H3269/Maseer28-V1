@@ -2806,7 +2806,7 @@ export function getAngerDailyAssistantPromptGroups(day) {
   const guide = ANGER_DAILY_ASSISTANT_GUIDES.find((item) => item.day === Number(day));
   if (!guide) return [];
   return [
-    { label: 'فهم تمرین روز ' + guide.day, questions: guide.questions.filter((item) => item.kind.startsWith('exercise_')) },
+    { label: 'فهم تمرین روز ' + guide.day, questions: guide.questions.filter((item) => ['exercise_meaning','exercise_example'].includes(item.kind)) },
     { label: 'فهم اقدام اختصاصی روز ' + guide.day, questions: guide.questions.filter((item) => item.kind.startsWith('action_')) },
     { label: 'تفاوت تمرین و اقدام', questions: guide.questions.filter((item) => item.kind === 'exercise_action_difference') },
     { label: 'اجرا و موانع', questions: guide.questions.filter((item) => ['light_version','not_done','no_event','can_change','duration'].includes(item.kind)) },
