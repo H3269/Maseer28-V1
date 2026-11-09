@@ -84,6 +84,9 @@ export function validateSelfEvaluationPilot({ pilot, queue, evidence }) {
       errors.push('draft must remain blocked ' + record.content_id);
     }
 
+    if (record.evidence_mapping_status !== 'candidate_only_pending_claim_level_review') {
+      errors.push('evidence mapping must remain candidate-only pending claim review ' + record.content_id);
+    }
     const ids = Array.isArray(record.evidence_ids) ? record.evidence_ids : [];
     const referenceIds = Array.isArray(record.source_reference_ids) ? record.source_reference_ids : [];
     if (ids.length === 0) errors.push('missing evidence provenance ' + record.content_id);
