@@ -8,6 +8,10 @@ import { copyTextToClipboard, fa, formatDate, normalizeDigits } from '../../shar
 import { burdenScoreFromAnswers, evaluatePqhtEligibility, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
 import { exportArchivesZip, triggerBlobDownload } from './archiveExport.js';
 import { selectCanonicalDailyRecord, selectDailyContentCategory } from '../content/dailyContentSelector.js';
+import AssessmentAssistant from '../assistant/AssessmentAssistant.jsx';
+import PersonalizationSettings from '../privacy/PersonalizationSettings.jsx';
+import { createPrivacyBackup, validatePrivacyBackup } from '../privacy/privacyBackup.js';
+import { executeCompleteLocalDataDeletion } from '../privacy/dataDeletion.js';
 
 export const SCALE_QUESTIONS = [
   'این مشکل در حال حاضر چقدر شدت دارد؟',
@@ -383,23 +387,116 @@ export function DailyResult({ day, journey, data, problem, sourceLabel, onDashbo
   return <section className="card" id="dailyResult"><span className="badge" id="resultBadge">نتیجه روز {fa(day)} از ۲۸</span><h2 id="resultTitle">عملکرد روز {fa(day)}</h2><div className="metric"><div className="metricBox"><strong id="resultScore">{skipped ? '—' : `${fa(rec.score)}/۱۰`}</strong><span>{skipped ? 'امتیازی ثبت نشد' : 'امتیاز امروز'}</span></div><div className="metricBox"><strong id="resultFeedback">{skipped ? 'تمرین اجرا نشد' : labels[rec.feedback] || 'ثبت شد'}</strong><span>{skipped ? skipReason : 'بازخورد'}</span></div></div><div className="feedback"><b>جمع‌بندی امروز</b><p className="muted" id="resultText">{rec.feedbackText}</p></div><div className="recommendation"><b>قدم بعدی</b><p className="muted" id="resultNext">{skipped ? 'این روز بدون اجرای تمرین ثبت شد. این ثبت را به‌عنوان امتیاز، بهبود یا بدترشدن تفسیر نکن.' : day === 28 ? 'روز ۲۸ کامل شد. اکنون ارزیابی نهایی فعال است.' : nextStepText(day, data, rec, problem)}</p></div><div id="resultNextWrap">{recommendedBook ? <><div className="bookRecommendationSource">{sourceLabel}</div><button className="gold" onClick={() => onBook(recommendedBook)}><AppIcon name="bookOpen" size={17} /> مطالعه پیشنهاد کتاب امروز</button></> : !skipped && rec.bookRecPending ? <p className="muted" id="bookRecommendationPending" aria-live="polite">نتیجه ثبت شد؛ در حال بررسی پیشنهاد مطالعه مرتبط…</p> : !skipped && <p className="muted" id="noNewBookRecommendation">در میان بخش‌های مرتبط و استفاده‌نشده کتاب‌ها، پیشنهاد تازه‌ای پیدا نشد؛ برای جلوگیری از تکرار، پیشنهاد نامرتبط یا تکراری نمایش داده نمی‌شود.</p>}{day === 28 ? <button className="primary" onClick={onFinal}><AppIcon name="checkCircle" size={17} /> رفتن به ارزیابی نهایی →</button> : <button className="primary" onClick={() => onNext(day + 1)}><AppIcon name="arrow" size={17} /> رفتن به روز {fa(day + 1)} →</button>}</div><div className="navrow"><button className="secondary" onClick={onDashboard}>{buttonLabel('بازگشت به داشبورد')}</button></div></section>;
 }
 
-export function Support({ content, onBack }) {
+export function Support({ content, journeyContext = {}, onBack }) {
   const [help, setHelp] = useState('اگر اپ شما اجازه باز کردن مستقیم پیامک را ندهد، شماره با یک لمس کپی می‌شود.');
   const [copyFailed, setCopyFailed] = useState(false);
+  const [privacyMessage, setPrivacyMessage] = useState('');
+  const [privacyBusy, setPrivacyBusy] = useState(false);
   const number = '09190889062';
+
   async function copySupportNumber() {
     const copied = await copyTextToClipboard(number);
     setCopyFailed(!copied);
     setHelp(copied ? 'مرورگر عملیات کپی را پذیرفت؛ برای اطمینان، شماره را در برنامه دیگری جای‌گذاری کن.' : 'کپی خودکار انجام نشد. شماره را از کادر زیر انتخاب و دستی کپی کن.');
   }
-  function sendSms() { const body = 'سلام، برای نوبت‌دهی و دریافت راهنمایی پیام می‌دهم.'; try { if (window.Android && typeof window.Android.openSms === 'function') { window.Android.openSms(number, body); setHelp('برنامه پیامک باز شد.'); return; } if (window.webkit?.messageHandlers?.openSms) { window.webkit.messageHandlers.openSms.postMessage({ number, body }); setHelp('برنامه پیامک باز شد.'); return; } const ua = navigator.userAgent || '', sep = /iPhone|iPad|iPod/i.test(ua) ? '&' : '?', a = document.createElement('a'); a.href = `sms:${number}${sep}body=${encodeURIComponent(body)}`; a.style.display = 'none'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => setHelp('اگر پیامک باز نشد، «کپی شماره» را بزنید. در WebView اپ باید scheme پیامک به سیستم تحویل داده شود.'), 900); } catch { copySupportNumber(); } }
+
+  function sendSms() {
+    const body = 'سلام، برای نوبت‌دهی و دریافت راهنمایی پیام می‌دهم.';
+    try {
+      if (window.Android && typeof window.Android.openSms === 'function') { window.Android.openSms(number, body); setHelp('برنامه پیامک باز شد.'); return; }
+      if (window.webkit?.messageHandlers?.openSms) { window.webkit.messageHandlers.openSms.postMessage({ number, body }); setHelp('برنامه پیامک باز شد.'); return; }
+      const ua = navigator.userAgent || '', sep = /iPhone|iPad|iPod/i.test(ua) ? '&' : '?', a = document.createElement('a');
+      a.href = `sms:${number}${sep}body=${encodeURIComponent(body)}`;
+      a.style.display = 'none'; document.body.appendChild(a); a.click(); a.remove();
+      window.setTimeout(() => setHelp('اگر پیامک باز نشد، «کپی شماره» را بزنید. در WebView اپ باید scheme پیامک به سیستم تحویل داده شود.'), 900);
+    } catch { copySupportNumber(); }
+  }
+
+  async function exportData() {
+    if (privacyBusy) return;
+    setPrivacyBusy(true);
+    setPrivacyMessage('');
+    try {
+      const backup = await createPrivacyBackup();
+      if (backup.localStorage?.complete === false) {
+        setPrivacyMessage('خروجی کامل تهیه نشد؛ خواندن برخی داده‌های محلی با خطا روبه‌رو شد. فایل ناقص دانلود نشد.');
+        return;
+      }
+      const validation = validatePrivacyBackup(backup);
+      if (!validation.valid) {
+        setPrivacyMessage('اعتبارسنجی فایل پشتیبان موفق نبود؛ برای جلوگیری از تحویل فایل ناقص، دانلود انجام نشد.');
+        return;
+      }
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `maseer28-privacy-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+      setPrivacyMessage('فایل پشتیبان داده‌های محلی آماده شد. آن را در محل امن نگهداری کن.');
+    } catch (error) {
+      setPrivacyMessage(error?.message || 'تهیه نسخه اطلاعات انجام نشد.');
+    } finally {
+      setPrivacyBusy(false);
+    }
+  }
+
+  async function deleteData() {
+    if (privacyBusy || !window.confirm('همه داده‌های شخصی این برنامه در همین مرورگر حذف شوند؟ این کار قابل بازگشت نیست.')) return;
+    setPrivacyBusy(true);
+    setPrivacyMessage('');
+    try {
+      const result = await executeCompleteLocalDataDeletion();
+      if (result.deleted && result.status === 'complete') {
+        setPrivacyMessage('حذف داده‌های محلی تأیید شد؛ برنامه دوباره بارگذاری می‌شود.');
+        window.setTimeout(() => window.location.reload(), 500);
+      } else {
+        setPrivacyMessage(result.errors?.join(' ') || 'حذف کامل داده‌ها تأیید نشد. از ادامه استفاده خودداری کن تا وضعیت بررسی شود.');
+      }
+    } catch (error) {
+      setPrivacyMessage(error?.message || 'حذف داده‌های محلی انجام نشد.');
+    } finally {
+      setPrivacyBusy(false);
+    }
+  }
+
   return <section className="card" id="support">
-    <span className="badge">پشتیبانی مرکز</span><h2>نیاز به راهنمایی داری؟</h2><p className="muted">اگر برای نوبت‌دهی یا ارتباط با مرکز نیاز به راهنمایی داری، می‌توانی از راه‌های زیر استفاده کنی.</p>
-    <div className="support"><h3><AppIcon name="phone" size={18} /> نوبت‌دهی پیامکی</h3><p className="muted">شماره مرکز: <b>۰۹۱۹۰۸۸۹۰۶۲</b></p><div className="contactActions"><button className="sms" onClick={sendSms}><AppIcon name="message" size={17} /> باز کردن پیامک</button><button className="copyAction" onClick={copySupportNumber}><AppIcon name="copy" size={17} /> کپی شماره</button></div><p className="contactHelp" id="smsHelp" role="status" aria-live="polite">{help}</p>{copyFailed && <input aria-label="شماره مرکز برای کپی دستی" readOnly value={number} onFocus={(event) => event.currentTarget.select()} onClick={(event) => event.currentTarget.select()} />}<hr/><h3><AppIcon name="message" size={18} /> نوبت‌دهی تلگرامی</h3><p className="muted">پشتیبانی و نوبت‌دهی تلگرامی مرکز</p><a className="telegram" href={content.supportUrl || content.bookSupportUrl || 'https://t.me/Hypnotherapy_admin'} rel="noopener" target="_blank"><AppIcon name="message" size={17} /> ورود به پشتیبانی تلگرام</a></div>
+    <span className="badge">پشتیبانی و حریم خصوصی</span>
+    <h2>نیاز به راهنمایی داری؟</h2>
+    <p className="muted">اگر برای نوبت‌دهی یا ارتباط با مرکز نیاز به راهنمایی داری، می‌توانی از راه‌های زیر استفاده کنی.</p>
+    <div className="support">
+      <h3><AppIcon name="phone" size={18} /> نوبت‌دهی پیامکی</h3>
+      <p className="muted">شماره مرکز: <b>۰۹۱۹۰۸۸۹۰۶۲</b></p>
+      <div className="contactActions">
+        <button className="sms" onClick={sendSms}><AppIcon name="message" size={17} /> باز کردن پیامک</button>
+        <button className="copyAction" onClick={copySupportNumber}><AppIcon name="copy" size={17} /> کپی شماره</button>
+      </div>
+      <p className="contactHelp" id="smsHelp" role="status" aria-live="polite">{help}</p>
+      {copyFailed && <input aria-label="شماره مرکز برای کپی دستی" readOnly value={number} onFocus={(event) => event.currentTarget.select()} onClick={(event) => event.currentTarget.select()} />}
+      <hr />
+      <h3><AppIcon name="message" size={18} /> نوبت‌دهی تلگرامی</h3>
+      <p className="muted">پشتیبانی و نوبت‌دهی تلگرامی مرکز</p>
+      <a className="telegram" href={content.supportUrl || content.bookSupportUrl || 'https://t.me/Hypnotherapy_admin'} rel="noopener" target="_blank"><AppIcon name="message" size={17} /> ورود به پشتیبانی تلگرام</a>
+    </div>
+    <hr />
+    <AssessmentAssistant journeyContext={journeyContext} />
+    <hr />
+    <PersonalizationSettings />
+    <hr />
+    <div className="sectionHint" role="note">
+      <span><AppIcon name="lock" size={18} /></span>
+      <div><b>حریم خصوصی و داده‌های من</b><small>می‌توانی نسخه‌ای از داده‌های ذخیره‌شده در همین مرورگر بگیری یا آن‌ها را حذف کنی. داده‌های عمومی کتابخانه و فایل‌های دانلودشده شامل این عملیات نیستند.</small></div>
+    </div>
+    <p className="muted">خروجی شامل داده‌های محلی برنامه و رکوردهای متعلق به کاربر در کتابخانه همین مرورگر است. حذف نیز فقط داده‌های شخصی برنامه در همین مرورگر را هدف می‌گیرد؛ نسخه‌های دانلودشده، پشتیبان‌های دستگاه و اطلاعات بیرون از این مرورگر حذف نمی‌شوند.</p>
+    <div className="contactActions">
+      <button className="secondary" type="button" onClick={exportData} disabled={privacyBusy}><AppIcon name="fileText" size={17} /> دریافت نسخه اطلاعات من</button>
+      <button className="secondary" type="button" onClick={deleteData} disabled={privacyBusy}><AppIcon name="eraser" size={17} /> حذف داده‌های محلی من</button>
+    </div>
+    {privacyMessage && <p className="contactHelp" role="status" aria-live="polite">{privacyMessage}</p>}
     <button className="secondary" onClick={onBack}>{buttonLabel('بازگشت')}</button>
   </section>;
 }
-
 function reflectionValues(value) { const rows = String(value || '').split('\n---\n').slice(0, 3); return [...rows, '', '', ''].slice(0, 3); }
 function ReflectionFields({ prefix, values, setValues }) { return <>{values.map((value, i) => <textarea key={`${prefix}-${i}`} className="small" id={`${prefix}_${i + 1}`} maxLength={2000} placeholder={`مورد ${fa(i + 1)} را بنویس...`} value={value} onChange={(e) => setValues(values.map((row, j) => j === i ? e.target.value : row))} />)}</>; }
 

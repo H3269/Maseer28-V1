@@ -1,3 +1,4 @@
+import { validateAssistantContext } from './assistantContext.v1.js';
 import { routeSemanticIntake } from './intentContextRouter.js';
 import { routeAssistantTurn } from './assistantTurnEngine.js';
 
@@ -209,8 +210,11 @@ function chooseNextIntakeQuestion(session) {
   return QUESTION.summary;
 }
 
-export function createAssessmentSession({ localOnly = true } = {}) {
+export function createAssessmentSession({ localOnly = true, assistantContext = null, consentState = {}, now = new Date().toISOString() } = {}) {
   if (localOnly !== true) throw new Error('این موتور فقط برای پردازش محلی طراحی شده است؛ ارسال ابری در این نسخه پشتیبانی نمی‌شود.');
+  const contextValidation = assistantContext
+    ? validateAssistantContext(assistantContext, { consentState, now })
+    : { valid: false };
   return {
     schema_version: '1.0.0',
     protocol_id: 'maseer28-adaptive-intake',
@@ -225,6 +229,7 @@ export function createAssessmentSession({ localOnly = true } = {}) {
     clarification_history: [],
     summary_revision_count: 0,
     summary: null,
+    assistant_context: contextValidation.valid ? structuredClone(assistantContext) : null,
     processing: 'local_in_memory_only',
   };
 }
@@ -233,7 +238,7 @@ export function getCurrentQuestion(session) {
   return session?.current_question ?? null;
 }
 
-export function submitAssessmentAnswer(session, answer) {
+export function submitAssessmentAnswer(session, answer, { consentState = {}, now = new Date().toISOString() } = {}) {
   if (!session || session.status !== 'in_progress') throw new Error('جلسه ارزیابی فعال نیست.');
   if (!session.current_question) throw new Error('پرسشی برای پاسخ‌گویی وجود ندارد.');
   const knownQuestionIds = new Set(Object.values(QUESTION).map((question) => question.id));
@@ -256,7 +261,10 @@ export function submitAssessmentAnswer(session, answer) {
   const value = String(answer ?? '').trim();
   if (!value) throw new Error('پاسخ خالی است؛ می‌توانی بگویی «رد می‌کنم» یا جلسه را متوقف کنی.');
   if (value.length > 3000) throw new Error('پاسخ بیش از حد طولانی است؛ حداکثر ۳۰۰۰ نویسه مجاز است.');
-  const next = { ...session, answers: { ...session.answers }, candidate_topics: [...session.candidate_topics], clarification_history: [...(session.clarification_history ?? [])], summary: session.summary ? { ...session.summary } : null };
+  const contextValidation = session.assistant_context
+    ? validateAssistantContext(session.assistant_context, { consentState, now })
+    : { valid: false };
+  const next = { ...session, assistant_context: contextValidation.valid ? session.assistant_context : null, answers: { ...session.answers }, candidate_topics: [...session.candidate_topics], clarification_history: [...(session.clarification_history ?? [])], summary: session.summary ? { ...session.summary } : null };
   const questionId = next.current_question.id;
   next.answers[questionId] = value;
 
@@ -592,6 +600,7 @@ export function stopAssessment(session) {
     ...session,
     status: 'stopped_by_user',
     current_question: null,
+    assistant_context: null,
     safety_state: 'not_assessed',
     safety_context_flag: false,
     answers: {},

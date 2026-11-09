@@ -19,7 +19,14 @@
     "generate:content-mapping-queue": "node scripts/generate-content-mapping-queue.mjs",
     "audit:course-content-quality": "node scripts/audit-course-content-quality.mjs",
     "prepare:first-pass-review": "node scripts/build-first-pass-review-packet.mjs",
-    "audit:content-template-sample": "node scripts/audit-content-template-sample.mjs"
+    "audit:content-template-sample": "node scripts/audit-content-template-sample.mjs",
+    "validate:content-redesign": "node scripts/validate-content-redesign.mjs",
+    "validate:self-evaluation-pilot": "node scripts/validate-self-evaluation-pilot.mjs",
+    "validate:subtopic-definitions": "node scripts/validate-subtopic-definition-proposals.mjs",
+    "validate:assessment-knowledge": "node scripts/validate-assessment-knowledge-consistency.mjs",
+    "validate:assessment-rule-registry": "node scripts/validate-assessment-rule-registry.mjs",
+    "validate:quality-safety-gates": "node scripts/validate-quality-safety-gates.mjs",
+    "validate:independent-review-ledger": "node scripts/validate-independent-review-ledger.mjs"
   },
   "dependencies": {
     "react": "18.3.1",

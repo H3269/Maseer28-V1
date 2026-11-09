@@ -1,0 +1,240 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "maseer28-content-quality-safety-gates-v1",
+  "status": "proposed_pending_independent_review",
+  "scope": [
+    "daily_learning_content",
+    "952_day_redesign_queue",
+    "assistant_retrieval_content"
+  ],
+  "core_rule": "automated_validation_is_not_expert_or_clinical_approval",
+  "review_dimensions": [
+    {
+      "id": "A",
+      "name": "scientific_accuracy_and_claim_precision",
+      "scale": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": "B",
+      "name": "evidence_quality_and_relevance",
+      "scale": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": "C",
+      "name": "conceptual_boundaries_and_non_overgeneralization",
+      "scale": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": "D",
+      "name": "safety_user_agency_and_risk_controls",
+      "scale": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": "E",
+      "name": "instructional_quality_and_actionability",
+      "scale": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": "F",
+      "name": "sequence_progression_and_continuity",
+      "scale": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": "G",
+      "name": "language_culture_and_accessibility",
+      "scale": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": "H",
+      "name": "provenance_versioning_and_maintainability",
+      "scale": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    }
+  ],
+  "score_anchors": {
+    "0": "missing_incorrect_misleading_or_potentially_harmful",
+    "1": "major_deficiency_not_acceptable_for_use",
+    "2": "partially_acceptable_major_revision_required",
+    "3": "acceptable_with_limited_documented_revision",
+    "4": "clear_supported_proportionate_within_claim_scope"
+  },
+  "scoring_policy": {
+    "reviewers_required": 1,
+    "independent_reviews": false,
+    "minimum_score_for_release": null,
+    "minimum_score_policy": "not_set_pending_calibration_and_governance_approval",
+    "hard_stop_overrides_aggregate_score": true,
+    "scores_are_not_efficacy_or_clinical_validity_estimates": true,
+    "review_model": "single_authorized_owner_expert_review",
+    "optional_peer_review_allowed": true
+  },
+  "hard_stop_flags": [
+    "foreseeable_material_harm_without_adequate_controls",
+    "coerced_disclosure_exposure_contact_reconciliation_or_repair",
+    "victim_blame_or_transfer_of_abuser_responsibility",
+    "equating_emotion_with_fault_or_diagnosis",
+    "unsupported_diagnostic_treatment_prevention_or_efficacy_claim",
+    "untraceable_or_claim_mismatched_source",
+    "sensitive_exercise_without_refusal_or_stop_option",
+    "no_safe_alternative_or_required_human_referral_path",
+    "runtime_access_for_unapproved_or_unversioned_content",
+    "unnecessary_sensitive_data_collection_or_processing_outside_consent"
+  ],
+  "severity_levels": [
+    {
+      "id": "P0",
+      "meaning": "critical_immediate_risk_or_serious_privacy_or_authorization_breach",
+      "release_block": true
+    },
+    {
+      "id": "P1",
+      "meaning": "high_scientific_or_safety_risk_or_serious_referral_gap",
+      "release_block": true
+    },
+    {
+      "id": "P2",
+      "meaning": "moderate_quality_clarity_accessibility_or_learning_gap",
+      "release_block": false
+    },
+    {
+      "id": "P3",
+      "meaning": "low_impact_editorial_or_experience_improvement",
+      "release_block": false
+    }
+  ],
+  "workflow_statuses": [
+    "draft",
+    "pending_review",
+    "rework_required",
+    "expert_reviewed",
+    "approved",
+    "retired",
+    "rejected"
+  ],
+  "runtime_policy": {
+    "eligible_statuses": [
+      "approved"
+    ],
+    "require_separate_versioned_runtime_grant": true,
+    "fail_closed": true,
+    "expert_reviewed_is_not_release_approval": true,
+    "draft_pending_review_rework_required_rejected_retired_runtime_eligible": false
+  },
+  "required_review_record_fields": [
+    "content_id",
+    "topic_id",
+    "day_number",
+    "content_version",
+    "gate_results",
+    "reviewer_scores",
+    "findings",
+    "hard_stop_flags",
+    "decision",
+    "target_population",
+    "usage_limits",
+    "reviewer_qualification",
+    "conflict_of_interest",
+    "reviewed_at",
+    "adjudicator_if_needed",
+    "previous_version",
+    "replacement_version"
+  ],
+  "evidence_claim_fields": [
+    "claim_id",
+    "claim_text",
+    "evidence_id",
+    "url_or_doi",
+    "population",
+    "construct_or_intervention",
+    "comparator_or_context",
+    "outcome",
+    "study_design_or_guideline_type",
+    "evidence_certainty",
+    "limitations",
+    "publication_year",
+    "last_checked",
+    "permitted_wording",
+    "unsupported_interpretations"
+  ],
+  "calibration": {
+    "anchor_examples_required": true,
+    "reviewer_training_required": true,
+    "inter_rater_agreement_required": false,
+    "numeric_acceptance_threshold": null,
+    "threshold_policy": "set_before_calibration_study_with_methodological_justification",
+    "optional_peer_review_may_be_used": true,
+    "owner_expert_decision_is_sufficient": true
+  },
+  "initial_pilot": {
+    "pull_request": 34,
+    "content_count": 25,
+    "topic_ids": [
+      "T15",
+      "T23",
+      "T33",
+      "T19",
+      "T26"
+    ],
+    "day_range": [
+      4,
+      8
+    ],
+    "require_two_independent_reviews": false,
+    "keep_runtime_blocked_until_all_gates_pass": true,
+    "keep_queue_scores_null_until_review_complete": true,
+    "owner_expert_review_required": true,
+    "optional_peer_review_allowed": true
+  },
+  "limitations": [
+    "This policy is a governance and release-control framework, not a diagnostic or treatment protocol.",
+    "Automated validators cannot independently establish clinical accuracy, contextual safety, Persian pragmatic understanding, or efficacy.",
+    "Passing CI does not constitute expert approval or permission for public release."
+  ]
+}

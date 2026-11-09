@@ -749,7 +749,10 @@ function navigate(next) {
       </> : <section className="card dayCard" role="alert"><h2>محتوای دقیق این روز در دسترس نیست</h2><p>موضوع یا شماره روز با داده اصلی تطبیق قطعی ندارد؛ برای جلوگیری از نمایش تمرین اشتباه، راهنمایی این روز متوقف شده است.</p><button className="secondary" onClick={() => navigate('dashboard')}>بازگشت به داشبورد</button></section>)}
       {screen === 'dailyResult' && <DailyResult day={resultDay || journey.completed.length || currentDay} journey={journey} data={resultData} problem={category?.name} sourceLabel={recommendationSource} onDashboard={() => navigate('dashboard')} onNext={openDay} onFinal={() => navigate('final')} onBook={(rec) => openRecommendedBook(resultDay || currentDay, rec)} />}
       {screen === 'books' && <LibraryPage books={books} loading={libraryLoading} error={libraryError} onOpenBook={(book) => openBook(book)} onBack={() => navigate(libraryReturn)} />}
-      {screen === 'support' && <Support content={content} onBack={() => navigate(supportReturn)} />}
+      {screen === 'support' && <Support content={content} journeyContext={{
+        active_day: journey.started && journey.assessment && nextRequiredDay(journey) <= 28 ? nextRequiredDay(journey) : undefined,
+        completed_days_count: journey.started && journey.assessment ? journey.completed.length : undefined,
+      }} onBack={() => navigate(supportReturn)} />}
       {screen === 'final' && <FinalAssessment initial={journey.final} onSave={finishFinal} onValidation={showValidation} />}
       {screen === 'done' && <Done journey={journey} onReport={() => navigate('report')} onBooks={() => openBooks('done')} onSupport={() => openSupport('done')} onArchive={() => navigate('archive')} onNew={startNewPathFromArchive} />}
       {screen === 'report' && <Report journey={journey} userProfile={userProfile} content={content} onBooks={() => openBooks('report')} onSupport={() => openSupport('report')} onDashboard={() => navigate('dashboard')} onArchive={() => navigate('archive')} onNew={startNewPathFromArchive} />}

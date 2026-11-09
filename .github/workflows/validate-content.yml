@@ -10,6 +10,14 @@ on:
       - 'tests/**'
       - 'scripts/validate-content.mjs'
       - 'scripts/validate-assistant-topics.mjs'
+      - 'scripts/validate-content-redesign.mjs'
+      - 'scripts/validate-self-evaluation-pilot.mjs'
+      - 'scripts/validate-subtopic-definition-proposals.mjs'
+      - 'scripts/validate-assessment-knowledge-consistency.mjs'
+      - 'scripts/validate-assessment-rule-registry.mjs'
+      - 'scripts/validate-quality-safety-gates.mjs'
+      - 'scripts/validate-independent-review-ledger.mjs'
+      - 'public/assistant/quality/**'
       - 'scripts/audit-content-quality.mjs'
       - 'scripts/audit-content-mappings.mjs'
       - 'scripts/generate-content-mapping-queue.mjs'
@@ -122,6 +130,27 @@ jobs:
       - name: Validate course and library data
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:content
+      - name: Validate 952-day redesign queue and draft gates
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:content-redesign
+      - name: Validate five-topic self-evaluation pilot
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:self-evaluation-pilot
+      - name: Validate operational subtopic definition proposals
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:subtopic-definitions
+      - name: Validate assessment and canonical knowledge consistency
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:assessment-knowledge
+      - name: Validate versioned assessment rule registry
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:assessment-rule-registry
+      - name: Validate content quality and safety release gates
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:quality-safety-gates
+      - name: Validate owner-expert review ledger
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:independent-review-ledger
       - name: Audit daily content quality and topic specificity
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run audit:content-quality

@@ -1,0 +1,744 @@
+{
+  "schema_version": "1.0.0",
+  "registry_id": "maseer28-952-day-redesign-draft-v1",
+  "source_content_version": "2026-10-22-content-rebuild-1",
+  "batch_id": "days-04-08-self-evaluation-cluster-pilot",
+  "status": "draft_pending_expert_review",
+  "purpose": "پایلوت ۲۵ محتوای روزهای ۴ تا ۸ برای پنج موضوع خوشه ارزیابی منفی خود؛ متن‌ها پیش‌نویس آموزشی غیرتشخیصی‌اند، نه درمان و نه تأییدشده برای انتشار یا runtime.",
+  "design_rules": [
+    "این فایل فقط پنج موضوع T15,T23,T33,T19,T26 را پوشش می‌دهد؛ T18 عمداً حذف شده تا تصمیم taxonomy/ایمنی آن مستقل بررسی شود.",
+    "هر پنج مسیر از مشاهده روزهای ۱ تا ۳ به مهارت‌سازی تدریجی و سپس جمع‌بندی می‌روند؛ progression باید در بازبینی متخصص تأیید شود.",
+    "منابع در evidence_ids به منابع واقعی ثبت‌شده در رجیستری اشاره می‌کنند؛ وجود منبع، اثربخشی این متن خاص را اثبات نمی‌کند.",
+    "تمرین‌ها اختیاری‌اند؛ افشا، مواجهه، تماس با فرد ناامن، خودتنبیهی یا رفتار پرخطر تجویز نمی‌شود.",
+    "همه رکوردها draft_pending_expert_review و runtime_eligible=false هستند؛ هیچ نمره یا هویت بازبین از پیش ثبت نشده است."
+  ],
+  "evidence_limitations": [
+    "برای T15، نظریه خودکارآمدی مبنای مفهومی است؛ این منابع به‌تنهایی اثربخشی این تمرین‌های خاص را اثبات نمی‌کنند.",
+    "برای T23، شواهد مربوط به عزت‌نفس/مداخلات شفقت‌محور معادل شواهد مستقیم برای باور بی‌ارزشی نیستند؛ از ادعای درمانی پرهیز شده است.",
+    "برای T33، مرورهای مداخلات شفقت‌محور و درمان متمرکز بر هیجان ناهمگنی و محدودیت کیفیت دارند؛ تمرین‌ها صرفاً مهارت‌های آموزشی اولیه‌اند.",
+    "برای T19، شواهد خودسرزنشی محدود و عمدتاً مشاهده‌ای است؛ هیچ فرمول جبرانی یا تعیین تقصیر قطعی ارائه نمی‌شود.",
+    "برای T26، تمایز شرم/گناه در ادبیات محل بحث است و شواهد مداخله‌ای برای شرم درونی محدودتر از برخی پیامدهای دیگر است."
+  ],
+  "records": [
+    {
+      "content_id": "DRAFT_T15_D04",
+      "source_content_id": "اعتمادبه‌نفس پایین-04",
+      "topic_id": "T15",
+      "topic_name": "اعتمادبه‌نفس پایین",
+      "subtopic_id": "T15-S01",
+      "subtopic_name": "خودکارآمدی در حوزه مشخص",
+      "day_number": 4,
+      "phase": "guided_skill_building",
+      "learning_objective": "یک موقعیت مشخص را انتخاب کن که در آن درباره توانایی خود تردید داری؛ تکلیف را آن‌قدر محدود کن که بتوانی آن را در یک جمله توصیف کنی.",
+      "mechanism_focus": "خودکارآمدی وابسته به تکلیف، نه ارزش شخصی یا توانایی کلی.",
+      "exercise": "یک تکلیف واقعی و کم‌خطر را مشخص کن؛ بنویس دقیقاً چه کاری، در چه شرایطی و با چه معیار قابل مشاهده‌ای باید انجام شود.",
+      "action": "فقط خط پایه را ثبت کن: اکنون انجام کدام بخش برایت آسان، دشوار یا نامعلوم است؟",
+      "progress_measure": "آیا تکلیف و شرایط آن به‌طور مشخص تعریف شدند؟",
+      "safety_and_limits": "این تمرین آزمون توانایی یا تشخیص نیست؛ تکلیف پرخطر یا فراتر از مهارت فعلی انتخاب نکن.",
+      "evidence_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "source_reference_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T15_D05",
+      "source_content_id": "اعتمادبه‌نفس پایین-05",
+      "topic_id": "T15",
+      "topic_name": "اعتمادبه‌نفس پایین",
+      "subtopic_id": "T15-S01",
+      "subtopic_name": "خودکارآمدی در حوزه مشخص",
+      "day_number": 5,
+      "phase": "guided_skill_building",
+      "learning_objective": "تکلیف را به دو تا چهار گام کوچک و قابل مشاهده تقسیم کن؛ از برچسب‌هایی مثل «من بی‌عرضه‌ام» استفاده نکن.",
+      "mechanism_focus": "شکستن تکلیف و تبدیل ارزیابی کلی به مهارت‌های قابل یادگیری.",
+      "exercise": "برای هر گام، آنچه از قبل بلدی و آنچه نیاز به آموزش یا تمرین دارد بنویس.",
+      "action": "یک گام مقدماتی را که در کنترل توست مشخص کن؛ هنوز لازم نیست آن را اجرا کنی.",
+      "progress_measure": "آیا دست‌کم یک مهارت قابل تمرین از قضاوت کلی جدا شد؟",
+      "safety_and_limits": "تقسیم‌بندی نباید به فشار برای عملکرد بی‌نقص تبدیل شود؛ در صورت اضطراب شدید، کار را کوچک‌تر یا متوقف کن.",
+      "evidence_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "source_reference_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T15_D06",
+      "source_content_id": "اعتمادبه‌نفس پایین-06",
+      "topic_id": "T15",
+      "topic_name": "اعتمادبه‌نفس پایین",
+      "subtopic_id": "T15-S01",
+      "subtopic_name": "خودکارآمدی در حوزه مشخص",
+      "day_number": 6,
+      "phase": "guided_skill_building",
+      "learning_objective": "یک تجربه قبلی مرتبط را مرور کن؛ فقط شواهد مستقیم از تلاش، یادگیری یا انجام بخشی از کار را ثبت کن.",
+      "mechanism_focus": "تجربه تسلط و اطلاعات واقعی درباره شرایط موفقیت؛ بدون مقایسه با دیگران.",
+      "exercise": "یک نمونه کوچک از زمانی را بنویس که بخشی از این مهارت را انجام دادی؛ چه شرایط یا کمکی مؤثر بود؟ اگر نمونه‌ای نداری، «ندارم» ثبت کن.",
+      "action": "یک منبع یادگیری، بازخورد یا حمایت واقع‌بینانه را که ممکن است کمک کند نام ببر.",
+      "progress_measure": "آیا یک شاهد واقعی یا نبودِ شاهد بدون تحقیر خود ثبت شد؟",
+      "safety_and_limits": "نبود تجربه قبلی شکست شخصی نیست؛ از خاطره‌ای که ناراحت‌کننده یا ناامن است صرف‌نظر کن.",
+      "evidence_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "source_reference_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T15_D07",
+      "source_content_id": "اعتمادبه‌نفس پایین-07",
+      "topic_id": "T15",
+      "topic_name": "اعتمادبه‌نفس پایین",
+      "subtopic_id": "T15-S01",
+      "subtopic_name": "خودکارآمدی در حوزه مشخص",
+      "day_number": 7,
+      "phase": "guided_skill_application",
+      "learning_objective": "اگر خودت مایل هستی، یک آزمایش رفتاری بسیار کوچک و کم‌خطر طراحی کن؛ هدف سنجش یادگیری است، نه اثبات ارزش خود.",
+      "mechanism_focus": "یادگیری از اقدام محدود و بازخورد؛ نتیجه به‌عنوان داده، نه حکم هویتی.",
+      "exercise": "پیش‌بینی خود را درباره یک گام کوچک بنویس، سپس فقط در صورت امن و مناسب بودن آن را انجام بده و نتیجه قابل مشاهده را ثبت کن.",
+      "action": "اگر انجامش دادی، نتیجه را با پیش‌بینی مقایسه کن؛ اگر انجام ندادی، مانع را بدون سرزنش ثبت کن.",
+      "progress_measure": "آیا پیش‌بینی و نتیجه واقعی از هم جدا شدند؟",
+      "safety_and_limits": "مواجهه اجباری، ریسک مالی/جسمی/اجتماعی یا موقعیت همراه با تهدید انجام نده؛ انجام‌ندادن نیز پاسخ معتبر است.",
+      "evidence_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "source_reference_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T15_D08",
+      "source_content_id": "اعتمادبه‌نفس پایین-08",
+      "topic_id": "T15",
+      "topic_name": "اعتمادبه‌نفس پایین",
+      "subtopic_id": "T15-S01",
+      "subtopic_name": "خودکارآمدی در حوزه مشخص",
+      "day_number": 8,
+      "phase": "consolidation_and_review",
+      "learning_objective": "داده‌های روزهای قبل را جمع‌بندی کن و یک هدف تمرینی واقع‌بینانه برای هفته بعد تعیین کن.",
+      "mechanism_focus": "کالیبراسیون باور به توانایی بر پایه شواهد و شرایط؛ نه افزایش اجباری اعتمادبه‌نفس.",
+      "exercise": "سه مورد را مرور کن: مهارت موجود، مهارت نیازمند تمرین، و حمایتی که کمک می‌کند؛ یک گام بعدی قابل کنترل انتخاب کن.",
+      "action": "یک معیار پیشرفت شخصی و غیرمقایسه‌ای تعیین کن؛ مثلاً تکمیل یک گام یا درخواست بازخورد.",
+      "progress_measure": "آیا گام بعدی، معیار و منبع حمایت روشن‌اند؟",
+      "safety_and_limits": "این جمع‌بندی ارزیابی روان‌سنجی نیست و نتیجه را به ارزش کلی فرد تعمیم نده.",
+      "evidence_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "source_reference_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T23_D04",
+      "source_content_id": "احساس بی‌ارزشی-04",
+      "topic_id": "T23",
+      "topic_name": "احساس بی‌ارزشی",
+      "subtopic_id": "T23-S01",
+      "subtopic_name": "باور کلی درباره ارزش شخصی",
+      "day_number": 4,
+      "phase": "guided_skill_building",
+      "learning_objective": "اگر برایت قابل تحمل است، یک باور بی‌ارزشی را همان‌طور که در ذهن ظاهر می‌شود ثبت کن و مشخص کن درباره کل وجود توست یا یک حوزه خاص.",
+      "mechanism_focus": "دامنه باور کلی در برابر ارزیابی موقعیتی؛ بدون بحث یا مثبت‌اندیشی اجباری.",
+      "exercise": "فقط جمله را ثبت کن و کنار آن بنویس «کلی»، «موقعیتی» یا «هنوز روشن نیست».",
+      "action": "اگر نوشتن جمله سنگین است، فقط دامنه را انتخاب کن یا تمرین را رد کن.",
+      "progress_measure": "آیا دامنه باور بدون مجبورکردن خود به رد آن مشخص شد؟",
+      "safety_and_limits": "ثبت عبارت دردناک اختیاری است؛ اگر حال بدتر شد متوقف شو. بی‌ارزشی به‌تنهایی تشخیص یا تعیین‌کننده خطر نیست.",
+      "evidence_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021"
+      ],
+      "source_reference_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T23_D05",
+      "source_content_id": "احساس بی‌ارزشی-05",
+      "topic_id": "T23",
+      "topic_name": "احساس بی‌ارزشی",
+      "subtopic_id": "T23-S02",
+      "subtopic_name": "بی‌ارزشی موقعیتی و وابسته به عملکرد",
+      "day_number": 5,
+      "phase": "guided_skill_building",
+      "learning_objective": "بررسی کن آیا ارزش خود را به یک شرط مانند موفقیت، تأیید دیگران یا بی‌اشتباه‌بودن گره زده‌ای.",
+      "mechanism_focus": "ارزشمندی مشروط و تعمیم نتیجه یک حوزه به کل خود.",
+      "exercise": "یک شرط احتمالی را بنویس: «فقط وقتی ... باشم، ارزش دارم». سپس مشخص کن این شرط از کجا آمده؛ پاسخ‌دادن به جزئیات لازم نیست.",
+      "action": "یک استثنا یا موقعیتی را که در آن این شرط برقرار نبوده ولی همچنان حق احترام و مراقبت داشته‌ای، در صورت تمایل یادداشت کن.",
+      "progress_measure": "آیا یک قاعده مشروط شناسایی شد، بدون اینکه مجبور به باور جایگزین شوی؟",
+      "safety_and_limits": "اگر یادآوری تجربه باعث آشفتگی شد، توقف کن؛ ارزش شخصی را با عملکرد یا بهره‌وری نسنج.",
+      "evidence_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021"
+      ],
+      "source_reference_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T23_D06",
+      "source_content_id": "احساس بی‌ارزشی-06",
+      "topic_id": "T23",
+      "topic_name": "احساس بی‌ارزشی",
+      "subtopic_id": "T23-S01",
+      "subtopic_name": "باور کلی درباره ارزش شخصی",
+      "day_number": 6,
+      "phase": "guided_skill_building",
+      "learning_objective": "برای باور کلی، داده‌های موافق، مخالف و نامعلوم را از هم جدا کن؛ هدف صدور حکم قطعی نیست.",
+      "mechanism_focus": "بازبینی شناختی متوازن و تحمل ابهام.",
+      "exercise": "یک نمونه را در سه ستون بنویس: داده قابل مشاهده، تفسیر ذهنی، اطلاعاتی که هنوز ندارم.",
+      "action": "یک تفسیر جایگزینِ محتاطانه بساز که نه انکارکننده باشد و نه تحقیرگر.",
+      "progress_measure": "آیا دست‌کم یک تفسیر از داده جدا شد؟",
+      "safety_and_limits": "به‌دنبال اثبات اجباری مثبت‌بودن خود نباش؛ اگر تمرین نشخوار را بیشتر کرد، متوقف کن.",
+      "evidence_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021"
+      ],
+      "source_reference_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T23_D07",
+      "source_content_id": "احساس بی‌ارزشی-07",
+      "topic_id": "T23",
+      "topic_name": "احساس بی‌ارزشی",
+      "subtopic_id": "T23-S01",
+      "subtopic_name": "باور کلی درباره ارزش شخصی",
+      "day_number": 7,
+      "phase": "guided_skill_application",
+      "learning_objective": "یک جمله پاسخ متوازن و محترمانه بساز که وجود دشواری را انکار نکند و کل هویت را محکوم نکند.",
+      "mechanism_focus": "زبان خودمهربانانه و دقیق در برابر برچسب‌زنی کلی.",
+      "exercise": "جمله‌ای با این قالب کامل کن: «اینکه در ... مشکل دارم، درباره ... اطلاعات می‌دهد؛ اما به‌تنهایی ثابت نمی‌کند که ...».",
+      "action": "جمله را فقط اگر باورپذیر و قابل تحمل است نگه دار؛ در غیر این صورت نسخه خنثی‌تر بنویس.",
+      "progress_measure": "آیا جمله از برچسب هویتی به توصیف دقیق‌تر حرکت کرد؟",
+      "safety_and_limits": "قرار نیست با یک جمله احساس بی‌ارزشی از بین برود؛ این تمرین درمان یا جایگزین حمایت انسانی نیست.",
+      "evidence_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021"
+      ],
+      "source_reference_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T23_D08",
+      "source_content_id": "احساس بی‌ارزشی-08",
+      "topic_id": "T23",
+      "topic_name": "احساس بی‌ارزشی",
+      "subtopic_id": "T23-S01",
+      "subtopic_name": "باور کلی درباره ارزش شخصی",
+      "day_number": 8,
+      "phase": "consolidation_and_review",
+      "learning_objective": "به چیزهایی توجه کن که در زندگی تو اهمیت دارند و به موفقیت یا تأیید دیگران محدود نیستند.",
+      "mechanism_focus": "گسترش تصویر خود فراتر از عملکرد و شناسایی منابع حمایت/معنا.",
+      "exercise": "دو نقش، رابطه، ارزش یا فعالیت مهم را نام ببر؛ لازم نیست در آن‌ها موفق یا مفید باشی.",
+      "action": "یک اقدام کوچک و سازگار با یکی از ارزش‌ها را انتخاب کن، حتی اگر حال خوب ایجاد نکند.",
+      "progress_measure": "آیا دست‌کم یک حوزه مهم مستقل از عملکرد شناسایی شد؟",
+      "safety_and_limits": "فعالیت نباید به اجبار یا معیار ارزشمندی تازه تبدیل شود. ناامیدی شدید یا فکر آسیب به خود نیازمند حمایت انسانی فوری است.",
+      "evidence_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021"
+      ],
+      "source_reference_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T33_D04",
+      "source_content_id": "خودانتقادی-04",
+      "topic_id": "T33",
+      "topic_name": "خودانتقادی",
+      "subtopic_id": "T33-S02",
+      "subtopic_name": "خودحمله‌گری و گفت‌وگوی درونی تنبیهی",
+      "day_number": 4,
+      "phase": "guided_skill_building",
+      "learning_objective": "یک نمونه از گفت‌وگوی انتقادی درونی را ثبت کن؛ اگر محتوای آن آزاردهنده است، فقط نوع آن را مشخص کن.",
+      "mechanism_focus": "مشاهده صدای منتقد بدون پذیرفتن آن به‌عنوان واقعیت.",
+      "exercise": "مشخص کن جمله بیشتر «بازخورد درباره رفتار»، «توهین به هویت» یا «ترکیبی» است.",
+      "action": "فقط یک موقعیت محرک را نام ببر؛ نیازی به بازخوانی مکرر جمله نیست.",
+      "progress_measure": "آیا نوع گفت‌وگو از محتوای آن تفکیک شد؟",
+      "safety_and_limits": "ثبت دقیق توهین یا تکرار آن اجباری نیست؛ در صورت افزایش آشفتگی متوقف شو.",
+      "evidence_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "source_reference_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T33_D05",
+      "source_content_id": "خودانتقادی-05",
+      "topic_id": "T33",
+      "topic_name": "خودانتقادی",
+      "subtopic_id": "T33-S01",
+      "subtopic_name": "بازخورد سازنده به خود",
+      "day_number": 5,
+      "phase": "guided_skill_building",
+      "learning_objective": "جمله را از نظر دقت، شواهد و امکان اقدام بررسی کن.",
+      "mechanism_focus": "تمایز ارزیابی قابل آزمون از قضاوت کلی و غیرقابل اصلاح.",
+      "exercise": "سه پرسش بپرس: دقیقاً کدام رفتار؟ چه شواهدی؟ چه بخشی قابل تغییر است؟ پاسخ نامعلوم را مجاز بدان.",
+      "action": "یک عبارت کلی را به توصیف موقعیت‌مند تبدیل کن؛ مثلاً از «همیشه خراب می‌کنم» به «در این بخش به مشکل خوردم».",
+      "progress_measure": "آیا جمله به رفتار و موقعیت مشخص‌تر تبدیل شد؟",
+      "safety_and_limits": "هدف تبرئه یا محکوم‌کردن نیست؛ از بازبینی وسواسی و کمال‌گرایانه پرهیز کن.",
+      "evidence_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "source_reference_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T33_D06",
+      "source_content_id": "خودانتقادی-06",
+      "topic_id": "T33",
+      "topic_name": "خودانتقادی",
+      "subtopic_id": "T33-S03",
+      "subtopic_name": "استانداردهای سخت‌گیرانه و تعمیم خطا",
+      "day_number": 6,
+      "phase": "guided_skill_building",
+      "learning_objective": "استانداردی را که از خود انتظار داری با استانداردی که برای فرد دیگری در شرایط مشابه به کار می‌بری مقایسه کن.",
+      "mechanism_focus": "استانداردهای دوگانه، کمال‌گرایی و معیارهای غیرواقع‌بینانه.",
+      "exercise": "یک انتظار را بنویس و بررسی کن آیا برای فردی با منابع، زمان و شرایط مشابه نیز همان انتظار را داری. اگر مقایسه با دیگری مناسب نیست، آن را با معیار شخصیِ واقع‌بینانه‌ای که قبلاً برای خودت پذیرفته‌ای مقایسه کن.",
+      "action": "اگر معیار نامتناسب است، نسخه واقع‌بینانه‌تر و قابل سنجش آن را بنویس؛ اگر مقایسه آشفتگی یا رقابت را بیشتر می‌کند، تمرین مقایسه را متوقف کن.",
+      "progress_measure": "آیا یک معیار سخت‌گیرانه یا دوگانه شناسایی شد؟",
+      "safety_and_limits": "این مقایسه برای توجیه آسیب یا نادیده‌گرفتن مسئولیت نیست؛ شرایط و اثر رفتار را در نظر بگیر.",
+      "evidence_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "source_reference_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T33_D07",
+      "source_content_id": "خودانتقادی-07",
+      "topic_id": "T33",
+      "topic_name": "خودانتقادی",
+      "subtopic_id": "T33-S01",
+      "subtopic_name": "بازخورد سازنده به خود",
+      "day_number": 7,
+      "phase": "guided_skill_application",
+      "learning_objective": "یک جمله منتقدانه را به بازخوردی تبدیل کن که هم واقع‌بینانه باشد و هم راه اقدام مشخصی بدهد.",
+      "mechanism_focus": "بازخورد رفتارمحور و خودراهنمایی به‌جای تحقیر.",
+      "exercise": "از قالب استفاده کن: «در ... این اتفاق افتاد؛ عامل مؤثر ... بود؛ گام قابل انجام بعدی ... است».",
+      "action": "اگر گام بعدی فعلاً ممکن نیست، فقط نیاز به زمان، آموزش یا کمک را مشخص کن.",
+      "progress_measure": "آیا بازخورد شامل رفتار، زمینه و گام مشخص است؟",
+      "safety_and_limits": "اگر بازنویسی به خودحمله‌گری شدید منجر شد، تمرین را متوقف کن و از حمایت انسانی استفاده کن.",
+      "evidence_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "source_reference_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T33_D08",
+      "source_content_id": "خودانتقادی-08",
+      "topic_id": "T33",
+      "topic_name": "خودانتقادی",
+      "subtopic_id": "T33-S01",
+      "subtopic_name": "بازخورد سازنده به خود",
+      "day_number": 8,
+      "phase": "consolidation_and_review",
+      "learning_objective": "اثر خودانتقادی را بر رفتار و حال خود مرور کن؛ آیا به اصلاح کمک کرده یا به اجتناب و فرسودگی؟",
+      "mechanism_focus": "ارزیابی کارکردی خودانتقادی و انتخاب پاسخ جایگزین.",
+      "exercise": "یک نمونه را از نظر پیامد بررسی کن: اقدام، تعلل، پنهان‌کاری، نشخوار یا کناره‌گیری.",
+      "action": "یک شیوه بازخورد واقع‌بینانه را برای موقعیت بعدی انتخاب کن و معیار اثر آن را مشخص کن.",
+      "progress_measure": "آیا یک پیامد و یک پاسخ جایگزین قابل بررسی تعیین شد؟",
+      "safety_and_limits": "این تمرین تشخیص یا درمان نیست؛ در صورت ناامیدی شدید یا فکر آسیب به خود، مسیر ایمنی و کمک انسانی مقدم است.",
+      "evidence_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "source_reference_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T19_D04",
+      "source_content_id": "خودسرزنشی-04",
+      "topic_id": "T19",
+      "topic_name": "خودسرزنشی",
+      "subtopic_id": "T19-S01",
+      "subtopic_name": "سرزنش رفتار و مسئولیت",
+      "day_number": 4,
+      "phase": "guided_skill_building",
+      "learning_objective": "اگر رویداد مشخصی در ذهن داری و مرور آن امن است، فقط واقعیت‌های قابل مشاهده را از برداشت‌ها جدا کن.",
+      "mechanism_focus": "تفکیک رویداد، تفسیر و خلأ اطلاعات؛ بدون بازسازی اجباری تجربه آسیب‌زا.",
+      "exercise": "سه مورد بنویس: چه چیزی را مستقیم می‌دانم، چه چیزی را حدس می‌زنم، و چه چیزی را نمی‌دانم.",
+      "action": "اگر رویداد آسیب‌زا یا ناامن است، جزئیات را ننویس و تمرین را رد کن.",
+      "progress_measure": "آیا دست‌کم یک واقعیت از تفسیر جدا شد؟",
+      "safety_and_limits": "در خشونت، اجبار، سوءاستفاده یا آسیب، این تمرین نباید مسئولیت رفتار عامل آسیب را به فرد آسیب‌دیده منتقل کند.",
+      "evidence_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "source_reference_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T19_D05",
+      "source_content_id": "خودسرزنشی-05",
+      "topic_id": "T19",
+      "topic_name": "خودسرزنشی",
+      "subtopic_id": "T19-S01",
+      "subtopic_name": "سرزنش رفتار و مسئولیت",
+      "day_number": 5,
+      "phase": "guided_skill_building",
+      "learning_objective": "عوامل تحت کنترل، خارج از کنترل و نامعلوم را از هم جدا کن.",
+      "mechanism_focus": "اسناد مسئولیت و کنترل‌پذیری واقعی.",
+      "exercise": "برای یک رویداد غیرآسیب‌زا، عوامل مربوط به انتخاب خود، انتخاب دیگران و شرایط را جداگانه فهرست کن.",
+      "action": "یک عامل خارج از کنترل خود را مشخص کن؛ لازم نیست درباره سهم نهایی تصمیم بگیری.",
+      "progress_measure": "آیا دست‌کم یک عامل خارج از کنترل یا نامعلوم شناسایی شد؟",
+      "safety_and_limits": "در رویدادهای خشونت یا سوءاستفاده، ایمنی و حمایت تخصصی مقدم است؛ قربانی مسئول انتخاب عامل آسیب نیست.",
+      "evidence_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "source_reference_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T19_D06",
+      "source_content_id": "خودسرزنشی-06",
+      "topic_id": "T19",
+      "topic_name": "خودسرزنشی",
+      "subtopic_id": "T19-S01",
+      "subtopic_name": "سرزنش رفتار و مسئولیت",
+      "day_number": 6,
+      "phase": "guided_skill_building",
+      "learning_objective": "اگر سهمی داشته‌ای، آن را متناسب با شواهد و بدون تعمیم به کل هویت توصیف کن.",
+      "mechanism_focus": "تفکیک مسئولیت رفتاری از سرزنش کلی شخصیت؛ تناسب با شواهد.",
+      "exercise": "یک جمله بنویس: «سهم مشخص من در این بخش ... بود» یا «شواهد کافی برای تعیین سهمم ندارم».",
+      "action": "از درصدسازی ساختگی خودداری کن؛ فقط حدود دانسته‌ها و نامعلوم‌ها را ثبت کن.",
+      "progress_measure": "آیا مسئولیت به رفتار و شواهد محدود ماند، نه کل هویت؟",
+      "safety_and_limits": "این تمرین ابزار داوری حقوقی یا تعیین تقصیر نیست؛ در موقعیت پیچیده از مشورت مستقل و امن کمک بگیر.",
+      "evidence_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "source_reference_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T19_D07",
+      "source_content_id": "خودسرزنشی-07",
+      "topic_id": "T19",
+      "topic_name": "خودسرزنشی",
+      "subtopic_id": "T19-S03",
+      "subtopic_name": "چرخه نشخوار، تنبیه خود و جبران",
+      "day_number": 7,
+      "phase": "guided_skill_application",
+      "learning_objective": "میان جبران متناسب، یادگیری و تنبیه خود تفاوت بگذار.",
+      "mechanism_focus": "حل مسئله و ترمیم در برابر نشخوار یا خودتنبیهی.",
+      "exercise": "اگر واقعاً آسیبی زده‌ای، گزینه‌های جبران ایمن و متناسب را فهرست کن؛ اگر جبران ممکن یا مناسب نیست، این را ثبت کن.",
+      "action": "یک گام کوچک و محترمانه انتخاب کن؛ اگر تماس با دیگری ناامن یا ناخواسته است، اقدام نکن.",
+      "progress_measure": "آیا یک گزینه جبران از خودتنبیهی تفکیک شد؟",
+      "safety_and_limits": "جبران نباید نقض مرز، تماس ناخواسته، افشای اطلاعات یا آسیب به خود/دیگری ایجاد کند.",
+      "evidence_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "source_reference_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T19_D08",
+      "source_content_id": "خودسرزنشی-08",
+      "topic_id": "T19",
+      "topic_name": "خودسرزنشی",
+      "subtopic_id": "T19-S03",
+      "subtopic_name": "چرخه نشخوار، تنبیه خود و جبران",
+      "day_number": 8,
+      "phase": "consolidation_and_review",
+      "learning_objective": "آنچه از رویداد آموختی را به قاعده‌ای عملی و محدود تبدیل کن؛ سپس بررسی کن آیا سرزنش تکراری هنوز چیزی حل می‌کند.",
+      "mechanism_focus": "یادگیری، مسئولیت متناسب و پایان‌دادن به نشخوار غیرمفید.",
+      "exercise": "سه خط بنویس: سهم قابل اتکا، چیزی که آموختم، و گام آینده در کنترل من.",
+      "action": "اگر هنوز اطلاعات کافی نداری، تصمیم را به تعویق بینداز و منبع کمک مناسب را مشخص کن.",
+      "progress_measure": "آیا یک یادگیری یا گام بعدی مشخص شد بدون محکومیت کلی خود؟",
+      "safety_and_limits": "اگر خودتنبیهی به محرومیت از نیازهای پایه یا آسیب می‌انجامد، تمرین را متوقف و کمک انسانی بگیر.",
+      "evidence_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "source_reference_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T26_D04",
+      "source_content_id": "شرم-04",
+      "topic_id": "T26",
+      "topic_name": "شرم",
+      "subtopic_id": "T26-S01",
+      "subtopic_name": "شرم درونی و ارزیابی کلی خود",
+      "day_number": 4,
+      "phase": "guided_skill_building",
+      "learning_objective": "بدون نوشتن جزئیات خصوصی، مشخص کن شرم بیشتر درباره یک رفتار، تصویر کلی از خود یا احتمال قضاوت دیگران است.",
+      "mechanism_focus": "تمایز اولیه شرمِ خودمحور از ارزیابی رفتار و نگرانی از افشا.",
+      "exercise": "یکی از سه گزینه را انتخاب کن؛ اگر چند مورد هم‌زمان‌اند، چند گزینه را علامت بزن.",
+      "action": "محتوای خصوصی را ثبت نکن مگر اینکه خودت بخواهی و امن باشد.",
+      "progress_measure": "آیا کانون تجربه بدون افشای جزئیات مشخص شد؟",
+      "safety_and_limits": "هیچ افشا یا مواجهه‌ای اجباری نیست؛ امنیت و حریم خصوصی مقدم‌اند.",
+      "evidence_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "source_reference_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T26_D05",
+      "source_content_id": "شرم-05",
+      "topic_id": "T26",
+      "topic_name": "شرم",
+      "subtopic_id": "T26-S02",
+      "subtopic_name": "شرم اجتماعی و ترس از افشا",
+      "day_number": 5,
+      "phase": "guided_skill_building",
+      "learning_objective": "مشخص کن قضاوت مورد انتظار از سوی چه کسی است و چه شواهدی برای واقعی یا فرضی‌بودن آن داری.",
+      "mechanism_focus": "ادراک مخاطب، تهدید اجتماعی و واقعیت در برابر پیش‌بینی.",
+      "exercise": "فقط نقش مخاطب را بنویس (مثلاً خانواده، همکار، فرد ناشناس) و شواهد موجود/نامعلوم درباره قضاوت را جدا کن؛ لازم نیست نام یا جزئیات خصوصی را ثبت کنی.",
+      "action": "اگر مایل بودی، مشخص کن با چه کسی، اگر اصلاً، و در چه حدی مایلی اطلاعاتی را در میان بگذاری؛ نداشتنِ تمایل به افشا نیز انتخاب معتبر است.",
+      "progress_measure": "آیا مخاطب و مرز اطلاعاتی روشن‌تر شدند؟",
+      "safety_and_limits": "اگر افشا می‌تواند خطر، خشونت، تبعیض یا پیامد جدی ایجاد کند، از افشا خودداری کن و حمایت امن بجوی.",
+      "evidence_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "source_reference_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T26_D06",
+      "source_content_id": "شرم-06",
+      "topic_id": "T26",
+      "topic_name": "شرم",
+      "subtopic_id": "T26-S03",
+      "subtopic_name": "پنهان‌کاری، کناره‌گیری و خودپذیری",
+      "day_number": 6,
+      "phase": "guided_skill_building",
+      "learning_objective": "بررسی کن شرم چه اثری بر رفتار دارد؛ مثلاً پنهان‌کاری، کناره‌گیری یا اجتناب؛ بدون قضاوت درباره خود.",
+      "mechanism_focus": "کارکرد رفتاری شرم و هزینه‌های احتمالی اجتناب.",
+      "exercise": "یک پیامد روزمره را انتخاب کن و بنویس چه چیزی را از تو دور کرده یا از چه چیزی محافظت کرده است.",
+      "action": "فقط یک هزینه یا فایده را ثبت کن؛ تغییر رفتار لازم نیست.",
+      "progress_measure": "آیا یک اثر رفتاری مشخص شناسایی شد؟",
+      "safety_and_limits": "اجتناب گاهی برای امنیت لازم است؛ آن را خودکار ناسازگار یا غلط تلقی نکن.",
+      "evidence_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "source_reference_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T26_D07",
+      "source_content_id": "شرم-07",
+      "topic_id": "T26",
+      "topic_name": "شرم",
+      "subtopic_id": "T26-S02",
+      "subtopic_name": "شرم اجتماعی و ترس از افشا",
+      "day_number": 7,
+      "phase": "guided_skill_application",
+      "learning_objective": "اگر حمایت لازم داری، امن‌ترین شکل درخواست کمک را بدون افشای بیش از حد طراحی کن.",
+      "mechanism_focus": "حمایت اجتماعی انتخابی و حفظ اختیار/حریم.",
+      "exercise": "یک فرد یا خدمت قابل اعتماد را در نظر بگیر و مشخص کن چه مقدار اطلاعات برای درخواست حمایت کافی است.",
+      "action": "می‌توانی فقط بگویی «موضوعی هست که برایم سنگین است؛ فعلاً نمی‌خواهم جزئیات بدهم».",
+      "progress_measure": "آیا یک مسیر حمایت با حد اطلاعات دلخواه مشخص شد؟",
+      "safety_and_limits": "با فرد ناامن یا کنترل‌گر تماس نگیر؛ افشای جزئیات شرط دریافت حمایت نیست.",
+      "evidence_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "source_reference_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "content_id": "DRAFT_T26_D08",
+      "source_content_id": "شرم-08",
+      "topic_id": "T26",
+      "topic_name": "شرم",
+      "subtopic_id": "T26-S01",
+      "subtopic_name": "شرم درونی و ارزیابی کلی خود",
+      "day_number": 8,
+      "phase": "consolidation_and_review",
+      "learning_objective": "یک پاسخ محترمانه و واقع‌بینانه به خودت بنویس که شأن انسانی را از قضاوت دیگران یا یک رویداد جدا کند.",
+      "mechanism_focus": "نگاه متوازن و خودمهربانی بدون انکار مسئولیت یا تحمیل پذیرش.",
+      "exercise": "جمله‌ای کامل کن: «ممکن است از ... ناراحت یا پشیمان باشم؛ اما این موضوع به‌تنهایی تمام هویت من را تعریف نمی‌کند».",
+      "action": "جمله را با زبان خودت تعدیل کن؛ اگر مصنوعی یا آزاردهنده است، آن را کنار بگذار.",
+      "progress_measure": "آیا یک پاسخ غیرتحقیرآمیز و باورپذیر ساخته شد؟",
+      "safety_and_limits": "این تمرین افشا، بخشش اجباری یا انکار آسیب نیست؛ اگر شرم با خطر یا ناامیدی شدید همراه است، حمایت انسانی مقدم است.",
+      "evidence_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "source_reference_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "review_status": "draft_pending_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    }
+  ]
+}

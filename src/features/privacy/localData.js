@@ -15,12 +15,27 @@ function isUserDataKey(key) {
 export function readLocalUserData(storage) {
   const target = getStorage(storage);
   const entries = {};
-  for (let index = 0; index < target.length; index += 1) {
-    const key = target.key(index);
+  const errors = [];
+  let length = 0;
+  try { length = target.length; }
+  catch (error) {
+    errors.push({ phase: 'enumerate', key: null, message: String(error?.message || error) });
+  }
+  for (let index = 0; index < length; index += 1) {
+    let key;
+    try { key = target.key(index); }
+    catch (error) {
+      errors.push({ phase: 'enumerate_key', key: null, message: String(error?.message || error) });
+      continue;
+    }
     if (!key || !isUserDataKey(key)) continue;
-    const raw = target.getItem(key);
-    try { entries[key] = JSON.parse(raw); }
-    catch { entries[key] = raw; }
+    try {
+      const raw = target.getItem(key);
+      try { entries[key] = JSON.parse(raw); }
+      catch { entries[key] = raw; }
+    } catch (error) {
+      errors.push({ phase: 'read', key, message: String(error?.message || error) });
+    }
   }
   return {
     schema_version: '1.0.0',
@@ -28,9 +43,10 @@ export function readLocalUserData(storage) {
     scope: 'This export contains app-owned browser localStorage data only.',
     storage: 'localStorage',
     entries,
+    complete: errors.length === 0,
+    errors,
   };
 }
-
 export function createLocalUserDataDeletionPlan(storage) {
   const target = getStorage(storage);
   const keys = [];
