@@ -168,7 +168,7 @@
       "lightExerciseText": "پیامد مرز را به اقدامی که در اختیار خودت است تبدیل کن.",
       "lightActionText": "بررسی کن آیا پیامد قابل اجرا و غیرتنبیهی است.",
       "progressActionText": "در شرایط امن، جمله کوتاه و پیامد قابل اجرا را بیان کن.",
-      "restExerciseText": "امروز پاسخ را تا زمان امن‌تر به تعویق بینداز.",
+      "restExerciseText": "اگر پاسخ‌دادن فشار ایجاد می‌کند، یک زمان مشخص برای تصمیم‌گیری بعدی تعیین کن.",
       "restActionText": "در تهدید یا خشونت، حمایت محرمانه مقدم است.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
@@ -207,7 +207,7 @@
       "lightExerciseText": "یک مهارت را در موقعیت واقعی و کم‌خطر مرور کن.",
       "lightActionText": "بخش مستقل و بخش نیازمند آموزش را جدا کن.",
       "progressActionText": "برای بخش دشوار بازخورد یا آموزش معتبر بگیر.",
-      "restExerciseText": "امروز خودت را با دیگران مقایسه نکن.",
+      "restExerciseText": "امروز فقط یک مهارت را که نیازمند تمرین یا نظارت است مشخص کن.",
       "restActionText": "در فعالیت حساس، بدون صلاحیت یا نظارت اقدام نکن.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
@@ -376,7 +376,7 @@
       "lightExerciseText": "یک تلاش را از نظر هزینه، یادگیری و امکان اصلاح بررسی کن.",
       "lightActionText": "چهار گزینه را مقایسه کن: ادامه، تغییر روش، کمک یا توقف.",
       "progressActionText": "تصمیم متناسب با منابع و ریسک بگیر.",
-      "restExerciseText": "امروز تصمیم پرهزینه را عقب بینداز.",
+      "restExerciseText": "پیش از تعهد تازه، پیامد نامطلوب محتمل و راه برگشت را روی کاغذ بیاور.",
       "restActionText": "پافشاری برای اثبات خود ارزشمندتر از امنیت نیست.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
@@ -415,7 +415,7 @@
       "lightExerciseText": "نمونه‌ای را که پاسخ منفی دیگری را پذیرفتی مرور کن.",
       "lightActionText": "عامل کمک‌کننده به تحمل ناراحتی بدون کنترل را مشخص کن.",
       "progressActionText": "همان پاسخ را در موقعیت بعدی تکرار و برای الگوی پایدار کمک بگیر.",
-      "restExerciseText": "امروز از پایش و فشار فاصله بگیر.",
+      "restExerciseText": "امروز یک موقعیت را بدون مداخله در انتخاب دیگری پشت سر بگذار.",
       "restActionText": "تهدید یا تلافی در برابر پاسخ منفی قابل قبول نیست.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
@@ -442,7 +442,7 @@
       "lightActionText": "یک اصلاح مشخص و قابل اجرا بنویس.",
       "progressActionText": "اصلاح را انجام بده و مرور بی‌فایده را ببند.",
       "restExerciseText": "اگر تمرین به تحقیر خود تبدیل شد متوقف کن.",
-      "restActionText": "خودتحقیری جایگزین مسئولیت‌پذیری نیست.",
+      "restActionText": "بازخورد دقیق را از تحقیر جدا کن؛ اگر خودتحقیری پایدار است، حمایت حرفه‌ای بگیر.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
     },
