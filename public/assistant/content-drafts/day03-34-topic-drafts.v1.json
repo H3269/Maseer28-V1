@@ -17,10 +17,10 @@
       "source_content_id": "خشم-03",
       "topic_id": "T01",
       "topic_name": "خشم",
-      "subtopic_id": "T01-S01",
-      "subtopic_name": "محرک‌ها و ارزیابی موقعیت",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 3,
-      "phase": "topic_specific_daily_skill",
+      "phase": "functional_context_and_impact",
       "learning_objective": "شناسایی محرک‌های احتمالی و عوامل زمینه‌ای بدون فرض علت قطعی.",
       "mechanism_focus": "نقشه‌برداری محرک و تفکیک رویداد از زمینه.",
       "exercise": "دو تجربه کم‌فشار را انتخاب کن. برای هرکدام بنویس چه اتفاقی افتاد، چه چیزی برایت مهم بود و چه عامل زمینه‌ای مانند خستگی، فشار یا ابهام حضور داشت. موارد نامعلوم را خالی بگذار.",
@@ -35,10 +35,10 @@
       "runtime_eligible": false,
       "title": "نقشه محرک‌ها و زمینه‌ها",
       "subtopic_ids": [
-        "T01-S01"
+        "T01-S03"
       ],
       "subtopic_names": [
-        "محرک‌ها و ارزیابی موقعیت"
+        "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
       "target_skill": "نقشه‌برداری محرک و تفکیک رویداد از زمینه.",
       "teaching_point": "محرک‌ها ممکن است بیرونی یا درونی باشند و خستگی، فشار و تعارض‌های حل‌نشده می‌توانند حساسیت را بیشتر کنند.",
@@ -80,7 +80,10 @@
       },
       "source_runtime_mechanism": "شناسایی محرک‌ها و عوامل زمینه‌ای قابل مشاهده",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D03"
+      "canonical_package_record_id": "DRAFT_T01_D03",
+      "design_subtopic_ids": [
+        "T01-S01"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D03",
