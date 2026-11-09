@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url';
 export const SHARED_COPY_FIELDS = ['proposed_title', 'proposed_intro', 'proposed_closing'];
 export const PROPOSAL_FILES = [
   'public/assistant/content-drafts/day01-support-copy-proposals-34-topics.v1.json',
+  'public/assistant/content-drafts/day02-support-copy-proposals-34-topics.v1.json',
+  'public/assistant/content-drafts/day03-support-copy-proposals-34-topics.v1.json',
   'public/assistant/content-drafts/day01-shared-copy-proposals-34-topics.v1.json',
   'public/assistant/content-drafts/day02-shared-copy-proposals-34-topics.v1.json',
   'public/assistant/content-drafts/day03-shared-copy-proposals-34-topics.v1.json',
