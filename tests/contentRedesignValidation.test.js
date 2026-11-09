@@ -2,6 +2,41 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateContentRedesign } from '../scripts/validate-content-redesign.mjs';
 
+
+function makeFullData() {
+  const data = makeData();
+  for (const item of data.queue.records) {
+    item.draft_content_id = 'DRAFT_' + item.topic_id + '_D' + String(item.day_number).padStart(2, '0');
+    item.redesign_status = 'draft_created_pending_review';
+  }
+  const allDays = Array.from({ length: 28 }, (_, index) => {
+    const day = index + 1;
+    if (day <= 3) return data['day' + day];
+    return {
+      records: data.topics.topics.map((topic) => ({
+        content_id: 'DRAFT_' + topic.topic_id + '_D' + String(day).padStart(2, '0'),
+        source_content_id: topic.topic_id + '-' + String(day).padStart(2, '0'),
+        topic_id: topic.topic_id,
+        topic_name: topic.name,
+        subtopic_id: topic.topic_id + '-S01',
+        day_number: day,
+        phase: 'phase-' + day,
+        learning_objective: 'هدف اختصاصی ' + topic.topic_id + ' روز ' + day,
+        mechanism_focus: 'سازوکار ' + topic.topic_id + ' روز ' + day,
+        exercise: 'تمرین مستقل ' + topic.topic_id + ' روز ' + day,
+        action: 'اقدام مستقل ' + topic.topic_id + ' روز ' + day,
+        progress_measure: 'سنجه اختصاصی ' + topic.topic_id + ' روز ' + day,
+        safety_and_limits: 'محدودیت ایمنی موضوع ' + topic.topic_id,
+        evidence_ids: [],
+        source_reference_ids: [],
+        review_status: 'draft_pending_expert_review',
+        runtime_eligible: false,
+      })),
+    };
+  });
+  return { ...data, allDays };
+}
+
 function makeData() {
   const reviewedMappings = new Map([
     ['DRAFT_T14_D02', 'T14-S01'],
@@ -131,4 +166,24 @@ test('detects incorrect day phase and repeated subtopic progression', () => {
   const result = validateContentRedesign(data);
   assert.ok(result.errors.some((item) => item.includes('phase/day progression mismatch')));
   assert.ok(result.errors.some((item) => item.includes('distinct subtopic each day')));
+});
+
+
+test('validates all 952 daily drafts, global exercise/action uniqueness and topic-specific objectives/measures', () => {
+  const data = makeFullData();
+  const result = validateContentRedesign(data);
+  assert.equal(result.valid, true, result.errors.join('; '));
+});
+
+test('detects global repeated exercise and normalized cross-topic objective/progress templates', () => {
+  const data = makeFullData();
+  data.allDays[3].records[0].exercise = data.allDays[0].records[0].exercise;
+  data.allDays[4].records[0].learning_objective = 'هدف برای موضوع 1';
+  data.allDays[4].records[1].learning_objective = 'هدف برای موضوع 2';
+  data.allDays[5].records[0].progress_measure = 'سنجه برای موضوع 1';
+  data.allDays[5].records[1].progress_measure = 'سنجه برای موضوع 2';
+  const result = validateContentRedesign(data);
+  assert.ok(result.errors.some((item) => item.includes('global duplicate exercise across 952 drafts')));
+  assert.ok(result.errors.some((item) => item.includes('normalized duplicate learning_objective')));
+  assert.ok(result.errors.some((item) => item.includes('normalized duplicate progress_measure')));
 });
