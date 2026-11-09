@@ -327,6 +327,12 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
     return result('شناسه روزِ محتوای دریافتی با روز فعال یکسان نیست؛ برای جلوگیری از راهنمایی اشتباه، فعلاً به این محتوا پاسخ نمی‌دهم.', state, text);
   }
 
+  if (getCanonicalTopicIdForCategory(problem) === 'T01'
+      && dayData?.topic_id
+      && String(dayData.topic_id).trim() !== 'T01') {
+    return result('شناسه موضوعِ محتوای دریافتی با موضوع خشم یکسان نیست؛ برای جلوگیری از پاسخ بر پایه محتوای موضوع دیگر، فعلاً راهنمایی آماده را ارائه نمی‌کنم.', state, text);
+  }
+
   if (getCanonicalTopicIdForCategory(problem) === 'T01') {
     const preparedAnswer = answerAngerDailyPreparedQuestion({ day, message: text });
     if (preparedAnswer) return result(preparedAnswer, { ...state, lastTopic: currentTopic }, text);
