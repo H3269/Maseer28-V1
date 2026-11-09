@@ -8,10 +8,12 @@ import {
 import topicRegistry from '../../../public/assistant/knowledge/topics.v1.json';
 import { DEFAULT_PERSONALIZATION, loadPersonalizationPreferences } from '../privacy/personalizationPreferences.js';
 import { formatAssistantPrompt } from './assistantPreferences.js';
+import { buildAssistantContext, validateAssistantContext } from './assistantContext.v1.js';
+import { getConsentState } from '../privacy/consentManager.js';
 
 const topicNames = new Map(topicRegistry.topics.map((topic) => [topic.topic_id, topic.name]));
 
-export default function AssessmentAssistant() {
+export default function AssessmentAssistant({ journeyContext = {} }) {
   const [expanded, setExpanded] = useState(false);
   const [session, setSession] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -25,7 +27,22 @@ export default function AssessmentAssistant() {
     };
     refreshPreferences();
     window.addEventListener('maseer28:personalization-changed', refreshPreferences);
-    return () => window.removeEventListener('maseer28:personalization-changed', refreshPreferences);
+    const refreshContextConsent = () => {
+      setSession((previous) => {
+        if (!previous?.assistant_context) return previous;
+        try {
+          const validation = validateAssistantContext(previous.assistant_context, { consentState: getConsentState() });
+          return validation.valid ? previous : { ...previous, assistant_context: null };
+        } catch {
+          return { ...previous, assistant_context: null };
+        }
+      });
+    };
+    window.addEventListener('maseer28:consent-changed', refreshContextConsent);
+    return () => {
+      window.removeEventListener('maseer28:personalization-changed', refreshPreferences);
+      window.removeEventListener('maseer28:consent-changed', refreshContextConsent);
+    };
   }, []);
 
 
@@ -33,7 +50,20 @@ export default function AssessmentAssistant() {
     let currentPreferences = { ...DEFAULT_PERSONALIZATION };
     try { currentPreferences = loadPersonalizationPreferences(); } catch { /* defaults remain local and temporary */ }
     setPreferences(currentPreferences);
-    const next = createAssessmentSession();
+    let assistantContext = null;
+    let consentState = {};
+    try {
+      consentState = getConsentState();
+      const candidate = buildAssistantContext({
+        journey: journeyContext,
+        preferences: currentPreferences,
+        consentState,
+      });
+      if (validateAssistantContext(candidate, { consentState }).valid) assistantContext = candidate;
+    } catch {
+      assistantContext = null;
+    }
+    const next = createAssessmentSession({ assistantContext, consentState });
     setSession(next);
     setMessages([{ role: 'assistant', text: formatAssistantPrompt(getCurrentQuestion(next), currentPreferences) }]);
     setDraft('');
@@ -45,7 +75,7 @@ export default function AssessmentAssistant() {
     event.preventDefault();
     if (!session) return;
     try {
-      const updated = submitAssessmentAnswer(session, draft);
+      const updated = submitAssessmentAnswer(session, draft, { consentState: getConsentState() });
       setMessages((previous) => [
         ...previous,
         { role: 'user', text: draft.trim() },
@@ -85,6 +115,13 @@ export default function AssessmentAssistant() {
         <span> <strong>i</strong> </span>
         <div><b>حریم خصوصی آزمایشی</b><small>پاسخ‌ها فقط در حافظه موقت همین صفحه نگهداری می‌شوند؛ ذخیره یا به سرور ارسال نمی‌شوند. فقط ترجیحات غیرحساسِ شیوه تعامل، در صورت رضایت جداگانه، روی همین مرورگر اعمال می‌شوند. اطلاعات شناسایی‌کننده ننویس.</small></div>
       </div>
+      {session?.assistant_context?.entries?.length > 0 && <p className="muted" role="note">
+        زمینه محدود مسیر: {session.assistant_context.entries
+          .filter((item) => item.key === 'active_day' || item.key === 'completed_days_count')
+          .map((item) => item.key === 'active_day' ? `روز فعال ${item.value} از ۲۸` : `${item.value} روز تکمیل‌شده`)
+          .join(' · ')}
+        . این اطلاعات فقط برای نمایش زمینه در همین جلسه محلی استفاده می‌شود.
+      </p>}
       <div className="assistantTranscript" aria-live="polite">
         {messages.map((message, index) => <div className={message.role === 'assistant' ? 'assistantMessage' : 'userMessage'} key={index}>
           <b>{message.role === 'assistant' ? 'دستیار' : 'تو'}</b>
