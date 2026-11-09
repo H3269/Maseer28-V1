@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 export const SHARED_COPY_FIELDS = ['proposed_title', 'proposed_intro', 'proposed_closing'];
 export const PROPOSAL_FILES = [
+  'public/assistant/content-drafts/day01-support-copy-proposals-34-topics.v1.json',
   'public/assistant/content-drafts/day01-shared-copy-proposals-34-topics.v1.json',
   'public/assistant/content-drafts/day02-shared-copy-proposals-34-topics.v1.json',
   'public/assistant/content-drafts/day03-shared-copy-proposals-34-topics.v1.json',
@@ -13,13 +14,14 @@ export function auditSharedCopyProposal(proposal, expectedTopics = 34) {
   if (records.length !== expectedTopics) errors.push(`expected_${expectedTopics}_records_found_${records.length}`);
   const ids = records.map((record) => record.topic_id);
   if (new Set(ids).size !== ids.length) errors.push('duplicate_topic_ids');
-  for (const field of SHARED_COPY_FIELDS) {
+  const fields = Array.isArray(proposal?.fields) ? proposal.fields : SHARED_COPY_FIELDS;
+  for (const field of fields) {
     const values = records.map((record) => String(record?.[field] ?? '').trim());
     if (values.some((value) => !value)) errors.push(`empty_${field}`);
     if (new Set(values).size !== values.length) errors.push(`duplicate_${field}`);
   }
   if (records.some((record) => record.runtime_eligible !== false)) errors.push('runtime_eligible_record_found');
-  if (records.some((record) => record.copy_review_status !== 'draft_pending_expert_review')) errors.push('review_status_mismatch');
+  if (records.some((record) => (record.copy_review_status ?? record.review_status) !== 'draft_pending_expert_review')) errors.push('review_status_mismatch');
   if (proposal?.status !== 'draft_pending_expert_review') errors.push('proposal_status_mismatch');
   return { ok: errors.length === 0, record_count: records.length, unique_topic_count: new Set(ids).size, errors };
 }
