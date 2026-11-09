@@ -1,0 +1,736 @@
+{
+  "schema_version": "1.0.0",
+  "batch_id": "topic-specific-copy-pilot-t25-t30-days04-07",
+  "status": "draft_pending_owner_and_expert_review",
+  "purpose": "بازنویسی آزمایشی عنوان و مقدمه برای موضوعات T25 تا T30 در روزهای ۴ تا ۷؛ تمرین و اقدام runtime همان روز به‌عنوان منبع زمینه ثبت شده‌اند و تغییر نکرده‌اند.",
+  "source": "runtime content source and daily text overrides from current main snapshot",
+  "design_rules": [
+    "عنوان و مقدمه به تمرین همان روز متصل باشند و از کلی‌گویی پرهیز کنند.",
+    "در موضوع شرم و طرد، افشاگری یا تماس اجباری توصیه نشود.",
+    "در ترس از شکست، فقط فعالیت کم‌خطر و برگشت‌پذیر برای آزمون مطرح شود.",
+    "در شک و تردید، تصمیم‌های حساس به خودیاری ساده تقلیل داده نشوند.",
+    "همه رکوردها پیش‌نویس‌اند و runtime_eligible=false."
+  ],
+  "records": [
+    {
+      "source_content_id": "رنجش و کینه-04",
+      "topic_id": "T25",
+      "topic_name": "رنجش و کینه",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «رنجش و کینه».",
+      "source_exercise": "نیاز آسیب‌دیده: احترام، انصاف، امنیت یا شنیده‌شدن را شناسایی کنید.",
+      "source_action": "نیاز را به عبارت روشن تبدیل کن، بدون اینکه مسئولیت دیگری را بر عهده بگیری.",
+      "proposed_title": "شناخت نیاز آسیب‌دیده در رنجش",
+      "proposed_intro": "مشخص کن رویداد چه نیازی مانند احترام، انصاف، امنیت یا شنیده‌شدن را تحت تأثیر قرار داده است؛ احساس رنجش را معتبر بدان، اما نیت دیگری را بدون شواهد قطعی فرض نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "رنجش و کینه-05",
+      "topic_id": "T25",
+      "topic_name": "رنجش و کینه",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «رنجش و کینه».",
+      "source_exercise": "انتظار برآورده‌نشده: انتظار خود را روشن و واقع‌بینانه توصیف کنید.",
+      "source_action": "انتظار را به شکل قابل گفت‌وگو و متناسب با نوع رابطه بازنویسی کن.",
+      "proposed_title": "روشن‌کردن انتظار برآورده‌نشده",
+      "proposed_intro": "انتظار خود را دقیق و متناسب با نوع رابطه توصیف کن؛ میان توافق صریح و امید یا فرض شخصی تفاوت بگذار.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "رنجش و کینه-06",
+      "topic_id": "T25",
+      "topic_name": "رنجش و کینه",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «رنجش و کینه».",
+      "source_exercise": "سه مورد را جدا بنویس: چه چیزی صریحاً توافق شده بود، چه چیزی را انتظار داشتی اما توافق نشده بود، و اکنون چه انتخابی در اختیار توست.",
+      "source_action": "یک مرز یا تصمیم فعلی را مشخص کن که به رفتار خودت مربوط است؛ مسئولیت انتخاب طرف مقابل را بر عهده نگیر.",
+      "proposed_title": "تفکیک توافق، انتظار و انتخاب فعلی",
+      "proposed_intro": "آنچه صریحاً توافق شده، آنچه فقط انتظار داشتی و انتخابی را که اکنون در اختیار توست جدا ثبت کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "رنجش و کینه-07",
+      "topic_id": "T25",
+      "topic_name": "رنجش و کینه",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «رنجش و کینه».",
+      "source_exercise": "هدف شخصی: مشخص کنید اکنون به گفت‌وگو، جبران، فاصله یا پذیرش نیاز دارید.",
+      "source_action": "یکی از گزینه‌ها را بر اساس نیاز و امنیت انتخاب کن؛ تصمیم نهایی لازم نیست.",
+      "proposed_title": "انتخاب مسیر متناسب با نیاز و امنیت",
+      "proposed_intro": "بررسی کن اکنون به گفت‌وگو، جبران، فاصله یا پذیرش نیاز داری؛ هیچ‌کدام اجباری نیست و امنیت مقدم است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "شرم-04",
+      "topic_id": "T26",
+      "topic_name": "شرم",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «شرم».",
+      "source_exercise": "محرک اجتماعی: نگاه، مقایسه یا احتمال قضاوت را شناسایی کنید.",
+      "source_action": "یک موقعیت را از نظر شواهد واقعی و احتمال قضاوت بررسی کن.",
+      "proposed_title": "شناخت محرک اجتماعیِ شرم",
+      "proposed_intro": "موقعیتی را که نگاه، مقایسه یا احتمال قضاوت شرم را فعال کرده مشخص کن؛ پیش‌بینی ذهن را با شواهد واقعی یکی نگیر.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "شرم-05",
+      "topic_id": "T26",
+      "topic_name": "شرم",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «شرم».",
+      "source_exercise": "واقعیت و تصور: شواهد واقعی قضاوت دیگران را از پیش‌بینی ذهنی جدا کنید.",
+      "source_action": "یک مشاهده مستقیم را کنار پیش‌بینی بنویس.",
+      "proposed_title": "تفکیک مشاهده از پیش‌بینی قضاوت",
+      "proposed_intro": "یک مشاهدهٔ مستقیم را کنار پیش‌بینی ذهنی دربارهٔ قضاوت دیگران بنویس؛ نبود اطلاعات را به‌عنوان ابهام حفظ کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "شرم-06",
+      "topic_id": "T26",
+      "topic_name": "شرم",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «شرم».",
+      "source_exercise": "نیاز به پنهان‌کاری: بررسی کنید چه چیزی را می‌خواهید از دید دیگران مخفی کنید و چرا.",
+      "source_action": "بررسی کن پنهان‌کاری از امنیت محافظت می‌کند یا از ترس قضاوت ناشی می‌شود؛ هر دو ممکن است.",
+      "proposed_title": "شناخت کارکرد پنهان‌کاری",
+      "proposed_intro": "بررسی کن پنهان‌کردن موضوع از امنیت و حریم خصوصی محافظت می‌کند یا بیشتر از ترس قضاوت ناشی می‌شود؛ هر دو احتمال ممکن‌اند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "شرم-07",
+      "topic_id": "T26",
+      "topic_name": "شرم",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «شرم».",
+      "source_exercise": "حریم خصوصی: مشخص کنید چه چیزی حق دارید برای خود نگه دارید؛ افشاگری اجباری نیست.",
+      "source_action": "یک مرز روشن برای اطلاعاتی که نمی‌خواهی بگویی تعیین کن.",
+      "proposed_title": "تعیین مرز حریم خصوصی",
+      "proposed_intro": "مشخص کن چه اطلاعاتی را حق داری برای خود نگه داری؛ تمرین شرم به افشاگری یا اعتراف اجباری نیاز ندارد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از قضاوت-04",
+      "topic_id": "T27",
+      "topic_name": "ترس از قضاوت",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از قضاوت».",
+      "source_exercise": "هزینه پنهان‌کاری: فرصت‌هایی را که به دلیل ترس کنار گذاشته‌اید ثبت کنید.",
+      "source_action": "یک فرصت کم‌خطر را که کنار گذاشته‌ای مشخص کن.",
+      "proposed_title": "شناخت فرصت‌های کنارگذاشته‌شده از ترس قضاوت",
+      "proposed_intro": "یک فرصت کم‌خطر را که به‌دلیل نگرانی از ارزیابی دیگران کنار گذاشته‌ای ثبت کن؛ هدف سرزنش نیست، بلکه دیدن هزینهٔ احتمالی است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از قضاوت-05",
+      "topic_id": "T27",
+      "topic_name": "ترس از قضاوت",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از قضاوت».",
+      "source_exercise": "هدف ابراز اجتماعی: یک رفتار کوچک و انتخابی مانند بیان ترجیح، پرسیدن سؤال یا ارائه نظر کوتاه تعیین کنید.",
+      "source_action": "رفتار ابراز نظر را با معیار امنیت، اختیار و امکان توقف انتخاب کن؛ لازم نیست صرفاً وارد موقعیت شوی.",
+      "proposed_title": "انتخاب رفتار اجتماعی کوچک و اختیاری",
+      "proposed_intro": "یک رفتار کوچک مانند بیان ترجیح یا پرسیدن سؤال را فقط در موقعیتی امن و با امکان توقف انتخاب کن؛ ورود به موقعیت دشوار اجباری نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از قضاوت-06",
+      "topic_id": "T27",
+      "topic_name": "ترس از قضاوت",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از قضاوت».",
+      "source_exercise": "نردبان ابراز نظر: سه سطح از آماده‌سازی در خلوت، بیان به فرد امن و مشارکت در جمع کوچک طراحی کنید.",
+      "source_action": "برای هر سطح، یک رفتار مشخصِ بیان نظر و شرط توقف امن بنویس.",
+      "proposed_title": "ساخت نردبان تدریجی ابراز نظر",
+      "proposed_intro": "سه سطح اختیاری از آماده‌سازی در خلوت تا بیان نظر در جمع کوچک طراحی کن و برای هر سطح شرط توقف امن مشخص کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از قضاوت-07",
+      "topic_id": "T27",
+      "topic_name": "ترس از قضاوت",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از قضاوت».",
+      "source_exercise": "تمرین پاسخ: برای یک نظر متفاوت جمله‌ای محترمانه آماده کنید.",
+      "source_action": "یک پاسخ کوتاه و محترمانه آماده کن که از خودت دفاع کند بدون توهین.",
+      "proposed_title": "آماده‌کردن پاسخ محترمانه به نظر متفاوت",
+      "proposed_intro": "جمله‌ای کوتاه آماده کن که دیدگاهت را روشن کند و به دیگری توهین نکند؛ هدف تضمین موافقت دیگران نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از شکست-04",
+      "topic_id": "T28",
+      "topic_name": "ترس از شکست",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از شکست».",
+      "source_exercise": "یک معیار ارزش انسانی مستقل از نتیجه مشخص کن.",
+      "source_action": "جمله‌ای را که نتیجه نامطلوب درباره ارزش خودت ثابت می‌کند، دقیق ثبت کن.",
+      "proposed_title": "تفکیک ارزش انسانی از نتیجه",
+      "proposed_intro": "یک معیار برای ارزشمندی خودت مشخص کن که به موفقیت یا شکست یک کار وابسته نباشد؛ عملکرد را می‌توان ارزیابی کرد، نه تمام هویت را.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از شکست-05",
+      "topic_id": "T28",
+      "topic_name": "ترس از شکست",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از شکست».",
+      "source_exercise": "معیار حداقلی را با اهمیت و ریسک واقعی کار هماهنگ کن.",
+      "source_action": "معیار حداقلی را در یک عبارت قابل سنجش و متناسب با ریسک کار تعیین کن.",
+      "proposed_title": "تعریف معیار حداقلی متناسب با ریسک",
+      "proposed_intro": "معیار کافی برای یک کار را با اهمیت و ریسک واقعی آن هماهنگ کن؛ استانداردهای ضروری ایمنی و مسئولیت را کاهش نده.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از شکست-06",
+      "topic_id": "T28",
+      "topic_name": "ترس از شکست",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از شکست».",
+      "source_exercise": "یک فرصت کم‌خطر را که به‌دلیل پیش‌بینی شکست کنار گذاشته‌ای انتخاب کن و یک بخش مشخص از خودِ کار را که قابل آزمایش و توقف است جدا کن؛ تصمیم پرپیامد یا رابطه‌ای را انتخاب نکن.",
+      "source_action": "یک خروجی کوچک از همان کار را برای یک نوبت مشخص کن و هزینه واقعی تأخیر را ثبت کن؛ آزمایش به معنی تعهد به ادامه نیست.",
+      "proposed_title": "انتخاب بخش کوچک و قابل‌آزمایش کار",
+      "proposed_intro": "یک فرصت کم‌خطر را که به‌دلیل پیش‌بینی شکست کنار گذاشته‌ای انتخاب کن و فقط بخشی را جدا کن که قابل آزمایش و توقف باشد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از شکست-07",
+      "topic_id": "T28",
+      "topic_name": "ترس از شکست",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از شکست».",
+      "source_exercise": "حد هزینه، زمان و امکان توقف را از پیش تعیین کن.",
+      "source_action": "در همان هدف کم‌هزینه، نخستین گام برگشت‌پذیر را انجام بده یا اگر هنوز زمان مناسب نیست، شرط توقف و زمان بازبینی را تعیین کن؛ پیامد پرهزینه را آزمایش نکن.",
+      "proposed_title": "تعیین حد هزینه و امکان توقف",
+      "proposed_intro": "پیش از اقدام، حد زمان، هزینه و امکان توقف را روشن کن؛ تمرین به معنی پذیرش ریسک پرهزینه یا تعهد به ادامه نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از طرد شدن-04",
+      "topic_id": "T29",
+      "topic_name": "ترس از طرد شدن",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از طرد شدن».",
+      "source_exercise": "یک تجربه قبلی را فقط در حد قابل تحمل نام ببر؛ سپس یک شاهد مشخص از موقعیت کنونی را ثبت کن که با آن تجربه یکسان نیست یا هنوز برای نتیجه‌گیری کافی نیست.",
+      "source_action": "یک تفاوت مشاهده‌پذیر میان تعامل قبلی و فعلی بنویس؛ اگر تفاوتی نمی‌بینی یا داده کافی نیست، همان را ثبت کن.",
+      "proposed_title": "تفکیک تجربهٔ قبلی از نشانهٔ کنونی",
+      "proposed_intro": "تجربهٔ قبلی را فقط در حد قابل‌تحمل نام ببر و یک شاهد مشخص از موقعیت کنونی را جدا ثبت کن؛ شباهت ظاهری به معنی یکسان‌بودن موقعیت‌ها نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از طرد شدن-05",
+      "topic_id": "T29",
+      "topic_name": "ترس از طرد شدن",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از طرد شدن».",
+      "source_exercise": "نیاز به تعلق را به نشانه‌ای متقابل و قابل مشاهده پیوند بده؛ مانند ابتکار دوطرفه در تماس یا پایبندی به توافق، بدون نتیجه‌گیری قطعی از یک نشانه منفرد.",
+      "source_action": "یک رفتار متقابل مشخص را که برایت مهم است در قالب درخواست قابل مذاکره بنویس؛ امکان پاسخ منفی یا نیاز به زمان را نیز در نظر بگیر.",
+      "proposed_title": "شناخت نشانه‌های متقابل تعلق",
+      "proposed_intro": "نیاز به تعلق را به رفتارهای متقابل و قابل مشاهده پیوند بده؛ از نتیجه‌گیری قطعی بر اساس یک نشانهٔ منفرد پرهیز کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از طرد شدن-06",
+      "topic_id": "T29",
+      "topic_name": "ترس از طرد شدن",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از طرد شدن».",
+      "source_exercise": "یک تعامل اخیر را مرور کن که در آن برای جلوگیری از ردشدن، ترجیحی را پنهان کردی یا برخلاف خواستت موافقت کردی؛ ترجیح واقعی و واکنشی را که از آن می‌ترسیدی جدا بنویس.",
+      "source_action": "یک ترجیح کم‌خطر را که معمولاً پنهان می‌کنی مشخص کن و جمله‌ای محترمانه برای بیان آن آماده کن؛ ارسال یا اجرای آن اجباری نیست.",
+      "proposed_title": "بازشناسی ترجیح پنهان‌شده از ترس ردشدن",
+      "proposed_intro": "یک تعامل را مرور کن و ترجیح واقعی خود را از موافقت یا سکوتی که برای جلوگیری از ردشدن انتخاب کردی جدا بنویس.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از طرد شدن-07",
+      "topic_id": "T29",
+      "topic_name": "ترس از طرد شدن",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از طرد شدن».",
+      "source_exercise": "یک هدف ارتباطی را به رفتار خودت، زمان تقریبی و حد تماس مشخص تبدیل کن؛ پاسخ طرف مقابل را هدف تضمین‌شده قرار نده.",
+      "source_action": "رفتار قابل‌کنترل خودت را بنویس (مثلاً یک پیام یا دعوت روشن) و زمان/حد پیگیری را مشخص کن؛ پذیرش یا پاسخ دیگری در اختیار تو نیست.",
+      "proposed_title": "تعریف هدف ارتباطی در حوزهٔ اختیار خود",
+      "proposed_intro": "هدف را به رفتار خودت، زمان و حد پیگیری مشخص تبدیل کن؛ پذیرش یا پاسخ طرف مقابل در کنترل تو نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "شک و تردید-04",
+      "topic_id": "T30",
+      "topic_name": "شک و تردید",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «شک و تردید».",
+      "source_exercise": "اطلاعات لازم و اطلاعات غیرضروری را جدا کنید.",
+      "source_action": "برای هر گزینه فقط اطلاعاتی را فهرست کن که انتخاب را تغییر می‌دهد.",
+      "proposed_title": "تفکیک اطلاعات ضروری از جزئیات اضافی",
+      "proposed_intro": "اطلاعاتی را که واقعاً می‌تواند انتخاب را تغییر دهد از جزئیات کم‌اثر جدا کن؛ برای تصمیم‌های حساس، معیارهای تخصصی لازم را حفظ کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "شک و تردید-05",
+      "topic_id": "T30",
+      "topic_name": "شک و تردید",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «شک و تردید».",
+      "source_exercise": "هزینه تأخیر را بررسی کنید.",
+      "source_action": "هزینه تأخیر را با پیامد تصمیم عجولانه مقایسه کن.",
+      "proposed_title": "مقایسهٔ هزینهٔ تأخیر و تصمیم عجولانه",
+      "proposed_intro": "هزینهٔ صبرکردن را در کنار پیامد احتمالی تصمیم عجولانه بررسی کن؛ هدف حذف کامل عدم‌قطعیت نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "شک و تردید-06",
+      "topic_id": "T30",
+      "topic_name": "شک و تردید",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «شک و تردید».",
+      "source_exercise": "تصمیم برگشت‌پذیر را از برگشت‌ناپذیر جدا کنید.",
+      "source_action": "تصمیم را به برگشت‌پذیر، دشوار برای بازگشت یا برگشت‌ناپذیر دسته‌بندی کن.",
+      "proposed_title": "سنجش برگشت‌پذیری تصمیم",
+      "proposed_intro": "تصمیم را از نظر امکان اصلاح یا بازگشت دسته‌بندی کن؛ همهٔ انتخاب‌ها به سطح یکسانی از قطعیت نیاز ندارند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "شک و تردید-07",
+      "topic_id": "T30",
+      "topic_name": "شک و تردید",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «شک و تردید».",
+      "source_exercise": "حد زمانی جمع‌آوری اطلاعات تعیین کنید.",
+      "source_action": "حداکثر زمان یا تعداد منابع لازم را برای جمع‌آوری اطلاعات تعیین کن.",
+      "proposed_title": "تعیین حد زمانی برای جمع‌آوری اطلاعات",
+      "proposed_intro": "برای یک تصمیم کم‌خطر، زمان یا تعداد منابع لازم را از پیش محدود کن؛ در تصمیم‌های پزشکی، حقوقی یا مالی از مشورت تخصصی صرف‌نظر نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    }
+  ]
+}
