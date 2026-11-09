@@ -334,18 +334,17 @@
       "action": "یک منبع یادگیری، بازخورد یا حمایت واقع‌بینانه را که ممکن است کمک کند نام ببر.",
       "progress_measure": "آیا یک شاهد واقعی یا نبودِ شاهد بدون تحقیر خود ثبت شد؟",
       "safety_and_limits": "نبود تجربه قبلی شکست شخصی نیست؛ از خاطره‌ای که ناراحت‌کننده یا ناامن است صرف‌نظر کن.",
-      "evidence_ids": [
-        "EVID_BANDURA_1977",
-        "EVID_SELF_EFFICACY_IBI_2025"
-      ],
-      "source_reference_ids": [
-        "EVID_BANDURA_1977",
-        "EVID_SELF_EFFICACY_IBI_2025"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T16_D06",
@@ -428,20 +427,18 @@
       "action": "از درصدسازی ساختگی خودداری کن؛ فقط حدود دانسته‌ها و نامعلوم‌ها را ثبت کن.",
       "progress_measure": "آیا مسئولیت به رفتار و شواهد محدود ماند، نه کل هویت؟",
       "safety_and_limits": "این تمرین ابزار داوری حقوقی یا تعیین تقصیر نیست؛ در موقعیت پیچیده از مشورت مستقل و امن کمک بگیر.",
-      "evidence_ids": [
-        "EVID_SELFBLAME_REVIEW_2020",
-        "EVID_GUILT_MEASUREMENT_2010",
-        "EVID_JANOFF_BULMAN_1979"
-      ],
-      "source_reference_ids": [
-        "EVID_SELFBLAME_REVIEW_2020",
-        "EVID_GUILT_MEASUREMENT_2010",
-        "EVID_JANOFF_BULMAN_1979"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T20_D06",
@@ -524,18 +521,17 @@
       "action": "یک تفسیر جایگزینِ محتاطانه بساز که نه انکارکننده باشد و نه تحقیرگر.",
       "progress_measure": "آیا دست‌کم یک تفسیر از داده جدا شد؟",
       "safety_and_limits": "به‌دنبال اثبات اجباری مثبت‌بودن خود نباش؛ اگر تمرین نشخوار را بیشتر کرد، متوقف کن.",
-      "evidence_ids": [
-        "EVID_SELFESTEEM_CFT_2021",
-        "EVID_SELFESTEEM_META_2021"
-      ],
-      "source_reference_ids": [
-        "EVID_SELFESTEEM_CFT_2021",
-        "EVID_SELFESTEEM_META_2021"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T24_D06",
@@ -596,18 +592,17 @@
       "action": "فقط یک هزینه یا فایده را ثبت کن؛ تغییر رفتار لازم نیست.",
       "progress_measure": "آیا یک اثر رفتاری مشخص شناسایی شد؟",
       "safety_and_limits": "اجتناب گاهی برای امنیت لازم است؛ آن را خودکار ناسازگار یا غلط تلقی نکن.",
-      "evidence_ids": [
-        "EVID_SHAME_GUILT_2018",
-        "EVID_CFT_SHAME_2025"
-      ],
-      "source_reference_ids": [
-        "EVID_SHAME_GUILT_2018",
-        "EVID_CFT_SHAME_2025"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T27_D06",
@@ -756,20 +751,18 @@
       "action": "اگر معیار نامتناسب است، نسخه واقع‌بینانه‌تر و قابل سنجش آن را بنویس؛ اگر مقایسه آشفتگی یا رقابت را بیشتر می‌کند، تمرین مقایسه را متوقف کن.",
       "progress_measure": "آیا یک معیار سخت‌گیرانه یا دوگانه شناسایی شد؟",
       "safety_and_limits": "این مقایسه برای توجیه آسیب یا نادیده‌گرفتن مسئولیت نیست؛ شرایط و اثر رفتار را در نظر بگیر.",
-      "evidence_ids": [
-        "EVID_SELFCRITICISM_CBI_2021",
-        "EVID_CFT_SHAME_2025",
-        "EVID_SELFCRITICISM_EFT_2026"
-      ],
-      "source_reference_ids": [
-        "EVID_SELFCRITICISM_CBI_2021",
-        "EVID_CFT_SHAME_2025",
-        "EVID_SELFCRITICISM_EFT_2026"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T34_D06",
