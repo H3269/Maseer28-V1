@@ -28,7 +28,8 @@
     "validate:quality-safety-gates": "node scripts/validate-quality-safety-gates.mjs",
     "validate:independent-review-ledger": "node scripts/validate-independent-review-ledger.mjs",
     "audit:content-specificity": "node scripts/audit-content-specificity.mjs",
-    "validate:shared-copy-proposals": "node scripts/validate-shared-copy-proposals.mjs"
+    "validate:shared-copy-proposals": "node scripts/validate-shared-copy-proposals.mjs",
+    "validate:topic-specific-copy-pilot": "node scripts/validate-topic-specific-copy-pilot.mjs"
   },
   "dependencies": {
     "react": "18.3.1",
