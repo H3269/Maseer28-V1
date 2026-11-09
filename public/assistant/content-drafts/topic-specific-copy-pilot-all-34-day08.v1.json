@@ -1000,6 +1000,36 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false
+    },
+    {
+      "source_content_id": "غم و سوگ-08",
+      "topic_id": "T06",
+      "topic_name": "غم و سوگ",
+      "day_number": 8,
+      "current_title": "پاسخ جایگزین · روز 8",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «غم و سوگ».",
+      "source_exercise": "فردی را انتخاب کن که بتواند گوش بدهد بدون اینکه سوگ را زمان‌بندی یا قضاوت کند.",
+      "source_action": "درخواست شنیده‌شدن یا کمک عملی را روشن مطرح کن.",
+      "proposed_title": "درخواست همراهی یا کمک عملی در سوگ",
+      "proposed_intro": "مشخص کن اکنون بیشتر به شنیده‌شدن، همراهی یا کمک عملی نیاز داری؛ درخواست حمایت باید روشن و بدون فشار بر خود یا دیگری باشد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
     }
   ]
 }
