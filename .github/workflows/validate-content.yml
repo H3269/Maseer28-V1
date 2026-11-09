@@ -155,6 +155,9 @@ jobs:
       - name: Audit all 28-day exercise and action text specificity across 34 topics
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run audit:content-specificity
+      - name: Validate day 1-3 shared-copy rewrite proposals
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:shared-copy-proposals
       - name: Audit daily content quality and topic specificity
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run audit:content-quality
