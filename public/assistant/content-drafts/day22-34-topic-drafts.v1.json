@@ -19,7 +19,7 @@
       "subtopic_id": "T01-S03",
       "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 22,
-      "phase": "topic_specific_daily_skill",
+      "phase": "skill_transfer_and_low_risk_real_world_practice",
       "learning_objective": "ارزیابی اینکه آیا توافق یا مذاکره، با توجه به نابرابری قدرت و پیامد رد پیشنهاد، واقعاً داوطلبانه و بدون تلافی است.",
       "mechanism_focus": "تحلیل پیامدهای قدرت، وابستگی و تلافی؛ فراتر از حق عمومی توقف که در روز ۱۱ بررسی شد.",
       "exercise": "اگر توافقی مطرح است، وابستگی مالی/شغلی/اجتماعی، کنترل منابع، سابقه تهدید یا تلافی و پیامد واقعی رد پیشنهاد را بررسی کن. اگر اطلاعات کافی نداری یا پاسخ‌ها نگران‌کننده‌اند، توافق را داوطلبانه فرض نکن.",
@@ -81,7 +81,10 @@
       },
       "source_runtime_mechanism": "ارزیابی امکان مذاکره در روابط امن و حفظ مرزها",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D22"
+      "canonical_package_record_id": "DRAFT_T01_D22",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D22",
