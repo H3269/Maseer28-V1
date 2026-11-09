@@ -18,8 +18,8 @@ function parseDraft(markdown) {
     const end = headings[index + 1]?.index ?? markdown.length;
     const block = markdown.slice(start, end);
     const values = Object.fromEntries(fields.map((field) => {
-      const match = block.match(new RegExp('^- \\*\\*' + field.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&') + ':\\*\\* (.+)$', 'm'));
-      return [field, match?.[1]?.trim() ?? ''];
+      const line = block.split('\n').find((item) => item.startsWith('- **' + field + ':** '));
+      return [field, line ? line.slice(('- **' + field + ':** ').length).trim() : ''];
     }));
     return { day: Number(persianDigits(heading[1])), title: heading[2].trim(), values };
   });
