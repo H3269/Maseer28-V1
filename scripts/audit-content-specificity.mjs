@@ -39,7 +39,15 @@ function duplicateStats(entries) {
   }
   const duplicates = [...groups.entries()].filter(([, rows]) => rows.length > 1);
   const crossTopic = duplicates.filter(([, rows]) => new Set(rows.map((row) => row.topic)).size > 1);
-  const withinTopic = duplicates.filter(([, rows]) => new Set(rows.map((row) => row.topic)).size === 1);
+  const withinTopicGroups = new Map();
+  for (const entry of entries) {
+    if (!entry.value) continue;
+    const key = JSON.stringify([entry.topic, entry.value]);
+    const group = withinTopicGroups.get(key) ?? [];
+    group.push(entry);
+    withinTopicGroups.set(key, group);
+  }
+  const withinTopic = [...withinTopicGroups.entries()].filter(([, rows]) => rows.length > 1);
   const repeatedOccurrences = (rows) => rows.reduce((sum, [, group]) => sum + group.length - 1, 0);
   return {
     duplicate_groups: duplicates.length,
