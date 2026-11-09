@@ -104,11 +104,11 @@ function classifySafetyAnswer(text) {
   return 'clarification_needed';
 }
 
-export function createAssessmentSession({ localOnly = true, assistantContext = null, consentState = {} } = {}) {
+export function createAssessmentSession({ localOnly = true, assistantContext = null, consentState = {}, now = new Date().toISOString() } = {}) {
   if (localOnly !== true) throw new Error('این موتور فقط برای پردازش محلی طراحی شده است؛ ارسال ابری در این نسخه پشتیبانی نمی‌شود.');
   let validatedContext = null;
   if (assistantContext) {
-    const validation = validateAssistantContext(assistantContext, { consentState });
+    const validation = validateAssistantContext(assistantContext, { consentState, now });
     if (validation.valid) validatedContext = assistantContext;
   }
   return {
@@ -130,13 +130,13 @@ export function getCurrentQuestion(session) {
   return session?.current_question ?? null;
 }
 
-export function submitAssessmentAnswer(session, answer, { consentState = {} } = {}) {
+export function submitAssessmentAnswer(session, answer, { consentState = {}, now = new Date().toISOString() } = {}) {
   if (!session || session.status !== 'in_progress') throw new Error('جلسه ارزیابی فعال نیست.');
   if (!session.current_question) throw new Error('پرسشی برای پاسخ‌گویی وجود ندارد.');
   const value = String(answer ?? '').trim();
   if (!value) throw new Error('پاسخ خالی است؛ می‌توانی بگویی «رد می‌کنم» یا جلسه را متوقف کنی.');
   const contextValidation = session.assistant_context
-    ? validateAssistantContext(session.assistant_context, { consentState })
+    ? validateAssistantContext(session.assistant_context, { consentState, now })
     : { valid: false };
   const next = {
     ...session,
