@@ -66,7 +66,6 @@ export default function PersonalizationSettings() {
       });
       setConsent(next);
       setPreferences(loadPersonalizationPreferences());
-      window.dispatchEvent(new Event('maseer28:consent-changed'));
       setError('');
       setMessage('رضایت ذخیره ترجیحات غیرحساس ثبت شد. هنوز هیچ متن گفتگو یا سابقه روان‌شناختی ذخیره نمی‌شود.');
     } catch (cause) {
@@ -82,7 +81,7 @@ export default function PersonalizationSettings() {
       setJourneyContextEnabled(true);
       window.dispatchEvent(new Event('maseer28:consent-changed'));
       setError('');
-      setMessage('رضایت مستقل زمینه مسیر ثبت شد. با رضایت فعال، فقط روز فعال و تعداد روزهای تکمیل‌شده در بسته موقت محلی به دستیار آزمایشی داده می‌شود؛ هیچ ارسال بیرونی انجام نمی‌شود.');
+      setMessage('رضایت مستقل زمینه مسیر ثبت شد. این مجوز به‌تنهایی به معنی اتصال یا ارسال اطلاعات مسیر به دستیار نیست.');
     } catch (cause) {
       setError(cause?.message || 'ثبت رضایت زمینه مسیر انجام نشد.');
     }
@@ -107,7 +106,7 @@ export default function PersonalizationSettings() {
       setPreferences(saved);
       notifyPreferencesChanged();
       setError('');
-      setMessage('ترجیحات در همین مرورگر ذخیره شدند و در پرسش‌های غیرایمنی برای تنظیم لحن و میزان توضیح به کار می‌روند؛ ترتیب پرسش‌های ایمنی تغییر نمی‌کند.');
+      setMessage('ترجیحات در همین مرورگر ذخیره شدند. این تنظیمات هنوز به رفتار موتور پاسخ‌گویی متصل نشده‌اند.');
     } catch (cause) {
       setError(cause?.message || 'ذخیره ترجیحات انجام نشد.');
     }
@@ -131,7 +130,6 @@ export default function PersonalizationSettings() {
       setConsent(getConsentState());
       setPreferences({ ...DEFAULT_PERSONALIZATION });
       notifyPreferencesChanged();
-      window.dispatchEvent(new Event('maseer28:consent-changed'));
       setError('');
       setMessage(next.erasure_errors?.length
         ? 'رضایت لغو شد، اما حذف ترجیحات با خطا روبه‌رو شد. حذف کامل را نمی‌توان تأیید کرد.'
@@ -163,13 +161,13 @@ export default function PersonalizationSettings() {
       {!enabled && <button className="secondary" type="button" onClick={enable}>رضایت می‌دهم ترجیحات غیرحساس ذخیره شوند</button>}
       <div className="sectionHint" role="group" aria-labelledby="journey-context-consent-title">
         <b id="journey-context-consent-title">رضایت جداگانه برای زمینه مسیر</b>
-        <p className="muted">این مجوز فقط می‌تواند روز فعال، تعداد روزهای تکمیل‌شده و هدفی را که خودت انتخاب کرده‌ای در یک بسته محلی با عمر حداکثر ۲۴ ساعت مجاز کند. پاسخ‌های روزانه، متن گفتگو، نام، تشخیص و آرشیو مسیر شامل این مجوز نیستند. در حال حاضر با رضایت فعال، فقط داده‌های مجاز در حافظه موقت همین جلسه به دستیار محلی داده می‌شوند.</p>
+        <p className="muted">این مجوز فقط می‌تواند روز فعال، تعداد روزهای تکمیل‌شده و هدفی را که خودت انتخاب کرده‌ای در یک بسته محلی با عمر حداکثر ۲۴ ساعت مجاز کند. پاسخ‌های روزانه، متن گفتگو، نام، تشخیص و آرشیو مسیر شامل این مجوز نیستند. در حال حاضر این داده هنوز به دستیار متصل نشده است.</p>
         {journeyContextEnabled
           ? <button className="secondary" type="button" onClick={withdrawJourneyContext}>لغو رضایت زمینه مسیر</button>
           : <button className="secondary" type="button" onClick={enableJourneyContext}>رضایت می‌دهم زمینه محدود مسیر مجاز باشد</button>}
       </div>
 
-      <p className="muted">پردازش ابری، تحلیل محصول و پردازش داده حساس در این نسخه فعال نیستند و از این بخش قابل فعال‌سازی نیستند. زمینه مسیر و ترجیحات فقط به‌صورت محلی و با رضایت جداگانه استفاده می‌شوند. متن گفتگو، پاسخ‌ها و اطلاعات سلامت در این حافظه ذخیره نمی‌شوند. سرعت پرسش‌ها و زبان هنوز گزینه قابل تغییر نیستند، چون در موتور فعلی به‌طور کامل پشتیبانی نمی‌شوند.</p>
+      <p className="muted">پردازش ابری، تحلیل محصول و پردازش داده حساس در این نسخه فعال نیستند و از این بخش قابل فعال‌سازی نیستند. متن گفتگو، پاسخ‌ها و اطلاعات سلامت در این حافظه ذخیره نمی‌شوند. سرعت پرسش‌ها و زبان هنوز گزینه قابل تغییر نیستند، چون در موتور فعلی به‌طور کامل پشتیبانی نمی‌شوند.</p>
       {message && <p className="contactHelp" role="status" aria-live="polite">{message}</p>}
       {error && <p className="contactHelp" role="alert">{error}</p>}
     </div>

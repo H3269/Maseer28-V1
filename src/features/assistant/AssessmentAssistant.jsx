@@ -6,65 +6,25 @@ import {
   stopAssessment,
 } from './assessmentEngine.js';
 import topicRegistry from '../../../public/assistant/knowledge/topics.v1.json';
-import { DEFAULT_PERSONALIZATION, loadPersonalizationPreferences } from '../privacy/personalizationPreferences.js';
-import { formatAssistantPrompt } from './assistantPreferences.js';
-import { buildAssistantContext, validateAssistantContext } from './assistantContext.v1.js';
-import { getConsentState } from '../privacy/consentManager.js';
 
 const topicNames = new Map(topicRegistry.topics.map((topic) => [topic.topic_id, topic.name]));
 
-export default function AssessmentAssistant({ journeyContext = {} }) {
+export default function AssessmentAssistant() {
   const [expanded, setExpanded] = useState(false);
   const [session, setSession] = useState(null);
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
   const [error, setError] = useState('');
   const transcriptEndRef = useRef(null);
-  const [preferences, setPreferences] = useState({ ...DEFAULT_PERSONALIZATION });
 
   useEffect(() => {
     transcriptEndRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'end' });
   }, [messages]);
-  useEffect(() => {
-    const refreshPreferences = () => {
-      try { setPreferences(loadPersonalizationPreferences()); } catch { setPreferences({ ...DEFAULT_PERSONALIZATION }); }
-    };
-    refreshPreferences();
-    window.addEventListener('maseer28:personalization-changed', refreshPreferences);
-    const refreshContextConsent = () => {
-      setSession((previous) => {
-        if (!previous?.assistant_context) return previous;
-        try {
-          const validation = validateAssistantContext(previous.assistant_context, { consentState: getConsentState() });
-          return validation.valid ? previous : { ...previous, assistant_context: null };
-        } catch {
-          return { ...previous, assistant_context: null };
-        }
-      });
-    };
-    window.addEventListener('maseer28:consent-changed', refreshContextConsent);
-    return () => {
-      window.removeEventListener('maseer28:personalization-changed', refreshPreferences);
-      window.removeEventListener('maseer28:consent-changed', refreshContextConsent);
-    };
-  }, []);
 
   function start() {
-    let currentPreferences = { ...DEFAULT_PERSONALIZATION };
-    try { currentPreferences = loadPersonalizationPreferences(); } catch { /* defaults remain local and temporary */ }
-    setPreferences(currentPreferences);
-    let assistantContext = null;
-    let consentState = {};
-    try {
-      consentState = getConsentState();
-      const candidate = buildAssistantContext({ journey: journeyContext, preferences: currentPreferences, consentState });
-      if (validateAssistantContext(candidate, { consentState }).valid) assistantContext = candidate;
-    } catch {
-      assistantContext = null;
-    }
-    const next = createAssessmentSession({ assistantContext, consentState });
+    const next = createAssessmentSession();
     setSession(next);
-    setMessages([{ role: 'assistant', text: formatAssistantPrompt(getCurrentQuestion(next), currentPreferences) }]);
+    setMessages([{ role: 'assistant', text: getCurrentQuestion(next).prompt }]);
     setDraft('');
     setError('');
     setExpanded(true);
@@ -75,12 +35,12 @@ export default function AssessmentAssistant({ journeyContext = {} }) {
     if (!session || !draft.trim()) return;
     try {
       const answer = draft.trim();
-      const updated = submitAssessmentAnswer(session, answer, { consentState: getConsentState() });
+      const updated = submitAssessmentAnswer(session, answer);
       setMessages((previous) => [
         ...previous,
         { role: 'user', text: answer },
         ...(getCurrentQuestion(updated)
-          ? [{ role: 'assistant', text: formatAssistantPrompt(getCurrentQuestion(updated), preferences) }]
+          ? [{ role: 'assistant', text: getCurrentQuestion(updated).prompt }]
           : updated.referral
             ? [{ role: 'assistant', text: updated.referral.instruction }]
             : updated.status === 'completed'
@@ -124,15 +84,8 @@ export default function AssessmentAssistant({ journeyContext = {} }) {
     {expanded && <>
       <div className="sectionHint" role="note">
         <span><strong>i</strong></span>
-        <div><b>حریم خصوصی آزمایشی</b><small>پاسخ‌ها فقط در حافظه موقت همین صفحه نگهداری می‌شوند؛ ذخیره یا به سرور ارسال نمی‌شوند. فقط ترجیحات غیرحساسِ شیوه تعامل، در صورت رضایت جداگانه، روی همین مرورگر اعمال می‌شوند. اطلاعات شناسایی‌کننده ننویس.</small></div>
+        <div><b>حریم خصوصی آزمایشی</b><small>پاسخ‌ها فقط در حافظه موقت همین صفحه نگهداری می‌شوند؛ در این نسخه ذخیره یا به سرور ارسال نمی‌شوند. اطلاعات شناسایی‌کننده ننویس.</small></div>
       </div>
-      {session?.assistant_context?.entries?.length > 0 && <p className="muted" role="note">
-        زمینه محدود مسیر: {session.assistant_context.entries
-          .filter((item) => item.key === 'active_day' || item.key === 'completed_days_count')
-          .map((item) => item.key === 'active_day' ? `روز فعال ${item.value} از ۲۸` : `${item.value} روز تکمیل‌شده`)
-          .join(' · ')}
-        . این اطلاعات فقط برای نمایش زمینه در همین جلسه محلی استفاده می‌شود.
-      </p>}
       <div className="assistantChatShell" aria-label="فضای مکالمه دستیار مسیر۲۸">
         <div className="assistantTranscript" aria-label="پیام‌های مکالمه" aria-live="polite">
           {messages.map((message, index) => <div className={message.role === 'assistant' ? 'assistantMessage' : 'userMessage'} key={index}>
@@ -171,9 +124,6 @@ export default function AssessmentAssistant({ journeyContext = {} }) {
       {summary && <div className="assistantSummary">
         <h3>خلاصه موقت برای بازبینی</h3>
         <p><b>آنچه گفتی:</b> {summary.user_report}</p>
-        {summary.user_correction && <p><b>اصلاح تو:</b> {summary.user_correction}</p>}
-        {summary.review_status === 'correction_requested' && <p className="muted">برداشت قبلی و موضوعات پیشنهادی کنار گذاشته شدند تا توضیح تو دریافت شود.</p>}
-        {summary.review_status === 'user_corrected_pending_confirmation' && <p className="muted">برداشت قبلی کنار گذاشته شده است. لطفاً خلاصه اصلاح‌شده را دوباره بررسی کن.</p>}
         <p><b>اثر بر زندگی روزمره:</b> {summary.impact}</p>
         <p><b>مدت و تکرار:</b> {summary.duration}</p>
         <p><b>هدفت:</b> {summary.user_goal}</p>
@@ -181,7 +131,7 @@ export default function AssessmentAssistant({ journeyContext = {} }) {
           ? summary.candidate_topics.map((item) => topicNames.get(item.topic_id) || item.topic_id).join('، ')
           : 'با واژه‌های فعلی موضوع مشخصی قابل پیشنهاد نیست؛ این به معنی رد هیچ موضوعی نیست.'}</p>
         <ul>{summary.limitations.map((item) => <li key={item}>{item}</li>)}</ul>
-        <p className="muted">هیچ تمرین یا درمانی به‌صورت خودکار پیشنهاد نمی‌شود؛ محتوای مناسب هنوز نیازمند تأیید علمی و تخصصی است. ترجیحات فقط لحن، میزان توضیح و نوع راهنمایی برای مثال را تغییر می‌دهند؛ ترتیب پرسش‌های ایمنی مستقل و ثابت می‌ماند.</p>
+        <p className="muted">هیچ تمرین یا درمانی به‌صورت خودکار پیشنهاد نمی‌شود؛ محتوای مناسب هنوز نیازمند تأیید علمی و تخصصی است.</p>
       </div>}
     </>}
   </section>;
