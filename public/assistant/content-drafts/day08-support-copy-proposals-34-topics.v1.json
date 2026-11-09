@@ -22,13 +22,14 @@
       "topic_id": "T01",
       "topic_name": "خشم",
       "day_number": 8,
-      "lightExerciseText": "یک موقعیت اخیر را مرور کن: کدام نشانه زودتر از بالاگرفتن خشم ظاهر شد؟",
-      "lightActionText": "همان نشانه را به یک علامت توقف قابل تشخیص تبدیل کن.",
-      "progressActionText": "برنامه توقف و بازگشت را با یک فرد امن مرور کن؛ فقط در موقعیت کم‌تنش تمرین کن.",
-      "restExerciseText": "امروز رویداد را بازسازی نکن؛ فقط از محرک فاصله بگیر.",
-      "restActionText": "اگر خطر آسیب هست، فاصله از فرد و ابزار خطر و کمک فوری مقدم است.",
+      "lightExerciseText": "فقط تصمیم بگیر تنفس آرام را امتحان می‌کنی یا نه.",
+      "lightActionText": "فقط مشخص کن تنفس طبیعی و آرام برایت راحت است یا نه؛ هیچ الگوی اجباری اجرا نکن.",
+      "progressActionText": "یک روش جایگزین غیرتنفسی مانند نگاه‌کردن به محیط را هم در نظر بگیر.",
+      "restExerciseText": "هیچ تمرین تنفسی انجام نده؛ بدن را مجبور به تغییر نکن.",
+      "restActionText": "هیچ تمرین تنفسی انجام نده و تنفس را مجبور به تغییر نکن.",
       "review_status": "draft_pending_expert_review",
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1"
     },
     {
       "content_id": "DRAFT_T02_D08",
