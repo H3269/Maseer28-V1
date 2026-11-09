@@ -16,10 +16,10 @@
       "source_content_id": "خشم-10",
       "topic_id": "T01",
       "topic_name": "خشم",
-      "subtopic_id": "T01-S02",
-      "subtopic_name": "نشانه‌های بدنی و برانگیختگی، بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 10,
-      "phase": "topic_specific_daily_skill",
+      "phase": "values_and_needs_alignment",
       "learning_objective": "طراحی راهی امن برای توقف تعامل پیش از واکنش آسیب‌زا.",
       "mechanism_focus": "وقفه رفتاری و کاهش احتمال آسیب.",
       "exercise": "برای یک اختلاف کم‌خطر بنویس چه نشانه‌ای می‌گوید باید مکث کنی، چگونه می‌توانی بدون تهدید فاصله بگیری و چه زمانی ادامه تعامل فقط با رضایت آزادانه و ایمنی هر دو طرف ممکن است.",
@@ -34,11 +34,9 @@
       "runtime_eligible": false,
       "title": "برنامه مکث و فاصله‌گیری",
       "subtopic_ids": [
-        "T01-S02",
         "T01-S03"
       ],
       "subtopic_names": [
-        "نشانه‌های بدنی و برانگیختگی",
         "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
       "target_skill": "وقفه رفتاری و کاهش احتمال آسیب.",
@@ -83,7 +81,11 @@
       },
       "source_runtime_mechanism": "ایجاد وقفه و فاصله برای کاهش احتمال واکنش تکانه‌ای؛ تناسب آن به ایمنی و رضایت آزادانه وابسته است.",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D10"
+      "canonical_package_record_id": "DRAFT_T01_D10",
+      "design_subtopic_ids": [
+        "T01-S02",
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D10",
