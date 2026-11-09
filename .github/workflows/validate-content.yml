@@ -11,6 +11,11 @@ on:
       - 'scripts/validate-content.mjs'
       - 'scripts/validate-assistant-topics.mjs'
       - 'scripts/audit-content-quality.mjs'
+      - 'scripts/audit-content-mappings.mjs'
+      - 'scripts/generate-content-mapping-queue.mjs'
+      - 'scripts/audit-course-content-quality.mjs'
+      - 'scripts/build-first-pass-review-packet.mjs'
+      - 'scripts/audit-content-template-sample.mjs'
       - 'scripts/audit-library-assistant-acceptance.mjs'
       - 'scripts/assert-validation-run.mjs'
       - 'package.json'
@@ -120,6 +125,21 @@ jobs:
       - name: Audit daily content quality and topic specificity
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run audit:content-quality
+      - name: Generate complete 952-day content mapping review queue
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run generate:content-mapping-queue
+      - name: Audit topic and subtopic content mappings
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run audit:content-mappings
+      - name: Audit 952-day content quality and review readiness
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run audit:course-content-quality
+      - name: Audit sampled cross-topic content templates
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run audit:content-template-sample
+      - name: Prepare first-pass review packet for all 34 topics
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run prepare:first-pass-review
       - name: Build application
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: |
@@ -161,6 +181,27 @@ jobs:
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/global-assistant-launcher.mjs
           # Invalid legacy-data recovery remains covered by local unit tests; browser suite disabled by project decision.
 
+      - name: Upload generated 952-day mapping review queue
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: content-mapping-review-queue
+          path: public/assistant/mappings/course-content-mappings.v1.json
+          if-no-files-found: error
+      - name: Upload sampled content template report
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: content-template-sample-report
+          path: artifacts/content-template-sample-report.md
+          if-no-files-found: error
+      - name: Upload first-pass 34-topic review packet
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: first-pass-review-34-days
+          path: artifacts/first-pass-review-34-days.md
+          if-no-files-found: error
       - name: Upload daily content quality audit
         if: ${{ always() && steps.install.outcome == 'success' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
