@@ -195,8 +195,8 @@
       "topic_name": "خشم",
       "day_number": 7,
       "source_content_id": "خشم-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T01_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -213,7 +213,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -961,8 +963,8 @@
       "topic_name": "اضطراب",
       "day_number": 7,
       "source_content_id": "اضطراب-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T02_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -979,7 +981,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -1727,8 +1731,8 @@
       "topic_name": "ترس",
       "day_number": 7,
       "source_content_id": "ترس-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T03_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -1745,7 +1749,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -2493,8 +2499,8 @@
       "topic_name": "نفرت",
       "day_number": 7,
       "source_content_id": "نفرت-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T04_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -2511,7 +2517,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -3259,8 +3267,8 @@
       "topic_name": "حسادت",
       "day_number": 7,
       "source_content_id": "حسادت-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T05_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -3277,7 +3285,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -4025,8 +4035,8 @@
       "topic_name": "غم و سوگ",
       "day_number": 7,
       "source_content_id": "غم و سوگ-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T06_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -4043,7 +4053,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -4791,8 +4803,8 @@
       "topic_name": "احساس گناه",
       "day_number": 7,
       "source_content_id": "احساس گناه-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T07_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -4809,7 +4821,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -5557,8 +5571,8 @@
       "topic_name": "وابستگی عاطفی",
       "day_number": 7,
       "source_content_id": "وابستگی عاطفی-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T08_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -5575,7 +5589,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -6323,8 +6339,8 @@
       "topic_name": "اهمال‌کاری",
       "day_number": 7,
       "source_content_id": "اهمال‌کاری-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T09_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -6341,7 +6357,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -7089,8 +7107,8 @@
       "topic_name": "بی‌خوابی و مشکلات خواب",
       "day_number": 7,
       "source_content_id": "بی‌خوابی و مشکلات خواب-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T10_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -7107,7 +7125,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -7855,8 +7875,8 @@
       "topic_name": "عادت‌های تکراری",
       "day_number": 7,
       "source_content_id": "عادت‌های تکراری-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T11_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -7873,7 +7893,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -8621,8 +8643,8 @@
       "topic_name": "مرزبندی و نه گفتن",
       "day_number": 7,
       "source_content_id": "مرزبندی و نه گفتن-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T12_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -8639,7 +8661,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -9387,8 +9411,8 @@
       "topic_name": "تنهایی",
       "day_number": 7,
       "source_content_id": "تنهایی-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T13_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -9405,7 +9429,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -10153,8 +10179,8 @@
       "topic_name": "کمبود انگیزه",
       "day_number": 7,
       "source_content_id": "کمبود انگیزه-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T14_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -10171,7 +10197,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -10936,13 +10964,9 @@
       "reviewer_qualification": null,
       "reviewed_at": null,
       "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
-      "evidence_ids": [
-        "EVID_BANDURA_1977",
-        "EVID_SELF_EFFICACY_IBI_2025"
-      ],
+      "evidence_ids": [],
       "safety_notes": [
-        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
-        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
       ],
       "runtime_eligible": false
     },
@@ -11697,8 +11721,8 @@
       "topic_name": "افکار منفی و نشخوار فکری",
       "day_number": 7,
       "source_content_id": "افکار منفی و نشخوار فکری-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T16_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -11715,7 +11739,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -12463,8 +12489,8 @@
       "topic_name": "مشکلات رابطه",
       "day_number": 7,
       "source_content_id": "مشکلات رابطه-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T17_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -12481,7 +12507,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -13229,8 +13257,8 @@
       "topic_name": "نفرت از خود",
       "day_number": 7,
       "source_content_id": "نفرت از خود-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T18_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -13247,7 +13275,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -14012,14 +14042,9 @@
       "reviewer_qualification": null,
       "reviewed_at": null,
       "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
-      "evidence_ids": [
-        "EVID_SELFBLAME_REVIEW_2020",
-        "EVID_GUILT_MEASUREMENT_2010",
-        "EVID_JANOFF_BULMAN_1979"
-      ],
+      "evidence_ids": [],
       "safety_notes": [
-        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
-        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
       ],
       "runtime_eligible": false
     },
@@ -14775,8 +14800,8 @@
       "topic_name": "کمال‌گرایی",
       "day_number": 7,
       "source_content_id": "کمال‌گرایی-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T20_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -14793,7 +14818,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -15541,8 +15568,8 @@
       "topic_name": "اجتناب",
       "day_number": 7,
       "source_content_id": "اجتناب-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T21_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -15559,7 +15586,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -16307,8 +16336,8 @@
       "topic_name": "استرس",
       "day_number": 7,
       "source_content_id": "استرس-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T22_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -16325,7 +16354,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -17090,14 +17121,9 @@
       "reviewer_qualification": null,
       "reviewed_at": null,
       "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
-      "evidence_ids": [
-        "EVID_SELFESTEEM_CFT_2021",
-        "EVID_SELFESTEEM_META_2021",
-        "EVID_NICE_NG222"
-      ],
+      "evidence_ids": [],
       "safety_notes": [
-        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
-        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
       ],
       "runtime_eligible": false
     },
@@ -17853,8 +17879,8 @@
       "topic_name": "مشکل در کنترل هیجان",
       "day_number": 7,
       "source_content_id": "مشکل در کنترل هیجان-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T24_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -17871,7 +17897,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -18619,8 +18647,8 @@
       "topic_name": "رنجش و کینه",
       "day_number": 7,
       "source_content_id": "رنجش و کینه-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T25_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -18637,7 +18665,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -19402,13 +19432,9 @@
       "reviewer_qualification": null,
       "reviewed_at": null,
       "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
-      "evidence_ids": [
-        "EVID_SHAME_GUILT_2018",
-        "EVID_CFT_SHAME_2025"
-      ],
+      "evidence_ids": [],
       "safety_notes": [
-        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
-        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
       ],
       "runtime_eligible": false
     },
@@ -20163,8 +20189,8 @@
       "topic_name": "ترس از قضاوت",
       "day_number": 7,
       "source_content_id": "ترس از قضاوت-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T27_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -20181,7 +20207,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -20929,8 +20957,8 @@
       "topic_name": "ترس از شکست",
       "day_number": 7,
       "source_content_id": "ترس از شکست-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T28_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -20947,7 +20975,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21695,8 +21725,8 @@
       "topic_name": "ترس از طرد شدن",
       "day_number": 7,
       "source_content_id": "ترس از طرد شدن-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T29_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21713,7 +21743,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -22461,8 +22493,8 @@
       "topic_name": "شک و تردید",
       "day_number": 7,
       "source_content_id": "شک و تردید-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T30_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -22479,7 +22511,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -23227,8 +23261,8 @@
       "topic_name": "کنترل‌گری",
       "day_number": 7,
       "source_content_id": "کنترل‌گری-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T31_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -23245,7 +23279,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -23993,8 +24029,8 @@
       "topic_name": "بی‌انگیزگی",
       "day_number": 7,
       "source_content_id": "بی‌انگیزگی-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T32_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -24011,7 +24047,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -24776,14 +24814,9 @@
       "reviewer_qualification": null,
       "reviewed_at": null,
       "rationale": "متن روزانه در فایل پایلوت روزهای 04 تا 08 ثبت شده؛ شواهد صرفاً پشتیبان مفهومی/مجاورند و اثربخشی متن خاص را ثابت نمی‌کنند.",
-      "evidence_ids": [
-        "EVID_SELFCRITICISM_CBI_2021",
-        "EVID_CFT_SHAME_2025",
-        "EVID_SELFCRITICISM_EFT_2026"
-      ],
+      "evidence_ids": [],
       "safety_notes": [
-        "پیش‌نویس پایلوت؛ نیازمند بازبینی مستقل متخصص",
-        "runtime_eligible=false؛ هیچ تأیید بالینی یا انتشار ضمنی نیست"
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
       ],
       "runtime_eligible": false
     },
@@ -25539,8 +25572,8 @@
       "topic_name": "مشکل دیگر",
       "day_number": 7,
       "source_content_id": "مشکل دیگر-07",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T34_D07",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -25557,7 +25590,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هفتم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
