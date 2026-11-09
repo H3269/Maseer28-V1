@@ -5,7 +5,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const readJson=p=>JSON.parse(fs.readFileSync(path.join(root,p),'utf8'));
 export const SAMPLE_DAYS=[1,2,7,14,21,28];
 export const TEMPLATE_FIELDS=['title','intro','exercise','actionText','closing','scientific_family','lightActionText','progressActionText','lightExerciseText','restExerciseText','restActionText','legacyBookReason'];
-const norm=s=>String(s??'').normalize('NFKC').replace(/\\s+/g,' ').trim().toLocaleLowerCase('fa');
+const norm=s=>String(s??'').normalize('NFKC').replace(/\s+/g,' ').trim().toLocaleLowerCase('fa');
 
 export function auditSampleDayTemplates({content,topics,days=SAMPLE_DAYS}){
  const registry=topics.topics??[], categories=content.categories??{};
@@ -68,5 +68,5 @@ if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.ur
  const output=path.join(root,'artifacts','content-template-sample-report.md');
  fs.mkdirSync(path.dirname(output),{recursive:true});
  fs.writeFileSync(output,renderSampleTemplateReport(result)+'\n','utf8');
- process.stdout.write(`Audited ${result.scope.record_count} sampled records across ${result.scope.sample_days.length} days.\\n`);
+ process.stdout.write(`Audited ${result.scope.record_count} sampled records across ${result.scope.sample_days.length} days.\n`);
 }
