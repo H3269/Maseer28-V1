@@ -514,8 +514,8 @@
       "topic_name": "خشم",
       "day_number": 18,
       "source_content_id": "خشم-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T01_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -532,7 +532,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -1302,8 +1304,8 @@
       "topic_name": "اضطراب",
       "day_number": 18,
       "source_content_id": "اضطراب-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T02_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -1320,7 +1322,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -2090,8 +2094,8 @@
       "topic_name": "ترس",
       "day_number": 18,
       "source_content_id": "ترس-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T03_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -2108,7 +2112,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -2878,8 +2884,8 @@
       "topic_name": "نفرت",
       "day_number": 18,
       "source_content_id": "نفرت-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T04_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -2896,7 +2902,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -3666,8 +3674,8 @@
       "topic_name": "حسادت",
       "day_number": 18,
       "source_content_id": "حسادت-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T05_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -3684,7 +3692,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -4454,8 +4464,8 @@
       "topic_name": "غم و سوگ",
       "day_number": 18,
       "source_content_id": "غم و سوگ-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T06_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -4472,7 +4482,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -5242,8 +5254,8 @@
       "topic_name": "احساس گناه",
       "day_number": 18,
       "source_content_id": "احساس گناه-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T07_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -5260,7 +5272,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -6030,8 +6044,8 @@
       "topic_name": "وابستگی عاطفی",
       "day_number": 18,
       "source_content_id": "وابستگی عاطفی-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T08_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -6048,7 +6062,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -6818,8 +6834,8 @@
       "topic_name": "اهمال‌کاری",
       "day_number": 18,
       "source_content_id": "اهمال‌کاری-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T09_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -6836,7 +6852,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -7606,8 +7624,8 @@
       "topic_name": "بی‌خوابی و مشکلات خواب",
       "day_number": 18,
       "source_content_id": "بی‌خوابی و مشکلات خواب-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T10_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -7624,7 +7642,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -8394,8 +8414,8 @@
       "topic_name": "عادت‌های تکراری",
       "day_number": 18,
       "source_content_id": "عادت‌های تکراری-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T11_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -8412,7 +8432,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -9182,8 +9204,8 @@
       "topic_name": "مرزبندی و نه گفتن",
       "day_number": 18,
       "source_content_id": "مرزبندی و نه گفتن-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T12_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -9200,7 +9222,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -9970,8 +9994,8 @@
       "topic_name": "تنهایی",
       "day_number": 18,
       "source_content_id": "تنهایی-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T13_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -9988,7 +10012,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -10758,8 +10784,8 @@
       "topic_name": "کمبود انگیزه",
       "day_number": 18,
       "source_content_id": "کمبود انگیزه-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T14_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -10776,7 +10802,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -11546,8 +11574,8 @@
       "topic_name": "اعتمادبه‌نفس پایین",
       "day_number": 18,
       "source_content_id": "اعتمادبه‌نفس پایین-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T15_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -11564,7 +11592,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -12334,8 +12364,8 @@
       "topic_name": "افکار منفی و نشخوار فکری",
       "day_number": 18,
       "source_content_id": "افکار منفی و نشخوار فکری-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T16_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -12352,7 +12382,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -13122,8 +13154,8 @@
       "topic_name": "مشکلات رابطه",
       "day_number": 18,
       "source_content_id": "مشکلات رابطه-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T17_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -13140,7 +13172,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -13910,8 +13944,8 @@
       "topic_name": "نفرت از خود",
       "day_number": 18,
       "source_content_id": "نفرت از خود-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T18_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -13928,7 +13962,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -14698,8 +14734,8 @@
       "topic_name": "خودسرزنشی",
       "day_number": 18,
       "source_content_id": "خودسرزنشی-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T19_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -14716,7 +14752,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -15486,8 +15524,8 @@
       "topic_name": "کمال‌گرایی",
       "day_number": 18,
       "source_content_id": "کمال‌گرایی-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T20_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -15504,7 +15542,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -16274,8 +16314,8 @@
       "topic_name": "اجتناب",
       "day_number": 18,
       "source_content_id": "اجتناب-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T21_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -16292,7 +16332,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -17062,8 +17104,8 @@
       "topic_name": "استرس",
       "day_number": 18,
       "source_content_id": "استرس-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T22_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -17080,7 +17122,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -17850,8 +17894,8 @@
       "topic_name": "احساس بی‌ارزشی",
       "day_number": 18,
       "source_content_id": "احساس بی‌ارزشی-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T23_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -17868,7 +17912,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -18638,8 +18684,8 @@
       "topic_name": "مشکل در کنترل هیجان",
       "day_number": 18,
       "source_content_id": "مشکل در کنترل هیجان-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T24_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -18656,7 +18702,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -19426,8 +19474,8 @@
       "topic_name": "رنجش و کینه",
       "day_number": 18,
       "source_content_id": "رنجش و کینه-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T25_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -19444,7 +19492,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -20214,8 +20264,8 @@
       "topic_name": "شرم",
       "day_number": 18,
       "source_content_id": "شرم-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T26_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -20232,7 +20282,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21002,8 +21054,8 @@
       "topic_name": "ترس از قضاوت",
       "day_number": 18,
       "source_content_id": "ترس از قضاوت-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T27_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21020,7 +21072,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21790,8 +21844,8 @@
       "topic_name": "ترس از شکست",
       "day_number": 18,
       "source_content_id": "ترس از شکست-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T28_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21808,7 +21862,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -22578,8 +22634,8 @@
       "topic_name": "ترس از طرد شدن",
       "day_number": 18,
       "source_content_id": "ترس از طرد شدن-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T29_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -22596,7 +22652,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -23366,8 +23424,8 @@
       "topic_name": "شک و تردید",
       "day_number": 18,
       "source_content_id": "شک و تردید-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T30_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -23384,7 +23442,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -24154,8 +24214,8 @@
       "topic_name": "کنترل‌گری",
       "day_number": 18,
       "source_content_id": "کنترل‌گری-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T31_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -24172,7 +24232,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -24942,8 +25004,8 @@
       "topic_name": "بی‌انگیزگی",
       "day_number": 18,
       "source_content_id": "بی‌انگیزگی-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T32_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -24960,7 +25022,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -25730,8 +25794,8 @@
       "topic_name": "خودانتقادی",
       "day_number": 18,
       "source_content_id": "خودانتقادی-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T33_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -25748,7 +25812,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -26518,8 +26584,8 @@
       "topic_name": "مشکل دیگر",
       "day_number": 18,
       "source_content_id": "مشکل دیگر-18",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T34_D18",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -26536,7 +26602,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز هجدهم؛ تطبیق شواهد و بازبینی ایمنی و تخصصی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
