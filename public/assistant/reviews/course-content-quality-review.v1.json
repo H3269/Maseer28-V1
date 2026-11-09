@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "ledger_id": "maseer28-course-content-quality-review-v1",
+  "status": "draft_review_queue_only",
+  "runtime_eligible": false,
+  "review_dimensions": [
+    "target_specificity",
+    "psychological_mechanism",
+    "evidence_support",
+    "exercise_alignment",
+    "progression_and_difficulty",
+    "safety_and_cautions",
+    "outcome_measurement",
+    "accessibility"
+  ],
+  "reviews": []
+}

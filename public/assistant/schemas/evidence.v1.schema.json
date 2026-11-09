@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maseer28.invalid/schemas/evidence.v1.schema.json",
+  "title": "Maseer28 Evidence Registry v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "registry_id",
+    "status",
+    "runtime_eligible",
+    "evidence"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "registry_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "draft_requires_expert_review",
+        "under_review",
+        "reviewed_not_runtime_approved"
+      ]
+    },
+    "runtime_eligible": {
+      "const": false
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    }
+  },
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "source_type",
+        "title",
+        "citation",
+        "population",
+        "study_type",
+        "limitations",
+        "review_status",
+        "reviewer_id",
+        "reviewed_at"
+      ],
+      "properties": {
+        "evidence_id": {
+          "type": "string",
+          "pattern": "^EVD_[A-Z0-9_-]+$"
+        },
+        "source_type": {
+          "enum": [
+            "clinical_guideline",
+            "systematic_review",
+            "meta_analysis",
+            "randomized_trial",
+            "observational_study",
+            "textbook",
+            "other"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "citation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "population": {
+          "type": "string",
+          "minLength": 1
+        },
+        "study_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "review_status": {
+          "enum": [
+            "pending_review",
+            "reviewed",
+            "approved",
+            "rejected"
+          ]
+        },
+        "reviewer_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reviewed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}
