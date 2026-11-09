@@ -164,6 +164,9 @@ jobs:
       - name: Export complete runtime content source for targeted redesign
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: node scripts/export-content-rewrite-source.mjs
+      - name: Validate topic-specific copy pilot and source traceability
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:topic-specific-copy-pilot
       - name: Generate complete 952-day content mapping review queue
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run generate:content-mapping-queue
