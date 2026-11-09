@@ -109,8 +109,12 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     return () => { active = false; };
   }, [screen, libraryContext?.titles?.length]);
 
-  const isAngerDailyPromptContext = screen === 'day'
-    && getCanonicalTopicIdForCategory(dailyContext?.problem) === 'T01';
+  const angerProblemTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem);
+  const angerRecordTopicId = dailyContext?.data?.topic_id || dailyContext?.data?.topicId || null;
+  const isAngerDailyPromptContext = Boolean(dailyContext)
+    && (angerProblemTopicId === 'T01' || angerRecordTopicId === 'T01')
+    && (!angerProblemTopicId || angerProblemTopicId === 'T01')
+    && (!angerRecordTopicId || angerRecordTopicId === 'T01');
   const activePromptGroups = screen === 'books'
     ? LIBRARY_ASSISTANT_PROMPT_GROUPS
     : isAngerDailyPromptContext
