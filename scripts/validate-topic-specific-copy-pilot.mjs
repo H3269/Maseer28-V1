@@ -12,6 +12,7 @@ const pilots = [
   { file: 'public/assistant/content-drafts/topic-specific-copy-pilot-t07-t12-days04-07.v1.json', expected: 24 },
   { file: 'public/assistant/content-drafts/topic-specific-copy-pilot-t13-t18-days04-07.v1.json', expected: 24 },
   { file: 'public/assistant/content-drafts/topic-specific-copy-pilot-t19-t24-days04-07.v1.json', expected: 24 },
+  { file: 'public/assistant/content-drafts/topic-specific-copy-pilot-t25-t30-days04-07.v1.json', expected: 24 },
 ];
 let total = 0;
 for (const item of pilots) {
