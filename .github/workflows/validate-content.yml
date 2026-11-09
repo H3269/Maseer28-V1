@@ -14,6 +14,7 @@ on:
       - 'scripts/audit-content-mappings.mjs'
       - 'scripts/generate-content-mapping-queue.mjs'
       - 'scripts/audit-course-content-quality.mjs'
+      - 'scripts/generate-course-content-quality-review-queue.mjs'
       - 'scripts/build-first-pass-review-packet.mjs'
       - 'scripts/audit-content-template-sample.mjs'
       - 'scripts/audit-library-assistant-acceptance.mjs'
@@ -131,6 +132,9 @@ jobs:
       - name: Audit topic and subtopic content mappings
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run audit:content-mappings
+      - name: Generate complete 952-day quality review queue
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run generate:course-content-review-queue
       - name: Audit 952-day content quality and review readiness
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run audit:course-content-quality
@@ -181,6 +185,13 @@ jobs:
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/global-assistant-launcher.mjs
           # Invalid legacy-data recovery remains covered by local unit tests; browser suite disabled by project decision.
 
+      - name: Upload generated 952-day quality review queue
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: course-content-quality-review-queue
+          path: public/assistant/reviews/course-content-quality-review.v1.json
+          if-no-files-found: error
       - name: Upload generated 952-day mapping review queue
         if: ${{ always() && steps.install.outcome == 'success' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
