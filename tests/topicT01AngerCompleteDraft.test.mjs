@@ -151,3 +151,21 @@ test('T01 source references resolve and day 8 does not repeat the T02 breathing 
   assert.doesNotMatch(day8.exercise, /تنفس|نفس/);
   assert.ok(day8.source_ids.includes('SRC-ANGER-KJAERVIK-2024-001'));
 });
+
+test('each T01 day has a scoped provisional claim-to-source map without claiming evidence approval', () => {
+  const registry = JSON.parse(fs.readFileSync(path.join(root,
+    'public/assistant/evidence/sources.v1.json'), 'utf8'));
+  const sourceIds = new Set(registry.sources.map((source) => source.source_id));
+  for (const record of pack.records) {
+    assert.ok(Array.isArray(record.candidate_source_ids) && record.candidate_source_ids.length > 0);
+    assert.deepEqual(record.claim_evidence_map.source_ids, record.candidate_source_ids);
+    assert.ok(record.claim_evidence_map.claim.trim());
+    assert.ok(record.claim_evidence_map.limitations.trim());
+    assert.equal(record.claim_evidence_map.status, 'provisional_pending_expert_and_evidence_review');
+    for (const sourceId of record.candidate_source_ids) {
+      assert.ok(sourceIds.has(sourceId), 'unregistered candidate source ' + sourceId);
+    }
+    assert.deepEqual(record.evidence_ids, []);
+    assert.equal(record.evidence_grade, 'not_assessed');
+  }
+});
