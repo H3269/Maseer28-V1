@@ -16,10 +16,10 @@
       "source_content_id": "خشم-24",
       "topic_id": "T01",
       "topic_name": "خشم",
-      "subtopic_id": "T01-S01",
-      "subtopic_name": "محرک‌ها و ارزیابی موقعیت، نشانه‌های بدنی و برانگیختگی",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 24,
-      "phase": "topic_specific_daily_skill",
+      "phase": "environment_design_and_pattern_maintenance",
       "learning_objective": "انتخاب یک عامل زمینه‌ای شناسایی‌شده و تصمیم درباره تغییر در اختیار، درخواست حمایت یا پذیرفتن محدودیت فعلی.",
       "mechanism_focus": "ارزیابی کنترل‌پذیری و برنامه‌ریزی متناسب با منابع واقعی.",
       "exercise": "از میان زمینه‌هایی که قبلاً شناسایی کرده‌ای، فقط یکی را انتخاب کن و در سه دسته قرار بده: در اختیار من، نیازمند همکاری/حمایت، خارج از اختیار فعلی. دلیل این دسته‌بندی را بنویس.",
@@ -34,12 +34,10 @@
       "runtime_eligible": false,
       "title": "تصمیم درباره عامل زمینه‌ای قابل‌تغییر",
       "subtopic_ids": [
-        "T01-S01",
-        "T01-S02"
+        "T01-S03"
       ],
       "subtopic_names": [
-        "محرک‌ها و ارزیابی موقعیت",
-        "نشانه‌های بدنی و برانگیختگی"
+        "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
       "target_skill": "ارزیابی کنترل‌پذیری و برنامه‌ریزی متناسب با منابع واقعی.",
       "teaching_point": "خستگی، فشار و زمان نامناسب ممکن است حساسیت را بیشتر کنند؛ این عوامل رفتار آسیب‌زا را توجیه نمی‌کنند.",
@@ -81,7 +79,11 @@
       },
       "source_runtime_mechanism": "شناسایی فشارهای زمینه‌ای برای پیشگیری زودهنگام",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D24"
+      "canonical_package_record_id": "DRAFT_T01_D24",
+      "design_subtopic_ids": [
+        "T01-S01",
+        "T01-S02"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D24",
