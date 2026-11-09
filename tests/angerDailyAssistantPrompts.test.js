@@ -113,6 +113,15 @@ test('daily turn routes prepared anger questions only after source identity and 
   assert.match(mismatch.response, /شناسه روزِ محتوای دریافتی/);
   assert.doesNotMatch(mismatch.response, /راهنمای روز 1 خشم/);
 
+  const topicMismatch = makeDailyExerciseGuidanceTurn({
+    message: question.value,
+    problem: 'خشم',
+    day: 1,
+    dayData: { id: 'T02-D01', topic_id: 'T02', day: 1, exercise: guide.exercise, actionText: guide.action },
+  });
+  assert.match(topicMismatch.response, /شناسه موضوعِ محتوای دریافتی/);
+  assert.doesNotMatch(topicMismatch.response, /راهنمای روز 1 خشم/);
+
   const pending = makeDailyExerciseGuidanceTurn({
     message: question.value,
     problem: 'خشم',
