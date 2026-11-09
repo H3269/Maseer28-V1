@@ -93,7 +93,20 @@
       "design_subtopic_ids": [
         "T01-S01",
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-ABCT-001",
+        "SRC-ANGER-NHS-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "خشم به‌عنوان هیجان از رفتار پرخاشگرانه جداست؛ نشانه‌ها و رفتار باید جدا ثبت شوند.",
+        "source_ids": [
+          "SRC-ANGER-ABCT-001",
+          "SRC-ANGER-NHS-001"
+        ],
+        "limitations": "منابع عمومی/حرفه‌ای؛ این تمرین ابزار تشخیص یا ارزیابی خطر نیست.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D02",
@@ -164,7 +177,20 @@
       "source_runtime_mechanism": "تفکیک هیجان از رفتار برای تقویت مسئولیت‌پذیری",
       "design_subtopic_ids": [
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-NHS-001",
+        "SRC-ANGER-APA-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "شناخت نشانه‌های اولیه و محرک‌ها می‌تواند فرصت انتخاب پاسخ را بیشتر کند.",
+        "source_ids": [
+          "SRC-ANGER-NHS-001",
+          "SRC-ANGER-APA-001"
+        ],
+        "limitations": "راهنمای عمومی؛ نشانه‌ها در افراد متفاوت‌اند و تشخیص محسوب نمی‌شوند.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D03",
@@ -235,7 +261,20 @@
       "source_runtime_mechanism": "شناسایی محرک‌ها و عوامل زمینه‌ای قابل مشاهده",
       "design_subtopic_ids": [
         "T01-S01"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-ABCT-001",
+        "SRC-ANGER-APA-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "احساس، رفتار و پیامد از هم تفکیک می‌شوند؛ خشم به‌تنهایی معادل پرخاشگری نیست.",
+        "source_ids": [
+          "SRC-ANGER-ABCT-001",
+          "SRC-ANGER-APA-001"
+        ],
+        "limitations": "این ثبت، تعیین مسئولیت حقوقی یا تشخیص بالینی نیست.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D04",
@@ -306,7 +345,20 @@
       "source_runtime_mechanism": "تشخیص نشانه‌های بدنی زودهنگام پیش از تشدید واکنش",
       "design_subtopic_ids": [
         "T01-S02"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-NHS-001",
+        "SRC-ANGER-APA-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "نشانه‌های بدنی/شناختی/رفتاری ممکن است پیش از تشدید آشکار شوند.",
+        "source_ids": [
+          "SRC-ANGER-NHS-001",
+          "SRC-ANGER-APA-001"
+        ],
+        "limitations": "نشانه جسمی جدید یا شدید نباید خودکار به خشم نسبت داده شود.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D05",
@@ -379,7 +431,20 @@
         "T01-S01",
         "T01-S02",
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-ABCT-001",
+        "SRC-ANGER-APA-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "خودپایشگریِ موقعیت و توالی پاسخ می‌تواند بخشی از رویکردهای CBT-informed باشد.",
+        "source_ids": [
+          "SRC-ANGER-ABCT-001",
+          "SRC-ANGER-APA-001"
+        ],
+        "limitations": "خودپایشگری به‌تنهایی اثربخشی درمان یا تغییر رفتار را ثابت نمی‌کند.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D06",
@@ -451,7 +516,20 @@
       "design_subtopic_ids": [
         "T01-S02",
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-APA-001",
+        "SRC-ANGER-ABCT-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "مکث/فاصله‌گیری برنامه‌ریزی‌شده می‌تواند در برخی موقعیت‌ها از واکنش شتاب‌زده جلوگیری کند.",
+        "source_ids": [
+          "SRC-ANGER-APA-001",
+          "SRC-ANGER-ABCT-001"
+        ],
+        "limitations": "فاصله‌گیری باید امن باشد؛ در خطر فوری تمرین جایگزین کمک انسانی نیست.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D07",
@@ -524,7 +602,20 @@
         "T01-S01",
         "T01-S02",
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-ABCT-001",
+        "SRC-ANGER-APA-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "مرور نشانه‌ها و پیامدها برای شناسایی الگوهای شخصی در رویکردهای خودپایشگری/CBT به‌کار می‌رود.",
+        "source_ids": [
+          "SRC-ANGER-ABCT-001",
+          "SRC-ANGER-APA-001"
+        ],
+        "limitations": "این مرور، آزمون تشخیصی یا پیش‌بینی‌کننده رفتار آینده نیست.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D08",
@@ -598,7 +689,20 @@
       "design_subtopic_ids": [
         "T01-S02"
       ],
-      "audit_notes_day": "بازطراحی روز ۸ برای رفع هم‌پوشانی مفهومی با تمرین تنفس T02 و تفکیک آموزش «تشخیص راهبردهای تخلیه‌محور» از روز ۱۳ که به انتخاب گزینه آرام‌ساز اختصاص دارد."
+      "audit_notes_day": "بازطراحی روز ۸ برای رفع هم‌پوشانی مفهومی با تمرین تنفس T02 و تفکیک آموزش «تشخیص راهبردهای تخلیه‌محور» از روز ۱۳ که به انتخاب گزینه آرام‌ساز اختصاص دارد.",
+      "candidate_source_ids": [
+        "SRC-ANGER-KJAERVIK-2024-001",
+        "SRC-ANGER-APA-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "فعالیت‌های کاهنده برانگیختگی در فراتحلیل با کاهش خشم/پرخاشگری همراه بودند؛ فعالیت‌های افزایش‌دهنده در مجموع اثر معناداری نداشتند.",
+        "source_ids": [
+          "SRC-ANGER-KJAERVIK-2024-001",
+          "SRC-ANGER-APA-001"
+        ],
+        "limitations": "اثر گروهی، مناسب‌بودن هر تمرین برای هر فرد را ثابت نمی‌کند؛ ورزش عمومی منع نمی‌شود و فقط نباید ورزش شدید/تخلیه پرخطر را درمان فوری خشم دانست.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D09",
@@ -670,7 +774,20 @@
       "source_runtime_mechanism": "انتقال توجه از تکانه به محیط حاضر",
       "design_subtopic_ids": [
         "T01-S02"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-ODEAN-2025-001",
+        "SRC-ANGER-APA-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "توجه‌آگاهی در قالب مداخلات ساختاریافته می‌تواند با کاهش خشم همراه باشد؛ این روز فقط تمرین کوتاه توجه به محیط است.",
+        "source_ids": [
+          "SRC-ANGER-ODEAN-2025-001",
+          "SRC-ANGER-APA-001"
+        ],
+        "limitations": "شواهد مداخلات ساختاریافته را نمی‌توان معادل اثربخشی یک prompt کوتاه یا grounding مستقل دانست.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D10",
@@ -744,7 +861,20 @@
       "design_subtopic_ids": [
         "T01-S02",
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-APA-001",
+        "SRC-ANGER-ABCT-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "مکث و time-out در برخی رویکردهای مدیریت خشم برای کاهش واکنش شتاب‌زده مطرح شده‌اند.",
+        "source_ids": [
+          "SRC-ANGER-APA-001",
+          "SRC-ANGER-ABCT-001"
+        ],
+        "limitations": "بازگشت به گفت‌وگو فقط وقتی مناسب است که امن و با رضایت طرفین باشد.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D11",
@@ -817,7 +947,22 @@
       "source_runtime_mechanism": "تسهیل ادامه گفت‌وگو فقط در صورت رضایت آزادانه و ایمنی؛ نه تحمیل بازگشت.",
       "design_subtopic_ids": [
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-APA-001",
+        "SRC-ANGER-ABCT-001",
+        "SRC-ANGER-WHO-IPV-2013-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "حق توقف و انتخاب‌نکردن گفت‌وگو حفظ می‌شود؛ در افشای خشونت، ایمنی، حریم خصوصی و اختیار فرد مقدم است.",
+        "source_ids": [
+          "SRC-ANGER-APA-001",
+          "SRC-ANGER-ABCT-001",
+          "SRC-ANGER-WHO-IPV-2013-001"
+        ],
+        "limitations": "WHO IPV فقط راهنمای پاسخ سلامت‌محور به خشونت علیه زنان است؛ برای همه جنسیت‌ها/روابط یا ارزیابی خودکار خطر تعمیم داده نمی‌شود.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D12",
@@ -889,7 +1034,18 @@
       "source_runtime_mechanism": "کاهش تنش عضلانی بدون درد یا فشار",
       "design_subtopic_ids": [
         "T01-S02"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-APA-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "آرام‌سازی عضلانی تدریجی در راهنمای عمومی APA به‌عنوان یک روش آرام‌سازی معرفی شده است.",
+        "source_ids": [
+          "SRC-ANGER-APA-001"
+        ],
+        "limitations": "تمرین باید اختیاری و بدون درد/فشار باشد؛ برای علائم جسمی جدید یا شدید مناسب نیست.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D13",
@@ -962,7 +1118,20 @@
       "design_subtopic_ids": [
         "T01-S02",
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-KJAERVIK-2024-001",
+        "SRC-ANGER-APA-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "در موقعیت کم‌خطر، گزینه‌های کاهش‌دهنده برانگیختگی از تخلیه پرخاشگرانه متمایز می‌شوند.",
+        "source_ids": [
+          "SRC-ANGER-KJAERVIK-2024-001",
+          "SRC-ANGER-APA-001"
+        ],
+        "limitations": "این شواهد، یک تکنیک خاص یا اثربخشی برنامه ۲۸روزه را تأیید نمی‌کند.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D14",
@@ -1035,7 +1204,20 @@
       "design_subtopic_ids": [
         "T01-S02",
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-APS-001",
+        "SRC-ANGER-APA-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "انتخاب راهبرد باید با موقعیت، ایمنی و تناسب فردی سنجیده شود؛ ارتباط و حل مسئله از مهارت‌های مطرح در راهنماها هستند.",
+        "source_ids": [
+          "SRC-ANGER-APS-001",
+          "SRC-ANGER-APA-001"
+        ],
+        "limitations": "راهنماهای عمومی، نسخه فردی یا تضمین نتیجه نیستند.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D15",
@@ -1107,7 +1289,18 @@
       "source_runtime_mechanism": "بازبینی برداشت‌ها با تفکیک شواهد و تفسیر",
       "design_subtopic_ids": [
         "T01-S01"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-APA-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "بازنگری برداشت‌ها و کاهش تعمیم‌های مطلق مانند همیشه/هرگز در بازسازی شناختی مطرح است.",
+        "source_ids": [
+          "SRC-ANGER-APA-001"
+        ],
+        "limitations": "بازنگری شناختی نباید شواهد واقعی بی‌عدالتی، تهدید یا سوءرفتار را انکار کند.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D16",
@@ -1179,7 +1372,18 @@
       "source_runtime_mechanism": "کاهش قطعیت‌های شناختی و افزایش دقت در ارزیابی موقعیت",
       "design_subtopic_ids": [
         "T01-S01"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-APA-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "جایگزینی گزاره‌های مطلق با توصیف دقیق‌تر در راهنمای بازسازی شناختی APA آمده است.",
+        "source_ids": [
+          "SRC-ANGER-APA-001"
+        ],
+        "limitations": "هدف تحمیل مثبت‌اندیشی نیست؛ برداشت جایگزین باید با شواهد سازگار باشد.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D17",
@@ -1252,7 +1456,20 @@
       "source_runtime_mechanism": "تبدیل انتظار مبهم به درخواست روشن و قابل مذاکره",
       "design_subtopic_ids": [
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-APS-001",
+        "SRC-ANGER-APA-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "روشن‌کردن نیاز و تبدیل انتظار به درخواست روشن با راهنمایی‌های ارتباطی/حل مسئله هم‌راستاست.",
+        "source_ids": [
+          "SRC-ANGER-APS-001",
+          "SRC-ANGER-APA-001"
+        ],
+        "limitations": "درخواست‌کردن اجباری نیست و در رابطه ناامن یا نابرابر ممکن است مناسب نباشد.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D18",
@@ -1325,7 +1542,20 @@
       "design_subtopic_ids": [
         "T01-S01",
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-APA-001",
+        "SRC-ANGER-ABCT-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "توصیف رفتار مشخص به‌جای برچسب کلی با خودپایشگری و بازسازی شناختی هم‌راستاست.",
+        "source_ids": [
+          "SRC-ANGER-APA-001",
+          "SRC-ANGER-ABCT-001"
+        ],
+        "limitations": "این بازنویسی نباید رفتار آسیب‌زا را کوچک جلوه دهد یا مسئولیت را حذف کند.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D19",
@@ -1397,7 +1627,20 @@
       "source_runtime_mechanism": "تولید گزینه‌های کم‌خطر و انتخاب راه‌حل واقع‌بینانه",
       "design_subtopic_ids": [
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-APS-001",
+        "SRC-ANGER-ABCT-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "تولید گزینه و حل مسئله از مهارت‌های رایج رویکردهای CBT-informed مدیریت خشم است.",
+        "source_ids": [
+          "SRC-ANGER-APS-001",
+          "SRC-ANGER-ABCT-001"
+        ],
+        "limitations": "گزینه‌ها باید غیرآسیب‌زا و متناسب با شرایط واقعی باشند؛ تمرین به‌تنهایی درمان نیست.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D20",
@@ -1470,7 +1713,20 @@
       "source_runtime_mechanism": "بیان نیاز و مرز بدون حمله یا تهدید",
       "design_subtopic_ids": [
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-APA-001",
+        "SRC-ANGER-APS-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "مکث، گوش‌دادن و انتخاب پاسخ سنجیده در راهنماهای ارتباطی مدیریت خشم مطرح است.",
+        "source_ids": [
+          "SRC-ANGER-APA-001",
+          "SRC-ANGER-APS-001"
+        ],
+        "limitations": "ارتباط مؤثر به معنی آشتی، تسلیم یا ادامه تماس در شرایط ناامن نیست.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D21",
@@ -1543,7 +1799,22 @@
       "source_runtime_mechanism": "کاهش پاسخ‌دهی تکانشی از طریق گوش‌دادن و مکث",
       "design_subtopic_ids": [
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-APA-001",
+        "SRC-ANGER-ABCT-001",
+        "SRC-ANGER-WHO-IPV-2013-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "درخواست وقفه می‌تواند مهارت ارتباطی باشد؛ اگر خشونت/اجبار مطرح است، ایمنی و اختیار فرد مقدم است.",
+        "source_ids": [
+          "SRC-ANGER-APA-001",
+          "SRC-ANGER-ABCT-001",
+          "SRC-ANGER-WHO-IPV-2013-001"
+        ],
+        "limitations": "WHO فقط برای خشونت شریک عاطفی/جنسی علیه زنان و پاسخ سلامت‌محور آن قابل استناد است؛ نه نسخه عمومی برای همه روابط.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D22",
@@ -1616,7 +1887,22 @@
       "source_runtime_mechanism": "ارزیابی امکان مذاکره در روابط امن و حفظ مرزها",
       "design_subtopic_ids": [
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-APS-001",
+        "SRC-ANGER-APA-001",
+        "SRC-ANGER-WHO-IPV-2013-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "ساختار جمله روشن و غیرتحقیرآمیز با راهنمای مهارت ارتباطی هم‌راستاست؛ قاعده ایمنی در خشونت از منبع WHO فقط در دامنه محدود خودش گرفته می‌شود.",
+        "source_ids": [
+          "SRC-ANGER-APS-001",
+          "SRC-ANGER-APA-001",
+          "SRC-ANGER-WHO-IPV-2013-001"
+        ],
+        "limitations": "گفت‌وگو یا مذاکره در حضور تهدید، کنترل اجباری یا ترس از تلافی توصیه نمی‌شود.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D23",
@@ -1688,7 +1974,22 @@
       "source_runtime_mechanism": "تقویت مسئولیت‌پذیری و پیشگیری از تکرار آسیب",
       "design_subtopic_ids": [
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-APA-001",
+        "SRC-ANGER-ABCT-001",
+        "SRC-ANGER-WHO-IPV-2013-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "شناسایی نقطه توقف و فاصله‌گیری امن با راهنمای time-out هم‌راستاست؛ اولویت ایمنی در خشونت محدود به راهنمای دامنه‌دار WHO است.",
+        "source_ids": [
+          "SRC-ANGER-APA-001",
+          "SRC-ANGER-ABCT-001",
+          "SRC-ANGER-WHO-IPV-2013-001"
+        ],
+        "limitations": "این نقشه، ابزار پیش‌بینی خشونت یا جایگزین ارزیابی انسانی نیست.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D24",
@@ -1760,7 +2061,20 @@
       "design_subtopic_ids": [
         "T01-S01",
         "T01-S02"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-APA-001",
+        "SRC-ANGER-NHS-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "شناخت محرک‌ها و تعدیل عوامل محیطی می‌تواند بخشی از مدیریت موقعیت‌های تحریک‌کننده باشد.",
+        "source_ids": [
+          "SRC-ANGER-APA-001",
+          "SRC-ANGER-NHS-001"
+        ],
+        "limitations": "هدف حذف اعتراض موجه یا نسبت‌دادن تمام مسئولیت به فرد نیست.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D25",
@@ -1836,7 +2150,20 @@
         "T01-S01",
         "T01-S02",
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-APA-001",
+        "SRC-ANGER-NHS-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "مرور نشانه‌های زودهنگام و پیامدهای راهبردها می‌تواند به اصلاح برنامه شخصی کمک کند.",
+        "source_ids": [
+          "SRC-ANGER-APA-001",
+          "SRC-ANGER-NHS-001"
+        ],
+        "limitations": "تغییر هم‌زمان عوامل متعدد اجازه استنباط علت قطعی نمی‌دهد.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D26",
@@ -1907,7 +2234,20 @@
       "source_runtime_mechanism": "شناسایی محدودیت خودیاری و تسهیل کمک‌خواهی",
       "design_subtopic_ids": [
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-APA-001",
+        "SRC-ANGER-NHS-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "برنامه‌ریزی پیش از تنش و شناسایی پاسخ امن با راهنماهای عمومی مدیریت خشم هم‌راستاست.",
+        "source_ids": [
+          "SRC-ANGER-APA-001",
+          "SRC-ANGER-NHS-001"
+        ],
+        "limitations": "در خطر فوری، کارت یا برنامه خودیاری جای خروج امن و کمک فوری نیست.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D27",
@@ -1979,7 +2319,22 @@
       "source_runtime_mechanism": "آمادگی مقدماتی برای فاصله‌گیری و اقدام ایمن در زمان خطر",
       "design_subtopic_ids": [
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-ABCT-001",
+        "SRC-ANGER-NHS-001",
+        "SRC-ANGER-WHO-IPV-2013-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "وقتی خشم شدید/مکرر/مختل‌کننده یا رفتار آسیب‌زا وجود دارد، ارزیابی حرفه‌ای لازم است؛ در افشای خشونت، ایمنی و اختیار مقدم است.",
+        "source_ids": [
+          "SRC-ANGER-ABCT-001",
+          "SRC-ANGER-NHS-001",
+          "SRC-ANGER-WHO-IPV-2013-001"
+        ],
+        "limitations": "WHO فقط در دامنه خشونت شریک عاطفی/جنسی علیه زنان به‌کار می‌رود؛ این روز ابزار غربالگری خطر نیست و برای سطح خطر به قضاوت انسانی نیاز است.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     },
     {
       "content_id": "DRAFT_T01_D28",
@@ -2055,11 +2410,25 @@
         "T01-S01",
         "T01-S02",
         "T01-S03"
-      ]
+      ],
+      "candidate_source_ids": [
+        "SRC-ANGER-APS-001",
+        "SRC-ANGER-NHS-001"
+      ],
+      "claim_evidence_map": {
+        "claim": "برنامه ادامه و کمک‌خواهی در صورت نیاز با راهنماهای عمومی و توصیه به کمک حرفه‌ای هم‌راستاست.",
+        "source_ids": [
+          "SRC-ANGER-APS-001",
+          "SRC-ANGER-NHS-001"
+        ],
+        "limitations": "پایان ۲۸ روز به معنی درمان، بهبود تضمینی یا ضرورت ادامه مسیر نیست.",
+        "status": "provisional_pending_expert_and_evidence_review"
+      }
     }
   ],
   "audit_notes": [
     "برای جلوگیری از حمل تناقض از فراداده قدیمی به پیش‌نویس تازه، سازوکار اصلی در این بسته از مهارت/سازوکار نسخه B2-AB گرفته شده است؛ مقدار mechanism قدیمی فقط در source_runtime_mechanism برای ردیابی نگهداری می‌شود.",
     "پنج گونه پشتیبان هر روز جداگانه تعریف شده‌اند؛ نسخه سبک، اقدام سبک، اقدام پیشرفت، تمرین استراحت و اقدام استراحت. این پنج فیلد با متن‌های قبلی runtime یکسان فرض نشده‌اند و نیازمند بازبینی مستقل‌اند."
-  ]
+  ],
+  "evidence_review_status": "provisional_claim_source_map_pending_expert_review"
 }
