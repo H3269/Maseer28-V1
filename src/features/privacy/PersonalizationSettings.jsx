@@ -66,6 +66,7 @@ export default function PersonalizationSettings() {
       });
       setConsent(next);
       setPreferences(loadPersonalizationPreferences());
+      window.dispatchEvent(new Event('maseer28:consent-changed'));
       setError('');
       setMessage('رضایت ذخیره ترجیحات غیرحساس ثبت شد. هنوز هیچ متن گفتگو یا سابقه روان‌شناختی ذخیره نمی‌شود.');
     } catch (cause) {
@@ -130,6 +131,7 @@ export default function PersonalizationSettings() {
       setConsent(getConsentState());
       setPreferences({ ...DEFAULT_PERSONALIZATION });
       notifyPreferencesChanged();
+      window.dispatchEvent(new Event('maseer28:consent-changed'));
       setError('');
       setMessage(next.erasure_errors?.length
         ? 'رضایت لغو شد، اما حذف ترجیحات با خطا روبه‌رو شد. حذف کامل را نمی‌توان تأیید کرد.'
