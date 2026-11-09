@@ -54,4 +54,4 @@ for (const item of pilots) {
   if (keys.size !== item.expected) throw new Error('Incomplete topic/day coverage: ' + item.file);
   total += keys.size;
 }
-process.stdout.write(`Validated ${total} source-traceable, unique, non-runtime pilot records across three batches.\\n`);
+process.stdout.write(`Validated ${total} source-traceable, unique, non-runtime pilot records across six batches.\\n`);
