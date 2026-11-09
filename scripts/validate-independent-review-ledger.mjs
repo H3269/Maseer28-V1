@@ -65,11 +65,11 @@ export function validateIndependentReviewLedger(ledger) {
     }
         if (record.decision === 'approved' || record.decision === 'expert_reviewed') {
       if (reviews.length !== 1) errors.push('one submitted authorized owner-expert review is required before expert decision: ' + record.content_id);
-      if (reviews.some((r) => r.hard_stop_flags.length > 0 ||
-          r.findings.some((f) => ['P0','P1'].includes(f.severity) && f.resolved !== true))) {
+      if (reviews.some((r) => (r.hard_stop_flags ?? []).length > 0 ||
+          (r.findings ?? []).some((f) => ['P0','P1'].includes(f.severity) && f.resolved !== true))) {
         errors.push('open hard-stop/P0/P1 finding blocks expert decision: ' + record.content_id);
       }
-      if (reviews.some((r) => DIMENSIONS.some((key) => r.scores[key] <= 1))) errors.push('score 0 or 1 blocks approval pending rework and review: ' + record.content_id);
+      if (reviews.some((r) => DIMENSIONS.some((key) => (r.scores?.[key] ?? 0) <= 1))) errors.push('score 0 or 1 blocks approval pending rework and review: ' + record.content_id);
       if (!nonEmpty(record.decision_rationale) || !nonEmpty(record.decided_at)) errors.push('decision rationale and timestamp are required: ' + record.content_id);
     }
     if (!DECISIONS.has(record.decision)) errors.push('record decision is missing or invalid: ' + record.content_id);
