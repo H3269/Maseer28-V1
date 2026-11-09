@@ -17,10 +17,10 @@
       "source_content_id": "خشم-02",
       "topic_id": "T01",
       "topic_name": "خشم",
-      "subtopic_id": "T01-S03",
-      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "subtopic_id": "T01-S02",
+      "subtopic_name": "نشانه‌های بدنی و برانگیختگی",
       "day_number": 2,
-      "phase": "topic_specific_daily_skill",
+      "phase": "pattern_discrimination_and_context",
       "learning_objective": "تشخیص اینکه احساس خشم می‌تواند وجود داشته باشد بدون آنکه توهین، تهدید یا آسیب رخ دهد.",
       "mechanism_focus": "تفکیک هیجان از رفتار و مسئولیت‌پذیری رفتاری.",
       "exercise": "سه پاسخ احتمالی به یک موقعیت کم‌خطر بنویس: بیان محترمانه اعتراض، فاصله‌گیری، و یک رفتار آسیب‌زا که باید از آن پرهیز شود. پیامد هرکدام را برای خود و دیگری مقایسه کن.",
@@ -35,10 +35,10 @@
       "runtime_eligible": false,
       "title": "خشم در برابر پرخاشگری",
       "subtopic_ids": [
-        "T01-S03"
+        "T01-S02"
       ],
       "subtopic_names": [
-        "بیان خشم، تکانه و رفتار پرخاشگرانه"
+        "نشانه‌های بدنی و برانگیختگی"
       ],
       "target_skill": "تفکیک هیجان از رفتار و مسئولیت‌پذیری رفتاری.",
       "teaching_point": "طبیعی‌بودن یک هیجان، تهدید یا آسیب‌رساندن را توجیه نمی‌کند؛ مسئولیت رفتار همچنان باقی است.",
@@ -80,7 +80,10 @@
       },
       "source_runtime_mechanism": "تفکیک هیجان از رفتار برای تقویت مسئولیت‌پذیری",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D02"
+      "canonical_package_record_id": "DRAFT_T01_D02",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D02",
