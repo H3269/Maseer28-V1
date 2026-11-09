@@ -54,3 +54,12 @@ test('validator rejects evidence references represented as fully verified', () =
   assert.equal(result.valid, false);
   assert.ok(result.errors.some((error) => error.includes('candidate-only and pending claim review')));
 });
+
+
+test('validator rejects candidate evidence ids that drift from provenance ids', () => {
+  const pilot = structuredClone(fixtures.pilot);
+  pilot.records[0].candidate_evidence_ids = ['EVID_NOT_REGISTERED'];
+  const result = validateQualitySafetyGates({ ...fixtures, pilot });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.includes('candidate evidence ids must exactly match')));
+});
