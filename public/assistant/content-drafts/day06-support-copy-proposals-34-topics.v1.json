@@ -22,13 +22,14 @@
       "topic_id": "T01",
       "topic_name": "خشم",
       "day_number": 6,
-      "lightExerciseText": "فقط یک جزء از گفت‌وگوی دشوار را انتخاب کن که امروز آماده‌سازی آن کافی است.",
-      "lightActionText": "جمله مربوط به واقعیت را بدون قضاوت و برچسب بنویس.",
-      "progressActionText": "اگر امن است، گفت‌وگوی سه‌جمله‌ای را در زمان مناسب اجرا کن؛ امکان توقف را حفظ کن.",
-      "restExerciseText": "امروز گفت‌وگو را انجام نده؛ فقط از تنش فاصله بگیر.",
-      "restActionText": "در سابقه خشونت یا خطر آسیب، گفت‌وگوی مستقیم را کنار بگذار و کمک امن بگیر.",
+      "lightExerciseText": "فقط نشانه سطح میانی را بنویس.",
+      "lightActionText": "یک نشانه را برای مکث انتخاب کن؛ لازم نیست شدت خشم را عددگذاری کنی.",
+      "progressActionText": "یک نشانه زودهنگام دیگر را اضافه کن که پیش از رسیدن به سطح بالا ظاهر می‌شود.",
+      "restExerciseText": "امروز شدت را درجه‌بندی نکن؛ یک کار خنثی و غیرتعاملی انتخاب کن.",
+      "restActionText": "امروز شدت خشم را درجه‌بندی نکن؛ اگر تنش بالاست از موقعیت فاصله بگیر.",
       "review_status": "draft_pending_expert_review",
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1"
     },
     {
       "content_id": "DRAFT_T02_D06",
