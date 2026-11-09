@@ -85,6 +85,43 @@ for (const file of fullCoverageFiles) {
     copyRecords.push(r);
   }
 }
+const lateProposalBatch = read('public/assistant/content-drafts/topic-specific-copy-proposals-all-34-days21-28.v1.json');
+if (lateProposalBatch.records.length !== 272 ||
+    lateProposalBatch.status !== 'draft_pending_exact_runtime_source_reconciliation_owner_and_expert_review') {
+  throw new Error('Expected 272 late title/intro proposals in pending source-reconciliation status');
+}
+const lateByDay = new Map();
+const lateDraftByKey = new Map();
+for (let day = 21; day <= 28; day += 1) {
+  const batch = read('public/assistant/content-drafts/day' + String(day).padStart(2, '0') + '-34-topic-drafts.v1.json');
+  for (const draft of batch.records) lateDraftByKey.set(draft.topic_id + ':' + day, draft);
+}
+for (const proposal of lateProposalBatch.records) {
+  const key = proposal.topic_id + ':' + proposal.day_number;
+  const sourceDraft = lateDraftByKey.get(key);
+  if (!sourceDraft || proposal.source_content_id !== sourceDraft.source_content_id) {
+    throw new Error('Late proposal source draft mismatch: ' + key);
+  }
+  if (!proposal.proposed_title?.trim() || !proposal.proposed_intro?.trim()) {
+    throw new Error('Empty late title/intro proposal: ' + key);
+  }
+  if (proposal.runtime_eligible !== false ||
+      proposal.review_status !== 'pending_owner_and_expert_review' ||
+      proposal.source_mapping_status !== 'pending_exact_runtime_source_reconciliation') {
+    throw new Error('Late proposal gate or source status mismatch: ' + key);
+  }
+  if (proposal.source_exercise !== sourceDraft.exercise || proposal.source_action !== sourceDraft.action) {
+    throw new Error('Late proposal exercise/action traceability mismatch: ' + key);
+  }
+  if (!lateByDay.has(proposal.day_number)) lateByDay.set(proposal.day_number, []);
+  lateByDay.get(proposal.day_number).push(proposal);
+}
+for (let day = 21; day <= 28; day += 1) {
+  const records = lateByDay.get(day) ?? [];
+  if (records.length !== 34) throw new Error('Expected 34 late proposals on day ' + day);
+  if (new Set(records.map((r) => r.proposed_title)).size !== 34) throw new Error('Duplicate late title on day ' + day);
+  if (new Set(records.map((r) => r.proposed_intro)).size !== 34) throw new Error('Duplicate late intro on day ' + day);
+}
 const byTopicDay = new Map();
 for (const r of copyRecords) {
   const key = r.topic_name + ':' + (r.day_number ?? r.day);
@@ -101,4 +138,4 @@ for (let day = 1; day <= 20; day += 1) {
   if (new Set(records.map((r) => r.proposed_title)).size !== 34) throw new Error('Duplicate title across topics on day ' + day);
   if (new Set(records.map((r) => r.proposed_intro)).size !== 34) throw new Error('Duplicate intro across topics on day ' + day);
 }
-process.stdout.write(`Validated ${pilotRecordCount} traceable, unique, non-runtime pilot records and 680 complete first-twenty-day topic/day title-intro pairs.\\n`);
+process.stdout.write(`Validated ${pilotRecordCount} traceable, unique, non-runtime pilot records, 680 first-twenty-day title-intro pairs, and 272 late proposals pending source reconciliation.\\n`);
