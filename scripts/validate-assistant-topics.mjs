@@ -35,6 +35,14 @@ if (new Set(topics.map((item) => item.topic_id)).size !== topics.length) errors.
 if (JSON.stringify(topics.map((item) => item.topic_id)) !== JSON.stringify(expectedIds)) errors.push('شناسه‌ها باید به ترتیب T01 تا T34 باشند.');
 
 for (const id of expectedIds) if (!definitionIds.has(id)) errors.push(`تعریف کاری ${id} وجود ندارد.`);
+(topicDefinitions.definitions || []).forEach((item) => {
+  if (!topicIds.has(item.topic_id)) errors.push(`تعریف به موضوع نامعتبر ${item.topic_id} متصل است.`);
+  if (!item.working_definition?.trim()) errors.push(`تعریف کاری ${item.topic_id} خالی است.`);
+  const linkedTopic = topics.find((topic) => topic.topic_id === item.topic_id);
+  if (linkedTopic?.definition !== item.working_definition) errors.push(`تعریف کاری ${item.topic_id} با رجیستری موضوعات همگام نیست.`);
+  if (!item.scope_limit?.trim()) errors.push(`محدودیت دامنه ${item.topic_id} خالی است.`);
+  if (item.review_status !== 'pending_expert_review' || item.evidence_ids?.length) errors.push(`تعریف ${item.topic_id} نباید بدون منبع و بازبینی تأیید شود.`);
+});
 if (evidenceSourcesRegistry.registry_id !== 'maseer28-evidence-sources') errors.push('شناسه رجیستری منابع شواهد نامعتبر است.');
 if (evidenceSourcesRegistry.status !== 'curated_draft_sources_pending_evidence_review') errors.push('منابع شواهد باید تا ارزیابی کیفیت و بازبینی در وضعیت draft باقی بمانند.');
 if (new Set(evidenceSources.map((item) => item.source_id)).size !== evidenceSources.length) errors.push('شناسه منبع شواهد تکراری است.');
@@ -56,9 +64,10 @@ topics.forEach((topic, index) => {
     if (!evidenceSourceIds.has(sourceId)) errors.push(`منبع ${sourceId} برای موضوع ${topic.topic_id} در رجیستری وجود ندارد.`);
   }
   if (typeof topic.name !== 'string' || !topic.name.trim()) errors.push(`نام موضوع ${expectedIds[index]} خالی است.`);
+  if (typeof topic.definition !== 'string' || !topic.definition.trim()) errors.push(`تعریف عملیاتی موضوع ${expectedIds[index]} خالی است.`);
   if (topic.display_order !== index + 1) errors.push(`ترتیب نمایشی ${expectedIds[index]} نامعتبر است.`);
   if (topic.definition_status !== 'pending_expert_review') errors.push(`تعریف موضوع ${expectedIds[index]} نباید پیش از بازبینی متخصص تأیید شود.`);
-  for (const field of ['review_flags', 'subtopic_ids', 'relation_ids', 'evidence_ids', 'content_ids', 'intervention_ids', 'safety_rule_ids']) {
+  for (const field of ['review_flags', 'subtopic_ids', 'relation_ids', 'evidence_ids', 'content_ids', 'intervention_ids', 'safety_rule_ids', 'draft_content_ids', 'draft_evidence_ids']) {
     if (!Array.isArray(topic[field])) errors.push(`فیلد ${field} باید آرایه باشد: ${expectedIds[index]}.`);
   }
   for (const id of topic.relation_ids || []) {
@@ -75,6 +84,7 @@ if (subtopics.length !== 102) errors.push('نسخه فعلی باید ۱۰۲ ز�
 if (new Set(subtopics.map((item) => item.subtopic_id)).size !== subtopics.length) errors.push('شناسه زیرموضوع تکراری است.');
 subtopics.forEach((item) => {
   if (!topicIds.has(item.topic_id)) errors.push(`موضوع والد برای ${item.subtopic_id} وجود ندارد.`);
+  if (typeof item.definition !== 'string' || !item.definition.trim()) errors.push(`تعریف زیرموضوع ${item.subtopic_id} خالی است.`);
   if (item.definition_status !== 'pending_expert_review' || item.review_status !== 'draft') errors.push(`زیرموضوع ${item.subtopic_id} نباید تأییدشده تلقی شود.`);
   if (!Array.isArray(item.evidence_ids)) errors.push(`فهرست منابع زیرموضوع ${item.subtopic_id} باید آرایه باشد.`);
   if (item.review_status === 'draft' && (item.evidence_ids || []).length) {
