@@ -28,6 +28,7 @@ test('prompt groups are scoped to the selected day and contain all prepared ques
     assert.ok(groups.flatMap((group) => group.questions).every((question) => question.value.startsWith(`روز ${day} خشم:`)));
   }
   assert.deepEqual(getAngerDailyAssistantPromptGroups(29), []);
+  assert.equal(getAngerDailyAssistantPromptGroups('۱').reduce((count, group) => count + group.questions.length, 0), 14);
 });
 
 test('anger guide exercise and action text match the 28 runtime overrides exactly', async () => {
