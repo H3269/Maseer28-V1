@@ -92,6 +92,9 @@ export function validateQualitySafetyGates({ policy, queue, pilot, evidence }) {
         item.reviewed_at !== null) {
       errors.push('pilot draft must remain unreviewed and runtime-blocked: ' + item.content_id);
     }
+    if (item.evidence_mapping_status !== 'candidate_only_pending_claim_level_review') {
+      errors.push('pilot evidence mapping must remain candidate-only and pending claim review: ' + item.content_id);
+    }
     const ids = Array.isArray(item.evidence_ids) ? item.evidence_ids : [];
     const refs = Array.isArray(item.source_reference_ids) ? item.source_reference_ids : [];
     if (!ids.length || [...ids].sort().join('|') !== [...refs].sort().join('|')) {
