@@ -13,6 +13,9 @@ on:
       - 'scripts/validate-self-evaluation-pilot.mjs'
       - 'scripts/validate-assessment-knowledge-consistency.mjs'
       - 'scripts/validate-assessment-rule-registry.mjs'
+      - 'scripts/validate-quality-safety-gates.mjs'
+      - 'scripts/validate-independent-review-ledger.mjs'
+      - 'public/assistant/quality/**'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/**'
@@ -82,6 +85,12 @@ jobs:
       - name: Validate versioned assessment rule registry
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:assessment-rule-registry
+      - name: Validate content quality and safety release gates
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:quality-safety-gates
+      - name: Validate independent expert review ledger
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run validate:independent-review-ledger
       - name: Build application
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: |
