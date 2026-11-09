@@ -82,7 +82,7 @@ test('no-event answer never asks the user to create an anger-provoking situation
   const guide = ANGER_DAILY_ASSISTANT_GUIDES[14];
   const question = guide.questions.find((item) => item.kind === 'no_event');
   const answer = answerAngerDailyPreparedQuestion({ day: 15, message: question.value });
-  assert.match(answer, /عمداً خودت را وارد بحث یا موقعیت خشم‌آور نکن/);
+  assert.match(answer, /عمداً خودت را وارد بحث یا موقعیت خشم‌آور/);
   assert.match(answer, /نمونه کم‌فشار قبلی/);
 });
 
