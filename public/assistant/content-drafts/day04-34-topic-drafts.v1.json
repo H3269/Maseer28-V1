@@ -17,10 +17,10 @@
       "source_content_id": "خشم-04",
       "topic_id": "T01",
       "topic_name": "خشم",
-      "subtopic_id": "T01-S02",
-      "subtopic_name": "نشانه‌های بدنی و برانگیختگی",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 4,
-      "phase": "topic_specific_daily_skill",
+      "phase": "guided_skill_building",
       "learning_objective": "شناخت یک نشانه جسمانی شخصی که ممکن است پیش از تشدید خشم ظاهر شود.",
       "mechanism_focus": "آگاهی بدنی محدود و تشخیص نشانه اولیه.",
       "exercise": "فقط در یک موقعیت عادی، اگر نشانه‌ای مانند تنش فک، گرمی یا تغییر تنفس را خودبه‌خود متوجه شدی، یک بار آن را توصیف کن. هیچ ناراحتی را عمداً ایجاد نکن.",
@@ -35,10 +35,10 @@
       "runtime_eligible": false,
       "title": "نشانه‌های بدنی زودهنگام",
       "subtopic_ids": [
-        "T01-S02"
+        "T01-S03"
       ],
       "subtopic_names": [
-        "نشانه‌های بدنی و برانگیختگی"
+        "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
       "target_skill": "آگاهی بدنی محدود و تشخیص نشانه اولیه.",
       "teaching_point": "نشانه‌های جسمانی افراد متفاوت‌اند؛ تشخیص الگوی شخصی از حفظ‌کردن یک فهرست عمومی مفیدتر است.",
@@ -80,7 +80,10 @@
       },
       "source_runtime_mechanism": "تشخیص نشانه‌های بدنی زودهنگام پیش از تشدید واکنش",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D04"
+      "canonical_package_record_id": "DRAFT_T01_D04",
+      "design_subtopic_ids": [
+        "T01-S02"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D04",
