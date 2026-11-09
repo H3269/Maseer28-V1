@@ -194,7 +194,7 @@
       "lightExerciseText": "یک فعالیت را از نظر ارزش شخصی و دشواری شروع بررسی کن.",
       "lightActionText": "اگر فعالیت هنوز مهم است، کوچک‌ترین شکل قابل تداوم آن را تعریف کن.",
       "progressActionText": "نسخه کوتاه را در زمان واقع‌بینانه اجرا کن و اثر را مشاهده کن.",
-      "restExerciseText": "امروز استراحت را شکست تلقی نکن.",
+      "restExerciseText": "برای امروز یک فعالیت ضروری را نگه دار و باقی برنامه را با ظرفیت واقعی هماهنگ کن.",
       "restActionText": "فقدان لذت فراگیر و پایدار نیازمند ارزیابی سلامت است.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
@@ -259,7 +259,7 @@
       "lightExerciseText": "مسئولیت عملی را از تکرار ذهنیِ مجازات‌کننده جدا کن.",
       "lightActionText": "اقدام باقی‌مانده را مشخص کن؛ اگر اقدامی نیست، محدودیت را بپذیر.",
       "progressActionText": "اقدام متناسب را انجام بده و سپس به زندگی روزمره برگرد.",
-      "restExerciseText": "امروز مرور تنبیهی را متوقف کن.",
+      "restExerciseText": "اگر مرور به تنبیه خود تبدیل شده، فعلاً آن را متوقف کن و فقط مسئولیت عملی باقی‌مانده را نگه دار.",
       "restActionText": "مسئولیت دیگران برای سوءرفتار را به خودت منتقل نکن.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
@@ -324,7 +324,7 @@
       "lightExerciseText": "یک هیجان را به ارزشی که برایت مهم است پیوند بده.",
       "lightActionText": "رفتاری را انتخاب کن که به آن ارزش پاسخ دهد و حقوق دیگران را حفظ کند.",
       "progressActionText": "در موقعیت کم‌تنش، رفتار انتخابی را تمرین کن.",
-      "restExerciseText": "امروز تحلیل هیجان را کنار بگذار و ایمنی را حفظ کن.",
+      "restExerciseText": "در اوج برانگیختگی، تحلیل را عقب بینداز و ابتدا محرک و خطر فوری را کاهش بده.",
       "restActionText": "ارزش‌محوری مجوز تحمل آسیب یا نادیده‌گرفتن مرز نیست.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
