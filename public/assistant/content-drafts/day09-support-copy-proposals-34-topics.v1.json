@@ -103,7 +103,7 @@
       "lightExerciseText": "یک خطای گذشته را با اطلاعاتی که همان زمان داشتی ارزیابی کن.",
       "lightActionText": "یک درس آینده‌نگر را از قضاوت پسینی جدا کن.",
       "progressActionText": "درس را به رفتار مشخص در موقعیت مشابه تبدیل کن.",
-      "restExerciseText": "امروز مرور تنبیهی را متوقف کن.",
+      "restExerciseText": "اگر پاسخ تازه‌ای در دست نیست، مرور واقعه را تا زمان مشخص متوقف کن.",
       "restActionText": "اگر جبران لازم است، حقوق فرد آسیب‌دیده را محترم بشمار؛ خودآزاری جبران نیست.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
@@ -168,7 +168,7 @@
       "lightExerciseText": "یک پاسخ اخیر را از نظر نیاز شخصی و ترس از واکنش مقایسه کن.",
       "lightActionText": "جمله‌ای کوتاه بنویس که خواسته و حد تو را روشن کند.",
       "progressActionText": "در موقعیت امن همان جمله را بیان کن و وارد توجیه طولانی نشو.",
-      "restExerciseText": "امروز پاسخ را تا زمان امن‌تر به تعویق بینداز.",
+      "restExerciseText": "اگر زمان پاسخ امن نیست، فقط مهلت لازم را اعلام کن و وارد توضیح طولانی نشو.",
       "restActionText": "در برابر تهدیدگر، اجرای مستقیم مرز بدون برنامه ایمنی مناسب نیست.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
@@ -324,7 +324,7 @@
       "lightExerciseText": "دو موقعیت هیجانی را از نظر شدت، مدت و محرک مقایسه کن.",
       "lightActionText": "شرایطی را که انتخاب رفتار را دشوار می‌کند مشخص کن.",
       "progressActionText": "برای همان شرایط مهارت یا حمایت متناسب آماده کن.",
-      "restExerciseText": "امروز تحلیل هیجان را کنار بگذار و ایمنی را حفظ کن.",
+      "restExerciseText": "در شدت هیجان بالا، محرک را کاهش بده و تصمیم مهم را به زمان امن موکول کن.",
       "restActionText": "در خطر فوری، اقدام حفاظتی بر تمرین مقدم است.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
@@ -350,7 +350,7 @@
       "lightExerciseText": "ترس اصلی را میان افشا، طرد و قضاوت تفکیک کن؛ جزئیات خصوصی لازم نیست.",
       "lightActionText": "سطح اطلاعاتی را که خودت مایل به گفتنش هستی تعیین کن.",
       "progressActionText": "فقط با فرد امن و به اندازه انتخاب خودت صحبت کن.",
-      "restExerciseText": "امروز هیچ افشایی لازم نیست.",
+      "restExerciseText": "امروز می‌توانی تجربه را برای خودت نگه داری و هیچ جزئیاتی را به اشتراک نگذاری.",
       "restActionText": "افشا در محیط ناامن یا نزد فرد آزارگر توصیه نمی‌شود.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
@@ -376,7 +376,7 @@
       "lightExerciseText": "یک شکست را از نظر هدف، روش، منابع و زمان‌بندی تفکیک کن.",
       "lightActionText": "عاملی را که واقعاً قابل اصلاح است انتخاب کن.",
       "progressActionText": "یک تغییر محدود در روش یا تعریف هدف ایجاد کن.",
-      "restExerciseText": "امروز تصمیم پرهزینه را عقب بینداز.",
+      "restExerciseText": "تعهد مالی یا کاری تازه را تا روشن‌شدن پیامدها نپذیر.",
       "restActionText": "برای اثبات توانایی ریسک نامتناسب نپذیر.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
@@ -402,7 +402,7 @@
       "lightExerciseText": "یک تصمیم گذشته را از نظر سطح اطمینان واقعاً لازم بررسی کن.",
       "lightActionText": "برای تصمیم مشابه حد اطلاعات کافی را بنویس.",
       "progressActionText": "زمان تصمیم را تعیین کن و پس از آن فقط با داده تازه بازبینی کن.",
-      "restExerciseText": "امروز جست‌وجوی تکراری را متوقف کن.",
+      "restExerciseText": "در نبود اطلاعات تازه، بر معیار ازپیش‌تعیین‌شده تکیه کن و جست‌وجو را ادامه نده.",
       "restActionText": "تصمیم تخصصی یا اضطراری نیازمند مشورت معتبر است.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
@@ -428,7 +428,7 @@
       "lightExerciseText": "افت انرژی را در حوزه‌های مختلف و در کنار خواب و سلامت جسم بررسی کن.",
       "lightActionText": "مشخص کن افت محدود است یا فراگیر و پایدار.",
       "progressActionText": "در افت پایدار ارزیابی سلامت بگیر؛ در افت محدود مانع همان کار را اصلاح کن.",
-      "restExerciseText": "امروز فعالیت را به نیازهای پایه محدود کن.",
+      "restExerciseText": "یک فعالیت را حذف یا واگذار کن تا انرژی لازم برای نیاز پایه باقی بماند.",
       "restActionText": "علت را تنبلی فرض نکن و دارو را خودسرانه تغییر نده.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
