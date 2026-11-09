@@ -19,7 +19,7 @@
       "subtopic_id": "T01-S03",
       "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 23,
-      "phase": "topic_specific_daily_skill",
+      "phase": "behavioral_choice_and_feedback_review",
       "learning_objective": "جداکردن توضیح زمینه از توجیه رفتار آسیب‌زا و تعیین مسئولیت متناسب.",
       "mechanism_focus": "پاسخ‌گویی رفتاری و پیشگیری از تکرار.",
       "exercise": "اگر رفتاری آسیب‌زا رخ داده، آن را بدون کم‌اهمیت‌سازی توصیف کن: چه رفتاری انجام شد، چه اثری داشت و کدام بخش در اختیار تو بود. احساس خشم یا رفتار دیگری، توجیه آسیب نیست.",
@@ -80,7 +80,10 @@
       },
       "source_runtime_mechanism": "تقویت مسئولیت‌پذیری و پیشگیری از تکرار آسیب",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D23"
+      "canonical_package_record_id": "DRAFT_T01_D23",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D23",
