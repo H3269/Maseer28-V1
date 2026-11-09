@@ -10,77 +10,61 @@ function memoryStorage() {
     removeItem: (key) => values.delete(key),
   };
 }
-const cloud = { processor_identity:'Provider A', processing_region:'EU', data_categories:'prompt text only', retention_period:'30 days', withdrawal_method:'in-app control' };
-const sensitive = { necessity_explanation:'Explicit user-requested processing only', exact_data_categories:'user-provided wellbeing text' };
-const memory = { retention_period:'30 days', view_edit_delete_controls:'available in app' };
-const analytics = { purpose_limitation:'aggregate feature usage', avoid_sensitive_content:true };
+const memory = { retention_period:'until withdrawn', view_edit_delete_controls:'available in settings' };
+const journey = {
+  selected_data_categories:'active day and completed day count only',
+  retention_period:'maximum 24 hours',
+  view_edit_delete_controls:'available in settings',
+};
 
-test('all consent purposes default to false and no implicit consent is inferred', () => {
+test('only local preference and ephemeral journey context consent are supported; defaults are off', () => {
   const storage=memoryStorage();
   const state=getConsentState(storage);
+  assert.deepEqual(Object.keys(state.purposes).sort(), ['journey_context','long_term_ai_memory']);
   for (const item of Object.values(state.purposes)) assert.equal(item.granted,false);
-  assert.equal(hasConsent('ai_cloud_processing',storage),false);
+  for (const purpose of ['ai_cloud_processing','sensitive_health_data_processing','product_analytics']) {
+    assert.equal(hasConsent(purpose,storage),false);
+    assert.throws(()=>grantConsent(purpose,{explicitAction:true,context:{}},storage),/شناخته‌شده/);
+    assert.throws(()=>withdrawConsent(purpose,{},storage),/شناخته‌شده/);
+  }
 });
 
-test('grant requires explicit action and complete purpose-specific context', () => {
+test('local preference consent requires explicit action and complete context', () => {
   const storage=memoryStorage();
-  assert.throws(()=>grantConsent('ai_cloud_processing',{explicitAction:false,context:cloud},storage),/اقدام صریح/);
-  assert.throws(()=>grantConsent('ai_cloud_processing',{explicitAction:true,context:{processor_identity:'Provider A'}},storage),/کامل نیست/);
-  assert.equal(hasConsent('ai_cloud_processing',storage),false);
-});
-
-test('health-data consent is separate and requires cloud consent first', () => {
-  const storage=memoryStorage();
-  assert.throws(()=>grantConsent('sensitive_health_data_processing',{explicitAction:true,context:sensitive},storage),/رضایت جداگانه/);
-  grantConsent('ai_cloud_processing',{explicitAction:true,context:cloud},storage);
-  grantConsent('sensitive_health_data_processing',{explicitAction:true,context:sensitive},storage);
-  assert.equal(hasConsent('ai_cloud_processing',storage),true);
-  assert.equal(hasConsent('sensitive_health_data_processing',storage),true);
-});
-
-test('withdrawing cloud consent also withdraws sensitive processing consent', () => {
-  const storage=memoryStorage();
-  grantConsent('ai_cloud_processing',{explicitAction:true,context:cloud},storage);
-  grantConsent('sensitive_health_data_processing',{explicitAction:true,context:sensitive},storage);
-  const state=withdrawConsent('ai_cloud_processing',{},storage);
-  assert.equal(state.purposes.ai_cloud_processing.granted,false);
-  assert.equal(state.purposes.sensitive_health_data_processing.granted,false);
-  assert.ok(state.purposes.ai_cloud_processing.withdrawn_at);
-});
-
-test('memory and analytics consent remain independent from cloud and health consent', () => {
-  const storage=memoryStorage();
+  assert.throws(()=>grantConsent('long_term_ai_memory',{explicitAction:false,context:memory},storage),/اقدام صریح/);
+  assert.throws(()=>grantConsent('long_term_ai_memory',{explicitAction:true,context:{retention_period:'until withdrawn'}},storage),/کامل نیست/);
   grantConsent('long_term_ai_memory',{explicitAction:true,context:memory},storage);
-  grantConsent('product_analytics',{explicitAction:true,context:analytics},storage);
   assert.equal(hasConsent('long_term_ai_memory',storage),true);
-  assert.equal(hasConsent('product_analytics',storage),true);
-  assert.equal(hasConsent('ai_cloud_processing',storage),false);
 });
 
-test('clearing consent returns every purpose to false', () => {
+test('journey context consent is separate, explicit, and withdrawable', () => {
+  const storage=memoryStorage();
+  assert.throws(()=>grantConsent('journey_context',{explicitAction:false,context:journey},storage),/اقدام صریح/);
+  assert.throws(()=>grantConsent('journey_context',{explicitAction:true,context:{retention_period:'24 hours'}},storage),/کامل نیست/);
+  grantConsent('journey_context',{explicitAction:true,context:journey},storage);
+  assert.equal(hasConsent('journey_context',storage),true);
+  assert.equal(hasConsent('long_term_ai_memory',storage),false);
+  const state=withdrawConsent('journey_context',{},storage);
+  assert.equal(state.purposes.journey_context.granted,false);
+  assert.ok(state.purposes.journey_context.withdrawn_at);
+});
+
+test('withdrawing local preference consent erases the persisted profile', () => {
   const storage=memoryStorage();
   grantConsent('long_term_ai_memory',{explicitAction:true,context:memory},storage);
+  const state=withdrawConsent('long_term_ai_memory',{},storage);
+  assert.equal(state.purposes.long_term_ai_memory.granted,false);
+  assert.ok(state.purposes.long_term_ai_memory.withdrawn_at);
+});
+
+test('clearing consent returns supported purposes to false', () => {
+  const storage=memoryStorage();
+  grantConsent('long_term_ai_memory',{explicitAction:true,context:memory},storage);
+  grantConsent('journey_context',{explicitAction:true,context:journey},storage);
   clearConsentState(storage);
   assert.equal(storage.getItem(CONSENT_STORAGE_KEY),null);
   assert.equal(hasConsent('long_term_ai_memory',storage),false);
-});
-
-test('journey context consent is independent, explicit, and withdrawable', () => {
-  const storage = memoryStorage();
-  const context = {
-    selected_data_categories: 'active day and completed day count only',
-    retention_period: 'maximum 24 hours',
-    view_edit_delete_controls: 'available in settings',
-  };
-  assert.equal(hasConsent('journey_context', storage), false);
-  assert.throws(() => grantConsent('journey_context', { explicitAction: false, context }, storage), /اقدام صریح/);
-  assert.throws(() => grantConsent('journey_context', { explicitAction: true, context: { retention_period: '24 hours' } }, storage), /کامل نیست/);
-  grantConsent('journey_context', { explicitAction: true, context }, storage);
-  assert.equal(hasConsent('journey_context', storage), true);
-  assert.equal(hasConsent('long_term_ai_memory', storage), false);
-  const state = withdrawConsent('journey_context', {}, storage);
-  assert.equal(state.purposes.journey_context.granted, false);
-  assert.ok(state.purposes.journey_context.withdrawn_at);
+  assert.equal(hasConsent('journey_context',storage),false);
 });
 
 test('unknown purposes are rejected and never treated as consented', () => {
