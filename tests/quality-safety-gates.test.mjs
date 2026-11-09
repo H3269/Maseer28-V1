@@ -45,3 +45,12 @@ test('validator rejects a runtime policy that permits expert-reviewed without ap
   assert.equal(result.valid, false);
   assert.ok(result.errors.some((error) => error.includes('runtime policy must fail closed')));
 });
+
+
+test('validator rejects evidence references represented as fully verified', () => {
+  const pilot = structuredClone(fixtures.pilot);
+  pilot.records[0].evidence_mapping_status = 'verified';
+  const result = validateQualitySafetyGates({ ...fixtures, pilot });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.includes('candidate-only and pending claim review')));
+});
