@@ -1,0 +1,995 @@
+{
+  "schema_version": "1.0.0",
+  "batch_id": "topic-specific-copy-all-34-day17",
+  "status": "draft_pending_owner_and_expert_review",
+  "purpose": "پیشنهاد اختصاصی عنوان و مقدمه برای ۳۴ موضوع در روز ۱۷؛ تمرین و اقدام اصلی واقعی برای ردیابی ثبت شده و در این بسته تغییر نمی‌کند.",
+  "source": "daily-text-overrides.v1.json plus runtime title/intro from exported 952-day snapshot",
+  "records": [
+    {
+      "source_content_id": "خشم-17",
+      "topic_name": "خشم",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خشم».",
+      "source_exercise": "یک انتظار مبهم را به سه بخش تبدیل کن: چه اتفاقی افتاده، چه نیازی داری و چه درخواست مشخصی مطرح می‌کنی. درخواست باید امکان پاسخ منفی طرف مقابل را به رسمیت بشناسد.",
+      "source_action": "فقط اگر رابطه امن و زمان مناسب است، درخواست را بیان کن؛ در غیر این صورت آن را برای خودت نگه دار یا از حمایت امن استفاده کن.",
+      "proposed_title": "تبدیل انتظار مبهم به درخواست روشن",
+      "proposed_intro": "آنچه رخ داده، نیازی که داری و درخواست مشخصت را جدا کن؛ درخواست باید حق پاسخ منفی طرف مقابل را به رسمیت بشناسد و فقط در رابطهٔ امن مطرح شود.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اضطراب-17",
+      "topic_name": "اضطراب",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اضطراب».",
+      "source_exercise": "فقط اگر روز ۱۶ به‌روشنی نشان داده رفتار تکراری غیرضروری و کم‌خطر است، یک تغییر کوچک و برگشت‌پذیر را روی کاغذ طراحی کن. رفتارهای مربوط به سلامت، ایمنی، مراقبت، قانون یا مسئولیت مهم را هدف نگیر؛ پیش‌بینی و معیار توقف را بنویس.",
+      "source_action": "اجرای آزمایش الزامی نیست؛ اگر درباره ضرورت یا ایمنی رفتار کوچک‌ترین تردیدی داری، آن را اجرا نکن و برای بررسی از فرد صلاحیت‌دار کمک بگیر.",
+      "proposed_title": "طراحی تغییر کوچک فقط پس از احراز ضرورت",
+      "proposed_intro": "فقط اگر بررسی قبلی نشان داده رفتار تکراری غیرضروری و کم‌خطر است، تغییر برگشت‌پذیری را روی کاغذ طراحی کن؛ اجرای آن اجباری نیست و در تردید باید از فرد صلاحیت‌دار کمک بگیری.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس-17",
+      "topic_name": "ترس",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس».",
+      "source_exercise": "اگر چند تجربه ثبت‌شده داری، یک عامل مشترک مانند زمان، صدا، مکان یا نوع تعامل را مشخص کن؛ رابطه را علت قطعی فرض نکن.",
+      "source_action": "یک سؤال درباره عامل مشترک بنویس که در صورت نیاز بتوانی با متخصص بررسی کنی.",
+      "proposed_title": "شناسایی عامل مشترک بدون نتیجه‌گیری علّی",
+      "proposed_intro": "اگر چند تجربهٔ طبیعی ثبت کرده‌ای، عامل مشترکی مانند زمان یا محیط را مشخص کن؛ هم‌زمانی را علت قطعی ترس فرض نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت-17",
+      "topic_name": "نفرت",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «نفرت».",
+      "source_exercise": "اگر ارتباط امن نیست یا ضرورتی ندارد، گزینه عدم گفت‌وگو و فاصله را نیز معتبر بدان.",
+      "source_action": "در صورت نیاز، گفت‌وگو را به تعویق بینداز یا از واسطه امن/حمایت مناسب استفاده کن.",
+      "proposed_title": "اعتباردادن به فاصله در رابطهٔ ناامن",
+      "proposed_intro": "اگر گفت‌وگو امن یا ضروری نیست، عدم تماس یا فاصله را گزینه‌ای معتبر بدان؛ ترمیم رابطه یا گفت‌وگوی مستقیم وظیفهٔ تو نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "حسادت-17",
+      "topic_name": "حسادت",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «حسادت».",
+      "source_exercise": "احساس حسادت را از مسئولیت کنترل رفتار خود جدا کن.",
+      "source_action": "برای احساس خود مسئولیت بپذیر، اما دیگری را کنترل نکن.",
+      "proposed_title": "پذیرش احساس بدون کنترل رفتار دیگری",
+      "proposed_intro": "احساس حسادت را از انتخاب رفتاری خود جدا کن؛ مسئولیت رفتار خودت را بپذیر، اما آن را به نظارت یا محدودکردن دیگری تبدیل نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "غم و سوگ-17",
+      "topic_name": "غم و سوگ",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «غم و سوگ».",
+      "source_exercise": "ثبت کن شدت سوگ در روزهای مختلف چگونه تغییر می‌کند؛ جدول مرحله‌ای نساز.",
+      "source_action": "به خودت اجازه بده بعضی روزها سخت‌تر و بعضی روزها آرام‌تر باشند.",
+      "proposed_title": "مشاهدهٔ نوسان سوگ بدون مرحله‌بندی",
+      "proposed_intro": "شدت دلتنگی یا غم را در روزهای مختلف ثبت کن؛ سوگ مسیر خطی یا جدول مرحله‌ای واحد ندارد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "احساس گناه-17",
+      "topic_name": "احساس گناه",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «احساس گناه».",
+      "source_exercise": "اگر خطا تکرار شده، رخداد تازه، پیامد و سهم مسئولیت را جدا کن؛ لغزش را نه انکار کن و نه مدرک بی‌ارزشی خود بدان.",
+      "source_action": "یک اصلاح فوری و متناسب را مشخص کن.",
+      "proposed_title": "اصلاح لغزش بدون تعمیم به ارزش شخصی",
+      "proposed_intro": "اگر رفتار تکرار شده، رخداد تازه، پیامد و سهم واقعی خود را جدا کن؛ لغزش را نه انکار کن و نه مدرک بی‌ارزشی خود بدان.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "وابستگی عاطفی-17",
+      "topic_name": "وابستگی عاطفی",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «وابستگی عاطفی».",
+      "source_exercise": "یک رخداد تکراری را مرور کن: محرک، نیاز، رفتار و پیامد. خودت را تحقیر نکن و نیاز واقعی را انکار نکن.",
+      "source_action": "یک تغییر کوچک برای دفعه بعد انتخاب کن.",
+      "proposed_title": "بازبینی زنجیرهٔ محرک تا پیامد در رابطه",
+      "proposed_intro": "یک رخداد تکراری را از نظر محرک، نیاز، رفتار و پیامد مرور کن؛ نیاز واقعی را انکار نکن و از تحقیر خود بپرهیز.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اهمال‌کاری-17",
+      "topic_name": "اهمال‌کاری",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اهمال‌کاری».",
+      "source_exercise": "یک وقفه یا روز ازدست‌رفته را مرور کن؛ برنامه را از کوچک‌ترین گام بعدی از سر بگیر، نه با جبران فشرده و تنبیهی.",
+      "source_action": "گام بعدی را بازتعریف کن و زمان شروع تازه تعیین کن.",
+      "proposed_title": "شروع دوباره پس از وقفه بدون جبران تنبیهی",
+      "proposed_intro": "پس از یک وقفه یا روز ازدست‌رفته، برنامه را از کوچک‌ترین گام بعدی از سر بگیر؛ جبران فشرده و تنبیهی معمولاً معیار مناسبی برای بازگشت نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "بی‌خوابی و مشکلات خواب-17",
+      "topic_name": "بی‌خوابی و مشکلات خواب",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «بی‌خوابی و مشکلات خواب».",
+      "source_exercise": "پس از شب کم‌خواب، از رانندگی خواب‌آلود، مصرف خودسرانه دارو یا تغییرات شدید برنامه پرهیز کن؛ برنامه روز را با ایمنی و ظرفیت تنظیم کن.",
+      "source_action": "یک فعالیت پرخطر را در صورت خواب‌آلودگی به تعویق بینداز یا کمک بگیر.",
+      "proposed_title": "تنظیم برنامه پس از شب کم‌خوابی با اولویت ایمنی",
+      "proposed_intro": "پس از خواب ناکافی، فعالیت روز را با ظرفیت و ایمنی تنظیم کن؛ هنگام خواب‌آلودگی از رانندگی یا کار پرخطر و از تغییر خودسرانهٔ دارو پرهیز کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "عادت‌های تکراری-17",
+      "topic_name": "عادت‌های تکراری",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «عادت‌های تکراری».",
+      "source_exercise": "اگر رفتار تکرار شد، رخداد را توصیف کن و از واژه شکست/بی‌ارادگی پرهیز کن.",
+      "source_action": "S01: نشانه را دوباره بررسی کن. S02: از مجازات خود یا افزایش اجباری پایش پرهیز کن و در صورت آسیب/اختلال حمایت بگیر. S03: فرد را به کنترل ارادی تیک/استیمینگ مجبور نکن.",
+      "proposed_title": "بازبینی رفتار پس از لغزش بدون سرزنش",
+      "proposed_intro": "اگر رفتار تکرار شد، رخداد را توصیف کن و از واژه‌هایی مانند شکست یا بی‌ارادگی پرهیز کن؛ نوع رفتار و میزان آسیب تعیین‌کنندهٔ گام بعدی است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مرزبندی و نه گفتن-17",
+      "topic_name": "مرزبندی و نه گفتن",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مرزبندی و نه گفتن».",
+      "source_exercise": "یک لغزش کوچک را مرور کنید: چه شد؟ چه چیزی از کنترل شما خارج بود؟ اکنون چه اصلاح محدودی ممکن است—مثلاً روشن کردن دامنه تعهد یا عذرخواهی بابت لحن، بدون پس گرفتن نیاز مشروع؟",
+      "source_action": "اگر موافقت ناخواسته رخ داد، دامنه تعهد را روشن و در صورت لزوم اصلاح کن.",
+      "proposed_title": "اصلاح تعهد ناخواسته به شکل محدود",
+      "proposed_intro": "اگر با موافقت ناخواسته روبه‌رو شدی، دامنهٔ تعهد را روشن و در صورت لزوم اصلاح کن؛ نیاز مشروع خود را صرفاً برای جبران لحن پس نگیر.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "تنهایی-17",
+      "topic_name": "تنهایی",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «تنهایی».",
+      "source_exercise": "یک نمونه تأخیر پاسخ را بنویس و سه توضیح ممکن غیرقطعی فهرست کن؛ شواهد واقعی را از حدس جدا کن.",
+      "source_action": "تا زمان تعیین‌شده، به برنامه مستقل یا فعالیت روزمره‌ات برگرد؛ پس از آن فقط در صورت نیاز یک پیگیری کوتاه و محترمانه انجام بده.",
+      "proposed_title": "تفسیر تأخیر پاسخ بدون ذهن‌خوانی",
+      "proposed_intro": "برای یک تأخیر پاسخ، چند توضیح ممکن و غیرقطعی بنویس؛ تا زمان بازبینی به فعالیت مستقل خود برگرد و از پیگیری مکرر پرهیز کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کمبود انگیزه-17",
+      "topic_name": "کمبود انگیزه",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کمبود انگیزه».",
+      "source_exercise": "فکر بازدارنده: جمله‌ای مانند «نمی‌توانم» را به پاسخ واقع‌بینانه تبدیل کنید.",
+      "source_action": "پاسخ جایگزین را در یک جمله کنار فکر بازدارنده نگه دار.",
+      "proposed_title": "بازنویسی فکر بازدارنده به پاسخ واقع‌بینانه",
+      "proposed_intro": "یک فکر بازدارنده مانند «نمی‌توانم» را به جمله‌ای واقع‌بینانه‌تر تبدیل کن که هم دشواری را ببیند و هم امکان یک گام محدود را باز بگذارد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اعتمادبه‌نفس پایین-17",
+      "topic_name": "اعتمادبه‌نفس پایین",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اعتمادبه‌نفس پایین».",
+      "source_exercise": "تحمل دیده‌شدن: در سطح کم‌خطر، کار یا نظر خود را با فردی امن به اشتراک بگذارید.",
+      "source_action": "یک نمونه کم‌خطر را فقط با مخاطب انتخابی به اشتراک بگذار.",
+      "proposed_title": "به‌اشتراک‌گذاری کم‌خطر کار یا نظر",
+      "proposed_intro": "اگر مایل هستی، نمونه‌ای کم‌خطر از کار یا نظرت را فقط با مخاطبی که خودت انتخاب می‌کنی در میان بگذار؛ بازخورد دیگران معیار ارزش کلی تو نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "افکار منفی و نشخوار فکری-17",
+      "topic_name": "افکار منفی و نشخوار فکری",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «افکار منفی و نشخوار فکری».",
+      "source_exercise": "یک فکر تکرارشونده را در سه جزء بازنویسی کن: داده قابل مشاهده، توضیح جایگزین، و بخشی که هنوز نامعلوم است.",
+      "source_action": "یک جمله متعادل بنویس که قطعیت فکر را کم کند، بدون اینکه احساس یا واقعیت موجود را انکار کند.",
+      "proposed_title": "تفکیک داده، توضیح جایگزین و مجهول",
+      "proposed_intro": "یک فکر تکرارشونده را به دادهٔ قابل مشاهده، توضیح جایگزین و بخش نامعلوم تقسیم کن؛ هدف انکار احساس یا ساختن خوش‌بینی اجباری نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکلات رابطه-17",
+      "topic_name": "مشکلات رابطه",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکلات رابطه».",
+      "source_exercise": "الگوی تکراری: موقعیت‌هایی را که اختلاف مشابه بازمی‌گردد شناسایی کنید.",
+      "source_action": "یک نشانه آغاز چرخه را برای دفعه بعد ثبت کن.",
+      "proposed_title": "شناسایی نشانهٔ آغاز چرخهٔ تعارض",
+      "proposed_intro": "موقعیت‌هایی را که اختلاف مشابه دوباره رخ می‌دهد مرور کن و یک نشانهٔ آغاز چرخه را مشخص کن؛ در رابطهٔ ناامن، ثبت الگو جای گفت‌وگوی مستقیم را می‌گیرد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت از خود-17",
+      "topic_name": "نفرت از خود",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «نفرت از خود».",
+      "source_exercise": "محتوایی را که گفت‌وگوی درونی سخت‌گیرانه را تشدید می‌کند شناسایی کن؛ بنویس چه پیام یا مقایسه‌ای آن را فعال می‌کند.",
+      "source_action": "برای همان منبع یک مرز مشخص تعیین کن (بی‌صدا، پنهان‌کردن یا زمان محدود) و پس از مواجهه یک فعالیت خنثی یا حمایتگر انتخاب کن؛ آن محتوا را معیار ارزیابی خود قرار نده.",
+      "proposed_title": "مرزبندی با محتوای تشدیدکنندهٔ خودتحقیری",
+      "proposed_intro": "محتوایی را که خودگویی تحقیرآمیز را تشدید می‌کند شناسایی کن و برای آن مرزی انتخابی بگذار؛ حذف محتوا باید با نیازهای اطلاعاتی و ارتباطی سازگار باشد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خودسرزنشی-17",
+      "topic_name": "خودسرزنشی",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خودسرزنشی».",
+      "source_exercise": "توقف نشخوار: پس از تعیین اقدام اصلاحی، زمان بررسی دوباره را محدود کنید.",
+      "source_action": "فقط اگر واقعیت تازه یا گام حل‌نشده‌ای وجود دارد، آن را ثبت کن؛ در غیر این صورت بررسی را ببند و آگاهانه به فعالیت انتخابی برگرد.",
+      "proposed_title": "پایان‌دادن به مرور پس از اقدام اصلاحی",
+      "proposed_intro": "پس از تعیین اقدام اصلاحی، فقط در صورت وجود واقعیت تازه یا گام حل‌نشده به موضوع برگرد؛ در غیر این صورت مرور را ببند و به فعالیت انتخابی بازگرد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کمال‌گرایی-17",
+      "topic_name": "کمال‌گرایی",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کمال‌گرایی».",
+      "source_exercise": "استراحت بدون کسب اجازه: یک وقفه را بدون مشروط کردن آن به اتمام همه کارها انجام دهید.",
+      "source_action": "وقفه را در برنامه قرار بده و بدون جبران فشرده برگرد.",
+      "proposed_title": "استراحت بدون شرطِ کامل‌کردن همهٔ کارها",
+      "proposed_intro": "یک وقفه را بدون مشروط‌کردن آن به پایان همهٔ وظایف انجام بده؛ بازگشت به کار نباید با جبران فشرده همراه شود.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اجتناب-17",
+      "topic_name": "اجتناب",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اجتناب».",
+      "source_exercise": "برای یک موقعیت کم‌خطر سه گزینه روی کاغذ بنویس: حفظ وضعیت فعلی، درخواست حمایت، یا یک تغییر کوچک در شرایط. گزینه «فعلاً هیچ تغییری نمی‌دهم» نیز باید باقی بماند.",
+      "source_action": "گزینه‌ها را از نظر ایمنی، اختیار و هزینه مقایسه کن؛ هیچ گزینه‌ای را برای اثبات شجاعت انتخاب نکن.",
+      "proposed_title": "مقایسهٔ حفظ وضعیت، حمایت یا تغییر کوچک",
+      "proposed_intro": "برای یک موقعیت کم‌خطر سه گزینهٔ حفظ وضعیت، درخواست حمایت یا تغییر کوچک را روی کاغذ مقایسه کن؛ فعلاً هیچ تغییری ندادن نیز گزینه‌ای معتبر است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "استرس-17",
+      "topic_name": "استرس",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «استرس».",
+      "source_exercise": "یک بخش پرفشار روز را انتخاب کن و یک وقفه کوتاه و واقع‌بینانه پس از آن مشخص کن؛ مانند فاصله‌گرفتن از کار، نوشیدن آب یا چند دقیقه سکوت، فقط اگر برایت راحت و مناسب است.",
+      "source_action": "زمان یا نشانه پایان تعهد را به یک وقفه بازیابی کوتاه پیوند بده؛ اگر زمان کافی نیست، یک مکث کوتاه‌تر انتخاب کن.",
+      "proposed_title": "پیوند دادن فشار روز با وقفهٔ بازیابی",
+      "proposed_intro": "یک بخش پرفشار روز را انتخاب و وقفه‌ای کوتاه و واقع‌بینانه پس از آن مشخص کن؛ شکل وقفه باید با شرایط و نیازهای تو سازگار باشد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "احساس بی‌ارزشی-17",
+      "topic_name": "احساس بی‌ارزشی",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «احساس بی‌ارزشی».",
+      "source_exercise": "جمله را کامل کن: «وقتی ... رخ می‌دهد، احساس بی‌ارزشی می‌کنم، چون باور دارم برای احترام یا مراقبت باید ...». شرط پنهان را مشخص کن.",
+      "source_action": "بررسی کن آیا این شرط را برای همه انسان‌ها هم لازم می‌دانی؛ سپس یک قاعده منعطف‌تر و واقع‌بینانه بنویس.",
+      "proposed_title": "شناخت شرط پنهان برای احترام یا مراقبت",
+      "proposed_intro": "جمله‌ای را کامل کن که نشان دهد چه شرطی را برای دریافت احترام یا مراقبت لازم می‌دانی؛ سپس بررسی کن آیا این شرط واقع‌بینانه و منصفانه است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکل در کنترل هیجان-17",
+      "topic_name": "مشکل در کنترل هیجان",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکل در کنترل هیجان».",
+      "source_exercise": "بازگشت پس از واکنش: اگر واکنش نامناسبی رخ داد، مسئولیت و ترمیم را مشخص کنید.",
+      "source_action": "اگر واکنش آسیب‌زا بوده، مسئولیت رفتار و اقدام ترمیمی را بدون توجیه ثبت کن.",
+      "proposed_title": "بازگشت و ترمیم پس از واکنش نامناسب",
+      "proposed_intro": "اگر واکنشی آسیب‌زا رخ داده، مسئولیت رفتار و اقدام ترمیمی متناسب را مشخص کن؛ توضیح زمینه جای توجیه آسیب را نمی‌گیرد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "رنجش و کینه-17",
+      "topic_name": "رنجش و کینه",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «رنجش و کینه».",
+      "source_exercise": "با فردی امن درباره اثر رنجش بر احساس امنیت، اعتماد یا مرزی که اکنون نیاز داری صحبت کن؛ لازم نیست جزئیات حساس را بازگو کنی.",
+      "source_action": "نیاز مشخص به شنیده‌شدن، همراهی یا کمک برای حفظ مرز را با فرد امن در میان بگذار؛ لازم نیست با فرد آسیب‌زننده تماس بگیری.",
+      "proposed_title": "درخواست حمایت برای حفظ مرز پس از رنجش",
+      "proposed_intro": "اگر مایل هستی، با فردی امن دربارهٔ اثر رنجش بر احساس امنیت یا مرز فعلی صحبت کن؛ لازم نیست جزئیات حساس را بازگو کنی یا با فرد آسیب‌زننده تماس بگیری.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "شرم-17",
+      "topic_name": "شرم",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «شرم».",
+      "source_exercise": "توجه به بدن: نشانه‌های شرم را مشاهده و یک رفتار آرام‌کننده انتخاب کنید.",
+      "source_action": "اگر توجه به بدن راحت است، فقط ببین آیا نشانه در طول چند نفس عادی تغییر می‌کند؛ اگر ناراحتی بیشتر شد، توجه را به محیط بیرون برگردان.",
+      "proposed_title": "مشاهدهٔ نشانه‌های شرم با امکان تغییر توجه",
+      "proposed_intro": "اگر توجه به بدن برایت راحت است، نشانه‌ای را بدون فشار مشاهده کن؛ اگر ناراحتی بیشتر شد، توجه را به محیط بیرونی برگردان و تمرین را متوقف کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از قضاوت-17",
+      "topic_name": "ترس از قضاوت",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از قضاوت».",
+      "source_exercise": "توجه به ارزش: مشخص کنید چرا بیان نظر برای شما اهمیت دارد.",
+      "source_action": "دلیل ارزشمند بودن بیان نظر را با یک رفتار مرتبط کن.",
+      "proposed_title": "پیوند دادن بیان نظر به ارزش شخصی",
+      "proposed_intro": "مشخص کن بیان نظر یا پرسیدن سؤال به کدام ارزش تو مانند یادگیری، صداقت یا مشارکت مربوط است؛ هدف جلب تأیید همه نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از شکست-17",
+      "topic_name": "ترس از شکست",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از شکست».",
+      "source_exercise": "یک معیار پیشرفت شخصی و قابل سنجش جایگزین کن.",
+      "source_action": "منبع مقایسه را مشخص کن و یک معیار پیشرفت شخصی را کنار آن بنویس.",
+      "proposed_title": "تعریف شاخص پیشرفت شخصی و قابل سنجش",
+      "proposed_intro": "یک معیار پیشرفت شخصی انتخاب کن که به رفتار یا مهارت مربوط باشد؛ مقایسه با دیگران را تنها معیار ارزیابی قرار نده.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از طرد شدن-17",
+      "topic_name": "ترس از طرد شدن",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از طرد شدن».",
+      "source_exercise": "یک موقعیت واقعیِ پاسخ منفی یا بی‌پاسخی را مرور کن؛ آنچه واقعاً گفته یا انجام شده را از قضاوتی مانند «من دوست‌داشتنی نیستم» جدا بنویس.",
+      "source_action": "برای ادامه یا توقف ارتباط یک مرز روشن انتخاب کن؛ مانند پایان‌دادن به پیگیری یک‌طرفه، محدودکردن تماس به موضوع ضروری، یا تعیین اینکه فقط در صورت پاسخ متقابل گفت‌وگو را ادامه می‌دهی.",
+      "proposed_title": "تفکیک پاسخ منفی از حکم کلی دربارهٔ خود",
+      "proposed_intro": "یک تجربهٔ پاسخ منفی یا بی‌پاسخی را مرور کن و رفتار واقعی را از نتیجه‌گیری کلی دربارهٔ دوست‌داشتنی‌بودن خود جدا نگه دار.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "شک و تردید-17",
+      "topic_name": "شک و تردید",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «شک و تردید».",
+      "source_exercise": "تصمیم کوچک را در زمان تعیین‌شده بگیرید.",
+      "source_action": "تصمیم کوچک را در زمان تعیین‌شده بگیر.",
+      "proposed_title": "تصمیم‌گیری دربارهٔ انتخاب کوچک در زمان تعیین‌شده",
+      "proposed_intro": "برای یک تصمیم کم‌خطر و برگشت‌پذیر زمان مشخصی تعیین کن و در همان زمان تصمیم بگیر؛ این روش برای تصمیم پزشکی، مالی یا ایمنی پرپیامد نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کنترل‌گری-17",
+      "topic_name": "کنترل‌گری",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کنترل‌گری».",
+      "source_exercise": "اعتماد تدریجی: مسئولیتی کوچک را واگذار و نتیجه را مشاهده کنید.",
+      "source_action": "مسئولیت کوچکی را فقط با رضایت طرف مقابل واگذار و نتیجه را مشاهده کن.",
+      "proposed_title": "واگذاری مسئولیت کوچک با رضایت طرف مقابل",
+      "proposed_intro": "اگر مناسب و امن است، مسئولیتی کوچک را با رضایت آزادانهٔ طرف مقابل واگذار کن؛ واگذاری به معنی آزمودن یا نظارت پنهانی بر او نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "بی‌انگیزگی-17",
+      "topic_name": "بی‌انگیزگی",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «بی‌انگیزگی».",
+      "source_exercise": "میزان لذت، معنا و دشواری را جداگانه ثبت کنید.",
+      "source_action": "لذت، معنا و دشواری را جداگانه توصیف کن.",
+      "proposed_title": "تفکیک لذت، معنا و دشواری فعالیت",
+      "proposed_intro": "یک فعالیت را از نظر لذت، معنا و دشواری جداگانه بررسی کن؛ پایین‌بودن یکی از این ابعاد به‌تنهایی کل فعالیت را بی‌ارزش نمی‌کند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خودانتقادی-17",
+      "topic_name": "خودانتقادی",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خودانتقادی».",
+      "source_exercise": "یک محدودیت عملکردی را در چارچوب زمان، مهارت یا منابع توصیف کن و آن را از برچسب شخصیتی جدا نگه دار.",
+      "source_action": "یک سازگاری مشخص در روش، زمان یا ابزار تعیین کن؛ محدودیت را به نقص هویت تبدیل نکن.",
+      "proposed_title": "توصیف محدودیت عملکردی بدون برچسب شخصیتی",
+      "proposed_intro": "محدودیت را در چارچوب زمان، مهارت یا منابع توصیف کن و آن را از برچسبی دربارهٔ شخصیت جدا نگه دار؛ سپس یک سازگاری عملی را مشخص کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکل دیگر-17",
+      "topic_name": "مشکل دیگر",
+      "day_number": 17,
+      "current_title": "بازگشت پس از لغزش · روز 17",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکل دیگر».",
+      "source_exercise": "مشخص کن کدام اقدام را می‌توانی با اطلاعات فعلی انجام دهی، کدام به راهنمایی نیاز دارد و کدام را نباید بدون تخصص امتحان کنی.",
+      "source_action": "یک اقدام خودیاری را که فعلاً بدون راهنمایی انجام نمی‌دهی ثبت کن و منبع مناسب برای پرسش را مشخص کن.",
+      "proposed_title": "تفکیک اقدام شخصی از نیاز به تخصص",
+      "proposed_intro": "مشخص کن کدام اقدام با اطلاعات فعلی کم‌خطر است، کدام به راهنمایی نیاز دارد و کدام را نباید بدون تخصص امتحان کنی.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    }
+  ]
+}
