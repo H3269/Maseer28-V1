@@ -1,0 +1,736 @@
+{
+  "schema_version": "1.0.0",
+  "batch_id": "topic-specific-copy-pilot-t13-t18-days04-07",
+  "status": "draft_pending_owner_and_expert_review",
+  "purpose": "بازنویسی آزمایشی عنوان و مقدمه برای موضوعات T13 تا T18 در روزهای ۴ تا ۷؛ تمرین و اقدام فقط منبع زمینه‌اند و تغییر نکرده‌اند.",
+  "source": "runtime content source and daily text overrides from current main snapshot",
+  "design_rules": [
+    "عنوان و مقدمه باید به تمرین و اقدام همان روز متصل باشند.",
+    "از تشخیص‌گذاری، تعمیم ارزش فرد به عملکرد و وعده درمان پرهیز شود.",
+    "در موضوع رابطه، ایمنی، رضایت و توازن قدرت مقدم بر توصیه به گفت‌وگو است.",
+    "در خودبیزاری، محتوای خودتحقیرگر تأیید نشود و خطر احتمالی به مسیر ایمنی مستقل ارجاع شود.",
+    "تمام رکوردها پیش‌نویس‌اند و runtime_eligible=false."
+  ],
+  "records": [
+    {
+      "source_content_id": "تنهایی-04",
+      "topic_id": "T13",
+      "topic_name": "تنهایی",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «تنهایی».",
+      "source_exercise": "از میان شنیده‌شدن، همراهی، صمیمیت، تعلق، حمایت عملی یا گفت‌وگوی عمیق، نیاز نزدیک‌تر به تجربه اخیرت را انتخاب و با یک مثال توضیح بده.",
+      "source_action": "نیاز را به جمله‌ای روشن تبدیل کن: «این روزها به … نیاز دارم»؛ فعلاً فقط برای خودت بنویس.",
+      "proposed_title": "شناخت نوع ارتباطِ موردنیاز",
+      "proposed_intro": "از میان شنیده‌شدن، همراهی، صمیمیت، تعلق یا کمک عملی مشخص کن کدام نیاز در تجربهٔ اخیرت پررنگ‌تر بوده؛ لازم نیست فوراً آن را از کسی مطالبه کنی.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "تنهایی-05",
+      "topic_id": "T13",
+      "topic_name": "تنهایی",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «تنهایی».",
+      "source_exercise": "یک هفته اخیر را مرور کن و زمان‌ها یا مکان‌هایی را که تنهایی بیشتر یا کمتر بوده علامت بزن؛ علت قطعی فرض نکن.",
+      "source_action": "یک تغییر محیطی کم‌هزینه را که احتمال ارتباط معنادار را بیشتر می‌کند انتخاب کن؛ مثل حضور در فضای مشترک امن.",
+      "proposed_title": "زمان و زمینهٔ پررنگ‌شدن تنهایی",
+      "proposed_intro": "یک هفتهٔ اخیر را مرور کن و زمان‌ها یا مکان‌هایی را که تنهایی بیشتر یا کمتر بوده ثبت کن؛ از نسبت‌دادن علت قطعی بدون شواهد پرهیز کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "تنهایی-06",
+      "topic_id": "T13",
+      "topic_name": "تنهایی",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «تنهایی».",
+      "source_exercise": "در دو ستون بنویس چه نوع ارتباطی می‌خواهی و اکنون چه چیزی در دسترس است؛ تفاوت را بدون قضاوت ثبت کن.",
+      "source_action": "فقط یک بخش کوچک از فاصله را انتخاب کن که تغییرش در اختیار توست؛ برای بقیه محدودیت‌ها را به رسمیت بشناس.",
+      "proposed_title": "فاصلهٔ ارتباط مطلوب و موجود",
+      "proposed_intro": "نوع ارتباطی را که می‌خواهی با آنچه اکنون در دسترس است مقایسه کن؛ تفاوت را بدون سرزنش خود یا دیگران بنویس.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "تنهایی-07",
+      "topic_id": "T13",
+      "topic_name": "تنهایی",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «تنهایی».",
+      "source_exercise": "مانع‌ها را در دسته زمان، هزینه، فاصله، سلامت، دسترس‌پذیری، زبان، امنیت یا فرصت قرار بده و فقط یک مورد را انتخاب کن.",
+      "source_action": "برای همان مانع یک راهکار کوچک و قابل کنترل بنویس؛ مانند زمان جایگزین یا گزینه رایگان و نزدیک.",
+      "proposed_title": "مانع دسترسی به ارتباط معنادار",
+      "proposed_intro": "مانع احتمالی را در زمان، هزینه، فاصله، سلامت، دسترس‌پذیری، زبان، امنیت یا فرصت بررسی کن و فقط یک مورد را انتخاب کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کمبود انگیزه-04",
+      "topic_id": "T14",
+      "topic_name": "کمبود انگیزه",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کمبود انگیزه».",
+      "source_exercise": "ارزش پشت هدف: بنویسید چرا یکی از کارها برای شما اهمیت دارد.",
+      "source_action": "یک گام کوچک را به ارزش انتخاب‌شده وصل کن و دلیلش را بنویس.",
+      "proposed_title": "ارزش شخصی پشت یک هدف",
+      "proposed_intro": "بررسی کن چرا یک فعالیت برایت اهمیت دارد؛ ارزش شخصی را از پاداش فوری یا انتظار دیگران جدا کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کمبود انگیزه-05",
+      "topic_id": "T14",
+      "topic_name": "کمبود انگیزه",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کمبود انگیزه».",
+      "source_exercise": "مانع شروع: روشن کنید مشکل بیشتر تصمیم‌گیری، ترس، پیچیدگی، زمان یا محیط است.",
+      "source_action": "برای مانع غالب فقط یک راهکار آزمایشی تعیین کن.",
+      "proposed_title": "شناسایی مانع آغاز فعالیت",
+      "proposed_intro": "مشخص کن شروع کار بیشتر با تصمیم‌گیری، ترس، پیچیدگی، زمان یا محیط دشوار شده است؛ پیش از انتخاب راهکار، مانع را محدود کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کمبود انگیزه-06",
+      "topic_id": "T14",
+      "topic_name": "کمبود انگیزه",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کمبود انگیزه».",
+      "source_exercise": "یک کار عقب‌افتاده را انتخاب کن و بنویس چرا انجامش می‌دهی: علاقه، ارزش شخصی، فایده ضروری، انتظار دیگران یا اجبار بیرونی. اگر دلیل روشن نیست، همان ابهام را ثبت کن.",
+      "source_action": "اگر کار ضروری است، یک دلیل عملی و واقعی برای انجامش مشخص کن؛ اگر غیرضروری یا تحمیلی است، امکان مذاکره، واگذاری یا کنارگذاشتن آن را بررسی کن.",
+      "proposed_title": "دلیل انجام کار: ارزش، ضرورت یا اجبار",
+      "proposed_intro": "یک کار عقب‌افتاده را از نظر علاقه، ارزش شخصی، فایدهٔ ضروری، انتظار دیگران یا اجبار بیرونی بررسی کن؛ اگر دلیل روشن نیست، ابهام را ثبت کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کمبود انگیزه-07",
+      "topic_id": "T14",
+      "topic_name": "کمبود انگیزه",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کمبود انگیزه».",
+      "source_exercise": "هدف هفتگی: هدفی کوچک با زمان و معیار پایان روشن تعیین کنید.",
+      "source_action": "زمان شروع و نشانه پایان هدف هفتگی را در تقویم ثبت کن.",
+      "proposed_title": "هدف هفتگی با زمان و معیار پایان",
+      "proposed_intro": "هدف کوچکی تعیین کن که زمان شروع و نشانهٔ پایان روشن داشته باشد؛ هدف را در حد منابع و انرژی واقعی نگه دار.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اعتمادبه‌نفس پایین-04",
+      "topic_id": "T15",
+      "topic_name": "اعتمادبه‌نفس پایین",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اعتمادبه‌نفس پایین».",
+      "source_exercise": "مهارت یا ارزش؟ مشخص کنید تردید درباره مهارتی مشخص است یا قضاوت کلی درباره خودتان.",
+      "source_action": "اگر مهارت مشخص است، یک منبع یادگیری پیدا کن؛ اگر قضاوت کلی است، آن را به مهارت تقلیل نده.",
+      "proposed_title": "تردید مهارتی یا قضاوت کلی دربارهٔ خود",
+      "proposed_intro": "روشن کن تردیدت دربارهٔ یک مهارت مشخص است یا به داوری فراگیر دربارهٔ خودت تبدیل شده؛ این دو به پاسخ یکسان نیاز ندارند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اعتمادبه‌نفس پایین-05",
+      "topic_id": "T15",
+      "topic_name": "اعتمادبه‌نفس پایین",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اعتمادبه‌نفس پایین».",
+      "source_exercise": "مقایسه اجتماعی: یک مقایسه اخیر را بررسی و اطلاعات ناشناخته درباره زندگی طرف مقابل را یادداشت کنید.",
+      "source_action": "یک مقایسه را برای امروز متوقف و معیار شخصی خودت را جایگزین کن.",
+      "proposed_title": "بررسی مقایسه با اطلاعات ناقص",
+      "proposed_intro": "یک مقایسهٔ اخیر را مرور کن و اطلاعاتی را که دربارهٔ شرایط، منابع یا مسیر طرف مقابل نمی‌دانی مشخص کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اعتمادبه‌نفس پایین-06",
+      "topic_id": "T15",
+      "topic_name": "اعتمادبه‌نفس پایین",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اعتمادبه‌نفس پایین».",
+      "source_exercise": "نقاط قوت کاربردی: یک توانایی را با مثال رفتاری، نه صفت کلی، توصیف کنید.",
+      "source_action": "توانایی را در یک جمله مبتنی بر فعل و مثال ثبت کن.",
+      "proposed_title": "نقطهٔ قوت با شاهد رفتاری",
+      "proposed_intro": "یک توانایی را با مثال رفتاری و قابل مشاهده توصیف کن؛ به‌جای صفت کلی، بنویس دقیقاً چه کاری انجام دادی.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اعتمادبه‌نفس پایین-07",
+      "topic_id": "T15",
+      "topic_name": "اعتمادبه‌نفس پایین",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اعتمادبه‌نفس پایین».",
+      "source_exercise": "یک مهارت یا توانایی را که قبلاً در موقعیتی واقعی به کار برده‌ای انتخاب کن. شواهد همان تجربه را بنویس و یک کاربرد کوچک و مستقل از آن مهارت را برای موقعیتی تازه مشخص کن.",
+      "source_action": "زمان و حد پایان یک اقدام کوچک را مشخص کن.",
+      "proposed_title": "کاربرد مستقل یک مهارتِ تجربه‌شده",
+      "proposed_intro": "مهارتی را که قبلاً در موقعیتی واقعی به کار برده‌ای انتخاب کن و یک کاربرد کوچک و مستقل از آن را در موقعیتی تازه مشخص کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "افکار منفی و نشخوار فکری-04",
+      "topic_id": "T16",
+      "topic_name": "افکار منفی و نشخوار فکری",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «افکار منفی و نشخوار فکری».",
+      "source_exercise": "کارکرد نشخوار: بررسی کنید آیا فکر کردن به حل مسئله می‌انجامد یا همان پرسش را تکرار می‌کند.",
+      "source_action": "اگر فکر به اقدام مشخص نمی‌رسد، زمان بررسی را محدود و فعالیت را عوض کن.",
+      "proposed_title": "تمایز حل مسئله از تکرار ذهنی",
+      "proposed_intro": "بررسی کن فکرکردن به یک موضوع به اقدام یا فهم تازه می‌رسد یا همان پرسش را بدون پیشرفت تکرار می‌کند؛ مرور سازنده را با نشخوار یکی ندان.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "افکار منفی و نشخوار فکری-05",
+      "topic_id": "T16",
+      "topic_name": "افکار منفی و نشخوار فکری",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «افکار منفی و نشخوار فکری».",
+      "source_exercise": "نشانه گیرکردن: علائم ذهنی و جسمی در شروع چرخه را ثبت کنید.",
+      "source_action": "در صورت مشاهده نشانه آغاز، فقط نام آن را در ذهن بگو.",
+      "proposed_title": "نشانهٔ آغاز چرخهٔ نشخوار",
+      "proposed_intro": "نشانهٔ ذهنی یا بدنی‌ای را که گاهی در شروع چرخه متوجه می‌شوی ثبت کن؛ برای یافتن آن، خودت را به وارسی مداوم وادار نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "افکار منفی و نشخوار فکری-06",
+      "topic_id": "T16",
+      "topic_name": "افکار منفی و نشخوار فکری",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «افکار منفی و نشخوار فکری».",
+      "source_exercise": "سؤال مفید: از خود بپرسید «آیا اکنون مسئله‌ای عملی برای حل دارم؟»",
+      "source_action": "اگر مسئله عملی است، یک گام کوچک تعیین کن؛ اگر نیست، آن را فعلاً نامعلوم بگذار.",
+      "proposed_title": "پرسش عملی در برابر پرسش بی‌پاسخ",
+      "proposed_intro": "از خود بپرس آیا اکنون مسئله‌ای عملی برای حل وجود دارد؛ اگر هست یک گام کوچک، و اگر نیست نامعلوم‌بودن فعلی را ثبت کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "افکار منفی و نشخوار فکری-07",
+      "topic_id": "T16",
+      "topic_name": "افکار منفی و نشخوار فکری",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «افکار منفی و نشخوار فکری».",
+      "source_exercise": "هدف تمرین: موقعیتی انتخاب کنید که بازگشت به فعالیت در آن برایتان مهم است.",
+      "source_action": "فعالیت انتخابی را به زمان و مکان مشخص پیوند بده.",
+      "proposed_title": "انتخاب موقعیت برای بازگشت به فعالیت",
+      "proposed_intro": "موقعیتی را انتخاب کن که بازگشت به فعالیت در آن برایت مهم است؛ هدف حذف اجباری فکر نیست، بلکه حفظ انتخاب رفتاری است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکلات رابطه-04",
+      "topic_id": "T17",
+      "topic_name": "مشکلات رابطه",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکلات رابطه».",
+      "source_exercise": "نیازهای دوطرف: نیاز خود و نیاز احتمالی طرف مقابل را بدون حدس قطعی بنویسید.",
+      "source_action": "نیاز خود را روشن بنویس و نیاز طرف مقابل را فقط در حد پرسش احتمالی نگه دار.",
+      "proposed_title": "نیاز خود و نیاز احتمالی طرف مقابل",
+      "proposed_intro": "نیاز خود را روشن بنویس و نیاز طرف مقابل را فقط به‌عنوان فرضیه نگه دار؛ برای دانستن آن باید امکان پرسش امن وجود داشته باشد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکلات رابطه-05",
+      "topic_id": "T17",
+      "topic_name": "مشکلات رابطه",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکلات رابطه».",
+      "source_exercise": "موضوع اصلی: مسئله را در یک جمله مشخص و محدود تعریف کنید.",
+      "source_action": "موضوع را به یک مسئله قابل گفت‌وگو محدود کن.",
+      "proposed_title": "تعریف محدود و روشن مسئلهٔ رابطه",
+      "proposed_intro": "مسئله را در یک جملهٔ مشخص و محدود تعریف کن؛ از تبدیل یک رویداد به حکم کلی دربارهٔ کل رابطه پرهیز کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکلات رابطه-06",
+      "topic_id": "T17",
+      "topic_name": "مشکلات رابطه",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکلات رابطه».",
+      "source_exercise": "سهم و مسئولیت: سهم رفتاری خود را از مسئولیت رفتار طرف مقابل جدا کنید.",
+      "source_action": "اگر تعهد یا رفتار مشخصی را نادیده گرفته‌ای، سهم خود را با یک اقدام روشن—مانند اطلاع‌رسانی، اصلاح توافق یا جبران متناسب—پیگیری کن؛ مسئولیت انتخاب و واکنش طرف مقابل با تو نیست.",
+      "proposed_title": "تفکیک سهم خود از مسئولیت دیگری",
+      "proposed_intro": "رفتار و تعهد خود را از انتخاب و واکنش طرف مقابل جدا کن؛ مسئولیت‌پذیری نباید به پذیرش تقصیر دیگران منجر شود.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکلات رابطه-07",
+      "topic_id": "T17",
+      "topic_name": "مشکلات رابطه",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکلات رابطه».",
+      "source_exercise": "هدف رابطه‌ای: یک تغییر رفتاری مشخص و واقع‌بینانه تعیین کنید.",
+      "source_action": "رفتار هدف را طوری تعریف کن که در یک هفته قابل مشاهده باشد.",
+      "proposed_title": "هدف رفتاری واقع‌بینانه در رابطه",
+      "proposed_intro": "یک تغییر رفتاری کوچک و قابل مشاهده تعیین کن که در حوزهٔ اختیار تو باشد؛ هدف را به تغییر اجباری طرف مقابل وابسته نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت از خود-04",
+      "topic_id": "T18",
+      "topic_name": "نفرت از خود",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «نفرت از خود».",
+      "source_exercise": "صدای آموخته‌شده: بررسی کنید این زبان خودتحقیرگر شبیه صدای چه تجربه یا محیطی است؛ نتیجه قطعی نگیرید.",
+      "source_action": "اگر منشأ را نمی‌دانی، «نامعلوم» ثبت کن و دنبال خاطره‌سازی نرو.",
+      "proposed_title": "شناخت زبان خودتحقیرگر و منشأ نامعلوم",
+      "proposed_intro": "بررسی کن زبان خودتحقیرگر ممکن است شبیه کدام تجربه یا محیط باشد؛ اگر منشأ روشن نیست، «نامعلوم» ثبت کن و خاطره‌سازی نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت از خود-05",
+      "topic_id": "T18",
+      "topic_name": "نفرت از خود",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «نفرت از خود».",
+      "source_exercise": "واقعیت‌های خنثی: سه واقعیت توصیفی درباره خود بنویسید که نه ستایش‌اند و نه تحقیر.",
+      "source_action": "یک واقعیت خنثی را در فعالیت روزمره مشاهده کن.",
+      "proposed_title": "ثبت واقعیت‌های خنثی دربارهٔ خود",
+      "proposed_intro": "سه واقعیت توصیفی دربارهٔ خود بنویس که نه ستایش‌اند و نه تحقیر؛ هدف فاصله‌گرفتن از داوری کلی است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت از خود-06",
+      "topic_id": "T18",
+      "topic_name": "نفرت از خود",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «نفرت از خود».",
+      "source_exercise": "رفتار در برابر هویت: یک رفتار پشیمان‌کننده را از ارزش کلی انسان جدا کنید.",
+      "source_action": "اگر خطایی رخ داده، فقط رفتار و پیامد را جداگانه ثبت کن؛ ارزش انسانی را به آن گره نزن.",
+      "proposed_title": "تفکیک رفتار پشیمان‌کننده از هویت",
+      "proposed_intro": "یک رفتار مشخص را از ارزش کلی انسان جدا کن؛ اگر خطایی رخ داده، رفتار و پیامد آن قابل بررسی است، نه اینکه کل هویت محکوم شود.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت از خود-07",
+      "topic_id": "T18",
+      "topic_name": "نفرت از خود",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «نفرت از خود».",
+      "source_exercise": "هدف حمایتی: یک رفتار مراقبتی کوچک که سزاوارش هستید تعیین کنید.",
+      "source_action": "رفتار مراقبتی را همین امروز انجام بده یا زمان دقیقش را تعیین کن.",
+      "proposed_title": "هدف مراقبتی کوچک در برابر خودبیزاری",
+      "proposed_intro": "یک رفتار مراقبتی کوچک و واقع‌بینانه انتخاب کن؛ مراقبت از خود به معنای انکار مسئولیت یا حل فوری احساس نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    }
+  ]
+}
