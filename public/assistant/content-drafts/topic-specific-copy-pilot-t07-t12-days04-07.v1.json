@@ -1,0 +1,735 @@
+{
+  "schema_version": "1.0.0",
+  "batch_id": "topic-specific-copy-pilot-t07-t12-days04-07",
+  "status": "draft_pending_owner_and_expert_review",
+  "purpose": "بازنویسی آزمایشی عنوان و مقدمه برای موضوعات T07 تا T12 در روزهای ۴ تا ۷؛ تمرین و اقدام فقط به‌عنوان منبع زمینه ثبت شده‌اند و تغییر نکرده‌اند.",
+  "source": "runtime content source and daily text overrides from current main snapshot",
+  "design_rules": [
+    "عنوان و مقدمه باید به تمرین و اقدام همان روز متصل باشند.",
+    "از تشخیص‌گذاری، ادعای علت قطعی و وعده درمان پرهیز شود.",
+    "مرزهای ایمنی و ارجاع تخصصی حفظ شوند؛ رفتارهای تنظیمی بی‌ضرر به‌طور خودکار حذف نشوند.",
+    "تمام رکوردها پیش‌نویس‌اند و runtime_eligible=false."
+  ],
+  "records": [
+    {
+      "source_content_id": "احساس گناه-04",
+      "topic_id": "T07",
+      "topic_name": "احساس گناه",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «احساس گناه».",
+      "source_exercise": "دو نشانه بدنی و احساس‌های همراه مانند نگرانی، غم یا ترس را در زمان حال مشاهده کن؛ برای ایجاد ناراحتی، خاطره را عمداً تشدید نکن.",
+      "source_action": "برای مکث، توجه را به یک فعالیت حسی خنثی برگردان و در این مرحله خاطره یا خطا را دوباره مرور نکن.",
+      "proposed_title": "نشانه‌های بدنیِ گناه و مکث امن",
+      "proposed_intro": "گاهی احساس گناه با تنش بدنی یا بی‌قراری همراه می‌شود؛ فقط نشانه‌ای را که خودبه‌خود متوجه می‌شوی ثبت کن و برای ایجاد ناراحتی، خاطره را تشدید نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "احساس گناه-05",
+      "topic_id": "T07",
+      "topic_name": "احساس گناه",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «احساس گناه».",
+      "source_exercise": "سه عبارت بنویس: «کاری که کردم/نکردم»، «پیامد محتمل»، «آنچه این رخداد درباره هویت کلی من ثابت نمی‌کند».",
+      "source_action": "یک توصیف رفتاری دقیق جایگزین یک برچسب هویتی کن.",
+      "proposed_title": "رفتار مشخص در برابر برچسب هویتی",
+      "proposed_intro": "میان کاری که انجام دادی و حکمی که دربارهٔ تمام شخصیت خودت می‌دهی تفاوت بگذار؛ مسئولیت‌پذیری به تحقیر هویت نیاز ندارد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "احساس گناه-06",
+      "topic_id": "T07",
+      "topic_name": "احساس گناه",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «احساس گناه».",
+      "source_exercise": "مشخص کن کدام ارزش یا تعهد ممکن است درگیر باشد: صداقت، مراقبت، انصاف، وفای به قول یا مسئولیت. این‌ها فرضیه‌اند و ممکن است هیچ‌کدام دقیق نباشد.",
+      "source_action": "یک ارزش را با عبارت «برای من مهم است که…» ثبت کن.",
+      "proposed_title": "ارزش یا تعهد درگیر در احساس گناه",
+      "proposed_intro": "بررسی کن کدام ارزش یا تعهد ممکن است در موقعیت نقش داشته باشد؛ پاسخ را فرضیه بدان و اگر هیچ‌کدام دقیق نیست، ابهام را حفظ کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "احساس گناه-07",
+      "topic_id": "T07",
+      "topic_name": "احساس گناه",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «احساس گناه».",
+      "source_exercise": "هدفی انتخاب کن که به رفتار خودت مربوط باشد: روشن‌کردن واقعیت، توقف تکرار، اصلاح فرایند یا یادگیری مهارت. هدف نباید مجازات خود یا وادارکردن دیگری به بخشش باشد.",
+      "source_action": "اگر مسئولیت واقعی وجود دارد، یک جبران متناسب و سازگار با رضایت و حریم فرد آسیب‌دیده انتخاب کن؛ اگر تماس مناسب نیست، اصلاح فرایند یا یادگیری را جایگزین کن.",
+      "proposed_title": "جبران متناسب بدون خودتنبیهی",
+      "proposed_intro": "هدفی انتخاب کن که به رفتار خودت مربوط باشد؛ جبران فقط وقتی مطرح است که متناسب، امن و سازگار با رضایت و حریم فرد آسیب‌دیده باشد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "وابستگی عاطفی-04",
+      "topic_id": "T08",
+      "topic_name": "وابستگی عاطفی",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «وابستگی عاطفی».",
+      "source_exercise": "نشانه‌های بدنی و هیجانی هنگام انتظار پاسخ را مشاهده کن؛ تمرین به معنای بی‌اعتنایی به نیاز واقعی یا خطر نیست.",
+      "source_action": "یک فعالیت خنثی و آشنا برای گذر از زمان انتظار انتخاب کن.",
+      "proposed_title": "نشانه‌های انتظار پاسخ در بدن",
+      "proposed_intro": "هنگام انتظار پاسخ، نشانه‌های بدنی و هیجانی را بدون تحریک عمدی نگرانی مشاهده کن؛ این تمرین به معنی نادیده‌گرفتن نیاز واقعی یا خطر نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "وابستگی عاطفی-05",
+      "topic_id": "T08",
+      "topic_name": "وابستگی عاطفی",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «وابستگی عاطفی».",
+      "source_exercise": "بررسی کن تماس مکرر، چک‌کردن وضعیت آنلاین یا لغو برنامه شخصی چه کارکردی دارد؛ این رفتارها را از درخواست روشن و محترمانه کمک جدا کن.",
+      "source_action": "یک رفتار تکراری را ثبت کن و یک جایگزین غیرکنترلی بنویس.",
+      "proposed_title": "چرخهٔ وارسی و تماس در رابطه",
+      "proposed_intro": "بررسی کن تماس مکرر یا چک‌کردن وضعیت آنلاین چه کارکردی دارد و آن را از درخواست روشن و محترمانهٔ کمک جدا کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "وابستگی عاطفی-06",
+      "topic_id": "T08",
+      "topic_name": "وابستگی عاطفی",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «وابستگی عاطفی».",
+      "source_exercise": "نیاز احتمالی را مشخص کن: امنیت، تعلق، دیده‌شدن، همراهی، تأیید یا کمک عملی. سپس یک راه تأمین دیگر را بدون حذف رابطه فعلی بررسی کن.",
+      "source_action": "یک نیاز و یک منبع بالقوه دیگر برای آن ثبت کن.",
+      "proposed_title": "نیاز رابطه‌ای و منبع حمایت دیگر",
+      "proposed_intro": "نیاز احتمالی مانند امنیت، تعلق یا همراهی را نام ببر و یک راه دیگر برای تأمین بخشی از آن را بررسی کن، بدون اینکه رابطهٔ فعلی را حذف کنی.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "وابستگی عاطفی-07",
+      "topic_id": "T08",
+      "topic_name": "وابستگی عاطفی",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «وابستگی عاطفی».",
+      "source_exercise": "هدفی کوچک انتخاب کن که توان انتخاب را بیشتر کند، نه اینکه نیاز به دیگران را حذف کند؛ مثال: انجام یک تصمیم کم‌خطر با معیارهای شخصی.",
+      "source_action": "یک تصمیم کم‌خطر را بر اساس معیار شخصی اجرا کن و پیش از آن از درخواست تأیید چندباره خودداری کن؛ نتیجه را پس از انجام ثبت کن.",
+      "proposed_title": "یک انتخاب مستقل و کم‌خطر",
+      "proposed_intro": "هدف کوچکی انتخاب کن که عاملیت شخصی را تقویت کند؛ استقلال به معنی حذف نیاز طبیعی به دیگران نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اهمال‌کاری-04",
+      "topic_id": "T09",
+      "topic_name": "اهمال‌کاری",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اهمال‌کاری».",
+      "source_exercise": "سطح انرژی، خواب، گرسنگی، درد یا خستگی را بدون امتیازدهی ارزشی مشاهده کن؛ محدودیت جسمی را با بی‌انضباطی یکی ندان.",
+      "source_action": "زمان کوتاهی را انتخاب کن که معمولاً انرژی بیشتری داری؛ اگر چنین زمانی نیست، کار را کوچک‌تر کن.",
+      "proposed_title": "انرژی و آمادگی برای شروع کار",
+      "proposed_intro": "سطح انرژی، خواب، گرسنگی، درد یا خستگی را بدون قضاوت مشاهده کن؛ محدودیت جسمی را با بی‌انضباطی یکی ندان.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اهمال‌کاری-05",
+      "topic_id": "T09",
+      "topic_name": "اهمال‌کاری",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اهمال‌کاری».",
+      "source_exercise": "مانع را مشخص کن: ابهام، دشواری، ترس از نتیجه، کمال‌گرایی، حواس‌پرتی، کمبود ابزار یا کمبود اختیار.",
+      "source_action": "یک مانع را انتخاب کن که بیشترین نقش را دارد؛ چند علت را قطعی فرض نکن.",
+      "proposed_title": "طبقه‌بندی مانع شروع",
+      "proposed_intro": "مانع شروع را از میان ابهام، دشواری، ترس از نتیجه، کمال‌گرایی، حواس‌پرتی، کمبود ابزار یا کمبود اختیار بررسی کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اهمال‌کاری-06",
+      "topic_id": "T09",
+      "topic_name": "اهمال‌کاری",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اهمال‌کاری».",
+      "source_exercise": "بررسی کن تعویق موقتاً از چه چیزی دور می‌کند: خستگی، ابهام، اضطراب، شکست احتمالی یا کار بیش از حد.",
+      "source_action": "یک نیاز یا محدودیت محتمل را با عبارت «ممکن است…» ثبت کن.",
+      "proposed_title": "کارکرد کوتاه‌مدتِ به‌تعویق‌انداختن",
+      "proposed_intro": "بررسی کن تعویق موقتاً تو را از چه چیزی دور می‌کند؛ خستگی، ابهام، اضطراب یا کار بیش از حد می‌توانند نقش داشته باشند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اهمال‌کاری-07",
+      "topic_id": "T09",
+      "topic_name": "اهمال‌کاری",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اهمال‌کاری».",
+      "source_exercise": "یک هدف قابل کنترل تعیین کن: شروع یک بخش، روشن‌کردن گام بعد یا درخواست منبع؛ هدف را با حجم کار غیرواقعی تعریف نکن.",
+      "source_action": "هدف را با فعل و زمان مشخص بنویس.",
+      "proposed_title": "هدف کوچک و قابل‌کنترل برای شروع",
+      "proposed_intro": "هدفی انتخاب کن که به رفتار خودت مربوط باشد، مانند شروع یک بخش یا روشن‌کردن گام بعد؛ هدف را با حجم غیرواقعی تعریف نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "بی‌خوابی و مشکلات خواب-04",
+      "topic_id": "T10",
+      "topic_name": "بی‌خوابی و مشکلات خواب",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «بی‌خوابی و مشکلات خواب».",
+      "source_exercise": "زمان‌های افت انرژی، چرت، تمرکز دشوار و خواب‌آلودگی ناخواسته را مشاهده کن؛ اگر خواب‌آلودگی هنگام رانندگی رخ می‌دهد رانندگی نکن و کمک مناسب بگیر.",
+      "source_action": "یک بازه دشوار روز را ثبت کن.",
+      "proposed_title": "خواب‌آلودگی و انرژی در طول روز",
+      "proposed_intro": "زمان‌های افت انرژی و خواب‌آلودگی ناخواسته را ثبت کن؛ اگر خواب‌آلودگی هنگام رانندگی رخ می‌دهد رانندگی نکن و کمک مناسب بگیر.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "بی‌خوابی و مشکلات خواب-05",
+      "topic_id": "T10",
+      "topic_name": "بی‌خوابی و مشکلات خواب",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «بی‌خوابی و مشکلات خواب».",
+      "source_exercise": "مصرف کافئین، نیکوتین، الکل، داروها، درد، استرس، نور، صدا و برنامه شیفت را در حد اطلاعات شخصی ثبت کن؛ علت را از هم‌زمانی نتیجه نگیر.",
+      "source_action": "یک عامل قابل مشاهده را مشخص کن.",
+      "proposed_title": "عوامل محیطی و رفتاریِ مرتبط با خواب",
+      "proposed_intro": "عوامل احتمالی مانند کافئین، داروها، درد، استرس، نور و برنامهٔ شیفت را ثبت کن؛ هم‌زمانی را علت قطعی فرض نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "بی‌خوابی و مشکلات خواب-06",
+      "topic_id": "T10",
+      "topic_name": "بی‌خوابی و مشکلات خواب",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «بی‌خوابی و مشکلات خواب».",
+      "source_exercise": "انتظارات خود درباره خواب را بررسی کن؛ نیاز خواب میان افراد و سنین متفاوت است و عدد ثابت برای همه مناسب نیست.",
+      "source_action": "یک انتظار خشک یا غیرواقعی را به هدف مشاهده‌پذیر تبدیل کن.",
+      "proposed_title": "انتظارات واقع‌بینانه دربارهٔ خواب",
+      "proposed_intro": "انتظارهای خود دربارهٔ خواب را بررسی کن؛ نیاز خواب میان افراد و سنین متفاوت است و عدد ثابتی برای همه مناسب نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "بی‌خوابی و مشکلات خواب-07",
+      "topic_id": "T10",
+      "topic_name": "بی‌خوابی و مشکلات خواب",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «بی‌خوابی و مشکلات خواب».",
+      "source_exercise": "یک هدف قابل‌کنترل انتخاب کن: ثبت زمان برخاستن، کاهش نور شبانه یا آماده‌سازی محیط؛ هدف را «حتماً خوابیدن» تعریف نکن.",
+      "source_action": "هدف را برای چند روز آینده مشخص کن.",
+      "proposed_title": "هدف قابل‌کنترل برای بهداشت خواب",
+      "proposed_intro": "یک هدف قابل‌کنترل مانند ثبت زمان برخاستن یا آماده‌سازی محیط انتخاب کن؛ موفقیت را به «حتماً خوابیدن» وابسته نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "عادت‌های تکراری-04",
+      "topic_id": "T11",
+      "topic_name": "عادت‌های تکراری",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «عادت‌های تکراری».",
+      "source_exercise": "اگر طبیعی و قابل‌تحمل است، ببین پیش از رفتار چه چیزی رخ می‌دهد؛ تمرکز اجباری یا وارسی مداوم بدن لازم نیست.",
+      "source_action": "S01: نشانه‌ای مثل دیدن وسیله یا نشستن در مکان خاص. S02: میل/تنش/فکر مزاحم را فقط ثبت کن. S03: احساس پیش‌درآمد تیک یا نیاز حسی را توصیف کن، بدون تلاش برای سرکوب.",
+      "proposed_title": "نشانهٔ پیش از رفتار تکراری",
+      "proposed_intro": "اگر طبیعی و قابل‌تحمل است، نشانهٔ محیطی یا حس بدنی پیش از رفتار را ثبت کن؛ وارسی مداوم یا تلاش اجباری برای سرکوب لازم نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "عادت‌های تکراری-05",
+      "topic_id": "T11",
+      "topic_name": "عادت‌های تکراری",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «عادت‌های تکراری».",
+      "source_exercise": "برای یک عادت ساده، زنجیره نشانه ← رفتار ← پیامد را روی کاغذ رسم کن.",
+      "source_action": "یک نشانه محیطی را که در اختیار خودت است مشخص کن؛ رفتار بی‌ضرر را صرفاً برای متفاوت‌بودن حذف نکن.",
+      "proposed_title": "ترسیم زنجیرهٔ نشانه، رفتار و پیامد",
+      "proposed_intro": "برای یک عادت ساده، نشانهٔ آغاز، خود رفتار و پیامد فوری آن را جداگانه بنویس؛ هدف فهم الگوست نه سرزنش.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "عادت‌های تکراری-06",
+      "topic_id": "T11",
+      "topic_name": "عادت‌های تکراری",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «عادت‌های تکراری».",
+      "source_exercise": "بررسی کن رفتار برای تسکین میل/حس بدنی انجام می‌شود یا برای خنثی‌کردن فکر/ترس؛ این توصیف تشخیص BFRB یا OCD نیست.",
+      "source_action": "اگر رفتار شامل کندن مو/پوست یا آسیب بدنی است، آن را برای گفت‌وگو با متخصص ثبت کن. اگر آیین برای خنثی‌کردن فکر مزاحم است، از خوددرمانی مواجهه‌ای پرهیز کن.",
+      "proposed_title": "تمایز میل حسی از خنثی‌سازی فکر",
+      "proposed_intro": "بررسی کن رفتار بیشتر برای پاسخ به میل یا حس بدنی رخ می‌دهد یا برای خنثی‌کردن فکر و ترس؛ این مشاهده تشخیص پزشکی نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "عادت‌های تکراری-07",
+      "topic_id": "T11",
+      "topic_name": "عادت‌های تکراری",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «عادت‌های تکراری».",
+      "source_exercise": "حرکت یا صدای تکراری را در بافت واقعی آن توصیف کن: تنظیم حسی، تمرکز، هیجان، تیک احتمالی یا نامشخص.",
+      "source_action": "اگر حرکت بی‌ضرر و تنظیم‌کننده است، حذفش هدف نیست؛ اگر تازه‌پدید، دردناک یا مختل‌کننده است، ارزیابی مناسب را در نظر بگیر.",
+      "proposed_title": "توصیف حرکت تکراری در بافت واقعی",
+      "proposed_intro": "حرکت یا صدای تکراری را در زمینه‌اش توصیف کن؛ رفتار بی‌ضرر و تنظیم‌کننده لزوماً نباید حذف شود.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مرزبندی و نه گفتن-04",
+      "topic_id": "T12",
+      "topic_name": "مرزبندی و نه گفتن",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مرزبندی و نه گفتن».",
+      "source_exercise": "هنگام یادآوری یک درخواست دشوار، بدون بازسازی تنش شدید، سه نشانه بدنی احتمالی مانند انقباض فک، حبس نفس یا سنگینی را نام ببرید. سپس یک مکث آرام و طبیعی را تمرین کنید.",
+      "source_action": "اگر نشانه بدنی ناراحت‌کننده است، توجه را به محیط بیرونی برگردان.",
+      "proposed_title": "نشانه‌های بدنی هنگام یادآوری درخواست دشوار",
+      "proposed_intro": "بدون بازسازی تنش شدید، نشانه‌های بدنی احتمالی را نام ببر و یک مکث طبیعی را تمرین کن؛ اگر ناراحت‌کننده شد توجه را به محیط برگردان.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مرزبندی و نه گفتن-05",
+      "topic_id": "T12",
+      "topic_name": "مرزبندی و نه گفتن",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مرزبندی و نه گفتن».",
+      "source_exercise": "بررسی کنید در موقعیت‌های مشابه بیشتر کدام پاسخ رخ می‌دهد: موافقت فوری، توضیح طولانی، سکوت، عقب‌نشینی، خشم یا مذاکره. یک نمونه واقعی برای الگوی پرتکرار بنویسید.",
+      "source_action": "یک پاسخ را که می‌خواهی در موقعیت بعدی تغییر بدهی مشخص کن.",
+      "proposed_title": "الگوی پاسخ به درخواست دیگران",
+      "proposed_intro": "بررسی کن در موقعیت‌های مشابه بیشتر موافقت فوری، توضیح طولانی، سکوت، عقب‌نشینی، خشم یا مذاکره رخ می‌دهد؛ یک نمونه واقعی انتخاب کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مرزبندی و نه گفتن-06",
+      "topic_id": "T12",
+      "topic_name": "مرزبندی و نه گفتن",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مرزبندی و نه گفتن».",
+      "source_exercise": "جمله را کامل کنید: «در آن موقعیت برای من مهم بود که…» گزینه‌هایی مانند استراحت، احترام، زمان، حریم خصوصی، انصاف یا امنیت را بررسی کنید؛ پاسخ را خودتان انتخاب کنید.",
+      "source_action": "نیاز را با جمله‌ای از زبان خودت بیان کن؛ آن را به الزام دیگری تبدیل نکن.",
+      "proposed_title": "نیاز پشت مرز شخصی",
+      "proposed_intro": "مشخص کن در آن موقعیت چه چیزی برایت مهم بوده است؛ مانند استراحت، احترام، زمان، حریم خصوصی، انصاف یا امنیت.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مرزبندی و نه گفتن-07",
+      "topic_id": "T12",
+      "topic_name": "مرزبندی و نه گفتن",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مرزبندی و نه گفتن».",
+      "source_exercise": "هدفی برای هفته آینده بنویسید که در کنترل خودتان باشد؛ مانند «پیش از پاسخ به درخواست غیراضطراری، زمان بررسی می‌خواهم». معیار را تعداد دفعات تلاش یا وضوح پاسخ قرار دهید، نه موافقت طرف مقابل.",
+      "source_action": "هدف را به تعداد تلاش یا وضوح پاسخ محدود کن، نه نتیجه واکنش دیگران.",
+      "proposed_title": "هدف مرزبندی در حوزهٔ اختیار خودت",
+      "proposed_intro": "هدفی بنویس که در کنترل خودت باشد، مانند درخواست زمان برای بررسی؛ معیار را وضوح پاسخ یا تلاش خودت قرار بده، نه واکنش طرف مقابل.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    }
+  ]
+}
