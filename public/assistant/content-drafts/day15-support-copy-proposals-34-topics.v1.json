@@ -21,13 +21,14 @@
       "topic_id": "T01",
       "topic_name": "خشم",
       "day_number": 15,
-      "lightExerciseText": "دو نمونه را فقط از نظر رفتار قابل مشاهده مقایسه کن: کجا پیش از پرخاش مکث کردی؟",
-      "lightActionText": "عامل کمک‌کننده را در برنامه روزانه بگذار و برای بازگشت امن پس از مکث زمان مشخص کن.",
-      "progressActionText": "در هفته آینده تعداد مکث‌های پیش از توهین یا تهدید را ثبت و عامل مؤثر را تقویت کن.",
-      "restExerciseText": "اگر خسته‌ای، فقط نشانه هشدار و مسیر فاصله‌گیری را مرور کن.",
-      "restActionText": "لغزش را توجیه نکن؛ اگر خطر آسیب هست فاصله و کمک فوری را مقدم بدان.",
+      "lightExerciseText": "فقط یک واقعیت را از یک برداشت جدا کن.",
+      "lightActionText": "یک واقعیت را از برداشت خود جدا کن؛ درباره نیت فرد دیگر حکم نده.",
+      "progressActionText": "دو تفسیر ممکن را با شواهد موجود مقایسه کن.",
+      "restExerciseText": "امروز درباره نیت دیگران نتیجه‌گیری نکن؛ ثبت را متوقف کن.",
+      "restActionText": "امروز درباره نیت دیگران نتیجه‌گیری نکن؛ اگر خسته‌ای ثبت را متوقف کن.",
       "review_status": "draft_pending_expert_review",
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1"
     },
     {
       "content_id": "DRAFT_T02_D15",
