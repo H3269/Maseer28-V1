@@ -158,6 +158,9 @@ jobs:
       - name: Audit daily content quality and topic specificity
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run audit:content-quality
+      - name: Export complete runtime content source for targeted redesign
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: node scripts/export-content-rewrite-source.mjs
       - name: Generate complete 952-day content mapping review queue
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run generate:content-mapping-queue
@@ -241,6 +244,13 @@ jobs:
         with:
           name: path28-content-quality-audit
           path: reports/generated/path28-content-quality-audit.json
+          if-no-files-found: error
+      - name: Upload complete 952-day runtime content source
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: content-rewrite-source-952
+          path: reports/generated/content-rewrite-source-952.json
           if-no-files-found: error
 
       - name: Upload npm audit report
