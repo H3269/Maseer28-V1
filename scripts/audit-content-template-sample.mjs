@@ -61,12 +61,12 @@ export function renderSampleTemplateReport(result){
   for(const group of item.groups) lines.push(`- ${group.topic_count>1?'قالب مشترک':'قالب منفرد'} (${group.topic_count} موضوع): ${group.topics.join('، ')} | ${group.template_preview}`);
  }
  lines.push('','## محدودیت‌ها',...result.limitations.map(x=>`- ${x}`),'');
- return lines.join('\\n');
+ return lines.join('\n');
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  const result=auditSampleDayTemplates({content:readJson('public/content/path-content.json'),topics:readJson('public/assistant/knowledge/topics.v1.json')});
  const output=path.join(root,'artifacts','content-template-sample-report.md');
  fs.mkdirSync(path.dirname(output),{recursive:true});
- fs.writeFileSync(output,renderSampleTemplateReport(result)+'\\n','utf8');
+ fs.writeFileSync(output,renderSampleTemplateReport(result)+'\n','utf8');
  process.stdout.write(`Audited ${result.scope.record_count} sampled records across ${result.scope.sample_days.length} days.\\n`);
 }
