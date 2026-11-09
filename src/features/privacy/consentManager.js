@@ -2,12 +2,7 @@ export const CONSENT_STORAGE_KEY = 'maseer28_consent_v1';
 export const CONSENT_POLICY_VERSION = '1.0.0';
 export const PERSONALIZATION_STORAGE_KEY = 'maseer28_personalization_v1';
 
-export const CONSENT_PURPOSES = Object.freeze([
-  'ai_cloud_processing',
-  'sensitive_health_data_processing',
-  'long_term_ai_memory',
-  'product_analytics',
-]);
+export const CONSENT_PURPOSES = Object.freeze(['long_term_ai_memory']);
 
 const DEFAULT_STATE = Object.freeze({
   schema_version: '1.0.0',
@@ -41,10 +36,7 @@ function readState(storage) {
 
 function requiredContext(purpose, context) {
   const required = {
-    ai_cloud_processing: ['processor_identity', 'processing_region', 'data_categories', 'retention_period', 'withdrawal_method'],
-    sensitive_health_data_processing: ['necessity_explanation', 'exact_data_categories'],
     long_term_ai_memory: ['retention_period', 'view_edit_delete_controls'],
-    product_analytics: ['purpose_limitation', 'avoid_sensitive_content'],
   }[purpose];
   return required.every((key) => {
     const value = context?.[key];
@@ -65,9 +57,6 @@ export function grantConsent(purpose, { explicitAction, context = {}, now = new 
   if (!CONSENT_PURPOSES.includes(purpose)) throw new Error('هدف رضایت شناخته‌شده نیست.');
   if (explicitAction !== true) throw new Error('رضایت فقط با اقدام صریح کاربر ثبت می‌شود.');
   if (!requiredContext(purpose, context)) throw new Error('اطلاعات لازم برای رضایت آگاهانه کامل نیست.');
-  if (purpose === 'sensitive_health_data_processing' && !hasConsent('ai_cloud_processing', storage)) {
-    throw new Error('پردازش داده حساس بدون رضایت جداگانه پردازش ابری مجاز نیست.');
-  }
   const state = readState(storage);
   state.purposes[purpose] = { granted: true, granted_at: now, withdrawn_at: null, context: structuredClone(context) };
   storageOf(storage).setItem(CONSENT_STORAGE_KEY, JSON.stringify(state));
@@ -78,9 +67,6 @@ export function withdrawConsent(purpose, { now = new Date().toISOString() } = {}
   if (!CONSENT_PURPOSES.includes(purpose)) throw new Error('هدف رضایت شناخته‌شده نیست.');
   const state = readState(storage);
   state.purposes[purpose] = { granted: false, granted_at: null, withdrawn_at: now, context: null };
-  if (purpose === 'ai_cloud_processing') {
-    state.purposes.sensitive_health_data_processing = { granted: false, granted_at: null, withdrawn_at: now, context: null };
-  }
   storageOf(storage).setItem(CONSENT_STORAGE_KEY, JSON.stringify(state));
   const erasure_errors = [];
   if (purpose === 'long_term_ai_memory') {
