@@ -15,7 +15,8 @@ const pilots = [
   { file: 'public/assistant/content-drafts/topic-specific-copy-pilot-t25-t30-days04-07.v1.json', expected: 24 },
   { file: 'public/assistant/content-drafts/topic-specific-copy-pilot-t31-t34-days04-07.v1.json', expected: 16 },
 ];
-let total = 0;
+const copyRecords = [];
+let pilotRecordCount = 0;
 for (const item of pilots) {
   const pilot = read(item.file);
   if (pilot.records.length !== item.expected) throw new Error(`Expected ${item.expected} records in ${item.file}`);
@@ -50,8 +51,35 @@ for (const item of pilots) {
     if (JSON.stringify(r.fields_changed) !== JSON.stringify(['title', 'intro'])) {
       throw new Error('Unexpected fields_changed: ' + key);
     }
+    copyRecords.push(r);
   }
   if (keys.size !== item.expected) throw new Error('Incomplete topic/day coverage: ' + item.file);
-  total += keys.size;
+  pilotRecordCount += keys.size;
 }
-process.stdout.write(`Validated ${total} source-traceable, unique, non-runtime pilot records across six batches.\\n`);
+const fullCoverageFiles = [
+  'public/assistant/content-drafts/day01-shared-copy-proposals-34-topics.v1.json',
+  'public/assistant/content-drafts/day02-shared-copy-proposals-34-topics.v1.json',
+  'public/assistant/content-drafts/day03-shared-copy-proposals-34-topics.v1.json',
+];
+for (const file of fullCoverageFiles) {
+  const batch = read(file);
+  if (batch.records.length !== 34) throw new Error('Expected 34 records in ' + file);
+  for (const r of batch.records) copyRecords.push(r);
+}
+const byTopicDay = new Map();
+for (const r of copyRecords) {
+  const key = r.topic_name + ':' + (r.day_number ?? r.day);
+  const existing = byTopicDay.get(key);
+  if (existing && (existing.proposed_title !== r.proposed_title || existing.proposed_intro !== r.proposed_intro)) {
+    throw new Error('Conflicting title/intro proposals for ' + key);
+  }
+  if (!existing) byTopicDay.set(key, { topic_name: r.topic_name, day: r.day_number ?? r.day, proposed_title: r.proposed_title, proposed_intro: r.proposed_intro });
+}
+if (byTopicDay.size !== 238) throw new Error('Expected 238 unique topic/day title-intro pairs, found ' + byTopicDay.size);
+for (let day = 1; day <= 7; day += 1) {
+  const records = [...byTopicDay.values()].filter((r) => r.day === day);
+  if (records.length !== 34) throw new Error(`Expected all 34 topics on day ${day}, found ${records.length}`);
+  if (new Set(records.map((r) => r.proposed_title)).size !== 34) throw new Error('Duplicate title across topics on day ' + day);
+  if (new Set(records.map((r) => r.proposed_intro)).size !== 34) throw new Error('Duplicate intro across topics on day ' + day);
+}
+process.stdout.write(`Validated ${pilotRecordCount} traceable, unique, non-runtime pilot records and 238 complete first-week topic/day title-intro pairs.\\n`);
