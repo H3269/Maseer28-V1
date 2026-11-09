@@ -19,6 +19,7 @@ on:
       - 'scripts/validate-independent-review-ledger.mjs'
       - 'public/assistant/quality/**'
       - 'scripts/audit-content-quality.mjs'
+      - 'scripts/audit-content-specificity.mjs'
       - 'scripts/audit-content-mappings.mjs'
       - 'scripts/generate-content-mapping-queue.mjs'
       - 'scripts/audit-course-content-quality.mjs'
@@ -151,6 +152,9 @@ jobs:
       - name: Validate owner-expert review ledger
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run validate:independent-review-ledger
+      - name: Audit all 28-day exercise and action text specificity across 34 topics
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: npm run audit:content-specificity
       - name: Audit daily content quality and topic specificity
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run audit:content-quality
