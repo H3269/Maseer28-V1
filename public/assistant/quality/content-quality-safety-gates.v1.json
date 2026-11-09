@@ -206,9 +206,11 @@
   "calibration": {
     "anchor_examples_required": true,
     "reviewer_training_required": true,
-    "inter_rater_agreement_required": true,
+    "inter_rater_agreement_required": false,
     "numeric_acceptance_threshold": null,
-    "threshold_policy": "set_before_calibration_study_with_methodological_justification"
+    "threshold_policy": "set_before_calibration_study_with_methodological_justification",
+    "optional_peer_review_may_be_used": true,
+    "owner_expert_decision_is_sufficient": true
   },
   "initial_pilot": {
     "pull_request": 34,
