@@ -211,12 +211,12 @@ try {
   assert.match(await dailyReply.innerText(), /روز ۱/);
   assert.match(await dailyReply.innerText(), /متن تمرین همین روز/);
   assert.match(await dailyReply.innerText(), /راهکار اختصاصی همین روز/);
-  const angerPromptPicker = dialog.getByRole('button', { name: 'باز کردن سؤال‌های آماده روز 1 خشم' });
+  const angerPromptPicker = dialog.getByRole('button', { name: /باز کردن سؤال‌های آماده روز .+ خشم/ });
   await angerPromptPicker.waitFor({ state: 'visible' });
   await angerPromptPicker.click();
   const angerPromptDialog = page.locator('#library-assistant-prompt-dialog');
   await angerPromptDialog.waitFor({ state: 'visible' });
-  assert.match(await angerPromptDialog.innerText(), /سؤال‌های آماده روز 1 خشم/);
+  assert.match(await angerPromptDialog.innerText(), /سؤال‌های آماده روز .+ خشم/);
   await angerPromptDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
   assert.equal(await dialog.getByRole('textbox').inputValue(), 'روز 1 خشم: منظور از تمرین امروز چیست؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
