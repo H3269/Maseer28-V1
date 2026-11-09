@@ -19,12 +19,12 @@ export function validateIndependentReviewLedger(ledger) {
   if (ledger?.schema_version !== '1.0.0') errors.push('ledger schema_version must be 1.0.0');
   if (ledger?.ledger_id !== 'maseer28-independent-content-review-ledger-v1') errors.push('ledger identity is invalid');
   const blind = ledger?.blind_review_policy;
-  if (blind?.required_reviewers !== 2 || blind?.independent !== true ||
-      blind?.reviewer_ids_must_differ !== true ||
-      blind?.submissions_hidden_from_other_reviewer_until_both_submitted !== true ||
-      blind?.no_prepopulated_scores_or_reviewer_identity !== true) errors.push('blind independent review policy is weakened');
+  if (blind?.review_model !== 'single_authorized_owner_expert_review' ||
+      blind?.required_reviewers !== 1 || blind?.independent !== false ||
+      blind?.no_prepopulated_scores_or_reviewer_identity !== true) errors.push('owner-expert review policy is weakened');
   if (ledger?.governance?.release_score_threshold !== null ||
-      ledger?.governance?.disagreement_resolution !== 'third_qualified_adjudicator_required_no_averaging' ||
+      ledger?.governance?.disagreement_resolution !== 'owner_expert_documents_final_decision; optional_peer_input_is_advisory' ||
+      ledger?.governance?.decision_authority !== 'authorized_product_owner_or_designated_expert' ||
       ledger?.governance?.runtime_requires !== 'approved_record_and_separate_versioned_runtime_grant') {
     errors.push('review governance or fail-closed runtime policy is weakened');
   }
@@ -38,10 +38,10 @@ export function validateIndependentReviewLedger(ledger) {
     if (!nonEmpty(record.content_version) || !nonEmpty(record.topic_id) ||
         !Number.isInteger(record.day_number) || record.day_number < 1) errors.push('record identity/version fields are incomplete: ' + record.content_id);
     const reviews = Array.isArray(record.reviews) ? record.reviews : [];
-    if (reviews.length > 2) errors.push('at most two first-line independent reviews are allowed: ' + record.content_id);
+    if (reviews.length > 1) errors.push('one authorized owner-expert review is required; optional peer input is advisory and not a second approval: ' + record.content_id);
     const reviewers = new Set();
     for (const review of reviews) {
-      if (!nonEmpty(review.reviewer_id) || reviewers.has(review.reviewer_id)) errors.push('reviewer IDs must be present and distinct: ' + record.content_id);
+      if (!nonEmpty(review.reviewer_id) || reviewers.has(review.reviewer_id)) errors.push('owner-expert reviewer ID must be present and unique: ' + record.content_id);
       reviewers.add(review.reviewer_id);
       if (review.status !== 'submitted') errors.push('only submitted immutable reviews belong in the ledger: ' + record.content_id);
       if (!hasAllScores(review.scores)) errors.push('submitted review must contain A-H scores from 0 to 4: ' + record.content_id);
@@ -63,13 +63,8 @@ export function validateIndependentReviewLedger(ledger) {
             typeof finding.resolved !== 'boolean') errors.push('finding schema invalid: ' + record.content_id);
       }
     }
-    const adjudication = record.adjudication;
-    const disagreement = reviews.length === 2 && DIMENSIONS.some((key) => reviews[0].scores?.[key] !== reviews[1].scores?.[key]);
-    if (record.decision === 'approved' || record.decision === 'expert_reviewed') {
-      if (reviews.length !== 2) errors.push('two submitted independent reviews are required before expert decision: ' + record.content_id);
-      if (disagreement && (!isObject(adjudication) || !nonEmpty(adjudication.adjudicator_id) ||
-          !nonEmpty(adjudication.qualification) || !nonEmpty(adjudication.rationale) ||
-          !nonEmpty(adjudication.decided_at))) errors.push('score disagreement requires qualified third-party adjudication: ' + record.content_id);
+        if (record.decision === 'approved' || record.decision === 'expert_reviewed') {
+      if (reviews.length !== 1) errors.push('one submitted authorized owner-expert review is required before expert decision: ' + record.content_id);
       if (reviews.some((r) => r.hard_stop_flags.length > 0 ||
           r.findings.some((f) => ['P0','P1'].includes(f.severity) && f.resolved !== true))) {
         errors.push('open hard-stop/P0/P1 finding blocks expert decision: ' + record.content_id);
@@ -102,7 +97,7 @@ export function validateIndependentReviewLedger(ledger) {
     previousHash = event_hash ?? null;
   });
   return { valid: errors.length === 0, errors, summary: {
-    records: records.length, records_with_two_reviews: records.filter((r) => r.reviews?.length === 2).length,
+    records: records.length, records_with_owner_expert_review: records.filter((r) => r.reviews?.length === 1).length,
     approved_records: records.filter((r) => r.decision === 'approved').length,
     runtime_eligible_records: records.filter((r) => r.runtime_eligible === true).length,
     audit_events: events.length
