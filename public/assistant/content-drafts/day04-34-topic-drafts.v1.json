@@ -335,18 +335,17 @@
       "action": "فقط خط پایه را ثبت کن: اکنون انجام کدام بخش برایت آسان، دشوار یا نامعلوم است؟",
       "progress_measure": "آیا تکلیف و شرایط آن به‌طور مشخص تعریف شدند؟",
       "safety_and_limits": "این تمرین آزمون توانایی یا تشخیص نیست؛ تکلیف پرخطر یا فراتر از مهارت فعلی انتخاب نکن.",
-      "evidence_ids": [
-        "EVID_BANDURA_1977",
-        "EVID_SELF_EFFICACY_IBI_2025"
-      ],
-      "source_reference_ids": [
-        "EVID_BANDURA_1977",
-        "EVID_SELF_EFFICACY_IBI_2025"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T16_D04",
@@ -429,20 +428,18 @@
       "action": "اگر رویداد آسیب‌زا یا ناامن است، جزئیات را ننویس و تمرین را رد کن.",
       "progress_measure": "آیا دست‌کم یک واقعیت از تفسیر جدا شد؟",
       "safety_and_limits": "در خشونت، اجبار، سوءاستفاده یا آسیب، این تمرین نباید مسئولیت رفتار عامل آسیب را به فرد آسیب‌دیده منتقل کند.",
-      "evidence_ids": [
-        "EVID_SELFBLAME_REVIEW_2020",
-        "EVID_GUILT_MEASUREMENT_2010",
-        "EVID_JANOFF_BULMAN_1979"
-      ],
-      "source_reference_ids": [
-        "EVID_SELFBLAME_REVIEW_2020",
-        "EVID_GUILT_MEASUREMENT_2010",
-        "EVID_JANOFF_BULMAN_1979"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T20_D04",
@@ -525,18 +522,17 @@
       "action": "اگر نوشتن جمله سنگین است، فقط دامنه را انتخاب کن یا تمرین را رد کن.",
       "progress_measure": "آیا دامنه باور بدون مجبورکردن خود به رد آن مشخص شد؟",
       "safety_and_limits": "ثبت عبارت دردناک اختیاری است؛ اگر حال بدتر شد متوقف شو. بی‌ارزشی به‌تنهایی تشخیص یا تعیین‌کننده خطر نیست.",
-      "evidence_ids": [
-        "EVID_SELFESTEEM_CFT_2021",
-        "EVID_SELFESTEEM_META_2021"
-      ],
-      "source_reference_ids": [
-        "EVID_SELFESTEEM_CFT_2021",
-        "EVID_SELFESTEEM_META_2021"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T24_D04",
@@ -597,18 +593,17 @@
       "action": "محتوای خصوصی را ثبت نکن مگر اینکه خودت بخواهی و امن باشد.",
       "progress_measure": "آیا کانون تجربه بدون افشای جزئیات مشخص شد؟",
       "safety_and_limits": "هیچ افشا یا مواجهه‌ای اجباری نیست؛ امنیت و حریم خصوصی مقدم‌اند.",
-      "evidence_ids": [
-        "EVID_SHAME_GUILT_2018",
-        "EVID_CFT_SHAME_2025"
-      ],
-      "source_reference_ids": [
-        "EVID_SHAME_GUILT_2018",
-        "EVID_CFT_SHAME_2025"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T27_D04",
@@ -757,20 +752,18 @@
       "action": "فقط یک موقعیت محرک را نام ببر؛ نیازی به بازخوانی مکرر جمله نیست.",
       "progress_measure": "آیا نوع گفت‌وگو از محتوای آن تفکیک شد؟",
       "safety_and_limits": "ثبت دقیق توهین یا تکرار آن اجباری نیست؛ در صورت افزایش آشفتگی متوقف شو.",
-      "evidence_ids": [
-        "EVID_SELFCRITICISM_CBI_2021",
-        "EVID_CFT_SHAME_2025",
-        "EVID_SELFCRITICISM_EFT_2026"
-      ],
-      "source_reference_ids": [
-        "EVID_SELFCRITICISM_CBI_2021",
-        "EVID_CFT_SHAME_2025",
-        "EVID_SELFCRITICISM_EFT_2026"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T34_D04",
