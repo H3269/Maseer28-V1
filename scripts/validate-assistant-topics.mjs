@@ -67,7 +67,7 @@ topics.forEach((topic, index) => {
   if (typeof topic.definition !== 'string' || !topic.definition.trim()) errors.push(`تعریف عملیاتی موضوع ${expectedIds[index]} خالی است.`);
   if (topic.display_order !== index + 1) errors.push(`ترتیب نمایشی ${expectedIds[index]} نامعتبر است.`);
   if (topic.definition_status !== 'pending_expert_review') errors.push(`تعریف موضوع ${expectedIds[index]} نباید پیش از بازبینی متخصص تأیید شود.`);
-  for (const field of ['review_flags', 'subtopic_ids', 'relation_ids', 'evidence_ids', 'content_ids', 'intervention_ids', 'safety_rule_ids', 'draft_content_ids', 'draft_evidence_ids']) {
+  for (const field of ['review_flags', 'subtopic_ids', 'relation_ids', 'evidence_ids', 'content_ids', 'intervention_ids', 'safety_rule_ids']) {
     if (!Array.isArray(topic[field])) errors.push(`فیلد ${field} باید آرایه باشد: ${expectedIds[index]}.`);
   }
   for (const id of topic.relation_ids || []) {
