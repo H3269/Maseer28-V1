@@ -36,6 +36,8 @@ test('validator rejects a queue score entered before review', () => {
   assert.ok(result.errors.some((error) => error.includes('scores must all remain null')));
 });
 
+test('validator accepts owner-expert review without mandatory second reviewer',()=>{const policy=structuredClone(fixtures.policy);policy.scoring_policy.reviewers_required=2;const result=validateQualitySafetyGates({...fixtures,policy});assert.equal(result.valid,false);assert.ok(result.errors.some(x=>x.includes('one authorized owner-expert review')));});
+
 test('validator rejects a runtime policy that permits expert-reviewed without approval', () => {
   const policy = structuredClone(fixtures.policy);
   policy.runtime_policy.eligible_statuses = ['expert_reviewed', 'approved'];
