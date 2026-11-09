@@ -334,18 +334,17 @@
       "action": "اگر انجامش دادی، نتیجه را با پیش‌بینی مقایسه کن؛ اگر انجام ندادی، مانع را بدون سرزنش ثبت کن.",
       "progress_measure": "آیا پیش‌بینی و نتیجه واقعی از هم جدا شدند؟",
       "safety_and_limits": "مواجهه اجباری، ریسک مالی/جسمی/اجتماعی یا موقعیت همراه با تهدید انجام نده؛ انجام‌ندادن نیز پاسخ معتبر است.",
-      "evidence_ids": [
-        "EVID_BANDURA_1977",
-        "EVID_SELF_EFFICACY_IBI_2025"
-      ],
-      "source_reference_ids": [
-        "EVID_BANDURA_1977",
-        "EVID_SELF_EFFICACY_IBI_2025"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T16_D07",
@@ -428,20 +427,18 @@
       "action": "یک گام کوچک و محترمانه انتخاب کن؛ اگر تماس با دیگری ناامن یا ناخواسته است، اقدام نکن.",
       "progress_measure": "آیا یک گزینه جبران از خودتنبیهی تفکیک شد؟",
       "safety_and_limits": "جبران نباید نقض مرز، تماس ناخواسته، افشای اطلاعات یا آسیب به خود/دیگری ایجاد کند.",
-      "evidence_ids": [
-        "EVID_SELFBLAME_REVIEW_2020",
-        "EVID_GUILT_MEASUREMENT_2010",
-        "EVID_JANOFF_BULMAN_1979"
-      ],
-      "source_reference_ids": [
-        "EVID_SELFBLAME_REVIEW_2020",
-        "EVID_GUILT_MEASUREMENT_2010",
-        "EVID_JANOFF_BULMAN_1979"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T20_D07",
@@ -524,18 +521,17 @@
       "action": "جمله را فقط اگر باورپذیر و قابل تحمل است نگه دار؛ در غیر این صورت نسخه خنثی‌تر بنویس.",
       "progress_measure": "آیا جمله از برچسب هویتی به توصیف دقیق‌تر حرکت کرد؟",
       "safety_and_limits": "قرار نیست با یک جمله احساس بی‌ارزشی از بین برود؛ این تمرین درمان یا جایگزین حمایت انسانی نیست.",
-      "evidence_ids": [
-        "EVID_SELFESTEEM_CFT_2021",
-        "EVID_SELFESTEEM_META_2021"
-      ],
-      "source_reference_ids": [
-        "EVID_SELFESTEEM_CFT_2021",
-        "EVID_SELFESTEEM_META_2021"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T24_D07",
@@ -596,18 +592,17 @@
       "action": "می‌توانی فقط بگویی «موضوعی هست که برایم سنگین است؛ فعلاً نمی‌خواهم جزئیات بدهم».",
       "progress_measure": "آیا یک مسیر حمایت با حد اطلاعات دلخواه مشخص شد؟",
       "safety_and_limits": "با فرد ناامن یا کنترل‌گر تماس نگیر؛ افشای جزئیات شرط دریافت حمایت نیست.",
-      "evidence_ids": [
-        "EVID_SHAME_GUILT_2018",
-        "EVID_CFT_SHAME_2025"
-      ],
-      "source_reference_ids": [
-        "EVID_SHAME_GUILT_2018",
-        "EVID_CFT_SHAME_2025"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T27_D07",
@@ -756,20 +751,18 @@
       "action": "اگر گام بعدی فعلاً ممکن نیست، فقط نیاز به زمان، آموزش یا کمک را مشخص کن.",
       "progress_measure": "آیا بازخورد شامل رفتار، زمینه و گام مشخص است؟",
       "safety_and_limits": "اگر بازنویسی به خودحمله‌گری شدید منجر شد، تمرین را متوقف کن و از حمایت انسانی استفاده کن.",
-      "evidence_ids": [
-        "EVID_SELFCRITICISM_CBI_2021",
-        "EVID_CFT_SHAME_2025",
-        "EVID_SELFCRITICISM_EFT_2026"
-      ],
-      "source_reference_ids": [
-        "EVID_SELFCRITICISM_CBI_2021",
-        "EVID_CFT_SHAME_2025",
-        "EVID_SELFCRITICISM_EFT_2026"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T34_D07",
