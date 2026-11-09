@@ -6,6 +6,8 @@ on:
       - 'public/content/**'
       - 'public/assistant/**'
       - 'docs/review-data/**'
+      - 'docs/CONTENT_REWRITE_EVENT_LOG_FA.md'
+      - 'docs/CONTENT_REWRITE_PROGRESS_FA.md'
       - 'src/**'
       - 'tests/**'
       - 'scripts/validate-content.mjs'
