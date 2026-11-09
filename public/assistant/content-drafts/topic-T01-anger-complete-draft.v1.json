@@ -31,15 +31,13 @@
       "day_number": 1,
       "title": "تفکیک رویداد، احساس و رفتار",
       "subtopic_ids": [
-        "T01-S01",
-        "T01-S03"
+        "T01-S01"
       ],
       "subtopic_names": [
-        "محرک‌ها و ارزیابی موقعیت",
-        "بیان خشم، تکانه و رفتار پرخاشگرانه"
+        "محرک‌ها و ارزیابی موقعیت"
       ],
       "subtopic_id": "T01-S01",
-      "subtopic_name": "محرک‌ها و ارزیابی موقعیت، بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "subtopic_name": "محرک‌ها و ارزیابی موقعیت",
       "phase": "orientation_and_safe_observation",
       "learning_objective": "تشخیص تفاوت میان رویداد قابل مشاهده، احساس خشم، میل به واکنش و رفتار واقعی.",
       "target_skill": "خودمشاهده‌گری بدون قضاوت و فاصله‌گذاری میان هیجان و عمل.",
@@ -91,7 +89,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "افزایش آگاهی از هیجان و ایجاد فاصله میان احساس و واکنش"
+      "source_runtime_mechanism": "افزایش آگاهی از هیجان و ایجاد فاصله میان احساس و واکنش",
+      "design_subtopic_ids": [
+        "T01-S01",
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D02",
@@ -101,14 +103,14 @@
       "day_number": 2,
       "title": "خشم در برابر پرخاشگری",
       "subtopic_ids": [
-        "T01-S03"
+        "T01-S02"
       ],
       "subtopic_names": [
-        "بیان خشم، تکانه و رفتار پرخاشگرانه"
+        "نشانه‌های بدنی و برانگیختگی"
       ],
-      "subtopic_id": "T01-S03",
-      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "subtopic_id": "T01-S02",
+      "subtopic_name": "نشانه‌های بدنی و برانگیختگی",
+      "phase": "pattern_discrimination_and_context",
       "learning_objective": "تشخیص اینکه احساس خشم می‌تواند وجود داشته باشد بدون آنکه توهین، تهدید یا آسیب رخ دهد.",
       "target_skill": "تفکیک هیجان از رفتار و مسئولیت‌پذیری رفتاری.",
       "mechanism_focus": "تفکیک هیجان از رفتار و مسئولیت‌پذیری رفتاری.",
@@ -159,7 +161,10 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "تفکیک هیجان از رفتار برای تقویت مسئولیت‌پذیری"
+      "source_runtime_mechanism": "تفکیک هیجان از رفتار برای تقویت مسئولیت‌پذیری",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D03",
@@ -169,14 +174,14 @@
       "day_number": 3,
       "title": "نقشه محرک‌ها و زمینه‌ها",
       "subtopic_ids": [
-        "T01-S01"
+        "T01-S03"
       ],
       "subtopic_names": [
-        "محرک‌ها و ارزیابی موقعیت"
+        "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
-      "subtopic_id": "T01-S01",
-      "subtopic_name": "محرک‌ها و ارزیابی موقعیت",
-      "phase": "topic_specific_daily_skill",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "phase": "functional_context_and_impact",
       "learning_objective": "شناسایی محرک‌های احتمالی و عوامل زمینه‌ای بدون فرض علت قطعی.",
       "target_skill": "نقشه‌برداری محرک و تفکیک رویداد از زمینه.",
       "mechanism_focus": "نقشه‌برداری محرک و تفکیک رویداد از زمینه.",
@@ -227,7 +232,10 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "شناسایی محرک‌ها و عوامل زمینه‌ای قابل مشاهده"
+      "source_runtime_mechanism": "شناسایی محرک‌ها و عوامل زمینه‌ای قابل مشاهده",
+      "design_subtopic_ids": [
+        "T01-S01"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D04",
@@ -237,14 +245,14 @@
       "day_number": 4,
       "title": "نشانه‌های بدنی زودهنگام",
       "subtopic_ids": [
-        "T01-S02"
+        "T01-S03"
       ],
       "subtopic_names": [
-        "نشانه‌های بدنی و برانگیختگی"
+        "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
-      "subtopic_id": "T01-S02",
-      "subtopic_name": "نشانه‌های بدنی و برانگیختگی",
-      "phase": "topic_specific_daily_skill",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "phase": "guided_skill_building",
       "learning_objective": "شناخت یک نشانه جسمانی شخصی که ممکن است پیش از تشدید خشم ظاهر شود.",
       "target_skill": "آگاهی بدنی محدود و تشخیص نشانه اولیه.",
       "mechanism_focus": "آگاهی بدنی محدود و تشخیص نشانه اولیه.",
@@ -295,7 +303,10 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "تشخیص نشانه‌های بدنی زودهنگام پیش از تشدید واکنش"
+      "source_runtime_mechanism": "تشخیص نشانه‌های بدنی زودهنگام پیش از تشدید واکنش",
+      "design_subtopic_ids": [
+        "T01-S02"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D05",
@@ -305,18 +316,14 @@
       "day_number": 5,
       "title": "زنجیره موقعیت تا پیامد",
       "subtopic_ids": [
-        "T01-S01",
-        "T01-S02",
         "T01-S03"
       ],
       "subtopic_names": [
-        "محرک‌ها و ارزیابی موقعیت",
-        "نشانه‌های بدنی و برانگیختگی",
         "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
-      "subtopic_id": "T01-S01",
-      "subtopic_name": "محرک‌ها و ارزیابی موقعیت، نشانه‌های بدنی و برانگیختگی، بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "phase": "guided_skill_building",
       "learning_objective": "توصیف ترتیب موقعیت، برداشت، احساس، نشانه بدن، میل، رفتار و پیامد.",
       "target_skill": "تحلیل زنجیره بدون نتیجه‌گیری علّی شتاب‌زده.",
       "mechanism_focus": "تحلیل زنجیره بدون نتیجه‌گیری علّی شتاب‌زده.",
@@ -367,7 +374,12 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "شناخت زنجیره موقعیت، فکر، هیجان، تکانه، رفتار و پیامد"
+      "source_runtime_mechanism": "شناخت زنجیره موقعیت، فکر، هیجان، تکانه، رفتار و پیامد",
+      "design_subtopic_ids": [
+        "T01-S01",
+        "T01-S02",
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D06",
@@ -377,16 +389,14 @@
       "day_number": 6,
       "title": "مقیاس شدت و آستانه مکث",
       "subtopic_ids": [
-        "T01-S02",
         "T01-S03"
       ],
       "subtopic_names": [
-        "نشانه‌های بدنی و برانگیختگی",
         "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
-      "subtopic_id": "T01-S02",
-      "subtopic_name": "نشانه‌های بدنی و برانگیختگی، بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "phase": "guided_skill_building",
       "learning_objective": "تعریف سه سطح شخصی شدت با نشانه‌های قابل مشاهده و تعیین زمان مناسب مکث.",
       "target_skill": "پایش شدت برای پیشگیری از پاسخ تکانشی.",
       "mechanism_focus": "پایش شدت برای پیشگیری از پاسخ تکانشی.",
@@ -437,7 +447,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "پایش شدت شخصی برای انتخاب زمان مکث ایمن"
+      "source_runtime_mechanism": "پایش شدت شخصی برای انتخاب زمان مکث ایمن",
+      "design_subtopic_ids": [
+        "T01-S02",
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D07",
@@ -447,18 +461,14 @@
       "day_number": 7,
       "title": "مرور هفته اول",
       "subtopic_ids": [
-        "T01-S01",
-        "T01-S02",
         "T01-S03"
       ],
       "subtopic_names": [
-        "محرک‌ها و ارزیابی موقعیت",
-        "نشانه‌های بدنی و برانگیختگی",
         "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
-      "subtopic_id": "T01-S01",
-      "subtopic_name": "محرک‌ها و ارزیابی موقعیت، نشانه‌های بدنی و برانگیختگی، بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "phase": "guided_skill_building",
       "learning_objective": "خلاصه‌کردن محرک‌ها، نشانه‌ها و تفاوت احساس با رفتار.",
       "target_skill": "جمع‌بندی شواهد و شناسایی پرسش‌های باز.",
       "mechanism_focus": "جمع‌بندی شواهد و شناسایی پرسش‌های باز.",
@@ -509,7 +519,12 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "مرور الگوها بدون تعمیم یا برچسب‌زنی"
+      "source_runtime_mechanism": "مرور الگوها بدون تعمیم یا برچسب‌زنی",
+      "design_subtopic_ids": [
+        "T01-S01",
+        "T01-S02",
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D08",
@@ -519,14 +534,14 @@
       "day_number": 8,
       "title": "انتخاب روش آرام‌سازی اختیاری",
       "subtopic_ids": [
-        "T01-S02"
+        "T01-S03"
       ],
       "subtopic_names": [
-        "نشانه‌های بدنی و برانگیختگی"
+        "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
-      "subtopic_id": "T01-S02",
-      "subtopic_name": "نشانه‌های بدنی و برانگیختگی",
-      "phase": "topic_specific_daily_skill",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "phase": "guided_skill_building",
       "learning_objective": "بررسی اینکه آیا تنفس آرام و طبیعی برای فرد راحت است یا خیر.",
       "target_skill": "تنظیم اختیاری برانگیختگی بدون کنترل اجباری.",
       "mechanism_focus": "تنظیم اختیاری برانگیختگی بدون کنترل اجباری.",
@@ -578,7 +593,10 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "کاهش ملایم برانگیختگی بدنی با تنفس اختیاری"
+      "source_runtime_mechanism": "کاهش ملایم برانگیختگی بدنی با تنفس اختیاری",
+      "design_subtopic_ids": [
+        "T01-S02"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D09",
@@ -588,14 +606,14 @@
       "day_number": 9,
       "title": "جهت‌دهی توجه به محیط",
       "subtopic_ids": [
-        "T01-S02"
+        "T01-S03"
       ],
       "subtopic_names": [
-        "نشانه‌های بدنی و برانگیختگی"
+        "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
-      "subtopic_id": "T01-S02",
-      "subtopic_name": "نشانه‌های بدنی و برانگیختگی",
-      "phase": "topic_specific_daily_skill",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "phase": "pattern_review_and_personalization",
       "learning_objective": "انتقال توجه از تکانه به نشانه‌های خنثی محیط حاضر.",
       "target_skill": "جهت‌دهی توجه پیش از انتخاب پاسخ.",
       "mechanism_focus": "جهت‌دهی توجه پیش از انتخاب پاسخ.",
@@ -647,7 +665,10 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "انتقال توجه از تکانه به محیط حاضر"
+      "source_runtime_mechanism": "انتقال توجه از تکانه به محیط حاضر",
+      "design_subtopic_ids": [
+        "T01-S02"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D10",
@@ -657,16 +678,14 @@
       "day_number": 10,
       "title": "برنامه مکث و فاصله‌گیری",
       "subtopic_ids": [
-        "T01-S02",
         "T01-S03"
       ],
       "subtopic_names": [
-        "نشانه‌های بدنی و برانگیختگی",
         "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
-      "subtopic_id": "T01-S02",
-      "subtopic_name": "نشانه‌های بدنی و برانگیختگی، بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "phase": "values_and_needs_alignment",
       "learning_objective": "طراحی راهی امن برای توقف تعامل پیش از واکنش آسیب‌زا.",
       "target_skill": "وقفه رفتاری و کاهش احتمال آسیب.",
       "mechanism_focus": "وقفه رفتاری و کاهش احتمال آسیب.",
@@ -719,7 +738,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "ایجاد وقفه و فاصله برای کاهش احتمال واکنش تکانه‌ای؛ تناسب آن به ایمنی و رضایت آزادانه وابسته است."
+      "source_runtime_mechanism": "ایجاد وقفه و فاصله برای کاهش احتمال واکنش تکانه‌ای؛ تناسب آن به ایمنی و رضایت آزادانه وابسته است.",
+      "design_subtopic_ids": [
+        "T01-S02",
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D11",
@@ -736,7 +759,7 @@
       ],
       "subtopic_id": "T01-S03",
       "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "phase": "environmental_adjustment",
       "learning_objective": "روشن‌کردن حق هر فرد برای شروع‌نکردن، متوقف‌کردن یا ترک گفت‌وگو، بدون الزام به توضیح یا آشتی.",
       "target_skill": "حفظ اختیار و مرز توقف؛ این روز درباره مذاکره یا رسیدن به توافق نیست.",
       "mechanism_focus": "حفظ اختیار و مرز توقف؛ این روز درباره مذاکره یا رسیدن به توافق نیست.",
@@ -789,7 +812,10 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "تسهیل ادامه گفت‌وگو فقط در صورت رضایت آزادانه و ایمنی؛ نه تحمیل بازگشت."
+      "source_runtime_mechanism": "تسهیل ادامه گفت‌وگو فقط در صورت رضایت آزادانه و ایمنی؛ نه تحمیل بازگشت.",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D12",
@@ -799,14 +825,14 @@
       "day_number": 12,
       "title": "رهاسازی ملایم تنش عضلانی",
       "subtopic_ids": [
-        "T01-S02"
+        "T01-S03"
       ],
       "subtopic_names": [
-        "نشانه‌های بدنی و برانگیختگی"
+        "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
-      "subtopic_id": "T01-S02",
-      "subtopic_name": "نشانه‌های بدنی و برانگیختگی",
-      "phase": "topic_specific_daily_skill",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "phase": "consolidation_and_transfer",
       "learning_objective": "شناسایی یک ناحیه تنش و کاهش فشار عضلانی بدون درد.",
       "target_skill": "آگاهی و رهاسازی اختیاری عضله.",
       "mechanism_focus": "آگاهی و رهاسازی اختیاری عضله.",
@@ -858,7 +884,10 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "کاهش تنش عضلانی بدون درد یا فشار"
+      "source_runtime_mechanism": "کاهش تنش عضلانی بدون درد یا فشار",
+      "design_subtopic_ids": [
+        "T01-S02"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D13",
@@ -868,16 +897,14 @@
       "day_number": 13,
       "title": "انتخاب پاسخ کاهنده برانگیختگی",
       "subtopic_ids": [
-        "T01-S02",
         "T01-S03"
       ],
       "subtopic_names": [
-        "نشانه‌های بدنی و برانگیختگی",
         "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
-      "subtopic_id": "T01-S02",
-      "subtopic_name": "نشانه‌های بدنی و برانگیختگی، بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "phase": "progress_indicators_and_feedback",
       "learning_objective": "انتخاب یک پاسخ غیرآسیب‌زا برای زمانی که برانگیختگی بالا می‌رود.",
       "target_skill": "جایگزینی تخلیه آسیب‌زا با راهبرد کم‌خطر.",
       "mechanism_focus": "جایگزینی تخلیه آسیب‌زا با راهبرد کم‌خطر.",
@@ -929,7 +956,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "جایگزینی تخلیه برانگیزاننده با راهبردهای آرام‌ساز"
+      "source_runtime_mechanism": "جایگزینی تخلیه برانگیزاننده با راهبردهای آرام‌ساز",
+      "design_subtopic_ids": [
+        "T01-S02",
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D14",
@@ -939,16 +970,14 @@
       "day_number": 14,
       "title": "مرور ابزارهای تنظیم",
       "subtopic_ids": [
-        "T01-S02",
         "T01-S03"
       ],
       "subtopic_names": [
-        "نشانه‌های بدنی و برانگیختگی",
         "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
-      "subtopic_id": "T01-S02",
-      "subtopic_name": "نشانه‌های بدنی و برانگیختگی، بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "phase": "anticipatory_coping_plan",
       "learning_objective": "تشخیص اینکه کدام مهارت‌ها برای فرد مناسب، بی‌اثر یا نامناسب بوده‌اند.",
       "target_skill": "انتخاب ابزار بر اساس تجربه و تناسب.",
       "mechanism_focus": "انتخاب ابزار بر اساس تجربه و تناسب.",
@@ -1000,7 +1029,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "تثبیت مهارت‌های تنظیم هیجان و انتخاب ابزار مناسب"
+      "source_runtime_mechanism": "تثبیت مهارت‌های تنظیم هیجان و انتخاب ابزار مناسب",
+      "design_subtopic_ids": [
+        "T01-S02",
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D15",
@@ -1010,14 +1043,14 @@
       "day_number": 15,
       "title": "واقعیت، برداشت و شواهد",
       "subtopic_ids": [
-        "T01-S01"
+        "T01-S03"
       ],
       "subtopic_names": [
-        "محرک‌ها و ارزیابی موقعیت"
+        "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
-      "subtopic_id": "T01-S01",
-      "subtopic_name": "محرک‌ها و ارزیابی موقعیت",
-      "phase": "topic_specific_daily_skill",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "phase": "maintenance_and_adaptation",
       "learning_objective": "تفکیک اتفاق قابل مشاهده از تفسیر شخصی در یک موقعیت کم‌خطر.",
       "target_skill": "ارزیابی شواهد و کاهش قطعیت شتاب‌زده.",
       "mechanism_focus": "ارزیابی شواهد و کاهش قطعیت شتاب‌زده.",
@@ -1069,7 +1102,10 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "بازبینی برداشت‌ها با تفکیک شواهد و تفسیر"
+      "source_runtime_mechanism": "بازبینی برداشت‌ها با تفکیک شواهد و تفسیر",
+      "design_subtopic_ids": [
+        "T01-S01"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D16",
@@ -1079,14 +1115,14 @@
       "day_number": 16,
       "title": "دقیق‌کردن فکر قطعی",
       "subtopic_ids": [
-        "T01-S01"
+        "T01-S03"
       ],
       "subtopic_names": [
-        "محرک‌ها و ارزیابی موقعیت"
+        "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
-      "subtopic_id": "T01-S01",
-      "subtopic_name": "محرک‌ها و ارزیابی موقعیت",
-      "phase": "topic_specific_daily_skill",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "phase": "functional_analysis_and_learning",
       "learning_objective": "تبدیل یک برداشت مطلق به فرضیه‌ای دقیق‌تر، بدون انکار بی‌عدالتی.",
       "target_skill": "انعطاف شناختی و تشخیص بخش نامعلوم.",
       "mechanism_focus": "انعطاف شناختی و تشخیص بخش نامعلوم.",
@@ -1138,7 +1174,10 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "کاهش قطعیت‌های شناختی و افزایش دقت در ارزیابی موقعیت"
+      "source_runtime_mechanism": "کاهش قطعیت‌های شناختی و افزایش دقت در ارزیابی موقعیت",
+      "design_subtopic_ids": [
+        "T01-S01"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D17",
@@ -1155,7 +1194,7 @@
       ],
       "subtopic_id": "T01-S03",
       "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "phase": "effective_strategy_selection",
       "learning_objective": "تبدیل انتظار مبهم به یک نیاز و درخواست مشخص، بدون تمرین قالب جمله قاطعانه.",
       "target_skill": "روشن‌سازی نیاز و تشخیص تفاوت درخواست با مطالبه یا اجبار.",
       "mechanism_focus": "روشن‌سازی نیاز و تشخیص تفاوت درخواست با مطالبه یا اجبار.",
@@ -1208,7 +1247,10 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "تبدیل انتظار مبهم به درخواست روشن و قابل مذاکره"
+      "source_runtime_mechanism": "تبدیل انتظار مبهم به درخواست روشن و قابل مذاکره",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D18",
@@ -1218,16 +1260,14 @@
       "day_number": 18,
       "title": "تعریف مسئله بدون حمله به شخصیت",
       "subtopic_ids": [
-        "T01-S01",
         "T01-S03"
       ],
       "subtopic_names": [
-        "محرک‌ها و ارزیابی موقعیت",
         "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
-      "subtopic_id": "T01-S01",
-      "subtopic_name": "محرک‌ها و ارزیابی موقعیت، بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "phase": "unresolved_barriers_and_escalation",
       "learning_objective": "توصیف یک مسئله رفتاری یا موقعیتی بدون برچسب‌زدن کلی به خود یا دیگری.",
       "target_skill": "تعریف مسئله و محدودکردن قضاوت.",
       "mechanism_focus": "تعریف مسئله و محدودکردن قضاوت.",
@@ -1279,7 +1319,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "تعریف مسئله به جای سرزنش کلی افراد"
+      "source_runtime_mechanism": "تعریف مسئله به جای سرزنش کلی افراد",
+      "design_subtopic_ids": [
+        "T01-S01",
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D19",
@@ -1296,7 +1340,7 @@
       ],
       "subtopic_id": "T01-S03",
       "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "phase": "personal_maintenance_commitment",
       "learning_objective": "مقایسه پاسخ‌های رفتاری ممکن به یک اختلاف کم‌خطر، از جمله عدم تعامل، فاصله‌گیری، مخالفت محترمانه در صورت ایمنی یا کمک مستقل.",
       "target_skill": "ارزیابی پیامد، امکان اجرا و ایمنی گزینه‌های رفتاری؛ نه انتخاب روش آرام‌سازی بدن.",
       "mechanism_focus": "ارزیابی پیامد، امکان اجرا و ایمنی گزینه‌های رفتاری؛ نه انتخاب روش آرام‌سازی بدن.",
@@ -1348,7 +1392,10 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "تولید گزینه‌های کم‌خطر و انتخاب راه‌حل واقع‌بینانه"
+      "source_runtime_mechanism": "تولید گزینه‌های کم‌خطر و انتخاب راه‌حل واقع‌بینانه",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D20",
@@ -1365,7 +1412,7 @@
       ],
       "subtopic_id": "T01-S03",
       "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "phase": "barrier_anticipation_and_safe_continuity",
       "learning_objective": "بازبینی یک جمله ارتباطی از پیش آماده‌شده برای حذف توهین، تهدید، تعمیم و ابهام؛ این روز نیاز تازه‌ای تولید نمی‌کند.",
       "target_skill": "ویرایش پیام و کنترل لحن، نه شناسایی نیاز یا تولید درخواست جدید.",
       "mechanism_focus": "ویرایش پیام و کنترل لحن، نه شناسایی نیاز یا تولید درخواست جدید.",
@@ -1418,7 +1465,10 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "بیان نیاز و مرز بدون حمله یا تهدید"
+      "source_runtime_mechanism": "بیان نیاز و مرز بدون حمله یا تهدید",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D21",
@@ -1435,7 +1485,7 @@
       ],
       "subtopic_id": "T01-S03",
       "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "phase": "support_network_and_effective_help_seeking",
       "learning_objective": "تمرین بازگویی پیام طرف مقابل یا بازبینی پاسخ خود پیش از ارسال، در تعامل امن.",
       "target_skill": "گوش‌دادن فعال و مهار پاسخ تکانشی.",
       "mechanism_focus": "گوش‌دادن فعال و مهار پاسخ تکانشی.",
@@ -1488,7 +1538,10 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "کاهش پاسخ‌دهی تکانشی از طریق گوش‌دادن و مکث"
+      "source_runtime_mechanism": "کاهش پاسخ‌دهی تکانشی از طریق گوش‌دادن و مکث",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D22",
@@ -1505,7 +1558,7 @@
       ],
       "subtopic_id": "T01-S03",
       "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "phase": "skill_transfer_and_low_risk_real_world_practice",
       "learning_objective": "ارزیابی اینکه آیا توافق یا مذاکره، با توجه به نابرابری قدرت و پیامد رد پیشنهاد، واقعاً داوطلبانه و بدون تلافی است.",
       "target_skill": "تحلیل پیامدهای قدرت، وابستگی و تلافی؛ فراتر از حق عمومی توقف که در روز ۱۱ بررسی شد.",
       "mechanism_focus": "تحلیل پیامدهای قدرت، وابستگی و تلافی؛ فراتر از حق عمومی توقف که در روز ۱۱ بررسی شد.",
@@ -1558,7 +1611,10 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "ارزیابی امکان مذاکره در روابط امن و حفظ مرزها"
+      "source_runtime_mechanism": "ارزیابی امکان مذاکره در روابط امن و حفظ مرزها",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D23",
@@ -1575,7 +1631,7 @@
       ],
       "subtopic_id": "T01-S03",
       "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "phase": "behavioral_choice_and_feedback_review",
       "learning_objective": "جداکردن توضیح زمینه از توجیه رفتار آسیب‌زا و تعیین مسئولیت متناسب.",
       "target_skill": "پاسخ‌گویی رفتاری و پیشگیری از تکرار.",
       "mechanism_focus": "پاسخ‌گویی رفتاری و پیشگیری از تکرار.",
@@ -1627,7 +1683,10 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "تقویت مسئولیت‌پذیری و پیشگیری از تکرار آسیب"
+      "source_runtime_mechanism": "تقویت مسئولیت‌پذیری و پیشگیری از تکرار آسیب",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D24",
@@ -1637,16 +1696,14 @@
       "day_number": 24,
       "title": "تصمیم درباره عامل زمینه‌ای قابل‌تغییر",
       "subtopic_ids": [
-        "T01-S01",
-        "T01-S02"
+        "T01-S03"
       ],
       "subtopic_names": [
-        "محرک‌ها و ارزیابی موقعیت",
-        "نشانه‌های بدنی و برانگیختگی"
+        "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
-      "subtopic_id": "T01-S01",
-      "subtopic_name": "محرک‌ها و ارزیابی موقعیت، نشانه‌های بدنی و برانگیختگی",
-      "phase": "topic_specific_daily_skill",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "phase": "environment_design_and_pattern_maintenance",
       "learning_objective": "انتخاب یک عامل زمینه‌ای شناسایی‌شده و تصمیم درباره تغییر در اختیار، درخواست حمایت یا پذیرفتن محدودیت فعلی.",
       "target_skill": "ارزیابی کنترل‌پذیری و برنامه‌ریزی متناسب با منابع واقعی.",
       "mechanism_focus": "ارزیابی کنترل‌پذیری و برنامه‌ریزی متناسب با منابع واقعی.",
@@ -1697,7 +1754,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "شناسایی فشارهای زمینه‌ای برای پیشگیری زودهنگام"
+      "source_runtime_mechanism": "شناسایی فشارهای زمینه‌ای برای پیشگیری زودهنگام",
+      "design_subtopic_ids": [
+        "T01-S01",
+        "T01-S02"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D25",
@@ -1707,18 +1768,14 @@
       "day_number": 25,
       "title": "نقشه شخصی پاسخ ایمن",
       "subtopic_ids": [
-        "T01-S01",
-        "T01-S02",
         "T01-S03"
       ],
       "subtopic_names": [
-        "محرک‌ها و ارزیابی موقعیت",
-        "نشانه‌های بدنی و برانگیختگی",
         "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
-      "subtopic_id": "T01-S01",
-      "subtopic_name": "محرک‌ها و ارزیابی موقعیت، نشانه‌های بدنی و برانگیختگی، بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "phase": "progress_evaluation_and_adaptive_adjustment",
       "learning_objective": "اتصال محرک، نشانه آغاز، آستانه مکث، پاسخ امن و گزینه حمایت در یک نقشه قابل اصلاح.",
       "target_skill": "یکپارچه‌سازی مهارت‌ها.",
       "mechanism_focus": "یکپارچه‌سازی مهارت‌ها.",
@@ -1772,7 +1829,12 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "یکپارچه‌سازی مهارت‌ها در یک نقشه شخصی قابل اصلاح"
+      "source_runtime_mechanism": "یکپارچه‌سازی مهارت‌ها در یک نقشه شخصی قابل اصلاح",
+      "design_subtopic_ids": [
+        "T01-S01",
+        "T01-S02",
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D26",
@@ -1789,7 +1851,7 @@
       ],
       "subtopic_id": "T01-S03",
       "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "phase": "maintenance_plan_and_safe_recovery",
       "learning_objective": "تشخیص زمان‌هایی که تکرار رفتار آسیب‌زا، تهدید یا اختلال عملکرد نیازمند کمک انسانی/تخصصی است.",
       "target_skill": "تشخیص مرز خودیاری در برابر خطر تکرار رفتار آسیب‌زا و نیاز به مداخله/حمایت انسانی.",
       "mechanism_focus": "تشخیص مرز خودیاری در برابر خطر تکرار رفتار آسیب‌زا و نیاز به مداخله/حمایت انسانی.",
@@ -1840,7 +1902,10 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "شناسایی محدودیت خودیاری و تسهیل کمک‌خواهی"
+      "source_runtime_mechanism": "شناسایی محدودیت خودیاری و تسهیل کمک‌خواهی",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D27",
@@ -1857,7 +1922,7 @@
       ],
       "subtopic_id": "T01-S03",
       "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "phase": "personal_pattern_integration_and_skill_selection",
       "learning_objective": "شناسایی یک مسیر مقدماتی خروج/حمایت در صورت افزایش خطر؛ این تمرین برنامه ایمنی کامل یا مداخله بحران نیست.",
       "target_skill": "شناسایی منبع کمک و محدودیت خودیاری در موقعیت پرخطر.",
       "mechanism_focus": "شناسایی منبع کمک و محدودیت خودیاری در موقعیت پرخطر.",
@@ -1909,7 +1974,10 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "آمادگی مقدماتی برای فاصله‌گیری و اقدام ایمن در زمان خطر"
+      "source_runtime_mechanism": "آمادگی مقدماتی برای فاصله‌گیری و اقدام ایمن در زمان خطر",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T01_D28",
@@ -1919,18 +1987,14 @@
       "day_number": 28,
       "title": "مرور و تصمیم بعدی",
       "subtopic_ids": [
-        "T01-S01",
-        "T01-S02",
         "T01-S03"
       ],
       "subtopic_names": [
-        "محرک‌ها و ارزیابی موقعیت",
-        "نشانه‌های بدنی و برانگیختگی",
         "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
-      "subtopic_id": "T01-S01",
-      "subtopic_name": "محرک‌ها و ارزیابی موقعیت، نشانه‌های بدنی و برانگیختگی، بیان خشم، تکانه و رفتار پرخاشگرانه",
-      "phase": "topic_specific_daily_skill",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "phase": "personalized_continuation_and_next_step_plan",
       "learning_objective": "مرور آموخته‌ها، دشواری‌های حل‌نشده و انتخاب ادامه، مکث یا کمک تخصصی.",
       "target_skill": "خودارزیابی و برنامه‌ریزی تداوم.",
       "mechanism_focus": "خودارزیابی و برنامه‌ریزی تداوم.",
@@ -1984,7 +2048,12 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "source_runtime_mechanism": "تثبیت مهارت‌ها و برنامه‌ریزی ادامه مسیر بدون ادعای درمان"
+      "source_runtime_mechanism": "تثبیت مهارت‌ها و برنامه‌ریزی ادامه مسیر بدون ادعای درمان",
+      "design_subtopic_ids": [
+        "T01-S01",
+        "T01-S02",
+        "T01-S03"
+      ]
     }
   ],
   "audit_notes": [
