@@ -16,10 +16,10 @@
       "source_content_id": "خشم-12",
       "topic_id": "T01",
       "topic_name": "خشم",
-      "subtopic_id": "T01-S02",
-      "subtopic_name": "نشانه‌های بدنی و برانگیختگی",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 12,
-      "phase": "topic_specific_daily_skill",
+      "phase": "consolidation_and_transfer",
       "learning_objective": "شناسایی یک ناحیه تنش و کاهش فشار عضلانی بدون درد.",
       "mechanism_focus": "آگاهی و رهاسازی اختیاری عضله.",
       "exercise": "اگر راحتی، یک ناحیه مانند شانه یا فک را در حالت طبیعی مشاهده کن و اجازه بده بدون فشار به حالت راحت برگردد؛ انقباض شدید یا نگه‌داشتن نفس لازم نیست.",
@@ -34,10 +34,10 @@
       "runtime_eligible": false,
       "title": "رهاسازی ملایم تنش عضلانی",
       "subtopic_ids": [
-        "T01-S02"
+        "T01-S03"
       ],
       "subtopic_names": [
-        "نشانه‌های بدنی و برانگیختگی"
+        "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
       "target_skill": "آگاهی و رهاسازی اختیاری عضله.",
       "teaching_point": "آرام‌سازی جسمانی می‌تواند به کاهش برانگیختگی کمک کند؛ درد یا فشار جسمانی نباید بخشی از تمرین باشد.",
@@ -80,7 +80,10 @@
       },
       "source_runtime_mechanism": "کاهش تنش عضلانی بدون درد یا فشار",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D12"
+      "canonical_package_record_id": "DRAFT_T01_D12",
+      "design_subtopic_ids": [
+        "T01-S02"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D12",
