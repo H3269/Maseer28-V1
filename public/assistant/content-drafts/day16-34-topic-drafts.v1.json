@@ -16,10 +16,10 @@
       "source_content_id": "خشم-16",
       "topic_id": "T01",
       "topic_name": "خشم",
-      "subtopic_id": "T01-S01",
-      "subtopic_name": "محرک‌ها و ارزیابی موقعیت",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 16,
-      "phase": "topic_specific_daily_skill",
+      "phase": "functional_analysis_and_learning",
       "learning_objective": "تبدیل یک برداشت مطلق به فرضیه‌ای دقیق‌تر، بدون انکار بی‌عدالتی.",
       "mechanism_focus": "انعطاف شناختی و تشخیص بخش نامعلوم.",
       "exercise": "جمله‌ای مانند «همیشه عمداً این کار را می‌کند» را بنویس و آن را به توصیفی محدودتر تبدیل کن که فقط به داده موجود تکیه دارد. اگر شواهد کافی برای نگرانی وجود دارد، آن را حذف نکن.",
@@ -34,10 +34,10 @@
       "runtime_eligible": false,
       "title": "دقیق‌کردن فکر قطعی",
       "subtopic_ids": [
-        "T01-S01"
+        "T01-S03"
       ],
       "subtopic_names": [
-        "محرک‌ها و ارزیابی موقعیت"
+        "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
       "target_skill": "انعطاف شناختی و تشخیص بخش نامعلوم.",
       "teaching_point": "بازنگری شناختی به معنای توجیه رفتار آسیب‌زا نیست؛ هدف، دقیق‌تر دیدن شواهد و گزینه‌هاست.",
@@ -80,7 +80,10 @@
       },
       "source_runtime_mechanism": "کاهش قطعیت‌های شناختی و افزایش دقت در ارزیابی موقعیت",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D16"
+      "canonical_package_record_id": "DRAFT_T01_D16",
+      "design_subtopic_ids": [
+        "T01-S01"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D16",
