@@ -11,6 +11,7 @@ on:
       - 'scripts/validate-content.mjs'
       - 'scripts/validate-assistant-topics.mjs'
       - 'scripts/audit-content-quality.mjs'
+      - 'scripts/audit-content-specificity.mjs'
       - 'scripts/audit-content-mappings.mjs'
       - 'scripts/generate-content-mapping-queue.mjs'
       - 'scripts/audit-course-content-quality.mjs'
@@ -125,6 +126,11 @@ jobs:
       - name: Audit daily content quality and topic specificity
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run audit:content-quality
+      - name: Audit 34-topic exercise and action text specificity
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: |
+          mkdir -p reports/generated
+          npm run audit:content-specificity > reports/generated/content-specificity-audit.json
       - name: Generate complete 952-day content mapping review queue
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: npm run generate:content-mapping-queue
@@ -201,6 +207,13 @@ jobs:
         with:
           name: first-pass-review-34-days
           path: artifacts/first-pass-review-34-days.md
+          if-no-files-found: error
+      - name: Upload 34-topic content specificity audit
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: content-specificity-audit
+          path: reports/generated/content-specificity-audit.json
           if-no-files-found: error
       - name: Upload daily content quality audit
         if: ${{ always() && steps.install.outcome == 'success' }}
