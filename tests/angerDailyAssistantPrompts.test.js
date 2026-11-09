@@ -181,3 +181,13 @@ test('duration answer does not invent a number that is absent from reviewed sour
   assert.match(answer, /مدت زمان تأییدشده و مشخصی.*ثبت نشده/);
   assert.doesNotMatch(answer, /\d+ دقیقه/);
 });
+
+
+test('exercise explanation preserves the source-requested number of examples for days that need more than one', () => {
+  const guide = ANGER_DAILY_ASSISTANT_GUIDES[2];
+  const question = guide.questions.find((item) => item.kind === 'exercise_meaning');
+  const answer = answerAngerDailyPreparedQuestion({ day: 3, message: question.value });
+  assert.match(answer, /دو تجربه کم‌فشار/);
+  assert.match(answer, /تعداد نمونه‌ها.*خود متن تمرین خواسته/);
+  assert.doesNotMatch(answer, /فقط یک نمونه کم‌فشار و امن انتخاب کن/);
+});
