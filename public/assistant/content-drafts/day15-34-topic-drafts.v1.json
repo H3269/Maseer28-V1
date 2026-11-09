@@ -16,10 +16,10 @@
       "source_content_id": "خشم-15",
       "topic_id": "T01",
       "topic_name": "خشم",
-      "subtopic_id": "T01-S01",
-      "subtopic_name": "محرک‌ها و ارزیابی موقعیت",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 15,
-      "phase": "topic_specific_daily_skill",
+      "phase": "maintenance_and_adaptation",
       "learning_objective": "تفکیک اتفاق قابل مشاهده از تفسیر شخصی در یک موقعیت کم‌خطر.",
       "mechanism_focus": "ارزیابی شواهد و کاهش قطعیت شتاب‌زده.",
       "exercise": "یک موقعیت را در دو ستون بنویس: «چه چیزی را می‌توان ثبت کرد؟» و «چه معنایی به آن دادم؟» سپس مشخص کن کدام برداشت هنوز نیازمند اطلاعات است.",
@@ -34,10 +34,10 @@
       "runtime_eligible": false,
       "title": "واقعیت، برداشت و شواهد",
       "subtopic_ids": [
-        "T01-S01"
+        "T01-S03"
       ],
       "subtopic_names": [
-        "محرک‌ها و ارزیابی موقعیت"
+        "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
       "target_skill": "ارزیابی شواهد و کاهش قطعیت شتاب‌زده.",
       "teaching_point": "تفکیک واقعیت و برداشت، احتمال واکنش بر پایه فرض قطعی را کاهش می‌دهد؛ به معنای نادیده‌گرفتن بی‌عدالتی یا خطر واقعی نیست.",
@@ -80,7 +80,10 @@
       },
       "source_runtime_mechanism": "بازبینی برداشت‌ها با تفکیک شواهد و تفسیر",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D15"
+      "canonical_package_record_id": "DRAFT_T01_D15",
+      "design_subtopic_ids": [
+        "T01-S01"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D15",
