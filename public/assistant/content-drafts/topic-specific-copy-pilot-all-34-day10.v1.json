@@ -1,0 +1,1034 @@
+{
+  "schema_version": "1.0.0",
+  "batch_id": "topic-specific-copy-pilot-all-34-day10",
+  "status": "draft_pending_owner_and_expert_review",
+  "purpose": "پیشنهاد اختصاصی عنوان و مقدمه برای روز دهم تمام ۳۴ موضوع؛ تمرین و اقدام runtime همان روز منبع زمینه‌اند و تغییر نکرده‌اند.",
+  "source": "runtime content source and daily text overrides from current main snapshot",
+  "design_rules": [
+    "عنوان و مقدمه با تمرین و اقدام همان روز هماهنگ باشند.",
+    "از مواجهه ناامن، افشای اجباری، کنترل حریم و خوددرمانی تخصصی پرهیز شود.",
+    "تمام پیشنهادها پیش‌نویس‌اند و runtime_eligible=false."
+  ],
+  "records": [
+    {
+      "source_content_id": "خشم-10",
+      "topic_id": "T01",
+      "topic_name": "خشم",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خشم».",
+      "source_exercise": "برای یک اختلاف کم‌خطر بنویس چه نشانه‌ای می‌گوید باید مکث کنی، چگونه می‌توانی بدون تهدید فاصله بگیری و چه زمانی ادامه تعامل فقط با رضایت آزادانه و ایمنی هر دو طرف ممکن است.",
+      "source_action": "فقط اگر موقعیت واقعی امن است، جمله کوتاهی برای مکث آماده کن؛ مثلاً «الان ادامه نمی‌دهم». بازگشت به گفت‌وگو اجباری نیست.",
+      "proposed_title": "تعیین حد امن برای ادامه یا توقف گفت‌وگو",
+      "proposed_intro": "در یک اختلاف کم‌خطر مشخص کن چه نشانه‌ای می‌گوید باید مکث کنی، چگونه بدون تهدید فاصله می‌گیری و ادامهٔ تعامل چه زمانی فقط با رضایت و ایمنی هر دو طرف ممکن است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اضطراب-10",
+      "topic_id": "T02",
+      "topic_name": "اضطراب",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اضطراب».",
+      "source_exercise": "اگر مایل هستی، برای چند چرخه فقط اجازه بده تنفس طبیعی و راحت باشد؛ نفس عمیق، حبس نفس یا شمارش اجباری لازم نیست.",
+      "source_action": "پس از چند چرخه به تنفس عادی خود برگرد و فقط ثبت کن این روش راحت بود، خنثی بود یا نامناسب.",
+      "proposed_title": "مشاهدهٔ تنفس طبیعی بدون اجبار",
+      "proposed_intro": "اگر برایت راحت است، اجازه بده تنفس طبیعی و بی‌فشار ادامه یابد؛ نفس عمیق، حبس نفس یا شمارش اجباری لازم نیست و در صورت ناراحتی تمرین را قطع کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس-10",
+      "topic_id": "T03",
+      "topic_name": "ترس",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس».",
+      "source_exercise": "دو سناریوی فرضی بنویس: یکی اختلاف عادی بدون تهدید و دیگری نشانه خطر واقعی. برای هرکدام پاسخ متفاوتی مانند گفت‌وگوی اختیاری، فاصله‌گیری یا کمک‌خواهی را مشخص کن.",
+      "source_action": "یک قاعده شخصی بنویس که در خطر واقعی حفاظت را بر ادامه گفت‌وگو مقدم می‌داند.",
+      "proposed_title": "تمایز اختلاف عادی از نشانهٔ خطر",
+      "proposed_intro": "دو سناریوی فرضی را مقایسه کن: اختلاف بدون تهدید و موقعیتی با نشانهٔ خطر واقعی؛ برای هرکدام پاسخ متفاوتی مانند گفت‌وگوی اختیاری، فاصله یا کمک‌خواهی مشخص کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت-10",
+      "topic_id": "T04",
+      "topic_name": "نفرت",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «نفرت».",
+      "source_exercise": "اگر نفرت متوجه خود است، فقط جهت تجربه را ثبت کن و وارد تمرین‌های خودبیزاری نشو.",
+      "source_action": "در صورت خودبیزاری، تمرین را همین‌جا متوقف و از مسیر اختصاصی T18 استفاده کن.",
+      "proposed_title": "تشخیص جهت نفرت و مرز ارجاع",
+      "proposed_intro": "اگر تجربه متوجه خودت است، آن را به‌عنوان نشانهٔ نیاز به مسیر مناسب‌تر ثبت کن؛ خودتحقیرگری را در این تمرین بازسازی نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "حسادت-10",
+      "topic_id": "T05",
+      "topic_name": "حسادت",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «حسادت».",
+      "source_exercise": "اگر حسادت به نیاز به اطمینان مربوط است، یک درخواست محدود و قابل توافق درباره اطلاع‌رسانی هنگام تغییر برنامه بنویس؛ درخواست دسترسی به تلفن، رمز، موقعیت یا کنترل رفت‌وآمد را جایگزین توافق نکن.",
+      "source_action": "درخواست را با موضوع و زمان مشخص مطرح کن و امکان رد یا مذاکره را بپذیر؛ وارسی پنهانی و درخواست تضمین مکرر جایگزین گفت‌وگو نیست.",
+      "proposed_title": "درخواست توافق محدود به‌جای دسترسی به حریم",
+      "proposed_intro": "اگر نیاز به اطلاع‌رسانی وجود دارد، درخواست محدود و قابل مذاکره دربارهٔ تغییر برنامه بنویس؛ دسترسی به تلفن، رمز، موقعیت یا کنترل رفت‌وآمد جای توافق نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "غم و سوگ-10",
+      "topic_id": "T06",
+      "topic_name": "غم و سوگ",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «غم و سوگ».",
+      "source_exercise": "یک آیین شخصی کوچک و اختیاری برای یادبود یا خداحافظی طراحی کن.",
+      "source_action": "آیین را به اندازه توان و خواست خودت طراحی کن؛ انجام آن اجباری نیست.",
+      "proposed_title": "طراحی جبران متناسب با مسئولیت در سوگ",
+      "proposed_intro": "اگر در موقعیت مرتبط با فقدان سهم رفتاری روشنی داری، اقدام احتمالی را از نظر امنیت، تناسب و فشار احتمالی بر فرد آسیب‌دیده بسنج؛ اقدام مستقیم همیشه مناسب نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "احساس گناه-10",
+      "topic_id": "T07",
+      "topic_name": "احساس گناه",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «احساس گناه».",
+      "source_exercise": "یک اقدام احتمالی را مشخص کن: اصلاح یک خطا، تکمیل تعهد، تصحیح اطلاعات یا تغییر رفتار آینده. اگر اقدام مستقیم به آسیب‌دیده فشار می‌آورد یا خطرناک است، آن را انجام نده.",
+      "source_action": "اگر سهم رفتاری تو روشن است و اقدام مستقیم امن و بدون فشار است، یک جبران متناسب مانند اصلاح خطا یا تکمیل تعهد را طراحی کن؛ اگر سهم یا پیامد نامعلوم است، فعلاً فقط اطلاعات لازم را مشخص کن.",
+      "proposed_title": "انتخاب جبران متناسب و بی‌فشار",
+      "proposed_intro": "اگر سهم رفتاری تو روشن و اقدام مستقیم امن است، یک جبران متناسب طراحی کن؛ اگر سهم یا پیامد نامعلوم است، فعلاً فقط اطلاعات لازم را مشخص کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "وابستگی عاطفی-10",
+      "topic_id": "T08",
+      "topic_name": "وابستگی عاطفی",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «وابستگی عاطفی».",
+      "source_exercise": "یک کار کم‌خطر و متناسب با توان خود را بدون درخواست تأیید مکرر انجام بده؛ اگر کمک لازم است، کمک مناسب بگیر.",
+      "source_action": "یک تصمیم یا کار کوچک را با معیارهای خودت پیش ببر.",
+      "proposed_title": "تقویت تصمیم کوچک بدون تأیید مکرر",
+      "proposed_intro": "یک کار کم‌خطر و متناسب با توان خود را با معیارهای خودت انجام بده؛ کمک‌گرفتن در مواقع نیاز با وابستگی ناسالم یکی نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اهمال‌کاری-10",
+      "topic_id": "T09",
+      "topic_name": "اهمال‌کاری",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اهمال‌کاری».",
+      "source_exercise": "یک بازه کوتاه متناسب با انرژی تعیین کن و فقط روی نخستین بخش تمرکز کن؛ پایان بازه مجوز استراحت یا توقف است.",
+      "source_action": "در صورت امکان یک بازه کوتاه اجرا کن؛ اگر نشد، مانع را ثبت کن.",
+      "proposed_title": "تعیین بازهٔ کوتاه برای شروع",
+      "proposed_intro": "بازه‌ای کوتاه و متناسب با انرژی تعیین کن و فقط نخستین بخش کار را انجام بده؛ پایان بازه امکان استراحت یا توقف را فراهم می‌کند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "بی‌خوابی و مشکلات خواب-10",
+      "topic_id": "T10",
+      "topic_name": "بی‌خوابی و مشکلات خواب",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «بی‌خوابی و مشکلات خواب».",
+      "source_exercise": "نور، صدا، دما، راحتی بستر و مزاحمت‌های محیطی را بررسی کن؛ فقر امکانات یا ناامنی محیط را به ضعف فرد نسبت نده.",
+      "source_action": "فقط یک عامل محیط خواب (نور، صدا، دما یا راحتی بستر) را در زمان خواب تغییر بده و اثر آن را بر آسودگی یا بیدارشدن شبانه ثبت کن؛ چند عامل را هم‌زمان تغییر نده.",
+      "proposed_title": "بررسی نشانه‌های رفتار تکراریِ آسیب‌زا",
+      "proposed_intro": "اگر رفتار شامل کندن مو یا پوست یا آسیب بدنی است، زمینه و پیامد را ثبت کن؛ از خودداری اجباری یا پاسخ تجویزی خودسرانه پرهیز کن و در صورت آسیب از متخصص آگاه کمک بگیر.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "عادت‌های تکراری-10",
+      "topic_id": "T11",
+      "topic_name": "عادت‌های تکراری",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «عادت‌های تکراری».",
+      "source_exercise": "اگر رفتار شامل کندن مو/پوست، جویدن ناخن/لب یا رفتار بدنی آسیب‌زا است، زمینه، دست/ابزار، حالت توجه و پیامد را توصیف کن؛ زخم و آسیب را نادیده نگیر.",
+      "source_action": "از خودداری اجباری یا پاسخ رقابتیِ تجویزی در این برنامه عمومی پرهیز کن؛ برای HRT/ComB و آسیب جسمی، متخصص آگاه به BFRB را در نظر بگیر.",
+      "proposed_title": "بیان ترجیح ساده در موقعیت کم‌ریسک",
+      "proposed_intro": "در موقعیتی روزمره و کم‌ریسک ترجیح ساده‌ای را روشن بیان کن؛ هدف وضوح است، نه وادارکردن دیگری به پذیرش.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مرزبندی و نه گفتن-10",
+      "topic_id": "T12",
+      "topic_name": "مرزبندی و نه گفتن",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مرزبندی و نه گفتن».",
+      "source_exercise": "در یک موقعیت روزمره کم‌ریسک، ترجیح ساده‌ای را بیان کنید؛ مثلاً زمان مناسب تماس یا انتخاب فعالیت. هدف تمرین وضوح است، نه وادار کردن دیگری به پذیرش.",
+      "source_action": "ترجیح را در موقعیت امن بیان کن یا اگر امن نیست فقط برای خود روشن کن.",
+      "proposed_title": "درخواست محدود برای ارتباط در تنهایی",
+      "proposed_intro": "برای فردی امن پیام کوتاهی بنویس که دلیل تماس و پیشنهاد محدود دارد؛ افشای ناخواسته یا پیام طولانی لازم نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "تنهایی-10",
+      "topic_id": "T13",
+      "topic_name": "تنهایی",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «تنهایی».",
+      "source_exercise": "برای فردی امن یک پیام کوتاه بنویس که دلیل تماس و پیشنهاد محدود داشته باشد؛ از پیام طولانی یا افشای ناخواسته پرهیز کن.",
+      "source_action": "پیام را بازخوانی کن و اگر هنوز مناسب است ارسال کن؛ پاسخ‌گرفتن یا پاسخ‌ندادن معیار ارزش تو نیست.",
+      "proposed_title": "زمان‌بندی فعالیت در اوج انرژی",
+      "proposed_intro": "فعالیتی کوچک را در بازه‌ای قرار بده که معمولاً انرژی بیشتری داری؛ زمان‌بندی را با شرایط واقعی روزت هماهنگ کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کمبود انگیزه-10",
+      "topic_id": "T14",
+      "topic_name": "کمبود انگیزه",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کمبود انگیزه».",
+      "source_exercise": "زمان‌بندی: فعالیت را در بازه‌ای قرار دهید که معمولاً انرژی بیشتری دارید.",
+      "source_action": "بازه انتخابی را آزمایش و پس از آن تناسب انرژی را یادداشت کن.",
+      "proposed_title": "اقدام با وجود تردید قابل‌تحمل",
+      "proposed_intro": "یک گام کم‌خطر را با وجود تردید قابل‌تحمل انجام بده و فقط رفتار انجام‌شده را ثبت کن؛ لازم نیست احساس اطمینان کامل ایجاد شود.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اعتمادبه‌نفس پایین-10",
+      "topic_id": "T15",
+      "topic_name": "اعتمادبه‌نفس پایین",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اعتمادبه‌نفس پایین».",
+      "source_exercise": "اقدام با تردید: یک گام کوچک را با وجود تردید قابل تحمل انجام دهید.",
+      "source_action": "گام را در موقعیت کم‌خطر اجرا کن و فقط رفتار انجام‌شده را ثبت کن.",
+      "proposed_title": "تبدیل نگرانی اقدام‌پذیر به گام بعدی",
+      "proposed_intro": "اگر موضوعی واقعاً قابل اقدام است، فقط قدم بعدی و زمان واقع‌بینانهٔ آن را مشخص کن؛ اگر هنوز اقدام ممکن نیست، زمان پیگیری اطلاعات را تعیین کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "افکار منفی و نشخوار فکری-10",
+      "topic_id": "T16",
+      "topic_name": "افکار منفی و نشخوار فکری",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «افکار منفی و نشخوار فکری».",
+      "source_exercise": "حل مسئله واقعی: اگر موضوع اقدام‌پذیر است، فقط قدم بعدی و زمان انجام آن را تعیین کنید.",
+      "source_action": "برای همان نگرانیِ اقدام‌پذیر، نخستین گام اطلاعاتی یا عملی و زمان واقع‌بینانه آن را در تقویم ثبت کن؛ اگر هنوز اقدام ممکن نیست، زمان پیگیری اطلاعات را تعیین کن.",
+      "proposed_title": "آماده‌سازی درخواست قابل مذاکره در رابطه",
+      "proposed_intro": "درخواست روشن خود را همراه با یک گزینهٔ جایگزین آماده کن تا خواسته به دستور یا تهدید تبدیل نشود.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکلات رابطه-10",
+      "topic_id": "T17",
+      "topic_name": "مشکلات رابطه",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکلات رابطه».",
+      "source_exercise": "درخواست قابل مذاکره: یک درخواست روشن و امکان جایگزین آن را آماده کنید.",
+      "source_action": "یک گزینه جایگزین را آماده کن تا درخواست به دستور تبدیل نشود.",
+      "proposed_title": "آماده‌کردن جملهٔ توقف برای خودتحقیرگری",
+      "proposed_intro": "برای زمان شروع تحقیر خود، جمله‌ای کوتاه و غیرتنبیهی آماده کن که به تو یادآوری کند تمرین را متوقف کنی و به نیاز فعلی برگردی.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت از خود-10",
+      "topic_id": "T18",
+      "topic_name": "نفرت از خود",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «نفرت از خود».",
+      "source_exercise": "مرز با خودآزاری کلامی: یک جمله توقف برای زمان شروع تحقیر خود آماده کنید.",
+      "source_action": "جمله توقف را با صدای آرام یا در ذهن یک بار بخوان.",
+      "proposed_title": "جبران مسئولانه بدون خودتنبیهی",
+      "proposed_intro": "اگر آسیبی وارد شده، جبران ممکن و متناسب را بررسی کن؛ پیش از اقدام، رضایت، امنیت و اثر احتمالی بر فرد آسیب‌دیده را در نظر بگیر.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خودسرزنشی-10",
+      "topic_id": "T19",
+      "topic_name": "خودسرزنشی",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خودسرزنشی».",
+      "source_exercise": "جبران متناسب: اگر آسیبی وارد شده، اقدام جبرانی ممکن و متناسب را تعیین کنید.",
+      "source_action": "پیش از جبران، رضایت، امنیت و اثر احتمالی بر فرد آسیب‌دیده را بررسی کن.",
+      "proposed_title": "مشاهدهٔ نقص بی‌خطر بدون اصلاح فوری",
+      "proposed_intro": "یک نقص بی‌خطر را برای مدتی کوتاه بدون اصلاح فوری باقی بگذار و واکنش خود را مشاهده کن؛ کار حساس یا ناایمن را ناقص رها نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کمال‌گرایی-10",
+      "topic_id": "T20",
+      "topic_name": "کمال‌گرایی",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کمال‌گرایی».",
+      "source_exercise": "خطای کوچک: یک نقص بی‌خطر را بدون اصلاح فوری باقی بگذارید و واکنش خود را مشاهده کنید.",
+      "source_action": "نقص بی‌خطر را تا پایان بازه مشاهده نگه دار؛ کار حساس را ناقص نگذار.",
+      "proposed_title": "بررسی اثر اجتناب بر حوزهٔ زندگی",
+      "proposed_intro": "یک حوزهٔ زندگی را انتخاب کن و بنویس کنارکشیدن چه تغییری در آن ایجاد کرده است؛ اثر مشاهده‌شده را از حدس جدا نگه دار.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اجتناب-10",
+      "topic_id": "T21",
+      "topic_name": "اجتناب",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اجتناب».",
+      "source_exercise": "یک حوزه مانند کار، تحصیل، ارتباط، مراقبت از خود یا استراحت را انتخاب کن و بنویس رفتار کنارکشیدن چه تغییری در آن ایجاد کرده است.",
+      "source_action": "فقط اثر مشاهده‌شده را ثبت کن؛ لازم نیست فوراً فعالیت را از سر بگیری.",
+      "proposed_title": "تقسیم مسئله به گام و مسئول مشخص",
+      "proposed_intro": "مسئله‌ای را که قابل حل است به گام‌های کوچک تقسیم کن و برای هر گام مسئول و زمان واقع‌بینانه تعیین کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "استرس-10",
+      "topic_id": "T22",
+      "topic_name": "استرس",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «استرس».",
+      "source_exercise": "حل مسئله: مسئله‌ای را به گام‌های کوچک با مسئول و زمان مشخص تقسیم کنید.",
+      "source_action": "مسئله را به یک گام، مسئول و زمان تبدیل کن.",
+      "proposed_title": "تفکیک ارزش از تأیید و دستاورد",
+      "proposed_intro": "موقعیتی را که ارزش خود را به دستاورد یا تأیید دیگری گره می‌زنی بررسی کن و اطلاعات ناقص دربارهٔ دیگری را جدا ثبت کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "احساس بی‌ارزشی-10",
+      "topic_id": "T23",
+      "topic_name": "احساس بی‌ارزشی",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «احساس بی‌ارزشی».",
+      "source_exercise": "مقایسه ارزشمندی: موقعیتی را که ارزش خود را به دستاورد یا تأیید دیگری گره می‌زنی ثبت کن و اطلاعات ناقص را جدا کن.",
+      "source_action": "یک معیار ارزش انسانی مستقل از رتبه، ظاهر یا دستاورد بنویس و اطلاعات ناشناخته درباره دیگری را مشخص کن.",
+      "proposed_title": "مشاهدهٔ بیرونی برای تنظیم هیجان",
+      "proposed_intro": "چند جزئیات دیداری یا شنیداری محیط را نام ببر و به فعالیت جاری برگرد؛ هدف حذف احساس نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکل در کنترل هیجان-10",
+      "topic_id": "T24",
+      "topic_name": "مشکل در کنترل هیجان",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکل در کنترل هیجان».",
+      "source_exercise": "توجه حسی: پنج چیز دیدنی یا صداهای محیط را نام ببرید.",
+      "source_action": "سه جزئیات محیط را نام ببر و فعالیت را ادامه بده.",
+      "proposed_title": "تعیین مرز تماس متناسب با نیاز",
+      "proposed_intro": "سطح و شکل ارتباطی را که فعلاً برایت قابل تحمل است مشخص کن؛ مرز تماس باید متناسب با ایمنی و مسئولیت‌های واقعی باشد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "رنجش و کینه-10",
+      "topic_id": "T25",
+      "topic_name": "رنجش و کینه",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «رنجش و کینه».",
+      "source_exercise": "مرز تماس: میزان و شکل ارتباطی را که فعلاً برای شما قابل تحمل است تعیین کنید.",
+      "source_action": "سطح تماس و راه پایان‌دادن به تعامل را برای خود روشن کن.",
+      "proposed_title": "تعیین حد افشای تجربهٔ شرم",
+      "proposed_intro": "یک ویژگی یا تجربه را که از قضاوت دربارهٔ آن می‌ترسی نام ببر و مشخص کن کدام بخش خصوصی می‌ماند؛ افشاگری اجباری نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "شرم-10",
+      "topic_id": "T26",
+      "topic_name": "شرم",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «شرم».",
+      "source_exercise": "موضوع شرم و حریم خصوصی: یک ویژگی یا تجربه را که از قضاوت درباره آن می‌ترسی نام ببر و مشخص کن کدام بخش خصوصی می‌ماند.",
+      "source_action": "برای این موضوع حد افشا تعیین کن؛ لازم نیست آن را اصلاح یا با دیگران در میان بگذاری.",
+      "proposed_title": "مقایسهٔ پیش‌بینی قضاوت با واکنش واقعی",
+      "proposed_intro": "پیش‌بینی خود دربارهٔ نظر دیگران را با گفته یا رفتار قابل مشاهدهٔ آنان مقایسه کن؛ برداشت ذهنی را از شواهد جدا نگه دار.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از قضاوت-10",
+      "topic_id": "T27",
+      "topic_name": "ترس از قضاوت",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از قضاوت».",
+      "source_exercise": "پیش‌بینی قضاوت دیگران را با واکنش قابل مشاهده آنان مقایسه کن و کیفیت کار خود را جداگانه بسنج.",
+      "source_action": "آنچه درباره نظر دیگران پیش‌بینی کرده بودی را با گفته یا رفتار واقعی آنان مقایسه کن؛ برداشت ذهنی را جدا نگه دار.",
+      "proposed_title": "نگه‌داشتن نسخهٔ اولیه بدون بازنویسی فوری",
+      "proposed_intro": "نسخهٔ اولیهٔ یک کار را برای خودت نگه دار و فقط یک معیار روشن برای بازبینی بعدی تعیین کن؛ بازنویسی فوری برای کاهش تردید الزامی نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از شکست-10",
+      "topic_id": "T28",
+      "topic_name": "ترس از شکست",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از شکست».",
+      "source_exercise": "نسخه را برای خودت نگه دار و یک معیار مشخص برای بازبینی انتخاب کن.",
+      "source_action": "نسخه اولیه را بدون بازنویسی فوری ذخیره کن و فقط یک معیار روشن برای بازبینی بعدی تعیین کن.",
+      "proposed_title": "روشن‌کردن معنای پاسخ مبهم در رابطه",
+      "proposed_intro": "یک پاسخ مبهم را انتخاب کن و مشخص کن چه اطلاعاتی برای فهم منظور دیگری کم است؛ ابهام را به طرد قطعی یا بی‌ارزشی خودت تبدیل نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از طرد شدن-10",
+      "topic_id": "T29",
+      "topic_name": "ترس از طرد شدن",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از طرد شدن».",
+      "source_exercise": "یک پاسخ مبهم را انتخاب کن و مشخص کن چه اطلاعاتی برای فهم منظور دیگری کم است؛ آن را به طرد قطعی یا بی‌ارزشی خود تعبیر نکن.",
+      "source_action": "اگر موقعیت امن و مناسب است، یک سؤال کوتاه و روشن‌کننده آماده کن؛ پس از آن برای پاسخ‌گویی فرصت بده و پیام‌های پیاپی نفرست.",
+      "proposed_title": "شناخت ارزش مرتبط با تصمیم",
+      "proposed_intro": "یک ارزش را که در تصمیم نقش دارد نام ببر؛ ارزش را از نیاز به قطعیت کامل جدا کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "شک و تردید-10",
+      "topic_id": "T30",
+      "topic_name": "شک و تردید",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «شک و تردید».",
+      "source_exercise": "ارزش‌های مرتبط با انتخاب را مشخص کنید.",
+      "source_action": "یک ارزش را انتخاب کن که در تصمیم نقش دارد.",
+      "proposed_title": "تحمل نتیجهٔ متفاوت از انتظار در کنترل‌گری",
+      "proposed_intro": "اگر دیگری روشی متفاوت انتخاب کرد، واکنش خودت را مشاهده کن و از اصلاح فوری یا گرفتن اختیار او خودداری کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کنترل‌گری-10",
+      "topic_id": "T31",
+      "topic_name": "کنترل‌گری",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کنترل‌گری».",
+      "source_exercise": "تحمل نتیجه متفاوت: واکنش خود را مشاهده و ثبت کنید.",
+      "source_action": "اگر نتیجه متفاوت شد، واکنش خود را مشاهده کن و از اصلاح فوری آن خودداری کن.",
+      "proposed_title": "کاهش بار حسی و انرژی غیرضروری",
+      "proposed_intro": "یک تغییر محیطی کم‌هزینه مانند کاهش صدای مزاحم یا نزدیک‌کردن آب و وسایل ضروری را انجام بده؛ محدودیت‌های محیطی را به ضعف اراده نسبت نده.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "بی‌انگیزگی-10",
+      "topic_id": "T32",
+      "topic_name": "بی‌انگیزگی",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «بی‌انگیزگی».",
+      "source_exercise": "محیط را از نظر نور، صدا، دما و دسترسی به نیازهای پایه بررسی کنید تا بار حسی و انرژی غیرضروری کمتر شود.",
+      "source_action": "یک تغییر محیطی کم‌هزینه مانند کاهش صدای مزاحم یا نزدیک‌کردن آب و وسایل ضروری را انجام بده.",
+      "proposed_title": "نگاه بی‌طرفانه به عملکرد",
+      "proposed_intro": "یک موقعیت را از نگاه ناظر بی‌طرف در چند جمله توصیف کن؛ دادهٔ قابل مشاهده را از قضاوت کلی دربارهٔ خود جدا نگه دار.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خودانتقادی-10",
+      "topic_id": "T33",
+      "topic_name": "خودانتقادی",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خودانتقادی».",
+      "source_exercise": "از نگاه ناظر بی‌طرف به موقعیت نگاه کنید.",
+      "source_action": "موقعیت را از نگاه ناظر بی‌طرف در سه جمله توصیف کن.",
+      "proposed_title": "بررسی دسترسی واقعی به منبع کمک",
+      "proposed_intro": "برای یک منبع کمک، روش دسترسی، هزینه یا زمان انتظار و شرط استفاده را بررسی کن؛ صرف نام‌بردن از منبع کافی نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکل دیگر-10",
+      "topic_id": "T34",
+      "topic_name": "مشکل دیگر",
+      "day_number": 10,
+      "current_title": "گام کوچک · روز 10",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکل دیگر».",
+      "source_exercise": "مانع دسترسی به راه‌حل یا خدمت را در یکی از این دسته‌های عملیاتی مشخص کن: شرط پذیرش/صلاحیت، هزینه، زمان انتظار، محدوده جغرافیایی یا قانونی، نیاز به رضایت، یا نبود خدمت ایمن. اگر مانع از جنس دیگری است، آن را دقیق نام ببر.",
+      "source_action": "برای مانع انتخاب‌شده، مرجع تصمیم‌گیر یا منبع پاسخ را مشخص کن؛ اگر رفع آن در اختیار تو نیست، مسیر پیگیری یا ارجاع را ثبت کن و مسئولیت سازمانی را به خودت نسبت نده.",
+      "proposed_title": "طراحی آیین یادبود اختیاری در سوگ",
+      "proposed_intro": "اگر با خواست و توانت سازگار است، آیینی کوچک برای یادبود یا خداحافظی طراحی کن؛ انجام آن اجباری نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    }
+  ]
+}
