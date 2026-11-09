@@ -228,3 +228,30 @@ test('day-ten copy pilot covers all 34 topics with traceable unique copy', () =>
     assert.equal(record.reviewed_at, null);
   }
 });
+
+
+for (const day of [11, 12]) {
+  test(`day-${day} copy pilot covers all 34 topics with unique, traceable, non-runtime copy`, () => {
+    const pilot = JSON.parse(fs.readFileSync(
+      path.join(root, `public/assistant/content-drafts/topic-specific-copy-pilot-all-34-day${day}.v1.json`),
+      'utf8'
+    ));
+    assert.equal(pilot.status, 'draft_pending_owner_and_expert_review');
+    assert.equal(pilot.records.length, 34);
+    assert.equal(new Set(pilot.records.map((x) => x.source_content_id)).size, 34);
+    assert.equal(new Set(pilot.records.map((x) => x.proposed_title)).size, 34);
+    assert.equal(new Set(pilot.records.map((x) => x.proposed_intro)).size, 34);
+    for (const record of pilot.records) {
+      assert.ok(record.current_title);
+      assert.ok(record.current_intro);
+      assert.ok(record.proposed_title);
+      assert.ok(record.proposed_intro);
+      assert.equal(record.source_content_id, record.topic_name + '-' + String(day).padStart(2, '0'));
+      assert.deepEqual(record.fields_changed, ['title', 'intro']);
+      assert.equal(record.runtime_eligible, false);
+      assert.equal(record.review_status, 'pending_owner_and_expert_review');
+      assert.equal(record.reviewer, null);
+      assert.equal(record.reviewed_at, null);
+    }
+  });
+}

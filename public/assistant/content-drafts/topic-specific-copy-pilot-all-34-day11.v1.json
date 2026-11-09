@@ -1,0 +1,927 @@
+{
+  "schema_version": "1.0.0",
+  "batch_id": "topic-specific-copy-all-34-day11",
+  "status": "draft_pending_owner_and_expert_review",
+  "purpose": "پیشنهاد اختصاصی عنوان و مقدمه برای هر ۳۴ موضوع در روز 11؛ تمرین و اقدام اصلی در این بسته تغییر نکرده‌اند.",
+  "source": "runtime content snapshot exported by scripts/export-content-rewrite-source.mjs; source IDs are topic-day IDs",
+  "records": [
+    {
+      "source_content_id": "خشم-11",
+      "topic_name": "خشم",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خشم».",
+      "proposed_title": "مرز گفت‌وگوی امن",
+      "proposed_intro": "پیش از ادامهٔ گفت‌وگو، آزادیِ ردکردن، امکان فاصله‌گرفتن و نبودِ فشار برای پاسخ فوری را بررسی کن؛ اگر ایمنی یا اختیار روشن نیست، گفت‌وگو را پیش‌فرض نگیر.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اضطراب-11",
+      "topic_name": "اضطراب",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اضطراب».",
+      "proposed_title": "فشارهای روزمره و سهم قابل‌کنترل",
+      "proposed_intro": "یک عامل مانند فشار برنامه، استراحت یا خواب را در کنار تجربهٔ اضطراب مشاهده کن؛ هم‌زمانی آن‌ها علت قطعی را ثابت نمی‌کند و تغییر دارو یا ماده در این تمرین جایی ندارد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس-11",
+      "topic_name": "ترس",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس».",
+      "proposed_title": "شناخت واکنش توقف بدون بازسازی تجربه",
+      "proposed_intro": "اگر تجربه‌ای از مکث یا بی‌حرکتی به یاد داری، فقط دشواری و حمایتِ در دسترس را ثبت کن؛ خاطره را برای اجرای تمرین عمداً زنده نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت-11",
+      "topic_name": "نفرت",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «نفرت».",
+      "proposed_title": "مرزبندی موضوع نفرت با خودبیزاری",
+      "proposed_intro": "این روز فقط جهت تجربه را روشن می‌کند: نفرت یا خصومت نسبت به دیگری در این مسیر بررسی می‌شود و خودبیزاری به مسیر جداگانهٔ نفرت از خود تعلق دارد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "حسادت-11",
+      "topic_name": "حسادت",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «حسادت».",
+      "proposed_title": "تحمل ابهام بدون وارسی مکرر",
+      "proposed_intro": "یک موضوع کم‌خطر و نامعلوم را برای زمانی معقول باز بگذار؛ کاهش وارسی فقط دربارهٔ نشانه‌های غیرضروری است، نه نادیده‌گرفتن خطر واقعی یا توافق مهم.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "غم و سوگ-11",
+      "topic_name": "غم و سوگ",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «غم و سوگ».",
+      "proposed_title": "نیاز امروز در موج دلتنگی",
+      "proposed_intro": "در روزی که یادآور فقدان پررنگ است، نیاز فعلی به همراهی، استراحت یا کمک عملی را مشخص کن؛ لازم نیست شدت غم را کم کنی یا سوگ را سریع‌تر پیش ببری.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "احساس گناه-11",
+      "topic_name": "احساس گناه",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «احساس گناه».",
+      "proposed_title": "مسئولیت‌پذیری در برابر خودتنبیهی",
+      "proposed_intro": "مسئولیت قابل‌اقدام را از محروم‌سازی و مجازات خود جدا کن؛ آسیب‌زدن به خود یا تحمل آزار، جبرانِ خطا محسوب نمی‌شود.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "وابستگی عاطفی-11",
+      "topic_name": "وابستگی عاطفی",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «وابستگی عاطفی».",
+      "proposed_title": "مرز شخصی در کنار توافق رابطه",
+      "proposed_intro": "رفتاری را که خودت می‌توانی مدیریت کنی از توافق دوطرفه جدا کن؛ مرز شخصی مجوز کنترل تلفن، برنامه یا ارتباطات دیگری نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اهمال‌کاری-11",
+      "topic_name": "اهمال‌کاری",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اهمال‌کاری».",
+      "proposed_title": "تنظیم حد کار بر پایهٔ منابع واقعی",
+      "proposed_intro": "حجم کار را با زمان، انرژی و منابع موجود مقایسه کن؛ حد توقف و استراحت بخشی از برنامه‌ریزی واقع‌بینانه است، نه شکست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "بی‌خوابی و مشکلات خواب-11",
+      "topic_name": "بی‌خوابی و مشکلات خواب",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «بی‌خوابی و مشکلات خواب».",
+      "proposed_title": "ساخت توالی آرام پیش از خواب",
+      "proposed_intro": "یک توالی کوتاه و تکرارپذیر برای پایان روز انتخاب کن؛ آن را درمان قطعی ندان و هیچ تمرین تنفسی یا تغییر دارویی را اجباری نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "عادت‌های تکراری-11",
+      "topic_name": "عادت‌های تکراری",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «عادت‌های تکراری».",
+      "proposed_title": "تمایز عادت از چرخهٔ اجبار",
+      "proposed_intro": "بررسی کن آیا رفتار برای خنثی‌کردن فکر مزاحم یا جلوگیری از پیامد ترسناک انجام می‌شود؛ اگر روشن نیست، نتیجه‌گیری یا خودتشخیصی نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مرزبندی و نه گفتن-11",
+      "topic_name": "مرزبندی و نه گفتن",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مرزبندی و نه گفتن».",
+      "proposed_title": "بیان حد و اقدام در اختیار خود",
+      "proposed_intro": "ترجیح، حد پذیرفتنی و اقدام محافظتیِ تحت کنترل خودت را از تهدید یا تلاش برای تنبیه دیگری جدا کن؛ اعلام مستقیم مرز فقط در صورت ایمنی مناسب است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "تنهایی-11",
+      "topic_name": "تنهایی",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «تنهایی».",
+      "proposed_title": "گفت‌وگوی دوسویه و شنیدن فعال",
+      "proposed_intro": "در یک تعامل امن، یک پرسش باز بپرس و پاسخ را بشنو؛ اگر مایل بودی تجربهٔ خودت را هم کوتاه بیان کن، بدون اینکه معاشرت را به تکلیف اجباری تبدیل کنی.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کمبود انگیزه-11",
+      "topic_name": "کمبود انگیزه",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کمبود انگیزه».",
+      "proposed_title": "همراهی برای شروع بدون واگذاری مسئولیت",
+      "proposed_intro": "یک همراه پیگیری انتخاب کن که فقط زمان شروع یا پایان گام را یادآوری کند؛ انجام کار و تصمیم نهایی همچنان در اختیار خودت می‌ماند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اعتمادبه‌نفس پایین-11",
+      "topic_name": "اعتمادبه‌نفس پایین",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اعتمادبه‌نفس پایین».",
+      "proposed_title": "دریافت بازخورد دربارهٔ عملکرد مشخص",
+      "proposed_intro": "بازخورد را به یک رفتار یا مهارت مشخص محدود کن؛ نظر دربارهٔ یک کار، داوری دربارهٔ ارزش کلی تو نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "افکار منفی و نشخوار فکری-11",
+      "topic_name": "افکار منفی و نشخوار فکری",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «افکار منفی و نشخوار فکری».",
+      "proposed_title": "ثبت پرسش بی‌پاسخ بدون اطمینان‌جویی فوری",
+      "proposed_intro": "یک سؤال بی‌پاسخ را به‌عنوان نامعلوم ثبت کن؛ هدف حذف پرسش یا چشم‌پوشی از اطلاعات ضروری نیست، بلکه تشخیص زمانِ جست‌وجوی مفید از وارسی تکراری است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکلات رابطه-11",
+      "topic_name": "مشکلات رابطه",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکلات رابطه».",
+      "proposed_title": "تعیین مرز زمانی و موضوعی گفت‌وگو",
+      "proposed_intro": "مشخص کن چه زمانی، لحنی یا موضوعی گفت‌وگو را ناامن یا بی‌ثمر می‌کند؛ توقف تعامل در موقعیت تهدید یا خشونت باید با توجه به برنامهٔ ایمنی باشد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت از خود-11",
+      "topic_name": "نفرت از خود",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «نفرت از خود».",
+      "proposed_title": "یافتن شاهد واقعی در برابر حکم کلی",
+      "proposed_intro": "برای یک باور فراگیر منفی، نمونه‌ای واقعی و محدود را که با آن سازگار نیست ثبت کن؛ لازم نیست با خودت بحث کنی یا فوراً احساس مثبتی بسازی.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خودسرزنشی-11",
+      "topic_name": "خودسرزنشی",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خودسرزنشی».",
+      "proposed_title": "عذرخواهی متناسب بدون مطالبهٔ بخشش",
+      "proposed_intro": "اگر رفتار مشخصی رخ داده و تماس امن و مناسب است، عذرخواهی را بدون بهانه‌تراشی آماده کن؛ طرف مقابل ملزم به بخشش یا پاسخ‌گویی نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کمال‌گرایی-11",
+      "topic_name": "کمال‌گرایی",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کمال‌گرایی».",
+      "proposed_title": "بازخورد محدود دربارهٔ کیفیت کار",
+      "proposed_intro": "از فردی امن دربارهٔ یک بخش مشخص کار بازخورد بخواه؛ درخواست را به معیار یا رفتار قابل‌بررسی محدود کن، نه تأیید کلی ارزش خود.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اجتناب-11",
+      "topic_name": "اجتناب",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اجتناب».",
+      "proposed_title": "شناخت ارزش پشت فعالیت کنارگذاشته‌شده",
+      "proposed_intro": "فعالیتی را که از آن فاصله گرفته‌ای نام ببر و ارزش یا نیازی را که برایت داشته مشخص کن؛ شناخت ارزش به معنی اجبار به بازگشت به موقعیت ناامن نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "استرس-11",
+      "topic_name": "استرس",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «استرس».",
+      "proposed_title": "درخواست کمک عملی و محدود",
+      "proposed_intro": "یک درخواست مشخص را با نوع کمک و زمان موردنیاز روشن کن؛ کمک‌خواستن باید متناسب با اختیار، منابع و امنیت رابطه باشد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "احساس بی‌ارزشی-11",
+      "topic_name": "احساس بی‌ارزشی",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «احساس بی‌ارزشی».",
+      "proposed_title": "درخواست شنیده‌شدن بدون داوری ارزشی",
+      "proposed_intro": "از فردی امن بخواه احساس و نیازت را بشنود، نه اینکه دربارهٔ ارزش تو حکم بدهد؛ میزان افشا و ادامهٔ گفت‌وگو را خودت تعیین کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکل در کنترل هیجان-11",
+      "topic_name": "مشکل در کنترل هیجان",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکل در کنترل هیجان».",
+      "proposed_title": "تغییر آرام وضعیت برای کاهش فشار",
+      "proposed_intro": "اگر امکان دارد، محیط یا وضعیت بدنی را به شکلی راحت‌تر و امن‌تر تغییر بده؛ این اقدام جای خروج از خطر واقعی یا کمک انسانی را نمی‌گیرد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "رنجش و کینه-11",
+      "topic_name": "رنجش و کینه",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «رنجش و کینه».",
+      "proposed_title": "ردیابی زمان‌های نشخوار رنجش",
+      "proposed_intro": "زمان و موقعیت‌هایی را که مرور ذهنی رویداد تکرار می‌شود ثبت کن؛ هدف مشاهدهٔ الگوست، نه بازسازی طولانی یا اثبات نیت طرف مقابل.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "شرم-11",
+      "topic_name": "شرم",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «شرم».",
+      "proposed_title": "سنجش ایمنی و فایدهٔ ترمیم",
+      "proposed_intro": "پیش از تماس یا عذرخواهی بررسی کن آیا این کار به فرد آسیب‌دیده کمک می‌کند یا فقط برای کاهش شرم خودت است؛ تماس ناخواسته یا ناامن را تحمیل نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از قضاوت-11",
+      "topic_name": "ترس از قضاوت",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از قضاوت».",
+      "proposed_title": "تحمل اختلاف نظر بدون متقاعدسازی",
+      "proposed_intro": "یک اختلاف نظر کم‌خطر را مشاهده کن و ببین آیا می‌توانی بدون تلاش برای تغییر نظر همه، دیدگاه خود را حفظ کنی؛ در موضوعات ایمنی یا حقوقی، اطلاعات لازم را نادیده نگیر.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از شکست-11",
+      "topic_name": "ترس از شکست",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از شکست».",
+      "proposed_title": "پرسش محدود برای بازخورد کاربردی",
+      "proposed_intro": "برای بخشی مشخص از کار یک پرسش کوتاه آماده کن؛ بازخورد را اطلاعاتی برای یادگیری ببین، نه حکم قطعی دربارهٔ توانایی یا ارزش خود.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از طرد شدن-11",
+      "topic_name": "ترس از طرد شدن",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از طرد شدن».",
+      "proposed_title": "بررسی الگوی تعامل به‌جای حدس نیت",
+      "proposed_intro": "چند تعامل اخیر را از نظر رفتار قابل مشاهده، ابتکار دوطرفه و پایبندی به توافق مرور کن؛ تأخیر یا سکوت منفرد، علت یا نیت طرف مقابل را ثابت نمی‌کند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "شک و تردید-11",
+      "topic_name": "شک و تردید",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «شک و تردید».",
+      "proposed_title": "درخواست نظر مشخص از فرد آگاه",
+      "proposed_intro": "از فردی آگاه دربارهٔ یک بخش محدود بازخورد بگیر؛ یک پرسش مشخص کافی است و تأییدخواهی مکرر جای تصمیم‌گیری را نمی‌گیرد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کنترل‌گری-11",
+      "topic_name": "کنترل‌گری",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کنترل‌گری».",
+      "proposed_title": "پرسیدن پیش از مداخله",
+      "proposed_intro": "پیش از دخالت در کار دیگری، نظر او را با پرسشی باز و بدون اتهام جویا شو؛ پاسخ منفی یا انتخاب متفاوت او باید محترم بماند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "بی‌انگیزگی-11",
+      "topic_name": "بی‌انگیزگی",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «بی‌انگیزگی».",
+      "proposed_title": "تقسیم فعالیت مراقبتی به واحد کوچک",
+      "proposed_intro": "یک فعالیت مراقبتی یا معنادار را به واحدی کوتاه و پایان‌پذیر تقسیم کن؛ ادامه‌دادن تا خستگی شدید معیار موفقیت نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خودانتقادی-11",
+      "topic_name": "خودانتقادی",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خودانتقادی».",
+      "proposed_title": "بازنویسی بازخورد با احترام",
+      "proposed_intro": "یک بازخورد را طوری بازنویسی کن که رفتار قابل اصلاح را روشن کند، اما به توهین یا حکم کلی دربارهٔ شخصیت تبدیل نشود.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکل دیگر-11",
+      "topic_name": "مشکل دیگر",
+      "day_number": 11,
+      "current_title": "مرز و حد توان · روز 11",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکل دیگر».",
+      "proposed_title": "ترسیم مسیرهای واقع‌بینانه برای مسئلهٔ نامشخص",
+      "proposed_intro": "برای مسئله‌ای که در ۳۳ مسیر دیگر نمی‌گنجد، گزینهٔ اقدام کم‌خطر، کسب اطلاعات یا کمک، و ارجاع یا تعویق را جدا کن؛ گزینهٔ نامتناسب را حذف کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    }
+  ]
+}
