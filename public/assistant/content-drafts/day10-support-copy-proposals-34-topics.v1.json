@@ -22,13 +22,14 @@
       "topic_id": "T01",
       "topic_name": "خشم",
       "day_number": 10,
-      "lightExerciseText": "در یک تعارض اخیر، نیاز زیر خشم را از خواسته برای تنبیه یا پیروزی جدا کن.",
-      "lightActionText": "نیاز را در یک واژه دقیق بنویس: احترام، امنیت، عدالت یا شنیده‌شدن.",
-      "progressActionText": "آن نیاز را به درخواست مشخص و غیرتهدیدآمیز تبدیل کن؛ فقط اگر گفت‌وگو امن است.",
-      "restExerciseText": "امروز لازم نیست درباره علت خشم تصمیم بگیری؛ از تنش فاصله بگیر.",
-      "restActionText": "شناخت نیاز رفتار آسیب‌زا را توجیه نمی‌کند؛ خطر آسیب نیازمند کمک فوری است.",
+      "lightExerciseText": "فقط نشانه توقف را تعیین کن.",
+      "lightActionText": "یک نشانه توقف را مشخص کن؛ لازم نیست گفت‌وگویی را برنامه‌ریزی یا اجرا کنی.",
+      "progressActionText": "یک راه خروج یا فرد حمایتی را نیز مشخص کن.",
+      "restExerciseText": "هیچ گفت‌وگویی را برنامه‌ریزی نکن؛ فاصله امن را در اولویت بگذار.",
+      "restActionText": "امروز گفت‌وگو را برنامه‌ریزی نکن؛ فاصله امن را مقدم بدان.",
       "review_status": "draft_pending_expert_review",
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1"
     },
     {
       "content_id": "DRAFT_T02_D10",
