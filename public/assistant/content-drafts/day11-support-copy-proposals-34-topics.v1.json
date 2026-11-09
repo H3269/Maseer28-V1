@@ -22,13 +22,14 @@
       "topic_id": "T01",
       "topic_name": "خشم",
       "day_number": 11,
-      "lightExerciseText": "یک محرک محیطی را که قابل تغییر است از رفتار دیگری که در اختیار تو نیست جدا کن.",
-      "lightActionText": "مشخص کن کدام تغییر محیطی تنش را کم می‌کند بی‌آنکه مسئولیت رفتار را جابه‌جا کند.",
-      "progressActionText": "برای یک موقعیت کم‌تنش، زمان یا مکان مناسب‌تری انتخاب و اثر را مشاهده کن.",
-      "restExerciseText": "امروز محیط را فقط به اندازه لازم آرام‌تر کن؛ گفت‌وگوی دشوار را عقب بینداز.",
-      "restActionText": "تغییر محیط جایگزین توقف تهدید یا خشونت نیست.",
+      "lightExerciseText": "فقط مشخص کن آیا هر دو نفر می‌توانند گفت‌وگو را بدون توضیح یا فشار متوقف کنند.",
+      "lightActionText": "حق توقف یا شروع‌نکردن گفت‌وگو را برای خودت روشن کن؛ تماس با طرف مقابل لازم نیست.",
+      "progressActionText": "یک شرط توقف روشن به طرح گفت‌وگو اضافه کن.",
+      "restExerciseText": "گفت‌وگو را به زمان دیگری موکول کن یا کلاً کنار بگذار.",
+      "restActionText": "هیچ تماس یا گفت‌وگویی لازم نیست؛ حق توقف و شروع‌نکردن محفوظ است.",
       "review_status": "draft_pending_expert_review",
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1"
     },
     {
       "content_id": "DRAFT_T02_D11",
