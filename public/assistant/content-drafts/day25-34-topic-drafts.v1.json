@@ -16,10 +16,10 @@
       "source_content_id": "خشم-25",
       "topic_id": "T01",
       "topic_name": "خشم",
-      "subtopic_id": "T01-S01",
-      "subtopic_name": "محرک‌ها و ارزیابی موقعیت، نشانه‌های بدنی و برانگیختگی، بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 25,
-      "phase": "topic_specific_daily_skill",
+      "phase": "progress_evaluation_and_adaptive_adjustment",
       "learning_objective": "اتصال محرک، نشانه آغاز، آستانه مکث، پاسخ امن و گزینه حمایت در یک نقشه قابل اصلاح.",
       "mechanism_focus": "یکپارچه‌سازی مهارت‌ها.",
       "exercise": "یک موقعیت معمول را انتخاب کن و پنج بخش را کنار هم بنویس: محرک احتمالی، نشانه زودهنگام، حدی که ادامه تعامل مناسب نیست، پاسخ غیرآسیب‌زا، و منبع حمایت.",
@@ -34,13 +34,9 @@
       "runtime_eligible": false,
       "title": "نقشه شخصی پاسخ ایمن",
       "subtopic_ids": [
-        "T01-S01",
-        "T01-S02",
         "T01-S03"
       ],
       "subtopic_names": [
-        "محرک‌ها و ارزیابی موقعیت",
-        "نشانه‌های بدنی و برانگیختگی",
         "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
       "target_skill": "یکپارچه‌سازی مهارت‌ها.",
@@ -86,7 +82,12 @@
       },
       "source_runtime_mechanism": "یکپارچه‌سازی مهارت‌ها در یک نقشه شخصی قابل اصلاح",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D25"
+      "canonical_package_record_id": "DRAFT_T01_D25",
+      "design_subtopic_ids": [
+        "T01-S01",
+        "T01-S02",
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D25",
