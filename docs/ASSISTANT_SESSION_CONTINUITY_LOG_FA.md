@@ -4900,3 +4900,15 @@ undefined
 4. هیچ Telegram Action یا انتشار Telegram/Bale بدون اجازه صریح مالک اجرا نشود.
 
 **وضعیت جاری:** PR65_MERGED_TO_MAIN; POST_MERGE_CI_SUCCESS_42525480821; PAGES_TEST_DEPLOY_SUCCESS_42525480862; WORKER_BUILD_CLOSED_BY_OWNER; P3_CLOSED_BY_OWNER; CLOUD_SERVICE_CLOSED_BY_OWNER; MAIN_PROTECTION_NOT_A_PROJECT_BLOCKER; CONTENT_952_REQUIRES_OWNER_LIVE_EXPERT_REVIEW; LOCAL_AI_ITERATIVE; EVENT_LOG_UPDATE_AFTER_EACH_SUCCESSFUL_MERGE; NO_TELEGRAM_BALE_RELEASE
+
+
+## 2026-11-09 — ادغام ابزارهای ممیزی و بازبینی محتوای ۹۵۲ روز
+
+- PR #67 با روش squash در شاخه main ادغام شد.
+- Merge commit: `84ce8bf4f02adcac75d349c58f2b15377e4ae808`.
+- این ادغام ابزارهای ممیزی نگاشت موضوع/زیرموضوع، کیفیت محتوای ۹۵۲ روز، بررسی نمونه‌ای قالب‌های مشترک و ساخت بسته بازبینی روز نخست برای ۳۴ موضوع را به main اضافه کرد.
+- CI پیش از ادغام موفق بود؛ آزمون‌های واحد، اعتبارسنجی رجیستری‌ها، ممیزی کیفیت، ممیزی قالب نمونه، تولید صف ۹۵۲ نگاشت، بسته بازبینی ۳۴ موضوع، build و آزمون‌های مرورگر موفق شدند.
+- صف نگاشت ۹۵۲ موردی در زمان CI تولید و به‌صورت artifact نگهداری می‌شود؛ نگاشت زیرموضوع و تأیید محتوایی همچنان در وضعیت بازبینی/پیش‌نویس است.
+- هیچ محتوای جدیدی به runtime منتقل نشد و هیچ انتشار Telegram/Bale انجام نشد.
+- PRهای قبلی #20، #21 و #22 به‌صورت خودکار بسته نشدند؛ وضعیت آن‌ها پس از ادغام PR #67 باید به‌عنوان درخواست‌های منشأ/تکراری تعیین‌تکلیف شود.
+- بازبینی تخصصی محتوای ۹۵۲ روز همچنان بر عهده مالک است و مانع اعتبارسنجی یا ادغام فنی نیست.
