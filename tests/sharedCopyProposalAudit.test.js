@@ -31,3 +31,23 @@ test('shared-copy proposal audit rejects duplicate text and runtime eligibility'
   assert.ok(report.errors.includes('duplicate_proposed_intro'));
   assert.ok(report.errors.includes('runtime_eligible_record_found'));
 });
+
+test('audit accepts the five distinct support-copy variants in the day-one batch', () => {
+  const proposal = {
+    status: 'draft_pending_expert_review',
+    fields: ['lightExerciseText', 'lightActionText', 'progressActionText', 'restExerciseText', 'restActionText'],
+    records: Array.from({ length: 34 }, (_, index) => ({
+      topic_id: `T${String(index + 1).padStart(2, '0')}`,
+      lightExerciseText: `تمرین سبک ${index + 1}`,
+      lightActionText: `اقدام سبک ${index + 1}`,
+      progressActionText: `گام پیشرفت ${index + 1}`,
+      restExerciseText: `تمرین استراحت ${index + 1}`,
+      restActionText: `اقدام استراحت ${index + 1}`,
+      review_status: 'draft_pending_expert_review',
+      runtime_eligible: false,
+    })),
+  };
+  const report = auditSharedCopyProposal(proposal);
+  assert.equal(report.ok, true);
+  assert.equal(report.record_count, 34);
+});
