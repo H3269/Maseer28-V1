@@ -2802,8 +2802,15 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
   }
 ];
 
+function toAngerDayNumber(value) {
+  const normalized = String(value ?? '').replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)));
+  const parsed = Number(normalized);
+  return Number.isInteger(parsed) ? parsed : NaN;
+}
+
 export function getAngerDailyAssistantPromptGroups(day) {
-  const guide = ANGER_DAILY_ASSISTANT_GUIDES.find((item) => item.day === Number(day));
+  const dayNumber = toAngerDayNumber(day);
+  const guide = ANGER_DAILY_ASSISTANT_GUIDES.find((item) => item.day === dayNumber);
   if (!guide) return [];
   return [
     { label: 'فهم تمرین روز ' + guide.day, questions: guide.questions.filter((item) => ['exercise_meaning','exercise_example'].includes(item.kind)) },
@@ -2815,7 +2822,8 @@ export function getAngerDailyAssistantPromptGroups(day) {
 }
 
 export function answerAngerDailyPreparedQuestion({ day, message } = {}) {
-  const guide = ANGER_DAILY_ASSISTANT_GUIDES.find((item) => item.day === Number(day));
+  const dayNumber = toAngerDayNumber(day);
+  const guide = ANGER_DAILY_ASSISTANT_GUIDES.find((item) => item.day === dayNumber);
   if (!guide) return null;
   const question = guide.questions.find((item) => item.value === String(message || '').trim());
   if (!question) return null;
