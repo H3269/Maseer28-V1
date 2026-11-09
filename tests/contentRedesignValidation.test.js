@@ -187,3 +187,20 @@ test('detects global repeated exercise and normalized cross-topic objective/prog
   assert.ok(result.errors.some((item) => item.includes('normalized duplicate learning_objective')));
   assert.ok(result.errors.some((item) => item.includes('normalized duplicate progress_measure')));
 });
+
+
+test('accepts registered candidate evidence without treating it as verified evidence', () => {
+  const data = makeFullData();
+  data.evidenceRegistry = { sources: [{ evidence_id: 'EVID_CANDIDATE_1' }] };
+  data.allDays[3].records[0].candidate_evidence_ids = ['EVID_CANDIDATE_1'];
+  const result = validateContentRedesign(data);
+  assert.equal(result.valid, true, result.errors.join('; '));
+});
+
+test('rejects candidate evidence identifiers absent from the registry', () => {
+  const data = makeFullData();
+  data.evidenceRegistry = { sources: [] };
+  data.allDays[3].records[0].candidate_evidence_ids = ['EVID_NOT_REGISTERED'];
+  const result = validateContentRedesign(data);
+  assert.ok(result.errors.some((item) => item.includes('unknown candidate evidence reference EVID_NOT_REGISTERED')));
+});
