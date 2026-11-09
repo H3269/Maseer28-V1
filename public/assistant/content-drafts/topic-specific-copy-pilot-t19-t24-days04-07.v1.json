@@ -1,0 +1,736 @@
+{
+  "schema_version": "1.0.0",
+  "batch_id": "topic-specific-copy-pilot-t19-t24-days04-07",
+  "status": "draft_pending_owner_and_expert_review",
+  "purpose": "بازنویسی آزمایشی عنوان و مقدمه برای موضوعات T19 تا T24 در روزهای ۴ تا ۷؛ تمرین و اقدام همان روز به‌عنوان منبع زمینه ثبت شده‌اند و تغییر نکرده‌اند.",
+  "source": "runtime content source and daily text overrides from current main snapshot",
+  "design_rules": [
+    "عنوان و مقدمه با تمرین و اقدام همان روز هم‌راستا باشند.",
+    "مسئولیت واقعی از سرزنش کلی، محدودیت بیرونی و رفتار دیگران جدا بماند.",
+    "در اجتناب، غربال خطر مقدم بر هر پیشنهاد تغییر است.",
+    "در استرس و تنظیم هیجان، روش‌ها اختیاری و کم‌خطرند و حذف کامل احساس هدف نیست.",
+    "همه رکوردها پیش‌نویس‌اند و runtime_eligible=false."
+  ],
+  "records": [
+    {
+      "source_content_id": "خودسرزنشی-04",
+      "topic_id": "T19",
+      "topic_name": "خودسرزنشی",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خودسرزنشی».",
+      "source_exercise": "مسئولیت واقعی: کدام بخش رفتار واقعاً در اختیار شما بود؟",
+      "source_action": "در موقعیتی که فوراً خودت را مقصر دانستی، سهم خودت را از انتخاب‌ها و رفتار دیگران جدا بنویس؛ مسئولیت دیگران را به حساب خودت نگذار.",
+      "proposed_title": "برآورد سهم واقعی در خودسرزنشی",
+      "proposed_intro": "رفتار یا تصمیم مشخص را از عواملی که در اختیار تو نبوده‌اند جدا کن؛ مسئولیت‌پذیری به معنای پذیرفتن همهٔ پیامدها نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خودسرزنشی-05",
+      "topic_id": "T19",
+      "topic_name": "خودسرزنشی",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خودسرزنشی».",
+      "source_exercise": "عوامل بیرونی: چه شرایطی خارج از کنترل شما اثر داشت؟",
+      "source_action": "یک محدودیت بیرونی را از فهرست مسئولیت شخصی خارج کن.",
+      "proposed_title": "شناخت محدودیت‌های بیرونی",
+      "proposed_intro": "شرایط بیرونی را که بر رخداد اثر داشته‌اند نام ببر؛ آن‌ها را نه انکار کن و نه به‌جای سهم واقعی خودت بنشان.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خودسرزنشی-06",
+      "topic_id": "T19",
+      "topic_name": "خودسرزنشی",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خودسرزنشی».",
+      "source_exercise": "معیار منصفانه: همان موقعیت را با همان معیار برای فرد دیگری ارزیابی کنید.",
+      "source_action": "همان معیار را برای خود و فردی دیگر به کار ببر و تفاوت را بررسی کن.",
+      "proposed_title": "به‌کارگیری معیار منصفانه برای خود",
+      "proposed_intro": "همان معیار را برای خود و فردی دیگر به کار ببر و تفاوت ارزیابی را بررسی کن؛ هدف حذف مسئولیت نیست، بلکه سنجش منصفانه است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خودسرزنشی-07",
+      "topic_id": "T19",
+      "topic_name": "خودسرزنشی",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خودسرزنشی».",
+      "source_exercise": "هدف: یک پاسخ متعادل‌تر به خطا تعیین کنید.",
+      "source_action": "یک پاسخ منصفانه به خودت بنویس که هم خطای مشخص را انکار نکند و هم از حکم کلی یا مجازات خودداری کند؛ فعلاً تعیین جبران یا برنامه اصلاحی لازم نیست.",
+      "proposed_title": "پاسخ متعادل به خطا",
+      "proposed_intro": "پاسخی بنویس که خطای مشخص را انکار نکند، اما به حکم کلی دربارهٔ هویت یا مجازات خود تبدیل نشود.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کمال‌گرایی-04",
+      "topic_id": "T20",
+      "topic_name": "کمال‌گرایی",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کمال‌گرایی».",
+      "source_exercise": "ترس زیرین: اشتباه، قضاوت، طرد یا از دست دادن کنترل را شناسایی کنید.",
+      "source_action": "برای ترس شناسایی‌شده یک پاسخ حمایتی واقع‌بینانه بنویس.",
+      "proposed_title": "شناسایی ترس زیر استاندارد سخت‌گیرانه",
+      "proposed_intro": "بررسی کن پشت معیار افراطی چه نگرانی‌ای هست: اشتباه، قضاوت، طرد یا ازدست‌دادن کنترل؛ پاسخ را بدون نتیجه‌گیری قطعی ثبت کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کمال‌گرایی-05",
+      "topic_id": "T20",
+      "topic_name": "کمال‌گرایی",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کمال‌گرایی».",
+      "source_exercise": "معیار کافی: برای یک کار معیار پایان قابل قبول تعیین کنید.",
+      "source_action": "معیار پایان را پیش از شروع روی کاغذ قرار بده.",
+      "proposed_title": "تعریف معیار کافی برای پایان کار",
+      "proposed_intro": "برای یک کار کم‌خطر، معیار پایانِ قابل قبول را پیش از شروع روشن کن؛ استانداردهای ضروری ایمنی و حرفه‌ای باید حفظ شوند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کمال‌گرایی-06",
+      "topic_id": "T20",
+      "topic_name": "کمال‌گرایی",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کمال‌گرایی».",
+      "source_exercise": "نسخه اولیه: کاری را به شکل پیش‌نویس ناقص اما قابل استفاده شروع کنید.",
+      "source_action": "نسخه اولیه را با حداقل اطلاعات لازم بساز و آن را نگه دار.",
+      "proposed_title": "ساخت نسخهٔ اولیه به‌جای انتظار برای کمال",
+      "proposed_intro": "یک پیش‌نویس قابل استفاده بساز و آن را از نسخهٔ نهایی جدا نگه دار؛ هدف شروع است، نه تحویل عجولانهٔ کار حساس.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کمال‌گرایی-07",
+      "topic_id": "T20",
+      "topic_name": "کمال‌گرایی",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کمال‌گرایی».",
+      "source_exercise": "هدف متعادل: یک هدف قابل سنجش با محدوده زمانی مشخص انتخاب کنید.",
+      "source_action": "هدف را با زمان و کیفیت مورد نیاز همان کار هماهنگ کن.",
+      "proposed_title": "هدف متعادل با محدودهٔ زمانی",
+      "proposed_intro": "یک هدف قابل سنجش انتخاب کن و زمان و کیفیت موردنیاز همان کار را در نظر بگیر؛ هدف را از منابع واقعی جدا نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اجتناب-04",
+      "topic_id": "T21",
+      "topic_name": "اجتناب",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اجتناب».",
+      "source_exercise": "برای یک رفتار مشخص بررسی کن آیا تهدید، خشونت، اجبار، خطر پزشکی/محیطی، پیامد حقوقی یا مسئولیت مراقبتی وجود دارد؛ اگر پاسخ نامعلوم است، آن را نامعلوم ثبت کن.",
+      "source_action": "در صورت وجود خطر یا ابهام جدی، رفتار حفاظتی را حفظ کن و برای ارزیابی از منبع واجد صلاحیت کمک بگیر.",
+      "proposed_title": "غربال خطر پیش از بررسی اجتناب",
+      "proposed_intro": "پیش از تحلیل دوری‌کردن، احتمال تهدید، خشونت، اجبار، خطر پزشکی یا مسئولیت مراقبتی را بررسی کن؛ ابهام را صریحاً نامعلوم بگذار.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اجتناب-05",
+      "topic_id": "T21",
+      "topic_name": "اجتناب",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اجتناب».",
+      "source_exercise": "یک نمونه را در یکی از دو دسته قرار بده: دوری از فعالیت/مکان/تعامل، یا تلاش برای حذف/سرکوب فکر و احساس. اگر هر دو وجود دارند، هر دو را جدا ثبت کن.",
+      "source_action": "نوع غالب را نام ببر؛ هنوز برای تغییر آن برنامه نساز.",
+      "proposed_title": "تمایز اجتناب موقعیتی از اجتناب تجربه‌ای",
+      "proposed_intro": "مشخص کن از یک موقعیت بیرونی دوری می‌کنی یا می‌کوشی فکر و احساس ناخوشایند را حذف کنی؛ اگر هر دو رخ می‌دهند جدا ثبت کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اجتناب-06",
+      "topic_id": "T21",
+      "topic_name": "اجتناب",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اجتناب».",
+      "source_exercise": "برای یک رفتار کم‌خطر، دو ستون بساز: «اثر همان لحظه» و «اثر در روزها/هفته‌های بعد». اگر پیامد بلندمدت را نمی‌دانی، حدس نزن.",
+      "source_action": "یک هزینه یا فایده را که شواهد واقعی دارد مشخص کن.",
+      "proposed_title": "سنجش پیامد فوری و پیامد دیرتر اجتناب",
+      "proposed_intro": "برای یک رفتار کم‌خطر، اثر همان لحظه را با پیامد روزها یا هفته‌های بعد مقایسه کن؛ پیامد نامعلوم را حدس نزن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اجتناب-07",
+      "topic_id": "T21",
+      "topic_name": "اجتناب",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اجتناب».",
+      "source_exercise": "چهار عنوان را تکمیل کن: رفتار، زمینه، پیامد فوری و وضعیت خطر. هر بخش نامعلوم را صریحاً نامعلوم بگذار.",
+      "source_action": "فقط یک سؤال را برای بررسی بعدی انتخاب کن؛ رفتار را هنوز تغییر نده.",
+      "proposed_title": "جمع‌بندی زمینه، رفتار و وضعیت خطر",
+      "proposed_intro": "رفتار، زمینه، پیامد فوری و وضعیت خطر را کنار هم ثبت کن؛ هر بخش نامعلوم باید همان‌طور نامعلوم بماند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "استرس-04",
+      "topic_id": "T22",
+      "topic_name": "استرس",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «استرس».",
+      "source_exercise": "عامل خارج از کنترل: آنچه فعلاً تغییرپذیر نیست را از برنامه اقدام جدا کنید.",
+      "source_action": "برای عامل خارج از کنترل، مرز واقع‌بینانه و نیاز احتمالی به حمایت را بنویس.",
+      "proposed_title": "تفکیک عامل فشار از حوزهٔ کنترل",
+      "proposed_intro": "عامل‌هایی را که فعلاً تغییرپذیر نیستند از برنامهٔ اقدام جدا کن و نیاز احتمالی به حمایت را مشخص کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "استرس-05",
+      "topic_id": "T22",
+      "topic_name": "استرس",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «استرس».",
+      "source_exercise": "اولویت فوری: کارهای ضروری امروز را از کارهای قابل تعویق تفکیک کنید.",
+      "source_action": "فقط سه کار ضروری را با دلیل انتخاب کن.",
+      "proposed_title": "اولویت‌بندی کارهای ضروری زیر فشار",
+      "proposed_intro": "کارهای ضروری امروز را از موارد قابل تعویق جدا کن؛ اولویت را بر اساس پیامد واقعی تعیین کن، نه احساس فوریت همه‌چیز.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "استرس-06",
+      "topic_id": "T22",
+      "topic_name": "استرس",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «استرس».",
+      "source_exercise": "هدف تنظیم: یک روش کوتاه آرام‌سازی متناسب با خود انتخاب کنید.",
+      "source_action": "روش تنظیم را انتخاب کن و اثر آن را بدون انتظار حذف کامل استرس بسنج.",
+      "proposed_title": "انتخاب روش تنظیم متناسب با فرد",
+      "proposed_intro": "یک روش کوتاه و کم‌خطر برای تنظیم انتخاب کن و اثر آن را بدون انتظار حذف کامل استرس مشاهده کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "استرس-07",
+      "topic_id": "T22",
+      "topic_name": "استرس",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «استرس».",
+      "source_exercise": "در وضعیت راحت، فقط بررسی کن فک، شانه‌ها یا دست‌ها منقبض‌اند یا نه؛ اگر راحت بود، اجازه بده عضلات بدون فشار و کشش اجباری رها شوند.",
+      "source_action": "پس از یک کار پرفشار، مکث کوتاهی کن و یک ناحیه را بدون فشار شل کن؛ اگر تغییری رخ نداد، همان مشاهده کافی است.",
+      "proposed_title": "مشاهدهٔ تنش عضلانی و مکث طبیعی",
+      "proposed_intro": "در وضعیت راحت، تنش فک، شانه یا دست را مشاهده کن؛ اگر رهاسازی طبیعی و بی‌فشار ممکن است آن را امتحان کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "احساس بی‌ارزشی-04",
+      "topic_id": "T23",
+      "topic_name": "احساس بی‌ارزشی",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «احساس بی‌ارزشی».",
+      "source_exercise": "تعمیم افراطی: واژه‌هایی مانند هیچ‌کس، همیشه و بی‌فایده را در فکرها پیدا کنید.",
+      "source_action": "جمله را با این پرسش محدود کن: «این اتفاق درباره ارزش کلی من چه چیزی را ثابت نمی‌کند؟»؛ دامنه ادعا را کاهش بده و مسئولیت رفتاری واقعی را جداگانه نگه دار.",
+      "proposed_title": "محدودکردن تعمیمِ فکر بی‌ارزشی",
+      "proposed_intro": "واژه‌های کلی مانند «هیچ‌کس» یا «همیشه» را در فکرها شناسایی کن؛ یک رویداد یا عملکرد، ارزش کلی انسان را اثبات یا رد نمی‌کند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "احساس بی‌ارزشی-05",
+      "topic_id": "T23",
+      "topic_name": "احساس بی‌ارزشی",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «احساس بی‌ارزشی».",
+      "source_exercise": "نقش‌ها: نقش‌های مختلف زندگی را که فقط یکی از آن‌ها نیستید فهرست کنید.",
+      "source_action": "یک نقش را که امروز در آن حضور داری در عمل نام ببر.",
+      "proposed_title": "دیدن خود در چند نقش زندگی",
+      "proposed_intro": "نقش‌های مختلف زندگی را نام ببر تا یک حوزهٔ عملکردی تمام تصویر تو را تعریف نکند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "احساس بی‌ارزشی-06",
+      "topic_id": "T23",
+      "topic_name": "احساس بی‌ارزشی",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «احساس بی‌ارزشی».",
+      "source_exercise": "شواهد رابطه‌ای و مراقبتی: یک نمونه را ثبت کنید که در آن به نیاز خود یا دیگری پاسخ داده‌اید؛ عملکرد یا دستاورد معیار ارزش نیست.",
+      "source_action": "نمونه‌ای از مراقبت، احترام یا حضور انسانی را ثبت کن؛ آن را به موفقیت شغلی یا مهارتی تبدیل نکن.",
+      "proposed_title": "ثبت شواهد مراقبت و حضور انسانی",
+      "proposed_intro": "نمونه‌ای از مراقبت، احترام یا حضور را ثبت کن؛ ارزش انسانی را به دستاورد شغلی یا مهارتی تقلیل نده.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "احساس بی‌ارزشی-07",
+      "topic_id": "T23",
+      "topic_name": "احساس بی‌ارزشی",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «احساس بی‌ارزشی».",
+      "source_exercise": "یک نیاز فعلی را مشخص کن و بررسی کن چه شرطی در ذهن تو مانع پاسخ‌دادن به آن می‌شود؛ نیاز را از قضاوت درباره ارزش خود جدا کن.",
+      "source_action": "یک پاسخ کوچک به همان نیاز انتخاب کن که به اثبات شایستگی یا جبران عملکرد وابسته نباشد.",
+      "proposed_title": "پاسخ به نیاز بدون شرط اثبات ارزش",
+      "proposed_intro": "یک نیاز فعلی را از قضاوت دربارهٔ ارزش خود جدا کن و پاسخی کوچک انتخاب کن که به اثبات شایستگی وابسته نباشد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکل در کنترل هیجان-04",
+      "topic_id": "T24",
+      "topic_name": "مشکل در کنترل هیجان",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکل در کنترل هیجان».",
+      "source_exercise": "نشانه بدن: تغییرات تنفس، عضلات یا ضربان را بدون قضاوت مشاهده کنید.",
+      "source_action": "پس از نام‌گذاری نشانه، یک پاسخ خنثی انتخاب کن: ادامه فعالیت، مکث کوتاه یا تغییر وضعیت؛ نشانه را عمداً تشدید نکن.",
+      "proposed_title": "مشاهدهٔ نشانهٔ بدنی هیجان",
+      "proposed_intro": "تغییر تنفس، عضلات یا ضربان را بدون قضاوت مشاهده کن؛ هدف آگاهی است، نه تشدید عمدی نشانه.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکل در کنترل هیجان-05",
+      "topic_id": "T24",
+      "topic_name": "مشکل در کنترل هیجان",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکل در کنترل هیجان».",
+      "source_exercise": "محرک و زمینه: رویداد، خستگی و عوامل زمینه‌ای را تفکیک کنید.",
+      "source_action": "یک عامل زمینه‌ای را به‌عنوان احتمال ثبت کن، نه علت قطعی.",
+      "proposed_title": "تفکیک محرک از زمینهٔ هیجان",
+      "proposed_intro": "رویداد آغازگر را از خستگی و سایر عوامل زمینه‌ای جدا کن؛ هم‌زمانی یک عامل، علت قطعی را ثابت نمی‌کند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکل در کنترل هیجان-06",
+      "topic_id": "T24",
+      "topic_name": "مشکل در کنترل هیجان",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکل در کنترل هیجان».",
+      "source_exercise": "نیاز زیر هیجان: نیاز به امنیت، احترام، استراحت یا ارتباط را بررسی کنید.",
+      "source_action": "از میان امنیت، احترام، استراحت یا ارتباط، یک نیاز پشت هیجان را انتخاب کن و فقط نام آن را برای خودت ثبت کن؛ لازم نیست آن را به درخواست از دیگری تبدیل کنی.",
+      "proposed_title": "شناخت نیاز احتمالی پشت هیجان",
+      "proposed_intro": "نیاز به امنیت، احترام، استراحت یا ارتباط را بررسی کن؛ نام‌گذاری نیاز الزاماً به معنی درخواست از دیگری نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکل در کنترل هیجان-07",
+      "topic_id": "T24",
+      "topic_name": "مشکل در کنترل هیجان",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکل در کنترل هیجان».",
+      "source_exercise": "هدف تنظیم: هدف را کاهش آسیب و انتخاب پاسخ بدانید، نه حذف احساس.",
+      "source_action": "پیش از تمرین، پاسخ رفتاری ایمن و هدفمند را مشخص کن.",
+      "proposed_title": "تعریف هدف تنظیم به‌جای حذف هیجان",
+      "proposed_intro": "هدف را کاهش آسیب و انتخاب پاسخ ایمن بدان، نه حذف احساس؛ پاسخ رفتاری را در حوزهٔ اختیار خودت مشخص کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    }
+  ]
+}
