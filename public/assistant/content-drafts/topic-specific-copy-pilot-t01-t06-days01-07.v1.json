@@ -1,0 +1,1108 @@
+{
+  "schema_version": "1.0.0",
+  "batch_id": "topic-specific-copy-pilot-t01-t06-days01-07",
+  "status": "draft_pending_owner_and_expert_review",
+  "purpose": "بازنویسی آزمایشی عنوان و مقدمه برای ۶ موضوع نخست در هفته اول؛ تمرین و اقدام موجود در این مرحله تغییر داده نشده‌اند و هیچ رکوردی مجاز runtime نیست.",
+  "source": "content-rewrite-source-952 artifact from validation run 42657008617",
+  "design_rules": [
+    "عنوان باید مهارت یا مسئله مشخص همان موضوع و همان روز را نشان دهد؛ عنوان‌های قالبی مشترک حذف شوند.",
+    "مقدمه باید به محتوای همان روز وصل باشد و از وعده درمان، تشخیص یا قطعیت علّی پرهیز کند.",
+    "متن ایمنی پایانی مشترک فعلاً حفظ می‌شود؛ تکرار هشدار ایمنی یکسان به‌خودی‌خود نقص محسوب نمی‌شود.",
+    "تمرین و اقدام فعلی در این پایلوت فقط منبع زمینه‌اند و تا بازبینی معنایی جداگانه تأییدشده نیستند.",
+    "همه رکوردها پیش‌نویس‌اند؛ runtime_eligible=false و reviewer خالی می‌ماند."
+  ],
+  "records": [
+    {
+      "source_content_id": "خشم-01",
+      "topic_name": "خشم",
+      "day_number": 1,
+      "current_title": "",
+      "proposed_title": "خشم در لحظه: احساس، میل و رفتار",
+      "proposed_intro": "برای شروع، سه لایه تجربه را از هم جدا می‌کنیم: اتفاق بیرونی، احساسی که بالا می‌آید و رفتاری که واقعاً انجام می‌دهی.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خشم-02",
+      "topic_name": "خشم",
+      "day_number": 2,
+      "current_title": "",
+      "proposed_title": "خشم و انتخاب پاسخ کم‌آسیب",
+      "proposed_intro": "این تمرین درباره انتخاب میان اعتراض روشن، فاصله‌گرفتن و رفتار آسیب‌زا است؛ احساس خشم به‌تنهایی هیچ‌کدام از این رفتارها را اجتناب‌ناپذیر نمی‌کند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خشم-03",
+      "topic_name": "خشم",
+      "day_number": 3,
+      "current_title": "",
+      "proposed_title": "زمینه‌های پیش از خشم",
+      "proposed_intro": "برای فهم بهتر خشم، به اتفاق پیش از آن و عواملی مانند خستگی، فشار یا ابهام نگاه کن؛ هم‌زمانی را با علت قطعی اشتباه نگیر.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خشم-04",
+      "topic_name": "خشم",
+      "day_number": 4,
+      "current_title": "",
+      "proposed_title": "ردیابی نشانه‌های طبیعی برانگیختگی",
+      "proposed_intro": "بدن ممکن است هنگام خشم تغییر کند؛ فقط نشانه‌ای را که خودبه‌خود متوجه می‌شوی ثبت کن و آن را عمداً ایجاد نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خشم-05",
+      "topic_name": "خشم",
+      "day_number": 5,
+      "current_title": "",
+      "proposed_title": "ترسیم زنجیره خشم بدون مقصرسازی",
+      "proposed_intro": "این روز به مرتب‌کردن مراحل تجربه اختصاص دارد؛ جاهای نامعلوم را خالی بگذار و دنبال یک علت قطعی یا مقصر نگرد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خشم-06",
+      "topic_name": "خشم",
+      "day_number": 6,
+      "current_title": "",
+      "proposed_title": "شناخت سطح تنش و حد ایمنی",
+      "proposed_intro": "شدت خشم در همه موقعیت‌ها یکسان نیست؛ نشانه‌های شخصی هر سطح و اقدام حفاظتی لازم را از هم تفکیک کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خشم-07",
+      "topic_name": "خشم",
+      "day_number": 7,
+      "current_title": "",
+      "proposed_title": "جمع‌بندی نشانه و پاسخ مسئولانه",
+      "proposed_intro": "در پایان هفته اول، آنچه درباره محرک، نشانه زودهنگام و انتخاب رفتاری آموخته‌ای مرور کن؛ موفقیت به حذف کامل خشم وابسته نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اضطراب-01",
+      "topic_name": "اضطراب",
+      "day_number": 1,
+      "current_title": "",
+      "proposed_title": "نقشه نگرانی: پیش‌بینی و واکنش",
+      "proposed_intro": "یک موقعیت واقعی را بررسی می‌کنی تا پیش‌بینی ذهنی، احساس و واکنش رفتاری با هم اشتباه گرفته نشوند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اضطراب-02",
+      "topic_name": "اضطراب",
+      "day_number": 2,
+      "current_title": "",
+      "proposed_title": "تفکیک مسئله قابل اقدام از نگرانی نامطمئن",
+      "proposed_intro": "هر نگرانی به اقدام فوری نیاز ندارد؛ امروز میان مسئله قابل حل، نیاز به اطلاعات و پیش‌بینی نامطمئن فرق بگذار.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اضطراب-03",
+      "topic_name": "اضطراب",
+      "day_number": 3,
+      "current_title": "",
+      "proposed_title": "چرخه نگرانی و رفتار اطمینان‌جویی",
+      "proposed_intro": "نگرانی گاهی به بررسی یا اجتناب کوتاه‌مدت منجر می‌شود؛ زنجیره را توصیف کن، بدون اینکه هر احتیاطی را ناسازگارانه بدانی.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اضطراب-04",
+      "topic_name": "اضطراب",
+      "day_number": 4,
+      "current_title": "",
+      "proposed_title": "زمان و زمینه بروز نگرانی",
+      "proposed_intro": "به جای جست‌وجوی علت قطعی، زمان‌هایی را که نگرانی در آن‌ها بیشتر می‌شود با نمونه‌های روزمره مقایسه کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اضطراب-05",
+      "topic_name": "اضطراب",
+      "day_number": 5,
+      "current_title": "",
+      "proposed_title": "مشاهده ملایم نشانه‌های جسمانی اضطراب",
+      "proposed_intro": "نشانه‌های جسمی اختصاصی اضطراب نیستند؛ فقط تغییر خودبه‌خودی را یک بار نام ببر و از اندازه‌گیری یا وارسی مکرر پرهیز کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اضطراب-06",
+      "topic_name": "اضطراب",
+      "day_number": 6,
+      "current_title": "",
+      "proposed_title": "سنجش پیش‌بینی در برابر اطلاعات موجود",
+      "proposed_intro": "یک پیش‌بینی را کنار دانسته‌های واقعی بگذار؛ هدف حذف عدم‌قطعیت نیست، بلکه روشن‌کردن مرز دانسته و حدس است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اضطراب-07",
+      "topic_name": "اضطراب",
+      "day_number": 7,
+      "current_title": "",
+      "proposed_title": "مرور الگوی هفتگی اضطراب",
+      "proposed_intro": "یادداشت‌ها را برای یافتن زمینه پرتکرار و سؤال بی‌پاسخ مرور کن؛ اگر داده کافی نداری، از ساختن مثال خودداری کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس-01",
+      "topic_name": "ترس",
+      "day_number": 1,
+      "current_title": "",
+      "proposed_title": "نقشه ترس: نشانه، معنا و پاسخ",
+      "proposed_intro": "یک تجربه کم‌فشار را توصیف کن و میان نشانه بیرونی، معنایی که به آن دادی و پاسخی که انتخاب کردی تفاوت بگذار.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس-02",
+      "topic_name": "ترس",
+      "day_number": 2,
+      "current_title": "",
+      "proposed_title": "خطر قابل مشاهده و پیش‌بینی ترسناک",
+      "proposed_intro": "ترس می‌تواند به خطر واقعی یا پیش‌بینی مربوط باشد؛ امروز شواهد موجود را از احتمال‌های هنوز نامعلوم جدا کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس-03",
+      "topic_name": "ترس",
+      "day_number": 3,
+      "current_title": "",
+      "proposed_title": "ردیابی زنجیره پاسخ به تهدید",
+      "proposed_intro": "به ترتیب رویداد، برداشت، احساس و پاسخ را ثبت کن؛ اگر خطر واقعی یا فوری وجود دارد، ایمنی مقدم بر تحلیل است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس-04",
+      "topic_name": "ترس",
+      "day_number": 4,
+      "current_title": "",
+      "proposed_title": "شناخت واکنش طبیعی بدن به ترس",
+      "proposed_intro": "بدن ممکن است در برابر تهدید واکنش نشان دهد؛ فقط تجربه‌ای را که خودبه‌خود متوجه شده‌ای ثبت کن و بدن را وارسی نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس-05",
+      "topic_name": "ترس",
+      "day_number": 5,
+      "current_title": "",
+      "proposed_title": "تمایز نزدیک‌شدن، دورشدن و درخواست کمک",
+      "proposed_intro": "پاسخ به ترس می‌تواند شکل‌های متفاوتی داشته باشد؛ هیچ واکنشی را بدون توجه به موقعیت و ایمنی درست یا غلط اعلام نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس-06",
+      "topic_name": "ترس",
+      "day_number": 6,
+      "current_title": "",
+      "proposed_title": "نیاز حفاظتی پشت احساس ترس",
+      "proposed_intro": "گاهی ترس به نیاز اطلاعات، فاصله، همراهی یا حمایت اشاره می‌کند؛ نیاز را نام ببر، نه اینکه خود را به مواجهه وادار کنی.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس-07",
+      "topic_name": "ترس",
+      "day_number": 7,
+      "current_title": "",
+      "proposed_title": "مرور نشانه‌های تهدید و ابهام",
+      "proposed_intro": "یادداشت‌های هفته را مرور کن و یک نشانه روشن، یک موضوع نامعلوم و یک نیاز حفاظتی را از هم جدا نگه دار.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت-01",
+      "topic_name": "نفرت",
+      "day_number": 1,
+      "current_title": "",
+      "proposed_title": "جهت تجربه نفرت: خود، فرد یا گروه",
+      "proposed_intro": "پیش از هر نتیجه‌گیری، مشخص کن تجربه متوجه خودت، فردی مشخص یا گروهی از افراد است؛ اگر روشن نیست، ابهام را حفظ کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت-02",
+      "topic_name": "نفرت",
+      "day_number": 2,
+      "current_title": "",
+      "proposed_title": "رفتار مشاهده‌شده در برابر داوری درباره نیت",
+      "proposed_intro": "یک رفتار یا گفته قابل مشاهده را از برداشت درباره نیت یا ماهیت فرد جدا کن؛ احساس رنجش را هم بی‌اعتبار نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت-03",
+      "topic_name": "نفرت",
+      "day_number": 3,
+      "current_title": "",
+      "proposed_title": "تداوم هیجان یا نگرش خصمانه",
+      "proposed_intro": "مدت و تکرار تجربه را بررسی کن تا موج هیجانی کوتاه‌مدت با نگرش پایدار اشتباه نشود.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت-04",
+      "topic_name": "نفرت",
+      "day_number": 4,
+      "current_title": "",
+      "proposed_title": "مرزبندی میان نفرت از خود و دیگری",
+      "proposed_intro": "جهت تجربه اهمیت دارد؛ اگر خودمعطوف است، آن را با مسیر مستقل خودبیزاری یکی نکن و وارد تمرین نامتناسب نشو.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت-05",
+      "topic_name": "نفرت",
+      "day_number": 5,
+      "current_title": "",
+      "proposed_title": "تمایز خشم لحظه‌ای و خصومت پایدار",
+      "proposed_intro": "دو نمونه را از نظر مدت، تکرار و اثر بر رفتار مقایسه کن؛ شدت احساس به‌تنهایی قصد آسیب را ثابت نمی‌کند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت-06",
+      "topic_name": "نفرت",
+      "day_number": 6,
+      "current_title": "",
+      "proposed_title": "بررسی شواهد آسیب و نقض مرز",
+      "proposed_intro": "اگر آسیب یا نقض مرزی رخ داده، شواهد را جدی ثبت کن؛ آن را از پیش خیال یا سوءبرداشت فرض نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت-07",
+      "topic_name": "نفرت",
+      "day_number": 7,
+      "current_title": "",
+      "proposed_title": "بازبینی تعمیم درباره افراد و گروه‌ها",
+      "proposed_intro": "یک حکم کلی را با داده‌های واقعی بسنج؛ تجربه با یک فرد، به‌تنهایی درباره همه اعضای یک گروه نتیجه نمی‌دهد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "حسادت-01",
+      "topic_name": "حسادت",
+      "day_number": 1,
+      "current_title": "",
+      "proposed_title": "نقشه حسادت: رابطه یا مقایسه اجتماعی",
+      "proposed_intro": "مشخص کن حسادت در این تجربه به رابطه، توجه، مقایسه اجتماعی یا موضوع دیگری مربوط است؛ برچسب کلی کافی نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "حسادت-02",
+      "topic_name": "حسادت",
+      "day_number": 2,
+      "current_title": "",
+      "proposed_title": "محرک حسادت و اطلاعات نامعلوم",
+      "proposed_intro": "موقعیت آغازگر را با زمان و زمینه ثبت کن و میان آنچه دیده‌ای و آنچه درباره نیت دیگری حدس می‌زنی فرق بگذار.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "حسادت-03",
+      "topic_name": "حسادت",
+      "day_number": 3,
+      "current_title": "",
+      "proposed_title": "تفکیک حسادت رابطه‌ای از رشک",
+      "proposed_intro": "حسادت درباره امنیت یک رابطه با رشک نسبت به دستاورد یا دارایی دیگری یکسان نیست؛ نمونه‌ها را جداگانه بررسی کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "حسادت-04",
+      "topic_name": "حسادت",
+      "day_number": 4,
+      "current_title": "",
+      "proposed_title": "ترس رابطه‌ای و شواهد موجود",
+      "proposed_intro": "اگر نگرانی درباره تغییر رابطه داری، ترس مشخص و شواهد واقعی را بنویس؛ احتمال را به واقعیت قطعی تبدیل نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "حسادت-05",
+      "topic_name": "حسادت",
+      "day_number": 5,
+      "current_title": "",
+      "proposed_title": "مشاهده در برابر تفسیر در حسادت",
+      "proposed_intro": "یک نشانه قابل مشاهده را از نتیجه‌گیری‌هایی مانند خیانت یا بی‌علاقگی جدا کن؛ برای نتیجه‌گیری به شواهد کافی نیاز است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "حسادت-06",
+      "topic_name": "حسادت",
+      "day_number": 6,
+      "current_title": "",
+      "proposed_title": "مقایسه اجتماعی و اطلاعات ناقص",
+      "proposed_intro": "مقایسه‌ای را که حسادت را تشدید کرده بررسی کن و مشخص کن چه بخش‌هایی از زندگی دیگری را واقعاً نمی‌دانی.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "حسادت-07",
+      "topic_name": "حسادت",
+      "day_number": 7,
+      "current_title": "",
+      "proposed_title": "نیاز زیر حسادت: امنیت، توجه یا توافق",
+      "proposed_intro": "نیاز احتمالی را به زبان روشن بنویس؛ نیاز به اطمینان، مجوز نظارت یا کنترل حریم خصوصی دیگری ایجاد نمی‌کند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "غم و سوگ-01",
+      "topic_name": "غم و سوگ",
+      "day_number": 1,
+      "current_title": "",
+      "proposed_title": "نام‌گذاری فقدان با حد قابل تحمل",
+      "proposed_intro": "اگر آمادگی داری، نوع فقدان یا تغییر مهم را فقط در حدی که قابل تحمل است نام ببر؛ شرح جزئیات اجباری نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "غم و سوگ-02",
+      "topic_name": "غم و سوگ",
+      "day_number": 2,
+      "current_title": "",
+      "proposed_title": "شناخت نوع فقدان و تغییر زندگی",
+      "proposed_intro": "فقدان می‌تواند به مرگ، جدایی، سلامت، نقش یا آینده مربوط باشد؛ نوع تجربه را بدون رتبه‌بندی درد ثبت کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "غم و سوگ-03",
+      "topic_name": "غم و سوگ",
+      "day_number": 3,
+      "current_title": "",
+      "proposed_title": "واقعیت فقدان و آرزوی برآورده‌نشده",
+      "proposed_intro": "آنچه رخ داده را از چیزی که آرزو داشتی رخ دهد جدا کن؛ هر دو می‌توانند مهم باشند، اما یکسان نیستند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "غم و سوگ-04",
+      "topic_name": "غم و سوگ",
+      "day_number": 4,
+      "current_title": "",
+      "proposed_title": "نام‌گذاری واکنش‌های متنوع سوگ",
+      "proposed_intro": "غم، خشم، بی‌حسی، دلتنگی یا حتی آسودگی ممکن است تجربه شوند؛ لازم نیست احساس خود را با الگوی ثابت تطبیق دهی.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "غم و سوگ-05",
+      "topic_name": "غم و سوگ",
+      "day_number": 5,
+      "current_title": "",
+      "proposed_title": "نوسان شدت سوگ در زمان",
+      "proposed_intro": "شدت سوگ ممکن است در روزها و موقعیت‌های مختلف تغییر کند؛ دو زمان را مقایسه کن، نه اینکه برای خود جدول مرحله‌ای بسازی.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "غم و سوگ-06",
+      "topic_name": "غم و سوگ",
+      "day_number": 6,
+      "current_title": "",
+      "proposed_title": "یادآورهای فقدان و زمان‌های دشوار",
+      "proposed_intro": "یک زمان یا مناسبت یادآور را شناسایی کن؛ هدف پیش‌بینی قطعی واکنش نیست، بلکه شناخت موقعیت نیازمند حمایت است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "غم و سوگ-07",
+      "topic_name": "غم و سوگ",
+      "day_number": 7,
+      "current_title": "",
+      "proposed_title": "نیاز امروز در برابر انتظار بلندمدت",
+      "proposed_intro": "نیاز فعلی مانند استراحت، همراهی یا کمک عملی را از انتظار بلندمدت برای بهترشدن جدا کن؛ لازم نیست امروز برنامه بزرگی بسازی.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    }
+  ]
+}
