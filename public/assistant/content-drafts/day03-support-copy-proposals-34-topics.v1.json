@@ -22,13 +22,14 @@
       "topic_id": "T01",
       "topic_name": "خشم",
       "day_number": 3,
-      "lightExerciseText": "فقط یک پیامد خفیف واکنش را نام ببر؛ لازم نیست رخداد را دوباره مرور کنی.",
-      "lightActionText": "یک اثر قابل مشاهده بر خود یا دیگری را در چند کلمه ثبت کن.",
-      "progressActionText": "اگر امن است، یک پاسخ کم‌خطر را که در آینده می‌توانی انتخاب کنی مشخص کن.",
-      "restExerciseText": "امروز از تحلیل پیامدها فاصله بگیر و به آرامش و امنیت توجه کن.",
-      "restActionText": "اگر احتمال آسیب وجود دارد، تمرین را قطع و کمک فوری بگیر.",
+      "lightExerciseText": "یک محرک احتمالی را بدون تحلیل بیشتر نام ببر.",
+      "lightActionText": "یک عامل زمینه‌ای را فقط به‌عنوان احتمال یادداشت کن؛ علت قطعی تعیین نکن.",
+      "progressActionText": "یک نمونه دوم پیدا کن و تفاوت محرک‌ها را مشخص کن.",
+      "restExerciseText": "امروز نمونه‌ای را به یاد نیاور؛ فقط فهرست زمینه‌ها را برای زمان مناسب نگه دار.",
+      "restActionText": "امروز علت‌یابی را کنار بگذار؛ لازم نیست تجربه‌ای را به خاطر بیاوری یا بازسازی کنی.",
       "review_status": "draft_pending_expert_review",
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1"
     },
     {
       "content_id": "DRAFT_T02_D03",
