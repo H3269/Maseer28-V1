@@ -22,13 +22,14 @@
       "topic_id": "T01",
       "topic_name": "خشم",
       "day_number": 12,
-      "lightExerciseText": "یک تعامل پس از تنش را مرور کن: آیا ترمیم لازم است یا فاصله امن؟",
-      "lightActionText": "اثر رفتارت را از نیت خودت جدا و بدون توجیه بنویس.",
-      "progressActionText": "اگر تماس امن و خواسته‌شده است، یک عذرخواهی کوتاه همراه با تغییر رفتاری ارائه کن.",
-      "restExerciseText": "امروز تماس نگیر؛ فقط رفتار آسیب‌زا را متوقف کن.",
-      "restActionText": "عذرخواهی حق پاسخ‌ندادن طرف مقابل را از بین نمی‌برد.",
+      "lightExerciseText": "فقط یک ناحیه را نام ببر؛ نیازی به تغییر آن نیست.",
+      "lightActionText": "یک ناحیه تنش را فقط نام ببر؛ رهاسازی یا تغییر بدنی لازم نیست.",
+      "progressActionText": "در زمان دیگری یک ناحیه دوم را هم بررسی کن، فقط اگر روش راحت است.",
+      "restExerciseText": "رهاسازی عضله را انجام نده؛ یک فعالیت راحت و غیربدنی را انتخاب کن.",
+      "restActionText": "تمرین بدنی را کنار بگذار؛ در صورت درد یا علامت جسمی تازه/شدید، ارزیابی پزشکی مناسب بگیر.",
       "review_status": "draft_pending_expert_review",
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1"
     },
     {
       "content_id": "DRAFT_T02_D12",
