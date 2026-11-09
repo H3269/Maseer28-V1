@@ -44,7 +44,7 @@ for (const item of pilots) {
     const original = sourceByKey.get(key);
     if (!original) throw new Error('Missing source record: ' + key);
     if (r.current_title !== original.title || r.current_intro !== original.intro) {
-      throw new Error('Source title/intro mismatch: ' + key);
+      throw new Error('Source title/intro mismatch: ' + key + ' expected=' + JSON.stringify({ title: original.title, intro: original.intro }) + ' actual=' + JSON.stringify({ title: r.current_title, intro: r.current_intro }));
     }
     if (r.source_exercise !== undefined && r.source_exercise !== original.exercise) {
       throw new Error('Source exercise mismatch: ' + key);
