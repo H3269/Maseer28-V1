@@ -32,10 +32,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "proposed_title": "تفکیک نشانهٔ بدنی از تکانهٔ خشم",
-      "proposed_intro": "در یک نمونهٔ کم‌تنش، اولین تغییر بدن را از میلی که پس از آن برای فریاد، ترک موقعیت یا واکنش دیگر پیدا کردی جداگانه ثبت کن؛ هیچ‌کدام به‌تنهایی رفتار قطعی را تعیین نمی‌کنند.",
+      "proposed_title": "خشم و انتخاب پاسخ کم‌آسیب",
+      "proposed_intro": "این تمرین درباره انتخاب میان اعتراض روشن، فاصله‌گرفتن و رفتار آسیب‌زا است؛ احساس خشم به‌تنهایی هیچ‌کدام از این رفتارها را اجتناب‌ناپذیر نمی‌کند.",
       "proposed_closing": "اگر برانگیختگی با احتمال آسیب همراه شد، ثبت را کنار بگذار و ابتدا فاصلهٔ امن و کمک فوری انسانی را فراهم کن.",
-      "copy_review_status": "draft_pending_expert_review"
+      "copy_review_status": "draft_pending_expert_review",
+      "source_pilot_batch": "topic-specific-copy-pilot-t01-t06-days01-07"
     },
     {
       "content_id": "DRAFT_T02_D02",
@@ -58,10 +59,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "proposed_title": "سنجش نگرانیِ قابل اقدام",
-      "proposed_intro": "یک نگرانی را با دو معیار بررسی کن: آیا مسئله اکنون قابل حل است و آیا قدمی مشخص در اختیار توست؟ اگر پاسخ منفی است، آن را با اجبار به اطمینان تبدیل نکن.",
+      "proposed_title": "تفکیک مسئله قابل اقدام از نگرانی نامطمئن",
+      "proposed_intro": "هر نگرانی به اقدام فوری نیاز ندارد؛ امروز میان مسئله قابل حل، نیاز به اطلاعات و پیش‌بینی نامطمئن فرق بگذار.",
       "proposed_closing": "برای علائم جسمی تازه یا شدید، بررسی پزشکی را جایگزین فرضِ اضطراب کن؛ تمرین برای تشخیص علت جسمی طراحی نشده است.",
-      "copy_review_status": "draft_pending_expert_review"
+      "copy_review_status": "draft_pending_expert_review",
+      "source_pilot_batch": "topic-specific-copy-pilot-t01-t06-days01-07"
     },
     {
       "content_id": "DRAFT_T03_D02",
@@ -84,10 +86,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "proposed_title": "تمایز خطر واقعی از یادآور تهدید",
-      "proposed_intro": "یک موقعیت امن را انتخاب کن و بنویس کدام نشانه اکنون خطر واقعی را نشان می‌دهد و کدام نشانه فقط تو را به تجربه‌ای قبلی یادآوری می‌کند.",
+      "proposed_title": "خطر قابل مشاهده و پیش‌بینی ترسناک",
+      "proposed_intro": "ترس می‌تواند به خطر واقعی یا پیش‌بینی مربوط باشد؛ امروز شواهد موجود را از احتمال‌های هنوز نامعلوم جدا کن.",
       "proposed_closing": "هیچ مواجهه‌ای را برای آزمودن ترس ترتیب نده؛ اگر خطر واقعی وجود دارد، اقدام حفاظتی مناسب بر تمرین مقدم است.",
-      "copy_review_status": "draft_pending_expert_review"
+      "copy_review_status": "draft_pending_expert_review",
+      "source_pilot_batch": "topic-specific-copy-pilot-t01-t06-days01-07"
     },
     {
       "content_id": "DRAFT_T04_D02",
@@ -110,10 +113,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "proposed_title": "شناخت فاصلهٔ احساس نفرت و رفتار",
-      "proposed_intro": "اگر نفرت یا خصومت را تجربه کرده‌ای، احساس، میل لحظه‌ای و رفتاری را که واقعاً انتخاب کردی در سه بخش جدا ثبت کن؛ قصد را با عمل یکی نگیر.",
+      "proposed_title": "رفتار مشاهده‌شده در برابر داوری درباره نیت",
+      "proposed_intro": "یک رفتار یا گفته قابل مشاهده را از برداشت درباره نیت یا ماهیت فرد جدا کن؛ احساس رنجش را هم بی‌اعتبار نکن.",
       "proposed_closing": "اگر میل آسیب‌رسان به خود یا دیگری شدت گرفت، تمرین را متوقف کن و از فرد امن یا خدمات حرفه‌ای فوری کمک بگیر.",
-      "copy_review_status": "draft_pending_expert_review"
+      "copy_review_status": "draft_pending_expert_review",
+      "source_pilot_batch": "topic-specific-copy-pilot-t01-t06-days01-07"
     },
     {
       "content_id": "DRAFT_T05_D02",
@@ -136,10 +140,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "proposed_title": "تمایز حسادت، غبطه و نگرانی رابطه‌ای",
-      "proposed_intro": "یک نمونه را بررسی کن: آیا خواسته‌ای چیزی را که دیگری دارد به دست آوری، نگران ازدست‌دادن پیوندی هستی، یا خودت را با دیگری مقایسه می‌کنی؟",
+      "proposed_title": "محرک حسادت و اطلاعات نامعلوم",
+      "proposed_intro": "موقعیت آغازگر را با زمان و زمینه ثبت کن و میان آنچه دیده‌ای و آنچه درباره نیت دیگری حدس می‌زنی فرق بگذار.",
       "proposed_closing": "برای رفع ابهام به وارسی، تعقیب یا محدودکردن دیگری متوسل نشو؛ رضایت و حریم هر دو نفر باید حفظ شود.",
-      "copy_review_status": "draft_pending_expert_review"
+      "copy_review_status": "draft_pending_expert_review",
+      "source_pilot_batch": "topic-specific-copy-pilot-t01-t06-days01-07"
     },
     {
       "content_id": "DRAFT_T06_D02",
@@ -162,10 +167,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "proposed_title": "شناخت نیاز حمایتی در سوگ",
-      "proposed_intro": "در تجربهٔ فقدان، نیاز امروزت را از انتظار برای پایان‌یافتن غم جدا کن؛ ممکن است به همراهی، کمک عملی، خلوت یا حمایت تخصصی نیاز داشته باشی.",
+      "proposed_title": "شناخت نوع فقدان و تغییر زندگی",
+      "proposed_intro": "فقدان می‌تواند به مرگ، جدایی، سلامت، نقش یا آینده مربوط باشد؛ نوع تجربه را بدون رتبه‌بندی درد ثبت کن.",
       "proposed_closing": "اگر سوگ با ناتوانی شدید در مراقبت از خود یا فکر آسیب همراه است، تنها نمان و حمایت انسانی و تخصصی بگیر.",
-      "copy_review_status": "draft_pending_expert_review"
+      "copy_review_status": "draft_pending_expert_review",
+      "source_pilot_batch": "topic-specific-copy-pilot-t01-t06-days01-07"
     },
     {
       "content_id": "DRAFT_T07_D02",
