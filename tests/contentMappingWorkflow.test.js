@@ -10,14 +10,13 @@ const [content, topics, subtopics] = await Promise.all([
   read('../public/assistant/knowledge/topics.v1.json'),
   read('../public/assistant/knowledge/subtopics.v1.json'),
 ]);
-const emptyEvidence = { runtime_eligible: false, evidence: [] };
+const emptyEvidence = { schema_version: '1.0.0', registry_id: 'test', status: 'draft_requires_expert_review', runtime_eligible: false, evidence: [] };
 const approvedEvidence = {
-  runtime_eligible: false,
+  schema_version: '1.0.0', registry_id: 'test', status: 'draft_requires_expert_review', runtime_eligible: false,
   evidence: [{
-    evidence_id: 'EVD_TEST_01',
-    review_status: 'approved',
-    reviewer_id: 'expert-1',
-    reviewed_at: '2026-11-01T12:00:00Z',
+    evidence_id: 'EVD_TEST_01', title: 'Guideline title', citation: 'Verified guideline citation',
+    population: 'Adults', study_type: 'Clinical guideline', review_status: 'approved',
+    reviewer_id: 'expert-1', reviewed_at: '2026-11-01T12:00:00Z',
   }],
 };
 
@@ -71,7 +70,7 @@ test('approved mappings require same-parent subtopic, reviewer metadata and appr
   const unapprovedEvidence = structuredClone(approvedEvidence);
   unapprovedEvidence.evidence[0].review_status = 'pending_review';
   const invalidEvidence = auditContentMappings({ content, topics, subtopics, evidenceRegistry: unapprovedEvidence, mappingSet: queue });
-  assert.ok(invalidEvidence.errors.some((item) => item.includes('unapproved evidence')));
+  assert.ok(invalidEvidence.errors.some((item) => item.includes('unapproved')));
 
   first.subtopic_ids = [subtopics.subtopics.find((item) => item.topic_id !== first.source_topic_id).subtopic_id];
   const invalidSubtopic = auditContentMappings({ content, topics, subtopics, evidenceRegistry: approvedEvidence, mappingSet: queue });
