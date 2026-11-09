@@ -55,7 +55,7 @@ test('T01 anger exercises and actions have no exact duplicates across the other 
   const overlay = JSON.parse(await read('public/content/daily-text-overrides.v1.json'));
   const categories = overlay.categories;
   const anger = categories['خشم'].days;
-  const normalize = (value) => value.normalize('NFKC').replace(/\\s+/g, ' ').trim();
+  const normalize = (value) => value.normalize('NFKC').replace(/\s+/g, ' ').trim();
   for (const field of ['exercise', 'actionText']) {
     const angerValues = new Set(anger.map((day) => normalize(day[field])));
     for (const [topic, category] of Object.entries(categories)) {
@@ -71,7 +71,7 @@ test('all 28 T01 days have valid source references in the evidence registry', as
   const csv = await read('docs/CONTENT_952_DAILY_AUDIT_INDEX_B2V.csv');
   const registry = JSON.parse(await read('public/assistant/evidence/sources.v1.json'));
   const validIds = new Set(registry.sources.map((source) => source.source_id));
-  const rows = csv.split(/\\r?\\n/).filter((line) => /^"خشم-\\d+"/.test(line));
+  const rows = csv.split(/\r?\n/).filter((line) => /^"خشم-\d+"/.test(line));
   assert.equal(rows.length, 28);
   for (const row of rows) {
     const ids = [...row.matchAll(/SRC-[A-Z0-9-]+/g)].map((match) => match[0]);
