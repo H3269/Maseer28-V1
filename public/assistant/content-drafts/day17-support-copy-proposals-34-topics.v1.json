@@ -22,15 +22,16 @@
       "topic_id": "T01",
       "topic_name": "خشم",
       "day_number": 17,
-      "lightExerciseText": "سه راهبرد پس از تنش را مقایسه کن: مکث، بیان اثر رفتار و ترمیم؛ کدام با سطح خطر و آمادگی دو طرف سازگار است؟",
-      "lightActionText": "در تعامل امن، یک مسئولیت رفتاری را بدون توجیه بپذیر و برای مکث بعدی توافق مشخص پیشنهاد کن.",
-      "progressActionText": "راهبردی را انتخاب کن که احتمال تکرار پرخاش را کم می‌کند و اجرای آن را در چند موقعیت ثبت کن.",
-      "restExerciseText": "امروز فقط از تشدید تعارض دوری کن؛ ترمیم را به زمان امن بسپار.",
-      "restActionText": "اگر خطر آسیب وجود دارد، فاصله و کمک فوری مقدم است.",
+      "lightExerciseText": "فقط نیاز را در یک جمله بنویس.",
+      "lightActionText": "یک نیاز را برای خودت نام ببر؛ بیان درخواست یا تماس با کسی لازم نیست.",
+      "progressActionText": "یک درخواست مشخص و یک گزینه جایگزین در صورت رد درخواست آماده کن.",
+      "restExerciseText": "درخواست را آماده نکن؛ فقط نیاز خودت را برای خودت نام ببر.",
+      "restActionText": "درخواست را آماده یا بیان نکن؛ روشن‌کردن نیاز برای خودت کافی است.",
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1"
     },
     {
       "content_id": "DRAFT_T02_D17",
