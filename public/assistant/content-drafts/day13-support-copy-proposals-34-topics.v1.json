@@ -22,13 +22,14 @@
       "topic_id": "T01",
       "topic_name": "خشم",
       "day_number": 13,
-      "lightExerciseText": "یک رفتار قابل مشاهده را که نشان‌دهنده توقف واکنش آسیب‌زا است انتخاب کن.",
-      "lightActionText": "معیار را به رفتار مشخص محدود کن؛ نه اینکه انتظار نداشته باشی عصبانی شوی.",
-      "progressActionText": "در یک هفته، توقف توهین یا درخواست مکث را پیگیری کن و لغزش را به اصلاح تبدیل کن.",
-      "restExerciseText": "امروز فقط یک نشانه ایمنی را حفظ کن؛ ثبت روزانه لازم نیست.",
-      "restActionText": "در خطر آسیب، کمک فوری و فاصله امن مقدم است.",
+      "lightExerciseText": "فقط یک موقعیت کم‌خطر را مشخص کن که در آن بتوانی یک راهبرد را در آینده بررسی کنی؛ فعلاً راهبردی انتخاب نکن.",
+      "lightActionText": "یک گزینه کم‌برانگیختگی را برای موقعیت کم‌خطر نام ببر؛ فعلاً اجرای آن لازم نیست.",
+      "progressActionText": "برای دو زمینه متفاوت، دو گزینه متناسب تعیین کن.",
+      "restExerciseText": "امروز راهبرد تازه‌ای انتخاب نکن؛ فقط گزینه‌های قبلی را کنار بگذار و به فعالیت عادی برگرد.",
+      "restActionText": "امروز راهبرد تازه‌ای انتخاب نکن؛ استراحت و ایمنی بر اجرای تمرین مقدم است.",
       "review_status": "draft_pending_expert_review",
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1"
     },
     {
       "content_id": "DRAFT_T02_D13",
