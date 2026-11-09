@@ -8,8 +8,6 @@ import {
 } from '../src/features/assistant/angerDailyAssistantPrompts.js';
 import { makeDailyExerciseGuidanceTurn } from '../src/features/assistant/dailyExerciseAssistantGuidance.js';
 
-const digits = (value) => String(value).replace(/[0-9]/g, (digit) => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
-
 test('anger assistant guide covers all 28 days with eight day-scoped prepared questions each', () => {
   assert.equal(ANGER_DAILY_ASSISTANT_GUIDES.length, 28);
   assert.deepEqual(ANGER_DAILY_ASSISTANT_GUIDES.map((item) => item.day), Array.from({ length: 28 }, (_, index) => index + 1));
@@ -27,7 +25,7 @@ test('prompt groups are scoped to the selected day and contain all prepared ques
     const groups = getAngerDailyAssistantPromptGroups(day);
     assert.equal(groups.length, 3);
     assert.equal(groups.reduce((count, group) => count + group.questions.length, 0), 8);
-    assert.ok(groups.flatMap((group) => group.questions).every((question) => question.value.startsWith(`روز ${digits(day)} خشم:`)));
+    assert.ok(groups.flatMap((group) => group.questions).every((question) => question.value.startsWith(`روز ${day} خشم:`)));
   }
   assert.deepEqual(getAngerDailyAssistantPromptGroups(29), []);
 });
