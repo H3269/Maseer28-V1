@@ -19,7 +19,7 @@
       "subtopic_id": "T01-S03",
       "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 11,
-      "phase": "topic_specific_daily_skill",
+      "phase": "environmental_adjustment",
       "learning_objective": "روشن‌کردن حق هر فرد برای شروع‌نکردن، متوقف‌کردن یا ترک گفت‌وگو، بدون الزام به توضیح یا آشتی.",
       "mechanism_focus": "حفظ اختیار و مرز توقف؛ این روز درباره مذاکره یا رسیدن به توافق نیست.",
       "exercise": "برای یک گفت‌وگوی فرضی یا واقعیِ کم‌خطر مشخص کن هر فرد چگونه می‌تواند شروع گفت‌وگو را نپذیرد، مکالمه را متوقف کند یا از آن خارج شود. اگر اعلام توقف ممکن است خطر ایجاد کند، فقط گزینه عدم تماس یا کمک مستقل را ثبت کن.",
@@ -81,7 +81,10 @@
       },
       "source_runtime_mechanism": "تسهیل ادامه گفت‌وگو فقط در صورت رضایت آزادانه و ایمنی؛ نه تحمیل بازگشت.",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D11"
+      "canonical_package_record_id": "DRAFT_T01_D11",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D11",
