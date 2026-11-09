@@ -1,0 +1,496 @@
+{
+  "schema_version": "1.0.0",
+  "batch_id": "topic-specific-copy-pilot-t31-t34-days04-07",
+  "status": "draft_pending_owner_and_expert_review",
+  "purpose": "بازنویسی آزمایشی عنوان و مقدمه برای موضوعات T31 تا T34 در روزهای ۴ تا ۷؛ تمرین و اقدام runtime منبع زمینه‌اند و تغییر نکرده‌اند.",
+  "source": "runtime content source and daily text overrides from current main snapshot",
+  "design_rules": [
+    "عنوان و مقدمه با تمرین و اقدام همان روز هم‌راستا باشند.",
+    "در کنترل‌گری، اختیار و رضایت دیگری حفظ شود و رفتار محدودکننده توجیه نشود.",
+    "در بی‌انگیزگی، افت انرژی یا علاقه به ضعف اراده تقلیل داده نشود.",
+    "در موضوع نامشخص، از تشخیص‌گذاری و ادعای علت قطعی پرهیز شود.",
+    "همه رکوردها پیش‌نویس‌اند و runtime_eligible=false."
+  ],
+  "records": [
+    {
+      "source_content_id": "کنترل‌گری-04",
+      "topic_id": "T31",
+      "topic_name": "کنترل‌گری",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کنترل‌گری».",
+      "source_exercise": "پیامد کنترل‌گری را برای خود و دیگران بررسی کنید.",
+      "source_action": "یک پیامد را برای خود و یک پیامد را برای دیگری جدا بنویس.",
+      "proposed_title": "پیامد کنترل‌گری برای خود و دیگری",
+      "proposed_intro": "بررسی کن رفتار کنترلی چه اثری بر آزادی، اعتماد یا احساس امنیت خودت و دیگری گذاشته است؛ نیت خوب به‌تنهایی اثر رفتار را تعیین نمی‌کند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کنترل‌گری-05",
+      "topic_id": "T31",
+      "topic_name": "کنترل‌گری",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کنترل‌گری».",
+      "source_exercise": "یک رفتار مشخص خودت را که به کنترل دیگری نزدیک می‌شود (وارسی، اصرار، دستور یا دخالت) از مسئولیت واقعی خودت و تصمیم مستقل طرف مقابل جدا کن.",
+      "source_action": "یک حد رفتاری برای خودت تعیین کن که بدون گرفتن اختیار از دیگری اجرا شود؛ مثلاً از وارسی یا تکرار دستور صرف‌نظر کنی و فقط درباره رفتار خودت پاسخ‌گو بمانی.",
+      "proposed_title": "تفکیک رفتار خود از اختیار دیگری",
+      "proposed_intro": "یک رفتار مشخص مانند وارسی، اصرار یا دستور را از مسئولیت واقعی خود و تصمیم مستقل طرف مقابل جدا کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کنترل‌گری-06",
+      "topic_id": "T31",
+      "topic_name": "کنترل‌گری",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کنترل‌گری».",
+      "source_exercise": "نیاز پشت کنترل را پیدا کنید: امنیت، پیش‌بینی‌پذیری یا اطمینان.",
+      "source_action": "نیاز را به جمله‌ای روشن تبدیل کن، بدون مطالبه تضمین از دیگری.",
+      "proposed_title": "شناخت نیاز پشت میل به کنترل",
+      "proposed_intro": "نیاز احتمالی مانند امنیت، پیش‌بینی‌پذیری یا اطمینان را نام ببر؛ نیاز به امنیت مجوز گرفتن اختیار از دیگری نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کنترل‌گری-07",
+      "topic_id": "T31",
+      "topic_name": "کنترل‌گری",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کنترل‌گری».",
+      "source_exercise": "هدف رفتاری تعیین کنید که در آن انتخاب دیگری محترم بماند.",
+      "source_action": "یک رفتار مشخص مانند دستور، وارسی یا دخالت را که استقلال دیگری را محدود می‌کند انتخاب کن و جایگزینش را با درخواست رضایت یا کنارکشیدن طراحی کن.",
+      "proposed_title": "هدف رفتاری با حفظ اختیار دیگری",
+      "proposed_intro": "یک رفتار مشخص را که استقلال دیگری را محدود می‌کند انتخاب کن و جایگزینی مبتنی بر درخواست رضایت یا کنارکشیدن طراحی کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "بی‌انگیزگی-04",
+      "topic_id": "T32",
+      "topic_name": "بی‌انگیزگی",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «بی‌انگیزگی».",
+      "source_exercise": "فعالیت‌های کوچک لذت‌بخش گذشته را یادداشت کنید.",
+      "source_action": "یک فعالیت قدیمی را فقط به‌عنوان امکان بررسی کن؛ لازم نیست انجامش بدهی.",
+      "proposed_title": "یادآوری فعالیت‌های کوچکِ خوشایند",
+      "proposed_intro": "فعالیت‌هایی را که در گذشته کمی لذت یا علاقه ایجاد می‌کردند نام ببر؛ یادآوری آن‌ها به معنی الزام به انجام فوری نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "بی‌انگیزگی-05",
+      "topic_id": "T32",
+      "topic_name": "بی‌انگیزگی",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «بی‌انگیزگی».",
+      "source_exercise": "ارزش‌های شخصی را از انتظار دیگران جدا کنید.",
+      "source_action": "یک ارزش را انتخاب کن که هنوز برایت اهمیت دارد، حتی اگر احساس لذت کم است.",
+      "proposed_title": "تفکیک ارزش شخصی از انتظار دیگران",
+      "proposed_intro": "یک ارزش را که هنوز برایت اهمیت دارد از خواسته یا انتظار دیگران جدا کن؛ احساس لذت ممکن است فعلاً کم باشد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "بی‌انگیزگی-06",
+      "topic_id": "T32",
+      "topic_name": "بی‌انگیزگی",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «بی‌انگیزگی».",
+      "source_exercise": "یک فعالیت کوتاه و قابل انجام انتخاب کنید.",
+      "source_action": "فعالیت را به کوچک‌ترین بخش قابل انجام تبدیل کن.",
+      "proposed_title": "انتخاب فعالیت کوتاه و شدنی",
+      "proposed_intro": "یک فعالیت کوتاه را به کوچک‌ترین بخش قابل انجام تبدیل کن؛ میزان انرژی و محدودیت‌های واقعی را در نظر بگیر.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "بی‌انگیزگی-07",
+      "topic_id": "T32",
+      "topic_name": "بی‌انگیزگی",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «بی‌انگیزگی».",
+      "source_exercise": "پیش از فعالیت، میزان انرژی و پس از آن تغییر را ثبت کنید.",
+      "source_action": "انرژی پیش و پس از فعالیت را با یک توصیف کوتاه مقایسه کن.",
+      "proposed_title": "مشاهدهٔ انرژی پیش و پس از فعالیت",
+      "proposed_intro": "انرژی خود را پیش و پس از یک فعالیت کوتاه توصیف کن؛ هدف مشاهده است، نه الزام به بهترشدن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خودانتقادی-04",
+      "topic_id": "T33",
+      "topic_name": "خودانتقادی",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خودانتقادی».",
+      "source_exercise": "یک جمله درباره کیفیت یک خروجی یا عملکردت انتخاب کن؛ مشخص کن کدام بخش درباره نتیجه قابل مشاهده است و کدام بخش به توانایی یا هویت کلی تو حکم می‌دهد.",
+      "source_action": "جمله را به ارزیابی همان خروجی محدود کن؛ درباره ارزش یا توانایی کلی خودت نتیجه‌گیری نکن.",
+      "proposed_title": "تفکیک ارزیابی خروجی از حکم دربارهٔ هویت",
+      "proposed_intro": "یک جمله دربارهٔ کیفیت کار را بررسی کن و مشخص کن کدام بخش به نتیجهٔ قابل مشاهده و کدام بخش به توانایی یا هویت کلی تو حکم می‌دهد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خودانتقادی-05",
+      "topic_id": "T33",
+      "topic_name": "خودانتقادی",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خودانتقادی».",
+      "source_exercise": "برای یک کار مشخص، معیار منتقد درونی را ثبت کن؛ آن را با هدف واقعی کار، زمان و منابع موجود و سطح کیفیت لازم مقایسه کن.",
+      "source_action": "یک بخش از معیار را که برای کیفیت یا ایمنی ضروری است و یک انتظار اضافی و غیرضروری را جدا کن؛ فقط بخش دوم را بازنگری کن.",
+      "proposed_title": "سنجش معیار منتقد با نیاز واقعی کار",
+      "proposed_intro": "معیار سخت‌گیرانه را با هدف واقعی کار، زمان، منابع و کیفیت ضروری مقایسه کن؛ استانداردهای ایمنی و حرفه‌ای را حفظ کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خودانتقادی-06",
+      "topic_id": "T33",
+      "topic_name": "خودانتقادی",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خودانتقادی».",
+      "source_exercise": "یک جمله‌ای را که خودت پس از ارزیابی کار به خودت می‌گویی انتخاب کن؛ ببین آیا معیار و رفتار اصلاح‌پذیر دارد یا فقط توهین و تحقیر است.",
+      "source_action": "اگر جمله داده یا معیار مشخصی دارد آن را نگه دار؛ بخش تحقیرآمیز را کنار بگذار و فقط یک اصلاح قابل انجام بنویس.",
+      "proposed_title": "جداکردن بازخورد از زبان تحقیر",
+      "proposed_intro": "جملهٔ منتقد درونی را بررسی کن: آیا معیار و رفتار اصلاح‌پذیر دارد یا صرفاً توهین و تحقیر است؟",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خودانتقادی-07",
+      "topic_id": "T33",
+      "topic_name": "خودانتقادی",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خودانتقادی».",
+      "source_exercise": "یک جمله تکراری منتقد درباره عملکردت را انتخاب کن و بپرس اگر هدف آن بهترشدن کار باشد، دقیقاً چه اطلاعات یا تغییر رفتاری لازم است؟",
+      "source_action": "جمله را به یک پرسش مشخص درباره روش یا رفتار قابل تغییر در نوبت بعد تبدیل کن؛ پاسخ را به ارزش کلی خودت تعمیم نده.",
+      "proposed_title": "تبدیل خودانتقادی به پرسش اصلاح‌پذیر",
+      "proposed_intro": "یک جملهٔ تکراری را به پرسشی مشخص دربارهٔ روش یا رفتار قابل تغییر در نوبت بعد تبدیل کن؛ آن را به ارزش کلی خود تعمیم نده.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکل دیگر-04",
+      "topic_id": "T34",
+      "topic_name": "مشکل دیگر",
+      "day_number": 4,
+      "current_title": "نشانه‌های بدن · روز 4",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکل دیگر».",
+      "source_exercise": "برای یک بازه کوتاه و بدون وارسی مکرر، دو بُعد را جدا ثبت کن: شدت تجربه (کم/متوسط/زیاد) و تعداد دفعات تقریبی. اگر مسئله به‌ندرت رخ می‌دهد، همان را بنویس.",
+      "source_action": "فقط یک بار در پایان روز شدت و تعداد دفعات تقریبی را ثبت کن؛ اگر پایش اضطراب یا اشتغال ذهنی را بیشتر می‌کند، آن را کنار بگذار.",
+      "proposed_title": "ثبت شدت و فراوانی بدون وارسی مکرر",
+      "proposed_intro": "شدت تجربه و تعداد دفعات تقریبی را جدا ثبت کن؛ اگر پایش مداوم اضطراب یا اشتغال ذهنی را بیشتر می‌کند، آن را کنار بگذار.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکل دیگر-05",
+      "topic_id": "T34",
+      "topic_name": "مشکل دیگر",
+      "day_number": 5,
+      "current_title": "الگوی رفتاری · روز 5",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکل دیگر».",
+      "source_exercise": "سه ستون بساز: اطلاعاتی که مستقیماً تأیید شده، فرض‌هایی که هنوز تأیید نشده، و پرسش‌هایی که برای روشن‌شدن موضوع باقی مانده‌اند.",
+      "source_action": "یک پرسش قابل بررسی بنویس که مهم‌ترین خلأ اطلاعاتی را روشن کند.",
+      "proposed_title": "تفکیک اطلاعات تأییدشده از فرض‌ها",
+      "proposed_intro": "اطلاعات مستقیم، فرض‌های تأییدنشده و پرسش‌های باقی‌مانده را در سه بخش جدا بنویس؛ خلأ اطلاعات را با حدس پر نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکل دیگر-06",
+      "topic_id": "T34",
+      "topic_name": "مشکل دیگر",
+      "day_number": 6,
+      "current_title": "نیاز پشت واکنش · روز 6",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکل دیگر».",
+      "source_exercise": "یک عامل بیرونی یا ساختاری مانند دسترسی، هزینه، مقررات، زمان انتظار، شرایط محیطی یا حمایت در دسترس را انتخاب کن. بنویس این عامل چه محدودیتی ایجاد می‌کند و چه شواهدی برای آن داری؛ اگر معلوم نیست، «نامعلوم» ثبت کن.",
+      "source_action": "یک محدودیت محیطی یا ساختاری را از ویژگی‌های شخصی خودت جدا ثبت کن؛ برای آزمودن آن، دسترسی یا ایمنی خود را به خطر نینداز.",
+      "proposed_title": "شناخت محدودیت‌های بیرونی و ساختاری",
+      "proposed_intro": "یک عامل بیرونی مانند دسترسی، هزینه، مقررات یا شرایط محیطی را بررسی کن و آن را از ویژگی‌های شخصی خودت جدا نگه دار.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکل دیگر-07",
+      "topic_id": "T34",
+      "topic_name": "مشکل دیگر",
+      "day_number": 7,
+      "current_title": "هدف شخصی · روز 7",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکل دیگر».",
+      "source_exercise": "از میان اثر مسئله، سطح خطر، علت احتمالی، کمبود اطلاعات و مسیر حمایت مشخص کن کدام پرسش برای تصمیم بعدی اولویت دارد.",
+      "source_action": "یک پرسش اولویت‌دار برای مرحله بعد بنویس و توضیح بده پاسخ آن چه تصمیمی را روشن می‌کند.",
+      "proposed_title": "انتخاب پرسش اولویت‌دار برای گام بعد",
+      "proposed_intro": "مشخص کن کدام پرسش دربارهٔ اثر مسئله، خطر، علت احتمالی، اطلاعات یا مسیر حمایت برای تصمیم بعدی مهم‌تر است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    }
+  ]
+}
