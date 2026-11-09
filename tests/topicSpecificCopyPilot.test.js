@@ -1,0 +1,38 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const pilot = JSON.parse(fs.readFileSync(
+  path.join(root, 'public/assistant/content-drafts/topic-specific-copy-pilot-t01-t06-days01-07.v1.json'),
+  'utf8'
+));
+
+test('six-topic first-week copy pilot is complete, unique, traceable, and non-runtime', () => {
+  assert.equal(pilot.status, 'draft_pending_owner_and_expert_review');
+  assert.equal(pilot.records.length, 42);
+  assert.equal(new Set(pilot.records.map((x) => x.source_content_id)).size, 42);
+  assert.equal(new Set(pilot.records.map((x) => x.proposed_title)).size, 42);
+  assert.equal(new Set(pilot.records.map((x) => x.proposed_intro)).size, 42);
+
+  const topicDays = new Set();
+  for (const record of pilot.records) {
+    assert.ok(record.source_content_id);
+    assert.ok(record.current_title);
+    assert.ok(record.current_intro);
+    assert.ok(record.proposed_title);
+    assert.ok(record.proposed_intro);
+    assert.deepEqual(record.fields_changed, ['title', 'intro']);
+    assert.equal(record.runtime_eligible, false);
+    assert.equal(record.review_status, 'pending_owner_and_expert_review');
+    assert.equal(record.reviewer, null);
+    assert.equal(record.reviewed_at, null);
+    topicDays.add(record.topic_name + ':' + record.day_number);
+  }
+  assert.equal(topicDays.size, 42);
+  assert.deepEqual([...new Set(pilot.records.map((x) => x.topic_name))].sort(), [
+    'خشم', 'اضطراب', 'ترس', 'غم و سوگ', 'حسادت', 'نفرت'
+  ].sort());
+});
