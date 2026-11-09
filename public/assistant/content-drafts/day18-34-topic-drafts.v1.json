@@ -16,10 +16,10 @@
       "source_content_id": "خشم-18",
       "topic_id": "T01",
       "topic_name": "خشم",
-      "subtopic_id": "T01-S01",
-      "subtopic_name": "محرک‌ها و ارزیابی موقعیت، بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 18,
-      "phase": "topic_specific_daily_skill",
+      "phase": "unresolved_barriers_and_escalation",
       "learning_objective": "توصیف یک مسئله رفتاری یا موقعیتی بدون برچسب‌زدن کلی به خود یا دیگری.",
       "mechanism_focus": "تعریف مسئله و محدودکردن قضاوت.",
       "exercise": "جمله‌ای که با «او همیشه...» یا «من آدم...» شروع می‌شود را به توصیف یک رفتار مشخص، زمان و پیامد تبدیل کن.",
@@ -34,11 +34,9 @@
       "runtime_eligible": false,
       "title": "تعریف مسئله بدون حمله به شخصیت",
       "subtopic_ids": [
-        "T01-S01",
         "T01-S03"
       ],
       "subtopic_names": [
-        "محرک‌ها و ارزیابی موقعیت",
         "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
       "target_skill": "تعریف مسئله و محدودکردن قضاوت.",
@@ -82,7 +80,11 @@
       },
       "source_runtime_mechanism": "تعریف مسئله به جای سرزنش کلی افراد",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D18"
+      "canonical_package_record_id": "DRAFT_T01_D18",
+      "design_subtopic_ids": [
+        "T01-S01",
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D18",
