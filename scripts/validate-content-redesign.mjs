@@ -156,6 +156,8 @@ export function validateContentRedesign({ queue, day1, day2, day3, allDays = nul
   }
 
   const registeredEvidenceIds = new Set((evidenceRegistry?.sources ?? []).map((item) => item.evidence_id));
+  let nearDuplicateCandidateCount = 0;
+  let nearDuplicateCandidates = [];
   if (Array.isArray(allDays)) {
     const completeDrafts = allDays.flatMap((batch) => batch?.records ?? []);
     if (allDays.length !== 28 || completeDrafts.length !== 952) {
@@ -243,6 +245,53 @@ export function validateContentRedesign({ queue, day1, day2, day3, allDays = nul
       }
     }
     if (allDraftIds.size !== 952) errors.push('complete draft ids must be 952 unique records');
+
+    const stopWords = new Set([
+      'و', 'در', 'از', 'به', 'را', 'برای', 'با', 'یک', 'اگر', 'که', 'این', 'آن',
+      'هم', 'یا', 'تا', 'فقط', 'خود', 'می', 'شود', 'است', 'باشد', 'کن', 'کنید',
+      'کنند', 'هر', 'پس', 'اما', 'همان', 'چون', 'باید', 'نمی', 'روی', 'پس',
+      'هنگام', 'بعد', 'قبل', 'بدون', 'بین', 'درباره', 'چگونه', 'چه',
+    ]);
+    const tokenize = (value) => new Set(
+      normalizeText(value)
+        .replace(/[\u064B-\u065F\u0670]/g, '')
+        .replace(/\u200c/g, ' ')
+        .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+        .split(/\s+/)
+        .filter((token) => token.length > 2 && !stopWords.has(token))
+    );
+    for (const field of ['exercise', 'action']) {
+      const candidates = completeDrafts.map((item) => ({
+        id: item.content_id,
+        topic_id: item.topic_id,
+        day_number: item.day_number,
+        tokens: tokenize(item[field]),
+      }));
+      for (let left = 0; left < candidates.length; left += 1) {
+        const a = candidates[left];
+        if (a.tokens.size < 5) continue;
+        for (let right = left + 1; right < candidates.length; right += 1) {
+          const b = candidates[right];
+          if (b.tokens.size < 5) continue;
+          let shared = [];
+          for (const token of a.tokens) if (b.tokens.has(token)) shared.push(token);
+          if (shared.length < 5) continue;
+          const score = shared.length / (a.tokens.size + b.tokens.size - shared.length);
+          if (score >= 0.42) {
+            nearDuplicateCandidateCount += 1;
+            nearDuplicateCandidates.push({
+              field,
+              left: a.id,
+              right: b.id,
+              similarity: Number(score.toFixed(3)),
+              shared_terms: shared.slice(0, 12),
+            });
+          }
+        }
+      }
+    }
+    nearDuplicateCandidates.sort((a, b) => b.similarity - a.similarity);
+    nearDuplicateCandidates = nearDuplicateCandidates.slice(0, 100);
   }
 
   return {
@@ -254,6 +303,8 @@ export function validateContentRedesign({ queue, day1, day2, day3, allDays = nul
       complete_day_batches: Array.isArray(allDays) ? allDays.length : 3,
       not_started: records.filter((item) => item.redesign_status === 'not_started').length,
       runtime_eligible: drafts.filter((item) => item.runtime_eligible === true).length,
+      near_duplicate_candidate_count: nearDuplicateCandidateCount,
+      near_duplicate_candidates: nearDuplicateCandidates,
     },
   };
 }
