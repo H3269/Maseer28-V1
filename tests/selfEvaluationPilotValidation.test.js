@@ -91,3 +91,11 @@ test('requires candidate-only evidence status rather than implying verified supp
   const result = validateSelfEvaluationPilot(data);
   assert.ok(result.errors.some((error) => error.includes('candidate-only pending claim review')));
 });
+
+
+test('rejects candidate evidence ids that do not match provenance ids', () => {
+  const data = base();
+  data.pilot.records[0].candidate_evidence_ids = ['EVID_NOT_REGISTERED'];
+  const result = validateSelfEvaluationPilot(data);
+  assert.ok(result.errors.some((error) => error.includes('candidate evidence ids must match provenance ids')));
+});
