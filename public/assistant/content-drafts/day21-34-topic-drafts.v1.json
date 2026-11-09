@@ -19,7 +19,7 @@
       "subtopic_id": "T01-S03",
       "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 21,
-      "phase": "topic_specific_daily_skill",
+      "phase": "support_network_and_effective_help_seeking",
       "learning_objective": "تمرین بازگویی پیام طرف مقابل یا بازبینی پاسخ خود پیش از ارسال، در تعامل امن.",
       "mechanism_focus": "گوش‌دادن فعال و مهار پاسخ تکانشی.",
       "exercise": "یک گفت‌وگوی کم‌تنش را انتخاب کن. پیش از پاسخ، مضمون حرف طرف مقابل را در یک جمله بازگو کن؛ اگر گفت‌وگو امن نیست، به‌جای اجرا یک پیام فرضی را بازبینی کن.",
@@ -81,7 +81,10 @@
       },
       "source_runtime_mechanism": "کاهش پاسخ‌دهی تکانشی از طریق گوش‌دادن و مکث",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D21"
+      "canonical_package_record_id": "DRAFT_T01_D21",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D21",
