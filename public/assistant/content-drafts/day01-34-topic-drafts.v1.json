@@ -19,7 +19,7 @@
       "topic_id": "T01",
       "topic_name": "خشم",
       "subtopic_id": "T01-S01",
-      "subtopic_name": "محرک‌ها و ارزیابی موقعیت، بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "subtopic_name": "محرک‌ها و ارزیابی موقعیت",
       "day_number": 1,
       "phase": "orientation_and_safe_observation",
       "learning_objective": "تشخیص تفاوت میان رویداد قابل مشاهده، احساس خشم، میل به واکنش و رفتار واقعی.",
@@ -36,12 +36,10 @@
       "runtime_eligible": false,
       "title": "تفکیک رویداد، احساس و رفتار",
       "subtopic_ids": [
-        "T01-S01",
-        "T01-S03"
+        "T01-S01"
       ],
       "subtopic_names": [
-        "محرک‌ها و ارزیابی موقعیت",
-        "بیان خشم، تکانه و رفتار پرخاشگرانه"
+        "محرک‌ها و ارزیابی موقعیت"
       ],
       "target_skill": "خودمشاهده‌گری بدون قضاوت و فاصله‌گذاری میان هیجان و عمل.",
       "teaching_point": "خشم یک هیجان است؛ فریاد، تهدید، آسیب یا سکوت تنبیهی رفتارهایی جداگانه‌اند و ایمنی آن‌ها باید مستقل بررسی شود.",
@@ -83,7 +81,11 @@
       },
       "source_runtime_mechanism": "افزایش آگاهی از هیجان و ایجاد فاصله میان احساس و واکنش",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D01"
+      "canonical_package_record_id": "DRAFT_T01_D01",
+      "design_subtopic_ids": [
+        "T01-S01",
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D01",
