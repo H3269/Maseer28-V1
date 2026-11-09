@@ -43,7 +43,7 @@
       "phase": "orientation_and_safe_observation",
       "learning_objective": "تشخیص تفاوت میان رویداد قابل مشاهده، احساس خشم، میل به واکنش و رفتار واقعی.",
       "target_skill": "خودمشاهده‌گری بدون قضاوت و فاصله‌گذاری میان هیجان و عمل.",
-      "mechanism_focus": "افزایش آگاهی از هیجان و ایجاد فاصله میان احساس و واکنش",
+      "mechanism_focus": "خودمشاهده‌گری بدون قضاوت و فاصله‌گذاری میان هیجان و عمل.",
       "teaching_point": "خشم یک هیجان است؛ فریاد، تهدید، آسیب یا سکوت تنبیهی رفتارهایی جداگانه‌اند و ایمنی آن‌ها باید مستقل بررسی شود.",
       "exercise_type": "ثبت خودمشاهده‌ای",
       "exercise": "یک موقعیت کم‌فشار را انتخاب کن و چهار مورد را جدا بنویس: چه اتفاقی افتاد، چه احساسی داشتی، چه میلی به ذهنت رسید و در عمل چه کردی یا نکردی. اگر رفتار واقعی با میل فرق داشت، هر دو را ثبت کن.",
@@ -90,7 +90,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "افزایش آگاهی از هیجان و ایجاد فاصله میان احساس و واکنش"
     },
     {
       "content_id": "DRAFT_T01_D02_B2AB",
@@ -110,7 +111,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "تشخیص اینکه احساس خشم می‌تواند وجود داشته باشد بدون آنکه توهین، تهدید یا آسیب رخ دهد.",
       "target_skill": "تفکیک هیجان از رفتار و مسئولیت‌پذیری رفتاری.",
-      "mechanism_focus": "تفکیک هیجان از رفتار برای تقویت مسئولیت‌پذیری",
+      "mechanism_focus": "تفکیک هیجان از رفتار و مسئولیت‌پذیری رفتاری.",
       "teaching_point": "طبیعی‌بودن یک هیجان، تهدید یا آسیب‌رساندن را توجیه نمی‌کند؛ مسئولیت رفتار همچنان باقی است.",
       "exercise_type": "دسته‌بندی تجربه",
       "exercise": "سه پاسخ احتمالی به یک موقعیت کم‌خطر بنویس: بیان محترمانه اعتراض، فاصله‌گیری، و یک رفتار آسیب‌زا که باید از آن پرهیز شود. پیامد هرکدام را برای خود و دیگری مقایسه کن.",
@@ -157,7 +158,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "تفکیک هیجان از رفتار برای تقویت مسئولیت‌پذیری"
     },
     {
       "content_id": "DRAFT_T01_D03_B2AB",
@@ -177,7 +179,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "شناسایی محرک‌های احتمالی و عوامل زمینه‌ای بدون فرض علت قطعی.",
       "target_skill": "نقشه‌برداری محرک و تفکیک رویداد از زمینه.",
-      "mechanism_focus": "شناسایی محرک‌ها و عوامل زمینه‌ای قابل مشاهده",
+      "mechanism_focus": "نقشه‌برداری محرک و تفکیک رویداد از زمینه.",
       "teaching_point": "محرک‌ها ممکن است بیرونی یا درونی باشند و خستگی، فشار و تعارض‌های حل‌نشده می‌توانند حساسیت را بیشتر کنند.",
       "exercise_type": "نقشه محرک",
       "exercise": "دو تجربه کم‌فشار را انتخاب کن. برای هرکدام بنویس چه اتفاقی افتاد، چه چیزی برایت مهم بود و چه عامل زمینه‌ای مانند خستگی، فشار یا ابهام حضور داشت. موارد نامعلوم را خالی بگذار.",
@@ -224,7 +226,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "شناسایی محرک‌ها و عوامل زمینه‌ای قابل مشاهده"
     },
     {
       "content_id": "DRAFT_T01_D04_B2AB",
@@ -244,7 +247,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "شناخت یک نشانه جسمانی شخصی که ممکن است پیش از تشدید خشم ظاهر شود.",
       "target_skill": "آگاهی بدنی محدود و تشخیص نشانه اولیه.",
-      "mechanism_focus": "تشخیص نشانه‌های بدنی زودهنگام پیش از تشدید واکنش",
+      "mechanism_focus": "آگاهی بدنی محدود و تشخیص نشانه اولیه.",
       "teaching_point": "نشانه‌های جسمانی افراد متفاوت‌اند؛ تشخیص الگوی شخصی از حفظ‌کردن یک فهرست عمومی مفیدتر است.",
       "exercise_type": "پایش نشانه‌های بدنی",
       "exercise": "فقط در یک موقعیت عادی، اگر نشانه‌ای مانند تنش فک، گرمی یا تغییر تنفس را خودبه‌خود متوجه شدی، یک بار آن را توصیف کن. هیچ ناراحتی را عمداً ایجاد نکن.",
@@ -291,7 +294,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "تشخیص نشانه‌های بدنی زودهنگام پیش از تشدید واکنش"
     },
     {
       "content_id": "DRAFT_T01_D05_B2AB",
@@ -315,7 +319,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "توصیف ترتیب موقعیت، برداشت، احساس، نشانه بدن، میل، رفتار و پیامد.",
       "target_skill": "تحلیل زنجیره بدون نتیجه‌گیری علّی شتاب‌زده.",
-      "mechanism_focus": "شناخت زنجیره موقعیت، فکر، هیجان، تکانه، رفتار و پیامد",
+      "mechanism_focus": "تحلیل زنجیره بدون نتیجه‌گیری علّی شتاب‌زده.",
       "teaching_point": "ثبت ترتیب رویدادها به معنای اثبات رابطه علت‌ومعلولی نیست؛ هدف، دیدن نقاطی است که می‌توان در آن‌ها انتخاب تازه‌ای داشت.",
       "exercise_type": "تحلیل زنجیره",
       "exercise": "یک نمونه کم‌فشار را در هفت مرحله ثبت کن. اگر مرحله‌ای را نمی‌دانی، خالی بگذار؛ هدف یافتن مقصر یا علت قطعی نیست.",
@@ -362,7 +366,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "شناخت زنجیره موقعیت، فکر، هیجان، تکانه، رفتار و پیامد"
     },
     {
       "content_id": "DRAFT_T01_D06_B2AB",
@@ -384,7 +389,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "تعریف سه سطح شخصی شدت با نشانه‌های قابل مشاهده و تعیین زمان مناسب مکث.",
       "target_skill": "پایش شدت برای پیشگیری از پاسخ تکانشی.",
-      "mechanism_focus": "پایش شدت شخصی برای انتخاب زمان مکث ایمن",
+      "mechanism_focus": "پایش شدت برای پیشگیری از پاسخ تکانشی.",
       "teaching_point": "عدد خودارزیابی ابزار تشخیص نیست؛ فقط برای مشاهده تغییرات شخصی و تصمیم‌گیری ایمن به کار می‌رود.",
       "exercise_type": "مقیاس‌سازی شخصی",
       "exercise": "سه سطح «کم»، «رو به افزایش» و «بسیار شدید» را با نشانه‌های شخصی مانند سرعت گفتار، تنش یا میل به قطع صحبت توصیف کن. برای سطح سوم، یک اقدام حفاظتی مشخص بنویس.",
@@ -431,7 +436,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "پایش شدت شخصی برای انتخاب زمان مکث ایمن"
     },
     {
       "content_id": "DRAFT_T01_D07_B2AB",
@@ -455,7 +461,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "خلاصه‌کردن محرک‌ها، نشانه‌ها و تفاوت احساس با رفتار.",
       "target_skill": "جمع‌بندی شواهد و شناسایی پرسش‌های باز.",
-      "mechanism_focus": "مرور الگوها بدون تعمیم یا برچسب‌زنی",
+      "mechanism_focus": "جمع‌بندی شواهد و شناسایی پرسش‌های باز.",
       "teaching_point": "یک یا چند تجربه برای تشخیص قطعی الگو یا علت کافی نیست؛ نتیجه‌ها باید موقت و قابل اصلاح بمانند.",
       "exercise_type": "مرور هفتگی",
       "exercise": "یادداشت‌های هفته را مرور کن و سه مورد بنویس: محرک احتمالی، نشانه زودهنگام، و رفتاری که می‌خواهی مسئولانه‌تر انتخاب کنی. یک مورد نامعلوم را هم ثبت کن.",
@@ -502,7 +508,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "مرور الگوها بدون تعمیم یا برچسب‌زنی"
     },
     {
       "content_id": "DRAFT_T01_D08_B2AB",
@@ -522,7 +529,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "بررسی اینکه آیا تنفس آرام و طبیعی برای فرد راحت است یا خیر.",
       "target_skill": "تنظیم اختیاری برانگیختگی بدون کنترل اجباری.",
-      "mechanism_focus": "کاهش ملایم برانگیختگی بدنی با تنفس اختیاری",
+      "mechanism_focus": "تنظیم اختیاری برانگیختگی بدون کنترل اجباری.",
       "teaching_point": "هدف تمرین ایجاد مکث و کاهش تنش است، نه کنترل کامل هیجان یا جایگزینی ارزیابی پزشکی.",
       "exercise_type": "تنفس آرام",
       "exercise": "اگر مایل هستی، برای چند چرخه اجازه بده تنفس طبیعی و راحت باشد؛ نفس عمیق یا حبس نفس لازم نیست. اگر این کار توجهت را به ناراحتی بیشتر می‌کند، روش دیگری انتخاب کن.",
@@ -570,7 +577,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "کاهش ملایم برانگیختگی بدنی با تنفس اختیاری"
     },
     {
       "content_id": "DRAFT_T01_D09_B2AB",
@@ -590,7 +598,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "انتقال توجه از تکانه به نشانه‌های خنثی محیط حاضر.",
       "target_skill": "جهت‌دهی توجه پیش از انتخاب پاسخ.",
-      "mechanism_focus": "انتقال توجه از تکانه به محیط حاضر",
+      "mechanism_focus": "جهت‌دهی توجه پیش از انتخاب پاسخ.",
       "teaching_point": "تمرکز بر محیط یک مهارت کمکی برای مکث است؛ مسئله اصلی یا نیاز به حل آن را به‌تنهایی برطرف نمی‌کند.",
       "exercise_type": "جهت‌دهی حسی",
       "exercise": "در یک فضای امن، سه شیء معمولی را نام ببر و هرکدام را با یک ویژگی عینی توصیف کن. اگر این تمرین برایت نامناسب است، فقط نگاهت را به یک فعالیت روزمره برگردان.",
@@ -638,7 +646,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "انتقال توجه از تکانه به محیط حاضر"
     },
     {
       "content_id": "DRAFT_T01_D10_B2AB",
@@ -660,7 +669,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "طراحی راهی امن برای توقف تعامل پیش از واکنش آسیب‌زا.",
       "target_skill": "وقفه رفتاری و کاهش احتمال آسیب.",
-      "mechanism_focus": "ایجاد وقفه و فاصله برای کاهش احتمال واکنش تکانه‌ای؛ تناسب آن به ایمنی و رضایت آزادانه وابسته است.",
+      "mechanism_focus": "وقفه رفتاری و کاهش احتمال آسیب.",
       "teaching_point": "مکث ممکن است فرصت کاهش تنش و انتخاب پاسخ امن فراهم کند؛ اما زمان و ادامه گفتگو باید آزادانه باشد. مکث نباید ابزار تهدید، کنترل یا مجازات شود.",
       "exercise_type": "برنامه مکث",
       "exercise": "برای یک اختلاف کم‌خطر بنویس چه نشانه‌ای می‌گوید باید مکث کنی، چگونه می‌توانی بدون تهدید فاصله بگیری و چه زمانی ادامه تعامل فقط با رضایت آزادانه و ایمنی هر دو طرف ممکن است.",
@@ -709,7 +718,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "ایجاد وقفه و فاصله برای کاهش احتمال واکنش تکانه‌ای؛ تناسب آن به ایمنی و رضایت آزادانه وابسته است."
     },
     {
       "content_id": "DRAFT_T01_D11_B2AB",
@@ -729,7 +739,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "روشن‌کردن حق هر فرد برای شروع‌نکردن، متوقف‌کردن یا ترک گفت‌وگو، بدون الزام به توضیح یا آشتی.",
       "target_skill": "حفظ اختیار و مرز توقف؛ این روز درباره مذاکره یا رسیدن به توافق نیست.",
-      "mechanism_focus": "تسهیل ادامه گفت‌وگو فقط در صورت رضایت آزادانه و ایمنی؛ نه تحمیل بازگشت.",
+      "mechanism_focus": "حفظ اختیار و مرز توقف؛ این روز درباره مذاکره یا رسیدن به توافق نیست.",
       "teaching_point": "مکث به‌خودی‌خود تعهد به بازگشت نیست؛ ادامه گفت‌وگو فقط با رضایت آزادانه هر دو نفر و مناسب‌بودن شرایط انجام می‌شود.",
       "exercise_type": "ارزیابی آمادگی برای ادامه گفت‌وگو",
       "exercise": "برای یک گفت‌وگوی فرضی یا واقعیِ کم‌خطر مشخص کن هر فرد چگونه می‌تواند شروع گفت‌وگو را نپذیرد، مکالمه را متوقف کند یا از آن خارج شود. اگر اعلام توقف ممکن است خطر ایجاد کند، فقط گزینه عدم تماس یا کمک مستقل را ثبت کن.",
@@ -778,7 +788,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "تسهیل ادامه گفت‌وگو فقط در صورت رضایت آزادانه و ایمنی؛ نه تحمیل بازگشت."
     },
     {
       "content_id": "DRAFT_T01_D12_B2AB",
@@ -798,7 +809,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "شناسایی یک ناحیه تنش و کاهش فشار عضلانی بدون درد.",
       "target_skill": "آگاهی و رهاسازی اختیاری عضله.",
-      "mechanism_focus": "کاهش تنش عضلانی بدون درد یا فشار",
+      "mechanism_focus": "آگاهی و رهاسازی اختیاری عضله.",
       "teaching_point": "آرام‌سازی جسمانی می‌تواند به کاهش برانگیختگی کمک کند؛ درد یا فشار جسمانی نباید بخشی از تمرین باشد.",
       "exercise_type": "رهاسازی عضلانی ملایم",
       "exercise": "اگر راحتی، یک ناحیه مانند شانه یا فک را در حالت طبیعی مشاهده کن و اجازه بده بدون فشار به حالت راحت برگردد؛ انقباض شدید یا نگه‌داشتن نفس لازم نیست.",
@@ -846,7 +857,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "کاهش تنش عضلانی بدون درد یا فشار"
     },
     {
       "content_id": "DRAFT_T01_D13_B2AB",
@@ -868,7 +880,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "انتخاب یک پاسخ غیرآسیب‌زا برای زمانی که برانگیختگی بالا می‌رود.",
       "target_skill": "جایگزینی تخلیه آسیب‌زا با راهبرد کم‌خطر.",
-      "mechanism_focus": "جایگزینی تخلیه برانگیزاننده با راهبردهای آرام‌ساز",
+      "mechanism_focus": "جایگزینی تخلیه آسیب‌زا با راهبرد کم‌خطر.",
       "teaching_point": "یک فراتحلیل، فعالیت‌های کاهنده برانگیختگی را مؤثرتر از فعالیت‌های افزایش‌دهنده برانگیختگی یافت؛ تخلیه خشم نسخه قابل اتکایی نیست.",
       "exercise_type": "آموزش و انتخاب راهبرد",
       "exercise": "سه گزینه غیرآسیب‌زا مانند فاصله‌گیری، نوشیدن آب یا انجام یک فعالیت خنثی را بنویس. مشخص کن کدام گزینه در موقعیت تو عملی و امن است و کدام ممکن است مناسب نباشد.",
@@ -916,7 +928,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "جایگزینی تخلیه برانگیزاننده با راهبردهای آرام‌ساز"
     },
     {
       "content_id": "DRAFT_T01_D14_B2AB",
@@ -938,7 +951,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "تشخیص اینکه کدام مهارت‌ها برای فرد مناسب، بی‌اثر یا نامناسب بوده‌اند.",
       "target_skill": "انتخاب ابزار بر اساس تجربه و تناسب.",
-      "mechanism_focus": "تثبیت مهارت‌های تنظیم هیجان و انتخاب ابزار مناسب",
+      "mechanism_focus": "انتخاب ابزار بر اساس تجربه و تناسب.",
       "teaching_point": "هدف، حذف کامل خشم نیست؛ افزایش فرصت انتخاب پاسخ امن و متناسب است.",
       "exercise_type": "مرور و انتخاب مهارت",
       "exercise": "روش‌هایی را که تاکنون بررسی کردی در سه ستون قرار بده: مفید، خنثی، نامناسب. برای هر مورد یک دلیل کوتاه بنویس؛ لازم نیست روشی را صرفاً به‌خاطر توصیه عمومی ادامه بدهی.",
@@ -986,7 +999,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "تثبیت مهارت‌های تنظیم هیجان و انتخاب ابزار مناسب"
     },
     {
       "content_id": "DRAFT_T01_D15_B2AB",
@@ -1006,7 +1020,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "تفکیک اتفاق قابل مشاهده از تفسیر شخصی در یک موقعیت کم‌خطر.",
       "target_skill": "ارزیابی شواهد و کاهش قطعیت شتاب‌زده.",
-      "mechanism_focus": "بازبینی برداشت‌ها با تفکیک شواهد و تفسیر",
+      "mechanism_focus": "ارزیابی شواهد و کاهش قطعیت شتاب‌زده.",
       "teaching_point": "تفکیک واقعیت و برداشت، احتمال واکنش بر پایه فرض قطعی را کاهش می‌دهد؛ به معنای نادیده‌گرفتن بی‌عدالتی یا خطر واقعی نیست.",
       "exercise_type": "دوستونه‌نویسی",
       "exercise": "یک موقعیت را در دو ستون بنویس: «چه چیزی را می‌توان ثبت کرد؟» و «چه معنایی به آن دادم؟» سپس مشخص کن کدام برداشت هنوز نیازمند اطلاعات است.",
@@ -1054,7 +1068,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "بازبینی برداشت‌ها با تفکیک شواهد و تفسیر"
     },
     {
       "content_id": "DRAFT_T01_D16_B2AB",
@@ -1074,7 +1089,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "تبدیل یک برداشت مطلق به فرضیه‌ای دقیق‌تر، بدون انکار بی‌عدالتی.",
       "target_skill": "انعطاف شناختی و تشخیص بخش نامعلوم.",
-      "mechanism_focus": "کاهش قطعیت‌های شناختی و افزایش دقت در ارزیابی موقعیت",
+      "mechanism_focus": "انعطاف شناختی و تشخیص بخش نامعلوم.",
       "teaching_point": "بازنگری شناختی به معنای توجیه رفتار آسیب‌زا نیست؛ هدف، دقیق‌تر دیدن شواهد و گزینه‌هاست.",
       "exercise_type": "بازنویسی فکر",
       "exercise": "جمله‌ای مانند «همیشه عمداً این کار را می‌کند» را بنویس و آن را به توصیفی محدودتر تبدیل کن که فقط به داده موجود تکیه دارد. اگر شواهد کافی برای نگرانی وجود دارد، آن را حذف نکن.",
@@ -1122,7 +1137,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "کاهش قطعیت‌های شناختی و افزایش دقت در ارزیابی موقعیت"
     },
     {
       "content_id": "DRAFT_T01_D17_B2AB",
@@ -1142,7 +1158,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "تبدیل انتظار مبهم به یک نیاز و درخواست مشخص، بدون تمرین قالب جمله قاطعانه.",
       "target_skill": "روشن‌سازی نیاز و تشخیص تفاوت درخواست با مطالبه یا اجبار.",
-      "mechanism_focus": "تبدیل انتظار مبهم به درخواست روشن و قابل مذاکره",
+      "mechanism_focus": "روشن‌سازی نیاز و تشخیص تفاوت درخواست با مطالبه یا اجبار.",
       "teaching_point": "درخواست روشن جایگزین مطالبه اجباری است؛ مرز شخصی با کنترل‌کردن دیگری تفاوت دارد.",
       "exercise_type": "تبدیل انتظار به درخواست",
       "exercise": "یک انتظار مبهم را به دو مورد تبدیل کن: نیاز خودت و درخواست مشخصی که طرف مقابل آزاد است آن را نپذیرد. هنوز آن را به جمله‌ای برای ارسال یا گفتن تبدیل نکن.",
@@ -1191,7 +1207,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "تبدیل انتظار مبهم به درخواست روشن و قابل مذاکره"
     },
     {
       "content_id": "DRAFT_T01_D18_B2AB",
@@ -1213,7 +1230,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "توصیف یک مسئله رفتاری یا موقعیتی بدون برچسب‌زدن کلی به خود یا دیگری.",
       "target_skill": "تعریف مسئله و محدودکردن قضاوت.",
-      "mechanism_focus": "تعریف مسئله به جای سرزنش کلی افراد",
+      "mechanism_focus": "تعریف مسئله و محدودکردن قضاوت.",
       "teaching_point": "تمرکز بر مسئله و سهم قابل کنترل، جایگزین سرزنش کلی یا پذیرش مسئولیت رفتار دیگران نیست.",
       "exercise_type": "تعریف مسئله",
       "exercise": "جمله‌ای که با «او همیشه...» یا «من آدم...» شروع می‌شود را به توصیف یک رفتار مشخص، زمان و پیامد تبدیل کن.",
@@ -1261,7 +1278,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "تعریف مسئله به جای سرزنش کلی افراد"
     },
     {
       "content_id": "DRAFT_T01_D19_B2AB",
@@ -1281,7 +1299,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "مقایسه پاسخ‌های رفتاری ممکن به یک اختلاف کم‌خطر، از جمله عدم تعامل، فاصله‌گیری، مخالفت محترمانه در صورت ایمنی یا کمک مستقل.",
       "target_skill": "ارزیابی پیامد، امکان اجرا و ایمنی گزینه‌های رفتاری؛ نه انتخاب روش آرام‌سازی بدن.",
-      "mechanism_focus": "تولید گزینه‌های کم‌خطر و انتخاب راه‌حل واقع‌بینانه",
+      "mechanism_focus": "ارزیابی پیامد، امکان اجرا و ایمنی گزینه‌های رفتاری؛ نه انتخاب روش آرام‌سازی بدن.",
       "teaching_point": "حل مسئله زمانی مفید است که گزینه‌ها با ایمنی، واقعیت و حقوق همه افراد سازگار باشند.",
       "exercise_type": "فهرست راه‌حل‌ها",
       "exercise": "دست‌کم دو پاسخ متفاوت به یک اختلاف کم‌خطر بنویس؛ یکی می‌تواند عدم تماس/عدم ادامه تعامل باشد. پیامد، ایمنی، اختیار و امکان اجرای هر گزینه را مقایسه کن. میانجی‌گری مشترک را در موقعیت تهدید، اجبار یا کنترل اجباری پیشنهاد نکن.",
@@ -1329,7 +1347,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "تولید گزینه‌های کم‌خطر و انتخاب راه‌حل واقع‌بینانه"
     },
     {
       "content_id": "DRAFT_T01_D20_B2AB",
@@ -1349,7 +1368,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "بازبینی یک جمله ارتباطی از پیش آماده‌شده برای حذف توهین، تهدید، تعمیم و ابهام؛ این روز نیاز تازه‌ای تولید نمی‌کند.",
       "target_skill": "ویرایش پیام و کنترل لحن، نه شناسایی نیاز یا تولید درخواست جدید.",
-      "mechanism_focus": "بیان نیاز و مرز بدون حمله یا تهدید",
+      "mechanism_focus": "ویرایش پیام و کنترل لحن، نه شناسایی نیاز یا تولید درخواست جدید.",
       "teaching_point": "بیان قاطعانه می‌تواند به روشن‌شدن نیاز کمک کند، اما تضمین نمی‌کند طرف مقابل همکاری کند.",
       "exercise_type": "نوشتن پیام قاطعانه",
       "exercise": "فقط اگر یک پیام یا جمله غیرضروری و امن از قبل در اختیار داری، آن را از نظر توهین، تهدید، تعمیم و وضوح بازبینی کن. اگر جمله‌ای آماده نیست، یک نمونه فرضی خنثی را ویرایش کن؛ از ساختن درخواست تازه خودداری کن.",
@@ -1398,7 +1417,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "بیان نیاز و مرز بدون حمله یا تهدید"
     },
     {
       "content_id": "DRAFT_T01_D21_B2AB",
@@ -1418,7 +1438,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "تمرین بازگویی پیام طرف مقابل یا بازبینی پاسخ خود پیش از ارسال، در تعامل امن.",
       "target_skill": "گوش‌دادن فعال و مهار پاسخ تکانشی.",
-      "mechanism_focus": "کاهش پاسخ‌دهی تکانشی از طریق گوش‌دادن و مکث",
+      "mechanism_focus": "گوش‌دادن فعال و مهار پاسخ تکانشی.",
       "teaching_point": "گوش‌دادن فعال با موافقت‌کردن یکی نیست؛ می‌توانی حرف دیگری را بفهمی و همچنان با آن مخالف باشی.",
       "exercise_type": "بازگویی و مکث",
       "exercise": "یک گفت‌وگوی کم‌تنش را انتخاب کن. پیش از پاسخ، مضمون حرف طرف مقابل را در یک جمله بازگو کن؛ اگر گفت‌وگو امن نیست، به‌جای اجرا یک پیام فرضی را بازبینی کن.",
@@ -1467,7 +1487,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "کاهش پاسخ‌دهی تکانشی از طریق گوش‌دادن و مکث"
     },
     {
       "content_id": "DRAFT_T01_D22_B2AB",
@@ -1487,7 +1508,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "ارزیابی اینکه آیا توافق یا مذاکره، با توجه به نابرابری قدرت و پیامد رد پیشنهاد، واقعاً داوطلبانه و بدون تلافی است.",
       "target_skill": "تحلیل پیامدهای قدرت، وابستگی و تلافی؛ فراتر از حق عمومی توقف که در روز ۱۱ بررسی شد.",
-      "mechanism_focus": "ارزیابی امکان مذاکره در روابط امن و حفظ مرزها",
+      "mechanism_focus": "تحلیل پیامدهای قدرت، وابستگی و تلافی؛ فراتر از حق عمومی توقف که در روز ۱۱ بررسی شد.",
       "teaching_point": "توافق سالم بر رضایت و ایمنی دوطرف استوار است؛ در خشونت و کنترل اجباری، اولویت مذاکره نیست.",
       "exercise_type": "بررسی گزینه توافق",
       "exercise": "اگر توافقی مطرح است، وابستگی مالی/شغلی/اجتماعی، کنترل منابع، سابقه تهدید یا تلافی و پیامد واقعی رد پیشنهاد را بررسی کن. اگر اطلاعات کافی نداری یا پاسخ‌ها نگران‌کننده‌اند، توافق را داوطلبانه فرض نکن.",
@@ -1536,7 +1557,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "ارزیابی امکان مذاکره در روابط امن و حفظ مرزها"
     },
     {
       "content_id": "DRAFT_T01_D23_B2AB",
@@ -1556,7 +1578,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "جداکردن توضیح زمینه از توجیه رفتار آسیب‌زا و تعیین مسئولیت متناسب.",
       "target_skill": "پاسخ‌گویی رفتاری و پیشگیری از تکرار.",
-      "mechanism_focus": "تقویت مسئولیت‌پذیری و پیشگیری از تکرار آسیب",
+      "mechanism_focus": "پاسخ‌گویی رفتاری و پیشگیری از تکرار.",
       "teaching_point": "احساس خشم می‌تواند قابل فهم باشد؛ اما تهدید و آسیب همچنان نیازمند توقف، مسئولیت و حمایت تخصصی است.",
       "exercise_type": "مرور مسئولیت و پیامد",
       "exercise": "اگر رفتاری آسیب‌زا رخ داده، آن را بدون کم‌اهمیت‌سازی توصیف کن: چه رفتاری انجام شد، چه اثری داشت و کدام بخش در اختیار تو بود. احساس خشم یا رفتار دیگری، توجیه آسیب نیست.",
@@ -1604,7 +1626,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "تقویت مسئولیت‌پذیری و پیشگیری از تکرار آسیب"
     },
     {
       "content_id": "DRAFT_T01_D24_B2AB",
@@ -1626,7 +1649,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "انتخاب یک عامل زمینه‌ای شناسایی‌شده و تصمیم درباره تغییر در اختیار، درخواست حمایت یا پذیرفتن محدودیت فعلی.",
       "target_skill": "ارزیابی کنترل‌پذیری و برنامه‌ریزی متناسب با منابع واقعی.",
-      "mechanism_focus": "شناسایی فشارهای زمینه‌ای برای پیشگیری زودهنگام",
+      "mechanism_focus": "ارزیابی کنترل‌پذیری و برنامه‌ریزی متناسب با منابع واقعی.",
       "teaching_point": "خستگی، فشار و زمان نامناسب ممکن است حساسیت را بیشتر کنند؛ این عوامل رفتار آسیب‌زا را توجیه نمی‌کنند.",
       "exercise_type": "پایش و برنامه پیشگیری",
       "exercise": "از میان زمینه‌هایی که قبلاً شناسایی کرده‌ای، فقط یکی را انتخاب کن و در سه دسته قرار بده: در اختیار من، نیازمند همکاری/حمایت، خارج از اختیار فعلی. دلیل این دسته‌بندی را بنویس.",
@@ -1673,7 +1696,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "شناسایی فشارهای زمینه‌ای برای پیشگیری زودهنگام"
     },
     {
       "content_id": "DRAFT_T01_D25_B2AB",
@@ -1697,7 +1721,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "اتصال محرک، نشانه آغاز، آستانه مکث، پاسخ امن و گزینه حمایت در یک نقشه قابل اصلاح.",
       "target_skill": "یکپارچه‌سازی مهارت‌ها.",
-      "mechanism_focus": "یکپارچه‌سازی مهارت‌ها در یک نقشه شخصی قابل اصلاح",
+      "mechanism_focus": "یکپارچه‌سازی مهارت‌ها.",
       "teaching_point": "نقشه شخصی فرضیه‌ای قابل اصلاح است، نه تشخیص یا توضیح قطعی شخصیت.",
       "exercise_type": "نقشه شخصی",
       "exercise": "یک موقعیت معمول را انتخاب کن و پنج بخش را کنار هم بنویس: محرک احتمالی، نشانه زودهنگام، حدی که ادامه تعامل مناسب نیست، پاسخ غیرآسیب‌زا، و منبع حمایت.",
@@ -1747,7 +1771,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "یکپارچه‌سازی مهارت‌ها در یک نقشه شخصی قابل اصلاح"
     },
     {
       "content_id": "DRAFT_T01_D26_B2AB",
@@ -1767,7 +1792,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "تشخیص زمان‌هایی که تکرار رفتار آسیب‌زا، تهدید یا اختلال عملکرد نیازمند کمک انسانی/تخصصی است.",
       "target_skill": "تشخیص مرز خودیاری در برابر خطر تکرار رفتار آسیب‌زا و نیاز به مداخله/حمایت انسانی.",
-      "mechanism_focus": "شناسایی محدودیت خودیاری و تسهیل کمک‌خواهی",
+      "mechanism_focus": "تشخیص مرز خودیاری در برابر خطر تکرار رفتار آسیب‌زا و نیاز به مداخله/حمایت انسانی.",
       "teaching_point": "خودمراقبتی جایگزین درمان یا مداخله ایمنی در خشم شدید، خشونت یا خطر آسیب نیست.",
       "exercise_type": "خودارزیابی نیاز به حمایت",
       "exercise": "بررسی کن آیا خشم با تهدید، تخریب، آسیب جسمی، ترس دیگران، از دست‌دادن کنترل یا پیامد جدی در روابط/کار همراه شده است. لازم نیست برای پاسخ مثبت جزئیات آسیب‌زا را بازسازی کنی.",
@@ -1814,7 +1839,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "شناسایی محدودیت خودیاری و تسهیل کمک‌خواهی"
     },
     {
       "content_id": "DRAFT_T01_D27_B2AB",
@@ -1834,7 +1860,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "شناسایی یک مسیر مقدماتی خروج/حمایت در صورت افزایش خطر؛ این تمرین برنامه ایمنی کامل یا مداخله بحران نیست.",
       "target_skill": "شناسایی منبع کمک و محدودیت خودیاری در موقعیت پرخطر.",
-      "mechanism_focus": "آمادگی مقدماتی برای فاصله‌گیری و اقدام ایمن در زمان خطر",
+      "mechanism_focus": "شناسایی منبع کمک و محدودیت خودیاری در موقعیت پرخطر.",
       "teaching_point": "برنامه خودیاری جایگزین ارزیابی خطر یا مداخله فوری نیست و نباید امنیت فرد دیگری را به خطر بیندازد.",
       "exercise_type": "برنامه ایمنی مقدماتی",
       "exercise": "فقط در نبود خطر فوری، یک منبع کمک قابل‌دسترسی و یک راه خروج کلی را مشخص کن. اگر تهیه این اطلاعات ممکن نیست یا خطر جاری است، تمرین را ادامه نده و از کمک انسانی/اضطراری استفاده کن.",
@@ -1882,7 +1908,8 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "آمادگی مقدماتی برای فاصله‌گیری و اقدام ایمن در زمان خطر"
     },
     {
       "content_id": "DRAFT_T01_D28_B2AB",
@@ -1906,7 +1933,7 @@
       "phase": "topic_specific_daily_skill",
       "learning_objective": "مرور آموخته‌ها، دشواری‌های حل‌نشده و انتخاب ادامه، مکث یا کمک تخصصی.",
       "target_skill": "خودارزیابی و برنامه‌ریزی تداوم.",
-      "mechanism_focus": "تثبیت مهارت‌ها و برنامه‌ریزی ادامه مسیر بدون ادعای درمان",
+      "mechanism_focus": "خودارزیابی و برنامه‌ریزی تداوم.",
       "teaching_point": "تکمیل ۲۸ روز به‌تنهایی اثبات‌کننده کاهش خشم، درمان یا تغییر پایدار نیست؛ تصمیم بعدی باید بر تجربه و ایمنی تکیه کند.",
       "exercise_type": "مرور و برنامه ادامه",
       "exercise": "یادداشت‌ها را مرور کن و سه مورد بنویس: نشانه‌ای که زودتر می‌شناسی، پاسخی که برایت امن‌تر بوده، و مسئله‌ای که هنوز نیاز به حمایت دارد. کاهش کامل خشم شرط موفقیت نیست.",
@@ -1956,7 +1983,12 @@
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_runtime_mechanism": "تثبیت مهارت‌ها و برنامه‌ریزی ادامه مسیر بدون ادعای درمان"
     }
+  ],
+  "audit_notes": [
+    "برای جلوگیری از حمل تناقض از فراداده قدیمی به پیش‌نویس تازه، سازوکار اصلی در این بسته از مهارت/سازوکار نسخه B2-AB گرفته شده است؛ مقدار mechanism قدیمی فقط در source_runtime_mechanism برای ردیابی نگهداری می‌شود.",
+    "پنج گونه پشتیبان هر روز جداگانه تعریف شده‌اند؛ نسخه سبک، اقدام سبک، اقدام پیشرفت، تمرین استراحت و اقدام استراحت. این پنج فیلد با متن‌های قبلی runtime یکسان فرض نشده‌اند و نیازمند بازبینی مستقل‌اند."
   ]
 }
