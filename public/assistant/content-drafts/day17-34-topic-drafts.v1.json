@@ -19,7 +19,7 @@
       "subtopic_id": "T01-S03",
       "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 17,
-      "phase": "topic_specific_daily_skill",
+      "phase": "effective_strategy_selection",
       "learning_objective": "تبدیل انتظار مبهم به یک نیاز و درخواست مشخص، بدون تمرین قالب جمله قاطعانه.",
       "mechanism_focus": "روشن‌سازی نیاز و تشخیص تفاوت درخواست با مطالبه یا اجبار.",
       "exercise": "یک انتظار مبهم را به دو مورد تبدیل کن: نیاز خودت و درخواست مشخصی که طرف مقابل آزاد است آن را نپذیرد. هنوز آن را به جمله‌ای برای ارسال یا گفتن تبدیل نکن.",
@@ -81,7 +81,10 @@
       },
       "source_runtime_mechanism": "تبدیل انتظار مبهم به درخواست روشن و قابل مذاکره",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D17"
+      "canonical_package_record_id": "DRAFT_T01_D17",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D17",
