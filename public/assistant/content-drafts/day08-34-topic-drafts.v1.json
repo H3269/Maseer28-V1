@@ -16,10 +16,10 @@
       "source_content_id": "خشم-08",
       "topic_id": "T01",
       "topic_name": "خشم",
-      "subtopic_id": "T01-S02",
-      "subtopic_name": "نشانه‌های بدنی و برانگیختگی",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 8,
-      "phase": "topic_specific_daily_skill",
+      "phase": "guided_skill_building",
       "learning_objective": "بررسی اینکه آیا تنفس آرام و طبیعی برای فرد راحت است یا خیر.",
       "mechanism_focus": "تنظیم اختیاری برانگیختگی بدون کنترل اجباری.",
       "exercise": "اگر مایل هستی، برای چند چرخه اجازه بده تنفس طبیعی و راحت باشد؛ نفس عمیق یا حبس نفس لازم نیست. اگر این کار توجهت را به ناراحتی بیشتر می‌کند، روش دیگری انتخاب کن.",
@@ -34,10 +34,10 @@
       "runtime_eligible": false,
       "title": "انتخاب روش آرام‌سازی اختیاری",
       "subtopic_ids": [
-        "T01-S02"
+        "T01-S03"
       ],
       "subtopic_names": [
-        "نشانه‌های بدنی و برانگیختگی"
+        "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
       "target_skill": "تنظیم اختیاری برانگیختگی بدون کنترل اجباری.",
       "teaching_point": "هدف تمرین ایجاد مکث و کاهش تنش است، نه کنترل کامل هیجان یا جایگزینی ارزیابی پزشکی.",
@@ -80,7 +80,10 @@
       },
       "source_runtime_mechanism": "کاهش ملایم برانگیختگی بدنی با تنفس اختیاری",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D08"
+      "canonical_package_record_id": "DRAFT_T01_D08",
+      "design_subtopic_ids": [
+        "T01-S02"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D08",
