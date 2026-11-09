@@ -16,10 +16,10 @@
       "source_content_id": "خشم-06",
       "topic_id": "T01",
       "topic_name": "خشم",
-      "subtopic_id": "T01-S02",
-      "subtopic_name": "نشانه‌های بدنی و برانگیختگی، بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 6,
-      "phase": "topic_specific_daily_skill",
+      "phase": "guided_skill_building",
       "learning_objective": "تعریف سه سطح شخصی شدت با نشانه‌های قابل مشاهده و تعیین زمان مناسب مکث.",
       "mechanism_focus": "پایش شدت برای پیشگیری از پاسخ تکانشی.",
       "exercise": "سه سطح «کم»، «رو به افزایش» و «بسیار شدید» را با نشانه‌های شخصی مانند سرعت گفتار، تنش یا میل به قطع صحبت توصیف کن. برای سطح سوم، یک اقدام حفاظتی مشخص بنویس.",
@@ -34,11 +34,9 @@
       "runtime_eligible": false,
       "title": "مقیاس شدت و آستانه مکث",
       "subtopic_ids": [
-        "T01-S02",
         "T01-S03"
       ],
       "subtopic_names": [
-        "نشانه‌های بدنی و برانگیختگی",
         "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
       "target_skill": "پایش شدت برای پیشگیری از پاسخ تکانشی.",
@@ -81,7 +79,11 @@
       },
       "source_runtime_mechanism": "پایش شدت شخصی برای انتخاب زمان مکث ایمن",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D06"
+      "canonical_package_record_id": "DRAFT_T01_D06",
+      "design_subtopic_ids": [
+        "T01-S02",
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D06",
