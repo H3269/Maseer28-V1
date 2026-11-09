@@ -16,10 +16,10 @@
       "source_content_id": "خشم-13",
       "topic_id": "T01",
       "topic_name": "خشم",
-      "subtopic_id": "T01-S02",
-      "subtopic_name": "نشانه‌های بدنی و برانگیختگی، بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 13,
-      "phase": "topic_specific_daily_skill",
+      "phase": "progress_indicators_and_feedback",
       "learning_objective": "انتخاب یک پاسخ غیرآسیب‌زا برای زمانی که برانگیختگی بالا می‌رود.",
       "mechanism_focus": "جایگزینی تخلیه آسیب‌زا با راهبرد کم‌خطر.",
       "exercise": "سه گزینه غیرآسیب‌زا مانند فاصله‌گیری، نوشیدن آب یا انجام یک فعالیت خنثی را بنویس. مشخص کن کدام گزینه در موقعیت تو عملی و امن است و کدام ممکن است مناسب نباشد.",
@@ -34,11 +34,9 @@
       "runtime_eligible": false,
       "title": "انتخاب پاسخ کاهنده برانگیختگی",
       "subtopic_ids": [
-        "T01-S02",
         "T01-S03"
       ],
       "subtopic_names": [
-        "نشانه‌های بدنی و برانگیختگی",
         "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
       "target_skill": "جایگزینی تخلیه آسیب‌زا با راهبرد کم‌خطر.",
@@ -82,7 +80,11 @@
       },
       "source_runtime_mechanism": "جایگزینی تخلیه برانگیزاننده با راهبردهای آرام‌ساز",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D13"
+      "canonical_package_record_id": "DRAFT_T01_D13",
+      "design_subtopic_ids": [
+        "T01-S02",
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D13",
