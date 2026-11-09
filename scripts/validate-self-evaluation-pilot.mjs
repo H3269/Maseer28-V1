@@ -89,6 +89,10 @@ export function validateSelfEvaluationPilot({ pilot, queue, evidence }) {
     }
     const ids = Array.isArray(record.evidence_ids) ? record.evidence_ids : [];
     const referenceIds = Array.isArray(record.source_reference_ids) ? record.source_reference_ids : [];
+    const candidateIds = Array.isArray(record.candidate_evidence_ids) ? record.candidate_evidence_ids : [];
+    if ([...ids].sort().join('|') !== [...candidateIds].sort().join('|')) {
+      errors.push('candidate evidence ids must match provenance ids ' + record.content_id);
+    }
     if (ids.length === 0) errors.push('missing evidence provenance ' + record.content_id);
     if (!unique(ids)) errors.push('duplicate evidence id ' + record.content_id);
     if (!unique(referenceIds)) errors.push('duplicate source reference id ' + record.content_id);
