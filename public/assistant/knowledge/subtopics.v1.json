@@ -16,7 +16,27 @@
       "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
-      "safety_rule_ids": []
+      "safety_rule_ids": [],
+      "draft_content_ids": [
+        "خشم-01",
+        "خشم-02",
+        "خشم-03",
+        "خشم-05",
+        "خشم-07",
+        "خشم-15",
+        "خشم-16",
+        "خشم-17",
+        "خشم-18",
+        "خشم-19",
+        "خشم-24",
+        "خشم-25",
+        "خشم-28"
+      ],
+      "draft_evidence_ids": [
+        "SRC-ANGER-NHS-001",
+        "SRC-ANGER-APA-001",
+        "SRC-ANGER-POP-2025-001"
+      ]
     },
     {
       "subtopic_id": "T01-S02",
@@ -30,7 +50,29 @@
       "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
-      "safety_rule_ids": []
+      "safety_rule_ids": [],
+      "draft_content_ids": [
+        "خشم-04",
+        "خشم-05",
+        "خشم-06",
+        "خشم-07",
+        "خشم-08",
+        "خشم-09",
+        "خشم-10",
+        "خشم-12",
+        "خشم-13",
+        "خشم-14",
+        "خشم-24",
+        "خشم-25",
+        "خشم-28"
+      ],
+      "draft_evidence_ids": [
+        "SRC-ANGER-NHS-001",
+        "SRC-ANGER-KJAERVIK-2024-001",
+        "SRC-ANGER-ODEAN-2025-001",
+        "SRC-ER-SACCARO-2024-001",
+        "SRC-ANGER-MINDFULNESS-ER-2026-001"
+      ]
     },
     {
       "subtopic_id": "T01-S03",
@@ -44,7 +86,36 @@
       "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
-      "safety_rule_ids": []
+      "safety_rule_ids": [],
+      "draft_content_ids": [
+        "خشم-01",
+        "خشم-02",
+        "خشم-05",
+        "خشم-06",
+        "خشم-10",
+        "خشم-11",
+        "خشم-13",
+        "خشم-14",
+        "خشم-17",
+        "خشم-18",
+        "خشم-19",
+        "خشم-20",
+        "خشم-21",
+        "خشم-22",
+        "خشم-23",
+        "خشم-25",
+        "خشم-26",
+        "خشم-27",
+        "خشم-28"
+      ],
+      "draft_evidence_ids": [
+        "SRC-ANGER-ABCT-001",
+        "SRC-ANGER-APS-001",
+        "SRC-ANGER-SMITH-2026-001",
+        "SRC-ANGER-ODEAN-2025-001",
+        "SRC-ANGER-WHO-IPV-2013-001",
+        "SRC-IPV-RASMUSSEN-2026-001"
+      ]
     },
     {
       "subtopic_id": "T02-S01",
@@ -58,7 +129,29 @@
       "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
-      "safety_rule_ids": []
+      "safety_rule_ids": [],
+      "draft_content_ids": [
+        "اضطراب-01",
+        "اضطراب-02",
+        "اضطراب-03",
+        "اضطراب-04",
+        "اضطراب-06",
+        "اضطراب-07",
+        "اضطراب-12",
+        "اضطراب-13",
+        "اضطراب-14",
+        "اضطراب-21",
+        "اضطراب-22",
+        "اضطراب-23",
+        "اضطراب-25",
+        "اضطراب-27",
+        "اضطراب-28"
+      ],
+      "draft_evidence_ids": [
+        "SRC-ANXIETY-NHS-001",
+        "SRC-ANXIETY-NICE-CG113-001",
+        "SRC-ANXIETY-APA-001"
+      ]
     },
     {
       "subtopic_id": "T02-S02",
@@ -72,7 +165,24 @@
       "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
-      "safety_rule_ids": []
+      "safety_rule_ids": [],
+      "draft_content_ids": [
+        "اضطراب-05",
+        "اضطراب-07",
+        "اضطراب-08",
+        "اضطراب-09",
+        "اضطراب-10",
+        "اضطراب-11",
+        "اضطراب-24",
+        "اضطراب-26",
+        "اضطراب-27",
+        "اضطراب-28"
+      ],
+      "draft_evidence_ids": [
+        "SRC-ANXIETY-NHS-001",
+        "SRC-ANXIETY-APA-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001"
+      ]
     },
     {
       "subtopic_id": "T02-S03",
@@ -86,7 +196,32 @@
       "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
-      "safety_rule_ids": []
+      "safety_rule_ids": [],
+      "draft_content_ids": [
+        "اضطراب-03",
+        "اضطراب-07",
+        "اضطراب-12",
+        "اضطراب-13",
+        "اضطراب-14",
+        "اضطراب-15",
+        "اضطراب-16",
+        "اضطراب-17",
+        "اضطراب-18",
+        "اضطراب-19",
+        "اضطراب-20",
+        "اضطراب-21",
+        "اضطراب-23",
+        "اضطراب-24",
+        "اضطراب-25",
+        "اضطراب-26",
+        "اضطراب-27",
+        "اضطراب-28"
+      ],
+      "draft_evidence_ids": [
+        "SRC-ANXIETY-APA-UNCERTAINTY-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001",
+        "SRC-ANXIETY-APA-001"
+      ]
     },
     {
       "subtopic_id": "T03-S01",
