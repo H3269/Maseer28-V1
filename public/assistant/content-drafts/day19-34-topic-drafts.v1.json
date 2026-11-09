@@ -19,7 +19,7 @@
       "subtopic_id": "T01-S03",
       "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 19,
-      "phase": "topic_specific_daily_skill",
+      "phase": "personal_maintenance_commitment",
       "learning_objective": "مقایسه پاسخ‌های رفتاری ممکن به یک اختلاف کم‌خطر، از جمله عدم تعامل، فاصله‌گیری، مخالفت محترمانه در صورت ایمنی یا کمک مستقل.",
       "mechanism_focus": "ارزیابی پیامد، امکان اجرا و ایمنی گزینه‌های رفتاری؛ نه انتخاب روش آرام‌سازی بدن.",
       "exercise": "دست‌کم دو پاسخ متفاوت به یک اختلاف کم‌خطر بنویس؛ یکی می‌تواند عدم تماس/عدم ادامه تعامل باشد. پیامد، ایمنی، اختیار و امکان اجرای هر گزینه را مقایسه کن. میانجی‌گری مشترک را در موقعیت تهدید، اجبار یا کنترل اجباری پیشنهاد نکن.",
@@ -80,7 +80,10 @@
       },
       "source_runtime_mechanism": "تولید گزینه‌های کم‌خطر و انتخاب راه‌حل واقع‌بینانه",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D19"
+      "canonical_package_record_id": "DRAFT_T01_D19",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D19",
