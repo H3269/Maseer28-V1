@@ -335,18 +335,17 @@
       "action": "یک گام مقدماتی را که در کنترل توست مشخص کن؛ هنوز لازم نیست آن را اجرا کنی.",
       "progress_measure": "آیا دست‌کم یک مهارت قابل تمرین از قضاوت کلی جدا شد؟",
       "safety_and_limits": "تقسیم‌بندی نباید به فشار برای عملکرد بی‌نقص تبدیل شود؛ در صورت اضطراب شدید، کار را کوچک‌تر یا متوقف کن.",
-      "evidence_ids": [
-        "EVID_BANDURA_1977",
-        "EVID_SELF_EFFICACY_IBI_2025"
-      ],
-      "source_reference_ids": [
-        "EVID_BANDURA_1977",
-        "EVID_SELF_EFFICACY_IBI_2025"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_BANDURA_1977",
+        "EVID_SELF_EFFICACY_IBI_2025"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T16_D05",
@@ -429,20 +428,18 @@
       "action": "یک عامل خارج از کنترل خود را مشخص کن؛ لازم نیست درباره سهم نهایی تصمیم بگیری.",
       "progress_measure": "آیا دست‌کم یک عامل خارج از کنترل یا نامعلوم شناسایی شد؟",
       "safety_and_limits": "در رویدادهای خشونت یا سوءاستفاده، ایمنی و حمایت تخصصی مقدم است؛ قربانی مسئول انتخاب عامل آسیب نیست.",
-      "evidence_ids": [
-        "EVID_SELFBLAME_REVIEW_2020",
-        "EVID_GUILT_MEASUREMENT_2010",
-        "EVID_JANOFF_BULMAN_1979"
-      ],
-      "source_reference_ids": [
-        "EVID_SELFBLAME_REVIEW_2020",
-        "EVID_GUILT_MEASUREMENT_2010",
-        "EVID_JANOFF_BULMAN_1979"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_SELFBLAME_REVIEW_2020",
+        "EVID_GUILT_MEASUREMENT_2010",
+        "EVID_JANOFF_BULMAN_1979"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T20_D05",
@@ -525,18 +522,17 @@
       "action": "یک استثنا یا موقعیتی را که در آن این شرط برقرار نبوده ولی همچنان حق احترام و مراقبت داشته‌ای، در صورت تمایل یادداشت کن.",
       "progress_measure": "آیا یک قاعده مشروط شناسایی شد، بدون اینکه مجبور به باور جایگزین شوی؟",
       "safety_and_limits": "اگر یادآوری تجربه باعث آشفتگی شد، توقف کن؛ ارزش شخصی را با عملکرد یا بهره‌وری نسنج.",
-      "evidence_ids": [
-        "EVID_SELFESTEEM_CFT_2021",
-        "EVID_SELFESTEEM_META_2021"
-      ],
-      "source_reference_ids": [
-        "EVID_SELFESTEEM_CFT_2021",
-        "EVID_SELFESTEEM_META_2021"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_SELFESTEEM_CFT_2021",
+        "EVID_SELFESTEEM_META_2021"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T24_D05",
@@ -597,18 +593,17 @@
       "action": "اگر مایل بودی، مشخص کن با چه کسی، اگر اصلاً، و در چه حدی مایلی اطلاعاتی را در میان بگذاری؛ نداشتنِ تمایل به افشا نیز انتخاب معتبر است.",
       "progress_measure": "آیا مخاطب و مرز اطلاعاتی روشن‌تر شدند؟",
       "safety_and_limits": "اگر افشا می‌تواند خطر، خشونت، تبعیض یا پیامد جدی ایجاد کند، از افشا خودداری کن و حمایت امن بجوی.",
-      "evidence_ids": [
-        "EVID_SHAME_GUILT_2018",
-        "EVID_CFT_SHAME_2025"
-      ],
-      "source_reference_ids": [
-        "EVID_SHAME_GUILT_2018",
-        "EVID_CFT_SHAME_2025"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_SHAME_GUILT_2018",
+        "EVID_CFT_SHAME_2025"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T27_D05",
@@ -757,20 +752,18 @@
       "action": "یک عبارت کلی را به توصیف موقعیت‌مند تبدیل کن؛ مثلاً از «همیشه خراب می‌کنم» به «در این بخش به مشکل خوردم».",
       "progress_measure": "آیا جمله به رفتار و موقعیت مشخص‌تر تبدیل شد؟",
       "safety_and_limits": "هدف تبرئه یا محکوم‌کردن نیست؛ از بازبینی وسواسی و کمال‌گرایانه پرهیز کن.",
-      "evidence_ids": [
-        "EVID_SELFCRITICISM_CBI_2021",
-        "EVID_CFT_SHAME_2025",
-        "EVID_SELFCRITICISM_EFT_2026"
-      ],
-      "source_reference_ids": [
-        "EVID_SELFCRITICISM_CBI_2021",
-        "EVID_CFT_SHAME_2025",
-        "EVID_SELFCRITICISM_EFT_2026"
-      ],
+      "evidence_ids": [],
+      "source_reference_ids": [],
       "review_status": "draft_pending_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "candidate_evidence_ids": [
+        "EVID_SELFCRITICISM_CBI_2021",
+        "EVID_CFT_SHAME_2025",
+        "EVID_SELFCRITICISM_EFT_2026"
+      ],
+      "evidence_mapping_status": "candidate_only_pending_claim_level_review"
     },
     {
       "content_id": "DRAFT_T34_D05",
