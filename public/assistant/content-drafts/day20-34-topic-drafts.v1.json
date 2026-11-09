@@ -19,7 +19,7 @@
       "subtopic_id": "T01-S03",
       "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 20,
-      "phase": "topic_specific_daily_skill",
+      "phase": "barrier_anticipation_and_safe_continuity",
       "learning_objective": "بازبینی یک جمله ارتباطی از پیش آماده‌شده برای حذف توهین، تهدید، تعمیم و ابهام؛ این روز نیاز تازه‌ای تولید نمی‌کند.",
       "mechanism_focus": "ویرایش پیام و کنترل لحن، نه شناسایی نیاز یا تولید درخواست جدید.",
       "exercise": "فقط اگر یک پیام یا جمله غیرضروری و امن از قبل در اختیار داری، آن را از نظر توهین، تهدید، تعمیم و وضوح بازبینی کن. اگر جمله‌ای آماده نیست، یک نمونه فرضی خنثی را ویرایش کن؛ از ساختن درخواست تازه خودداری کن.",
@@ -81,7 +81,10 @@
       },
       "source_runtime_mechanism": "بیان نیاز و مرز بدون حمله یا تهدید",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D20"
+      "canonical_package_record_id": "DRAFT_T01_D20",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D20",
