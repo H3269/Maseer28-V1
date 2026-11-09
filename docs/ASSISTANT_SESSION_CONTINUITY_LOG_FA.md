@@ -4927,3 +4927,15 @@ undefined
 - هیچ Telegram Action و هیچ انتشار Telegram/Bale اجرا نشده است.
 
 **وضعیت:** PR67_MERGED; PR68_MERGED; PR68_HEAD_CI_GREEN_RUN_42637757927; 34_TOPIC_AND_102_SUBTOPIC_DEFINITIONS_PRESENT_AS_DRAFT; NO_RUNTIME_ACTIVATION; OWNER_EXPERT_REVIEW_PENDING; NO_TELEGRAM_BALE_RELEASE
+
+
+## تکمیل اعتبارسنجی پس از ادغام‌ها — 2026-11-09
+
+- پس از ادغام PR #68 و ثبت دفتر وقایع، اعتبارسنجی مستقیم main روی commit `8f662aa252866320cd3af0084c7804a61ef09ea0` در run `42639411465` با نتیجه کامل `success` پایان یافت؛ job اصلی و job ثبت نتیجه هر دو موفق شدند و Chromium regression نیز تکمیل شد.
+- PR #23 پس از ادغام جایگزین کامل‌تر آن (#68) به‌عنوان درخواست تکراری بسته شد؛ هیچ تغییری از PR #23 به‌صورت جداگانه ادغام نشد.
+- برای زنجیره PRهای #26 تا #38 یک PR تجمیعی آزمایشی #70 با head دقیق `88b873270677687b4a45ef029d17277dc05bec10` ساخته شد تا کل تغییرات در برابر main فعلی ارزیابی شوند. CI مستقیم همان head در PR #38 قبلاً موفق بوده است، اما PR #70 در مقایسه با main فعلی هنوز `mergeable=false` است؛ بنابراین ادغام نشده و نیازمند حل اختلاف شاخه/تعارض است.
+- PR #70 شامل پیش‌نویس‌های محتوایی و ledgerهای بازبینی است؛ هیچ‌یک تأیید تخصصی یا runtime-ready تلقی نمی‌شوند. بازبینی مالک مانع ادامه اصلاح فنی نیست.
+- PR #66 همچنان باز می‌ماند و بدون دستور صریح مالک بسته نمی‌شود.
+- هیچ Telegram Action یا انتشار Telegram/Bale انجام نشده است.
+
+**وضعیت:** MAIN_POST_PR68_CI_SUCCESS_RUN_42639411465; PR23_CLOSED_AS_SUPERSEDED; PR70_OPEN_NOT_MERGEABLE; PR66_REMAINS_OPEN_BY_OWNER_INSTRUCTION; NO_TELEGRAM_BALE_RELEASE
