@@ -24,7 +24,7 @@
   ],
   "records": [
     {
-      "content_id": "DRAFT_T01_D01_B2AB",
+      "content_id": "DRAFT_T01_D01",
       "source_content_id": "خشم-01",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -94,7 +94,7 @@
       "source_runtime_mechanism": "افزایش آگاهی از هیجان و ایجاد فاصله میان احساس و واکنش"
     },
     {
-      "content_id": "DRAFT_T01_D02_B2AB",
+      "content_id": "DRAFT_T01_D02",
       "source_content_id": "خشم-02",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -162,7 +162,7 @@
       "source_runtime_mechanism": "تفکیک هیجان از رفتار برای تقویت مسئولیت‌پذیری"
     },
     {
-      "content_id": "DRAFT_T01_D03_B2AB",
+      "content_id": "DRAFT_T01_D03",
       "source_content_id": "خشم-03",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -230,7 +230,7 @@
       "source_runtime_mechanism": "شناسایی محرک‌ها و عوامل زمینه‌ای قابل مشاهده"
     },
     {
-      "content_id": "DRAFT_T01_D04_B2AB",
+      "content_id": "DRAFT_T01_D04",
       "source_content_id": "خشم-04",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -298,7 +298,7 @@
       "source_runtime_mechanism": "تشخیص نشانه‌های بدنی زودهنگام پیش از تشدید واکنش"
     },
     {
-      "content_id": "DRAFT_T01_D05_B2AB",
+      "content_id": "DRAFT_T01_D05",
       "source_content_id": "خشم-05",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -370,7 +370,7 @@
       "source_runtime_mechanism": "شناخت زنجیره موقعیت، فکر، هیجان، تکانه، رفتار و پیامد"
     },
     {
-      "content_id": "DRAFT_T01_D06_B2AB",
+      "content_id": "DRAFT_T01_D06",
       "source_content_id": "خشم-06",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -440,7 +440,7 @@
       "source_runtime_mechanism": "پایش شدت شخصی برای انتخاب زمان مکث ایمن"
     },
     {
-      "content_id": "DRAFT_T01_D07_B2AB",
+      "content_id": "DRAFT_T01_D07",
       "source_content_id": "خشم-07",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -512,7 +512,7 @@
       "source_runtime_mechanism": "مرور الگوها بدون تعمیم یا برچسب‌زنی"
     },
     {
-      "content_id": "DRAFT_T01_D08_B2AB",
+      "content_id": "DRAFT_T01_D08",
       "source_content_id": "خشم-08",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -581,7 +581,7 @@
       "source_runtime_mechanism": "کاهش ملایم برانگیختگی بدنی با تنفس اختیاری"
     },
     {
-      "content_id": "DRAFT_T01_D09_B2AB",
+      "content_id": "DRAFT_T01_D09",
       "source_content_id": "خشم-09",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -650,7 +650,7 @@
       "source_runtime_mechanism": "انتقال توجه از تکانه به محیط حاضر"
     },
     {
-      "content_id": "DRAFT_T01_D10_B2AB",
+      "content_id": "DRAFT_T01_D10",
       "source_content_id": "خشم-10",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -722,7 +722,7 @@
       "source_runtime_mechanism": "ایجاد وقفه و فاصله برای کاهش احتمال واکنش تکانه‌ای؛ تناسب آن به ایمنی و رضایت آزادانه وابسته است."
     },
     {
-      "content_id": "DRAFT_T01_D11_B2AB",
+      "content_id": "DRAFT_T01_D11",
       "source_content_id": "خشم-11",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -792,7 +792,7 @@
       "source_runtime_mechanism": "تسهیل ادامه گفت‌وگو فقط در صورت رضایت آزادانه و ایمنی؛ نه تحمیل بازگشت."
     },
     {
-      "content_id": "DRAFT_T01_D12_B2AB",
+      "content_id": "DRAFT_T01_D12",
       "source_content_id": "خشم-12",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -861,7 +861,7 @@
       "source_runtime_mechanism": "کاهش تنش عضلانی بدون درد یا فشار"
     },
     {
-      "content_id": "DRAFT_T01_D13_B2AB",
+      "content_id": "DRAFT_T01_D13",
       "source_content_id": "خشم-13",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -932,7 +932,7 @@
       "source_runtime_mechanism": "جایگزینی تخلیه برانگیزاننده با راهبردهای آرام‌ساز"
     },
     {
-      "content_id": "DRAFT_T01_D14_B2AB",
+      "content_id": "DRAFT_T01_D14",
       "source_content_id": "خشم-14",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -1003,7 +1003,7 @@
       "source_runtime_mechanism": "تثبیت مهارت‌های تنظیم هیجان و انتخاب ابزار مناسب"
     },
     {
-      "content_id": "DRAFT_T01_D15_B2AB",
+      "content_id": "DRAFT_T01_D15",
       "source_content_id": "خشم-15",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -1072,7 +1072,7 @@
       "source_runtime_mechanism": "بازبینی برداشت‌ها با تفکیک شواهد و تفسیر"
     },
     {
-      "content_id": "DRAFT_T01_D16_B2AB",
+      "content_id": "DRAFT_T01_D16",
       "source_content_id": "خشم-16",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -1141,7 +1141,7 @@
       "source_runtime_mechanism": "کاهش قطعیت‌های شناختی و افزایش دقت در ارزیابی موقعیت"
     },
     {
-      "content_id": "DRAFT_T01_D17_B2AB",
+      "content_id": "DRAFT_T01_D17",
       "source_content_id": "خشم-17",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -1211,7 +1211,7 @@
       "source_runtime_mechanism": "تبدیل انتظار مبهم به درخواست روشن و قابل مذاکره"
     },
     {
-      "content_id": "DRAFT_T01_D18_B2AB",
+      "content_id": "DRAFT_T01_D18",
       "source_content_id": "خشم-18",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -1282,7 +1282,7 @@
       "source_runtime_mechanism": "تعریف مسئله به جای سرزنش کلی افراد"
     },
     {
-      "content_id": "DRAFT_T01_D19_B2AB",
+      "content_id": "DRAFT_T01_D19",
       "source_content_id": "خشم-19",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -1351,7 +1351,7 @@
       "source_runtime_mechanism": "تولید گزینه‌های کم‌خطر و انتخاب راه‌حل واقع‌بینانه"
     },
     {
-      "content_id": "DRAFT_T01_D20_B2AB",
+      "content_id": "DRAFT_T01_D20",
       "source_content_id": "خشم-20",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -1421,7 +1421,7 @@
       "source_runtime_mechanism": "بیان نیاز و مرز بدون حمله یا تهدید"
     },
     {
-      "content_id": "DRAFT_T01_D21_B2AB",
+      "content_id": "DRAFT_T01_D21",
       "source_content_id": "خشم-21",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -1491,7 +1491,7 @@
       "source_runtime_mechanism": "کاهش پاسخ‌دهی تکانشی از طریق گوش‌دادن و مکث"
     },
     {
-      "content_id": "DRAFT_T01_D22_B2AB",
+      "content_id": "DRAFT_T01_D22",
       "source_content_id": "خشم-22",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -1561,7 +1561,7 @@
       "source_runtime_mechanism": "ارزیابی امکان مذاکره در روابط امن و حفظ مرزها"
     },
     {
-      "content_id": "DRAFT_T01_D23_B2AB",
+      "content_id": "DRAFT_T01_D23",
       "source_content_id": "خشم-23",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -1630,7 +1630,7 @@
       "source_runtime_mechanism": "تقویت مسئولیت‌پذیری و پیشگیری از تکرار آسیب"
     },
     {
-      "content_id": "DRAFT_T01_D24_B2AB",
+      "content_id": "DRAFT_T01_D24",
       "source_content_id": "خشم-24",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -1700,7 +1700,7 @@
       "source_runtime_mechanism": "شناسایی فشارهای زمینه‌ای برای پیشگیری زودهنگام"
     },
     {
-      "content_id": "DRAFT_T01_D25_B2AB",
+      "content_id": "DRAFT_T01_D25",
       "source_content_id": "خشم-25",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -1775,7 +1775,7 @@
       "source_runtime_mechanism": "یکپارچه‌سازی مهارت‌ها در یک نقشه شخصی قابل اصلاح"
     },
     {
-      "content_id": "DRAFT_T01_D26_B2AB",
+      "content_id": "DRAFT_T01_D26",
       "source_content_id": "خشم-26",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -1843,7 +1843,7 @@
       "source_runtime_mechanism": "شناسایی محدودیت خودیاری و تسهیل کمک‌خواهی"
     },
     {
-      "content_id": "DRAFT_T01_D27_B2AB",
+      "content_id": "DRAFT_T01_D27",
       "source_content_id": "خشم-27",
       "topic_id": "T01",
       "topic_name": "خشم",
@@ -1912,7 +1912,7 @@
       "source_runtime_mechanism": "آمادگی مقدماتی برای فاصله‌گیری و اقدام ایمن در زمان خطر"
     },
     {
-      "content_id": "DRAFT_T01_D28_B2AB",
+      "content_id": "DRAFT_T01_D28",
       "source_content_id": "خشم-28",
       "topic_id": "T01",
       "topic_name": "خشم",
