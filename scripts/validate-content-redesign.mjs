@@ -25,7 +25,7 @@ const PROGRESSION_FIELDS = [
 ];
 const normalizeText = (value) => String(value ?? '').normalize('NFKC').replace(/\\s+/g, ' ').trim();
 
-export function validateContentRedesign({ queue, day1, day2, day3, allDays = null, topics, subtopics }) {
+export function validateContentRedesign({ queue, day1, day2, day3, allDays = null, topics, subtopics, evidenceRegistry = null }) {
   const errors = [];
   const topicList = topics.topics ?? [];
   const topicIds = new Set(topicList.map((item) => item.topic_id));
@@ -155,6 +155,7 @@ export function validateContentRedesign({ queue, day1, day2, day3, allDays = nul
     }
   }
 
+  const registeredEvidenceIds = new Set((evidenceRegistry?.sources ?? []).map((item) => item.evidence_id));
   if (Array.isArray(allDays)) {
     const completeDrafts = allDays.flatMap((batch) => batch?.records ?? []);
     if (allDays.length !== 28 || completeDrafts.length !== 952) {
@@ -191,6 +192,11 @@ export function validateContentRedesign({ queue, day1, day2, day3, allDays = nul
         }
         if ((item.evidence_ids ?? []).length || (item.source_reference_ids ?? []).length) {
           errors.push('complete draft claims unverified evidence ' + item.content_id);
+        }
+        for (const candidateId of item.candidate_evidence_ids ?? []) {
+          if (!registeredEvidenceIds.has(candidateId)) {
+            errors.push('unknown candidate evidence reference ' + candidateId + ' in ' + item.content_id);
+          }
         }
         const slot = item.topic_id + ':' + day;
         if (topicDaySeen.has(slot)) errors.push('duplicate complete draft slot ' + slot);
@@ -263,6 +269,7 @@ if (process.argv[1]?.endsWith('validate-content-redesign.mjs')) {
     allDays: Array.from({ length: 28 }, (_, index) => read('public/assistant/content-drafts/day' + String(index + 1).padStart(2, '0') + '-34-topic-drafts.v1.json')),
     topics: read('public/assistant/knowledge/topics.v1.json'),
     subtopics: read('public/assistant/knowledge/subtopics.v1.json'),
+    evidenceRegistry: read('public/assistant/evidence/evidence-source-registry.v1.json'),
   });
   console.log(JSON.stringify(result, null, 2));
   if (!result.valid) throw new Error('Content redesign validation failed');
