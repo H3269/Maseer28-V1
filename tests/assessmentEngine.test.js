@@ -28,9 +28,9 @@ test('session accepts only a valid, consented journey context and revalidates it
     consentState,
     now,
   });
-  let session = createAssessmentSession({ assistantContext: context, consentState });
+  let session = createAssessmentSession({ assistantContext: context, consentState, now });
   assert.deepEqual(session.assistant_context.entries.map((entry) => entry.key), ['active_day', 'completed_days_count']);
-  session = submitAssessmentAnswer(session, 'یک توضیح', { consentState: { purposes: { journey_context: { granted: false } } } });
+  session = submitAssessmentAnswer(session, 'یک توضیح', { consentState: { purposes: { journey_context: { granted: false } } }, now });
   assert.equal(session.assistant_context, null);
   assert.equal(getCurrentQuestion(session).id, 'safety_now');
 });
