@@ -16,10 +16,10 @@
       "source_content_id": "خشم-14",
       "topic_id": "T01",
       "topic_name": "خشم",
-      "subtopic_id": "T01-S02",
-      "subtopic_name": "نشانه‌های بدنی و برانگیختگی، بیان خشم، تکانه و رفتار پرخاشگرانه",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 14,
-      "phase": "topic_specific_daily_skill",
+      "phase": "anticipatory_coping_plan",
       "learning_objective": "تشخیص اینکه کدام مهارت‌ها برای فرد مناسب، بی‌اثر یا نامناسب بوده‌اند.",
       "mechanism_focus": "انتخاب ابزار بر اساس تجربه و تناسب.",
       "exercise": "روش‌هایی را که تاکنون بررسی کردی در سه ستون قرار بده: مفید، خنثی، نامناسب. برای هر مورد یک دلیل کوتاه بنویس؛ لازم نیست روشی را صرفاً به‌خاطر توصیه عمومی ادامه بدهی.",
@@ -34,11 +34,9 @@
       "runtime_eligible": false,
       "title": "مرور ابزارهای تنظیم",
       "subtopic_ids": [
-        "T01-S02",
         "T01-S03"
       ],
       "subtopic_names": [
-        "نشانه‌های بدنی و برانگیختگی",
         "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
       "target_skill": "انتخاب ابزار بر اساس تجربه و تناسب.",
@@ -82,7 +80,11 @@
       },
       "source_runtime_mechanism": "تثبیت مهارت‌های تنظیم هیجان و انتخاب ابزار مناسب",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D14"
+      "canonical_package_record_id": "DRAFT_T01_D14",
+      "design_subtopic_ids": [
+        "T01-S02",
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D14",
