@@ -15,6 +15,7 @@ const pilots = [
   { file: 'public/assistant/content-drafts/topic-specific-copy-pilot-t25-t30-days04-07.v1.json', expected: 24 },
   { file: 'public/assistant/content-drafts/topic-specific-copy-pilot-t31-t34-days04-07.v1.json', expected: 16 },
   { file: 'public/assistant/content-drafts/topic-specific-copy-pilot-all-34-day08.v1.json', expected: 34 },
+  { file: 'public/assistant/content-drafts/topic-specific-copy-pilot-all-34-day09.v1.json', expected: 34 },
 ];
 const copyRecords = [];
 let pilotRecordCount = 0;
@@ -82,11 +83,11 @@ for (const r of copyRecords) {
   }
   if (!existing) byTopicDay.set(key, { topic_name: r.topic_name, day: r.day_number ?? r.day, proposed_title: r.proposed_title, proposed_intro: r.proposed_intro });
 }
-if (byTopicDay.size !== 272) throw new Error('Expected 272 unique topic/day title-intro pairs, found ' + byTopicDay.size);
-for (let day = 1; day <= 8; day += 1) {
+if (byTopicDay.size !== 306) throw new Error('Expected 306 unique topic/day title-intro pairs, found ' + byTopicDay.size);
+for (let day = 1; day <= 9; day += 1) {
   const records = [...byTopicDay.values()].filter((r) => r.day === day);
   if (records.length !== 34) throw new Error(`Expected all 34 topics on day ${day}, found ${records.length}`);
   if (new Set(records.map((r) => r.proposed_title)).size !== 34) throw new Error('Duplicate title across topics on day ' + day);
   if (new Set(records.map((r) => r.proposed_intro)).size !== 34) throw new Error('Duplicate intro across topics on day ' + day);
 }
-process.stdout.write(`Validated ${pilotRecordCount} traceable, unique, non-runtime pilot records and 272 complete first-eight-day topic/day title-intro pairs.\\n`);
+process.stdout.write(`Validated ${pilotRecordCount} traceable, unique, non-runtime pilot records and 306 complete first-nine-day topic/day title-intro pairs.\\n`);
