@@ -217,7 +217,7 @@ try {
   const angerPromptDialog = page.locator('#library-assistant-prompt-dialog');
   await angerPromptDialog.waitFor({ state: 'visible' });
   assert.match(await angerPromptDialog.innerText(), /سؤال‌های آماده روز 1 خشم/);
-  await angerPromptDialog.getByRole('button', { name: 'روز 1 خشم: منظور از تمرین امروز چیست؟' }).click();
+  await angerPromptDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
   assert.equal(await dialog.getByRole('textbox').inputValue(), 'روز 1 خشم: منظور از تمرین امروز چیست؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('راهنمای روز 1 خشم')));
