@@ -149,11 +149,15 @@ const allTitleIntroProposals = [
 ];
 for (const topicName of new Set(allTitleIntroProposals.map((r) => r.topic_name))) {
   const topicRows = allTitleIntroProposals.filter((r) => r.topic_name === topicName);
-  if (new Set(topicRows.map((r) => r.proposed_title)).size !== topicRows.length) {
-    throw new Error('Repeated proposed title across days for topic ' + topicName);
-  }
-  if (new Set(topicRows.map((r) => r.proposed_intro)).size !== topicRows.length) {
-    throw new Error('Repeated proposed intro across days for topic ' + topicName);
+  for (const field of ['proposed_title', 'proposed_intro']) {
+    const seen = new Map();
+    for (const row of topicRows) {
+      const value = row[field];
+      if (seen.has(value)) {
+        throw new Error(`Repeated ${field} across days for topic ${topicName}: days ${seen.get(value)} and ${row.day}; value=${JSON.stringify(value)}`);
+      }
+      seen.set(value, row.day);
+    }
   }
 }
 process.stdout.write(`Validated ${pilotRecordCount} traceable, unique, non-runtime pilot records, 680 first-twenty-day title-intro pairs, and 272 late proposals pending source reconciliation.\\n`);
