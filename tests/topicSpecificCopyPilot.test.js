@@ -132,3 +132,27 @@ test('T25-T30 day 4-7 copy pilot is traceable, unique, and non-runtime', () => {
     assert.equal(record.reviewed_at, null);
   }
 });
+
+test('T31-T34 day 4-7 copy pilot is traceable, unique, and non-runtime', () => {
+  const pilot = JSON.parse(fs.readFileSync(
+    path.join(root, 'public/assistant/content-drafts/topic-specific-copy-pilot-t31-t34-days04-07.v1.json'),
+    'utf8'
+  ));
+  assert.equal(pilot.status, 'draft_pending_owner_and_expert_review');
+  assert.equal(pilot.records.length, 16);
+  assert.equal(new Set(pilot.records.map((x) => x.source_content_id)).size, 16);
+  assert.equal(new Set(pilot.records.map((x) => x.proposed_title)).size, 16);
+  assert.equal(new Set(pilot.records.map((x) => x.proposed_intro)).size, 16);
+  for (const record of pilot.records) {
+    assert.ok(record.source_content_id);
+    assert.ok(record.source_exercise);
+    assert.ok(record.source_action);
+    assert.ok(record.current_title);
+    assert.ok(record.current_intro);
+    assert.deepEqual(record.fields_changed, ['title', 'intro']);
+    assert.equal(record.runtime_eligible, false);
+    assert.equal(record.review_status, 'pending_owner_and_expert_review');
+    assert.equal(record.reviewer, null);
+    assert.equal(record.reviewed_at, null);
+  }
+});
