@@ -135,3 +135,19 @@ test('all 28 shared day drafts and the first 17 support proposal files point to 
     assert.equal(record.runtime_eligible, false);
   }
 });
+
+test('T01 source references resolve and day 8 does not repeat the T02 breathing exercise', () => {
+  const registry = JSON.parse(fs.readFileSync(path.join(root,
+    'public/assistant/evidence/sources.v1.json'), 'utf8'));
+  const sourceIds = new Set(registry.sources.map((source) => source.source_id));
+  for (const record of pack.records) {
+    assert.ok(record.source_ids.length > 0, 'missing source IDs on day ' + record.day_number);
+    for (const sourceId of record.source_ids) {
+      assert.ok(sourceIds.has(sourceId), 'unknown source ' + sourceId + ' on day ' + record.day_number);
+    }
+  }
+  const day8 = pack.records.find((record) => record.day_number === 8);
+  assert.match(day8.exercise, /تخلیه|برانگیختگی/);
+  assert.doesNotMatch(day8.exercise, /تنفس|نفس/);
+  assert.ok(day8.source_ids.includes('SRC-ANGER-KJAERVIK-2024-001'));
+});
