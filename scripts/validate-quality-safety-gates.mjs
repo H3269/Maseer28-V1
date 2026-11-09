@@ -97,6 +97,10 @@ export function validateQualitySafetyGates({ policy, queue, pilot, evidence }) {
     }
     const ids = Array.isArray(item.evidence_ids) ? item.evidence_ids : [];
     const refs = Array.isArray(item.source_reference_ids) ? item.source_reference_ids : [];
+    const candidates = Array.isArray(item.candidate_evidence_ids) ? item.candidate_evidence_ids : [];
+    if ([...ids].sort().join('|') !== [...candidates].sort().join('|')) {
+      errors.push('candidate evidence ids must exactly match the traceability ids: ' + item.content_id);
+    }
     if (!ids.length || [...ids].sort().join('|') !== [...refs].sort().join('|')) {
       errors.push('evidence_ids and source_reference_ids must be non-empty and identical: ' + item.content_id);
     }
