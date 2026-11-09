@@ -138,4 +138,22 @@ for (let day = 1; day <= 20; day += 1) {
   if (new Set(records.map((r) => r.proposed_title)).size !== 34) throw new Error('Duplicate title across topics on day ' + day);
   if (new Set(records.map((r) => r.proposed_intro)).size !== 34) throw new Error('Duplicate intro across topics on day ' + day);
 }
+const allTitleIntroProposals = [
+  ...byTopicDay.values(),
+  ...lateProposalBatch.records.map((r) => ({
+    topic_name: r.topic_name,
+    day: r.day_number,
+    proposed_title: r.proposed_title,
+    proposed_intro: r.proposed_intro,
+  })),
+];
+for (const topicName of new Set(allTitleIntroProposals.map((r) => r.topic_name))) {
+  const topicRows = allTitleIntroProposals.filter((r) => r.topic_name === topicName);
+  if (new Set(topicRows.map((r) => r.proposed_title)).size !== topicRows.length) {
+    throw new Error('Repeated proposed title across days for topic ' + topicName);
+  }
+  if (new Set(topicRows.map((r) => r.proposed_intro)).size !== topicRows.length) {
+    throw new Error('Repeated proposed intro across days for topic ' + topicName);
+  }
+}
 process.stdout.write(`Validated ${pilotRecordCount} traceable, unique, non-runtime pilot records, 680 first-twenty-day title-intro pairs, and 272 late proposals pending source reconciliation.\\n`);
