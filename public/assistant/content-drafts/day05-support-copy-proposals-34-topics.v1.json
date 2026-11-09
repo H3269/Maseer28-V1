@@ -22,13 +22,14 @@
       "topic_id": "T01",
       "topic_name": "خشم",
       "day_number": 5,
-      "lightExerciseText": "فقط نشانه بدنی یا رفتاریِ پیش از بالاگرفتن خشم را نام ببر.",
-      "lightActionText": "برای همان نشانه، یک علامت توقف شخصی تعیین کن؛ مثلاً کنارگذاشتن بحث.",
-      "progressActionText": "اگر امن است، مکث را پیش از پاسخ اجرا کن و بازگشت به گفت‌وگو را به آرامش موکول کن.",
-      "restExerciseText": "امروز اختلاف را حل نکن؛ فاصله امن را حفظ کن.",
-      "restActionText": "اگر کنترل رفتار دشوار یا خطر آسیب مطرح است، از موقعیت دور شو و کمک فوری بگیر.",
+      "lightExerciseText": "فقط یک حلقه از زنجیره را که به یاد داری ثبت کن؛ لازم نیست باقی رویداد را بازسازی کنی.",
+      "lightActionText": "فقط یک حلقه از زنجیره را انتخاب کن و همان را ثبت کن؛ بازسازی کامل لازم نیست.",
+      "progressActionText": "زنجیره دوم را مقایسه کن و حلقه‌ای را پیدا کن که در دو تجربه متفاوت بوده است.",
+      "restExerciseText": "فقط عنوان مراحل را مرور کن؛ تجربه را دوباره بازسازی نکن.",
+      "restActionText": "امروز زنجیره را بازسازی نکن؛ جزئیات را به زمان امن‌تر موکول کن.",
       "review_status": "draft_pending_expert_review",
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1"
     },
     {
       "content_id": "DRAFT_T02_D05",
