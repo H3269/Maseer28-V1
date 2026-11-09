@@ -85,3 +85,37 @@ test('all T01 drafts remain non-approved and non-runtime; high-risk day 27 is hu
   assert.equal(pack.records.find((record) => record.day_number === 27).risk_level,
     'human_review_required');
 });
+
+test('all 28 shared day drafts and the first 17 support proposal files point to the canonical T01 package', () => {
+  for (let day = 1; day <= 28; day += 1) {
+    const file = path.join(root, 'public/assistant/content-drafts/day'
+      + String(day).padStart(2, '0') + '-34-topic-drafts.v1.json');
+    const batch = JSON.parse(fs.readFileSync(file, 'utf8'));
+    const record = batch.records.find((item) => item.topic_id === 'T01');
+    const canonical = pack.records[day - 1];
+    assert.ok(record, 'missing T01 day ' + day);
+    for (const field of [
+      'title', 'learning_objective', 'target_skill', 'mechanism_focus',
+      'exercise', 'action', 'progress_measure', 'reflection_prompt',
+      'safety_and_limits',
+    ]) {
+      assert.equal(record[field], canonical[field], 'day ' + day + ':' + field);
+    }
+    assert.equal(record.canonical_package_id, pack.package_id);
+  }
+
+  for (let day = 1; day <= 17; day += 1) {
+    const file = path.join(root, 'public/assistant/content-drafts/day'
+      + String(day).padStart(2, '0') + '-support-copy-proposals-34-topics.v1.json');
+    const batch = JSON.parse(fs.readFileSync(file, 'utf8'));
+    const record = batch.records.find((item) => item.topic_id === 'T01');
+    const canonical = pack.records[day - 1];
+    assert.ok(record, 'missing T01 support day ' + day);
+    for (const field of SUPPORT_FIELDS) {
+      assert.equal(record[field], canonical.support_variants[field],
+        'support day ' + day + ':' + field);
+    }
+    assert.equal(record.canonical_package_id, pack.package_id);
+    assert.equal(record.runtime_eligible, false);
+  }
+});
