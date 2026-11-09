@@ -32,10 +32,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "proposed_title": "بررسی پیامد واکنش خشم",
-      "proposed_intro": "یک رخداد کم‌تنش را مرور کن و پیامد رفتار را از شدت خشم جدا بنویس؛ بررسی کن چه اثری بر خودت، فرد دیگر یا موقعیت گذاشت، بدون اینکه علت قطعی برای آن بسازی.",
+      "proposed_title": "زمینه‌های پیش از خشم",
+      "proposed_intro": "برای فهم بهتر خشم، به اتفاق پیش از آن و عواملی مانند خستگی، فشار یا ابهام نگاه کن؛ هم‌زمانی را با علت قطعی اشتباه نگیر.",
       "proposed_closing": "اگر مرور رخداد میل به پرخاش یا خطر آسیب را بالا برد، متوقف شو و به فاصلهٔ امن و حمایت انسانی اولویت بده.",
-      "copy_review_status": "draft_pending_expert_review"
+      "copy_review_status": "draft_pending_expert_review",
+      "source_pilot_batch": "topic-specific-copy-pilot-t01-t06-days01-07"
     },
     {
       "content_id": "DRAFT_T02_D03",
@@ -58,10 +59,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "proposed_title": "ردیابی اثر نگرانی بر زندگی روزمره",
-      "proposed_intro": "در یک روز اخیر ببین نگرانی کدام بخش تمرکز، خواب یا تصمیم‌گیری را مختل کرد؛ فقط اثر قابل مشاهده را ثبت کن، نه برچسبی دربارهٔ شخصیت خودت.",
+      "proposed_title": "چرخه نگرانی و رفتار اطمینان‌جویی",
+      "proposed_intro": "نگرانی گاهی به بررسی یا اجتناب کوتاه‌مدت منجر می‌شود؛ زنجیره را توصیف کن، بدون اینکه هر احتیاطی را ناسازگارانه بدانی.",
       "proposed_closing": "اگر نگرانی با افت جدی عملکرد یا علائم جسمی نگران‌کننده همراه است، ارزیابی تخصصی یا پزشکی را جایگزین خودیاری کن.",
-      "copy_review_status": "draft_pending_expert_review"
+      "copy_review_status": "draft_pending_expert_review",
+      "source_pilot_batch": "topic-specific-copy-pilot-t01-t06-days01-07"
     },
     {
       "content_id": "DRAFT_T03_D03",
@@ -84,10 +86,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "proposed_title": "تمایز احتیاط از اجتناب محدودکننده",
-      "proposed_intro": "یک موقعیت را بررسی کن و مشخص کن دوری از آن برای پیشگیری از خطر واقعی بوده یا دامنهٔ فعالیت امن تو را محدود کرده است.",
+      "proposed_title": "ردیابی زنجیره پاسخ به تهدید",
+      "proposed_intro": "به ترتیب رویداد، برداشت، احساس و پاسخ را ثبت کن؛ اگر خطر واقعی یا فوری وجود دارد، ایمنی مقدم بر تحلیل است.",
       "proposed_closing": "از موقعیت خطرناک دوری‌کردن را مشکل تلقی نکن؛ هیچ مواجههٔ عمدی بدون ارزیابی و آمادگی مناسب انجام نده.",
-      "copy_review_status": "draft_pending_expert_review"
+      "copy_review_status": "draft_pending_expert_review",
+      "source_pilot_batch": "topic-specific-copy-pilot-t01-t06-days01-07"
     },
     {
       "content_id": "DRAFT_T04_D03",
@@ -110,10 +113,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "proposed_title": "شناخت فاصلهٔ خصومت تا عمل",
-      "proposed_intro": "در یک نمونه، احساس خصومت را از میل، تصمیم و رفتار واقعی جدا کن و ببین چه نقطه‌ای امکان انتخاب متفاوت را فراهم کرد.",
+      "proposed_title": "تداوم هیجان یا نگرش خصمانه",
+      "proposed_intro": "مدت و تکرار تجربه را بررسی کن تا موج هیجانی کوتاه‌مدت با نگرش پایدار اشتباه نشود.",
       "proposed_closing": "اگر احتمال آسیب‌رساندن وجود دارد، تحلیل فردی را کنار بگذار و از فرد امن یا خدمات فوری کمک بگیر.",
-      "copy_review_status": "draft_pending_expert_review"
+      "copy_review_status": "draft_pending_expert_review",
+      "source_pilot_batch": "topic-specific-copy-pilot-t01-t06-days01-07"
     },
     {
       "content_id": "DRAFT_T05_D03",
@@ -136,10 +140,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "proposed_title": "بررسی رفتارهای وارسی ناشی از حسادت",
-      "proposed_intro": "اگر حسادت به وارسی یا کنترل منجر شده، زنجیرهٔ نگرانی، رفتار و پیامد را ثبت کن؛ هدف شناخت چرخه است نه توجیه نقض حریم.",
+      "proposed_title": "تفکیک حسادت رابطه‌ای از رشک",
+      "proposed_intro": "حسادت درباره امنیت یک رابطه با رشک نسبت به دستاورد یا دارایی دیگری یکسان نیست؛ نمونه‌ها را جداگانه بررسی کن.",
       "proposed_closing": "وارسی مخفیانه، تعقیب و محدودسازی شریک یا دیگران قابل قبول نیست؛ در صورت خطر یا خشونت، کمک تخصصی و ایمنی مقدم است.",
-      "copy_review_status": "draft_pending_expert_review"
+      "copy_review_status": "draft_pending_expert_review",
+      "source_pilot_batch": "topic-specific-copy-pilot-t01-t06-days01-07"
     },
     {
       "content_id": "DRAFT_T06_D03",
@@ -162,10 +167,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "proposed_title": "شناخت اثر سوگ بر کارکرد روزانه",
-      "proposed_intro": "یک نیاز روزمره را که پس از فقدان تغییر کرده مشخص کن؛ ببین امروز چه نوع حمایت یا تعدیلی می‌تواند فشار را کمتر کند.",
+      "proposed_title": "واقعیت فقدان و آرزوی برآورده‌نشده",
+      "proposed_intro": "آنچه رخ داده را از چیزی که آرزو داشتی رخ دهد جدا کن؛ هر دو می‌توانند مهم باشند، اما یکسان نیستند.",
       "proposed_closing": "اگر مراقبت پایه از خود دشوار شده یا فکر آسیب وجود دارد، از فرد امن و متخصص کمک بگیر و تنها نمان.",
-      "copy_review_status": "draft_pending_expert_review"
+      "copy_review_status": "draft_pending_expert_review",
+      "source_pilot_batch": "topic-specific-copy-pilot-t01-t06-days01-07"
     },
     {
       "content_id": "DRAFT_T07_D03",
