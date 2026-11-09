@@ -86,6 +86,22 @@ test('all T01 drafts remain non-approved and non-runtime; high-risk day 27 is hu
     'human_review_required');
 });
 
+test('T01 phase metadata follows the shared 28-day progression contract', () => {
+  const expected = [
+    'orientation_and_safe_observation',
+    'pattern_discrimination_and_context',
+    'functional_context_and_impact',
+  ];
+  for (let day = 1; day <= 3; day += 1) {
+    assert.equal(pack.records[day - 1].phase, expected[day - 1]);
+    const file = path.join(root, 'public/assistant/content-drafts/day'
+      + String(day).padStart(2, '0') + '-34-topic-drafts.v1.json');
+    const batch = JSON.parse(fs.readFileSync(file, 'utf8'));
+    const record = batch.records.find((item) => item.topic_id === 'T01');
+    assert.equal(record.phase, expected[day - 1]);
+  }
+});
+
 test('all 28 shared day drafts and the first 17 support proposal files point to the canonical T01 package', () => {
   for (let day = 1; day <= 28; day += 1) {
     const file = path.join(root, 'public/assistant/content-drafts/day'
