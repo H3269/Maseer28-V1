@@ -16,10 +16,10 @@
       "source_content_id": "خشم-09",
       "topic_id": "T01",
       "topic_name": "خشم",
-      "subtopic_id": "T01-S02",
-      "subtopic_name": "نشانه‌های بدنی و برانگیختگی",
+      "subtopic_id": "T01-S03",
+      "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 9,
-      "phase": "topic_specific_daily_skill",
+      "phase": "pattern_review_and_personalization",
       "learning_objective": "انتقال توجه از تکانه به نشانه‌های خنثی محیط حاضر.",
       "mechanism_focus": "جهت‌دهی توجه پیش از انتخاب پاسخ.",
       "exercise": "در یک فضای امن، سه شیء معمولی را نام ببر و هرکدام را با یک ویژگی عینی توصیف کن. اگر این تمرین برایت نامناسب است، فقط نگاهت را به یک فعالیت روزمره برگردان.",
@@ -34,10 +34,10 @@
       "runtime_eligible": false,
       "title": "جهت‌دهی توجه به محیط",
       "subtopic_ids": [
-        "T01-S02"
+        "T01-S03"
       ],
       "subtopic_names": [
-        "نشانه‌های بدنی و برانگیختگی"
+        "بیان خشم، تکانه و رفتار پرخاشگرانه"
       ],
       "target_skill": "جهت‌دهی توجه پیش از انتخاب پاسخ.",
       "teaching_point": "تمرکز بر محیط یک مهارت کمکی برای مکث است؛ مسئله اصلی یا نیاز به حل آن را به‌تنهایی برطرف نمی‌کند.",
@@ -80,7 +80,10 @@
       },
       "source_runtime_mechanism": "انتقال توجه از تکانه به محیط حاضر",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D09"
+      "canonical_package_record_id": "DRAFT_T01_D09",
+      "design_subtopic_ids": [
+        "T01-S02"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D09",
