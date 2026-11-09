@@ -19,7 +19,7 @@
       "subtopic_id": "T01-S03",
       "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 26,
-      "phase": "topic_specific_daily_skill",
+      "phase": "maintenance_plan_and_safe_recovery",
       "learning_objective": "تشخیص زمان‌هایی که تکرار رفتار آسیب‌زا، تهدید یا اختلال عملکرد نیازمند کمک انسانی/تخصصی است.",
       "mechanism_focus": "تشخیص مرز خودیاری در برابر خطر تکرار رفتار آسیب‌زا و نیاز به مداخله/حمایت انسانی.",
       "exercise": "بررسی کن آیا خشم با تهدید، تخریب، آسیب جسمی، ترس دیگران، از دست‌دادن کنترل یا پیامد جدی در روابط/کار همراه شده است. لازم نیست برای پاسخ مثبت جزئیات آسیب‌زا را بازسازی کنی.",
@@ -79,7 +79,10 @@
       },
       "source_runtime_mechanism": "شناسایی محدودیت خودیاری و تسهیل کمک‌خواهی",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D26"
+      "canonical_package_record_id": "DRAFT_T01_D26",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D26",
