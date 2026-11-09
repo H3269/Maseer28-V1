@@ -32,10 +32,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "proposed_title": "ردیابی اولین جرقهٔ خشم",
-      "proposed_intro": "امروز به‌جای قضاوت دربارهٔ خشم، لحظه‌ای را پیدا کن که تنش برای نخستین بار در تو بالا می‌رود؛ هدف فقط شناخت نشانهٔ آغاز است.",
+      "proposed_title": "خشم در لحظه: احساس، میل و رفتار",
+      "proposed_intro": "برای شروع، سه لایه تجربه را از هم جدا می‌کنیم: اتفاق بیرونی، احساسی که بالا می‌آید و رفتاری که واقعاً انجام می‌دهی.",
       "proposed_closing": "اگر مرور موقعیت خشم را تشدید کرد یا میل به آسیب پدید آمد، تمرین را قطع کن؛ فاصلهٔ امن و کمک انسانی بر تحلیل فردی مقدم است.",
-      "copy_review_status": "draft_pending_expert_review"
+      "copy_review_status": "draft_pending_expert_review",
+      "source_pilot_batch": "topic-specific-copy-pilot-t01-t06-days01-07"
     },
     {
       "content_id": "DRAFT_T02_D01",
@@ -58,10 +59,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "proposed_title": "تفکیک نگرانی از واقعیت",
-      "proposed_intro": "یک نگرانی مشخص را انتخاب کن و ببین کدام بخش آن واقعیتِ اکنون و کدام بخش پیش‌بینی ذهن دربارهٔ آینده است؛ لازم نیست پیش‌بینی را رد یا خنثی کنی.",
+      "proposed_title": "نقشه نگرانی: پیش‌بینی و واکنش",
+      "proposed_intro": "یک موقعیت واقعی را بررسی می‌کنی تا پیش‌بینی ذهنی، احساس و واکنش رفتاری با هم اشتباه گرفته نشوند.",
       "proposed_closing": "اگر نشانهٔ جسمی تازه، شدید یا نگران‌کننده داری، آن را خودکار به اضطراب نسبت نده و ارزیابی پزشکی مناسب بگیر.",
-      "copy_review_status": "draft_pending_expert_review"
+      "copy_review_status": "draft_pending_expert_review",
+      "source_pilot_batch": "topic-specific-copy-pilot-t01-t06-days01-07"
     },
     {
       "content_id": "DRAFT_T03_D01",
@@ -84,10 +86,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "proposed_title": "شناخت موقعیتِ ترس‌آور بدون مواجههٔ اجباری",
-      "proposed_intro": "امروز فقط مشخص کن ترس در چه موقعیتی فعال می‌شود و چه چیزی آن موقعیت را برایت تهدیدآمیز می‌کند؛ قرار نیست خودت را در معرض ترس قرار دهی.",
+      "proposed_title": "نقشه ترس: نشانه، معنا و پاسخ",
+      "proposed_intro": "یک تجربه کم‌فشار را توصیف کن و میان نشانه بیرونی، معنایی که به آن دادی و پاسخی که انتخاب کردی تفاوت بگذار.",
       "proposed_closing": "برای انجام تمرین خودت را وارد موقعیت ترس‌آور نکن؛ اگر خطر واقعی یا ناایمنی وجود دارد، دورشدن و کمک‌گرفتن اولویت دارد.",
-      "copy_review_status": "draft_pending_expert_review"
+      "copy_review_status": "draft_pending_expert_review",
+      "source_pilot_batch": "topic-specific-copy-pilot-t01-t06-days01-07"
     },
     {
       "content_id": "DRAFT_T04_D01",
@@ -110,10 +113,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "proposed_title": "شناخت واکنشِ انزجار",
-      "proposed_intro": "موقعیتی را که در آن انزجار را تجربه می‌کنی، فقط در حدی امن و قابل‌تحمل نام ببر و میان احساس انزجار و رفتار بعدی تفاوت بگذار.",
+      "proposed_title": "جهت تجربه نفرت: خود، فرد یا گروه",
+      "proposed_intro": "پیش از هر نتیجه‌گیری، مشخص کن تجربه متوجه خودت، فردی مشخص یا گروهی از افراد است؛ اگر روشن نیست، ابهام را حفظ کن.",
       "proposed_closing": "برای کامل‌کردن تمرین تماس یا مواجههٔ عمدی ایجاد نکن؛ بهداشت، سلامت جسمی و مرزهای شخصی را نادیده نگیر.",
-      "copy_review_status": "draft_pending_expert_review"
+      "copy_review_status": "draft_pending_expert_review",
+      "source_pilot_batch": "topic-specific-copy-pilot-t01-t06-days01-07"
     },
     {
       "content_id": "DRAFT_T05_D01",
@@ -136,10 +140,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "proposed_title": "ردیابی محرک‌های حسادت",
-      "proposed_intro": "یک موقعیت کم‌تنش را بررسی کن و بنویس چه چیزی حسادت را فعال کرد، چه برداشتی داشتی و چه نیازی پشت آن برداشت ممکن است باشد؛ برداشت را واقعیت قطعی فرض نکن.",
+      "proposed_title": "نقشه حسادت: رابطه یا مقایسه اجتماعی",
+      "proposed_intro": "مشخص کن حسادت در این تجربه به رابطه، توجه، مقایسه اجتماعی یا موضوع دیگری مربوط است؛ برچسب کلی کافی نیست.",
       "proposed_closing": "این تمرین مجوز کنترل، بازجویی، وارسی تلفن یا نقض حریم دیگری نیست؛ اگر رابطه ناامن است، ایمنی و حمایت بیرونی را مقدم بدان.",
-      "copy_review_status": "draft_pending_expert_review"
+      "copy_review_status": "draft_pending_expert_review",
+      "source_pilot_batch": "topic-specific-copy-pilot-t01-t06-days01-07"
     },
     {
       "content_id": "DRAFT_T06_D01",
@@ -162,10 +167,11 @@
       "reviewer": null,
       "reviewed_at": null,
       "runtime_eligible": false,
-      "proposed_title": "نام‌گذاری تجربهٔ سوگ",
-      "proposed_intro": "اگر آمادگی داری، فقط یک نشانه از دلتنگی یا فقدان را نام ببر و ببین امروز چه اثری بر تو گذاشته است؛ لازم نیست خاطرهٔ دردناک را با جزئیات بازسازی کنی.",
+      "proposed_title": "نام‌گذاری فقدان با حد قابل تحمل",
+      "proposed_intro": "اگر آمادگی داری، نوع فقدان یا تغییر مهم را فقط در حدی که قابل تحمل است نام ببر؛ شرح جزئیات اجباری نیست.",
       "proposed_closing": "سوگ زمان‌بندی یکسانی ندارد؛ اگر تمرین فشار زیادی ایجاد کرد، متوقف شو و به حمایت فرد امن یا متخصص تکیه کن.",
-      "copy_review_status": "draft_pending_expert_review"
+      "copy_review_status": "draft_pending_expert_review",
+      "source_pilot_batch": "topic-specific-copy-pilot-t01-t06-days01-07"
     },
     {
       "content_id": "DRAFT_T07_D01",
