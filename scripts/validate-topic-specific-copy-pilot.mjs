@@ -64,7 +64,13 @@ const fullCoverageFiles = [
 for (const file of fullCoverageFiles) {
   const batch = read(file);
   if (batch.records.length !== 34) throw new Error('Expected 34 records in ' + file);
-  for (const r of batch.records) copyRecords.push(r);
+  for (const r of batch.records) {
+    const key = r.topic_name + ':' + (r.day_number ?? r.day);
+    const original = sourceByKey.get(key);
+    if (!original || r.source_content_id !== original.content_id) throw new Error('Full-coverage source reference mismatch: ' + key);
+    if (r.runtime_eligible !== false) throw new Error('Full-coverage proposal must remain non-runtime: ' + key);
+    copyRecords.push(r);
+  }
 }
 const byTopicDay = new Map();
 for (const r of copyRecords) {
