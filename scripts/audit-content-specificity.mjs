@@ -22,11 +22,11 @@ const fields = [
 
 function normalize(value, topic) {
   const text = String(value ?? '').normalize('NFKC');
-  const quoted = text.split(`«${topic}»`).join('«[TOPIC]»');
+  const quoted = text.split('«' + topic + '»').join('«[TOPIC]»');
   const regexSpecials = new Set(['.', '*', '+', '?', '^', '$', '(', ')', '|', '[', ']', '{', '}']);
   const escapedTopic = [...topic].map((char) => regexSpecials.has(char) ? String.fromCharCode(92) + char : char).join('');
-  const tokenPattern = new RegExp('(^|[^\\\\p{L}\\\\p{N}_])' + escapedTopic + '(?=$|[^\\\\p{L}\\\\p{N}_])', 'gu');
-  return quoted.replace(tokenPattern, '$1[TOPIC]').replace(/\\s+/g, ' ').trim();
+  const tokenPattern = new RegExp('(^|[^\\p{L}\\p{N}_])' + escapedTopic + '(?=$|[^\\p{L}\\p{N}_])', 'gu');
+  return quoted.replace(tokenPattern, '$1[TOPIC]').replace(/\s+/g, ' ').trim();
 }
 
 function duplicateStats(entries) {
@@ -110,5 +110,5 @@ export function auditContentSpecificity(data) {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  process.stdout.write(`${JSON.stringify(auditContentSpecificity(source), null, 2)}\\n`);
+  process.stdout.write(JSON.stringify(auditContentSpecificity(source), null, 2) + '\n');
 }
