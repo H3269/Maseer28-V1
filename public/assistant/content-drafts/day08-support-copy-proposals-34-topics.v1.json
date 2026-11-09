@@ -194,7 +194,7 @@
       "lightExerciseText": "فعالیت‌هایی را که با انرژی کم ممکن شدند از فعالیت‌های فراتر از ظرفیت جدا کن.",
       "lightActionText": "یک عامل تسهیل‌گر و یک فشار قابل کاهش را مشخص کن.",
       "progressActionText": "برای هفته بعد یکی را حفظ و دیگری را تعدیل کن.",
-      "restExerciseText": "امروز استراحت را شکست تلقی نکن.",
+      "restExerciseText": "اگر انرژی کم است، فقط نیاز پایه امروز را انتخاب کن و باقی کارها را باززمان‌بندی کن.",
       "restActionText": "افت پایدار علاقه، خلق یا انرژی ممکن است نیازمند ارزیابی حرفه‌ای باشد.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
@@ -260,7 +260,7 @@
       "lightActionText": "فقط یک درس عملی را که از شواهد پشتیبانی می‌شود انتخاب کن.",
       "progressActionText": "آن درس را به رفتار آینده تبدیل کن و مرور تکراری را ببند.",
       "restExerciseText": "امروز درباره تقصیر نهایی حکم صادر نکن.",
-      "restActionText": "در خشونت یا سوءاستفاده، مسئولیت عامل آسیب را به خودت منتقل نکن.",
+      "restActionText": "جبران را به سهم واقعی و اقدام متناسب محدود کن؛ خودتحقیری مسئولیت‌پذیری نیست.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
     },
@@ -402,7 +402,7 @@
       "lightExerciseText": "تصمیم‌های کم‌خطری را که با اطلاعات کافی بسته شدند مرور کن.",
       "lightActionText": "برای یک حوزه کم‌خطر معیار پایان بررسی را مکتوب کن.",
       "progressActionText": "معیار را در تصمیم مشابه بعدی اجرا کن و فقط با داده تازه بازبینی کن.",
-      "restExerciseText": "امروز جست‌وجوی تکراری را متوقف کن.",
+      "restExerciseText": "امروز فقط یک معیار کافی برای تصمیم کم‌خطر تعیین کن؛ بررسی تازه لازم نیست.",
       "restActionText": "اطلاعات ضروری پزشکی، حقوقی یا ایمنی را کنار نگذار.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
@@ -415,7 +415,7 @@
       "lightExerciseText": "رفتار نظارتی یا محدودکننده‌ای را که متوقف کردی و اثر آن را مرور کن.",
       "lightActionText": "مسئولیت اثر رفتار را بدون توجیه‌کردن مشخص کن.",
       "progressActionText": "برای تغییر پایدار، بازخورد حرفه‌ای یا برنامه حمایتی بگیر.",
-      "restExerciseText": "امروز از پایش و فشار فاصله بگیر.",
+      "restExerciseText": "امروز از یک رفتار نظارتی مشخص خودداری کن و اختیار طرف مقابل را رعایت کن.",
       "restActionText": "قول به‌تنهایی کافی نیست؛ در صورت تهدید یا اجبار باید رفتار متوقف و کمک گرفته شود.",
       "review_status": "draft_pending_expert_review",
       "runtime_eligible": false
