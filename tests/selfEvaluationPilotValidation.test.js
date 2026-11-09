@@ -83,3 +83,11 @@ test('rejects incomplete provenance and mismatched topic labels', () => {
   assert.ok(result.errors.some((error) => error.includes('source references must exactly match')));
   assert.ok(result.errors.some((error) => error.includes('topic name mismatch')));
 });
+
+
+test('requires candidate-only evidence status rather than implying verified support', () => {
+  const data = base();
+  data.pilot.records[0].evidence_mapping_status = 'verified';
+  const result = validateSelfEvaluationPilot(data);
+  assert.ok(result.errors.some((error) => error.includes('candidate-only pending claim review')));
+});
