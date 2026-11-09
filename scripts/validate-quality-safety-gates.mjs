@@ -27,8 +27,12 @@ export function validateQualitySafetyGates({ policy, queue, pilot, evidence }) {
       errors.push('invalid score scale for dimension ' + dimension.id);
     }
   }
-  if (policy?.scoring_policy?.reviewers_required !== 2 || policy?.scoring_policy?.independent_reviews !== true) {
-    errors.push('two independent reviewers are mandatory');
+  if (policy?.scoring_policy?.reviewers_required !== 1 ||
+      policy?.scoring_policy?.independent_reviews !== false ||
+      policy?.scoring_policy?.review_model !== 'single_authorized_owner_expert_review' ||
+      policy?.initial_pilot?.owner_expert_review_required !== true ||
+      policy?.initial_pilot?.require_two_independent_reviews !== false) {
+    errors.push('one authorized owner-expert review must be sufficient; peer review may only be optional');
   }
   if (policy?.scoring_policy?.minimum_score_for_release !== null) {
     errors.push('release threshold must remain unset pending calibration');
