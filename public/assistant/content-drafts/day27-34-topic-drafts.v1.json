@@ -19,7 +19,7 @@
       "subtopic_id": "T01-S03",
       "subtopic_name": "بیان خشم، تکانه و رفتار پرخاشگرانه",
       "day_number": 27,
-      "phase": "topic_specific_daily_skill",
+      "phase": "personal_pattern_integration_and_skill_selection",
       "learning_objective": "شناسایی یک مسیر مقدماتی خروج/حمایت در صورت افزایش خطر؛ این تمرین برنامه ایمنی کامل یا مداخله بحران نیست.",
       "mechanism_focus": "شناسایی منبع کمک و محدودیت خودیاری در موقعیت پرخطر.",
       "exercise": "فقط در نبود خطر فوری، یک منبع کمک قابل‌دسترسی و یک راه خروج کلی را مشخص کن. اگر تهیه این اطلاعات ممکن نیست یا خطر جاری است، تمرین را ادامه نده و از کمک انسانی/اضطراری استفاده کن.",
@@ -80,7 +80,10 @@
       },
       "source_runtime_mechanism": "آمادگی مقدماتی برای فاصله‌گیری و اقدام ایمن در زمان خطر",
       "canonical_package_id": "maseer28-topic-T01-anger-complete-draft-v1",
-      "canonical_package_record_id": "DRAFT_T01_D27"
+      "canonical_package_record_id": "DRAFT_T01_D27",
+      "design_subtopic_ids": [
+        "T01-S03"
+      ]
     },
     {
       "content_id": "DRAFT_T02_D27",
