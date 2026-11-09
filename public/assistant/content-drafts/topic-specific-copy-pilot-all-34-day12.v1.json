@@ -30,7 +30,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "اگر راحتی، یک ناحیه مانند شانه یا فک را در حالت طبیعی مشاهده کن و اجازه بده بدون فشار به حالت راحت برگردد؛ انقباض شدید یا نگه‌داشتن نفس لازم نیست.",
+      "source_action": "پس از یک بار رهاسازی، به فعالیت معمول برگرد و بررسی مکرر بدن را ادامه نده."
     },
     {
       "source_content_id": "اضطراب-12",
@@ -57,7 +59,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "یک نگرانی غیراضطراری را انتخاب کن. اگر مناسب می‌دانی، زمانی کوتاه در روز برای نوشتن آن تعیین کن؛ هنگام ظهور فکر در زمان دیگر، فقط یادداشت کن که می‌توانی بعداً به آن برگردی. مجبور نیستی فکر را پس بزنی.",
+      "source_action": "در زمان انتخاب‌شده، فقط یک بار نگرانی را مرور کن و بپرس آیا اقدام واقعی دارد یا فعلاً نامطمئن است."
     },
     {
       "source_content_id": "ترس-12",
@@ -84,7 +88,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "یک مکان امن احتمالی، فردی که می‌تواند همراهی کند و راه دسترسی به خدمت حمایتی یا اضطراری را مشخص کن؛ اگر گزینه امنی وجود ندارد، همین خلأ را ثبت کن.",
+      "source_action": "مسیر و روش دسترسی را روی کاغذ بنویس؛ تماس، افشا یا حرکت به سمت مکان خاص اجباری نیست مگر برای حفاظت فوری لازم باشد."
     },
     {
       "source_content_id": "نفرت-12",
@@ -111,7 +117,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "یک بخش در اختیار خود و یک بخش خارج از اختیار را درباره موقعیت مشخص جدا کن.",
+      "source_action": "برای بخش قابل کنترل یک اقدام تعیین کن و بقیه را به خود نسبت نده."
     },
     {
       "source_content_id": "حسادت-12",
@@ -138,7 +146,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "یک توافق روشن درباره شفافیت یا تماس را مرور کن و رفتار قابل مشاهده را با همان توافق مقایسه کن؛ از حدس درباره ذهن طرف مقابل نتیجه نگیر.",
+      "source_action": "یک رفتار مشخص را در چند موقعیت ثبت کن و فقط درباره سازگاری آن با توافق واقعی نتیجه بگیر؛ نشانه منفرد یا حدس را دلیل قطعی ندان."
     },
     {
       "source_content_id": "غم و سوگ-12",
@@ -165,7 +175,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "برای روز دشوار یک فرد امن، یک فعالیت پایه و یک گزینه کمک مشخص کن.",
+      "source_action": "برنامه را کوتاه نگه دار و راه تماس را در دسترس قرار بده."
     },
     {
       "source_content_id": "احساس گناه-12",
@@ -192,7 +204,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "معیارهای منبع حمایت را بنویس: رازدار، منصف، آگاه به زمینه و بدون فشار برای اعتراف یا آشتی. اطلاعات حساس را در دستگاه یا حساب تحت نظارت ثبت نکن.",
+      "source_action": "یک نوع منبع حمایت را شناسایی کن؛ تماس اجباری نیست."
     },
     {
       "source_content_id": "وابستگی عاطفی-12",
@@ -219,7 +233,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "نقشه‌ای از منابع حمایت بالقوه بکش: دوست، خانواده، گروه اجتماعی، خدمات حرفه‌ای یا فعالیت جمعی؛ هیچ‌کس مجبور به افشای جزئیات حساس نیست.",
+      "source_action": "یک منبع غیرانحصاری را شناسایی کن؛ تماس الزامی نیست."
     },
     {
       "source_content_id": "اهمال‌کاری-12",
@@ -246,7 +262,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "اگر مانع از ابهام، دسترسی یا تقسیم مسئولیت ناشی می‌شود، یک پرسش یا درخواست مشخص بنویس.",
+      "source_action": "درخواست را برای فرد/مسیر مناسب آماده کن؛ ارسال آن اجباری نیست."
     },
     {
       "source_content_id": "بی‌خوابی و مشکلات خواب-12",
@@ -273,7 +291,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "زمان و مقدار تقریبی کافئین، نیکوتین و الکل را ثبت کن؛ الکل راهکار خواب نیست و می‌تواند کیفیت خواب را مختل کند. در صورت وابستگی یا مصرف دارو، تغییر ناگهانی را بدون مشورت انجام نده.",
+      "source_action": "یک الگوی مصرف را مشاهده کن؛ تصمیم به تغییر را متناسب و ایمن بگیر."
     },
     {
       "source_content_id": "عادت‌های تکراری-12",
@@ -300,7 +320,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "حرکت/صدای تکراری را از نظر ناگهانی‌بودن، زمینه، کنترل‌پذیری ادراک‌شده، کارکرد و اثر توصیف کن؛ خودتشخیصی نکن.",
+      "source_action": "تیک احتمالی را با عادت یکی ندان؛ استیمینگ بی‌ضرر را سرکوب نکن. درد، آسیب یا تغییر ناگهانی نیازمند ارزیابی است."
     },
     {
       "source_content_id": "مرزبندی و نه گفتن-12",
@@ -327,7 +349,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "از فردی قابل اعتماد و امن یک کمک محدود بخواهید؛ مانند همراهی برای گفت‌وگو، پوشش یک وظیفه یا گوش دادن بدون قضاوت. زمان و شکل کمک را روشن کنید.",
+      "source_action": "از فرد امن درخواست محدود و زمان‌دار مطرح کن؛ پاسخ منفی را بپذیر."
     },
     {
       "source_content_id": "تنهایی-12",
@@ -354,7 +378,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "یک درخواست عملی و محدود بنویس؛ مانند تماس ده‌دقیقه‌ای، همراهی برای پیاده‌روی یا شنیدن بدون ارائه راه‌حل.",
+      "source_action": "درخواست را فقط از فردی امن و در زمان مناسب مطرح کن و امکان ردکردن آن را محترم بشمار."
     },
     {
       "source_content_id": "کمبود انگیزه-12",
@@ -381,7 +407,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "پاداش سالم: پس از انجام گام، استراحت یا فعالیت خوشایندی در نظر بگیرید.",
+      "source_action": "پس از گام، وقفه یا فعالیت خوشایند غیرآسیب‌زا را اجرا کن."
     },
     {
       "source_content_id": "اعتمادبه‌نفس پایین-12",
@@ -408,7 +436,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "یک مهارت را انتخاب کن و از فرد امن بخواه یک نمونه مشخص از زمانی را به یاد بیاورد که آن مهارت را در تو دیده است؛ در صورت تمایل یک حوزه قابل بهبود را نیز بپرس.",
+      "source_action": "پرسشی محدود درباره یک مهارت آماده کن؛ مانند «کدام بخش این کار را به‌خوبی انجام دادم؟» و از پرسش کلی درباره ارزش خود پرهیز کن."
     },
     {
       "source_content_id": "افکار منفی و نشخوار فکری-12",
@@ -435,7 +465,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "توجه به حواس: فعالیتی روزمره را با توجه به صدا، رنگ و حس تماس انجام دهید.",
+      "source_action": "یک فعالیت ساده را با تمرکز بر سه جزئیات حسی انجام بده."
     },
     {
       "source_content_id": "مشکلات رابطه-12",
@@ -462,7 +494,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "مکث در تنش: نشانه افزایش تنش را بشناسید و وقفه‌ای با زمان بازگشت پیشنهاد کنید.",
+      "source_action": "زمان بازگشت به گفت‌وگو را فقط اگر امن و مورد توافق است مشخص کن."
     },
     {
       "source_content_id": "نفرت از خود-12",
@@ -489,7 +523,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "نگاه دوست امن: تصور کنید دوست مورد اعتماد شما همین جمله را درباره خودش می‌گوید؛ پاسخ مهربانانه و واقع‌بینانه بنویسید.",
+      "source_action": "پاسخ را طوری بنویس که هم درد را ببیند و هم واقعیت را تحریف نکند."
     },
     {
       "source_content_id": "خودسرزنشی-12",
@@ -516,7 +552,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "مرز مسئولیت: آنچه متعلق به انتخاب دیگران است از سهم خود جدا کنید.",
+      "source_action": "یک مسئولیت را که متعلق به دیگری است صریحاً از سهم خود جدا کن."
     },
     {
       "source_content_id": "کمال‌گرایی-12",
@@ -543,7 +581,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "زبان مطلق: واژه‌های «همیشه»، «باید» و «بی‌نقص» را به معیارهای واقع‌بینانه تبدیل کنید.",
+      "source_action": "یک باید را به معیار قابل سنجش تبدیل کن."
     },
     {
       "source_content_id": "اجتناب-12",
@@ -570,7 +610,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "یک فعالیت کنارگذاشته‌شده را بررسی کن و موانع آن را در سه دسته بنویس: شرایط محیطی، منابع/زمان/هزینه، و واکنش درونی. بیش از یک دسته می‌تواند درست باشد.",
+      "source_action": "یک مانع بیرونی را که نیازمند حمایت یا تغییر شرایط است مشخص کن."
     },
     {
       "source_content_id": "استرس-12",
@@ -597,7 +639,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "بار محیطی: یک عامل بیرونی مانند صدای مزاحم، وقفه‌های پیاپی یا هم‌زمانی وظایف را برای بازه مشخص کاهش دهید.",
+      "source_action": "یک وقفه محیطی را کاهش بده یا بازه بدون مزاحمت برای یک کار مشخص تنظیم کن."
     },
     {
       "source_content_id": "احساس بی‌ارزشی-12",
@@ -624,7 +668,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "مهربانی واقع‌بینانه: جمله‌ای بنویسید که هم درد را ببیند و هم حکم کلی صادر نکند.",
+      "source_action": "جمله‌ای بنویس که درد را تأیید کند اما حکم کلی را نپذیرد."
     },
     {
       "source_content_id": "مشکل در کنترل هیجان-12",
@@ -651,7 +697,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "بیان هیجان: احساس را با جمله‌ای غیراتهامی توصیف کنید.",
+      "source_action": "احساس را با جمله «من احساس… دارم وقتی…» توصیف کن."
     },
     {
       "source_content_id": "رنجش و کینه-12",
@@ -678,7 +726,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "بازگشت توجه: پس از تشخیص نشخوار، به فعالیت انتخابی برگردید.",
+      "source_action": "پس از تشخیص نشخوار، یک فعالیت خنثی و انتخابی را آغاز کن."
     },
     {
       "source_content_id": "شرم-12",
@@ -705,7 +755,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "گفت‌وگوی امن: تجربه را فقط با فردی قابل اعتماد و به میزان دلخواه به اشتراک بگذارید.",
+      "source_action": "فقط اگر مایل و امن است، بخشی کم‌حساسیت را با فرد قابل اعتماد در میان بگذار."
     },
     {
       "source_content_id": "ترس از قضاوت-12",
@@ -732,7 +784,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "کاهش اطمینان‌خواهی: یک بار کمتر از دیگران تأیید بگیرید و نتیجه را ثبت کنید.",
+      "source_action": "اگر برای نظر، ظاهر یا اجرای اجتماعی چند بار از دیگران تأیید می‌خواهی، فقط یک درخواست تأیید غیرضروری را در موقعیت کم‌خطر حذف یا به تعویق بینداز؛ بازخورد لازم و اطلاعات ایمنی را نگه دار."
     },
     {
       "source_content_id": "ترس از شکست-12",
@@ -759,7 +813,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "برای همان خطا یک اصلاح محدود تعیین کن.",
+      "source_action": "خطای کوچک را به یک رفتار یا مرحله مشخص محدود کن، نه کل توانایی خودت."
     },
     {
       "source_content_id": "ترس از طرد شدن-12",
@@ -786,7 +842,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "در چند تعامل اخیر ابتکار تماس، پایبندی به توافق و پاسخ‌گویی را بررسی کن؛ تفاوت نیازها و شرایط را هم ثبت کن و از یک رخداد نتیجه کلی نگیر.",
+      "source_action": "یک حد شخصی و قابل اجرا تعیین کن، مثل میزان زمانی که برای پیگیری یک‌طرفه می‌گذاری؛ آن را به کنترل یا مجازات طرف مقابل تبدیل نکن."
     },
     {
       "source_content_id": "شک و تردید-12",
@@ -813,7 +871,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "یک گزینه کم‌ریسک را آزمایش کنید.",
+      "source_action": "فقط در موضوع کم‌خطر، گزینه را در مقیاس کوچک امتحان کن."
     },
     {
       "source_content_id": "کنترل‌گری-12",
@@ -840,7 +900,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "مرز خود را از تلاش برای اداره رفتار دیگری جدا کنید.",
+      "source_action": "حدی را که درباره رفتار خودت تعیین می‌کنی از محدودکردن دیگری جدا کن."
     },
     {
       "source_content_id": "بی‌انگیزگی-12",
@@ -867,7 +929,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "اگر انزوا تجربه را تشدید می‌کند، همراهی آرام و بدون مطالبه گفت‌وگو را از فرد امن درخواست کنید.",
+      "source_action": "از فرد امن بخواه مدتی کنار تو باشد یا در فعالیت ساده همراهی کند؛ لازم نیست درباره احساساتت توضیح بدهی."
     },
     {
       "source_content_id": "خودانتقادی-12",
@@ -894,7 +958,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "از یک خطای عملکردی، روش یا مهارت قابل یادگیری را استخراج کن؛ بنویس کدام اطلاعات به اصلاح آن کمک می‌کند و کدام عبارت فقط سرزنش است.",
+      "source_action": "یک تغییر مشخص در روش یا مهارت را برای تمرین بعدی ثبت کن؛ حکم کلی درباره شخصیت را به‌عنوان درس یادگیری ثبت نکن."
     },
     {
       "source_content_id": "مشکل دیگر-12",
@@ -921,7 +987,9 @@
       "review_status": "pending_owner_and_expert_review",
       "reviewer": null,
       "reviewed_at": null,
-      "runtime_eligible": false
+      "runtime_eligible": false,
+      "source_exercise": "گزینه‌های روز قبل را با چهار معیار یکسان مقایسه کن: ایمنی، رضایت/اختیار، برگشت‌پذیری و دسترسی. اگر برای سنجش پیامد یا هزینه اطلاعات نداری، آن خانه را نامعلوم بگذار.",
+      "source_action": "گزینه‌ای را که خطر جدی، نقض رضایت یا پیامد برگشت‌ناپذیر دارد کنار بگذار؛ برای گزینه‌های باقی‌مانده یک مزیت و یک محدودیت ثبت کن."
     }
   ]
 }

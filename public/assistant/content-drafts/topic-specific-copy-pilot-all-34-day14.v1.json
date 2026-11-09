@@ -1,0 +1,995 @@
+{
+  "schema_version": "1.0.0",
+  "batch_id": "topic-specific-copy-all-34-day14",
+  "status": "draft_pending_owner_and_expert_review",
+  "purpose": "پیشنهاد اختصاصی عنوان و مقدمه برای ۳۴ موضوع در روز 14؛ تمرین و اقدام اصلی واقعی در هر رکورد برای ردیابی ثبت شده‌اند و در این بسته تغییر نمی‌کنند.",
+  "source": "daily-text-overrides.v1.json plus runtime title/intro template from exported 952-day snapshot",
+  "records": [
+    {
+      "source_content_id": "خشم-14",
+      "topic_name": "خشم",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خشم».",
+      "source_exercise": "روش‌هایی را که تاکنون بررسی کردی در سه ستون قرار بده: مفید، خنثی، نامناسب. برای هر مورد یک دلیل کوتاه بنویس؛ لازم نیست روشی را صرفاً به‌خاطر توصیه عمومی ادامه بدهی.",
+      "source_action": "فقط یک روش مناسب را برای موقعیت کم‌خطر بعدی نگه دار و یک روش نامناسب را کنار بگذار.",
+      "proposed_title": "ارزیابی روش‌های پاسخ به خشم",
+      "proposed_intro": "روش‌هایی را که بررسی کرده‌ای در سه گروه مفید، خنثی و نامناسب قرار بده؛ فقط گزینه‌ای را نگه دار که در موقعیت واقعی تو امن و عملی است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اضطراب-14",
+      "topic_name": "اضطراب",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اضطراب».",
+      "source_exercise": "یک مسئله روزمره قابل کنترل را انتخاب کن. سه گزینه کم‌خطر بنویس و برای هرکدام امکان اجرا و هزینه احتمالی را بررسی کن. اگر مسئله قابل کنترل نیست، این تمرین را به آن تحمیل نکن.",
+      "source_action": "یک گزینه کوچک را انتخاب کن یا تصمیم بگیر فعلاً هیچ گزینه‌ای مناسب نیست؛ هر دو می‌توانند نتیجه معتبر باشند.",
+      "proposed_title": "مقایسهٔ گزینه‌های حل مسئلهٔ قابل‌کنترل",
+      "proposed_intro": "برای یک مسئلهٔ روزمرهٔ قابل‌کنترل چند گزینهٔ کم‌خطر بنویس و امکان اجرا و هزینه را بسنج؛ اگر مسئله در کنترل تو نیست، حل مسئله را به آن تحمیل نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس-14",
+      "topic_name": "ترس",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس».",
+      "source_exercise": "یک اقدام حفاظتی واقعی یا فرضی را در سه دسته قرار بده: کمک‌کننده، نامشخص، یا ناکافی. دلیل را فقط بر پایه اطلاعات موجود بنویس.",
+      "source_action": "اگر اقدام ناکافی بوده، یک منبع حمایت قوی‌تر را مشخص کن؛ حفاظت لازم را کاهش نده.",
+      "proposed_title": "بازبینی کفایت اقدام حفاظتی",
+      "proposed_intro": "یک اقدام حفاظتی را بر اساس اطلاعات موجود کمک‌کننده، نامشخص یا ناکافی دسته‌بندی کن؛ در صورت ناکافی‌بودن، حفاظت را کاهش نده و حمایت قوی‌تر را بررسی کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت-14",
+      "topic_name": "نفرت",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «نفرت».",
+      "source_exercise": "یک پاسخ جایگزین بنویس که تهدید، تحقیر، انتقام یا آسیب در آن نباشد.",
+      "source_action": "پاسخ را فقط در موقعیت امن اجرا کن؛ اگر خطر هست، فاصله بگیر.",
+      "proposed_title": "ساخت پاسخ جایگزین بدون آسیب",
+      "proposed_intro": "برای یک موقعیت مشخص پاسخی بنویس که تهدید، تحقیر، انتقام یا آسیب در آن نباشد؛ اگر خطر واقعی وجود دارد، فاصله و ایمنی بر پاسخ‌گویی مقدم است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "حسادت-14",
+      "topic_name": "حسادت",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «حسادت».",
+      "source_exercise": "یک منبع مقایسه‌برانگیز را برای بازه محدود تنظیم کن.",
+      "source_action": "مقایسه را با اطلاعاتی که نداری کامل نکن؛ به هدف خود برگرد.",
+      "proposed_title": "تنظیم مواجهه با منبع مقایسه",
+      "proposed_intro": "یک منبع مقایسه‌برانگیز را برای مدتی محدود تنظیم کن و مشخص کن چه اطلاعاتی از زندگی دیگران در اختیار نداری؛ مقایسه را با حدس کامل نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "غم و سوگ-14",
+      "topic_name": "غم و سوگ",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «غم و سوگ».",
+      "source_exercise": "اگر احساس تقصیر داری، رفتار واقعی و چیزهای خارج از اختیار را جدا کن.",
+      "source_action": "مسئولیت واقعی را بپذیر، اما نتیجه خارج از اختیار را به خود نسبت نده.",
+      "proposed_title": "تفکیک مسئولیت واقعی از نتیجهٔ خارج از اختیار",
+      "proposed_intro": "اگر احساس تقصیر در سوگ وجود دارد، رفتار واقعی و شرایط خارج از اختیار را جدا کن؛ فقدان به‌تنهایی اثبات‌کنندهٔ کوتاهی تو نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "احساس گناه-14",
+      "topic_name": "احساس گناه",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «احساس گناه».",
+      "source_exercise": "چرخه رخداد ← داوری کلی ← نشخوار ← خودتنبیهی/اجتناب ← بازگشت احساس را بررسی کن؛ اگر اقدام اصلاحی واقعی باقی مانده، آن را با نشخوار یکی نکن.",
+      "source_action": "یک حلقه تکراری را با یک پاسخ مشخص جایگزین کن: اقدام محدود یا بازگشت به فعالیت روزمره.",
+      "proposed_title": "شناخت چرخهٔ خودسرزنشی و جبران",
+      "proposed_intro": "بررسی کن رخداد چگونه به داوری کلی، نشخوار و خودتنبیهی می‌رسد؛ اقدام اصلاحی واقعی را از تکرار ذهنیِ بی‌پایان جدا نگه دار.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "وابستگی عاطفی-14",
+      "topic_name": "وابستگی عاطفی",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «وابستگی عاطفی».",
+      "source_exercise": "چرخه نگرانی ← درخواست مکرر تأیید ← آرامش کوتاه ← بازگشت نگرانی را بررسی کن؛ درخواست یک‌باره و متناسب برای نیاز واقعی را آسیب‌زا فرض نکن.",
+      "source_action": "یک رفتار تکراری را با فعالیت مستقل کوتاه جایگزین کن.",
+      "proposed_title": "شناخت چرخهٔ اطمینان‌خواهی تکراری",
+      "proposed_intro": "چرخهٔ نگرانی، درخواست مکرر تأیید و آرامش کوتاه را بررسی کن؛ درخواست متناسب برای یک نیاز واقعی را به‌اشتباه آسیب‌زا تلقی نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اهمال‌کاری-14",
+      "topic_name": "اهمال‌کاری",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اهمال‌کاری».",
+      "source_exercise": "چرخه کار دشوار ← ناراحتی ← فعالیت جایگزین فوری ← آرامش کوتاه ← فشار بیشتر را بررسی کن؛ استراحت برنامه‌ریزی‌شده را از فرار تکراری جدا کن.",
+      "source_action": "یک فعالیت جایگزین پرتکرار را برای بازه کوتاه مدیریت کن و زمان بازگشت را مشخص کن.",
+      "proposed_title": "تمایز استراحت از تعویق فرساینده",
+      "proposed_intro": "چرخهٔ کار دشوار، ناراحتی و رفتن به فعالیت جایگزین را بررسی کن؛ استراحت برنامه‌ریزی‌شده را از تعویق تکراری که فشار را بیشتر می‌کند جدا کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "بی‌خوابی و مشکلات خواب-14",
+      "topic_name": "بی‌خوابی و مشکلات خواب",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «بی‌خوابی و مشکلات خواب».",
+      "source_exercise": "چرخه نگرانی ← بررسی ساعت ← تلاش اجباری برای خواب ← برانگیختگی بیشتر را بررسی کن؛ زمان‌نگری را در حدی کاهش بده که ایمنی و برنامه دارویی مختل نشود.",
+      "source_action": "ساعت را از میدان دید خارج کن، اگر برایت مناسب است.",
+      "proposed_title": "شناخت چرخهٔ وارسی ساعت و فشار خواب",
+      "proposed_intro": "بررسی کن آیا نگرانی، وارسی ساعت و تلاش اجباری برای خواب تنش را بیشتر می‌کند؛ هر تغییری باید با نیازهای ایمنی و برنامهٔ درمانی سازگار باشد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "عادت‌های تکراری-14",
+      "topic_name": "عادت‌های تکراری",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «عادت‌های تکراری».",
+      "source_exercise": "بررسی کن آیا رفتار واقعاً آسیب، رنج یا اختلال ایجاد می‌کند و آیا خود فرد خواهان تغییر آن است.",
+      "source_action": "S01: فقط در صورت خواست فرد، عادت ناخواسته را تغییر بده. S02: هدف درمانی را با متخصص تعیین کن؛ سرکوب خودسرانه یا ERP/HRT خودساخته انجام نده. S03: تیک و استیمینگ بی‌ضرر هدف حذف نیستند؛ در آسیب/اختلال ارزیابی کن.",
+      "proposed_title": "سنجش رنج، آسیب و خواست تغییر",
+      "proposed_intro": "بررسی کن رفتار تکراری واقعاً چه میزان رنج، آسیب یا اختلال ایجاد می‌کند و آیا خود فرد خواهان تغییر آن است؛ تیک یا استیمینگ بی‌ضرر را هدف حذف قرار نده.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مرزبندی و نه گفتن-14",
+      "topic_name": "مرزبندی و نه گفتن",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مرزبندی و نه گفتن».",
+      "source_exercise": "بررسی کنید کدام عامل بیشتر اثر دارد: ترس از تعارض، احساس گناه، عادت به مراقبت از دیگران، فشار نقش، نگرانی مالی یا نابرابری قدرت. یک عامل را انتخاب و یک راه کاهش اثر آن را ثبت کنید.",
+      "source_action": "برای عامل زمینه‌ای یک راهکار عملی یا منبع حمایت مشخص کن.",
+      "proposed_title": "شناخت مانع زمینه‌ای در بیان مرز",
+      "proposed_intro": "بررسی کن چه عاملی مانند ترس از تعارض، فشار نقش، نگرانی مالی یا نابرابری قدرت بیان مرز را دشوار می‌کند؛ یک عامل را انتخاب کن، نه اینکه همه‌چیز را به ضعف فرد نسبت بدهی.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "تنهایی-14",
+      "topic_name": "تنهایی",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «تنهایی».",
+      "source_exercise": "یک فعالیت گروهی کم‌هزینه و امن مرتبط با علاقه‌ات پیدا کن؛ شرایط دسترسی، زمان و فضای آن را بررسی کن.",
+      "source_action": "فقط یک قدم اطلاعاتی بردار؛ مانند بررسی زمان یا پرسیدن شرایط حضور، بدون تعهد به ثبت‌نام.",
+      "proposed_title": "یافتن فرصت ارتباط گروهی کم‌هزینه",
+      "proposed_intro": "یک فعالیت گروهی امن و مرتبط با علاقه‌ات پیدا کن و زمان، هزینه و شرایط دسترسی را بررسی کن؛ در این روز فقط جمع‌آوری اطلاعات کافی است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کمبود انگیزه-14",
+      "topic_name": "کمبود انگیزه",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کمبود انگیزه».",
+      "source_exercise": "یک کار کم‌علاقه را به گام کوچک تقسیم کن و پس از آن فعالیت کوتاه و واقع‌بینانه‌ای انتخاب کن که برایت خوشایند یا بازیابی‌کننده است.",
+      "source_action": "پس از انجام همان گام کوچک، فعالیت انتخابی را اجرا کن؛ اگر گام انجام نشد، از تنبیه یا محروم‌کردن خودداری کن.",
+      "proposed_title": "تنظیم گام و پاداش بازیابی‌کننده",
+      "proposed_intro": "یک کار کم‌علاقه را به گامی کوچک تقسیم کن و پس از آن فعالیت خوشایند یا بازیابی‌کننده‌ای انتخاب کن؛ انجام‌نشدن گام مجوز تنبیه خود نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اعتمادبه‌نفس پایین-14",
+      "topic_name": "اعتمادبه‌نفس پایین",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اعتمادبه‌نفس پایین».",
+      "source_exercise": "مرز مقایسه: یک منبع مقایسه فرساینده را محدود و جایگزینی مفید انتخاب کنید.",
+      "source_action": "یک بازه محدود برای استفاده از منبع مقایسه‌برانگیز تعیین کن.",
+      "proposed_title": "تنظیم مرز مقایسهٔ فرساینده",
+      "proposed_intro": "یک منبع مقایسه را که قضاوتت دربارهٔ عملکرد را مختل می‌کند محدود کن و جایگزینی مانند سنجش پیشرفت شخصی انتخاب کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "افکار منفی و نشخوار فکری-14",
+      "topic_name": "افکار منفی و نشخوار فکری",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «افکار منفی و نشخوار فکری».",
+      "source_exercise": "یک موضوع گذشته را در دو پرسش بررسی کن: «چه چیزی آموختم؟» و «آیا پرسش تازه‌ای دارم که به اقدام مشخص برسد؟» اگر پاسخ‌ها تکراری‌اند، آن را ثبت کن.",
+      "source_action": "یک درس محدود یا تصمیم به پایان مرور را بنویس.",
+      "proposed_title": "استخراج یادگیری از مرور گذشته",
+      "proposed_intro": "یک موضوع گذشته را با دو پرسش مرور کن: چه آموختم و آیا پرسش تازه‌ای به اقدام مشخص می‌رسد؟ اگر پاسخ تکراری است، پایان مرور را ثبت کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکلات رابطه-14",
+      "topic_name": "مشکلات رابطه",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکلات رابطه».",
+      "source_exercise": "حل مسئله مشترک: سه گزینه بسازید و پیامد هرکدام را مقایسه کنید.",
+      "source_action": "سه گزینه را با معیار امنیت، انصاف و امکان اجرا مقایسه کن.",
+      "proposed_title": "مقایسهٔ راه‌حل‌های مشترک با معیار ایمنی",
+      "proposed_intro": "برای مسئله‌ای که گفت‌وگوی مشترک درباره‌اش امن است چند گزینه بساز و پیامدها را از نظر امنیت، انصاف و امکان اجرا بسنج؛ در رابطهٔ خشونت‌آمیز این تمرین دونفره مناسب نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت از خود-14",
+      "topic_name": "نفرت از خود",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «نفرت از خود».",
+      "source_exercise": "حمایت بیرونی: فرد یا منبع امنی را برای گفت‌وگو درباره این احساس شناسایی کنید.",
+      "source_action": "فقط یک منبع امن را انتخاب و حد اطلاعاتی که می‌خواهی بگویی مشخص کن.",
+      "proposed_title": "شناسایی منبع حمایت امن",
+      "proposed_intro": "یک فرد یا منبع امن برای گفت‌وگو دربارهٔ خودبیزاری مشخص کن و حد اطلاعاتی را که مایل به بیان آن هستی تعیین کن؛ افشا اجباری نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خودسرزنشی-14",
+      "topic_name": "خودسرزنشی",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خودسرزنشی».",
+      "source_exercise": "درس‌آموزی: یک تغییر مشخص برای دفعه بعد طراحی کنید.",
+      "source_action": "تغییر را به یک رفتار قابل مشاهده برای موقعیت مشابه تبدیل کن.",
+      "proposed_title": "تبدیل مسئولیت به تغییر رفتاری مشخص",
+      "proposed_intro": "یک تغییر مشخص برای موقعیت مشابه آینده طراحی کن؛ مسئولیت‌پذیری را به مجازات مداوم خود تبدیل نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کمال‌گرایی-14",
+      "topic_name": "کمال‌گرایی",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کمال‌گرایی».",
+      "source_exercise": "تقسیم کار: یک پروژه را به گام‌هایی با معیار پایان مستقل بشکنید.",
+      "source_action": "گام اول را انجام بده و معیار پایان همان گام را بررسی کن.",
+      "proposed_title": "شکستن پروژه به گام‌های پایان‌پذیر",
+      "proposed_intro": "پروژه را به گام‌هایی تقسیم کن که هرکدام معیار پایان مستقل و واقع‌بینانه داشته باشند؛ کامل‌بودن کل پروژه شرط شروع نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اجتناب-14",
+      "topic_name": "اجتناب",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اجتناب».",
+      "source_exercise": "اطلاعات روزهای قبل را مرور کن و رفتار را در یکی از سه وضعیت قرار بده: «حفظ»، «نیازمند بررسی بیشتر»، یا «احتمالاً قابل تغییر در شرایط کاملاً امن». دلیل و داده ناکافی را بنویس.",
+      "source_action": "اگر خطر یا ابهام باقی است، رفتار را حفظ کن و ارزیابی مستقل بگیر؛ تغییر فقط پس از روشن‌شدن ایمنی مطرح است.",
+      "proposed_title": "تصمیم دربارهٔ حفظ یا تغییر رفتار با توجه به ایمنی",
+      "proposed_intro": "رفتار را با توجه به داده‌های موجود در گروه حفظ، نیازمند بررسی بیشتر یا احتمالاً قابل تغییر در شرایط امن قرار بده؛ در خطر یا ابهام، تغییر را تحمیل نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "استرس-14",
+      "topic_name": "استرس",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «استرس».",
+      "source_exercise": "بازنگری فکر: یک پیش‌بینی فاجعه‌آمیز را با داده‌های موجود بررسی کنید.",
+      "source_action": "یک پیش‌بینی را با داده موجود بررسی کن و اطلاعات نامعلوم را نگه دار.",
+      "proposed_title": "بررسی پیش‌بینی فاجعه‌آمیز با دادهٔ موجود",
+      "proposed_intro": "یک پیش‌بینی نگران‌کننده را با شواهد فعلی مقایسه کن و اطلاعات نامعلوم را جدا نگه دار؛ هدف تضمین آینده نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "احساس بی‌ارزشی-14",
+      "topic_name": "احساس بی‌ارزشی",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «احساس بی‌ارزشی».",
+      "source_exercise": "یک راه ارتباط کم‌فشار با فردی امن انتخاب کن؛ می‌تواند حضور کوتاه، پیام ساده یا انجام فعالیتی مشترک باشد و لازم نیست درباره احساس بی‌ارزشی توضیح بدهی.",
+      "source_action": "برای یک تماس یا حضور کوتاه و قابل‌قطع برنامه بگذار؛ میزان نزدیکی و موضوع گفت‌وگو را خودت تعیین کن و اگر مناسب نبود، ارتباط را ادامه نده.",
+      "proposed_title": "برنامه‌ریزی ارتباط کم‌فشار و قابل‌قطع",
+      "proposed_intro": "یک راه ارتباط کوتاه با فرد امن انتخاب کن؛ موضوع گفت‌وگو و میزان نزدیکی را خودت تعیین کن و برای بهتر نشان‌دادن حالت تحت فشار قرار نگیر.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکل در کنترل هیجان-14",
+      "topic_name": "مشکل در کنترل هیجان",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکل در کنترل هیجان».",
+      "source_exercise": "حل مسئله: پس از کاهش شدت، یک اقدام عملی متناسب انتخاب کنید.",
+      "source_action": "پس از مکث، فقط یک مسئله قابل حل و گام بعدی را تعیین کن.",
+      "proposed_title": "حل مسئله پس از بازگشت ظرفیت تصمیم",
+      "proposed_intro": "پس از مکث و کاهش شدت هیجان، فقط یک مسئلهٔ قابل‌حل و گام بعدی را تعیین کن؛ تصمیم مهم را در اوج برانگیختگی مجبور به نهایی‌کردن نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "رنجش و کینه-14",
+      "topic_name": "رنجش و کینه",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «رنجش و کینه».",
+      "source_exercise": "برای یک رنجش مشخص، رفتار قابل مشاهده، اثر آن بر تو و نیازی را که نادیده ماند جداگانه ثبت کن؛ قصد طرف مقابل را حدس نزن.",
+      "source_action": "یک مرز فعلی را مشخص کن که از تکرار همان آسیب جلوگیری کند؛ مرز می‌تواند کاهش تماس، محدودکردن موضوع گفت‌وگو یا فاصله امن باشد.",
+      "proposed_title": "تفکیک رفتار، اثر و نیاز آسیب‌دیده",
+      "proposed_intro": "برای یک رنجش مشخص، رفتار قابل مشاهده، اثر آن بر خودت و نیاز نادیده‌مانده را جدا بنویس؛ نیت دیگری را بدون شواهد قطعی فرض نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "شرم-14",
+      "topic_name": "شرم",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «شرم».",
+      "source_exercise": "مرز در برابر تحقیر: پاسخ یا فاصله مناسب از فرد قضاوتگر را طراحی کنید.",
+      "source_action": "یک پاسخ کوتاه یا فاصله امن از فرد تحقیرگر را طراحی کن.",
+      "proposed_title": "طراحی پاسخ یا فاصله در برابر تحقیر",
+      "proposed_intro": "اگر با تحقیر روبه‌رو هستی، یک پاسخ کوتاه یا فاصلهٔ امن را بررسی کن؛ لازم نیست برای اثبات ارزش خود در تعامل آسیب‌زا بمانی.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از قضاوت-14",
+      "topic_name": "ترس از قضاوت",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از قضاوت».",
+      "source_exercise": "پاسخ به نقد: یک بازخورد مشخص را بررسی و بخش مفیدش را انتخاب کنید.",
+      "source_action": "یک نکته قابل استفاده را انتخاب و یک نکته نامعتبر را کنار بگذار.",
+      "proposed_title": "انتخاب بخش مفید از نقد مشخص",
+      "proposed_intro": "یک بازخورد را بررسی کن و نکتهٔ قابل استفاده را از بخش نامعتبر یا تحقیرآمیز جدا کن؛ پذیرش نقد به معنی پذیرفتن توهین نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از شکست-14",
+      "topic_name": "ترس از شکست",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از شکست».",
+      "source_exercise": "پس از رسیدن به معیار، کار را متوقف و نتیجه را ثبت کن.",
+      "source_action": "نقطه توقف و سقف بازبینی را پیش از شروع کار تعیین کن.",
+      "proposed_title": "تعیین نقطهٔ توقف و سقف بازبینی",
+      "proposed_intro": "پیش از شروع کار، معیار پایان و سقف بازبینی را تعیین کن؛ پس از رسیدن به معیار، نتیجه را ثبت کن و بازبینی بی‌پایان را ادامه نده.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از طرد شدن-14",
+      "topic_name": "ترس از طرد شدن",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از طرد شدن».",
+      "source_exercise": "نیاز را روشن بگو و امکان رد درخواست را محترم بشمار.",
+      "source_action": "درخواست را با زمان و دامنه محدود مطرح کن و پاسخ منفی را بدون پیگیری مکرر بپذیر؛ حمایت را به تضمین ماندن رابطه تبدیل نکن.",
+      "proposed_title": "بیان نیاز با احترام به حق پاسخ منفی",
+      "proposed_intro": "اگر امن و مناسب است، نیاز را روشن و محدود بیان کن و امکان رد درخواست را محترم بشمار؛ پاسخ منفی را با پیگیری یا فشار مکرر دنبال نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "شک و تردید-14",
+      "topic_name": "شک و تردید",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «شک و تردید».",
+      "source_exercise": "مقایسه را با معیارهای روز سوم انجام دهید.",
+      "source_action": "هر گزینه را با همان سه معیار امتیازدهی یا توصیف کن.",
+      "proposed_title": "مقایسهٔ گزینه‌ها با معیار ثابت",
+      "proposed_intro": "گزینه‌ها را با همان معیارهایی مقایسه کن که پیش از دیدن نتیجه تعیین کرده‌ای؛ تغییر معیار برای توجیه انتخاب دلخواه را ثبت کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کنترل‌گری-14",
+      "topic_name": "کنترل‌گری",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کنترل‌گری».",
+      "source_exercise": "یک رفتار وارسی یا پیگیری افراطی را شناسایی کنید.",
+      "source_action": "دفعات وارسی یا پیگیری را ثبت کن، بدون تغییر اجباری.",
+      "proposed_title": "شناسایی رفتار وارسی و پیگیری افراطی",
+      "proposed_intro": "یک رفتار وارسی یا پیگیری را مشخص و فراوانی آن را مشاهده کن؛ کاهش آن باید با ایمنی و توافق‌های واقعی سازگار باشد، نه با نادیده‌گرفتن خطر.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "بی‌انگیزگی-14",
+      "topic_name": "بی‌انگیزگی",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «بی‌انگیزگی».",
+      "source_exercise": "یک مانع بیرونی مشخص را بررسی کن: هزینه، فاصله، حمل‌ونقل، ساعت دسترسی یا ابزار لازم؛ آن را از دشواری شروع درونی جدا کن.",
+      "source_action": "یک گزینه دسترس‌پذیرتر را پیدا کن (رایگان، نزدیک، زمان مناسب یا آنلاین امن)؛ اگر گزینه‌ای وجود ندارد، مانع را برای درخواست حمایت ثبت کن.",
+      "proposed_title": "شناخت مانع بیرونی دسترسی و منابع",
+      "proposed_intro": "هزینه، فاصله، زمان، حمل‌ونقل یا ابزار لازم را بررسی کن و مانع بیرونی را از دشواری شروع جدا نگه دار؛ کمبود دسترسی نقص اراده نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خودانتقادی-14",
+      "topic_name": "خودانتقادی",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خودانتقادی».",
+      "source_exercise": "یک انتقاد درباره عملکردت را بخوان و معیار کیفیت لازم را از نتیجه‌گیری درباره توانایی کلی خود جدا کن؛ مشخص کن کدام بخش قابل سنجش است.",
+      "source_action": "فقط معیار مربوط به همان خروجی را نگه دار و حکم درباره ارزش یا توانایی کلی را کنار بگذار؛ الزام واقعی کیفیت را حفظ کن.",
+      "proposed_title": "تفکیک معیار کیفیت از قضاوت دربارهٔ خود",
+      "proposed_intro": "معیار واقعی کیفیت خروجی را از نتیجه‌گیری دربارهٔ توانایی کلی خود جدا کن؛ الزام حرفه‌ای را حفظ کن، اما آن را به محکومیت شخصیت تبدیل نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکل دیگر-14",
+      "topic_name": "مشکل دیگر",
+      "day_number": 14,
+      "current_title": "عامل نگه‌دارنده · روز 14",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکل دیگر».",
+      "source_exercise": "مشخص کن اطلاعات به‌دست‌آمده کدام بخش پرسش را تأیید کرد، کدام را رد کرد و چه چیزی را همچنان نامعلوم گذاشت.",
+      "source_action": "سه مورد را ثبت کن: یافته تأییدشده، پرسش بی‌پاسخ و منبع بعدیِ مناسب در صورت نیاز.",
+      "proposed_title": "جمع‌بندی یافته و پرسش‌های باز",
+      "proposed_intro": "مشخص کن کدام داده پرسش را تأیید یا رد کرد و چه چیزی هنوز نامعلوم است؛ تصمیم نهایی را بر پایهٔ اطلاعاتی که وجود ندارد نساز.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    }
+  ]
+}

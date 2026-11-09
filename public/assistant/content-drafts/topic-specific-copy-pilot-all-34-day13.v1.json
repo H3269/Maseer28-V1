@@ -1,0 +1,995 @@
+{
+  "schema_version": "1.0.0",
+  "batch_id": "topic-specific-copy-all-34-day13",
+  "status": "draft_pending_owner_and_expert_review",
+  "purpose": "پیشنهاد اختصاصی عنوان و مقدمه برای ۳۴ موضوع در روز 13؛ تمرین و اقدام اصلی واقعی در هر رکورد برای ردیابی ثبت شده‌اند و در این بسته تغییر نمی‌کنند.",
+  "source": "daily-text-overrides.v1.json plus runtime title/intro template from exported 952-day snapshot",
+  "records": [
+    {
+      "source_content_id": "خشم-13",
+      "topic_name": "خشم",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خشم».",
+      "source_exercise": "سه گزینه غیرآسیب‌زا مانند فاصله‌گیری، نوشیدن آب یا انجام یک فعالیت خنثی را بنویس. مشخص کن کدام گزینه در موقعیت تو عملی و امن است و کدام ممکن است مناسب نباشد.",
+      "source_action": "یک گزینه را برای موقعیت کم‌خطر آماده کن؛ هدف خاموش‌کردن احساس نیست، بلکه جلوگیری از رفتار آسیب‌زا است.",
+      "proposed_title": "آماده‌سازی گزینهٔ غیرآسیب‌زا",
+      "proposed_intro": "چند پاسخ کم‌خطر مانند فاصله‌گرفتن یا فعالیت خنثی را با موقعیت واقعی خود بسنج؛ هدف خاموش‌کردن خشم نیست، بلکه انتخاب رفتاری امن‌تر است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اضطراب-13",
+      "topic_name": "اضطراب",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اضطراب».",
+      "source_exercise": "نگرانی را در یک جمله بنویس. سپس مشخص کن چه اطلاعاتی واقعاً کم است، چه کسی منبع معتبر آن است و آیا پیگیری آن امن و ضروری است.",
+      "source_action": "اگر اطلاعات معتبر و در دسترس است، یک پرسش مشخص آماده کن؛ اگر نیست، «فعلاً نامعلوم» را ثبت کن و جست‌وجوی تکراری را ادامه نده.",
+      "proposed_title": "تفکیک اطلاعات لازم از جست‌وجوی تکراری",
+      "proposed_intro": "نگرانی را به یک پرسش روشن تبدیل کن و منبع معتبر پاسخ را مشخص کن؛ اگر اطلاعات ضروری در دسترس نیست، نامعلوم‌بودن را ثبت کن و وارسی بی‌پایان را ادامه نده.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس-13",
+      "topic_name": "ترس",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس».",
+      "source_exercise": "دو موقعیت معمول را که بدون ایجاد عمدی ترس تجربه شده‌اند مقایسه کن؛ بنویس کدام نشانه در هرکدام ظاهر شد و چه تفاوت زمینه‌ای وجود داشت.",
+      "source_action": "یک تفاوت را برای شناخت بهتر الگو نگه دار؛ لازم نیست برای تکرار آن موقعیت برنامه بسازی.",
+      "proposed_title": "مقایسهٔ زمینه‌های طبیعی بروز ترس",
+      "proposed_intro": "دو موقعیت عادی را که بدون ایجاد عمدی ترس رخ داده‌اند مقایسه کن؛ تفاوت زمینه را ثبت کن، نه اینکه برای تکرار ترس موقعیتی بسازی.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت-13",
+      "topic_name": "نفرت",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «نفرت».",
+      "source_exercise": "یک یادآور غیرضروری را برای مدت محدود کاهش بده، بدون قطع ارتباط یا اطلاعات ضروری.",
+      "source_action": "محدودسازی را موقت و انتخابی نگه دار و زمان بازبینی تعیین کن.",
+      "proposed_title": "کاهش انتخابی یادآور غیرضروری",
+      "proposed_intro": "یک یادآور غیرضروری را موقتاً کمتر در معرض دید قرار بده؛ ارتباط یا اطلاعات ضروری را قطع نکن و زمان بازبینی این تصمیم را مشخص کن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "حسادت-13",
+      "topic_name": "حسادت",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «حسادت».",
+      "source_exercise": "دفعات وارسی، پرس‌وجو یا نظارت را ثبت کن؛ وارد حساب یا وسیله دیگری نشو.",
+      "source_action": "یک رفتار وارسی را متوقف کن که نقض حریم خصوصی است؛ اگر ایمنی واقعی مطرح است کمک مناسب بگیر.",
+      "proposed_title": "ثبت و توقف وارسی ناقض حریم خصوصی",
+      "proposed_intro": "دفعات وارسی یا پرس‌وجو را مشاهده کن و رفتارهایی را که حریم خصوصی دیگری را نقض می‌کنند کنار بگذار؛ وارد حساب یا وسیلهٔ شخص دیگری نشو.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "غم و سوگ-13",
+      "topic_name": "غم و سوگ",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «غم و سوگ».",
+      "source_exercise": "نقشی را که پس از فقدان تغییر کرده نام ببر و یک نیاز تازه را ثبت کن.",
+      "source_action": "یک نقش تازه یا تغییرکرده را با یک گام عملی بررسی کن.",
+      "proposed_title": "بازشناسی نقش تغییرکرده پس از فقدان",
+      "proposed_intro": "نقشی را که پس از فقدان تغییر کرده نام ببر و نیاز تازه‌ای را که از این تغییر پدید آمده ثبت کن؛ سازگاری به معنی فراموش‌کردن نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "احساس گناه-13",
+      "topic_name": "احساس گناه",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «احساس گناه».",
+      "source_exercise": "سه ستون «می‌دانم»، «حدس می‌زنم»، «نمی‌دانم» بساز؛ خاطره ناقص را با قطعیت ساختگی پر نکن.",
+      "source_action": "یک پرسش روشن‌کننده را بنویس؛ پرسیدن آن از دیگری الزامی نیست.",
+      "proposed_title": "تفکیک دانسته، حدس و نادانسته",
+      "proposed_intro": "اطلاعات مربوط به رخداد را در سه دستهٔ دانسته، حدس و نادانسته قرار بده؛ خاطرهٔ ناقص را با قطعیت ساختگی پر نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "وابستگی عاطفی-13",
+      "topic_name": "وابستگی عاطفی",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «وابستگی عاطفی».",
+      "source_exercise": "یک موقعیت انتظار را بررسی کن: چه می‌دانم، چه حدس می‌زنم و چه چیزی نامعلوم است. دیر پاسخ‌دادن به‌تنهایی اثبات طرد یا بی‌علاقگی نیست.",
+      "source_action": "یک برداشت قطعی را به فرضیه قابل بازنگری تبدیل کن.",
+      "proposed_title": "بازبینی برداشت از تأخیر در پاسخ",
+      "proposed_intro": "یک موقعیت انتظار را بررسی کن و واقعیت را از حدس جدا نگه دار؛ دیر پاسخ‌دادن به‌تنهایی طرد یا بی‌علاقگی را ثابت نمی‌کند.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اهمال‌کاری-13",
+      "topic_name": "اهمال‌کاری",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اهمال‌کاری».",
+      "source_exercise": "مشخص کن خروجی نهایی چیست، معیار پایان کدام است و چه چیزی هنوز معلوم نیست؛ کمال‌گرایی را با معیار رسمی تحویل اشتباه نگیر.",
+      "source_action": "یک معیار «به‌اندازه کافی کامل» بنویس.",
+      "proposed_title": "تعریف معیار پایانِ کافی",
+      "proposed_intro": "خروجی، معیار پایان و بخش‌های هنوز نامعلوم کار را مشخص کن؛ معیار رسمی تحویل را با انتظار بی‌نقص‌بودن اشتباه نگیر.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "بی‌خوابی و مشکلات خواب-13",
+      "topic_name": "بی‌خوابی و مشکلات خواب",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «بی‌خوابی و مشکلات خواب».",
+      "source_exercise": "فهرست داروها و مکمل‌های مرتبط احتمالی را برای گفت‌وگو با پزشک/داروساز آماده کن؛ هیچ دارویی را خودسرانه شروع، قطع یا جابه‌جا نکن.",
+      "source_action": "اگر تغییر خواب با دارو یا علامت جسمی همراه است، پرسش مشخصی برای متخصص آماده کن.",
+      "proposed_title": "آماده‌سازی فهرست دارو و مکمل برای مشورت",
+      "proposed_intro": "داروها و مکمل‌های مصرفی را برای گفت‌وگو با پزشک یا داروساز فهرست کن؛ هیچ دارویی را خودسرانه شروع، قطع یا جابه‌جا نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "عادت‌های تکراری-13",
+      "topic_name": "عادت‌های تکراری",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «عادت‌های تکراری».",
+      "source_exercise": "یک رفتار تکراری را در چهار بخش ثبت کن: محرک یا موقعیت، میل یا تنش پیش از رفتار، خود رفتار، و پیامد کوتاه‌مدت؛ اگر اطلاعات کافی نیست، آن را نامعلوم بگذار.",
+      "source_action": "یک پرسش مشخص درباره تکرار، آسیب یا اختلال عملکرد برای گفت‌وگو با متخصص مرتبط آماده کن؛ از خودتشخیصی و جست‌وجوی بی‌پایان پرهیز کن.",
+      "proposed_title": "ثبت زنجیرهٔ رفتار تکراری",
+      "proposed_intro": "رفتار را در چهار بخش موقعیت آغازگر، میل یا تنش پیش از رفتار، خود رفتار و پیامد کوتاه‌مدت توصیف کن؛ اگر بخشی روشن نیست، آن را نامعلوم بگذار.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مرزبندی و نه گفتن-13",
+      "topic_name": "مرزبندی و نه گفتن",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مرزبندی و نه گفتن».",
+      "source_exercise": "درباره یک درخواست مبهم، سه سؤال روشن‌کننده آماده کنید: دقیقاً چه کاری؟ تا چه زمانی؟ با چه میزان مسئولیت؟ سپس مشخص کنید کدام اطلاعات برای تصمیم شما ضروری است.",
+      "source_action": "پیش از پذیرش تعهد، یک سؤال درباره دامنه یا زمان بپرس.",
+      "proposed_title": "شفاف‌سازی دامنهٔ درخواست پیش از تعهد",
+      "proposed_intro": "پیش از پذیرفتن درخواست مبهم، دربارهٔ کار دقیق، زمان و سهم مسئولیت پرسش کن؛ لازم نیست پیش از روشن‌شدن دامنه تعهد بدهی.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "تنهایی-13",
+      "topic_name": "تنهایی",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «تنهایی».",
+      "source_exercise": "یک رابطه را از نظر آغاز تماس، گوش‌دادن، احترام به مرز و پیگیری متقابل توصیف کن؛ یک رویداد را به الگوی قطعی تبدیل نکن.",
+      "source_action": "برای رابطه‌ای که دوسویگی کافی دارد گام متناسب انتخاب کن؛ در رابطه یک‌طرفه حد تماس خود را بازنگری کن.",
+      "proposed_title": "سنجش دوسویگی در رابطه",
+      "proposed_intro": "یک رابطه را از نظر آغاز تماس، گوش‌دادن، احترام به مرز و پیگیری متقابل مرور کن؛ یک رویداد منفرد را به الگوی قطعی تبدیل نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کمبود انگیزه-13",
+      "topic_name": "کمبود انگیزه",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کمبود انگیزه».",
+      "source_exercise": "یک انتظار سنگین درباره مقدار یا مدت کار را با زمان و انرژی واقعاً در دسترس مقایسه کن؛ مشخص کن کدام بخش ضروری و کدام بخش قابل تعویق است.",
+      "source_action": "دامنه کار امروز را به یک بخش شدنی محدود کن و بخش باقی‌مانده را آگاهانه زمان‌بندی مجدد کن.",
+      "proposed_title": "تنظیم دامنهٔ کار با انرژی در دسترس",
+      "proposed_intro": "انتظار سنگین دربارهٔ مقدار کار را با زمان و انرژی واقعی مقایسه کن؛ بخش ضروری را از بخش قابل تعویق جدا نگه دار.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اعتمادبه‌نفس پایین-13",
+      "topic_name": "اعتمادبه‌نفس پایین",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اعتمادبه‌نفس پایین».",
+      "source_exercise": "یک موقعیت مشخص را ثبت کن که در آن توانستی کاری را پیش ببری. مهارت به‌کاررفته، میزان آمادگی و شرایط کمک‌کننده را جدا بنویس؛ یک اشتباه را تنها داده درباره توانایی خودت فرض نکن.",
+      "source_action": "یک تغییر کوچک در روش بعدی را از داده خطا استخراج کن.",
+      "proposed_title": "یادگیری از تجربهٔ موفقیت مشخص",
+      "proposed_intro": "یک موقعیت واقعی را که در آن کاری را پیش بردی مرور کن؛ مهارت، آمادگی و شرایط کمک‌کننده را جدا کن و یک اشتباه را تنها داده دربارهٔ توانایی خود ندان.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "افکار منفی و نشخوار فکری-13",
+      "topic_name": "افکار منفی و نشخوار فکری",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «افکار منفی و نشخوار فکری».",
+      "source_exercise": "تغییر رابطه با فکر: به‌جای بحث با فکر، حضورش را بپذیرید و توجه را به انتخاب فعلی برگردانید.",
+      "source_action": "به فکر اجازه حضور بده و یک حرکت کوچک در کار جاری انجام بده.",
+      "proposed_title": "تغییر رابطه با فکر به‌جای مجادله",
+      "proposed_intro": "به‌جای بحث طولانی با فکر، حضور آن را تشخیص بده و توجه را به یک حرکت کوچک در کار جاری برگردان؛ هدف حذف اجباری فکر نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکلات رابطه-13",
+      "topic_name": "مشکلات رابطه",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکلات رابطه».",
+      "source_exercise": "ترمیم پس از خطا: اگر رفتار آسیب‌زننده‌ای از شما سر زده، مسئولیت آن را بدون توجیه بپذیرید.",
+      "source_action": "یک اقدام اصلاحی متناسب را بنویس؛ تماس یا عذرخواهی اجباری نیست.",
+      "proposed_title": "مسئولیت‌پذیری پس از رفتار آسیب‌زننده",
+      "proposed_intro": "اگر رفتار مشخصی از تو آسیب‌زا بوده، سهم خود را بدون توجیه روشن کن؛ عذرخواهی یا تماس فقط در صورت امنیت و تناسب مطرح است.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "نفرت از خود-13",
+      "topic_name": "نفرت از خود",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «نفرت از خود».",
+      "source_exercise": "پذیرش نقص: یک نقص یا محدودیت معمول انسانی را بدون تبدیل آن به محکومیت کلی بپذیرید.",
+      "source_action": "محدودیت را نام ببر و یک راه سازگاری کوچک مشخص کن.",
+      "proposed_title": "پذیرش محدودیت بدون محکومیت کلی",
+      "proposed_intro": "یک محدودیت انسانی یا مهارتی را نام ببر و از تبدیل آن به حکم کلی دربارهٔ ارزش خودت خودداری کن؛ پذیرش محدودیت به معنی تسلیم‌شدن نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خودسرزنشی-13",
+      "topic_name": "خودسرزنشی",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خودسرزنشی».",
+      "source_exercise": "شواهد کامل‌تر: اطلاعاتی را که هنگام قضاوت اولیه نادیده گرفته‌اید اضافه کنید.",
+      "source_action": "یک داده جدید را به فهرست دانسته‌ها اضافه کن و نتیجه را بازنگری کن.",
+      "proposed_title": "افزودن اطلاعات جاافتاده به قضاوت",
+      "proposed_intro": "اطلاعاتی را که هنگام قضاوت اولیه نادیده گرفته‌ای اضافه کن و نتیجه را با دادهٔ کامل‌تر بازبینی کن؛ مسئولیت واقعی را هم حذف نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کمال‌گرایی-13",
+      "topic_name": "کمال‌گرایی",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کمال‌گرایی».",
+      "source_exercise": "مقایسه نتیجه و فرایند: کیفیت خروجی را از میزان یادگیری جداگانه بسنجید.",
+      "source_action": "یک شاخص یادگیری را جدا از نتیجه نهایی ثبت کن.",
+      "proposed_title": "تفکیک کیفیت خروجی از یادگیری",
+      "proposed_intro": "کیفیت نتیجه را جدا از مهارتی که در فرایند یاد گرفته‌ای بسنج؛ نتیجهٔ ضعیف لزوماً به معنی نبود یادگیری نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "اجتناب-13",
+      "topic_name": "اجتناب",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «اجتناب».",
+      "source_exercise": "رفتار را در یکی از سه دسته قرار بده: اختیار مستقیم، نیازمند همکاری/حمایت، یا خارج از اختیار فعلی. دلیل را بر پایه شرایط واقعی بنویس.",
+      "source_action": "اگر رفتار خارج از اختیار است، تصمیم به عدم تغییر را معتبر بدان.",
+      "proposed_title": "تفکیک اختیار مستقیم از نیاز به حمایت",
+      "proposed_intro": "رفتار را بر اساس اختیار مستقیم، نیاز به همکاری یا حمایت، و خارج‌بودن از اختیار فعلی دسته‌بندی کن؛ عدم تغییر در شرایط خارج از اختیار می‌تواند تصمیم معتبر باشد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "استرس-13",
+      "topic_name": "استرس",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «استرس».",
+      "source_exercise": "حرکت ملایم: فعالیت بدنی سبک و متناسب با توان را انتخاب کنید.",
+      "source_action": "حرکت سبک را متناسب با توان و وضعیت سلامت انتخاب کن.",
+      "proposed_title": "انتخاب حرکت بدنی متناسب با توان",
+      "proposed_intro": "اگر وضعیت سلامت و شرایط اجازه می‌دهد، فعالیت بدنی سبک و متناسب انتخاب کن؛ این تمرین نسخهٔ درمانی یا الزام به ورزش نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "احساس بی‌ارزشی-13",
+      "topic_name": "احساس بی‌ارزشی",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «احساس بی‌ارزشی».",
+      "source_exercise": "یک فعالیت کوتاه و کم‌فشار را از روی علاقه یا کنجکاوی انتخاب کن؛ هنگام انجام، به تجربه و چیز تازه‌ای که متوجه می‌شوی توجه کن، نه به کیفیت نتیجه یا میزان بهره‌وری.",
+      "source_action": "۱۰ دقیقه به همان فعالیت اختصاص بده و پس از آن فقط یک نکته تازه یا تجربه جالب را ثبت کن؛ لازم نیست محصولی بسازی یا عملکردت را ارزیابی کنی.",
+      "proposed_title": "فعالیت کنجکاوی‌محور بدون سنجش عملکرد",
+      "proposed_intro": "یک فعالیت کوتاه و کم‌فشار را از روی علاقه یا کنجکاوی انتخاب کن؛ توجه را به تجربه معطوف کن، نه کیفیت نتیجه یا بهره‌وری.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکل در کنترل هیجان-13",
+      "topic_name": "مشکل در کنترل هیجان",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکل در کنترل هیجان».",
+      "source_exercise": "تأخیر در اقدام: تصمیم مهم را تا بازگشت توان فکر کردن به تعویق بیندازید، اگر فوریت واقعی ندارد.",
+      "source_action": "تصمیم غیرضروری را تا بازگشت توان فکرکردن عقب بینداز.",
+      "proposed_title": "تعویق تصمیم غیرضروری در اوج هیجان",
+      "proposed_intro": "اگر فوریت واقعی وجود ندارد، تصمیم مهم را تا زمانی که توان فکرکردن کافی بازگردد به تعویق بینداز؛ اقدام حفاظتی فوری را عقب نینداز.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "رنجش و کینه-13",
+      "topic_name": "رنجش و کینه",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «رنجش و کینه».",
+      "source_exercise": "بخشایش یا عدم بخشایش: روشن کنید بخشایش اجباری نیست و تصمیمی شخصی است.",
+      "source_action": "تصمیم بگیر آیا بخشایش برایت معنایی دارد؛ هیچ نتیجه‌ای اجباری نیست.",
+      "proposed_title": "انتخاب شخصی دربارهٔ بخشایش",
+      "proposed_intro": "روشن کن بخشایش برای تو چه معنایی دارد و آیا اصلاً خواهان آن هستی؛ بخشایش اجباری نیست و جایگزین مرزبندی یا پاسخ‌گویی نمی‌شود.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "شرم-13",
+      "topic_name": "شرم",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «شرم».",
+      "source_exercise": "مواجهه کوچک: در موقعیت کم‌خطر، حضور بدون پنهان‌کاری افراطی را تمرین کنید.",
+      "source_action": "موقعیت کم‌خطر و امکان خروج را مشخص کن؛ حضور اجباری نیست.",
+      "proposed_title": "طراحی حضور محدود در موقعیت کم‌خطر",
+      "proposed_intro": "اگر مایل هستی، یک موقعیت کم‌خطر با امکان خروج را مشخص کن؛ حضور یا افشای تجربه اجباری نیست و موقعیت تحقیرآمیز را انتخاب نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از قضاوت-13",
+      "topic_name": "ترس از قضاوت",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از قضاوت».",
+      "source_exercise": "مرز نقد: بازخورد سازنده را از تحقیر یا توهین جدا کنید.",
+      "source_action": "یک نمونه نقد را بر اساس رفتار، لحن و شواهد دسته‌بندی کن.",
+      "proposed_title": "تمایز بازخورد سازنده از تحقیر",
+      "proposed_intro": "یک نمونه نقد را از نظر رفتار مشخص، لحن و شواهد بررسی کن؛ توهین یا تحقیر را صرفاً به نام بازخورد سازنده نپذیر.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از شکست-13",
+      "topic_name": "ترس از شکست",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از شکست».",
+      "source_exercise": "اگر مانع اصلی کمبود منبع است، منبع دقیقِ لازم را نام ببر و بررسی کن از چه مسیر امنی می‌توانی آن را تهیه یا جایگزین کنی؛ کمبود منبع را به ترس از شکست تقلیل نده.",
+      "source_action": "برای منبع ضروری، درخواست دسترسی/کمک یا جایگزین عملی تعیین کن؛ اگر در دسترس نیست، زمان‌بندی را تا رفع مانع بازنگری کن.",
+      "proposed_title": "شناخت کمبود منبع به‌عنوان مانع واقعی",
+      "proposed_intro": "اگر مانع، کمبود زمان، ابزار یا دسترسی است، آن را دقیق نام ببر؛ همهٔ موانع را به ترس درونی نسبت نده.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "ترس از طرد شدن-13",
+      "topic_name": "ترس از طرد شدن",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «ترس از طرد شدن».",
+      "source_exercise": "نظر متفاوت را بدون تلاش برای متقاعدکردن طرف مقابل ثبت کن.",
+      "source_action": "موضوع اختلاف را در یک جمله بی‌اتهام و جدا از قضاوت درباره شخص بنویس.",
+      "proposed_title": "ثبت اختلاف نظر بدون تلاش برای اقناع",
+      "proposed_intro": "یک اختلاف نظر را در یک جملهٔ بی‌اتهام توصیف کن؛ تفاوت دیدگاه به‌تنهایی نشانهٔ طرد یا پایان رابطه نیست.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "شک و تردید-13",
+      "topic_name": "شک و تردید",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «شک و تردید».",
+      "source_exercise": "نتیجه آزمایش را ثبت کنید.",
+      "source_action": "نتیجه را با معیار از پیش تعیین‌شده ثبت کن.",
+      "proposed_title": "ثبت نتیجه بر اساس معیار ازپیش‌تعیین‌شده",
+      "proposed_intro": "نتیجهٔ یک آزمایش کم‌خطر را با همان معیاری که پیش‌تر تعیین کرده‌ای ثبت کن؛ معیار را پس از دیدن نتیجه برای تأیید انتخابت عوض نکن.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "کنترل‌گری-13",
+      "topic_name": "کنترل‌گری",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «کنترل‌گری».",
+      "source_exercise": "اگر رابطه امن است و هر دو آزادانه موافق‌اند، یک توافق کوچک را با نقش‌ها، زمان و امکان رد یا بازنگری طراحی کنید؛ در رابطه دارای تهدید، ترس یا کنترل اجباری وارد مذاکره مشترک نشوید.",
+      "source_action": "فقط در موقعیت امن و با رضایت آزادانه هر دو، نقش و زمان توافق را روشن کن؛ مخالفت یا پس‌گرفتن رضایت را بپذیر. اگر تهدید یا ترس وجود دارد، توافق مشترک را کنار بگذار و حمایت امن را مقدم بدان.",
+      "proposed_title": "توافق محدود فقط با رضایت آزادانه",
+      "proposed_intro": "فقط اگر رابطه امن است و هر دو آزادانه موافق‌اند، توافق کوچکی با نقش و زمان روشن بساز؛ در حضور تهدید یا ترس، مذاکرهٔ مشترک را کنار بگذار.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "بی‌انگیزگی-13",
+      "topic_name": "بی‌انگیزگی",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «بی‌انگیزگی».",
+      "source_exercise": "یک تجربه تازه اما کم‌فشار را امتحان کنید.",
+      "source_action": "تجربه تازه را با هزینه کم و امکان خروج انتخاب کن.",
+      "proposed_title": "تجربهٔ تازه با هزینه و فشار کم",
+      "proposed_intro": "یک تجربهٔ تازه و کم‌فشار با امکان توقف انتخاب کن؛ هدف کشف علاقه است، نه اثبات انگیزه یا عملکرد.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "خودانتقادی-13",
+      "topic_name": "خودانتقادی",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «خودانتقادی».",
+      "source_exercise": "یک مهارت قابل اصلاح را از بازخورد یا نتیجه کار بیرون بکش و شکاف مشخص میان عملکرد فعلی و رفتار مطلوب را بنویس؛ هنوز راه‌حل یا جبران انتخاب نکن.",
+      "source_action": "برای کار بعدی یک معیار رفتاری قابل مشاهده تعیین کن که بازخورد را به مهارت اصلاح‌پذیر تبدیل کند؛ جبران رخداد گذشته موضوع این روز نیست.",
+      "proposed_title": "تبدیل بازخورد به معیار رفتاری",
+      "proposed_intro": "شکاف مشخص میان عملکرد فعلی و رفتار مطلوب را بنویس؛ برای گام بعدی معیار قابل مشاهده تعیین کن، نه حکم کلی دربارهٔ شخصیت.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    },
+    {
+      "source_content_id": "مشکل دیگر-13",
+      "topic_name": "مشکل دیگر",
+      "day_number": 13,
+      "current_title": "ابهام و نادانسته‌ها · روز 13",
+      "current_intro": "یک قدم کوچک و قابل انجام برای کار روی «مشکل دیگر».",
+      "source_exercise": "به‌جای مواجهه یا تغییر رفتار پرریسک، یک راه کم‌خطر برای کسب اطلاعات انتخاب کن؛ مانند بررسی سند، پرسش از فرد صلاحیت‌دار یا مشاهده داده موجود.",
+      "source_action": "یک منبع اطلاعاتی را برای پاسخ به پرسش روز ۸ انتخاب کن؛ تصمیم برگشت‌ناپذیر یا آزمایش ناامن انجام نده.",
+      "proposed_title": "کسب اطلاعات پیش از اقدام پرریسک",
+      "proposed_intro": "برای مسئله‌ای که هنوز روشن نیست، راه کم‌خطر کسب اطلاعات مانند بررسی سند یا پرسش از فرد صلاحیت‌دار انتخاب کن؛ تصمیم برگشت‌ناپذیر را به تعویق بینداز.",
+      "fields_changed": [
+        "title",
+        "intro"
+      ],
+      "fields_unchanged": [
+        "exercise",
+        "actionText",
+        "closing",
+        "lightExerciseText",
+        "lightActionText",
+        "progressActionText",
+        "restExerciseText",
+        "restActionText"
+      ],
+      "review_status": "pending_owner_and_expert_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "runtime_eligible": false
+    }
+  ]
+}
