@@ -8,12 +8,12 @@ import {
 } from '../src/features/assistant/angerDailyAssistantPrompts.js';
 import { makeDailyExerciseGuidanceTurn } from '../src/features/assistant/dailyExerciseAssistantGuidance.js';
 
-test('anger assistant guide covers all 28 days with eight day-scoped prepared questions each', () => {
+test('anger assistant guide covers all 28 days with fourteen day-scoped prepared questions each', () => {
   assert.equal(ANGER_DAILY_ASSISTANT_GUIDES.length, 28);
   assert.deepEqual(ANGER_DAILY_ASSISTANT_GUIDES.map((item) => item.day), Array.from({ length: 28 }, (_, index) => index + 1));
   for (const guide of ANGER_DAILY_ASSISTANT_GUIDES) {
     assert.equal(guide.topicId, 'T01');
-    assert.equal(guide.questions.length, 8, `day ${guide.day}`);
+    assert.equal(guide.questions.length, 14, `day ${guide.day}`);
     assert.equal(new Set(guide.questions.map((item) => item.value)).size, 8, `day ${guide.day}`);
     assert.ok(guide.exercise && guide.action && guide.exerciseExample && guide.actionExample);
     assert.ok(guide.lightVersion && guide.successCriterion && guide.stopCondition);
@@ -23,8 +23,8 @@ test('anger assistant guide covers all 28 days with eight day-scoped prepared qu
 test('prompt groups are scoped to the selected day and contain all prepared questions', () => {
   for (let day = 1; day <= 28; day += 1) {
     const groups = getAngerDailyAssistantPromptGroups(day);
-    assert.equal(groups.length, 3);
-    assert.equal(groups.reduce((count, group) => count + group.questions.length, 0), 8);
+    assert.equal(groups.length, 5);
+    assert.equal(groups.reduce((count, group) => count + group.questions.length, 0), 14);
     assert.ok(groups.flatMap((group) => group.questions).every((question) => question.value.startsWith(`روز ${day} خشم:`)));
   }
   assert.deepEqual(getAngerDailyAssistantPromptGroups(29), []);
@@ -133,4 +133,42 @@ test('anger prepared answers are not returned for another selected topic', () =>
     dayData: { day: 1, exercise: 'تمرین اضطراب', actionText: 'اقدام اضطراب' },
   });
   assert.doesNotMatch(response.response, /راهنمای روز 1 خشم/);
+});
+
+test('additional prepared answers distinguish exercise from action and handle missed days without shame', () => {
+  const guide = ANGER_DAILY_ASSISTANT_GUIDES[6];
+  const difference = guide.questions.find((item) => item.kind === 'exercise_action_difference');
+  const missed = guide.questions.find((item) => item.kind === 'not_done');
+  const differenceAnswer = answerAngerDailyPreparedQuestion({ day: 7, message: difference.value });
+  const missedAnswer = answerAngerDailyPreparedQuestion({ day: 7, message: missed.value });
+  assert.ok(differenceAnswer.includes(guide.exercise));
+  assert.ok(differenceAnswer.includes(guide.action));
+  assert.match(differenceAnswer, /تمرین را برای فهم و ثبت/);
+  assert.ok(missedAnswer.includes(guide.lightVersion));
+  assert.match(missedAnswer, /خودت را سرزنش نکن/);
+});
+
+test('prepared answer for increased anger prioritizes stopping and immediate safety', () => {
+  const guide = ANGER_DAILY_ASSISTANT_GUIDES[26];
+  const question = guide.questions.find((item) => item.kind === 'anger_increased');
+  const answer = answerAngerDailyPreparedQuestion({ day: 27, message: question.value });
+  assert.ok(answer.includes(guide.stopCondition));
+  assert.match(answer, /تمرین را متوقف کن/);
+  assert.match(answer, /خدمات اضطراری/);
+});
+
+test('talking to another person is never presented as mandatory', () => {
+  const guide = ANGER_DAILY_ASSISTANT_GUIDES[10];
+  const question = guide.questions.find((item) => item.kind === 'talk_other');
+  const answer = answerAngerDailyPreparedQuestion({ day: 11, message: question.value });
+  assert.match(answer, /لازم نیست.*با فرد دیگری صحبت کنی/);
+  assert.match(answer, /آزادانه رضایت داشته باشند/);
+});
+
+test('duration answer does not invent a number that is absent from reviewed source content', () => {
+  const guide = ANGER_DAILY_ASSISTANT_GUIDES[0];
+  const question = guide.questions.find((item) => item.kind === 'duration');
+  const answer = answerAngerDailyPreparedQuestion({ day: 1, message: question.value });
+  assert.match(answer, /مدت زمان تأییدشده و مشخصی.*ثبت نشده/);
+  assert.doesNotMatch(answer, /\d+ دقیقه/);
 });
