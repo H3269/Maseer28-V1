@@ -244,7 +244,8 @@ export function validateContentRedesign({ queue, day1, day2, day3, allDays = nul
     errors,
     summary: {
       queue_records: records.length,
-      drafts_created: drafts.length,
+      drafts_created: Array.isArray(allDays) ? allDays.flatMap((batch) => batch?.records ?? []).length : drafts.length,
+      complete_day_batches: Array.isArray(allDays) ? allDays.length : 3,
       not_started: records.filter((item) => item.redesign_status === 'not_started').length,
       runtime_eligible: drafts.filter((item) => item.runtime_eligible === true).length,
     },
