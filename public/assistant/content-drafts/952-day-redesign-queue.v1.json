@@ -20661,8 +20661,8 @@
       "topic_name": "خشم",
       "day_number": 22,
       "source_content_id": "خشم-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T01_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -20679,7 +20679,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -20688,8 +20690,8 @@
       "topic_name": "اضطراب",
       "day_number": 22,
       "source_content_id": "اضطراب-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T02_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -20706,7 +20708,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -20715,8 +20719,8 @@
       "topic_name": "ترس",
       "day_number": 22,
       "source_content_id": "ترس-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T03_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -20733,7 +20737,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -20742,8 +20748,8 @@
       "topic_name": "نفرت",
       "day_number": 22,
       "source_content_id": "نفرت-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T04_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -20760,7 +20766,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -20769,8 +20777,8 @@
       "topic_name": "حسادت",
       "day_number": 22,
       "source_content_id": "حسادت-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T05_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -20787,7 +20795,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -20796,8 +20806,8 @@
       "topic_name": "غم و سوگ",
       "day_number": 22,
       "source_content_id": "غم و سوگ-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T06_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -20814,7 +20824,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -20823,8 +20835,8 @@
       "topic_name": "احساس گناه",
       "day_number": 22,
       "source_content_id": "احساس گناه-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T07_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -20841,7 +20853,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -20850,8 +20864,8 @@
       "topic_name": "وابستگی عاطفی",
       "day_number": 22,
       "source_content_id": "وابستگی عاطفی-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T08_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -20868,7 +20882,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -20877,8 +20893,8 @@
       "topic_name": "اهمال‌کاری",
       "day_number": 22,
       "source_content_id": "اهمال‌کاری-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T09_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -20895,7 +20911,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -20904,8 +20922,8 @@
       "topic_name": "بی‌خوابی و مشکلات خواب",
       "day_number": 22,
       "source_content_id": "بی‌خوابی و مشکلات خواب-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T10_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -20922,7 +20940,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -20931,8 +20951,8 @@
       "topic_name": "عادت‌های تکراری",
       "day_number": 22,
       "source_content_id": "عادت‌های تکراری-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T11_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -20949,7 +20969,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -20958,8 +20980,8 @@
       "topic_name": "مرزبندی و نه گفتن",
       "day_number": 22,
       "source_content_id": "مرزبندی و نه گفتن-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T12_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -20976,7 +20998,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -20985,8 +21009,8 @@
       "topic_name": "تنهایی",
       "day_number": 22,
       "source_content_id": "تنهایی-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T13_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21003,7 +21027,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21012,8 +21038,8 @@
       "topic_name": "کمبود انگیزه",
       "day_number": 22,
       "source_content_id": "کمبود انگیزه-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T14_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21030,7 +21056,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21039,8 +21067,8 @@
       "topic_name": "اعتمادبه‌نفس پایین",
       "day_number": 22,
       "source_content_id": "اعتمادبه‌نفس پایین-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T15_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21057,7 +21085,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21066,8 +21096,8 @@
       "topic_name": "افکار منفی و نشخوار فکری",
       "day_number": 22,
       "source_content_id": "افکار منفی و نشخوار فکری-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T16_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21084,7 +21114,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21093,8 +21125,8 @@
       "topic_name": "مشکلات رابطه",
       "day_number": 22,
       "source_content_id": "مشکلات رابطه-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T17_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21111,7 +21143,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21120,8 +21154,8 @@
       "topic_name": "نفرت از خود",
       "day_number": 22,
       "source_content_id": "نفرت از خود-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T18_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21138,7 +21172,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21147,8 +21183,8 @@
       "topic_name": "خودسرزنشی",
       "day_number": 22,
       "source_content_id": "خودسرزنشی-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T19_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21165,7 +21201,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21174,8 +21212,8 @@
       "topic_name": "کمال‌گرایی",
       "day_number": 22,
       "source_content_id": "کمال‌گرایی-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T20_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21192,7 +21230,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21201,8 +21241,8 @@
       "topic_name": "اجتناب",
       "day_number": 22,
       "source_content_id": "اجتناب-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T21_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21219,7 +21259,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21228,8 +21270,8 @@
       "topic_name": "استرس",
       "day_number": 22,
       "source_content_id": "استرس-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T22_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21246,7 +21288,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21255,8 +21299,8 @@
       "topic_name": "احساس بی‌ارزشی",
       "day_number": 22,
       "source_content_id": "احساس بی‌ارزشی-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T23_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21273,7 +21317,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21282,8 +21328,8 @@
       "topic_name": "مشکل در کنترل هیجان",
       "day_number": 22,
       "source_content_id": "مشکل در کنترل هیجان-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T24_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21300,7 +21346,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21309,8 +21357,8 @@
       "topic_name": "رنجش و کینه",
       "day_number": 22,
       "source_content_id": "رنجش و کینه-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T25_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21327,7 +21375,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21336,8 +21386,8 @@
       "topic_name": "شرم",
       "day_number": 22,
       "source_content_id": "شرم-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T26_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21354,7 +21404,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21363,8 +21415,8 @@
       "topic_name": "ترس از قضاوت",
       "day_number": 22,
       "source_content_id": "ترس از قضاوت-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T27_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21381,7 +21433,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21390,8 +21444,8 @@
       "topic_name": "ترس از شکست",
       "day_number": 22,
       "source_content_id": "ترس از شکست-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T28_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21408,7 +21462,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21417,8 +21473,8 @@
       "topic_name": "ترس از طرد شدن",
       "day_number": 22,
       "source_content_id": "ترس از طرد شدن-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T29_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21435,7 +21491,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21444,8 +21502,8 @@
       "topic_name": "شک و تردید",
       "day_number": 22,
       "source_content_id": "شک و تردید-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T30_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21462,7 +21520,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21471,8 +21531,8 @@
       "topic_name": "کنترل‌گری",
       "day_number": 22,
       "source_content_id": "کنترل‌گری-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T31_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21489,7 +21549,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21498,8 +21560,8 @@
       "topic_name": "بی‌انگیزگی",
       "day_number": 22,
       "source_content_id": "بی‌انگیزگی-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T32_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21516,7 +21578,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21525,8 +21589,8 @@
       "topic_name": "خودانتقادی",
       "day_number": 22,
       "source_content_id": "خودانتقادی-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T33_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21543,7 +21607,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
@@ -21552,8 +21618,8 @@
       "topic_name": "مشکل دیگر",
       "day_number": 22,
       "source_content_id": "مشکل دیگر-22",
-      "draft_content_id": null,
-      "redesign_status": "not_started",
+      "draft_content_id": "DRAFT_T34_D22",
+      "redesign_status": "draft_created_pending_review",
       "review_status": "pending_review",
       "scores": {
         "target_specificity": null,
@@ -21570,7 +21636,9 @@
       "reviewed_at": null,
       "rationale": null,
       "evidence_ids": [],
-      "safety_notes": [],
+      "safety_notes": [
+        "پیش‌نویس روز بیست‌ودوم؛ بررسی مفهومی، شواهد و ایمنی لازم است."
+      ],
       "runtime_eligible": false
     },
     {
