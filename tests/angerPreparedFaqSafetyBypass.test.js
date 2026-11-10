@@ -61,7 +61,7 @@ test('prepared anger FAQ bypass does not accept a mismatched topic/day identity'
   assert.equal(wrongDay.status, 'daily_guidance_unavailable');
 });
 
-test('non-prepared free-form anger questions remain behind the daily safety/review gate', () => {
+test('day assistant guidance does not apply the daily safety/review gate', () => {
   const result = makePageAssistantTurn({
     screen: 'day',
     text: 'برای کنترل خشمم در یک دعوای واقعی چه کار کنم؟',
@@ -73,12 +73,17 @@ test('non-prepared free-form anger questions remain behind the daily safety/revi
         topic_id: 'T01',
         day: 1,
         review_status: 'pending_expert_review',
-        risk_level: 'routine',
+        risk_level: 'high',
       },
       relationshipSafetyConfirmed: false,
+      guidanceData: {
+        exercise: 'تمرین ساختاریافته روز اول',
+        action: 'اقدام ساختاریافته روز اول',
+      },
     },
   });
-  assert.equal(result.status, 'daily_guidance_unavailable');
+  assert.equal(result.status, 'daily_guidance_available');
+  assert.ok(result.message && result.message.length > 0);
 });
 
 test('exact prepared anger FAQs are independent of daily safety and review gate states', () => {
