@@ -82,7 +82,7 @@ try {
   await launcher.click();
   let dialog = page.getByRole('dialog', { name: 'دستیار هوشمند مسیر ۲۸' });
   await dialog.waitFor({ state: 'visible' });
-  const closeButton = dialog.getByRole('button', { name: 'بستن پنجره دستیار' });
+  let closeButton = dialog.getByRole('button', { name: 'بستن پنجره دستیار' });
   await page.waitForFunction(() => document.activeElement?.getAttribute('aria-label') === 'بستن پنجره دستیار');
   assert.equal(await launcher.getAttribute('aria-expanded'), 'true');
   // The visible model-install button is the first focusable control in DOM order;
@@ -212,6 +212,7 @@ try {
   await launcher.click();
   dialog = page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' });
   await dialog.waitFor({ state: 'visible' });
+  closeButton = dialog.getByRole('button', { name: 'بستن پنجره دستیار' });
   assert.doesNotMatch(await dialog.innerText(), /صفحه فعلی:|موضوع: خشم/);
   assert.equal(await page.locator('.dailyExerciseAssistant').count(), 0, 'the standalone daily assistant panel must be removed');
   await dialog.getByRole('textbox').fill('چطور انجامش بدم؟');
