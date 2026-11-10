@@ -45,8 +45,8 @@ test('T04 self-hatred days are classification/referral only and never provide se
  for(const day of [4,10,11]){
   const g=HATRED_DAILY_ASSISTANT_GUIDES[day-1];
   assert.equal(g.subtopic,'T04-S02');
-  assert.match(g.exercise,/T18|خودمعطوف|خودبیزاری/);
-  assert.match(g.action,/T18|خودبیزاری|نفرت از خود/);
+  assert.match(g.exercise,/خودمعطوف|خودبیزاری|نفرت از خود/);
+  assert.match(g.action,/خودبیزاری|نفرت از خود/);
   assert.doesNotMatch(g.exercise,/خودمهربانی|بازسازی باور خود|تمرین عزت نفس/);
  }
  assert.equal(HATRED_DAILY_ASSISTANT_GUIDES[27].subtopic,'T04-S03');
@@ -119,3 +119,5 @@ test('T04 self-hatred safety handoff uses the human-readable topic title, never 
  assert.match(answer,/این مسیر را ادامه نده و مسیر «نفرت از خود» را انتخاب کن/);
  assert.doesNotMatch(answer,/\\bT18\\b/);
 });
+
+test('T04 every prepared answer includes the selected day safety condition',()=>{\n for(const g of HATRED_DAILY_ASSISTANT_GUIDES){\n  for(const q of g.questions){\n   const answer=answerHatredDailyPreparedQuestion({day:g.day,message:q.value});\n   assert.ok(answer.includes(g.stopCondition),`day ${g.day} safety condition missing for ${q.kind}`);\n  }\n }\n});\n
