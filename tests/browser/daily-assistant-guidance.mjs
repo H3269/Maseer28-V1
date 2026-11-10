@@ -264,7 +264,7 @@ try {
     'T03 must not expose local model installation');
   const fearTrigger = fearPanel.getByTestId('fear-daily-prompt-trigger');
   await fearTrigger.waitFor({ state: 'visible' });
-  await fearPage.waitForFunction(() => {
+  await fearGuidedPage.waitForFunction(() => {
     const trigger = document.querySelector('[data-testid="fear-daily-prompt-trigger"]');
     return trigger && !trigger.disabled;
   });
