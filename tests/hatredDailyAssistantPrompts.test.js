@@ -9,6 +9,10 @@ test('T04 has 28 complete days and exactly 14 unique prepared questions per day'
   assert.equal(g.topicId,'T04');assert.equal(g.topic,'نفرت');assert.equal(g.questions.length,14);
   assert.equal(new Set(g.questions.map(q=>q.value)).size,14);
   for(const key of ['subtopic','objective','skill','mechanism','exercise','action','lightVersion','progressVersion','restVersion','successCriterion','reflectionQuestion','stopCondition','exerciseExample','actionExample'])assert.ok(String(g[key]||'').trim(),`day ${g.day} missing ${key}`);
+  assert.ok(g.exerciseExample.length>=120,`day ${g.day} exercise example is not sufficiently worked`);
+  assert.ok(g.actionExample.length>=120,`day ${g.day} action example is not sufficiently worked`);
+  assert.doesNotMatch(g.exerciseExample,/\bT18\b/,`day ${g.day} exposes an internal topic code`);
+  assert.doesNotMatch(g.actionExample,/\bT18\b/,`day ${g.day} exposes an internal topic code`);
  }
 });
 
@@ -41,8 +45,8 @@ test('T04 self-hatred days are classification/referral only and never provide se
  for(const day of [4,10,11]){
   const g=HATRED_DAILY_ASSISTANT_GUIDES[day-1];
   assert.equal(g.subtopic,'T04-S02');
-  assert.match(g.exercise,/T18|خودمعطوف|خودبیزاری/);
-  assert.match(g.action,/T18|خودبیزاری/);
+  assert.match(g.exercise,/خودمعطوف|خودبیزاری|نفرت از خود/);
+  assert.match(g.action,/خودبیزاری|نفرت از خود/);
   assert.doesNotMatch(g.exercise,/خودمهربانی|بازسازی باور خود|تمرین عزت نفس/);
  }
  assert.equal(HATRED_DAILY_ASSISTANT_GUIDES[27].subtopic,'T04-S03');
@@ -101,9 +105,26 @@ test('T04 day 2 example question gives a worked observation-versus-interpretatio
  const g=HATRED_DAILY_ASSISTANT_GUIDES[1];
  const q=g.questions.find(x=>x.kind==='exercise_example');
  const answer=answerHatredDailyPreparedQuestion({day:2,message:q.value,dailyContent:{exercise:g.exercise,actionText:g.action}});
- assert.match(answer,/همکارت در جلسه می‌گوید/);
- assert.match(answer,/این جمله مشاهده است/);
+ assert.match(answer,/همکارت می‌گوید/);
+ assert.match(answer,/این جمله چیزی است که شنیده‌ای/);
  assert.match(answer,/برداشت تو از نیت اوست/);
  assert.match(answer,/۱\. موقعیت فرضی/);
  assert.match(answer,/۴\. از کجا بفهمی کافی است/);
+});
+
+test('T04 self-hatred safety handoff uses the human-readable topic title, never the internal code',()=>{
+ const g=HATRED_DAILY_ASSISTANT_GUIDES[3];
+ const q=g.questions.find(x=>x.kind==='stop');
+ const answer=answerHatredDailyPreparedQuestion({day:4,message:q.value});
+ assert.match(answer,/این مسیر را ادامه نده و مسیر «نفرت از خود» را انتخاب کن/);
+ assert.doesNotMatch(answer,/\bT18\b/);
+});
+
+test('T04 every prepared answer includes the selected day safety condition',()=>{
+ for(const g of HATRED_DAILY_ASSISTANT_GUIDES){
+  for(const q of g.questions){
+   const answer=answerHatredDailyPreparedQuestion({day:g.day,message:q.value});
+   assert.ok(answer.includes(g.stopCondition),`day ${g.day} safety condition missing for ${q.kind}`);
+  }
+ }
 });
