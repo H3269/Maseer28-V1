@@ -219,7 +219,7 @@ try {
   await angerPromptDialog.waitFor({ state: 'visible' });
   assert.match(await angerPromptDialog.innerText(), /سؤال‌های آماده روز .+ خشم/);
   await angerPromptDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
-  assert.equal(await dialog.getByRole('textbox').inputValue(), 'روز 1 خشم: منظور از تمرین امروز چیست؟');
+  assert.equal(await dialog.getByRole('textbox').inputValue(), 'منظور از تمرین امروز چیست؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('راهنمای روز 1 خشم')));
   assert.match(await dialog.locator('.assistantMessage').last().innerText(), /چه اتفاقی افتاد/);
