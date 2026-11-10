@@ -87,10 +87,12 @@ test('no-event answer never asks the user to create an anger-provoking situation
   assert.match(answer, /نمونه کم‌فشار قبلی/);
 });
 
-test('prepared question answers are isolated by day and exact question text', () => {
+test('neutral prepared question text is resolved against the active day, not a day embedded in the prompt', () => {
   const dayOne = ANGER_DAILY_ASSISTANT_GUIDES[0].questions[0].value;
-  assert.equal(answerAngerDailyPreparedQuestion({ day: 2, message: dayOne }), null);
-  assert.equal(answerAngerDailyPreparedQuestion({ day: 1, message: 'منظور از تمرین امروز چیست؟' }), null);
+  const dayTwoAnswer = answerAngerDailyPreparedQuestion({ day: 2, message: dayOne });
+  assert.match(dayTwoAnswer, /راهنمای روز 2 خشم/);
+  assert.doesNotMatch(dayTwoAnswer, /راهنمای روز 1 خشم/);
+  assert.equal(answerAngerDailyPreparedQuestion({ day: 1, message: 'این سؤال آماده در فهرست نیست' }), null);
 });
 
 test('daily turn routes prepared anger questions only after source identity and safety checks', () => {
