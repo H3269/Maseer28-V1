@@ -2,6 +2,8 @@ import { routeAssistantTurn } from './assistantTurnEngine.js';
 import { answerPageAssistantQuestion, getPageAssistantContext } from './pageAssistantContext.js';
 import { getDailyAssistantAccess } from './dailyAssistantAccess.js';
 import { makeDailyExerciseGuidanceTurn, selectDailyExerciseGuidanceData } from './dailyExerciseAssistantGuidance.js';
+import { answerAngerDailyPreparedQuestion } from './angerDailyAssistantPrompts.js';
+import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
 
 const SAFETY_STATUSES = new Set([
   'urgent_human_support_required',
@@ -47,6 +49,30 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       relationshipSafetyConfirmed: dailyContext?.relationshipSafetyConfirmed === true,
     });
     if (!access.available) {
+      // Day 11's prepared FAQ answers are educational and explicitly prohibit
+      // direct contact unless both people are freely and safely willing.
+      // Keep the relationship gate for free-form guidance and all other days.
+      if (access.reason === 'relationship_safety_unconfirmed'
+        && getCanonicalTopicIdForCategory(dailyContext?.problem) === 'T01'
+        && Number(dailyContext?.day) === 11) {
+        const identityCheck = getDailyAssistantAccess({
+          day: dailyContext?.data,
+          problem: dailyContext?.problem,
+          relationshipSafetyConfirmed: true,
+        });
+        const preparedAnswer = identityCheck.available
+          ? answerAngerDailyPreparedQuestion({ day: 11, message })
+          : null;
+        if (preparedAnswer) {
+          return Object.freeze({
+            status: 'daily_guidance_available',
+            message: preparedAnswer,
+            knowledge: Object.freeze([]),
+            page_context: 'day',
+            conversationState: null,
+          });
+        }
+      }
       const messageText = access.reason === 'daily_content_blocked'
         ? 'این محتوای روز به‌دلیل نیاز به بازبینی ایمنی برای راهنمایی دستیار فعال نیست. لطفاً این محدودیت را دور نزن.'
         : access.reason === 'relationship_safety_unconfirmed'
