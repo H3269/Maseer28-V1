@@ -54,3 +54,15 @@ test('T03 has no exact exercise/action duplication with any other topic override
  const fear=override.categories['ترس'].days;
  for(const [topic,data] of Object.entries(override.categories)){if(topic==='ترس')continue;for(const row of data.days||[])for(const f of fear){assert.notEqual(normalize(f.exercise),normalize(row.exercise),'exercise duplicate with '+topic+' day '+row.day);assert.notEqual(normalize(f.actionText),normalize(row.actionText),'action duplicate with '+topic+' day '+row.day);}}
 });
+
+test('T03 urgent safety clarification persists and never falls back to a prepared routine answer',()=>{
+ const data={topic_id:'T03',day:1,exercise:'تمرین روز اول ترس',actionText:'اقدام روز اول ترس'};
+ const first=makeDailyExerciseGuidanceTurn({message:'دیگه نمی‌کشم و نمی‌دانم چه کنم',dayData:data,problem:'ترس',day:1});
+ assert.equal(first.nextState.safetyStatus,'pending');
+ const second=makeDailyExerciseGuidanceTurn({message:'شاید، مطمئن نیستم',dayData:data,problem:'ترس',day:1,conversationState:first.nextState});
+ assert.equal(second.nextState.safetyStatus,'handoff');
+ assert.match(second.response,/کمک فوری انسانی/);
+ const third=makeDailyExerciseGuidanceTurn({message:FEAR_DAILY_ASSISTANT_GUIDES[0].questions[0].value,dayData:data,problem:'ترس',day:1,conversationState:second.nextState});
+ assert.match(third.response,/کمک فوری انسانی/);
+ assert.doesNotMatch(third.response,/راهنمای روز/);
+});
