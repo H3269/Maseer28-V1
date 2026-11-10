@@ -120,4 +120,11 @@ test('T04 self-hatred safety handoff uses the human-readable topic title, never 
  assert.doesNotMatch(answer,/\\bT18\\b/);
 });
 
-test('T04 every prepared answer includes the selected day safety condition',()=>{\n for(const g of HATRED_DAILY_ASSISTANT_GUIDES){\n  for(const q of g.questions){\n   const answer=answerHatredDailyPreparedQuestion({day:g.day,message:q.value});\n   assert.ok(answer.includes(g.stopCondition),`day ${g.day} safety condition missing for ${q.kind}`);\n  }\n }\n});\n
+test('T04 every prepared answer includes the selected day safety condition',()=>{
+ for(const g of HATRED_DAILY_ASSISTANT_GUIDES){
+  for(const q of g.questions){
+   const answer=answerHatredDailyPreparedQuestion({day:g.day,message:q.value});
+   assert.ok(answer.includes(g.stopCondition),`day ${g.day} safety condition missing for ${q.kind}`);
+  }
+ }
+});
