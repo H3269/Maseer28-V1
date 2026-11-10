@@ -82,9 +82,26 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     let active = true;
     if (screen !== 'books') {
       setLoadedLibraryBooks([]);
+    } else {
+      (async () => {
+        try {
+          const rows = await libraryRepository.listBooks();
+          const hydrated = await Promise.all(rows.map(async (book) => {
+            if (!book.activeVersionId) return null;
+            const version = await libraryRepository.getVersion(book.activeVersionId);
+            return version?.content ? { title: book.title, legacyId: book.legacyId, content: version.content } : null;
+          }));
+          if (active) setLoadedLibraryBooks(hydrated.filter(Boolean));
+        } catch {
+          if (active) setLoadedLibraryBooks([]);
+        }
+      })();
+    }
+    const shouldCheckModel = screen === 'books' || (screen === 'day' && Boolean(dailyContext));
+    if (!shouldCheckModel) {
       setLocalModelInstalled(false);
       setLocalModelStatusChecked(false);
-      return undefined;
+      return () => { active = false; };
     }
     setLocalModelStatusChecked(false);
     isLocalNeuralModelInstalled().then((installed) => {
@@ -92,22 +109,14 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         setLocalModelInstalled(installed);
         setLocalModelStatusChecked(true);
       }
-    });
-    (async () => {
-      try {
-        const rows = await libraryRepository.listBooks();
-        const hydrated = await Promise.all(rows.map(async (book) => {
-          if (!book.activeVersionId) return null;
-          const version = await libraryRepository.getVersion(book.activeVersionId);
-          return version?.content ? { title: book.title, legacyId: book.legacyId, content: version.content } : null;
-        }));
-        if (active) setLoadedLibraryBooks(hydrated.filter(Boolean));
-      } catch {
-        if (active) setLoadedLibraryBooks([]);
+    }).catch(() => {
+      if (active) {
+        setLocalModelInstalled(false);
+        setLocalModelStatusChecked(true);
       }
-    })();
+    });
     return () => { active = false; };
-  }, [screen, libraryContext?.titles?.length]);
+  }, [screen, libraryContext?.titles?.length, dailyContext?.day, dailyContext?.problem]);
 
   const angerProblemText = String(dailyContext?.problem || '').trim();
   const angerProblemTopicId = getCanonicalTopicIdForCategory(angerProblemText);
@@ -451,37 +460,24 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
-              <form className={'assistantComposer' + (screen === 'books' && !localModelInstalled ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} onSubmit={send}>
-                {isAngerDailyPromptContext && (
-                  <button
-                    ref={libraryPromptTriggerRef}
-                    className="libraryAssistantPromptTrigger dailyAssistantPromptTrigger"
-                    data-testid="anger-daily-prompt-trigger"
-                    type="button"
-                    aria-label={`باز کردن سؤال‌های آماده روز ${dailyContext?.day} خشم`}
-                    aria-haspopup="dialog"
-                    aria-expanded={libraryPromptOpen}
-                    aria-controls="library-assistant-prompt-dialog"
-                    disabled={sending}
-                    onClick={() => setLibraryPromptOpen(true)}
-                  >
-                    انتخاب سؤال آماده برای روز {dailyContext?.day} خشم
-                  </button>
-                )}
-                {screen === 'books' && !localModelInstalled ? (
+              <form className={'assistantComposer' + ((screen === 'books' || isAngerDailyPromptContext) && !localModelInstalled ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} onSubmit={send}>
+                {(screen === 'books' || isAngerDailyPromptContext) && !localModelInstalled ? (
                   <div className="libraryAssistantPromptRow">
                     <button
                       ref={libraryPromptTriggerRef}
                       className="libraryAssistantPromptTrigger"
+                      data-testid={isAngerDailyPromptContext ? "anger-daily-prompt-trigger" : "library-assistant-prompt-trigger"}
                       type="button"
-                      aria-label="باز کردن سؤال‌های آماده دستیار کتابخانه"
+                      aria-label={isAngerDailyPromptContext
+                        ? `باز کردن سؤال‌های آماده روز ${dailyContext?.day} خشم`
+                        : "باز کردن سؤال‌های آماده دستیار کتابخانه"}
                       aria-haspopup="dialog"
                       aria-expanded={libraryPromptOpen}
                       aria-controls="library-assistant-prompt-dialog"
                       disabled={sending || !localModelStatusChecked}
                       onClick={() => setLibraryPromptOpen(true)}
                     >
-                      {draft.trim() || 'انتخاب سؤال آماده...'}
+                      {draft.trim() || (isAngerDailyPromptContext ? 'انتخاب سؤال آماده روز...' : 'انتخاب سؤال آماده...')}
                     </button>
                     <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال سؤال انتخاب‌شده" disabled={!localModelStatusChecked || !draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
                   </div>
