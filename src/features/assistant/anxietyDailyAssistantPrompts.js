@@ -2999,7 +2999,7 @@ export function answerAnxietyDailyPreparedQuestion({ day, message, dailyContent 
         '\n\nاین تمرین قرار نیست اضطراب را به‌زور حذف کند یا نتیجه آینده را تضمین کند. هرجا داده نداری، همان را نامعلوم بگذار.\n\n' + safe;
 
     case 'exercise_example':
-      return heading + '\n\n**یک مثال فرضی از تمرین امروز**\n' + dailyExerciseExample +
+      return heading + '\n\n**یک مثال فرضی از تمرین امروز**\n' + guide.exerciseExample +
         '\n\n**ارتباط مثال با تمرین:**\n' + dailyExercise +
         '\n\nاین نمونه فقط برای توضیح روش است؛ تجربه واقعی تو را فرض نمی‌کند. از موقعیت کم‌فشار استفاده کن و اگر مناسب نیست، نسخه سبک یا توقف را انتخاب کن.\n\n' + safe;
 
@@ -3009,7 +3009,7 @@ export function answerAnxietyDailyPreparedQuestion({ day, message, dailyContent 
         '\n\nاقدام فقط وقتی اجرا می‌شود که موقعیت مناسب، کم‌خطر و در اختیار تو باشد؛ لازم نیست رفتار دیگران را کنترل کنی.\n\n' + safe;
 
     case 'action_example':
-      return heading + '\n\n**یک مثال فرضی از اقدام امروز**\n' + dailyActionExample +
+      return heading + '\n\n**یک مثال فرضی از اقدام امروز**\n' + guide.actionExample +
         '\n\n**اقدام امروز در متن مسیر:**\n' + dailyAction +
         '\n\nاگر شرایط واقعی تو با مثال فرق دارد، آن را عیناً تکرار نکن. اگر اجرا امن یا مناسب نیست، انجام‌ندادن اقدام انتخاب معتبرتری است.\n\n' + safe;
 
