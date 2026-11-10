@@ -78,10 +78,13 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         && typeof preparedSource === 'object'
         && preparedSource.id === getCanonicalDailyRecordId(dailyContext?.problem, preparedDay)
         && Number(preparedSource.day) === preparedDay
-        && (preparedTopicId === 'T03'
-          ? preparedSource.topic_id === 'T03'
-          : (!Object.prototype.hasOwnProperty.call(preparedSource, 'topic_id')
-            || preparedSource.topic_id === preparedTopicId));
+        // Legacy daily records identify the topic through the selected category
+        // key + canonical record ID (for example, ترس-01). The display adapter
+        // may carry topic_id: null when the source has no explicit topic_id.
+        // Accept that absence, but reject every explicit conflicting topic ID.
+        && (!Object.prototype.hasOwnProperty.call(preparedSource, 'topic_id')
+          || preparedSource.topic_id == null
+          || preparedSource.topic_id === preparedTopicId);
       if (!hasCanonicalPreparedIdentity) {
         return Object.freeze({
           status: 'daily_guidance_unavailable',
