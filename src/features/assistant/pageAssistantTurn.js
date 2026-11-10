@@ -4,6 +4,7 @@ import { makeDailyExerciseGuidanceTurn, selectDailyExerciseGuidanceData } from '
 import { answerAngerDailyPreparedQuestion } from './angerDailyAssistantPrompts.js';
 import { answerAnxietyDailyPreparedQuestion } from './anxietyDailyAssistantPrompts.js';
 import { answerFearDailyPreparedQuestion } from './fearDailyAssistantPrompts.js';
+import { answerHatredDailyPreparedQuestion } from './hatredDailyAssistantPrompts.js';
 import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
 import { getCanonicalDailyRecordId } from '../content/dailyContentSelector.js';
 
@@ -46,7 +47,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       return Object.freeze({ status: 'input_too_long', message: 'پیام بیش از حد طولانی است؛ لطفاً آن را کوتاه‌تر کن.', knowledge: Object.freeze([]), conversationState: null });
     }
 
-    // Exact, pre-authored T01/T02/T03 FAQs are bounded educational routes.
+    // Exact, pre-authored T01/T02/T03/T04 FAQs are bounded educational routes.
     // Validate canonical topic/day identity before answering; free-form
     // guidance continues through the separate safety and review gates.
     const preparedDay = Number(dailyContext?.day);
@@ -58,7 +59,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     const preparedTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem);
     // T03 safety and clarification signals must preempt both prepared answers
     // and the generic daily-guidance route, even when the message is not an FAQ.
-    if (preparedTopicId === 'T03' && SAFETY_STATUSES.has(inputProbe.status)) {
+    if (['T03', 'T04'].includes(preparedTopicId) && SAFETY_STATUSES.has(inputProbe.status)) {
       return Object.freeze({ ...inputProbe, conversationState: null });
     }
     const answerPreparedQuestion = preparedTopicId === 'T01'
@@ -67,12 +68,14 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         ? answerAnxietyDailyPreparedQuestion
         : preparedTopicId === 'T03'
           ? answerFearDailyPreparedQuestion
-          : null;
+          : preparedTopicId === 'T04'
+            ? answerHatredDailyPreparedQuestion
+            : null;
     const preparedAnswer = answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent });
     if (preparedAnswer) {
       // T03 prepared FAQs use the same direct, canonical route as T01/T02;
       // category + canonical record ID + day establish legacy identity.
-      const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03'].includes(preparedTopicId)
+      const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03', 'T04'].includes(preparedTopicId)
         && Number.isInteger(preparedDay)
         && preparedDay >= 1
         && preparedDay <= 28
@@ -102,6 +105,10 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         page_context: 'day',
         conversationState: null,
       });
+    }
+
+    if (preparedTopicId === 'T04') {
+      return Object.freeze({ status: 'daily_guidance_unavailable', message: 'برای موضوع نفرت، فقط سؤال‌های آماده همین روز پاسخ داده می‌شوند. لطفاً یکی از سؤال‌های فهرست را انتخاب کن؛ گفت‌وگوی آزاد در این بسته فعال نیست.', knowledge: Object.freeze([]), conversationState: null });
     }
 
     // The in-path assistant is a bounded local guidance surface. Do not apply

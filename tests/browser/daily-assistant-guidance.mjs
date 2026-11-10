@@ -170,7 +170,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
         assert.equal(Object.hasOwn(day, 'risk_level'), false);
       } else {
         Object.assign(day, {
-          topic_id: topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : 'T01',
+          topic_id: topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : topicKey === 'نفرت' ? 'T04' : 'T01',
           day: dayNumber,
           review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
           risk_level: 'routine',
@@ -276,8 +276,37 @@ try {
   await fearPanel.getByRole('button', { name: 'ارسال' }).click();
   await fearGuidedPage.waitForFunction(() => Array.from(document.querySelectorAll('.globalAssistantDialog .assistantMessage')).some(node => node.innerText.includes('راهنمای روز ۱ ترس')));
   assert.match(await fearPanel.locator('.assistantMessage').last().innerText(), /راهنمای روز ۱ ترس/);
+
   assert.deepEqual(fearErrors, [], 'T03 prepared-only assistant browser flow must not raise page errors');
   await fearGuidedPage.close();
+
+  // T04 is also strictly prepared-only, with the same five-group selector and no model/free-text escape.
+  const hatredGuidedPage = await browser.newPage();
+  const hatredErrors = [];
+  hatredGuidedPage.on('pageerror', error => hatredErrors.push(String(error)));
+  await openDay(hatredGuidedPage, { problem: 'نفرت', assistantDayMode: 'blocked', localModelInstalled: true });
+  const hatredPanel = hatredGuidedPage.locator('.globalAssistantDialog');
+  await hatredPanel.waitFor({ state: 'visible' });
+  assert.equal(await hatredPanel.locator('#global-assistant-message').count(), 0,
+    'T04 must never expose free-form typing, even with a cached local model');
+  assert.equal(await hatredPanel.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
+    'T04 must not expose local model installation');
+  const hatredTrigger = hatredPanel.getByTestId('hatred-daily-prompt-trigger');
+  await hatredTrigger.waitFor({ state: 'visible' });
+  await hatredTrigger.click();
+  const hatredPromptDialog = hatredGuidedPage.locator('#library-assistant-prompt-dialog');
+  await hatredPromptDialog.waitFor({ state: 'visible' });
+  assert.match(await hatredPromptDialog.innerText(), /سؤال‌های آماده روز ۱ نفرت/);
+  assert.equal(await hatredPromptDialog.locator('.libraryAssistantPromptGroup').count(), 5);
+  assert.equal(await hatredPromptDialog.locator('[data-prompt-option]').count(), 14);
+  await hatredPromptDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
+  await hatredPanel.getByRole('button', { name: 'ارسال' }).click();
+  await hatredGuidedPage.waitForFunction(() => Array.from(document.querySelectorAll('.globalAssistantDialog .assistantMessage')).some(node => node.innerText.includes('راهنمای روز ۱ نفرت')));
+  const hatredReply = await hatredPanel.locator('.assistantMessage').last().innerText();
+  assert.match(hatredReply, /نفرت/);
+  assert.match(hatredReply, /تمرین/);
+  assert.deepEqual(hatredErrors, [], 'T04 prepared-only assistant browser flow must not raise page errors');
+  await hatredGuidedPage.close();
 
   await openDay(page, { localModelInstalled: true });
   const panel = page.locator('.globalAssistantDialog');
