@@ -79,3 +79,31 @@ test('T04 assigns exactly one canonical package subtopic to each of the 28 days'
  assert.equal(HATRED_DAILY_ASSISTANT_GUIDES[27].subtopic,'T04-S03');
  assert.deepEqual(HATRED_DAILY_ASSISTANT_GUIDES.filter(g=>g.subtopic==='T04-S02').map(g=>g.day),[4,10,11]);
 });
+
+
+test('T04 all 392 prepared answers teach the user with clear steps, day-specific content and safety',()=>{
+ for(const g of HATRED_DAILY_ASSISTANT_GUIDES){
+  for(const q of g.questions){
+   const answer=answerHatredDailyPreparedQuestion({day:g.day,message:q.value,dailyContent:{exercise:g.exercise,actionText:g.action}});
+   assert.ok(answer, `missing answer day ${g.day} kind ${q.kind}`);
+   assert.ok(answer.length>=450, `answer too short day ${g.day} kind ${q.kind}: ${answer.length}`);
+   assert.ok(answer.includes(`روز ${g.day}`), `missing day context day ${g.day} kind ${q.kind}`);
+   assert.match(answer,/ایمنی|متوقف|فاصله|اختیاری/);
+   if(q.kind==='exercise_example'||q.kind==='action_example'){
+    assert.match(answer,/موقعیت فرضی|قدم‌به‌قدم|چطور انجامش بدهی/);
+    assert.match(answer,/معیار پایان/);
+   }
+  }
+ }
+});
+
+test('T04 day 2 example question gives a worked observation-versus-interpretation example, not a paraphrase',()=>{
+ const g=HATRED_DAILY_ASSISTANT_GUIDES[1];
+ const q=g.questions.find(x=>x.kind==='exercise_example');
+ const answer=answerHatredDailyPreparedQuestion({day:2,message:q.value,dailyContent:{exercise:g.exercise,actionText:g.action}});
+ assert.match(answer,/همکارت در جلسه می‌گوید/);
+ assert.match(answer,/این جمله مشاهده است/);
+ assert.match(answer,/برداشت تو از نیت اوست/);
+ assert.match(answer,/۱\. موقعیت فرضی/);
+ assert.match(answer,/۴\. از کجا بفهمی کافی است/);
+});
