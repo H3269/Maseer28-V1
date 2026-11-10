@@ -56,7 +56,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       : preparedTopicId === 'T02'
         ? answerAnxietyDailyPreparedQuestion
         : null;
-    const preparedAnswer = answerPreparedQuestion?.({ day: preparedDay, message });
+    const preparedAnswer = answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedSource });
     if (preparedAnswer) {
       const hasCanonicalPreparedIdentity = ['T01', 'T02'].includes(preparedTopicId)
         && Number.isInteger(preparedDay)
