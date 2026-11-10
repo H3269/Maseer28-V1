@@ -58,3 +58,16 @@ test('T04 runtime exercise/action overrides match all 28 assistant guide entries
   assert.equal(row.actionText,g.action,`action mismatch day ${g.day}`);
  }
 });
+
+test('T04 exercise/action text has no exact same-field duplicate in the other 33 topic overlays',async()=>{
+ const raw=await readFile(new URL('../public/content/daily-text-overrides.v1.json',import.meta.url),'utf8');
+ const categories=JSON.parse(raw).categories;
+ const norm=s=>String(s||'').normalize('NFKC').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[\u064B-\u065F\u0670]/g,'').replace(/[\u200c\u200f\u200e]/g,' ').replace(/[^\p{L}\p{N}\s]/gu,' ').replace(/\s+/g,' ').trim().toLowerCase();
+ for(const field of ['exercise','actionText']){
+  const own=new Set(categories['نفرت'].days.map(x=>norm(x[field])));
+  for(const [topic,data] of Object.entries(categories)){
+   if(topic==='نفرت')continue;
+   for(const row of data.days||[])assert.equal(own.has(norm(row[field])),false,'T04 '+field+' duplicates '+topic+' day '+row.day);
+  }
+ }
+});
