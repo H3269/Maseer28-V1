@@ -2914,8 +2914,9 @@ export const FEAR_DAILY_ASSISTANT_GUIDES = [
   }
 ];
 export function toFearDayNumber(value) { const n=Number(String(value ?? '').replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))); return Number.isInteger(n)&&n>=1&&n<=28?n:null; }
-export function getFearDailyAssistantPromptGroups(day) { const n=toFearDayNumber(day); const g=FEAR_DAILY_ASSISTANT_GUIDES.find(x=>x.day===n); return g?[{label:'راهنمای روز '+n+' ترس — '+g.title,questions:g.questions}]:[]; }
-function heading(g){return 'راهنمای روز '+g.day+' ترس — '+g.title;}
+export function getFearDailyAssistantPromptGroups(day) { const n=toFearDayNumber(day); const g=FEAR_DAILY_ASSISTANT_GUIDES.find(x=>x.day===n); return g?[{label:'راهنمای روز '+persianDay(n)+' ترس — '+g.title,questions:g.questions}]:[]; }
+function persianDay(value){return String(value).replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[Number(d)]);}
+function heading(g){return 'راهنمای روز '+persianDay(g.day)+' ترس — '+g.title;}
 function safe(){return 'این راهنما آموزشی است و تشخیص یا درمان نیست. ترس می‌تواند در برابر خطر واقعی نقش محافظتی داشته باشد. برای تکمیل تمرین به تهدید نزدیک نشو، با عامل تهدید تماس نگیر، خاطره آزاردهنده را به‌اجبار بازسازی نکن و حفاظت لازم را کاهش نده. در خطر جاری، خشونت، سوءاستفاده یا وضعیت پزشکی/محیطی نگران‌کننده، فاصله امن و کمک انسانی مقدم است. اگر احتمال فوری آسیب به خودت یا دیگری وجود دارد، تمرین را متوقف کن و از خدمات اضطراری محل زندگی یا فرد امن کمک بگیر.';}
 export function answerFearDailyPreparedQuestion({day,message,dailyContent}={}) {
  const n=toFearDayNumber(day),g=FEAR_DAILY_ASSISTANT_GUIDES.find(x=>x.day===n); if(!g)return null;
