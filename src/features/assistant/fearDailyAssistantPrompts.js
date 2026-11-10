@@ -1,4 +1,4 @@
-import { buildTeacherStylePreparedAnswer } from './teacherStylePreparedAnswer.js';
+import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 // T03 prepared-only daily assistant bank. Draft educational content; not expert-approved treatment.
 export const FEAR_DAILY_ASSISTANT_GUIDES = [
   {
@@ -2986,21 +2986,89 @@ export function getFearDailyAssistantPromptGroups(day) {
 function persianDay(value){return String(value).replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[Number(d)]);}
 function heading(g){return 'راهنمای روز '+persianDay(g.day)+' ترس — '+g.title;}
 function safe(){return 'این راهنما آموزشی است و تشخیص یا درمان نیست. ترس می‌تواند در برابر خطر واقعی نقش محافظتی داشته باشد. برای تکمیل تمرین به تهدید نزدیک نشو، با عامل تهدید تماس نگیر، خاطره آزاردهنده را به‌اجبار بازسازی نکن و حفاظت لازم را کاهش نده. در خطر جاری، خشونت، سوءاستفاده یا وضعیت پزشکی/محیطی نگران‌کننده، فاصله امن و کمک انسانی مقدم است. اگر احتمال فوری آسیب به خودت یا دیگری وجود دارد، تمرین را متوقف کن و از خدمات اضطراری محل زندگی یا فرد امن کمک بگیر.';}
-export function answerFearDailyPreparedQuestion({ day, message, dailyContent } = {}) {
+function answerFearDailyPreparedQuestionRaw({ day, message, dailyContent } = {}) {
   const dayNumber = toFearDayNumber(day);
   const guide = FEAR_DAILY_ASSISTANT_GUIDES.find((item) => item.day === dayNumber);
   if (!guide) return null;
+
   const question = guide.questions.find((item) => item.value === String(message || '').trim());
   if (!question) return null;
-  const dailyExercise = String(dailyContent?.exercise || guide.exercise || '').trim();
-  const dailyAction = String(dailyContent?.actionText || dailyContent?.action || guide.action || '').trim();
-  return buildTeacherStylePreparedAnswer({
-    guide,
-    question,
-    topic: 'ترس',
-    dailyExercise,
-    dailyAction,
-    safetyReminder: safe(),
-    steps: {},
-  });
+
+  const exercise = String(dailyContent?.exercise || guide.exercise || '').trim();
+  const action = String(dailyContent?.actionText || dailyContent?.action || guide.action || '').trim();
+  const responseHeading = heading(guide);
+  const safetyReminder = safe();
+
+  switch (question.kind) {
+    case 'exercise_meaning':
+      return responseHeading + '\n\n**منظور از تمرین امروز چیست؟**\n' + exercise +
+        '\n\n**چرا این تمرین انتخاب شده؟**\n' + guide.objective +
+        '\n\n**مهارت مورد توجه:**\n' + guide.skill +
+        '\n\n**چطور انجامش بدهی؟**\n' + exercise +
+        '\n\n**نکته امروز:** ' + guide.successCriterion +
+        '\n\nاین تمرین برای شناخت تجربه است؛ قرار نیست خودت را در معرض خطر قرار بدهی یا ترس را به‌زور حذف کنی.\n\n' + safetyReminder;
+
+    case 'exercise_example':
+      return responseHeading + '\n\n**یک مثال فرضی از تمرین امروز**\n' + guide.exerciseExample +
+        '\n\n**ارتباط مثال با تمرین:**\n' + exercise +
+        '\n\nاین نمونه فقط روش را روشن می‌کند و تجربه واقعی تو را فرض نمی‌کند. اگر یادآوری فشارآور است، نسخه سبک یا توقف را انتخاب کن.\n\n' + safetyReminder;
+
+    case 'action_meaning':
+      return responseHeading + '\n\n**اقدام اختصاصی امروز چیست؟**\n' + action +
+        '\n\n**چرا این اقدام انتخاب شده؟**\n' + guide.objective +
+        '\n\n**چطور اجرا کنی؟**\nاقدام را فقط در شرایط امن و مناسب انجام بده. برای تکمیل تمرین، موقعیت تهدیدآمیز نساز و حفاظت لازم را کاهش نده.' +
+        '\n\n**نکته مهم:** اقدام اختیاری است و فقط در محدوده انتخاب امن خودت معنا دارد.\n\n' + safetyReminder;
+
+    case 'action_example':
+      return responseHeading + '\n\n**یک مثال فرضی از اقدام امروز**\n' + guide.actionExample +
+        '\n\n**اقدام امروز در مسیر:**\n' + action +
+        '\n\nمثال را عیناً تکرار نکن؛ فقط اگر با شرایط واقعی و امن تو سازگار است از آن برای فهم روش استفاده کن.\n\n' + safetyReminder;
+
+    case 'light_version':
+      return responseHeading + '\n\n**نسخه سبک امروز**\n' + guide.lightVersion +
+        '\n\nاگر همین نسخه هم فشار یا احساس ناامنی ایجاد می‌کند، تمرین را متوقف کن. نسخه سبک یا مکث، شکست محسوب نمی‌شود.';
+
+    case 'success':
+      return responseHeading + '\n\n**معیار موفقیت امروز**\n' + guide.successCriterion +
+        '\n\nموفقیت به معنی حذف ترس یا اثبات بی‌خطر بودن موقعیت نیست. معیار فقط همان خروجی مشخص امروز است؛ اگر به آن نرسیدی، خودت را سرزنش نکن.';
+
+    case 'stop':
+      return responseHeading + '\n\n**شرط توقف اختصاصی امروز**\n' + guide.stopCondition +
+        '\n\nدر خطر واقعی، تمرین نوشتاری را جایگزین حفاظت یا کمک نکن. نشانه جسمانی تازه یا شدید را خودکار به ترس نسبت نده.\n\n' + safetyReminder;
+
+    case 'no_event':
+      return responseHeading + '\n\n**اگر امروز نمونه‌ای پیش نیامد**\nلازم نیست عمداً موقعیت ترسناک بسازی یا خودت را در معرض آن قرار بدهی. اگر مرور نمونه قبلی کم‌فشار و امن است، همان را بررسی کن؛ در غیر این صورت نسخه سبک را انتخاب کن یا تمرین را به زمان دیگری موکول کن.\n\n**نسخه سبک:** ' + guide.lightVersion;
+
+    case 'exercise_action_difference':
+      return responseHeading + '\n\n**تفاوت تمرین و اقدام امروز**\n**تمرین:** ' + exercise +
+        '\n\n**اقدام:** ' + action +
+        '\n\nتمرین برای شناخت و ثبت است؛ اقدام یک گام اختیاری در زندگی روزمره است و فقط وقتی شرایط امن و مناسب باشد اجرا می‌شود.';
+
+    case 'not_done':
+      return responseHeading + '\n\n**اگر تمرین انجام نشد یا فراموش شد**\nخودت را سرزنش نکن و چند روز را یک‌جا جبران نکن. اگر مانع، ناامنی یا افزایش ناراحتی وجود داشت، توقف تصمیم مناسبی بوده است.\n\n**نسخه سبک:** ' + guide.lightVersion;
+
+    case 'fear_increased':
+      return responseHeading + '\n\n**اگر هنگام تمرین ترس بیشتر شد**\nنوشتن و مرور را متوقف کن؛ به محیط امن یا فعالیت خنثی برگرد و خودت را مجبور به بازسازی خاطره، تنفس یا تمرکز بدنی نکن. نشانه جسمانی تازه یا شدید را خودکار به ترس نسبت نده و در صورت نیاز ارزیابی پزشکی بگیر.\n\n**شرط توقف امروز:** ' + guide.stopCondition + '\n\n' + safetyReminder;
+
+    case 'talk_other':
+      return responseHeading + '\n\n**آیا لازم است با فرد دیگری صحبت کنی؟**\nبرای انجام تمرین نوشتاری الزاماً لازم نیست با کسی صحبت کنی. اگر حمایت می‌خواهی، فقط فرد یا منبعی را انتخاب کن که امن و قابل اعتماد باشد. در رابطه ناامن، افشا یا گفت‌وگوی مستقیم را به خودت تحمیل نکن.';
+
+    case 'can_change':
+      return responseHeading + '\n\n**آیا می‌توانی تمرین را تغییر بدهی؟**\nمی‌توانی زمان یا قالب ثبت را ساده‌تر کنی و از نسخه سبک استفاده کنی؛ اما هشدارهای ایمنی و نیاز به حفاظت را حذف نکن. هیچ‌گاه برای تکمیل تمرین وارد موقعیت تهدیدآمیز نشو.\n\n**نسخه سبک:** ' + guide.lightVersion + '\n\n' + safetyReminder;
+
+    case 'duration':
+      return responseHeading + '\n\n**برای تمرین امروز چقدر زمان لازم است؟**\nبرای این روز زمان قطعی و تأییدشده‌ای ثبت نشده است؛ بنابراین عددی حدس نمی‌زنم. فقط به‌اندازه‌ای پیش برو که برایت قابل‌تحمل است و در صورت ناراحتی مکث کن.\n\n**هدف امروز:** ' + guide.objective;
+
+    default:
+      return null;
+  }
+}
+
+export function answerFearDailyPreparedQuestion(args = {}) {
+  const answer = answerFearDailyPreparedQuestionRaw(args);
+  if (!answer) return null;
+  const day = toFearDayNumber(args.day);
+  const guide = FEAR_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
+  const question = guide?.questions.find((item) => item.value === String(args.message || '').trim());
+  return addTeacherStyleFrame(answer, { guide, question, topic: 'ترس' });
 }
