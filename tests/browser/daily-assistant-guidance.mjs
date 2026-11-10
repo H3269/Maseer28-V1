@@ -212,10 +212,10 @@ try {
   await anxietyGuidedTrigger.click();
   const anxietyPromptDialog = anxietyGuidedPage.locator('#library-assistant-prompt-dialog');
   await anxietyPromptDialog.waitFor({ state: 'visible' });
-  assert.match(await anxietyPromptDialog.innerText(), /سؤال‌های آماده روز 1 اضطراب/);
+  assert.match(await anxietyPromptDialog.innerText(), /سؤال‌های آماده روز ۱ اضطراب/);
   await anxietyPromptDialog.getByRole('button', { name: 'تمرین و اقدام امروز چه تفاوتی دارند؟' }).click();
   await anxietyGuidedPanel.getByRole('button', { name: 'ارسال' }).click();
-  await anxietyGuidedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /راهنمای روز 1 اضطراب/.test(node.innerText)));
+  await anxietyGuidedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /راهنمای روز ۱ اضطراب/.test(node.innerText)));
   await assertAssistantUsesVisibleDailySource(anxietyGuidedPage, anxietyGuidedPanel, 'اضطراب', 1);
   await anxietyGuidedPage.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await anxietyGuidedPanel.waitFor({ state: 'detached' });
