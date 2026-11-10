@@ -80,3 +80,22 @@ test('non-prepared free-form anger questions remain behind the daily safety/revi
   });
   assert.equal(result.status, 'daily_guidance_unavailable');
 });
+
+test('pending-review anger FAQs do not bypass elevated or unknown risk', () => {
+  const question = ANGER_DAILY_ASSISTANT_GUIDES[0].questions[0];
+  for (const risk_level of ['high', 'caution', 'unknown', undefined]) {
+    const data = {
+      id: getCanonicalDailyRecordId('خشم', 1),
+      topic_id: 'T01',
+      day: 1,
+      review_status: 'pending_expert_review',
+      ...(risk_level === undefined ? {} : { risk_level }),
+    };
+    const result = makePageAssistantTurn({
+      screen: 'day',
+      text: question.value,
+      dailyContext: { day: 1, problem: 'خشم', data, relationshipSafetyConfirmed: false },
+    });
+    assert.equal(result.status, 'daily_guidance_unavailable', `risk level ${risk_level ?? 'missing'}`);
+  }
+});
