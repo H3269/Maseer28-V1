@@ -46,7 +46,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       return Object.freeze({ status: 'input_too_long', message: 'پیام بیش از حد طولانی است؛ لطفاً آن را کوتاه‌تر کن.', knowledge: Object.freeze([]), conversationState: null });
     }
 
-    // Exact, pre-authored T01/T02 FAQs are bounded educational routes.
+    // Exact, pre-authored T01/T02/T03 FAQs are bounded educational routes.
     // Validate canonical topic/day identity before answering; free-form
     // guidance continues through the separate safety and review gates.
     const preparedDay = Number(dailyContext?.day);
@@ -66,7 +66,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     const preparedAnswer = answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent });
     if (preparedAnswer) {
       // T03 prepared FAQs use the same direct, canonical route as T01/T02;
-      // require an explicit T03 topic marker so adapted or stale content cannot cross topics.
+      // category + canonical record ID + day establish legacy identity.
       if (preparedTopicId === 'T03' && SAFETY_STATUSES.has(inputProbe.status)) {
         return Object.freeze({ ...inputProbe, conversationState: null });
       }
