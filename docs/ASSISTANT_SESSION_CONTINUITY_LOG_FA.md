@@ -4981,3 +4981,16 @@ undefined
 - تغییرات فقط روی شاخه `content/t03-fear-audit-assistant-20261110` و PR #89 انجام می‌شوند؛ `main` تغییر نکرده، ادغام و انتشار عمومی انجام نشده است.
 
 **وضعیت:** T03_ALL_28_DAYS_ASSIGNED_ONE_CANONICAL_SUBTOPIC; T03_T21_TAXONOMY_BOUNDARY_REDEFINED; SAFETY_GATES_PRESERVED; EVIDENCE_LINKAGE_PENDING; OWNER_EXPERT_REVIEW_PENDING; PR89_OPEN_NO_MERGE; NO_TELEGRAM_BALE_RELEASE
+
+
+## 2026-11-10 — ادغام بسته T03 در main برای آزمون مالک
+
+- بنا به دستور صریح مالک برای تکمیل بسته T03 و ادغام آن در main جهت آزمون زنده، PR #89 با روش squash ادغام شد.
+- commit ادغام: `a96117b262bc004ffbb8ef634e05a868dff7fe00`.
+- دامنه ادغام: محتوای ۲۸ روز T03، نگاشت یکتای زیرموضوع‌ها، اصلاح مرز T03-S03/T21-S01، بانک ۳۹۲ پرسش/پاسخ آماده و تغییرات رابط/آزمون مرتبط.
+- وضعیت دستیار T03: فقط پرسش‌های آماده و پاسخ‌های متناظر؛ گفت‌وگوی آزاد و fallback عمومی برای T03 غیرفعال است.
+- بررسی وضعیت commit ادغام در GitHub هیچ status check ثبت‌شده‌ای برنگرداند؛ بنابراین سبز بودن CI را تأیید نمی‌کنیم و این مورد باید جداگانه بررسی شود.
+- منابع علمی روزبه‌روز و پیوند claim-to-source همچنان ناقص‌اند؛ محتوا و taxonomy هنوز نیازمند بازبینی متخصص واجدصلاحیت‌اند. ادغام فنی به‌معنی تأیید تخصصی/بالینی نیست.
+- گام بعد: آزمون زنده مالک در مرورگر روی main، ثبت خطاهای احتمالی و تکمیل شواهد علمی/بازبینی تخصصی. هیچ Telegram Action یا انتشار Telegram/Bale انجام نشده است.
+
+**وضعیت:** T03_MERGED_TO_MAIN_FOR_OWNER_BROWSER_TEST; CI_STATUS_NOT_CONFIRMED; EVIDENCE_LINKAGE_PENDING; EXPERT_REVIEW_PENDING; NO_PUBLIC_RELEASE
