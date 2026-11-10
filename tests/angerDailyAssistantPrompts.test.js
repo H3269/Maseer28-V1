@@ -197,43 +197,80 @@ test('exercise explanation preserves the source-requested number of examples for
 });
 
 
-test('anger day 11 prepared FAQs remain available while free-form interpersonal guidance keeps its safety gate', () => {
-  const guide = ANGER_DAILY_ASSISTANT_GUIDES[10];
-  const dayData = {
-    id: 'خشم-11',
-    topic_id: 'T01',
-    day: 11,
-    review_status: 'approved',
-    risk_level: 'routine',
-    exercise: guide.exercise,
-    action: guide.action,
-  };
-  for (const question of guide.questions) {
-    const turn = makePageAssistantTurn({
+test('prepared FAQs remain available on every gated anger day while free-form interpersonal guidance stays gated', () => {
+  const gatedDays = [10, 11, 17, 18, 19, 20, 21, 22, 23];
+  for (const day of gatedDays) {
+    const guide = ANGER_DAILY_ASSISTANT_GUIDES[day - 1];
+    const dayData = {
+      id: `خشم-${day}`,
+      topic_id: 'T01',
+      day,
+      review_status: 'approved',
+      risk_level: 'routine',
+      exercise: guide.exercise,
+      action: guide.action,
+    };
+    for (const question of guide.questions) {
+      const turn = makePageAssistantTurn({
+        screen: 'day',
+        text: question.value,
+        dailyContext: {
+          day,
+          problem: 'خشم',
+          data: dayData,
+          relationshipSafetyConfirmed: false,
+        },
+      });
+      assert.equal(turn.status, 'daily_guidance_available', `day ${day}, ${question.kind}`);
+      assert.match(turn.message, new RegExp(`راهنمای روز ${day} خشم`), `day ${day}, ${question.kind}`);
+    }
+
+    const freeForm = makePageAssistantTurn({
       screen: 'day',
-      text: question.value,
+      text: 'چطور با طرف مقابل وارد گفت‌وگو شوم؟',
       dailyContext: {
-        day: 11,
+        day,
         problem: 'خشم',
         data: dayData,
         relationshipSafetyConfirmed: false,
       },
     });
-    assert.equal(turn.status, 'daily_guidance_available', question.kind);
-    assert.match(turn.message, /راهنمای روز 11 خشم/, question.kind);
+    assert.equal(freeForm.status, 'daily_guidance_unavailable', `day ${day} free-form`);
+    assert.match(freeForm.message, /بررسی ایمنی همین روز/, `day ${day} free-form`);
+    assert.doesNotMatch(freeForm.message, new RegExp(`راهنمای روز ${day} خشم`));
   }
+});
 
-  const freeForm = makePageAssistantTurn({
+test('prepared FAQ exception never bypasses blocked content or unverified source identity', () => {
+  const guide = ANGER_DAILY_ASSISTANT_GUIDES[10];
+  const question = guide.questions[0];
+  const blockedDay = {
+    id: 'خشم-11',
+    topic_id: 'T01',
+    day: 11,
+    review_status: 'blocked',
+    risk_level: 'high',
+    exercise: guide.exercise,
+    action: guide.action,
+  };
+  const blocked = makePageAssistantTurn({
     screen: 'day',
-    text: 'چطور با طرف مقابل وارد گفت‌وگو شوم؟',
+    text: question.value,
+    dailyContext: { day: 11, problem: 'خشم', data: blockedDay, relationshipSafetyConfirmed: false },
+  });
+  assert.equal(blocked.status, 'daily_guidance_unavailable');
+  assert.match(blocked.message, /نیاز به بازبینی ایمنی/);
+
+  const wrongIdentity = makePageAssistantTurn({
+    screen: 'day',
+    text: question.value,
     dailyContext: {
       day: 11,
       problem: 'خشم',
-      data: dayData,
+      data: { ...blockedDay, id: 'خشم-10', review_status: 'approved', risk_level: 'routine' },
       relationshipSafetyConfirmed: false,
     },
   });
-  assert.equal(freeForm.status, 'daily_guidance_unavailable');
-  assert.match(freeForm.message, /بررسی ایمنی همین روز/);
-  assert.doesNotMatch(freeForm.message, /راهنمای روز 11 خشم/);
+  assert.equal(wrongIdentity.status, 'daily_guidance_unavailable');
+  assert.match(wrongIdentity.message, /محتوای معتبر روز جاری/);
 });
