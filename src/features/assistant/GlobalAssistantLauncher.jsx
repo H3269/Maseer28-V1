@@ -229,9 +229,14 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     const message = draft.trim();
     if (!message || sending) return;
     if (isFearDailyPromptContext && !activePromptGroups.some(group => group.questions.some(question => question.value === message))) {
-      setMessages(current => [...current, { id: `user-rejected-${++turnSequenceRef.current}`, role: 'user', text: message, knowledge: [] }, { id: `assistant-rejected-${turnSequenceRef.current}`, role: 'assistant', text: 'این پرسش در فهرست راهنمای آماده موضوع ترس نیست. لطفاً یکی از پرسش‌های آماده همین روز را انتخاب کن.', knowledge: [] }]);
-      setDraft('');
-      return;
+      const fearSafetyIntent = routeAssistantTurn({ text: message });
+      const urgentSafetyStatuses = new Set(['urgent_human_support_required', 'safety_clarification_required']);
+      if (!urgentSafetyStatuses.has(fearSafetyIntent.status)) {
+        const rejectedId = ++turnSequenceRef.current;
+        setMessages(current => [...current, { id: `user-rejected-${rejectedId}`, role: 'user', text: message, knowledge: [] }, { id: `assistant-rejected-${rejectedId}`, role: 'assistant', text: 'این پرسش در فهرست راهنمای آماده موضوع ترس نیست. لطفاً یکی از پرسش‌های آماده همین روز را انتخاب کن.', knowledge: [] }]);
+        setDraft('');
+        return;
+      }
     }
     const turnId = ++turnSequenceRef.current;
     const responseId = `assistant-${turnId}`;
