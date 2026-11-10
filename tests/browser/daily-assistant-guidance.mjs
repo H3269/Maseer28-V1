@@ -7,6 +7,14 @@ const { chromium } = require('playwright');
 const baseURL = process.env.PATH28_BASE_URL || 'http://127.0.0.1:4173';
 const canonicalPathContent = JSON.parse(await readFile(new URL('../../public/content/path-content.json', import.meta.url), 'utf8'));
 const dailyTextOverrides = JSON.parse(await readFile(new URL('../../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+const previewBaseURL = baseURL.endsWith('/') ? baseURL : `${baseURL}/`;
+const servedOverrideResponse = await fetch(new URL('content/daily-text-overrides.v1.json', previewBaseURL));
+assert.equal(servedOverrideResponse.status, 200, 'the production preview must serve the daily text override asset');
+assert.deepEqual(
+  await servedOverrideResponse.json(),
+  dailyTextOverrides,
+  'the production preview daily text override asset must match the checked-in browser fixture',
+);
 const browser = await chromium.launch({ headless: true });
 
 const journey = {
