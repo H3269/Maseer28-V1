@@ -2976,7 +2976,7 @@ function safeAnxietyReminder() {
   return 'این راهنما برای شناخت تجربه اضطراب و انتخاب گام‌های کم‌خطر است؛ تشخیص یا درمان نیست. اضطراب را مجبور نیستی حذف کنی. خطر واقعی، نشانه جسمانی تازه یا شدید، یا بررسی ضروری سلامت/قانون/ایمنی را به‌عنوان نگرانی فرضی یا رفتار غیرضروری کنار نگذار. اگر خطر فوری آسیب به خودت یا دیگری وجود دارد، تمرین را متوقف کن، به مکان امن برو و از فرد امن یا خدمات اضطراری محل زندگی کمک بگیر.';
 }
 
-export function answerAnxietyDailyPreparedQuestion({ day, message } = {}) {
+export function answerAnxietyDailyPreparedQuestion({ day, message, dailyContent } = {}) {
   const dayNumber = toAnxietyDayNumber(day);
   const guide = ANXIETY_DAILY_ASSISTANT_GUIDES.find((item) => item.day === dayNumber);
   if (!guide) return null;
@@ -2985,28 +2985,32 @@ export function answerAnxietyDailyPreparedQuestion({ day, message } = {}) {
   const steps = ANXIETY_DAILY_PLAIN_LANGUAGE_STEPS[guide.day];
   const heading = anxietyGuideHeading(guide);
   const safe = safeAnxietyReminder();
+  // The visible daily record is authoritative; prepared explanations must quote
+  // the same exercise/action that the user sees after runtime overrides.
+  const dailyExercise = String(dailyContent?.exercise || guide.exercise || '').trim();
+  const dailyAction = String(dailyContent?.actionText || dailyContent?.action || guide.action || '').trim();
 
   switch (question.kind) {
     case 'exercise_meaning':
-      return heading + '\n\n**منظور از تمرین امروز چیست؟**\n' + guide.exercise +
+      return heading + '\n\n**منظور از تمرین امروز چیست؟**\n' + dailyExercise +
         '\n\n**چرا این تمرین انتخاب شده؟**\n' + guide.objective + '\n\n' +
         '**قدم‌به‌قدم:**\n' + steps.exercise +
         '\n\n**نکته امروز:** ' + guide.successCriterion +
         '\n\nاین تمرین قرار نیست اضطراب را به‌زور حذف کند یا نتیجه آینده را تضمین کند. هرجا داده نداری، همان را نامعلوم بگذار.\n\n' + safe;
 
     case 'exercise_example':
-      return heading + '\n\n**یک مثال فرضی از تمرین امروز**\n' + guide.exerciseExample +
-        '\n\n**ارتباط مثال با تمرین:**\n' + guide.exercise +
+      return heading + '\n\n**یک مثال فرضی از تمرین امروز**\n' + dailyExerciseExample +
+        '\n\n**ارتباط مثال با تمرین:**\n' + dailyExercise +
         '\n\nاین نمونه فقط برای توضیح روش است؛ تجربه واقعی تو را فرض نمی‌کند. از موقعیت کم‌فشار استفاده کن و اگر مناسب نیست، نسخه سبک یا توقف را انتخاب کن.\n\n' + safe;
 
     case 'action_meaning':
-      return heading + '\n\n**اقدام اختصاصی امروز چیست؟**\n' + guide.action +
+      return heading + '\n\n**اقدام اختصاصی امروز چیست؟**\n' + dailyAction +
         '\n\n**چطور آن را اجرا کنی؟**\n' + steps.action +
         '\n\nاقدام فقط وقتی اجرا می‌شود که موقعیت مناسب، کم‌خطر و در اختیار تو باشد؛ لازم نیست رفتار دیگران را کنترل کنی.\n\n' + safe;
 
     case 'action_example':
-      return heading + '\n\n**یک مثال فرضی از اقدام امروز**\n' + guide.actionExample +
-        '\n\n**اقدام امروز در متن مسیر:**\n' + guide.action +
+      return heading + '\n\n**یک مثال فرضی از اقدام امروز**\n' + dailyActionExample +
+        '\n\n**اقدام امروز در متن مسیر:**\n' + dailyAction +
         '\n\nاگر شرایط واقعی تو با مثال فرق دارد، آن را عیناً تکرار نکن. اگر اجرا امن یا مناسب نیست، انجام‌ندادن اقدام انتخاب معتبرتری است.\n\n' + safe;
 
     case 'light_version':
@@ -3025,8 +3029,8 @@ export function answerAnxietyDailyPreparedQuestion({ day, message } = {}) {
       return heading + '\n\n**اگر امروز نمونه‌ای پیش نیامد**\nلازم نیست عمداً خودت را نگران کنی یا موقعیتی اضطراب‌آور بسازی. اگر مرور یک نمونه قبلی کم‌فشار و امن است، می‌توانی همان را بررسی کنی؛ وگرنه نسخه سبک را انتخاب کن یا تمرین را به زمان دیگری موکول کن.\n\nنسخه سبک: ' + guide.lightVersion + '\n\nنبود نمونه، شکست یا عقب‌ماندن نیست.';
 
     case 'exercise_action_difference':
-      return heading + '\n\n**تفاوت تمرین و اقدام امروز**\n**تمرین:** ' + guide.exercise +
-        '\n\n**اقدام:** ' + guide.action +
+      return heading + '\n\n**تفاوت تمرین و اقدام امروز**\n**تمرین:** ' + dailyExercise +
+        '\n\n**اقدام:** ' + dailyAction +
         '\n\nتمرین بخش یادگیری و مشاهده است؛ اقدام به‌کارگیری یک گام در زندگی روزمره است و فقط وقتی شرایط امن و مناسب باشد اجرا می‌شود. ممکن است تمرین را انجام بدهی اما به‌دلیل نبود موقعیت مناسب، اقدام را انجام ندهی؛ این قابل قبول است.';
 
     case 'not_done':
@@ -3037,7 +3041,7 @@ export function answerAnxietyDailyPreparedQuestion({ day, message } = {}) {
       return heading + '\n\n**اگر اضطرابت هنگام تمرین بیشتر شد**\n۱) نوشتن، مرور یا آزمایش را متوقف کن. ۲) به یک فعالیت عادی و خنثی برگرد یا در محیط امن استراحت کن؛ خودت را مجبور به تنفس عمیق یا تمرکز بدنی نکن. ۳) اگر نشانه جسمانی تازه یا شدید است، آن را خودکار به اضطراب نسبت نده و ارزیابی پزشکی مناسب بگیر. ۴) اگر خطر فوری آسیب به خود یا دیگری وجود دارد، از فرد امن یا خدمات اضطراری کمک بگیر.\n\nشرط توقف امروز: ' + guide.stopCondition;
 
     case 'talk_other':
-      return heading + '\n\n**آیا لازم است با فرد دیگری صحبت کنی؟**\nنه؛ برای انجام بخش نوشتاری یا مشاهده‌ای این روز، گفت‌وگو با فرد دیگر الزامی نیست. اگر حمایت لازم داری، می‌توانی نوع حمایت را مشخص کنی؛ اما افشا، تماس یا درخواست کمک را در رابطه ناامن یا تحت فشار انجام نده. فرد مورد اعتماد جایگزین پزشک یا متخصص در صورت نیاز به ارزیابی نیست.\n\nاقدام امروز: ' + guide.action;
+      return heading + '\n\n**آیا لازم است با فرد دیگری صحبت کنی؟**\nنه؛ برای انجام بخش نوشتاری یا مشاهده‌ای این روز، گفت‌وگو با فرد دیگر الزامی نیست. اگر حمایت لازم داری، می‌توانی نوع حمایت را مشخص کنی؛ اما افشا، تماس یا درخواست کمک را در رابطه ناامن یا تحت فشار انجام نده. فرد مورد اعتماد جایگزین پزشک یا متخصص در صورت نیاز به ارزیابی نیست.\n\nاقدام امروز: ' + dailyAction;
 
     case 'can_change':
       return heading + '\n\n**سازگارکردن تمرین با شرایط تو**\nمی‌توانی زمان یا قالب نوشتن را ساده‌تر کنی و از نسخه سبک استفاده کنی؛ اما هدف اصلی و هشدارهای ایمنی را تغییر نده. بررسی ضروری سلامت، قانون و ایمنی را حذف نکن و هیچ دارو یا درمانی را بر اساس این تمرین تغییر نده.\n\nنسخه سبک: ' + guide.lightVersion + '\n\n' + safe;
