@@ -162,7 +162,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
   await page.locator('#dashboard .heroAction').click();
   await page.locator('#day').waitFor({ state: 'visible' });
   await page.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
-  await page.getByRole('dialog', { name: 'دستیار هوشمند مسیر ۲۸' }).waitFor({ state: 'visible' });
+  await page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' }).waitFor({ state: 'visible' });
 }
 
 try {
