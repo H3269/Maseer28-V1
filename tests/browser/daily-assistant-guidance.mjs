@@ -349,15 +349,36 @@ try {
     await openDay(adaptedPage, { assistantDayMode: scenario.mode, problem: scenario.topic, localModelInstalled: true });
     const adaptedPanel = adaptedPage.locator('.globalAssistantDialog');
     await adaptedPanel.waitFor({ state: 'visible' });
-    await adaptedPanel.locator('#global-assistant-message').fill('چطور انجامش بدم؟');
-    await adaptedPanel.getByRole('button', { name: 'ارسال' }).click();
-    await adaptedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
-    const adaptedReply = await adaptedPanel.locator('.assistantMessage').last().innerText();
-    assert.ok(adaptedReply.includes(scenario.expected),
-      `assistant must expose the expected source-derived adaptation for ${scenario.mode}`);
-    assert.match(adaptedReply, /متن تمرین همین روز/);
-    assert.match(adaptedReply, /راهکار اختصاصی همین روز/);
-    await assertAssistantUsesVisibleDailySource(adaptedPage, adaptedPanel, scenario.topic, scenario.day);
+    let adaptedReply;
+    if (scenario.topic === 'اضطراب') {
+      const adaptedGuidance = normalizeVisibleDailyText(await adaptedPage.locator('#day .adaptiveGuidance').innerText());
+      assert.ok(adaptedGuidance.includes(normalizeVisibleDailyText(scenario.expected)),
+        `the visible daily screen must show the expected adaptation for ${scenario.mode}`);
+      assert.equal(await adaptedPanel.locator('#global-assistant-message').count(), 0,
+        'T02 adapted days must not expose a free-form composer');
+      assert.equal(await adaptedPanel.locator('.globalAssistantModelButton').count(), 0,
+        'T02 adapted days must not expose a local-model generation route');
+      const adaptedTrigger = adaptedPanel.getByTestId('anxiety-daily-prompt-trigger');
+      await adaptedTrigger.waitFor({ state: 'visible' });
+      await adaptedTrigger.click();
+      const adaptedPromptDialog = adaptedPage.locator('#library-assistant-prompt-dialog');
+      await adaptedPromptDialog.waitFor({ state: 'visible' });
+      await adaptedPromptDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
+      await adaptedPanel.getByRole('button', { name: 'ارسال' }).click();
+      await adaptedPage.waitForFunction((day) => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+        .some((node) => node.innerText.includes(`راهنمای روز ${day} اضطراب`)), scenario.day);
+      adaptedReply = await adaptedPanel.locator('.assistantMessage').last().innerText();
+    } else {
+      await adaptedPanel.locator('#global-assistant-message').fill('چطور انجامش بدم؟');
+      await adaptedPanel.getByRole('button', { name: 'ارسال' }).click();
+      await adaptedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
+      adaptedReply = await adaptedPanel.locator('.assistantMessage').last().innerText();
+      assert.ok(adaptedReply.includes(scenario.expected),
+        `assistant must expose the expected source-derived adaptation for ${scenario.mode}`);
+      assert.match(adaptedReply, /متن تمرین همین روز/);
+      assert.match(adaptedReply, /راهکار اختصاصی همین روز/);
+      await assertAssistantUsesVisibleDailySource(adaptedPage, adaptedPanel, scenario.topic, scenario.day);
+    }
     assert.match(adaptedReply, new RegExp(scenario.topic));
     const visibleScenarioDay = String(scenario.day).replace(/[0-9]/g, digit => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
     assert.match(adaptedReply, new RegExp('روز ' + visibleScenarioDay));
