@@ -3,6 +3,7 @@ import test from 'node:test';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
 import { ANXIETY_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
+import { FEAR_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/fearDailyAssistantPrompts.js';
 
 test('page-specific UI guidance is selected for the current screen', () => {
   const result = makePageAssistantTurn({
@@ -319,4 +320,90 @@ test('daily page answers pre-authored anxiety questions only with matching canon
     dailyContext: { day: 2, problem: 'اضطراب', data: dayData },
   });
   assert.equal(wrongDay.status, 'daily_guidance_unavailable');
+});
+
+
+test('all exact prepared T03 FAQs answer through the real page router for all 28 days despite review gates', () => {
+  let checked = 0;
+  for (const guide of FEAR_DAILY_ASSISTANT_GUIDES) {
+    for (const question of guide.questions) {
+      const result = makePageAssistantTurn({
+        screen: 'day',
+        text: question.value,
+        dailyContext: {
+          day: guide.day,
+          problem: 'ترس',
+          data: {
+            id: getCanonicalDailyRecordId('ترس', guide.day),
+            topic_id: 'T03',
+            day: guide.day,
+            review_status: 'pending_expert_review',
+            risk_level: 'routine',
+          },
+          relationshipSafetyConfirmed: false,
+        },
+      });
+      assert.equal(result.status, 'daily_guidance_available', `T03 prepared FAQ must answer on day ${guide.day}: ${question.id}`);
+      assert.match(result.message, new RegExp('راهنمای روز'));
+      assert.doesNotMatch(result.message, /نیاز به بازبینی ایمنی|بررسی ایمنی همین روز/u);
+      checked += 1;
+    }
+  }
+  assert.equal(FEAR_DAILY_ASSISTANT_GUIDES.length, 28);
+  assert.equal(checked, 392);
+});
+
+test('T03 prepared FAQs require exact canonical topic/day identity', () => {
+  const question = FEAR_DAILY_ASSISTANT_GUIDES[0].questions[0];
+  const wrongTopic = makePageAssistantTurn({
+    screen: 'day',
+    text: question.value,
+    dailyContext: {
+      day: 1,
+      problem: 'ترس',
+      data: { id: getCanonicalDailyRecordId('اضطراب', 1), topic_id: 'T02', day: 1, review_status: 'pending_expert_review' },
+    },
+  });
+  assert.equal(wrongTopic.status, 'daily_guidance_unavailable');
+
+  const missingTopic = makePageAssistantTurn({
+    screen: 'day',
+    text: question.value,
+    dailyContext: {
+      day: 1,
+      problem: 'ترس',
+      data: { id: getCanonicalDailyRecordId('ترس', 1), day: 1, review_status: 'pending_expert_review' },
+    },
+  });
+  assert.equal(missingTopic.status, 'daily_guidance_unavailable');
+
+  const wrongDay = makePageAssistantTurn({
+    screen: 'day',
+    text: question.value,
+    dailyContext: {
+      day: 1,
+      problem: 'ترس',
+      data: { id: getCanonicalDailyRecordId('ترس', 2), topic_id: 'T03', day: 2, review_status: 'pending_expert_review' },
+    },
+  });
+  assert.equal(wrongDay.status, 'daily_guidance_unavailable');
+});
+
+test('T03 prepared FAQ route still gives urgent safety handoff precedence', () => {
+  const result = makePageAssistantTurn({
+    screen: 'day',
+    text: 'امشب قصد دارم خودم را بکشم.',
+    dailyContext: {
+      day: 1,
+      problem: 'ترس',
+      data: {
+        id: getCanonicalDailyRecordId('ترس', 1),
+        topic_id: 'T03',
+        day: 1,
+        review_status: 'pending_expert_review',
+      },
+    },
+  });
+  assert.equal(result.status, 'urgent_human_support_required');
+  assert.deepEqual(result.knowledge, []);
 });
