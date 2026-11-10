@@ -80,7 +80,7 @@ try {
   await launcher.waitFor({ state: 'visible' });
   assert.equal(await launcher.isVisible(), true, 'global assistant launcher must appear on the dashboard');
   await launcher.click();
-  let dialog = page.getByRole('dialog', { name: 'دستیار هوشمند مسیر ۲۸' });
+  let dialog = page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' });
   await dialog.waitFor({ state: 'visible' });
   let closeButton = dialog.getByRole('button', { name: 'بستن پنجره دستیار' });
   await page.waitForFunction(() => document.activeElement?.getAttribute('aria-label') === 'بستن پنجره دستیار');
@@ -97,7 +97,7 @@ try {
   await page.keyboard.press('Tab');
   assert.equal(await firstDialogControl.evaluate((element) => element === document.activeElement), true, 'Tab from the actual last control must wrap to the first');
   await dialog.getByRole('textbox').fill('');
-  assert.match(await dialog.innerText(), /دستیار هوشمند مسیر ۲۸/);
+  assert.match(await dialog.innerText(), /دستیار راهنمای مسیر ۲۸/);
   const dialogBoxForLayout = await dialog.boundingBox();
   assert.ok(dialogBoxForLayout.width >= 500, 'assistant dialog should use a wider desktop layout');
   const titleBox = await dialog.locator('#global-assistant-title').boundingBox();
@@ -242,9 +242,9 @@ try {
   await page.getByRole('button', { name: 'مطالعه', exact: true }).click();
   await page.locator('.bottomNav button[data-view="books"].active').waitFor({ state: 'visible' });
   await launcher.click();
-  dialog = page.getByRole('dialog', { name: 'دستیار هوشمند مسیر ۲۸' });
+  dialog = page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' });
   await dialog.waitFor({ state: 'visible' });
-  assert.match(await dialog.innerText(), /دستیار هوشمند مسیر ۲۸/);
+  assert.match(await dialog.innerText(), /دستیار راهنمای مسیر ۲۸/);
 
   // Before successful local-model installation, only the guided picker is shown.
   const libraryPromptPicker = dialog.getByRole('button', { name: 'باز کردن سؤال‌های آماده دستیار کتابخانه' });
@@ -345,7 +345,7 @@ try {
   await page.getByRole('button', { name: 'مطالعه', exact: true }).click();
   await page.locator('.bottomNav button[data-view="books"].active').waitFor({ state: 'visible' });
   await launcher.click();
-  dialog = page.getByRole('dialog', { name: 'دستیار هوشمند مسیر ۲۸' });
+  dialog = page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' });
   await dialog.waitFor({ state: 'visible' });
   await page.getByPlaceholder('سؤال پیشرفته‌ات را اینجا بنویس...').waitFor({ state: 'visible' });
   assert.equal(await dialog.getByRole('textbox').count(), 1, 'successful local-model installation must reveal free typing');
@@ -356,9 +356,9 @@ try {
   await page.getByRole('button', { name: 'ارتباط' }).click();
   await page.locator('.bottomNav button[data-view="support"].active').waitFor({ state: 'visible' });
   await launcher.click();
-  dialog = page.getByRole('dialog', { name: 'دستیار هوشمند مسیر ۲۸' });
+  dialog = page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' });
   await dialog.waitFor({ state: 'visible' });
-  assert.match(await dialog.innerText(), /دستیار هوشمند مسیر ۲۸/);
+  assert.match(await dialog.innerText(), /دستیار راهنمای مسیر ۲۸/);
   await dialog.getByRole('textbox').fill('این صفحه برای چیست؟');
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('راه‌های ارتباط با مرکز')));
@@ -376,7 +376,7 @@ try {
     );
 
     await launcher.click();
-    dialog = page.getByRole('dialog', { name: 'دستیار هوشمند مسیر ۲۸' });
+    dialog = page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' });
     await dialog.waitFor({ state: 'visible' });
     const dialogBox = await dialog.boundingBox();
     assert.ok(dialogBox, 'mobile dialog must have a visible layout box');
