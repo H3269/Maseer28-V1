@@ -360,7 +360,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
             onKeyDown={containDialogTab}
           >
             <div className="globalAssistantDialogTop">
-              <h2 id="global-assistant-title">{screen === 'day' ? 'دستیار راهنمای مسیر ۲۸' : 'دستیار هوشمند مسیر ۲۸'}</h2>
+              <h2 id="global-assistant-title">دستیار راهنمای مسیر ۲۸</h2>
               <button type="button" className="globalAssistantModelButton" onClick={requestModelInstall} disabled={sending} aria-label="نصب مدل هوش مصنوعی محلی" title="نصب اختیاری مدل هوش مصنوعی روی همین دستگاه">نصب مدل محلی</button>
               <button ref={closeButtonRef} type="button" className="iconButton" onClick={() => setOpen(false)} aria-label="بستن پنجره دستیار">
                 <AppIcon name="x" size={18} />
