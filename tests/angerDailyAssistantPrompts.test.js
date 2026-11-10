@@ -25,7 +25,7 @@ test('prompt groups are scoped to the selected day and contain all prepared ques
     const groups = getAngerDailyAssistantPromptGroups(day);
     assert.equal(groups.length, 5);
     assert.equal(groups.reduce((count, group) => count + group.questions.length, 0), 14);
-    assert.ok(groups.flatMap((group) => group.questions).every((question) => question.value.startsWith(`روز ${day} خشم:`)));
+    assert.ok(groups.flatMap((group) => group.questions).every((question) => question.value === question.label && !question.value.includes('خشم')));
   }
   assert.deepEqual(getAngerDailyAssistantPromptGroups(29), []);
   assert.equal(getAngerDailyAssistantPromptGroups('۱').reduce((count, group) => count + group.questions.length, 0), 14);
