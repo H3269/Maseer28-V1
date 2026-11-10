@@ -41,6 +41,10 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
   }
 
   if (screen === 'day') {
+    // Crisis and immediate-safety routing always precede the prepared-only FAQ boundary.
+    if (SAFETY_STATUSES.has(inputProbe.status)) {
+      return Object.freeze({ ...inputProbe, conversationState: null });
+    }
     if (message.length > 2000) {
       return Object.freeze({ status: 'input_too_long', message: 'پیام بیش از حد طولانی است؛ لطفاً آن را کوتاه‌تر کن.', knowledge: Object.freeze([]), conversationState: null });
     }
@@ -61,17 +65,45 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         ? answerAnxietyDailyPreparedQuestion
         : null;
     const preparedAnswer = answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent });
+    const hasCanonicalPreparedIdentity = ['T01', 'T02'].includes(preparedTopicId)
+      && Number.isInteger(preparedDay)
+      && preparedDay >= 1
+      && preparedDay <= 28
+      && preparedSource
+      && typeof preparedSource === 'object'
+      && preparedSource.id === getCanonicalDailyRecordId(dailyContext?.problem, preparedDay)
+      && Number(preparedSource.day) === preparedDay
+      && (!Object.prototype.hasOwnProperty.call(preparedSource, 'topic_id')
+        || preparedSource.topic_id === preparedTopicId);
+
+    if (preparedTopicId === 'T02') {
+      if (!hasCanonicalPreparedIdentity) {
+        return Object.freeze({
+          status: 'daily_guidance_unavailable',
+          message: 'محتوای معتبر روز جاری در دسترس نیست؛ برای جلوگیری از راهنمایی اشتباه، فعلاً پاسخ روزمحور نمی‌دهم.',
+          knowledge: Object.freeze([]),
+          conversationState: null,
+        });
+      }
+      if (preparedAnswer) {
+        return Object.freeze({
+          status: 'daily_guidance_available',
+          message: preparedAnswer,
+          knowledge: Object.freeze([]),
+          page_context: 'day',
+          conversationState: null,
+        });
+      }
+      return Object.freeze({
+        status: 'prepared_question_required',
+        message: 'این پرسش در فهرست راهنمای آماده اضطراب نیست؛ برای جلوگیری از پاسخ‌سازی آزاد یا راهنمایی نامطمئن، فقط یکی از سؤال‌های آماده همین روز را انتخاب کن.',
+        knowledge: Object.freeze([]),
+        page_context: 'day',
+        conversationState: null,
+      });
+    }
+
     if (preparedAnswer) {
-      const hasCanonicalPreparedIdentity = ['T01', 'T02'].includes(preparedTopicId)
-        && Number.isInteger(preparedDay)
-        && preparedDay >= 1
-        && preparedDay <= 28
-        && preparedSource
-        && typeof preparedSource === 'object'
-        && preparedSource.id === getCanonicalDailyRecordId(dailyContext?.problem, preparedDay)
-        && Number(preparedSource.day) === preparedDay
-        && (!Object.prototype.hasOwnProperty.call(preparedSource, 'topic_id')
-          || preparedSource.topic_id === preparedTopicId);
       if (!hasCanonicalPreparedIdentity) {
         return Object.freeze({
           status: 'daily_guidance_unavailable',
