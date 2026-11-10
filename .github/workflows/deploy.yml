@@ -17,7 +17,7 @@ concurrency:
 jobs:
   deploy-test-app:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -53,3 +53,5 @@ jobs:
       - name: Deploy test app
         id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346
+        with:
+          timeout: 1800000
