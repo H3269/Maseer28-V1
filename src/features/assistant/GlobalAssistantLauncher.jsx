@@ -311,7 +311,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
 
       conversationStateRef.current = turn.conversationState || null;
       let finalMessage = turn.message || 'برای این پرسش پاسخ قابل اتکایی در دسترس نیست.';
-      if (!localModelUnavailable && shouldUseLocalNeuralModel({ screen, turn, intentStatus: intentGate.status, isLibraryTurn })) {
+      if (!isFearDailyPromptContext && !localModelUnavailable && shouldUseLocalNeuralModel({ screen, turn, intentStatus: intentGate.status, isLibraryTurn })) {
         try {
           await requestLocalNeuralModel('load', { allowDownload: false }, updateProgress);
           updateAssistantMessage('در حال تولید پاسخ با مدل زبانی عصبی محلی...', turn.knowledge || []);
@@ -420,7 +420,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
             }}
           >
             <span className="badge">پرسش‌های پیشنهادی</span>
-            <h2 id="library-assistant-prompt-title">{screen === "books" ? "سؤال آماده دستیار کتابخانه" : `سؤال‌های آماده روز ${dailyContext?.day} ${isAnxietyDailyPromptContext ? "اضطراب" : "خشم"}`}</h2>
+            <h2 id="library-assistant-prompt-title">{screen === "books" ? "سؤال آماده دستیار کتابخانه" : `سؤال‌های آماده روز ${dailyContext?.day} ${isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : "خشم"}`}</h2>
             <p className="muted">برای انتخاب، روی سؤال موردنظرت بزن تا برای همین روز ارسال شود.</p>
             <div className="libraryAssistantPromptOptions">
               {activePromptGroups.map((group) => (
@@ -485,7 +485,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                     <button
                       ref={libraryPromptTriggerRef}
                       className="libraryAssistantPromptTrigger"
-                      data-testid={isAngerDailyPromptContext ? "anger-daily-prompt-trigger" : isAnxietyDailyPromptContext ? "anxiety-daily-prompt-trigger" : "library-assistant-prompt-trigger"}
+                      data-testid={isAngerDailyPromptContext ? "anger-daily-prompt-trigger" : isAnxietyDailyPromptContext ? "anxiety-daily-prompt-trigger" : isFearDailyPromptContext ? "fear-daily-prompt-trigger" : "library-assistant-prompt-trigger"}
                       type="button"
                       aria-label={isTopicDailyPromptContext
                         ? `باز کردن سؤال‌های آماده روز ${dailyContext?.day} ${isAnxietyDailyPromptContext ? "اضطراب" : "خشم"}`
