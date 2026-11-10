@@ -78,3 +78,18 @@ test('each T03 day has distinct, explicitly hypothetical exercise and action exa
  assert.match(exercise,/مثال فرضی/);assert.ok(exercise.includes(g.exerciseExample));
  assert.match(action,/مثال فرضی/);assert.ok(action.includes(g.actionExample));
 });
+
+test('T03 prepared guide metadata maps to all ten runtime fields for every day',async()=>{
+ const override=JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json',import.meta.url),'utf8'));
+ for(const g of FEAR_DAILY_ASSISTANT_GUIDES){
+  const row=override.categories['ترس'].days.find(x=>x.day===g.day);
+  assert.equal(row.title,g.title,'title day '+g.day);
+  assert.equal(row.intro,`هدف: ${g.objective}\nمهارت: ${g.skill}\nسازوکار: ${g.mechanism}`,'intro day '+g.day);
+  assert.equal(row.closing,`معیار موفقیت: ${g.successCriterion}\nپرسش بازتاب: ${g.reflectionQuestion}\nشرط توقف: ${g.stopCondition}`,'closing day '+g.day);
+  assert.equal(row.lightExerciseText,`نسخه سبک تمرین: ${g.lightVersion}`,'light exercise day '+g.day);
+  assert.equal(row.lightActionText,`نسخه سبک اقدام: ${g.lightVersion}`,'light action day '+g.day);
+  assert.equal(row.progressActionText,`نسخه پیشرفت اقدام: ${g.progressVersion}`,'progress day '+g.day);
+  assert.equal(row.restExerciseText,`نسخه استراحت تمرین: ${g.restVersion}`,'rest exercise day '+g.day);
+  assert.equal(row.restActionText,`نسخه استراحت اقدام: ${g.restVersion}`,'rest action day '+g.day);
+ }
+});
