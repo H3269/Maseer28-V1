@@ -8,6 +8,7 @@ import {
   getAnxietyDailyAssistantPromptGroups,
 } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
 import { makeDailyExerciseGuidanceTurn } from '../src/features/assistant/dailyExerciseAssistantGuidance.js';
+import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
 
 test('anxiety assistant guide covers all 28 days with fourteen day-scoped prepared questions', () => {
   assert.equal(ANXIETY_DAILY_ASSISTANT_GUIDES.length, 28);
@@ -139,4 +140,54 @@ test('daily turn routes anxiety prepared answers only for matching source topic 
   });
   assert.match(dayMismatch.response, /شناسه روزِ محتوای دریافتی/);
   assert.doesNotMatch(dayMismatch.response, /راهنمای روز 1 اضطراب/);
+});
+
+
+test('T02 daily assistant refuses free-form questions and requires a prepared question', () => {
+  const guide = ANXIETY_DAILY_ASSISTANT_GUIDES[0];
+  const result = makePageAssistantTurn({
+    screen: 'day',
+    text: 'چطور اضطرابم را در همه موقعیت‌ها درمان کنم؟',
+    dailyContext: {
+      day: 1,
+      problem: 'اضطراب',
+      data: { id: 'T02-D01', topic_id: 'T02', day: 1, exercise: guide.exercise, actionText: guide.action },
+    },
+  });
+  assert.equal(result.status, 'prepared_question_required');
+  assert.match(result.message, /فقط یکی از سؤال‌های آماده همین روز را انتخاب کن/);
+  assert.doesNotMatch(result.message, /پیشنهاد می‌کنم|بهتر است انجام بدهی/);
+  assert.equal(result.conversationState, null);
+});
+
+test('T02 urgent safety routing takes precedence over the prepared-question-only boundary', () => {
+  const guide = ANXIETY_DAILY_ASSISTANT_GUIDES[0];
+  const result = makePageAssistantTurn({
+    screen: 'day',
+    text: 'می‌خواهم خودم را بکشم؛ امشب قصد انجامش را دارم.',
+    dailyContext: {
+      day: 1,
+      problem: 'اضطراب',
+      data: { id: 'T02-D01', topic_id: 'T02', day: 1, exercise: guide.exercise, actionText: guide.action },
+    },
+  });
+  assert.equal(result.status, 'urgent_human_support_required');
+  assert.equal(result.conversationState, null);
+  assert.doesNotMatch(result.message, /راهنمای روز 1 اضطراب/);
+});
+
+test('T02 prepared FAQ still requires canonical topic and day identity', () => {
+  const guide = ANXIETY_DAILY_ASSISTANT_GUIDES[0];
+  const question = guide.questions[0].value;
+  const result = makePageAssistantTurn({
+    screen: 'day',
+    text: question,
+    dailyContext: {
+      day: 1,
+      problem: 'اضطراب',
+      data: { id: 'T01-D01', topic_id: 'T01', day: 1, exercise: guide.exercise, actionText: guide.action },
+    },
+  });
+  assert.equal(result.status, 'daily_guidance_unavailable');
+  assert.doesNotMatch(result.message, /راهنمای روز 1 اضطراب/);
 });
