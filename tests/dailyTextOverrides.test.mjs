@@ -134,3 +134,8 @@ test('T03 fear overrides all ten runtime text fields uniquely across all 28 days
   }
   assert.deepEqual(actual.map(day => day.id), original.map(day => day.id), 'canonical IDs remain unchanged');
 });
+
+test('T03 daily override fetch uses a fresh cache key', async () => {
+ const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
+ assert.match(app, /daily-text-overrides\\.v1\\.json\\?v=20261110-t03/);
+});
