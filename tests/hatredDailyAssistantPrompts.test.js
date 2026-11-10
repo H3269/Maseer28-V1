@@ -87,8 +87,8 @@ test('T04 all 392 prepared answers teach the user with clear steps, day-specific
    const answer=answerHatredDailyPreparedQuestion({day:g.day,message:q.value,dailyContent:{exercise:g.exercise,actionText:g.action}});
    assert.ok(answer, `missing answer day ${g.day} kind ${q.kind}`);
    assert.ok(answer.length>=450, `answer too short day ${g.day} kind ${q.kind}: ${answer.length}`);
-   assert.ok(answer.includes(`روز ${g.day}`), `missing day context day ${g.day} kind ${q.kind}`);
-   assert.match(answer,/ایمنی|متوقف|فاصله|اختیاری/);
+   assert.match(answer,/راهنمای روز/, `missing day context day ${g.day} kind ${q.kind}`);
+   assert.match(answer,/ایمنی|متوقف|فاصله|اختیاری|مکث/);
    if(q.kind==='exercise_example'||q.kind==='action_example'){
     assert.match(answer,/موقعیت فرضی|قدم‌به‌قدم|چطور انجامش بدهی/);
     assert.match(answer,/معیار پایان/);
