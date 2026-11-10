@@ -50,13 +50,17 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     // guidance continues through the separate safety and review gates.
     const preparedDay = Number(dailyContext?.day);
     const preparedSource = dailyContext?.data;
+    // Prepared FAQ answers must quote the exact transformed daily content shown
+    // in DayScreen (including adaptation and display normalization), while
+    // canonical identity validation continues to use the untouched source.
+    const preparedVisibleContent = dailyContext?.guidanceData || preparedSource;
     const preparedTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem);
     const answerPreparedQuestion = preparedTopicId === 'T01'
       ? answerAngerDailyPreparedQuestion
       : preparedTopicId === 'T02'
         ? answerAnxietyDailyPreparedQuestion
         : null;
-    const preparedAnswer = answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedSource });
+    const preparedAnswer = answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent });
     if (preparedAnswer) {
       const hasCanonicalPreparedIdentity = ['T01', 'T02'].includes(preparedTopicId)
         && Number.isInteger(preparedDay)
