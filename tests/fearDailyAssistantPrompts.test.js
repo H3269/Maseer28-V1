@@ -49,7 +49,7 @@ test('T03 runtime override and prepared assistant bank match all 28 exercise/act
  for(const g of FEAR_DAILY_ASSISTANT_GUIDES){const source=days.find(x=>x.day===g.day);assert.ok(source);assert.equal(g.exercise,source.exercise,'exercise day '+g.day);assert.equal(g.action,source.actionText,'action day '+g.day);}
 });
 test('T03 has no exact exercise/action duplication with any other topic override',async()=>{
- const override=JSON.parse(await readTextFile(new URL('../public/content/daily-text-overrides.v1.json',import.meta.url),'utf8'));
+ const override=JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json',import.meta.url),'utf8'));
  const normalize=s=>String(s||'').normalize('NFKC').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[\u200c\s،؛.!؟,:]/g,'').toLowerCase();
  const fear=override.categories['ترس'].days;
  for(const [topic,data] of Object.entries(override.categories)){if(topic==='ترس')continue;for(const row of data.days||[])for(const f of fear){assert.notEqual(normalize(f.exercise),normalize(row.exercise),'exercise duplicate with '+topic+' day '+row.day);assert.notEqual(normalize(f.actionText),normalize(row.actionText),'action duplicate with '+topic+' day '+row.day);}}
