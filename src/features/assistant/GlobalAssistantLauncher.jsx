@@ -369,7 +369,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
           >
             <div className="globalAssistantDialogTop">
               <h2 id="global-assistant-title">دستیار راهنمای مسیر ۲۸</h2>
-              <button type="button" className="globalAssistantModelButton" onClick={requestModelInstall} disabled={sending} aria-label="نصب مدل هوش مصنوعی محلی" title="نصب اختیاری مدل هوش مصنوعی روی همین دستگاه">نصب مدل محلی</button>
+              {!isAnxietyDailyPromptContext && <button type="button" className="globalAssistantModelButton" onClick={requestModelInstall} disabled={sending} aria-label="نصب مدل هوش مصنوعی محلی" title="نصب اختیاری مدل هوش مصنوعی روی همین دستگاه">نصب مدل محلی</button>}
               <button ref={closeButtonRef} type="button" className="iconButton" onClick={() => setOpen(false)} aria-label="بستن پنجره دستیار">
                 <AppIcon name="x" size={18} />
               </button>
@@ -468,8 +468,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
-              <form className={'assistantComposer' + ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} onSubmit={send}>
-                {(screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled ? (
+              <form className={'assistantComposer' + (((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled) || isAnxietyDailyPromptContext ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} onSubmit={send}>
+                {((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled) || isAnxietyDailyPromptContext ? (
                   <div className="libraryAssistantPromptRow">
                     <button
                       ref={libraryPromptTriggerRef}
