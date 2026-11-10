@@ -1,3 +1,4 @@
+import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 // Daily prepared guidance for the T01 anger path. Content is grounded in the reviewed 28-day draft.
 export const ANGER_DAILY_ASSISTANT_GUIDES = [
   {
@@ -2944,7 +2945,7 @@ function safeAngerReminder() {
   return 'این تمرین برای شناخت و انتخاب رفتار امن‌تر است، نه برای سرکوب احساس خشم یا مجبورکردن خودت به ادامه یک موقعیت دشوار. اگر احتمال فوری آسیب به خودت، فرد دیگری یا اموال وجود دارد، تمرین را کنار بگذار، فاصله امن ایجاد کن و از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر.';
 }
 
-export function answerAngerDailyPreparedQuestion({ day, message } = {}) {
+function answerAngerDailyPreparedQuestionRaw({ day, message } = {}) {
   const dayNumber = toAngerDayNumber(day);
   const guide = ANGER_DAILY_ASSISTANT_GUIDES.find((item) => item.day === dayNumber);
   if (!guide) return null;
@@ -3069,4 +3070,13 @@ export function answerAngerDailyPreparedQuestion({ day, message } = {}) {
     default:
       return null;
   }
+}
+
+export function answerAngerDailyPreparedQuestion(args = {}) {
+  const answer = answerAngerDailyPreparedQuestionRaw(args);
+  if (!answer) return null;
+  const day = toAngerDayNumber(args.day);
+  const guide = ANGER_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
+  const question = guide?.questions.find((item) => item.value === String(args.message || '').trim());
+  return addTeacherStyleFrame(answer, { guide, question, topic: 'خشم' });
 }

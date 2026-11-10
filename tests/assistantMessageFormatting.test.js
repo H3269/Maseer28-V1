@@ -30,6 +30,14 @@ test('all 1,568 prepared answers across T01-T04 render without raw markdown or e
         assert.equal(visibleText.includes('**'), false, topic.id + ' raw bold markers');
         assert.equal(visibleText.includes(String.fromCharCode(92) + 'n'), false, topic.id + ' escaped newline');
         assert.ok(lines.length > 1, topic.id + ' must preserve paragraph/line breaks');
+        assert.doesNotMatch(visibleText, /(?:^|[^A-Za-z0-9])T(?:0?[1-9]|[12][0-9]|3[0-4])(?:$|[^A-Za-z0-9])/,
+          topic.id + ' must not expose internal topic identifiers');
+        assert.doesNotMatch(visibleText, /(?:این|در این)\s+بسته|بسته\s*T(?:0?[1-9]|[12][0-9]|3[0-4])/,
+          topic.id + ' must use the actual topic name, not package terminology');
+        if (topic.id !== 'T04') {
+          assert.match(visibleText, /بیاییم قدم‌به‌قدم پیش برویم/,
+            topic.id + ' prepared answers must use the teacher-style introduction');
+        }
         assert.ok(lines.flat().some((part) => part.type === 'strong'), topic.id + ' bold headings must become strong spans');
         checked += 1;
       }

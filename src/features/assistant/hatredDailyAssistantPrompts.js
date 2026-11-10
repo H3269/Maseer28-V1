@@ -1,3 +1,4 @@
+import { cleanPreparedAssistantTopicText } from './teacherStylePreparedAnswer.js';
 // Prepared-only daily guidance for T04. Self-hatred is classified and referred to T18; no self-hatred intervention is delivered here.
 export const HATRED_DAILY_ASSISTANT_GUIDES = [
   {
@@ -2983,7 +2984,7 @@ function workedSteps(g,example,kind){
  const step3=isExercise?'حالا همان کار را روی یک نمونه کم‌فشار انجام بده و نتیجه را کوتاه ثبت کن.':'اگر انجام این کار امن و مناسب است، آن را در حد کوچک اجرا کن؛ اگر نه، فاصله‌گرفتن یا انجام‌ندادن انتخاب معتبر است.';
  return '**۱. موقعیت فرضی**\n'+example+'\n\n**۲. چطور انجامش بدهی؟**\n'+step1+'\n'+step2+'\n'+step3+'\n\n**۳. ارتباط با دستور امروز**\n'+instruction+'\n\n**۴. از کجا بفهمی کافی است؟**\n'+g.successCriterion+'\n\n**یادت باشد:** این نمونه فقط برای آموزش است؛ لازم نیست عین آن برای تو اتفاق افتاده باشد یا جزئیات خصوصی کسی را ثبت کنی.';
 }
-export function answerHatredDailyPreparedQuestion({day,message,dailyContent}={}){
+function answerHatredDailyPreparedQuestionRaw({day,message,dailyContent}={}){
  const n=toHatredDayNumber(day),g=HATRED_DAILY_ASSISTANT_GUIDES.find(x=>x.day===n);if(!g)return null;
  const q=g.questions.find(x=>x.value===String(message||'').trim());if(!q)return null;
  const e=String(dailyContent?.exercise||g.exercise||'').trim(),a=String(dailyContent?.actionText||dailyContent?.action||g.action||'').trim(),intro=teachingIntro(g),s=safetyFor(g);
@@ -3004,4 +3005,9 @@ export function answerHatredDailyPreparedQuestion({day,message,dailyContent}={})
  case'duration':return intro+'\n\n**چقدر زمان لازم است؟**\nبرای این تمرین زمان استاندارد معتبر و مشخصی ثبت نشده؛ بنابراین عددی حدس نمی‌زنم. به‌اندازه‌ای پیش برو که بتوانی دستور را روشن و بدون فشار انجام بدهی. اگر تمرین طولانی شد یا به نشخوار ذهنی تبدیل شد، متوقفش کن.\n\n**معیار پایان:** '+g.successCriterion+'\n\nکیفیت و ایمنی مهم‌تر از مدت‌زمان است.\n\n'+s;
  default:return null;
  }
+}
+
+export function answerHatredDailyPreparedQuestion(args = {}) {
+  const answer = answerHatredDailyPreparedQuestionRaw(args);
+  return answer ? cleanPreparedAssistantTopicText(answer, 'نفرت') : null;
 }

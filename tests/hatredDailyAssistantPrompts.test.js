@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 import { HATRED_DAILY_ASSISTANT_GUIDES, answerHatredDailyPreparedQuestion, getHatredDailyAssistantPromptGroups } from '../src/features/assistant/hatredDailyAssistantPrompts.js';
+import { cleanPreparedAssistantTopicText } from '../src/features/assistant/teacherStylePreparedAnswer.js';
 
 test('T04 has 28 complete days and exactly 14 unique prepared questions per day',()=>{
  assert.equal(HATRED_DAILY_ASSISTANT_GUIDES.length,28);
@@ -33,7 +34,7 @@ test('T04 exercises, actions and hypothetical examples are unique within the top
 
 test('T04 prepared answers stay tied to the selected day and the visible runtime text',()=>{
  const g=HATRED_DAILY_ASSISTANT_GUIDES[0];
- const visible={exercise:'تمرین نمایان و جاری T04',actionText:'اقدام نمایان و جاری T04'};
+ const visible={exercise:'تمرین نمایان و جاری نفرت',actionText:'اقدام نمایان و جاری نفرت'};
  const exercise=answerHatredDailyPreparedQuestion({day:1,message:g.questions.find(q=>q.kind==='exercise_meaning').value,dailyContent:visible});
  const action=answerHatredDailyPreparedQuestion({day:1,message:g.questions.find(q=>q.kind==='action_meaning').value,dailyContent:visible});
  assert.ok(exercise.includes(visible.exercise));assert.ok(action.includes(visible.actionText));
@@ -124,7 +125,7 @@ test('T04 every prepared answer includes the selected day safety condition',()=>
  for(const g of HATRED_DAILY_ASSISTANT_GUIDES){
   for(const q of g.questions){
    const answer=answerHatredDailyPreparedQuestion({day:g.day,message:q.value});
-   assert.ok(answer.includes(g.stopCondition),`day ${g.day} safety condition missing for ${q.kind}`);
+   assert.ok(answer.includes(cleanPreparedAssistantTopicText(g.stopCondition, 'نفرت')),`day ${g.day} safety condition missing for ${q.kind}`);
   }
  }
 });

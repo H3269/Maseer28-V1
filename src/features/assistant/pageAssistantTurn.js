@@ -1,4 +1,5 @@
 import { routeAssistantTurn } from './assistantTurnEngine.js';
+import { cleanPreparedAssistantTopicText } from './teacherStylePreparedAnswer.js';
 import { answerPageAssistantQuestion, getPageAssistantContext } from './pageAssistantContext.js';
 import { makeDailyExerciseGuidanceTurn, selectDailyExerciseGuidanceData } from './dailyExerciseAssistantGuidance.js';
 import { answerAngerDailyPreparedQuestion } from './angerDailyAssistantPrompts.js';
@@ -59,8 +60,13 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     const preparedTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem);
     // T03 safety and clarification signals must preempt both prepared answers
     // and the generic daily-guidance route, even when the message is not an FAQ.
+    const visibleTopicName = ({ T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت' })[preparedTopicId];
     if (['T03', 'T04'].includes(preparedTopicId) && SAFETY_STATUSES.has(inputProbe.status)) {
-      return Object.freeze({ ...inputProbe, conversationState: null });
+      return Object.freeze({
+        ...inputProbe,
+        message: cleanPreparedAssistantTopicText(inputProbe.message, visibleTopicName),
+        conversationState: null,
+      });
     }
     const answerPreparedQuestion = preparedTopicId === 'T01'
       ? answerAngerDailyPreparedQuestion
@@ -108,7 +114,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     }
 
     if (preparedTopicId === 'T04') {
-      return Object.freeze({ status: 'daily_guidance_unavailable', message: 'برای موضوع نفرت، فقط سؤال‌های آماده همین روز پاسخ داده می‌شوند. لطفاً یکی از سؤال‌های فهرست را انتخاب کن؛ گفت‌وگوی آزاد در این بسته فعال نیست.', knowledge: Object.freeze([]), conversationState: null });
+      return Object.freeze({ status: 'daily_guidance_unavailable', message: 'برای موضوع نفرت، فقط سؤال‌های آماده همین روز پاسخ داده می‌شوند. لطفاً یکی از سؤال‌های فهرست را انتخاب کن؛ گفت‌وگوی آزاد برای این موضوع فعال نیست.', knowledge: Object.freeze([]), conversationState: null });
     }
 
     // The in-path assistant is a bounded local guidance surface. Do not apply
@@ -125,7 +131,9 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     });
     return Object.freeze({
       status: 'daily_guidance_available',
-      message: dailyTurn.response,
+      message: visibleTopicName
+        ? cleanPreparedAssistantTopicText(dailyTurn.response, visibleTopicName)
+        : dailyTurn.response,
       knowledge: Object.freeze([]),
       page_context: 'day',
       conversationState: Object.freeze({ dailyState: dailyTurn.nextState }),
