@@ -44,8 +44,11 @@ test('T03 assigns one canonical, topic-owned subtopic to every day with a non-ov
  const allowed=new Set(['T03-S01','T03-S02','T03-S03']);
  assert.ok(FEAR_DAILY_ASSISTANT_GUIDES.every(x=>allowed.has(x.subtopic)), 'every T03 day must have exactly one canonical T03 subtopic');
  assert.deepEqual(FEAR_DAILY_ASSISTANT_GUIDES.map(x=>x.subtopic),["T03-S01","T03-S01","T03-S01","T03-S03","T03-S03","T03-S03","T03-S03","T03-S02","T03-S01","T03-S03","T03-S03","T03-S03","T03-S02","T03-S03","T03-S02","T03-S02","T03-S02","T03-S02","T03-S03","T03-S02","T03-S03","T03-S01","T03-S02","T03-S02","T03-S03","T03-S02","T03-S03","T03-S02"]);
+ const s01=registry.subtopics.find(x=>x.subtopic_id==='T03-S01');
  const s03=registry.subtopics.find(x=>x.subtopic_id==='T03-S03');
  const t21=registry.subtopics.find(x=>x.subtopic_id==='T21-S01');
+ assert.match(s01.name,/ارزیابی شواهد حاضر/);
+ assert.match(s01.definition,/پاسخ دفاعی فوری در T03-S03/);
  assert.match(s03.name,/پاسخ دفاعی فوری/);
  assert.match(s03.definition,/الگوی اجتناب رفتاری/);
  assert.match(t21.name,/رفتار اجتنابی/);
