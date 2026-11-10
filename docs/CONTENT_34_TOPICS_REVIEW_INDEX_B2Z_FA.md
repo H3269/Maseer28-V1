@@ -1086,3 +1086,6 @@
 - آزمون‌های جدید: `tests/hatredDailyAssistantPrompts.test.js`، آزمون‌های T04 در `tests/pageAssistantTurn.test.js` و سناریوی Chromium در `tests/browser/daily-assistant-guidance.mjs`.
 - غربال فعلی overlay: تکرار عینی هم‌نوع با ۳۳ موضوع دیگر برای تمرین/اقدام پیدا نشد؛ ممیزی مفهومی کامل ۹۵۲ روز هنوز باز است.
 - **وضعیت:** پیاده‌سازی اولیه تکمیل؛ CI، آزمون مرورگر، ادغام main و تست زنده مالک باز هستند.
+
+- PR فعال بسته T04: [#94](https://github.com/H3269/Maseer28-V1/pull/94) از شاخه `content/t04-hatred-package-20261110-v2`.
+- آخرین snapshot: ۲۸ روز محتوا، ۳۹۲ پرسش آماده، ۵۶ مثال، همگام‌سازی runtime و غربال عینی بین‌موضوعی بدون جفت تکراری. CI/Chromium هنوز قابل مشاهده/تأیید نیست؛ ادغام و تست زنده مالک باز هستند.
