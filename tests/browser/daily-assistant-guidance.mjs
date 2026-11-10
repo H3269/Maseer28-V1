@@ -330,6 +330,11 @@ try {
     const visibleScenarioDay = String(scenario.day).replace(/[0-9]/g, digit => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
     assert.match(adaptedReply, new RegExp('روز ' + visibleScenarioDay));
     if (scenario.fieldMode) {
+      // The assistant is a modal overlay; close it before interacting with
+      // disclosures in the underlying daily screen. Playwright correctly
+      // rejects clicks intercepted by the modal backdrop/dialog.
+      await adaptedPanel.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
+      await adaptedPanel.waitFor({ state: 'detached' });
       const source = dailyTextOverrides.categories['اضطراب'].days.find((item) => item.day === scenario.day);
       const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(adaptedPage, '#dayExercise'));
       const visibleAction = normalizeVisibleDailyText(await readExpandedDailyText(adaptedPage, '#dayAction'));
