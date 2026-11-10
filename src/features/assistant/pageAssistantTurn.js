@@ -49,19 +49,23 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       relationshipSafetyConfirmed: dailyContext?.relationshipSafetyConfirmed === true,
     });
     if (!access.available) {
-      // Day 11's prepared FAQ answers are educational and explicitly prohibit
-      // direct contact unless both people are freely and safely willing.
-      // Keep the relationship gate for free-form guidance and all other days.
+      // Prepared FAQs for every day of the anger path are bounded educational
+      // explanations, not instructions to initiate contact or perform an exercise.
+      // Permit only an exact catalogued FAQ after re-validating source identity;
+      // keep the interpersonal gate for free-form advice and unsafe/blocked content.
+      const angerDay = Number(dailyContext?.day);
       if (access.reason === 'relationship_safety_unconfirmed'
         && getCanonicalTopicIdForCategory(dailyContext?.problem) === 'T01'
-        && Number(dailyContext?.day) === 11) {
+        && Number.isInteger(angerDay)
+        && angerDay >= 1
+        && angerDay <= 28) {
         const identityCheck = getDailyAssistantAccess({
           day: dailyContext?.data,
           problem: dailyContext?.problem,
           relationshipSafetyConfirmed: true,
         });
         const preparedAnswer = identityCheck.available
-          ? answerAngerDailyPreparedQuestion({ day: 11, message })
+          ? answerAngerDailyPreparedQuestion({ day: angerDay, message })
           : null;
         if (preparedAnswer) {
           return Object.freeze({
