@@ -3,6 +3,7 @@ import { answerPageAssistantQuestion, getPageAssistantContext } from './pageAssi
 import { makeDailyExerciseGuidanceTurn, selectDailyExerciseGuidanceData } from './dailyExerciseAssistantGuidance.js';
 import { answerAngerDailyPreparedQuestion } from './angerDailyAssistantPrompts.js';
 import { answerAnxietyDailyPreparedQuestion } from './anxietyDailyAssistantPrompts.js';
+import { answerFearDailyPreparedQuestion } from './fearDailyAssistantPrompts.js';
 import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
 import { getCanonicalDailyRecordId } from '../content/dailyContentSelector.js';
 
@@ -59,10 +60,17 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       ? answerAngerDailyPreparedQuestion
       : preparedTopicId === 'T02'
         ? answerAnxietyDailyPreparedQuestion
-        : null;
+        : preparedTopicId === 'T03'
+          ? answerFearDailyPreparedQuestion
+          : null;
     const preparedAnswer = answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent });
     if (preparedAnswer) {
-      const hasCanonicalPreparedIdentity = ['T01', 'T02'].includes(preparedTopicId)
+      // T03 prepared FAQs use the same direct, canonical route as T01/T02;
+      // require an explicit T03 topic marker so adapted or stale content cannot cross topics.
+      if (preparedTopicId === 'T03' && SAFETY_STATUSES.has(inputProbe.status)) {
+        return Object.freeze({ ...inputProbe, conversationState: null });
+      }
+      const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03'].includes(preparedTopicId)
         && Number.isInteger(preparedDay)
         && preparedDay >= 1
         && preparedDay <= 28
@@ -70,8 +78,10 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         && typeof preparedSource === 'object'
         && preparedSource.id === getCanonicalDailyRecordId(dailyContext?.problem, preparedDay)
         && Number(preparedSource.day) === preparedDay
-        && (!Object.prototype.hasOwnProperty.call(preparedSource, 'topic_id')
-          || preparedSource.topic_id === preparedTopicId);
+        && (preparedTopicId === 'T03'
+          ? preparedSource.topic_id === 'T03'
+          : (!Object.prototype.hasOwnProperty.call(preparedSource, 'topic_id')
+            || preparedSource.topic_id === preparedTopicId));
       if (!hasCanonicalPreparedIdentity) {
         return Object.freeze({
           status: 'daily_guidance_unavailable',
