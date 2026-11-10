@@ -105,8 +105,8 @@ test('T04 day 2 example question gives a worked observation-versus-interpretatio
  const g=HATRED_DAILY_ASSISTANT_GUIDES[1];
  const q=g.questions.find(x=>x.kind==='exercise_example');
  const answer=answerHatredDailyPreparedQuestion({day:2,message:q.value,dailyContent:{exercise:g.exercise,actionText:g.action}});
- assert.match(answer,/همکارت در جلسه می‌گوید/);
- assert.match(answer,/این جمله مشاهده است/);
+ assert.match(answer,/همکارت می‌گوید/);
+ assert.match(answer,/این جمله چیزی است که شنیده‌ای/);
  assert.match(answer,/برداشت تو از نیت اوست/);
  assert.match(answer,/۱\. موقعیت فرضی/);
  assert.match(answer,/۴\. از کجا بفهمی کافی است/);
