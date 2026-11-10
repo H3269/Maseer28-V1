@@ -60,24 +60,26 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       && Number(preparedAngerSource.day) === preparedAngerDay
       && (!Object.prototype.hasOwnProperty.call(preparedAngerSource, 'topic_id')
         || preparedAngerSource.topic_id === 'T01');
-    if (hasCanonicalAngerIdentity) {
-      // Prepared FAQ answers are fixed, pre-authored educational content.
-      // They are independent of the daily exercise's review and relationship
-      // gates; only canonical topic/day identity and exact catalog membership
-      // are required. Free-form and exercise guidance retain their own gates.
-      const preparedAnswer = answerAngerDailyPreparedQuestion({
-        day: preparedAngerDay,
-        message,
-      });
-      if (preparedAnswer) {
+    const preparedAnswer = answerAngerDailyPreparedQuestion({
+      day: preparedAngerDay,
+      message,
+    });
+    if (preparedAnswer) {
+      if (!hasCanonicalAngerIdentity) {
         return Object.freeze({
-          status: 'daily_guidance_available',
-          message: preparedAnswer,
+          status: 'daily_guidance_unavailable',
+          message: 'محتوای معتبر روز جاری در دسترس نیست؛ برای جلوگیری از راهنمایی اشتباه، فعلاً پاسخ روزمحور نمی‌دهم.',
           knowledge: Object.freeze([]),
-          page_context: 'day',
           conversationState: null,
         });
       }
+      return Object.freeze({
+        status: 'daily_guidance_available',
+        message: preparedAnswer,
+        knowledge: Object.freeze([]),
+        page_context: 'day',
+        conversationState: null,
+      });
     }
 
     // The in-path assistant is a bounded local guidance surface. Do not apply
