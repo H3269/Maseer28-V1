@@ -2,6 +2,7 @@ import { routeAssistantTurn } from './assistantTurnEngine.js';
 import { answerPageAssistantQuestion, getPageAssistantContext } from './pageAssistantContext.js';
 import { makeDailyExerciseGuidanceTurn, selectDailyExerciseGuidanceData } from './dailyExerciseAssistantGuidance.js';
 import { answerAngerDailyPreparedQuestion } from './angerDailyAssistantPrompts.js';
+import { answerAnxietyDailyPreparedQuestion } from './anxietyDailyAssistantPrompts.js';
 import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
 import { getCanonicalDailyRecordId } from '../content/dailyContentSelector.js';
 
@@ -44,28 +45,30 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       return Object.freeze({ status: 'input_too_long', message: 'پیام بیش از حد طولانی است؛ لطفاً آن را کوتاه‌تر کن.', knowledge: Object.freeze([]), conversationState: null });
     }
 
-    // Exact, pre-authored T01 FAQs are a separate bounded educational route.
-    // Validate the canonical topic/day identity, then answer before exercise
-    // safety/review gates; those gates continue to protect free-form guidance
-    // and the actual daily exercise content.
-    const preparedAngerDay = Number(dailyContext?.day);
-    const preparedAngerSource = dailyContext?.data;
-    const hasCanonicalAngerIdentity = getCanonicalTopicIdForCategory(dailyContext?.problem) === 'T01'
-      && Number.isInteger(preparedAngerDay)
-      && preparedAngerDay >= 1
-      && preparedAngerDay <= 28
-      && preparedAngerSource
-      && typeof preparedAngerSource === 'object'
-      && preparedAngerSource.id === getCanonicalDailyRecordId(dailyContext?.problem, preparedAngerDay)
-      && Number(preparedAngerSource.day) === preparedAngerDay
-      && (!Object.prototype.hasOwnProperty.call(preparedAngerSource, 'topic_id')
-        || preparedAngerSource.topic_id === 'T01');
-    const preparedAnswer = answerAngerDailyPreparedQuestion({
-      day: preparedAngerDay,
-      message,
-    });
+    // Exact, pre-authored T01/T02 FAQs are bounded educational routes.
+    // Validate canonical topic/day identity before answering; free-form
+    // guidance continues through the separate safety and review gates.
+    const preparedDay = Number(dailyContext?.day);
+    const preparedSource = dailyContext?.data;
+    const preparedTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem);
+    const answerPreparedQuestion = preparedTopicId === 'T01'
+      ? answerAngerDailyPreparedQuestion
+      : preparedTopicId === 'T02'
+        ? answerAnxietyDailyPreparedQuestion
+        : null;
+    const preparedAnswer = answerPreparedQuestion?.({ day: preparedDay, message });
     if (preparedAnswer) {
-      if (!hasCanonicalAngerIdentity) {
+      const hasCanonicalPreparedIdentity = ['T01', 'T02'].includes(preparedTopicId)
+        && Number.isInteger(preparedDay)
+        && preparedDay >= 1
+        && preparedDay <= 28
+        && preparedSource
+        && typeof preparedSource === 'object'
+        && preparedSource.id === getCanonicalDailyRecordId(dailyContext?.problem, preparedDay)
+        && Number(preparedSource.day) === preparedDay
+        && (!Object.prototype.hasOwnProperty.call(preparedSource, 'topic_id')
+          || preparedSource.topic_id === preparedTopicId);
+      if (!hasCanonicalPreparedIdentity) {
         return Object.freeze({
           status: 'daily_guidance_unavailable',
           message: 'محتوای معتبر روز جاری در دسترس نیست؛ برای جلوگیری از راهنمایی اشتباه، فعلاً پاسخ روزمحور نمی‌دهم.',
