@@ -71,7 +71,7 @@ test('prepared exercise answer is explicit, stepwise, and grounded in the select
   const question = guide.questions.find((item) => item.kind === 'exercise_meaning');
   const answer = answerAngerDailyPreparedQuestion({ day: 1, message: question.value });
   assert.match(answer, /چه اتفاقی افتاد/);
-  assert.match(answer, /این کار را این‌طور پیش ببر/);
+  assert.match(answer, /قدم‌به‌قدم انجامش بده/);
   assert.match(answer, /هدف امروز/);
   assert.match(answer, /تفکیک رویداد، احساس و رفتار/);
 });
@@ -80,8 +80,8 @@ test('prepared action example stays distinct from the exercise and preserves saf
   const guide = ANGER_DAILY_ASSISTANT_GUIDES[9];
   const question = guide.questions.find((item) => item.kind === 'action_example');
   const answer = answerAngerDailyPreparedQuestion({ day: 10, message: question.value });
-  assert.match(answer, /رفتار خروج خودت|فضای امن|مکث/);
-  assert.match(answer, /اگر موقعیت تو ناامن است، آن را اجرا نکن/);
+  assert.match(answer, /رفتار خروج خودت|فضای امن|مکث|اقدام امروز/);
+  assert.match(answer, /اگر شرایط زندگی تو شبیه این نمونه نیست|اگر گفتن یا انجام‌دادن آن امن نیست/);
 });
 
 test('light version answer does not shame or force the user', () => {
@@ -178,7 +178,7 @@ test('additional prepared answers distinguish exercise from action and handle mi
   const missedAnswer = answerAngerDailyPreparedQuestion({ day: 7, message: missed.value });
   assert.ok(differenceAnswer.includes(guide.exercise));
   assert.ok(differenceAnswer.includes(guide.action));
-  assert.match(differenceAnswer, /تمرین را برای فهم و ثبت/);
+  assert.match(differenceAnswer, /تمرین، بخش یادگیری است/);
   assert.ok(missedAnswer.includes(guide.lightVersion));
   assert.match(missedAnswer, /خودت را سرزنش نکن/);
 });
@@ -204,7 +204,7 @@ test('duration answer does not invent a number that is absent from reviewed sour
   const guide = ANGER_DAILY_ASSISTANT_GUIDES[0];
   const question = guide.questions.find((item) => item.kind === 'duration');
   const answer = answerAngerDailyPreparedQuestion({ day: 1, message: question.value });
-  assert.match(answer, /مدت زمان تأییدشده و مشخصی.*ثبت نشده/);
+  assert.match(answer, /مدت زمان مشخصی ثبت نشده/);
   assert.doesNotMatch(answer, /\d+ دقیقه/);
 });
 
@@ -296,17 +296,22 @@ test('in-path assistant ignores review status but rejects mismatched source iden
   assert.match(wrongIdentity.message, /محتوای معتبر روز جاری/);
 });
 
-test('all 392 prepared anger questions resolve to a day-specific answer across the full 28-day path', () => {
+test('all 392 prepared anger questions resolve to substantial, day-specific teacher-style answers', () => {
   assert.equal(ANGER_DAILY_ASSISTANT_GUIDES.length, 28);
   let resolved = 0;
+  const answerBodies = new Set();
   for (const guide of ANGER_DAILY_ASSISTANT_GUIDES) {
     assert.equal(guide.questions.length, 14, `day ${guide.day}`);
     for (const question of guide.questions) {
       const answer = answerAngerDailyPreparedQuestion({ day: guide.day, message: question.value });
       assert.ok(answer, `missing answer for day ${guide.day}, ${question.kind}`);
       assert.ok(answer.includes(`راهنمای روز ${guide.day} خشم`));
+      assert.ok(answer.length > 350, `answer too short for day ${guide.day}, ${question.kind}`);
+      assert.match(answer, /امروز|تمرین|اقدام|نمونه|موقعیت/);
+      answerBodies.add(answer);
       resolved += 1;
     }
   }
   assert.equal(resolved, 392);
+  assert.equal(answerBodies.size, 392, 'every prepared question must produce its own day-scoped answer');
 });
