@@ -86,7 +86,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
         : assistantDayMode === 'adaptedLegacySame'
           ? { 1: { feedback: 'same', score: 5 } }
           : {};
-  const testJourney = dayNumber === 1 ? journey : {
+  const testJourney = dayNumber === 1 && topicKey === journey.profileData.problem ? journey : {
     ...journey,
     profileData: { ...journey.profileData, problem: topicKey },
     completed: Array.from({ length: dayNumber - 1 }, (_, index) => index + 1),
@@ -139,7 +139,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
         assert.equal(Object.hasOwn(day, 'risk_level'), false);
       } else {
         Object.assign(day, {
-          topic_id: 'T01',
+          topic_id: topicKey === 'اضطراب' ? 'T02' : 'T01',
           day: dayNumber,
           review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
           risk_level: 'routine',
@@ -199,6 +199,24 @@ try {
   await guidedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
   assert.match(await guidedPanel.locator('.assistantMessage').last().innerText(), /راهنمای روز ۱ خشم/);
   await guidedPage.close();
+
+  // T02 anxiety must expose the same day-scoped prepared guidance structure.
+  const anxietyGuidedPage = await browser.newPage();
+  await openDay(anxietyGuidedPage, { problem: 'اضطراب' });
+  const anxietyGuidedPanel = anxietyGuidedPage.locator('.globalAssistantDialog');
+  const anxietyGuidedTrigger = anxietyGuidedPanel.getByTestId('anxiety-daily-prompt-trigger');
+  await anxietyGuidedTrigger.waitFor({ state: 'visible' });
+  await anxietyGuidedTrigger.click();
+  const anxietyPromptDialog = anxietyGuidedPage.locator('#library-assistant-prompt-dialog');
+  await anxietyPromptDialog.waitFor({ state: 'visible' });
+  assert.match(await anxietyPromptDialog.innerText(), /سؤال‌های آماده روز 1 اضطراب/);
+  await anxietyPromptDialog.getByRole('button', { name: 'تمرین و اقدام امروز چه تفاوتی دارند؟' }).click();
+  await anxietyGuidedPanel.getByRole('button', { name: 'ارسال' }).click();
+  await anxietyGuidedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /راهنمای روز 1 اضطراب/.test(node.innerText)));
+  await assertAssistantUsesVisibleDailySource(anxietyGuidedPage, anxietyGuidedPanel, 'اضطراب', 1);
+  await anxietyGuidedPage.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
+  await anxietyGuidedPanel.waitFor({ state: 'detached' });
+  await anxietyGuidedPage.close();
 
   await openDay(page, { localModelInstalled: true });
   const panel = page.locator('.globalAssistantDialog');
