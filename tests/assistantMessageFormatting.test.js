@@ -32,7 +32,7 @@ test('all 1,568 prepared answers across T01-T04 render without raw markdown or e
         assert.ok(lines.length > 1, topic.id + ' must preserve paragraph/line breaks');
         assert.doesNotMatch(visibleText, /(?:^|[^A-Za-z0-9])T(?:0?[1-9]|[12][0-9]|3[0-4])(?:$|[^A-Za-z0-9])/,
           topic.id + ' must not expose internal topic identifiers');
-        assert.doesNotMatch(visibleText, /(?:این|در این)\\s+بسته|بسته\\s*T(?:0?[1-9]|[12][0-9]|3[0-4])/,
+        assert.doesNotMatch(visibleText, /(?:این|در این)\s+بسته|بسته\s*T(?:0?[1-9]|[12][0-9]|3[0-4])/,
           topic.id + ' must use the actual topic name, not package terminology');
         if (topic.id !== 'T04') {
           assert.match(visibleText, /بیاییم ساده و قدم‌به‌قدم پیش برویم/,
