@@ -62,7 +62,17 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       && (!Object.prototype.hasOwnProperty.call(preparedAngerSource, 'topic_id')
         || preparedAngerSource.topic_id === 'T01');
     if (hasCanonicalAngerIdentity) {
-      const preparedAnswer = answerAngerDailyPreparedQuestion({ day: preparedAngerDay, message });
+      // Re-run the canonical access validator with only the interpersonal
+      // confirmation satisfied. This still rejects blocked content, unsafe
+      // risk levels, and invalid source records before any prepared answer.
+      const preparedAccess = getDailyAssistantAccess({
+        day: preparedAngerSource,
+        problem: dailyContext?.problem,
+        relationshipSafetyConfirmed: true,
+      });
+      const preparedAnswer = preparedAccess.available
+        ? answerAngerDailyPreparedQuestion({ day: preparedAngerDay, message })
+        : null;
       if (preparedAnswer) {
         return Object.freeze({
           status: 'daily_guidance_available',
