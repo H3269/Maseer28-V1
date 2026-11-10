@@ -344,8 +344,9 @@ try {
         : scenario.fieldMode === 'rest' ? source.restExerciseText : source.exercise;
       const expectedAction = scenario.fieldMode === 'light' ? source.lightActionText
         : scenario.fieldMode === 'rest' ? source.restActionText : source.progressActionText;
-      assert.ok(visibleExercise.includes(normalizeVisibleDailyText(expectedExercise)),
-        `visible T02 ${scenario.fieldMode} exercise must come from its dedicated runtime field`);
+      const normalizedExpectedExercise = normalizeVisibleDailyText(expectedExercise);
+      assert.ok(visibleExercise.includes(normalizedExpectedExercise),
+        `visible T02 ${scenario.fieldMode} exercise must come from its dedicated runtime field; expected=${JSON.stringify(normalizedExpectedExercise)}; visible=${JSON.stringify(visibleExercise)}`);
       assert.ok(visibleAction.includes(normalizeVisibleDailyText(expectedAction)),
         `visible T02 ${scenario.fieldMode} action must come from its dedicated runtime field`);
       assert.equal(normalizeVisibleDailyText(await adaptedPage.locator('#dayTitle').innerText()), normalizeVisibleDailyText(source.title));
