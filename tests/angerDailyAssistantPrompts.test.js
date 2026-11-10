@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import {
   ANGER_DAILY_ASSISTANT_GUIDES,
+  ANGER_DAILY_PLAIN_LANGUAGE_STEPS,
   answerAngerDailyPreparedQuestion,
   getAngerDailyAssistantPromptGroups,
 } from '../src/features/assistant/angerDailyAssistantPrompts.js';
@@ -19,6 +20,27 @@ test('anger assistant guide covers all 28 days with fourteen day-scoped prepared
     assert.ok(guide.exercise && guide.action && guide.exerciseExample && guide.actionExample);
     assert.ok(guide.lightVersion && guide.successCriterion && guide.stopCondition);
   }
+});
+
+test('all 28 anger days have distinct plain-language instructions for both exercise and action', () => {
+  assert.equal(Object.keys(ANGER_DAILY_PLAIN_LANGUAGE_STEPS).length, 28);
+  const exerciseSteps = new Set();
+  const actionSteps = new Set();
+  for (let day = 1; day <= 28; day += 1) {
+    const entry = ANGER_DAILY_PLAIN_LANGUAGE_STEPS[day];
+    assert.ok(entry?.exercise?.length > 80, 'day ' + day + ' needs a concrete exercise explanation');
+    assert.ok(entry?.action?.length > 80, 'day ' + day + ' needs a concrete action explanation');
+    exerciseSteps.add(entry.exercise);
+    actionSteps.add(entry.action);
+    const exerciseQuestion = ANGER_DAILY_ASSISTANT_GUIDES[day - 1].questions.find((item) => item.kind === 'exercise_meaning');
+    const actionQuestion = ANGER_DAILY_ASSISTANT_GUIDES[day - 1].questions.find((item) => item.kind === 'action_meaning');
+    const exerciseAnswer = answerAngerDailyPreparedQuestion({ day, message: exerciseQuestion.value });
+    const actionAnswer = answerAngerDailyPreparedQuestion({ day, message: actionQuestion.value });
+    assert.ok(exerciseAnswer.includes(entry.exercise), 'exercise explanation missing on day ' + day);
+    assert.ok(actionAnswer.includes(entry.action), 'action explanation missing on day ' + day);
+  }
+  assert.equal(exerciseSteps.size, 28, 'exercise explanations must not repeat across days');
+  assert.equal(actionSteps.size, 28, 'action explanations must not repeat across days');
 });
 
 test('prompt groups are scoped to the selected day and contain all prepared questions', () => {
