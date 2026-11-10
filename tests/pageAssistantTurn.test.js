@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
+import { ANXIETY_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
 
 test('page-specific UI guidance is selected for the current screen', () => {
   const result = makePageAssistantTurn({
@@ -276,4 +277,46 @@ test('personal-intake and ambiguity routes still take precedence over app topic 
   });
   assert.equal(result.status, 'personal_intake_required');
   assert.deepEqual(result.knowledge, []);
+});
+
+
+test('daily page answers pre-authored anxiety questions only with matching canonical topic and day identity', () => {
+  const guide = ANXIETY_DAILY_ASSISTANT_GUIDES[0];
+  const question = guide.questions.find((item) => item.kind === 'exercise_action_difference');
+  const dayData = {
+    id: getCanonicalDailyRecordId('اضطراب', 1),
+    topic_id: 'T02',
+    day: 1,
+    review_status: 'draft',
+    risk_level: 'routine',
+    exercise: guide.exercise,
+    actionText: guide.action,
+  };
+  const result = makePageAssistantTurn({
+    screen: 'day',
+    text: question.value,
+    dailyContext: { day: 1, problem: 'اضطراب', data: dayData },
+  });
+  assert.equal(result.status, 'daily_guidance_available');
+  assert.match(result.message, /راهنمای روز 1 اضطراب/);
+  assert.ok(result.message.includes(guide.exercise));
+  assert.ok(result.message.includes(guide.action));
+
+  const wrongTopic = makePageAssistantTurn({
+    screen: 'day',
+    text: question.value,
+    dailyContext: {
+      day: 1,
+      problem: 'اضطراب',
+      data: { ...dayData, id: getCanonicalDailyRecordId('خشم', 1), topic_id: 'T01' },
+    },
+  });
+  assert.equal(wrongTopic.status, 'daily_guidance_unavailable');
+
+  const wrongDay = makePageAssistantTurn({
+    screen: 'day',
+    text: question.value,
+    dailyContext: { day: 2, problem: 'اضطراب', data: dayData },
+  });
+  assert.equal(wrongDay.status, 'daily_guidance_unavailable');
 });
