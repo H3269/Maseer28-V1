@@ -162,7 +162,8 @@ test('global assistant conversation is one right-to-left transcript', async () =
 test('GitHub Pages tracks main as a test app without production-release gates', async () => {
   const journeyStore = await readFile(new URL('../src/features/journey/journeyStore.js', import.meta.url), 'utf8');
   assert.match(pagesDeployWorkflow, /on:\s+push:\s+branches:\s+\[main\]/);
-  assert.doesNotMatch(pagesDeployWorkflow, /workflow_dispatch|confirm_public_release/);
+  assert.match(pagesDeployWorkflow, /workflow_dispatch:/); // Manual trigger is permitted for the test-only Pages app.
+  assert.doesNotMatch(pagesDeployWorkflow, /confirm_public_release/);
   assert.doesNotMatch(pagesDeployWorkflow, /run:\s*npm run (?:prepare:production|assert:production-content)/);
   assert.ok(pagesDeployWorkflow.includes('npm run build -- --base=/Maseer28-V1/'));
   assert.match(journeyStore, /TEST_MODE:\s*true/);
