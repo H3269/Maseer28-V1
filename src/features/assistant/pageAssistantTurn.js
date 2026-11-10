@@ -70,7 +70,14 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         problem: dailyContext?.problem,
         relationshipSafetyConfirmed: true,
       });
-      const preparedAnswer = preparedAccess.available
+      // Pending expert review may block delivery of the actual daily exercise,
+      // but the user-approved, exact pre-authored FAQ catalog remains available
+      // when the canonical source is explicitly routine-risk. This exception
+      // never applies to blocked status, elevated/unknown risk, free-form input,
+      // or an unverified topic/day identity.
+      const pendingRoutineFaqOnly = preparedAngerSource.review_status === 'pending_expert_review'
+        && preparedAngerSource.risk_level === 'routine';
+      const preparedAnswer = preparedAccess.available || pendingRoutineFaqOnly
         ? answerAngerDailyPreparedQuestion({ day: preparedAngerDay, message })
         : null;
       if (preparedAnswer) {
