@@ -65,10 +65,9 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
           problem: dailyContext?.problem,
           relationshipSafetyConfirmed: true,
         });
-        // The re-check is authoritative for the final denial reason. Never
-        // let the original relationship gate mask blocked content or an
-        // unverified daily source identity.
-        denialReason = identityCheck.reason;
+        // The re-check is authoritative for content identity and blocking.
+        // If it passes but the message is not an exact prepared FAQ, the
+        // original interpersonal gate still applies to this free-form turn.
         const preparedAnswer = identityCheck.available
           ? answerAngerDailyPreparedQuestion({ day: angerDay, message })
           : null;
@@ -81,6 +80,9 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
             conversationState: null,
           });
         }
+        denialReason = identityCheck.available
+          ? 'relationship_safety_unconfirmed'
+          : identityCheck.reason;
       }
       const messageText = denialReason === 'daily_content_blocked'
         ? 'این محتوای روز به‌دلیل نیاز به بازبینی ایمنی برای راهنمایی دستیار فعال نیست. لطفاً این محدودیت را دور نزن.'
