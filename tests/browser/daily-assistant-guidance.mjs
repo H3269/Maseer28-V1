@@ -233,10 +233,14 @@ try {
 
   // T02 anxiety must expose the same day-scoped prepared guidance structure.
   const anxietyGuidedPage = await browser.newPage();
-  await openDay(anxietyGuidedPage, { problem: 'اضطراب' });
+  await openDay(anxietyGuidedPage, { problem: 'اضطراب', localModelInstalled: true });
   const anxietyGuidedPanel = anxietyGuidedPage.locator('.globalAssistantDialog');
   const anxietyGuidedTrigger = anxietyGuidedPanel.getByTestId('anxiety-daily-prompt-trigger');
   await anxietyGuidedTrigger.waitFor({ state: 'visible' });
+  assert.equal(await anxietyGuidedPanel.locator('#global-assistant-message').count(), 0,
+    'T02 must keep free-form typing disabled even when a local model is installed');
+  assert.equal(await anxietyGuidedPanel.locator('.globalAssistantModelButton').count(), 0,
+    'T02 must not expose a local-model generation/install route');
   await anxietyGuidedTrigger.click();
   const anxietyPromptDialog = anxietyGuidedPage.locator('#library-assistant-prompt-dialog');
   await anxietyPromptDialog.waitFor({ state: 'visible' });
