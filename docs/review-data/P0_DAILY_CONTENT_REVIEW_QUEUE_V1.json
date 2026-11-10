@@ -6,7 +6,7 @@
     "canonical_path": "public/content/path-content.json",
     "canonical_blob_sha": "f6d3b0f66fe56775e32d5d2c0ef7050bf4fcc385",
     "topic_registry_blob_sha": "3d21f0779a806da93d7940c40575d19e8d3c1882",
-    "subtopic_registry_blob_sha": "c2c71f2439f2322c43bc380a5dc2e58209c33071"
+    "subtopic_registry_blob_sha": "a6f6cb6bca8dd56f0c6fdc2553b9e7c75626c09d"
   },
   "scope": {
     "topic_ids": [

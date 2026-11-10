@@ -170,7 +170,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
         assert.equal(Object.hasOwn(day, 'risk_level'), false);
       } else {
         Object.assign(day, {
-          topic_id: topicKey === 'اضطراب' ? 'T02' : 'T01',
+          topic_id: topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : 'T01',
           day: dayNumber,
           review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
           risk_level: 'routine',
@@ -247,7 +247,37 @@ try {
   await assertAssistantUsesVisibleDailySource(anxietyGuidedPage, anxietyGuidedPanel, 'اضطراب', 1);
   await anxietyGuidedPage.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await anxietyGuidedPanel.waitFor({ state: 'detached' });
+
   await anxietyGuidedPage.close();
+
+  // T03 must remain prepared-only even when a local model is already cached.
+  // The daily safety-review gate remains fail-closed for this unapproved fixture.
+  const fearGuidedPage = await browser.newPage();
+  const fearErrors = [];
+  fearGuidedPage.on('pageerror', error => fearErrors.push(String(error)));
+  await openDay(fearGuidedPage, { problem: 'ترس', assistantDayMode: 'blocked', localModelInstalled: true });
+  const fearPanel = fearGuidedPage.locator('.globalAssistantDialog');
+  await fearPanel.waitFor({ state: 'visible' });
+  assert.equal(await fearPanel.locator('#global-assistant-message').count(), 0,
+    'T03 must never expose a free-form composer, even with a cached local model');
+  assert.equal(await fearPanel.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
+    'T03 must not expose local model installation');
+  const fearTrigger = fearPanel.getByTestId('fear-daily-prompt-trigger');
+  await fearTrigger.waitFor({ state: 'visible' });
+  await fearGuidedPage.waitForFunction(() => {
+    const trigger = document.querySelector('[data-testid="fear-daily-prompt-trigger"]');
+    return trigger && !trigger.disabled;
+  });
+  await fearTrigger.click();
+  const fearPromptDialog = fearGuidedPage.locator('#library-assistant-prompt-dialog');
+  await fearPromptDialog.waitFor({ state: 'visible' });
+  assert.match(await fearPromptDialog.innerText(), /ترس/);
+  await fearPromptDialog.locator('[data-prompt-option]').first().click();
+  await fearPanel.getByRole('button', { name: 'ارسال' }).click();
+  await fearGuidedPage.waitForFunction(() => Array.from(document.querySelectorAll('.globalAssistantDialog .assistantMessage')).some(node => node.innerText.includes('راهنمای روز ۱ ترس')));
+  assert.match(await fearPanel.locator('.assistantMessage').last().innerText(), /راهنمای روز ۱ ترس/);
+  assert.deepEqual(fearErrors, [], 'T03 prepared-only assistant browser flow must not raise page errors');
+  await fearGuidedPage.close();
 
   await openDay(page, { localModelInstalled: true });
   const panel = page.locator('.globalAssistantDialog');
