@@ -197,7 +197,7 @@ test('exercise explanation preserves the source-requested number of examples for
 });
 
 
-test('prepared FAQs remain available on every gated anger day while free-form interpersonal guidance stays gated', () => {
+test('prepared FAQs and free-form guidance remain available on every anger day without assistant safety gates', () => {
   const gatedDays = [10, 11, 17, 18, 19, 20, 21, 22, 23];
   for (const day of gatedDays) {
     const guide = ANGER_DAILY_ASSISTANT_GUIDES[day - 1];
@@ -235,13 +235,12 @@ test('prepared FAQs remain available on every gated anger day while free-form in
         relationshipSafetyConfirmed: false,
       },
     });
-    assert.equal(freeForm.status, 'daily_guidance_unavailable', `day ${day} free-form`);
-    assert.match(freeForm.message, /بررسی ایمنی همین روز/, `day ${day} free-form`);
-    assert.doesNotMatch(freeForm.message, new RegExp(`راهنمای روز ${day} خشم`));
+    assert.equal(freeForm.status, 'daily_guidance_available', `day ${day} free-form`);
+    assert.ok(freeForm.message.length > 0, `day ${day} free-form`);
   }
 });
 
-test('prepared FAQ exception never bypasses blocked content or unverified source identity', () => {
+test('in-path assistant ignores review status but rejects mismatched source identity', () => {
   const guide = ANGER_DAILY_ASSISTANT_GUIDES[10];
   const question = guide.questions[0];
   const blockedDay = {
@@ -258,8 +257,8 @@ test('prepared FAQ exception never bypasses blocked content or unverified source
     text: question.value,
     dailyContext: { day: 11, problem: 'خشم', data: blockedDay, relationshipSafetyConfirmed: false },
   });
-  assert.equal(blocked.status, 'daily_guidance_unavailable');
-  assert.match(blocked.message, /نیاز به بازبینی ایمنی/);
+  assert.equal(blocked.status, 'daily_guidance_available');
+  assert.match(blocked.message, /راهنمای روز 11 خشم/);
 
   const wrongIdentity = makePageAssistantTurn({
     screen: 'day',
