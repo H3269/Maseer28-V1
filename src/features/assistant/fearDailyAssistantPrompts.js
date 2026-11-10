@@ -2864,7 +2864,7 @@ export const FEAR_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 28,
-    "title": "مرور و انتخاب مسیر بعدی",
+    "title": "جمع‌بندی مسیر ترس و انتخاب گام بعدی",
     "topicId": "T03",
     "topic": "ترس",
     "subtopic": null,
