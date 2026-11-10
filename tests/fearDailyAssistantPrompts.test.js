@@ -7,7 +7,7 @@ import { readFile } from 'node:fs/promises';
 test('T03 prepared assistant has 28 canonical day slots and 14 unique prompts per day',()=>{
  assert.equal(FEAR_DAILY_ASSISTANT_GUIDES.length,28);
  assert.deepEqual(FEAR_DAILY_ASSISTANT_GUIDES.map(x=>x.day),Array.from({length:28},(_,i)=>i+1));
- for(const g of FEAR_DAILY_ASSISTANT_GUIDES){assert.equal(g.topicId,'T03');assert.equal(g.topic,'ترس');assert.equal(g.questions.length,14);assert.equal(new Set(g.questions.map(q=>q.value)).size,14);assert.ok(g.exercise&&g.action&&g.exerciseExample&&g.actionExample&&g.objective&&g.stopCondition);}
+ for(const g of FEAR_DAILY_ASSISTANT_GUIDES){assert.equal(g.topicId,'T03');assert.equal(g.topic,'ترس');assert.equal(g.questions.length,14);assert.equal(new Set(g.questions.map(q=>q.value)).size,14);assert.ok(g.exercise&&g.action&&g.exerciseExample&&g.actionExample&&g.objective&&g.skill&&g.mechanism&&g.lightVersion&&g.progressVersion&&g.restVersion&&g.successCriterion&&g.reflectionQuestion&&g.stopCondition);}
 });
 test('T03 daily exercises and actions are not exact duplicates across the 28-day bank',()=>{
  assert.equal(new Set(FEAR_DAILY_ASSISTANT_GUIDES.map(x=>x.exercise.trim())).size,28);
