@@ -41,10 +41,6 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
   }
 
   if (screen === 'day') {
-    // Crisis and immediate-safety routing always precede the prepared-only FAQ boundary.
-    if (SAFETY_STATUSES.has(inputProbe.status)) {
-      return Object.freeze({ ...inputProbe, conversationState: null });
-    }
     if (message.length > 2000) {
       return Object.freeze({ status: 'input_too_long', message: 'پیام بیش از حد طولانی است؛ لطفاً آن را کوتاه‌تر کن.', knowledge: Object.freeze([]), conversationState: null });
     }
@@ -85,6 +81,33 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
           conversationState: null,
         });
       }
+
+      // Immediate danger is handed off directly. Safety clarification is a
+      // bounded, stateful safety exchange, not free-form therapeutic guidance.
+      if (inputProbe.status === 'urgent_human_support_required') {
+        return Object.freeze({ ...inputProbe, conversationState: null });
+      }
+      if (inputProbe.status === 'safety_clarification_required'
+        || ['pending', 'handoff'].includes(conversationState?.dailyState?.safetyStatus)) {
+        const safetyTurn = makeDailyExerciseGuidanceTurn({
+          message,
+          dayData: selectDailyExerciseGuidanceData({ guidanceData: dailyContext?.guidanceData, data: dailyContext?.data }),
+          problem: dailyContext?.problem,
+          day: dailyContext?.day,
+          conversationState: conversationState?.dailyState || {},
+        });
+        const safetyStatus = safetyTurn.nextState?.safetyStatus === 'handoff'
+          ? 'urgent_human_support_required'
+          : 'safety_clarification_required';
+        return Object.freeze({
+          status: safetyStatus,
+          message: safetyTurn.response,
+          knowledge: Object.freeze([]),
+          page_context: 'day',
+          conversationState: Object.freeze({ dailyState: safetyTurn.nextState }),
+        });
+      }
+
       if (preparedAnswer) {
         return Object.freeze({
           status: 'daily_guidance_available',
