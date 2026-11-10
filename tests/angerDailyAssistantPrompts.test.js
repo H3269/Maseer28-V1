@@ -274,3 +274,18 @@ test('prepared FAQ exception never bypasses blocked content or unverified source
   assert.equal(wrongIdentity.status, 'daily_guidance_unavailable');
   assert.match(wrongIdentity.message, /محتوای معتبر روز جاری/);
 });
+
+test('all 392 prepared anger questions resolve to a day-specific answer across the full 28-day path', () => {
+  assert.equal(ANGER_DAILY_ASSISTANT_GUIDES.length, 28);
+  let resolved = 0;
+  for (const guide of ANGER_DAILY_ASSISTANT_GUIDES) {
+    assert.equal(guide.questions.length, 14, `day ${guide.day}`);
+    for (const question of guide.questions) {
+      const answer = answerAngerDailyPreparedQuestion({ day: guide.day, message: question.value });
+      assert.ok(answer, `missing answer for day ${guide.day}, ${question.kind}`);
+      assert.ok(answer.includes(`راهنمای روز ${guide.day} خشم`));
+      resolved += 1;
+    }
+  }
+  assert.equal(resolved, 392);
+});
