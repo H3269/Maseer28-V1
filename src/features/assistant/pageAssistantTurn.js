@@ -54,6 +54,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       // Permit only an exact catalogued FAQ after re-validating source identity;
       // keep the interpersonal gate for free-form advice and unsafe/blocked content.
       const angerDay = Number(dailyContext?.day);
+      let denialReason = access.reason;
       if (access.reason === 'relationship_safety_unconfirmed'
         && getCanonicalTopicIdForCategory(dailyContext?.problem) === 'T01'
         && Number.isInteger(angerDay)
@@ -64,6 +65,10 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
           problem: dailyContext?.problem,
           relationshipSafetyConfirmed: true,
         });
+        // The re-check is authoritative for the final denial reason. Never
+        // let the original relationship gate mask blocked content or an
+        // unverified daily source identity.
+        denialReason = identityCheck.reason;
         const preparedAnswer = identityCheck.available
           ? answerAngerDailyPreparedQuestion({ day: angerDay, message })
           : null;
@@ -77,9 +82,9 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
           });
         }
       }
-      const messageText = access.reason === 'daily_content_blocked'
+      const messageText = denialReason === 'daily_content_blocked'
         ? 'این محتوای روز به‌دلیل نیاز به بازبینی ایمنی برای راهنمایی دستیار فعال نیست. لطفاً این محدودیت را دور نزن.'
-        : access.reason === 'relationship_safety_unconfirmed'
+        : denialReason === 'relationship_safety_unconfirmed'
           ? 'برای راهنمایی این تمرین، پنجره دستیار را ببند و بررسی ایمنی همین روز را در بخش تمرین کامل کن. تا آن زمان متن تمرین و راهکار را از این مسیر توضیح نمی‌دهم.'
           : 'محتوای معتبر روز جاری در دسترس نیست؛ برای جلوگیری از راهنمایی اشتباه، فعلاً پاسخ روزمحور نمی‌دهم.';
       return Object.freeze({ status: 'daily_guidance_unavailable', message: messageText, knowledge: Object.freeze([]), conversationState: null });
