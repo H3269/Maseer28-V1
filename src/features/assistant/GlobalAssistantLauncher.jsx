@@ -374,7 +374,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 <AppIcon name="x" size={18} />
               </button>
             </div>
-      {open && libraryPromptOpen && (screen === 'books' || isAngerDailyPromptContext) && (
+      {open && libraryPromptOpen && (screen === 'books' || isTopicDailyPromptContext) && (
         <div
           className="validationModal libraryAssistantPromptModal"
           onClick={(event) => {
