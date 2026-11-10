@@ -71,3 +71,11 @@ test('T04 exercise/action text has no exact same-field duplicate in the other 33
   }
  }
 });
+
+test('T04 assigns exactly one canonical package subtopic to each of the 28 days',()=>{
+ const allowed=new Set(['T04-S01','T04-S02','T04-S03']);
+ assert.ok(HATRED_DAILY_ASSISTANT_GUIDES.every(g=>allowed.has(g.subtopic)));
+ assert.equal(new Set(HATRED_DAILY_ASSISTANT_GUIDES.map(g=>g.day)).size,28);
+ assert.equal(HATRED_DAILY_ASSISTANT_GUIDES[27].subtopic,'T04-S03');
+ assert.deepEqual(HATRED_DAILY_ASSISTANT_GUIDES.filter(g=>g.subtopic==='T04-S02').map(g=>g.day),[4,10,11]);
+});
