@@ -9,6 +9,7 @@ import {
 } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
 import { makeDailyExerciseGuidanceTurn } from '../src/features/assistant/dailyExerciseAssistantGuidance.js';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
+import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
 
 test('anxiety assistant guide covers all 28 days with fourteen day-scoped prepared questions', () => {
   assert.equal(ANXIETY_DAILY_ASSISTANT_GUIDES.length, 28);
@@ -118,7 +119,7 @@ test('daily turn routes anxiety prepared answers only for matching source topic 
     message: question.value,
     problem: 'اضطراب',
     day: 1,
-    dayData: { id: 'T02-D01', topic_id: 'T02', day: 1, exercise: guide.exercise, actionText: guide.action },
+    dayData: { id: getCanonicalDailyRecordId('اضطراب', 1), topic_id: 'T02', day: 1, exercise: guide.exercise, actionText: guide.action },
   });
   assert.match(ok.response, /راهنمای روز 1 اضطراب/);
   assert.match(ok.response, /نقشه تجربه اضطراب/);
@@ -127,7 +128,7 @@ test('daily turn routes anxiety prepared answers only for matching source topic 
     message: question.value,
     problem: 'اضطراب',
     day: 1,
-    dayData: { id: 'T01-D01', topic_id: 'T01', day: 1, exercise: guide.exercise, actionText: guide.action },
+    dayData: { id: getCanonicalDailyRecordId('خشم', 1), topic_id: 'T01', day: 1, exercise: guide.exercise, actionText: guide.action },
   });
   assert.match(topicMismatch.response, /شناسه موضوعِ محتوای دریافتی/);
   assert.doesNotMatch(topicMismatch.response, /راهنمای روز 1 اضطراب/);
@@ -136,7 +137,7 @@ test('daily turn routes anxiety prepared answers only for matching source topic 
     message: question.value,
     problem: 'اضطراب',
     day: 2,
-    dayData: { id: 'T02-D01', topic_id: 'T02', day: 1, exercise: guide.exercise, actionText: guide.action },
+    dayData: { id: getCanonicalDailyRecordId('اضطراب', 1), topic_id: 'T02', day: 1, exercise: guide.exercise, actionText: guide.action },
   });
   assert.match(dayMismatch.response, /شناسه روزِ محتوای دریافتی/);
   assert.doesNotMatch(dayMismatch.response, /راهنمای روز 1 اضطراب/);
@@ -151,7 +152,7 @@ test('T02 daily assistant refuses free-form questions and requires a prepared qu
     dailyContext: {
       day: 1,
       problem: 'اضطراب',
-      data: { id: 'T02-D01', topic_id: 'T02', day: 1, exercise: guide.exercise, actionText: guide.action },
+      data: { id: getCanonicalDailyRecordId('اضطراب', 1), topic_id: 'T02', day: 1, exercise: guide.exercise, actionText: guide.action },
     },
   });
   assert.equal(result.status, 'prepared_question_required');
@@ -168,7 +169,7 @@ test('T02 urgent safety routing takes precedence over the prepared-question-only
     dailyContext: {
       day: 1,
       problem: 'اضطراب',
-      data: { id: 'T02-D01', topic_id: 'T02', day: 1, exercise: guide.exercise, actionText: guide.action },
+      data: { id: getCanonicalDailyRecordId('اضطراب', 1), topic_id: 'T02', day: 1, exercise: guide.exercise, actionText: guide.action },
     },
   });
   assert.equal(result.status, 'urgent_human_support_required');
