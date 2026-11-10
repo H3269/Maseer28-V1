@@ -54,7 +54,13 @@ async function readExpandedDailyText(page, selector) {
     'close the modal assistant before interacting with daily-screen disclosures');
   const section = page.locator(selector);
   const disclosure = section.locator('details.dailyTextDisclosure');
-  if (await disclosure.count()) await disclosure.locator('summary').click();
+  if (await disclosure.count()) {
+    const isOpen = await disclosure.evaluate((element) => element.open);
+    if (!isOpen) {
+      await disclosure.locator('summary').click();
+      await page.waitForFunction((details) => details?.open === true, await disclosure.elementHandle());
+    }
+  }
   const preview = await section.locator('.dailyTextPreview').innerText();
   const remaining = await section.locator('.dailyTextFull p').allInnerTexts();
   return [preview, ...remaining].join(' ');
