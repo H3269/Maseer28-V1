@@ -1,6 +1,6 @@
 const INTERNAL_TOPIC_LABELS = Object.freeze({ T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت', T18: 'نفرت از خود' });
 const replaceInternalLabels = (value) => String(value || '')
-  .replace(/\bT(0[1-9]|[12][0-9]|3[0-4])(?:-[A-Z]\d{2})?\b/g, (_, digits) => INTERNAL_TOPIC_LABELS['T' + digits.padStart(2, '0')] || 'موضوع مرتبط')
+  .replace(/\bT(0?[1-9]|[12][0-9]|3[0-4])(?:-[A-Z]\d{2})?\b/g, (_, digits) => INTERNAL_TOPIC_LABELS['T' + digits.padStart(2, '0')] || 'موضوع مرتبط')
   .replace(/«?بسته(?:‌ی| ی)?\s*(?:T0?[1-4]|T18)?»?/g, 'این موضوع')
   .replace(/این بسته/g, 'این موضوع')
   .replace(/در این بسته/g, 'در این موضوع')
