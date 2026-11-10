@@ -1,0 +1,44 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { FEAR_DAILY_ASSISTANT_GUIDES, answerFearDailyPreparedQuestion, getFearDailyAssistantPromptGroups } from '../src/features/assistant/fearDailyAssistantPrompts.js';
+import { makeDailyExerciseGuidanceTurn } from '../src/features/assistant/dailyExerciseAssistantGuidance.js';
+import { readFile } from 'node:fs/promises';
+
+test('T03 prepared assistant has 28 canonical day slots and 14 unique prompts per day',()=>{
+ assert.equal(FEAR_DAILY_ASSISTANT_GUIDES.length,28);
+ assert.deepEqual(FEAR_DAILY_ASSISTANT_GUIDES.map(x=>x.day),Array.from({length:28},(_,i)=>i+1));
+ for(const g of FEAR_DAILY_ASSISTANT_GUIDES){assert.equal(g.topicId,'T03');assert.equal(g.topic,'ترس');assert.equal(g.questions.length,14);assert.equal(new Set(g.questions.map(q=>q.value)).size,14);assert.ok(g.exercise&&g.action&&g.objective&&g.stopCondition);}
+});
+test('T03 daily exercises and actions are not exact duplicates across the 28-day bank',()=>{
+ assert.equal(new Set(FEAR_DAILY_ASSISTANT_GUIDES.map(x=>x.exercise.trim())).size,28);
+ assert.equal(new Set(FEAR_DAILY_ASSISTANT_GUIDES.map(x=>x.action.trim())).size,28);
+});
+test('T03 prompt groups are scoped to the selected day',()=>{
+ for(let day=1;day<=28;day++){const groups=getFearDailyAssistantPromptGroups(day);assert.equal(groups.length,1);assert.equal(groups[0].questions.length,14);assert.ok(groups[0].label.includes('ترس'));}
+ assert.deepEqual(getFearDailyAssistantPromptGroups(29),[]);
+ assert.equal(getFearDailyAssistantPromptGroups('۱').length,1);
+});
+test('T03 prepared answers quote the active visible daily content and refuse unknown prompts',()=>{
+ const g=FEAR_DAILY_ASSISTANT_GUIDES[0],visible={topic_id:'T03',day:1,exercise:'متن تمرین نمایان روز اول ترس',actionText:'اقدام اختصاصی نمایان روز اول ترس'};
+ assert.match(answerFearDailyPreparedQuestion({day:1,message:g.questions.find(q=>q.kind==='exercise_meaning').value,dailyContent:visible}),/متن تمرین نمایان روز اول ترس/);
+ assert.match(answerFearDailyPreparedQuestion({day:1,message:g.questions.find(q=>q.kind==='action_meaning').value,dailyContent:visible}),/اقدام اختصاصی نمایان روز اول ترس/);
+ assert.equal(answerFearDailyPreparedQuestion({day:1,message:'پرسش آزاد خارج از بانک'}),null);
+});
+test('T03 router requires canonical topic identity, keeps safety preemption, and refuses out-of-bank questions',()=>{
+ const data={topic_id:'T03',day:1,exercise:'تمرین روز اول ترس',actionText:'اقدام روز اول ترس'};
+ const q=FEAR_DAILY_ASSISTANT_GUIDES[0].questions[0].value;
+ const good=makeDailyExerciseGuidanceTurn({message:q,dayData:data,problem:'ترس',day:1});
+ assert.match(good.response,/راهنمای روز 1 ترس/);
+ const mismatch=makeDailyExerciseGuidanceTurn({message:q,dayData:{...data,topic_id:'T02'},problem:'ترس',day:1});
+ assert.match(mismatch.response,/شناسه موضوع/);
+ const outside=makeDailyExerciseGuidanceTurn({message:'یک پرسش آزاد',dayData:data,problem:'ترس',day:1});
+ assert.match(outside.response,/در فهرست راهنمای آماده موضوع ترس نیست/);
+ const safety=makeDailyExerciseGuidanceTurn({message:'امشب قصد دارم خودم را بکشم',dayData:data,problem:'ترس',day:1});
+ assert.match(safety.response,/خطر فوری/);
+});
+test('T03 content bank explicitly flags unresolved taxonomy labels and non-approved review status',async()=>{
+ const source=await readFile(new URL('../src/features/assistant/fearDailyAssistantPrompts.js',import.meta.url),'utf8');
+ assert.match(source,/Draft educational content; not expert-approved treatment/);
+ assert.equal(FEAR_DAILY_ASSISTANT_GUIDES.filter(x=>!x.subtopic).length,3);
+ assert.deepEqual(FEAR_DAILY_ASSISTANT_GUIDES.filter(x=>!x.subtopic).map(x=>x.day),[25,26,28]);
+});
