@@ -479,7 +479,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
-              <form className={'assistantComposer' + ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} onSubmit={send}>
+              <form className={'assistantComposer' + (isFearDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled) ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} onSubmit={send}>
                 {(screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled ? (
                   <div className="libraryAssistantPromptRow">
                     <button
