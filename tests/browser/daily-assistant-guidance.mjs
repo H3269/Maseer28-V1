@@ -42,6 +42,8 @@ function normalizeVisibleDailyText(value) {
 }
 
 async function readExpandedDailyText(page, selector) {
+  assert.equal(await page.locator('.globalAssistantDialog').count(), 0,
+    'close the modal assistant before interacting with daily-screen disclosures');
   const section = page.locator(selector);
   const disclosure = section.locator('details.dailyTextDisclosure');
   if (await disclosure.count()) await disclosure.locator('summary').click();
