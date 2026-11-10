@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
+import { FEAR_DAILY_ASSISTANT_GUIDES, answerFearDailyPreparedQuestion, getFearDailyAssistantPromptGroups } from '../src/features/assistant/fearDailyAssistantPrompts.js';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
 import { ANXIETY_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
 import { FEAR_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/fearDailyAssistantPrompts.js';
@@ -406,4 +407,40 @@ test('T03 prepared FAQ route still gives urgent safety handoff precedence', () =
   });
   assert.equal(result.status, 'urgent_human_support_required');
   assert.deepEqual(result.knowledge, []);
+});
+
+
+test('T03 prepared question groups match the five-section presentation used by T01 and T02', () => {
+  for (let day = 1; day <= 28; day += 1) {
+    const groups = getFearDailyAssistantPromptGroups(day);
+    assert.equal(groups.length, 5, `day ${day}`);
+    assert.deepEqual(groups.map((group) => group.questions.length), [2, 2, 1, 5, 4]);
+    assert.equal(groups.reduce((count, group) => count + group.questions.length, 0), 14);
+    assert.deepEqual(groups.map((group) => group.label), [
+      'فهم تمرین روز ' + day,
+      'فهم اقدام اختصاصی روز ' + day,
+      'تفاوت تمرین و اقدام',
+      'اجرا و موانع',
+      'ارزیابی و ایمنی',
+    ]);
+  }
+  assert.deepEqual(getFearDailyAssistantPromptGroups(29), []);
+});
+
+test('T03 prepared answers follow the shared answer hierarchy and remain specific to the selected day', () => {
+  const guide = FEAR_DAILY_ASSISTANT_GUIDES[0];
+  const exercise = answerFearDailyPreparedQuestion({ day: 1, message: guide.questions.find((item) => item.kind === 'exercise_meaning').value });
+  const example = answerFearDailyPreparedQuestion({ day: 1, message: guide.questions.find((item) => item.kind === 'exercise_example').value });
+  const action = answerFearDailyPreparedQuestion({ day: 1, message: guide.questions.find((item) => item.kind === 'action_meaning').value });
+  assert.match(exercise, /راهنمای روز ۱ ترس/);
+  assert.match(exercise, /چرا این تمرین انتخاب شده/);
+  assert.match(exercise, /مهارت مورد توجه/);
+  assert.match(exercise, /نکته امروز/);
+  assert.match(example, /یک مثال فرضی از تمرین امروز/);
+  assert.match(example, /ارتباط مثال با تمرین/);
+  assert.match(action, /اقدام اختصاصی امروز چیست/);
+  assert.match(action, /چطور اجرا کنی/);
+  assert.ok(exercise.includes(guide.exercise));
+  assert.ok(action.includes(guide.action));
+  assert.equal(answerFearDailyPreparedQuestion({ day: 1, message: 'سؤال خارج از فهرست' }), null);
 });
