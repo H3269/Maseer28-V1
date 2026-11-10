@@ -99,3 +99,38 @@ test('T02 anxiety overrides all ten runtime text fields uniquely across all 28 d
   }
   assert.deepEqual(actual.map(day => day.id), original.map(day => day.id), 'canonical IDs remain unchanged');
 });
+
+test('T03 fear overrides all ten runtime text fields uniquely across all 28 days', async () => {
+  const [base, overrides] = await Promise.all([
+    readJson('../public/content/path-content.json'),
+    readJson('../public/content/daily-text-overrides.v1.json'),
+  ]);
+  const merged = mergeDailyTextOverrides(base, overrides);
+  const fields = ['title', 'intro', 'exercise', 'actionText', 'closing', 'lightExerciseText', 'lightActionText', 'progressActionText', 'restExerciseText', 'restActionText'];
+  const normalizeField = (value) => String(value ?? '').normalize('NFKC')
+    .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
+    .replace(/[\u064B-\u065F\u0670]/g, '')
+    .replace(/[\u200c\u200f\u202a-\u202e]/g, '')
+    .replace(/\s+/g, ' ').trim();
+  const original = base.categories['ترس'].days;
+  const actual = merged.categories['ترس'].days;
+  const allRecords = Object.entries(merged.categories).flatMap(([topic, category]) =>
+    (category.days || []).map((day) => ({ topic, day })),
+  );
+  assert.equal(actual.length, 28);
+  for (const field of fields) {
+    const values = actual.map((day) => normalizeField(day[field]));
+    assert.equal(values.filter(Boolean).length, 28, field + ' coverage');
+    assert.equal(new Set(values).size, 28, field + ' must be unique within T03');
+    for (let index = 0; index < 28; index += 1) {
+      assert.equal(actual[index][field], overrides.categories['ترس'].days[index][field], field + ' day ' + (index + 1));
+      const normalized = normalizeField(actual[index][field]);
+      const duplicate = allRecords.find(({ topic, day }) =>
+        !(topic === 'ترس' && Number(day.day) === index + 1)
+        && normalizeField(day[field]) === normalized,
+      );
+      assert.equal(duplicate, undefined, field + ' T03 day ' + (index + 1) + ' must not exactly duplicate another topic/day');
+    }
+  }
+  assert.deepEqual(actual.map(day => day.id), original.map(day => day.id), 'canonical IDs remain unchanged');
+});
