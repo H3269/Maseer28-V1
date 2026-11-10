@@ -484,7 +484,7 @@ test('extended paragraph ordinals retrieve existing paragraphs and clarify missi
 test('daily assistant fails closed when canonical day identity is incomplete or invalid', () => {
   const valid = {
     id: 'خشم-01',
-    topic_id: 'T02',
+    topic_id: 'T01',
     day: 1,
     review_status: 'approved',
     risk_level: 'routine',
@@ -527,7 +527,7 @@ test('daily assistant remains unavailable when the day content is blocked for sa
 test('relationship-gated daily guidance stays closed until the day-specific safety check is confirmed', () => {
   const gatedDay = {
     id: 'خشم-10',
-    topic_id: 'T02',
+    topic_id: 'T01',
     day: 10,
     review_status: 'approved',
     risk_level: 'routine',
@@ -724,7 +724,7 @@ test('approved day metadata supplies its reviewed rationale, duration, and succe
 test('adapted daily content retains original review metadata', () => {
   const raw = {
     id: 'T01-D04',
-    topic_id: 'T02',
+    topic_id: 'T01',
     day: 4,
     review_status: 'approved',
     duration_minutes: 8,
@@ -734,7 +734,7 @@ test('adapted daily content retains original review metadata', () => {
   };
   const adapted = {
     id: 'T01-D04',
-    topic_id: 'T02',
+    topic_id: 'T01',
     day: 4,
     exercise: 'تمرین سبک‌شده',
     action: 'اقدام سبک‌شده',
@@ -751,7 +751,7 @@ test('adapted daily content retains original review metadata', () => {
 test('rejects adapted guidance when its source day or topic differs from the canonical record', () => {
   const raw = {
     id: 'T01-D04',
-    topic_id: 'T02',
+    topic_id: 'T01',
     day: 4,
     exercise: 'تمرین معتبر روز چهارم',
     actionText: 'راهکار معتبر روز چهارم',
@@ -765,7 +765,7 @@ test('rejects adapted guidance when its source day or topic differs from the can
   };
   const wrongDay = {
     id: 'T01-D05',
-    topic_id: 'T02',
+    topic_id: 'T01',
     day: 5,
     exercise: 'تمرین روز پنجم',
     action: 'راهکار روز پنجم',
@@ -778,13 +778,13 @@ test('rejects adapted guidance when its source day or topic differs from the can
 test('rejects adapted guidance when any canonical identity field is missing from the adapted copy', () => {
   const raw = {
     id: 'T01-D04',
-    topic_id: 'T02',
+    topic_id: 'T01',
     day: 4,
     exercise: 'تمرین معتبر روز چهارم',
     actionText: 'راهکار معتبر روز چهارم',
   };
   const missingTopic = { id: 'T01-D04', day: 4, exercise: 'متن نامطمئن' };
-  const missingDay = { id: 'T01-D04', topic_id: 'T02', exercise: 'متن نامطمئن' };
+  const missingDay = { id: 'T01-D04', topic_id: 'T01', exercise: 'متن نامطمئن' };
   const nullIdentity = { id: 'T01-D04', topic_id: 'T02', day: null, exercise: 'متن نامطمئن' };
 
   assert.equal(selectDailyExerciseGuidanceData({ guidanceData: missingTopic, data: raw }), raw);
