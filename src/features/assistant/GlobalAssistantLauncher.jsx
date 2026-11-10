@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { formatAssistantMessageText } from './assistantMessageFormatting.js';
 import AppIcon from '../../shared/components/AppIcon.jsx';
 import { makePageAssistantTurn } from './pageAssistantTurn.js';
 import { libraryRepository } from '../library/libraryRepository.js';
@@ -472,7 +473,14 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                         </svg>
                       )}
                     </b>
-                    <p>{item.text}</p>
+                    <p>{formatAssistantMessageText(item.text).map((line, lineIndex) => (
+                      <React.Fragment key={lineIndex}>
+                        {lineIndex > 0 ? <br /> : null}
+                        {line.map((part, partIndex) => part.type === 'strong'
+                          ? <strong key={partIndex}>{part.text}</strong>
+                          : <React.Fragment key={partIndex}>{part.text}</React.Fragment>)}
+                      </React.Fragment>
+                    ))}</p>
                     {item.modelInstallPrompt && (
                       <div className="globalAssistantModelActions">
                         <button type="button" onClick={installLocalModel} disabled={sending}>بله، شروع نصب</button>
