@@ -109,12 +109,16 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     return () => { active = false; };
   }, [screen, libraryContext?.titles?.length]);
 
-  const angerProblemTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem);
+  const angerProblemText = String(dailyContext?.problem || '').trim();
+  const angerProblemTopicId = getCanonicalTopicIdForCategory(angerProblemText);
   const angerRecordTopicId = dailyContext?.data?.topic_id || dailyContext?.data?.topicId || null;
+  const hasConflictingAngerTopic = Boolean(
+    (angerProblemTopicId && angerProblemTopicId !== 'T01')
+    || (angerRecordTopicId && angerRecordTopicId !== 'T01'),
+  );
   const isAngerDailyPromptContext = Boolean(dailyContext)
-    && (angerProblemTopicId === 'T01' || angerRecordTopicId === 'T01')
-    && (!angerProblemTopicId || angerProblemTopicId === 'T01')
-    && (!angerRecordTopicId || angerRecordTopicId === 'T01');
+    && !hasConflictingAngerTopic
+    && (angerProblemTopicId === 'T01' || angerRecordTopicId === 'T01' || angerProblemText.includes('خشم'));
   const activePromptGroups = screen === 'books'
     ? LIBRARY_ASSISTANT_PROMPT_GROUPS
     : isAngerDailyPromptContext
@@ -447,11 +451,12 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
-              <form className={'assistantComposer' + (screen === 'books' && !localModelInstalled ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" onSubmit={send}>
+              <form className={'assistantComposer' + (screen === 'books' && !localModelInstalled ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} onSubmit={send}>
                 {isAngerDailyPromptContext && (
                   <button
                     ref={libraryPromptTriggerRef}
                     className="libraryAssistantPromptTrigger dailyAssistantPromptTrigger"
+                    data-testid="anger-daily-prompt-trigger"
                     type="button"
                     aria-label={`باز کردن سؤال‌های آماده روز ${dailyContext?.day} خشم`}
                     aria-haspopup="dialog"
