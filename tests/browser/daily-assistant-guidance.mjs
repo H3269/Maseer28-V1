@@ -361,8 +361,12 @@ try {
   await gatedPanel.waitFor({ state: 'visible' });
   await gatedPanel.locator('#global-assistant-message').fill('چطور انجامش بدم؟');
   await gatedPanel.getByRole('button', { name: 'ارسال' }).click();
-  await gatedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some(node => /بررسی ایمنی همین روز/.test(node.innerText)));
-  assert.match(await gatedPanel.locator('.assistantMessage').last().innerText(), /بررسی ایمنی همین روز/);
+  await gatedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
+  const reenteredReply = await gatedPanel.locator('.assistantMessage').last().innerText();
+  assert.match(reenteredReply, /متن تمرین همین روز/,
+    're-entering the same Path28 day must keep daily assistant guidance available');
+  assert.match(reenteredReply, /راهکار اختصاصی همین روز/);
+  assert.doesNotMatch(reenteredReply, /بررسی ایمنی همین روز|بازبینی ایمنی/);
   await gatedPage.close();
 
   process.stdout.write('PASS: Chromium daily assistant guidance, real legacy retrieval across three topics, four source-derived adaptation branches, follow-up context, input bounds, persistent safety handoff, local-only privacy, blocked-day denial, and assistant-only relationship gate (WV-BROWSER-ASSISTANT)\\n');
