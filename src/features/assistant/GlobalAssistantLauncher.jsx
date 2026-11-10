@@ -6,6 +6,8 @@ import { answerLibraryBookTurn } from './libraryBookAssistant.js';
 import { routeAssistantTurn } from './assistantTurnEngine.js';
 import { isLocalNeuralModelInstalled, requestLocalNeuralModel } from './localNeuralModelClient.js';
 import { LIBRARY_ASSISTANT_PROMPT_GROUPS } from './libraryAssistantPrompts.js';
+import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
+import { getAngerDailyAssistantPromptGroups } from './angerDailyAssistantPrompts.js';
 import { appendLocalSourceReferences, buildLocalAssistantMessages, isLocalModelInstallCommand, LOCAL_MODEL_CACHE_MESSAGE, LOCAL_MODEL_FAILURE_MESSAGE, LOCAL_MODEL_INSTALL_MESSAGE, shouldUseLocalNeuralModel } from './localNeuralAssistant.js';
 
 export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null }) {
@@ -107,6 +109,21 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     return () => { active = false; };
   }, [screen, libraryContext?.titles?.length]);
 
+  const angerProblemText = String(dailyContext?.problem || '').trim();
+  const angerProblemTopicId = getCanonicalTopicIdForCategory(angerProblemText);
+  const angerRecordTopicId = dailyContext?.data?.topic_id || dailyContext?.data?.topicId || null;
+  const hasConflictingAngerTopic = Boolean(
+    (angerProblemTopicId && angerProblemTopicId !== 'T01')
+    || (angerRecordTopicId && angerRecordTopicId !== 'T01'),
+  );
+  const isAngerDailyPromptContext = Boolean(dailyContext)
+    && !hasConflictingAngerTopic
+    && (angerProblemTopicId === 'T01' || angerRecordTopicId === 'T01' || angerProblemText.includes('خشم'));
+  const activePromptGroups = screen === 'books'
+    ? LIBRARY_ASSISTANT_PROMPT_GROUPS
+    : isAngerDailyPromptContext
+      ? getAngerDailyAssistantPromptGroups(dailyContext?.day)
+      : [];
   if (!visible || screen === 'bookReader') return null;
 
   function resizeComposerInput(element) {
@@ -340,7 +357,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 <AppIcon name="x" size={18} />
               </button>
             </div>
-      {open && libraryPromptOpen && screen === 'books' && (
+      {open && libraryPromptOpen && (screen === 'books' || isAngerDailyPromptContext) && (
         <div
           className="validationModal libraryAssistantPromptModal"
           onClick={(event) => {
@@ -375,10 +392,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
             }}
           >
             <span className="badge">پرسش‌های پیشنهادی</span>
-            <h2 id="library-assistant-prompt-title">سؤال آماده دستیار کتابخانه</h2>
-            <p className="muted">برای انتخاب، روی سؤال موردنظرت بزن.</p>
+            <h2 id="library-assistant-prompt-title">{screen === "books" ? "سؤال آماده دستیار کتابخانه" : `سؤال‌های آماده روز ${dailyContext?.day} خشم`}</h2>
+            <p className="muted">برای انتخاب، روی سؤال موردنظرت بزن تا برای همین روز ارسال شود.</p>
             <div className="libraryAssistantPromptOptions">
-              {LIBRARY_ASSISTANT_PROMPT_GROUPS.map((group) => (
+              {activePromptGroups.map((group) => (
                 <section className="libraryAssistantPromptGroup" key={group.label}>
                   <h3>{group.label}</h3>
                   {group.questions.map((question) => (
@@ -434,7 +451,23 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
-              <form className={'assistantComposer' + (screen === 'books' && !localModelInstalled ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" onSubmit={send}>
+              <form className={'assistantComposer' + (screen === 'books' && !localModelInstalled ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} onSubmit={send}>
+                {isAngerDailyPromptContext && (
+                  <button
+                    ref={libraryPromptTriggerRef}
+                    className="libraryAssistantPromptTrigger dailyAssistantPromptTrigger"
+                    data-testid="anger-daily-prompt-trigger"
+                    type="button"
+                    aria-label={`باز کردن سؤال‌های آماده روز ${dailyContext?.day} خشم`}
+                    aria-haspopup="dialog"
+                    aria-expanded={libraryPromptOpen}
+                    aria-controls="library-assistant-prompt-dialog"
+                    disabled={sending}
+                    onClick={() => setLibraryPromptOpen(true)}
+                  >
+                    انتخاب سؤال آماده برای روز {dailyContext?.day} خشم
+                  </button>
+                )}
                 {screen === 'books' && !localModelInstalled ? (
                   <div className="libraryAssistantPromptRow">
                     <button

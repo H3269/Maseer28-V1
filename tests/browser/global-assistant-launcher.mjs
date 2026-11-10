@@ -211,6 +211,22 @@ try {
   assert.match(await dailyReply.innerText(), /روز ۱/);
   assert.match(await dailyReply.innerText(), /متن تمرین همین روز/);
   assert.match(await dailyReply.innerText(), /راهکار اختصاصی همین روز/);
+  assert.equal(await dialog.locator('.assistantComposer').getAttribute('data-anger-daily-prompt'), 'true', 'the active anger day context must expose its prepared-question picker');
+  const angerPromptPicker = dialog.getByTestId('anger-daily-prompt-trigger');
+  await angerPromptPicker.waitFor({ state: 'visible' });
+  await angerPromptPicker.click();
+  const angerPromptDialog = page.locator('#library-assistant-prompt-dialog');
+  await angerPromptDialog.waitFor({ state: 'visible' });
+  assert.match(await angerPromptDialog.innerText(), /سؤال‌های آماده روز .+ خشم/);
+  await angerPromptDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
+  assert.equal(await dialog.getByRole('textbox').inputValue(), 'منظور از تمرین امروز چیست؟');
+  const assistantMessagesBeforePreparedPrompt = await dialog.locator('.assistantMessage').count();
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction((previousCount) => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length > previousCount, assistantMessagesBeforePreparedPrompt);
+  const preparedPromptReply = await dialog.locator('.assistantMessage').last().innerText();
+  console.log('ANGER_PREPARED_PROMPT_REPLY=' + JSON.stringify(preparedPromptReply));
+  assert.match(preparedPromptReply, /راهنمای روز [1۱] خشم/u, 'the prepared question must return the active anger-day guide; actual reply is logged above');
+  assert.match(preparedPromptReply, /چه اتفاقی افتاد/);
   await closeButton.click();
   await dialog.waitFor({ state: 'detached' });
 

@@ -7220,6 +7220,11 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
   text-align: right; direction: rtl; cursor: pointer;
 }
 .globalAssistantChat .libraryAssistantPromptTrigger:disabled { opacity: .7; cursor: wait; }
+.globalAssistantChat .dailyAssistantPromptTrigger {
+  flex: 0 0 100%; width: 100%; min-height: 42px; height: auto;
+  margin: 0 0 8px; font-size: 13px;
+}
+
 .globalAssistantChat .libraryAssistantPromptTrigger:focus-visible,
 .libraryAssistantPromptCard button:focus-visible {
   outline: 3px solid #d6a84b; outline-offset: 2px;
