@@ -132,6 +132,18 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
 
   await page.route('**/*', async (route) => {
     const url = new URL(route.request().url());
+    if (url.pathname.endsWith('/content/daily-text-overrides.v1.json')) {
+      const overrideDay = dailyTextOverrides.categories?.[topicKey]?.days?.find((item) => Number(item.day) === dayNumber);
+      if (assistantDayMode.startsWith('adaptedAnxiety') || assistantDayMode.startsWith('adaptedLegacy')) {
+        assert.ok(overrideDay, 'the deterministic browser fixture must contain the selected topic override');
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json; charset=utf-8',
+        body: JSON.stringify(dailyTextOverrides),
+      });
+      return;
+    }
     if (url.pathname.endsWith('/content/path-content.json')) {
       // Use the checked-in fixture directly: repeatedly proxying the large path JSON
       // through Chromium's route.fetch caused intermittent preview-server socket resets.
