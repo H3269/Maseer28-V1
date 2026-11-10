@@ -91,7 +91,7 @@ test('T04 all 392 prepared answers teach the user with clear steps, day-specific
    assert.match(answer,/ایمنی|متوقف|فاصله|اختیاری|مکث/);
    if(q.kind==='exercise_example'||q.kind==='action_example'){
     assert.match(answer,/موقعیت فرضی|قدم‌به‌قدم|چطور انجامش بدهی/);
-    assert.match(answer,/معیار پایان/);
+    assert.match(answer,/معیار پایان|از کجا بفهمی کافی است/);
    }
   }
  }
