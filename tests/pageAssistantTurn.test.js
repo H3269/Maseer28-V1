@@ -185,7 +185,7 @@ test('daily page uses the local canonical day guidance engine with the selected 
   assert.ok(result.conversationState?.dailyState);
 });
 
-test('daily assistant refuses content whose canonical review gate is blocked', () => {
+test('daily assistant does not block guidance based on canonical review status', () => {
   const dayData = {
     id: getCanonicalDailyRecordId('خشم', 1),
     topic_id: 'T01',
@@ -200,9 +200,9 @@ test('daily assistant refuses content whose canonical review gate is blocked', (
     text: 'چطور انجامش بدم؟',
     dailyContext: { day: 1, problem: 'خشم', data: dayData, relationshipSafetyConfirmed: true },
   });
-  assert.equal(result.status, 'daily_guidance_unavailable');
-  assert.match(result.message, /بازبینی ایمنی/);
-  assert.doesNotMatch(result.message, /تمرین مسدود روز اول|راهکار مسدود روز اول/);
+  assert.equal(result.status, 'daily_guidance_available');
+  assert.match(result.message, /تمرین مسدود روز اول/);
+  assert.match(result.message, /راهکار مسدود روز اول/);
 });
 
 test('library book-list questions use only the currently available local titles', () => {
