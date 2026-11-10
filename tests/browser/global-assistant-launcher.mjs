@@ -211,7 +211,8 @@ try {
   assert.match(await dailyReply.innerText(), /روز ۱/);
   assert.match(await dailyReply.innerText(), /متن تمرین همین روز/);
   assert.match(await dailyReply.innerText(), /راهکار اختصاصی همین روز/);
-  const angerPromptPicker = dialog.getByRole('button', { name: /باز کردن سؤال‌های آماده روز .+ خشم/ });
+  assert.equal(await dialog.locator('.assistantComposer').getAttribute('data-anger-daily-prompt'), 'true', 'the active anger day context must expose its prepared-question picker');
+  const angerPromptPicker = dialog.getByTestId('anger-daily-prompt-trigger');
   await angerPromptPicker.waitFor({ state: 'visible' });
   await angerPromptPicker.click();
   const angerPromptDialog = page.locator('#library-assistant-prompt-dialog');
