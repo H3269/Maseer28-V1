@@ -3,6 +3,7 @@ name: Build and Deploy Maseer28-V1 Test App
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
