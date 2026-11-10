@@ -36,11 +36,21 @@ test('T03 router requires canonical topic identity, keeps safety preemption, and
  const safety=makeDailyExerciseGuidanceTurn({message:'امشب قصد دارم خودم را بکشم',dayData:data,problem:'ترس',day:1});
  assert.match(safety.response,/خطر فوری/);
 });
-test('T03 content bank explicitly flags unresolved taxonomy labels and non-approved review status',async()=>{
+test('T03 assigns one canonical, topic-owned subtopic to every day with a non-overlapping T03/T21 boundary',async()=>{
  const source=await readFile(new URL('../src/features/assistant/fearDailyAssistantPrompts.js',import.meta.url),'utf8');
+ const registry=JSON.parse(await readFile(new URL('../public/assistant/knowledge/subtopics.v1.json',import.meta.url),'utf8'));
  assert.match(source,/Draft educational content; not expert-approved treatment/);
- assert.equal(FEAR_DAILY_ASSISTANT_GUIDES.filter(x=>!x.subtopic).length,3);
- assert.deepEqual(FEAR_DAILY_ASSISTANT_GUIDES.filter(x=>!x.subtopic).map(x=>x.day),[25,26,28]);
+ assert.equal(FEAR_DAILY_ASSISTANT_GUIDES.length,28);
+ const allowed=new Set(['T03-S01','T03-S02','T03-S03']);
+ assert.ok(FEAR_DAILY_ASSISTANT_GUIDES.every(x=>allowed.has(x.subtopic)), 'every T03 day must have exactly one canonical T03 subtopic');
+ assert.deepEqual(FEAR_DAILY_ASSISTANT_GUIDES.map(x=>x.subtopic),["T03-S01","T03-S01","T03-S01","T03-S03","T03-S03","T03-S03","T03-S03","T03-S02","T03-S01","T03-S03","T03-S03","T03-S03","T03-S02","T03-S03","T03-S02","T03-S02","T03-S02","T03-S02","T03-S03","T03-S02","T03-S03","T03-S01","T03-S02","T03-S02","T03-S03","T03-S02","T03-S03","T03-S02"]);
+ const s03=registry.subtopics.find(x=>x.subtopic_id==='T03-S03');
+ const t21=registry.subtopics.find(x=>x.subtopic_id==='T21-S01');
+ assert.match(s03.name,/پاسخ دفاعی فوری/);
+ assert.match(s03.definition,/الگوی اجتناب رفتاری/);
+ assert.match(t21.name,/رفتار اجتنابی/);
+ assert.match(t21.definition,/پاسخ هیجانی\/دفاعی فوری ترس/);
+ assert.notEqual(s03.name,t21.name);
 });
 
 test('T03 runtime override and prepared assistant bank match all 28 exercise/action pairs',async()=>{
