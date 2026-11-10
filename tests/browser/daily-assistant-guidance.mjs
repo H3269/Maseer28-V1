@@ -365,8 +365,9 @@ try {
       await adaptedPromptDialog.waitFor({ state: 'visible' });
       await adaptedPromptDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
       await adaptedPanel.getByRole('button', { name: 'ارسال' }).click();
-      await adaptedPage.waitForFunction((day) => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-        .some((node) => node.innerText.includes(`راهنمای روز ${day} اضطراب`)), scenario.day);
+      const visibleScenarioDay = String(scenario.day).replace(/[0-9]/g, digit => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
+      await adaptedPage.waitForFunction((dayLabel) => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+        .some((node) => node.innerText.includes(`راهنمای روز ${dayLabel} اضطراب`)), visibleScenarioDay);
       adaptedReply = await adaptedPanel.locator('.assistantMessage').last().innerText();
     } else {
       await adaptedPanel.locator('#global-assistant-message').fill('چطور انجامش بدم؟');
@@ -380,7 +381,6 @@ try {
       await assertAssistantUsesVisibleDailySource(adaptedPage, adaptedPanel, scenario.topic, scenario.day);
     }
     assert.match(adaptedReply, new RegExp(scenario.topic));
-    const visibleScenarioDay = String(scenario.day).replace(/[0-9]/g, digit => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
     assert.match(adaptedReply, new RegExp('روز ' + visibleScenarioDay));
     if (scenario.fieldMode) {
       // The assistant is a modal overlay; close it before interacting with
