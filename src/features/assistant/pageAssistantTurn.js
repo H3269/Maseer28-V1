@@ -108,7 +108,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     }
 
     if (preparedTopicId === 'T04') {
-      return Object.freeze({ status: 'daily_guidance_unavailable', message: 'برای موضوع نفرت، فقط سؤال‌های آماده همین روز پاسخ داده می‌شوند. لطفاً یکی از سؤال‌های فهرست را انتخاب کن؛ گفت‌وگوی آزاد در این بسته فعال نیست.', knowledge: Object.freeze([]), conversationState: null });
+      return Object.freeze({ status: 'daily_guidance_unavailable', message: 'برای موضوع نفرت، فقط سؤال‌های آماده همین روز پاسخ داده می‌شوند. لطفاً یکی از سؤال‌های فهرست را انتخاب کن؛ گفت‌وگوی آزاد برای این موضوع فعال نیست.', knowledge: Object.freeze([]), conversationState: null });
     }
 
     // The in-path assistant is a bounded local guidance surface. Do not apply
