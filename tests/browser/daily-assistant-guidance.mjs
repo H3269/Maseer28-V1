@@ -349,6 +349,7 @@ try {
     await openDay(adaptedPage, { assistantDayMode: scenario.mode, problem: scenario.topic, localModelInstalled: true });
     const adaptedPanel = adaptedPage.locator('.globalAssistantDialog');
     await adaptedPanel.waitFor({ state: 'visible' });
+    const visibleScenarioDay = String(scenario.day).replace(/[0-9]/g, digit => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
     let adaptedReply;
     if (scenario.topic === 'اضطراب') {
       const adaptedGuidance = normalizeVisibleDailyText(await adaptedPage.locator('#day .adaptiveGuidance').innerText());
@@ -365,7 +366,6 @@ try {
       await adaptedPromptDialog.waitFor({ state: 'visible' });
       await adaptedPromptDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
       await adaptedPanel.getByRole('button', { name: 'ارسال' }).click();
-      const visibleScenarioDay = String(scenario.day).replace(/[0-9]/g, digit => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
       await adaptedPage.waitForFunction((dayLabel) => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
         .some((node) => node.innerText.includes(`راهنمای روز ${dayLabel} اضطراب`)), visibleScenarioDay);
       adaptedReply = await adaptedPanel.locator('.assistantMessage').last().innerText();
