@@ -76,11 +76,12 @@ test('T02 anxiety overrides all ten runtime text fields uniquely across all 28 d
   ]);
   const merged = mergeDailyTextOverrides(base, overrides);
   const fields = ['title', 'intro', 'exercise', 'actionText', 'closing', 'lightExerciseText', 'lightActionText', 'progressActionText', 'restExerciseText', 'restActionText'];
+  const normalizeField = (value) => String(value ?? '').normalize('NFKC').replace(/[يى]/g, 'ی').replace(/ك/g, 'ک').replace(/[\\u064B-\\u065F\\u0670]/g, '').replace(/[\\u200c\\u200f\\u202a-\\u202e]/g, '').replace(/\\s+/g, ' ').trim();
   const original = base.categories['اضطراب'].days;
   const actual = merged.categories['اضطراب'].days;
   assert.equal(actual.length, 28);
   for (const field of fields) {
-    const values = actual.map((day) => normalized(day[field]));
+    const values = actual.map((day) => normalizeField(day[field]));
     assert.equal(values.filter(Boolean).length, 28, field + ' coverage');
     assert.equal(new Set(values).size, 28, field + ' must be unique within T02');
     for (let index = 0; index < 28; index += 1) assert.equal(actual[index][field], overrides.categories['اضطراب'].days[index][field], field + ' day ' + (index + 1));
