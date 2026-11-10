@@ -13,10 +13,21 @@ test('T03 daily exercises and actions are not exact duplicates across the 28-day
  assert.equal(new Set(FEAR_DAILY_ASSISTANT_GUIDES.map(x=>x.exercise.trim())).size,28);
  assert.equal(new Set(FEAR_DAILY_ASSISTANT_GUIDES.map(x=>x.action.trim())).size,28);
 });
-test('T03 prompt groups are scoped to the selected day',()=>{
- for(let day=1;day<=28;day++){const groups=getFearDailyAssistantPromptGroups(day);assert.equal(groups.length,1);assert.equal(groups[0].questions.length,14);assert.ok(groups[0].label.includes('ترس'));}
+test('T03 prompt groups use the shared five-section structure and stay scoped to the selected day',()=>{
+ for(let day=1;day<=28;day++){
+  const groups=getFearDailyAssistantPromptGroups(day);
+  assert.equal(groups.length,5);
+  assert.deepEqual(groups.map(group=>group.questions.length),[2,2,1,5,4]);
+  assert.deepEqual(groups.map(group=>group.label),[
+   'فهم تمرین روز '+day,
+   'فهم اقدام اختصاصی روز '+day,
+   'تفاوت تمرین و اقدام',
+   'اجرا و موانع',
+   'ارزیابی و ایمنی',
+  ]);
+ }
  assert.deepEqual(getFearDailyAssistantPromptGroups(29),[]);
- assert.equal(getFearDailyAssistantPromptGroups('۱').length,1);
+ assert.equal(getFearDailyAssistantPromptGroups('۱').length,5);
 });
 test('T03 prepared answers quote the active visible daily content and refuse unknown prompts',()=>{
  const g=FEAR_DAILY_ASSISTANT_GUIDES[0],visible={topic_id:'T03',day:1,exercise:'متن تمرین نمایان روز اول ترس',actionText:'اقدام اختصاصی نمایان روز اول ترس'};
