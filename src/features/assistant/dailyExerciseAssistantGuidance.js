@@ -2,6 +2,7 @@ import { routeSemanticIntake } from './intentContextRouter.js';
 import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
 import { answerAngerDailyPreparedQuestion } from './angerDailyAssistantPrompts.js';
 import { answerAnxietyDailyPreparedQuestion } from './anxietyDailyAssistantPrompts.js';
+import { answerFearDailyPreparedQuestion } from './fearDailyAssistantPrompts.js';
 
 const SAFETY_QUESTION = 'آیا همین الآن خطر فوری، قصد یا برنامه عملی برای آسیب به خودت یا شخص دیگری وجود دارد؟ اگر پاسخ روشن نیست، بگو مطمئن نیستی.';
 const SAFETY_HANDOFF = 'راهنمایی تمرین را متوقف می‌کنم. اگر احتمال خطر فوری وجود دارد یا مطمئن نیستی، همین الآن با خدمات اورژانسی محل زندگی یا یک فرد امن و قابل اعتماد تماس بگیر و تنها نمان. این گفت‌وگو جای کمک فوری انسانی را نمی‌گیرد.';
@@ -343,6 +344,13 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
   if (canonicalTopicId === 'T02') {
     const preparedAnswer = answerAnxietyDailyPreparedQuestion({ day, message: text });
     if (preparedAnswer) return result(preparedAnswer, { ...state, lastTopic: currentTopic }, text);
+  }
+
+  if (canonicalTopicId === 'T03') {
+    if (sourceTopicId !== 'T03') return result('شناسه موضوع محتوای روز با موضوع ترس تطبیق ندارد؛ برای جلوگیری از راهنمایی اشتباه، پاسخ آماده ارائه نمی‌شود.', state, text);
+    const preparedAnswer = answerFearDailyPreparedQuestion({ day, message: text, dailyContent: dayData });
+    if (preparedAnswer) return result(preparedAnswer, { ...state, lastTopic: currentTopic }, text);
+    return result('این پرسش در فهرست راهنمای آماده موضوع ترس نیست. لطفاً یکی از پرسش‌های آماده همین روز را انتخاب کن.', { ...state, lastTopic: currentTopic }, text);
   }
 
   const followUp = followUpResponse(text, state, dayData);
