@@ -6,6 +6,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const baseURL = process.env.PATH28_BASE_URL || 'http://127.0.0.1:4173';
 const canonicalPathContent = JSON.parse(await readFile(new URL('../../public/content/path-content.json', import.meta.url), 'utf8'));
+const dailyTextOverrides = JSON.parse(await readFile(new URL('../../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
 const browser = await chromium.launch({ headless: true });
 
 const journey = {
@@ -73,15 +74,17 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
   const isLegacyMode = assistantDayMode === 'legacy' || assistantDayMode.startsWith('adaptedLegacy');
   const dayNumber = assistantDayMode === 'relationship'
     ? 10
-    : assistantDayMode === 'adaptedLegacyStreak' || assistantDayMode === 'adaptedLegacyImprovement'
+    : ['adaptedLegacyStreak', 'adaptedLegacyImprovement', 'adaptedAnxietyStreak', 'adaptedAnxietyImprovement'].includes(assistantDayMode)
       ? 3
-      : isLegacyMode ? 2 : 1;
+      : ['adaptedLegacy', 'adaptedLegacySame', 'adaptedAnxiety'].includes(assistantDayMode)
+        ? 2
+        : isLegacyMode ? 2 : 1;
   const topicKey = problem || (isLegacyMode ? 'غم و سوگ' : 'خشم');
-  const adaptationHistory = assistantDayMode === 'adaptedLegacy'
+  const adaptationHistory = ['adaptedLegacy', 'adaptedAnxiety'].includes(assistantDayMode)
     ? { 1: { feedback: 'hard', score: 8 } }
-    : assistantDayMode === 'adaptedLegacyStreak'
+    : ['adaptedLegacyStreak', 'adaptedAnxietyStreak'].includes(assistantDayMode)
       ? { 1: { feedback: 'hard', score: 8 }, 2: { feedback: 'worse', score: 9 } }
-      : assistantDayMode === 'adaptedLegacyImprovement'
+      : ['adaptedLegacyImprovement', 'adaptedAnxietyImprovement'].includes(assistantDayMode)
         ? { 1: { feedback: 'better', score: 3 }, 2: { feedback: 'better', score: 4 } }
         : assistantDayMode === 'adaptedLegacySame'
           ? { 1: { feedback: 'same', score: 5 } }
@@ -300,15 +303,18 @@ try {
   }
 
   for (const scenario of [
-    { mode: 'adaptedLegacy', day: 2, expected: 'با توجه به نتیجه روز گذشته' },
-    { mode: 'adaptedLegacyStreak', day: 3, expected: 'در چند روز اخیر انجام تمرین دشوار بوده' },
-    { mode: 'adaptedLegacyImprovement', day: 3, expected: 'بهبود در چند روز اخیر دیده می‌شود' },
-    { mode: 'adaptedLegacySame', day: 2, expected: 'تغییر محسوسی ثبت نشده است' },
+    { mode: 'adaptedLegacy', topic: 'غم و سوگ', day: 2, expected: 'با توجه به نتیجه روز گذشته' },
+    { mode: 'adaptedLegacyStreak', topic: 'غم و سوگ', day: 3, expected: 'در چند روز اخیر انجام تمرین دشوار بوده' },
+    { mode: 'adaptedLegacyImprovement', topic: 'غم و سوگ', day: 3, expected: 'بهبود در چند روز اخیر دیده می‌شود' },
+    { mode: 'adaptedLegacySame', topic: 'غم و سوگ', day: 2, expected: 'تغییر محسوسی ثبت نشده است' },
+    { mode: 'adaptedAnxiety', topic: 'اضطراب', day: 2, expected: 'با توجه به نتیجه روز گذشته', fieldMode: 'light' },
+    { mode: 'adaptedAnxietyStreak', topic: 'اضطراب', day: 3, expected: 'در چند روز اخیر انجام تمرین دشوار بوده', fieldMode: 'rest' },
+    { mode: 'adaptedAnxietyImprovement', topic: 'اضطراب', day: 3, expected: 'بهبود در چند روز اخیر دیده می‌شود', fieldMode: 'progress' },
   ]) {
     const adaptedPage = await browser.newPage();
     const adaptedErrors = [];
     adaptedPage.on('pageerror', error => adaptedErrors.push(String(error)));
-    await openDay(adaptedPage, { assistantDayMode: scenario.mode, localModelInstalled: true });
+    await openDay(adaptedPage, { assistantDayMode: scenario.mode, problem: scenario.topic, localModelInstalled: true });
     const adaptedPanel = adaptedPage.locator('.globalAssistantDialog');
     await adaptedPanel.waitFor({ state: 'visible' });
     await adaptedPanel.locator('#global-assistant-message').fill('چطور انجامش بدم؟');
@@ -319,11 +325,27 @@ try {
       `assistant must expose the expected source-derived adaptation for ${scenario.mode}`);
     assert.match(adaptedReply, /متن تمرین همین روز/);
     assert.match(adaptedReply, /راهکار اختصاصی همین روز/);
-    await assertAssistantUsesVisibleDailySource(adaptedPage, adaptedPanel, 'غم و سوگ', scenario.day);
-    assert.match(adaptedReply, /غم و سوگ/);
+    await assertAssistantUsesVisibleDailySource(adaptedPage, adaptedPanel, scenario.topic, scenario.day);
+    assert.match(adaptedReply, new RegExp(scenario.topic));
     const visibleScenarioDay = String(scenario.day).replace(/[0-9]/g, digit => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
     assert.match(adaptedReply, new RegExp('روز ' + visibleScenarioDay));
-    assert.deepEqual(adaptedErrors, [], `adapted legacy daily guidance ${scenario.mode} must not raise browser errors`);
+    if (scenario.fieldMode) {
+      const source = dailyTextOverrides.categories['اضطراب'].days.find((item) => item.day === scenario.day);
+      const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(adaptedPage, '#dayExercise'));
+      const visibleAction = normalizeVisibleDailyText(await readExpandedDailyText(adaptedPage, '#dayAction'));
+      const expectedExercise = scenario.fieldMode === 'light' ? source.lightExerciseText
+        : scenario.fieldMode === 'rest' ? source.restExerciseText : source.exercise;
+      const expectedAction = scenario.fieldMode === 'light' ? source.lightActionText
+        : scenario.fieldMode === 'rest' ? source.restActionText : source.progressActionText;
+      assert.ok(visibleExercise.includes(normalizeVisibleDailyText(expectedExercise)),
+        `visible T02 ${scenario.fieldMode} exercise must come from its dedicated runtime field`);
+      assert.ok(visibleAction.includes(normalizeVisibleDailyText(expectedAction)),
+        `visible T02 ${scenario.fieldMode} action must come from its dedicated runtime field`);
+      assert.equal(normalizeVisibleDailyText(await adaptedPage.locator('#dayTitle').innerText()), normalizeVisibleDailyText(source.title));
+      assert.ok(normalizeVisibleDailyText(await adaptedPage.locator('#dayClosing').innerText()).includes(normalizeVisibleDailyText(source.closing)),
+        'visible T02 closing must preserve the day-specific criterion, reflection and stop condition');
+    }
+    assert.deepEqual(adaptedErrors, [], `adapted daily guidance ${scenario.mode} must not raise browser errors`);
     await adaptedPage.close();
   }
 
