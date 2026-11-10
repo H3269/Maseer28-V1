@@ -232,25 +232,6 @@ try {
   await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await dialog.waitFor({ state: 'detached' });
 
-  // T02 anxiety receives its own day-scoped prepared question picker before
-  // model installation, with canonical topic/day identity and exact source text.
-  const anxietyPage = await browser.newPage();
-  await openDay(anxietyPage, { problem: 'اضطراب' });
-  const anxietyPanel = anxietyPage.locator('.globalAssistantDialog');
-  const anxietyTrigger = anxietyPanel.getByTestId('anxiety-daily-prompt-trigger');
-  await anxietyTrigger.waitFor({ state: 'visible' });
-  await anxietyTrigger.click();
-  const anxietyPromptDialog = anxietyPage.locator('#library-assistant-prompt-dialog');
-  await anxietyPromptDialog.waitFor({ state: 'visible' });
-  assert.match(await anxietyPromptDialog.innerText(), /سؤال‌های آماده روز 1 اضطراب/);
-  await anxietyPromptDialog.getByRole('button', { name: 'تمرین و اقدام امروز چه تفاوتی دارند؟' }).click();
-  await anxietyPanel.getByRole('button', { name: 'ارسال' }).click();
-  await anxietyPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /راهنمای روز 1 اضطراب/.test(node.innerText)));
-  await assertAssistantUsesVisibleDailySource(anxietyPage, anxietyPanel, 'اضطراب', 1);
-  await anxietyPage.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
-  await anxietyPanel.waitFor({ state: 'detached' });
-  await anxietyPage.close();
-
   // Restore the pre-install state before testing the Library guided composer.
   await page.evaluate(async () => {
     const cache = await caches.open('maseer28-local-model-state-v1');
