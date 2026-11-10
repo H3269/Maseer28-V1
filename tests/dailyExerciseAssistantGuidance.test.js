@@ -545,7 +545,7 @@ test('relationship-gated daily guidance stays closed until the day-specific safe
 test('caution-level daily guidance is available but explicitly marked for cautious handling', () => {
   const cautionDay = {
     id: 'خشم-01',
-    topic_id: 'T02',
+    topic_id: 'T01',
     day: 1,
     review_status: 'approved',
     risk_level: 'caution',
@@ -785,7 +785,7 @@ test('rejects adapted guidance when any canonical identity field is missing from
   };
   const missingTopic = { id: 'T01-D04', day: 4, exercise: 'متن نامطمئن' };
   const missingDay = { id: 'T01-D04', topic_id: 'T01', exercise: 'متن نامطمئن' };
-  const nullIdentity = { id: 'T01-D04', topic_id: 'T02', day: null, exercise: 'متن نامطمئن' };
+  const nullIdentity = { id: 'T01-D04', topic_id: 'T01', day: null, exercise: 'متن نامطمئن' };
 
   assert.equal(selectDailyExerciseGuidanceData({ guidanceData: missingTopic, data: raw }), raw);
   assert.equal(selectDailyExerciseGuidanceData({ guidanceData: missingDay, data: raw }), raw);
