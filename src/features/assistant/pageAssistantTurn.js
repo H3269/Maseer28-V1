@@ -4,6 +4,7 @@ import { getDailyAssistantAccess } from './dailyAssistantAccess.js';
 import { makeDailyExerciseGuidanceTurn, selectDailyExerciseGuidanceData } from './dailyExerciseAssistantGuidance.js';
 import { answerAngerDailyPreparedQuestion } from './angerDailyAssistantPrompts.js';
 import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
+import { getCanonicalDailyRecordId } from '../content/dailyContentSelector.js';
 
 const SAFETY_STATUSES = new Set([
   'urgent_human_support_required',
@@ -43,6 +44,36 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     if (message.length > 2000) {
       return Object.freeze({ status: 'input_too_long', message: 'پیام بیش از حد طولانی است؛ لطفاً آن را کوتاه‌تر کن.', knowledge: Object.freeze([]), conversationState: null });
     }
+
+    // Exact, pre-authored T01 FAQs are a separate bounded educational route.
+    // Validate the canonical topic/day identity, then answer before exercise
+    // safety/review gates; those gates continue to protect free-form guidance
+    // and the actual daily exercise content.
+    const preparedAngerDay = Number(dailyContext?.day);
+    const preparedAngerSource = dailyContext?.data;
+    const hasCanonicalAngerIdentity = getCanonicalTopicIdForCategory(dailyContext?.problem) === 'T01'
+      && Number.isInteger(preparedAngerDay)
+      && preparedAngerDay >= 1
+      && preparedAngerDay <= 28
+      && preparedAngerSource
+      && typeof preparedAngerSource === 'object'
+      && preparedAngerSource.id === getCanonicalDailyRecordId(dailyContext?.problem, preparedAngerDay)
+      && Number(preparedAngerSource.day) === preparedAngerDay
+      && (!Object.prototype.hasOwnProperty.call(preparedAngerSource, 'topic_id')
+        || preparedAngerSource.topic_id === 'T01');
+    if (hasCanonicalAngerIdentity) {
+      const preparedAnswer = answerAngerDailyPreparedQuestion({ day: preparedAngerDay, message });
+      if (preparedAnswer) {
+        return Object.freeze({
+          status: 'daily_guidance_available',
+          message: preparedAnswer,
+          knowledge: Object.freeze([]),
+          page_context: 'day',
+          conversationState: null,
+        });
+      }
+    }
+
     const access = getDailyAssistantAccess({
       day: dailyContext?.data,
       problem: dailyContext?.problem,
