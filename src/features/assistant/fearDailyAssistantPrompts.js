@@ -3001,6 +3001,6 @@ export function answerFearDailyPreparedQuestion({ day, message, dailyContent } =
     dailyExercise,
     dailyAction,
     safetyReminder: safe(),
-    steps: {}[guide.day] || {},
+    steps: {},
   });
 }
