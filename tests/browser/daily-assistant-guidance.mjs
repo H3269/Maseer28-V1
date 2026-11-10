@@ -274,7 +274,7 @@ try {
   assert.match(await fearPromptDialog.innerText(), /ترس/);
   await fearPromptDialog.locator('[data-prompt-option]').first().click();
   await fearPanel.getByRole('button', { name: 'ارسال' }).click();
-  await fearGuidedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
+  await fearGuidedPage.waitForFunction(() => Array.from(document.querySelectorAll('.globalAssistantDialog .assistantMessage')).some(node => node.innerText.includes('راهنمای روز ۱ ترس')));
   assert.match(await fearPanel.locator('.assistantMessage').last().innerText(), /راهنمای روز ۱ ترس/);
   assert.deepEqual(fearErrors, [], 'T03 prepared-only assistant browser flow must not raise page errors');
   await fearGuidedPage.close();
