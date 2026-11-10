@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { FEAR_DAILY_ASSISTANT_GUIDES, answerFearDailyPreparedQuestion, getFearDailyAssistantPromptGroups } from '../src/features/assistant/fearDailyAssistantPrompts.js';
 import { makeDailyExerciseGuidanceTurn } from '../src/features/assistant/dailyExerciseAssistantGuidance.js';
+import { readFile as readTextFile } from 'node:fs/promises';
 import { readFile } from 'node:fs/promises';
 
 test('T03 prepared assistant has 28 canonical day slots and 14 unique prompts per day',()=>{
@@ -41,4 +42,16 @@ test('T03 content bank explicitly flags unresolved taxonomy labels and non-appro
  assert.match(source,/Draft educational content; not expert-approved treatment/);
  assert.equal(FEAR_DAILY_ASSISTANT_GUIDES.filter(x=>!x.subtopic).length,3);
  assert.deepEqual(FEAR_DAILY_ASSISTANT_GUIDES.filter(x=>!x.subtopic).map(x=>x.day),[25,26,28]);
+});
+
+test('T03 runtime override and prepared assistant bank match all 28 exercise/action pairs',async()=>{
+ const override=JSON.parse(await readTextFile(new URL('../public/content/daily-text-overrides.v1.json',import.meta.url),'utf8'));
+ const days=override.categories['ترس'].days; assert.equal(days.length,28);
+ for(const g of FEAR_DAILY_ASSISTANT_GUIDES){const source=days.find(x=>x.day===g.day);assert.ok(source);assert.equal(g.exercise,source.exercise,'exercise day '+g.day);assert.equal(g.action,source.actionText,'action day '+g.day);}
+});
+test('T03 has no exact exercise/action duplication with any other topic override',async()=>{
+ const override=JSON.parse(await readTextFile(new URL('../public/content/daily-text-overrides.v1.json',import.meta.url),'utf8'));
+ const normalize=s=>String(s||'').normalize('NFKC').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[\u200c\s،؛.!؟,:]/g,'').toLowerCase();
+ const fear=override.categories['ترس'].days;
+ for(const [topic,data] of Object.entries(override.categories)){if(topic==='ترس')continue;for(const row of data.days||[])for(const f of fear){assert.notEqual(normalize(f.exercise),normalize(row.exercise),'exercise duplicate with '+topic+' day '+row.day);assert.notEqual(normalize(f.actionText),normalize(row.actionText),'action duplicate with '+topic+' day '+row.day);}}
 });
