@@ -4994,3 +4994,16 @@ undefined
 - گام بعد: آزمون زنده مالک در مرورگر روی main، ثبت خطاهای احتمالی و تکمیل شواهد علمی/بازبینی تخصصی. هیچ Telegram Action یا انتشار Telegram/Bale انجام نشده است.
 
 **وضعیت:** T03_MERGED_TO_MAIN_FOR_OWNER_BROWSER_TEST; CI_STATUS_NOT_CONFIRMED; EVIDENCE_LINKAGE_PENDING; EXPERT_REVIEW_PENDING; NO_PUBLIC_RELEASE
+
+## 2026-11-10 — رفع اتصال اجرایی دستیار آماده T03
+
+- علت شکست پاسخ‌دهی در مسیر واقعی رابط مشخص شد: بانک ۳۹۲ پرسش و پاسخ T03 و تابع پاسخ‌ساز آن وجود داشتند، اما pageAssistantTurn.js فقط پاسخ‌سازهای T01 و T02 را در مسیر مستقیم پرسش‌های آماده متصل کرده بود. پرسش‌های T03 به مسیر عمومی راهنمای روزانه می‌افتادند؛ آزمون‌های قبلی عمدتاً تابع سطح پایین را می‌سنجیدند و این نقص یکپارچه‌سازی را پوشش نمی‌دادند.
+- اصلاح در PR #90 انجام و در main ادغام شد: https://github.com/H3269/Maseer28-V1/pull/90
+- commit ادغام: e013d164724888b32fd0dbfc3f7e379b96fd3620.
+- پاسخ‌ساز T03 به مسیر مستقیم FAQ آماده متصل شد؛ تطبیق روز و شناسه canonical موضوع اجباری است و در T03 نبود شناسه صریح یا تعارض شناسه/روز به توقف امن منجر می‌شود.
+- تقدم مسیر خطر فوری/شفاف‌سازی ایمنی حفظ شد؛ هیچ گیت ایمنی حذف یا دور زده نشد. ورودی آزاد و fallback عمومی T03 همچنان غیرفعال‌اند.
+- آزمون رگرسیون مسیر واقعی makePageAssistantTurn برای ۲۸ روز × ۱۴ پرسش = ۳۹۲ پرسش افزوده شد؛ آزمون‌های تعارض هویت موضوع/روز و تقدم خطر فوری نیز افزوده شدند.
+- وضعیت CI: در بررسی این commit، اجرای workflow و status check قابل مشاهده/تأیید نبود (workflow_runs و statuses خالی بودند). بنابراین سبز بودن CI ادعا نمی‌شود؛ آزمون مرورگر زنده مالک همچنان لازم است.
+- این اصلاح صرفاً اشکال اتصال runtime را رفع می‌کند و به معنی تأیید تخصصی/بالینی محتوای T03 یا انتشار عمومی نیست. هیچ Telegram Action یا انتشار Telegram/Bale انجام نشد.
+
+**وضعیت:** T03_PREPARED_FAQ_RUNTIME_ROUTE_FIXED_AND_MERGED; 392_ROUTING_REGRESSION_TESTS_ADDED; SAFETY_PREEMPTION_PRESERVED; CI_UNVERIFIED; OWNER_BROWSER_TEST_PENDING; NO_TELEGRAM_BALE_RELEASE
