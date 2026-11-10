@@ -195,6 +195,17 @@ try {
   assert.equal(await launcher.getAttribute('aria-expanded'), 'false');
   assert.equal(await launcher.evaluate((element) => element === document.activeElement), true, 'closing the dialog must restore focus to the launcher');
 
+  // Simulate a successfully installed local model for the free-form daily
+  // guidance scenarios below. The separate Library scenarios later in this
+  // test deliberately verify the pre-install guided-only composer.
+  await page.evaluate(async () => {
+    const cache = await caches.open('maseer28-local-model-state-v1');
+    const markerUrl = new URL('local-model/qwen3-0.6b-ready.json', location.href);
+    await cache.put(markerUrl.href, new Response(JSON.stringify({
+      modelId: 'onnx-community/Qwen3-0.6B-Instruct-ONNX',
+      revision: '54250909aca286a05b9d013c8af7a21859ee6ead',
+    }), { headers: { 'content-type': 'application/json' } }));
+  });
   await page.locator('#dashboard .heroAction').click();
   await page.locator('#day').waitFor({ state: 'visible' });
   await launcher.waitFor({ state: 'visible' });
@@ -229,6 +240,11 @@ try {
   assert.match(preparedPromptReply, /چه اتفاقی افتاد/);
   await closeButton.click();
   await dialog.waitFor({ state: 'detached' });
+  // Restore the pre-install state before testing the Library guided composer.
+  await page.evaluate(async () => {
+    const cache = await caches.open('maseer28-local-model-state-v1');
+    await cache.delete(new URL('local-model/qwen3-0.6b-ready.json', location.href).href);
+  });
 
   await page.getByRole('button', { name: 'خانه' }).click();
   await page.locator('#dashboard').waitFor({ state: 'visible' });
