@@ -5032,3 +5032,13 @@ undefined
 - گیت خطر فوری، تطبیق دقیق شناسه canonical و رد موضوع/روز متعارض حذف یا تضعیف نشده‌اند.
 
 **وضعیت:** T03_LEGACY_CANONICAL_TOPIC_ID_MISMATCH_ROOT_CAUSE_IDENTIFIED; RUNTIME_SHAPED_392_FAQ_REGRESSION_UPDATED; EXPLICIT_TOPIC_DAY_CONFLICTS_REJECTED; SAFETY_PRECEDENCE_PRESERVED; PR_PENDING; NO_PUBLIC_RELEASE
+
+
+## تکمیل اصلاح T03 — رفع آزمون قدیمی ناسازگار با قالب پنج‌گانه
+
+- اجرای CI نخست PR #92 نشان داد آزمون واحد `tests/fearDailyAssistantPrompts.test.js` هنوز انتظار قالب قدیمی یک‌گروهی (۱۴ سؤال در یک گروه) را داشت؛ این انتظار پس از PR #91 و انتقال به پنج گروه مشترک T01/T02 عمداً منسوخ شده بود. شکست مربوط به آزمون کهنه بود، نه شکست مسیر اصلاح هویت canonical.
+- آزمون قدیمی با قرارداد فعلی هماهنگ شد: پنج گروه با تعداد پرسش‌های `[2, 2, 1, 5, 4]`، عناوین استاندارد و پوشش روزهای ۱ تا ۲۸؛ روز خارج از دامنه همچنان گروهی ندارد.
+- شکست CI ثبت و پنهان نشد؛ اجرای مجدد کامل workflow پس از این اصلاح لازم است. ادغام تا دریافت نتیجه قابل قبول آزمون‌ها انجام نمی‌شود.
+- PR #92 همچنان شامل اصلاح ریشه خطای runtime، آزمون ۳۹۲ پرسش با شکل واقعی داده legacy، رد تعارض صریح و اصلاح این آزمون stale است.
+
+**وضعیت:** T03_LEGACY_IDENTITY_FIX_READY_FOR_REVALIDATION; STALE_SINGLE_GROUP_TEST_UPDATED_TO_FIVE_GROUP_CONTRACT; CI_RETRY_PENDING; NO_MAIN_MERGE_YET; NO_PUBLIC_RELEASE
