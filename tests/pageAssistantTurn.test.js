@@ -4,6 +4,7 @@ import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTu
 import { FEAR_DAILY_ASSISTANT_GUIDES, answerFearDailyPreparedQuestion, getFearDailyAssistantPromptGroups } from '../src/features/assistant/fearDailyAssistantPrompts.js';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
 import { ANXIETY_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
+import { HATRED_DAILY_ASSISTANT_GUIDES, getHatredDailyAssistantPromptGroups } from '../src/features/assistant/hatredDailyAssistantPrompts.js';
 
 test('page-specific UI guidance is selected for the current screen', () => {
   const result = makePageAssistantTurn({
@@ -460,4 +461,43 @@ test('T03 prepared answers follow the shared answer hierarchy and remain specifi
   assert.ok(exercise.includes(guide.exercise));
   assert.ok(action.includes(guide.action));
   assert.equal(answerFearDailyPreparedQuestion({ day: 1, message: 'سؤال خارج از فهرست' }), null);
+});
+
+
+test('all 392 prepared T04 questions answer through the real page router for canonical day identity',()=>{
+ let checked=0;
+ for(const guide of HATRED_DAILY_ASSISTANT_GUIDES){
+  for(const question of guide.questions){
+   const result=makePageAssistantTurn({screen:'day',text:question.value,dailyContext:{day:guide.day,problem:'نفرت',data:{id:getCanonicalDailyRecordId('نفرت',guide.day),topic_id:'T04',day:guide.day,review_status:'pending_expert_review'},guidanceData:{id:getCanonicalDailyRecordId('نفرت',guide.day),topic_id:'T04',day:guide.day}}});
+   assert.equal(result.status,'daily_guidance_available',`T04 day ${guide.day} question ${question.id}`);
+   assert.match(result.message,/راهنمای روز/);checked++;
+  }
+ }
+ assert.equal(checked,392);
+});
+
+test('T04 prepared assistant accepts legacy missing topic_id but rejects topic and day conflicts',()=>{
+ const q=HATRED_DAILY_ASSISTANT_GUIDES[0].questions[0];
+ const legacy=makePageAssistantTurn({screen:'day',text:q.value,dailyContext:{day:1,problem:'نفرت',data:{id:getCanonicalDailyRecordId('نفرت',1),day:1},guidanceData:{id:getCanonicalDailyRecordId('نفرت',1),topic_id:null,day:1}}});
+ assert.equal(legacy.status,'daily_guidance_available');
+ const wrongTopic=makePageAssistantTurn({screen:'day',text:q.value,dailyContext:{day:1,problem:'نفرت',data:{id:getCanonicalDailyRecordId('نفرت',1),topic_id:'T18',day:1}}});
+ assert.equal(wrongTopic.status,'daily_guidance_unavailable');
+ const wrongDay=makePageAssistantTurn({screen:'day',text:q.value,dailyContext:{day:1,problem:'نفرت',data:{id:getCanonicalDailyRecordId('نفرت',2),topic_id:'T04',day:2}}});
+ assert.equal(wrongDay.status,'daily_guidance_unavailable');
+});
+
+test('T04 urgent safety status preempts prepared Q&A and free-form daily guidance is disabled',()=>{
+ const urgent=makePageAssistantTurn({screen:'day',text:'امشب قصد دارم خودم را بکشم.',dailyContext:{day:1,problem:'نفرت',data:{id:getCanonicalDailyRecordId('نفرت',1),topic_id:'T04',day:1}}});
+ assert.equal(urgent.status,'urgent_human_support_required');
+ const free=makePageAssistantTurn({screen:'day',text:'چرا از یک نفر متنفرم؟',dailyContext:{day:1,problem:'نفرت',data:{id:getCanonicalDailyRecordId('نفرت',1),topic_id:'T04',day:1}}});
+ assert.equal(free.status,'daily_guidance_unavailable');
+ assert.match(free.message,/فقط سؤال‌های آماده/);
+});
+
+test('T04 prompt groups use the same five-section ordering as T01-T03',()=>{
+ for(let day=1;day<=28;day++){
+  const groups=getHatredDailyAssistantPromptGroups(day);
+  assert.deepEqual(groups.map(g=>g.questions.length),[2,2,1,5,4]);
+  assert.deepEqual(groups.map(g=>g.label),['فهم تمرین روز '+day,'فهم اقدام اختصاصی روز '+day,'تفاوت تمرین و اقدام','اجرا و موانع','ارزیابی و ایمنی']);
+ }
 });
