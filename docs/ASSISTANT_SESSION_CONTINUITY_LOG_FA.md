@@ -5020,3 +5020,15 @@ undefined
 - هیچ انتشار Telegram/Bale انجام نشد.
 
 **وضعیت:** T03_PROMPT_GROUPS_AND_ANSWER_HIERARCHY_ALIGNED_AND_MERGED; T01_T02_T03_RUNTIME_COVERAGE_FOUND; T04_T34_ASSISTANT_PROMPT_PARITY_NOT_IMPLEMENTED; CI_PENDING; OWNER_BROWSER_TEST_PENDING; NO_TELEGRAM_BALE_RELEASE
+
+
+## 2026-11-10 — رفع خطای «محتوای روز جاری در دسترس نیست» در دستیار T03
+
+- گزارش آزمون زنده مالک نشان داد انتخاب پرسش آماده ترس در رابط، به‌جای پاسخ متناظر، پیام «محتوای مربوط به روز جاری در دسترس نیست» را برمی‌گرداند.
+- علت دقیق در شرط هویت canonical در `pageAssistantTurn.js` پیدا شد: برای T03 وجود صریح `preparedSource.topic_id === 'T03'` اجباری شده بود؛ اما رکوردهای canonical قدیمی مسیر با شناسه دسته/روز مانند `ترس-01` شناسایی می‌شوند و `topic_id` در منبع پایه وجود ندارد. آداپتور نمایشی `splitDayContent` نیز برای حفظ شکل داده، مقدار `topic_id: null` را تولید می‌کند. در نتیجه رکورد معتبر T03 به‌اشتباه رد می‌شد، هرچند نام دسته، شناسه canonical و روز دقیقاً منطبق بودند.
+- اصلاح: برای هر سه مسیر FAQ آماده T01/T02/T03، هویت موضوع از دسته انتخاب‌شده + شناسه canonical + شماره روز اعتبارسنجی می‌شود؛ نبودن `topic_id` یا null بودن آن در رکورد legacy مجاز است، اما هر `topic_id` صریح و متعارض همچنان رد می‌شود. تطبیق شناسه و روز و اولویت ایمنی دست‌نخورده‌اند.
+- آزمون مسیر واقعی برای تمام ۲۸ روز × ۱۴ پرسش T03 به شکل داده runtime legacy (بدون `topic_id` در منبع و `topic_id: null` در داده نمایشی) بازنویسی شد؛ آزمون تعارض صریح T02/T03 و تعارض روز نیز حفظ شد. import تکراری FEAR در فایل آزمون که مانع parse شدن test module می‌شد نیز حذف شد.
+- شاخه کاری: `fix/t03-legacy-canonical-topic-identity-20261110`. این تغییر هنوز در انتظار اجرای آزمون/CI و ادغام PR است؛ هیچ تغییری در main یا انتشار Telegram/Bale تا این لحظه انجام نشده است.
+- گیت خطر فوری، تطبیق دقیق شناسه canonical و رد موضوع/روز متعارض حذف یا تضعیف نشده‌اند.
+
+**وضعیت:** T03_LEGACY_CANONICAL_TOPIC_ID_MISMATCH_ROOT_CAUSE_IDENTIFIED; RUNTIME_SHAPED_392_FAQ_REGRESSION_UPDATED; EXPLICIT_TOPIC_DAY_CONFLICTS_REJECTED; SAFETY_PRECEDENCE_PRESERVED; PR_PENDING; NO_PUBLIC_RELEASE
