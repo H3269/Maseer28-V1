@@ -2,6 +2,8 @@ import { routeAssistantTurn } from './assistantTurnEngine.js';
 import { answerPageAssistantQuestion, getPageAssistantContext } from './pageAssistantContext.js';
 import { getDailyAssistantAccess } from './dailyAssistantAccess.js';
 import { makeDailyExerciseGuidanceTurn, selectDailyExerciseGuidanceData } from './dailyExerciseAssistantGuidance.js';
+import { answerAngerDailyPreparedQuestion } from './angerDailyAssistantPrompts.js';
+import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
 
 const SAFETY_STATUSES = new Set([
   'urgent_human_support_required',
@@ -47,9 +49,44 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       relationshipSafetyConfirmed: dailyContext?.relationshipSafetyConfirmed === true,
     });
     if (!access.available) {
-      const messageText = access.reason === 'daily_content_blocked'
+      // Prepared FAQs for every day of the anger path are bounded educational
+      // explanations, not instructions to initiate contact or perform an exercise.
+      // Permit only an exact catalogued FAQ after re-validating source identity;
+      // keep the interpersonal gate for free-form advice and unsafe/blocked content.
+      const angerDay = Number(dailyContext?.day);
+      let denialReason = access.reason;
+      if (access.reason === 'relationship_safety_unconfirmed'
+        && getCanonicalTopicIdForCategory(dailyContext?.problem) === 'T01'
+        && Number.isInteger(angerDay)
+        && angerDay >= 1
+        && angerDay <= 28) {
+        const identityCheck = getDailyAssistantAccess({
+          day: dailyContext?.data,
+          problem: dailyContext?.problem,
+          relationshipSafetyConfirmed: true,
+        });
+        // The re-check is authoritative for content identity and blocking.
+        // If it passes but the message is not an exact prepared FAQ, the
+        // original interpersonal gate still applies to this free-form turn.
+        const preparedAnswer = identityCheck.available
+          ? answerAngerDailyPreparedQuestion({ day: angerDay, message })
+          : null;
+        if (preparedAnswer) {
+          return Object.freeze({
+            status: 'daily_guidance_available',
+            message: preparedAnswer,
+            knowledge: Object.freeze([]),
+            page_context: 'day',
+            conversationState: null,
+          });
+        }
+        denialReason = identityCheck.available
+          ? 'relationship_safety_unconfirmed'
+          : identityCheck.reason;
+      }
+      const messageText = denialReason === 'daily_content_blocked'
         ? 'این محتوای روز به‌دلیل نیاز به بازبینی ایمنی برای راهنمایی دستیار فعال نیست. لطفاً این محدودیت را دور نزن.'
-        : access.reason === 'relationship_safety_unconfirmed'
+        : denialReason === 'relationship_safety_unconfirmed'
           ? 'برای راهنمایی این تمرین، پنجره دستیار را ببند و بررسی ایمنی همین روز را در بخش تمرین کامل کن. تا آن زمان متن تمرین و راهکار را از این مسیر توضیح نمی‌دهم.'
           : 'محتوای معتبر روز جاری در دسترس نیست؛ برای جلوگیری از راهنمایی اشتباه، فعلاً پاسخ روزمحور نمی‌دهم.';
       return Object.freeze({ status: 'daily_guidance_unavailable', message: messageText, knowledge: Object.freeze([]), conversationState: null });

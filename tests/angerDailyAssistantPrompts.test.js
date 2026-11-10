@@ -7,6 +7,7 @@ import {
   getAngerDailyAssistantPromptGroups,
 } from '../src/features/assistant/angerDailyAssistantPrompts.js';
 import { makeDailyExerciseGuidanceTurn } from '../src/features/assistant/dailyExerciseAssistantGuidance.js';
+import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
 
 test('anger assistant guide covers all 28 days with fourteen day-scoped prepared questions each', () => {
   assert.equal(ANGER_DAILY_ASSISTANT_GUIDES.length, 28);
@@ -193,4 +194,98 @@ test('exercise explanation preserves the source-requested number of examples for
   assert.match(answer, /دو تجربه کم‌فشار/);
   assert.match(answer, /تعداد نمونه‌ها.*خود متن تمرین خواسته/);
   assert.doesNotMatch(answer, /فقط یک نمونه کم‌فشار و امن انتخاب کن/);
+});
+
+
+test('prepared FAQs remain available on every gated anger day while free-form interpersonal guidance stays gated', () => {
+  const gatedDays = [10, 11, 17, 18, 19, 20, 21, 22, 23];
+  for (const day of gatedDays) {
+    const guide = ANGER_DAILY_ASSISTANT_GUIDES[day - 1];
+    const dayData = {
+      id: `خشم-${day}`,
+      topic_id: 'T01',
+      day,
+      review_status: 'approved',
+      risk_level: 'routine',
+      exercise: guide.exercise,
+      action: guide.action,
+    };
+    for (const question of guide.questions) {
+      const turn = makePageAssistantTurn({
+        screen: 'day',
+        text: question.value,
+        dailyContext: {
+          day,
+          problem: 'خشم',
+          data: dayData,
+          relationshipSafetyConfirmed: false,
+        },
+      });
+      assert.equal(turn.status, 'daily_guidance_available', `day ${day}, ${question.kind}`);
+      assert.match(turn.message, new RegExp(`راهنمای روز ${day} خشم`), `day ${day}, ${question.kind}`);
+    }
+
+    const freeForm = makePageAssistantTurn({
+      screen: 'day',
+      text: 'چطور با طرف مقابل وارد گفت‌وگو شوم؟',
+      dailyContext: {
+        day,
+        problem: 'خشم',
+        data: dayData,
+        relationshipSafetyConfirmed: false,
+      },
+    });
+    assert.equal(freeForm.status, 'daily_guidance_unavailable', `day ${day} free-form`);
+    assert.match(freeForm.message, /بررسی ایمنی همین روز/, `day ${day} free-form`);
+    assert.doesNotMatch(freeForm.message, new RegExp(`راهنمای روز ${day} خشم`));
+  }
+});
+
+test('prepared FAQ exception never bypasses blocked content or unverified source identity', () => {
+  const guide = ANGER_DAILY_ASSISTANT_GUIDES[10];
+  const question = guide.questions[0];
+  const blockedDay = {
+    id: 'خشم-11',
+    topic_id: 'T01',
+    day: 11,
+    review_status: 'blocked',
+    risk_level: 'high',
+    exercise: guide.exercise,
+    action: guide.action,
+  };
+  const blocked = makePageAssistantTurn({
+    screen: 'day',
+    text: question.value,
+    dailyContext: { day: 11, problem: 'خشم', data: blockedDay, relationshipSafetyConfirmed: false },
+  });
+  assert.equal(blocked.status, 'daily_guidance_unavailable');
+  assert.match(blocked.message, /نیاز به بازبینی ایمنی/);
+
+  const wrongIdentity = makePageAssistantTurn({
+    screen: 'day',
+    text: question.value,
+    dailyContext: {
+      day: 11,
+      problem: 'خشم',
+      data: { ...blockedDay, id: 'خشم-10', review_status: 'approved', risk_level: 'routine' },
+      relationshipSafetyConfirmed: false,
+    },
+  });
+  assert.equal(wrongIdentity.status, 'daily_guidance_unavailable');
+  assert.match(wrongIdentity.message, /محتوای معتبر روز جاری/);
+});
+
+test('all 392 prepared anger questions resolve to a day-specific answer across the full 28-day path', () => {
+  assert.equal(ANGER_DAILY_ASSISTANT_GUIDES.length, 28);
+  let resolved = 0;
+  for (const guide of ANGER_DAILY_ASSISTANT_GUIDES) {
+    assert.equal(guide.questions.length, 14, `day ${guide.day}`);
+    for (const question of guide.questions) {
+      const answer = answerAngerDailyPreparedQuestion({ day: guide.day, message: question.value });
+      assert.ok(answer, `missing answer for day ${guide.day}, ${question.kind}`);
+      assert.ok(answer.includes(`راهنمای روز ${guide.day} خشم`));
+      resolved += 1;
+    }
+  }
+  assert.equal(resolved, 392);
 });

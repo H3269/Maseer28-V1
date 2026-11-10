@@ -195,6 +195,17 @@ try {
   assert.equal(await launcher.getAttribute('aria-expanded'), 'false');
   assert.equal(await launcher.evaluate((element) => element === document.activeElement), true, 'closing the dialog must restore focus to the launcher');
 
+  // Simulate a successfully installed local model for the free-form daily
+  // guidance scenarios below. The separate Library scenarios later in this
+  // test deliberately verify the pre-install guided-only composer.
+  await page.evaluate(async () => {
+    const cache = await caches.open('maseer28-local-model-state-v1');
+    const markerUrl = new URL('local-model/qwen3-0.6b-ready.json', location.href);
+    await cache.put(markerUrl.href, new Response(JSON.stringify({
+      modelId: 'onnx-community/Qwen3-0.6B-Instruct-ONNX',
+      revision: '54250909aca286a05b9d013c8af7a21859ee6ead',
+    }), { headers: { 'content-type': 'application/json' } }));
+  });
   await page.locator('#dashboard .heroAction').click();
   await page.locator('#day').waitFor({ state: 'visible' });
   await launcher.waitFor({ state: 'visible' });
@@ -212,23 +223,18 @@ try {
   assert.match(await dailyReply.innerText(), /متن تمرین همین روز/);
   assert.match(await dailyReply.innerText(), /راهکار اختصاصی همین روز/);
   assert.equal(await dialog.locator('.assistantComposer').getAttribute('data-anger-daily-prompt'), 'true', 'the active anger day context must expose its prepared-question picker');
-  const angerPromptPicker = dialog.getByTestId('anger-daily-prompt-trigger');
-  await angerPromptPicker.waitFor({ state: 'visible' });
-  await angerPromptPicker.click();
-  const angerPromptDialog = page.locator('#library-assistant-prompt-dialog');
-  await angerPromptDialog.waitFor({ state: 'visible' });
-  assert.match(await angerPromptDialog.innerText(), /سؤال‌های آماده روز .+ خشم/);
-  await angerPromptDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
-  assert.equal(await dialog.getByRole('textbox').inputValue(), 'منظور از تمرین امروز چیست؟');
-  const assistantMessagesBeforePreparedPrompt = await dialog.locator('.assistantMessage').count();
-  await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction((previousCount) => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length > previousCount, assistantMessagesBeforePreparedPrompt);
-  const preparedPromptReply = await dialog.locator('.assistantMessage').last().innerText();
-  console.log('ANGER_PREPARED_PROMPT_REPLY=' + JSON.stringify(preparedPromptReply));
-  assert.match(preparedPromptReply, /راهنمای روز [1۱] خشم/u, 'the prepared question must return the active anger-day guide; actual reply is logged above');
-  assert.match(preparedPromptReply, /چه اتفاقی افتاد/);
+  // This scenario deliberately simulates an installed local model, so free-form
+  // typing is enabled and the prepared-question picker must be hidden. The
+  // pre-install guided picker and prepared FAQ are covered in daily-assistant-guidance.
+  assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 0,
+    'the prepared-question picker must be hidden after successful local-model installation');
   await closeButton.click();
   await dialog.waitFor({ state: 'detached' });
+  // Restore the pre-install state before testing the Library guided composer.
+  await page.evaluate(async () => {
+    const cache = await caches.open('maseer28-local-model-state-v1');
+    await cache.delete(new URL('local-model/qwen3-0.6b-ready.json', location.href).href);
+  });
 
   await page.getByRole('button', { name: 'خانه' }).click();
   await page.locator('#dashboard').waitFor({ state: 'visible' });

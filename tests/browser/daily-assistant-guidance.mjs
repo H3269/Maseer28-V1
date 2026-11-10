@@ -69,7 +69,7 @@ async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumb
   await panel.waitFor({ state: 'visible' });
 }
 
-async function openDay(page, { assistantDayMode = 'routine', problem = null } = {}) {
+async function openDay(page, { assistantDayMode = 'routine', problem = null, localModelInstalled = false } = {}) {
   const isLegacyMode = assistantDayMode === 'legacy' || assistantDayMode.startsWith('adaptedLegacy');
   const dayNumber = assistantDayMode === 'relationship'
     ? 10
@@ -108,6 +108,22 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null } = 
       medicationRisk: 'no',
     }));
   }, testJourney);
+
+  if (localModelInstalled) {
+    await page.addInitScript(async ({ basePath, marker }) => {
+      const cache = await caches.open('maseer28-local-model-state-v1');
+      const markerUrl = new URL(`${basePath}local-model/qwen3-0.6b-ready.json`, location.origin);
+      await cache.put(markerUrl.href, new Response(JSON.stringify(marker), {
+        headers: { 'content-type': 'application/json' },
+      }));
+    }, {
+      basePath: new URL(baseURL).pathname,
+      marker: {
+        modelId: 'onnx-community/Qwen3-0.6B-Instruct-ONNX',
+        revision: '54250909aca286a05b9d013c8af7a21859ee6ead',
+      },
+    });
+  }
 
   await page.route('**/*', async (route) => {
     const url = new URL(route.request().url());
@@ -161,7 +177,30 @@ try {
     }
   });
 
-  await openDay(page);
+  // Before model installation, the anger assistant must expose prepared
+  // questions only; free-form typing is enabled only after a valid local-model marker.
+  const guidedPage = await browser.newPage();
+  await openDay(guidedPage);
+  const guidedPanel = guidedPage.locator('.globalAssistantDialog');
+  await guidedPanel.waitFor({ state: 'visible' });
+  const guidedTrigger = guidedPanel.getByTestId('anger-daily-prompt-trigger');
+  await guidedTrigger.waitFor({ state: 'visible' });
+  await guidedPage.waitForFunction(() => {
+    const trigger = document.querySelector('[data-testid="anger-daily-prompt-trigger"]');
+    return trigger && !trigger.disabled;
+  });
+  assert.equal(await guidedPanel.locator('#global-assistant-message').count(), 0,
+    'free-form typing must remain unavailable before local model installation');
+  await guidedTrigger.click();
+  const promptDialog = guidedPage.locator('#library-assistant-prompt-dialog');
+  await promptDialog.waitFor({ state: 'visible' });
+  await promptDialog.locator('[data-prompt-option]').first().click();
+  await guidedPanel.getByRole('button', { name: 'ارسال' }).click();
+  await guidedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
+  assert.match(await guidedPanel.locator('.assistantMessage').last().innerText(), /راهنمای روز ۱ خشم/);
+  await guidedPage.close();
+
+  await openDay(page, { localModelInstalled: true });
   const panel = page.locator('.globalAssistantDialog');
   await panel.waitFor({ state: 'visible' });
   const composer = panel.locator('#global-assistant-message');
@@ -225,7 +264,7 @@ try {
     const legacyPage = await browser.newPage();
     const legacyErrors = [];
     legacyPage.on('pageerror', error => legacyErrors.push(String(error)));
-    await openDay(legacyPage, { assistantDayMode: 'legacy', problem });
+    await openDay(legacyPage, { assistantDayMode: 'legacy', problem, localModelInstalled: true });
     const legacyPanel = legacyPage.locator('.globalAssistantDialog');
     await legacyPanel.waitFor({ state: 'visible' });
     const legacyComposer = legacyPanel.locator('#global-assistant-message');
@@ -251,7 +290,7 @@ try {
     const adaptedPage = await browser.newPage();
     const adaptedErrors = [];
     adaptedPage.on('pageerror', error => adaptedErrors.push(String(error)));
-    await openDay(adaptedPage, { assistantDayMode: scenario.mode });
+    await openDay(adaptedPage, { assistantDayMode: scenario.mode, localModelInstalled: true });
     const adaptedPanel = adaptedPage.locator('.globalAssistantDialog');
     await adaptedPanel.waitFor({ state: 'visible' });
     await adaptedPanel.locator('#global-assistant-message').fill('چطور انجامش بدم؟');
@@ -271,7 +310,7 @@ try {
   }
 
   const blockedPage = await browser.newPage();
-  await openDay(blockedPage, { assistantDayMode: 'blocked' });
+  await openDay(blockedPage, { assistantDayMode: 'blocked', localModelInstalled: true });
   const blockedPanel = blockedPage.locator('.globalAssistantDialog');
   await blockedPanel.waitFor({ state: 'visible' });
   const blockedComposer = blockedPanel.locator('#global-assistant-message');
@@ -285,7 +324,7 @@ try {
   await blockedPage.close();
 
   const gatedPage = await browser.newPage();
-  await openDay(gatedPage, { assistantDayMode: 'relationship' });
+  await openDay(gatedPage, { assistantDayMode: 'relationship', localModelInstalled: true });
   const gatedPanel = gatedPage.locator('.globalAssistantDialog');
   await gatedPanel.waitFor({ state: 'visible' });
   assert.equal(await gatedPage.locator('#dayExercise').count(), 1,

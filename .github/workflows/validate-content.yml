@@ -73,6 +73,9 @@ jobs:
           node-version: 22
       - name: Install dependencies
         id: install
+        env:
+          # CI validates the browser/WASM path; CUDA provider binaries are not used here.
+          ONNXRUNTIME_NODE_INSTALL: skip
         run: npm ci
       - name: Dependency security audit
         if: ${{ steps.install.outcome == 'success' }}
