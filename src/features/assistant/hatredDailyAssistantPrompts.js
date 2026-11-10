@@ -2972,7 +2972,8 @@ export const HATRED_DAILY_ASSISTANT_GUIDES = [
 export function toHatredDayNumber(value){const n=Number(String(value??'').replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))));return Number.isInteger(n)&&n>=1&&n<=28?n:null;}
 export function getHatredDailyAssistantPromptGroups(day){const n=toHatredDayNumber(day),g=HATRED_DAILY_ASSISTANT_GUIDES.find(x=>x.day===n);if(!g)return[];return[{label:'فهم تمرین روز '+g.day,questions:g.questions.filter(x=>['exercise_meaning','exercise_example'].includes(x.kind))},{label:'فهم اقدام اختصاصی روز '+g.day,questions:g.questions.filter(x=>['action_meaning','action_example'].includes(x.kind))},{label:'تفاوت تمرین و اقدام',questions:g.questions.filter(x=>x.kind==='exercise_action_difference')},{label:'اجرا و موانع',questions:g.questions.filter(x=>['light_version','not_done','no_event','can_change','duration'].includes(x.kind))},{label:'ارزیابی و ایمنی',questions:g.questions.filter(x=>['hostility_increased','talk_other','success','stop'].includes(x.kind))}];}
 const heading=g=>'راهنمای روز '+String(g.day).replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[+d])+' نفرت — '+g.title;
-const safety='این راهنما آموزشی است و تشخیص یا درمان نیست. احساس نفرت مجوز تهدید، تحقیر، تعقیب، افشا، تبعیض یا آسیب نیست؛ تجربه واقعی خشونت، تبعیض یا نقض مرز را نیز انکار نکن. بخشایش، آشتی، تماس یا گفت‌وگوی مستقیم اجباری نیست. در خطر فوری برای تو یا دیگری، تمرین را متوقف کن، فاصله امن ایجاد کن و از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر. اگر تجربه‌ات نفرت از خود است، این مسیر را ادامه نده و مسیر «نفرت از خود» را انتخاب کن.';
+const commonSafety='این راهنما آموزشی است و تشخیص یا درمان نیست. احساس نفرت مجوز تهدید، تحقیر، تعقیب، افشا، تبعیض یا آسیب نیست؛ تجربه واقعی خشونت، تبعیض یا نقض مرز را نیز انکار نکن. بخشایش، آشتی، تماس یا گفت‌وگوی مستقیم اجباری نیست. در خطر فوری برای تو یا دیگری، تمرین را متوقف کن، فاصله امن ایجاد کن و از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر. اگر تجربه‌ات نفرت از خود است، این مسیر را ادامه نده و مسیر «نفرت از خود» را انتخاب کن.';
+function safetyFor(g){return commonSafety+'\\n\\n**نکته ایمنی ویژه روز '+g.day+' («'+g.title+'»):**\\n'+g.stopCondition;}
 function teachingIntro(g){return heading(g)+'\n\n**بیاییم قدم‌به‌قدم پیش برویم.**\nاین راهنما مربوط به روز '+g.day+' و مهارت «'+g.skill+'» است. قرار نیست احساس خودت را انکار کنی یا درباره نیت دیگری بدون شواهد حکم قطعی بدهی.';}
 function workedSteps(g,example,kind){
  const isExercise=kind==='exercise_example';
@@ -2985,7 +2986,7 @@ function workedSteps(g,example,kind){
 export function answerHatredDailyPreparedQuestion({day,message,dailyContent}={}){
  const n=toHatredDayNumber(day),g=HATRED_DAILY_ASSISTANT_GUIDES.find(x=>x.day===n);if(!g)return null;
  const q=g.questions.find(x=>x.value===String(message||'').trim());if(!q)return null;
- const e=String(dailyContent?.exercise||g.exercise||'').trim(),a=String(dailyContent?.actionText||dailyContent?.action||g.action||'').trim(),intro=teachingIntro(g),s=safety;
+ const e=String(dailyContent?.exercise||g.exercise||'').trim(),a=String(dailyContent?.actionText||dailyContent?.action||g.action||'').trim(),intro=teachingIntro(g),s=safetyFor(g);
  switch(q.kind){
  case'exercise_meaning':return intro+'\n\n**معنی ساده تمرین**\n'+e+'\n\n**چرا این کار را انجام می‌دهیم؟**\n'+g.mechanism+'\n\n**روش انجام**\n۱. یک نمونه کم‌فشار و مرتبط انتخاب کن.\n۲. دستور بالا را فقط روی همان نمونه اجرا کن؛ لازم نیست همه جزئیات را بنویسی.\n۳. در پایان بررسی کن آیا مهارت «'+g.skill+'» را به کار برده‌ای.\n\n**معیار پایان:** '+g.successCriterion+'\n\nاگر نمونه‌ای پیدا نمی‌کنی، چیزی را به زور ایجاد نکن.\n\n'+s;
  case'exercise_example':return intro+'\n\n'+workedSteps(g,g.exerciseExample,'exercise_example')+'\n\n'+s;
