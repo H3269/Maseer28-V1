@@ -225,7 +225,7 @@ try {
   await page.waitForFunction((previousCount) => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length > previousCount, assistantMessagesBeforePreparedPrompt);
   const preparedPromptReply = await dialog.locator('.assistantMessage').last().innerText();
   console.log('ANGER_PREPARED_PROMPT_REPLY=' + JSON.stringify(preparedPromptReply));
-  assert.match(preparedPromptReply, /راهنمای روز 1 خشم/, 'the prepared question must return the active anger-day guide; actual reply is logged above');
+  assert.match(preparedPromptReply, /راهنمای روز [1۱] خشم/u, 'the prepared question must return the active anger-day guide; actual reply is logged above');
   assert.match(preparedPromptReply, /چه اتفاقی افتاد/);
   await closeButton.click();
   await dialog.waitFor({ state: 'detached' });
