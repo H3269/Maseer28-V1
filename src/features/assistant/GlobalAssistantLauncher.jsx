@@ -499,7 +499,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       data-testid={isAngerDailyPromptContext ? "anger-daily-prompt-trigger" : isAnxietyDailyPromptContext ? "anxiety-daily-prompt-trigger" : isFearDailyPromptContext ? "fear-daily-prompt-trigger" : isHatredDailyPromptContext ? "hatred-daily-prompt-trigger" : "library-assistant-prompt-trigger"}
                       type="button"
                       aria-label={isTopicDailyPromptContext
-                        ? `باز کردن سؤال‌های آماده روز ${dailyContext?.day} ${isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : "خشم"}`
+                        ? `باز کردن سؤال‌های آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : "خشم"}`
                         : "باز کردن سؤال‌های آماده دستیار کتابخانه"}
                       aria-haspopup="dialog"
                       aria-expanded={libraryPromptOpen}
@@ -507,7 +507,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       disabled={sending || !localModelStatusChecked}
                       onClick={() => setLibraryPromptOpen(true)}
                     >
-                      {draft.trim() || (isTopicDailyPromptContext ? `انتخاب سؤال آماده روز ${dailyContext?.day} ${isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : "خشم"}...` : 'انتخاب سؤال آماده...')}
+                      {draft.trim() || (isTopicDailyPromptContext ? `انتخاب سؤال آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : "خشم"}...` : 'انتخاب سؤال آماده...')}
                     </button>
                     <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال سؤال انتخاب‌شده" disabled={!localModelStatusChecked || !draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
                   </div>
