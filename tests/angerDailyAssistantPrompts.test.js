@@ -7,6 +7,7 @@ import {
   getAngerDailyAssistantPromptGroups,
 } from '../src/features/assistant/angerDailyAssistantPrompts.js';
 import { makeDailyExerciseGuidanceTurn } from '../src/features/assistant/dailyExerciseAssistantGuidance.js';
+import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
 
 test('anger assistant guide covers all 28 days with fourteen day-scoped prepared questions each', () => {
   assert.equal(ANGER_DAILY_ASSISTANT_GUIDES.length, 28);
@@ -193,4 +194,46 @@ test('exercise explanation preserves the source-requested number of examples for
   assert.match(answer, /دو تجربه کم‌فشار/);
   assert.match(answer, /تعداد نمونه‌ها.*خود متن تمرین خواسته/);
   assert.doesNotMatch(answer, /فقط یک نمونه کم‌فشار و امن انتخاب کن/);
+});
+
+
+test('anger day 11 prepared FAQs remain available while free-form interpersonal guidance keeps its safety gate', () => {
+  const guide = ANGER_DAILY_ASSISTANT_GUIDES[10];
+  const dayData = {
+    id: 'خشم-11',
+    topic_id: 'T01',
+    day: 11,
+    review_status: 'approved',
+    risk_level: 'routine',
+    exercise: guide.exercise,
+    action: guide.action,
+  };
+  for (const question of guide.questions) {
+    const turn = makePageAssistantTurn({
+      screen: 'day',
+      text: question.value,
+      dailyContext: {
+        day: 11,
+        problem: 'خشم',
+        data: dayData,
+        relationshipSafetyConfirmed: false,
+      },
+    });
+    assert.equal(turn.status, 'daily_guidance_available', question.kind);
+    assert.match(turn.message, /راهنمای روز 11 خشم/, question.kind);
+  }
+
+  const freeForm = makePageAssistantTurn({
+    screen: 'day',
+    text: 'چطور با طرف مقابل وارد گفت‌وگو شوم؟',
+    dailyContext: {
+      day: 11,
+      problem: 'خشم',
+      data: dayData,
+      relationshipSafetyConfirmed: false,
+    },
+  });
+  assert.equal(freeForm.status, 'daily_guidance_unavailable');
+  assert.match(freeForm.message, /بررسی ایمنی همین روز/);
+  assert.doesNotMatch(freeForm.message, /راهنمای روز 11 خشم/);
 });
