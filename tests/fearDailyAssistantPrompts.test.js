@@ -7,7 +7,7 @@ import { readFile } from 'node:fs/promises';
 test('T03 prepared assistant has 28 canonical day slots and 14 unique prompts per day',()=>{
  assert.equal(FEAR_DAILY_ASSISTANT_GUIDES.length,28);
  assert.deepEqual(FEAR_DAILY_ASSISTANT_GUIDES.map(x=>x.day),Array.from({length:28},(_,i)=>i+1));
- for(const g of FEAR_DAILY_ASSISTANT_GUIDES){assert.equal(g.topicId,'T03');assert.equal(g.topic,'ترس');assert.equal(g.questions.length,14);assert.equal(new Set(g.questions.map(q=>q.value)).size,14);assert.ok(g.exercise&&g.action&&g.objective&&g.stopCondition);}
+ for(const g of FEAR_DAILY_ASSISTANT_GUIDES){assert.equal(g.topicId,'T03');assert.equal(g.topic,'ترس');assert.equal(g.questions.length,14);assert.equal(new Set(g.questions.map(q=>q.value)).size,14);assert.ok(g.exercise&&g.action&&g.exerciseExample&&g.actionExample&&g.objective&&g.stopCondition);}
 });
 test('T03 daily exercises and actions are not exact duplicates across the 28-day bank',()=>{
  assert.equal(new Set(FEAR_DAILY_ASSISTANT_GUIDES.map(x=>x.exercise.trim())).size,28);
@@ -65,4 +65,16 @@ test('T03 urgent safety clarification persists and never falls back to a prepare
  const third=makeDailyExerciseGuidanceTurn({message:FEAR_DAILY_ASSISTANT_GUIDES[0].questions[0].value,dayData:data,problem:'ترس',day:1,conversationState:second.nextState});
  assert.match(third.response,/کمک فوری انسانی/);
  assert.doesNotMatch(third.response,/راهنمای روز/);
+});
+
+test('each T03 day has distinct, explicitly hypothetical exercise and action examples',()=>{
+ const exerciseExamples=new Set(),actionExamples=new Set();
+ for(const g of FEAR_DAILY_ASSISTANT_GUIDES){exerciseExamples.add(g.exerciseExample);actionExamples.add(g.actionExample);}
+ assert.equal(exerciseExamples.size,28);
+ assert.equal(actionExamples.size,28);
+ const g=FEAR_DAILY_ASSISTANT_GUIDES[0];
+ const exercise=answerFearDailyPreparedQuestion({day:1,message:g.questions.find(q=>q.kind==='exercise_example').value});
+ const action=answerFearDailyPreparedQuestion({day:1,message:g.questions.find(q=>q.kind==='action_example').value});
+ assert.match(exercise,/مثال فرضی/);assert.ok(exercise.includes(g.exerciseExample));
+ assert.match(action,/مثال فرضی/);assert.ok(action.includes(g.actionExample));
 });
