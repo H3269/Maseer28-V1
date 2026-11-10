@@ -190,7 +190,7 @@ try {
   const personalReply = dialog.locator('.assistantMessage').last();
   assert.match(await personalReply.innerText(), /موضوع فعلاً فقط یک فرضیه اولیه است/);
   assert.doesNotMatch(await personalReply.innerText(), /در صفحه «خانه» می‌توانی/);
-  await closeButton.click();
+  await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await dialog.waitFor({ state: 'detached' });
   assert.equal(await launcher.getAttribute('aria-expanded'), 'false');
   assert.equal(await launcher.evaluate((element) => element === document.activeElement), true, 'closing the dialog must restore focus to the launcher');
@@ -229,7 +229,7 @@ try {
   // pre-install guided picker and prepared FAQ are covered in daily-assistant-guidance.
   assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 0,
     'the prepared-question picker must be hidden after successful local-model installation');
-  await closeButton.click();
+  await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await dialog.waitFor({ state: 'detached' });
   // Restore the pre-install state before testing the Library guided composer.
   await page.evaluate(async () => {
@@ -336,7 +336,7 @@ try {
       revision: '54250909aca286a05b9d013c8af7a21859ee6ead',
     }), { headers: { 'content-type': 'application/json' } }));
   });
-  await closeButton.click();
+  await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await dialog.waitFor({ state: 'detached' });
   await page.getByRole('button', { name: 'ارتباط' }).click();
   await page.locator('.bottomNav button[data-view="support"].active').waitFor({ state: 'visible' });
@@ -350,7 +350,7 @@ try {
   await page.getByPlaceholder('سؤال پیشرفته‌ات را اینجا بنویس...').waitFor({ state: 'visible' });
   assert.equal(await dialog.getByRole('textbox').count(), 1, 'successful local-model installation must reveal free typing');
   assert.equal(await dialog.getByRole('button', { name: 'باز کردن سؤال‌های آماده دستیار کتابخانه' }).count(), 0, 'installed local mode must hide the guided list');
-  await closeButton.click();
+  await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await dialog.waitFor({ state: 'detached' });
 
   await page.getByRole('button', { name: 'ارتباط' }).click();
@@ -382,7 +382,7 @@ try {
     assert.ok(dialogBox, 'mobile dialog must have a visible layout box');
     assert.ok(dialogBox.x >= 0 && dialogBox.x + dialogBox.width <= viewport.width, 'mobile dialog must fit horizontally');
     assert.ok(dialogBox.y >= 0 && dialogBox.y + dialogBox.height <= viewport.height, 'mobile dialog must fit vertically');
-    await closeButton.click();
+    await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
     await dialog.waitFor({ state: 'detached' });
   }
 
