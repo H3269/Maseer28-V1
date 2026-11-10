@@ -177,6 +177,33 @@ test('T02 urgent safety routing takes precedence over the prepared-question-only
   assert.doesNotMatch(result.message, /راهنمای روز 1 اضطراب/);
 });
 
+test('T02 safety clarification preserves pending state and escalates uncertain replies', () => {
+  const guide = ANXIETY_DAILY_ASSISTANT_GUIDES[0];
+  const dailyContext = {
+    day: 1,
+    problem: 'اضطراب',
+    data: { id: getCanonicalDailyRecordId('اضطراب', 1), topic_id: 'T02', day: 1, exercise: guide.exercise, actionText: guide.action },
+  };
+  const first = makePageAssistantTurn({
+    screen: 'day',
+    text: 'دیگه نمی‌کشم. همه‌چی تمومه.',
+    dailyContext,
+  });
+  assert.equal(first.status, 'safety_clarification_required');
+  assert.match(first.message, /آیا همین الآن خطر فوری/);
+  assert.equal(first.conversationState.dailyState.safetyStatus, 'pending');
+
+  const second = makePageAssistantTurn({
+    screen: 'day',
+    text: 'شاید، مطمئن نیستم',
+    conversationState: first.conversationState,
+    dailyContext,
+  });
+  assert.equal(second.status, 'urgent_human_support_required');
+  assert.match(second.message, /کمک فوری انسانی/);
+  assert.equal(second.conversationState.dailyState.safetyStatus, 'handoff');
+});
+
 test('T02 prepared FAQ still requires canonical topic and day identity', () => {
   const guide = ANXIETY_DAILY_ASSISTANT_GUIDES[0];
   const question = guide.questions[0].value;
