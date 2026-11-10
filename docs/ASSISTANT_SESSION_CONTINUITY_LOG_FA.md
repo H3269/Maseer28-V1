@@ -5020,3 +5020,36 @@ undefined
 - هیچ انتشار Telegram/Bale انجام نشد.
 
 **وضعیت:** T03_PROMPT_GROUPS_AND_ANSWER_HIERARCHY_ALIGNED_AND_MERGED; T01_T02_T03_RUNTIME_COVERAGE_FOUND; T04_T34_ASSISTANT_PROMPT_PARITY_NOT_IMPLEMENTED; CI_PENDING; OWNER_BROWSER_TEST_PENDING; NO_TELEGRAM_BALE_RELEASE
+
+
+## 2026-11-10 — رفع خطای «محتوای روز جاری در دسترس نیست» در دستیار T03
+
+- گزارش آزمون زنده مالک نشان داد انتخاب پرسش آماده ترس در رابط، به‌جای پاسخ متناظر، پیام «محتوای مربوط به روز جاری در دسترس نیست» را برمی‌گرداند.
+- علت دقیق در شرط هویت canonical در `pageAssistantTurn.js` پیدا شد: برای T03 وجود صریح `preparedSource.topic_id === 'T03'` اجباری شده بود؛ اما رکوردهای canonical قدیمی مسیر با شناسه دسته/روز مانند `ترس-01` شناسایی می‌شوند و `topic_id` در منبع پایه وجود ندارد. آداپتور نمایشی `splitDayContent` نیز برای حفظ شکل داده، مقدار `topic_id: null` را تولید می‌کند. در نتیجه رکورد معتبر T03 به‌اشتباه رد می‌شد، هرچند نام دسته، شناسه canonical و روز دقیقاً منطبق بودند.
+- اصلاح: برای هر سه مسیر FAQ آماده T01/T02/T03، هویت موضوع از دسته انتخاب‌شده + شناسه canonical + شماره روز اعتبارسنجی می‌شود؛ نبودن `topic_id` یا null بودن آن در رکورد legacy مجاز است، اما هر `topic_id` صریح و متعارض همچنان رد می‌شود. تطبیق شناسه و روز و اولویت ایمنی دست‌نخورده‌اند.
+- آزمون مسیر واقعی برای تمام ۲۸ روز × ۱۴ پرسش T03 به شکل داده runtime legacy (بدون `topic_id` در منبع و `topic_id: null` در داده نمایشی) بازنویسی شد؛ آزمون تعارض صریح T02/T03 و تعارض روز نیز حفظ شد. import تکراری FEAR در فایل آزمون که مانع parse شدن test module می‌شد نیز حذف شد.
+- شاخه کاری: `fix/t03-legacy-canonical-topic-identity-20261110`. این تغییر هنوز در انتظار اجرای آزمون/CI و ادغام PR است؛ هیچ تغییری در main یا انتشار Telegram/Bale تا این لحظه انجام نشده است.
+- گیت خطر فوری، تطبیق دقیق شناسه canonical و رد موضوع/روز متعارض حذف یا تضعیف نشده‌اند.
+
+**وضعیت:** T03_LEGACY_CANONICAL_TOPIC_ID_MISMATCH_ROOT_CAUSE_IDENTIFIED; RUNTIME_SHAPED_392_FAQ_REGRESSION_UPDATED; EXPLICIT_TOPIC_DAY_CONFLICTS_REJECTED; SAFETY_PRECEDENCE_PRESERVED; PR_PENDING; NO_PUBLIC_RELEASE
+
+
+## تکمیل اصلاح T03 — رفع آزمون قدیمی ناسازگار با قالب پنج‌گانه
+
+- اجرای CI نخست PR #92 نشان داد آزمون واحد `tests/fearDailyAssistantPrompts.test.js` هنوز انتظار قالب قدیمی یک‌گروهی (۱۴ سؤال در یک گروه) را داشت؛ این انتظار پس از PR #91 و انتقال به پنج گروه مشترک T01/T02 عمداً منسوخ شده بود. شکست مربوط به آزمون کهنه بود، نه شکست مسیر اصلاح هویت canonical.
+- آزمون قدیمی با قرارداد فعلی هماهنگ شد: پنج گروه با تعداد پرسش‌های `[2, 2, 1, 5, 4]`، عناوین استاندارد و پوشش روزهای ۱ تا ۲۸؛ روز خارج از دامنه همچنان گروهی ندارد.
+- شکست CI ثبت و پنهان نشد؛ اجرای مجدد کامل workflow پس از این اصلاح لازم است. ادغام تا دریافت نتیجه قابل قبول آزمون‌ها انجام نمی‌شود.
+- PR #92 همچنان شامل اصلاح ریشه خطای runtime، آزمون ۳۹۲ پرسش با شکل واقعی داده legacy، رد تعارض صریح و اصلاح این آزمون stale است.
+
+**وضعیت:** T03_LEGACY_IDENTITY_FIX_READY_FOR_REVALIDATION; STALE_SINGLE_GROUP_TEST_UPDATED_TO_FIVE_GROUP_CONTRACT; CI_RETRY_PENDING; NO_MAIN_MERGE_YET; NO_PUBLIC_RELEASE
+
+
+## تکمیل اصلاح T03 — حفظ تقدم واقعی هشدار ایمنی در مسیر صفحه
+
+- اجرای مجدد CI پس از اصلاح آزمون قدیمی قالب، یک نقص مستقل در مسیر صفحه را آشکار کرد: آزمون هشدار فوری نشان داد متن پرخطر T03 که عضو بانک FAQ نیست، از شرط safety داخل شاخه `if (preparedAnswer)` عبور نمی‌کند و به مسیر عمومی راهنمای روزانه می‌رسد.
+- علت: بررسی وضعیت‌های `urgent_human_support_required` و `safety_clarification_required` برای T03 داخل شرط وجود پاسخ آماده قرار گرفته بود؛ بنابراین فقط وقتی متن پرخطر اتفاقاً FAQ را match می‌کرد، تقدم ایمنی اعمال می‌شد.
+- اصلاح: برای موضوع T03، وضعیت‌های ایمنی بلافاصله پس از تعیین موضوع canonical و پیش از انتخاب پاسخ آماده یا مسیر عمومی روزانه برگردانده می‌شوند. این کار پاسخ آزاد را فعال نمی‌کند و فقط مسیر ایمنی موجود را مقدم می‌کند.
+- آزمون موجود `T03 prepared FAQ route still gives urgent safety handoff precedence` معیار این اصلاح است؛ اجرای کامل CI جدید باید این مورد و آزمون‌های ۳۹۲ پرسش را تأیید کند.
+- شکست‌های قبلی CI شفاف ثبت می‌شوند: ابتدا تست تک‌گروهی stale بود و پس از اصلاح آن، آزمون تقدم ایمنی این نقص را آشکار کرد. ادغام تا پایان اجرای موفق آزمون‌ها متوقف است.
+
+**وضعیت:** T03_SAFETY_PREEMPTION_MOVED_AHEAD_OF_FAQ_AND_GENERIC_GUIDANCE; LEGACY_IDENTITY_AND_FIVE_GROUP_TESTS_UPDATED; FULL_CI_REVALIDATION_PENDING; NO_MAIN_MERGE; NO_PUBLIC_RELEASE

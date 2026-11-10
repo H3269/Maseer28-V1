@@ -4,7 +4,6 @@ import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTu
 import { FEAR_DAILY_ASSISTANT_GUIDES, answerFearDailyPreparedQuestion, getFearDailyAssistantPromptGroups } from '../src/features/assistant/fearDailyAssistantPrompts.js';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
 import { ANXIETY_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
-import { FEAR_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/fearDailyAssistantPrompts.js';
 
 test('page-specific UI guidance is selected for the current screen', () => {
   const result = makePageAssistantTurn({
@@ -336,10 +335,16 @@ test('all exact prepared T03 FAQs answer through the real page router for all 28
           problem: 'ترس',
           data: {
             id: getCanonicalDailyRecordId('ترس', guide.day),
-            topic_id: 'T03',
             day: guide.day,
             review_status: 'pending_expert_review',
             risk_level: 'routine',
+          },
+          // Mirrors the live DayScreen adapter: legacy canonical source has no
+          // topic_id, while splitDayContent preserves the absent identity as null.
+          guidanceData: {
+            id: getCanonicalDailyRecordId('ترس', guide.day),
+            topic_id: null,
+            day: guide.day,
           },
           relationshipSafetyConfirmed: false,
         },
@@ -354,7 +359,7 @@ test('all exact prepared T03 FAQs answer through the real page router for all 28
   assert.equal(checked, 392);
 });
 
-test('T03 prepared FAQs require exact canonical topic/day identity', () => {
+test('T03 prepared FAQs accept legacy category-derived identity but reject explicit topic/day conflicts', () => {
   const question = FEAR_DAILY_ASSISTANT_GUIDES[0].questions[0];
   const wrongTopic = makePageAssistantTurn({
     screen: 'day',
@@ -367,16 +372,28 @@ test('T03 prepared FAQs require exact canonical topic/day identity', () => {
   });
   assert.equal(wrongTopic.status, 'daily_guidance_unavailable');
 
-  const missingTopic = makePageAssistantTurn({
+  const legacyTopicMissing = makePageAssistantTurn({
     screen: 'day',
     text: question.value,
     dailyContext: {
       day: 1,
       problem: 'ترس',
       data: { id: getCanonicalDailyRecordId('ترس', 1), day: 1, review_status: 'pending_expert_review' },
+      guidanceData: { id: getCanonicalDailyRecordId('ترس', 1), topic_id: null, day: 1 },
     },
   });
-  assert.equal(missingTopic.status, 'daily_guidance_unavailable');
+  assert.equal(legacyTopicMissing.status, 'daily_guidance_available');
+
+  const explicitTopicConflict = makePageAssistantTurn({
+    screen: 'day',
+    text: question.value,
+    dailyContext: {
+      day: 1,
+      problem: 'ترس',
+      data: { id: getCanonicalDailyRecordId('ترس', 1), topic_id: 'T02', day: 1 },
+    },
+  });
+  assert.equal(explicitTopicConflict.status, 'daily_guidance_unavailable');
 
   const wrongDay = makePageAssistantTurn({
     screen: 'day',

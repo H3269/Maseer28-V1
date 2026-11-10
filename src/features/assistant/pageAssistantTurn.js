@@ -46,7 +46,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       return Object.freeze({ status: 'input_too_long', message: 'پیام بیش از حد طولانی است؛ لطفاً آن را کوتاه‌تر کن.', knowledge: Object.freeze([]), conversationState: null });
     }
 
-    // Exact, pre-authored T01/T02 FAQs are bounded educational routes.
+    // Exact, pre-authored T01/T02/T03 FAQs are bounded educational routes.
     // Validate canonical topic/day identity before answering; free-form
     // guidance continues through the separate safety and review gates.
     const preparedDay = Number(dailyContext?.day);
@@ -56,6 +56,11 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     // canonical identity validation continues to use the untouched source.
     const preparedVisibleContent = dailyContext?.guidanceData || preparedSource;
     const preparedTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem);
+    // T03 safety and clarification signals must preempt both prepared answers
+    // and the generic daily-guidance route, even when the message is not an FAQ.
+    if (preparedTopicId === 'T03' && SAFETY_STATUSES.has(inputProbe.status)) {
+      return Object.freeze({ ...inputProbe, conversationState: null });
+    }
     const answerPreparedQuestion = preparedTopicId === 'T01'
       ? answerAngerDailyPreparedQuestion
       : preparedTopicId === 'T02'
@@ -66,10 +71,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     const preparedAnswer = answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent });
     if (preparedAnswer) {
       // T03 prepared FAQs use the same direct, canonical route as T01/T02;
-      // require an explicit T03 topic marker so adapted or stale content cannot cross topics.
-      if (preparedTopicId === 'T03' && SAFETY_STATUSES.has(inputProbe.status)) {
-        return Object.freeze({ ...inputProbe, conversationState: null });
-      }
+      // category + canonical record ID + day establish legacy identity.
       const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03'].includes(preparedTopicId)
         && Number.isInteger(preparedDay)
         && preparedDay >= 1
@@ -78,10 +80,13 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         && typeof preparedSource === 'object'
         && preparedSource.id === getCanonicalDailyRecordId(dailyContext?.problem, preparedDay)
         && Number(preparedSource.day) === preparedDay
-        && (preparedTopicId === 'T03'
-          ? preparedSource.topic_id === 'T03'
-          : (!Object.prototype.hasOwnProperty.call(preparedSource, 'topic_id')
-            || preparedSource.topic_id === preparedTopicId));
+        // Legacy daily records identify the topic through the selected category
+        // key + canonical record ID (for example, ترس-01). The display adapter
+        // may carry topic_id: null when the source has no explicit topic_id.
+        // Accept that absence, but reject every explicit conflicting topic ID.
+        && (!Object.prototype.hasOwnProperty.call(preparedSource, 'topic_id')
+          || preparedSource.topic_id == null
+          || preparedSource.topic_id === preparedTopicId);
       if (!hasCanonicalPreparedIdentity) {
         return Object.freeze({
           status: 'daily_guidance_unavailable',
