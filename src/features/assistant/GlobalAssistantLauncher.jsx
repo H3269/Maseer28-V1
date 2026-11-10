@@ -8,6 +8,7 @@ import { isLocalNeuralModelInstalled, requestLocalNeuralModel } from './localNeu
 import { LIBRARY_ASSISTANT_PROMPT_GROUPS } from './libraryAssistantPrompts.js';
 import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
 import { getAngerDailyAssistantPromptGroups } from './angerDailyAssistantPrompts.js';
+import { getAnxietyDailyAssistantPromptGroups } from './anxietyDailyAssistantPrompts.js';
 import { appendLocalSourceReferences, buildLocalAssistantMessages, isLocalModelInstallCommand, LOCAL_MODEL_CACHE_MESSAGE, LOCAL_MODEL_FAILURE_MESSAGE, LOCAL_MODEL_INSTALL_MESSAGE, shouldUseLocalNeuralModel } from './localNeuralAssistant.js';
 
 export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null }) {
@@ -118,21 +119,28 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     return () => { active = false; };
   }, [screen, libraryContext?.titles?.length, dailyContext?.day, dailyContext?.problem]);
 
-  const angerProblemText = String(dailyContext?.problem || '').trim();
-  const angerProblemTopicId = getCanonicalTopicIdForCategory(angerProblemText);
-  const angerRecordTopicId = dailyContext?.data?.topic_id || dailyContext?.data?.topicId || null;
-  const hasConflictingAngerTopic = Boolean(
-    (angerProblemTopicId && angerProblemTopicId !== 'T01')
-    || (angerRecordTopicId && angerRecordTopicId !== 'T01'),
+  const dailyProblemText = String(dailyContext?.problem || '').trim();
+  const dailyProblemTopicId = getCanonicalTopicIdForCategory(dailyProblemText);
+  const dailyRecordTopicId = dailyContext?.data?.topic_id || dailyContext?.data?.topicId || null;
+  const hasConflictingDailyTopic = Boolean(
+    (dailyProblemTopicId && dailyRecordTopicId && dailyProblemTopicId !== dailyRecordTopicId)
+    || (dailyProblemTopicId && !['T01', 'T02'].includes(dailyProblemTopicId) && dailyRecordTopicId)
+    || (dailyRecordTopicId && !['T01', 'T02'].includes(dailyRecordTopicId) && dailyProblemTopicId),
   );
   const isAngerDailyPromptContext = Boolean(dailyContext)
-    && !hasConflictingAngerTopic
-    && (angerProblemTopicId === 'T01' || angerRecordTopicId === 'T01' || angerProblemText.includes('خشم'));
+    && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T01' || dailyRecordTopicId === 'T01' || dailyProblemText.includes('خشم'));
+  const isAnxietyDailyPromptContext = Boolean(dailyContext)
+    && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T02' || dailyRecordTopicId === 'T02' || dailyProblemText.includes('اضطراب'));
+  const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext;
   const activePromptGroups = screen === 'books'
     ? LIBRARY_ASSISTANT_PROMPT_GROUPS
     : isAngerDailyPromptContext
       ? getAngerDailyAssistantPromptGroups(dailyContext?.day)
-      : [];
+      : isAnxietyDailyPromptContext
+        ? getAnxietyDailyAssistantPromptGroups(dailyContext?.day)
+        : [];
   if (!visible || screen === 'bookReader') return null;
 
   function resizeComposerInput(element) {
@@ -366,7 +374,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 <AppIcon name="x" size={18} />
               </button>
             </div>
-      {open && libraryPromptOpen && (screen === 'books' || isAngerDailyPromptContext) && (
+      {open && libraryPromptOpen && (screen === 'books' || isTopicDailyPromptContext) && (
         <div
           className="validationModal libraryAssistantPromptModal"
           onClick={(event) => {
@@ -401,7 +409,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
             }}
           >
             <span className="badge">پرسش‌های پیشنهادی</span>
-            <h2 id="library-assistant-prompt-title">{screen === "books" ? "سؤال آماده دستیار کتابخانه" : `سؤال‌های آماده روز ${dailyContext?.day} خشم`}</h2>
+            <h2 id="library-assistant-prompt-title">{screen === "books" ? "سؤال آماده دستیار کتابخانه" : `سؤال‌های آماده روز ${dailyContext?.day} ${isAnxietyDailyPromptContext ? "اضطراب" : "خشم"}`}</h2>
             <p className="muted">برای انتخاب، روی سؤال موردنظرت بزن تا برای همین روز ارسال شود.</p>
             <div className="libraryAssistantPromptOptions">
               {activePromptGroups.map((group) => (
@@ -460,16 +468,16 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
-              <form className={'assistantComposer' + ((screen === 'books' || isAngerDailyPromptContext) && !localModelInstalled ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} onSubmit={send}>
-                {(screen === 'books' || isAngerDailyPromptContext) && !localModelInstalled ? (
+              <form className={'assistantComposer' + ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} onSubmit={send}>
+                {(screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled ? (
                   <div className="libraryAssistantPromptRow">
                     <button
                       ref={libraryPromptTriggerRef}
                       className="libraryAssistantPromptTrigger"
-                      data-testid={isAngerDailyPromptContext ? "anger-daily-prompt-trigger" : "library-assistant-prompt-trigger"}
+                      data-testid={isAngerDailyPromptContext ? "anger-daily-prompt-trigger" : isAnxietyDailyPromptContext ? "anxiety-daily-prompt-trigger" : "library-assistant-prompt-trigger"}
                       type="button"
-                      aria-label={isAngerDailyPromptContext
-                        ? `باز کردن سؤال‌های آماده روز ${dailyContext?.day} خشم`
+                      aria-label={isTopicDailyPromptContext
+                        ? `باز کردن سؤال‌های آماده روز ${dailyContext?.day} ${isAnxietyDailyPromptContext ? "اضطراب" : "خشم"}`
                         : "باز کردن سؤال‌های آماده دستیار کتابخانه"}
                       aria-haspopup="dialog"
                       aria-expanded={libraryPromptOpen}
@@ -477,7 +485,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       disabled={sending || !localModelStatusChecked}
                       onClick={() => setLibraryPromptOpen(true)}
                     >
-                      {draft.trim() || (isAngerDailyPromptContext ? 'انتخاب سؤال آماده روز...' : 'انتخاب سؤال آماده...')}
+                      {draft.trim() || (isTopicDailyPromptContext ? 'انتخاب سؤال آماده روز...' : 'انتخاب سؤال آماده...')}
                     </button>
                     <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال سؤال انتخاب‌شده" disabled={!localModelStatusChecked || !draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
                   </div>

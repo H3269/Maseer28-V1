@@ -1,3 +1,9 @@
+const RUNTIME_TEXT_FIELDS = Object.freeze([
+  'title', 'intro', 'exercise', 'actionText', 'closing',
+  'lightExerciseText', 'lightActionText', 'progressActionText',
+  'restExerciseText', 'restActionText',
+]);
+
 export function mergeDailyTextOverrides(content, overrides) {
   if (!content || typeof content !== 'object' || !overrides || typeof overrides !== 'object') {
     return content;
@@ -28,15 +34,12 @@ export function mergeDailyTextOverrides(content, overrides) {
       days: baseCategory.days.map((day) => {
         const replacement = overridesByDay.get(Number(day?.day));
         if (!replacement) return day;
-        return {
-          ...day,
-          ...(typeof replacement.exercise === 'string' && replacement.exercise.trim()
-            ? { exercise: replacement.exercise }
-            : {}),
-          ...(typeof replacement.actionText === 'string' && replacement.actionText.trim()
-            ? { actionText: replacement.actionText }
-            : {}),
-        };
+        const textOverrides = Object.fromEntries(
+          RUNTIME_TEXT_FIELDS
+            .filter((field) => typeof replacement[field] === 'string' && replacement[field].trim())
+            .map((field) => [field, replacement[field]]),
+        );
+        return { ...day, ...textOverrides };
       }),
     };
   }

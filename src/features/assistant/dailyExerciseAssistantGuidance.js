@@ -1,6 +1,7 @@
 import { routeSemanticIntake } from './intentContextRouter.js';
 import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
 import { answerAngerDailyPreparedQuestion } from './angerDailyAssistantPrompts.js';
+import { answerAnxietyDailyPreparedQuestion } from './anxietyDailyAssistantPrompts.js';
 
 const SAFETY_QUESTION = 'آیا همین الآن خطر فوری، قصد یا برنامه عملی برای آسیب به خودت یا شخص دیگری وجود دارد؟ اگر پاسخ روشن نیست، بگو مطمئن نیستی.';
 const SAFETY_HANDOFF = 'راهنمایی تمرین را متوقف می‌کنم. اگر احتمال خطر فوری وجود دارد یا مطمئن نیستی، همین الآن با خدمات اورژانسی محل زندگی یا یک فرد امن و قابل اعتماد تماس بگیر و تنها نمان. این گفت‌وگو جای کمک فوری انسانی را نمی‌گیرد.';
@@ -327,14 +328,20 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
     return result('شناسه روزِ محتوای دریافتی با روز فعال یکسان نیست؛ برای جلوگیری از راهنمایی اشتباه، فعلاً به این محتوا پاسخ نمی‌دهم.', state, text);
   }
 
-  if (getCanonicalTopicIdForCategory(problem) === 'T01'
-      && dayData?.topic_id
-      && String(dayData.topic_id).trim() !== 'T01') {
-    return result('شناسه موضوعِ محتوای دریافتی با موضوع خشم یکسان نیست؛ برای جلوگیری از پاسخ بر پایه محتوای موضوع دیگر، فعلاً راهنمایی آماده را ارائه نمی‌کنم.', state, text);
+  const canonicalTopicId = getCanonicalTopicIdForCategory(problem);
+  const sourceTopicId = String(dayData?.topic_id || dayData?.topicId || '').trim();
+  if (['T01', 'T02'].includes(canonicalTopicId) && sourceTopicId && sourceTopicId !== canonicalTopicId) {
+    const topicLabel = canonicalTopicId === 'T01' ? 'خشم' : 'اضطراب';
+    return result('شناسه موضوعِ محتوای دریافتی با موضوع ' + topicLabel + ' یکسان نیست؛ برای جلوگیری از پاسخ بر پایه محتوای موضوع دیگر، فعلاً راهنمایی آماده را ارائه نمی‌کنم.', state, text);
   }
 
-  if (getCanonicalTopicIdForCategory(problem) === 'T01') {
+  if (canonicalTopicId === 'T01') {
     const preparedAnswer = answerAngerDailyPreparedQuestion({ day, message: text });
+    if (preparedAnswer) return result(preparedAnswer, { ...state, lastTopic: currentTopic }, text);
+  }
+
+  if (canonicalTopicId === 'T02') {
+    const preparedAnswer = answerAnxietyDailyPreparedQuestion({ day, message: text });
     if (preparedAnswer) return result(preparedAnswer, { ...state, lastTopic: currentTopic }, text);
   }
 

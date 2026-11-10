@@ -274,7 +274,8 @@ export function splitDayContent(d, problem, previousRecord, history = {}) {
     action = contextualAction(d.lightActionText || action);
     adaptation = 'با توجه به نتیجه روز گذشته، امروز فقط بخش ساده‌تر را انجام بده. لازم نیست موقعیت دشوار را تجربه کنی؛ اگر فشار بیشتر شد، مکث کن یا تمرین را متوقف کن.';
   } else if (sustainedImprovement) {
-    exercise = [exercise, 'چون در چند روز اخیر بهبود ثبت کرده‌ای، اگر آمادگی داری مهارت را در موقعیتی امن و کمی متفاوت بررسی کن؛ دشواری را ناگهانی افزایش نده.'].filter(Boolean).join('\n\n');
+    // Keep the day-specific exercise unchanged; progression belongs in the
+    // dedicated action field so the displayed exercise remains source-faithful.
     action = contextualAction(d.progressActionText || action);
     adaptation = 'بهبود در چند روز اخیر دیده می‌شود؛ گام بعدی کمی متفاوت است، اما انجام آن اختیاری است و باید در محدوده امن و قابل‌تحمل بماند.';
   } else if (previousRecord?.feedback === 'same') {

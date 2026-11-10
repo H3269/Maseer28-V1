@@ -231,6 +231,7 @@ try {
     'the prepared-question picker must be hidden after successful local-model installation');
   await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await dialog.waitFor({ state: 'detached' });
+
   // Restore the pre-install state before testing the Library guided composer.
   await page.evaluate(async () => {
     const cache = await caches.open('maseer28-local-model-state-v1');
