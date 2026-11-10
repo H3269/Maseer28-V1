@@ -231,7 +231,10 @@ try {
   const angerReply = guidedPanel.locator('.assistantMessage').last();
   assert.match(await angerReply.innerText(), /راهنمای روز ۱ خشم/);
   assert.ok(await angerReply.locator('strong').count() > 0, 'T01 assistant headings must render as bold text, not raw markdown');
-  assert.doesNotMatch(await angerReply.innerText(), /\\*\\*|\\\\n/, 'T01 must not expose markdown markers or escaped newline tokens');
+  const angerVisibleText = await angerReply.innerText();
+  assert.equal(angerVisibleText.includes('**'), false, 'T01 must not expose raw markdown markers');
+  assert.equal(angerVisibleText.includes(String.fromCharCode(92) + 'n'), false, 'T01 must not expose escaped newline tokens');
+  assert.ok(angerVisibleText.includes('\n'), 'T01 paragraphs must display on separate lines');
   await guidedPage.close();
 
   // T02 anxiety must expose the same day-scoped prepared guidance structure.
@@ -249,7 +252,10 @@ try {
   await anxietyGuidedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /راهنمای روز ۱ اضطراب/.test(node.innerText)));
   const anxietyReply = anxietyGuidedPanel.locator('.assistantMessage').last();
   assert.ok(await anxietyReply.locator('strong').count() > 0, 'T02 assistant headings must render as bold text');
-  assert.doesNotMatch(await anxietyReply.innerText(), /\\*\\*|\\\\n/, 'T02 must not expose markdown markers or escaped newline tokens');
+  const anxietyVisibleText = await anxietyReply.innerText();
+  assert.equal(anxietyVisibleText.includes('**'), false, 'T02 must not expose raw markdown markers');
+  assert.equal(anxietyVisibleText.includes(String.fromCharCode(92) + 'n'), false, 'T02 must not expose escaped newline tokens');
+  assert.ok(anxietyVisibleText.includes('\n'), 'T02 paragraphs must display on separate lines');
   await assertAssistantUsesVisibleDailySource(anxietyGuidedPage, anxietyGuidedPanel, 'اضطراب', 1);
   await anxietyGuidedPage.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await anxietyGuidedPanel.waitFor({ state: 'detached' });
@@ -284,7 +290,10 @@ try {
   const fearReply = fearPanel.locator('.assistantMessage').last();
   assert.match(await fearReply.innerText(), /راهنمای روز ۱ ترس/);
   assert.ok(await fearReply.locator('strong').count() > 0, 'T03 assistant headings must render as bold text');
-  assert.doesNotMatch(await fearReply.innerText(), /\\*\\*|\\\\n/, 'T03 must not expose markdown markers or escaped newline tokens');
+  const fearVisibleText = await fearReply.innerText();
+  assert.equal(fearVisibleText.includes('**'), false, 'T03 must not expose raw markdown markers');
+  assert.equal(fearVisibleText.includes(String.fromCharCode(92) + 'n'), false, 'T03 must not expose escaped newline tokens');
+  assert.ok(fearVisibleText.includes('\n'), 'T03 paragraphs must display on separate lines');
 
   assert.deepEqual(fearErrors, [], 'T03 prepared-only assistant browser flow must not raise page errors');
   await fearGuidedPage.close();
@@ -316,7 +325,9 @@ try {
   assert.match(hatredReply, /تمرین/);
   assert.ok(await hatredPanel.locator('.assistantMessage').last().locator('strong').count() > 0,
     'T04 assistant headings must render as bold text');
-  assert.doesNotMatch(hatredReply, /\\*\\*|\\\\n/, 'T04 must not expose markdown markers or escaped newline tokens');
+  assert.equal(hatredReply.includes('**'), false, 'T04 must not expose raw markdown markers');
+  assert.equal(hatredReply.includes(String.fromCharCode(92) + 'n'), false, 'T04 must not expose escaped newline tokens');
+  assert.ok(hatredReply.includes('\n'), 'T04 paragraphs must display on separate lines');
   assert.deepEqual(hatredErrors, [], 'T04 prepared-only assistant browser flow must not raise page errors');
   await hatredGuidedPage.close();
 
