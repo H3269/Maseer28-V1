@@ -56,6 +56,11 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     // canonical identity validation continues to use the untouched source.
     const preparedVisibleContent = dailyContext?.guidanceData || preparedSource;
     const preparedTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem);
+    // T03 safety and clarification signals must preempt both prepared answers
+    // and the generic daily-guidance route, even when the message is not an FAQ.
+    if (preparedTopicId === 'T03' && SAFETY_STATUSES.has(inputProbe.status)) {
+      return Object.freeze({ ...inputProbe, conversationState: null });
+    }
     const answerPreparedQuestion = preparedTopicId === 'T01'
       ? answerAngerDailyPreparedQuestion
       : preparedTopicId === 'T02'
@@ -67,9 +72,6 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     if (preparedAnswer) {
       // T03 prepared FAQs use the same direct, canonical route as T01/T02;
       // category + canonical record ID + day establish legacy identity.
-      if (preparedTopicId === 'T03' && SAFETY_STATUSES.has(inputProbe.status)) {
-        return Object.freeze({ ...inputProbe, conversationState: null });
-      }
       const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03'].includes(preparedTopicId)
         && Number.isInteger(preparedDay)
         && preparedDay >= 1
