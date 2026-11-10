@@ -117,7 +117,7 @@ test('T04 self-hatred safety handoff uses the human-readable topic title, never 
  const q=g.questions.find(x=>x.kind==='stop');
  const answer=answerHatredDailyPreparedQuestion({day:4,message:q.value});
  assert.match(answer,/این مسیر را ادامه نده و مسیر «نفرت از خود» را انتخاب کن/);
- assert.doesNotMatch(answer,/\\bT18\\b/);
+ assert.doesNotMatch(answer,/\bT18\b/);
 });
 
 test('T04 every prepared answer includes the selected day safety condition',()=>{
