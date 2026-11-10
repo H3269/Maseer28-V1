@@ -5042,3 +5042,14 @@ undefined
 - PR #92 همچنان شامل اصلاح ریشه خطای runtime، آزمون ۳۹۲ پرسش با شکل واقعی داده legacy، رد تعارض صریح و اصلاح این آزمون stale است.
 
 **وضعیت:** T03_LEGACY_IDENTITY_FIX_READY_FOR_REVALIDATION; STALE_SINGLE_GROUP_TEST_UPDATED_TO_FIVE_GROUP_CONTRACT; CI_RETRY_PENDING; NO_MAIN_MERGE_YET; NO_PUBLIC_RELEASE
+
+
+## تکمیل اصلاح T03 — حفظ تقدم واقعی هشدار ایمنی در مسیر صفحه
+
+- اجرای مجدد CI پس از اصلاح آزمون قدیمی قالب، یک نقص مستقل در مسیر صفحه را آشکار کرد: آزمون هشدار فوری نشان داد متن پرخطر T03 که عضو بانک FAQ نیست، از شرط safety داخل شاخه `if (preparedAnswer)` عبور نمی‌کند و به مسیر عمومی راهنمای روزانه می‌رسد.
+- علت: بررسی وضعیت‌های `urgent_human_support_required` و `safety_clarification_required` برای T03 داخل شرط وجود پاسخ آماده قرار گرفته بود؛ بنابراین فقط وقتی متن پرخطر اتفاقاً FAQ را match می‌کرد، تقدم ایمنی اعمال می‌شد.
+- اصلاح: برای موضوع T03، وضعیت‌های ایمنی بلافاصله پس از تعیین موضوع canonical و پیش از انتخاب پاسخ آماده یا مسیر عمومی روزانه برگردانده می‌شوند. این کار پاسخ آزاد را فعال نمی‌کند و فقط مسیر ایمنی موجود را مقدم می‌کند.
+- آزمون موجود `T03 prepared FAQ route still gives urgent safety handoff precedence` معیار این اصلاح است؛ اجرای کامل CI جدید باید این مورد و آزمون‌های ۳۹۲ پرسش را تأیید کند.
+- شکست‌های قبلی CI شفاف ثبت می‌شوند: ابتدا تست تک‌گروهی stale بود و پس از اصلاح آن، آزمون تقدم ایمنی این نقص را آشکار کرد. ادغام تا پایان اجرای موفق آزمون‌ها متوقف است.
+
+**وضعیت:** T03_SAFETY_PREEMPTION_MOVED_AHEAD_OF_FAQ_AND_GENERIC_GUIDANCE; LEGACY_IDENTITY_AND_FIVE_GROUP_TESTS_UPDATED; FULL_CI_REVALIDATION_PENDING; NO_MAIN_MERGE; NO_PUBLIC_RELEASE
