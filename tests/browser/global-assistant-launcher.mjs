@@ -210,7 +210,7 @@ try {
   await page.locator('#day').waitFor({ state: 'visible' });
   await launcher.waitFor({ state: 'visible' });
   await launcher.click();
-  dialog = page.getByRole('dialog', { name: 'دستیار هوشمند مسیر ۲۸' });
+  dialog = page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' });
   await dialog.waitFor({ state: 'visible' });
   assert.doesNotMatch(await dialog.innerText(), /صفحه فعلی:|موضوع: خشم/);
   assert.equal(await page.locator('.dailyExerciseAssistant').count(), 0, 'the standalone daily assistant panel must be removed');
