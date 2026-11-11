@@ -476,10 +476,8 @@ try {
     await promptDialog.waitFor({ state: 'visible' });
     await promptDialog.getByRole('button', { name: safetyQuestion }).click();
     await panel.getByRole('button', { name: 'ارسال' }).click();
-    await page.waitForFunction((questionCount) => {
-      const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-      return replies.some(node => node.innerText.includes('مرکز هیپنوتراپی شفا با شماره تماس ۰۹۱۹۰۸۸۹۰۶۲'));
-    }, null, 1);
+    await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+      .some(node => node.innerText.includes('مرکز هیپنوتراپی شفا با شماره تماس ۰۹۱۹۰۸۸۹۰۶۲')));
     const reply = panel.locator('.assistantMessage').last();
     assert.equal(await reply.getByTestId('daily-assistant-safety-reminder').count(), 1,
       'each evaluation/safety answer must contain exactly one reminder card');
