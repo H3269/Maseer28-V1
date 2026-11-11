@@ -506,6 +506,12 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                     disabled={sending}
                     onClick={(event) => send(event, 'مطمئن نیستم الان امن هستم یا نه و برای بررسی وضعیت ایمنی‌ام به کمک انسانی نیاز دارم.')}
                   >مطمئن نیستم الان امن هستم یا نه</button>
+                  <button
+                    type="button"
+                    data-testid="daily-assistant-urgent-help"
+                    disabled={sending}
+                    onClick={(event) => send(event, 'قصد دارم همین الآن به خودم آسیب بزنم یا به شخص دیگری آسیب بزنم و به کمک فوری نیاز دارم.')}
+                  >خطر فوری وجود دارد</button>
                   {conversationStateRef.current?.dailyState?.safetyStatus === 'pending' && (
                     <>
                       <button type="button" data-testid="daily-assistant-safety-no" disabled={sending}
