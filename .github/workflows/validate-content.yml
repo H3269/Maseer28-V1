@@ -242,7 +242,7 @@ jobs:
 # Feature-specific PRs use a bounded test set; never fall through to the full 34-topic suite.
   validate-assistant-safety-ui:
     name: Validate assistant safety UI (T01-T05)
-    if: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'fix/assistant-safety-return-contact-') }}
+    if: ${{ github.event_name == 'pull_request' && (startsWith(github.head_ref, 'fix/assistant-safety-return-contact-') || startsWith(github.head_ref, 'fix/shafa-contact-guidance-')) }}
     runs-on: ubuntu-24.04
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
