@@ -259,6 +259,9 @@ try {
   const returnToDaily = dialog.getByTestId('daily-assistant-return-to-daily');
   await returnToDaily.waitFor({ state: 'visible' });
   await returnToDaily.click();
+  assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 0,
+    'the handoff must remain active until the user explicitly confirms that immediate danger has passed');
+  await dialog.getByTestId('daily-assistant-confirm-safe-return').click();
   const restoredDailyPicker = dialog.getByTestId('anger-daily-prompt-trigger');
   await restoredDailyPicker.waitFor({ state: 'visible' });
   await restoredDailyPicker.click();
