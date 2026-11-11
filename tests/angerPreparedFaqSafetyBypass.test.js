@@ -61,10 +61,10 @@ test('prepared anger FAQ bypass does not accept a mismatched topic/day identity'
   assert.equal(wrongDay.status, 'daily_guidance_unavailable');
 });
 
-test('day assistant guidance does not apply the daily safety/review gate', () => {
+test('out-of-list anger questions are refused even when daily review metadata is present', () => {
   const result = makePageAssistantTurn({
     screen: 'day',
-    text: 'برای کنترل خشمم در یک دعوای واقعی چه کار کنم؟',
+    text: 'چرا از یک نفر متنفرم؟',
     dailyContext: {
       day: 1,
       problem: 'خشم',
@@ -82,8 +82,8 @@ test('day assistant guidance does not apply the daily safety/review gate', () =>
       },
     },
   });
-  assert.equal(result.status, 'daily_guidance_available');
-  assert.ok(result.message && result.message.length > 0);
+  assert.equal(result.status, 'prepared_question_required');
+  assert.match(result.message, /گفت‌وگوی آزاد برای این موضوع فعال نیست/);
 });
 
 test('exact prepared anger FAQs are independent of daily safety and review gate states', () => {

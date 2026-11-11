@@ -141,8 +141,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     && (dailyProblemTopicId === 'T03' || dailyRecordTopicId === 'T03' || dailyProblemText === 'ترس');
   const isHatredDailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
     && (dailyProblemTopicId === 'T04' || dailyRecordTopicId === 'T04' || dailyProblemText === 'نفرت');
-  const isPreparedOnlyDailyPromptContext = isFearDailyPromptContext || isHatredDailyPromptContext;
   const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext;
+  const isPreparedOnlyDailyPromptContext = isTopicDailyPromptContext;
   const activePromptGroups = screen === 'books'
     ? LIBRARY_ASSISTANT_PROMPT_GROUPS
     : isAngerDailyPromptContext
@@ -231,14 +231,15 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     }
   }
 
-  async function send(event) {
+  async function send(event, overrideMessage = null) {
     event.preventDefault();
-    const message = draft.trim();
+    const message = String(overrideMessage ?? draft).trim();
     if (!message || sending) return;
     if (isPreparedOnlyDailyPromptContext && !activePromptGroups.some(group => group.questions.some(question => question.value === message))) {
-      const fearSafetyIntent = routeAssistantTurn({ text: message });
+      const safetyIntent = routeAssistantTurn({ text: message });
       const urgentSafetyStatuses = new Set(['urgent_human_support_required', 'safety_clarification_required']);
-      if (!urgentSafetyStatuses.has(fearSafetyIntent.status)) {
+      const isSafetyFollowUp = conversationStateRef.current?.dailyState?.safetyStatus === 'pending';
+      if (!urgentSafetyStatuses.has(safetyIntent.status) && !isSafetyFollowUp) {
         const rejectedId = ++turnSequenceRef.current;
         setMessages(current => [...current, { id: `user-rejected-${rejectedId}`, role: 'user', text: message, knowledge: [] }, { id: `assistant-rejected-${rejectedId}`, role: 'assistant', text: 'این پرسش در فهرست راهنمای آماده این موضوع نیست. لطفاً یکی از پرسش‌های آماده همین روز را انتخاب کن.', knowledge: [] }]);
         setDraft('');
@@ -498,6 +499,34 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
+              {isTopicDailyPromptContext && (
+                <div className="libraryAssistantPromptRow dailyAssistantSafetyActions" role="group" aria-label="راه‌های دریافت کمک ایمنی">
+                  <button
+                    type="button"
+                    data-testid="daily-assistant-human-help"
+                    disabled={sending}
+                    onClick={(event) => send(event, 'مطمئن نیستم الان امن هستم یا نه و برای بررسی وضعیت ایمنی‌ام به کمک انسانی نیاز دارم.')}
+                  >مطمئن نیستم الان امن هستم یا نه</button>
+                  <button
+                    type="button"
+                    data-testid="daily-assistant-urgent-help"
+                    disabled={sending}
+                    onClick={(event) => send(event, 'قصد دارم همین الآن به خودم آسیب بزنم یا به شخص دیگری آسیب بزنم و به کمک فوری نیاز دارم.')}
+                  >خطر فوری وجود دارد</button>
+                  {conversationStateRef.current?.dailyState?.safetyStatus === 'pending' && (
+                    <>
+                      <button type="button" data-testid="daily-assistant-safety-no" disabled={sending}
+                        onClick={(event) => send(event, 'نه، همین حالا خطر فوری ندارم و قصد یا برنامه عملی برای آسیب ندارم.')}>
+                        نه، خطر فوری ندارم
+                      </button>
+                      <button type="button" data-testid="daily-assistant-safety-uncertain" disabled={sending}
+                        onClick={(event) => send(event, 'بله یا مطمئن نیستم؛ ممکن است خطر وجود داشته باشد.')}>
+                        بله یا مطمئن نیستم
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
               <form className={'assistantComposer' + (isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled) ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} onSubmit={send}>
                 {(isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled)) ? (
                   <div className="libraryAssistantPromptRow">
