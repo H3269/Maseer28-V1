@@ -82,6 +82,11 @@ try {
   await page.locator('#dashboard').waitFor({ state: 'visible' });
   await page.locator('#dashboard .heroAction').click();
   await page.locator('#day').waitFor({ state: 'visible' });
+  const dayText = await page.locator('#day').innerText();
+  assert.match(dayText, /نام‌گذاری فقدان/);
+  assert.match(dayText, /هدف: به‌رسمیت‌شناختن فقدان بدون اجبار به جزئیات/);
+  assert.match(dayText, /معیار پایان:/);
+  assert.match(dayText, /شرط توقف:/);
   await page.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
 
   const panel = page.locator('.globalAssistantDialog');
