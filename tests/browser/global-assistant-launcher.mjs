@@ -254,6 +254,25 @@ try {
   assert.match(await shafaContact.innerText(), /۰۹۱۹۰۸۸۹۰۶۲/u);
   assert.match(await dialog.locator('.assistantMessage').last().innerText(), /اورژانس|خدمات اورژانسی/u,
     'the Shafa contact must supplement, not replace, emergency guidance');
+  assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 0,
+    'prepared daily questions must be hidden while the human-support stage is active');
+  const returnToDaily = dialog.getByTestId('daily-assistant-return-to-daily');
+  await returnToDaily.waitFor({ state: 'visible' });
+  await returnToDaily.click();
+  assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 0,
+    'the handoff must remain active until the user explicitly confirms that immediate danger has passed');
+  await dialog.getByTestId('daily-assistant-confirm-safe-return').click();
+  const restoredDailyPicker = dialog.getByTestId('anger-daily-prompt-trigger');
+  await restoredDailyPicker.waitFor({ state: 'visible' });
+  await restoredDailyPicker.click();
+  const restoredQuestionDialog = page.locator('#library-assistant-prompt-dialog');
+  await restoredQuestionDialog.waitFor({ state: 'visible' });
+  await restoredQuestionDialog.locator('[data-prompt-option]').first().click();
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some((node) => /راهنمای روز ۱ خشم/u.test(node.innerText)));
+  assert.match(await dialog.locator('.assistantMessage').last().innerText(), /راهنمای روز ۱ خشم/u,
+    'closing the support stage must restore the exact prepared answer for the same day');
 
   await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await dialog.waitFor({ state: 'detached' });

@@ -395,15 +395,14 @@ try {
   assert.doesNotMatch(assistantReply, /متن تمرین همین روز/);
 
   // A prepared FAQ cannot bypass an active human-support handoff.
-  await trigger.click();
-  await page.locator('#library-assistant-prompt-dialog')
-    .getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
-  await panel.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .filter(node => /کمک فوری انسانی/.test(node.innerText)).length >= 2);
-  assistantReply = await panel.locator('.assistantMessage').last().innerText();
-  assert.match(assistantReply, /کمک فوری انسانی/);
-  assert.doesNotMatch(assistantReply, /راهنمای روز ۱ خشم/);
+  // The daily picker and ordinary composer must be absent, not merely rejected
+  // after submission; the dedicated handoff/return browser test covers recovery.
+  assert.equal(await trigger.count(), 0,
+    'prepared daily questions must be hidden while a human-support handoff is active');
+  assert.equal(await panel.locator('.assistantComposer').count(), 0,
+    'the ordinary daily composer must be hidden while a human-support handoff is active');
+  assert.ok(await panel.getByTestId('daily-assistant-return-to-daily').isVisible(),
+    'the handoff must expose only its explicit safe-return flow');
 
   const storedValues = await page.evaluate(() => Object.keys(localStorage).map((key) => localStorage.getItem(key) || '').join('\n'));
   assert.equal(storedValues.includes(privateMarker), false, 'assistant transcript must not be persisted to localStorage');

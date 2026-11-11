@@ -23,6 +23,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const libraryPromptDialogRef = useRef(null);
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
+  const [dailySafetyStageActive, setDailySafetyStageActive] = useState(false);
+  const [safetyCloseConfirmOpen, setSafetyCloseConfirmOpen] = useState(false);
   const [localModelUnavailable, setLocalModelUnavailable] = useState(false);
   const [localModelInstalled, setLocalModelInstalled] = useState(false);
   const [localModelStatusChecked, setLocalModelStatusChecked] = useState(false);
@@ -41,6 +43,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     setError('');
     setSending(false);
     conversationStateRef.current = null;
+    setDailySafetyStageActive(false);
+    setSafetyCloseConfirmOpen(false);
     setOpen(false);
     setLibraryPromptOpen(false);
   }, [screen, dailyContext?.day, dailyContext?.problem, dailyContext?.relationshipSafetyConfirmed]);
@@ -323,6 +327,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       }
 
       conversationStateRef.current = turn.conversationState || null;
+      const nextSafetyStatus = turn.conversationState?.dailyState?.safetyStatus || 'none';
+      setDailySafetyStageActive(['pending', 'handoff'].includes(nextSafetyStatus));
       let finalMessage = turn.message || 'برای این پرسش پاسخ قابل اتکایی در دسترس نیست.';
       if (!isPreparedOnlyDailyPromptContext && !localModelUnavailable && shouldUseLocalNeuralModel({ screen, turn, intentStatus: intentGate.status, isLibraryTurn })) {
         try {
@@ -345,6 +351,25 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     } finally {
       setSending(false);
     }
+  }
+
+  function closeDailySafetyStage() {
+    if (conversationStateRef.current?.dailyState?.safetyStatus !== 'handoff') return;
+    setSafetyCloseConfirmOpen(true);
+  }
+
+  function confirmDailySafetyStageReturn() {
+    conversationStateRef.current = { dailyState: { safetyStatus: 'cleared' } };
+    setDailySafetyStageActive(false);
+    setSafetyCloseConfirmOpen(false);
+    setDraft('');
+    setError('');
+    setMessages((current) => [...current, {
+      id: `assistant-safety-return-${++turnSequenceRef.current}`,
+      role: 'assistant',
+      text: 'گفتی که اکنون خطر فوری وجود ندارد. مرحله حمایت بسته شد و دستیار امروز دوباره فعال است؛ می‌توانی از سؤال‌های آماده همین روز استفاده کنی. اگر خطر دوباره ایجاد شد، فوراً آن را اعلام کن و کمک انسانی بگیر.',
+      knowledge: [],
+    }]);
   }
 
   function containDialogTab(event) {
@@ -482,7 +507,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                           : <React.Fragment key={partIndex}>{part.text}</React.Fragment>)}
                       </React.Fragment>
                     ))}</p>
-                    {isTopicDailyPromptContext && /(?:اورژانس|خدمات اورژانسی)/u.test(String(item.text || '')) && (
+                    {isTopicDailyPromptContext && dailySafetyStageActive && /(?:اورژانس|خدمات اورژانسی)/u.test(String(item.text || '')) && (
                       <div className="dailyAssistantShafaContact" data-testid="daily-assistant-shafa-contact">
                         <a href="tel:+989190889062" aria-label="تماس با مرکز هیپنوتراپی شفا">
                           تماس با مرکز هیپنوتراپی شفا
@@ -508,33 +533,54 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 <div ref={endRef} />
               </div>
               {isTopicDailyPromptContext && (
-                <div className="libraryAssistantPromptRow dailyAssistantSafetyActions" role="group" aria-label="راه‌های دریافت کمک ایمنی">
-                  <button
-                    type="button"
-                    data-testid="daily-assistant-human-help"
-                    disabled={sending}
-                    onClick={(event) => send(event, 'مطمئن نیستم الان امن هستم یا نه و برای بررسی وضعیت ایمنی‌ام به کمک انسانی نیاز دارم.')}
-                  >مطمئن نیستم الان امن هستم یا نه</button>
-                  <button
-                    type="button"
-                    data-testid="daily-assistant-urgent-help"
-                    disabled={sending}
-                    onClick={(event) => send(event, 'قصد دارم همین الآن به خودم آسیب بزنم یا به شخص دیگری آسیب بزنم و به کمک فوری نیاز دارم.')}
-                  >خطر فوری وجود دارد</button>
-                  {conversationStateRef.current?.dailyState?.safetyStatus === 'pending' && (
+                <div className="libraryAssistantPromptRow dailyAssistantSafetyActions" role="group" aria-label={dailySafetyStageActive ? "راه‌های دریافت کمک ایمنی" : "اعلام نیاز به بررسی ایمنی"}>
+                  {!dailySafetyStageActive ? (
                     <>
-                      <button type="button" data-testid="daily-assistant-safety-no" disabled={sending}
-                        onClick={(event) => send(event, 'نه، همین حالا خطر فوری ندارم و قصد یا برنامه عملی برای آسیب ندارم.')}>
-                        نه، خطر فوری ندارم
-                      </button>
-                      <button type="button" data-testid="daily-assistant-safety-uncertain" disabled={sending}
-                        onClick={(event) => send(event, 'بله یا مطمئن نیستم؛ ممکن است خطر وجود داشته باشد.')}>
-                        بله یا مطمئن نیستم
-                      </button>
+                      <button
+                        type="button"
+                        data-testid="daily-assistant-human-help"
+                        disabled={sending}
+                        onClick={(event) => send(event, 'مطمئن نیستم الان امن هستم یا نه و برای بررسی وضعیت ایمنی‌ام به کمک انسانی نیاز دارم.')}
+                      >مطمئن نیستم الان امن هستم یا نه</button>
+                      <button
+                        type="button"
+                        data-testid="daily-assistant-urgent-help"
+                        disabled={sending}
+                        onClick={(event) => send(event, 'قصد دارم همین الآن به خودم آسیب بزنم یا به شخص دیگری آسیب بزنم و به کمک فوری نیاز دارم.')}
+                      >خطر فوری وجود دارد</button>
+                    </>
+                  ) : (
+                    <>
+                      {conversationStateRef.current?.dailyState?.safetyStatus === 'pending' && (
+                        <>
+                          <button type="button" data-testid="daily-assistant-safety-no" disabled={sending}
+                            onClick={(event) => send(event, 'نه، همین حالا خطر فوری ندارم و قصد یا برنامه عملی برای آسیب ندارم.')}>
+                            نه، خطر فوری ندارم
+                          </button>
+                          <button type="button" data-testid="daily-assistant-safety-uncertain" disabled={sending}
+                            onClick={(event) => send(event, 'بله یا مطمئن نیستم؛ ممکن است خطر وجود داشته باشد.')}>
+                            بله یا مطمئن نیستم
+                          </button>
+                        </>
+                      )}
                     </>
                   )}
                 </div>
               )}
+              {isTopicDailyPromptContext && dailySafetyStageActive ? (
+                <div className="dailyAssistantSafetyActions" role="group" aria-label="پایان مرحله حمایت">
+                  {conversationStateRef.current?.dailyState?.safetyStatus === 'handoff' && (safetyCloseConfirmOpen ? (
+                    <>
+                      <p className="safetyNote" role="alert">پیش از بازگشت، فقط اگر واقعاً اکنون خطر فوری برطرف شده و می‌توانی در امنیت بمانی، تأیید کن. اگر هنوز در خطری یا مطمئن نیستی، این مرحله را نبند و کمک انسانی/اورژانسی را دنبال کن.</p>
+                      <button type="button" data-testid="daily-assistant-confirm-safe-return" onClick={confirmDailySafetyStageReturn} disabled={sending}>بله، اکنون خطر فوری ندارم</button>
+                      <button type="button" data-testid="daily-assistant-cancel-safe-return" onClick={() => setSafetyCloseConfirmOpen(false)} disabled={sending}>نه، هنوز مطمئن نیستم</button>
+                    </>
+                  ) : (
+                    <button type="button" className="libraryAssistantPromptTrigger" data-testid="daily-assistant-return-to-daily" onClick={closeDailySafetyStage} disabled={sending}>درخواست بازگشت به دستیار امروز</button>
+                  ))}
+                  {conversationStateRef.current?.dailyState?.safetyStatus === 'pending' && <p className="safetyNote" role="status">برای ادامه، وضعیت ایمنی را با یکی از پاسخ‌های بالا روشن کن. تا آن زمان سؤال‌های روزانه غیرفعال‌اند.</p>}
+                </div>
+              ) : (
               <form className={'assistantComposer' + (isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled) ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} onSubmit={send}>
                 {(isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled)) ? (
                   <div className="libraryAssistantPromptRow">
@@ -575,6 +621,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 )}
                 {error && <p className="contactHelp assistantComposerError" role="alert">{error}</p>}
               </form>
+              )}
             </div>
           </section>
         </div>
