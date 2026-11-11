@@ -2,6 +2,7 @@ import { routeAssistantTurn } from './assistantTurnEngine.js';
 import { cleanPreparedAssistantTopicText } from './teacherStylePreparedAnswer.js';
 import { answerPageAssistantQuestion, getPageAssistantContext } from './pageAssistantContext.js';
 import { makeDailyExerciseGuidanceTurn, selectDailyExerciseGuidanceData } from './dailyExerciseAssistantGuidance.js';
+import { getRelationshipSafetyGate } from '../journey/relationshipSafetyGate.js';
 import { answerAngerDailyPreparedQuestion } from './angerDailyAssistantPrompts.js';
 import { answerAnxietyDailyPreparedQuestion } from './anxietyDailyAssistantPrompts.js';
 import { answerFearDailyPreparedQuestion } from './fearDailyAssistantPrompts.js';
@@ -82,6 +83,21 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       && (!Object.prototype.hasOwnProperty.call(preparedSource, 'topic_id')
         || preparedSource.topic_id == null
         || preparedSource.topic_id === preparedTopicId);
+
+    const jealousyRelationshipGate = preparedTopicId === 'T05' ? getRelationshipSafetyGate(preparedSource) : null;
+    if (jealousyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true) {
+      return Object.freeze({
+        status: dailyContext?.relationshipSafetyResponse === 'unsafe'
+          ? 'relationship_safety_blocked'
+          : 'relationship_safety_confirmation_required',
+        message: dailyContext?.relationshipSafetyResponse === 'unsafe'
+          ? jealousyRelationshipGate.blockedMessage
+          : jealousyRelationshipGate.question + '\n\n' + jealousyRelationshipGate.disclaimer,
+        knowledge: Object.freeze([]),
+        page_context: 'day',
+        conversationState: null,
+      });
+    }
 
     // An exact, pre-authored FAQ is a question selected by the user, not a
     // first-person safety disclosure. Broad lexical safety cues inside its
