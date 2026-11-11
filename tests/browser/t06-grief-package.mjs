@@ -62,7 +62,9 @@ await page.route('**/*', async route => {
     const payload = structuredClone(canonicalPathContent);
     const day = payload.categories?.[topicKey]?.days?.find(item => Number(item.day) === dayNumber);
     assert.ok(day, 'the canonical fixture must contain T06 day 1');
-    Object.assign(day, { topic_id: 'T06', day: dayNumber, review_status: 'approved', risk_level: 'routine' });
+    assert.equal(Object.hasOwn(day, 'topic_id'), false);
+    assert.equal(Object.hasOwn(day, 'review_status'), false);
+    assert.equal(Object.hasOwn(day, 'risk_level'), false);
     await route.fulfill({ status: 200, contentType: 'application/json; charset=utf-8', body: JSON.stringify(payload) });
     return;
   }
