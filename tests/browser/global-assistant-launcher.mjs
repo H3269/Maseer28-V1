@@ -244,11 +244,18 @@ try {
   })));
   assert.ok(safetyButtonMetrics.every((item) => item.height <= 42), 'safety buttons must stay compact');
   assert.notEqual(safetyButtonMetrics[0].border, safetyButtonMetrics[1].border, 'help and urgent-risk actions must have distinct but restrained colors');
-  // The explicit urgent-risk action must trigger the handoff text and Shafa contact.
-  await urgentHelp.click();
+  // Shafa contact must appear as soon as the safety-support stage starts,
+  // even when the assistant's message does not contain an emergency keyword.
+  await humanHelp.click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some((node) => /برای بررسی وضعیت ایمنی‌ام به کمک انسانی نیاز دارم/u.test(node.innerText)));
+  const shafaContact = dialog.getByTestId('daily-assistant-shafa-contact');
+  await shafaContact.waitFor({ state: 'visible' });
+  assert.doesNotMatch(await dialog.locator('.assistantMessage').last().innerText(), /اورژانس|خدمات اورژانسی/u,
+    'the Shafa contact must not depend on emergency wording in the assistant message');
+  await dialog.getByRole('button', { name: /بله یا مطمئن نیستم/ }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
     .some((node) => /اورژانس|خدمات اورژانسی/u.test(node.innerText)));
-  const shafaContact = dialog.getByTestId('daily-assistant-shafa-contact');
   await shafaContact.waitFor({ state: 'visible' });
   assert.equal(await shafaContact.getByRole('link').count(), 0, 'safety contact must not depend on a tel: deep link inside Telegram/Bale WebViews');
   assert.match(await shafaContact.innerText(), /۰۹۱۹۰۸۸۹۰۶۲/u);
