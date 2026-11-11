@@ -489,16 +489,19 @@ try {
   await openDay(blockedPage, { assistantDayMode: 'blocked', localModelInstalled: true });
   const blockedPanel = blockedPage.locator('.globalAssistantDialog');
   await blockedPanel.waitFor({ state: 'visible' });
-  const blockedComposer = blockedPanel.locator('#global-assistant-message');
-  assert.equal(await blockedComposer.count(), 1, 'the global launcher remains available, but the blocked day must deny guidance');
-  await blockedComposer.fill('چطور انجامش بدم؟');
+  assert.equal(await blockedPanel.locator('#global-assistant-message').count(), 0,
+    'the blocked T01 daily context must not expose free-form typing');
+  const blockedTrigger = blockedPanel.getByTestId('anger-daily-prompt-trigger');
+  await blockedTrigger.waitFor({ state: 'visible' });
+  await blockedTrigger.click();
+  const blockedPrompt = blockedPage.locator('#library-assistant-prompt-dialog');
+  await blockedPrompt.waitFor({ state: 'visible' });
+  await blockedPrompt.locator('[data-prompt-option]').first().click();
   await blockedPanel.getByRole('button', { name: 'ارسال' }).click();
   await blockedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
   const blockedReply = await blockedPanel.locator('.assistantMessage').last().innerText();
   assert.match(blockedReply, /خشم/);
   assert.match(blockedReply, /روز ۱/);
-  assert.match(blockedReply, /متن تمرین همین روز/);
-  assert.match(blockedReply, /راهکار اختصاصی همین روز/);
   assert.doesNotMatch(blockedReply, /بازبینی ایمنی/);
   await blockedPage.close();
 
@@ -513,8 +516,14 @@ try {
   assert.equal(await gatedPage.getByLabel('بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.').count(), 0,
     'the original daily screen must not add a relationship confirmation prerequisite');
 
-  const gatedComposer = gatedPanel.locator('#global-assistant-message');
-  await gatedComposer.fill('چطور انجامش بدم؟');
+  assert.equal(await gatedPanel.locator('#global-assistant-message').count(), 0,
+    'the relationship-gated T01 day must keep the prepared-only boundary');
+  const gatedTrigger = gatedPanel.getByTestId('anger-daily-prompt-trigger');
+  await gatedTrigger.waitFor({ state: 'visible' });
+  await gatedTrigger.click();
+  const gatedPrompt = gatedPage.locator('#library-assistant-prompt-dialog');
+  await gatedPrompt.waitFor({ state: 'visible' });
+  await gatedPrompt.locator('[data-prompt-option]').first().click();
   await gatedPanel.getByRole('button', { name: 'ارسال' }).click();
   await gatedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
   const gatedReply = await gatedPanel.locator('.assistantMessage').last().innerText();
@@ -535,7 +544,8 @@ try {
   assert.equal(await gatedPage.getByLabel('بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.').count(), 0);
   await gatedPage.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
   await gatedPanel.waitFor({ state: 'visible' });
-  await gatedPanel.locator('#global-assistant-message').fill('چطور انجامش بدم؟');
+  await gatedPanel.getByTestId('anger-daily-prompt-trigger').click();
+  await gatedPage.locator('#library-assistant-prompt-dialog').locator('[data-prompt-option]').first().click();
   await gatedPanel.getByRole('button', { name: 'ارسال' }).click();
   await gatedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
   const reenteredReply = await gatedPanel.locator('.assistantMessage').last().innerText();
