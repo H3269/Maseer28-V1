@@ -7,7 +7,7 @@ import { answerLibraryBookTurn } from './libraryBookAssistant.js';
 import { routeAssistantTurn } from './assistantTurnEngine.js';
 import { isLocalNeuralModelInstalled, requestLocalNeuralModel } from './localNeuralModelClient.js';
 import { LIBRARY_ASSISTANT_PROMPT_GROUPS } from './libraryAssistantPrompts.js';
-import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
+import { getCanonicalTopicIdForCategory, getRelationshipSafetyGate } from '../journey/relationshipSafetyGate.js';
 import { getAngerDailyAssistantPromptGroups } from './angerDailyAssistantPrompts.js';
 import { getAnxietyDailyAssistantPromptGroups } from './anxietyDailyAssistantPrompts.js';
 import { getFearDailyAssistantPromptGroups } from './fearDailyAssistantPrompts.js';
@@ -15,7 +15,7 @@ import { getHatredDailyAssistantPromptGroups } from './hatredDailyAssistantPromp
 import { getJealousyDailyAssistantPromptGroups } from './jealousyDailyAssistantPrompts.js';
 import { appendLocalSourceReferences, buildLocalAssistantMessages, isLocalModelInstallCommand, LOCAL_MODEL_CACHE_MESSAGE, LOCAL_MODEL_FAILURE_MESSAGE, LOCAL_MODEL_INSTALL_MESSAGE, shouldUseLocalNeuralModel } from './localNeuralAssistant.js';
 
-export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null }) {
+export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null, onRelationshipSafetyResponse = null }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
@@ -48,7 +48,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     setSafetyCloseConfirmOpen(false);
     setOpen(false);
     setLibraryPromptOpen(false);
-  }, [screen, dailyContext?.day, dailyContext?.problem, dailyContext?.relationshipSafetyConfirmed]);
+  }, [screen, dailyContext?.day, dailyContext?.problem, dailyContext?.relationshipSafetyConfirmed, dailyContext?.relationshipSafetyResponse]);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -150,6 +150,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     && (dailyProblemTopicId === 'T05' || dailyRecordTopicId === 'T05' || dailyProblemText === 'حسادت');
   const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext || isJealousyDailyPromptContext;
   const isPreparedOnlyDailyPromptContext = isTopicDailyPromptContext;
+  const jealousyRelationshipGate = isJealousyDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
+  const jealousyRelationshipGatePending = Boolean(jealousyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
+  const jealousyRelationshipGateBlocked = jealousyRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
   const activePromptGroups = screen === 'books'
     ? LIBRARY_ASSISTANT_PROMPT_GROUPS
     : isAngerDailyPromptContext
@@ -489,6 +492,21 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         </div>
       )}
             <div className="assistantChatShell globalAssistantChat" dir="rtl" aria-label="گفت‌وگوی دستیار در صفحه جاری">
+              {jealousyRelationshipGatePending && jealousyRelationshipGate && (
+                <section className="dailyAssistantSafetyActions" role="group" aria-label="بررسی ایمنی گفت‌وگوی رابطه‌ای" data-testid="jealousy-relationship-safety-gate">
+                  <p role="alert">{jealousyRelationshipGateBlocked ? jealousyRelationshipGate.blockedMessage : jealousyRelationshipGate.question}</p>
+                  {!jealousyRelationshipGateBlocked && (
+                    <>
+                      <p className="safetyNote">{jealousyRelationshipGate.disclaimer}</p>
+                      <button type="button" data-testid="jealousy-relationship-safety-safe" disabled={sending}
+                        onClick={() => onRelationshipSafetyResponse?.('safe')}>بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.</button>
+                      <button type="button" data-testid="jealousy-relationship-safety-unsafe" disabled={sending}
+                        onClick={() => onRelationshipSafetyResponse?.('unsafe')}>نه، مطمئن نیستم یا یکی از ما تحت فشار است.</button>
+                    </>
+                  )}
+                </section>
+              )}
+
               <div className="assistantTranscript" dir="rtl" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
                 {messages.map((item, index) => (
                   <div className={item.role === 'user' ? 'userMessage' : 'assistantMessage'} key={item.id || index}>
@@ -600,7 +618,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       aria-haspopup="dialog"
                       aria-expanded={libraryPromptOpen}
                       aria-controls="library-assistant-prompt-dialog"
-                      disabled={sending || !localModelStatusChecked}
+                      disabled={sending || !localModelStatusChecked || jealousyRelationshipGatePending}
                       onClick={() => setLibraryPromptOpen(true)}
                     >
                       {draft.trim() || (isTopicDailyPromptContext ? `انتخاب سؤال آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : "خشم"}...` : 'انتخاب سؤال آماده...')}
