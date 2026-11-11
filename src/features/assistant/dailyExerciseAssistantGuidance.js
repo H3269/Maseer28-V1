@@ -5,7 +5,7 @@ import { answerAnxietyDailyPreparedQuestion } from './anxietyDailyAssistantPromp
 import { answerFearDailyPreparedQuestion } from './fearDailyAssistantPrompts.js';
 
 const SAFETY_QUESTION = 'آیا همین الآن خطر فوری، قصد یا برنامه عملی برای آسیب به خودت یا شخص دیگری وجود دارد؟ اگر پاسخ روشن نیست، بگو مطمئن نیستی.';
-const SAFETY_HANDOFF = 'راهنمایی تمرین را متوقف می‌کنم. اگر احتمال خطر فوری وجود دارد یا مطمئن نیستی، همین الآن با خدمات اورژانسی محل زندگی یا یک فرد امن و قابل اعتماد تماس بگیر و تنها نمان. این گفت‌وگو جای کمک فوری انسانی را نمی‌گیرد.';
+const SAFETY_HANDOFF = 'راهنمایی تمرین را متوقف می‌کنم. من نمی‌توانم به‌جای تو با اورژانس یا فرد دیگری تماس بگیرم. اگر احتمال خطر فوری وجود دارد یا مطمئن نیستی، همین الآن با خدمات اورژانسی محل زندگی یا یک فرد امن و قابل اعتماد تماس بگیر و تنها نمان. این گفت‌وگو جای کمک فوری انسانی را نمی‌گیرد.';
 const MAX_CONTEXT_TEXT = 2400;
 
 function hasDailySourceIdentityConflict(guidanceData, data) {
