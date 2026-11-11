@@ -98,6 +98,10 @@ try {
 
   const trigger = panel.getByTestId('grief-daily-prompt-trigger');
   await trigger.waitFor({ state: 'visible' });
+  await page.waitForFunction(() => {
+    const element = document.querySelector('[data-testid="grief-daily-prompt-trigger"]');
+    return Boolean(element && !element.disabled);
+  });
   assert.match(await trigger.getAttribute('aria-label'), /غم و سوگ/);
   await trigger.click();
 
