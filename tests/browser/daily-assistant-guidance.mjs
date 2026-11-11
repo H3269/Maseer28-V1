@@ -401,7 +401,7 @@ try {
   assert.equal(await jealousyGatePanel.getByTestId('jealousy-daily-prompt-trigger').isDisabled(), true,
     'T05 prepared interaction prompts remain unavailable until the relationship check is confirmed');
   await jealousyGate.getByTestId('jealousy-relationship-safety-unsafe').click();
-  await jealousyGatePage.waitForFunction(() => document.querySelector('[data-testid="jealousy-relationship-safety-gate"]')?.innerText.includes('مواجهه مستقیم'));
+  await jealousyGatePage.waitForFunction(() => document.querySelector('[data-testid="jealousy-relationship-safety-gate"]')?.innerText.includes('گفت‌وگوی مستقیم، مواجهه یا مذاکره'));
   assert.equal(await jealousyGate.getByTestId('jealousy-relationship-safety-safe').count(), 0,
     'an unsafe or uncertain answer must not allow direct interaction');
   await jealousyGatePage.close();
