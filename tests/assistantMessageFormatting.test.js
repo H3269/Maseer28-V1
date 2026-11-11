@@ -5,8 +5,9 @@ import { ANGER_DAILY_ASSISTANT_GUIDES, answerAngerDailyPreparedQuestion } from '
 import { ANXIETY_DAILY_ASSISTANT_GUIDES, answerAnxietyDailyPreparedQuestion } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
 import { FEAR_DAILY_ASSISTANT_GUIDES, answerFearDailyPreparedQuestion } from '../src/features/assistant/fearDailyAssistantPrompts.js';
 import { HATRED_DAILY_ASSISTANT_GUIDES, answerHatredDailyPreparedQuestion } from '../src/features/assistant/hatredDailyAssistantPrompts.js';
+import { JEALOUSY_DAILY_ASSISTANT_GUIDES, answerJealousyDailyPreparedQuestion } from '../src/features/assistant/jealousyDailyAssistantPrompts.js';
 
-test('all 1,568 prepared answers across T01-T04 render without raw markdown or escaped newline tokens', () => {
+test('all 1,960 prepared answers across T01-T05 render without raw markdown or escaped newline tokens', () => {
   const topics = [
     { id: 'T01', guides: ANGER_DAILY_ASSISTANT_GUIDES, answer: (guide, question) =>
       answerAngerDailyPreparedQuestion({ day: guide.day, message: question.value }) },
@@ -16,6 +17,8 @@ test('all 1,568 prepared answers across T01-T04 render without raw markdown or e
       answerFearDailyPreparedQuestion({ day: guide.day, message: question.value, dailyContent: { exercise: guide.exercise, actionText: guide.action } }) },
     { id: 'T04', guides: HATRED_DAILY_ASSISTANT_GUIDES, answer: (guide, question) =>
       answerHatredDailyPreparedQuestion({ day: guide.day, message: question.value, dailyContent: { exercise: guide.exercise, actionText: guide.action } }) },
+    { id: 'T05', guides: JEALOUSY_DAILY_ASSISTANT_GUIDES, answer: (guide, question) =>
+      answerJealousyDailyPreparedQuestion({ day: guide.day, message: question.value, dailyContent: { exercise: guide.exercise, actionText: guide.action } }) },
   ];
   let checked = 0;
   for (const topic of topics) {
@@ -43,5 +46,5 @@ test('all 1,568 prepared answers across T01-T04 render without raw markdown or e
       }
     }
   }
-  assert.equal(checked, 1568);
+  assert.equal(checked, 1960);
 });

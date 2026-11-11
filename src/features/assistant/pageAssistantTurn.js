@@ -2,10 +2,12 @@ import { routeAssistantTurn } from './assistantTurnEngine.js';
 import { cleanPreparedAssistantTopicText } from './teacherStylePreparedAnswer.js';
 import { answerPageAssistantQuestion, getPageAssistantContext } from './pageAssistantContext.js';
 import { makeDailyExerciseGuidanceTurn, selectDailyExerciseGuidanceData } from './dailyExerciseAssistantGuidance.js';
+import { getRelationshipSafetyGate } from '../journey/relationshipSafetyGate.js';
 import { answerAngerDailyPreparedQuestion } from './angerDailyAssistantPrompts.js';
 import { answerAnxietyDailyPreparedQuestion } from './anxietyDailyAssistantPrompts.js';
 import { answerFearDailyPreparedQuestion } from './fearDailyAssistantPrompts.js';
 import { answerHatredDailyPreparedQuestion } from './hatredDailyAssistantPrompts.js';
+import { answerJealousyDailyPreparedQuestion } from './jealousyDailyAssistantPrompts.js';
 import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
 import { getCanonicalDailyRecordId } from '../content/dailyContentSelector.js';
 
@@ -58,7 +60,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     // canonical identity validation continues to use the untouched source.
     const preparedVisibleContent = dailyContext?.guidanceData || preparedSource;
     const preparedTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem);
-    const visibleTopicName = ({ T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت' })[preparedTopicId];
+    const visibleTopicName = ({ T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت', T05: 'حسادت' })[preparedTopicId];
     const answerPreparedQuestion = preparedTopicId === 'T01'
       ? answerAngerDailyPreparedQuestion
       : preparedTopicId === 'T02'
@@ -67,8 +69,10 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
           ? answerFearDailyPreparedQuestion
           : preparedTopicId === 'T04'
             ? answerHatredDailyPreparedQuestion
-            : null;
-    const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03', 'T04'].includes(preparedTopicId)
+            : preparedTopicId === 'T05'
+              ? answerJealousyDailyPreparedQuestion
+              : null;
+    const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03', 'T04', 'T05'].includes(preparedTopicId)
       && Number.isInteger(preparedDay)
       && preparedDay >= 1
       && preparedDay <= 28
@@ -80,13 +84,34 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         || preparedSource.topic_id == null
         || preparedSource.topic_id === preparedTopicId);
 
+    const hasPendingSafetyExchange = ['pending', 'handoff'].includes(conversationState?.dailyState?.safetyStatus);
+    const hasExplicitSafetyHandoff = inputProbe.intake?.safety_handoff?.handoff_required === true;
+    const hasExactJealousyPreparedQuestion = preparedTopicId === 'T05'
+      && Boolean(answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }));
+    const jealousyRelationshipGate = preparedTopicId === 'T05' ? getRelationshipSafetyGate(preparedSource) : null;
+    if (jealousyRelationshipGate
+      && hasExactJealousyPreparedQuestion
+      && !hasPendingSafetyExchange
+      && !hasExplicitSafetyHandoff
+      && dailyContext?.relationshipSafetyConfirmed !== true) {
+      return Object.freeze({
+        status: dailyContext?.relationshipSafetyResponse === 'unsafe'
+          ? 'relationship_safety_blocked'
+          : 'relationship_safety_confirmation_required',
+        message: dailyContext?.relationshipSafetyResponse === 'unsafe'
+          ? jealousyRelationshipGate.blockedMessage
+          : jealousyRelationshipGate.question + '\n\n' + jealousyRelationshipGate.disclaimer,
+        knowledge: Object.freeze([]),
+        page_context: 'day',
+        conversationState: null,
+      });
+    }
+
     // An exact, pre-authored FAQ is a question selected by the user, not a
     // first-person safety disclosure. Broad lexical safety cues inside its
     // wording must not replace its prepared answer. A real explicit-risk
     // declaration and an already-pending safety exchange still take priority.
-    const hasPendingSafetyExchange = ['pending', 'handoff'].includes(conversationState?.dailyState?.safetyStatus);
-    const hasExplicitSafetyHandoff = inputProbe.intake?.safety_handoff?.handoff_required === true;
-    if (['T01', 'T02', 'T03', 'T04'].includes(preparedTopicId)
+    if (['T01', 'T02', 'T03', 'T04', 'T05'].includes(preparedTopicId)
       && hasCanonicalPreparedIdentity
       && !hasPendingSafetyExchange
       && !hasExplicitSafetyHandoff) {
@@ -108,7 +133,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
 
     // Explicit immediate-risk declarations and an active safety exchange
     // always take precedence over the prepared-question list.
-    if (['T01', 'T02', 'T03', 'T04'].includes(preparedTopicId)
+    if (['T01', 'T02', 'T03', 'T04', 'T05'].includes(preparedTopicId)
       && (SAFETY_STATUSES.has(inputProbe.status)
         || hasPendingSafetyExchange
         || hasExplicitSafetyHandoff)) {
@@ -133,7 +158,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       });
     }
 
-    if (['T01', 'T02', 'T03', 'T04'].includes(preparedTopicId)) {
+    if (['T01', 'T02', 'T03', 'T04', 'T05'].includes(preparedTopicId)) {
       if (!hasCanonicalPreparedIdentity) {
         return Object.freeze({
           status: 'daily_guidance_unavailable',

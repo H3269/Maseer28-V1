@@ -91,8 +91,10 @@ async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumb
 
 async function openDay(page, { assistantDayMode = 'routine', problem = null, localModelInstalled = false } = {}) {
   const isLegacyMode = assistantDayMode === 'legacy' || assistantDayMode.startsWith('adaptedLegacy');
-  const dayNumber = assistantDayMode === 'relationship'
-    ? 10
+  const dayNumber = assistantDayMode === 'jealousy-communication'
+    ? 16
+    : assistantDayMode === 'relationship'
+      ? 10
     : ['adaptedLegacyStreak', 'adaptedLegacyImprovement', 'adaptedAnxietyStreak', 'adaptedAnxietyImprovement'].includes(assistantDayMode)
       ? 3
       : ['adaptedLegacy', 'adaptedLegacySame', 'adaptedAnxiety'].includes(assistantDayMode)
@@ -113,7 +115,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
     profileData: { ...journey.profileData, problem: topicKey },
     completed: Array.from({ length: dayNumber - 1 }, (_, index) => index + 1),
     daily: adaptationHistory,
-    startedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+    startedAt: new Date(Date.now() - Math.max(12, dayNumber + 1) * 24 * 60 * 60 * 1000).toISOString(),
   };
   await page.addInitScript((state) => {
     localStorage.setItem('maseer28_onboarding_complete_v1', '1');
@@ -173,7 +175,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
         assert.equal(Object.hasOwn(day, 'risk_level'), false);
       } else {
         Object.assign(day, {
-          topic_id: topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : topicKey === 'نفرت' ? 'T04' : 'T01',
+          topic_id: topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : topicKey === 'نفرت' ? 'T04' : topicKey === 'حسادت' ? 'T05' : 'T01',
           day: dayNumber,
           review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
           risk_level: 'routine',
@@ -333,6 +335,94 @@ try {
   assert.deepEqual(hatredErrors, [], 'T04 prepared-only assistant browser flow must not raise page errors');
   await hatredGuidedPage.close();
 
+
+  // T05 jealousy uses its own prepared-only 28-day assistant and distinct examples.
+  const jealousyGuidedPage = await browser.newPage();
+  const jealousyErrors = [];
+  jealousyGuidedPage.on('pageerror', error => jealousyErrors.push(String(error)));
+  await openDay(jealousyGuidedPage, { problem: 'حسادت', assistantDayMode: 'blocked', localModelInstalled: true });
+  const jealousyPanel = jealousyGuidedPage.locator('.globalAssistantDialog');
+  await jealousyPanel.waitFor({ state: 'visible' });
+  assert.equal(await jealousyPanel.locator('#global-assistant-message').count(), 0,
+    'T05 must never expose free-form typing, even with a cached local model');
+  assert.equal(await jealousyPanel.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
+    'T05 must not expose local model installation');
+  const jealousyTrigger = jealousyPanel.getByTestId('jealousy-daily-prompt-trigger');
+  await jealousyTrigger.waitFor({ state: 'visible' });
+  assert.match(await jealousyTrigger.getAttribute('aria-label'), /حسادت/,
+    'T05 prompt trigger must have the correct accessible topic label');
+  await jealousyTrigger.click();
+  const jealousyPromptDialog = jealousyGuidedPage.locator('#library-assistant-prompt-dialog');
+  await jealousyPromptDialog.waitFor({ state: 'visible' });
+  assert.match(await jealousyPromptDialog.innerText(), /سؤال‌های آماده روز ۱ حسادت/);
+  assert.equal(await jealousyPromptDialog.locator('.libraryAssistantPromptGroup').count(), 5);
+  assert.equal(await jealousyPromptDialog.locator('[data-prompt-option]').count(), 14);
+  await jealousyPromptDialog.getByRole('button', { name: 'برای تمرین امروز یک مثال می‌زنی؟' }).click();
+  await jealousyPanel.getByRole('button', { name: 'ارسال' }).click();
+  await jealousyGuidedPage.waitForFunction(() => Array.from(document.querySelectorAll('.globalAssistantDialog .assistantMessage'))
+    .some(node => node.innerText.includes('راهنمای روز ۱ حسادت')));
+  const jealousyExerciseExample = await jealousyPanel.locator('.assistantMessage').last().innerText();
+  assert.match(jealousyExerciseExample, /مثال فرضی/);
+  assert.match(jealousyExerciseExample, /دوستت با فرد دیگری/);
+  assert.match(jealousyExerciseExample, /یک موقعیت را ثبت کن/);
+  assert.ok(await jealousyPanel.locator('.assistantMessage').last().locator('strong').count() > 0,
+    'T05 assistant headings must render as bold text');
+  assert.equal(jealousyExerciseExample.includes('**'), false, 'T05 must not expose raw markdown markers');
+  assert.equal(jealousyExerciseExample.includes(String.fromCharCode(92) + 'n'), false, 'T05 must not expose escaped newline tokens');
+  assert.ok(jealousyExerciseExample.includes('\n'), 'T05 paragraphs must display on separate lines');
+
+  await jealousyPanel.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
+  await jealousyPanel.waitFor({ state: 'detached' });
+  await jealousyGuidedPage.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
+  await jealousyPanel.waitFor({ state: 'visible' });
+  await jealousyPanel.getByTestId('jealousy-daily-prompt-trigger').click();
+  await jealousyGuidedPage.locator('#library-assistant-prompt-dialog')
+    .getByRole('button', { name: 'برای اقدام امروز یک مثال می‌زنی؟' }).click();
+  await jealousyPanel.getByRole('button', { name: 'ارسال' }).click();
+  await jealousyGuidedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => node.innerText.includes('راهنمای روز ۱ حسادت')));
+  const jealousyActionExample = await jealousyPanel.locator('.assistantMessage').last().innerText();
+  assert.match(jealousyActionExample, /مثال فرضی/);
+  assert.match(jealousyActionExample, /حسادت رابطه‌ای؛ نگرانی از کم‌شدن صمیمیت/);
+  assert.notEqual(jealousyExerciseExample, jealousyActionExample,
+    'T05 exercise and action examples must teach different tasks, not repeat the same text');
+  assert.deepEqual(jealousyErrors, [], 'T05 prepared-only browser flow must not raise page errors');
+  await jealousyGuidedPage.close();
+
+
+  // Direct T05 relationship requests require the explicit relationship-safety check.
+  const jealousyGatePage = await browser.newPage();
+  await openDay(jealousyGatePage, { problem: 'حسادت', assistantDayMode: 'jealousy-communication' });
+  const jealousyGatePanel = jealousyGatePage.locator('.globalAssistantDialog');
+  await jealousyGatePanel.waitFor({ state: 'visible' });
+  const jealousyGate = jealousyGatePanel.getByTestId('jealousy-relationship-safety-gate');
+  await jealousyGate.waitFor({ state: 'visible' });
+  assert.match(await jealousyGate.innerText(), /هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
+  assert.equal(await jealousyGatePanel.getByTestId('jealousy-daily-prompt-trigger').isDisabled(), true,
+    'T05 prepared interaction prompts remain unavailable until the relationship check is confirmed');
+  await jealousyGate.getByTestId('jealousy-relationship-safety-unsafe').click();
+  await jealousyGatePage.waitForFunction(() => document.querySelector('[data-testid="jealousy-relationship-safety-gate"]')?.innerText.includes('گفت‌وگوی مستقیم، مواجهه یا مذاکره'));
+  assert.equal(await jealousyGate.getByTestId('jealousy-relationship-safety-safe').count(), 0,
+    'an unsafe or uncertain answer must not allow direct interaction');
+  await jealousyGatePage.close();
+
+  const jealousySafeGatePage = await browser.newPage();
+  await openDay(jealousySafeGatePage, { problem: 'حسادت', assistantDayMode: 'jealousy-communication' });
+  const jealousySafePanel = jealousySafeGatePage.locator('.globalAssistantDialog');
+  await jealousySafePanel.waitFor({ state: 'visible' });
+  await jealousySafePanel.getByTestId('jealousy-relationship-safety-gate')
+    .getByTestId('jealousy-relationship-safety-safe').click();
+  await jealousySafeGatePage.waitForFunction(() => !document.querySelector('[data-testid="jealousy-relationship-safety-gate"]'));
+  const enabledJealousyTrigger = jealousySafePanel.getByTestId('jealousy-daily-prompt-trigger');
+  await jealousySafeGatePage.waitForFunction(() => {
+    const button = document.querySelector('[data-testid="jealousy-daily-prompt-trigger"]');
+    return button && !button.disabled;
+  });
+  await enabledJealousyTrigger.click();
+  await jealousySafeGatePage.locator('#library-assistant-prompt-dialog').waitFor({ state: 'visible' });
+  assert.match(await jealousySafeGatePage.locator('#library-assistant-prompt-dialog').innerText(), /سؤال‌های آماده روز ۱۶ حسادت/);
+  await jealousySafeGatePage.close();
+
   // T01 is now prepared-only even when a local model is cached. Safety controls
   // remain available and their answers must preempt prepared FAQs.
   await openDay(page, { localModelInstalled: true });
@@ -411,7 +501,9 @@ try {
 
   await page.close();
 
-  for (const problem of ['غم و سوگ', 'حسادت', 'شرم']) {
+  // Legacy free-text fallback remains for legacy topics that are not in the prepared-only T01–T05 set.
+  // T05 jealousy is intentionally prepared-only even when its source record is legacy-shaped.
+  for (const problem of ['غم و سوگ', 'شرم']) {
     const legacyPage = await browser.newPage();
     const legacyErrors = [];
     legacyPage.on('pageerror', error => legacyErrors.push(String(error)));

@@ -217,3 +217,14 @@ test('relationship safety helpers remain available to the assistant, not the Pat
   const completeEnd = app.indexOf('function openCurrentDay', completeStart);
   assert.doesNotMatch(app.slice(completeStart, completeEnd), /getRelationshipSafetyGate|isRelationshipSafetyConfirmed|relationshipSafetyConfirmed/);
 });
+
+test('T05 gates every direct relationship request, conversation and agreement action', () => {
+  for (const day of [6, 10, 11, 15, 16, 24, 26]) {
+    const id = 'T05-D' + String(day).padStart(2, '0');
+    assert.ok(getRelationshipSafetyGate({ id, topic_id: 'T05', day }), 'T05 day ' + day + ' must require the relationship safety check');
+  }
+  for (const day of [7, 8, 9, 13, 14, 17, 18, 19, 21, 22, 23, 25, 27, 28]) {
+    const id = 'T05-D' + String(day).padStart(2, '0');
+    assert.equal(getRelationshipSafetyGate({ id, topic_id: 'T05', day }), null, 'T05 day ' + day + ' must not receive an unrelated communication gate');
+  }
+});

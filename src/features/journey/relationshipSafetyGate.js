@@ -3,10 +3,13 @@ import { getDailySafetyMode } from '../content/dailySafety.js';
 const COMMON_INTERPERSONAL_DAYS = [6, 11, 15, 24];
 const GATED_DAYS_BY_TOPIC = new Map([
   ['T01', new Set([10, 11, 17, 18, 19, 20, 21, 22, 23])],
-  ...Array.from({ length: 32 }, (_, index) => [
-    'T' + String(index + 3).padStart(2, '0'),
-    new Set(COMMON_INTERPERSONAL_DAYS),
-  ]),
+  ...Array.from({ length: 32 }, (_, index) => {
+    const topicId = 'T' + String(index + 3).padStart(2, '0');
+    const topicDays = topicId === 'T05'
+      ? [...COMMON_INTERPERSONAL_DAYS, 10, 16, 26]
+      : COMMON_INTERPERSONAL_DAYS;
+    return [topicId, new Set(topicDays)];
+  }),
 ]);
 
 const RELATIONSHIP_COMMUNICATION_GATE = Object.freeze({

@@ -7,14 +7,15 @@ import { answerLibraryBookTurn } from './libraryBookAssistant.js';
 import { routeAssistantTurn } from './assistantTurnEngine.js';
 import { isLocalNeuralModelInstalled, requestLocalNeuralModel } from './localNeuralModelClient.js';
 import { LIBRARY_ASSISTANT_PROMPT_GROUPS } from './libraryAssistantPrompts.js';
-import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
+import { getCanonicalTopicIdForCategory, getRelationshipSafetyGate } from '../journey/relationshipSafetyGate.js';
 import { getAngerDailyAssistantPromptGroups } from './angerDailyAssistantPrompts.js';
 import { getAnxietyDailyAssistantPromptGroups } from './anxietyDailyAssistantPrompts.js';
 import { getFearDailyAssistantPromptGroups } from './fearDailyAssistantPrompts.js';
 import { getHatredDailyAssistantPromptGroups } from './hatredDailyAssistantPrompts.js';
+import { getJealousyDailyAssistantPromptGroups } from './jealousyDailyAssistantPrompts.js';
 import { appendLocalSourceReferences, buildLocalAssistantMessages, isLocalModelInstallCommand, LOCAL_MODEL_CACHE_MESSAGE, LOCAL_MODEL_FAILURE_MESSAGE, LOCAL_MODEL_INSTALL_MESSAGE, shouldUseLocalNeuralModel } from './localNeuralAssistant.js';
 
-export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null }) {
+export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null, onRelationshipSafetyResponse = null }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
@@ -47,7 +48,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     setSafetyCloseConfirmOpen(false);
     setOpen(false);
     setLibraryPromptOpen(false);
-  }, [screen, dailyContext?.day, dailyContext?.problem, dailyContext?.relationshipSafetyConfirmed]);
+  }, [screen, dailyContext?.day, dailyContext?.problem]);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -131,8 +132,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const dailyRecordTopicId = dailyContext?.data?.topic_id || dailyContext?.data?.topicId || null;
   const hasConflictingDailyTopic = Boolean(
     (dailyProblemTopicId && dailyRecordTopicId && dailyProblemTopicId !== dailyRecordTopicId)
-    || (dailyProblemTopicId && !['T01', 'T02', 'T03', 'T04'].includes(dailyProblemTopicId) && dailyRecordTopicId)
-    || (dailyRecordTopicId && !['T01', 'T02', 'T03', 'T04'].includes(dailyRecordTopicId) && dailyProblemTopicId),
+    || (dailyProblemTopicId && !['T01', 'T02', 'T03', 'T04', 'T05'].includes(dailyProblemTopicId) && dailyRecordTopicId)
+    || (dailyRecordTopicId && !['T01', 'T02', 'T03', 'T04', 'T05'].includes(dailyRecordTopicId) && dailyProblemTopicId),
   );
   const isAngerDailyPromptContext = Boolean(dailyContext)
     && !hasConflictingDailyTopic
@@ -145,8 +146,13 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     && (dailyProblemTopicId === 'T03' || dailyRecordTopicId === 'T03' || dailyProblemText === 'ترس');
   const isHatredDailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
     && (dailyProblemTopicId === 'T04' || dailyRecordTopicId === 'T04' || dailyProblemText === 'نفرت');
-  const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext;
+  const isJealousyDailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T05' || dailyRecordTopicId === 'T05' || dailyProblemText === 'حسادت');
+  const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext || isJealousyDailyPromptContext;
   const isPreparedOnlyDailyPromptContext = isTopicDailyPromptContext;
+  const jealousyRelationshipGate = isJealousyDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
+  const jealousyRelationshipGatePending = Boolean(jealousyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true && !dailySafetyStageActive);
+  const jealousyRelationshipGateBlocked = jealousyRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
   const activePromptGroups = screen === 'books'
     ? LIBRARY_ASSISTANT_PROMPT_GROUPS
     : isAngerDailyPromptContext
@@ -157,7 +163,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
           ? getFearDailyAssistantPromptGroups(dailyContext?.day)
           : isHatredDailyPromptContext
             ? getHatredDailyAssistantPromptGroups(dailyContext?.day)
-            : [];
+            : isJealousyDailyPromptContext
+              ? getJealousyDailyAssistantPromptGroups(dailyContext?.day)
+              : [];
   if (!visible || screen === 'bookReader') return null;
 
   function resizeComposerInput(element) {
@@ -458,7 +466,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
             }}
           >
             <span className="badge">پرسش‌های پیشنهادی</span>
-            <h2 id="library-assistant-prompt-title">{screen === "books" ? "سؤال آماده دستیار کتابخانه" : `سؤال‌های آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : "خشم"}`}</h2>
+            <h2 id="library-assistant-prompt-title">{screen === "books" ? "سؤال آماده دستیار کتابخانه" : `سؤال‌های آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : "خشم"}`}</h2>
             <p className="muted">برای انتخاب، روی سؤال موردنظرت بزن تا برای همین روز ارسال شود.</p>
             <div className="libraryAssistantPromptOptions">
               {activePromptGroups.map((group) => (
@@ -484,6 +492,21 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         </div>
       )}
             <div className="assistantChatShell globalAssistantChat" dir="rtl" aria-label="گفت‌وگوی دستیار در صفحه جاری">
+              {jealousyRelationshipGatePending && jealousyRelationshipGate && (
+                <section className="dailyAssistantSafetyActions" role="group" aria-label="بررسی ایمنی گفت‌وگوی رابطه‌ای" data-testid="jealousy-relationship-safety-gate">
+                  <p role="alert">{jealousyRelationshipGateBlocked ? jealousyRelationshipGate.blockedMessage : jealousyRelationshipGate.question}</p>
+                  {!jealousyRelationshipGateBlocked && (
+                    <>
+                      <p className="safetyNote">{jealousyRelationshipGate.disclaimer}</p>
+                      <button type="button" data-testid="jealousy-relationship-safety-safe" disabled={sending}
+                        onClick={() => onRelationshipSafetyResponse?.('safe')}>بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.</button>
+                      <button type="button" data-testid="jealousy-relationship-safety-unsafe" disabled={sending}
+                        onClick={() => onRelationshipSafetyResponse?.('unsafe')}>نه، مطمئن نیستم یا یکی از ما تحت فشار است.</button>
+                    </>
+                  )}
+                </section>
+              )}
+
               <div className="assistantTranscript" dir="rtl" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
                 {messages.map((item, index) => (
                   <div className={item.role === 'user' ? 'userMessage' : 'assistantMessage'} key={item.id || index}>
@@ -581,24 +604,24 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                   {conversationStateRef.current?.dailyState?.safetyStatus === 'pending' && <p className="safetyNote" role="status">برای ادامه، وضعیت ایمنی را با یکی از پاسخ‌های بالا روشن کن. تا آن زمان سؤال‌های روزانه غیرفعال‌اند.</p>}
                 </div>
               ) : (
-              <form className={'assistantComposer' + (isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled) ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} onSubmit={send}>
+              <form className={'assistantComposer' + (isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled) ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} data-jealousy-daily-prompt={String(isJealousyDailyPromptContext)} onSubmit={send}>
                 {(isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled)) ? (
                   <div className="libraryAssistantPromptRow">
                     <button
                       ref={libraryPromptTriggerRef}
                       className="libraryAssistantPromptTrigger"
-                      data-testid={isAngerDailyPromptContext ? "anger-daily-prompt-trigger" : isAnxietyDailyPromptContext ? "anxiety-daily-prompt-trigger" : isFearDailyPromptContext ? "fear-daily-prompt-trigger" : isHatredDailyPromptContext ? "hatred-daily-prompt-trigger" : "library-assistant-prompt-trigger"}
+                      data-testid={isAngerDailyPromptContext ? "anger-daily-prompt-trigger" : isAnxietyDailyPromptContext ? "anxiety-daily-prompt-trigger" : isFearDailyPromptContext ? "fear-daily-prompt-trigger" : isHatredDailyPromptContext ? "hatred-daily-prompt-trigger" : isJealousyDailyPromptContext ? "jealousy-daily-prompt-trigger" : "library-assistant-prompt-trigger"}
                       type="button"
                       aria-label={isTopicDailyPromptContext
-                        ? `باز کردن سؤال‌های آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : "خشم"}`
+                        ? `باز کردن سؤال‌های آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : "خشم"}`
                         : "باز کردن سؤال‌های آماده دستیار کتابخانه"}
                       aria-haspopup="dialog"
                       aria-expanded={libraryPromptOpen}
                       aria-controls="library-assistant-prompt-dialog"
-                      disabled={sending || !localModelStatusChecked}
+                      disabled={sending || !localModelStatusChecked || jealousyRelationshipGatePending}
                       onClick={() => setLibraryPromptOpen(true)}
                     >
-                      {draft.trim() || (isTopicDailyPromptContext ? `انتخاب سؤال آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : "خشم"}...` : 'انتخاب سؤال آماده...')}
+                      {draft.trim() || (isTopicDailyPromptContext ? `انتخاب سؤال آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : "خشم"}...` : 'انتخاب سؤال آماده...')}
                     </button>
                     <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال سؤال انتخاب‌شده" disabled={!localModelStatusChecked || !draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
                   </div>

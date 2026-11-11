@@ -23,19 +23,19 @@ on:
       - '.github/workflows/**'
       - 'scripts/prepare-production-build.mjs'
   push:
-    branches: [main]
+    branches: [main, 'content/t*']
 
 permissions:
   contents: read
 
 concurrency:
-  group: path28-validation-${{ github.event.pull_request.number || github.sha }}
-  cancel-in-progress: false
+  group: ${{ startsWith(github.ref_name, 'content/t') && format('path28-topic-validation-{0}', github.ref_name) || format('path28-validation-{0}', github.event.pull_request.number || github.sha) }}
+  cancel-in-progress: ${{ startsWith(github.ref_name, 'content/t') || startsWith(github.head_ref, 'content/t') }}
 
 jobs:
   announce-commit-status:
     name: Announce validation in progress
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-24.04
     permissions:
       statuses: write
@@ -59,7 +59,7 @@ jobs:
 
   validate-content:
     needs: announce-commit-status
-    if: ${{ always() }}
+    if: ${{ always() && ((github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && !startsWith(github.head_ref, 'content/t'))) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
@@ -152,20 +152,35 @@ jobs:
       - name: Install Chromium for remaining browser regression tests
         id: chromium
         if: ${{ steps.install.outcome == 'success' }}
-        run: npx --yes --package=playwright@1.55.0 playwright install --with-deps chromium
+        run: |
+          # Ubuntu package mirrors can briefly fail DNS resolution on hosted runners.
+          # Retry the browser + OS dependency install before treating it as a CI failure.
+          for attempt in 1 2 3; do
+            if npx --yes --package=playwright@1.55.0 playwright install --with-deps chromium; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              echo "Chromium dependency installation failed (attempt $attempt/3); retrying after a short delay."
+              sleep $((attempt * 15))
+            fi
+          done
+          echo "Chromium installation failed after 3 attempts."
+          exit 1
 
       - name: Start production preview for browser regression tests
         if: ${{ steps.install.outcome == 'success' && steps.chromium.outcome == 'success' }}
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/path28-vite.log 2>&1 &
           echo $! > /tmp/path28-vite.pid
-          for attempt in {1..30}; do
+          attempt=1
+          while [ "$attempt" -le 30 ]; do
             # The first connection can race Vite startup; keep expected retries quiet.
             if curl --silent --fail http://127.0.0.1:4173/Maseer28/ > /dev/null; then
               echo "Production preview is ready on 127.0.0.1:4173"
               exit 0
             fi
             sleep 1
+            attempt=$((attempt + 1))
           done
           echo "Production preview did not become ready within 30 seconds."
           cat /tmp/path28-vite.log
@@ -221,9 +236,63 @@ jobs:
           path: npm-audit-report.json
           if-no-files-found: error
 
+# Topic-package PRs are validated in isolation; the full 34-topic suite is reserved for integration.
+  validate-topic-package:
+    name: Validate one topic package
+    if: ${{ github.event_name == 'push' && startsWith(github.ref_name, 'content/t') }}
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+      - name: Install dependencies
+        env:
+          ONNXRUNTIME_NODE_INSTALL: skip
+        run: npm ci
+      - name: Dependency security audit
+        run: npm audit --audit-level=high
+      - name: Run T05 content and assistant tests
+        run: node --test tests/jealousyDailyAssistantPrompts.test.js
+      - name: Build application
+        run: |
+          PATH28_DEPLOY_BASE=/Maseer28/ npm run prepare:production
+          npm run build
+      - name: Verify preinstalled Chromium for T05 browser regression
+        run: npx --yes --package=playwright@1.55.0 playwright --version
+      - name: Start production preview
+        run: |
+          nohup npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/path28-vite.log 2>&1 &
+          echo $! > /tmp/path28-vite.pid
+          attempt=1
+          while [ "$attempt" -le 30 ]; do
+            if curl --silent --fail http://127.0.0.1:4173/Maseer28/ > /dev/null; then
+              echo "Production preview is ready on 127.0.0.1:4173"
+              exit 0
+            fi
+            sleep 1
+            attempt=$((attempt + 1))
+          done
+          echo "Production preview did not become ready within 30 seconds."
+          cat /tmp/path28-vite.log
+          exit 1
+      - name: Run T05 Chromium regression only
+        env:
+          PATH28_BASE_URL: http://127.0.0.1:4173/Maseer28/
+        run: |
+          PLAYWRIGHT_NODE_PATH="$(npx --yes --package=playwright@1.55.0 -c 'dirname "$(dirname "$(command -v playwright)")"')"
+          NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/t05-jealousy-package.mjs
+
   report-commit-status:
     name: Report validation result on commit
-    if: ${{ always() && github.event_name == 'push' }}
+    if: ${{ always() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     needs: [announce-commit-status, validate-content]
     runs-on: ubuntu-24.04
     permissions:
