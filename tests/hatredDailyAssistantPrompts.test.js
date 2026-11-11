@@ -3,6 +3,7 @@ import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 import { HATRED_DAILY_ASSISTANT_GUIDES, answerHatredDailyPreparedQuestion, getHatredDailyAssistantPromptGroups } from '../src/features/assistant/hatredDailyAssistantPrompts.js';
 import { cleanPreparedAssistantTopicText } from '../src/features/assistant/teacherStylePreparedAnswer.js';
+import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from '../src/features/assistant/dailyAssistantSafetyReminder.js';
 
 test('T04 has 28 complete days and exactly 14 unique prepared questions per day',()=>{
  assert.equal(HATRED_DAILY_ASSISTANT_GUIDES.length,28);
@@ -86,14 +87,15 @@ test('T04 assigns exactly one canonical package subtopic to each of the 28 days'
 });
 
 
-test('T04 all 392 prepared answers teach the user with clear steps, day-specific content and safety',()=>{
+test('T04 all 392 prepared answers teach the user and append the shared reminder only to evaluation/safety questions',()=>{
+ const safetyKinds=new Set(['hostility_increased','talk_other','success','stop']);
  for(const g of HATRED_DAILY_ASSISTANT_GUIDES){
   for(const q of g.questions){
    const answer=answerHatredDailyPreparedQuestion({day:g.day,message:q.value,dailyContent:{exercise:g.exercise,actionText:g.action}});
    assert.ok(answer, `missing answer day ${g.day} kind ${q.kind}`);
    assert.ok(answer.length>=450, `answer too short day ${g.day} kind ${q.kind}: ${answer.length}`);
    assert.match(answer,/راهنمای روز/, `missing day context day ${g.day} kind ${q.kind}`);
-   assert.match(answer,/ایمنی|متوقف|فاصله|اختیاری|مکث/);
+   assert.equal(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN),safetyKinds.has(q.kind),`day ${g.day} ${q.kind} reminder routing mismatch`);
    if(q.kind==='exercise_example'||q.kind==='action_example'){
     assert.match(answer,/موقعیت فرضی|قدم‌به‌قدم|چطور انجامش بدهی/);
     assert.match(answer,/معیار پایان|از کجا بفهمی کافی است/);
@@ -121,11 +123,12 @@ test('T04 self-hatred safety handoff uses the human-readable topic title, never 
  assert.doesNotMatch(answer,/\bT18\b/);
 });
 
-test('T04 every prepared answer includes the selected day safety condition',()=>{
+test('T04 appends the approved reminder to the four evaluation/safety questions only',()=>{
+ const safetyKinds=new Set(['hostility_increased','talk_other','success','stop']);
  for(const g of HATRED_DAILY_ASSISTANT_GUIDES){
   for(const q of g.questions){
    const answer=answerHatredDailyPreparedQuestion({day:g.day,message:q.value});
-   assert.ok(answer.includes(cleanPreparedAssistantTopicText(g.stopCondition, 'نفرت')),`day ${g.day} safety condition missing for ${q.kind}`);
+   assert.equal(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN),safetyKinds.has(q.kind),`day ${g.day} reminder mismatch for ${q.kind}`);
   }
  }
 });
