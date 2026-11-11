@@ -364,6 +364,7 @@ try {
   const angerDayBadge = normalizeVisibleDailyText(await page.locator('#dayBadge').innerText());
   assert.ok(angerDayBadge.includes('خشم') && angerDayBadge.includes('روز 1'),
     'the prepared answer must correspond to the currently displayed anger day');
+  await assertAssistantUsesVisibleDailySource(page, panel, 'خشم', 1);
 
   await panel.getByTestId('daily-assistant-human-help').click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
