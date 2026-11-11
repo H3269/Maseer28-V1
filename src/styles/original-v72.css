@@ -7300,3 +7300,22 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 }
 
 /* The library preset list now uses the shared validation-card visual pattern. */
+
+
+/* Daily topic safety actions remain visible and usable on narrow screens. */
+.globalAssistantChat .dailyAssistantSafetyActions {
+  flex-wrap: wrap; margin: 0 0 8px; justify-content: flex-start;
+}
+.globalAssistantChat .dailyAssistantSafetyActions button {
+  box-sizing: border-box; flex: 1 1 30%; min-width: 0; min-height: 42px;
+  margin: 0; padding: 8px 10px; border: 1px solid var(--border, #d5dde7);
+  border-radius: 12px; background: var(--surface-soft, #f8fafc);
+  color: var(--text, #243b3c); font: inherit; font-size: 13px;
+  line-height: 1.6; white-space: normal; cursor: pointer;
+}
+.globalAssistantChat .dailyAssistantSafetyActions button:focus-visible {
+  outline: 3px solid #d6a84b; outline-offset: 2px;
+}
+.globalAssistantChat .dailyAssistantSafetyActions button:disabled {
+  opacity: .65; cursor: wait;
+}
