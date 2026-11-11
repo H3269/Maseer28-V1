@@ -2985,7 +2985,6 @@ export function getJealousyDailyAssistantPromptGroups(day){
 }
 const fa=n=>String(n).replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[+d]);
 const intro=g=>'راهنمای روز '+fa(g.day)+' حسادت — '+g.title+'\n\n**بیاییم قدم‌به‌قدم پیش برویم.** این راهنما بر مهارت «'+g.skill+'» تمرکز دارد؛ احساس را انکار نمی‌کنیم و بدون شواهد هم درباره نیت دیگری حکم قطعی نمی‌دهیم.';
-const safety='این راهنما آموزشی است، نه تشخیص یا درمان. حسادت به‌تنهایی مدرک خیانت نیست؛ شواهد واقعی نقض توافق یا آسیب را هم انکار نکن. حسادت مجوز وارسی تلفن، ردیابی، دسترسی بدون اجازه، تهدید یا محدودکردن دیگری نیست. غبطه به دستاورد با ترس از دست‌دادن رابطه یکی نیست. گفت‌وگو، افشا، آشتی و بخشش اجباری نیستند. در تهدید، خشونت یا خطر تلافی، مواجهه مستقیم را انجام نده؛ فاصله امن و حمایت انسانی مقدم است. در خطر فوری برای خودت یا دیگری، از موقعیت فاصله بگیر و فوراً از فرد امن یا خدمات اضطراری محل زندگی کمک بگیر.';
 function answerRaw({day,message,dailyContent}={}){
  const g=JEALOUSY_DAILY_ASSISTANT_GUIDES.find(x=>x.day===toJealousyDayNumber(day));if(!g)return null;
  const q=g.questions.find(x=>x.value===String(message||'').trim());if(!q)return null;
