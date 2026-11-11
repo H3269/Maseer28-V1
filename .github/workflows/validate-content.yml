@@ -23,19 +23,19 @@ on:
       - '.github/workflows/**'
       - 'scripts/prepare-production-build.mjs'
   push:
-    branches: [main]
+    branches: [main, 'content/t*']
 
 permissions:
   contents: read
 
 concurrency:
-  group: ${{ startsWith(github.head_ref, 'content/t') && format('path28-topic-validation-{0}', github.event.pull_request.number) || format('path28-validation-{0}', github.event.pull_request.number || github.sha) }}
-  cancel-in-progress: ${{ startsWith(github.head_ref, 'content/t') }}
+  group: ${{ startsWith(github.ref_name, 'content/t') && format('path28-topic-validation-{0}', github.ref_name) || format('path28-validation-{0}', github.event.pull_request.number || github.sha) }}
+  cancel-in-progress: ${{ startsWith(github.ref_name, 'content/t') || startsWith(github.head_ref, 'content/t') }}
 
 jobs:
   announce-commit-status:
     name: Announce validation in progress
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-24.04
     permissions:
       statuses: write
@@ -59,7 +59,7 @@ jobs:
 
   validate-content:
     needs: announce-commit-status
-    if: ${{ github.event_name != 'pull_request' || !startsWith(github.head_ref, 'content/t') }}
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && !startsWith(github.head_ref, 'content/t')) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
@@ -237,7 +237,7 @@ jobs:
 # Topic-package PRs are validated in isolation; the full 34-topic suite is reserved for integration.
   validate-topic-package:
     name: Validate one topic package
-    if: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'content/t') }}
+    if: ${{ github.event_name == 'push' && startsWith(github.ref_name, 'content/t') }}
     runs-on: ubuntu-24.04
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
@@ -288,7 +288,7 @@ jobs:
 
   report-commit-status:
     name: Report validation result on commit
-    if: ${{ always() && github.event_name == 'push' }}
+    if: ${{ always() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     needs: [announce-commit-status, validate-content]
     runs-on: ubuntu-24.04
     permissions:
