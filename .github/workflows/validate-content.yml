@@ -332,8 +332,8 @@ jobs:
         run: |
           git fetch origin main --depth=1
           git diff --name-only origin/main...HEAD > /tmp/topic-package-files.txt
-          mapfile -t unit_tests < <(grep -E '^tests/.+\\.test\\.(js|mjs)$' /tmp/topic-package-files.txt || true)
-          mapfile -t browser_tests < <(grep -E '^tests/browser/.+\\.mjs$' /tmp/topic-package-files.txt || true)
+          mapfile -t unit_tests < <(grep -E '^tests/.+\.test\.(js|mjs)$' /tmp/topic-package-files.txt || true)
+          mapfile -t browser_tests < <(grep -E '^tests/browser/.+\.mjs$' /tmp/topic-package-files.txt || true)
           if [ "${#unit_tests[@]}" -eq 0 ]; then
             echo "No package-scoped unit/content/assistant tests were changed; refusing to report a topic package as validated."
             exit 1
