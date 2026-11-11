@@ -304,16 +304,17 @@ jobs:
 
 # Topic-package PRs are validated in isolation; the full 34-topic suite is reserved for integration.
   validate-topic-package:
-    name: Validate one topic package
-    if: ${{ github.event_name == 'push' && startsWith(github.ref_name, 'content/t') }}
+    name: Validate only changed topic package tests
+    if: ${{ (github.event_name == 'push' && startsWith(github.ref_name, 'content/t')) || (github.event_name == 'pull_request' && startsWith(github.head_ref, 'content/t')) }}
     runs-on: ubuntu-24.04
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     timeout-minutes: 20
     steps:
-      - name: Checkout
+      - name: Checkout full history for package-scoped diff
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
@@ -325,13 +326,34 @@ jobs:
         run: npm ci
       - name: Dependency security audit
         run: npm audit --audit-level=high
-      - name: Run T05 content and assistant tests
-        run: node --test tests/jealousyDailyAssistantPrompts.test.js
+      - name: Select tests changed by this topic package only
+        id: package_tests
+        shell: bash
+        run: |
+          git fetch origin main --depth=1
+          git diff --name-only origin/main...HEAD > /tmp/topic-package-files.txt
+          mapfile -t unit_tests < <(grep -E '^tests/.+\\.test\\.(js|mjs)$' /tmp/topic-package-files.txt || true)
+          mapfile -t browser_tests < <(grep -E '^tests/browser/.+\\.mjs$' /tmp/topic-package-files.txt || true)
+          if [ "${#unit_tests[@]}" -eq 0 ]; then
+            echo "No package-scoped unit/content/assistant tests were changed; refusing to report a topic package as validated."
+            exit 1
+          fi
+          if [ "${#browser_tests[@]}" -eq 0 ]; then
+            echo "No package-scoped Chromium regression test was changed; refusing to report a topic package as validated."
+            exit 1
+          fi
+          printf '%s\\n' "${unit_tests[@]}" > /tmp/topic-unit-tests.txt
+          printf '%s\\n' "${browser_tests[@]}" > /tmp/topic-browser-tests.txt
+          echo "Selected ${#unit_tests[@]} unit tests and ${#browser_tests[@]} browser tests for this package."
+      - name: Run changed topic-package unit and content tests
+        run: |
+          mapfile -t unit_tests < /tmp/topic-unit-tests.txt
+          node --test "${unit_tests[@]}"
       - name: Build application
         run: |
           PATH28_DEPLOY_BASE=/Maseer28/ npm run prepare:production
           npm run build
-      - name: Verify preinstalled Chromium for T05 browser regression
+      - name: Verify preinstalled Chromium
         run: npx --yes --package=playwright@1.55.0 playwright --version
       - name: Start production preview
         run: |
@@ -349,12 +371,14 @@ jobs:
           echo "Production preview did not become ready within 30 seconds."
           cat /tmp/path28-vite.log
           exit 1
-      - name: Run T05 Chromium regression only
+      - name: Run only changed topic-package Chromium regressions
         env:
           PATH28_BASE_URL: http://127.0.0.1:4173/Maseer28/
         run: |
           PLAYWRIGHT_NODE_PATH="$(npx --yes --package=playwright@1.55.0 -c 'dirname "$(dirname "$(command -v playwright)")"')"
-          NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/t05-jealousy-package.mjs
+          while IFS= read -r browser_test; do
+            NODE_PATH="$PLAYWRIGHT_NODE_PATH" node "$browser_test"
+          done < /tmp/topic-browser-tests.txt
 
   report-commit-status:
     name: Report validation result on commit
