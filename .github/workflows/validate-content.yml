@@ -30,7 +30,8 @@ permissions:
 
 concurrency:
   group: ${{ startsWith(github.ref_name, 'content/t') && format('path28-topic-validation-{0}', github.ref_name) || format('path28-validation-{0}', github.event.pull_request.number || github.sha) }}
-  cancel-in-progress: ${{ startsWith(github.ref_name, 'content/t') || startsWith(github.head_ref, 'content/t') }}
+  # New commits supersede queued/running PR checks; main integration runs are never auto-cancelled.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || startsWith(github.ref_name, 'content/t') || startsWith(github.head_ref, 'content/t') }}
 
 jobs:
   announce-commit-status:
