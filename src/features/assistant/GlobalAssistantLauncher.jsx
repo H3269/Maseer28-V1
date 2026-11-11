@@ -141,7 +141,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     && (dailyProblemTopicId === 'T03' || dailyRecordTopicId === 'T03' || dailyProblemText === 'ترس');
   const isHatredDailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
     && (dailyProblemTopicId === 'T04' || dailyRecordTopicId === 'T04' || dailyProblemText === 'نفرت');
-  const isPreparedOnlyDailyPromptContext = isFearDailyPromptContext || isHatredDailyPromptContext;
+  const isPreparedOnlyDailyPromptContext = isTopicDailyPromptContext;
   const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext;
   const activePromptGroups = screen === 'books'
     ? LIBRARY_ASSISTANT_PROMPT_GROUPS
@@ -231,9 +231,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     }
   }
 
-  async function send(event) {
+  async function send(event, overrideMessage = null) {
     event.preventDefault();
-    const message = draft.trim();
+    const message = String(overrideMessage ?? draft).trim();
     if (!message || sending) return;
     if (isPreparedOnlyDailyPromptContext && !activePromptGroups.some(group => group.questions.some(question => question.value === message))) {
       const fearSafetyIntent = routeAssistantTurn({ text: message });
@@ -498,6 +498,28 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
+              {isTopicDailyPromptContext && (
+                <div className="libraryAssistantPromptRow dailyAssistantSafetyActions" role="group" aria-label="راه‌های دریافت کمک ایمنی">
+                  <button
+                    type="button"
+                    data-testid="daily-assistant-human-help"
+                    disabled={sending}
+                    onClick={(event) => send(event, 'ممکن است همین حالا به خودم یا شخص دیگری آسیب بزنم و برای ایمن ماندن به کمک انسانی فوری نیاز دارم.')}
+                  >نیاز به کمک انسانی دارم</button>
+                  {conversationStateRef.current?.dailyState?.safetyStatus === 'pending' && (
+                    <>
+                      <button type="button" data-testid="daily-assistant-safety-no" disabled={sending}
+                        onClick={(event) => send(event, 'نه، همین حالا خطر فوری ندارم و قصد یا برنامه عملی برای آسیب ندارم.')}>
+                        نه، خطر فوری ندارم
+                      </button>
+                      <button type="button" data-testid="daily-assistant-safety-uncertain" disabled={sending}
+                        onClick={(event) => send(event, 'بله یا مطمئن نیستم؛ ممکن است خطر وجود داشته باشد.')}>
+                        بله یا مطمئن نیستم
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
               <form className={'assistantComposer' + (isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled) ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} onSubmit={send}>
                 {(isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled)) ? (
                   <div className="libraryAssistantPromptRow">
