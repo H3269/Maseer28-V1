@@ -7326,15 +7326,34 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
   opacity: .65; cursor: wait;
 }
 .globalAssistantChat .dailyAssistantShafaContact {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;
-  margin-top: 8px; padding: 7px 9px; border: 1px solid var(--border, #d5dde7);
-  border-radius: 10px; background: var(--surface-soft, #f8fafc);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;
+  margin-top: 8px; padding: 9px 10px; border: 1px solid var(--border, #d5dde7);
+  border-radius: 12px; background: var(--surface-soft, #f8fafc);
   font-size: 12px; line-height: 1.5;
 }
-.globalAssistantChat .dailyAssistantShafaContact a {
-  color: var(--link, #356b75); font-weight: 650; text-decoration: underline;
-  text-underline-offset: 2px;
+.globalAssistantChat .dailyAssistantShafaContact .dailyAssistantShafaNumber {
+  color: var(--text, #243b3c); font-weight: 700; direction: ltr; unicode-bidi: isolate;
 }
-.globalAssistantChat .dailyAssistantShafaContact span {
-  color: var(--muted, #64748b); direction: ltr; unicode-bidi: isolate;
+.globalAssistantChat .dailyAssistantShafaCopyButton,
+.globalAssistantChat .dailyAssistantReturnButton {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  box-sizing: border-box; min-height: 42px; margin: 0; padding: 8px 13px;
+  border: 1px solid var(--border, #d5dde7); border-radius: 12px;
+  background: var(--surface-soft, #f8fafc); color: var(--text, #243b3c);
+  font: inherit; font-size: 13px; line-height: 1.65; text-align: center;
+  cursor: pointer; white-space: normal;
 }
+.globalAssistantChat .dailyAssistantReturnButton {
+  width: 100%; min-height: 46px; font-size: 14px; text-align: right;
+}
+.globalAssistantChat .dailyAssistantShafaCopyButton:focus-visible,
+.globalAssistantChat .dailyAssistantReturnButton:focus-visible {
+  outline: 2px solid #d6a84b; outline-offset: 2px;
+}
+.globalAssistantChat .dailyAssistantShafaCopyButton:disabled,
+.globalAssistantChat .dailyAssistantReturnButton:disabled { opacity: .65; cursor: wait; }
+.globalAssistantChat .dailyAssistantShafaCopyStatus {
+  flex: 1 0 100%; color: var(--muted, #64748b); font-size: 11px;
+}
+.globalAssistantChat .dailyAssistantReturnButton::before,
+.globalAssistantChat .dailyAssistantReturnButton::after { content: none !important; display: none !important; }
