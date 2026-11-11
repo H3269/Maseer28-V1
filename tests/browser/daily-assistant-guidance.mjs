@@ -501,7 +501,9 @@ try {
 
   await page.close();
 
-  for (const problem of ['غم و سوگ', 'حسادت', 'شرم']) {
+  // Legacy free-text fallback remains for legacy topics that are not in the prepared-only T01–T05 set.
+  // T05 jealousy is intentionally prepared-only even when its source record is legacy-shaped.
+  for (const problem of ['غم و سوگ', 'شرم']) {
     const legacyPage = await browser.newPage();
     const legacyErrors = [];
     legacyPage.on('pageerror', error => legacyErrors.push(String(error)));
