@@ -273,6 +273,7 @@ jobs:
           tests/preparedOnlyCurrentTopics.test.js
           tests/dailySafety.test.mjs
           tests/assistantMessageFormatting.test.js
+          tests/dailyAssistantSafetyReminder.test.js
       - name: Build application
         run: |
           PATH28_DEPLOY_BASE=/Maseer28/ npm run prepare:production
