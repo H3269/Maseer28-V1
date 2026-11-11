@@ -1,4 +1,5 @@
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
+import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 // Daily prepared guidance for the T01 anger path. Content is grounded in the reviewed 28-day draft.
 export const ANGER_DAILY_ASSISTANT_GUIDES = [
   {
