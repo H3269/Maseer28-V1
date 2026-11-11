@@ -480,7 +480,7 @@ try {
     await page.waitForFunction((previous) => {
       const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
       return replies.length > previous && Boolean(replies.at(-1)?.querySelector('[data-testid="daily-assistant-safety-reminder"]'));
-    }, previousReplyCount);
+    }, previousReplyCount, { timeout: 8000 });
     const reply = panel.locator('.assistantMessage').last();
     assert.equal(await reply.getByTestId('daily-assistant-safety-reminder').count(), 1,
       'each evaluation/safety answer must contain exactly one reminder card');
@@ -502,7 +502,7 @@ try {
   await page.waitForFunction((previous) => {
     const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
     return replies.length > previous && /فرق تمرین و اقدام امروز را این‌طور به خاطر بسپار/.test(replies.at(-1)?.innerText || '');
-  }, previousNormalReplyCount);
+  }, previousNormalReplyCount, { timeout: 8000 });
   assert.equal(await panel.locator('.assistantMessage').last().getByTestId('daily-assistant-safety-reminder').count(), 0,
     'ordinary questions after a safety answer must not inherit the reminder card');
 
