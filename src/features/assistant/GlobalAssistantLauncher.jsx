@@ -524,30 +524,37 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
-              {isTopicDailyPromptContext && dailySafetyStageActive && (
-                <div className="libraryAssistantPromptRow dailyAssistantSafetyActions" role="group" aria-label="راه‌های دریافت کمک ایمنی">
-                  <button
-                    type="button"
-                    data-testid="daily-assistant-human-help"
-                    disabled={sending}
-                    onClick={(event) => send(event, 'مطمئن نیستم الان امن هستم یا نه و برای بررسی وضعیت ایمنی‌ام به کمک انسانی نیاز دارم.')}
-                  >مطمئن نیستم الان امن هستم یا نه</button>
-                  <button
-                    type="button"
-                    data-testid="daily-assistant-urgent-help"
-                    disabled={sending}
-                    onClick={(event) => send(event, 'قصد دارم همین الآن به خودم آسیب بزنم یا به شخص دیگری آسیب بزنم و به کمک فوری نیاز دارم.')}
-                  >خطر فوری وجود دارد</button>
-                  {conversationStateRef.current?.dailyState?.safetyStatus === 'pending' && (
+              {isTopicDailyPromptContext && (
+                <div className="libraryAssistantPromptRow dailyAssistantSafetyActions" role="group" aria-label={dailySafetyStageActive ? "راه‌های دریافت کمک ایمنی" : "اعلام نیاز به بررسی ایمنی"}>
+                  {!dailySafetyStageActive ? (
                     <>
-                      <button type="button" data-testid="daily-assistant-safety-no" disabled={sending}
-                        onClick={(event) => send(event, 'نه، همین حالا خطر فوری ندارم و قصد یا برنامه عملی برای آسیب ندارم.')}>
-                        نه، خطر فوری ندارم
-                      </button>
-                      <button type="button" data-testid="daily-assistant-safety-uncertain" disabled={sending}
-                        onClick={(event) => send(event, 'بله یا مطمئن نیستم؛ ممکن است خطر وجود داشته باشد.')}>
-                        بله یا مطمئن نیستم
-                      </button>
+                      <button
+                        type="button"
+                        data-testid="daily-assistant-human-help"
+                        disabled={sending}
+                        onClick={(event) => send(event, 'مطمئن نیستم الان امن هستم یا نه و برای بررسی وضعیت ایمنی‌ام به کمک انسانی نیاز دارم.')}
+                      >مطمئن نیستم الان امن هستم یا نه</button>
+                      <button
+                        type="button"
+                        data-testid="daily-assistant-urgent-help"
+                        disabled={sending}
+                        onClick={(event) => send(event, 'قصد دارم همین الآن به خودم آسیب بزنم یا به شخص دیگری آسیب بزنم و به کمک فوری نیاز دارم.')}
+                      >خطر فوری وجود دارد</button>
+                    </>
+                  ) : (
+                    <>
+                      {conversationStateRef.current?.dailyState?.safetyStatus === 'pending' && (
+                        <>
+                          <button type="button" data-testid="daily-assistant-safety-no" disabled={sending}
+                            onClick={(event) => send(event, 'نه، همین حالا خطر فوری ندارم و قصد یا برنامه عملی برای آسیب ندارم.')}>
+                            نه، خطر فوری ندارم
+                          </button>
+                          <button type="button" data-testid="daily-assistant-safety-uncertain" disabled={sending}
+                            onClick={(event) => send(event, 'بله یا مطمئن نیستم؛ ممکن است خطر وجود داشته باشد.')}>
+                            بله یا مطمئن نیستم
+                          </button>
+                        </>
+                      )}
                     </>
                   )}
                 </div>
