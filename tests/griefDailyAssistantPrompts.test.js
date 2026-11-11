@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import {
   GRIEF_DAILY_ASSISTANT_GUIDES,
   answerGriefDailyPreparedQuestion,
@@ -45,6 +46,25 @@ test('T06 contains 28 complete days and 14 unique prepared questions per day', (
     assert.equal(guide.questions.length, 14);
     assert.equal(new Set(guide.questions.map(question => question.value)).size, 14);
     assert.deepEqual(new Set(guide.questions.map(question => question.kind)), new Set(questionKinds));
+  }
+});
+
+test('T06 prepared assistant guide stays synchronized with the ten runtime fields', async () => {
+  const overrides = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+  const days = overrides.categories['غم و سوگ'].days;
+  for (const guide of GRIEF_DAILY_ASSISTANT_GUIDES) {
+    const runtime = days[guide.day - 1];
+    assert.equal(guide.title, runtime.title);
+    assert.equal(guide.exercise, runtime.exercise);
+    assert.equal(guide.action, runtime.actionText);
+    assert.equal(runtime.lightExerciseText, 'نسخه سبک تمرین: ' + guide.lightVersion);
+    assert.equal(runtime.progressActionText, guide.progressVersion);
+    assert.equal(runtime.restExerciseText, 'نسخه استراحت تمرین: ' + guide.restVersion);
+    assert.ok(runtime.intro.includes(guide.objective));
+    assert.ok(runtime.intro.includes(guide.skill));
+    assert.ok(runtime.closing.includes(guide.successCriterion));
+    assert.ok(runtime.closing.includes(guide.reflectionQuestion));
+    assert.ok(runtime.closing.includes(guide.stopCondition));
   }
 });
 
