@@ -30,7 +30,7 @@ permissions:
 
 concurrency:
   group: ${{ startsWith(github.head_ref, 'content/t') && format('path28-topic-validation-{0}', github.event.pull_request.number) || format('path28-validation-{0}', github.event.pull_request.number || github.sha) }}
-  cancel-in-progress: false
+  cancel-in-progress: ${{ startsWith(github.head_ref, 'content/t') }}
 
 jobs:
   announce-commit-status:
@@ -238,6 +238,8 @@ jobs:
     name: Validate one topic package
     if: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'content/t') }}
     runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
     timeout-minutes: 20
     steps:
       - name: Checkout
@@ -260,20 +262,8 @@ jobs:
         run: |
           PATH28_DEPLOY_BASE=/Maseer28/ npm run prepare:production
           npm run build
-      - name: Install Chromium for T05 browser regression
-        id: chromium
-        run: |
-          for attempt in 1 2 3; do
-            if npx --yes --package=playwright@1.55.0 playwright install --with-deps chromium; then
-              exit 0
-            fi
-            if [ "$attempt" -lt 3 ]; then
-              echo "Chromium installation failed (attempt $attempt/3); retrying."
-              sleep $((attempt * 15))
-            fi
-          done
-          echo "Chromium installation failed after 3 attempts."
-          exit 1
+      - name: Verify preinstalled Chromium for T05 browser regression
+        run: npx --yes --package=playwright@1.55.0 playwright --version
       - name: Start production preview
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/path28-vite.log 2>&1 &
