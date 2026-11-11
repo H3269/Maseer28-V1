@@ -111,8 +111,6 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     // first-person safety disclosure. Broad lexical safety cues inside its
     // wording must not replace its prepared answer. A real explicit-risk
     // declaration and an already-pending safety exchange still take priority.
-    const hasPendingSafetyExchange = ['pending', 'handoff'].includes(conversationState?.dailyState?.safetyStatus);
-    const hasExplicitSafetyHandoff = inputProbe.intake?.safety_handoff?.handoff_required === true;
     if (['T01', 'T02', 'T03', 'T04', 'T05'].includes(preparedTopicId)
       && hasCanonicalPreparedIdentity
       && !hasPendingSafetyExchange
