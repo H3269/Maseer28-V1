@@ -26,6 +26,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const [sending, setSending] = useState(false);
   const [dailySafetyStageActive, setDailySafetyStageActive] = useState(false);
   const [safetyCloseConfirmOpen, setSafetyCloseConfirmOpen] = useState(false);
+  const [shafaContactCopyStatus, setShafaContactCopyStatus] = useState('');
   const [localModelUnavailable, setLocalModelUnavailable] = useState(false);
   const [localModelInstalled, setLocalModelInstalled] = useState(false);
   const [localModelStatusChecked, setLocalModelStatusChecked] = useState(false);
@@ -46,6 +47,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     conversationStateRef.current = null;
     setDailySafetyStageActive(false);
     setSafetyCloseConfirmOpen(false);
+    setShafaContactCopyStatus('');
     setOpen(false);
     setLibraryPromptOpen(false);
   }, [screen, dailyContext?.day, dailyContext?.problem]);
@@ -361,6 +363,30 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     }
   }
 
+  async function copyShafaContactNumber() {
+    const internationalNumber = '+989190889062';
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error('Clipboard API unavailable');
+      await navigator.clipboard.writeText(internationalNumber);
+      setShafaContactCopyStatus('شماره تماس کپی شد.');
+    } catch {
+      try {
+        const field = document.createElement('textarea');
+        field.value = internationalNumber;
+        field.setAttribute('readonly', '');
+        field.style.position = 'fixed';
+        field.style.opacity = '0';
+        document.body.appendChild(field);
+        field.select();
+        const copied = document.execCommand('copy');
+        field.remove();
+        setShafaContactCopyStatus(copied ? 'شماره تماس کپی شد.' : 'کپی خودکار در این محیط پشتیبانی نمی‌شود؛ شماره را دستی بردار.');
+      } catch {
+        setShafaContactCopyStatus('کپی خودکار در این محیط پشتیبانی نمی‌شود؛ شماره را دستی بردار.');
+      }
+    }
+  }
+
   function closeDailySafetyStage() {
     if (conversationStateRef.current?.dailyState?.safetyStatus !== 'handoff') return;
     setSafetyCloseConfirmOpen(true);
@@ -375,7 +401,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     setMessages((current) => [...current, {
       id: `assistant-safety-return-${++turnSequenceRef.current}`,
       role: 'assistant',
-      text: 'گفتی که اکنون خطر فوری وجود ندارد. مرحله حمایت بسته شد و دستیار امروز دوباره فعال است؛ می‌توانی از سؤال‌های آماده همین روز استفاده کنی. اگر خطر دوباره ایجاد شد، فوراً آن را اعلام کن و کمک انسانی بگیر.',
+      text: 'گفتی که اکنون خطر فوری وجود ندارد. مرحله حمایت بسته شد و پرسش‌های آماده دستیار دوباره فعال شدند. اگر خطر دوباره ایجاد شد، فوراً کمک انسانی یا اورژانسی بگیر.',
       knowledge: [],
     }]);
   }
@@ -532,10 +558,11 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                     ))}</p>
                     {isTopicDailyPromptContext && dailySafetyStageActive && /(?:اورژانس|خدمات اورژانسی)/u.test(String(item.text || '')) && (
                       <div className="dailyAssistantShafaContact" data-testid="daily-assistant-shafa-contact">
-                        <a href="tel:+989190889062" aria-label="تماس با مرکز هیپنوتراپی شفا">
-                          تماس با مرکز هیپنوتراپی شفا
-                        </a>
-                        <span>۰۹۱۹۰۸۸۹۰۶۲</span>
+                        <span className="dailyAssistantShafaNumber" dir="ltr">۰۹۱۹۰۸۸۹۰۶۲</span>
+                        <button type="button" className="dailyAssistantShafaCopyButton" data-testid="daily-assistant-shafa-copy" onClick={copyShafaContactNumber}>
+                          <AppIcon name="copy" size={15} /> کپی شماره تماس مرکز
+                        </button>
+                        {shafaContactCopyStatus && <span className="dailyAssistantShafaCopyStatus" role="status">{shafaContactCopyStatus}</span>}
                       </div>
                     )}
                     {item.modelInstallPrompt && (
@@ -599,7 +626,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       <button type="button" data-testid="daily-assistant-cancel-safe-return" onClick={() => setSafetyCloseConfirmOpen(false)} disabled={sending}>نه، هنوز مطمئن نیستم</button>
                     </>
                   ) : (
-                    <button type="button" className="libraryAssistantPromptTrigger" data-testid="daily-assistant-return-to-daily" onClick={closeDailySafetyStage} disabled={sending}>درخواست بازگشت به دستیار امروز</button>
+                    <button type="button" className="dailyAssistantReturnButton" data-testid="daily-assistant-return-to-daily" onClick={closeDailySafetyStage} disabled={sending}>درخواست بازگشت به پرسش‌های آماده</button>
                   ))}
                   {conversationStateRef.current?.dailyState?.safetyStatus === 'pending' && <p className="safetyNote" role="status">برای ادامه، وضعیت ایمنی را با یکی از پاسخ‌های بالا روشن کن. تا آن زمان سؤال‌های روزانه غیرفعال‌اند.</p>}
                 </div>

@@ -234,7 +234,7 @@ try {
   assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 1,
     'the prepared-question picker must remain available after successful local-model installation');
 
-  // Safety handoff must expose the Shafa call link without replacing emergency guidance.
+  // Safety handoff must expose a WebView-safe copy action without replacing emergency guidance.
   const humanHelp = dialog.getByTestId('daily-assistant-human-help');
   const urgentHelp = dialog.getByTestId('daily-assistant-urgent-help');
   assert.ok(await humanHelp.isVisible() && await urgentHelp.isVisible(), 'both safety actions must remain visible');
@@ -250,14 +250,29 @@ try {
     .some((node) => /اورژانس|خدمات اورژانسی/u.test(node.innerText)));
   const shafaContact = dialog.getByTestId('daily-assistant-shafa-contact');
   await shafaContact.waitFor({ state: 'visible' });
-  assert.equal(await shafaContact.getByRole('link').getAttribute('href'), 'tel:+989190889062');
+  assert.equal(await shafaContact.getByRole('link').count(), 0, 'safety contact must not depend on a tel: deep link inside Telegram/Bale WebViews');
   assert.match(await shafaContact.innerText(), /۰۹۱۹۰۸۸۹۰۶۲/u);
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async (value) => { window.__shafaCopiedNumber = value; } } });
+  });
+  await shafaContact.getByTestId('daily-assistant-shafa-copy').click();
+  await page.waitForFunction(() => window.__shafaCopiedNumber === '+989190889062');
+  assert.match(await shafaContact.innerText(), /شماره تماس کپی شد/u, 'copy action must provide clear success feedback');
   assert.match(await dialog.locator('.assistantMessage').last().innerText(), /اورژانس|خدمات اورژانسی/u,
     'the Shafa contact must supplement, not replace, emergency guidance');
   assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 0,
     'prepared daily questions must be hidden while the human-support stage is active');
   const returnToDaily = dialog.getByTestId('daily-assistant-return-to-daily');
   await returnToDaily.waitFor({ state: 'visible' });
+  assert.equal(await returnToDaily.innerText(), 'درخواست بازگشت به پرسش‌های آماده');
+  const returnButtonStyle = await returnToDaily.evaluate((element) => ({
+    before: getComputedStyle(element, '::before').content,
+    after: getComputedStyle(element, '::after').content,
+    borderRadius: getComputedStyle(element).borderRadius,
+  }));
+  assert.equal(returnButtonStyle.before, 'none', 'return button must not show a decorative line before its text');
+  assert.equal(returnButtonStyle.after, 'none', 'return button must not show a decorative line after its text');
+  assert.ok(Number.parseFloat(returnButtonStyle.borderRadius) >= 10, 'return button must use the app-aligned rounded button shape');
   await returnToDaily.click();
   assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 0,
     'the handoff must remain active until the user explicitly confirms that immediate danger has passed');
