@@ -2974,7 +2974,7 @@ function anxietyGuideHeading(guide) {
 }
 
 function safeAnxietyReminder() {
-  return 'این راهنما برای شناخت تجربه اضطراب و انتخاب گام‌های کم‌خطر است؛ تشخیص یا درمان نیست. اضطراب را مجبور نیستی حذف کنی. خطر واقعی، نشانه جسمانی تازه یا شدید، یا بررسی ضروری سلامت/قانون/ایمنی را به‌عنوان نگرانی فرضی یا رفتار غیرضروری کنار نگذار. اگر خطر فوری آسیب به خودت یا دیگری وجود دارد، تمرین را متوقف کن، به مکان امن برو و از فرد امن یا خدمات اضطراری محل زندگی کمک بگیر.';
+  return '';
 }
 
 function answerAnxietyDailyPreparedQuestionRaw({ day, message, dailyContent } = {}) {
@@ -3061,5 +3061,5 @@ export function answerAnxietyDailyPreparedQuestion(args = {}) {
   const day = toAnxietyDayNumber(args.day);
   const guide = ANXIETY_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
   const question = guide?.questions.find((item) => item.value === String(args.message || '').trim());
-  return addTeacherStyleFrame(answer, { guide, question, topic: 'اضطراب' });
+  return appendDailyAssistantSafetyReminder(addTeacherStyleFrame(answer, { guide, question, topic: 'اضطراب' }), question?.kind);
 }
