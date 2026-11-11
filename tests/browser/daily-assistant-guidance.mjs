@@ -501,7 +501,7 @@ try {
   await panel.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction((previous) => {
     const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-    return replies.length > previous && /تفاوت تمرین و اقدام امروز/.test(replies.at(-1)?.innerText || '');
+    return replies.length > previous && /فرق تمرین و اقدام امروز را این‌طور به خاطر بسپار/.test(replies.at(-1)?.innerText || '');
   }, previousNormalReplyCount);
   assert.equal(await panel.locator('.assistantMessage').last().getByTestId('daily-assistant-safety-reminder').count(), 0,
     'ordinary questions after a safety answer must not inherit the reminder card');
