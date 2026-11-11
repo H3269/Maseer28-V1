@@ -331,20 +331,26 @@ try {
   assert.deepEqual(hatredErrors, [], 'T04 prepared-only assistant browser flow must not raise page errors');
   await hatredGuidedPage.close();
 
+  // T01 is now prepared-only even when a local model is cached. Safety controls
+  // remain available and their answers must preempt prepared FAQs.
   await openDay(page, { localModelInstalled: true });
   const panel = page.locator('.globalAssistantDialog');
   await panel.waitFor({ state: 'visible' });
-  const composer = panel.locator('#global-assistant-message');
-  const send = panel.getByRole('button', { name: 'ارسال' });
-
-  assert.equal(await composer.getAttribute('maxlength'), '2000');
-  assert.equal(await send.isDisabled(), true, 'empty assistant messages must not be sent');
-
-  await composer.fill(`چطور انجامش بدم؟ ${privateMarker}`);
-  assert.equal(await send.isDisabled(), false);
-  await send.click();
-  await page.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
-
+  assert.equal(await panel.locator('#global-assistant-message').count(), 0,
+    'T01 must never expose free-form typing, even with a cached local model');
+  assert.equal(await panel.locator('.globalAssistantModelButton').count(), 0,
+    'T01 must not expose local model installation');
+  assert.ok(await panel.getByTestId('daily-assistant-human-help').isVisible(),
+    'T01 must expose an active safety clarification control');
+  const trigger = panel.getByTestId('anger-daily-prompt-trigger');
+  await trigger.waitFor({ state: 'visible' });
+  await trigger.click();
+  const dayPrompt = page.locator('#library-assistant-prompt-dialog');
+  await dayPrompt.waitFor({ state: 'visible' });
+  await dayPrompt.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
+  await panel.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => /راهنمای روز ۱ خشم/.test(node.innerText)));
   let assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /خشم/);
   assert.match(assistantReply, /روز ۱/);
@@ -352,37 +358,32 @@ try {
   assert.match(assistantReply, /راهکار اختصاصی همین روز/);
   await assertAssistantUsesVisibleDailySource(page, panel, 'خشم', 1);
 
-  await composer.fill('تمرین را بیشتر توضیح بده');
-  await send.click();
-  await page.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 2);
-  assistantReply = await panel.locator('.assistantMessage').last().innerText();
-  assert.match(assistantReply, /متن تمرین همین روز/);
-  assert.match(assistantReply, /جمله یا واژه‌اش را بیشتر باز کنم/);
-
-  await composer.click();
-  await composer.pressSequentially('آ'.repeat(2001));
-  const boundedValue = await composer.inputValue();
-  assert.equal(boundedValue.length, 2000, 'composer must enforce its 2000-character limit');
-  await composer.fill('دیگه نمی‌کشم. همه‌چی تمومه.');
-  await send.click();
-  await page.waitForFunction(() => { const replies = document.querySelectorAll('.globalAssistantDialog .assistantMessage'); return replies.length >= 3 && /آیا همین الآن خطر فوری/.test(replies[replies.length - 1]?.innerText || ''); });
+  await panel.getByTestId('daily-assistant-human-help').click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => /آیا همین الآن خطر فوری/.test(node.innerText)));
   assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /آیا همین الآن خطر فوری/);
   assert.doesNotMatch(assistantReply, /متن تمرین همین روز/);
+  assert.ok(await panel.getByTestId('daily-assistant-safety-no').isVisible());
+  assert.ok(await panel.getByTestId('daily-assistant-safety-uncertain').isVisible());
 
-  await composer.fill('شاید، مطمئن نیستم');
-  await send.click();
-  await page.waitForFunction(() => { const replies = document.querySelectorAll('.globalAssistantDialog .assistantMessage'); return replies.length >= 4 && /کمک فوری انسانی/.test(replies[replies.length - 1]?.innerText || ''); });
+  await panel.getByTestId('daily-assistant-safety-uncertain').click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => /کمک فوری انسانی/.test(node.innerText)));
   assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /کمک فوری انسانی/);
   assert.doesNotMatch(assistantReply, /متن تمرین همین روز/);
 
-  await composer.fill('حالا تمرین امروز را توضیح بده');
-  await send.click();
-  await page.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 5);
+  // A prepared FAQ cannot bypass an active human-support handoff.
+  await trigger.click();
+  await page.locator('#library-assistant-prompt-dialog')
+    .getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
+  await panel.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .filter(node => /کمک فوری انسانی/.test(node.innerText)).length >= 2);
   assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /کمک فوری انسانی/);
-  assert.doesNotMatch(assistantReply, /متن تمرین همین روز/);
+  assert.doesNotMatch(assistantReply, /راهنمای روز ۱ خشم/);
 
   const storedValues = await page.evaluate(() => Object.keys(localStorage).map((key) => localStorage.getItem(key) || '').join('\n'));
   assert.equal(storedValues.includes(privateMarker), false, 'assistant transcript must not be persisted to localStorage');
