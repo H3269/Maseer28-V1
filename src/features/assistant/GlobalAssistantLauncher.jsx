@@ -558,6 +558,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                     ))}</p>
                     {isTopicDailyPromptContext && dailySafetyStageActive && /(?:اورژانس|خدمات اورژانسی)/u.test(String(item.text || '')) && (
                       <div className="dailyAssistantShafaContact" data-testid="daily-assistant-shafa-contact">
+                        <p className="dailyAssistantShafaGuidance">اگر احساس می‌کنید برای عبور از این شرایط به راهنمایی و حمایت بیشتری نیاز دارید، می‌توانید با مرکز هیپنوتراپی شفا تماس بگیرید.</p>
                         <span className="dailyAssistantShafaNumber" dir="ltr">۰۹۱۹۰۸۸۹۰۶۲</span>
                         <button type="button" className="dailyAssistantShafaCopyButton" data-testid="daily-assistant-shafa-copy" onClick={copyShafaContactNumber}>
                           <AppIcon name="copy" size={15} /> کپی شماره تماس مرکز
