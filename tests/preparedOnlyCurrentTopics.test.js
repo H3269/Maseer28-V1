@@ -107,3 +107,34 @@ test('explicit immediate-risk action skips clarification and goes straight to hu
   assert.match(result.message, /خدمات اورژانسی محل زندگی|فرد امن/);
   assert.equal(result.conversationState.dailyState.safetyStatus, 'handoff');
 });
+
+test('a clear no-immediate-danger answer safely returns each topic to prepared guidance', () => {
+  for (const topic of topics) {
+    const dailyContext = contextFor(topic);
+    const first = makePageAssistantTurn({
+      screen: 'day',
+      text: 'دیگه نمی‌کشم. همه‌چی تمومه.',
+      dailyContext,
+    });
+    assert.equal(first.status, 'safety_clarification_required', topic.name);
+
+    const cleared = makePageAssistantTurn({
+      screen: 'day',
+      text: 'نه، همین حالا خطر فوری ندارم و قصد یا برنامه عملی برای آسیب ندارم.',
+      conversationState: first.conversationState,
+      dailyContext,
+    });
+    assert.equal(cleared.status, 'daily_guidance_available', topic.name);
+    assert.equal(cleared.conversationState.dailyState.safetyStatus, 'cleared', topic.name);
+
+    const question = topic.groups(1).flatMap(group => group.questions)[0].value;
+    const prepared = makePageAssistantTurn({
+      screen: 'day',
+      text: question,
+      conversationState: cleared.conversationState,
+      dailyContext,
+    });
+    assert.equal(prepared.status, 'daily_guidance_available', topic.name);
+    assert.match(prepared.message, /راهنمای روز/);
+  }
+});
