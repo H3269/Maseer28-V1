@@ -77,25 +77,45 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
           : preparedTopicId === 'T04'
             ? answerHatredDailyPreparedQuestion
             : null;
-    const preparedAnswer = answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent });
-    if (preparedAnswer) {
-      // T03 prepared FAQs use the same direct, canonical route as T01/T02;
-      // category + canonical record ID + day establish legacy identity.
-      const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03', 'T04'].includes(preparedTopicId)
-        && Number.isInteger(preparedDay)
-        && preparedDay >= 1
-        && preparedDay <= 28
-        && preparedSource
-        && typeof preparedSource === 'object'
-        && preparedSource.id === getCanonicalDailyRecordId(dailyContext?.problem, preparedDay)
-        && Number(preparedSource.day) === preparedDay
-        // Legacy daily records identify the topic through the selected category
-        // key + canonical record ID (for example, ترس-01). The display adapter
-        // may carry topic_id: null when the source has no explicit topic_id.
-        // Accept that absence, but reject every explicit conflicting topic ID.
-        && (!Object.prototype.hasOwnProperty.call(preparedSource, 'topic_id')
-          || preparedSource.topic_id == null
-          || preparedSource.topic_id === preparedTopicId);
+    const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03', 'T04'].includes(preparedTopicId)
+      && Number.isInteger(preparedDay)
+      && preparedDay >= 1
+      && preparedDay <= 28
+      && preparedSource
+      && typeof preparedSource === 'object'
+      && preparedSource.id === getCanonicalDailyRecordId(dailyContext?.problem, preparedDay)
+      && Number(preparedSource.day) === preparedDay
+      && (!Object.prototype.hasOwnProperty.call(preparedSource, 'topic_id')
+        || preparedSource.topic_id == null
+        || preparedSource.topic_id === preparedTopicId);
+
+    // Safety checks and the follow-up safety exchange always take precedence
+    // over prepared FAQs for every currently supported topic.
+    if (['T01', 'T02', 'T03', 'T04'].includes(preparedTopicId)
+      && (SAFETY_STATUSES.has(inputProbe.status)
+        || ['pending', 'handoff'].includes(conversationState?.dailyState?.safetyStatus))) {
+      const safetyTurn = makeDailyExerciseGuidanceTurn({
+        message,
+        dayData: selectDailyExerciseGuidanceData({ guidanceData: dailyContext?.guidanceData, data: dailyContext?.data }),
+        problem: dailyContext?.problem,
+        day: dailyContext?.day,
+        conversationState: conversationState?.dailyState || {},
+      });
+      const safetyStatus = safetyTurn.nextState?.safetyStatus === 'handoff'
+        ? 'urgent_human_support_required'
+        : safetyTurn.nextState?.safetyStatus === 'pending'
+          ? 'safety_clarification_required'
+          : 'daily_guidance_available';
+      return Object.freeze({
+        status: safetyStatus,
+        message: cleanPreparedAssistantTopicText(safetyTurn.response, visibleTopicName),
+        knowledge: Object.freeze([]),
+        page_context: 'day',
+        conversationState: Object.freeze({ dailyState: safetyTurn.nextState }),
+      });
+    }
+
+    if (['T01', 'T02', 'T03', 'T04'].includes(preparedTopicId)) {
       if (!hasCanonicalPreparedIdentity) {
         return Object.freeze({
           status: 'daily_guidance_unavailable',
@@ -104,17 +124,23 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
           conversationState: null,
         });
       }
+      const preparedAnswer = answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent });
+      if (preparedAnswer) {
+        return Object.freeze({
+          status: 'daily_guidance_available',
+          message: cleanPreparedAssistantTopicText(preparedAnswer, visibleTopicName),
+          knowledge: Object.freeze([]),
+          page_context: 'day',
+          conversationState: null,
+        });
+      }
       return Object.freeze({
-        status: 'daily_guidance_available',
-        message: preparedAnswer,
+        status: 'prepared_question_required',
+        message: `این پرسش در فهرست راهنمای آماده موضوع ${visibleTopicName} نیست. لطفاً یکی از سؤال‌های آماده همین روز را انتخاب کن؛ گفت‌وگوی آزاد برای این موضوع فعال نیست.`,
         knowledge: Object.freeze([]),
         page_context: 'day',
         conversationState: null,
       });
-    }
-
-    if (preparedTopicId === 'T04') {
-      return Object.freeze({ status: 'daily_guidance_unavailable', message: 'برای موضوع نفرت، فقط سؤال‌های آماده همین روز پاسخ داده می‌شوند. لطفاً یکی از سؤال‌های فهرست را انتخاب کن؛ گفت‌وگوی آزاد برای این موضوع فعال نیست.', knowledge: Object.freeze([]), conversationState: null });
     }
 
     // The in-path assistant is a bounded local guidance surface. Do not apply
