@@ -482,6 +482,14 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                           : <React.Fragment key={partIndex}>{part.text}</React.Fragment>)}
                       </React.Fragment>
                     ))}</p>
+                    {isTopicDailyPromptContext && /(?:اورژانس|خدمات اورژانسی)/u.test(String(item.text || '')) && (
+                      <div className="dailyAssistantShafaContact" data-testid="daily-assistant-shafa-contact">
+                        <a href="tel:+989190889062" aria-label="تماس با مرکز هیپنوتراپی شفا">
+                          تماس با مرکز هیپنوتراپی شفا
+                        </a>
+                        <span>۰۹۱۹۰۸۸۹۰۶۲</span>
+                      </div>
+                    )}
                     {item.modelInstallPrompt && (
                       <div className="globalAssistantModelActions">
                         <button type="button" onClick={installLocalModel} disabled={sending}>بله، شروع نصب</button>

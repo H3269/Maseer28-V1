@@ -7302,20 +7302,39 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 /* The library preset list now uses the shared validation-card visual pattern. */
 
 
-/* Daily topic safety actions remain visible and usable on narrow screens. */
+/* Compact, theme-aligned safety actions and Shafa contact fallback. */
 .globalAssistantChat .dailyAssistantSafetyActions {
-  flex-wrap: wrap; margin: 0 0 8px; justify-content: flex-start;
+  flex-wrap: wrap; margin: 0 0 6px; gap: 6px; justify-content: flex-start;
 }
 .globalAssistantChat .dailyAssistantSafetyActions button {
-  box-sizing: border-box; flex: 1 1 30%; min-width: 0; min-height: 42px;
-  margin: 0; padding: 8px 10px; border: 1px solid var(--border, #d5dde7);
-  border-radius: 12px; background: var(--surface-soft, #f8fafc);
-  color: var(--text, #243b3c); font: inherit; font-size: 13px;
-  line-height: 1.6; white-space: normal; cursor: pointer;
+  box-sizing: border-box; flex: 0 1 auto; min-width: 0; min-height: 36px;
+  margin: 0; padding: 6px 9px; border: 1px solid var(--border, #d5dde7);
+  border-radius: 10px; background: var(--surface-soft, #f8fafc);
+  color: var(--text, #243b3c); font: inherit; font-size: 12px;
+  line-height: 1.45; white-space: normal; cursor: pointer;
+}
+.globalAssistantChat .dailyAssistantSafetyActions [data-testid="daily-assistant-human-help"] {
+  border-color: #c98b36; background: color-mix(in srgb, #d99a3d 10%, var(--surface, #fff));
+}
+.globalAssistantChat .dailyAssistantSafetyActions [data-testid="daily-assistant-urgent-help"] {
+  border-color: #c65c58; background: color-mix(in srgb, #c65c58 12%, var(--surface, #fff));
 }
 .globalAssistantChat .dailyAssistantSafetyActions button:focus-visible {
-  outline: 3px solid #d6a84b; outline-offset: 2px;
+  outline: 2px solid #bd5a54; outline-offset: 2px;
 }
 .globalAssistantChat .dailyAssistantSafetyActions button:disabled {
   opacity: .65; cursor: wait;
+}
+.globalAssistantChat .dailyAssistantShafaContact {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;
+  margin-top: 8px; padding: 7px 9px; border: 1px solid var(--border, #d5dde7);
+  border-radius: 10px; background: var(--surface-soft, #f8fafc);
+  font-size: 12px; line-height: 1.5;
+}
+.globalAssistantChat .dailyAssistantShafaContact a {
+  color: var(--link, #356b75); font-weight: 650; text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.globalAssistantChat .dailyAssistantShafaContact span {
+  color: var(--muted, #64748b); direction: ltr; unicode-bidi: isolate;
 }

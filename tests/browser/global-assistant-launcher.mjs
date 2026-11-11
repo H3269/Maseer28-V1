@@ -233,6 +233,28 @@ try {
     'the active anger day context must expose its prepared-question picker');
   assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 1,
     'the prepared-question picker must remain available after successful local-model installation');
+
+  // Safety handoff must expose the Shafa call link without replacing emergency guidance.
+  const humanHelp = dialog.getByTestId('daily-assistant-human-help');
+  const urgentHelp = dialog.getByTestId('daily-assistant-urgent-help');
+  assert.ok(await humanHelp.isVisible() && await urgentHelp.isVisible(), 'both safety actions must remain visible');
+  const safetyButtonMetrics = await Promise.all([humanHelp, urgentHelp].map((button) => button.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return { height: element.getBoundingClientRect().height, border: style.borderTopColor, background: style.backgroundColor };
+  })));
+  assert.ok(safetyButtonMetrics.every((item) => item.height <= 42), 'safety buttons must stay compact');
+  assert.notEqual(safetyButtonMetrics[0].border, safetyButtonMetrics[1].border, 'help and urgent-risk actions must have distinct but restrained colors');
+  // The explicit urgent-risk action must trigger the handoff text and Shafa contact.
+  await urgentHelp.click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some((node) => /اورژانس|خدمات اورژانسی/u.test(node.innerText)));
+  const shafaContact = dialog.getByTestId('daily-assistant-shafa-contact');
+  await shafaContact.waitFor({ state: 'visible' });
+  assert.equal(await shafaContact.getByRole('link').getAttribute('href'), 'tel:+989190889062');
+  assert.match(await shafaContact.innerText(), /۰۹۱۹۰۸۸۹۰۶۲/u);
+  assert.match(await dialog.locator('.assistantMessage').last().innerText(), /اورژانس|خدمات اورژانسی/u,
+    'the Shafa contact must supplement, not replace, emergency guidance');
+
   await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await dialog.waitFor({ state: 'detached' });
 
