@@ -173,7 +173,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
         assert.equal(Object.hasOwn(day, 'risk_level'), false);
       } else {
         Object.assign(day, {
-          topic_id: topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : topicKey === 'نفرت' ? 'T04' : 'T01',
+          topic_id: topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : topicKey === 'نفرت' ? 'T04' : topicKey === 'حسادت' ? 'T05' : 'T01',
           day: dayNumber,
           review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
           risk_level: 'routine',
@@ -332,6 +332,58 @@ try {
   assert.ok(hatredReply.includes('\n'), 'T04 paragraphs must display on separate lines');
   assert.deepEqual(hatredErrors, [], 'T04 prepared-only assistant browser flow must not raise page errors');
   await hatredGuidedPage.close();
+
+
+  // T05 jealousy uses its own prepared-only 28-day assistant and distinct examples.
+  const jealousyGuidedPage = await browser.newPage();
+  const jealousyErrors = [];
+  jealousyGuidedPage.on('pageerror', error => jealousyErrors.push(String(error)));
+  await openDay(jealousyGuidedPage, { problem: 'حسادت', assistantDayMode: 'blocked', localModelInstalled: true });
+  const jealousyPanel = jealousyGuidedPage.locator('.globalAssistantDialog');
+  await jealousyPanel.waitFor({ state: 'visible' });
+  assert.equal(await jealousyPanel.locator('#global-assistant-message').count(), 0,
+    'T05 must never expose free-form typing, even with a cached local model');
+  assert.equal(await jealousyPanel.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
+    'T05 must not expose local model installation');
+  const jealousyTrigger = jealousyPanel.getByTestId('jealousy-daily-prompt-trigger');
+  await jealousyTrigger.waitFor({ state: 'visible' });
+  await jealousyTrigger.click();
+  const jealousyPromptDialog = jealousyGuidedPage.locator('#library-assistant-prompt-dialog');
+  await jealousyPromptDialog.waitFor({ state: 'visible' });
+  assert.match(await jealousyPromptDialog.innerText(), /سؤال‌های آماده روز ۱ حسادت/);
+  assert.equal(await jealousyPromptDialog.locator('.libraryAssistantPromptGroup').count(), 5);
+  assert.equal(await jealousyPromptDialog.locator('[data-prompt-option]').count(), 14);
+  await jealousyPromptDialog.getByRole('button', { name: 'برای تمرین امروز یک مثال می‌زنی؟' }).click();
+  await jealousyPanel.getByRole('button', { name: 'ارسال' }).click();
+  await jealousyGuidedPage.waitForFunction(() => Array.from(document.querySelectorAll('.globalAssistantDialog .assistantMessage'))
+    .some(node => node.innerText.includes('راهنمای روز ۱ حسادت')));
+  const jealousyExerciseExample = await jealousyPanel.locator('.assistantMessage').last().innerText();
+  assert.match(jealousyExerciseExample, /مثال فرضی/);
+  assert.match(jealousyExerciseExample, /دوستت با فرد دیگری/);
+  assert.match(jealousyExerciseExample, /تمرین امروز/);
+  assert.ok(await jealousyPanel.locator('.assistantMessage').last().locator('strong').count() > 0,
+    'T05 assistant headings must render as bold text');
+  assert.equal(jealousyExerciseExample.includes('**'), false, 'T05 must not expose raw markdown markers');
+  assert.equal(jealousyExerciseExample.includes(String.fromCharCode(92) + 'n'), false, 'T05 must not expose escaped newline tokens');
+  assert.ok(jealousyExerciseExample.includes('\n'), 'T05 paragraphs must display on separate lines');
+
+  await jealousyPanel.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
+  await jealousyPanel.waitFor({ state: 'detached' });
+  await jealousyGuidedPage.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
+  await jealousyPanel.waitFor({ state: 'visible' });
+  await jealousyPanel.getByTestId('jealousy-daily-prompt-trigger').click();
+  await jealousyGuidedPage.locator('#library-assistant-prompt-dialog')
+    .getByRole('button', { name: 'برای اقدام امروز یک مثال می‌زنی؟' }).click();
+  await jealousyPanel.getByRole('button', { name: 'ارسال' }).click();
+  await jealousyGuidedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => node.innerText.includes('راهنمای روز ۱ حسادت')));
+  const jealousyActionExample = await jealousyPanel.locator('.assistantMessage').last().innerText();
+  assert.match(jealousyActionExample, /مثال فرضی/);
+  assert.match(jealousyActionExample, /جهت حسادت و موضوع آن را روی کاغذ مشخص کن/);
+  assert.notEqual(jealousyExerciseExample, jealousyActionExample,
+    'T05 exercise and action examples must teach different tasks, not repeat the same text');
+  assert.deepEqual(jealousyErrors, [], 'T05 prepared-only browser flow must not raise page errors');
+  await jealousyGuidedPage.close();
 
   // T01 is now prepared-only even when a local model is cached. Safety controls
   // remain available and their answers must preempt prepared FAQs.
