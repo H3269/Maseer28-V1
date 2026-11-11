@@ -75,13 +75,24 @@ test('safety clarification and uncertain answers preempt prepared FAQs for all c
   }
 });
 
-test('explicit urgent-risk request reaches the human-support handoff before prepared FAQ routing', () => {
-  const result = makePageAssistantTurn({
+test('the explicit safety control starts clarification and uncertain answers reach human-support handoff', () => {
+  const dailyContext = contextFor(topics[0]);
+  const first = makePageAssistantTurn({
     screen: 'day',
     text: 'ممکن است همین حالا به خودم یا شخص دیگری آسیب بزنم و برای ایمن ماندن به کمک انسانی فوری نیاز دارم.',
-    dailyContext: contextFor(topics[0]),
+    dailyContext,
   });
-  assert.equal(result.status, 'urgent_human_support_required');
-  assert.match(result.message, /خدمات اورژانسی محل زندگی|فرد امن/);
-  assert.equal(result.conversationState.dailyState.safetyStatus, 'handoff');
+  assert.equal(first.status, 'safety_clarification_required');
+  assert.match(first.message, /آیا همین الآن خطر فوری/);
+  assert.equal(first.conversationState.dailyState.safetyStatus, 'pending');
+
+  const second = makePageAssistantTurn({
+    screen: 'day',
+    text: 'بله یا مطمئن نیستم؛ ممکن است خطر وجود داشته باشد.',
+    conversationState: first.conversationState,
+    dailyContext,
+  });
+  assert.equal(second.status, 'urgent_human_support_required');
+  assert.match(second.message, /خدمات اورژانسی محل زندگی|فرد امن/);
+  assert.equal(second.conversationState.dailyState.safetyStatus, 'handoff');
 });
