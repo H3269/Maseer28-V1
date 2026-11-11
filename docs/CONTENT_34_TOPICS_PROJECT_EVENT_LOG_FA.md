@@ -474,3 +474,14 @@
 - آخرین اصلاح رابط، نمایش یادآوری ایمنی `grief_increased` را در کارت مجزای ایمنی UI فعال می‌کند؛ reminder فقط برای چهار نوع پرسش ایمنی/ارزیابی در هر روز اضافه می‌شود.
 - آخرین SHA ارسال‌شده به PR: `a712ae4f603b896f009e2b4a59b9bf3b5d767103`.
 - CI اختصاصی شاخه در وضعیت صف/queued است؛ نتیجه یا job سبز هنوز دریافت نشده است. PR عمداً draft است و برچسب full-validation ندارد؛ آزمون جامع ۹۵۲روزه در این مرحله اجرا نمی‌شود.
+
+
+### ۱۱ نوامبر ۲۰۲۶ ـ اتصال کامل ۱۰ فیلد متنی T06 به runtime
+- بررسی دقیق `src/features/content/dailyTextOverrides.js` نشان داد تابع ادغام از قبل ده فیلد متنی را پشتیبانی می‌کند؛ محدودیت T06 فقط به‌علت ناقص‌بودن overlay آن بود، نه نیاز به تغییر عمومی تابع.
+- overlay برای هر ۲۸ روز T06 اکنون هر ۱۰ فیلد runtime را دارد: `title`, `intro`, `exercise`, `actionText`, `closing`, `lightExerciseText`, `lightActionText`, `progressActionText`, `restExerciseText`, `restActionText`.
+- نگاشت ۱۱ فیلد طراحی به runtime: هدف/مهارت/سازوکار در `intro`؛ معیار/پرسش بازتاب/شرط توقف در `closing`؛ نسخه سبک تمرین در `lightExerciseText`؛ نسخه سبک اقدام در `lightActionText`؛ نسخه پیشرفت در `progressActionText`؛ نسخه استراحت تمرین و اقدام در دو فیلد rest جداگانه.
+- کنترل ساختاری overlay: برای هر یک از ۱۰ فیلد، ۲۸/۲۸ مقدار غیرخالی و ۲۸/۲۸ مقدار یکتا ثبت شد. آزمون متمرکز `tests/t06DailyTextOverrides.test.js` برای merge، حفظ شناسه canonical و حفظ metadata غیرمتنی ایجاد شد.
+- آزمون Chromium T06 نیز اکنون عنوان، هدف، معیار پایان و شرط توقف واقعی روز را از صفحه روز بررسی می‌کند؛ صرفاً وجود فایل یا selector ملاک نیست.
+- آخرین commit overlay: `67a084fd0ac2d50ccbf4f63a4a2ced94141dc03b`; commit آزمون overlay: `c045376f88174a3b13cd600997227e3918936e62`; commit آزمون مرورگر: `7fd7d93802e00f483ab9048f6e390223b09c6e3d`.
+- این گام overlay را به ۱۰ فیلد runtime وصل می‌کند و نیازی به تغییر ۱.۸۸ مگابایتی فایل canonical یا تابع مشترک merge ایجاد نکرد. صف P0، رجیستری و metadata تأیید تخصصی همچنان دست‌نخورده‌اند.
+- آزمون ساختاری مستقل اجرا و CI هنوز باید روی آخرین SHA سبز شود؛ این گام به‌تنهایی مجوز ادغام نیست.
