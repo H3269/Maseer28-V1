@@ -219,7 +219,7 @@ test('exercise explanation preserves the source-requested number of examples for
 });
 
 
-test('prepared FAQs and free-form guidance remain available on every anger day without assistant safety gates', () => {
+test('prepared FAQs remain available and free-form guidance is refused on every anger day', () => {
   const gatedDays = [10, 11, 17, 18, 19, 20, 21, 22, 23];
   for (const day of gatedDays) {
     const guide = ANGER_DAILY_ASSISTANT_GUIDES[day - 1];
@@ -257,8 +257,8 @@ test('prepared FAQs and free-form guidance remain available on every anger day w
         relationshipSafetyConfirmed: false,
       },
     });
-    assert.equal(freeForm.status, 'daily_guidance_available', `day ${day} free-form`);
-    assert.ok(freeForm.message.length > 0, `day ${day} free-form`);
+    assert.equal(freeForm.status, 'prepared_question_required', `day ${day} free-form`);
+    assert.match(freeForm.message, /گفت‌وگوی آزاد برای این موضوع فعال نیست/, `day ${day} free-form`);
   }
 });
 
