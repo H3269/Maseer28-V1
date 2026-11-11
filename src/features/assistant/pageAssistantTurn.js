@@ -89,7 +89,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     // declaration and an already-pending safety exchange still take priority.
     const hasPendingSafetyExchange = ['pending', 'handoff'].includes(conversationState?.dailyState?.safetyStatus);
     const hasExplicitSafetyHandoff = inputProbe.intake?.safety_handoff?.handoff_required === true;
-    if (['T01', 'T02', 'T03', 'T04'].includes(preparedTopicId)
+    if (['T01', 'T02', 'T03', 'T04', 'T05'].includes(preparedTopicId)
       && hasCanonicalPreparedIdentity
       && !hasPendingSafetyExchange
       && !hasExplicitSafetyHandoff) {
@@ -111,7 +111,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
 
     // Explicit immediate-risk declarations and an active safety exchange
     // always take precedence over the prepared-question list.
-    if (['T01', 'T02', 'T03', 'T04'].includes(preparedTopicId)
+    if (['T01', 'T02', 'T03', 'T04', 'T05'].includes(preparedTopicId)
       && (SAFETY_STATUSES.has(inputProbe.status)
         || hasPendingSafetyExchange
         || hasExplicitSafetyHandoff)) {
@@ -136,7 +136,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       });
     }
 
-    if (['T01', 'T02', 'T03', 'T04'].includes(preparedTopicId)) {
+    if (['T01', 'T02', 'T03', 'T04', 'T05'].includes(preparedTopicId)) {
       if (!hasCanonicalPreparedIdentity) {
         return Object.freeze({
           status: 'daily_guidance_unavailable',
