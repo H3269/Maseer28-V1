@@ -85,6 +85,10 @@ try {
   const dayText = await page.locator('#day').innerText();
   assert.match(dayText, /نام‌گذاری فقدان/);
   assert.match(dayText, /هدف: به‌رسمیت‌شناختن فقدان بدون اجبار به جزئیات/);
+  await page.locator('#dayIntro summary').click();
+  const expandedIntro = await page.locator('#dayIntro').innerText();
+  assert.match(expandedIntro, /مهارت: نام‌گذاری فقدان/);
+  assert.match(expandedIntro, /توضیح: نام‌گذاری فقدان/);
   assert.match(dayText, /معیار پایان:/);
   assert.match(dayText, /شرط توقف:/);
   await page.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
