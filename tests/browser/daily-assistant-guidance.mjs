@@ -347,6 +347,8 @@ try {
     'T05 must not expose local model installation');
   const jealousyTrigger = jealousyPanel.getByTestId('jealousy-daily-prompt-trigger');
   await jealousyTrigger.waitFor({ state: 'visible' });
+  assert.match(await jealousyTrigger.getAttribute('aria-label'), /حسادت/,
+    'T05 prompt trigger must have the correct accessible topic label');
   await jealousyTrigger.click();
   const jealousyPromptDialog = jealousyGuidedPage.locator('#library-assistant-prompt-dialog');
   await jealousyPromptDialog.waitFor({ state: 'visible' });
