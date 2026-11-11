@@ -4,6 +4,7 @@ import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTu
 import { FEAR_DAILY_ASSISTANT_GUIDES, answerFearDailyPreparedQuestion, getFearDailyAssistantPromptGroups } from '../src/features/assistant/fearDailyAssistantPrompts.js';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
 import { ANXIETY_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
+import { ANGER_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/angerDailyAssistantPrompts.js';
 import { HATRED_DAILY_ASSISTANT_GUIDES, getHatredDailyAssistantPromptGroups } from '../src/features/assistant/hatredDailyAssistantPrompts.js';
 
 test('page-specific UI guidance is selected for the current screen', () => {
@@ -168,7 +169,7 @@ test('pending scope context is discarded when the user changes screens', () => {
 });
 
 
-test('daily page uses the local canonical day guidance engine with the selected topic and day', () => {
+test('daily page answers a prepared question with the selected topic and day', () => {
   const dayData = {
     id: getCanonicalDailyRecordId('خشم', 1),
     day: 1,
@@ -177,18 +178,19 @@ test('daily page uses the local canonical day guidance engine with the selected 
   };
   const result = makePageAssistantTurn({
     screen: 'day',
-    text: 'چطور انجامش بدم؟',
+    text: ANGER_DAILY_ASSISTANT_GUIDES[0].questions[0].value,
     dailyContext: { day: 1, problem: 'خشم', data: dayData, relationshipSafetyConfirmed: true },
   });
   assert.equal(result.status, 'daily_guidance_available');
   assert.match(result.message, /خشم/);
   assert.match(result.message, /روز 1/);
+  assert.match(result.message, /راهنمای روز 1 خشم/);
   assert.match(result.message, /سه موقعیت اخیر/);
   assert.match(result.message, /فقط یک موقعیت/);
-  assert.ok(result.conversationState?.dailyState);
+  assert.equal(result.conversationState, null);
 });
 
-test('daily assistant does not block guidance based on canonical review status', () => {
+test('daily assistant answers prepared questions regardless of canonical review status', () => {
   const dayData = {
     id: getCanonicalDailyRecordId('خشم', 1),
     topic_id: 'T01',
@@ -200,7 +202,7 @@ test('daily assistant does not block guidance based on canonical review status',
   };
   const result = makePageAssistantTurn({
     screen: 'day',
-    text: 'چطور انجامش بدم؟',
+    text: ANGER_DAILY_ASSISTANT_GUIDES[0].questions[0].value,
     dailyContext: { day: 1, problem: 'خشم', data: dayData, relationshipSafetyConfirmed: true },
   });
   assert.equal(result.status, 'daily_guidance_available');
@@ -490,8 +492,8 @@ test('T04 urgent safety status preempts prepared Q&A and free-form daily guidanc
  const urgent=makePageAssistantTurn({screen:'day',text:'امشب قصد دارم خودم را بکشم.',dailyContext:{day:1,problem:'نفرت',data:{id:getCanonicalDailyRecordId('نفرت',1),topic_id:'T04',day:1}}});
  assert.equal(urgent.status,'urgent_human_support_required');
  const free=makePageAssistantTurn({screen:'day',text:'چرا از یک نفر متنفرم؟',dailyContext:{day:1,problem:'نفرت',data:{id:getCanonicalDailyRecordId('نفرت',1),topic_id:'T04',day:1}}});
- assert.equal(free.status,'daily_guidance_unavailable');
- assert.match(free.message,/فقط سؤال‌های آماده/);
+ assert.equal(free.status,'prepared_question_required');
+ assert.match(free.message,/گفت‌وگوی آزاد برای این موضوع فعال نیست/);
 });
 
 test('T04 prompt groups use the same five-section ordering as T01-T03',()=>{
