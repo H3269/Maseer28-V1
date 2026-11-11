@@ -24,6 +24,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
   const [dailySafetyStageActive, setDailySafetyStageActive] = useState(false);
+  const [safetyCloseConfirmOpen, setSafetyCloseConfirmOpen] = useState(false);
   const [localModelUnavailable, setLocalModelUnavailable] = useState(false);
   const [localModelInstalled, setLocalModelInstalled] = useState(false);
   const [localModelStatusChecked, setLocalModelStatusChecked] = useState(false);
@@ -43,6 +44,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     setSending(false);
     conversationStateRef.current = null;
     setDailySafetyStageActive(false);
+    setSafetyCloseConfirmOpen(false);
     setOpen(false);
     setLibraryPromptOpen(false);
   }, [screen, dailyContext?.day, dailyContext?.problem, dailyContext?.relationshipSafetyConfirmed]);
@@ -352,14 +354,20 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   }
 
   function closeDailySafetyStage() {
+    if (conversationStateRef.current?.dailyState?.safetyStatus !== 'handoff') return;
+    setSafetyCloseConfirmOpen(true);
+  }
+
+  function confirmDailySafetyStageReturn() {
     conversationStateRef.current = { dailyState: { safetyStatus: 'cleared' } };
     setDailySafetyStageActive(false);
+    setSafetyCloseConfirmOpen(false);
     setDraft('');
     setError('');
     setMessages((current) => [...current, {
       id: `assistant-safety-return-${++turnSequenceRef.current}`,
       role: 'assistant',
-      text: 'مرحله حمایت بسته شد. دستیار امروز دوباره فعال است و می‌توانی از فهرست سؤال‌های آماده همین روز استفاده کنی. اگر خطر فوری دوباره مطرح شد، مسیر حمایت ایمنی دوباره فعال می‌شود.',
+      text: 'گفتی که اکنون خطر فوری وجود ندارد. مرحله حمایت بسته شد و دستیار امروز دوباره فعال است؛ می‌توانی از سؤال‌های آماده همین روز استفاده کنی. اگر خطر دوباره ایجاد شد، فوراً آن را اعلام کن و کمک انسانی بگیر.',
       knowledge: [],
     }]);
   }
@@ -561,8 +569,16 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
               )}
               {isTopicDailyPromptContext && dailySafetyStageActive ? (
                 <div className="dailyAssistantSafetyActions" role="group" aria-label="پایان مرحله حمایت">
-                  <p className="safetyNote" role="status">برای بازگشت به سؤال‌های روزانه، مرحله حمایت را ببند. در صورت وجود خطر فوری، راهنمای کمک بیرونی را دنبال کن.</p>
-                  <button type="button" className="libraryAssistantPromptTrigger" data-testid="daily-assistant-return-to-daily" onClick={closeDailySafetyStage} disabled={sending}>پایان مرحله حمایت و بازگشت به دستیار امروز</button>
+                  {conversationStateRef.current?.dailyState?.safetyStatus === 'handoff' && (safetyCloseConfirmOpen ? (
+                    <>
+                      <p className="safetyNote" role="alert">پیش از بازگشت، فقط اگر واقعاً اکنون خطر فوری برطرف شده و می‌توانی در امنیت بمانی، تأیید کن. اگر هنوز در خطری یا مطمئن نیستی، این مرحله را نبند و کمک انسانی/اورژانسی را دنبال کن.</p>
+                      <button type="button" data-testid="daily-assistant-confirm-safe-return" onClick={confirmDailySafetyStageReturn} disabled={sending}>بله، اکنون خطر فوری ندارم</button>
+                      <button type="button" data-testid="daily-assistant-cancel-safe-return" onClick={() => setSafetyCloseConfirmOpen(false)} disabled={sending}>نه، هنوز مطمئن نیستم</button>
+                    </>
+                  ) : (
+                    <button type="button" className="libraryAssistantPromptTrigger" data-testid="daily-assistant-return-to-daily" onClick={closeDailySafetyStage} disabled={sending}>درخواست بازگشت به دستیار امروز</button>
+                  ))}
+                  {conversationStateRef.current?.dailyState?.safetyStatus === 'pending' && <p className="safetyNote" role="status">برای ادامه، وضعیت ایمنی را با یکی از پاسخ‌های بالا روشن کن. تا آن زمان سؤال‌های روزانه غیرفعال‌اند.</p>}
                 </div>
               ) : (
               <form className={'assistantComposer' + (isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled) ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} onSubmit={send}>
