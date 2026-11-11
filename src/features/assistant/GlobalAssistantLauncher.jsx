@@ -14,6 +14,7 @@ import { getFearDailyAssistantPromptGroups } from './fearDailyAssistantPrompts.j
 import { getHatredDailyAssistantPromptGroups } from './hatredDailyAssistantPrompts.js';
 import { getJealousyDailyAssistantPromptGroups } from './jealousyDailyAssistantPrompts.js';
 import { appendLocalSourceReferences, buildLocalAssistantMessages, isLocalModelInstallCommand, LOCAL_MODEL_CACHE_MESSAGE, LOCAL_MODEL_FAILURE_MESSAGE, LOCAL_MODEL_INSTALL_MESSAGE, shouldUseLocalNeuralModel } from './localNeuralAssistant.js';
+import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
 
 export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null, onRelationshipSafetyResponse = null }) {
   const [open, setOpen] = useState(false);
@@ -24,9 +25,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const libraryPromptDialogRef = useRef(null);
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
-  const [dailySafetyStageActive, setDailySafetyStageActive] = useState(false);
-  const [safetyCloseConfirmOpen, setSafetyCloseConfirmOpen] = useState(false);
-  const [shafaContactCopyStatus, setShafaContactCopyStatus] = useState('');
   const [localModelUnavailable, setLocalModelUnavailable] = useState(false);
   const [localModelInstalled, setLocalModelInstalled] = useState(false);
   const [localModelStatusChecked, setLocalModelStatusChecked] = useState(false);
@@ -45,9 +43,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     setError('');
     setSending(false);
     conversationStateRef.current = null;
-    setDailySafetyStageActive(false);
-    setSafetyCloseConfirmOpen(false);
-    setShafaContactCopyStatus('');
     setOpen(false);
     setLibraryPromptOpen(false);
   }, [screen, dailyContext?.day, dailyContext?.problem]);
@@ -153,7 +148,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext || isJealousyDailyPromptContext;
   const isPreparedOnlyDailyPromptContext = isTopicDailyPromptContext;
   const jealousyRelationshipGate = isJealousyDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
-  const jealousyRelationshipGatePending = Boolean(jealousyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true && !dailySafetyStageActive);
+  const jealousyRelationshipGatePending = Boolean(jealousyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
   const jealousyRelationshipGateBlocked = jealousyRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
   const activePromptGroups = screen === 'books'
     ? LIBRARY_ASSISTANT_PROMPT_GROUPS
@@ -186,84 +181,28 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     setOpen(true);
   }
 
-  function requestModelInstall() {
-    if (sending) return;
-    const turnId = ++turnSequenceRef.current;
-    setMessages((current) => [...current, {
-      id: `assistant-model-consent-${turnId}`,
-      role: 'assistant',
-      text: 'مدل محلی یک ارتقای اختیاری است، نه شرط استفاده از دستیار. بارگیری اولیه حدود ۶۵۰ تا ۷۵۰ مگابایت به‌علاوه فایل‌های جانبی حجم دارد و به اینترنت و فضای خالی کافی نیاز دارد. پس از نصب، پاسخ‌سازی روی همین دستگاه انجام می‌شود و پرسش‌ها به سرویس هوش مصنوعی بیرونی فرستاده نمی‌شوند. اگر گوشی نتواند مدل را اجرا کند، دستیار پایه همچنان در دسترس می‌ماند. آیا نصب را شروع کنیم؟',
-      knowledge: [],
-      modelInstallPrompt: true,
-    }]);
-  }
-
-  function cancelModelInstall(promptId) {
-    setMessages((current) => current.map((item) => item.id === promptId
-      ? { ...item, modelInstallPrompt: false, text: 'نصب مدل انجام نمی‌شود. می‌توانی بدون نصب، مثل قبل از دستیار کتابخانه استفاده کنی.' }
-      : item));
-  }
-
-  async function installLocalModel() {
-    if (sending) return;
-    setMessages((current) => current.map((item) => item.modelInstallPrompt
-      ? { ...item, modelInstallPrompt: false, text: 'درخواست نصب تأیید شد؛ آماده‌سازی آغاز می‌شود...' }
-      : item));
-    const turnId = ++turnSequenceRef.current;
-    setMessages((current) => [...current, {
-      id: `assistant-model-install-${turnId}`,
-      role: 'assistant',
-      text: 'برای نصب اختیاری مدل هوش مصنوعی روی همین گوشی، ابتدا سازگاری و فضای ذخیره‌سازی بررسی می‌شود...',
-      knowledge: [],
-    }]);
-    setSending(true);
-    try {
-      await requestLocalNeuralModel('load', { allowDownload: true }, (progress) => {
-        const percent = Number.isFinite(progress?.progress) ? Math.max(0, Math.min(100, Math.round(progress.progress))) : null;
-        setMessages((current) => current.map((item) => item.id === `assistant-model-install-${turnId}`
-          ? { ...item, text: percent === null ? 'در حال آماده‌سازی مدل محلی روی همین گوشی...' : `در حال بارگیری مدل روی همین گوشی: ${percent}٪` }
-          : item));
-      });
-      setLocalModelUnavailable(false);
-      setLocalModelInstalled(true);
-      setMessages((current) => current.map((item) => item.id === `assistant-model-install-${turnId}`
-        ? { ...item, text: 'مدل هوش مصنوعی محلی با موفقیت آماده شد. از این پس پرسش‌های واجد شرایط می‌توانند با کمک همین گوشی پاسخ داده شوند.' }
-        : item));
-    } catch (installError) {
-      setLocalModelUnavailable(true);
-      setLocalModelInstalled(false);
-      const reason = installError?.code === 'MODEL_DOWNLOAD_OFFLINE'
-        ? 'برای نصب اولیه، اتصال اینترنت لازم است. دستیار پایه همچنان فعال است و می‌توانی به پرسش‌هایت ادامه بدهی.'
-        : installError?.code === 'CACHE_UNAVAILABLE' || installError?.code === 'STORAGE_QUOTA_LOW'
-          ? LOCAL_MODEL_CACHE_MESSAGE + ' دستیار پایه همچنان فعال است و می‌توانی به پرسش‌هایت ادامه بدهی.'
-          : 'این گوشی یا مرورگر فعلاً نتوانست مدل محلی را اجرا کند. دستیار پایه همچنان فعال است و می‌توانی بدون نصب مدل به پرسش‌هایت ادامه بدهی.';
-      setMessages((current) => current.map((item) => item.id === `assistant-model-install-${turnId}`
-        ? { ...item, text: reason }
-        : item));
-    } finally {
-      setSending(false);
-    }
-  }
-
   async function send(event, overrideMessage = null) {
     event.preventDefault();
     const message = String(overrideMessage ?? draft).trim();
     if (!message || sending) return;
-    if (isPreparedOnlyDailyPromptContext && !activePromptGroups.some(group => group.questions.some(question => question.value === message))) {
-      const safetyIntent = routeAssistantTurn({ text: message });
-      const urgentSafetyStatuses = new Set(['urgent_human_support_required', 'safety_clarification_required']);
-      const isSafetyFollowUp = conversationStateRef.current?.dailyState?.safetyStatus === 'pending';
-      if (!urgentSafetyStatuses.has(safetyIntent.status) && !isSafetyFollowUp) {
-        const rejectedId = ++turnSequenceRef.current;
-        setMessages(current => [...current, { id: `user-rejected-${rejectedId}`, role: 'user', text: message, knowledge: [] }, { id: `assistant-rejected-${rejectedId}`, role: 'assistant', text: 'این پرسش در فهرست راهنمای آماده این موضوع نیست. لطفاً یکی از پرسش‌های آماده همین روز را انتخاب کن.', knowledge: [] }]);
-        setDraft('');
-        return;
-      }
+    const selectedDailyQuestion = isPreparedOnlyDailyPromptContext
+      ? activePromptGroups.flatMap((group) => group.questions).find((question) => question.value === message)
+      : null;
+    if (isPreparedOnlyDailyPromptContext && !selectedDailyQuestion) {
+      const rejectedId = ++turnSequenceRef.current;
+      setMessages((current) => [...current,
+        { id: `user-rejected-${rejectedId}`, role: 'user', text: message, knowledge: [] },
+        { id: `assistant-rejected-${rejectedId}`, role: 'assistant', text: 'این دستیار فقط برای سؤال‌های آماده همین روز پاسخ دارد. لطفاً یکی از سؤال‌های فهرست را انتخاب کن.', knowledge: [] },
+      ]);
+      setDraft('');
+      return;
     }
+    const isDailySafetyQuestion = Boolean(selectedDailyQuestion
+      && ['anger_increased', 'anxiety_increased', 'fear_increased', 'hostility_increased', 'talk_other', 'success', 'stop'].includes(selectedDailyQuestion.kind));
     const turnId = ++turnSequenceRef.current;
     const responseId = `assistant-${turnId}`;
-    const updateAssistantMessage = (text, knowledge = []) => {
-      setMessages((current) => current.map((item) => item.id === responseId ? { ...item, text, knowledge } : item));
+    const updateAssistantMessage = (text, knowledge = [], dailySafetyReminder = false) => {
+      setMessages((current) => current.map((item) => item.id === responseId ? { ...item, text, knowledge, dailySafetyReminder } : item));
     };
     setMessages((current) => [...current,
       { id: `user-${turnId}`, role: 'user', text: message, knowledge: [] },
@@ -337,8 +276,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       }
 
       conversationStateRef.current = turn.conversationState || null;
-      const nextSafetyStatus = turn.conversationState?.dailyState?.safetyStatus || 'none';
-      setDailySafetyStageActive(['pending', 'handoff'].includes(nextSafetyStatus));
       let finalMessage = turn.message || 'برای این پرسش پاسخ قابل اتکایی در دسترس نیست.';
       if (!isPreparedOnlyDailyPromptContext && !localModelUnavailable && shouldUseLocalNeuralModel({ screen, turn, intentStatus: intentGate.status, isLibraryTurn })) {
         try {
@@ -350,60 +287,17 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         } catch (modelError) {
           setLocalModelUnavailable(true);
           setLocalModelInstalled(false);
-          if (modelError?.code === 'MODEL_NOT_INSTALLED') finalMessage += `\n\nبرای ارتقای اختیاری پاسخ‌ها، از گزینه «نصب مدل محلی» در بالای پنجره استفاده کن. پاسخ پایه همین حالا در دسترس است.`;
+          if (modelError?.code === 'MODEL_NOT_INSTALLED') finalMessage += '\n\nپاسخ پایه همین حالا در دسترس است.';
           else if (modelError?.code === 'CACHE_UNAVAILABLE' || modelError?.code === 'STORAGE_QUOTA_LOW') finalMessage += `\n\n${LOCAL_MODEL_CACHE_MESSAGE} پاسخ‌گویی پایه همچنان فعال است.`;
           else finalMessage += '\n\nمدل محلی روی این دستگاه اجرا نشد؛ پاسخ بالا از دستیار پایه است و می‌توانی به پرسش‌هایت ادامه بدهی.';
         }
       }
-      updateAssistantMessage(finalMessage, turn.knowledge || []);
+      updateAssistantMessage(finalMessage, turn.knowledge || [], isDailySafetyQuestion);
     } catch {
       updateAssistantMessage('پاسخ آماده نشد. دوباره تلاش کن.');
     } finally {
       setSending(false);
     }
-  }
-
-  async function copyShafaContactNumber() {
-    const internationalNumber = '+989190889062';
-    try {
-      if (!navigator.clipboard?.writeText) throw new Error('Clipboard API unavailable');
-      await navigator.clipboard.writeText(internationalNumber);
-      setShafaContactCopyStatus('شماره تماس کپی شد.');
-    } catch {
-      try {
-        const field = document.createElement('textarea');
-        field.value = internationalNumber;
-        field.setAttribute('readonly', '');
-        field.style.position = 'fixed';
-        field.style.opacity = '0';
-        document.body.appendChild(field);
-        field.select();
-        const copied = document.execCommand('copy');
-        field.remove();
-        setShafaContactCopyStatus(copied ? 'شماره تماس کپی شد.' : 'کپی خودکار در این محیط پشتیبانی نمی‌شود؛ شماره را دستی بردار.');
-      } catch {
-        setShafaContactCopyStatus('کپی خودکار در این محیط پشتیبانی نمی‌شود؛ شماره را دستی بردار.');
-      }
-    }
-  }
-
-  function closeDailySafetyStage() {
-    if (conversationStateRef.current?.dailyState?.safetyStatus !== 'handoff') return;
-    setSafetyCloseConfirmOpen(true);
-  }
-
-  function confirmDailySafetyStageReturn() {
-    conversationStateRef.current = { dailyState: { safetyStatus: 'cleared' } };
-    setDailySafetyStageActive(false);
-    setSafetyCloseConfirmOpen(false);
-    setDraft('');
-    setError('');
-    setMessages((current) => [...current, {
-      id: `assistant-safety-return-${++turnSequenceRef.current}`,
-      role: 'assistant',
-      text: 'گفتی که اکنون خطر فوری وجود ندارد. مرحله حمایت بسته شد و پرسش‌های آماده دستیار دوباره فعال شدند. اگر خطر دوباره ایجاد شد، فوراً کمک انسانی یا اورژانسی بگیر.',
-      knowledge: [],
-    }]);
   }
 
   function containDialogTab(event) {
@@ -452,7 +346,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
           >
             <div className="globalAssistantDialogTop">
               <h2 id="global-assistant-title">دستیار راهنمای مسیر ۲۸</h2>
-              {!isPreparedOnlyDailyPromptContext && <button type="button" className="globalAssistantModelButton" onClick={requestModelInstall} disabled={sending} aria-label="نصب مدل هوش مصنوعی محلی" title="نصب اختیاری مدل هوش مصنوعی روی همین دستگاه">نصب مدل محلی</button>}
               <button ref={closeButtonRef} type="button" className="iconButton" onClick={() => setOpen(false)} aria-label="بستن پنجره دستیار">
                 <AppIcon name="x" size={18} />
               </button>
@@ -548,7 +441,11 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                         </svg>
                       )}
                     </b>
-                    <p>{formatAssistantMessageText(item.text).map((line, lineIndex) => (
+                    <p>{formatAssistantMessageText(
+                      item.dailySafetyReminder && item.text.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN)
+                        ? item.text.slice(0, -DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN.length).trimEnd()
+                        : item.text,
+                    ).map((line, lineIndex) => (
                       <React.Fragment key={lineIndex}>
                         {lineIndex > 0 ? <br /> : null}
                         {line.map((part, partIndex) => part.type === 'strong'
@@ -556,12 +453,14 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                           : <React.Fragment key={partIndex}>{part.text}</React.Fragment>)}
                       </React.Fragment>
                     ))}</p>
-
-                    {item.modelInstallPrompt && (
-                      <div className="globalAssistantModelActions">
-                        <button type="button" onClick={installLocalModel} disabled={sending}>بله، شروع نصب</button>
-                        <button type="button" onClick={() => cancelModelInstall(item.id)} disabled={sending}>فعلاً نه</button>
-                      </div>
+                    {item.dailySafetyReminder && (
+                      <aside className="dailyAssistantSafetyReminder" role="note" data-testid="daily-assistant-safety-reminder">
+                        <h3>یادآوری مهم درباره ایمنی شما</h3>
+                        <p>در طول انجام تمرین‌ امروز، به احساسات و وضعیت روانی خود توجه کنید. اگر احساس کردید فشار روانی شما بیشتر شده، حالتان رو به وخامت است یا ادامه تمرین برایتان آزاردهنده شده، تمرین را متوقف کنید و به خودتان فرصت آرام‌شدن بدهید.</p>
+                        <p>در چنین شرایطی، می‌توانید از یک فرد مورد اعتماد یا متخصص سلامت روان کمک بگیرید. اگر احتمال آسیب به خودتان یا فرد دیگری وجود دارد، موضوع را جدی بگیرید و از خدمات اورژانسی محل زندگی خود کمک فوری دریافت کنید.</p>
+                        <p className="dailyAssistantSafetyReminderShafa">مرکز هیپنوتراپی شفا با شماره تماس ۰۹۱۹۰۸۸۹۰۶۲ همیشه در کل مسیر همراه شماست</p>
+                        <p>به یاد داشته باشید: سلامت و امنیت شما از انجام هر تمرینی مهم‌تر است.</p>
+                      </aside>
                     )}
                     {(item.knowledge || []).map((entry) => (
                       <div className="globalAssistantKnowledge" key={entry.item_id}>
@@ -574,65 +473,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
-              {isTopicDailyPromptContext && dailySafetyStageActive && (
-                <div className="dailyAssistantShafaContact" data-testid="daily-assistant-shafa-contact">
-                  <p className="dailyAssistantShafaGuidance">اگر احساس می‌کنید برای عبور از این شرایط به راهنمایی و حمایت بیشتری نیاز دارید، می‌توانید با مرکز هیپنوتراپی شفا تماس بگیرید.</p>
-                  <span className="dailyAssistantShafaNumber" dir="ltr">۰۹۱۹۰۸۸۹۰۶۲</span>
-                  <button type="button" className="dailyAssistantShafaCopyButton" data-testid="daily-assistant-shafa-copy" onClick={copyShafaContactNumber}>
-                    <AppIcon name="copy" size={15} /> کپی شماره تماس مرکز
-                  </button>
-                  {shafaContactCopyStatus && <span className="dailyAssistantShafaCopyStatus" role="status">{shafaContactCopyStatus}</span>}
-                </div>
-              )}
-              {isTopicDailyPromptContext && (
-                <div className="libraryAssistantPromptRow dailyAssistantSafetyActions" role="group" aria-label={dailySafetyStageActive ? "راه‌های دریافت کمک ایمنی" : "اعلام نیاز به بررسی ایمنی"}>
-                  {!dailySafetyStageActive ? (
-                    <>
-                      <button
-                        type="button"
-                        data-testid="daily-assistant-human-help"
-                        disabled={sending}
-                        onClick={(event) => send(event, 'مطمئن نیستم الان امن هستم یا نه و برای بررسی وضعیت ایمنی‌ام به کمک انسانی نیاز دارم.')}
-                      >مطمئن نیستم الان امن هستم یا نه</button>
-                      <button
-                        type="button"
-                        data-testid="daily-assistant-urgent-help"
-                        disabled={sending}
-                        onClick={(event) => send(event, 'قصد دارم همین الآن به خودم آسیب بزنم یا به شخص دیگری آسیب بزنم و به کمک فوری نیاز دارم.')}
-                      >خطر فوری وجود دارد</button>
-                    </>
-                  ) : (
-                    <>
-                      {conversationStateRef.current?.dailyState?.safetyStatus === 'pending' && (
-                        <>
-                          <button type="button" data-testid="daily-assistant-safety-no" disabled={sending}
-                            onClick={(event) => send(event, 'نه، همین حالا خطر فوری ندارم و قصد یا برنامه عملی برای آسیب ندارم.')}>
-                            نه، خطر فوری ندارم
-                          </button>
-                          <button type="button" data-testid="daily-assistant-safety-uncertain" disabled={sending}
-                            onClick={(event) => send(event, 'بله یا مطمئن نیستم؛ ممکن است خطر وجود داشته باشد.')}>
-                            بله یا مطمئن نیستم
-                          </button>
-                        </>
-                      )}
-                    </>
-                  )}
-                </div>
-              )}
-              {isTopicDailyPromptContext && dailySafetyStageActive ? (
-                <div className="dailyAssistantSafetyActions" role="group" aria-label="پایان مرحله حمایت">
-                  {conversationStateRef.current?.dailyState?.safetyStatus === 'handoff' && (safetyCloseConfirmOpen ? (
-                    <>
-                      <p className="safetyNote" role="alert">پیش از بازگشت، فقط اگر واقعاً اکنون خطر فوری برطرف شده و می‌توانی در امنیت بمانی، تأیید کن. اگر هنوز در خطری یا مطمئن نیستی، این مرحله را نبند و کمک انسانی/اورژانسی را دنبال کن.</p>
-                      <button type="button" data-testid="daily-assistant-confirm-safe-return" onClick={confirmDailySafetyStageReturn} disabled={sending}>بله، اکنون خطر فوری ندارم</button>
-                      <button type="button" data-testid="daily-assistant-cancel-safe-return" onClick={() => setSafetyCloseConfirmOpen(false)} disabled={sending}>نه، هنوز مطمئن نیستم</button>
-                    </>
-                  ) : (
-                    <button type="button" className="dailyAssistantReturnButton" data-testid="daily-assistant-return-to-daily" onClick={closeDailySafetyStage} disabled={sending}>درخواست بازگشت به پرسش‌های آماده</button>
-                  ))}
-                  {conversationStateRef.current?.dailyState?.safetyStatus === 'pending' && <p className="safetyNote" role="status">برای ادامه، وضعیت ایمنی را با یکی از پاسخ‌های بالا روشن کن. تا آن زمان سؤال‌های روزانه غیرفعال‌اند.</p>}
-                </div>
-              ) : (
               <form className={'assistantComposer' + (isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled) ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} data-jealousy-daily-prompt={String(isJealousyDailyPromptContext)} onSubmit={send}>
                 {(isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled)) ? (
                   <div className="libraryAssistantPromptRow">
@@ -673,7 +513,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 )}
                 {error && <p className="contactHelp assistantComposerError" role="alert">{error}</p>}
               </form>
-              )}
             </div>
           </section>
         </div>

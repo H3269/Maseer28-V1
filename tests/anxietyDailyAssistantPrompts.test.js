@@ -84,7 +84,7 @@ test('stop answer includes the exact daily stop condition and urgent safety hand
   const guide = ANXIETY_DAILY_ASSISTANT_GUIDES[26];
   const answer = answerAnxietyDailyPreparedQuestion({ day: 27, message: guide.questions.find((item) => item.kind === 'stop').value });
   assert.ok(answer.includes(guide.stopCondition));
-  assert.match(answer, /خدمات اضطراری/);
+  assert.match(answer, /خدمات اورژانسی/);
   assert.match(answer, /ارزیابی پزشکی/);
 });
 

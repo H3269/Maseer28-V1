@@ -1,4 +1,5 @@
 import { cleanPreparedAssistantTopicText } from './teacherStylePreparedAnswer.js';
+import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 // Prepared-only daily guidance for T04. Self-hatred is classified and referred to T18; no self-hatred intervention is delivered here.
 export const HATRED_DAILY_ASSISTANT_GUIDES = [
   {
@@ -2973,8 +2974,7 @@ export const HATRED_DAILY_ASSISTANT_GUIDES = [
 export function toHatredDayNumber(value){const n=Number(String(value??'').replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))));return Number.isInteger(n)&&n>=1&&n<=28?n:null;}
 export function getHatredDailyAssistantPromptGroups(day){const n=toHatredDayNumber(day),g=HATRED_DAILY_ASSISTANT_GUIDES.find(x=>x.day===n);if(!g)return[];return[{label:'فهم تمرین روز '+g.day,questions:g.questions.filter(x=>['exercise_meaning','exercise_example'].includes(x.kind))},{label:'فهم اقدام اختصاصی روز '+g.day,questions:g.questions.filter(x=>['action_meaning','action_example'].includes(x.kind))},{label:'تفاوت تمرین و اقدام',questions:g.questions.filter(x=>x.kind==='exercise_action_difference')},{label:'اجرا و موانع',questions:g.questions.filter(x=>['light_version','not_done','no_event','can_change','duration'].includes(x.kind))},{label:'ارزیابی و ایمنی',questions:g.questions.filter(x=>['hostility_increased','talk_other','success','stop'].includes(x.kind))}];}
 const heading=g=>'راهنمای روز '+String(g.day).replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[+d])+' نفرت — '+g.title;
-const commonSafety='این راهنما آموزشی است و تشخیص یا درمان نیست. احساس نفرت مجوز تهدید، تحقیر، تعقیب، افشا، تبعیض یا آسیب نیست؛ تجربه واقعی خشونت، تبعیض یا نقض مرز را نیز انکار نکن. بخشایش، آشتی، تماس یا گفت‌وگوی مستقیم اجباری نیست. در خطر فوری برای تو یا دیگری، تمرین را متوقف کن، فاصله امن ایجاد کن و از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر. اگر تجربه‌ات نفرت از خود است، این مسیر را ادامه نده و مسیر «نفرت از خود» را انتخاب کن.';
-function safetyFor(g){return commonSafety+'\n\n**نکته ایمنی ویژه روز '+g.day+' («'+g.title+'»):**\n'+g.stopCondition;}
+function safetyFor(){return '';}
 function teachingIntro(g){return heading(g)+'\n\n**بیاییم قدم‌به‌قدم پیش برویم.**\nاین راهنما مربوط به روز '+g.day+' و مهارت «'+g.skill+'» است. قرار نیست احساس خودت را انکار کنی یا درباره نیت دیگری بدون شواهد حکم قطعی بدهی.';}
 function workedSteps(g,example,kind){
  const isExercise=kind==='exercise_example';
@@ -2995,7 +2995,7 @@ function answerHatredDailyPreparedQuestionRaw({day,message,dailyContent}={}){
  case'action_example':return intro+'\n\n'+workedSteps(g,g.actionExample,'action_example')+'\n\n'+s;
  case'light_version':return intro+'\n\n**نسخه ساده‌تر و قابل انجام**\n'+g.lightVersion+'\n\nیعنی لازم نیست تمام مراحل نسخه اصلی را انجام بدهی. فقط همین بخش کوچک را انجام بده و بعد مکث کن. هدف، حفظ جهت تمرین است نه فشارآوردن به خودت.\n\n**اگر همین هم سخت بود:** فعلاً توقف کن؛ مجبور نیستی تمرین را کامل کنی.\n\n**معیار:** '+g.successCriterion+'\n\n'+s;
  case'success':return intro+'\n\n**معیار موفقیت امروز**\n'+g.successCriterion+'\n\nاین معیار را مثل یک چک ساده بررسی کن: آیا کاری که از تو خواسته شده انجام شده یا دست‌کم بخش قابل انجام آن روشن شده است؟ لازم نیست احساس نفرت از بین برود یا نتیجه رابطه تغییر کند. این تمرین آزمون شخصیت یا نمره روان‌شناختی نیست.\n\n**پرسش بازبینی:** '+g.reflectionQuestion+'\n\n'+s;
- case'stop':return intro+'\n\n**چه زمانی مکث یا توقف لازم است؟**\n'+g.stopCondition+'\n\nاگر تمرین باعث تشدید شدید فشار، میل به تهدید/تعقیب/تلافی، یا احساس ناامنی شد، همان‌جا متوقفش کن. وارد مواجهه یا گفت‌وگوی مستقیم نشو. اگر خطر واقعی یا فوری برای تو یا دیگری وجود دارد، از موقعیت فاصله بگیر و کمک انسانی فوری بگیر.\n\nتوقف به‌موقع شکست نیست؛ بخشی از اجرای ایمن تمرین است.\n\n'+s;
+ case'stop':return intro+'\n\n**چه زمانی مکث یا توقف لازم است؟**\n'+g.stopCondition+(g.subtopic==='T04-S02'?'\n\nاگر تجربه اصلی تو نفرت از خود است، این مسیر را ادامه نده و مسیر «نفرت از خود» را انتخاب کن.':'')+'\n\nاگر تمرین باعث تشدید شدید فشار، میل به تهدید/تعقیب/تلافی، یا احساس ناامنی شد، همان‌جا متوقفش کن. وارد مواجهه یا گفت‌وگوی مستقیم نشو. اگر خطر واقعی یا فوری برای تو یا دیگری وجود دارد، از موقعیت فاصله بگیر و کمک انسانی فوری بگیر.\n\nتوقف به‌موقع شکست نیست؛ بخشی از اجرای ایمن تمرین است.\n\n'+s;
  case'no_event':return intro+'\n\n**اگر امروز چنین موقعیتی پیش نیامد**\nلازم نیست تعارضی ایجاد کنی یا برای انجام تمرین به کسی پیام بدهی. سه انتخاب داری:\n۱. اگر نمونه‌ای از گذشته داری و مرورش فشار ایجاد نمی‌کند، فقط یک نمونه کم‌فشار را در ذهن مرور کن.\n۲. نسخه سبک را انجام بده: '+g.lightVersion+'\n۳. اگر هیچ‌کدام مناسب نیست، امروز مکث کن و روز را بدون تمرین اجباری بگذران.\n\nهدف، تمرین مهارت است؛ ساختن موقعیت تنش‌زا نیست.\n\n'+s;
  case'exercise_action_difference':return intro+'\n\n**فرق این دو را با هم ببینیم**\n**تمرین امروز:**\n'+e+'\n\nتمرین به تو کمک می‌کند موضوع را مشاهده یا بهتر درک کنی.\n\n**اقدام اختصاصی امروز:**\n'+a+'\n\nاقدام یک گام عملی و در اختیار خودت است؛ انجام آن اختیاری و وابسته به ایمنی است.\n\n**خلاصه:** تمرین یعنی «چه چیزی را بررسی یا یاد می‌گیرم؟»؛ اقدام یعنی «در صورت امن‌بودن، چه کار کوچکی از دست خودم برمی‌آید؟» این دو جای یکدیگر را نمی‌گیرند.\n\n'+s;
  case'not_done':return intro+'\n\n**اگر انجام ندادی یا فراموش کردی**\nلازم نیست خودت را سرزنش کنی یا چند مرحله را یک‌جا جبران کنی. اول ببین چه چیزی مانع شد: فراموشی، نبود موقعیت، خستگی یا ناامن‌بودن شرایط؟ اگر شرایط مناسب نبود، توقف تصمیم درستی بوده است.\n\n**برای برگشت ساده:** در فرصت بعدی فقط نسخه سبک را انتخاب کن: '+g.lightVersion+'\n\nقرار نیست با فشار یا عجله عقب‌ماندگی را جبران کنی.\n\n'+s;
@@ -3009,5 +3009,10 @@ function answerHatredDailyPreparedQuestionRaw({day,message,dailyContent}={}){
 
 export function answerHatredDailyPreparedQuestion(args = {}) {
   const answer = answerHatredDailyPreparedQuestionRaw(args);
-  return answer ? cleanPreparedAssistantTopicText(answer, 'نفرت') : null;
+  if (!answer) return null;
+  const cleaned = cleanPreparedAssistantTopicText(answer, 'نفرت');
+  const day = toHatredDayNumber(args.day);
+  const guide = HATRED_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
+  const question = guide?.questions.find((item) => item.value === String(args.message || '').trim());
+  return appendDailyAssistantSafetyReminder(cleaned, question?.kind);
 }

@@ -242,7 +242,7 @@ jobs:
 # Feature-specific PRs use a bounded test set; never fall through to the full 34-topic suite.
   validate-assistant-safety-ui:
     name: Validate assistant safety UI (T01-T05)
-    if: ${{ github.event_name == 'pull_request' && (startsWith(github.head_ref, 'fix/assistant-safety-return-contact-') || startsWith(github.head_ref, 'fix/shafa-contact-guidance-') || startsWith(github.head_ref, 'fix/shafa-contact-visible-through-safety-stage-')) }}
+    if: ${{ github.event_name == 'pull_request' && (startsWith(github.head_ref, 'fix/assistant-safety-return-contact-') || startsWith(github.head_ref, 'fix/shafa-contact-guidance-') || startsWith(github.head_ref, 'fix/shafa-contact-visible-through-safety-stage-') || startsWith(github.head_ref, 'assistant/daily-safety-footer-')) }}
     runs-on: ubuntu-24.04
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
@@ -272,6 +272,8 @@ jobs:
           tests/jealousyDailyAssistantPrompts.test.js
           tests/preparedOnlyCurrentTopics.test.js
           tests/dailySafety.test.mjs
+          tests/assistantMessageFormatting.test.js
+          tests/dailyAssistantSafetyReminder.test.js
       - name: Build application
         run: |
           PATH28_DEPLOY_BASE=/Maseer28/ npm run prepare:production

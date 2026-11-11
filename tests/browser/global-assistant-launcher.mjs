@@ -85,11 +85,11 @@ try {
   let closeButton = dialog.getByRole('button', { name: 'بستن پنجره دستیار' });
   await page.waitForFunction(() => document.activeElement?.getAttribute('aria-label') === 'بستن پنجره دستیار');
   assert.equal(await launcher.getAttribute('aria-expanded'), 'true');
-  // The visible model-install button is the first focusable control in DOM order;
-  // the enabled send button is last. Test the actual order rather than assuming
-  // the close button is first (the install action was added to the header later).
+  // The model-install action is intentionally absent; the close control is first.
+  assert.equal(await dialog.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
+    'the local-model installation button must be removed from the entire assistant');
   await dialog.getByRole('textbox').fill('آزمون گردش فوکوس');
-  const firstDialogControl = dialog.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' });
+  const firstDialogControl = closeButton;
   const lastDialogControl = dialog.getByRole('button', { name: 'ارسال' });
   await firstDialogControl.focus();
   await page.keyboard.press('Shift+Tab');
@@ -234,68 +234,38 @@ try {
   assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 1,
     'the prepared-question picker must remain available after successful local-model installation');
 
-  // Safety handoff must expose a WebView-safe copy action without replacing emergency guidance.
-  const humanHelp = dialog.getByTestId('daily-assistant-human-help');
-  const urgentHelp = dialog.getByTestId('daily-assistant-urgent-help');
-  assert.ok(await humanHelp.isVisible() && await urgentHelp.isVisible(), 'both safety actions must remain visible');
-  const safetyButtonMetrics = await Promise.all([humanHelp, urgentHelp].map((button) => button.evaluate((element) => {
-    const style = getComputedStyle(element);
-    return { height: element.getBoundingClientRect().height, border: style.borderTopColor, background: style.backgroundColor };
-  })));
-  assert.ok(safetyButtonMetrics.every((item) => item.height <= 42), 'safety buttons must stay compact');
-  assert.notEqual(safetyButtonMetrics[0].border, safetyButtonMetrics[1].border, 'help and urgent-risk actions must have distinct but restrained colors');
-  // Shafa contact must appear as soon as the safety-support stage starts,
-  // even when the assistant's message does not contain an emergency keyword.
-  await humanHelp.click();
-  const shafaContact = dialog.getByTestId('daily-assistant-shafa-contact');
-  // The clicked text is a user message, not an assistant message. Wait for the
-  // safety-stage contact UI itself instead of searching assistant bubbles for it.
-  await shafaContact.waitFor({ state: 'visible' });
-  assert.doesNotMatch(await dialog.locator('.assistantMessage').last().innerText(), /اورژانس|خدمات اورژانسی/u,
-    'the Shafa contact must not depend on emergency wording in the assistant message');
-  await dialog.getByRole('button', { name: /بله یا مطمئن نیستم/ }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some((node) => /اورژانس|خدمات اورژانسی/u.test(node.innerText)));
-  await shafaContact.waitFor({ state: 'visible' });
-  assert.equal(await shafaContact.getByRole('link').count(), 0, 'safety contact must not depend on a tel: deep link inside Telegram/Bale WebViews');
-  assert.match(await shafaContact.innerText(), /۰۹۱۹۰۸۸۹۰۶۲/u);
-  assert.match(await shafaContact.innerText(), /اگر احساس می‌کنید برای عبور از این شرایط به راهنمایی و حمایت بیشتری نیاز دارید، می‌توانید با مرکز هیپنوتراپی شفا تماس بگیرید/u, 'safety contact must explain clearly when and why to contact Shafa');
-  await page.evaluate(() => {
-    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async (value) => { window.__shafaCopiedNumber = value; } } });
-  });
-  await shafaContact.getByTestId('daily-assistant-shafa-copy').click();
-  await page.waitForFunction(() => window.__shafaCopiedNumber === '+989190889062');
-  assert.match(await shafaContact.innerText(), /شماره تماس کپی شد/u, 'copy action must provide clear success feedback');
-  assert.match(await dialog.locator('.assistantMessage').last().innerText(), /اورژانس|خدمات اورژانسی/u,
-    'the Shafa contact must supplement, not replace, emergency guidance');
-  assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 0,
-    'prepared daily questions must be hidden while the human-support stage is active');
-  const returnToDaily = dialog.getByTestId('daily-assistant-return-to-daily');
-  await returnToDaily.waitFor({ state: 'visible' });
-  assert.equal(await returnToDaily.innerText(), 'درخواست بازگشت به پرسش‌های آماده');
-  const returnButtonStyle = await returnToDaily.evaluate((element) => ({
-    before: getComputedStyle(element, '::before').content,
-    after: getComputedStyle(element, '::after').content,
-    borderRadius: getComputedStyle(element).borderRadius,
-  }));
-  assert.equal(returnButtonStyle.before, 'none', 'return button must not show a decorative line before its text');
-  assert.equal(returnButtonStyle.after, 'none', 'return button must not show a decorative line after its text');
-  assert.ok(Number.parseFloat(returnButtonStyle.borderRadius) >= 10, 'return button must use the app-aligned rounded button shape');
-  await returnToDaily.click();
-  assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 0,
-    'the handoff must remain active until the user explicitly confirms that immediate danger has passed');
-  await dialog.getByTestId('daily-assistant-confirm-safe-return').click();
-  const restoredDailyPicker = dialog.getByTestId('anger-daily-prompt-trigger');
-  await restoredDailyPicker.waitFor({ state: 'visible' });
-  await restoredDailyPicker.click();
-  const restoredQuestionDialog = page.locator('#library-assistant-prompt-dialog');
-  await restoredQuestionDialog.waitFor({ state: 'visible' });
-  await restoredQuestionDialog.locator('[data-prompt-option]').first().click();
+  // Prepared safety FAQ answers render one highlighted reminder card; no nested controls remain.
+  assert.equal(await dialog.getByTestId('daily-assistant-human-help').count(), 0);
+  assert.equal(await dialog.getByTestId('daily-assistant-urgent-help').count(), 0);
+  assert.equal(await dialog.getByTestId('daily-assistant-return-to-daily').count(), 0);
+  await dialog.getByTestId('anger-daily-prompt-trigger').click();
+  const safetyPromptDialog = page.locator('#library-assistant-prompt-dialog');
+  await safetyPromptDialog.waitFor({ state: 'visible' });
+  await safetyPromptDialog.getByRole('button', { name: 'از کجا بفهمم درست انجامش داده‌ام؟' }).click();
+  const previousSafetyReplyCount = await dialog.locator('.assistantMessage').count();
   await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some((node) => /راهنمای روز ۱ خشم/u.test(node.innerText)));
-  assert.match(await dialog.locator('.assistantMessage').last().innerText(), /راهنمای روز ۱ خشم/u,
-    'closing the support stage must restore the exact prepared answer for the same day');
+  await page.waitForFunction((previous) => {
+    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+    return replies.length > previous && Boolean(replies.at(-1)?.querySelector('[data-testid="daily-assistant-safety-reminder"]'));
+  }, previousSafetyReplyCount);
+  const safetyReply = dialog.locator('.assistantMessage').last();
+  assert.equal(await safetyReply.getByTestId('daily-assistant-safety-reminder').count(), 1);
+  assert.equal(await safetyReply.locator('.dailyAssistantSafetyReminderShafa').innerText(),
+    'مرکز هیپنوتراپی شفا با شماره تماس ۰۹۱۹۰۸۸۹۰۶۲ همیشه در کل مسیر همراه شماست');
+  assert.ok(Number(await safetyReply.locator('.dailyAssistantSafetyReminderShafa')
+    .evaluate(element => getComputedStyle(element).fontWeight)) >= 700);
+  await dialog.getByTestId('anger-daily-prompt-trigger').click();
+  const normalQuestionDialog = page.locator('#library-assistant-prompt-dialog');
+  await normalQuestionDialog.waitFor({ state: 'visible' });
+  await normalQuestionDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
+  const previousNormalReplyCount = await dialog.locator('.assistantMessage').count();
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction((previous) => {
+    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+    return replies.length > previous && /بیا تمرین امروز را ساده و روشن باز کنیم/.test(replies.at(-1)?.innerText || '');
+  }, previousNormalReplyCount);
+  assert.equal(await dialog.locator('.assistantMessage').last().getByTestId('daily-assistant-safety-reminder').count(), 0,
+    'normal prepared answers must not inherit the safety reminder');
 
   await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await dialog.waitFor({ state: 'detached' });
@@ -372,29 +342,12 @@ try {
   assert.match(await libraryFollowUp.innerText(), /هنر شناخت و دگرگونی احساسات/u);
   assert.match(await libraryFollowUp.innerText(), /نکته|مهم/u);
 
-  // A failed optional model installation must not disable the deterministic library assistant.
-  const installModelButton = dialog.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' });
-  assert.equal(await installModelButton.isVisible(), true, 'model installation must be discoverable without memorizing a command');
-  // Force a deterministic offline failure across every model CDN/redirect host.
-  // Intercepting only huggingface.co can miss CDN subdomains and start a real download.
-  await page.context().setOffline(true);
-  await installModelButton.click();
-  await dialog.getByRole('button', { name: 'بله، شروع نصب' }).waitFor({ state: 'visible' });
-  await dialog.getByRole('button', { name: 'بله، شروع نصب' }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /دستیار پایه همچنان فعال است/u.test(node.innerText)));
-  await page.context().setOffline(false);
-  const fallbackPromptPicker = dialog.getByRole('button', { name: 'باز کردن سؤال‌های آماده دستیار کتابخانه' });
-  await fallbackPromptPicker.waitFor({ state: 'visible' });
-  await fallbackPromptPicker.click();
-  promptDialog = page.getByRole('dialog', { name: 'سؤال آماده دستیار کتابخانه' });
-  await promptDialog.getByRole('button', { name: 'خلاصه کتاب چهارم را بگو.' }).click();
-  await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /خلاصه راهنمای محتوایی/u.test(node.innerText)));
-  const fallbackAfterInstallFailure = dialog.locator('.assistantMessage').last();
-  assert.equal(await fallbackPromptPicker.isVisible(), true, 'failed installation must retain the guided base-mode question list');
-  assert.equal(await dialog.getByRole('textbox').count(), 0, 'failed installation must keep free typing hidden');
-  assert.match(await fallbackAfterInstallFailure.innerText(), /شاهد کوتاه متن|منبع:/u, 'the book assistant must continue returning a grounded base answer after model installation fails');
-  assert.doesNotMatch(await fallbackAfterInstallFailure.innerText(), /این گوشی یا مرورگر نتوانست مدل محلی را اجرا کند/u, 'the installation failure must not replace later answers');
+  // Local-model installation is no longer offered anywhere in the assistant UI.
+  assert.equal(await dialog.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
+    'the library assistant must not expose a local-model installation button');
+  const guidedLibraryPicker = dialog.getByRole('button', { name: 'باز کردن سؤال‌های آماده دستیار کتابخانه' });
+  assert.equal(await guidedLibraryPicker.isVisible(), true,
+    'removing the installation button must not disable the prepared library assistant');
 
   // A valid installed-model marker switches only the Library composer to free-form mode.
   await page.evaluate(async () => {

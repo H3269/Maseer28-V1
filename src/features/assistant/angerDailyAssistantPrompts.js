@@ -1,4 +1,5 @@
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
+import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 // Daily prepared guidance for the T01 anger path. Content is grounded in the reviewed 28-day draft.
 export const ANGER_DAILY_ASSISTANT_GUIDES = [
   {
@@ -77,8 +78,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -177,8 +178,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -277,8 +278,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -377,8 +378,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -477,8 +478,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -577,8 +578,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -677,8 +678,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -777,8 +778,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -877,8 +878,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -977,8 +978,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -1077,8 +1078,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -1177,8 +1178,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -1277,8 +1278,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -1377,8 +1378,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -1477,8 +1478,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -1577,8 +1578,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -1677,8 +1678,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -1777,8 +1778,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -1877,8 +1878,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -1977,8 +1978,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -2077,8 +2078,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -2177,8 +2178,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -2277,8 +2278,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -2377,8 +2378,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -2477,8 +2478,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -2577,8 +2578,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -2677,8 +2678,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -2777,8 +2778,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "anger_increased",
-        "label": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
-        "value": "اگر هنگام تمرین فشار روانی بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟",
         "kind": "anger_increased"
       },
       {
@@ -2942,7 +2943,7 @@ function angerGuideHeading(guide) {
 }
 
 function safeAngerReminder() {
-  return 'این تمرین برای شناخت و انتخاب رفتار امن‌تر است، نه برای سرکوب احساس خشم یا مجبورکردن خودت به ادامه یک موقعیت دشوار. اگر احتمال فوری آسیب به خودت، فرد دیگری یا اموال وجود دارد، تمرین را کنار بگذار، فاصله امن ایجاد کن و از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر.';
+  return '';
 }
 
 function answerAngerDailyPreparedQuestionRaw({ day, message } = {}) {
@@ -3078,5 +3079,5 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   const day = toAngerDayNumber(args.day);
   const guide = ANGER_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
   const question = guide?.questions.find((item) => item.value === String(args.message || '').trim());
-  return addTeacherStyleFrame(answer, { guide, question, topic: 'خشم' });
+  return appendDailyAssistantSafetyReminder(addTeacherStyleFrame(answer, { guide, question, topic: 'خشم' }), question?.kind);
 }
