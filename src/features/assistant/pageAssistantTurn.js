@@ -84,8 +84,16 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         || preparedSource.topic_id == null
         || preparedSource.topic_id === preparedTopicId);
 
+    const hasPendingSafetyExchange = ['pending', 'handoff'].includes(conversationState?.dailyState?.safetyStatus);
+    const hasExplicitSafetyHandoff = inputProbe.intake?.safety_handoff?.handoff_required === true;
+    const hasExactJealousyPreparedQuestion = preparedTopicId === 'T05'
+      && Boolean(answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }));
     const jealousyRelationshipGate = preparedTopicId === 'T05' ? getRelationshipSafetyGate(preparedSource) : null;
-    if (jealousyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true) {
+    if (jealousyRelationshipGate
+      && hasExactJealousyPreparedQuestion
+      && !hasPendingSafetyExchange
+      && !hasExplicitSafetyHandoff
+      && dailyContext?.relationshipSafetyConfirmed !== true) {
       return Object.freeze({
         status: dailyContext?.relationshipSafetyResponse === 'unsafe'
           ? 'relationship_safety_blocked'
