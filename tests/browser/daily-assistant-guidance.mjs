@@ -423,17 +423,20 @@ try {
   assert.match(await jealousySafeGatePage.locator('#library-assistant-prompt-dialog').innerText(), /سؤال‌های آماده روز ۱۶ حسادت/);
   await jealousySafeGatePage.close();
 
-  // T01 is now prepared-only even when a local model is cached. Safety controls
-  // remain available and their answers must preempt prepared FAQs.
+  // T01 is prepared-only: there are no nested safety action buttons or free-text composer.
   await openDay(page, { localModelInstalled: true });
   const panel = page.locator('.globalAssistantDialog');
   await panel.waitFor({ state: 'visible' });
   assert.equal(await panel.locator('#global-assistant-message').count(), 0,
     'T01 must never expose free-form typing, even with a cached local model');
-  assert.equal(await panel.locator('.globalAssistantModelButton').count(), 0,
-    'T01 must not expose local model installation');
-  assert.ok(await panel.getByTestId('daily-assistant-human-help').isVisible(),
-    'T01 must expose an active safety clarification control');
+  assert.equal(await panel.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
+    'the local-model installation button must be absent from every assistant screen');
+  assert.equal(await panel.getByTestId('daily-assistant-human-help').count(), 0,
+    'the obsolete nested human-help button must be removed');
+  assert.equal(await panel.getByTestId('daily-assistant-urgent-help').count(), 0,
+    'the obsolete nested urgent-help button must be removed');
+  assert.equal(await panel.getByTestId('daily-assistant-return-to-daily').count(), 0,
+    'the obsolete return-to-questions button must be removed');
   const trigger = panel.getByTestId('anger-daily-prompt-trigger');
   await trigger.waitFor({ state: 'visible' });
   await page.waitForFunction(() => {
@@ -454,45 +457,50 @@ try {
   assert.match(assistantReply, /چرا این تمرین به درد می‌خورد/);
   assert.match(assistantReply, /یک موقعیت کم‌فشار را انتخاب کن/);
   assert.match(assistantReply, /تفکیک رویداد، احساس و رفتار/);
+  assert.equal(await panel.getByTestId('daily-assistant-safety-reminder').count(), 0,
+    'ordinary exercise questions must not show the safety reminder card');
   const angerDayBadge = normalizeVisibleDailyText(await page.locator('#dayBadge').innerText());
   assert.ok(angerDayBadge.includes('خشم') && angerDayBadge.includes('روز 1'),
     'the prepared answer must correspond to the currently displayed anger day');
   await assertAssistantUsesVisibleDailySource(page, panel, 'خشم', 1, ['exercise']);
 
-  await panel.getByTestId('daily-assistant-human-help').click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => /آیا همین الآن خطر فوری/.test(node.innerText)));
-  assistantReply = await panel.locator('.assistantMessage').last().innerText();
-  assert.match(assistantReply, /آیا همین الآن خطر فوری/);
-  assert.doesNotMatch(assistantReply, /متن تمرین همین روز/);
-  assert.ok(await panel.getByTestId('daily-assistant-safety-no').isVisible());
-  assert.ok(await panel.getByTestId('daily-assistant-safety-uncertain').isVisible());
+  // Each of the four questions in the evaluation/safety group gets the same footer.
+  for (const safetyQuestion of [
+    'اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟',
+    'آیا لازم است حتماً با فرد دیگری صحبت کنم؟',
+    'از کجا بفهمم درست انجامش داده‌ام؟',
+    'چه زمانی باید تمرین امروز را متوقف کنم؟',
+  ]) {
+    await panel.getByTestId('anger-daily-prompt-trigger').click();
+    const promptDialog = page.locator('#library-assistant-prompt-dialog');
+    await promptDialog.waitFor({ state: 'visible' });
+    await promptDialog.getByRole('button', { name: safetyQuestion }).click();
+    await panel.getByRole('button', { name: 'ارسال' }).click();
+    await page.waitForFunction((questionCount) => {
+      const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+      return replies.some(node => node.innerText.includes('مرکز هیپنوتراپی شفا با شماره تماس ۰۹۱۹۰۸۸۹۰۶۲'));
+    }, null, 1);
+    const reply = panel.locator('.assistantMessage').last();
+    assert.equal(await reply.getByTestId('daily-assistant-safety-reminder').count(), 1,
+      'each evaluation/safety answer must contain exactly one reminder card');
+    assert.match(await reply.innerText(), /یادآوری مهم درباره ایمنی شما/);
+    assert.match(await reply.innerText(), /به یاد داشته باشید: سلامت و امنیت شما از انجام هر تمرینی مهم‌تر است/);
+    const shafaLine = reply.locator('.dailyAssistantSafetyReminderShafa');
+    assert.equal(await shafaLine.innerText(), 'مرکز هیپنوتراپی شفا با شماره تماس ۰۹۱۹۰۸۸۹۰۶۲ همیشه در کل مسیر همراه شماست');
+    assert.ok(Number(await shafaLine.evaluate(element => getComputedStyle(element).fontWeight)) >= 700,
+      'the Shafa contact line must be visibly bold');
+  }
 
-  await panel.getByTestId('daily-assistant-safety-no').click();
+  // Returning to a normal prepared question must not leak the reminder state.
+  await panel.getByTestId('anger-daily-prompt-trigger').click();
+  const normalPrompt = page.locator('#library-assistant-prompt-dialog');
+  await normalPrompt.waitFor({ state: 'visible' });
+  await normalPrompt.getByRole('button', { name: 'تمرین و اقدام امروز چه تفاوتی دارند؟' }).click();
+  await panel.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => /ممنون که روشن کردی/.test(node.innerText)));
-  assert.equal(await panel.getByTestId('daily-assistant-safety-no').count(), 0,
-    'the no-immediate-danger answer must clear the pending safety question');
-
-  await panel.getByTestId('daily-assistant-human-help').click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .filter(node => /آیا همین الآن خطر فوری/.test(node.innerText)).length >= 2);
-  await panel.getByTestId('daily-assistant-safety-uncertain').click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => /کمک فوری انسانی/.test(node.innerText)));
-  assistantReply = await panel.locator('.assistantMessage').last().innerText();
-  assert.match(assistantReply, /کمک فوری انسانی/);
-  assert.doesNotMatch(assistantReply, /متن تمرین همین روز/);
-
-  // A prepared FAQ cannot bypass an active human-support handoff.
-  // The daily picker and ordinary composer must be absent, not merely rejected
-  // after submission; the dedicated handoff/return browser test covers recovery.
-  assert.equal(await trigger.count(), 0,
-    'prepared daily questions must be hidden while a human-support handoff is active');
-  assert.equal(await panel.locator('.assistantComposer').count(), 0,
-    'the ordinary daily composer must be hidden while a human-support handoff is active');
-  assert.ok(await panel.getByTestId('daily-assistant-return-to-daily').isVisible(),
-    'the handoff must expose only its explicit safe-return flow');
+    .some(node => /تفاوت تمرین و اقدام امروز/.test(node.innerText)));
+  assert.equal(await panel.locator('.assistantMessage').last().getByTestId('daily-assistant-safety-reminder').count(), 0,
+    'ordinary questions after a safety answer must not inherit the reminder card');
 
   const storedValues = await page.evaluate(() => Object.keys(localStorage).map((key) => localStorage.getItem(key) || '').join('\n'));
   assert.equal(storedValues.includes(privateMarker), false, 'assistant transcript must not be persisted to localStorage');
