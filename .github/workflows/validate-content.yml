@@ -234,6 +234,7 @@ jobs:
           path: npm-audit-report.json
           if-no-files-found: error
 
+# Topic-package PRs are validated in isolation; the full 34-topic suite is reserved for integration.
   validate-topic-package:
     name: Validate one topic package
     if: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'content/t') }}
