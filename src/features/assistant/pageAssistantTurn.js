@@ -48,9 +48,9 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       return Object.freeze({ status: 'input_too_long', message: 'پیام بیش از حد طولانی است؛ لطفاً آن را کوتاه‌تر کن.', knowledge: Object.freeze([]), conversationState: null });
     }
 
-    // Exact, pre-authored T01/T02/T03/T04 FAQs are bounded educational routes.
-    // Validate canonical topic/day identity before answering; free-form
-    // guidance continues through the separate safety and review gates.
+    // Current topic assistants answer only exact, pre-authored day-specific FAQs.
+    // Validate canonical topic/day identity before answering; safety routing
+    // remains available and takes precedence over every prepared question.
     const preparedDay = Number(dailyContext?.day);
     const preparedSource = dailyContext?.data;
     // Prepared FAQ answers must quote the exact transformed daily content shown
