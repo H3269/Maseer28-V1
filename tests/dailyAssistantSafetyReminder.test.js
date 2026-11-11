@@ -38,7 +38,7 @@ test('T01-T05 append the shared safety reminder to exactly the four safety/evalu
 
       for (const question of guide.questions) {
         const expected = safetyKinds.has(question.kind);
-        const answer = topic.answer({ day: guide.day, message: question.value });
+        const answer = topic.answer({ day: guide.day, message: question.value, dailyContent: { exercise: guide.exercise, actionText: guide.action } });
         assert.equal(typeof answer, 'string', `${topic.id} day ${guide.day} ${question.kind} must resolve to an answer`);
         const reminderCount = answer.split(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN).length - 1;
         assert.equal(reminderCount, expected ? 1 : 0,
