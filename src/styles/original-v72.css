@@ -6807,10 +6807,6 @@ body:not(.bale-webview) .bottomNav button.active:after {
   border-radius: 10px; background: #edf5f1; color: #245d53; font: inherit; font-size: 12px;
   font-weight: 700; cursor: pointer; white-space: nowrap;
 }
-.globalAssistantModelButton:disabled { opacity: .55; cursor: wait; }
-.globalAssistantModelActions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-.globalAssistantModelActions button { min-height: 36px; padding: 7px 12px; border: 1px solid #b9d2c8; border-radius: 9px; background: #edf5f1; color: #245d53; font: inherit; font-size: 12px; font-weight: 700; }
-.globalAssistantModelActions button:last-child { background: transparent; color: var(--muted); }
 .globalAssistantDialogTop .iconButton {
   flex: 0 0 40px; width: 40px; height: 40px; min-width: 40px; padding: 0;
   display: inline-flex; align-items: center; justify-content: center;
@@ -7357,3 +7353,36 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 }
 .globalAssistantChat .dailyAssistantReturnButton::before,
 .globalAssistantChat .dailyAssistantReturnButton::after { content: none !important; display: none !important; }
+
+
+.globalAssistantChat .dailyAssistantSafetyReminder {
+  margin: 14px 0 4px;
+  padding: 14px 16px;
+  border: 1px solid #e3c77f;
+  border-radius: 12px;
+  background: #fff8e9;
+  color: #49391e;
+  line-height: 1.85;
+  font-size: 13px;
+}
+.globalAssistantChat .dailyAssistantSafetyReminder h3 {
+  margin: 0 0 8px;
+  color: #76541a;
+  font-size: 14px;
+  font-weight: 800;
+}
+.globalAssistantChat .dailyAssistantSafetyReminder p {
+  margin: 0 0 8px;
+}
+.globalAssistantChat .dailyAssistantSafetyReminder p:last-child {
+  margin-bottom: 0;
+  font-weight: 700;
+}
+.globalAssistantChat .dailyAssistantSafetyReminder .dailyAssistantSafetyReminderShafa {
+  margin: 10px 0;
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: #f2e3c0;
+  color: #654510;
+  font-weight: 800;
+}
