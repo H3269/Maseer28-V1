@@ -6,12 +6,14 @@ import { ANGER_DAILY_ASSISTANT_GUIDES, getAngerDailyAssistantPromptGroups } from
 import { ANXIETY_DAILY_ASSISTANT_GUIDES, getAnxietyDailyAssistantPromptGroups } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
 import { FEAR_DAILY_ASSISTANT_GUIDES, getFearDailyAssistantPromptGroups } from '../src/features/assistant/fearDailyAssistantPrompts.js';
 import { HATRED_DAILY_ASSISTANT_GUIDES, getHatredDailyAssistantPromptGroups } from '../src/features/assistant/hatredDailyAssistantPrompts.js';
+import { JEALOUSY_DAILY_ASSISTANT_GUIDES, getJealousyDailyAssistantPromptGroups } from '../src/features/assistant/jealousyDailyAssistantPrompts.js';
 
 const topics = [
   { name: 'خشم', id: 'T01', guides: ANGER_DAILY_ASSISTANT_GUIDES, groups: getAngerDailyAssistantPromptGroups },
   { name: 'اضطراب', id: 'T02', guides: ANXIETY_DAILY_ASSISTANT_GUIDES, groups: getAnxietyDailyAssistantPromptGroups },
   { name: 'ترس', id: 'T03', guides: FEAR_DAILY_ASSISTANT_GUIDES, groups: getFearDailyAssistantPromptGroups },
   { name: 'نفرت', id: 'T04', guides: HATRED_DAILY_ASSISTANT_GUIDES, groups: getHatredDailyAssistantPromptGroups },
+  { name: 'حسادت', id: 'T05', guides: JEALOUSY_DAILY_ASSISTANT_GUIDES, groups: getJealousyDailyAssistantPromptGroups },
 ];
 
 function contextFor(topic) {
