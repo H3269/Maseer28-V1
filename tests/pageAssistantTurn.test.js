@@ -185,8 +185,8 @@ test('daily page answers a prepared question with the selected topic and day', (
   assert.match(result.message, /خشم/);
   assert.match(result.message, /روز 1/);
   assert.match(result.message, /راهنمای روز 1 خشم/);
-  assert.match(result.message, /سه موقعیت اخیر/);
-  assert.match(result.message, /فقط یک موقعیت/);
+  assert.match(result.message, /بیاییم قدم‌به‌قدم پیش برویم/);
+  assert.match(result.message, /تمرین امروز/);
   assert.equal(result.conversationState, null);
 });
 
@@ -206,8 +206,8 @@ test('daily assistant answers prepared questions regardless of canonical review 
     dailyContext: { day: 1, problem: 'خشم', data: dayData, relationshipSafetyConfirmed: true },
   });
   assert.equal(result.status, 'daily_guidance_available');
-  assert.match(result.message, /تمرین مسدود روز اول/);
-  assert.match(result.message, /راهکار مسدود روز اول/);
+  assert.match(result.message, /راهنمای روز 1 خشم/);
+  assert.doesNotMatch(result.message, /تمرین مسدود روز اول|راهکار مسدود روز اول/);
 });
 
 test('library book-list questions use only the currently available local titles', () => {
