@@ -513,7 +513,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 )}
                 {error && <p className="contactHelp assistantComposerError" role="alert">{error}</p>}
               </form>
-              )}
             </div>
           </section>
         </div>
