@@ -1,4 +1,5 @@
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
+import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 // Daily prepared guidance for the T02 anxiety path. Content is grounded in the reviewed 28-day draft and active runtime overrides.
 export const ANXIETY_DAILY_ASSISTANT_GUIDES = [
   {
