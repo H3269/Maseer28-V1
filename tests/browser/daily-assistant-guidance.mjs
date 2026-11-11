@@ -383,7 +383,7 @@ try {
     .some(node => node.innerText.includes('راهنمای روز ۱ حسادت')));
   const jealousyActionExample = await jealousyPanel.locator('.assistantMessage').last().innerText();
   assert.match(jealousyActionExample, /مثال فرضی/);
-  assert.match(jealousyActionExample, /جهت حسادت و موضوع آن را روی کاغذ مشخص کن/);
+  assert.match(jealousyActionExample, /حسادت رابطه‌ای؛ نگرانی از کم‌شدن صمیمیت/);
   assert.notEqual(jealousyExerciseExample, jealousyActionExample,
     'T05 exercise and action examples must teach different tasks, not repeat the same text');
   assert.deepEqual(jealousyErrors, [], 'T05 prepared-only browser flow must not raise page errors');
