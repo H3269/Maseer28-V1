@@ -1,4 +1,5 @@
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
+import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 // T03 prepared-only daily assistant bank. Draft educational content; not expert-approved treatment.
 export const FEAR_DAILY_ASSISTANT_GUIDES = [
   {
