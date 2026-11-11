@@ -236,9 +236,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     const message = String(overrideMessage ?? draft).trim();
     if (!message || sending) return;
     if (isPreparedOnlyDailyPromptContext && !activePromptGroups.some(group => group.questions.some(question => question.value === message))) {
-      const fearSafetyIntent = routeAssistantTurn({ text: message });
+      const safetyIntent = routeAssistantTurn({ text: message });
       const urgentSafetyStatuses = new Set(['urgent_human_support_required', 'safety_clarification_required']);
-      if (!urgentSafetyStatuses.has(fearSafetyIntent.status)) {
+      if (!urgentSafetyStatuses.has(safetyIntent.status)) {
         const rejectedId = ++turnSequenceRef.current;
         setMessages(current => [...current, { id: `user-rejected-${rejectedId}`, role: 'user', text: message, knowledge: [] }, { id: `assistant-rejected-${rejectedId}`, role: 'assistant', text: 'این پرسش در فهرست راهنمای آماده این موضوع نیست. لطفاً یکی از پرسش‌های آماده همین روز را انتخاب کن.', knowledge: [] }]);
         setDraft('');
