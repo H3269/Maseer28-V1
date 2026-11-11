@@ -366,6 +366,15 @@ try {
   assert.ok(await panel.getByTestId('daily-assistant-safety-no').isVisible());
   assert.ok(await panel.getByTestId('daily-assistant-safety-uncertain').isVisible());
 
+  await panel.getByTestId('daily-assistant-safety-no').click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => /ممنون که روشن کردی/.test(node.innerText)));
+  assert.equal(await panel.getByTestId('daily-assistant-safety-no').count(), 0,
+    'the no-immediate-danger answer must clear the pending safety question');
+
+  await panel.getByTestId('daily-assistant-human-help').click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .filter(node => /آیا همین الآن خطر فوری/.test(node.innerText)).length >= 2);
   await panel.getByTestId('daily-assistant-safety-uncertain').click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
     .some(node => /کمک فوری انسانی/.test(node.innerText)));
