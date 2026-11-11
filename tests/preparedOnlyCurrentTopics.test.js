@@ -96,3 +96,14 @@ test('the explicit safety control starts clarification and uncertain answers rea
   assert.match(second.message, /خدمات اورژانسی محل زندگی|فرد امن/);
   assert.equal(second.conversationState.dailyState.safetyStatus, 'handoff');
 });
+
+test('explicit immediate-risk action skips clarification and goes straight to human-support handoff', () => {
+  const result = makePageAssistantTurn({
+    screen: 'day',
+    text: 'قصد دارم همین الآن به خودم آسیب بزنم یا به شخص دیگری آسیب بزنم و به کمک فوری نیاز دارم.',
+    dailyContext: contextFor(topics[0]),
+  });
+  assert.equal(result.status, 'urgent_human_support_required');
+  assert.match(result.message, /خدمات اورژانسی محل زندگی|فرد امن/);
+  assert.equal(result.conversationState.dailyState.safetyStatus, 'handoff');
+});
