@@ -59,7 +59,7 @@ jobs:
 
   validate-content:
     needs: announce-commit-status
-    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && !startsWith(github.head_ref, 'content/t')) }}
+    if: ${{ always() && ((github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && !startsWith(github.head_ref, 'content/t'))) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
