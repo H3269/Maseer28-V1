@@ -87,6 +87,8 @@ test('T06 answers every prepared question with day-specific content and distinct
         dailyContent: { exercise: guide.exercise, actionText: guide.action },
       });
       assert.equal(typeof answer, 'string', `day ${guide.day} ${question.kind} must return an answer`);
+      assert.equal(answer.includes(String.fromCharCode(92) + 'n'), false, `day ${guide.day} ${question.kind} must not expose escaped newline tokens`);
+      assert.ok(answer.includes('\n'), `day ${guide.day} ${question.kind} must render paragraph breaks`);
       assert.ok(answer.includes(`راهنمای روز ${fa(guide.day)} غم و سوگ`));
       assert.ok(answer.includes(guide.title), `day ${guide.day} answer must use its day title`);
     }
