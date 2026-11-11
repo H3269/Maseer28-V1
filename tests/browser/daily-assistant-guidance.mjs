@@ -115,7 +115,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
     profileData: { ...journey.profileData, problem: topicKey },
     completed: Array.from({ length: dayNumber - 1 }, (_, index) => index + 1),
     daily: adaptationHistory,
-    startedAt: new Date(Date.now() - Math.max(12, dayNumber - 1) * 24 * 60 * 60 * 1000).toISOString(),
+    startedAt: new Date(Date.now() - Math.max(12, dayNumber + 1) * 24 * 60 * 60 * 1000).toISOString(),
   };
   await page.addInitScript((state) => {
     localStorage.setItem('maseer28_onboarding_complete_v1', '1');
