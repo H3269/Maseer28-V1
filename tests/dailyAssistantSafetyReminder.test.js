@@ -6,6 +6,7 @@ import { ANXIETY_DAILY_ASSISTANT_GUIDES, answerAnxietyDailyPreparedQuestion } fr
 import { FEAR_DAILY_ASSISTANT_GUIDES, answerFearDailyPreparedQuestion } from '../src/features/assistant/fearDailyAssistantPrompts.js';
 import { HATRED_DAILY_ASSISTANT_GUIDES, answerHatredDailyPreparedQuestion } from '../src/features/assistant/hatredDailyAssistantPrompts.js';
 import { JEALOUSY_DAILY_ASSISTANT_GUIDES, answerJealousyDailyPreparedQuestion } from '../src/features/assistant/jealousyDailyAssistantPrompts.js';
+import { GRIEF_DAILY_ASSISTANT_GUIDES, answerGriefDailyPreparedQuestion } from '../src/features/assistant/griefDailyAssistantPrompts.js';
 
 const safetyKindsByTopic = {
   T01: new Set(['anger_increased', 'talk_other', 'success', 'stop']),
@@ -13,6 +14,7 @@ const safetyKindsByTopic = {
   T03: new Set(['fear_increased', 'talk_other', 'success', 'stop']),
   T04: new Set(['hostility_increased', 'talk_other', 'success', 'stop']),
   T05: new Set(['hostility_increased', 'talk_other', 'success', 'stop']),
+  T06: new Set(['grief_increased', 'talk_other', 'success', 'stop']),
 };
 
 const packages = [
@@ -21,9 +23,10 @@ const packages = [
   { id: 'T03', guides: FEAR_DAILY_ASSISTANT_GUIDES, answer: answerFearDailyPreparedQuestion },
   { id: 'T04', guides: HATRED_DAILY_ASSISTANT_GUIDES, answer: answerHatredDailyPreparedQuestion },
   { id: 'T05', guides: JEALOUSY_DAILY_ASSISTANT_GUIDES, answer: answerJealousyDailyPreparedQuestion },
+  { id: 'T06', guides: GRIEF_DAILY_ASSISTANT_GUIDES, answer: answerGriefDailyPreparedQuestion },
 ];
 
-test('T01-T05 append the shared safety reminder to exactly the four safety/evaluation answers on every day', () => {
+test('T01-T06 append the shared safety reminder to exactly the four safety/evaluation answers on every day', () => {
   for (const topic of packages) {
     const safetyKinds = safetyKindsByTopic[topic.id];
     assert.equal(topic.guides.length, 28, `${topic.id} must retain all 28 days`);
