@@ -766,9 +766,11 @@ function navigate(next) {
           problem: journey.profileData?.problem || '',
           data: activeDay,
           relationshipSafetyConfirmed,
+          relationshipSafetyResponse,
           guidanceData: splitDayContent(activeDay, journey.profileData?.problem || '', journey.daily?.[currentDay - 1], journey.daily || {}),
         } : null}
         libraryContext={screen === 'books' ? { titles: books.map((book) => book.title).filter(Boolean) } : null}
+        onRelationshipSafetyResponse={(response) => setRelationshipSafetyState({ dayKey: relationshipSafetyDayKey, response })}
       />
       {preview && <BookPreviewModal preview={preview} onClose={() => setPreview(null)} onOpen={() => { const item = preview; setPreview(null); openBook(item.book, item.sourcePage, { day: item.day, sourcePage: item.sourcePage, reason: item.reason, sourceTitle: item.sourceTitle }); }} />}
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}
