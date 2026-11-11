@@ -23,6 +23,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const libraryPromptDialogRef = useRef(null);
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
+  const [dailySafetyStageActive, setDailySafetyStageActive] = useState(false);
   const [localModelUnavailable, setLocalModelUnavailable] = useState(false);
   const [localModelInstalled, setLocalModelInstalled] = useState(false);
   const [localModelStatusChecked, setLocalModelStatusChecked] = useState(false);
@@ -41,6 +42,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     setError('');
     setSending(false);
     conversationStateRef.current = null;
+    setDailySafetyStageActive(false);
     setOpen(false);
     setLibraryPromptOpen(false);
   }, [screen, dailyContext?.day, dailyContext?.problem, dailyContext?.relationshipSafetyConfirmed]);
@@ -323,6 +325,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       }
 
       conversationStateRef.current = turn.conversationState || null;
+      const nextSafetyStatus = turn.conversationState?.dailyState?.safetyStatus || 'none';
+      setDailySafetyStageActive(['pending', 'handoff'].includes(nextSafetyStatus));
       let finalMessage = turn.message || 'برای این پرسش پاسخ قابل اتکایی در دسترس نیست.';
       if (!isPreparedOnlyDailyPromptContext && !localModelUnavailable && shouldUseLocalNeuralModel({ screen, turn, intentStatus: intentGate.status, isLibraryTurn })) {
         try {
@@ -345,6 +349,19 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     } finally {
       setSending(false);
     }
+  }
+
+  function closeDailySafetyStage() {
+    conversationStateRef.current = { dailyState: { safetyStatus: 'cleared' } };
+    setDailySafetyStageActive(false);
+    setDraft('');
+    setError('');
+    setMessages((current) => [...current, {
+      id: `assistant-safety-return-${++turnSequenceRef.current}`,
+      role: 'assistant',
+      text: 'مرحله حمایت بسته شد. دستیار امروز دوباره فعال است و می‌توانی از فهرست سؤال‌های آماده همین روز استفاده کنی. اگر خطر فوری دوباره مطرح شد، مسیر حمایت ایمنی دوباره فعال می‌شود.',
+      knowledge: [],
+    }]);
   }
 
   function containDialogTab(event) {
@@ -507,7 +524,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
-              {isTopicDailyPromptContext && (
+              {isTopicDailyPromptContext && dailySafetyStageActive && (
                 <div className="libraryAssistantPromptRow dailyAssistantSafetyActions" role="group" aria-label="راه‌های دریافت کمک ایمنی">
                   <button
                     type="button"
@@ -535,6 +552,12 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                   )}
                 </div>
               )}
+              {isTopicDailyPromptContext && dailySafetyStageActive ? (
+                <div className="dailyAssistantSafetyActions" role="group" aria-label="پایان مرحله حمایت">
+                  <p className="safetyNote" role="status">برای بازگشت به سؤال‌های روزانه، مرحله حمایت را ببند. در صورت وجود خطر فوری، راهنمای کمک بیرونی را دنبال کن.</p>
+                  <button type="button" className="libraryAssistantPromptTrigger" data-testid="daily-assistant-return-to-daily" onClick={closeDailySafetyStage} disabled={sending}>پایان مرحله حمایت و بازگشت به دستیار امروز</button>
+                </div>
+              ) : (
               <form className={'assistantComposer' + (isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled) ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} onSubmit={send}>
                 {(isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled)) ? (
                   <div className="libraryAssistantPromptRow">
@@ -575,6 +598,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 )}
                 {error && <p className="contactHelp assistantComposerError" role="alert">{error}</p>}
               </form>
+              )}
             </div>
           </section>
         </div>
