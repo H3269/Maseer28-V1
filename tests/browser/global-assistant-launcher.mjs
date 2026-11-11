@@ -242,9 +242,12 @@ try {
   const safetyPromptDialog = page.locator('#library-assistant-prompt-dialog');
   await safetyPromptDialog.waitFor({ state: 'visible' });
   await safetyPromptDialog.getByRole('button', { name: 'از کجا بفهمم درست انجامش داده‌ام؟' }).click();
+  const previousSafetyReplyCount = await dialog.locator('.assistantMessage').count();
   await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => node.querySelector('[data-testid="daily-assistant-safety-reminder"]')));
+  await page.waitForFunction((previous) => {
+    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+    return replies.length > previous && Boolean(replies.at(-1)?.querySelector('[data-testid="daily-assistant-safety-reminder"]'));
+  }, previousSafetyReplyCount);
   const safetyReply = dialog.locator('.assistantMessage').last();
   assert.equal(await safetyReply.getByTestId('daily-assistant-safety-reminder').count(), 1);
   assert.equal(await safetyReply.locator('.dailyAssistantSafetyReminderShafa').innerText(),
@@ -255,9 +258,12 @@ try {
   const normalQuestionDialog = page.locator('#library-assistant-prompt-dialog');
   await normalQuestionDialog.waitFor({ state: 'visible' });
   await normalQuestionDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
+  const previousNormalReplyCount = await dialog.locator('.assistantMessage').count();
   await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => /بیا تمرین امروز را ساده و روشن باز کنیم/.test(node.innerText)));
+  await page.waitForFunction((previous) => {
+    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+    return replies.length > previous && /بیا تمرین امروز را ساده و روشن باز کنیم/.test(replies.at(-1)?.innerText || '');
+  }, previousNormalReplyCount);
   assert.equal(await dialog.locator('.assistantMessage').last().getByTestId('daily-assistant-safety-reminder').count(), 0,
     'normal prepared answers must not inherit the safety reminder');
 
