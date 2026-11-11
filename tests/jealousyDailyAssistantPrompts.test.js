@@ -63,4 +63,6 @@ test('T05 direct relationship communication questions fail closed until the user
  const safe=makePageAssistantTurn({...base,dailyContext:{...base.dailyContext,relationshipSafetyConfirmed:true,relationshipSafetyResponse:'safe'}});
  assert.equal(safe.status,'daily_guidance_available');
  assert.match(safe.message,/اقدام اختصاصی امروز/);
+ const urgent=makePageAssistantTurn({...base,text:'قصد دارم همین الآن به خودم آسیب بزنم یا به شخص دیگری آسیب بزنم و به کمک فوری نیاز دارم.'});
+ assert.equal(urgent.status,'urgent_human_support_required');
 });
