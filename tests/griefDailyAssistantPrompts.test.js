@@ -78,6 +78,31 @@ test('T06 answers every prepared question with day-specific content and distinct
   }
 });
 
+test('T06 explains distinct light, progress and rest variants from the visible day record', () => {
+  const guide = GRIEF_DAILY_ASSISTANT_GUIDES[0];
+  const dailyContent = {
+    exercise: guide.exercise,
+    actionText: guide.action,
+    lightExerciseText: 'نسخه سبک تمرین واقعی T06',
+    lightActionText: 'نسخه سبک اقدام واقعی T06',
+    progressActionText: 'نسخه پیشرفت واقعی T06',
+    restExerciseText: 'نسخه استراحت تمرین واقعی T06',
+    restActionText: 'نسخه استراحت اقدام واقعی T06',
+  };
+  const answer = answerGriefDailyPreparedQuestion({
+    day: 1,
+    message: guide.questions.find(q => q.kind === 'light_version').value,
+    dailyContent,
+  });
+  for (const value of [
+    dailyContent.lightExerciseText,
+    dailyContent.lightActionText,
+    dailyContent.progressActionText,
+    dailyContent.restExerciseText,
+    dailyContent.restActionText,
+  ]) assert.ok(answer.includes(value), value);
+});
+
 test('T06 uses transformed visible daily text in its prepared answer', () => {
   const guide = GRIEF_DAILY_ASSISTANT_GUIDES[2];
   const result = makePageAssistantTurn({
