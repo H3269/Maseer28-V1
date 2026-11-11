@@ -46,6 +46,23 @@ test('T06 connects all ten visible daily text fields to 28 unique topic-specific
   }
 });
 
+test('T06 exercise and action are distinct tasks, including their light versions', async () => {
+  const overrides = await readJson('../public/content/daily-text-overrides.v1.json');
+  const days = overrides.categories['غم و سوگ'].days;
+  const similarity = (left, right) => {
+    const a = new Set(String(left).normalize('NFKC').split(/\\s+/u).filter(Boolean));
+    const b = new Set(String(right).normalize('NFKC').split(/\\s+/u).filter(Boolean));
+    const intersection = [...a].filter(word => b.has(word)).length;
+    return intersection / new Set([...a, ...b]).size;
+  };
+  for (const day of days) {
+    assert.notEqual(day.exercise, day.actionText, 'day ' + day.day + ' exercise/action must not be identical');
+    assert.ok(similarity(day.exercise, day.actionText) < 0.55, 'day ' + day.day + ' exercise/action overlap');
+    assert.notEqual(day.lightExerciseText, day.lightActionText, 'day ' + day.day + ' light variants must differ');
+    assert.ok(similarity(day.lightExerciseText, day.lightActionText) < 0.55, 'day ' + day.day + ' light variant overlap');
+  }
+});
+
 test('T06 override leaves canonical identity and non-text metadata untouched', async () => {
   const [base, overrides] = await Promise.all([
     readJson('../public/content/path-content.json'),
