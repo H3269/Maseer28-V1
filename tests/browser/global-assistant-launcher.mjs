@@ -85,11 +85,11 @@ try {
   let closeButton = dialog.getByRole('button', { name: 'بستن پنجره دستیار' });
   await page.waitForFunction(() => document.activeElement?.getAttribute('aria-label') === 'بستن پنجره دستیار');
   assert.equal(await launcher.getAttribute('aria-expanded'), 'true');
-  // The visible model-install button is the first focusable control in DOM order;
-  // the enabled send button is last. Test the actual order rather than assuming
-  // the close button is first (the install action was added to the header later).
+  // The model-install action is intentionally absent; the close control is first.
+  assert.equal(await dialog.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
+    'the local-model installation button must be removed from the entire assistant');
   await dialog.getByRole('textbox').fill('آزمون گردش فوکوس');
-  const firstDialogControl = dialog.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' });
+  const firstDialogControl = closeButton;
   const lastDialogControl = dialog.getByRole('button', { name: 'ارسال' });
   await firstDialogControl.focus();
   await page.keyboard.press('Shift+Tab');
@@ -372,29 +372,12 @@ try {
   assert.match(await libraryFollowUp.innerText(), /هنر شناخت و دگرگونی احساسات/u);
   assert.match(await libraryFollowUp.innerText(), /نکته|مهم/u);
 
-  // A failed optional model installation must not disable the deterministic library assistant.
-  const installModelButton = dialog.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' });
-  assert.equal(await installModelButton.isVisible(), true, 'model installation must be discoverable without memorizing a command');
-  // Force a deterministic offline failure across every model CDN/redirect host.
-  // Intercepting only huggingface.co can miss CDN subdomains and start a real download.
-  await page.context().setOffline(true);
-  await installModelButton.click();
-  await dialog.getByRole('button', { name: 'بله، شروع نصب' }).waitFor({ state: 'visible' });
-  await dialog.getByRole('button', { name: 'بله، شروع نصب' }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /دستیار پایه همچنان فعال است/u.test(node.innerText)));
-  await page.context().setOffline(false);
-  const fallbackPromptPicker = dialog.getByRole('button', { name: 'باز کردن سؤال‌های آماده دستیار کتابخانه' });
-  await fallbackPromptPicker.waitFor({ state: 'visible' });
-  await fallbackPromptPicker.click();
-  promptDialog = page.getByRole('dialog', { name: 'سؤال آماده دستیار کتابخانه' });
-  await promptDialog.getByRole('button', { name: 'خلاصه کتاب چهارم را بگو.' }).click();
-  await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /خلاصه راهنمای محتوایی/u.test(node.innerText)));
-  const fallbackAfterInstallFailure = dialog.locator('.assistantMessage').last();
-  assert.equal(await fallbackPromptPicker.isVisible(), true, 'failed installation must retain the guided base-mode question list');
-  assert.equal(await dialog.getByRole('textbox').count(), 0, 'failed installation must keep free typing hidden');
-  assert.match(await fallbackAfterInstallFailure.innerText(), /شاهد کوتاه متن|منبع:/u, 'the book assistant must continue returning a grounded base answer after model installation fails');
-  assert.doesNotMatch(await fallbackAfterInstallFailure.innerText(), /این گوشی یا مرورگر نتوانست مدل محلی را اجرا کند/u, 'the installation failure must not replace later answers');
+  // Local-model installation is no longer offered anywhere in the assistant UI.
+  assert.equal(await dialog.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
+    'the library assistant must not expose a local-model installation button');
+  const guidedLibraryPicker = dialog.getByRole('button', { name: 'باز کردن سؤال‌های آماده دستیار کتابخانه' });
+  assert.equal(await guidedLibraryPicker.isVisible(), true,
+    'removing the installation button must not disable the prepared library assistant');
 
   // A valid installed-model marker switches only the Library composer to free-form mode.
   await page.evaluate(async () => {
