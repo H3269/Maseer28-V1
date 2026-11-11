@@ -80,11 +80,38 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         || preparedSource.topic_id == null
         || preparedSource.topic_id === preparedTopicId);
 
-    // Safety checks and the follow-up safety exchange always take precedence
-    // over prepared FAQs for every currently supported topic.
+    // An exact, pre-authored FAQ is a question selected by the user, not a
+    // first-person safety disclosure. Broad lexical safety cues inside its
+    // wording must not replace its prepared answer. A real explicit-risk
+    // declaration and an already-pending safety exchange still take priority.
+    const hasPendingSafetyExchange = ['pending', 'handoff'].includes(conversationState?.dailyState?.safetyStatus);
+    const hasExplicitSafetyHandoff = inputProbe.intake?.safety_handoff?.handoff_required === true;
+    if (['T01', 'T02', 'T03', 'T04'].includes(preparedTopicId)
+      && hasCanonicalPreparedIdentity
+      && !hasPendingSafetyExchange
+      && !hasExplicitSafetyHandoff) {
+      const exactPreparedAnswer = answerPreparedQuestion?.({
+        day: preparedDay,
+        message,
+        dailyContent: preparedVisibleContent,
+      });
+      if (exactPreparedAnswer) {
+        return Object.freeze({
+          status: 'daily_guidance_available',
+          message: cleanPreparedAssistantTopicText(exactPreparedAnswer, visibleTopicName),
+          knowledge: Object.freeze([]),
+          page_context: 'day',
+          conversationState: null,
+        });
+      }
+    }
+
+    // Explicit immediate-risk declarations and an active safety exchange
+    // always take precedence over the prepared-question list.
     if (['T01', 'T02', 'T03', 'T04'].includes(preparedTopicId)
       && (SAFETY_STATUSES.has(inputProbe.status)
-        || ['pending', 'handoff'].includes(conversationState?.dailyState?.safetyStatus))) {
+        || hasPendingSafetyExchange
+        || hasExplicitSafetyHandoff)) {
       const safetyTurn = makeDailyExerciseGuidanceTurn({
         message,
         dayData: selectDailyExerciseGuidanceData({ guidanceData: dailyContext?.guidanceData, data: dailyContext?.data }),

@@ -52,6 +52,57 @@ for (const topic of topics) {
   });
 }
 
+
+test('all exact prepared FAQs across 28 days keep their own answers when their wording contains broad safety cues', () => {
+  let checked = 0;
+  for (const topic of topics) {
+    for (const guide of topic.guides) {
+      const dailyContext = {
+        day: guide.day,
+        problem: topic.name,
+        data: {
+          id: getCanonicalDailyRecordId(topic.name, guide.day),
+          topic_id: topic.id,
+          day: guide.day,
+          exercise: guide.exercise,
+          actionText: guide.action,
+        },
+      };
+      const questions = topic.groups(guide.day).flatMap(group => group.questions);
+      for (const question of questions) {
+        const result = makePageAssistantTurn({
+          screen: 'day',
+          text: question.value,
+          dailyContext,
+        });
+        assert.equal(result.status, 'daily_guidance_available', `${topic.name} day ${guide.day}: ${question.value}`);
+        assert.match(result.message, /راهنمای روز/u, `${topic.name} day ${guide.day} must return its prepared answer`);
+        checked += 1;
+      }
+    }
+  }
+  assert.ok(checked >= 900, `expected broad coverage of the 4 × 28 prepared FAQ sets; checked ${checked}`);
+});
+
+test('a pending safety exchange still preempts even an exact prepared FAQ', () => {
+  const topic = topics[0];
+  const dailyContext = contextFor(topic);
+  const pending = makePageAssistantTurn({
+    screen: 'day',
+    text: 'دیگه نمی‌کشم. همه‌چی تمومه.',
+    dailyContext,
+  });
+  const preparedQuestion = topic.groups(1).flatMap(group => group.questions)[0].value;
+  const result = makePageAssistantTurn({
+    screen: 'day',
+    text: preparedQuestion,
+    dailyContext,
+    conversationState: pending.conversationState,
+  });
+  assert.equal(result.status, 'safety_clarification_required');
+  assert.match(result.message, /آیا همین الآن خطر فوری/u);
+});
+
 test('safety clarification and uncertain answers preempt prepared FAQs for all current topics', () => {
   for (const topic of topics) {
     const dailyContext = contextFor(topic);
