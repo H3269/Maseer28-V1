@@ -3003,6 +3003,11 @@ function answerRaw({ day, message, dailyContent } = {}) {
   if (!q) return null;
   const e = String(dailyContent?.exercise || g.exercise).trim();
   const a = String(dailyContent?.actionText || dailyContent?.action || g.action).trim();
+  const lightExercise = String(dailyContent?.lightExerciseText || ('نسخه سبک تمرین: ' + g.lightVersion)).trim();
+  const lightAction = String(dailyContent?.lightActionText || g.lightVersion).trim();
+  const progressAction = String(dailyContent?.progressActionText || g.progressVersion).trim();
+  const restExercise = String(dailyContent?.restExerciseText || g.restVersion).trim();
+  const restAction = String(dailyContent?.restActionText || g.restVersion).trim();
   const h = intro(g);
   const example = isAction => {
     const body = isAction ? g.actionExample : g.exerciseExample;
