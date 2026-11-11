@@ -15,6 +15,8 @@ const questionKinds = [
   'not_done', 'grief_increased', 'talk_other', 'can_change', 'duration',
 ];
 
+function fa(value) { return String(value).replace(/[0-9]/g, digit => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]); }
+
 function contextFor(day) {
   const guide = GRIEF_DAILY_ASSISTANT_GUIDES[day - 1];
   return {
@@ -65,7 +67,7 @@ test('T06 answers every prepared question with day-specific content and distinct
         dailyContent: { exercise: guide.exercise, actionText: guide.action },
       });
       assert.equal(typeof answer, 'string', `day ${guide.day} ${question.kind} must return an answer`);
-      assert.match(answer, new RegExp(`راهنمای روز ${'۰۱۲۳۴۵۶۷۸۹'[Math.floor(guide.day / 10)] || ''}`));
+      assert.ok(answer.includes(`راهنمای روز ${fa(guide.day)} غم و سوگ`));
       assert.ok(answer.includes(guide.title), `day ${guide.day} answer must use its day title`);
     }
     const exerciseExample = answerGriefDailyPreparedQuestion({ day: guide.day, message: guide.questions.find(q => q.kind === 'exercise_example').value });
@@ -79,7 +81,7 @@ test('T06 answers every prepared question with day-specific content and distinct
 test('T06 uses transformed visible daily text in its prepared answer', () => {
   const guide = GRIEF_DAILY_ASSISTANT_GUIDES[2];
   const result = makePageAssistantTurn({
-    ...contextFor(3),
+    screen: 'day',
     text: guide.questions.find(q => q.kind === 'exercise_meaning').value,
     dailyContext: {
       ...contextFor(3),
@@ -96,22 +98,22 @@ test('T06 uses transformed visible daily text in its prepared answer', () => {
 test('T06 prepared-only routing validates canonical topic/day identity and rejects free-form questions', () => {
   const guide = GRIEF_DAILY_ASSISTANT_GUIDES[0];
   const question = guide.questions.find(q => q.kind === 'exercise_meaning').value;
-  const valid = makePageAssistantTurn({ ...contextFor(1), text: question });
+  const valid = makePageAssistantTurn({ screen: 'day', text: question, dailyContext: contextFor(1) });
   assert.equal(valid.status, 'daily_guidance_available');
   assert.match(valid.message, /راهنمای روز ۱ غم و سوگ/);
 
-  const freeForm = makePageAssistantTurn({ ...contextFor(1), text: 'لطفاً درباره موضوع دیگری به‌صورت آزاد توضیح بده.' });
+  const freeForm = makePageAssistantTurn({ screen: 'day', text: 'لطفاً درباره موضوع دیگری به‌صورت آزاد توضیح بده.', dailyContext: contextFor(1) });
   assert.equal(freeForm.status, 'prepared_question_required');
 
   const wrongDay = makePageAssistantTurn({
-    ...contextFor(1),
+    screen: 'day',
     text: question,
     dailyContext: { ...contextFor(1), day: 2 },
   });
   assert.equal(wrongDay.status, 'daily_guidance_unavailable');
 
   const wrongTopic = makePageAssistantTurn({
-    ...contextFor(1),
+    screen: 'day',
     text: question,
     dailyContext: {
       ...contextFor(1),
@@ -125,14 +127,16 @@ test('T06 explicit immediate risk and pending safety exchange take precedence ov
   const guide = GRIEF_DAILY_ASSISTANT_GUIDES[0];
   const question = guide.questions.find(q => q.kind === 'exercise_meaning').value;
   const urgent = makePageAssistantTurn({
-    ...contextFor(1),
+    screen: 'day',
     text: 'قصد دارم همین الآن به خودم آسیب بزنم و به کمک فوری نیاز دارم.',
+    dailyContext: contextFor(1),
   });
   assert.equal(urgent.status, 'urgent_human_support_required');
 
   const pending = makePageAssistantTurn({
-    ...contextFor(1),
+    screen: 'day',
     text: question,
+    dailyContext: contextFor(1),
     conversationState: { dailyState: { safetyStatus: 'pending' } },
   });
   assert.notEqual(pending.status, 'daily_guidance_available');
