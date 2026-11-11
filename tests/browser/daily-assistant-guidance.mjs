@@ -563,8 +563,8 @@ try {
   const gatedReply = await gatedPanel.locator('.assistantMessage').last().innerText();
   assert.match(gatedReply, /خشم/);
   assert.match(gatedReply, /روز ۱۰/);
-  assert.match(gatedReply, /متن تمرین همین روز/);
-  assert.match(gatedReply, /راهکار اختصاصی همین روز/);
+  assert.match(gatedReply, /برنامه مکث و فاصله‌گیری/);
+  assert.match(gatedReply, /نشانه‌ای می‌گوید باید مکث کنی/);
   assert.doesNotMatch(gatedReply, /بررسی ایمنی همین روز/);
 
   await gatedPanel.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
@@ -583,9 +583,9 @@ try {
   await gatedPanel.getByRole('button', { name: 'ارسال' }).click();
   await gatedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
   const reenteredReply = await gatedPanel.locator('.assistantMessage').last().innerText();
-  assert.match(reenteredReply, /متن تمرین همین روز/,
-    're-entering the same Path28 day must keep daily assistant guidance available');
-  assert.match(reenteredReply, /راهکار اختصاصی همین روز/);
+  assert.match(reenteredReply, /برنامه مکث و فاصله‌گیری/,
+    're-entering the same Path28 day must keep its exercise-specific assistant guidance available');
+  assert.match(reenteredReply, /نشانه‌ای می‌گوید باید مکث کنی/);
   assert.doesNotMatch(reenteredReply, /بررسی ایمنی همین روز|بازبینی ایمنی/);
   await gatedPage.close();
 
