@@ -58,16 +58,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     // canonical identity validation continues to use the untouched source.
     const preparedVisibleContent = dailyContext?.guidanceData || preparedSource;
     const preparedTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem);
-    // T03 safety and clarification signals must preempt both prepared answers
-    // and the generic daily-guidance route, even when the message is not an FAQ.
     const visibleTopicName = ({ T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت' })[preparedTopicId];
-    if (['T03', 'T04'].includes(preparedTopicId) && SAFETY_STATUSES.has(inputProbe.status)) {
-      return Object.freeze({
-        ...inputProbe,
-        message: cleanPreparedAssistantTopicText(inputProbe.message, visibleTopicName),
-        conversationState: null,
-      });
-    }
     const answerPreparedQuestion = preparedTopicId === 'T01'
       ? answerAngerDailyPreparedQuestion
       : preparedTopicId === 'T02'
