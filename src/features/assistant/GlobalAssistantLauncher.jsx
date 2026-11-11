@@ -556,16 +556,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                           : <React.Fragment key={partIndex}>{part.text}</React.Fragment>)}
                       </React.Fragment>
                     ))}</p>
-                    {isTopicDailyPromptContext && dailySafetyStageActive && /(?:اورژانس|خدمات اورژانسی)/u.test(String(item.text || '')) && (
-                      <div className="dailyAssistantShafaContact" data-testid="daily-assistant-shafa-contact">
-                        <p className="dailyAssistantShafaGuidance">اگر احساس می‌کنید برای عبور از این شرایط به راهنمایی و حمایت بیشتری نیاز دارید، می‌توانید با مرکز هیپنوتراپی شفا تماس بگیرید.</p>
-                        <span className="dailyAssistantShafaNumber" dir="ltr">۰۹۱۹۰۸۸۹۰۶۲</span>
-                        <button type="button" className="dailyAssistantShafaCopyButton" data-testid="daily-assistant-shafa-copy" onClick={copyShafaContactNumber}>
-                          <AppIcon name="copy" size={15} /> کپی شماره تماس مرکز
-                        </button>
-                        {shafaContactCopyStatus && <span className="dailyAssistantShafaCopyStatus" role="status">{shafaContactCopyStatus}</span>}
-                      </div>
-                    )}
+
                     {item.modelInstallPrompt && (
                       <div className="globalAssistantModelActions">
                         <button type="button" onClick={installLocalModel} disabled={sending}>بله، شروع نصب</button>
@@ -583,6 +574,16 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
+              {isTopicDailyPromptContext && dailySafetyStageActive && (
+                <div className="dailyAssistantShafaContact" data-testid="daily-assistant-shafa-contact">
+                  <p className="dailyAssistantShafaGuidance">اگر احساس می‌کنید برای عبور از این شرایط به راهنمایی و حمایت بیشتری نیاز دارید، می‌توانید با مرکز هیپنوتراپی شفا تماس بگیرید.</p>
+                  <span className="dailyAssistantShafaNumber" dir="ltr">۰۹۱۹۰۸۸۹۰۶۲</span>
+                  <button type="button" className="dailyAssistantShafaCopyButton" data-testid="daily-assistant-shafa-copy" onClick={copyShafaContactNumber}>
+                    <AppIcon name="copy" size={15} /> کپی شماره تماس مرکز
+                  </button>
+                  {shafaContactCopyStatus && <span className="dailyAssistantShafaCopyStatus" role="status">{shafaContactCopyStatus}</span>}
+                </div>
+              )}
               {isTopicDailyPromptContext && (
                 <div className="libraryAssistantPromptRow dailyAssistantSafetyActions" role="group" aria-label={dailySafetyStageActive ? "راه‌های دریافت کمک ایمنی" : "اعلام نیاز به بررسی ایمنی"}>
                   {!dailySafetyStageActive ? (
