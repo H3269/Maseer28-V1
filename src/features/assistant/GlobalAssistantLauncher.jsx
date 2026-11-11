@@ -141,8 +141,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     && (dailyProblemTopicId === 'T03' || dailyRecordTopicId === 'T03' || dailyProblemText === 'ترس');
   const isHatredDailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
     && (dailyProblemTopicId === 'T04' || dailyRecordTopicId === 'T04' || dailyProblemText === 'نفرت');
-  const isPreparedOnlyDailyPromptContext = isTopicDailyPromptContext;
   const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext;
+  const isPreparedOnlyDailyPromptContext = isTopicDailyPromptContext;
   const activePromptGroups = screen === 'books'
     ? LIBRARY_ASSISTANT_PROMPT_GROUPS
     : isAngerDailyPromptContext
