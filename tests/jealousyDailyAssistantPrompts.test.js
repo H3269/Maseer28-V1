@@ -49,3 +49,18 @@ test('T05 retains urgent safety precedence and rejects unprepared free-form ques
  assert.equal(free.status,'prepared_question_required');
  assert.match(free.message,/گفت‌وگوی آزاد برای این موضوع فعال نیست/);
 });
+
+test('T05 direct relationship communication questions fail closed until the user confirms freedom to refuse',()=>{
+ const g=JEALOUSY_DAILY_ASSISTANT_GUIDES[15],q=g.questions.find(x=>x.kind==='action_meaning');
+ const data={id:getCanonicalDailyRecordId('حسادت',16),topic_id:'T05',day:16,exercise:g.exercise,actionText:g.action};
+ const base={screen:'day',text:q.value,dailyContext:{day:16,problem:'حسادت',data}};
+ const pending=makePageAssistantTurn(base);
+ assert.equal(pending.status,'relationship_safety_confirmation_required');
+ assert.match(pending.message,/هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
+ const unsafe=makePageAssistantTurn({...base,dailyContext:{...base.dailyContext,relationshipSafetyResponse:'unsafe'}});
+ assert.equal(unsafe.status,'relationship_safety_blocked');
+ assert.match(unsafe.message,/مواجهه مستقیم/);
+ const safe=makePageAssistantTurn({...base,dailyContext:{...base.dailyContext,relationshipSafetyConfirmed:true,relationshipSafetyResponse:'safe'}});
+ assert.equal(safe.status,'daily_guidance_available');
+ assert.match(safe.message,/اقدام اختصاصی امروز/);
+});
