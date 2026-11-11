@@ -129,6 +129,20 @@ try {
   assert.ok(await panel.locator('[data-testid="daily-assistant-safety-reminder"]').count() >= 1,
     'T06 increased-distress FAQ must append the shared safety reminder');
 
+  await panel.getByTestId('grief-daily-prompt-trigger').click();
+  await page.locator('#library-assistant-prompt-dialog')
+    .getByRole('button', { name: 'اگر انجام کاملش برایم سخت بود چه کنم؟' }).click();
+  await panel.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => node.innerText.includes('نسخه سبک تمرین امروز')));
+  const variantsAnswer = await panel.locator('.assistantMessage').last().innerText();
+  const dayOneOverride = dailyTextOverrides.categories[topicKey].days[0];
+  assert.ok(variantsAnswer.includes(dayOneOverride.lightExerciseText));
+  assert.ok(variantsAnswer.includes(dayOneOverride.lightActionText));
+  assert.ok(variantsAnswer.includes(dayOneOverride.progressActionText));
+  assert.ok(variantsAnswer.includes(dayOneOverride.restExerciseText));
+  assert.ok(variantsAnswer.includes(dayOneOverride.restActionText));
+
   assert.deepEqual(pageErrors, [], 'T06 prepared-only assistant browser flow must not raise page errors');
   process.stdout.write('PASS: T06 grief and loss prepared-only assistant UI, 14 prepared questions, teacher-style answer and safety reminder\n');
 } finally {
