@@ -208,8 +208,7 @@ try {
     }
   });
 
-  // Before model installation, the anger assistant must expose prepared
-  // questions only; free-form typing is enabled only after a valid local-model marker.
+  // The anger assistant remains prepared-only even after local model installation.
   const guidedPage = await browser.newPage();
   await openDay(guidedPage);
   const guidedPanel = guidedPage.locator('.globalAssistantDialog');
@@ -436,6 +435,8 @@ try {
         `the visible daily screen must show the expected adaptation for ${scenario.mode}`);
       assert.equal(await adaptedPanel.locator('#global-assistant-message').count(), 0,
         'T02 adapted days must not expose a free-form composer');
+      assert.equal(await adaptedPanel.locator('.globalAssistantModelButton').count(), 0,
+        'T02 adapted days must not expose local model installation');
       const adaptedTrigger = adaptedPanel.getByTestId('anxiety-daily-prompt-trigger');
       await adaptedTrigger.waitFor({ state: 'visible' });
       await adaptedTrigger.click();
