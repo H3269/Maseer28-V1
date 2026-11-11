@@ -452,6 +452,10 @@ try {
         'T02 adapted days must not expose local model installation');
       const adaptedTrigger = adaptedPanel.getByTestId('anxiety-daily-prompt-trigger');
       await adaptedTrigger.waitFor({ state: 'visible' });
+      await adaptedPage.waitForFunction(() => {
+        const item = document.querySelector('[data-testid="anxiety-daily-prompt-trigger"]');
+        return item && !item.disabled;
+      });
       await adaptedTrigger.click();
       const adaptedPrompt = adaptedPage.locator('#library-assistant-prompt-dialog');
       await adaptedPrompt.waitFor({ state: 'visible' });
@@ -507,6 +511,10 @@ try {
     'the blocked T01 daily context must not expose free-form typing');
   const blockedTrigger = blockedPanel.getByTestId('anger-daily-prompt-trigger');
   await blockedTrigger.waitFor({ state: 'visible' });
+  await blockedPage.waitForFunction(() => {
+    const item = document.querySelector('[data-testid="anger-daily-prompt-trigger"]');
+    return item && !item.disabled;
+  });
   await blockedTrigger.click();
   const blockedPrompt = blockedPage.locator('#library-assistant-prompt-dialog');
   await blockedPrompt.waitFor({ state: 'visible' });
@@ -534,6 +542,10 @@ try {
     'the relationship-gated T01 day must keep the prepared-only boundary');
   const gatedTrigger = gatedPanel.getByTestId('anger-daily-prompt-trigger');
   await gatedTrigger.waitFor({ state: 'visible' });
+  await gatedPage.waitForFunction(() => {
+    const item = document.querySelector('[data-testid="anger-daily-prompt-trigger"]');
+    return item && !item.disabled;
+  });
   await gatedTrigger.click();
   const gatedPrompt = gatedPage.locator('#library-assistant-prompt-dialog');
   await gatedPrompt.waitFor({ state: 'visible' });
