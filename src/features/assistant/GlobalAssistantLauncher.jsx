@@ -48,7 +48,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     setSafetyCloseConfirmOpen(false);
     setOpen(false);
     setLibraryPromptOpen(false);
-  }, [screen, dailyContext?.day, dailyContext?.problem, dailyContext?.relationshipSafetyConfirmed, dailyContext?.relationshipSafetyResponse]);
+  }, [screen, dailyContext?.day, dailyContext?.problem]);
 
   useEffect(() => {
     if (!open) return undefined;
