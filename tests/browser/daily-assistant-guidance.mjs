@@ -364,7 +364,7 @@ try {
   const jealousyExerciseExample = await jealousyPanel.locator('.assistantMessage').last().innerText();
   assert.match(jealousyExerciseExample, /مثال فرضی/);
   assert.match(jealousyExerciseExample, /دوستت با فرد دیگری/);
-  assert.match(jealousyExerciseExample, /تمرین امروز/);
+  assert.match(jealousyExerciseExample, /یک موقعیت را ثبت کن/);
   assert.ok(await jealousyPanel.locator('.assistantMessage').last().locator('strong').count() > 0,
     'T05 assistant headings must render as bold text');
   assert.equal(jealousyExerciseExample.includes('**'), false, 'T05 must not expose raw markdown markers');
