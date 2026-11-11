@@ -244,7 +244,8 @@ try {
   })));
   assert.ok(safetyButtonMetrics.every((item) => item.height <= 42), 'safety buttons must stay compact');
   assert.notEqual(safetyButtonMetrics[0].border, safetyButtonMetrics[1].border, 'help and urgent-risk actions must have distinct but restrained colors');
-  await humanHelp.click();
+  // The explicit urgent-risk action must trigger the handoff text and Shafa contact.
+  await urgentHelp.click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
     .some((node) => /اورژانس|خدمات اورژانسی/u.test(node.innerText)));
   const shafaContact = dialog.getByTestId('daily-assistant-shafa-contact');
