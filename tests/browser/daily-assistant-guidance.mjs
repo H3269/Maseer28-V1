@@ -91,8 +91,10 @@ async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumb
 
 async function openDay(page, { assistantDayMode = 'routine', problem = null, localModelInstalled = false } = {}) {
   const isLegacyMode = assistantDayMode === 'legacy' || assistantDayMode.startsWith('adaptedLegacy');
-  const dayNumber = assistantDayMode === 'relationship'
-    ? 10
+  const dayNumber = assistantDayMode === 'jealousy-communication'
+    ? 16
+    : assistantDayMode === 'relationship'
+      ? 10
     : ['adaptedLegacyStreak', 'adaptedLegacyImprovement', 'adaptedAnxietyStreak', 'adaptedAnxietyImprovement'].includes(assistantDayMode)
       ? 3
       : ['adaptedLegacy', 'adaptedLegacySame', 'adaptedAnxiety'].includes(assistantDayMode)
@@ -386,6 +388,40 @@ try {
     'T05 exercise and action examples must teach different tasks, not repeat the same text');
   assert.deepEqual(jealousyErrors, [], 'T05 prepared-only browser flow must not raise page errors');
   await jealousyGuidedPage.close();
+
+
+  // Direct T05 relationship requests require the explicit relationship-safety check.
+  const jealousyGatePage = await browser.newPage();
+  await openDay(jealousyGatePage, { problem: 'حسادت', assistantDayMode: 'jealousy-communication' });
+  const jealousyGatePanel = jealousyGatePage.locator('.globalAssistantDialog');
+  await jealousyGatePanel.waitFor({ state: 'visible' });
+  const jealousyGate = jealousyGatePanel.getByTestId('jealousy-relationship-safety-gate');
+  await jealousyGate.waitFor({ state: 'visible' });
+  assert.match(await jealousyGate.innerText(), /هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
+  assert.equal(await jealousyGatePanel.getByTestId('jealousy-daily-prompt-trigger').isDisabled(), true,
+    'T05 prepared interaction prompts remain unavailable until the relationship check is confirmed');
+  await jealousyGate.getByTestId('jealousy-relationship-safety-unsafe').click();
+  await jealousyGatePage.waitForFunction(() => document.querySelector('[data-testid="jealousy-relationship-safety-gate"]')?.innerText.includes('مواجهه مستقیم'));
+  assert.equal(await jealousyGate.getByTestId('jealousy-relationship-safety-safe').count(), 0,
+    'an unsafe or uncertain answer must not allow direct interaction');
+  await jealousyGatePage.close();
+
+  const jealousySafeGatePage = await browser.newPage();
+  await openDay(jealousySafeGatePage, { problem: 'حسادت', assistantDayMode: 'jealousy-communication' });
+  const jealousySafePanel = jealousySafeGatePage.locator('.globalAssistantDialog');
+  await jealousySafePanel.waitFor({ state: 'visible' });
+  await jealousySafePanel.getByTestId('jealousy-relationship-safety-gate')
+    .getByTestId('jealousy-relationship-safety-safe').click();
+  await jealousySafeGatePage.waitForFunction(() => !document.querySelector('[data-testid="jealousy-relationship-safety-gate"]'));
+  const enabledJealousyTrigger = jealousySafePanel.getByTestId('jealousy-daily-prompt-trigger');
+  await jealousySafeGatePage.waitForFunction(() => {
+    const button = document.querySelector('[data-testid="jealousy-daily-prompt-trigger"]');
+    return button && !button.disabled;
+  });
+  await enabledJealousyTrigger.click();
+  await jealousySafeGatePage.locator('#library-assistant-prompt-dialog').waitFor({ state: 'visible' });
+  assert.match(await jealousySafeGatePage.locator('#library-assistant-prompt-dialog').innerText(), /سؤال‌های آماده روز ۱۶ حسادت/);
+  await jealousySafeGatePage.close();
 
   // T01 is now prepared-only even when a local model is cached. Safety controls
   // remain available and their answers must preempt prepared FAQs.
