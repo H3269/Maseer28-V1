@@ -21,6 +21,7 @@ function contextFor(topic) {
   return {
     day: 1,
     problem: topic.name,
+    relationshipSafetyConfirmed: true,
     data: {
       id: getCanonicalDailyRecordId(topic.name, 1),
       topic_id: topic.id,
@@ -62,6 +63,7 @@ test('all exact prepared FAQs across 28 days keep their own answers when their w
       const dailyContext = {
         day: guide.day,
         problem: topic.name,
+        relationshipSafetyConfirmed: true,
         data: {
           id: getCanonicalDailyRecordId(topic.name, guide.day),
           topic_id: topic.id,
