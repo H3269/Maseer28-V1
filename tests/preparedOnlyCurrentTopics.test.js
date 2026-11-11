@@ -79,7 +79,7 @@ test('the explicit safety control starts clarification and uncertain answers rea
   const dailyContext = contextFor(topics[0]);
   const first = makePageAssistantTurn({
     screen: 'day',
-    text: 'ممکن است همین حالا به خودم یا شخص دیگری آسیب بزنم و برای ایمن ماندن به کمک انسانی فوری نیاز دارم.',
+    text: 'مطمئن نیستم الان امن هستم یا نه و برای بررسی وضعیت ایمنی‌ام به کمک انسانی نیاز دارم.',
     dailyContext,
   });
   assert.equal(first.status, 'safety_clarification_required');
