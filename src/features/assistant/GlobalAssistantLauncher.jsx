@@ -151,7 +151,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext || isJealousyDailyPromptContext;
   const isPreparedOnlyDailyPromptContext = isTopicDailyPromptContext;
   const jealousyRelationshipGate = isJealousyDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
-  const jealousyRelationshipGatePending = Boolean(jealousyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
+  const jealousyRelationshipGatePending = Boolean(jealousyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true && !dailySafetyStageActive);
   const jealousyRelationshipGateBlocked = jealousyRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
   const activePromptGroups = screen === 'books'
     ? LIBRARY_ASSISTANT_PROMPT_GROUPS
