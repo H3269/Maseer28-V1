@@ -3009,7 +3009,7 @@ function answerRaw({day,message,dailyContent}={}){
  case'duration':body='**زمان لازم**\nزمان استاندارد اعتبارسنجی‌شده‌ای برای این تمرین ثبت نشده؛ عددی حدس نمی‌زنم. به‌اندازه‌ای پیش برو که دستور را روشن و بدون فشار انجام بدهی. اگر به نشخوار یا وارسی ذهنی تبدیل شد متوقف کن.\n\n**معیار پایان:** '+g.successCriterion;break;
  default:return null;
  }
- return h+'\\n\\n'+body;
+ return h+'\n\n'+body;
 }
 export function answerJealousyDailyPreparedQuestion(args={}){
  const answer=answerRaw(args);if(!answer)return null;
