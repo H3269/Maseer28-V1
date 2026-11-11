@@ -252,6 +252,7 @@ try {
   await shafaContact.waitFor({ state: 'visible' });
   assert.equal(await shafaContact.getByRole('link').count(), 0, 'safety contact must not depend on a tel: deep link inside Telegram/Bale WebViews');
   assert.match(await shafaContact.innerText(), /۰۹۱۹۰۸۸۹۰۶۲/u);
+  assert.match(await shafaContact.innerText(), /اگر احساس می‌کنید برای عبور از این شرایط به راهنمایی و حمایت بیشتری نیاز دارید، می‌توانید با مرکز هیپنوتراپی شفا تماس بگیرید/u, 'safety contact must explain clearly when and why to contact Shafa');
   await page.evaluate(() => {
     Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async (value) => { window.__shafaCopiedNumber = value; } } });
   });
