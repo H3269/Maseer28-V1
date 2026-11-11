@@ -29,7 +29,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: path28-validation-${{ github.event.pull_request.number || github.sha }}
+  group: ${{ startsWith(github.head_ref, 'content/t') && format('path28-topic-validation-{0}', github.event.pull_request.number) || format('path28-validation-{0}', github.event.pull_request.number || github.sha) }}
   cancel-in-progress: false
 
 jobs:
