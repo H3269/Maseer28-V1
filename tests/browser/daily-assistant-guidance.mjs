@@ -343,6 +343,10 @@ try {
     'T01 must expose an active safety clarification control');
   const trigger = panel.getByTestId('anger-daily-prompt-trigger');
   await trigger.waitFor({ state: 'visible' });
+  await page.waitForFunction(() => {
+    const item = document.querySelector('[data-testid="anger-daily-prompt-trigger"]');
+    return item && !item.disabled;
+  });
   await trigger.click();
   const dayPrompt = page.locator('#library-assistant-prompt-dialog');
   await dayPrompt.waitFor({ state: 'visible' });
