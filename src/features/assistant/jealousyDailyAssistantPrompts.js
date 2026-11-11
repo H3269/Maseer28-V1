@@ -1,4 +1,5 @@
 import { cleanPreparedAssistantTopicText } from './teacherStylePreparedAnswer.js';
+import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 
 // T05: prepared-only, day-specific guidance. Jealousy is not proof of betrayal.
 export const JEALOUSY_DAILY_ASSISTANT_GUIDES = [
@@ -3010,4 +3011,10 @@ function answerRaw({day,message,dailyContent}={}){
  }
  return h+'\n\n'+body+'\n\n'+safety+'\n\n**نکته ایمنی ویژه امروز:** '+g.stopCondition;
 }
-export function answerJealousyDailyPreparedQuestion(args={}){const a=answerRaw(args);return a?cleanPreparedAssistantTopicText(a,'حسادت'):null;}
+export function answerJealousyDailyPreparedQuestion(args={}){
+ const answer=answerRaw(args);if(!answer)return null;
+ const cleaned=cleanPreparedAssistantTopicText(answer,'حسادت');
+ const guide=JEALOUSY_DAILY_ASSISTANT_GUIDES.find(x=>x.day===toJealousyDayNumber(args.day));
+ const question=guide?.questions.find(x=>x.value===String(args.message||'').trim());
+ return appendDailyAssistantSafetyReminder(cleaned,question?.kind);
+}
