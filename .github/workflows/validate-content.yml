@@ -59,7 +59,9 @@ jobs:
 
   validate-content:
     needs: announce-commit-status
-    if: ${{ always() && ((github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && !startsWith(github.head_ref, 'content/t'))) }}
+    # The expensive 34-topic / 952-day integration suite is opt-in for PRs.
+    # Ordinary package and feature PRs must use their focused validation jobs.
+    if: ${{ always() && ((github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'full-validation'))) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
@@ -235,6 +237,70 @@ jobs:
           name: npm-audit-report
           path: npm-audit-report.json
           if-no-files-found: error
+
+# Feature-specific PRs use a bounded test set; never fall through to the full 34-topic suite.
+  validate-assistant-safety-ui:
+    name: Validate assistant safety UI (T01-T05)
+    if: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'fix/assistant-safety-return-contact-') }}
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+    timeout-minutes: 18
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+      - name: Install dependencies
+        env:
+          ONNXRUNTIME_NODE_INSTALL: skip
+        run: npm ci
+      - name: Dependency security audit
+        run: npm audit --audit-level=high
+      - name: Run focused T01-T05 assistant and safety unit tests
+        run: >-
+          node --test
+          tests/angerDailyAssistantPrompts.test.js
+          tests/anxietyDailyAssistantPrompts.test.js
+          tests/fearDailyAssistantPrompts.test.js
+          tests/hatredDailyAssistantPrompts.test.js
+          tests/jealousyDailyAssistantPrompts.test.js
+          tests/preparedOnlyCurrentTopics.test.js
+          tests/dailySafety.test.mjs
+      - name: Build application
+        run: |
+          PATH28_DEPLOY_BASE=/Maseer28/ npm run prepare:production
+          npm run build
+      - name: Verify preinstalled Chromium
+        run: npx --yes --package=playwright@1.55.0 playwright --version
+      - name: Start production preview
+        run: |
+          nohup npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/path28-vite.log 2>&1 &
+          echo $! > /tmp/path28-vite.pid
+          attempt=1
+          while [ "$attempt" -le 30 ]; do
+            if curl --silent --fail http://127.0.0.1:4173/Maseer28/ > /dev/null; then
+              echo "Production preview is ready on 127.0.0.1:4173"
+              exit 0
+            fi
+            sleep 1
+            attempt=$((attempt + 1))
+          done
+          echo "Production preview did not become ready within 30 seconds."
+          cat /tmp/path28-vite.log
+          exit 1
+      - name: Run focused Chromium safety and assistant regressions
+        env:
+          PATH28_BASE_URL: http://127.0.0.1:4173/Maseer28/
+        run: |
+          PLAYWRIGHT_NODE_PATH="$(npx --yes --package=playwright@1.55.0 -c 'dirname "$(dirname "$(command -v playwright)")"')"
+          NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/daily-safety-gate.mjs
+          NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/daily-assistant-guidance.mjs
+          NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/global-assistant-launcher.mjs
 
 # Topic-package PRs are validated in isolation; the full 34-topic suite is reserved for integration.
   validate-topic-package:
