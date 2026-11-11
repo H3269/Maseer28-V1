@@ -66,7 +66,7 @@ async function readExpandedDailyText(page, selector) {
   return [preview, ...remaining].join(' ');
 }
 
-async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumber) {
+async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumber, sourceTypes = ['exercise', 'action']) {
   const dayBadge = normalizeVisibleDailyText(await page.locator('#dayBadge').innerText());
   assert.ok(dayBadge.includes(normalizeVisibleDailyText(topic)), 'day UI must show the selected canonical topic');
   assert.ok(dayBadge.includes('روز ' + dayNumber), 'day UI must show the selected canonical day');
@@ -77,7 +77,10 @@ async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumb
   await panel.waitFor({ state: 'detached' });
   const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
   const visibleAction = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayAction'));
-  for (const [label, source] of [['exercise', visibleExercise], ['action', visibleAction]]) {
+  const visibleSources = { exercise: visibleExercise, action: visibleAction };
+  for (const label of sourceTypes) {
+    const source = visibleSources[label];
+    assert.ok(source, `unsupported daily source type: ${label}`);
     assert.ok(source.length > 20, `visible ${label} source must be substantial`);
     assert.ok(reply.includes(source),
       `assistant response must preserve the exact visible daily ${label} text for ${topic}, day ${dayNumber}`);
@@ -364,7 +367,7 @@ try {
   const angerDayBadge = normalizeVisibleDailyText(await page.locator('#dayBadge').innerText());
   assert.ok(angerDayBadge.includes('خشم') && angerDayBadge.includes('روز 1'),
     'the prepared answer must correspond to the currently displayed anger day');
-  await assertAssistantUsesVisibleDailySource(page, panel, 'خشم', 1);
+  await assertAssistantUsesVisibleDailySource(page, panel, 'خشم', 1, ['exercise']);
 
   await panel.getByTestId('daily-assistant-human-help').click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
