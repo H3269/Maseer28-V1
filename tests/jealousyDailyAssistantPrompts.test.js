@@ -59,7 +59,7 @@ test('T05 direct relationship communication questions fail closed until the user
  assert.match(pending.message,/هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
  const unsafe=makePageAssistantTurn({...base,dailyContext:{...base.dailyContext,relationshipSafetyResponse:'unsafe'}});
  assert.equal(unsafe.status,'relationship_safety_blocked');
- assert.match(unsafe.message,/مواجهه مستقیم/);
+ assert.match(unsafe.message,/گفت‌وگوی مستقیم، مواجهه یا مذاکره/);
  const safe=makePageAssistantTurn({...base,dailyContext:{...base.dailyContext,relationshipSafetyConfirmed:true,relationshipSafetyResponse:'safe'}});
  assert.equal(safe.status,'daily_guidance_available');
  assert.match(safe.message,/اقدام اختصاصی امروز/);
