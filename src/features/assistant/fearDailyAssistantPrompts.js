@@ -2985,7 +2985,7 @@ export function getFearDailyAssistantPromptGroups(day) {
 }
 function persianDay(value){return String(value).replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[Number(d)]);}
 function heading(g){return 'راهنمای روز '+persianDay(g.day)+' ترس — '+g.title;}
-function safe(){return 'این راهنما آموزشی است و تشخیص یا درمان نیست. ترس می‌تواند در برابر خطر واقعی نقش محافظتی داشته باشد. برای تکمیل تمرین به تهدید نزدیک نشو، با عامل تهدید تماس نگیر، خاطره آزاردهنده را به‌اجبار بازسازی نکن و حفاظت لازم را کاهش نده. در خطر جاری، خشونت، سوءاستفاده یا وضعیت پزشکی/محیطی نگران‌کننده، فاصله امن و کمک انسانی مقدم است. اگر احتمال فوری آسیب به خودت یا دیگری وجود دارد، تمرین را متوقف کن و از خدمات اضطراری محل زندگی یا فرد امن کمک بگیر.';}
+function safe(){return '';}
 function answerFearDailyPreparedQuestionRaw({ day, message, dailyContent } = {}) {
   const dayNumber = toFearDayNumber(day);
   const guide = FEAR_DAILY_ASSISTANT_GUIDES.find((item) => item.day === dayNumber);
@@ -3070,5 +3070,5 @@ export function answerFearDailyPreparedQuestion(args = {}) {
   const day = toFearDayNumber(args.day);
   const guide = FEAR_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
   const question = guide?.questions.find((item) => item.value === String(args.message || '').trim());
-  return addTeacherStyleFrame(answer, { guide, question, topic: 'ترس' });
+  return appendDailyAssistantSafetyReminder(addTeacherStyleFrame(answer, { guide, question, topic: 'ترس' }), question?.kind);
 }
