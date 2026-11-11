@@ -247,9 +247,9 @@ try {
   // Shafa contact must appear as soon as the safety-support stage starts,
   // even when the assistant's message does not contain an emergency keyword.
   await humanHelp.click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some((node) => /برای بررسی وضعیت ایمنی‌ام به کمک انسانی نیاز دارم/u.test(node.innerText)));
   const shafaContact = dialog.getByTestId('daily-assistant-shafa-contact');
+  // The clicked text is a user message, not an assistant message. Wait for the
+  // safety-stage contact UI itself instead of searching assistant bubbles for it.
   await shafaContact.waitFor({ state: 'visible' });
   assert.doesNotMatch(await dialog.locator('.assistantMessage').last().innerText(), /اورژانس|خدمات اورژانسی/u,
     'the Shafa contact must not depend on emergency wording in the assistant message');
