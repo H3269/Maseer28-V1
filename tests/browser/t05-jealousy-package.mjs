@@ -244,3 +244,5 @@ try {
 } finally {
   await browser.close();
 }
+
+// T05 package validation is intentionally isolated from the 34-topic full-project audit.
