@@ -234,68 +234,32 @@ try {
   assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 1,
     'the prepared-question picker must remain available after successful local-model installation');
 
-  // Safety handoff must expose a WebView-safe copy action without replacing emergency guidance.
-  const humanHelp = dialog.getByTestId('daily-assistant-human-help');
-  const urgentHelp = dialog.getByTestId('daily-assistant-urgent-help');
-  assert.ok(await humanHelp.isVisible() && await urgentHelp.isVisible(), 'both safety actions must remain visible');
-  const safetyButtonMetrics = await Promise.all([humanHelp, urgentHelp].map((button) => button.evaluate((element) => {
-    const style = getComputedStyle(element);
-    return { height: element.getBoundingClientRect().height, border: style.borderTopColor, background: style.backgroundColor };
-  })));
-  assert.ok(safetyButtonMetrics.every((item) => item.height <= 42), 'safety buttons must stay compact');
-  assert.notEqual(safetyButtonMetrics[0].border, safetyButtonMetrics[1].border, 'help and urgent-risk actions must have distinct but restrained colors');
-  // Shafa contact must appear as soon as the safety-support stage starts,
-  // even when the assistant's message does not contain an emergency keyword.
-  await humanHelp.click();
-  const shafaContact = dialog.getByTestId('daily-assistant-shafa-contact');
-  // The clicked text is a user message, not an assistant message. Wait for the
-  // safety-stage contact UI itself instead of searching assistant bubbles for it.
-  await shafaContact.waitFor({ state: 'visible' });
-  assert.doesNotMatch(await dialog.locator('.assistantMessage').last().innerText(), /اورژانس|خدمات اورژانسی/u,
-    'the Shafa contact must not depend on emergency wording in the assistant message');
-  await dialog.getByRole('button', { name: /بله یا مطمئن نیستم/ }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some((node) => /اورژانس|خدمات اورژانسی/u.test(node.innerText)));
-  await shafaContact.waitFor({ state: 'visible' });
-  assert.equal(await shafaContact.getByRole('link').count(), 0, 'safety contact must not depend on a tel: deep link inside Telegram/Bale WebViews');
-  assert.match(await shafaContact.innerText(), /۰۹۱۹۰۸۸۹۰۶۲/u);
-  assert.match(await shafaContact.innerText(), /اگر احساس می‌کنید برای عبور از این شرایط به راهنمایی و حمایت بیشتری نیاز دارید، می‌توانید با مرکز هیپنوتراپی شفا تماس بگیرید/u, 'safety contact must explain clearly when and why to contact Shafa');
-  await page.evaluate(() => {
-    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async (value) => { window.__shafaCopiedNumber = value; } } });
-  });
-  await shafaContact.getByTestId('daily-assistant-shafa-copy').click();
-  await page.waitForFunction(() => window.__shafaCopiedNumber === '+989190889062');
-  assert.match(await shafaContact.innerText(), /شماره تماس کپی شد/u, 'copy action must provide clear success feedback');
-  assert.match(await dialog.locator('.assistantMessage').last().innerText(), /اورژانس|خدمات اورژانسی/u,
-    'the Shafa contact must supplement, not replace, emergency guidance');
-  assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 0,
-    'prepared daily questions must be hidden while the human-support stage is active');
-  const returnToDaily = dialog.getByTestId('daily-assistant-return-to-daily');
-  await returnToDaily.waitFor({ state: 'visible' });
-  assert.equal(await returnToDaily.innerText(), 'درخواست بازگشت به پرسش‌های آماده');
-  const returnButtonStyle = await returnToDaily.evaluate((element) => ({
-    before: getComputedStyle(element, '::before').content,
-    after: getComputedStyle(element, '::after').content,
-    borderRadius: getComputedStyle(element).borderRadius,
-  }));
-  assert.equal(returnButtonStyle.before, 'none', 'return button must not show a decorative line before its text');
-  assert.equal(returnButtonStyle.after, 'none', 'return button must not show a decorative line after its text');
-  assert.ok(Number.parseFloat(returnButtonStyle.borderRadius) >= 10, 'return button must use the app-aligned rounded button shape');
-  await returnToDaily.click();
-  assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 0,
-    'the handoff must remain active until the user explicitly confirms that immediate danger has passed');
-  await dialog.getByTestId('daily-assistant-confirm-safe-return').click();
-  const restoredDailyPicker = dialog.getByTestId('anger-daily-prompt-trigger');
-  await restoredDailyPicker.waitFor({ state: 'visible' });
-  await restoredDailyPicker.click();
-  const restoredQuestionDialog = page.locator('#library-assistant-prompt-dialog');
-  await restoredQuestionDialog.waitFor({ state: 'visible' });
-  await restoredQuestionDialog.locator('[data-prompt-option]').first().click();
+  // Prepared safety FAQ answers render one highlighted reminder card; no nested controls remain.
+  assert.equal(await dialog.getByTestId('daily-assistant-human-help').count(), 0);
+  assert.equal(await dialog.getByTestId('daily-assistant-urgent-help').count(), 0);
+  assert.equal(await dialog.getByTestId('daily-assistant-return-to-daily').count(), 0);
+  await dialog.getByTestId('anger-daily-prompt-trigger').click();
+  const safetyPromptDialog = page.locator('#library-assistant-prompt-dialog');
+  await safetyPromptDialog.waitFor({ state: 'visible' });
+  await safetyPromptDialog.getByRole('button', { name: 'از کجا بفهمم درست انجامش داده‌ام؟' }).click();
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some((node) => /راهنمای روز ۱ خشم/u.test(node.innerText)));
-  assert.match(await dialog.locator('.assistantMessage').last().innerText(), /راهنمای روز ۱ خشم/u,
-    'closing the support stage must restore the exact prepared answer for the same day');
+    .some(node => node.querySelector('[data-testid="daily-assistant-safety-reminder"]')));
+  const safetyReply = dialog.locator('.assistantMessage').last();
+  assert.equal(await safetyReply.getByTestId('daily-assistant-safety-reminder').count(), 1);
+  assert.equal(await safetyReply.locator('.dailyAssistantSafetyReminderShafa').innerText(),
+    'مرکز هیپنوتراپی شفا با شماره تماس ۰۹۱۹۰۸۸۹۰۶۲ همیشه در کل مسیر همراه شماست');
+  assert.ok(Number(await safetyReply.locator('.dailyAssistantSafetyReminderShafa')
+    .evaluate(element => getComputedStyle(element).fontWeight)) >= 700);
+  await dialog.getByTestId('anger-daily-prompt-trigger').click();
+  const normalQuestionDialog = page.locator('#library-assistant-prompt-dialog');
+  await normalQuestionDialog.waitFor({ state: 'visible' });
+  await normalQuestionDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => /بیا تمرین امروز را ساده و روشن باز کنیم/.test(node.innerText)));
+  assert.equal(await dialog.locator('.assistantMessage').last().getByTestId('daily-assistant-safety-reminder').count(), 0,
+    'normal prepared answers must not inherit the safety reminder');
 
   await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await dialog.waitFor({ state: 'detached' });
