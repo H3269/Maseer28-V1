@@ -475,9 +475,12 @@ try {
     const promptDialog = page.locator('#library-assistant-prompt-dialog');
     await promptDialog.waitFor({ state: 'visible' });
     await promptDialog.getByRole('button', { name: safetyQuestion }).click();
+    const previousReplyCount = await panel.locator('.assistantMessage').count();
     await panel.getByRole('button', { name: 'ارسال' }).click();
-    await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-      .some(node => node.innerText.includes('مرکز هیپنوتراپی شفا با شماره تماس ۰۹۱۹۰۸۸۹۰۶۲')));
+    await page.waitForFunction((previous) => {
+      const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+      return replies.length > previous && Boolean(replies.at(-1)?.querySelector('[data-testid="daily-assistant-safety-reminder"]'));
+    }, previousReplyCount);
     const reply = panel.locator('.assistantMessage').last();
     assert.equal(await reply.getByTestId('daily-assistant-safety-reminder').count(), 1,
       'each evaluation/safety answer must contain exactly one reminder card');
@@ -494,9 +497,12 @@ try {
   const normalPrompt = page.locator('#library-assistant-prompt-dialog');
   await normalPrompt.waitFor({ state: 'visible' });
   await normalPrompt.getByRole('button', { name: 'تمرین و اقدام امروز چه تفاوتی دارند؟' }).click();
+  const previousNormalReplyCount = await panel.locator('.assistantMessage').count();
   await panel.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => /تفاوت تمرین و اقدام امروز/.test(node.innerText)));
+  await page.waitForFunction((previous) => {
+    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+    return replies.length > previous && /تفاوت تمرین و اقدام امروز/.test(replies.at(-1)?.innerText || '');
+  }, previousNormalReplyCount);
   assert.equal(await panel.locator('.assistantMessage').last().getByTestId('daily-assistant-safety-reminder').count(), 0,
     'ordinary questions after a safety answer must not inherit the reminder card');
 
