@@ -94,6 +94,8 @@ test('T06 explains distinct light, progress and rest variants from the visible d
     message: guide.questions.find(q => q.kind === 'light_version').value,
     dailyContent,
   });
+  assert.equal(answer.includes(String.fromCharCode(92) + 'n'), false);
+  assert.ok(answer.includes('\n'));
   for (const value of [
     dailyContent.lightExerciseText,
     dailyContent.lightActionText,
