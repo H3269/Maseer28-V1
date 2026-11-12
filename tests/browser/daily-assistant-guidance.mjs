@@ -93,8 +93,10 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
   const isLegacyMode = assistantDayMode === 'legacy' || assistantDayMode.startsWith('adaptedLegacy');
   const dayNumber = assistantDayMode === 'jealousy-communication'
     ? 16
-    : assistantDayMode === 'relationship'
-      ? 10
+    : assistantDayMode === 'grief-support'
+      ? 15
+      : assistantDayMode === 'relationship'
+        ? 10
     : ['adaptedLegacyStreak', 'adaptedLegacyImprovement', 'adaptedAnxietyStreak', 'adaptedAnxietyImprovement'].includes(assistantDayMode)
       ? 3
       : ['adaptedLegacy', 'adaptedLegacySame', 'adaptedAnxiety'].includes(assistantDayMode)
@@ -426,6 +428,36 @@ try {
   await assertAssistantUsesVisibleDailySource(griefGuidedPage, griefPanel, 'غم و سوگ', 1, ['exercise']);
   assert.deepEqual(griefErrors, [], 'T06 prepared-only browser flow must not raise page errors');
   await griefGuidedPage.close();
+
+  // T06 day 15 support requests require an explicit mutual-freedom check before assistant guidance.
+  const griefGatePage = await browser.newPage();
+  const griefGateErrors = [];
+  griefGatePage.on('pageerror', error => griefGateErrors.push(String(error)));
+  await openDay(griefGatePage, { problem: 'غم و سوگ', assistantDayMode: 'grief-support', localModelInstalled: true });
+  const griefGatePanel = griefGatePage.locator('.globalAssistantDialog');
+  await griefGatePanel.waitFor({ state: 'visible' });
+  const griefGate = griefGatePanel.getByTestId('grief-relationship-safety-gate');
+  await griefGate.waitFor({ state: 'visible' });
+  assert.match(await griefGate.innerText(), /هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
+  assert.equal(await griefGatePanel.getByTestId('grief-daily-prompt-trigger').isDisabled(), true,
+    'T06 support prompts remain unavailable until the safety check is confirmed');
+  await griefGate.getByTestId('grief-relationship-safety-safe').click();
+  await griefGatePage.waitForFunction(() => {
+    const trigger = document.querySelector('[data-testid="grief-daily-prompt-trigger"]');
+    return trigger && !trigger.disabled;
+  });
+  await griefGatePanel.getByTestId('grief-daily-prompt-trigger').click();
+  const griefGatePrompt = griefGatePage.locator('#library-assistant-prompt-dialog');
+  await griefGatePrompt.waitFor({ state: 'visible' });
+  await griefGatePrompt.getByRole('button', { name: 'منظور از اقدام اختصاصی امروز چیست؟' }).click();
+  await griefGatePanel.getByRole('button', { name: 'ارسال' }).click();
+  await griefGatePage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => node.innerText.includes('راهنمای روز ۱۵ غم و سوگ')));
+  const griefGateReply = await griefGatePanel.locator('.assistantMessage').last().innerText();
+  assert.match(griefGateReply, /درخواست/);
+  assert.match(griefGateReply, /فرد امن/);
+  assert.deepEqual(griefGateErrors, [], 'T06 support safety-gate browser flow must not raise page errors');
+  await griefGatePage.close();
 
   // Direct T05 relationship requests require the explicit relationship-safety check.
   const jealousyGatePage = await browser.newPage();
