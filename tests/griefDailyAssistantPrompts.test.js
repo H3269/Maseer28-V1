@@ -59,13 +59,13 @@ test('all 392 T06 prepared questions return substantive and meaningfully varied 
       assert.notEqual(answer.trim(), guide.action, 'answer must teach beyond repeating the action');
       switch (question.kind) {
         case 'exercise_meaning':
-          assert.ok(answer.includes(guide.exercise) && answer.includes(guide.mechanism) && answer.includes(guide.skill));
+          assert.ok(answer.includes(guide.exercise) && answer.includes(guide.objective) && answer.includes(guide.mechanism) && answer.includes(guide.skill));
           break;
         case 'exercise_example':
           assert.ok(answer.includes(guide.exerciseExample) && answer.includes(guide.exercise) && answer.includes(guide.successCriterion));
           break;
         case 'action_meaning':
-          assert.ok(answer.includes(guide.action) && answer.includes('تمرین کمک می‌کند'));
+          assert.ok(answer.includes(guide.action) && answer.includes(guide.objective) && answer.includes(guide.skill) && answer.includes('تمرین کمک می‌کند'));
           break;
         case 'action_example':
           assert.ok(answer.includes(guide.actionExample) && answer.includes(guide.action));
@@ -81,7 +81,7 @@ test('all 392 T06 prepared questions return substantive and meaningfully varied 
           assert.ok(answer.includes(guide.stopCondition) && answer.includes('خدمات اضطراری') && answer.includes(guide.exercise) && answer.includes(guide.action));
           break;
         case 'no_event':
-          assert.ok(answer.includes(guide.lightVersion) && answer.includes('جبران') && answer.includes(guide.exercise) && answer.includes(guide.action));
+          assert.ok(answer.includes(guide.lightVersion) && answer.includes(guide.lightActionVersion) && answer.includes('جبران') && answer.includes(guide.exercise) && answer.includes(guide.action));
           break;
         case 'not_done':
           assert.ok(answer.includes(guide.lightVersion) && answer.includes('جبران'));
