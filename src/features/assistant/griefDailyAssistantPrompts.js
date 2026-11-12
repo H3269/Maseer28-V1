@@ -1,5 +1,6 @@
 import { cleanPreparedAssistantTopicText } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
+import { getGriefDaySpecificAnswerGuidance } from './griefDailyAssistantDaySpecificGuidance.js';
 
 // T06: prepared-only, day-specific guidance for grief and loss.
 // The guide content is synchronized with the reviewed 28-day draft.
@@ -3197,6 +3198,15 @@ function answerRaw({ day, message, dailyContent } = {}) {
       break;
     default:
       return null;
+  }
+  const specific = getGriefDaySpecificAnswerGuidance(g.day);
+  if (specific) {
+    body += '\\n\\n**راهنمای اجرایی اختصاصی روز ' + g.day + ' — ' + g.title + '**'
+      + '\\n**روش انجام تمرین:** ' + specific.exerciseHow
+      + '\\n**روش انجام اقدام:** ' + specific.actionHow
+      + '\\n**معیار کافی‌بودن تمرین:** ' + specific.exerciseSuccess
+      + '\\n**معیار کافی‌بودن اقدام:** ' + specific.actionSuccess
+      + '\\n**برداشت یا خطای نامناسب:** ' + specific.avoid;
   }
   return h + '\n\n' + body;
 }
