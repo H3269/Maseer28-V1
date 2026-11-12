@@ -8,6 +8,7 @@ import {
 } from '../src/features/assistant/emotionalDependencyDailyAssistantPrompts.js';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
+import { getDailySafetyMode } from '../src/features/content/dailySafety.js';
 
 function contextFor(guide, overrides = {}) {
   const data = {
@@ -119,6 +120,8 @@ test('T08 canonical content, adaptive runtime fields and draft taxonomy stay ali
     const day = canonical[index];
     assert.equal(day.topic_id, 'T08');
     assert.equal(day.review_status, 'draft');
+    assert.equal(getDailySafetyMode(day), 'blocked',
+      'unreviewed T08 day ' + (index + 1) + ' must remain withheld from runtime completion');
     assert.equal(day.evidence_grade, 'not_assessed');
     assert.equal(day.metadata_version, 2);
     assert.equal(day.subtopic_ids.length, 1);
