@@ -138,13 +138,29 @@ test('T08 canonical content, adaptive runtime fields and draft taxonomy stay ali
   assert.equal(mappedSubtopics.reduce((n, item) => n + item.draft_content_ids.length, 0), 28);
   for (let index = 0; index < 28; index += 1) {
     const day = canonical[index];
+    const guide = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES[index];
     assert.equal(day.topic_id, 'T08');
     assert.equal(day.review_status, 'draft');
     assert.equal(getDailySafetyMode(day), 'blocked',
       'unreviewed T08 day ' + (index + 1) + ' must remain withheld from runtime completion');
     assert.equal(day.evidence_grade, 'not_assessed');
+    assert.deepEqual(day.source_ids, []);
     assert.equal(day.metadata_version, 2);
-    assert.equal(day.subtopic_ids.length, 1);
+    assert.deepEqual(day.subtopic_ids, [guide.subtopic]);
+    assert.equal(day.title, guide.title);
+    assert.equal(day.learning_objective, guide.objective);
+    assert.equal(day.target_skill, guide.skill);
+    assert.equal(day.teaching_point, guide.mechanism);
+    assert.equal(day.exercise_type, guide.exerciseType);
+    assert.equal(day.duration_minutes, guide.durationMinutes);
+    assert.equal(day.instructions, guide.exercise);
+    assert.equal(day.reflection_prompt, guide.reflectionQuestion);
+    assert.equal(day.success_criterion, guide.successCriterion);
+    assert.ok(day.closing.includes('معیار موفقیت: ' + guide.successCriterion));
+    assert.ok(day.stop_conditions.includes(guide.stopCondition));
+    assert.equal(day.risk_level, guide.riskLevel);
+    assert.equal(day.when_to_seek_human_support, guide.whenToSeekHumanSupport);
+    assert.deepEqual(day.contraindications, guide.contraindications);
     for (const field of fields) assert.equal(day[field], runtime[index][field], 'day ' + (index + 1) + ' ' + field + ' must match overlay');
   }
   for (const field of fields) {
