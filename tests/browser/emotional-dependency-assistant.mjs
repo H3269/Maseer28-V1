@@ -149,7 +149,7 @@ try {
   const coerciveControlPanel = await openT08Day(coerciveControlPage, 25);
   await coerciveControlPanel.getByTestId('emotional-dependency-privacy-notice').waitFor({ state: 'visible' });
   const coercivePrivacyText = await coerciveControlPanel.getByTestId('emotional-dependency-privacy-notice').innerText();
-  assert.match(coercivePrivacyText, /دستگاه امن/);
+  assert.match(coercivePrivacyText, /مسیر امن/);
   assert.match(coercivePrivacyText, /نظارت/);
   await coerciveControlPage.close();
 
