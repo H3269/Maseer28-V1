@@ -23,15 +23,15 @@ on:
       - '.github/workflows/**'
       - 'scripts/prepare-production-build.mjs'
   push:
-    branches: [main, 'content/t*']
+    branches: [main]
 
 permissions:
   contents: read
 
 concurrency:
   group: ${{ startsWith(github.ref_name, 'content/t') && format('path28-topic-validation-{0}', github.ref_name) || format('path28-validation-{0}', github.event.pull_request.number || github.sha) }}
-  # New commits supersede queued/running PR checks; main integration runs are never auto-cancelled.
-  cancel-in-progress: ${{ github.event_name == 'pull_request' || startsWith(github.ref_name, 'content/t') || startsWith(github.head_ref, 'content/t') }}
+  # Keep an active validation running; a newer PR commit may replace only the queued pending run.
+  cancel-in-progress: false
 
 jobs:
   announce-commit-status:
@@ -262,7 +262,7 @@ jobs:
         run: npm ci
       - name: Dependency security audit
         run: npm audit --audit-level=high
-      - name: Run focused T01-T06 assistant and safety unit tests
+      - name: Run focused T01-T07 assistant and safety unit tests
         run: >-
           node --test
           tests/angerDailyAssistantPrompts.test.js
@@ -271,6 +271,7 @@ jobs:
           tests/hatredDailyAssistantPrompts.test.js
           tests/jealousyDailyAssistantPrompts.test.js
           tests/griefDailyAssistantPrompts.test.js
+          tests/guiltDailyAssistantPrompts.test.js
           tests/preparedOnlyCurrentTopics.test.js
           tests/dailySafety.test.mjs
           tests/assistantMessageFormatting.test.js

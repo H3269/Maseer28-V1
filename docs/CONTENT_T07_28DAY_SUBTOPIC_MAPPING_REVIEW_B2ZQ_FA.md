@@ -75,3 +75,14 @@
 - این پیشنهادها تا بررسی نهایی مرز T07 با T19/T33 و هرگونه بازبینی مجاز انسانی، پیشنهادی باقی می‌مانند.
 
 **وضعیت:** `T07_daily_subtopic_proposals_added; day26_draft_overlay_synced; ledger_unchanged`
+
+
+## ثبت فراداده پیشنهادی در شاخه کاری — ۱۲ نوامبر ۲۰۲۶
+
+- جدول پیشنهادی روزبه‌روز در `public/assistant/knowledge/subtopics.v1.json` فقط در فیلدهای `draft_content_ids` ثبت شد؛ ۲۸ شناسه روز بین سه زیرموضوع توزیع شده‌اند: S01=4، S02=9، S03=15.
+- برای زیرموضوع‌ها `draft_evidence_ids` به منابع مرتبط افزوده شد؛ منابع تازه در `public/assistant/evidence/sources.v1.json` با شناسه‌های SRC-GUILT-* و وضعیت کلی `curated_draft_sources_pending_evidence_review` ثبت شدند.
+- فیلدهای فعال `content_ids` و `evidence_ids` همچنان خالی ماندند؛ `review_status` همچنان `draft` و `definition_status` همچنان `pending_expert_review` است.
+- هیچ رکوردی در ledger نگاشت نهایی یا evidence registry ایجاد نشد؛ هیچ منبعی runtime-eligible یا تأییدشده اعلام نشد.
+- این ثبت فقط فراداده پیش‌نویس در شاخه کاری است و تا بازبینی متخصص و تأیید مالک نباید به‌عنوان نگاشت قطعی استفاده شود.
+
+**وضعیت:** `T07_proposed_subtopic_mapping_recorded_as_draft_metadata_only_pending_expert_review`

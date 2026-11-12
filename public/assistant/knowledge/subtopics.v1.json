@@ -407,11 +407,24 @@
       "definition": "تناسب احساس گناه با رفتار، مسئولیت و پیامد واقعی را بررسی می‌کند؛ مسئولیت فرد نباید بیش از سهم شواهدپذیر او برآورد شود.",
       "definition_status": "pending_expert_review",
       "review_status": "draft",
-      "scope_notes": [],
+      "scope_notes": [
+        "پیشنهاد نگاشت روزانه بر اساس هدف/مهارت پیش‌نویس؛ صرفاً draft، نیازمند بازبینی متخصص و ثبت رسمی در ledger پیش از استفاده runtime."
+      ],
       "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
-      "safety_rule_ids": []
+      "safety_rule_ids": [],
+      "draft_content_ids": [
+        "احساس گناه-01",
+        "احساس گناه-03",
+        "احساس گناه-06",
+        "احساس گناه-13"
+      ],
+      "draft_evidence_ids": [
+        "SRC-GUILT-EICKELS-2025-001",
+        "SRC-GUILT-WANG-2026-001",
+        "SRC-ANGER-WHO-IPV-2013-001"
+      ]
     },
     {
       "subtopic_id": "T07-S02",
@@ -421,11 +434,30 @@
       "definition": "گناهی را بررسی می‌کند که با مسئولیت یا شواهد موجود نامتناسب به نظر می‌رسد؛ قضاوت نهایی نیازمند بررسی زمینه و معیارهای فرد است.",
       "definition_status": "pending_expert_review",
       "review_status": "draft",
-      "scope_notes": [],
+      "scope_notes": [
+        "پیشنهاد نگاشت روزانه بر اساس هدف/مهارت پیش‌نویس؛ صرفاً draft، نیازمند بازبینی متخصص و ثبت رسمی در ledger پیش از استفاده runtime."
+      ],
       "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
-      "safety_rule_ids": []
+      "safety_rule_ids": [],
+      "draft_content_ids": [
+        "احساس گناه-02",
+        "احساس گناه-04",
+        "احساس گناه-05",
+        "احساس گناه-08",
+        "احساس گناه-09",
+        "احساس گناه-11",
+        "احساس گناه-14",
+        "احساس گناه-18",
+        "احساس گناه-22"
+      ],
+      "draft_evidence_ids": [
+        "SRC-GUILT-EICKELS-2025-001",
+        "SRC-GUILT-WANG-2026-001",
+        "SRC-GUILT-MOTTERSHEAD-2024-001",
+        "SRC-GUILT-CFT-2025-001"
+      ]
     },
     {
       "subtopic_id": "T07-S03",
@@ -435,11 +467,37 @@
       "definition": "راه‌های جبران متناسب و مسئولیت‌پذیری را از خودتنبیهی جدا می‌کند؛ جبران نباید به تماس ناایمن یا نقض مرز دیگران منجر شود.",
       "definition_status": "pending_expert_review",
       "review_status": "draft",
-      "scope_notes": [],
+      "scope_notes": [
+        "پیشنهاد نگاشت روزانه بر اساس هدف/مهارت پیش‌نویس؛ صرفاً draft، نیازمند بازبینی متخصص و ثبت رسمی در ledger پیش از استفاده runtime."
+      ],
       "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
-      "safety_rule_ids": []
+      "safety_rule_ids": [],
+      "draft_content_ids": [
+        "احساس گناه-07",
+        "احساس گناه-10",
+        "احساس گناه-12",
+        "احساس گناه-15",
+        "احساس گناه-16",
+        "احساس گناه-17",
+        "احساس گناه-19",
+        "احساس گناه-20",
+        "احساس گناه-21",
+        "احساس گناه-23",
+        "احساس گناه-24",
+        "احساس گناه-25",
+        "احساس گناه-26",
+        "احساس گناه-27",
+        "احساس گناه-28"
+      ],
+      "draft_evidence_ids": [
+        "SRC-GUILT-WANG-2026-001",
+        "SRC-GUILT-VISMAYA-2024-001",
+        "SRC-GUILT-MOTTERSHEAD-2024-001",
+        "SRC-ANGER-WHO-IPV-2013-001",
+        "SRC-GUILT-CFT-2025-001"
+      ]
     },
     {
       "subtopic_id": "T08-S01",

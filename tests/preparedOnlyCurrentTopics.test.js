@@ -8,6 +8,7 @@ import { FEAR_DAILY_ASSISTANT_GUIDES, getFearDailyAssistantPromptGroups } from '
 import { HATRED_DAILY_ASSISTANT_GUIDES, getHatredDailyAssistantPromptGroups } from '../src/features/assistant/hatredDailyAssistantPrompts.js';
 import { JEALOUSY_DAILY_ASSISTANT_GUIDES, getJealousyDailyAssistantPromptGroups } from '../src/features/assistant/jealousyDailyAssistantPrompts.js';
 import { GRIEF_DAILY_ASSISTANT_GUIDES, getGriefDailyAssistantPromptGroups } from '../src/features/assistant/griefDailyAssistantPrompts.js';
+import { GUILT_DAILY_ASSISTANT_GUIDES, getGuiltDailyAssistantPromptGroups } from '../src/features/assistant/guiltDailyAssistantPrompts.js';
 
 const topics = [
   { name: 'خشم', id: 'T01', guides: ANGER_DAILY_ASSISTANT_GUIDES, groups: getAngerDailyAssistantPromptGroups },
@@ -16,6 +17,7 @@ const topics = [
   { name: 'نفرت', id: 'T04', guides: HATRED_DAILY_ASSISTANT_GUIDES, groups: getHatredDailyAssistantPromptGroups },
   { name: 'حسادت', id: 'T05', guides: JEALOUSY_DAILY_ASSISTANT_GUIDES, groups: getJealousyDailyAssistantPromptGroups },
   { name: 'غم و سوگ', id: 'T06', guides: GRIEF_DAILY_ASSISTANT_GUIDES, groups: getGriefDailyAssistantPromptGroups },
+  { name: 'احساس گناه', id: 'T07', guides: GUILT_DAILY_ASSISTANT_GUIDES, groups: getGuiltDailyAssistantPromptGroups },
 ];
 
 function contextFor(topic) {
@@ -87,7 +89,7 @@ test('all exact prepared FAQs across 28 days keep their own answers when their w
       }
     }
   }
-  assert.ok(checked >= 900, `expected broad coverage of the 6 × 28 prepared FAQ sets; checked ${checked}`);
+  assert.ok(checked >= 2700, `expected broad coverage of the 7 × 28 prepared FAQ sets; checked ${checked}`);
 });
 
 test('a pending safety exchange still preempts even an exact prepared FAQ', () => {
