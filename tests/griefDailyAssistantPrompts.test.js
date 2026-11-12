@@ -161,3 +161,41 @@ test('T06 non-interpersonal day-one prepared guidance does not receive an unrela
   assert.equal(result.status, 'daily_guidance_available');
   assert.match(result.message, /راهنمای روز/);
 });
+
+test('T06 28-day exercises/actions match the runtime overlay and contain no exact cross-topic duplicates', async () => {
+  const overlay = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+  const categories = overlay.categories || {};
+  const griefDays = categories['غم و سوگ']?.days || [];
+  assert.equal(griefDays.length, 28);
+  const normalize = (value) => String(value || '').normalize('NFKC')
+    .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
+    .replace(/[\u200c\u200f\u200e]/g, '')
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+    .replace(/\s+/g, ' ').trim().toLowerCase();
+  const griefTexts = [];
+  for (const guide of GRIEF_DAILY_ASSISTANT_GUIDES) {
+    const day = griefDays.find((item) => Number(item.day) === guide.day);
+    assert.ok(day, 'missing T06 overlay day ' + guide.day);
+    assert.equal(day.exercise, guide.exercise, 'exercise mismatch on T06 day ' + guide.day);
+    assert.equal(day.actionText, guide.action, 'action mismatch on T06 day ' + guide.day);
+    griefTexts.push({ day: guide.day, field: 'exercise', text: normalize(day.exercise) });
+    griefTexts.push({ day: guide.day, field: 'action', text: normalize(day.actionText) });
+  }
+  const seen = new Map();
+  for (const item of griefTexts) {
+    assert.ok(item.text.length > 20, 'T06 daily text must be substantive');
+    assert.equal(seen.has(item.text), false, 'T06 exact duplicate: ' + JSON.stringify(item));
+    seen.set(item.text, item);
+  }
+  for (const [topic, category] of Object.entries(categories)) {
+    if (topic === 'غم و سوگ') continue;
+    for (const day of category.days || []) {
+      for (const [field, value] of [['exercise', day.exercise], ['action', day.actionText]]) {
+        const text = normalize(value);
+        if (text.length <= 20) continue;
+        assert.equal(seen.has(text), false,
+          'T06 exact cross-topic duplicate against ' + topic + ' day ' + day.day + ' ' + field);
+      }
+    }
+  }
+});
