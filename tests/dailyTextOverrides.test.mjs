@@ -27,6 +27,8 @@ test('the 34-topic daily text overlay merges every configured runtime text field
     .replace(/\s+/g, ' ').trim();
   const exerciseTexts = new Set();
   const actionTexts = new Set();
+  const unchangedExerciseIds = [];
+  const unchangedActionIds = [];
   for (const topic of topicNames) {
     const originalDays = base.categories[topic]?.days || [];
     const overrideDays = overrides.categories[topic]?.days || [];
@@ -57,14 +59,21 @@ test('the 34-topic daily text overlay merges every configured runtime text field
       exerciseTexts.add(normalizedExercise);
       actionTexts.add(normalizedAction);
       if (actual.exercise !== original.exercise) changedExercise += 1;
+      else unchangedExerciseIds.push(actual.id);
       if (actual.actionText !== original.actionText) changedAction += 1;
+      else unchangedActionIds.push(actual.id);
       total += 1;
     }
   }
 
   assert.equal(total, 952);
-  assert.equal(changedExercise, 952);
-  assert.equal(changedAction, 952);
+  const canonicalT07Ids = base.categories['احساس گناه'].days.map(day => day.id).sort();
+  assert.deepEqual(unchangedExerciseIds.sort(), canonicalT07Ids,
+    'only the 28 T07 exercise texts are already stored in canonical content');
+  assert.deepEqual(unchangedActionIds.sort(), canonicalT07Ids,
+    'only the 28 T07 action texts are already stored in canonical content');
+  assert.equal(changedExercise, 924);
+  assert.equal(changedAction, 924);
   assert.equal(exerciseTexts.size, 952);
   assert.equal(actionTexts.size, 952);
 });
