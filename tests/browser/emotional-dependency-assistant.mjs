@@ -145,7 +145,15 @@ try {
   assert.match(await privacyPanel.getByTestId('emotional-dependency-privacy-notice').innerText(), /رمزگذاری نمی‌کند/);
   await privacyPage.close();
 
-  process.stdout.write('PASS: Chromium T08 prepared assistant, canonical day routing, exact visible source use, relationship safety gate and support-seeking privacy notice\n');
+  const coerciveControlPage = await browser.newPage();
+  const coerciveControlPanel = await openT08Day(coerciveControlPage, 25);
+  await coerciveControlPanel.getByTestId('emotional-dependency-privacy-notice').waitFor({ state: 'visible' });
+  const coercivePrivacyText = await coerciveControlPanel.getByTestId('emotional-dependency-privacy-notice').innerText();
+  assert.match(coercivePrivacyText, /دستگاه امن/);
+  assert.match(coercivePrivacyText, /نظارت/);
+  await coerciveControlPage.close();
+
+  process.stdout.write('PASS: Chromium T08 prepared assistant, canonical day routing, exact visible source use, relationship safety gate and support-seeking and coercive-control privacy notices\n');
 } finally {
   await browser.close();
 }
