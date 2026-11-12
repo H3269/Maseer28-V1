@@ -15,12 +15,14 @@ test('T08 interpersonal days require a mutual-choice check', () => {
   }
 });
 
-test('T08 support-seeking days 12 and 18 show the device privacy notice', () => {
-  for (const day of [12, 18]) {
+test('T08 support-seeking days 12, 18 and coercive-control day 25 show the device privacy notice', () => {
+  for (const day of [12, 18, 25]) {
     const notice = getInterpersonalPrivacyNotice({ id: 'وابستگی عاطفی-' + day, topic_id: 'T08', day });
     assert.match(notice, /حافظه محلی مرورگر/);
     assert.match(notice, /رمزگذاری نمی‌کند/);
     assert.match(notice, /نظارت/);
   }
-  assert.equal(getInterpersonalPrivacyNotice({ id: 'وابستگی عاطفی-11', topic_id: 'T08', day: 11 }), null);
+  for (const day of [6, 11, 15, 24]) {
+    assert.equal(getInterpersonalPrivacyNotice({ id: 'وابستگی عاطفی-' + day, topic_id: 'T08', day }), null);
+  }
 });
