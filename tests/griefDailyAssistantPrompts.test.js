@@ -115,6 +115,7 @@ test('all 392 T06 prepared questions return substantive and meaningfully varied 
 });
 
 test('T06 support-request day requires explicit relationship safety confirmation', () => {
+  assert.equal(getCanonicalDailyRecordId('سوگ و فقدان', 15), getCanonicalDailyRecordId('غم و سوگ', 15));
   const guide = GRIEF_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 15);
   const question = guide.questions.find((item) => item.kind === 'action_meaning');
   const data = {
