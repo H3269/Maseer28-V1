@@ -132,8 +132,8 @@ test('T07 daily exercise and action match the runtime overlay and have no exact 
     assert.equal(day.exercise, guide.exercise, 'exercise mismatch on day ' + guide.day);
     assert.equal(day.actionText, guide.action, 'action mismatch on day ' + guide.day);
     assert.equal(day.title, guide.title, 'title mismatch on day ' + guide.day);
-    assert.equal(day.intro, 'هدف: ' + guide.objective + '\\n\\nمهارت: ' + guide.skill + '\\n\\nچرایی تمرین: ' + guide.mechanism, 'intro mismatch on day ' + guide.day);
-    assert.equal(day.closing, 'معیار موفقیت: ' + guide.successCriterion + '\\n\\nپرسش بازتاب: ' + guide.reflectionQuestion + '\\n\\nشرط توقف/احتیاط: ' + guide.stopCondition, 'closing mismatch on day ' + guide.day);
+    assert.equal(day.intro, 'هدف: ' + guide.objective + '\n\nمهارت: ' + guide.skill + '\n\nچرایی تمرین: ' + guide.mechanism, 'intro mismatch on day ' + guide.day);
+    assert.equal(day.closing, 'معیار موفقیت: ' + guide.successCriterion + '\n\nپرسش بازتاب: ' + guide.reflectionQuestion + '\n\nشرط توقف/احتیاط: ' + guide.stopCondition, 'closing mismatch on day ' + guide.day);
     assert.equal(day.lightExerciseText, 'نسخه سبک تمرین: ' + guide.lightVersion, 'light exercise mismatch on day ' + guide.day);
     assert.equal(day.lightActionText, guide.lightActionVersion, 'light action mismatch on day ' + guide.day);
     assert.equal(day.progressActionText, guide.progressActionVersion, 'progress action mismatch on day ' + guide.day);
