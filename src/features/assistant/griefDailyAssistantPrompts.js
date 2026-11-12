@@ -3201,12 +3201,34 @@ function answerRaw({ day, message, dailyContent } = {}) {
   }
   const specific = getGriefDaySpecificAnswerGuidance(g.day);
   if (specific) {
-    body += '\n\n**راهنمای اجرایی اختصاصی روز ' + g.day + ' — ' + g.title + '**'
-      + '\n**روش انجام تمرین:** ' + specific.exerciseHow
-      + '\n**روش انجام اقدام:** ' + specific.actionHow
-      + '\n**معیار کافی‌بودن تمرین:** ' + specific.exerciseSuccess
-      + '\n**معیار کافی‌بودن اقدام:** ' + specific.actionSuccess
-      + '\n**برداشت یا خطای نامناسب:** ' + specific.avoid;
+    const fieldsByQuestion = {
+      exercise_meaning: ['exerciseHow', 'exerciseSuccess', 'avoid'],
+      exercise_example: ['exerciseHow', 'exerciseSuccess', 'avoid'],
+      action_meaning: ['actionHow', 'actionSuccess', 'avoid'],
+      action_example: ['actionHow', 'actionSuccess', 'avoid'],
+      light_version: ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess', 'avoid'],
+      success: ['exerciseSuccess', 'actionSuccess'],
+      stop: ['avoid'],
+      no_event: ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess', 'avoid'],
+      exercise_action_difference: ['exerciseHow', 'actionHow'],
+      not_done: ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess'],
+      grief_increased: ['avoid'],
+      talk_other: ['actionHow', 'actionSuccess', 'avoid'],
+      can_change: ['exerciseHow', 'actionHow', 'avoid'],
+      duration: ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess'],
+    };
+    const labels = {
+      exerciseHow: 'روش انجام تمرین',
+      actionHow: 'روش انجام اقدام',
+      exerciseSuccess: 'معیار کافی‌بودن تمرین',
+      actionSuccess: 'معیار کافی‌بودن اقدام',
+      avoid: 'مرز و برداشت نامناسب',
+    };
+    const fields = fieldsByQuestion[q.kind] || [];
+    if (fields.length) {
+      body += '\n\n**راهنمای اختصاصی روز ' + g.day + ' — ' + g.title + '**'
+        + fields.map(field => '\n**' + labels[field] + ':** ' + specific[field]).join('');
+    }
   }
   return h + '\n\n' + body;
 }
