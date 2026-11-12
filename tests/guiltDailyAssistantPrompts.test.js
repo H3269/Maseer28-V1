@@ -249,6 +249,53 @@ test('T07 daily exercise and action match the runtime overlay and have no exact 
   }
 });
 
+test('T07 canonical path-content satisfies the v2 draft contract without claiming approval', async () => {
+  const [contentText, topicText, subtopicText, sourceText] = await Promise.all([
+    readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'),
+    readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'),
+    readFile(new URL('../public/assistant/knowledge/subtopics.v1.json', import.meta.url), 'utf8'),
+    readFile(new URL('../public/assistant/evidence/sources.v1.json', import.meta.url), 'utf8'),
+  ]);
+  const content = JSON.parse(contentText);
+  const days = content.categories['احساس گناه'].days;
+  const topic = JSON.parse(topicText).topics.find(item => item.topic_id === 'T07');
+  const subtopics = JSON.parse(subtopicText).subtopics.filter(item => item.topic_id === 'T07');
+  const sourceIds = new Set(JSON.parse(sourceText).sources.map(item => item.source_id));
+  assert.equal(content.version, '2026-11-12-T07-v2-draft');
+  assert.equal(days.length, 28);
+  assert.equal(topic.review_status, 'draft');
+  assert.deepEqual(topic.content_ids, []);
+  assert.equal(topic.draft_content_ids.length, 28);
+  for (const guide of GUILT_DAILY_ASSISTANT_GUIDES) {
+    const day = days.find(item => item.day === guide.day);
+    assert.ok(day);
+    assert.equal(day.id, 'احساس گناه-' + String(guide.day).padStart(2, '0'));
+    assert.equal(day.topic_id, 'T07');
+    assert.deepEqual(day.subtopic_ids, [guide.subtopic]);
+    assert.equal(day.learning_objective, guide.objective);
+    assert.equal(day.target_skill, guide.skill);
+    assert.equal(day.teaching_point, guide.mechanism);
+    assert.equal(day.exercise_type, guide.exerciseType);
+    assert.equal(day.instructions, guide.exercise);
+    assert.equal(day.duration_minutes, guide.durationMinutes);
+    assert.equal(day.duration_status, 'provisional_estimate');
+    assert.equal(day.reflection_prompt, guide.reflectionQuestion);
+    assert.equal(day.success_criterion, guide.successCriterion);
+    assert.ok(day.stop_conditions.length > 0 && day.contraindications.length > 0);
+    assert.equal(day.risk_level, guide.riskLevel);
+    assert.ok(day.when_to_seek_human_support);
+    assert.ok(day.source_ids.length > 0);
+    assert.ok(day.source_ids.every(id => sourceIds.has(id)));
+    assert.equal(day.evidence_grade, 'not_assessed');
+    assert.equal(day.review_status, 'draft');
+    assert.equal(Boolean(day.review_record_id || day.reviewer_name || day.reviewed_at), false);
+    assert.ok(topic.draft_content_ids.includes(day.id));
+    const linkedSubtopic = subtopics.find(item => item.subtopic_id === guide.subtopic);
+    assert.ok(linkedSubtopic.draft_content_ids.includes(day.id));
+    assert.deepEqual(linkedSubtopic.content_ids, []);
+  }
+});
+
 test('T07 prepared answers require exact canonical topic/day identity and preserve urgent safety precedence', () => {
   const guide = GUILT_DAILY_ASSISTANT_GUIDES[0];
   const question = guide.questions[0];
