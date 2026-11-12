@@ -9,6 +9,7 @@ import { HATRED_DAILY_ASSISTANT_GUIDES, getHatredDailyAssistantPromptGroups } fr
 import { JEALOUSY_DAILY_ASSISTANT_GUIDES, getJealousyDailyAssistantPromptGroups } from '../src/features/assistant/jealousyDailyAssistantPrompts.js';
 import { GRIEF_DAILY_ASSISTANT_GUIDES, getGriefDailyAssistantPromptGroups } from '../src/features/assistant/griefDailyAssistantPrompts.js';
 import { GUILT_DAILY_ASSISTANT_GUIDES, getGuiltDailyAssistantPromptGroups } from '../src/features/assistant/guiltDailyAssistantPrompts.js';
+import { EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES, getEmotionalDependencyDailyAssistantPromptGroups } from '../src/features/assistant/emotionalDependencyDailyAssistantPrompts.js';
 
 const topics = [
   { name: 'خشم', id: 'T01', guides: ANGER_DAILY_ASSISTANT_GUIDES, groups: getAngerDailyAssistantPromptGroups },
@@ -18,6 +19,7 @@ const topics = [
   { name: 'حسادت', id: 'T05', guides: JEALOUSY_DAILY_ASSISTANT_GUIDES, groups: getJealousyDailyAssistantPromptGroups },
   { name: 'غم و سوگ', id: 'T06', guides: GRIEF_DAILY_ASSISTANT_GUIDES, groups: getGriefDailyAssistantPromptGroups },
   { name: 'احساس گناه', id: 'T07', guides: GUILT_DAILY_ASSISTANT_GUIDES, groups: getGuiltDailyAssistantPromptGroups },
+  { name: 'وابستگی عاطفی', id: 'T08', guides: EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES, groups: getEmotionalDependencyDailyAssistantPromptGroups },
 ];
 
 function contextFor(topic) {
