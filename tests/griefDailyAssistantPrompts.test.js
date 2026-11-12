@@ -248,3 +248,25 @@ test('T06 assistant uses separate runtime light/progress/rest actions while pres
   assert.ok(result.message.includes(guide.exercise));
   assert.ok(result.message.includes(guide.action));
 });
+
+test('T06 day 11 support-seeking action also requires the relationship safety check', () => {
+  const guide = GRIEF_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 11);
+  const question = guide.questions.find((item) => item.kind === 'action_meaning');
+  const result = makePageAssistantTurn({
+    screen: 'day',
+    text: question.value,
+    dailyContext: {
+      day: 11,
+      problem: 'غم و سوگ',
+      data: {
+        id: getCanonicalDailyRecordId('غم و سوگ', 11),
+        topic_id: 'T06',
+        day: 11,
+        exercise: guide.exercise,
+        actionText: guide.action,
+      },
+    },
+  });
+  assert.equal(result.status, 'relationship_safety_confirmation_required');
+  assert.match(result.message, /هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
+});
