@@ -81,6 +81,14 @@ test('all 392 T08 prepared outputs are substantive and retain day-specific conte
   assert.equal(answerEmotionalDependencyDailyPreparedQuestion({ day: 1, message: 'سؤال آزاد خارج از فهرست' }), null);
 });
 
+test('T08 relationship and privacy-sensitive days retain caution risk metadata', () => {
+  const cautionDays = new Set([6, 11, 12, 15, 18, 24, 25]);
+  for (const guide of EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES) {
+    assert.equal(guide.riskLevel, cautionDays.has(guide.day) ? 'caution' : 'routine',
+      'T08 day ' + guide.day + ' must preserve its reviewed safety classification');
+  }
+});
+
 test('T08 human-support thresholds are tailored to each day', () => {
   const thresholds = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES.map((guide) => guide.whenToSeekHumanSupport.trim());
   assert.equal(thresholds.length, 28);
@@ -181,6 +189,7 @@ test('T08 assistant guide titles, objectives, skills and adaptive variants match
     assert.equal(guide.restActionVersion, day.restActionText, 'day ' + (index + 1) + ' rest action must match canonical content');
     assert.equal(guide.successCriterion, day.success_criterion, 'day ' + (index + 1) + ' success criterion must match canonical metadata');
     assert.equal(guide.whenToSeekHumanSupport, day.when_to_seek_human_support, 'day ' + (index + 1) + ' human-support threshold must match canonical metadata');
+    assert.equal(guide.riskLevel, day.risk_level, 'day ' + (index + 1) + ' risk level must match canonical metadata');
     assert.equal(day.closing, 'معیار موفقیت: ' + guide.successCriterion + '\n\nپرسش بازتاب: ' + guide.reflectionQuestion + '\n\nشرط توقف/احتیاط: ' + guide.stopCondition, 'day ' + (index + 1) + ' closing text must match the day-specific guide');
   }
 });
