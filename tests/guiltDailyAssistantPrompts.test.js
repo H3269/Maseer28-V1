@@ -202,7 +202,7 @@ test('T07 daily exercise and action match the runtime overlay and have no exact 
   assert.equal(guiltDays.length, 28);
   const normalize = value => String(value || '').normalize('NFKC')
     .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
-    .replace(/[\u200c\u200f\u200e]/g, '')
+    .replace(/[\u200c\u200f\u200e]/g, ' ')
     .replace(/[^\p{L}\p{N}\s]/gu, ' ')
     .replace(/\s+/g, ' ').trim().toLowerCase();
   const seen = new Map();
