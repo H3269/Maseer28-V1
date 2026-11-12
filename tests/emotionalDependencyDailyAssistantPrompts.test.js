@@ -87,7 +87,7 @@ test('T08 success criteria are distinct, observable and not generic day-number p
   assert.equal(new Set(criteria).size, 28, 'each day needs its own success criterion');
   for (const criterion of criteria) {
     assert.ok(criterion.length >= 45);
-    assert.doesNotMatch(criterion, /^محور روز \\d+ به‌صورت مشخص ثبت شده/u);
+    assert.doesNotMatch(criterion, /^محور روز \d+ به‌صورت مشخص ثبت شده/u);
     assert.match(criterion, /ثبت|مشخص|انتخاب|تفکیک|شناسایی|بررسی|ترسیم|نوشته|تعیین/u);
   }
 });
