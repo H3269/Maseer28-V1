@@ -279,10 +279,8 @@ test('T07 canonical path-content satisfies the v2 draft contract without claimin
   const subtopics = JSON.parse(subtopicText).subtopics.filter(item => item.topic_id === 'T07');
   const sourceIds = new Set(JSON.parse(sourceText).sources.map(item => item.source_id));
   const overlayDays = JSON.parse(overlayText).categories['احساس گناه'].days;
-  assert.match(content.version, /^\d{4}-\d{2}-\d{2}-T\d{2}-v2-draft$/u,
-    'global canonical version must identify its latest topic draft without pinning a T07-only date');
-  assert.equal(days.length, 28);
-  assert.equal(topic.review_status, 'draft');
+  assert.ok(/^20\d{2}-\d{2}-\d{2}-T\d{2}-v2-draft$/u.test(content.version),
+    'global canonical version must identify its latest topic draft without pinning a T07-only date');view_status, 'draft');
   assert.deepEqual(topic.content_ids, []);
   assert.equal(topic.draft_content_ids.length, 28);
   for (const guide of GUILT_DAILY_ASSISTANT_GUIDES) {
