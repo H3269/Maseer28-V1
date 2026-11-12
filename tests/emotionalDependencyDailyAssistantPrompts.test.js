@@ -174,3 +174,17 @@ test('T08 urgent safety handoff takes precedence and free-form daily questions r
   assert.equal(free.status, 'prepared_question_required');
   assert.match(free.message, /گفت‌وگوی آزاد برای این موضوع فعال نیست/u);
 });
+
+
+test('T08 targeted semantic rewrites retain relationship-specific operational detail', () => {
+  const byDay = new Map(EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES.map((guide) => [guide.day, guide]));
+  assert.match(byDay.get(1).action, /پاسخی که منتظرش بودی/u);
+  assert.match(byDay.get(3).exercise, /پیش‌بینی تو درباره طرد/u);
+  assert.match(byDay.get(3).exercise, /آرامش کوتاه‌مدت/u);
+  assert.match(byDay.get(17).action, /جمله بازگشت/u);
+  assert.match(byDay.get(22).exercise, /نیاز واقعی پشت دلتنگی/u);
+  assert.match(byDay.get(23).action, /فعالیت شخصی معنادار/u);
+  assert.match(byDay.get(23).action, /ارتباط داوطلبانه و دوسویه/u);
+  assert.match(byDay.get(28).action, /سه ستون بنویس/u);
+  assert.match(byDay.get(28).action, /محدودیت‌هایی که به حمایت یا برنامه ایمنی نیاز دارند/u);
+});
