@@ -131,12 +131,27 @@ test('all 392 T06 answers include day-specific execution, separate success check
         message: question.value,
         dailyContent: { exercise: guide.exercise, actionText: guide.action },
       });
-      assert.ok(answer.includes('راهنمای اجرایی اختصاصی روز ' + guide.day + ' — ' + guide.title));
-      assert.ok(answer.includes(specific.exerciseHow), 'missing day-specific exercise method on day ' + guide.day);
-      assert.ok(answer.includes(specific.actionHow), 'missing day-specific action method on day ' + guide.day);
-      assert.ok(answer.includes(specific.exerciseSuccess), 'missing exercise-specific success check on day ' + guide.day);
-      assert.ok(answer.includes(specific.actionSuccess), 'missing action-specific success check on day ' + guide.day);
-      assert.ok(answer.includes(specific.avoid), 'missing day-specific boundary on day ' + guide.day);
+      const fieldsByQuestion = {
+        exercise_meaning: ['exerciseHow', 'exerciseSuccess', 'avoid'],
+        exercise_example: ['exerciseHow', 'exerciseSuccess', 'avoid'],
+        action_meaning: ['actionHow', 'actionSuccess', 'avoid'],
+        action_example: ['actionHow', 'actionSuccess', 'avoid'],
+        light_version: ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess', 'avoid'],
+        success: ['exerciseSuccess', 'actionSuccess'],
+        stop: ['avoid'],
+        no_event: ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess', 'avoid'],
+        exercise_action_difference: ['exerciseHow', 'actionHow'],
+        not_done: ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess'],
+        grief_increased: ['avoid'],
+        talk_other: ['actionHow', 'actionSuccess', 'avoid'],
+        can_change: ['exerciseHow', 'actionHow', 'avoid'],
+        duration: ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess'],
+      };
+      const expectedFields = fieldsByQuestion[question.kind];
+      assert.ok(answer.includes('راهنمای اختصاصی روز ' + guide.day + ' — ' + guide.title));
+      for (const field of expectedFields) {
+        assert.ok(answer.includes(specific[field]), 'missing relevant ' + field + ' for ' + question.kind + ' on day ' + guide.day);
+      }
       count += 1;
     }
   }
