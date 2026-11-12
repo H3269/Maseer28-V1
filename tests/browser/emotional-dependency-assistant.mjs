@@ -126,6 +126,8 @@ try {
   await gatedTrigger.waitFor({ state: 'visible' });
   assert.equal(await gatedTrigger.isDisabled(), true, 'prepared prompts must remain unavailable until the relationship safety check is answered');
   await gate.getByTestId('emotional-dependency-relationship-safety-safe').click();
+  assert.equal(await gatedPanel.getByTestId('emotional-dependency-privacy-notice').count(), 0,
+    'T08 relationship-gate day 6 must not show the separate device-privacy notice reserved for support-seeking/coercive-control days');
   await gatedPage.waitForFunction(() => {
     const button = document.querySelector('[data-testid="emotional-dependency-daily-prompt-trigger"]');
     return button && !button.disabled;
