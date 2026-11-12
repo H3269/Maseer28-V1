@@ -190,7 +190,8 @@ test('T06 day 12 prepares for a grief wave rather than a generic crisis or stres
   assert.ok(guide.exercise.includes('یادآور فقدان'));
   assert.ok(guide.action.includes('موج سوگ'));
   assert.ok(specific.exerciseHow.includes('موج یا یادآور مرتبط با فقدان'));
-  assert.ok(specific.avoid.includes('نقشه بحران عمومی'));
+  assert.ok(specific.exerciseHow.includes('نه نقشه بحران عمومی'));
+  assert.ok(specific.avoid.includes('همه بحران‌ها'));
   assert.ok(!guide.action.includes('برنامه روز دشوار'));
 });
 
