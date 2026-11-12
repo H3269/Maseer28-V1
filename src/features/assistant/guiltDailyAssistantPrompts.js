@@ -2803,8 +2803,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "riskLevel": "human_review_required",
     "sourceIds": [
       "SRC-GUILT-CFT-2025-001",
-      "SRC-GUILT-WANG-2026-001",
-      "SRC-ANGER-WHO-IPV-2013-001"
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
