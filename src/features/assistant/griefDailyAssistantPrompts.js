@@ -3201,33 +3201,34 @@ function answerRaw({ day, message, dailyContent } = {}) {
   }
   const specific = getGriefDaySpecificAnswerGuidance(g.day);
   if (specific) {
+    // Add only the guidance needed for this question, in a compact inline note.
+    // Do not append a repeated day-heading block to every prepared answer.
     const fieldsByQuestion = {
-      exercise_meaning: ['exerciseHow', 'exerciseSuccess', 'avoid'],
-      exercise_example: ['exerciseHow', 'exerciseSuccess', 'avoid'],
-      action_meaning: ['actionHow', 'actionSuccess', 'avoid'],
-      action_example: ['actionHow', 'actionSuccess', 'avoid'],
+      exercise_meaning: ['exerciseHow', 'exerciseSuccess'],
+      exercise_example: ['exerciseHow'],
+      action_meaning: ['actionHow', 'actionSuccess'],
+      action_example: ['actionHow'],
       light_version: ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess', 'avoid'],
       success: ['exerciseSuccess', 'actionSuccess'],
       stop: ['avoid'],
-      no_event: ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess', 'avoid'],
+      no_event: ['exerciseHow', 'actionHow', 'avoid'],
       exercise_action_difference: ['exerciseHow', 'actionHow'],
-      not_done: ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess'],
+      not_done: ['exerciseHow', 'actionHow'],
       grief_increased: ['avoid'],
-      talk_other: ['actionHow', 'actionSuccess', 'avoid'],
+      talk_other: ['actionHow', 'actionSuccess'],
       can_change: ['exerciseHow', 'actionHow', 'avoid'],
-      duration: ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess'],
+      duration: ['exerciseHow', 'actionHow'],
     };
     const labels = {
-      exerciseHow: 'روش انجام تمرین',
-      actionHow: 'روش انجام اقدام',
+      exerciseHow: 'نکته اجرایی تمرین',
+      actionHow: 'نکته اجرایی اقدام',
       exerciseSuccess: 'معیار کافی‌بودن تمرین',
       actionSuccess: 'معیار کافی‌بودن اقدام',
-      avoid: 'مرز و برداشت نامناسب',
+      avoid: 'مرز مهم',
     };
     const fields = fieldsByQuestion[q.kind] || [];
     if (fields.length) {
-      body += '\n\n**راهنمای اختصاصی روز ' + g.day + ' — ' + g.title + '**'
-        + fields.map(field => '\n**' + labels[field] + ':** ' + specific[field]).join('');
+      body += '\n\n' + fields.map(field => '**' + labels[field] + ':** ' + specific[field]).join('\n\n');
     }
   }
   return h + '\n\n' + body;
