@@ -479,6 +479,8 @@ try {
     'T07 must not expose free-form typing, even with a cached local model');
   assert.equal(await guiltPanel.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
     'T07 must not expose local model installation');
+  assert.equal(await guiltPanel.locator('form.assistantComposer').getAttribute('data-guilt-daily-prompt'), 'true',
+    'T07 launcher must expose its canonical daily topic state');
   const guiltTrigger = guiltPanel.getByTestId('guilt-daily-prompt-trigger');
   await guiltTrigger.waitFor({ state: 'visible' });
   assert.match(await guiltTrigger.getAttribute('aria-label'), /احساس گناه/,
