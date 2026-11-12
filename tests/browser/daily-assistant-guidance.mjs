@@ -453,6 +453,12 @@ try {
   const griefReply = await griefPanel.locator('.assistantMessage').last().innerText();
   assert.match(griefReply, /نام‌گذاری فقدان/);
   assert.match(griefReply, /یک فقدان یا تغییر مهم/);
+  assert.equal(griefReply.includes('راهنمای اختصاصی روز'), false,
+    'T06 must not append a duplicate day-specific guidance block at the end of every answer');
+  assert.equal(griefReply.includes('معیار کافی‌بودن اقدام'), false,
+    'an exercise-meaning answer must not append the unrelated action success criterion');
+  assert.equal(griefReply.includes('مرز و برداشت نامناسب'), false,
+    'an exercise-meaning answer must not append an unrelated generic boundary section');
   assert.ok(await griefPanel.locator('.assistantMessage').last().locator('strong').count() > 0,
     'T06 assistant headings must render as bold text');
   assert.equal(griefReply.includes('**'), false, 'T06 must not expose raw markdown markers');
