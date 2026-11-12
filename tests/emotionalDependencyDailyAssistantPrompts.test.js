@@ -204,3 +204,19 @@ test('T08 reassurance, autonomy and boundary actions remain topic-specific', () 
   assert.match(byDay.get(21).action, /محدودیت حقوقی/u);
   assert.match(byDay.get(27).action, /پیگیری مکرر برای گرفتن تضمین/u);
 });
+
+
+test('T08 day 1 uses fourteen independently authored prepared answers', () => {
+  const guide = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 1);
+  assert.equal(Object.keys(guide.preparedAnswers || {}).length, 14);
+  for (const question of guide.questions) {
+    const authored = guide.preparedAnswers[question.kind];
+    assert.ok(authored && authored.length >= 250, 'missing authored answer for ' + question.kind);
+    const answer = answerEmotionalDependencyDailyPreparedQuestion({
+      day: 1,
+      message: question.value,
+      dailyContent: { exercise: guide.exercise, actionText: guide.action },
+    });
+    assert.ok(answer.includes(authored), 'prepared answer must use the authored day-specific text');
+  }
+});
