@@ -203,9 +203,9 @@ test('T08 daily exercises and actions stay distinct from the six adjacent relati
   ]);
   const normalize = (value) => String(value || '').normalize('NFKC')
     .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
-    .replace(/[\\u200c\\u200f\\u200e]/g, ' ')
-    .replace(/[^\\p{L}\\p{N}\\s]/gu, ' ')
-    .replace(/\\s+/g, ' ').trim().toLowerCase();
+    .replace(/[\u200c\u200f\u200e]/g, ' ')
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+    .replace(/\s+/g, ' ').trim().toLowerCase();
   const tokenSet = (value) => new Set(
     normalize(value).split(' ').filter((token) => token.length > 2 && !lexicalStopWords.has(token)),
   );
