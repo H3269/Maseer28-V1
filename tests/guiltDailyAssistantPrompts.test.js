@@ -260,6 +260,7 @@ test('T07 canonical path-content satisfies the v2 draft contract without claimin
     readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'),
     readFile(new URL('../public/assistant/knowledge/subtopics.v1.json', import.meta.url), 'utf8'),
     readFile(new URL('../public/assistant/evidence/sources.v1.json', import.meta.url), 'utf8'),
+    readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'),
   ]);
   const content = JSON.parse(contentText);
   const days = content.categories['احساس گناه'].days;
