@@ -66,6 +66,34 @@ test('all 28 T07 assistant guides match the full-field editorial draft', async (
 
 const toPersianDigits = value => String(value).replace(/[0-9]/g, digit => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
 
+test('T07 subtopic and evidence links remain draft-only and cover all 28 days', async () => {
+  const [subtopicText, sourceText, evidenceText] = await Promise.all([
+    readFile(new URL('../public/assistant/knowledge/subtopics.v1.json', import.meta.url), 'utf8'),
+    readFile(new URL('../public/assistant/evidence/sources.v1.json', import.meta.url), 'utf8'),
+    readFile(new URL('../public/assistant/evidence/evidence.v1.json', import.meta.url), 'utf8'),
+  ]);
+  const subtopics = JSON.parse(subtopicText).subtopics.filter(item => item.topic_id === 'T07');
+  const sources = JSON.parse(sourceText);
+  const evidence = JSON.parse(evidenceText);
+  assert.equal(subtopics.length, 3);
+  const sourceIds = new Set(sources.sources.map(source => source.source_id));
+  const contentIds = subtopics.flatMap(item => item.draft_content_ids || []);
+  assert.equal(contentIds.length, 28);
+  assert.equal(new Set(contentIds).size, 28);
+  assert.deepEqual(contentIds.sort(), Array.from({ length: 28 }, (_, index) => 'احساس گناه-' + String(index + 1).padStart(2, '0')).sort());
+  assert.deepEqual(subtopics.map(item => item.draft_content_ids.length), [4, 9, 15]);
+  for (const item of subtopics) {
+    assert.equal(item.review_status, 'draft');
+    assert.equal(item.definition_status, 'pending_expert_review');
+    assert.deepEqual(item.content_ids, []);
+    assert.deepEqual(item.evidence_ids, []);
+    assert.ok(item.draft_evidence_ids.length > 0);
+    for (const id of item.draft_evidence_ids) assert.ok(sourceIds.has(id), 'missing draft source ' + id);
+  }
+  assert.equal(evidence.runtime_eligible, false);
+  assert.deepEqual(evidence.evidence, []);
+});
+
 test('T07 prompt groups preserve the five shared sections on every day', () => {
   for (let day = 1; day <= 28; day += 1) {
     const groups = getGuiltDailyAssistantPromptGroups(day);
