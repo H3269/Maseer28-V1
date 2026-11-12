@@ -50,6 +50,19 @@ async function openT08Day(page, day) {
       medicationRisk: 'no',
     }));
   }, journey(day));
+  await page.addInitScript(async ({ basePath, marker }) => {
+    const cache = await caches.open('maseer28-local-model-state-v1');
+    const markerUrl = new URL(`${basePath}local-model/qwen3-0.6b-ready.json`, location.origin);
+    await cache.put(markerUrl.href, new Response(JSON.stringify(marker), {
+      headers: { 'content-type': 'application/json' },
+    }));
+  }, {
+    basePath: new URL(baseURL).pathname,
+    marker: {
+      modelId: 'onnx-community/Qwen3-0.6B-Instruct-ONNX',
+      revision: '54250909aca286a05b9d013c8af7a21859ee6ead',
+    },
+  });
   await page.route('**/*', async (route) => {
     const url = new URL(route.request().url());
     if (url.pathname.endsWith('/content/daily-text-overrides.v1.json')) {
@@ -98,7 +111,9 @@ try {
     .some((node) => node.innerText.includes('راهنمای روز ۱ وابستگی عاطفی')));
   const dayOneReply = await dayOnePanel.locator('.assistantMessage').last().innerText();
   assert.match(dayOneReply, /نقشه اتکای عاطفی/);
-  assert.ok(dayOneReply.includes(overrides.categories['وابستگی عاطفی'].days[0].exercise),
+  const normalizedReply = dayOneReply.normalize('NFKC').replace(/[يى]/g, 'ی').replace(/ك/g, 'ک').replace(/\s+/g, ' ');
+  const normalizedExercise = overrides.categories['وابستگی عاطفی'].days[0].exercise.normalize('NFKC').replace(/[يى]/g, 'ی').replace(/ك/g, 'ک').replace(/\s+/g, ' ');
+  assert.ok(normalizedReply.includes(normalizedExercise),
     'T08 assistant must use the same exercise text shown by the daily content source');
   assert.deepEqual(errors, [], 'T08 day 1 must not raise browser errors');
   await dayOnePage.close();
@@ -125,7 +140,7 @@ try {
   await gatedPage.close();
 
   const privacyPage = await browser.newPage();
-  const privacyPanel = await openT08Day(12);
+  const privacyPanel = await openT08Day(privacyPage, 12);
   await privacyPanel.getByTestId('emotional-dependency-privacy-notice').waitFor({ state: 'visible' });
   assert.match(await privacyPanel.getByTestId('emotional-dependency-privacy-notice').innerText(), /رمزگذاری نمی‌کند/);
   await privacyPage.close();
