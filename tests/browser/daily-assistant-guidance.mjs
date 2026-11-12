@@ -178,6 +178,12 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
       const day = payload.categories?.[topicKey]?.days?.find((item) => Number(item.day) === dayNumber);
       assert.ok(day, 'the deterministic browser fixture must contain the selected topic day');
       if (isLegacyMode) {
+        // Recreate a pre-canonical legacy record from the canonical fixture.
+        // The checked-in source now contains these fields, so asserting their
+        // absence without stripping them made the browser fixture self-contradictory.
+        delete day.topic_id;
+        delete day.review_status;
+        delete day.risk_level;
         assert.equal(Object.hasOwn(day, 'topic_id'), false);
         assert.equal(Object.hasOwn(day, 'review_status'), false);
         assert.equal(Object.hasOwn(day, 'risk_level'), false);
