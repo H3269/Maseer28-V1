@@ -107,10 +107,14 @@ for (const { topic, category } of topicRows) {
       ];
       for (const field of requiredV2) {
         const value = day[field];
-        const present = Array.isArray(value) ? value.length > 0
-          : typeof value === 'number' ? Number.isFinite(value)
-            : typeof value === 'string' ? Boolean(value.trim())
-              : false;
+        const explicitlyUnmappedDraftEvidence = field === 'source_ids'
+          && Array.isArray(value) && value.length === 0
+          && day.review_status === 'draft' && day.evidence_grade === 'not_assessed';
+        const present = explicitlyUnmappedDraftEvidence
+          || (Array.isArray(value) ? value.length > 0
+            : typeof value === 'number' ? Number.isFinite(value)
+              : typeof value === 'string' ? Boolean(value.trim())
+                : false);
         if (!present) fail.push(`قرارداد روز جدید: فیلد ${field} ناقص در «${topic}»، روز ${index + 1}`);
       }
       const expectedTopicId = topicIdByName.get(topic);
