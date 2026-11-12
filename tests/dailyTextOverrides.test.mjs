@@ -67,11 +67,14 @@ test('the 34-topic daily text overlay merges every configured runtime text field
   }
 
   assert.equal(total, 952);
-  assert.equal(changedExercise + alreadyAlignedExercise, 952,
-    'every exercise must either be overlaid or already synchronized in canonical content');
-  assert.equal(changedAction + alreadyAlignedAction, 952,
-    'every action must either be overlaid or already synchronized in canonical content');
-  assert.ok(changedExercise > 0 && changedAction > 0);
+  assert.equal(changedExercise, 896,
+    '896 legacy daily exercises are supplied by the overlay; the remaining 56 v2 days are canonical');
+  assert.equal(changedAction, 896,
+    '896 legacy daily actions are supplied by the overlay; the remaining 56 v2 days are canonical');
+  assert.equal(alreadyAlignedExercise, 56,
+    'the 56 v2 daily exercises must remain canonical rather than duplicated in the legacy overlay');
+  assert.equal(alreadyAlignedAction, 56,
+    'the 56 v2 daily actions must remain canonical rather than duplicated in the legacy overlay');
   assert.equal(exerciseTexts.size, 952);
   assert.equal(actionTexts.size, 952);
 });
