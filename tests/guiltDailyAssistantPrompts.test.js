@@ -24,6 +24,15 @@ test('T07 contains 28 complete day guides and 14 fixed questions per day', () =>
     assert.ok(guide.successCriterion && guide.reflectionQuestion && guide.stopCondition);
     assert.ok(guide.lightVersion && guide.progressVersion && guide.restVersion);
     assert.ok(guide.lightActionVersion && guide.progressActionVersion && guide.restActionVersion);
+    assert.ok(Number.isInteger(guide.durationMinutes) && guide.durationMinutes >= 1 && guide.durationMinutes <= 60);
+    assert.equal(guide.durationStatus, 'provisional_estimate');
+    assert.ok(guide.exerciseType);
+    assert.ok(['routine', 'caution', 'human_review_required'].includes(guide.riskLevel));
+    assert.ok(guide.sourceIds.length > 0);
+    assert.equal(guide.evidenceGrade, 'not_assessed');
+    assert.equal(guide.reviewStatus, 'draft');
+    assert.deepEqual(guide.subtopicIds, [guide.subtopic]);
+    assert.ok(guide.whenToSeekHumanSupport && guide.contraindications.length > 0);
     assert.notEqual(guide.lightActionVersion, guide.lightVersion);
     assert.notEqual(guide.progressActionVersion, guide.progressVersion);
     assert.notEqual(guide.restActionVersion, guide.restVersion);
