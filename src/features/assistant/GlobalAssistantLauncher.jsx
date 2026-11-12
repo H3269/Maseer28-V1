@@ -7,7 +7,7 @@ import { answerLibraryBookTurn } from './libraryBookAssistant.js';
 import { routeAssistantTurn } from './assistantTurnEngine.js';
 import { isLocalNeuralModelInstalled, requestLocalNeuralModel } from './localNeuralModelClient.js';
 import { LIBRARY_ASSISTANT_PROMPT_GROUPS } from './libraryAssistantPrompts.js';
-import { getCanonicalTopicIdForCategory, getRelationshipSafetyGate } from '../journey/relationshipSafetyGate.js';
+import { getCanonicalTopicIdForCategory, getInterpersonalPrivacyNotice, getRelationshipSafetyGate } from '../journey/relationshipSafetyGate.js';
 import { getAngerDailyAssistantPromptGroups } from './angerDailyAssistantPrompts.js';
 import { getAnxietyDailyAssistantPromptGroups } from './anxietyDailyAssistantPrompts.js';
 import { getFearDailyAssistantPromptGroups } from './fearDailyAssistantPrompts.js';
@@ -165,6 +165,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const emotionalDependencyRelationshipGate = isEmotionalDependencyDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
   const emotionalDependencyRelationshipGatePending = Boolean(emotionalDependencyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
   const emotionalDependencyRelationshipGateBlocked = emotionalDependencyRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
+  const emotionalDependencyPrivacyNotice = isEmotionalDependencyDailyPromptContext ? getInterpersonalPrivacyNotice(dailyContext?.data) : null;
   const activePromptGroups = screen === 'books'
     ? LIBRARY_ASSISTANT_PROMPT_GROUPS
     : isAngerDailyPromptContext
@@ -444,6 +445,11 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                         onClick={() => onRelationshipSafetyResponse?.('unsafe')}>نه، مطمئن نیستم یا یکی از ما تحت فشار است.</button>
                     </>
                   )}
+                </section>
+              )}
+              {emotionalDependencyPrivacyNotice && (
+                <section className="dailyAssistantSafetyActions" role="note" aria-label="یادآوری حریم خصوصی" data-testid="emotional-dependency-privacy-notice">
+                  <p>{emotionalDependencyPrivacyNotice}</p>
                 </section>
               )}
               {emotionalDependencyRelationshipGatePending && emotionalDependencyRelationshipGate && (
