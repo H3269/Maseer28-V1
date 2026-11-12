@@ -87,7 +87,7 @@ test('all exact prepared FAQs across 28 days keep their own answers when their w
       }
     }
   }
-  assert.ok(checked >= 900, `expected broad coverage of the 5 × 28 prepared FAQ sets; checked ${checked}`);
+  assert.ok(checked >= 900, `expected broad coverage of the 6 × 28 prepared FAQ sets; checked ${checked}`);
 });
 
 test('a pending safety exchange still preempts even an exact prepared FAQ', () => {
