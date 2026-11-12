@@ -14,10 +14,18 @@ test('relationship safety gate covers T01 and shared interpersonal days across T
   const sharedTopics = registry.topics.filter((topic) => Number(topic.topic_id.slice(1)) >= 3);
   assert.equal(sharedTopics.length, 32);
   for (const topic of sharedTopics) {
-    for (const day of [6, 11, 15, 24]) {
+    const gatedDays = topic.topic_id === 'T06' ? [11, 15] : [6, 11, 15, 24];
+    for (const day of gatedDays) {
       const canonicalId = topic.topic_id + '-D' + String(day).padStart(2, '0');
       assert.ok(getRelationshipSafetyGate({ id: canonicalId, topic_id: topic.topic_id, day }),
         topic.topic_id + ' day ' + day + ' must gate the shared interpersonal prompt');
+    }
+    if (topic.topic_id === 'T06') {
+      for (const day of [6, 24]) {
+        const canonicalId = topic.topic_id + '-D' + String(day).padStart(2, '0');
+        assert.equal(getRelationshipSafetyGate({ id: canonicalId, topic_id: topic.topic_id, day }), null,
+          'T06 day ' + day + ' is self-directed and must not receive an unrelated conversation gate');
+      }
     }
   }
   for (const day of [10, 11, 17, 18, 19, 20, 21, 22, 23]) {
@@ -33,11 +41,16 @@ test('legacy and canonical identifiers preserve shared-topic gates and fail clos
   const registry = JSON.parse(await readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'));
   const sharedTopics = registry.topics.filter((topic) => Number(topic.topic_id.slice(1)) >= 3);
   for (const topic of sharedTopics) {
-    for (const day of [6, 11, 15, 24]) {
+    const gatedDays = topic.topic_id === 'T06' ? [11, 15] : [6, 11, 15, 24];
+    for (const day of gatedDays) {
       const legacyId = topic.name + '-' + day;
       const canonicalId = topic.topic_id + '-D' + String(day).padStart(2, '0');
       assert.ok(getRelationshipSafetyGate({ id: legacyId }), legacyId + ' must remain gated');
       assert.ok(getRelationshipSafetyGate({ id: canonicalId }), canonicalId + ' must remain gated');
+    }
+    if (topic.topic_id === 'T06') {
+      assert.equal(getRelationshipSafetyGate({ id: topic.name + '-6', day: 6 }), null);
+      assert.equal(getRelationshipSafetyGate({ id: topic.name + '-24', day: 24 }), null);
     }
   }
   assert.equal(getRelationshipSafetyGate({ id: 'غم و سوگ-10' }), null);
@@ -121,7 +134,8 @@ test('actual shared interpersonal prompts across T03-T34 are gated', async () =>
     if (!topic) continue;
     const topicNumber = Number(topic.topic_id.slice(1));
     if (topicNumber >= 3) {
-      for (const dayNumber of [6, 11, 15, 24]) {
+      const gatedDays = topic.topic_id === 'T06' ? [11, 15] : [6, 11, 15, 24];
+      for (const dayNumber of gatedDays) {
         const day = category.days.find((candidate) => candidate.day === dayNumber);
         assert.ok(day, 'missing ' + categoryName + ' day ' + dayNumber);
         assert.equal(getRelationshipSafetyGate(day)?.gateId, 'relationship-communication-safety-v1');

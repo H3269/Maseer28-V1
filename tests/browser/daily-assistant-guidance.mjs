@@ -93,11 +93,13 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
   const isLegacyMode = assistantDayMode === 'legacy' || assistantDayMode.startsWith('adaptedLegacy');
   const dayNumber = assistantDayMode === 'jealousy-communication'
     ? 16
-    : assistantDayMode === 'relationship'
-      ? 10
-    : ['adaptedLegacyStreak', 'adaptedLegacyImprovement', 'adaptedAnxietyStreak', 'adaptedAnxietyImprovement'].includes(assistantDayMode)
+    : assistantDayMode === 'grief-support'
+      ? 15
+      : assistantDayMode === 'relationship'
+        ? 10
+    : ['adaptedLegacyStreak', 'adaptedLegacyImprovement', 'adaptedAnxietyStreak', 'adaptedAnxietyImprovement', 'adaptedGriefStreak', 'adaptedGriefImprovement'].includes(assistantDayMode)
       ? 3
-      : ['adaptedLegacy', 'adaptedLegacySame', 'adaptedAnxiety'].includes(assistantDayMode)
+      : ['adaptedLegacy', 'adaptedLegacySame', 'adaptedAnxiety', 'adaptedGrief'].includes(assistantDayMode)
         ? 2
         : isLegacyMode ? 2 : 1;
   const topicKey = problem || (isLegacyMode ? 'غم و سوگ' : 'خشم');
@@ -109,7 +111,13 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
         ? { 1: { feedback: 'better', score: 3 }, 2: { feedback: 'better', score: 4 } }
         : assistantDayMode === 'adaptedLegacySame'
           ? { 1: { feedback: 'same', score: 5 } }
-          : {};
+          : assistantDayMode === 'adaptedGrief'
+            ? { 1: { feedback: 'hard', score: 8 } }
+            : assistantDayMode === 'adaptedGriefStreak'
+              ? { 1: { feedback: 'hard', score: 8 }, 2: { feedback: 'worse', score: 9 } }
+              : assistantDayMode === 'adaptedGriefImprovement'
+                ? { 1: { feedback: 'better', score: 3 }, 2: { feedback: 'better', score: 4 } }
+                : {};
   const testJourney = dayNumber === 1 && topicKey === journey.profileData.problem ? journey : {
     ...journey,
     profileData: { ...journey.profileData, problem: topicKey },
@@ -170,12 +178,18 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
       const day = payload.categories?.[topicKey]?.days?.find((item) => Number(item.day) === dayNumber);
       assert.ok(day, 'the deterministic browser fixture must contain the selected topic day');
       if (isLegacyMode) {
+        // Recreate a pre-canonical legacy record from the canonical fixture.
+        // The checked-in source now contains these fields, so asserting their
+        // absence without stripping them made the browser fixture self-contradictory.
+        delete day.topic_id;
+        delete day.review_status;
+        delete day.risk_level;
         assert.equal(Object.hasOwn(day, 'topic_id'), false);
         assert.equal(Object.hasOwn(day, 'review_status'), false);
         assert.equal(Object.hasOwn(day, 'risk_level'), false);
       } else {
         Object.assign(day, {
-          topic_id: topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : topicKey === 'نفرت' ? 'T04' : topicKey === 'حسادت' ? 'T05' : 'T01',
+          topic_id: topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : topicKey === 'نفرت' ? 'T04' : topicKey === 'حسادت' ? 'T05' : topicKey === 'غم و سوگ' ? 'T06' : 'T01',
           day: dayNumber,
           review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
           risk_level: 'routine',
@@ -199,6 +213,27 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
   await page.locator('#day').waitFor({ state: 'visible' });
   await page.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
   await page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' }).waitFor({ state: 'visible' });
+}
+
+async function assertGriefAdaptiveDay(mode, dayNumber, exerciseField, actionField) {
+  const page = await browser.newPage();
+  const errors = [];
+  page.on('pageerror', error => errors.push(String(error)));
+  await openDay(page, { problem: 'غم و سوگ', assistantDayMode: mode });
+  const panel = page.locator('.globalAssistantDialog');
+  await panel.waitFor({ state: 'visible' });
+  await panel.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
+  await panel.waitFor({ state: 'detached' });
+  const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
+  const visibleAction = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayAction'));
+  const source = dailyTextOverrides.categories['غم و سوگ'].days.find((item) => item.day === dayNumber);
+  assert.ok(source, 'T06 adaptation fixture must exist for day ' + dayNumber);
+  assert.ok(visibleExercise.includes(normalizeVisibleDailyText(source[exerciseField])),
+    'T06 day ' + dayNumber + ' must display ' + exerciseField);
+  assert.ok(visibleAction.includes(normalizeVisibleDailyText(source[actionField])),
+    'T06 day ' + dayNumber + ' must display ' + actionField);
+  assert.deepEqual(errors, [], 'T06 adaptive daily guidance must not raise page errors');
+  await page.close();
 }
 
 try {
@@ -390,6 +425,78 @@ try {
   await jealousyGuidedPage.close();
 
 
+  // T06 grief and loss must use its own prepared-only 28-day assistant, including legacy-shaped source data.
+  const griefGuidedPage = await browser.newPage();
+  const griefErrors = [];
+  griefGuidedPage.on('pageerror', error => griefErrors.push(String(error)));
+  await openDay(griefGuidedPage, { problem: 'غم و سوگ', assistantDayMode: 'blocked', localModelInstalled: true });
+  const griefPanel = griefGuidedPage.locator('.globalAssistantDialog');
+  await griefPanel.waitFor({ state: 'visible' });
+  assert.equal(await griefPanel.locator('#global-assistant-message').count(), 0,
+    'T06 must never expose free-form typing, even with a cached local model');
+  assert.equal(await griefPanel.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
+    'T06 must not expose local model installation');
+  const griefTrigger = griefPanel.getByTestId('grief-daily-prompt-trigger');
+  await griefTrigger.waitFor({ state: 'visible' });
+  assert.match(await griefTrigger.getAttribute('aria-label'), /غم و سوگ/,
+    'T06 prompt trigger must have the correct accessible topic label');
+  await griefTrigger.click();
+  const griefPromptDialog = griefGuidedPage.locator('#library-assistant-prompt-dialog');
+  await griefPromptDialog.waitFor({ state: 'visible' });
+  assert.match(await griefPromptDialog.innerText(), /سؤال‌های آماده روز ۱ غم و سوگ/);
+  assert.equal(await griefPromptDialog.locator('.libraryAssistantPromptGroup').count(), 5);
+  assert.equal(await griefPromptDialog.locator('[data-prompt-option]').count(), 14);
+  await griefPromptDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
+  await griefPanel.getByRole('button', { name: 'ارسال' }).click();
+  await griefGuidedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => node.innerText.includes('راهنمای روز ۱ غم و سوگ')));
+  const griefReply = await griefPanel.locator('.assistantMessage').last().innerText();
+  assert.match(griefReply, /نام‌گذاری فقدان/);
+  assert.match(griefReply, /یک فقدان یا تغییر مهم/);
+  assert.ok(await griefPanel.locator('.assistantMessage').last().locator('strong').count() > 0,
+    'T06 assistant headings must render as bold text');
+  assert.equal(griefReply.includes('**'), false, 'T06 must not expose raw markdown markers');
+  assert.equal(griefReply.includes(String.fromCharCode(92) + 'n'), false, 'T06 must not expose escaped newline tokens');
+  assert.ok(griefReply.includes('\n'), 'T06 paragraphs must display on separate lines');
+  await assertAssistantUsesVisibleDailySource(griefGuidedPage, griefPanel, 'غم و سوگ', 1, ['exercise']);
+  assert.deepEqual(griefErrors, [], 'T06 prepared-only browser flow must not raise page errors');
+  await griefGuidedPage.close();
+
+  // T06 adaptive versions must remain distinct for difficult streaks and sustained improvement.
+  await assertGriefAdaptiveDay('adaptedGrief', 2, 'lightExerciseText', 'lightActionText');
+  await assertGriefAdaptiveDay('adaptedGriefStreak', 3, 'restExerciseText', 'restActionText');
+  await assertGriefAdaptiveDay('adaptedGriefImprovement', 3, 'exercise', 'progressActionText');
+
+  // T06 day 15 support requests require an explicit mutual-freedom check before assistant guidance.
+  const griefGatePage = await browser.newPage();
+  const griefGateErrors = [];
+  griefGatePage.on('pageerror', error => griefGateErrors.push(String(error)));
+  await openDay(griefGatePage, { problem: 'غم و سوگ', assistantDayMode: 'grief-support', localModelInstalled: true });
+  const griefGatePanel = griefGatePage.locator('.globalAssistantDialog');
+  await griefGatePanel.waitFor({ state: 'visible' });
+  const griefGate = griefGatePanel.getByTestId('grief-relationship-safety-gate');
+  await griefGate.waitFor({ state: 'visible' });
+  assert.match(await griefGate.innerText(), /هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
+  assert.equal(await griefGatePanel.getByTestId('grief-daily-prompt-trigger').isDisabled(), true,
+    'T06 support prompts remain unavailable until the safety check is confirmed');
+  await griefGate.getByTestId('grief-relationship-safety-safe').click();
+  await griefGatePage.waitForFunction(() => {
+    const trigger = document.querySelector('[data-testid="grief-daily-prompt-trigger"]');
+    return trigger && !trigger.disabled;
+  });
+  await griefGatePanel.getByTestId('grief-daily-prompt-trigger').click();
+  const griefGatePrompt = griefGatePage.locator('#library-assistant-prompt-dialog');
+  await griefGatePrompt.waitFor({ state: 'visible' });
+  await griefGatePrompt.getByRole('button', { name: 'منظور از اقدام اختصاصی امروز چیست؟' }).click();
+  await griefGatePanel.getByRole('button', { name: 'ارسال' }).click();
+  await griefGatePage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => node.innerText.includes('راهنمای روز ۱۵ غم و سوگ')));
+  const griefGateReply = await griefGatePanel.locator('.assistantMessage').last().innerText();
+  assert.match(griefGateReply, /درخواست/);
+  assert.match(griefGateReply, /فرد امن/);
+  assert.deepEqual(griefGateErrors, [], 'T06 support safety-gate browser flow must not raise page errors');
+  await griefGatePage.close();
+
   // Direct T05 relationship requests require the explicit relationship-safety check.
   const jealousyGatePage = await browser.newPage();
   await openDay(jealousyGatePage, { problem: 'حسادت', assistantDayMode: 'jealousy-communication' });
@@ -513,9 +620,8 @@ try {
 
   await page.close();
 
-  // Legacy free-text fallback remains for legacy topics that are not in the prepared-only T01–T05 set.
-  // T05 jealousy is intentionally prepared-only even when its source record is legacy-shaped.
-  for (const problem of ['غم و سوگ', 'شرم']) {
+  // Legacy free-text fallback remains for topics outside the prepared-only T01–T06 set.
+  for (const problem of ['شرم']) {
     const legacyPage = await browser.newPage();
     const legacyErrors = [];
     legacyPage.on('pageerror', error => legacyErrors.push(String(error)));
@@ -537,10 +643,11 @@ try {
   }
 
   for (const scenario of [
-    { mode: 'adaptedLegacy', topic: 'غم و سوگ', day: 2, expected: 'با توجه به نتیجه روز گذشته' },
-    { mode: 'adaptedLegacyStreak', topic: 'غم و سوگ', day: 3, expected: 'در چند روز اخیر انجام تمرین دشوار بوده' },
-    { mode: 'adaptedLegacyImprovement', topic: 'غم و سوگ', day: 3, expected: 'بهبود در چند روز اخیر دیده می‌شود' },
-    { mode: 'adaptedLegacySame', topic: 'غم و سوگ', day: 2, expected: 'تغییر محسوسی ثبت نشده است' },
+    // Keep the legacy free-text adaptation cases outside the prepared-only T01–T06 set.
+    { mode: 'adaptedLegacy', topic: 'شرم', day: 2, expected: 'با توجه به نتیجه روز گذشته' },
+    { mode: 'adaptedLegacyStreak', topic: 'شرم', day: 3, expected: 'در چند روز اخیر انجام تمرین دشوار بوده' },
+    { mode: 'adaptedLegacyImprovement', topic: 'شرم', day: 3, expected: 'بهبود در چند روز اخیر دیده می‌شود' },
+    { mode: 'adaptedLegacySame', topic: 'شرم', day: 2, expected: 'تغییر محسوسی ثبت نشده است' },
     { mode: 'adaptedAnxiety', topic: 'اضطراب', day: 2, expected: 'با توجه به نتیجه روز گذشته', fieldMode: 'light' },
     { mode: 'adaptedAnxietyStreak', topic: 'اضطراب', day: 3, expected: 'در چند روز اخیر انجام تمرین دشوار بوده', fieldMode: 'rest' },
     { mode: 'adaptedAnxietyImprovement', topic: 'اضطراب', day: 3, expected: 'بهبود در چند روز اخیر دیده می‌شود', fieldMode: 'progress' },
