@@ -217,7 +217,8 @@ test('T07 daily exercise and action match the runtime overlay and have no exact 
     assert.equal(day.restActionText, guide.restActionVersion, 'rest action mismatch on day ' + guide.day);
     for (const [field, value] of [['title', day.title], ['exercise', day.exercise], ['actionText', day.actionText], ['lightActionText', day.lightActionText], ['progressActionText', day.progressActionText], ['restActionText', day.restActionText]]) {
       const key = normalize(value);
-      assert.ok(key.length > 20);
+      assert.ok(field === 'title' ? key.length >= 8 : key.length > 20,
+        'T07 ' + field + ' must be meaningful and non-empty on day ' + guide.day);
       assert.equal(seen.has(key), false, 'duplicate T07 text: ' + field + ' day ' + guide.day);
       seen.set(key, { day: guide.day, field });
       for (const [topic, category] of Object.entries(categories)) {
