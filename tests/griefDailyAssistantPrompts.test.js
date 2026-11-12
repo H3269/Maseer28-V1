@@ -202,3 +202,36 @@ test('T06 28-day exercises/actions match the runtime overlay and contain no exac
     }
   }
 });
+
+test('T06 assistant uses separate runtime light/progress/rest actions while preserving the visible exercise and action', () => {
+  const guide = GRIEF_DAILY_ASSISTANT_GUIDES[0];
+  const question = guide.questions.find((item) => item.kind === 'light_version');
+  const custom = {
+    lightExerciseText: 'نسخه سبک تمرین اختصاصی آزمون: فقط نام فقدان را در ذهن مشخص کن.',
+    lightActionText: 'نسخه سبک اقدام اختصاصی آزمون: فقط تصمیم بگیر نام فقدان خصوصی بماند.',
+    progressActionText: 'نسخه پیشرفت اقدام اختصاصی آزمون: اگر مایل هستی یک جمله برای خودت بنویس.',
+    restExerciseText: 'نسخه استراحت تمرین اختصاصی آزمون: امروز نام‌گذاری را کنار بگذار.',
+    restActionText: 'نسخه استراحت اقدام اختصاصی آزمون: امروز درباره افشا تصمیم نگیر.',
+  };
+  const result = makePageAssistantTurn({
+    screen: 'day',
+    text: question.value,
+    dailyContext: {
+      day: 1,
+      problem: 'غم و سوگ',
+      data: {
+        id: getCanonicalDailyRecordId('غم و سوگ', 1),
+        topic_id: 'T06',
+        day: 1,
+        exercise: guide.exercise,
+        actionText: guide.action,
+        ...custom,
+      },
+      guidanceData: { exercise: guide.exercise, action: guide.action },
+    },
+  });
+  assert.equal(result.status, 'daily_guidance_available');
+  for (const value of Object.values(custom)) assert.ok(result.message.includes(value), 'missing runtime adaptation: ' + value);
+  assert.ok(result.message.includes(guide.exercise));
+  assert.ok(result.message.includes(guide.action));
+});
