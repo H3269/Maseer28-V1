@@ -132,25 +132,32 @@ test('all 392 T06 answers include day-specific execution, separate success check
         dailyContent: { exercise: guide.exercise, actionText: guide.action },
       });
       const fieldsByQuestion = {
-        exercise_meaning: ['exerciseHow', 'exerciseSuccess', 'avoid'],
-        exercise_example: ['exerciseHow', 'exerciseSuccess', 'avoid'],
-        action_meaning: ['actionHow', 'actionSuccess', 'avoid'],
-        action_example: ['actionHow', 'actionSuccess', 'avoid'],
+        exercise_meaning: ['exerciseHow', 'exerciseSuccess'],
+        exercise_example: ['exerciseHow'],
+        action_meaning: ['actionHow', 'actionSuccess'],
+        action_example: ['actionHow'],
         light_version: ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess', 'avoid'],
         success: ['exerciseSuccess', 'actionSuccess'],
         stop: ['avoid'],
-        no_event: ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess', 'avoid'],
+        no_event: ['exerciseHow', 'actionHow', 'avoid'],
         exercise_action_difference: ['exerciseHow', 'actionHow'],
-        not_done: ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess'],
+        not_done: ['exerciseHow', 'actionHow'],
         grief_increased: ['avoid'],
-        talk_other: ['actionHow', 'actionSuccess', 'avoid'],
+        talk_other: ['actionHow', 'actionSuccess'],
         can_change: ['exerciseHow', 'actionHow', 'avoid'],
-        duration: ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess'],
+        duration: ['exerciseHow', 'actionHow'],
       };
       const expectedFields = fieldsByQuestion[question.kind];
-      assert.ok(answer.includes('راهنمای اختصاصی روز ' + guide.day + ' — ' + guide.title));
+      assert.ok(!answer.includes('راهنمای اختصاصی روز ' + guide.day + ' — ' + guide.title),
+        'repeated day-heading block must not be appended');
       for (const field of expectedFields) {
         assert.ok(answer.includes(specific[field]), 'missing relevant ' + field + ' for ' + question.kind + ' on day ' + guide.day);
+      }
+      for (const field of ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess', 'avoid']) {
+        if (!expectedFields.includes(field)) {
+          assert.ok(!answer.includes(specific[field]),
+            'irrelevant ' + field + ' leaked into ' + question.kind + ' on day ' + guide.day);
+        }
       }
       count += 1;
     }
