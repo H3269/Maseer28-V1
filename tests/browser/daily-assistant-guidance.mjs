@@ -661,7 +661,7 @@ try {
 
   await page.close();
 
-  // Legacy free-text fallback remains for topics outside the prepared-only T01–T06 set.
+  // Legacy free-text fallback remains for topics outside the prepared-only T01–T07 set.
   for (const problem of ['شرم']) {
     const legacyPage = await browser.newPage();
     const legacyErrors = [];
@@ -684,7 +684,7 @@ try {
   }
 
   for (const scenario of [
-    // Keep the legacy free-text adaptation cases outside the prepared-only T01–T06 set.
+    // Keep the legacy free-text adaptation cases outside the prepared-only T01–T07 set.
     { mode: 'adaptedLegacy', topic: 'شرم', day: 2, expected: 'با توجه به نتیجه روز گذشته' },
     { mode: 'adaptedLegacyStreak', topic: 'شرم', day: 3, expected: 'در چند روز اخیر انجام تمرین دشوار بوده' },
     { mode: 'adaptedLegacyImprovement', topic: 'شرم', day: 3, expected: 'بهبود در چند روز اخیر دیده می‌شود' },
