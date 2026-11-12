@@ -87,7 +87,19 @@
       "working_definition": "وابستگی عاطفی در این اپ یک برچسب آموزشی برای الگوهای نیاز شدید به اطمینان، نزدیکی یا دشواری حفظ عاملیت در رابطه است و تشخیص بالینی مستقل نیست. زمینه رابطه، دوسویگی، امنیت، استقلال عملی و احتمال کنترل یا سوءاستفاده باید بررسی شوند.",
       "scope_limit": "این اصطلاح به‌تنهایی تشخیص رسمی نیست؛ وابستگی سالم و متقابل را نباید آسیب‌شناسی کرد.",
       "definition_status": "draft",
-      "evidence_ids": [],
+      "evidence_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-MCLEOD-2019-001",
+        "SRC-T08-ERS-2022-001",
+        "SRC-T08-MOLINA-2026-001",
+        "SRC-RELATIONSHIP-NHSE-SAFETY-2026-001",
+        "SRC-ANGER-WHO-IPV-2013-001",
+        "SRC-RELATIONSHIP-WHO-RESPECT-2025-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001",
+        "SRC-ANXIETY-APA-UNCERTAINTY-001",
+        "SRC-WHO-PSYCH-SELFHELP-2026-001"
+      ],
       "review_status": "pending_expert_review",
       "reviewer": null,
       "reviewed_at": null
