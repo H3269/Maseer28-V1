@@ -14,6 +14,10 @@ test('T07 contains 28 complete day guides and 14 fixed questions per day', () =>
   const expectedQuestions = GUILT_DAILY_ASSISTANT_GUIDES[0].questions.map(question => question.value);
   assert.equal(new Set(GUILT_DAILY_ASSISTANT_GUIDES.map(guide => guide.exerciseExample)).size, 28);
   assert.equal(new Set(GUILT_DAILY_ASSISTANT_GUIDES.map(guide => guide.actionExample)).size, 28);
+  for (const field of ['title', 'objective', 'skill', 'mechanism', 'exercise', 'action', 'lightVersion', 'progressVersion', 'restVersion', 'lightActionVersion', 'progressActionVersion', 'restActionVersion', 'successCriterion', 'reflectionQuestion', 'stopCondition']) {
+    assert.equal(new Set(GUILT_DAILY_ASSISTANT_GUIDES.map(guide => guide[field])).size, 28,
+      'T07 field must be unique across all days: ' + field);
+  }
   for (const guide of GUILT_DAILY_ASSISTANT_GUIDES) {
     assert.ok(guide.title && guide.objective && guide.skill && guide.mechanism);
     assert.ok(guide.exercise && guide.action && guide.exerciseExample && guide.actionExample);
