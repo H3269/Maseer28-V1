@@ -8,6 +8,7 @@ import { answerAnxietyDailyPreparedQuestion } from './anxietyDailyAssistantPromp
 import { answerFearDailyPreparedQuestion } from './fearDailyAssistantPrompts.js';
 import { answerHatredDailyPreparedQuestion } from './hatredDailyAssistantPrompts.js';
 import { answerJealousyDailyPreparedQuestion } from './jealousyDailyAssistantPrompts.js';
+import { answerGriefDailyPreparedQuestion } from './griefDailyAssistantPrompts.js';
 import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
 import { getCanonicalDailyRecordId } from '../content/dailyContentSelector.js';
 
@@ -58,9 +59,18 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     // Prepared FAQ answers must quote the exact transformed daily content shown
     // in DayScreen (including adaptation and display normalization), while
     // canonical identity validation continues to use the untouched source.
-    const preparedVisibleContent = dailyContext?.guidanceData || preparedSource;
+    const preparedVisibleContent = dailyContext?.guidanceData
+      ? {
+        ...dailyContext.guidanceData,
+        lightExerciseText: preparedSource?.lightExerciseText || dailyContext.guidanceData.lightExerciseText,
+        lightActionText: preparedSource?.lightActionText || dailyContext.guidanceData.lightActionText,
+        progressActionText: preparedSource?.progressActionText || dailyContext.guidanceData.progressActionText,
+        restExerciseText: preparedSource?.restExerciseText || dailyContext.guidanceData.restExerciseText,
+        restActionText: preparedSource?.restActionText || dailyContext.guidanceData.restActionText,
+      }
+      : preparedSource;
     const preparedTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem);
-    const visibleTopicName = ({ T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت', T05: 'حسادت' })[preparedTopicId];
+    const visibleTopicName = ({ T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت', T05: 'حسادت', T06: 'غم و سوگ' })[preparedTopicId];
     const answerPreparedQuestion = preparedTopicId === 'T01'
       ? answerAngerDailyPreparedQuestion
       : preparedTopicId === 'T02'
@@ -71,8 +81,10 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
             ? answerHatredDailyPreparedQuestion
             : preparedTopicId === 'T05'
               ? answerJealousyDailyPreparedQuestion
-              : null;
-    const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03', 'T04', 'T05'].includes(preparedTopicId)
+              : preparedTopicId === 'T06'
+                ? answerGriefDailyPreparedQuestion
+                : null;
+    const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03', 'T04', 'T05', 'T06'].includes(preparedTopicId)
       && Number.isInteger(preparedDay)
       && preparedDay >= 1
       && preparedDay <= 28
@@ -107,11 +119,32 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       });
     }
 
+    const hasExactGriefPreparedQuestion = preparedTopicId === 'T06'
+      && Boolean(answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }));
+    const griefRelationshipGate = preparedTopicId === 'T06' ? getRelationshipSafetyGate(preparedSource) : null;
+    if (griefRelationshipGate
+      && hasExactGriefPreparedQuestion
+      && !hasPendingSafetyExchange
+      && !hasExplicitSafetyHandoff
+      && dailyContext?.relationshipSafetyConfirmed !== true) {
+      return Object.freeze({
+        status: dailyContext?.relationshipSafetyResponse === 'unsafe'
+          ? 'relationship_safety_blocked'
+          : 'relationship_safety_confirmation_required',
+        message: dailyContext?.relationshipSafetyResponse === 'unsafe'
+          ? griefRelationshipGate.blockedMessage
+          : griefRelationshipGate.question + '\n\n' + griefRelationshipGate.disclaimer,
+        knowledge: Object.freeze([]),
+        page_context: 'day',
+        conversationState: null,
+      });
+    }
+
     // An exact, pre-authored FAQ is a question selected by the user, not a
     // first-person safety disclosure. Broad lexical safety cues inside its
     // wording must not replace its prepared answer. A real explicit-risk
     // declaration and an already-pending safety exchange still take priority.
-    if (['T01', 'T02', 'T03', 'T04', 'T05'].includes(preparedTopicId)
+    if (['T01', 'T02', 'T03', 'T04', 'T05', 'T06'].includes(preparedTopicId)
       && hasCanonicalPreparedIdentity
       && !hasPendingSafetyExchange
       && !hasExplicitSafetyHandoff) {
@@ -133,7 +166,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
 
     // Explicit immediate-risk declarations and an active safety exchange
     // always take precedence over the prepared-question list.
-    if (['T01', 'T02', 'T03', 'T04', 'T05'].includes(preparedTopicId)
+    if (['T01', 'T02', 'T03', 'T04', 'T05', 'T06'].includes(preparedTopicId)
       && (SAFETY_STATUSES.has(inputProbe.status)
         || hasPendingSafetyExchange
         || hasExplicitSafetyHandoff)) {
@@ -158,7 +191,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       });
     }
 
-    if (['T01', 'T02', 'T03', 'T04', 'T05'].includes(preparedTopicId)) {
+    if (['T01', 'T02', 'T03', 'T04', 'T05', 'T06'].includes(preparedTopicId)) {
       if (!hasCanonicalPreparedIdentity) {
         return Object.freeze({
           status: 'daily_guidance_unavailable',
