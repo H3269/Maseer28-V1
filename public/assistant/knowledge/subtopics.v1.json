@@ -510,7 +510,12 @@
       "scope_notes": [
         "نگاشت پیشنهادی بر اساس هدف/مهارت روز؛ وضعیت draft و نیازمند بازبینی متخصص و ثبت رسمی در ledger پیش از استفاده runtime."
       ],
-      "evidence_ids": [],
+      "evidence_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-ERS-2022-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001"
+      ],
       "assessment_question_ids": [],
       "content_ids": [],
       "safety_rule_ids": [],
@@ -538,7 +543,13 @@
       "scope_notes": [
         "نگاشت پیشنهادی بر اساس هدف/مهارت روز؛ وضعیت draft و نیازمند بازبینی متخصص و ثبت رسمی در ledger پیش از استفاده runtime."
       ],
-      "evidence_ids": [],
+      "evidence_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-MOLINA-2026-001",
+        "SRC-ANXIETY-APA-UNCERTAINTY-001",
+        "SRC-WHO-PSYCH-SELFHELP-2026-001"
+      ],
       "assessment_question_ids": [],
       "content_ids": [],
       "safety_rule_ids": [],
@@ -562,7 +573,14 @@
       "scope_notes": [
         "نگاشت پیشنهادی بر اساس هدف/مهارت روز؛ وضعیت draft و نیازمند بازبینی متخصص و ثبت رسمی در ledger پیش از استفاده runtime."
       ],
-      "evidence_ids": [],
+      "evidence_ids": [
+        "SRC-T08-MCLEOD-2019-001",
+        "SRC-ANGER-WHO-IPV-2013-001",
+        "SRC-RELATIONSHIP-NHSE-SAFETY-2026-001",
+        "SRC-RELATIONSHIP-WHO-RESPECT-2025-001",
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-MOLINA-2026-001"
+      ],
       "assessment_question_ids": [],
       "content_ids": [],
       "safety_rule_ids": [],
