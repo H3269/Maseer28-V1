@@ -3201,12 +3201,12 @@ function answerRaw({ day, message, dailyContent } = {}) {
   }
   const specific = getGriefDaySpecificAnswerGuidance(g.day);
   if (specific) {
-    body += '\\n\\n**راهنمای اجرایی اختصاصی روز ' + g.day + ' — ' + g.title + '**'
-      + '\\n**روش انجام تمرین:** ' + specific.exerciseHow
-      + '\\n**روش انجام اقدام:** ' + specific.actionHow
-      + '\\n**معیار کافی‌بودن تمرین:** ' + specific.exerciseSuccess
-      + '\\n**معیار کافی‌بودن اقدام:** ' + specific.actionSuccess
-      + '\\n**برداشت یا خطای نامناسب:** ' + specific.avoid;
+    body += '\n\n**راهنمای اجرایی اختصاصی روز ' + g.day + ' — ' + g.title + '**'
+      + '\n**روش انجام تمرین:** ' + specific.exerciseHow
+      + '\n**روش انجام اقدام:** ' + specific.actionHow
+      + '\n**معیار کافی‌بودن تمرین:** ' + specific.exerciseSuccess
+      + '\n**معیار کافی‌بودن اقدام:** ' + specific.actionSuccess
+      + '\n**برداشت یا خطای نامناسب:** ' + specific.avoid;
   }
   return h + '\n\n' + body;
 }
