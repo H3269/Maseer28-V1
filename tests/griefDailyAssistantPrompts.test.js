@@ -160,6 +160,29 @@ test('all 392 T06 answers include day-specific execution, separate success check
   assert.equal(getGriefDaySpecificAnswerGuidance(29), null);
 });
 
+test('T06 day 8 screens behavioral safety while day 15 separately formulates a support request', () => {
+  const day8 = GRIEF_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 8);
+  const day15 = GRIEF_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 15);
+  assert.ok(day8.action.includes('رفتارهای قابل مشاهده'));
+  assert.ok(day8.action.includes('تماس یا درخواست لازم نیست'));
+  assert.ok(!day8.action.includes('درخواست کوتاه'));
+  assert.ok(day15.action.includes('درخواست مشخص'));
+  assert.ok(day15.exercise.includes('شنیده‌شدن'));
+  const day8Answer = answerGriefDailyPreparedQuestion({
+    day: 8,
+    message: day8.questions.find((q) => q.kind === 'action_meaning').value,
+    dailyContent: { exercise: day8.exercise, actionText: day8.action },
+  });
+  const day15Answer = answerGriefDailyPreparedQuestion({
+    day: 15,
+    message: day15.questions.find((q) => q.kind === 'action_meaning').value,
+    dailyContent: { exercise: day15.exercise, actionText: day15.action },
+  });
+  assert.match(day8Answer, /تماس یا درخواست لازم نیست/);
+  assert.match(day15Answer, /درخواست مشخص/);
+  assert.notEqual(day8Answer, day15Answer);
+});
+
 test('T06 support-request day requires explicit relationship safety confirmation', () => {
   assert.equal(getCanonicalDailyRecordId('سوگ و فقدان', 15), getCanonicalDailyRecordId('غم و سوگ', 15));
   const guide = GRIEF_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 15);
