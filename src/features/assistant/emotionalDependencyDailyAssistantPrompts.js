@@ -1,6 +1,6 @@
 import { cleanPreparedAssistantTopicText } from './teacherStylePreparedAnswer.js';
 
-export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
+export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES =  [
   {
     "day": 1,
     "title": "نقشه اتکای عاطفی",
@@ -484,7 +484,7 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
     "mechanism": "بررسی کارکرد تماس یا چک‌کردن، تفاوت درخواست روشن از رفتار تکراری برای کاهش موقت تردید را آشکار می‌کند.",
     "exercise": "بررسی کن تماس مکرر، چک‌کردن وضعیت آنلاین یا لغو برنامه شخصی چه کارکردی دارد؛ این رفتارها را از درخواست روشن و محترمانه کمک جدا کن.",
     "action": "یک رفتار تکراری را ثبت کن و یک جایگزین غیرکنترلی بنویس.",
-    "lightVersion": "فقط یک رفتار را نام ببر.",
+    "lightVersion": "فقط یک نمونه از لحظه پیش از بررسی یا درخواست اطمینان را نام ببر؛ اگر نمونه‌ای نداری، بنویس «نمونه‌ای ندارم».",
     "progressVersion": "یک رفتار تکراری دیگر را با جایگزین محترمانه و غیرکنترلی مقایسه کن.",
     "restVersion": "رفتار را تحلیل نکن؛ فقط یک نیاز پایه را مشخص کن و از خودسرزنشی فاصله بگیر.",
     "successCriterion": "محور روز 5 به‌صورت مشخص ثبت شده و یک تصمیم یا مشاهده متناسب با آن انجام شده باشد.",
@@ -1404,8 +1404,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "lightActionVersion": "فقط یک منبع بالقوه حمایت را روی کاغذ نام ببر؛ نام یا جزئیات حساس ثبت نکن.",
-    "progressActionVersion": "دو منبع حمایت را از نظر محرمانگی، امنیت و دسترسی بررسی کن؛ تماس یا افشای اطلاعات همچنان اختیاری است.",
+    "lightActionVersion": "فقط نوع حمایت موردنیاز را بنویس، نه نام فرد؛ اگر دستگاه امن نیست، هیچ جزئیاتی ثبت نکن.",
+    "progressActionVersion": "دو مسیر تأمین نیاز را از نظر وابستگی عملی، دسترس‌پذیری و امنیت مقایسه کن؛ هیچ تماس یا افشایی لازم نیست.",
     "restActionVersion": "فهرست را ذخیره نکن اگر دستگاه امن نیست؛ نام یا جزئیات حساس وارد نکن و تمرین را متوقف کن.",
     "durationMinutes": 10,
     "durationStatus": "provisional_estimate",
@@ -1891,7 +1891,7 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 17,
-    "title": "بازگشت پس از لغزش",
+    "title": "بازنگری چرخه اطمینان‌خواهی بدون سرزنش",
     "topicId": "T08",
     "topic": "وابستگی عاطفی",
     "subtopic": "T08-S01",
@@ -2114,7 +2114,7 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
     ],
     "lightActionVersion": "فقط یک توانایی یا ارزش را نام ببر؛ لازم نیست برای اثبات آن کاری دشوار انجام بدهی.",
     "progressActionVersion": "سه ارزش یا توانایی را ثبت کن و یکی را در یک رفتار کوچک روزمره به کار بگیر؛ دریافت تأیید شرط آن نیست.",
-    "restActionVersion": "مرور ارزش‌ها را متوقف کن؛ لازم نیست در روز دشوار چیزی را به خودت ثابت کنی.",
+    "restActionVersion": "امروز برای اثبات ارزشمندی فعالیت مستقل انجام نده؛ نیاز به نزدیکی را بپذیر و فقط به خودت فرصت استراحت بده.",
     "durationMinutes": 5,
     "durationStatus": "provisional_estimate",
     "exerciseType": "evidence_based_alternative_perspective",
@@ -2245,7 +2245,7 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 20,
-    "title": "ثبت روند بدون سنجش بالینی",
+    "title": "پایش اختیار و کیفیت پیوند",
     "topicId": "T08",
     "topic": "وابستگی عاطفی",
     "subtopic": "T08-S03",
@@ -2466,7 +2466,7 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "lightActionVersion": "فقط مانع بیرونی را نام ببر؛ لازم نیست امروز راه‌حل کامل پیدا کنی.",
+    "lightActionVersion": "فقط یک محدودیت واقعی مانند پول، رفت‌وآمد یا مراقبت را مشخص کن؛ آن را به ضعف شخصی نسبت نده.",
     "progressActionVersion": "برای مانع واقعی، یک گام عملی و یک منبع پشتیبانی در نظر بگیر؛ اگر اختیار یا امنیت محدود است، راه امن‌تر را مقدم بدان.",
     "restActionVersion": "برنامه حل مانع را متوقف کن و اگر مانع بیرونی فوری است از حمایت عملی امن استفاده کن.",
     "durationMinutes": 5,
@@ -2481,7 +2481,7 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 22,
-    "title": "نقشه روز دشوار",
+    "title": "نقشه روزهای انتظار و دلتنگی",
     "topicId": "T08",
     "topic": "وابستگی عاطفی",
     "subtopic": "T08-S01",
@@ -2846,7 +2846,7 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
     "action": "اگر کنترل یا خشونت وجود دارد، به جای مواجهه مستقیم، حمایت انسانی و مسیر محلی امن را در اولویت قرار بده.",
     "lightVersion": "فقط یک عامل ایمنی را نام ببر.",
     "progressVersion": "یک منبع حمایت امن و یک راه دسترسی به آن را بدون مواجهه مستقیم با فرد کنترل‌گر مشخص کن.",
-    "restVersion": "هیچ مواجهه یا مرزبندی مستقیمی انجام نده؛ اولویت با حفاظت و حمایت امن است.",
+    "restVersion": "نشانه‌های کنترل را بیشتر بررسی نکن؛ اگر دستگاه یا محیط امن نیست، صفحه را ببند و مرور را به زمان و وسیله امن موکول کن.",
     "successCriterion": "محور روز 25 به‌صورت مشخص ثبت شده و یک تصمیم یا مشاهده متناسب با آن انجام شده باشد.",
     "reflectionQuestion": "آیا مسئله واقعاً کمبود استقلال فردی است یا محدودیت تحمیل‌شده از بیرون؟",
     "stopCondition": "در صورت خشونت یا کنترل، با فرد کنترل‌گر برای اعلام مرز مواجهه مستقیم نکن؛ از خدمات حمایتی امن و برنامه ایمنی استفاده کن.",
@@ -2953,7 +2953,7 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 26,
-    "title": "اقدام همسو با ارزش",
+    "title": "انتخاب رابطه‌مند بر پایه ارزش‌ها",
     "topicId": "T08",
     "topic": "وابستگی عاطفی",
     "subtopic": "T08-S03",
@@ -3176,7 +3176,7 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
     ],
     "lightActionVersion": "فقط یک نشانه هشدار یا یک منبع حمایت را در برنامه نگهداری ثبت کن.",
     "progressActionVersion": "نشانه‌های بازگشت الگوی دشوار و زمان بازبینی را مشخص کن و برای هرکدام یک پاسخ حمایتی واقع‌بینانه بنویس.",
-    "restActionVersion": "برنامه نگهداری را کنار بگذار و فقط نیاز فعلی به استراحت یا حمایت را مشخص کن.",
+    "restActionVersion": "امروز شبکه حمایت را ارزیابی نکن؛ فقط نیاز فعلی به یک ارتباط امن یا استراحت را نام ببر و تصمیم را به زمان مناسب موکول کن.",
     "durationMinutes": 5,
     "durationStatus": "provisional_estimate",
     "exerciseType": "maintenance_and_relapse_plan",
