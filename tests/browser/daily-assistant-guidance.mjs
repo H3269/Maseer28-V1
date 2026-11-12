@@ -498,6 +498,10 @@ try {
   const guiltReply = await guiltPanel.locator('.assistantMessage').last().innerText();
   assert.match(guiltReply, /نام‌گذاری گناه مشخص/);
   assert.match(guiltReply, /یک رخداد مشخص را بدون ذکر نام/);
+  assert.equal((guiltReply.match(/راهنمای روز/g) || []).length, 1, 'T07 must show one day heading only');
+  assert.equal(guiltReply.includes('راهنمای اختصاصی روز'), false, 'T07 must not append a duplicate day-guidance block');
+  assert.equal(guiltReply.includes('معیار کافی‌بودن اقدام'), false, 'T07 exercise answer must not leak action criteria');
+  assert.equal(guiltReply.includes('مرز و برداشت نامناسب'), false, 'T07 exercise answer must not leak unrelated boundaries');
   assert.equal(guiltReply.includes('**'), false, 'T07 must not expose raw markdown markers');
   assert.equal(guiltReply.includes(String.fromCharCode(92) + 'n'), false, 'T07 must not expose escaped newline tokens');
   assert.ok(guiltReply.includes('\n'), 'T07 paragraphs must display on separate lines');
@@ -513,7 +517,9 @@ try {
   }, previousGuiltReplyCount, { timeout: 8000 });
   assert.equal(await guiltPanel.locator('.assistantMessage').last().getByTestId('daily-assistant-safety-reminder').count(), 1,
     'T07 escalation answer must render exactly one shared safety reminder');
-  assert.match(await guiltPanel.locator('.assistantMessage').last().innerText(), /یادآوری مهم درباره ایمنی شما/);
+  const guiltSafetyReply = await guiltPanel.locator('.assistantMessage').last().innerText();
+  assert.match(guiltSafetyReply, /یادآوری مهم درباره ایمنی شما/);
+  assert.equal((guiltSafetyReply.match(/راهنمای روز/g) || []).length, 1, 'T07 safety answer must also show one day heading only');
   assert.deepEqual(guiltErrors, [], 'T07 prepared-only browser flow must not raise page errors');
   await guiltGuidedPage.close();
 
