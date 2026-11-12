@@ -220,3 +220,21 @@ test('T08 day 1 uses fourteen independently authored prepared answers', () => {
     assert.ok(answer.includes(authored), 'prepared answer must use the authored day-specific text');
   }
 });
+
+
+test('T08 days 1-3 have forty-two independently authored prepared answers', () => {
+  for (const day of [1, 2, 3]) {
+    const guide = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
+    assert.equal(Object.keys(guide.preparedAnswers || {}).length, 14);
+    for (const question of guide.questions) {
+      const authored = guide.preparedAnswers[question.kind];
+      assert.ok(authored && authored.length >= 250, 'missing authored answer: day ' + day + ' ' + question.kind);
+      const answer = answerEmotionalDependencyDailyPreparedQuestion({
+        day,
+        message: question.value,
+        dailyContent: { exercise: guide.exercise, actionText: guide.action },
+      });
+      assert.ok(answer.includes(authored), 'answer must use authored text: day ' + day + ' ' + question.kind);
+    }
+  }
+});
