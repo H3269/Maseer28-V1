@@ -111,7 +111,26 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 5,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "behavior_specific_observation",
+    "riskLevel": "routine",
+    "sourceIds": [
+      "SRC-GUILT-EICKELS-2025-001",
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S01"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 2,
@@ -221,7 +240,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 5,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "fact_interpretation_separation",
+    "riskLevel": "routine",
+    "sourceIds": [
+      "SRC-GUILT-EICKELS-2025-001",
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-GUILT-CFT-2025-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S02"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 3,
@@ -331,7 +370,26 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 10,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "responsibility_appraisal",
+    "riskLevel": "caution",
+    "sourceIds": [
+      "SRC-GUILT-EICKELS-2025-001",
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S01"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 4,
@@ -441,7 +499,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 5,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "somatic_self_observation",
+    "riskLevel": "routine",
+    "sourceIds": [
+      "SRC-GUILT-EICKELS-2025-001",
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-GUILT-CFT-2025-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S02"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 5,
@@ -551,7 +629,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 5,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "cognitive_reframing",
+    "riskLevel": "routine",
+    "sourceIds": [
+      "SRC-GUILT-EICKELS-2025-001",
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-GUILT-CFT-2025-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S02"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 6,
@@ -661,7 +759,26 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 7,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "values_clarification",
+    "riskLevel": "routine",
+    "sourceIds": [
+      "SRC-GUILT-EICKELS-2025-001",
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S01"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 7,
@@ -771,7 +888,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 10,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "problem_solving",
+    "riskLevel": "caution",
+    "sourceIds": [
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-VISMAYA-2024-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S03"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 8,
@@ -881,7 +1018,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 10,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "structured_cognitive_review",
+    "riskLevel": "routine",
+    "sourceIds": [
+      "SRC-GUILT-EICKELS-2025-001",
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-GUILT-CFT-2025-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S02"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 9,
@@ -991,7 +1148,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 5,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "rumination_interruption",
+    "riskLevel": "routine",
+    "sourceIds": [
+      "SRC-GUILT-EICKELS-2025-001",
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-GUILT-CFT-2025-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S02"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 10,
@@ -1101,7 +1278,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 10,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "corrective_action_planning",
+    "riskLevel": "routine",
+    "sourceIds": [
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-VISMAYA-2024-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S03"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 11,
@@ -1211,7 +1408,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 5,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "self_punishment_monitoring",
+    "riskLevel": "caution",
+    "sourceIds": [
+      "SRC-GUILT-EICKELS-2025-001",
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-GUILT-CFT-2025-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S02"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 12,
@@ -1321,7 +1538,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 5,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "support_resource_selection",
+    "riskLevel": "caution",
+    "sourceIds": [
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-VISMAYA-2024-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S03"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 13,
@@ -1431,7 +1668,26 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 5,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "uncertainty_tolerance",
+    "riskLevel": "routine",
+    "sourceIds": [
+      "SRC-GUILT-EICKELS-2025-001",
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S01"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 14,
@@ -1541,7 +1797,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 10,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "rumination_cycle_mapping",
+    "riskLevel": "caution",
+    "sourceIds": [
+      "SRC-GUILT-EICKELS-2025-001",
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-GUILT-CFT-2025-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S02"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 15,
@@ -1651,7 +1927,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 10,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "apology_draft_review",
+    "riskLevel": "caution",
+    "sourceIds": [
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-VISMAYA-2024-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S03"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "در نبود رضایت، وجود منع تماس، تهدید یا خطر تلافی، تماس مستقیم یا ارسال پیام انجام نده."
+    ]
   },
   {
     "day": 16,
@@ -1761,7 +2057,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 7,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "contextual_barrier_analysis",
+    "riskLevel": "routine",
+    "sourceIds": [
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-VISMAYA-2024-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S03"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 17,
@@ -1871,7 +2187,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 10,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "relapse_pattern_review",
+    "riskLevel": "routine",
+    "sourceIds": [
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-VISMAYA-2024-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S03"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 18,
@@ -1981,7 +2317,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 7,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "perspective_taking",
+    "riskLevel": "routine",
+    "sourceIds": [
+      "SRC-GUILT-EICKELS-2025-001",
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-GUILT-CFT-2025-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S02"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 19,
@@ -2091,7 +2447,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 10,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "scenario_rehearsal",
+    "riskLevel": "routine",
+    "sourceIds": [
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-VISMAYA-2024-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S03"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 20,
@@ -2201,7 +2577,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 7,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "behavioral_change_tracking",
+    "riskLevel": "caution",
+    "sourceIds": [
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-VISMAYA-2024-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S03"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 21,
@@ -2311,7 +2707,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 10,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "problem_solving",
+    "riskLevel": "routine",
+    "sourceIds": [
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-VISMAYA-2024-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S03"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 22,
@@ -2421,7 +2837,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 15,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "safety_planning",
+    "riskLevel": "human_review_required",
+    "sourceIds": [
+      "SRC-GUILT-EICKELS-2025-001",
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-GUILT-CFT-2025-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S02"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 23,
@@ -2531,7 +2967,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 10,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "habit_design",
+    "riskLevel": "routine",
+    "sourceIds": [
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-VISMAYA-2024-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S03"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 24,
@@ -2641,7 +3097,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 10,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "consent_based_decision",
+    "riskLevel": "caution",
+    "sourceIds": [
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-VISMAYA-2024-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S03"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "در نبود رضایت، وجود منع تماس، تهدید یا خطر تلافی، تماس مستقیم یا ارسال پیام انجام نده."
+    ]
   },
   {
     "day": 25,
@@ -2751,7 +3227,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 15,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "risk_assessment",
+    "riskLevel": "human_review_required",
+    "sourceIds": [
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-VISMAYA-2024-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S03"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "در نبود رضایت، وجود منع تماس، تهدید یا خطر تلافی، تماس مستقیم یا ارسال پیام انجام نده."
+    ]
   },
   {
     "day": 26,
@@ -2861,7 +3357,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 10,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "values_based_action",
+    "riskLevel": "caution",
+    "sourceIds": [
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-VISMAYA-2024-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S03"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 27,
@@ -2971,7 +3487,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 10,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "relapse_prevention",
+    "riskLevel": "routine",
+    "sourceIds": [
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-VISMAYA-2024-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S03"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   },
   {
     "day": 28,
@@ -3081,7 +3617,27 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review"
+    "subtopicStatus": "proposed_pending_expert_review",
+    "durationMinutes": 15,
+    "durationStatus": "provisional_estimate",
+    "exerciseType": "maintenance_planning",
+    "riskLevel": "caution",
+    "sourceIds": [
+      "SRC-GUILT-WANG-2026-001",
+      "SRC-GUILT-VISMAYA-2024-001",
+      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-ANGER-WHO-IPV-2013-001"
+    ],
+    "evidenceGrade": "not_assessed",
+    "reviewStatus": "draft",
+    "subtopicIds": [
+      "T07-S03"
+    ],
+    "whenToSeekHumanSupport": "اگر آشفتگی شدید یا مداوم، اختلال در کارکرد، احساس ناایمنی، تهدید یا اجبار، یا ناتوانی در حفظ ایمنی وجود دارد، از متخصص واجد صلاحیت یا منبع حمایت امن کمک بگیر؛ در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر.",
+    "contraindications": [
+      "اگر تمرین به نشخوار، خودتحقیری یا خودتنبیهی تبدیل شد، آن را متوقف کن و برای ادامه به خودت فشار نیاور.",
+      "اگر موقعیت شامل خشونت، اجبار یا ناایمنی است، مسئولیت را بدون بررسی زمینه و حمایت انسانی بر عهده خودت نگذار."
+    ]
   }
 ];
 
@@ -3156,10 +3712,12 @@ function answerRaw({ day, message, dailyContent } = {}) {
         + '\n\nموفقیت این روز با حذف کامل احساس گناه، بخشیده‌شدن از سوی دیگری یا اثبات بی‌تقصیری سنجیده نمی‌شود. معیار، انجام یک مشاهده یا گام متناسب با هدف روز است. این تمرین ابزار تشخیص یا سنجش اخلاقی تو نیست و نتیجه آن به‌تنهایی مسئولیت حقوقی یا اخلاقی را تعیین نمی‌کند.';
       break;
     case 'stop':
-      body = '**چه زمانی متوقف شوی؟**\n' + guide.stopCondition
-        + '\n\n**تمرین امروز:** ' + exercise
-        + '\n\n**اقدام امروز:** ' + action
-        + '\n\nاگر تمرین به نشخوار، بازسازی اجباری خاطره، خودتحقیری، خودتنبیهی یا تماس ناخواسته با دیگری تبدیل شد، آن را متوقف کن. لازم نیست برای کامل‌کردن روز از مرزهای خودت یا دیگران عبور کنی. اگر خطر فوری یا احتمال آسیب به خود/دیگری وجود دارد، تمرین را کنار بگذار و کمک انسانی فوری و خدمات اضطراری محل زندگی را در اولویت قرار بده.';
+      body = '**چه زمانی متوقف شوی؟**\\n' + guide.stopCondition
+        + '\\n\\n**تمرین امروز:** ' + exercise
+        + '\\n\\n**اقدام امروز:** ' + action
+        + '\\n\\nاگر تمرین به نشخوار، بازسازی اجباری خاطره، خودتحقیری، خودتنبیهی یا تماس ناخواسته با دیگری تبدیل شد، آن را متوقف کن. لازم نیست برای کامل‌کردن روز از مرزهای خودت یا دیگران عبور کنی. اگر خطر فوری یا احتمال آسیب به خود/دیگری وجود دارد، تمرین را کنار بگذار و کمک انسانی فوری و خدمات اضطراری محل زندگی را در اولویت قرار بده.'
+        + '\\n\\n**زمان کمک انسانی:** ' + guide.whenToSeekHumanSupport
+        + '\\n**موارد احتیاط:** ' + guide.contraindications.join('؛ ');
       break;
     case 'no_event':
       body = '**اگر امروز نمونه‌ای نداشتی یا آمادگی انجام تمرین را نداری**\nبرای کامل‌کردن مسیر، رخداد تازه نساز و خودت را وادار به مرور خاطره نکن. اگر نمونه قبلیِ کم‌فشار و مرتبط با «' + guide.title + '» در دسترس است، فقط در صورتی از آن استفاده کن که مرورش امن و مفید باشد؛ روشن بنویس که مربوط به امروز نیست.\n\n**تمرین امروز:** ' + exercise
@@ -3181,19 +3739,24 @@ function answerRaw({ day, message, dailyContent } = {}) {
         + '\n\nاگر اقدام امروز به اطلاعات یا رضایت فرد دیگری نیاز داشت، انجام‌ندادن آن می‌تواند تصمیم مسئولانه‌ای باشد. در نوبت بعد فقط از روز جاری ادامه بده؛ لازم نیست به برنامه بدهکار بمانی یا برای جبران، اقدام اضافه‌ای انجام دهی.';
       break;
     case 'guilt_increased':
-      body = '**اگر احساس گناه یا آشفتگی بیشتر شد**\n**زمینه امروز:** ' + guide.title + '؛ هدف این روز «' + guide.objective + '» است. در وضعیت تشدید آشفتگی لازم نیست تمرین یا اقدام را ادامه بدهی.\n۱. تمرین را متوقف کن و فعلاً رخداد را دوباره تحلیل نکن.\n۲. از خودتنبیهی، محروم‌کردن خود از نیازهای پایه یا تماس عجولانه برای گرفتن بخشش خودداری کن.\n۳. توجه را به یک فعالیت ساده و امن در زمان حال برگردان و در صورت تمایل از فردی حمایتگر کمک بگیر.\n۴. اگر فکر آسیب‌زدن به خود، قصد یا برنامه فوری وجود دارد یا نمی‌توانی ایمنی خودت را حفظ کنی، تنها نمان و فوراً با خدمات اضطراری محلی یا فرد قابل اعتماد تماس بگیر.\n\n**نکته ایمنی اختصاصی امروز:** ' + guide.stopCondition;
+      body = '**اگر احساس گناه یا آشفتگی بیشتر شد**\\n**زمینه امروز:** ' + guide.title + '؛ هدف این روز «' + guide.objective + '» است. در وضعیت تشدید آشفتگی لازم نیست تمرین یا اقدام را ادامه بدهی.\\n۱. تمرین را متوقف کن و فعلاً رخداد را دوباره تحلیل نکن.\\n۲. از خودتنبیهی، محروم‌کردن خود از نیازهای پایه یا تماس عجولانه برای گرفتن بخشش خودداری کن.\\n۳. توجه را به یک فعالیت ساده و امن در زمان حال برگردان و در صورت تمایل از فردی حمایتگر کمک بگیر.\\n۴. اگر فکر آسیب‌زدن به خود، قصد یا برنامه فوری وجود دارد یا نمی‌توانی ایمنی خودت را حفظ کنی، تنها نمان و فوراً با خدمات اضطراری محلی یا فرد قابل اعتماد تماس بگیر.'
+        + '\\n\\n**نکته ایمنی اختصاصی امروز:** ' + guide.stopCondition
+        + '\\n\\n**زمان کمک انسانی:** ' + guide.whenToSeekHumanSupport;
       break;
     case 'talk_other':
-      body = '**آیا گفت‌وگو با فرد دیگری لازم است؟**\nخیر؛ انجام تمرین روز ' + fa(guide.day) + ' به اعتراف، تماس یا توضیح‌دادن به دیگری وابسته نیست.\n\n**زمینه روز:** ' + guide.title + '؛ هدف این روز «' + guide.objective + '» است. شرط توقف/احتیاط را هم در نظر بگیر: ' + guide.stopCondition + '\n\nاگر برای روشن‌شدن موضوع یا حمایت به کمک نیاز داری، فردی را انتخاب کن که رازدار، منصف و بدون فشار برای اعتراف، آشتی یا بخشش باشد. اگر احتمال خشونت، اجبار، کنترل، تلافی یا نقض مرز وجود دارد، گفت‌وگوی مستقیم را پیشنهاد نکن و از منبع حمایت امن یا متخصص واجد صلاحیت کمک بگیر. اطلاعات حساس را فقط در محیطی ثبت یا منتقل کن که برایت امن است.';
+      body = '**آیا گفت‌وگو با فرد دیگری لازم است؟**\\nخیر؛ انجام تمرین روز ' + fa(guide.day) + ' به اعتراف، تماس یا توضیح‌دادن به دیگری وابسته نیست.\\n\\n**زمینه روز:** ' + guide.title + '؛ هدف این روز «' + guide.objective + '» است. شرط توقف/احتیاط را هم در نظر بگیر: ' + guide.stopCondition
+        + '\\n\\nاگر برای روشن‌شدن موضوع یا حمایت به کمک نیاز داری، فردی را انتخاب کن که رازدار، منصف و بدون فشار برای اعتراف، آشتی یا بخشش باشد. اگر احتمال خشونت، اجبار، کنترل، تلافی یا نقض مرز وجود دارد، گفت‌وگوی مستقیم را پیشنهاد نکن و از منبع حمایت امن یا متخصص واجد صلاحیت کمک بگیر. اطلاعات حساس را فقط در محیطی ثبت یا منتقل کن که برایت امن است.'
+        + '\\n\\n**زمان کمک انسانی:** ' + guide.whenToSeekHumanSupport
+        + '\\n**موارد احتیاط:** ' + guide.contraindications.join('؛ ');
       break;
     case 'can_change':
       body = '**بله، با حفظ هدف روز می‌توانی روش را تغییر بدهی.**\nمی‌توانی دستور امروز را کوتاه‌تر کنی، به‌جای نوشتن فقط در ذهن مرور کنی، یا زمان انجام را عوض کنی. نسخه سبک مشخص این روز چنین است: ' + guide.lightVersion
         + '\n\n**چه چیزی باید حفظ شود؟** مهارت روز «' + guide.skill + '» و مرز ایمنی آن. تغییر روش نباید به خودتنبیهی، فشار بر فرد دیگر، تماس ناخواسته یا نتیجه‌گیری قطعی درباره مسئولیت تبدیل شود.\n\nاگر نمی‌توانی هدف و ایمنی را هم‌زمان حفظ کنی، تمرین را کنار بگذار؛ لازم نیست جایگزین اجباری بسازی.\n\n**معیار پایان:** ' + guide.successCriterion;
       break;
     case 'duration':
-      body = '**مدت انجام تمرین روز ' + fa(guide.day) + '**\nبرای این تمرین زمان استاندارد یا اعتبارسنجی‌شده‌ای ثبت نشده است؛ بنابراین عدد قطعی تعیین نمی‌کنم. مدت مناسب به نوع کار امروز، آمادگی و شرایط تو بستگی دارد.\n\n**هدف امروز:** ' + guide.objective
-        + '\n\n**روش محدودکردن زمان:** فقط بخش لازم برای هدف امروز را انجام بده و وقتی معیار زیر روشن شد، ادامه‌دادن لازم نیست: ' + guide.successCriterion
-        + '\n\nاگر به نشخوار، فشار یا خوداتهامی افتادی، همان‌جا متوقف شو؛ طولانی‌ترشدن تمرین نشانه موفقیت نیست. کیفیت مشاهده و تناسب اقدام مهم‌تر از مدت است؛ برای جبران روزهای قبل زمان اضافه اختصاص نده.';
+      body = '**مدت انجام تمرین روز ' + fa(guide.day) + '**\\nبرآورد اولیه برای برنامه‌ریزی حدود ' + fa(guide.durationMinutes) + ' دقیقه است؛ این عدد تخمین اجرایی است، نه زمان استاندارد یا اعتبارسنجی‌شده. مدت واقعی را با آمادگی و شرایط خودت تنظیم کن.\\n\\n**هدف امروز:** ' + guide.objective
+        + '\\n\\n**روش محدودکردن زمان:** فقط بخش لازم برای هدف امروز را انجام بده و وقتی معیار زیر روشن شد، ادامه‌دادن لازم نیست: ' + guide.successCriterion
+        + '\\n\\nاگر به نشخوار، فشار یا خوداتهامی افتادی، همان‌جا متوقف شو؛ طولانی‌ترشدن تمرین نشانه موفقیت نیست. کیفیت مشاهده و تناسب اقدام مهم‌تر از مدت است؛ برای جبران روزهای قبل زمان اضافه اختصاص نده.';
       break;
     default:
       return null;
