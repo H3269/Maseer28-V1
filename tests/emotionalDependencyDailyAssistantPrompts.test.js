@@ -148,6 +148,7 @@ test('T08 canonical content, adaptive runtime fields and draft taxonomy stay ali
     assert.equal(day.metadata_version, 2);
     assert.deepEqual(day.subtopic_ids, [guide.subtopic]);
     assert.equal(day.title, guide.title);
+    assert.equal(day.intro, 'هدف: ' + guide.objective + '\\n\\nمهارت: ' + guide.skill + '\\n\\nچرایی تمرین: ' + guide.mechanism);
     assert.equal(day.learning_objective, guide.objective);
     assert.equal(day.target_skill, guide.skill);
     assert.equal(day.teaching_point, guide.mechanism);
