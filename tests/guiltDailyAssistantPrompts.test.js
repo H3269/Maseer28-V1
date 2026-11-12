@@ -174,7 +174,7 @@ test('T07 daily exercise and action match the runtime overlay and have no exact 
     assert.equal(day.progressActionText, guide.progressActionVersion, 'progress action mismatch on day ' + guide.day);
     assert.equal(day.restExerciseText, guide.restVersion, 'rest exercise mismatch on day ' + guide.day);
     assert.equal(day.restActionText, guide.restActionVersion, 'rest action mismatch on day ' + guide.day);
-    for (const [field, value] of [['exercise', day.exercise], ['action', day.actionText]]) {
+    for (const [field, value] of [['exercise', day.exercise], ['actionText', day.actionText], ['lightActionText', day.lightActionText], ['progressActionText', day.progressActionText], ['restActionText', day.restActionText]]) {
       const key = normalize(value);
       assert.ok(key.length > 20);
       assert.equal(seen.has(key), false, 'duplicate T07 text: ' + field + ' day ' + guide.day);
@@ -182,7 +182,7 @@ test('T07 daily exercise and action match the runtime overlay and have no exact 
       for (const [topic, category] of Object.entries(categories)) {
         if (topic === 'احساس گناه') continue;
         for (const other of category.days || []) {
-          assert.notEqual(key, normalize(field === 'exercise' ? other.exercise : other.actionText),
+          assert.notEqual(key, normalize(other[field]),
             'T07 exact cross-topic duplicate with ' + topic + ' day ' + other.day);
         }
       }
@@ -190,12 +190,13 @@ test('T07 daily exercise and action match the runtime overlay and have no exact 
   }
   const tokenSet = value => new Set(normalize(value).split(' ').filter(token => token.length > 2));
   for (const guide of GUILT_DAILY_ASSISTANT_GUIDES) {
-    for (const field of ['exercise', 'actionText']) {
-      const target = tokenSet(field === 'exercise' ? guide.exercise : guide.action);
+    for (const field of ['exercise', 'actionText', 'lightActionText', 'progressActionText', 'restActionText']) {
+      const guideValue = field === 'exercise' ? guide.exercise : field === 'actionText' ? guide.action : field === 'lightActionText' ? guide.lightActionVersion : field === 'progressActionText' ? guide.progressActionVersion : guide.restActionVersion;
+      const target = tokenSet(guideValue);
       for (const [topic, category] of Object.entries(categories)) {
         if (topic === 'احساس گناه') continue;
         for (const other of category.days || []) {
-          const candidate = tokenSet(field === 'exercise' ? other.exercise : other.actionText);
+          const candidate = tokenSet(other[field]);
           const union = new Set([...target, ...candidate]);
           let intersection = 0;
           for (const token of target) if (candidate.has(token)) intersection += 1;
