@@ -5,8 +5,8 @@
   "generated_from": {
     "canonical_path": "public/content/path-content.json",
     "canonical_blob_sha": "7b21378d75f67f7cebe028b2fc81bd9ddc7f7c3e",
-    "topic_registry_blob_sha": "3d21f0779a806da93d7940c40575d19e8d3c1882",
-    "subtopic_registry_blob_sha": "a6f6cb6bca8dd56f0c6fdc2553b9e7c75626c09d"
+    "topic_registry_blob_sha": "c62022ffe93e8584d6994325ae8244375ea7d332",
+    "subtopic_registry_blob_sha": "60d208b376dca8bd42a96a7650569f8d0ae8df2d"
   },
   "scope": {
     "topic_ids": [
