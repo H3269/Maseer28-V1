@@ -105,7 +105,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط نام یک حوزه اتکا را ثبت کن؛ لازم نیست همان روز تغییری در رابطه یا برنامه ایجاد کنی.",
+    "progressActionVersion": "یک حوزه دوم را نیز بررسی کن و برای هر دو، تفاوت حمایت‌کننده بودن و محدودشدن انتخاب را بنویس.",
+    "restActionVersion": "نقشه را متوقف کن و فقط یک نیاز فعلی را نام ببر؛ تصمیم درباره رابطه را به زمان امن‌تری موکول کن."
   },
   {
     "day": 2,
@@ -211,7 +214,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک نمونه از حمایت متقابل را نام ببر و فعلاً درباره سالم یا ناسالم بودن کل رابطه حکم نده.",
+    "progressActionVersion": "دو موقعیت متفاوت را مقایسه کن و روشن کن کدام محدودیت از شرایط بیرونی می‌آید و کدام انتخاب در اختیار توست.",
+    "restActionVersion": "مقایسه را کنار بگذار و فقط یک نمونه از حمایت موجود را به خاطر بسپار؛ نتیجه‌گیری لازم نیست."
   },
   {
     "day": 3,
@@ -317,7 +323,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط محرک یا نیاز اصلی را در یک عبارت ثبت کن؛ لازم نیست زنجیره را کامل بازسازی کنی.",
+    "progressActionVersion": "یک زنجیره دیگر را با ترتیب رخداد، برداشت، احساس، میل و رفتار مقایسه کن؛ تفاوت دو موقعیت را مشخص کن.",
+    "restActionVersion": "تحلیل زنجیره را متوقف کن؛ اگر مرور آن آشفتگی می‌آورد، فقط از موقعیت فاصله بگیر و استراحت کن."
   },
   {
     "day": 4,
@@ -423,7 +432,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک نشانه بدنی را نام ببر و به خودت فرصت مکث بده؛ تفسیر آن ضروری نیست.",
+    "progressActionVersion": "نشانه‌های بدنی را در دو موقعیت متفاوت مقایسه کن و بررسی کن چه نیاز یا زمینه‌ای با آن‌ها همراه بوده است.",
+    "restActionVersion": "نشانه‌های بدن را بیشتر وارسی نکن؛ فعالیت آرام و آشنایی را انتخاب کن یا تمرین را کنار بگذار."
   },
   {
     "day": 5,
@@ -529,7 +541,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط رفتار و کارکرد احتمالی آن را بنویس؛ فعلاً دفعات یا مدت آن را کاهش نده.",
+    "progressActionVersion": "کارکرد کوتاه‌مدت و پیامد بعدی رفتار را در دو نمونه مقایسه کن؛ فقط در موقعیت امن و غیرضروری گزینه جایگزین را بررسی کن.",
+    "restActionVersion": "رفتار را کاهش نده و خودت را مجبور به کنترل نکن؛ فقط نیاز یا مانع زمینه‌ای را ثبت کن."
   },
   {
     "day": 6,
@@ -635,7 +650,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک نیاز و یک منبع بالقوه حمایت را نام ببر؛ تماس یا درخواست اجباری نیست.",
+    "progressActionVersion": "دو منبع حمایت را با توجه به دسترس‌پذیری و امنیت مقایسه کن؛ اگر تمایل داشتی، یک درخواست محدود و قابل رد را آماده کن.",
+    "restActionVersion": "هیچ درخواست یا تماسی لازم نیست؛ فقط نام نیاز و امکان حمایت را نگه دار."
   },
   {
     "day": 7,
@@ -741,7 +759,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک تصمیم کم‌خطر را با معیار خودت انتخاب کن؛ تصمیم مهم را می‌توانی به زمان مناسب موکول کنی.",
+    "progressActionVersion": "یک تصمیم کم‌خطر دیگر را با معیار شخصی بگیر و بعد نتیجه واقعی را بدون داوری درباره شخصیتت مرور کن.",
+    "restActionVersion": "تصمیم را به زمان مناسب موکول کن؛ اگر کمک یا مشورت لازم است، دریافت آن را نشانه ضعف ندان."
   },
   {
     "day": 8,
@@ -847,7 +868,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط سه گزینه را نام ببر؛ لازم نیست هیچ‌کدام را همان روز اجرا کنی.",
+    "progressActionVersion": "برای هر گزینه پیامد احتمالی و شرط استفاده را بنویس و یک برنامه اگر ـ آنگاه متناسب با موقعیت بساز.",
+    "restActionVersion": "برنامه‌ریزی را متوقف کن و فقط گزینه‌ای را که اکنون امن‌تر است به خاطر بسپار."
   },
   {
     "day": 9,
@@ -953,7 +977,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط زمان تقریبی بازگشت به کار خودت را مشخص کن؛ اگر موضوع فوری است، کمک لازم را عقب نینداز.",
+    "progressActionVersion": "یک فعالیت دیگر را پس از مکث از سر بگیر و بررسی کن آیا توانستی بدون انتظار برای پاسخ، انتخاب خودت را ادامه دهی.",
+    "restActionVersion": "به خودت استراحت بده و کار را به زمان دیگری موکول کن؛ تماس یا پیام ضروری را به خاطر تمرین عقب نینداز."
   },
   {
     "day": 10,
@@ -1059,7 +1086,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط نخستین گام یک کار روزمره را انتخاب کن؛ لازم نیست همه کار را مستقل انجام بدهی.",
+    "progressActionVersion": "یک کار روزمره دوم را تا حد توان پیش ببر و دقیق بنویس در کدام بخش کمک عملی لازم است.",
+    "restActionVersion": "کار را کوچک‌تر کن یا از کمک متناسب استفاده کن؛ لازم نیست استقلال را ثابت کنی."
   },
   {
     "day": 11,
@@ -1165,7 +1195,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک مرز مربوط به رفتار خودت را روی کاغذ بنویس؛ بیان مستقیم آن الزامی نیست.",
+    "progressActionVersion": "یک مرز رفتاری دیگر و واکنش امن خودت در صورت رعایت‌نشدن آن را مشخص کن؛ فقط اگر اعلام آن امن است مطرحش کن.",
+    "restActionVersion": "مرز را فقط برای خودت نگه دار؛ در صورت احتمال تلافی آن را اعلام نکن و حمایت امن را در نظر بگیر."
   },
   {
     "day": 12,
@@ -1271,7 +1304,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک منبع بالقوه حمایت را روی کاغذ نام ببر؛ نام یا جزئیات حساس ثبت نکن.",
+    "progressActionVersion": "دو منبع حمایت را از نظر محرمانگی، امنیت و دسترسی بررسی کن؛ تماس یا افشای اطلاعات همچنان اختیاری است.",
+    "restActionVersion": "فهرست را ذخیره نکن اگر دستگاه امن نیست؛ نام یا جزئیات حساس وارد نکن و تمرین را متوقف کن."
   },
   {
     "day": 13,
@@ -1377,7 +1413,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک واقعیت و یک برداشت را جدا بنویس؛ لازم نیست به نتیجه قطعی برسی.",
+    "progressActionVersion": "برای یک برداشت، دو توضیح جایگزین بنویس و بخش نامعلوم را باز نگه دار؛ برای قطعیت گرفتن فشار وارد نکن.",
+    "restActionVersion": "برداشت‌ها را کنار بگذار و فقط واقعیت قابل مشاهده را نگه دار؛ پاسخ قطعی لازم نیست."
   },
   {
     "day": 14,
@@ -1483,7 +1522,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط چهار بخش چرخه را با چند واژه ثبت کن؛ لازم نیست رفتار را عمداً تکرار کنی.",
+    "progressActionVersion": "چرخه را در یک موقعیت غیراضطراری دیگر بررسی و یک پاسخ مراقبتی جایگزین برای میل به اطمینان‌خواهی تعیین کن.",
+    "restActionVersion": "چرخه را ادامه نده و خودت را مجبور به تأخیر یا قطع تماس نکن؛ نیاز فوری را به شکل مناسب پاسخ بده."
   },
   {
     "day": 15,
@@ -1589,7 +1631,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط درخواست را برای خودت پیش‌نویس کن؛ ارسال یا گفت‌وگو لازم نیست.",
+    "progressActionVersion": "در صورت امنیت و تمایل، درخواست مشخص را با زمان و گزینه جایگزین دقیق‌تر کن و حق رد طرف مقابل را حفظ کن.",
+    "restActionVersion": "درخواست را ارسال نکن؛ آن را به زمان امن‌تری موکول کن یا فقط از حمایت مستقل استفاده کن."
   },
   {
     "day": 16,
@@ -1695,7 +1740,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط نام یک فعالیت معنادار را بنویس؛ انجام آن را به تأیید فرد دیگری وابسته نکن.",
+    "progressActionVersion": "فعالیت معنادار را در برنامه هفتگی زمان‌بندی کن و در کنار آن یک ارتباط داوطلبانه و حمایت‌کننده را نیز نگه دار.",
+    "restActionVersion": "فعالیت را حذف یا سبک کن؛ نیاز به ارتباط را سرکوب نکن و به خودت استراحت بده."
   },
   {
     "day": 17,
@@ -1801,7 +1849,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک انتخاب متفاوت برای موقعیت بعدی ثبت کن؛ خودسرزنش‌گری لازم نیست.",
+    "progressActionVersion": "برای موقعیت بعدی یک برنامه اگر ـ آنگاه بنویس که هم نیاز به حمایت را به رسمیت بشناسد و هم از فشار یا کنترل جلوگیری کند.",
+    "restActionVersion": "لغزش را جبران نکن؛ فقط از رفتار آسیب‌زا فاصله بگیر و یک گام حمایتی انتخاب کن."
   },
   {
     "day": 18,
@@ -1907,7 +1958,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک توانایی یا ارزش را نام ببر؛ لازم نیست برای اثبات آن کاری دشوار انجام بدهی.",
+    "progressActionVersion": "سه ارزش یا توانایی را ثبت کن و یکی را در یک رفتار کوچک روزمره به کار بگیر؛ دریافت تأیید شرط آن نیست.",
+    "restActionVersion": "مرور ارزش‌ها را متوقف کن؛ لازم نیست در روز دشوار چیزی را به خودت ثابت کنی."
   },
   {
     "day": 19,
@@ -2013,7 +2067,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط نخستین گام کار شخصی را مشخص کن؛ کمک‌گرفتن در بخش دشوار همچنان مجاز است.",
+    "progressActionVersion": "کار شخصی را تا یک مرحله قابل مشاهده پیش ببر و در بخشی که واقعاً نیاز داری، درخواست کمک مشخص و متناسب آماده کن.",
+    "restActionVersion": "کار را متوقف کن و کمک متناسب بخواه؛ خوداتکایی به معنی انجام همه‌چیز به‌تنهایی نیست."
   },
   {
     "day": 20,
@@ -2119,7 +2176,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک شاخص کارکردی را انتخاب کن؛ تعداد تماس‌ها یا پیام‌ها را نمره نده.",
+    "progressActionVersion": "یک شاخص کارکردی را در چند روز مشاهده کن و تغییر آن را در کنار کیفیت رابطه و شرایط بیرونی تفسیر کن؛ نمره تشخیصی نساز.",
+    "restActionVersion": "ثبت روند را کنار بگذار؛ یک روز دشوار درباره کل مسیر چیزی را ثابت نمی‌کند."
   },
   {
     "day": 21,
@@ -2225,7 +2285,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط مانع بیرونی را نام ببر؛ لازم نیست امروز راه‌حل کامل پیدا کنی.",
+    "progressActionVersion": "برای مانع واقعی، یک گام عملی و یک منبع پشتیبانی در نظر بگیر؛ اگر اختیار یا امنیت محدود است، راه امن‌تر را مقدم بدان.",
+    "restActionVersion": "برنامه حل مانع را متوقف کن و اگر مانع بیرونی فوری است از حمایت عملی امن استفاده کن."
   },
   {
     "day": 22,
@@ -2331,7 +2394,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک گزینه امن برای روز دشوار انتخاب کن؛ تماس فوری یا قطع ارتباط اجباری نیست.",
+    "progressActionVersion": "برای روز دشوار یک برنامه چندگزینه‌ای بنویس: فعالیت شخصی، حمایت امن و کمک حرفه‌ای در صورت نیاز؛ هیچ گزینه‌ای اجباری نیست.",
+    "restActionVersion": "برنامه را کوتاه کن و فقط یک گزینه آرام‌کننده یا حمایت امن را انتخاب کن."
   },
   {
     "day": 23,
@@ -2437,7 +2503,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک عادت کوچک را در برنامه بگذار؛ ارتباط داوطلبانه را حذف نکن.",
+    "progressActionVersion": "یک عادت کوچک را در چند روز برنامه‌ریزی کن و هم‌زمان یک ارتباط داوطلبانه را حفظ کن؛ هدف حذف صمیمیت نیست.",
+    "restActionVersion": "عادت را به زمان دیگری موکول کن؛ حفظ ارتباط و استراحت هر دو مجازند."
   },
   {
     "day": 24,
@@ -2543,7 +2612,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک معیار کیفیت رابطه را برای خودت روشن کن؛ تصمیم نهایی لازم نیست.",
+    "progressActionVersion": "چند معیار کیفیت رابطه را کنار هم بررسی کن: احترام، دوسویگی، آزادی رد، امنیت و امکان تصمیم مستقل؛ از یک رخداد حکم قطعی نساز.",
+    "restActionVersion": "ارزیابی رابطه را متوقف کن؛ در شرایط فشار یا ترس تصمیم مهم نگیر و حمایت امن را مقدم بدان."
   },
   {
     "day": 25,
@@ -2649,7 +2721,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک منبع امن برای کسب حمایت را مشخص کن؛ با فرد کنترل‌گر روبه‌رو نشو.",
+    "progressActionVersion": "گزینه‌های امن دریافت حمایت را با توجه به دستگاه امن، دسترسی مالی/حقوقی و خطر تلافی مرور کن؛ مواجهه مستقیم را پیش‌فرض نگذار.",
+    "restActionVersion": "هیچ مواجهه یا اعلام مرزی انجام نده؛ از دستگاه امن و کمک تخصصی/حمایتی مستقل استفاده کن."
   },
   {
     "day": 26,
@@ -2755,7 +2830,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک ارزش و یک اقدام کوچک متناظر را نام ببر؛ لازم نیست بین رابطه و استقلال یکی را حذف کنی.",
+    "progressActionVersion": "یک اقدام ارزش‌محور دیگر انتخاب کن که هم اختیار شخصی و هم احترام به پیوند متقابل را حفظ کند و پیامدش را مرور کن.",
+    "restActionVersion": "اقدام ارزش‌محور را به زمان دیگری موکول کن؛ لازم نیست میان پیوند و اختیار یکی را انتخاب کنی."
   },
   {
     "day": 27,
@@ -2861,7 +2939,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک نشانه هشدار یا یک منبع حمایت را در برنامه نگهداری ثبت کن.",
+    "progressActionVersion": "نشانه‌های بازگشت الگوی دشوار و زمان بازبینی را مشخص کن و برای هرکدام یک پاسخ حمایتی واقع‌بینانه بنویس.",
+    "restActionVersion": "برنامه نگهداری را کنار بگذار و فقط نیاز فعلی به استراحت یا حمایت را مشخص کن."
   },
   {
     "day": 28,
@@ -2967,7 +3048,10 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک نکته از مسیر و یک گام بعدی احتمالی را بنویس؛ تصمیم قطعی لازم نیست.",
+    "progressActionVersion": "یک گام بعدی را با زمان بازبینی و منبع حمایت مشخص کن؛ اگر شرایط تغییر کرد، امکان تغییر تصمیم را باز بگذار.",
+    "restActionVersion": "مرور را متوقف کن؛ تصمیم بعدی را به زمانی موکول کن که اطلاعات و حمایت کافی داری."
   }
 ];
 
@@ -3012,9 +3096,9 @@ function answerRaw({ day, message, dailyContent } = {}) {
   const exercise = String(dailyContent?.exercise || g.exercise).trim();
   const action = String(dailyContent?.actionText || dailyContent?.action || g.action).trim();
   const lightExercise = String(dailyContent?.lightExerciseText || g.lightVersion).trim();
-  const lightAction = String(dailyContent?.lightActionText || g.lightVersion).trim();
-  const progressAction = String(dailyContent?.progressActionText || g.progressVersion).trim();
-  const restAction = String(dailyContent?.restActionText || g.restVersion).trim();
+  const lightAction = String(dailyContent?.lightActionText || g.lightActionVersion || g.lightVersion).trim();
+  const progressAction = String(dailyContent?.progressActionText || g.progressActionVersion || g.progressVersion).trim();
+  const restAction = String(dailyContent?.restActionText || g.restActionVersion || g.restVersion).trim();
   const heading = intro(g);
   let body = '';
   switch (q.kind) {
