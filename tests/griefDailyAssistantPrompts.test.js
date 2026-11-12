@@ -14,6 +14,10 @@ test('T06 contains 28 complete days and 14 unchanged prepared questions per day'
   for (const guide of GRIEF_DAILY_ASSISTANT_GUIDES) {
     assert.ok(guide.title && guide.objective && guide.skill && guide.mechanism);
     assert.ok(guide.exercise && guide.action && guide.exerciseExample && guide.actionExample);
+    assert.ok(guide.lightActionVersion && guide.progressActionVersion && guide.restActionVersion, 'missing action-specific adaptation on day ' + guide.day);
+    assert.notEqual(guide.lightActionVersion, guide.lightVersion, 'light action must not reuse the light exercise on day ' + guide.day);
+    assert.notEqual(guide.progressActionVersion, guide.progressVersion, 'progress action must not reuse the progress exercise on day ' + guide.day);
+    assert.notEqual(guide.restActionVersion, guide.restVersion, 'rest action must not reuse the rest exercise on day ' + guide.day);
     assert.notEqual(guide.exerciseExample, guide.actionExample, 'exercise/action examples must teach distinct tasks on day ' + guide.day);
     assert.equal(guide.questions.length, 14);
     assert.equal(new Set(guide.questions.map((q) => q.value)).size, 14);
@@ -68,6 +72,7 @@ test('all 392 T06 prepared questions return substantive and meaningfully varied 
           break;
         case 'light_version':
           assert.ok(answer.includes(guide.lightVersion) && answer.includes(guide.progressVersion) && answer.includes(guide.restVersion));
+          assert.ok(answer.includes(guide.lightActionVersion) && answer.includes(guide.progressActionVersion) && answer.includes(guide.restActionVersion));
           break;
         case 'success':
           assert.ok(answer.includes(guide.successCriterion) && answer.includes(guide.reflectionQuestion));
