@@ -1,0 +1,324 @@
+{
+  "schema_version": "1.0.0",
+  "status": "draft_subtopic_inherited_evidence_mapping_not_claim_level",
+  "topic_id": "T08",
+  "topic_name": "وابستگی عاطفی",
+  "policy": {
+    "inherit_from_subtopic_draft_evidence_ids": true,
+    "claim_level_evidence_not_assessed": true,
+    "runtime_eligibility": false,
+    "expert_review_required": true
+  },
+  "records": [
+    {
+      "content_id": "وابستگی عاطفی-01",
+      "subtopic_id": "T08-S03",
+      "source_ids": [
+        "SRC-T08-MCLEOD-2019-001",
+        "SRC-ANGER-WHO-IPV-2013-001",
+        "SRC-RELATIONSHIP-NHSE-SAFETY-2026-001",
+        "SRC-RELATIONSHIP-WHO-RESPECT-2025-001",
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-MOLINA-2026-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-02",
+      "subtopic_id": "T08-S03",
+      "source_ids": [
+        "SRC-T08-MCLEOD-2019-001",
+        "SRC-ANGER-WHO-IPV-2013-001",
+        "SRC-RELATIONSHIP-NHSE-SAFETY-2026-001",
+        "SRC-RELATIONSHIP-WHO-RESPECT-2025-001",
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-MOLINA-2026-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-03",
+      "subtopic_id": "T08-S01",
+      "source_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-ERS-2022-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-04",
+      "subtopic_id": "T08-S01",
+      "source_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-ERS-2022-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-05",
+      "subtopic_id": "T08-S01",
+      "source_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-ERS-2022-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-06",
+      "subtopic_id": "T08-S01",
+      "source_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-ERS-2022-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-07",
+      "subtopic_id": "T08-S02",
+      "source_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-MOLINA-2026-001",
+        "SRC-ANXIETY-APA-UNCERTAINTY-001",
+        "SRC-WHO-PSYCH-SELFHELP-2026-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-08",
+      "subtopic_id": "T08-S01",
+      "source_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-ERS-2022-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-09",
+      "subtopic_id": "T08-S01",
+      "source_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-ERS-2022-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-10",
+      "subtopic_id": "T08-S02",
+      "source_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-MOLINA-2026-001",
+        "SRC-ANXIETY-APA-UNCERTAINTY-001",
+        "SRC-WHO-PSYCH-SELFHELP-2026-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-11",
+      "subtopic_id": "T08-S03",
+      "source_ids": [
+        "SRC-T08-MCLEOD-2019-001",
+        "SRC-ANGER-WHO-IPV-2013-001",
+        "SRC-RELATIONSHIP-NHSE-SAFETY-2026-001",
+        "SRC-RELATIONSHIP-WHO-RESPECT-2025-001",
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-MOLINA-2026-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-12",
+      "subtopic_id": "T08-S03",
+      "source_ids": [
+        "SRC-T08-MCLEOD-2019-001",
+        "SRC-ANGER-WHO-IPV-2013-001",
+        "SRC-RELATIONSHIP-NHSE-SAFETY-2026-001",
+        "SRC-RELATIONSHIP-WHO-RESPECT-2025-001",
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-MOLINA-2026-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-13",
+      "subtopic_id": "T08-S01",
+      "source_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-ERS-2022-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-14",
+      "subtopic_id": "T08-S01",
+      "source_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-ERS-2022-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-15",
+      "subtopic_id": "T08-S03",
+      "source_ids": [
+        "SRC-T08-MCLEOD-2019-001",
+        "SRC-ANGER-WHO-IPV-2013-001",
+        "SRC-RELATIONSHIP-NHSE-SAFETY-2026-001",
+        "SRC-RELATIONSHIP-WHO-RESPECT-2025-001",
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-MOLINA-2026-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-16",
+      "subtopic_id": "T08-S02",
+      "source_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-MOLINA-2026-001",
+        "SRC-ANXIETY-APA-UNCERTAINTY-001",
+        "SRC-WHO-PSYCH-SELFHELP-2026-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-17",
+      "subtopic_id": "T08-S01",
+      "source_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-ERS-2022-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-18",
+      "subtopic_id": "T08-S02",
+      "source_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-MOLINA-2026-001",
+        "SRC-ANXIETY-APA-UNCERTAINTY-001",
+        "SRC-WHO-PSYCH-SELFHELP-2026-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-19",
+      "subtopic_id": "T08-S02",
+      "source_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-MOLINA-2026-001",
+        "SRC-ANXIETY-APA-UNCERTAINTY-001",
+        "SRC-WHO-PSYCH-SELFHELP-2026-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-20",
+      "subtopic_id": "T08-S03",
+      "source_ids": [
+        "SRC-T08-MCLEOD-2019-001",
+        "SRC-ANGER-WHO-IPV-2013-001",
+        "SRC-RELATIONSHIP-NHSE-SAFETY-2026-001",
+        "SRC-RELATIONSHIP-WHO-RESPECT-2025-001",
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-MOLINA-2026-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-21",
+      "subtopic_id": "T08-S02",
+      "source_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-MOLINA-2026-001",
+        "SRC-ANXIETY-APA-UNCERTAINTY-001",
+        "SRC-WHO-PSYCH-SELFHELP-2026-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-22",
+      "subtopic_id": "T08-S01",
+      "source_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-ERS-2022-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-23",
+      "subtopic_id": "T08-S03",
+      "source_ids": [
+        "SRC-T08-MCLEOD-2019-001",
+        "SRC-ANGER-WHO-IPV-2013-001",
+        "SRC-RELATIONSHIP-NHSE-SAFETY-2026-001",
+        "SRC-RELATIONSHIP-WHO-RESPECT-2025-001",
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-MOLINA-2026-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-24",
+      "subtopic_id": "T08-S03",
+      "source_ids": [
+        "SRC-T08-MCLEOD-2019-001",
+        "SRC-ANGER-WHO-IPV-2013-001",
+        "SRC-RELATIONSHIP-NHSE-SAFETY-2026-001",
+        "SRC-RELATIONSHIP-WHO-RESPECT-2025-001",
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-MOLINA-2026-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-25",
+      "subtopic_id": "T08-S03",
+      "source_ids": [
+        "SRC-T08-MCLEOD-2019-001",
+        "SRC-ANGER-WHO-IPV-2013-001",
+        "SRC-RELATIONSHIP-NHSE-SAFETY-2026-001",
+        "SRC-RELATIONSHIP-WHO-RESPECT-2025-001",
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-MOLINA-2026-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-26",
+      "subtopic_id": "T08-S03",
+      "source_ids": [
+        "SRC-T08-MCLEOD-2019-001",
+        "SRC-ANGER-WHO-IPV-2013-001",
+        "SRC-RELATIONSHIP-NHSE-SAFETY-2026-001",
+        "SRC-RELATIONSHIP-WHO-RESPECT-2025-001",
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-MOLINA-2026-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-27",
+      "subtopic_id": "T08-S03",
+      "source_ids": [
+        "SRC-T08-MCLEOD-2019-001",
+        "SRC-ANGER-WHO-IPV-2013-001",
+        "SRC-RELATIONSHIP-NHSE-SAFETY-2026-001",
+        "SRC-RELATIONSHIP-WHO-RESPECT-2025-001",
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-MOLINA-2026-001"
+      ]
+    },
+    {
+      "content_id": "وابستگی عاطفی-28",
+      "subtopic_id": "T08-S03",
+      "source_ids": [
+        "SRC-T08-MCLEOD-2019-001",
+        "SRC-ANGER-WHO-IPV-2013-001",
+        "SRC-RELATIONSHIP-NHSE-SAFETY-2026-001",
+        "SRC-RELATIONSHIP-WHO-RESPECT-2025-001",
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-MOLINA-2026-001"
+      ]
+    }
+  ]
+}
