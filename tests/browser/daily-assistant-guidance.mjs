@@ -500,6 +500,18 @@ try {
   assert.equal(guiltReply.includes(String.fromCharCode(92) + 'n'), false, 'T07 must not expose escaped newline tokens');
   assert.ok(guiltReply.includes('\n'), 'T07 paragraphs must display on separate lines');
   await assertAssistantUsesVisibleDailySource(guiltGuidedPage, guiltPanel, 'احساس گناه', 1, ['exercise']);
+  await guiltTrigger.click();
+  await guiltPromptDialog.waitFor({ state: 'visible' });
+  await guiltPromptDialog.getByRole('button', { name: 'اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟' }).click();
+  const previousGuiltReplyCount = await guiltPanel.locator('.assistantMessage').count();
+  await guiltPanel.getByRole('button', { name: 'ارسال' }).click();
+  await guiltGuidedPage.waitForFunction(previous => {
+    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+    return replies.length > previous && Boolean(replies.at(-1)?.querySelector('[data-testid="daily-assistant-safety-reminder"]'));
+  }, previousGuiltReplyCount, { timeout: 8000 });
+  assert.equal(await guiltPanel.locator('.assistantMessage').last().getByTestId('daily-assistant-safety-reminder').count(), 1,
+    'T07 escalation answer must render exactly one shared safety reminder');
+  assert.match(await guiltPanel.locator('.assistantMessage').last().innerText(), /یادآوری مهم درباره ایمنی شما/);
   assert.deepEqual(guiltErrors, [], 'T07 prepared-only browser flow must not raise page errors');
   await guiltGuidedPage.close();
 
