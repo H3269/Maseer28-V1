@@ -3372,7 +3372,7 @@ function answerRaw({ day, message, dailyContent } = {}) {
   if (authoredAnswer) {
     const authoredSafeKinds = new Set(['dependency_increased', 'talk_other', 'success', 'stop']);
     return cleanPreparedAssistantTopicText(
-      heading + '\\n\\n' + authoredAnswer + (authoredSafeKinds.has(q.kind) ? '\\n\\n' + safetyReminder : ''),
+      heading + '\n\n' + authoredAnswer + (authoredSafeKinds.has(q.kind) ? '\n\n' + safetyReminder : ''),
       'وابستگی عاطفی'
     );
   }
