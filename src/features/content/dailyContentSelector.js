@@ -1,15 +1,17 @@
 export function getCanonicalDailyRecordId(categoryKey, dayNumber) {
   if (typeof categoryKey !== 'string' || !categoryKey.trim()) return null;
   if (!Number.isInteger(dayNumber) || dayNumber < 1 || dayNumber > 28) return null;
-  return `${categoryKey.trim()}-${String(dayNumber).padStart(2, '0')}`;
+  const canonicalCategoryKey = categoryKey.trim() === 'سوگ و فقدان' ? 'غم و سوگ' : categoryKey.trim();
+  return `${canonicalCategoryKey}-${String(dayNumber).padStart(2, '0')}`;
 }
 
 export function selectDailyContentCategory(categories, problem) {
   if (!categories || typeof categories !== 'object' || Array.isArray(categories)) return null;
   if (typeof problem !== 'string' || !problem.trim()) return null;
-  if (!Object.prototype.hasOwnProperty.call(categories, problem)) return null;
+  const canonicalProblem = problem.trim() === 'سوگ و فقدان' ? 'غم و سوگ' : problem.trim();
+  if (!Object.prototype.hasOwnProperty.call(categories, canonicalProblem)) return null;
 
-  const category = categories[problem];
+  const category = categories[canonicalProblem];
   return category && typeof category === 'object' && Array.isArray(category.days)
     ? category
     : null;
