@@ -185,6 +185,60 @@ test('T08 assistant guide titles, objectives, skills and adaptive variants match
   }
 });
 
+test('T08 daily exercises and actions stay distinct from the six adjacent relationship topics', async () => {
+  const [overlayText, topicText] = await Promise.all([
+    readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'),
+    readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'),
+  ]);
+  const categories = JSON.parse(overlayText).categories;
+  const topics = JSON.parse(topicText).topics;
+  const adjacentIds = ['T05', 'T12', 'T13', 'T17', 'T29', 'T31'];
+  const names = new Map(topics.filter((item) => adjacentIds.includes(item.topic_id)).map((item) => [item.topic_id, item.name]));
+  const lexicalStopWords = new Set([
+    'نسخه', 'سبک', 'تمرین', 'اقدام', 'فقط', 'یک', 'و', 'یا', 'را', 'از', 'به',
+    'در', 'که', 'اگر', 'برای', 'با', 'بدون', 'امروز', 'فعلا', 'کن', 'کنید',
+    'بنویس', 'بنویسی', 'بنویسید', 'ثبت', 'انتخاب', 'نام', 'ببر', 'مشخص',
+    'بررسی', 'انجام', 'بده', 'بگیر', 'دارد', 'هست', 'است', 'میشود', 'شود',
+    'تا', 'خودت', 'خود', 'او', 'این', 'آن', 'همان', 'هر', 'هیچ', 'همه',
+  ]);
+  const normalize = (value) => String(value || '').normalize('NFKC')
+    .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
+    .replace(/[\\u200c\\u200f\\u200e]/g, ' ')
+    .replace(/[^\\p{L}\\p{N}\\s]/gu, ' ')
+    .replace(/\\s+/g, ' ').trim().toLowerCase();
+  const tokenSet = (value) => new Set(
+    normalize(value).split(' ').filter((token) => token.length > 2 && !lexicalStopWords.has(token)),
+  );
+  const fields = ['title', 'exercise', 'actionText', 'lightExerciseText', 'lightActionText', 'progressActionText', 'restExerciseText', 'restActionText'];
+  for (const guide of EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES) {
+    const guideValues = {
+      title: guide.title,
+      exercise: guide.exercise,
+      actionText: guide.action,
+      lightExerciseText: guide.lightVersion,
+      lightActionText: guide.lightActionVersion,
+      progressActionText: guide.progressActionVersion,
+      restExerciseText: guide.restVersion,
+      restActionText: guide.restActionVersion,
+    };
+    for (const field of fields) {
+      const target = tokenSet(guideValues[field]);
+      for (const topicId of adjacentIds) {
+        const topic = names.get(topicId);
+        for (const other of categories[topic]?.days || []) {
+          const candidate = tokenSet(other[field]);
+          const union = new Set([...target, ...candidate]);
+          let intersection = 0;
+          for (const token of target) if (candidate.has(token)) intersection += 1;
+          const similarity = union.size ? intersection / union.size : 0;
+          assert.ok(similarity < 0.30,
+            'T08 day ' + guide.day + ' overlaps with ' + topicId + ' day ' + other.day + ' for ' + field + ': ' + similarity);
+        }
+      }
+    }
+  }
+});
+
 test('T08 prepared questions route only for matching canonical topic and day', () => {
   const guide = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES[0];
   const question = guide.questions[0];
