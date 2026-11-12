@@ -242,7 +242,7 @@ test('T07 daily exercise and action match the runtime overlay and have no exact 
           for (const token of target) if (candidate.has(token)) intersection += 1;
           const similarity = union.size ? intersection / union.size : 0;
           assert.ok(similarity < 0.30,
-            'high-similarity T07 text with ' + topic + ' day ' + other.day + ' for ' + field + ': ' + similarity);
+            'high-similarity T07 day ' + guide.day + ' text with ' + topic + ' day ' + other.day + ' for ' + field + ': ' + similarity);
         }
       }
     }
