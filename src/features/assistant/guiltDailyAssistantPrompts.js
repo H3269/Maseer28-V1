@@ -2731,7 +2731,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 22,
-    "title": "نقشه روز دشوار",
+    "title": "پیشگیری از خودتنبیهی در روز دشوار",
     "topicId": "T07",
     "topic": "احساس گناه",
     "objective": "برنامه بازگشت احساس گناه",
@@ -3251,7 +3251,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 26,
-    "title": "اقدام همسو با ارزش",
+    "title": "ارزش اخلاقی در رفتار اصلاحی",
     "topicId": "T07",
     "topic": "احساس گناه",
     "objective": "تبدیل یادگیری به رفتار",
