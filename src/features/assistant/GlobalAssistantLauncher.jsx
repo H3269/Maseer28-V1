@@ -132,7 +132,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const hasConflictingDailyTopic = Boolean(
     (dailyProblemTopicId && dailyRecordTopicId && dailyProblemTopicId !== dailyRecordTopicId)
     || (dailyProblemTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07'].includes(dailyProblemTopicId) && dailyRecordTopicId)
-    || (dailyRecordTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06'].includes(dailyRecordTopicId) && dailyProblemTopicId),
+    || (dailyRecordTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07'].includes(dailyRecordTopicId) && dailyProblemTopicId),
   );
   const isAngerDailyPromptContext = Boolean(dailyContext)
     && !hasConflictingDailyTopic
