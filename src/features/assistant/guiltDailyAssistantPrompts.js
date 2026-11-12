@@ -118,8 +118,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "riskLevel": "routine",
     "sourceIds": [
       "SRC-GUILT-EICKELS-2025-001",
-      "SRC-GUILT-WANG-2026-001",
-      "SRC-ANGER-WHO-IPV-2013-001"
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -247,9 +246,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "riskLevel": "routine",
     "sourceIds": [
       "SRC-GUILT-EICKELS-2025-001",
-      "SRC-GUILT-WANG-2026-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-GUILT-CFT-2025-001"
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -505,10 +502,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "somatic_self_observation",
     "riskLevel": "routine",
     "sourceIds": [
-      "SRC-GUILT-EICKELS-2025-001",
-      "SRC-GUILT-WANG-2026-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-GUILT-CFT-2025-001"
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -636,9 +630,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "riskLevel": "routine",
     "sourceIds": [
       "SRC-GUILT-EICKELS-2025-001",
-      "SRC-GUILT-WANG-2026-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-GUILT-CFT-2025-001"
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -765,9 +757,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "values_clarification",
     "riskLevel": "routine",
     "sourceIds": [
-      "SRC-GUILT-EICKELS-2025-001",
-      "SRC-GUILT-WANG-2026-001",
-      "SRC-ANGER-WHO-IPV-2013-001"
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -894,10 +884,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "problem_solving",
     "riskLevel": "caution",
     "sourceIds": [
-      "SRC-GUILT-WANG-2026-001",
       "SRC-GUILT-VISMAYA-2024-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-ANGER-WHO-IPV-2013-001"
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -1024,10 +1012,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "structured_cognitive_review",
     "riskLevel": "routine",
     "sourceIds": [
-      "SRC-GUILT-EICKELS-2025-001",
-      "SRC-GUILT-WANG-2026-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-GUILT-CFT-2025-001"
+      "SRC-GUILT-CFT-2025-001",
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -1154,10 +1140,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "rumination_interruption",
     "riskLevel": "routine",
     "sourceIds": [
-      "SRC-GUILT-EICKELS-2025-001",
-      "SRC-GUILT-WANG-2026-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-GUILT-CFT-2025-001"
+      "SRC-GUILT-CFT-2025-001",
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -1284,10 +1268,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "corrective_action_planning",
     "riskLevel": "routine",
     "sourceIds": [
-      "SRC-GUILT-WANG-2026-001",
       "SRC-GUILT-VISMAYA-2024-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-ANGER-WHO-IPV-2013-001"
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -1414,10 +1396,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "self_punishment_monitoring",
     "riskLevel": "caution",
     "sourceIds": [
-      "SRC-GUILT-EICKELS-2025-001",
-      "SRC-GUILT-WANG-2026-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-GUILT-CFT-2025-001"
+      "SRC-GUILT-CFT-2025-001",
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -1545,8 +1525,6 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "riskLevel": "caution",
     "sourceIds": [
       "SRC-GUILT-WANG-2026-001",
-      "SRC-GUILT-VISMAYA-2024-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
       "SRC-ANGER-WHO-IPV-2013-001"
     ],
     "evidenceGrade": "not_assessed",
@@ -1674,9 +1652,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "uncertainty_tolerance",
     "riskLevel": "routine",
     "sourceIds": [
-      "SRC-GUILT-EICKELS-2025-001",
-      "SRC-GUILT-WANG-2026-001",
-      "SRC-ANGER-WHO-IPV-2013-001"
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -1803,9 +1779,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "rumination_cycle_mapping",
     "riskLevel": "caution",
     "sourceIds": [
-      "SRC-GUILT-EICKELS-2025-001",
       "SRC-GUILT-WANG-2026-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
       "SRC-GUILT-CFT-2025-001"
     ],
     "evidenceGrade": "not_assessed",
@@ -1933,9 +1907,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "apology_draft_review",
     "riskLevel": "caution",
     "sourceIds": [
-      "SRC-GUILT-WANG-2026-001",
       "SRC-GUILT-VISMAYA-2024-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-GUILT-WANG-2026-001",
       "SRC-ANGER-WHO-IPV-2013-001"
     ],
     "evidenceGrade": "not_assessed",
@@ -2063,10 +2036,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "contextual_barrier_analysis",
     "riskLevel": "routine",
     "sourceIds": [
-      "SRC-GUILT-WANG-2026-001",
-      "SRC-GUILT-VISMAYA-2024-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-ANGER-WHO-IPV-2013-001"
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -2193,10 +2163,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "relapse_pattern_review",
     "riskLevel": "routine",
     "sourceIds": [
-      "SRC-GUILT-WANG-2026-001",
       "SRC-GUILT-VISMAYA-2024-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-ANGER-WHO-IPV-2013-001"
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -2324,9 +2292,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "riskLevel": "routine",
     "sourceIds": [
       "SRC-GUILT-EICKELS-2025-001",
-      "SRC-GUILT-WANG-2026-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-GUILT-CFT-2025-001"
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -2453,10 +2419,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "scenario_rehearsal",
     "riskLevel": "routine",
     "sourceIds": [
-      "SRC-GUILT-WANG-2026-001",
-      "SRC-GUILT-VISMAYA-2024-001",
       "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-ANGER-WHO-IPV-2013-001"
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -2583,10 +2547,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "behavioral_change_tracking",
     "riskLevel": "caution",
     "sourceIds": [
-      "SRC-GUILT-WANG-2026-001",
       "SRC-GUILT-VISMAYA-2024-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-ANGER-WHO-IPV-2013-001"
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -2713,10 +2675,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "problem_solving",
     "riskLevel": "routine",
     "sourceIds": [
-      "SRC-GUILT-WANG-2026-001",
-      "SRC-GUILT-VISMAYA-2024-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-ANGER-WHO-IPV-2013-001"
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -2843,10 +2802,9 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "safety_planning",
     "riskLevel": "human_review_required",
     "sourceIds": [
-      "SRC-GUILT-EICKELS-2025-001",
+      "SRC-GUILT-CFT-2025-001",
       "SRC-GUILT-WANG-2026-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-GUILT-CFT-2025-001"
+      "SRC-ANGER-WHO-IPV-2013-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -2973,10 +2931,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "habit_design",
     "riskLevel": "routine",
     "sourceIds": [
-      "SRC-GUILT-WANG-2026-001",
-      "SRC-GUILT-VISMAYA-2024-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-ANGER-WHO-IPV-2013-001"
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -3103,9 +3058,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "consent_based_decision",
     "riskLevel": "caution",
     "sourceIds": [
-      "SRC-GUILT-WANG-2026-001",
       "SRC-GUILT-VISMAYA-2024-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "SRC-GUILT-WANG-2026-001",
       "SRC-ANGER-WHO-IPV-2013-001"
     ],
     "evidenceGrade": "not_assessed",
@@ -3233,10 +3187,9 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "risk_assessment",
     "riskLevel": "human_review_required",
     "sourceIds": [
+      "SRC-ANGER-WHO-IPV-2013-001",
       "SRC-GUILT-WANG-2026-001",
-      "SRC-GUILT-VISMAYA-2024-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-ANGER-WHO-IPV-2013-001"
+      "SRC-GUILT-MOTTERSHEAD-2024-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -3363,10 +3316,9 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "values_based_action",
     "riskLevel": "caution",
     "sourceIds": [
-      "SRC-GUILT-WANG-2026-001",
       "SRC-GUILT-VISMAYA-2024-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-ANGER-WHO-IPV-2013-001"
+      "SRC-GUILT-CFT-2025-001",
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -3494,9 +3446,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "riskLevel": "routine",
     "sourceIds": [
       "SRC-GUILT-WANG-2026-001",
-      "SRC-GUILT-VISMAYA-2024-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-ANGER-WHO-IPV-2013-001"
+      "SRC-GUILT-VISMAYA-2024-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
@@ -3623,10 +3573,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "exerciseType": "maintenance_planning",
     "riskLevel": "caution",
     "sourceIds": [
-      "SRC-GUILT-WANG-2026-001",
       "SRC-GUILT-VISMAYA-2024-001",
-      "SRC-GUILT-MOTTERSHEAD-2024-001",
-      "SRC-ANGER-WHO-IPV-2013-001"
+      "SRC-GUILT-WANG-2026-001"
     ],
     "evidenceGrade": "not_assessed",
     "reviewStatus": "draft",
