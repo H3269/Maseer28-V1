@@ -1172,7 +1172,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 10,
-    "title": "اقدام اصلاحی کوچک",
+    "title": "تناسب جبران و پاسخگویی",
     "topicId": "T07",
     "topic": "احساس گناه",
     "objective": "جبران متناسب",
@@ -2731,7 +2731,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 22,
-    "title": "پیشگیری از خودتنبیهی در روز دشوار",
+    "title": "مهار میل به خودمجازات‌گری",
     "topicId": "T07",
     "topic": "احساس گناه",
     "objective": "برنامه بازگشت احساس گناه",
@@ -3381,7 +3381,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 27,
-    "title": "برنامه نگهداری و پیشگیری از تکرار",
+    "title": "تثبیت اصلاح رفتاری",
     "topicId": "T07",
     "topic": "احساس گناه",
     "objective": "حفظ اصلاح",
@@ -3511,7 +3511,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 28,
-    "title": "مرور منصفانه و گام بعدی",
+    "title": "جمع‌بندی مسئولیت و تصمیم پایدار",
     "topicId": "T07",
     "topic": "احساس گناه",
     "objective": "جمع‌بندی مسئولیت و یادگیری",
