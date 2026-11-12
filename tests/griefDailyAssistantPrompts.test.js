@@ -197,11 +197,11 @@ test('T06 day 12 prepares for a grief wave rather than a generic crisis or stres
 
 test('the 28-day T06 design draft stays synchronized with runtime guidance', async () => {
   const draft = await readFile(new URL('../docs/T06_GRIEF_AND_LOSS_28DAY_REDESIGN_DRAFT_B2_CX_FA.md', import.meta.url), 'utf8');
-  const sections = [...draft.matchAll(/^### روز (\\d+) — (.+)$/gm)].map((match, index, all) => ({
+  const sections = [...draft.matchAll(/^### روز (\d+) — (.+)$/gm)].map((match, index, all) => ({
     day: Number(match[1]),
     title: match[2],
     start: match.index,
-    end: index + 1 < all.length ? all[index + 1].index : draft.indexOf('\\n## وضعیت ممیزی', match.index),
+    end: index + 1 < all.length ? all[index + 1].index : draft.indexOf('\n## وضعیت ممیزی', match.index),
   }));
   assert.equal(sections.length, 28);
   const fields = {
