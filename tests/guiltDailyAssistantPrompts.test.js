@@ -235,7 +235,16 @@ test('T07 daily exercise and action match the runtime overlay and have no exact 
       }
     }
   }
-  const tokenSet = value => new Set(normalize(value).split(' ').filter(token => token.length > 2));
+  const lexicalStopWords = new Set([
+    'نسخه', 'سبک', 'تمرین', 'اقدام', 'فقط', 'یک', 'و', 'یا', 'را', 'از', 'به',
+    'در', 'که', 'اگر', 'برای', 'با', 'بدون', 'امروز', 'فعلا', 'کن', 'کنید',
+    'بنویس', 'بنویسی', 'بنویسید', 'ثبت', 'انتخاب', 'نام', 'ببر', 'مشخص',
+    'بررسی', 'انجام', 'بده', 'بگیر', 'دارد', 'هست', 'است', 'میشود', 'شود',
+    'تا', 'خودت', 'خود', 'او', 'این', 'آن', 'همان', 'هر', 'هیچ', 'همه',
+  ]);
+  const tokenSet = value => new Set(
+    normalize(value).split(' ').filter(token => token.length > 2 && !lexicalStopWords.has(token)),
+  );
   for (const guide of GUILT_DAILY_ASSISTANT_GUIDES) {
     for (const field of ['title', 'exercise', 'actionText', 'lightExerciseText', 'lightActionText', 'progressActionText', 'restExerciseText', 'restActionText']) {
       const guideValue = field === 'title' ? guide.title : field === 'exercise' ? guide.exercise : field === 'actionText' ? guide.action : field === 'lightExerciseText' ? 'نسخه سبک تمرین: ' + guide.lightVersion : field === 'lightActionText' ? guide.lightActionVersion : field === 'progressActionText' ? guide.progressActionVersion : field === 'restExerciseText' ? guide.restVersion : guide.restActionVersion;
