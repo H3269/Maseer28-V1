@@ -65,6 +65,7 @@ test('all 28 T07 assistant guides match the full-field editorial draft', async (
   for (const guide of GUILT_DAILY_ASSISTANT_GUIDES) {
     const section = sections.find(item => new RegExp('^### روز ' + guide.day + ' — ', 'm').test(item));
     assert.ok(section, 'missing T07 draft section for day ' + guide.day);
+    assert.ok(section.startsWith('### روز ' + guide.day + ' — ' + guide.title), 'draft title mismatch on day ' + guide.day);
     for (const [field, label] of Object.entries(fields)) {
       assert.ok(section.includes('- **' + label + ':** ' + guide[field]),
         'draft/runtime mismatch for ' + field + ' on day ' + guide.day);
