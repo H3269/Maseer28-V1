@@ -12,6 +12,8 @@ import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentS
 test('T07 contains 28 complete day guides and 14 fixed questions per day', () => {
   assert.equal(GUILT_DAILY_ASSISTANT_GUIDES.length, 28);
   const expectedQuestions = GUILT_DAILY_ASSISTANT_GUIDES[0].questions.map(question => question.value);
+  assert.equal(new Set(GUILT_DAILY_ASSISTANT_GUIDES.map(guide => guide.exerciseExample)).size, 28);
+  assert.equal(new Set(GUILT_DAILY_ASSISTANT_GUIDES.map(guide => guide.actionExample)).size, 28);
   for (const guide of GUILT_DAILY_ASSISTANT_GUIDES) {
     assert.ok(guide.title && guide.objective && guide.skill && guide.mechanism);
     assert.ok(guide.exercise && guide.action && guide.exerciseExample && guide.actionExample);
