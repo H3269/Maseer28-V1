@@ -139,13 +139,38 @@ try {
     .some((node) => node.innerText.includes('راهنمای روز ۶ وابستگی عاطفی')));
   await gatedPage.close();
 
+  // Every other T08 relationship-communication day must fail closed and remain blocked
+  // when either person is unsure or feels pressured.
+  for (const day of [11, 15, 24]) {
+    const safetyPage = await browser.newPage();
+    const safetyPanel = await openT08Day(safetyPage, day);
+    const safetyGate = safetyPanel.getByTestId('emotional-dependency-relationship-safety-gate');
+    await safetyGate.waitFor({ state: 'visible' });
+    const safetyTrigger = safetyPanel.getByTestId('emotional-dependency-daily-prompt-trigger');
+    await safetyTrigger.waitFor({ state: 'visible' });
+    assert.equal(await safetyTrigger.isDisabled(), true,
+      'T08 day ' + day + ' prepared prompts must wait for explicit safety confirmation');
+    await safetyGate.getByTestId('emotional-dependency-relationship-safety-unsafe').click();
+    await safetyPage.waitForFunction(() =>
+      document.querySelector('[data-testid="emotional-dependency-relationship-safety-unsafe"]') === null);
+    assert.equal(await safetyTrigger.isDisabled(), true,
+      'T08 day ' + day + ' must remain blocked when safety is uncertain or pressured');
+    await safetyPage.close();
+  }
+
   const privacyPage = await browser.newPage();
   const privacyPanel = await openT08Day(privacyPage, 12);
   await privacyPanel.getByTestId('emotional-dependency-privacy-notice').waitFor({ state: 'visible' });
   assert.match(await privacyPanel.getByTestId('emotional-dependency-privacy-notice').innerText(), /رمزگذاری نمی‌کند/);
   await privacyPage.close();
 
-  process.stdout.write('PASS: Chromium T08 prepared assistant, canonical day routing, exact visible source use, relationship safety gate and support-seeking privacy notice\n');
+  const privacyDay18Page = await browser.newPage();
+  const privacyDay18Panel = await openT08Day(privacyDay18Page, 18);
+  await privacyDay18Panel.getByTestId('emotional-dependency-privacy-notice').waitFor({ state: 'visible' });
+  assert.match(await privacyDay18Panel.getByTestId('emotional-dependency-privacy-notice').innerText(), /نظارت|حریم خصوصی/);
+  await privacyDay18Page.close();
+
+  process.stdout.write('PASS: Chromium T08 prepared assistant, canonical day routing, exact visible source use, all relationship safety gates and both privacy notices\n');
 } finally {
   await browser.close();
 }
