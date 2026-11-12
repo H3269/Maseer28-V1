@@ -64,13 +64,15 @@ test('all 28 T07 assistant guides match the full-field editorial draft', async (
   }
 });
 
+const toPersianDigits = value => String(value).replace(/[0-9]/g, digit => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
+
 test('T07 prompt groups preserve the five shared sections on every day', () => {
   for (let day = 1; day <= 28; day += 1) {
     const groups = getGuiltDailyAssistantPromptGroups(day);
     assert.deepEqual(groups.map(group => group.questions.length), [2, 2, 1, 5, 4]);
     assert.deepEqual(groups.map(group => group.label), [
-      'فهم تمرین روز ' + day,
-      'فهم اقدام اختصاصی روز ' + day,
+      'فهم تمرین روز ' + toPersianDigits(day),
+      'فهم اقدام اختصاصی روز ' + toPersianDigits(day),
       'تفاوت تمرین و اقدام',
       'اجرا و موانع',
       'ارزیابی و ایمنی',
