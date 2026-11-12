@@ -32,7 +32,7 @@ test('T07 contains 28 complete day guides and 14 fixed questions per day', () =>
 
 test('all 28 T07 assistant guides match the full-field editorial draft', async () => {
   const draft = await readFile(new URL('../docs/T07_GUILT_28DAY_REDESIGN_DRAFT_B2_CY_FA.md', import.meta.url), 'utf8');
-  const sections = draft.split(/(?=^### روز \\d+ — )/m).filter(section => /^### روز \\d+ — /m.test(section));
+  const sections = draft.split(/(?=^### روز \d+ — )/m).filter(section => /^### روز \d+ — /m.test(section));
   assert.equal(sections.length, 28);
   const fields = {
     objective: 'هدف',
