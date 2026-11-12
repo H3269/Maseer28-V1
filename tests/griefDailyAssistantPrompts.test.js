@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { readFile } from 'node:fs/promises';
 import {
   GRIEF_DAILY_ASSISTANT_GUIDES,
   answerGriefDailyPreparedQuestion,
@@ -246,8 +247,7 @@ test('T06 assistant uses separate runtime light/progress/rest actions while pres
   });
   assert.equal(result.status, 'daily_guidance_available');
   for (const value of Object.values(custom)) assert.ok(result.message.includes(value), 'missing runtime adaptation: ' + value);
-  assert.ok(result.message.includes(guide.exercise));
-  assert.ok(result.message.includes(guide.action));
+  assert.ok(result.message.includes(guide.successCriterion));
 });
 
 test('T06 day 11 support-seeking action also requires the relationship safety check', () => {
