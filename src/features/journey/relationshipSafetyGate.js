@@ -7,7 +7,9 @@ const GATED_DAYS_BY_TOPIC = new Map([
     const topicId = 'T' + String(index + 3).padStart(2, '0');
     const topicDays = topicId === 'T05'
       ? [...COMMON_INTERPERSONAL_DAYS, 10, 16, 26]
-      : COMMON_INTERPERSONAL_DAYS;
+      : topicId === 'T06'
+        ? [11, 15]
+        : COMMON_INTERPERSONAL_DAYS;
     return [topicId, new Set(topicDays)];
   }),
 ]);
