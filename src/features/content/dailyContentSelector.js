@@ -1,7 +1,8 @@
 export function getCanonicalDailyRecordId(categoryKey, dayNumber) {
   if (typeof categoryKey !== 'string' || !categoryKey.trim()) return null;
   if (!Number.isInteger(dayNumber) || dayNumber < 1 || dayNumber > 28) return null;
-  return `${categoryKey.trim()}-${String(dayNumber).padStart(2, '0')}`;
+  const canonicalCategoryKey = categoryKey.trim() === 'سوگ و فقدان' ? 'غم و سوگ' : categoryKey.trim();
+  return `${canonicalCategoryKey}-${String(dayNumber).padStart(2, '0')}`;
 }
 
 export function selectDailyContentCategory(categories, problem) {
