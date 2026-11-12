@@ -897,7 +897,8 @@ test('all 952 canonical daily records pass exact category/day selection and only
         v2Count += 1;
         assert.equal(record.topic_id, getCanonicalTopicIdForCategory(categoryKey),
           `${categoryKey} day ${dayNumber} must use its registry topic_id`);
-        assert.equal(record.review_status, 'pending_expert_review',
+        const expectedReviewStatus = record.topic_id === 'T07' ? 'draft' : 'pending_expert_review';
+        assert.equal(record.review_status, expectedReviewStatus,
           'v2 records remain unavailable until an explicit expert approval is recorded');
       }
 
@@ -936,10 +937,10 @@ test('all 952 canonical daily records pass exact category/day selection and only
   }
 
   assert.equal(total, 952);
-  assert.equal(legacyCount, 896);
-  assert.equal(v2Count, 56);
-  assert.equal(blockedV2Count, 56,
-    'all 56 v2 records are pending expert review and must remain blocked');
+  assert.equal(legacyCount, 868);
+  assert.equal(v2Count, 84);
+  assert.equal(blockedV2Count, 84,
+    'all 84 v2 records are pending or draft review and must remain blocked');
   assert.equal(availableCount + blockedCount, total);
 });
 
