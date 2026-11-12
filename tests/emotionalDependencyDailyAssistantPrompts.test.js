@@ -8,6 +8,7 @@ import {
 } from '../src/features/assistant/emotionalDependencyDailyAssistantPrompts.js';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
+import { getDailySafetyMode } from '../src/features/content/dailySafety.js';
 
 function contextFor(guide, overrides = {}) {
   const data = {
@@ -72,6 +73,26 @@ test('all 392 T08 prepared answers are substantive, day-scoped and meaningfully 
       assert.ok(answer.includes(guide.title), 'answer must retain the selected day title');
       assert.ok(answer.includes(guide.objective) || answer.includes(guide.exercise) || answer.includes(guide.action),
         'answer must use day-specific content');
+      const anchorsByKind = {
+        exercise_meaning: [guide.exercise, guide.mechanism, guide.reflectionQuestion],
+        exercise_example: [guide.exerciseExample, guide.exercise],
+        action_meaning: [guide.action, guide.mechanism],
+        action_example: [guide.actionExample, guide.action],
+        light_version: [guide.lightVersion, guide.lightActionVersion, guide.progressActionVersion, guide.restActionVersion],
+        success: [guide.successCriterion, guide.reflectionQuestion],
+        stop: [guide.stopCondition],
+        no_event: [guide.objective, guide.successCriterion],
+        exercise_action_difference: [guide.exercise, guide.action, guide.skill],
+        not_done: [guide.lightVersion, guide.restActionVersion],
+        dependency_increased: [guide.whenToSeekHumanSupport, guide.stopCondition],
+        talk_other: [guide.whenToSeekHumanSupport, guide.objective],
+        can_change: [guide.objective, guide.lightVersion, guide.successCriterion],
+        duration: [guide.exercise, guide.successCriterion],
+      };
+      for (const anchor of anchorsByKind[question.kind] || []) {
+        assert.ok(answer.includes(anchor),
+          'day ' + guide.day + ' ' + question.kind + ' must include its corresponding day-specific content');
+      }
       answers.add(answer);
       count += 1;
     }
@@ -79,6 +100,22 @@ test('all 392 T08 prepared answers are substantive, day-scoped and meaningfully 
   assert.equal(count, 392);
   assert.ok(answers.size > 300, 'answers must be meaningfully varied');
   assert.equal(answerEmotionalDependencyDailyPreparedQuestion({ day: 1, message: 'سؤال آزاد خارج از فهرست' }), null);
+});
+
+test('T08 success criteria are day-specific and match canonical metadata', async () => {
+  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
+  const canonical = content.categories['وابستگی عاطفی'].days;
+  assert.equal(canonical.length, 28);
+  const criteria = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES.map((guide, index) => {
+    const criterion = guide.successCriterion;
+    assert.ok(criterion.length >= 55, 'day ' + (index + 1) + ' needs an actionable criterion');
+    assert.doesNotMatch(criterion, /^محور روز \\d+ به‌صورت مشخص ثبت شده/u,
+      'day ' + (index + 1) + ' must not use the former generic criterion');
+    assert.equal(canonical[index].success_criterion, criterion,
+      'day ' + (index + 1) + ' assistant and canonical success criteria must match');
+    return criterion;
+  });
+  assert.equal(new Set(criteria).size, 28, 'all 28 criteria must be distinct');
 });
 
 test('T08 canonical content, adaptive runtime fields and draft taxonomy stay aligned', async () => {
@@ -101,11 +138,30 @@ test('T08 canonical content, adaptive runtime fields and draft taxonomy stay ali
   assert.equal(mappedSubtopics.reduce((n, item) => n + item.draft_content_ids.length, 0), 28);
   for (let index = 0; index < 28; index += 1) {
     const day = canonical[index];
+    const guide = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES[index];
     assert.equal(day.topic_id, 'T08');
     assert.equal(day.review_status, 'draft');
+    assert.equal(getDailySafetyMode(day), 'blocked',
+      'unreviewed T08 day ' + (index + 1) + ' must remain withheld from runtime completion');
     assert.equal(day.evidence_grade, 'not_assessed');
+    assert.deepEqual(day.source_ids, []);
     assert.equal(day.metadata_version, 2);
-    assert.equal(day.subtopic_ids.length, 1);
+    assert.deepEqual(day.subtopic_ids, [guide.subtopic]);
+    assert.equal(day.title, guide.title);
+    assert.equal(day.intro, `هدف: ${guide.objective}\n\nمهارت: ${guide.skill}\n\nچرایی تمرین: ${guide.mechanism}`);
+    assert.equal(day.learning_objective, guide.objective);
+    assert.equal(day.target_skill, guide.skill);
+    assert.equal(day.teaching_point, guide.mechanism);
+    assert.equal(day.exercise_type, guide.exerciseType);
+    assert.equal(day.duration_minutes, guide.durationMinutes);
+    assert.equal(day.instructions, guide.exercise);
+    assert.equal(day.reflection_prompt, guide.reflectionQuestion);
+    assert.equal(day.success_criterion, guide.successCriterion);
+    assert.ok(day.closing.includes('معیار موفقیت: ' + guide.successCriterion));
+    assert.ok(day.stop_conditions.includes(guide.stopCondition));
+    assert.equal(day.risk_level, guide.riskLevel);
+    assert.equal(day.when_to_seek_human_support, guide.whenToSeekHumanSupport);
+    assert.deepEqual(day.contraindications, guide.contraindications);
     for (const field of fields) assert.equal(day[field], runtime[index][field], 'day ' + (index + 1) + ' ' + field + ' must match overlay');
   }
   for (const field of fields) {

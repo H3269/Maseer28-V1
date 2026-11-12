@@ -107,7 +107,12 @@ export function getInterpersonalPrivacyNotice(day) {
   });
   const hasSharedSupportSeekingDay = dayNumbers.some((number) => number === 12 || number === 18);
   const hasAnxietySupportMessage = topicIds.includes('T02') && dayNumbers.includes(24);
-  return (hasSharedLegacyTopic && hasSharedSupportSeekingDay) || hasAnxietySupportMessage
+  // T08 day 25 explicitly reviews coercive control, monitoring and safe access
+  // to support; surface the device-privacy warning before any sensitive entry.
+  const hasT08CoerciveControlDay = topicIds.includes('T08') && dayNumbers.includes(25);
+  return (hasSharedLegacyTopic && hasSharedSupportSeekingDay)
+    || hasAnxietySupportMessage
+    || hasT08CoerciveControlDay
     ? SUPPORT_SEEKING_PRIVACY_NOTICE
     : null;
 }
