@@ -347,8 +347,8 @@ jobs:
             echo "No package-scoped Chromium regression test was changed; refusing to report a topic package as validated."
             exit 1
           fi
-          printf '%s\\n' "${unit_tests[@]}" > /tmp/topic-unit-tests.txt
-          printf '%s\\n' "${browser_tests[@]}" > /tmp/topic-browser-tests.txt
+          printf '%s\n' "${unit_tests[@]}" > /tmp/topic-unit-tests.txt
+          printf '%s\n' "${browser_tests[@]}" > /tmp/topic-browser-tests.txt
           echo "Selected ${#unit_tests[@]} unit tests and ${#browser_tests[@]} browser tests for this package."
       - name: Run changed topic-package unit and content tests
         shell: bash
