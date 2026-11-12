@@ -153,6 +153,24 @@ test('T07 daily exercise and action match the runtime overlay and have no exact 
       }
     }
   }
+  const tokenSet = value => new Set(normalize(value).split(' ').filter(token => token.length > 2));
+  for (const guide of GUILT_DAILY_ASSISTANT_GUIDES) {
+    for (const field of ['exercise', 'actionText']) {
+      const target = tokenSet(field === 'exercise' ? guide.exercise : guide.action);
+      for (const [topic, category] of Object.entries(categories)) {
+        if (topic === 'احساس گناه') continue;
+        for (const other of category.days || []) {
+          const candidate = tokenSet(field === 'exercise' ? other.exercise : other.actionText);
+          const union = new Set([...target, ...candidate]);
+          let intersection = 0;
+          for (const token of target) if (candidate.has(token)) intersection += 1;
+          const similarity = union.size ? intersection / union.size : 0;
+          assert.ok(similarity < 0.30,
+            'high-similarity T07 text with ' + topic + ' day ' + other.day + ' for ' + field + ': ' + similarity);
+        }
+      }
+    }
+  }
 });
 
 test('T07 prepared answers require exact canonical topic/day identity and preserve urgent safety precedence', () => {
