@@ -186,6 +186,11 @@ test('T06 28-day exercises/actions match the runtime overlay and contain no exac
     assert.ok(day, 'missing T06 overlay day ' + guide.day);
     assert.equal(day.exercise, guide.exercise, 'exercise mismatch on T06 day ' + guide.day);
     assert.equal(day.actionText, guide.action, 'action mismatch on T06 day ' + guide.day);
+    assert.equal(day.lightExerciseText, guide.lightVersion, 'light exercise mismatch on T06 day ' + guide.day);
+    assert.equal(day.lightActionText, guide.lightActionVersion, 'light action mismatch on T06 day ' + guide.day);
+    assert.equal(day.progressActionText, guide.progressActionVersion, 'progress action mismatch on T06 day ' + guide.day);
+    assert.equal(day.restExerciseText, guide.restVersion, 'rest exercise mismatch on T06 day ' + guide.day);
+    assert.equal(day.restActionText, guide.restActionVersion, 'rest action mismatch on T06 day ' + guide.day);
     griefTexts.push({ day: guide.day, field: 'exercise', text: normalize(day.exercise) });
     griefTexts.push({ day: guide.day, field: 'action', text: normalize(day.actionText) });
   }
