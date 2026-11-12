@@ -9,7 +9,7 @@ import {
 } from '../src/features/journey/relationshipSafetyGate.js';
 import { getDailySafetyMode, createHumanReviewSkipRecord } from '../src/features/content/dailySafety.js';
 
-test('relationship safety gate covers T01 and shared interpersonal days across T03-T34', async () => {
+test('relationship safety gate preserves the current shared date map across T03-T34', async () => {
   const registry = JSON.parse(await readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'));
   const sharedTopics = registry.topics.filter((topic) => Number(topic.topic_id.slice(1)) >= 3);
   assert.equal(sharedTopics.length, 32);
