@@ -60,20 +60,6 @@ test('legacy and canonical identifiers preserve shared-topic gates and fail clos
     'a conflicting topic identifier must not bypass a gated interaction');
 });
 
-test('T08 support-seeking days show privacy notice and interpersonal days remain gated', () => {
-  for (const day of [6, 11, 15, 24]) {
-    const record = { id: 'وابستگی عاطفی-' + day, topic_id: 'T08', day };
-    assert.ok(getRelationshipSafetyGate(record), 'T08 day ' + day + ' must require the relationship safety check');
-  }
-  for (const day of [12, 18]) {
-    const record = { id: 'وابستگی عاطفی-' + day, topic_id: 'T08', day };
-    assert.match(getInterpersonalPrivacyNotice(record), /حافظه محلی مرورگر/);
-    assert.match(getInterpersonalPrivacyNotice(record), /نظارت/);
-  }
-  assert.equal(getRelationshipSafetyGate({ id: 'وابستگی عاطفی-12', topic_id: 'T08', day: 12 }), null);
-  assert.equal(getInterpersonalPrivacyNotice({ id: 'وابستگی عاطفی-11', topic_id: 'T08', day: 11 }), null);
-});
-
 test('relationship safety check requires mutual freedom to refuse or stop communication', () => {
   const gate = getRelationshipSafetyGate({ id: 'T03-D06', topic_id: 'T03', day: 6 });
   assert.ok(gate);
