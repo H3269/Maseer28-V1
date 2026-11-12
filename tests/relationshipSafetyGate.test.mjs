@@ -14,7 +14,7 @@ test('relationship safety gate covers T01 and shared interpersonal days across T
   const sharedTopics = registry.topics.filter((topic) => Number(topic.topic_id.slice(1)) >= 3);
   assert.equal(sharedTopics.length, 32);
   for (const topic of sharedTopics) {
-    const gatedDays = topic.topic_id === 'T06' ? [11, 15] : topic.topic_id === 'T07' ? [15, 24] : [6, 11, 15, 24];
+    const gatedDays = topic.topic_id === 'T06' ? [11, 15] : topic.topic_id === 'T07' ? [15] : [6, 11, 15, 24];
     for (const day of gatedDays) {
       const canonicalId = topic.topic_id + '-D' + String(day).padStart(2, '0');
       assert.ok(getRelationshipSafetyGate({ id: canonicalId, topic_id: topic.topic_id, day }),
@@ -41,6 +41,8 @@ test('relationship safety gate covers T01 and shared interpersonal days across T
   assert.equal(getRelationshipSafetyGate({ id: 'T03-D07', topic_id: 'T03', day: 7 }), null);
   assert.equal(getRelationshipSafetyGate({ id: 'T03-D12', topic_id: 'T03', day: 12 }), null);
   assert.equal(getRelationshipSafetyGate({ id: 'T02-D20', topic_id: 'T02', day: 20 }), null);
+  assert.equal(getRelationshipSafetyGate({ id: 'T07-D24', topic_id: 'T07', day: 24 }), null,
+    'T07 day 24 is self-directed and must not receive an unrelated relationship-communication gate');
 });
 
 test('legacy and canonical identifiers preserve shared-topic gates and fail closed on conflicts', async () => {
