@@ -77,7 +77,7 @@ test('all 28 T07 assistant guides match the full-field editorial draft', async (
 const toPersianDigits = value => String(value).replace(/[0-9]/g, digit => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
 
 test('T07 subtopic and evidence links remain draft-only and cover all 28 days', async () => {
-  const [subtopicText, sourceText, evidenceText] = await Promise.all([
+  const [subtopicText, sourceText, overlayText, evidenceText] = await Promise.all([
     readFile(new URL('../public/assistant/knowledge/subtopics.v1.json', import.meta.url), 'utf8'),
     readFile(new URL('../public/assistant/evidence/sources.v1.json', import.meta.url), 'utf8'),
     readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'),
@@ -85,7 +85,9 @@ test('T07 subtopic and evidence links remain draft-only and cover all 28 days', 
   ]);
   const subtopics = JSON.parse(subtopicText).subtopics.filter(item => item.topic_id === 'T07');
   const sources = JSON.parse(sourceText);
+  const overlayDays = JSON.parse(overlayText).categories['احساس گناه']?.days || [];
   const evidence = JSON.parse(evidenceText);
+  assert.equal(overlayDays.length, 28, 'T07 runtime overlay must cover all 28 days');
   assert.equal(subtopics.length, 3);
   const sourceIds = new Set(sources.sources.map(source => source.source_id));
   const contentIds = subtopics.flatMap(item => item.draft_content_ids || []);
