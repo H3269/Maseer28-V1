@@ -30,6 +30,34 @@ test('T07 contains 28 complete day guides and 14 fixed questions per day', () =>
   }
 });
 
+test('all 28 T07 assistant guides match the full-field editorial draft', async () => {
+  const draft = await readFile(new URL('../docs/T07_GUILT_28DAY_REDESIGN_DRAFT_B2_CY_FA.md', import.meta.url), 'utf8');
+  const sections = draft.split(/(?=^### روز \\d+ — )/m).filter(section => /^### روز \\d+ — /m.test(section));
+  assert.equal(sections.length, 28);
+  const fields = {
+    objective: 'هدف',
+    skill: 'مهارت',
+    mechanism: 'سازوکار',
+    exercise: 'تمرین',
+    action: 'اقدام',
+    lightVersion: 'نسخه سبک',
+    progressVersion: 'نسخه پیشرفت',
+    restVersion: 'نسخه استراحت',
+    successCriterion: 'معیار موفقیت',
+    reflectionQuestion: 'پرسش بازتاب',
+    stopCondition: 'شرط توقف/احتیاط',
+  };
+  for (const guide of GUILT_DAILY_ASSISTANT_GUIDES) {
+    const section = sections.find(item => new RegExp('^### روز ' + guide.day + ' — ', 'm').test(item));
+    assert.ok(section, 'missing T07 draft section for day ' + guide.day);
+    for (const [field, label] of Object.entries(fields)) {
+      assert.ok(section.includes('- **' + label + ':** ' + guide[field]),
+        'draft/runtime mismatch for ' + field + ' on day ' + guide.day);
+    }
+    assert.ok(section.includes('- **زیرموضوع پیشنهادی:** ' + guide.subtopic));
+  }
+});
+
 test('T07 prompt groups preserve the five shared sections on every day', () => {
   for (let day = 1; day <= 28; day += 1) {
     const groups = getGuiltDailyAssistantPromptGroups(day);
