@@ -8,9 +8,10 @@ export function getCanonicalDailyRecordId(categoryKey, dayNumber) {
 export function selectDailyContentCategory(categories, problem) {
   if (!categories || typeof categories !== 'object' || Array.isArray(categories)) return null;
   if (typeof problem !== 'string' || !problem.trim()) return null;
-  if (!Object.prototype.hasOwnProperty.call(categories, problem)) return null;
+  const canonicalProblem = problem.trim() === 'سوگ و فقدان' ? 'غم و سوگ' : problem.trim();
+  if (!Object.prototype.hasOwnProperty.call(categories, canonicalProblem)) return null;
 
-  const category = categories[problem];
+  const category = categories[canonicalProblem];
   return category && typeof category === 'object' && Array.isArray(category.days)
     ? category
     : null;
