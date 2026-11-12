@@ -7,8 +7,9 @@ import { ANXIETY_DAILY_ASSISTANT_GUIDES, answerAnxietyDailyPreparedQuestion } fr
 import { FEAR_DAILY_ASSISTANT_GUIDES, answerFearDailyPreparedQuestion } from '../src/features/assistant/fearDailyAssistantPrompts.js';
 import { HATRED_DAILY_ASSISTANT_GUIDES, answerHatredDailyPreparedQuestion } from '../src/features/assistant/hatredDailyAssistantPrompts.js';
 import { JEALOUSY_DAILY_ASSISTANT_GUIDES, answerJealousyDailyPreparedQuestion } from '../src/features/assistant/jealousyDailyAssistantPrompts.js';
+import { GRIEF_DAILY_ASSISTANT_GUIDES, answerGriefDailyPreparedQuestion } from '../src/features/assistant/griefDailyAssistantPrompts.js';
 
-test('all 1,960 prepared answers across T01-T05 render without raw markdown or escaped newline tokens', () => {
+test('all 2,352 prepared answers across T01-T06 render without raw markdown or escaped newline tokens', () => {
   const topics = [
     { id: 'T01', guides: ANGER_DAILY_ASSISTANT_GUIDES, answer: (guide, question) =>
       answerAngerDailyPreparedQuestion({ day: guide.day, message: question.value }) },
@@ -20,8 +21,10 @@ test('all 1,960 prepared answers across T01-T05 render without raw markdown or e
       answerHatredDailyPreparedQuestion({ day: guide.day, message: question.value, dailyContent: { exercise: guide.exercise, actionText: guide.action } }) },
     { id: 'T05', guides: JEALOUSY_DAILY_ASSISTANT_GUIDES, answer: (guide, question) =>
       answerJealousyDailyPreparedQuestion({ day: guide.day, message: question.value, dailyContent: { exercise: guide.exercise, actionText: guide.action } }) },
+    { id: 'T06', guides: GRIEF_DAILY_ASSISTANT_GUIDES, answer: (guide, question) =>
+      answerGriefDailyPreparedQuestion({ day: guide.day, message: question.value, dailyContent: { exercise: guide.exercise, actionText: guide.action } }) },
   ];
-  const safetyKinds = new Set(['anger_increased', 'anxiety_increased', 'fear_increased', 'hostility_increased', 'talk_other', 'success', 'stop']);
+  const safetyKinds = new Set(['anger_increased', 'anxiety_increased', 'fear_increased', 'hostility_increased', 'grief_increased', 'talk_other', 'success', 'stop']);
   let checked = 0;
   for (const topic of topics) {
     assert.equal(topic.guides.length, 28, topic.id);
@@ -48,7 +51,10 @@ test('all 1,960 prepared answers across T01-T05 render without raw markdown or e
           topic.id + ' must not expose internal topic identifiers');
         assert.doesNotMatch(visibleText, /(?:این|در این)\s+بسته|بسته\s*T(?:0?[1-9]|[12][0-9]|3[0-4])/,
           topic.id + ' must use the actual topic name, not package terminology');
-        if (topic.id !== 'T04') {
+        if (topic.id === 'T06') {
+          assert.match(visibleText, /قدم‌به‌قدم پیش می‌رویم/,
+            topic.id + ' prepared answers must use the teacher-style introduction');
+        } else if (topic.id !== 'T04') {
           assert.match(visibleText, /بیاییم قدم‌به‌قدم پیش برویم/,
             topic.id + ' prepared answers must use the teacher-style introduction');
         }
@@ -57,5 +63,5 @@ test('all 1,960 prepared answers across T01-T05 render without raw markdown or e
       }
     }
   }
-  assert.equal(checked, 1960);
+  assert.equal(checked, 2352);
 });
