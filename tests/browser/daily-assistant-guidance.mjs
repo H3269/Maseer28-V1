@@ -93,10 +93,16 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
   const isLegacyMode = assistantDayMode === 'legacy' || assistantDayMode.startsWith('adaptedLegacy');
   const dayNumber = assistantDayMode === 'jealousy-communication'
     ? 16
-    : assistantDayMode === 'grief-support'
+    : assistantDayMode === 'grief-support' || assistantDayMode === 'guilt-apology'
       ? 15
-      : assistantDayMode === 'relationship'
-        ? 10
+      : assistantDayMode === 'guilt-boundary'
+        ? 24
+        : assistantDayMode === 'guilt-ungated-six'
+          ? 6
+          : assistantDayMode === 'guilt-ungated-eleven'
+            ? 11
+            : assistantDayMode === 'relationship'
+              ? 10
     : ['adaptedLegacyStreak', 'adaptedLegacyImprovement', 'adaptedAnxietyStreak', 'adaptedAnxietyImprovement', 'adaptedGriefStreak', 'adaptedGriefImprovement'].includes(assistantDayMode)
       ? 3
       : ['adaptedLegacy', 'adaptedLegacySame', 'adaptedAnxiety', 'adaptedGrief'].includes(assistantDayMode)
@@ -522,6 +528,51 @@ try {
   assert.equal((guiltSafetyReply.match(/راهنمای روز/g) || []).length, 1, 'T07 safety answer must also show one day heading only');
   assert.deepEqual(guiltErrors, [], 'T07 prepared-only browser flow must not raise page errors');
   await guiltGuidedPage.close();
+
+  // T07 relationship checks apply only to the apology/contact days, not to self-focused days.
+  for (const mode of ['guilt-ungated-six', 'guilt-ungated-eleven']) {
+    const ungatedPage = await browser.newPage();
+    await openDay(ungatedPage, { problem: 'احساس گناه', assistantDayMode: mode, localModelInstalled: true });
+    const ungatedPanel = ungatedPage.locator('.globalAssistantDialog');
+    await ungatedPanel.waitFor({ state: 'visible' });
+    assert.equal(await ungatedPanel.getByTestId('guilt-relationship-safety-gate').count(), 0,
+      mode + ' must not show a relationship gate for self-focused guilt work');
+    await ungatedPage.close();
+  }
+
+  const guiltUnsafePage = await browser.newPage();
+  await openDay(guiltUnsafePage, { problem: 'احساس گناه', assistantDayMode: 'guilt-apology', localModelInstalled: true });
+  const guiltUnsafePanel = guiltUnsafePage.locator('.globalAssistantDialog');
+  await guiltUnsafePanel.waitFor({ state: 'visible' });
+  const guiltUnsafeGate = guiltUnsafePanel.getByTestId('guilt-relationship-safety-gate');
+  await guiltUnsafeGate.waitFor({ state: 'visible' });
+  assert.equal(await guiltUnsafePanel.getByTestId('guilt-daily-prompt-trigger').isDisabled(), true,
+    'T07 apology prompts remain unavailable until the relationship safety check is confirmed');
+  await guiltUnsafeGate.getByTestId('guilt-relationship-safety-unsafe').click();
+  await guiltUnsafePage.waitForFunction(() => document.querySelector('[data-testid="guilt-relationship-safety-gate"]')?.innerText.includes('گفت‌وگوی مستقیم، مواجهه یا مذاکره'));
+  assert.equal(await guiltUnsafeGate.getByTestId('guilt-relationship-safety-safe').count(), 0,
+    'an unsafe or uncertain T07 relationship answer must not enable direct interaction');
+  assert.equal(await guiltUnsafePanel.getByTestId('guilt-daily-prompt-trigger').isDisabled(), true);
+  await guiltUnsafePage.close();
+
+  const guiltSafePage = await browser.newPage();
+  await openDay(guiltSafePage, { problem: 'احساس گناه', assistantDayMode: 'guilt-boundary', localModelInstalled: true });
+  const guiltSafePanel = guiltSafePage.locator('.globalAssistantDialog');
+  await guiltSafePanel.waitFor({ state: 'visible' });
+  const guiltSafeGate = guiltSafePanel.getByTestId('guilt-relationship-safety-gate');
+  await guiltSafeGate.waitFor({ state: 'visible' });
+  await guiltSafeGate.getByTestId('guilt-relationship-safety-safe').click();
+  await guiltSafePage.waitForFunction(() => !document.querySelector('[data-testid="guilt-relationship-safety-gate"]'));
+  const guiltSafeTrigger = guiltSafePanel.getByTestId('guilt-daily-prompt-trigger');
+  await guiltSafePage.waitForFunction(() => {
+    const button = document.querySelector('[data-testid="guilt-daily-prompt-trigger"]');
+    return button && !button.disabled;
+  });
+  await guiltSafeTrigger.click();
+  const guiltSafePrompt = guiltSafePage.locator('#library-assistant-prompt-dialog');
+  await guiltSafePrompt.waitFor({ state: 'visible' });
+  assert.match(await guiltSafePrompt.innerText(), /سؤال‌های آماده روز ۲۴ احساس گناه/);
+  await guiltSafePage.close();
 
   // T06 adaptive versions must remain distinct for difficult streaks and sustained improvement.
   await assertGriefAdaptiveDay('adaptedGrief', 2, 'lightExerciseText', 'lightActionText');
