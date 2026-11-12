@@ -113,6 +113,28 @@ test('T08 canonical content, adaptive runtime fields and draft taxonomy stay ali
   }
 });
 
+
+test('T08 assistant guide titles, objectives, skills and adaptive variants match canonical daily content', async () => {
+  const pathContent = await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8').then(JSON.parse);
+  const canonical = pathContent.categories['وابستگی عاطفی'].days;
+  assert.equal(canonical.length, 28);
+  for (let index = 0; index < 28; index += 1) {
+    const day = canonical[index];
+    const guide = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES[index];
+    assert.equal(guide.day, day.day);
+    assert.equal(guide.title, day.title, 'day ' + (index + 1) + ' title must match canonical content');
+    assert.equal(guide.objective, day.learning_objective, 'day ' + (index + 1) + ' objective must match canonical content');
+    assert.equal(guide.skill, day.target_skill, 'day ' + (index + 1) + ' skill must match canonical content');
+    assert.equal(guide.exercise, day.exercise, 'day ' + (index + 1) + ' exercise must match canonical content');
+    assert.equal(guide.action, day.actionText, 'day ' + (index + 1) + ' action must match canonical content');
+    assert.equal(guide.lightVersion, day.lightExerciseText, 'day ' + (index + 1) + ' light exercise must match canonical content');
+    assert.equal(guide.lightActionVersion, day.lightActionText, 'day ' + (index + 1) + ' light action must match canonical content');
+    assert.equal(guide.progressActionVersion, day.progressActionText, 'day ' + (index + 1) + ' progress action must match canonical content');
+    assert.equal(guide.restVersion, day.restExerciseText, 'day ' + (index + 1) + ' rest exercise must match canonical content');
+    assert.equal(guide.restActionVersion, day.restActionText, 'day ' + (index + 1) + ' rest action must match canonical content');
+  }
+});
+
 test('T08 prepared questions route only for matching canonical topic and day', () => {
   const guide = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES[0];
   const question = guide.questions[0];
