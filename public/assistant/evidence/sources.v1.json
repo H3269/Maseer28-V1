@@ -2,7 +2,7 @@
   "schema_version": "1.0.0",
   "registry_id": "maseer28-evidence-sources",
   "status": "curated_draft_sources_pending_evidence_review",
-  "access_date": "2026-11-12",
+  "access_date": "2026-11-13",
   "sources": [
     {
       "source_id": "SRC-ANGER-NHS-001",
@@ -590,6 +590,109 @@
       "volume": "15",
       "issue": "8",
       "article_number": "1031"
+    },
+    {
+      "source_id": "SRC-T08-ZHANG-2022-001",
+      "title": "The relationship between adult attachment and mental health: A meta-analysis",
+      "authors": [
+        "Xing Zhang",
+        "Jihang Li",
+        "Fang Xie",
+        "Xu Chen",
+        "Wenjian Xu",
+        "Nathan W. Hudson"
+      ],
+      "publisher": "Journal of Personality and Social Psychology",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2022-11",
+      "doi": "10.1037/pspp0000437",
+      "pmid": "36201836",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/36201836/",
+      "relevant_claims": [
+        "The meta-analysis synthesized 224 studies, 245 samples and 79,722 participants.",
+        "Adult attachment anxiety and avoidance were associated with negative mental-health indicators, including anxiety, depression and loneliness, and with lower positive indicators such as life satisfaction and self-esteem.",
+        "Associations varied with moderators including age and gender; the findings are associations and do not establish an individual diagnosis or causation."
+      ],
+      "limitations": "Meta-analytic associations do not diagnose an individual, establish causation, or validate this app's 28-day pathway. Attachment constructs and measures vary, and associations are moderated by sample and context."
+    },
+    {
+      "source_id": "SRC-T08-OVERALL-2022-001",
+      "title": "Buffering and spillover of adult attachment insecurity in couple and family relationships",
+      "authors": [
+        "Nickola C. Overall",
+        "Paula R. Pietromonaco",
+        "Jeffry A. Simpson"
+      ],
+      "publisher": "Nature Reviews Psychology",
+      "source_type": "review_article",
+      "publication_date": "2022-01-28",
+      "doi": "10.1038/s44159-021-00011-1",
+      "url": "https://www.nature.com/articles/s44159-021-00011-1",
+      "relevant_claims": [
+        "Adult attachment anxiety and avoidance are associated with different cognitive, emotional and behavioral responses in stressful couple contexts.",
+        "Attachment-related responses can spill over between stressful and non-stressful couple and family interactions.",
+        "Partner buffering processes may mitigate some adverse relationship processes."
+      ],
+      "limitations": "Narrative review focused on couple and family contexts; it does not establish a diagnosis, causal pathway for an individual, or effectiveness of a particular app exercise."
+    },
+    {
+      "source_id": "SRC-T08-MCLEOD-2019-001",
+      "title": "Attachment and social support in romantic dyads: A systematic review",
+      "authors": [
+        "Saul McLeod",
+        "Katherine Berry",
+        "Catherine Hodgson",
+        "Alison Wearden"
+      ],
+      "publisher": "Journal of Clinical Psychology",
+      "source_type": "systematic_review",
+      "publication_date": "2019-09-30",
+      "doi": "10.1002/jclp.22868",
+      "pmid": "31566266",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/31566266/",
+      "relevant_claims": [
+        "The systematic review included 43 studies of attachment constructs and support behavior in romantic couples.",
+        "Insecure attachment was associated with differences in support provision and interpretation of received support.",
+        "The authors discuss more adaptive support-seeking as one possible focus for therapeutic work."
+      ],
+      "limitations": "The review concerns romantic dyads and heterogeneous studies; it does not imply that ordinary support-seeking is pathological or that any one person must diversify their network."
+    },
+    {
+      "source_id": "SRC-T08-ERS-2022-001",
+      "title": "The Contribution of Attachment Styles and Reassurance Seeking to Trust in Romantic Couples",
+      "authors": [
+        "Michela?"
+      ],
+      "publisher": "European Journal of Personality",
+      "source_type": "peer_reviewed_dyadic_daily_diary_study",
+      "publication_date": "2022-02-25",
+      "doi": "10.5964/ejop.3059",
+      "pmid": "35330852",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8895702/",
+      "relevant_claims": [
+        "A daily-diary study of 110 heterosexual couples examined attachment style, excessive reassurance seeking and relationship trust.",
+        "In the study sample, anxious attachment was associated with higher daily excessive reassurance seeking and avoidant attachment with lower daily reassurance seeking."
+      ],
+      "limitations": "The study involved 110 heterosexual couples and does not establish that every reassurance request is excessive or harmful, nor does it justify labeling or diagnosing an individual from message frequency."
+    },
+    {
+      "source_id": "SRC-T08-MOLINA-2026-001",
+      "title": "Co-Dependency Revisited: An Integrative Review of Conceptualisations and Mental Health Outcomes",
+      "authors": [
+        "Molina et al."
+      ],
+      "publisher": "Clinical Psychology & Psychotherapy",
+      "source_type": "integrative_systematic_review",
+      "publication_date": "2026-04",
+      "doi": "10.1002/cpp.70265",
+      "pmid": "41958380",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13067074/",
+      "relevant_claims": [
+        "The integrative review included 30 studies: 14 quantitative, 9 qualitative and 7 theoretical.",
+        "The literature used heterogeneous conceptual perspectives for co-dependency, including relational, developmental, sociocultural and cognitive-personality approaches.",
+        "The review reported associations with emotional distress, disrupted identity and impaired relational functioning while emphasizing conceptual heterogeneity."
+      ],
+      "limitations": "The review reports substantial conceptual heterogeneity and limited cultural generalizability. Co-dependency is not thereby established as a standalone diagnosis, and these findings do not validate this app's label, exercises or 28-day sequence."
     }
   ]
 }
