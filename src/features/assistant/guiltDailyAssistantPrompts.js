@@ -3099,8 +3099,8 @@ export function getGuiltDailyAssistantPromptGroups(day) {
   const guide = GUILT_DAILY_ASSISTANT_GUIDES.find(item => item.day === n);
   if (!guide) return [];
   return [
-    { label: 'فهم تمرین روز ' + guide.day, questions: guide.questions.filter(q => ['exercise_meaning', 'exercise_example'].includes(q.kind)) },
-    { label: 'فهم اقدام اختصاصی روز ' + guide.day, questions: guide.questions.filter(q => ['action_meaning', 'action_example'].includes(q.kind)) },
+    { label: 'فهم تمرین روز ' + fa(guide.day), questions: guide.questions.filter(q => ['exercise_meaning', 'exercise_example'].includes(q.kind)) },
+    { label: 'فهم اقدام اختصاصی روز ' + fa(guide.day), questions: guide.questions.filter(q => ['action_meaning', 'action_example'].includes(q.kind)) },
     { label: 'تفاوت تمرین و اقدام', questions: guide.questions.filter(q => q.kind === 'exercise_action_difference') },
     { label: 'اجرا و موانع', questions: guide.questions.filter(q => ['light_version', 'not_done', 'no_event', 'can_change', 'duration'].includes(q.kind)) },
     { label: 'ارزیابی و ایمنی', questions: guide.questions.filter(q => ['guilt_increased', 'talk_other', 'success', 'stop'].includes(q.kind)) },
