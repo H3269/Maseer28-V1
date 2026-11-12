@@ -108,7 +108,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط مشخص کن که فعلاً نام فقدان را خصوصی نگه می‌داری؛ لازم نیست آن را با کسی در میان بگذاری.",
+    "progressActionVersion": "اگر خودت مایل هستی، یک جمله کوتاه برای خودت بنویس یا فرد امنی را که شاید بعداً با او صحبت کنی مشخص کن.",
+    "restActionVersion": "امروز درباره گفتن یا نگفتن تصمیم نگیر؛ حفظ حریم خصوصی کافی است."
   },
   {
     "day": 2,
@@ -214,7 +217,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک نوع فقدان را مشخص کن؛ لازم نیست آن را برای کسی توضیح بدهی.",
+    "progressActionVersion": "اگر چند نوع فقدان وجود دارد، برای هرکدام یک نیاز متفاوت را جداگانه نام ببر.",
+    "restActionVersion": "دسته‌بندی را به زمان دیگری موکول کن؛ لازم نیست امروز چیزی را روشن کنی."
   },
   {
     "day": 3,
@@ -320,7 +326,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط نام یک منبع معتبر یا فرد آگاه را برای مراجعه احتمالی یادداشت کن؛ تماس لازم نیست.",
+    "progressActionVersion": "یک سؤال مشخص برای پرسیدن از منبع معتبر آماده کن، بدون اینکه مجبور باشی امروز پاسخ بگیری.",
+    "restActionVersion": "پیگیری اطلاعات را متوقف کن و تصمیم‌گیری را به زمان مناسب بسپار."
   },
   {
     "day": 4,
@@ -426,7 +435,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "برای یک واکنش، فقط یک پاسخ مراقبتی کوچک انتخاب کن؛ لازم نیست احساس را تغییر بدهی.",
+    "progressActionVersion": "اگر آمادگی داری، برای واکنش دوم هم یک پاسخ حمایتی متفاوت مشخص کن.",
+    "restActionVersion": "امروز لازم نیست واکنش را مدیریت کنی؛ فقط از خودت مراقبت کن یا استراحت کن."
   },
   {
     "day": 5,
@@ -532,7 +544,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک گزینه حمایتی برای زمانی که موج سوگ پررنگ شد نام ببر.",
+    "progressActionVersion": "برای دو وضعیت متفاوت، دو گزینه حمایتی جدا آماده کن؛ شدت احساس را مجبور به کاهش نکن.",
+    "restActionVersion": "پیش‌بینی موج بعدی لازم نیست؛ اگر دشوار شد همان زمان کمک مناسب بگیر."
   },
   {
     "day": 6,
@@ -638,7 +653,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط راه مکث یا خروج از موقعیت یادآور را در ذهن مشخص کن؛ مواجهه عمدی لازم نیست.",
+    "progressActionVersion": "اگر مناسب است، یک فرد امن یا فعالیت جایگزین را برای زمان روبه‌روشدن طبیعی با یادآور مشخص کن.",
+    "restActionVersion": "فعلاً از یادآور فاصله بگیر؛ هیچ برنامه مواجهه‌ای اجرا نکن."
   },
   {
     "day": 7,
@@ -744,7 +762,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک نیاز امروز را نام ببر؛ لازم نیست فوراً برای آن کاری انجام بدهی.",
+    "progressActionVersion": "یک گام کوچک و شدنی برای پاسخ به همان نیاز انجام بده یا از منبع امن کمک بخواه.",
+    "restActionVersion": "اگر توان اقدام نداری، نیاز را نگه دار و استراحت کن؛ جبران لازم نیست."
   },
   {
     "day": 8,
@@ -850,7 +871,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط فرد یا منبع حمایت امن را برای خودت مشخص کن؛ تماس یا افشا لازم نیست.",
+    "progressActionVersion": "اگر مایل و امن است، یک درخواست کوتاه و مشخص برای همان نوع کمک مطرح کن.",
+    "restActionVersion": "از فرد ناامن حمایت نخواه و درخواست را تا زمان مناسب به تعویق بینداز."
   },
   {
     "day": 9,
@@ -956,7 +980,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک واژه درباره خاطره انتخاب کن یا تصمیم بگیر امروز آن را مرور نکنی.",
+    "progressActionVersion": "اگر آمادگی داری، یک خاطره دیگر را در حد قابل تحمل انتخاب کن و پس از آن یک کار ساده برای بازگشت به زمان حال انجام بده.",
+    "restActionVersion": "خاطره را مرور نکن؛ امروز به تمرین بازنگرد و به خودت فرصت بده."
   },
   {
     "day": 10,
@@ -1062,7 +1089,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط ایده یک نشانه یادبود را در ذهن مرور کن؛ انتخاب یا اجرای آن لازم نیست.",
+    "progressActionVersion": "اگر نشانه‌ای انتخاب کرده‌ای، شرایط امن نگهداری یا زمان دلخواه رجوع به آن را مشخص کن.",
+    "restActionVersion": "هیچ آیین یا نشانه‌ای ایجاد نکن؛ انتخاب‌نکردن کاملاً معتبر است."
   },
   {
     "day": 11,
@@ -1168,7 +1198,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک نیاز جسمی را نام ببر؛ لازم نیست همان لحظه آن را برطرف کنی.",
+    "progressActionVersion": "برای یک نیاز دیگر، کمک عملی یا زمان مناسب دریافت کمک را مشخص کن.",
+    "restActionVersion": "اگر بررسی نیازها دشوار است مکث کن؛ نیاز پزشکی فوری را به تعویق نینداز."
   },
   {
     "day": 12,
@@ -1274,7 +1307,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک فرد یا خدمت حمایتی را برای روز دشوار مشخص کن.",
+    "progressActionVersion": "اگر منبع اول در دسترس نبود، یک جایگزین عملی و راه تماس آن را آماده کن.",
+    "restActionVersion": "امروز برنامه کامل نساز؛ اگر خطر فوری وجود دارد از کمک اضطراری استفاده کن."
   },
   {
     "day": 13,
@@ -1380,7 +1416,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک نقش یا مسئولیت تغییرکرده را نام ببر؛ لازم نیست آن را بپذیری.",
+    "progressActionVersion": "برای یک مسئولیت تازه، امکان تقسیم یا واگذاری را با فرد مناسب بررسی کن.",
+    "restActionVersion": "امروز مسئولیت تازه‌ای نپذیر؛ بازنگری نقش را به زمان دیگری موکول کن."
   },
   {
     "day": 14,
@@ -1486,7 +1525,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یکی از چهار بخش موقعیت را که تحملش آسان‌تر است مشخص کن؛ نتیجه‌گیری نکن.",
+    "progressActionVersion": "اگر گفت‌وگو با متخصص یا فرد بی‌طرف را انتخاب کرده‌ای، یک پرسش روشن برای آن جلسه آماده کن.",
+    "restActionVersion": "بررسی گذشته را متوقف کن؛ امروز درباره تقصیر یا مسئولیت حکم نهایی نده."
   },
   {
     "day": 15,
@@ -1592,7 +1634,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط نوع حمایت مورد نیاز را برای خودت بنویس؛ ارسال درخواست لازم نیست.",
+    "progressActionVersion": "اگر امن و مایل هستی، درخواست کوتاه و مشخص را با فرد منتخب مطرح کن.",
+    "restActionVersion": "گفت‌وگو را انجام نده؛ در صورت نیاز از مسیر امن یا کمک غیرمستقیم استفاده کن."
   },
   {
     "day": 16,
@@ -1698,7 +1743,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک پاسخ مرزی کوتاه را برای خودت آماده کن؛ لازم نیست آن را اعلام کنی.",
+    "progressActionVersion": "فقط اگر امن است، مرز را با روش کم‌خطر یا از طریق واسطه بیان کن.",
+    "restActionVersion": "با فرد ناامن روبه‌رو نشو؛ فعلاً فاصله امن را حفظ کن و اعلام مستقیم را کنار بگذار."
   },
   {
     "day": 17,
@@ -1804,7 +1852,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط به خودت یادآوری کن که سوگ زمان‌بندی یا مرحله ثابت ندارد.",
+    "progressActionVersion": "برای موج دشوار احتمالی آینده، یک گزینه حمایتی انتخاب کن؛ آن را نشانه پسرفت ندان.",
+    "restActionVersion": "ثبت روند را متوقف کن؛ مقایسه با دیگران یا روزهای قبل لازم نیست."
   },
   {
     "day": 18,
@@ -1910,7 +1961,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط امکان استراحت را به خودت یادآوری کن؛ انتخاب فعالیت لازم نیست.",
+    "progressActionVersion": "اگر خودت مایل هستی، یک فعالیت آرام و کم‌فشار را برای مدت دلخواه انتخاب کن.",
+    "restActionVersion": "هیچ لحظه آرامش یا لذتی را به خودت تحمیل نکن؛ استراحت هم اجباری نیست."
   },
   {
     "day": 19,
@@ -2016,7 +2070,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک گزینه یادبود را در ذهن مشخص کن؛ لازم نیست اجرا شود.",
+    "progressActionVersion": "اگر خودت می‌خواهی، یک گام کوچک برای حفظ پیوند یادمانی انجام بده.",
+    "restActionVersion": "هیچ یادبودی را اجرا نکن؛ انتخاب‌نکردن یا به‌تعویق‌انداختن معتبر است."
   },
   {
     "day": 20,
@@ -2122,7 +2179,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط مشخص کن آیا کار اجرایی زمان‌حساس وجود دارد یا نه؛ جزئیات را لازم نیست امروز حل کنی.",
+    "progressActionVersion": "برای یک مورد، مهلت واقعی و مرجع واجد صلاحیت را مشخص کن یا امکان واگذاری را پیگیری کن.",
+    "restActionVersion": "امروز تصمیم حقوقی یا مالی نگیر؛ اگر مهلت را می‌دانی فقط آن را ثبت کن."
   },
   {
     "day": 21,
@@ -2228,7 +2288,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک بخش از روال تغییرکرده را نام ببر؛ بازطراحی لازم نیست.",
+    "progressActionVersion": "یک تغییر کوچک و قابل بازگشت در همان روال اجرا کن یا برای آن بخش کمک بخواه.",
+    "restActionVersion": "بازطراحی را به تعویق بینداز؛ فعالیت یا بهره‌وری را به خودت تحمیل نکن."
   },
   {
     "day": 22,
@@ -2334,7 +2397,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط گزینه حضور، عدم حضور یا خروج زودهنگام را برای مناسبت مشخص کن.",
+    "progressActionVersion": "اگر قصد حضور داری، راه خروج و برگشت را آماده کن؛ اگر نمی‌روی، یک برنامه جایگزین حمایتی انتخاب کن.",
+    "restActionVersion": "امروز درباره حضور تصمیم نگیر؛ شرکت در مناسبت یا مراسم اجباری نیست."
   },
   {
     "day": 23,
@@ -2440,7 +2506,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک منبع حمایت واقعی و در دسترس را نام ببر.",
+    "progressActionVersion": "نوع کمک، زمان دسترسی و یک گزینه جایگزین را بررسی کن.",
+    "restActionVersion": "از منبع ناامن درخواست کمک نکن؛ بررسی منابع را به زمان دیگری موکول کن."
   },
   {
     "day": 24,
@@ -2546,7 +2615,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط مشخص کن که فعلاً معناجویی نمی‌خواهی؛ همین تصمیم کافی است.",
+    "progressActionVersion": "اگر معنایی به‌طور طبیعی شکل گرفته، یک رفتار کوچک همسو با آن انتخاب کن؛ نه برای اثبات بهبود.",
+    "restActionVersion": "معناجویی را کنار بگذار؛ هیچ درس یا نتیجه مثبتی لازم نیست."
   },
   {
     "day": 25,
@@ -2652,7 +2724,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک حوزه زندگی را که اکنون به حمایت نیاز دارد نام ببر.",
+    "progressActionVersion": "یک نمونه مشخص از تغییر کارکرد و یک سؤال برای گفت‌وگو با متخصص آماده کن.",
+    "restActionVersion": "جزئیات را ثبت نکن؛ فقط نام یک فرد یا خدمت حمایتی را در دسترس نگه دار."
   },
   {
     "day": 26,
@@ -2758,7 +2833,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک نیاز امروز را نام ببر؛ لازم نیست حرکت یا پیشرفت را ثابت کنی.",
+    "progressActionVersion": "یک اقدام کوچک همسو با نیاز یا ارزش خود انجام بده یا برای همان کار کمک بخواه.",
+    "restActionVersion": "برای اثبات بهبود اقدامی نکن؛ استراحت یا تعویق انتخاب معتبر است."
   },
   {
     "day": 27,
@@ -2864,7 +2942,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک موقعیت آینده را که ممکن است دشوار باشد نام ببر؛ شرح آن لازم نیست.",
+    "progressActionVersion": "برای همان موقعیت، راه تماس، گزینه استراحت و زمان بازبینی را آماده کن.",
+    "restActionVersion": "برنامه کامل نساز؛ فقط یک گزینه حمایت را در دسترس نگه دار."
   },
   {
     "day": 28,
@@ -2970,7 +3051,10 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "lightActionVersion": "فقط یک نیاز حمایتی باقی‌مانده را مشخص کن؛ مرور کامل لازم نیست.",
+    "progressActionVersion": "برای یک نیاز، گام بعدی، منبع حمایت و زمان پیگیری را مشخص کن.",
+    "restActionVersion": "مرور را به تعویق بینداز؛ پایان دوره به معنی پایان سوگ نیست."
   }
 ];
 
@@ -3004,10 +3088,10 @@ function answerRaw({ day, message, dailyContent } = {}) {
   const e = String(dailyContent?.exercise || g.exercise).trim();
   const a = String(dailyContent?.actionText || dailyContent?.action || g.action).trim();
   const lightExercise = String(dailyContent?.lightExerciseText || ('نسخه سبک تمرین: ' + g.lightVersion)).trim();
-  const lightAction = String(dailyContent?.lightActionText || g.lightVersion).trim();
-  const progressAction = String(dailyContent?.progressActionText || g.progressVersion).trim();
+  const lightAction = String(dailyContent?.lightActionText || g.lightActionVersion || g.lightVersion).trim();
+  const progressAction = String(dailyContent?.progressActionText || g.progressActionVersion || g.progressVersion).trim();
   const restExercise = String(dailyContent?.restExerciseText || g.restVersion).trim();
-  const restAction = String(dailyContent?.restActionText || g.restVersion).trim();
+  const restAction = String(dailyContent?.restActionText || g.restActionVersion || g.restVersion).trim();
   const h = intro(g);
   const example = isAction => {
     const body = isAction ? g.actionExample : g.exerciseExample;
