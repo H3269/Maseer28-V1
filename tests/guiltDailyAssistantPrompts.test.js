@@ -299,6 +299,7 @@ test('T07 canonical path-content satisfies the v2 draft contract without claimin
     assert.ok(day.stop_conditions.length > 0 && day.contraindications.length > 0);
     assert.equal(day.risk_level, guide.riskLevel);
     assert.ok(day.when_to_seek_human_support);
+    assert.deepEqual(day.source_ids, guide.sourceIds);
     assert.ok(day.source_ids.length > 0);
     assert.ok(day.source_ids.every(id => sourceIds.has(id)));
     assert.equal(day.evidence_grade, 'not_assessed');
