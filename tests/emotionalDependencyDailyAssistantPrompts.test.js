@@ -81,6 +81,13 @@ test('all 392 T08 prepared outputs are substantive and retain day-specific conte
   assert.equal(answerEmotionalDependencyDailyPreparedQuestion({ day: 1, message: 'سؤال آزاد خارج از فهرست' }), null);
 });
 
+test('T08 human-support thresholds are tailored to each day', () => {
+  const thresholds = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES.map((guide) => guide.whenToSeekHumanSupport.trim());
+  assert.equal(thresholds.length, 28);
+  assert.equal(new Set(thresholds).size, 28, 'each day must have a distinct support threshold');
+  for (const threshold of thresholds) assert.ok(threshold.length >= 70);
+});
+
 test('T08 success criteria are distinct, observable and not generic day-number placeholders', () => {
   const criteria = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES.map((guide) => guide.successCriterion.trim());
   assert.equal(criteria.length, 28);
@@ -149,6 +156,7 @@ test('T08 assistant guide titles, objectives, skills and adaptive variants match
     assert.equal(guide.restVersion, day.restExerciseText, 'day ' + (index + 1) + ' rest exercise must match canonical content');
     assert.equal(guide.restActionVersion, day.restActionText, 'day ' + (index + 1) + ' rest action must match canonical content');
     assert.equal(guide.successCriterion, day.success_criterion, 'day ' + (index + 1) + ' success criterion must match canonical metadata');
+    assert.equal(guide.whenToSeekHumanSupport, day.when_to_seek_human_support, 'day ' + (index + 1) + ' human-support threshold must match canonical metadata');
     assert.equal(day.closing, 'معیار موفقیت: ' + guide.successCriterion + '\n\nپرسش بازتاب: ' + guide.reflectionQuestion + '\n\nشرط توقف/احتیاط: ' + guide.stopCondition, 'day ' + (index + 1) + ' closing text must match the day-specific guide');
   }
 });
