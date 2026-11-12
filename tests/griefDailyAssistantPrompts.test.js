@@ -14,6 +14,7 @@ test('T06 contains 28 complete days and 14 unchanged prepared questions per day'
   for (const guide of GRIEF_DAILY_ASSISTANT_GUIDES) {
     assert.ok(guide.title && guide.objective && guide.skill && guide.mechanism);
     assert.ok(guide.exercise && guide.action && guide.exerciseExample && guide.actionExample);
+    assert.notEqual(guide.exerciseExample, guide.actionExample, 'exercise/action examples must teach distinct tasks on day ' + guide.day);
     assert.equal(guide.questions.length, 14);
     assert.equal(new Set(guide.questions.map((q) => q.value)).size, 14);
     assert.deepEqual(guide.questions.map((q) => q.value), expectedQuestions);
