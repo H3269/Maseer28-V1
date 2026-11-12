@@ -102,7 +102,7 @@ test('all 392 T06 prepared questions return substantive and meaningfully varied 
     }
   }
   assert.equal(count, 392);
-  assert.ok(answers.size > 300, 'answers must be meaningfully varied across day/question pairs');
+  assert.equal(answers.size, 392, 'every day/question pair must return its own distinct answer text');
   assert.equal(answerGriefDailyPreparedQuestion({ day: 1, message: 'سؤال آزاد خارج از فهرست' }), null);
   assert.equal(answerGriefDailyPreparedQuestion({ day: 29, message: GRIEF_DAILY_ASSISTANT_GUIDES[0].questions[0].value }), null);
 });
