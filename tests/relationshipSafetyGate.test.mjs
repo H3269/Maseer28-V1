@@ -8,7 +8,6 @@ import {
   createRelationshipSafetySkipRecord,
 } from '../src/features/journey/relationshipSafetyGate.js';
 import { getDailySafetyMode, createHumanReviewSkipRecord } from '../src/features/content/dailySafety.js';
-import { mergeDailyTextOverrides } from '../src/features/content/dailyTextOverrides.js';
 
 test('relationship safety gate covers T01 and shared interpersonal days across T03-T34', async () => {
   const registry = JSON.parse(await readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'));
@@ -125,12 +124,10 @@ test('relationship safety skip records are explicit and never fabricate a score'
 });
 
 test('actual shared interpersonal prompts across T03-T34 are gated', async () => {
-  const [baseContent, overrides, registry] = await Promise.all([
+  const [content, registry] = await Promise.all([
     readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8').then(JSON.parse),
-    readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8').then(JSON.parse),
     readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8').then(JSON.parse),
   ]);
-  const content = mergeDailyTextOverrides(baseContent, overrides);
   const topicByName = new Map(registry.topics.map((topic) => [topic.name, topic]));
   for (const [categoryName, category] of Object.entries(content.categories)) {
     const topic = topicByName.get(categoryName);
