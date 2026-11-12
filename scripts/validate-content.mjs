@@ -28,11 +28,13 @@ const booksById = new Map();
 const topicsRegistry = readJson('public/assistant/knowledge/topics.v1.json');
 const subtopicsRegistry = readJson('public/assistant/knowledge/subtopics.v1.json');
 const evidenceRegistry = readJson('public/assistant/evidence/sources.v1.json');
+const dailySourceMappingRegistry = readJson('public/assistant/evidence/daily-source-mappings.v1.json');
 const topicIdByName = new Map((topicsRegistry.topics || []).map((item) => [item.name, item.topic_id]));
 const topicRecordById = new Map((topicsRegistry.topics || []).map((item) => [item.topic_id, item]));
 const subtopicRecordById = new Map((subtopicsRegistry.subtopics || []).map((item) => [item.subtopic_id, item]));
 const subtopicById = new Map((subtopicsRegistry.subtopics || []).map((item) => [item.subtopic_id, item.topic_id]));
 const evidenceSourceIds = new Set((evidenceRegistry.sources || []).map((item) => item.source_id));
+const dailySourceMappings = new Map((dailySourceMappingRegistry.records || []).map((item) => [item.content_id, item]));
 const validReviewStatuses = new Set(['draft', 'pending_expert_review', 'approved', 'rejected', 'retired']);
 const validEvidenceGrades = new Set(['not_assessed', 'very_low', 'low', 'moderate', 'high']);
 const validRiskLevels = new Set(['routine', 'caution', 'human_review_required']);
@@ -102,7 +104,7 @@ for (const { topic, category } of topicRows) {
         'topic_id', 'subtopic_ids', 'learning_objective', 'target_skill',
         'teaching_point', 'exercise_type', 'instructions', 'duration_minutes',
         'reflection_prompt', 'success_criterion', 'stop_conditions',
-        'risk_level', 'when_to_seek_human_support', 'source_ids',
+        'risk_level', 'when_to_seek_human_support',
         'evidence_grade', 'review_status',
       ];
       for (const field of requiredV2) {
@@ -144,8 +146,24 @@ for (const { topic, category } of topicRows) {
       if (!validRiskLevels.has(day.risk_level)) {
         fail.push(`risk_level نامعتبر در «${topic}»، روز ${index + 1}`);
       }
-      if (!Array.isArray(day.source_ids) || day.source_ids.some((id) => !evidenceSourceIds.has(id))) {
+      const sourceMapping = dailySourceMappings.get(day.id);
+      const effectiveSourceIds = Array.isArray(day.source_ids) && day.source_ids.length
+        ? day.source_ids
+        : day.topic_id === 'T08' && Array.isArray(sourceMapping?.source_ids)
+          ? sourceMapping.source_ids
+          : [];
+      if (!effectiveSourceIds.length) {
+        fail.push(`source_ids یا نگاشت شواهد معتبر ناقص در «${topic}»، روز ${index + 1}`);
+      } else if (effectiveSourceIds.some((id) => !evidenceSourceIds.has(id))) {
         fail.push(`source_ids ناموجود در رجیستری شواهد برای «${topic}»، روز ${index + 1}`);
+      }
+      if (day.topic_id === 'T08' && !(Array.isArray(day.source_ids) && day.source_ids.length)) {
+        const mappedSubtopic = subtopicRecordById.get(sourceMapping?.subtopic_id);
+        if (!sourceMapping || !day.subtopic_ids?.includes(sourceMapping.subtopic_id)
+          || !Array.isArray(mappedSubtopic?.draft_evidence_ids)
+          || effectiveSourceIds.some((id) => !mappedSubtopic.draft_evidence_ids.includes(id))) {
+          fail.push(`نگاشت شواهد draft روز ${index + 1} در «${topic}» با زیرموضوع و رجیستری شواهد سازگار نیست.`);
+        }
       }
       if (!Array.isArray(day.stop_conditions) || day.stop_conditions.length === 0
         || !Array.isArray(day.contraindications) || day.contraindications.length === 0) {
