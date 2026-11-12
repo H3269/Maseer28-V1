@@ -31,6 +31,10 @@ test('T08 contains 28 complete day guides with 14 unchanged prepared questions p
     assert.ok(guide.title && guide.objective && guide.skill && guide.mechanism);
     assert.ok(guide.exercise && guide.action && guide.lightVersion && guide.progressVersion && guide.restVersion);
     assert.ok(guide.successCriterion && guide.reflectionQuestion && guide.stopCondition);
+    assert.ok(Number.isInteger(guide.durationMinutes) && guide.durationMinutes >= 1 && guide.durationMinutes <= 60);
+    assert.equal(guide.durationStatus, 'provisional_estimate');
+    assert.ok(guide.exerciseType && guide.whenToSeekHumanSupport && guide.contraindications?.length);
+    assert.ok(['routine', 'caution'].includes(guide.riskLevel));
     assert.ok(guide.exerciseExample && guide.actionExample);
     assert.match(guide.subtopic, /^T08-S0[123]$/u);
     assert.equal(guide.questions.length, 14);
