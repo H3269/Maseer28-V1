@@ -208,7 +208,7 @@ test('support-seeking privacy notice covers shared legacy days and T02 message d
   assert.match(getInterpersonalPrivacyNotice({ id: 'مشکلات رابطه-18', day: 18 }), /نظارت/);
   assert.match(getInterpersonalPrivacyNotice({ id: 'T02-D24', topic_id: 'T02', day: 24 }), /اعلان‌ها/);
   const t08CoerciveControlNotice = getInterpersonalPrivacyNotice({ id: 'T08-D25', topic_id: 'T08', day: 25 });
-  assert.match(t08CoerciveControlNotice, /دستگاه امن/);
+  assert.match(t08CoerciveControlNotice, /مسیر امن/);
   assert.match(t08CoerciveControlNotice, /نظارت/);
   assert.equal(getInterpersonalPrivacyNotice({ id: 'T08-D24', topic_id: 'T08', day: 24 }), null);
   assert.equal(getInterpersonalPrivacyNotice({ id: 'خشم-12', topic_id: 'T01', day: 12 }), null);
