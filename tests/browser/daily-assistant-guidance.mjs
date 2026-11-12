@@ -643,10 +643,11 @@ try {
   }
 
   for (const scenario of [
-    { mode: 'adaptedLegacy', topic: 'خشم', day: 2, expected: 'با توجه به نتیجه روز گذشته' },
-    { mode: 'adaptedLegacyStreak', topic: 'خشم', day: 3, expected: 'در چند روز اخیر انجام تمرین دشوار بوده' },
-    { mode: 'adaptedLegacyImprovement', topic: 'خشم', day: 3, expected: 'بهبود در چند روز اخیر دیده می‌شود' },
-    { mode: 'adaptedLegacySame', topic: 'خشم', day: 2, expected: 'تغییر محسوسی ثبت نشده است' },
+    // Keep the legacy free-text adaptation cases outside the prepared-only T01–T06 set.
+    { mode: 'adaptedLegacy', topic: 'شرم', day: 2, expected: 'با توجه به نتیجه روز گذشته' },
+    { mode: 'adaptedLegacyStreak', topic: 'شرم', day: 3, expected: 'در چند روز اخیر انجام تمرین دشوار بوده' },
+    { mode: 'adaptedLegacyImprovement', topic: 'شرم', day: 3, expected: 'بهبود در چند روز اخیر دیده می‌شود' },
+    { mode: 'adaptedLegacySame', topic: 'شرم', day: 2, expected: 'تغییر محسوسی ثبت نشده است' },
     { mode: 'adaptedAnxiety', topic: 'اضطراب', day: 2, expected: 'با توجه به نتیجه روز گذشته', fieldMode: 'light' },
     { mode: 'adaptedAnxietyStreak', topic: 'اضطراب', day: 3, expected: 'در چند روز اخیر انجام تمرین دشوار بوده', fieldMode: 'rest' },
     { mode: 'adaptedAnxietyImprovement', topic: 'اضطراب', day: 3, expected: 'بهبود در چند روز اخیر دیده می‌شود', fieldMode: 'progress' },
