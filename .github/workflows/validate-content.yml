@@ -351,6 +351,7 @@ jobs:
           printf '%s\\n' "${browser_tests[@]}" > /tmp/topic-browser-tests.txt
           echo "Selected ${#unit_tests[@]} unit tests and ${#browser_tests[@]} browser tests for this package."
       - name: Run changed topic-package unit and content tests
+        shell: bash
         run: |
           mapfile -t unit_tests < /tmp/topic-unit-tests.txt
           node --test "${unit_tests[@]}"
