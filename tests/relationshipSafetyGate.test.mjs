@@ -184,7 +184,7 @@ test('current violence and relationship safety sources remain contextual, not da
   assert.equal(ids.size, registry.sources.length, 'evidence source identifiers must be unique');
 });
 
-test('support-seeking privacy notice covers shared legacy days and T02 message day only', () => {
+test('support-seeking privacy notice covers shared days, T02 message day and T08 coercive-control day', () => {
   const day12Notice = getInterpersonalPrivacyNotice({ id: 'ترس-12', day: 12 });
   assert.match(day12Notice, /حافظه محلی مرورگر/);
   assert.match(day12Notice, /رمزگذاری نمی‌کند/);
