@@ -148,15 +148,23 @@ test('all 392 T06 answers include day-specific execution, separate success check
         duration: ['exerciseHow', 'actionHow'],
       };
       const expectedFields = fieldsByQuestion[question.kind];
+      const labels = {
+        exerciseHow: 'نکته اجرایی تمرین',
+        actionHow: 'نکته اجرایی اقدام',
+        exerciseSuccess: 'معیار کافی‌بودن تمرین',
+        actionSuccess: 'معیار کافی‌بودن اقدام',
+        avoid: 'مرز مهم',
+      };
       assert.ok(!answer.includes('راهنمای اختصاصی روز ' + guide.day + ' — ' + guide.title),
         'repeated day-heading block must not be appended');
       for (const field of expectedFields) {
-        assert.ok(answer.includes(specific[field]), 'missing relevant ' + field + ' for ' + question.kind + ' on day ' + guide.day);
+        assert.ok(answer.includes('**' + labels[field] + ':** ' + specific[field]),
+          'missing labeled relevant ' + field + ' for ' + question.kind + ' on day ' + guide.day);
       }
       for (const field of ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess', 'avoid']) {
         if (!expectedFields.includes(field)) {
-          assert.ok(!answer.includes(specific[field]),
-            'irrelevant ' + field + ' leaked into ' + question.kind + ' on day ' + guide.day);
+          assert.ok(!answer.includes('**' + labels[field] + ':**'),
+            'irrelevant labeled ' + field + ' leaked into ' + question.kind + ' on day ' + guide.day);
         }
       }
       count += 1;
