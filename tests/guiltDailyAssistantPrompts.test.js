@@ -80,6 +80,7 @@ test('T07 subtopic and evidence links remain draft-only and cover all 28 days', 
   const [subtopicText, sourceText, evidenceText] = await Promise.all([
     readFile(new URL('../public/assistant/knowledge/subtopics.v1.json', import.meta.url), 'utf8'),
     readFile(new URL('../public/assistant/evidence/sources.v1.json', import.meta.url), 'utf8'),
+    readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'),
     readFile(new URL('../public/assistant/evidence/evidence.v1.json', import.meta.url), 'utf8'),
   ]);
   const subtopics = JSON.parse(subtopicText).subtopics.filter(item => item.topic_id === 'T07');
@@ -252,7 +253,7 @@ test('T07 daily exercise and action match the runtime overlay and have no exact 
 });
 
 test('T07 canonical path-content satisfies the v2 draft contract without claiming approval', async () => {
-  const [contentText, topicText, subtopicText, sourceText] = await Promise.all([
+  const [contentText, topicText, subtopicText, sourceText, overlayText] = await Promise.all([
     readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'),
     readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'),
     readFile(new URL('../public/assistant/knowledge/subtopics.v1.json', import.meta.url), 'utf8'),
@@ -263,6 +264,7 @@ test('T07 canonical path-content satisfies the v2 draft contract without claimin
   const topic = JSON.parse(topicText).topics.find(item => item.topic_id === 'T07');
   const subtopics = JSON.parse(subtopicText).subtopics.filter(item => item.topic_id === 'T07');
   const sourceIds = new Set(JSON.parse(sourceText).sources.map(item => item.source_id));
+  const overlayDays = JSON.parse(overlayText).categories['احساس گناه'].days;
   assert.equal(content.version, '2026-11-12-T07-v2-draft');
   assert.equal(days.length, 28);
   assert.equal(topic.review_status, 'draft');
@@ -272,7 +274,18 @@ test('T07 canonical path-content satisfies the v2 draft contract without claimin
     const day = days.find(item => item.day === guide.day);
     assert.ok(day);
     assert.equal(day.id, 'احساس گناه-' + String(guide.day).padStart(2, '0'));
+    const overlayDay = overlayDays.find(item => item.day === guide.day);
     assert.equal(day.topic_id, 'T07');
+    assert.equal(day.title, guide.title);
+    assert.equal(day.intro, overlayDay.intro);
+    assert.equal(day.exercise, guide.exercise);
+    assert.equal(day.actionText, guide.action);
+    assert.equal(day.closing, overlayDay.closing);
+    assert.equal(day.lightExerciseText, 'نسخه سبک تمرین: ' + guide.lightVersion);
+    assert.equal(day.lightActionText, guide.lightActionVersion);
+    assert.equal(day.progressActionText, guide.progressActionVersion);
+    assert.equal(day.restExerciseText, guide.restVersion);
+    assert.equal(day.restActionText, guide.restActionVersion);
     assert.deepEqual(day.subtopic_ids, [guide.subtopic]);
     assert.equal(day.learning_objective, guide.objective);
     assert.equal(day.target_skill, guide.skill);
