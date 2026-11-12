@@ -20,6 +20,8 @@ test('the 34-topic daily text overlay merges every configured runtime text field
   let total = 0;
   let changedExercise = 0;
   let changedAction = 0;
+  const unchangedExerciseTopics = new Set();
+  const unchangedActionTopics = new Set();
   const normalized = (value) => String(value ?? '').normalize('NFKC')
     .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
     .replace(/[\u064B-\u065F\u0670]/g, '')
@@ -57,14 +59,20 @@ test('the 34-topic daily text overlay merges every configured runtime text field
       exerciseTexts.add(normalizedExercise);
       actionTexts.add(normalizedAction);
       if (actual.exercise !== original.exercise) changedExercise += 1;
+      else unchangedExerciseTopics.add(topic);
       if (actual.actionText !== original.actionText) changedAction += 1;
+      else unchangedActionTopics.add(topic);
       total += 1;
     }
   }
 
   assert.equal(total, 952);
-  assert.equal(changedExercise, 952);
-  assert.equal(changedAction, 952);
+  assert.equal(changedExercise, total - 28,
+    'T07 canonical exercise text already includes its matching runtime overlay');
+  assert.equal(changedAction, total - 28,
+    'T07 canonical action text already includes its matching runtime overlay');
+  assert.deepEqual([...unchangedExerciseTopics].sort(), ['احساس گناه']);
+  assert.deepEqual([...unchangedActionTopics].sort(), ['احساس گناه']);
   assert.equal(exerciseTexts.size, 952);
   assert.equal(actionTexts.size, 952);
 });
