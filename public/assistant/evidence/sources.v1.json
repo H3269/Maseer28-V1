@@ -486,69 +486,110 @@
       "title": "The parent–child relationship and child shame and guilt: A meta-analytic systematic review",
       "publisher": "Child Development",
       "source_type": "systematic_review_meta_analysis",
-      "publication_date": "2025",
+      "publication_date": "2025-01-16",
       "doi": "10.1111/cdev.14212",
       "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12023818/",
       "relevant_claims": [
         "Six meta-analyses across 65 samples and 19,144 participants examined associations between parent–child relationship characteristics and child shame/guilt.",
         "The review distinguishes adaptive guilt, maladaptive guilt, and shame as related but non-identical constructs."
       ],
-      "limitations": "The review focuses on children and adolescents; findings should not be directly generalized to all adults or treated as validation of a 28-day self-help pathway."
+      "limitations": "The review focuses on children and adolescents; findings should not be directly generalized to all adults or treated as validation of a 28-day self-help pathway.",
+      "authors": [
+        "Rahel L. van Eickels",
+        "Magdalena Siegel",
+        "Alice J. Juhasz",
+        "Martina Zemp"
+      ],
+      "epub_date": "2025-01-16",
+      "pmid": "39821595",
+      "volume": "96",
+      "issue": "3",
+      "pages": "907-929"
     },
     {
       "source_id": "SRC-GUILT-WANG-2026-001",
       "title": "Moral emotions in mental health: regulation and mediation",
       "publisher": "Frontiers in Psychology",
       "source_type": "narrative_review",
-      "publication_date": "2026",
+      "publication_date": "2026-01-21",
       "doi": "10.3389/fpsyg.2025.1718674",
       "pmid": "41646899",
       "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12867822/",
       "relevant_claims": [
         "The review discusses adaptive pathways such as behavior-focused appraisal and repair alongside maladaptive pathways such as rumination, avoidance, and self-punishment."
       ],
-      "limitations": "This is a narrative/minireview, not a meta-analysis of intervention effectiveness or a clinical practice guideline; it supports conceptual framing only."
+      "limitations": "This is a narrative/minireview, not a meta-analysis of intervention effectiveness or a clinical practice guideline; it supports conceptual framing only.",
+      "authors": [
+        "Angela Lu Wang"
+      ],
+      "epub_date": "2026-01-21",
+      "volume": "16",
+      "article_number": "1718674"
     },
     {
       "source_id": "SRC-GUILT-VISMAYA-2024-001",
       "title": "Psychological interventions to promote self-forgiveness: a systematic review",
       "publisher": "BMC Psychology",
       "source_type": "systematic_review",
-      "publication_date": "2024",
+      "publication_date": "2024-05-09",
       "doi": "10.1186/s40359-024-01671-3",
       "pmid": "38725052",
       "url": "https://pubmed.ncbi.nlm.nih.gov/38725052/",
       "relevant_claims": [
         "The systematic review examines psychological interventions that aim to promote self-forgiveness."
       ],
-      "limitations": "Self-forgiveness must not be conflated with denial of harm, removal of responsibility, or demanding forgiveness from an affected person; the review does not validate the T07 daily sequence."
+      "limitations": "Self-forgiveness must not be conflated with denial of harm, removal of responsibility, or demanding forgiveness from an affected person; the review does not validate the T07 daily sequence.",
+      "authors": [
+        "A. Vismaya",
+        "Aswathy Gopi",
+        "John Romate",
+        "Eslavath Rajkumar"
+      ],
+      "volume": "12",
+      "issue": "1",
+      "article_number": "258"
     },
     {
       "source_id": "SRC-GUILT-MOTTERSHEAD-2024-001",
       "title": "A mixed-methods systematic review of offence-related shame and/or guilt in violent offenders",
       "publisher": "Aggression and Violent Behavior",
       "source_type": "mixed_methods_systematic_review",
-      "publication_date": "2024",
+      "publication_date": "2024-09",
       "doi": "10.1016/j.avb.2024.101989",
       "url": "https://www.sciencedirect.com/science/article/pii/S135917892400079X",
       "relevant_claims": [
         "The review examines offence-related shame and guilt in the specific population of violent offenders and discusses distinctions relevant to adaptive guilt and maladaptive shame."
       ],
-      "limitations": "The population is highly specific; findings cannot be generalized to all users or all guilt experiences."
+      "limitations": "The population is highly specific; findings cannot be generalized to all users or all guilt experiences.",
+      "authors": [
+        "Trixie Mottershead",
+        "Alys Griffiths",
+        "Rajan Nathan",
+        "Jon Cole"
+      ],
+      "volume": "78",
+      "article_number": "101989"
     },
     {
       "source_id": "SRC-GUILT-CFT-2025-001",
       "title": "The Effectiveness of Compassion Focused Therapy for the Three Flows of Compassion, Self-Criticism, and Shame in Clinical Populations: A Systematic Review",
       "publisher": "Behavioral Sciences",
       "source_type": "systematic_review",
-      "publication_date": "2025",
+      "publication_date": "2025-07-29",
       "doi": "10.3390/bs15081031",
       "pmid": "40867388",
       "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12382812/",
       "relevant_claims": [
         "The review includes 21 studies and 450 clinical participants and reports improvements in self-compassion and reductions in self-criticism; evidence for internal shame and long-term follow-up is more limited."
       ],
-      "limitations": "The review concerns compassion-focused therapy in clinical populations, not a general guilt curriculum or proof of effectiveness for the T07 exercises."
+      "limitations": "The review concerns compassion-focused therapy in clinical populations, not a general guilt curriculum or proof of effectiveness for the T07 exercises.",
+      "authors": [
+        "Naomi Brown",
+        "Katie Ashcroft"
+      ],
+      "volume": "15",
+      "issue": "8",
+      "article_number": "1031"
     }
   ]
 }
