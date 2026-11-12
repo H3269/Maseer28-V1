@@ -6,6 +6,7 @@ import {
   answerGriefDailyPreparedQuestion,
   getGriefDailyAssistantPromptGroups,
 } from '../src/features/assistant/griefDailyAssistantPrompts.js';
+import { getGriefDaySpecificAnswerGuidance } from '../src/features/assistant/griefDailyAssistantDaySpecificGuidance.js';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
 
@@ -113,6 +114,35 @@ test('all 392 T06 prepared questions return substantive and meaningfully varied 
   assert.equal(answers.size, 392, 'every day/question pair must return its own distinct answer text');
   assert.equal(answerGriefDailyPreparedQuestion({ day: 1, message: 'سؤال آزاد خارج از فهرست' }), null);
   assert.equal(answerGriefDailyPreparedQuestion({ day: 29, message: GRIEF_DAILY_ASSISTANT_GUIDES[0].questions[0].value }), null);
+});
+
+test('all 392 T06 answers include day-specific execution, separate success checks, and a day-specific boundary', () => {
+  let count = 0;
+  for (const guide of GRIEF_DAILY_ASSISTANT_GUIDES) {
+    const specific = getGriefDaySpecificAnswerGuidance(guide.day);
+    assert.ok(specific, 'missing day-specific guidance on day ' + guide.day);
+    for (const field of ['exerciseHow', 'actionHow', 'exerciseSuccess', 'actionSuccess', 'avoid']) {
+      assert.ok(typeof specific[field] === 'string' && specific[field].length >= 35,
+        'missing substantive ' + field + ' on day ' + guide.day);
+    }
+    for (const question of guide.questions) {
+      const answer = answerGriefDailyPreparedQuestion({
+        day: guide.day,
+        message: question.value,
+        dailyContent: { exercise: guide.exercise, actionText: guide.action },
+      });
+      assert.ok(answer.includes('راهنمای اجرایی اختصاصی روز ' + guide.day + ' — ' + guide.title));
+      assert.ok(answer.includes(specific.exerciseHow), 'missing day-specific exercise method on day ' + guide.day);
+      assert.ok(answer.includes(specific.actionHow), 'missing day-specific action method on day ' + guide.day);
+      assert.ok(answer.includes(specific.exerciseSuccess), 'missing exercise-specific success check on day ' + guide.day);
+      assert.ok(answer.includes(specific.actionSuccess), 'missing action-specific success check on day ' + guide.day);
+      assert.ok(answer.includes(specific.avoid), 'missing day-specific boundary on day ' + guide.day);
+      count += 1;
+    }
+  }
+  assert.equal(count, 392);
+  assert.equal(getGriefDaySpecificAnswerGuidance(0), null);
+  assert.equal(getGriefDaySpecificAnswerGuidance(29), null);
 });
 
 test('T06 support-request day requires explicit relationship safety confirmation', () => {
