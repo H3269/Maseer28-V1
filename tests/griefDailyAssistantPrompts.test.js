@@ -183,6 +183,17 @@ test('T06 day 8 screens behavioral safety while day 15 separately formulates a s
   assert.notEqual(day8Answer, day15Answer);
 });
 
+test('T06 day 12 prepares for a grief wave rather than a generic crisis or stress plan', () => {
+  const guide = GRIEF_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 12);
+  const specific = getGriefDaySpecificAnswerGuidance(12);
+  assert.ok(guide.exercise.includes('موج دلتنگی'));
+  assert.ok(guide.exercise.includes('یادآور فقدان'));
+  assert.ok(guide.action.includes('موج سوگ'));
+  assert.ok(specific.exerciseHow.includes('موج یا یادآور مرتبط با فقدان'));
+  assert.ok(specific.avoid.includes('نقشه بحران عمومی'));
+  assert.ok(!guide.action.includes('برنامه روز دشوار'));
+});
+
 test('T06 support-request day requires explicit relationship safety confirmation', () => {
   assert.equal(getCanonicalDailyRecordId('سوگ و فقدان', 15), getCanonicalDailyRecordId('غم و سوگ', 15));
   const guide = GRIEF_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 15);
