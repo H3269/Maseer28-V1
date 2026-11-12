@@ -84,7 +84,7 @@ test('all 392 T06 prepared questions return substantive and meaningfully varied 
           assert.ok(answer.includes(guide.lightVersion) && answer.includes(guide.lightActionVersion) && answer.includes('جبران') && answer.includes(guide.exercise) && answer.includes(guide.action));
           break;
         case 'not_done':
-          assert.ok(answer.includes(guide.lightVersion) && answer.includes('جبران'));
+          assert.ok(answer.includes(guide.lightVersion) && answer.includes(guide.lightActionVersion) && answer.includes('جبران') && answer.includes(guide.exercise) && answer.includes(guide.action));
           break;
         case 'exercise_action_difference':
           assert.ok(answer.includes(guide.exercise) && answer.includes(guide.action));
