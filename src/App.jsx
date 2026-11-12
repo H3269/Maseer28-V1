@@ -179,7 +179,7 @@ function MainApp() {
       .then((response) => { if (!response.ok) throw new Error('فایل محتوای مسیر پیدا نشد.'); return response.json(); })
       .then((data) => {
         if (cancelled) return;
-        return fetch(`${import.meta.env.BASE_URL}content/daily-text-overrides.v1.json?v=20261110-t03`, { cache: 'default' })
+        return fetch(`${import.meta.env.BASE_URL}content/daily-text-overrides.v1.json?v=20261112-t06`, { cache: 'default' })
           .then((response) => response.ok ? response.json() : null)
           .catch(() => null)
           .then((overrides) => {
