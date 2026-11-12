@@ -58,7 +58,7 @@ test('T08 keeps the shared five-section, fourteen-question layout for all 28 day
   assert.deepEqual(getEmotionalDependencyDailyAssistantPromptGroups(29), []);
 });
 
-test('all 392 T08 prepared answers are substantive, day-scoped and meaningfully varied', () => {
+test('all 392 T08 prepared outputs are substantive and retain day-specific content', () => {
   let count = 0;
   const answers = new Set();
   for (const guide of EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES) {
@@ -77,8 +77,19 @@ test('all 392 T08 prepared answers are substantive, day-scoped and meaningfully 
     }
   }
   assert.equal(count, 392);
-  assert.ok(answers.size > 300, 'answers must be meaningfully varied');
+  assert.equal(answers.size, 392, 'all 392 rendered outputs must be distinct strings; this is not a semantic-quality verdict');
   assert.equal(answerEmotionalDependencyDailyPreparedQuestion({ day: 1, message: 'سؤال آزاد خارج از فهرست' }), null);
+});
+
+test('T08 success criteria are distinct, observable and not generic day-number placeholders', () => {
+  const criteria = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES.map((guide) => guide.successCriterion.trim());
+  assert.equal(criteria.length, 28);
+  assert.equal(new Set(criteria).size, 28, 'each day needs its own success criterion');
+  for (const criterion of criteria) {
+    assert.ok(criterion.length >= 45);
+    assert.doesNotMatch(criterion, /^محور روز \\d+ به‌صورت مشخص ثبت شده/u);
+    assert.match(criterion, /ثبت|مشخص|انتخاب|تفکیک|شناسایی|بررسی|ترسیم|نوشته|تعیین/u);
+  }
 });
 
 test('T08 canonical content, adaptive runtime fields and draft taxonomy stay aligned', async () => {
