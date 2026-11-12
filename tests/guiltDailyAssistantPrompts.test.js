@@ -14,6 +14,7 @@ test('T07 contains 28 complete day guides and 14 fixed questions per day', () =>
   const expectedQuestions = GUILT_DAILY_ASSISTANT_GUIDES[0].questions.map(question => question.value);
   assert.equal(new Set(GUILT_DAILY_ASSISTANT_GUIDES.map(guide => guide.exerciseExample)).size, 28);
   assert.equal(new Set(GUILT_DAILY_ASSISTANT_GUIDES.map(guide => guide.actionExample)).size, 28);
+  assert.equal(new Set(GUILT_DAILY_ASSISTANT_GUIDES.map(guide => guide.whenToSeekHumanSupport)).size, 28);
   for (const field of ['title', 'objective', 'skill', 'mechanism', 'exercise', 'action', 'lightVersion', 'progressVersion', 'restVersion', 'lightActionVersion', 'progressActionVersion', 'restActionVersion', 'successCriterion', 'reflectionQuestion', 'stopCondition']) {
     assert.equal(new Set(GUILT_DAILY_ASSISTANT_GUIDES.map(guide => guide[field])).size, 28,
       'T07 field must be unique across all days: ' + field);
@@ -299,9 +300,11 @@ test('T07 canonical path-content satisfies the v2 draft contract without claimin
     assert.equal(day.duration_status, 'provisional_estimate');
     assert.equal(day.reflection_prompt, guide.reflectionQuestion);
     assert.equal(day.success_criterion, guide.successCriterion);
+    assert.deepEqual(day.stop_conditions[0], guide.stopCondition);
+    assert.deepEqual(day.contraindications, guide.contraindications);
     assert.ok(day.stop_conditions.length > 0 && day.contraindications.length > 0);
     assert.equal(day.risk_level, guide.riskLevel);
-    assert.ok(day.when_to_seek_human_support);
+    assert.equal(day.when_to_seek_human_support, guide.whenToSeekHumanSupport);
     assert.deepEqual(day.source_ids, guide.sourceIds);
     assert.ok(day.source_ids.length > 0);
     assert.ok(day.source_ids.every(id => sourceIds.has(id)));
