@@ -89,9 +89,9 @@ async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumb
   await panel.waitFor({ state: 'visible' });
 }
 
-async function openDay(page, { assistantDayMode = 'routine', problem = null, localModelInstalled = false } = {}) {
+async function openDay(page, { assistantDayMode = 'routine', problem = null, localModelInstalled = false, dayNumberOverride = null } = {}) {
   const isLegacyMode = assistantDayMode === 'legacy' || assistantDayMode.startsWith('adaptedLegacy');
-  const dayNumber = assistantDayMode === 'jealousy-communication'
+  const dayNumber = dayNumberOverride ?? (assistantDayMode === 'jealousy-communication'
     ? 16
     : assistantDayMode === 'grief-support'
       ? 15
@@ -101,7 +101,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
       ? 3
       : ['adaptedLegacy', 'adaptedLegacySame', 'adaptedAnxiety', 'adaptedGrief'].includes(assistantDayMode)
         ? 2
-        : isLegacyMode ? 2 : 1;
+        : isLegacyMode ? 2 : 1);
   const topicKey = problem || (isLegacyMode ? 'غم و سوگ' : 'خشم');
   const adaptationHistory = ['adaptedLegacy', 'adaptedAnxiety'].includes(assistantDayMode)
     ? { 1: { feedback: 'hard', score: 8 } }
@@ -522,6 +522,35 @@ try {
   assert.equal((guiltSafetyReply.match(/راهنمای روز/g) || []).length, 1, 'T07 safety answer must also show one day heading only');
   assert.deepEqual(guiltErrors, [], 'T07 prepared-only browser flow must not raise page errors');
   await guiltGuidedPage.close();
+
+  // T07 day 6 interpersonal guidance must preserve consent and boundaries in the visible source and prepared answer.
+  const guiltDaySixPage = await browser.newPage();
+  const guiltDaySixErrors = [];
+  guiltDaySixPage.on('pageerror', error => guiltDaySixErrors.push(String(error)));
+  await openDay(guiltDaySixPage, {
+    problem: 'احساس گناه',
+    assistantDayMode: 'routine',
+    localModelInstalled: true,
+    dayNumberOverride: 6,
+  });
+  const guiltDaySixPanel = guiltDaySixPage.locator('.globalAssistantDialog');
+  await guiltDaySixPanel.waitFor({ state: 'visible' });
+  assert.equal(await guiltDaySixPanel.locator('#global-assistant-message').count(), 0,
+    'T07 day 6 must remain prepared-only when a local model is cached');
+  const guiltDaySixTrigger = guiltDaySixPanel.getByTestId('guilt-daily-prompt-trigger');
+  await guiltDaySixTrigger.waitFor({ state: 'visible' });
+  await guiltDaySixTrigger.click();
+  const guiltDaySixPrompt = guiltDaySixPage.locator('#library-assistant-prompt-dialog');
+  await guiltDaySixPrompt.waitFor({ state: 'visible' });
+  await guiltDaySixPrompt.getByRole('button', { name: 'منظور از اقدام اختصاصی امروز چیست؟' }).click();
+  await guiltDaySixPanel.getByRole('button', { name: 'ارسال' }).click();
+  await guiltDaySixPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => node.innerText.includes('راهنمای روز ۶ احساس گناه')));
+  await assertAssistantUsesVisibleDailySource(guiltDaySixPage, guiltDaySixPanel, 'احساس گناه', 6, ['action']);
+  await guiltDaySixPanel.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
+  await guiltDaySixPanel.waitFor({ state: 'detached' });
+  assert.deepEqual(guiltDaySixErrors, [], 'T07 day 6 consent and boundary guidance must not raise page errors');
+  await guiltDaySixPage.close();
 
   // T06 adaptive versions must remain distinct for difficult streaks and sustained improvement.
   await assertGriefAdaptiveDay('adaptedGrief', 2, 'lightExerciseText', 'lightActionText');
