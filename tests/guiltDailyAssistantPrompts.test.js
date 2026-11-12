@@ -26,6 +26,7 @@ test('T07 contains 28 complete day guides and 14 fixed questions per day', () =>
     assert.equal(new Set(guide.questions.map(question => question.value)).size, 14);
     assert.deepEqual(guide.questions.map(question => question.value), expectedQuestions);
     assert.match(guide.subtopic, /^T07-S0[1-3]$/);
+    assert.equal(guide.subtopicStatus, 'proposed_pending_expert_review');
   }
 });
 
@@ -130,6 +131,14 @@ test('T07 daily exercise and action match the runtime overlay and have no exact 
     assert.ok(day, 'missing T07 overlay day ' + guide.day);
     assert.equal(day.exercise, guide.exercise, 'exercise mismatch on day ' + guide.day);
     assert.equal(day.actionText, guide.action, 'action mismatch on day ' + guide.day);
+    assert.equal(day.title, guide.title, 'title mismatch on day ' + guide.day);
+    assert.equal(day.intro, 'هدف: ' + guide.objective + '\\n\\nمهارت: ' + guide.skill + '\\n\\nچرایی تمرین: ' + guide.mechanism, 'intro mismatch on day ' + guide.day);
+    assert.equal(day.closing, 'معیار موفقیت: ' + guide.successCriterion + '\\n\\nپرسش بازتاب: ' + guide.reflectionQuestion + '\\n\\nشرط توقف/احتیاط: ' + guide.stopCondition, 'closing mismatch on day ' + guide.day);
+    assert.equal(day.lightExerciseText, 'نسخه سبک تمرین: ' + guide.lightVersion, 'light exercise mismatch on day ' + guide.day);
+    assert.equal(day.lightActionText, guide.lightActionVersion, 'light action mismatch on day ' + guide.day);
+    assert.equal(day.progressActionText, guide.progressActionVersion, 'progress action mismatch on day ' + guide.day);
+    assert.equal(day.restExerciseText, guide.restVersion, 'rest exercise mismatch on day ' + guide.day);
+    assert.equal(day.restActionText, guide.restActionVersion, 'rest action mismatch on day ' + guide.day);
     for (const [field, value] of [['exercise', day.exercise], ['action', day.actionText]]) {
       const key = normalize(value);
       assert.ok(key.length > 20);
