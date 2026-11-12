@@ -176,7 +176,7 @@ test('all 392 T07 prepared questions return substantive, day-specific answers', 
           assert.ok(answer.includes(guide.skill) && answer.includes(guide.lightVersion));
           break;
         case 'duration':
-          assert.ok(answer.includes(guide.objective) && answer.includes('زمان استاندارد') && answer.includes('برآورد اولیه') && answer.includes(String(guide.durationMinutes)));
+          assert.ok(answer.includes(guide.objective) && answer.includes('زمان استاندارد') && answer.includes('برآورد اولیه') && answer.includes(toPersianDigits(guide.durationMinutes)));
           break;
         default:
           assert.fail('unexpected T07 question kind: ' + question.kind);
