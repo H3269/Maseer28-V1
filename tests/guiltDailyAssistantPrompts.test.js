@@ -219,6 +219,7 @@ test('T07 daily exercise and action match the runtime overlay and have no exact 
     assert.equal(day.progressActionText, guide.progressActionVersion, 'progress action mismatch on day ' + guide.day);
     assert.equal(day.restExerciseText, guide.restVersion, 'rest exercise mismatch on day ' + guide.day);
     assert.equal(day.restActionText, guide.restActionVersion, 'rest action mismatch on day ' + guide.day);
+    assert.equal(day.duration_minutes, guide.durationMinutes, 'duration estimate mismatch on day ' + guide.day);
     for (const [field, value] of [['title', day.title], ['exercise', day.exercise], ['actionText', day.actionText], ['lightExerciseText', day.lightExerciseText], ['lightActionText', day.lightActionText], ['progressActionText', day.progressActionText], ['restExerciseText', day.restExerciseText], ['restActionText', day.restActionText]]) {
       const key = normalize(value);
       assert.ok(field === 'title' ? key.length >= 8 : key.length > 20,
@@ -297,6 +298,7 @@ test('T07 canonical path-content satisfies the v2 draft contract without claimin
     assert.equal(day.exercise_type, guide.exerciseType);
     assert.equal(day.instructions, guide.exercise);
     assert.equal(day.duration_minutes, guide.durationMinutes);
+    assert.equal(overlayDay.duration_minutes, guide.durationMinutes);
     assert.equal(day.duration_status, 'provisional_estimate');
     assert.equal(day.reflection_prompt, guide.reflectionQuestion);
     assert.equal(day.success_criterion, guide.successCriterion);
