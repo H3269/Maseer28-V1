@@ -73,6 +73,26 @@ test('all 392 T08 prepared answers are substantive, day-scoped and meaningfully 
       assert.ok(answer.includes(guide.title), 'answer must retain the selected day title');
       assert.ok(answer.includes(guide.objective) || answer.includes(guide.exercise) || answer.includes(guide.action),
         'answer must use day-specific content');
+      const anchorsByKind = {
+        exercise_meaning: [guide.exercise, guide.mechanism, guide.reflectionQuestion],
+        exercise_example: [guide.exerciseExample, guide.exercise],
+        action_meaning: [guide.action, guide.mechanism],
+        action_example: [guide.actionExample, guide.action],
+        light_version: [guide.lightVersion, guide.lightActionVersion, guide.progressActionVersion, guide.restActionVersion],
+        success: [guide.successCriterion, guide.reflectionQuestion],
+        stop: [guide.stopCondition],
+        no_event: [guide.objective, guide.successCriterion],
+        exercise_action_difference: [guide.exercise, guide.action, guide.skill],
+        not_done: [guide.lightVersion, guide.restActionVersion],
+        dependency_increased: [guide.whenToSeekHumanSupport, guide.stopCondition],
+        talk_other: [guide.whenToSeekHumanSupport, guide.objective],
+        can_change: [guide.objective, guide.lightVersion, guide.successCriterion],
+        duration: [guide.exercise, guide.successCriterion],
+      };
+      for (const anchor of anchorsByKind[question.kind] || []) {
+        assert.ok(answer.includes(anchor),
+          'day ' + guide.day + ' ' + question.kind + ' must include its corresponding day-specific content');
+      }
       answers.add(answer);
       count += 1;
     }
