@@ -73,9 +73,11 @@ test('all 392 T06 prepared questions return substantive and meaningfully varied 
           assert.ok(answer.includes(guide.successCriterion) && answer.includes(guide.reflectionQuestion));
           break;
         case 'stop':
-          assert.ok(answer.includes(guide.stopCondition) && answer.includes('خدمات اضطراری'));
+          assert.ok(answer.includes(guide.stopCondition) && answer.includes('خدمات اضطراری') && answer.includes(guide.exercise) && answer.includes(guide.action));
           break;
         case 'no_event':
+          assert.ok(answer.includes(guide.lightVersion) && answer.includes('جبران'));
+          break;
         case 'not_done':
           assert.ok(answer.includes(guide.lightVersion) && answer.includes('جبران'));
           break;
@@ -83,16 +85,16 @@ test('all 392 T06 prepared questions return substantive and meaningfully varied 
           assert.ok(answer.includes(guide.exercise) && answer.includes(guide.action));
           break;
         case 'grief_increased':
-          assert.ok(answer.includes(guide.stopCondition) && answer.includes('خدمات اضطراری'));
+          assert.ok(answer.includes(guide.stopCondition) && answer.includes('خدمات اضطراری') && answer.includes(guide.exercise) && answer.includes(guide.action));
           break;
         case 'talk_other':
-          assert.ok(answer.includes('فرد امن') && answer.includes('مجبور'));
+          assert.ok(answer.includes('فرد امن') && answer.includes('مجبور') && answer.includes(guide.action));
           break;
         case 'can_change':
           assert.ok(answer.includes(guide.lightVersion) && answer.includes('چه چیزی را تغییر ندهی'));
           break;
         case 'duration':
-          assert.ok(answer.includes('زمان ثابت') && answer.includes(guide.successCriterion));
+          assert.ok(answer.includes('زمان ثابت') && answer.includes(guide.successCriterion) && answer.includes(guide.exercise) && answer.includes(guide.action));
           break;
         default:
           assert.fail('unexpected question kind: ' + question.kind);
