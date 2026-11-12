@@ -13,6 +13,7 @@ import { getAnxietyDailyAssistantPromptGroups } from './anxietyDailyAssistantPro
 import { getFearDailyAssistantPromptGroups } from './fearDailyAssistantPrompts.js';
 import { getHatredDailyAssistantPromptGroups } from './hatredDailyAssistantPrompts.js';
 import { getJealousyDailyAssistantPromptGroups } from './jealousyDailyAssistantPrompts.js';
+import { getGriefDailyAssistantPromptGroups } from './griefDailyAssistantPrompts.js';
 import { appendLocalSourceReferences, buildLocalAssistantMessages, isLocalModelInstallCommand, LOCAL_MODEL_CACHE_MESSAGE, LOCAL_MODEL_FAILURE_MESSAGE, LOCAL_MODEL_INSTALL_MESSAGE, shouldUseLocalNeuralModel } from './localNeuralAssistant.js';
 import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
 
@@ -145,7 +146,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     && (dailyProblemTopicId === 'T04' || dailyRecordTopicId === 'T04' || dailyProblemText === 'نفرت');
   const isJealousyDailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
     && (dailyProblemTopicId === 'T05' || dailyRecordTopicId === 'T05' || dailyProblemText === 'حسادت');
-  const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext || isJealousyDailyPromptContext;
+  const isGriefDailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T06' || dailyRecordTopicId === 'T06' || dailyProblemText === 'غم و سوگ' || dailyProblemText === 'سوگ و فقدان');
+  const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext || isJealousyDailyPromptContext || isGriefDailyPromptContext;
   const isPreparedOnlyDailyPromptContext = isTopicDailyPromptContext;
   const jealousyRelationshipGate = isJealousyDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
   const jealousyRelationshipGatePending = Boolean(jealousyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
@@ -162,7 +165,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
             ? getHatredDailyAssistantPromptGroups(dailyContext?.day)
             : isJealousyDailyPromptContext
               ? getJealousyDailyAssistantPromptGroups(dailyContext?.day)
-              : [];
+              : isGriefDailyPromptContext
+                ? getGriefDailyAssistantPromptGroups(dailyContext?.day)
+                : [];
   if (!visible || screen === 'bookReader') return null;
 
   function resizeComposerInput(element) {
