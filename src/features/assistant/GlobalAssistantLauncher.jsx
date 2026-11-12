@@ -14,6 +14,7 @@ import { getFearDailyAssistantPromptGroups } from './fearDailyAssistantPrompts.j
 import { getHatredDailyAssistantPromptGroups } from './hatredDailyAssistantPrompts.js';
 import { getJealousyDailyAssistantPromptGroups } from './jealousyDailyAssistantPrompts.js';
 import { getGriefDailyAssistantPromptGroups } from './griefDailyAssistantPrompts.js';
+import { getGuiltDailyAssistantPromptGroups } from './guiltDailyAssistantPrompts.js';
 import { appendLocalSourceReferences, buildLocalAssistantMessages, isLocalModelInstallCommand, LOCAL_MODEL_CACHE_MESSAGE, LOCAL_MODEL_FAILURE_MESSAGE, LOCAL_MODEL_INSTALL_MESSAGE, shouldUseLocalNeuralModel } from './localNeuralAssistant.js';
 import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
 
@@ -130,7 +131,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const dailyRecordTopicId = dailyContext?.data?.topic_id || dailyContext?.data?.topicId || null;
   const hasConflictingDailyTopic = Boolean(
     (dailyProblemTopicId && dailyRecordTopicId && dailyProblemTopicId !== dailyRecordTopicId)
-    || (dailyProblemTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06'].includes(dailyProblemTopicId) && dailyRecordTopicId)
+    || (dailyProblemTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07'].includes(dailyProblemTopicId) && dailyRecordTopicId)
     || (dailyRecordTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06'].includes(dailyRecordTopicId) && dailyProblemTopicId),
   );
   const isAngerDailyPromptContext = Boolean(dailyContext)
@@ -148,7 +149,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     && (dailyProblemTopicId === 'T05' || dailyRecordTopicId === 'T05' || dailyProblemText === 'حسادت');
   const isGriefDailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
     && (dailyProblemTopicId === 'T06' || dailyRecordTopicId === 'T06' || dailyProblemText === 'غم و سوگ' || dailyProblemText === 'سوگ و فقدان');
-  const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext || isJealousyDailyPromptContext || isGriefDailyPromptContext;
+  const isGuiltDailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T07' || dailyRecordTopicId === 'T07' || dailyProblemText === 'احساس گناه');
+  const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext || isJealousyDailyPromptContext || isGriefDailyPromptContext || isGuiltDailyPromptContext;
   const isPreparedOnlyDailyPromptContext = isTopicDailyPromptContext;
   const jealousyRelationshipGate = isJealousyDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
   const jealousyRelationshipGatePending = Boolean(jealousyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
@@ -170,7 +173,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
               ? getJealousyDailyAssistantPromptGroups(dailyContext?.day)
               : isGriefDailyPromptContext
                 ? getGriefDailyAssistantPromptGroups(dailyContext?.day)
-                : [];
+                : isGuiltDailyPromptContext
+                  ? getGuiltDailyAssistantPromptGroups(dailyContext?.day)
+                  : [];
   if (!visible || screen === 'bookReader') return null;
 
   function resizeComposerInput(element) {
@@ -206,7 +211,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       return;
     }
     const isDailySafetyQuestion = Boolean(selectedDailyQuestion
-      && ['anger_increased', 'anxiety_increased', 'fear_increased', 'hostility_increased', 'talk_other', 'success', 'stop'].includes(selectedDailyQuestion.kind));
+      && ['anger_increased', 'anxiety_increased', 'fear_increased', 'hostility_increased', 'guilt_increased', 'talk_other', 'success', 'stop'].includes(selectedDailyQuestion.kind));
     const turnId = ++turnSequenceRef.current;
     const responseId = `assistant-${turnId}`;
     const updateAssistantMessage = (text, knowledge = [], dailySafetyReminder = false) => {
@@ -495,7 +500,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
-              <form className={'assistantComposer' + (isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled) ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} data-jealousy-daily-prompt={String(isJealousyDailyPromptContext)} data-grief-daily-prompt={String(isGriefDailyPromptContext)} onSubmit={send}>
+              <form className={'assistantComposer' + (isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled) ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} data-jealousy-daily-prompt={String(isJealousyDailyPromptContext)} data-grief-daily-prompt={String(isGriefDailyPromptContext)} data-guilt-daily-prompt={String(isGuiltDailyPromptContext)} onSubmit={send}>
                 {(isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled)) ? (
                   <div className="libraryAssistantPromptRow">
                     <button
