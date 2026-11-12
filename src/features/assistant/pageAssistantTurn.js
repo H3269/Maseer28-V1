@@ -59,7 +59,16 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     // Prepared FAQ answers must quote the exact transformed daily content shown
     // in DayScreen (including adaptation and display normalization), while
     // canonical identity validation continues to use the untouched source.
-    const preparedVisibleContent = dailyContext?.guidanceData || preparedSource;
+    const preparedVisibleContent = dailyContext?.guidanceData
+      ? {
+        ...dailyContext.guidanceData,
+        lightExerciseText: preparedSource?.lightExerciseText || dailyContext.guidanceData.lightExerciseText,
+        lightActionText: preparedSource?.lightActionText || dailyContext.guidanceData.lightActionText,
+        progressActionText: preparedSource?.progressActionText || dailyContext.guidanceData.progressActionText,
+        restExerciseText: preparedSource?.restExerciseText || dailyContext.guidanceData.restExerciseText,
+        restActionText: preparedSource?.restActionText || dailyContext.guidanceData.restActionText,
+      }
+      : preparedSource;
     const preparedTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem);
     const visibleTopicName = ({ T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت', T05: 'حسادت', T06: 'غم و سوگ' })[preparedTopicId];
     const answerPreparedQuestion = preparedTopicId === 'T01'
