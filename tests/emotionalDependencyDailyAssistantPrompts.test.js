@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { readFile } from 'node:fs/promises';
 import {
   EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES,
   answerEmotionalDependencyDailyPreparedQuestion,
@@ -74,6 +75,38 @@ test('all 392 T08 prepared answers are substantive, day-scoped and meaningfully 
   assert.equal(count, 392);
   assert.ok(answers.size > 300, 'answers must be meaningfully varied');
   assert.equal(answerEmotionalDependencyDailyPreparedQuestion({ day: 1, message: 'سؤال آزاد خارج از فهرست' }), null);
+});
+
+test('T08 canonical content, adaptive runtime fields and draft taxonomy stay aligned', async () => {
+  const [pathContent, overrides, topics, subtopics] = await Promise.all([
+    readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8').then(JSON.parse),
+    readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8').then(JSON.parse),
+    readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8').then(JSON.parse),
+    readFile(new URL('../public/assistant/knowledge/subtopics.v1.json', import.meta.url), 'utf8').then(JSON.parse),
+  ]);
+  const canonical = pathContent.categories['وابستگی عاطفی'].days;
+  const runtime = overrides.categories['وابستگی عاطفی'].days;
+  const topic = topics.topics.find((item) => item.topic_id === 'T08');
+  const mappedSubtopics = subtopics.subtopics.filter((item) => item.topic_id === 'T08');
+  const fields = ['exercise', 'actionText', 'lightExerciseText', 'lightActionText', 'progressActionText', 'restExerciseText', 'restActionText'];
+  assert.equal(canonical.length, 28);
+  assert.equal(runtime.length, 28);
+  assert.equal(topic.draft_content_ids.length, 28);
+  assert.deepEqual(topic.content_ids, [], 'draft content must not become runtime-approved content');
+  assert.equal(mappedSubtopics.length, 3);
+  assert.equal(mappedSubtopics.reduce((n, item) => n + item.draft_content_ids.length, 0), 28);
+  for (let index = 0; index < 28; index += 1) {
+    const day = canonical[index];
+    assert.equal(day.topic_id, 'T08');
+    assert.equal(day.review_status, 'draft');
+    assert.equal(day.evidence_grade, 'not_assessed');
+    assert.equal(day.metadata_version, 2);
+    assert.equal(day.subtopic_ids.length, 1);
+    for (const field of fields) assert.equal(day[field], runtime[index][field], 'day ' + (index + 1) + ' ' + field + ' must match overlay');
+  }
+  for (const field of fields) {
+    assert.equal(new Set(canonical.map((day) => day[field])).size, 28, field + ' must be unique across T08 days');
+  }
 });
 
 test('T08 prepared questions route only for matching canonical topic and day', () => {
