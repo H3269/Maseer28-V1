@@ -188,3 +188,19 @@ test('T08 targeted semantic rewrites retain relationship-specific operational de
   assert.match(byDay.get(28).action, /سه ستون بنویس/u);
   assert.match(byDay.get(28).action, /محدودیت‌هایی که به حمایت یا برنامه ایمنی نیاز دارند/u);
 });
+
+
+test('T08 reassurance, autonomy and boundary actions remain topic-specific', () => {
+  const byDay = new Map(EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES.map((guide) => [guide.day, guide]));
+  assert.match(byDay.get(7).action, /تأیید چندباره/u);
+  assert.match(byDay.get(9).action, /انتظار پاسخ/u);
+  assert.match(byDay.get(10).action, /منتظر تأیید فرد دیگری/u);
+  assert.match(byDay.get(11).action, /بدون کنترل تلفن/u);
+  assert.match(byDay.get(13).action, /حتماً طرد شدم/u);
+  assert.match(byDay.get(14).action, /میل به پرسیدن دوباره/u);
+  assert.match(byDay.get(15).action, /امکان نه‌گفتن طرف مقابل/u);
+  assert.match(byDay.get(16).action, /به‌خاطر انتظار پاسخ کنار گذاشته‌ای/u);
+  assert.match(byDay.get(18).action, /بدون تأیید فرد موردنظر/u);
+  assert.match(byDay.get(21).action, /محدودیت حقوقی/u);
+  assert.match(byDay.get(27).action, /پیگیری مکرر برای گرفتن تضمین/u);
+});
