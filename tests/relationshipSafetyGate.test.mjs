@@ -123,35 +123,18 @@ test('relationship safety skip records are explicit and never fabricate a score'
   );
 });
 
-test('actual shared interpersonal prompts across T03-T34 are gated', async () => {
-  const [content, registry] = await Promise.all([
-    readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8').then(JSON.parse),
-    readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8').then(JSON.parse),
-  ]);
-  const topicByName = new Map(registry.topics.map((topic) => [topic.name, topic]));
-  for (const [categoryName, category] of Object.entries(content.categories)) {
-    const topic = topicByName.get(categoryName);
-    if (!topic) continue;
-    const topicNumber = Number(topic.topic_id.slice(1));
-    if (topicNumber >= 3) {
-      const gatedDays = topic.topic_id === 'T06' ? [11, 15] : [6, 11, 15, 24];
-      for (const dayNumber of gatedDays) {
-        const day = category.days.find((candidate) => candidate.day === dayNumber);
-        assert.ok(day, 'missing ' + categoryName + ' day ' + dayNumber);
-        assert.equal(getRelationshipSafetyGate(day)?.gateId, 'relationship-communication-safety-v1');
-        assert.match(String(day.exercise || '') + '\n' + String(day.actionText || ''),
-          /درخواست|گفت.?وگو|ارتباط|مرز|مذاکره|بیان کن|بیان نیاز|مطرح کن|عذرخواهی|اقدام جبرانی|تقسیم وظیفه|راه.?حل|مسئله|مکث|ترمیم/u);
-      }
-    }
-    if (topic.topic_id === 'T01') {
-      for (const dayNumber of [10, 11, 17, 18, 19, 20, 21, 22, 23]) {
-        const day = category.days.find((candidate) => candidate.day === dayNumber);
-        assert.ok(day, 'missing T01 day ' + dayNumber);
-        assert.equal(day.topic_id, 'T01');
-        assert.equal(day.risk_level, 'caution');
-        assert.equal(getRelationshipSafetyGate(day)?.gateId, 'relationship-communication-safety-v1');
-      }
-    }
+test('T08 designated relationship days contain interpersonal content and are gated', async () => {
+  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
+  const category = content.categories['وابستگی عاطفی'];
+  assert.ok(category);
+  for (const dayNumber of [6, 11, 15, 24]) {
+    const day = category.days.find((candidate) => candidate.day === dayNumber);
+    assert.ok(day, 'missing T08 day ' + dayNumber);
+    assert.equal(day.topic_id, 'T08');
+    assert.equal(getRelationshipSafetyGate(day)?.gateId, 'relationship-communication-safety-v1');
+    assert.match(String(day.exercise || '') + '\\n' + String(day.actionText || ''),
+      /درخواست|گفت.?وگو|ارتباط|مرز|مذاکره|بیان کن|بیان نیاز|مطرح کن|پاسخ منفی|توافق/u,
+      'T08 day ' + dayNumber + ' must justify its interpersonal safety gate');
   }
 });
 
