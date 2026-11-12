@@ -159,6 +159,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const griefRelationshipGate = isGriefDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
   const griefRelationshipGatePending = Boolean(griefRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
   const griefRelationshipGateBlocked = griefRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
+  const guiltRelationshipGate = isGuiltDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
+  const guiltRelationshipGatePending = Boolean(guiltRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
+  const guiltRelationshipGateBlocked = guiltRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
   const activePromptGroups = screen === 'books'
     ? LIBRARY_ASSISTANT_PROMPT_GROUPS
     : isAngerDailyPromptContext
@@ -198,6 +201,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     event.preventDefault();
     const message = String(overrideMessage ?? draft).trim();
     if (!message || sending) return;
+    if (jealousyRelationshipGatePending || griefRelationshipGatePending || guiltRelationshipGatePending) {
+      setError('پیش از ادامه، بررسی ایمنی گفت‌وگو را کامل کن یا تمرین ارتباطی را متوقف کن.');
+      return;
+    }
     const selectedDailyQuestion = isPreparedOnlyDailyPromptContext
       ? activePromptGroups.flatMap((group) => group.questions).find((question) => question.value === message)
       : null;
@@ -452,6 +459,20 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                   )}
                 </section>
               )}
+              {guiltRelationshipGatePending && guiltRelationshipGate && (
+                <section className="dailyAssistantSafetyActions" role="group" aria-label="بررسی ایمنی عذرخواهی یا تماس" data-testid="guilt-relationship-safety-gate">
+                  <p role="alert">{guiltRelationshipGateBlocked ? guiltRelationshipGate.blockedMessage : guiltRelationshipGate.question}</p>
+                  {!guiltRelationshipGateBlocked && (
+                    <>
+                      <p className="safetyNote">{guiltRelationshipGate.disclaimer}</p>
+                      <button type="button" data-testid="guilt-relationship-safety-safe" disabled={sending}
+                        onClick={() => onRelationshipSafetyResponse?.('safe')}>بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.</button>
+                      <button type="button" data-testid="guilt-relationship-safety-unsafe" disabled={sending}
+                        onClick={() => onRelationshipSafetyResponse?.('unsafe')}>نه، مطمئن نیستم یا یکی از ما تحت فشار است.</button>
+                    </>
+                  )}
+                </section>
+              )}
 
               <div className="assistantTranscript" dir="rtl" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
                 {messages.map((item, index) => (
@@ -514,7 +535,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       aria-haspopup="dialog"
                       aria-expanded={libraryPromptOpen}
                       aria-controls="library-assistant-prompt-dialog"
-                      disabled={sending || !localModelStatusChecked || jealousyRelationshipGatePending || griefRelationshipGatePending}
+                      disabled={sending || !localModelStatusChecked || jealousyRelationshipGatePending || griefRelationshipGatePending || guiltRelationshipGatePending}
                       onClick={() => setLibraryPromptOpen(true)}
                     >
                       {draft.trim() || (isTopicDailyPromptContext ? `انتخاب سؤال آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : isGriefDailyPromptContext ? "غم و سوگ" : isGuiltDailyPromptContext ? "احساس گناه" : "خشم"}...` : 'انتخاب سؤال آماده...')}
