@@ -222,8 +222,8 @@ test('T08 day 1 uses fourteen independently authored prepared answers', () => {
 });
 
 
-test('T08 days 1-3 have forty-two independently authored prepared answers', () => {
-  for (const day of [1, 2, 3]) {
+test('T08 days 1-5 have seventy independently authored prepared answers', () => {
+  for (const day of [1, 2, 3, 4, 5]) {
     const guide = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
     assert.equal(Object.keys(guide.preparedAnswers || {}).length, 14);
     for (const question of guide.questions) {
