@@ -1891,7 +1891,7 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 17,
-    "title": "بازگشت پس از لغزش",
+    "title": "بازنگری چرخه اطمینان‌خواهی بدون سرزنش",
     "topicId": "T08",
     "topic": "وابستگی عاطفی",
     "subtopic": "T08-S01",
@@ -2245,7 +2245,7 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 20,
-    "title": "ثبت روند بدون سنجش بالینی",
+    "title": "پایش اختیار و کیفیت پیوند",
     "topicId": "T08",
     "topic": "وابستگی عاطفی",
     "subtopic": "T08-S03",
@@ -2481,7 +2481,7 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 22,
-    "title": "نقشه روز دشوار",
+    "title": "نقشه روزهای انتظار و دلتنگی",
     "topicId": "T08",
     "topic": "وابستگی عاطفی",
     "subtopic": "T08-S01",
@@ -2953,7 +2953,7 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 26,
-    "title": "اقدام همسو با ارزش",
+    "title": "انتخاب رابطه‌مند بر پایه ارزش‌ها",
     "topicId": "T08",
     "topic": "وابستگی عاطفی",
     "subtopic": "T08-S03",
