@@ -184,8 +184,11 @@ test('T06 28-day exercises/actions match the runtime overlay and contain no exac
   for (const guide of GRIEF_DAILY_ASSISTANT_GUIDES) {
     const day = griefDays.find((item) => Number(item.day) === guide.day);
     assert.ok(day, 'missing T06 overlay day ' + guide.day);
+    assert.equal(day.title, guide.title, 'title mismatch on T06 day ' + guide.day);
+    assert.equal(day.intro, 'هدف: ' + guide.objective + '\n\nمهارت: ' + guide.skill + '\n\nچرایی تمرین: ' + guide.mechanism, 'intro mismatch on T06 day ' + guide.day);
     assert.equal(day.exercise, guide.exercise, 'exercise mismatch on T06 day ' + guide.day);
     assert.equal(day.actionText, guide.action, 'action mismatch on T06 day ' + guide.day);
+    assert.equal(day.closing, 'معیار موفقیت: ' + guide.successCriterion + '\n\nپرسش بازتاب: ' + guide.reflectionQuestion + '\n\nشرط توقف/احتیاط: ' + guide.stopCondition, 'closing mismatch on T06 day ' + guide.day);
     assert.equal(day.lightExerciseText, guide.lightVersion, 'light exercise mismatch on T06 day ' + guide.day);
     assert.equal(day.lightActionText, guide.lightActionVersion, 'light action mismatch on T06 day ' + guide.day);
     assert.equal(day.progressActionText, guide.progressActionVersion, 'progress action mismatch on T06 day ' + guide.day);
