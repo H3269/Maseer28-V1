@@ -320,7 +320,7 @@ test('T07 canonical path-content satisfies the v2 draft contract without claimin
     assert.ok(day.source_ids.length > 0);
     assert.ok(day.source_ids.every(id => sourceIds.has(id)));
     assert.equal(day.evidence_grade, 'not_assessed');
-    assert.equal(day.review_status, 'draft');
+    assert.equal(day.review_status, 'pending_expert_review');
     assert.equal(Boolean(day.review_record_id || day.reviewer_name || day.reviewed_at), false);
     assert.ok(topic.draft_content_ids.includes(day.id));
     const linkedSubtopic = subtopics.find(item => item.subtopic_id === guide.subtopic);
