@@ -311,6 +311,7 @@ test('T07 canonical path-content satisfies the v2 draft contract without claimin
     assert.ok(topic.draft_content_ids.includes(day.id));
     const linkedSubtopic = subtopics.find(item => item.subtopic_id === guide.subtopic);
     assert.ok(linkedSubtopic.draft_content_ids.includes(day.id));
+    assert.ok(day.source_ids.every(id => linkedSubtopic.draft_evidence_ids.includes(id)));
     assert.deepEqual(linkedSubtopic.content_ids, []);
   }
 });
