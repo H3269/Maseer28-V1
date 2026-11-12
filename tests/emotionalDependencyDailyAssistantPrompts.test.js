@@ -136,6 +136,31 @@ test('T08 canonical content, adaptive runtime fields and draft taxonomy stay ali
 });
 
 
+test('T08 daily source mappings inherit only draft subtopic evidence and are not claim-level approvals', async () => {
+  const [mappingText, topicText, subtopicText] = await Promise.all([
+    readFile(new URL('../public/assistant/evidence/daily-source-mappings.v1.json', import.meta.url), 'utf8'),
+    readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'),
+    readFile(new URL('../public/assistant/knowledge/subtopics.v1.json', import.meta.url), 'utf8'),
+  ]);
+  const mapping = JSON.parse(mappingText);
+  const topic = JSON.parse(topicText).topics.find((item) => item.topic_id === 'T08');
+  const subtopics = JSON.parse(subtopicText).subtopics.filter((item) => item.topic_id === 'T08');
+  assert.equal(mapping.status, 'draft_subtopic_inherited_evidence_mapping_not_claim_level');
+  assert.equal(mapping.policy.claim_level_evidence_not_assessed, true);
+  assert.equal(mapping.policy.runtime_eligibility, false);
+  assert.equal(mapping.policy.expert_review_required, true);
+  assert.equal(mapping.records.length, 28);
+  for (const record of mapping.records) {
+    assert.ok(record.content_id);
+    assert.ok(record.subtopic_id.startsWith('T08-S'));
+    assert.ok(record.source_ids.length > 0);
+    const subtopic = subtopics.find((item) => item.subtopic_id === record.subtopic_id);
+    assert.ok(subtopic);
+    assert.ok(record.source_ids.every((sourceId) => subtopic.draft_evidence_ids.includes(sourceId)));
+    assert.ok(record.source_ids.every((sourceId) => topic.draft_evidence_ids.includes(sourceId)));
+  }
+});
+
 test('T08 assistant guide titles, objectives, skills and adaptive variants match canonical daily content', async () => {
   const pathContent = await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8').then(JSON.parse);
   const canonical = pathContent.categories['وابستگی عاطفی'].days;
