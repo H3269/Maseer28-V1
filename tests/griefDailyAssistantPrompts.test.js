@@ -5,6 +5,8 @@ import {
   answerGriefDailyPreparedQuestion,
   getGriefDailyAssistantPromptGroups,
 } from '../src/features/assistant/griefDailyAssistantPrompts.js';
+import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
+import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
 
 test('T06 contains 28 complete days and 14 unchanged prepared questions per day', () => {
   assert.equal(GRIEF_DAILY_ASSISTANT_GUIDES.length, 28);
@@ -56,4 +58,60 @@ test('all 392 T06 prepared questions return substantive and meaningfully varied 
   assert.ok(answers.size > 300, 'answers must be meaningfully varied across day/question pairs');
   assert.equal(answerGriefDailyPreparedQuestion({ day: 1, message: 'سؤال آزاد خارج از فهرست' }), null);
   assert.equal(answerGriefDailyPreparedQuestion({ day: 29, message: GRIEF_DAILY_ASSISTANT_GUIDES[0].questions[0].value }), null);
+});
+
+test('T06 support-request day requires explicit relationship safety confirmation', () => {
+  const guide = GRIEF_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 15);
+  const question = guide.questions.find((item) => item.kind === 'action_meaning');
+  const data = {
+    id: getCanonicalDailyRecordId('غم و سوگ', 15),
+    topic_id: 'T06',
+    day: 15,
+    exercise: guide.exercise,
+    actionText: guide.action,
+  };
+  const base = {
+    screen: 'day',
+    text: question.value,
+    dailyContext: { day: 15, problem: 'غم و سوگ', data },
+  };
+  const pending = makePageAssistantTurn(base);
+  assert.equal(pending.status, 'relationship_safety_confirmation_required');
+  assert.match(pending.message, /هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
+
+  const unsafe = makePageAssistantTurn({
+    ...base,
+    dailyContext: { ...base.dailyContext, relationshipSafetyResponse: 'unsafe' },
+  });
+  assert.equal(unsafe.status, 'relationship_safety_blocked');
+  assert.match(unsafe.message, /وارد گفت‌وگوی مستقیم/);
+
+  const safe = makePageAssistantTurn({
+    ...base,
+    dailyContext: { ...base.dailyContext, relationshipSafetyConfirmed: true, relationshipSafetyResponse: 'safe' },
+  });
+  assert.equal(safe.status, 'daily_guidance_available');
+  assert.match(safe.message, /اقدام اختصاصی امروز/);
+});
+
+test('T06 non-interpersonal day-one prepared guidance does not receive an unrelated relationship gate', () => {
+  const guide = GRIEF_DAILY_ASSISTANT_GUIDES[0];
+  const question = guide.questions[0];
+  const result = makePageAssistantTurn({
+    screen: 'day',
+    text: question.value,
+    dailyContext: {
+      day: 1,
+      problem: 'غم و سوگ',
+      data: {
+        id: getCanonicalDailyRecordId('غم و سوگ', 1),
+        topic_id: 'T06',
+        day: 1,
+        exercise: guide.exercise,
+        actionText: guide.action,
+      },
+    },
+  });
+  assert.equal(result.status, 'daily_guidance_available');
+  assert.match(result.message, /راهنمای روز/);
 });
