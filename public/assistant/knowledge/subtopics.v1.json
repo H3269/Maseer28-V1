@@ -510,12 +510,7 @@
       "scope_notes": [
         "نگاشت پیشنهادی بر اساس هدف/مهارت روز؛ وضعیت draft و نیازمند بازبینی متخصص و ثبت رسمی در ledger پیش از استفاده runtime."
       ],
-      "evidence_ids": [
-        "SRC-T08-ZHANG-2022-001",
-        "SRC-T08-OVERALL-2022-001",
-        "SRC-T08-ERS-2022-001",
-        "SRC-ANXIETY-CBT-GUIDELINE-001"
-      ],
+      "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
       "safety_rule_ids": [],
@@ -530,6 +525,12 @@
         "وابستگی عاطفی-14",
         "وابستگی عاطفی-17",
         "وابستگی عاطفی-22"
+      ],
+      "draft_evidence_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-ERS-2022-001",
+        "SRC-ANXIETY-CBT-GUIDELINE-001"
       ]
     },
     {
@@ -543,13 +544,7 @@
       "scope_notes": [
         "نگاشت پیشنهادی بر اساس هدف/مهارت روز؛ وضعیت draft و نیازمند بازبینی متخصص و ثبت رسمی در ledger پیش از استفاده runtime."
       ],
-      "evidence_ids": [
-        "SRC-T08-ZHANG-2022-001",
-        "SRC-T08-OVERALL-2022-001",
-        "SRC-T08-MOLINA-2026-001",
-        "SRC-ANXIETY-APA-UNCERTAINTY-001",
-        "SRC-WHO-PSYCH-SELFHELP-2026-001"
-      ],
+      "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
       "safety_rule_ids": [],
@@ -560,6 +555,13 @@
         "وابستگی عاطفی-18",
         "وابستگی عاطفی-19",
         "وابستگی عاطفی-21"
+      ],
+      "draft_evidence_ids": [
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-OVERALL-2022-001",
+        "SRC-T08-MOLINA-2026-001",
+        "SRC-ANXIETY-APA-UNCERTAINTY-001",
+        "SRC-WHO-PSYCH-SELFHELP-2026-001"
       ]
     },
     {
@@ -573,14 +575,7 @@
       "scope_notes": [
         "نگاشت پیشنهادی بر اساس هدف/مهارت روز؛ وضعیت draft و نیازمند بازبینی متخصص و ثبت رسمی در ledger پیش از استفاده runtime."
       ],
-      "evidence_ids": [
-        "SRC-T08-MCLEOD-2019-001",
-        "SRC-ANGER-WHO-IPV-2013-001",
-        "SRC-RELATIONSHIP-NHSE-SAFETY-2026-001",
-        "SRC-RELATIONSHIP-WHO-RESPECT-2025-001",
-        "SRC-T08-ZHANG-2022-001",
-        "SRC-T08-MOLINA-2026-001"
-      ],
+      "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
       "safety_rule_ids": [],
@@ -597,6 +592,14 @@
         "وابستگی عاطفی-26",
         "وابستگی عاطفی-27",
         "وابستگی عاطفی-28"
+      ],
+      "draft_evidence_ids": [
+        "SRC-T08-MCLEOD-2019-001",
+        "SRC-ANGER-WHO-IPV-2013-001",
+        "SRC-RELATIONSHIP-NHSE-SAFETY-2026-001",
+        "SRC-RELATIONSHIP-WHO-RESPECT-2025-001",
+        "SRC-T08-ZHANG-2022-001",
+        "SRC-T08-MOLINA-2026-001"
       ]
     },
     {
