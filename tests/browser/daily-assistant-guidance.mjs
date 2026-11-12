@@ -111,7 +111,13 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
         ? { 1: { feedback: 'better', score: 3 }, 2: { feedback: 'better', score: 4 } }
         : assistantDayMode === 'adaptedLegacySame'
           ? { 1: { feedback: 'same', score: 5 } }
-          : {};
+          : assistantDayMode === 'adaptedGrief'
+            ? { 1: { feedback: 'hard', score: 8 } }
+            : assistantDayMode === 'adaptedGriefStreak'
+              ? { 1: { feedback: 'hard', score: 8 }, 2: { feedback: 'worse', score: 9 } }
+              : assistantDayMode === 'adaptedGriefImprovement'
+                ? { 1: { feedback: 'better', score: 3 }, 2: { feedback: 'better', score: 4 } }
+                : {};
   const testJourney = dayNumber === 1 && topicKey === journey.profileData.problem ? journey : {
     ...journey,
     profileData: { ...journey.profileData, problem: topicKey },
