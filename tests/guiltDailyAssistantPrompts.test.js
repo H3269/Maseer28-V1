@@ -88,6 +88,7 @@ test('all 392 T07 prepared questions return substantive, day-specific answers', 
       });
       assert.ok(answer && answer.length >= 450, 'missing/short answer day ' + guide.day + ' ' + question.kind);
       assert.match(answer, /راهنمای روز/);
+      assert.ok(answer.includes('شرم حکم کلی درباره ارزش خود'), 'every T07 answer must preserve the guilt/shame/self-blame boundary');
       assert.ok(answer.includes(guide.title), 'answer must identify the exact day title');
       assert.notEqual(answer.trim(), guide.exercise);
       assert.notEqual(answer.trim(), guide.action);
