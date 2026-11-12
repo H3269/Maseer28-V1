@@ -50,6 +50,52 @@ test('all 392 T06 prepared questions return substantive and meaningfully varied 
       assert.ok(answer && answer.length >= 450, 'missing/short answer day ' + guide.day + ' ' + question.kind);
       assert.match(answer, /راهنمای روز/);
       assert.ok(answer.includes(guide.title), 'answer must identify the exact day title');
+      assert.notEqual(answer.trim(), guide.exercise, 'answer must teach beyond repeating the exercise');
+      assert.notEqual(answer.trim(), guide.action, 'answer must teach beyond repeating the action');
+      switch (question.kind) {
+        case 'exercise_meaning':
+          assert.ok(answer.includes(guide.exercise) && answer.includes(guide.mechanism) && answer.includes(guide.skill));
+          break;
+        case 'exercise_example':
+          assert.ok(answer.includes(guide.exerciseExample) && answer.includes(guide.exercise) && answer.includes(guide.successCriterion));
+          break;
+        case 'action_meaning':
+          assert.ok(answer.includes(guide.action) && answer.includes('تمرین کمک می‌کند'));
+          break;
+        case 'action_example':
+          assert.ok(answer.includes(guide.actionExample) && answer.includes(guide.action));
+          break;
+        case 'light_version':
+          assert.ok(answer.includes(guide.lightVersion) && answer.includes(guide.progressVersion) && answer.includes(guide.restVersion));
+          break;
+        case 'success':
+          assert.ok(answer.includes(guide.successCriterion) && answer.includes(guide.reflectionQuestion));
+          break;
+        case 'stop':
+          assert.ok(answer.includes(guide.stopCondition) && answer.includes('خدمات اضطراری'));
+          break;
+        case 'no_event':
+        case 'not_done':
+          assert.ok(answer.includes(guide.lightVersion) && answer.includes('جبران'));
+          break;
+        case 'exercise_action_difference':
+          assert.ok(answer.includes(guide.exercise) && answer.includes(guide.action));
+          break;
+        case 'grief_increased':
+          assert.ok(answer.includes(guide.stopCondition) && answer.includes('خدمات اضطراری'));
+          break;
+        case 'talk_other':
+          assert.ok(answer.includes('فرد امن') && answer.includes('اجباری'));
+          break;
+        case 'can_change':
+          assert.ok(answer.includes(guide.lightVersion) && answer.includes('چه چیزی را تغییر ندهی'));
+          break;
+        case 'duration':
+          assert.ok(answer.includes('زمان ثابت') && answer.includes(guide.successCriterion));
+          break;
+        default:
+          assert.fail('unexpected question kind: ' + question.kind);
+      }
       answers.add(answer);
       count += 1;
     }
