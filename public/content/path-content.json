@@ -4941,7 +4941,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -4995,7 +4995,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5050,7 +5050,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5103,7 +5103,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5157,7 +5157,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5167,7 +5167,7 @@
           "title": "ارزش یا تعهد درگیر",
           "intro": "هدف: شناخت معیار شخصی\n\nمهارت: شناخت معیار شخصی\n\nچرایی تمرین: شناخت ارزش درگیر، دلیل اهمیت رخداد را روشن می‌کند؛ ارزش باید از تجربه فرد بیرون بیاید و نباید به او تحمیل شود.",
           "exercise": "مشخص کن کدام ارزش یا تعهد ممکن است درگیر باشد: صداقت، مراقبت، انصاف، وفای به قول یا مسئولیت. این‌ها فرضیه‌اند و ممکن است هیچ‌کدام دقیق نباشد.",
-          "actionText": "یک تعهد مشخص را که واقعاً خودت پذیرفته بودی به ارزش مرتبط وصل کن؛ انتظار تحمیلی دیگران را از تعهد شخصی جدا نگه دار.",
+          "actionText": "یک تعهد مشخص را که واقعاً خودت پذیرفته بودی به ارزش مرتبط وصل کن؛ مرز میان خواسته دیگران و تعهد پذیرفته‌شده خودت را روشن نگه دار، بدون اینکه لازم باشد برای اثبات آن با کسی تماس بگیری.",
           "closing": "معیار موفقیت: محور روز 6 به‌صورت مشخص ثبت شده و یک تصمیم یا مشاهده متناسب با آن انجام شده باشد.\n\nپرسش بازتاب: آیا معیار از ارزش خودت آمده یا از فشار و انتظار دیگران؟\n\nشرط توقف/احتیاط: اگر ارزش انتخابی از فشار یا انتظار دیگران می‌آید، آن را قطعی ثبت نکن؛ انتخاب‌نکردن نیز مجاز است.",
           "scientific_family": "general",
           "lightActionText": "فقط یک جمله کامل کن: «این تعهد را خودم پذیرفته بودم» یا «هنوز مطمئن نیستم»؛ ارزش یا تقصیر را امروز قطعی نکن.",
@@ -5210,7 +5210,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5258,7 +5258,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5306,7 +5306,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5354,7 +5354,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5408,7 +5408,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5462,7 +5462,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5510,7 +5510,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5557,7 +5557,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5611,7 +5611,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5666,7 +5666,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5713,7 +5713,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5761,7 +5761,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5809,7 +5809,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5857,7 +5857,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5911,7 +5911,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -5958,7 +5958,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -6012,7 +6012,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -6059,7 +6059,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -6108,7 +6108,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -6157,7 +6157,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -6206,7 +6206,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -6254,7 +6254,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         },
@@ -6308,7 +6308,7 @@
           ],
           "evidence_grade": "not_assessed",
           "evidence_note": "منابع پیوست‌شده فقط زمینه علمی مرتبط را نشان می‌دهند؛ هیچ‌یک به‌تنهایی اثربخشی این تمرین یا مسیر ۲۸روزه را اثبات نمی‌کند. درجه شواهد روزانه هنوز ارزیابی نشده است.",
-          "review_status": "draft",
+          "review_status": "pending_expert_review",
           "subtopic_mapping_status": "proposed_pending_expert_review",
           "metadata_version": 2
         }
