@@ -115,6 +115,7 @@ test('T08 canonical content, adaptive runtime fields and draft taxonomy stay ali
     assert.equal(day.topic_id, 'T08');
     assert.equal(day.review_status, 'draft');
     assert.equal(day.evidence_grade, 'not_assessed');
+    assert.equal(day.source_ids.length > 0, true, 'day ' + (index + 1) + ' must retain contextual source references without claiming evidence assessment');
     assert.equal(day.metadata_version, 2);
     assert.equal(day.subtopic_ids.length, 1);
     for (const field of fields) assert.equal(day[field], runtime[index][field], 'day ' + (index + 1) + ' ' + field + ' must match overlay');
@@ -143,6 +144,8 @@ test('T08 assistant guide titles, objectives, skills and adaptive variants match
     assert.equal(guide.progressActionVersion, day.progressActionText, 'day ' + (index + 1) + ' progress action must match canonical content');
     assert.equal(guide.restVersion, day.restExerciseText, 'day ' + (index + 1) + ' rest exercise must match canonical content');
     assert.equal(guide.restActionVersion, day.restActionText, 'day ' + (index + 1) + ' rest action must match canonical content');
+    assert.equal(guide.successCriterion, day.success_criterion, 'day ' + (index + 1) + ' success criterion must match canonical metadata');
+    assert.equal(day.closing, 'معیار موفقیت: ' + guide.successCriterion + '\\n\\nپرسش بازتاب: ' + guide.reflectionQuestion + '\\n\\nشرط توقف/احتیاط: ' + guide.stopCondition, 'day ' + (index + 1) + ' closing text must match the day-specific guide');
   }
 });
 
