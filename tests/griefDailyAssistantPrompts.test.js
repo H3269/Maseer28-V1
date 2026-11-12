@@ -17,7 +17,7 @@ test('T06 contains 28 complete days and 14 unchanged prepared questions per day'
     assert.equal(guide.questions.length, 14);
     assert.equal(new Set(guide.questions.map((q) => q.value)).size, 14);
     assert.deepEqual(guide.questions.map((q) => q.value), expectedQuestions);
-    assert.ok(/^T06-S0[1-3]$/.test(guide.subtopic));
+    assert.ok(String(guide.subtopic).split('|').every((id) => /^T06-S0[1-3]$/.test(id)), 'invalid T06 subtopic on day ' + guide.day);
   }
 });
 
