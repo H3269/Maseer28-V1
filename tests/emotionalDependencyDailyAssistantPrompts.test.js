@@ -81,6 +81,22 @@ test('all 392 T08 prepared answers are substantive, day-scoped and meaningfully 
   assert.equal(answerEmotionalDependencyDailyPreparedQuestion({ day: 1, message: 'سؤال آزاد خارج از فهرست' }), null);
 });
 
+test('T08 success criteria are day-specific and match canonical metadata', async () => {
+  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
+  const canonical = content.categories['وابستگی عاطفی'].days;
+  assert.equal(canonical.length, 28);
+  const criteria = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES.map((guide, index) => {
+    const criterion = guide.successCriterion;
+    assert.ok(criterion.length >= 55, 'day ' + (index + 1) + ' needs an actionable criterion');
+    assert.doesNotMatch(criterion, /^محور روز \\d+ به‌صورت مشخص ثبت شده/u,
+      'day ' + (index + 1) + ' must not use the former generic criterion');
+    assert.equal(canonical[index].success_criterion, criterion,
+      'day ' + (index + 1) + ' assistant and canonical success criteria must match');
+    return criterion;
+  });
+  assert.equal(new Set(criteria).size, 28, 'all 28 criteria must be distinct');
+});
+
 test('T08 canonical content, adaptive runtime fields and draft taxonomy stay aligned', async () => {
   const [pathContent, overrides, topics, subtopics] = await Promise.all([
     readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8').then(JSON.parse),
