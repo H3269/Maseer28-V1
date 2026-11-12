@@ -912,7 +912,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 8,
-    "title": "پاسخ جایگزین به خوداتهامی",
+    "title": "تفکیک سهم واقعی از اتهام کلی",
     "topicId": "T07",
     "topic": "احساس گناه",
     "objective": "تبدیل محکومیت به بررسی",
@@ -2211,7 +2211,7 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 18,
-    "title": "دیدگاه منصفانه ناظر",
+    "title": "سنجش مسئولیت با معیار برابر",
     "topicId": "T07",
     "topic": "احساس گناه",
     "objective": "سنجش معیار دوگانه",
