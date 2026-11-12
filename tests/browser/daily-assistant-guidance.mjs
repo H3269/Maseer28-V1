@@ -175,7 +175,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
         assert.equal(Object.hasOwn(day, 'risk_level'), false);
       } else {
         Object.assign(day, {
-          topic_id: topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : topicKey === 'نفرت' ? 'T04' : topicKey === 'حسادت' ? 'T05' : 'T01',
+          topic_id: topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : topicKey === 'نفرت' ? 'T04' : topicKey === 'حسادت' ? 'T05' : topicKey === 'غم و سوگ' ? 'T06' : 'T01',
           day: dayNumber,
           review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
           risk_level: 'routine',
@@ -390,6 +390,43 @@ try {
   await jealousyGuidedPage.close();
 
 
+  // T06 grief and loss must use its own prepared-only 28-day assistant, including legacy-shaped source data.
+  const griefGuidedPage = await browser.newPage();
+  const griefErrors = [];
+  griefGuidedPage.on('pageerror', error => griefErrors.push(String(error)));
+  await openDay(griefGuidedPage, { problem: 'غم و سوگ', assistantDayMode: 'blocked', localModelInstalled: true });
+  const griefPanel = griefGuidedPage.locator('.globalAssistantDialog');
+  await griefPanel.waitFor({ state: 'visible' });
+  assert.equal(await griefPanel.locator('#global-assistant-message').count(), 0,
+    'T06 must never expose free-form typing, even with a cached local model');
+  assert.equal(await griefPanel.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
+    'T06 must not expose local model installation');
+  const griefTrigger = griefPanel.getByTestId('grief-daily-prompt-trigger');
+  await griefTrigger.waitFor({ state: 'visible' });
+  assert.match(await griefTrigger.getAttribute('aria-label'), /غم و سوگ/,
+    'T06 prompt trigger must have the correct accessible topic label');
+  await griefTrigger.click();
+  const griefPromptDialog = griefGuidedPage.locator('#library-assistant-prompt-dialog');
+  await griefPromptDialog.waitFor({ state: 'visible' });
+  assert.match(await griefPromptDialog.innerText(), /سؤال‌های آماده روز ۱ غم و سوگ/);
+  assert.equal(await griefPromptDialog.locator('.libraryAssistantPromptGroup').count(), 5);
+  assert.equal(await griefPromptDialog.locator('[data-prompt-option]').count(), 14);
+  await griefPromptDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
+  await griefPanel.getByRole('button', { name: 'ارسال' }).click();
+  await griefGuidedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => node.innerText.includes('راهنمای روز ۱ غم و سوگ')));
+  const griefReply = await griefPanel.locator('.assistantMessage').last().innerText();
+  assert.match(griefReply, /نام‌گذاری فقدان/);
+  assert.match(griefReply, /یک فقدان یا تغییر مهم/);
+  assert.ok(await griefPanel.locator('.assistantMessage').last().locator('strong').count() > 0,
+    'T06 assistant headings must render as bold text');
+  assert.equal(griefReply.includes('**'), false, 'T06 must not expose raw markdown markers');
+  assert.equal(griefReply.includes(String.fromCharCode(92) + 'n'), false, 'T06 must not expose escaped newline tokens');
+  assert.ok(griefReply.includes('\n'), 'T06 paragraphs must display on separate lines');
+  await assertAssistantUsesVisibleDailySource(griefGuidedPage, griefPanel, 'غم و سوگ', 1, ['exercise']);
+  assert.deepEqual(griefErrors, [], 'T06 prepared-only browser flow must not raise page errors');
+  await griefGuidedPage.close();
+
   // Direct T05 relationship requests require the explicit relationship-safety check.
   const jealousyGatePage = await browser.newPage();
   await openDay(jealousyGatePage, { problem: 'حسادت', assistantDayMode: 'jealousy-communication' });
@@ -513,9 +550,8 @@ try {
 
   await page.close();
 
-  // Legacy free-text fallback remains for legacy topics that are not in the prepared-only T01–T05 set.
-  // T05 jealousy is intentionally prepared-only even when its source record is legacy-shaped.
-  for (const problem of ['غم و سوگ', 'شرم']) {
+  // Legacy free-text fallback remains for topics outside the prepared-only T01–T06 set.
+  for (const problem of ['شرم']) {
     const legacyPage = await browser.newPage();
     const legacyErrors = [];
     legacyPage.on('pageerror', error => legacyErrors.push(String(error)));
