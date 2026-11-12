@@ -130,7 +130,6 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     const griefRelationshipGate = preparedTopicId === 'T06' ? getRelationshipSafetyGate(preparedSource) : null;
     const emotionalDependencyRelationshipGate = preparedTopicId === 'T08' ? getRelationshipSafetyGate(preparedSource) : null;
     if (emotionalDependencyRelationshipGate
-      && hasExactGriefPreparedQuestion === false
       && preparedTopicId === 'T08'
       && Boolean(answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }))
       && !hasPendingSafetyExchange
