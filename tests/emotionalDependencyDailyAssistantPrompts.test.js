@@ -118,7 +118,8 @@ test('T08 canonical content, adaptive runtime fields and draft taxonomy stay ali
     assert.equal(day.topic_id, 'T08');
     assert.equal(day.review_status, 'draft');
     assert.equal(day.evidence_grade, 'not_assessed');
-    assert.deepEqual(day.source_ids, [], 'day ' + (index + 1) + ' must not attach contextual sources to an exercise before claim-level review');
+    assert.ok(day.source_ids.length > 0, 'day ' + (index + 1) + ' must retain relevant T08 or directly applicable safety source references');
+    assert.ok(day.source_ids.every((sourceId) => topic.draft_evidence_ids.includes(sourceId)), 'day ' + (index + 1) + ' source references must remain within the topic draft evidence set');
     assert.equal(day.metadata_version, 2);
     assert.equal(day.subtopic_ids.length, 1);
     for (const field of fields) assert.equal(day[field], runtime[index][field], 'day ' + (index + 1) + ' ' + field + ' must match overlay');
