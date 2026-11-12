@@ -209,6 +209,27 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
   await page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' }).waitFor({ state: 'visible' });
 }
 
+async function assertGriefAdaptiveDay(mode, dayNumber, exerciseField, actionField) {
+  const page = await browser.newPage();
+  const errors = [];
+  page.on('pageerror', error => errors.push(String(error)));
+  await openDay(page, { problem: 'غم و سوگ', assistantDayMode: mode });
+  const panel = page.locator('.globalAssistantDialog');
+  await panel.waitFor({ state: 'visible' });
+  await panel.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
+  await panel.waitFor({ state: 'detached' });
+  const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
+  const visibleAction = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayAction'));
+  const source = dailyTextOverrides.categories['غم و سوگ'].days.find((item) => item.day === dayNumber);
+  assert.ok(source, 'T06 adaptation fixture must exist for day ' + dayNumber);
+  assert.ok(visibleExercise.includes(normalizeVisibleDailyText(source[exerciseField])),
+    'T06 day ' + dayNumber + ' must display ' + exerciseField);
+  assert.ok(visibleAction.includes(normalizeVisibleDailyText(source[actionField])),
+    'T06 day ' + dayNumber + ' must display ' + actionField);
+  assert.deepEqual(errors, [], 'T06 adaptive daily guidance must not raise page errors');
+  await page.close();
+}
+
 try {
   const page = await browser.newPage();
   const errors = [];
@@ -434,6 +455,11 @@ try {
   await assertAssistantUsesVisibleDailySource(griefGuidedPage, griefPanel, 'غم و سوگ', 1, ['exercise']);
   assert.deepEqual(griefErrors, [], 'T06 prepared-only browser flow must not raise page errors');
   await griefGuidedPage.close();
+
+  // T06 adaptive versions must remain distinct for difficult streaks and sustained improvement.
+  await assertGriefAdaptiveDay('adaptedGrief', 2, 'lightExerciseText', 'lightActionText');
+  await assertGriefAdaptiveDay('adaptedGriefStreak', 3, 'restExerciseText', 'restActionText');
+  await assertGriefAdaptiveDay('adaptedGriefImprovement', 3, 'exercise', 'progressActionText');
 
   // T06 day 15 support requests require an explicit mutual-freedom check before assistant guidance.
   const griefGatePage = await browser.newPage();
