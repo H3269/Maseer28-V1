@@ -8,6 +8,7 @@ import { answerAnxietyDailyPreparedQuestion } from './anxietyDailyAssistantPromp
 import { answerFearDailyPreparedQuestion } from './fearDailyAssistantPrompts.js';
 import { answerHatredDailyPreparedQuestion } from './hatredDailyAssistantPrompts.js';
 import { answerJealousyDailyPreparedQuestion } from './jealousyDailyAssistantPrompts.js';
+import { answerGriefDailyPreparedQuestion } from './griefDailyAssistantPrompts.js';
 import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
 import { getCanonicalDailyRecordId } from '../content/dailyContentSelector.js';
 
@@ -60,7 +61,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     // canonical identity validation continues to use the untouched source.
     const preparedVisibleContent = dailyContext?.guidanceData || preparedSource;
     const preparedTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem);
-    const visibleTopicName = ({ T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت', T05: 'حسادت' })[preparedTopicId];
+    const visibleTopicName = ({ T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت', T05: 'حسادت', T06: 'غم و سوگ' })[preparedTopicId];
     const answerPreparedQuestion = preparedTopicId === 'T01'
       ? answerAngerDailyPreparedQuestion
       : preparedTopicId === 'T02'
@@ -71,8 +72,10 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
             ? answerHatredDailyPreparedQuestion
             : preparedTopicId === 'T05'
               ? answerJealousyDailyPreparedQuestion
-              : null;
-    const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03', 'T04', 'T05'].includes(preparedTopicId)
+              : preparedTopicId === 'T06'
+                ? answerGriefDailyPreparedQuestion
+                : null;
+    const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03', 'T04', 'T05', 'T06'].includes(preparedTopicId)
       && Number.isInteger(preparedDay)
       && preparedDay >= 1
       && preparedDay <= 28
