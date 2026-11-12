@@ -148,7 +148,7 @@ test('all 392 T07 prepared questions return substantive, day-specific answers', 
           assert.ok(answer.includes(guide.successCriterion) && answer.includes(guide.reflectionQuestion) && answer.includes(guide.exercise) && answer.includes(guide.action));
           break;
         case 'stop':
-          assert.ok(answer.includes(guide.stopCondition) && answer.includes('خدمات اضطراری') && answer.includes(guide.exercise) && answer.includes(guide.action));
+          assert.ok(answer.includes(guide.stopCondition) && answer.includes('خدمات اضطراری') && answer.includes(guide.exercise) && answer.includes(guide.action) && answer.includes(guide.whenToSeekHumanSupport));
           break;
         case 'no_event':
         case 'not_done':
@@ -158,16 +158,16 @@ test('all 392 T07 prepared questions return substantive, day-specific answers', 
           assert.ok(answer.includes(guide.exercise) && answer.includes(guide.action));
           break;
         case 'guilt_increased':
-          assert.ok(answer.includes('خودتنبیهی') && answer.includes('خدمات اضطراری') && answer.includes(guide.objective) && answer.includes(guide.stopCondition));
+          assert.ok(answer.includes('خودتنبیهی') && answer.includes('خدمات اضطراری') && answer.includes(guide.objective) && answer.includes(guide.stopCondition) && answer.includes(guide.whenToSeekHumanSupport));
           break;
         case 'talk_other':
-          assert.ok(answer.includes('تماس') && answer.includes('رضایت') && answer.includes(guide.objective) && answer.includes(guide.stopCondition));
+          assert.ok(answer.includes('تماس') && answer.includes('رضایت') && answer.includes(guide.objective) && answer.includes(guide.stopCondition) && answer.includes(guide.whenToSeekHumanSupport));
           break;
         case 'can_change':
           assert.ok(answer.includes(guide.skill) && answer.includes(guide.lightVersion));
           break;
         case 'duration':
-          assert.ok(answer.includes(guide.objective) && answer.includes('زمان استاندارد'));
+          assert.ok(answer.includes(guide.objective) && answer.includes('زمان استاندارد') && answer.includes('برآورد اولیه') && answer.includes(String(guide.durationMinutes)));
           break;
         default:
           assert.fail('unexpected T07 question kind: ' + question.kind);
