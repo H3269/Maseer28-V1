@@ -23,7 +23,7 @@ on:
       - '.github/workflows/**'
       - 'scripts/prepare-production-build.mjs'
   push:
-    branches: [main, 'content/t*']
+    branches: [main]
 
 permissions:
   contents: read
