@@ -189,7 +189,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
         assert.equal(Object.hasOwn(day, 'risk_level'), false);
       } else {
         Object.assign(day, {
-          topic_id: topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : topicKey === 'نفرت' ? 'T04' : topicKey === 'حسادت' ? 'T05' : topicKey === 'غم و سوگ' ? 'T06' : 'T01',
+          topic_id: topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : topicKey === 'نفرت' ? 'T04' : topicKey === 'حسادت' ? 'T05' : topicKey === 'غم و سوگ' ? 'T06' : topicKey === 'احساس گناه' ? 'T07' : 'T01',
           day: dayNumber,
           review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
           risk_level: 'routine',
@@ -467,6 +467,41 @@ try {
   await assertAssistantUsesVisibleDailySource(griefGuidedPage, griefPanel, 'غم و سوگ', 1, ['exercise']);
   assert.deepEqual(griefErrors, [], 'T06 prepared-only browser flow must not raise page errors');
   await griefGuidedPage.close();
+
+  // T07 guilt uses its own prepared-only 28-day assistant and the shared 14-question structure.
+  const guiltGuidedPage = await browser.newPage();
+  const guiltErrors = [];
+  guiltGuidedPage.on('pageerror', error => guiltErrors.push(String(error)));
+  await openDay(guiltGuidedPage, { problem: 'احساس گناه', assistantDayMode: 'blocked', localModelInstalled: true });
+  const guiltPanel = guiltGuidedPage.locator('.globalAssistantDialog');
+  await guiltPanel.waitFor({ state: 'visible' });
+  assert.equal(await guiltPanel.locator('#global-assistant-message').count(), 0,
+    'T07 must not expose free-form typing, even with a cached local model');
+  assert.equal(await guiltPanel.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
+    'T07 must not expose local model installation');
+  const guiltTrigger = guiltPanel.getByTestId('guilt-daily-prompt-trigger');
+  await guiltTrigger.waitFor({ state: 'visible' });
+  assert.match(await guiltTrigger.getAttribute('aria-label'), /احساس گناه/,
+    'T07 prompt trigger must have the correct accessible topic label');
+  await guiltTrigger.click();
+  const guiltPromptDialog = guiltGuidedPage.locator('#library-assistant-prompt-dialog');
+  await guiltPromptDialog.waitFor({ state: 'visible' });
+  assert.match(await guiltPromptDialog.innerText(), /سؤال‌های آماده روز ۱ احساس گناه/);
+  assert.equal(await guiltPromptDialog.locator('.libraryAssistantPromptGroup').count(), 5);
+  assert.equal(await guiltPromptDialog.locator('[data-prompt-option]').count(), 14);
+  await guiltPromptDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
+  await guiltPanel.getByRole('button', { name: 'ارسال' }).click();
+  await guiltGuidedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => node.innerText.includes('راهنمای روز ۱ احساس گناه')));
+  const guiltReply = await guiltPanel.locator('.assistantMessage').last().innerText();
+  assert.match(guiltReply, /نام‌گذاری گناه مشخص/);
+  assert.match(guiltReply, /یک رخداد مشخص را بدون ذکر نام/);
+  assert.equal(guiltReply.includes('**'), false, 'T07 must not expose raw markdown markers');
+  assert.equal(guiltReply.includes(String.fromCharCode(92) + 'n'), false, 'T07 must not expose escaped newline tokens');
+  assert.ok(guiltReply.includes('\n'), 'T07 paragraphs must display on separate lines');
+  await assertAssistantUsesVisibleDailySource(guiltGuidedPage, guiltPanel, 'احساس گناه', 1, ['exercise']);
+  assert.deepEqual(guiltErrors, [], 'T07 prepared-only browser flow must not raise page errors');
+  await guiltGuidedPage.close();
 
   // T06 adaptive versions must remain distinct for difficult streaks and sustained improvement.
   await assertGriefAdaptiveDay('adaptedGrief', 2, 'lightExerciseText', 'lightActionText');
