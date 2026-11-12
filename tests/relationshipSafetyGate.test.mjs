@@ -134,13 +134,21 @@ test('actual shared interpersonal prompts across T03-T34 are gated', async () =>
     if (!topic) continue;
     const topicNumber = Number(topic.topic_id.slice(1));
     if (topicNumber >= 3) {
-      const gatedDays = topic.topic_id === 'T06' ? [11, 15] : [6, 11, 15, 24];
+      const gatedDays = topic.topic_id === 'T06' ? [11, 15] : topic.topic_id === 'T07' ? [15, 24] : [6, 11, 15, 24];
       for (const dayNumber of gatedDays) {
         const day = category.days.find((candidate) => candidate.day === dayNumber);
         assert.ok(day, 'missing ' + categoryName + ' day ' + dayNumber);
         assert.equal(getRelationshipSafetyGate(day)?.gateId, 'relationship-communication-safety-v1');
         assert.match(String(day.exercise || '') + '\n' + String(day.actionText || ''),
-          /درخواست|گفت.?وگو|مرز|مذاکره|بیان کن|مطرح کن|عذرخواهی|اقدام جبرانی|تقسیم وظیفه|راه.?حل|مسئله|مکث|ترمیم/u);
+          /درخواست|گفت.?وگو|مرز|مذاکره|بیان کن|مطرح کن|عذرخواهی|اقدام جبرانی|تقسیم وظیفه|راه.?حل|مسئله|مکث|ترمیم|تماس|رضایت|پاسخ.?ندادن/u);
+      }
+    }
+    if (topic.topic_id === 'T07') {
+      for (const dayNumber of [6, 11]) {
+        const day = category.days.find((candidate) => candidate.day === dayNumber);
+        assert.ok(day, 'missing T07 day ' + dayNumber);
+        assert.equal(getRelationshipSafetyGate(day), null,
+          'non-interpersonal T07 day ' + dayNumber + ' must not require a relationship-communication gate');
       }
     }
     if (topic.topic_id === 'T01') {
