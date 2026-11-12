@@ -335,7 +335,7 @@ jobs:
         shell: bash
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git fetch origin main --depth=1
+          git fetch origin main
           git diff --name-only origin/main...HEAD > /tmp/topic-package-files.txt
           mapfile -t unit_tests < <(grep -E '^tests/.+\.test\.(js|mjs)$' /tmp/topic-package-files.txt || true)
           mapfile -t browser_tests < <(grep -E '^tests/browser/.+\.mjs$' /tmp/topic-package-files.txt || true)
