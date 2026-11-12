@@ -85,7 +85,7 @@ test('all 392 T06 prepared questions return substantive and meaningfully varied 
           assert.ok(answer.includes(guide.stopCondition) && answer.includes('خدمات اضطراری'));
           break;
         case 'talk_other':
-          assert.ok(answer.includes('فرد امن') && answer.includes('اجباری'));
+          assert.ok(answer.includes('فرد امن') && answer.includes('مجبور'));
           break;
         case 'can_change':
           assert.ok(answer.includes(guide.lightVersion) && answer.includes('چه چیزی را تغییر ندهی'));
