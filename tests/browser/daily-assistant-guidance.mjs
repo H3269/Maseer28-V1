@@ -97,9 +97,9 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
       ? 15
       : assistantDayMode === 'relationship'
         ? 10
-    : ['adaptedLegacyStreak', 'adaptedLegacyImprovement', 'adaptedAnxietyStreak', 'adaptedAnxietyImprovement'].includes(assistantDayMode)
+    : ['adaptedLegacyStreak', 'adaptedLegacyImprovement', 'adaptedAnxietyStreak', 'adaptedAnxietyImprovement', 'adaptedGriefStreak', 'adaptedGriefImprovement'].includes(assistantDayMode)
       ? 3
-      : ['adaptedLegacy', 'adaptedLegacySame', 'adaptedAnxiety'].includes(assistantDayMode)
+      : ['adaptedLegacy', 'adaptedLegacySame', 'adaptedAnxiety', 'adaptedGrief'].includes(assistantDayMode)
         ? 2
         : isLegacyMode ? 2 : 1;
   const topicKey = problem || (isLegacyMode ? 'غم و سوگ' : 'خشم');
