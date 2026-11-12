@@ -262,7 +262,7 @@ jobs:
         run: npm ci
       - name: Dependency security audit
         run: npm audit --audit-level=high
-      - name: Run focused T01-T05 assistant and safety unit tests
+      - name: Run focused T01-T06 assistant and safety unit tests
         run: >-
           node --test
           tests/angerDailyAssistantPrompts.test.js
@@ -270,6 +270,7 @@ jobs:
           tests/fearDailyAssistantPrompts.test.js
           tests/hatredDailyAssistantPrompts.test.js
           tests/jealousyDailyAssistantPrompts.test.js
+          tests/griefDailyAssistantPrompts.test.js
           tests/preparedOnlyCurrentTopics.test.js
           tests/dailySafety.test.mjs
           tests/assistantMessageFormatting.test.js
