@@ -80,3 +80,15 @@ test('builds one canonical category/day ID for both legacy and versioned daily r
     assert.equal(getCanonicalDailyRecordId(category, day), null);
   }
 });
+
+test('resolves the T06 grief and loss alias to its canonical category and daily IDs', () => {
+  const griefDays = Array.from({ length: 28 }, (_, index) => ({
+    id: getCanonicalDailyRecordId('غم و سوگ', index + 1),
+    day: index + 1,
+    exercise: 'تمرین سوگ ' + (index + 1),
+  }));
+  const categories = { 'غم و سوگ': { days: griefDays } };
+  assert.equal(selectDailyContentCategory(categories, 'سوگ و فقدان'), categories['غم و سوگ']);
+  assert.equal(getCanonicalDailyRecordId('سوگ و فقدان', 15), 'غم و سوگ-15');
+  assert.equal(isCompleteDailyContentCategory(categories, 'سوگ و فقدان'), true);
+});
