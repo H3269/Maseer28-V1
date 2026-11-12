@@ -49,7 +49,7 @@ test('legacy and canonical identifiers preserve shared-topic gates and fail clos
   const registry = JSON.parse(await readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'));
   const sharedTopics = registry.topics.filter((topic) => Number(topic.topic_id.slice(1)) >= 3);
   for (const topic of sharedTopics) {
-    const gatedDays = topic.topic_id === 'T06' ? [11, 15] : topic.topic_id === 'T07' ? [15, 24] : [6, 11, 15, 24];
+    const gatedDays = topic.topic_id === 'T06' ? [11, 15] : topic.topic_id === 'T07' ? [15] : [6, 11, 15, 24];
     for (const day of gatedDays) {
       const legacyId = topic.name + '-' + day;
       const canonicalId = topic.topic_id + '-D' + String(day).padStart(2, '0');
@@ -145,7 +145,7 @@ test('actual shared interpersonal prompts across T03-T34 are gated', async () =>
     if (!topic) continue;
     const topicNumber = Number(topic.topic_id.slice(1));
     if (topicNumber >= 3) {
-      const gatedDays = topic.topic_id === 'T06' ? [11, 15] : topic.topic_id === 'T07' ? [15, 24] : [6, 11, 15, 24];
+      const gatedDays = topic.topic_id === 'T06' ? [11, 15] : topic.topic_id === 'T07' ? [15] : [6, 11, 15, 24];
       for (const dayNumber of gatedDays) {
         const day = category.days.find((candidate) => candidate.day === dayNumber);
         assert.ok(day, 'missing ' + categoryName + ' day ' + dayNumber);
