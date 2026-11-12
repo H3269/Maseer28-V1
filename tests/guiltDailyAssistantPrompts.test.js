@@ -127,10 +127,10 @@ test('all 392 T07 prepared questions return substantive, day-specific answers', 
           assert.ok(answer.includes(guide.exercise) && answer.includes(guide.action));
           break;
         case 'guilt_increased':
-          assert.ok(answer.includes('خودتنبیهی') && answer.includes('خدمات اضطراری'));
+          assert.ok(answer.includes('خودتنبیهی') && answer.includes('خدمات اضطراری') && answer.includes(guide.objective) && answer.includes(guide.stopCondition));
           break;
         case 'talk_other':
-          assert.ok(answer.includes('تماس') && answer.includes('رضایت'));
+          assert.ok(answer.includes('تماس') && answer.includes('رضایت') && answer.includes(guide.objective) && answer.includes(guide.stopCondition));
           break;
         case 'can_change':
           assert.ok(answer.includes(guide.skill) && answer.includes(guide.lightVersion));
