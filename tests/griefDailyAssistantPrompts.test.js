@@ -195,6 +195,43 @@ test('T06 day 12 prepares for a grief wave rather than a generic crisis or stres
   assert.ok(!guide.action.includes('برنامه روز دشوار'));
 });
 
+test('the 28-day T06 design draft stays synchronized with runtime guidance', async () => {
+  const draft = await readFile(new URL('../docs/T06_GRIEF_AND_LOSS_28DAY_REDESIGN_DRAFT_B2_CX_FA.md', import.meta.url), 'utf8');
+  const sections = [...draft.matchAll(/^### روز (\\d+) — (.+)$/gm)].map((match, index, all) => ({
+    day: Number(match[1]),
+    title: match[2],
+    start: match.index,
+    end: index + 1 < all.length ? all[index + 1].index : draft.indexOf('\\n## وضعیت ممیزی', match.index),
+  }));
+  assert.equal(sections.length, 28);
+  const fields = {
+    objective: 'هدف',
+    skill: 'مهارت',
+    mechanism: 'سازوکار',
+    exercise: 'تمرین',
+    action: 'اقدام',
+    lightVersion: 'نسخه سبک تمرین',
+    progressVersion: 'نسخه پیشرفت تمرین',
+    restVersion: 'نسخه استراحت تمرین',
+    successCriterion: 'معیار موفقیت',
+    reflectionQuestion: 'پرسش بازتاب',
+    lightActionVersion: 'نسخه سبک اقدام',
+    progressActionVersion: 'نسخه پیشرفت اقدام',
+    restActionVersion: 'نسخه استراحت اقدام',
+    stopCondition: 'شرط توقف/احتیاط',
+  };
+  for (const guide of GRIEF_DAILY_ASSISTANT_GUIDES) {
+    const section = sections.find((item) => item.day === guide.day);
+    assert.ok(section, 'missing draft section for T06 day ' + guide.day);
+    assert.equal(section.title, guide.title, 'draft title mismatch on T06 day ' + guide.day);
+    const body = draft.slice(section.start, section.end);
+    for (const [field, label] of Object.entries(fields)) {
+      assert.ok(body.includes('- **' + label + ':** ' + guide[field]),
+        'draft/runtime mismatch for ' + field + ' on T06 day ' + guide.day);
+    }
+  }
+});
+
 test('T06 support-request day requires explicit relationship safety confirmation', () => {
   assert.equal(getCanonicalDailyRecordId('سوگ و فقدان', 15), getCanonicalDailyRecordId('غم و سوگ', 15));
   const guide = GRIEF_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 15);
