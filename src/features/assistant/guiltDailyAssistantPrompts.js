@@ -110,7 +110,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 2,
@@ -219,7 +220,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 3,
@@ -328,7 +330,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 4,
@@ -437,7 +440,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 5,
@@ -546,7 +550,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 6,
@@ -655,7 +660,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 7,
@@ -764,7 +770,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 8,
@@ -873,7 +880,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 9,
@@ -982,7 +990,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 10,
@@ -1091,7 +1100,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 11,
@@ -1200,7 +1210,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 12,
@@ -1309,7 +1320,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 13,
@@ -1418,7 +1430,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 14,
@@ -1527,7 +1540,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 15,
@@ -1636,7 +1650,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 16,
@@ -1745,7 +1760,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 17,
@@ -1854,7 +1870,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 18,
@@ -1963,7 +1980,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 19,
@@ -2072,7 +2090,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 20,
@@ -2181,7 +2200,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 21,
@@ -2290,7 +2310,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 22,
@@ -2399,7 +2420,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 23,
@@ -2508,7 +2530,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 24,
@@ -2617,7 +2640,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 25,
@@ -2726,7 +2750,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 26,
@@ -2835,7 +2860,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 27,
@@ -2944,7 +2970,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   },
   {
     "day": 28,
@@ -3053,7 +3080,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
       }
-    ]
+    ],
+    "subtopicStatus": "proposed_pending_expert_review"
   }
 ];
 
