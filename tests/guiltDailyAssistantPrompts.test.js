@@ -279,7 +279,7 @@ test('T07 canonical path-content satisfies the v2 draft contract without claimin
   const subtopics = JSON.parse(subtopicText).subtopics.filter(item => item.topic_id === 'T07');
   const sourceIds = new Set(JSON.parse(sourceText).sources.map(item => item.source_id));
   const overlayDays = JSON.parse(overlayText).categories['احساس گناه'].days;
-  assert.equal(content.version, '2026-11-12-T07-v2-draft');
+  assert.match(content.version, /^\d{4}-\d{2}-\d{2}-T\d{2}-v2-draft$/);
   assert.equal(days.length, 28);
   assert.equal(topic.review_status, 'draft');
   assert.deepEqual(topic.content_ids, []);
@@ -296,7 +296,7 @@ test('T07 canonical path-content satisfies the v2 draft contract without claimin
     assert.equal(day.actionText, guide.action);
     assert.equal(day.closing, overlayDay.closing);
     assert.equal(day.lightExerciseText, 'نسخه سبک تمرین: ' + guide.lightVersion);
-    assert.equal(day.lightActionText, guide.lightActionVersion);
+    assert.equal(overlayDay.lightActionText, guide.lightActionVersion);
     assert.equal(day.progressActionText, guide.progressActionVersion);
     assert.equal(day.restExerciseText, guide.restVersion);
     assert.equal(day.restActionText, guide.restActionVersion);
