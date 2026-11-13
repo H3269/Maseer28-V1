@@ -40,6 +40,7 @@ const expectedValues = [
   'می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟',
   'این تمرین چقدر زمان می‌برد؟',
 ];
+const expectedKinds = ['exercise_meaning', 'exercise_example', 'action_meaning', 'action_example', 'light_version', 'success', 'stop', 'no_event', 'exercise_action_difference', 'not_done', null, 'talk_other', 'can_change', 'duration'];
 const expectedGuideKeys = Object.keys(ANGER_DAILY_ASSISTANT_GUIDES[0]);
 const expectedQuestionKeys = Object.keys(ANGER_DAILY_ASSISTANT_GUIDES[0].questions[0]);
 
@@ -56,6 +57,9 @@ test('T01-T09 share the exact same 14 prepared question IDs, wording, and order 
       assert.deepEqual(guide.questions.map(q => q.id), expectedIds, topicId + ' question IDs day ' + guide.day);
       assert.deepEqual(guide.questions.map(q => q.value), expectedValues, topicId + ' question wording day ' + guide.day);
       assert.deepEqual(guide.questions.map(q => q.label), expectedValues, topicId + ' question labels day ' + guide.day);
+      guide.questions.forEach((question, index) => {
+        if (index !== 10) assert.equal(question.kind, expectedKinds[index], topicId + ' question kind ' + question.id + ' day ' + guide.day);
+      });
       assert.ok(String(guide.questions[10].kind || '').trim(), topicId + ' q11 must retain its topic-specific safety handler day ' + guide.day);
     }
   }
@@ -148,6 +152,12 @@ test('all T01-T09 prepared answers share the same structural heading and day obj
       }
     }
   }
+});
+
+test('T01 q10 does not repeat the self-blame instruction', () => {
+  const answer = answerAngerDailyPreparedQuestion({ day: 1, message: expectedValues[9] });
+  const occurrences = (answer.match(/خودت را سرزنش/g) || []).length;
+  assert.equal(occurrences, 1, 'T01 q10 should state the self-compassion reminder once');
 });
 
 test('q11 keeps a genuinely topic-specific answer body after the shared response frame', () => {
