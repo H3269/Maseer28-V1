@@ -60,7 +60,7 @@ test('each FAQ answer is anchored to its corresponding daily content and safety 
   for (const record of guide.records) {
     assert.ok(answer(record, 'q01').includes(record.exercise), `day ${record.day}: q01 exercise`);
     assert.ok(answer(record, 'q03').includes(record.action), `day ${record.day}: q03 action`);
-    assert.ok(answer(record, 'q05').includes(record.lightVersion), `day ${record.day}: q05 light version`);
+    assert.equal(answer(record, 'q05'), record.lightVersion, `day ${record.day}: q05 is the exact light version`);
     assert.equal(answer(record, 'q06'), record.successCriterion, `day ${record.day}: q06 success criterion`);
     assert.ok(answer(record, 'q07').includes(record.stopCondition), `day ${record.day}: q07 stop condition`);
     assert.ok(record.stopConditions.every((condition) => answer(record, 'q07').includes(condition)), `day ${record.day}: q07 all safety conditions`);
@@ -75,6 +75,15 @@ test('each FAQ answer is anchored to its corresponding daily content and safety 
     assert.ok(answer(record, 'q14').includes(record.title), `day ${record.day}: q14 title`);
     assert.ok(answer(record, 'q14').includes(String(record.durationMinutes)), `day ${record.day}: q14 duration`);
   }
+});
+
+test('q09 and q11 avoid repeated generic endings and openings', () => {
+  const q09 = guide.records.map((record) => answer(record, 'q09'));
+  const q11 = guide.records.map((record) => answer(record, 'q11'));
+  assert.equal(new Set(q09).size, 28);
+  assert.equal(new Set(q11).size, 28);
+  assert.ok(q09.every((item) => !item.includes('اگر فقط فرصت یکی را داری، با نسخه سبک تمرین شروع کن')));
+  assert.ok(q11.every((item) => !item.startsWith('اگر فشار یا مقاومت بالا رفت، لازم نیست ادامه بدهی')));
 });
 
 test('q02 has one distinct concrete example per day and q08 has day-specific no-event guidance', () => {
