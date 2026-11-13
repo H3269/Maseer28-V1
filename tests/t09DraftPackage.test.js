@@ -41,7 +41,6 @@ test('T09 assistant guide and canonical content stay aligned across all daily fi
     ['reviewRecordId', 'review_record_id'],
     ['subtopicMappingStatus', 'subtopic_mapping_status'],
     ['durationStatus', 'duration_status'],
-    ['sourceIds', 'source_ids'],
     ['evidenceGrade', 'evidence_grade'],
     ['reviewStatus', 'review_status'],
   ];
@@ -52,6 +51,7 @@ test('T09 assistant guide and canonical content stay aligned across all daily fi
       assert.equal(guideDay[guideField], canonicalDay[canonicalField], `day ${index + 1}: ${guideField}`);
     }
     assert.deepEqual(guideDay.stopConditions, canonicalDay.stop_conditions, `day ${index + 1}: stopConditions`);
+    assert.deepEqual(guideDay.sourceIds, canonicalDay.source_ids, `day ${index + 1}: sourceIds`);
     assert.deepEqual(guideDay.subtopicIds, canonicalDay.subtopic_ids, `day ${index + 1}: subtopicIds`);
     assert.equal(guideDay.subtopicId, canonicalDay.subtopic_ids[0], `day ${index + 1}: primary subtopicId`);
     assert.deepEqual(guideDay.contraindications, canonicalDay.contraindications, `day ${index + 1}: contraindications`);
