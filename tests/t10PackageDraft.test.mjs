@@ -21,6 +21,11 @@ test('T10 canonical draft covers 28 unique daily units with the v2 contract', ()
   assert.equal(evidenceMap.mappings.length, 28);
   const sharedClaimIds = new Set(evidenceMap.shared_safety_claims.map((claim) => claim.claim_id));
   assert.equal(sharedClaimIds.size, 5);
+  assert.equal(evidenceMap.status, 'draft_pending_expert_review');
+  assert.equal(sourceRegistry.status, 'curated_draft_sources_pending_evidence_review');
+  assert.ok(evidenceMap.shared_safety_claims.every((claim) => claim.review_status === 'pending_expert_review'));
+  const allClaimIds = [...evidenceMap.shared_safety_claims.map((claim) => claim.claim_id), ...evidenceMap.mappings.flatMap((item) => item.claim_mappings.map((claim) => claim.claim_id))];
+  assert.equal(new Set(allClaimIds).size, allClaimIds.length, 'all day-specific and shared claim IDs must be unique');
   for (const claim of evidenceMap.shared_safety_claims) {
     assert.ok(sourceIds.has(claim.source_id));
     assert.equal(claim.applies_to_days.length, 28);
