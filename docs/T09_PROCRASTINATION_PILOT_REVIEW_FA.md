@@ -134,3 +134,9 @@
 - بنابراین «صفر روز با metadata نسخه دوم» در بخش قدیمی این سند دیگر وضعیت فعلی نیست؛ اما «صفر روز تأییدشده» و «صفر رکورد بازبینی تخصصی واقعی» همچنان درست است.
 
 **وضعیت جاری:** `draft_v2_structurally_complete_scoped_ci_passed_specialist_evidence_safety_and_runtime_gates_open`
+
+## نتیجه همگام‌سازی کامل metadata ایمنی در guide — 2026-11-13
+
+- پس از افزودن contraindications، whenToSeekHumanSupport، reflectionPrompt، exerciseType، subtopicIds و reviewRecordId به guide، تعداد فیلدهای هم‌ترازی‌شده canonical/guide به **۲۵ فیلد در ۲۸/۲۸ روز** رسید؛ صفر اختلاف.
+- q07 و q11 در هر ۲۸ روز اکنون همه stopConditions، contraindications و آستانه حمایت انسانی را بازتاب می‌دهند؛ هر دو ستون ۲۸ پاسخ یکتا دارند.
+- راهنمای دستیار هنوز draft است؛ این هم‌ترازی به معنی تأیید محتوایی/بالینی نیست. CI تازه برای نسخه جدید لازم است.
