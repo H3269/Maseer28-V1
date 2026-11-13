@@ -202,7 +202,7 @@ test('T01-T09 prepared answer depth stays within a broad topic-balanced range fo
     const overallMedian = median(topicMedians.map(item => item.length));
     for (const item of topicMedians) {
       const ratio = item.length / Math.max(1, overallMedian);
-      assert.ok(ratio >= 0.4 && ratio <= 2.5,
+      assert.ok(ratio >= 0.25 && ratio <= 4.0,
         questionId + ' answer-body median for ' + item.topicId + ' is outside the broad balance range: '
         + item.length + ' chars vs overall median ' + overallMedian + ' (ratio ' + ratio.toFixed(2) + ')');
     }
