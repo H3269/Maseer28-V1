@@ -16,7 +16,7 @@ test('T10 prepared answer requires exact canonical day identity and matching top
   const guide = T10_DAILY_ASSISTANT_GUIDES[0];
   const question = guide.questions[0];
   const dailyContent = {
-    id: 'T10-D01',
+    id: 'بی‌خوابی و مشکلات خواب-01',
     day: 1,
     topic_id: 'T10',
     exercise: guide.exercise,
@@ -24,7 +24,7 @@ test('T10 prepared answer requires exact canonical day identity and matching top
   };
   const answer = answerT10DailyPreparedQuestion({ day: 1, message: question.value, dailyContent });
   assert.ok(answer?.includes(guide.exercise));
-  assert.equal(answerT10DailyPreparedQuestion({ day: 1, message: question.value, dailyContent: { ...dailyContent, id: 'T10-D02' } }), null);
+  assert.equal(answerT10DailyPreparedQuestion({ day: 1, message: question.value, dailyContent: { ...dailyContent, id: 'بی‌خوابی و مشکلات خواب-02' } }), null);
   assert.equal(answerT10DailyPreparedQuestion({ day: 1, message: question.value, dailyContent: { ...dailyContent, topic_id: 'T09' } }), null);
 });
 
@@ -34,7 +34,7 @@ test('T10 sleep-distress answer preserves stop conditions and safety guidance', 
   const answer = answerT10DailyPreparedQuestion({
     day: 1,
     message: question.value,
-    dailyContent: { id: 'T10-D01', day: 1, topic_id: 'T10' },
+    dailyContent: { id: 'بی‌خوابی و مشکلات خواب-01', day: 1, topic_id: 'T10' },
   });
   assert.ok(answer.includes(guide.stopCondition));
   assert.ok(answer.includes('خواب‌آلودگی'));
@@ -42,7 +42,7 @@ test('T10 sleep-distress answer preserves stop conditions and safety guidance', 
 });
 
 test('T10 rejects unknown questions and invalid days instead of improvising', () => {
-  const dailyContent = { id: 'T10-D01', day: 1, topic_id: 'T10' };
+  const dailyContent = { id: 'بی‌خوابی و مشکلات خواب-01', day: 1, topic_id: 'T10' };
   assert.equal(answerT10DailyPreparedQuestion({ day: 1, message: 'سؤال خارج از فهرست', dailyContent }), null);
   assert.deepEqual(getT10DailyAssistantPromptGroups(29), []);
 });
