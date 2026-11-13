@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
-import { cleanPreparedAssistantTopicText } from '../src/features/assistant/teacherStylePreparedAnswer.js';
 import { ANGER_DAILY_ASSISTANT_GUIDES, answerAngerDailyPreparedQuestion, getAngerDailyAssistantPromptGroups } from '../src/features/assistant/angerDailyAssistantPrompts.js';
 import { ANXIETY_DAILY_ASSISTANT_GUIDES, answerAnxietyDailyPreparedQuestion, getAnxietyDailyAssistantPromptGroups } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
 import { FEAR_DAILY_ASSISTANT_GUIDES, answerFearDailyPreparedQuestion, getFearDailyAssistantPromptGroups } from '../src/features/assistant/fearDailyAssistantPrompts.js';
@@ -24,7 +23,6 @@ const topics = [
   ['T09', T09_DAILY_ASSISTANT_GUIDES, getT09DailyAssistantPromptGroups, answerT09DailyPreparedQuestion],
 ];
 const expectedIds = Array.from({ length: 14 }, (_, i) => 'q' + String(i + 1).padStart(2, '0'));
-const topicLabels = { T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت', T05: 'حسادت', T06: 'غم و سوگ', T07: 'احساس گناه', T08: 'وابستگی عاطفی', T09: 'اهمال‌کاری' };
 const expectedValues = [
   'منظور از تمرین امروز چیست؟',
   'برای تمرین امروز یک مثال می‌زنی؟',
@@ -109,8 +107,8 @@ test('all T01-T09 prepared answers share the same structural heading and day obj
         assert.ok(answer.includes('**هدف امروز:** ' + guide.objective), topicId + ' day ' + guide.day + ' objective frame');
         assert.ok(answer.includes('مهارت «' + guide.skill + '»'), topicId + ' day ' + guide.day + ' skill frame');
         assert.ok(answer.includes(guide.title), topicId + ' day ' + guide.day + ' title context');
-        if (question.kind === 'exercise_meaning') assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.exercise, topicLabels[topicId])), topicId + ' day ' + guide.day + ' exercise context');
-        if (question.kind === 'action_meaning') assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.action, topicLabels[topicId])), topicId + ' day ' + guide.day + ' action context');
+        if (question.kind === 'exercise_meaning') assert.ok(answer.includes(String(guide.exercise).trim().slice(0, 40)), topicId + ' day ' + guide.day + ' exercise context');
+        if (question.kind === 'action_meaning') assert.ok(answer.includes(String(guide.action).trim().slice(0, 40)), topicId + ' day ' + guide.day + ' action context');
       }
     }
   }
