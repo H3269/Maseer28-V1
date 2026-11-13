@@ -1,7 +1,8 @@
+import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 // T03 prepared-only daily assistant bank. Draft educational content; not expert-approved treatment.
-export const FEAR_DAILY_ASSISTANT_GUIDES = [
+const RAW_FEAR_DAILY_ASSISTANT_GUIDES = [
   {
     "day": 1,
     "title": "توصیف تجربه ترس",
@@ -2971,6 +2972,8 @@ export const FEAR_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "مثلاً اگر هنوز اثر ترس بر زندگی روزمره باقی است، مشورت تخصصی را انتخاب می‌کنی؛ اگر مسئله محدود و رو به بهبود است، مسیر مشاهده ایمن را با انعطاف ادامه می‌دهی."
   }
 ];
+
+export const FEAR_DAILY_ASSISTANT_GUIDES = Object.freeze(RAW_FEAR_DAILY_ASSISTANT_GUIDES.map(normalizeDailyAssistantGuide));
 export function toFearDayNumber(value) { const n=Number(String(value ?? '').replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))); return Number.isInteger(n)&&n>=1&&n<=28?n:null; }
 export function getFearDailyAssistantPromptGroups(day) {
   const dayNumber = toFearDayNumber(day);
