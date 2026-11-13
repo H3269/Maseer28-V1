@@ -1329,3 +1329,9 @@
 - این metadata به guide اضافه شد؛ subtopicIds، exerciseType و reviewRecordId نیز برای تکمیل زمینه روز همگام شدند.
 - q07 و q11 در همه ۲۸ روز اکنون stop conditions، محدودیت کاربرد و آستانه حمایت انسانی را پوشش می‌دهند. آزمون رگرسیون جدید این پوشش را بررسی می‌کند.
 - فقط فایل‌های draft/test در شاخه PR #129 تغییر کردند؛ runtime/main/overlay/registry دست‌نخورده‌اند و CI جدید لازم است.
+
+## 2026-11-13 — تکمیل هم‌ترازی metadata ایمنی در guide
+
+- پس از افزودن metadataهای ایمنی/زمینه‌ای به guide، ۲۵ فیلد canonical/guide در ۲۸ روز بدون اختلاف‌اند.
+- q07 و q11 در ۲۸/۲۸ روز stopConditions، contraindications و whenToSeekHumanSupport را پوشش می‌دهند؛ هر دو نوع پاسخ ۲۸ متن یکتا دارند.
+- این کنترل ساختاری است، نه تأیید تخصصی؛ CI جدید برای فایل‌های آزمون/guide افزوده‌شده لازم است.
