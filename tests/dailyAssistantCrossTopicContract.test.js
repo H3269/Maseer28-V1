@@ -39,12 +39,18 @@ const expectedValues = [
   'می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟',
   'این تمرین چقدر زمان می‌برد؟',
 ];
+const expectedGuideKeys = Object.keys(ANGER_DAILY_ASSISTANT_GUIDES[0]);
+const expectedQuestionKeys = Object.keys(ANGER_DAILY_ASSISTANT_GUIDES[0].questions[0]);
 
 test('T01-T09 share the exact same 14 prepared question IDs, wording, and order on all 28 days', () => {
   for (const [topicId, guides] of topics) {
     assert.equal(guides.length, 28, topicId + ' day coverage');
     for (const guide of guides) {
       assert.equal(guide.day >= 1 && guide.day <= 28, true, topicId + ' day range');
+      assert.deepEqual(Object.keys(guide), expectedGuideKeys, topicId + ' day ' + guide.day + ' shared guide schema');
+      assert.ok(Array.isArray(guide.metadataGaps), topicId + ' day ' + guide.day + ' explicit metadata gaps');
+      assert.deepEqual(Object.keys(guide.questions[0]), expectedQuestionKeys, topicId + ' day ' + guide.day + ' shared question schema');
+      assert.ok(guide.questions.every(question => Object.hasOwn(question, 'answer')), topicId + ' day ' + guide.day + ' answer field');
       assert.equal(guide.questions.length, 14, topicId + ' day ' + guide.day);
       assert.deepEqual(guide.questions.map(q => q.id), expectedIds, topicId + ' question IDs day ' + guide.day);
       assert.deepEqual(guide.questions.map(q => q.value), expectedValues, topicId + ' question wording day ' + guide.day);
