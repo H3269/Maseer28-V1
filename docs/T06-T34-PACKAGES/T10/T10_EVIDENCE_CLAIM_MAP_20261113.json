@@ -2,36 +2,66 @@
   "schema_version": "1.0.0",
   "package_id": "T10",
   "status": "draft_pending_expert_review",
-  "scope_note": "This is a preliminary source-to-day index, not a completed claim-by-claim evidence appraisal. Source IDs support only the bounded statements in the registry; they do not validate the entire exercise or prove app effectiveness.",
+  "scope_note": "Preliminary source-to-claim links identify which bounded factual statements are supported by each traceable source. This is not a completed appraisal of evidence quality, clinical appropriateness, or app efficacy. All mappings remain pending qualified human review; do not infer treatment approval or runtime eligibility.",
   "source_registry": "public/assistant/evidence/sources.v1.json",
   "mappings": [
     {
       "day": 1,
       "content_id": "T10-D01",
       "source_ids": [
-        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-NHLBI-INSOMNIA-OVERVIEW-001",
         "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D01-C01",
+          "source_id": "SRC-SLEEP-NHLBI-INSOMNIA-OVERVIEW-001",
+          "claim": "The user is asked to describe the sleep complaint without making a diagnosis; the NHLBI describes insomnia as difficulty falling asleep, staying asleep, or poor-quality sleep despite adequate opportunity.",
+          "review_status": "pending_expert_review",
+          "limitations": "Public-facing educational page; symptom descriptions are not diagnostic criteria for the app and cannot establish insomnia from a single complaint."
+        },
+        {
+          "claim_id": "T10-D01-C02",
+          "source_id": "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+          "claim": "Breathing pauses, loud snoring, gasping, and daytime sleepiness are warning symptoms that warrant discussion with a healthcare provider; they are not a diagnosis.",
+          "review_status": "pending_expert_review",
+          "limitations": "Symptom education only; these signs do not establish a diagnosis and do not replace clinical evaluation."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
       "day": 2,
       "content_id": "T10-D02",
       "source_ids": [
-        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
+        "SRC-SLEEP-NHLBI-INSOMNIA-OVERVIEW-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D02-C01",
+          "source_id": "SRC-SLEEP-NHLBI-INSOMNIA-OVERVIEW-001",
+          "claim": "The distinction between inadequate opportunity and difficulty sleeping despite time and a suitable environment is part of the clinical definition of insomnia; the exercise only records opportunity and constraints.",
+          "review_status": "pending_expert_review",
+          "limitations": "Public-facing educational page; symptom descriptions are not diagnostic criteria for the app and cannot establish insomnia from a single complaint."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
       "day": 3,
       "content_id": "T10-D03",
       "source_ids": [
-        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
-        "SRC-SLEEP-NHLBI-OSA-DIAGNOSIS-001"
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D03-C01",
+          "source_id": "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+          "claim": "A limited sleep diary may help a clinician understand sleep timing, awakenings, naps, and daytime sleepiness; this course explicitly avoids minute-by-minute or compulsive monitoring.",
+          "review_status": "pending_expert_review",
+          "limitations": "Patient education about clinical evaluation; symptom patterns are not diagnostic criteria for the app. Sleep diary suggestions do not justify obsessive tracking or self-diagnosis."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
@@ -40,7 +70,15 @@
       "source_ids": [
         "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D04-C01",
+          "source_id": "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+          "claim": "Daytime sleepiness and tiredness can occur with sleep apnea; the content prioritizes safety and clinical evaluation rather than diagnosis.",
+          "review_status": "pending_expert_review",
+          "limitations": "Symptom education only; these signs do not establish a diagnosis and do not replace clinical evaluation."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
@@ -50,7 +88,22 @@
         "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
         "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D05-C01",
+          "source_id": "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+          "claim": "Clinical history may include caffeine, nicotine, alcohol, medicines, and health conditions; recording co-occurrence does not prove causation.",
+          "review_status": "pending_expert_review",
+          "limitations": "Patient education about clinical evaluation; symptom patterns are not diagnostic criteria for the app. Sleep diary suggestions do not justify obsessive tracking or self-diagnosis."
+        },
+        {
+          "claim_id": "T10-D05-C02",
+          "source_id": "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001",
+          "claim": "Caffeine can affect alertness and sleep depending on timing and individual sensitivity; this is not a universal cut-off or instruction to stop abruptly.",
+          "review_status": "pending_expert_review",
+          "limitations": "Training material for shift workers; timing and effects vary. Do not advise abrupt cessation or use caffeine as a substitute for sleep or safety."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
@@ -59,14 +112,22 @@
       "source_ids": [
         "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D06-C01",
+          "source_id": "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001",
+          "claim": "Sleep needs vary with age; the course avoids a single universal hour target.",
+          "review_status": "pending_expert_review",
+          "limitations": "General public-health education. Age, health, shift work, caregiving, environment, and individual circumstances matter; these suggestions are not an insomnia treatment protocol."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
       "day": 7,
       "content_id": "T10-D07",
       "source_ids": [],
-      "claim_scope": "No external clinical efficacy claim is asserted for this day; the unit is limited to self-observation or a non-clinical planning action.",
+      "claim_mappings": [],
       "review_status": "pending_expert_review"
     },
     {
@@ -75,7 +136,15 @@
       "source_ids": [
         "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D08-C01",
+          "source_id": "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001",
+          "claim": "A consistent schedule can be a general sleep-supportive habit, but T10 explicitly adapts it to shift work, caregiving, and adequate sleep opportunity.",
+          "review_status": "pending_expert_review",
+          "limitations": "General public-health education. Age, health, shift work, caregiving, environment, and individual circumstances matter; these suggestions are not an insomnia treatment protocol."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
@@ -84,7 +153,15 @@
       "source_ids": [
         "SRC-SLEEP-NIOSH-LIGHT-CIRCADIAN-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D09-C01",
+          "source_id": "SRC-SLEEP-NIOSH-LIGHT-CIRCADIAN-001",
+          "claim": "Light at different times can influence circadian timing and alertness; the source is shift-work education and does not justify a universal timing prescription.",
+          "review_status": "pending_expert_review",
+          "limitations": "Educational material with examples for shift-work contexts. Do not translate into a universal light prescription; eye conditions, photosensitizing medicines, and individual schedules require caution."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
@@ -93,7 +170,15 @@
       "source_ids": [
         "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D10-C01",
+          "source_id": "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001",
+          "claim": "A quiet and comfortable environment is a general sleep-supportive consideration; it is not a treatment and must respect safety and resource constraints.",
+          "review_status": "pending_expert_review",
+          "limitations": "General public-health education. Age, health, shift work, caregiving, environment, and individual circumstances matter; these suggestions are not an insomnia treatment protocol."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
@@ -102,17 +187,32 @@
       "source_ids": [
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D11-C01",
+          "source_id": "SRC-SLEEP-AASM-CBTI-2021-001",
+          "claim": "Relaxation therapy receives a conditional recommendation as a single component for adults with chronic insomnia; an optional calming routine in this app is not clinician-delivered therapy or CBT-I.",
+          "review_status": "pending_expert_review",
+          "limitations": "Guideline is for adults with chronic insomnia disorder and clinician-delivered treatment decisions. It does not validate this app's 28-day course, any single app exercise, or unsupervised sleep restriction. Recommendations require clinical judgment and patient context."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
       "day": 12,
       "content_id": "T10-D12",
       "source_ids": [
-        "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001",
-        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
+        "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D12-C01",
+          "source_id": "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001",
+          "claim": "Caffeine is a stimulant and may interfere with sleep depending on timing and sensitivity; the content asks for observation and prohibits self-directed substance changes.",
+          "review_status": "pending_expert_review",
+          "limitations": "Training material for shift workers; timing and effects vary. Do not advise abrupt cessation or use caffeine as a substitute for sleep or safety."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
@@ -122,7 +222,22 @@
         "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
         "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D13-C01",
+          "source_id": "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+          "claim": "Medication and health history may be relevant to sleep evaluation; the content directs questions to a clinician or pharmacist and prohibits unsupervised medication changes.",
+          "review_status": "pending_expert_review",
+          "limitations": "Patient education about clinical evaluation; symptom patterns are not diagnostic criteria for the app. Sleep diary suggestions do not justify obsessive tracking or self-diagnosis."
+        },
+        {
+          "claim_id": "T10-D13-C02",
+          "source_id": "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+          "claim": "The guideline emphasizes reviewing sleep disorders, daytime sleepiness, respiratory impairment, substance history, and medication interactions in clinical care.",
+          "review_status": "pending_expert_review",
+          "limitations": "Professional clinical practice guideline intended to support clinician judgment, not replace it. The app must not diagnose, prescribe, or independently determine suitability for CBT-I, BBT-I, sleep restriction, or medication."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
@@ -131,7 +246,15 @@
       "source_ids": [
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D14-C01",
+          "source_id": "SRC-SLEEP-AASM-CBTI-2021-001",
+          "claim": "CBT-I includes cognitive approaches to sleep-related thoughts; this day's brief reflection is not a CBT-I protocol or substitute for treatment.",
+          "review_status": "pending_expert_review",
+          "limitations": "Guideline is for adults with chronic insomnia disorder and clinician-delivered treatment decisions. It does not validate this app's 28-day course, any single app exercise, or unsupervised sleep restriction. Recommendations require clinical judgment and patient context."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
@@ -141,7 +264,22 @@
         "SRC-SLEEP-AASM-CBTI-2021-001",
         "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D15-C01",
+          "source_id": "SRC-SLEEP-AASM-CBTI-2021-001",
+          "claim": "Stimulus control is a recognized component of clinician-directed insomnia treatment; this day offers only an optional low-stimulation alternative and does not prescribe full stimulus-control therapy.",
+          "review_status": "pending_expert_review",
+          "limitations": "Guideline is for adults with chronic insomnia disorder and clinician-delivered treatment decisions. It does not validate this app's 28-day course, any single app exercise, or unsupervised sleep restriction. Recommendations require clinical judgment and patient context."
+        },
+        {
+          "claim_id": "T10-D15-C02",
+          "source_id": "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+          "claim": "Nighttime fall risk or inability to transfer safely may require adapting behavioral treatment; the content explicitly offers an in-place alternative.",
+          "review_status": "pending_expert_review",
+          "limitations": "Professional clinical practice guideline intended to support clinician judgment, not replace it. The app must not diagnose, prescribe, or independently determine suitability for CBT-I, BBT-I, sleep restriction, or medication."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
@@ -150,16 +288,32 @@
       "source_ids": [
         "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D16-C01",
+          "source_id": "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+          "claim": "Sleep diaries may record naps and daytime sleepiness; this day observes nap timing and explicitly avoids a universal nap prohibition.",
+          "review_status": "pending_expert_review",
+          "limitations": "Patient education about clinical evaluation; symptom patterns are not diagnostic criteria for the app. Sleep diary suggestions do not justify obsessive tracking or self-diagnosis."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
       "day": 17,
       "content_id": "T10-D17",
       "source_ids": [
-        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D17-C01",
+          "source_id": "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+          "claim": "Clinical assessment considers dozing during routine tasks, especially driving; the day prioritizes stopping hazardous activity rather than compensating with substances or medication.",
+          "review_status": "pending_expert_review",
+          "limitations": "Patient education; it does not provide an individualized fitness-to-drive assessment. When sleepy, the app should advise stopping hazardous activity rather than trying to overcome sleepiness."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
@@ -168,14 +322,22 @@
       "source_ids": [
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D18-C01",
+          "source_id": "SRC-SLEEP-AASM-CBTI-2021-001",
+          "claim": "Cognitive approaches are part of multicomponent CBT-I for adults; this day's optional note for non-urgent worries is not a full cognitive treatment protocol.",
+          "review_status": "pending_expert_review",
+          "limitations": "Guideline is for adults with chronic insomnia disorder and clinician-delivered treatment decisions. It does not validate this app's 28-day course, any single app exercise, or unsupervised sleep restriction. Recommendations require clinical judgment and patient context."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
       "day": 19,
       "content_id": "T10-D19",
       "source_ids": [],
-      "claim_scope": "No external clinical efficacy claim is asserted for this day; the unit is limited to self-observation or a non-clinical planning action.",
+      "claim_mappings": [],
       "review_status": "pending_expert_review"
     },
     {
@@ -184,7 +346,15 @@
       "source_ids": [
         "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D20-C01",
+          "source_id": "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+          "claim": "A limited sleep diary can help a clinician review patterns and daytime effects; the content emphasizes brief, non-compulsive tracking.",
+          "review_status": "pending_expert_review",
+          "limitations": "Patient education about clinical evaluation; symptom patterns are not diagnostic criteria for the app. Sleep diary suggestions do not justify obsessive tracking or self-diagnosis."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
@@ -192,17 +362,31 @@
       "content_id": "T10-D21",
       "source_ids": [
         "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
-        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
         "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D21-C01",
+          "source_id": "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+          "claim": "Clinical sleep assessment considers symptoms, schedules, medicines, and other health conditions; the day separates external, medical, and access barriers.",
+          "review_status": "pending_expert_review",
+          "limitations": "Patient education about clinical evaluation; symptom patterns are not diagnostic criteria for the app. Sleep diary suggestions do not justify obsessive tracking or self-diagnosis."
+        },
+        {
+          "claim_id": "T10-D21-C02",
+          "source_id": "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+          "claim": "The guideline includes screening and clinician-led evaluation pathways for insomnia and obstructive sleep apnea.",
+          "review_status": "pending_expert_review",
+          "limitations": "Professional clinical practice guideline intended to support clinician judgment, not replace it. The app must not diagnose, prescribe, or independently determine suitability for CBT-I, BBT-I, sleep restriction, or medication."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
       "day": 22,
       "content_id": "T10-D22",
       "source_ids": [],
-      "claim_scope": "No external clinical efficacy claim is asserted for this day; the unit is limited to self-observation or a non-clinical planning action.",
+      "claim_mappings": [],
       "review_status": "pending_expert_review"
     },
     {
@@ -211,7 +395,15 @@
       "source_ids": [
         "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D23-C01",
+          "source_id": "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001",
+          "claim": "A relaxing routine and consistent schedule are general sleep-supportive habits, but this day makes the cue optional and adaptable to shift work and caregiving.",
+          "review_status": "pending_expert_review",
+          "limitations": "General public-health education. Age, health, shift work, caregiving, environment, and individual circumstances matter; these suggestions are not an insomnia treatment protocol."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
@@ -220,7 +412,15 @@
       "source_ids": [
         "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D24-C01",
+          "source_id": "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001",
+          "claim": "A quiet and comfortable sleep environment is a general consideration; this day focuses on support and realistic environmental changes without blaming the individual.",
+          "review_status": "pending_expert_review",
+          "limitations": "General public-health education. Age, health, shift work, caregiving, environment, and individual circumstances matter; these suggestions are not an insomnia treatment protocol."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
@@ -231,16 +431,46 @@
         "SRC-SLEEP-NHLBI-OSA-DIAGNOSIS-001",
         "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D25-C01",
+          "source_id": "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+          "claim": "Breathing pauses, loud snoring, gasping, and daytime sleepiness are symptoms to discuss with a healthcare provider; they do not establish a diagnosis.",
+          "review_status": "pending_expert_review",
+          "limitations": "Symptom education only; these signs do not establish a diagnosis and do not replace clinical evaluation."
+        },
+        {
+          "claim_id": "T10-D25-C02",
+          "source_id": "SRC-SLEEP-NHLBI-OSA-DIAGNOSIS-001",
+          "claim": "A healthcare provider may use a sleep study to diagnose sleep apnea; the app must not diagnose or select a test.",
+          "review_status": "pending_expert_review",
+          "limitations": "Patient education; the app must not diagnose sleep apnea or decide which test a person needs."
+        },
+        {
+          "claim_id": "T10-D25-C03",
+          "source_id": "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+          "claim": "The guideline includes distinct clinical screening and management pathways for obstructive sleep apnea.",
+          "review_status": "pending_expert_review",
+          "limitations": "Professional clinical practice guideline intended to support clinician judgment, not replace it. The app must not diagnose, prescribe, or independently determine suitability for CBT-I, BBT-I, sleep restriction, or medication."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
       "day": 26,
       "content_id": "T10-D26",
       "source_ids": [
-        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001"
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D26-C01",
+          "source_id": "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+          "claim": "Dozing or difficulty staying awake during routine tasks, especially driving, is relevant to clinical assessment; the day prioritizes stopping hazardous activity.",
+          "review_status": "pending_expert_review",
+          "limitations": "Patient education; it does not provide an individualized fitness-to-drive assessment. When sleepy, the app should advise stopping hazardous activity rather than trying to overcome sleepiness."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
@@ -250,7 +480,22 @@
         "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
         "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D27-C01",
+          "source_id": "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+          "claim": "Persistent sleep problems affecting daily activity warrant discussion with a healthcare provider; the course is not a diagnosis or treatment.",
+          "review_status": "pending_expert_review",
+          "limitations": "Patient education about clinical evaluation; symptom patterns are not diagnostic criteria for the app. Sleep diary suggestions do not justify obsessive tracking or self-diagnosis."
+        },
+        {
+          "claim_id": "T10-D27-C02",
+          "source_id": "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+          "claim": "The clinical guideline supports structured clinician-led pathways and reassessment rather than indefinite self-help.",
+          "review_status": "pending_expert_review",
+          "limitations": "Professional clinical practice guideline intended to support clinician judgment, not replace it. The app must not diagnose, prescribe, or independently determine suitability for CBT-I, BBT-I, sleep restriction, or medication."
+        }
+      ],
       "review_status": "pending_expert_review"
     },
     {
@@ -260,7 +505,22 @@
         "SRC-SLEEP-AASM-CBTI-2021-001",
         "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
       ],
-      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "claim_mappings": [
+        {
+          "claim_id": "T10-D28-C01",
+          "source_id": "SRC-SLEEP-AASM-CBTI-2021-001",
+          "claim": "For adults with chronic insomnia disorder, multicomponent CBT-I is strongly recommended; completion of this app course is not equivalent to CBT-I or evidence of remission.",
+          "review_status": "pending_expert_review",
+          "limitations": "Guideline is for adults with chronic insomnia disorder and clinician-delivered treatment decisions. It does not validate this app's 28-day course, any single app exercise, or unsupervised sleep restriction. Recommendations require clinical judgment and patient context."
+        },
+        {
+          "claim_id": "T10-D28-C02",
+          "source_id": "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+          "claim": "The guideline offers clinical pathways for chronic insomnia and obstructive sleep apnea; the next step depends on individual assessment.",
+          "review_status": "pending_expert_review",
+          "limitations": "Professional clinical practice guideline intended to support clinician judgment, not replace it. The app must not diagnose, prescribe, or independently determine suitability for CBT-I, BBT-I, sleep restriction, or medication."
+        }
+      ],
       "review_status": "pending_expert_review"
     }
   ]
