@@ -130,3 +130,18 @@ test('T09 overlay and prompt UI are connected while the knowledge registry remai
   assert.match(launcher, /isT09DailyPromptContext/);
   assert.match(launcher, /t09-daily-prompt-trigger/);
 });
+
+test('T09 answer helper refuses mismatched canonical topic/day identities', () => {
+  const guide = T09_DAILY_ASSISTANT_GUIDES[0];
+  const question = guide.questions[0];
+  assert.equal(answerT09DailyPreparedQuestion({
+    day: 1,
+    message: question.value,
+    dailyContent: { id: getCanonicalDailyRecordId('اضطراب', 1), day: 1, topic_id: 'T02' },
+  }), null);
+  assert.equal(answerT09DailyPreparedQuestion({
+    day: 2,
+    message: question.value,
+    dailyContent: { id: getCanonicalDailyRecordId('اهمال‌کاری', 1), day: 1, topic_id: 'T09' },
+  }), null);
+});
