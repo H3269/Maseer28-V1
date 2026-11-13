@@ -289,6 +289,12 @@ export function getDailySafetyMode(day) {
   // performed after the owner can inspect the full package in the live app.
   // Keep the risk classification gate active; unknown/missing risk stays blocked.
   if (isSleepTopicDay(day)) {
+    const selectedSubtopics = Array.isArray(day.subtopic_ids) ? day.subtopic_ids : [];
+    if (selectedSubtopics.length === 1 && selectedSubtopics[0] === 'T10-S03') {
+      return day.risk_level === 'caution'
+        && Array.isArray(day.safety_rule_ids)
+        && day.safety_rule_ids.length > 0 ? 'caution' : 'blocked';
+    }
     if (day.risk_level === 'routine') return 'routine';
     if (day.risk_level === 'caution') return 'caution';
     return 'blocked';
