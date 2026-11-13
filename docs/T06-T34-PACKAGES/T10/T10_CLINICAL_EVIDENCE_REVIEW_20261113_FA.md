@@ -23,6 +23,43 @@
    - محدودسازی خواب ممکن است خواب‌آلودگی، خستگی و افت تمرکز گذرا ایجاد کند.
    - برای مشاغل پرخطر و افراد مستعد مانیا یا تشنج، این جزء درمانی می‌تواند نامناسب/نیازمند احتیاط تخصصی باشد.
 
+### منابع تکمیلی افزوده‌شده به registry
+
+4. **NHLBI/NIH — Insomnia: What Is Insomnia?**
+https://www.nhlbi.nih.gov/health/insomnia
+- دشواری شروع یا تداوم خواب با وجود فرصت و محیط مناسب را از کمبود فرصت خواب جدا می‌کند؛ شرح علائم تشخیص محسوب نمی‌شود.
+
+5. **NHLBI/NIH — Insomnia: Diagnosis.**
+https://www.nhlbi.nih.gov/health/insomnia/diagnosis
+- ارزیابی بالینی می‌تواند الگوی خواب، اثر روزانه، برنامه کاری، داروها و مصرف کافئین/نیکوتین/الکل را بررسی کند؛ دفترچه محدود خواب ممکن است به گفت‌وگو با پزشک کمک کند.
+
+6. **NHLBI/NIH — Sleep Apnea: Symptoms and Diagnosis.**
+https://www.nhlbi.nih.gov/health/sleep-apnea/symptoms
+https://www.nhlbi.nih.gov/health/sleep-apnea/diagnosis
+- وقفه تنفسی، خرخر بلند، نفس‌نفس/خفگی و خواب‌آلودگی روزانه از نشانه‌هایی هستند که باید با پزشک مطرح شوند؛ تشخیص ممکن است به مطالعه خواب نیاز داشته باشد.
+
+7. **NHLBI/NIH — Sleep Deprivation and Deficiency: Diagnosis and Treatment.**
+https://www.nhlbi.nih.gov/health/sleep-deprivation/diagnosis-treatment
+- خواب‌آلودگی در فعالیت‌های روزمره، به‌ویژه رانندگی، موضوع مهم ارزیابی بالینی است.
+
+8. **CDC — About Sleep.**
+https://www.cdc.gov/sleep/about/index.html
+- نیاز خواب با سن تغییر می‌کند و محیط آرام/راحت و برنامه نسبتاً منظم از عادت‌های عمومی حمایت‌کننده خواب‌اند؛ این‌ها درمان بی‌خوابی نیستند.
+
+9. **CDC/NIOSH — Effects of Light on Circadian Rhythms.**
+https://www.cdc.gov/niosh/work-hour-training-for-nurses/longhours/mod2/19.html
+- زمان نور می‌تواند بر ریتم شبانه‌روزی و هوشیاری اثر بگذارد؛ کاربرد باید وابسته به زمان‌بندی فرد باشد و نسخه عمومی برای همه نیست.
+
+10. **CDC/NIOSH — Sleep Aids and Stimulants: Caffeine.**
+https://www.cdc.gov/niosh/work-hour-training-for-nurses/longhours/mod6/11.html
+- کافئین محرک است و اثر آن بر هوشیاری/خواب به زمان مصرف و حساسیت فرد بستگی دارد؛ قطع ناگهانی یا جایگزینی خواب با کافئین توصیه نمی‌شود.
+
+11. **NHTSA — Drowsy Driving: Avoid Falling Asleep Behind the Wheel.**
+https://www.nhtsa.gov/risky-driving/drowsy-driving
+- خواب‌آلودگی رانندگی را ناایمن می‌کند؛ کافئین به‌تنهایی راه‌حل قابل اتکا نیست و هنگام خواب‌آلودگی باید در محل امن توقف کرد.
+
+این منابع به‌صورت ۳۸ پیوند محدود روز-ادعا در فایل T10_EVIDENCE_CLAIM_MAP_20261113.json نگاشت شده‌اند. این تعداد، تعداد پیوندهاست نه ۳۸ مطالعه مستقل؛ هر منبع می‌تواند برای چند روز مرتبط استفاده شده باشد.
+
 ## نگاشت محدود ادعاها به شواهد
 
 | ادعای قابل استفاده | منبع | وضعیت در T10 |
