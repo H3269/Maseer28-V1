@@ -39,6 +39,11 @@ test('T09 assistant guide and canonical content stay aligned across all daily fi
     ['reflectionPrompt', 'reflection_prompt'],
     ['whenToSeekHumanSupport', 'when_to_seek_human_support'],
     ['reviewRecordId', 'review_record_id'],
+    ['subtopicMappingStatus', 'subtopic_mapping_status'],
+    ['durationStatus', 'duration_status'],
+    ['sourceIds', 'source_ids'],
+    ['evidenceGrade', 'evidence_grade'],
+    ['reviewStatus', 'review_status'],
   ];
   for (let index = 0; index < 28; index += 1) {
     const guideDay = guide.records[index];
@@ -48,6 +53,7 @@ test('T09 assistant guide and canonical content stay aligned across all daily fi
     }
     assert.deepEqual(guideDay.stopConditions, canonicalDay.stop_conditions, `day ${index + 1}: stopConditions`);
     assert.deepEqual(guideDay.subtopicIds, canonicalDay.subtopic_ids, `day ${index + 1}: subtopicIds`);
+    assert.equal(guideDay.subtopicId, canonicalDay.subtopic_ids[0], `day ${index + 1}: primary subtopicId`);
     assert.deepEqual(guideDay.contraindications, canonicalDay.contraindications, `day ${index + 1}: contraindications`);
     assert.equal(canonicalDay.review_status, 'draft');
     assert.equal(canonicalDay.evidence_grade, 'not_assessed');
