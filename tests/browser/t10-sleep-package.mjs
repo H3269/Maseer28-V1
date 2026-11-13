@@ -81,10 +81,12 @@ async function verifyDay(browser, dayNumber) {
       const payload = structuredClone(canonical);
       const day = payload.categories?.[topic]?.days?.find(item => Number(item.day) === dayNumber);
       assert.ok(day, `T10 day ${dayNumber} must exist in the canonical fixture`);
+      const auditedDay = t10Draft.records.find(item => Number(item.day) === dayNumber);
+      assert.ok(auditedDay, `T10 draft day ${dayNumber} must exist`);
       Object.assign(day, {
         topic_id: 'T10', day: dayNumber,
-        review_status: 'draft',
-        risk_level: [4, 17, 25, 26].includes(dayNumber) ? 'caution' : 'routine',
+        review_status: auditedDay.review_status,
+        risk_level: auditedDay.risk_level,
       });
       await route.fulfill({ status: 200, contentType: 'application/json; charset=utf-8', body: JSON.stringify(payload) });
       return;
