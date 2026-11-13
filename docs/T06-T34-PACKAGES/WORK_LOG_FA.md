@@ -1378,3 +1378,16 @@
 - گام مالک: تست زنده نسخه main در مرورگر؛ انتشار به Telegram/Bale فقط با مجوز جداگانه مالک.
 
 **وضعیت:** `T09_LIMITED_RUNTIME_INTEGRATED_MAIN; SCOPED_CI_4825_SUCCESS; MAIN_FULL_VALIDATION_PENDING; OWNER_BROWSER_TEST_PENDING; NO_TELEGRAM_BALE_RELEASE`
+
+
+## 2026-11-13 — نتیجه اعتبارسنجی کامل main پس از ادغام T09
+
+- اجرای کامل main با run ID `43422666904` پایان یافت و status نهایی `failure` شد؛ بنابراین full validation کل اپ سبز نیست، با وجود موفقیت CI بسته‌ای T09 #4825.
+- خطای صف P0 فقط stale بودن fingerprint سه منبع canonical path-content، topic registry و subtopic registry را گزارش کرد.
+- از ۸۱۸ آزمون واحد، ۸۱۴ موفق و ۴ ناموفق بودند: آزمون عمومی وضعیت review در رکوردهای T07، آزمون سراسری تعداد overrideهای ۹۵۲ روز (۸۹۶ مورد تغییر یافته به‌جای ۹۵۲، به‌علت عدم تغییر exercise/action در ۲۸ روز T07 و ۲۸ روز T08)، و دو آزمون T07 درباره هم‌پوشانی lightActionText با T08 و version metadata قدیمی T08.
+- اعتبارسنجی محتوای کلی، ۲۸ خطای T08 را گزارش کرد: source_ids در همه روزهای وابستگی عاطفی ناقص است. این مورد به T08 مربوط است.
+- ممیزی‌های ۹۵۲ روز، کیفیت محتوا، نگاشت‌ها، نمونه‌های قالب و ساخت production موفق شدند؛ build موفق بود. آزمون‌های Chromium سراسری به‌دلیل شکست مراحل قبلی اجرا نشدند.
+- در گزارش‌های فوق خطای اختصاصی T09 مشاهده نشد؛ T09 در CI بسته‌ای #4825 (۳۹۲ مسیر پرسش، build و Chromium اختصاصی) موفق بوده است. این تفکیک، شکست full validation را پنهان یا به T09 نسبت نمی‌دهد.
+- **گام بعدی:** مالک می‌تواند main را در مرورگر تست کند، اما نباید نتیجه را تأیید کامل ۳۴ موضوع تلقی کند. موانع سراسری T07/T08 و fingerprintهای صف P0 باید در کارهای مستقل رفع شوند. هیچ انتشار Telegram/Bale انجام نشده است.
+
+**وضعیت:** `T09_SCOPED_VALIDATION_SUCCESS; MAIN_FULL_VALIDATION_FAILURE_T07_T08_P0; OWNER_BROWSER_TEST_PENDING; NO_TELEGRAM_BALE_RELEASE`
