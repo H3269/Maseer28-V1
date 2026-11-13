@@ -1544,3 +1544,15 @@
 - هنوز هیچ تغییری در runtime یا overlay اجرایی انجام نشده، CI اجرا نشده، مرورگر تست نشده و بسته T10 تکمیل/تأیید نشده است.
 
 **وضعیت:** T10_INITIAL_AUDIT_AND_DRAFTS_CREATED; 28_DAILY_UNITS; 392_DRAFT_ANSWERS; STRUCTURAL_CHECKS_PASSED; SEMANTIC_REVIEW_PENDING; CLINICAL_REVIEW_PENDING; RUNTIME_NOT_CHANGED; NO_MAIN_MERGE; NO_RELEASE
+
+
+### 2026-11-13 — ممیزی اختصاصی‌تر محتوای T10 و افزودن آزمون ساختاری
+
+- معیار موفقیت هر ۲۸ روز از عبارت‌های عمومی به معیارهای قابل مشاهده و اختصاصی همان روز تبدیل شد.
+- اقدام‌های روزهای ۱، ۲، ۳، ۴، ۵، ۷، ۸، ۹، ۱۱، ۱۲، ۱۵، ۱۶، ۱۸، ۱۹، ۲۰، ۲۱ و ۲۴ برای کاهش کلی‌گویی و تمایز موضوعی بازنویسی شدند.
+- q02/q04 هر روز مثال مستقل دارد؛ q08/q12/q14 نیز روزمحور شدند. ۳۹۲ پاسخ غیرخالی و از نظر متن کامل یکتا هستند.
+- غربال واژگانی روی ۳۴ موضوع، هیچ تکرار دقیق بین‌موضوعی در ۵۶ متن تمرین/اقدام T10 پیدا نکرد. بیشترین شباهت 0.50 در پیام ارجاع پزشکی T10-D25 و پیام ایمنی موضوع عادت‌های تکراری بود؛ هم‌پوشانی ایمنی مشترک و عمدی است. این غربال، تأیید نبود تکرار مفهومی نیست.
+- آزمون اختصاصی `tests/t10PackageDraft.test.mjs` برای ساختار ۲۸ روز، ۳۹۲ پاسخ، گیت‌های ایمنی و عدم تکرار دقیق افزوده شد؛ هنوز CI اجرا نشده است.
+- محتوا و راهنمای T10 همچنان draft/not_assessed و خارج از runtime هستند؛ هیچ تغییر اجرایی، ادغام در main یا انتشار انجام نشده است.
+
+**وضعیت:** T10_DRAFTS_REFINED; 28_DAY_CRITERIA_UNIQUE; 392_ANSWERS_UNIQUE; CROSS_TOPIC_EXACT_DUPLICATES_ZERO; PACKAGE_TEST_ADDED_CI_PENDING; SEMANTIC_AND_CLINICAL_REVIEW_PENDING; NO_RUNTIME_CHANGE; NO_MAIN_MERGE; NO_RELEASE
