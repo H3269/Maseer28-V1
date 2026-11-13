@@ -87,7 +87,7 @@ export function answerT09DailyPreparedQuestion({ day, message, dailyContent } = 
         '۲. مانع را از میان ابهام کار، بزرگی گام، ظرفیت جسمی/ذهنی، نگرانی از نتیجه و محدودیت بیرونی مشخص کن؛ علت را حدس قطعی نزن.',
         `۳. اگر امن و متناسب است، فقط بخش کوچک و غیرحساس تمرین را نگه دار: ${exercise}`,
         `۴. اگر ادامه مناسب نیست، نسخه استراحت را انتخاب کن: ${restAction}`,
-        `**شرط توقف اختصاصی امروز:** ${guide.stopCondition}`,
+        `**شرط‌های توقف اختصاصی امروز:** ${(guide.stopConditions || [guide.stopCondition]).join(' ')}`,
         `**محدودیت کاربرد:** ${(guide.contraindications || []).join(' ')}`,
         `**زمان حمایت انسانی:** ${guide.whenToSeekHumanSupport}`
       ].join('\n\n');
