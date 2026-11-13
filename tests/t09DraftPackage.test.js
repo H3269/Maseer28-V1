@@ -111,7 +111,7 @@ test('day 8 remains about defining the first move, not environmental setup', () 
   assert.match(record.progressVersion, /حرکت فیزیکیِ نخست/u);
   assert.match(record.restVersion, /حرکت نخست را تعیین نکن/u);
   assert.match(record.stopCondition, /مرحله الزامی، بررسی تخصصی یا کنترل ایمنی/u);
-  assert.match(answer(record, 'q12'), /اطلاعاتی.*فرد دیگری/u);
+  assert.match(answer(record, 'q12'), /اطلاعات، اجازه، دسترسی، هماهنگی یا تقسیم مسئولیتی/u);
   assert.doesNotMatch(record.restVersion, /محرک‌ها را حذف نکن/u);
 });
 
