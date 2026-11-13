@@ -217,3 +217,14 @@ test('q09 explains the day-specific distinction without the repeated generic tra
     assert.doesNotMatch(response, /اقدام، خروجی عملی کوچک‌تر و مشخص این روز است/u, `day ${record.day}: generic q09 transition`);
   }
 });
+
+test('q02 exercise examples and q04 action examples are not near-duplicates within a day', () => {
+  const tokens = (value) => new Set(value.toLocaleLowerCase('fa').replace(/[‌ـ،؛.!؟,:()«»"']/gu, ' ').split(/\s+/u).filter((item) => item.length > 1));
+  for (const record of guide.records) {
+    const exerciseExample = tokens(answer(record, 'q02'));
+    const actionExample = tokens(answer(record, 'q04'));
+    const intersection = [...exerciseExample].filter((item) => actionExample.has(item)).length;
+    const union = new Set([...exerciseExample, ...actionExample]).size;
+    assert.ok(union > 0 && intersection / union < 0.5, `day ${record.day}: q02/q04 example overlap`);
+  }
+});
