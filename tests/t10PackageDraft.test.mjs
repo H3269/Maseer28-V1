@@ -77,6 +77,52 @@ test('T10 assistant guide has 392 non-empty, unique answers and 14 questions per
   assert.equal(new Set(q04).size, 28, 'action examples must be day-specific');
 });
 
+test('T10 guide and canonical records remain aligned across all daily fields and FAQs', () => {
+  const fields = [
+    ['title', 'title'], ['objective', 'learning_objective'], ['skill', 'target_skill'],
+    ['mechanism', 'teaching_point'], ['exercise', 'instructions'], ['action', 'action'],
+    ['lightVersion', 'light_version'], ['progressVersion', 'progress_version'],
+    ['restVersion', 'rest_version'], ['durationMinutes', 'duration_minutes'],
+    ['successCriterion', 'success_criterion'], ['stopCondition', 'stop_condition_text'],
+    ['exerciseType', 'exercise_type'], ['reflectionPrompt', 'reflection_prompt'],
+    ['whenToSeekHumanSupport', 'when_to_seek_human_support'],
+    ['durationStatus', 'duration_status'], ['evidenceGrade', 'evidence_grade'],
+    ['reviewStatus', 'review_status'],
+  ];
+  for (let index = 0; index < 28; index += 1) {
+    const g = guide.records[index];
+    const c = canonical.records[index];
+    for (const [gf, cf] of fields) assert.equal(g[gf], c[cf], `day ${index + 1}: ${gf}`);
+    assert.deepEqual(g.stopConditions, c.stop_conditions);
+    assert.deepEqual(g.sourceIds, c.source_ids);
+    assert.deepEqual(g.subtopicIds, c.subtopic_ids);
+    assert.deepEqual(g.contraindications, c.contraindications);
+    const answer = (id) => g.questions.find((q) => q.id === id).answer;
+    assert.ok(answer('q01').includes(g.exercise));
+    assert.ok(answer('q03').includes(g.action));
+    assert.equal(answer('q05'), g.lightVersion);
+    assert.equal(answer('q06'), g.successCriterion);
+    assert.ok(answer('q07').includes(g.stopCondition));
+    assert.ok(answer('q07').includes(g.restVersion));
+    assert.ok(answer('q07').includes(g.whenToSeekHumanSupport));
+    assert.ok(g.stopConditions.every((v) => answer('q07').includes(v)));
+    assert.ok(g.contraindications.every((v) => answer('q07').includes(v)));
+    assert.ok(answer('q09').includes(g.exercise));
+    assert.ok(answer('q09').includes(g.action));
+    assert.ok(answer('q10').includes(g.lightVersion));
+    assert.ok(answer('q10').includes(g.restVersion));
+    assert.ok(answer('q11').includes(g.stopCondition));
+    assert.ok(answer('q11').includes(g.restVersion));
+    assert.ok(answer('q11').includes(g.whenToSeekHumanSupport));
+    assert.ok(g.stopConditions.every((v) => answer('q11').includes(v)));
+    assert.ok(g.contraindications.every((v) => answer('q11').includes(v)));
+    const duration = answer('q14').match(/حدود\\s+(\\d+)\\s+دقیقه/);
+    assert.ok(duration, `day ${index + 1}: q14 duration`);
+    assert.equal(Number(duration[1]), g.durationMinutes);
+    assert.ok(answer('q14').includes('این زمان تخمینی و غیرالزامی است'));
+  }
+});
+
 test('T10 retains sleep-specific safety boundaries and avoids unsafe self-treatment instructions', () => {
   const joined = JSON.stringify({ canonical, guide });
   assert.match(joined, /رانندگی/);
