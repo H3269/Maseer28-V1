@@ -25,7 +25,7 @@ test('pending expert review may remain unassessed until claim-level source mappi
 test('approved content cannot omit claim-level evidence sources', () => {
   const result = validateDailyEvidenceSourceIds({
     review_status: 'approved',
-    evidence_grade: 'not_assessed',
+    evidence_grade: 'low',
     source_ids: [],
   }, registry);
   assert.equal(result.valid, false);
