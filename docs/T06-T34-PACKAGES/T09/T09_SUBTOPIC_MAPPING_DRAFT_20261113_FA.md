@@ -71,3 +71,9 @@
 - این سند جای تأیید متخصص مستقل یا نگاشت claim-level منابع را نمی‌گیرد.
 
 **وضعیت:** `proposed_day_to_subtopic_mapping_pending_expert_review`
+
+## اصلاح وضعیت اتصال شناسه‌های پیشنهادی به canonical v2 — 2026-11-13
+
+- بند دامنه قدیمی که می‌گفت هیچ subtopic_id به JSON canonical یا guide اضافه نشده، برای نسخه فعلی superseded است.
+- در canonical v2 برای هر ۲۸ روز subtopic_ids پیشنهادی ثبت شده‌اند؛ وضعیت همه آن‌ها proposed_not_approved است. این شناسه‌ها هنوز در رجیستری رسمی، topics/subtopics registry یا runtime فعال نشده‌اند و به معنی تأیید متخصص نیستند.
+- راهنمای دستیار شناسه‌های پیشنهادی را از canonical هم‌تراز می‌خواند؛ هیچ تغییری در registry، overlay، UI، runtime یا main انجام نشده است.
