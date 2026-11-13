@@ -703,6 +703,32 @@
         "Shift workers may have different alertness and sleep timing constraints."
       ],
       "limitations": "Training material for shift workers; timing and effects vary. Do not advise abrupt cessation or use caffeine as a substitute for sleep or safety."
+    },
+    {
+      "source_id": "SRC-SLEEP-NHLBI-INSOMNIA-OVERVIEW-001",
+      "title": "Insomnia — What Is Insomnia?",
+      "publisher": "National Heart, Lung, and Blood Institute (NIH)",
+      "source_type": "public_health_guidance",
+      "publication_date": "2022-03-24",
+      "url": "https://www.nhlbi.nih.gov/health/insomnia",
+      "relevant_claims": [
+        "Insomnia can involve difficulty falling asleep, staying asleep, or getting good-quality sleep despite having time and an appropriate environment to sleep.",
+        "Persistent insomnia can interfere with daily activities; diagnosis belongs to a healthcare provider."
+      ],
+      "limitations": "Public-facing educational page; symptom descriptions are not diagnostic criteria for the app and cannot establish insomnia from a single complaint."
+    },
+    {
+      "source_id": "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+      "title": "Sleep Deprivation and Deficiency — Diagnosis and Treatment",
+      "publisher": "National Heart, Lung, and Blood Institute (NIH)",
+      "source_type": "public_health_guidance",
+      "publication_date": null,
+      "url": "https://www.nhlbi.nih.gov/health/sleep-deprivation/diagnosis-treatment",
+      "relevant_claims": [
+        "Clinical evaluation may ask how often a person dozes off or has trouble staying awake during routine tasks, especially driving.",
+        "A sleep diary may record sleep timing, naps, alertness, and daytime sleepiness for discussion with a healthcare provider."
+      ],
+      "limitations": "Patient education; it does not provide an individualized fitness-to-drive assessment. When sleepy, the app should advise stopping hazardous activity rather than trying to overcome sleepiness."
     }
   ]
 }
