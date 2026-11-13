@@ -49,6 +49,7 @@ test('T01-T09 share the exact same 14 prepared question IDs, wording, and order 
       assert.deepEqual(guide.questions.map(q => q.id), expectedIds, topicId + ' question IDs day ' + guide.day);
       assert.deepEqual(guide.questions.map(q => q.value), expectedValues, topicId + ' question wording day ' + guide.day);
       assert.deepEqual(guide.questions.map(q => q.label), expectedValues, topicId + ' question labels day ' + guide.day);
+      assert.ok(String(guide.questions[10].kind || '').trim(), topicId + ' q11 must retain its topic-specific safety handler day ' + guide.day);
     }
   }
 });
