@@ -37,7 +37,10 @@
       ],
       "risk_level": "caution",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -76,7 +79,9 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -115,7 +120,10 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-NHLBI-OSA-DIAGNOSIS-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -153,7 +161,9 @@
       ],
       "risk_level": "caution",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -191,7 +201,10 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -229,7 +242,9 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -305,7 +320,9 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -343,7 +360,9 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-NIOSH-LIGHT-CIRCADIAN-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -381,7 +400,9 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -419,7 +440,9 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-AASM-CBTI-2021-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -457,7 +480,10 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001",
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -495,7 +521,10 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -533,7 +562,9 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-AASM-CBTI-2021-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -571,7 +602,10 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-AASM-CBTI-2021-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -609,7 +643,9 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -647,7 +683,9 @@
       ],
       "risk_level": "caution",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -685,7 +723,9 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-AASM-CBTI-2021-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -761,7 +801,9 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -799,7 +841,11 @@
       ],
       "risk_level": "caution",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -875,7 +921,9 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -913,7 +961,9 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -951,7 +1001,11 @@
       ],
       "risk_level": "caution",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-OSA-DIAGNOSIS-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -989,7 +1043,9 @@
       ],
       "risk_level": "caution",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -1027,7 +1083,10 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
@@ -1065,7 +1124,10 @@
       ],
       "risk_level": "routine",
       "when_to_seek_human_support": "اگر مشکل خواب پایدار است، عملکرد روزانه را مختل می‌کند، با خرخر شدید و وقفه تنفسی/خفگی، خواب‌آلودگی خطرناک، رفتارهای غیرعادی هنگام خواب، حرکات آزاردهنده پا، علائم جسمی تازه یا تغییر غیرعادی نیاز به خواب همراه انرژی/فعالیت غیرمعمول همراه است، ارزیابی پزشک یا متخصص خواب را پیگیری کن. در خطر فوری یا ناتوانی در حفظ ایمنی، از خدمات اضطراری محلی کمک بگیر. این مسیر خودیاری تشخیص یا درمان پزشکی نیست.",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-AASM-CBTI-2021-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+      ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
