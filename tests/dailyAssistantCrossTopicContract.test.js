@@ -1,3 +1,4 @@
+import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS } from '../src/features/assistant/dailyAssistantSafetyReminder.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
@@ -73,6 +74,20 @@ test('T01-T09 use the same five prompt groups and question distribution on every
     }
     assert.deepEqual(getGroups(0), [], topicId + ' invalid day lower bound');
     assert.deepEqual(getGroups(29), [], topicId + ' invalid day upper bound');
+  }
+});
+
+
+test('every topic-specific q11 handler is included in the same shared safety gate used by the launcher and answer footer', () => {
+  for (const [topicId, guides] of topics) {
+    const q11Kind = guides[0].questions[10].kind;
+    assert.ok(DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(q11Kind), topicId + ' q11 safety kind ' + q11Kind);
+    for (const guide of guides) {
+      assert.equal(guide.questions[10].kind, q11Kind, topicId + ' q11 handler remains stable across days');
+    }
+  }
+  for (const kind of ['talk_other', 'success', 'stop']) {
+    assert.ok(DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(kind), kind + ' shared safety/evaluation kind');
   }
 });
 
