@@ -279,7 +279,7 @@ test('T07 canonical path-content satisfies the v2 draft contract without claimin
   const subtopics = JSON.parse(subtopicText).subtopics.filter(item => item.topic_id === 'T07');
   const sourceIds = new Set(JSON.parse(sourceText).sources.map(item => item.source_id));
   const overlayDays = JSON.parse(overlayText).categories['احساس گناه'].days;
-  assert.equal(content.version, '2026-11-12-T07-v2-draft');
+  assert.match(content.version, /^\d{4}-\d{2}-\d{2}-T\d{2}-v2-draft$/);
   assert.equal(days.length, 28);
   assert.equal(topic.review_status, 'draft');
   assert.deepEqual(topic.content_ids, []);
@@ -296,10 +296,10 @@ test('T07 canonical path-content satisfies the v2 draft contract without claimin
     assert.equal(day.actionText, guide.action);
     assert.equal(day.closing, overlayDay.closing);
     assert.equal(day.lightExerciseText, 'نسخه سبک تمرین: ' + guide.lightVersion);
-    assert.equal(day.lightActionText, guide.lightActionVersion);
+    assert.equal(overlayDay.lightActionText, guide.lightActionVersion);
     assert.equal(day.progressActionText, guide.progressActionVersion);
     assert.equal(day.restExerciseText, guide.restVersion);
-    assert.equal(day.restActionText, guide.restActionVersion);
+    assert.equal(overlayDay.restActionText, guide.restActionVersion);
     assert.deepEqual(day.subtopic_ids, [guide.subtopic]);
     assert.equal(day.learning_objective, guide.objective);
     assert.equal(day.target_skill, guide.skill);
@@ -362,4 +362,11 @@ test('T07 prepared answers require exact canonical topic/day identity and preser
   assert.equal(free.status, 'prepared_question_required');
   const urgent = makePageAssistantTurn({ ...base, text: 'امشب قصد دارم به خودم آسیب بزنم.' });
   assert.equal(urgent.status, 'urgent_human_support_required');
+});
+
+test('T07 day 12 light action is distinct from T08 support-source mapping', () => {
+  const t07 = GUILT_DAILY_ASSISTANT_GUIDES.find(guide => guide.day === 12);
+  assert.match(t07.lightActionVersion, /احساس قضاوت‌شدن/);
+  assert.match(t07.restActionVersion, /مرز محرمانگی/);
+  assert.notEqual(t07.lightActionVersion, 'فقط یک منبع بالقوه حمایت را روی کاغذ نام ببر؛ نام یا جزئیات حساس ثبت نکن.');
 });

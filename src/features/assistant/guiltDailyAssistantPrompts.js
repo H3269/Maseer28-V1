@@ -1,8 +1,9 @@
-import { cleanPreparedAssistantTopicText } from './teacherStylePreparedAnswer.js';
+import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 
 // T07 prepared-only assistant: 28 day guides × 14 fixed questions.
-export const GUILT_DAILY_ASSISTANT_GUIDES = [
+const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
   {
     "day": 1,
     "title": "نام‌گذاری گناه مشخص",
@@ -88,8 +89,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -216,8 +217,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -344,8 +345,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -473,8 +474,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -600,8 +601,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -728,8 +729,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -855,8 +856,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -983,8 +984,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -1111,8 +1112,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -1239,8 +1240,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -1367,8 +1368,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -1427,9 +1428,9 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     "subtopic": "T07-S03",
     "exercise": "معیارهای منبع حمایت را بنویس: رازدار، منصف، آگاه به زمینه و بدون فشار برای اعتراف یا آشتی. اطلاعات حساس را در دستگاه یا حساب تحت نظارت ثبت نکن.",
     "action": "یک منبع حمایتی مناسب را برای روشن‌کردن زمینه یا دریافت حمایت شناسایی کن؛ از او نخواه داور قطعی تقصیر یا بخشش باشد.",
-    "lightActionVersion": "فقط یک ویژگی منبع حمایت امن را مشخص کن؛ نام فرد یا جزئیات را ثبت نکن.",
+    "lightActionVersion": "در حد یک جمله برای خودت روشن کن چه رفتاری از یک همراه، احساس قضاوت‌شدن را کمتر می‌کند؛ لازم نیست آن را با کسی در میان بگذاری.",
     "progressActionVersion": "بررسی کن منبع حمایت انتخابی محرمانگی و بی‌طرفی کافی دارد یا نه؛ تماس هنوز اختیاری است.",
-    "restActionVersion": "اطلاعات حساس را افشا نکن و تماس با منبع را به زمان امن‌تری موکول کن.",
+    "restActionVersion": "فعلاً شرح ماجرا را در اختیار کسی نگذار؛ تا وقتی مرز محرمانگی روشن نشده، تصمیم‌گیری را متوقف کن.",
     "exerciseExample": "فرضی: فرد برای بررسی یک رخداد حساس، معیارهای منبع حمایت را می‌نویسد: محرمانگی، انصاف، آگاهی از زمینه و نداشتن فشار برای اعتراف یا آشتی.",
     "actionExample": "فرضی: فرد نام یک مشاور یا خدمت محرمانه را برای مراجعه احتمالی یادداشت می‌کند؛ لازم نیست همان روز تماس بگیرد یا جزئیات رخداد را افشا کند.",
     "questions": [
@@ -1495,8 +1496,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -1623,8 +1624,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -1750,8 +1751,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -1878,8 +1879,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -2007,8 +2008,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -2134,8 +2135,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -2262,8 +2263,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -2390,8 +2391,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -2518,8 +2519,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -2646,8 +2647,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -2773,8 +2774,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -2901,8 +2902,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -3028,8 +3029,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -3157,8 +3158,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -3286,8 +3287,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -3415,8 +3416,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -3543,8 +3544,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "guilt_increased"
       },
       {
@@ -3587,6 +3588,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     ]
   }
 ];
+
+export const GUILT_DAILY_ASSISTANT_GUIDES = Object.freeze(RAW_GUILT_DAILY_ASSISTANT_GUIDES.map(normalizeDailyAssistantGuide));
 
 const toGuiltDayNumber = (value) => {
   const normalized = String(value ?? '').replace(/[۰-۹]/g, digit => '۰۱۲۳۴۵۶۷۸۹'.indexOf(digit));
@@ -3714,8 +3717,8 @@ function answerRaw({ day, message, dailyContent } = {}) {
 export function answerGuiltDailyPreparedQuestion(args = {}) {
   const answer = answerRaw(args);
   if (!answer) return null;
-  const cleaned = cleanPreparedAssistantTopicText(answer, 'احساس گناه');
   const guide = GUILT_DAILY_ASSISTANT_GUIDES.find(item => item.day === toGuiltDayNumber(args.day));
   const question = guide?.questions.find(item => item.value === String(args.message || '').trim());
-  return appendDailyAssistantSafetyReminder(cleaned, question?.kind);
+  const framed = addTeacherStyleFrame(answer, { guide, question, topic: 'احساس گناه' });
+  return appendDailyAssistantSafetyReminder(framed, question?.kind);
 }

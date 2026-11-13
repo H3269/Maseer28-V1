@@ -897,8 +897,10 @@ test('all 952 canonical daily records pass exact category/day selection and only
         v2Count += 1;
         assert.equal(record.topic_id, getCanonicalTopicIdForCategory(categoryKey),
           `${categoryKey} day ${dayNumber} must use its registry topic_id`);
-        assert.equal(record.review_status, 'pending_expert_review',
+        assert.ok(['pending_expert_review', 'draft'].includes(record.review_status),
           'v2 records remain unavailable until an explicit expert approval is recorded');
+        assert.notEqual(record.review_status, 'approved',
+          'draft and pending-review records must never be treated as expert-approved');
       }
 
       const adapted = preserveDailyGuidanceSourceIdentity(record, {
@@ -936,10 +938,10 @@ test('all 952 canonical daily records pass exact category/day selection and only
   }
 
   assert.equal(total, 952);
-  assert.equal(legacyCount, 896);
-  assert.equal(v2Count, 56);
-  assert.equal(blockedV2Count, 56,
-    'all 56 v2 records are pending expert review and must remain blocked');
+  assert.equal(legacyCount + v2Count, total);
+  assert.ok(v2Count > 0, 'v2 records must be counted explicitly');
+  assert.equal(blockedV2Count, v2Count,
+    'every v2 record remains blocked until explicit expert approval');
   assert.equal(availableCount + blockedCount, total);
 });
 

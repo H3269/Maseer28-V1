@@ -1,6 +1,7 @@
-import { cleanPreparedAssistantTopicText } from './teacherStylePreparedAnswer.js';
+import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { addTeacherStyleFrame, cleanPreparedAssistantTopicText } from './teacherStylePreparedAnswer.js';
 
-export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
+const RAW_EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
   {
     "day": 1,
     "title": "نقشه اتکای عاطفی",
@@ -83,8 +84,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -201,8 +202,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -319,8 +320,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -437,8 +438,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -555,8 +556,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -673,8 +674,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -791,8 +792,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -909,8 +910,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -1027,8 +1028,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -1145,8 +1146,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -1263,8 +1264,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -1381,8 +1382,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -1499,8 +1500,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -1617,8 +1618,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -1735,8 +1736,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -1853,8 +1854,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -1971,8 +1972,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -2089,8 +2090,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -2207,8 +2208,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -2325,8 +2326,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -2443,8 +2444,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -2561,8 +2562,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -2679,8 +2680,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -2797,8 +2798,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -2915,8 +2916,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -3033,8 +3034,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -3151,8 +3152,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -3269,8 +3270,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
       },
       {
         "id": "q11",
-        "label": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
-        "value": "اگر میل به اطمینان‌خواهی یا آشفتگی‌ام بیشتر شد چه کنم؟",
+        "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+        "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "kind": "dependency_increased"
       },
       {
@@ -3306,6 +3307,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
     ]
   }
 ];
+
+export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = Object.freeze(RAW_EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES.map(normalizeDailyAssistantGuide));
 
 const toDayNumber = (value) => {
   const n = Number(value);
@@ -3468,5 +3471,9 @@ function answerRaw({ day, message, dailyContent } = {}) {
 }
 
 export function answerEmotionalDependencyDailyPreparedQuestion(args = {}) {
-  return answerRaw(args);
+  const answer = answerRaw(args);
+  if (!answer) return null;
+  const guide = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES.find((item) => item.day === toDayNumber(args.day));
+  const question = guide?.questions.find((item) => item.value === String(args.message || '').trim());
+  return addTeacherStyleFrame(answer, { guide, question, topic: 'وابستگی عاطفی' });
 }

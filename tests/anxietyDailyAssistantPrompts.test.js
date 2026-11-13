@@ -1,3 +1,13 @@
+test('T02 q05 explains the daily light version, rest option, success criterion, and stop condition', () => {
+  for (const guide of ANXIETY_DAILY_ASSISTANT_GUIDES) {
+    const question = guide.questions.find(item => item.id === 'q05');
+    const answer = answerAnxietyDailyPreparedQuestion({ day: guide.day, message: question.value });
+    for (const field of ['lightVersion', 'restVersion', 'successCriterion', 'stopCondition']) {
+      assert.ok(answer.includes(guide[field]), 'day ' + guide.day + ' q05 must include ' + field);
+    }
+  }
+});
+
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';

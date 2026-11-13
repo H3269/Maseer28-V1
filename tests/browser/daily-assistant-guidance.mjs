@@ -508,7 +508,7 @@ try {
   await assertAssistantUsesVisibleDailySource(guiltGuidedPage, guiltPanel, 'احساس گناه', 1, ['exercise']);
   await guiltTrigger.click();
   await guiltPromptDialog.waitFor({ state: 'visible' });
-  await guiltPromptDialog.getByRole('button', { name: 'اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟' }).click();
+  await guiltPromptDialog.getByRole('button', { name: 'اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟' }).click();
   const previousGuiltReplyCount = await guiltPanel.locator('.assistantMessage').count();
   await guiltPanel.getByRole('button', { name: 'ارسال' }).click();
   await guiltGuidedPage.waitForFunction(previous => {
@@ -634,7 +634,7 @@ try {
 
   // Each of the four questions in the evaluation/safety group gets the same footer.
   for (const safetyQuestion of [
-    'اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟',
+    'اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟',
     'آیا لازم است حتماً با فرد دیگری صحبت کنم؟',
     'از کجا بفهمم درست انجامش داده‌ام؟',
     'چه زمانی باید تمرین امروز را متوقف کنم؟',
@@ -900,7 +900,7 @@ try {
   await t09Trigger.click();
   const t09ThirdPrompt = t09Page.locator('#library-assistant-prompt-dialog');
   await t09ThirdPrompt.waitFor({ state: 'visible' });
-  await t09ThirdPrompt.getByRole('button', { name: 'اگر هنگام شروع یا ادامه کار فشار یا مقاومت بیشتری احساس کردم چه کنم؟' }).click();
+  await t09ThirdPrompt.getByRole('button', { name: 'اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟' }).click();
   await t09Panel.getByRole('button', { name: 'ارسال' }).click();
   await t09Page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
     .some(node => node.innerText.includes('افزایش مقاومت به‌تنهایی نشانه تنبلی')));

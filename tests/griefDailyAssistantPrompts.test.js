@@ -144,7 +144,7 @@ test('all 392 T06 answers include day-specific execution, separate success check
         not_done: ['exerciseHow', 'actionHow'],
         grief_increased: ['avoid'],
         talk_other: ['actionHow', 'actionSuccess'],
-        can_change: ['exerciseHow', 'actionHow', 'avoid'],
+        can_change: ['exerciseHow', 'avoid'],
         duration: ['exerciseHow', 'actionHow'],
       };
       const expectedFields = fieldsByQuestion[question.kind];

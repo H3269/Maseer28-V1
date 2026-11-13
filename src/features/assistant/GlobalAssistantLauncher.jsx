@@ -18,7 +18,7 @@ import { getGuiltDailyAssistantPromptGroups } from './guiltDailyAssistantPrompts
 import { getEmotionalDependencyDailyAssistantPromptGroups } from './emotionalDependencyDailyAssistantPrompts.js';
 import { getT09DailyAssistantPromptGroups } from './t09DailyAssistantPrompts.js';
 import { appendLocalSourceReferences, buildLocalAssistantMessages, isLocalModelInstallCommand, LOCAL_MODEL_CACHE_MESSAGE, LOCAL_MODEL_FAILURE_MESSAGE, LOCAL_MODEL_INSTALL_MESSAGE, shouldUseLocalNeuralModel } from './localNeuralAssistant.js';
-import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
+import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS, DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
 
 export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null, onRelationshipSafetyResponse = null }) {
   const [open, setOpen] = useState(false);
@@ -225,7 +225,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       return;
     }
     const isDailySafetyQuestion = Boolean(selectedDailyQuestion
-      && ['anger_increased', 'anxiety_increased', 'fear_increased', 'hostility_increased', 'guilt_increased', 'procrastination_increased', 'talk_other', 'success', 'stop'].includes(selectedDailyQuestion.kind));
+      && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(selectedDailyQuestion.kind));
     const turnId = ++turnSequenceRef.current;
     const responseId = `assistant-${turnId}`;
     const updateAssistantMessage = (text, knowledge = [], dailySafetyReminder = false) => {
