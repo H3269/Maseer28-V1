@@ -35,6 +35,10 @@ test('T09 assistant guide and canonical content stay aligned across all daily fi
     ['durationMinutes', 'duration_minutes'],
     ['successCriterion', 'success_criterion'],
     ['stopCondition', 'stop_condition_text'],
+    ['exerciseType', 'exercise_type'],
+    ['reflectionPrompt', 'reflection_prompt'],
+    ['whenToSeekHumanSupport', 'when_to_seek_human_support'],
+    ['reviewRecordId', 'review_record_id'],
   ];
   for (let index = 0; index < 28; index += 1) {
     const guideDay = guide.records[index];
@@ -43,6 +47,8 @@ test('T09 assistant guide and canonical content stay aligned across all daily fi
       assert.equal(guideDay[guideField], canonicalDay[canonicalField], `day ${index + 1}: ${guideField}`);
     }
     assert.deepEqual(guideDay.stopConditions, canonicalDay.stop_conditions, `day ${index + 1}: stopConditions`);
+    assert.deepEqual(guideDay.subtopicIds, canonicalDay.subtopic_ids, `day ${index + 1}: subtopicIds`);
+    assert.deepEqual(guideDay.contraindications, canonicalDay.contraindications, `day ${index + 1}: contraindications`);
     assert.equal(canonicalDay.review_status, 'draft');
     assert.equal(canonicalDay.evidence_grade, 'not_assessed');
     assert.deepEqual(canonicalDay.source_ids, []);
@@ -237,5 +243,20 @@ test('day 18 stop guidance stays specific to safe handoff and approval', () => {
     const response = answer(guideRecord, id);
     assert.ok(response.includes(record.stop_condition_text));
     assert.doesNotMatch(response, /فکر آسیب به خود/u);
+  }
+});
+
+test('assistant safety metadata mirrors canonical contraindications and support thresholds', () => {
+  for (let index = 0; index < 28; index += 1) {
+    const guideDay = guide.records[index];
+    const canonicalDay = canonical.records[index];
+    assert.deepEqual(guideDay.contraindications, canonicalDay.contraindications, `day ${index + 1}: contraindications`);
+    assert.equal(guideDay.whenToSeekHumanSupport, canonicalDay.when_to_seek_human_support, `day ${index + 1}: human support`);
+    assert.equal(guideDay.reflectionPrompt, canonicalDay.reflection_prompt, `day ${index + 1}: reflection prompt`);
+    for (const id of ['q07', 'q11']) {
+      const response = answer(guideDay, id);
+      for (const warning of canonicalDay.contraindications) assert.ok(response.includes(warning), `day ${index + 1} ${id}: contraindication`);
+      assert.ok(response.includes(canonicalDay.when_to_seek_human_support), `day ${index + 1} ${id}: support threshold`);
+    }
   }
 });
