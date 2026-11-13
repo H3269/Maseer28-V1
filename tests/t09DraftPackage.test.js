@@ -279,3 +279,12 @@ test('T09 keeps every subtopic mapping provisional and every safety field popula
     assert.deepEqual(record.sourceIds, [], `day ${index + 1}: no unsupported source assignment`);
   }
 });
+
+test('q12 interpersonal guidance preserves safety and voluntary exit across all 28 days', () => {
+  const responses = guide.records.map((record) => answer(record, 'q12'));
+  assert.equal(new Set(responses).size, 28);
+  for (const response of responses) {
+    assert.ok(response.includes('اگر گفت‌وگو امن نیست یا امکان رد/توقف آزادانه آن را نداری')) ;
+    assert.ok(response.includes('وابستگی را فقط ثبت کن و از مسیر امن و مجاز کمک بگیر'));
+  }
+});
