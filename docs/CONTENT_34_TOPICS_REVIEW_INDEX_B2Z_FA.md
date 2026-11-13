@@ -1110,3 +1110,18 @@
 - PR [#96](https://github.com/H3269/Maseer28-V1/pull/96) در main ادغام شد؛ SHA: `f0a68a513f973227a5759e7a70541eaea980172e`.
 - **وضعیت:** آماده تست زنده مالک در مرورگر برای T01، T02، T03 و T04. پذیرش نهایی این اصلاح منوط به تأیید صریح مالک است.
 - انتشار Telegram/Bale انجام نشده است.
+
+## وضعیت جاری T09 — 2026-11-13
+
+- بسته T09 از مرحله بازطراحی اولیه عبور کرده و canonical v2، راهنمای ۲۸×۱۴ پاسخ، نقشه شواهد E01–E10 و گزارش موانع تکمیلی در شاخه کاری PR #129 آماده بررسی‌اند.
+- کنترل ساختاری/واژگانی: ۲۸ روز، ۳۹۲ پاسخ یکتا، صفر اختلاف فیلدهای canonical/guide، صفر شرط توقف جاافتاده؛ CI scoped #4787 موفق.
+- وضعیت تأیید: تمام روزها draft/not_assessed و زیرموضوع‌ها proposed_not_approved؛ تأیید تخصصی و نگاشت نهایی claim-level هنوز انجام نشده است.
+- overlay فعال main در ۱۷ روز (۹ تمرین و ۱۷ اقدام) با canonical v2 اختلاف دارد؛ هیچ runtime/main/registry تغییر نکرده است.
+- **وضعیت:** آماده تکمیل بازبینی تخصصی و گیت‌های ایمنی/شواهد؛ هنوز آماده ادغام، تست زنده مالک یا انتشار نیست.
+- اسناد جاری: docs/T06-T34-PACKAGES/T09/T09_FINAL_AUDIT_BLOCKERS_20261113_FA.md، T09_EVIDENCE_MAP_DRAFT_20261113_FA.md، T09_CROSS_TOPIC_BOUNDARY_REVIEW_20261113_FA.md و T09_INTERPERSONAL_GATE_APPLICABILITY_DRAFT_20261113_FA.md.
+
+## نتیجه همگام‌سازی کامل metadata ایمنی در guide — 2026-11-13
+
+- پس از افزودن contraindications، whenToSeekHumanSupport، reflectionPrompt، exerciseType، subtopicIds و reviewRecordId به guide، تعداد فیلدهای هم‌ترازی‌شده canonical/guide به **۲۵ فیلد در ۲۸/۲۸ روز** رسید؛ صفر اختلاف.
+- q07 و q11 در هر ۲۸ روز اکنون همه stopConditions، contraindications و آستانه حمایت انسانی را بازتاب می‌دهند؛ هر دو ستون ۲۸ پاسخ یکتا دارند.
+- راهنمای دستیار هنوز draft است؛ این هم‌ترازی به معنی تأیید محتوایی/بالینی نیست. CI تازه برای نسخه جدید لازم است.

@@ -34,3 +34,19 @@
 - تأیید تخصصی، بررسی منابع و آزمون کاربردپذیری نسخه‌ها و شروط توقف باز هستند.
 
 **وضعیت:** `T09_28_days_11_fields_structurally_complete_112_template_fields_rewritten_all_core_fields_exact_duplicate_free_progression_screened_expert_and_runtime_integration_pending`
+
+## وضعیت تکمیلی پس از canonical v2 — 2026-11-13
+
+- این گزارش اولیه مربوط به دور بازطراحی پیشین است؛ مرجع جاری ساختار، فایل T09_CANONICAL_CONTENT_DRAFT_V2_20261113.json و راهنمای ۳۹۲ پاسخ است.
+- ۲۸/۲۸ روز دارای فیلدهای ساختاری نسخه دوم و شناسه زیرموضوع پیشنهادی‌اند؛ وضعیت نگاشت همه روزها proposed_not_approved است.
+- ۲۸×۱۴=۳۹۲ پاسخ دستیار موجود، غیرخالی و دقیقاً یکتا است؛ کنترل هم‌ترازی ۱۲ فیلد canonical/guide صفر اختلاف دارد.
+- هیچ روزی تأیید تخصصی نشده؛ source_ids خالی، evidence_grade=not_assessed، review_status=draft و review_record_id ثبت‌نشده باقی‌اند.
+- اصلاح‌های اخیر q09، مثال‌های q04 و شرط توقف روز ۱۸ در شاخه PR #129 انجام شده‌اند. CI #4787 (۲۱ آزمون واحد/content، build، Chromium regression و dependency audit) موفق است.
+- overlay فعال main در ۱۷ روز با canonical v2 اختلاف دارد؛ ۹ تمرین و ۱۷ اقدام. runtime و main هنوز تغییر نکرده‌اند.
+- این وضعیت جایگزین گزارش اولیه برای شمارش فیلدهاست؛ نتیجه آن همچنان «ساختاری کامل اما تأیید تخصصی/منبع‌دهی/ادغام باز» است.
+
+## نتیجه همگام‌سازی کامل metadata ایمنی در guide — 2026-11-13
+
+- پس از افزودن contraindications، whenToSeekHumanSupport، reflectionPrompt، exerciseType، subtopicIds و reviewRecordId به guide، تعداد فیلدهای هم‌ترازی‌شده canonical/guide به **۲۵ فیلد در ۲۸/۲۸ روز** رسید؛ صفر اختلاف.
+- q07 و q11 در هر ۲۸ روز اکنون همه stopConditions، contraindications و آستانه حمایت انسانی را بازتاب می‌دهند؛ هر دو ستون ۲۸ پاسخ یکتا دارند.
+- راهنمای دستیار هنوز draft است؛ این هم‌ترازی به معنی تأیید محتوایی/بالینی نیست. CI تازه برای نسخه جدید لازم است.

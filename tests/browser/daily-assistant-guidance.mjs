@@ -189,7 +189,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
         assert.equal(Object.hasOwn(day, 'risk_level'), false);
       } else {
         Object.assign(day, {
-          topic_id: topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : topicKey === 'نفرت' ? 'T04' : topicKey === 'حسادت' ? 'T05' : topicKey === 'غم و سوگ' ? 'T06' : topicKey === 'احساس گناه' ? 'T07' : 'T01',
+          topic_id: topicKey === 'اهمال‌کاری' ? 'T09' : topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : topicKey === 'نفرت' ? 'T04' : topicKey === 'حسادت' ? 'T05' : topicKey === 'غم و سوگ' ? 'T06' : topicKey === 'احساس گناه' ? 'T07' : 'T01',
           day: dayNumber,
           review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
           risk_level: 'routine',
@@ -859,6 +859,33 @@ try {
   assert.match(reenteredReply, /نشانه‌ای می‌گوید باید مکث کنی/);
   assert.doesNotMatch(reenteredReply, /بررسی ایمنی همین روز|بازبینی ایمنی/);
   await gatedPage.close();
+
+  const t09Page = await browser.newPage();
+  const t09Errors = [];
+  t09Page.on('pageerror', (error) => t09Errors.push(String(error)));
+  await openDay(t09Page, { problem: 'اهمال‌کاری' });
+  const t09Panel = t09Page.locator('.globalAssistantDialog');
+  await t09Panel.waitFor({ state: 'visible' });
+  const t09Trigger = t09Panel.getByTestId('t09-daily-prompt-trigger');
+  await t09Trigger.waitFor({ state: 'visible' });
+  await t09Page.waitForFunction(() => {
+    const trigger = document.querySelector('[data-testid="t09-daily-prompt-trigger"]');
+    return trigger && !trigger.disabled;
+  });
+  assert.equal(await t09Panel.locator('#global-assistant-message').count(), 0,
+    'T09 must remain prepared-only and must not expose free-form typing');
+  await t09Trigger.click();
+  const t09Prompt = t09Page.locator('#library-assistant-prompt-dialog');
+  await t09Prompt.waitFor({ state: 'visible' });
+  assert.equal(await t09Prompt.locator('[data-prompt-option]').count(), 14,
+    'T09 day one must expose exactly fourteen prepared questions');
+  await t09Prompt.locator('[data-prompt-option]').first().click();
+  await t09Panel.getByRole('button', { name: 'ارسال' }).click();
+  await t09Page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => node.innerText.includes('راهنمای روز ۱ اهمال‌کاری')));
+  await assertAssistantUsesVisibleDailySource(t09Page, t09Panel, 'اهمال‌کاری', 1, ['exercise']);
+  assert.deepEqual(t09Errors, [], 'T09 prepared daily assistant must not raise browser errors');
+  await t09Page.close();
 
   process.stdout.write('PASS: Chromium daily assistant guidance, real legacy retrieval across three topics, four source-derived adaptation branches, follow-up context, input bounds, persistent safety handoff, local-only privacy, blocked-day denial, and assistant-only relationship gate (WV-BROWSER-ASSISTANT)\\n');
 } finally {
