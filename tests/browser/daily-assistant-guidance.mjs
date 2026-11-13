@@ -905,7 +905,8 @@ try {
   await t09Page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
     .some(node => node.innerText.includes('افزایش مقاومت به‌تنهایی نشانه تنبلی')));
   const t09ResistanceReply = await t09Panel.locator('.assistantMessage').last().innerText();
-  assert.match(t09ResistanceReply, /شرط توقف اختصاصی امروز/);
+  assert.match(t09ResistanceReply, /شرط توقف اصلی امروز/);
+  assert.match(t09ResistanceReply, /شرط‌های توقف تکمیلی/);
   assert.match(t09ResistanceReply, /زمان حمایت انسانی/);
   assert.deepEqual(t09Errors, [], 'T09 prepared daily assistant must not raise browser errors');
   await t09Page.close();
