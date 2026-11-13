@@ -128,3 +128,244 @@ select:focus,
 .loadingProgressSegment::before {
   background: var(--brand-turquoise) !important;
 }
+
+
+/* ============================================================
+   M28 BRAND SYSTEM — coordinated buttons, cards and surfaces
+   Added for live review on main. Semantic success/warning/danger
+   colors remain distinct and are intentionally not recolored.
+   ============================================================ */
+
+/* Shared surface language */
+:root {
+  --brand-turquoise-soft: #E4F8F6;
+  --brand-turquoise-wash: #F0FBFA;
+  --brand-lapis-soft: #EAF1FA;
+  --brand-sky-soft: #EDF6FB;
+  --brand-card-shadow: 0 7px 24px rgba(16, 42, 67, .055);
+  --brand-card-shadow-hover: 0 11px 30px rgba(36, 90, 154, .11);
+  --brand-focus-ring: 0 0 0 3px rgba(64, 224, 208, .24);
+}
+
+/* Primary, secondary and utility buttons share geometry and motion,
+   while semantic status actions keep their own recognizable colors. */
+button,
+a.button,
+[role="button"] {
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease,
+    box-shadow .18s ease, transform .14s ease;
+}
+button.primary,
+.primary,
+.globalAssistantChat .assistantSendButton:not(:disabled) {
+  background: linear-gradient(135deg, #40E0D0 0%, #70E4DB 100%) !important;
+  color: #102A43 !important;
+  border: 1px solid rgba(36, 90, 154, .14) !important;
+  box-shadow: 0 3px 0 rgba(16, 42, 67, .12), 0 7px 17px rgba(36, 90, 154, .12) !important;
+}
+button.primary:hover,
+.primary:hover,
+.globalAssistantChat .assistantSendButton:not(:disabled):hover {
+  background: linear-gradient(135deg, #31D2C4 0%, #55CFCB 100%) !important;
+  box-shadow: 0 4px 0 rgba(16, 42, 67, .13), 0 10px 21px rgba(36, 90, 154, .17) !important;
+}
+button.secondary,
+.secondary,
+button.gold,
+.gold,
+button.bookTocToggle,
+.bookTocToggle {
+  background: linear-gradient(135deg, #EDF4FB 0%, #E4F8F6 100%);
+  color: #173E62;
+  border: 1px solid #D1E2EF;
+  box-shadow: 0 3px 0 rgba(36, 90, 154, .07), 0 6px 14px rgba(16, 42, 67, .045);
+}
+button.secondary:hover,
+.secondary:hover,
+button.gold:hover,
+.gold:hover,
+button.bookTocToggle:hover,
+.bookTocToggle:hover {
+  background: #DDEFF5;
+  border-color: #AFCFDF;
+}
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid #245A9A;
+  outline-offset: 3px;
+}
+button:disabled,
+button[disabled] {
+  filter: saturate(.55);
+  opacity: .58;
+}
+
+/* Cards: quiet white surfaces with restrained turquoise/lapis accents. */
+.card,
+.metricBox,
+.profileBox,
+.book,
+.answerItem,
+.support,
+.introBox,
+.copyrightCard,
+.validationCard,
+.bookTocPanel,
+.smartSelectMenu,
+.smartSelectOption,
+.libraryAssistantPromptCard,
+.globalAssistantDialog,
+.globalAssistantKnowledge,
+.dailyAssistantShafaContact {
+  border-color: #DCE8F0;
+  box-shadow: var(--brand-card-shadow);
+}
+.card {
+  background: linear-gradient(155deg, #FFFFFF 0%, #FCFEFF 72%, #F7FBFD 100%);
+}
+.card > h2,
+.card > h3,
+.metricBox strong,
+.answerItem b,
+.bookTocPanel h3,
+.libraryAssistantPromptCard h2 {
+  color: #173E62;
+}
+.metricBox {
+  background: linear-gradient(145deg, #FFFFFF 0%, #F0F8FC 100%);
+  border-top: 3px solid #4096C8;
+}
+.profileBox {
+  background: linear-gradient(145deg, #FFFFFF 0%, #F0FBFA 100%);
+}
+.book {
+  background: linear-gradient(145deg, #FFFFFF 0%, #F5F9FD 100%);
+}
+.book .bookIcon {
+  color: #245A9A;
+}
+.answerItem {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F4FAFC 100%);
+}
+.support {
+  background: linear-gradient(135deg, #F2FAFC 0%, #F0FBFA 100%);
+}
+.introBox {
+  background: linear-gradient(135deg, #EAF8F8 0%, #F2F7FC 58%, #FFFFFF 100%);
+  border-color: #CDE8E8;
+}
+.card:hover,
+.metricBox:hover,
+.profileBox:hover,
+.book:hover,
+.answerItem:hover {
+  box-shadow: var(--brand-card-shadow-hover);
+}
+
+/* Small chips, selected options and progress indicators. */
+.badge,
+.tag,
+.chip,
+.pill {
+  border-color: #C7EAE7;
+}
+.badge {
+  background: #E4F8F6;
+  color: #155B69;
+}
+.daydot {
+  border: 1px solid #DCE8F0;
+}
+.daydot.current {
+  background: #EAF1FA;
+  color: #173E62;
+  outline: 2px solid #245A9A;
+}
+.daydot.done {
+  background: #DDF3F0;
+  border-color: #BCE5DF;
+  color: #155B69;
+}
+.exercise {
+  background: linear-gradient(120deg, #E8FAF8 0%, #F3FBFC 100%);
+  border-right-color: #40E0D0;
+}
+.action {
+  background: linear-gradient(120deg, #F0F5FC 0%, #F8FBFE 100%);
+  border-right-color: #4096C8;
+}
+.feedback {
+  background: linear-gradient(120deg, #EDF6FB 0%, #F7FBFD 100%);
+  border-right-color: #4096C8;
+}
+
+/* Navigation, menus, and form controls use lapis for orientation. */
+.bottomNav {
+  border-color: #D5E4EE !important;
+  background: rgba(255, 255, 255, .97) !important;
+  box-shadow: 0 8px 26px rgba(16, 42, 67, .12) !important;
+}
+.bottomNav button.active,
+body.bale-webview .bottomNav button.active,
+body:not(.bale-webview) .bottomNav button.active {
+  background: linear-gradient(135deg, #E2F8F5 0%, #EAF3FB 100%) !important;
+  color: #155B69 !important;
+  border-color: #BFE7E2 !important;
+}
+.smartSelectButton,
+.libraryAssistantPromptTrigger,
+input,
+textarea,
+select {
+  border-color: #D4E2EC;
+}
+.smartSelectButton:hover,
+.libraryAssistantPromptTrigger:hover {
+  border-color: #9BCFD3;
+  background: #F5FBFC;
+}
+.smartSelectOption:hover,
+.smartSelectOption.selected,
+.bookTocEntry:hover {
+  background: #EAF5FB;
+  border-color: #BFD8E9;
+  color: #173E62;
+}
+.bookTocPanel,
+.smartSelectMenu {
+  background: #FFFFFF;
+  border-color: #D5E4EE;
+}
+
+/* Icon tiles and quick actions: alternating soft brand tints, not full saturation. */
+.quickAction span,
+.iconButton {
+  color: #245A9A;
+}
+.quickAction span {
+  background: linear-gradient(145deg, #EAF5FB, #E5F8F6);
+  border: 1px solid #D3E8EF;
+}
+.iconButton {
+  background: #EDF6FB;
+  border: 1px solid #D5E6F0;
+}
+
+/* Keep success, warning and danger feedback semantically distinct. */
+button.success,
+.success,
+.badge.success {
+  background: #E8F6EF;
+  color: #277A55;
+  border-color: #C7E8D6;
+}
+button.danger,
+.danger,
+.alert,
+.validationCard li {
+  /* Existing warning/danger surfaces and text colors are deliberately preserved. */
+}
