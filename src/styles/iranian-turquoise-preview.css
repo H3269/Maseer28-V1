@@ -1782,3 +1782,33 @@ body .bookReaderFull.theme-night .readerProgressTrack span { background: linear-
   background: linear-gradient(90deg,#40E0D0 0%,#69DCD8 58%,#4096C8 100%) !important;
   border-radius: 999px !important;
 }
+
+
+/* M28 follow-up: requested final assistant and daily safety refinements. */
+/* All four corners of the assistant title strip are softly rounded. */
+.app .globalAssistantDialogTop {
+  border-radius: 16px !important;
+  overflow: hidden !important;
+}
+
+/* Daily safety notice: calm turquoise/lapis surface, consistent with app cards. */
+.app #day .safetyNote {
+  display: block !important;
+  box-sizing: border-box;
+  padding: 13px 15px !important;
+  margin-block: 12px 16px !important;
+  background: linear-gradient(135deg,#EAF8F8 0%,#F0F6FC 100%) !important;
+  border: 1px solid #C9E4E8 !important;
+  border-inline-start: 4px solid #4096C8 !important;
+  border-radius: 14px !important;
+  color: #173E62 !important;
+  box-shadow: 0 4px 13px rgba(16,42,67,.045) !important;
+}
+.app #day .safetyNote p,
+.app #day .safetyNote li {
+  color: #36566F !important;
+}
+.app #day .safetyNote b,
+.app #day .safetyNote strong {
+  color: #245A9A !important;
+}
