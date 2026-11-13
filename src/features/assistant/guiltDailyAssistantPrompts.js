@@ -1,8 +1,9 @@
+import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 
 // T07 prepared-only assistant: 28 day guides × 14 fixed questions.
-export const GUILT_DAILY_ASSISTANT_GUIDES = [
+const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
   {
     "day": 1,
     "title": "نام‌گذاری گناه مشخص",
@@ -3587,6 +3588,8 @@ export const GUILT_DAILY_ASSISTANT_GUIDES = [
     ]
   }
 ];
+
+export const GUILT_DAILY_ASSISTANT_GUIDES = Object.freeze(RAW_GUILT_DAILY_ASSISTANT_GUIDES.map(normalizeDailyAssistantGuide));
 
 const toGuiltDayNumber = (value) => {
   const normalized = String(value ?? '').replace(/[۰-۹]/g, digit => '۰۱۲۳۴۵۶۷۸۹'.indexOf(digit));
