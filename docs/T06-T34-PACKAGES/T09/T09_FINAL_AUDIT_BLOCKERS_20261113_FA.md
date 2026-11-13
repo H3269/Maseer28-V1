@@ -489,3 +489,9 @@
 - این فیلدها به guide افزوده و با canonical هم‌تراز شدند؛ subtopicIds، exerciseType و reviewRecordId نیز برای حفظ زمینه کامل روز به راهنما اضافه شدند.
 - q07 و q11 اکنون علاوه بر stopCondition/stopConditions و restVersion، محدودیت کاربرد همان روز و شرط حمایت انسانی را نیز بازتاب می‌دهند. آزمون جدید پوشش ۲۸ روز را کنترل می‌کند.
 - این اصلاح فقط در داده‌های draft و آزمون‌ها روی شاخه PR #129 است؛ runtime همچنان withheld است و CI جدید لازم است.
+
+## نتیجه همگام‌سازی کامل metadata ایمنی در guide — 2026-11-13
+
+- پس از افزودن contraindications، whenToSeekHumanSupport، reflectionPrompt، exerciseType، subtopicIds و reviewRecordId به guide، تعداد فیلدهای هم‌ترازی‌شده canonical/guide به **۲۵ فیلد در ۲۸/۲۸ روز** رسید؛ صفر اختلاف.
+- q07 و q11 در هر ۲۸ روز اکنون همه stopConditions، contraindications و آستانه حمایت انسانی را بازتاب می‌دهند؛ هر دو ستون ۲۸ پاسخ یکتا دارند.
+- راهنمای دستیار هنوز draft است؛ این هم‌ترازی به معنی تأیید محتوایی/بالینی نیست. CI تازه برای نسخه جدید لازم است.
