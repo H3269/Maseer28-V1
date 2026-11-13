@@ -130,7 +130,9 @@ test('q11 keeps a genuinely topic-specific answer body after the shared response
       const answer = answerPrepared({ day, message: question.value, dailyContent });
       const markerIndex = answer?.indexOf(marker) ?? -1;
       assert.ok(markerIndex >= 0, topicId + ' day ' + day + ' shared frame marker');
-      return answer.slice(markerIndex + marker.length).trim();
+      const body = answer.slice(markerIndex + marker.length).trim();
+      assert.ok(body.length > 20, topicId + ' day ' + day + ' q11 needs a substantive topic-specific answer body');
+      return body;
     });
     assert.equal(new Set(topicBodies).size, 9, 'q11 answer bodies must be distinct across all topics on day ' + day);
   }
