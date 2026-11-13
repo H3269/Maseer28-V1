@@ -4,7 +4,7 @@ import { getDailySafetyMode } from '../src/features/content/dailySafety.js';
 
 test('T10 draft is available for owner live review while retaining risk classification', () => {
   const base = {
-    id: 'T10-D01', topic_id: 'T10', day: 1,
+    id: 'بی‌خوابی و مشکلات خواب-01', topic_id: 'T10', day: 1,
     review_status: 'draft', risk_level: 'caution',
     subtopic_ids: ['T10-S01'],
   };
@@ -18,7 +18,7 @@ test('T10 draft is available for owner live review while retaining risk classifi
 
 test('unapproved T10 does not get a blanket routine pass', () => {
   assert.equal(getDailySafetyMode({
-    id: 'T10-D01', topic_id: 'T10', day: 1,
+    id: 'بی‌خوابی و مشکلات خواب-01', topic_id: 'T10', day: 1,
     review_status: 'draft', risk_level: 'caution',
     subtopic_ids: ['T10-S01'],
   }), 'caution');
