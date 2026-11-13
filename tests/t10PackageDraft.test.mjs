@@ -168,6 +168,8 @@ test('T10 retains sleep-specific safety boundaries and avoids unsafe self-treatm
   assert.match(joined, /متخصص خواب|پزشک/);
   assert.match(joined, /دارو/);
   assert.match(joined, /محرومیت از خواب|خواب را محدود/);
+  assert.match(joined, /خطر افتادن شبانه یا دشواری انتقال از تخت/);
+  assert.match(joined, /درمان مواجهه‌محور PTSD/);
   assert.doesNotMatch(joined, /دوز دارو را افزایش بده|الکل مصرف کن تا بخوابی|عمداً تمام شب بیدار بمان/);
   assert.ok(guide.records.every((record) => record.questions.find((question) => question.id === 'q07').answer.split(/\s+/u).length <= 135));
   for (const day of [1, 4, 5, 9, 12, 13, 15, 17, 21, 22, 24, 25, 26]) {
