@@ -8,10 +8,21 @@ const baseURL = process.env.PATH28_BASE_URL || 'http://127.0.0.1:4173';
 const topic = 'بی‌خوابی و مشکلات خواب';
 const canonical = JSON.parse(await readFile(new URL('../../public/content/path-content.json', import.meta.url), 'utf8'));
 const overrides = JSON.parse(await readFile(new URL('../../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+const t10Draft = JSON.parse(await readFile(new URL('../../docs/T06-T34-PACKAGES/T10/T10_CANONICAL_CONTENT_DRAFT_V2_20261113.json', import.meta.url), 'utf8'));
 const canonicalDays = canonical.categories?.[topic]?.days || [];
 const overrideDays = overrides.categories?.[topic]?.days || [];
-assert.equal(canonicalDays.length, 28, 'T10 canonical path must contain 28 days');
-assert.equal(overrideDays.length, 28, 'T10 override must contain 28 days');
+assert.equal(canonicalDays.length, 28, 'T10 canonical path fixture must contain 28 days');
+assert.equal(overrideDays.length, 28, 'T10 override fixture must contain 28 days');
+assert.equal(t10Draft.records.length, 28, 'T10 draft must contain 28 days');
+
+// Feed the browser smoke test from the newly audited draft, not stale runtime copy.
+// This remains a fixture-level rendering test; it does not claim production integration.
+for (const draftDay of t10Draft.records) {
+  const target = overrideDays.find(item => Number(item.day) === Number(draftDay.day));
+  assert.ok(target, `T10 day ${draftDay.day} must exist in the override fixture`);
+  target.exercise = draftDay.instructions;
+  target.actionText = draftDay.action;
+}
 
 function normalize(value) {
   return String(value || '').normalize('NFKC')
@@ -107,8 +118,9 @@ async function verifyDay(browser, dayNumber) {
 
 const browser = await chromium.launch({ headless: true });
 try {
-  await verifyDay(browser, 1);
-  await verifyDay(browser, 25);
+  for (let dayNumber = 1; dayNumber <= 28; dayNumber += 1) {
+    await verifyDay(browser, dayNumber);
+  }
 } finally {
   await browser.close();
 }
