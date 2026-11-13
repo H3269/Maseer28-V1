@@ -228,3 +228,14 @@ test('q02 exercise examples and q04 action examples are not near-duplicates with
     assert.ok(union > 0 && intersection / union < 0.5, `day ${record.day}: q02/q04 example overlap`);
   }
 });
+
+test('day 18 stop guidance stays specific to safe handoff and approval', () => {
+  const record = canonical.records.find((item) => item.day === 18);
+  const guideRecord = guide.records.find((item) => item.day === 18);
+  assert.deepEqual(record.stop_conditions, [record.stop_condition_text]);
+  for (const id of ['q07', 'q11']) {
+    const response = answer(guideRecord, id);
+    assert.ok(response.includes(record.stop_condition_text));
+    assert.doesNotMatch(response, /فکر آسیب به خود/u);
+  }
+});
