@@ -743,6 +743,18 @@
         "If a person becomes sleepy while driving, they should stop in a safe place rather than trying to force themselves to stay awake."
       ],
       "limitations": "Road-safety guidance, not a clinical sleep-disorder diagnostic source. T10 uses it only for the safety boundary: do not drive while dangerously sleepy; do not prescribe caffeine as a substitute for sleep."
+    },
+    {
+      "source_id": "SRC-SLEEP-NIMH-BIPOLAR-SIGNS-001",
+      "title": "Bipolar Disorder",
+      "publisher": "National Institute of Mental Health (NIH)",
+      "source_type": "public_health_guidance",
+      "url": "https://www.nimh.nih.gov/health/publications/bipolar-disorder",
+      "relevant_claims": [
+        "Symptoms of a manic episode can include decreased need for sleep together with unusually elevated or irritable mood, increased energy or activity, racing thoughts, or other marked changes.",
+        "A sleep change alone does not establish bipolar disorder; symptoms must be considered in a broader clinical assessment."
+      ],
+      "limitations": "Public health information about bipolar disorder, not a screening or diagnostic tool. Decreased sleep alone does not establish mania or bipolar disorder; the app must not diagnose and should direct concerns to qualified clinical assessment."
     }
   ]
 }
