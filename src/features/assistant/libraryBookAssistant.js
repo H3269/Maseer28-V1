@@ -112,7 +112,14 @@ function pageBlocks(page) {
   })).filter((block) => block.type === 'heading' || block.text.length > 24);
 }
 
+const PASSAGES_CACHE = new WeakMap();
+const BOOK_HEADINGS_CACHE = new WeakMap();
+
 function passagesForBook(book) {
+  if (book && typeof book === 'object') {
+    const cached = PASSAGES_CACHE.get(book);
+    if (cached) return cached;
+  }
   const rows = [];
   for (const page of Array.isArray(book?.content?.pages) ? book.content.pages : []) {
     const blocks = pageBlocks(page);
@@ -138,6 +145,7 @@ function passagesForBook(book) {
       });
     }
   }
+  if (book && typeof book === 'object') PASSAGES_CACHE.set(book, rows);
   return rows;
 }
 
@@ -236,6 +244,10 @@ function formatPassages(passages) {
 }
 
 function bookHeadings(book) {
+  if (book && typeof book === 'object') {
+    const cached = BOOK_HEADINGS_CACHE.get(book);
+    if (cached) return cached;
+  }
   const rows = [];
   for (const page of book.content?.pages || []) {
     const blocks = pageBlocks(page);
@@ -258,12 +270,14 @@ function bookHeadings(book) {
     }
   }
   const seen = new Set();
-  return rows.filter((row) => {
+  const headings = rows.filter((row) => {
     const key = normalizeLibraryText(row.text);
     if (!key || seen.has(key)) return false;
     seen.add(key);
     return true;
   });
+  if (book && typeof book === 'object') BOOK_HEADINGS_CACHE.set(book, headings);
+  return headings;
 }
 
 function representativePassages(passages, limit = 5) {
