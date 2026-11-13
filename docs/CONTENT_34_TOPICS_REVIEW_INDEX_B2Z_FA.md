@@ -1119,3 +1119,9 @@
 - overlay فعال main در ۱۷ روز (۹ تمرین و ۱۷ اقدام) با canonical v2 اختلاف دارد؛ هیچ runtime/main/registry تغییر نکرده است.
 - **وضعیت:** آماده تکمیل بازبینی تخصصی و گیت‌های ایمنی/شواهد؛ هنوز آماده ادغام، تست زنده مالک یا انتشار نیست.
 - اسناد جاری: docs/T06-T34-PACKAGES/T09/T09_FINAL_AUDIT_BLOCKERS_20261113_FA.md، T09_EVIDENCE_MAP_DRAFT_20261113_FA.md، T09_CROSS_TOPIC_BOUNDARY_REVIEW_20261113_FA.md و T09_INTERPERSONAL_GATE_APPLICABILITY_DRAFT_20261113_FA.md.
+
+## نتیجه همگام‌سازی کامل metadata ایمنی در guide — 2026-11-13
+
+- پس از افزودن contraindications، whenToSeekHumanSupport، reflectionPrompt، exerciseType، subtopicIds و reviewRecordId به guide، تعداد فیلدهای هم‌ترازی‌شده canonical/guide به **۲۵ فیلد در ۲۸/۲۸ روز** رسید؛ صفر اختلاف.
+- q07 و q11 در هر ۲۸ روز اکنون همه stopConditions، contraindications و آستانه حمایت انسانی را بازتاب می‌دهند؛ هر دو ستون ۲۸ پاسخ یکتا دارند.
+- راهنمای دستیار هنوز draft است؛ این هم‌ترازی به معنی تأیید محتوایی/بالینی نیست. CI تازه برای نسخه جدید لازم است.
