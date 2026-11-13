@@ -2,7 +2,7 @@
   "schema_version": "1.0.0",
   "registry_id": "maseer28-evidence-sources",
   "status": "curated_draft_sources_pending_evidence_review",
-  "access_date": "2026-11-12",
+  "access_date": "2026-11-13",
   "sources": [
     {
       "source_id": "SRC-ANGER-NHS-001",
@@ -590,6 +590,171 @@
       "volume": "15",
       "issue": "8",
       "article_number": "1031"
+    },
+    {
+      "source_id": "SRC-SLEEP-AASM-CBTI-2021-001",
+      "title": "Behavioral and psychological treatments for chronic insomnia disorder in adults: AASM clinical practice guideline",
+      "publisher": "American Academy of Sleep Medicine",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2021-02-01",
+      "doi": "10.5664/jcsm.8986",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7853203/",
+      "relevant_claims": [
+        "For adults with chronic insomnia disorder, multicomponent CBT-I is strongly recommended by the guideline.",
+        "Stimulus control, sleep restriction therapy, and relaxation therapy as single components receive conditional recommendations.",
+        "Sleep hygiene alone is not recommended as a single-component treatment for chronic insomnia disorder.",
+        "Sleep restriction components may be contraindicated or require caution in high-risk occupations and people predisposed to mania/hypomania or with poorly controlled seizure disorders."
+      ],
+      "limitations": "Guideline is for adults with chronic insomnia disorder and clinician-delivered treatment decisions. It does not validate this app's 28-day course, any single app exercise, or unsupervised sleep restriction. Recommendations require clinical judgment and patient context."
+    },
+    {
+      "source_id": "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+      "title": "VA/DoD Clinical Practice Guideline for the Management of Chronic Insomnia Disorder and Obstructive Sleep Apnea (2025)",
+      "publisher": "U.S. Department of Veterans Affairs / Department of Defense",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2025-01-01",
+      "url": "https://www.healthquality.va.gov/guidelines/CD/insomnia/I-OSA-CPG_2025-Guideline_final_20250915.pdf",
+      "relevant_claims": [
+        "CBT-I and brief behavioral therapy for insomnia are clinician-directed options for chronic insomnia disorder.",
+        "Evaluation for other sleep disorders, daytime sleepiness, respiratory impairment, substance use history, and medication interactions is relevant before pharmacotherapy.",
+        "The guideline includes separate screening and management pathways for obstructive sleep apnea.",
+        "Conditions requiring adaptation or delay of CBT-I/BBT-I include medically unstable status, active alcohol or drug use disorder, excessive daytime sleepiness, nighttime fall risk or inability to transfer in/out of bed, active exposure-based PTSD treatment, uncontrolled seizure disorder, bipolar disorder, current acute mental health symptoms, and pregnancy/postpartum insomnia."
+      ],
+      "limitations": "Professional clinical practice guideline for clinician decision-making, not a self-screening tool or app treatment protocol. The app must not diagnose or independently determine suitability for CBT-I, BBT-I, sleep restriction, or medication."
+    },
+    {
+      "source_id": "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+      "title": "Insomnia — Diagnosis",
+      "publisher": "National Heart, Lung, and Blood Institute (NIH)",
+      "source_type": "public_health_guidance",
+      "publication_date": "2022-03-24",
+      "url": "https://www.nhlbi.nih.gov/health/insomnia/diagnosis",
+      "relevant_claims": [
+        "Clinical evaluation considers frequency and duration of sleep difficulty, daytime effects, work and non-work schedules, medications, caffeine, nicotine, alcohol, health conditions, and possible other sleep disorders.",
+        "A sleep diary for a limited period may help a healthcare provider understand sleep patterns and daytime sleepiness.",
+        "Sleep studies and other tests may be used when other sleep disorders or medical conditions are suspected."
+      ],
+      "limitations": "Patient education about clinical evaluation; symptom patterns are not diagnostic criteria for the app. Sleep diary suggestions do not justify obsessive tracking or self-diagnosis."
+    },
+    {
+      "source_id": "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+      "title": "Sleep Apnea — Symptoms",
+      "publisher": "National Heart, Lung, and Blood Institute (NIH)",
+      "source_type": "public_health_guidance",
+      "publication_date": "2025-01-09",
+      "url": "https://www.nhlbi.nih.gov/health/sleep-apnea/symptoms",
+      "relevant_claims": [
+        "Sleep apnea symptoms can include breathing that starts and stops, loud snoring, gasping for air, daytime sleepiness, and tiredness.",
+        "People may not notice nighttime symptoms themselves; a bed partner may observe them.",
+        "People with symptoms should discuss them with a healthcare provider; a sleep study may be needed."
+      ],
+      "limitations": "Symptom education only; these signs do not establish a diagnosis and do not replace clinical evaluation."
+    },
+    {
+      "source_id": "SRC-SLEEP-NHLBI-OSA-DIAGNOSIS-001",
+      "title": "Sleep Apnea — Diagnosis",
+      "publisher": "National Heart, Lung, and Blood Institute (NIH)",
+      "source_type": "public_health_guidance",
+      "publication_date": null,
+      "url": "https://www.nhlbi.nih.gov/health/sleep-apnea/diagnosis",
+      "relevant_claims": [
+        "A healthcare provider evaluates symptoms, risk factors, and medical history when sleep apnea is suspected.",
+        "A sleep study can help diagnose the type and severity of sleep apnea.",
+        "A sleep diary may help a provider review sleep duration, quality, and daytime sleepiness."
+      ],
+      "limitations": "Patient education; the app must not diagnose sleep apnea or decide which test a person needs."
+    },
+    {
+      "source_id": "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001",
+      "title": "About Sleep",
+      "publisher": "Centers for Disease Control and Prevention (CDC)",
+      "source_type": "public_health_guidance",
+      "publication_date": "2024-05-15",
+      "url": "https://www.cdc.gov/sleep/about/index.html",
+      "relevant_claims": [
+        "Sleep needs vary with age.",
+        "General sleep-supportive habits can include a consistent schedule, a quiet and comfortable sleep environment, and attention to caffeine and alcohol timing.",
+        "People with ongoing sleep problems should discuss them with a healthcare provider."
+      ],
+      "limitations": "General public-health education. Age, health, shift work, caregiving, environment, and individual circumstances matter; these suggestions are not an insomnia treatment protocol."
+    },
+    {
+      "source_id": "SRC-SLEEP-NIOSH-LIGHT-CIRCADIAN-001",
+      "title": "Effects of Light on Circadian Rhythms",
+      "publisher": "National Institute for Occupational Safety and Health (CDC)",
+      "source_type": "public_health_guidance",
+      "publication_date": null,
+      "url": "https://www.cdc.gov/niosh/work-hour-training-for-nurses/longhours/mod2/19.html",
+      "relevant_claims": [
+        "Light exposure at different times can influence circadian timing and alertness.",
+        "The effect of light depends on timing relative to a person's usual sleep and wake schedule; shift work requires context-specific consideration."
+      ],
+      "limitations": "Educational material with examples for shift-work contexts. Do not translate into a universal light prescription; eye conditions, photosensitizing medicines, and individual schedules require caution."
+    },
+    {
+      "source_id": "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001",
+      "title": "Sleep Aids and Stimulants — Caffeine",
+      "publisher": "National Institute for Occupational Safety and Health (CDC)",
+      "source_type": "public_health_guidance",
+      "publication_date": null,
+      "url": "https://www.cdc.gov/niosh/work-hour-training-for-nurses/longhours/mod6/11.html",
+      "relevant_claims": [
+        "Caffeine is a stimulant that can increase alertness and may also interfere with sleep depending on timing and individual sensitivity.",
+        "Shift workers may have different alertness and sleep timing constraints."
+      ],
+      "limitations": "Training material for shift workers; timing and effects vary. Do not advise abrupt cessation or use caffeine as a substitute for sleep or safety."
+    },
+    {
+      "source_id": "SRC-SLEEP-NHLBI-INSOMNIA-OVERVIEW-001",
+      "title": "Insomnia — What Is Insomnia?",
+      "publisher": "National Heart, Lung, and Blood Institute (NIH)",
+      "source_type": "public_health_guidance",
+      "publication_date": "2022-03-24",
+      "url": "https://www.nhlbi.nih.gov/health/insomnia",
+      "relevant_claims": [
+        "Insomnia can involve difficulty falling asleep, staying asleep, or getting good-quality sleep despite having time and an appropriate environment to sleep.",
+        "Persistent insomnia can interfere with daily activities; diagnosis belongs to a healthcare provider."
+      ],
+      "limitations": "Public-facing educational page; symptom descriptions are not diagnostic criteria for the app and cannot establish insomnia from a single complaint."
+    },
+    {
+      "source_id": "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+      "title": "Sleep Deprivation and Deficiency — Diagnosis and Treatment",
+      "publisher": "National Heart, Lung, and Blood Institute (NIH)",
+      "source_type": "public_health_guidance",
+      "publication_date": null,
+      "url": "https://www.nhlbi.nih.gov/health/sleep-deprivation/diagnosis-treatment",
+      "relevant_claims": [
+        "Clinical evaluation may ask how often a person dozes off or has trouble staying awake during routine tasks, especially driving.",
+        "A sleep diary may record sleep timing, naps, alertness, and daytime sleepiness for discussion with a healthcare provider."
+      ],
+      "limitations": "Patient education; it does not provide an individualized fitness-to-drive assessment. When sleepy, the app should advise stopping hazardous activity rather than trying to overcome sleepiness."
+    },
+    {
+      "source_id": "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+      "title": "Drowsy Driving: Avoid Falling Asleep Behind the Wheel",
+      "publisher": "National Highway Traffic Safety Administration (NHTSA)",
+      "source_type": "public_safety_guidance",
+      "publication_date": null,
+      "url": "https://www.nhtsa.gov/risky-driving/drowsy-driving",
+      "relevant_claims": [
+        "Drowsy driving can impair safe driving; sleepiness and medication effects can increase risk.",
+        "Caffeine or energy drinks alone may not reliably prevent dangerous sleepiness or microsleeps.",
+        "If a person becomes sleepy while driving, they should stop in a safe place rather than trying to force themselves to stay awake."
+      ],
+      "limitations": "Road-safety guidance, not a clinical sleep-disorder diagnostic source. T10 uses it only for the safety boundary: do not drive while dangerously sleepy; do not prescribe caffeine as a substitute for sleep."
+    },
+    {
+      "source_id": "SRC-SLEEP-NIMH-BIPOLAR-SIGNS-001",
+      "title": "Bipolar Disorder",
+      "publisher": "National Institute of Mental Health (NIH)",
+      "source_type": "public_health_guidance",
+      "url": "https://www.nimh.nih.gov/health/publications/bipolar-disorder",
+      "relevant_claims": [
+        "Symptoms of a manic episode can include decreased need for sleep together with unusually elevated or irritable mood, increased energy or activity, racing thoughts, or other marked changes.",
+        "A sleep change alone does not establish bipolar disorder; symptoms must be considered in a broader clinical assessment."
+      ],
+      "limitations": "Public health information about bipolar disorder, not a screening or diagnostic tool. Decreased sleep alone does not establish mania or bipolar disorder; the app must not diagnose and should direct concerns to qualified clinical assessment."
     }
   ]
 }
