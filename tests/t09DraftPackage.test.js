@@ -72,12 +72,12 @@ test('each FAQ answer is anchored to its corresponding daily content and safety 
     assert.ok(answer(record, 'q11').includes(record.stopCondition), `day ${record.day}: q11 stop condition`);
     assert.ok(record.stopConditions.every((condition) => answer(record, 'q11').includes(condition)), `day ${record.day}: q11 all safety conditions`);
     assert.ok(answer(record, 'q11').includes(record.restVersion), `day ${record.day}: q11 rest version`);
-    assert.ok(answer(record, 'q14').includes('این زمان فقط برای خودِ مشاهده، نوشتن یا برنامه‌ریزیِ تمرین است'), `day ${record.day}: q14 scope`);
+    assert.ok(answer(record, 'q14').includes('این زمان فقط برای خودِ تمرین است، نه اجرای کار اصلی'), `day ${record.day}: q14 scope`);
     assert.ok(answer(record, 'q14').includes(String(record.durationMinutes)), `day ${record.day}: q14 duration`);
   }
 });
 
-test('q09 and q11 avoid repeated generic endings and openings', () => {
+test('canonical records have one authoritative field set without stale legacy aliases', () => {\n  const aliases = ['objective', 'skill', 'teaching', 'exercise', 'light', 'progress', 'rest', 'reflection', 'success', 'stop', 'q04'];\n  for (const record of canonical.records) {\n    for (const key of aliases) assert.equal(Object.hasOwn(record, key), false, `day ${record.day}: stale alias ${key}`);\n  }\n});\n\ntest('day 7 defines an observable completion marker while day 8 defines the first physical move', () => {\n  const day7 = guide.records.find((record) => record.day === 7);\n  const day8 = guide.records.find((record) => record.day === 8);\n  assert.match(day7.action, /نشانه قابل مشاهده برای پایان/u);\n  assert.match(day8.action, /حرکت نخست را با یک فعل و یک شیء/u);\n  assert.notEqual(day7.action, day8.action);\n  assert.equal(answer(day7, 'q05'), day7.lightVersion);\n  assert.equal(answer(day7, 'q06'), day7.successCriterion);\n});\n\ntest('q09 and q11 avoid repeated generic endings and openings', () => {
   const q09 = guide.records.map((record) => answer(record, 'q09'));
   const q11 = guide.records.map((record) => answer(record, 'q11'));
   assert.equal(new Set(q09).size, 28);
