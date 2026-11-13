@@ -71,8 +71,8 @@ test('T10 assistant guide has 392 non-empty, unique answers and 14 questions per
     assert.match(record.questions.find((question) => question.id === 'q11').answer, /خواب|خواب‌آلودگی|بیدار/);
     assert.equal(record.reviewStatus, 'draft');
     assert.equal(record.evidenceGrade, 'not_assessed');
-    assert.deepEqual(record.sourceIds, canonicalDay.source_ids);
     const canonicalDay = canonical.records[record.day - 1];
+    assert.deepEqual(record.sourceIds, canonicalDay.source_ids);
     assert.equal(record.successCriterion, canonicalDay.success_criterion,
       `day ${record.day} guide success criterion must match canonical content`);
     const durationMatch = record.questions.find((question) => question.id === 'q14').answer.match(/حدود\s+(\d+)\s+دقیقه/);
@@ -90,7 +90,7 @@ test('T10 assistant guide has 392 non-empty, unique answers and 14 questions per
   const q07 = guide.records.map((record) => record.questions.find((question) => question.id === 'q07').answer);
   assert.equal(new Set(q07).size, 28, 'stop guidance must remain day-specific');
   assert.ok(q07.every((answer) => answer.split(/\s+/u).length <= 150), 'q07 must remain concise');
-  assert.ok(q11.every((answer) => answer.split(/\\s+/u).length <= 120), 'q11 must remain concise');
+  assert.ok(q11.every((answer) => answer.split(/\s+/u).length <= 120), 'q11 must remain concise');
 });
 
 test('T10 guide and canonical records remain aligned across all daily fields and FAQs', () => {
