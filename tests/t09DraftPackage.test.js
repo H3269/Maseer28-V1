@@ -121,6 +121,13 @@ test('days 6, 7, 11, 15, 16 and 25 keep stop and rest guidance aligned with thei
   assert.match(byDay(25).stopCondition, /موعد واقعی/u);
 });
 
+test('T09 day 1 action is task-and-delay specific rather than a generic observation prompt', () => {
+  const record = guide.records.find((item) => item.day === 1);
+  assert.match(record.action, /زمان قصد شروع و پیامد واقعی تأخیر/u);
+  assert.doesNotMatch(record.action, /برای مشاهده هفت‌روزه انتخاب کن/u);
+  assert.equal(answer(record, 'q03'), `اقدام اختصاصی روز 1: ${record.action}`);
+});
+
 test('day 14 does not turn healthy rest into avoidance or prescribe accountability partners', () => {
   const record = guide.records.find((item) => item.day === 14);
   assert.ok(record.exercise.includes('استراحت برنامه‌ریزی‌شده'));
