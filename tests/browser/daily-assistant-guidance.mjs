@@ -900,7 +900,7 @@ try {
   await t09Trigger.click();
   const t09ThirdPrompt = t09Page.locator('#library-assistant-prompt-dialog');
   await t09ThirdPrompt.waitFor({ state: 'visible' });
-  await t09ThirdPrompt.getByRole('button', { name: 'اگر هنگام شروع یا ادامه کار فشار یا مقاومت بیشتری احساس کردم چه کنم؟' }).click();
+  await t09ThirdPrompt.getByRole('button', { name: 'اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟' }).click();
   await t09Panel.getByRole('button', { name: 'ارسال' }).click();
   await t09Page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
     .some(node => node.innerText.includes('افزایش مقاومت به‌تنهایی نشانه تنبلی')));
