@@ -30,6 +30,11 @@ test('T10 canonical draft covers 28 unique daily units with the v2 contract', as
     assert.ok(sourceIds.has(claim.source_id));
     assert.equal(claim.applies_to_days.length, 28);
   }
+  for (const day of [7, 19, 22]) {
+    const mapping = evidenceMap.mappings[day - 1];
+    assert.equal(mapping.claim_mappings.length, 0, `day ${day}: do not invent unsupported clinical efficacy claims`);
+    assert.ok(mapping.claim_mapping_note?.trim(), `day ${day}: explain why no day-specific clinical claim is mapped`);
+  }
   for (const item of evidenceMap.mappings) {
     assert.ok(item.claim_mappings.every((claim) => sourceIds.has(claim.source_id)));
     assert.deepEqual(new Set(item.shared_safety_claim_ids), sharedClaimIds);
@@ -107,6 +112,9 @@ test('T10 assistant guide has 392 non-empty, unique answers and 14 questions per
   assert.equal(new Set(q02).size, 28, 'exercise examples must be day-specific');
   assert.equal(new Set(q04).size, 28, 'action examples must be day-specific');
   assert.equal(new Set(q13).size, 28, 'adaptation guidance must be day-specific');
+  const referralGuidance = guide.records.map((record) => record.whenToSeekHumanSupport);
+  assert.equal(new Set(referralGuidance).size, 28, 'human-support guidance must include day-specific context');
+  assert.ok(referralGuidance.every((answer) => answer.includes('پزشک یا متخصص خواب')));
   const q11 = guide.records.map((record) => record.questions.find((question) => question.id === 'q11').answer);
   assert.equal(new Set(q11).size, 28, 'sleep-safety guidance must remain day-specific');
   assert.ok(guide.records.every((record) => record.questions.find((question) => question.id === 'q11').answer !== record.questions.find((question) => question.id === 'q07').answer));
@@ -172,6 +180,10 @@ test('T10 retains sleep-specific safety boundaries and avoids unsafe self-treatm
   assert.match(joined, /محرومیت از خواب|خواب را محدود/);
   assert.match(joined, /خطر افتادن شبانه یا دشواری انتقال از تخت/);
   assert.match(joined, /درمان مواجهه‌محور PTSD/);
+  assert.ok(guide.records.every((record) => {
+    const answer = record.questions.find((question) => question.id === 'q07').answer;
+    return answer.includes('خطر افتادن/دشواری انتقال') && answer.includes('درمان مواجهه‌محور PTSD');
+  }), 'each day-specific stop answer must retain both VA/DoD adaptation cautions');
   assert.doesNotMatch(joined, /دوز دارو را افزایش بده|الکل مصرف کن تا بخوابی|عمداً تمام شب بیدار بمان/);
   assert.ok(guide.records.every((record) => record.questions.find((question) => question.id === 'q07').answer.split(/\s+/u).length <= 135));
   for (const day of [1, 4, 5, 9, 12, 13, 15, 17, 21, 22, 24, 25, 26]) {
