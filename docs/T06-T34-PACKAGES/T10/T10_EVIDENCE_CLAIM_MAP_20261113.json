@@ -990,7 +990,7 @@
     {
       "claim_id": "T10-SAFETY-004",
       "source_id": "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
-      "claim": "Structured insomnia behavioral interventions may require adaptation or delay for excessive daytime sleepiness, bipolar disorder, uncontrolled seizures, medical instability, acute mental health symptoms, pregnancy/postpartum, or active substance use disorder.",
+      "claim": "Structured insomnia behavioral interventions require clinician-led adaptation or delay in contexts such as excessive daytime sleepiness, nighttime fall risk or inability to transfer, active exposure-based PTSD treatment, bipolar disorder, uncontrolled seizures, medical instability, acute mental health symptoms, pregnancy/postpartum, or active substance use disorder.",
       "applies_to_days": [
         1,
         2,
@@ -1022,7 +1022,7 @@
         28
       ],
       "review_status": "pending_expert_review",
-      "limitations": "Professional guideline for clinician decision-making; not a self-screening tool or app treatment protocol."
+      "limitations": "VA/DoD clinician guidance, not a self-screening tool. These conditions do not let the app determine treatment eligibility; they require qualified clinical assessment and individualized decisions."
     },
     {
       "claim_id": "T10-SAFETY-005",
