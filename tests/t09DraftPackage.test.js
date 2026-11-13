@@ -280,7 +280,7 @@ test('T09 keeps every subtopic mapping provisional and every safety field popula
   }
 });
 
-test('q12 interpersonal guidance preserves safety and voluntary exit across all 28 days', () => {
+test('q12 guidance stays specific to procrastination barriers across all 28 days', () => {
   const responses = guide.records.map((record) => answer(record, 'q12'));
   assert.equal(new Set(responses).size, 28);
   for (const response of responses) {
