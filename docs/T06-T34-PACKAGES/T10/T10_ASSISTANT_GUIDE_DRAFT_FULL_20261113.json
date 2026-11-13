@@ -2015,7 +2015,7 @@
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
       "stopConditions": [
-        "اگر کاهش ساعت‌نگری با نگرانی دارویی یا ایمنی تداخل دارد، ثبت ضروری را حذف نکن؛ برنامه را با متخصص هماهنگ کن."
+        "اگر کاهش ساعت‌نگری با پایش ضروری دارویی، ایمنی یا تعهد زمانی تداخل دارد، آن را اجرا نکن؛ برنامه را با متخصص هماهنگ کن."
       ],
       "exerciseType": "guided_self_observation_and_action",
       "contraindications": [
