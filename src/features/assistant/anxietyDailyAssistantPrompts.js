@@ -3047,8 +3047,13 @@ function answerAnxietyDailyPreparedQuestionRaw({ day, message, dailyContent } = 
         '\n\nاگر شرایط واقعی تو با مثال فرق دارد، آن را عیناً تکرار نکن. اگر اجرا امن یا مناسب نیست، انجام‌ندادن اقدام انتخاب معتبرتری است.\n\n' + safe;
 
     case 'light_version':
-      return heading + '\n\n**نسخه سبک امروز**\n' + guide.lightVersion +
-        '\n\nاگر نسخه کامل دشوار است، خودت را مجبور نکن. اگر نسخه سبک هم فشار را بیشتر می‌کند، تمرین را متوقف کن. نسخه سبک یا مکث، شکست محسوب نمی‌شود.';
+      return heading + '\n\n**نسخه سبک تمرین امروز**\n' + guide.lightVersion +
+        '\n\n**نسخه سبک اقدام امروز**\nفقط یک نشانه آغاز نگرانی را نام ببر؛ لازم نیست آن را تغییر بدهی یا با موقعیت اضطراب‌آور روبه‌رو شوی.' +
+        '\n\n**نسخه استراحت**\n' + guide.restVersion +
+        '\n\nاگر نسخه سبک آسان و بدون افزایش فشار بود، در زمان مناسب می‌توانی نسخه پیشرفت را ببینی: ' + guide.progressVersion +
+        '\n\n**معیار موفقیت**\n' + guide.successCriterion +
+        '\n\nاگر ناراحتی بیشتر شد، توقف کن: ' + guide.stopCondition +
+        '\n\nنسخه سبک یا مکث، شکست محسوب نمی‌شود و لازم نیست برای جبران، تمرین را سنگین‌تر کنی.';
 
     case 'success':
       return heading + '\n\n**معیار موفقیت امروز**\n' + guide.successCriterion +
