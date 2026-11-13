@@ -1,0 +1,267 @@
+{
+  "schema_version": "1.0.0",
+  "package_id": "T10",
+  "status": "draft_pending_expert_review",
+  "scope_note": "This is a preliminary source-to-day index, not a completed claim-by-claim evidence appraisal. Source IDs support only the bounded statements in the registry; they do not validate the entire exercise or prove app effectiveness.",
+  "source_registry": "public/assistant/evidence/sources.v1.json",
+  "mappings": [
+    {
+      "day": 1,
+      "content_id": "T10-D01",
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 2,
+      "content_id": "T10-D02",
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 3,
+      "content_id": "T10-D03",
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-NHLBI-OSA-DIAGNOSIS-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 4,
+      "content_id": "T10-D04",
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 5,
+      "content_id": "T10-D05",
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 6,
+      "content_id": "T10-D06",
+      "source_ids": [
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 7,
+      "content_id": "T10-D07",
+      "source_ids": [],
+      "claim_scope": "No external clinical efficacy claim is asserted for this day; the unit is limited to self-observation or a non-clinical planning action.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 8,
+      "content_id": "T10-D08",
+      "source_ids": [
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 9,
+      "content_id": "T10-D09",
+      "source_ids": [
+        "SRC-SLEEP-NIOSH-LIGHT-CIRCADIAN-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 10,
+      "content_id": "T10-D10",
+      "source_ids": [
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 11,
+      "content_id": "T10-D11",
+      "source_ids": [
+        "SRC-SLEEP-AASM-CBTI-2021-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 12,
+      "content_id": "T10-D12",
+      "source_ids": [
+        "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001",
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 13,
+      "content_id": "T10-D13",
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 14,
+      "content_id": "T10-D14",
+      "source_ids": [
+        "SRC-SLEEP-AASM-CBTI-2021-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 15,
+      "content_id": "T10-D15",
+      "source_ids": [
+        "SRC-SLEEP-AASM-CBTI-2021-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 16,
+      "content_id": "T10-D16",
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 17,
+      "content_id": "T10-D17",
+      "source_ids": [
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 18,
+      "content_id": "T10-D18",
+      "source_ids": [
+        "SRC-SLEEP-AASM-CBTI-2021-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 19,
+      "content_id": "T10-D19",
+      "source_ids": [],
+      "claim_scope": "No external clinical efficacy claim is asserted for this day; the unit is limited to self-observation or a non-clinical planning action.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 20,
+      "content_id": "T10-D20",
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 21,
+      "content_id": "T10-D21",
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 22,
+      "content_id": "T10-D22",
+      "source_ids": [],
+      "claim_scope": "No external clinical efficacy claim is asserted for this day; the unit is limited to self-observation or a non-clinical planning action.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 23,
+      "content_id": "T10-D23",
+      "source_ids": [
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 24,
+      "content_id": "T10-D24",
+      "source_ids": [
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 25,
+      "content_id": "T10-D25",
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-OSA-DIAGNOSIS-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 26,
+      "content_id": "T10-D26",
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 27,
+      "content_id": "T10-D27",
+      "source_ids": [
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    },
+    {
+      "day": 28,
+      "content_id": "T10-D28",
+      "source_ids": [
+        "SRC-SLEEP-AASM-CBTI-2021-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+      ],
+      "claim_scope": "The listed source supports only the factual/clinical context stated in its relevant_claims; it does not validate the full exercise, app efficacy, or individual suitability.",
+      "review_status": "pending_expert_review"
+    }
+  ]
+}
