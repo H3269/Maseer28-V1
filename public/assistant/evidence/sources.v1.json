@@ -729,6 +729,20 @@
         "A sleep diary may record sleep timing, naps, alertness, and daytime sleepiness for discussion with a healthcare provider."
       ],
       "limitations": "Patient education; it does not provide an individualized fitness-to-drive assessment. When sleepy, the app should advise stopping hazardous activity rather than trying to overcome sleepiness."
+    },
+    {
+      "source_id": "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+      "title": "Drowsy Driving: Avoid Falling Asleep Behind the Wheel",
+      "publisher": "National Highway Traffic Safety Administration (NHTSA)",
+      "source_type": "public_safety_guidance",
+      "publication_date": null,
+      "url": "https://www.nhtsa.gov/risky-driving/drowsy-driving",
+      "relevant_claims": [
+        "Drowsy driving can impair safe driving; sleepiness and medication effects can increase risk.",
+        "Caffeine or energy drinks alone may not reliably prevent dangerous sleepiness or microsleeps.",
+        "If a person becomes sleepy while driving, they should stop in a safe place rather than trying to force themselves to stay awake."
+      ],
+      "limitations": "Road-safety guidance, not a clinical sleep-disorder diagnostic source. T10 uses it only for the safety boundary: do not drive while dangerously sleepy; do not prescribe caffeine as a substitute for sleep."
     }
   ]
 }
