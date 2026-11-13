@@ -22,7 +22,7 @@ function buildT10Heading(guide) {
 export function answerT10DailyPreparedQuestion({ day, message, dailyContent } = {}) {
   const dayNumber = toT10DayNumber(day);
   if (!dayNumber || !dailyContent || typeof dailyContent !== 'object') return null;
-  const expectedId = `T10-D${String(dayNumber).padStart(2, '0')}`;
+  const expectedId = `بی‌خوابی و مشکلات خواب-${String(dayNumber).padStart(2, '0')}`;
   if (dailyContent.id !== expectedId || Number(dailyContent.day) !== dayNumber
     || (dailyContent.topic_id != null && dailyContent.topic_id !== 'T10')) return null;
 
