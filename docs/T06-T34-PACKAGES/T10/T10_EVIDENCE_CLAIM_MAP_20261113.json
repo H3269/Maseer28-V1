@@ -730,7 +730,8 @@
         "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
         "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
         "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
-        "SRC-SLEEP-AASM-CBTI-2021-001"
+        "SRC-SLEEP-AASM-CBTI-2021-001",
+        "SRC-SLEEP-NIMH-BIPOLAR-SIGNS-001"
       ],
       "claim_mappings": [
         {
@@ -760,6 +761,13 @@
           "claim": "NHTSA advises stopping in a safe place rather than trying to force wakefulness when sleepiness threatens driving; caffeine alone is not a reliable safety solution.",
           "review_status": "pending_expert_review",
           "limitations": "Road-safety guidance, not a clinical sleep-disorder diagnostic source. T10 uses it only for the safety boundary: do not drive while dangerously sleepy; do not prescribe caffeine as a substitute for sleep."
+        },
+        {
+          "claim_id": "T10-D25-C05",
+          "source_id": "SRC-SLEEP-NIMH-BIPOLAR-SIGNS-001",
+          "claim": "A marked decrease in need for sleep together with unusually elevated or irritable mood, increased energy or activity can be a sign requiring clinical assessment; a sleep change alone is not a diagnosis.",
+          "review_status": "pending_expert_review",
+          "limitations": "NIMH public information about bipolar disorder; the app must not diagnose mania or bipolar disorder from sleep patterns."
         }
       ],
       "review_status": "pending_expert_review",
