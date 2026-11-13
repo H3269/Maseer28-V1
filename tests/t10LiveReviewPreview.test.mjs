@@ -12,6 +12,8 @@ test('T10 draft is available for owner live review while retaining risk classifi
   assert.equal(getDailySafetyMode({ ...base, risk_level: 'routine' }), 'routine');
   assert.equal(getDailySafetyMode({ ...base, risk_level: 'unknown' }), 'blocked');
   assert.equal(getDailySafetyMode({ ...base, risk_level: undefined }), 'blocked');
+  assert.equal(getDailySafetyMode({ ...base, subtopic_ids: ['T10-S03'], risk_level: 'caution' }), 'blocked');
+  assert.equal(getDailySafetyMode({ ...base, subtopic_ids: ['T10-S03'], risk_level: 'caution', safety_rule_ids: ['SR-T10-SLEEP-REFERRAL'] }), 'caution');
 });
 
 test('unapproved T10 does not get a blanket routine pass', () => {
