@@ -173,3 +173,45 @@ test('q11 keeps a genuinely topic-specific answer body after the shared response
     assert.equal(new Set(topicBodies).size, 9, 'q11 answer bodies must be distinct across all topics on day ' + day);
   }
 });
+
+
+test('T01-T09 answer-body depth remains broadly balanced for each shared question', () => {
+  const marker = 'هدف این است که دستور امروز را بفهمی و تا جایی که امن و شدنی است اجرا کنی.';
+  const median = values => {
+    const sorted = [...values].sort((a, b) => a - b);
+    const middle = Math.floor(sorted.length / 2);
+    return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+  };
+  const questionIds = topics[0][1][0].questions.map(question => question.id);
+  const outliers = [];
+  for (const questionId of questionIds) {
+    const topicMedians = topics.map(([topicId, guides, , answerPrepared]) => {
+      const lengths = guides.map(guide => {
+        const question = guide.questions.find(item => item.id === questionId);
+        assert.ok(question, topicId + ' day ' + guide.day + ' missing ' + questionId);
+        const dailyContent = topicId === 'T09' ? {
+          id: 'اهمال‌کاری-' + String(guide.day).padStart(2, '0'),
+          topic_id: 'T09',
+          day: guide.day,
+          exercise: guide.exercise,
+          actionText: guide.action,
+        } : undefined;
+        const answer = answerPrepared({ day: guide.day, message: question.value, dailyContent });
+        assert.equal(typeof answer, 'string', topicId + ' day ' + guide.day + ' ' + questionId);
+        const markerIndex = answer.indexOf(marker);
+        assert.ok(markerIndex >= 0, topicId + ' day ' + guide.day + ' shared response frame');
+        return answer.slice(markerIndex + marker.length).trim().length;
+      });
+      return { topicId, length: median(lengths) };
+    });
+    const overallMedian = median(topicMedians.map(item => item.length));
+    for (const item of topicMedians) {
+      const ratio = item.length / Math.max(1, overallMedian);
+      if (ratio < 0.4 || ratio > 2.5) {
+        outliers.push(questionId + '/' + item.topicId + ': ' + item.length + ' chars, overall median '
+          + overallMedian + ' (ratio ' + ratio.toFixed(2) + ')');
+      }
+    }
+  }
+  assert.deepEqual(outliers, [], 'answer depth outliers: ' + outliers.join('; '));
+});

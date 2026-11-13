@@ -1,3 +1,13 @@
+test('T03 q10 gives a non-punitive restart, a light option, rest, and a clear stop boundary', () => {
+ for (const guide of FEAR_DAILY_ASSISTANT_GUIDES) {
+  const question = guide.questions.find(item => item.id === 'q10');
+  const answer = answerFearDailyPreparedQuestion({ day: guide.day, message: question.value });
+  for (const field of ['lightVersion', 'restVersion', 'successCriterion', 'stopCondition']) {
+   assert.ok(answer.includes(guide[field]), 'day ' + guide.day + ' q10 must include ' + field);
+  }
+ }
+});
+
 test('T03 q05 explains the daily light version, rest option, success criterion, and stop condition', () => {
  for (const guide of FEAR_DAILY_ASSISTANT_GUIDES) {
   const question = guide.questions.find(item => item.id === 'q05');
