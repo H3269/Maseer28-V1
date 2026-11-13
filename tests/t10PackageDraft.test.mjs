@@ -116,7 +116,7 @@ test('T10 guide and canonical records remain aligned across all daily fields and
     assert.ok(answer('q11').includes(g.whenToSeekHumanSupport));
     assert.ok(g.stopConditions.every((v) => answer('q11').includes(v)));
     assert.ok(g.contraindications.every((v) => answer('q11').includes(v)));
-    const duration = answer('q14').match(/حدود\\s+(\\d+)\\s+دقیقه/);
+    const duration = answer('q14').match(/حدود\s+(\d+)\s+دقیقه/);
     assert.ok(duration, `day ${index + 1}: q14 duration`);
     assert.equal(Number(duration[1]), g.durationMinutes);
     assert.ok(answer('q14').includes('این زمان تخمینی و غیرالزامی است'));
