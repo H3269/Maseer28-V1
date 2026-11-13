@@ -495,3 +495,8 @@
 - پس از افزودن contraindications، whenToSeekHumanSupport، reflectionPrompt، exerciseType، subtopicIds و reviewRecordId به guide، تعداد فیلدهای هم‌ترازی‌شده canonical/guide به **۲۵ فیلد در ۲۸/۲۸ روز** رسید؛ صفر اختلاف.
 - q07 و q11 در هر ۲۸ روز اکنون همه stopConditions، contraindications و آستانه حمایت انسانی را بازتاب می‌دهند؛ هر دو ستون ۲۸ پاسخ یکتا دارند.
 - راهنمای دستیار هنوز draft است؛ این هم‌ترازی به معنی تأیید محتوایی/بالینی نیست. CI تازه برای نسخه جدید لازم است.
+
+## پیگیری CI #4803 — اصلاح خطای assertion آزمون metadata
+
+- CI #4803 در آزمون هم‌ترازی فیلد sourceIds متوقف شد؛ علت، استفاده از assert.equal برای دو آرایه جدا با محتوای برابر بود، نه اختلاف داده canonical و guide.
+- مقایسه sourceIds به assert.deepEqual تغییر کرد؛ کنترل مستقل داده‌ها نیز نشان داد هر دو آرایه در ۲۸ روز برابرند. اجرای مجدد پس از commit اصلاح آزمون لازم است.
