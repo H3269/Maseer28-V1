@@ -15,9 +15,9 @@ const OPTIONAL_METADATA_FIELDS = Object.freeze([
 ]);
 
 /**
- * Normalize all topic-specific daily guides to one stable assistant schema.
- * Missing metadata remains explicit and is reported in metadataGaps; no content
- * or clinical guidance is fabricated by this adapter.
+ * Normalize topic-specific source records to one stable daily-assistant schema.
+ * Missing metadata stays explicit (null/empty) and is listed in metadataGaps;
+ * this adapter never fabricates clinical or topic-specific content.
  */
 export function normalizeDailyAssistantGuide(source = {}) {
   const subtopic = source.subtopic || source.subtopicId || null;
@@ -70,7 +70,7 @@ export function normalizeDailyAssistantGuide(source = {}) {
     evidenceGrade: source.evidenceGrade || 'not_assessed',
     reviewStatus: source.reviewStatus || 'not_recorded',
     questions: Object.freeze(questions),
-    metadataGaps: Object.freeze(OPTIONAL_METADATA_FIELDS.filter((field) => normalized[field] == null)),
   };
+  normalized.metadataGaps = Object.freeze(OPTIONAL_METADATA_FIELDS.filter((field) => normalized[field] == null));
   return Object.freeze(normalized);
 }
