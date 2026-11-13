@@ -1,8 +1,9 @@
+import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 
 // T05: prepared-only, day-specific guidance. Jealousy is not proof of betrayal.
-export const JEALOUSY_DAILY_ASSISTANT_GUIDES = [
+const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
   {
     "day": 1,
     "title": "تعریف حسادت",
@@ -2972,6 +2973,8 @@ export const JEALOUSY_DAILY_ASSISTANT_GUIDES = [
     ]
   }
 ];
+
+export const JEALOUSY_DAILY_ASSISTANT_GUIDES = Object.freeze(RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES.map(normalizeDailyAssistantGuide));
 export function toJealousyDayNumber(value){const n=Number(String(value??'').replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))));return Number.isInteger(n)&&n>=1&&n<=28?n:null;}
 export function getJealousyDailyAssistantPromptGroups(day){
  const n=toJealousyDayNumber(day),g=JEALOUSY_DAILY_ASSISTANT_GUIDES.find(x=>x.day===n);if(!g)return[];
