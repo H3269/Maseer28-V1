@@ -186,6 +186,11 @@ test('T10 retains sleep-specific safety boundaries and avoids unsafe self-treatm
   assert.match(canonical.records[14].instructions, /پروتکل تخصصی کنترل محرک نیست/);
   assert.doesNotMatch(canonical.records[14].instructions, /هنگام خواب‌آلودگی بازگرد/);
   assert.match(canonical.records[24].instructions, /کاهش غیرمعمول نیاز به خواب/);
+  assert.match(canonical.records[4].instructions, /غیرمرتبط با مواد/);
+  assert.doesNotMatch(canonical.records[4].instructions, /کافئین، نیکوتین، الکل/);
+  assert.ok(!canonical.records[4].source_ids.includes('SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001'));
+  assert.match(canonical.records[11].instructions, /کافئین، نیکوتین و الکل/);
+
   assert.match(canonical.records[24].instructions, /این نشانه به‌تنهایی تشخیص نیست/);
   const joined = JSON.stringify({ canonical, guide });
   assert.match(joined, /رانندگی/);
