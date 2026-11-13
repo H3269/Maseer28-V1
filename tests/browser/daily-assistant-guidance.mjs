@@ -884,6 +884,30 @@ try {
   await t09Page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
     .some(node => node.innerText.includes('راهنمای روز ۱ اهمال‌کاری')));
   await assertAssistantUsesVisibleDailySource(t09Page, t09Panel, 'اهمال‌کاری', 1, ['exercise']);
+
+  await t09Trigger.click();
+  const t09SecondPrompt = t09Page.locator('#library-assistant-prompt-dialog');
+  await t09SecondPrompt.waitFor({ state: 'visible' });
+  await t09SecondPrompt.getByRole('button', { name: 'آیا لازم است حتماً با فرد دیگری صحبت کنم؟' }).click();
+  await t09Panel.getByRole('button', { name: 'ارسال' }).click();
+  await t09Page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => node.innerText.includes('گفت‌وگو شرط انجام تمرین نیست')));
+  const t09CollaborationReply = await t09Panel.locator('.assistantMessage').last().innerText();
+  assert.match(t09CollaborationReply, /اطلاعات، اجازه، دسترسی، هماهنگی یا تقسیم مسئولیتی/);
+  assert.doesNotMatch(t09CollaborationReply, /وابستگی را فقط ثبت کن/,
+    'T09 collaboration guidance must not contain copied T08 relationship-dependency wording');
+
+  await t09Trigger.click();
+  const t09ThirdPrompt = t09Page.locator('#library-assistant-prompt-dialog');
+  await t09ThirdPrompt.waitFor({ state: 'visible' });
+  await t09ThirdPrompt.getByRole('button', { name: 'اگر هنگام شروع یا ادامه کار فشار یا مقاومت بیشتری احساس کردم چه کنم؟' }).click();
+  await t09Panel.getByRole('button', { name: 'ارسال' }).click();
+  await t09Page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => node.innerText.includes('افزایش مقاومت به‌تنهایی نشانه تنبلی')));
+  const t09ResistanceReply = await t09Panel.locator('.assistantMessage').last().innerText();
+  assert.match(t09ResistanceReply, /شرط توقف اصلی امروز/);
+  assert.match(t09ResistanceReply, /شرط‌های توقف تکمیلی/);
+  assert.match(t09ResistanceReply, /زمان حمایت انسانی/);
   assert.deepEqual(t09Errors, [], 'T09 prepared daily assistant must not raise browser errors');
   await t09Page.close();
 

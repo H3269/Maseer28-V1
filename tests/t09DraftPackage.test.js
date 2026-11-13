@@ -111,7 +111,7 @@ test('day 8 remains about defining the first move, not environmental setup', () 
   assert.match(record.progressVersion, /حرکت فیزیکیِ نخست/u);
   assert.match(record.restVersion, /حرکت نخست را تعیین نکن/u);
   assert.match(record.stopCondition, /مرحله الزامی، بررسی تخصصی یا کنترل ایمنی/u);
-  assert.match(answer(record, 'q12'), /اطلاعاتی.*فرد دیگری/u);
+  assert.match(answer(record, 'q12'), /اطلاعات، اجازه، دسترسی، هماهنگی یا تقسیم مسئولیتی/u);
   assert.doesNotMatch(record.restVersion, /محرک‌ها را حذف نکن/u);
 });
 
@@ -120,6 +120,7 @@ test('q09 and q11 avoid repeated generic endings and openings', () => {
   const q11 = guide.records.map((record) => answer(record, 'q11'));
   assert.equal(new Set(q09).size, 28);
   assert.equal(new Set(q11).size, 28);
+  assert.ok(guide.records.every((record) => answer(record, 'q11') !== answer(record, 'q07')));
   assert.ok(q09.every((item) => !item.includes('اگر فقط فرصت یکی را داری، با نسخه سبک تمرین شروع کن')));
   assert.ok(q11.every((item) => !item.startsWith('اگر فشار یا مقاومت بالا رفت، لازم نیست ادامه بدهی')));
 });
@@ -280,11 +281,12 @@ test('T09 keeps every subtopic mapping provisional and every safety field popula
   }
 });
 
-test('q12 interpersonal guidance preserves safety and voluntary exit across all 28 days', () => {
+test('q12 guidance stays specific to procrastination barriers across all 28 days', () => {
   const responses = guide.records.map((record) => answer(record, 'q12'));
   assert.equal(new Set(responses).size, 28);
   for (const response of responses) {
-    assert.ok(response.includes('اگر گفت‌وگو امن نیست یا امکان رد/توقف آزادانه آن را نداری')) ;
-    assert.ok(response.includes('وابستگی را فقط ثبت کن و از مسیر امن و مجاز کمک بگیر'));
+    assert.ok(response.includes('گفت‌وگو با فرد دیگر شرط انجام تمرین امروز نیست'));
+    assert.ok(response.includes('اطلاعات، اجازه، دسترسی، هماهنگی یا تقسیم مسئولیتی'));
+    assert.doesNotMatch(response, /وابستگی را فقط ثبت کن/u);
   }
 });
