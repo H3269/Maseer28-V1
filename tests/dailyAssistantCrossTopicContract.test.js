@@ -154,6 +154,20 @@ test('all T01-T09 prepared answers share the same structural heading and day obj
   }
 });
 
+test('T03-T05 q12 answers retain the topic-specific daily action', () => {
+  const cases = [
+    ['T03', FEAR_DAILY_ASSISTANT_GUIDES, answerFearDailyPreparedQuestion],
+    ['T04', HATRED_DAILY_ASSISTANT_GUIDES, answerHatredDailyPreparedQuestion],
+    ['T05', JEALOUSY_DAILY_ASSISTANT_GUIDES, answerJealousyDailyPreparedQuestion],
+  ];
+  for (const [topicId, guides, answerPrepared] of cases) {
+    const guide = guides[0];
+    const question = guide.questions[11];
+    const answer = answerPrepared({ day: guide.day, message: question.value });
+    assert.ok(answer.includes(guide.action), topicId + ' q12 must connect the general support answer to today\'s specific action');
+  }
+});
+
 test('T01 q10 does not repeat the self-blame instruction', () => {
   const answer = answerAngerDailyPreparedQuestion({ day: 1, message: expectedValues[9] });
   const occurrences = (answer.match(/خودت را سرزنش/g) || []).length;
