@@ -29,6 +29,8 @@ const QUESTION_TEXTS = [
 ];
 const QUESTION_IDS = Array.from({ length: 14 }, (_, index) => 'q' + String(index + 1).padStart(2, '0'));
 const GROUP_SIZES = [2, 2, 1, 5, 4];
+const GUIDE_KEYS = Object.keys(ANGER_DAILY_ASSISTANT_GUIDES[0]);
+const QUESTION_KEYS = Object.keys(ANGER_DAILY_ASSISTANT_GUIDES[0].questions[0]);
 
 const TOPICS = [
   { id: 'T01', guides: ANGER_DAILY_ASSISTANT_GUIDES, answer: answerAngerDailyPreparedQuestion, groups: getAngerDailyAssistantPromptGroups, topic: 'خشم' },
@@ -63,6 +65,10 @@ test('T01-T09 share the exact same 14 prepared question IDs, order and visible t
     assert.deepEqual(topic.guides.map((guide) => guide.day), Array.from({ length: 28 }, (_, index) => index + 1), topic.id);
     for (const guide of topic.guides) {
       assert.equal(guide.topicId, topic.id, topic.id + ' day ' + guide.day);
+      assert.deepEqual(Object.keys(guide), GUIDE_KEYS, topic.id + ' day ' + guide.day + ' normalized guide schema');
+      assert.ok(Array.isArray(guide.metadataGaps), topic.id + ' day ' + guide.day + ' explicit metadata gap list');
+      assert.deepEqual(Object.keys(guide.questions[0]), QUESTION_KEYS, topic.id + ' day ' + guide.day + ' normalized question schema');
+      assert.ok(guide.questions.every((question) => Object.prototype.hasOwnProperty.call(question, 'answer')), topic.id + ' day ' + guide.day + ' explicit answer field');
       assert.deepEqual(guide.questions.map((question) => question.id), QUESTION_IDS, topic.id + ' day ' + guide.day + ' IDs');
       assert.deepEqual(guide.questions.map((question) => question.value), QUESTION_TEXTS, topic.id + ' day ' + guide.day + ' text');
       assert.deepEqual(guide.questions.map((question) => question.label), QUESTION_TEXTS, topic.id + ' day ' + guide.day + ' labels');
