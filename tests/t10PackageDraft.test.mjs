@@ -38,6 +38,8 @@ test('T10 canonical draft covers 28 unique daily units with the v2 contract', as
       `day ${item.day}: all daily and shared safety sources must be mapped`);
   }
   assert.ok(sourceRegistry.sources.every((source) => source.title?.trim() && source.url?.startsWith('https://')));
+  assert.ok(canonical.records.every((record) => record.source_ids.includes('SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001')),
+    'shared driving-safety evidence must be linked to every daily unit');
   for (const record of canonical.records) {
     assert.ok(record.source_ids.every((id) => sourceIds.has(id)), `day ${record.day}: source ID must exist`);
     assert.deepEqual(record.source_ids, evidenceMap.mappings[record.day - 1].source_ids);
