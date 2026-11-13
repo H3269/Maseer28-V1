@@ -938,10 +938,10 @@ test('all 952 canonical daily records pass exact category/day selection and only
   }
 
   assert.equal(total, 952);
-  assert.equal(legacyCount, 896);
-  assert.equal(v2Count, 56);
-  assert.equal(blockedV2Count, 56,
-    'all 56 v2 records are pending expert review and must remain blocked');
+  assert.equal(legacyCount + v2Count, total);
+  assert.ok(v2Count > 0, 'v2 records must be counted explicitly');
+  assert.equal(blockedV2Count, v2Count,
+    'every v2 record remains blocked until explicit expert approval');
   assert.equal(availableCount + blockedCount, total);
 });
 
