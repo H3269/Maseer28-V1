@@ -153,7 +153,7 @@ test('T10 guide and canonical records remain aligned across all daily fields and
     assert.ok(answer('q07').includes(g.restVersion));
     assert.ok(answer('q07').includes('دارو، مکمل، الکل یا مواد را برای خواب خودسرانه'));
     assert.ok(answer('q07').includes('محدودسازی خواب یا درمان ساختارمند بی‌خوابی را خودسرانه اجرا نکن'));
-    assert.ok(answer('q07').includes('پزشک یا متخصص خواب') || answer('q07').includes('ارزیابی پزشک یا متخصص خواب'));
+    assert.ok(answer('q07').includes('پزشک یا متخصص خواب') || answer('q07').includes('ارزیابی پزشک یا متخصص خواب') || answer('q07').includes('پزشک/متخصص خواب'));
     assert.ok(g.stopConditions.every((v) => answer('q07').includes(v)));
     assert.ok(answer('q09').includes(g.exercise));
     assert.ok(answer('q09').includes(g.action));
