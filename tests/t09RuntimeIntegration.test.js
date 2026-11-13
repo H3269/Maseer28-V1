@@ -24,7 +24,7 @@ function contextFor(guide, overrides = {}) {
   };
 }
 
-test('T09 limited runtime guide exposes 28 days and exactly 14 prepared questions per day', () => {
+test('T09 runtime guide exposes 28 days and exactly 14 prepared questions per day', () => {
   assert.equal(T09_DAILY_ASSISTANT_GUIDES.length, 28);
   for (let day = 1; day <= 28; day += 1) {
     const guide = T09_DAILY_ASSISTANT_GUIDES[day - 1];
@@ -101,7 +101,7 @@ test('explicit immediate-risk disclosures keep precedence over prepared T09 answ
   assert.equal(urgent.status, 'urgent_human_support_required');
 });
 
-test('T09 interpersonal FAQ answers retain the voluntary-exit safety fallback', () => {
+test('T09 interpersonal FAQ answers stay task-focused and do not inherit relationship-dependency copy', () => {
   for (const guide of T09_DAILY_ASSISTANT_GUIDES) {
     const question = guide.questions.find((item) => item.kind === 'talk_other');
     const answer = answerT09DailyPreparedQuestion({
@@ -109,8 +109,9 @@ test('T09 interpersonal FAQ answers retain the voluntary-exit safety fallback', 
       message: question.value,
       dailyContent: { id: getCanonicalDailyRecordId('اهمال‌کاری', guide.day), day: guide.day, topic_id: 'T09' },
     });
-    assert.ok(answer.includes('اگر گفت‌وگو امن نیست یا امکان رد/توقف آزادانه آن را نداری'), `day ${guide.day}`);
-    assert.ok(answer.includes('وابستگی را فقط ثبت کن و از مسیر امن و مجاز کمک بگیر'), `day ${guide.day}`);
+    assert.ok(answer.includes('گفت‌وگو شرط انجام تمرین نیست'), `day ${guide.day}`);
+    assert.ok(answer.includes('اطلاعات، اجازه، دسترسی، هماهنگی یا تقسیم مسئولیتی'), `day ${guide.day}`);
+    assert.doesNotMatch(answer, /وابستگی را فقط ثبت کن/u, `day ${guide.day}: no T08 copy`);
   }
 });
 
@@ -129,6 +130,27 @@ test('T09 overlay and prompt UI are connected while the knowledge registry remai
   assert.match(launcher, /getT09DailyAssistantPromptGroups/);
   assert.match(launcher, /isT09DailyPromptContext/);
   assert.match(launcher, /t09-daily-prompt-trigger/);
+});
+
+test('T09 answers are fully contextual, use visible daily content, and keep resistance distinct from stop guidance', () => {
+  const guide = T09_DAILY_ASSISTANT_GUIDES[0];
+  const exerciseQuestion = guide.questions.find((item) => item.id === 'q01');
+  const actionQuestion = guide.questions.find((item) => item.id === 'q03');
+  const resistanceQuestion = guide.questions.find((item) => item.id === 'q11');
+  const stopQuestion = guide.questions.find((item) => item.id === 'q07');
+  const visible = { id: getCanonicalDailyRecordId('اهمال‌کاری', 1), day: 1, topic_id: 'T09', exercise: 'تمرین نمایان و مخصوص آزمون', actionText: 'اقدام نمایان و مخصوص آزمون' };
+  const exerciseAnswer = answerT09DailyPreparedQuestion({ day: 1, message: exerciseQuestion.value, dailyContent: visible });
+  const actionAnswer = answerT09DailyPreparedQuestion({ day: 1, message: actionQuestion.value, dailyContent: visible });
+  const resistanceAnswer = answerT09DailyPreparedQuestion({ day: 1, message: resistanceQuestion.value, dailyContent: visible });
+  const stopAnswer = answerT09DailyPreparedQuestion({ day: 1, message: stopQuestion.value, dailyContent: visible });
+  assert.ok(exerciseAnswer.includes('تمرین نمایان و مخصوص آزمون'));
+  assert.ok(actionAnswer.includes('اقدام نمایان و مخصوص آزمون'));
+  assert.ok(exerciseAnswer.includes('هدف امروز') && exerciseAnswer.includes(guide.objective));
+  assert.ok(exerciseAnswer.includes('منطق آموزشی امروز') && exerciseAnswer.includes(guide.mechanism));
+  assert.ok(resistanceAnswer.includes('افزایش مقاومت به‌تنهایی نشانه تنبلی'));
+  assert.notEqual(resistanceAnswer, stopAnswer);
+  assert.ok(resistanceAnswer.includes(guide.whenToSeekHumanSupport));
+  assert.doesNotMatch(resistanceAnswer, /وابستگی را فقط ثبت کن/u);
 });
 
 test('T09 answer helper refuses mismatched canonical topic/day identities', () => {
