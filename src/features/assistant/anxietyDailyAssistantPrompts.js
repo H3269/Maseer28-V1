@@ -1,7 +1,8 @@
+import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 // Daily prepared guidance for the T02 anxiety path. Content is grounded in the reviewed 28-day draft and active runtime overrides.
-export const ANXIETY_DAILY_ASSISTANT_GUIDES = [
+const RAW_ANXIETY_DAILY_ASSISTANT_GUIDES = [
   {
     "day": 1,
     "topicId": "T02",
@@ -2943,6 +2944,8 @@ export const ANXIETY_DAILY_ASSISTANT_GUIDES = [
     ]
   }
 ];
+
+export const ANXIETY_DAILY_ASSISTANT_GUIDES = Object.freeze(RAW_ANXIETY_DAILY_ASSISTANT_GUIDES.map(normalizeDailyAssistantGuide));
 
 function toAnxietyDayNumber(value) {
   const normalized = String(value ?? '').replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)));
