@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
+import { validateDailyEvidenceSourceIds } from '../src/features/content/dailyEvidenceSourceValidation.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const readJson = (relativePath) => {
@@ -102,7 +103,7 @@ for (const { topic, category } of topicRows) {
         'topic_id', 'subtopic_ids', 'learning_objective', 'target_skill',
         'teaching_point', 'exercise_type', 'instructions', 'duration_minutes',
         'reflection_prompt', 'success_criterion', 'stop_conditions',
-        'risk_level', 'when_to_seek_human_support', 'source_ids',
+        'risk_level', 'when_to_seek_human_support',
         'evidence_grade', 'review_status',
       ];
       for (const field of requiredV2) {
@@ -144,8 +145,9 @@ for (const { topic, category } of topicRows) {
       if (!validRiskLevels.has(day.risk_level)) {
         fail.push(`risk_level نامعتبر در «${topic}»، روز ${index + 1}`);
       }
-      if (!Array.isArray(day.source_ids) || day.source_ids.some((id) => !evidenceSourceIds.has(id))) {
-        fail.push(`source_ids ناموجود در رجیستری شواهد برای «${topic}»، روز ${index + 1}`);
+      const evidenceSourceValidation = validateDailyEvidenceSourceIds(day, evidenceSourceIds);
+      if (!evidenceSourceValidation.valid) {
+        fail.push(`source_ids نامعتبر/ناقص برای وضعیت شواهد در «${topic}»، روز ${index + 1}: ${evidenceSourceValidation.reason}`);
       }
       if (!Array.isArray(day.stop_conditions) || day.stop_conditions.length === 0
         || !Array.isArray(day.contraindications) || day.contraindications.length === 0) {
