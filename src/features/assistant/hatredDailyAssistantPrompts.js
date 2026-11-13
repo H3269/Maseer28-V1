@@ -1,7 +1,8 @@
+import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 // Prepared-only daily guidance for T04. Self-hatred is classified and referred to T18; no self-hatred intervention is delivered here.
-export const HATRED_DAILY_ASSISTANT_GUIDES = [
+const RAW_HATRED_DAILY_ASSISTANT_GUIDES = [
   {
     "day": 1,
     "title": "هدف نفرت",
@@ -2971,6 +2972,8 @@ export const HATRED_DAILY_ASSISTANT_GUIDES = [
     ]
   }
 ];
+
+export const HATRED_DAILY_ASSISTANT_GUIDES = Object.freeze(RAW_HATRED_DAILY_ASSISTANT_GUIDES.map(normalizeDailyAssistantGuide));
 export function toHatredDayNumber(value){const n=Number(String(value??'').replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))));return Number.isInteger(n)&&n>=1&&n<=28?n:null;}
 export function getHatredDailyAssistantPromptGroups(day){const n=toHatredDayNumber(day),g=HATRED_DAILY_ASSISTANT_GUIDES.find(x=>x.day===n);if(!g)return[];return[{label:'فهم تمرین روز '+g.day,questions:g.questions.filter(x=>['exercise_meaning','exercise_example'].includes(x.kind))},{label:'فهم اقدام اختصاصی روز '+g.day,questions:g.questions.filter(x=>['action_meaning','action_example'].includes(x.kind))},{label:'تفاوت تمرین و اقدام',questions:g.questions.filter(x=>x.kind==='exercise_action_difference')},{label:'اجرا و موانع',questions:g.questions.filter(x=>['light_version','not_done','no_event','can_change','duration'].includes(x.kind))},{label:'ارزیابی و ایمنی',questions:g.questions.filter(x=>['hostility_increased','talk_other','success','stop'].includes(x.kind))}];}
 const heading=g=>'راهنمای روز '+String(g.day).replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[+d])+' نفرت — '+g.title;
