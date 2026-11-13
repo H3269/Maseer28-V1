@@ -585,3 +585,333 @@ input:focus, textarea:focus, select:focus, .smartSelectButton:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+
+/* ============================================================
+   M28 COMPLETE PALETTE CORRECTION — active legacy selectors
+   This block intentionally follows all earlier compatibility
+   rules so that older high-specificity green/beige declarations
+   cannot leak into active screens.
+   ============================================================ */
+:root {
+  --m28-green: #245A9A;
+  --m28-ink: #102A43;
+  --m28-line: #DCE4EC;
+  --m28-muted: #5B7187;
+  --m28-accent: #40E0D0;
+  --m28-accent-soft: #E4F8F6;
+  --m28-surface: #FFFFFF;
+  --m28-surface-soft: #F5F8FC;
+  --m28-shadow: 0 8px 26px rgba(16,42,67,.07);
+  --primary: #40E0D0;
+  --primary2: #245A9A;
+  --accent: #4096C8;
+  --accent2: #E4F8F6;
+  --navy: #102A43;
+  --navy2: #245A9A;
+  --bg: #F5F8FC;
+  --card: #FFFFFF;
+  --text: #102A43;
+  --muted: #5B7187;
+  --line: #DCE4EC;
+}
+
+/* React loading screen after the static HTML splash. */
+.appLoading, .appLoading .loadingBrand {
+  background: radial-gradient(ellipse at 50% 35%,#E4F8F6 0%,#FFFFFF 45%,#F5F8FC 100%) !important;
+  color: #102A43 !important;
+}
+.appLoading .loadingBrand h1 { color: #173E62 !important; }
+.appLoading .loadingBrand p { color: #5B7187 !important; }
+.appLoading .loadingBrand img {
+  border: 2px solid #40E0D0 !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 0 0 4px rgba(64,224,208,.13),0 12px 26px rgba(16,42,67,.12) !important;
+}
+.appLoading .loadingProgressSegment {
+  background: #E4F8F6 !important;
+  border-color: #BFE7E2 !important;
+}
+.appLoading .loadingProgressSegment::before {
+  background: linear-gradient(90deg,#40E0D0,#4096C8) !important;
+}
+
+/* All core action controls, including buttons nested in old cards. */
+.app button.primary, .app .primary, .app .heroAction,
+.app .book button, .app .libraryBook button,
+.bookPreviewCard button.primary, .validationCard button.primary {
+  background: linear-gradient(135deg,#40E0D0 0%,#76E4DA 100%) !important;
+  color: #102A43 !important;
+  border: 1px solid #A8E9E2 !important;
+  box-shadow: 0 3px 0 rgba(16,42,67,.10),0 7px 16px rgba(36,90,154,.10) !important;
+}
+.app button.secondary, .app .secondary, .app .ghostButton,
+.app .libraryBack, .app .bookTocToggle, .app .bookTocClose,
+.app .copyAction, .app .readerTools button, .app .readerNav,
+.app .readerCenter, .app .readerIcon {
+  background: linear-gradient(135deg,#EDF4FB 0%,#E4F8F6 100%) !important;
+  color: #173E62 !important;
+  border: 1px solid #D1E2EF !important;
+  box-shadow: 0 2px 7px rgba(16,42,67,.05) !important;
+}
+.app button.gold, .app .gold {
+  background: #F2F7FA !important;
+  color: #245A9A !important;
+  border: 1px solid #C9DDEB !important;
+}
+.app button.danger, .app .danger {
+  background: #FFF1EF !important;
+  color: #A12A22 !important;
+  border: 1px solid #F0C9C5 !important;
+}
+.app button.success, .app .success {
+  background: #E8F6EF !important;
+  color: #277A55 !important;
+  border: 1px solid #C7E8D6 !important;
+}
+.app button.sms, .app .sms {
+  background: #EAF5FB !important;
+  color: #245A9A !important;
+  border: 1px solid #C8DDED !important;
+}
+.app button.telegram, .app .telegram {
+  background: #EAF5FB !important;
+  color: #245A9A !important;
+  border: 1px solid #C8DDED !important;
+}
+
+/* Journey introduction, assessment, guidance and response panels.
+   These rules replace earlier beige/green !important overrides. */
+.app .introBox,
+.app .sectionHint,
+.app .guidePage .guideClosing,
+.app .assessmentIntro,
+.app .dailyEntryPanel,
+.app .answerItem,
+.app .support,
+.app .assessmentCard,
+.app .guidePage,
+.app .dashboardNote,
+.app .finalAnswerDisclosure,
+.app .finalReflection,
+.app .archiveHero,
+.app .archiveExportControl,
+.app .dailyLockCountdown {
+  background: linear-gradient(145deg,#FFFFFF 0%,#F1F8FC 100%) !important;
+  border: 1px solid #DCE8F0 !important;
+  color: #102A43 !important;
+  box-shadow: 0 5px 18px rgba(16,42,67,.045) !important;
+}
+.app .introBox, .app .guidePage .guideClosing {
+  background: linear-gradient(135deg,#EAF8F8 0%,#F1F6FC 100%) !important;
+  border-color: #CDE8E8 !important;
+}
+.app .assessmentIntro > span,
+.app .sectionHint > span,
+.app .stepNumber,
+.app .iconButton {
+  background: linear-gradient(145deg,#E4F8F6,#EAF1FA) !important;
+  border: 1px solid #CDE8E8 !important;
+  color: #245A9A !important;
+}
+.app .guidePage > h3,
+.app .assessmentIntro strong,
+.app .scaleQuestionTitle,
+.app .scaleQuestionTitle b,
+.app .finalAnswerDisclosure > summary,
+.app .answerItem b {
+  color: #173E62 !important;
+}
+.app .guidePage .guideClosing { color: #173E62 !important; }
+
+/* Assessment choices: both idle and selected states now use the
+   turquoise/lapis system instead of the former green/beige palette. */
+.app .assessmentCard .scaleOption,
+.app .scaleQuestion .scaleOption {
+  background: #EDF4FB !important;
+  border: 1px solid #D1E2EF !important;
+  color: #245A9A !important;
+  box-shadow: none !important;
+}
+.app .assessmentCard .scaleOption.selected,
+.app .scaleQuestion .scaleOption.selected {
+  background: linear-gradient(135deg,#245A9A 0%,#4096C8 100%) !important;
+  border-color: #245A9A !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 12px rgba(36,90,154,.18) !important;
+}
+
+/* Day screen: remove the remaining green exercise and purple action
+   blocks; differentiate the two with balanced aqua and sky-blue tints. */
+.app #day .dailyStep .exercise,
+.app .dailyStep .exercise,
+.app .exercise {
+  background: linear-gradient(120deg,#E4F8F6 0%,#F2FBFA 100%) !important;
+  border: 1px solid #C8EAE5 !important;
+  border-inline-start: 4px solid #40E0D0 !important;
+  border-inline-end: 0 !important;
+  color: #173E62 !important;
+  box-shadow: none !important;
+}
+.app #day .dailyStep .action,
+.app .dailyStep .action,
+.app .action {
+  background: linear-gradient(120deg,#EAF2FB 0%,#F5F9FD 100%) !important;
+  border: 1px solid #D2E2F0 !important;
+  border-inline-start: 4px solid #4096C8 !important;
+  border-inline-end: 0 !important;
+  color: #173E62 !important;
+  box-shadow: none !important;
+}
+.app .recommendation {
+  background: linear-gradient(120deg,#EEF4FB 0%,#F8FBFE 100%) !important;
+  border: 1px solid #D8E5F0 !important;
+  border-inline-start: 4px solid #7896BD !important;
+  color: #173E62 !important;
+}
+.app .feedback {
+  background: linear-gradient(120deg,#EAF5FB 0%,#F7FBFD 100%) !important;
+  border: 1px solid #D1E2EF !important;
+  border-inline-start: 4px solid #4096C8 !important;
+  color: #173E62 !important;
+}
+.app .safetyNote, .app .alert, .app .dailyAssistantSafetyReminder {
+  background: #FFF8E8 !important;
+  border-color: #EAD9AA !important;
+  color: #654510 !important;
+}
+.app .bookRecommendationSource {
+  background: #F0F6FB !important;
+  border: 1px solid #D4E3EF !important;
+  color: #245A9A !important;
+}
+
+/* Day progress, scale and countdown indicators. Severity retains its
+   meaningful green-to-red scale; only its handle and label are branded. */
+.app .daydot { background: #EDF2F7 !important; color: #52677D !important; border: 1px solid #DCE4EC !important; }
+.app .daydot.current { background: #EAF1FA !important; color: #173E62 !important; outline: 2px solid #245A9A !important; }
+.app .daydot.done { background: #DDF3F0 !important; color: #155B69 !important; border-color: #BCE5DF !important; }
+.app .severityValue { background: #102A43 !important; color: #FFFFFF !important; border: 1px solid #4096C8 !important; }
+.app .severityThumb, .app .severityRange::-webkit-slider-thumb { border-color: #245A9A !important; }
+.app .severityRange:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px rgba(64,224,208,.30) !important; }
+.app .dailyLockCountdownValue { color: #245A9A !important; }
+.app .dailyLockCountdownSeparator { color: #D7B96D !important; }
+
+/* Profile, dashboard, quick actions and daily text disclosures. */
+.app .profileBox { background: linear-gradient(145deg,#FFFFFF,#F0FBFA) !important; border-color: #D1EAE8 !important; }
+.app .metricBox { background: linear-gradient(145deg,#FFFFFF,#F0F7FC) !important; border-color: #D4E3EF !important; border-top: 3px solid #4096C8 !important; }
+.app .metricBox strong { color: #173E62 !important; }
+.app .quickAction { background: linear-gradient(145deg,#FFFFFF,#F1F8FC) !important; border: 1px solid #D7E5EF !important; color: #173E62 !important; }
+.app .quickAction > span { background: linear-gradient(145deg,#E4F8F6,#EAF1FA) !important; color: #245A9A !important; border: 1px solid #CDE8E8 !important; }
+.app .dailyTextDisclosure { border-color: #DCE8F0 !important; }
+.app .dailyTextDisclosure summary { color: #245A9A !important; }
+.app .dashboardLead, .app .dailyText, .app .dailyTextFull { color: #102A43 !important; }
+.app .muted, .app .subtle, .app .footerNotice { color: #5B7187 !important; }
+
+/* Forms, native selects and custom selectors throughout onboarding and
+   the 28-day screens. */
+.app input:not([type="range"]),
+.app textarea,
+.app select,
+.app .smartSelectButton {
+  background: #FFFFFF !important;
+  color: #102A43 !important;
+  border: 1px solid #D4E2EC !important;
+  box-shadow: inset 0 1px 0 #FFFFFF !important;
+}
+.app input:focus, .app textarea:focus, .app select:focus,
+.app .smartSelectButton:focus-visible {
+  border-color: #245A9A !important;
+  box-shadow: 0 0 0 3px rgba(64,224,208,.22) !important;
+}
+.app .smartSelectMenu { background: #FFFFFF !important; border-color: #D5E4EE !important; }
+.app .smartSelectOption { background: #FFFFFF !important; color: #173E62 !important; border-color: #DCE8F0 !important; }
+.app .smartSelectOption:hover, .app .smartSelectOption.selected {
+  background: #EAF5FB !important; border-color: #BFD8E9 !important; color: #173E62 !important;
+}
+
+/* Library cards and reading controls. Book page paper remains governed
+   by the reader's light/sepia/night reading preference. */
+.app #books .libraryBook { background: linear-gradient(155deg,#FFFFFF,#F5F9FD) !important; border-color: #DCE4EC !important; }
+.app #books .libraryBook button { background: linear-gradient(135deg,#40E0D0,#76E4DA) !important; color: #102A43 !important; border: 1px solid #A8E9E2 !important; }
+.app #books .libraryBookBadge { background: #E4F8F6 !important; color: #155B69 !important; border-color: #C7EAE7 !important; }
+.app #books .libraryProgress { background: #E6EEF5 !important; }
+.app #books .libraryProgress span { background: linear-gradient(90deg,#40E0D0,#4096C8) !important; }
+.app .bookReaderFull { background: #F5F8FC !important; color: #102A43 !important; }
+.app .bookReaderFull .readerTopbar,
+.app .bookReaderFull .readerTools,
+.app .bookReaderFull .readerBottombar {
+  background: rgba(255,255,255,.97) !important;
+  border-color: #DCE4EC !important;
+  color: #173E62 !important;
+}
+.app .bookReaderFull .readerIcon,
+.app .bookReaderFull .readerTools button,
+.app .bookReaderFull .readerNav,
+.app .bookReaderFull .readerCenter {
+  background: linear-gradient(135deg,#EDF4FB,#E4F8F6) !important;
+  color: #245A9A !important;
+  border: 1px solid #D1E2EF !important;
+  box-shadow: none !important;
+}
+.app .bookReaderFull .readerTarget {
+  background: #EAF5FB !important;
+  border-color: #C9DFEE !important;
+  color: #173E62 !important;
+}
+.app .bookReaderFull .readerProgressTrack { background: #E6EEF5 !important; }
+.app .bookReaderFull .readerProgressTrack span { background: linear-gradient(90deg,#40E0D0,#4096C8) !important; }
+.app .bookReaderFull .readerPageRange::-webkit-slider-runnable-track { background: #DCE4EC !important; }
+.app .bookReaderFull .readerPageRange::-webkit-slider-thumb,
+.app .bookReaderFull .readerPageRange::-moz-range-thumb { background: #40E0D0 !important; border: 2px solid #245A9A !important; }
+.app .bookReaderFull .bookTocEntry { background: #F5F9FD !important; border-color: #DCE8F0 !important; color: #173E62 !important; }
+.app .bookReaderFull .bookTocEntry.open,
+.app .bookReaderFull .bookTocEntry:hover { background: #EAF5FB !important; border-color: #BFD8E9 !important; }
+
+/* App bottom navigation, including older WebView-specific high-specificity
+   selectors that previously kept the green active state. */
+html body .app .bottomNav {
+  background: rgba(255,255,255,.98) !important;
+  border-color: #D5E4EE !important;
+  box-shadow: 0 8px 26px rgba(16,42,67,.12) !important;
+}
+html body .app .bottomNav button.active,
+html body.bale-webview .app .bottomNav button.active,
+html body:not(.bale-webview) .app .bottomNav button.active {
+  background: linear-gradient(135deg,#E2F8F5 0%,#EAF3FB 100%) !important;
+  color: #155B69 !important;
+  border: 1px solid #BFE7E2 !important;
+}
+html body .app .bottomNav button.active .navIcon,
+html body.bale-webview .app .bottomNav button.active .navIcon,
+html body:not(.bale-webview) .app .bottomNav button.active .navIcon {
+  background: #DDF3F0 !important;
+  color: #245A9A !important;
+}
+html body .app .bottomNav button.active b { color: #155B69 !important; }
+
+/* Generic cards, panels and modal surfaces, after all old declarations. */
+.app .card, .app .dayCard, .app .answerItem, .app .book,
+.app .archiveHero, .app .bookPreviewCard, .app .copyrightCard,
+.app .validationCard, .app .libraryShell, .app .libraryBook,
+.app .globalAssistantDialog, .app .libraryAssistantPromptCard {
+  border-color: #DCE4EC !important;
+  box-shadow: 0 7px 24px rgba(16,42,67,.065) !important;
+}
+.app .card { background: linear-gradient(155deg,#FFFFFF 0%,#FCFEFF 72%,#F7FBFD 100%) !important; }
+.app .badge { background: #E4F8F6 !important; color: #155B69 !important; border-color: #C7EAE7 !important; }
+.app .bookRecommendationSource { border-radius: 10px !important; }
+.app hr { border-top-color: #DCE4EC !important; }
+
+/* Night reading mode remains dark by design; only app chrome is branded. */
+.app .bookReaderFull.theme-night .readerTopbar,
+.app .bookReaderFull.theme-night .readerTools,
+.app .bookReaderFull.theme-night .readerBottombar {
+  background: #182B40 !important; border-color: #344B62 !important; color: #E6EEF6 !important;
+}
+.app .bookReaderFull.theme-night .readerIcon,
+.app .bookReaderFull.theme-night .readerNav,
+.app .bookReaderFull.theme-night .readerCenter,
+.app .bookReaderFull.theme-night .readerTools button {
+  background: #263F58 !important; border-color: #3E5D79 !important; color: #E6EEF6 !important;
+}
