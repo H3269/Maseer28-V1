@@ -8,8 +8,6 @@ export const DAILY_ASSISTANT_SAFETY_QUESTION_KINDS = new Set([
   'grief_increased',
   'dependency_increased',
   'procrastination_increased',
-  'dependency_increased',
-  'procrastination_increased',
   'guilt_increased',
   'talk_other',
   'success',
