@@ -72,7 +72,7 @@ test('each FAQ answer is anchored to its corresponding daily content and safety 
     assert.ok(answer(record, 'q11').includes(record.stopCondition), `day ${record.day}: q11 stop condition`);
     assert.ok(record.stopConditions.every((condition) => answer(record, 'q11').includes(condition)), `day ${record.day}: q11 all safety conditions`);
     assert.ok(answer(record, 'q11').includes(record.restVersion), `day ${record.day}: q11 rest version`);
-    assert.ok(answer(record, 'q14').includes('این زمان فقط برای خودِ تمرین است، نه اجرای کار اصلی'), `day ${record.day}: q14 scope`);
+    assert.ok(answer(record, 'q14').includes('این فقط تخمینِ زمانِ خودِ تمرین است'), `day ${record.day}: q14 scope`);
     assert.ok(answer(record, 'q14').includes(String(record.durationMinutes)), `day ${record.day}: q14 duration`);
   }
 });
