@@ -1,6 +1,7 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 import T09_GUIDE from './t09DailyAssistantGuide.v1.json' with { type: 'json' };
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
+import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 
 export const T09_DAILY_ASSISTANT_GUIDES = Object.freeze(T09_GUIDE.records.map(normalizeDailyAssistantGuide));
 
@@ -106,7 +107,7 @@ export function answerT09DailyPreparedQuestion({ day, message, dailyContent } = 
   }
 
   const fullAnswer = `${buildT09Heading(guide)}\n\n${body}`;
-  return addTeacherStyleFrame(fullAnswer, { guide, question, topic: 'اهمال‌کاری' });
+  return appendDailyAssistantSafetyReminder(addTeacherStyleFrame(fullAnswer, { guide, question, topic: 'اهمال‌کاری' }), question.kind);
 }
 
 export function getT09DailyAssistantPromptGroups(day) {
