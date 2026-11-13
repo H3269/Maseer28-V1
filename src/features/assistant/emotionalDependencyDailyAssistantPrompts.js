@@ -3470,7 +3470,7 @@ function answerRaw({ day, message, dailyContent } = {}) {
 export function answerEmotionalDependencyDailyPreparedQuestion(args = {}) {
   const answer = answerRaw(args);
   if (!answer) return null;
-  const guide = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES.find((item) => item.day === toEmotionalDependencyDayNumber(args.day));
+  const guide = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES.find((item) => item.day === toDayNumber(args.day));
   const question = guide?.questions.find((item) => item.value === String(args.message || '').trim());
   return addTeacherStyleFrame(answer, { guide, question, topic: 'وابستگی عاطفی' });
 }
