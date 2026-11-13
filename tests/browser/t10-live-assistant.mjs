@@ -128,7 +128,15 @@ async function verifyDay(browser, dayNumber) {
     await selectedPrompt.waitFor({ state: 'visible' });
     await selectedPrompt.getByText('منظور از تمرین امروز چیست؟').waitFor({ state: 'visible' });
     await composer.locator('button[aria-label="ارسال"]').click();
-    await page.getByText(/راهنمای روز 1 بی‌خوابی و مشکلات خواب/).waitFor({ state: 'visible', timeout: 10000 });
+    const assistantReply = page.locator('.assistantMessage p').last();
+    await assistantReply.waitFor({ state: 'visible', timeout: 10000 });
+    await page.waitForFunction(() => {
+      const reply = document.querySelector('.assistantMessage:last-of-type p');
+      return Boolean(reply && !reply.innerText.includes('در حال بررسی پرسش'));
+    }, { timeout: 10000 }).catch(() => {});
+    const replyText = await assistantReply.innerText();
+    assert.match(replyText, /راهنمای روز 1 بی‌خوابی و مشکلات خواب/,
+      `T10 prepared assistant must return its day-specific answer; actual reply: ${replyText}`);
   }
   assert.deepEqual(errors, [], `T10 day ${dayNumber} must render without browser errors`);
   await page.close();
