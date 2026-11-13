@@ -1,7 +1,8 @@
+import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 // Daily prepared guidance for the T01 anger path. Content is grounded in the reviewed 28-day draft.
-export const ANGER_DAILY_ASSISTANT_GUIDES = [
+const RAW_ANGER_DAILY_ASSISTANT_GUIDES = [
   {
     "day": 1,
     "topicId": "T01",
@@ -2803,6 +2804,8 @@ export const ANGER_DAILY_ASSISTANT_GUIDES = [
     ]
   }
 ];
+
+export const ANGER_DAILY_ASSISTANT_GUIDES = Object.freeze(RAW_ANGER_DAILY_ASSISTANT_GUIDES.map(normalizeDailyAssistantGuide));
 
 function toAngerDayNumber(value) {
   const normalized = String(value ?? '').replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)));
