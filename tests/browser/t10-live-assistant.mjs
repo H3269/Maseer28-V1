@@ -114,6 +114,19 @@ async function verifyDay(browser, dayNumber) {
   const action = normalize(await readDailyText(page, '#dayAction'));
   assert.ok(exercise.includes(normalize(source.exercise)), `T10 day ${dayNumber} exercise must match its daily override`);
   assert.ok(action.includes(normalize(source.actionText)), `T10 day ${dayNumber} action must match its daily override`);
+  if (dayNumber === 1) {
+    await page.locator('.globalAssistantLauncher').click();
+    await page.locator('.globalAssistantDialog').waitFor({ state: 'visible' });
+    const promptTrigger = page.getByTestId('t10-daily-prompt-trigger');
+    await promptTrigger.waitFor({ state: 'visible' });
+    await promptTrigger.click();
+    const promptOption = page.locator('[data-prompt-option]').filter({ hasText: 'منظور از تمرین امروز چیست؟' }).first();
+    await promptOption.click();
+    const composer = page.locator('.assistantComposer');
+    await composer.locator('textarea').waitFor({ state: 'visible' });
+    await composer.locator('button[aria-label="ارسال"]').click();
+    await page.getByText(/راهنمای روز 1 بی‌خوابی و مشکلات خواب/).waitFor({ state: 'visible', timeout: 10000 });
+  }
   assert.deepEqual(errors, [], `T10 day ${dayNumber} must render without browser errors`);
   await page.close();
 }
