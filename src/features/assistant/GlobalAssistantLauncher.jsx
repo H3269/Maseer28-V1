@@ -16,6 +16,7 @@ import { getJealousyDailyAssistantPromptGroups } from './jealousyDailyAssistantP
 import { getGriefDailyAssistantPromptGroups } from './griefDailyAssistantPrompts.js';
 import { getGuiltDailyAssistantPromptGroups } from './guiltDailyAssistantPrompts.js';
 import { getEmotionalDependencyDailyAssistantPromptGroups } from './emotionalDependencyDailyAssistantPrompts.js';
+import { getT09DailyAssistantPromptGroups } from './t09DailyAssistantPrompts.js';
 import { appendLocalSourceReferences, buildLocalAssistantMessages, isLocalModelInstallCommand, LOCAL_MODEL_CACHE_MESSAGE, LOCAL_MODEL_FAILURE_MESSAGE, LOCAL_MODEL_INSTALL_MESSAGE, shouldUseLocalNeuralModel } from './localNeuralAssistant.js';
 import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
 
@@ -132,8 +133,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const dailyRecordTopicId = dailyContext?.data?.topic_id || dailyContext?.data?.topicId || null;
   const hasConflictingDailyTopic = Boolean(
     (dailyProblemTopicId && dailyRecordTopicId && dailyProblemTopicId !== dailyRecordTopicId)
-    || (dailyProblemTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08'].includes(dailyProblemTopicId) && dailyRecordTopicId)
-    || (dailyRecordTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08'].includes(dailyRecordTopicId) && dailyProblemTopicId),
+    || (dailyProblemTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09'].includes(dailyProblemTopicId) && dailyRecordTopicId)
+    || (dailyRecordTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09'].includes(dailyRecordTopicId) && dailyProblemTopicId),
   );
   const isAngerDailyPromptContext = Boolean(dailyContext)
     && !hasConflictingDailyTopic
@@ -154,7 +155,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     && (dailyProblemTopicId === 'T07' || dailyRecordTopicId === 'T07' || dailyProblemText === 'احساس گناه');
   const isEmotionalDependencyDailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
     && (dailyProblemTopicId === 'T08' || dailyRecordTopicId === 'T08' || dailyProblemText === 'وابستگی عاطفی');
-  const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext || isJealousyDailyPromptContext || isGriefDailyPromptContext || isGuiltDailyPromptContext || isEmotionalDependencyDailyPromptContext;
+  const isT09DailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T09' || dailyRecordTopicId === 'T09' || dailyProblemText === 'اهمال‌کاری' || dailyProblemText === 'اهمال کاری');
+  const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext || isJealousyDailyPromptContext || isGriefDailyPromptContext || isGuiltDailyPromptContext || isEmotionalDependencyDailyPromptContext || isT09DailyPromptContext;
   const isPreparedOnlyDailyPromptContext = isTopicDailyPromptContext;
   const jealousyRelationshipGate = isJealousyDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
   const jealousyRelationshipGatePending = Boolean(jealousyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
@@ -184,7 +187,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                   ? getGuiltDailyAssistantPromptGroups(dailyContext?.day)
                   : isEmotionalDependencyDailyPromptContext
                     ? getEmotionalDependencyDailyAssistantPromptGroups(dailyContext?.day)
-                    : [];
+                    : isT09DailyPromptContext
+                      ? getT09DailyAssistantPromptGroups(dailyContext?.day)
+                      : [];
   if (!visible || screen === 'bookReader') return null;
 
   function resizeComposerInput(element) {
@@ -220,7 +225,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       return;
     }
     const isDailySafetyQuestion = Boolean(selectedDailyQuestion
-      && ['anger_increased', 'anxiety_increased', 'fear_increased', 'hostility_increased', 'guilt_increased', 'talk_other', 'success', 'stop'].includes(selectedDailyQuestion.kind));
+      && ['anger_increased', 'anxiety_increased', 'fear_increased', 'hostility_increased', 'guilt_increased', 'procrastination_increased', 'talk_other', 'success', 'stop'].includes(selectedDailyQuestion.kind));
     const turnId = ++turnSequenceRef.current;
     const responseId = `assistant-${turnId}`;
     const updateAssistantMessage = (text, knowledge = [], dailySafetyReminder = false) => {
@@ -407,7 +412,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
             }}
           >
             <span className="badge">پرسش‌های پیشنهادی</span>
-            <h2 id="library-assistant-prompt-title">{screen === "books" ? "سؤال آماده دستیار کتابخانه" : `سؤال‌های آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : isGriefDailyPromptContext ? "غم و سوگ" : isGuiltDailyPromptContext ? "احساس گناه" : isEmotionalDependencyDailyPromptContext ? "وابستگی عاطفی" : "خشم"}`}</h2>
+            <h2 id="library-assistant-prompt-title">{screen === "books" ? "سؤال آماده دستیار کتابخانه" : `سؤال‌های آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : isGriefDailyPromptContext ? "غم و سوگ" : isGuiltDailyPromptContext ? "احساس گناه" : isEmotionalDependencyDailyPromptContext ? "وابستگی عاطفی" : isT09DailyPromptContext ? "اهمال‌کاری" : "خشم"}`}</h2>
             <p className="muted">برای انتخاب، روی سؤال موردنظرت بزن تا برای همین روز ارسال شود.</p>
             <div className="libraryAssistantPromptOptions">
               {activePromptGroups.map((group) => (
@@ -534,10 +539,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                     <button
                       ref={libraryPromptTriggerRef}
                       className="libraryAssistantPromptTrigger"
-                      data-testid={isAngerDailyPromptContext ? "anger-daily-prompt-trigger" : isAnxietyDailyPromptContext ? "anxiety-daily-prompt-trigger" : isFearDailyPromptContext ? "fear-daily-prompt-trigger" : isHatredDailyPromptContext ? "hatred-daily-prompt-trigger" : isJealousyDailyPromptContext ? "jealousy-daily-prompt-trigger" : isGriefDailyPromptContext ? "grief-daily-prompt-trigger" : isGuiltDailyPromptContext ? "guilt-daily-prompt-trigger" : isEmotionalDependencyDailyPromptContext ? "emotional-dependency-daily-prompt-trigger" : "library-assistant-prompt-trigger"}
+                      data-testid={isAngerDailyPromptContext ? "anger-daily-prompt-trigger" : isAnxietyDailyPromptContext ? "anxiety-daily-prompt-trigger" : isFearDailyPromptContext ? "fear-daily-prompt-trigger" : isHatredDailyPromptContext ? "hatred-daily-prompt-trigger" : isJealousyDailyPromptContext ? "jealousy-daily-prompt-trigger" : isGriefDailyPromptContext ? "grief-daily-prompt-trigger" : isGuiltDailyPromptContext ? "guilt-daily-prompt-trigger" : isEmotionalDependencyDailyPromptContext ? "emotional-dependency-daily-prompt-trigger" : isT09DailyPromptContext ? "t09-daily-prompt-trigger" : "library-assistant-prompt-trigger"}
                       type="button"
                       aria-label={isTopicDailyPromptContext
-                        ? `باز کردن سؤال‌های آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : isGriefDailyPromptContext ? "غم و سوگ" : isGuiltDailyPromptContext ? "احساس گناه" : isEmotionalDependencyDailyPromptContext ? "وابستگی عاطفی" : "خشم"}`
+                        ? `باز کردن سؤال‌های آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : isGriefDailyPromptContext ? "غم و سوگ" : isGuiltDailyPromptContext ? "احساس گناه" : isEmotionalDependencyDailyPromptContext ? "وابستگی عاطفی" : isT09DailyPromptContext ? "اهمال‌کاری" : "خشم"}`
                         : "باز کردن سؤال‌های آماده دستیار کتابخانه"}
                       aria-haspopup="dialog"
                       aria-expanded={libraryPromptOpen}
@@ -545,7 +550,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       disabled={sending || !localModelStatusChecked || jealousyRelationshipGatePending || griefRelationshipGatePending || emotionalDependencyRelationshipGatePending}
                       onClick={() => setLibraryPromptOpen(true)}
                     >
-                      {draft.trim() || (isTopicDailyPromptContext ? `انتخاب سؤال آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : isGriefDailyPromptContext ? "غم و سوگ" : isGuiltDailyPromptContext ? "احساس گناه" : isEmotionalDependencyDailyPromptContext ? "وابستگی عاطفی" : "خشم"}...` : 'انتخاب سؤال آماده...')}
+                      {draft.trim() || (isTopicDailyPromptContext ? `انتخاب سؤال آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : isGriefDailyPromptContext ? "غم و سوگ" : isGuiltDailyPromptContext ? "احساس گناه" : isEmotionalDependencyDailyPromptContext ? "وابستگی عاطفی" : isT09DailyPromptContext ? "اهمال‌کاری" : "خشم"}...` : 'انتخاب سؤال آماده...')}
                     </button>
                     <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال سؤال انتخاب‌شده" disabled={!localModelStatusChecked || !draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
                   </div>
