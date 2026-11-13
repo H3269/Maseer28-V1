@@ -18,7 +18,7 @@ import { getGuiltDailyAssistantPromptGroups } from './guiltDailyAssistantPrompts
 import { getEmotionalDependencyDailyAssistantPromptGroups } from './emotionalDependencyDailyAssistantPrompts.js';
 import { getT09DailyAssistantPromptGroups } from './t09DailyAssistantPrompts.js';
 import { appendLocalSourceReferences, buildLocalAssistantMessages, isLocalModelInstallCommand, LOCAL_MODEL_CACHE_MESSAGE, LOCAL_MODEL_FAILURE_MESSAGE, LOCAL_MODEL_INSTALL_MESSAGE, shouldUseLocalNeuralModel } from './localNeuralAssistant.js';
-import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
+import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS, DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
 
 export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null, onRelationshipSafetyResponse = null }) {
   const [open, setOpen] = useState(false);
