@@ -70,3 +70,13 @@ test('T09 shared question contract is documented in its canonical guide metadata
   const guide = JSON.parse(await readFile(new URL('../src/features/assistant/t09DailyAssistantGuide.v1.json', import.meta.url), 'utf8'));
   assert.match(guide.questionPolicy, /identical question IDs, labels, values, and positions across all topics/);
 });
+
+test('T01 and T02 assistant guides retain the full skill/mechanism and three exercise versions from their canonical drafts', () => {
+  for (const [topicId, guides] of topics.slice(0, 2)) {
+    for (const guide of guides) {
+      for (const field of ['skill', 'mechanism', 'lightVersion', 'progressVersion', 'restVersion', 'successCriterion', 'reflectionQuestion', 'stopCondition']) {
+        assert.ok(String(guide[field] || '').trim(), topicId + ' day ' + guide.day + ' missing ' + field);
+      }
+    }
+  }
+});
