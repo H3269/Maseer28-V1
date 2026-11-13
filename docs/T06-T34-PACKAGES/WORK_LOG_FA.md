@@ -1666,4 +1666,4 @@
 - اندازه نهایی q07 در هر ۲۸ روز: ۹۶ تا ۱۱۱ واژه؛ q11: ۱۰۰ تا ۱۱۵ واژه.
 - آزمون ساختاری، وجود هر دو هشدار را در کل بسته کنترل می‌کند؛ اجرای CI هنوز تأیید نشده است.
 
-**وضعیت:** `Q07_FINAL_BLOB_VERIFIED; FALL_AND_PTSd_GUARDRAILS_PRESENT_ALL_28_DAYS; CI_PENDING`
+**وضعیت:** `Q07_FINAL_BLOB_VERIFIED; FALL_AND_PTSD_GUARDRAILS_PRESENT_ALL_28_DAYS; CI_PENDING`
