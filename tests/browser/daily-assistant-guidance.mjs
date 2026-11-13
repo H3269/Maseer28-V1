@@ -508,7 +508,7 @@ try {
   await assertAssistantUsesVisibleDailySource(guiltGuidedPage, guiltPanel, 'احساس گناه', 1, ['exercise']);
   await guiltTrigger.click();
   await guiltPromptDialog.waitFor({ state: 'visible' });
-  await guiltPromptDialog.getByRole('button', { name: 'اگر احساس گناه یا آشفتگی‌ام بیشتر شد چه کنم؟' }).click();
+  await guiltPromptDialog.getByRole('button', { name: 'اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟' }).click();
   const previousGuiltReplyCount = await guiltPanel.locator('.assistantMessage').count();
   await guiltPanel.getByRole('button', { name: 'ارسال' }).click();
   await guiltGuidedPage.waitForFunction(previous => {
