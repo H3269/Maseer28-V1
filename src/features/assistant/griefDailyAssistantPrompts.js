@@ -26,61 +26,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد پس از نام‌گذاری تغییر شغل تصمیم می‌گیرد فعلاً آن را خصوصی نگه دارد و فقط در صورت نیاز با یک فرد امن در میان بگذارد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -135,61 +135,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "پس از شناسایی فقدان سلامت و جابه‌جایی خانه، فرد انتخاب می‌کند امروز فقط درباره پیگیری پزشکی اطلاعات بگیرد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -244,61 +244,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "برای وضعیت نامعلوم درمان یکی از اعضای خانواده، فرد یک سؤال مشخص را برای پرسیدن از پزشک یادداشت می‌کند؛ نتیجه را حدس نمی‌زند.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -353,61 +353,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد پس از ثبت بی‌حسی، تصمیم می‌گیرد خودش را مجبور به گریه نکند و برای انجام یک کار ضروری کمک بگیرد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -462,61 +462,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد برای ساعتی که معمولاً دلتنگی بیشتر می‌شود، شماره دوست امن را در دسترس می‌گذارد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -571,61 +571,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "با شنیدن آهنگ یادآور، فرد از محیط پرصدا بیرون می‌رود و در صورت تمایل به دوستش پیام می‌دهد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -680,61 +680,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد پس از شناخت نیاز به غذا، یک میان‌وعده ساده آماده می‌کند یا از کسی می‌خواهد آن را بیاورد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -789,61 +789,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد یادداشت می‌کند دوستش در گذشته حریم را حفظ کرده و برای صحبت‌کردن فشار نیاورده است؛ او را فقط به‌عنوان گزینه احتمالی نگه می‌دارد و هنوز پیامی نمی‌فرستد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -898,61 +898,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "پس از ثبت خاطره آشپزی، فرد تصمیم می‌گیرد یک لیوان آب بنوشد و به کار روزمره برگردد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -1007,61 +1007,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد عکس یادبود را در کشوی شخصی می‌گذارد و تصمیم می‌گیرد فقط وقتی خودش خواست آن را ببیند.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -1116,61 +1116,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد برای نیاز به آب، بطری را کنار خود می‌گذارد و برای تهیه غذا از کسی کمک می‌خواهد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -1225,61 +1225,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد آب و میان‌وعده را در دسترس می‌گذارد و راه تماس با منبع امن را نگه می‌دارد؛ تماس فقط در صورت نیاز و خواست خودش انجام می‌شود.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -1334,61 +1334,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد از خواهرش می‌خواهد یک کار اداری مشخص را موقتاً همراهی کند تا فشار نقش تازه کمتر شود.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -1443,61 +1443,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد تصمیم می‌گیرد موضوع آخرین تماس را در جلسه با درمانگر بررسی کند و تا آن زمان خود را محکوم نکند.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -1552,61 +1552,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد از دوستش می‌خواهد فردا در مراجعه اداری همراهش باشد و روشن می‌کند که فقط همراهی می‌خواهد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -1661,61 +1661,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد به‌جای گفت‌وگوی حضوری، پیام کوتاهی می‌فرستد: «فعلاً آمادگی شنیدن توصیه ندارم؛ اگر نیاز شد خودم مطرح می‌کنم.»",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -1770,61 +1770,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد برای روز سالگرد، یک وعده استراحت و تماس با دوست امن را از قبل در تقویم می‌گذارد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -1879,61 +1879,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد اگر مایل باشد، برای خودش چای درست می‌کند و از لحظه آرامش توضیح یا نتیجه‌گیری نمی‌خواهد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -1988,61 +1988,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد دستور غذای محبوب مادرش را در دفتر نگه می‌دارد و اگر آمادگی داشت آن را با خواهرش می‌پزد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -2097,61 +2097,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد تاریخ سررسید یک کار اداری را در تقویم ثبت می‌کند و برای راهنمایی با مرجع رسمی تماس می‌گیرد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -2206,61 +2206,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد که خرید روزانه برایش دشوار شده، تصمیم می‌گیرد فعلاً خرید را آنلاین انجام دهد یا از همسایه کمک بخواهد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -2315,61 +2315,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد برای حضور کوتاه در مراسم، وسیله برگشت مستقل را از قبل هماهنگ می‌کند تا هر زمان خواست خارج شود.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -2424,61 +2424,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد ساعت پاسخ‌گویی یک مرکز مشاوره را بررسی می‌کند و شماره آن را ذخیره می‌کند؛ اگر پاسخ‌گو نبود، گزینه جایگزین می‌یابد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -2533,61 +2533,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد اگر ارزش مهربانی برایش معنا دارد، تصمیم می‌گیرد یک پیام قدردانی بفرستد؛ اگر آمادگی ندارد، اقدام را کنار می‌گذارد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -2642,61 +2642,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد برای اختلال طولانی خواب و کار، زمان مشاوره با متخصص سلامت روان را رزرو می‌کند.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -2751,61 +2751,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد یک تماس کوتاه با دوست قابل اعتماد می‌گیرد و همان را برای امروز کافی می‌داند.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -2860,61 +2860,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد تاریخ سالگرد را در تقویم یادآوری می‌کند و شماره فرد امن را کنار یادآوری می‌گذارد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
@@ -2969,61 +2969,61 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "actionExample": "فرد پیگیری یک کار حل‌نشده را برای هفته آینده زمان‌بندی می‌کند و نام مرجع کمک را می‌نویسد.",
     "questions": [
       {
-        "id": "exercise_meaning",
+        "id": "q01",
         "label": "منظور از تمرین امروز چیست؟",
         "value": "منظور از تمرین امروز چیست؟",
         "kind": "exercise_meaning"
       },
       {
-        "id": "exercise_example",
+        "id": "q02",
         "label": "برای تمرین امروز یک مثال می‌زنی؟",
         "value": "برای تمرین امروز یک مثال می‌زنی؟",
         "kind": "exercise_example"
       },
       {
-        "id": "action_meaning",
+        "id": "q03",
         "label": "منظور از اقدام اختصاصی امروز چیست؟",
         "value": "منظور از اقدام اختصاصی امروز چیست؟",
         "kind": "action_meaning"
       },
       {
-        "id": "action_example",
+        "id": "q04",
         "label": "برای اقدام امروز یک مثال می‌زنی؟",
         "value": "برای اقدام امروز یک مثال می‌زنی؟",
         "kind": "action_example"
       },
       {
-        "id": "light_version",
+        "id": "q05",
         "label": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "value": "اگر انجام کاملش برایم سخت بود چه کنم؟",
         "kind": "light_version"
       },
       {
-        "id": "success",
+        "id": "q06",
         "label": "از کجا بفهمم درست انجامش داده‌ام؟",
         "value": "از کجا بفهمم درست انجامش داده‌ام؟",
         "kind": "success"
       },
       {
-        "id": "stop",
+        "id": "q07",
         "label": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "value": "چه زمانی باید تمرین امروز را متوقف کنم؟",
         "kind": "stop"
       },
       {
-        "id": "no_event",
+        "id": "q08",
         "label": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "value": "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
         "kind": "no_event"
       },
       {
-        "id": "exercise_action_difference",
+        "id": "q09",
         "label": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "value": "تمرین و اقدام امروز چه تفاوتی دارند؟",
         "kind": "exercise_action_difference"
       },
       {
-        "id": "not_done",
+        "id": "q10",
         "label": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "value": "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
         "kind": "not_done"
