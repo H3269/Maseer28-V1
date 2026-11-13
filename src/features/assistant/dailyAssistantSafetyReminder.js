@@ -6,6 +6,8 @@ const SAFETY_QUESTION_KINDS = new Set([
   'fear_increased',
   'hostility_increased',
   'grief_increased',
+  'dependency_increased',
+  'procrastination_increased',
   'guilt_increased',
   'talk_other',
   'success',
