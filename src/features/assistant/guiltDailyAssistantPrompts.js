@@ -1,4 +1,4 @@
-import { cleanPreparedAssistantTopicText } from './teacherStylePreparedAnswer.js';
+import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 
 // T07 prepared-only assistant: 28 day guides × 14 fixed questions.
@@ -3714,8 +3714,8 @@ function answerRaw({ day, message, dailyContent } = {}) {
 export function answerGuiltDailyPreparedQuestion(args = {}) {
   const answer = answerRaw(args);
   if (!answer) return null;
-  const cleaned = cleanPreparedAssistantTopicText(answer, 'احساس گناه');
+ 
   const guide = GUILT_DAILY_ASSISTANT_GUIDES.find(item => item.day === toGuiltDayNumber(args.day));
   const question = guide?.questions.find(item => item.value === String(args.message || '').trim());
-  return appendDailyAssistantSafetyReminder(cleaned, question?.kind);
+  return appendDailyAssistantSafetyReminder(addTeacherStyleFrame(answer, { guide, question, topic: 'احساس گناه' }), question?.kind);
 }
