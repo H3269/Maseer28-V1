@@ -1,3 +1,4 @@
+// T09 draft-only regression suite: validates content alignment without activating runtime data.
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
