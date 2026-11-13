@@ -915,3 +915,24 @@ html body .app .bottomNav button.active b { color: #155B69 !important; }
 .app .bookReaderFull.theme-night .readerTools button {
   background: #263F58 !important; border-color: #3E5D79 !important; color: #E6EEF6 !important;
 }
+
+
+/* Final control sweep: reader pagination and assistant launcher. */
+.app button.readerPageArrow,
+.app button.readerBottomIcon,
+.app button.readerPageCounter,
+.app button.readerChapterLabel {
+  background: linear-gradient(135deg,#EDF4FB 0%,#E4F8F6 100%) !important;
+  color: #245A9A !important;
+  border: 1px solid #D1E2EF !important;
+  box-shadow: none !important;
+}
+.app .readerPageCounter { color: #173E62 !important; }
+.app .readerChapterLabel { color: #245A9A !important; }
+.app button.globalAssistantLauncher {
+  background: linear-gradient(135deg,#102A43 0%,#245A9A 72%,#4096C8 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(64,224,208,.55) !important;
+  box-shadow: 0 7px 20px rgba(16,42,67,.20) !important;
+}
+.app button.globalAssistantLauncher svg { color: #40E0D0 !important; }
