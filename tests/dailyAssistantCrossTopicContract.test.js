@@ -60,6 +60,7 @@ test('T01-T09 use the same five prompt groups and question distribution on every
       const groups = getGroups(day);
       assert.equal(groups.length, 5, topicId + ' day ' + day + ' group count');
       assert.deepEqual(groups.map(group => group.questions.length), [2, 2, 1, 5, 4], topicId + ' day ' + day + ' group distribution');
+      assert.deepEqual(groups.map(group => group.label.replace(/[۰-۹0-9]+/g, '{day}')), ['فهم تمرین روز {day}', 'فهم اقدام اختصاصی روز {day}', 'تفاوت تمرین و اقدام', 'اجرا و موانع', 'ارزیابی و ایمنی'], topicId + ' day ' + day + ' shared group labels');
       const groupedQuestions = groups.flatMap(group => group.questions).sort((a, b) => Number(a.id.slice(1)) - Number(b.id.slice(1)));
       assert.deepEqual(groupedQuestions.map(q => q.id), expectedIds, topicId + ' day ' + day + ' grouped question coverage');
       assert.deepEqual(groupedQuestions.map(q => q.value), expectedValues, topicId + ' day ' + day + ' grouped question order');
