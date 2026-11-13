@@ -989,3 +989,59 @@ body .bookReaderFull.theme-night .readerPageCounter,
 body .bookReaderFull.theme-night .readerChapterLabel {
   background: #263F58 !important; border-color: #3E5D79 !important; color: #E6EEF6 !important;
 }
+
+
+/* High-specificity legacy fixes discovered in the final cascade audit. */
+:root {
+  --m28-surface: #F5F8FC;
+  --m28-card: #FFFFFF;
+  --m28-ink: #102A43;
+  --m28-muted: #5B7187;
+  --m28-line: #DCE4EC;
+  --m28-green: #245A9A;
+  --m28-green-action: #245A9A;
+  --m28-green-soft: #40E0D0;
+  --m28-gold: #D7B96D;
+}
+.app .assessmentSummary,
+.app .assessmentSummary.complete {
+  background: linear-gradient(135deg,#EAF5FB,#F4FAFC) !important;
+  border: 1px solid #D1E2EF !important;
+  color: #173E62 !important;
+}
+.app > section.card#support .contactActions > button.sms {
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg,#245A9A,#4096C8) !important;
+  border: 1px solid #245A9A !important;
+}
+.app > section.card#support .contactActions > button.copyAction {
+  color: #173E62 !important;
+  background: linear-gradient(135deg,#EDF4FB,#E4F8F6) !important;
+  border: 1px solid #D1E2EF !important;
+}
+#bookReader .readerPageArrow {
+  background: linear-gradient(135deg,#EDF4FB,#E4F8F6) !important;
+  color: #245A9A !important;
+  border: 1px solid #D1E2EF !important;
+  box-shadow: none !important;
+}
+#bookReader .readerSoundButton.soundOn {
+  background: #E4F8F6 !important;
+  color: #155B69 !important;
+  border: 1px solid #BFE7E2 !important;
+}
+#bookReader .readerSoundButton.soundOff {
+  background: #EDF2F7 !important;
+  color: #5B7187 !important;
+  border: 1px solid #DCE4EC !important;
+}
+#bookReader .bookTocPanel {
+  background: #FFFFFF !important;
+  border-color: #DCE4EC !important;
+  color: #102A43 !important;
+}
+#bookReader.theme-night .bookTocPanel {
+  background: #182B40 !important;
+  border-color: #344B62 !important;
+  color: #E6EEF6 !important;
+}
