@@ -366,6 +366,6 @@ test('T07 prepared answers require exact canonical topic/day identity and preser
 
 test('T07 day 12 light action is distinct from T08 support-source mapping', () => {
   const t07 = GUILT_DAILY_ASSISTANT_GUIDES.find(guide => guide.day === 12);
-  assert.match(t07.lightActionVersion, /قضاوت‌نکردن/);
+  assert.match(t07.lightActionVersion, /احساس قضاوت‌شدن/);
   assert.notEqual(t07.lightActionVersion, 'فقط یک منبع بالقوه حمایت را روی کاغذ نام ببر؛ نام یا جزئیات حساس ثبت نکن.');
 });
