@@ -10,7 +10,7 @@ const [canonical, guide] = await Promise.all([
   readFile(guideUrl, 'utf8').then(JSON.parse),
 ]);
 
-test('T10 canonical draft covers 28 unique daily units with the v2 contract', () => {
+test('T10 canonical draft covers 28 unique daily units with the v2 contract', async () => {
   assert.equal(canonical.topic_id, 'T10');
   assert.equal(canonical.daily_unit_contract, 'v2');
   assert.equal(canonical.status, 'draft_not_runtime_eligible');
