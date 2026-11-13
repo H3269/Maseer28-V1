@@ -32,6 +32,17 @@ test('approved content cannot omit claim-level evidence sources', () => {
   assert.equal(result.reason, 'source_ids_required_for_assessed_or_approved_content');
 });
 
+
+test('approved content cannot retain an unassessed evidence grade even if an ID is present', () => {
+  const result = validateDailyEvidenceSourceIds({
+    review_status: 'approved',
+    evidence_grade: 'not_assessed',
+    source_ids: ['SRC-VALID-001'],
+  }, registry);
+  assert.equal(result.valid, false);
+  assert.equal(result.reason, 'approved_content_cannot_be_not_assessed');
+});
+
 test('assessed content cannot omit its evidence source links even while still draft', () => {
   const result = validateDailyEvidenceSourceIds({
     review_status: 'draft',
