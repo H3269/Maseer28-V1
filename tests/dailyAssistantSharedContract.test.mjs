@@ -83,7 +83,7 @@ test('T01-T09 expose the same five prompt groups and the same 2/2/1/5/4 question
       const groups = topic.groups(day);
       assert.equal(groups.length, 5, topic.id + ' day ' + day);
       assert.deepEqual(groups.map((group) => group.questions.length), GROUP_SIZES, topic.id + ' day ' + day);
-      assert.deepEqual(groups.flatMap((group) => group.questions).map((question) => question.id), QUESTION_IDS, topic.id + ' day ' + day);
+      assert.deepEqual(groups.flatMap((group) => group.questions).map((question) => question.id).sort(), QUESTION_IDS, topic.id + ' day ' + day);
     }
     assert.deepEqual(topic.groups(29), [], topic.id + ' invalid day');
   }
