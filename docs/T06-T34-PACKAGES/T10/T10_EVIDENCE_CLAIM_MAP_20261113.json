@@ -2,7 +2,7 @@
   "schema_version": "1.0.0",
   "package_id": "T10",
   "status": "draft_pending_expert_review",
-  "scope_note": "Preliminary source-to-claim links identify which bounded factual statements are supported by each traceable source. This is not a completed appraisal of evidence quality, clinical appropriateness, or app efficacy. All mappings remain pending qualified human review; do not infer treatment approval or runtime eligibility.",
+  "scope_note": "Daily claim mappings identify bounded day-specific factual context. Shared safety claims apply across all 28 daily units and are separately linked below. This is a preliminary traceability index, not a completed evidence-quality appraisal or clinical approval; all links remain pending qualified human review.",
   "source_registry": "public/assistant/evidence/sources.v1.json",
   "mappings": [
     {
@@ -10,7 +10,11 @@
       "content_id": "T10-D01",
       "source_ids": [
         "SRC-SLEEP-NHLBI-INSOMNIA-OVERVIEW-001",
-        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001"
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -28,13 +32,25 @@
           "limitations": "Symptom education only; these signs do not establish a diagnosis and do not replace clinical evaluation."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 2,
       "content_id": "T10-D02",
       "source_ids": [
-        "SRC-SLEEP-NHLBI-INSOMNIA-OVERVIEW-001"
+        "SRC-SLEEP-NHLBI-INSOMNIA-OVERVIEW-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -45,13 +61,25 @@
           "limitations": "Public-facing educational page; symptom descriptions are not diagnostic criteria for the app and cannot establish insomnia from a single complaint."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 3,
       "content_id": "T10-D03",
       "source_ids": [
-        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -62,14 +90,24 @@
           "limitations": "Patient education about clinical evaluation; symptom patterns are not diagnostic criteria for the app. Sleep diary suggestions do not justify obsessive tracking or self-diagnosis."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 4,
       "content_id": "T10-D04",
       "source_ids": [
         "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
-        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001"
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -87,14 +125,26 @@
           "limitations": "Road-safety guidance, not a clinical sleep-disorder diagnostic source. T10 uses it only for the safety boundary: do not drive while dangerously sleepy; do not prescribe caffeine as a substitute for sleep."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 5,
       "content_id": "T10-D05",
       "source_ids": [
         "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
-        "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001"
+        "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -112,13 +162,25 @@
           "limitations": "Training material for shift workers; timing and effects vary. Do not advise abrupt cessation or use caffeine as a substitute for sleep or safety."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 6,
       "content_id": "T10-D06",
       "source_ids": [
-        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -129,20 +191,45 @@
           "limitations": "General public-health education. Age, health, shift work, caregiving, environment, and individual circumstances matter; these suggestions are not an insomnia treatment protocol."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 7,
       "content_id": "T10-D07",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
+      ],
       "claim_mappings": [],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 8,
       "content_id": "T10-D08",
       "source_ids": [
-        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -153,13 +240,25 @@
           "limitations": "General public-health education. Age, health, shift work, caregiving, environment, and individual circumstances matter; these suggestions are not an insomnia treatment protocol."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 9,
       "content_id": "T10-D09",
       "source_ids": [
-        "SRC-SLEEP-NIOSH-LIGHT-CIRCADIAN-001"
+        "SRC-SLEEP-NIOSH-LIGHT-CIRCADIAN-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -170,13 +269,25 @@
           "limitations": "Educational material with examples for shift-work contexts. Do not translate into a universal light prescription; eye conditions, photosensitizing medicines, and individual schedules require caution."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 10,
       "content_id": "T10-D10",
       "source_ids": [
-        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -187,13 +298,24 @@
           "limitations": "General public-health education. Age, health, shift work, caregiving, environment, and individual circumstances matter; these suggestions are not an insomnia treatment protocol."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 11,
       "content_id": "T10-D11",
       "source_ids": [
-        "SRC-SLEEP-AASM-CBTI-2021-001"
+        "SRC-SLEEP-AASM-CBTI-2021-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
       ],
       "claim_mappings": [
         {
@@ -204,13 +326,25 @@
           "limitations": "Guideline is for adults with chronic insomnia disorder and clinician-delivered treatment decisions. It does not validate this app's 28-day course, any single app exercise, or unsupervised sleep restriction. Recommendations require clinical judgment and patient context."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 12,
       "content_id": "T10-D12",
       "source_ids": [
-        "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001"
+        "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -221,14 +355,25 @@
           "limitations": "Training material for shift workers; timing and effects vary. Do not advise abrupt cessation or use caffeine as a substitute for sleep or safety."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 13,
       "content_id": "T10-D13",
       "source_ids": [
         "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
-        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -246,13 +391,24 @@
           "limitations": "Professional clinical practice guideline intended to support clinician judgment, not replace it. The app must not diagnose, prescribe, or independently determine suitability for CBT-I, BBT-I, sleep restriction, or medication."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 14,
       "content_id": "T10-D14",
       "source_ids": [
-        "SRC-SLEEP-AASM-CBTI-2021-001"
+        "SRC-SLEEP-AASM-CBTI-2021-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
       ],
       "claim_mappings": [
         {
@@ -263,14 +419,24 @@
           "limitations": "Guideline is for adults with chronic insomnia disorder and clinician-delivered treatment decisions. It does not validate this app's 28-day course, any single app exercise, or unsupervised sleep restriction. Recommendations require clinical judgment and patient context."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 15,
       "content_id": "T10-D15",
       "source_ids": [
         "SRC-SLEEP-AASM-CBTI-2021-001",
-        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001"
       ],
       "claim_mappings": [
         {
@@ -288,13 +454,25 @@
           "limitations": "Professional clinical practice guideline intended to support clinician judgment, not replace it. The app must not diagnose, prescribe, or independently determine suitability for CBT-I, BBT-I, sleep restriction, or medication."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 16,
       "content_id": "T10-D16",
       "source_ids": [
-        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -305,14 +483,24 @@
           "limitations": "Patient education about clinical evaluation; symptom patterns are not diagnostic criteria for the app. Sleep diary suggestions do not justify obsessive tracking or self-diagnosis."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 17,
       "content_id": "T10-D17",
       "source_ids": [
         "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
-        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001"
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -330,13 +518,24 @@
           "limitations": "Road-safety guidance, not a clinical sleep-disorder diagnostic source. T10 uses it only for the safety boundary: do not drive while dangerously sleepy; do not prescribe caffeine as a substitute for sleep."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 18,
       "content_id": "T10-D18",
       "source_ids": [
-        "SRC-SLEEP-AASM-CBTI-2021-001"
+        "SRC-SLEEP-AASM-CBTI-2021-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
       ],
       "claim_mappings": [
         {
@@ -347,20 +546,45 @@
           "limitations": "Guideline is for adults with chronic insomnia disorder and clinician-delivered treatment decisions. It does not validate this app's 28-day course, any single app exercise, or unsupervised sleep restriction. Recommendations require clinical judgment and patient context."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 19,
       "content_id": "T10-D19",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
+      ],
       "claim_mappings": [],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 20,
       "content_id": "T10-D20",
       "source_ids": [
-        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -371,14 +595,25 @@
           "limitations": "Patient education about clinical evaluation; symptom patterns are not diagnostic criteria for the app. Sleep diary suggestions do not justify obsessive tracking or self-diagnosis."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 21,
       "content_id": "T10-D21",
       "source_ids": [
         "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
-        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -396,20 +631,45 @@
           "limitations": "Professional clinical practice guideline intended to support clinician judgment, not replace it. The app must not diagnose, prescribe, or independently determine suitability for CBT-I, BBT-I, sleep restriction, or medication."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 22,
       "content_id": "T10-D22",
-      "source_ids": [],
+      "source_ids": [
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
+      ],
       "claim_mappings": [],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 23,
       "content_id": "T10-D23",
       "source_ids": [
-        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -420,13 +680,25 @@
           "limitations": "General public-health education. Age, health, shift work, caregiving, environment, and individual circumstances matter; these suggestions are not an insomnia treatment protocol."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 24,
       "content_id": "T10-D24",
       "source_ids": [
-        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -437,7 +709,14 @@
           "limitations": "General public-health education. Age, health, shift work, caregiving, environment, and individual circumstances matter; these suggestions are not an insomnia treatment protocol."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 25,
@@ -446,7 +725,9 @@
         "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
         "SRC-SLEEP-NHLBI-OSA-DIAGNOSIS-001",
         "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
-        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001"
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -478,14 +759,24 @@
           "limitations": "Road-safety guidance, not a clinical sleep-disorder diagnostic source. T10 uses it only for the safety boundary: do not drive while dangerously sleepy; do not prescribe caffeine as a substitute for sleep."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 26,
       "content_id": "T10-D26",
       "source_ids": [
         "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
-        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001"
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -503,14 +794,25 @@
           "limitations": "Road-safety guidance, not a clinical sleep-disorder diagnostic source. T10 uses it only for the safety boundary: do not drive while dangerously sleepy; do not prescribe caffeine as a substitute for sleep."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 27,
       "content_id": "T10-D27",
       "source_ids": [
         "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
-        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "claim_mappings": [
         {
@@ -528,14 +830,24 @@
           "limitations": "Professional clinical practice guideline intended to support clinician judgment, not replace it. The app must not diagnose, prescribe, or independently determine suitability for CBT-I, BBT-I, sleep restriction, or medication."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
     },
     {
       "day": 28,
       "content_id": "T10-D28",
       "source_ids": [
         "SRC-SLEEP-AASM-CBTI-2021-001",
-        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001"
       ],
       "claim_mappings": [
         {
@@ -553,7 +865,201 @@
           "limitations": "Professional clinical practice guideline intended to support clinician judgment, not replace it. The app must not diagnose, prescribe, or independently determine suitability for CBT-I, BBT-I, sleep restriction, or medication."
         }
       ],
-      "review_status": "pending_expert_review"
+      "review_status": "pending_expert_review",
+      "shared_safety_claim_ids": [
+        "T10-SAFETY-001",
+        "T10-SAFETY-002",
+        "T10-SAFETY-003",
+        "T10-SAFETY-004",
+        "T10-SAFETY-005"
+      ]
+    }
+  ],
+  "shared_safety_claims": [
+    {
+      "claim_id": "T10-SAFETY-001",
+      "source_id": "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+      "claim": "When sleepiness threatens driving, stop in a safe place rather than trying to force wakefulness; caffeine alone is not a reliable safety solution.",
+      "applies_to_days": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "review_status": "pending_expert_review",
+      "limitations": "Road-safety guidance, not a clinical sleep-disorder diagnostic source."
+    },
+    {
+      "claim_id": "T10-SAFETY-002",
+      "source_id": "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+      "claim": "Breathing pauses, loud snoring, gasping, and daytime sleepiness are symptoms to discuss with a healthcare provider; they do not establish a diagnosis.",
+      "applies_to_days": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "review_status": "pending_expert_review",
+      "limitations": "Symptom education only; does not replace clinical evaluation."
+    },
+    {
+      "claim_id": "T10-SAFETY-003",
+      "source_id": "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+      "claim": "Dozing or difficulty staying awake during routine tasks, especially driving, is relevant to clinical assessment and safety planning.",
+      "applies_to_days": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "review_status": "pending_expert_review",
+      "limitations": "Patient education; does not provide individualized fitness-to-drive assessment."
+    },
+    {
+      "claim_id": "T10-SAFETY-004",
+      "source_id": "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+      "claim": "Structured insomnia behavioral interventions may require adaptation or delay for excessive daytime sleepiness, bipolar disorder, uncontrolled seizures, medical instability, acute mental health symptoms, pregnancy/postpartum, or active substance use disorder.",
+      "applies_to_days": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "review_status": "pending_expert_review",
+      "limitations": "Professional guideline for clinician decision-making; not a self-screening tool or app treatment protocol."
+    },
+    {
+      "claim_id": "T10-SAFETY-005",
+      "source_id": "SRC-SLEEP-AASM-CBTI-2021-001",
+      "claim": "Sleep restriction is a clinical behavioral intervention with population-specific cautions; the app must not prescribe sleep restriction or sleep deprivation.",
+      "applies_to_days": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "review_status": "pending_expert_review",
+      "limitations": "Adult chronic insomnia guideline; does not authorize unsupervised sleep restriction."
     }
   ]
 }
