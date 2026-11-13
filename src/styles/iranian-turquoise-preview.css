@@ -1,0 +1,130 @@
+/*
+ * Maseer 28 — Iranian Turquoise & Lapis visual identity preview
+ * Experimental theme only. Imported after original-v72.css on the preview branch.
+ * Palette inspired by Persian tilework: turquoise, lapis, sky blue and warm ivory.
+ */
+:root {
+  --brand-turquoise: #40E0D0;
+  --brand-lapis: #245A9A;
+  --brand-sky: #4096C8;
+  --brand-deep: #102A43;
+  --brand-ivory: #F7F8FA;
+  --brand-line: #DCE4EC;
+
+  --primary: var(--brand-turquoise);
+  --primary2: var(--brand-lapis);
+  --accent: var(--brand-sky);
+  --accent2: #E6F7F8;
+  --navy: var(--brand-deep);
+  --navy2: var(--brand-lapis);
+  --gold: #D7B96D;
+  --gold2: #F2E7C8;
+  --bg: #F5F8FC;
+  --card: #FFFFFF;
+  --text: #102A43;
+  --muted: #5B7187;
+  --line: var(--brand-line);
+}
+
+/* The header stays deep blue so white title text remains comfortably legible. */
+.header {
+  background: linear-gradient(135deg, #102A43 0%, #1D4777 58%, #245A9A 100%) !important;
+  color: #FFFFFF;
+  box-shadow: 0 12px 34px rgba(16, 42, 67, .16);
+}
+.header .subtitle,
+.header .stats {
+  color: #E7F1FA;
+}
+.header .logo {
+  border-color: var(--brand-turquoise);
+  box-shadow: 0 0 0 3px rgba(64, 224, 208, .13);
+}
+.header .progress {
+  background: rgba(255, 255, 255, .2);
+}
+.header .bar {
+  background: linear-gradient(90deg, #40E0D0 0%, #72DCD8 55%, #D7B96D 100%);
+}
+
+/* Turquoise is reserved for primary actions; dark text passes contrast far better than white. */
+button.primary,
+.primary {
+  background: var(--brand-turquoise) !important;
+  color: var(--brand-deep) !important;
+  border: 1px solid rgba(16, 42, 67, .08);
+  box-shadow: 0 4px 0 rgba(16, 42, 67, .13), 0 8px 16px rgba(36, 90, 154, .12);
+}
+button.primary:focus-visible,
+.primary:focus-visible {
+  outline: 3px solid var(--brand-lapis);
+  outline-offset: 3px;
+}
+button.secondary,
+.secondary {
+  color: var(--brand-deep);
+  border-color: var(--brand-line);
+}
+
+/* Quiet surfaces: a light aqua wash, never a full-screen turquoise fill. */
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+.card,
+.metricBox,
+.profileBox,
+.book,
+.answerItem {
+  border-color: var(--brand-line);
+}
+.badge {
+  background: #E4F8F6;
+  color: #155B69;
+}
+.exercise {
+  background: #EAF9F8;
+  border-right-color: var(--brand-turquoise);
+}
+.daydot.current {
+  outline-color: var(--brand-lapis);
+}
+.daydot.done {
+  background: #DDF3F0;
+  color: #155B69;
+}
+.bottomNav button.active,
+body.bale-webview .bottomNav button.active,
+body:not(.bale-webview) .bottomNav button.active {
+  background: #E4F8F6 !important;
+  color: #155B69 !important;
+  box-shadow: inset 0 0 0 1px rgba(64, 224, 208, .45) !important;
+}
+.bottomNav button.active svg,
+.quickAction span,
+.iconButton {
+  color: var(--brand-lapis);
+}
+.quickAction span {
+  background: #EAF5FB;
+  border-color: #D6E7F4;
+}
+input:focus,
+textarea:focus,
+select:focus,
+.smartSelectButton:focus-visible {
+  border-color: var(--brand-lapis) !important;
+  box-shadow: 0 0 0 3px rgba(64, 224, 208, .22) !important;
+}
+
+/* The first loading screen follows the same palette before React mounts. */
+.loadingBrand img {
+  border-color: var(--brand-turquoise) !important;
+  box-shadow: 0 7px 0 #B9E9E4, 0 15px 30px rgba(16, 42, 67, .12), inset 0 1px 0 #FFFFFF !important;
+}
+.loadingBrand h1 {
+  color: var(--brand-deep) !important;
+}
+.loadingProgressSegment::before {
+  background: var(--brand-turquoise) !important;
+}
