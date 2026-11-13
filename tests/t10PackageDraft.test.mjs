@@ -45,6 +45,10 @@ test('T10 canonical draft covers 28 unique daily units with the v2 contract', as
   assert.ok(sourceRegistry.sources.every((source) => source.title?.trim() && source.url?.startsWith('https://')));
   assert.ok(canonical.records.every((record) => record.source_ids.includes('SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001')),
     'shared driving-safety evidence must be linked to every daily unit');
+  assert.ok(canonical.records[24].source_ids.includes('SRC-SLEEP-NIMH-BIPOLAR-SIGNS-001'));
+  assert.ok(evidenceMap.mappings[24].claim_mappings.some((claim) =>
+    claim.claim_id === 'T10-D25-C05' && claim.source_id === 'SRC-SLEEP-NIMH-BIPOLAR-SIGNS-001'));
+
   for (const record of canonical.records) {
     assert.ok(record.source_ids.every((id) => sourceIds.has(id)), `day ${record.day}: source ID must exist`);
     assert.deepEqual(record.source_ids, evidenceMap.mappings[record.day - 1].source_ids);
@@ -172,6 +176,14 @@ test('T10 guide and canonical records remain aligned across all daily fields and
 });
 
 test('T10 retains sleep-specific safety boundaries and avoids unsafe self-treatment instructions', () => {
+  assert.match(canonical.records[8].instructions, /برنامه خواب\/بیداری و شیفت/);
+  assert.doesNotMatch(canonical.records[8].instructions, /پس از بیداری/);
+  assert.match(canonical.records[13].instructions, /بدون نتیجه‌گیری درباره علت/);
+  assert.doesNotMatch(canonical.records[13].instructions, /برانگیختگی بیشتر/);
+  assert.match(canonical.records[14].instructions, /پروتکل تخصصی کنترل محرک نیست/);
+  assert.doesNotMatch(canonical.records[14].instructions, /هنگام خواب‌آلودگی بازگرد/);
+  assert.match(canonical.records[24].instructions, /کاهش غیرمعمول نیاز به خواب/);
+  assert.match(canonical.records[24].instructions, /این نشانه به‌تنهایی تشخیص نیست/);
   const joined = JSON.stringify({ canonical, guide });
   assert.match(joined, /رانندگی/);
   assert.match(joined, /وقفه تنفسی|خفگی/);
