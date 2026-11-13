@@ -2,6 +2,7 @@ export function getCanonicalDailyRecordId(categoryKey, dayNumber) {
   if (typeof categoryKey !== 'string' || !categoryKey.trim()) return null;
   if (!Number.isInteger(dayNumber) || dayNumber < 1 || dayNumber > 28) return null;
   const canonicalCategoryKey = categoryKey.trim() === 'سوگ و فقدان' ? 'غم و سوگ' : categoryKey.trim();
+  if (canonicalCategoryKey === 'بی‌خوابی و مشکلات خواب') return `T10-D${String(dayNumber).padStart(2, '0')}`;
   return `${canonicalCategoryKey}-${String(dayNumber).padStart(2, '0')}`;
 }
 
