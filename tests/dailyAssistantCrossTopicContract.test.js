@@ -96,6 +96,17 @@ test('T09 shared question contract is documented in its canonical guide metadata
   assert.match(guide.questionPolicy, /identical question IDs, labels, values, and positions across all topics/);
 });
 
+test('all T01-T09 daily guides carry the same core day-specific teaching and safety fields', () => {
+  const requiredFields = ['objective', 'skill', 'mechanism', 'exercise', 'action', 'lightVersion', 'progressVersion', 'restVersion', 'successCriterion', 'reflectionQuestion', 'stopCondition'];
+  for (const [topicId, guides] of topics) {
+    for (const guide of guides) {
+      for (const field of requiredFields) {
+        assert.ok(String(guide[field] || '').trim(), topicId + ' day ' + guide.day + ' missing core field ' + field);
+      }
+    }
+  }
+});
+
 test('T01 and T02 assistant guides retain the full skill/mechanism and three exercise versions from their canonical drafts', () => {
   for (const [topicId, guides] of topics.slice(0, 2)) {
     for (const guide of guides) {
