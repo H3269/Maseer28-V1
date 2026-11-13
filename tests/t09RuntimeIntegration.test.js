@@ -138,11 +138,13 @@ test('T09 answers are fully contextual, use visible daily content, and keep resi
   const actionQuestion = guide.questions.find((item) => item.id === 'q03');
   const resistanceQuestion = guide.questions.find((item) => item.id === 'q11');
   const stopQuestion = guide.questions.find((item) => item.id === 'q07');
+  const lightQuestion = guide.questions.find((item) => item.id === 'q05');
   const visible = { id: getCanonicalDailyRecordId('اهمال‌کاری', 1), day: 1, topic_id: 'T09', exercise: 'تمرین نمایان و مخصوص آزمون', actionText: 'اقدام نمایان و مخصوص آزمون' };
   const exerciseAnswer = answerT09DailyPreparedQuestion({ day: 1, message: exerciseQuestion.value, dailyContent: visible });
   const actionAnswer = answerT09DailyPreparedQuestion({ day: 1, message: actionQuestion.value, dailyContent: visible });
   const resistanceAnswer = answerT09DailyPreparedQuestion({ day: 1, message: resistanceQuestion.value, dailyContent: visible });
   const stopAnswer = answerT09DailyPreparedQuestion({ day: 1, message: stopQuestion.value, dailyContent: visible });
+  const lightAnswer = answerT09DailyPreparedQuestion({ day: 1, message: lightQuestion.value, dailyContent: visible });
   assert.ok(exerciseAnswer.includes('تمرین نمایان و مخصوص آزمون'));
   assert.ok(actionAnswer.includes('اقدام نمایان و مخصوص آزمون'));
   assert.ok(exerciseAnswer.includes('هدف امروز') && exerciseAnswer.includes(guide.objective));
@@ -150,6 +152,9 @@ test('T09 answers are fully contextual, use visible daily content, and keep resi
   assert.ok(resistanceAnswer.includes('افزایش مقاومت به‌تنهایی نشانه تنبلی'));
   assert.notEqual(resistanceAnswer, stopAnswer);
   assert.ok(resistanceAnswer.includes(guide.whenToSeekHumanSupport));
+  assert.ok(lightAnswer.includes('نسخه سبک اقدام'));
+  assert.ok(lightAnswer.includes(guide.restVersion));
+  assert.ok(lightAnswer.includes(guide.progressVersion));
   assert.doesNotMatch(resistanceAnswer, /وابستگی را فقط ثبت کن/u);
 });
 
