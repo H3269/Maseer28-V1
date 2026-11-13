@@ -573,7 +573,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       disabled={sending || !localModelStatusChecked || jealousyRelationshipGatePending || griefRelationshipGatePending || emotionalDependencyRelationshipGatePending}
                       onClick={() => setLibraryPromptOpen(true)}
                     >
-                      {draft.trim() || (isTopicDailyPromptContext ? 'سوالت را انتخاب کن' : 'باز کردن سؤال‌های آماده دستیار کتابخانه')}
+                      {draft.trim() || 'انتخاب از میان سؤال‌های پیشنهادی'}
                     </button>
                     <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال سؤال انتخاب‌شده" disabled={!localModelStatusChecked || !draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
                   </div>
