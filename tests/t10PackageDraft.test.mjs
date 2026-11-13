@@ -64,6 +64,7 @@ test('T10 assistant guide has 392 non-empty, unique answers and 14 questions per
   const answers = [];
   const q02 = [];
   const q04 = [];
+  const q13 = [];
   for (const record of guide.records) {
     assert.equal(record.questions.length, 14, `day ${record.day} must have 14 questions`);
     assert.equal(new Set(record.questions.map((question) => question.id)).size, 14);
@@ -73,6 +74,7 @@ test('T10 assistant guide has 392 non-empty, unique answers and 14 questions per
     }
     q02.push(record.questions.find((question) => question.id === 'q02').answer);
     q04.push(record.questions.find((question) => question.id === 'q04').answer);
+    q13.push(record.questions.find((question) => question.id === 'q13').answer);
     assert.match(record.questions.find((question) => question.id === 'q11').answer, /خواب|خواب‌آلودگی|بیدار/);
     assert.equal(record.reviewStatus, 'draft');
     assert.equal(record.evidenceGrade, 'not_assessed');
@@ -89,6 +91,7 @@ test('T10 assistant guide has 392 non-empty, unique answers and 14 questions per
   assert.equal(new Set(answers).size, 392, 'full answer bodies must not be exact duplicates');
   assert.equal(new Set(q02).size, 28, 'exercise examples must be day-specific');
   assert.equal(new Set(q04).size, 28, 'action examples must be day-specific');
+  assert.equal(new Set(q13).size, 28, 'adaptation guidance must be day-specific');
   const q11 = guide.records.map((record) => record.questions.find((question) => question.id === 'q11').answer);
   assert.equal(new Set(q11).size, 28, 'sleep-safety guidance must remain day-specific');
   assert.ok(guide.records.every((record) => record.questions.find((question) => question.id === 'q11').answer !== record.questions.find((question) => question.id === 'q07').answer));
