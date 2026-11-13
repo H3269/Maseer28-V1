@@ -68,7 +68,8 @@
       "day": 4,
       "content_id": "T10-D04",
       "source_ids": [
-        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001"
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001"
       ],
       "claim_mappings": [
         {
@@ -77,6 +78,13 @@
           "claim": "Daytime sleepiness and tiredness can occur with sleep apnea; the content prioritizes safety and clinical evaluation rather than diagnosis.",
           "review_status": "pending_expert_review",
           "limitations": "Symptom education only; these signs do not establish a diagnosis and do not replace clinical evaluation."
+        },
+        {
+          "claim_id": "T10-D04-C02",
+          "source_id": "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+          "claim": "NHTSA advises stopping in a safe place rather than trying to force wakefulness when sleepiness threatens driving; caffeine alone is not a reliable safety solution.",
+          "review_status": "pending_expert_review",
+          "limitations": "Road-safety guidance, not a clinical sleep-disorder diagnostic source. T10 uses it only for the safety boundary: do not drive while dangerously sleepy; do not prescribe caffeine as a substitute for sleep."
         }
       ],
       "review_status": "pending_expert_review"
@@ -303,7 +311,8 @@
       "day": 17,
       "content_id": "T10-D17",
       "source_ids": [
-        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001"
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001"
       ],
       "claim_mappings": [
         {
@@ -312,6 +321,13 @@
           "claim": "Clinical assessment considers dozing during routine tasks, especially driving; the day prioritizes stopping hazardous activity rather than compensating with substances or medication.",
           "review_status": "pending_expert_review",
           "limitations": "Patient education; it does not provide an individualized fitness-to-drive assessment. When sleepy, the app should advise stopping hazardous activity rather than trying to overcome sleepiness."
+        },
+        {
+          "claim_id": "T10-D17-C02",
+          "source_id": "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+          "claim": "NHTSA advises stopping in a safe place rather than trying to force wakefulness when sleepiness threatens driving; caffeine alone is not a reliable safety solution.",
+          "review_status": "pending_expert_review",
+          "limitations": "Road-safety guidance, not a clinical sleep-disorder diagnostic source. T10 uses it only for the safety boundary: do not drive while dangerously sleepy; do not prescribe caffeine as a substitute for sleep."
         }
       ],
       "review_status": "pending_expert_review"
@@ -429,7 +445,8 @@
       "source_ids": [
         "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
         "SRC-SLEEP-NHLBI-OSA-DIAGNOSIS-001",
-        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001"
       ],
       "claim_mappings": [
         {
@@ -452,6 +469,13 @@
           "claim": "The guideline includes distinct clinical screening and management pathways for obstructive sleep apnea.",
           "review_status": "pending_expert_review",
           "limitations": "Professional clinical practice guideline intended to support clinician judgment, not replace it. The app must not diagnose, prescribe, or independently determine suitability for CBT-I, BBT-I, sleep restriction, or medication."
+        },
+        {
+          "claim_id": "T10-D25-C04",
+          "source_id": "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+          "claim": "NHTSA advises stopping in a safe place rather than trying to force wakefulness when sleepiness threatens driving; caffeine alone is not a reliable safety solution.",
+          "review_status": "pending_expert_review",
+          "limitations": "Road-safety guidance, not a clinical sleep-disorder diagnostic source. T10 uses it only for the safety boundary: do not drive while dangerously sleepy; do not prescribe caffeine as a substitute for sleep."
         }
       ],
       "review_status": "pending_expert_review"
@@ -460,7 +484,8 @@
       "day": 26,
       "content_id": "T10-D26",
       "source_ids": [
-        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001"
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001"
       ],
       "claim_mappings": [
         {
@@ -469,6 +494,13 @@
           "claim": "Dozing or difficulty staying awake during routine tasks, especially driving, is relevant to clinical assessment; the day prioritizes stopping hazardous activity.",
           "review_status": "pending_expert_review",
           "limitations": "Patient education; it does not provide an individualized fitness-to-drive assessment. When sleepy, the app should advise stopping hazardous activity rather than trying to overcome sleepiness."
+        },
+        {
+          "claim_id": "T10-D26-C02",
+          "source_id": "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+          "claim": "NHTSA advises stopping in a safe place rather than trying to force wakefulness when sleepiness threatens driving; caffeine alone is not a reliable safety solution.",
+          "review_status": "pending_expert_review",
+          "limitations": "Road-safety guidance, not a clinical sleep-disorder diagnostic source. T10 uses it only for the safety boundary: do not drive while dangerously sleepy; do not prescribe caffeine as a substitute for sleep."
         }
       ],
       "review_status": "pending_expert_review"
