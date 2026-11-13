@@ -19,10 +19,18 @@ test('T10 canonical draft covers 28 unique daily units with the v2 contract', ()
   const evidenceMap = JSON.parse(await readFile(new URL('../docs/T06-T34-PACKAGES/T10/T10_EVIDENCE_CLAIM_MAP_20261113.json', import.meta.url), 'utf8'));
   const sourceIds = new Set(sourceRegistry.sources.map((source) => source.source_id));
   assert.equal(evidenceMap.mappings.length, 28);
-  assert.ok(evidenceMap.mappings.every((item) => item.claim_mappings.every((claim) => sourceIds.has(claim.source_id))));
+  const sharedClaimIds = new Set(evidenceMap.shared_safety_claims.map((claim) => claim.claim_id));
+  assert.equal(sharedClaimIds.size, 5);
+  for (const claim of evidenceMap.shared_safety_claims) {
+    assert.ok(sourceIds.has(claim.source_id));
+    assert.equal(claim.applies_to_days.length, 28);
+  }
   for (const item of evidenceMap.mappings) {
-    assert.deepEqual([...new Set(item.claim_mappings.map((claim) => claim.source_id))].sort(), [...item.source_ids].sort(),
-      `day ${item.day}: every linked source must have a bounded claim mapping`);
+    assert.ok(item.claim_mappings.every((claim) => sourceIds.has(claim.source_id)));
+    assert.deepEqual(new Set(item.shared_safety_claim_ids), sharedClaimIds);
+    const mappedIds = new Set([...item.claim_mappings.map((claim) => claim.source_id), ...evidenceMap.shared_safety_claims.map((claim) => claim.source_id)]);
+    assert.deepEqual([...mappedIds].sort(), [...item.source_ids].sort(),
+      `day ${item.day}: all daily and shared safety sources must be mapped`);
   }
   assert.ok(sourceRegistry.sources.every((source) => source.title?.trim() && source.url?.startsWith('https://')));
   for (const record of canonical.records) {
