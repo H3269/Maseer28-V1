@@ -86,7 +86,10 @@ test('q02 has one distinct concrete example per day and q08 has day-specific no-
 });
 
 test('T09 keeps all durations provisional and all content withheld from production approval', () => {
-  assert.ok(canonical.records.every((record) => record.duration_minutes === 10));
+  assert.ok(canonical.records.every((record) => [5, 10, 15].includes(record.duration_minutes)));
+  assert.ok(new Set(canonical.records.map((record) => record.duration_minutes)).size > 1);
+  assert.equal(new Set(guide.records.map((record) => answer(record, 'q14'))).size, 28);
+  assert.ok(guide.records.every((record) => answer(record, 'q14').includes('این زمان فقط برای خودِ مشاهده، نوشتن یا برنامه‌ریزیِ تمرین است')));
   assert.ok(canonical.records.every((record) => record.duration_status === 'provisional_estimate'));
   assert.ok(canonical.records.every((record) => record.review_status === 'draft'));
   assert.ok(canonical.records.every((record) => record.evidence_grade === 'not_assessed'));
