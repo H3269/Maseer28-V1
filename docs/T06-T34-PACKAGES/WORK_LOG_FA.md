@@ -1625,3 +1625,6 @@
 - هیچ تغییری در `main`، هیچ ادغامی و هیچ انتشار Telegram/Bale انجام نشد.
 
 **وضعیت:** `T10_Q13_DAY_SPECIFIC_GUARDRAILS_REVISED; STRUCTURAL_ASSERTION_ADDED; CI_PENDING; EXPERT_REVIEW_PENDING; RUNTIME_INTEGRATION_PENDING; NO_MAIN_MERGE; NO_RELEASE`
+
+- برای جلوگیری از جداافتادن هشدارهای مشترک q07/q11 از منبع، پنج ادعای ایمنی عمومی به‌صورت shared_safety_claims در evidence map ثبت شدند و هر ۲۸ روز به این منابع مشترک ارجاع می‌دهد؛ source_ids canonical و guide با این نگاشت همگام شدند.
+- آزمون اکنون پوشش ۳۸ پیوند اختصاصی روز-ادعا و پنج پیوند مشترک ایمنی، وجود شناسه در registry و هم‌ترازی canonical/guide/map را کنترل می‌کند. همه وضعیت‌ها همچنان pending_expert_review / draft / not_assessed هستند.
