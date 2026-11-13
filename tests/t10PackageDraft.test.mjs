@@ -63,6 +63,13 @@ test('T10 assistant guide has 392 non-empty, unique answers and 14 questions per
     assert.equal(record.reviewStatus, 'draft');
     assert.equal(record.evidenceGrade, 'not_assessed');
     assert.deepEqual(record.sourceIds, []);
+    const canonicalDay = canonical.records[record.day - 1];
+    assert.equal(record.successCriterion, canonicalDay.success_criterion,
+      `day ${record.day} guide success criterion must match canonical content`);
+    const durationMatch = record.questions.find((question) => question.id === 'q14').answer.match(/حدود\s+(\d+)\s+دقیقه/);
+    assert.ok(durationMatch, `day ${record.day} q14 must state an estimated duration`);
+    assert.equal(Number(durationMatch[1]), canonicalDay.duration_minutes,
+      `day ${record.day} duration must match q14`);
   }
   assert.equal(answers.length, 392);
   assert.equal(new Set(answers).size, 392, 'full answer bodies must not be exact duplicates');
