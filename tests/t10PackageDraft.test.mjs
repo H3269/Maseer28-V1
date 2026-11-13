@@ -179,6 +179,9 @@ test('T10 retains sleep-specific safety boundaries and avoids unsafe self-treatm
   assert.match(canonical.records[8].instructions, /برنامه خواب\/بیداری و شیفت/);
   assert.doesNotMatch(canonical.records[8].instructions, /پس از بیداری/);
   assert.match(canonical.records[13].instructions, /بدون نتیجه‌گیری درباره علت/);
+  assert.match(canonical.records[13].action, /اگر بررسی مکرر ساعت برایت فشار ایجاد می‌کند/);
+  assert.match(canonical.records[13].action, /پایش ضروری/);
+  assert.match(guide.records[13].questions.find((question) => question.id === 'q13').answer, /پایش لازم را مختل نکند/);
   assert.doesNotMatch(canonical.records[13].instructions, /برانگیختگی بیشتر/);
   assert.match(canonical.records[14].instructions, /پروتکل تخصصی کنترل محرک نیست/);
   assert.doesNotMatch(canonical.records[14].instructions, /هنگام خواب‌آلودگی بازگرد/);
