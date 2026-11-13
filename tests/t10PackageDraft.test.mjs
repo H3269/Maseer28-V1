@@ -192,4 +192,28 @@ test('T10 draft exercises and actions do not exactly duplicate another topic run
     assert.ok(!normalized.has(String(text).normalize('NFKC').replace(/\s+/g, ' ').trim()),
       'T10 text must not be an exact duplicate of another topic exercise/action');
   }
+
+  // Lexical Jaccard is a screening heuristic, not proof of conceptual uniqueness.
+  const tokens = (value) => new Set(String(value || '').normalize('NFKC')
+    .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ').toLowerCase()
+    .split(/\s+/u).filter((token) => token.length > 1));
+  const otherSets = otherTopicTexts.map(tokens);
+  let maxJaccard = 0;
+  let closestPair = '';
+  for (let index = 0; index < t10Texts.length; index += 1) {
+    const left = tokens(t10Texts[index]);
+    for (let otherIndex = 0; otherIndex < otherSets.length; otherIndex += 1) {
+      const right = otherSets[otherIndex];
+      let intersection = 0;
+      for (const token of left) if (right.has(token)) intersection += 1;
+      const union = left.size + right.size - intersection;
+      const score = union ? intersection / union : 0;
+      if (score > maxJaccard) {
+        maxJaccard = score;
+        closestPair = `T10 text ${index + 1} vs other-topic text ${otherIndex + 1}`;
+      }
+    }
+  }
+  assert.ok(maxJaccard < 0.4, `cross-topic lexical overlap must remain below 0.4; ${closestPair}: ${maxJaccard.toFixed(3)}`);
 });
