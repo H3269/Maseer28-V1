@@ -1,10 +1,11 @@
+import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 import { getGriefDaySpecificAnswerGuidance } from './griefDailyAssistantDaySpecificGuidance.js';
 
 // T06: prepared-only, day-specific guidance for grief and loss.
 // The guide content is synchronized with the reviewed 28-day draft.
-export const GRIEF_DAILY_ASSISTANT_GUIDES = [
+const RAW_GRIEF_DAILY_ASSISTANT_GUIDES = [
   {
     "day": 1,
     "title": "نام‌گذاری فقدان",
@@ -3058,6 +3059,8 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
     "restActionVersion": "مرور را به تعویق بینداز؛ پایان دوره به معنی پایان سوگ نیست."
   }
 ];
+
+export const GRIEF_DAILY_ASSISTANT_GUIDES = Object.freeze(RAW_GRIEF_DAILY_ASSISTANT_GUIDES.map(normalizeDailyAssistantGuide));
 
 export function toGriefDayNumber(value) {
   const n = Number(String(value ?? '').replace(/[۰-۹]/g, d => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))));
