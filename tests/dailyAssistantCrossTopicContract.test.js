@@ -1,26 +1,26 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
-import { ANGER_DAILY_ASSISTANT_GUIDES, getAngerDailyAssistantPromptGroups } from '../src/features/assistant/angerDailyAssistantPrompts.js';
-import { ANXIETY_DAILY_ASSISTANT_GUIDES, getAnxietyDailyAssistantPromptGroups } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
-import { FEAR_DAILY_ASSISTANT_GUIDES, getFearDailyAssistantPromptGroups } from '../src/features/assistant/fearDailyAssistantPrompts.js';
-import { HATRED_DAILY_ASSISTANT_GUIDES, getHatredDailyAssistantPromptGroups } from '../src/features/assistant/hatredDailyAssistantPrompts.js';
-import { JEALOUSY_DAILY_ASSISTANT_GUIDES, getJealousyDailyAssistantPromptGroups } from '../src/features/assistant/jealousyDailyAssistantPrompts.js';
-import { GRIEF_DAILY_ASSISTANT_GUIDES, getGriefDailyAssistantPromptGroups } from '../src/features/assistant/griefDailyAssistantPrompts.js';
-import { GUILT_DAILY_ASSISTANT_GUIDES, getGuiltDailyAssistantPromptGroups } from '../src/features/assistant/guiltDailyAssistantPrompts.js';
-import { EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES, getEmotionalDependencyDailyAssistantPromptGroups } from '../src/features/assistant/emotionalDependencyDailyAssistantPrompts.js';
-import { T09_DAILY_ASSISTANT_GUIDES, getT09DailyAssistantPromptGroups } from '../src/features/assistant/t09DailyAssistantPrompts.js';
+import { ANGER_DAILY_ASSISTANT_GUIDES, answerAngerDailyPreparedQuestion, getAngerDailyAssistantPromptGroups } from '../src/features/assistant/angerDailyAssistantPrompts.js';
+import { ANXIETY_DAILY_ASSISTANT_GUIDES, answerAnxietyDailyPreparedQuestion, getAnxietyDailyAssistantPromptGroups } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
+import { FEAR_DAILY_ASSISTANT_GUIDES, answerFearDailyPreparedQuestion, getFearDailyAssistantPromptGroups } from '../src/features/assistant/fearDailyAssistantPrompts.js';
+import { HATRED_DAILY_ASSISTANT_GUIDES, answerHatredDailyPreparedQuestion, getHatredDailyAssistantPromptGroups } from '../src/features/assistant/hatredDailyAssistantPrompts.js';
+import { JEALOUSY_DAILY_ASSISTANT_GUIDES, answerJealousyDailyPreparedQuestion, getJealousyDailyAssistantPromptGroups } from '../src/features/assistant/jealousyDailyAssistantPrompts.js';
+import { GRIEF_DAILY_ASSISTANT_GUIDES, answerGriefDailyPreparedQuestion, getGriefDailyAssistantPromptGroups } from '../src/features/assistant/griefDailyAssistantPrompts.js';
+import { GUILT_DAILY_ASSISTANT_GUIDES, answerGuiltDailyPreparedQuestion, getGuiltDailyAssistantPromptGroups } from '../src/features/assistant/guiltDailyAssistantPrompts.js';
+import { EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES, answerEmotionalDependencyDailyPreparedQuestion, getEmotionalDependencyDailyAssistantPromptGroups } from '../src/features/assistant/emotionalDependencyDailyAssistantPrompts.js';
+import { T09_DAILY_ASSISTANT_GUIDES, answerT09DailyPreparedQuestion, getT09DailyAssistantPromptGroups } from '../src/features/assistant/t09DailyAssistantPrompts.js';
 
 const topics = [
-  ['T01', ANGER_DAILY_ASSISTANT_GUIDES, getAngerDailyAssistantPromptGroups],
-  ['T02', ANXIETY_DAILY_ASSISTANT_GUIDES, getAnxietyDailyAssistantPromptGroups],
-  ['T03', FEAR_DAILY_ASSISTANT_GUIDES, getFearDailyAssistantPromptGroups],
-  ['T04', HATRED_DAILY_ASSISTANT_GUIDES, getHatredDailyAssistantPromptGroups],
-  ['T05', JEALOUSY_DAILY_ASSISTANT_GUIDES, getJealousyDailyAssistantPromptGroups],
-  ['T06', GRIEF_DAILY_ASSISTANT_GUIDES, getGriefDailyAssistantPromptGroups],
-  ['T07', GUILT_DAILY_ASSISTANT_GUIDES, getGuiltDailyAssistantPromptGroups],
-  ['T08', EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES, getEmotionalDependencyDailyAssistantPromptGroups],
-  ['T09', T09_DAILY_ASSISTANT_GUIDES, getT09DailyAssistantPromptGroups],
+  ['T01', ANGER_DAILY_ASSISTANT_GUIDES, getAngerDailyAssistantPromptGroups, answerAngerDailyPreparedQuestion],
+  ['T02', ANXIETY_DAILY_ASSISTANT_GUIDES, getAnxietyDailyAssistantPromptGroups, answerAnxietyDailyPreparedQuestion],
+  ['T03', FEAR_DAILY_ASSISTANT_GUIDES, getFearDailyAssistantPromptGroups, answerFearDailyPreparedQuestion],
+  ['T04', HATRED_DAILY_ASSISTANT_GUIDES, getHatredDailyAssistantPromptGroups, answerHatredDailyPreparedQuestion],
+  ['T05', JEALOUSY_DAILY_ASSISTANT_GUIDES, getJealousyDailyAssistantPromptGroups, answerJealousyDailyPreparedQuestion],
+  ['T06', GRIEF_DAILY_ASSISTANT_GUIDES, getGriefDailyAssistantPromptGroups, answerGriefDailyPreparedQuestion],
+  ['T07', GUILT_DAILY_ASSISTANT_GUIDES, getGuiltDailyAssistantPromptGroups, answerGuiltDailyPreparedQuestion],
+  ['T08', EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES, getEmotionalDependencyDailyAssistantPromptGroups, answerEmotionalDependencyDailyPreparedQuestion],
+  ['T09', T09_DAILY_ASSISTANT_GUIDES, getT09DailyAssistantPromptGroups, answerT09DailyPreparedQuestion],
 ];
 const expectedIds = Array.from({ length: 14 }, (_, i) => 'q' + String(i + 1).padStart(2, '0'));
 const expectedValues = [
@@ -83,3 +83,30 @@ test('T01 and T02 assistant guides retain the full skill/mechanism and three exe
     }
   }
 });
+
+test('all T01-T09 prepared answers share the same structural heading and day objective/skill frame', () => {
+  for (const [topicId, guides, , answerPrepared] of topics) {
+    assert.equal(typeof answerPrepared, 'function', topicId + ' answer handler');
+    for (const guide of guides) {
+      const dailyContent = {
+        id: topicId === 'T09' ? 'اهمال‌کاری-' + String(guide.day).padStart(2, '0') : topicId + '-D' + String(guide.day).padStart(2, '0'),
+        topic_id: topicId,
+        day: guide.day,
+        exercise: guide.exercise,
+        actionText: guide.action,
+      };
+      for (const question of guide.questions) {
+        const answer = answerPrepared({
+          day: guide.day,
+          message: question.value,
+          dailyContent,
+        });
+        assert.equal(typeof answer, 'string', topicId + ' day ' + guide.day + ' ' + question.id + ' answer');
+        assert.ok(answer.includes('**بیاییم قدم‌به‌قدم پیش برویم.**'), topicId + ' day ' + guide.day + ' common frame');
+        assert.ok(answer.includes('**هدف امروز:** ' + guide.objective), topicId + ' day ' + guide.day + ' objective frame');
+        assert.ok(answer.includes('مهارت «' + guide.skill + '»'), topicId + ' day ' + guide.day + ' skill frame');
+      }
+    }
+  }
+});
+
