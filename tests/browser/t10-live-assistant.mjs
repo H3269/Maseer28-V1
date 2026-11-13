@@ -135,7 +135,7 @@ async function verifyDay(browser, dayNumber) {
       return Boolean(reply && !reply.innerText.includes('در حال بررسی پرسش'));
     }, { timeout: 10000 }).catch(() => {});
     const replyText = await assistantReply.innerText();
-    assert.match(replyText, /راهنمای روز 1 بی‌خوابی و مشکلات خواب/,
+    assert.ok(normalize(replyText).includes(normalize(`راهنمای روز ${dayNumber} بی‌خوابی و مشکلات خواب`)),
       `T10 prepared assistant must return its day-specific answer; actual reply: ${replyText}`);
   }
   assert.deepEqual(errors, [], `T10 day ${dayNumber} must render without browser errors`);
