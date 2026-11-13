@@ -15,7 +15,9 @@ export function answerT09DailyPreparedQuestion({ day, message, dailyContent } = 
     || (dailyContent.topic_id != null && dailyContent.topic_id !== 'T09')) return null;
   const guide = T09_DAILY_ASSISTANT_GUIDES.find((item) => item.day === dayNumber);
   const question = guide?.questions.find((item) => item.value === String(message || '').trim());
-  return typeof question?.answer === 'string' && question.answer.trim() ? question.answer : null;
+  return typeof question?.answer === 'string' && question.answer.trim()
+    ? `راهنمای روز ${dayNumber} اهمال‌کاری — ${guide.title}\\n\\n${question.answer}`
+    : null;
 }
 
 export function getT09DailyAssistantPromptGroups(day) {
