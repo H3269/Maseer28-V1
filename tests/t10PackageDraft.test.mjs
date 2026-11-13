@@ -19,6 +19,7 @@ test('T10 canonical draft covers 28 unique daily units with the v2 contract', ()
   const evidenceMap = JSON.parse(await readFile(new URL('../docs/T06-T34-PACKAGES/T10/T10_EVIDENCE_CLAIM_MAP_20261113.json', import.meta.url), 'utf8'));
   const sourceIds = new Set(sourceRegistry.sources.map((source) => source.source_id));
   assert.equal(evidenceMap.mappings.length, 28);
+  assert.ok(evidenceMap.mappings.every((item) => item.claim_mappings.every((claim) => sourceIds.has(claim.source_id))));
   for (const record of canonical.records) {
     assert.ok(record.source_ids.every((id) => sourceIds.has(id)), `day ${record.day}: source ID must exist`);
     assert.deepEqual(record.source_ids, evidenceMap.mappings[record.day - 1].source_ids);
@@ -70,7 +71,7 @@ test('T10 assistant guide has 392 non-empty, unique answers and 14 questions per
     assert.match(record.questions.find((question) => question.id === 'q11').answer, /خواب|خواب‌آلودگی|بیدار/);
     assert.equal(record.reviewStatus, 'draft');
     assert.equal(record.evidenceGrade, 'not_assessed');
-    assert.deepEqual(record.sourceIds, []);
+    assert.deepEqual(record.sourceIds, canonicalDay.source_ids);
     const canonicalDay = canonical.records[record.day - 1];
     assert.equal(record.successCriterion, canonicalDay.success_criterion,
       `day ${record.day} guide success criterion must match canonical content`);
@@ -88,7 +89,7 @@ test('T10 assistant guide has 392 non-empty, unique answers and 14 questions per
   assert.ok(guide.records.every((record) => record.questions.find((question) => question.id === 'q11').answer !== record.questions.find((question) => question.id === 'q07').answer));
   const q07 = guide.records.map((record) => record.questions.find((question) => question.id === 'q07').answer);
   assert.equal(new Set(q07).size, 28, 'stop guidance must remain day-specific');
-  assert.ok(q07.every((answer) => answer.split(/\\s+/u).length <= 150), 'q07 must remain concise');
+  assert.ok(q07.every((answer) => answer.split(/\s+/u).length <= 150), 'q07 must remain concise');
   assert.ok(q11.every((answer) => answer.split(/\\s+/u).length <= 120), 'q11 must remain concise');
 });
 
@@ -119,8 +120,6 @@ test('T10 guide and canonical records remain aligned across all daily fields and
     assert.equal(answer('q06'), g.successCriterion);
     assert.ok(answer('q07').includes(g.stopCondition));
     assert.ok(answer('q07').includes(g.restVersion));
-    assert.ok(answer('q07').includes(g.stopCondition));
-    assert.ok(answer('q07').includes(g.restVersion));
     assert.ok(answer('q07').includes('دارو، مکمل، الکل یا مواد را برای خواب خودسرانه'));
     assert.ok(answer('q07').includes('محدودسازی خواب یا درمان ساختارمند بی‌خوابی را خودسرانه اجرا نکن'));
     assert.ok(answer('q07').includes('پزشک یا متخصص خواب') || answer('q07').includes('ارزیابی پزشک یا متخصص خواب'));
@@ -129,8 +128,6 @@ test('T10 guide and canonical records remain aligned across all daily fields and
     assert.ok(answer('q09').includes(g.action));
     assert.ok(answer('q10').includes(g.lightVersion));
     assert.ok(answer('q10').includes(g.restVersion));
-    assert.ok(answer('q11').includes(g.stopCondition));
-    assert.ok(answer('q11').includes(g.restVersion));
     assert.ok(answer('q11').includes(g.stopCondition));
     assert.ok(answer('q11').includes(g.restVersion));
     assert.ok(answer('q11').includes('ادامه‌دادن معیار موفقیت نیست'));
