@@ -3219,7 +3219,7 @@ function answerRaw({ day, message, dailyContent } = {}) {
       not_done: ['exerciseHow', 'actionHow'],
       grief_increased: ['avoid'],
       talk_other: ['actionHow', 'actionSuccess'],
-      can_change: ['exerciseHow', 'actionHow', 'avoid'],
+      can_change: ['exerciseHow', 'avoid'],
       duration: ['exerciseHow', 'actionHow'],
     };
     const labels = {
