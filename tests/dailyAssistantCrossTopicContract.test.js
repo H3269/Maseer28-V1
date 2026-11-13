@@ -114,3 +114,24 @@ test('all T01-T09 prepared answers share the same structural heading and day obj
   }
 });
 
+test('q11 keeps a genuinely topic-specific answer body after the shared response frame', () => {
+  const marker = 'هدف این است که دستور امروز را بفهمی و تا جایی که امن و شدنی است اجرا کنی.';
+  for (let day = 1; day <= 28; day += 1) {
+    const topicBodies = topics.map(([topicId, guides, , answerPrepared]) => {
+      const guide = guides[day - 1];
+      const question = guide.questions[10];
+      const dailyContent = topicId === 'T09' ? {
+        id: 'اهمال‌کاری-' + String(day).padStart(2, '0'),
+        topic_id: 'T09',
+        day,
+        exercise: guide.exercise,
+        actionText: guide.action,
+      } : undefined;
+      const answer = answerPrepared({ day, message: question.value, dailyContent });
+      const markerIndex = answer?.indexOf(marker) ?? -1;
+      assert.ok(markerIndex >= 0, topicId + ' day ' + day + ' shared frame marker');
+      return answer.slice(markerIndex + marker.length).trim();
+    });
+    assert.equal(new Set(topicBodies).size, 9, 'q11 answer bodies must be distinct across all topics on day ' + day);
+  }
+});
