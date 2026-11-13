@@ -616,11 +616,11 @@
       "url": "https://www.healthquality.va.gov/guidelines/CD/insomnia/I-OSA-CPG_2025-Guideline_final_20250915.pdf",
       "relevant_claims": [
         "CBT-I and brief behavioral therapy for insomnia are clinician-directed options for chronic insomnia disorder.",
-        "Conditions requiring adaptation or delay of CBT-I/BBT-I include medical instability, active alcohol or drug use disorder, excessive daytime sleepiness, nighttime fall risk or inability to transfer, exposure-based PTSD treatment, uncontrolled seizure disorder, bipolar disorder, acute mental health symptoms, and pregnancy/postpartum insomnia.",
         "Evaluation for other sleep disorders, daytime sleepiness, respiratory impairment, substance use history, and medication interactions is relevant before pharmacotherapy.",
-        "The guideline includes separate screening and management pathways for obstructive sleep apnea."
+        "The guideline includes separate screening and management pathways for obstructive sleep apnea.",
+        "Conditions requiring adaptation or delay of CBT-I/BBT-I include medically unstable status, active alcohol or drug use disorder, excessive daytime sleepiness, nighttime fall risk or inability to transfer in/out of bed, active exposure-based PTSD treatment, uncontrolled seizure disorder, bipolar disorder, current acute mental health symptoms, and pregnancy/postpartum insomnia."
       ],
-      "limitations": "Professional clinical practice guideline intended to support clinician judgment, not replace it. The app must not diagnose, prescribe, or independently determine suitability for CBT-I, BBT-I, sleep restriction, or medication."
+      "limitations": "Professional clinical practice guideline for clinician decision-making, not a self-screening tool or app treatment protocol. The app must not diagnose or independently determine suitability for CBT-I, BBT-I, sleep restriction, or medication."
     },
     {
       "source_id": "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
