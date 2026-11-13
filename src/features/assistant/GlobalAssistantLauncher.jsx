@@ -225,7 +225,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       return;
     }
     const isDailySafetyQuestion = Boolean(selectedDailyQuestion
-      && ['anger_increased', 'anxiety_increased', 'fear_increased', 'hostility_increased', 'guilt_increased', 'procrastination_increased', 'talk_other', 'success', 'stop'].includes(selectedDailyQuestion.kind));
+      && ['anger_increased', 'anxiety_increased', 'fear_increased', 'hostility_increased', 'grief_increased', 'guilt_increased', 'dependency_increased', 'procrastination_increased', 'talk_other', 'success', 'stop'].includes(selectedDailyQuestion.kind));
     const turnId = ++turnSequenceRef.current;
     const responseId = `assistant-${turnId}`;
     const updateAssistantMessage = (text, knowledge = [], dailySafetyReminder = false) => {
