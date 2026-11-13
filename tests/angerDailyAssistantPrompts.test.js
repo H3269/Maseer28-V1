@@ -52,7 +52,7 @@ test('prompt groups are scoped to the selected day and contain all prepared ques
     assert.ok(allQuestions.every((question) => question.value === question.label
       && (!question.value.includes('خشم') || question.kind === 'anger_increased')));
     const angerSafetyQuestion = allQuestions.find((question) => question.kind === 'anger_increased');
-    assert.equal(angerSafetyQuestion?.value, 'اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟',
+    assert.equal(angerSafetyQuestion?.value, 'اگر هنگام شروع، انجام یا ادامه تمرین و اقدام، فشار یا دشواری بیشتری احساس کردم چه کنم؟',
       `day ${day} must expose the exact, topic-specific safety question`);
   }
   assert.deepEqual(getAngerDailyAssistantPromptGroups(29), []);
