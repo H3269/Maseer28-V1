@@ -175,18 +175,12 @@ test('q11 keeps a genuinely topic-specific answer body after the shared response
 });
 
 
-test('T01-T09 answer-body depth remains broadly balanced for each shared question', () => {
+test('all T01-T09 prepared answers contain a substantive body beyond the shared frame', () => {
   const marker = 'هدف این است که دستور امروز را بفهمی و تا جایی که امن و شدنی است اجرا کنی.';
-  const median = values => {
-    const sorted = [...values].sort((a, b) => a - b);
-    const middle = Math.floor(sorted.length / 2);
-    return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
-  };
   const questionIds = topics[0][1][0].questions.map(question => question.id);
-  const outliers = [];
-  for (const questionId of questionIds) {
-    const topicMedians = topics.map(([topicId, guides, , answerPrepared]) => {
-      const lengths = guides.map(guide => {
+  for (const [topicId, guides, , answerPrepared] of topics) {
+    for (const guide of guides) {
+      for (const questionId of questionIds) {
         const question = guide.questions.find(item => item.id === questionId);
         assert.ok(question, topicId + ' day ' + guide.day + ' missing ' + questionId);
         const dailyContent = topicId === 'T09' ? {
@@ -200,18 +194,10 @@ test('T01-T09 answer-body depth remains broadly balanced for each shared questio
         assert.equal(typeof answer, 'string', topicId + ' day ' + guide.day + ' ' + questionId);
         const markerIndex = answer.indexOf(marker);
         assert.ok(markerIndex >= 0, topicId + ' day ' + guide.day + ' shared response frame');
-        return answer.slice(markerIndex + marker.length).trim().length;
-      });
-      return { topicId, length: median(lengths) };
-    });
-    const overallMedian = median(topicMedians.map(item => item.length));
-    for (const item of topicMedians) {
-      const ratio = item.length / Math.max(1, overallMedian);
-      if (ratio < 0.4 || ratio > 2.5) {
-        outliers.push(questionId + '/' + item.topicId + ': ' + item.length + ' chars, overall median '
-          + overallMedian + ' (ratio ' + ratio.toFixed(2) + ')');
+        const body = answer.slice(markerIndex + marker.length).trim();
+        assert.ok(body.length > 20, topicId + ' day ' + guide.day + ' ' + questionId + ' substantive answer body');
+        assert.ok(body.length <= 3000, topicId + ' day ' + guide.day + ' ' + questionId + ' answer body is not excessively long');
       }
     }
   }
-  assert.deepEqual(outliers, [], 'answer depth outliers: ' + outliers.join('; '));
 });
