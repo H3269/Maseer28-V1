@@ -10,6 +10,9 @@ export function validateDailyEvidenceSourceIds(day, evidenceSourceIds) {
 
   const evidenceAssessed = day.evidence_grade !== 'not_assessed';
   const approved = day.review_status === 'approved';
+  if (approved && !evidenceAssessed) {
+    return { valid: false, reason: 'approved_content_cannot_be_not_assessed' };
+  }
   if ((approved || evidenceAssessed) && day.source_ids.length === 0) {
     return { valid: false, reason: 'source_ids_required_for_assessed_or_approved_content' };
   }
