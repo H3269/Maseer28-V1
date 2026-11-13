@@ -3029,8 +3029,13 @@ function answerFearDailyPreparedQuestionRaw({ day, message, dailyContent } = {})
         '\n\nمثال را عیناً تکرار نکن؛ فقط اگر با شرایط واقعی و امن تو سازگار است از آن برای فهم روش استفاده کن.\n\n' + safetyReminder;
 
     case 'light_version':
-      return responseHeading + '\n\n**نسخه سبک امروز**\n' + guide.lightVersion +
-        '\n\nاگر همین نسخه هم فشار یا احساس ناامنی ایجاد می‌کند، تمرین را متوقف کن. نسخه سبک یا مکث، شکست محسوب نمی‌شود.';
+      return responseHeading + '\n\n**اگر تمرین کامل امروز دشوار است، آن را کوچک‌تر کن؛ نه اینکه خودت را در معرض ترس قرار بدهی.**\n' +
+        'قرار نیست برای کامل‌کردن برنامه با موقعیت تهدیدآمیز روبه‌رو شوی یا خاطره‌ای را با جزئیات بازسازی کنی.\n\n' +
+        '**نسخه سبک تمرین:** ' + guide.lightVersion +
+        '\n\n**اگر امروز به استراحت نیاز داری:** ' + guide.restVersion +
+        '\n\n**معیار کافی‌بودن:** ' + guide.successCriterion +
+        '\n\n**شرط توقف:** ' + guide.stopCondition +
+        '\n\nاگر نسخه سبک هم فشار یا احساس ناامنی ایجاد می‌کند، تمرین را متوقف کن و به فعالیت خنثی یا محیط امن برگرد. مکث شکست نیست و لازم نیست روزهای قبلی را جبران کنی.';
 
     case 'success':
       return responseHeading + '\n\n**معیار موفقیت امروز**\n' + guide.successCriterion +
