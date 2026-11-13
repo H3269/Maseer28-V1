@@ -44,3 +44,9 @@
 - اصلاح‌های اخیر q09، مثال‌های q04 و شرط توقف روز ۱۸ در شاخه PR #129 انجام شده‌اند. CI #4787 (۲۱ آزمون واحد/content، build، Chromium regression و dependency audit) موفق است.
 - overlay فعال main در ۱۷ روز با canonical v2 اختلاف دارد؛ ۹ تمرین و ۱۷ اقدام. runtime و main هنوز تغییر نکرده‌اند.
 - این وضعیت جایگزین گزارش اولیه برای شمارش فیلدهاست؛ نتیجه آن همچنان «ساختاری کامل اما تأیید تخصصی/منبع‌دهی/ادغام باز» است.
+
+## نتیجه همگام‌سازی کامل metadata ایمنی در guide — 2026-11-13
+
+- پس از افزودن contraindications، whenToSeekHumanSupport، reflectionPrompt، exerciseType، subtopicIds و reviewRecordId به guide، تعداد فیلدهای هم‌ترازی‌شده canonical/guide به **۲۵ فیلد در ۲۸/۲۸ روز** رسید؛ صفر اختلاف.
+- q07 و q11 در هر ۲۸ روز اکنون همه stopConditions، contraindications و آستانه حمایت انسانی را بازتاب می‌دهند؛ هر دو ستون ۲۸ پاسخ یکتا دارند.
+- راهنمای دستیار هنوز draft است؛ این هم‌ترازی به معنی تأیید محتوایی/بالینی نیست. CI تازه برای نسخه جدید لازم است.
