@@ -1259,3 +1259,44 @@ body .bookReaderFull.theme-night .readerChapterLabel {
 .app button.globalAssistantLauncher svg {
   color: #40E0D0 !important;
 }
+
+
+/* App-wide SVG icon baseline: Lucent/lapis line icons with semantic
+   exceptions for success, warning, danger and primary actions. */
+.app svg {
+  color: #245A9A;
+}
+.app button.primary svg,
+.app .primary svg,
+.app .heroAction svg,
+.app button.globalAssistantLauncher svg {
+  color: #40E0D0 !important;
+}
+.app .header svg,
+.app .globalAssistantDialogTop svg {
+  color: #40E0D0;
+}
+.app button.danger svg,
+.app .danger svg,
+.app .alert svg {
+  color: #A12A22 !important;
+}
+.app button.success svg,
+.app .success svg {
+  color: #277A55 !important;
+}
+.app .safetyNote svg,
+.app .dailyAssistantSafetyReminder svg {
+  color: #9A6B18 !important;
+}
+body .bookReaderFull svg {
+  color: #245A9A;
+}
+body .bookReaderFull.theme-night svg {
+  color: #8DDDD7;
+}
+body .bookReaderFull .readerIcon svg,
+body .bookReaderFull .readerTools button svg,
+body .bookReaderFull .readerPageArrow svg {
+  color: inherit;
+}
