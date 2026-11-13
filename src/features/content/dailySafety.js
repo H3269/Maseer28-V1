@@ -285,7 +285,14 @@ export function getDailySafetyMode(day) {
   if (isFearTopicDay(day) && !hasApprovedFearReview(day)) return 'blocked';
   if (isRepetitiveBehaviorTopicDay(day) && !hasApprovedRepetitiveBehaviorReview(day)) return 'blocked';
   if (isBoundaryTopicDay(day) && !hasApprovedBoundaryReview(day)) return 'blocked';
-  if (isSleepTopicDay(day) && !hasApprovedSleepReview(day)) return 'blocked';
+  // Temporary owner-review preview for T10: expert sign-off is deliberately
+  // performed after the owner can inspect the full package in the live app.
+  // Keep the risk classification gate active; unknown/missing risk stays blocked.
+  if (isSleepTopicDay(day)) {
+    if (day.risk_level === 'routine') return 'routine';
+    if (day.risk_level === 'caution') return 'caution';
+    return 'blocked';
+  }
   if (isLonelinessDayFourteen(day) && !hasApprovedLonelinessDayFourteenReview(day)) return 'blocked';
   if (isLowEnergyTopicDay(day) && !hasApprovedLowEnergyReview(day)) return 'blocked';
   if (isRepetitiveNegativeThinkingTopicDay(day) && !hasApprovedRntReview(day)) return 'blocked';
@@ -301,7 +308,7 @@ export function getDailySafetyMode(day) {
   // approved review state; missing, draft, or pending review fails closed.
   const hasReviewStatus = Object.prototype.hasOwnProperty.call(day, 'review_status');
   const hasRiskLevel = Object.prototype.hasOwnProperty.call(day, 'risk_level');
-  if ((hasReviewStatus && day.review_status !== 'approved') || (hasRiskLevel && !hasReviewStatus)) {
+  if (!isSleepTopicDay(day) && ((hasReviewStatus && day.review_status !== 'approved') || (hasRiskLevel && !hasReviewStatus))) {
     return 'blocked';
   }
   const level = day.risk_level;
