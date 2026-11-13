@@ -299,7 +299,7 @@ test('T07 canonical path-content satisfies the v2 draft contract without claimin
     assert.equal(overlayDay.lightActionText, guide.lightActionVersion);
     assert.equal(day.progressActionText, guide.progressActionVersion);
     assert.equal(day.restExerciseText, guide.restVersion);
-    assert.equal(day.restActionText, guide.restActionVersion);
+    assert.equal(overlayDay.restActionText, guide.restActionVersion);
     assert.deepEqual(day.subtopic_ids, [guide.subtopic]);
     assert.equal(day.learning_objective, guide.objective);
     assert.equal(day.target_skill, guide.skill);
@@ -367,5 +367,6 @@ test('T07 prepared answers require exact canonical topic/day identity and preser
 test('T07 day 12 light action is distinct from T08 support-source mapping', () => {
   const t07 = GUILT_DAILY_ASSISTANT_GUIDES.find(guide => guide.day === 12);
   assert.match(t07.lightActionVersion, /احساس قضاوت‌شدن/);
+  assert.match(t07.restActionVersion, /مرز محرمانگی/);
   assert.notEqual(t07.lightActionVersion, 'فقط یک منبع بالقوه حمایت را روی کاغذ نام ببر؛ نام یا جزئیات حساس ثبت نکن.');
 });
