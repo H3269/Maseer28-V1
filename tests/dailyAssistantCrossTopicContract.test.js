@@ -106,6 +106,9 @@ test('all T01-T09 prepared answers share the same structural heading and day obj
         assert.ok(answer.includes('**بیاییم قدم‌به‌قدم پیش برویم.**'), topicId + ' day ' + guide.day + ' common frame');
         assert.ok(answer.includes('**هدف امروز:** ' + guide.objective), topicId + ' day ' + guide.day + ' objective frame');
         assert.ok(answer.includes('مهارت «' + guide.skill + '»'), topicId + ' day ' + guide.day + ' skill frame');
+        assert.ok(answer.includes(guide.title), topicId + ' day ' + guide.day + ' title context');
+        if (question.kind === 'exercise_meaning') assert.ok(answer.includes(guide.exercise), topicId + ' day ' + guide.day + ' exercise context');
+        if (question.kind === 'action_meaning') assert.ok(answer.includes(guide.action), topicId + ' day ' + guide.day + ' action context');
       }
     }
   }
