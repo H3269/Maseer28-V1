@@ -15,9 +15,8 @@ export function addTeacherStyleFrame(answer, { guide, topic, question } = {}) {
   if (!answer || !guide || !topic || !question) return null;
   const cleanAnswer = cleanPreparedAssistantTopicText(answer, topic);
   const splitAt = cleanAnswer.indexOf('\n');
-  if (splitAt < 0) return cleanAnswer;
-  const heading = cleanAnswer.slice(0, splitAt);
-  const body = cleanAnswer.slice(splitAt + 1).replace(/^\n+/, '');
+  const heading = splitAt < 0 ? cleanAnswer : cleanAnswer.slice(0, splitAt);
+  const body = splitAt < 0 ? '' : cleanAnswer.slice(splitAt + 1).replace(/^\n+/, '');
   const objective = guide.objective || guide.title;
   const skill = guide.skill || guide.mechanism || objective;
   const intro = '**بیاییم قدم‌به‌قدم پیش برویم.**\n**هدف امروز:** ' + objective + '\nقرار نیست همه مسئله را یک‌باره حل کنی. امروز فقط روی مهارت «' + skill + '» کار می‌کنیم. هدف این است که دستور امروز را بفهمی و تا جایی که امن و شدنی است اجرا کنی.';
