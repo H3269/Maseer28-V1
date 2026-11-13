@@ -208,3 +208,12 @@ test('day 26 no longer contains stale value-based contraindication language', ()
   assert.match(record.contraindications.join(' '), /وابستگی یا زمان تحویل/u);
   assert.doesNotMatch(record.contraindications.join(' '), /ارزش‌محوری/u);
 });
+
+test('q09 explains the day-specific distinction without the repeated generic transition', () => {
+  for (const record of guide.records) {
+    const response = answer(record, 'q09');
+    assert.ok(response.includes(record.exercise), `day ${record.day}: q09 exercise`);
+    assert.ok(response.includes(record.action), `day ${record.day}: q09 action`);
+    assert.doesNotMatch(response, /اقدام، خروجی عملی کوچک‌تر و مشخص این روز است/u, `day ${record.day}: generic q09 transition`);
+  }
+});
