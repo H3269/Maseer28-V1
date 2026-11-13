@@ -936,3 +936,56 @@ html body .app .bottomNav button.active b { color: #155B69 !important; }
   box-shadow: 0 7px 20px rgba(16,42,67,.20) !important;
 }
 .app button.globalAssistantLauncher svg { color: #40E0D0 !important; }
+
+
+/* Reader is rendered as a standalone full-screen React return, outside
+   .app. These global selectors are therefore required for reader chrome. */
+body .bookReaderFull { background: #F5F8FC !important; color: #102A43 !important; }
+body .bookReaderFull .readerTopbar,
+body .bookReaderFull .readerTools,
+body .bookReaderFull .readerBottombar {
+  background: rgba(255,255,255,.97) !important;
+  border-color: #DCE4EC !important;
+  color: #173E62 !important;
+}
+body .bookReaderFull .readerIcon,
+body .bookReaderFull .readerTools button,
+body .bookReaderFull .readerNav,
+body .bookReaderFull .readerCenter,
+body .bookReaderFull .readerBottomIcon,
+body .bookReaderFull .readerPageArrow,
+body .bookReaderFull .readerPageCounter,
+body .bookReaderFull .readerChapterLabel {
+  background: linear-gradient(135deg,#EDF4FB,#E4F8F6) !important;
+  color: #245A9A !important;
+  border: 1px solid #D1E2EF !important;
+  box-shadow: none !important;
+}
+body .bookReaderFull .readerTarget {
+  background: #EAF5FB !important;
+  border-color: #C9DFEE !important;
+  color: #173E62 !important;
+}
+body .bookReaderFull .readerProgressTrack { background: #E6EEF5 !important; }
+body .bookReaderFull .readerProgressTrack span { background: linear-gradient(90deg,#40E0D0,#4096C8) !important; }
+body .bookReaderFull .readerPageRange::-webkit-slider-runnable-track { background: #DCE4EC !important; }
+body .bookReaderFull .readerPageRange::-webkit-slider-thumb,
+body .bookReaderFull .readerPageRange::-moz-range-thumb { background: #40E0D0 !important; border: 2px solid #245A9A !important; }
+body .bookReaderFull .bookTocPanel { border-color: #DCE4EC !important; }
+body .bookReaderFull .bookTocEntry { background: #F5F9FD !important; border-color: #DCE8F0 !important; color: #173E62 !important; }
+body .bookReaderFull .bookTocEntry.open,
+body .bookReaderFull .bookTocEntry:hover { background: #EAF5FB !important; border-color: #BFD8E9 !important; }
+body .bookReaderFull.theme-night { background: #101E2D !important; color: #E6EEF6 !important; }
+body .bookReaderFull.theme-night .readerTopbar,
+body .bookReaderFull.theme-night .readerTools,
+body .bookReaderFull.theme-night .readerBottombar { background: #182B40 !important; border-color: #344B62 !important; color: #E6EEF6 !important; }
+body .bookReaderFull.theme-night .readerIcon,
+body .bookReaderFull.theme-night .readerNav,
+body .bookReaderFull.theme-night .readerCenter,
+body .bookReaderFull.theme-night .readerTools button,
+body .bookReaderFull.theme-night .readerBottomIcon,
+body .bookReaderFull.theme-night .readerPageArrow,
+body .bookReaderFull.theme-night .readerPageCounter,
+body .bookReaderFull.theme-night .readerChapterLabel {
+  background: #263F58 !important; border-color: #3E5D79 !important; color: #E6EEF6 !important;
+}
