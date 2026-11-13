@@ -266,3 +266,16 @@ test('assistant safety metadata mirrors canonical contraindications and support 
     }
   }
 });
+
+test('T09 keeps every subtopic mapping provisional and every safety field populated', () => {
+  for (let index = 0; index < 28; index += 1) {
+    const record = guide.records[index];
+    assert.ok(Array.isArray(record.subtopicIds) && record.subtopicIds.length > 0, `day ${index + 1}: subtopic ids`);
+    assert.equal(record.subtopicMappingStatus, 'proposed_not_approved', `day ${index + 1}: mapping remains provisional`);
+    assert.ok(Array.isArray(record.contraindications) && record.contraindications.length > 0, `day ${index + 1}: contraindications`);
+    assert.ok(record.whenToSeekHumanSupport.trim(), `day ${index + 1}: human support threshold`);
+    assert.equal(record.reviewStatus, 'draft', `day ${index + 1}: review status`);
+    assert.equal(record.evidenceGrade, 'not_assessed', `day ${index + 1}: evidence grade`);
+    assert.deepEqual(record.sourceIds, [], `day ${index + 1}: no unsupported source assignment`);
+  }
+});
