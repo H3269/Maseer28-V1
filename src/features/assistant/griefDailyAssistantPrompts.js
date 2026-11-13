@@ -86,25 +86,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -195,25 +195,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -304,25 +304,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -413,25 +413,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -522,25 +522,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -631,25 +631,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -740,25 +740,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -849,25 +849,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -958,25 +958,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -1067,25 +1067,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -1176,25 +1176,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -1285,25 +1285,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -1394,25 +1394,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -1503,25 +1503,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -1612,25 +1612,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -1721,25 +1721,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -1830,25 +1830,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -1939,25 +1939,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -2048,25 +2048,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -2157,25 +2157,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -2266,25 +2266,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -2375,25 +2375,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -2484,25 +2484,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -2593,25 +2593,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -2702,25 +2702,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -2811,25 +2811,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -2920,25 +2920,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
@@ -3029,25 +3029,25 @@ export const GRIEF_DAILY_ASSISTANT_GUIDES = [
         "kind": "not_done"
       },
       {
-        "id": "grief_increased",
+        "id": "q11",
         "label": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "value": "اگر غم یا آشفتگی‌ام بیشتر شد چه کنم؟",
         "kind": "grief_increased"
       },
       {
-        "id": "talk_other",
+        "id": "q12",
         "label": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "value": "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
         "kind": "talk_other"
       },
       {
-        "id": "can_change",
+        "id": "q13",
         "label": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "value": "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
         "kind": "can_change"
       },
       {
-        "id": "duration",
+        "id": "q14",
         "label": "این تمرین چقدر زمان می‌برد؟",
         "value": "این تمرین چقدر زمان می‌برد؟",
         "kind": "duration"
