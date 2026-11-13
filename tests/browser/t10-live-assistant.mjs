@@ -123,7 +123,10 @@ async function verifyDay(browser, dayNumber) {
     const promptOption = page.locator('[data-prompt-option]').filter({ hasText: 'منظور از تمرین امروز چیست؟' }).first();
     await promptOption.click();
     const composer = page.locator('.assistantComposer');
-    await composer.locator('textarea').waitFor({ state: 'visible' });
+    // Topic-specific assistant uses a guided prompt button, not a free-text textarea.
+    const selectedPrompt = composer.getByTestId('t10-daily-prompt-trigger');
+    await selectedPrompt.waitFor({ state: 'visible' });
+    await selectedPrompt.getByText('منظور از تمرین امروز چیست؟').waitFor({ state: 'visible' });
     await composer.locator('button[aria-label="ارسال"]').click();
     await page.getByText(/راهنمای روز 1 بی‌خوابی و مشکلات خواب/).waitFor({ state: 'visible', timeout: 10000 });
   }
