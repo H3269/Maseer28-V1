@@ -105,6 +105,22 @@ test('T09 keeps all durations provisional and all content withheld from producti
   assert.ok(canonical.records.every((record) => record.source_ids.length === 0));
 });
 
+test('days 6, 7, 11, 15, 16 and 25 keep stop and rest guidance aligned with their daily task', () => {
+  const byDay = (day) => guide.records.find((record) => record.day === day);
+  assert.doesNotMatch(byDay(6).stopCondition, /نشانه شروع/u);
+  assert.match(byDay(6).restVersion, /تحلیل نیاز را متوقف کن/u);
+  assert.doesNotMatch(byDay(7).stopCondition, /مرور هفتگی/u);
+  assert.match(byDay(7).stopCondition, /هدف/u);
+  assert.doesNotMatch(byDay(7).restVersion, /مرور هفتگی/u);
+  assert.doesNotMatch(byDay(11).restVersion, /فهرست اولویت را کوچک نکن/u);
+  assert.doesNotMatch(byDay(15).stopCondition, /پاداش/u);
+  assert.match(byDay(15).stopCondition, /قول قطعی/u);
+  assert.doesNotMatch(byDay(16).stopCondition, /بیماری، فرسودگی/u);
+  assert.match(byDay(16).stopCondition, /تغییر محیط/u);
+  assert.doesNotMatch(byDay(25).stopCondition, /ارزش انتخابی/u);
+  assert.match(byDay(25).stopCondition, /موعد واقعی/u);
+});
+
 test('day 14 does not turn healthy rest into avoidance or prescribe accountability partners', () => {
   const record = guide.records.find((item) => item.day === 14);
   assert.ok(record.exercise.includes('استراحت برنامه‌ریزی‌شده'));
