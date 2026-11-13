@@ -1045,3 +1045,217 @@ body .bookReaderFull.theme-night .readerChapterLabel {
   border-color: #344B62 !important;
   color: #E6EEF6 !important;
 }
+
+
+/* ============================================================
+   HOME DASHBOARD + APP-WIDE ICONS + PRIMARY ACTION STANDARD
+   Primary actions deliberately match the home assistant launcher:
+   deep lapis gradient, white label, turquoise icon/highlight.
+   ============================================================ */
+
+/* The main action color is the same deep-blue treatment as the
+   assistant launcher on the home screen (not the soft secondary tint). */
+.app button.primary,
+.app .primary,
+.app .heroAction,
+.app a.primary,
+.app [role="button"].primary {
+  background: linear-gradient(115deg,#102A43 0%,#245A9A 66%,#4096C8 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(64,224,208,.48) !important;
+  box-shadow: 0 4px 0 rgba(16,42,67,.16),0 8px 20px rgba(16,42,67,.18) !important;
+}
+.app button.primary:hover,
+.app .primary:hover,
+.app .heroAction:hover,
+.app a.primary:hover,
+.app [role="button"].primary:hover {
+  background: linear-gradient(115deg,#173B5C 0%,#2B68A8 66%,#4AA4D2 100%) !important;
+  box-shadow: 0 5px 0 rgba(16,42,67,.16),0 11px 24px rgba(16,42,67,.20) !important;
+}
+.app button.primary svg,
+.app .primary svg,
+.app .heroAction svg {
+  color: #40E0D0 !important;
+}
+.app button.primary:focus-visible,
+.app .primary:focus-visible,
+.app .heroAction:focus-visible {
+  outline: 3px solid #40E0D0 !important;
+  outline-offset: 3px !important;
+}
+
+/* Dashboard identity cards: client code, profile, selected issue,
+   and duration get distinct but related soft surfaces. */
+.app #dashboard #profileSummary .profile {
+  gap: 10px !important;
+}
+.app #dashboard #profileSummary .profileBox {
+  position: relative;
+  min-height: 76px;
+  padding: 13px 15px !important;
+  background: linear-gradient(145deg,#FFFFFF 0%,#F1F8FC 100%) !important;
+  border: 1px solid #D6E5EF !important;
+  border-inline-start: 3px solid #4096C8 !important;
+  border-radius: 15px !important;
+  box-shadow: 0 5px 16px rgba(16,42,67,.055) !important;
+}
+.app #dashboard #profileSummary .profileBox:nth-child(1) {
+  background: linear-gradient(145deg,#FFFFFF 0%,#EFFAF9 100%) !important;
+  border-inline-start-color: #40CFC5 !important;
+}
+.app #dashboard #profileSummary .profileBox:nth-child(2) {
+  background: linear-gradient(145deg,#FFFFFF 0%,#EEF5FC 100%) !important;
+  border-inline-start-color: #245A9A !important;
+}
+.app #dashboard #profileSummary .profileBox:nth-child(3) {
+  background: linear-gradient(145deg,#FFFFFF 0%,#F1F7FB 100%) !important;
+  border-inline-start-color: #4096C8 !important;
+}
+.app #dashboard #profileSummary .profileBox:nth-child(4) {
+  background: linear-gradient(145deg,#FFFFFF 0%,#F5F8FC 100%) !important;
+  border-inline-start-color: #7896BD !important;
+}
+.app #dashboard #profileSummary .profileBox > span {
+  display: block;
+  margin-bottom: 6px;
+  color: #5B7187 !important;
+  font-size: 12px;
+  font-weight: 600;
+}
+.app #dashboard #profileSummary .profileBox > b {
+  display: block;
+  color: #102A43 !important;
+  font-size: 14px;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+.app #dashboard .metric {
+  gap: 10px !important;
+}
+.app #dashboard .metricBox {
+  background: linear-gradient(145deg,#FFFFFF 0%,#EAF5FB 100%) !important;
+  border: 1px solid #D2E3EF !important;
+  border-top: 3px solid #40CFC5 !important;
+  border-radius: 15px !important;
+  box-shadow: 0 5px 16px rgba(16,42,67,.055) !important;
+}
+.app #dashboard .metricBox:nth-child(2) {
+  background: linear-gradient(145deg,#FFFFFF 0%,#F0F8FC 100%) !important;
+  border-top-color: #4096C8 !important;
+}
+.app #dashboard .metricBox strong {
+  color: #173E62 !important;
+  font-weight: 800;
+}
+.app #dashboard .metricBox span {
+  color: #5B7187 !important;
+}
+
+/* Dashboard shortcuts: book library, archive, support and center channel. */
+.app #dashboard .quickGrid {
+  gap: 11px !important;
+}
+.app #dashboard .quickAction {
+  min-height: 112px;
+  padding: 14px 10px !important;
+  background: linear-gradient(150deg,#FFFFFF 0%,#F3F8FC 100%) !important;
+  color: #173E62 !important;
+  border: 1px solid #D7E5EF !important;
+  border-radius: 16px !important;
+  box-shadow: 0 5px 17px rgba(16,42,67,.055) !important;
+}
+.app #dashboard .quickAction:nth-child(1) { border-top: 3px solid #40CFC5 !important; }
+.app #dashboard .quickAction:nth-child(2) { border-top: 3px solid #245A9A !important; }
+.app #dashboard .quickAction:nth-child(3) { border-top: 3px solid #4096C8 !important; }
+.app #dashboard .quickAction:nth-child(4) { border-top: 3px solid #7896BD !important; }
+.app #dashboard .quickAction > span {
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg,#E4F8F6 0%,#EAF1FA 100%) !important;
+  color: #245A9A !important;
+  border: 1px solid #CDE8E8 !important;
+  border-radius: 14px !important;
+}
+.app #dashboard .quickAction > span svg {
+  color: #245A9A !important;
+  stroke-width: 1.9;
+}
+.app #dashboard .quickAction b {
+  color: #173E62 !important;
+}
+.app #dashboard .quickAction small {
+  color: #6A7F92 !important;
+}
+.app #dashboard .quickAction:hover {
+  background: linear-gradient(150deg,#FFFFFF 0%,#EAF8F8 100%) !important;
+  border-color: #A9DAD9 !important;
+  box-shadow: 0 9px 22px rgba(36,90,154,.11) !important;
+  transform: translateY(-1px);
+}
+
+/* Edit-profile pencil and other compact icon controls. */
+.app #dashboard .dashboardHero .iconButton,
+.app .iconButton {
+  background: linear-gradient(145deg,#E4F8F6 0%,#EAF1FA 100%) !important;
+  color: #245A9A !important;
+  border: 1px solid #BFDDE5 !important;
+  box-shadow: 0 3px 10px rgba(36,90,154,.08) !important;
+}
+.app #dashboard .dashboardHero .iconButton svg,
+.app .iconButton svg {
+  color: #245A9A !important;
+  stroke-width: 2;
+}
+.app .iconButton:hover {
+  background: linear-gradient(145deg,#D9F5F1 0%,#E1ECF8 100%) !important;
+  border-color: #8BCBCB !important;
+}
+
+/* Consistent icon color hierarchy throughout every screen. */
+.app .bottomNav .navIcon svg,
+.app .quickAction svg,
+.app .libraryMark svg,
+.app .readerIcon svg,
+.app .readerTools svg,
+.app .sectionHint > span svg,
+.app .stepNumber svg,
+.app .dashboardHero svg:not(.iconButton svg) {
+  color: #245A9A;
+}
+.app .bottomNav button.active .navIcon svg {
+  color: #173E62 !important;
+}
+.app button.secondary svg,
+.app .secondary svg,
+.app .ghostButton svg,
+.app .bookTocToggle svg,
+.app .bookTocClose svg {
+  color: #245A9A !important;
+}
+.app .badge svg,
+.app .tag svg,
+.app .chip svg {
+  color: #155B69 !important;
+}
+.app .support h3 svg,
+.app .contactActions svg {
+  color: #245A9A;
+}
+.app .contactActions > button.sms svg,
+.app .contactActions > button.telegram svg {
+  color: currentColor !important;
+}
+
+/* The home assistant launcher retains its original exact brand treatment. */
+.app button.globalAssistantLauncher {
+  background: linear-gradient(115deg,#102A43 0%,#245A9A 66%,#4096C8 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(64,224,208,.55) !important;
+}
+.app button.globalAssistantLauncher svg {
+  color: #40E0D0 !important;
+}
