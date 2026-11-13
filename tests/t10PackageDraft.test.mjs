@@ -20,6 +20,11 @@ test('T10 canonical draft covers 28 unique daily units with the v2 contract', ()
   const sourceIds = new Set(sourceRegistry.sources.map((source) => source.source_id));
   assert.equal(evidenceMap.mappings.length, 28);
   assert.ok(evidenceMap.mappings.every((item) => item.claim_mappings.every((claim) => sourceIds.has(claim.source_id))));
+  for (const item of evidenceMap.mappings) {
+    assert.deepEqual([...new Set(item.claim_mappings.map((claim) => claim.source_id))].sort(), [...item.source_ids].sort(),
+      `day ${item.day}: every linked source must have a bounded claim mapping`);
+  }
+  assert.ok(sourceRegistry.sources.every((source) => source.title?.trim() && source.url?.startsWith('https://')));
   for (const record of canonical.records) {
     assert.ok(record.source_ids.every((id) => sourceIds.has(id)), `day ${record.day}: source ID must exist`);
     assert.deepEqual(record.source_ids, evidenceMap.mappings[record.day - 1].source_ids);
