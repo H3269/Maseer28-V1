@@ -77,7 +77,7 @@ test('T09 rejects wrong topic, wrong day, and free-form questions', () => {
     dailyContext: {
       ...contextFor(guide),
       day: 2,
-      data: { ...contextFor(guide).data, id: getCanonicalDailyRecordId('اهمال‌کاری', 2), day: 2 },
+      data: { ...contextFor(guide).data, id: getCanonicalDailyRecordId('اهمال‌کاری', 1), day: 1 },
     },
   });
   assert.equal(wrongDay.status, 'daily_guidance_unavailable');
