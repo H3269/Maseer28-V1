@@ -88,13 +88,13 @@ test('all T01-T09 prepared answers share the same structural heading and day obj
   for (const [topicId, guides, , answerPrepared] of topics) {
     assert.equal(typeof answerPrepared, 'function', topicId + ' answer handler');
     for (const guide of guides) {
-      const dailyContent = {
-        id: topicId === 'T09' ? 'اهمال‌کاری-' + String(guide.day).padStart(2, '0') : topicId + '-D' + String(guide.day).padStart(2, '0'),
-        topic_id: topicId,
+      const dailyContent = topicId === 'T09' ? {
+        id: 'اهمال‌کاری-' + String(guide.day).padStart(2, '0'),
+        topic_id: 'T09',
         day: guide.day,
         exercise: guide.exercise,
         actionText: guide.action,
-      };
+      } : undefined;
       for (const question of guide.questions) {
         const answer = answerPrepared({
           day: guide.day,
