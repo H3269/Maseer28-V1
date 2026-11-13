@@ -135,7 +135,11 @@
       ],
       "sourceIds": [
         "SRC-SLEEP-NHLBI-INSOMNIA-OVERVIEW-001",
-        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001"
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -275,7 +279,12 @@
         }
       ],
       "sourceIds": [
-        "SRC-SLEEP-NHLBI-INSOMNIA-OVERVIEW-001"
+        "SRC-SLEEP-NHLBI-INSOMNIA-OVERVIEW-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -415,7 +424,12 @@
         }
       ],
       "sourceIds": [
-        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -555,7 +569,10 @@
       ],
       "sourceIds": [
         "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
-        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001"
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -695,7 +712,12 @@
       ],
       "sourceIds": [
         "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
-        "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001"
+        "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -834,7 +856,12 @@
         }
       ],
       "sourceIds": [
-        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -972,7 +999,13 @@
           "answer": "برای روز 7 حدود 5 دقیقه برای انتخاب یک رفتار واقع‌بینانه و محدود در نظر بگیر. اگر هدف به اجبار برای خوابیدن تبدیل شد، تمرین را کنار بگذار. این زمان تخمینی و غیرالزامی است."
         }
       ],
-      "sourceIds": [],
+      "sourceIds": [
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
+      ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
       "stopConditions": [
@@ -1110,7 +1143,12 @@
         }
       ],
       "sourceIds": [
-        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -1249,7 +1287,12 @@
         }
       ],
       "sourceIds": [
-        "SRC-SLEEP-NIOSH-LIGHT-CIRCADIAN-001"
+        "SRC-SLEEP-NIOSH-LIGHT-CIRCADIAN-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -1388,7 +1431,12 @@
         }
       ],
       "sourceIds": [
-        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -1527,7 +1575,11 @@
         }
       ],
       "sourceIds": [
-        "SRC-SLEEP-AASM-CBTI-2021-001"
+        "SRC-SLEEP-AASM-CBTI-2021-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -1666,7 +1718,12 @@
         }
       ],
       "sourceIds": [
-        "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001"
+        "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -1806,7 +1863,11 @@
       ],
       "sourceIds": [
         "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
-        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -1945,7 +2006,11 @@
         }
       ],
       "sourceIds": [
-        "SRC-SLEEP-AASM-CBTI-2021-001"
+        "SRC-SLEEP-AASM-CBTI-2021-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -2085,7 +2150,10 @@
       ],
       "sourceIds": [
         "SRC-SLEEP-AASM-CBTI-2021-001",
-        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -2224,7 +2292,12 @@
         }
       ],
       "sourceIds": [
-        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -2364,7 +2437,10 @@
       ],
       "sourceIds": [
         "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
-        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001"
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -2503,7 +2579,11 @@
         }
       ],
       "sourceIds": [
-        "SRC-SLEEP-AASM-CBTI-2021-001"
+        "SRC-SLEEP-AASM-CBTI-2021-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -2641,7 +2721,13 @@
           "answer": "برای روز 19 حدود 5 دقیقه برای انتخاب و ارزیابی یک تغییر در نظر بگیر. در صورت بدترشدن وضعیت، تغییر را متوقف کن. این زمان تخمینی و غیرالزامی است."
         }
       ],
-      "sourceIds": [],
+      "sourceIds": [
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
+      ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
       "stopConditions": [
@@ -2779,7 +2865,12 @@
         }
       ],
       "sourceIds": [
-        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001"
+        "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -2919,7 +3010,11 @@
       ],
       "sourceIds": [
         "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
-        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -3057,7 +3152,13 @@
           "answer": "برای روز 22 حدود 6 دقیقه برای آماده‌کردن گزینه‌های شب دشوار و نشانه مراجعه در نظر بگیر. این یادداشت جای ارزیابی پزشکی را نمی‌گیرد. این زمان تخمینی و غیرالزامی است."
         }
       ],
-      "sourceIds": [],
+      "sourceIds": [
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
+      ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
       "stopConditions": [
@@ -3195,7 +3296,12 @@
         }
       ],
       "sourceIds": [
-        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -3334,7 +3440,12 @@
         }
       ],
       "sourceIds": [
-        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001"
+        "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -3476,7 +3587,9 @@
         "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
         "SRC-SLEEP-NHLBI-OSA-DIAGNOSIS-001",
         "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
-        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001"
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -3616,7 +3729,10 @@
       ],
       "sourceIds": [
         "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
-        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001"
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -3756,7 +3872,11 @@
       ],
       "sourceIds": [
         "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
-        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+        "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
@@ -3896,7 +4016,10 @@
       ],
       "sourceIds": [
         "SRC-SLEEP-AASM-CBTI-2021-001",
-        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
+        "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+        "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+        "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+        "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "draft",
