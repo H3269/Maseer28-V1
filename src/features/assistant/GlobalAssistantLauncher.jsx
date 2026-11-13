@@ -35,6 +35,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const [localModelStatusChecked, setLocalModelStatusChecked] = useState(false);
   const turnSequenceRef = useRef(0);
   const [loadedLibraryBooks, setLoadedLibraryBooks] = useState([]);
+  const [libraryComparisonReply, setLibraryComparisonReply] = useState('');
   const conversationStateRef = useRef(null);
   const launcherRef = useRef(null);
   const closeButtonRef = useRef(null);
@@ -102,7 +103,21 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
             const version = await libraryRepository.getVersion(book.activeVersionId);
             return version?.content ? { title: book.title, legacyId: book.legacyId, content: version.content } : null;
           }));
-          if (active) setLoadedLibraryBooks(hydrated.filter(Boolean));
+          if (active) {
+            const availableBooks = hydrated.filter(Boolean);
+            setLoadedLibraryBooks(availableBooks);
+            setLibraryComparisonReply('');
+            // Prepare the common five-book comparison before the user submits it.
+            // Deferring one task lets the library screen paint first.
+            window.setTimeout(() => {
+              if (!active) return;
+              const comparison = answerLibraryBookTurn({
+                books: availableBooks,
+                message: 'تفاوت موضوعی این پنج کتاب چیست؟',
+              });
+              if (active) setLibraryComparisonReply(comparison?.message || '');
+            }, 0);
+          }
         } catch {
           if (active) setLoadedLibraryBooks([]);
         }
@@ -296,7 +311,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       } else if (screen === 'books' && !loadedLibraryBooks.length) {
         turn = { message: 'متن کتاب‌ها هنوز بارگذاری نشده است. چند لحظه صبر کن و دوباره پرسشت را بفرست.', knowledge: [], conversationState: null };
       } else if (screen === 'books') {
-        const libraryTurn = answerLibraryBookTurn({ books: loadedLibraryBooks, message, conversationState: conversationStateRef.current });
+        const isFiveBookComparison = /تفاوت موضوعی این پنج کتاب چیست/u.test(message);
+        const libraryTurn = isFiveBookComparison && libraryComparisonReply
+          ? { message: libraryComparisonReply, conversationState: null }
+          : answerLibraryBookTurn({ books: loadedLibraryBooks, message, conversationState: conversationStateRef.current });
         if (libraryTurn) {
           turn = { ...libraryTurn, knowledge: [] };
           isLibraryTurn = true;
