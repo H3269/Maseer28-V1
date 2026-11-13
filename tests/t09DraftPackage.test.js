@@ -121,6 +121,22 @@ test('days 6, 7, 11, 15, 16 and 25 keep stop and rest guidance aligned with thei
   assert.match(byDay(25).stopCondition, /موعد واقعی/u);
 });
 
+test('T09 actions remain specific at the six cross-topic near-overlap points', () => {
+  const expected = new Map([
+    [7, /حرکت آغازِ قابل مشاهده/u],
+    [10, /نخستین بخش کار را آغاز کن/u],
+    [12, /پرسش روشن درباره خروجی، دسترسی یا تقسیم مسئولیت/u],
+    [21, /مانع ساختاری/u],
+    [22, /بخش ضروریِ متناسب با ظرفیت امروز/u],
+    [23, /رویداد طبیعی/u],
+  ]);
+  for (const [day, pattern] of expected) {
+    const record = guide.records.find((item) => item.day === day);
+    assert.match(record.action, pattern, `day ${day}: action specificity`);
+    assert.ok(answer(record, 'q03').includes(record.action), `day ${day}: q03 action`);
+  }
+});
+
 test('T09 day 1 action is task-and-delay specific rather than a generic observation prompt', () => {
   const record = guide.records.find((item) => item.day === 1);
   assert.match(record.action, /زمان قصد شروع و پیامد واقعی تأخیر/u);
