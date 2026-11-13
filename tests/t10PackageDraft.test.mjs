@@ -153,7 +153,8 @@ test('T10 retains sleep-specific safety boundaries and avoids unsafe self-treatm
   assert.match(joined, /دارو/);
   assert.match(joined, /محرومیت از خواب|خواب را محدود/);
   assert.doesNotMatch(joined, /دوز دارو را افزایش بده|الکل مصرف کن تا بخوابی|عمداً تمام شب بیدار بمان/);
-  for (const day of [4, 17, 25, 26]) {
+  assert.ok(guide.records.every((record) => record.questions.find((question) => question.id === 'q07').answer.split(/\\s+/u).length <= 120));
+  for (const day of [1, 4, 5, 9, 12, 13, 15, 17, 21, 22, 24, 25, 26]) {
     assert.equal(canonical.records[day - 1].risk_level, 'caution',
       `day ${day} contains an explicit sleepiness or warning-sign safety gate`);
   }
