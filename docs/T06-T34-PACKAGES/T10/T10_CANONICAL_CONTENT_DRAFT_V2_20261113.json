@@ -1117,7 +1117,8 @@
         "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
         "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
         "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
-        "SRC-SLEEP-AASM-CBTI-2021-001"
+        "SRC-SLEEP-AASM-CBTI-2021-001",
+        "SRC-SLEEP-NIMH-BIPOLAR-SIGNS-001"
       ],
       "evidence_grade": "not_assessed",
       "review_status": "draft",
