@@ -1300,3 +1300,387 @@ body .bookReaderFull .readerTools button svg,
 body .bookReaderFull .readerPageArrow svg {
   color: inherit;
 }
+
+
+/* ============================================================
+   FINAL POLISH — library, secondary actions, daily summary,
+   dashboard shortcuts, active navigation, assistant and reader.
+   ============================================================ */
+
+/* 1) Library emblem uses the same lapis icon tone as the app. */
+.app #books .libraryMark {
+  background: linear-gradient(145deg,#E4F8F6 0%,#EAF1FA 100%) !important;
+  border: 1px solid #BFDDE5 !important;
+  color: #245A9A !important;
+  box-shadow: 0 3px 10px rgba(36,90,154,.08) !important;
+}
+.app #books .libraryMark svg,
+.app #books .libraryMark svg * {
+  color: #245A9A !important;
+  stroke: #245A9A !important;
+}
+
+/* 2) Every book action is a primary action, exactly like the assistant. */
+.app #books .libraryBook button,
+.app #books .libraryBook button.primary,
+.app #books .libraryBook .primary {
+  min-height: 42px;
+  background: linear-gradient(115deg,#102A43 0%,#245A9A 66%,#4096C8 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(64,224,208,.48) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 0 rgba(16,42,67,.13),0 7px 16px rgba(16,42,67,.14) !important;
+  font-weight: 800 !important;
+}
+.app #books .libraryBook button svg,
+.app #books .libraryBook button svg * {
+  color: #40E0D0 !important;
+  stroke: #40E0D0 !important;
+}
+.app #books .libraryBook button:hover {
+  background: linear-gradient(115deg,#173B5C 0%,#2B68A8 66%,#4AA4D2 100%) !important;
+  transform: translateY(-1px);
+}
+
+/* 3) One secondary-action language for all screens, including
+   "فعلاً می‌خواهم تمرین را ادامه بدهم". */
+.app button.secondary,
+.app button.ghostButton,
+.app .secondary,
+.app .ghostButton,
+.app button.libraryBack,
+.app .libraryBack,
+.app button.copyAction,
+.app .copyAction,
+.app button.bookTocClose,
+.app .bookTocClose {
+  background: linear-gradient(135deg,#F1F6FB 0%,#E8F6F5 100%) !important;
+  color: #173E62 !important;
+  border: 1px solid #C8DCE9 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(16,42,67,.055) !important;
+  font-weight: 700 !important;
+}
+.app button.secondary svg,
+.app button.ghostButton svg,
+.app .secondary svg,
+.app .ghostButton svg,
+.app button.libraryBack svg,
+.app button.copyAction svg,
+.app button.bookTocClose svg {
+  color: #245A9A !important;
+  stroke: #245A9A !important;
+}
+.app button.secondary:hover,
+.app button.ghostButton:hover,
+.app .secondary:hover,
+.app .ghostButton:hover,
+.app button.libraryBack:hover,
+.app button.copyAction:hover,
+.app button.bookTocClose:hover {
+  background: linear-gradient(135deg,#E5F2FA 0%,#DDF3F0 100%) !important;
+  border-color: #9CC9D8 !important;
+  box-shadow: 0 4px 12px rgba(36,90,154,.10) !important;
+}
+.app button.secondary:active,
+.app button.ghostButton:active,
+.app .secondary:active,
+.app .ghostButton:active {
+  transform: translateY(1px);
+}
+.app button.secondary:disabled,
+.app button.ghostButton:disabled {
+  opacity: .55;
+  box-shadow: none !important;
+}
+
+/* 4 + 12) Daily summary, "why this exercise", and today's
+   personalized action use the same calm card surface and typography. */
+.app #dailyResult .feedback,
+.app #dailyResult .recommendation,
+.app #day .adaptiveGuidance,
+.app #day .dailyStep .action,
+.app #day .dailyStep .exercise,
+.app #day #dailyFeedback,
+.app #day #dailyRecommendation,
+.app #report .feedback,
+.app #report .recommendation {
+  background: linear-gradient(150deg,#FFFFFF 0%,#F2F7FB 100%) !important;
+  border: 1px solid #D7E4EE !important;
+  border-inline-start: 4px solid #4096C8 !important;
+  border-inline-end: 1px solid #D7E4EE !important;
+  border-radius: 14px !important;
+  color: #173E62 !important;
+  box-shadow: 0 4px 14px rgba(16,42,67,.045) !important;
+}
+.app #day .adaptiveGuidance {
+  background: linear-gradient(150deg,#FFFFFF 0%,#EEF7FA 100%) !important;
+  border-inline-start-color: #40CFC5 !important;
+}
+.app #day .dailyStep .action {
+  background: linear-gradient(150deg,#FFFFFF 0%,#EEF4FB 100%) !important;
+  border-inline-start-color: #245A9A !important;
+}
+.app #dailyResult .feedback b,
+.app #dailyResult .recommendation b,
+.app #day .adaptiveGuidance > b,
+.app #day .dailyStep .action > b,
+.app #day .dailyStep .exercise > b,
+.app #report .feedback > b,
+.app #report .recommendation > b {
+  color: #173E62 !important;
+}
+.app #dailyResult .feedback p,
+.app #dailyResult .recommendation p,
+.app #day .adaptiveGuidance .muted,
+.app #day .dailyStep .action .muted,
+.app #day .dailyStep .exercise .muted {
+  color: #526B80 !important;
+}
+
+/* 5) Home shortcuts must read as buttons, not passive information cards:
+   stronger outline, tactile elevation, clear icon button tile and hover. */
+.app #dashboard .quickAction {
+  appearance: none;
+  cursor: pointer !important;
+  background: linear-gradient(145deg,#EAF7F8 0%,#EDF3FA 100%) !important;
+  color: #173E62 !important;
+  border: 1.5px solid #8FB8CF !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 0 rgba(36,90,154,.12),0 8px 18px rgba(16,42,67,.09) !important;
+  transition: transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease;
+}
+.app #dashboard .quickAction > span {
+  background: linear-gradient(145deg,#102A43 0%,#245A9A 100%) !important;
+  color: #40E0D0 !important;
+  border: 1px solid rgba(64,224,208,.55) !important;
+  box-shadow: 0 3px 8px rgba(16,42,67,.15) !important;
+}
+.app #dashboard .quickAction > span svg,
+.app #dashboard .quickAction > span svg * {
+  color: #40E0D0 !important;
+  stroke: #40E0D0 !important;
+}
+.app #dashboard .quickAction b { color: #102A43 !important; font-weight: 850 !important; }
+.app #dashboard .quickAction small { color: #526B80 !important; }
+.app #dashboard .quickAction:hover {
+  background: linear-gradient(145deg,#DFF3F3 0%,#E3EDF8 100%) !important;
+  border-color: #245A9A !important;
+  box-shadow: 0 5px 0 rgba(36,90,154,.14),0 12px 22px rgba(16,42,67,.13) !important;
+  transform: translateY(-2px);
+}
+.app #dashboard .quickAction:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 rgba(36,90,154,.12),0 4px 9px rgba(16,42,67,.08) !important;
+}
+
+/* 6) Selected bottom-navigation ICON itself is navy (not green).
+   The active pill may retain its subtle pale surface. */
+html body .app .bottomNav button.active .navIcon svg,
+html body .app .bottomNav button.active .navIcon svg *,
+html body.bale-webview .app .bottomNav button.active .navIcon svg,
+html body.bale-webview .app .bottomNav button.active .navIcon svg *,
+html body:not(.bale-webview) .app .bottomNav button.active .navIcon svg,
+html body:not(.bale-webview) .app .bottomNav button.active .navIcon svg * {
+  color: #102A43 !important;
+  stroke: #102A43 !important;
+}
+html body .app .bottomNav button.active .navIcon {
+  color: #102A43 !important;
+}
+html body .app .bottomNav button.active b { color: #173E62 !important; }
+
+/* 7 + 9) Assistant heading spacing and close icon match the home pencil. */
+.app .globalAssistantDialogTop {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 12px !important;
+  padding: 15px 18px !important;
+  min-height: 68px;
+}
+.app .globalAssistantDialogTop h2,
+.app .globalAssistantDialogTop #global-assistant-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 2px 0 !important;
+  line-height: 1.8 !important;
+  text-align: right !important;
+  overflow-wrap: anywhere;
+}
+.app .globalAssistantDialogTop .iconButton {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg,#E4F8F6 0%,#EAF1FA 100%) !important;
+  color: #245A9A !important;
+  border: 1px solid #BFDDE5 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 3px 10px rgba(36,90,154,.08) !important;
+}
+.app .globalAssistantDialogTop .iconButton svg,
+.app .globalAssistantDialogTop .iconButton svg * {
+  color: #245A9A !important;
+  stroke: #245A9A !important;
+}
+
+/* 8) Active assistant send button uses the exact primary gradient. */
+.app .globalAssistantChat .assistantSendButton:not(:disabled) {
+  background: linear-gradient(115deg,#102A43 0%,#245A9A 66%,#4096C8 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(64,224,208,.5) !important;
+  box-shadow: 0 4px 0 rgba(16,42,67,.13),0 7px 16px rgba(16,42,67,.14) !important;
+}
+.app .globalAssistantChat .assistantSendButton:not(:disabled) svg,
+.app .globalAssistantChat .assistantSendButton:not(:disabled) svg * {
+  color: #40E0D0 !important;
+  stroke: #40E0D0 !important;
+}
+.app .globalAssistantChat .assistantSendButton:disabled {
+  background: #E8EEF4 !important;
+  color: #8A9BAC !important;
+  border: 1px solid #D7E1E9 !important;
+  box-shadow: none !important;
+}
+
+/* 13) Reader chrome, tools, page counter/progress and TOC all share
+   the app's secondary-control language. Paper colors stay user-selectable. */
+body .bookReaderFull .readerIcon,
+body .bookReaderFull .readerTools button,
+body .bookReaderFull .readerBottomIcon,
+body .bookReaderFull .readerPageArrow,
+body .bookReaderFull .readerPageCounter,
+body .bookReaderFull .readerChapterLabel,
+body .bookReaderFull .bookTocClose {
+  background: linear-gradient(135deg,#F1F6FB 0%,#E8F6F5 100%) !important;
+  color: #245A9A !important;
+  border: 1px solid #C8DCE9 !important;
+  border-radius: 11px !important;
+  box-shadow: 0 2px 8px rgba(16,42,67,.055) !important;
+}
+body .bookReaderFull .readerIcon svg,
+body .bookReaderFull .readerTools button svg,
+body .bookReaderFull .readerBottomIcon svg,
+body .bookReaderFull .readerPageArrow svg,
+body .bookReaderFull .readerPageCounter svg,
+body .bookReaderFull .bookTocClose svg,
+body .bookReaderFull .readerIcon svg *,
+body .bookReaderFull .readerTools button svg * {
+  color: #245A9A !important;
+  stroke: #245A9A !important;
+}
+body .bookReaderFull .readerTools button:hover,
+body .bookReaderFull .readerIcon:hover,
+body .bookReaderFull .readerBottomIcon:hover,
+body .bookReaderFull .readerPageArrow:hover,
+body .bookReaderFull .bookTocClose:hover {
+  background: linear-gradient(135deg,#E5F2FA 0%,#DDF3F0 100%) !important;
+  border-color: #9CC9D8 !important;
+}
+body .bookReaderFull .readerPageCounter {
+  background: linear-gradient(145deg,#FFFFFF 0%,#F0F6FB 100%) !important;
+  color: #173E62 !important;
+  border-color: #C8DCE9 !important;
+}
+body .bookReaderFull .readerChapterLabel {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  color: #245A9A !important;
+}
+body .bookReaderFull .readerProgressTrack {
+  height: 6px !important;
+  background: #DCE7EF !important;
+  border-radius: 999px !important;
+  overflow: hidden;
+}
+body .bookReaderFull .readerProgressTrack span {
+  background: linear-gradient(90deg,#40E0D0 0%,#4096C8 100%) !important;
+  border-radius: 999px !important;
+}
+body .bookReaderFull .bookTocPanel {
+  background: linear-gradient(160deg,#FFFFFF 0%,#F5F9FD 100%) !important;
+  border: 1px solid #C8DCE9 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 12px 32px rgba(16,42,67,.16) !important;
+  color: #102A43 !important;
+}
+body .bookReaderFull .bookTocPanel h3 {
+  color: #173E62 !important;
+  border-bottom: 1px solid #DCE7EF !important;
+}
+body .bookReaderFull .bookTocEntry,
+body .bookReaderFull .bookTocEntry.open,
+body .bookReaderFull .bookTocEntry.isActive {
+  background: #F1F6FB !important;
+  border: 1px solid #D5E3ED !important;
+  border-radius: 11px !important;
+  color: #173E62 !important;
+}
+body .bookReaderFull .bookTocEntry:hover,
+body .bookReaderFull .bookTocEntry.open,
+body .bookReaderFull .bookTocEntry.isActive {
+  background: #E5F2FA !important;
+  border-color: #9CC9D8 !important;
+}
+body .bookReaderFull .bookTocClose {
+  background: linear-gradient(135deg,#F1F6FB 0%,#E8F6F5 100%) !important;
+  color: #173E62 !important;
+}
+body .bookReaderFull .readerSoundButton.soundOn,
+body .bookReaderFull .readerSoundButton.soundOff {
+  background: linear-gradient(135deg,#F1F6FB 0%,#E8F6F5 100%) !important;
+  color: #245A9A !important;
+  border: 1px solid #C8DCE9 !important;
+}
+body .bookReaderFull .readerSoundButton.soundOn svg,
+body .bookReaderFull .readerSoundButton.soundOff svg {
+  color: #245A9A !important;
+  stroke: #245A9A !important;
+}
+
+/* Reader night mode keeps its dark frame while retaining navy/turquoise
+   icon identity and readable controls. */
+body .bookReaderFull.theme-night .readerIcon,
+body .bookReaderFull.theme-night .readerTools button,
+body .bookReaderFull.theme-night .readerBottomIcon,
+body .bookReaderFull.theme-night .readerPageArrow,
+body .bookReaderFull.theme-night .readerPageCounter,
+body .bookReaderFull.theme-night .bookTocClose,
+body .bookReaderFull.theme-night .readerSoundButton.soundOn,
+body .bookReaderFull.theme-night .readerSoundButton.soundOff {
+  background: #263F58 !important;
+  border-color: #3E5D79 !important;
+  color: #8DDDD7 !important;
+}
+body .bookReaderFull.theme-night .readerIcon svg,
+body .bookReaderFull.theme-night .readerTools button svg,
+body .bookReaderFull.theme-night .readerBottomIcon svg,
+body .bookReaderFull.theme-night .readerPageArrow svg,
+body .bookReaderFull.theme-night .readerPageCounter svg,
+body .bookReaderFull.theme-night .bookTocClose svg,
+body .bookReaderFull.theme-night .readerSoundButton svg {
+  color: #8DDDD7 !important;
+  stroke: #8DDDD7 !important;
+}
+body .bookReaderFull.theme-night .bookTocPanel {
+  background: linear-gradient(160deg,#182B40 0%,#20384F 100%) !important;
+  border-color: #3E5D79 !important;
+  color: #E6EEF6 !important;
+}
+body .bookReaderFull.theme-night .bookTocPanel h3,
+body .bookReaderFull.theme-night .bookTocEntry,
+body .bookReaderFull.theme-night .bookTocEntry.open,
+body .bookReaderFull.theme-night .bookTocEntry.isActive {
+  background: #263F58 !important;
+  border-color: #3E5D79 !important;
+  color: #E6EEF6 !important;
+}
+body .bookReaderFull.theme-night .readerProgressTrack { background: #344B62 !important; }
+body .bookReaderFull.theme-night .readerProgressTrack span { background: linear-gradient(90deg,#40E0D0,#4096C8) !important; }
