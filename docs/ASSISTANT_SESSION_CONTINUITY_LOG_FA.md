@@ -5168,3 +5168,13 @@ undefined
 - اعتبارسنجی کامل main با run ID `43422666904` پس از ادغام شروع شده و هنگام ثبت این یادداشت هنوز pending است؛ نتیجه scoped #4825 جایگزین full validation نیست.
 - PRهای #129 و #130 بسته شدند. هیچ انتشار Telegram/Bale انجام نشده است.
 - نقطه بعدی: پس از اعلام نتیجه full validation، مالک نسخه main را در مرورگر زنده آزمایش می‌کند. هیچ انتشار بیرونی بدون مجوز جداگانه انجام نمی‌شود.
+
+
+## 2026-11-13 — اصلاح وضعیت full validation پس از ادغام T09
+
+- full validation main با run ID `43422666904` پایان یافت و failure شد؛ نتیجه CI اختصاصی T09 #4825 همچنان success است.
+- P0 queue: سه fingerprint stale (canonical path-content، topic registry، subtopic registry).
+- Unit tests: ۸۱۴ از ۸۱۸ موفق؛ چهار شکست به T07/T08 مربوط‌اند: metadata review برای رکوردهای T07، ۵۶ مورد exercise/action تغییرنیافته در ۲۸ روز T07 و ۲۸ روز T08، هم‌پوشانی T07/T08 در lightActionText روز ۱۲، و version metadata قدیمی T08.
+- validate:content: ۲۸ خطای T08 به‌علت source_ids ناقص در تمام روزهای وابستگی عاطفی.
+- build و ممیزی‌های ۹۵۲ روز/کیفیت/نگاشت موفق شدند؛ Chromium سراسری به‌دلیل شکست مراحل پیشین skipped شد. در این full run خطای اختصاصی T09 گزارش نشد.
+- وضعیت: T09 در main ادغام و با CI بسته‌ای #4825 تأیید شده؛ main به‌عنوان کل اپ هنوز full-validation-passed نیست. تست مرورگر توسط مالک مرحله بعد است؛ انتشار Telegram/Bale انجام نشده است.
