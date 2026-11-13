@@ -1,4 +1,4 @@
-import { cleanPreparedAssistantTopicText } from './teacherStylePreparedAnswer.js';
+import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 // Prepared-only daily guidance for T04. Self-hatred is classified and referred to T18; no self-hatred intervention is delivered here.
 export const HATRED_DAILY_ASSISTANT_GUIDES = [
@@ -3010,9 +3010,9 @@ function answerHatredDailyPreparedQuestionRaw({day,message,dailyContent}={}){
 export function answerHatredDailyPreparedQuestion(args = {}) {
   const answer = answerHatredDailyPreparedQuestionRaw(args);
   if (!answer) return null;
-  const cleaned = cleanPreparedAssistantTopicText(answer, 'نفرت');
   const day = toHatredDayNumber(args.day);
   const guide = HATRED_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
   const question = guide?.questions.find((item) => item.value === String(args.message || '').trim());
-  return appendDailyAssistantSafetyReminder(cleaned, question?.kind);
+  const framed = addTeacherStyleFrame(answer, { guide, question, topic: 'نفرت' });
+  return appendDailyAssistantSafetyReminder(framed, question?.kind);
 }
