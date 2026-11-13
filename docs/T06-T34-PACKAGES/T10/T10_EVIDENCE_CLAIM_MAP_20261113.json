@@ -150,16 +150,9 @@
         {
           "claim_id": "T10-D05-C01",
           "source_id": "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
-          "claim": "Clinical history may include caffeine, nicotine, alcohol, medicines, and health conditions; recording co-occurrence does not prove causation.",
+          "claim": "Clinical history may include health conditions, stressors, and sleep schedules; this exercise records a co-occurring contextual factor and does not infer causation.",
           "review_status": "pending_expert_review",
           "limitations": "Patient education about clinical evaluation; symptom patterns are not diagnostic criteria for the app. Sleep diary suggestions do not justify obsessive tracking or self-diagnosis."
-        },
-        {
-          "claim_id": "T10-D05-C02",
-          "source_id": "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001",
-          "claim": "Caffeine can affect alertness and sleep depending on timing and individual sensitivity; this is not a universal cut-off or instruction to stop abruptly.",
-          "review_status": "pending_expert_review",
-          "limitations": "Training material for shift workers; timing and effects vary. Do not advise abrupt cessation or use caffeine as a substitute for sleep or safety."
         }
       ],
       "review_status": "pending_expert_review",
@@ -169,7 +162,8 @@
         "T10-SAFETY-003",
         "T10-SAFETY-004",
         "T10-SAFETY-005"
-      ]
+      ],
+      "claim_mapping_note": "این روز عوامل زمینه‌ای غیرمرتبط با مصرف مواد (درد، فشار روانی، نور، صدا یا شیفت) را فقط به‌عنوان هم‌زمانی ثبت می‌کند. بررسی اختصاصی کافئین/نیکوتین/الکل در روز ۱۲ انجام می‌شود؛ هیچ رابطه علّی اثبات‌شده ادعا نمی‌شود."
     },
     {
       "day": 6,
