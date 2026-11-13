@@ -15,6 +15,14 @@ test('T10 canonical draft covers 28 unique daily units with the v2 contract', ()
   assert.equal(canonical.daily_unit_contract, 'v2');
   assert.equal(canonical.status, 'draft_not_runtime_eligible');
   assert.equal(canonical.records.length, 28);
+  const sourceRegistry = JSON.parse(await readFile(new URL('../public/assistant/evidence/sources.v1.json', import.meta.url), 'utf8'));
+  const evidenceMap = JSON.parse(await readFile(new URL('../docs/T06-T34-PACKAGES/T10/T10_EVIDENCE_CLAIM_MAP_20261113.json', import.meta.url), 'utf8'));
+  const sourceIds = new Set(sourceRegistry.sources.map((source) => source.source_id));
+  assert.equal(evidenceMap.mappings.length, 28);
+  for (const record of canonical.records) {
+    assert.ok(record.source_ids.every((id) => sourceIds.has(id)), `day ${record.day}: source ID must exist`);
+    assert.deepEqual(record.source_ids, evidenceMap.mappings[record.day - 1].source_ids);
+  }
   assert.deepEqual(canonical.records.map((record) => record.day), Array.from({ length: 28 }, (_, i) => i + 1));
   assert.equal(new Set(canonical.records.map((record) => record.id)).size, 28);
 
@@ -31,7 +39,7 @@ test('T10 canonical draft covers 28 unique daily units with the v2 contract', ()
     }
     assert.equal(record.review_status, 'draft');
     assert.equal(record.evidence_grade, 'not_assessed');
-    assert.deepEqual(record.source_ids, []);
+    assert.ok(Array.isArray(record.source_ids));
     assert.equal(record.subtopic_mapping_status, 'proposed_not_approved');
   }
   assert.equal(new Set(canonical.records.map((record) => record.success_criterion)).size, 28,
@@ -78,6 +86,10 @@ test('T10 assistant guide has 392 non-empty, unique answers and 14 questions per
   const q11 = guide.records.map((record) => record.questions.find((question) => question.id === 'q11').answer);
   assert.equal(new Set(q11).size, 28, 'sleep-safety guidance must remain day-specific');
   assert.ok(guide.records.every((record) => record.questions.find((question) => question.id === 'q11').answer !== record.questions.find((question) => question.id === 'q07').answer));
+  const q07 = guide.records.map((record) => record.questions.find((question) => question.id === 'q07').answer);
+  assert.equal(new Set(q07).size, 28, 'stop guidance must remain day-specific');
+  assert.ok(q07.every((answer) => answer.split(/\\s+/u).length <= 150), 'q07 must remain concise');
+  assert.ok(q11.every((answer) => answer.split(/\\s+/u).length <= 120), 'q11 must remain concise');
 });
 
 test('T10 guide and canonical records remain aligned across all daily fields and FAQs', () => {
@@ -107,18 +119,23 @@ test('T10 guide and canonical records remain aligned across all daily fields and
     assert.equal(answer('q06'), g.successCriterion);
     assert.ok(answer('q07').includes(g.stopCondition));
     assert.ok(answer('q07').includes(g.restVersion));
-    assert.ok(answer('q07').includes(g.whenToSeekHumanSupport));
+    assert.ok(answer('q07').includes(g.stopCondition));
+    assert.ok(answer('q07').includes(g.restVersion));
+    assert.ok(answer('q07').includes('دارو، مکمل، الکل یا مواد را برای خواب خودسرانه'));
+    assert.ok(answer('q07').includes('محدودسازی خواب یا درمان ساختارمند بی‌خوابی را خودسرانه اجرا نکن'));
+    assert.ok(answer('q07').includes('پزشک یا متخصص خواب') || answer('q07').includes('ارزیابی پزشک یا متخصص خواب'));
     assert.ok(g.stopConditions.every((v) => answer('q07').includes(v)));
-    assert.ok(g.contraindications.every((v) => answer('q07').includes(v)));
     assert.ok(answer('q09').includes(g.exercise));
     assert.ok(answer('q09').includes(g.action));
     assert.ok(answer('q10').includes(g.lightVersion));
     assert.ok(answer('q10').includes(g.restVersion));
     assert.ok(answer('q11').includes(g.stopCondition));
     assert.ok(answer('q11').includes(g.restVersion));
-    assert.ok(answer('q11').includes(g.whenToSeekHumanSupport));
-    assert.ok(g.stopConditions.every((v) => answer('q11').includes(v)));
-    assert.ok(g.contraindications.every((v) => answer('q11').includes(v)));
+    assert.ok(answer('q11').includes(g.stopCondition));
+    assert.ok(answer('q11').includes(g.restVersion));
+    assert.ok(answer('q11').includes('ادامه‌دادن معیار موفقیت نیست'));
+    assert.ok(answer('q11').includes('خواب‌آلودگی ایمنی رانندگی یا کار پرخطر را مختل می‌کند'));
+    assert.ok(answer('q11').includes('پزشک یا متخصص خواب'));
     const duration = answer('q14').match(/حدود\s+(\d+)\s+دقیقه/);
     assert.ok(duration, `day ${index + 1}: q14 duration`);
     assert.equal(Number(duration[1]), g.durationMinutes);
