@@ -60,7 +60,9 @@ test('T01-T09 use the same five prompt groups and question distribution on every
       const groups = getGroups(day);
       assert.equal(groups.length, 5, topicId + ' day ' + day + ' group count');
       assert.deepEqual(groups.map(group => group.questions.length), [2, 2, 1, 5, 4], topicId + ' day ' + day + ' group distribution');
-      const groupedQuestions = groups.flatMap(group => group.questions).sort((a, b) => Number(a.id.slice(1)) - Number(b.id.slice(1)));\n      assert.deepEqual(groupedQuestions.map(q => q.id), expectedIds, topicId + ' day ' + day + ' grouped question coverage');\n      assert.deepEqual(groupedQuestions.map(q => q.value), expectedValues, topicId + ' day ' + day + ' grouped question order');
+      const groupedQuestions = groups.flatMap(group => group.questions).sort((a, b) => Number(a.id.slice(1)) - Number(b.id.slice(1)));
+      assert.deepEqual(groupedQuestions.map(q => q.id), expectedIds, topicId + ' day ' + day + ' grouped question coverage');
+      assert.deepEqual(groupedQuestions.map(q => q.value), expectedValues, topicId + ' day ' + day + ' grouped question order');
     }
     assert.deepEqual(getGroups(0), [], topicId + ' invalid day lower bound');
     assert.deepEqual(getGroups(29), [], topicId + ' invalid day upper bound');
