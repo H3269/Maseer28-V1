@@ -1,6 +1,7 @@
+import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 import { addTeacherStyleFrame, cleanPreparedAssistantTopicText } from './teacherStylePreparedAnswer.js';
 
-export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
+const RAW_EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
   {
     "day": 1,
     "title": "نقشه اتکای عاطفی",
@@ -3306,6 +3307,8 @@ export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
     ]
   }
 ];
+
+export const EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = Object.freeze(RAW_EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES.map(normalizeDailyAssistantGuide));
 
 const toDayNumber = (value) => {
   const n = Number(value);
