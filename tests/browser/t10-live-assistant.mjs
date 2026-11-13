@@ -134,6 +134,7 @@ async function verifyDay(browser, dayNumber) {
 const browser = await chromium.launch({ headless: true });
 try {
   for (let dayNumber = 1; dayNumber <= 28; dayNumber += 1) {
+    process.stdout.write(`T10 live browser day ${dayNumber}\\n`);
     await verifyDay(browser, dayNumber);
   }
 } finally {
