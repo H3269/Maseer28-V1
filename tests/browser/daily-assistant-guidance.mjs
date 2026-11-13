@@ -634,7 +634,7 @@ try {
 
   // Each of the four questions in the evaluation/safety group gets the same footer.
   for (const safetyQuestion of [
-    'اگر هنگام تمرین خشم یا ناراحتی بیشتر شد چه کنم؟',
+    'اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟',
     'آیا لازم است حتماً با فرد دیگری صحبت کنم؟',
     'از کجا بفهمم درست انجامش داده‌ام؟',
     'چه زمانی باید تمرین امروز را متوقف کنم؟',
