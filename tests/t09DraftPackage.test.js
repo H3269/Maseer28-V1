@@ -77,7 +77,33 @@ test('each FAQ answer is anchored to its corresponding daily content and safety 
   }
 });
 
-test('canonical records have one authoritative field set without stale legacy aliases', () => {\n  const aliases = ['objective', 'skill', 'teaching', 'exercise', 'light', 'progress', 'rest', 'reflection', 'success', 'stop', 'q04'];\n  for (const record of canonical.records) {\n    for (const key of aliases) assert.equal(Object.hasOwn(record, key), false, `day ${record.day}: stale alias ${key}`);\n  }\n});\n\ntest('day 7 defines an observable completion marker while day 8 defines the first physical move', () => {\n  const day7 = guide.records.find((record) => record.day === 7);\n  const day8 = guide.records.find((record) => record.day === 8);\n  assert.match(day7.action, /نشانه قابل مشاهده برای پایان/u);\n  assert.match(day8.action, /حرکت نخست را با یک فعل و یک شیء/u);\n  assert.notEqual(day7.action, day8.action);\n  assert.equal(answer(day7, 'q05'), day7.lightVersion);\n  assert.equal(answer(day7, 'q06'), day7.successCriterion);\n});\n\ntest('day 8 remains about defining the first move, not environmental setup', () => {\n  const record = guide.records.find((item) => item.day === 8);\n  assert.match(record.progressVersion, /حرکت فیزیکیِ نخست/u);\n  assert.match(record.restVersion, /حرکت نخست را تعیین نکن/u);\n  assert.match(record.stopCondition, /مرحله الزامی، بررسی تخصصی یا کنترل ایمنی/u);\n  assert.match(answer(record, 'q12'), /اطلاعاتی.*فرد دیگری/u);\n  assert.doesNotMatch(record.restVersion, /محرک‌ها را حذف نکن/u);\n});\n\ntest('q09 and q11 avoid repeated generic endings and openings', () => {
+test('canonical records have one authoritative field set without stale legacy aliases', () => {
+  const aliases = ['objective', 'skill', 'teaching', 'exercise', 'light', 'progress', 'rest', 'reflection', 'success', 'stop', 'q04'];
+  for (const record of canonical.records) {
+    for (const key of aliases) assert.equal(Object.hasOwn(record, key), false, `day ${record.day}: stale alias ${key}`);
+  }
+});
+
+test('day 7 defines an observable completion marker while day 8 defines the first physical move', () => {
+  const day7 = guide.records.find((record) => record.day === 7);
+  const day8 = guide.records.find((record) => record.day === 8);
+  assert.match(day7.action, /نشانه قابل مشاهده برای پایان/u);
+  assert.match(day8.action, /حرکت نخست را با یک فعل و یک شیء/u);
+  assert.notEqual(day7.action, day8.action);
+  assert.equal(answer(day7, 'q05'), day7.lightVersion);
+  assert.equal(answer(day7, 'q06'), day7.successCriterion);
+});
+
+test('day 8 remains about defining the first move, not environmental setup', () => {
+  const record = guide.records.find((item) => item.day === 8);
+  assert.match(record.progressVersion, /حرکت فیزیکیِ نخست/u);
+  assert.match(record.restVersion, /حرکت نخست را تعیین نکن/u);
+  assert.match(record.stopCondition, /مرحله الزامی، بررسی تخصصی یا کنترل ایمنی/u);
+  assert.match(answer(record, 'q12'), /اطلاعاتی.*فرد دیگری/u);
+  assert.doesNotMatch(record.restVersion, /محرک‌ها را حذف نکن/u);
+});
+
+test('q09 and q11 avoid repeated generic endings and openings', () => {
   const q09 = guide.records.map((record) => answer(record, 'q09'));
   const q11 = guide.records.map((record) => answer(record, 'q11'));
   assert.equal(new Set(q09).size, 28);
