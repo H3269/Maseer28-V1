@@ -20,9 +20,17 @@ test('startup does not wait through an artificial splash delay', () => {
   assert.match(app, /setContent\(merged\)/);
 });
 
-test('path content and daily overrides are fetched concurrently', () => {
-  assert.match(app, /Promise\.all\(\[pathRequest, overridesRequest\]\)/);
-  assert.ok(app.indexOf('const pathRequest = fetch') < app.indexOf('const overridesRequest = fetch'));
+test('the home screen renders as soon as primary path content is ready', () => {
+  assert.match(app, /pathRequest[\s\S]*?\.then\(\(data\) => \{[\s\S]*?setContent\(data\)/);
+  assert.match(app, /overridesRequest\.then\(\(overrides\) => \{[\s\S]*?mergeDailyTextOverrides\(data, overrides\)/);
+  assert.doesNotMatch(app, /Promise\.all\(\[pathRequest, overridesRequest\]\)/);
+  assert.ok(app.indexOf('setContent(data)') < app.indexOf('overridesRequest.then'));
+});
+
+test('the static splash logo and title remain visible before React mounts', () => {
+  assert.match(html, /\.initialSplash img\{[^}]*opacity:1;visibility:visible/);
+  assert.match(html, /\.initialSplash h1\{[^}]*opacity:1/);
+  assert.doesNotMatch(html, /\.initialSplash h1\{opacity:0!important/);
 });
 
 test('the library catalogue does not download every full book on entry', () => {
