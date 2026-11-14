@@ -1,4 +1,5 @@
 import test from 'node:test';
+import { readFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
@@ -138,4 +139,13 @@ test('T11 is exposed as a non-recording owner review preview in the day UI', asy
   assert.match(ui, /id="t11ReviewNextDayBtn"/);
   assert.match(launcher, /getT11DailyAssistantPromptGroups\(dailyContext\?\.day\)/);
   assert.match(launcher, /!isT11DailyPromptContext\s*&&\s*Boolean\(selectedDailyQuestion/);
+});
+
+
+test('T11 assistant UI uses the correct topic label and suppresses shared-center safety boilerplate', async () => {
+  const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
+  assert.match(launcher, /!isT11DailyPromptContext\s*&&\s*Boolean\(selectedDailyQuestion/);
+  assert.match(launcher, /isT11DailyPromptContext\s*\?\s*"عادت‌های تکراری"/);
+  assert.match(launcher, /"t11-daily-prompt-trigger"/);
+  assert.match(launcher, /getT11DailyAssistantPromptGroups\(dailyContext\?\.day\)/);
 });
