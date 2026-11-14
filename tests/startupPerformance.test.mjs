@@ -62,6 +62,11 @@ test('the library catalogue does not download every full book on entry', () => {
   assert.match(recommendationSource, /await ensureSeedBookContent\(book\)/);
 });
 
+test('library manifest revalidates with the browser cache instead of allowing stale catalogue metadata', () => {
+  assert.match(libraryHook, /fetchJson\('content\/library\.seed\.json', 'manifest-check-v90', 'no-cache'\)/);
+  assert.match(libraryHook, /cache === 'no-store'[\s\S]*?\{ cache \}/);
+});
+
 test('cached library catalogue is painted before the network manifest refresh', () => {
   assert.match(app, /const libraryNeeded = screen === 'books' \|\| screen === 'bookReader' \|\| screen === 'dailyResult'/);
   assert.match(app, /useLibrary\(libraryNeeded\)/);
