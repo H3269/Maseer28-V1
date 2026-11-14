@@ -129,6 +129,7 @@ function MainApp() {
   });
   const [readerState, setReaderState] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [openingBook, setOpeningBook] = useState(false);
   const libraryNeeded = screen === 'books' || screen === 'bookReader' || screen === 'dailyResult';
   const { books, loading: libraryLoading, error: libraryError, refresh: refreshLibrary } = useLibrary(libraryNeeded);
 
@@ -553,12 +554,15 @@ function navigate(next) {
   }
 
   async function openBook(book, sourcePage = null, target = null) {
+    setOpeningBook(true);
     try {
       const { book: readyBook } = await ensureSeedBookContent(book);
       setReaderState({ book: readyBook, sourcePage, target });
       navigate('bookReader');
     } catch {
       showValidation(['متن کتاب بارگذاری نشد. اتصال را بررسی کن و دوباره تلاش کن.'], 'خطا در کتابخانه');
+    } finally {
+      setOpeningBook(false);
     }
   }
 
@@ -567,6 +571,7 @@ function navigate(next) {
     const availableBooks = books.length ? books : await refreshLibrary();
     const book = availableBooks.find((item) => Number(item.legacyId) === Number(recommendation.bookId)) || availableBooks[Number(recommendation.bookId) - 1];
     if (!book) return;
+    setOpeningBook(true);
     try {
       const { book: readyBook, version } = await ensureSeedBookContent(book);
       if (!version?.content) throw new Error('book missing');
@@ -584,6 +589,8 @@ function navigate(next) {
       });
     } catch {
       showValidation(['متن کتاب بارگذاری نشد.'], 'خطا در کتابخانه');
+    } finally {
+      setOpeningBook(false);
     }
   }
 
@@ -747,6 +754,7 @@ function navigate(next) {
         libraryContext={screen === 'books' ? { titles: books.map((book) => book.title).filter(Boolean) } : null}
         onRelationshipSafetyResponse={(response) => setRelationshipSafetyState({ dayKey: relationshipSafetyDayKey, response })}
       />
+      {openingBook && <div className="validationModal" role="status" aria-live="polite"><div className="validationCard"><h2>در حال آماده‌سازی کتاب</h2><p className="muted">متن این کتاب در حال دریافت و آماده‌سازی است…</p></div></div>}
       {preview && <BookPreviewModal preview={preview} onClose={() => setPreview(null)} onOpen={() => { const item = preview; setPreview(null); openBook(item.book, item.sourcePage, { day: item.day, sourcePage: item.sourcePage, reason: item.reason, sourceTitle: item.sourceTitle }); }} />}
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}
       {validation && <ValidationModal data={validation} onClose={() => setValidation(null)} />}
