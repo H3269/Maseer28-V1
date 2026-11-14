@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useMemo, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
 import AppIcon from './shared/components/AppIcon.jsx';
 import { legacySourceLabel } from './features/library/legacyLibraryMeta.js';
 import { ensureSeedBookContent, useLibrary } from './features/library/useLibrary.js';
@@ -109,6 +109,7 @@ function MainApp() {
   const [loadError, setLoadError] = useState('');
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [splashLogoReady, setSplashLogoReady] = useState(false);
+  const splashLogoRef = useRef(null);
   const [journey, setJourney] = useState(initial.state);
   const [userProfile, setUserProfileState] = useState(initial.user);
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(initial.onboardingComplete);
@@ -222,8 +223,7 @@ function MainApp() {
   const resultData = selectCanonicalDailyRecord(category, resultNumber);
   const headerDay = screen === 'day' ? currentDay : screen === 'dailyResult' ? (resultDay || journey.completed.length) : journey.completed.length;
 
-  async function markSplashLogoReady(event) {
-    const image = event.currentTarget;
+  async function markSplashLogoReady(image) {
     try {
       if (typeof image.decode === 'function') await image.decode();
       if (image.complete && image.naturalWidth > 0) setSplashLogoReady(true);
@@ -231,6 +231,26 @@ function MainApp() {
       if (image.complete && image.naturalWidth > 0) setSplashLogoReady(true);
     }
   }
+
+  useEffect(() => {
+    const image = splashLogoRef.current;
+    if (!image) return undefined;
+    let cancelled = false;
+    const confirmReady = async () => {
+      try {
+        if (typeof image.decode === 'function') await image.decode();
+      } catch {
+        // A decoded image may reject decode() on some older Android WebViews.
+      }
+      if (!cancelled && image.complete && image.naturalWidth > 0) setSplashLogoReady(true);
+    };
+    if (image.complete) void confirmReady();
+    else image.addEventListener('load', confirmReady, { once: true });
+    return () => {
+      cancelled = true;
+      image.removeEventListener('load', confirmReady);
+    };
+  }, []);
 
   function showValidation(items, title = 'چند بخش هنوز نیاز به تکمیل دارد') {
     setValidation({ title, items: Array.isArray(items) ? items : [items] });
@@ -729,7 +749,7 @@ function navigate(next) {
   }
 
   if (loadError) return <div className="validationModal"><div className="validationCard"><h2>خطا در بارگذاری برنامه</h2><p className="muted">{loadError}</p></div></div>;
-  if (!content || !splashLogoReady) return <div className="app appLoading" role="status" aria-live="polite"><div className="loadingBrand"><img src={`${import.meta.env.BASE_URL}assets/Logo m24.png`} alt="لوگوی برنامه مسیر" onLoad={markSplashLogoReady} onError={() => setLoadError('تصویر صفحه آغازین بارگذاری نشد. لطفاً اتصال را بررسی و دوباره تلاش کن.')} style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }} /><h1 style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }}>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p><div className="loadingProgress" role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(loadingProgress)}>{Array.from({ length: 10 }, (_, index) => <span key={index} className="loadingProgressSegment" style={{ '--segment-progress': `${Math.max(0, Math.min(100, loadingProgress - index * 10))}%` }} />)}</div></div></div>;
+  if (!content || !splashLogoReady) return <div className="app appLoading" role="status" aria-live="polite"><div className="loadingBrand"><img ref={splashLogoRef} src={`${import.meta.env.BASE_URL}assets/Logo m24.png`} alt="لوگوی برنامه مسیر" loading="eager" decoding="async" fetchPriority="high" onLoad={(event) => markSplashLogoReady(event.currentTarget)} onError={() => setLoadError('تصویر صفحه آغازین بارگذاری نشد. لطفاً اتصال را بررسی و دوباره تلاش کن.')} style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }} /><h1 style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }}>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p><div className="loadingProgress" role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(loadingProgress)}>{Array.from({ length: 10 }, (_, index) => <span key={index} className="loadingProgressSegment" style={{ '--segment-progress': `${Math.max(0, Math.min(100, loadingProgress - index * 10))}%` }} />)}</div></div></div>;
 
   const onboardingComplete = Boolean(userProfile && hasCompletedOnboarding);
 
