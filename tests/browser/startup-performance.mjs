@@ -71,7 +71,7 @@ try {
     results,
   };
   await mkdir('reports/generated', { recursive: true });
-  await writeFile(outputPath, JSON.stringify(report, null, 2) + '\\n', 'utf8');
+  await writeFile(outputPath, JSON.stringify(report, null, 2) + '\n', 'utf8');
   console.log(JSON.stringify({
     outputPath,
     runs: results.length,
