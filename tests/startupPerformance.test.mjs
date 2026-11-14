@@ -17,24 +17,28 @@ test('library, reader, and assistant modules stay out of the initial application
   assert.match(app, /navVisible && <Suspense fallback=\{null\}><GlobalAssistantLauncher/);
 });
 
-test('startup does not wait through an artificial splash delay', () => {
-  assert.doesNotMatch(app, /minimumSplashDuration|completionDuration/);
-  // Primary content is rendered first; optional overlays are merged afterward.
-  assert.match(app, /setContent\(data\)/);
-  assert.match(app, /mergeDailyTextOverrides\(data, overrides\)/);
-  assert.doesNotMatch(app, /setContent\(merged\)/);
+test('startup uses the compact runtime topic index instead of downloading all daily content', () => {
+  assert.match(app, /runtimeRepository\.loadContentIndex\(\)/);
+  assert.match(app, /setContent\(\{ \.\.\.\(index\.metadata \|\| \{\}\), categories: \{\}, topics: index\.topics \}\)/);
+  assert.match(app, /const runtimeRepository = useMemo\(\(\) => createRuntimeContentRepository\(/);
+  assert.match(app, /const loadTopicForScreen = useCallback\(async \(topicKey\) => \{/);
+  assert.match(app, /runtimeRepository\.loadTopicContent\(topicKey\)/);
+  assert.doesNotMatch(app.slice(app.indexOf('useEffect(() => {'), app.indexOf('useEffect(() => {', app.indexOf('useEffect(() => {') + 1)), /fetch\(pathUrl/);
 });
 
-test('primary path content receives network priority over optional daily overrides', () => {
+test('canonical full-content and daily-overlay loading remain available as a compatibility fallback', () => {
+  assert.match(app, /content\/path-content\.json\?v=20261023-fast-open/);
   assert.match(app, /fetch\(pathUrl, \{ cache: attempt === 0 \? 'default' : 'reload', priority: 'high' \}\)/);
   assert.match(app, /daily-text-overrides\.v1\.json[^\n]*priority: 'low'/);
+  assert.match(app, /mergeDailyTextOverrides\(data, overrides\)/);
 });
 
-test('the home screen renders as soon as primary path content is ready', () => {
-  assert.match(app, /pathRequest[\s\S]*?\.then\(\(data\) => \{[\s\S]*?setContent\(data\)/);
-  assert.match(app, /overridesRequest\.then\(\(overrides\) => \{[\s\S]*?mergeDailyTextOverrides\(data, overrides\)/);
-  assert.doesNotMatch(app, /Promise\.all\(\[pathRequest, overridesRequest\]\)/);
-  assert.ok(app.indexOf('setContent(data)') < app.indexOf('overridesRequest.then'));
+test('the selected topic loads independently and the day screen waits for its verified content', () => {
+  assert.match(app, /if \(!content \|\| !problemKey \|\| content\.categories\?\.\[problemKey\]\) return undefined/);
+  assert.match(app, /setTopicLoadState\(\{ key: problemKey, status: 'loading'/);
+  assert.match(app, /activeDay \? <>[\s\S]*?topicLoadState\.status === 'loading'/);
+  assert.match(app, /screen === 'report' && \(category \?/);
+  assert.match(app, /onLoadTopic=\{loadTopicForScreen\}/);
 });
 
 test('the static splash logo and title remain visible before React mounts', () => {
@@ -143,9 +147,9 @@ test('content and logo failures keep the splash visible and expose retry without
   assert.match(app, /<div className="loadingError" role="alert">[\s\S]*?\{loadError\}[\s\S]*?window\.location\.reload\(\)/);
 });
 
-test('startup retries transient path-content failures and offers a manual retry for terminal errors', () => {
-  assert.match(app, /const loadPathContent = async \(attempt = 0\)/);
-  assert.match(app, /attempt < 2/);
+test('runtime index failure falls back to canonical content and keeps the manual startup retry', () => {
+  assert.match(app, /runtimeRepository\.loadContentIndex\(\)[\s\S]*?\.catch\(async \(\) => \{/);
+  assert.match(app, /for \(let attempt = 0; attempt <= 2; attempt \+= 1\)/);
   assert.match(app, /response\.status === 404/);
   assert.match(app, /window\.location\.reload\(\)/);
 });
