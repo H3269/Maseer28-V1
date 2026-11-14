@@ -88,6 +88,20 @@ try {
         'T11 must not expose a scoring panel before specialist approval');
       assert.equal(await card.locator('#nextButtonWrap button').count(), 1,
         'T11 owner can inspect the next day without recording a score');
+      for (let day = 1; day <= 28; day += 1) {
+        const expected = content.categories[topic].days.find((item) => item.day === day);
+        assert.ok(expected, 'T11 canonical day ' + day + ' exists');
+        assert.equal(await card.locator('#dayExercise').count(), 1, 'T11 day ' + day + ' exercise renders');
+        assert.equal(await card.locator('#dayAction').count(), 1, 'T11 day ' + day + ' action renders');
+        assert.equal(await card.locator('#dailySafetyStatus').count(), 1, 'T11 day ' + day + ' retains specialist gate');
+        assert.equal(await card.locator('#openDailyEntryBtn').count(), 0, 'T11 day ' + day + ' cannot score before approval');
+        if (day < 28) {
+          await card.locator('#nextButtonWrap button').click();
+          await page.waitForFunction((nextDay) =>
+            document.querySelector('#dayBadge')?.textContent?.includes('روز ' + nextDay + ' از ۲۸'),
+          day + 1);
+        }
+      }
       assert.deepEqual(errors, [], topic + ' must not raise browser errors');
       await page.close();
       continue;
