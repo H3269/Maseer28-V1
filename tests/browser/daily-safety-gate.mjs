@@ -101,9 +101,11 @@ try {
           assert.match(await page.locator('#resultText').innerText(), /هیچ امتیازی ثبت نشده/u);
           await page.locator('#resultNextWrap button').click();
           await page.locator('#day').waitFor({ state: 'visible' });
-          await page.waitForFunction((nextDay) =>
-            document.querySelector('#dayBadge')?.textContent?.includes('روز ' + nextDay + ' از ۲۸'),
-          day + 1);
+          await page.waitForFunction((nextDay) => {
+            const text = document.querySelector('#dayBadge')?.textContent || '';
+            const normalized = text.replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)));
+            return normalized.includes('روز ' + nextDay + ' از 28');
+          }, day + 1);
         }
       }
       assert.deepEqual(errors, [], topic + ' must not raise browser errors');
