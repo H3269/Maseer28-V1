@@ -9,27 +9,36 @@ const libraryPage = await readFile(new URL('../src/features/library/LibraryPage.
 const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 const assistantLauncher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
 
-test('library and reader modules remain split while the guide assistant is restored to eager loading', () => {
+test('library, reader, and assistant modules stay out of the initial application bundle', () => {
   assert.match(app, /const LibraryPage = lazy\(\(\) => import\('\.\/features\/library\/LibraryPage\.jsx'\)\)/);
   assert.match(app, /const Reader = lazy\(\(\) => import\('\.\/features\/library\/Reader\.jsx'\)\)/);
-  assert.match(app, /import GlobalAssistantLauncher from '\.\/features\/assistant\/GlobalAssistantLauncher\.jsx'/);
-  assert.doesNotMatch(app, /const GlobalAssistantLauncher = lazy/);
-  assert.match(app, /navVisible && <GlobalAssistantLauncher/);
+  assert.match(app, /const GlobalAssistantLauncher = lazy\(\(\) => import\('\.\/features\/assistant\/GlobalAssistantLauncher\.jsx'\)\)/);
+  assert.doesNotMatch(app, /import GlobalAssistantLauncher from/);
+  assert.match(app, /navVisible && <Suspense fallback=\{null\}><GlobalAssistantLauncher/);
 });
 
-test('startup does not wait through an artificial splash delay', () => {
-  assert.doesNotMatch(app, /minimumSplashDuration|completionDuration/);
-  // Primary content is rendered first; optional overlays are merged afterward.
-  assert.match(app, /setContent\(data\)/);
+test('startup uses the compact runtime topic index instead of downloading all daily content', () => {
+  assert.match(app, /runtimeRepository\.loadContentIndex\(\)/);
+  assert.match(app, /setContent\(\{ \.\.\.\(index\.metadata \|\| \{\}\), categories: \{\}, topics: index\.topics \}\)/);
+  assert.match(app, /const runtimeRepository = useMemo\(\(\) => createRuntimeContentRepository\(/);
+  assert.match(app, /const loadTopicForScreen = useCallback\(async \(topicKey\) => \{/);
+  assert.match(app, /runtimeRepository\.loadTopicContent\(topicKey\)/);
+  assert.ok(app.indexOf('runtimeRepository.loadContentIndex()') < app.indexOf('const pathUrl ='), 'the compact index must be requested before the full-content fallback');
+});
+
+test('canonical full-content and daily-overlay loading remain available as a compatibility fallback', () => {
+  assert.match(app, /content\/path-content\.json\?v=20261023-fast-open/);
+  assert.match(app, /fetch\(pathUrl, \{ cache: attempt === 0 \? 'default' : 'reload', priority: 'high' \}\)/);
+  assert.match(app, /daily-text-overrides\.v1\.json[^\n]*priority: 'low'/);
   assert.match(app, /mergeDailyTextOverrides\(data, overrides\)/);
-  assert.doesNotMatch(app, /setContent\(merged\)/);
 });
 
-test('the home screen renders as soon as primary path content is ready', () => {
-  assert.match(app, /pathRequest[\s\S]*?\.then\(\(data\) => \{[\s\S]*?setContent\(data\)/);
-  assert.match(app, /overridesRequest\.then\(\(overrides\) => \{[\s\S]*?mergeDailyTextOverrides\(data, overrides\)/);
-  assert.doesNotMatch(app, /Promise\.all\(\[pathRequest, overridesRequest\]\)/);
-  assert.ok(app.indexOf('setContent(data)') < app.indexOf('overridesRequest.then'));
+test('the selected topic loads independently and the day screen waits for its verified content', () => {
+  assert.match(app, /if \(!content \|\| !problemKey \|\| content\.categories\?\.\[problemKey\]\) return undefined/);
+  assert.match(app, /setTopicLoadState\(\{ key: problemKey, status: 'loading'/);
+  assert.match(app, /activeDay \? <>[\s\S]*?topicLoadState\.status === 'loading'/);
+  assert.match(app, /screen === 'report' && \(category \?/);
+  assert.match(app, /onLoadTopic=\{loadTopicForScreen\}/);
 });
 
 test('the static splash logo and title remain visible before React mounts', () => {
@@ -77,8 +86,9 @@ test('library assistant hydrates full book content only when the assistant is op
   assert.match(assistantLauncher, /screen === 'books' && !booksForTurn\.length/);
 });
 
-test('all five library covers are requested eagerly at high priority', () => {
-  assert.match(libraryPage, /loading="eager" decoding="async" fetchPriority="high"/);
+test('library covers are lazy-loaded at low priority to avoid a multi-megabyte burst', () => {
+  assert.match(libraryPage, /loading="lazy" decoding="async" fetchPriority="low"/);
+  assert.doesNotMatch(libraryPage, /loading="eager"[^>]*fetchPriority="high"/);
 });
 
 test('initial splash restores the original approved logo asset', async () => {
@@ -100,9 +110,8 @@ test('the app waits until the complete splash logo image is decoded', () => {
   assert.match(app, /onLoad=\{\(event\) => markSplashLogoReady\(event\.currentTarget\)\}/);
 });
 
-test('all five library book covers are requested eagerly at high priority', () => {
-  assert.match(libraryPage, /loading="eager" decoding="async" fetchPriority="high"/);
-  assert.doesNotMatch(libraryPage, /fetchPriority="low"/);
+test('library book covers do not compete with the initial library render', () => {
+  assert.match(libraryPage, /loading="lazy" decoding="async" fetchPriority="low"/);
 });
 
 const reader = await readFile(new URL('../src/features/library/Reader.jsx', import.meta.url), 'utf8');
@@ -138,9 +147,9 @@ test('content and logo failures keep the splash visible and expose retry without
   assert.match(app, /<div className="loadingError" role="alert">[\s\S]*?\{loadError\}[\s\S]*?window\.location\.reload\(\)/);
 });
 
-test('startup retries transient path-content failures and offers a manual retry for terminal errors', () => {
-  assert.match(app, /const loadPathContent = async \(attempt = 0\)/);
-  assert.match(app, /attempt < 2/);
+test('runtime index failure falls back to canonical content and keeps the manual startup retry', () => {
+  assert.match(app, /runtimeRepository\.loadContentIndex\(\)[\s\S]*?\.catch\(async \(\) => \{/);
+  assert.match(app, /for \(let attempt = 0; attempt <= 2; attempt \+= 1\)/);
   assert.match(app, /response\.status === 404/);
   assert.match(app, /window\.location\.reload\(\)/);
 });

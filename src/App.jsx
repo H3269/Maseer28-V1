@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import AppIcon from './shared/components/AppIcon.jsx';
 import { legacySourceLabel } from './features/library/legacyLibraryMeta.js';
 import { ensureSeedBookContent, useLibrary } from './features/library/useLibrary.js';
@@ -51,11 +51,11 @@ import {
 } from './features/journey/JourneyScreens.jsx';
 import { getRelationshipSafetyGate, isRelationshipSafetyConfirmed } from './features/journey/relationshipSafetyGate.js';
 import { isCompleteDailyContentCategory, selectCanonicalDailyRecord, selectDailyContentCategory } from './features/content/dailyContentSelector.js';
+import { createRuntimeContentRepository } from './features/content/runtimeContentRepository.js';
 import { mergeDailyTextOverrides } from './features/content/dailyTextOverrides.js';
 import { fa } from './shared/utils.js';
 import VersionFooter from './shared/components/VersionFooter.jsx';
-import GlobalAssistantLauncher from './features/assistant/GlobalAssistantLauncher.jsx';
-
+const GlobalAssistantLauncher = lazy(() => import('./features/assistant/GlobalAssistantLauncher.jsx'));
 const LibraryPage = lazy(() => import('./features/library/LibraryPage.jsx'));
 const Reader = lazy(() => import('./features/library/Reader.jsx'));
 
@@ -105,7 +105,9 @@ export default function App() {
 
 function MainApp() {
   const initial = useMemo(initialSnapshot, []);
+  const runtimeRepository = useMemo(() => createRuntimeContentRepository({ baseUrl: import.meta.env.BASE_URL }), []);
   const [content, setContent] = useState(null);
+  const [topicLoadState, setTopicLoadState] = useState({ key: '', status: 'idle', error: '' });
   const [loadError, setLoadError] = useState('');
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [splashLogoReady, setSplashLogoReady] = useState(false);
@@ -139,64 +141,49 @@ function MainApp() {
     let cancelled = false;
     setLoadingProgress(18);
 
-    // The route content and its optional text overrides are independent files.
-    // Fetch them together so startup does not wait for two sequential network round trips.
-    const pathUrl = `${import.meta.env.BASE_URL}content/path-content.json?v=20261023-fast-open`;
-    const loadPathContent = async (attempt = 0) => {
-      try {
-        const response = await fetch(pathUrl, { cache: attempt === 0 ? 'default' : 'reload' });
-        if (!response.ok) {
-          if (response.status >= 500 && attempt < 2) {
-            await new Promise((resolve) => window.setTimeout(resolve, 450 * (attempt + 1)));
-            return loadPathContent(attempt + 1);
-          }
-          throw new Error(response.status === 404
-            ? 'فایل محتوای مسیر در نشانی انتشار پیدا نشد.'
-            : `دریافت محتوای مسیر ناموفق بود (کد ${response.status}).`);
-        }
-        const data = await response.json();
-        if (!data?.categories || !Object.keys(data.categories).length) {
-          throw new Error('فایل محتوای مسیر ناقص است.');
-        }
-        return data;
-      } catch (error) {
-        if (attempt < 2 && !(error instanceof SyntaxError)) {
-          await new Promise((resolve) => window.setTimeout(resolve, 450 * (attempt + 1)));
-          return loadPathContent(attempt + 1);
-        }
-        throw error;
-      }
-    };
-    const pathRequest = loadPathContent()
-      .then((data) => {
-        if (!cancelled) setLoadingProgress(78);
-        return data;
-      });
-
-    const overridesRequest = fetch(`${import.meta.env.BASE_URL}content/daily-text-overrides.v1.json?v=20261112-t06`, { cache: 'default' })
-      .then((response) => response.ok ? response.json() : null)
-      .catch(() => null);
-
-    // The primary route data alone gates the first usable render.
-    // Daily text overrides are optional and must never hold the home screen behind
-    // a slow or stalled secondary request.
-    pathRequest
-      .then((data) => {
+    // Startup downloads only the compact topic index. The selected topic is
+    // fetched separately after the profile/path is known.
+    runtimeRepository.loadContentIndex()
+      .then((index) => {
         if (cancelled) return;
+        setContent({ ...(index.metadata || {}), categories: {}, topics: index.topics });
         setLoadingProgress(100);
-        setContent(data);
-        overridesRequest.then((overrides) => {
-          if (cancelled || !overrides) return;
-          setContent(mergeDailyTextOverrides(data, overrides));
-        });
       })
-      .catch((error) => {
-        if (cancelled) return;
-        setLoadError(error?.message || 'خطا در بارگذاری برنامه');
+      .catch(async () => {
+        // Compatibility fallback: if the generated runtime index is unavailable,
+        // retain the canonical full-content path rather than blocking the app.
+        try {
+          const pathUrl = `${import.meta.env.BASE_URL}content/path-content.json?v=20261023-fast-open`;
+          let data = null;
+          for (let attempt = 0; attempt <= 2; attempt += 1) {
+            try {
+              const response = await fetch(pathUrl, { cache: attempt === 0 ? 'default' : 'reload', priority: 'high' });
+              if (!response.ok) {
+                if (response.status >= 500 && attempt < 2) continue;
+                throw new Error(response.status === 404
+                  ? 'فایل محتوای مسیر در نشانی انتشار پیدا نشد.'
+                  : `دریافت محتوای مسیر ناموفق بود (کد ${response.status}).`);
+              }
+              data = await response.json();
+              if (!data?.categories || !Object.keys(data.categories).length) throw new Error('فایل محتوای مسیر ناقص است.');
+              break;
+            } catch (error) {
+              if (attempt >= 2 || error instanceof SyntaxError) throw error;
+            }
+          }
+          const overrides = await fetch(`${import.meta.env.BASE_URL}content/daily-text-overrides.v1.json?v=20261112-t06`, { cache: 'default', priority: 'low' })
+            .then((response) => response.ok ? response.json() : null)
+            .catch(() => null);
+          if (cancelled) return;
+          setContent(overrides ? mergeDailyTextOverrides(data, overrides) : data);
+          setLoadingProgress(100);
+        } catch (error) {
+          if (!cancelled) setLoadError(error?.message || 'خطا در بارگذاری برنامه');
+        }
       });
 
     return () => { cancelled = true; };
-  }, []);
+  }, [runtimeRepository]);
 
   useEffect(() => {
     saveJourneyState({ ...journey, lastView: screen });
@@ -236,6 +223,25 @@ function MainApp() {
   }, []);
 
   const problemKey = journey.profileData?.problem;
+  const loadTopicForScreen = useCallback(async (topicKey) => {
+    const loadedCategory = await runtimeRepository.loadTopicContent(topicKey);
+    setContent((previous) => previous ? {
+      ...previous,
+      categories: { ...(previous.categories || {}), [topicKey]: loadedCategory },
+    } : previous);
+    return loadedCategory;
+  }, [runtimeRepository]);
+
+  useEffect(() => {
+    if (!content || !problemKey || content.categories?.[problemKey]) return undefined;
+    let cancelled = false;
+    setTopicLoadState({ key: problemKey, status: 'loading', error: '' });
+    loadTopicForScreen(problemKey)
+      .then(() => { if (!cancelled) setTopicLoadState({ key: problemKey, status: 'loaded', error: '' }); })
+      .catch((error) => { if (!cancelled) setTopicLoadState({ key: problemKey, status: 'error', error: error?.message || 'بارگذاری محتوای موضوع انجام نشد.' }); });
+    return () => { cancelled = true; };
+  }, [content, problemKey, loadTopicForScreen]);
+
   const categoryCandidate = selectDailyContentCategory(content?.categories, problemKey);
   const category = categoryCandidate && isCompleteDailyContentCategory(content?.categories, problemKey) ? categoryCandidate : null;
   const activeDay = selectCanonicalDailyRecord(category, Number(currentDay));
@@ -507,9 +513,13 @@ function navigate(next) {
       // existed. Include those completed days, even in legacy states with no
       // daily record, so an old suggestion cannot reappear.
       const problemKey = path?.profileData?.problem;
-      for (const dayNumber of path?.completed || []) {
-        if (daily[dayNumber]?.bookRec) continue;
-        const authoredDay = content?.categories?.[problemKey]?.days?.find((row) => Number(row.day) === Number(dayNumber));
+      const completedWithoutDynamicRecommendation = (path?.completed || []).filter((dayNumber) => !daily[dayNumber]?.bookRec);
+      let authoredCategory = content?.categories?.[problemKey];
+      if (completedWithoutDynamicRecommendation.length && !authoredCategory && problemKey) {
+        try { authoredCategory = await loadTopicForScreen(problemKey); } catch { /* Keep the existing recommendation history even if a legacy topic shard is unavailable. */ }
+      }
+      for (const dayNumber of completedWithoutDynamicRecommendation) {
+        const authoredDay = authoredCategory?.days?.find((row) => Number(row.day) === Number(dayNumber));
         const authored = authoredDay?.legacyBookRec || authoredDay?.bookRec;
         if (authored) await addUsedRecommendation(authored);
       }
@@ -833,24 +843,24 @@ function navigate(next) {
       {screen === 'howWorks' && <HowWorks onBack={() => navigate('home')} />}
       {screen === 'about' && <AboutProgram onBack={() => navigate('home')} />}
       {screen === 'profile' && <ProfileScreen initial={userProfile || journey.profileData} editing={profileEditing} onSave={saveProfile} onCancel={() => navigate(profileReturn || 'dashboard')} onValidation={showValidation} />}
-      {screen === 'pathSetup' && <PathSetupScreen initial={journey.profileData} problems={Object.keys(content.categories || {})} onSave={savePathSetup} onEditProfile={() => openProfileEditor('pathSetup')} onValidation={showValidation} />}
+      {screen === 'pathSetup' && <PathSetupScreen initial={journey.profileData} problems={content.topics?.map((topic) => topic.key) || Object.keys(content.categories || {})} onSave={savePathSetup} onEditProfile={() => openProfileEditor('pathSetup')} onValidation={showValidation} />}
       {screen === 'assessment' && <AssessmentScreen initial={journey.assessmentData?.answers} onSave={saveAssessment} onValidation={showValidation} />}
       {screen === 'dashboard' && <Dashboard journey={journey} userProfile={userProfile} onEditProfile={() => openProfileEditor('dashboard')} onCurrent={openCurrentDay} onBooks={() => openBooks('dashboard')} onArchive={() => navigate('archive')} onSupport={() => openSupport('dashboard')} onChannel={() => window.open(content.channelUrl, '_blank', 'noopener,noreferrer')} />}
       {screen === 'day' && (activeDay ? <>
         <DayScreen day={currentDay} problem={journey.profileData?.problem || ''} data={activeDay} record={journey.daily?.[currentDay]} savedAnswer={journey.answers?.[currentDay] || ''} previousRecord={journey.daily?.[currentDay - 1]} previousAnswer={journey.answers?.[currentDay - 1] || ''} history={journey.daily || {}} onDashboard={() => navigate('dashboard')} onPrevious={() => currentDay <= 1 ? navigate('dashboard') : openDay(currentDay - 1)} onComplete={completeDay} onNext={() => openDay(currentDay + 1)} completed={journey.completed.includes(currentDay)} onValidation={showValidation} />
-      </> : <section className="card dayCard" role="alert"><h2>محتوای دقیق این روز در دسترس نیست</h2><p>موضوع یا شماره روز با داده اصلی تطبیق قطعی ندارد؛ برای جلوگیری از نمایش تمرین اشتباه، راهنمایی این روز متوقف شده است.</p><button className="secondary" onClick={() => navigate('dashboard')}>بازگشت به داشبورد</button></section>)}
+      </> : topicLoadState.key === problemKey && topicLoadState.status === 'loading' ? <section className="card dayCard" role="status"><p>در حال دریافت محتوای موضوع انتخاب‌شده…</p></section> : <section className="card dayCard" role="alert"><h2>محتوای دقیق این روز در دسترس نیست</h2><p>{topicLoadState.error || 'موضوع یا شماره روز با داده اصلی تطبیق قطعی ندارد؛ برای جلوگیری از نمایش تمرین اشتباه، راهنمایی این روز متوقف شده است.'}</p><button className="secondary" onClick={() => navigate('dashboard')}>بازگشت به داشبورد</button>{topicLoadState.status === 'error' && <button className="secondary" onClick={() => { setTopicLoadState({ key: problemKey, status: 'loading', error: '' }); loadTopicForScreen(problemKey).then(() => setTopicLoadState({ key: problemKey, status: 'loaded', error: '' })).catch((error) => setTopicLoadState({ key: problemKey, status: 'error', error: error?.message || 'بارگذاری محتوا انجام نشد.' })); }}>تلاش دوباره</button>}</section>)}
       {screen === 'dailyResult' && <DailyResult day={resultDay || journey.completed.length || currentDay} journey={journey} data={resultData} problem={category?.name} sourceLabel={recommendationSource} onDashboard={() => navigate('dashboard')} onNext={openDay} onFinal={() => navigate('final')} onBook={(rec) => openRecommendedBook(resultDay || currentDay, rec)} />}
       {screen === 'books' && <Suspense fallback={<section className="card libraryShell"><p className="muted">در حال آماده‌سازی کتابخانه…</p></section>}><LibraryPage books={books} loading={libraryLoading} error={libraryError} onOpenBook={(book) => openBook(book)} onBack={() => navigate(libraryReturn)} /></Suspense>}
       {screen === 'support' && <Support content={content} onBack={() => navigate(supportReturn)} />}
       {screen === 'final' && <FinalAssessment initial={journey.final} onSave={finishFinal} onValidation={showValidation} />}
       {screen === 'done' && <Done journey={journey} onReport={() => navigate('report')} onBooks={() => openBooks('done')} onSupport={() => openSupport('done')} onArchive={() => navigate('archive')} onNew={startNewPathFromArchive} />}
-      {screen === 'report' && <Report journey={journey} userProfile={userProfile} content={content} onBooks={() => openBooks('report')} onSupport={() => openSupport('report')} onDashboard={() => navigate('dashboard')} onArchive={() => navigate('archive')} onNew={startNewPathFromArchive} />}
-      {screen === 'archive' && <Archive journey={journey} content={content} onDeleteArchive={deleteSingleArchive} onBack={() => navigate('dashboard')} onNew={startNewPathFromArchive} />}
+      {screen === 'report' && (category ? <Report journey={journey} userProfile={userProfile} content={content} onBooks={() => openBooks('report')} onSupport={() => openSupport('report')} onDashboard={() => navigate('dashboard')} onArchive={() => navigate('archive')} onNew={startNewPathFromArchive} /> : <section className="card" role="status"><h2>در حال آماده‌سازی گزارش</h2><p>{topicLoadState.error || 'عنوان روزهای مسیر در حال دریافت است…'}</p></section>)}
+      {screen === 'archive' && <Archive journey={journey} content={content} onLoadTopic={loadTopicForScreen} onDeleteArchive={deleteSingleArchive} onBack={() => navigate('dashboard')} onNew={startNewPathFromArchive} />}
       <div className="appBottomDock" aria-label="پایین صفحه برنامه">
         {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
         <VersionFooter navVisible={navVisible} />
       </div>
-      {navVisible && <GlobalAssistantLauncher
+      {navVisible && <Suspense fallback={null}><GlobalAssistantLauncher
         screen={screen}
         visible={navVisible}
         dailyContext={screen === 'day' && activeDay ? {
@@ -863,7 +873,7 @@ function navigate(next) {
         } : null}
         libraryContext={screen === 'books' ? { titles: books.map((book) => book.title).filter(Boolean), loadBooks: refreshLibrary } : null}
         onRelationshipSafetyResponse={(response) => setRelationshipSafetyState({ dayKey: relationshipSafetyDayKey, response })}
-      />}
+      /></Suspense>}
       {openingBook && <div className="validationModal" role="status" aria-live="polite"><div className="validationCard"><h2>در حال آماده‌سازی کتاب</h2><p className="muted">متن این کتاب در حال دریافت و آماده‌سازی است…</p></div></div>}
       {preview && <BookPreviewModal preview={preview} onClose={() => setPreview(null)} onOpen={() => { const item = preview; setPreview(null); openBook(item.book, item.sourcePage, { day: item.day, sourcePage: item.sourcePage, reason: item.reason, sourceTitle: item.sourceTitle }); }} />}
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}

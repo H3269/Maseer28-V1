@@ -264,6 +264,18 @@ jobs:
         run: npm ci
       - name: Dependency security audit
         run: npm audit --audit-level=high
+      - name: Verify runtime topic shards preserve all 952 canonical daily records
+        run: node --test tests/runtimeContentArtifacts.test.mjs
+      - name: Test isolated runtime topic repository and cache behavior
+        run: node --test src/features/content/runtimeContentRepository.test.mjs
+      - name: Generate runtime topic shards (validation artifact only)
+        run: node scripts/generate-runtime-content-shards.mjs
+      - name: Upload generated runtime topic shards for inspection
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: runtime-topic-shards-validation
+          path: public/content/runtime-v1/
+          if-no-files-found: error
       - name: Run focused T01-T07 assistant and safety unit tests
         run: >-
           node --test
@@ -309,6 +321,19 @@ jobs:
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/daily-safety-gate.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/daily-assistant-guidance.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/global-assistant-launcher.mjs
+      - name: Capture startup performance diagnostics (mobile and desktop)
+        env:
+          PATH28_BASE_URL: http://127.0.0.1:4173/Maseer28/
+        run: |
+          PLAYWRIGHT_NODE_PATH="$(npx --yes --package=playwright@1.55.0 -c 'dirname "$(dirname "$(command -v playwright)")"')"
+          NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/startup-performance.mjs
+      - name: Upload startup performance diagnostics
+        if: always() && hashFiles('reports/generated/startup-performance.json') != ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: startup-performance-diagnostics
+          path: reports/generated/startup-performance.json
+          if-no-files-found: error
 
 # Topic-package PRs are validated in isolation; the full 34-topic suite is reserved for integration.
   validate-topic-package:
