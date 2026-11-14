@@ -757,7 +757,7 @@ function navigate(next) {
           relationshipSafetyResponse,
           guidanceData: splitDayContent(activeDay, journey.profileData?.problem || '', journey.daily?.[currentDay - 1], journey.daily || {}),
         } : null}
-        libraryContext={screen === 'books' ? { titles: books.map((book) => book.title).filter(Boolean) } : null}
+        libraryContext={screen === 'books' ? { titles: books.map((book) => book.title).filter(Boolean), loadBooks: refreshLibrary } : null}
         onRelationshipSafetyResponse={(response) => setRelationshipSafetyState({ dayKey: relationshipSafetyDayKey, response })}
       /></Suspense>}
       {openingBook && <div className="validationModal" role="status" aria-live="polite"><div className="validationCard"><h2>در حال آماده‌سازی کتاب</h2><p className="muted">متن این کتاب در حال دریافت و آماده‌سازی است…</p></div></div>}

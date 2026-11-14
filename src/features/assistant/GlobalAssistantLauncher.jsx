@@ -208,6 +208,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     if (libraryBooksLoadRef.current) return libraryBooksLoadRef.current;
     const loadTask = (async () => {
       try {
+        if (!libraryContext?.titles?.length && libraryContext?.loadBooks) await libraryContext.loadBooks();
         const rows = await libraryRepository.listBooks();
         const hydrated = await Promise.all(rows.map(async (book) => {
           try {
