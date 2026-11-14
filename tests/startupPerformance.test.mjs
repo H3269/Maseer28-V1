@@ -49,7 +49,7 @@ test('the static splash logo and title remain visible before React mounts', () =
 
 test('the library catalogue does not download every full book on entry', () => {
   const seedStart = libraryHook.indexOf('async function seedLibrary()');
-  const ensureStart = libraryHook.indexOf('export async function ensureSeedBookContent');
+  const ensureStart = libraryHook.indexOf('export function ensureSeedBookContent');
   const seedSource = libraryHook.slice(seedStart, ensureStart);
   const ensureSource = libraryHook.slice(ensureStart);
   assert.doesNotMatch(seedSource, /fetchJson\(meta\.file/);
