@@ -355,6 +355,26 @@ function sentenceSegments(text) {
   return out.length ? out : [s];
 }
 
+// Build the exact nearest non-empty structural neighbours in linear time.
+// Exported so the canonical-book regression can compare every result with the
+// former scan-based implementation without rebuilding full page layouts.
+export function buildNeighbourTextIndex(blocks) {
+  const blockTexts = blocks.map((block) => norm(block?.text));
+  const nextTexts = new Array(blocks.length);
+  const previousTexts = new Array(blocks.length);
+  let nextNonEmptyText = '';
+  for (let blockIndex = blocks.length - 1; blockIndex >= 0; blockIndex -= 1) {
+    nextTexts[blockIndex] = nextNonEmptyText;
+    if (blockTexts[blockIndex]) nextNonEmptyText = blockTexts[blockIndex];
+  }
+  let previousNonEmptyText = '';
+  for (let blockIndex = 0; blockIndex < blocks.length; blockIndex += 1) {
+    previousTexts[blockIndex] = previousNonEmptyText;
+    if (blockTexts[blockIndex]) previousNonEmptyText = blockTexts[blockIndex];
+  }
+  return { blockTexts, nextTexts, previousTexts };
+}
+
 function bookRows(book) {
   return (book.pages || []).map((page, index) => ({
     source: Number(page.sourcePage || page.page || index + 1),
@@ -688,19 +708,7 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
     // Precompute structural neighbours once per source page. Re-scanning the
     // remaining/preceding block array for every block made book pagination
     // quadratic on long Word pages, especially on mobile devices.
-    const blockTexts = blocks.map((block) => norm(block?.text));
-    const nextTexts = new Array(blocks.length);
-    const previousTexts = new Array(blocks.length);
-    let nextNonEmptyText = '';
-    for (let blockIndex = blocks.length - 1; blockIndex >= 0; blockIndex -= 1) {
-      nextTexts[blockIndex] = nextNonEmptyText;
-      if (blockTexts[blockIndex]) nextNonEmptyText = blockTexts[blockIndex];
-    }
-    let previousNonEmptyText = '';
-    for (let blockIndex = 0; blockIndex < blocks.length; blockIndex += 1) {
-      previousTexts[blockIndex] = previousNonEmptyText;
-      if (blockTexts[blockIndex]) previousNonEmptyText = blockTexts[blockIndex];
-    }
+    const { blockTexts, nextTexts, previousTexts } = buildNeighbourTextIndex(blocks);
     // Some Word pages contain the tail of the previous section before the next
     // section heading (notably book 3 pages 285 and 300). Insert the dedicated
     // opener exactly where that heading occurs instead of at the source-page edge.
