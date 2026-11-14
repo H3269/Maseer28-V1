@@ -140,11 +140,33 @@ function MainApp() {
 
     // The route content and its optional text overrides are independent files.
     // Fetch them together so startup does not wait for two sequential network round trips.
-    const pathRequest = fetch(`${import.meta.env.BASE_URL}content/path-content.json?v=20261023-fast-open`, { cache: 'default' })
-      .then((response) => {
-        if (!response.ok) throw new Error('فایل محتوای مسیر پیدا نشد.');
-        return response.json();
-      })
+    const pathUrl = `${import.meta.env.BASE_URL}content/path-content.json?v=20261023-fast-open`;
+    const loadPathContent = async (attempt = 0) => {
+      try {
+        const response = await fetch(pathUrl, { cache: attempt === 0 ? 'default' : 'reload' });
+        if (!response.ok) {
+          if (response.status >= 500 && attempt < 2) {
+            await new Promise((resolve) => window.setTimeout(resolve, 450 * (attempt + 1)));
+            return loadPathContent(attempt + 1);
+          }
+          throw new Error(response.status === 404
+            ? 'فایل محتوای مسیر در نشانی انتشار پیدا نشد.'
+            : `دریافت محتوای مسیر ناموفق بود (کد ${response.status}).`);
+        }
+        const data = await response.json();
+        if (!data?.categories || !Object.keys(data.categories).length) {
+          throw new Error('فایل محتوای مسیر ناقص است.');
+        }
+        return data;
+      } catch (error) {
+        if (attempt < 2 && !(error instanceof SyntaxError)) {
+          await new Promise((resolve) => window.setTimeout(resolve, 450 * (attempt + 1)));
+          return loadPathContent(attempt + 1);
+        }
+        throw error;
+      }
+    };
+    const pathRequest = loadPathContent()
       .then((data) => {
         if (!cancelled) setLoadingProgress(78);
         return data;
@@ -748,7 +770,7 @@ function navigate(next) {
     setCopyrightOpen(false);
   }
 
-  if (loadError) return <div className="validationModal"><div className="validationCard"><h2>خطا در بارگذاری برنامه</h2><p className="muted">{loadError}</p></div></div>;
+  if (loadError) return <div className="validationModal"><div className="validationCard" role="alert"><h2>خطا در بارگذاری برنامه</h2><p className="muted">{loadError}</p><button className="primary" type="button" onClick={() => window.location.reload()}>تلاش دوباره</button></div></div>;
   if (!content || !splashLogoReady) return <div className="app appLoading" role="status" aria-live="polite"><div className="loadingBrand"><img ref={splashLogoRef} src={`${import.meta.env.BASE_URL}assets/Logo m24.png`} alt="لوگوی برنامه مسیر" loading="eager" decoding="async" fetchPriority="high" onLoad={(event) => markSplashLogoReady(event.currentTarget)} onError={() => setLoadError('تصویر صفحه آغازین بارگذاری نشد. لطفاً اتصال را بررسی و دوباره تلاش کن.')} style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }} /><h1 style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }}>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p><div className="loadingProgress" role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(loadingProgress)}>{Array.from({ length: 10 }, (_, index) => <span key={index} className="loadingProgressSegment" style={{ '--segment-progress': `${Math.max(0, Math.min(100, loadingProgress - index * 10))}%` }} />)}</div></div></div>;
 
   const onboardingComplete = Boolean(userProfile && hasCompletedOnboarding);
