@@ -20,6 +20,9 @@ test('T11 overlay connects all 28 redesigned days and complete owner-review meta
 
   assert.equal(days.length, 28);
   assert.equal(guide.records.length, 28);
+  assert.equal(new Set(days.map((day) => day.title)).size, 28, 'T11 day titles must not repeat');
+  assert.equal(new Set(days.map((day) => day.exercise)).size, 28, 'T11 daily exercises must not repeat exactly');
+  assert.equal(new Set(days.map((day) => day.actionText)).size, 28, 'T11 dedicated actions must not repeat exactly');
   for (const day of days) {
     const expected = guideByDay.get(Number(day.day));
     assert.ok(expected, 'guide exists for day ' + day.day);
