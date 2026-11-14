@@ -1,31 +1,18 @@
-import ANSWERS from './t11DailyAssistantAnswers.v1.json' with { type: 'json' };
+import GUIDE from './t11DailyAssistantGuide.v1.json' with { type: 'json' };
 
-const QUESTION_KINDS = Object.freeze({
-  q01: 'exercise_meaning',
-  q02: 'exercise_example',
-  q03: 'action_meaning',
-  q04: 'action_example',
-  q05: 'light_version',
-  q06: 'success',
-  q07: 'stop',
-  q08: 'no_event',
-  q09: 'exercise_action_difference',
-  q10: 'not_done',
-  q11: 't11_distress',
-  q12: 'talk_other',
-  q13: 'can_change',
-  q14: 'duration',
-});
+const QUESTION_GROUPS = Object.freeze([
+  { label: 'فهم تمرین', ids: ['q01', 'q02'] },
+  { label: 'فهم اقدام اختصاصی', ids: ['q03', 'q04'] },
+  { label: 'تفاوت تمرین و اقدام', ids: ['q09'] },
+  { label: 'اجرا و موانع', ids: ['q05', 'q08', 'q10', 'q13', 'q14'] },
+  { label: 'ارزیابی و ایمنی', ids: ['q06', 'q07', 'q11', 'q12'] },
+]);
 
-const GUIDES = new Map(ANSWERS.records.map((record) => [
+const GUIDES = new Map(GUIDE.records.map((record) => [
   record.day,
   Object.freeze({
     ...record,
-    questions: Object.freeze(record.questions.map((question) => Object.freeze({
-      ...question,
-      value: question.label,
-      kind: QUESTION_KINDS[question.id],
-    }))),
+    questions: Object.freeze(record.questions.map((question) => Object.freeze({ ...question }))),
   }),
 ]));
 
@@ -34,17 +21,10 @@ function toDayNumber(value) {
   return Number.isInteger(day) && day >= 1 && day <= 28 ? day : null;
 }
 
-function getVisibleText(dailyContent, keys) {
-  for (const key of keys) {
-    const value = dailyContent?.[key];
-    if (typeof value === 'string' && value.trim()) return value.trim();
-  }
-  return '';
-}
-
 /**
- * T11 answers are informational prepared content only. They do not approve
- * daily exercises, assign a subtype, or bypass the daily-content safety gate.
+ * T11 prepared answers are owner-review material. They are bound to the
+ * canonical topic/day and exact visible exercise/action; no subtype is inferred,
+ * no treatment protocol is added, and no shared-center reminder is appended.
  */
 export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = {}) {
   const dayNumber = toDayNumber(day);
@@ -56,33 +36,19 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
     || (dailyContent.topic_id != null && dailyContent.topic_id !== 'T11')) return null;
 
   const guide = GUIDES.get(dayNumber);
-  const question = guide?.questions.find((item) => item.value === String(message || '').trim());
-  if (!question || !question.answer) return null;
+  if (!guide || guide.reviewStatus !== 'pending_owner_review'
+    || guide.subtopicId != null
+    || !Array.isArray(guide.subtopicIds)
+    || guide.subtopicIds.length !== 0) return null;
 
-  let body = question.answer;
-  const exercise = getVisibleText(dailyContent, ['exercise', 'exerciseText']);
-  const action = getVisibleText(dailyContent, ['actionText', 'action']);
-  const lightExercise = getVisibleText(dailyContent, ['lightExerciseText', 'lightExercise']);
-  const lightAction = getVisibleText(dailyContent, ['lightActionText', 'lightAction']);
+  const question = guide.questions.find((item) => item.value === String(message || '').trim());
+  if (!question || typeof question.answer !== 'string' || !question.answer.trim()) return null;
 
-  if (question.id === 'q01' && exercise) {
-    body += `\n\n**متن تمرین همین روز در برنامه:** ${exercise}`;
-  }
-  if (question.id === 'q02' && exercise) {
-    body += `\n\n**تمرین واقعی همین روز:** ${exercise}`;
-  }
-  if (question.id === 'q03' && action) {
-    body += `\n\n**متن اقدام اختصاصی همین روز در برنامه:** ${action}`;
-  }
-  if (question.id === 'q04' && action) {
-    body += `\n\n**اقدام واقعی همین روز:** ${action}`;
-  }
-  if (question.id === 'q05') {
-    if (lightExercise) body += `\n\n**نسخه سبک تمرین:** ${lightExercise}`;
-    if (lightAction) body += `\n\n**نسخه سبک اقدام:** ${lightAction}`;
-  }
+  const exercise = String(dailyContent.exercise || '').trim();
+  const action = String(dailyContent.actionText || dailyContent.action || '').trim();
+  if (!exercise || !action || exercise !== guide.exercise || action !== guide.action) return null;
 
-  return `راهنمای روز ${dayNumber} عادت‌های تکراری — ${guide.title}\n\n${body}`;
+  return `راهنمای روز ${dayNumber} عادت‌های تکراری — ${guide.title}\n\n${question.answer}`;
 }
 
 export function getT11DailyAssistantPromptGroups(day) {
@@ -90,14 +56,10 @@ export function getT11DailyAssistantPromptGroups(day) {
   const guide = GUIDES.get(dayNumber);
   if (!guide) return [];
 
-  const questions = guide.questions;
-  return [
-    { label: `فهم تمرین روز ${dayNumber}`, questions: questions.filter((item) => ['q01', 'q02'].includes(item.id)) },
-    { label: `فهم اقدام اختصاصی روز ${dayNumber}`, questions: questions.filter((item) => ['q03', 'q04'].includes(item.id)) },
-    { label: 'تفاوت تمرین و اقدام', questions: questions.filter((item) => item.id === 'q09') },
-    { label: 'اجرا و موانع', questions: questions.filter((item) => ['q05', 'q08', 'q10', 'q13', 'q14'].includes(item.id)) },
-    { label: 'ارزیابی و ایمنی', questions: questions.filter((item) => ['q06', 'q07', 'q11', 'q12'].includes(item.id)) },
-  ];
+  return QUESTION_GROUPS.map((group) => ({
+    label: group.ids.length === 1 ? group.label : `${group.label} روز ${dayNumber}`,
+    questions: guide.questions.filter((question) => group.ids.includes(question.id)),
+  }));
 }
 
-export const T11_DAILY_ASSISTANT_GUIDES = ANSWERS.records;
+export const T11_DAILY_ASSISTANT_GUIDES = Object.freeze(GUIDE.records);
