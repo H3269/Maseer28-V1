@@ -75,11 +75,11 @@ function hasApprovedFearReview(day) {
 }
 
 function isRepetitiveBehaviorTopicDay(day) {
-  return Boolean(day && typeof day === 'object' && (
-    day.topic_id === 'T11'
-    || /^عادت‌های تکراری-[0-9]{1,2}$/u.test(String(day.id || ''))
-    || /^T11-D[0-9]{1,2}$/i.test(String(day.id || ''))
-  ));
+  if (!day || typeof day !== 'object') return false;
+  const id = String(day.id || '');
+  const canonicalId = /^عادت‌های تکراری-(?:0[1-9]|1[0-9]|2[0-8])$/u.test(id)
+    || /^T11-D(?:0[1-9]|1[0-9]|2[0-8])$/i.test(id);
+  return canonicalId && (day.topic_id == null || day.topic_id === 'T11');
 }
 
 function isBoundaryTopicDay(day) {
