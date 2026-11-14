@@ -46,7 +46,10 @@ function makeState(problem, completedDays = []) {
 async function openDay(problem, day) {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   const errors = [];
+  const failedRequests = [];
   page.on('pageerror', (error) => errors.push(String(error)));
+  page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
+  page.on('requestfailed', (request) => failedRequests.push(`${request.url()} :: ${request.failure()?.errorText || 'failed'}`));
   const completed = Array.from({ length: day - 1 }, (_, index) => index + 1);
   await page.addInitScript((state) => {
     localStorage.setItem('maseer28_onboarding_complete_v1', '1');
@@ -57,7 +60,14 @@ async function openDay(problem, day) {
     }));
   }, makeState(problem, completed));
   await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
-  await page.locator('#copyrightModal').waitFor({ state: 'visible' });
+  try {
+    await page.locator('#copyrightModal').waitFor({ state: 'visible' });
+  } catch (error) {
+    console.error('STARTUP_PAGE_ERRORS', JSON.stringify(errors));
+    console.error('STARTUP_FAILED_REQUESTS', JSON.stringify(failedRequests));
+    console.error('STARTUP_BODY_TEXT', await page.locator('body').innerText().catch(() => 'unavailable'));
+    throw error;
+  }
   await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
   await page.locator('#dashboard').waitFor({ state: 'visible' });
   await page.locator('#dashboard .heroAction').click();
