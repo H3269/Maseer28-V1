@@ -98,7 +98,9 @@ test('T11 q11 uses its own distress response and does not append shared-center b
   assert.ok(answer.includes(guide.questions[10].answer));
   assert.match(answer, /شرط توقف امروز/u);
   assert.match(answer, /حمایت انسانی مناسب/u);
-  assert.match(answer, /مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود/u);
+  assert.match(answer, /بیاییم قدم‌به‌قدم پیش برویم/u);
+  assert.match(answer, /هدف امروز/u);
+  assert.doesNotMatch(answer, /پیش‌نمایش برای بازبینی مالک|مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود/u);
   assert.doesNotMatch(answer, /۰۹۱۹۰۸۸۹۰۶۲|هیپنوتراپی شفا|مرکز مشاوره/u);
 });
 
@@ -144,12 +146,14 @@ test('T11 page assistant routes every exact day-specific question and rejects mi
   }
 });
 
-test('T11 uses the shared daily page structure without preview-only markup', async () => {
+test('T11 uses the standard daily entry UI without owner-preview boxes or blocked controls', async () => {
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
-  assert.match(ui, /getDailySafetyMode\(data\) === 'blocked'/);
-  assert.match(ui, /id="dailySafetyStatus"/);
-  assert.doesNotMatch(ui, /isT11ReviewPreview|t11-owner-review-preview|t11-review-details|t11ReviewNextDayBtn/);
+  const safety = await readFile(new URL('../src/features/content/dailySafety.js', import.meta.url), 'utf8');
+  assert.match(ui, /id="openDailyEntryBtn"/);
+  assert.match(ui, /id="dailyEntryPanel"/);
+  assert.doesNotMatch(ui, /getDailySafetyMode|isT11SafetyBlocked|dailySafetyStatus|skipDailyReviewBtn|پیش‌نمایش برای بازبینی مالک|مشاهده مشخصات کامل این روز برای بازبینی/u);
+  assert.match(safety, /if \(isRepetitiveBehaviorTopicDay\(day\)\) return 'routine'/);
   assert.match(launcher, /getT11DailyAssistantPromptGroups\(dailyContext\?\.day\)/);
   assert.match(launcher, /!isT11DailyPromptContext\s*&&\s*Boolean\(selectedDailyQuestion/);
 });
