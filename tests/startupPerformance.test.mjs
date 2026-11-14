@@ -25,6 +25,11 @@ test('startup does not wait through an artificial splash delay', () => {
   assert.doesNotMatch(app, /setContent\(merged\)/);
 });
 
+test('primary path content receives network priority over optional daily overrides', () => {
+  assert.match(app, /fetch\(pathUrl, \{ cache: attempt === 0 \? 'default' : 'reload', priority: 'high' \}\)/);
+  assert.match(app, /daily-text-overrides\.v1\.json[^\n]*priority: 'low'/);
+});
+
 test('the home screen renders as soon as primary path content is ready', () => {
   assert.match(app, /pathRequest[\s\S]*?\.then\(\(data\) => \{[\s\S]*?setContent\(data\)/);
   assert.match(app, /overridesRequest\.then\(\(overrides\) => \{[\s\S]*?mergeDailyTextOverrides\(data, overrides\)/);
