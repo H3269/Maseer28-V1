@@ -10,6 +10,7 @@ const BASE = import.meta.env.BASE_URL;
 // and active-version metadata so imported/replaced books cannot reuse stale data.
 const SEED_BOOK_CONTENT_CACHE = new Map();
 const SEED_BOOK_CONTENT_IN_FLIGHT = new Map();
+const SEED_BOOK_CONTENT_CACHE_LIMIT = 2;
 
 function seedBookCacheKey(book) {
   return [
@@ -87,7 +88,12 @@ async function seedLibrary() {
 export function ensureSeedBookContent(book) {
   if (!book?.id) return Promise.reject(new Error('مشخصات کتاب معتبر نیست.'));
   const cacheKey = seedBookCacheKey(book);
-  if (SEED_BOOK_CONTENT_CACHE.has(cacheKey)) return Promise.resolve(SEED_BOOK_CONTENT_CACHE.get(cacheKey));
+  if (SEED_BOOK_CONTENT_CACHE.has(cacheKey)) {
+    const cached = SEED_BOOK_CONTENT_CACHE.get(cacheKey);
+    SEED_BOOK_CONTENT_CACHE.delete(cacheKey);
+    SEED_BOOK_CONTENT_CACHE.set(cacheKey, cached);
+    return Promise.resolve(cached);
+  }
   if (SEED_BOOK_CONTENT_IN_FLIGHT.has(cacheKey)) return SEED_BOOK_CONTENT_IN_FLIGHT.get(cacheKey);
 
   const task = (async () => {
@@ -142,7 +148,11 @@ export function ensureSeedBookContent(book) {
 
   SEED_BOOK_CONTENT_IN_FLIGHT.set(cacheKey, task);
   return task.then((result) => {
+    SEED_BOOK_CONTENT_CACHE.delete(cacheKey);
     SEED_BOOK_CONTENT_CACHE.set(cacheKey, result);
+    while (SEED_BOOK_CONTENT_CACHE.size > SEED_BOOK_CONTENT_CACHE_LIMIT) {
+      SEED_BOOK_CONTENT_CACHE.delete(SEED_BOOK_CONTENT_CACHE.keys().next().value);
+    }
     return result;
   }).finally(() => {
     if (SEED_BOOK_CONTENT_IN_FLIGHT.get(cacheKey) === task) {
