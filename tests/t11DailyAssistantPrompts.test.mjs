@@ -67,13 +67,13 @@ test('T11 assistant exposes five groups and exactly fourteen questions for each 
 });
 
 test('T11 q11 uses its own distress response and does not append shared-center boilerplate', () => {
-  const dailyContent = { id: 'عادت‌های تکراری-01', day: 1, topic_id: 'T11' };
+  const dailyContent = { id: 'عادت‌های تکراری-02', day: 2, topic_id: 'T11' };
   const answer = answerT11DailyPreparedQuestion({
-    day: 1,
+    day: 2,
     message: EXPECTED_QUESTIONS[10],
     dailyContent,
   });
-  assert.match(answer, /فشار یا ناراحتی/u);
+  assert.match(answer, /بررسی را متوقف کن/u);
   assert.match(answer, /متوقف/u);
   assert.doesNotMatch(answer, /۱۱۵/u);
   assert.doesNotMatch(answer, /مرکز مشاوره/u);
