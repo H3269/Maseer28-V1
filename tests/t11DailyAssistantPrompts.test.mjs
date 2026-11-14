@@ -41,6 +41,14 @@ test('T11 assistant catalog contains exactly 28 days and 392 complete fixed-ques
   }
 });
 
+test('T11 package is enabled for owner live testing without claiming expert approval', async () => {
+  const packageData = JSON.parse(await readFile(new URL('../src/features/assistant/t11DailyAssistantGuide.v1.json', import.meta.url), 'utf8'));
+  assert.equal(packageData.status, 'owner_live_test_enabled_pending_expert_review');
+  assert.equal(packageData.records.length, 28);
+  assert.ok(packageData.records.every((record) => record.reviewStatus === 'pending_owner_review'));
+  assert.ok(packageData.records.every((record) => record.evidenceGrade === 'not_assessed'));
+});
+
 test('T11 retains its own 392 answers and does not copy any exact T10 prepared answer', () => {
   const t10Answers = new Set(T10_DAILY_ASSISTANT_GUIDES.flatMap((guide) => guide.questions.map((question) => question.answer)));
   const t11Answers = T11_DAILY_ASSISTANT_GUIDES.flatMap((guide) => guide.questions.map((question) => question.answer));
