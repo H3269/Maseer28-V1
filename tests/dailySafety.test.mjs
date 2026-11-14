@@ -345,49 +345,23 @@ test('legacy T12 boundary content stays blocked until expert and safety review',
   })), 'caution');
 });
 
-test('legacy T11 repetitive behavior content stays blocked until specialist subtype review', async () => {
+test('T11 is fully interactive during the owner live-test window without changing its pending review metadata', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const days = content.categories['عادت‌های تکراری'].days;
   assert.equal(days.length, 28);
   for (const day of days) {
-    assert.equal(getDailySafetyMode(day), 'blocked', `${day.id} must remain withheld until its behavior class is reviewed`);
+    assert.equal(day.review_status, 'pending_expert_review');
+    assert.equal(getDailySafetyMode(day), 'routine', `${day.id} must allow the owner to test the complete daily flow`);
   }
-  const skipped = createHumanReviewSkipRecord(days[0], new Date('2026-11-04T12:00:00.000Z'));
-  assert.equal(skipped.status, 'skipped_human_review');
-  assert.equal('score' in skipped, false);
+  assert.throws(() => createHumanReviewSkipRecord(days[0]),
+    'T11 no longer uses the non-scoring review-preview skip path');
   assert.equal(getDailySafetyMode({
     id: 'T11-D06',
     topic_id: 'T11',
-    risk_level: 'routine',
-    review_status: 'approved',
-    review_record_id: 'review-t11-day-06',
-  }), 'blocked', 'expert approval without exactly one reviewed subtype must not release content');
-  assert.equal(getDailySafetyMode({
-    id: 'T11-D06',
-    topic_id: 'T11',
-    risk_level: 'routine',
-    review_status: 'approved',
-    review_record_id: 'review-t11-day-06',
-    subtopic_ids: ['T11-S01', 'T11-S02'],
-  }), 'blocked', 'ambiguous multi-subtopic assignment must remain blocked');
-  assert.equal(getDailySafetyMode({
-    id: 'T11-D06',
-    topic_id: 'T11',
-    risk_level: 'routine',
-    review_status: 'approved',
-    review_record_id: 'review-t11-day-06',
-    subtopic_ids: ['T11-S01'],
-  }), 'routine', 'a reviewed simple habit with one explicit subtype and review record may be released');
-  for (const subtopic of ['T11-S02', 'T11-S03']) {
-    assert.equal(getDailySafetyMode({
-      id: 'T11-D06',
-      topic_id: 'T11',
-      risk_level: 'routine',
-      review_status: 'approved',
-      review_record_id: 'review-t11-day-06',
-      subtopic_ids: [subtopic],
-    }), 'blocked', `${subtopic} must remain withheld until its specialist-specific taxonomy and intervention are separated`);
-  }
+    risk_level: 'human_review_required',
+    review_status: 'pending_expert_review',
+    subtopic_ids: [],
+  }), 'routine', 'the main-branch live-test override must not impersonate an expert approval');
 });
 
 test('ambiguous control topic stays blocked until its subtypes receive expert review', async () => {
@@ -442,7 +416,7 @@ test('T01 day 27 is explicitly withheld for human review', async () => {
   assert.match(day.when_to_seek_human_support, /فوراً از خدمات اضطراری/);
 });
 
-test('Path28 daily screen keeps canonical records visible and enforces the T11 approval gate', async () => {
+test('Path28 daily screen keeps canonical records visible and enables the full T11 live-test flow', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
   const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
@@ -462,12 +436,11 @@ test('Path28 daily screen keeps canonical records visible and enforces the T11 a
   assert.match(ui, /value=\{parts\.exercise\}/);
   assert.match(ui, /value=\{parts\.action\}/);
   assert.match(ui, /id="openDailyEntryBtn"/);
-  assert.match(ui, /isT11Day && getDailySafetyMode\(data\) === 'blocked'/);
-  assert.match(ui, /!isT11SafetyBlocked && !entryOpen/);
-  assert.match(ui, /id="skipDailyReviewBtn"/);
+  assert.doesNotMatch(ui, /getDailySafetyMode|isT11SafetyBlocked|dailySafetyStatus|skipDailyReviewBtn|پیش‌نمایش برای بازبینی مالک|مشاهده مشخصات کامل این روز برای بازبینی/);
+  assert.match(ui, /!entryOpen && <button className="primary heroAction" id="openDailyEntryBtn"/);
+  assert.match(ui, /entryOpen && <div ref=\{entryPanelRef\}[^>]*id="dailyEntryPanel"/);
   assert.doesNotMatch(ui, /getRelationshipSafetyGate|requiresHumanReview|relationshipSafetyGate/);
-  assert.match(app, /createHumanReviewSkipRecord\(activeDay/);
-  assert.match(app, /skipDayForHumanReview/);
+  assert.doesNotMatch(app, /createHumanReviewSkipRecord|skipDayForHumanReview/);
   assert.doesNotMatch(app, /getDailySafetyMode|skipDayForRelationshipSafety/);
   assert.match(app, /selectDailyContentCategory\(content\?\.categories, problemKey\)/);
   assert.match(app, /isCompleteDailyContentCategory\(content\?\.categories, problemKey\)/);
