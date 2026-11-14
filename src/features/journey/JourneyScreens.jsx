@@ -335,7 +335,7 @@ export function adaptiveGuidance(previousRecord, previousAnswer, problem, histor
   return cleanDailyCopy(`${base}${note}`, problem);
 }
 
-export function DayScreen({ day, problem, data, record, savedAnswer, previousRecord, previousAnswer, history = {}, onDashboard, onPrevious, onComplete, onSkip, onNext, completed, onValidation }) {
+export function DayScreen({ day, problem, data, record, savedAnswer, previousRecord, previousAnswer, history = {}, onDashboard, onPrevious, onComplete, onNext, completed, onValidation }) {
   const parts = splitDayContent(data, problem, previousRecord, history);
   const guidance = parts.adaptation || adaptiveGuidance(previousRecord, previousAnswer, problem, history);
   const [entryOpen, setEntryOpen] = useState(Boolean(record?.score != null || savedAnswer || record?.feedback));
