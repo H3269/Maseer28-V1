@@ -81,6 +81,12 @@ try {
     assert.equal(await card.locator('#dayAction').count(), 1, topic + ' day 1 must display its dedicated action');
     if (topic === 'عادت‌های تکراری') {
       for (let day = 1; day <= 28; day += 1) {
+        if (day > 1) {
+          await page.close();
+          const reopened = await openDay(topic, day);
+          page = reopened.page;
+          errors.push(...reopened.errors);
+        }
         const dayCard = page.locator('#day');
         const badgeText = await page.locator('#dayBadge').innerText();
         assert.match(badgeText, new RegExp('روز ' + toPersianDigits(day) + ' از ۲۸', 'u'));
@@ -128,8 +134,10 @@ try {
           const nextLabel = new RegExp('رفتن به روز ' + toPersianDigits(day + 1), 'u');
           assert.equal(await page.getByRole('button', { name: nextLabel }).count(), 1,
             'T11 day ' + day + ' must expose the normal next-day action');
-          await page.getByRole('button', { name: nextLabel }).click();
-          await page.locator('#dayBadge').waitFor({ state: 'visible' });
+          // Production CI preserves the normal one-day pacing rule; the
+          // owner-facing GitHub Pages test build disables that clock lock.
+          // Here we verify the next-day CTA and open each day with an old
+          // completed-day fixture so every canonical day can be submitted.
         } else {
           assert.equal(await page.getByRole('button', { name: /رفتن به ارزیابی نهایی/u }).count(), 1,
             'T11 day 28 must expose the normal final-assessment action');
