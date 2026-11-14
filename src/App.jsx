@@ -4,7 +4,6 @@ import LibraryPage from './features/library/LibraryPage.jsx';
 import Reader from './features/library/Reader.jsx';
 import { legacySourceLabel } from './features/library/legacyLibraryMeta.js';
 import { previewPageText } from './features/library/readerEngine.js';
-import { libraryRepository } from './features/library/libraryRepository.js';
 import { ensureSeedBookContent, useLibrary } from './features/library/useLibrary.js';
 import {
   APP_CONFIG,
@@ -572,11 +571,11 @@ function navigate(next) {
 
   async function openRecommendedBook(day, recommendation) {
     if (!recommendation?.bookId) return;
-    const availableBooks = books.length ? books : await refreshLibrary();
-    const book = availableBooks.find((item) => Number(item.legacyId) === Number(recommendation.bookId)) || availableBooks[Number(recommendation.bookId) - 1];
-    if (!book) return;
     setOpeningBook(true);
     try {
+      const availableBooks = books.length ? books : await refreshLibrary();
+      const book = availableBooks.find((item) => Number(item.legacyId) === Number(recommendation.bookId)) || availableBooks[Number(recommendation.bookId) - 1];
+      if (!book) throw new Error('book missing');
       const { book: readyBook, version } = await ensureSeedBookContent(book);
       if (!version?.content) throw new Error('book missing');
       const sourcePage = Number(recommendation.page) || 1;
