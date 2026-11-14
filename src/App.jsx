@@ -513,9 +513,13 @@ function navigate(next) {
       // existed. Include those completed days, even in legacy states with no
       // daily record, so an old suggestion cannot reappear.
       const problemKey = path?.profileData?.problem;
-      for (const dayNumber of path?.completed || []) {
-        if (daily[dayNumber]?.bookRec) continue;
-        const authoredDay = content?.categories?.[problemKey]?.days?.find((row) => Number(row.day) === Number(dayNumber));
+      const completedWithoutDynamicRecommendation = (path?.completed || []).filter((dayNumber) => !daily[dayNumber]?.bookRec);
+      let authoredCategory = content?.categories?.[problemKey];
+      if (completedWithoutDynamicRecommendation.length && !authoredCategory && problemKey) {
+        try { authoredCategory = await loadTopicForScreen(problemKey); } catch { /* Keep the existing recommendation history even if a legacy topic shard is unavailable. */ }
+      }
+      for (const dayNumber of completedWithoutDynamicRecommendation) {
+        const authoredDay = authoredCategory?.days?.find((row) => Number(row.day) === Number(dayNumber));
         const authored = authoredDay?.legacyBookRec || authoredDay?.bookRec;
         if (authored) await addUsedRecommendation(authored);
       }
