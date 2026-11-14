@@ -29,9 +29,9 @@ export default function LibraryPage({ books, loading, error, onOpenBook, onBack 
         <div><span className="badge">کتابخانه اختصاصی</span><h2>کتابخانه مسیر</h2></div>
         <div className="libraryMark"><AppIcon name="bookOpen" size={25} /></div>
       </div>
-      {loading && <div className="muted">در حال آماده‌سازی کتابخانه…</div>}
+      {loading && !books.length && <div className="muted">در حال آماده‌سازی کتابخانه…</div>}
       {error && <div className="feedback">{error}</div>}
-      {!loading && !error && <div className="libraryGrid">
+      {books.length > 0 && <div className="libraryGrid">
         {books.map((book) => {
           const legacy = LEGACY_BOOK_META[Number(book.legacyId)] || {};
           const title = book.customTitle ? book.title : (legacy.title || book.title);
