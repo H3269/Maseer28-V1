@@ -152,12 +152,18 @@ function MainApp() {
       .then((response) => response.ok ? response.json() : null)
       .catch(() => null);
 
-    Promise.all([pathRequest, overridesRequest])
-      .then(([data, overrides]) => {
+    // The primary route data alone gates the first usable render.
+    // Daily text overrides are optional and must never hold the home screen behind
+    // a slow or stalled secondary request.
+    pathRequest
+      .then((data) => {
         if (cancelled) return;
-        const merged = mergeDailyTextOverrides(data, overrides);
         setLoadingProgress(100);
-        setContent(merged);
+        setContent(data);
+        overridesRequest.then((overrides) => {
+          if (cancelled || !overrides) return;
+          setContent(mergeDailyTextOverrides(data, overrides));
+        });
       })
       .catch((error) => {
         if (cancelled) return;
