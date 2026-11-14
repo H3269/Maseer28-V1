@@ -21,6 +21,14 @@ function toDayNumber(value) {
   return Number.isInteger(day) && day >= 1 && day <= 28 ? day : null;
 }
 
+function normalizeT11VisibleText(value) {
+  return String(value || '').normalize('NFKC')
+    .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
+    .replace(/\s+([،؛.!؟»])/gu, '$1')
+    .replace(/\s+/gu, ' ')
+    .trim().toLowerCase();
+}
+
 /**
  * T11 prepared answers are owner-review material. They are bound to the
  * canonical topic/day and exact visible exercise/action; no subtype is inferred,
@@ -46,7 +54,10 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
 
   const exercise = String(dailyContent.exercise || '').trim();
   const action = String(dailyContent.actionText || dailyContent.action || '').trim();
-  if (!exercise || !action || exercise !== guide.exercise || !action.endsWith(guide.action)) return null;
+  const actionWithoutDisplayPrefix = action.replace(/^برای مسئله «عادت‌های تکراری»،\s*/u, '');
+  if (!exercise || !action
+    || normalizeT11VisibleText(exercise) !== normalizeT11VisibleText(guide.exercise)
+    || normalizeT11VisibleText(actionWithoutDisplayPrefix) !== normalizeT11VisibleText(guide.action)) return null;
 
   return `راهنمای روز ${dayNumber} عادت‌های تکراری — ${guide.title}\n\n${question.answer}`;
 }
