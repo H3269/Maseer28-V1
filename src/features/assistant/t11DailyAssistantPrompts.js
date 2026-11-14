@@ -68,7 +68,6 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
     || normalizeT11VisibleText(actionWithoutDisplayPrefix) !== normalizeT11VisibleText(guide.action)) return null;
 
   const lightExercise = String(dailyContent.lightExerciseText || guide.lightVersion || '').trim();
-  const lightAction = String(dailyContent.lightActionText || guide.lightVersion || '').trim();
   const progressAction = String(dailyContent.progressActionText || guide.progressVersion || '').trim();
   const restAction = String(dailyContent.restActionText || dailyContent.restExerciseText || guide.restVersion || '').trim();
 
