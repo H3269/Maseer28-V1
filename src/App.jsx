@@ -1,9 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import AppIcon from './shared/components/AppIcon.jsx';
-import LibraryPage from './features/library/LibraryPage.jsx';
-import Reader from './features/library/Reader.jsx';
 import { legacySourceLabel } from './features/library/legacyLibraryMeta.js';
-import { previewPageText } from './features/library/readerEngine.js';
 import { ensureSeedBookContent, useLibrary } from './features/library/useLibrary.js';
 import {
   APP_CONFIG,
@@ -56,8 +53,11 @@ import { getRelationshipSafetyGate, isRelationshipSafetyConfirmed } from './feat
 import { isCompleteDailyContentCategory, selectCanonicalDailyRecord, selectDailyContentCategory } from './features/content/dailyContentSelector.js';
 import { mergeDailyTextOverrides } from './features/content/dailyTextOverrides.js';
 import { fa } from './shared/utils.js';
-import GlobalAssistantLauncher from './features/assistant/GlobalAssistantLauncher.jsx';
 import VersionFooter from './shared/components/VersionFooter.jsx';
+
+const LibraryPage = lazy(() => import('./features/library/LibraryPage.jsx'));
+const Reader = lazy(() => import('./features/library/Reader.jsx'));
+const GlobalAssistantLauncher = lazy(() => import('./features/assistant/GlobalAssistantLauncher.jsx'));
 
 function isPathSetupComplete(state) {
   const data = state?.profileData;
@@ -576,7 +576,10 @@ function navigate(next) {
       const availableBooks = books.length ? books : await refreshLibrary();
       const book = availableBooks.find((item) => Number(item.legacyId) === Number(recommendation.bookId)) || availableBooks[Number(recommendation.bookId) - 1];
       if (!book) throw new Error('book missing');
-      const { book: readyBook, version } = await ensureSeedBookContent(book);
+      const [{ book: readyBook, version }, { previewPageText }] = await Promise.all([
+        ensureSeedBookContent(book),
+        import('./features/library/readerEngine.js'),
+      ]);
       if (!version?.content) throw new Error('book missing');
       const sourcePage = Number(recommendation.page) || 1;
       const page = version.content.pages?.find((row) => Number(row.sourcePage || row.page) === sourcePage) || version.content.pages?.[0];
@@ -708,7 +711,7 @@ function navigate(next) {
 
   if (screen === 'bookReader' && readerState) {
     // The immersive reader is the only app screen without the global bottom navigation.
-    return <Reader book={readerState.book} initialSourcePage={readerState.sourcePage} initialPage={readerState.initialPage} target={readerState.target} returnTo={libraryReturn} onClose={() => { setReaderState(null); navigate('books'); }} />;
+    return <Suspense fallback={<div className="app appLoading" role="status">در حال آماده‌سازی صفحه مطالعه…</div>}><Reader book={readerState.book} initialSourcePage={readerState.sourcePage} initialPage={readerState.initialPage} target={readerState.target} returnTo={libraryReturn} onClose={() => { setReaderState(null); navigate('books'); }} /></Suspense>;
   }
 
   // Navigation becomes available only after the first profile and baseline
@@ -733,7 +736,7 @@ function navigate(next) {
         <DayScreen day={currentDay} problem={journey.profileData?.problem || ''} data={activeDay} record={journey.daily?.[currentDay]} savedAnswer={journey.answers?.[currentDay] || ''} previousRecord={journey.daily?.[currentDay - 1]} previousAnswer={journey.answers?.[currentDay - 1] || ''} history={journey.daily || {}} onDashboard={() => navigate('dashboard')} onPrevious={() => currentDay <= 1 ? navigate('dashboard') : openDay(currentDay - 1)} onComplete={completeDay} onNext={() => openDay(currentDay + 1)} completed={journey.completed.includes(currentDay)} onValidation={showValidation} />
       </> : <section className="card dayCard" role="alert"><h2>محتوای دقیق این روز در دسترس نیست</h2><p>موضوع یا شماره روز با داده اصلی تطبیق قطعی ندارد؛ برای جلوگیری از نمایش تمرین اشتباه، راهنمایی این روز متوقف شده است.</p><button className="secondary" onClick={() => navigate('dashboard')}>بازگشت به داشبورد</button></section>)}
       {screen === 'dailyResult' && <DailyResult day={resultDay || journey.completed.length || currentDay} journey={journey} data={resultData} problem={category?.name} sourceLabel={recommendationSource} onDashboard={() => navigate('dashboard')} onNext={openDay} onFinal={() => navigate('final')} onBook={(rec) => openRecommendedBook(resultDay || currentDay, rec)} />}
-      {screen === 'books' && <LibraryPage books={books} loading={libraryLoading} error={libraryError} onOpenBook={(book) => openBook(book)} onBack={() => navigate(libraryReturn)} />}
+      {screen === 'books' && <Suspense fallback={<section className="card libraryShell"><p className="muted">در حال آماده‌سازی کتابخانه…</p></section>}><LibraryPage books={books} loading={libraryLoading} error={libraryError} onOpenBook={(book) => openBook(book)} onBack={() => navigate(libraryReturn)} /></Suspense>}
       {screen === 'support' && <Support content={content} onBack={() => navigate(supportReturn)} />}
       {screen === 'final' && <FinalAssessment initial={journey.final} onSave={finishFinal} onValidation={showValidation} />}
       {screen === 'done' && <Done journey={journey} onReport={() => navigate('report')} onBooks={() => openBooks('done')} onSupport={() => openSupport('done')} onArchive={() => navigate('archive')} onNew={startNewPathFromArchive} />}
@@ -743,7 +746,7 @@ function navigate(next) {
         {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
         <VersionFooter navVisible={navVisible} />
       </div>
-      <GlobalAssistantLauncher
+      {navVisible && <Suspense fallback={null}><GlobalAssistantLauncher
         screen={screen}
         visible={navVisible}
         dailyContext={screen === 'day' && activeDay ? {
@@ -756,7 +759,7 @@ function navigate(next) {
         } : null}
         libraryContext={screen === 'books' ? { titles: books.map((book) => book.title).filter(Boolean) } : null}
         onRelationshipSafetyResponse={(response) => setRelationshipSafetyState({ dayKey: relationshipSafetyDayKey, response })}
-      />
+      /></Suspense>}
       {openingBook && <div className="validationModal" role="status" aria-live="polite"><div className="validationCard"><h2>در حال آماده‌سازی کتاب</h2><p className="muted">متن این کتاب در حال دریافت و آماده‌سازی است…</p></div></div>}
       {preview && <BookPreviewModal preview={preview} onClose={() => setPreview(null)} onOpen={() => { const item = preview; setPreview(null); openBook(item.book, item.sourcePage, { day: item.day, sourcePage: item.sourcePage, reason: item.reason, sourceTitle: item.sourceTitle }); }} />}
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}

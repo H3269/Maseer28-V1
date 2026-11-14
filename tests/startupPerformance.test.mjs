@@ -8,6 +8,13 @@ const libraryPage = await readFile(new URL('../src/features/library/LibraryPage.
 const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 const assistantLauncher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
 
+test('heavy library, reader, and assistant modules are split from the startup bundle', () => {
+  assert.match(app, /const LibraryPage = lazy\(\(\) => import\('\.\/features\/library\/LibraryPage\.jsx'\)\)/);
+  assert.match(app, /const Reader = lazy\(\(\) => import\('\.\/features\/library\/Reader\.jsx'\)\)/);
+  assert.match(app, /const GlobalAssistantLauncher = lazy\(\(\) => import\('\.\/features\/assistant\/GlobalAssistantLauncher\.jsx'\)\)/);
+  assert.match(app, /navVisible && <Suspense fallback=\{null\}>/);
+});
+
 test('startup does not wait through an artificial splash delay', () => {
   assert.doesNotMatch(app, /minimumSplashDuration|completionDuration/);
   assert.match(app, /setContent\(merged\)/);
