@@ -8,6 +8,10 @@ import { mergeDailyTextOverrides } from '../../src/features/content/dailyTextOve
 const baseURL = process.env.PATH28_BASE_URL || 'http://127.0.0.1:4173';
 const browser = await chromium.launch({ headless: true });
 
+function toPersianDigits(value) {
+  return String(value).replace(/\\d/g, (digit) => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
+}
+
 function normalizeVisibleDailyText(value) {
   return String(value || '').normalize('NFKC')
     .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
@@ -76,11 +80,61 @@ try {
     assert.equal(await card.locator('#dayExercise').count(), 1, topic + ' day 1 must display its exercise');
     assert.equal(await card.locator('#dayAction').count(), 1, topic + ' day 1 must display its dedicated action');
     if (topic === 'عادت‌های تکراری') {
-      assert.equal(await card.locator('#dailySafetyStatus').count(), 0,
-        'T11 must not show an owner-review or approval-block notice');
-      assert.equal(await card.locator('#skipDailyReviewBtn').count(), 0,
-        'T11 must not use the non-scoring preview skip flow');
-      assert.equal(await card.locator('#openDailyEntryBtn').count(), 1,
+      for (let day = 1; day <= 28; day += 1) {
+        const dayCard = page.locator('#day');
+        const badgeText = await page.locator('#dayBadge').innerText();
+        assert.match(badgeText, new RegExp('روز ' + toPersianDigits(day) + ' از ۲۸/u'));
+        const expected = content.categories[topic].days.find((item) => item.day === day);
+        assert.ok(expected, 'T11 canonical day ' + day + ' exists');
+        const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
+        const visibleAction = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayAction'));
+        assert.equal(visibleExercise, normalizeVisibleDailyText(expected.exercise), 'T11 day ' + day + ' exact exercise renders');
+        assert.ok(visibleAction.endsWith(normalizeVisibleDailyText(expected.actionText)), 'T11 day ' + day + ' exact action renders');
+        assert.equal(await dayCard.locator('#dailySafetyStatus').count(), 0,
+          'T11 must not show an owner-review or approval-block notice');
+        assert.equal(await dayCard.locator('#skipDailyReviewBtn').count(), 0,
+          'T11 must not use the non-scoring preview skip flow');
+        assert.equal(await dayCard.locator('#openDailyEntryBtn').count(), 1,
+          'T11 must expose the same daily result-entry action as T01-T10');
+        assert.doesNotMatch(await dayCard.innerText(), /پیش‌نمایش برای بازبینی مالک|مشاهده مشخصات کامل این روز برای بازبینی/u);
+
+        await dayCard.locator('#openDailyEntryBtn').click();
+        await dayCard.locator('#dailyEntryPanel').waitFor({ state: 'visible' });
+        assert.equal(await dayCard.locator('#dayScore').count(), 1, 'T11 day ' + day + ' exposes score input');
+        assert.equal(await dayCard.locator('#dayFeedbackChoice').count(), 1, 'T11 day ' + day + ' exposes feedback input');
+        assert.equal(await dayCard.locator('#answer').count(), 1, 'T11 day ' + day + ' exposes response input');
+
+        const scoreInput = dayCard.locator('#dayScore');
+        await scoreInput.focus();
+        for (let step = 0; step < 4; step += 1) await scoreInput.press('ArrowRight');
+        assert.equal(await scoreInput.getAttribute('data-touched'), '1',
+          'T11 score slider must register a real user change');
+        assert.equal(await scoreInput.inputValue(), '4');
+        await dayCard.locator('.smartSelectButton').click();
+        await dayCard.locator('.smartSelectOption').filter({ hasText: 'تقریباً مثل قبل' }).click();
+        assert.equal(await dayCard.locator('#dayFeedbackChoice').inputValue(), 'same');
+        await dayCard.locator('#answer').fill('امروز تمرین روز ' + toPersianDigits(day) + ' را انجام دادم و نتیجه را ثبت کردم.');
+        await dayCard.getByRole('button', { name: /ثبت امروز و دریافت نتیجه/u }).click();
+        await page.locator('#dailyResult').waitFor({ state: 'visible' });
+        assert.equal(await page.locator('#resultScore').count(), 1,
+          'T11 day ' + day + ' must complete and render the normal result screen');
+
+        if (day < 28) {
+          const nextLabel = new RegExp('رفتن به روز ' + toPersianDigits(day + 1), 'u');
+          assert.equal(await page.getByRole('button', { name: nextLabel }).count(), 1,
+            'T11 day ' + day + ' must expose the normal next-day action');
+          await page.getByRole('button', { name: nextLabel }).click();
+          await page.locator('#dayBadge').waitFor({ state: 'visible' });
+        } else {
+          assert.equal(await page.getByRole('button', { name: /رفتن به ارزیابی نهایی/u }).count(), 1,
+            'T11 day 28 must expose the normal final-assessment action');
+        }
+        assert.deepEqual(errors, [], 'T11 day ' + day + ' must not raise browser errors');
+      }
+      await page.close();
+      continue;
+    }
+    assert.equal(await card.locator('#openDailyEntryBtn').count(), 1,
         'T11 must expose the same daily result-entry action as T01-T10');
       assert.doesNotMatch(await card.innerText(), /پیش‌نمایش برای بازبینی مالک|مشاهده مشخصات کامل این روز برای بازبینی/u);
 
