@@ -242,7 +242,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
 
   function activate() {
     setOpen(true);
-    if (screen === 'books' && !booksForTurn.length) ensureLibraryBooksLoaded();
+    if (screen === 'books' && !loadedLibraryBooks.length) ensureLibraryBooksLoaded();
   }
 
   async function send(event, overrideMessage = null) {

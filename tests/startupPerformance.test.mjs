@@ -54,7 +54,8 @@ test('recommended books can be loaded on demand without relying on startup prelo
 test('library assistant hydrates full book content only when the assistant is opened', () => {
   assert.match(assistantLauncher, /const libraryBooksLoadRef = useRef\(null\)/);
   assert.match(assistantLauncher, /else if \(open && !loadedLibraryBooks\.length\)/);
-  assert.match(assistantLauncher, /function activate\(\)[\s\S]{0,180}ensureLibraryBooksLoaded\(\)/);
+  assert.match(assistantLauncher, /function activate\(\)[\s\S]{0,180}loadedLibraryBooks\.length\) ensureLibraryBooksLoaded\(\)/);
+  assert.match(assistantLauncher, /screen === 'books' && !booksForTurn\.length/);
   assert.match(assistantLauncher, /ensureSeedBookContent\(book\)/);
   assert.match(assistantLauncher, /await libraryBooksLoadRef\.current/);
   assert.match(assistantLauncher, /screen === 'books' && !booksForTurn\.length/);
