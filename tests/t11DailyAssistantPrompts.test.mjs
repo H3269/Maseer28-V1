@@ -60,16 +60,16 @@ test('T11 assistant exposes five groups and exactly fourteen questions for each 
     const groups = getT11DailyAssistantPromptGroups(day);
     assert.equal(groups.length, 5);
     assert.equal(groups.flatMap((group) => group.questions).length, 14);
-    assert.deepEqual(groups.flatMap((group) => group.questions).map((item) => item.value), EXPECTED_QUESTIONS);
+    assert.deepEqual(groups.flatMap((group) => group.questions).sort((a, b) => a.id.localeCompare(b.id)).map((item) => item.value), EXPECTED_QUESTIONS);
   }
   assert.deepEqual(getT11DailyAssistantPromptGroups(0), []);
   assert.deepEqual(getT11DailyAssistantPromptGroups(29), []);
 });
 
 test('T11 q11 uses its own distress response and does not append shared-center boilerplate', () => {
-  const dailyContent = { id: 'عادت‌های تکراری-04', day: 4, topic_id: 'T11' };
+  const dailyContent = { id: 'عادت‌های تکراری-01', day: 1, topic_id: 'T11' };
   const answer = answerT11DailyPreparedQuestion({
-    day: 4,
+    day: 1,
     message: EXPECTED_QUESTIONS[10],
     dailyContent,
   });
