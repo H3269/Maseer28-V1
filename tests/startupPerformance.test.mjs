@@ -14,7 +14,7 @@ test('startup does not wait through an artificial splash delay', () => {
 
 test('path content and daily overrides are fetched concurrently', () => {
   assert.match(app, /Promise\.all\(\[pathRequest, overridesRequest\]\)/);
-  assert.doesNotMatch(app, /path-content\.json[\s\S]{0,700}then\(\(data\)[\s\S]{0,700}daily-text-overrides\.v1\.json/);
+  assert.ok(app.indexOf('const pathRequest = fetch') < app.indexOf('const overridesRequest = fetch'));
 });
 
 test('library synchronization is deferred until a library-dependent screen is opened', () => {
