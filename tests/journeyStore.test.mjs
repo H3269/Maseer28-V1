@@ -2,12 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+  APP_CONFIG,
   burdenScoreFromAnswers,
   cloneForArchive,
   executeArchivedJourneyDeletion,
   defaultJourneyState,
   evaluatePqhtEligibility,
   nextRequiredDay,
+  isDayUnlockedAt,
   sanitizeJourneyState,
   migrateUserProfileToV2,
   removeArchivedJourney,
@@ -17,6 +19,30 @@ import {
   validPhone,
   validScore,
 } from '../src/features/journey/journeyStore.js';
+
+test('a non-scoring safety or human-review skip can advance immediately, but a performed day keeps the daily cooldown', () => {
+  const original = { testMode: APP_CONFIG.TEST_MODE, timeLock: APP_CONFIG.TIME_LOCK_ENABLED };
+  APP_CONFIG.TEST_MODE = false;
+  APP_CONFIG.TIME_LOCK_ENABLED = true;
+  try {
+    const now = Date.parse('2026-11-14T10:00:00.000Z');
+    const base = {
+      startedAt: '2026-11-14T08:00:00.000Z',
+      completed: [1],
+      daily: { 1: { updatedAt: '2026-11-14T09:00:00.000Z', status: 'skipped_human_review' } },
+    };
+    assert.equal(isDayUnlockedAt(base, 2, now), true, 'human-review skip does not impose a 24-hour wait');
+
+    const safetySkip = { ...base, daily: { 1: { updatedAt: '2026-11-14T09:00:00.000Z', status: 'skipped_safety_gate' } } };
+    assert.equal(isDayUnlockedAt(safetySkip, 2, now), true, 'safety skip does not impose a 24-hour wait');
+
+    const performed = { ...base, daily: { 1: { updatedAt: '2026-11-14T09:00:00.000Z', score: 4, feedback: 'same' } } };
+    assert.equal(isDayUnlockedAt(performed, 2, now), false, 'a performed day retains the one-day cooldown');
+  } finally {
+    APP_CONFIG.TEST_MODE = original.testMode;
+    APP_CONFIG.TIME_LOCK_ENABLED = original.timeLock;
+  }
+});
 
 test('validScore accepts integer scores from 0 through 10, including Persian digits', () => {
   assert.equal(validScore(0), true);
