@@ -92,44 +92,19 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   }, [libraryPromptOpen]);
 
   useEffect(() => {
-    let active = true;
     if (screen !== 'books') {
       setLoadedLibraryBooks([]);
-    } else {
-      (async () => {
-        try {
-          const rows = await libraryRepository.listBooks();
-          const hydrated = await Promise.all(rows.map(async (book) => {
-            if (!book.activeVersionId) return null;
-            const version = await libraryRepository.getVersion(book.activeVersionId);
-            return version?.content ? { title: book.title, legacyId: book.legacyId, content: version.content } : null;
-          }));
-          if (active) {
-            const availableBooks = hydrated.filter(Boolean);
-            setLoadedLibraryBooks(availableBooks);
-            setLibraryComparisonReply('');
-            // Prepare the common five-book comparison before the user submits it.
-            // Deferring one task lets the library screen paint first.
-            window.setTimeout(() => {
-              if (!active) return;
-              const comparison = answerLibraryBookTurn({
-                books: availableBooks,
-                message: 'تفاوت موضوعی این پنج کتاب چیست؟',
-              });
-              if (active) setLibraryComparisonReply(comparison?.message || '');
-            }, 0);
-          }
-        } catch {
-          if (active) setLoadedLibraryBooks([]);
-        }
-      })();
+      libraryBooksLoadRef.current = null;
+    } else if (open && !loadedLibraryBooks.length) {
+      ensureLibraryBooksLoaded();
     }
     const shouldCheckModel = screen === 'books' || (screen === 'day' && Boolean(dailyContext));
     if (!shouldCheckModel) {
       setLocalModelInstalled(false);
       setLocalModelStatusChecked(false);
-      return () => { active = false; };
+      return undefined;
     }
+    let active = true;
     setLocalModelStatusChecked(false);
     isLocalNeuralModelInstalled().then((installed) => {
       if (active) {
@@ -143,7 +118,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       }
     });
     return () => { active = false; };
-  }, [screen, libraryContext?.titles?.length, dailyContext?.day, dailyContext?.problem]);
+  }, [screen, open, loadedLibraryBooks.length, libraryContext?.titles?.length, dailyContext?.day, dailyContext?.problem]);
 
   const dailyProblemText = String(dailyContext?.problem || '').trim();
   const dailyProblemTopicId = getCanonicalTopicIdForCategory(dailyProblemText);
@@ -229,8 +204,43 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     resizeComposerInput(event.currentTarget);
   }
 
+  function ensureLibraryBooksLoaded() {
+    if (libraryBooksLoadRef.current) return libraryBooksLoadRef.current;
+    const loadTask = (async () => {
+      try {
+        const rows = await libraryRepository.listBooks();
+        const hydrated = await Promise.all(rows.map(async (book) => {
+          try {
+            const { book: readyBook, version } = await ensureSeedBookContent(book);
+            return version?.content ? { title: readyBook.title, legacyId: readyBook.legacyId, content: version.content } : null;
+          } catch { return null; }
+        }));
+        const availableBooks = hydrated.filter(Boolean);
+        setLoadedLibraryBooks(availableBooks);
+        setLibraryComparisonReply('');
+        window.setTimeout(() => {
+          const comparison = answerLibraryBookTurn({
+            books: availableBooks,
+            message: 'تفاوت موضوعی این پنج کتاب چیست؟',
+          });
+          setLibraryComparisonReply(comparison?.message || '');
+        }, 0);
+        return availableBooks;
+      } catch {
+        setLoadedLibraryBooks([]);
+        return [];
+      }
+    })();
+    libraryBooksLoadRef.current = loadTask;
+    loadTask.finally(() => {
+      if (libraryBooksLoadRef.current === loadTask) libraryBooksLoadRef.current = null;
+    });
+    return loadTask;
+  }
+
   function activate() {
     setOpen(true);
+    if (screen === 'books' && !loadedLibraryBooks.length) ensureLibraryBooksLoaded();
   }
 
   async function send(event, overrideMessage = null) {
