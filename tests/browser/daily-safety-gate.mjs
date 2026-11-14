@@ -9,7 +9,7 @@ const baseURL = process.env.PATH28_BASE_URL || 'http://127.0.0.1:4173';
 const browser = await chromium.launch({ headless: true });
 
 function toPersianDigits(value) {
-  return String(value).replace(/\\d/g, (digit) => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
+  return String(value).replace(/\d/g, (digit) => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
 }
 
 function normalizeVisibleDailyText(value) {
