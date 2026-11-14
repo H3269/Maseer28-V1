@@ -62,12 +62,14 @@ export function createRuntimeContentRepository({
         if (!response?.ok) {
           const status = Number(response?.status || 0);
           if (status >= 500 && attempt < retries) continue;
-          throw new Error(`دریافت محتوای برنامه ناموفق بود (کد ${status}).`);
+          const error = new Error(`دریافت محتوای برنامه ناموفق بود (کد ${status}).`);
+          error.permanent = status > 0 && status < 500;
+          throw error;
         }
         return await response.json();
       } catch (error) {
         lastError = error;
-        if (error instanceof SyntaxError || attempt >= retries) break;
+        if (error instanceof SyntaxError || error?.permanent || attempt >= retries) break;
       }
     }
     throw lastError || new Error('دریافت محتوای برنامه ناموفق بود.');
