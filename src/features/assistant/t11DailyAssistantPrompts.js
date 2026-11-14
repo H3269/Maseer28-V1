@@ -68,14 +68,18 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
     || normalizeT11VisibleText(actionWithoutDisplayPrefix) !== normalizeT11VisibleText(guide.action)) return null;
 
   const lightExercise = String(dailyContent.lightExerciseText || guide.lightVersion || '').trim();
-  const progressAction = String(dailyContent.progressActionText || guide.progressVersion || '').trim();
-  const restAction = String(dailyContent.restActionText || dailyContent.restExerciseText || guide.restVersion || '').trim();
+  const lightAction = String(dailyContent.lightActionText || guide.lightActionVersion || guide.lightVersion || '').trim();
+  const progressAction = String(dailyContent.progressActionText || guide.progressActionVersion || guide.progressVersion || '').trim();
+  const restAction = String(dailyContent.restActionText || guide.restActionVersion || dailyContent.restExerciseText || guide.restVersion || '').trim();
 
   let body = replaceExact(question.answer, guide.exercise, exercise);
   body = replaceExact(body, guide.action, actionWithoutDisplayPrefix);
   body = replaceExact(body, guide.lightVersion, lightExercise);
+  body = replaceExact(body, guide.lightActionVersion, lightAction);
   body = replaceExact(body, guide.progressVersion, progressAction);
+  body = replaceExact(body, guide.progressActionVersion, progressAction);
   body = replaceExact(body, guide.restVersion, restAction);
+  body = replaceExact(body, guide.restActionVersion, restAction);
 
   switch (question.kind) {
     case 'exercise_meaning':
@@ -91,7 +95,7 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
       body += `\n\n${section('متن اقدام اختصاصی همین روز', actionWithoutDisplayPrefix)}\n\nمثال، نسخه اجباری نیست و نباید به وارسی یا ثبت جزئیات حساس تبدیل شود.`;
       break;
     case 'light_version':
-      body += `\n\n${section('نسخه سبک تمرین', lightExercise)}\n${section('نسخه استراحت', restAction)}\n${section('نسخه پیشرفت، فقط در صورت آمادگی', progressAction)}\n\nاستراحت یا کنارگذاشتن تمرین نیز انتخاب معتبر است.`;
+      body += `\n\n${section('نسخه سبک تمرین', lightExercise)}\n${lightAction !== lightExercise ? section('نسخه سبک اقدام', lightAction) : ''}\n${section('نسخه استراحت', restAction)}\n${section('نسخه پیشرفت، فقط در صورت آمادگی', progressAction)}\n\nاستراحت یا کنارگذاشتن تمرین نیز انتخاب معتبر است.`;
       break;
     case 'success':
       body += `\n\n${section('معیار کافی‌بودن', guide.successCriterion)}\n${section('پرسش بازتاب', guide.reflectionQuestion)}\n\nکاهش یا حذف رفتار، معیار موفقیت این بسته نیست.`;
