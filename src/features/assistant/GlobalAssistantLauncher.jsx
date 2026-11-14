@@ -249,7 +249,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       setDraft('');
       return;
     }
-    const isDailySafetyQuestion = !isT11DailyPromptContext && Boolean(selectedDailyQuestion
+    const isDailySafetyQuestion = Boolean(selectedDailyQuestion
       && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(selectedDailyQuestion.kind));
     const turnId = ++turnSequenceRef.current;
     const responseId = `assistant-${turnId}`;
