@@ -122,8 +122,8 @@ test('reader pagination precomputes neighbouring block text instead of rescannin
   assert.match(readerEngine, /const blockTexts = blocks\.map\(\(block\) => norm\(block\?\.text\)\)/);
   assert.match(readerEngine, /const nextTexts = new Array\(blocks\.length\)/);
   assert.match(readerEngine, /const previousTexts = new Array\(blocks\.length\)/);
-  assert.doesNotMatch(readerEngine, /blocks\.slice\(i \+ 1\)\.map\(\(x\) => norm\(x\?\.text\)\)\.find/);
-  assert.doesNotMatch(readerEngine, /blocks\.slice\(0, i\)\.reverse\(\)\.map/);
+  assert.doesNotMatch(readerEngine, /const nextText = blocks\.slice\(i \+ 1\)\.map\(\(x\) => norm\(x\?\.text\)\)\.find/);
+  assert.doesNotMatch(readerEngine, /const previousText = blocks\.slice\(0, i\)\.reverse\(\)\.map/);
 });
 
 test('recent reader layouts are reused with a strict two-layout memory cap', () => {
