@@ -86,8 +86,6 @@ try {
         'T11 must not expose score entry before specialist approval');
       assert.equal(await card.locator('#dailyEntryPanel').count(), 0,
         'T11 must not expose a scoring panel before specialist approval');
-      assert.equal(await card.locator('#nextButtonWrap button').count(), 1,
-        'T11 owner can inspect the next day without recording a score');
       for (let day = 1; day <= 28; day += 1) {
         const expected = content.categories[topic].days.find((item) => item.day === day);
         assert.ok(expected, 'T11 canonical day ' + day + ' exists');
@@ -95,8 +93,14 @@ try {
         assert.equal(await card.locator('#dayAction').count(), 1, 'T11 day ' + day + ' action renders');
         assert.equal(await card.locator('#dailySafetyStatus').count(), 1, 'T11 day ' + day + ' retains specialist gate');
         assert.equal(await card.locator('#openDailyEntryBtn').count(), 0, 'T11 day ' + day + ' cannot score before approval');
+        assert.equal(await card.locator('#skipDailyReviewBtn').count(), 1, 'T11 day ' + day + ' offers an honest non-scoring skip');
         if (day < 28) {
-          await card.locator('#nextButtonWrap button').click();
+          await card.locator('#skipDailyReviewBtn').click();
+          await page.locator('#dailyResult').waitFor({ state: 'visible' });
+          assert.equal(await page.locator('#resultScore').innerText(), '—', 'T11 skipped day ' + day + ' must not create a score');
+          assert.match(await page.locator('#resultText').innerText(), /هیچ امتیازی ثبت نشده/u);
+          await page.locator('#resultNextWrap button').click();
+          await page.locator('#day').waitFor({ state: 'visible' });
           await page.waitForFunction((nextDay) =>
             document.querySelector('#dayBadge')?.textContent?.includes('روز ' + nextDay + ' از ۲۸'),
           day + 1);
