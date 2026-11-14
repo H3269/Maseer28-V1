@@ -329,7 +329,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       let isLibraryTurn = false;
       if (screen === 'books' && restrictedStatuses.has(intentGate.status)) {
         turn = { ...intentGate, conversationState: null };
-      } else if (screen === 'books' && !loadedLibraryBooks.length) {
+      } else if (screen === 'books' && !booksForTurn.length) {
         turn = { message: 'متن کتاب‌ها هنوز بارگذاری نشده است. چند لحظه صبر کن و دوباره پرسشت را بفرست.', knowledge: [], conversationState: null };
       } else if (screen === 'books') {
         const isFiveBookComparison = /تفاوت موضوعی این پنج کتاب چیست/u.test(message);

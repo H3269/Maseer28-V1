@@ -57,6 +57,7 @@ test('library assistant hydrates full book content only when the assistant is op
   assert.match(assistantLauncher, /function activate\(\)[\s\S]{0,180}ensureLibraryBooksLoaded\(\)/);
   assert.match(assistantLauncher, /ensureSeedBookContent\(book\)/);
   assert.match(assistantLauncher, /await libraryBooksLoadRef\.current/);
+  assert.match(assistantLauncher, /screen === 'books' && !booksForTurn\.length/);
 });
 
 test('library covers use lazy loading and asynchronous decoding', () => {
