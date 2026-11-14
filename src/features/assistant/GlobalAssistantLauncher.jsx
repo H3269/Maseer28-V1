@@ -240,13 +240,17 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
 
   function activate() {
     setOpen(true);
-    if (screen === 'books' && !loadedLibraryBooks.length) ensureLibraryBooksLoaded();
+    if (screen === 'books' && !booksForTurn.length) ensureLibraryBooksLoaded();
   }
 
   async function send(event, overrideMessage = null) {
     event.preventDefault();
     const message = String(overrideMessage ?? draft).trim();
     if (!message || sending) return;
+    let booksForTurn = loadedLibraryBooks;
+    if (screen === 'books' && !booksForTurn.length && libraryBooksLoadRef.current) {
+      booksForTurn = await libraryBooksLoadRef.current;
+    }
     const selectedDailyQuestion = isPreparedOnlyDailyPromptContext
       ? activePromptGroups.flatMap((group) => group.questions).find((question) => question.value === message)
       : null;
@@ -329,7 +333,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         const isFiveBookComparison = /تفاوت موضوعی این پنج کتاب چیست/u.test(message);
         const libraryTurn = isFiveBookComparison && libraryComparisonReply
           ? { message: libraryComparisonReply, conversationState: null }
-          : answerLibraryBookTurn({ books: loadedLibraryBooks, message, conversationState: conversationStateRef.current });
+          : answerLibraryBookTurn({ books: booksForTurn, message, conversationState: conversationStateRef.current });
         if (libraryTurn) {
           turn = { ...libraryTurn, knowledge: [] };
           isLibraryTurn = true;
