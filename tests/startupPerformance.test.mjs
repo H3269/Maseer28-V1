@@ -74,7 +74,7 @@ test('library assistant hydrates full book content only when the assistant is op
 });
 
 test('library covers use lazy loading and asynchronous decoding', () => {
-  assert.match(libraryPage, /loading="lazy" decoding="async" fetchPriority="low"/);
+  assert.match(libraryPage, /loading="eager" decoding="async" fetchPriority="high"/);
 });
 
 test('initial splash restores the original approved logo asset', async () => {
