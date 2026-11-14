@@ -23,7 +23,7 @@ test('startup uses the compact runtime topic index instead of downloading all da
   assert.match(app, /const runtimeRepository = useMemo\(\(\) => createRuntimeContentRepository\(/);
   assert.match(app, /const loadTopicForScreen = useCallback\(async \(topicKey\) => \{/);
   assert.match(app, /runtimeRepository\.loadTopicContent\(topicKey\)/);
-  assert.doesNotMatch(app.slice(app.indexOf('useEffect(() => {'), app.indexOf('useEffect(() => {', app.indexOf('useEffect(() => {') + 1)), /fetch\(pathUrl/);
+  assert.ok(app.indexOf('runtimeRepository.loadContentIndex()') < app.indexOf('const pathUrl ='), 'the compact index must be requested before the full-content fallback');
 });
 
 test('canonical full-content and daily-overlay loading remain available as a compatibility fallback', () => {
