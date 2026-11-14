@@ -30,9 +30,9 @@ function validateIndex(index) {
   const ids = new Set();
   for (const topic of index.topics) {
     if (!topic || typeof topic.key !== 'string' || !topic.key.trim()
-      || typeof topic.topic_id !== 'string' || !/^T\\d{2}$/.test(topic.topic_id)
-      || !/^topics\\/T\\d{2}\\.json$/.test(topic.basePath)
-      || !/^overrides\\/T\\d{2}\\.json$/.test(topic.overridePath)
+      || typeof topic.topic_id !== 'string' || !/^T\d{2}$/.test(topic.topic_id)
+      || !/^topics\/T\d{2}\.json$/.test(topic.basePath)
+      || !/^overrides\/T\d{2}\.json$/.test(topic.overridePath)
       || keys.has(topic.key) || ids.has(topic.topic_id)) {
       throw new Error('نگاشت موضوع‌ها در فهرست محتوای برنامه معتبر نیست.');
     }
