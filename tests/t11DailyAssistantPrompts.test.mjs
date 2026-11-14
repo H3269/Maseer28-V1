@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
+import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from '../src/features/assistant/dailyAssistantSafetyReminder.js';
 import { T10_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/t10DailyAssistantPrompts.js';
 import {
   answerT11DailyPreparedQuestion,
@@ -98,7 +99,7 @@ test('T11 assistant exposes five groups and exactly fourteen questions for each 
   assert.deepEqual(getT11DailyAssistantPromptGroups(29), []);
 });
 
-test('T11 q11 uses its own distress response and does not append shared-center boilerplate', () => {
+test('T11 q11 uses its own distress response and appends the exact shared safety reminder card', () => {
   const guide = T11_DAILY_ASSISTANT_GUIDES[1];
   const dailyContent = {
     id: 'عادت‌های تکراری-02',
@@ -119,9 +120,39 @@ test('T11 q11 uses its own distress response and does not append shared-center b
   assert.match(answer, new RegExp('مهارت «' + guide.skill + '»', 'u'));
   assert.match(answer, /هدف امروز/u);
   assert.doesNotMatch(answer, /پیش‌نمایش برای بازبینی مالک|مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود/u);
-  assert.doesNotMatch(answer, /۰۹۱۹۰۸۸۹۰۶۲|هیپنوتراپی شفا|مرکز مشاوره/u);
+  assert.ok(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN));
+  assert.match(answer, /۰۹۱۹۰۸۸۹۰۶۲|هیپنوتراپی شفا/u);
 });
 
+
+
+test('T11 appends the exact shared safety reminder to only its four evaluation/safety answers across all 28 days', () => {
+  const safetyKinds = new Set(['t11_distress', 'talk_other', 'success', 'stop']);
+  assert.equal(T11_DAILY_ASSISTANT_GUIDES.length, 28);
+  for (const guide of T11_DAILY_ASSISTANT_GUIDES) {
+    assert.equal(guide.questions.filter((question) => safetyKinds.has(question.kind)).length, 4,
+      'T11 day ' + guide.day + ' must have exactly four evaluation/safety questions');
+    for (const question of guide.questions) {
+      const answer = answerT11DailyPreparedQuestion({
+        day: guide.day,
+        message: question.value,
+        dailyContent: {
+          id: 'عادت‌های تکراری-' + String(guide.day).padStart(2, '0'),
+          day: guide.day,
+          topic_id: 'T11',
+          exercise: guide.exercise,
+          actionText: guide.action,
+        },
+      });
+      assert.equal(typeof answer, 'string', 'T11 day ' + guide.day + ' ' + question.kind);
+      const expected = safetyKinds.has(question.kind);
+      const count = answer.split(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN).length - 1;
+      assert.equal(count, expected ? 1 : 0, 'T11 day ' + guide.day + ' ' + question.kind + ' reminder count');
+      assert.equal(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN), expected,
+        'T11 day ' + guide.day + ' ' + question.kind + ' reminder placement');
+    }
+  }
+});
 
 test('T11 page assistant routes every exact day-specific question and rejects mismatched identity', () => {
   for (const guide of T11_DAILY_ASSISTANT_GUIDES) {
@@ -167,6 +198,8 @@ test('T11 page assistant routes every exact day-specific question and rejects mi
 test('T11 uses the standard daily entry UI without owner-preview boxes or blocked controls', async () => {
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
+  assert.match(launcher, /const isDailySafetyQuestion = Boolean\(selectedDailyQuestion/);
+  assert.doesNotMatch(launcher, /!isT11DailyPromptContext && Boolean\(selectedDailyQuestion/);
   const safety = await readFile(new URL('../src/features/content/dailySafety.js', import.meta.url), 'utf8');
   assert.match(ui, /id="openDailyEntryBtn"/);
   assert.match(ui, /id="dailyEntryPanel"/);
