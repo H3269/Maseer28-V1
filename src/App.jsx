@@ -1,11 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import AppIcon from './shared/components/AppIcon.jsx';
-import LibraryPage from './features/library/LibraryPage.jsx';
-import Reader from './features/library/Reader.jsx';
 import { legacySourceLabel } from './features/library/legacyLibraryMeta.js';
-import { previewPageText } from './features/library/readerEngine.js';
-import { libraryRepository } from './features/library/libraryRepository.js';
-import { useLibrary } from './features/library/useLibrary.js';
+import { ensureSeedBookContent, useLibrary } from './features/library/useLibrary.js';
 import {
   APP_CONFIG,
   COPYRIGHT_KEY,
@@ -57,8 +53,11 @@ import { getRelationshipSafetyGate, isRelationshipSafetyConfirmed } from './feat
 import { isCompleteDailyContentCategory, selectCanonicalDailyRecord, selectDailyContentCategory } from './features/content/dailyContentSelector.js';
 import { mergeDailyTextOverrides } from './features/content/dailyTextOverrides.js';
 import { fa } from './shared/utils.js';
-import GlobalAssistantLauncher from './features/assistant/GlobalAssistantLauncher.jsx';
 import VersionFooter from './shared/components/VersionFooter.jsx';
+
+const LibraryPage = lazy(() => import('./features/library/LibraryPage.jsx'));
+const Reader = lazy(() => import('./features/library/Reader.jsx'));
+const GlobalAssistantLauncher = lazy(() => import('./features/assistant/GlobalAssistantLauncher.jsx'));
 
 function isPathSetupComplete(state) {
   const data = state?.profileData;
@@ -129,75 +128,43 @@ function MainApp() {
   });
   const [readerState, setReaderState] = useState(null);
   const [preview, setPreview] = useState(null);
-  const { books, loading: libraryLoading, error: libraryError } = useLibrary();
+  const [openingBook, setOpeningBook] = useState(false);
+  const libraryNeeded = screen === 'books' || screen === 'bookReader' || screen === 'dailyResult';
+  const { books, loading: libraryLoading, error: libraryError, refresh: refreshLibrary } = useLibrary(libraryNeeded);
 
   useEffect(() => {
-    const loadingStartedAt = Date.now();
-    const minimumSplashDuration = 3200;
-    const completionDuration = 650;
     let cancelled = false;
-    let loadedData = null;
-    let dataReady = false;
-    let completionStartedAt = null;
-    let completionStartProgress = 0;
-    let currentProgress = 0;
+    setLoadingProgress(18);
 
-    const timer = window.setInterval(() => {
-      if (cancelled) return;
-      const elapsed = Date.now() - loadingStartedAt;
-
-      if (!dataReady) {
-        // Ease toward 90% while the content request is still pending.
-        // This keeps moving during slow connections without claiming completion.
-        currentProgress = Math.min(90, 90 * (1 - Math.exp(-elapsed / 1700)));
-        setLoadingProgress(currentProgress);
-        return;
-      }
-
-      if (elapsed < minimumSplashDuration) {
-        currentProgress = Math.min(90, 90 * (1 - Math.exp(-elapsed / 1700)));
-        setLoadingProgress(currentProgress);
-        return;
-      }
-
-      if (completionStartedAt === null) {
-        completionStartedAt = Date.now();
-        completionStartProgress = currentProgress;
-      }
-
-      const completionRatio = Math.min(1, (Date.now() - completionStartedAt) / completionDuration);
-      currentProgress = completionStartProgress + (100 - completionStartProgress) * completionRatio;
-      setLoadingProgress(currentProgress);
-
-      if (completionRatio >= 1) {
-        window.clearInterval(timer);
-        setContent(loadedData);
-      }
-    }, 50);
-
-    fetch(`${import.meta.env.BASE_URL}content/path-content.json?v=20261023-fast-open`, { cache: 'default' })
-      .then((response) => { if (!response.ok) throw new Error('فایل محتوای مسیر پیدا نشد.'); return response.json(); })
+    // The route content and its optional text overrides are independent files.
+    // Fetch them together so startup does not wait for two sequential network round trips.
+    const pathRequest = fetch(`${import.meta.env.BASE_URL}content/path-content.json?v=20261023-fast-open`, { cache: 'default' })
+      .then((response) => {
+        if (!response.ok) throw new Error('فایل محتوای مسیر پیدا نشد.');
+        return response.json();
+      })
       .then((data) => {
+        if (!cancelled) setLoadingProgress(78);
+        return data;
+      });
+
+    const overridesRequest = fetch(`${import.meta.env.BASE_URL}content/daily-text-overrides.v1.json?v=20261112-t06`, { cache: 'default' })
+      .then((response) => response.ok ? response.json() : null)
+      .catch(() => null);
+
+    Promise.all([pathRequest, overridesRequest])
+      .then(([data, overrides]) => {
         if (cancelled) return;
-        return fetch(`${import.meta.env.BASE_URL}content/daily-text-overrides.v1.json?v=20261112-t06`, { cache: 'default' })
-          .then((response) => response.ok ? response.json() : null)
-          .catch(() => null)
-          .then((overrides) => {
-            if (cancelled) return;
-            loadedData = mergeDailyTextOverrides(data, overrides);
-            dataReady = true;
-          });
+        const merged = mergeDailyTextOverrides(data, overrides);
+        setLoadingProgress(100);
+        setContent(merged);
       })
       .catch((error) => {
         if (cancelled) return;
-        window.clearInterval(timer);
         setLoadError(error?.message || 'خطا در بارگذاری برنامه');
       });
 
-    return () => {
-      cancelled = true;
-      window.clearInterval(timer);
-    };
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -434,8 +401,12 @@ function navigate(next) {
     // already recommended in this user's current or archived paths.
     const usedKeys = new Set();
     const usedParagraphs = new Set();
-    const versions = await Promise.all(books.map(async (book) => {
-      try { return await libraryRepository.getVersion(book.activeVersionId); } catch { return null; }
+    const availableBooks = books.length ? books : await refreshLibrary();
+    const versions = await Promise.all(availableBooks.map(async (book) => {
+      try {
+        const { version } = await ensureSeedBookContent(book);
+        return version;
+      } catch { return null; }
     }));
     const normalizeParagraph = (value) => normalizeSearchText(value).replace(/\s+/g, ' ').trim();
     const pageText = (page) => normalizeParagraph(`${page?.title || ''} ${(page?.blocks || []).map((b) => `${b.text || ''} ${(b.rows || []).flat().join(' ')}`).join(' ')} ${page?.text || ''}`);
@@ -444,7 +415,7 @@ function navigate(next) {
       const bookId = Number(recommendation.bookId), pageNo = Number(recommendation.page);
       if (!Number.isInteger(bookId) || bookId < 1 || bookId > 5 || !Number.isInteger(pageNo) || pageNo < 1) return;
       usedKeys.add(`${bookId}:${pageNo}`);
-      const bookIndex = books.findIndex((item) => Number(item.legacyId) === bookId);
+      const bookIndex = availableBooks.findIndex((item) => Number(item.legacyId) === bookId);
       const version = versions[bookIndex >= 0 ? bookIndex : bookId - 1];
       const page = version?.content?.pages?.find((row) => Number(row.sourcePage || row.page) === pageNo);
       if (!page) return;
@@ -482,8 +453,8 @@ function navigate(next) {
     const candidates = [];
     // Build this once, not once per page: the old placement multiplied work by every book page.
     const priorParagraphs = [...usedParagraphs];
-    for (let bookIndex = 0; bookIndex < books.length; bookIndex += 1) {
-      const book = books[bookIndex];
+    for (let bookIndex = 0; bookIndex < availableBooks.length; bookIndex += 1) {
+      const book = availableBooks[bookIndex];
       try {
         const version = versions[bookIndex];
         const pages = version?.content?.pages || [];
@@ -585,24 +556,37 @@ function navigate(next) {
     navigate('support');
   }
 
-  function openBook(book, sourcePage = null, target = null) {
-    setReaderState({ book, sourcePage, target });
-    navigate('bookReader');
+  async function openBook(book, sourcePage = null, target = null) {
+    setOpeningBook(true);
+    try {
+      const { book: readyBook } = await ensureSeedBookContent(book);
+      setReaderState({ book: readyBook, sourcePage, target });
+      navigate('bookReader');
+    } catch {
+      showValidation(['متن کتاب بارگذاری نشد. اتصال را بررسی کن و دوباره تلاش کن.'], 'خطا در کتابخانه');
+    } finally {
+      setOpeningBook(false);
+    }
   }
 
   async function openRecommendedBook(day, recommendation) {
     if (!recommendation?.bookId) return;
-    const book = books.find((item) => Number(item.legacyId) === Number(recommendation.bookId)) || books[Number(recommendation.bookId) - 1];
-    if (!book) return;
+    setOpeningBook(true);
     try {
-      const version = await libraryRepository.getVersion(book.activeVersionId);
+      const availableBooks = books.length ? books : await refreshLibrary();
+      const book = availableBooks.find((item) => Number(item.legacyId) === Number(recommendation.bookId)) || availableBooks[Number(recommendation.bookId) - 1];
+      if (!book) throw new Error('book missing');
+      const [{ book: readyBook, version }, { previewPageText }] = await Promise.all([
+        ensureSeedBookContent(book),
+        import('./features/library/readerEngine.js'),
+      ]);
       if (!version?.content) throw new Error('book missing');
       const sourcePage = Number(recommendation.page) || 1;
       const page = version.content.pages?.find((row) => Number(row.sourcePage || row.page) === sourcePage) || version.content.pages?.[0];
-      const sourceTitle = legacySourceLabel(book, version.content);
+      const sourceTitle = legacySourceLabel(readyBook, version.content);
       setPreview({
         day,
-        book,
+        book: readyBook,
         sourcePage,
         reason: recommendation.reason || 'این بخش برای تعمیق موضوع امروز پیشنهاد شده است.',
         sourceTitle,
@@ -611,6 +595,8 @@ function navigate(next) {
       });
     } catch {
       showValidation(['متن کتاب بارگذاری نشد.'], 'خطا در کتابخانه');
+    } finally {
+      setOpeningBook(false);
     }
   }
 
@@ -719,13 +705,13 @@ function navigate(next) {
   }
 
   if (loadError) return <div className="validationModal"><div className="validationCard"><h2>خطا در بارگذاری برنامه</h2><p className="muted">{loadError}</p></div></div>;
-  if (!content) return <div className="app appLoading" role="status" aria-live="polite"><div className="loadingBrand"><img src={`${import.meta.env.BASE_URL}assets/Logo m24.png`} alt="لوگوی برنامه مسیر" style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }} /><h1 style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }}>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p><div className="loadingProgress" role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(loadingProgress)}>{Array.from({ length: 10 }, (_, index) => <span key={index} className="loadingProgressSegment" style={{ '--segment-progress': `${Math.max(0, Math.min(100, loadingProgress - index * 10))}%` }} />)}</div></div></div>;
+  if (!content) return <div className="app appLoading" role="status" aria-live="polite"><div className="loadingBrand"><img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="لوگوی برنامه مسیر" style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }} /><h1 style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }}>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p><div className="loadingProgress" role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(loadingProgress)}>{Array.from({ length: 10 }, (_, index) => <span key={index} className="loadingProgressSegment" style={{ '--segment-progress': `${Math.max(0, Math.min(100, loadingProgress - index * 10))}%` }} />)}</div></div></div>;
 
   const onboardingComplete = Boolean(userProfile && hasCompletedOnboarding);
 
   if (screen === 'bookReader' && readerState) {
     // The immersive reader is the only app screen without the global bottom navigation.
-    return <Reader book={readerState.book} initialSourcePage={readerState.sourcePage} initialPage={readerState.initialPage} target={readerState.target} returnTo={libraryReturn} onClose={() => { setReaderState(null); navigate('books'); }} />;
+    return <Suspense fallback={<div className="app appLoading" role="status">در حال آماده‌سازی صفحه مطالعه…</div>}><Reader book={readerState.book} initialSourcePage={readerState.sourcePage} initialPage={readerState.initialPage} target={readerState.target} returnTo={libraryReturn} onClose={() => { setReaderState(null); navigate('books'); }} /></Suspense>;
   }
 
   // Navigation becomes available only after the first profile and baseline
@@ -750,7 +736,7 @@ function navigate(next) {
         <DayScreen day={currentDay} problem={journey.profileData?.problem || ''} data={activeDay} record={journey.daily?.[currentDay]} savedAnswer={journey.answers?.[currentDay] || ''} previousRecord={journey.daily?.[currentDay - 1]} previousAnswer={journey.answers?.[currentDay - 1] || ''} history={journey.daily || {}} onDashboard={() => navigate('dashboard')} onPrevious={() => currentDay <= 1 ? navigate('dashboard') : openDay(currentDay - 1)} onComplete={completeDay} onNext={() => openDay(currentDay + 1)} completed={journey.completed.includes(currentDay)} onValidation={showValidation} />
       </> : <section className="card dayCard" role="alert"><h2>محتوای دقیق این روز در دسترس نیست</h2><p>موضوع یا شماره روز با داده اصلی تطبیق قطعی ندارد؛ برای جلوگیری از نمایش تمرین اشتباه، راهنمایی این روز متوقف شده است.</p><button className="secondary" onClick={() => navigate('dashboard')}>بازگشت به داشبورد</button></section>)}
       {screen === 'dailyResult' && <DailyResult day={resultDay || journey.completed.length || currentDay} journey={journey} data={resultData} problem={category?.name} sourceLabel={recommendationSource} onDashboard={() => navigate('dashboard')} onNext={openDay} onFinal={() => navigate('final')} onBook={(rec) => openRecommendedBook(resultDay || currentDay, rec)} />}
-      {screen === 'books' && <LibraryPage books={books} loading={libraryLoading} error={libraryError} onOpenBook={(book) => openBook(book)} onBack={() => navigate(libraryReturn)} />}
+      {screen === 'books' && <Suspense fallback={<section className="card libraryShell"><p className="muted">در حال آماده‌سازی کتابخانه…</p></section>}><LibraryPage books={books} loading={libraryLoading} error={libraryError} onOpenBook={(book) => openBook(book)} onBack={() => navigate(libraryReturn)} /></Suspense>}
       {screen === 'support' && <Support content={content} onBack={() => navigate(supportReturn)} />}
       {screen === 'final' && <FinalAssessment initial={journey.final} onSave={finishFinal} onValidation={showValidation} />}
       {screen === 'done' && <Done journey={journey} onReport={() => navigate('report')} onBooks={() => openBooks('done')} onSupport={() => openSupport('done')} onArchive={() => navigate('archive')} onNew={startNewPathFromArchive} />}
@@ -760,7 +746,7 @@ function navigate(next) {
         {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
         <VersionFooter navVisible={navVisible} />
       </div>
-      <GlobalAssistantLauncher
+      {navVisible && <Suspense fallback={null}><GlobalAssistantLauncher
         screen={screen}
         visible={navVisible}
         dailyContext={screen === 'day' && activeDay ? {
@@ -771,9 +757,10 @@ function navigate(next) {
           relationshipSafetyResponse,
           guidanceData: splitDayContent(activeDay, journey.profileData?.problem || '', journey.daily?.[currentDay - 1], journey.daily || {}),
         } : null}
-        libraryContext={screen === 'books' ? { titles: books.map((book) => book.title).filter(Boolean) } : null}
+        libraryContext={screen === 'books' ? { titles: books.map((book) => book.title).filter(Boolean), loadBooks: refreshLibrary } : null}
         onRelationshipSafetyResponse={(response) => setRelationshipSafetyState({ dayKey: relationshipSafetyDayKey, response })}
-      />
+      /></Suspense>}
+      {openingBook && <div className="validationModal" role="status" aria-live="polite"><div className="validationCard"><h2>در حال آماده‌سازی کتاب</h2><p className="muted">متن این کتاب در حال دریافت و آماده‌سازی است…</p></div></div>}
       {preview && <BookPreviewModal preview={preview} onClose={() => setPreview(null)} onOpen={() => { const item = preview; setPreview(null); openBook(item.book, item.sourcePage, { day: item.day, sourcePage: item.sourcePage, reason: item.reason, sourceTitle: item.sourceTitle }); }} />}
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}
       {validation && <ValidationModal data={validation} onClose={() => setValidation(null)} />}

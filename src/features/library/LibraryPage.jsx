@@ -12,7 +12,7 @@ function readProgress() {
 
 function Cover({ book }) {
   const src = book.coverDataUrl || book.coverUrl;
-  return src ? <img className="libraryCover" src={src} alt={`جلد ${book.title}`} /> : (
+  return src ? <img className="libraryCover" src={src} alt={`جلد ${book.title}`} loading="lazy" decoding="async" fetchPriority="low" /> : (
     <div className="libraryCoverFallback" role="img" aria-label="جلد کتابچه تکمیلی جلد سوم">
       <small>از حقیقت تا واقعیت</small>
       <strong>کتابچه تکمیلی<br/>جلد سوم</strong>
