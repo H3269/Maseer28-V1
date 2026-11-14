@@ -266,6 +266,8 @@ jobs:
         run: npm audit --audit-level=high
       - name: Verify runtime topic shards preserve all 952 canonical daily records
         run: node --test tests/runtimeContentArtifacts.test.mjs
+      - name: Test isolated runtime topic repository and cache behavior
+        run: node --test src/features/content/runtimeContentRepository.test.mjs
       - name: Generate runtime topic shards (validation artifact only)
         run: node scripts/generate-runtime-content-shards.mjs
       - name: Upload generated runtime topic shards for inspection
