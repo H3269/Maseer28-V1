@@ -123,13 +123,17 @@ test('offscreen library book covers remain lazy and low priority', () => {
 const reader = await readFile(new URL('../src/features/library/Reader.jsx', import.meta.url), 'utf8');
 const readerEngine = await readFile(new URL('../src/features/library/readerEngine.js', import.meta.url), 'utf8');
 
-test('reader pagination precomputes neighbouring block text instead of rescanning each page', () => {
+test('reader pagination uses the linear neighbour index instead of rescanning each block array', () => {
   const layoutSource = readerEngine.slice(readerEngine.indexOf('export function buildLegacyReaderLayout'));
-  assert.match(layoutSource, /const blockTexts = blocks\.map\(\(block\) => norm\(block\?\.text\)\)/);
-  assert.match(layoutSource, /const nextTexts = new Array\(blocks\.length\)/);
-  assert.match(layoutSource, /const previousTexts = new Array\(blocks\.length\)/);
-  assert.doesNotMatch(layoutSource, /const nextText = blocks\.slice\(i \+ 1\)\.map\(\(x\) => norm\(x\?\.text\)\)\.find/);
-  assert.doesNotMatch(layoutSource, /const previousText = blocks\.slice\(0, i\)\.reverse\(\)\.map/);
+  const helperStart = readerEngine.indexOf('export function buildNeighbourTextIndex');
+  const helperEnd = readerEngine.indexOf('function bookRows', helperStart);
+  const helperSource = readerEngine.slice(helperStart, helperEnd);
+  assert.match(layoutSource, /buildNeighbourTextIndex\(blocks\)/);
+  assert.match(helperSource, /const blockTexts = blocks\.map\(\(block\) => norm\(block\?\.text\)\)/);
+  assert.match(helperSource, /const nextTexts = new Array\(blocks\.length\)/);
+  assert.match(helperSource, /const previousTexts = new Array\(blocks\.length\)/);
+  assert.doesNotMatch(helperSource, /blocks\.slice\(i \+ 1\)/);
+  assert.doesNotMatch(helperSource, /blocks\.slice\(0, i\)\.reverse\(\)/);
 });
 
 test('recent reader layouts are reused with a strict two-layout memory cap', () => {
