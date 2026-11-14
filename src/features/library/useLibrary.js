@@ -28,7 +28,7 @@ async function fetchJson(path, cacheToken, cache = 'default') {
 async function seedLibrary() {
   // Keep the library catalogue lightweight. Full book JSON is downloaded only
   // when the reader or a book recommendation actually needs that book.
-  const manifest = await fetchJson('content/library.seed.json', 'manifest-check-v90', 'no-store');
+  const manifest = await fetchJson('content/library.seed.json', 'manifest-check-v90', 'default');
   const revision = String(manifest.revision || 'legacy');
   const now = new Date().toISOString();
   const [storedRevision, existingBooks] = await Promise.all([
