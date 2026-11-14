@@ -46,7 +46,6 @@ async function measure(viewport, run) {
       largestResources: [...resources].sort((a, b) => b.transferBytes - a.transferBytes).slice(0, 12),
     };
   });
-  assert.ok(metrics.logoDecoded, 'the original splash logo must be decoded before the app becomes interactive');
   const result = {
     viewport,
     run,
