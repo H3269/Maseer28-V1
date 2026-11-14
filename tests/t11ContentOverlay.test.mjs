@@ -57,4 +57,6 @@ test('T11 uses the shared daily page structure while its real approval gate stay
   assert.match(ui, /id="skipDailyReviewBtn"/);
   assert.match(app, /createHumanReviewSkipRecord\(activeDay/);
   assert.match(app, /onSkip=\{skipDayForHumanReview\}/);
+  assert.match(app, /guidanceData: splitDayContent\(activeDay, journey\.profileData\?\.problem \|\| '', journey\.daily\?\.\[currentDay - 1\], journey\.daily \|\| \{\}\)/);
+  assert.doesNotMatch(app, /guidanceData: activeDay\.topic_id === 'T11'/);
 });
