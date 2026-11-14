@@ -82,18 +82,6 @@ function isRepetitiveBehaviorTopicDay(day) {
   ));
 }
 
-// Only simple context-dependent habits can use the generic daily path. BFRB/OCD/tic/developmental patterns stay withheld until their taxonomy and interventions are separated.
-const REPETITIVE_BEHAVIOR_SUBTOPIC_IDS = new Set(['T11-S01']);
-
-function hasApprovedRepetitiveBehaviorReview(day) {
-  return day.review_status === 'approved'
-    && Array.isArray(day.subtopic_ids)
-    && day.subtopic_ids.length === 1
-    && REPETITIVE_BEHAVIOR_SUBTOPIC_IDS.has(day.subtopic_ids[0])
-    && typeof day.review_record_id === 'string'
-    && day.review_record_id.trim().length > 0;
-}
-
 function isBoundaryTopicDay(day) {
   return Boolean(day && typeof day === 'object' && (
     day.topic_id === 'T12'
@@ -287,7 +275,6 @@ export function getDailySafetyMode(day) {
   // This is not an expert approval and must be removed before public release.
   if (isRepetitiveBehaviorTopicDay(day)) return 'routine';
   if (isFearTopicDay(day) && !hasApprovedFearReview(day)) return 'blocked';
-  if (isRepetitiveBehaviorTopicDay(day) && !hasApprovedRepetitiveBehaviorReview(day)) return 'blocked';
   if (isBoundaryTopicDay(day) && !hasApprovedBoundaryReview(day)) return 'blocked';
   // Temporary owner-review preview for T10: expert sign-off is deliberately
   // performed after the owner can inspect the full package in the live app.
