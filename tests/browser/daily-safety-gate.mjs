@@ -75,6 +75,19 @@ try {
     const card = page.locator('#day');
     assert.equal(await card.locator('#dayExercise').count(), 1, topic + ' day 1 must display its exercise');
     assert.equal(await card.locator('#dayAction').count(), 1, topic + ' day 1 must display its dedicated action');
+    if (topic === 'عادت‌های تکراری') {
+      // T11 is an owner-review preview: content is visible, but runtime scoring
+      // and daily-result interaction must remain unavailable before approval.
+      assert.equal(await card.locator('[data-testid="t11-owner-review-preview"]').count(), 1,
+        'T11 day 1 must expose the owner-review preview gate');
+      assert.equal(await card.locator('#openDailyEntryBtn').count(), 0,
+        'T11 must not expose the runtime daily interaction before owner approval');
+      assert.equal(await card.locator('#dailyEntryPanel').count(), 0,
+        'T11 must not expose a scoring panel before owner approval');
+      assert.deepEqual(errors, [], topic + ' must not raise browser errors');
+      await page.close();
+      continue;
+    }
     assert.equal(await card.locator('#openDailyEntryBtn').count(), 1, topic + ' day 1 must expose the original daily interaction');
     const text = await card.innerText();
     const expected = content.categories[topic].days.find((item) => item.day === 1);
