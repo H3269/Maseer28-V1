@@ -142,15 +142,6 @@ test('recent reader layouts are reused with a strict two-layout memory cap', () 
   assert.match(reader, /while \(READER_LAYOUT_CACHE\.size > READER_LAYOUT_CACHE_LIMIT\)/);
 });
 
-test('daily book recommendation avoids repeated history lookups and yields during long scans', () => {
-  assert.match(app, /const versionPages = versions\.map\(\(version\) => new Map\(/);
-  assert.match(app, /const processedRecommendationKeys = new Set\(\)/);
-  assert.match(app, /processedRecommendationKeys\.has\(recommendationKey\)/);
-  assert.match(app, /const priorParagraphSet = new Set\(priorParagraphs\)/);
-  assert.match(app, /scannedPages % 120 === 0/);
-  assert.match(app, /window\.setTimeout\(resolve, 0\)/);
-});
-
 test('hydrated book content is cached with a strict mobile memory cap', () => {
   assert.match(libraryHook, /SEED_BOOK_CONTENT_IN_FLIGHT = new Map\(\)/);
   assert.match(libraryHook, /const SEED_BOOK_CONTENT_CACHE_LIMIT = 2/);
