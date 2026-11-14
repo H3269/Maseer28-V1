@@ -25,6 +25,11 @@ test('the library catalogue does not download every full book on entry', () => {
   assert.doesNotMatch(seedSource, /fetchJson\\(meta\\.file/);
   assert.match(ensureSource, /fetchJson\\(currentBook\\.seedFile/);
   assert.match(app, /ensureSeedBookContent\\(book\\)/);
+  const recommendationStart = app.indexOf('async function findRelevantBook');
+  const completionStart = app.indexOf('async function completeDay', recommendationStart);
+  const recommendationSource = app.slice(recommendationStart, completionStart);
+  assert.match(recommendationSource, /await refreshLibrary\\(\\)/);
+  assert.match(recommendationSource, /await ensureSeedBookContent\\(book\\)/);
 });
 
 test('library synchronization is deferred until a library-dependent screen is opened', () => {

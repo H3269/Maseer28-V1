@@ -402,8 +402,12 @@ function navigate(next) {
     // already recommended in this user's current or archived paths.
     const usedKeys = new Set();
     const usedParagraphs = new Set();
-    const versions = await Promise.all(books.map(async (book) => {
-      try { return await libraryRepository.getVersion(book.activeVersionId); } catch { return null; }
+    const availableBooks = books.length ? books : await refreshLibrary();
+    const versions = await Promise.all(availableBooks.map(async (book) => {
+      try {
+        const { version } = await ensureSeedBookContent(book);
+        return version;
+      } catch { return null; }
     }));
     const normalizeParagraph = (value) => normalizeSearchText(value).replace(/\s+/g, ' ').trim();
     const pageText = (page) => normalizeParagraph(`${page?.title || ''} ${(page?.blocks || []).map((b) => `${b.text || ''} ${(b.rows || []).flat().join(' ')}`).join(' ')} ${page?.text || ''}`);
@@ -412,7 +416,7 @@ function navigate(next) {
       const bookId = Number(recommendation.bookId), pageNo = Number(recommendation.page);
       if (!Number.isInteger(bookId) || bookId < 1 || bookId > 5 || !Number.isInteger(pageNo) || pageNo < 1) return;
       usedKeys.add(`${bookId}:${pageNo}`);
-      const bookIndex = books.findIndex((item) => Number(item.legacyId) === bookId);
+      const bookIndex = availableBooks.findIndex((item) => Number(item.legacyId) === bookId);
       const version = versions[bookIndex >= 0 ? bookIndex : bookId - 1];
       const page = version?.content?.pages?.find((row) => Number(row.sourcePage || row.page) === pageNo);
       if (!page) return;
@@ -450,8 +454,8 @@ function navigate(next) {
     const candidates = [];
     // Build this once, not once per page: the old placement multiplied work by every book page.
     const priorParagraphs = [...usedParagraphs];
-    for (let bookIndex = 0; bookIndex < books.length; bookIndex += 1) {
-      const book = books[bookIndex];
+    for (let bookIndex = 0; bookIndex < availableBooks.length; bookIndex += 1) {
+      const book = availableBooks[bookIndex];
       try {
         const version = versions[bookIndex];
         const pages = version?.content?.pages || [];
