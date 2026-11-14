@@ -52,6 +52,7 @@ import {
 import { getRelationshipSafetyGate, isRelationshipSafetyConfirmed } from './features/journey/relationshipSafetyGate.js';
 import { isCompleteDailyContentCategory, selectCanonicalDailyRecord, selectDailyContentCategory } from './features/content/dailyContentSelector.js';
 import { createRuntimeContentRepository } from './features/content/runtimeContentRepository.js';
+import { mergeDailyTextOverrides } from './features/content/dailyTextOverrides.js';
 import { fa } from './shared/utils.js';
 import VersionFooter from './shared/components/VersionFooter.jsx';
 const GlobalAssistantLauncher = lazy(() => import('./features/assistant/GlobalAssistantLauncher.jsx'));
@@ -170,8 +171,11 @@ function MainApp() {
               if (attempt >= 2 || error instanceof SyntaxError) throw error;
             }
           }
+          const overrides = await fetch(`${import.meta.env.BASE_URL}content/daily-text-overrides.v1.json?v=20261112-t06`, { cache: 'default', priority: 'low' })
+            .then((response) => response.ok ? response.json() : null)
+            .catch(() => null);
           if (cancelled) return;
-          setContent(data);
+          setContent(overrides ? mergeDailyTextOverrides(data, overrides) : data);
           setLoadingProgress(100);
         } catch (error) {
           if (!cancelled) setLoadError(error?.message || 'خطا در بارگذاری برنامه');
