@@ -18,7 +18,7 @@ test('T11 overlay connects all 28 redesigned days and retains honest pending-rev
   const draftActionLines = [...draft.matchAll(/^- \\*\\*اقدام:\\*\\* (.+)$/gmu)].map((match) => match[1]);
   assert.equal(draftExerciseLines.length, 28);
   assert.equal(draftActionLines.length, 28);
-  assert.ok([...draftExerciseLines, ...draftActionLines].every((value) => !/[A-Za-z]/u.test(value)), 'T11 draft exercises/actions must contain no Latin characters');
+  assert.ok([...draftExerciseLines, ...draftActionLines].every((value) => !/[A-Za-z0-9]/u.test(value)), 'T11 draft exercises/actions must contain no Latin characters');
   const merged = mergeDailyTextOverrides(base, overrides);
   const days = merged.categories['عادت‌های تکراری'].days;
   const guideByDay = new Map(guide.records.map((record) => [record.day, record]));
@@ -35,7 +35,7 @@ test('T11 overlay connects all 28 redesigned days and retains honest pending-rev
     assert.equal(day.title, expected.title);
     assert.equal(day.exercise, expected.exercise);
     assert.ok(day.actionText.endsWith(expected.action));
-    assert.doesNotMatch(day.exercise + day.actionText, /[A-Za-z]/u, 'T11 day ' + day.day + ' exercise/action must contain no Latin characters');
+    assert.doesNotMatch(day.exercise + day.actionText, /[A-Za-z0-9]/u, 'T11 day ' + day.day + ' exercise/action must contain no Latin characters');
     assert.doesNotMatch(expected.exercise + expected.action, /[A-Za-z]/u, 'T11 day ' + day.day + ' assistant guide exercise/action must contain no Latin characters');
     assert.ok(day.objective && day.skill && day.mechanism);
     assert.ok(day.lightVersion && day.progressVersion && day.restVersion);
