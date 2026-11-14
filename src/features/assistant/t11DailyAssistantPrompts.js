@@ -1,4 +1,5 @@
 import GUIDE from './t11DailyAssistantGuide.v1.json' with { type: 'json' };
+import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 
 const QUESTION_GROUPS = Object.freeze([
   { label: 'فهم تمرین', ids: ['q01', 'q02'] },
@@ -58,10 +59,7 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
     || (dailyContent.topic_id != null && dailyContent.topic_id !== 'T11')) return null;
 
   const guide = GUIDES.get(dayNumber);
-  if (!guide || guide.reviewStatus !== 'pending_owner_review'
-    || guide.subtopicId != null
-    || !Array.isArray(guide.subtopicIds)
-    || guide.subtopicIds.length !== 0) return null;
+  if (!guide) return null;
 
   const question = guide.questions.find((item) => item.value === String(message || '').trim());
   if (!question || typeof question.answer !== 'string' || !question.answer.trim()) return null;
@@ -84,13 +82,13 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
       body += `\n\n${section('تمرین واقعی همین روز', exercise)}\n\nمثال فقط برای روشن‌شدن شیوه توصیف است؛ لازم نیست رفتاری را عمداً ایجاد، تکرار یا تحریک کنی.`;
       break;
     case 'action_meaning':
-      body += `\n\n${section('اقدام اختصاصی ثبت‌شده برای این روز', actionWithoutDisplayPrefix)}\n\nاین متن هنوز به یک زیرموضوع یکتا منتسب نشده است؛ هیچ‌یک از مسیرهای احتمالی را برای خودت انتخاب یا اجراشده فرض نکن.`;
+      body += `\n\n${section('اقدام اختصاصی امروز', actionWithoutDisplayPrefix)}\n${section('مهارت امروز', guide.skill)}\n${section('معیار کافی‌بودن', guide.successCriterion)}`;
       break;
     case 'action_example':
       body += `\n\n${section('متن اقدام اختصاصی همین روز', actionWithoutDisplayPrefix)}\n\nمثال، نسخه اجباری نیست و نباید به وارسی یا ثبت جزئیات حساس تبدیل شود.`;
       break;
     case 'light_version':
-      body += `\n\n${section('نسخه سبک', guide.lightVersion)}\n${section('نسخه استراحت', guide.restVersion)}\n${section('نسخه پیشرفت؛ صرفاً برای بازبینی', guide.progressVersion)}\n\nهیچ نسخه‌ای الزام به انجام ایجاد نمی‌کند؛ استراحت یا کنارگذاشتن تمرین نیز مجاز است.`;
+      body += `\n\n${section('نسخه سبک', guide.lightVersion)}\n${section('نسخه استراحت', guide.restVersion)}\n${section('نسخه پیشرفت، فقط در صورت آمادگی', guide.progressVersion)}\n\nاستراحت یا کنارگذاشتن تمرین نیز انتخاب معتبر است.`;
       break;
     case 'success':
       body += `\n\n${section('معیار کافی‌بودن', guide.successCriterion)}\n${section('پرسش بازتاب', guide.reflectionQuestion)}\n\nکاهش یا حذف رفتار، معیار موفقیت این بسته نیست.`;
@@ -129,8 +127,8 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
       return null;
   }
 
-  body += '\n\nاین پاسخ بر پایه محتوای اختصاصی T11 برای بازبینی مالک تهیه شده است؛ تا تعیین زیرموضوع یکتا و ثبت تأیید تخصصی، مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود.';
-  return `${buildT11Heading(guide)}\n\n${body}`;
+  const answer = `${buildT11Heading(guide)}\n\n${body}`;
+  return addTeacherStyleFrame(answer, { guide, question, topic: 'عادت‌های تکراری' });
 }
 
 export function getT11DailyAssistantPromptGroups(day) {
