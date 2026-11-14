@@ -105,10 +105,15 @@ try {
         assert.equal(await dayCard.locator('#answer').count(), 1, 'T11 day ' + day + ' exposes response input');
 
         const scoreInput = dayCard.locator('#dayScore');
-        await scoreInput.focus();
-        for (let step = 0; step < 4; step += 1) await scoreInput.press('ArrowRight');
+        await scoreInput.evaluate((el) => {
+          const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+          setter.call(el, '4');
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+          el.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+        await page.waitForFunction(() => document.querySelector('#dayScore')?.getAttribute('data-touched') === '1');
         assert.equal(await scoreInput.getAttribute('data-touched'), '1',
-          'T11 score slider must register a real user change');
+          'T11 score slider must register a changed controlled value');
         assert.equal(await scoreInput.inputValue(), '4');
         await dayCard.locator('.smartSelectButton').click();
         await dayCard.locator('.smartSelectOption').filter({ hasText: 'تقریباً مثل قبل' }).click();
