@@ -71,7 +71,7 @@ try {
   assert.equal(topics.length, 34);
 
   for (const topic of topics) {
-    const { page, errors } = await openDay(topic, 1);
+    let { page, errors } = await openDay(topic, 1);
     const card = page.locator('#day');
     assert.equal(await card.locator('#dayExercise').count(), 1, topic + ' day 1 must display its exercise');
     assert.equal(await card.locator('#dayAction').count(), 1, topic + ' day 1 must display its dedicated action');
