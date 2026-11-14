@@ -2,7 +2,6 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
-import { splitDayContent } from '../src/features/journey/JourneyScreens.jsx';
 import {
   answerT11DailyPreparedQuestion,
   getT11DailyAssistantPromptGroups,
@@ -108,7 +107,10 @@ test('T11 page assistant routes every exact day-specific question and rejects mi
         day: guide.day,
         problem: 'عادت‌های تکراری',
         data: dailyContent,
-        guidanceData: splitDayContent(dailyContent, 'عادت‌های تکراری', null, {}),
+        guidanceData: {
+          ...dailyContent,
+          action: `برای مسئله «عادت‌های تکراری»، ${guide.action.charAt(0).toLowerCase()}${guide.action.slice(1)}`,
+        },
       },
     });
     assert.equal(result.status, 'daily_guidance_available', 'T11 day ' + guide.day);
