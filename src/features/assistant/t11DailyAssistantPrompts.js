@@ -1,5 +1,6 @@
 import GUIDE from './t11DailyAssistantGuide.v1.json' with { type: 'json' };
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
+import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 
 const QUESTION_GROUPS = Object.freeze([
   { label: 'فهم تمرین', dayScoped: true, ids: ['q01', 'q02'] },
@@ -9,13 +10,8 @@ const QUESTION_GROUPS = Object.freeze([
   { label: 'ارزیابی و ایمنی', dayScoped: false, ids: ['q06', 'q07', 'q11', 'q12'] },
 ]);
 
-const GUIDES = new Map(GUIDE.records.map((record) => [
-  record.day,
-  Object.freeze({
-    ...record,
-    questions: Object.freeze(record.questions.map((question) => Object.freeze({ ...question }))),
-  }),
-]));
+export const T11_DAILY_ASSISTANT_GUIDES = Object.freeze(GUIDE.records.map(normalizeDailyAssistantGuide));
+const GUIDES = new Map(T11_DAILY_ASSISTANT_GUIDES.map((guide) => [guide.day, guide]));
 
 function toDayNumber(value) {
   const day = Number(value);
@@ -150,4 +146,3 @@ export function getT11DailyAssistantPromptGroups(day) {
   }));
 }
 
-export const T11_DAILY_ASSISTANT_GUIDES = Object.freeze(GUIDE.records);
