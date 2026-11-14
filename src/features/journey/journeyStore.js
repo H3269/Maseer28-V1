@@ -833,6 +833,12 @@ export function isDayUnlockedAt(state, day, trustedNowMs) {
   // even when the user skipped several days before returning to the app.
   const previousDay = n - 1;
   if (!completed.includes(previousDay)) return false;
+
+  // A day withheld by a safety or human-review gate did not involve an
+  // intervention. Allow sequential continuation immediately after an honest
+  // non-scoring skip; the one-day cooldown still applies to performed days.
+  if (['skipped_human_review', 'skipped_safety_gate'].includes(state.daily?.[previousDay]?.status)) return true;
+
   let previousCompletionMs = Date.parse(state.daily?.[previousDay]?.updatedAt || '');
 
   // Compatibility for old saved journeys that did not have a usable daily
