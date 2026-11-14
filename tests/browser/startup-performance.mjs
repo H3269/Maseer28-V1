@@ -19,8 +19,30 @@ async function measure(viewport, run) {
 
   const startedAt = Date.now();
   await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
-  // The app exposes its first interactive surface only after its required
-  // content and splash-logo readiness gates have completed.
+
+  // Capture the splash logo while the loading screen is still mounted. The
+  // logo is intentionally removed after the app passes its startup gate.
+  const logoReadiness = await page.evaluate(async () => {
+    const selector = '#root img[alt="لوگوی برنامه مسیر"]';
+    const image = document.querySelector(selector);
+    if (!image) return { logoDecoded: false, logoNaturalWidth: 0, logoVisible: false };
+    try {
+      await image.decode();
+    } catch {
+      // A failed decode is reflected in the explicit readiness fields below.
+    }
+    const style = getComputedStyle(image);
+    const rect = image.getBoundingClientRect();
+    return {
+      logoDecoded: image.complete && image.naturalWidth > 0,
+      logoNaturalWidth: image.naturalWidth || 0,
+      logoVisible: style.display !== 'none' && style.visibility !== 'hidden'
+        && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0,
+    };
+  });
+
+  // The first interactive surface is exposed only after required content and
+  // splash-logo readiness gates have completed.
   await page.locator('#copyrightModal').waitFor({ state: 'visible', timeout: 45000 });
   const metrics = await page.evaluate(() => {
     const navigation = performance.getEntriesByType('navigation')[0];
@@ -31,15 +53,12 @@ async function measure(viewport, run) {
       decodedBytes: entry.decodedBodySize || 0,
       initiatorType: entry.initiatorType,
     }));
-    const logo = [...document.images].find((image) => /Logo%20m24|Logo m24/i.test(image.currentSrc || image.src));
     return {
       domContentLoadedMs: Math.round(navigation?.domContentLoadedEventEnd || 0),
       loadEventMs: Math.round(navigation?.loadEventEnd || 0),
       responseStartMs: Math.round(navigation?.responseStart || 0),
       firstPaintMs: Math.round(performance.getEntriesByName('first-paint')[0]?.startTime || 0),
       firstContentfulPaintMs: Math.round(performance.getEntriesByName('first-contentful-paint')[0]?.startTime || 0),
-      logoDecoded: Boolean(logo?.complete && logo?.naturalWidth > 0),
-      logoNaturalWidth: logo?.naturalWidth || 0,
       resourceCount: resources.length,
       totalTransferBytes: resources.reduce((sum, item) => sum + item.transferBytes, 0),
       totalDecodedBytes: resources.reduce((sum, item) => sum + item.decodedBytes, 0),
@@ -50,9 +69,12 @@ async function measure(viewport, run) {
     viewport,
     run,
     appReadyMs: Date.now() - startedAt,
+    ...logoReadiness,
     ...metrics,
     consoleErrors: errors,
   };
+  assert.equal(result.logoDecoded, true, 'Splash logo must decode before the app becomes interactive');
+  assert.equal(result.logoVisible, true, 'Splash logo must be visible while the startup gate is active');
   await context.close();
   return result;
 }
