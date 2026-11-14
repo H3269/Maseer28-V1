@@ -143,7 +143,7 @@ function MainApp() {
     const pathUrl = `${import.meta.env.BASE_URL}content/path-content.json?v=20261023-fast-open`;
     const loadPathContent = async (attempt = 0) => {
       try {
-        const response = await fetch(pathUrl, { cache: attempt === 0 ? 'default' : 'reload' });
+        const response = await fetch(pathUrl, { cache: attempt === 0 ? 'default' : 'reload', priority: 'high' });
         if (!response.ok) {
           if (response.status >= 500 && attempt < 2) {
             await new Promise((resolve) => window.setTimeout(resolve, 450 * (attempt + 1)));
@@ -172,7 +172,7 @@ function MainApp() {
         return data;
       });
 
-    const overridesRequest = fetch(`${import.meta.env.BASE_URL}content/daily-text-overrides.v1.json?v=20261112-t06`, { cache: 'default' })
+    const overridesRequest = fetch(`${import.meta.env.BASE_URL}content/daily-text-overrides.v1.json?v=20261112-t06`, { cache: 'default', priority: 'low' })
       .then((response) => response.ok ? response.json() : null)
       .catch(() => null);
 
