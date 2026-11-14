@@ -832,6 +832,115 @@
         "Support should address causes of distress and avoid treating harmless stimming as something that must be eliminated; when a behavior causes harm, support should prioritize safety and individual needs."
       ],
       "limitations": "Public guidance from an autism organization, not an individualized clinical assessment. It should not be used to infer autism or diagnose the function of an individual's repetitive behavior."
+    },
+    {
+      "source_id": "SRC-T11-FISAK-TTM-META-2026-001",
+      "title": "The efficacy of psychotherapeutic and pharmacological interventions for trichotillomania: A review and meta-analysis",
+      "publisher": "Journal of Psychiatric Research",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2026",
+      "pmid": "41812482",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41812482/",
+      "relevant_claims": [
+        "A review of 29 trials for standard meta-analysis and 30 for network meta-analysis found replicated support for behavioral therapy with habit reversal and ACT-enhanced habit reversal for trichotillomania.",
+        "Interventions involving habit reversal were generally superior to interventions without habit reversal in the reviewed trichotillomania trials."
+      ],
+      "limitations": "Findings are specific to trichotillomania and clinician-designed behavioral treatments; they do not validate general self-help for all repetitive behaviors or authorize the app to prescribe HRT/ACT-HRT."
+    },
+    {
+      "source_id": "SRC-T11-BARBER-DIGITAL-BFRB-2026-001",
+      "title": "Effectiveness of digitally-delivered interventions for trichotillomania and skin picking disorder: A systematic review and meta-analysis",
+      "authors": [
+        "Kathryn E. Barber",
+        "Isabella F. Cram",
+        "Elyse C. Smith",
+        "Douglas W. Woods",
+        "Han Joo Lee"
+      ],
+      "publisher": "Journal of Psychiatric Research",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2026-05",
+      "doi": "10.1016/j.jpsychires.2026.02.020",
+      "pmid": "41713175",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41713175/",
+      "relevant_claims": [
+        "A systematic review and meta-analysis included 14 studies and 5,468 participants examining digitally delivered interventions for trichotillomania and excoriation disorder.",
+        "Randomized controlled trial comparisons showed a medium pooled effect favoring digital interventions, while the authors note heterogeneity and variability in study design."
+      ],
+      "limitations": "Evidence concerns digital interventions grounded in CBT/behavioral therapy for two specific BFRB disorders; it does not validate this app's generic T11 course or prove that unguided content is safe/effective."
+    },
+    {
+      "source_id": "SRC-T11-STEIN-LOCHNER-BFRB-2026-001",
+      "title": "Body-Focused Repetitive Behavior Disorders: From Competing Paradigms Toward Iterative Integration",
+      "authors": [
+        "Dan J. Stein",
+        "Christine Lochner"
+      ],
+      "publisher": "Annual Review of Clinical Psychology",
+      "source_type": "peer_reviewed_review",
+      "publication_date": "2026-05",
+      "doi": "10.1146/annurev-clinpsy-081423-015659",
+      "pmid": "42097987",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42097987/",
+      "relevant_claims": [
+        "BFRBs have been understood through multiple conceptual frameworks, including behavioral, psychopharmacological, neuroscience, advocacy, and global mental health perspectives.",
+        "A pluralistic and iterative approach is preferable to reducing BFRBs to a single explanatory paradigm."
+      ],
+      "limitations": "Conceptual review, not an individualized treatment guideline; it supports caution about one-size-fits-all framing rather than any specific app intervention."
+    },
+    {
+      "source_id": "SRC-T11-IPS-OCD-2025-UPDATE-001",
+      "title": "Clinical practice guidelines for obsessive-compulsive disorder: 2025 update",
+      "authors": [
+        "Shyam Sundar Arumugham",
+        "Janardhanan C. Narayanaswamy",
+        "Srinivas Balachander",
+        "Eesha Sharma",
+        "T. S. Jaisoorya",
+        "Sai Chaitanya Reddy",
+        "Aleem M. Siddiqui",
+        "Avinash Desouza",
+        "Parag S. Shah",
+        "Y. C. Janardhan Reddy"
+      ],
+      "publisher": "Indian Journal of Psychiatry",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2026-01-27",
+      "doi": "10.4103/indianjpsychiatry_1259_25",
+      "pmid": "41694048",
+      "pmcid": "PMC12900050",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12900050/",
+      "relevant_claims": [
+        "The 2025 update provides an evidence-based framework for OCD assessment and management across age groups and comorbidities.",
+        "CBT is a first-line psychological treatment option; clinical treatment decisions depend on assessment and severity."
+      ],
+      "limitations": "Guideline issued by the Indian Psychiatric Society and published in 2026; it is not an app self-help protocol and does not authorize unsupervised ERP or response prevention."
+    },
+    {
+      "source_id": "SRC-T11-CDC-CBIT-2026-001",
+      "title": "Behavioral Treatment for Tics That Works",
+      "publisher": "Centers for Disease Control and Prevention",
+      "source_type": "public_health_guidance",
+      "publication_date": "2026-03-27",
+      "url": "https://www.cdc.gov/tourette-syndrome/articles/behavioral-treatment-for-tics-that-works.html",
+      "relevant_claims": [
+        "CBIT is a behavioral therapy that can help people with tics and tic disorders manage tics.",
+        "CBIT is a structured treatment option for tic disorders, not a generic instruction to suppress repetitive movement."
+      ],
+      "limitations": "Public health information about a specific treatment; it does not support self-diagnosis or app-delivered CBIT without appropriate clinical care."
+    },
+    {
+      "source_id": "SRC-T11-NICE-CG142-001",
+      "title": "Autism spectrum disorder in adults: diagnosis and management — Recommendations",
+      "publisher": "National Institute for Health and Care Excellence (NICE)",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2012-06-27",
+      "url": "https://www.nice.org.uk/guidance/cg142/chapter/recommendations",
+      "relevant_claims": [
+        "Assessment of behavior that challenges in autistic adults should include functional analysis of triggers and maintaining factors, including physical disorders, social and physical environment, sensory factors, coexisting mental disorders, communication, and routine changes.",
+        "Intervention choices should account for function, quality of life, environmental factors, individual preferences, and capabilities."
+      ],
+      "limitations": "Guideline scope is autistic adults in the UK and behavior that challenges; it must not be used to diagnose autism or to infer that harmless stimming requires intervention."
     }
   ]
 }
