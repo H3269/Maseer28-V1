@@ -119,11 +119,12 @@ const reader = await readFile(new URL('../src/features/library/Reader.jsx', impo
 const readerEngine = await readFile(new URL('../src/features/library/readerEngine.js', import.meta.url), 'utf8');
 
 test('reader pagination precomputes neighbouring block text instead of rescanning each page', () => {
-  assert.match(readerEngine, /const blockTexts = blocks\.map\(\(block\) => norm\(block\?\.text\)\)/);
-  assert.match(readerEngine, /const nextTexts = new Array\(blocks\.length\)/);
-  assert.match(readerEngine, /const previousTexts = new Array\(blocks\.length\)/);
-  assert.doesNotMatch(readerEngine, /const nextText = blocks\.slice\(i \+ 1\)\.map\(\(x\) => norm\(x\?\.text\)\)\.find/);
-  assert.doesNotMatch(readerEngine, /const previousText = blocks\.slice\(0, i\)\.reverse\(\)\.map/);
+  const layoutSource = readerEngine.slice(readerEngine.indexOf('export function buildLegacyReaderLayout'));
+  assert.match(layoutSource, /const blockTexts = blocks\.map\(\(block\) => norm\(block\?\.text\)\)/);
+  assert.match(layoutSource, /const nextTexts = new Array\(blocks\.length\)/);
+  assert.match(layoutSource, /const previousTexts = new Array\(blocks\.length\)/);
+  assert.doesNotMatch(layoutSource, /const nextText = blocks\.slice\(i \+ 1\)\.map\(\(x\) => norm\(x\?\.text\)\)\.find/);
+  assert.doesNotMatch(layoutSource, /const previousText = blocks\.slice\(0, i\)\.reverse\(\)\.map/);
 });
 
 test('recent reader layouts are reused with a strict two-layout memory cap', () => {
