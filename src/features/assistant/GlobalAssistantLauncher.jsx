@@ -215,7 +215,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
           try {
             const { book: readyBook, version } = await ensureSeedBookContent(book);
             return version?.content ? { title: readyBook.title, legacyId: readyBook.legacyId, content: version.content } : null;
-          } catch { return null; }
+          } catch (error) {
+            console.error('Library assistant book hydration failed', book.id, error);
+            return null;
+          }
         }));
         const availableBooks = hydrated.filter(Boolean);
         setLoadedLibraryBooks(availableBooks);
@@ -228,7 +231,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
           setLibraryComparisonReply(comparison?.message || '');
         }, 0);
         return availableBooks;
-      } catch {
+      } catch (error) {
+        console.error('Library assistant catalogue loading failed', error);
         setLoadedLibraryBooks([]);
         return [];
       }

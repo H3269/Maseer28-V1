@@ -33,6 +33,7 @@ try {
   const page = await browser.newPage();
   const errors = [];
   page.on('pageerror', (error) => errors.push(String(error)));
+  page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
   await page.addInitScript((state) => {
     localStorage.setItem('maseer28_onboarding_complete_v1', '1');
     localStorage.setItem('maseer28_state', JSON.stringify(state));
@@ -321,6 +322,7 @@ try {
   } catch (error) {
     console.error('LIBRARY_ASSISTANT_MESSAGES', JSON.stringify(await dialog.locator('.assistantMessage').allInnerTexts()));
     console.error('LIBRARY_ASSISTANT_DIALOG', await dialog.innerText());
+    console.error('LIBRARY_ASSISTANT_ERRORS', JSON.stringify(errors));
     throw error;
   }
   const guidedLibrarySummary = dialog.locator('.assistantMessage').last();
