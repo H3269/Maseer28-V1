@@ -93,7 +93,7 @@ test('initial splash restores the original approved logo asset', async () => {
 test('the app waits until the complete splash logo image is decoded', () => {
   assert.match(app, /const \[splashLogoReady, setSplashLogoReady\] = useState\(false\)/);
   assert.match(app, /await image\.decode\(\)/);
-  assert.match(app, /if \(!content \|\| !splashLogoReady\)/);
+  assert.match(app, /if \(!content \|\| !splashLogoReady \|\| !splashMinimumVisible \|\| loadError\)/);
   assert.match(app, /ref=\{splashLogoRef\}/);
   assert.match(app, /image\.complete\) void confirmReady\(\)/);
   assert.match(app, /fetchPriority="high"/);
@@ -123,6 +123,19 @@ test('no later stylesheet rule can re-hide the splash logo or title behind loadi
   assert.doesNotMatch(css, /clip-path:\s*circle\(var\(--logo-reveal/);
   assert.match(css, /\.appLoading \.loadingBrand img \{[\s\S]*?clip-path: none !important[\s\S]*?visibility: visible !important/);
   assert.match(css, /\.appLoading \.loadingBrand h1 \{[\s\S]*?clip-path: none !important[\s\S]*?visibility: visible !important/);
+});
+
+
+test('the splash remains visible for a short, real display interval after the logo is decoded', () => {
+  assert.match(app, /const \[splashMinimumVisible, setSplashMinimumVisible\] = useState\(false\)/);
+  assert.match(app, /if \(!splashLogoReady\) return undefined[\s\S]*?setTimeout\(\(\) => \{[\s\S]*?setSplashMinimumVisible\(true\)[\s\S]*?\}, 650\)/);
+  assert.match(app, /!splashMinimumVisible/);
+});
+
+test('content and logo failures keep the splash visible and expose retry without replacing it', () => {
+  assert.doesNotMatch(app, /if \(loadError\) return <div className="validationModal"/);
+  assert.match(app, /if \(!content \|\| !splashLogoReady \|\| !splashMinimumVisible \|\| loadError\)/);
+  assert.match(app, /<div className="loadingError" role="alert">[\s\S]*?\{loadError\}[\s\S]*?window\.location\.reload\(\)/);
 });
 
 test('startup retries transient path-content failures and offers a manual retry for terminal errors', () => {
