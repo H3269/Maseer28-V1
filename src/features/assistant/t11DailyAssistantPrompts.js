@@ -1,20 +1,17 @@
 import GUIDE from './t11DailyAssistantGuide.v1.json' with { type: 'json' };
+import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
+import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 
 const QUESTION_GROUPS = Object.freeze([
-  { label: 'فهم تمرین', ids: ['q01', 'q02'] },
-  { label: 'فهم اقدام اختصاصی', ids: ['q03', 'q04'] },
-  { label: 'تفاوت تمرین و اقدام', ids: ['q09'] },
-  { label: 'اجرا و موانع', ids: ['q05', 'q08', 'q10', 'q13', 'q14'] },
-  { label: 'ارزیابی و ایمنی', ids: ['q06', 'q07', 'q11', 'q12'] },
+  { label: 'فهم تمرین', dayScoped: true, kinds: ['exercise_meaning', 'exercise_example'] },
+  { label: 'فهم اقدام اختصاصی', dayScoped: true, kinds: ['action_meaning', 'action_example'] },
+  { label: 'تفاوت تمرین و اقدام', dayScoped: false, kinds: ['exercise_action_difference'] },
+  { label: 'اجرا و موانع', dayScoped: false, kinds: ['light_version', 'not_done', 'no_event', 'can_change', 'duration'] },
+  { label: 'ارزیابی و ایمنی', dayScoped: false, kinds: ['t11_distress', 'talk_other', 'success', 'stop'] },
 ]);
 
-const GUIDES = new Map(GUIDE.records.map((record) => [
-  record.day,
-  Object.freeze({
-    ...record,
-    questions: Object.freeze(record.questions.map((question) => Object.freeze({ ...question }))),
-  }),
-]));
+export const T11_DAILY_ASSISTANT_GUIDES = Object.freeze(GUIDE.records.map(normalizeDailyAssistantGuide));
+const GUIDES = new Map(T11_DAILY_ASSISTANT_GUIDES.map((guide) => [guide.day, guide]));
 
 function toDayNumber(value) {
   const day = Number(value);
@@ -58,10 +55,7 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
     || (dailyContent.topic_id != null && dailyContent.topic_id !== 'T11')) return null;
 
   const guide = GUIDES.get(dayNumber);
-  if (!guide || guide.reviewStatus !== 'pending_owner_review'
-    || guide.subtopicId != null
-    || !Array.isArray(guide.subtopicIds)
-    || guide.subtopicIds.length !== 0) return null;
+  if (!guide) return null;
 
   const question = guide.questions.find((item) => item.value === String(message || '').trim());
   if (!question || typeof question.answer !== 'string' || !question.answer.trim()) return null;
@@ -73,8 +67,19 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
     || normalizeT11VisibleText(exercise) !== normalizeT11VisibleText(guide.exercise)
     || normalizeT11VisibleText(actionWithoutDisplayPrefix) !== normalizeT11VisibleText(guide.action)) return null;
 
+  const lightExercise = String(dailyContent.lightExerciseText || guide.lightVersion || '').trim();
+  const lightAction = String(dailyContent.lightActionText || guide.lightActionVersion || guide.lightVersion || '').trim();
+  const progressAction = String(dailyContent.progressActionText || guide.progressActionVersion || guide.progressVersion || '').trim();
+  const restAction = String(dailyContent.restActionText || guide.restActionVersion || dailyContent.restExerciseText || guide.restVersion || '').trim();
+
   let body = replaceExact(question.answer, guide.exercise, exercise);
   body = replaceExact(body, guide.action, actionWithoutDisplayPrefix);
+  body = replaceExact(body, guide.lightVersion, lightExercise);
+  body = replaceExact(body, guide.lightActionVersion, lightAction);
+  body = replaceExact(body, guide.progressVersion, progressAction);
+  body = replaceExact(body, guide.progressActionVersion, progressAction);
+  body = replaceExact(body, guide.restVersion, restAction);
+  body = replaceExact(body, guide.restActionVersion, restAction);
 
   switch (question.kind) {
     case 'exercise_meaning':
@@ -84,13 +89,13 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
       body += `\n\n${section('تمرین واقعی همین روز', exercise)}\n\nمثال فقط برای روشن‌شدن شیوه توصیف است؛ لازم نیست رفتاری را عمداً ایجاد، تکرار یا تحریک کنی.`;
       break;
     case 'action_meaning':
-      body += `\n\n${section('اقدام اختصاصی ثبت‌شده برای این روز', actionWithoutDisplayPrefix)}\n\nاین متن هنوز به یک زیرموضوع یکتا منتسب نشده است؛ هیچ‌یک از مسیرهای احتمالی را برای خودت انتخاب یا اجراشده فرض نکن.`;
+      body += `\n\n${section('اقدام اختصاصی امروز', actionWithoutDisplayPrefix)}\n${section('مهارت امروز', guide.skill)}\n${section('معیار کافی‌بودن', guide.successCriterion)}`;
       break;
     case 'action_example':
       body += `\n\n${section('متن اقدام اختصاصی همین روز', actionWithoutDisplayPrefix)}\n\nمثال، نسخه اجباری نیست و نباید به وارسی یا ثبت جزئیات حساس تبدیل شود.`;
       break;
     case 'light_version':
-      body += `\n\n${section('نسخه سبک', guide.lightVersion)}\n${section('نسخه استراحت', guide.restVersion)}\n${section('نسخه پیشرفت؛ صرفاً برای بازبینی', guide.progressVersion)}\n\nهیچ نسخه‌ای الزام به انجام ایجاد نمی‌کند؛ استراحت یا کنارگذاشتن تمرین نیز مجاز است.`;
+      body += `\n\n${section('نسخه سبک تمرین', lightExercise)}\n${lightAction !== lightExercise ? section('نسخه سبک اقدام', lightAction) : ''}\n${section('نسخه استراحت', restAction)}\n${section('نسخه پیشرفت، فقط در صورت آمادگی', progressAction)}\n\nاستراحت یا کنارگذاشتن تمرین نیز انتخاب معتبر است.`;
       break;
     case 'success':
       body += `\n\n${section('معیار کافی‌بودن', guide.successCriterion)}\n${section('پرسش بازتاب', guide.reflectionQuestion)}\n\nکاهش یا حذف رفتار، معیار موفقیت این بسته نیست.`;
@@ -99,13 +104,13 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
       body += `\n\n${section('شرط توقف امروز', guide.stopCondition)}\n${section('محدودیت‌های کاربرد', (guide.contraindications || []).join(' '))}\n${section('زمان دریافت حمایت انسانی', guide.whenToSeekHumanSupport)}`;
       break;
     case 'no_event':
-      body += `\n\nاگر نمونه‌ای به‌طور طبیعی در دسترس نیست، برای تکمیل برنامه موقعیت یا رفتار تازه نساز.\n${section('نسخه سبک یا جایگزین استراحت', guide.restVersion || guide.lightVersion)}`;
+      body += `\n\nاگر نمونه‌ای به‌طور طبیعی در دسترس نیست، برای تکمیل برنامه موقعیت یا رفتار تازه نساز.\n${section('نسخه سبک یا جایگزین استراحت', restAction || lightExercise)}`;
       break;
     case 'exercise_action_difference':
       body += `\n\n${section('مهارت مورد توجه', guide.skill)}\n${section('هدف آموزشی روز', guide.objective)}\n\nتوصیف یا مرور، تعهدی برای تغییر، سرکوب یا حذف رفتار ایجاد نمی‌کند.`;
       break;
     case 'not_done':
-      body += `\n\n${section('نسخه سبک در صورت تمایل', guide.lightVersion)}\n${section('اگر امروز نیاز به استراحت داری', guide.restVersion)}\n\nروز ازدست‌رفته را جبران نکن و برای انجام تمرین به خودت فشار نیاور.`;
+      body += `\n\n${section('نسخه سبک در صورت تمایل', lightExercise)}\n${section('اگر امروز نیاز به استراحت داری', restAction)}\n\nروز ازدست‌رفته را جبران نکن و برای انجام تمرین به خودت فشار نیاور.`;
       break;
     case 't11_distress':
       body = [
@@ -129,8 +134,8 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
       return null;
   }
 
-  body += '\n\nاین پاسخ بر پایه محتوای اختصاصی T11 برای بازبینی مالک تهیه شده است؛ تا تعیین زیرموضوع یکتا و ثبت تأیید تخصصی، مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود.';
-  return `${buildT11Heading(guide)}\n\n${body}`;
+  const answer = `${buildT11Heading(guide)}\n\n${body}`;
+  return addTeacherStyleFrame(answer, { guide, question, topic: 'عادت‌های تکراری' });
 }
 
 export function getT11DailyAssistantPromptGroups(day) {
@@ -139,9 +144,8 @@ export function getT11DailyAssistantPromptGroups(day) {
   if (!guide) return [];
 
   return QUESTION_GROUPS.map((group) => ({
-    label: group.ids.length === 1 ? group.label : `${group.label} روز ${dayNumber}`,
-    questions: guide.questions.filter((question) => group.ids.includes(question.id)),
+    label: group.dayScoped ? `${group.label} روز ${dayNumber}` : group.label,
+    questions: guide.questions.filter((question) => group.kinds.includes(question.kind)),
   }));
 }
 
-export const T11_DAILY_ASSISTANT_GUIDES = Object.freeze(GUIDE.records);

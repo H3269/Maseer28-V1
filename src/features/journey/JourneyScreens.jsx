@@ -8,7 +8,6 @@ import { copyTextToClipboard, fa, formatDate, normalizeDigits } from '../../shar
 import { burdenScoreFromAnswers, evaluatePqhtEligibility, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
 import { exportArchivesZip, triggerBlobDownload } from './archiveExport.js';
 import { selectCanonicalDailyRecord, selectDailyContentCategory } from '../content/dailyContentSelector.js';
-import { getDailySafetyMode } from '../content/dailySafety.js';
 
 export const SCALE_QUESTIONS = [
   'این مشکل در حال حاضر چقدر شدت دارد؟',
@@ -336,14 +335,7 @@ export function adaptiveGuidance(previousRecord, previousAnswer, problem, histor
   return cleanDailyCopy(`${base}${note}`, problem);
 }
 
-export function DayScreen({ day, problem, data, record, savedAnswer, previousRecord, previousAnswer, history = {}, onDashboard, onPrevious, onComplete, onSkip, onNext, completed, onValidation }) {
-  const isT11Day = data?.topic_id === 'T11'
-    || /^عادت‌های تکراری-[0-9]{1,2}$/u.test(String(data?.id || ''))
-    || /^T11-D[0-9]{1,2}$/i.test(String(data?.id || ''));
-  // Keep the real content-approval gate independent from any owner-review UI.
-  // T11 content may be inspected, but cannot be scored or completed until its
-  // day has an approved, unambiguous specialist review record.
-  const isT11SafetyBlocked = isT11Day && getDailySafetyMode(data) === 'blocked';
+export function DayScreen({ day, problem, data, record, savedAnswer, previousRecord, previousAnswer, history = {}, onDashboard, onPrevious, onComplete, onNext, completed, onValidation }) {
   const parts = splitDayContent(data, problem, previousRecord, history);
   const guidance = parts.adaptation || adaptiveGuidance(previousRecord, previousAnswer, problem, history);
   const [entryOpen, setEntryOpen] = useState(Boolean(record?.score != null || savedAnswer || record?.feedback));
@@ -362,12 +354,12 @@ export function DayScreen({ day, problem, data, record, savedAnswer, previousRec
   }, [day, record, savedAnswer]);
 
   useEffect(() => {
-    if (!entryOpen || isT11SafetyBlocked) return undefined;
+    if (!entryOpen) return undefined;
     const frame = requestAnimationFrame(() => {
       entryPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
     return () => cancelAnimationFrame(frame);
-  }, [entryOpen, isT11SafetyBlocked]);
+  }, [entryOpen]);
 
   if (!data) return null;
   const bubblePos = Math.min(96, Math.max(4, (10 - Number(score)) * 10));
@@ -402,12 +394,8 @@ export function DayScreen({ day, problem, data, record, savedAnswer, previousRec
       <div className="action"><b>اقدام اختصاصی امروز</b><DailyText id="dayAction" label="اقدام اختصاصی امروز" value={parts.action} /></div>
     </div>
     <div className="safetyNote"><span><AppIcon name="info" size={18} /></span><p className="muted" id="dayClosing">{fa(data.closing || '')}</p></div>
-    {isT11SafetyBlocked && <div className="dailySafetyStatus" id="dailySafetyStatus" role="status">
-      <p className="muted">این محتوای روزانه تا ثبت بازبینی تخصصی و تعیین دقیق زیرموضوع، برای اجرا و ثبت امتیاز فعال نیست. می‌توانی متن تمرین و پاسخ‌های راهنمای همین روز را بررسی کنی.</p>
-      <button className="secondary" id="skipDailyReviewBtn" onClick={onSkip}>ثبت عدم اجرای این روز و رفتن به روز بعد</button>
-    </div>}
-    {!isT11SafetyBlocked && !entryOpen && <button className="primary heroAction" id="openDailyEntryBtn" onClick={() => setEntryOpen(true)}>انجام دادم؛ ثبت نتیجه امروز</button>}
-    {!isT11SafetyBlocked && entryOpen && <div ref={entryPanelRef} aria-live="polite" className="dailyEntryPanel" id="dailyEntryPanel">
+    {!entryOpen && <button className="primary heroAction" id="openDailyEntryBtn" onClick={() => setEntryOpen(true)}>انجام دادم؛ ثبت نتیجه امروز</button>}
+    {entryOpen && <div ref={entryPanelRef} aria-live="polite" className="dailyEntryPanel" id="dailyEntryPanel">
       <div className="entryHeader"><span className="stepNumber">۳</span><div><b>ثبت نتیجه</b><small>کمتر از یک دقیقه</small></div></div>
       <label>شدت یا میزان درگیری امروز</label>
       <div className="severityWrap">

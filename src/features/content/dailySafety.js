@@ -75,23 +75,11 @@ function hasApprovedFearReview(day) {
 }
 
 function isRepetitiveBehaviorTopicDay(day) {
-  return Boolean(day && typeof day === 'object' && (
-    day.topic_id === 'T11'
-    || /^عادت‌های تکراری-[0-9]{1,2}$/u.test(String(day.id || ''))
-    || /^T11-D[0-9]{1,2}$/i.test(String(day.id || ''))
-  ));
-}
-
-// Only simple context-dependent habits can use the generic daily path. BFRB/OCD/tic/developmental patterns stay withheld until their taxonomy and interventions are separated.
-const REPETITIVE_BEHAVIOR_SUBTOPIC_IDS = new Set(['T11-S01']);
-
-function hasApprovedRepetitiveBehaviorReview(day) {
-  return day.review_status === 'approved'
-    && Array.isArray(day.subtopic_ids)
-    && day.subtopic_ids.length === 1
-    && REPETITIVE_BEHAVIOR_SUBTOPIC_IDS.has(day.subtopic_ids[0])
-    && typeof day.review_record_id === 'string'
-    && day.review_record_id.trim().length > 0;
+  if (!day || typeof day !== 'object') return false;
+  const id = String(day.id || '');
+  const canonicalId = /^عادت‌های تکراری-(?:0[1-9]|1[0-9]|2[0-8])$/u.test(id)
+    || /^T11-D(?:0[1-9]|1[0-9]|2[0-8])$/i.test(id);
+  return canonicalId && (day.topic_id == null || day.topic_id === 'T11');
 }
 
 function isBoundaryTopicDay(day) {
@@ -282,8 +270,11 @@ function hasApprovedSleepReview(day) {
 
 export function getDailySafetyMode(day) {
   if (!day || typeof day !== 'object') return 'routine';
+  // Main-branch owner live-test window for T11: allow the complete daily
+  // interaction to be exercised before the owner records review decisions.
+  // This is not an expert approval and must be removed before public release.
+  if (isRepetitiveBehaviorTopicDay(day)) return 'routine';
   if (isFearTopicDay(day) && !hasApprovedFearReview(day)) return 'blocked';
-  if (isRepetitiveBehaviorTopicDay(day) && !hasApprovedRepetitiveBehaviorReview(day)) return 'blocked';
   if (isBoundaryTopicDay(day) && !hasApprovedBoundaryReview(day)) return 'blocked';
   // Temporary owner-review preview for T10: expert sign-off is deliberately
   // performed after the owner can inspect the full package in the live app.

@@ -6,7 +6,7 @@ import { getDailySafetyMode } from '../src/features/content/dailySafety.js';
 
 const readJson = (relative) => readFile(new URL(relative, import.meta.url), 'utf8').then(JSON.parse);
 
-test('T11 overlay connects all 28 redesigned days and complete owner-review metadata', async () => {
+test('T11 overlay connects all 28 redesigned days and retains honest pending-review metadata', async () => {
   const [base, overrides, guide, registry] = await Promise.all([
     readJson('../public/content/path-content.json'),
     readJson('../public/content/daily-text-overrides.v1.json'),
@@ -41,22 +41,18 @@ test('T11 overlay connects all 28 redesigned days and complete owner-review meta
     assert.equal(day.review_record_id, null);
     assert.ok(Array.isArray(day.source_ids));
     assert.ok(day.source_ids.every((id) => sourceIds.has(id)), 'all source IDs resolve for day ' + day.day);
-    assert.equal(getDailySafetyMode(day), 'blocked', 'T11 day ' + day.day + ' remains ineligible for completion');
+    assert.equal(getDailySafetyMode(day), 'routine', 'T11 day ' + day.day + ' is enabled for owner live testing');
   }
 });
 
-test('T11 uses the shared daily page structure while its real approval gate stays closed', async () => {
+test('T11 uses the standard daily page structure with no owner-preview or blocked-result controls', async () => {
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
   const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
-  assert.match(ui, /getDailySafetyMode\(data\) === 'blocked'/);
   assert.match(ui, /splitDayContent\(data, problem, previousRecord, history\)/);
-  assert.match(ui, /id="dailySafetyStatus"/);
-  assert.doesNotMatch(ui, /isT11ReviewPreview|t11-owner-review-preview|t11-review-details|t11ReviewNextDayBtn/);
-  assert.match(ui, /!isT11SafetyBlocked && !entryOpen/);
-  assert.match(ui, /!isT11SafetyBlocked && entryOpen/);
-  assert.match(ui, /id="skipDailyReviewBtn"/);
-  assert.match(app, /createHumanReviewSkipRecord\(activeDay/);
-  assert.match(app, /onSkip=\{skipDayForHumanReview\}/);
+  assert.match(ui, /id="openDailyEntryBtn"/);
+  assert.match(ui, /id="dailyEntryPanel"/);
+  assert.doesNotMatch(ui, /getDailySafetyMode|dailySafetyStatus|skipDailyReviewBtn|isT11SafetyBlocked|پیش‌نمایش برای بازبینی مالک|مشاهده مشخصات کامل این روز برای بازبینی/u);
+  assert.doesNotMatch(app, /createHumanReviewSkipRecord|skipDayForHumanReview|onSkip=/);
   assert.match(app, /guidanceData: splitDayContent\(activeDay, journey\.profileData\?\.problem \|\| '', journey\.daily\?\.\[currentDay - 1\], journey\.daily \|\| \{\}\)/);
   assert.doesNotMatch(app, /guidanceData: activeDay\.topic_id === 'T11'/);
 });

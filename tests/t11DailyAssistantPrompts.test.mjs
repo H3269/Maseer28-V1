@@ -31,6 +31,8 @@ test('T11 assistant catalog contains exactly 28 days and 392 complete fixed-ques
   assert.equal(T11_DAILY_ASSISTANT_GUIDES.length, 28);
   for (const [index, guide] of T11_DAILY_ASSISTANT_GUIDES.entries()) {
     assert.equal(guide.day, index + 1);
+    assert.equal(guide.topicId, 'T11');
+    assert.equal(guide.topic, 'عادت‌های تکراری');
     assert.equal(guide.questions.length, 14);
     assert.equal(guide.reviewStatus, 'pending_owner_review');
     assert.equal(guide.evidenceGrade, 'not_assessed');
@@ -39,6 +41,14 @@ test('T11 assistant catalog contains exactly 28 days and 392 complete fixed-ques
     assert.deepEqual(guide.questions.map((item) => item.label), EXPECTED_QUESTIONS);
     assert.ok(guide.questions.every((item) => typeof item.answer === 'string' && item.answer.trim()));
   }
+});
+
+test('T11 package is enabled for owner live testing without claiming expert approval', async () => {
+  const packageData = JSON.parse(await readFile(new URL('../src/features/assistant/t11DailyAssistantGuide.v1.json', import.meta.url), 'utf8'));
+  assert.equal(packageData.status, 'owner_live_test_enabled_pending_expert_review');
+  assert.equal(packageData.records.length, 28);
+  assert.ok(packageData.records.every((record) => record.reviewStatus === 'pending_owner_review'));
+  assert.ok(packageData.records.every((record) => record.evidenceGrade === 'not_assessed'));
 });
 
 test('T11 retains its own 392 answers and does not copy any exact T10 prepared answer', () => {
@@ -74,6 +84,13 @@ test('T11 assistant exposes five groups and exactly fourteen questions for each 
   for (let day = 1; day <= 28; day += 1) {
     const groups = getT11DailyAssistantPromptGroups(day);
     assert.equal(groups.length, 5);
+    assert.deepEqual(groups.map((group) => group.label), [
+      'فهم تمرین روز ' + day,
+      'فهم اقدام اختصاصی روز ' + day,
+      'تفاوت تمرین و اقدام',
+      'اجرا و موانع',
+      'ارزیابی و ایمنی',
+    ]);
     assert.equal(groups.flatMap((group) => group.questions).length, 14);
     assert.deepEqual(groups.flatMap((group) => group.questions).sort((a, b) => a.id.localeCompare(b.id)).map((item) => item.value), EXPECTED_QUESTIONS);
   }
@@ -98,7 +115,10 @@ test('T11 q11 uses its own distress response and does not append shared-center b
   assert.ok(answer.includes(guide.questions[10].answer));
   assert.match(answer, /شرط توقف امروز/u);
   assert.match(answer, /حمایت انسانی مناسب/u);
-  assert.match(answer, /مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود/u);
+  assert.match(answer, /بیاییم قدم‌به‌قدم پیش برویم/u);
+  assert.match(answer, new RegExp('مهارت «' + guide.skill + '»', 'u'));
+  assert.match(answer, /هدف امروز/u);
+  assert.doesNotMatch(answer, /پیش‌نمایش برای بازبینی مالک|مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود/u);
   assert.doesNotMatch(answer, /۰۹۱۹۰۸۸۹۰۶۲|هیپنوتراپی شفا|مرکز مشاوره/u);
 });
 
@@ -144,12 +164,14 @@ test('T11 page assistant routes every exact day-specific question and rejects mi
   }
 });
 
-test('T11 uses the shared daily page structure without preview-only markup', async () => {
+test('T11 uses the standard daily entry UI without owner-preview boxes or blocked controls', async () => {
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
-  assert.match(ui, /getDailySafetyMode\(data\) === 'blocked'/);
-  assert.match(ui, /id="dailySafetyStatus"/);
-  assert.doesNotMatch(ui, /isT11ReviewPreview|t11-owner-review-preview|t11-review-details|t11ReviewNextDayBtn/);
+  const safety = await readFile(new URL('../src/features/content/dailySafety.js', import.meta.url), 'utf8');
+  assert.match(ui, /id="openDailyEntryBtn"/);
+  assert.match(ui, /id="dailyEntryPanel"/);
+  assert.doesNotMatch(ui, /getDailySafetyMode|isT11SafetyBlocked|dailySafetyStatus|skipDailyReviewBtn|پیش‌نمایش برای بازبینی مالک|مشاهده مشخصات کامل این روز برای بازبینی/u);
+  assert.match(safety, /if \(isRepetitiveBehaviorTopicDay\(day\)\) return 'routine'/);
   assert.match(launcher, /getT11DailyAssistantPromptGroups\(dailyContext\?\.day\)/);
   assert.match(launcher, /!isT11DailyPromptContext\s*&&\s*Boolean\(selectedDailyQuestion/);
 });
