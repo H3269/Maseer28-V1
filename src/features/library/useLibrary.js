@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { libraryRepository } from './libraryRepository.js';
 import { createVersionRecord, normalizeBookContent } from './bookUtils.js';
 
@@ -96,29 +96,42 @@ export function useLibrary(enabled = true) {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const refreshInFlight = useRef(null);
+  const hasLoadedOnce = useRef(false);
 
-  const refresh = useCallback(async () => {
-    try {
-      setLoading(true);
-      const seededBooks = await seedLibrary();
-      setBooks(seededBooks.length ? seededBooks : await libraryRepository.listBooks());
-      setError('');
-    } catch (err) {
-      console.error(err);
-      const cachedBooks = await libraryRepository.listBooks().catch(() => []);
-      if (cachedBooks.length) {
-        setBooks(cachedBooks);
-        setError('نسخه ذخیره‌شده کتابخانه نمایش داده می‌شود؛ به‌روزرسانی آنلاین در دسترس نبود.');
-      } else {
+  const refresh = useCallback(() => {
+    if (refreshInFlight.current) return refreshInFlight.current;
+    const task = (async () => {
+      try {
+        setLoading(true);
+        const seededBooks = await seedLibrary();
+        const nextBooks = seededBooks.length ? seededBooks : await libraryRepository.listBooks();
+        setBooks(nextBooks);
+        setError('');
+        hasLoadedOnce.current = true;
+        return nextBooks;
+      } catch (err) {
+        console.error(err);
+        const cachedBooks = await libraryRepository.listBooks().catch(() => []);
+        if (cachedBooks.length) {
+          setBooks(cachedBooks);
+          setError('نسخه ذخیره‌شده کتابخانه نمایش داده می‌شود؛ به‌روزرسانی آنلاین در دسترس نبود.');
+          hasLoadedOnce.current = true;
+          return cachedBooks;
+        }
         setError(err?.message || 'خطا در بارگذاری کتابخانه');
+        return [];
+      } finally {
+        setLoading(false);
+        refreshInFlight.current = null;
       }
-    } finally {
-      setLoading(false);
-    }
+    })();
+    refreshInFlight.current = task;
+    return task;
   }, []);
 
   useEffect(() => {
-    if (enabled) refresh();
+    if (enabled && !hasLoadedOnce.current) refresh();
   }, [enabled, refresh]);
 
   return { books, loading, error, refresh };

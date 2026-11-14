@@ -130,7 +130,7 @@ function MainApp() {
   const [readerState, setReaderState] = useState(null);
   const [preview, setPreview] = useState(null);
   const libraryNeeded = screen === 'books' || screen === 'bookReader' || screen === 'dailyResult';
-  const { books, loading: libraryLoading, error: libraryError } = useLibrary(libraryNeeded);
+  const { books, loading: libraryLoading, error: libraryError, refresh: refreshLibrary } = useLibrary(libraryNeeded);
 
   useEffect(() => {
     let cancelled = false;
@@ -559,7 +559,8 @@ function navigate(next) {
 
   async function openRecommendedBook(day, recommendation) {
     if (!recommendation?.bookId) return;
-    const book = books.find((item) => Number(item.legacyId) === Number(recommendation.bookId)) || books[Number(recommendation.bookId) - 1];
+    const availableBooks = books.length ? books : await refreshLibrary();
+    const book = availableBooks.find((item) => Number(item.legacyId) === Number(recommendation.bookId)) || availableBooks[Number(recommendation.bookId) - 1];
     if (!book) return;
     try {
       const version = await libraryRepository.getVersion(book.activeVersionId);
