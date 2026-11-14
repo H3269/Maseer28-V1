@@ -336,7 +336,8 @@ export function adaptiveGuidance(previousRecord, previousAnswer, problem, histor
 }
 
 export function DayScreen({ day, problem, data, record, savedAnswer, previousRecord, previousAnswer, history = {}, onDashboard, onPrevious, onComplete, onNext, completed, onValidation }) {
-  const parts = splitDayContent(data, problem, previousRecord, history), guidance = parts.adaptation || adaptiveGuidance(previousRecord, previousAnswer, problem, history), [entryOpen, setEntryOpen] = useState(Boolean(record?.score != null || savedAnswer || record?.feedback)), [score, setScore] = useState(record?.score ?? 0), [touched, setTouched] = useState(record?.score != null), [feedback, setFeedback] = useState(record?.feedback || ''), [answer, setAnswer] = useState(savedAnswer || '');const entryPanelRef = React.useRef(null);
+  const isT11ReviewPreview = data?.topic_id === 'T11' || /^عادت‌های تکراری-[0-9]{1,2}$/u.test(String(data?.id || '')) || /^T11-D[0-9]{1,2}$/i.test(String(data?.id || ''));
+  const parts = splitDayContent(data, problem, isT11ReviewPreview ? null : previousRecord, isT11ReviewPreview ? {} : history), guidance = isT11ReviewPreview ? '' : parts.adaptation || adaptiveGuidance(previousRecord, previousAnswer, problem, history), [entryOpen, setEntryOpen] = useState(Boolean(record?.score != null || savedAnswer || record?.feedback)), [score, setScore] = useState(record?.score ?? 0), [touched, setTouched] = useState(record?.score != null), [feedback, setFeedback] = useState(record?.feedback || ''), [answer, setAnswer] = useState(savedAnswer || '');const entryPanelRef = React.useRef(null);
   useEffect(() => { setEntryOpen(Boolean(record?.score != null || savedAnswer || record?.feedback)); setScore(record?.score ?? 0); setTouched(record?.score != null); setFeedback(record?.feedback || ''); setAnswer(savedAnswer || ''); }, [day, record, savedAnswer]);useEffect(() => {
   if (!entryOpen) return;
 
@@ -350,7 +351,6 @@ export function DayScreen({ day, problem, data, record, savedAnswer, previousRec
   return () => cancelAnimationFrame(frame);
 }, [entryOpen]);
   if (!data) return null;
-  const isT11ReviewPreview = data.topic_id === 'T11' || /^عادت‌های تکراری-[0-9]{1,2}$/u.test(String(data.id || '')) || /^T11-D[0-9]{1,2}$/i.test(String(data.id || ''));
   const bubblePos = Math.min(96, Math.max(4, (10 - Number(score)) * 10));
   const guidanceLines = structuredText(guidance);
   function submit() { const missing = []; if (!touched || Number(score) < 0 || Number(score) > 10) missing.push('شدت یا میزان درگیری از ۰ تا ۱۰'); if (!feedback) missing.push('بازخورد امروز'); if (!validDailyAnswer(answer)) missing.push('پاسخ یا تجربه امروز (فقط کلمات فارسی و نشانه‌های مجاز)'); if (missing.length) return onValidation(missing, 'نتیجه امروز هنوز کامل نشده است'); onComplete({ answer: answer.trim(), score: Number(score), feedback }); }
