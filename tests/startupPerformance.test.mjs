@@ -6,6 +6,7 @@ const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
 const libraryHook = await readFile(new URL('../src/features/library/useLibrary.js', import.meta.url), 'utf8');
 const libraryPage = await readFile(new URL('../src/features/library/LibraryPage.jsx', import.meta.url), 'utf8');
 const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+const assistantLauncher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
 
 test('startup does not wait through an artificial splash delay', () => {
   assert.doesNotMatch(app, /minimumSplashDuration|completionDuration/);
@@ -41,6 +42,12 @@ test('library synchronization is deferred until a library-dependent screen is op
 
 test('recommended books can be loaded on demand without relying on startup preloading', () => {
   assert.match(app, /const availableBooks = books\.length \? books : await refreshLibrary\(\)/);
+});
+
+test('library assistant hydrates full book content only when the assistant is opened', () => {
+  assert.match(assistantLauncher, /else if \(open\)/);
+  assert.match(assistantLauncher, /ensureSeedBookContent\(book\)/);
+  assert.match(assistantLauncher, /await libraryBooksLoadRef\.current/);
 });
 
 test('library covers use lazy loading and asynchronous decoding', () => {
