@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile, stat } from 'node:fs/promises';
 
 const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
+const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
 const libraryHook = await readFile(new URL('../src/features/library/useLibrary.js', import.meta.url), 'utf8');
 const libraryPage = await readFile(new URL('../src/features/library/LibraryPage.jsx', import.meta.url), 'utf8');
 const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
@@ -111,4 +112,16 @@ test('opening a book preloads the reader module and reuses the prepared IndexedD
   assert.match(app, /initialVersion=\{readerState\.version\}/);
   assert.match(reader, /initialVersion = null/);
   assert.match(reader, /if \(initialVersion\?\.content\)/);
+});
+
+test('the splash logo is visible independently of the content-download progress', () => {
+  assert.match(css, /\.appLoading \.loadingBrand img \{[\s\S]*?clip-path: none !important/);
+  assert.match(css, /\.appLoading \.loadingBrand h1 \{[\s\S]*?clip-path: none !important/);
+});
+
+test('startup retries transient path-content failures and offers a manual retry for terminal errors', () => {
+  assert.match(app, /const loadPathContent = async \(attempt = 0\)/);
+  assert.match(app, /attempt < 2/);
+  assert.match(app, /response\.status === 404/);
+  assert.match(app, /window\.location\.reload\(\)/);
 });
