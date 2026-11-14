@@ -82,6 +82,7 @@ test('all five library covers are requested eagerly at high priority', () => {
 
 test('initial splash restores the original approved logo asset', async () => {
   assert.match(html, /assets\/Logo m24\.png/);
+  assert.match(html, /rel="preload" as="image"[^>]*fetchpriority="high"/);
   assert.match(app, /assets\/Logo m24\.png/);
   const original = await stat(new URL('../public/assets/Logo m24.png', import.meta.url));
   assert.ok(original.size > 0, 'the original splash logo asset must exist');
@@ -92,7 +93,10 @@ test('the app waits until the complete splash logo image is decoded', () => {
   assert.match(app, /const \[splashLogoReady, setSplashLogoReady\] = useState\(false\)/);
   assert.match(app, /await image\.decode\(\)/);
   assert.match(app, /if \(!content \|\| !splashLogoReady\)/);
-  assert.match(app, /onLoad=\{markSplashLogoReady\}/);
+  assert.match(app, /ref=\{splashLogoRef\}/);
+  assert.match(app, /image\.complete\) void confirmReady\(\)/);
+  assert.match(app, /fetchPriority="high"/);
+  assert.match(app, /onLoad=\{\(event\) => markSplashLogoReady\(event\.currentTarget\)\}/);
 });
 
 test('all five library book covers are requested eagerly at high priority', () => {
