@@ -282,6 +282,10 @@ function hasApprovedSleepReview(day) {
 
 export function getDailySafetyMode(day) {
   if (!day || typeof day !== 'object') return 'routine';
+  // Main-branch owner live-test window for T11: allow the complete daily
+  // interaction to be exercised before the owner records review decisions.
+  // This is not an expert approval and must be removed before public release.
+  if (isRepetitiveBehaviorTopicDay(day)) return 'routine';
   if (isFearTopicDay(day) && !hasApprovedFearReview(day)) return 'blocked';
   if (isRepetitiveBehaviorTopicDay(day) && !hasApprovedRepetitiveBehaviorReview(day)) return 'blocked';
   if (isBoundaryTopicDay(day) && !hasApprovedBoundaryReview(day)) return 'blocked';
