@@ -37,7 +37,16 @@ test('all 392 exact T11 prepared questions route through the real page assistant
       assert.equal(result.status, 'daily_guidance_available', `day ${guide.day}: ${question.id}`);
       assert.ok(result.message.includes(guide.title));
       assert.ok(result.message.includes(`راهنمای روز ${guide.day}`));
-      assert.ok(result.message.endsWith(question.answer));
+      assert.ok(result.message.includes(question.answer), `day ${guide.day}: ${question.id} retains its T11 answer`);
+      assert.ok(result.message.includes('مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود'));
+      if (question.kind === 't11_distress') {
+        assert.ok(result.message.includes(guide.stopCondition));
+        assert.ok(result.message.includes(guide.whenToSeekHumanSupport));
+      }
+      if (question.kind === 'exercise_meaning') {
+        assert.ok(result.message.includes(guide.mechanism));
+        assert.ok(result.message.includes(guide.successCriterion));
+      }
       checked += 1;
     }
   }
