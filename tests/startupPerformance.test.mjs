@@ -9,11 +9,11 @@ const libraryPage = await readFile(new URL('../src/features/library/LibraryPage.
 const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 const assistantLauncher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
 
-test('library and reader modules remain split while the guide assistant is restored to eager loading', () => {
+test('library, reader, and assistant modules stay out of the initial application bundle', () => {
   assert.match(app, /const LibraryPage = lazy\(\(\) => import\('\.\/features\/library\/LibraryPage\.jsx'\)\)/);
   assert.match(app, /const Reader = lazy\(\(\) => import\('\.\/features\/library\/Reader\.jsx'\)\)/);
-  assert.match(app, /import GlobalAssistantLauncher from '\.\/features\/assistant\/GlobalAssistantLauncher\.jsx'/);
-  assert.doesNotMatch(app, /const GlobalAssistantLauncher = lazy/);
+  assert.match(app, /const GlobalAssistantLauncher = lazy\(\(\) => import\('\.\/features\/assistant\/GlobalAssistantLauncher\.jsx'\)\)/);
+  assert.doesNotMatch(app, /import GlobalAssistantLauncher from/);
   assert.match(app, /navVisible && <GlobalAssistantLauncher/);
 });
 
@@ -77,8 +77,9 @@ test('library assistant hydrates full book content only when the assistant is op
   assert.match(assistantLauncher, /screen === 'books' && !booksForTurn\.length/);
 });
 
-test('all five library covers are requested eagerly at high priority', () => {
-  assert.match(libraryPage, /loading="eager" decoding="async" fetchPriority="high"/);
+test('library covers are lazy-loaded at low priority to avoid a multi-megabyte burst', () => {
+  assert.match(libraryPage, /loading="lazy" decoding="async" fetchPriority="low"/);
+  assert.doesNotMatch(libraryPage, /loading="eager"[^>]*fetchPriority="high"/);
 });
 
 test('initial splash restores the original approved logo asset', async () => {
@@ -100,9 +101,8 @@ test('the app waits until the complete splash logo image is decoded', () => {
   assert.match(app, /onLoad=\{\(event\) => markSplashLogoReady\(event\.currentTarget\)\}/);
 });
 
-test('all five library book covers are requested eagerly at high priority', () => {
-  assert.match(libraryPage, /loading="eager" decoding="async" fetchPriority="high"/);
-  assert.doesNotMatch(libraryPage, /fetchPriority="low"/);
+test('library book covers do not compete with the initial library render', () => {
+  assert.match(libraryPage, /loading="lazy" decoding="async" fetchPriority="low"/);
 });
 
 const reader = await readFile(new URL('../src/features/library/Reader.jsx', import.meta.url), 'utf8');
