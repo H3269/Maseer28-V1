@@ -2,7 +2,7 @@
   "schema_version": "1.0.0",
   "registry_id": "maseer28-evidence-sources",
   "status": "curated_draft_sources_pending_evidence_review",
-  "access_date": "2026-11-13",
+  "access_date": "2026-11-14",
   "sources": [
     {
       "source_id": "SRC-ANGER-NHS-001",
@@ -755,6 +755,83 @@
         "A sleep change alone does not establish bipolar disorder; symptoms must be considered in a broader clinical assessment."
       ],
       "limitations": "Public health information about bipolar disorder, not a screening or diagnostic tool. Decreased sleep alone does not establish mania or bipolar disorder; the app must not diagnose and should direct concerns to qualified clinical assessment."
+    },
+    {
+      "source_id": "SRC-T11-WOOD-RUNGER-2016-001",
+      "title": "Psychology of Habit",
+      "authors": [
+        "Wendy Wood",
+        "Dennis Rünger"
+      ],
+      "publisher": "Annual Review of Psychology",
+      "source_type": "peer_reviewed_review",
+      "publication_date": "2016-01",
+      "doi": "10.1146/annurev-psych-122414-033417",
+      "pmid": "26361052",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/26361052/",
+      "relevant_claims": [
+        "Habitual responses can be associated with recurring contextual cues and repeated responses in stable contexts.",
+        "People may incorrectly infer that frequent habitual behavior was fully intentional; observed repetition alone does not establish motive."
+      ],
+      "limitations": "Narrative scholarly review of habit science; it does not validate the T11 28-day program or justify applying habit-change techniques to OCD, BFRBs, tics, or harmless self-regulatory stimming."
+    },
+    {
+      "source_id": "SRC-T11-NICE-CG31-001",
+      "title": "Obsessive-compulsive disorder and body dysmorphic disorder: treatment — Recommendations",
+      "publisher": "National Institute for Health and Care Excellence (NICE)",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2005-11-29",
+      "url": "https://www.nice.org.uk/guidance/cg31/chapter/Recommendations",
+      "relevant_claims": [
+        "OCD recognition and assessment should consider distress and interference with daily activities.",
+        "CBT including ERP is a structured psychological treatment delivered by appropriately trained professionals; treatment intensity and support depend on impairment and clinical assessment."
+      ],
+      "limitations": "UK clinical guideline published in 2005; it is not an app self-help protocol and does not authorize unsupervised exposure or response prevention. Check current local clinical guidance before clinical use."
+    },
+    {
+      "source_id": "SRC-T11-AAN-TICS-2019-001",
+      "title": "Practice guideline recommendations summary: Treatment of tics in people with Tourette syndrome and chronic tic disorders",
+      "publisher": "American Academy of Neurology",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2019-05-07",
+      "doi": "10.1212/WNL.0000000000007466",
+      "url": "https://www.neurology.org/doi/10.1212/WNL.0000000000007466",
+      "relevant_claims": [
+        "For people with tics who have access to CBIT, clinicians should offer CBIT as an initial treatment option.",
+        "Treatment selection for tic disorders belongs in clinical care; guideline recommendations concern clinician-delivered treatment options."
+      ],
+      "limitations": "Clinical guideline for diagnosed tic disorders; it does not support self-diagnosis or an app prescribing CBIT or tic suppression. It does not imply that every tic requires treatment."
+    },
+    {
+      "source_id": "SRC-T11-BFRB-GREENBERG-2018-001",
+      "title": "Assessment and treatment of trichotillomania (hair pulling disorder) and excoriation (skin picking) disorder",
+      "authors": [
+        "Erin E. Greenberg",
+        "Carolyn I. Phillips"
+      ],
+      "publisher": "PubMed / Clinical review",
+      "source_type": "peer_reviewed_clinical_review",
+      "publication_date": "2018-11",
+      "pmid": "30446196",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/30446196/",
+      "relevant_claims": [
+        "BFRB presentations require assessment of severity, comorbidities, and behavioral style.",
+        "The review discusses HRT and stimulus control as behavioral treatments within treatment planning."
+      ],
+      "limitations": "Clinical review of specific BFRB disorders; it is not a lay self-help instruction set. The T11 app must not prescribe HRT, competing responses, stimulus-control restrictions, or treatment without appropriate assessment."
+    },
+    {
+      "source_id": "SRC-T11-NAS-STIMMING-001",
+      "title": "Autism and neurodiversity",
+      "publisher": "National Autistic Society",
+      "source_type": "autism_organization_public_guidance",
+      "publication_date": null,
+      "url": "https://www.autism.org.uk/advice-and-guidance/identity/autism-and-neurodiversity",
+      "relevant_claims": [
+        "Stimming may serve purposes such as regulation, calm, or expressing joy and is often harmless.",
+        "Support should address causes of distress and avoid treating harmless stimming as something that must be eliminated; when a behavior causes harm, support should prioritize safety and individual needs."
+      ],
+      "limitations": "Public guidance from an autism organization, not an individualized clinical assessment. It should not be used to infer autism or diagnose the function of an individual's repetitive behavior."
     }
   ]
 }
