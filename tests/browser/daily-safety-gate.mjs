@@ -112,7 +112,8 @@ try {
             el.dispatchEvent(new Event('input', { bubbles: true }));
             el.dispatchEvent(new Event('change', { bubbles: true }));
           });
-          await dayCard.locator('#dayFeedbackChoice').selectOption('same');
+          await dayCard.locator('.smartSelectButton').click();
+          await dayCard.locator('.smartSelectOption').filter({ hasText: 'تقریباً مثل قبل' }).click();
           await dayCard.locator('#answer').fill('ثبت آزمایشی برای بررسی مسیر کامل روز اول');
           await dayCard.getByRole('button', { name: /ثبت امروز و دریافت نتیجه/u }).click();
           await page.locator('#dailyResult').waitFor({ state: 'visible' });
