@@ -91,6 +91,10 @@ try {
         assert.ok(expected, 'T11 canonical day ' + day + ' exists');
         assert.equal(await card.locator('#dayExercise').count(), 1, 'T11 day ' + day + ' exercise renders');
         assert.equal(await card.locator('#dayAction').count(), 1, 'T11 day ' + day + ' action renders');
+        const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
+        const visibleAction = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayAction'));
+        assert.equal(visibleExercise, normalizeVisibleDailyText(expected.exercise), 'T11 day ' + day + ' must render its exact dedicated exercise');
+        assert.ok(visibleAction.endsWith(normalizeVisibleDailyText(expected.actionText)), 'T11 day ' + day + ' must render its exact dedicated action');
         assert.equal(await card.locator('#dailySafetyStatus').count(), 1, 'T11 day ' + day + ' retains specialist gate');
         assert.equal(await card.locator('#openDailyEntryBtn').count(), 0, 'T11 day ' + day + ' cannot score before approval');
         assert.equal(await card.locator('#skipDailyReviewBtn').count(), 1, 'T11 day ' + day + ' offers an honest non-scoring skip');
