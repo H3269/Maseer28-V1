@@ -4,6 +4,17 @@ const RUNTIME_TEXT_FIELDS = Object.freeze([
   'restExerciseText', 'restActionText',
 ]);
 
+const T11_REVIEW_METADATA_FIELDS = Object.freeze([
+  'objective', 'skill', 'mechanism', 'lightVersion', 'progressVersion', 'restVersion',
+  'successCriterion', 'reflectionQuestion', 'stopCondition', 'stopConditions',
+  'contraindications', 'whenToSeekHumanSupport', 'durationMinutes', 'durationStatus',
+  'exerciseType', 'riskLevel', 'sourceIds', 'evidenceGrade', 'reviewStatus',
+  'subtopicId', 'subtopicIds', 'subtopicMappingStatus', 'duration_minutes',
+  'duration_status', 'exercise_type', 'risk_level', 'source_ids', 'evidence_grade',
+  'review_status', 'subtopic_ids', 'subtopic_mapping_status', 'stop_conditions',
+  'when_to_seek_human_support', 'review_record_id',
+]);
+
 export function mergeDailyTextOverrides(content, overrides) {
   if (!content || typeof content !== 'object' || !overrides || typeof overrides !== 'object') {
     return content;
@@ -39,7 +50,16 @@ export function mergeDailyTextOverrides(content, overrides) {
             .filter((field) => typeof replacement[field] === 'string' && replacement[field].trim())
             .map((field) => [field, replacement[field]]),
         );
-        return { ...day, ...textOverrides };
+        const isT11Record = categoryKey === 'عادت‌های تکراری'
+          && (day?.topic_id === 'T11'
+            || /^عادت‌های تکراری-[0-9]{1,2}$/u.test(String(day?.id || ''))
+            || /^T11-D[0-9]{1,2}$/i.test(String(day?.id || '')));
+        const reviewMetadata = isT11Record
+          ? Object.fromEntries(T11_REVIEW_METADATA_FIELDS
+            .filter((field) => Object.prototype.hasOwnProperty.call(replacement, field))
+            .map((field) => [field, replacement[field]]))
+          : {};
+        return { ...day, ...textOverrides, ...reviewMetadata };
       }),
     };
   }
