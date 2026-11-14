@@ -76,14 +76,18 @@ try {
     assert.equal(await card.locator('#dayExercise').count(), 1, topic + ' day 1 must display its exercise');
     assert.equal(await card.locator('#dayAction').count(), 1, topic + ' day 1 must display its dedicated action');
     if (topic === 'عادت‌های تکراری') {
-      // T11 is an owner-review preview: content is visible, but runtime scoring
-      // and daily-result interaction must remain unavailable before approval.
-      assert.equal(await card.locator('[data-testid="t11-owner-review-preview"]').count(), 1,
-        'T11 day 1 must expose the owner-review preview gate');
+      // The shared daily layout is used, while the independent specialist
+      // approval gate prevents scoring/completion until review is recorded.
+      assert.equal(await card.locator('#dailySafetyStatus').count(), 1,
+        'T11 must expose its actual specialist-approval status');
+      assert.equal(await card.locator('[data-testid="t11-owner-review-preview"]').count(), 0,
+        'T11 must not contain preview-only markup');
       assert.equal(await card.locator('#openDailyEntryBtn').count(), 0,
-        'T11 must not expose the runtime daily interaction before owner approval');
+        'T11 must not expose score entry before specialist approval');
       assert.equal(await card.locator('#dailyEntryPanel').count(), 0,
-        'T11 must not expose a scoring panel before owner approval');
+        'T11 must not expose a scoring panel before specialist approval');
+      assert.equal(await card.locator('#nextButtonWrap button').count(), 1,
+        'T11 owner can inspect the next day without recording a score');
       assert.deepEqual(errors, [], topic + ' must not raise browser errors');
       await page.close();
       continue;
