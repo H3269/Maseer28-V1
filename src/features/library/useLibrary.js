@@ -92,7 +92,7 @@ export async function updatePublishedLibrary() {
   return seedLibrary();
 }
 
-export function useLibrary() {
+export function useLibrary(enabled = true) {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -117,7 +117,9 @@ export function useLibrary() {
     }
   }, []);
 
-  useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => {
+    if (enabled) refresh();
+  }, [enabled, refresh]);
 
   return { books, loading, error, refresh };
 }

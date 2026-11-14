@@ -129,75 +129,42 @@ function MainApp() {
   });
   const [readerState, setReaderState] = useState(null);
   const [preview, setPreview] = useState(null);
-  const { books, loading: libraryLoading, error: libraryError } = useLibrary();
+  const libraryNeeded = screen === 'books' || screen === 'bookReader' || screen === 'dailyResult';
+  const { books, loading: libraryLoading, error: libraryError } = useLibrary(libraryNeeded);
 
   useEffect(() => {
-    const loadingStartedAt = Date.now();
-    const minimumSplashDuration = 3200;
-    const completionDuration = 650;
     let cancelled = false;
-    let loadedData = null;
-    let dataReady = false;
-    let completionStartedAt = null;
-    let completionStartProgress = 0;
-    let currentProgress = 0;
+    setLoadingProgress(18);
 
-    const timer = window.setInterval(() => {
-      if (cancelled) return;
-      const elapsed = Date.now() - loadingStartedAt;
-
-      if (!dataReady) {
-        // Ease toward 90% while the content request is still pending.
-        // This keeps moving during slow connections without claiming completion.
-        currentProgress = Math.min(90, 90 * (1 - Math.exp(-elapsed / 1700)));
-        setLoadingProgress(currentProgress);
-        return;
-      }
-
-      if (elapsed < minimumSplashDuration) {
-        currentProgress = Math.min(90, 90 * (1 - Math.exp(-elapsed / 1700)));
-        setLoadingProgress(currentProgress);
-        return;
-      }
-
-      if (completionStartedAt === null) {
-        completionStartedAt = Date.now();
-        completionStartProgress = currentProgress;
-      }
-
-      const completionRatio = Math.min(1, (Date.now() - completionStartedAt) / completionDuration);
-      currentProgress = completionStartProgress + (100 - completionStartProgress) * completionRatio;
-      setLoadingProgress(currentProgress);
-
-      if (completionRatio >= 1) {
-        window.clearInterval(timer);
-        setContent(loadedData);
-      }
-    }, 50);
-
-    fetch(`${import.meta.env.BASE_URL}content/path-content.json?v=20261023-fast-open`, { cache: 'default' })
-      .then((response) => { if (!response.ok) throw new Error('فایل محتوای مسیر پیدا نشد.'); return response.json(); })
+    // The route content and its optional text overrides are independent files.
+    // Fetch them together so startup does not wait for two sequential network round trips.
+    const pathRequest = fetch(`${import.meta.env.BASE_URL}content/path-content.json?v=20261023-fast-open`, { cache: 'default' })
+      .then((response) => {
+        if (!response.ok) throw new Error('فایل محتوای مسیر پیدا نشد.');
+        return response.json();
+      })
       .then((data) => {
+        if (!cancelled) setLoadingProgress(78);
+        return data;
+      });
+
+    const overridesRequest = fetch(`${import.meta.env.BASE_URL}content/daily-text-overrides.v1.json?v=20261112-t06`, { cache: 'default' })
+      .then((response) => response.ok ? response.json() : null)
+      .catch(() => null);
+
+    Promise.all([pathRequest, overridesRequest])
+      .then(([data, overrides]) => {
         if (cancelled) return;
-        return fetch(`${import.meta.env.BASE_URL}content/daily-text-overrides.v1.json?v=20261112-t06`, { cache: 'default' })
-          .then((response) => response.ok ? response.json() : null)
-          .catch(() => null)
-          .then((overrides) => {
-            if (cancelled) return;
-            loadedData = mergeDailyTextOverrides(data, overrides);
-            dataReady = true;
-          });
+        const merged = mergeDailyTextOverrides(data, overrides);
+        setLoadingProgress(100);
+        setContent(merged);
       })
       .catch((error) => {
         if (cancelled) return;
-        window.clearInterval(timer);
         setLoadError(error?.message || 'خطا در بارگذاری برنامه');
       });
 
-    return () => {
-      cancelled = true;
-      window.clearInterval(timer);
-    };
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -719,7 +686,7 @@ function navigate(next) {
   }
 
   if (loadError) return <div className="validationModal"><div className="validationCard"><h2>خطا در بارگذاری برنامه</h2><p className="muted">{loadError}</p></div></div>;
-  if (!content) return <div className="app appLoading" role="status" aria-live="polite"><div className="loadingBrand"><img src={`${import.meta.env.BASE_URL}assets/Logo m24.png`} alt="لوگوی برنامه مسیر" style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }} /><h1 style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }}>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p><div className="loadingProgress" role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(loadingProgress)}>{Array.from({ length: 10 }, (_, index) => <span key={index} className="loadingProgressSegment" style={{ '--segment-progress': `${Math.max(0, Math.min(100, loadingProgress - index * 10))}%` }} />)}</div></div></div>;
+  if (!content) return <div className="app appLoading" role="status" aria-live="polite"><div className="loadingBrand"><img src={`${import.meta.env.BASE_URL}assets/logo.png`} alt="لوگوی برنامه مسیر" style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }} /><h1 style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }}>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p><div className="loadingProgress" role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(loadingProgress)}>{Array.from({ length: 10 }, (_, index) => <span key={index} className="loadingProgressSegment" style={{ '--segment-progress': `${Math.max(0, Math.min(100, loadingProgress - index * 10))}%` }} />)}</div></div></div>;
 
   const onboardingComplete = Boolean(userProfile && hasCompletedOnboarding);
 
