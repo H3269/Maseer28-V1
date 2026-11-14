@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
+import { T10_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/t10DailyAssistantPrompts.js';
 import {
   answerT11DailyPreparedQuestion,
   getT11DailyAssistantPromptGroups,
@@ -38,6 +39,13 @@ test('T11 assistant catalog contains exactly 28 days and 392 complete fixed-ques
     assert.deepEqual(guide.questions.map((item) => item.label), EXPECTED_QUESTIONS);
     assert.ok(guide.questions.every((item) => typeof item.answer === 'string' && item.answer.trim()));
   }
+});
+
+test('T11 retains its own 392 answers and does not copy any exact T10 prepared answer', () => {
+  const t10Answers = new Set(T10_DAILY_ASSISTANT_GUIDES.flatMap((guide) => guide.questions.map((question) => question.answer)));
+  const t11Answers = T11_DAILY_ASSISTANT_GUIDES.flatMap((guide) => guide.questions.map((question) => question.answer));
+  assert.equal(t11Answers.length, 392);
+  assert.ok(t11Answers.every((answer) => !t10Answers.has(answer)), 'T11 prepared answers must remain topic-specific');
 });
 
 test('T11 prepared answers require exact topic/day identity and exact fixed question', () => {
