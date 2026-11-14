@@ -3,11 +3,11 @@ import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 
 const QUESTION_GROUPS = Object.freeze([
-  { label: 'فهم تمرین', dayScoped: true, ids: ['q01', 'q02'] },
-  { label: 'فهم اقدام اختصاصی', dayScoped: true, ids: ['q03', 'q04'] },
-  { label: 'تفاوت تمرین و اقدام', dayScoped: false, ids: ['q09'] },
-  { label: 'اجرا و موانع', dayScoped: false, ids: ['q05', 'q08', 'q10', 'q13', 'q14'] },
-  { label: 'ارزیابی و ایمنی', dayScoped: false, ids: ['q06', 'q07', 'q11', 'q12'] },
+  { label: 'فهم تمرین', dayScoped: true, kinds: ['exercise_meaning', 'exercise_example'] },
+  { label: 'فهم اقدام اختصاصی', dayScoped: true, kinds: ['action_meaning', 'action_example'] },
+  { label: 'تفاوت تمرین و اقدام', dayScoped: false, kinds: ['exercise_action_difference'] },
+  { label: 'اجرا و موانع', dayScoped: false, kinds: ['light_version', 'not_done', 'no_event', 'can_change', 'duration'] },
+  { label: 'ارزیابی و ایمنی', dayScoped: false, kinds: ['t11_distress', 'talk_other', 'success', 'stop'] },
 ]);
 
 export const T11_DAILY_ASSISTANT_GUIDES = Object.freeze(GUIDE.records.map(normalizeDailyAssistantGuide));
@@ -141,7 +141,7 @@ export function getT11DailyAssistantPromptGroups(day) {
 
   return QUESTION_GROUPS.map((group) => ({
     label: group.dayScoped ? `${group.label} روز ${dayNumber}` : group.label,
-    questions: guide.questions.filter((question) => group.ids.includes(question.id)),
+    questions: guide.questions.filter((question) => group.kinds.includes(question.kind)),
   }));
 }
 
