@@ -14,8 +14,8 @@ test('T11 overlay connects all 28 redesigned days and retains honest pending-rev
     readJson('../public/assistant/evidence/sources.v1.json'),
   ]);
   const draft = await readFile(new URL('../docs/T11_REPETITIVE_BEHAVIORS_28DAY_REDESIGN_DRAFT_B2_DC_FA.md', import.meta.url), 'utf8');
-  const draftExerciseLines = [...draft.matchAll(/^- \\*\\*تمرین:\\*\\* (.+)$/gmu)].map((match) => match[1]);
-  const draftActionLines = [...draft.matchAll(/^- \\*\\*اقدام:\\*\\* (.+)$/gmu)].map((match) => match[1]);
+  const draftExerciseLines = [...draft.matchAll(/^- \*\*تمرین:\*\* (.+)$/gmu)].map((match) => match[1]);
+  const draftActionLines = [...draft.matchAll(/^- \*\*اقدام:\*\* (.+)$/gmu)].map((match) => match[1]);
   assert.equal(draftExerciseLines.length, 28);
   assert.equal(draftActionLines.length, 28);
   assert.ok([...draftExerciseLines, ...draftActionLines].every((value) => !/[A-Za-z0-9]/u.test(value)), 'T11 draft exercises/actions must contain no Latin characters');
