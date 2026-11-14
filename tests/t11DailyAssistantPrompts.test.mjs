@@ -28,27 +28,29 @@ test('T11 assistant catalog contains exactly 28 days and 392 complete fixed-ques
   for (const [index, guide] of T11_DAILY_ASSISTANT_GUIDES.entries()) {
     assert.equal(guide.day, index + 1);
     assert.equal(guide.questions.length, 14);
+    assert.equal(guide.reviewStatus, 'pending_owner_review');
+    assert.equal(guide.evidenceGrade, 'not_assessed');
+    assert.deepEqual(guide.subtopicIds, []);
     assert.deepEqual(guide.questions.map((item) => item.label), EXPECTED_QUESTIONS);
     assert.ok(guide.questions.every((item) => typeof item.answer === 'string' && item.answer.trim()));
   }
 });
 
 test('T11 prepared answers require exact topic/day identity and exact fixed question', () => {
+  const guide = T11_DAILY_ASSISTANT_GUIDES[0];
   const dailyContent = {
     id: 'عادت‌های تکراری-01',
     day: 1,
     topic_id: 'T11',
-    exercise: 'تمرین واقعی روز اول',
-    actionText: 'اقدام واقعی روز اول',
-    lightExerciseText: 'نسخه سبک تمرین',
-    lightActionText: 'نسخه سبک اقدام',
+    exercise: guide.exercise,
+    actionText: guide.action,
   };
   const answer = answerT11DailyPreparedQuestion({
     day: 1,
     message: EXPECTED_QUESTIONS[0],
     dailyContent,
   });
-  assert.match(answer, /تمرین واقعی روز اول/u);
+  assert.match(answer, /راهنمای روز 1 عادت‌های تکراری/u);
   assert.equal(answerT11DailyPreparedQuestion({ day: 2, message: EXPECTED_QUESTIONS[0], dailyContent }), null);
   assert.equal(answerT11DailyPreparedQuestion({ day: 1, message: EXPECTED_QUESTIONS[0], dailyContent: { ...dailyContent, id: 'عادت‌های تکراری-02' } }), null);
   assert.equal(answerT11DailyPreparedQuestion({ day: 1, message: 'یک سؤال آزاد', dailyContent }), null);
@@ -67,14 +69,19 @@ test('T11 assistant exposes five groups and exactly fourteen questions for each 
 });
 
 test('T11 q11 uses its own distress response and does not append shared-center boilerplate', () => {
-  const dailyContent = { id: 'عادت‌های تکراری-02', day: 2, topic_id: 'T11' };
+  const guide = T11_DAILY_ASSISTANT_GUIDES[1];
+  const dailyContent = {
+    id: 'عادت‌های تکراری-02',
+    day: 2,
+    topic_id: 'T11',
+    exercise: guide.exercise,
+    actionText: guide.action,
+  };
   const answer = answerT11DailyPreparedQuestion({
     day: 2,
     message: EXPECTED_QUESTIONS[10],
     dailyContent,
   });
-  assert.match(answer, /بررسی را متوقف کن/u);
-  assert.match(answer, /متوقف/u);
-  assert.doesNotMatch(answer, /۱۱۵/u);
-  assert.doesNotMatch(answer, /مرکز مشاوره/u);
+  assert.ok(answer.endsWith(guide.questions[10].answer));
+  assert.doesNotMatch(answer, /۰۹۱۹۰۸۸۹۰۶۲|هیپنوتراپی شفا|مرکز مشاوره/u);
 });
