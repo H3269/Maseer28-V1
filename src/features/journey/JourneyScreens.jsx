@@ -8,6 +8,7 @@ import { copyTextToClipboard, fa, formatDate, normalizeDigits } from '../../shar
 import { burdenScoreFromAnswers, evaluatePqhtEligibility, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
 import { exportArchivesZip, triggerBlobDownload } from './archiveExport.js';
 import { selectCanonicalDailyRecord, selectDailyContentCategory } from '../content/dailyContentSelector.js';
+import { getDailySafetyMode } from '../content/dailySafety.js';
 
 export const SCALE_QUESTIONS = [
   'این مشکل در حال حاضر چقدر شدت دارد؟',
@@ -335,26 +336,101 @@ export function adaptiveGuidance(previousRecord, previousAnswer, problem, histor
   return cleanDailyCopy(`${base}${note}`, problem);
 }
 
-export function DayScreen({ day, problem, data, record, savedAnswer, previousRecord, previousAnswer, history = {}, onDashboard, onPrevious, onComplete, onNext, completed, onValidation }) {
-  const isT11ReviewPreview = data?.topic_id === 'T11' || /^عادت‌های تکراری-[0-9]{1,2}$/u.test(String(data?.id || '')) || /^T11-D[0-9]{1,2}$/i.test(String(data?.id || ''));
-  const parts = splitDayContent(data, problem, isT11ReviewPreview ? null : previousRecord, isT11ReviewPreview ? {} : history), guidance = isT11ReviewPreview ? '' : parts.adaptation || adaptiveGuidance(previousRecord, previousAnswer, problem, history), [entryOpen, setEntryOpen] = useState(Boolean(record?.score != null || savedAnswer || record?.feedback)), [score, setScore] = useState(record?.score ?? 0), [touched, setTouched] = useState(record?.score != null), [feedback, setFeedback] = useState(record?.feedback || ''), [answer, setAnswer] = useState(savedAnswer || '');const entryPanelRef = React.useRef(null);
-  useEffect(() => { setEntryOpen(Boolean(record?.score != null || savedAnswer || record?.feedback)); setScore(record?.score ?? 0); setTouched(record?.score != null); setFeedback(record?.feedback || ''); setAnswer(savedAnswer || ''); }, [day, record, savedAnswer]);useEffect(() => {
-  if (!entryOpen) return;
+export function DayScreen({ day, problem, data, record, savedAnswer, previousRecord, previousAnswer, history = {}, onDashboard, onPrevious, onComplete, onSkip, onNext, completed, onValidation }) {
+  const isT11Day = data?.topic_id === 'T11'
+    || /^عادت‌های تکراری-[0-9]{1,2}$/u.test(String(data?.id || ''))
+    || /^T11-D[0-9]{1,2}$/i.test(String(data?.id || ''));
+  // Keep the real content-approval gate independent from any owner-review UI.
+  // T11 content may be inspected, but cannot be scored or completed until its
+  // day has an approved, unambiguous specialist review record.
+  const isT11SafetyBlocked = isT11Day && getDailySafetyMode(data) === 'blocked';
+  const parts = splitDayContent(data, problem, previousRecord, history);
+  const guidance = parts.adaptation || adaptiveGuidance(previousRecord, previousAnswer, problem, history);
+  const [entryOpen, setEntryOpen] = useState(Boolean(record?.score != null || savedAnswer || record?.feedback));
+  const [score, setScore] = useState(record?.score ?? 0);
+  const [touched, setTouched] = useState(record?.score != null);
+  const [feedback, setFeedback] = useState(record?.feedback || '');
+  const [answer, setAnswer] = useState(savedAnswer || '');
+  const entryPanelRef = React.useRef(null);
 
-  const frame = requestAnimationFrame(() => {
-    entryPanelRef.current?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
+  useEffect(() => {
+    setEntryOpen(Boolean(record?.score != null || savedAnswer || record?.feedback));
+    setScore(record?.score ?? 0);
+    setTouched(record?.score != null);
+    setFeedback(record?.feedback || '');
+    setAnswer(savedAnswer || '');
+  }, [day, record, savedAnswer]);
+
+  useEffect(() => {
+    if (!entryOpen || isT11SafetyBlocked) return undefined;
+    const frame = requestAnimationFrame(() => {
+      entryPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
-  });
+    return () => cancelAnimationFrame(frame);
+  }, [entryOpen, isT11SafetyBlocked]);
 
-  return () => cancelAnimationFrame(frame);
-}, [entryOpen]);
   if (!data) return null;
   const bubblePos = Math.min(96, Math.max(4, (10 - Number(score)) * 10));
   const guidanceLines = structuredText(guidance);
-  function submit() { const missing = []; if (!touched || Number(score) < 0 || Number(score) > 10) missing.push('شدت یا میزان درگیری از ۰ تا ۱۰'); if (!feedback) missing.push('بازخورد امروز'); if (!validDailyAnswer(answer)) missing.push('پاسخ یا تجربه امروز (فقط کلمات فارسی و نشانه‌های مجاز)'); if (missing.length) return onValidation(missing, 'نتیجه امروز هنوز کامل نشده است'); onComplete({ answer: answer.trim(), score: Number(score), feedback }); }
-  return <section className="card dayCard" id="day"><div className="dayTopline"><span className="badge" id="dayBadge">روز {fa(day)} از ۲۸ · {problem}</span><button aria-label="داشبورد" className="iconButton subtle" onClick={onDashboard}><AppIcon name="home" size={19} /></button></div><h2 id="dayTitle">{parts.title}</h2><p className="muted" id="dayIntro">{fa(data.intro || `امروز روی «${parts.title}» تمرکز می‌کنی.`)}</p>{isT11ReviewPreview && <aside className="recommendation" role="note" data-testid="t11-owner-review-preview"><b>پیش‌نمایش برای بازبینی مالک</b><p className="muted">این نسخه برای بررسی محتوای ۲۸ روز و دستیار روزمحور آماده شده است. ثبت امتیاز، نتیجه یا پیشرفت این موضوع تا تصمیم نهایی مالک غیرفعال است؛ متن‌ها را به‌عنوان تشخیص یا درمان تلقی نکن.</p></aside>}{guidance && <div className="recommendation adaptiveGuidance"><b>چرا تمرین امروز این‌طور تنظیم شده؟</b><div className="muted">{guidanceLines.map((line, index) => <p key={index} style={{ margin: index === guidanceLines.length - 1 ? '0' : '0 0 8px' }}>{line}</p>)}</div></div>}<div className="dailyStep"><span className="stepNumber">۱</span><div className="exercise"><b>تمرین امروز</b><DailyText id="dayExercise" label="تمرین امروز" value={parts.exercise} /></div></div><div className="dailyStep"><span className="stepNumber">۲</span><div className="action"><b>اقدام اختصاصی امروز</b><DailyText id="dayAction" label="اقدام اختصاصی امروز" value={parts.action} /></div></div><div className="safetyNote"><span><AppIcon name="info" size={18} /></span><p className="muted" id="dayClosing">{fa(data.closing || '')}</p></div>{isT11ReviewPreview && <details className="recommendation t11ReviewDetails" data-testid="t11-review-details"><summary>مشاهده مشخصات کامل این روز برای بازبینی</summary><div className="muted"><p><b>مهارت:</b> {fa(data.skill || '')}</p><p><b>سازوکار/منطق آموزشی:</b> {fa(data.mechanism || '')}</p><p><b>نسخه سبک:</b> {fa(data.lightVersion || '')}</p><p><b>نسخه پیشرفت:</b> {fa(data.progressVersion || '')}</p><p><b>نسخه استراحت:</b> {fa(data.restVersion || '')}</p><p><b>معیار موفقیت:</b> {fa(data.successCriterion || '')}</p><p><b>پرسش بازتاب:</b> {fa(data.reflectionQuestion || '')}</p><p><b>شرط توقف:</b> {fa(data.stopCondition || '')}</p><p><b>زمان استاندارد:</b> {data.durationMinutes == null ? 'ثبت نشده؛ زمان قطعی ادعا نمی‌شود.' : fa(String(data.durationMinutes) + ' دقیقه')}</p><p><b>محدودیت‌ها و موارد منع:</b></p>{(Array.isArray(data.contraindications) ? data.contraindications : []).map((item, index) => <p key={index}>{fa(item)}</p>)}<p><b>زمان/شرط دریافت کمک انسانی:</b> {fa(data.whenToSeekHumanSupport || '')}</p><p><b>زیرموضوع:</b> {Array.isArray(data.subtopicIds) && data.subtopicIds.length ? data.subtopicIds.join('، ') : 'هنوز تعیین نشده؛ این پیش‌نمایش هیچ زیرموضوعی را به روز منتسب نمی‌کند.'}</p><p><b>وضعیت بازبینی:</b> {fa(data.reviewStatus || data.review_status || 'pending_owner_review')}؛ درجه شواهد: {fa(data.evidenceGrade || data.evidence_grade || 'not_assessed')}.</p><p><b>منابع مرتبط:</b> {Array.isArray(data.sourceIds) && data.sourceIds.length ? fa(String(data.sourceIds.length) + ' منبع در نقشه شواهد T11 ثبت شده است.') : 'برای این روز ادعای منبع‌محور ثبت نشده است.'}</p></div></details>}{!isT11ReviewPreview && !entryOpen && <button className="primary heroAction" id="openDailyEntryBtn" onClick={() => setEntryOpen(true)}>انجام دادم؛ ثبت نتیجه امروز</button>}{!isT11ReviewPreview && entryOpen && <div ref={entryPanelRef} aria-live="polite" className="dailyEntryPanel" id="dailyEntryPanel"><div className="entryHeader"><span className="stepNumber">۳</span><div><b>ثبت نتیجه</b><small>کمتر از یک دقیقه</small></div></div><label>شدت یا میزان درگیری امروز</label><div className="severityWrap"><div className="severityValue" id="severityValue" style={{ left: `${bubblePos}%` }}>{touched ? `${fa(score)} از ۱۰` : 'انتخاب نشده'}</div><div className="severityThumb" id="severityThumb" /><input aria-label="شدت درگیری" className="severityRange" id="dayScore" max="10" min="0" step="1" type="range" value={score} data-touched={touched ? '1' : '0'} onChange={(e) => { setScore(Number(e.target.value)); setTouched(true); }} /></div><div className="stats" style={{ color: 'var(--muted)', marginTop: 0 }}><span>۰ = بدون درگیری</span><span>۵ = متوسط</span><span>۱۰ = بسیار شدید</span></div><p className="muted" id="severityText" style={{ fontSize: 11, marginTop: 5 }}>{severityText(Number(score))}</p><label>بازخورد امروز</label><SmartSelect id="dayFeedbackChoice" value={feedback} onChange={setFeedback} options={FEEDBACK_OPTIONS} /><label>پاسخ یا تجربه امروزت</label><textarea id="answer" maxLength={3000} placeholder="کوتاه و واقعی بنویس؛ چه اتفاقی افتاد و چه چیزی یاد گرفتی؟" value={answer} onChange={(e) => setAnswer(e.target.value)} /><button className="primary" onClick={submit}>{buttonLabel('ثبت امروز و دریافت نتیجه')}</button><button className="ghostButton" onClick={() => setEntryOpen(false)}>فعلاً می‌خواهم تمرین را ادامه بدهم</button></div>}<div className="feedback hidden" id="dailyFeedback"/><div className="recommendation hidden" id="dailyRecommendation"/><div className="navrow compactNav"><button className="secondary" onClick={onDashboard}>{buttonLabel('داشبورد')}</button></div><div id="nextButtonWrap">{day < 28 && isT11ReviewPreview && <button className="primary" id="t11ReviewNextDayBtn" onClick={onNext}>رفتن به روز بعد برای بازبینی</button>}{day < 28 && !isT11ReviewPreview && completed && <button className="primary" onClick={onNext}>ادامه به روز {fa(day + 1)}</button>}</div></section>;
+
+  function submit() {
+    const missing = [];
+    if (!touched || Number(score) < 0 || Number(score) > 10) missing.push('شدت یا میزان درگیری از ۰ تا ۱۰');
+    if (!feedback) missing.push('بازخورد امروز');
+    if (!validDailyAnswer(answer)) missing.push('پاسخ یا تجربه امروز (فقط کلمات فارسی و نشانه‌های مجاز)');
+    if (missing.length) return onValidation(missing, 'نتیجه امروز هنوز کامل نشده است');
+    onComplete({ answer: answer.trim(), score: Number(score), feedback });
+  }
+
+  return <section className="card dayCard" id="day">
+    <div className="dayTopline">
+      <span className="badge" id="dayBadge">روز {fa(day)} از ۲۸ · {problem}</span>
+      <button aria-label="داشبورد" className="iconButton subtle" onClick={onDashboard}><AppIcon name="home" size={19} /></button>
+    </div>
+    <h2 id="dayTitle">{parts.title}</h2>
+    <p className="muted" id="dayIntro">{fa(data.intro || `امروز روی «${parts.title}» تمرکز می‌کنی.`)}</p>
+    {guidance && <div className="recommendation adaptiveGuidance">
+      <b>چرا تمرین امروز این‌طور تنظیم شده؟</b>
+      <div className="muted">{guidanceLines.map((line, index) => <p key={index} style={{ margin: index === guidanceLines.length - 1 ? '0' : '0 0 8px' }}>{line}</p>)}</div>
+    </div>}
+    <div className="dailyStep">
+      <span className="stepNumber">۱</span>
+      <div className="exercise"><b>تمرین امروز</b><DailyText id="dayExercise" label="تمرین امروز" value={parts.exercise} /></div>
+    </div>
+    <div className="dailyStep">
+      <span className="stepNumber">۲</span>
+      <div className="action"><b>اقدام اختصاصی امروز</b><DailyText id="dayAction" label="اقدام اختصاصی امروز" value={parts.action} /></div>
+    </div>
+    <div className="safetyNote"><span><AppIcon name="info" size={18} /></span><p className="muted" id="dayClosing">{fa(data.closing || '')}</p></div>
+    {isT11SafetyBlocked && <div className="dailySafetyStatus" id="dailySafetyStatus" role="status">
+      <p className="muted">این محتوای روزانه تا ثبت بازبینی تخصصی و تعیین دقیق زیرموضوع، برای اجرا و ثبت امتیاز فعال نیست. می‌توانی متن تمرین و پاسخ‌های راهنمای همین روز را بررسی کنی.</p>
+      <button className="secondary" id="skipDailyReviewBtn" onClick={onSkip}>ثبت عدم اجرای این روز و رفتن به روز بعد</button>
+    </div>}
+    {!isT11SafetyBlocked && !entryOpen && <button className="primary heroAction" id="openDailyEntryBtn" onClick={() => setEntryOpen(true)}>انجام دادم؛ ثبت نتیجه امروز</button>}
+    {!isT11SafetyBlocked && entryOpen && <div ref={entryPanelRef} aria-live="polite" className="dailyEntryPanel" id="dailyEntryPanel">
+      <div className="entryHeader"><span className="stepNumber">۳</span><div><b>ثبت نتیجه</b><small>کمتر از یک دقیقه</small></div></div>
+      <label>شدت یا میزان درگیری امروز</label>
+      <div className="severityWrap">
+        <div className="severityValue" id="severityValue" style={{ left: `${bubblePos}%` }}>{touched ? `${fa(score)} از ۱۰` : 'انتخاب نشده'}</div>
+        <div className="severityThumb" id="severityThumb" />
+        <input aria-label="شدت درگیری" className="severityRange" id="dayScore" max="10" min="0" step="1" type="range" value={score} data-touched={touched ? '1' : '0'} onChange={(e) => { setScore(Number(e.target.value)); setTouched(true); }} />
+      </div>
+      <div className="stats" style={{ color: 'var(--muted)', marginTop: 0 }}><span>۰ = بدون درگیری</span><span>۵ = متوسط</span><span>۱۰ = بسیار شدید</span></div>
+      <p className="muted" id="severityText" style={{ fontSize: 11, marginTop: 5 }}>{severityText(Number(score))}</p>
+      <label>بازخورد امروز</label>
+      <SmartSelect id="dayFeedbackChoice" value={feedback} onChange={setFeedback} options={FEEDBACK_OPTIONS} />
+      <label>پاسخ یا تجربه امروزت</label>
+      <textarea id="answer" maxLength={3000} placeholder="کوتاه و واقعی بنویس؛ چه اتفاقی افتاد و چه چیزی یاد گرفتی؟" value={answer} onChange={(e) => setAnswer(e.target.value)} />
+      <button className="primary" onClick={submit}>{buttonLabel('ثبت امروز و دریافت نتیجه')}</button>
+      <button className="ghostButton" onClick={() => setEntryOpen(false)}>فعلاً می‌خواهم تمرین را ادامه بدهم</button>
+    </div>}
+    <div className="feedback hidden" id="dailyFeedback" />
+    <div className="recommendation hidden" id="dailyRecommendation" />
+    <div className="navrow compactNav"><button className="secondary" onClick={onDashboard}>{buttonLabel('داشبورد')}</button></div>
+    <div id="nextButtonWrap">
+      {day < 28 && completed && <button className="primary" onClick={onNext}>ادامه به روز {fa(day + 1)}</button>}
+    </div>
+  </section>;
 }
 
 export function nextStepText(n, d, rec, problem) {

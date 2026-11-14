@@ -29,10 +29,24 @@ function normalizeT11VisibleText(value) {
     .trim().toLowerCase();
 }
 
+function replaceExact(source, original, replacement) {
+  if (!original || !replacement || original === replacement) return source;
+  return source.split(original).join(replacement);
+}
+
+function section(label, value) {
+  const text = String(value || '').trim();
+  return text ? `**${label}:** ${text}` : '';
+}
+
+function buildT11Heading(guide) {
+  return `راهنمای روز ${guide.day} عادت‌های تکراری — ${guide.title}`;
+}
+
 /**
- * T11 prepared answers are owner-review material. They are bound to the
- * canonical topic/day and exact visible exercise/action; no subtype is inferred,
- * no treatment protocol is added, and no shared-center reminder is appended.
+ * T11 uses the shared T10 response architecture, but only T11 source content:
+ * canonical topic/day identity, exact question matching, day heading,
+ * structured question-kind handling and exact exercise/action substitution.
  */
 export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = {}) {
   const dayNumber = toDayNumber(day);
@@ -59,7 +73,64 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
     || normalizeT11VisibleText(exercise) !== normalizeT11VisibleText(guide.exercise)
     || normalizeT11VisibleText(actionWithoutDisplayPrefix) !== normalizeT11VisibleText(guide.action)) return null;
 
-  return `راهنمای روز ${dayNumber} عادت‌های تکراری — ${guide.title}\n\n${question.answer}`;
+  let body = replaceExact(question.answer, guide.exercise, exercise);
+  body = replaceExact(body, guide.action, actionWithoutDisplayPrefix);
+
+  switch (question.kind) {
+    case 'exercise_meaning':
+      body += `\n\n${section('مهارت امروز', guide.skill)}\n${section('منطق آموزشی', guide.mechanism)}\n${section('معیار کافی‌بودن', guide.successCriterion)}\n${section('پرسش بازتاب', guide.reflectionQuestion)}`;
+      break;
+    case 'exercise_example':
+      body += `\n\n${section('تمرین واقعی همین روز', exercise)}\n\nمثال فقط برای روشن‌شدن شیوه توصیف است؛ لازم نیست رفتاری را عمداً ایجاد، تکرار یا تحریک کنی.`;
+      break;
+    case 'action_meaning':
+      body += `\n\n${section('اقدام اختصاصی ثبت‌شده برای این روز', actionWithoutDisplayPrefix)}\n\nاین متن هنوز به یک زیرموضوع یکتا منتسب نشده است؛ هیچ‌یک از مسیرهای احتمالی را برای خودت انتخاب یا اجراشده فرض نکن.`;
+      break;
+    case 'action_example':
+      body += `\n\n${section('متن اقدام اختصاصی همین روز', actionWithoutDisplayPrefix)}\n\nمثال، نسخه اجباری نیست و نباید به وارسی یا ثبت جزئیات حساس تبدیل شود.`;
+      break;
+    case 'light_version':
+      body += `\n\n${section('نسخه سبک', guide.lightVersion)}\n${section('نسخه استراحت', guide.restVersion)}\n${section('نسخه پیشرفت؛ صرفاً برای بازبینی', guide.progressVersion)}\n\nهیچ نسخه‌ای الزام به انجام ایجاد نمی‌کند؛ استراحت یا کنارگذاشتن تمرین نیز مجاز است.`;
+      break;
+    case 'success':
+      body += `\n\n${section('معیار کافی‌بودن', guide.successCriterion)}\n${section('پرسش بازتاب', guide.reflectionQuestion)}\n\nکاهش یا حذف رفتار، معیار موفقیت این بسته نیست.`;
+      break;
+    case 'stop':
+      body += `\n\n${section('شرط توقف امروز', guide.stopCondition)}\n${section('محدودیت‌های کاربرد', (guide.contraindications || []).join(' '))}\n${section('زمان دریافت حمایت انسانی', guide.whenToSeekHumanSupport)}`;
+      break;
+    case 'no_event':
+      body += `\n\nاگر نمونه‌ای به‌طور طبیعی در دسترس نیست، برای تکمیل برنامه موقعیت یا رفتار تازه نساز.\n${section('نسخه سبک یا جایگزین استراحت', guide.restVersion || guide.lightVersion)}`;
+      break;
+    case 'exercise_action_difference':
+      body += `\n\n${section('مهارت مورد توجه', guide.skill)}\n${section('هدف آموزشی روز', guide.objective)}\n\nتوصیف یا مرور، تعهدی برای تغییر، سرکوب یا حذف رفتار ایجاد نمی‌کند.`;
+      break;
+    case 'not_done':
+      body += `\n\n${section('نسخه سبک در صورت تمایل', guide.lightVersion)}\n${section('اگر امروز نیاز به استراحت داری', guide.restVersion)}\n\nروز ازدست‌رفته را جبران نکن و برای انجام تمرین به خودت فشار نیاور.`;
+      break;
+    case 't11_distress':
+      body = [
+        body,
+        section('شرط توقف امروز', guide.stopCondition),
+        section('محدودیت‌های کاربرد', (guide.contraindications || []).join(' ')),
+        section('حمایت انسانی مناسب', guide.whenToSeekHumanSupport),
+        'اگر خطر فوری یا آسیب جسمی جدی وجود دارد، کمک فوری محلی را در اولویت قرار بده.',
+      ].filter(Boolean).join('\n\n');
+      break;
+    case 'talk_other':
+      body += `\n\nگفت‌وگو یا افشای جزئیات رفتار شرط انجام هیچ تمرینی نیست.\n${section('در صورت نیاز به حمایت انسانی', guide.whenToSeekHumanSupport)}`;
+      break;
+    case 'can_change':
+      body += `\n\n${section('هدف آموزشی که نباید از آن فراتر رفت', guide.objective)}\n${section('شرط توقف', guide.stopCondition)}\n\nتغییر روش نباید به پایش اجباری، خودتشخیصی یا تلاش برای سرکوب رفتار تبدیل شود.`;
+      break;
+    case 'duration':
+      body += `\n\nزمان استاندارد ثبت‌شده: ${guide.durationMinutes == null ? 'وجود ندارد؛ مدت قطعی یا اعتبارسنجی‌شده‌ای ادعا نمی‌شود.' : `${guide.durationMinutes} دقیقه`}\n\n${section('تمرین ثبت‌شده', exercise)}\nهر زمان خواستی می‌توانی متوقف شوی.`;
+      break;
+    default:
+      return null;
+  }
+
+  body += '\n\nاین پاسخ بر پایه محتوای اختصاصی T11 برای بازبینی مالک تهیه شده است؛ تا تعیین زیرموضوع یکتا و ثبت تأیید تخصصی، مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود.';
+  return `${buildT11Heading(guide)}\n\n${body}`;
 }
 
 export function getT11DailyAssistantPromptGroups(day) {

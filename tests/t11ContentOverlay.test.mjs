@@ -20,6 +20,9 @@ test('T11 overlay connects all 28 redesigned days and complete owner-review meta
 
   assert.equal(days.length, 28);
   assert.equal(guide.records.length, 28);
+  assert.equal(new Set(days.map((day) => day.title)).size, 28, 'T11 day titles must not repeat');
+  assert.equal(new Set(days.map((day) => day.exercise)).size, 28, 'T11 daily exercises must not repeat exactly');
+  assert.equal(new Set(days.map((day) => day.actionText)).size, 28, 'T11 dedicated actions must not repeat exactly');
   for (const day of days) {
     const expected = guideByDay.get(Number(day.day));
     assert.ok(expected, 'guide exists for day ' + day.day);
@@ -42,13 +45,18 @@ test('T11 overlay connects all 28 redesigned days and complete owner-review meta
   }
 });
 
-test('T11 review preview shows the full package but disables score and completion controls', async () => {
+test('T11 uses the shared daily page structure while its real approval gate stays closed', async () => {
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
-  assert.match(ui, /data-testid="t11-owner-review-preview"/);
-  assert.match(ui, /data-testid="t11-review-details"/);
-  assert.match(ui, /!isT11ReviewPreview && !entryOpen/);
-  assert.match(ui, /!isT11ReviewPreview && entryOpen/);
-  assert.match(ui, /id="t11ReviewNextDayBtn"/);
-  assert.match(ui, /data\.successCriterion/);
-  assert.match(ui, /data\.contraindications/);
+  const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
+  assert.match(ui, /getDailySafetyMode\(data\) === 'blocked'/);
+  assert.match(ui, /splitDayContent\(data, problem, previousRecord, history\)/);
+  assert.match(ui, /id="dailySafetyStatus"/);
+  assert.doesNotMatch(ui, /isT11ReviewPreview|t11-owner-review-preview|t11-review-details|t11ReviewNextDayBtn/);
+  assert.match(ui, /!isT11SafetyBlocked && !entryOpen/);
+  assert.match(ui, /!isT11SafetyBlocked && entryOpen/);
+  assert.match(ui, /id="skipDailyReviewBtn"/);
+  assert.match(app, /createHumanReviewSkipRecord\(activeDay/);
+  assert.match(app, /onSkip=\{skipDayForHumanReview\}/);
+  assert.match(app, /guidanceData: splitDayContent\(activeDay, journey\.profileData\?\.problem \|\| '', journey\.daily\?\.\[currentDay - 1\], journey\.daily \|\| \{\}\)/);
+  assert.doesNotMatch(app, /guidanceData: activeDay\.topic_id === 'T11'/);
 });

@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
+import { T10_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/t10DailyAssistantPrompts.js';
 import {
   answerT11DailyPreparedQuestion,
   getT11DailyAssistantPromptGroups,
@@ -38,6 +39,13 @@ test('T11 assistant catalog contains exactly 28 days and 392 complete fixed-ques
     assert.deepEqual(guide.questions.map((item) => item.label), EXPECTED_QUESTIONS);
     assert.ok(guide.questions.every((item) => typeof item.answer === 'string' && item.answer.trim()));
   }
+});
+
+test('T11 retains its own 392 answers and does not copy any exact T10 prepared answer', () => {
+  const t10Answers = new Set(T10_DAILY_ASSISTANT_GUIDES.flatMap((guide) => guide.questions.map((question) => question.answer)));
+  const t11Answers = T11_DAILY_ASSISTANT_GUIDES.flatMap((guide) => guide.questions.map((question) => question.answer));
+  assert.equal(t11Answers.length, 392);
+  assert.ok(t11Answers.every((answer) => !t10Answers.has(answer)), 'T11 prepared answers must remain topic-specific');
 });
 
 test('T11 prepared answers require exact topic/day identity and exact fixed question', () => {
@@ -87,7 +95,10 @@ test('T11 q11 uses its own distress response and does not append shared-center b
     message: EXPECTED_QUESTIONS[10],
     dailyContent,
   });
-  assert.ok(answer.endsWith(guide.questions[10].answer));
+  assert.ok(answer.includes(guide.questions[10].answer));
+  assert.match(answer, /شرط توقف امروز/u);
+  assert.match(answer, /حمایت انسانی مناسب/u);
+  assert.match(answer, /مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود/u);
   assert.doesNotMatch(answer, /۰۹۱۹۰۸۸۹۰۶۲|هیپنوتراپی شفا|مرکز مشاوره/u);
 });
 
@@ -133,17 +144,15 @@ test('T11 page assistant routes every exact day-specific question and rejects mi
   }
 });
 
-test('T11 is exposed as a non-recording owner review preview in the day UI', async () => {
+test('T11 uses the shared daily page structure without preview-only markup', async () => {
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
-  assert.match(ui, /data-testid="t11-owner-review-preview"/);
-  assert.match(ui, /!isT11ReviewPreview && !entryOpen/);
-  assert.match(ui, /!isT11ReviewPreview && entryOpen/);
-  assert.match(ui, /id="t11ReviewNextDayBtn"/);
+  assert.match(ui, /getDailySafetyMode\(data\) === 'blocked'/);
+  assert.match(ui, /id="dailySafetyStatus"/);
+  assert.doesNotMatch(ui, /isT11ReviewPreview|t11-owner-review-preview|t11-review-details|t11ReviewNextDayBtn/);
   assert.match(launcher, /getT11DailyAssistantPromptGroups\(dailyContext\?\.day\)/);
   assert.match(launcher, /!isT11DailyPromptContext\s*&&\s*Boolean\(selectedDailyQuestion/);
 });
-
 
 test('T11 assistant UI uses the correct topic label and suppresses shared-center safety boilerplate', async () => {
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');

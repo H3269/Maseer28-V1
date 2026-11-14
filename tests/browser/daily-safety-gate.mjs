@@ -76,14 +76,42 @@ try {
     assert.equal(await card.locator('#dayExercise').count(), 1, topic + ' day 1 must display its exercise');
     assert.equal(await card.locator('#dayAction').count(), 1, topic + ' day 1 must display its dedicated action');
     if (topic === 'عادت‌های تکراری') {
-      // T11 is an owner-review preview: content is visible, but runtime scoring
-      // and daily-result interaction must remain unavailable before approval.
-      assert.equal(await card.locator('[data-testid="t11-owner-review-preview"]').count(), 1,
-        'T11 day 1 must expose the owner-review preview gate');
+      // The shared daily layout is used, while the independent specialist
+      // approval gate prevents scoring/completion until review is recorded.
+      assert.equal(await card.locator('#dailySafetyStatus').count(), 1,
+        'T11 must expose its actual specialist-approval status');
+      assert.equal(await card.locator('[data-testid="t11-owner-review-preview"]').count(), 0,
+        'T11 must not contain preview-only markup');
       assert.equal(await card.locator('#openDailyEntryBtn').count(), 0,
-        'T11 must not expose the runtime daily interaction before owner approval');
+        'T11 must not expose score entry before specialist approval');
       assert.equal(await card.locator('#dailyEntryPanel').count(), 0,
-        'T11 must not expose a scoring panel before owner approval');
+        'T11 must not expose a scoring panel before specialist approval');
+      for (let day = 1; day <= 28; day += 1) {
+        const expected = content.categories[topic].days.find((item) => item.day === day);
+        assert.ok(expected, 'T11 canonical day ' + day + ' exists');
+        assert.equal(await card.locator('#dayExercise').count(), 1, 'T11 day ' + day + ' exercise renders');
+        assert.equal(await card.locator('#dayAction').count(), 1, 'T11 day ' + day + ' action renders');
+        const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
+        const visibleAction = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayAction'));
+        assert.equal(visibleExercise, normalizeVisibleDailyText(expected.exercise), 'T11 day ' + day + ' must render its exact dedicated exercise');
+        assert.ok(visibleAction.endsWith(normalizeVisibleDailyText(expected.actionText)), 'T11 day ' + day + ' must render its exact dedicated action');
+        assert.equal(await card.locator('#dailySafetyStatus').count(), 1, 'T11 day ' + day + ' retains specialist gate');
+        assert.equal(await card.locator('#openDailyEntryBtn').count(), 0, 'T11 day ' + day + ' cannot score before approval');
+        assert.equal(await card.locator('#skipDailyReviewBtn').count(), 1, 'T11 day ' + day + ' offers an honest non-scoring skip');
+        if (day < 28) {
+          await card.locator('#skipDailyReviewBtn').click();
+          await page.locator('#dailyResult').waitFor({ state: 'visible' });
+          assert.equal(await page.locator('#resultScore').innerText(), '—', 'T11 skipped day ' + day + ' must not create a score');
+          assert.match(await page.locator('#resultText').innerText(), /هیچ امتیازی ثبت نشده/u);
+          await page.locator('#resultNextWrap button').click();
+          await page.locator('#day').waitFor({ state: 'visible' });
+          await page.waitForFunction((nextDay) => {
+            const text = document.querySelector('#dayBadge')?.textContent || '';
+            const normalized = text.replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)));
+            return normalized.includes('روز ' + nextDay + ' از 28');
+          }, day + 1);
+        }
+      }
       assert.deepEqual(errors, [], topic + ' must not raise browser errors');
       await page.close();
       continue;

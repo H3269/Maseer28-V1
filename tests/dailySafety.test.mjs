@@ -442,7 +442,7 @@ test('T01 day 27 is explicitly withheld for human review', async () => {
   assert.match(day.when_to_seek_human_support, /فوراً از خدمات اضطراری/);
 });
 
-test('Path28 daily screen displays every canonical record directly without assistant review gates', async () => {
+test('Path28 daily screen keeps canonical records visible and enforces the T11 approval gate', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
   const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
@@ -462,8 +462,13 @@ test('Path28 daily screen displays every canonical record directly without assis
   assert.match(ui, /value=\{parts\.exercise\}/);
   assert.match(ui, /value=\{parts\.action\}/);
   assert.match(ui, /id="openDailyEntryBtn"/);
-  assert.doesNotMatch(ui, /getDailySafetyMode|getRelationshipSafetyGate|requiresHumanReview|relationshipSafetyGate/);
-  assert.doesNotMatch(app, /getDailySafetyMode|skipDayForHumanReview|skipDayForRelationshipSafety/);
+  assert.match(ui, /isT11Day && getDailySafetyMode\(data\) === 'blocked'/);
+  assert.match(ui, /!isT11SafetyBlocked && !entryOpen/);
+  assert.match(ui, /id="skipDailyReviewBtn"/);
+  assert.doesNotMatch(ui, /getRelationshipSafetyGate|requiresHumanReview|relationshipSafetyGate/);
+  assert.match(app, /createHumanReviewSkipRecord\(activeDay/);
+  assert.match(app, /skipDayForHumanReview/);
+  assert.doesNotMatch(app, /getDailySafetyMode|skipDayForRelationshipSafety/);
   assert.match(app, /selectDailyContentCategory\(content\?\.categories, problemKey\)/);
   assert.match(app, /isCompleteDailyContentCategory\(content\?\.categories, problemKey\)/);
   assert.match(app, /selectCanonicalDailyRecord\(category, Number\(currentDay\)\)/);
