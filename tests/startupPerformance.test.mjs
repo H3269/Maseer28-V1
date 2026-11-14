@@ -14,7 +14,7 @@ test('library, reader, and assistant modules stay out of the initial application
   assert.match(app, /const Reader = lazy\(\(\) => import\('\.\/features\/library\/Reader\.jsx'\)\)/);
   assert.match(app, /const GlobalAssistantLauncher = lazy\(\(\) => import\('\.\/features\/assistant\/GlobalAssistantLauncher\.jsx'\)\)/);
   assert.doesNotMatch(app, /import GlobalAssistantLauncher from/);
-  assert.match(app, /navVisible && <GlobalAssistantLauncher/);
+  assert.match(app, /navVisible && <Suspense fallback=\{null\}><GlobalAssistantLauncher/);
 });
 
 test('startup does not wait through an artificial splash delay', () => {
