@@ -57,7 +57,7 @@ test('library assistant hydrates full book content only when the assistant is op
   assert.match(assistantLauncher, /function activate\(\)[\s\S]{0,180}loadedLibraryBooks\.length\) ensureLibraryBooksLoaded\(\)/);
   assert.match(assistantLauncher, /screen === 'books' && !booksForTurn\.length/);
   assert.match(assistantLauncher, /ensureSeedBookContent\(book\)/);
-  assert.match(assistantLauncher, /await libraryBooksLoadRef\.current/);
+  assert.match(assistantLauncher, /await \(libraryBooksLoadRef\.current \|\| ensureLibraryBooksLoaded\(\)\)/);
   assert.match(assistantLauncher, /screen === 'books' && !booksForTurn\.length/);
 });
 

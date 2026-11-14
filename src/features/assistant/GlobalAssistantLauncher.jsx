@@ -250,8 +250,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     const message = String(overrideMessage ?? draft).trim();
     if (!message || sending) return;
     let booksForTurn = loadedLibraryBooks;
-    if (screen === 'books' && !booksForTurn.length && libraryBooksLoadRef.current) {
-      booksForTurn = await libraryBooksLoadRef.current;
+    if (screen === 'books' && !booksForTurn.length) {
+      booksForTurn = await (libraryBooksLoadRef.current || ensureLibraryBooksLoaded());
     }
     const selectedDailyQuestion = isPreparedOnlyDailyPromptContext
       ? activePromptGroups.flatMap((group) => group.questions).find((question) => question.value === message)
