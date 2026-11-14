@@ -74,6 +74,13 @@ test('T11 assistant exposes five groups and exactly fourteen questions for each 
   for (let day = 1; day <= 28; day += 1) {
     const groups = getT11DailyAssistantPromptGroups(day);
     assert.equal(groups.length, 5);
+    assert.deepEqual(groups.map((group) => group.label), [
+      'فهم تمرین روز ' + day,
+      'فهم اقدام اختصاصی روز ' + day,
+      'تفاوت تمرین و اقدام',
+      'اجرا و موانع',
+      'ارزیابی و ایمنی',
+    ]);
     assert.equal(groups.flatMap((group) => group.questions).length, 14);
     assert.deepEqual(groups.flatMap((group) => group.questions).sort((a, b) => a.id.localeCompare(b.id)).map((item) => item.value), EXPECTED_QUESTIONS);
   }
