@@ -316,7 +316,13 @@ try {
   promptDialog = page.getByRole('dialog', { name: 'سؤال آماده دستیار کتابخانه' });
   await promptDialog.getByRole('button', { name: 'خلاصه کتاب پنجم را بگو.' }).click();
   await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('خلاصه راهنمای محتوایی')));
+  try {
+    await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('خلاصه راهنمای محتوایی')));
+  } catch (error) {
+    console.error('LIBRARY_ASSISTANT_MESSAGES', JSON.stringify(await dialog.locator('.assistantMessage').allInnerTexts()));
+    console.error('LIBRARY_ASSISTANT_DIALOG', await dialog.innerText());
+    throw error;
+  }
   const guidedLibrarySummary = dialog.locator('.assistantMessage').last();
   assert.match(await guidedLibrarySummary.innerText(), /هنر شناخت و دگرگونی احساسات/u);
   assert.match(await guidedLibrarySummary.innerText(), /منبع:/u);
