@@ -3,11 +3,11 @@
   "packageId": "T11",
   "topicId": "T11",
   "topic": "عادت‌های تکراری",
-  "status": "draft_for_owner_review_not_runtime_eligible",
+  "status": "owner_live_test_enabled_pending_expert_review",
   "coveredDays": "1-28",
   "expectedDays": 28,
   "questionsPerDay": 14,
-  "questionPolicy": "q01-q14 use the fixed shared Persian labels and positions; T11 answers are topic/day-specific. This file does not approve subtopic mappings or clinical use.",
+  "questionPolicy": "q01-q14 use the exact shared T01-T10 question labels, positions, groups and answer framing; T11 answers remain topic/day-specific. Owner live testing is enabled; this file does not approve subtopic mappings or clinical use.",
   "records": [
     {
       "day": 1,
