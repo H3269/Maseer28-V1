@@ -70,6 +70,20 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
+      - name: Prepare main-branch reader engine for exact layout parity (test-only)
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$BASE_SHA"
+          mkdir -p public/test-fixtures
+          node --input-type=module - <<'NODE'
+          import { execFileSync } from 'node:child_process';
+          import { writeFileSync } from 'node:fs';
+          const source = execFileSync('git', ['show', `${process.env.BASE_SHA}:src/features/library/readerEngine.js`], { encoding: 'utf8' });
+          const baseline = source.replaceAll('import.meta.env.BASE_URL', JSON.stringify('/Maseer28/'));
+          if (baseline.includes('import.meta.env')) throw new Error('Unexpected unresolved Vite environment reference in baseline engine.');
+          writeFileSync('public/test-fixtures/readerEngine-baseline.js', baseline, 'utf8');
+          NODE
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
@@ -322,6 +336,7 @@ jobs:
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/daily-safety-gate.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/daily-assistant-guidance.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/global-assistant-launcher.mjs
+          NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/reader-layout-parity.mjs
       - name: Capture startup performance diagnostics (mobile and desktop)
         env:
           PATH28_BASE_URL: http://127.0.0.1:4173/Maseer28/
