@@ -66,9 +66,9 @@ test('library covers use lazy loading and asynchronous decoding', () => {
   assert.match(libraryPage, /loading="lazy" decoding="async" fetchPriority="low"/);
 });
 
-test('initial splash uses the smaller existing logo asset', async () => {
-  assert.match(html, /assets\/logo\.png/);
-  const small = await stat(new URL('../public/assets/logo.png', import.meta.url));
-  const large = await stat(new URL('../public/assets/Logo m24.png', import.meta.url));
-  assert.ok(small.size < large.size, 'splash logo should be smaller than the legacy high-resolution logo');
+test('initial splash restores the original approved logo asset', async () => {
+  assert.match(html, /assets\/Logo m24\.png/);
+  assert.match(app, /assets\/Logo m24\.png/);
+  const original = await stat(new URL('../public/assets/Logo m24.png', import.meta.url));
+  assert.ok(original.size > 0, 'the original splash logo asset must exist');
 });
