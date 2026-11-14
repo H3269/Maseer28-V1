@@ -83,3 +83,16 @@ test('initial splash restores the original approved logo asset', async () => {
   const original = await stat(new URL('../public/assets/Logo m24.png', import.meta.url));
   assert.ok(original.size > 0, 'the original splash logo asset must exist');
 });
+
+
+test('the app waits until the complete splash logo image is decoded', () => {
+  assert.match(app, /const \[splashLogoReady, setSplashLogoReady\] = useState\(false\)/);
+  assert.match(app, /await image\.decode\(\)/);
+  assert.match(app, /if \(!content \|\| !splashLogoReady\)/);
+  assert.match(app, /onLoad=\{markSplashLogoReady\}/);
+});
+
+test('all five library book covers are requested eagerly at high priority', () => {
+  assert.match(libraryPage, /loading="eager" decoding="async" fetchPriority="high"/);
+  assert.doesNotMatch(libraryPage, /fetchPriority="low"/);
+});
