@@ -109,7 +109,10 @@ test('T11 page assistant routes every exact day-specific question and rejects mi
         problem: 'عادت‌های تکراری',
         data: dailyContent,
         guidanceData: {
-          ...dailyContent,
+          id: dailyContent.id,
+          topic_id: 'T11',
+          day: guide.day,
+          exercise: guide.exercise,
           action: `برای مسئله «عادت‌های تکراری»، ${guide.action.charAt(0).toLowerCase()}${guide.action.slice(1)}`,
         },
       },
