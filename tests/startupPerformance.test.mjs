@@ -120,7 +120,7 @@ test('the splash logo is visible independently of the content-download progress'
 });
 
 test('no later stylesheet rule can re-hide the splash logo or title behind loading progress', () => {
-  assert.doesNotMatch(css, /clip-path:\\s*circle\\(var\\(--logo-reveal/);
+  assert.doesNotMatch(css, /clip-path:\s*circle\(var\(--logo-reveal/);
   assert.match(css, /\.appLoading \.loadingBrand img \{[\s\S]*?clip-path: none !important[\s\S]*?visibility: visible !important/);
   assert.match(css, /\.appLoading \.loadingBrand h1 \{[\s\S]*?clip-path: none !important[\s\S]*?visibility: visible !important/);
 });
