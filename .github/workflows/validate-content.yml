@@ -258,6 +258,7 @@ jobs:
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git fetch --no-tags --depth=1 origin "$BASE_SHA"
           mkdir -p public/test-fixtures
           node --input-type=module - <<'NODE'
