@@ -336,7 +336,7 @@ export function adaptiveGuidance(previousRecord, previousAnswer, problem, histor
   return cleanDailyCopy(`${base}${note}`, problem);
 }
 
-export function DayScreen({ day, problem, data, record, savedAnswer, previousRecord, previousAnswer, history = {}, onDashboard, onPrevious, onComplete, onNext, completed, onValidation }) {
+export function DayScreen({ day, problem, data, record, savedAnswer, previousRecord, previousAnswer, history = {}, onDashboard, onPrevious, onComplete, onSkip, onNext, completed, onValidation }) {
   const isT11Day = data?.topic_id === 'T11'
     || /^عادت‌های تکراری-[0-9]{1,2}$/u.test(String(data?.id || ''))
     || /^T11-D[0-9]{1,2}$/i.test(String(data?.id || ''));
@@ -402,7 +402,10 @@ export function DayScreen({ day, problem, data, record, savedAnswer, previousRec
       <div className="action"><b>اقدام اختصاصی امروز</b><DailyText id="dayAction" label="اقدام اختصاصی امروز" value={parts.action} /></div>
     </div>
     <div className="safetyNote"><span><AppIcon name="info" size={18} /></span><p className="muted" id="dayClosing">{fa(data.closing || '')}</p></div>
-    {isT11SafetyBlocked && <p className="muted" id="dailySafetyStatus" role="status">این محتوای روزانه تا ثبت بازبینی تخصصی و تعیین دقیق زیرموضوع، برای اجرا و ثبت امتیاز فعال نیست. می‌توانی متن تمرین و پاسخ‌های راهنمای همین روز را بررسی کنی.</p>}
+    {isT11SafetyBlocked && <div className="dailySafetyStatus" id="dailySafetyStatus" role="status">
+      <p className="muted">این محتوای روزانه تا ثبت بازبینی تخصصی و تعیین دقیق زیرموضوع، برای اجرا و ثبت امتیاز فعال نیست. می‌توانی متن تمرین و پاسخ‌های راهنمای همین روز را بررسی کنی.</p>
+      <button className="secondary" id="skipDailyReviewBtn" onClick={onSkip}>ثبت عدم اجرای این روز و رفتن به روز بعد</button>
+    </div>}
     {!isT11SafetyBlocked && !entryOpen && <button className="primary heroAction" id="openDailyEntryBtn" onClick={() => setEntryOpen(true)}>انجام دادم؛ ثبت نتیجه امروز</button>}
     {!isT11SafetyBlocked && entryOpen && <div ref={entryPanelRef} aria-live="polite" className="dailyEntryPanel" id="dailyEntryPanel">
       <div className="entryHeader"><span className="stepNumber">۳</span><div><b>ثبت نتیجه</b><small>کمتر از یک دقیقه</small></div></div>
@@ -425,7 +428,7 @@ export function DayScreen({ day, problem, data, record, savedAnswer, previousRec
     <div className="recommendation hidden" id="dailyRecommendation" />
     <div className="navrow compactNav"><button className="secondary" onClick={onDashboard}>{buttonLabel('داشبورد')}</button></div>
     <div id="nextButtonWrap">
-      {day < 28 && (isT11SafetyBlocked || completed) && <button className="primary" onClick={onNext}>ادامه به روز {fa(day + 1)}</button>}
+      {day < 28 && completed && <button className="primary" onClick={onNext}>ادامه به روز {fa(day + 1)}</button>}
     </div>
   </section>;
 }
