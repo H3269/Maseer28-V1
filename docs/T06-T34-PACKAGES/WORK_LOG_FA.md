@@ -1902,3 +1902,48 @@
 **اقدامات انجام‌نشده و مرز مجوز:** هیچ‌یک از PRهای بسته‌شده merge نشده‌اند؛ هیچ شاخه‌ای حذف نشده؛ هیچ GitHub Action یا Telegram Action اجرا نشده؛ هیچ انتشار عمومی به Telegram یا Bale انجام نشده است. این پاک‌سازی صرفاً تعیین‌تکلیف وضعیت PRها بوده و به‌معنای تکمیل یا تأیید علمی/بالینی ۹۵۲ محتوا نیست.
 
 **وضعیت ثبت:** این جمع‌بندی در فایل WORK_LOG_FA.md شاخه main افزوده شد و پس از commit، محتوای فایل از main دوباره خوانده و وجود همین بخش راستی‌آزمایی می‌شود.
+
+
+## ثبت پاک‌سازی سراسری در دفتر وقایع شاخه‌های کاری مرتبط — 2026-11-14
+
+**دستور مالک:** سوابق پاک‌سازی PRها علاوه بر main در دفتر وقایع شاخه‌های دیگر مخزن نیز ثبت شود؛ با تأیید مالک، دامنه اجرا به شاخه‌های فعال و مرتبط با پروژه محدود شد.
+
+**اقدام انجام‌شده:** همان یادداشت خلاصه پاک‌سازی سراسری (۱۰ PR بسته و ادغام‌نشده، ۱۲ PR بازمانده، صفر Issue باز مستقل، و عدم اجرای merge/حذف شاخه/Action/انتشار) در همان مسیر `docs/T06-T34-PACKAGES/WORK_LOG_FA.md` روی ۳۲ شاخه مرتبط که این دفتر وقایع از قبل در آن‌ها وجود داشت، افزوده شد.
+
+**فهرست شاخه‌های به‌روزشده و پس از اقدام راستی‌آزمایی‌شده:**
+1. `content/t01-t09-shared-contract-20261113`
+2. `content/t06-package-completion-20261112`
+3. `content/t06-main-integration-20261112`
+4. `content/t06-repeated-guidance-20261112`
+5. `content/t07-package-completion-20261112`
+6. `content/t07-main-integration-final-20261113`
+7. `content/t07-main-integration-fix-20261113`
+8. `content/t07-main-integration-fix-v2-20261113`
+9. `content/t07-main-validation-followups-20261113`
+10. `content/t08-package-completion-20261113`
+11. `content/t08-final-audit-20261113`
+12. `content/t08-postmerge-semantic-audit-20261113`
+13. `content/t08-semantic-audit-followup-20261113`
+14. `content/t08-semantic-safety-followup-20261113`
+15. `content/t09-package-audit-20261113`
+16. `content/t09-assistant-completion-20261113`
+17. `content/t09-assistant-completion-final-20261113`
+18. `content/t09-assistant-final-rerun-20261113`
+19. `content/t09-runtime-integration-20261113`
+20. `content/t10-package-audit-20261113`
+21. `content/t10-live-assistant-activation`
+22. `assistant/t01-t09-shared-contract-20261113`
+23. `audit/t01-t09-shared-assistant-contract-20261113`
+24. `fix/t06-guidance-assertion-20261112`
+25. `fix/t07-main-integration-gates-20261113`
+26. `fix/t10-live-assistant-activation`
+27. `docs/t09-full-validation-result-20261113`
+28. `docs/t09-runtime-integration-log-20261113`
+29. `docs/record-t08-closure-20261113`
+30. `fix/t09-assistant-complete-20261113`
+31. `fix/t07-main-integration-regressions-20261113`
+32. `fix/t07-main-validation-followups-20261113`
+
+**راستی‌آزمایی:** وجود یادداشت در هر ۳۲ شاخه پس از ثبت، با خواندن دوباره همان فایل از هر ref بررسی شد. در main نیز جمع‌بندی اصلی قبلی موجود بود. شاخه‌هایی که فایل دفتر وقایع را از قبل نداشتند، عمداً تغییر داده نشدند و برایشان فایل جدید ساخته نشد؛ این کار از ایجاد دفتر وقایع مصنوعی در شاخه‌های نامرتبط یا فاقد سابقه جلوگیری می‌کند.
+
+**مرز اقدام:** این عملیات فقط مستندسازی در فایل دفتر وقایع بود؛ کد اجرایی شاخه‌ها تغییر نکرد، هیچ PRی merge یا بسته نشد، هیچ شاخه‌ای حذف نشد، و هیچ Action یا انتشار Telegram/Bale اجرا نشد.
