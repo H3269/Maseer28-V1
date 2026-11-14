@@ -206,12 +206,13 @@ test('T11 uses the standard daily entry UI without owner-preview boxes or blocke
   assert.doesNotMatch(ui, /getDailySafetyMode|isT11SafetyBlocked|dailySafetyStatus|skipDailyReviewBtn|پیش‌نمایش برای بازبینی مالک|مشاهده مشخصات کامل این روز برای بازبینی/u);
   assert.match(safety, /if \(isRepetitiveBehaviorTopicDay\(day\)\) return 'routine'/);
   assert.match(launcher, /getT11DailyAssistantPromptGroups\(dailyContext\?\.day\)/);
-  assert.match(launcher, /!isT11DailyPromptContext\s*&&\s*Boolean\(selectedDailyQuestion/);
+  assert.doesNotMatch(launcher, /!isT11DailyPromptContext\s*&&\s*Boolean\(selectedDailyQuestion/);
 });
 
-test('T11 assistant UI uses the correct topic label and suppresses shared-center safety boilerplate', async () => {
+test('T11 assistant UI uses the correct topic label and displays the shared safety reminder', async () => {
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
-  assert.match(launcher, /!isT11DailyPromptContext\s*&&\s*Boolean\(selectedDailyQuestion/);
+  assert.doesNotMatch(launcher, /!isT11DailyPromptContext\s*&&\s*Boolean\(selectedDailyQuestion/);
+  assert.match(launcher, /const isDailySafetyQuestion = Boolean\(selectedDailyQuestion/);
   assert.match(launcher, /isT11DailyPromptContext\s*\?\s*"عادت‌های تکراری"/);
   assert.match(launcher, /"t11-daily-prompt-trigger"/);
   assert.match(launcher, /getT11DailyAssistantPromptGroups\(dailyContext\?\.day\)/);
