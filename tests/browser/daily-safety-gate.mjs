@@ -83,7 +83,7 @@ try {
       for (let day = 1; day <= 28; day += 1) {
         const dayCard = page.locator('#day');
         const badgeText = await page.locator('#dayBadge').innerText();
-        assert.match(badgeText, new RegExp('روز ' + toPersianDigits(day) + ' از ۲۸/u'));
+        assert.match(badgeText, new RegExp('روز ' + toPersianDigits(day) + ' از ۲۸', 'u'));
         const expected = content.categories[topic].days.find((item) => item.day === day);
         assert.ok(expected, 'T11 canonical day ' + day + ' exists');
         const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
