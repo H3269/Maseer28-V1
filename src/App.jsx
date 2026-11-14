@@ -56,6 +56,7 @@ import {
 import { getRelationshipSafetyGate, isRelationshipSafetyConfirmed } from './features/journey/relationshipSafetyGate.js';
 import { isCompleteDailyContentCategory, selectCanonicalDailyRecord, selectDailyContentCategory } from './features/content/dailyContentSelector.js';
 import { mergeDailyTextOverrides } from './features/content/dailyTextOverrides.js';
+import { createHumanReviewSkipRecord } from './features/content/dailySafety.js';
 import { fa } from './shared/utils.js';
 import GlobalAssistantLauncher from './features/assistant/GlobalAssistantLauncher.jsx';
 import VersionFooter from './shared/components/VersionFooter.jsx';
@@ -568,6 +569,38 @@ function navigate(next) {
     }, 0);
   }
 
+  async function skipDayForHumanReview() {
+    const alreadyCompleted = (journey.completed || []).includes(currentDay);
+    if (alreadyCompleted) return showValidation(['این روز قبلاً ثبت شده است.'], 'این روز قبلاً ثبت شده است');
+    if (currentDay !== nextRequiredDay(journey)) {
+      return showValidation(['روزهای مسیر باید به ترتیب تکمیل شوند.'], 'ثبت روز مجاز نیست');
+    }
+
+    const trustedNow = APP_CONFIG.TIME_LOCK_ENABLED ? await getTrustedNowMs() : Date.now();
+    if (trustedNow == null) {
+      return showValidation(['فعلاً امکان ثبت عدم اجرای این مرحله وجود ندارد.'], 'امکان ادامه مسیر نیست');
+    }
+    if (!isDayUnlockedAt(journey, currentDay, trustedNow)) {
+      return showValidation(['این مرحله هنوز فعال نشده است.'], 'امکان ادامه مسیر نیست');
+    }
+
+    let record;
+    try {
+      record = createHumanReviewSkipRecord(activeDay, new Date(trustedNow));
+    } catch {
+      return showValidation(['این روز در وضعیت فعلی قابل ثبت به‌عنوان نیازمند بازبینی انسانی نیست.'], 'ثبت انجام نشد');
+    }
+
+    const skippedDay = currentDay;
+    patchJourney((previous) => ({
+      ...previous,
+      completed: [...new Set([...(previous.completed || []), skippedDay])].sort((a, b) => a - b),
+      daily: { ...(previous.daily || {}), [skippedDay]: record },
+    }));
+    setResultDay(skippedDay);
+    navigate('dailyResult');
+  }
+
   function openCurrentDay() {
     if (journey.completed.length === 28) return navigate(journey.final ? 'report' : 'final');
     openDay(nextRequiredDay(journey));
@@ -745,7 +778,7 @@ function navigate(next) {
       {screen === 'assessment' && <AssessmentScreen initial={journey.assessmentData?.answers} onSave={saveAssessment} onValidation={showValidation} />}
       {screen === 'dashboard' && <Dashboard journey={journey} userProfile={userProfile} onEditProfile={() => openProfileEditor('dashboard')} onCurrent={openCurrentDay} onBooks={() => openBooks('dashboard')} onArchive={() => navigate('archive')} onSupport={() => openSupport('dashboard')} onChannel={() => window.open(content.channelUrl, '_blank', 'noopener,noreferrer')} />}
       {screen === 'day' && (activeDay ? <>
-        <DayScreen day={currentDay} problem={journey.profileData?.problem || ''} data={activeDay} record={journey.daily?.[currentDay]} savedAnswer={journey.answers?.[currentDay] || ''} previousRecord={journey.daily?.[currentDay - 1]} previousAnswer={journey.answers?.[currentDay - 1] || ''} history={journey.daily || {}} onDashboard={() => navigate('dashboard')} onPrevious={() => currentDay <= 1 ? navigate('dashboard') : openDay(currentDay - 1)} onComplete={completeDay} onNext={() => openDay(currentDay + 1)} completed={journey.completed.includes(currentDay)} onValidation={showValidation} />
+        <DayScreen day={currentDay} problem={journey.profileData?.problem || ''} data={activeDay} record={journey.daily?.[currentDay]} savedAnswer={journey.answers?.[currentDay] || ''} previousRecord={journey.daily?.[currentDay - 1]} previousAnswer={journey.answers?.[currentDay - 1] || ''} history={journey.daily || {}} onDashboard={() => navigate('dashboard')} onPrevious={() => currentDay <= 1 ? navigate('dashboard') : openDay(currentDay - 1)} onComplete={completeDay} onSkip={skipDayForHumanReview} onNext={() => openDay(currentDay + 1)} completed={journey.completed.includes(currentDay)} onValidation={showValidation} />
       </> : <section className="card dayCard" role="alert"><h2>محتوای دقیق این روز در دسترس نیست</h2><p>موضوع یا شماره روز با داده اصلی تطبیق قطعی ندارد؛ برای جلوگیری از نمایش تمرین اشتباه، راهنمایی این روز متوقف شده است.</p><button className="secondary" onClick={() => navigate('dashboard')}>بازگشت به داشبورد</button></section>)}
       {screen === 'dailyResult' && <DailyResult day={resultDay || journey.completed.length || currentDay} journey={journey} data={resultData} problem={category?.name} sourceLabel={recommendationSource} onDashboard={() => navigate('dashboard')} onNext={openDay} onFinal={() => navigate('final')} onBook={(rec) => openRecommendedBook(resultDay || currentDay, rec)} />}
       {screen === 'books' && <LibraryPage books={books} loading={libraryLoading} error={libraryError} onOpenBook={(book) => openBook(book)} onBack={() => navigate(libraryReturn)} />}
