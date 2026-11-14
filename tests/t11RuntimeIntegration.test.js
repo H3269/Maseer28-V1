@@ -99,6 +99,13 @@ test('T11 prompt groups retain the five shared UI groups and fixed 14-question c
   for (let day = 1; day <= 28; day += 1) {
     const groups = getT11DailyAssistantPromptGroups(day);
     assert.deepEqual(groups.map((group) => group.questions.length), [2, 2, 1, 5, 4]);
+    assert.deepEqual(groups.map((group) => group.label), [
+      'فهم تمرین روز ' + day,
+      'فهم اقدام اختصاصی روز ' + day,
+      'تفاوت تمرین و اقدام',
+      'اجرا و موانع',
+      'ارزیابی و ایمنی',
+    ]);
     assert.equal(groups.reduce((sum, group) => sum + group.questions.length, 0), 14);
   }
 });
