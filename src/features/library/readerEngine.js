@@ -581,7 +581,7 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
     return Math.max(1, wrap(editorialReaderText(text), Math.max(100, m.available - indent), m.ctx).length);
   }
 
-  function tocChapterNeed(blocks, startIndex, nextTexts) {
+  function tocChapterNeed(blocks, startIndex, nextTexts, blockTexts) {
     let need = 0;
     for (let j = startIndex; j < blocks.length; j += 1) {
       const text = blockTexts[j];
@@ -746,7 +746,7 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
         } else if (tocActive && block?.type !== 'table' && block?.type !== 'separator') {
           const kind = tocKind(text);
           if (kind === 'tocChapter') {
-            const need = tocChapterNeed(blocks, i, nextTexts);
+            const need = tocChapterNeed(blocks, i, nextTexts, blockTexts);
             if (lines.length && remaining() < need) flush();
             tocSeenChapters += 1;
           }
