@@ -49,7 +49,7 @@ test('the static splash logo and title remain visible before React mounts', () =
 
 test('the library catalogue does not download every full book on entry', () => {
   const seedStart = libraryHook.indexOf('async function seedLibrary()');
-  const ensureStart = libraryHook.indexOf('export async function ensureSeedBookContent');
+  const ensureStart = libraryHook.indexOf('export function ensureSeedBookContent');
   const seedSource = libraryHook.slice(seedStart, ensureStart);
   const ensureSource = libraryHook.slice(ensureStart);
   assert.doesNotMatch(seedSource, /fetchJson\(meta\.file/);
@@ -60,6 +60,11 @@ test('the library catalogue does not download every full book on entry', () => {
   const recommendationSource = app.slice(recommendationStart, completionStart);
   assert.match(recommendationSource, /await refreshLibrary\(\)/);
   assert.match(recommendationSource, /await ensureSeedBookContent\(book\)/);
+});
+
+test('library manifest revalidates with the browser cache instead of allowing stale catalogue metadata', () => {
+  assert.match(libraryHook, /fetchJson\('content\/library\.seed\.json', 'manifest-check-v90', 'no-cache'\)/);
+  assert.match(libraryHook, /cache === 'no-store'[\s\S]*?\{ cache \}/);
 });
 
 test('cached library catalogue is painted before the network manifest refresh', () => {
@@ -86,9 +91,10 @@ test('library assistant hydrates full book content only when the assistant is op
   assert.match(assistantLauncher, /screen === 'books' && !booksForTurn\.length/);
 });
 
-test('library covers are lazy-loaded at low priority to avoid a multi-megabyte burst', () => {
-  assert.match(libraryPage, /loading="lazy" decoding="async" fetchPriority="low"/);
-  assert.doesNotMatch(libraryPage, /loading="eager"[^>]*fetchPriority="high"/);
+test('only the first two visible library covers receive eager high-priority loading', () => {
+  assert.match(libraryPage, /priority=\{index < 2\}/);
+  assert.match(libraryPage, /loading=\{priority \? 'eager' : 'lazy'\} decoding="async" fetchPriority=\{priority \? 'high' : 'low'\}/);
+  assert.match(libraryPage, /books\.map\(\(book, index\)/);
 });
 
 test('initial splash restores the original approved logo asset', async () => {
@@ -110,11 +116,37 @@ test('the app waits until the complete splash logo image is decoded', () => {
   assert.match(app, /onLoad=\{\(event\) => markSplashLogoReady\(event\.currentTarget\)\}/);
 });
 
-test('library book covers do not compete with the initial library render', () => {
-  assert.match(libraryPage, /loading="lazy" decoding="async" fetchPriority="low"/);
+test('offscreen library book covers remain lazy and low priority', () => {
+  assert.match(libraryPage, /loading=\{priority \? 'eager' : 'lazy'\} decoding="async" fetchPriority=\{priority \? 'high' : 'low'\}/);
 });
 
 const reader = await readFile(new URL('../src/features/library/Reader.jsx', import.meta.url), 'utf8');
+const readerEngine = await readFile(new URL('../src/features/library/readerEngine.js', import.meta.url), 'utf8');
+
+test('reader pagination uses the linear neighbour index instead of rescanning each block array', () => {
+  const layoutSource = readerEngine.slice(readerEngine.indexOf('export function buildLegacyReaderLayout'));
+  const helperStart = readerEngine.indexOf('export function buildNeighbourTextIndex');
+  const helperEnd = readerEngine.indexOf('function bookRows', helperStart);
+  const helperSource = readerEngine.slice(helperStart, helperEnd);
+  assert.match(layoutSource, /buildNeighbourTextIndex\(blocks\)/);
+  assert.match(helperSource, /const blockTexts = blocks\.map\(\(block\) => norm\(block\?\.text\)\)/);
+  assert.match(helperSource, /const nextTexts = new Array\(blocks\.length\)/);
+  assert.match(helperSource, /const previousTexts = new Array\(blocks\.length\)/);
+  assert.doesNotMatch(helperSource, /blocks\.slice\(i \+ 1\)/);
+  assert.doesNotMatch(helperSource, /blocks\.slice\(0, i\)\.reverse\(\)/);
+});
+
+test('recent reader layouts are reused with a strict two-layout memory cap', () => {
+  assert.match(reader, /const READER_LAYOUT_CACHE_LIMIT = 2/);
+  assert.match(reader, /READER_LAYOUT_CACHE\.get\(cacheKey\)/);
+  assert.match(reader, /while \(READER_LAYOUT_CACHE\.size > READER_LAYOUT_CACHE_LIMIT\)/);
+});
+
+test('hydrated book content is cached with a strict mobile memory cap', () => {
+  assert.match(libraryHook, /SEED_BOOK_CONTENT_IN_FLIGHT = new Map\(\)/);
+  assert.match(libraryHook, /const SEED_BOOK_CONTENT_CACHE_LIMIT = 2/);
+  assert.match(libraryHook, /while \(SEED_BOOK_CONTENT_CACHE\.size > SEED_BOOK_CONTENT_CACHE_LIMIT\)/);
+});
 
 test('opening a book preloads the reader module and reuses the prepared IndexedDB version', () => {
   assert.match(app, /Promise\.all\(\[[\s\S]*?ensureSeedBookContent\(book\),\s*import\('\.\/features\/library\/Reader\.jsx'\)/);

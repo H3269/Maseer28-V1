@@ -355,6 +355,26 @@ function sentenceSegments(text) {
   return out.length ? out : [s];
 }
 
+// Build the exact nearest non-empty structural neighbours in linear time.
+// Exported so the canonical-book regression can compare every result with the
+// former scan-based implementation without rebuilding full page layouts.
+export function buildNeighbourTextIndex(blocks) {
+  const blockTexts = blocks.map((block) => norm(block?.text));
+  const nextTexts = new Array(blocks.length);
+  const previousTexts = new Array(blocks.length);
+  let nextNonEmptyText = '';
+  for (let blockIndex = blocks.length - 1; blockIndex >= 0; blockIndex -= 1) {
+    nextTexts[blockIndex] = nextNonEmptyText;
+    if (blockTexts[blockIndex]) nextNonEmptyText = blockTexts[blockIndex];
+  }
+  let previousNonEmptyText = '';
+  for (let blockIndex = 0; blockIndex < blocks.length; blockIndex += 1) {
+    previousTexts[blockIndex] = previousNonEmptyText;
+    if (blockTexts[blockIndex]) previousNonEmptyText = blockTexts[blockIndex];
+  }
+  return { blockTexts, nextTexts, previousTexts };
+}
+
 function bookRows(book) {
   return (book.pages || []).map((page, index) => ({
     source: Number(page.sourcePage || page.page || index + 1),
@@ -581,14 +601,14 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
     return Math.max(1, wrap(editorialReaderText(text), Math.max(100, m.available - indent), m.ctx).length);
   }
 
-  function tocChapterNeed(blocks, startIndex) {
+  function tocChapterNeed(blocks, startIndex, nextTexts, blockTexts) {
     let need = 0;
     for (let j = startIndex; j < blocks.length; j += 1) {
-      const text = norm(blocks[j]?.text);
+      const text = blockTexts[j];
       if (!text) continue;
       const kind = tocKind(text);
       if (j > startIndex && (kind === 'tocChapter' || kind === 'tocPart' || kind === 'tocTitle')) break;
-      if (j > startIndex && isTocStop(text, blocks.slice(j + 1).map((x) => norm(x?.text)).find(Boolean) || '', tocSeenChapters)) break;
+      if (j > startIndex && isTocStop(text, nextTexts[j] || '', tocSeenChapters)) break;
       need += tocWrappedLineCount(blocks[j]?.text, kind);
     }
     // One quiet line between complete chapter groups, never inside a group.
@@ -685,6 +705,10 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
     if (tocActive && source >= firstChapterSource) { tocActive = false; lastTocKind = ''; }
     const chapter = chapterMap.get(source);
     const blocks = row.blocks || [];
+    // Precompute structural neighbours once per source page. Re-scanning the
+    // remaining/preceding block array for every block made book pagination
+    // quadratic on long Word pages, especially on mobile devices.
+    const { blockTexts, nextTexts, previousTexts } = buildNeighbourTextIndex(blocks);
     // Some Word pages contain the tail of the previous section before the next
     // section heading (notably book 3 pages 285 and 300). Insert the dedicated
     // opener exactly where that heading occurs instead of at the source-page edge.
@@ -698,9 +722,9 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
       // Keep two representations: `text` is structural-only and is never rendered;
       // `visibleText` preserves the author's wording/punctuation for display.
       const visibleText = editorialReaderText(block?.text);
-      const text = norm(block?.text);
+      const text = blockTexts[i];
       if (!text && block?.type !== 'separator' && block?.type !== 'table') continue;
-      const nextText = blocks.slice(i + 1).map((x) => norm(x?.text)).find(Boolean) || '';
+      const nextText = nextTexts[i] || '';
       if (chapter && i === chapterEchoIndex && !insertedChapters.has(source)) {
         addChapter(chapter, source);
         continue;
@@ -730,7 +754,7 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
         } else if (tocActive && block?.type !== 'table' && block?.type !== 'separator') {
           const kind = tocKind(text);
           if (kind === 'tocChapter') {
-            const need = tocChapterNeed(blocks, i);
+            const need = tocChapterNeed(blocks, i, nextTexts, blockTexts);
             if (lines.length && remaining() < need) flush();
             tocSeenChapters += 1;
           }
@@ -769,7 +793,7 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
         pendingTableTitle = visibleText;
         continue;
       }
-      const previousText = blocks.slice(0, i).reverse().map((x) => norm(x?.text)).find(Boolean) || '';
+      const previousText = previousTexts[i] || '';
       if (Number(bookId) === 1 && source < firstChapterSource && /^دفتر کار عملی$/u.test(previousText) && /^تمرین‌های کاربردی برای تبدیل آگاهی به زندگی روزمره$/u.test(text)) continue;
       if (Number(bookId) === 1 && /^یک مثال عملی$/u.test(text)) book1ExampleBodyActive = true;
       if (Number(bookId) === 1 && /^دفتر کار عملی(?: کتاب)?$/u.test(text)) { addWorkbookChapter(source); continue; }

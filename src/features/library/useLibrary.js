@@ -6,6 +6,22 @@ const SEED_REVISION_KEY = 'seed-content-revision-v89';
 const SEED_BOOK_FINGERPRINT_PREFIX = 'seed-book-fingerprint:';
 const BASE = import.meta.env.BASE_URL;
 
+// Keep hydrated seed books warm for this app session. The key includes revision
+// and active-version metadata so imported/replaced books cannot reuse stale data.
+const SEED_BOOK_CONTENT_CACHE = new Map();
+const SEED_BOOK_CONTENT_IN_FLIGHT = new Map();
+const SEED_BOOK_CONTENT_CACHE_LIMIT = 2;
+
+function seedBookCacheKey(book) {
+  return [
+    book?.id || '',
+    book?.manifestRevision || '',
+    book?.seedRevision || '',
+    book?.activeVersionId || '',
+    book?.updatedAt || '',
+  ].join('|');
+}
+
 function withCacheBust(path, token) {
   const separator = path.includes('?') ? '&' : '?';
   return `${BASE}${path}${separator}v=${encodeURIComponent(token)}`;
@@ -28,7 +44,7 @@ async function fetchJson(path, cacheToken, cache = 'default') {
 async function seedLibrary() {
   // Keep the library catalogue lightweight. Full book JSON is downloaded only
   // when the reader or a book recommendation actually needs that book.
-  const manifest = await fetchJson('content/library.seed.json', 'manifest-check-v90', 'no-store');
+  const manifest = await fetchJson('content/library.seed.json', 'manifest-check-v90', 'no-cache');
   const revision = String(manifest.revision || 'legacy');
   const now = new Date().toISOString();
   const [storedRevision, existingBooks] = await Promise.all([
@@ -69,8 +85,18 @@ async function seedLibrary() {
   return libraryRepository.listBooks();
 }
 
-export async function ensureSeedBookContent(book) {
-  if (!book?.id) throw new Error('مشخصات کتاب معتبر نیست.');
+export function ensureSeedBookContent(book) {
+  if (!book?.id) return Promise.reject(new Error('مشخصات کتاب معتبر نیست.'));
+  const cacheKey = seedBookCacheKey(book);
+  if (SEED_BOOK_CONTENT_CACHE.has(cacheKey)) {
+    const cached = SEED_BOOK_CONTENT_CACHE.get(cacheKey);
+    SEED_BOOK_CONTENT_CACHE.delete(cacheKey);
+    SEED_BOOK_CONTENT_CACHE.set(cacheKey, cached);
+    return Promise.resolve(cached);
+  }
+  if (SEED_BOOK_CONTENT_IN_FLIGHT.has(cacheKey)) return SEED_BOOK_CONTENT_IN_FLIGHT.get(cacheKey);
+
+  const task = (async () => {
   const currentBook = await libraryRepository.getBook(book.id) || book;
   if (currentBook.activeVersionId) {
     const existingVersion = await libraryRepository.getVersion(currentBook.activeVersionId);
@@ -118,6 +144,21 @@ export async function ensureSeedBookContent(book) {
   const version = await libraryRepository.getVersion(activeVersionId);
   if (!version?.content) throw new Error('متن کتاب پس از ذخیره‌سازی تأیید نشد.');
   return { book: updatedBook, version };
+  })();
+
+  SEED_BOOK_CONTENT_IN_FLIGHT.set(cacheKey, task);
+  return task.then((result) => {
+    SEED_BOOK_CONTENT_CACHE.delete(cacheKey);
+    SEED_BOOK_CONTENT_CACHE.set(cacheKey, result);
+    while (SEED_BOOK_CONTENT_CACHE.size > SEED_BOOK_CONTENT_CACHE_LIMIT) {
+      SEED_BOOK_CONTENT_CACHE.delete(SEED_BOOK_CONTENT_CACHE.keys().next().value);
+    }
+    return result;
+  }).finally(() => {
+    if (SEED_BOOK_CONTENT_IN_FLIGHT.get(cacheKey) === task) {
+      SEED_BOOK_CONTENT_IN_FLIGHT.delete(cacheKey);
+    }
+  });
 }
 
 export async function updatePublishedLibrary() {

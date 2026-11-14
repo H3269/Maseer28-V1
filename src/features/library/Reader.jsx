@@ -20,6 +20,28 @@ const PAGE_FLIP_SOUND_PATH = 'assets/sounds/page-flip-professional.mp3';
 const PAGE_FLIP_AUDIO_START = 0.304;
 const PAGE_FLIP_AUDIO_END = 1.645;
 
+// Keep only the two most recently used layouts in memory. Reopening a recently
+// read book avoids repeating the full pagination pass, while the strict cap
+// prevents unbounded memory growth on mobile browsers.
+const READER_LAYOUT_CACHE = new Map();
+const READER_LAYOUT_CACHE_LIMIT = 2;
+
+function readerLayoutCacheKey(version, book, metrics) {
+  const coverKey = book.coverDataUrl
+    ? `custom:${book.updatedAt || ''}`
+    : (book.coverUrl || '');
+  return [
+    version?.id || version?.createdAt || 'legacy',
+    book?.id || book?.legacyId || '',
+    book?.legacyId || '',
+    coverKey,
+    Math.round(metrics.width * 10) / 10,
+    metrics.linePx,
+    metrics.fontPx,
+    metrics.family,
+  ].join('|');
+}
+
 const LEGACY_META = {
   1: { title: 'از حقیقت تا واقعیت', subtitle: 'جلد اول' },
   2: { title: 'از حقیقت تا واقعیت', subtitle: 'جلد دوم · دگردیسی' },
@@ -169,16 +191,28 @@ export default function Reader({ book, onClose, initialVersion = null, initialSo
     if (!version?.content || !rootRef.current || !articleRef.current) return;
     const metrics = calcMetrics(rootRef.current, articleRef.current, settings.fontStep, Boolean(target));
     if (!metrics) return;
-    const nextLayout = buildLegacyReaderLayout({
-      book: version.content,
-      bookId: book.legacyId || book.id,
-      cover: book.coverDataUrl || book.coverUrl || '',
-      width: /bale/i.test(navigator.userAgent || '')
-  ? metrics.width * 0.94
-  : metrics.width,
-      fontPx: metrics.fontPx,
-      fontFamily: metrics.family,
-    });
+    const cacheKey = readerLayoutCacheKey(version, book, metrics);
+    let nextLayout = READER_LAYOUT_CACHE.get(cacheKey);
+    if (nextLayout) {
+      // Refresh insertion order for a small least-recently-used cache.
+      READER_LAYOUT_CACHE.delete(cacheKey);
+      READER_LAYOUT_CACHE.set(cacheKey, nextLayout);
+    } else {
+      nextLayout = buildLegacyReaderLayout({
+        book: version.content,
+        bookId: book.legacyId || book.id,
+        cover: book.coverDataUrl || book.coverUrl || '',
+        width: /bale/i.test(navigator.userAgent || '')
+          ? metrics.width * 0.94
+          : metrics.width,
+        fontPx: metrics.fontPx,
+        fontFamily: metrics.family,
+      });
+      READER_LAYOUT_CACHE.set(cacheKey, nextLayout);
+      while (READER_LAYOUT_CACHE.size > READER_LAYOUT_CACHE_LIMIT) {
+        READER_LAYOUT_CACHE.delete(READER_LAYOUT_CACHE.keys().next().value);
+      }
+    }
     setLayout(nextLayout);
 
     let nextPage = 0;
