@@ -13,6 +13,7 @@ import { answerGuiltDailyPreparedQuestion } from './guiltDailyAssistantPrompts.j
 import { answerEmotionalDependencyDailyPreparedQuestion } from './emotionalDependencyDailyAssistantPrompts.js';
 import { answerT09DailyPreparedQuestion } from './t09DailyAssistantPrompts.js';
 import { answerT10DailyPreparedQuestion } from './t10DailyAssistantPrompts.js';
+import { answerT11DailyPreparedQuestion } from './t11DailyAssistantPrompts.js';
 import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
 import { getCanonicalDailyRecordId } from '../content/dailyContentSelector.js';
 
@@ -73,8 +74,8 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         restActionText: preparedSource?.restActionText || dailyContext.guidanceData.restActionText,
       }
       : preparedSource;
-    const preparedTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem);
-    const visibleTopicName = ({ T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت', T05: 'حسادت', T06: 'غم و سوگ', T07: 'احساس گناه', T08: 'وابستگی عاطفی', T09: 'اهمال‌کاری', T10: 'بی‌خوابی و مشکلات خواب' })[preparedTopicId];
+    const preparedTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem) || preparedSource?.topic_id || null;
+    const visibleTopicName = ({ T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت', T05: 'حسادت', T06: 'غم و سوگ', T07: 'احساس گناه', T08: 'وابستگی عاطفی', T09: 'اهمال‌کاری', T10: 'بی‌خوابی و مشکلات خواب', T11: 'عادت‌های تکراری' })[preparedTopicId];
     const answerPreparedQuestion = preparedTopicId === 'T01'
       ? answerAngerDailyPreparedQuestion
       : preparedTopicId === 'T02'
@@ -95,8 +96,10 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
                       ? answerT09DailyPreparedQuestion
                       : preparedTopicId === 'T10'
                         ? answerT10DailyPreparedQuestion
-                        : null;
-    const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10'].includes(preparedTopicId)
+                        : preparedTopicId === 'T11'
+                          ? answerT11DailyPreparedQuestion
+                          : null;
+    const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11'].includes(preparedTopicId)
       && Number.isInteger(preparedDay)
       && preparedDay >= 1
       && preparedDay <= 28
