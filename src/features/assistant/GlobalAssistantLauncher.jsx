@@ -36,6 +36,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const [localModelStatusChecked, setLocalModelStatusChecked] = useState(false);
   const turnSequenceRef = useRef(0);
   const [loadedLibraryBooks, setLoadedLibraryBooks] = useState([]);
+  const libraryBooksLoadRef = useRef(null);
   const [libraryComparisonReply, setLibraryComparisonReply] = useState('');
   const conversationStateRef = useRef(null);
   const launcherRef = useRef(null);
