@@ -109,6 +109,7 @@ function MainApp() {
   const [loadError, setLoadError] = useState('');
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [splashLogoReady, setSplashLogoReady] = useState(false);
+  const [splashMinimumVisible, setSplashMinimumVisible] = useState(false);
   const splashLogoRef = useRef(null);
   const [journey, setJourney] = useState(initial.state);
   const [userProfile, setUserProfileState] = useState(initial.user);
@@ -273,6 +274,18 @@ function MainApp() {
       image.removeEventListener('load', confirmReady);
     };
   }, []);
+
+  useEffect(() => {
+    if (!splashLogoReady) return undefined;
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      if (!cancelled) setSplashMinimumVisible(true);
+    }, 650);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [splashLogoReady]);
 
   function showValidation(items, title = 'چند بخش هنوز نیاز به تکمیل دارد') {
     setValidation({ title, items: Array.isArray(items) ? items : [items] });
@@ -770,8 +783,33 @@ function navigate(next) {
     setCopyrightOpen(false);
   }
 
-  if (loadError) return <div className="validationModal"><div className="validationCard" role="alert"><h2>خطا در بارگذاری برنامه</h2><p className="muted">{loadError}</p><button className="primary" type="button" onClick={() => window.location.reload()}>تلاش دوباره</button></div></div>;
-  if (!content || !splashLogoReady) return <div className="app appLoading" role="status" aria-live="polite"><div className="loadingBrand"><img ref={splashLogoRef} src={`${import.meta.env.BASE_URL}assets/Logo m24.png`} alt="لوگوی برنامه مسیر" loading="eager" decoding="async" fetchPriority="high" onLoad={(event) => markSplashLogoReady(event.currentTarget)} onError={() => setLoadError('تصویر صفحه آغازین بارگذاری نشد. لطفاً اتصال را بررسی و دوباره تلاش کن.')} style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }} /><h1 style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }}>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p><div className="loadingProgress" role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(loadingProgress)}>{Array.from({ length: 10 }, (_, index) => <span key={index} className="loadingProgressSegment" style={{ '--segment-progress': `${Math.max(0, Math.min(100, loadingProgress - index * 10))}%` }} />)}</div></div></div>;
+  if (!content || !splashLogoReady || !splashMinimumVisible || loadError) return (
+    <div className="app appLoading" role="status" aria-live="polite" aria-busy={!content || !splashLogoReady}>
+      <div className="loadingBrand">
+        <img
+          ref={splashLogoRef}
+          src={`${import.meta.env.BASE_URL}assets/Logo m24.png`}
+          alt="لوگوی برنامه مسیر"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+          onLoad={(event) => markSplashLogoReady(event.currentTarget)}
+          onError={() => setLoadError('تصویر صفحه آغازین بارگذاری نشد. لطفاً اتصال را بررسی و دوباره تلاش کن.')}
+        />
+        <h1>مسیر ۲۸ روزه بازسازی ذهن</h1>
+        <p>{loadError ? 'آماده‌سازی برنامه کامل نشد.' : 'در حال آماده‌سازی مسیر تو…'}</p>
+        {loadError && (
+          <div className="loadingError" role="alert">
+            <p>{loadError}</p>
+            <button className="primary" type="button" onClick={() => window.location.reload()}>تلاش دوباره</button>
+          </div>
+        )}
+        <div className="loadingProgress" role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(loadingProgress)}>
+          {Array.from({ length: 10 }, (_, index) => <span key={index} className="loadingProgressSegment" style={{ '--segment-progress': `${Math.max(0, Math.min(100, loadingProgress - index * 10))}%` }} />)}
+        </div>
+      </div>
+    </div>
+  );
 
   const onboardingComplete = Boolean(userProfile && hasCompletedOnboarding);
 
