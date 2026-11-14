@@ -86,9 +86,10 @@ test('library assistant hydrates full book content only when the assistant is op
   assert.match(assistantLauncher, /screen === 'books' && !booksForTurn\.length/);
 });
 
-test('library covers are lazy-loaded at low priority to avoid a multi-megabyte burst', () => {
-  assert.match(libraryPage, /loading="lazy" decoding="async" fetchPriority="low"/);
-  assert.doesNotMatch(libraryPage, /loading="eager"[^>]*fetchPriority="high"/);
+test('only the first two visible library covers receive eager high-priority loading', () => {
+  assert.match(libraryPage, /priority=\{index < 2\}/);
+  assert.match(libraryPage, /loading=\{priority \? 'eager' : 'lazy'\} decoding="async" fetchPriority=\{priority \? 'high' : 'low'\}/);
+  assert.match(libraryPage, /books\.map\(\(book, index\)/);
 });
 
 test('initial splash restores the original approved logo asset', async () => {
@@ -115,6 +116,21 @@ test('library book covers do not compete with the initial library render', () =>
 });
 
 const reader = await readFile(new URL('../src/features/library/Reader.jsx', import.meta.url), 'utf8');
+const readerEngine = await readFile(new URL('../src/features/library/readerEngine.js', import.meta.url), 'utf8');
+
+test('reader pagination precomputes neighbouring block text instead of rescanning each page', () => {
+  assert.match(readerEngine, /const blockTexts = blocks\.map\(\(block\) => norm\(block\?\.text\)\)/);
+  assert.match(readerEngine, /const nextTexts = new Array\(blocks\.length\)/);
+  assert.match(readerEngine, /const previousTexts = new Array\(blocks\.length\)/);
+  assert.doesNotMatch(readerEngine, /blocks\.slice\(i \+ 1\)\.map\(\(x\) => norm\(x\?\.text\)\)\.find/);
+  assert.doesNotMatch(readerEngine, /blocks\.slice\(0, i\)\.reverse\(\)\.map/);
+});
+
+test('recent reader layouts are reused with a strict two-layout memory cap', () => {
+  assert.match(reader, /const READER_LAYOUT_CACHE_LIMIT = 2/);
+  assert.match(reader, /READER_LAYOUT_CACHE\.get\(cacheKey\)/);
+  assert.match(reader, /while \(READER_LAYOUT_CACHE\.size > READER_LAYOUT_CACHE_LIMIT\)/);
+});
 
 test('opening a book preloads the reader module and reuses the prepared IndexedDB version', () => {
   assert.match(app, /Promise\.all\(\[[\s\S]*?ensureSeedBookContent\(book\),\s*import\('\.\/features\/library\/Reader\.jsx'\)/);
