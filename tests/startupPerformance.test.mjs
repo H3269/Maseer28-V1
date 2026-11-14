@@ -17,7 +17,10 @@ test('heavy library, reader, and assistant modules are split from the startup bu
 
 test('startup does not wait through an artificial splash delay', () => {
   assert.doesNotMatch(app, /minimumSplashDuration|completionDuration/);
-  assert.match(app, /setContent\(merged\)/);
+  // Primary content is rendered first; optional overlays are merged afterward.
+  assert.match(app, /setContent\(data\)/);
+  assert.match(app, /mergeDailyTextOverrides\(data, overrides\)/);
+  assert.doesNotMatch(app, /setContent\(merged\)/);
 });
 
 test('the home screen renders as soon as primary path content is ready', () => {
