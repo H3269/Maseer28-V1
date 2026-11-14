@@ -107,14 +107,15 @@ try {
         assert.equal(await dayCard.locator('#answer').count(), 1, 'T11 day ' + day + ' exposes response input');
 
         if (day === 1) {
-          await dayCard.locator('#dayScore').evaluate((el) => {
-            el.value = '4';
-            el.dispatchEvent(new Event('input', { bubbles: true }));
-            el.dispatchEvent(new Event('change', { bubbles: true }));
-          });
+          const scoreInput = dayCard.locator('#dayScore');
+          await scoreInput.focus();
+          for (let step = 0; step < 4; step += 1) await scoreInput.press('ArrowRight');
+          assert.equal(await scoreInput.getAttribute('data-touched'), '1',
+            'T11 score slider must register a real user change');
           await dayCard.locator('.smartSelectButton').click();
           await dayCard.locator('.smartSelectOption').filter({ hasText: 'تقریباً مثل قبل' }).click();
-          await dayCard.locator('#answer').fill('ثبت آزمایشی برای بررسی مسیر کامل روز اول');
+          assert.equal(await dayCard.locator('#dayFeedbackChoice').inputValue(), 'same');
+          await dayCard.locator('#answer').fill('امروز تمرین را انجام دادم و نتیجه را ثبت کردم.');
           await dayCard.getByRole('button', { name: /ثبت امروز و دریافت نتیجه/u }).click();
           await page.locator('#dailyResult').waitFor({ state: 'visible' });
           assert.equal(await page.locator('#resultScore').count(), 1,
