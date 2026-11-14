@@ -8,18 +8,19 @@ import {
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
 
 function contextFor(guide, overrides = {}) {
+  const data = {
+    id: getCanonicalDailyRecordId('عادت‌های تکراری', guide.day),
+    topic_id: 'T11',
+    day: guide.day,
+    review_status: 'pending_expert_review',
+    risk_level: 'human_review_required',
+    exercise: guide.exercise,
+    actionText: guide.action,
+  };
   return {
     day: guide.day,
     problem: 'عادت‌های تکراری',
-    data: {
-      id: getCanonicalDailyRecordId('عادت‌های تکراری', guide.day),
-      topic_id: 'T11',
-      day: guide.day,
-      review_status: 'pending_expert_review',
-      risk_level: 'human_review_required',
-      exercise: `تمرین نمایان روز ${guide.day}`,
-      actionText: `اقدام نمایان روز ${guide.day}`,
-    },
+    data,
     ...overrides,
   };
 }
@@ -36,6 +37,7 @@ test('all 392 exact T11 prepared questions route through the real page assistant
       assert.equal(result.status, 'daily_guidance_available', `day ${guide.day}: ${question.id}`);
       assert.ok(result.message.includes(guide.title));
       assert.ok(result.message.includes(`راهنمای روز ${guide.day}`));
+      assert.ok(result.message.endsWith(question.answer));
       checked += 1;
     }
   }
@@ -72,24 +74,7 @@ test('T11 assistant refuses mismatched day/topic and all free-form prompts', () 
   assert.equal(freeForm.status, 'prepared_question_required');
 });
 
-test('T11 q01 and q03 explain the exact visible exercise and action', () => {
-  const guide = T11_DAILY_ASSISTANT_GUIDES[0];
-  const dailyContext = contextFor(guide);
-  const exercise = makePageAssistantTurn({
-    screen: 'day',
-    text: guide.questions.find((item) => item.id === 'q01').value,
-    dailyContext,
-  });
-  const action = makePageAssistantTurn({
-    screen: 'day',
-    text: guide.questions.find((item) => item.id === 'q03').value,
-    dailyContext,
-  });
-  assert.match(exercise.message, /تمرین نمایان روز 1/u);
-  assert.match(action.message, /اقدام نمایان روز 1/u);
-});
-
-test('explicit safety disclosures and pending safety exchanges preempt T11 prepared questions', () => {
+test('explicit safety disclosures preempt T11 prepared questions', () => {
   const guide = T11_DAILY_ASSISTANT_GUIDES[0];
   const first = makePageAssistantTurn({
     screen: 'day',
@@ -97,7 +82,6 @@ test('explicit safety disclosures and pending safety exchanges preempt T11 prepa
     dailyContext: contextFor(guide),
   });
   assert.equal(first.status, 'urgent_human_support_required');
-  assert.notEqual(first.status, 'daily_guidance_available');
 });
 
 test('T11 prompt groups retain the five shared UI groups and fixed 14-question coverage', () => {
