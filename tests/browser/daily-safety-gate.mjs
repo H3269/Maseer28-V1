@@ -134,64 +134,6 @@ try {
       await page.close();
       continue;
     }
-    assert.equal(await card.locator('#openDailyEntryBtn').count(), 1,
-        'T11 must expose the same daily result-entry action as T01-T10');
-      assert.doesNotMatch(await card.innerText(), /پیش‌نمایش برای بازبینی مالک|مشاهده مشخصات کامل این روز برای بازبینی/u);
-
-      for (let day = 1; day <= 28; day += 1) {
-        if (day > 1) {
-          if (day === 2) {
-            await page.locator('#dayBadge').waitFor({ state: 'visible' });
-            assert.match(await page.locator('#dayBadge').innerText(), /روز ۲ از ۲۸/u,
-              'the normal next-day action must open T11 day 2');
-          } else {
-            await page.close();
-            const reopened = await openDay(topic, day);
-            page = reopened.page;
-            errors.push(...reopened.errors);
-          }
-        }
-        const dayCard = page.locator('#day');
-        const expected = content.categories[topic].days.find((item) => item.day === day);
-        assert.ok(expected, 'T11 canonical day ' + day + ' exists');
-        const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
-        const visibleAction = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayAction'));
-        assert.equal(visibleExercise, normalizeVisibleDailyText(expected.exercise), 'T11 day ' + day + ' exact exercise renders');
-        assert.ok(visibleAction.endsWith(normalizeVisibleDailyText(expected.actionText)), 'T11 day ' + day + ' exact action renders');
-        assert.equal(await dayCard.locator('#dailySafetyStatus').count(), 0);
-        assert.equal(await dayCard.locator('#openDailyEntryBtn').count(), 1);
-        await dayCard.locator('#openDailyEntryBtn').click();
-        await dayCard.locator('#dailyEntryPanel').waitFor({ state: 'visible' });
-        assert.equal(await dayCard.locator('#dayScore').count(), 1, 'T11 day ' + day + ' exposes score input');
-        assert.equal(await dayCard.locator('#dayFeedbackChoice').count(), 1, 'T11 day ' + day + ' exposes feedback input');
-        assert.equal(await dayCard.locator('#answer').count(), 1, 'T11 day ' + day + ' exposes response input');
-
-        if (day === 1) {
-          const scoreInput = dayCard.locator('#dayScore');
-          await scoreInput.focus();
-          for (let step = 0; step < 4; step += 1) await scoreInput.press('ArrowRight');
-          assert.equal(await scoreInput.getAttribute('data-touched'), '1',
-            'T11 score slider must register a real user change');
-          await dayCard.locator('.smartSelectButton').click();
-          await dayCard.locator('.smartSelectOption').filter({ hasText: 'تقریباً مثل قبل' }).click();
-          assert.equal(await dayCard.locator('#dayFeedbackChoice').inputValue(), 'same');
-          await dayCard.locator('#answer').fill('امروز تمرین را انجام دادم و نتیجه را ثبت کردم.');
-          await dayCard.getByRole('button', { name: /ثبت امروز و دریافت نتیجه/u }).click();
-          await page.locator('#dailyResult').waitFor({ state: 'visible' });
-          assert.equal(await page.locator('#resultScore').count(), 1,
-            'T11 day 1 must complete and render the normal result screen');
-          assert.equal(await page.getByRole('button', { name: /رفتن به روز ۲/u }).count(), 1,
-            'T11 day 1 must expose the normal next-day action');
-          await page.getByRole('button', { name: /رفتن به روز ۲/u }).click();
-          await page.locator('#dayBadge').waitFor({ state: 'visible' });
-          assert.match(await page.locator('#dayBadge').innerText(), /روز ۲ از ۲۸/u,
-            'T11 day 1 result must navigate to day 2 through the standard route');
-        }
-        assert.deepEqual(errors, [], 'T11 day ' + day + ' must not raise browser errors');
-      }
-      await page.close();
-      continue;
-    }
     assert.equal(await card.locator('#openDailyEntryBtn').count(), 1, topic + ' day 1 must expose the original daily interaction');
     const text = await card.innerText();
     const expected = content.categories[topic].days.find((item) => item.day === 1);
