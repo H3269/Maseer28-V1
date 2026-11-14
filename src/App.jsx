@@ -5,7 +5,7 @@ import Reader from './features/library/Reader.jsx';
 import { legacySourceLabel } from './features/library/legacyLibraryMeta.js';
 import { previewPageText } from './features/library/readerEngine.js';
 import { libraryRepository } from './features/library/libraryRepository.js';
-import { useLibrary } from './features/library/useLibrary.js';
+import { ensureSeedBookContent, useLibrary } from './features/library/useLibrary.js';
 import {
   APP_CONFIG,
   COPYRIGHT_KEY,
@@ -552,9 +552,14 @@ function navigate(next) {
     navigate('support');
   }
 
-  function openBook(book, sourcePage = null, target = null) {
-    setReaderState({ book, sourcePage, target });
-    navigate('bookReader');
+  async function openBook(book, sourcePage = null, target = null) {
+    try {
+      const { book: readyBook } = await ensureSeedBookContent(book);
+      setReaderState({ book: readyBook, sourcePage, target });
+      navigate('bookReader');
+    } catch {
+      showValidation(['متن کتاب بارگذاری نشد. اتصال را بررسی کن و دوباره تلاش کن.'], 'خطا در کتابخانه');
+    }
   }
 
   async function openRecommendedBook(day, recommendation) {
@@ -563,14 +568,14 @@ function navigate(next) {
     const book = availableBooks.find((item) => Number(item.legacyId) === Number(recommendation.bookId)) || availableBooks[Number(recommendation.bookId) - 1];
     if (!book) return;
     try {
-      const version = await libraryRepository.getVersion(book.activeVersionId);
+      const { book: readyBook, version } = await ensureSeedBookContent(book);
       if (!version?.content) throw new Error('book missing');
       const sourcePage = Number(recommendation.page) || 1;
       const page = version.content.pages?.find((row) => Number(row.sourcePage || row.page) === sourcePage) || version.content.pages?.[0];
-      const sourceTitle = legacySourceLabel(book, version.content);
+      const sourceTitle = legacySourceLabel(readyBook, version.content);
       setPreview({
         day,
-        book,
+        book: readyBook,
         sourcePage,
         reason: recommendation.reason || 'این بخش برای تعمیق موضوع امروز پیشنهاد شده است.',
         sourceTitle,

@@ -17,6 +17,16 @@ test('path content and daily overrides are fetched concurrently', () => {
   assert.ok(app.indexOf('const pathRequest = fetch') < app.indexOf('const overridesRequest = fetch'));
 });
 
+test('the library catalogue does not download every full book on entry', () => {
+  const seedStart = libraryHook.indexOf('async function seedLibrary()');
+  const ensureStart = libraryHook.indexOf('export async function ensureSeedBookContent');
+  const seedSource = libraryHook.slice(seedStart, ensureStart);
+  const ensureSource = libraryHook.slice(ensureStart);
+  assert.doesNotMatch(seedSource, /fetchJson\\(meta\\.file/);
+  assert.match(ensureSource, /fetchJson\\(currentBook\\.seedFile/);
+  assert.match(app, /ensureSeedBookContent\\(book\\)/);
+});
+
 test('library synchronization is deferred until a library-dependent screen is opened', () => {
   assert.match(app, /const libraryNeeded = screen === 'books' \|\| screen === 'bookReader' \|\| screen === 'dailyResult'/);
   assert.match(app, /useLibrary\(libraryNeeded\)/);
