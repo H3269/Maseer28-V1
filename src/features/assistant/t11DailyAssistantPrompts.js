@@ -1,6 +1,7 @@
 import GUIDE from './t11DailyAssistantGuide.v1.json' with { type: 'json' };
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 
 const QUESTION_GROUPS = Object.freeze([
   { label: 'فهم تمرین', dayScoped: true, kinds: ['exercise_meaning', 'exercise_example'] },
@@ -135,7 +136,10 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
   }
 
   const answer = `${buildT11Heading(guide)}\n\n${body}`;
-  return addTeacherStyleFrame(answer, { guide, question, topic: 'عادت‌های تکراری' });
+  return appendDailyAssistantSafetyReminder(
+    addTeacherStyleFrame(answer, { guide, question, topic: 'عادت‌های تکراری' }),
+    question.kind,
+  );
 }
 
 export function getT11DailyAssistantPromptGroups(day) {
