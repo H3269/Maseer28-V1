@@ -362,6 +362,8 @@ test('T11 is fully interactive during the owner live-test window without changin
     review_status: 'pending_expert_review',
     subtopic_ids: [],
   }), 'routine', 'the main-branch live-test override must not impersonate an expert approval');
+  assert.equal(getDailySafetyMode({ id: 'T03-D06', topic_id: 'T11', risk_level: 'human_review_required' }), 'blocked',
+    'a conflicting non-T11 identifier must not receive the T11 live-test override');
 });
 
 test('ambiguous control topic stays blocked until its subtypes receive expert review', async () => {
