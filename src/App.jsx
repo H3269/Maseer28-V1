@@ -486,16 +486,22 @@ function navigate(next) {
         return version;
       } catch { return null; }
     }));
+    const versionPages = versions.map((version) => new Map(
+      (version?.content?.pages || []).map((page) => [Number(page.sourcePage || page.page) || 1, page])
+    ));
+    const processedRecommendationKeys = new Set();
     const normalizeParagraph = (value) => normalizeSearchText(value).replace(/\s+/g, ' ').trim();
     const pageText = (page) => normalizeParagraph(`${page?.title || ''} ${(page?.blocks || []).map((b) => `${b.text || ''} ${(b.rows || []).flat().join(' ')}`).join(' ')} ${page?.text || ''}`);
     const addUsedRecommendation = async (recommendation) => {
       if (!recommendation) return;
       const bookId = Number(recommendation.bookId), pageNo = Number(recommendation.page);
       if (!Number.isInteger(bookId) || bookId < 1 || bookId > 5 || !Number.isInteger(pageNo) || pageNo < 1) return;
-      usedKeys.add(`${bookId}:${pageNo}`);
+      const recommendationKey = `${bookId}:${pageNo}`;
+      if (processedRecommendationKeys.has(recommendationKey)) return;
+      processedRecommendationKeys.add(recommendationKey);
+      usedKeys.add(recommendationKey);
       const bookIndex = availableBooks.findIndex((item) => Number(item.legacyId) === bookId);
-      const version = versions[bookIndex >= 0 ? bookIndex : bookId - 1];
-      const page = version?.content?.pages?.find((row) => Number(row.sourcePage || row.page) === pageNo);
+      const page = versionPages[bookIndex >= 0 ? bookIndex : bookId - 1]?.get(pageNo);
       if (!page) return;
       const rawParts = [page.title, page.text, ...(page.blocks || []).map((block) => block.text || ''), ...(page.blocks || []).flatMap((block) => block.rows || []).flat()];
       for (const part of rawParts) {
@@ -535,12 +541,20 @@ function navigate(next) {
     const candidates = [];
     // Build this once, not once per page: the old placement multiplied work by every book page.
     const priorParagraphs = [...usedParagraphs];
+    const priorParagraphSet = new Set(priorParagraphs);
+    let scannedPages = 0;
     for (let bookIndex = 0; bookIndex < availableBooks.length; bookIndex += 1) {
       const book = availableBooks[bookIndex];
       try {
         const version = versions[bookIndex];
         const pages = version?.content?.pages || [];
         for (const page of pages) {
+          scannedPages += 1;
+          // Let the result screen remain responsive while the recommendation
+          // matcher processes long books on lower-powered mobile devices.
+          if (scannedPages % 120 === 0) {
+            await new Promise((resolve) => window.setTimeout(resolve, 0));
+          }
           const pageNo = Number(page.sourcePage || page.page) || 1;
           const key = `${Number(book.legacyId)}:${pageNo}`;
           if (usedKeys.has(key)) continue;
@@ -550,7 +564,8 @@ function navigate(next) {
             .map(normalizeParagraph).filter((part) => part.length >= 35);
           // A source page is unavailable if it repeats any substantial paragraph
           // that has already been offered, even when the book/page number differs.
-          if (paragraphs.some((paragraph) => priorParagraphs.some((prior) => paragraph === prior || paragraph.includes(prior) || prior.includes(paragraph)))) continue;
+          if (paragraphs.some((paragraph) => priorParagraphSet.has(paragraph)
+            || priorParagraphs.some((prior) => paragraph.includes(prior) || prior.includes(paragraph)))) continue;
           let scoreMatch = 0;
           let matchCount = 0;
           let topicMatchCount = 0;
