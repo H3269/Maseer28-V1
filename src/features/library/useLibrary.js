@@ -6,6 +6,21 @@ const SEED_REVISION_KEY = 'seed-content-revision-v89';
 const SEED_BOOK_FINGERPRINT_PREFIX = 'seed-book-fingerprint:';
 const BASE = import.meta.env.BASE_URL;
 
+// Keep hydrated seed books warm for this app session. The key includes revision
+// and active-version metadata so imported/replaced books cannot reuse stale data.
+const SEED_BOOK_CONTENT_CACHE = new Map();
+const SEED_BOOK_CONTENT_IN_FLIGHT = new Map();
+
+function seedBookCacheKey(book) {
+  return [
+    book?.id || '',
+    book?.manifestRevision || '',
+    book?.seedRevision || '',
+    book?.activeVersionId || '',
+    book?.updatedAt || '',
+  ].join('|');
+}
+
 function withCacheBust(path, token) {
   const separator = path.includes('?') ? '&' : '?';
   return `${BASE}${path}${separator}v=${encodeURIComponent(token)}`;
@@ -69,8 +84,13 @@ async function seedLibrary() {
   return libraryRepository.listBooks();
 }
 
-export async function ensureSeedBookContent(book) {
-  if (!book?.id) throw new Error('مشخصات کتاب معتبر نیست.');
+export function ensureSeedBookContent(book) {
+  if (!book?.id) return Promise.reject(new Error('مشخصات کتاب معتبر نیست.'));
+  const cacheKey = seedBookCacheKey(book);
+  if (SEED_BOOK_CONTENT_CACHE.has(cacheKey)) return Promise.resolve(SEED_BOOK_CONTENT_CACHE.get(cacheKey));
+  if (SEED_BOOK_CONTENT_IN_FLIGHT.has(cacheKey)) return SEED_BOOK_CONTENT_IN_FLIGHT.get(cacheKey);
+
+  const task = (async () => {
   const currentBook = await libraryRepository.getBook(book.id) || book;
   if (currentBook.activeVersionId) {
     const existingVersion = await libraryRepository.getVersion(currentBook.activeVersionId);
@@ -118,6 +138,17 @@ export async function ensureSeedBookContent(book) {
   const version = await libraryRepository.getVersion(activeVersionId);
   if (!version?.content) throw new Error('متن کتاب پس از ذخیره‌سازی تأیید نشد.');
   return { book: updatedBook, version };
+  })();
+
+  SEED_BOOK_CONTENT_IN_FLIGHT.set(cacheKey, task);
+  return task.then((result) => {
+    SEED_BOOK_CONTENT_CACHE.set(cacheKey, result);
+    return result;
+  }).finally(() => {
+    if (SEED_BOOK_CONTENT_IN_FLIGHT.get(cacheKey) === task) {
+      SEED_BOOK_CONTENT_IN_FLIGHT.delete(cacheKey);
+    }
+  });
 }
 
 export async function updatePublishedLibrary() {
