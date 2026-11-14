@@ -108,6 +108,7 @@ function MainApp() {
   const [content, setContent] = useState(null);
   const [loadError, setLoadError] = useState('');
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [splashLogoReady, setSplashLogoReady] = useState(false);
   const [journey, setJourney] = useState(initial.state);
   const [userProfile, setUserProfileState] = useState(initial.user);
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(initial.onboardingComplete);
@@ -152,12 +153,18 @@ function MainApp() {
       .then((response) => response.ok ? response.json() : null)
       .catch(() => null);
 
-    Promise.all([pathRequest, overridesRequest])
-      .then(([data, overrides]) => {
+    // The primary route data alone gates the first usable render.
+    // Daily text overrides are optional and must never hold the home screen behind
+    // a slow or stalled secondary request.
+    pathRequest
+      .then((data) => {
         if (cancelled) return;
-        const merged = mergeDailyTextOverrides(data, overrides);
         setLoadingProgress(100);
-        setContent(merged);
+        setContent(data);
+        overridesRequest.then((overrides) => {
+          if (cancelled || !overrides) return;
+          setContent(mergeDailyTextOverrides(data, overrides));
+        });
       })
       .catch((error) => {
         if (cancelled) return;
@@ -214,6 +221,16 @@ function MainApp() {
   const resultNumber = Number(resultDay || currentDay);
   const resultData = selectCanonicalDailyRecord(category, resultNumber);
   const headerDay = screen === 'day' ? currentDay : screen === 'dailyResult' ? (resultDay || journey.completed.length) : journey.completed.length;
+
+  async function markSplashLogoReady(event) {
+    const image = event.currentTarget;
+    try {
+      if (typeof image.decode === 'function') await image.decode();
+      if (image.complete && image.naturalWidth > 0) setSplashLogoReady(true);
+    } catch {
+      if (image.complete && image.naturalWidth > 0) setSplashLogoReady(true);
+    }
+  }
 
   function showValidation(items, title = 'چند بخش هنوز نیاز به تکمیل دارد') {
     setValidation({ title, items: Array.isArray(items) ? items : [items] });
@@ -705,7 +722,7 @@ function navigate(next) {
   }
 
   if (loadError) return <div className="validationModal"><div className="validationCard"><h2>خطا در بارگذاری برنامه</h2><p className="muted">{loadError}</p></div></div>;
-  if (!content) return <div className="app appLoading" role="status" aria-live="polite"><div className="loadingBrand"><img src={`${import.meta.env.BASE_URL}assets/Logo m24.png`} alt="لوگوی برنامه مسیر" style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }} /><h1 style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }}>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p><div className="loadingProgress" role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(loadingProgress)}>{Array.from({ length: 10 }, (_, index) => <span key={index} className="loadingProgressSegment" style={{ '--segment-progress': `${Math.max(0, Math.min(100, loadingProgress - index * 10))}%` }} />)}</div></div></div>;
+  if (!content || !splashLogoReady) return <div className="app appLoading" role="status" aria-live="polite"><div className="loadingBrand"><img src={`${import.meta.env.BASE_URL}assets/Logo m24.png`} alt="لوگوی برنامه مسیر" onLoad={markSplashLogoReady} onError={() => setLoadError('تصویر صفحه آغازین بارگذاری نشد. لطفاً اتصال را بررسی و دوباره تلاش کن.')} style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }} /><h1 style={{ "--logo-reveal": `${Math.max(0, Math.min(75, (loadingProgress - 5) * (75 / 95)))}%` }}>مسیر ۲۸ روزه بازسازی ذهن</h1><p>در حال آماده‌سازی مسیر تو…</p><div className="loadingProgress" role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(loadingProgress)}>{Array.from({ length: 10 }, (_, index) => <span key={index} className="loadingProgressSegment" style={{ '--segment-progress': `${Math.max(0, Math.min(100, loadingProgress - index * 10))}%` }} />)}</div></div></div>;
 
   const onboardingComplete = Boolean(userProfile && hasCompletedOnboarding);
 

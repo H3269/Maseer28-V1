@@ -17,12 +17,23 @@ test('heavy library, reader, and assistant modules are split from the startup bu
 
 test('startup does not wait through an artificial splash delay', () => {
   assert.doesNotMatch(app, /minimumSplashDuration|completionDuration/);
-  assert.match(app, /setContent\(merged\)/);
+  // Primary content is rendered first; optional overlays are merged afterward.
+  assert.match(app, /setContent\(data\)/);
+  assert.match(app, /mergeDailyTextOverrides\(data, overrides\)/);
+  assert.doesNotMatch(app, /setContent\(merged\)/);
 });
 
-test('path content and daily overrides are fetched concurrently', () => {
-  assert.match(app, /Promise\.all\(\[pathRequest, overridesRequest\]\)/);
-  assert.ok(app.indexOf('const pathRequest = fetch') < app.indexOf('const overridesRequest = fetch'));
+test('the home screen renders as soon as primary path content is ready', () => {
+  assert.match(app, /pathRequest[\s\S]*?\.then\(\(data\) => \{[\s\S]*?setContent\(data\)/);
+  assert.match(app, /overridesRequest\.then\(\(overrides\) => \{[\s\S]*?mergeDailyTextOverrides\(data, overrides\)/);
+  assert.doesNotMatch(app, /Promise\.all\(\[pathRequest, overridesRequest\]\)/);
+  assert.ok(app.indexOf('setContent(data)') < app.indexOf('overridesRequest.then'));
+});
+
+test('the static splash logo and title remain visible before React mounts', () => {
+  assert.match(html, /\.initialSplash img\{[^}]*opacity:1;visibility:visible/);
+  assert.match(html, /\.initialSplash h1\{[^}]*opacity:1/);
+  assert.doesNotMatch(html, /\.initialSplash h1\{opacity:0!important/);
 });
 
 test('the library catalogue does not download every full book on entry', () => {
@@ -63,7 +74,7 @@ test('library assistant hydrates full book content only when the assistant is op
 });
 
 test('library covers use lazy loading and asynchronous decoding', () => {
-  assert.match(libraryPage, /loading="lazy" decoding="async" fetchPriority="low"/);
+  assert.match(libraryPage, /loading="eager" decoding="async" fetchPriority="high"/);
 });
 
 test('initial splash restores the original approved logo asset', async () => {
@@ -71,4 +82,17 @@ test('initial splash restores the original approved logo asset', async () => {
   assert.match(app, /assets\/Logo m24\.png/);
   const original = await stat(new URL('../public/assets/Logo m24.png', import.meta.url));
   assert.ok(original.size > 0, 'the original splash logo asset must exist');
+});
+
+
+test('the app waits until the complete splash logo image is decoded', () => {
+  assert.match(app, /const \[splashLogoReady, setSplashLogoReady\] = useState\(false\)/);
+  assert.match(app, /await image\.decode\(\)/);
+  assert.match(app, /if \(!content \|\| !splashLogoReady\)/);
+  assert.match(app, /onLoad=\{markSplashLogoReady\}/);
+});
+
+test('all five library book covers are requested eagerly at high priority', () => {
+  assert.match(libraryPage, /loading="eager" decoding="async" fetchPriority="high"/);
+  assert.doesNotMatch(libraryPage, /fetchPriority="low"/);
 });

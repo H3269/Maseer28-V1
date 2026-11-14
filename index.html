@@ -15,13 +15,13 @@
 html,body{margin:0;min-height:100%;width:100%;background:#F5F8FC}#root{width:100%;min-height:100svh;margin:0;padding:0;}
 .initialSplash{position:fixed;inset:0;width:100%;height:100svh;min-height:100svh;display:grid;place-items:center;padding:24px;box-sizing:border-box;overflow:hidden;background:radial-gradient(ellipse at 50% 38%,rgba(64,224,208,.13) 0%,rgba(255,255,255,.98) 34%,#F5F8FC 72%,#EAF3FA 100%);color:#102A43;font-family:Tahoma,sans-serif}
 .initialSplashInner{display:flex;flex-direction:column;align-items:center;gap:13px;width:100%;text-align:center;opacity:1;clip-path:none;animation:none;transform-origin:center}
-.initialSplash img{display:block;width:174px;height:174px;max-width:70vw;object-fit:contain;border:0!important;outline:0!important;border-radius:0!important;padding:0!important;background:transparent!important;box-shadow:none!important;clip-path:circle(0% at 50% 50%);opacity:0;visibility:hidden;transform:none;transform-origin:center;animation:none}
-.initialSplash h1{margin:5px 0 0;font-size:20px;opacity:0;clip-path:circle(0% at 50% 50%);transform:none;animation:none}.initialSplash p{margin:0;color:#5B7187;font-size:13px;opacity:1;transform:none;animation:none}.initialProgress{opacity:1;transform:none;animation:none}
+.initialSplash img{display:block;width:174px;height:174px;max-width:70vw;object-fit:contain;border:0!important;outline:0!important;border-radius:0!important;padding:0!important;background:transparent!important;box-shadow:none!important;clip-path:none;opacity:1;visibility:visible;transform:none;transform-origin:center;animation:none}
+.initialSplash h1{margin:5px 0 0;font-size:20px;opacity:1;clip-path:none;transform:none;animation:none}.initialSplash p{margin:0;color:#5B7187;font-size:13px;opacity:1;transform:none;animation:none}.initialProgress{opacity:1;transform:none;animation:none}
 .initialProgress{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px;width:min(220px,70vw);height:8px;margin-top:3px;overflow:visible;border:0;border-radius:0;background:transparent;box-shadow:none;box-sizing:border-box}.initialProgress span{position:relative;display:block;min-width:0;height:8px;overflow:hidden;border:1px solid #C7E5E8;border-radius:4px;background:linear-gradient(180deg,#F0FBFA 0%,#E6F7F8 100%) !important;box-sizing:border-box}.initialProgress span::before{content:'';position:absolute;inset:0 0 0 auto;width:0;border-radius:2px;background:linear-gradient(90deg,#40E0D0 0%,#4096C8 100%) !important}
 @keyframes initialLogoBloom{0%{opacity:0;clip-path:circle(0% at 50% 50%);transform:scale(.82)}70%{opacity:1;clip-path:circle(75% at 50% 50%);transform:scale(1.035)}100%{opacity:1;clip-path:circle(75% at 50% 50%);transform:scale(1)}}@keyframes initialTextBloomReveal{to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.initialSplashInner,.initialSplash img,.initialSplash h1,.initialSplash p,.initialProgress{animation:none;opacity:1;transform:none;clip-path:none}.initialProgress span{animation:none;opacity:1;transform:none;clip-path:none}.initialProgress span::before{width:0;animation:none}}
-/* Keep the static pre-React title hidden; React reveals it with the logo. */
-.initialSplash h1{opacity:0!important;clip-path:circle(0% at 50% 50%)!important;transform:none!important;animation:none!important}
+/* Keep the static splash complete and visible while React boots. */
+.initialSplash h1{opacity:1!important;clip-path:none!important;visibility:visible!important;transform:none!important;animation:none!important}
 </style>
 </head>
 <body>
