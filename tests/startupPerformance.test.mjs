@@ -111,8 +111,8 @@ test('the app waits until the complete splash logo image is decoded', () => {
   assert.match(app, /onLoad=\{\(event\) => markSplashLogoReady\(event\.currentTarget\)\}/);
 });
 
-test('library book covers do not compete with the initial library render', () => {
-  assert.match(libraryPage, /loading="lazy" decoding="async" fetchPriority="low"/);
+test('offscreen library book covers remain lazy and low priority', () => {
+  assert.match(libraryPage, /loading=\{priority \? 'eager' : 'lazy'\} decoding="async" fetchPriority=\{priority \? 'high' : 'low'\}/);
 });
 
 const reader = await readFile(new URL('../src/features/library/Reader.jsx', import.meta.url), 'utf8');
