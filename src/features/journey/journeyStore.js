@@ -828,9 +828,8 @@ export function isDayUnlockedAt(state, day, trustedNowMs) {
   // Day 1 may be completed on the trusted calendar day the path starts.
   if (n === 1) return true;
 
-  // From day 2 onward, the previous day must have been completed on an
-  // earlier trusted calendar day. This enforces at most one NEW day per day,
-  // even when the user skipped several days before returning to the app.
+  // For performed days, the previous day must have been completed on an
+  // earlier trusted calendar day. Non-scoring safety skips were handled above.
   const previousDay = n - 1;
   if (!completed.includes(previousDay)) return false;
 
