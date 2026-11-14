@@ -106,6 +106,7 @@ test('T11 q11 uses its own distress response and does not append shared-center b
   assert.match(answer, /شرط توقف امروز/u);
   assert.match(answer, /حمایت انسانی مناسب/u);
   assert.match(answer, /بیاییم قدم‌به‌قدم پیش برویم/u);
+  assert.match(answer, /مهارت «توصیف بی‌قضاوت رفتار»/u);
   assert.match(answer, /هدف امروز/u);
   assert.doesNotMatch(answer, /پیش‌نمایش برای بازبینی مالک|مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود/u);
   assert.doesNotMatch(answer, /۰۹۱۹۰۸۸۹۰۶۲|هیپنوتراپی شفا|مرکز مشاوره/u);
