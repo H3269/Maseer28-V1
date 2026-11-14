@@ -178,7 +178,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     // first-person safety disclosure. Broad lexical safety cues inside its
     // wording must not replace its prepared answer. A real explicit-risk
     // declaration and an already-pending safety exchange still take priority.
-    if (['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10'].includes(preparedTopicId)
+    if (['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11'].includes(preparedTopicId)
       && hasCanonicalPreparedIdentity
       && !hasPendingSafetyExchange
       && !hasExplicitSafetyHandoff) {
@@ -200,7 +200,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
 
     // Explicit immediate-risk declarations and an active safety exchange
     // always take precedence over the prepared-question list.
-    if (['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10'].includes(preparedTopicId)
+    if (['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11'].includes(preparedTopicId)
       && (SAFETY_STATUSES.has(inputProbe.status)
         || hasPendingSafetyExchange
         || hasExplicitSafetyHandoff)) {
@@ -225,7 +225,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       });
     }
 
-    if (['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10'].includes(preparedTopicId)) {
+    if (['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11'].includes(preparedTopicId)) {
       if (!hasCanonicalPreparedIdentity) {
         return Object.freeze({
           status: 'daily_guidance_unavailable',
