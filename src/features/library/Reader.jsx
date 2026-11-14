@@ -130,8 +130,8 @@ function lineClass(line) {
   return classes.join(' ');
 }
 
-export default function Reader({ book, onClose, initialSourcePage = null, target = null, initialPage = null }) {
-  const [version, setVersion] = useState(null);
+export default function Reader({ book, onClose, initialVersion = null, initialSourcePage = null, target = null, initialPage = null }) {
+  const [version, setVersion] = useState(initialVersion);
   const [layout, setLayout] = useState(null);
   const [pageIndex, setPageIndex] = useState(0);
   const [tocOpen, setTocOpen] = useState(false);
@@ -152,15 +152,18 @@ export default function Reader({ book, onClose, initialSourcePage = null, target
 
   useEffect(() => {
     let alive = true;
-    setVersion(null); setLayout(null); setError(''); firstLayoutRef.current = true;
+    setVersion(initialVersion || null); setLayout(null); setError(''); firstLayoutRef.current = true;
     setSoundEnabled(loadBookSoundEnabled(book));
     if (flipCleanupRef.current) flipCleanupRef.current();
+    if (initialVersion?.content) {
+      return () => { alive = false; };
+    }
     libraryRepository.getVersion(book.activeVersionId).then((row) => {
       if (!row) throw new Error('نسخه فعال کتاب پیدا نشد.');
       if (alive) setVersion(row);
     }).catch((e) => { if (alive) setError(e?.message || 'متن کتاب بارگذاری نشد.'); });
     return () => { alive = false; };
-  }, [book]);
+  }, [book, initialVersion]);
 
   const rebuild = useCallback((preserveAnchor = null) => {
     if (!version?.content || !rootRef.current || !articleRef.current) return;

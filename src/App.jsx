@@ -54,10 +54,10 @@ import { isCompleteDailyContentCategory, selectCanonicalDailyRecord, selectDaily
 import { mergeDailyTextOverrides } from './features/content/dailyTextOverrides.js';
 import { fa } from './shared/utils.js';
 import VersionFooter from './shared/components/VersionFooter.jsx';
+import GlobalAssistantLauncher from './features/assistant/GlobalAssistantLauncher.jsx';
 
 const LibraryPage = lazy(() => import('./features/library/LibraryPage.jsx'));
 const Reader = lazy(() => import('./features/library/Reader.jsx'));
-const GlobalAssistantLauncher = lazy(() => import('./features/assistant/GlobalAssistantLauncher.jsx'));
 
 function isPathSetupComplete(state) {
   const data = state?.profileData;
@@ -576,8 +576,15 @@ function navigate(next) {
   async function openBook(book, sourcePage = null, target = null) {
     setOpeningBook(true);
     try {
-      const { book: readyBook } = await ensureSeedBookContent(book);
-      setReaderState({ book: readyBook, sourcePage, target });
+      // Start the reader chunk while the selected book is being prepared.
+      // The same dynamic import is cached by React.lazy, so Reader can mount
+      // without waiting for a second network round trip.
+      const [{ book: readyBook, version }] = await Promise.all([
+        ensureSeedBookContent(book),
+        import('./features/library/Reader.jsx'),
+      ]);
+      if (!version?.content) throw new Error('متن کتاب آماده نشد.');
+      setReaderState({ book: readyBook, version, sourcePage, target });
       navigate('bookReader');
     } catch {
       showValidation(['متن کتاب بارگذاری نشد. اتصال را بررسی کن و دوباره تلاش کن.'], 'خطا در کتابخانه');
@@ -728,7 +735,7 @@ function navigate(next) {
 
   if (screen === 'bookReader' && readerState) {
     // The immersive reader is the only app screen without the global bottom navigation.
-    return <Suspense fallback={<div className="app appLoading" role="status">در حال آماده‌سازی صفحه مطالعه…</div>}><Reader book={readerState.book} initialSourcePage={readerState.sourcePage} initialPage={readerState.initialPage} target={readerState.target} returnTo={libraryReturn} onClose={() => { setReaderState(null); navigate('books'); }} /></Suspense>;
+    return <Suspense fallback={<div className="app appLoading" role="status">در حال آماده‌سازی صفحه مطالعه…</div>}><Reader book={readerState.book} initialVersion={readerState.version} initialSourcePage={readerState.sourcePage} initialPage={readerState.initialPage} target={readerState.target} returnTo={libraryReturn} onClose={() => { setReaderState(null); navigate('books'); }} /></Suspense>;
   }
 
   // Navigation becomes available only after the first profile and baseline
@@ -763,7 +770,7 @@ function navigate(next) {
         {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
         <VersionFooter navVisible={navVisible} />
       </div>
-      {navVisible && <Suspense fallback={null}><GlobalAssistantLauncher
+      {navVisible && <GlobalAssistantLauncher
         screen={screen}
         visible={navVisible}
         dailyContext={screen === 'day' && activeDay ? {
@@ -776,7 +783,7 @@ function navigate(next) {
         } : null}
         libraryContext={screen === 'books' ? { titles: books.map((book) => book.title).filter(Boolean), loadBooks: refreshLibrary } : null}
         onRelationshipSafetyResponse={(response) => setRelationshipSafetyState({ dayKey: relationshipSafetyDayKey, response })}
-      /></Suspense>}
+      />}
       {openingBook && <div className="validationModal" role="status" aria-live="polite"><div className="validationCard"><h2>در حال آماده‌سازی کتاب</h2><p className="muted">متن این کتاب در حال دریافت و آماده‌سازی است…</p></div></div>}
       {preview && <BookPreviewModal preview={preview} onClose={() => setPreview(null)} onOpen={() => { const item = preview; setPreview(null); openBook(item.book, item.sourcePage, { day: item.day, sourcePage: item.sourcePage, reason: item.reason, sourceTitle: item.sourceTitle }); }} />}
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}

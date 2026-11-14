@@ -134,17 +134,26 @@ export function useLibrary(enabled = true) {
   const refresh = useCallback(() => {
     if (refreshInFlight.current) return refreshInFlight.current;
     const task = (async () => {
+      let cachedBooks = [];
       try {
-        setLoading(true);
+        // Paint the already-saved five-book catalogue before checking the
+        // network manifest. Returning users should not wait for a no-store fetch.
+        cachedBooks = await libraryRepository.listBooks().catch(() => []);
+        if (cachedBooks.length) {
+          setBooks(cachedBooks);
+          setLoading(false);
+        } else {
+          setLoading(true);
+        }
+
         const seededBooks = await seedLibrary();
-        const nextBooks = seededBooks.length ? seededBooks : await libraryRepository.listBooks();
+        const nextBooks = seededBooks.length ? seededBooks : cachedBooks;
         setBooks(nextBooks);
         setError('');
         hasLoadedOnce.current = true;
         return nextBooks;
       } catch (err) {
         console.error(err);
-        const cachedBooks = await libraryRepository.listBooks().catch(() => []);
         if (cachedBooks.length) {
           setBooks(cachedBooks);
           setError('نسخه ذخیره‌شده کتابخانه نمایش داده می‌شود؛ به‌روزرسانی آنلاین در دسترس نبود.');
