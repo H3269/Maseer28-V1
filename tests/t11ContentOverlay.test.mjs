@@ -42,13 +42,12 @@ test('T11 overlay connects all 28 redesigned days and complete owner-review meta
   }
 });
 
-test('T11 review preview shows the full package but disables score and completion controls', async () => {
+test('T11 uses the shared daily page structure while its real approval gate stays closed', async () => {
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
-  assert.match(ui, /data-testid="t11-owner-review-preview"/);
-  assert.match(ui, /data-testid="t11-review-details"/);
-  assert.match(ui, /!isT11ReviewPreview && !entryOpen/);
-  assert.match(ui, /!isT11ReviewPreview && entryOpen/);
-  assert.match(ui, /id="t11ReviewNextDayBtn"/);
-  assert.match(ui, /data\.successCriterion/);
-  assert.match(ui, /data\.contraindications/);
+  assert.match(ui, /getDailySafetyMode\(data\) === 'blocked'/);
+  assert.match(ui, /splitDayContent\(data, problem, previousRecord, history\)/);
+  assert.match(ui, /id="dailySafetyStatus"/);
+  assert.doesNotMatch(ui, /isT11ReviewPreview|t11-owner-review-preview|t11-review-details|t11ReviewNextDayBtn/);
+  assert.match(ui, /!isT11SafetyBlocked && !entryOpen/);
+  assert.match(ui, /!isT11SafetyBlocked && entryOpen/);
 });
