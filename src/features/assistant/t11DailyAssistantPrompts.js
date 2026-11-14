@@ -111,7 +111,7 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
       body += `\n\n${section('مهارت مورد توجه', guide.skill)}\n${section('هدف آموزشی روز', guide.objective)}\n\nتوصیف یا مرور، تعهدی برای تغییر، سرکوب یا حذف رفتار ایجاد نمی‌کند.`;
       break;
     case 'not_done':
-      body += `\n\n${section('نسخه سبک در صورت تمایل', lightExercise)}\n${section('اگر امروز نیاز به استراحت داری', guide.restVersion)}\n\nروز ازدست‌رفته را جبران نکن و برای انجام تمرین به خودت فشار نیاور.`;
+      body += `\n\n${section('نسخه سبک در صورت تمایل', lightExercise)}\n${section('اگر امروز نیاز به استراحت داری', restAction)}\n\nروز ازدست‌رفته را جبران نکن و برای انجام تمرین به خودت فشار نیاور.`;
       break;
     case 't11_distress':
       body = [
