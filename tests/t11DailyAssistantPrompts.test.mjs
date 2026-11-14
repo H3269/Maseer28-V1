@@ -31,6 +31,8 @@ test('T11 assistant catalog contains exactly 28 days and 392 complete fixed-ques
   assert.equal(T11_DAILY_ASSISTANT_GUIDES.length, 28);
   for (const [index, guide] of T11_DAILY_ASSISTANT_GUIDES.entries()) {
     assert.equal(guide.day, index + 1);
+    assert.equal(guide.topicId, 'T11');
+    assert.equal(guide.topic, 'عادت‌های تکراری');
     assert.equal(guide.questions.length, 14);
     assert.equal(guide.reviewStatus, 'pending_owner_review');
     assert.equal(guide.evidenceGrade, 'not_assessed');
