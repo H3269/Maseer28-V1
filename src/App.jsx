@@ -54,8 +54,7 @@ import { isCompleteDailyContentCategory, selectCanonicalDailyRecord, selectDaily
 import { mergeDailyTextOverrides } from './features/content/dailyTextOverrides.js';
 import { fa } from './shared/utils.js';
 import VersionFooter from './shared/components/VersionFooter.jsx';
-import GlobalAssistantLauncher from './features/assistant/GlobalAssistantLauncher.jsx';
-
+const GlobalAssistantLauncher = lazy(() => import('./features/assistant/GlobalAssistantLauncher.jsx'));
 const LibraryPage = lazy(() => import('./features/library/LibraryPage.jsx'));
 const Reader = lazy(() => import('./features/library/Reader.jsx'));
 
@@ -850,7 +849,7 @@ function navigate(next) {
         {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
         <VersionFooter navVisible={navVisible} />
       </div>
-      {navVisible && <GlobalAssistantLauncher
+      {navVisible && <Suspense fallback={null}><GlobalAssistantLauncher
         screen={screen}
         visible={navVisible}
         dailyContext={screen === 'day' && activeDay ? {
@@ -863,7 +862,7 @@ function navigate(next) {
         } : null}
         libraryContext={screen === 'books' ? { titles: books.map((book) => book.title).filter(Boolean), loadBooks: refreshLibrary } : null}
         onRelationshipSafetyResponse={(response) => setRelationshipSafetyState({ dayKey: relationshipSafetyDayKey, response })}
-      />}
+      /></Suspense>}
       {openingBook && <div className="validationModal" role="status" aria-live="polite"><div className="validationCard"><h2>در حال آماده‌سازی کتاب</h2><p className="muted">متن این کتاب در حال دریافت و آماده‌سازی است…</p></div></div>}
       {preview && <BookPreviewModal preview={preview} onClose={() => setPreview(null)} onOpen={() => { const item = preview; setPreview(null); openBook(item.book, item.sourcePage, { day: item.day, sourcePage: item.sourcePage, reason: item.reason, sourceTitle: item.sourceTitle }); }} />}
       {copyrightOpen && <CopyrightModal onAccept={acceptCopyright} />}
