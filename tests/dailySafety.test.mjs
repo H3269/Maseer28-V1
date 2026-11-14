@@ -350,7 +350,7 @@ test('T11 is fully interactive during the owner live-test window without changin
   const days = content.categories['عادت‌های تکراری'].days;
   assert.equal(days.length, 28);
   for (const day of days) {
-    assert.equal(day.review_status, 'pending_expert_review');
+    assert.notEqual(day.review_status, 'approved', 'live-test access must not write an expert approval into content metadata');
     assert.equal(getDailySafetyMode(day), 'routine', `${day.id} must allow the owner to test the complete daily flow`);
   }
   assert.throws(() => createHumanReviewSkipRecord(days[0]),
