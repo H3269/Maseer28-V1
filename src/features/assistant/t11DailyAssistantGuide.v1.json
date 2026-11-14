@@ -178,7 +178,10 @@
       "exerciseType": "non_diagnostic_daily_guidance",
       "riskLevel": "pending_owner_review",
       "sourceIds": [
-        "SRC-T11-BFRB-GREENBERG-2018-001"
+        "SRC-T11-BFRB-GREENBERG-2018-001",
+        "SRC-T11-FISAK-TTM-META-2026-001",
+        "SRC-T11-BARBER-DIGITAL-BFRB-2026-001",
+        "SRC-T11-STEIN-LOCHNER-BFRB-2026-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "pending_owner_review",
@@ -728,8 +731,12 @@
       "exerciseType": "non_diagnostic_daily_guidance",
       "riskLevel": "pending_owner_review",
       "sourceIds": [
+        "SRC-T11-BFRB-GREENBERG-2018-001",
+        "SRC-T11-FISAK-TTM-META-2026-001",
+        "SRC-T11-BARBER-DIGITAL-BFRB-2026-001",
+        "SRC-T11-STEIN-LOCHNER-BFRB-2026-001",
         "SRC-T11-NICE-CG31-001",
-        "SRC-T11-BFRB-GREENBERG-2018-001"
+        "SRC-T11-IPS-OCD-2025-UPDATE-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "pending_owner_review",
@@ -868,7 +875,9 @@
       "riskLevel": "pending_owner_review",
       "sourceIds": [
         "SRC-T11-AAN-TICS-2019-001",
-        "SRC-T11-NAS-STIMMING-001"
+        "SRC-T11-CDC-CBIT-2026-001",
+        "SRC-T11-NAS-STIMMING-001",
+        "SRC-T11-NICE-CG142-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "pending_owner_review",
@@ -1282,8 +1291,12 @@
       "exerciseType": "non_diagnostic_daily_guidance",
       "riskLevel": "pending_owner_review",
       "sourceIds": [
+        "SRC-T11-BFRB-GREENBERG-2018-001",
+        "SRC-T11-FISAK-TTM-META-2026-001",
+        "SRC-T11-BARBER-DIGITAL-BFRB-2026-001",
+        "SRC-T11-STEIN-LOCHNER-BFRB-2026-001",
         "SRC-T11-NICE-CG31-001",
-        "SRC-T11-BFRB-GREENBERG-2018-001"
+        "SRC-T11-IPS-OCD-2025-UPDATE-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "pending_owner_review",
@@ -1422,7 +1435,9 @@
       "riskLevel": "pending_owner_review",
       "sourceIds": [
         "SRC-T11-AAN-TICS-2019-001",
-        "SRC-T11-NAS-STIMMING-001"
+        "SRC-T11-CDC-CBIT-2026-001",
+        "SRC-T11-NAS-STIMMING-001",
+        "SRC-T11-NICE-CG142-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "pending_owner_review",
@@ -1561,7 +1576,9 @@
       "riskLevel": "pending_owner_review",
       "sourceIds": [
         "SRC-T11-AAN-TICS-2019-001",
-        "SRC-T11-NAS-STIMMING-001"
+        "SRC-T11-CDC-CBIT-2026-001",
+        "SRC-T11-NAS-STIMMING-001",
+        "SRC-T11-NICE-CG142-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "pending_owner_review",
@@ -1699,8 +1716,12 @@
       "exerciseType": "non_diagnostic_daily_guidance",
       "riskLevel": "pending_owner_review",
       "sourceIds": [
+        "SRC-T11-BFRB-GREENBERG-2018-001",
+        "SRC-T11-FISAK-TTM-META-2026-001",
+        "SRC-T11-BARBER-DIGITAL-BFRB-2026-001",
+        "SRC-T11-STEIN-LOCHNER-BFRB-2026-001",
         "SRC-T11-NICE-CG31-001",
-        "SRC-T11-BFRB-GREENBERG-2018-001"
+        "SRC-T11-IPS-OCD-2025-UPDATE-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "pending_owner_review",
@@ -1838,7 +1859,8 @@
       "exerciseType": "non_diagnostic_daily_guidance",
       "riskLevel": "pending_owner_review",
       "sourceIds": [
-        "SRC-T11-NICE-CG31-001"
+        "SRC-T11-NICE-CG31-001",
+        "SRC-T11-IPS-OCD-2025-UPDATE-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "pending_owner_review",
@@ -2114,7 +2136,8 @@
       "exerciseType": "non_diagnostic_daily_guidance",
       "riskLevel": "pending_owner_review",
       "sourceIds": [
-        "SRC-T11-NICE-CG31-001"
+        "SRC-T11-NICE-CG31-001",
+        "SRC-T11-IPS-OCD-2025-UPDATE-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "pending_owner_review",
@@ -2253,7 +2276,9 @@
       "riskLevel": "pending_owner_review",
       "sourceIds": [
         "SRC-T11-AAN-TICS-2019-001",
-        "SRC-T11-NAS-STIMMING-001"
+        "SRC-T11-CDC-CBIT-2026-001",
+        "SRC-T11-NAS-STIMMING-001",
+        "SRC-T11-NICE-CG142-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "pending_owner_review",
@@ -2667,8 +2692,12 @@
       "exerciseType": "non_diagnostic_daily_guidance",
       "riskLevel": "pending_owner_review",
       "sourceIds": [
+        "SRC-T11-BFRB-GREENBERG-2018-001",
+        "SRC-T11-FISAK-TTM-META-2026-001",
+        "SRC-T11-BARBER-DIGITAL-BFRB-2026-001",
+        "SRC-T11-STEIN-LOCHNER-BFRB-2026-001",
         "SRC-T11-NICE-CG31-001",
-        "SRC-T11-BFRB-GREENBERG-2018-001"
+        "SRC-T11-IPS-OCD-2025-UPDATE-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "pending_owner_review",
@@ -3083,7 +3112,10 @@
       "riskLevel": "pending_owner_review",
       "sourceIds": [
         "SRC-T11-WOOD-RUNGER-2016-001",
-        "SRC-T11-BFRB-GREENBERG-2018-001"
+        "SRC-T11-BFRB-GREENBERG-2018-001",
+        "SRC-T11-FISAK-TTM-META-2026-001",
+        "SRC-T11-BARBER-DIGITAL-BFRB-2026-001",
+        "SRC-T11-STEIN-LOCHNER-BFRB-2026-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "pending_owner_review",
@@ -3221,9 +3253,14 @@
       "exerciseType": "non_diagnostic_daily_guidance",
       "riskLevel": "pending_owner_review",
       "sourceIds": [
+        "SRC-T11-BFRB-GREENBERG-2018-001",
+        "SRC-T11-FISAK-TTM-META-2026-001",
+        "SRC-T11-BARBER-DIGITAL-BFRB-2026-001",
+        "SRC-T11-STEIN-LOCHNER-BFRB-2026-001",
         "SRC-T11-NICE-CG31-001",
+        "SRC-T11-IPS-OCD-2025-UPDATE-001",
         "SRC-T11-AAN-TICS-2019-001",
-        "SRC-T11-BFRB-GREENBERG-2018-001"
+        "SRC-T11-CDC-CBIT-2026-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "pending_owner_review",
@@ -3361,9 +3398,12 @@
       "exerciseType": "non_diagnostic_daily_guidance",
       "riskLevel": "pending_owner_review",
       "sourceIds": [
-        "SRC-T11-NICE-CG31-001",
         "SRC-T11-AAN-TICS-2019-001",
-        "SRC-T11-NAS-STIMMING-001"
+        "SRC-T11-CDC-CBIT-2026-001",
+        "SRC-T11-NAS-STIMMING-001",
+        "SRC-T11-NICE-CG142-001",
+        "SRC-T11-NICE-CG31-001",
+        "SRC-T11-IPS-OCD-2025-UPDATE-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "pending_owner_review",
@@ -3502,7 +3542,8 @@
       "riskLevel": "pending_owner_review",
       "sourceIds": [
         "SRC-T11-WOOD-RUNGER-2016-001",
-        "SRC-T11-NAS-STIMMING-001"
+        "SRC-T11-NAS-STIMMING-001",
+        "SRC-T11-NICE-CG142-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "pending_owner_review",
@@ -3641,7 +3682,9 @@
       "riskLevel": "pending_owner_review",
       "sourceIds": [
         "SRC-T11-AAN-TICS-2019-001",
-        "SRC-T11-NAS-STIMMING-001"
+        "SRC-T11-CDC-CBIT-2026-001",
+        "SRC-T11-NAS-STIMMING-001",
+        "SRC-T11-NICE-CG142-001"
       ],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "pending_owner_review",
