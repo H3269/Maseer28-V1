@@ -46,7 +46,7 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
 
   const exercise = String(dailyContent.exercise || '').trim();
   const action = String(dailyContent.actionText || dailyContent.action || '').trim();
-  if (!exercise || !action || exercise !== guide.exercise || action !== guide.action) return null;
+  if (!exercise || !action || exercise !== guide.exercise || !action.endsWith(guide.action)) return null;
 
   return `راهنمای روز ${dayNumber} عادت‌های تکراری — ${guide.title}\n\n${question.answer}`;
 }
