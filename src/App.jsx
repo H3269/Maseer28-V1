@@ -800,9 +800,7 @@ function navigate(next) {
           data: activeDay,
           relationshipSafetyConfirmed,
           relationshipSafetyResponse,
-          guidanceData: activeDay.topic_id === 'T11' || /^عادت‌های تکراری-[0-9]{1,2}$/u.test(String(activeDay.id || '')) || /^T11-D[0-9]{1,2}$/i.test(String(activeDay.id || ''))
-            ? splitDayContent(activeDay, journey.profileData?.problem || '', null, {})
-            : splitDayContent(activeDay, journey.profileData?.problem || '', journey.daily?.[currentDay - 1], journey.daily || {}),
+          guidanceData: splitDayContent(activeDay, journey.profileData?.problem || '', journey.daily?.[currentDay - 1], journey.daily || {}),
         } : null}
         libraryContext={screen === 'books' ? { titles: books.map((book) => book.title).filter(Boolean) } : null}
         onRelationshipSafetyResponse={(response) => setRelationshipSafetyState({ dayKey: relationshipSafetyDayKey, response })}
