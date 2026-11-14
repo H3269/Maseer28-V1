@@ -118,7 +118,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       }
     });
     return () => { active = false; };
-  }, [screen, open, loadedLibraryBooks.length, libraryContext?.titles?.length, dailyContext?.day, dailyContext?.problem]);
+  }, [screen, open, libraryContext?.titles?.length, dailyContext?.day, dailyContext?.problem]);
 
   const dailyProblemText = String(dailyContext?.problem || '').trim();
   const dailyProblemTopicId = getCanonicalTopicIdForCategory(dailyProblemText);
