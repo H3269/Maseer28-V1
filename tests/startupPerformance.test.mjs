@@ -119,6 +119,12 @@ test('the splash logo is visible independently of the content-download progress'
   assert.match(css, /\.appLoading \.loadingBrand h1 \{[\s\S]*?clip-path: none !important/);
 });
 
+test('no later stylesheet rule can re-hide the splash logo or title behind loading progress', () => {
+  assert.doesNotMatch(css, /clip-path:\s*circle\(var\(--logo-reveal/);
+  assert.match(css, /\.appLoading \.loadingBrand img \{[\s\S]*?clip-path: none !important[\s\S]*?visibility: visible !important/);
+  assert.match(css, /\.appLoading \.loadingBrand h1 \{[\s\S]*?clip-path: none !important[\s\S]*?visibility: visible !important/);
+});
+
 test('startup retries transient path-content failures and offers a manual retry for terminal errors', () => {
   assert.match(app, /const loadPathContent = async \(attempt = 0\)/);
   assert.match(app, /attempt < 2/);

@@ -6068,9 +6068,12 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
 }
 
 
-/* Reveal the loading logo in lockstep with the segmented loading progress. */
+/* Keep the complete splash logo visible even while route content is loading. */
 .appLoading .loadingBrand img {
-  clip-path: circle(var(--logo-reveal, 0%) at 50% 50%) !important;
+  clip-path: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
   animation: none !important;
 }
 
@@ -6115,10 +6118,11 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
 }
 
 
-/* Keep the loading title synchronized with the logo, including reduced-motion mode. */
+/* Keep the splash title visible independently of route-content progress. */
 .appLoading .loadingBrand h1 {
-  clip-path: circle(var(--logo-reveal, 0%) at 50% 50%) !important;
+  clip-path: none !important;
   opacity: 1 !important;
+  visibility: visible !important;
   transform: none !important;
   animation: none !important;
 }
