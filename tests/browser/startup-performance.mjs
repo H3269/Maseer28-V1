@@ -125,7 +125,13 @@ async function measure(viewport, run) {
     ).forEach(watchImage);
   });
 
-  const startedAt = Date.now();
+  const parseCssTimeMs = (value) => {
+  const match = /^(\d+(?:\.\d+)?)(ms|s)$/.exec(value?.trim() || '');
+  if (!match) return Number.NaN;
+  return Number(match[1]) * (match[2] === 's' ? 1000 : 1);
+};
+
+const startedAt = Date.now();
   await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
 
   // The static HTML splash can finish before DOMContentLoaded on a fast
@@ -159,7 +165,7 @@ async function measure(viewport, run) {
     'The initial or React splash must start the radial logo-opening animation',
   );
   assert.ok(
-    animationGate.firstAnimationDuration.includes('0.95s'),
+    Math.abs(parseCssTimeMs(animationGate.firstAnimationDuration) - 950) < 1,
     'The logo-opening animation must run for its full 0.95-second duration',
   );
   assert.equal(animationGate.decodedAtAnimationStart, true, 'The splash logo image must be decoded when its reveal animation starts');
