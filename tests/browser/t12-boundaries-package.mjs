@@ -95,7 +95,8 @@ try {
   await firstPage.close();
 
   const unsafePage = await browser.newPage();
-  const unsafePanel = await openDay(unsafePage, 18);
+  const unsafePanel = await openDay(unsafePage, 20);
+  await unsafePanel.getByTestId('t12-privacy-notice').waitFor({ state: 'visible' });
   const safetyGate = unsafePanel.getByTestId('t12-relationship-safety-gate');
   await safetyGate.waitFor({ state: 'visible' });
   assert.match(await safetyGate.innerText(), /هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
@@ -107,7 +108,7 @@ try {
   await unsafePage.close();
 
   const safePage = await browser.newPage();
-  const safePanel = await openDay(safePage, 18);
+  const safePanel = await openDay(safePage, 20);
   const safeGate = safePanel.getByTestId('t12-relationship-safety-gate');
   await safeGate.waitFor({ state: 'visible' });
   await safeGate.getByTestId('t12-relationship-safety-safe').click();
@@ -123,7 +124,7 @@ try {
     .getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
   await safePanel.getByRole('button', { name: 'ارسال' }).click();
   await safePage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => node.innerText.includes('روز 18')));
+    .some(node => node.innerText.includes('روز 20')));
   await safePage.close();
 
   process.stdout.write('PASS: T12 28-day visible content, 14 prepared assistant questions, and relationship-safety confirmation flow\n');
