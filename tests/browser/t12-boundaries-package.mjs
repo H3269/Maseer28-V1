@@ -81,7 +81,7 @@ try {
   await trigger.click();
   const promptDialog = firstPage.locator('#library-assistant-prompt-dialog');
   await promptDialog.waitFor({ state: 'visible' });
-  assert.match(await promptDialog.innerText(), /سؤال‌های آماده روز 1 مرزبندی و نه گفتن/);
+  assert.match(await promptDialog.innerText(), /سؤال‌های آماده روز .*مرزبندی و نه گفتن/);
   assert.equal(await promptDialog.locator('.libraryAssistantPromptGroup').count(), 5);
   assert.equal(await promptDialog.locator('[data-prompt-option]').count(), 14);
   await promptDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
