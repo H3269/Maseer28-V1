@@ -1,3 +1,5 @@
+// End-to-end route coverage: daily result -> computed recommendation -> preview -> Reader.
+// Keep the app state seeded, but perform every navigation and action through the visible UI.
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 
