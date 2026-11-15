@@ -142,12 +142,12 @@ test('T12 day 25 screens for boundary-related danger without diagnosing risk', (
 test('T12 day 14 identifies context and support, not behavior reduction', () => {
   const day14 = T12_DAILY_ASSISTANT_GUIDES[13];
   assert.match(day14.exercise, /عامل زمینه‌ای/u);
-  assert.doesNotMatch(day14.exercise, /کاهش یک رفتار محافظتی/u);
+  assert.match(day14.exercise, /هدف کاهش یک رفتار محافظتی.*نیست/u);
 });
 
 test('T12 day 24 negotiation is offered only in safe, voluntary relationships', () => {
   const day24 = T12_DAILY_ASSISTANT_GUIDES[23];
-  assert.match(day24.exercise, /فقط اگر رابطه امن است/u);
+  assert.match(day24.exercise, /فقط در رابطه امن/u);
   assert.match(day24.action, /فقط در رابطه امن/u);
   assert.match(day24.stopCondition, /رابطه ناامن/u);
 });
