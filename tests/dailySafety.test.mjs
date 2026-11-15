@@ -321,12 +321,13 @@ test('T12 is available for owner live testing without specialist-review gating w
   const days = overlay.categories['مرزبندی و نه گفتن'].days;
   assert.equal(days.length, 28);
   for (const day of days) {
-    assert.equal(getDailySafetyMode(day), day.risk_level === 'caution' ? 'caution' : 'routine');
+    assert.equal(getDailySafetyMode(day), day.subtopic_ids.includes('T12-S03') ? 'caution' : 'routine');
     assert.equal(day.risk_level, day.subtopic_ids.includes('T12-S03') ? 'caution' : 'routine');
     assert.equal('review_status' in day, false);
     assert.equal('review_record_id' in day, false);
   }
-  assert.equal(getDailySafetyMode({ id: 'T12-D06', topic_id: 'T12', risk_level: 'routine' }), 'routine');
+  assert.equal(getDailySafetyMode({ id: 'T12-D06', topic_id: 'T12', risk_level: 'routine', subtopic_ids: ['T12-S01'] }), 'routine');
+  assert.equal(getDailySafetyMode({ id: 'T12-D18', topic_id: 'T12', risk_level: 'routine', subtopic_ids: ['T12-S03'] }), 'blocked');
   assert.equal(getDailySafetyMode({ id: 'T12-D22', topic_id: 'T12', risk_level: 'caution' }), 'caution');
   assert.equal(getDailySafetyMode({ id: 'T12-D06', topic_id: 'T03', risk_level: 'routine' }), 'blocked');
 });
