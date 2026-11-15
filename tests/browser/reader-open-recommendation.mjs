@@ -85,12 +85,13 @@ try {
   }, null, { timeout: 120000 });
   const previewButton = page.locator('#resultNextWrap').getByRole('button', { name: /مطالعه پیشنهاد کتاب امروز/ });
   const recommendationReady = await page.evaluate(() => Number((performance.now() - window.__readerPerfStartedAt).toFixed(2)));
+  await page.evaluate(() => { window.__previewPerfStartedAt = performance.now(); });
   await previewButton.click();
   await page.locator('#bookPreviewModal').waitFor({ state: 'visible', timeout: 120000 });
   await page.locator('#bookPreviewText').waitFor({ state: 'visible' });
   await page.waitForFunction(() => String(document.querySelector('#bookPreviewText')?.innerText || '').trim().length > 0);
   const previewReady = await page.evaluate(() => ({
-    elapsedMs: Number((performance.now() - window.__readerPerfStartedAt).toFixed(2)),
+    elapsedMs: Number((performance.now() - window.__previewPerfStartedAt).toFixed(2)),
     textLength: String(document.querySelector('#bookPreviewText')?.innerText || '').trim().length,
     meta: document.querySelector('#bookPreviewMeta')?.innerText || '',
   }));
