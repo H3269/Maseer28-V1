@@ -118,6 +118,20 @@ test('T12 page assistant routes all exact day-specific questions and rejects wro
   assert.equal(wrong.status, 'daily_guidance_unavailable');
 });
 
+test('T12 days 15 and 24 teach distinct skills: stating a limit versus negotiating options', () => {
+  const day15 = T12_DAILY_ASSISTANT_GUIDES[14];
+  const day24 = T12_DAILY_ASSISTANT_GUIDES[23];
+  assert.match(day15.exercise, /جمله اول‌شخص/u);
+  assert.match(day24.exercise, /دو گزینه جایگزین/u);
+  assert.notEqual(day15.exercise, day24.exercise);
+});
+
+test('T12 day 14 identifies context and support, not behavior reduction', () => {
+  const day14 = T12_DAILY_ASSISTANT_GUIDES[13];
+  assert.match(day14.exercise, /عامل زمینه‌ای/u);
+  assert.doesNotMatch(day14.exercise, /کاهش یک رفتار محافظتی/u);
+});
+
 test('T12 day 24 negotiation is offered only in safe, voluntary relationships', () => {
   const day24 = T12_DAILY_ASSISTANT_GUIDES[23];
   assert.match(day24.exercise, /فقط اگر رابطه امن است/u);
