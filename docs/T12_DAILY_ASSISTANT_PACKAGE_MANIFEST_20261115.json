@@ -20,7 +20,9 @@
     "src/features/assistant/GlobalAssistantLauncher.jsx",
     "tests/browser/t12-boundaries-package.mjs",
     "src/features/journey/relationshipSafetyGate.js",
-    "tests/relationshipSafetyGate.test.mjs"
+    "tests/relationshipSafetyGate.test.mjs",
+    "src/features/assistant/dailyAssistantAccess.js",
+    "src/features/assistant/DailyExerciseAssistant.jsx"
   ],
   "metrics": {
     "days": 28,
