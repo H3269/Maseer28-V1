@@ -35,6 +35,8 @@ export function selectDailyExerciseGuidanceData({ guidanceData, data } = {}) {
   return {
     ...(data && typeof data === 'object' ? data : {}),
     ...guidanceData,
+    sourceExercise: data?.exercise || data?.instructions || '',
+    sourceActionText: data?.actionText || data?.action || '',
     exercise: guidanceData.exercise || data?.exercise || data?.instructions || '',
     actionText: guidanceData.action || guidanceData.actionText || data?.actionText || data?.action || '',
     adaptation: guidanceData.adaptation || data?.adaptation || '',
