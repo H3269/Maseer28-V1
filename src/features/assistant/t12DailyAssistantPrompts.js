@@ -8,7 +8,7 @@ const T12_SAFETY_REMINDER = [
   'یادآوری اختصاصی ایمنی و حریم خصوصی T12',
   'اگر تهدید، خشونت، کنترل اجباری، نظارت یا ترس از تلافی وجود دارد، گفت‌وگوی مستقیم یا اعلام مرز را انجام نده؛ اولویت با فاصله و حمایت امن است.',
   'اگر احتمال بررسی دستگاه، مرورگر یا حساب پیام‌رسان وجود دارد، جزئیات حساس یا برنامه خروج را در آن ذخیره یا ارسال نکن. در خطر فوری، از خدمات اضطراری محل زندگی کمک بگیر.',
-].join('\\n\\n');
+].join('\n\n');
 
 function toT12DayNumber(value) {
   const day = Number(value);
@@ -55,7 +55,7 @@ export function answerT12DailyPreparedQuestion({ day, message, dailyContent } = 
   });
   const safetyKinds = new Set(['procrastination_increased', 'talk_other', 'success', 'stop']);
   return safetyKinds.has(question.kind)
-    ? framedAnswer.trimEnd() + '\\n\\n' + T12_SAFETY_REMINDER
+    ? framedAnswer.trimEnd() + '\n\n' + T12_SAFETY_REMINDER
     : framedAnswer;
 }
 
