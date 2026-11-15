@@ -226,6 +226,23 @@ function pickBook(books, text, state) {
   return null;
 }
 
+export function planLibraryBookLoad({ books = [], message = '', conversationState = null } = {}) {
+  const normalized = normalizeLibraryText(message);
+  const needsAllBooks = BOOKS_COMBINED_HELP.test(normalized)
+    || LIST.test(normalized)
+    || (RECOMMEND.test(normalized) && !BOOK_AUDIENCE.test(normalized))
+    || (COMPARE.test(normalized) && !CONCEPT_COMPARE.test(normalized)
+      && !ALTERNATIVE_VIEW.test(normalized) && /(?:کتاب|پنج|همه)/u.test(normalized));
+  if (needsAllBooks) return { kind: 'all', books: [...books] };
+
+  const selected = pickBook(books, message, conversationState);
+  if (selected) return { kind: 'single', books: [selected] };
+
+  const asksForBook = /(?:کتاب|جلد|خلاصه|چکیده|متن کتاب|فصل|نویسنده)/u.test(normalized)
+    || RECOMMEND.test(normalized) || BOOKS_COMBINED_HELP.test(normalized);
+  return asksForBook ? { kind: 'clarify', books: [] } : { kind: 'none', books: [] };
+}
+
 function sourceLabel(item) {
   return [item.heading, item.page ? 'صفحه ' + item.page : ''].filter(Boolean).join(' · ') || 'متن کتاب';
 }
