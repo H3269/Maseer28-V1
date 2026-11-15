@@ -241,3 +241,14 @@ test('T12 safety-focused S03 days require a relationship communication check', (
     id: 'T12-D19', topic_id: 'T12', day: 19, subtopic_ids: ['T12-S02'],
   }), null, 'routine S02 content must not receive an unrelated S03 gate');
 });
+
+test('T12 S03 days show the device privacy notice before sensitive support planning', () => {
+  const notice = getInterpersonalPrivacyNotice({
+    id: 'T12-D20', topic_id: 'T12', day: 20, subtopic_ids: ['T12-S03'],
+  });
+  assert.match(notice, /حافظه محلی مرورگر/);
+  assert.match(notice, /رمزگذاری نمی‌کند/);
+  assert.equal(getInterpersonalPrivacyNotice({
+    id: 'T12-D19', topic_id: 'T12', day: 19, subtopic_ids: ['T12-S02'],
+  }), null);
+});
