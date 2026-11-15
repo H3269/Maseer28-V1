@@ -90,18 +90,20 @@ test('recommended books can be loaded on demand without relying on startup prelo
   assert.match(app, /const availableBooks = books\.length \? books : await refreshLibrary\(\)/);
 });
 
-test('library assistant acknowledges a send before waiting for book hydration', () => {
-  assert.match(assistantLauncher, /if \(screen === 'books' && !booksForTurn\.length\) \{[\s\S]*?setSending\(true\);[\s\S]*?در حال آماده‌سازی کتاب‌ها برای پاسخ[\s\S]*?await \(libraryBooksLoadRef\.current \|\| ensureLibraryBooksLoaded\(\)\)/);
+test('library assistant acknowledges every send before asynchronous retrieval begins', () => {
+  assert.match(assistantLauncher, /if \(screen === 'books'\) \{[\s\S]*?setSending\(true\);[\s\S]*?در حال بررسی پرسش[\s\S]*?ensureLibraryBooksLoaded\(message, conversationStateRef\.current\)/);
 });
 
-test('library assistant defers full-book hydration until a question is actually sent', () => {
-  assert.match(assistantLauncher, /import \{ ensureSeedBookContent \} from '\.\.\/library\/useLibrary\.js'/);
+test('library assistant hydrates only the requested book unless the question needs the catalogue', () => {
+  assert.match(assistantLauncher, /import \{ answerLibraryBookTurn, planLibraryBookLoad \} from '\.\/libraryBookAssistant\.js'/);
   assert.match(assistantLauncher, /const libraryBooksLoadRef = useRef\(null\)/);
   assert.doesNotMatch(assistantLauncher, /else if \(open && !loadedLibraryBooks\.length\)/);
   assert.doesNotMatch(assistantLauncher, /function activate\(\)[\s\S]{0,180}ensureLibraryBooksLoaded\(\)/);
-  assert.match(assistantLauncher, /screen === 'books' && !booksForTurn\.length/);
+  assert.match(assistantLauncher, /planLibraryBookLoad\(\{ books: rows, message, conversationState \}\)/);
+  assert.match(assistantLauncher, /const booksToHydrate = plan\.books\.filter/);
   assert.match(assistantLauncher, /ensureSeedBookContent\(book\)/);
-  assert.match(assistantLauncher, /await \(libraryBooksLoadRef\.current \|\| ensureLibraryBooksLoaded\(\)\)/);
+  assert.match(assistantLauncher, /ensureLibraryBooksLoaded\(message, conversationStateRef\.current\)/);
+  assert.doesNotMatch(assistantLauncher, /setLibraryComparisonReply/);
 });
 
 test('prepared daily questions are not blocked by asynchronous local-model status checks', () => {
