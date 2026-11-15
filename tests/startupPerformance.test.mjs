@@ -194,7 +194,7 @@ test('the React splash reveals the logo radially from its center and then reveal
 
 test('the splash remains visible briefly for its first paint without imposing a long artificial startup delay', () => {
   assert.match(app, /const \[splashMinimumVisible, setSplashMinimumVisible\] = useState\(false\)/);
-  assert.match(app, /if \(!splashLogoReady\) return undefined[\s\S]*?setTimeout\(\(\) => \{[\s\S]*?setSplashMinimumVisible\(true\)[\s\S]*?\}, 740\)/);
+  assert.match(app, /if \(!splashLogoReady\) return undefined[\s\S]*?setTimeout\(\(\) => \{[\s\S]*?setSplashMinimumVisible\(true\)[\s\S]*?\\}, 1100\\)/);
   assert.match(app, /!splashMinimumVisible/);
 });
 
