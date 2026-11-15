@@ -112,7 +112,9 @@ function MainApp() {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [splashLogoReady, setSplashLogoReady] = useState(false);
   const [splashMinimumVisible, setSplashMinimumVisible] = useState(false);
-  const [assistantLauncherRequested, setAssistantLauncherRequested] = useState(false);
+  const [assistantLauncherLoaded, setAssistantLauncherLoaded] = useState(false);
+  const [assistantOpen, setAssistantOpen] = useState(false);
+  const [assistantOpenRequest, setAssistantOpenRequest] = useState(0);
   const assistantLauncherButtonRef = useRef(null);
   const splashLogoRef = useRef(null);
   const [journey, setJourney] = useState(initial.state);
@@ -225,7 +227,6 @@ function MainApp() {
   }, []);
 
   const problemKey = journey.profileData?.problem;
-  const closeAssistantLauncher = useCallback(() => setAssistantLauncherRequested(false), []);
   const loadTopicForScreen = useCallback(async (topicKey) => {
     const loadedCategory = await runtimeRepository.loadTopicContent(topicKey);
     setContent((previous) => previous ? {
@@ -867,16 +868,25 @@ function navigate(next) {
         ref={assistantLauncherButtonRef}
         className="globalAssistantLauncher"
         type="button"
-        onClick={() => setAssistantLauncherRequested(true)}
+        onClick={() => {
+          if (!assistantLauncherLoaded) {
+            setAssistantLauncherLoaded(true);
+            setAssistantOpen(true);
+          } else {
+            setAssistantOpen(true);
+            setAssistantOpenRequest((value) => value + 1);
+          }
+        }}
         aria-label="باز کردن دستیار مسیر۲۸"
         aria-haspopup="dialog"
-        aria-expanded={assistantLauncherRequested}
+        aria-expanded={assistantOpen}
       ><AppIcon name="message" size={20} /><span>دستیار</span></button>}
-      {navVisible && assistantLauncherRequested && <Suspense fallback={null}><GlobalAssistantLauncher
+      {navVisible && assistantLauncherLoaded && <Suspense fallback={null}><GlobalAssistantLauncher
         hideLauncher
         initialOpen
+        openRequestId={assistantOpenRequest}
+        onOpenChange={setAssistantOpen}
         externalLauncherRef={assistantLauncherButtonRef}
-        onClose={closeAssistantLauncher}
         screen={screen}
         visible={navVisible}
         dailyContext={screen === 'day' && activeDay ? {
