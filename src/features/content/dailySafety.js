@@ -101,9 +101,12 @@ function hasApprovedBoundaryReview(day) {
     || day.review_record_id.trim().length === 0) return false;
 
   if (day.subtopic_ids[0] === 'T12-S03') {
+    // Use the governance contract's real safety fields; no unregistered rule ID is fabricated.
     return day.risk_level === 'caution'
-      && Array.isArray(day.safety_rule_ids)
-      && day.safety_rule_ids.length > 0;
+      && Array.isArray(day.stop_conditions)
+      && day.stop_conditions.some((condition) => typeof condition === 'string' && condition.trim().length > 0)
+      && typeof day.when_to_seek_human_support === 'string'
+      && day.when_to_seek_human_support.trim().length > 0;
   }
   return true;
 }
