@@ -7412,7 +7412,7 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
   visibility: visible !important;
   transform: scale(.82) !important;
   transform-origin: center !important;
-  animation: loadingLogoBloom .72s cubic-bezier(.2,.72,.2,1) both !important;
+  animation: loadingLogoBloom .95s cubic-bezier(.2,.72,.2,1) both !important;
 }
 @keyframes loadingLogoBloom {
   0% { opacity: 0; clip-path: circle(0% at 50% 50%); transform: scale(.82); }
