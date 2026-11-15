@@ -9,7 +9,16 @@ const outputPath = 'reports/generated/startup-performance.json';
 const browser = await chromium.launch({ headless: true });
 
 async function measure(viewport, run) {
-  const context = await browser.newContext({ viewport, deviceScaleFactor: 1 });
+  const isAndroid = viewport.profile === 'android';
+  const context = await browser.newContext({
+    viewport: { width: viewport.width, height: viewport.height },
+    deviceScaleFactor: isAndroid ? 2 : 1,
+    isMobile: isAndroid,
+    hasTouch: isAndroid,
+    ...(isAndroid ? {
+      userAgent: 'Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+    } : {}),
+  });
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', (error) => errors.push(String(error)));
@@ -66,7 +75,8 @@ async function measure(viewport, run) {
     };
   });
   const result = {
-    viewport,
+    viewport: { width: viewport.width, height: viewport.height },
+    profile: viewport.profile || 'desktop',
     run,
     appReadyMs: Date.now() - startedAt,
     ...logoReadiness,
@@ -81,7 +91,13 @@ async function measure(viewport, run) {
 
 try {
   const results = [];
-  for (const viewport of [{ width: 390, height: 844 }, { width: 1365, height: 900 }]) {
+  const profiles = [
+    { width: 360, height: 800, profile: 'android' },
+    { width: 320, height: 640, profile: 'android' },
+    { width: 390, height: 844, profile: 'desktop-mobile-viewport' },
+    { width: 1365, height: 900, profile: 'desktop' },
+  ];
+  for (const viewport of profiles) {
     for (let run = 1; run <= 3; run += 1) {
       results.push(await measure(viewport, run));
     }
@@ -97,7 +113,7 @@ try {
   console.log(JSON.stringify({
     outputPath,
     runs: results.length,
-    appReadyMs: results.map(({ viewport, run, appReadyMs }) => ({ viewport: viewport.width + 'x' + viewport.height, run, appReadyMs })),
+    appReadyMs: results.map(({ viewport, profile, run, appReadyMs }) => ({ profile, viewport: viewport.width + 'x' + viewport.height, run, appReadyMs })),
     maxTransferBytes: Math.max(...results.map((item) => item.totalTransferBytes)),
     consoleErrorRuns: results.filter((item) => item.consoleErrors.length).length,
   }, null, 2));
