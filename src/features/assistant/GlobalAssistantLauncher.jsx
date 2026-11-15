@@ -4,7 +4,7 @@ import AppIcon from '../../shared/components/AppIcon.jsx';
 import { makePageAssistantTurn } from './pageAssistantTurn.js';
 import { libraryRepository } from '../library/libraryRepository.js';
 import { ensureSeedBookContent } from '../library/useLibrary.js';
-import { answerLibraryBookTurn } from './libraryBookAssistant.js';
+import { answerLibraryBookTurn, planLibraryBookLoad } from './libraryBookAssistant.js';
 import { routeAssistantTurn } from './assistantTurnEngine.js';
 import { isLocalNeuralModelInstalled, requestLocalNeuralModel } from './localNeuralModelClient.js';
 import { LIBRARY_ASSISTANT_PROMPT_GROUPS } from './libraryAssistantPrompts.js';
@@ -38,7 +38,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const turnSequenceRef = useRef(0);
   const [loadedLibraryBooks, setLoadedLibraryBooks] = useState([]);
   const libraryBooksLoadRef = useRef(null);
-  const [libraryComparisonReply, setLibraryComparisonReply] = useState('');
   const conversationStateRef = useRef(null);
   const launcherRef = useRef(null);
   const closeButtonRef = useRef(null);
@@ -222,13 +221,21 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     resizeComposerInput(event.currentTarget);
   }
 
-  function ensureLibraryBooksLoaded() {
+  function ensureLibraryBooksLoaded(message, conversationState) {
     if (libraryBooksLoadRef.current) return libraryBooksLoadRef.current;
     const loadTask = (async () => {
       try {
         if (!libraryContext?.titles?.length && libraryContext?.loadBooks) await libraryContext.loadBooks();
         const rows = await libraryRepository.listBooks();
-        const hydrated = await Promise.all(rows.map(async (book) => {
+        const plan = planLibraryBookLoad({ books: rows, message, conversationState });
+        if (plan.kind === 'none' || plan.kind === 'clarify') {
+          setLoadedLibraryBooks([]);
+          return plan;
+        }
+
+        const cachedByLegacyId = new Map(loadedLibraryBooks.map((book) => [Number(book.legacyId), book]));
+        const booksToHydrate = plan.books.filter((book) => !cachedByLegacyId.has(Number(book.legacyId)));
+        const hydrated = await Promise.all(booksToHydrate.map(async (book) => {
           try {
             const { book: readyBook, version } = await ensureSeedBookContent(book);
             return version?.content ? { title: readyBook.title, legacyId: readyBook.legacyId, content: version.content } : null;
@@ -237,21 +244,19 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
             return null;
           }
         }));
-        const availableBooks = hydrated.filter(Boolean);
+        const hydratedByLegacyId = new Map([
+          ...cachedByLegacyId.entries(),
+          ...hydrated.filter(Boolean).map((book) => [Number(book.legacyId), book]),
+        ]);
+        const availableBooks = plan.books
+          .map((book) => hydratedByLegacyId.get(Number(book.legacyId)))
+          .filter(Boolean);
         setLoadedLibraryBooks(availableBooks);
-        setLibraryComparisonReply('');
-        window.setTimeout(() => {
-          const comparison = answerLibraryBookTurn({
-            books: availableBooks,
-            message: 'تفاوت موضوعی این پنج کتاب چیست؟',
-          });
-          setLibraryComparisonReply(comparison?.message || '');
-        }, 0);
-        return availableBooks;
+        return { ...plan, books: availableBooks };
       } catch (error) {
         console.error('Library assistant catalogue loading failed', error);
         setLoadedLibraryBooks([]);
-        return [];
+        return { kind: 'error', books: [] };
       }
     })();
     libraryBooksLoadRef.current = loadTask;
@@ -276,19 +281,22 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     const message = String(overrideMessage ?? draft).trim();
     if (!message || sending) return;
     let booksForTurn = loadedLibraryBooks;
+    let libraryLoadKind = null;
     let pendingLibraryTurn = null;
-    if (screen === 'books' && !booksForTurn.length) {
+    if (screen === 'books') {
       const pendingId = ++turnSequenceRef.current;
       pendingLibraryTurn = { turnId: pendingId, responseId: `assistant-${pendingId}` };
       setError('');
       setSending(true);
       setMessages((current) => [...current,
         { id: `user-${pendingId}`, role: 'user', text: message, knowledge: [] },
-        { id: pendingLibraryTurn.responseId, role: 'assistant', text: 'در حال آماده‌سازی کتاب‌ها برای پاسخ…', knowledge: [] },
+        { id: pendingLibraryTurn.responseId, role: 'assistant', text: 'در حال بررسی پرسش…', knowledge: [] },
       ]);
       setDraft('');
       resizeComposerInput(messageInputRef.current);
-      booksForTurn = await (libraryBooksLoadRef.current || ensureLibraryBooksLoaded());
+      const loadResult = await (libraryBooksLoadRef.current || ensureLibraryBooksLoaded(message, conversationStateRef.current));
+      booksForTurn = loadResult?.books || [];
+      libraryLoadKind = loadResult?.kind || 'error';
     }
     const selectedDailyQuestion = isPreparedOnlyDailyPromptContext
       ? activePromptGroups.flatMap((group) => group.questions).find((question) => question.value === message)
@@ -369,19 +377,22 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       let isLibraryTurn = false;
       if (screen === 'books' && restrictedStatuses.has(intentGate.status)) {
         turn = { ...intentGate, conversationState: null };
-      } else if (screen === 'books' && !booksForTurn.length) {
-        turn = { message: 'متن کتاب‌ها هنوز بارگذاری نشده است. چند لحظه صبر کن و دوباره پرسشت را بفرست.', knowledge: [], conversationState: null };
-      } else if (screen === 'books') {
-        const isFiveBookComparison = /تفاوت موضوعی این پنج کتاب چیست/u.test(message);
-        const libraryTurn = isFiveBookComparison && libraryComparisonReply
-          ? { message: libraryComparisonReply, conversationState: null }
-          : answerLibraryBookTurn({ books: booksForTurn, message, conversationState: conversationStateRef.current });
+      } else if (screen === 'books' && libraryLoadKind === 'clarify') {
+        turn = { message: 'برای اینکه متن اشتباهی را بررسی نکنم، نام یکی از کتاب‌ها یا شماره جلد را مشخص کن. پنج کتاب موجود در کتابخانه را می‌توانم بررسی کنم.', knowledge: [], conversationState: null };
+      } else if (screen === 'books' && libraryLoadKind === 'error') {
+        turn = { message: 'متن کتاب در این لحظه آماده نشد. دوباره تلاش کن؛ پاسخ حدسی ارائه نمی‌کنم.', knowledge: [], conversationState: null };
+      } else if (screen === 'books' && (libraryLoadKind === 'single' || libraryLoadKind === 'all') && !booksForTurn.length) {
+        turn = { message: 'متن کتاب در این لحظه بارگذاری نشد. دوباره تلاش کن.', knowledge: [], conversationState: null };
+      } else if (screen === 'books' && booksForTurn.length) {
+        const libraryTurn = answerLibraryBookTurn({ books: booksForTurn, message, conversationState: conversationStateRef.current });
         if (libraryTurn) {
           turn = { ...libraryTurn, knowledge: [] };
           isLibraryTurn = true;
         } else {
           turn = makePageAssistantTurn({ screen, text: message, conversationState: conversationStateRef.current, dailyContext, libraryContext });
         }
+      } else if (screen === 'books') {
+        turn = makePageAssistantTurn({ screen, text: message, conversationState: conversationStateRef.current, dailyContext, libraryContext });
       } else {
         turn = makePageAssistantTurn({ screen, text: message, conversationState: conversationStateRef.current, dailyContext, libraryContext });
       }
