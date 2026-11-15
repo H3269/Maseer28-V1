@@ -70,13 +70,22 @@ try {
   const errors = [];
   const failedRequests = [];
   const abortedNavigationRequests = [];
+  const abortedRequestDiagnostics = [];
   page.on('pageerror', (error) => errors.push(String(error)));
   page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
   page.on('requestfailed', (request) => {
     const failure = request.failure()?.errorText || 'failed';
-    if (failure === 'net::ERR_ABORTED' && request.isNavigationRequest() && request.resourceType() === 'document') {
-      abortedNavigationRequests.push(request.url() + ' :: ' + failure);
-      return;
+    if (failure === 'net::ERR_ABORTED') {
+      const diagnostic = {
+        url: request.url(), method: request.method(), resourceType: request.resourceType(),
+        isNavigationRequest: request.isNavigationRequest(),
+        frameUrl: (() => { try { return request.frame()?.url() || ''; } catch { return 'frame-unavailable'; } })(),
+      };
+      abortedRequestDiagnostics.push(diagnostic);
+      if (request.isNavigationRequest() && request.resourceType() === 'document') {
+        abortedNavigationRequests.push({ ...diagnostic, error: failure });
+        return;
+      }
     }
     failedRequests.push(request.url() + ' :: ' + failure);
   });
@@ -138,8 +147,9 @@ try {
   const readerReady = await waitForReadableReader(page);
   const firstBodyParagraph = await waitForFirstBodyParagraph(page);
 
+  console.log('Recommendation-to-reader diagnostics:', JSON.stringify({ readerReady, firstBodyParagraph, abortedNavigationRequests, abortedRequestDiagnostics, failedRequests, errors }, null, 2));
   assert.deepEqual(errors, [], 'recommendation-to-reader route must not raise browser errors');
-  assert.deepEqual(failedRequests, [], 'recommendation-to-reader route must not fail network requests');
+  assert.deepEqual(failedRequests, [], 'recommendation-to-reader route must not fail network requests; aborted request diagnostics are included above');
   console.log('PASS: real daily-result recommendation → preview → reader flow completed through UI.');
   console.log(JSON.stringify({
     recommendationReadyMs: recommendationReady,
@@ -149,6 +159,7 @@ try {
     errors,
     failedRequests,
     abortedNavigationRequests,
+    abortedRequestDiagnostics,
   }, null, 2));
   await page.close();
 } finally {
