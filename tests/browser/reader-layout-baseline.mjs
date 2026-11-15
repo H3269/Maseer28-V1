@@ -7,7 +7,7 @@ const { chromium } = require('playwright');
 const baseURL = process.env.PATH28_BASE_URL || 'http://127.0.0.1:4173/Maseer28/';
 const outputPath = 'reports/generated/reader-layout-baseline.json';
 const assetNames = await readdir('dist/assets');
-const engineFile = assetNames.find((name) => /^readerEngine-[^/]+\\.js$/.test(name));
+const engineFile = assetNames.find((name) => /^readerEngine-[^/]+\.js$/.test(name));
 assert.ok(engineFile, 'the production reader-engine chunk must exist');
 const browser = await chromium.launch({ headless: true });
 
@@ -16,15 +16,8 @@ try {
   page.setDefaultTimeout(120000);
   await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
 
-  const report = await page.evaluate(async ({ baseURL: appBase }) => {
-    const assetNames = (await (await fetch(new URL('assets/', appBase))).text()).match(/readerEngine-[^"/]+\.js/g) || [];
-    let engineUrl = assetNames[0] ? new URL(`assets/${assetNames[0]}`, appBase).href : '';
-    if (!engineUrl) {
-      const resources = performance.getEntriesByType('resource').map((entry) => entry.name);
-      engineUrl = resources.find((url) => /readerEngine-[^/]+\.js(?:\?|$)/.test(url)) || '';
-    }
-    if (!engineUrl) throw new Error('Production readerEngine chunk could not be located.');
-    const { buildLegacyReaderLayout } = await import(engineUrl);
+  const report = await page.evaluate(async ({ baseURL: appBase, engineFile: optimizedFile }) => {
+    const { buildLegacyReaderLayout } = await import(new URL(`assets/${optimizedFile}`, appBase).href);
     const profiles = [
       { name: 'android-360', width: 340, fontPx: 18 },
       { name: 'desktop-850', width: 850, fontPx: 20 },
@@ -59,6 +52,7 @@ try {
           layoutRuns.push({ run, durationMs: Number(durationMs.toFixed(2)), pageCount: layout.pageCount });
         }
 
+        const warm = layoutRuns.slice(1).map((item) => item.durationMs).sort((a, b) => a - b);
         const sorted = layoutRuns.map((item) => item.durationMs).sort((a, b) => a - b);
         results.push({
           bookId,
@@ -69,7 +63,7 @@ try {
           jsonParseMs: Number(parseMs.toFixed(2)),
           layoutRuns,
           firstLayoutMs: layoutRuns[0].durationMs,
-          warmMedianLayoutMs: Number(sorted.slice(1).sort((a, b) => a - b)[Math.floor((sorted.length - 1) / 2)].toFixed(2)),
+          warmMedianLayoutMs: Number(warm[Math.floor(warm.length / 2)].toFixed(2)),
           layoutP95Ms: Number(sorted[Math.min(sorted.length - 1, Math.ceil(sorted.length * 0.95) - 1)].toFixed(2)),
         });
       }
