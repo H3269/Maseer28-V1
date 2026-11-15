@@ -29,6 +29,24 @@ async function measure(viewport, run) {
   await page.addInitScript(() => {
     window.__path28SplashObserved = null;
     const watchedImages = new WeakSet();
+    window.__path28SplashAnimation = {
+      firstAnimationName: null,
+      firstAnimationDuration: null,
+      firstClipPath: null,
+      completedName: null,
+      completedAt: null,
+      appVisibleAt: null,
+    };
+    const recordAppVisibility = () => {
+      const modal = document.querySelector('#copyrightModal');
+      if (!modal || window.__path28SplashAnimation.appVisibleAt !== null) return;
+      const style = getComputedStyle(modal);
+      const rect = modal.getBoundingClientRect();
+      if (style.display !== 'none' && style.visibility !== 'hidden'
+        && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0) {
+        window.__path28SplashAnimation.appVisibleAt = performance.now();
+      }
+    };
     const inspectFrame = (image) => {
       if (!image.isConnected) return;
       const style = getComputedStyle(image);
@@ -53,6 +71,20 @@ async function measure(viewport, run) {
       if (!(image instanceof HTMLImageElement) || watchedImages.has(image)) return;
       if (!image.alt || image.alt !== 'لوگوی برنامه مسیر') return;
       watchedImages.add(image);
+      const initialStyle = getComputedStyle(image);
+      if (window.__path28SplashAnimation.firstAnimationName === null
+        && initialStyle.animationName !== 'none') {
+        window.__path28SplashAnimation.firstAnimationName = initialStyle.animationName;
+        window.__path28SplashAnimation.firstAnimationDuration = initialStyle.animationDuration;
+        window.__path28SplashAnimation.firstClipPath = initialStyle.clipPath;
+      }
+      image.addEventListener('animationend', (event) => {
+        if (event.animationName === 'initialLogoBloom' || event.animationName === 'loadingLogoBloom') {
+          window.__path28SplashAnimation.completedName = event.animationName;
+          window.__path28SplashAnimation.completedAt = performance.now();
+          recordAppVisibility();
+        }
+      });
       // Do not await image.decode(): the splash can be replaced while that
       // promise settles. Poll the live element from its first observed frame.
       if (image.complete && image.naturalWidth > 0) {
@@ -75,6 +107,7 @@ async function measure(viewport, run) {
       document.querySelectorAll(
         '#root .initialSplash img[alt="لوگوی برنامه مسیر"], #root .appLoading img[alt="لوگوی برنامه مسیر"]'
       ).forEach(watchImage);
+      recordAppVisibility();
     });
     observer.observe(document, { childList: true, subtree: true });
     document.querySelectorAll(
@@ -152,6 +185,23 @@ async function measure(viewport, run) {
   // The first interactive surface is exposed only after required content and
   // splash-logo readiness gates have completed.
   await page.locator('#copyrightModal').waitFor({ state: 'visible', timeout: 45000 });
+  const animationGate = await page.evaluate(() => window.__path28SplashAnimation);
+  assert.ok(
+    animationGate.firstAnimationName === 'initialLogoBloom' || animationGate.firstAnimationName === 'loadingLogoBloom',
+    'The initial or React splash must start the radial logo-opening animation',
+  );
+  assert.ok(
+    animationGate.firstAnimationDuration.includes('0.95s'),
+    'The logo-opening animation must run for its full 0.95-second duration',
+  );
+  assert.ok(
+    animationGate.completedName === 'initialLogoBloom' || animationGate.completedName === 'loadingLogoBloom',
+    'The splash logo radial animation must complete before the app is shown',
+  );
+  assert.ok(
+    animationGate.appVisibleAt !== null && animationGate.completedAt <= animationGate.appVisibleAt,
+    'The app must not expose its first interactive surface before the logo animation completes',
+  );
   const metrics = await page.evaluate(() => {
     const navigation = performance.getEntriesByType('navigation')[0];
     const resources = performance.getEntriesByType('resource').map((entry) => ({
