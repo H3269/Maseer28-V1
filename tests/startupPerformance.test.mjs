@@ -193,11 +193,11 @@ test('runtime index failure falls back to canonical content and keeps the manual
 });
 
 test('Android WebViews without modern viewport units retain a 100vh fallback', () => {
-  assert.match(html, /#root\\{[^}]*min-height:100vh;min-height:100svh/);
-  assert.match(html, /height:100vh;height:100svh;min-height:100vh;min-height:100svh/);
-  assert.match(css, /height: 100vh;\\s*height: 100dvh/);
-  assert.match(css, /\\.appLoading \\{ min-height: 100vh; min-height: 100svh/);
-  assert.match(css, /min-height: 100vh !important;\\s*min-height: 100svh !important/);
-  assert.match(css, /min-height: min\\(420px, calc\\(100vh - 20px\\)\\); max-height: calc\\(100vh - 20px\\);\\s*min-height: min\\(420px, calc\\(100dvh - 20px\\)\\)/);
-  assert.match(css, /height: 92vh; max-height: calc\\(100vh - 16px\\); height: 92dvh/);
+  assert.ok(html.includes('#root{width:100%;min-height:100vh;min-height:100svh'));
+  assert.ok(html.includes('height:100vh;height:100svh;min-height:100vh;min-height:100svh'));
+  assert.ok(css.includes('height: 100vh;\\n  height: 100dvh;'));
+  assert.ok(css.includes('.appLoading { min-height: 100vh; min-height: 100svh;'));
+  assert.ok(css.includes('min-height: 100vh !important;\\n  min-height: 100svh !important;'));
+  assert.ok(css.includes('min-height: min(420px, calc(100vh - 20px)); max-height: calc(100vh - 20px);\\n  min-height: min(420px, calc(100dvh - 20px))'));
+  assert.ok(css.includes('height: 92vh; max-height: calc(100vh - 16px); height: 92dvh'));
 });
