@@ -100,6 +100,7 @@ test('library assistant hydrates only the requested book unless the question nee
   assert.doesNotMatch(assistantLauncher, /else if \(open && !loadedLibraryBooks\.length\)/);
   assert.doesNotMatch(assistantLauncher, /function activate\(\)[\s\S]{0,180}ensureLibraryBooksLoaded\(\)/);
   assert.match(assistantLauncher, /planLibraryBookLoad\(\{ books: rows, message, conversationState \}\)/);
+  assert.match(assistantLauncher, /let rows = await libraryRepository\.listBooks\(\)[\s\S]*?rows\.length === 0[\s\S]*?await libraryContext\.loadBooks\(\)[\s\S]*?rows = await libraryRepository\.listBooks\(\)/);
   assert.match(assistantLauncher, /const booksToHydrate = plan\.books\.filter/);
   assert.match(assistantLauncher, /ensureSeedBookContent\(book\)/);
   assert.match(assistantLauncher, /ensureLibraryBooksLoaded\(message, conversationStateRef\.current\)/);
