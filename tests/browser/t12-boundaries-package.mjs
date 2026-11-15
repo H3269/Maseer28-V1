@@ -126,7 +126,9 @@ try {
     .getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
   await safePanel.getByRole('button', { name: 'ارسال' }).click();
   await safePage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => node.innerText.includes('نابرابری قدرت')));
+    .some(node => node.innerText.includes('نابرابری قدرت')), { timeout: 10000 }).catch(async () => {
+      throw new Error('T12 day 20 prepared answer was not rendered. Transcript: ' + await safePanel.innerText());
+    });
   await safePage.close();
 
   process.stdout.write('PASS: T12 28-day visible content, 14 prepared assistant questions, and relationship-safety confirmation flow\n');
