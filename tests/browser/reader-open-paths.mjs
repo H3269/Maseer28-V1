@@ -18,6 +18,7 @@ const makeState = () => {
 };
 
 async function waitForReadablePage(page) {
+  console.log('PHASE: waiting for first visible reader content');
   await page.waitForFunction(() => {
     const article = document.querySelector('#bookReaderText');
     if (!article || article.getClientRects().length === 0) return false;
@@ -25,7 +26,7 @@ async function waitForReadablePage(page) {
     const text = String(article.innerText || '').replace(/\s+/g, ' ').trim();
     const readableText = text.length > 0 && !text.includes('در حال بارگذاری کتاب');
     return loadedImage || readableText;
-  }, null, { timeout: 120000 });
+  }, null, { timeout: 45000 });
   return page.evaluate(() => ({
     elapsedMs: Number((performance.now() - window.__readerPerfStartedAt).toFixed(2)),
     contentType: document.querySelector('#bookReaderText img') ? 'image-or-cover' : 'text',
