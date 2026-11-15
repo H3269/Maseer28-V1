@@ -40,6 +40,8 @@ const startState = (day) => ({
 async function openDay(page, day) {
   await page.addInitScript((state) => {
     localStorage.setItem('maseer28_onboarding_complete_v1', '1');
+    // T12 content tests do not cover the separate copyright notice; start with it acknowledged.
+    localStorage.setItem('maseer28_copyright_v60', '1');
     localStorage.setItem('maseer28_state', JSON.stringify(state));
     localStorage.setItem('maseer28_user_profile_v2', JSON.stringify({
       version: 2,
