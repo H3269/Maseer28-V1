@@ -388,6 +388,8 @@ try {
   for (let attempt = 0; attempt < 2; attempt += 1) {
     await page.getByRole('button', { name: 'شروع مطالعه' }).first().click();
     await page.locator('#bookReader').waitFor({ state: 'visible' });
+    assert.equal(await page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' }).count(), 0,
+      'the assistant must not overlay the immersive reader');
     await page.getByRole('button', { name: 'خروج از مطالعه' }).click();
     await page.locator('#bookReader').waitFor({ state: 'detached' });
     await page.locator('#books').waitFor({ state: 'visible' });
