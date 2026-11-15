@@ -187,3 +187,48 @@ test('T12 runtime overlay carries proposed metadata but remains blocked pending 
     }
   }
 });
+
+test('T12 titles, exercises, actions and daily variants have no exact or high-similarity cross-topic duplicates', async () => {
+  const overrides = await readJson('../public/content/daily-text-overrides.v1.json');
+  const categories = overrides.categories;
+  const t12Days = categories[topicName].days;
+  const fields = ['title', 'exercise', 'actionText', 'lightExerciseText', 'lightActionText', 'progressActionText', 'restExerciseText', 'restActionText'];
+  const stopWords = new Set([
+    'نسخه', 'سبک', 'تمرین', 'اقدام', 'فقط', 'یک', 'و', 'یا', 'را', 'از', 'به',
+    'در', 'که', 'اگر', 'برای', 'با', 'بدون', 'امروز', 'فعلا', 'کن', 'کنید',
+    'بنویس', 'بنویسی', 'بنویسید', 'ثبت', 'انتخاب', 'نام', 'ببر', 'مشخص',
+    'بررسی', 'انجام', 'بده', 'بگیر', 'دارد', 'هست', 'است', 'میشود', 'شود',
+    'تا', 'خودت', 'خود', 'او', 'این', 'آن', 'همان', 'هر', 'هیچ', 'همه',
+  ]);
+  const normalize = (value) => String(value || '').normalize('NFKC')
+    .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
+    .replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
+    .replace(/[^\\p{L}\\p{N}\\s]/gu, ' ')
+    .replace(/\\s+/g, ' ').trim().toLowerCase();
+  const tokenSet = (value) => new Set(
+    normalize(value).split(' ').filter(token => token.length > 2 && !stopWords.has(token)),
+  );
+
+  for (const field of fields) {
+    const seen = new Set();
+    for (const day of t12Days) {
+      const value = normalize(day[field]);
+      if (!value) continue;
+      assert.equal(seen.has(value), false, 'duplicate T12 ' + field + ' across days: ' + day.day);
+      seen.add(value);
+      const target = tokenSet(day[field]);
+      for (const [otherTopic, category] of Object.entries(categories)) {
+        if (otherTopic === topicName) continue;
+        for (const other of category.days || []) {
+          const candidate = tokenSet(other[field]);
+          const union = new Set([...target, ...candidate]);
+          let intersection = 0;
+          for (const token of target) if (candidate.has(token)) intersection += 1;
+          const similarity = union.size ? intersection / union.size : 0;
+          assert.ok(similarity < (field === 'title' ? 0.50 : 0.30),
+            'high-similarity T12 day ' + day.day + ' text with ' + otherTopic + ' day ' + other.day + ' for ' + field + ': ' + similarity);
+        }
+      }
+    }
+  }
+});
