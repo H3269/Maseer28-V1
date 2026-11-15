@@ -92,6 +92,9 @@ try {
     .some(node => node.innerText.includes('تشخیص یک حد شخصی')));
   const answer = await firstPanel.locator('.assistantMessage').last().innerText();
   assert.ok(answer.includes(firstDay.exercise));
+  assert.ok(answer.includes('راهنمای روز 1 مرزبندی و نه گفتن — ' + firstDay.title));
+  assert.ok(answer.includes('بیاییم قدم‌به‌قدم پیش برویم.'));
+  assert.ok(answer.includes('هدف امروز: ' + firstDay.objective));
   assert.equal(answer.includes('**'), false);
   assert.deepEqual(pageErrors, []);
   await firstPage.close();
