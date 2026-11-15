@@ -54,7 +54,11 @@ export function mergeDailyTextOverrides(content, overrides) {
           && (day?.topic_id === 'T11'
             || /^عادت‌های تکراری-[0-9]{1,2}$/u.test(String(day?.id || ''))
             || /^T11-D[0-9]{1,2}$/i.test(String(day?.id || '')));
-        const reviewMetadata = isT11Record
+        const isT12Record = categoryKey === 'مرزبندی و نه گفتن'
+          && (day?.topic_id === 'T12'
+            || /^مرزبندی و نه گفتن-[0-9]{1,2}$/u.test(String(day?.id || ''))
+            || /^T12-D[0-9]{1,2}$/i.test(String(day?.id || '')));
+        const reviewMetadata = isT11Record || isT12Record
           ? Object.fromEntries(T11_REVIEW_METADATA_FIELDS
             .filter((field) => Object.prototype.hasOwnProperty.call(replacement, field))
             .map((field) => [field, replacement[field]]))
