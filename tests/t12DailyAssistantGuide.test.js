@@ -138,6 +138,17 @@ test('page assistant answers the T12 day guide and preserves the interpersonal s
   const gatedData = { id: 'مرزبندی و نه گفتن-06', topic_id: 'T12', day: 6, title: gatedGuide.title, exercise: gatedGuide.exercise, actionText: gatedGuide.action };
   const gated = makePageAssistantTurn({ screen: 'day', text: gatedGuide.questions[0].value, dailyContext: { day: 6, problem: 'مرزبندی و نه گفتن', data: gatedData } });
   assert.equal(gated.status, 'relationship_safety_confirmation_required');
+  const safetyFocusedGuide = T12_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 18);
+  const safetyFocusedData = {
+    id: 'مرزبندی و نه گفتن-18', topic_id: 'T12', day: 18, title: safetyFocusedGuide.title,
+    exercise: safetyFocusedGuide.exercise, actionText: safetyFocusedGuide.action,
+    subtopic_ids: ['T12-S01', 'T12-S03'], risk_level: 'caution',
+  };
+  const safetyFocused = makePageAssistantTurn({
+    screen: 'day', text: safetyFocusedGuide.questions[0].value,
+    dailyContext: { day: 18, problem: 'مرزبندی و نه گفتن', data: safetyFocusedData },
+  });
+  assert.equal(safetyFocused.status, 'relationship_safety_confirmation_required');
 });
 
 test('T12 overlay merges visible text and runtime safety metadata into the canonical record', async () => {
