@@ -160,7 +160,7 @@ try {
   await promptDialog.getByRole('button', { name: 'اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟' }).click();
   await safePanel.getByRole('button', { name: 'ارسال' }).click();
   await safePage.waitForFunction(() => Array.from(document.querySelectorAll('.globalAssistantDialog .assistantMessage'))
-    .some(node => node.innerText.includes('راهنمای روز 25 مرزبندی و نه گفتن')));
+    .some(node => /راهنمای روز (?:25|۲۵) مرزبندی و نه گفتن/.test(node.innerText)));
   const reply = await safePanel.locator('.assistantMessage').last().innerText();
   assert.match(reply, /یادآوری اختصاصی ایمنی و حریم خصوصی T12/);
   assert.match(reply, /دستگاه، مرورگر یا حساب پیام‌رسان/);
