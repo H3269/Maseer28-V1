@@ -26,6 +26,45 @@ async function measure(viewport, run) {
     if (message.type() === 'error' && !/favicon|third.party/i.test(message.text())) errors.push(message.text());
   });
 
+  await page.addInitScript(() => {
+    window.__path28SplashObserved = null;
+    let observationPending = false;
+    const inspectSplash = () => {
+      const splash = document.querySelector('#root .initialSplash');
+      const image = splash?.querySelector('img[alt="لوگوی برنامه مسیر"]');
+      if (!image || observationPending) return;
+      observationPending = true;
+      const observeFrame = () => {
+        if (!image.isConnected) {
+          observationPending = false;
+          return;
+        }
+        const style = getComputedStyle(image);
+        const rect = image.getBoundingClientRect();
+        if (image.complete && image.naturalWidth > 0
+          && style.display !== 'none' && style.visibility !== 'hidden'
+          && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0) {
+          window.__path28SplashObserved = {
+            ready: true,
+            naturalWidth: image.naturalWidth,
+            naturalHeight: image.naturalHeight,
+            width: rect.width,
+            height: rect.height,
+            opacity: Number(style.opacity),
+            src: image.currentSrc || image.src,
+          };
+          observationPending = false;
+          return;
+        }
+        requestAnimationFrame(observeFrame);
+      };
+      requestAnimationFrame(observeFrame);
+    };
+    const observer = new MutationObserver(inspectSplash);
+    observer.observe(document, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
+    inspectSplash();
+  });
+
   const startedAt = Date.now();
   await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
 
@@ -36,6 +75,7 @@ async function measure(viewport, run) {
   // the optional page-function argument).
   const logoSelector = '#root img[alt="لوگوی برنامه مسیر"]';
   const isSplashLogoReady = (selector) => {
+    if (window.__path28SplashObserved?.ready) return true;
     const image = document.querySelector(selector);
     if (!image) return false;
     const style = getComputedStyle(image);
@@ -65,6 +105,7 @@ async function measure(viewport, run) {
         imageOpacity: style?.opacity ?? null,
         imageRect: rect ? { width: rect.width, height: rect.height } : null,
         splashMounted: Boolean(document.querySelector('#root .initialSplash, #root .appLoading')),
+        splashObservedBeforeHydration: window.__path28SplashObserved || null,
         matchingResources: performance.getEntriesByType('resource')
           .filter((entry) => /Logo%20m24|Logo m24/i.test(entry.name))
           .map((entry) => ({ name: entry.name, duration: Math.round(entry.duration), transferSize: entry.transferSize })),
@@ -73,6 +114,12 @@ async function measure(viewport, run) {
     throw new Error(`Splash logo did not become ready within 15s. Diagnostic: ${JSON.stringify(diagnostic)}. Original: ${error.message}`);
   }
   const logoReadiness = await page.evaluate(() => {
+    const observed = window.__path28SplashObserved;
+    if (observed?.ready) return {
+      logoDecoded: observed.naturalWidth > 0,
+      logoNaturalWidth: observed.naturalWidth,
+      logoVisible: observed.width > 0 && observed.height > 0 && observed.opacity > 0,
+    };
     const image = document.querySelector('#root img[alt="لوگوی برنامه مسیر"]');
     if (!image) return { logoDecoded: false, logoNaturalWidth: 0, logoVisible: false };
     const style = getComputedStyle(image);
