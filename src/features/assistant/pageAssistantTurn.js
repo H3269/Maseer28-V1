@@ -154,7 +154,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
           : 'relationship_safety_confirmation_required',
         message: dailyContext?.relationshipSafetyResponse === 'unsafe'
           ? boundaryRelationshipGate.blockedMessage
-          : boundaryRelationshipGate.question + '\\n\\n' + boundaryRelationshipGate.disclaimer,
+          : boundaryRelationshipGate.question + '\n\n' + boundaryRelationshipGate.disclaimer,
         knowledge: Object.freeze([]),
         page_context: 'day',
         conversationState: null,
