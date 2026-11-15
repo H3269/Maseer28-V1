@@ -178,7 +178,7 @@ test('opening a book preloads the reader module and reuses the prepared IndexedD
 test('the React splash reveals the logo radially from its center and then reveals its title', () => {
   assert.match(css, /\.appLoading \.loadingBrand img \{[\s\S]*?clip-path: circle\(0% at 50% 50%\)[\s\S]*?animation: loadingLogoBloom/);
   assert.match(css, /@keyframes loadingLogoBloom[\s\S]*?circle\(75% at 50% 50%\)/);
-  assert.match(css, /\.appLoading \.loadingBrand h1,[\s\S]*?animation: loadingTextReveal \.42s ease-out \.58s both/);
+  assert.match(css, /\.appLoading \.loadingBrand h1,[\s\S]*?animation: loadingTextBloomReveal \.30s ease-out \.38s both/);
 });
 
 
