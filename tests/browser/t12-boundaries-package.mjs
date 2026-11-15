@@ -85,7 +85,10 @@ async function openT12Day(page) {
         risk_level: 'caution',
         subtopic_ids: ['T12-S03'],
         review_record_id: 'TEST-ONLY-NOT-A-REAL-REVIEW',
-        safety_rule_ids: ['SR-T12-RELATIONSHIP-SAFETY'],
+        stop_conditions: [
+          'در صورت وجود تهدید یا تلافی، اقدام مستقیم برای اعلام مرز انجام نشود.',
+        ],
+        when_to_seek_human_support: 'در صورت تهدید یا خطر فوری، از مسیر حمایت امن و خدمات اضطراری محل زندگی کمک بگیر.',
       });
       await route.fulfill({
         status: 200,
