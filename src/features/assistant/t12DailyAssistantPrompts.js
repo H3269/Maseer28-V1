@@ -1,5 +1,7 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 import T12_GUIDE from './t12DailyAssistantGuide.v1.json' with { type: 'json' };
+import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
+import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 
 export const T12_DAILY_ASSISTANT_GUIDES = Object.freeze(T12_GUIDE.records.map(normalizeDailyAssistantGuide));
 
@@ -39,7 +41,11 @@ export function answerT12DailyPreparedQuestion({ day, message, dailyContent } = 
   body = replaceExact(body, guide.lightActionVersion, String(dailyContent.lightActionText || guide.lightActionVersion || '').trim());
   body = replaceExact(body, guide.progressActionVersion, String(dailyContent.progressActionText || guide.progressActionVersion || '').trim());
   body = replaceExact(body, guide.restActionVersion, String(dailyContent.restActionText || guide.restActionVersion || '').trim());
-  return body;
+  const fullAnswer = `راهنمای روز ${guide.day} مرزبندی و نه گفتن — ${guide.title}\n\n${body}`;
+  return appendDailyAssistantSafetyReminder(
+    addTeacherStyleFrame(fullAnswer, { guide, question, topic: 'مرزبندی و نه گفتن' }),
+    question.kind,
+  );
 }
 
 export function getT12DailyAssistantPromptGroups(day) {
