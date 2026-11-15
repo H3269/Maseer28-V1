@@ -47,7 +47,7 @@ async function measure(viewport, run) {
         };
         return;
       }
-      inspectFrame(image);
+      return;
     };
     const watchImage = (image) => {
       if (!(image instanceof HTMLImageElement) || watchedImages.has(image)) return;
@@ -56,7 +56,7 @@ async function measure(viewport, run) {
       // Do not await image.decode(): the splash can be replaced while that
       // promise settles. Poll the live element from its first observed frame.
       if (image.complete && image.naturalWidth > 0) {
-        requestAnimationFrame(() => inspectFrame(image));
+        inspectFrame(image);
       } else {
         image.addEventListener('load', () => inspectFrame(image), { once: true });
       }
