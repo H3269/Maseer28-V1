@@ -24,8 +24,8 @@ import { getT12DailyAssistantPromptGroups } from './t12DailyAssistantPrompts.js'
 import { appendLocalSourceReferences, buildLocalAssistantMessages, isLocalModelInstallCommand, LOCAL_MODEL_CACHE_MESSAGE, LOCAL_MODEL_FAILURE_MESSAGE, LOCAL_MODEL_INSTALL_MESSAGE, shouldUseLocalNeuralModel } from './localNeuralAssistant.js';
 import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS, DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
 
-export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null, onRelationshipSafetyResponse = null }) {
-  const [open, setOpen] = useState(false);
+export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null, onRelationshipSafetyResponse = null, initialOpen = false, hideLauncher = false, externalLauncherRef = null, onClose = null }) {
+  const [open, setOpen] = useState(initialOpen);
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
   const [libraryPromptOpen, setLibraryPromptOpen] = useState(false);
@@ -46,8 +46,13 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const dialogRef = useRef(null);
   const endRef = useRef(null);
   const messageInputRef = useRef(null);
+  const initialContextEffectRef = useRef(false);
 
   useEffect(() => {
+    if (!initialContextEffectRef.current) {
+      initialContextEffectRef.current = true;
+      return;
+    }
     setMessages([]);
     setDraft('');
     setError('');
@@ -55,7 +60,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     conversationStateRef.current = null;
     setOpen(false);
     setLibraryPromptOpen(false);
-  }, [screen, dailyContext?.day, dailyContext?.problem]);
+    onClose?.();
+  }, [screen, dailyContext?.day, dailyContext?.problem, onClose]);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -64,13 +70,13 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       if (event.key === 'Escape') {
         if (document.getElementById('library-assistant-prompt-dialog')) return;
         event.preventDefault();
-        setOpen(false);
+        closeAssistant();
       }
     };
     window.addEventListener('keydown', closeOnEscape);
     return () => {
       window.removeEventListener('keydown', closeOnEscape);
-      launcherRef.current?.focus();
+      (externalLauncherRef?.current || launcherRef.current)?.focus();
     };
   }, [open]);
 
@@ -254,6 +260,11 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     return loadTask;
   }
 
+  function closeAssistant() {
+    setOpen(false);
+    onClose?.();
+  }
+
   function activate() {
     setOpen(true);
     if (screen === 'books' && !loadedLibraryBooks.length) ensureLibraryBooksLoaded();
@@ -407,7 +418,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
 
   return (
     <>
-      <button
+      {!hideLauncher && <button
         ref={launcherRef}
         className="globalAssistantLauncher"
         type="button"
@@ -418,7 +429,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       >
         <AppIcon name="message" size={20} />
         <span>دستیار</span>
-      </button>
+      </button>}
       {open && (
         <div className="globalAssistantBackdrop">
           <section
@@ -431,7 +442,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
           >
             <div className="globalAssistantDialogTop">
               <h2 id="global-assistant-title">دستیار راهنمای مسیر ۲۸</h2>
-              <button ref={closeButtonRef} type="button" className="iconButton" onClick={() => setOpen(false)} aria-label="بستن پنجره دستیار">
+              <button ref={closeButtonRef} type="button" className="iconButton" onClick={closeAssistant} aria-label="بستن پنجره دستیار">
                 <AppIcon name="x" size={18} />
               </button>
             </div>
