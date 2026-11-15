@@ -37,7 +37,7 @@ test('all 392 T12 prepared answers use the shared T01-T11 display frame', () => 
         'day ' + guide.day + ' ' + question.kind + ' must state the daily objective');
       assert.match(answer, /قرار نیست همه مسئله را یک‌باره حل کنی/,
         'day ' + guide.day + ' ' + question.kind + ' must include the shared supportive framing');
-      assert.equal(answer.includes('\\\\n'), false, 'answer must contain real line breaks, not escaped newline tokens');
+      assert.equal(answer.includes(String.fromCharCode(92) + 'n'), false, 'answer must contain real line breaks, not escaped newline tokens');
       const visible = formatAssistantMessageText(answer).flat().map((part) => part.text).join('\n');
       assert.equal(visible.includes('**'), false, 'raw Markdown markers must not reach visible text');
       assert.ok(visible.includes('هدف امروز:'), 'formatted answer must retain the shared objective');
