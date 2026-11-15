@@ -34,8 +34,9 @@ async function measure(viewport, run) {
   // not require one particular side of that hand-off to still be mounted.
   // waitForFunction takes its options as the third argument (the second is
   // the optional page-function argument).
-  await page.waitForFunction(() => {
-    const image = document.querySelector('#root img[alt="لوگوی برنامه مسیر"]');
+  const logoSelector = '#root img[alt="لوگوی برنامه مسیر"]';
+  const isSplashLogoReady = () => {
+    const image = document.querySelector(logoSelector);
     if (!image) return false;
     const style = getComputedStyle(image);
     const rect = image.getBoundingClientRect();
@@ -43,7 +44,34 @@ async function measure(viewport, run) {
     return splashMounted && image.complete && image.naturalWidth > 0
       && style.display !== 'none' && style.visibility !== 'hidden'
       && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0;
-  }, null, { timeout: 15000 });
+  };
+  try {
+    await page.waitForFunction(isSplashLogoReady, null, { timeout: 15000 });
+  } catch (error) {
+    const diagnostic = await page.evaluate((selector) => {
+      const image = document.querySelector(selector);
+      const style = image ? getComputedStyle(image) : null;
+      const rect = image?.getBoundingClientRect();
+      return {
+        pageUrl: location.href,
+        rootMarkup: document.querySelector('#root')?.innerHTML?.slice(0, 1800) || null,
+        imageFound: Boolean(image),
+        imageSrc: image?.currentSrc || image?.src || null,
+        imageComplete: image?.complete ?? null,
+        imageNaturalWidth: image?.naturalWidth ?? null,
+        imageNaturalHeight: image?.naturalHeight ?? null,
+        imageDisplay: style?.display ?? null,
+        imageVisibility: style?.visibility ?? null,
+        imageOpacity: style?.opacity ?? null,
+        imageRect: rect ? { width: rect.width, height: rect.height } : null,
+        splashMounted: Boolean(document.querySelector('#root .initialSplash, #root .appLoading')),
+        matchingResources: performance.getEntriesByType('resource')
+          .filter((entry) => /Logo%20m24|Logo m24/i.test(entry.name))
+          .map((entry) => ({ name: entry.name, duration: Math.round(entry.duration), transferSize: entry.transferSize })),
+      };
+    }, logoSelector);
+    throw new Error(`Splash logo did not become ready within 15s. Diagnostic: ${JSON.stringify(diagnostic)}. Original: ${error.message}`);
+  }
   const logoReadiness = await page.evaluate(() => {
     const image = document.querySelector('#root img[alt="لوگوی برنامه مسیر"]');
     if (!image) return { logoDecoded: false, logoNaturalWidth: 0, logoVisible: false };
