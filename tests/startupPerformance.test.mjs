@@ -58,11 +58,11 @@ test('the static splash logo and title remain visible before React mounts', () =
 });
 
 test('the static splash logo opens radially from its center before app startup can finish', () => {
-  assert.match(html, /\\.initialSplash img\\{[^}]*clip-path:circle\\(0% at 50% 50%\\)[^}]*animation:initialLogoBloom \\.95s/);
-  assert.match(html, /@keyframes initialLogoBloom\\{0%\\{opacity:0;clip-path:circle\\(0% at 50% 50%\\)/);
-  assert.match(app, /if \\(!content \\|\\| !splashLogoReady \\|\\| !splashMinimumVisible \\|\\| loadError\\)/);
-  assert.match(app, /setTimeout\\(\\(\\) => \\{[\\s\\S]*?setSplashMinimumVisible\\(true\\)[\\s\\S]*?}, 1100\\)/);
-  assert.match(css, /animation: loadingLogoBloom \\.95s/);
+  assert.match(html, /\.initialSplash img\{[^}]*clip-path:circle\(0% at 50% 50%\)[^}]*animation:initialLogoBloom \.95s/);
+  assert.match(html, /@keyframes initialLogoBloom\{0%\{opacity:0;clip-path:circle\(0% at 50% 50%\)/);
+  assert.match(app, /if \(!content \|\| !splashLogoReady \|\| !splashMinimumVisible \|\| loadError\)/);
+  assert.match(app, /setTimeout\(\(\) => \{[\s\S]*?setSplashMinimumVisible\(true\)[\s\S]*?}, 1100\)/);
+  assert.match(css, /animation: loadingLogoBloom \.95s/);
 });
 
 test('the library catalogue does not download every full book on entry', () => {
