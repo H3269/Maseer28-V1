@@ -6043,10 +6043,8 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   padding: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
-  clip-path: none !important;
-  opacity: 1 !important;
-  transform: none !important;
-  animation: none !important;
+  /* clip-path, opacity, transform and animation are owned by the later
+     loadingLogoBloom rule; do not lock animated properties in this reset. */
 }
 /* The title shares the logo's exact progress-driven reveal.
    Supporting status text and progress bar are visible from splash start. */
@@ -6080,13 +6078,9 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
 }
 
 
-/* Keep the complete splash logo visible even while route content is loading. */
+/* Keep the splash logo visible; animated properties remain owned by loadingLogoBloom. */
 .appLoading .loadingBrand img {
-  clip-path: none !important;
-  opacity: 1 !important;
   visibility: visible !important;
-  transform: none !important;
-  animation: none !important;
 }
 
 /* The daily-entry actions use the standard primary/secondary button system. */
