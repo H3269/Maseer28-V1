@@ -80,7 +80,8 @@ test('T12 prepared assistant is connected to the active daily text override for 
   const days = overrides.categories['مرزبندی و نه گفتن'].days;
   assert.equal(days.length, 28);
   for (const guide of T12_DAILY_ASSISTANT_GUIDES) {
-    const day = days.find((item) => item.day === guide.day);
+    const baseDay = days.find((item) => item.day === guide.day);
+    const day = { ...baseDay, id: 'مرزبندی و نه گفتن-' + String(guide.day).padStart(2, '0'), sourceExercise: baseDay.exercise, sourceActionText: baseDay.actionText };
     assert.ok(day);
     assert.equal(day.topic_id, 'T12');
     assert.equal(day.title, guide.title);
