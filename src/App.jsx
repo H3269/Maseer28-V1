@@ -309,7 +309,7 @@ function MainApp() {
     let cancelled = false;
     const timer = window.setTimeout(() => {
       if (!cancelled) setSplashMinimumVisible(true);
-    }, 980);
+    }, 740);
     return () => {
       cancelled = true;
       window.clearTimeout(timer);
