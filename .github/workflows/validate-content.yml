@@ -353,6 +353,7 @@ jobs:
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/global-assistant-launcher.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/reader-layout-parity.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/reader-open-paths.mjs
+          NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/reader-open-recommendation.mjs
       - name: Capture startup performance diagnostics (mobile and desktop)
         env:
           PATH28_BASE_URL: http://127.0.0.1:4173/Maseer28/
