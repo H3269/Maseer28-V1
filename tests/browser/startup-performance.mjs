@@ -29,52 +29,57 @@ async function measure(viewport, run) {
   await page.addInitScript(() => {
     window.__path28SplashObserved = null;
     const watchedImages = new WeakSet();
-    const inspectSplashImages = () => {
-      const images = document.querySelectorAll(
-        '#root .initialSplash img[alt="لوگوی برنامه مسیر"], #root .appLoading img[alt="لوگوی برنامه مسیر"]'
-      );
-      for (const image of images) {
-        if (watchedImages.has(image)) continue;
-        watchedImages.add(image);
-        const confirmVisibleFrame = async () => {
-          try {
-            if (typeof image.decode === 'function') await image.decode();
-          } catch {
-            // Older WebViews can reject decode() even when the image is usable.
-          }
-          const inspectFrame = () => {
-            if (!image.isConnected) return;
-            const style = getComputedStyle(image);
-            const rect = image.getBoundingClientRect();
-            if (image.complete && image.naturalWidth > 0
-              && style.display !== 'none' && style.visibility !== 'hidden'
-              && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0) {
-              window.__path28SplashObserved = {
-                ready: true,
-                naturalWidth: image.naturalWidth,
-                naturalHeight: image.naturalHeight,
-                width: rect.width,
-                height: rect.height,
-                opacity: Number(style.opacity),
-                src: image.currentSrc || image.src,
-              };
-              return;
-            }
-            requestAnimationFrame(inspectFrame);
-          };
-          requestAnimationFrame(inspectFrame);
+    const inspectFrame = (image) => {
+      if (!image.isConnected) return;
+      const style = getComputedStyle(image);
+      const rect = image.getBoundingClientRect();
+      if (image.complete && image.naturalWidth > 0
+        && style.display !== 'none' && style.visibility !== 'hidden'
+        && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0) {
+        window.__path28SplashObserved = {
+          ready: true,
+          naturalWidth: image.naturalWidth,
+          naturalHeight: image.naturalHeight,
+          width: rect.width,
+          height: rect.height,
+          opacity: Number(style.opacity),
+          src: image.currentSrc || image.src,
         };
-        void confirmVisibleFrame();
+        return;
+      }
+      requestAnimationFrame(() => inspectFrame(image));
+    };
+    const watchImage = (image) => {
+      if (!(image instanceof HTMLImageElement) || watchedImages.has(image)) return;
+      if (!image.alt || image.alt !== 'لوگوی برنامه مسیر') return;
+      watchedImages.add(image);
+      // Do not await image.decode(): the splash can be replaced while that
+      // promise settles. Poll the live element from its first observed frame.
+      if (image.complete && image.naturalWidth > 0) {
+        requestAnimationFrame(() => inspectFrame(image));
+      } else {
+        image.addEventListener('load', () => requestAnimationFrame(() => inspectFrame(image)), { once: true });
       }
     };
-    const observer = new MutationObserver(inspectSplashImages);
-    observer.observe(document, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['class', 'style'],
+    const inspectNode = (node) => {
+      if (!(node instanceof Element)) return;
+      watchImage(node);
+      node.querySelectorAll?.('img[alt="لوگوی برنامه مسیر"]').forEach(watchImage);
+    };
+    const observer = new MutationObserver((records) => {
+      // Inspect added nodes from the mutation records as well as the live
+      // document, so a quick splash hand-off is not lost between queries.
+      for (const record of records) {
+        for (const node of record.addedNodes) inspectNode(node);
+      }
+      document.querySelectorAll(
+        '#root .initialSplash img[alt="لوگوی برنامه مسیر"], #root .appLoading img[alt="لوگوی برنامه مسیر"]'
+      ).forEach(watchImage);
     });
-    inspectSplashImages();
+    observer.observe(document, { childList: true, subtree: true });
+    document.querySelectorAll(
+      '#root .initialSplash img[alt="لوگوی برنامه مسیر"], #root .appLoading img[alt="لوگوی برنامه مسیر"]'
+    ).forEach(watchImage);
   });
 
   const startedAt = Date.now();
