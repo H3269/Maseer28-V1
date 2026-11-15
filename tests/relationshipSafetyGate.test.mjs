@@ -229,3 +229,15 @@ test('T05 gates every direct relationship request, conversation and agreement ac
     assert.equal(getRelationshipSafetyGate({ id, topic_id: 'T05', day }), null, 'T05 day ' + day + ' must not receive an unrelated communication gate');
   }
 });
+
+test('T12 safety-focused S03 days require a relationship communication check', () => {
+  for (const day of [18, 20, 21, 23, 24, 27, 28]) {
+    const id = 'T12-D' + String(day).padStart(2, '0');
+    assert.ok(getRelationshipSafetyGate({
+      id, topic_id: 'T12', day, subtopic_ids: ['T12-S03'],
+    }), 'T12 S03 day ' + day + ' must require a safety check');
+  }
+  assert.equal(getRelationshipSafetyGate({
+    id: 'T12-D19', topic_id: 'T12', day: 19, subtopic_ids: ['T12-S02'],
+  }), null, 'routine S02 content must not receive an unrelated S03 gate');
+});
