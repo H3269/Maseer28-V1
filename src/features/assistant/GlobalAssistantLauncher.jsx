@@ -276,8 +276,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     const message = String(overrideMessage ?? draft).trim();
     if (!message || sending) return;
     // Lock the composer immediately; book hydration must not make the tap feel unresponsive.
-    setError('');
-    setSending(true);
+    if (screen === 'books') {
+      setError('');
+      setSending(true);
+    }
     let booksForTurn = loadedLibraryBooks;
     if (screen === 'books' && !booksForTurn.length) {
       booksForTurn = await (libraryBooksLoadRef.current || ensureLibraryBooksLoaded());
@@ -296,6 +298,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     }
     const isDailySafetyQuestion = Boolean(selectedDailyQuestion
       && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(selectedDailyQuestion.kind));
+    setError('');
+    setSending(true);
     const turnId = ++turnSequenceRef.current;
     const responseId = `assistant-${turnId}`;
     const updateAssistantMessage = (text, knowledge = [], dailySafetyReminder = false) => {
