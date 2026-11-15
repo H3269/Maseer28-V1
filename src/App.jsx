@@ -673,6 +673,9 @@ function navigate(next) {
         loadReader(),
       ]);
       if (!version?.content) throw new Error('متن کتاب آماده نشد.');
+      // The assistant is rendered outside the reader branch and would otherwise
+      // reopen when that branch unmounts/remounts the launcher.
+      setAssistantOpen(false);
       setReaderState({ book: readyBook, version, sourcePage, target });
       navigate('bookReader');
     } catch {
@@ -849,7 +852,7 @@ function navigate(next) {
 
   if (screen === 'bookReader' && readerState) {
     // The immersive reader is the only app screen without the global bottom navigation.
-    return <Suspense fallback={<div className="app appLoading" role="status">در حال آماده‌سازی صفحه مطالعه…</div>}><Reader book={readerState.book} initialVersion={readerState.version} initialSourcePage={readerState.sourcePage} initialPage={readerState.initialPage} target={readerState.target} returnTo={libraryReturn} onClose={() => { setReaderState(null); navigate('books'); }} /></Suspense>;
+    return <Suspense fallback={<div className="app appLoading" role="status">در حال آماده‌سازی صفحه مطالعه…</div>}><Reader book={readerState.book} initialVersion={readerState.version} initialSourcePage={readerState.sourcePage} initialPage={readerState.initialPage} target={readerState.target} returnTo={libraryReturn} onClose={() => { setAssistantOpen(false); setReaderState(null); navigate('books'); }} /></Suspense>;
   }
 
   // Navigation becomes available only after the first profile and baseline
@@ -907,7 +910,7 @@ function navigate(next) {
       ><AppIcon name="message" size={20} /><span>دستیار</span></button>}
       {navVisible && assistantLauncherLoaded && <Suspense fallback={null}><GlobalAssistantLauncher
         hideLauncher
-        initialOpen
+        initialOpen={assistantOpen}
         openRequestId={assistantOpenRequest}
         onOpenChange={setAssistantOpen}
         externalLauncherRef={assistantLauncherButtonRef}
