@@ -24,7 +24,7 @@ import { getT12DailyAssistantPromptGroups } from './t12DailyAssistantPrompts.js'
 import { appendLocalSourceReferences, buildLocalAssistantMessages, isLocalModelInstallCommand, LOCAL_MODEL_CACHE_MESSAGE, LOCAL_MODEL_FAILURE_MESSAGE, LOCAL_MODEL_INSTALL_MESSAGE, shouldUseLocalNeuralModel } from './localNeuralAssistant.js';
 import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS, DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
 
-export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null, onRelationshipSafetyResponse = null, initialOpen = false, hideLauncher = false, externalLauncherRef = null, onClose = null }) {
+export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null, onRelationshipSafetyResponse = null, initialOpen = false, hideLauncher = false, externalLauncherRef = null, openRequestId = 0, onOpenChange = null }) {
   const [open, setOpen] = useState(initialOpen);
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
@@ -47,6 +47,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const endRef = useRef(null);
   const messageInputRef = useRef(null);
   const initialContextEffectRef = useRef(false);
+  const openRequestRef = useRef(openRequestId);
 
   useEffect(() => {
     if (!initialContextEffectRef.current) {
@@ -59,9 +60,16 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     setSending(false);
     conversationStateRef.current = null;
     setOpen(false);
+    onOpenChange?.(false);
     setLibraryPromptOpen(false);
-    onClose?.();
-  }, [screen, dailyContext?.day, dailyContext?.problem, onClose]);
+  }, [screen, dailyContext?.day, dailyContext?.problem, onOpenChange]);
+
+  useEffect(() => {
+    if (openRequestRef.current === openRequestId) return;
+    openRequestRef.current = openRequestId;
+    setOpen(true);
+    onOpenChange?.(true);
+  }, [openRequestId, onOpenChange]);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -262,11 +270,12 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
 
   function closeAssistant() {
     setOpen(false);
-    onClose?.();
+    onOpenChange?.(false);
   }
 
   function activate() {
     setOpen(true);
+    onOpenChange?.(true);
     if (screen === 'books' && !loadedLibraryBooks.length) ensureLibraryBooksLoaded();
   }
 
