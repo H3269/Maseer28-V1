@@ -41,7 +41,7 @@ async function fetchJson(path, cacheToken, cache = 'default') {
   return response.json();
 }
 
-async function seedLibrary() {
+async function seedLibrary(onCatalogReady = null) {
   // Keep the library catalogue lightweight. Full book JSON is downloaded only
   // when the reader or a book recommendation actually needs that book.
   const manifest = await fetchJson('content/library.seed.json', 'manifest-check-v90', 'no-cache');
@@ -52,16 +52,10 @@ async function seedLibrary() {
     libraryRepository.listBooks(),
   ]);
   const existingById = new Map(existingBooks.map((book) => [book.id, book]));
-  const manifestReady = (manifest.books || []).every((meta) => {
-    const book = existingById.get(meta.id || `book-${meta.legacyId}`);
-    return Boolean(book?.seedFile === meta.file && book?.manifestRevision === revision);
-  });
-  if (storedRevision === revision && manifestReady) return existingBooks;
-
-  await Promise.all((manifest.books || []).map(async (meta) => {
+  const catalogueBooks = (manifest.books || []).map((meta) => {
     const bookId = meta.id || `book-${meta.legacyId}`;
-    const existingBook = existingById.get(bookId) || await libraryRepository.getBook(bookId);
-    await libraryRepository.putBook({
+    const existingBook = existingById.get(bookId);
+    return {
       id: bookId,
       legacyId: meta.legacyId,
       title: existingBook?.title || meta.title,
@@ -77,9 +71,19 @@ async function seedLibrary() {
       order: meta.order ?? meta.legacyId ?? 999,
       createdAt: existingBook?.createdAt || now,
       updatedAt: existingBook?.updatedAt || now,
-    });
-  }));
+    };
+  });
 
+  // Publish lightweight catalogue metadata to the UI before IndexedDB writes
+  // finish, so all five eager cover requests can start immediately on first entry.
+  onCatalogReady?.(catalogueBooks);
+  const manifestReady = catalogueBooks.every((book) => {
+    const existing = existingById.get(book.id);
+    return Boolean(existing?.seedFile === book.seedFile && existing?.manifestRevision === revision);
+  });
+  if (storedRevision === revision && manifestReady) return existingBooks;
+
+  await Promise.all(catalogueBooks.map((book) => libraryRepository.putBook(book)));
   await libraryRepository.setSetting(SEED_REVISION_KEY, revision);
   await libraryRepository.setSetting('seed-last-checked-at', now);
   return libraryRepository.listBooks();
@@ -187,7 +191,9 @@ export function useLibrary(enabled = true) {
           setLoading(true);
         }
 
-        const seededBooks = await seedLibrary();
+        const seededBooks = await seedLibrary((catalogueBooks) => {
+          if (catalogueBooks.length) setBooks(catalogueBooks);
+        });
         const nextBooks = seededBooks.length ? seededBooks : cachedBooks;
         setBooks(nextBooks);
         setError('');
