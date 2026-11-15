@@ -383,6 +383,20 @@ try {
   await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await dialog.waitFor({ state: 'detached' });
 
+  // Regression: opening a book after the assistant has been mounted must not
+  // reopen the assistant when the reader unmounts and the library remounts.
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    await page.getByRole('button', { name: 'شروع مطالعه' }).first().click();
+    await page.locator('#bookReader').waitFor({ state: 'visible' });
+    await page.getByRole('button', { name: 'خروج از مطالعه' }).click();
+    await page.locator('#bookReader').waitFor({ state: 'detached' });
+    await page.locator('#books').waitFor({ state: 'visible' });
+    assert.equal(await page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' }).count(), 0,
+      'closing the reader must return directly to the library without reopening the global assistant');
+    assert.equal(await page.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).getAttribute('aria-expanded'), 'false',
+      'the global assistant launcher must remain closed after reader exit');
+  }
+
   await page.getByRole('button', { name: 'ارتباط' }).click();
   await page.locator('.bottomNav button[data-view="support"].active').waitFor({ state: 'visible' });
   await launcher.click();
