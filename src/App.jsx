@@ -58,7 +58,7 @@ import VersionFooter from './shared/components/VersionFooter.jsx';
 const loadGlobalAssistantLauncher = () => import('./features/assistant/GlobalAssistantLauncher.jsx');
 const loadLibraryPage = () => import('./features/library/LibraryPage.jsx');
 const loadReader = () => import('./features/library/Reader.jsx');
-const GlobalAssistantLauncher = lazy(loadGlobalAssistantLauncher);
+const GlobalAssistantLauncher = lazy(() => import('./features/assistant/GlobalAssistantLauncher.jsx'));
 const LibraryPage = lazy(loadLibraryPage);
 const Reader = lazy(loadReader);
 

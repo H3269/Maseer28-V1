@@ -12,7 +12,8 @@ const assistantLauncher = await readFile(new URL('../src/features/assistant/Glob
 test('library, reader, and assistant modules stay out of the initial application bundle', () => {
   assert.match(app, /const LibraryPage = lazy\(loadLibraryPage\)/);
   assert.match(app, /const Reader = lazy\(loadReader\)/);
-  assert.match(app, /const GlobalAssistantLauncher = lazy\(loadGlobalAssistantLauncher\)/);
+  assert.match(app, /const loadGlobalAssistantLauncher = \(\) => import\('\.\/features\/assistant\/GlobalAssistantLauncher\.jsx'\)/);
+  assert.match(app, /const GlobalAssistantLauncher = lazy\(\(\) => import\('\.\/features\/assistant\/GlobalAssistantLauncher\.jsx'\)\)/);
   assert.match(app, /void loadLibraryPage\(\)/);
   assert.match(app, /void loadGlobalAssistantLauncher\(\)/);
   assert.match(app, /requestIdleCallback\(warmAssistant, \{ timeout: 1800 \}\)/);
