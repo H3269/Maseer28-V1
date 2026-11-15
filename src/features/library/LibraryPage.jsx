@@ -10,9 +10,9 @@ function readProgress() {
   catch { return {}; }
 }
 
-function Cover({ book, priority = false }) {
+function Cover({ book }) {
   const src = book.coverDataUrl || book.coverUrl;
-  return src ? <img className="libraryCover" src={src} alt={`جلد ${book.title}`} loading={priority ? 'eager' : 'lazy'} decoding="async" fetchPriority={priority ? 'high' : 'low'} /> : (
+  return src ? <img className="libraryCover" src={src} alt={`جلد ${book.title}`} loading="eager" decoding="async" fetchPriority="high" /> : (
     <div className="libraryCoverFallback" role="img" aria-label="جلد کتابچه تکمیلی جلد سوم">
       <small>از حقیقت تا واقعیت</small>
       <strong>کتابچه تکمیلی<br/>جلد سوم</strong>
@@ -32,7 +32,7 @@ export default function LibraryPage({ books, loading, error, onOpenBook, onBack 
       {loading && !books.length && <div className="muted">در حال آماده‌سازی کتابخانه…</div>}
       {error && <div className="feedback">{error}</div>}
       {books.length > 0 && <div className="libraryGrid">
-        {books.map((book, index) => {
+        {books.map((book) => {
           const legacy = LEGACY_BOOK_META[Number(book.legacyId)] || {};
           const title = book.customTitle ? book.title : (legacy.title || book.title);
           const subtitle = book.customSubtitle ? book.subtitle : (legacy.subtitle || book.subtitle || '');
@@ -41,7 +41,7 @@ export default function LibraryPage({ books, loading, error, onOpenBook, onBack 
           const pct = r?.total ? Math.round((Number(r.page) + 1) / Number(r.total) * 100) : 0;
           return <article className="libraryBook" key={book.id}>
             <div className="libraryCoverWrap">
-              <Cover book={book} priority={index === 0}/>
+              <Cover book={book}/>
               <span className="libraryBookBadge">{Number(book.legacyId) <= 3 ? `جلد ${fa(book.legacyId)}` : Number(book.legacyId) === 4 ? 'تکمیلی' : 'کتاب'}</span>
             </div>
             <div className="libraryBookInfo">
