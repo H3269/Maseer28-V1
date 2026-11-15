@@ -95,17 +95,45 @@ try {
       const book = page.locator('#books .libraryBook').nth(bookId - 1);
       await book.waitFor({ state: 'visible' });
 
+      console.log(`START reader scenario: repetition=${repetition}, entryPoint=${entryPoint.id}, book=${bookId}, phase=cold`);
       await page.evaluate(() => { window.__readerPerfStartedAt = performance.now(); });
       await book.locator('button').click();
-      const cold = await waitForReadablePage(page);
+      let cold;
+      try {
+        await page.locator('#bookReader').waitFor({ state: 'visible', timeout: 30000 });
+        cold = await waitForReadablePage(page);
+      } catch (error) {
+        const diagnostics = await page.evaluate(() => ({
+          url: location.href,
+          readerVisible: Boolean(document.querySelector('#bookReader')?.getClientRects().length),
+          readerTextExists: Boolean(document.querySelector('#bookReaderText')),
+          readerText: String(document.querySelector('#bookReaderText')?.innerText || '').slice(0, 300),
+          pageCounter: document.querySelector('#readerPageCounter')?.innerText || '',
+        })).catch(() => ({}));
+        throw new Error(`Cold reader open failed (${entryPoint.id}, book ${bookId}, repetition ${repetition}): ${error.message}; diagnostics=${JSON.stringify(diagnostics)}; browserErrors=${JSON.stringify(errors)}`);
+      }
       const coldFirstBodyParagraph = await waitForFirstBodyParagraph(page);
 
       await page.locator('#bookReader').getByRole('button', { name: 'خروج از مطالعه' }).click();
       await page.locator('#books').waitFor({ state: 'visible' });
       const reopenedBook = page.locator('#books .libraryBook').nth(bookId - 1);
+      console.log(`START reader scenario: repetition=${repetition}, entryPoint=${entryPoint.id}, book=${bookId}, phase=warm`);
       await page.evaluate(() => { window.__readerPerfStartedAt = performance.now(); });
       await reopenedBook.locator('button').click();
-      const warm = await waitForReadablePage(page);
+      let warm;
+      try {
+        await page.locator('#bookReader').waitFor({ state: 'visible', timeout: 30000 });
+        warm = await waitForReadablePage(page);
+      } catch (error) {
+        const diagnostics = await page.evaluate(() => ({
+          url: location.href,
+          readerVisible: Boolean(document.querySelector('#bookReader')?.getClientRects().length),
+          readerTextExists: Boolean(document.querySelector('#bookReaderText')),
+          readerText: String(document.querySelector('#bookReaderText')?.innerText || '').slice(0, 300),
+          pageCounter: document.querySelector('#readerPageCounter')?.innerText || '',
+        })).catch(() => ({}));
+        throw new Error(`Warm reader open failed (${entryPoint.id}, book ${bookId}, repetition ${repetition}): ${error.message}; diagnostics=${JSON.stringify(diagnostics)}; browserErrors=${JSON.stringify(errors)}`);
+      }
       const warmFirstBodyParagraph = await waitForFirstBodyParagraph(page);
 
       assert.equal(await page.locator('#bookReaderText').count(), 1, `${entryPoint.id}, book ${bookId}: reader text article must exist`);
