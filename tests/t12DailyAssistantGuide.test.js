@@ -125,6 +125,15 @@ test('page assistant answers the T12 day guide and preserves the interpersonal s
   });
   assert.equal(adaptedAnswer.status, 'daily_guidance_available');
   assert.ok(adaptedAnswer.message.includes(visibleExercise));
+  const adaptedActionAnswer = makePageAssistantTurn({
+    screen: 'day',
+    text: guide.questions[2].value,
+    dailyContext: {
+      day: 1, problem: 'مرزبندی و نه گفتن', data,
+      guidanceData: { title: guide.title, exercise: visibleExercise, action: visibleAction, adaptation: 'نسخه تطبیقی' },
+    },
+  });
+  assert.ok(adaptedActionAnswer.message.includes(visibleAction));
   const gatedGuide = T12_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 6);
   const gatedData = { id: 'مرزبندی و نه گفتن-06', topic_id: 'T12', day: 6, title: gatedGuide.title, exercise: gatedGuide.exercise, actionText: gatedGuide.action };
   const gated = makePageAssistantTurn({ screen: 'day', text: gatedGuide.questions[0].value, dailyContext: { day: 6, problem: 'مرزبندی و نه گفتن', data: gatedData } });
@@ -178,7 +187,7 @@ test('T12 prepared answers accept the visible adaptive version while checking th
     sourceExercise: guide.exercise, sourceActionText: guide.action,
     exercise: visibleExercise, actionText: visibleAction,
   };
-  const answer = answerT12DailyPreparedQuestion({ day: 1, message: guide.questions[0].value, dailyContent: day });
+  const answer = answerT12DailyPreparedQuestion({ day: 1, message: guide.questions[8].value, dailyContent: day });
   assert.ok(answer.includes(visibleExercise));
   assert.ok(answer.includes(visibleAction));
   assert.equal(answerT12DailyPreparedQuestion({ day: 1, message: guide.questions[0].value, dailyContent: { ...day, sourceExercise: 'متن منبع ناسازگار' } }), null);
