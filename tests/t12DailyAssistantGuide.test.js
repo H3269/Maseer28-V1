@@ -4,6 +4,7 @@ import { T12_DAILY_ASSISTANT_GUIDES, answerT12DailyPreparedQuestion, getT12Daily
 import { makeDailyExerciseGuidanceTurn } from '../src/features/assistant/dailyExerciseAssistantGuidance.js';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
 import { mergeDailyTextOverrides } from '../src/features/content/dailyTextOverrides.js';
+import { getDailyAssistantAccess } from '../src/features/assistant/dailyAssistantAccess.js';
 import { readFile } from 'node:fs/promises';
 
 const FIXED_LABELS = ["منظور از تمرین امروز چیست؟","برای تمرین امروز یک مثال می‌زنی؟","منظور از اقدام اختصاصی امروز چیست؟","برای اقدام امروز یک مثال می‌زنی؟","اگر انجام کاملش برایم سخت بود چه کنم؟","از کجا بفهمم درست انجامش داده‌ام؟","چه زمانی باید تمرین امروز را متوقف کنم؟","اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟","تمرین و اقدام امروز چه تفاوتی دارند؟","اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟","اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟","آیا لازم است حتماً با فرد دیگری صحبت کنم؟","می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟","این تمرین چقدر زمان می‌برد؟"];
@@ -149,6 +150,21 @@ test('page assistant answers the T12 day guide and preserves the interpersonal s
     dailyContext: { day: 18, problem: 'مرزبندی و نه گفتن', data: safetyFocusedData },
   });
   assert.equal(safetyFocused.status, 'relationship_safety_confirmation_required');
+});
+
+test('T12 assistant access requires a safety confirmation for common interpersonal days and every S03 day', async () => {
+  const overrides = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+  const days = overrides.categories['مرزبندی و نه گفتن'].days;
+  assert.equal(days.length, 28);
+  for (const source of days) {
+    const day = { ...source, id: 'مرزبندی و نه گفتن-' + String(source.day).padStart(2, '0') };
+    const access = getDailyAssistantAccess({ day, problem: 'مرزبندی و نه گفتن' });
+    const requiresSafetyCheck = [6, 11, 15, 24].includes(source.day) || source.subtopic_ids.includes('T12-S03');
+    assert.equal(access.available, !requiresSafetyCheck, 'day ' + source.day + ' safety access');
+    if (requiresSafetyCheck) assert.equal(access.reason, 'relationship_safety_unconfirmed');
+    const confirmed = getDailyAssistantAccess({ day, problem: 'مرزبندی و نه گفتن', relationshipSafetyConfirmed: true });
+    assert.equal(confirmed.available, true, 'day ' + source.day + ' should be available after the safety response');
+  }
 });
 
 test('T12 overlay merges visible text and runtime safety metadata into the canonical record', async () => {
