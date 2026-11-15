@@ -90,6 +90,10 @@ test('recommended books can be loaded on demand without relying on startup prelo
   assert.match(app, /const availableBooks = books\.length \? books : await refreshLibrary\(\)/);
 });
 
+test('library assistant acknowledges a send before waiting for book hydration', () => {
+  assert.match(assistantLauncher, /if \(screen === 'books'\) \{[\s\S]*?setSending\(true\);[\s\S]*?await \(libraryBooksLoadRef\.current \|\| ensureLibraryBooksLoaded\(\)\)/);
+});
+
 test('library assistant defers full-book hydration until a question is actually sent', () => {
   assert.match(assistantLauncher, /import \{ ensureSeedBookContent \} from '\.\.\/library\/useLibrary\.js'/);
   assert.match(assistantLauncher, /const libraryBooksLoadRef = useRef\(null\)/);
@@ -106,10 +110,10 @@ test('prepared daily questions are not blocked by asynchronous local-model statu
   assert.match(assistantLauncher, /disabled=\{!draft\.trim\(\) \|\| sending\}/);
 });
 
-test('only the first library cover receives eager high-priority loading', () => {
-  assert.match(libraryPage, /priority=\{index === 0\}/);
-  assert.match(libraryPage, /loading=\{priority \? 'eager' : 'lazy'\} decoding="async" fetchPriority=\{priority \? 'high' : 'low'\}/);
-  assert.match(libraryPage, /books\.map\(\(book, index\)/);
+test('all five library covers load eagerly at high priority on library entry', () => {
+  assert.match(libraryPage, /loading="eager" decoding="async" fetchPriority="high"/);
+  assert.doesNotMatch(libraryPage, /loading="lazy"|fetchPriority="low"|priority=\{index === 0\}/);
+  assert.match(libraryPage, /books\.map\(\(book\)/);
 });
 
 test('initial splash uses the optimized WebP logo asset', async () => {
@@ -131,9 +135,9 @@ test('the app waits until the complete splash logo image is decoded', () => {
   assert.match(app, /onLoad=\{\(event\) => markSplashLogoReady\(event\.currentTarget\)\}/);
 });
 
-test('offscreen library book covers remain lazy and only the first cover is high priority', () => {
-  assert.match(libraryPage, /priority=\{index === 0\}/);
-  assert.match(libraryPage, /loading=\{priority \? 'eager' : 'lazy'\} decoding="async" fetchPriority=\{priority \? 'high' : 'low'\}/);
+test('all library book covers are requested immediately at high priority', () => {
+  assert.match(libraryPage, /loading="eager" decoding="async" fetchPriority="high"/);
+  assert.doesNotMatch(libraryPage, /loading="lazy"|fetchPriority="low"/);
 });
 
 const reader = await readFile(new URL('../src/features/library/Reader.jsx', import.meta.url), 'utf8');
@@ -180,7 +184,7 @@ test('the React splash reveals the logo radially from its center and then reveal
 
 test('the splash remains visible briefly for its first paint without imposing a long artificial startup delay', () => {
   assert.match(app, /const \[splashMinimumVisible, setSplashMinimumVisible\] = useState\(false\)/);
-  assert.match(app, /if \(!splashLogoReady\) return undefined[\s\S]*?setTimeout\(\(\) => \{[\s\S]*?setSplashMinimumVisible\(true\)[\s\S]*?\}, 980\)/);
+  assert.match(app, /if \(!splashLogoReady\) return undefined[\s\S]*?setTimeout\(\(\) => \{[\s\S]*?setSplashMinimumVisible\(true\)[\s\S]*?\}, 740\)/);
   assert.match(app, /!splashMinimumVisible/);
 });
 
