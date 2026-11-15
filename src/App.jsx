@@ -798,7 +798,7 @@ function navigate(next) {
       <div className="loadingBrand">
         <img
           ref={splashLogoRef}
-          src={`${import.meta.env.BASE_URL}assets/Logo m24.png`}
+          src={`${import.meta.env.BASE_URL}assets/Logo m24.webp`}
           alt="لوگوی برنامه مسیر"
           loading="eager"
           decoding="async"

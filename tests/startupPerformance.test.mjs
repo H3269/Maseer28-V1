@@ -97,11 +97,11 @@ test('only the first two visible library covers receive eager high-priority load
   assert.match(libraryPage, /books\.map\(\(book, index\)/);
 });
 
-test('initial splash restores the original approved logo asset', async () => {
+test('initial splash uses the optimized WebP logo asset', async () => {
   assert.match(html, /assets\/Logo m24\.png/);
   assert.match(html, /rel="preload" as="image"[^>]*fetchpriority="high"/);
   assert.match(app, /assets\/Logo m24\.png/);
-  const original = await stat(new URL('../public/assets/Logo m24.png', import.meta.url));
+  const original = await stat(new URL('../public/assets/Logo m24.webp', import.meta.url));
   assert.ok(original.size > 0, 'the original splash logo asset must exist');
 });
 
