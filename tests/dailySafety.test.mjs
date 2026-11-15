@@ -328,7 +328,7 @@ test('T12 is available for owner live testing without specialist-review gating w
   }
   assert.equal(getDailySafetyMode({ id: 'T12-D06', topic_id: 'T12', risk_level: 'routine', subtopic_ids: ['T12-S01'] }), 'routine');
   assert.equal(getDailySafetyMode({ id: 'T12-D18', topic_id: 'T12', risk_level: 'routine', subtopic_ids: ['T12-S03'] }), 'blocked');
-  assert.equal(getDailySafetyMode({ id: 'T12-D22', topic_id: 'T12', risk_level: 'caution' }), 'caution');
+  assert.equal(getDailySafetyMode({ id: 'T12-D24', topic_id: 'T12', risk_level: 'caution', subtopic_ids: ['T12-S03'] }), 'caution');
   assert.equal(getDailySafetyMode({ id: 'T12-D06', topic_id: 'T03', risk_level: 'routine' }), 'blocked');
 });
 test('T11 is fully interactive during the owner live-test window without changing its pending review metadata', async () => {
