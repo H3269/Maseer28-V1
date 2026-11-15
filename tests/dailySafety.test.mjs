@@ -342,6 +342,8 @@ test('legacy T12 boundary content stays blocked until expert and safety review',
   assert.equal(getDailySafetyMode(approvedBoundary('T12-S03', {
     risk_level: 'caution',
     safety_rule_ids: ['SR-T12-RELATIONSHIP-SAFETY'],
+    stop_conditions: ['در صورت تهدید یا تلافی، اقدام مستقیم انجام نشود.'],
+    when_to_seek_human_support: 'در صورت خطر، از حمایت امن و تخصصی کمک بگیر.',
   })), 'caution');
 });
 
