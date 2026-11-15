@@ -202,6 +202,20 @@ jobs:
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/global-assistant-launcher.mjs
           # Invalid legacy-data recovery remains covered by local unit tests; browser suite disabled by project decision.
 
+      - name: Capture startup performance diagnostics (Android-sized and desktop viewports)
+        env:
+          PATH28_BASE_URL: http://127.0.0.1:4173/Maseer28/
+        run: |
+          PLAYWRIGHT_NODE_PATH="$(npx --yes --package=playwright@1.55.0 -c 'dirname "$(dirname "$(command -v playwright)")"')"
+          NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/startup-performance.mjs
+      - name: Upload startup performance diagnostics
+        if: always() && hashFiles('reports/generated/startup-performance.json') != ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: startup-performance-diagnostics
+          path: reports/generated/startup-performance.json
+          if-no-files-found: error
+
       - name: Upload generated 952-day mapping review queue
         if: ${{ always() && steps.install.outcome == 'success' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
