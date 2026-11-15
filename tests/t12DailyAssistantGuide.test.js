@@ -155,3 +155,18 @@ test('T12 prompt groups expose all fourteen daily questions in five clear sectio
   }
   assert.deepEqual(getT12DailyAssistantPromptGroups(29), []);
 });
+
+test('T12 prepared answers accept the visible adaptive version while checking the canonical source', () => {
+  const guide = T12_DAILY_ASSISTANT_GUIDES[0];
+  const visibleExercise = 'نسخه سبک تمرین روز اول برای نمایش تطبیقی';
+  const visibleAction = 'نسخه سبک اقدام روز اول برای نمایش تطبیقی';
+  const day = {
+    id: 'مرزبندی و نه گفتن-01', topic_id: 'T12', day: 1, title: guide.title,
+    sourceExercise: guide.exercise, sourceActionText: guide.action,
+    exercise: visibleExercise, actionText: visibleAction,
+  };
+  const answer = answerT12DailyPreparedQuestion({ day: 1, message: guide.questions[0].value, dailyContent: day });
+  assert.ok(answer.includes(visibleExercise));
+  assert.ok(answer.includes(visibleAction));
+  assert.equal(answerT12DailyPreparedQuestion({ day: 1, message: guide.questions[0].value, dailyContent: { ...day, sourceExercise: 'متن منبع ناسازگار' } }), null);
+});
