@@ -67,7 +67,16 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     // canonical identity validation continues to use the untouched source.
     const preparedVisibleContent = dailyContext?.guidanceData
       ? {
+        ...preparedSource,
         ...dailyContext.guidanceData,
+        id: preparedSource?.id,
+        topic_id: preparedSource?.topic_id,
+        day: preparedSource?.day,
+        title: dailyContext.guidanceData.title || preparedSource?.title,
+        sourceExercise: preparedSource?.exercise,
+        sourceActionText: preparedSource?.actionText,
+        exercise: dailyContext.guidanceData.exercise || preparedSource?.exercise,
+        actionText: dailyContext.guidanceData.action || preparedSource?.actionText,
         lightExerciseText: preparedSource?.lightExerciseText || dailyContext.guidanceData.lightExerciseText,
         lightActionText: preparedSource?.lightActionText || dailyContext.guidanceData.lightActionText,
         progressActionText: preparedSource?.progressActionText || dailyContext.guidanceData.progressActionText,
