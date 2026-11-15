@@ -2,7 +2,7 @@
   "packageId": "T12-boundaries-daily-assistant-v1",
   "topicId": "T12",
   "topic": "مرزبندی و نه گفتن",
-  "branch": "content/t12-package-20261115",
+  "branch": "main",
   "status": "ready_for_owner_live_test",
   "files": [
     "content/drafts/t12-boundaries-28day-redesign.v1.json",
@@ -61,5 +61,9 @@
     "The source combines skill and mechanism in one field; no unsupported mechanism decomposition was fabricated.",
     "The 28-day content is ready for owner live testing; final technical and specialist approval is intentionally left to the owner."
   ],
-  "runtimeIntegration": "connected_to_daily_text_overrides_daily_exercise_assistant_page_assistant_and_relationship_safety_gate"
+  "runtimeIntegration": "connected_to_daily_text_overrides_daily_exercise_assistant_page_assistant_and_relationship_safety_gate",
+  "developmentBranch": "content/t12-package-20261115",
+  "integratedCommit": "79fcf8bf25a70710b7efbc84b8512599bb9c0e70",
+  "testAppUrl": "https://h3269.github.io/Maseer28-V1/",
+  "testAppMode": "github_pages_test_app"
 }
