@@ -47,7 +47,7 @@ async function measure(viewport, run) {
         };
         return;
       }
-      requestAnimationFrame(() => inspectFrame(image));
+      inspectFrame(image);
     };
     const watchImage = (image) => {
       if (!(image instanceof HTMLImageElement) || watchedImages.has(image)) return;
@@ -58,7 +58,7 @@ async function measure(viewport, run) {
       if (image.complete && image.naturalWidth > 0) {
         requestAnimationFrame(() => inspectFrame(image));
       } else {
-        image.addEventListener('load', () => requestAnimationFrame(() => inspectFrame(image)), { once: true });
+        image.addEventListener('load', () => inspectFrame(image), { once: true });
       }
     };
     const inspectNode = (node) => {
