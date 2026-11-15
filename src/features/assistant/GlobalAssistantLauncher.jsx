@@ -275,13 +275,19 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     event.preventDefault();
     const message = String(overrideMessage ?? draft).trim();
     if (!message || sending) return;
-    // Lock the composer immediately; book hydration must not make the tap feel unresponsive.
-    if (screen === 'books') {
+    let booksForTurn = loadedLibraryBooks;
+    let pendingLibraryTurn = null;
+    if (screen === 'books' && !booksForTurn.length) {
+      const pendingId = ++turnSequenceRef.current;
+      pendingLibraryTurn = { turnId: pendingId, responseId: `assistant-${pendingId}` };
       setError('');
       setSending(true);
-    }
-    let booksForTurn = loadedLibraryBooks;
-    if (screen === 'books' && !booksForTurn.length) {
+      setMessages((current) => [...current,
+        { id: `user-${pendingId}`, role: 'user', text: message, knowledge: [] },
+        { id: pendingLibraryTurn.responseId, role: 'assistant', text: 'در حال آماده‌سازی کتاب‌ها برای پاسخ…', knowledge: [] },
+      ]);
+      setDraft('');
+      resizeComposerInput(messageInputRef.current);
       booksForTurn = await (libraryBooksLoadRef.current || ensureLibraryBooksLoaded());
     }
     const selectedDailyQuestion = isPreparedOnlyDailyPromptContext
@@ -300,17 +306,21 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(selectedDailyQuestion.kind));
     setError('');
     setSending(true);
-    const turnId = ++turnSequenceRef.current;
-    const responseId = `assistant-${turnId}`;
+    const turnId = pendingLibraryTurn?.turnId ?? ++turnSequenceRef.current;
+    const responseId = pendingLibraryTurn?.responseId || `assistant-${turnId}`;
     const updateAssistantMessage = (text, knowledge = [], dailySafetyReminder = false) => {
       setMessages((current) => current.map((item) => item.id === responseId ? { ...item, text, knowledge, dailySafetyReminder } : item));
     };
-    setMessages((current) => [...current,
-      { id: `user-${turnId}`, role: 'user', text: message, knowledge: [] },
-      { id: responseId, role: 'assistant', text: 'در حال بررسی پرسش...', knowledge: [] },
-    ]);
-    setDraft('');
-    resizeComposerInput(messageInputRef.current);
+    if (pendingLibraryTurn) {
+      updateAssistantMessage('در حال بررسی پرسش…');
+    } else {
+      setMessages((current) => [...current,
+        { id: `user-${turnId}`, role: 'user', text: message, knowledge: [] },
+        { id: responseId, role: 'assistant', text: 'در حال بررسی پرسش...', knowledge: [] },
+      ]);
+      setDraft('');
+      resizeComposerInput(messageInputRef.current);
+    }
     const updateProgress = (progress) => {
       if (progress?.stage === 'generation') {
         updateAssistantMessage('در حال تولید پاسخ با مدل زبانی عصبی محلی...');
