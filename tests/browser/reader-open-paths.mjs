@@ -68,7 +68,10 @@ try {
     { id: 'bottom-navigation-study-button', open: async (page) => page.locator('#bottomNav button[data-view="books"]').click() },
   ];
 
-  for (const entryPoint of entryPoints) {
+  // Three independent browser contexts per entry point/book provide repeated cold samples;
+  // each context is reopened once to capture its paired warm sample.
+  for (let repetition = 1; repetition <= 3; repetition += 1) {
+    for (const entryPoint of entryPoints) {
     for (let bookId = 1; bookId <= 5; bookId += 1) {
       const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
       const errors = [];
@@ -109,13 +112,27 @@ try {
       assert.ok(coldFirstBodyParagraph.paragraphLength >= 20, `${entryPoint.id}, book ${bookId}: cold open must reach a real body paragraph`);
       assert.ok(warmFirstBodyParagraph.paragraphLength >= 20, `${entryPoint.id}, book ${bookId}: warm open must reach a real body paragraph`);
       assert.deepEqual(errors, [], `${entryPoint.id}, book ${bookId}: no browser errors during cold/warm open`);
-      results.push({ entryPoint: entryPoint.id, bookId, cold, coldFirstBodyParagraph, warm, warmFirstBodyParagraph });
+      results.push({ repetition, entryPoint: entryPoint.id, bookId, cold, coldFirstBodyParagraph, warm, warmFirstBodyParagraph });
       await page.close();
+    }
     }
   }
 
-  console.log('PASS: dashboard-library and bottom-navigation study entry points each completed cold/warm reader opens for all five canonical books.');
+  const percentile = (values, p) => {
+    const sorted = [...values].sort((a, b) => a - b);
+    return sorted[Math.min(sorted.length - 1, Math.ceil((p / 100) * sorted.length) - 1)];
+  };
+  const coldSamples = results.map((item) => item.coldFirstBodyParagraph.elapsedMs);
+  const warmSamples = results.map((item) => item.warmFirstBodyParagraph.elapsedMs);
+  const summary = {
+    independentRepetitionsPerEntryPointAndBook: 3,
+    coldBodyParagraphMs: { samples: coldSamples.length, p50: percentile(coldSamples, 50), p95: percentile(coldSamples, 95), min: Math.min(...coldSamples), max: Math.max(...coldSamples) },
+    warmBodyParagraphMs: { samples: warmSamples.length, p50: percentile(warmSamples, 50), p95: percentile(warmSamples, 95), min: Math.min(...warmSamples), max: Math.max(...warmSamples) },
+  };
+  console.log('PASS: dashboard-library and bottom-navigation study entry points each completed 3 independent cold/warm reader opens for all five canonical books.');
   console.log('Both entry points are clicked independently. Timing includes click-to-first-readable-content and click-to-first-real-body-paragraph; measurements are headless Chromium, not physical Android results.');
+  console.log('Repeated first-body-paragraph timing summary (headless Chromium):');
+  console.log(JSON.stringify(summary, null, 2));
   console.log(JSON.stringify(results, null, 2));
 } finally {
   await browser.close();
