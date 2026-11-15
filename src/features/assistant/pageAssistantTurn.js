@@ -14,6 +14,7 @@ import { answerEmotionalDependencyDailyPreparedQuestion } from './emotionalDepen
 import { answerT09DailyPreparedQuestion } from './t09DailyAssistantPrompts.js';
 import { answerT10DailyPreparedQuestion } from './t10DailyAssistantPrompts.js';
 import { answerT11DailyPreparedQuestion } from './t11DailyAssistantPrompts.js';
+import { answerT12DailyPreparedQuestion } from './t12DailyAssistantPrompts.js';
 import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
 import { getCanonicalDailyRecordId } from '../content/dailyContentSelector.js';
 
@@ -98,8 +99,10 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
                         ? answerT10DailyPreparedQuestion
                         : preparedTopicId === 'T11'
                           ? answerT11DailyPreparedQuestion
-                          : null;
-    const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11'].includes(preparedTopicId)
+                          : preparedTopicId === 'T12'
+                            ? answerT12DailyPreparedQuestion
+                            : null;
+    const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12'].includes(preparedTopicId)
       && Number.isInteger(preparedDay)
       && preparedDay >= 1
       && preparedDay <= 28
@@ -138,6 +141,25 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       && Boolean(answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }));
     const griefRelationshipGate = preparedTopicId === 'T06' ? getRelationshipSafetyGate(preparedSource) : null;
     const emotionalDependencyRelationshipGate = preparedTopicId === 'T08' ? getRelationshipSafetyGate(preparedSource) : null;
+    const boundaryRelationshipGate = preparedTopicId === 'T12' ? getRelationshipSafetyGate(preparedSource) : null;
+    if (boundaryRelationshipGate
+      && preparedTopicId === 'T12'
+      && Boolean(answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }))
+      && !hasPendingSafetyExchange
+      && !hasExplicitSafetyHandoff
+      && dailyContext?.relationshipSafetyConfirmed !== true) {
+      return Object.freeze({
+        status: dailyContext?.relationshipSafetyResponse === 'unsafe'
+          ? 'relationship_safety_blocked'
+          : 'relationship_safety_confirmation_required',
+        message: dailyContext?.relationshipSafetyResponse === 'unsafe'
+          ? boundaryRelationshipGate.blockedMessage
+          : boundaryRelationshipGate.question + '\\n\\n' + boundaryRelationshipGate.disclaimer,
+        knowledge: Object.freeze([]),
+        page_context: 'day',
+        conversationState: null,
+      });
+    }
     if (emotionalDependencyRelationshipGate
       && preparedTopicId === 'T08'
       && Boolean(answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }))
