@@ -1127,3 +1127,12 @@
 - پس از افزودن contraindications، whenToSeekHumanSupport، reflectionPrompt، exerciseType، subtopicIds و reviewRecordId به guide، تعداد فیلدهای هم‌ترازی‌شده canonical/guide به **۲۵ فیلد در ۲۸/۲۸ روز** رسید؛ صفر اختلاف.
 - q07 و q11 در هر ۲۸ روز اکنون همه stopConditions، contraindications و آستانه حمایت انسانی را بازتاب می‌دهند؛ هر دو ستون ۲۸ پاسخ یکتا دارند.
 - راهنمای دستیار هنوز draft است؛ این هم‌ترازی به معنی تأیید محتوایی/بالینی نیست. CI تازه برای نسخه جدید لازم است.
+
+
+## T12 — مرزبندی و نه گفتن (چرخه ۱۵ نوامبر ۲۰۲۶)
+
+- گزارش اجرای بسته: [T12 package audit](T12_PACKAGE_COMPLETION_AUDIT_20261115_FA.md)
+- کاتالوگ راهنمای دستیار: [T12 daily assistant guide](../src/features/assistant/t12DailyAssistantGuide.v1.json)
+- ماژول پاسخ‌های آماده: [T12 daily assistant prompts](../src/features/assistant/t12DailyAssistantPrompts.js)
+- آزمون‌ها: [T12 daily assistant tests](../tests/t12DailyAssistantPrompts.test.mjs)
+- وضعیت: ۲۸ روز و ۳۹۲ پاسخ آماده در شاخه کاری ایجاد/همگام شده‌اند؛ نگاشت زیرموضوع پیشنهادی است، شواهد روزانه `not_assessed` و بازبینی `pending_owner_review` است. گیت runtime عمداً بسته مانده است. هنوز CI، build، Chromium، ادغام main یا تست زنده مالک تأیید نشده‌اند.
