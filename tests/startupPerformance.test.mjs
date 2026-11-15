@@ -91,7 +91,7 @@ test('recommended books can be loaded on demand without relying on startup prelo
 });
 
 test('library assistant acknowledges a send before waiting for book hydration', () => {
-  assert.match(assistantLauncher, /if \(screen === 'books'\) \{[\s\S]*?setSending\(true\);[\s\S]*?await \(libraryBooksLoadRef\.current \|\| ensureLibraryBooksLoaded\(\)\)/);
+  assert.match(assistantLauncher, /if \(screen === 'books' && !booksForTurn\.length\) \{[\s\S]*?setSending\(true\);[\s\S]*?در حال آماده‌سازی کتاب‌ها برای پاسخ[\s\S]*?await \(libraryBooksLoadRef\.current \|\| ensureLibraryBooksLoaded\(\)\)/);
 });
 
 test('library assistant defers full-book hydration until a question is actually sent', () => {
