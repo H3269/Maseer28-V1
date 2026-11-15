@@ -126,7 +126,7 @@ try {
     .getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
   await safePanel.getByRole('button', { name: 'ارسال' }).click();
   await safePage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => node.innerText.includes('روز 20')));
+    .some(node => node.innerText.includes('نابرابری قدرت')));
   await safePage.close();
 
   process.stdout.write('PASS: T12 28-day visible content, 14 prepared assistant questions, and relationship-safety confirmation flow\n');
