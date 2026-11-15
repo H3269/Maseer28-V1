@@ -4,15 +4,16 @@ const RUNTIME_TEXT_FIELDS = Object.freeze([
   'restExerciseText', 'restActionText',
 ]);
 
-const T11_REVIEW_METADATA_FIELDS = Object.freeze([
+const DAILY_REVIEW_METADATA_FIELDS = Object.freeze([
   'objective', 'skill', 'mechanism', 'lightVersion', 'progressVersion', 'restVersion',
   'successCriterion', 'reflectionQuestion', 'stopCondition', 'stopConditions',
+  'lightActionVersion', 'progressActionVersion', 'restActionVersion',
   'contraindications', 'whenToSeekHumanSupport', 'durationMinutes', 'durationStatus',
   'exerciseType', 'riskLevel', 'sourceIds', 'evidenceGrade', 'reviewStatus',
   'subtopicId', 'subtopicIds', 'subtopicMappingStatus', 'duration_minutes',
   'duration_status', 'exercise_type', 'risk_level', 'source_ids', 'evidence_grade',
   'review_status', 'subtopic_ids', 'subtopic_mapping_status', 'stop_conditions',
-  'when_to_seek_human_support', 'review_record_id',
+  'when_to_seek_human_support', 'review_record_id', 'safety_rule_ids',
 ]);
 
 export function mergeDailyTextOverrides(content, overrides) {
@@ -54,8 +55,12 @@ export function mergeDailyTextOverrides(content, overrides) {
           && (day?.topic_id === 'T11'
             || /^عادت‌های تکراری-[0-9]{1,2}$/u.test(String(day?.id || ''))
             || /^T11-D[0-9]{1,2}$/i.test(String(day?.id || '')));
-        const reviewMetadata = isT11Record
-          ? Object.fromEntries(T11_REVIEW_METADATA_FIELDS
+        const isT12Record = categoryKey === 'مرزبندی و نه گفتن'
+          && (day?.topic_id === 'T12'
+            || /^مرزبندی و نه گفتن-[0-9]{1,2}$/u.test(String(day?.id || ''))
+            || /^T12-D[0-9]{1,2}$/i.test(String(day?.id || '')));
+        const reviewMetadata = isT11Record || isT12Record
+          ? Object.fromEntries(DAILY_REVIEW_METADATA_FIELDS
             .filter((field) => Object.prototype.hasOwnProperty.call(replacement, field))
             .map((field) => [field, replacement[field]]))
           : {};
