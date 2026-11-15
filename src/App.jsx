@@ -112,6 +112,8 @@ function MainApp() {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [splashLogoReady, setSplashLogoReady] = useState(false);
   const [splashMinimumVisible, setSplashMinimumVisible] = useState(false);
+  const [assistantLauncherRequested, setAssistantLauncherRequested] = useState(false);
+  const assistantLauncherButtonRef = useRef(null);
   const splashLogoRef = useRef(null);
   const [journey, setJourney] = useState(initial.state);
   const [userProfile, setUserProfileState] = useState(initial.user);
@@ -223,6 +225,7 @@ function MainApp() {
   }, []);
 
   const problemKey = journey.profileData?.problem;
+  const closeAssistantLauncher = useCallback(() => setAssistantLauncherRequested(false), []);
   const loadTopicForScreen = useCallback(async (topicKey) => {
     const loadedCategory = await runtimeRepository.loadTopicContent(topicKey);
     setContent((previous) => previous ? {
@@ -286,7 +289,7 @@ function MainApp() {
     let cancelled = false;
     const timer = window.setTimeout(() => {
       if (!cancelled) setSplashMinimumVisible(true);
-    }, 650);
+    }, 120);
     return () => {
       cancelled = true;
       window.clearTimeout(timer);
@@ -860,7 +863,20 @@ function navigate(next) {
         {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
         <VersionFooter navVisible={navVisible} />
       </div>
-      {navVisible && <Suspense fallback={null}><GlobalAssistantLauncher
+      {navVisible && <button
+        ref={assistantLauncherButtonRef}
+        className="globalAssistantLauncher"
+        type="button"
+        onClick={() => setAssistantLauncherRequested(true)}
+        aria-label="باز کردن دستیار مسیر۲۸"
+        aria-haspopup="dialog"
+        aria-expanded={assistantLauncherRequested}
+      ><AppIcon name="message" size={20} /><span>دستیار</span></button>}
+      {navVisible && assistantLauncherRequested && <Suspense fallback={null}><GlobalAssistantLauncher
+        hideLauncher
+        initialOpen
+        externalLauncherRef={assistantLauncherButtonRef}
+        onClose={closeAssistantLauncher}
         screen={screen}
         visible={navVisible}
         dailyContext={screen === 'day' && activeDay ? {
