@@ -40,8 +40,8 @@ async function waitForFirstBodyParagraph(page) {
     const paragraph = await page.evaluate(() => {
       const article = document.querySelector('#bookReaderText');
       const line = [...(article?.querySelectorAll('.readerFixedLine.body.paraStart') || [])]
-        .find((item) => String(item.innerText || '').replace(/\\s+/g, ' ').trim().length >= 20);
-      return line ? String(line.innerText || '').replace(/\\s+/g, ' ').trim() : '';
+        .find((item) => String(item.innerText || '').replace(/\s+/g, ' ').trim().length >= 20);
+      return line ? String(line.innerText || '').replace(/\s+/g, ' ').trim() : '';
     });
     if (paragraph) {
       return page.evaluate((text) => ({
