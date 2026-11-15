@@ -92,15 +92,7 @@ async function measure(viewport, run) {
     };
     const watchImage = (image) => {
       if (!(image instanceof HTMLImageElement) || watchedImages.has(image)) return;
-      if (!image.alt || image.alt !== 'لوگوی برنامه مسیر') return;
       watchedImages.add(image);
-      const initialStyle = getComputedStyle(image);
-      if (window.__path28SplashAnimation.firstAnimationName === null
-        && initialStyle.animationName !== 'none') {
-        window.__path28SplashAnimation.firstAnimationName = initialStyle.animationName;
-        window.__path28SplashAnimation.firstAnimationDuration = initialStyle.animationDuration;
-        window.__path28SplashAnimation.firstClipPath = initialStyle.clipPath;
-      }
       // Animation events are also captured at document level so a fast
       // static-to-React splash hand-off cannot lose the first animation frame.
       // Do not await image.decode(): the splash can be replaced while that
@@ -114,7 +106,7 @@ async function measure(viewport, run) {
     const inspectNode = (node) => {
       if (!(node instanceof Element)) return;
       watchImage(node);
-      node.querySelectorAll?.('img[alt="لوگوی برنامه مسیر"]').forEach(watchImage);
+      node.querySelectorAll?.('#root .initialSplash img, #root .appLoading img').forEach(watchImage);
     };
     const observer = new MutationObserver((records) => {
       // Inspect added nodes from the mutation records as well as the live
@@ -129,7 +121,7 @@ async function measure(viewport, run) {
     });
     observer.observe(document, { childList: true, subtree: true });
     document.querySelectorAll(
-      '#root .initialSplash img[alt="لوگوی برنامه مسیر"], #root .appLoading img[alt="لوگوی برنامه مسیر"]'
+      '#root .initialSplash img, #root .appLoading img'
     ).forEach(watchImage);
   });
 
