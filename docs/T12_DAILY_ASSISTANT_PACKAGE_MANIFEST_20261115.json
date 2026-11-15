@@ -16,7 +16,9 @@
     "tests/t12DailyAssistantGuide.test.js",
     "tests/t12ContentDraft.test.js",
     "tests/dailySafety.test.mjs",
-    "docs/T12_DAILY_ASSISTANT_392_ANSWER_DRAFT_AUDIT_20261115_FA.md"
+    "docs/T12_DAILY_ASSISTANT_392_ANSWER_DRAFT_AUDIT_20261115_FA.md",
+    "src/features/assistant/GlobalAssistantLauncher.jsx",
+    "tests/browser/t12-boundaries-package.mjs"
   ],
   "metrics": {
     "days": 28,
