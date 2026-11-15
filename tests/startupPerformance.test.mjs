@@ -112,6 +112,13 @@ test('prepared daily questions are not blocked by asynchronous local-model statu
   assert.match(assistantLauncher, /disabled=\{!draft\.trim\(\) \|\| sending\}/);
 });
 
+test('first-entry cover requests start before IndexedDB catalogue synchronization finishes', () => {
+  assert.match(libraryHook, /async function seedLibrary\(onCatalogReady = null\)/);
+  assert.match(libraryHook, /onCatalogReady\?\.\(catalogueBooks\);[\s\S]*?await Promise\.all\(catalogueBooks\.map/);
+  assert.match(libraryHook, /seedLibrary\(\(catalogueBooks\) => \{[\s\S]*?setBooks\(catalogueBooks\)/);
+  assert.match(libraryPage, /disabled=\{loading\}/);
+});
+
 test('all five library covers load eagerly at high priority on library entry', () => {
   assert.match(libraryPage, /loading="eager" decoding="async" fetchPriority="high"/);
   assert.doesNotMatch(libraryPage, /loading="lazy"|fetchPriority="low"|priority=\{index === 0\}/);
