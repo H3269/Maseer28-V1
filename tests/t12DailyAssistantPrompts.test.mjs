@@ -122,8 +122,21 @@ test('T12 days 15 and 24 teach distinct skills: stating a limit versus negotiati
   const day15 = T12_DAILY_ASSISTANT_GUIDES[14];
   const day24 = T12_DAILY_ASSISTANT_GUIDES[23];
   assert.match(day15.exercise, /جمله اول‌شخص/u);
-  assert.match(day24.exercise, /دو گزینه جایگزین/u);
+  assert.match(day24.exercise, /حد غیرقابل مذاکره/u);
+  assert.match(day24.exercise, /ترجیح قابل مذاکره/u);
   assert.notEqual(day15.exercise, day24.exercise);
+});
+
+test('T12 day 13 clarifies scope and commitment, not emotional negotiation', () => {
+  const day13 = T12_DAILY_ASSISTANT_GUIDES[12];
+  assert.match(day13.exercise, /خروجی مورد انتظار، مهلت، مسئولیت/u);
+  assert.match(day13.action, /تعهد قطعی نده/u);
+});
+
+test('T12 day 25 screens for boundary-related danger without diagnosing risk', () => {
+  const day25 = T12_DAILY_ASSISTANT_GUIDES[24];
+  assert.match(day25.exercise, /برای آزمایش‌کردن مرز اقدام مستقیم نکن/u);
+  assert.match(day25.exercise, /ارزیابی حرفه‌ای خطر نیست/u);
 });
 
 test('T12 day 14 identifies context and support, not behavior reduction', () => {
