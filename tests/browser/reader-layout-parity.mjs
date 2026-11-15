@@ -29,11 +29,15 @@ try {
         if (!response.ok) throw new Error(`book ${bookId} could not be loaded for parity check (${response.status})`);
         const book = await response.json();
         const input = { book, bookId, cover: '', width: viewport.width, fontPx: viewport.fontPx, fontFamily: 'Tahoma, Arial, sans-serif' };
+        const oldStarted = performance.now();
         const oldLayout = baseline.buildLegacyReaderLayout(input);
+        const baselineDurationMs = performance.now() - oldStarted;
+        const newStarted = performance.now();
         const newLayout = optimized.buildLegacyReaderLayout(input);
+        const optimizedDurationMs = performance.now() - newStarted;
         const oldSignature = await digest(oldLayout);
         const newSignature = await digest(newLayout);
-        results.push({ bookId, width: viewport.width, oldPageCount: oldLayout.pageCount, newPageCount: newLayout.pageCount, oldSignature, newSignature });
+        results.push({ bookId, width: viewport.width, oldPageCount: oldLayout.pageCount, newPageCount: newLayout.pageCount, baselineDurationMs: Number(baselineDurationMs.toFixed(2)), optimizedDurationMs: Number(optimizedDurationMs.toFixed(2)), oldSignature, newSignature });
       }
     }
     return results;
@@ -44,6 +48,8 @@ try {
     assert.equal(result.newSignature, result.oldSignature, `book ${result.bookId}, width ${result.width}: rendered page structure or text changed`);
   }
   console.log(`PASS: exact reader-layout parity for all five canonical books at mobile and desktop widths (${comparisons.length} comparisons).`);
+  console.log('Reader layout timing diagnostics (ms; single-run CI measurements, not real-device guarantees):');
+  console.table(comparisons.map(({ bookId, width, baselineDurationMs, optimizedDurationMs, oldPageCount }) => ({ bookId, width, pageCount: oldPageCount, baselineDurationMs, optimizedDurationMs })));
 } finally {
   await browser.close();
 }
