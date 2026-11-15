@@ -35,8 +35,8 @@ async function measure(viewport, run) {
   // waitForFunction takes its options as the third argument (the second is
   // the optional page-function argument).
   const logoSelector = '#root img[alt="لوگوی برنامه مسیر"]';
-  const isSplashLogoReady = () => {
-    const image = document.querySelector(logoSelector);
+  const isSplashLogoReady = (selector) => {
+    const image = document.querySelector(selector);
     if (!image) return false;
     const style = getComputedStyle(image);
     const rect = image.getBoundingClientRect();
@@ -46,7 +46,7 @@ async function measure(viewport, run) {
       && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0;
   };
   try {
-    await page.waitForFunction(isSplashLogoReady, null, { timeout: 15000 });
+    await page.waitForFunction(isSplashLogoReady, logoSelector, { timeout: 15000 });
   } catch (error) {
     const diagnostic = await page.evaluate((selector) => {
       const image = document.querySelector(selector);
