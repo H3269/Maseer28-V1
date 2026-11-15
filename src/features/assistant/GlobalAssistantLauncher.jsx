@@ -275,6 +275,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     event.preventDefault();
     const message = String(overrideMessage ?? draft).trim();
     if (!message || sending) return;
+    // Lock the composer immediately; book hydration must not make the tap feel unresponsive.
+    setError('');
+    setSending(true);
     let booksForTurn = loadedLibraryBooks;
     if (screen === 'books' && !booksForTurn.length) {
       booksForTurn = await (libraryBooksLoadRef.current || ensureLibraryBooksLoaded());
@@ -304,9 +307,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     ]);
     setDraft('');
     resizeComposerInput(messageInputRef.current);
-    setError('');
-    setSending(true);
-
     const updateProgress = (progress) => {
       if (progress?.stage === 'generation') {
         updateAssistantMessage('در حال تولید پاسخ با مدل زبانی عصبی محلی...');
