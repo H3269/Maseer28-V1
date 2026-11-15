@@ -215,6 +215,13 @@ jobs:
           name: startup-performance-diagnostics
           path: reports/generated/startup-performance.json
           if-no-files-found: error
+      - name: Upload reader layout baseline diagnostics
+        if: always() && hashFiles('reports/generated/reader-layout-baseline.json') != ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: reader-layout-baseline-diagnostics
+          path: reports/generated/reader-layout-baseline.json
+          if-no-files-found: error
 
       - name: Upload generated 952-day mapping review queue
         if: ${{ always() && steps.install.outcome == 'success' }}
@@ -352,6 +359,7 @@ jobs:
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/daily-assistant-guidance.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/global-assistant-launcher.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/reader-layout-parity.mjs
+          NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/reader-layout-baseline.mjs
       - name: Capture startup performance diagnostics (mobile and desktop)
         env:
           PATH28_BASE_URL: http://127.0.0.1:4173/Maseer28/
