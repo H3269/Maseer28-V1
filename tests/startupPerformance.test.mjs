@@ -191,3 +191,13 @@ test('runtime index failure falls back to canonical content and keeps the manual
   assert.match(app, /response\.status === 404/);
   assert.match(app, /window\.location\.reload\(\)/);
 });
+
+test('Android WebViews without modern viewport units retain a 100vh fallback', () => {
+  assert.match(html, /#root\\{[^}]*min-height:100vh;min-height:100svh/);
+  assert.match(html, /height:100vh;height:100svh;min-height:100vh;min-height:100svh/);
+  assert.match(css, /height: 100vh;\\s*height: 100dvh/);
+  assert.match(css, /\\.appLoading \\{ min-height: 100vh; min-height: 100svh/);
+  assert.match(css, /min-height: 100vh !important;\\s*min-height: 100svh !important/);
+  assert.match(css, /min-height: min\\(420px, calc\\(100vh - 20px\\)\\); max-height: calc\\(100vh - 20px\\);\\s*min-height: min\\(420px, calc\\(100dvh - 20px\\)\\)/);
+  assert.match(css, /height: 92vh; max-height: calc\\(100vh - 16px\\); height: 92dvh/);
+});
