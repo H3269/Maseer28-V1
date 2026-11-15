@@ -4642,9 +4642,6 @@
             "T12-S03"
           ],
           "subtopic_mapping_status": "proposed_pending_owner_review",
-          "safety_rule_ids": [
-            "SR-T12-RELATIONSHIP-SAFETY"
-          ],
           "stop_conditions": [
             "تنظیم محیط نباید اطلاعات ایمنی ضروری را قطع کند.",
             "در صورت وجود تهدید، خشونت، نظارت، کنترل اجباری یا ترس از تلافی، اقدام مستقیم و افشای برنامه را کنار بگذار؛ حمایت امن و فردمحور را در اولویت قرار بده."
@@ -5035,9 +5032,6 @@
             "T12-S03"
           ],
           "subtopic_mapping_status": "proposed_pending_owner_review",
-          "safety_rule_ids": [
-            "SR-T12-RELATIONSHIP-SAFETY"
-          ],
           "stop_conditions": [
             "در خطر فوری کمک اضطراری محلی مقدم است.",
             "در صورت وجود تهدید، خشونت، نظارت، کنترل اجباری یا ترس از تلافی، اقدام مستقیم و افشای برنامه را کنار بگذار؛ حمایت امن و فردمحور را در اولویت قرار بده."
@@ -5234,9 +5228,6 @@
             "T12-S03"
           ],
           "subtopic_mapping_status": "proposed_pending_owner_review",
-          "safety_rule_ids": [
-            "SR-T12-RELATIONSHIP-SAFETY"
-          ],
           "stop_conditions": [
             "اگر خطر فوری وجود دارد، فاصله امن و کمک اضطراری لازم است.",
             "در صورت وجود تهدید، خشونت، نظارت، کنترل اجباری یا ترس از تلافی، اقدام مستقیم و افشای برنامه را کنار بگذار؛ حمایت امن و فردمحور را در اولویت قرار بده."
@@ -5367,9 +5358,6 @@
             "T12-S03"
           ],
           "subtopic_mapping_status": "proposed_pending_owner_review",
-          "safety_rule_ids": [
-            "SR-T12-RELATIONSHIP-SAFETY"
-          ],
           "stop_conditions": [
             "برنامه را جایگزین حمایت تخصصی نکن.",
             "در صورت وجود تهدید، خشونت، نظارت، کنترل اجباری یا ترس از تلافی، اقدام مستقیم و افشای برنامه را کنار بگذار؛ حمایت امن و فردمحور را در اولویت قرار بده."
