@@ -112,6 +112,18 @@ test('page assistant answers the T12 day guide and preserves the interpersonal s
   const answer = makePageAssistantTurn({ screen: 'day', text: guide.questions[0].value, dailyContext: { day: 1, problem: 'مرزبندی و نه گفتن', data } });
   assert.equal(answer.status, 'daily_guidance_available');
   assert.ok(answer.message.includes(guide.title));
+  const visibleExercise = 'نسخه تطبیقی تمرین روز اول';
+  const visibleAction = 'نسخه تطبیقی اقدام روز اول';
+  const adaptedAnswer = makePageAssistantTurn({
+    screen: 'day',
+    text: guide.questions[0].value,
+    dailyContext: {
+      day: 1, problem: 'مرزبندی و نه گفتن', data,
+      guidanceData: { title: guide.title, exercise: visibleExercise, action: visibleAction, adaptation: 'نسخه تطبیقی' },
+    },
+  });
+  assert.equal(adaptedAnswer.status, 'daily_guidance_available');
+  assert.ok(adaptedAnswer.message.includes(visibleExercise));
   const gatedGuide = T12_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 6);
   const gatedData = { id: 'مرزبندی و نه گفتن-06', topic_id: 'T12', day: 6, title: gatedGuide.title, exercise: gatedGuide.exercise, actionText: gatedGuide.action };
   const gated = makePageAssistantTurn({ screen: 'day', text: gatedGuide.questions[0].value, dailyContext: { day: 6, problem: 'مرزبندی و نه گفتن', data: gatedData } });
