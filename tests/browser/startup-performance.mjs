@@ -28,41 +28,53 @@ async function measure(viewport, run) {
 
   await page.addInitScript(() => {
     window.__path28SplashObserved = null;
-    let observationPending = false;
-    const inspectSplash = () => {
-      const image = document.querySelector('#root .appLoading img[alt="لوگوی برنامه مسیر"], #root .initialSplash img[alt="لوگوی برنامه مسیر"]');
-      if (!image || observationPending) return;
-      observationPending = true;
-      const observeFrame = () => {
-        if (!image.isConnected) {
-          observationPending = false;
-          inspectSplash();
-          return;
-        }
-        const style = getComputedStyle(image);
-        const rect = image.getBoundingClientRect();
-        if (image.complete && image.naturalWidth > 0
-          && style.display !== 'none' && style.visibility !== 'hidden'
-          && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0) {
-          window.__path28SplashObserved = {
-            ready: true,
-            naturalWidth: image.naturalWidth,
-            naturalHeight: image.naturalHeight,
-            width: rect.width,
-            height: rect.height,
-            opacity: Number(style.opacity),
-            src: image.currentSrc || image.src,
+    const watchedImages = new WeakSet();
+    const inspectSplashImages = () => {
+      const images = document.querySelectorAll(
+        '#root .initialSplash img[alt="لوگوی برنامه مسیر"], #root .appLoading img[alt="لوگوی برنامه مسیر"]'
+      );
+      for (const image of images) {
+        if (watchedImages.has(image)) continue;
+        watchedImages.add(image);
+        const confirmVisibleFrame = async () => {
+          try {
+            if (typeof image.decode === 'function') await image.decode();
+          } catch {
+            // Older WebViews can reject decode() even when the image is usable.
+          }
+          const inspectFrame = () => {
+            if (!image.isConnected) return;
+            const style = getComputedStyle(image);
+            const rect = image.getBoundingClientRect();
+            if (image.complete && image.naturalWidth > 0
+              && style.display !== 'none' && style.visibility !== 'hidden'
+              && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0) {
+              window.__path28SplashObserved = {
+                ready: true,
+                naturalWidth: image.naturalWidth,
+                naturalHeight: image.naturalHeight,
+                width: rect.width,
+                height: rect.height,
+                opacity: Number(style.opacity),
+                src: image.currentSrc || image.src,
+              };
+              return;
+            }
+            requestAnimationFrame(inspectFrame);
           };
-          observationPending = false;
-          return;
-        }
-        requestAnimationFrame(observeFrame);
-      };
-      requestAnimationFrame(observeFrame);
+          requestAnimationFrame(inspectFrame);
+        };
+        void confirmVisibleFrame();
+      }
     };
-    const observer = new MutationObserver(inspectSplash);
-    observer.observe(document, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
-    inspectSplash();
+    const observer = new MutationObserver(inspectSplashImages);
+    observer.observe(document, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class', 'style'],
+    });
+    inspectSplashImages();
   });
 
   const startedAt = Date.now();
