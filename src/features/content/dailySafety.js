@@ -90,23 +90,6 @@ function isBoundaryTopicDay(day) {
   ));
 }
 
-const BOUNDARY_SUBTOPIC_IDS = new Set(['T12-S01', 'T12-S02', 'T12-S03']);
-
-function hasApprovedBoundaryReview(day) {
-  if (day.review_status !== 'approved'
-    || !Array.isArray(day.subtopic_ids)
-    || day.subtopic_ids.length !== 1
-    || !BOUNDARY_SUBTOPIC_IDS.has(day.subtopic_ids[0])
-    || typeof day.review_record_id !== 'string'
-    || day.review_record_id.trim().length === 0) return false;
-
-  if (day.subtopic_ids[0] === 'T12-S03') {
-    return day.risk_level === 'caution'
-      && Array.isArray(day.safety_rule_ids)
-      && day.safety_rule_ids.length > 0;
-  }
-  return true;
-}
 
 function isSleepTopicDay(day) {
   return Boolean(day && typeof day === 'object' && (
@@ -275,7 +258,9 @@ export function getDailySafetyMode(day) {
   // This is not an expert approval and must be removed before public release.
   if (isRepetitiveBehaviorTopicDay(day)) return 'routine';
   if (isFearTopicDay(day) && !hasApprovedFearReview(day)) return 'blocked';
-  if (isBoundaryTopicDay(day) && !hasApprovedBoundaryReview(day)) return 'blocked';
+  // T12 owner live-test mode: no specialist-review approval gate is applied here.
+  // Preserve the content risk classification so S03 days display the caution notice.
+  if (isBoundaryTopicDay(day)) return day.risk_level === 'caution' ? 'caution' : day.risk_level === 'routine' ? 'routine' : 'blocked';
   // Temporary owner-review preview for T10: expert sign-off is deliberately
   // performed after the owner can inspect the full package in the live app.
   // Keep the risk classification gate active; unknown/missing risk stays blocked.
