@@ -58,6 +58,11 @@ async function measure(viewport, run) {
       window.__path28SplashAnimation.completedName = event.animationName;
       window.__path28SplashAnimation.completedAt = performance.now();
       window.__path28SplashAnimation.finalClipPath = getComputedStyle(image).clipPath;
+      const finalRect = image.getBoundingClientRect();
+      window.__path28SplashAnimation.finalLogoRect = {
+        width: finalRect.width,
+        height: finalRect.height,
+      };
       recordAppVisibility();
     }, true);
     const recordAppVisibility = () => {
@@ -173,9 +178,22 @@ const startedAt = Date.now();
     animationGate.completedName === 'initialLogoBloom' || animationGate.completedName === 'loadingLogoBloom',
     'The splash logo radial animation must complete before the app is shown',
   );
+  const finalClip = /^circle\\(\\s*([\\d.]+)(%|px)\\s+at\\s+([\\d.]+)(%|px)\\s+([\\d.]+)(%|px)\\s*\\)$/i.exec(
+    animationGate.finalClipPath || '',
+  );
+  const finalRect = animationGate.finalLogoRect;
+  const fullyRevealedCircle = Boolean(finalClip && finalRect?.width > 0 && finalRect?.height > 0
+    && finalClip[2] === finalClip[4] && finalClip[2] === finalClip[6]
+    && (finalClip[2] === '%'
+      ? Math.abs(Number(finalClip[1]) - 75) < 0.1
+        && Math.abs(Number(finalClip[3]) - 50) < 0.1
+        && Math.abs(Number(finalClip[5]) - 50) < 0.1
+      : Math.abs(Number(finalClip[1]) - (0.75 * Math.hypot(finalRect.width, finalRect.height) / Math.SQRT2)) < 1.5
+        && Math.abs(Number(finalClip[3]) - finalRect.width / 2) < 1.5
+        && Math.abs(Number(finalClip[5]) - finalRect.height / 2) < 1.5));
   assert.ok(
-    animationGate.finalClipPath?.includes('75%'),
-    'The logo must reach its fully revealed circular clip-path at animation end',
+    fullyRevealedCircle,
+    `The logo must finish at a centered 75% circular reveal; computed clip-path: ${animationGate.finalClipPath}`,
   );
   assert.ok(
     animationGate.appVisibleAt !== null && animationGate.completedAt <= animationGate.appVisibleAt,
