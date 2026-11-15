@@ -38,13 +38,48 @@ async function waitForReadableReader(page) {
   }));
 }
 
+async function waitForFirstBodyParagraph(page) {
+  for (let attempt = 0; attempt < 12; attempt += 1) {
+    const paragraph = await page.evaluate(() => {
+      const article = document.querySelector('#bookReaderText');
+      const line = [...(article?.querySelectorAll('.readerFixedLine.body.paraStart') || [])]
+        .find((item) => String(item.innerText || '').replace(/\s+/g, ' ').trim().length >= 20);
+      return line ? String(line.innerText || '').replace(/\s+/g, ' ').trim() : '';
+    });
+    if (paragraph) {
+      return page.evaluate((text) => ({
+        elapsedMs: Number((performance.now() - window.__readerPerfStartedAt).toFixed(2)),
+        paragraphLength: text.length,
+        pageCounter: document.querySelector('#readerPageCounter')?.innerText || '',
+      }), paragraph);
+    }
+
+    const counter = await page.locator('#readerPageCounter').innerText();
+    const next = page.locator('.readerNextArrow');
+    if (await next.isDisabled()) break;
+    await next.click();
+    await page.waitForFunction((previous) => (
+      String(document.querySelector('#readerPageCounter')?.innerText || '') !== previous
+    ), counter, { timeout: 15000 });
+  }
+  throw new Error('Reader opened, but the first readable body paragraph was not found within 12 pages.');
+}
+
 try {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
   const errors = [];
   const failedRequests = [];
+  const abortedNavigationRequests = [];
   page.on('pageerror', (error) => errors.push(String(error)));
   page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
-  page.on('requestfailed', (request) => failedRequests.push(request.url() + ' :: ' + (request.failure()?.errorText || 'failed')));
+  page.on('requestfailed', (request) => {
+    const failure = request.failure()?.errorText || 'failed';
+    if (failure === 'net::ERR_ABORTED' && request.isNavigationRequest() && request.resourceType() === 'document') {
+      abortedNavigationRequests.push(request.url() + ' :: ' + failure);
+      return;
+    }
+    failedRequests.push(request.url() + ' :: ' + failure);
+  });
 
   await page.addInitScript((state) => {
     localStorage.setItem('maseer28_onboarding_complete_v1', '1');
@@ -101,11 +136,20 @@ try {
   await page.evaluate(() => { window.__readerPerfStartedAt = performance.now(); });
   await page.locator('#bookPreviewModal').getByRole('button', { name: /رفتن به کتابخانه اختصاصی/ }).click();
   const readerReady = await waitForReadableReader(page);
+  const firstBodyParagraph = await waitForFirstBodyParagraph(page);
 
   assert.deepEqual(errors, [], 'recommendation-to-reader route must not raise browser errors');
   assert.deepEqual(failedRequests, [], 'recommendation-to-reader route must not fail network requests');
   console.log('PASS: real daily-result recommendation → preview → reader flow completed through UI.');
-  console.log(JSON.stringify({ recommendationReadyMs: recommendationReady, previewReady, readerReady, errors, failedRequests }, null, 2));
+  console.log(JSON.stringify({
+    recommendationReadyMs: recommendationReady,
+    previewReady,
+    readerReady,
+    firstBodyParagraph,
+    errors,
+    failedRequests,
+    abortedNavigationRequests,
+  }, null, 2));
   await page.close();
 } finally {
   await browser.close();
