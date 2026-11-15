@@ -338,11 +338,16 @@ test('legacy T12 boundary content stays blocked until expert and safety review',
   assert.equal(getDailySafetyMode(approvedBoundary('T12-S01')), 'routine');
   assert.equal(getDailySafetyMode(approvedBoundary('T12-S02')), 'routine');
   assert.equal(getDailySafetyMode(approvedBoundary('T12-S03')), 'blocked',
-    'unsafe-relationship content needs an explicit safety rule and caution classification');
+    'unsafe-relationship content needs caution plus the governance contract safety fields');
+  assert.equal(getDailySafetyMode(approvedBoundary('T12-S03', {
+    risk_level: 'caution',
+    stop_conditions: ['در صورت تهدید، اقدام مستقیم انجام نشود.'],
+    when_to_seek_human_support: 'در صورت تهدید یا خطر فوری از حمایت امن و خدمات اضطراری کمک بگیر.',
+  })), 'caution');
   assert.equal(getDailySafetyMode(approvedBoundary('T12-S03', {
     risk_level: 'caution',
     safety_rule_ids: ['SR-T12-RELATIONSHIP-SAFETY'],
-  })), 'caution');
+  })), 'blocked', 'an unregistered rule ID alone cannot satisfy the safety contract');
 });
 
 test('T11 is fully interactive during the owner live-test window without changing its pending review metadata', async () => {
