@@ -7,6 +7,7 @@ const RUNTIME_TEXT_FIELDS = Object.freeze([
 const T11_REVIEW_METADATA_FIELDS = Object.freeze([
   'objective', 'skill', 'mechanism', 'lightVersion', 'progressVersion', 'restVersion',
   'successCriterion', 'reflectionQuestion', 'stopCondition', 'stopConditions',
+  'lightActionVersion', 'progressActionVersion', 'restActionVersion',
   'contraindications', 'whenToSeekHumanSupport', 'durationMinutes', 'durationStatus',
   'exerciseType', 'riskLevel', 'sourceIds', 'evidenceGrade', 'reviewStatus',
   'subtopicId', 'subtopicIds', 'subtopicMappingStatus', 'duration_minutes',
