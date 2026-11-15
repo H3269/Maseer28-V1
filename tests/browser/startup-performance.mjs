@@ -178,7 +178,7 @@ const startedAt = Date.now();
     animationGate.completedName === 'initialLogoBloom' || animationGate.completedName === 'loadingLogoBloom',
     'The splash logo radial animation must complete before the app is shown',
   );
-  const finalClip = /^circle\\(\\s*([\\d.]+)(%|px)\\s+at\\s+([\\d.]+)(%|px)\\s+([\\d.]+)(%|px)\\s*\\)$/i.exec(
+  const finalClip = /^circle\(\s*([\d.]+)(%|px)\s+at\s+([\d.]+)(%|px)\s+([\d.]+)(%|px)\s*\)$/i.exec(
     animationGate.finalClipPath || '',
   );
   const finalRect = animationGate.finalLogoRect;
