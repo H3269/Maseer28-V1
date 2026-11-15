@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { answerLibraryBookQuestion, answerLibraryBookTurn } from '../src/features/assistant/libraryBookAssistant.js';
+import { answerLibraryBookQuestion, answerLibraryBookTurn, planLibraryBookLoad } from '../src/features/assistant/libraryBookAssistant.js';
 import { getLibraryBookProfile } from '../src/features/assistant/libraryBookProfiles.js';
 import { analyzeLibraryQuery, formatLocalSynthesis, rankLibraryPassages, synthesizeLibraryEvidence } from '../src/features/assistant/libraryLocalReasoning.js';
 import { LIBRARY_ASSISTANT_PROMPT_GROUPS, LIBRARY_ASSISTANT_PROMPTS } from '../src/features/assistant/libraryAssistantPrompts.js';
@@ -28,6 +28,45 @@ test('all five seeded books return grounded overviews with source page locators'
     assert.match(response, /صفحه/);
     assert.match(response, /خلاصه راهنمای محتوایی|مرور محتواییِ ساختاری/u);
   }
+});
+
+test('a specific book question hydrates only the requested book', () => {
+  const metadata = manifest.books.map(({ title, legacyId, id }) => ({ title, legacyId, id }));
+  const plan = planLibraryBookLoad({ books: metadata, message: 'خلاصه کتاب پنجم را بگو' });
+  assert.equal(plan.kind, 'single');
+  assert.deepEqual(plan.books.map((book) => Number(book.legacyId)), [5]);
+});
+
+test('follow-up questions reuse the previously selected book without hydrating the catalogue', () => {
+  const metadata = manifest.books.map(({ title, legacyId, id }) => ({ title, legacyId, id }));
+  const plan = planLibraryBookLoad({
+    books: metadata,
+    message: 'بیشتر توضیح بده',
+    conversationState: { bookId: 3, bookTitle: metadata[2].title },
+  });
+  assert.equal(plan.kind, 'single');
+  assert.deepEqual(plan.books.map((book) => Number(book.legacyId)), [3]);
+});
+
+test('catalogue-wide questions retain all-five-book retrieval', () => {
+  const metadata = manifest.books.map(({ title, legacyId, id }) => ({ title, legacyId, id }));
+  const plan = planLibraryBookLoad({ books: metadata, message: 'این کتابخانه چه کتاب‌هایی دارد؟' });
+  assert.equal(plan.kind, 'all');
+  assert.equal(plan.books.length, 5);
+});
+
+test('an unspecified book question asks for a title instead of loading all books', () => {
+  const metadata = manifest.books.map(({ title, legacyId, id }) => ({ title, legacyId, id }));
+  const plan = planLibraryBookLoad({ books: metadata, message: 'خلاصه کتاب را بگو' });
+  assert.equal(plan.kind, 'clarify');
+  assert.equal(plan.books.length, 0);
+});
+
+test('a non-book page question does not trigger book hydration', () => {
+  const metadata = manifest.books.map(({ title, legacyId, id }) => ({ title, legacyId, id }));
+  const plan = planLibraryBookLoad({ books: metadata, message: 'این صفحه برای چیست؟' });
+  assert.equal(plan.kind, 'none');
+  assert.equal(plan.books.length, 0);
 });
 
 test('the library inventory lists all five books', () => {
