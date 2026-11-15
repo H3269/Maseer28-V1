@@ -216,7 +216,10 @@ test('T12 runtime overlay carries proposed metadata but remains blocked pending 
     assert.equal(getDailySafetyMode(day), 'blocked');
     if (record.subtopicId === 'T12-S03') {
       assert.equal(day.risk_level, 'caution');
-      assert.deepEqual(day.safety_rule_ids, ['SR-T12-RELATIONSHIP-SAFETY']);
+      assert.ok(day.stop_conditions?.some((condition) => condition.trim().length > 0));
+      assert.ok(day.when_to_seek_human_support?.trim());
+      assert.ok(!day.safety_rule_ids?.includes('SR-T12-RELATIONSHIP-SAFETY'),
+        'do not fabricate an unregistered safety-rule reference');
     }
   }
 });
