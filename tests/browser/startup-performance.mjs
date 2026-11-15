@@ -40,6 +40,7 @@ async function measure(viewport, run) {
       completedAt: null,
       appVisibleAt: null,
       finalClipPath: null,
+      finalLogoConnectedAtAnimationEnd: null,
       decodedAtAnimationStart: false,
     };
     document.addEventListener('animationstart', (event) => {
@@ -60,6 +61,7 @@ async function measure(viewport, run) {
       if (event.animationName !== 'initialLogoBloom' && event.animationName !== 'loadingLogoBloom') return;
       window.__path28SplashAnimation.completedName = event.animationName;
       window.__path28SplashAnimation.completedAt = performance.now();
+      window.__path28SplashAnimation.finalLogoConnectedAtAnimationEnd = image.isConnected;
       window.__path28SplashAnimation.finalClipPath = getComputedStyle(image).clipPath;
       const finalRect = image.getBoundingClientRect();
       window.__path28SplashAnimation.finalLogoRect = {
@@ -196,7 +198,7 @@ const startedAt = Date.now();
         && Math.abs(Number(finalClip[5]) - finalRect.height / 2) < 1.5));
   assert.ok(
     fullyRevealedCircle,
-    `The logo must finish at a centered 75% circular reveal; computed clip-path: ${animationGate.finalClipPath}`,
+    `The logo must finish at a centered 75% circular reveal; computed clip-path: ${animationGate.finalClipPath}; target connected at animationend: ${animationGate.finalLogoConnectedAtAnimationEnd}`,
   );
   assert.ok(
     animationGate.appVisibleAt !== null && animationGate.completedAt <= animationGate.appVisibleAt,
