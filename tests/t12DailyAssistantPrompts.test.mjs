@@ -87,7 +87,8 @@ test('T12 page assistant routes all exact day-specific questions and rejects wro
       day: guide.day,
       topic_id: 'T12',
       exercise: guide.exercise,
-      action: 'برای مسئله «مرزبندی و نه گفتن»، ' + guide.action,
+      action: guide.action,
+      actionText: guide.action,
     };
     for (const question of guide.questions) {
       const result = makePageAssistantTurn({
