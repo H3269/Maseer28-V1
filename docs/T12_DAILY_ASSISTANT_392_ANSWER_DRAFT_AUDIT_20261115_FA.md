@@ -50,10 +50,12 @@
 - `src/features/assistant/t12DailyAssistantPrompts.js`
 - `src/features/assistant/dailyExerciseAssistantGuidance.js`
 - `src/features/assistant/pageAssistantTurn.js`
+- `src/features/assistant/GlobalAssistantLauncher.jsx`
 - `content/drafts/t12-boundaries-28day-redesign.v1.json`
 - `tests/t12DailyAssistantGuide.test.js`
 - `tests/t12ContentDraft.test.js`
 - `tests/dailySafety.test.mjs`
+- `tests/browser/t12-boundaries-package.mjs`
 
 ## وضعیت تحویل
 
