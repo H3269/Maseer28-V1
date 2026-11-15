@@ -31,15 +31,21 @@ async function measure(viewport, run) {
 
   // Capture the splash logo while the loading screen is still mounted. The
   // logo is intentionally removed after the app passes its startup gate.
-  const logoReadiness = await page.evaluate(async () => {
-    const selector = '#root img[alt="لوگوی برنامه مسیر"]';
-    const image = document.querySelector(selector);
+  // The center-out bloom intentionally begins at zero opacity. Wait for
+  // the first visible animation frame rather than sampling at DOMContentLoaded.
+  await page.waitForFunction(() => {
+    const image = document.querySelector('#root img[alt="لوگوی برنامه مسیر"]');
+    if (!image) return false;
+    const style = getComputedStyle(image);
+    const rect = image.getBoundingClientRect();
+    return image.complete && image.naturalWidth > 0
+      && style.display !== 'none' && style.visibility !== 'hidden'
+      && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0
+      && Boolean(document.querySelector('#root .appLoading'));
+  }, { timeout: 650 });
+  const logoReadiness = await page.evaluate(() => {
+    const image = document.querySelector('#root img[alt="لوگوی برنامه مسیر"]');
     if (!image) return { logoDecoded: false, logoNaturalWidth: 0, logoVisible: false };
-    try {
-      await image.decode();
-    } catch {
-      // A failed decode is reflected in the explicit readiness fields below.
-    }
     const style = getComputedStyle(image);
     const rect = image.getBoundingClientRect();
     return {
