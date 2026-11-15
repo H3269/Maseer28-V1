@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { T12_DAILY_ASSISTANT_GUIDES, answerT12DailyPreparedQuestion } from '../src/features/assistant/t12DailyAssistantPrompts.js';
-import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from '../src/features/assistant/dailyAssistantSafetyReminder.js';
 import { formatAssistantMessageText } from '../src/features/assistant/assistantMessageFormatting.js';
 
 test('all 392 T12 prepared answers use the shared T01-T11 display frame', () => {
@@ -42,8 +41,10 @@ test('all 392 T12 prepared answers use the shared T01-T11 display frame', () => 
       assert.equal(visible.includes('**'), false, 'raw Markdown markers must not reach visible text');
       assert.ok(visible.includes('هدف امروز:'), 'formatted answer must retain the shared objective');
       const requiresReminder = ['procrastination_increased', 'talk_other', 'success', 'stop'].includes(question.kind);
-      assert.equal(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN), requiresReminder,
-        'shared safety reminder behavior must match the same question kinds as other topics');
+      assert.equal(answer.includes('یادآوری اختصاصی ایمنی و حریم خصوصی T12'), requiresReminder,
+        'T12 safety-sensitive answers must use the topic-specific safety reminder');
+      assert.doesNotMatch(answer, /مرکز هیپنوتراپی شفا|۰۹۱۹۰۸۸۹۰۶۲|09190889062/,
+        'T12 prepared answers must not append promotional contact information');
       checked += 1;
     }
   }
