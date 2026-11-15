@@ -98,9 +98,9 @@ test('only the first two visible library covers receive eager high-priority load
 });
 
 test('initial splash uses the optimized WebP logo asset', async () => {
-  assert.match(html, /assets\/Logo m24\.png/);
+  assert.match(html, /assets\/Logo m24\.webp/);
   assert.match(html, /rel="preload" as="image"[^>]*fetchpriority="high"/);
-  assert.match(app, /assets\/Logo m24\.png/);
+  assert.match(app, /assets\/Logo m24\.webp/);
   const original = await stat(new URL('../public/assets/Logo m24.webp', import.meta.url));
   assert.ok(original.size > 0, 'the original splash logo asset must exist');
 });
