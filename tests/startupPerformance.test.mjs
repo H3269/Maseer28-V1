@@ -80,7 +80,7 @@ test('library manifest revalidates with the browser cache instead of allowing st
 test('cached library catalogue is painted before the network manifest refresh', () => {
   assert.match(app, /const libraryNeeded = screen === 'books' \|\| screen === 'bookReader' \|\| screen === 'dailyResult'/);
   assert.match(app, /useLibrary\(libraryNeeded\)/);
-  assert.ok(libraryHook.indexOf('cachedBooks = await libraryRepository.listBooks()') < libraryHook.indexOf('const seededBooks = await seedLibrary()'));
+  assert.ok(libraryHook.indexOf('cachedBooks = await libraryRepository.listBooks()') < libraryHook.indexOf('const seededBooks = await seedLibrary((catalogueBooks) =>'));
   assert.match(libraryHook, /setBooks\(cachedBooks\);\s*setLoading\(false\)/);
   assert.match(libraryHook, /if \(enabled && !hasLoadedOnce\.current\) refresh\(\)/);
   assert.match(libraryHook, /if \(refreshInFlight\.current\) return refreshInFlight\.current/);
