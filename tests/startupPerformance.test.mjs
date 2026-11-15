@@ -14,7 +14,10 @@ test('library, reader, and assistant modules stay out of the initial application
   assert.match(app, /const Reader = lazy\(\(\) => import\('\.\/features\/library\/Reader\.jsx'\)\)/);
   assert.match(app, /const GlobalAssistantLauncher = lazy\(\(\) => import\('\.\/features\/assistant\/GlobalAssistantLauncher\.jsx'\)\)/);
   assert.doesNotMatch(app, /import GlobalAssistantLauncher from/);
-  assert.match(app, /navVisible && <Suspense fallback=\{null\}><GlobalAssistantLauncher/);
+  assert.match(app, /navVisible && assistantLauncherRequested && <Suspense fallback=\{null\}><GlobalAssistantLauncher/);
+  assert.match(app, /onClick=\{\(\) => setAssistantLauncherRequested\(true\)\}/);
+  assert.match(app, /hideLauncher/);
+  assert.match(app, /initialOpen/);
 });
 
 test('startup uses the compact runtime topic index instead of downloading all daily content', () => {
@@ -167,9 +170,9 @@ test('no later stylesheet rule can re-hide the splash logo or title behind loadi
 });
 
 
-test('the splash remains visible for a short, real display interval after the logo is decoded', () => {
+test('the splash remains visible briefly for its first paint without imposing a long artificial startup delay', () => {
   assert.match(app, /const \[splashMinimumVisible, setSplashMinimumVisible\] = useState\(false\)/);
-  assert.match(app, /if \(!splashLogoReady\) return undefined[\s\S]*?setTimeout\(\(\) => \{[\s\S]*?setSplashMinimumVisible\(true\)[\s\S]*?\}, 650\)/);
+  assert.match(app, /if \(!splashLogoReady\) return undefined[\s\S]*?setTimeout\(\(\) => \{[\s\S]*?setSplashMinimumVisible\(true\)[\s\S]*?\}, 120\)/);
   assert.match(app, /!splashMinimumVisible/);
 });
 
