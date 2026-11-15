@@ -112,11 +112,12 @@ export function getInterpersonalPrivacyNotice(day) {
   // T08 day 25 explicitly reviews coercive control, monitoring and safe access
   // to support; surface the device-privacy warning before any sensitive entry.
   const hasT08CoerciveControlDay = topicIds.includes('T08') && dayNumbers.includes(25);
-  const hasT12SafetyPlanningDay = topicIds.includes('T12') && dayNumbers.includes(25);
+  const hasT12SensitiveEntryDay = topicIds.includes('T12')
+    && dayNumbers.some((number) => [1, 2, 3, 11, 13, 14, 15, 16, 17, 20, 21, 22, 24, 25, 26, 27, 28].includes(number));
   return (hasSharedLegacyTopic && hasSharedSupportSeekingDay)
     || hasAnxietySupportMessage
     || hasT08CoerciveControlDay
-    || hasT12SafetyPlanningDay
+    || hasT12SensitiveEntryDay
     ? SUPPORT_SEEKING_PRIVACY_NOTICE
     : null;
 }
