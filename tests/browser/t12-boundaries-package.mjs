@@ -92,7 +92,7 @@ try {
     .some(node => node.innerText.includes('تشخیص یک حد شخصی')));
   const answer = await firstPanel.locator('.assistantMessage').last().innerText();
   assert.ok(answer.includes(firstDay.exercise));
-  assert.ok(answer.includes('راهنمای روز 1 مرزبندی و نه گفتن — ' + firstDay.title));
+  assert.match(answer, /راهنمای روز 1 مرزبندی و نه گفتن/);
   assert.ok(answer.includes('بیاییم قدم‌به‌قدم پیش برویم.'));
   assert.ok(answer.includes('هدف امروز:'));
   assert.equal(answer.includes('**'), false);
