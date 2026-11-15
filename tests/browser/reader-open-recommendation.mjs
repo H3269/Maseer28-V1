@@ -90,19 +90,24 @@ try {
     failedRequests.push(request.url() + ' :: ' + failure);
   });
 
-  // The trusted-clock probe is a same-origin HEAD request with a cache-busting
-  // query. Fulfill it deterministically in this browser fixture, as other journey
-  // browser tests do, so route teardown cannot turn it into a false network failure.
-  await page.route('**/*', async (route) => {
-    const url = new URL(route.request().url());
-    if (url.searchParams.has('_m28_time')) {
-      await route.fulfill({ status: 200, headers: { date: new Date().toUTCString() } });
-      return;
-    }
-    await route.continue();
-  });
-
+  // Stub only the trusted-clock probe inside this test page. Intercepting the
+  // HEAD request at the browser routing layer still produced ERR_ABORTED in Chromium,
+  // so handle this deterministic fixture before the app issues a network request.
   await page.addInitScript((state) => {
+    const nativeFetch = window.fetch.bind(window);
+    window.fetch = (input, init = {}) => {
+      const rawUrl = typeof input === 'string' ? input : input?.url;
+      if (rawUrl) {
+        const url = new URL(rawUrl, window.location.href);
+        if (url.origin === window.location.origin && url.searchParams.has('_m28_time')) {
+          return Promise.resolve(new Response(null, {
+            status: 200,
+            headers: { date: new Date().toUTCString() },
+          }));
+        }
+      }
+      return nativeFetch(input, init);
+    };
     localStorage.setItem('maseer28_onboarding_complete_v1', '1');
     localStorage.setItem('maseer28_state', JSON.stringify(state));
     localStorage.setItem('maseer28_user_profile_v2', JSON.stringify({
