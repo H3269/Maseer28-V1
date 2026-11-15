@@ -624,9 +624,12 @@ input:focus, textarea:focus, select:focus, .smartSelectButton:focus-visible {
 .appLoading .loadingBrand h1 { color: #173E62 !important; }
 .appLoading .loadingBrand p { color: #5B7187 !important; }
 .appLoading .loadingBrand img {
-  border: 2px solid #40E0D0 !important;
-  background: #FFFFFF !important;
-  box-shadow: 0 0 0 4px rgba(64,224,208,.13),0 12px 26px rgba(16,42,67,.12) !important;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 .appLoading .loadingProgressSegment {
   background: #E4F8F6 !important;
