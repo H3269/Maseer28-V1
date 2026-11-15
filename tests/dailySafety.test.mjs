@@ -476,3 +476,15 @@ test('all 34 topics and 952 exercise/action pairs retain their canonical daily s
   }
   assert.equal(total, 952);
 });
+
+test('T12 live-test mode keeps all 28 days available with caution classification for safety-focused days', async () => {
+  const overrides = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+  const days = overrides.categories['مرزبندی و نه گفتن'].days;
+  assert.equal(days.length, 28);
+  for (const day of days) {
+    assert.equal(day.topic_id, 'T12');
+    assert.ok(['routine', 'caution'].includes(getDailySafetyMode(day)), 'T12 day ' + day.day + ' must be available for owner live testing');
+    assert.equal(day.risk_level, day.subtopic_ids.includes('T12-S03') ? 'caution' : 'routine');
+  }
+  assert.ok(days.some(day => getDailySafetyMode(day) === 'caution'));
+});
