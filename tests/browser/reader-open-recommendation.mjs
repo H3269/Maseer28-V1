@@ -66,6 +66,9 @@ async function waitForFirstBodyParagraph(page) {
 }
 
 try {
+  const repetitions = [];
+  for (let repetition = 1; repetition <= 3; repetition += 1) {
+  console.log(`START recommendation route repetition=${repetition}`);
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
   const errors = [];
   const failedRequests = [];
@@ -178,7 +181,34 @@ try {
     abortedNavigationRequests,
     abortedRequestDiagnostics,
   }, null, 2));
+  repetitions.push({
+    recommendationReadyMs: recommendationReady,
+    previewReadyMs: previewReady.elapsedMs,
+    readerReadyMs: readerReady.elapsedMs,
+    firstBodyParagraphMs: firstBodyParagraph.elapsedMs,
+  });
   await page.close();
+  }
+  const percentile = (values, p) => {
+    const sorted = [...values].sort((a, b) => a - b);
+    return sorted[Math.min(sorted.length - 1, Math.ceil((p / 100) * sorted.length) - 1)];
+  };
+  const summary = Object.fromEntries(
+    ['recommendationReadyMs', 'previewReadyMs', 'readerReadyMs', 'firstBodyParagraphMs'].map((key) => {
+      const values = repetitions.map((item) => item[key]);
+      return [key, {
+        samples: values.length,
+        p50: percentile(values, 50),
+        p95: percentile(values, 95),
+        min: Math.min(...values),
+        max: Math.max(...values),
+      }];
+    }),
+  );
+  assert.equal(repetitions.length, 3, 'recommendation route must complete three independent contexts');
+  console.log('PASS: daily-result recommendation → preview → reader completed in 3 independent browser contexts.');
+  console.log('Repeated recommendation-route timing summary (headless Chromium):');
+  console.log(JSON.stringify(summary, null, 2));
 } finally {
   await browser.close();
 }
