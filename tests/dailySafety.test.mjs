@@ -316,35 +316,20 @@ test('T10 sleep content is available for owner preview while preserving risk and
   })), 'caution');
 });
 
-test('legacy T12 boundary content stays blocked until expert and safety review', async () => {
-  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
-  const days = content.categories['مرزبندی و نه گفتن'].days;
+test('T12 is available for owner live testing without specialist-review gating while safety classification remains active', async () => {
+  const overlay = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+  const days = overlay.categories['مرزبندی و نه گفتن'].days;
   assert.equal(days.length, 28);
   for (const day of days) {
-    assert.equal(getDailySafetyMode(day), 'blocked', `${day.id} must remain withheld until its boundary subtype is reviewed`);
+    assert.equal(getDailySafetyMode(day), day.risk_level === 'caution' ? 'caution' : 'routine');
+    assert.equal(day.risk_level, day.subtopic_ids.includes('T12-S03') ? 'caution' : 'routine');
+    assert.equal('review_status' in day, false);
+    assert.equal('review_record_id' in day, false);
   }
-  const skipped = createHumanReviewSkipRecord(days[0], new Date('2026-11-04T13:00:00.000Z'));
-  assert.equal(skipped.status, 'skipped_human_review');
-  assert.equal('score' in skipped, false);
-  const approvedBoundary = (subtopic, extra = {}) => ({
-    id: 'T12-D06',
-    topic_id: 'T12',
-    risk_level: 'routine',
-    review_status: 'approved',
-    review_record_id: 'review-t12-day-06',
-    subtopic_ids: [subtopic],
-    ...extra,
-  });
-  assert.equal(getDailySafetyMode(approvedBoundary('T12-S01')), 'routine');
-  assert.equal(getDailySafetyMode(approvedBoundary('T12-S02')), 'routine');
-  assert.equal(getDailySafetyMode(approvedBoundary('T12-S03')), 'blocked',
-    'unsafe-relationship content needs an explicit safety rule and caution classification');
-  assert.equal(getDailySafetyMode(approvedBoundary('T12-S03', {
-    risk_level: 'caution',
-    safety_rule_ids: ['SR-T12-RELATIONSHIP-SAFETY'],
-  })), 'caution');
+  assert.equal(getDailySafetyMode({ id: 'T12-D06', topic_id: 'T12', risk_level: 'routine' }), 'routine');
+  assert.equal(getDailySafetyMode({ id: 'T12-D22', topic_id: 'T12', risk_level: 'caution' }), 'caution');
+  assert.equal(getDailySafetyMode({ id: 'T12-D06', topic_id: 'T03', risk_level: 'routine' }), 'blocked');
 });
-
 test('T11 is fully interactive during the owner live-test window without changing its pending review metadata', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const days = content.categories['عادت‌های تکراری'].days;
