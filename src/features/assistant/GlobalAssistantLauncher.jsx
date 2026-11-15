@@ -225,8 +225,12 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     if (libraryBooksLoadRef.current) return libraryBooksLoadRef.current;
     const loadTask = (async () => {
       try {
-        if (!libraryContext?.titles?.length && libraryContext?.loadBooks) await libraryContext.loadBooks();
-        const rows = await libraryRepository.listBooks();
+        let rows = await libraryRepository.listBooks();
+        const expectedCatalogueSize = libraryContext?.titles?.length || 0;
+        if (libraryContext?.loadBooks && (rows.length === 0 || (expectedCatalogueSize > 0 && rows.length < expectedCatalogueSize))) {
+          await libraryContext.loadBooks();
+          rows = await libraryRepository.listBooks();
+        }
         const plan = planLibraryBookLoad({ books: rows, message, conversationState });
         if (plan.kind === 'none' || plan.kind === 'clarify') {
           setLoadedLibraryBooks([]);
