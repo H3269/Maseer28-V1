@@ -43,7 +43,7 @@ export function answerT12DailyPreparedQuestion({ day, message, dailyContent } = 
   body = replaceExact(body, guide.restActionVersion, String(dailyContent.restActionText || guide.restActionVersion || '').trim());
 
   const heading = `راهنمای روز ${guide.day} مرزبندی و نه گفتن — ${guide.title}`;
-  const framedAnswer = addTeacherStyleFrame(`${heading}\\n\\n${body}`, {
+  const framedAnswer = addTeacherStyleFrame(`${heading}\n\n${body}`, {
     guide,
     question,
     topic: 'مرزبندی و نه گفتن',
