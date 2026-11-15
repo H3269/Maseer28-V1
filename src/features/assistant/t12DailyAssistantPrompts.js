@@ -68,10 +68,15 @@ export function answerT12DailyPreparedQuestion({ day, message, dailyContent } = 
     || normalizeVisibleText(actionWithoutDisplayPrefix) !== normalizeVisibleText(guide.action)) return null;
 
   const lightExercise = String(dailyContent.lightExerciseText || guide.lightVersion || '').trim();
+  const lightAction = String(dailyContent.lightActionText || guide.lightActionVersion || guide.lightVersion || '').trim();
+  const restExercise = String(dailyContent.restExerciseText || guide.restVersion || '').trim();
   const restAction = String(dailyContent.restActionText || guide.restActionVersion || guide.restVersion || '').trim();
   let body = replaceExact(question.answer, guide.exercise, exercise);
   body = replaceExact(body, guide.action, actionWithoutDisplayPrefix);
   body = replaceExact(body, guide.lightVersion, lightExercise);
+  body = replaceExact(body, guide.lightActionVersion, lightAction);
+  body = replaceExact(body, guide.restVersion, restExercise);
+  body = replaceExact(body, guide.restActionVersion, restAction);
 
   switch (question.kind) {
     case 'exercise_meaning':
@@ -87,7 +92,7 @@ export function answerT12DailyPreparedQuestion({ day, message, dailyContent } = 
       body += `\n\n${section('اقدام دقیق همین روز', actionWithoutDisplayPrefix)}\n\nاین اقدام فقط در صورت امنیت و اختیار قابل اجراست؛ انجام‌ندادن یا انتخاب راه غیرمستقیم نیز معتبر است.`;
       break;
     case 'light_version':
-      body += `\n\n${section('نسخه سبک', lightExercise)}\n${section('نسخه استراحت', restAction)}\n\nنسخه پیشرفت اجباری نیست و هیچ تمرینی نیاز به جبران ندارد.`;
+      body += `\n\n${section('نسخه سبک تمرین', lightExercise)}\n${section('نسخه سبک اقدام', lightAction)}\n${section('نسخه استراحت تمرین', restExercise)}\n${section('نسخه استراحت اقدام', restAction)}\n\nنسخه پیشرفت اجباری نیست و هیچ تمرینی نیاز به جبران ندارد.`;
       break;
     case 'success':
       body += `\n\n${section('معیار موفقیت', guide.successCriterion)}\n${section('پرسش بازتاب', guide.reflectionQuestion)}\n\nموافقت یا واکنش طرف مقابل معیار موفقیت تو نیست.`;
