@@ -7,6 +7,8 @@ const GATED_DAYS_BY_TOPIC = new Map([
     const topicId = 'T' + String(index + 3).padStart(2, '0');
     const topicDays = topicId === 'T05'
       ? [...COMMON_INTERPERSONAL_DAYS, 10, 16, 26]
+      : topicId === 'T12'
+        ? [...COMMON_INTERPERSONAL_DAYS, 25]
       : topicId === 'T06'
         ? [11, 15]
         : COMMON_INTERPERSONAL_DAYS;
@@ -110,9 +112,11 @@ export function getInterpersonalPrivacyNotice(day) {
   // T08 day 25 explicitly reviews coercive control, monitoring and safe access
   // to support; surface the device-privacy warning before any sensitive entry.
   const hasT08CoerciveControlDay = topicIds.includes('T08') && dayNumbers.includes(25);
+  const hasT12SafetyPlanningDay = topicIds.includes('T12') && dayNumbers.includes(25);
   return (hasSharedLegacyTopic && hasSharedSupportSeekingDay)
     || hasAnxietySupportMessage
     || hasT08CoerciveControlDay
+    || hasT12SafetyPlanningDay
     ? SUPPORT_SEEKING_PRIVACY_NOTICE
     : null;
 }
