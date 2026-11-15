@@ -90,6 +90,18 @@ try {
     failedRequests.push(request.url() + ' :: ' + failure);
   });
 
+  // The trusted-clock probe is a same-origin HEAD request with a cache-busting
+  // query. Fulfill it deterministically in this browser fixture, as other journey
+  // browser tests do, so route teardown cannot turn it into a false network failure.
+  await page.route('**/*', async (route) => {
+    const url = new URL(route.request().url());
+    if (url.searchParams.has('_m28_time')) {
+      await route.fulfill({ status: 200, headers: { date: new Date().toUTCString() } });
+      return;
+    }
+    await route.continue();
+  });
+
   await page.addInitScript((state) => {
     localStorage.setItem('maseer28_onboarding_complete_v1', '1');
     localStorage.setItem('maseer28_state', JSON.stringify(state));
