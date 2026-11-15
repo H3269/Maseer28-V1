@@ -154,12 +154,18 @@ test('T12 day 24 negotiation is offered only in safe, voluntary relationships', 
 
 test('T12 relationship gate covers the four communication days and the day-25 safety-planning day', () => {
   for (const day of [6, 11, 15, 24, 25]) {
+    const guide = T12_DAILY_ASSISTANT_GUIDES[day - 1];
     const record = { id: idFor(day), day, topic_id: 'T12' };
+    const guidanceData = {
+      ...record,
+      exercise: guide.exercise,
+      action: 'برای مسئله «مرزبندی و نه گفتن»، ' + guide.action,
+    };
     assert.ok(getRelationshipSafetyGate(record), 'day ' + day);
     const blocked = makePageAssistantTurn({
       screen: 'day',
-      text: T12_DAILY_ASSISTANT_GUIDES[day - 1].questions[0].value,
-      dailyContext: { day, problem: topicName, data: record, guidanceData: record },
+      text: guide.questions[0].value,
+      dailyContext: { day, problem: topicName, data: record, guidanceData },
     });
     assert.equal(blocked.status, 'relationship_safety_confirmation_required');
   }
