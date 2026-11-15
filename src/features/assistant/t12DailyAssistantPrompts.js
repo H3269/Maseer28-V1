@@ -25,8 +25,8 @@ export function answerT12DailyPreparedQuestion({ day, message, dailyContent } = 
   if (!guide || dailyContent.id !== expectedId || Number(dailyContent.day) !== dayNumber
     || String(dailyContent.title || '').trim() !== guideTitleForDay(dayNumber)
     || dailyContent.topic_id !== 'T12'
-    || String(dailyContent.exercise || '').trim() !== guide.exercise
-    || String(dailyContent.actionText || dailyContent.action || '').trim() !== guide.action) return null;
+    || String(dailyContent.sourceExercise ?? dailyContent.exercise ?? '').trim() !== guide.exercise
+    || String(dailyContent.sourceActionText ?? dailyContent.actionText ?? dailyContent.action ?? '').trim() !== guide.action) return null;
   const question = guide?.questions.find((item) => item.value === String(message || '').trim());
   if (!guide || !question || typeof question.answer !== 'string' || !question.answer.trim()) return null;
 
