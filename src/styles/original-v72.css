@@ -7407,11 +7407,13 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 
 /* Final splash override: restore the center-out bloom after legacy reset rules. */
 .appLoading .loadingBrand img {
-  clip-path: circle(0% at 50% 50%) !important;
-  opacity: 0 !important;
+  /* These are animation start values, not locks: !important here prevents
+     CSS keyframes from ever revealing the logo beyond the closed circle. */
+  clip-path: circle(0% at 50% 50%);
+  opacity: 0;
   visibility: visible !important;
-  transform: scale(.82) !important;
-  transform-origin: center !important;
+  transform: scale(.82);
+  transform-origin: center;
   animation: loadingLogoBloom .95s cubic-bezier(.2,.72,.2,1) both !important;
 }
 @keyframes loadingLogoBloom {
