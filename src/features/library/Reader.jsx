@@ -24,7 +24,7 @@ const PAGE_FLIP_AUDIO_END = 1.645;
 // read book avoids repeating the full pagination pass, while the strict cap
 // prevents unbounded memory growth on mobile browsers.
 const READER_LAYOUT_CACHE = new Map();
-const READER_LAYOUT_CACHE_LIMIT = 2;
+const READER_LAYOUT_CACHE_LIMIT = 3;
 
 function readerLayoutCacheKey(version, book, metrics) {
   const coverKey = book.coverDataUrl

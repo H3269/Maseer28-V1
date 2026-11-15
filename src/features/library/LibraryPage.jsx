@@ -41,7 +41,7 @@ export default function LibraryPage({ books, loading, error, onOpenBook, onBack 
           const pct = r?.total ? Math.round((Number(r.page) + 1) / Number(r.total) * 100) : 0;
           return <article className="libraryBook" key={book.id}>
             <div className="libraryCoverWrap">
-              <Cover book={book} priority={index < 2}/>
+              <Cover book={book} priority={index === 0}/>
               <span className="libraryBookBadge">{Number(book.legacyId) <= 3 ? `جلد ${fa(book.legacyId)}` : Number(book.legacyId) === 4 ? 'تکمیلی' : 'کتاب'}</span>
             </div>
             <div className="libraryBookInfo">

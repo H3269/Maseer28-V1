@@ -55,9 +55,12 @@ import { createRuntimeContentRepository } from './features/content/runtimeConten
 import { mergeDailyTextOverrides } from './features/content/dailyTextOverrides.js';
 import { fa } from './shared/utils.js';
 import VersionFooter from './shared/components/VersionFooter.jsx';
-const GlobalAssistantLauncher = lazy(() => import('./features/assistant/GlobalAssistantLauncher.jsx'));
-const LibraryPage = lazy(() => import('./features/library/LibraryPage.jsx'));
-const Reader = lazy(() => import('./features/library/Reader.jsx'));
+const loadGlobalAssistantLauncher = () => import('./features/assistant/GlobalAssistantLauncher.jsx');
+const loadLibraryPage = () => import('./features/library/LibraryPage.jsx');
+const loadReader = () => import('./features/library/Reader.jsx');
+const GlobalAssistantLauncher = lazy(loadGlobalAssistantLauncher);
+const LibraryPage = lazy(loadLibraryPage);
+const Reader = lazy(loadReader);
 
 function isPathSetupComplete(state) {
   const data = state?.profileData;
@@ -140,6 +143,22 @@ function MainApp() {
   const [openingBook, setOpeningBook] = useState(false);
   const libraryNeeded = screen === 'books' || screen === 'bookReader' || screen === 'dailyResult';
   const { books, loading: libraryLoading, error: libraryError, refresh: refreshLibrary } = useLibrary(libraryNeeded);
+
+  // Warm the assistant chunk only after the app is ready and the browser is idle.
+  useEffect(() => {
+    if (!content || !userProfile || !hasCompletedOnboarding) return undefined;
+    let cancelled = false;
+    let idleHandle = null;
+    let timer = null;
+    const warmAssistant = () => { if (!cancelled) void loadGlobalAssistantLauncher(); };
+    if (typeof window.requestIdleCallback === 'function') idleHandle = window.requestIdleCallback(warmAssistant, { timeout: 1800 });
+    else timer = window.setTimeout(warmAssistant, 900);
+    return () => {
+      cancelled = true;
+      if (idleHandle !== null) window.cancelIdleCallback?.(idleHandle);
+      if (timer !== null) window.clearTimeout(timer);
+    };
+  }, [content, userProfile, hasCompletedOnboarding]);
 
   useEffect(() => {
     let cancelled = false;
@@ -290,7 +309,7 @@ function MainApp() {
     let cancelled = false;
     const timer = window.setTimeout(() => {
       if (!cancelled) setSplashMinimumVisible(true);
-    }, 120);
+    }, 980);
     return () => {
       cancelled = true;
       window.clearTimeout(timer);
@@ -634,6 +653,7 @@ function navigate(next) {
 
   function openBooks(returnTo = 'dashboard') {
     setLibraryReturn(returnTo || 'dashboard');
+    void loadLibraryPage();
     navigate('books');
   }
 
@@ -650,7 +670,7 @@ function navigate(next) {
       // without waiting for a second network round trip.
       const [{ book: readyBook, version }] = await Promise.all([
         ensureSeedBookContent(book),
-        import('./features/library/Reader.jsx'),
+        loadReader(),
       ]);
       if (!version?.content) throw new Error('متن کتاب آماده نشد.');
       setReaderState({ book: readyBook, version, sourcePage, target });
@@ -868,7 +888,11 @@ function navigate(next) {
         ref={assistantLauncherButtonRef}
         className="globalAssistantLauncher"
         type="button"
+        onPointerDown={() => { void loadGlobalAssistantLauncher(); }}
+        onTouchStart={() => { void loadGlobalAssistantLauncher(); }}
+        onFocus={() => { void loadGlobalAssistantLauncher(); }}
         onClick={() => {
+          void loadGlobalAssistantLauncher();
           if (!assistantLauncherLoaded) {
             setAssistantLauncherLoaded(true);
             setAssistantOpen(true);

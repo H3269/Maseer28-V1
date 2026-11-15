@@ -35,7 +35,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const [sending, setSending] = useState(false);
   const [localModelUnavailable, setLocalModelUnavailable] = useState(false);
   const [localModelInstalled, setLocalModelInstalled] = useState(false);
-  const [localModelStatusChecked, setLocalModelStatusChecked] = useState(false);
   const turnSequenceRef = useRef(0);
   const [loadedLibraryBooks, setLoadedLibraryBooks] = useState([]);
   const libraryBooksLoadRef = useRef(null);
@@ -112,26 +111,20 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     if (screen !== 'books') {
       setLoadedLibraryBooks([]);
       libraryBooksLoadRef.current = null;
-    } else if (open && !loadedLibraryBooks.length) {
-      ensureLibraryBooksLoaded();
     }
     const shouldCheckModel = screen === 'books' || (screen === 'day' && Boolean(dailyContext));
     if (!shouldCheckModel) {
       setLocalModelInstalled(false);
-      setLocalModelStatusChecked(false);
-      return undefined;
+        return undefined;
     }
     let active = true;
-    setLocalModelStatusChecked(false);
     isLocalNeuralModelInstalled().then((installed) => {
       if (active) {
         setLocalModelInstalled(installed);
-        setLocalModelStatusChecked(true);
       }
     }).catch(() => {
       if (active) {
         setLocalModelInstalled(false);
-        setLocalModelStatusChecked(true);
       }
     });
     return () => { active = false; };
@@ -276,7 +269,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   function activate() {
     setOpen(true);
     onOpenChange?.(true);
-    if (screen === 'books' && !loadedLibraryBooks.length) ensureLibraryBooksLoaded();
   }
 
   async function send(event, overrideMessage = null) {
@@ -644,12 +636,12 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       aria-haspopup="dialog"
                       aria-expanded={libraryPromptOpen}
                       aria-controls="library-assistant-prompt-dialog"
-                      disabled={sending || !localModelStatusChecked || jealousyRelationshipGatePending || griefRelationshipGatePending || emotionalDependencyRelationshipGatePending || t12RelationshipGatePending}
+                      disabled={sending || jealousyRelationshipGatePending || griefRelationshipGatePending || emotionalDependencyRelationshipGatePending || t12RelationshipGatePending}
                       onClick={() => setLibraryPromptOpen(true)}
                     >
                       {draft.trim() || 'انتخاب از میان سؤال‌های پیشنهادی'}
                     </button>
-                    <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال سؤال انتخاب‌شده" disabled={!localModelStatusChecked || !draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
+                    <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال سؤال انتخاب‌شده" disabled={!draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
                   </div>
                 ) : (
                   <>

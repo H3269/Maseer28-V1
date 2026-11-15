@@ -10,9 +10,12 @@ const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 const assistantLauncher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
 
 test('library, reader, and assistant modules stay out of the initial application bundle', () => {
-  assert.match(app, /const LibraryPage = lazy\(\(\) => import\('\.\/features\/library\/LibraryPage\.jsx'\)\)/);
-  assert.match(app, /const Reader = lazy\(\(\) => import\('\.\/features\/library\/Reader\.jsx'\)\)/);
-  assert.match(app, /const GlobalAssistantLauncher = lazy\(\(\) => import\('\.\/features\/assistant\/GlobalAssistantLauncher\.jsx'\)\)/);
+  assert.match(app, /const LibraryPage = lazy\(loadLibraryPage\)/);
+  assert.match(app, /const Reader = lazy\(loadReader\)/);
+  assert.match(app, /const GlobalAssistantLauncher = lazy\(loadGlobalAssistantLauncher\)/);
+  assert.match(app, /void loadLibraryPage\(\)/);
+  assert.match(app, /void loadGlobalAssistantLauncher\(\)/);
+  assert.match(app, /requestIdleCallback\(warmAssistant, \{ timeout: 1800 \}\)/);
   assert.doesNotMatch(app, /import GlobalAssistantLauncher from/);
   assert.match(app, /navVisible && assistantLauncherLoaded && <Suspense fallback=\{null\}><GlobalAssistantLauncher/);
   assert.match(app, /setAssistantLauncherLoaded\(true\)/);
@@ -48,9 +51,9 @@ test('the selected topic loads independently and the day screen waits for its ve
 });
 
 test('the static splash logo and title remain visible before React mounts', () => {
-  assert.match(html, /\.initialSplash img\{[^}]*opacity:1;visibility:visible/);
-  assert.match(html, /\.initialSplash h1\{[^}]*opacity:1/);
-  assert.doesNotMatch(html, /\.initialSplash h1\{opacity:0!important/);
+  assert.match(html, /\.initialSplash img\{[^}]*clip-path:circle\(0% at 50% 50%\)[^}]*animation:initialLogoBloom/);
+  assert.match(html, /@keyframes initialLogoBloom\{0%\{opacity:0;clip-path:circle\(0% at 50% 50%\)/);
+  assert.match(html, /\.initialSplash h1,\.initialSplash p\{opacity:0;transform:translateY\(10px\);animation:initialTextBloomReveal/);
 });
 
 test('the library catalogue does not download every full book on entry', () => {
@@ -86,19 +89,24 @@ test('recommended books can be loaded on demand without relying on startup prelo
   assert.match(app, /const availableBooks = books\.length \? books : await refreshLibrary\(\)/);
 });
 
-test('library assistant hydrates full book content only when the assistant is opened', () => {
+test('library assistant defers full-book hydration until a question is actually sent', () => {
   assert.match(assistantLauncher, /import \{ ensureSeedBookContent \} from '\.\.\/library\/useLibrary\.js'/);
   assert.match(assistantLauncher, /const libraryBooksLoadRef = useRef\(null\)/);
-  assert.match(assistantLauncher, /else if \(open && !loadedLibraryBooks\.length\)/);
-  assert.match(assistantLauncher, /function activate\(\)[\s\S]{0,180}loadedLibraryBooks\.length\) ensureLibraryBooksLoaded\(\)/);
+  assert.doesNotMatch(assistantLauncher, /else if \(open && !loadedLibraryBooks\.length\)/);
+  assert.doesNotMatch(assistantLauncher, /function activate\(\)[\s\S]{0,180}ensureLibraryBooksLoaded\(\)/);
   assert.match(assistantLauncher, /screen === 'books' && !booksForTurn\.length/);
   assert.match(assistantLauncher, /ensureSeedBookContent\(book\)/);
   assert.match(assistantLauncher, /await \(libraryBooksLoadRef\.current \|\| ensureLibraryBooksLoaded\(\)\)/);
-  assert.match(assistantLauncher, /screen === 'books' && !booksForTurn\.length/);
 });
 
-test('only the first two visible library covers receive eager high-priority loading', () => {
-  assert.match(libraryPage, /priority=\{index < 2\}/);
+test('prepared daily questions are not blocked by asynchronous local-model status checks', () => {
+  assert.doesNotMatch(assistantLauncher, /localModelStatusChecked/);
+  assert.match(assistantLauncher, /disabled=\{sending \|\| jealousyRelationshipGatePending/);
+  assert.match(assistantLauncher, /disabled=\{!draft\.trim\(\) \|\| sending\}/);
+});
+
+test('only the first library cover receives eager high-priority loading', () => {
+  assert.match(libraryPage, /priority=\{index === 0\}/);
   assert.match(libraryPage, /loading=\{priority \? 'eager' : 'lazy'\} decoding="async" fetchPriority=\{priority \? 'high' : 'low'\}/);
   assert.match(libraryPage, /books\.map\(\(book, index\)/);
 });
@@ -122,7 +130,8 @@ test('the app waits until the complete splash logo image is decoded', () => {
   assert.match(app, /onLoad=\{\(event\) => markSplashLogoReady\(event\.currentTarget\)\}/);
 });
 
-test('offscreen library book covers remain lazy and low priority', () => {
+test('offscreen library book covers remain lazy and only the first cover is high priority', () => {
+  assert.match(libraryPage, /priority=\{index === 0\}/);
   assert.match(libraryPage, /loading=\{priority \? 'eager' : 'lazy'\} decoding="async" fetchPriority=\{priority \? 'high' : 'low'\}/);
 });
 
@@ -142,8 +151,8 @@ test('reader pagination uses the linear neighbour index instead of rescanning ea
   assert.doesNotMatch(helperSource, /blocks\.slice\(0, i\)\.reverse\(\)/);
 });
 
-test('recent reader layouts are reused with a strict two-layout memory cap', () => {
-  assert.match(reader, /const READER_LAYOUT_CACHE_LIMIT = 2/);
+test('recent reader layouts are reused with a bounded three-layout mobile memory cap', () => {
+  assert.match(reader, /const READER_LAYOUT_CACHE_LIMIT = 3/);
   assert.match(reader, /READER_LAYOUT_CACHE\.get\(cacheKey\)/);
   assert.match(reader, /while \(READER_LAYOUT_CACHE\.size > READER_LAYOUT_CACHE_LIMIT\)/);
 });
@@ -155,27 +164,22 @@ test('hydrated book content is cached with a strict mobile memory cap', () => {
 });
 
 test('opening a book preloads the reader module and reuses the prepared IndexedDB version', () => {
-  assert.match(app, /Promise\.all\(\[[\s\S]*?ensureSeedBookContent\(book\),\s*import\('\.\/features\/library\/Reader\.jsx'\)/);
+  assert.match(app, /Promise\.all\(\[[\s\S]*?ensureSeedBookContent\(book\),\s*loadReader\(\)/);
   assert.match(app, /initialVersion=\{readerState\.version\}/);
   assert.match(reader, /initialVersion = null/);
   assert.match(reader, /if \(initialVersion\?\.content\)/);
 });
 
-test('the splash logo is visible independently of the content-download progress', () => {
-  assert.match(css, /\.appLoading \.loadingBrand img \{[\s\S]*?clip-path: none !important/);
-  assert.match(css, /\.appLoading \.loadingBrand h1 \{[\s\S]*?clip-path: none !important/);
-});
-
-test('no later stylesheet rule can re-hide the splash logo or title behind loading progress', () => {
-  assert.doesNotMatch(css, /clip-path:\s*circle\(var\(--logo-reveal/);
-  assert.match(css, /\.appLoading \.loadingBrand img \{[\s\S]*?clip-path: none !important[\s\S]*?visibility: visible !important/);
-  assert.match(css, /\.appLoading \.loadingBrand h1 \{[\s\S]*?clip-path: none !important[\s\S]*?visibility: visible !important/);
+test('the React splash reveals the logo radially from its center and then reveals its title', () => {
+  assert.match(css, /\.appLoading \.loadingBrand img \{[\s\S]*?clip-path: circle\(0% at 50% 50%\)[\s\S]*?animation: loadingLogoBloom/);
+  assert.match(css, /@keyframes loadingLogoBloom[\s\S]*?circle\(75% at 50% 50%\)/);
+  assert.match(css, /\.appLoading \.loadingBrand h1,[\s\S]*?animation: loadingTextReveal \.42s ease-out \.58s both/);
 });
 
 
 test('the splash remains visible briefly for its first paint without imposing a long artificial startup delay', () => {
   assert.match(app, /const \[splashMinimumVisible, setSplashMinimumVisible\] = useState\(false\)/);
-  assert.match(app, /if \(!splashLogoReady\) return undefined[\s\S]*?setTimeout\(\(\) => \{[\s\S]*?setSplashMinimumVisible\(true\)[\s\S]*?\}, 120\)/);
+  assert.match(app, /if \(!splashLogoReady\) return undefined[\s\S]*?setTimeout\(\(\) => \{[\s\S]*?setSplashMinimumVisible\(true\)[\s\S]*?\}, 980\)/);
   assert.match(app, /!splashMinimumVisible/);
 });
 

@@ -5828,10 +5828,10 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
 .appLoading .loadingBrand {
   width: min(100%, 360px);
   gap: 13px;
-  opacity: 0;
-  clip-path: ellipse(0% 0% at 50% 50%);
+  opacity: 1;
+  clip-path: none;
   transform-origin: center;
-  animation: loadingBloomReveal 1.7s cubic-bezier(.2,.72,.2,1) both;
+  animation: none;
 }
 .appLoading .loadingBrand img {
   width: 174px !important;
@@ -5843,12 +5843,16 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   padding: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
+  clip-path: circle(0% at 50% 50%);
+  opacity: 0;
+  transform: scale(.82);
+  animation: loadingLogoBloom .95s cubic-bezier(.2,.72,.2,1) both;
 }
 .appLoading .loadingBrand h1,
 .appLoading .loadingBrand p {
-  opacity: 1;
-  transform: none;
-  animation: none;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: loadingTextReveal .42s ease-out .58s both;
 }
 .loadingProgress {
   display: grid;
@@ -5887,6 +5891,11 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
 @keyframes loadingBloomReveal {
   0% { opacity: 0; clip-path: ellipse(0% 0% at 50% 50%); }
   100% { opacity: 1; clip-path: ellipse(75% 75% at 50% 50%); }
+}
+@keyframes loadingLogoBloom {
+  0% { opacity: 0; clip-path: circle(0% at 50% 50%); transform: scale(.82); }
+  68% { opacity: 1; clip-path: circle(75% at 50% 50%); transform: scale(1.035); }
+  100% { opacity: 1; clip-path: circle(75% at 50% 50%); transform: scale(1); }
 }
 @media (prefers-reduced-motion: reduce) {
   .appLoading .loadingBrand,
