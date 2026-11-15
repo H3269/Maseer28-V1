@@ -30,13 +30,13 @@ async function measure(viewport, run) {
     window.__path28SplashObserved = null;
     let observationPending = false;
     const inspectSplash = () => {
-      const splash = document.querySelector('#root .initialSplash');
-      const image = splash?.querySelector('img[alt="لوگوی برنامه مسیر"]');
+      const image = document.querySelector('#root .appLoading img[alt="لوگوی برنامه مسیر"], #root .initialSplash img[alt="لوگوی برنامه مسیر"]');
       if (!image || observationPending) return;
       observationPending = true;
       const observeFrame = () => {
         if (!image.isConnected) {
           observationPending = false;
+          inspectSplash();
           return;
         }
         const style = getComputedStyle(image);
