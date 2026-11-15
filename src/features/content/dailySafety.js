@@ -260,7 +260,11 @@ export function getDailySafetyMode(day) {
   if (isFearTopicDay(day) && !hasApprovedFearReview(day)) return 'blocked';
   // T12 owner live-test mode: no specialist-review approval gate is applied here.
   // Preserve the content risk classification so S03 days display the caution notice.
-  if (isBoundaryTopicDay(day)) return day.risk_level === 'caution' ? 'caution' : day.risk_level === 'routine' ? 'routine' : 'blocked';
+  if (isBoundaryTopicDay(day)) {
+    const subtopics = Array.isArray(day.subtopic_ids) ? day.subtopic_ids : [];
+    if (subtopics.includes('T12-S03')) return day.risk_level === 'caution' ? 'caution' : 'blocked';
+    return day.risk_level === 'routine' ? 'routine' : 'blocked';
+  }
   // Temporary owner-review preview for T10: expert sign-off is deliberately
   // performed after the owner can inspect the full package in the live app.
   // Keep the risk classification gate active; unknown/missing risk stays blocked.
