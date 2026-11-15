@@ -1,11 +1,14 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, writeFile } from 'node:fs/promises';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const baseURL = process.env.PATH28_BASE_URL || 'http://127.0.0.1:4173/Maseer28/';
 const outputPath = 'reports/generated/reader-layout-baseline.json';
+const assetNames = await readdir('dist/assets');
+const engineFile = assetNames.find((name) => /^readerEngine-[^/]+\\.js$/.test(name));
+assert.ok(engineFile, 'the production reader-engine chunk must exist');
 const browser = await chromium.launch({ headless: true });
 
 try {
@@ -77,7 +80,7 @@ try {
       note: 'Measures browser-side book JSON fetch/parse and synchronous full-layout generation. This is a diagnostic baseline, not end-to-end time-to-first-text for the three user entry routes; real-device route timing remains required.',
       results,
     };
-  }, { baseURL });
+  }, { baseURL, engineFile });
 
   await mkdir('reports/generated', { recursive: true });
   await writeFile(outputPath, JSON.stringify(report, null, 2) + '\n', 'utf8');
