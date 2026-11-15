@@ -29,20 +29,21 @@ async function measure(viewport, run) {
   const startedAt = Date.now();
   await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
 
-  // Capture the splash logo while the loading screen is still mounted. The
-  // logo is intentionally removed after the app passes its startup gate.
-  // The center-out bloom intentionally begins at zero opacity. Wait for
-  // the first visible animation frame rather than sampling at DOMContentLoaded.
+  // The initial HTML splash (.initialSplash) is replaced by React's
+  // .appLoading splash during hydration. Both are valid startup states; do
+  // not require one particular side of that hand-off to still be mounted.
+  // waitForFunction takes its options as the third argument (the second is
+  // the optional page-function argument).
   await page.waitForFunction(() => {
     const image = document.querySelector('#root img[alt="لوگوی برنامه مسیر"]');
     if (!image) return false;
     const style = getComputedStyle(image);
     const rect = image.getBoundingClientRect();
-    return image.complete && image.naturalWidth > 0
+    const splashMounted = Boolean(document.querySelector('#root .initialSplash, #root .appLoading'));
+    return splashMounted && image.complete && image.naturalWidth > 0
       && style.display !== 'none' && style.visibility !== 'hidden'
-      && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0
-      && Boolean(document.querySelector('#root .appLoading'));
-  }, { timeout: 650 });
+      && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0;
+  }, null, { timeout: 15000 });
   const logoReadiness = await page.evaluate(() => {
     const image = document.querySelector('#root img[alt="لوگوی برنامه مسیر"]');
     if (!image) return { logoDecoded: false, logoNaturalWidth: 0, logoVisible: false };
