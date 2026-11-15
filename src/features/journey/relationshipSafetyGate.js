@@ -110,9 +110,13 @@ export function getInterpersonalPrivacyNotice(day) {
   // T08 day 25 explicitly reviews coercive control, monitoring and safe access
   // to support; surface the device-privacy warning before any sensitive entry.
   const hasT08CoerciveControlDay = topicIds.includes('T08') && dayNumbers.includes(25);
+  const hasT12SafetyFocusedDay = topicIds.includes('T12')
+    && Array.isArray(day?.subtopic_ids)
+    && day.subtopic_ids.includes('T12-S03');
   return (hasSharedLegacyTopic && hasSharedSupportSeekingDay)
     || hasAnxietySupportMessage
     || hasT08CoerciveControlDay
+    || hasT12SafetyFocusedDay
     ? SUPPORT_SEEKING_PRIVACY_NOTICE
     : null;
 }
@@ -121,7 +125,10 @@ export function getRelationshipSafetyGate(day) {
   const { topicIds, dayNumbers } = getTopicDayIdentity(day);
   // Conflicting identifiers must not weaken a gate: if any trusted topic/day
   // identifier points to a gated interpersonal exercise, require the check.
-  const requiresGate = topicIds.some((topicId) => {
+  const t12SafetySubtopicRequiresGate = topicIds.includes('T12')
+    && Array.isArray(day?.subtopic_ids)
+    && day.subtopic_ids.includes('T12-S03');
+  const requiresGate = t12SafetySubtopicRequiresGate || topicIds.some((topicId) => {
     const gatedDays = GATED_DAYS_BY_TOPIC.get(topicId);
     return gatedDays && dayNumbers.some((number) => gatedDays.has(number));
   });

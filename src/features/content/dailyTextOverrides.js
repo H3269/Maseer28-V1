@@ -15,6 +15,14 @@ const T11_REVIEW_METADATA_FIELDS = Object.freeze([
   'when_to_seek_human_support', 'review_record_id',
 ]);
 
+
+const T12_RUNTIME_METADATA_FIELDS = Object.freeze([
+  'topic_id', 'objective', 'skill', 'subtopic_ids', 'risk_level',
+  'successCriterion', 'reflectionQuestion', 'stopCondition', 'stopConditions',
+  'contraindications', 'whenToSeekHumanSupport', 'exerciseType', 'stop_conditions', 'when_to_seek_human_support',
+  'success_criterion', 'reflection_prompt', 'exercise_type',
+]);
+
 export function mergeDailyTextOverrides(content, overrides) {
   if (!content || typeof content !== 'object' || !overrides || typeof overrides !== 'object') {
     return content;
@@ -54,12 +62,15 @@ export function mergeDailyTextOverrides(content, overrides) {
           && (day?.topic_id === 'T11'
             || /^عادت‌های تکراری-[0-9]{1,2}$/u.test(String(day?.id || ''))
             || /^T11-D[0-9]{1,2}$/i.test(String(day?.id || '')));
-        const reviewMetadata = isT11Record
-          ? Object.fromEntries(T11_REVIEW_METADATA_FIELDS
-            .filter((field) => Object.prototype.hasOwnProperty.call(replacement, field))
-            .map((field) => [field, replacement[field]]))
-          : {};
-        return { ...day, ...textOverrides, ...reviewMetadata };
+        const isT12Record = categoryKey === 'مرزبندی و نه گفتن'
+          && (day?.topic_id === 'T12'
+            || /^مرزبندی و نه گفتن-[0-9]{1,2}$/u.test(String(day?.id || ''))
+            || /^T12-D[0-9]{1,2}$/i.test(String(day?.id || '')));
+        const metadataFields = isT11Record ? T11_REVIEW_METADATA_FIELDS : isT12Record ? T12_RUNTIME_METADATA_FIELDS : [];
+        const runtimeMetadata = Object.fromEntries(metadataFields
+          .filter((field) => Object.prototype.hasOwnProperty.call(replacement, field))
+          .map((field) => [field, replacement[field]]));
+        return { ...day, ...textOverrides, ...runtimeMetadata };
       }),
     };
   }

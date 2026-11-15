@@ -3,6 +3,7 @@ import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGat
 import { answerAngerDailyPreparedQuestion } from './angerDailyAssistantPrompts.js';
 import { answerAnxietyDailyPreparedQuestion } from './anxietyDailyAssistantPrompts.js';
 import { answerFearDailyPreparedQuestion } from './fearDailyAssistantPrompts.js';
+import { answerT12DailyPreparedQuestion } from './t12DailyAssistantPrompts.js';
 
 const SAFETY_QUESTION = 'آیا همین الآن خطر فوری، قصد یا برنامه عملی برای آسیب به خودت یا شخص دیگری وجود دارد؟ اگر پاسخ روشن نیست، بگو مطمئن نیستی.';
 const SAFETY_HANDOFF = 'راهنمایی تمرین را متوقف می‌کنم. من نمی‌توانم به‌جای تو با اورژانس یا فرد دیگری تماس بگیرم. اگر احتمال خطر فوری وجود دارد یا مطمئن نیستی، همین الآن با خدمات اورژانسی محل زندگی یا یک فرد امن و قابل اعتماد تماس بگیر و تنها نمان. این گفت‌وگو جای کمک فوری انسانی را نمی‌گیرد.';
@@ -34,6 +35,8 @@ export function selectDailyExerciseGuidanceData({ guidanceData, data } = {}) {
   return {
     ...(data && typeof data === 'object' ? data : {}),
     ...guidanceData,
+    sourceExercise: data?.exercise || data?.instructions || '',
+    sourceActionText: data?.actionText || data?.action || '',
     exercise: guidanceData.exercise || data?.exercise || data?.instructions || '',
     actionText: guidanceData.action || guidanceData.actionText || data?.actionText || data?.action || '',
     adaptation: guidanceData.adaptation || data?.adaptation || '',
@@ -344,6 +347,13 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
   if (canonicalTopicId === 'T02') {
     const preparedAnswer = answerAnxietyDailyPreparedQuestion({ day, message: text });
     if (preparedAnswer) return result(preparedAnswer, { ...state, lastTopic: currentTopic }, text);
+  }
+
+  if (canonicalTopicId === 'T12') {
+    if (sourceTopicId !== 'T12') return result('شناسه موضوع محتوای روز با موضوع مرزبندی و نه گفتن یکسان نیست؛ برای جلوگیری از پاسخ اشتباه، راهنمای آماده ارائه نمی‌شود.', state, text);
+    const preparedAnswer = answerT12DailyPreparedQuestion({ day, message: text, dailyContent: dayData });
+    if (preparedAnswer) return result(preparedAnswer, { ...state, lastTopic: currentTopic }, text);
+    return result('این پرسش در فهرست راهنمای آماده همین روز مرزبندی و نه گفتن نیست. لطفاً پرسش خود را درباره تمرین یا اقدام امروز دقیق‌تر مطرح کن.', { ...state, lastTopic: currentTopic }, text);
   }
 
   if (canonicalTopicId === 'T03') {
