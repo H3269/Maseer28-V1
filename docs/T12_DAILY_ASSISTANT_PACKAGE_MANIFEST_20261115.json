@@ -30,7 +30,11 @@
     "uniqueLightActions": 28,
     "uniqueProgressActions": 28,
     "uniqueRestActions": 28,
-    "crossTopicExactExerciseActionDuplicates": 0
+    "crossTopicExactExerciseActionDuplicates": 0,
+    "semanticSimilarityThreshold": 0.3,
+    "withinTopicSemanticPairsAboveThreshold": 0,
+    "crossTopicSemanticPairsAboveThreshold": 0,
+    "undefinedPreparedAnswers": 0
   },
   "approvals": {
     "ownerLiveTest": "ready_for_owner_action",
