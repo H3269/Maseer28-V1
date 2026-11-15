@@ -24,6 +24,8 @@ test('T12 assistant catalog covers 28 days and 392 complete fixed questions', ()
     assert.equal(guide.topic, topicName);
     assert.equal(guide.questions.length, 14);
     assert.equal(new Set(guide.questions.map((q) => q.id)).size, 14);
+    assert.ok(guide.lightActionVersion?.trim());
+    assert.ok(guide.restActionVersion?.trim());
     assert.ok(guide.questions.every((q) => q.value === q.label && q.answer?.trim()));
     assert.ok(guide.exercise?.trim());
     assert.ok(guide.action?.trim());
@@ -33,7 +35,9 @@ test('T12 assistant catalog covers 28 days and 392 complete fixed questions', ()
     assert.equal(guide.evidenceGrade, 'not_assessed');
     assert.deepEqual(guide.sourceIds, []);
   }
+  const allAnswers = T12_DAILY_ASSISTANT_GUIDES.flatMap((guide) => guide.questions.map((question) => question.answer));
   assert.equal(T12_DAILY_ASSISTANT_GUIDES.reduce((sum, guide) => sum + guide.questions.length, 0), 392);
+  assert.equal(new Set(allAnswers).size, 392, 'all 392 day-specific answers must be textually unique');
 });
 
 test('T12 question groups preserve the shared five-group UI and exact 14-question coverage', () => {
@@ -114,6 +118,13 @@ test('T12 page assistant routes all exact day-specific questions and rejects wro
   assert.equal(wrong.status, 'daily_guidance_unavailable');
 });
 
+test('T12 day 24 negotiation is offered only in safe, voluntary relationships', () => {
+  const day24 = T12_DAILY_ASSISTANT_GUIDES[23];
+  assert.match(day24.exercise, /فقط اگر رابطه امن است/u);
+  assert.match(day24.action, /فقط در رابطه امن/u);
+  assert.match(day24.stopCondition, /رابطه ناامن/u);
+});
+
 test('T12 relationship gate covers the four communication days and the day-25 safety-planning day', () => {
   for (const day of [6, 11, 15, 24, 25]) {
     const record = { id: idFor(day), day, topic_id: 'T12' };
@@ -125,8 +136,11 @@ test('T12 relationship gate covers the four communication days and the day-25 sa
     });
     assert.equal(blocked.status, 'relationship_safety_confirmation_required');
   }
-  const day25 = { id: idFor(25), day: 25, topic_id: 'T12' };
-  assert.match(getInterpersonalPrivacyNotice(day25), /ذخیره|نظارت/u);
+  for (const day of [1, 2, 3, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22, 24, 25, 26, 27, 28]) {
+    assert.match(getInterpersonalPrivacyNotice({ id: idFor(day), day, topic_id: 'T12' }), /ذخیره|نظارت/u,
+      'T12 day ' + day + ' must show a privacy notice before sensitive entry');
+  }
+  assert.equal(getInterpersonalPrivacyNotice({ id: idFor(5), day: 5, topic_id: 'T12' }), null);
 });
 
 test('T12 safety answers use the topic-specific safety notice, not the generic clinic promotion', () => {
@@ -160,6 +174,10 @@ test('T12 runtime overlay carries proposed metadata but remains blocked pending 
     const record = guide.records[day.day - 1];
     assert.equal(day.review_status, 'pending_owner_review');
     assert.deepEqual(day.subtopic_ids, [record.subtopicId]);
+    assert.equal(day.exercise, record.exercise);
+    assert.equal(day.actionText, record.action);
+    assert.ok(day.lightActionText?.trim());
+    assert.ok(day.restActionText?.trim());
     assert.equal(day.evidence_grade, 'not_assessed');
     assert.deepEqual(day.source_ids, []);
     assert.equal(getDailySafetyMode(day), 'blocked');
