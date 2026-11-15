@@ -214,5 +214,19 @@ test('T12 semantic text stays distinct from other topic overlays', async () => {
       assert.ok(similarity < 0.30, 'T12 day ' + day.day + ' ' + field + ' is too close to ' + topic + ' day ' + other.day + ': ' + similarity);
     }
   }
-  for (const field of fields) assert.equal(new Set(days.map(day => normalize(day[field]))).size, 28, 'T12 ' + field + ' must be unique within the topic');
+  for (const field of fields) {
+    for (let leftIndex = 0; leftIndex < days.length; leftIndex += 1) {
+      for (let rightIndex = leftIndex + 1; rightIndex < days.length; rightIndex += 1) {
+        const left = tokens(days[leftIndex][field]), right = tokens(days[rightIndex][field]);
+        const union = new Set([...left, ...right]);
+        let intersection = 0;
+        for (const token of left) if (right.has(token)) intersection += 1;
+        const similarity = union.size ? intersection / union.size : 0;
+        assert.ok(similarity < 0.30,
+          'T12 day ' + days[leftIndex].day + ' and day ' + days[rightIndex].day
+          + ' are too similar for ' + field + ': ' + similarity);
+      }
+    }
+    assert.equal(new Set(days.map(day => normalize(day[field]))).size, 28, 'T12 ' + field + ' must be unique within the topic');
+  }
 });
