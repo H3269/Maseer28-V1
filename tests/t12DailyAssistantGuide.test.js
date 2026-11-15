@@ -257,3 +257,52 @@ test('T12 semantic text stays distinct from other topic overlays', async () => {
     assert.equal(new Set(days.map(day => normalize(day[field]))).size, 28, 'T12 ' + field + ' must be unique within the topic');
   }
 });
+
+test('all 392 T12 prepared answers use the shared T01-T11 response display frame', () => {
+  let renderedCount = 0;
+  for (const guide of T12_DAILY_ASSISTANT_GUIDES) {
+    const dailyContent = {
+      id: 'مرزبندی و نه گفتن-' + String(guide.day).padStart(2, '0'),
+      topic_id: 'T12',
+      day: guide.day,
+      title: guide.title,
+      sourceExercise: guide.exercise,
+      sourceActionText: guide.action,
+      exercise: guide.exercise,
+      actionText: guide.action,
+      lightExerciseText: guide.lightVersion,
+      lightActionText: guide.lightActionVersion,
+      progressActionText: guide.progressActionVersion,
+      restExerciseText: guide.restVersion,
+      restActionText: guide.restActionVersion,
+    };
+    for (const question of guide.questions) {
+      const answer = answerT12DailyPreparedQuestion({
+        day: guide.day,
+        message: question.value,
+        dailyContent,
+      });
+      assert.ok(answer, 'missing prepared answer on day ' + guide.day + ' / ' + question.id);
+      assert.ok(answer.startsWith('راهنمای روز ' + guide.day + ' مرزبندی و نه گفتن — ' + guide.title));
+      assert.ok(answer.includes('**بیاییم قدم‌به‌قدم پیش برویم.**'));
+      assert.ok(answer.includes('**هدف امروز:** ' + guide.objective));
+      assert.ok(answer.includes(question.answer.slice(0, 35)), 'original prepared-answer wording must remain present');
+      renderedCount += 1;
+    }
+  }
+  assert.equal(renderedCount, 392);
+});
+
+test('T12 safety-sensitive prepared answers retain the shared T01-T11 safety reminder structure', () => {
+  const guide = T12_DAILY_ASSISTANT_GUIDES[0];
+  const dailyContent = {
+    id: 'مرزبندی و نه گفتن-01', topic_id: 'T12', day: 1, title: guide.title,
+    sourceExercise: guide.exercise, sourceActionText: guide.action,
+    exercise: guide.exercise, actionText: guide.action,
+  };
+  for (const questionId of ['q06', 'q07', 'q11', 'q12']) {
+    const question = guide.questions.find((item) => item.id === questionId);
+    const answer = answerT12DailyPreparedQuestion({ day: 1, message: question.value, dailyContent });
+    assert.ok(answer.includes('یادآوری مهم درباره ایمنی شما'), questionId + ' must include the shared safety reminder');
+  }
+});
