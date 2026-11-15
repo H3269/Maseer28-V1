@@ -12,6 +12,9 @@ async function measure(viewport, run) {
   const isAndroid = viewport.profile === 'android';
   const context = await browser.newContext({
     viewport: { width: viewport.width, height: viewport.height },
+    // This suite verifies the required radial bloom, so make the motion preference deterministic
+    // instead of inheriting a hosted runner's OS-level accessibility setting.
+    reducedMotion: 'no-preference',
     deviceScaleFactor: isAndroid ? 2 : 1,
     isMobile: isAndroid,
     hasTouch: isAndroid,
