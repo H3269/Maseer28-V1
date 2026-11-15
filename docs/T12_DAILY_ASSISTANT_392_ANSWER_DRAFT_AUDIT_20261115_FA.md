@@ -40,7 +40,7 @@
 - محتوای جدید از overlay روزانه بارگذاری می‌شود؛ فایل canonical بزرگ و شناسه‌های ۲۸ روز حفظ می‌شوند.
 - T12 برای آزمون زنده مالک فعال است و برای اجرای پیش‌نمایش به تأیید تخصصی از پیش نیاز ندارد.
 - روزهای دارای زیرموضوع T12-S03 با وضعیت احتیاط نمایش داده می‌شوند.
-- بررسی ایمنی تعامل در روزهای ارتباطی موجود حفظ شده است؛ پاسخ ناامن یا نامطمئن، تمرین گفت‌وگوی مستقیم را فعال نمی‌کند.
+- بررسی ایمنی تعامل در روزهای ارتباطی مشترک حفظ شده و برای همه روزهای دارای زیرموضوع پرخطر T12-S03 نیز اعمال می‌شود؛ پاسخ ناامن یا نامطمئن، تمرین گفت‌وگوی مستقیم را فعال نمی‌کند.
 - دستیار فقط به ۱۴ پرسش آماده همان روز پاسخ می‌دهد؛ پرسش خارج از بانک را به‌عنوان پاسخ تخصصی حدس نمی‌زند.
 - در موقعیت تهدید، خشونت، تعقیب، نظارت یا اجبار، مواجهه و اعلام مستقیم مرز تکلیف نیست؛ حفاظت و حمایت امن مقدم است.
 
@@ -54,6 +54,8 @@
 - `src/features/assistant/dailyExerciseAssistantGuidance.js`
 - `src/features/assistant/pageAssistantTurn.js`
 - `src/features/assistant/GlobalAssistantLauncher.jsx`
+- `src/features/journey/relationshipSafetyGate.js`
+- `tests/relationshipSafetyGate.test.mjs`
 - `content/drafts/t12-boundaries-28day-redesign.v1.json`
 - `tests/t12DailyAssistantGuide.test.js`
 - `tests/t12ContentDraft.test.js`
