@@ -146,20 +146,18 @@ function MainApp() {
   const { books, loading: libraryLoading, error: libraryError, refresh: refreshLibrary } = useLibrary(libraryNeeded);
 
 
-  // Warm the assistant chunk only after the app is ready and the browser is idle.
+  // Do not expose the assistant launcher until the app's core content and
+  // onboarding state are ready. Load its UI chunk immediately at that point,
+  // then reveal the launcher only after the import has resolved.
   useEffect(() => {
     if (!content || !userProfile || !hasCompletedOnboarding) return undefined;
     let cancelled = false;
-    let idleHandle = null;
-    let timer = null;
-    const warmAssistant = () => { if (!cancelled) void loadGlobalAssistantLauncher(); };
-    if (typeof window.requestIdleCallback === 'function') idleHandle = window.requestIdleCallback(warmAssistant, { timeout: 1800 });
-    else timer = window.setTimeout(warmAssistant, 900);
-    return () => {
-      cancelled = true;
-      if (idleHandle !== null) window.cancelIdleCallback?.(idleHandle);
-      if (timer !== null) window.clearTimeout(timer);
-    };
+    loadGlobalAssistantLauncher().then(() => {
+      if (!cancelled) setAssistantLauncherLoaded(true);
+    }).catch(() => {
+      if (!cancelled) setAssistantLauncherLoaded(false);
+    });
+    return () => { cancelled = true; };
   }, [content, userProfile, hasCompletedOnboarding]);
 
   useEffect(() => {
@@ -849,22 +847,13 @@ function navigate(next) {
         {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
         <VersionFooter navVisible={navVisible} />
       </div>
-      {navVisible && <button
+      {navVisible && assistantLauncherLoaded && <button
         ref={assistantLauncherButtonRef}
         className="globalAssistantLauncher"
         type="button"
-        onPointerDown={() => { void loadGlobalAssistantLauncher(); }}
-        onTouchStart={() => { void loadGlobalAssistantLauncher(); }}
-        onFocus={() => { void loadGlobalAssistantLauncher(); }}
         onClick={() => {
-          void loadGlobalAssistantLauncher();
-          if (!assistantLauncherLoaded) {
-            setAssistantLauncherLoaded(true);
-            setAssistantOpen(true);
-          } else {
-            setAssistantOpen(true);
-            setAssistantOpenRequest((value) => value + 1);
-          }
+          setAssistantOpen(true);
+          setAssistantOpenRequest((value) => value + 1);
         }}
         aria-label="باز کردن دستیار مسیر۲۸"
         aria-haspopup="dialog"
