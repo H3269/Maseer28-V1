@@ -1,0 +1,60 @@
+name: Validate library cover performance
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'public/assets/covers/**'
+      - 'public/content/library.seed.json'
+      - 'src/features/library/**'
+      - 'scripts/prepare-library-cover-thumbnails.mjs'
+      - 'tests/startupPerformance.test.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/validate-library-performance.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: library-cover-performance-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  validate-library-performance:
+    name: Build, test, and package five library covers
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Dependency security audit
+        run: npm audit --audit-level=high
+
+      - name: Run complete automated test suite
+        run: npm test
+
+      - name: Build production application and generate cover thumbnails
+        run: |
+          PATH28_DEPLOY_BASE=/Maseer28/ npm run build
+
+      - name: Upload original and generated library covers for visual QA
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: library-cover-visual-qa
+          path: |
+            public/assets/covers/book*.webp
+            public/assets/covers/library/*.webp
+          if-no-files-found: error
