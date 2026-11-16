@@ -793,14 +793,9 @@ function navigate(next) {
             if (event.animationName === 'loadingLogoBloom') setSplashLogoRevealComplete(true);
           }}
           onError={(event) => {
-            const image = event.currentTarget;
-            if (!image.dataset.fallbackAttempted) {
-              image.dataset.fallbackAttempted = 'true';
-              image.src = `${import.meta.env.BASE_URL}assets/logo.png`;
-            } else {
-              image.hidden = true;
-              setSplashLogoRevealComplete(true);
-            }
+            // A missing optimized logo must never block content readiness.
+            event.currentTarget.hidden = true;
+            setSplashLogoRevealComplete(true);
           }}
         />
         <h1>مسیر ۲۸ روزه بازسازی ذهن</h1>
