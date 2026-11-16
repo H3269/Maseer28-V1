@@ -214,9 +214,9 @@ test('T11 uses the standard daily entry UI without owner-preview boxes or blocke
 test('T11 assistant UI uses the correct topic label and displays the shared safety reminder', async () => {
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
   assert.doesNotMatch(launcher, /!isT11DailyPromptContext\s*&&\s*Boolean\(selectedPreparedQuestion/);
-  assert.match(launcher, /const isDailySafetyQuestion = Boolean\\(/);
+  assert.match(launcher, /const isDailySafetyQuestion = Boolean\(/);
   assert.match(launcher, /isPreparedOnlyDailyPromptContext/);
-  assert.match(launcher, /DAILY_ASSISTANT_SAFETY_QUESTION_KINDS\\.has\\(selectedPreparedQuestion\\.kind\\)/);
+  assert.match(launcher, /DAILY_ASSISTANT_SAFETY_QUESTION_KINDS\.has\(selectedPreparedQuestion\.kind\)/);
   assert.match(launcher, /isT11DailyPromptContext\s*\?\s*"عادت‌های تکراری"/);
   assert.match(launcher, /"t11-daily-prompt-trigger"/);
   assert.match(launcher, /getT11DailyAssistantPromptGroups\(dailyContext\?\.day\)/);
