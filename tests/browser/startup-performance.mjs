@@ -96,6 +96,16 @@ async function measure(viewport, run) {
       if (image.complete && image.naturalWidth > 0
         && style.display !== 'none' && style.visibility !== 'hidden'
         && rect.width > 0 && rect.height > 0) {
+        const logoAnimation = image.getAnimations()
+          .find((animation) => animation.animationName === 'loadingLogoSafeEnter');
+        if (logoAnimation && window.__path28SplashAnimation.firstAnimationName === null) {
+          window.__path28SplashAnimation.firstAnimationName = logoAnimation.animationName;
+          window.__path28SplashAnimation.firstAnimationDuration = style.animationDuration;
+          window.__path28SplashAnimation.firstAnimationOpacity = Number(style.opacity);
+          window.__path28SplashAnimation.firstClipPath = style.clipPath;
+          window.__path28SplashAnimation.decodedAtAnimationStart = image.complete && image.naturalWidth > 0;
+          window.__path28SplashAnimation.animationPlayState = logoAnimation.playState;
+        }
         window.__path28SplashObserved = {
           ready: true,
           naturalWidth: image.naturalWidth,
@@ -184,7 +194,8 @@ const startedAt = Date.now();
   assert.ok(splashVisual, 'A splash logo element must exist while startup is loading');
   assert.ok(['none', 'loadingLogoSafeEnter'].includes(splashVisual.animationName), 'The splash logo may use only the short non-blocking decorative animation');
   const animationEvidence = await page.evaluate(() => window.__path28SplashAnimation);
-  assert.equal(animationEvidence.firstAnimationName, 'loadingLogoSafeEnter', 'The initial splash must actually start the approved decorative logo animation');
+  assert.equal(animationEvidence.firstAnimationName, 'loadingLogoSafeEnter', 'The initial splash must expose the approved decorative logo animation through the Web Animations API');
+  assert.ok(['running', 'finished'].includes(animationEvidence.animationPlayState), 'The approved logo animation must be active or have completed without blocking startup');
   assert.equal(parseCssTimeMs(animationEvidence.firstAnimationDuration), 420, 'The decorative logo animation must remain 420ms');
   assert.equal(animationEvidence.firstAnimationOpacity, 1, 'The logo must remain fully visible when animation starts');
   assert.equal(splashVisual.opacity, 1, 'The splash logo must be visible immediately');
