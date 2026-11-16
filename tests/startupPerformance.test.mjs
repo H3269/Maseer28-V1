@@ -66,7 +66,7 @@ test('the static splash reveals the logo radially and fills its progress bar in 
 });
 
 test('startup waits for both actual content readiness and the completed radial reveal', () => {
-  assert.match(app, /if \(!content \|\| !splashAnimationComplete \|\| loadError\) return \(/);
+  assert.match(app, /if \(!content \|\| !splashLogoRevealComplete || !splashProgressComplete \|\| loadError\) return \(/);
   assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\.decode\(\)|setTimeout\(.*splash/i);
   assert.match(app, /onAnimationEnd=\{\(event\) => \{/);
   assert.match(app, /event\.animationName === 'loadingLogoBloom'\) setSplashLogoRevealComplete\(true\)/);
@@ -174,7 +174,7 @@ test('the initial splash preloads the generated lightweight WebP logo', async ()
 });
 
 test('logo failure never blocks startup, while content failure keeps its retry path', () => {
-  assert.match(app, /if \(!content \|\| !splashAnimationComplete \|\| loadError\) return \(/);
+  assert.match(app, /if \(!content \|\| !splashLogoRevealComplete || !splashProgressComplete \|\| loadError\) return \(/);
   assert.match(app, /fallbackAttempted/);
   assert.match(app, /<div className="loadingError" role="alert">[\s\S]*?window\.location\.reload\(\)/);
   assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\.decode\(\)|setTimeout\(.*splash/i);
@@ -239,8 +239,10 @@ test('the React splash uses the same radial reveal and progress animation as sta
   assert.match(css, /@keyframes loadingLogoBloom[\s\S]*?circle\(75% at 50% 50%\)/);
   assert.match(css, /@keyframes loadingProgressFill[\s\S]*?scaleX\(1\)/);
   assert.match(css, /prefers-reduced-motion: reduce/);
-  assert.match(app, /!splashAnimationComplete/);
-  assert.match(app, /setSplashAnimationComplete\(true\)/);
+  assert.match(app, /!splashLogoRevealComplete || !splashProgressComplete/);
+  assert.match(app, /setSplashLogoRevealComplete\(true\)/);
+  assert.match(app, /setSplashProgressComplete\(true\)/);
+  assert.match(app, /event\.animationName === 'loadingProgressFill'/);
 });
 
 test('Android WebViews without modern viewport units retain a 100vh fallback', () => {
