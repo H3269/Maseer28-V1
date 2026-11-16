@@ -171,6 +171,32 @@ export default function Reader({ book, onClose, initialVersion = null, initialSo
   const pageFlipAudioRef = useRef(null);
   const flipSheetRef = useRef(null);
   const flipCleanupRef = useRef(null);
+  const flipCleanupTimerRef = useRef(null);
+
+  // Release transient animation/audio resources when Reader leaves the tree.
+  // Without this, closing during a page turn can leave work alive until its
+  // fallback timeout and retain the decoded audio element across reader sessions.
+  useEffect(() => () => {
+    if (flipCleanupRef.current) flipCleanupRef.current();
+    if (flipCleanupTimerRef.current !== null) {
+      window.clearTimeout(flipCleanupTimerRef.current);
+      flipCleanupTimerRef.current = null;
+    }
+    const audio = pageFlipAudioRef.current;
+    if (audio) {
+      try {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.removeAttribute('src');
+        audio.load();
+      } catch { /* Media cleanup is best-effort on older WebViews. */ }
+      pageFlipAudioRef.current = null;
+    }
+    if (flipSheetRef.current) {
+      flipSheetRef.current.remove();
+      flipSheetRef.current = null;
+    }
+  }, []);
 
   useEffect(() => {
     let alive = true;
@@ -366,6 +392,10 @@ rebuild(preserveAnchorRef.current);
       const cleanup = () => {
         if (finished) return;
         finished = true;
+        if (flipCleanupTimerRef.current !== null) {
+          window.clearTimeout(flipCleanupTimerRef.current);
+          flipCleanupTimerRef.current = null;
+        }
         try { animation.cancel(); } catch {}
         sheet.remove();
         if (flipSheetRef.current === sheet) flipSheetRef.current = null;
@@ -373,7 +403,7 @@ rebuild(preserveAnchorRef.current);
       };
       flipCleanupRef.current = cleanup;
       animation.finished.then(cleanup).catch(cleanup);
-      window.setTimeout(cleanup, duration + 100);
+      flipCleanupTimerRef.current = window.setTimeout(cleanup, duration + 100);
     }
 
     // Persist the destination synchronously as well as in the React effect
