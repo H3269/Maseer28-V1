@@ -239,7 +239,7 @@ test('the React splash uses the same radial reveal and progress animation as sta
   assert.match(css, /@keyframes loadingLogoBloom[\s\S]*?circle\(75% at 50% 50%\)/);
   assert.match(css, /@keyframes loadingProgressFill[\s\S]*?scaleX\(1\)/);
   assert.match(css, /prefers-reduced-motion: reduce/);
-  assert.match(app, /!splashLogoRevealComplete || !splashProgressComplete/);
+  assert.match(app, /!splashLogoRevealComplete \\|\\| !splashProgressComplete/);
   assert.match(app, /setSplashLogoRevealComplete\(true\)/);
   assert.match(app, /setSplashProgressComplete\(true\)/);
   assert.match(app, /event\.animationName === 'loadingProgressFill'/);
