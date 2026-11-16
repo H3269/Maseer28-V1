@@ -60,18 +60,21 @@ test('the static splash reveals the logo radially and fills its progress bar in 
   assert.ok(html.includes('@keyframes loadingLogoBloom{from{opacity:1;clip-path:circle(0% at 50% 50%);transform:scale(.96)}to{opacity:1;clip-path:circle(75% at 50% 50%);transform:scale(1)}}'));
   assert.ok(html.includes('@keyframes loadingProgressFill{to{transform:scaleX(1)}}'));
   assert.match(html, /aria-label=\"پیشرفت نمایش لوگو\"/);
-  assert.ok(html.includes('@media(prefers-reduced-motion:reduce){.initialSplashInner,.initialSplash img,.initialSplash h1,.initialSplash p,.initialProgress{animation:none;opacity:1;transform:none;clip-path:none}'));
+  assert.ok(html.includes('@media(prefers-reduced-motion:reduce){.initialSplashInner,.initialSplash img,.initialSplash h1,.initialSplash p,.initialProgress{animation:none;opacity:1;transform:none;clip-path:none}.initialProgress span{animation:none;opacity:1;transform:scaleX(1);clip-path:none}}'));
   assert.match(html, /fetchpriority="high"/);
   assert.match(html, /width="174" height="174"/);
 });
 
 test('startup waits for both actual content readiness and the completed radial reveal', () => {
-  assert.match(app, /if \(!content \|\| loadError\) return \(/);
-  assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\.decode\(\)/);
-  assert.doesNotMatch(app, /setSplashMinimumVisible|splashMinimumVisible/);
-  assert.match(app, /assets\/splash-logo\.webp/);
+  assert.match(app, /if \\(!content \\|\\| !splashAnimationComplete \\|\\| loadError\\) return \\(/);
+  assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\\.decode\\(\\)|setTimeout\\(.*splash/i);
+  assert.match(app, /onAnimationEnd=\\{\\(event\\) => \\{/);
+  assert.match(app, /event\\.animationName === 'loadingLogoBloom'\\) setSplashAnimationComplete\\(true\\)/);
+  assert.match(app, /prefers-reduced-motion: reduce/);
+  assert.match(app, /assets\\/splash-logo\\.webp/);
   assert.match(app, /fallbackAttempted/);
-  assert.match(css, /\.appLoading \.loadingBrand img \{[\s\S]*?animation: none !important/);
+  assert.match(css, /animation: loadingLogoBloom 950ms/);
+  assert.match(css, /animation: loadingProgressFill 950ms linear both/);
 });
 
 test('the splash thumbnail is generated from the original artwork with a strict byte budget', () => {
