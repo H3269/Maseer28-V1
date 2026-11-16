@@ -53,18 +53,32 @@ test('the selected topic loads independently and the day screen waits for its ve
   assert.match(app, /onLoadTopic=\{loadTopicForScreen\}/);
 });
 
-test('the static splash logo and title remain visible before React mounts', () => {
-  assert.match(html, /\.initialSplash img\{[^}]*clip-path:circle\(0% at 50% 50%\)[^}]*animation:initialLogoBloom/);
-  assert.match(html, /@keyframes initialLogoBloom\{0%\{opacity:0;clip-path:circle\(0% at 50% 50%\)/);
-  assert.match(html, /\.initialSplash h1,\.initialSplash p\{opacity:0;transform:translateY\(10px\);animation:initialTextBloomReveal/);
+test('the static splash logo is visible immediately before React mounts', () => {
+  assert.match(html, /assets\/splash-logo\.webp/);
+  assert.match(html, /opacity:1;visibility:visible;transform:none;animation:none/);
+  assert.match(html, /fetchpriority="high"/);
+  assert.match(html, /width="174" height="174"/);
 });
 
-test('the static splash logo opens radially from its center before app startup can finish', () => {
-  assert.match(html, /\.initialSplash img\{[^}]*clip-path:circle\(0% at 50% 50%\)[^}]*animation:initialLogoBloom \.95s/);
-  assert.match(html, /@keyframes initialLogoBloom\{0%\{opacity:0;clip-path:circle\(0% at 50% 50%\)/);
-  assert.match(app, /if \(!content \|\| !splashLogoReady \|\| !splashMinimumVisible \|\| loadError\)/);
-  assert.match(app, /setTimeout\(\(\) => \{[\s\S]*?setSplashMinimumVisible\(true\)[\s\S]*?}, 1100\)/);
-  assert.match(css, /animation: loadingLogoBloom \.95s/);
+test('startup does not wait for logo decode or an artificial splash timer', () => {
+  assert.match(app, /if \(!content\) return \(/);
+  assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\.decode\(\)/);
+  assert.doesNotMatch(app, /setTimeout\(\(\) => \{[\s\S]*?1100/);
+  assert.match(app, /assets\/splash-logo\.webp/);
+  assert.match(app, /fallbackAttempted/);
+  assert.match(css, /\.appLoading \.loadingBrand img \{[\s\S]*?animation: none !important/);
+});
+
+test('the splash thumbnail is generated from the original artwork with a strict byte budget', () => {
+  assert.match(pkg.scripts.prebuild, /prepare-splash-logo\.mjs/);
+  assert.match(html, /assets\/splash-logo\.webp/);
+  const generator = readFile(new URL('../scripts/prepare-splash-logo.mjs', import.meta.url), 'utf8');
+  return generator.then((source) => {
+    assert.match(source, /Logo m24\.webp/);
+    assert.match(source, /splash-logo\.webp/);
+    assert.match(source, /--quality[\s\S]*?58/);
+    assert.match(source, /40 \* 1024/);
+  });
 });
 
 test('the library catalogue does not download every full book on entry', () => {
