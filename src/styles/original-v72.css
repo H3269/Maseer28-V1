@@ -7457,10 +7457,11 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 
 /* Coordinated splash reveal: the app gate waits for this animation AND real content readiness. */
 .appLoading .loadingBrand img {
-  clip-path: circle(0% at 50% 50%) !important;
+  /* Keep animated properties out of the !important cascade so keyframes can reveal the full logo. */
+  clip-path: circle(0% at 50% 50%);
   opacity: 1 !important;
   visibility: visible !important;
-  transform: scale(.96) !important;
+  transform: scale(.96);
   animation: loadingLogoBloom var(--path28-splash-duration, 950ms) cubic-bezier(.2,.72,.2,1) both !important;
   animation-delay: var(--splash-animation-delay, 0ms) !important;
 }
