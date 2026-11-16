@@ -76,6 +76,15 @@ try {
     for (let bookId = 1; bookId <= 5; bookId += 1) {
       const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
       const errors = [];
+      const requestedBookContent = [];
+      page.on('request', (request) => {
+        try {
+          const pathname = new URL(request.url()).pathname;
+          if (/\\/content\\/books\\/book[1-5]\\.json$/.test(pathname)) {
+            requestedBookContent.push(pathname);
+          }
+        } catch { /* ignore non-URL requests */ }
+      });
       page.on('pageerror', (error) => errors.push(String(error)));
       page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
       await page.addInitScript((state) => {
@@ -140,6 +149,7 @@ try {
       assert.equal(await page.locator('#bookReaderText').count(), 1, `${entryPoint.id}, book ${bookId}: reader text article must exist`);
       assert.ok(coldFirstBodyParagraph.paragraphLength >= 20, `${entryPoint.id}, book ${bookId}: cold open must reach a real body paragraph`);
       assert.ok(warmFirstBodyParagraph.paragraphLength >= 20, `${entryPoint.id}, book ${bookId}: warm open must reach a real body paragraph`);
+      assert.deepEqual(requestedBookContent, [`/Maseer28/content/books/book${bookId}.json`], `${entryPoint.id}, book ${bookId}: only the selected book content is fetched once across cold and warm opens`);
       assert.deepEqual(errors, [], `${entryPoint.id}, book ${bookId}: no browser errors during cold/warm open`);
       results.push({ repetition, entryPoint: entryPoint.id, bookId, cold, coldFirstBodyParagraph, warm, warmFirstBodyParagraph });
       await page.close();
