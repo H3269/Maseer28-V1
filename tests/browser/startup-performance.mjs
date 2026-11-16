@@ -31,6 +31,13 @@ async function measure(viewport, run) {
 
   await page.addInitScript(() => {
     window.__path28SplashObserved = null;
+    window.__path28ImageEvents = [];
+    document.addEventListener('load', (event) => {
+      if (event.target instanceof HTMLImageElement) window.__path28ImageEvents.push({ type: 'load', src: event.target.currentSrc || event.target.src, naturalWidth: event.target.naturalWidth });
+    }, true);
+    document.addEventListener('error', (event) => {
+      if (event.target instanceof HTMLImageElement) window.__path28ImageEvents.push({ type: 'error', src: event.target.currentSrc || event.target.src, fallbackAttempted: event.target.dataset.fallbackAttempted || null });
+    }, true);
     const watchedImages = new WeakSet();
     window.__path28SplashAnimation = {
       firstAnimationName: null,
@@ -193,6 +200,8 @@ const startedAt = Date.now();
       firstPaintMs: Math.round(performance.getEntriesByName('first-paint')[0]?.startTime || 0),
       firstContentfulPaintMs: Math.round(performance.getEntriesByName('first-contentful-paint')[0]?.startTime || 0),
       resourceCount: resources.length,
+      imageEvents: window.__path28ImageEvents,
+      splashLogoResources: resources.filter((item) => /splash-logo\\.webp|logo\\.png/i.test(item.url)),
       totalTransferBytes: resources.reduce((sum, item) => sum + item.transferBytes, 0),
       totalDecodedBytes: resources.reduce((sum, item) => sum + item.decodedBytes, 0),
       largestResources: [...resources].sort((a, b) => b.transferBytes - a.transferBytes).slice(0, 12),
@@ -209,6 +218,9 @@ const startedAt = Date.now();
   };
   assert.equal(result.logoDecoded, true, 'Splash logo must decode before the app becomes interactive');
   assert.equal(result.logoVisible, true, 'Splash logo must be visible while the startup gate is active');
+  assert.ok(!result.splashLogoResources.some((item) => /logo\\.png/i.test(item.url)), 'The oversized PNG fallback must never be requested during successful startup');
+  const optimizedLogo = result.splashLogoResources.find((item) => /splash-logo\\.webp/i.test(item.url));
+  assert.ok(optimizedLogo && optimizedLogo.transferBytes > 0 && optimizedLogo.transferBytes <= 40 * 1024, 'The startup logo must use the generated lightweight WebP asset');
   await context.close();
   return result;
 }
