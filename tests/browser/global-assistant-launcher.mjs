@@ -114,7 +114,7 @@ try {
   const pageSendButton = dialog.getByRole('button', { name: 'ارسال' });
   assert.equal(await pageSendButton.isEnabled(), true, 'only selecting a prepared question enables sending');
   await pageSendButton.click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('صفحه آغاز برنامه است')));
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('نمای کلی مسیر ۲۸ روزه است')));
   assert.equal(await dialog.getByRole('textbox').count(), 0, 'prepared page guidance must not expose a typing field');
   await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await dialog.waitFor({ state: 'detached' });
