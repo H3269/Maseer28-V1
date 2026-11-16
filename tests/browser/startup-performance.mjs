@@ -265,6 +265,26 @@ const startedAt = Date.now();
 
 async function verifySplashReadinessOrders() {
   const viewport = { width: 390, height: 844 };
+
+  // Simulate a slow application bundle: the static HTML animation may finish
+  // before React mounts, but the visible React splash must start a fresh reveal.
+  const delayedBundleContext = await browser.newContext({ viewport, reducedMotion: 'no-preference' });
+  const delayedBundlePage = await delayedBundleContext.newPage();
+  await delayedBundlePage.route('**/*.js', async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+    await route.continue();
+  });
+  await delayedBundlePage.goto(baseURL, { waitUntil: 'domcontentloaded' });
+  await delayedBundlePage.locator('#root .appLoading').waitFor({ state: 'visible', timeout: 20000 });
+  const delayedMountAnimation = await delayedBundlePage.locator('#root .appLoading .loadingBrand img').evaluate((image) => {
+    const animation = image.getAnimations().find((item) => item.animationName === 'loadingLogoBloom');
+    return { playState: animation?.playState || 'missing', currentTime: Number(animation?.currentTime ?? -1) };
+  });
+  assert.equal(delayedMountAnimation.playState, 'running',
+    'The React splash must start its logo reveal when it becomes visible, even after a delayed bundle');
+  assert.ok(delayedMountAnimation.currentTime >= 0 && delayedMountAnimation.currentTime < 500,
+    'The React splash animation must not be consumed before it is visible; observed ' + JSON.stringify(delayedMountAnimation));
+  await delayedBundleContext.close();
   const animationFirstContext = await browser.newContext({ viewport, reducedMotion: 'no-preference' });
   const animationFirstPage = await animationFirstContext.newPage();
   let releaseIndex;
