@@ -214,7 +214,7 @@ const startedAt = Date.now();
   assert.equal(splashVisual.opacity, 1, 'The splash logo must remain visible during the reveal');
   assert.ok(splashVisual.width >= 160 && splashVisual.height >= 160, 'The logo must retain its intended display size');
   assert.equal(animationEvidence.completedName, 'loadingLogoBloom', 'The app must wait for the radial reveal animation end event');
-  assert.match(animationEvidence.finalClipPath, /circle\\(75% at 50% 50%\\)/, `The reveal must finish with the full centered logo visible; evidence: ${JSON.stringify(animationEvidence)}`);
+  assert.match(animationEvidence.finalClipPath, /circle\(75% at 50% 50%\)/, `The reveal must finish with the full centered logo visible; evidence: ${JSON.stringify(animationEvidence)}`);
   assert.ok(animationEvidence.completedAt !== null && animationEvidence.appVisibleAt !== null
     && animationEvidence.completedAt <= animationEvidence.appVisibleAt,
   'The first app surface must not appear before the radial reveal completes');
