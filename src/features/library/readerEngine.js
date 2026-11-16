@@ -198,20 +198,23 @@ function shortHeadingCandidate(text, nextText, bookId) {
   return false;
 }
 
-function collectKnownHeadings(book) {
+function collectKnownHeadings(book, sourceRows = bookRows(book)) {
   const set = new Set();
   const firstChapter = Math.min(...(book.chapters || []).map((c) => Number(c.page)).filter((n) => Number.isFinite(n) && n > 0), Infinity);
   let inToc = false;
   let seenChapters = 0;
-  for (const row of bookRows(book)) {
+  for (const row of sourceRows) {
     if (row.source >= firstChapter) break;
     const blocks = row.blocks || [];
+    // Reuse the linear neighbour index instead of slicing and normalising the
+    // remaining block list for every TOC item (quadratic work on long pages).
+    const { blockTexts, nextTexts } = buildNeighbourTextIndex(blocks);
     for (let i = 0; i < blocks.length; i += 1) {
       const block = blocks[i];
       if (block?.type === 'table' || block?.type === 'separator') continue;
-      const t = norm(block?.text);
+      const t = blockTexts[i];
       if (!t) continue;
-      const nextText = blocks.slice(i + 1).map((x) => norm(x?.text)).find(Boolean) || '';
+      const nextText = nextTexts[i] || '';
       if (TOC_TITLE_RE.test(t)) { inToc = true; seenChapters = 0; continue; }
       if (!inToc) continue;
       if (isTocStop(t, nextText, seenChapters)) { inToc = false; continue; }
@@ -222,7 +225,6 @@ function collectKnownHeadings(book) {
   }
   return set;
 }
-
 function headingBlockIsNarrativeContinuation(text, previousText) {
   const t = norm(text);
   const prev = norm(previousText);
@@ -481,7 +483,10 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
   const insertedChapters = new Set();
   const poem = POEMS[Number(bookId)] || null;
   let poemDone = false;
-  const knownHeadings = collectKnownHeadings(book);
+  // Build normalised source blocks once and share them with heading discovery
+  // and pagination. The previous flow rebuilt every row twice.
+  const sourceRows = bookRows(book);
+  const knownHeadings = collectKnownHeadings(book, sourceRows);
   const MIN_SPLIT_FRAGMENT = 3;
   const HEADING_FOLLOW_LINES = 3;
   let tocActive = false;
@@ -698,7 +703,6 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
     });
   }
 
-  const sourceRows = bookRows(book);
   let book1ExampleBodyActive = false;
   for (const row of sourceRows) {
     const source = Number(row.source) || 1;
