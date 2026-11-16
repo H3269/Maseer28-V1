@@ -159,16 +159,23 @@ function passageText(passage) {
   return String(passage?.text || '');
 }
 
-export function rankLibraryPassages(passages, query, limit = 5) {
-  const rows = Array.isArray(passages) ? passages : [];
-  if (!rows.length) return [];
-  const analysis = analyzeLibraryQuery(query);
+const RANKING_INDEX_CACHE = new WeakMap();
+
+function getPassageRankingIndex(rows) {
+  const cached = RANKING_INDEX_CACHE.get(rows);
+  if (cached) return cached;
   const documents = rows.map((passage, index) => {
     const body = passageText(passage);
     const heading = String(passage?.heading || '');
     const bodyTokens = tokenize(body);
     const headingTokens = tokenize(heading);
-    return { passage, index, body, heading, bodyTokens, headingTokens, counts: countTerms(body), length: Math.max(1, bodyTokens.length) };
+    return {
+      passage, index, body, heading, bodyTokens, headingTokens,
+      counts: countTerms(body),
+      length: Math.max(1, bodyTokens.length),
+      normalizedBody: normalize(body),
+      normalizedDocument: normalize(body + ' ' + heading),
+    };
   });
   const frequency = new Map();
   let totalLength = 0;
@@ -178,32 +185,53 @@ export function rankLibraryPassages(passages, query, limit = 5) {
       frequency.set(term, (frequency.get(term) || 0) + 1);
     }
   }
-  const averageLength = totalLength / documents.length;
+  const index = {
+    documents,
+    frequency,
+    averageLength: documents.length ? totalLength / documents.length : 0,
+  };
+  RANKING_INDEX_CACHE.set(rows, index);
+  return index;
+}
+
+export function rankLibraryPassages(passages, query, limit = 5) {
+  const rows = Array.isArray(passages) ? passages : [];
+  if (!rows.length) return [];
+  const analysis = analyzeLibraryQuery(query);
+  // A book's passage list is immutable after extraction. Reuse its token and
+  // frequency index across questions instead of retokenizing every page on
+  // every assistant turn (especially costly on mobile for long books).
+  const { documents, frequency, averageLength } = getPassageRankingIndex(rows);
   const queryTerms = [...analysis.weights.keys()];
-  const hasDirectEvidence = documents.some((document) => [...analysis.weights].some(([term, weight]) => weight >= 0.7 && (document.counts.has(term) || document.headingTokens.includes(term))));
-  // Generic task words must not let a related-but-distinct concept masquerade
-  // as direct evidence for the concept explicitly requested by the user.
+  const hasDirectEvidence = documents.some((document) =>
+    [...analysis.weights].some(([term, weight]) => weight >= 0.7
+      && (document.counts.has(term) || document.headingTokens.includes(term)))
+  );
   const directAnchorGroups = RELATED_CONCEPTS.filter((relation) =>
     relation.terms.some((phrase) => phrasePresent(analysis.normalized, normalize(phrase)))
   );
-  const matchedConceptGroups = CLOSE_EQUIVALENTS.filter((group) => group.some((phrase) => phrasePresent(analysis.normalized, normalize(phrase))));
-  // Multiword concept families require phrase-level evidence; broad single-word
-  // concepts still need an exact term or a vetted strong equivalent.
-  const strictConceptGroups = matchedConceptGroups.filter((group) => group.some((phrase) => normalize(phrase).split(' ').length > 1));
-  const hasDirectConceptEvidence = strictConceptGroups.length > 0 && documents.some((document) => {
-    const text = normalize(document.body + ' ' + document.heading);
-    return strictConceptGroups.some((group) => group.some((phrase) => phrasePresent(text, normalize(phrase))));
-  });
+  const matchedConceptGroups = CLOSE_EQUIVALENTS.filter((group) =>
+    group.some((phrase) => phrasePresent(analysis.normalized, normalize(phrase)))
+  );
+  const strictConceptGroups = matchedConceptGroups.filter((group) =>
+    group.some((phrase) => normalize(phrase).split(' ').length > 1)
+  );
+  const hasDirectConceptEvidence = strictConceptGroups.length > 0 && documents.some((document) =>
+    strictConceptGroups.some((group) => group.some((phrase) =>
+      phrasePresent(document.normalizedDocument, normalize(phrase))
+    ))
+  );
   const ranked = documents.map((document) => {
-    const { passage, index, body, heading, bodyTokens, headingTokens, counts, length } = document;
+    const { passage, index, body, bodyTokens, headingTokens, counts, length, normalizedBody, normalizedDocument } = document;
     let score = 0;
     let matched = 0;
     let directMatches = 0;
-    const normalizedDocument = normalize(body + ' ' + heading);
     const directAnchorMatches = directAnchorGroups.filter((group) =>
       group.terms.some((phrase) => phrasePresent(normalizedDocument, normalize(phrase)))
     ).length;
-    const directConceptMatches = strictConceptGroups.filter((group) => group.some((phrase) => phrasePresent(normalizedDocument, normalize(phrase)))).length;
+    const directConceptMatches = strictConceptGroups.filter((group) =>
+      group.some((phrase) => phrasePresent(normalizedDocument, normalize(phrase)))
+    ).length;
     for (const [term, weight] of analysis.weights) {
       const tf = counts.get(term) || 0;
       const inHeading = headingTokens.includes(term);
@@ -219,7 +247,6 @@ export function rankLibraryPassages(passages, query, limit = 5) {
       const normTf = (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * length / Math.max(1, averageLength)));
       score += weight * idf * (normTf + (inHeading ? 2.1 : 0));
     }
-    const normalizedBody = normalize(body);
     if (analysis.normalized.length > 5 && normalizedBody.includes(analysis.normalized)) score += 7;
     for (const phrase of CLOSE_EQUIVALENTS.flat()) {
       const normalizedPhrase = normalize(phrase);
