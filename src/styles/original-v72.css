@@ -7461,7 +7461,7 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
   opacity: 1 !important;
   visibility: visible !important;
   transform: scale(.96) !important;
-  animation: loadingLogoBloom 950ms cubic-bezier(.2,.72,.2,1) both !important;
+  animation: loadingLogoBloom var(--path28-splash-duration, 950ms) cubic-bezier(.2,.72,.2,1) both !important;
   animation-delay: var(--splash-animation-delay, 0ms) !important;
 }
 @keyframes loadingLogoBloom {
@@ -7485,7 +7485,7 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
   background: linear-gradient(90deg, #40E0D0 0%, #4096C8 100%);
   transform: scaleX(0);
   transform-origin: right;
-  animation: loadingProgressFill 950ms linear both !important;
+  animation: loadingProgressFill var(--path28-splash-duration, 950ms) linear both !important;
   animation-delay: var(--splash-animation-delay, 0ms) !important;
 }
 @keyframes loadingProgressFill { to { transform: scaleX(1); } }
