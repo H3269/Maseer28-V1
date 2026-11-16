@@ -11,6 +11,7 @@ const coverThumbnailBuild = await readFile(new URL('../scripts/prepare-library-c
 const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
 const assistantLauncher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
+const libraryReasoning = await readFile(new URL('../src/features/assistant/libraryLocalReasoning.js', import.meta.url), 'utf8');
 
 test('library, reader, and assistant modules stay out of the initial application bundle', () => {
   assert.match(app, /const LibraryPage = lazy\(loadLibraryPage\)/);
@@ -135,6 +136,13 @@ test('library page/help questions avoid IndexedDB catalogue reads and book hydra
   assert.match(assistantLauncher, /initialLibraryPlan\.kind === 'none' \|\| initialLibraryPlan\.kind === 'clarify'/);
   assert.match(assistantLauncher, /Page\/help questions and requests that need clarification do not need an IndexedDB/);
   assert.match(assistantLauncher, /restrictedStatuses\.has\(intentGate\.status\)/);
+});
+
+test('library passage tokenization and document-frequency indexes are reused between questions', () => {
+  assert.match(libraryReasoning, /const RANKING_INDEX_CACHE = new WeakMap\(\)/);
+  assert.match(libraryReasoning, /RANKING_INDEX_CACHE\.get\(rows\)/);
+  assert.match(libraryReasoning, /RANKING_INDEX_CACHE\.set\(rows, index\)/);
+  assert.match(libraryReasoning, /getPassageRankingIndex\(rows\)/);
 });
 
 test('library assistant hydrates only the requested book unless the question needs the catalogue', () => {
