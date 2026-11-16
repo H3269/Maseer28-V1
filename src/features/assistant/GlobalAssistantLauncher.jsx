@@ -250,6 +250,14 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     event.preventDefault();
     const message = String(overrideMessage ?? draft).trim();
     if (!message || sending) return;
+    const selectedPreparedQuestion = activePromptGroups
+      .flatMap((group) => group.questions || [])
+      .find((question) => question.value === message);
+    if (!selectedPreparedQuestion) {
+      setError('این دستیار فقط از فهرست سؤال‌های آماده همین بخش پاسخ می‌دهد.');
+      setDraft('');
+      return;
+    }
     const initialLibraryPlan = screen === 'books'
       ? planLibraryBookLoad({ books: loadedLibraryBooks, message, conversationState: conversationStateRef.current })
       : null;
@@ -278,21 +286,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         libraryLoadKind = loadResult?.kind || 'error';
       }
     }
-    const selectedDailyQuestion = activePromptGroups
-      .flatMap((group) => group.questions || [])
-      .find((question) => question.value === message);
-    if (!selectedDailyQuestion) {
-      const rejectedId = ++turnSequenceRef.current;
-      setMessages((current) => [...current,
-        { id: `user-rejected-${rejectedId}`, role: 'user', text: message, knowledge: [] },
-        { id: `assistant-rejected-${rejectedId}`, role: 'assistant', text: 'این دستیار فقط از فهرست سؤال‌های آماده همین بخش پاسخ می‌دهد. لطفاً یکی از سؤال‌های فهرست را انتخاب کن.', knowledge: [] },
-      ]);
-      setDraft('');
-      return;
-    }
     const isDailySafetyQuestion = Boolean(
       isPreparedOnlyDailyPromptContext
-      && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(selectedDailyQuestion.kind),
+      && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(selectedPreparedQuestion.kind),
     );
     setError('');
     setSending(true);
