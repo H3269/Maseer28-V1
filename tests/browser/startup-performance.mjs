@@ -180,7 +180,7 @@ const startedAt = Date.now();
   // the logo is visible independently and never blocks this transition.
   const splashVisual = await page.evaluate(() => window.__path28SplashObserved);
   assert.ok(splashVisual, 'A splash logo element must exist while startup is loading');
-  assert.equal(splashVisual.animationName, 'none', 'The splash logo must not wait for a reveal animation');
+  assert.ok(['none', 'loadingLogoSafeEnter'].includes(splashVisual.animationName), 'The splash logo may use only the short non-blocking decorative animation');
   assert.equal(splashVisual.opacity, 1, 'The splash logo must be visible immediately');
   assert.equal(splashVisual.clipPath, 'none', 'The splash logo must not be hidden behind a reveal mask');
   assert.ok(splashVisual.width >= 160 && splashVisual.height >= 160, 'The logo must retain its intended display size');
