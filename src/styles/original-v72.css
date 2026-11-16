@@ -7438,12 +7438,12 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 }
 
 
-/* Fast splash: show the preloaded lightweight logo immediately; never gate app startup on image decoding. */
+/* Fast splash: keep the preloaded lightweight logo visible without locking animated properties. */
 .appLoading .loadingBrand img {
-  clip-path: none !important;
+  clip-path: none;
   opacity: 1 !important;
   visibility: visible !important;
-  transform: none !important;
+  transform: none;
   animation: none !important;
 }
 .appLoading .loadingBrand h1,
