@@ -7438,12 +7438,12 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 }
 
 
-/* Fast splash: show the preloaded lightweight logo immediately; never gate app startup on image decoding. */
+/* Fast splash: keep the preloaded lightweight logo visible without locking animated properties. */
 .appLoading .loadingBrand img {
-  clip-path: none !important;
+  clip-path: none;
   opacity: 1 !important;
   visibility: visible !important;
-  transform: none !important;
+  transform: none;
   animation: none !important;
 }
 .appLoading .loadingBrand h1,
@@ -7455,18 +7455,50 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 }
 
 
-/* Safe splash-logo motion: decorative only, never gates rendering or readiness. */
+/* Coordinated splash reveal: the app gate waits for this animation AND real content readiness. */
 .appLoading .loadingBrand img {
-  animation: loadingLogoSafeEnter 420ms cubic-bezier(.2,.72,.2,1) both !important;
+  /* Keep animated properties out of the !important cascade so keyframes can reveal the full logo. */
+  clip-path: circle(0% at 50% 50%);
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: scale(.96);
+  animation: loadingLogoBloom var(--path28-splash-duration, 950ms) cubic-bezier(.2,.72,.2,1) both !important;
+  animation-delay: var(--splash-animation-delay, 0ms) !important;
 }
-@keyframes loadingLogoSafeEnter {
-  from { opacity: 1; transform: scale(.96); }
-  to { opacity: 1; transform: scale(1); }
+@keyframes loadingLogoBloom {
+  from { opacity: 1; clip-path: circle(0% at 50% 50%); transform: scale(.96); }
+  to { opacity: 1; clip-path: circle(75% at 50% 50%); transform: scale(1); }
 }
+.appLoading .loadingProgress {
+  display: block;
+  width: min(220px, 70vw);
+  height: 8px;
+  overflow: hidden;
+  border: 1px solid #C7E5E8;
+  border-radius: 5px;
+  background: #E6F7F8;
+}
+.appLoading .loadingProgressFill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #40E0D0 0%, #4096C8 100%);
+  transform: scaleX(0);
+  transform-origin: right;
+  animation: loadingProgressFill var(--path28-splash-duration, 950ms) linear both !important;
+  animation-delay: var(--splash-animation-delay, 0ms) !important;
+}
+@keyframes loadingProgressFill { to { transform: scaleX(1); } }
 @media (prefers-reduced-motion: reduce) {
   .appLoading .loadingBrand img {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
+    clip-path: none !important;
+  }
+  .appLoading .loadingProgressFill {
+    animation: none !important;
+    transform: scaleX(1) !important;
   }
 }

@@ -50,11 +50,12 @@ async function measure(viewport, run) {
       finalClipPath: null,
       finalLogoConnectedAtAnimationEnd: null,
       decodedAtAnimationStart: false,
+      progressCompletedAt: null,
     };
     document.addEventListener('animationstart', (event) => {
       const image = event.target;
       if (!(image instanceof HTMLImageElement) || !image.closest('#root .initialSplash, #root .appLoading')) return;
-      if (event.animationName !== 'initialLogoBloom' && event.animationName !== 'loadingLogoBloom' && event.animationName !== 'loadingLogoSafeEnter') return;
+      if (event.animationName !== 'loadingLogoBloom') return;
       const style = getComputedStyle(image);
       if (window.__path28SplashAnimation.firstAnimationName === null) {
         window.__path28SplashAnimation.firstAnimationName = event.animationName;
@@ -67,17 +68,31 @@ async function measure(viewport, run) {
     document.addEventListener('animationend', (event) => {
       const image = event.target;
       if (!(image instanceof HTMLImageElement) || !image.closest('#root .initialSplash, #root .appLoading')) return;
-      if (event.animationName !== 'initialLogoBloom' && event.animationName !== 'loadingLogoBloom') return;
+      if (event.animationName !== 'loadingLogoBloom') return;
       window.__path28SplashAnimation.completedName = event.animationName;
       window.__path28SplashAnimation.completedAt = performance.now();
       window.__path28SplashAnimation.finalLogoConnectedAtAnimationEnd = image.isConnected;
-      window.__path28SplashAnimation.finalClipPath = getComputedStyle(image).clipPath;
+      const finalStyle = getComputedStyle(image);
+      const logoAnimation = image.getAnimations().find((animation) => animation.animationName === 'loadingLogoBloom');
+      window.__path28SplashAnimation.finalClipPath = finalStyle.clipPath;
+      window.__path28SplashAnimation.finalAnimationName = finalStyle.animationName;
+      window.__path28SplashAnimation.finalAnimationPlayState = logoAnimation?.playState || 'not-present';
+      window.__path28SplashAnimation.finalAnimationCurrentTime = logoAnimation?.currentTime ?? null;
+      window.__path28SplashAnimation.finalAnimationEffect = logoAnimation?.effect?.getKeyframes?.() || null;
+      window.__path28SplashAnimation.finalElementClass = image.className;
+      window.__path28SplashAnimation.finalParentClass = image.parentElement?.className || null;
+      window.__path28SplashAnimation.finalParentConnected = image.parentElement?.isConnected || false;
       const finalRect = image.getBoundingClientRect();
       window.__path28SplashAnimation.finalLogoRect = {
         width: finalRect.width,
         height: finalRect.height,
       };
       recordAppVisibility();
+    }, true);
+    document.addEventListener('animationend', (event) => {
+      if (event.target instanceof HTMLElement && event.target.classList.contains('loadingProgressFill')) {
+        window.__path28SplashAnimation.progressCompletedAt = performance.now();
+      }
     }, true);
     const recordAppVisibility = () => {
       const modal = document.querySelector('#copyrightModal');
@@ -97,7 +112,7 @@ async function measure(viewport, run) {
         && style.display !== 'none' && style.visibility !== 'hidden'
         && rect.width > 0 && rect.height > 0) {
         const logoAnimation = image.getAnimations()
-          .find((animation) => animation.animationName === 'loadingLogoSafeEnter');
+          .find((animation) => animation.animationName === 'loadingLogoBloom');
         if (logoAnimation && window.__path28SplashAnimation.firstAnimationName === null) {
           window.__path28SplashAnimation.firstAnimationName = logoAnimation.animationName;
           window.__path28SplashAnimation.firstAnimationDuration = style.animationDuration;
@@ -188,19 +203,24 @@ const startedAt = Date.now();
     };
   });
 
-  // The first interactive surface is exposed after required app content is ready;
-  // the logo is visible independently and never blocks this transition.
+  // The app is exposed only after both actual content readiness and the radial reveal.
   const splashVisual = await page.evaluate(() => window.__path28SplashObserved);
   assert.ok(splashVisual, 'A splash logo element must exist while startup is loading');
-  assert.ok(['none', 'loadingLogoSafeEnter'].includes(splashVisual.animationName), 'The splash logo may use only the short non-blocking decorative animation');
   const animationEvidence = await page.evaluate(() => window.__path28SplashAnimation);
-  assert.equal(animationEvidence.firstAnimationName, 'loadingLogoSafeEnter', 'The initial splash must expose the approved decorative logo animation through the Web Animations API');
-  assert.ok(['running', 'finished'].includes(animationEvidence.animationPlayState), 'The approved logo animation must be active or have completed without blocking startup');
-  assert.equal(parseCssTimeMs(animationEvidence.firstAnimationDuration), 420, 'The decorative logo animation must remain 420ms');
-  assert.equal(animationEvidence.firstAnimationOpacity, 1, 'The logo must remain fully visible when animation starts');
-  assert.equal(splashVisual.opacity, 1, 'The splash logo must be visible immediately');
-  assert.equal(splashVisual.clipPath, 'none', 'The splash logo must not be hidden behind a reveal mask');
+  assert.equal(animationEvidence.firstAnimationName, 'loadingLogoBloom', 'The splash must run the centered radial reveal');
+  assert.ok(['running', 'finished'].includes(animationEvidence.animationPlayState), 'The radial reveal must run to completion');
+  assert.equal(parseCssTimeMs(animationEvidence.firstAnimationDuration), 950, 'The radial reveal must retain its natural 950ms duration');
+  assert.equal(animationEvidence.firstAnimationOpacity, 1, 'The logo must remain opaque while its radial mask opens');
+  assert.equal(splashVisual.opacity, 1, 'The splash logo must remain visible during the reveal');
   assert.ok(splashVisual.width >= 160 && splashVisual.height >= 160, 'The logo must retain its intended display size');
+  assert.equal(animationEvidence.completedName, 'loadingLogoBloom', 'The app must wait for the radial reveal animation end event');
+  assert.match(animationEvidence.finalClipPath, /circle\(75% at 50% 50%\)/, `The reveal must finish with the full centered logo visible; evidence: ${JSON.stringify(animationEvidence)}`);
+  assert.ok(animationEvidence.completedAt !== null && animationEvidence.appVisibleAt !== null
+    && animationEvidence.completedAt <= animationEvidence.appVisibleAt,
+  'The first app surface must not appear before the radial reveal completes');
+  assert.ok(animationEvidence.progressCompletedAt !== null
+    && animationEvidence.progressCompletedAt <= animationEvidence.appVisibleAt,
+  'The app must not appear before the progress bar reaches 100%');
   const metrics = await page.evaluate(() => {
     const navigation = performance.getEntriesByType('navigation')[0];
     const resources = performance.getEntriesByType('resource').map((entry) => ({
@@ -243,7 +263,86 @@ const startedAt = Date.now();
   return result;
 }
 
+async function verifySplashReadinessOrders() {
+  const viewport = { width: 390, height: 844 };
+  const animationFirstContext = await browser.newContext({ viewport, reducedMotion: 'no-preference' });
+  const animationFirstPage = await animationFirstContext.newPage();
+  let releaseIndex;
+  let signalIndexRequest;
+  const indexRequested = new Promise((resolve) => { signalIndexRequest = resolve; });
+  const indexGate = new Promise((resolve) => { releaseIndex = resolve; });
+  await animationFirstPage.route('**/content/runtime-v1/index.json*', async (route) => {
+    signalIndexRequest();
+    await indexGate;
+    await route.continue();
+  });
+  await animationFirstPage.goto(baseURL, { waitUntil: 'domcontentloaded' });
+  await indexRequested;
+  await animationFirstPage.waitForFunction(() => {
+    const splash = document.querySelector('#root .appLoading');
+    return splash?.dataset.revealComplete === 'true';
+  }, { timeout: 10000 });
+  const animationFirstState = await animationFirstPage.locator('#root .appLoading').evaluate((node) => ({
+    contentReady: node.dataset.contentReady,
+    revealComplete: node.dataset.revealComplete,
+    modalVisible: Boolean(document.querySelector('#copyrightModal')),
+  }));
+  assert.deepEqual(animationFirstState, { contentReady: 'false', revealComplete: 'true', modalVisible: false },
+    'When content is slow, the completed animation must not dismiss the splash');
+  releaseIndex();
+  await animationFirstPage.locator('#copyrightModal').waitFor({ state: 'visible', timeout: 45000 });
+  await animationFirstContext.close();
+
+  const readinessFirstContext = await browser.newContext({ viewport, reducedMotion: 'no-preference' });
+  await readinessFirstContext.addInitScript(() => {
+    window.__PATH28_SPLASH_DURATION_MS__ = 3000;
+  });
+  await readinessFirstContext.addInitScript(() => {
+    window.__path28GateProbe = { completedAt: null, appVisibleAt: null };
+    document.addEventListener('animationend', (event) => {
+      if (event.animationName === 'loadingLogoBloom') window.__path28GateProbe.completedAt = performance.now();
+    }, true);
+    const observer = new MutationObserver(() => {
+      const modal = document.querySelector('#copyrightModal');
+      if (!modal || window.__path28GateProbe.appVisibleAt !== null) return;
+      const style = getComputedStyle(modal);
+      const rect = modal.getBoundingClientRect();
+      if (style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0) {
+        window.__path28GateProbe.appVisibleAt = performance.now();
+      }
+    });
+    observer.observe(document, { childList: true, subtree: true, attributes: true });
+  });
+  const readinessFirstPage = await readinessFirstContext.newPage();
+  await readinessFirstPage.goto(baseURL, { waitUntil: 'domcontentloaded' });
+  await readinessFirstPage.waitForFunction(() => {
+    const splash = document.querySelector('#root .appLoading');
+    return splash?.dataset.contentReady === 'true';
+  }, { timeout: 45000 });
+  const readinessFirstState = await readinessFirstPage.locator('#root .appLoading').evaluate((node) => ({
+    contentReady: node.dataset.contentReady,
+    revealComplete: node.dataset.revealComplete,
+    modalVisible: Boolean(document.querySelector('#copyrightModal')),
+  }));
+  assert.deepEqual(readinessFirstState, { contentReady: 'true', revealComplete: 'false', modalVisible: false },
+    'When content is ready first, the app must remain covered until the reveal completes');
+  await readinessFirstPage.locator('#copyrightModal').waitFor({ state: 'visible', timeout: 45000 });
+  const readinessFirstEvidence = await readinessFirstPage.evaluate(() => window.__path28GateProbe);
+  assert.ok(readinessFirstEvidence.completedAt <= readinessFirstEvidence.appVisibleAt,
+    'The app must become visible only after the deliberately extended reveal finishes');
+  await readinessFirstContext.close();
+
+  const reducedMotionContext = await browser.newContext({ viewport, reducedMotion: 'reduce' });
+  const reducedMotionPage = await reducedMotionContext.newPage();
+  await reducedMotionPage.goto(baseURL, { waitUntil: 'domcontentloaded' });
+  await reducedMotionPage.locator('#copyrightModal').waitFor({ state: 'visible', timeout: 45000 });
+  assert.equal(await reducedMotionPage.locator('#root .appLoading').count(), 0,
+    'Reduced-motion users must not be trapped behind an animation that does not run');
+  await reducedMotionContext.close();
+}
+
 try {
+  await verifySplashReadinessOrders();
   const results = [];
   const profiles = [
     { width: 360, height: 800, profile: 'android' },
