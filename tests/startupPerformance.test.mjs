@@ -9,6 +9,7 @@ const libraryPage = await readFile(new URL('../src/features/library/LibraryPage.
 const libraryManifest = JSON.parse(await readFile(new URL('../public/content/library.seed.json', import.meta.url), 'utf8'));
 const coverThumbnailBuild = await readFile(new URL('../scripts/prepare-library-cover-thumbnails.mjs', import.meta.url), 'utf8');
 const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
 const assistantLauncher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
 
 test('library, reader, and assistant modules stay out of the initial application bundle', () => {
@@ -53,18 +54,34 @@ test('the selected topic loads independently and the day screen waits for its ve
   assert.match(app, /onLoadTopic=\{loadTopicForScreen\}/);
 });
 
-test('the static splash logo and title remain visible before React mounts', () => {
-  assert.match(html, /\.initialSplash img\{[^}]*clip-path:circle\(0% at 50% 50%\)[^}]*animation:initialLogoBloom/);
-  assert.match(html, /@keyframes initialLogoBloom\{0%\{opacity:0;clip-path:circle\(0% at 50% 50%\)/);
-  assert.match(html, /\.initialSplash h1,\.initialSplash p\{opacity:0;transform:translateY\(10px\);animation:initialTextBloomReveal/);
+test('the static splash logo is visible immediately before React mounts', () => {
+  assert.match(html, /assets\/splash-logo\.webp/);
+  assert.match(html, /opacity:1;visibility:visible;transform:none;animation:loadingLogoSafeEnter 420ms/);
+  assert.ok(html.includes('@keyframes loadingLogoSafeEnter{from{opacity:1;transform:scale(.96)}to{opacity:1;transform:scale(1)}}'));
+  assert.ok(html.includes('@media(prefers-reduced-motion:reduce){.initialSplashInner,.initialSplash img,.initialSplash h1,.initialSplash p,.initialProgress{animation:none;opacity:1;transform:none;clip-path:none}'));
+  assert.match(html, /fetchpriority="high"/);
+  assert.match(html, /width="174" height="174"/);
 });
 
-test('the static splash logo opens radially from its center before app startup can finish', () => {
-  assert.match(html, /\.initialSplash img\{[^}]*clip-path:circle\(0% at 50% 50%\)[^}]*animation:initialLogoBloom \.95s/);
-  assert.match(html, /@keyframes initialLogoBloom\{0%\{opacity:0;clip-path:circle\(0% at 50% 50%\)/);
-  assert.match(app, /if \(!content \|\| !splashLogoReady \|\| !splashMinimumVisible \|\| loadError\)/);
-  assert.match(app, /setTimeout\(\(\) => \{[\s\S]*?setSplashMinimumVisible\(true\)[\s\S]*?}, 1100\)/);
-  assert.match(css, /animation: loadingLogoBloom \.95s/);
+test('startup does not wait for logo decode or an artificial splash timer', () => {
+  assert.match(app, /if \(!content \|\| loadError\) return \(/);
+  assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\.decode\(\)/);
+  assert.doesNotMatch(app, /setSplashMinimumVisible|splashMinimumVisible/);
+  assert.match(app, /assets\/splash-logo\.webp/);
+  assert.match(app, /fallbackAttempted/);
+  assert.match(css, /\.appLoading \.loadingBrand img \{[\s\S]*?animation: none !important/);
+});
+
+test('the splash thumbnail is generated from the original artwork with a strict byte budget', () => {
+  assert.match(pkg.scripts.prebuild, /prepare-splash-logo\.mjs/);
+  assert.match(html, /assets\/splash-logo\.webp/);
+  const generator = readFile(new URL('../scripts/prepare-splash-logo.mjs', import.meta.url), 'utf8');
+  return generator.then((source) => {
+    assert.match(source, /Logo m24\.webp/);
+    assert.match(source, /splash-logo\.webp/);
+    assert.match(source, /--quality[\s\S]*?58/);
+    assert.match(source, /40 \* 1024/);
+  });
 });
 
 test('the library catalogue does not download every full book on entry', () => {
@@ -136,23 +153,26 @@ test('all five library covers load eagerly at high priority on library entry', (
   assert.match(libraryPage, /books\.map\(\(book\)/);
 });
 
-test('initial splash uses the optimized WebP logo asset', async () => {
-  assert.match(html, /assets\/Logo m24\.webp/);
-  assert.match(html, /rel="preload" as="image"[^>]*fetchpriority="high"/);
-  assert.match(app, /assets\/Logo m24\.webp/);
-  const original = await stat(new URL('../public/assets/Logo m24.webp', import.meta.url));
-  assert.ok(original.size > 0, 'the original splash logo asset must exist');
+test('the static splash does not launch a large fallback during the React root handoff', () => {
+  const staticLogo = html.match(/<img[^>]+splash-logo\.webp[^>]*>/)?.[0] || '';
+  assert.ok(staticLogo, 'The initial HTML must contain the optimized splash logo');
+  assert.doesNotMatch(staticLogo, /onerror=/i, 'The static splash must not trigger a fallback when React replaces the initial root');
 });
 
+test('the initial splash preloads the generated lightweight WebP logo', async () => {
+  assert.match(html, /assets\/splash-logo\.webp/);
+  assert.match(app, /assets\/splash-logo\.webp/);
+  const generator = await readFile(new URL('../scripts/prepare-splash-logo.mjs', import.meta.url), 'utf8');
+  assert.match(generator, /Logo m24\.webp/);
+  assert.match(generator, /splash-logo\.webp/);
+  assert.match(generator, /40 \* 1024/);
+});
 
-test('the app waits until the complete splash logo image is decoded', () => {
-  assert.match(app, /const \[splashLogoReady, setSplashLogoReady\] = useState\(false\)/);
-  assert.match(app, /await image\.decode\(\)/);
-  assert.match(app, /if \(!content \|\| !splashLogoReady \|\| !splashMinimumVisible \|\| loadError\)/);
-  assert.match(app, /ref=\{splashLogoRef\}/);
-  assert.match(app, /image\.complete\) void confirmReady\(\)/);
-  assert.match(app, /fetchPriority="high"/);
-  assert.match(app, /onLoad=\{\(event\) => markSplashLogoReady\(event\.currentTarget\)\}/);
+test('logo failure never blocks startup, while content failure keeps its retry path', () => {
+  assert.match(app, /if \(!content \|\| loadError\) return \(/);
+  assert.match(app, /fallbackAttempted/);
+  assert.match(app, /<div className="loadingError" role="alert">[\s\S]*?window\.location\.reload\(\)/);
+  assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\.decode\(\)/);
 });
 
 test('library cards use generated lightweight WebP thumbnails without weakening eager display', () => {
@@ -209,30 +229,10 @@ test('opening a book preloads the reader module and reuses the prepared IndexedD
   assert.match(reader, /if \(initialVersion\?\.content\)/);
 });
 
-test('the React splash reveals the logo radially from its center and then reveals its title', () => {
-  assert.match(css, /\.appLoading \.loadingBrand img \{[\s\S]*?clip-path: circle\(0% at 50% 50%\)[\s\S]*?animation: loadingLogoBloom/);
-  assert.match(css, /@keyframes loadingLogoBloom[\s\S]*?circle\(75% at 50% 50%\)/);
-  assert.match(css, /\.appLoading \.loadingBrand h1,[\s\S]*?animation: loadingTextBloomReveal \.30s ease-out \.38s both/);
-});
-
-
-test('the splash remains visible briefly for its first paint without imposing a long artificial startup delay', () => {
-  assert.match(app, /const \[splashMinimumVisible, setSplashMinimumVisible\] = useState\(false\)/);
-  assert.match(app, /if \(!splashLogoReady\) return undefined[\s\S]*?setTimeout\(\(\) => \{[\s\S]*?setSplashMinimumVisible\(true\)[\s\S]*?}, 1100\)/);
-  assert.match(app, /!splashMinimumVisible/);
-});
-
-test('content and logo failures keep the splash visible and expose retry without replacing it', () => {
-  assert.doesNotMatch(app, /if \(loadError\) return <div className="validationModal"/);
-  assert.match(app, /if \(!content \|\| !splashLogoReady \|\| !splashMinimumVisible \|\| loadError\)/);
-  assert.match(app, /<div className="loadingError" role="alert">[\s\S]*?\{loadError\}[\s\S]*?window\.location\.reload\(\)/);
-});
-
-test('runtime index failure falls back to canonical content and keeps the manual startup retry', () => {
-  assert.match(app, /runtimeRepository\.loadContentIndex\(\)[\s\S]*?\.catch\(async \(\) => \{/);
-  assert.match(app, /for \(let attempt = 0; attempt <= 2; attempt \+= 1\)/);
-  assert.match(app, /response\.status === 404/);
-  assert.match(app, /window\.location\.reload\(\)/);
+test('the React splash shows logo and text without a delayed reveal animation', () => {
+  assert.match(css, /\.appLoading \.loadingBrand img \{[\s\S]*?animation: none !important/);
+  assert.match(css, /\.appLoading \.loadingBrand h1,[\s\S]*?animation: none !important/);
+  assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|markSplashLogoReady/);
 });
 
 test('Android WebViews without modern viewport units retain a 100vh fallback', () => {

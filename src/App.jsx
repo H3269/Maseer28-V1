@@ -113,13 +113,10 @@ function MainApp() {
   const [topicLoadState, setTopicLoadState] = useState({ key: '', status: 'idle', error: '' });
   const [loadError, setLoadError] = useState('');
   const [loadingProgress, setLoadingProgress] = useState(0);
-  const [splashLogoReady, setSplashLogoReady] = useState(false);
-  const [splashMinimumVisible, setSplashMinimumVisible] = useState(false);
   const [assistantLauncherLoaded, setAssistantLauncherLoaded] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [assistantOpenRequest, setAssistantOpenRequest] = useState(0);
   const assistantLauncherButtonRef = useRef(null);
-  const splashLogoRef = useRef(null);
   const [journey, setJourney] = useState(initial.state);
   const [userProfile, setUserProfileState] = useState(initial.user);
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(initial.onboardingComplete);
@@ -274,47 +271,6 @@ function MainApp() {
   const resultNumber = Number(resultDay || currentDay);
   const resultData = selectCanonicalDailyRecord(category, resultNumber);
   const headerDay = screen === 'day' ? currentDay : screen === 'dailyResult' ? (resultDay || journey.completed.length) : journey.completed.length;
-
-  async function markSplashLogoReady(image) {
-    try {
-      if (typeof image.decode === 'function') await image.decode();
-      if (image.complete && image.naturalWidth > 0) setSplashLogoReady(true);
-    } catch {
-      if (image.complete && image.naturalWidth > 0) setSplashLogoReady(true);
-    }
-  }
-
-  useEffect(() => {
-    const image = splashLogoRef.current;
-    if (!image) return undefined;
-    let cancelled = false;
-    const confirmReady = async () => {
-      try {
-        if (typeof image.decode === 'function') await image.decode();
-      } catch {
-        // A decoded image may reject decode() on some older Android WebViews.
-      }
-      if (!cancelled && image.complete && image.naturalWidth > 0) setSplashLogoReady(true);
-    };
-    if (image.complete) void confirmReady();
-    else image.addEventListener('load', confirmReady, { once: true });
-    return () => {
-      cancelled = true;
-      image.removeEventListener('load', confirmReady);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!splashLogoReady) return undefined;
-    let cancelled = false;
-    const timer = window.setTimeout(() => {
-      if (!cancelled) setSplashMinimumVisible(true);
-    }, 1100);
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timer);
-    };
-  }, [splashLogoReady]);
 
   function showValidation(items, title = 'چند بخش هنوز نیاز به تکمیل دارد') {
     setValidation({ title, items: Array.isArray(items) ? items : [items] });
@@ -820,27 +776,30 @@ function navigate(next) {
     setCopyrightOpen(false);
   }
 
-  if (!content || !splashLogoReady || !splashMinimumVisible || loadError) return (
-    <div className="app appLoading" role="status" aria-live="polite" aria-busy={!content || !splashLogoReady}>
+  if (!content || loadError) return (
+    <div className="app appLoading" role="status" aria-live="polite" aria-busy="true">
       <div className="loadingBrand">
         <img
-          ref={splashLogoRef}
-          src={`${import.meta.env.BASE_URL}assets/Logo m24.webp`}
+          src={`${import.meta.env.BASE_URL}assets/splash-logo.webp`}
           alt="لوگوی برنامه مسیر"
+          width="174"
+          height="174"
           loading="eager"
           decoding="async"
           fetchPriority="high"
-          onLoad={(event) => markSplashLogoReady(event.currentTarget)}
-          onError={() => setLoadError('تصویر صفحه آغازین بارگذاری نشد. لطفاً اتصال را بررسی و دوباره تلاش کن.')}
+          onError={(event) => {
+            const image = event.currentTarget;
+            if (!image.dataset.fallbackAttempted) {
+              image.dataset.fallbackAttempted = 'true';
+              image.src = `${import.meta.env.BASE_URL}assets/logo.png`;
+            } else {
+              image.hidden = true;
+            }
+          }}
         />
         <h1>مسیر ۲۸ روزه بازسازی ذهن</h1>
         <p>{loadError ? 'آماده‌سازی برنامه کامل نشد.' : 'در حال آماده‌سازی مسیر تو…'}</p>
-        {loadError && (
-          <div className="loadingError" role="alert">
-            <p>{loadError}</p>
-            <button className="primary" type="button" onClick={() => window.location.reload()}>تلاش دوباره</button>
-          </div>
-        )}
+        {loadError && <div className="loadingError" role="alert"><p>{loadError}</p><button className="primary" type="button" onClick={() => window.location.reload()}>تلاش دوباره</button></div>}
         <div className="loadingProgress" role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(loadingProgress)}>
           {Array.from({ length: 10 }, (_, index) => <span key={index} className="loadingProgressSegment" style={{ '--segment-progress': `${Math.max(0, Math.min(100, loadingProgress - index * 10))}%` }} />)}
         </div>

@@ -12,7 +12,7 @@ async function measure(viewport, run) {
   const isAndroid = viewport.profile === 'android';
   const context = await browser.newContext({
     viewport: { width: viewport.width, height: viewport.height },
-    // This suite verifies the required radial bloom, so make the motion preference deterministic
+    // This suite verifies the approved non-blocking splash motion, so make the motion preference deterministic
     // instead of inheriting a hosted runner's OS-level accessibility setting.
     reducedMotion: 'no-preference',
     deviceScaleFactor: isAndroid ? 2 : 1,
@@ -31,10 +31,18 @@ async function measure(viewport, run) {
 
   await page.addInitScript(() => {
     window.__path28SplashObserved = null;
+    window.__path28ImageEvents = [];
+    document.addEventListener('load', (event) => {
+      if (event.target instanceof HTMLImageElement) window.__path28ImageEvents.push({ type: 'load', src: event.target.currentSrc || event.target.src, naturalWidth: event.target.naturalWidth });
+    }, true);
+    document.addEventListener('error', (event) => {
+      if (event.target instanceof HTMLImageElement) window.__path28ImageEvents.push({ type: 'error', src: event.target.currentSrc || event.target.src, fallbackAttempted: event.target.dataset.fallbackAttempted || null });
+    }, true);
     const watchedImages = new WeakSet();
     window.__path28SplashAnimation = {
       firstAnimationName: null,
       firstAnimationDuration: null,
+      firstAnimationOpacity: null,
       firstClipPath: null,
       completedName: null,
       completedAt: null,
@@ -46,11 +54,12 @@ async function measure(viewport, run) {
     document.addEventListener('animationstart', (event) => {
       const image = event.target;
       if (!(image instanceof HTMLImageElement) || !image.closest('#root .initialSplash, #root .appLoading')) return;
-      if (event.animationName !== 'initialLogoBloom' && event.animationName !== 'loadingLogoBloom') return;
+      if (event.animationName !== 'initialLogoBloom' && event.animationName !== 'loadingLogoBloom' && event.animationName !== 'loadingLogoSafeEnter') return;
       const style = getComputedStyle(image);
       if (window.__path28SplashAnimation.firstAnimationName === null) {
         window.__path28SplashAnimation.firstAnimationName = event.animationName;
         window.__path28SplashAnimation.firstAnimationDuration = style.animationDuration;
+        window.__path28SplashAnimation.firstAnimationOpacity = Number(style.opacity);
         window.__path28SplashAnimation.firstClipPath = style.clipPath;
         window.__path28SplashAnimation.decodedAtAnimationStart = image.complete && image.naturalWidth > 0;
       }
@@ -87,6 +96,16 @@ async function measure(viewport, run) {
       if (image.complete && image.naturalWidth > 0
         && style.display !== 'none' && style.visibility !== 'hidden'
         && rect.width > 0 && rect.height > 0) {
+        const logoAnimation = image.getAnimations()
+          .find((animation) => animation.animationName === 'loadingLogoSafeEnter');
+        if (logoAnimation && window.__path28SplashAnimation.firstAnimationName === null) {
+          window.__path28SplashAnimation.firstAnimationName = logoAnimation.animationName;
+          window.__path28SplashAnimation.firstAnimationDuration = style.animationDuration;
+          window.__path28SplashAnimation.firstAnimationOpacity = Number(style.opacity);
+          window.__path28SplashAnimation.firstClipPath = style.clipPath;
+          window.__path28SplashAnimation.decodedAtAnimationStart = image.complete && image.naturalWidth > 0;
+          window.__path28SplashAnimation.animationPlayState = logoAnimation.playState;
+        }
         window.__path28SplashObserved = {
           ready: true,
           naturalWidth: image.naturalWidth,
@@ -94,6 +113,8 @@ async function measure(viewport, run) {
           width: rect.width,
           height: rect.height,
           opacity: Number(style.opacity),
+          animationName: style.animationName,
+          clipPath: style.clipPath,
           src: image.currentSrc || image.src,
         };
         return;
@@ -167,43 +188,19 @@ const startedAt = Date.now();
     };
   });
 
-  // The first interactive surface is exposed only after required content and
-  // splash-logo readiness gates have completed.
-  const animationGate = await page.evaluate(() => window.__path28SplashAnimation);
-  assert.ok(
-    animationGate.firstAnimationName === 'initialLogoBloom' || animationGate.firstAnimationName === 'loadingLogoBloom',
-    'The initial or React splash must start the radial logo-opening animation',
-  );
-  assert.ok(
-    Math.abs(parseCssTimeMs(animationGate.firstAnimationDuration) - 950) < 1,
-    'The logo-opening animation must run for its full 0.95-second duration',
-  );
-  assert.equal(animationGate.decodedAtAnimationStart, true, 'The splash logo image must be decoded when its reveal animation starts');
-  assert.ok(
-    animationGate.completedName === 'initialLogoBloom' || animationGate.completedName === 'loadingLogoBloom',
-    'The splash logo radial animation must complete before the app is shown',
-  );
-  const finalClip = /^circle\(\s*([\d.]+)(%|px)\s+at\s+([\d.]+)(%|px)\s+([\d.]+)(%|px)\s*\)$/i.exec(
-    animationGate.finalClipPath || '',
-  );
-  const finalRect = animationGate.finalLogoRect;
-  const fullyRevealedCircle = Boolean(finalClip && finalRect?.width > 0 && finalRect?.height > 0
-    && finalClip[2] === finalClip[4] && finalClip[2] === finalClip[6]
-    && (finalClip[2] === '%'
-      ? Math.abs(Number(finalClip[1]) - 75) < 0.1
-        && Math.abs(Number(finalClip[3]) - 50) < 0.1
-        && Math.abs(Number(finalClip[5]) - 50) < 0.1
-      : Math.abs(Number(finalClip[1]) - (0.75 * Math.hypot(finalRect.width, finalRect.height) / Math.SQRT2)) < 1.5
-        && Math.abs(Number(finalClip[3]) - finalRect.width / 2) < 1.5
-        && Math.abs(Number(finalClip[5]) - finalRect.height / 2) < 1.5));
-  assert.ok(
-    fullyRevealedCircle,
-    `The logo must finish at a centered 75% circular reveal; computed clip-path: ${animationGate.finalClipPath}; target connected at animationend: ${animationGate.finalLogoConnectedAtAnimationEnd}`,
-  );
-  assert.ok(
-    animationGate.appVisibleAt !== null && animationGate.completedAt <= animationGate.appVisibleAt,
-    'The app must not expose its first interactive surface before the logo animation completes',
-  );
+  // The first interactive surface is exposed after required app content is ready;
+  // the logo is visible independently and never blocks this transition.
+  const splashVisual = await page.evaluate(() => window.__path28SplashObserved);
+  assert.ok(splashVisual, 'A splash logo element must exist while startup is loading');
+  assert.ok(['none', 'loadingLogoSafeEnter'].includes(splashVisual.animationName), 'The splash logo may use only the short non-blocking decorative animation');
+  const animationEvidence = await page.evaluate(() => window.__path28SplashAnimation);
+  assert.equal(animationEvidence.firstAnimationName, 'loadingLogoSafeEnter', 'The initial splash must expose the approved decorative logo animation through the Web Animations API');
+  assert.ok(['running', 'finished'].includes(animationEvidence.animationPlayState), 'The approved logo animation must be active or have completed without blocking startup');
+  assert.equal(parseCssTimeMs(animationEvidence.firstAnimationDuration), 420, 'The decorative logo animation must remain 420ms');
+  assert.equal(animationEvidence.firstAnimationOpacity, 1, 'The logo must remain fully visible when animation starts');
+  assert.equal(splashVisual.opacity, 1, 'The splash logo must be visible immediately');
+  assert.equal(splashVisual.clipPath, 'none', 'The splash logo must not be hidden behind a reveal mask');
+  assert.ok(splashVisual.width >= 160 && splashVisual.height >= 160, 'The logo must retain its intended display size');
   const metrics = await page.evaluate(() => {
     const navigation = performance.getEntriesByType('navigation')[0];
     const resources = performance.getEntriesByType('resource').map((entry) => ({
@@ -220,6 +217,8 @@ const startedAt = Date.now();
       firstPaintMs: Math.round(performance.getEntriesByName('first-paint')[0]?.startTime || 0),
       firstContentfulPaintMs: Math.round(performance.getEntriesByName('first-contentful-paint')[0]?.startTime || 0),
       resourceCount: resources.length,
+      imageEvents: window.__path28ImageEvents,
+      splashLogoResources: resources.filter((item) => /splash-logo\.webp|logo\.png/i.test(item.url)),
       totalTransferBytes: resources.reduce((sum, item) => sum + item.transferBytes, 0),
       totalDecodedBytes: resources.reduce((sum, item) => sum + item.decodedBytes, 0),
       largestResources: [...resources].sort((a, b) => b.transferBytes - a.transferBytes).slice(0, 12),
@@ -236,6 +235,10 @@ const startedAt = Date.now();
   };
   assert.equal(result.logoDecoded, true, 'Splash logo must decode before the app becomes interactive');
   assert.equal(result.logoVisible, true, 'Splash logo must be visible while the startup gate is active');
+  if (result.splashLogoResources.some((item) => /logo\.png/i.test(item.url))) console.error('SPLASH LOGO DIAGNOSTICS', JSON.stringify({ imageEvents: result.imageEvents, splashLogoResources: result.splashLogoResources }, null, 2));
+  assert.ok(!result.splashLogoResources.some((item) => /logo\.png/i.test(item.url)), 'The oversized PNG fallback must never be requested during successful startup');
+  const optimizedLogo = result.splashLogoResources.find((item) => /splash-logo\.webp/i.test(item.url));
+  assert.ok(optimizedLogo && optimizedLogo.transferBytes > 0 && optimizedLogo.transferBytes <= 40 * 1024, 'The startup logo must use the generated lightweight WebP asset');
   await context.close();
   return result;
 }
