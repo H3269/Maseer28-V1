@@ -158,15 +158,15 @@ test('the app waits until the complete splash logo image is decoded', () => {
 test('library cards use generated lightweight WebP thumbnails without weakening eager display', () => {
   assert.equal(libraryManifest.books.length, 5);
   for (const book of libraryManifest.books) {
-    assert.match(book.libraryCover, /^assets\\/covers\\/library\\/book[1-5]\\.webp$/);
+    assert.equal(book.libraryCover, `assets/covers/library/book${book.legacyId}.webp`);
   }
-  assert.match(libraryHook, /libraryCoverUrl: meta\\.libraryCover/);
-  assert.match(libraryPage, /book\\.libraryCoverUrl/);
+  assert.ok(libraryHook.includes('libraryCoverUrl: meta.libraryCover'));
+  assert.ok(libraryPage.includes('book.libraryCoverUrl'));
   assert.match(libraryPage, /loading="eager" decoding="async" fetchPriority="high"/);
-  assert.match(coverThumbnailBuild, /sharp-cli@6\\.1\\.0/);
-  assert.match(coverThumbnailBuild, /'360',[\\s\\S]*?'522'/);
-  assert.match(coverThumbnailBuild, /'72'/);
-  assert.match(coverThumbnailBuild, /600 \\* 1024/);
+  assert.ok(coverThumbnailBuild.includes('sharp-cli@6.1.0'));
+  assert.ok(coverThumbnailBuild.includes("'360'") && coverThumbnailBuild.includes("'522'"));
+  assert.ok(coverThumbnailBuild.includes("'72'"));
+  assert.ok(coverThumbnailBuild.includes('600 * 1024'));
 });
 
 test('all library book covers are requested immediately at high priority', () => {
