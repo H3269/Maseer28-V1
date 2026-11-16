@@ -9,7 +9,8 @@
       "description": "نسخه اصلی کتابخانه مسیر ۲۸ روزه",
       "cover": "assets/covers/book1.webp",
       "file": "content/books/book1.json",
-      "order": 1
+      "order": 1,
+      "libraryCover": "assets/covers/library/book1.webp"
     },
     {
       "id": "book-2",
@@ -19,7 +20,8 @@
       "description": "نسخه اصلی کتابخانه مسیر ۲۸ روزه",
       "cover": "assets/covers/book2.webp",
       "file": "content/books/book2.json",
-      "order": 2
+      "order": 2,
+      "libraryCover": "assets/covers/library/book2.webp"
     },
     {
       "id": "book-3",
@@ -29,7 +31,8 @@
       "description": "نسخه اصلی کتابخانه مسیر ۲۸ روزه",
       "cover": "assets/covers/book3.webp",
       "file": "content/books/book3.json",
-      "order": 3
+      "order": 3,
+      "libraryCover": "assets/covers/library/book3.webp"
     },
     {
       "id": "book-4",
@@ -39,7 +42,8 @@
       "description": "نسخه اصلی کتابخانه مسیر ۲۸ روزه",
       "cover": "assets/covers/book4.webp",
       "file": "content/books/book4.json",
-      "order": 4
+      "order": 4,
+      "libraryCover": "assets/covers/library/book4.webp"
     },
     {
       "id": "book-5",
@@ -49,8 +53,9 @@
       "description": "از واکنش‌های ناخودآگاه تا آرامش درونی",
       "cover": "assets/covers/book5.webp",
       "file": "content/books/book5.json",
-      "order": 5
+      "order": 5,
+      "libraryCover": "assets/covers/library/book5.webp"
     }
   ],
-  "revision": "2026-10-23-v90-book2-final-chapter"
+  "revision": "2026-11-16-library-cover-thumbnails-v1"
 }
