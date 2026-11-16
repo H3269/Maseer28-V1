@@ -439,7 +439,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
           >
             <span className="badge">پرسش‌های پیشنهادی</span>
             <h2 id="library-assistant-prompt-title">{screen === "books" ? "سؤال آماده دستیار کتابخانه" : dailyContext ? `سؤال‌های آماده روز ${dailyContext.day}` : "سؤال‌های آماده این صفحه"}</h2>
-            <p className="muted">برای انتخاب، روی سؤال موردنظرت بزن تا برای همین روز ارسال شود.</p>
+            <p className="muted">برای انتخاب، روی سؤال آماده موردنظرت بزن تا پاسخ مربوط به همین بخش نمایش داده شود.</p>
             <div className="libraryAssistantPromptOptions">
               {activePromptGroups.map((group) => (
                 <section className="libraryAssistantPromptGroup" key={group.label}>
