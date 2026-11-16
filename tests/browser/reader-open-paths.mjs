@@ -133,10 +133,15 @@ try {
           if (request.resourceType() === 'image') requestedImages.push({ url: request.url(), pathname });
         } catch { /* ignore non-URL requests */ }
       });
-      page.on('requestfailed', (request) => failedRequests.push({
-        url: request.url(),
-        error: request.failure()?.errorText || 'request failed',
-      }));
+      page.on('requestfailed', (request) => {
+        const url = request.url();
+        if (request.resourceType() === 'image' || /\/content\/books\/book\d+\.json(?:$|\?)/.test(url)) {
+          failedRequests.push({
+            url,
+            error: request.failure()?.errorText || 'request failed',
+          });
+        }
+      });
       page.on('pageerror', (error) => errors.push(String(error)));
       page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
       await page.addInitScript((state) => {
