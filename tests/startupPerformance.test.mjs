@@ -60,9 +60,8 @@ test('the static splash reveals the logo radially and fills its progress bar in 
   assert.ok(html.includes('@keyframes loadingLogoBloom{from{opacity:1;clip-path:circle(0% at 50% 50%);transform:scale(.96)}to{opacity:1;clip-path:circle(75% at 50% 50%);transform:scale(1)}}'));
   assert.ok(html.includes('@keyframes loadingProgressFill{to{transform:scaleX(1)}}'));
   assert.match(html, /aria-label="پیشرفت نمایش لوگو"/);
-  assert.match(html, /PATH28_SPLASH_STARTED_AT__/);
   assert.match(html, /PATH28_SPLASH_DURATION_MS__/);
-  assert.ok(html.includes('@media(prefers-reduced-motion:reduce){.initialSplashInner,.initialSplash img,.initialSplash h1,.initialSplash p,.initialProgress{animation:none;opacity:1;transform:none;clip-path:none}.initialProgress span{animation:none;opacity:1;transform:scaleX(1);clip-path:none}}'));
+  assert.doesNotMatch(html, /@media\s*\(prefers-reduced-motion:\s*reduce\)/, 'The static splash must animate identically when reduced motion is enabled');
   assert.match(html, /fetchpriority="high"/);
   assert.match(html, /width="174" height="174"/);
 });
@@ -73,11 +72,11 @@ test('startup waits for both actual content readiness and the completed radial r
   assert.match(app, /onAnimationEnd=\{\(event\) => \{/);
   assert.match(app, /event\.animationName === 'loadingLogoBloom'\) setSplashLogoRevealComplete\(true\)/);
   assert.match(app, /event\.animationName === 'loadingProgressFill'/);
-  assert.match(app, /prefers-reduced-motion: reduce/);
+  assert.doesNotMatch(app, /prefers-reduced-motion: reduce/);
   assert.match(app, /assets\/splash-logo\.webp/);
   assert.match(app, /fallbackAttempted/);
-  assert.match(app, /splashAnimationElapsedMs/);
-  assert.match(app, /splash-animation-delay/);
+  assert.doesNotMatch(app, /splashAnimationElapsedMs|splash-animation-delay/);
+  assert.match(app, /Start the visual gate when React actually mounts the visible splash/);
   assert.match(css, /animation: loadingLogoBloom var\(--path28-splash-duration, 950ms\)/);
   assert.match(css, /animation: loadingProgressFill var\(--path28-splash-duration, 950ms\) linear both/);
 });
@@ -247,7 +246,7 @@ test('the React splash uses the same radial reveal and progress animation as sta
   assert.doesNotMatch(fastSplashRule, /(?:clip-path|transform):[^;]*!important/);
   assert.match(css, /@keyframes loadingLogoBloom[\s\S]*?circle\(75% at 50% 50%\)/);
   assert.match(css, /@keyframes loadingProgressFill[\s\S]*?scaleX\(1\)/);
-  assert.match(css, /prefers-reduced-motion: reduce/);
+  assert.doesNotMatch(css.slice(css.lastIndexOf('/* Coordinated splash reveal')), /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
   assert.match(app, /!splashLogoRevealComplete \|\| !splashProgressComplete/);
   assert.match(app, /setSplashLogoRevealComplete\(true\)/);
   assert.match(app, /setSplashProgressComplete\(true\)/);

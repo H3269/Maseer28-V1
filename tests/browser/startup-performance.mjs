@@ -265,6 +265,26 @@ const startedAt = Date.now();
 
 async function verifySplashReadinessOrders() {
   const viewport = { width: 390, height: 844 };
+
+  // Simulate a slow application bundle: the static HTML animation may finish
+  // before React mounts, but the visible React splash must start a fresh reveal.
+  const delayedBundleContext = await browser.newContext({ viewport, reducedMotion: 'no-preference' });
+  const delayedBundlePage = await delayedBundleContext.newPage();
+  await delayedBundlePage.route('**/*.js', async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+    await route.continue();
+  });
+  await delayedBundlePage.goto(baseURL, { waitUntil: 'domcontentloaded' });
+  await delayedBundlePage.locator('#root .appLoading').waitFor({ state: 'visible', timeout: 20000 });
+  const delayedMountAnimation = await delayedBundlePage.locator('#root .appLoading .loadingBrand img').evaluate((image) => {
+    const animation = image.getAnimations().find((item) => item.animationName === 'loadingLogoBloom');
+    return { playState: animation?.playState || 'missing', currentTime: Number(animation?.currentTime ?? -1) };
+  });
+  assert.equal(delayedMountAnimation.playState, 'running',
+    'The React splash must start its logo reveal when it becomes visible, even after a delayed bundle');
+  assert.ok(delayedMountAnimation.currentTime >= 0 && delayedMountAnimation.currentTime < 500,
+    'The React splash animation must not be consumed before it is visible; observed ' + JSON.stringify(delayedMountAnimation));
+  await delayedBundleContext.close();
   const animationFirstContext = await browser.newContext({ viewport, reducedMotion: 'no-preference' });
   const animationFirstPage = await animationFirstContext.newPage();
   let releaseIndex;
@@ -332,12 +352,40 @@ async function verifySplashReadinessOrders() {
     'The app must become visible only after the deliberately extended reveal finishes');
   await readinessFirstContext.close();
 
+  // The owner explicitly requires the same splash animation in both device
+  // motion settings. Reduced-motion must not skip either animation or the gate.
   const reducedMotionContext = await browser.newContext({ viewport, reducedMotion: 'reduce' });
   const reducedMotionPage = await reducedMotionContext.newPage();
   await reducedMotionPage.goto(baseURL, { waitUntil: 'domcontentloaded' });
+  await reducedMotionPage.locator('#root .appLoading').waitFor({ state: 'visible', timeout: 20000 });
+  const reducedMotionAnimations = await reducedMotionPage.locator('#root .appLoading').evaluate((splash) => {
+    const logo = splash.querySelector('.loadingBrand img');
+    const progress = splash.querySelector('.loadingProgressFill');
+    const logoAnimation = logo.getAnimations().find((item) => item.animationName === 'loadingLogoBloom');
+    const progressAnimation = progress.getAnimations().find((item) => item.animationName === 'loadingProgressFill');
+    return {
+      logoState: logoAnimation?.playState || 'missing',
+      progressState: progressAnimation?.playState || 'missing',
+      logoDuration: Number(logoAnimation?.effect?.getTiming().duration ?? -1),
+      progressDuration: Number(progressAnimation?.effect?.getTiming().duration ?? -1),
+    };
+  });
+  assert.deepEqual(reducedMotionAnimations, {
+    logoState: 'running',
+    progressState: 'running',
+    logoDuration: 950,
+    progressDuration: 950,
+  }, 'Reduced-motion preference must not disable or shorten the splash reveal or its synchronized progress');
+  await reducedMotionPage.waitForTimeout(250);
+  const reducedMotionProgress = await reducedMotionPage.locator('#root .appLoading .loadingProgressFill').evaluate((node) => {
+    const transform = getComputedStyle(node).transform;
+    return transform === 'none' ? 1 : Number(new DOMMatrixReadOnly(transform).m11);
+  });
+  assert.ok(reducedMotionProgress > 0 && reducedMotionProgress < 1,
+    'The progress bar must visibly fill over time, not jump instantly to 100%; observed ' + reducedMotionProgress);
   await reducedMotionPage.locator('#copyrightModal').waitFor({ state: 'visible', timeout: 45000 });
   assert.equal(await reducedMotionPage.locator('#root .appLoading').count(), 0,
-    'Reduced-motion users must not be trapped behind an animation that does not run');
+    'The first app screen must appear after the logo and progress animations complete, even with reduced-motion enabled');
   await reducedMotionContext.close();
 }
 

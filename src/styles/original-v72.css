@@ -7463,7 +7463,6 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
   visibility: visible !important;
   transform: scale(.96);
   animation: loadingLogoBloom var(--path28-splash-duration, 950ms) cubic-bezier(.2,.72,.2,1) both !important;
-  animation-delay: var(--splash-animation-delay, 0ms) !important;
 }
 @keyframes loadingLogoBloom {
   from { opacity: 1; clip-path: circle(0% at 50% 50%); transform: scale(.96); }
@@ -7487,18 +7486,7 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
   transform: scaleX(0);
   transform-origin: right;
   animation: loadingProgressFill var(--path28-splash-duration, 950ms) linear both !important;
-  animation-delay: var(--splash-animation-delay, 0ms) !important;
 }
 @keyframes loadingProgressFill { to { transform: scaleX(1); } }
-@media (prefers-reduced-motion: reduce) {
-  .appLoading .loadingBrand img {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-    clip-path: none !important;
-  }
-  .appLoading .loadingProgressFill {
-    animation: none !important;
-    transform: scaleX(1) !important;
-  }
-}
+/* The splash deliberately keeps its coordinated logo and progress animations
+   even when the device requests reduced motion. Other app motion remains reduced. */
