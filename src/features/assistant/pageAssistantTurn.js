@@ -73,6 +73,20 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       conversationState: null,
     });
   }
+  // Non-daily page questions are fixed navigation/help choices. Answer them
+  // directly without invoking semantic intake, safety classification,
+  // knowledge retrieval, or conversation-state machinery.
+  if (screen !== 'day') {
+    const pageReply = answerPageAssistantQuestion({ screen, message, libraryContext });
+    const context = getPageAssistantContext(screen);
+    return Object.freeze({
+      status: pageReply ? 'page_guidance_available' : 'prepared_question_required',
+      message: pageReply || 'برای این بخش پاسخ آماده‌ای در دسترس نیست.',
+      knowledge: Object.freeze([]),
+      page_context: context.screen,
+      conversationState: null,
+    });
+  }
   const inputProbe = routeAssistantTurn({ text: message });
   if ((screen !== 'day' && SAFETY_STATUSES.has(inputProbe.status))
     || inputProbe.status === 'invalid_input'
