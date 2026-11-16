@@ -3,18 +3,6 @@ export const LOCAL_MODEL_REVISION = '54250909aca286a05b9d013c8af7a21859ee6ead';
 export const LOCAL_MODEL_APPROX_MB = '۶۵۰ تا ۷۵۰';
 export const LOCAL_MODEL_INSTALL_COMMAND = 'بارگیری مدل محلی';
 
-const BLOCKED_STATUSES = new Set([
-  'urgent_human_support_required', 'safety_clarification_required',
-  'intent_scope_clarification_required', 'clarification_required',
-  'personal_intake_required', 'invalid_input', 'input_too_long',
-  'daily_guidance_unavailable', 'page_scope_required',
-]);
-
-function normalizeCommand(value) {
-  return String(value ?? '').normalize('NFKC').replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
-    .replace(/[\u200c\u200f\u200e]/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
-}
-
 // Conversational generation is disabled product-wide. Prepared-question answer
 // modules remain the only source of assistant guidance in the app.
 export function isLocalModelInstallCommand() {
