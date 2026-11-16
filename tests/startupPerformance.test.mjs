@@ -62,7 +62,7 @@ test('the static splash logo is visible immediately before React mounts', () => 
 });
 
 test('startup does not wait for logo decode or an artificial splash timer', () => {
-  assert.match(app, /if \(!content\) return \(/);
+  assert.match(app, /if \(!content \|\| loadError\) return \(/);
   assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\.decode\(\)/);
   assert.doesNotMatch(app, /setSplashMinimumVisible|splashMinimumVisible/);
   assert.match(app, /assets\/splash-logo\.webp/);
