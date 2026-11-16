@@ -1,7 +1,7 @@
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, statSync } from 'node:fs';
 
-const source = 'public/assets/Logo m24.webp';
+const source = 'scripts/assets/Logo m24.webp';
 const output = 'public/assets/splash-logo.webp';
 mkdirSync('public/assets', { recursive: true });
 const args = [

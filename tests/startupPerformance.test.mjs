@@ -74,7 +74,8 @@ test('startup waits for both actual content readiness and the completed radial r
   assert.match(app, /event\.animationName === 'loadingProgressFill'/);
   assert.doesNotMatch(app, /prefers-reduced-motion: reduce/);
   assert.match(app, /assets\/splash-logo\.webp/);
-  assert.match(app, /fallbackAttempted/);
+  assert.match(app, /event\.currentTarget\.hidden = true;[\s\S]*?setSplashLogoRevealComplete\(true\)/);
+  assert.doesNotMatch(app, /assets\/logo\.png|fallbackAttempted/);
   assert.doesNotMatch(app, /splashAnimationElapsedMs|splash-animation-delay/);
   assert.match(app, /Start the visual gate when React actually mounts the visible splash/);
   assert.match(css, /animation: loadingLogoBloom var\(--path28-splash-duration, 950ms\)/);
@@ -86,7 +87,7 @@ test('the splash thumbnail is generated from the original artwork with a strict 
   assert.match(html, /assets\/splash-logo\.webp/);
   const generator = readFile(new URL('../scripts/prepare-splash-logo.mjs', import.meta.url), 'utf8');
   return generator.then((source) => {
-    assert.match(source, /Logo m24\.webp/);
+    assert.match(source, /scripts\/assets\/Logo m24\.webp/);
     assert.match(source, /splash-logo\.webp/);
     assert.match(source, /--quality[\s\S]*?58/);
     assert.match(source, /40 \* 1024/);
@@ -172,14 +173,15 @@ test('the initial splash preloads the generated lightweight WebP logo', async ()
   assert.match(html, /assets\/splash-logo\.webp/);
   assert.match(app, /assets\/splash-logo\.webp/);
   const generator = await readFile(new URL('../scripts/prepare-splash-logo.mjs', import.meta.url), 'utf8');
-  assert.match(generator, /Logo m24\.webp/);
+  assert.match(generator, /scripts\/assets\/Logo m24\.webp/);
   assert.match(generator, /splash-logo\.webp/);
   assert.match(generator, /40 \* 1024/);
 });
 
 test('logo failure never blocks startup, while content failure keeps its retry path', () => {
   assert.match(app, /if \(!content \|\| !splashLogoRevealComplete || !splashProgressComplete \|\| loadError\) return \(/);
-  assert.match(app, /fallbackAttempted/);
+  assert.match(app, /event\.currentTarget\.hidden = true;[\s\S]*?setSplashLogoRevealComplete\(true\)/);
+  assert.doesNotMatch(app, /assets\/logo\.png|fallbackAttempted/);
   assert.match(app, /<div className="loadingError" role="alert">[\s\S]*?window\.location\.reload\(\)/);
   assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\.decode\(\)|setTimeout\(.*splash/i);
 });
@@ -241,9 +243,8 @@ test('opening a book preloads the reader module and reuses the prepared IndexedD
 test('the React splash uses the same radial reveal and progress animation as static HTML', () => {
   assert.match(css, /clip-path: circle\(0% at 50% 50%\);/);
   assert.doesNotMatch(css, /clip-path: circle\(0% at 50% 50%\) !important/);
-  const fastSplashRule = css.match(/\/\* Fast splash:[\s\S]*?\.appLoading \.loadingBrand img \{([\s\S]*?)\n\}/)?.[1] || '';
-  assert.ok(fastSplashRule, 'The legacy fast-splash override must remain present');
-  assert.doesNotMatch(fastSplashRule, /(?:clip-path|transform):[^;]*!important/);
+  assert.doesNotMatch(css, /Fast splash|loadingLogoEnter|loadingTextReveal|loadingPulse|loadingProgressSegment|loadingBloomReveal/, 'Legacy splash rules must be removed');
+  assert.equal((css.match(/@keyframes loadingLogoBloom/g) || []).length, 1, 'The React splash must have one canonical logo animation');
   assert.match(css, /@keyframes loadingLogoBloom[\s\S]*?circle\(75% at 50% 50%\)/);
   assert.match(css, /@keyframes loadingProgressFill[\s\S]*?scaleX\(1\)/);
   assert.doesNotMatch(css.slice(css.lastIndexOf('/* Coordinated splash reveal')), /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
