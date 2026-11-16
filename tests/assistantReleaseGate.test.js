@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 
 const journeyUi = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
 const assistantUi = await readFile(new URL('../src/features/assistant/AssessmentAssistant.jsx', import.meta.url), 'utf8');
+const legacyDailyAssistantUi = await readFile(new URL('../src/features/assistant/DailyExerciseAssistant.jsx', import.meta.url), 'utf8');
 const engine = await readFile(new URL('../src/features/assistant/assessmentEngine.js', import.meta.url), 'utf8');
 const turnEngine = await readFile(new URL('../src/features/assistant/assistantTurnEngine.js', import.meta.url), 'utf8');
 const knowledgeGateway = await readFile(new URL('../src/features/assistant/knowledgeGateway.js', import.meta.url), 'utf8');
@@ -34,13 +35,14 @@ test('global assistant launcher is mounted across navigable screens, including s
   assert.match(appUi, /dailyContext=\{screen === 'day'/);
   assert.match(appUi, /libraryContext=\{screen === 'books'/);
   assert.doesNotMatch(appUi, /DailyExerciseAssistant/);
+  assert.doesNotMatch(legacyDailyAssistantUi, /<textarea|onSubmit=\{send\}|makeDailyExerciseGuidanceTurn/);
   assert.doesNotMatch(readerUi, /GlobalAssistantLauncher/);
   assert.match(appUi, /screen === 'bookReader' && readerState/);
   assert.match(appUi, /<Reader book=/, 'reader must remain rendered inside its lazy-loaded Suspense boundary');
   assert.doesNotMatch(launcherUi, /support:\s*'پشتیبانی'/, 'launcher must not reintroduce screen-context helper labels');
   assert.doesNotMatch(launcherUi, /<textarea/);
   assert.match(launcherUi, /activePromptGroups\.some/);
-  assert.match(launcherUi, /selectedDailyQuestion/);
+  assert.match(launcherUi, /selectedPreparedQuestion/);
   assert.match(launcherUi, /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/);
   assert.doesNotMatch(launcherUi, /isDailyExercise/, 'assistant launcher must not reference removed daily-context state');
   assert.match(launcherUi, /className="globalAssistantLauncher"/);
