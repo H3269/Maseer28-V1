@@ -32,10 +32,9 @@ const PAGE_PREPARED_QUESTIONS = new Set([
 ]);
 
 /**
- * Routes one non-daily page turn locally.
- * A single scope clarification may carry the original question for one turn;
- * the pending text stays in volatile component memory and is never persisted.
- * Safety and personal-intake routes always retain precedence over page help.
+ * Routes only an explicitly selected prepared question.
+ * Non-daily pages answer their fixed help catalogue directly; daily questions
+ * retain their existing topic-specific and safety/assessment routing.
  */
 export function makePageAssistantTurn({ screen, text, conversationState = null, dailyContext = null, libraryContext = null } = {}) {
   const message = String(text ?? '').trim();
