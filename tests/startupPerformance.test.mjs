@@ -6,6 +6,8 @@ const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
 const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
 const libraryHook = await readFile(new URL('../src/features/library/useLibrary.js', import.meta.url), 'utf8');
 const libraryPage = await readFile(new URL('../src/features/library/LibraryPage.jsx', import.meta.url), 'utf8');
+const libraryManifest = JSON.parse(await readFile(new URL('../public/content/library.seed.json', import.meta.url), 'utf8'));
+const coverThumbnailBuild = await readFile(new URL('../scripts/prepare-library-cover-thumbnails.mjs', import.meta.url), 'utf8');
 const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 const assistantLauncher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
 
@@ -151,6 +153,20 @@ test('the app waits until the complete splash logo image is decoded', () => {
   assert.match(app, /image\.complete\) void confirmReady\(\)/);
   assert.match(app, /fetchPriority="high"/);
   assert.match(app, /onLoad=\{\(event\) => markSplashLogoReady\(event\.currentTarget\)\}/);
+});
+
+test('library cards use generated lightweight WebP thumbnails without weakening eager display', () => {
+  assert.equal(libraryManifest.books.length, 5);
+  for (const book of libraryManifest.books) {
+    assert.equal(book.libraryCover, `assets/covers/library/book${book.legacyId}.webp`);
+  }
+  assert.ok(libraryHook.includes('libraryCoverUrl: meta.libraryCover'));
+  assert.ok(libraryPage.includes('book.libraryCoverUrl'));
+  assert.match(libraryPage, /loading="eager" decoding="async" fetchPriority="high"/);
+  assert.ok(coverThumbnailBuild.includes('sharp-cli@6.1.0'));
+  assert.ok(coverThumbnailBuild.includes("'360'") && coverThumbnailBuild.includes("'522'"));
+  assert.ok(coverThumbnailBuild.includes("'72'"));
+  assert.ok(coverThumbnailBuild.includes('600 * 1024'));
 });
 
 test('all library book covers are requested immediately at high priority', () => {

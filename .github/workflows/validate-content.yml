@@ -152,6 +152,16 @@ jobs:
           PATH28_DEPLOY_BASE=/Maseer28/ npm run prepare:production
           npm run build
 
+      - name: Upload original and generated library covers for visual QA
+        if: ${{ steps.install.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: library-cover-visual-qa
+          path: |
+            public/assets/covers/book*.webp
+            public/assets/covers/library/*.webp
+          if-no-files-found: error
+
       - name: Install Chromium for remaining browser regression tests
         id: chromium
         if: ${{ steps.install.outcome == 'success' }}

@@ -63,6 +63,7 @@ async function seedLibrary(onCatalogReady = null) {
       author: existingBook?.author || meta.author || '',
       description: existingBook?.description || meta.description || '',
       coverUrl: `${BASE}${meta.cover}`,
+      libraryCoverUrl: meta.libraryCover ? `${BASE}${meta.libraryCover}` : '',
       coverDataUrl: existingBook?.coverDataUrl || '',
       activeVersionId: existingBook?.activeVersionId || null,
       seedFile: meta.file,
