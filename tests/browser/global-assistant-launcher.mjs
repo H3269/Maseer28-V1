@@ -357,7 +357,7 @@ try {
   assert.equal(await guidedLibraryPicker.isVisible(), true,
     'removing the installation button must not disable the prepared library assistant');
 
-  // A valid installed-model marker switches only the Library composer to free-form mode.
+  // A stale/forged installed-model marker must never enable conversational or free-form model mode.
   await page.evaluate(async () => {
     const cache = await caches.open('maseer28-local-model-state-v1');
     const markerUrl = new URL('local-model/qwen3-0.6b-ready.json', location.href);
@@ -368,8 +368,6 @@ try {
   });
   await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await dialog.waitFor({ state: 'detached' });
-  await page.getByRole('button', { name: 'ارتباط' }).click();
-  await page.locator('.bottomNav button[data-view="support"].active').waitFor({ state: 'visible' });
   await page.getByRole('button', { name: 'خانه' }).click();
   await page.locator('#dashboard').waitFor({ state: 'visible' });
   await page.getByRole('button', { name: 'مطالعه', exact: true }).click();
@@ -377,11 +375,8 @@ try {
   await launcher.click();
   dialog = page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' });
   await dialog.waitFor({ state: 'visible' });
-  await page.getByPlaceholder('سؤال پیشرفته‌ات را اینجا بنویس...').waitFor({ state: 'visible' });
-  assert.equal(await dialog.getByRole('textbox').count(), 1, 'successful local-model installation must reveal free typing');
-  assert.equal(await dialog.getByRole('button', { name: 'باز کردن سؤال‌های آماده دستیار کتابخانه' }).count(), 0, 'installed local mode must hide the guided list');
-  await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
-  await dialog.waitFor({ state: 'detached' });
+  assert.equal(await dialog.getByRole('textbox').count(), 0, 'a cached model marker must not reveal free typing');
+  assert.equal(await dialog.getByRole('button', { name: 'باز کردن سؤال‌های آماده دستیار کتابخانه' }).count(), 1, 'the prepared question list must remain available');
 
   // Regression: opening a book after the assistant has been mounted must not
   // reopen the assistant when the reader unmounts and the library remounts.
