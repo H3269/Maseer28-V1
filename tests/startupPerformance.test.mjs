@@ -57,8 +57,8 @@ test('the selected topic loads independently and the day screen waits for its ve
 test('the static splash logo is visible immediately before React mounts', () => {
   assert.match(html, /assets\/splash-logo\.webp/);
   assert.match(html, /opacity:1;visibility:visible;transform:none;animation:loadingLogoSafeEnter 420ms/);
-  assert.match(html, /@keyframes loadingLogoSafeEnter\\{from\\{opacity:1;transform:scale\\(\\.96\\)\\}to\\{opacity:1;transform:scale\\(1\\)\\}\\}/);
-  assert.match(html, /@media\\(prefers-reduced-motion:reduce\\)[\\s\\S]*?\.initialSplash img\\{animation:none;opacity:1;transform:none/);
+  assert.ok(html.includes('@keyframes loadingLogoSafeEnter{from{opacity:1;transform:scale(.96)}to{opacity:1;transform:scale(1)}}'));
+  assert.ok(html.includes('@media(prefers-reduced-motion:reduce){.initialSplashInner,.initialSplash img,.initialSplash h1,.initialSplash p,.initialProgress{animation:none;opacity:1;transform:none;clip-path:none}'));
   assert.match(html, /fetchpriority="high"/);
   assert.match(html, /width="174" height="174"/);
 });
