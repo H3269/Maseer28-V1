@@ -208,6 +208,9 @@ try {
       assert.ok(warmFirstBodyParagraph.paragraphLength >= 20, `${entryPoint.id}, book ${bookId}: warm open must reach a real body paragraph`);
       assert.equal(requestedBookContent.length, 1, `${entryPoint.id}, book ${bookId}: exactly one book-content request is allowed across cold and warm opens; got ${JSON.stringify(requestedBookContent)}`);
       assert.ok(requestedBookContent[0].endsWith(expectedBookPath), `${entryPoint.id}, book ${bookId}: only the selected book may be fetched; got ${requestedBookContent[0]}`);
+      // Freeze the cold/warm measurement before the later book-switch and repeated-reopen
+      // stress scenarios add their own intentional requests to the shared event listener.
+      const coldWarmBookContentRequests = [...requestedBookContent];
       assert.deepEqual(errors, [], `${viewport.id}, ${entryPoint.id}, book ${bookId}: no browser errors during cold/warm open`);
       assert.deepEqual(failedRequests, [], `${viewport.id}, ${entryPoint.id}, book ${bookId}: no failed network requests during cold/warm open`);
 
@@ -265,7 +268,8 @@ try {
         warm,
         warmFirstBodyParagraph,
         repeatedReopen,
-        requestedBookContent,
+        requestedBookContent: coldWarmBookContentRequests,
+        postColdWarmBookContentRequests: requestedBookContent.slice(coldWarmBookContentRequests.length),
         requestedImages,
         failedRequests,
         browserErrors: errors,
