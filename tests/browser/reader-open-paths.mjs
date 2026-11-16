@@ -165,7 +165,37 @@ try {
         await page.locator('#books').waitFor({ state: 'visible' });
       }
 
-      results.push({ repetition, entryPoint: entryPoint.id, bookId, cold, coldFirstBodyParagraph, warm, warmFirstBodyParagraph });
+      let repeatedReopen = null;
+      if (repetition === 1 && bookId === 1) {
+        const repeatedSamples = [];
+        // Exercise the exact user-reported pattern in one live page/context:
+        // close and reopen the same book repeatedly without refreshing the app.
+        for (let cycle = 1; cycle <= 8; cycle += 1) {
+          await page.evaluate(() => { window.__readerPerfStartedAt = performance.now(); });
+          const sameBook = page.locator('#books .libraryBook').nth(0);
+          await sameBook.locator('button').click();
+          await page.locator('#bookReader').waitFor({ state: 'visible', timeout: 30000 });
+          const sample = await waitForReadablePage(page);
+          assert.equal(await page.locator('#bookReaderText').count(), 1, `${entryPoint.id}: cycle ${cycle} must mount exactly one Reader text surface`);
+          assert.ok(sample.pageTextLength > 0, `${entryPoint.id}: cycle ${cycle} must render readable content`);
+          repeatedSamples.push(sample.elapsedMs);
+          await page.locator('#bookReader').getByRole('button', { name: 'خروج از مطالعه' }).click();
+          await page.locator('#books').waitFor({ state: 'visible' });
+          assert.equal(await page.locator('#bookReader').count(), 0, `${entryPoint.id}: cycle ${cycle} must fully unmount Reader`);
+        }
+        const sorted = [...repeatedSamples].sort((a, b) => a - b);
+        repeatedReopen = {
+          cycles: repeatedSamples.length,
+          samplesMs: repeatedSamples,
+          p50Ms: sorted[Math.floor(sorted.length / 2)],
+          firstMs: repeatedSamples[0],
+          lastMs: repeatedSamples[repeatedSamples.length - 1],
+        };
+        console.log(`Repeated same-book reopen stress (${entryPoint.id}, no app refresh): ${JSON.stringify(repeatedReopen)}`);
+        assert.equal(errors.length, 0, `${entryPoint.id}: repeated same-book open/close must not create browser errors: ${JSON.stringify(errors)}`);
+      }
+
+      results.push({ repetition, entryPoint: entryPoint.id, bookId, cold, coldFirstBodyParagraph, warm, warmFirstBodyParagraph, repeatedReopen });
       await page.close();
     }
     }
