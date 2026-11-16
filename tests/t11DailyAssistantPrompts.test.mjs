@@ -198,21 +198,21 @@ test('T11 page assistant routes every exact day-specific question and rejects mi
 test('T11 uses the standard daily entry UI without owner-preview boxes or blocked controls', async () => {
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
-  assert.match(launcher, /const isDailySafetyQuestion = Boolean\(selectedDailyQuestion/);
-  assert.doesNotMatch(launcher, /!isT11DailyPromptContext && Boolean\(selectedDailyQuestion/);
+  assert.match(launcher, /const isDailySafetyQuestion = Boolean\([\\s\\S]*?isPreparedOnlyDailyPromptContext[\\s\\S]*?selectedPreparedQuestion/);
+  assert.doesNotMatch(launcher, /!isT11DailyPromptContext && Boolean\(selectedPreparedQuestion/);
   const safety = await readFile(new URL('../src/features/content/dailySafety.js', import.meta.url), 'utf8');
   assert.match(ui, /id="openDailyEntryBtn"/);
   assert.match(ui, /id="dailyEntryPanel"/);
   assert.doesNotMatch(ui, /getDailySafetyMode|isT11SafetyBlocked|dailySafetyStatus|skipDailyReviewBtn|پیش‌نمایش برای بازبینی مالک|مشاهده مشخصات کامل این روز برای بازبینی/u);
   assert.match(safety, /if \(isRepetitiveBehaviorTopicDay\(day\)\) return 'routine'/);
   assert.match(launcher, /getT11DailyAssistantPromptGroups\(dailyContext\?\.day\)/);
-  assert.doesNotMatch(launcher, /!isT11DailyPromptContext\s*&&\s*Boolean\(selectedDailyQuestion/);
+  assert.doesNotMatch(launcher, /!isT11DailyPromptContext\s*&&\s*Boolean\(selectedPreparedQuestion/);
 });
 
 test('T11 assistant UI uses the correct topic label and displays the shared safety reminder', async () => {
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
-  assert.doesNotMatch(launcher, /!isT11DailyPromptContext\s*&&\s*Boolean\(selectedDailyQuestion/);
-  assert.match(launcher, /const isDailySafetyQuestion = Boolean\(selectedDailyQuestion/);
+  assert.doesNotMatch(launcher, /!isT11DailyPromptContext\s*&&\s*Boolean\(selectedPreparedQuestion/);
+  assert.match(launcher, /const isDailySafetyQuestion = Boolean\([\\s\\S]*?isPreparedOnlyDailyPromptContext[\\s\\S]*?selectedPreparedQuestion/);
   assert.match(launcher, /isT11DailyPromptContext\s*\?\s*"عادت‌های تکراری"/);
   assert.match(launcher, /"t11-daily-prompt-trigger"/);
   assert.match(launcher, /getT11DailyAssistantPromptGroups\(dailyContext\?\.day\)/);
