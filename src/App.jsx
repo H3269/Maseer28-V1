@@ -150,9 +150,7 @@ function MainApp() {
   // onboarding state are ready. Load its UI chunk immediately at that point,
   // then reveal the launcher only after the import has resolved.
   useEffect(() => {
-    const selectedTopic = journey.profileData?.problem;
-    if (!content || !userProfile || !hasCompletedOnboarding
-      || (selectedTopic && !content.categories?.[selectedTopic])) return undefined;
+    if (!content || !userProfile || !hasCompletedOnboarding) return undefined;
     let cancelled = false;
     loadGlobalAssistantLauncher().then(() => {
       if (!cancelled) setAssistantLauncherLoaded(true);
@@ -160,7 +158,7 @@ function MainApp() {
       if (!cancelled) setAssistantLauncherLoaded(false);
     });
     return () => { cancelled = true; };
-  }, [content, userProfile, hasCompletedOnboarding, journey.profileData?.problem]);
+  }, [content, userProfile, hasCompletedOnboarding]);
 
   useEffect(() => {
     let cancelled = false;
@@ -849,7 +847,7 @@ function navigate(next) {
         {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
         <VersionFooter navVisible={navVisible} />
       </div>
-      {navVisible && assistantLauncherLoaded && <button
+      {navVisible && assistantLauncherLoaded && (!journey.profileData?.problem || Boolean(content?.categories?.[journey.profileData.problem])) && <button
         ref={assistantLauncherButtonRef}
         className="globalAssistantLauncher"
         type="button"
@@ -861,7 +859,7 @@ function navigate(next) {
         aria-haspopup="dialog"
         aria-expanded={assistantOpen}
       ><AppIcon name="message" size={20} /><span>دستیار</span></button>}
-      {navVisible && assistantLauncherLoaded && <Suspense fallback={null}><GlobalAssistantLauncher
+      {navVisible && assistantLauncherLoaded && (!journey.profileData?.problem || Boolean(content?.categories?.[journey.profileData.problem])) && <Suspense fallback={null}><GlobalAssistantLauncher
         hideLauncher
         initialOpen={assistantOpen}
         openRequestId={assistantOpenRequest}
