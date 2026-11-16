@@ -5,7 +5,6 @@ import { makePageAssistantTurn } from './pageAssistantTurn.js';
 import { libraryRepository } from '../library/libraryRepository.js';
 import { ensureSeedBookContent } from '../library/useLibrary.js';
 import { answerLibraryBookTurn, planLibraryBookLoad } from './libraryBookAssistant.js';
-import { routeAssistantTurn } from './assistantTurnEngine.js';
 import { LIBRARY_ASSISTANT_PROMPT_GROUPS } from './libraryAssistantPrompts.js';
 import { getCanonicalTopicIdForCategory, getInterpersonalPrivacyNotice, getRelationshipSafetyGate } from '../journey/relationshipSafetyGate.js';
 import { getAngerDailyAssistantPromptGroups } from './angerDailyAssistantPrompts.js';
@@ -264,12 +263,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     event.preventDefault();
     const message = String(overrideMessage ?? draft).trim();
     if (!message || sending) return;
-    // Resolve urgent safety routing synchronously before any IndexedDB or book-content work.
-    // A safety handoff must never wait for library catalogue reads or network hydration.
-    const intentGate = screen === 'books' ? routeAssistantTurn({ text: message }) : null;
-    const restrictedStatuses = new Set([
-      'urgent_human_support_required', 'safety_clarification_required',
-    ]);
     const initialLibraryPlan = screen === 'books'
       ? planLibraryBookLoad({ books: loadedLibraryBooks, message, conversationState: conversationStateRef.current })
       : null;
@@ -287,9 +280,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       ]);
       setDraft('');
       resizeComposerInput(messageInputRef.current);
-      if (restrictedStatuses.has(intentGate.status)) {
-        libraryLoadKind = null;
-      } else if (initialLibraryPlan.kind === 'none'
+      if (initialLibraryPlan.kind === 'none'
         || (initialLibraryPlan.kind === 'clarify' && loadedLibraryBooks.length > 0)) {
         // Page/help questions avoid IndexedDB. A clarification is only final when
         // a catalogue is already available; with an empty cache, load metadata first
@@ -301,10 +292,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         libraryLoadKind = loadResult?.kind || 'error';
       }
     }
-    const selectedDailyQuestion = isPreparedOnlyDailyPromptContext
-      ? activePromptGroups.flatMap((group) => group.questions).find((question) => question.value === message)
-      : null;
-    if (isPreparedOnlyDailyPromptContext && !selectedDailyQuestion) {
+    const selectedDailyQuestion = activePromptGroups
+      .flatMap((group) => group.questions || [])
+      .find((question) => question.value === message);
+    if (!selectedDailyQuestion) {
       const rejectedId = ++turnSequenceRef.current;
       setMessages((current) => [...current,
         { id: `user-rejected-${rejectedId}`, role: 'user', text: message, knowledge: [] },
@@ -313,8 +304,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       setDraft('');
       return;
     }
-    const isDailySafetyQuestion = Boolean(selectedDailyQuestion
-      && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(selectedDailyQuestion.kind));
+    const isDailySafetyQuestion = Boolean(
+      isPreparedOnlyDailyPromptContext
+      && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(selectedDailyQuestion.kind),
+    );
     setError('');
     setSending(true);
     const turnId = pendingLibraryTurn?.turnId ?? ++turnSequenceRef.current;
@@ -335,9 +328,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     try {
       let turn;
       let isLibraryTurn = false;
-      if (screen === 'books' && restrictedStatuses.has(intentGate.status)) {
-        turn = { ...intentGate, conversationState: null };
-      } else if (screen === 'books' && libraryLoadKind === 'clarify') {
+      if (screen === 'books' && libraryLoadKind === 'clarify') {
         turn = { message: 'برای اینکه متن اشتباهی را بررسی نکنم، نام یکی از کتاب‌ها یا شماره جلد را مشخص کن. پنج کتاب موجود در کتابخانه را می‌توانم بررسی کنم.', knowledge: [], conversationState: null };
       } else if (screen === 'books' && libraryLoadKind === 'error') {
         turn = { message: 'متن کتاب در این لحظه آماده نشد. دوباره تلاش کن؛ پاسخ حدسی ارائه نمی‌کنم.', knowledge: [], conversationState: null };
@@ -592,8 +583,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
-              <form className={'assistantComposer' + (isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext)) ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} data-jealousy-daily-prompt={String(isJealousyDailyPromptContext)} data-grief-daily-prompt={String(isGriefDailyPromptContext)} data-guilt-daily-prompt={String(isGuiltDailyPromptContext)} data-t10-daily-prompt={String(isT10DailyPromptContext)} data-t12-daily-prompt={String(isT12DailyPromptContext)} onSubmit={send}>
-                {(isPreparedOnlyDailyPromptContext || screen === 'books' || isTopicDailyPromptContext) ? (
+              <form className="assistantComposer libraryAssistantGuidedComposer" dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} data-jealousy-daily-prompt={String(isJealousyDailyPromptContext)} data-grief-daily-prompt={String(isGriefDailyPromptContext)} data-guilt-daily-prompt={String(isGuiltDailyPromptContext)} data-t10-daily-prompt={String(isT10DailyPromptContext)} data-t12-daily-prompt={String(isT12DailyPromptContext)} onSubmit={send}>
+                {activePromptGroups.some((group) => Array.isArray(group.questions) && group.questions.length > 0) ? (
                   <div className="libraryAssistantPromptRow">
                     <button
                       ref={libraryPromptTriggerRef}
@@ -614,21 +605,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                     <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال سؤال انتخاب‌شده" disabled={!draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
                   </div>
                 ) : (
-                  <>
-                    <label className="assistantSrOnly" htmlFor="global-assistant-message">پیام شما</label>
-                    <textarea
-                      id="global-assistant-message"
-                      ref={messageInputRef}
-                      dir="rtl"
-                      rows={1}
-                      maxLength={dailyContext ? 2000 : 3000}
-                      value={draft}
-                      onChange={updateDraft}
-                      disabled={sending}
-                      placeholder={screen === 'books' ? 'سؤال پیشرفته‌ات را اینجا بنویس...' : 'چطور میتونم کمکت کنم؟'}
-                    />
-                    <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال پیام" disabled={!draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
-                  </>
+                  <p className="muted assistantPreparedQuestionsUnavailable" role="status">
+                    هنوز سؤال آماده‌ای برای این بخش ثبت نشده است. پس از تکمیل فهرست سؤال‌های آماده، این دستیار فعال می‌شود.
+                  </p>
                 )}
                 {error && <p className="contactHelp assistantComposerError" role="alert">{error}</p>}
               </form>
