@@ -46,7 +46,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     return Object.freeze({ status: 'input_too_long', message: 'پیام بیش از حد طولانی است.', knowledge: Object.freeze([]), conversationState: null });
   }
   const isAllowedPreparedPageQuestion = screen === 'books'
-    ? LIBRARY_ASSISTANT_PROMPTS.some((question) => question.value === message)
+    ? LIBRARY_ASSISTANT_PROMPTS.some((question) => question.value === message) || PAGE_PREPARED_QUESTIONS.has(message)
     : screen === 'day'
       ? true
       : PAGE_PREPARED_QUESTIONS.has(message);
