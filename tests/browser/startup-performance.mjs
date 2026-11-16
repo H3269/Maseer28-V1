@@ -169,8 +169,8 @@ const startedAt = Date.now();
     };
   });
 
-  // The first interactive surface is exposed only after required content and
-  // splash-logo readiness gates have completed.
+  // The first interactive surface is exposed after required app content is ready;
+  // the logo is visible independently and never blocks this transition.
   const splashVisual = await page.evaluate(() => window.__path28SplashObserved);
   assert.ok(splashVisual, 'A splash logo element must exist while startup is loading');
   assert.equal(splashVisual.animationName, 'none', 'The splash logo must not wait for a reveal animation');
