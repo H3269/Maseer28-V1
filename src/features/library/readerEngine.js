@@ -431,6 +431,23 @@ function nextMeaningfulBlock(blocks, start) {
   return null;
 }
 
+// Precompute the first meaningful block after each index in one reverse pass.
+// Keep the exact scan semantics: separators are ignored, tables are meaningful
+// even without text, and other blocks require non-empty normalized text.
+function buildNextMeaningfulBlockIndex(blocks) {
+  const nextBlocks = new Array(blocks.length).fill(null);
+  let nextMeaningful = null;
+  for (let i = blocks.length - 1; i >= 0; i -= 1) {
+    nextBlocks[i] = nextMeaningful;
+    const block = blocks[i];
+    if (block?.type === 'separator') continue;
+    if (block?.type === 'table' || norm(block?.text)) {
+      nextMeaningful = { block, index: i };
+    }
+  }
+  return nextBlocks;
+}
+
 function tocKind(text) {
   const t = norm(text);
   if (TOC_TITLE_RE.test(t)) return 'tocTitle';
@@ -713,6 +730,7 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
     // remaining/preceding block array for every block made book pagination
     // quadratic on long Word pages, especially on mobile devices.
     const { blockTexts, nextTexts, previousTexts } = buildNeighbourTextIndex(blocks);
+    const nextMeaningfulBlocks = buildNextMeaningfulBlockIndex(blocks);
     // Some Word pages contain the tail of the previous section before the next
     // section heading (notably book 3 pages 285 and 300). Insert the dedicated
     // opener exactly where that heading occurs instead of at the source-page edge.
@@ -780,8 +798,8 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
         }
       }
 
+      const upcoming = nextMeaningfulBlocks[i + 1] || null;
       if (block?.type === 'separator' || isRuleText(text)) {
-        const upcoming = nextMeaningfulBlock(blocks, i + 1);
         if (pendingTableTitle && upcoming?.block?.type === 'table') continue;
         pushLine('•  •  •', 'separator', source, { paraStart: true, paraEnd: true });
         continue;
@@ -792,7 +810,6 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
         continue;
       }
 
-      const upcoming = nextMeaningfulBlock(blocks, i + 1);
       if (upcoming?.block?.type === 'table' && looksLikeTableCaption(text, block)) {
         pendingTableTitle = visibleText;
         continue;
