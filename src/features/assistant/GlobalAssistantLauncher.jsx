@@ -38,7 +38,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const closeButtonRef = useRef(null);
   const dialogRef = useRef(null);
   const endRef = useRef(null);
-  const messageInputRef = useRef(null);
   const initialContextEffectRef = useRef(false);
   const openRequestRef = useRef(openRequestId);
 
@@ -188,18 +187,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                             : [];
   if (!visible || screen === 'bookReader') return null;
 
-  function resizeComposerInput(element) {
-    if (!element) return;
-    element.style.height = 'auto';
-    element.style.height = `${Math.min(128, Math.max(54, element.scrollHeight))}px`;
-  }
-
-  function updateDraft(event) {
-    const nextValue = event.target.value;
-    setDraft(nextValue);
-    resizeComposerInput(event.currentTarget);
-  }
-
   function ensureLibraryBooksLoaded(message, conversationState) {
     if (libraryBooksLoadRef.current) return libraryBooksLoadRef.current;
     const loadTask = (async () => {
@@ -279,7 +266,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         { id: pendingLibraryTurn.responseId, role: 'assistant', text: 'در حال بررسی پرسش…', knowledge: [] },
       ]);
       setDraft('');
-      resizeComposerInput(messageInputRef.current);
       if (initialLibraryPlan.kind === 'none'
         || (initialLibraryPlan.kind === 'clarify' && loadedLibraryBooks.length > 0)) {
         // Page/help questions avoid IndexedDB. A clarification is only final when
