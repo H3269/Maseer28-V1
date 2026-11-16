@@ -17,34 +17,61 @@ import { answerT11DailyPreparedQuestion } from './t11DailyAssistantPrompts.js';
 import { answerT12DailyPreparedQuestion } from './t12DailyAssistantPrompts.js';
 import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
 import { getCanonicalDailyRecordId } from '../content/dailyContentSelector.js';
+import { LIBRARY_ASSISTANT_PROMPTS } from './libraryAssistantPrompts.js';
 
 const SAFETY_STATUSES = new Set([
   'urgent_human_support_required',
   'safety_clarification_required',
 ]);
 
-function resolveRequestScopeReply(value) {
-  const normalized = String(value ?? '').normalize('NFKC')
-    .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
-    .replace(/[\u064B-\u065F\u0670]/g, '')
-    .replace(/[\u200c\u200f\u200e]/g, ' ')
-    .replace(/[.!؟?،؛:]+/g, ' ')
-    .replace(/\s+/g, ' ').trim().toLowerCase();
-
-  if (/^(?:برای )?(?:خودم|وضعیت شخصی خودم|تجربه شخصی خودم)(?: (?:است|هست|می خواهم|میخوام))?$/.test(normalized)
-    || /^(?:شخصی|تجربه شخصی)(?: است| هست)?$/.test(normalized)) return 'personal';
-  if (/^(?:اطلاعات عمومی|عمومی|برای آگاهی عمومی|صرفا اطلاعات عمومی|برای اطلاعات عمومی)(?: (?:می خواهم|میخوام|است|هست))?$/.test(normalized)) return 'general';
-  return null;
-}
+const PAGE_PREPARED_QUESTIONS = new Set([
+  'این صفحه برای چیست؟',
+  'اینجا چه کارهایی می‌توانم انجام بدهم؟',
+  'چطور به خانه برگردم؟',
+  'امکانات برنامه چیست؟',
+]);
 
 /**
- * Routes one non-daily page turn locally.
- * A single scope clarification may carry the original question for one turn;
- * the pending text stays in volatile component memory and is never persisted.
- * Safety and personal-intake routes always retain precedence over page help.
+ * Routes only an explicitly selected prepared question.
+ * Non-daily pages answer their fixed help catalogue directly; daily questions
+ * retain their existing topic-specific and safety/assessment routing.
  */
 export function makePageAssistantTurn({ screen, text, conversationState = null, dailyContext = null, libraryContext = null } = {}) {
   const message = String(text ?? '').trim();
+  if (!message) {
+    return Object.freeze({ status: 'invalid_input', message: 'پیام خالی است.', knowledge: Object.freeze([]), conversationState: null });
+  }
+  if (message.length > (screen === 'day' ? 2000 : 3000)) {
+    return Object.freeze({ status: 'input_too_long', message: 'پیام بیش از حد طولانی است.', knowledge: Object.freeze([]), conversationState: null });
+  }
+  const isAllowedPreparedPageQuestion = screen === 'books'
+    ? LIBRARY_ASSISTANT_PROMPTS.some((question) => question.value === message) || PAGE_PREPARED_QUESTIONS.has(message)
+    : screen === 'day'
+      ? true
+      : PAGE_PREPARED_QUESTIONS.has(message);
+  if (!isAllowedPreparedPageQuestion) {
+    return Object.freeze({
+      status: 'prepared_question_required',
+      message: 'این دستیار فقط از فهرست سؤال‌های آماده همین بخش پاسخ می‌دهد.',
+      knowledge: Object.freeze([]),
+      page_context: screen || null,
+      conversationState: null,
+    });
+  }
+  // Non-daily page questions are fixed navigation/help choices. Answer them
+  // directly without invoking semantic intake, safety classification,
+  // knowledge retrieval, or conversation-state machinery.
+  if (screen !== 'day') {
+    const pageReply = answerPageAssistantQuestion({ screen, message, libraryContext });
+    const context = getPageAssistantContext(screen);
+    return Object.freeze({
+      status: pageReply ? 'page_guidance_available' : 'prepared_question_required',
+      message: pageReply || 'برای این بخش پاسخ آماده‌ای در دسترس نیست.',
+      knowledge: Object.freeze([]),
+      page_context: context.screen,
+      conversationState: null,
+    });
+  }
   const inputProbe = routeAssistantTurn({ text: message });
   if ((screen !== 'day' && SAFETY_STATUSES.has(inputProbe.status))
     || inputProbe.status === 'invalid_input'
@@ -284,120 +311,16 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       });
     }
 
-    // The in-path assistant is a bounded local guidance surface. Do not apply
-    // the general daily-content or relationship safety gates to its prepared
-    // Q&A and structured day guidance; canonical topic/day identity remains
-    // required for prepared FAQs above.
-    const dayData = selectDailyExerciseGuidanceData({ guidanceData: dailyContext?.guidanceData, data: dailyContext?.data });
-    const dailyTurn = makeDailyExerciseGuidanceTurn({
-      message,
-      dayData,
-      problem: dailyContext?.problem,
-      day: dailyContext?.day,
-      conversationState: conversationState?.dailyState || {},
-    });
+    // Do not fall back to general text reasoning for topics whose prepared
+    // question catalogue is still being completed. The existing daily safety
+    // clarification and handoff branches above remain unchanged.
     return Object.freeze({
-      status: 'daily_guidance_available',
-      message: visibleTopicName
-        ? cleanPreparedAssistantTopicText(dailyTurn.response, visibleTopicName)
-        : dailyTurn.response,
+      status: 'prepared_question_required',
+      message: 'برای این موضوع هنوز فهرست سؤال‌های آماده فعال نشده است. پس از تکمیل فهرست، راهنمای همان روز در دسترس قرار می‌گیرد.',
       knowledge: Object.freeze([]),
       page_context: 'day',
-      conversationState: Object.freeze({ dailyState: dailyTurn.nextState }),
-    });
-  }
-  const pending = conversationState?.pendingScope;
-
-  if (pending?.screen === screen && typeof pending.text === 'string') {
-    const safetyProbe = routeAssistantTurn({ text: message });
-    if (SAFETY_STATUSES.has(safetyProbe.status)) {
-      return Object.freeze({ ...safetyProbe, conversationState: null });
-    }
-    if (safetyProbe.status === 'invalid_input' || safetyProbe.status === 'input_too_long') {
-      return Object.freeze({ ...safetyProbe, conversationState: null });
-    }
-
-    const scope = resolveRequestScopeReply(message);
-    if (scope) {
-      const resumed = routeAssistantTurn({ text: pending.text, requestScope: scope });
-      return Object.freeze({ ...resumed, conversationState: null, scope_resolution: scope });
-    }
-
-    // Allow one explicit retry, then discard the pending question to prevent loops.
-    if ((pending.clarificationAttempts || 0) < 1) {
-      return Object.freeze({
-        status: 'intent_scope_clarification_required',
-        message: 'برای ادامه، فقط مشخص کن منظورت تجربه و وضعیت شخصی خودت است یا اطلاعات عمومی می‌خواهی. اگر هنوز مطمئن نیستی، می‌توانی پرسش را از نو مطرح کنی.',
-        knowledge: Object.freeze([]),
-        conversationState: Object.freeze({
-          pendingScope: Object.freeze({ ...pending, clarificationAttempts: 1 }),
-        }),
-      });
-    }
-  }
-
-  const routed = inputProbe;
-
-  if (screen !== 'dashboard') {
-    const pageReply = answerPageAssistantQuestion({ screen, message, libraryContext });
-    const context = getPageAssistantContext(screen);
-    if (pageReply) {
-      return Object.freeze({
-        status: 'page_guidance_available',
-        message: pageReply,
-        knowledge: Object.freeze([]),
-        page_context: context.screen,
-        conversationState: null,
-      });
-    }
-    return Object.freeze({
-      status: 'page_scope_required',
-      message: `در صفحه «${context.label}» فقط درباره محتوای همین صفحه راهنمایی می‌دهم. پرسش تو در اطلاعات قابل‌دسترسی این صفحه نیست؛ برای پرسش عمومی به خانه برگرد.`,
-      knowledge: Object.freeze([]),
-      page_context: context.screen,
       conversationState: null,
     });
   }
 
-  // Deterministic app facts (such as the registered topic/subtopic index) are
-  // served locally before the empty approved-knowledge catalog can reject them.
-  // Personal-intake, ambiguity, safety and scope-clarification routes keep precedence.
-  if (['knowledge_unavailable', 'approved_knowledge_available'].includes(routed.status)) {
-    const appKnowledgeReply = answerPageAssistantQuestion({ screen, message, libraryContext });
-    if (appKnowledgeReply) {
-      return Object.freeze({
-        status: 'page_guidance_available',
-        message: appKnowledgeReply,
-        knowledge: Object.freeze([]),
-        page_context: 'dashboard',
-        conversationState: null,
-      });
-    }
-  }
-
-  // On the dashboard only, preserve the general assistant router and its scope clarification.
-  if (
-    SAFETY_STATUSES.has(routed.status)
-    || routed.status === 'invalid_input'
-    || routed.status === 'input_too_long'
-    || routed.status === 'intent_scope_clarification_required'
-    || (Array.isArray(routed.intake?.topic_candidates) && routed.intake.topic_candidates.length > 0)
-  ) {
-    const nextState = routed.status === 'intent_scope_clarification_required'
-      ? Object.freeze({ pendingScope: Object.freeze({ screen, text: message }) })
-      : null;
-    return Object.freeze({ ...routed, conversationState: nextState });
-  }
-
-  const pageReply = answerPageAssistantQuestion({ screen, message, libraryContext });
-  if (!pageReply) return Object.freeze({ ...routed, conversationState: null });
-
-  const context = getPageAssistantContext(screen);
-  return Object.freeze({
-    status: 'page_guidance_available',
-    message: pageReply,
-    knowledge: Object.freeze([]),
-    page_context: context.screen,
-    conversationState: null,
-  });
 }

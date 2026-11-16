@@ -681,34 +681,20 @@ try {
 
   await page.close();
 
-  // Legacy free-text fallback remains for topics outside the prepared-only T01–T07 set.
-  for (const problem of ['شرم']) {
-    const legacyPage = await browser.newPage();
-    const legacyErrors = [];
-    legacyPage.on('pageerror', error => legacyErrors.push(String(error)));
-    await openDay(legacyPage, { assistantDayMode: 'legacy', problem, localModelInstalled: true });
-    const legacyPanel = legacyPage.locator('.globalAssistantDialog');
-    await legacyPanel.waitFor({ state: 'visible' });
-    const legacyComposer = legacyPanel.locator('#global-assistant-message');
-    await legacyComposer.fill('چطور انجامش بدم؟');
-    await legacyPanel.getByRole('button', { name: 'ارسال' }).click();
-    await legacyPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
-    const legacyReply = await legacyPanel.locator('.assistantMessage').last().innerText();
-    assert.ok(legacyReply.includes(problem), `legacy assistant reply must retain selected topic ${problem}`);
-    assert.match(legacyReply, /روز ۲/);
-    assert.match(legacyReply, /متن تمرین همین روز/);
-    assert.match(legacyReply, /راهکار اختصاصی همین روز/);
-    await assertAssistantUsesVisibleDailySource(legacyPage, legacyPanel, problem, 2);
-    assert.deepEqual(legacyErrors, [], `real legacy day content for ${problem} must not raise browser errors`);
-    await legacyPage.close();
-  }
+  // Topics whose prepared catalogues are still being completed must remain closed
+  // to free text; they do not fall back to the general daily reasoning engine.
+  const pendingTopicPage = await browser.newPage();
+  await openDay(pendingTopicPage, { assistantDayMode: 'legacy', problem: 'شرم', localModelInstalled: true });
+  const pendingTopicPanel = pendingTopicPage.locator('.globalAssistantDialog');
+  await pendingTopicPanel.waitFor({ state: 'visible' });
+  assert.equal(await pendingTopicPanel.locator('#global-assistant-message').count(), 0,
+    'topics without a prepared question catalogue must not expose free-text input');
+  assert.equal(await pendingTopicPanel.getByRole('button', { name: 'ارسال' }).count(), 0,
+    'topics without a prepared question catalogue must not expose a send action');
+  assert.match(await pendingTopicPanel.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/);
+  await pendingTopicPage.close();
 
   for (const scenario of [
-    // Keep the legacy free-text adaptation cases outside the prepared-only T01–T07 set.
-    { mode: 'adaptedLegacy', topic: 'شرم', day: 2, expected: 'با توجه به نتیجه روز گذشته' },
-    { mode: 'adaptedLegacyStreak', topic: 'شرم', day: 3, expected: 'در چند روز اخیر انجام تمرین دشوار بوده' },
-    { mode: 'adaptedLegacyImprovement', topic: 'شرم', day: 3, expected: 'بهبود در چند روز اخیر دیده می‌شود' },
-    { mode: 'adaptedLegacySame', topic: 'شرم', day: 2, expected: 'تغییر محسوسی ثبت نشده است' },
     { mode: 'adaptedAnxiety', topic: 'اضطراب', day: 2, expected: 'با توجه به نتیجه روز گذشته', fieldMode: 'light' },
     { mode: 'adaptedAnxietyStreak', topic: 'اضطراب', day: 3, expected: 'در چند روز اخیر انجام تمرین دشوار بوده', fieldMode: 'rest' },
     { mode: 'adaptedAnxietyImprovement', topic: 'اضطراب', day: 3, expected: 'بهبود در چند روز اخیر دیده می‌شود', fieldMode: 'progress' },
@@ -743,16 +729,6 @@ try {
       await adaptedPage.waitForFunction((dayLabel) => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
         .some(node => node.innerText.includes(`راهنمای روز ${dayLabel} اضطراب`)), visibleScenarioDay);
       adaptedReply = await adaptedPanel.locator('.assistantMessage').last().innerText();
-    } else {
-      await adaptedPanel.locator('#global-assistant-message').fill('چطور انجامش بدم؟');
-      await adaptedPanel.getByRole('button', { name: 'ارسال' }).click();
-      await adaptedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
-      adaptedReply = await adaptedPanel.locator('.assistantMessage').last().innerText();
-      assert.ok(adaptedReply.includes(scenario.expected),
-        `assistant must expose the expected source-derived adaptation for ${scenario.mode}`);
-      assert.match(adaptedReply, /متن تمرین همین روز/);
-      assert.match(adaptedReply, /راهکار اختصاصی همین روز/);
-      await assertAssistantUsesVisibleDailySource(adaptedPage, adaptedPanel, scenario.topic, scenario.day);
     }
     assert.match(adaptedReply, new RegExp(scenario.topic));
     assert.match(adaptedReply, new RegExp('روز ' + visibleScenarioDay));

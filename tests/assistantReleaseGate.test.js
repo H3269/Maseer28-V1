@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 
 const journeyUi = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
 const assistantUi = await readFile(new URL('../src/features/assistant/AssessmentAssistant.jsx', import.meta.url), 'utf8');
+const legacyDailyAssistantUi = await readFile(new URL('../src/features/assistant/DailyExerciseAssistant.jsx', import.meta.url), 'utf8');
 const engine = await readFile(new URL('../src/features/assistant/assessmentEngine.js', import.meta.url), 'utf8');
 const turnEngine = await readFile(new URL('../src/features/assistant/assistantTurnEngine.js', import.meta.url), 'utf8');
 const knowledgeGateway = await readFile(new URL('../src/features/assistant/knowledgeGateway.js', import.meta.url), 'utf8');
@@ -25,16 +26,24 @@ test('global assistant launcher is mounted across navigable screens, including s
   assert.ok(supportStart >= 0 && supportEnd > supportStart, 'support screen source must be identifiable');
   const supportUi = journeyUi.slice(supportStart, supportEnd);
 
-  assert.match(appUi, /const GlobalAssistantLauncher = lazy\(\(\) => import\(['"]\.\/features\/assistant\/GlobalAssistantLauncher\.jsx['"]\)\)/, 'assistant launcher must remain lazy-loaded to protect startup performance');
+  assert.match(appUi, /const GlobalAssistantLauncher = lazy\(\(\) => import\(['"]\.\/features\/assistant\/GlobalAssistantLauncher\.jsx['"]\)\)/, 'assistant launcher must remain lazy-loaded');
+  assert.match(appUi, /loadGlobalAssistantLauncher\(\)\.then\(\(\) => \{/);
+  assert.match(appUi, /setAssistantLauncherLoaded\(true\)/);
+  assert.match(appUi, /\{navVisible && assistantLauncherLoaded && <button/);
+  assert.doesNotMatch(appUi, /onPointerDown=\{\(\) => \{ void loadGlobalAssistantLauncher/);
   assert.match(appUi, /<GlobalAssistantLauncher/);
   assert.match(appUi, /dailyContext=\{screen === 'day'/);
   assert.match(appUi, /libraryContext=\{screen === 'books'/);
   assert.doesNotMatch(appUi, /DailyExerciseAssistant/);
+  assert.doesNotMatch(legacyDailyAssistantUi, /<textarea|onSubmit=\{send\}|makeDailyExerciseGuidanceTurn/);
   assert.doesNotMatch(readerUi, /GlobalAssistantLauncher/);
   assert.match(appUi, /screen === 'bookReader' && readerState/);
   assert.match(appUi, /<Reader book=/, 'reader must remain rendered inside its lazy-loaded Suspense boundary');
   assert.doesNotMatch(launcherUi, /support:\s*'پشتیبانی'/, 'launcher must not reintroduce screen-context helper labels');
-  assert.match(launcherUi, /maxLength=\{dailyContext \? 2000 : 3000\}/, 'assistant composer must render without removed context state');
+  assert.doesNotMatch(launcherUi, /<textarea/);
+  assert.match(launcherUi, /activePromptGroups\.some/);
+  assert.match(launcherUi, /selectedPreparedQuestion/);
+  assert.match(launcherUi, /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/);
   assert.doesNotMatch(launcherUi, /isDailyExercise/, 'assistant launcher must not reference removed daily-context state');
   assert.match(launcherUi, /className="globalAssistantLauncher"/);
   assert.match(launcherUi, /aria-label="باز کردن دستیار مسیر۲۸"/);
@@ -149,11 +158,12 @@ test('global assistant conversation is one right-to-left transcript', async () =
   const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
   assert.equal((launcher.match(/className="assistantChatShell globalAssistantChat"/g) || []).length, 1);
   assert.match(launcher, /className="assistantTranscript" dir="rtl"/);
-  // The composer now conditionally switches between guided library mode and free typing.
-  assert.match(launcher, /className=\{['"]assistantComposer['"]\s*\+/);
+  // Every page uses the fixed question picker; no typing field remains.
+  assert.match(launcher, /className="assistantComposer libraryAssistantGuidedComposer"/);
   assert.match(launcher, /<form[^>]*dir="rtl"[^>]*onSubmit=\{send\}/);
   assert.match(launcher, /libraryAssistantPromptRow/);
-  assert.match(launcher, /<textarea[\s\S]*?id="global-assistant-message"/);
+  assert.doesNotMatch(launcher, /<textarea/);
+  assert.match(launcher, /PAGE_ASSISTANT_PROMPT_GROUPS/);
   assert.match(css, /\.globalAssistantChat \.assistantMessage,\s*\.globalAssistantChat \.userMessage\s*\{[^}]*align-self:\s*flex-start/);
   assert.match(css, /direction:\s*rtl !important;\s*text-align:\s*right !important;/);
   assert.match(css, /\.globalAssistantChat \.assistantMessage,\s*\.globalAssistantChat \.userMessage\s*\{[^}]*background:\s*transparent !important;[^}]*box-shadow:\s*none !important;/);
