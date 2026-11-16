@@ -268,11 +268,11 @@ jobs:
     name: Validate assistant safety UI (T01-T05)
     # This focused safety/UI regression is cheap enough to run for every PR that triggers this workflow.
     # Do not couple safety coverage to branch naming: content/topic PRs can change shared assistant behavior too.
-    if: ${{ github.event_name == 'pull_request' }}
+    if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
     runs-on: ubuntu-24.04
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
-    timeout-minutes: 18
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -364,6 +364,13 @@ jobs:
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/reader-layout-parity.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/reader-open-paths.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/reader-open-recommendation.mjs
+      - name: Upload five-book Reader open measurements
+        if: always() && hashFiles('reports/generated/reader-open-performance.json') != ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: reader-open-performance-baseline
+          path: reports/generated/reader-open-performance.json
+          if-no-files-found: error
       - name: Capture startup performance diagnostics (mobile and desktop)
         env:
           PATH28_BASE_URL: http://127.0.0.1:4173/Maseer28/
