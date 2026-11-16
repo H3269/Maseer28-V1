@@ -54,16 +54,18 @@ test('the selected topic loads independently and the day screen waits for its ve
   assert.match(app, /onLoadTopic=\{loadTopicForScreen\}/);
 });
 
-test('the static splash logo is visible immediately before React mounts', () => {
+test('the static splash reveals the logo radially and fills its progress bar in sync', () => {
   assert.match(html, /assets\/splash-logo\.webp/);
-  assert.match(html, /opacity:1;visibility:visible;transform:none;animation:loadingLogoSafeEnter 420ms/);
-  assert.ok(html.includes('@keyframes loadingLogoSafeEnter{from{opacity:1;transform:scale(.96)}to{opacity:1;transform:scale(1)}}'));
+  assert.match(html, /clip-path:circle\(0% at 50% 50%\);transform:scale\(\.96\);animation:loadingLogoBloom 950ms/);
+  assert.ok(html.includes('@keyframes loadingLogoBloom{from{opacity:1;clip-path:circle(0% at 50% 50%);transform:scale(.96)}to{opacity:1;clip-path:circle(75% at 50% 50%);transform:scale(1)}}'));
+  assert.ok(html.includes('@keyframes loadingProgressFill{to{transform:scaleX(1)}}'));
+  assert.match(html, /aria-label=\"پیشرفت نمایش لوگو\"/);
   assert.ok(html.includes('@media(prefers-reduced-motion:reduce){.initialSplashInner,.initialSplash img,.initialSplash h1,.initialSplash p,.initialProgress{animation:none;opacity:1;transform:none;clip-path:none}'));
   assert.match(html, /fetchpriority="high"/);
   assert.match(html, /width="174" height="174"/);
 });
 
-test('startup does not wait for logo decode or an artificial splash timer', () => {
+test('startup waits for both actual content readiness and the completed radial reveal', () => {
   assert.match(app, /if \(!content \|\| loadError\) return \(/);
   assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\.decode\(\)/);
   assert.doesNotMatch(app, /setSplashMinimumVisible|splashMinimumVisible/);
@@ -229,10 +231,11 @@ test('opening a book preloads the reader module and reuses the prepared IndexedD
   assert.match(reader, /if \(initialVersion\?\.content\)/);
 });
 
-test('the React splash shows logo and text without a delayed reveal animation', () => {
+test('the React splash uses the same radial reveal and progress animation as static HTML', () => {
   assert.match(css, /\.appLoading \.loadingBrand img \{[\s\S]*?animation: none !important/);
   assert.match(css, /\.appLoading \.loadingBrand h1,[\s\S]*?animation: none !important/);
-  assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|markSplashLogoReady/);
+  assert.match(app, /!splashAnimationComplete/);
+  assert.match(app, /setSplashAnimationComplete\\(true\\)/);
 });
 
 test('Android WebViews without modern viewport units retain a 100vh fallback', () => {
