@@ -6,7 +6,6 @@ import { libraryRepository } from '../library/libraryRepository.js';
 import { ensureSeedBookContent } from '../library/useLibrary.js';
 import { answerLibraryBookTurn, planLibraryBookLoad } from './libraryBookAssistant.js';
 import { routeAssistantTurn } from './assistantTurnEngine.js';
-import { isLocalNeuralModelInstalled, requestLocalNeuralModel } from './localNeuralModelClient.js';
 import { LIBRARY_ASSISTANT_PROMPT_GROUPS } from './libraryAssistantPrompts.js';
 import { getCanonicalTopicIdForCategory, getInterpersonalPrivacyNotice, getRelationshipSafetyGate } from '../journey/relationshipSafetyGate.js';
 import { getAngerDailyAssistantPromptGroups } from './angerDailyAssistantPrompts.js';
@@ -21,7 +20,6 @@ import { getT09DailyAssistantPromptGroups } from './t09DailyAssistantPrompts.js'
 import { getT10DailyAssistantPromptGroups } from './t10DailyAssistantPrompts.js';
 import { getT11DailyAssistantPromptGroups } from './t11DailyAssistantPrompts.js';
 import { getT12DailyAssistantPromptGroups } from './t12DailyAssistantPrompts.js';
-import { appendLocalSourceReferences, buildLocalAssistantMessages, isLocalModelInstallCommand, LOCAL_MODEL_CACHE_MESSAGE, LOCAL_MODEL_FAILURE_MESSAGE, LOCAL_MODEL_INSTALL_MESSAGE, shouldUseLocalNeuralModel } from './localNeuralAssistant.js';
 import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS, DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
 
 export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null, onRelationshipSafetyResponse = null, initialOpen = false, hideLauncher = false, externalLauncherRef = null, openRequestId = 0, onOpenChange = null }) {
@@ -33,8 +31,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const libraryPromptDialogRef = useRef(null);
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
-  const [localModelUnavailable, setLocalModelUnavailable] = useState(false);
-  const [localModelInstalled, setLocalModelInstalled] = useState(false);
   const turnSequenceRef = useRef(0);
   const [loadedLibraryBooks, setLoadedLibraryBooks] = useState([]);
   const libraryBooksLoadRef = useRef(null);
@@ -111,23 +107,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       setLoadedLibraryBooks([]);
       libraryBooksLoadRef.current = null;
     }
-    const shouldCheckModel = screen === 'books' || (screen === 'day' && Boolean(dailyContext));
-    if (!shouldCheckModel) {
-      setLocalModelInstalled(false);
-        return undefined;
-    }
-    let active = true;
-    isLocalNeuralModelInstalled().then((installed) => {
-      if (active) {
-        setLocalModelInstalled(installed);
-      }
-    }).catch(() => {
-      if (active) {
-        setLocalModelInstalled(false);
-      }
-    });
-    return () => { active = false; };
-  }, [screen, open, libraryContext?.titles?.length, dailyContext?.day, dailyContext?.problem]);
+  }, [screen]);
 
   const dailyProblemText = String(dailyContext?.problem || '').trim();
   const dailyProblemTopicId = getCanonicalTopicIdForCategory(dailyProblemText);
@@ -333,43 +313,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       setDraft('');
       resizeComposerInput(messageInputRef.current);
     }
-    const updateProgress = (progress) => {
-      if (progress?.stage === 'generation') {
-        updateAssistantMessage('در حال تولید پاسخ با مدل زبانی عصبی محلی...');
-        return;
-      }
-      const percent = Number.isFinite(progress?.progress) ? Math.max(0, Math.min(100, Math.round(progress.progress))) : null;
-      updateAssistantMessage(percent === null
-        ? 'در حال آماده‌سازی فایل‌های مدل محلی...'
-        : `در حال بارگیری مدل محلی روی همین دستگاه: ${percent}٪`);
-    };
-
     try {
-      if (screen !== 'day' && isLocalModelInstallCommand(message)) {
-        updateAssistantMessage('درخواست بارگیری دریافت شد. مدل فقط روی همین دستگاه آماده می‌شود...');
-        try {
-          await requestLocalNeuralModel('load', { allowDownload: true }, updateProgress);
-          setLocalModelUnavailable(false);
-          setLocalModelInstalled(true);
-          updateAssistantMessage('مدل زبانی عصبی محلی با موفقیت روی این دستگاه آماده شد. برای دریافت پاسخ، پرسش اصلی‌ات را دوباره بفرست.');
-        } catch (installError) {
-          if (installError?.code === 'MODEL_DOWNLOAD_OFFLINE') {
-            updateAssistantMessage('برای دریافت اولیه فایل مدل، اتصال اینترنت لازم است. پس از ذخیره مدل، تولید پاسخ به اینترنت نیاز ندارد و هیچ پرسشی به سرویس بیرونی ارسال نمی‌شود.');
-            setLocalModelUnavailable(true);
-            setLocalModelInstalled(false);
-          } else if (installError?.code === 'CACHE_UNAVAILABLE' || installError?.code === 'STORAGE_QUOTA_LOW') {
-            setLocalModelUnavailable(true);
-            setLocalModelInstalled(false);
-            updateAssistantMessage(LOCAL_MODEL_CACHE_MESSAGE + ' دستیار پایه همچنان فعال است و می‌توانی به پرسش‌هایت ادامه بدهی.');
-          } else {
-            setLocalModelUnavailable(true);
-            setLocalModelInstalled(false);
-            updateAssistantMessage('این گوشی یا مرورگر نتوانست مدل محلی را اجرا کند. دستیار پایه همچنان فعال است و می‌توانی به پرسش‌هایت ادامه بدهی.');
-          }
-        }
-        return;
-      }
-
       const intentGate = routeAssistantTurn({ text: message });
       const restrictedStatuses = new Set([
         // Safety handoff must always precede book retrieval. Ordinary ambiguity
@@ -402,22 +346,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       }
 
       conversationStateRef.current = turn.conversationState || null;
-      let finalMessage = turn.message || 'برای این پرسش پاسخ قابل اتکایی در دسترس نیست.';
-      if (!isPreparedOnlyDailyPromptContext && !localModelUnavailable && shouldUseLocalNeuralModel({ screen, turn, intentStatus: intentGate.status, isLibraryTurn })) {
-        try {
-          await requestLocalNeuralModel('load', { allowDownload: false }, updateProgress);
-          updateAssistantMessage('در حال تولید پاسخ با مدل زبانی عصبی محلی...', turn.knowledge || []);
-          const modelMessages = buildLocalAssistantMessages({ question: message, context: turn.message, knowledge: turn.knowledge || [] });
-          const generated = await requestLocalNeuralModel('generate', { messages: modelMessages });
-          finalMessage = appendLocalSourceReferences(generated.text, turn.message);
-        } catch (modelError) {
-          setLocalModelUnavailable(true);
-          setLocalModelInstalled(false);
-          if (modelError?.code === 'MODEL_NOT_INSTALLED') finalMessage += '\n\nپاسخ پایه همین حالا در دسترس است.';
-          else if (modelError?.code === 'CACHE_UNAVAILABLE' || modelError?.code === 'STORAGE_QUOTA_LOW') finalMessage += `\n\n${LOCAL_MODEL_CACHE_MESSAGE} پاسخ‌گویی پایه همچنان فعال است.`;
-          else finalMessage += '\n\nمدل محلی روی این دستگاه اجرا نشد؛ پاسخ بالا از دستیار پایه است و می‌توانی به پرسش‌هایت ادامه بدهی.';
-        }
-      }
+      const finalMessage = turn.message || 'برای این پرسش پاسخ قابل اتکایی در دسترس نیست.';
       updateAssistantMessage(finalMessage, turn.knowledge || [], isDailySafetyQuestion);
     } catch {
       updateAssistantMessage('پاسخ آماده نشد. دوباره تلاش کن.');
@@ -651,8 +580,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
                 <div ref={endRef} />
               </div>
-              <form className={'assistantComposer' + (isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled) ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} data-jealousy-daily-prompt={String(isJealousyDailyPromptContext)} data-grief-daily-prompt={String(isGriefDailyPromptContext)} data-guilt-daily-prompt={String(isGuiltDailyPromptContext)} data-t10-daily-prompt={String(isT10DailyPromptContext)} data-t12-daily-prompt={String(isT12DailyPromptContext)} onSubmit={send}>
-                {(isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext) && !localModelInstalled)) ? (
+              <form className={'assistantComposer' + (isPreparedOnlyDailyPromptContext || ((screen === 'books' || isTopicDailyPromptContext)) ? ' libraryAssistantGuidedComposer' : '')} dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} data-jealousy-daily-prompt={String(isJealousyDailyPromptContext)} data-grief-daily-prompt={String(isGriefDailyPromptContext)} data-guilt-daily-prompt={String(isGuiltDailyPromptContext)} data-t10-daily-prompt={String(isT10DailyPromptContext)} data-t12-daily-prompt={String(isT12DailyPromptContext)} onSubmit={send}>
+                {(isPreparedOnlyDailyPromptContext || screen === 'books' || isTopicDailyPromptContext) ? (
                   <div className="libraryAssistantPromptRow">
                     <button
                       ref={libraryPromptTriggerRef}
