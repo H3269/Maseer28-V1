@@ -112,7 +112,7 @@ function MainApp() {
   const [content, setContent] = useState(null);
   const [topicLoadState, setTopicLoadState] = useState({ key: '', status: 'idle', error: '' });
   const [loadError, setLoadError] = useState('');
-  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [splashAnimationComplete, setSplashAnimationComplete] = useState(false);
   const [assistantLauncherLoaded, setAssistantLauncherLoaded] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [assistantOpenRequest, setAssistantOpenRequest] = useState(0);
@@ -141,6 +141,12 @@ function MainApp() {
   const libraryNeeded = screen === 'books' || screen === 'bookReader' || screen === 'dailyResult';
   const { books, loading: libraryLoading, error: libraryError, refresh: refreshLibrary } = useLibrary(libraryNeeded);
 
+  useEffect(() => {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      setSplashAnimationComplete(true);
+    }
+  }, []);
+
   // Warm the assistant chunk only after the app is ready and the browser is idle.
   useEffect(() => {
     if (!content || !userProfile || !hasCompletedOnboarding) return undefined;
@@ -159,7 +165,6 @@ function MainApp() {
 
   useEffect(() => {
     let cancelled = false;
-    setLoadingProgress(18);
 
     // Startup downloads only the compact topic index. The selected topic is
     // fetched separately after the profile/path is known.
@@ -167,7 +172,6 @@ function MainApp() {
       .then((index) => {
         if (cancelled) return;
         setContent({ ...(index.metadata || {}), categories: {}, topics: index.topics });
-        setLoadingProgress(100);
       })
       .catch(async () => {
         // Compatibility fallback: if the generated runtime index is unavailable,
@@ -196,7 +200,6 @@ function MainApp() {
             .catch(() => null);
           if (cancelled) return;
           setContent(overrides ? mergeDailyTextOverrides(data, overrides) : data);
-          setLoadingProgress(100);
         } catch (error) {
           if (!cancelled) setLoadError(error?.message || 'خطا در بارگذاری برنامه');
         }
@@ -776,7 +779,7 @@ function navigate(next) {
     setCopyrightOpen(false);
   }
 
-  if (!content || loadError) return (
+  if (!content || !splashAnimationComplete || loadError) return (
     <div className="app appLoading" role="status" aria-live="polite" aria-busy="true">
       <div className="loadingBrand">
         <img
@@ -787,6 +790,9 @@ function navigate(next) {
           loading="eager"
           decoding="async"
           fetchPriority="high"
+          onAnimationEnd={(event) => {
+            if (event.animationName === 'loadingLogoBloom') setSplashAnimationComplete(true);
+          }}
           onError={(event) => {
             const image = event.currentTarget;
             if (!image.dataset.fallbackAttempted) {
@@ -794,14 +800,15 @@ function navigate(next) {
               image.src = `${import.meta.env.BASE_URL}assets/logo.png`;
             } else {
               image.hidden = true;
+              setSplashAnimationComplete(true);
             }
           }}
         />
         <h1>مسیر ۲۸ روزه بازسازی ذهن</h1>
         <p>{loadError ? 'آماده‌سازی برنامه کامل نشد.' : 'در حال آماده‌سازی مسیر تو…'}</p>
         {loadError && <div className="loadingError" role="alert"><p>{loadError}</p><button className="primary" type="button" onClick={() => window.location.reload()}>تلاش دوباره</button></div>}
-        <div className="loadingProgress" role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(loadingProgress)}>
-          {Array.from({ length: 10 }, (_, index) => <span key={index} className="loadingProgressSegment" style={{ '--segment-progress': `${Math.max(0, Math.min(100, loadingProgress - index * 10))}%` }} />)}
+        <div className="loadingProgress" role="progressbar" aria-label="پیشرفت نمایش لوگو" aria-valuemin="0" aria-valuemax="100" aria-valuenow={splashAnimationComplete ? 100 : 0}>
+          <span className="loadingProgressFill" />
         </div>
       </div>
     </div>
