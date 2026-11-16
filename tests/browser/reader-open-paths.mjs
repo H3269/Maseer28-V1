@@ -43,8 +43,23 @@ async function waitForReadablePage(page) {
         ? Number((performance.now() - window.__readerPerfStartedAt).toFixed(2))
         : null;
     })(),
+    coverImageUrl: (() => {
+      const image = document.querySelector('#bookReaderText .readerCoverPage img, #bookReaderText .readerFrontispiecePage img');
+      return image ? (image.currentSrc || image.src) : null;
+    })(),
+    coverImageResourceTiming: (() => {
+      const image = document.querySelector('#bookReaderText .readerCoverPage img, #bookReaderText .readerFrontispiecePage img');
+      const url = image ? (image.currentSrc || image.src) : '';
+      const entry = url ? performance.getEntriesByName(url).filter((item) => item.startTime >= window.__readerPerfStartedAt).at(-1) : null;
+      return entry ? {
+        requestStartMs: Number((entry.requestStart - window.__readerPerfStartedAt).toFixed(2)),
+        responseEndMs: Number((entry.responseEnd - window.__readerPerfStartedAt).toFixed(2)),
+        durationMs: Number(entry.duration.toFixed(2)),
+        transferBytes: entry.transferSize || 0,
+      } : null;
+    })(),
     bookContentResources: performance.getEntriesByType('resource')
-      .filter((entry) => /\/content\/books\/book\d+\.json(?:$|\?)/.test(entry.name))
+      .filter((entry) => entry.startTime >= window.__readerPerfStartedAt && /\/content\/books\/book\d+\.json(?:$|\?)/.test(entry.name))
       .map((entry) => ({
         url: entry.name,
         requestStartMs: Number((entry.requestStart - window.__readerPerfStartedAt).toFixed(2)),
