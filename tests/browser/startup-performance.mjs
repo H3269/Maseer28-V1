@@ -201,7 +201,7 @@ const startedAt = Date.now();
       firstContentfulPaintMs: Math.round(performance.getEntriesByName('first-contentful-paint')[0]?.startTime || 0),
       resourceCount: resources.length,
       imageEvents: window.__path28ImageEvents,
-      splashLogoResources: resources.filter((item) => /splash-logo\\.webp|logo\\.png/i.test(item.url)),
+      splashLogoResources: resources.filter((item) => /splash-logo\.webp|logo\.png/i.test(item.url)),
       totalTransferBytes: resources.reduce((sum, item) => sum + item.transferBytes, 0),
       totalDecodedBytes: resources.reduce((sum, item) => sum + item.decodedBytes, 0),
       largestResources: [...resources].sort((a, b) => b.transferBytes - a.transferBytes).slice(0, 12),
@@ -218,8 +218,8 @@ const startedAt = Date.now();
   };
   assert.equal(result.logoDecoded, true, 'Splash logo must decode before the app becomes interactive');
   assert.equal(result.logoVisible, true, 'Splash logo must be visible while the startup gate is active');
-  assert.ok(!result.splashLogoResources.some((item) => /logo\\.png/i.test(item.url)), 'The oversized PNG fallback must never be requested during successful startup');
-  const optimizedLogo = result.splashLogoResources.find((item) => /splash-logo\\.webp/i.test(item.url));
+  assert.ok(!result.splashLogoResources.some((item) => /logo\.png/i.test(item.url)), 'The oversized PNG fallback must never be requested during successful startup');
+  const optimizedLogo = result.splashLogoResources.find((item) => /splash-logo\.webp/i.test(item.url));
   assert.ok(optimizedLogo && optimizedLogo.transferBytes > 0 && optimizedLogo.transferBytes <= 40 * 1024, 'The startup logo must use the generated lightweight WebP asset');
   await context.close();
   return result;
