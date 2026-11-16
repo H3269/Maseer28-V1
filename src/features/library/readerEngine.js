@@ -798,7 +798,7 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
         }
       }
 
-      const upcoming = nextMeaningfulBlocks[i + 1] || null;
+      const upcoming = nextMeaningfulBlocks[i] || null;
       if (block?.type === 'separator' || isRuleText(text)) {
         if (pendingTableTitle && upcoming?.block?.type === 'table') continue;
         pushLine('•  •  •', 'separator', source, { paraStart: true, paraEnd: true });
