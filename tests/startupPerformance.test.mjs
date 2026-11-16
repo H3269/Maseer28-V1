@@ -158,6 +158,7 @@ test('all assistant pages stay on deterministic prepared guidance with neural ch
   assert.match(assistantLauncher, /activePromptGroups\.flatMap\(\(group\) => group\.questions\)/);
   assert.match(assistantLauncher, /makePageAssistantTurn\(\{ screen, text: message/);
   assert.match(assistantLauncher, /answerLibraryBookTurn\(\{ books: booksForTurn, message/);
+  assert.doesNotMatch(pkg.scripts.build, /copy-local-llm-runtime-assets/);
 });
 
 test('first-entry cover requests start before IndexedDB catalogue synchronization finishes', () => {
