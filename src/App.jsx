@@ -109,11 +109,15 @@ export default function App() {
 function MainApp() {
   const initial = useMemo(initialSnapshot, []);
   const runtimeRepository = useMemo(() => createRuntimeContentRepository({ baseUrl: import.meta.env.BASE_URL }), []);
+  const [splashAnimationElapsedMs] = useState(() => {
+    const startedAt = Number(window.__PATH28_SPLASH_STARTED_AT__);
+    return Number.isFinite(startedAt) ? Math.min(950, Math.max(0, performance.now() - startedAt)) : 0;
+  });
   const [content, setContent] = useState(null);
   const [topicLoadState, setTopicLoadState] = useState({ key: '', status: 'idle', error: '' });
   const [loadError, setLoadError] = useState('');
-  const [splashLogoRevealComplete, setSplashLogoRevealComplete] = useState(false);
-  const [splashProgressComplete, setSplashProgressComplete] = useState(false);
+  const [splashLogoRevealComplete, setSplashLogoRevealComplete] = useState(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || splashAnimationElapsedMs >= 950);
+  const [splashProgressComplete, setSplashProgressComplete] = useState(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || splashAnimationElapsedMs >= 950);
   const [assistantLauncherLoaded, setAssistantLauncherLoaded] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [assistantOpenRequest, setAssistantOpenRequest] = useState(0);
@@ -782,7 +786,7 @@ function navigate(next) {
   }
 
   if (!content || !splashLogoRevealComplete || !splashProgressComplete || loadError) return (
-    <div className="app appLoading" role="status" aria-live="polite" aria-busy="true" data-content-ready={content ? 'true' : 'false'} data-reveal-complete={splashLogoRevealComplete && splashProgressComplete ? 'true' : 'false'} data-logo-reveal-complete={splashLogoRevealComplete ? 'true' : 'false'} data-progress-complete={splashProgressComplete ? 'true' : 'false'}>
+    <div className="app appLoading" role="status" aria-live="polite" aria-busy="true" data-content-ready={content ? 'true' : 'false'} data-reveal-complete={splashLogoRevealComplete && splashProgressComplete ? 'true' : 'false'} data-logo-reveal-complete={splashLogoRevealComplete ? 'true' : 'false'} data-progress-complete={splashProgressComplete ? 'true' : 'false'} style={{ '--splash-animation-delay': `-${splashAnimationElapsedMs}ms` }}>
       <div className="loadingBrand">
         <img
           src={`${import.meta.env.BASE_URL}assets/splash-logo.webp`}
