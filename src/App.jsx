@@ -110,13 +110,14 @@ function MainApp() {
   const initial = useMemo(initialSnapshot, []);
   const runtimeRepository = useMemo(() => createRuntimeContentRepository({ baseUrl: import.meta.env.BASE_URL }), []);
   const [splashAnimationElapsedMs] = useState(() => {
+    const durationMs = Number(window.__PATH28_SPLASH_DURATION_MS__) || 950;
     const startedAt = Number(window.__PATH28_SPLASH_STARTED_AT__);
-    return Number.isFinite(startedAt) ? Math.min(950, Math.max(0, performance.now() - startedAt)) : 0;
+    return Number.isFinite(startedAt) ? Math.min(durationMs, Math.max(0, performance.now() - startedAt)) : 0;
   });
   const [content, setContent] = useState(null);
   const [topicLoadState, setTopicLoadState] = useState({ key: '', status: 'idle', error: '' });
   const [loadError, setLoadError] = useState('');
-  const [splashLogoRevealComplete, setSplashLogoRevealComplete] = useState(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || splashAnimationElapsedMs >= 950);
+  const [splashLogoRevealComplete, setSplashLogoRevealComplete] = useState(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || splashAnimationElapsedMs >= (Number(window.__PATH28_SPLASH_DURATION_MS__) || 950));
   const [splashProgressComplete, setSplashProgressComplete] = useState(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || splashAnimationElapsedMs >= 950);
   const [assistantLauncherLoaded, setAssistantLauncherLoaded] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
