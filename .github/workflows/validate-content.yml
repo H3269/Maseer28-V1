@@ -280,7 +280,7 @@ jobs:
           persist-credentials: false
       - name: Prepare main-branch reader engine for exact layout parity (test-only)
         env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git fetch --no-tags --depth=1 origin "$BASE_SHA"
