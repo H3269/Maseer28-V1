@@ -12,7 +12,7 @@ async function measure(viewport, run) {
   const isAndroid = viewport.profile === 'android';
   const context = await browser.newContext({
     viewport: { width: viewport.width, height: viewport.height },
-    // This suite verifies the required radial bloom, so make the motion preference deterministic
+    // This suite verifies the approved non-blocking splash motion, so make the motion preference deterministic
     // instead of inheriting a hosted runner's OS-level accessibility setting.
     reducedMotion: 'no-preference',
     deviceScaleFactor: isAndroid ? 2 : 1,
@@ -53,7 +53,7 @@ async function measure(viewport, run) {
     document.addEventListener('animationstart', (event) => {
       const image = event.target;
       if (!(image instanceof HTMLImageElement) || !image.closest('#root .initialSplash, #root .appLoading')) return;
-      if (event.animationName !== 'initialLogoBloom' && event.animationName !== 'loadingLogoBloom') return;
+      if (event.animationName !== 'initialLogoBloom' && event.animationName !== 'loadingLogoBloom' && event.animationName !== 'loadingLogoSafeEnter') return;
       const style = getComputedStyle(image);
       if (window.__path28SplashAnimation.firstAnimationName === null) {
         window.__path28SplashAnimation.firstAnimationName = event.animationName;
