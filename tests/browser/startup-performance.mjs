@@ -94,6 +94,8 @@ async function measure(viewport, run) {
           width: rect.width,
           height: rect.height,
           opacity: Number(style.opacity),
+          animationName: style.animationName,
+          clipPath: style.clipPath,
           src: image.currentSrc || image.src,
         };
         return;
@@ -169,18 +171,7 @@ const startedAt = Date.now();
 
   // The first interactive surface is exposed only after required content and
   // splash-logo readiness gates have completed.
-  const splashVisual = await page.evaluate(() => {
-    const image = document.querySelector('#root .initialSplash img, #root .appLoading img');
-    if (!image) return null;
-    const style = getComputedStyle(image);
-    return {
-      animationName: style.animationName,
-      opacity: Number(style.opacity),
-      clipPath: style.clipPath,
-      width: image.getBoundingClientRect().width,
-      height: image.getBoundingClientRect().height,
-    };
-  });
+  const splashVisual = await page.evaluate(() => window.__path28SplashObserved);
   assert.ok(splashVisual, 'A splash logo element must exist while startup is loading');
   assert.equal(splashVisual.animationName, 'none', 'The splash logo must not wait for a reveal animation');
   assert.equal(splashVisual.opacity, 1, 'The splash logo must be visible immediately');
