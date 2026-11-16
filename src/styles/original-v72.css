@@ -7488,15 +7488,5 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
   animation: loadingProgressFill var(--path28-splash-duration, 950ms) linear both !important;
 }
 @keyframes loadingProgressFill { to { transform: scaleX(1); } }
-@media (prefers-reduced-motion: reduce) {
-  .appLoading .loadingBrand img {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-    clip-path: none !important;
-  }
-  .appLoading .loadingProgressFill {
-    animation: none !important;
-    transform: scaleX(1) !important;
-  }
-}
+/* The splash deliberately keeps its coordinated logo and progress animations
+   even when the device requests reduced motion. Other app motion remains reduced. */
