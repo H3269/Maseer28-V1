@@ -169,41 +169,23 @@ const startedAt = Date.now();
 
   // The first interactive surface is exposed only after required content and
   // splash-logo readiness gates have completed.
-  const animationGate = await page.evaluate(() => window.__path28SplashAnimation);
-  assert.ok(
-    animationGate.firstAnimationName === 'initialLogoBloom' || animationGate.firstAnimationName === 'loadingLogoBloom',
-    'The initial or React splash must start the radial logo-opening animation',
-  );
-  assert.ok(
-    Math.abs(parseCssTimeMs(animationGate.firstAnimationDuration) - 950) < 1,
-    'The logo-opening animation must run for its full 0.95-second duration',
-  );
-  assert.equal(animationGate.decodedAtAnimationStart, true, 'The splash logo image must be decoded when its reveal animation starts');
-  assert.ok(
-    animationGate.completedName === 'initialLogoBloom' || animationGate.completedName === 'loadingLogoBloom',
-    'The splash logo radial animation must complete before the app is shown',
-  );
-  const finalClip = /^circle\(\s*([\d.]+)(%|px)\s+at\s+([\d.]+)(%|px)\s+([\d.]+)(%|px)\s*\)$/i.exec(
-    animationGate.finalClipPath || '',
-  );
-  const finalRect = animationGate.finalLogoRect;
-  const fullyRevealedCircle = Boolean(finalClip && finalRect?.width > 0 && finalRect?.height > 0
-    && finalClip[2] === finalClip[4] && finalClip[2] === finalClip[6]
-    && (finalClip[2] === '%'
-      ? Math.abs(Number(finalClip[1]) - 75) < 0.1
-        && Math.abs(Number(finalClip[3]) - 50) < 0.1
-        && Math.abs(Number(finalClip[5]) - 50) < 0.1
-      : Math.abs(Number(finalClip[1]) - (0.75 * Math.hypot(finalRect.width, finalRect.height) / Math.SQRT2)) < 1.5
-        && Math.abs(Number(finalClip[3]) - finalRect.width / 2) < 1.5
-        && Math.abs(Number(finalClip[5]) - finalRect.height / 2) < 1.5));
-  assert.ok(
-    fullyRevealedCircle,
-    `The logo must finish at a centered 75% circular reveal; computed clip-path: ${animationGate.finalClipPath}; target connected at animationend: ${animationGate.finalLogoConnectedAtAnimationEnd}`,
-  );
-  assert.ok(
-    animationGate.appVisibleAt !== null && animationGate.completedAt <= animationGate.appVisibleAt,
-    'The app must not expose its first interactive surface before the logo animation completes',
-  );
+  const splashVisual = await page.evaluate(() => {
+    const image = document.querySelector('#root .initialSplash img, #root .appLoading img');
+    if (!image) return null;
+    const style = getComputedStyle(image);
+    return {
+      animationName: style.animationName,
+      opacity: Number(style.opacity),
+      clipPath: style.clipPath,
+      width: image.getBoundingClientRect().width,
+      height: image.getBoundingClientRect().height,
+    };
+  });
+  assert.ok(splashVisual, 'A splash logo element must exist while startup is loading');
+  assert.equal(splashVisual.animationName, 'none', 'The splash logo must not wait for a reveal animation');
+  assert.equal(splashVisual.opacity, 1, 'The splash logo must be visible immediately');
+  assert.equal(splashVisual.clipPath, 'none', 'The splash logo must not be hidden behind a reveal mask');
+  assert.ok(splashVisual.width >= 160 && splashVisual.height >= 160, 'The logo must retain its intended display size');
   const metrics = await page.evaluate(() => {
     const navigation = performance.getEntriesByType('navigation')[0];
     const resources = performance.getEntriesByType('resource').map((entry) => ({
