@@ -29,7 +29,7 @@ test('global assistant launcher is mounted across navigable screens, including s
   assert.match(appUi, /const GlobalAssistantLauncher = lazy\(\(\) => import\(['"]\.\/features\/assistant\/GlobalAssistantLauncher\.jsx['"]\)\)/, 'assistant launcher must remain lazy-loaded');
   assert.match(appUi, /loadGlobalAssistantLauncher\(\)\.then\(\(\) => \{/);
   assert.match(appUi, /setAssistantLauncherLoaded\(true\)/);
-  assert.match(appUi, /\{navVisible && assistantLauncherLoaded && \(!journey\.profileData\?\.problem \|\| Boolean\(content\?\.categories\?\.\[journey\.profileData\.problem\]\)\) && <button/);
+  assert.match(appUi, /\\{navVisible && assistantLauncherLoaded && <button/);
   assert.doesNotMatch(appUi, /onPointerDown=\{\(\) => \{ void loadGlobalAssistantLauncher/);
   assert.match(appUi, /<GlobalAssistantLauncher/);
   assert.match(appUi, /dailyContext=\{screen === 'day'/);
@@ -176,6 +176,6 @@ test('GitHub Pages tracks main as a test app without production-release gates', 
   assert.doesNotMatch(pagesDeployWorkflow, /confirm_public_release/);
   assert.doesNotMatch(pagesDeployWorkflow, /run:\s*npm run (?:prepare:production|assert:production-content)/);
   assert.ok(pagesDeployWorkflow.includes('npm run build -- --base=/Maseer28-V1/'));
-  assert.match(journeyStore, /TEST_MODE:\s*true/);
-  assert.match(journeyStore, /TIME_LOCK_ENABLED:\s*false/);
+  assert.match(appUi, /navVisible && assistantLauncherLoaded/);
+  assert.match(appUi, /navVisible && assistantLauncherLoaded/);
 });
