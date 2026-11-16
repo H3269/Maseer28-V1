@@ -5,6 +5,7 @@ import {
   appendLocalSourceReferences, buildLocalAssistantMessages, extractLocalSourceReferences,
   isLocalModelInstallCommand, isAllowedLocalModelFetch, shouldUseLocalNeuralModel,
 } from '../src/features/assistant/localNeuralAssistant.js';
+import { isLocalNeuralModelInstalled, requestLocalNeuralModel } from '../src/features/assistant/localNeuralModelClient.js';
 
 test('model identity is pinned to an immutable revision', () => {
   assert.equal(LOCAL_MODEL_ID, 'onnx-community/Qwen3-0.6B-Instruct-ONNX');
@@ -77,4 +78,12 @@ test('the installed-model marker is version-bound and never accepts a different 
   assert.equal(isLocalModelCacheMarkerValid({ modelId: LOCAL_MODEL_ID, revision: 'main' }), false);
   assert.equal(isLocalModelCacheMarkerValid({ modelId: 'other/model', revision: LOCAL_MODEL_REVISION }), false);
   assert.equal(isLocalModelCacheMarkerValid(null), false);
+});
+
+test('the local neural model client is fail-closed and cannot start a worker', async () => {
+  assert.equal(await isLocalNeuralModelInstalled(), false);
+  await assert.rejects(
+    requestLocalNeuralModel('generate', { messages: [{ role: 'user', content: 'سلام' }] }),
+    (error) => error?.code === 'LOCAL_MODEL_DISABLED',
+  );
 });
