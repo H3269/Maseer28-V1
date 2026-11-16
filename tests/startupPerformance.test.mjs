@@ -47,7 +47,7 @@ test('canonical full-content and daily-overlay loading remain available as a com
 });
 
 test('the selected topic loads independently and the day screen waits for its verified content', () => {
-  assert.match(app, /if \(!content \|\| !problemKey \|\| content\.categories\?\.\[problemKey\]\) return undefined/);
+  assert.match(app, /if \(!content \|\| !splashAnimationComplete \|\| loadError\) return \(/);
   assert.match(app, /setTopicLoadState\(\{ key: problemKey, status: 'loading'/);
   assert.match(app, /activeDay \? <>[\s\S]*?topicLoadState\.status === 'loading'/);
   assert.match(app, /screen === 'report' && \(category \?/);
@@ -66,12 +66,12 @@ test('the static splash reveals the logo radially and fills its progress bar in 
 });
 
 test('startup waits for both actual content readiness and the completed radial reveal', () => {
-  assert.match(app, /if \\(!content \\|\\| !splashAnimationComplete \\|\\| loadError\\) return \\(/);
-  assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\\.decode\\(\\)|setTimeout\\(.*splash/i);
-  assert.match(app, /onAnimationEnd=\\{\\(event\\) => \\{/);
-  assert.match(app, /event\\.animationName === 'loadingLogoBloom'\\) setSplashAnimationComplete\\(true\\)/);
+  assert.match(app, /if \(!content \|\| !splashAnimationComplete \|\| loadError\) return \(/);
+  assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\.decode\(\)|setTimeout\(.*splash/i);
+  assert.match(app, /onAnimationEnd=\{\(event\) => \{/);
+  assert.match(app, /event\.animationName === 'loadingLogoBloom'\) setSplashAnimationComplete\(true\)/);
   assert.match(app, /prefers-reduced-motion: reduce/);
-  assert.match(app, /assets\\/splash-logo\\.webp/);
+  assert.match(app, /assets\/splash-logo\.webp/);
   assert.match(app, /fallbackAttempted/);
   assert.match(css, /animation: loadingLogoBloom 950ms/);
   assert.match(css, /animation: loadingProgressFill 950ms linear both/);
@@ -174,10 +174,10 @@ test('the initial splash preloads the generated lightweight WebP logo', async ()
 });
 
 test('logo failure never blocks startup, while content failure keeps its retry path', () => {
-  assert.match(app, /if \(!content \|\| loadError\) return \(/);
+  assert.match(app, /if \(!content \|\| !splashAnimationComplete \|\| loadError\) return \(/);
   assert.match(app, /fallbackAttempted/);
   assert.match(app, /<div className="loadingError" role="alert">[\s\S]*?window\.location\.reload\(\)/);
-  assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\.decode\(\)/);
+  assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\.decode\(\)|setTimeout\(.*splash/i);
 });
 
 test('library cards use generated lightweight WebP thumbnails without weakening eager display', () => {
@@ -235,10 +235,12 @@ test('opening a book preloads the reader module and reuses the prepared IndexedD
 });
 
 test('the React splash uses the same radial reveal and progress animation as static HTML', () => {
-  assert.match(css, /\.appLoading \.loadingBrand img \{[\s\S]*?animation: none !important/);
-  assert.match(css, /\.appLoading \.loadingBrand h1,[\s\S]*?animation: none !important/);
+  assert.match(css, /clip-path: circle\(0% at 50% 50%\) !important/);
+  assert.match(css, /@keyframes loadingLogoBloom[\s\S]*?circle\(75% at 50% 50%\)/);
+  assert.match(css, /@keyframes loadingProgressFill[\s\S]*?scaleX\(1\)/);
+  assert.match(css, /prefers-reduced-motion: reduce/);
   assert.match(app, /!splashAnimationComplete/);
-  assert.match(app, /setSplashAnimationComplete\\(true\\)/);
+  assert.match(app, /setSplashAnimationComplete\(true\)/);
 });
 
 test('Android WebViews without modern viewport units retain a 100vh fallback', () => {
