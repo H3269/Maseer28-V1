@@ -67,9 +67,14 @@ async function waitForFirstBodyParagraph(page) {
 
 try {
   const repetitions = [];
+  const viewports = [
+    { id: 'mobile', width: 390, height: 844, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
+    { id: 'desktop', width: 1365, height: 900, deviceScaleFactor: 1, isMobile: false, hasTouch: false },
+  ];
+  for (const viewport of viewports) {
   for (let repetition = 1; repetition <= 3; repetition += 1) {
-  console.log(`START recommendation route repetition=${repetition}`);
-  const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+  console.log(`START recommendation route viewport=${viewport.id} repetition=${repetition}`);
+  const page = await browser.newPage({ viewport: { width: viewport.width, height: viewport.height }, deviceScaleFactor: viewport.deviceScaleFactor, isMobile: viewport.isMobile, hasTouch: viewport.hasTouch });
   const errors = [];
   const failedRequests = [];
   const abortedNavigationRequests = [];
@@ -182,6 +187,8 @@ try {
     abortedRequestDiagnostics,
   }, null, 2));
   repetitions.push({
+    viewport: viewport.id,
+    repetition,
     recommendationReadyMs: recommendationReady,
     previewReadyMs: previewReady.elapsedMs,
     readerReadyMs: readerReady.elapsedMs,
@@ -189,26 +196,31 @@ try {
   });
   await page.close();
   }
+  }
   const percentile = (values, p) => {
     const sorted = [...values].sort((a, b) => a - b);
     return sorted[Math.min(sorted.length - 1, Math.ceil((p / 100) * sorted.length) - 1)];
   };
-  const summary = Object.fromEntries(
-    ['recommendationReadyMs', 'previewReadyMs', 'readerReadyMs', 'firstBodyParagraphMs'].map((key) => {
-      const values = repetitions.map((item) => item[key]);
-      return [key, {
-        samples: values.length,
-        p50: percentile(values, 50),
-        p95: percentile(values, 95),
-        min: Math.min(...values),
-        max: Math.max(...values),
-      }];
-    }),
-  );
-  assert.equal(repetitions.length, 3, 'recommendation route must complete three independent contexts');
-  console.log('PASS: daily-result recommendation → preview → reader completed in 3 independent browser contexts.');
-  console.log('Repeated recommendation-route timing summary (headless Chromium):');
+  const metrics = ['recommendationReadyMs', 'previewReadyMs', 'readerReadyMs', 'firstBodyParagraphMs'];
+  const summary = Object.fromEntries(viewports.map((viewport) => {
+    const viewportResults = repetitions.filter((item) => item.viewport === viewport.id);
+    const values = Object.fromEntries(metrics.map((key) => {
+      const samples = viewportResults.map((item) => item[key]);
+      return [key, { samples: samples.length, p50: percentile(samples, 50), p95: percentile(samples, 95), min: Math.min(...samples), max: Math.max(...samples) }];
+    }));
+    return [viewport.id, values];
+  }));
+  assert.equal(repetitions.length, 6, 'recommendation route must complete three independent contexts on each viewport');
+  console.log('PASS: daily-result recommendation → preview → reader completed in 3 independent mobile and 3 independent desktop browser contexts.');
+  console.log('Recommendation-route timing summary (headless Chromium):');
   console.log(JSON.stringify(summary, null, 2));
+  await (await import('node:fs/promises')).mkdir('reports/generated', { recursive: true });
+  await (await import('node:fs/promises')).writeFile(
+    'reports/generated/reader-recommendation-performance.json',
+    JSON.stringify({ generatedAt: new Date().toISOString(), baseURL, note: 'Headless Chromium diagnostics; mobile/desktop emulation is not a substitute for physical-device measurements. Each repetition is an independent cold route from daily result through preview to the first real body paragraph.', summary, results: repetitions }, null, 2) + '\n',
+    'utf8',
+  );
+  console.log('Saved reports/generated/reader-recommendation-performance.json');
 } finally {
   await browser.close();
 }
