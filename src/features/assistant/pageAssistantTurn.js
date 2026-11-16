@@ -284,26 +284,15 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       });
     }
 
-    // The in-path assistant is a bounded local guidance surface. Do not apply
-    // the general daily-content or relationship safety gates to its prepared
-    // Q&A and structured day guidance; canonical topic/day identity remains
-    // required for prepared FAQs above.
-    const dayData = selectDailyExerciseGuidanceData({ guidanceData: dailyContext?.guidanceData, data: dailyContext?.data });
-    const dailyTurn = makeDailyExerciseGuidanceTurn({
-      message,
-      dayData,
-      problem: dailyContext?.problem,
-      day: dailyContext?.day,
-      conversationState: conversationState?.dailyState || {},
-    });
+    // Do not fall back to general text reasoning for topics whose prepared
+    // question catalogue is still being completed. The existing daily safety
+    // clarification and handoff branches above remain unchanged.
     return Object.freeze({
-      status: 'daily_guidance_available',
-      message: visibleTopicName
-        ? cleanPreparedAssistantTopicText(dailyTurn.response, visibleTopicName)
-        : dailyTurn.response,
+      status: 'prepared_question_required',
+      message: 'برای این موضوع هنوز فهرست سؤال‌های آماده فعال نشده است. پس از تکمیل فهرست، راهنمای همان روز در دسترس قرار می‌گیرد.',
       knowledge: Object.freeze([]),
       page_context: 'day',
-      conversationState: Object.freeze({ dailyState: dailyTurn.nextState }),
+      conversationState: null,
     });
   }
   const pending = conversationState?.pendingScope;
