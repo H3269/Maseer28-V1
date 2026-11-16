@@ -285,7 +285,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       const rejectedId = ++turnSequenceRef.current;
       setMessages((current) => [...current,
         { id: `user-rejected-${rejectedId}`, role: 'user', text: message, knowledge: [] },
-        { id: `assistant-rejected-${rejectedId}`, role: 'assistant', text: 'این دستیار فقط برای سؤال‌های آماده همین روز پاسخ دارد. لطفاً یکی از سؤال‌های فهرست را انتخاب کن.', knowledge: [] },
+        { id: `assistant-rejected-${rejectedId}`, role: 'assistant', text: 'این دستیار فقط از فهرست سؤال‌های آماده همین بخش پاسخ می‌دهد. لطفاً یکی از سؤال‌های فهرست را انتخاب کن.', knowledge: [] },
       ]);
       setDraft('');
       return;
@@ -309,7 +309,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         { id: responseId, role: 'assistant', text: 'در حال بررسی پرسش...', knowledge: [] },
       ]);
       setDraft('');
-      resizeComposerInput(messageInputRef.current);
     }
     try {
       let turn;
@@ -394,7 +393,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 <AppIcon name="x" size={18} />
               </button>
             </div>
-      {open && libraryPromptOpen && (screen === 'books' || isTopicDailyPromptContext) && (
+      {open && libraryPromptOpen && (
         <div
           className="validationModal libraryAssistantPromptModal"
           onClick={(event) => {
