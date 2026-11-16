@@ -56,10 +56,12 @@ test('the selected topic loads independently and the day screen waits for its ve
 
 test('the static splash reveals the logo radially and fills its progress bar in sync', () => {
   assert.match(html, /assets\/splash-logo\.webp/);
-  assert.match(html, /clip-path:circle\(0% at 50% 50%\);transform:scale\(\.96\);animation:loadingLogoBloom 950ms/);
+  assert.match(html, /animation:loadingLogoBloom var\(--path28-splash-duration,950ms\)/);
   assert.ok(html.includes('@keyframes loadingLogoBloom{from{opacity:1;clip-path:circle(0% at 50% 50%);transform:scale(.96)}to{opacity:1;clip-path:circle(75% at 50% 50%);transform:scale(1)}}'));
   assert.ok(html.includes('@keyframes loadingProgressFill{to{transform:scaleX(1)}}'));
-  assert.match(html, /aria-label=\"پیشرفت نمایش لوگو\"/);
+  assert.match(html, /aria-label="پیشرفت نمایش لوگو"/);
+  assert.match(html, /PATH28_SPLASH_STARTED_AT__/);
+  assert.match(html, /PATH28_SPLASH_DURATION_MS__/);
   assert.ok(html.includes('@media(prefers-reduced-motion:reduce){.initialSplashInner,.initialSplash img,.initialSplash h1,.initialSplash p,.initialProgress{animation:none;opacity:1;transform:none;clip-path:none}.initialProgress span{animation:none;opacity:1;transform:scaleX(1);clip-path:none}}'));
   assert.match(html, /fetchpriority="high"/);
   assert.match(html, /width="174" height="174"/);
@@ -74,8 +76,10 @@ test('startup waits for both actual content readiness and the completed radial r
   assert.match(app, /prefers-reduced-motion: reduce/);
   assert.match(app, /assets\/splash-logo\.webp/);
   assert.match(app, /fallbackAttempted/);
-  assert.match(css, /animation: loadingLogoBloom var\\(--path28-splash-duration, 950ms\\)/);
-  assert.match(css, /animation: loadingProgressFill var\\(--path28-splash-duration, 950ms\\) linear both/);
+  assert.match(app, /splashAnimationElapsedMs/);
+  assert.match(app, /splash-animation-delay/);
+  assert.match(css, /animation: loadingLogoBloom var\(--path28-splash-duration, 950ms\)/);
+  assert.match(css, /animation: loadingProgressFill var\(--path28-splash-duration, 950ms\) linear both/);
 });
 
 test('the splash thumbnail is generated from the original artwork with a strict byte budget', () => {
