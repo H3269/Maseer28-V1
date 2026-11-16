@@ -286,9 +286,7 @@ async function verifySplashReadinessOrders() {
 
   const readinessFirstContext = await browser.newContext({ viewport, reducedMotion: 'no-preference' });
   await readinessFirstContext.addInitScript(() => {
-    const style = document.createElement('style');
-    style.textContent = 'html body #root .appLoading .loadingBrand img{animation-duration:3000ms!important}html body #root .appLoading .loadingProgressFill{animation-duration:3000ms!important}';
-    document.documentElement.appendChild(style);
+    window.__PATH28_SPLASH_DURATION_MS__ = 3000;
   });
   await readinessFirstContext.addInitScript(() => {
     window.__path28GateProbe = { completedAt: null, appVisibleAt: null };
