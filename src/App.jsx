@@ -109,16 +109,14 @@ export default function App() {
 function MainApp() {
   const initial = useMemo(initialSnapshot, []);
   const runtimeRepository = useMemo(() => createRuntimeContentRepository({ baseUrl: import.meta.env.BASE_URL }), []);
-  const [splashAnimationElapsedMs] = useState(() => {
-    const durationMs = Number(window.__PATH28_SPLASH_DURATION_MS__) || 950;
-    const startedAt = Number(window.__PATH28_SPLASH_STARTED_AT__);
-    return Number.isFinite(startedAt) ? Math.min(durationMs, Math.max(0, performance.now() - startedAt)) : 0;
-  });
   const [content, setContent] = useState(null);
   const [topicLoadState, setTopicLoadState] = useState({ key: '', status: 'idle', error: '' });
   const [loadError, setLoadError] = useState('');
-  const [splashLogoRevealComplete, setSplashLogoRevealComplete] = useState(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || splashAnimationElapsedMs >= (Number(window.__PATH28_SPLASH_DURATION_MS__) || 950));
-  const [splashProgressComplete, setSplashProgressComplete] = useState(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || splashAnimationElapsedMs >= 950);
+  // Start the visual gate when React actually mounts the visible splash.
+  // Document-start elapsed time can consume the animation before the user sees it
+  // on slower WebViews or devices that delay the application bundle.
+  const [splashLogoRevealComplete, setSplashLogoRevealComplete] = useState(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+  const [splashProgressComplete, setSplashProgressComplete] = useState(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
   const [assistantLauncherLoaded, setAssistantLauncherLoaded] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [assistantOpenRequest, setAssistantOpenRequest] = useState(0);
@@ -787,7 +785,7 @@ function navigate(next) {
   }
 
   if (!content || !splashLogoRevealComplete || !splashProgressComplete || loadError) return (
-    <div className="app appLoading" role="status" aria-live="polite" aria-busy="true" data-content-ready={content ? 'true' : 'false'} data-reveal-complete={splashLogoRevealComplete && splashProgressComplete ? 'true' : 'false'} data-logo-reveal-complete={splashLogoRevealComplete ? 'true' : 'false'} data-progress-complete={splashProgressComplete ? 'true' : 'false'} style={{ '--splash-animation-delay': `-${splashAnimationElapsedMs}ms` }}>
+    <div className="app appLoading" role="status" aria-live="polite" aria-busy="true" data-content-ready={content ? 'true' : 'false'} data-reveal-complete={splashLogoRevealComplete && splashProgressComplete ? 'true' : 'false'} data-logo-reveal-complete={splashLogoRevealComplete ? 'true' : 'false'} data-progress-complete={splashProgressComplete ? 'true' : 'false'}>
       <div className="loadingBrand">
         <img
           src={`${import.meta.env.BASE_URL}assets/splash-logo.webp`}
