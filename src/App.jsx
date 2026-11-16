@@ -112,7 +112,8 @@ function MainApp() {
   const [content, setContent] = useState(null);
   const [topicLoadState, setTopicLoadState] = useState({ key: '', status: 'idle', error: '' });
   const [loadError, setLoadError] = useState('');
-  const [splashAnimationComplete, setSplashAnimationComplete] = useState(false);
+  const [splashLogoRevealComplete, setSplashLogoRevealComplete] = useState(false);
+  const [splashProgressComplete, setSplashProgressComplete] = useState(false);
   const [assistantLauncherLoaded, setAssistantLauncherLoaded] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [assistantOpenRequest, setAssistantOpenRequest] = useState(0);
@@ -143,7 +144,8 @@ function MainApp() {
 
   useEffect(() => {
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
-      setSplashAnimationComplete(true);
+      setSplashLogoRevealComplete(true);
+      setSplashProgressComplete(true);
     }
   }, []);
 
@@ -779,8 +781,8 @@ function navigate(next) {
     setCopyrightOpen(false);
   }
 
-  if (!content || !splashAnimationComplete || loadError) return (
-    <div className="app appLoading" role="status" aria-live="polite" aria-busy="true" data-content-ready={content ? 'true' : 'false'} data-reveal-complete={splashAnimationComplete ? 'true' : 'false'}>
+  if (!content || !splashLogoRevealComplete || !splashProgressComplete || loadError) return (
+    <div className="app appLoading" role="status" aria-live="polite" aria-busy="true" data-content-ready={content ? 'true' : 'false'} data-reveal-complete={splashLogoRevealComplete && splashProgressComplete ? 'true' : 'false'} data-logo-reveal-complete={splashLogoRevealComplete ? 'true' : 'false'} data-progress-complete={splashProgressComplete ? 'true' : 'false'}>
       <div className="loadingBrand">
         <img
           src={`${import.meta.env.BASE_URL}assets/splash-logo.webp`}
@@ -791,7 +793,7 @@ function navigate(next) {
           decoding="async"
           fetchPriority="high"
           onAnimationEnd={(event) => {
-            if (event.animationName === 'loadingLogoBloom') setSplashAnimationComplete(true);
+            if (event.animationName === 'loadingLogoBloom') setSplashLogoRevealComplete(true);
           }}
           onError={(event) => {
             const image = event.currentTarget;
@@ -800,15 +802,17 @@ function navigate(next) {
               image.src = `${import.meta.env.BASE_URL}assets/logo.png`;
             } else {
               image.hidden = true;
-              setSplashAnimationComplete(true);
+              setSplashLogoRevealComplete(true);
             }
           }}
         />
         <h1>مسیر ۲۸ روزه بازسازی ذهن</h1>
         <p>{loadError ? 'آماده‌سازی برنامه کامل نشد.' : 'در حال آماده‌سازی مسیر تو…'}</p>
         {loadError && <div className="loadingError" role="alert"><p>{loadError}</p><button className="primary" type="button" onClick={() => window.location.reload()}>تلاش دوباره</button></div>}
-        <div className="loadingProgress" role="progressbar" aria-label="پیشرفت نمایش لوگو" aria-valuemin="0" aria-valuemax="100" aria-valuenow={splashAnimationComplete ? 100 : 0}>
-          <span className="loadingProgressFill" />
+        <div className="loadingProgress" role="progressbar" aria-label="پیشرفت نمایش لوگو" aria-valuemin="0" aria-valuemax="100" aria-valuenow={splashProgressComplete ? 100 : 0}>
+          <span className="loadingProgressFill" onAnimationEnd={(event) => {
+            if (event.animationName === 'loadingProgressFill') setSplashProgressComplete(true);
+          }} />
         </div>
       </div>
     </div>
