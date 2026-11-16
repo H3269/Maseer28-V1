@@ -131,6 +131,12 @@ test('library assistant acknowledges every send before asynchronous retrieval be
   assert.match(assistantLauncher, /if \(screen === 'books'\) \{[\s\S]*?setSending\(true\);[\s\S]*?در حال بررسی پرسش[\s\S]*?ensureLibraryBooksLoaded\(message, conversationStateRef\.current\)/);
 });
 
+test('library page/help questions avoid IndexedDB catalogue reads and book hydration', () => {
+  assert.match(assistantLauncher, /initialLibraryPlan\.kind === 'none' \|\| initialLibraryPlan\.kind === 'clarify'/);
+  assert.match(assistantLauncher, /Page\/help questions and requests that need clarification do not need an IndexedDB/);
+  assert.match(assistantLauncher, /restrictedStatuses\.has\(intentGate\.status\)/);
+});
+
 test('library assistant hydrates only the requested book unless the question needs the catalogue', () => {
   assert.match(assistantLauncher, /import \{ answerLibraryBookTurn, planLibraryBookLoad \} from '\.\/libraryBookAssistant\.js'/);
   assert.match(assistantLauncher, /const libraryBooksLoadRef = useRef\(null\)/);
