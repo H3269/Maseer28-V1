@@ -158,7 +158,7 @@ try {
         const nextBook = page.locator('#books .libraryBook').nth(1);
         await nextBook.locator('button').click();
         await page.locator('#bookReader').waitFor({ state: 'visible', timeout: 30000 });
-        const switchedBookParagraph = await firstBodyParagraph(page);
+        const switchedBookParagraph = await waitForFirstBodyParagraph(page);
         assert.ok(switchedBookParagraph.paragraphLength >= 20, `${entryPoint.id}: switching from the first book to the second after closing Reader must show real body content`);
         assert.deepEqual(errors, [], `${entryPoint.id}: close-and-switch book flow must not raise browser errors`);
         await page.locator('#bookReader').getByRole('button', { name: 'خروج از مطالعه' }).click();
