@@ -15,15 +15,14 @@ function normalizeCommand(value) {
     .replace(/[\u200c\u200f\u200e]/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
-export function isLocalModelInstallCommand(value) {
-  const normalized = normalizeCommand(value);
-  return normalized === normalizeCommand(LOCAL_MODEL_INSTALL_COMMAND) || normalized === 'نصب مدل محلی';
+// Conversational generation is disabled product-wide. Prepared-question answer
+// modules remain the only source of assistant guidance in the app.
+export function isLocalModelInstallCommand() {
+  return false;
 }
 
-export function shouldUseLocalNeuralModel({ screen, turn, intentStatus, isLibraryTurn = false } = {}) {
-  if (!turn || screen === 'day' || BLOCKED_STATUSES.has(intentStatus) || BLOCKED_STATUSES.has(turn.status)) return false;
-  if (isLibraryTurn) return /(?:منبع\s*:|صفحه\s*[۰-۹0-9]+)/u.test(String(turn.message || ''));
-  return turn.status === 'page_guidance_available' || turn.status === 'approved_knowledge_available';
+export function shouldUseLocalNeuralModel() {
+  return false;
 }
 
 export function buildLocalAssistantMessages({ question, context = '', knowledge = [] } = {}) {
