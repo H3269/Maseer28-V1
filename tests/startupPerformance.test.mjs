@@ -174,7 +174,7 @@ test('all assistant pages stay on deterministic prepared guidance with neural ch
   assert.doesNotMatch(assistantLauncher, /مدل زبانی عصبی محلی|بارگیری مدل محلی/);
   assert.match(assistantLauncher, /screen === 'books'[\s\S]*?LIBRARY_ASSISTANT_PROMPT_GROUPS/);
   assert.match(assistantLauncher, /dailyContext[\s\S]*?PAGE_ASSISTANT_PROMPT_GROUPS/);
-  assert.match(assistantLauncher, /activePromptGroups\.flatMap\(\(group\) => group\.questions \|\| \[\]\)/);
+  assert.match(assistantLauncher, /activePromptGroups\s*\.flatMap\(\(group\) => group\.questions \|\| \[\]\)/);
   assert.doesNotMatch(assistantLauncher, /<textarea/);
   assert.match(assistantLauncher, /if \(!selectedPreparedQuestion\)/);
   assert.match(assistantLauncher, /makePageAssistantTurn\(\{ screen, text: message/);
