@@ -150,6 +150,16 @@ test('prepared daily questions are not blocked by asynchronous local-model statu
   assert.match(assistantLauncher, /disabled=\{!draft\.trim\(\) \|\| sending\}/);
 });
 
+test('all assistant pages stay on deterministic prepared guidance with neural chat runtime disabled', () => {
+  assert.doesNotMatch(assistantLauncher, /localNeuralModelClient|requestLocalNeuralModel|isLocalNeuralModelInstalled|shouldUseLocalNeuralModel|buildLocalAssistantMessages|isLocalModelInstallCommand/);
+  assert.doesNotMatch(assistantLauncher, /مدل زبانی عصبی محلی|بارگیری مدل محلی/);
+  assert.match(assistantLauncher, /screen === 'books' \|\| isTopicDailyPromptContext/);
+  assert.match(assistantLauncher, /LIBRARY_ASSISTANT_PROMPT_GROUPS/);
+  assert.match(assistantLauncher, /activePromptGroups\.flatMap\(\(group\) => group\.questions\)/);
+  assert.match(assistantLauncher, /makePageAssistantTurn\(\{ screen, text: message/);
+  assert.match(assistantLauncher, /answerLibraryBookTurn\(\{ books: booksForTurn, message/);
+});
+
 test('first-entry cover requests start before IndexedDB catalogue synchronization finishes', () => {
   assert.match(libraryHook, /async function seedLibrary\(onCatalogReady = null\)/);
   assert.match(libraryHook, /onCatalogReady\?\.\(catalogueBooks\);[\s\S]*?await Promise\.all\(catalogueBooks\.map/);
