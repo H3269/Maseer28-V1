@@ -264,6 +264,12 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     event.preventDefault();
     const message = String(overrideMessage ?? draft).trim();
     if (!message || sending) return;
+    // Resolve urgent safety routing synchronously before any IndexedDB or book-content work.
+    // A safety handoff must never wait for library catalogue reads or network hydration.
+    const intentGate = routeAssistantTurn({ text: message });
+    const restrictedStatuses = new Set([
+      'urgent_human_support_required', 'safety_clarification_required',
+    ]);
     let booksForTurn = loadedLibraryBooks;
     let libraryLoadKind = null;
     let pendingLibraryTurn = null;
@@ -278,9 +284,11 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       ]);
       setDraft('');
       resizeComposerInput(messageInputRef.current);
-      const loadResult = await (libraryBooksLoadRef.current || ensureLibraryBooksLoaded(message, conversationStateRef.current));
-      booksForTurn = loadResult?.books || [];
-      libraryLoadKind = loadResult?.kind || 'error';
+      if (!restrictedStatuses.has(intentGate.status)) {
+        const loadResult = await (libraryBooksLoadRef.current || ensureLibraryBooksLoaded(message, conversationStateRef.current));
+        booksForTurn = loadResult?.books || [];
+        libraryLoadKind = loadResult?.kind || 'error';
+      }
     }
     const selectedDailyQuestion = isPreparedOnlyDailyPromptContext
       ? activePromptGroups.flatMap((group) => group.questions).find((question) => question.value === message)
@@ -314,13 +322,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       resizeComposerInput(messageInputRef.current);
     }
     try {
-      const intentGate = routeAssistantTurn({ text: message });
-      const restrictedStatuses = new Set([
-        // Safety handoff must always precede book retrieval. Ordinary ambiguity
-        // and personal-intake clarification must not pre-empt the library engine:
-        // doing so discards its pending context and blocks explicit book questions.
-        'urgent_human_support_required', 'safety_clarification_required',
-      ]);
       let turn;
       let isLibraryTurn = false;
       if (screen === 'books' && restrictedStatuses.has(intentGate.status)) {
