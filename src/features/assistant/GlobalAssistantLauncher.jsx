@@ -266,10 +266,13 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     if (!message || sending) return;
     // Resolve urgent safety routing synchronously before any IndexedDB or book-content work.
     // A safety handoff must never wait for library catalogue reads or network hydration.
-    const intentGate = routeAssistantTurn({ text: message });
+    const intentGate = screen === 'books' ? routeAssistantTurn({ text: message }) : null;
     const restrictedStatuses = new Set([
       'urgent_human_support_required', 'safety_clarification_required',
     ]);
+    const initialLibraryPlan = screen === 'books'
+      ? planLibraryBookLoad({ books: loadedLibraryBooks, message, conversationState: conversationStateRef.current })
+      : null;
     let booksForTurn = loadedLibraryBooks;
     let libraryLoadKind = null;
     let pendingLibraryTurn = null;
@@ -284,7 +287,13 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       ]);
       setDraft('');
       resizeComposerInput(messageInputRef.current);
-      if (!restrictedStatuses.has(intentGate.status)) {
+      if (restrictedStatuses.has(intentGate.status)) {
+        libraryLoadKind = null;
+      } else if (initialLibraryPlan.kind === 'none' || initialLibraryPlan.kind === 'clarify') {
+        // Page/help questions and requests that need clarification do not need an IndexedDB
+        // catalogue read or book-file hydration before the local answer can be shown.
+        libraryLoadKind = initialLibraryPlan.kind;
+      } else {
         const loadResult = await (libraryBooksLoadRef.current || ensureLibraryBooksLoaded(message, conversationStateRef.current));
         booksForTurn = loadResult?.books || [];
         libraryLoadKind = loadResult?.kind || 'error';
