@@ -17,10 +17,18 @@ import { answerT11DailyPreparedQuestion } from './t11DailyAssistantPrompts.js';
 import { answerT12DailyPreparedQuestion } from './t12DailyAssistantPrompts.js';
 import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
 import { getCanonicalDailyRecordId } from '../content/dailyContentSelector.js';
+import { LIBRARY_ASSISTANT_PROMPTS } from './libraryAssistantPrompts.js';
 
 const SAFETY_STATUSES = new Set([
   'urgent_human_support_required',
   'safety_clarification_required',
+]);
+
+const PAGE_PREPARED_QUESTIONS = new Set([
+  'این صفحه برای چیست؟',
+  'اینجا چه کارهایی می‌توانم انجام بدهم؟',
+  'چطور به خانه برگردم؟',
+  'امکانات برنامه چیست؟',
 ]);
 
 function resolveRequestScopeReply(value) {
@@ -45,6 +53,20 @@ function resolveRequestScopeReply(value) {
  */
 export function makePageAssistantTurn({ screen, text, conversationState = null, dailyContext = null, libraryContext = null } = {}) {
   const message = String(text ?? '').trim();
+  const isAllowedPreparedPageQuestion = screen === 'books'
+    ? LIBRARY_ASSISTANT_PROMPTS.some((question) => question.value === message)
+    : screen === 'day'
+      ? true
+      : PAGE_PREPARED_QUESTIONS.has(message);
+  if (!isAllowedPreparedPageQuestion) {
+    return Object.freeze({
+      status: 'prepared_question_required',
+      message: 'این دستیار فقط از فهرست سؤال‌های آماده همین بخش پاسخ می‌دهد.',
+      knowledge: Object.freeze([]),
+      page_context: screen || null,
+      conversationState: null,
+    });
+  }
   const inputProbe = routeAssistantTurn({ text: message });
   if ((screen !== 'day' && SAFETY_STATUSES.has(inputProbe.status))
     || inputProbe.status === 'invalid_input'
