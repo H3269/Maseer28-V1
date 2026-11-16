@@ -53,6 +53,12 @@ function resolveRequestScopeReply(value) {
  */
 export function makePageAssistantTurn({ screen, text, conversationState = null, dailyContext = null, libraryContext = null } = {}) {
   const message = String(text ?? '').trim();
+  if (!message) {
+    return Object.freeze({ status: 'invalid_input', message: 'پیام خالی است.', knowledge: Object.freeze([]), conversationState: null });
+  }
+  if (message.length > (screen === 'day' ? 2000 : 3000)) {
+    return Object.freeze({ status: 'input_too_long', message: 'پیام بیش از حد طولانی است.', knowledge: Object.freeze([]), conversationState: null });
+  }
   const isAllowedPreparedPageQuestion = screen === 'books'
     ? LIBRARY_ASSISTANT_PROMPTS.some((question) => question.value === message)
     : screen === 'day'
