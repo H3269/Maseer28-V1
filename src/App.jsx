@@ -847,7 +847,7 @@ function navigate(next) {
         {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} />}
         <VersionFooter navVisible={navVisible} />
       </div>
-      {navVisible && assistantLauncherLoaded && (!journey.profileData?.problem || Boolean(content?.categories?.[journey.profileData.problem])) && <button
+      {navVisible && assistantLauncherLoaded && <button
         ref={assistantLauncherButtonRef}
         className="globalAssistantLauncher"
         type="button"
@@ -859,7 +859,7 @@ function navigate(next) {
         aria-haspopup="dialog"
         aria-expanded={assistantOpen}
       ><AppIcon name="message" size={20} /><span>دستیار</span></button>}
-      {navVisible && assistantLauncherLoaded && (!journey.profileData?.problem || Boolean(content?.categories?.[journey.profileData.problem])) && <Suspense fallback={null}><GlobalAssistantLauncher
+      {navVisible && assistantLauncherLoaded && <Suspense fallback={null}><GlobalAssistantLauncher
         hideLauncher
         initialOpen={assistantOpen}
         openRequestId={assistantOpenRequest}
