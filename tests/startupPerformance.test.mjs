@@ -133,8 +133,8 @@ test('library assistant acknowledges every send before asynchronous retrieval be
 });
 
 test('library page/help questions avoid IndexedDB catalogue reads and book hydration', () => {
-  assert.match(assistantLauncher, /initialLibraryPlan\.kind === 'none' \|\| initialLibraryPlan\.kind === 'clarify'/);
-  assert.match(assistantLauncher, /Page\/help questions and requests that need clarification do not need an IndexedDB/);
+  assert.match(assistantLauncher, /initialLibraryPlan\.kind === 'none'[\s\S]*?initialLibraryPlan\.kind === 'clarify' && loadedLibraryBooks\.length > 0/);
+  assert.match(assistantLauncher, /with an empty cache, load metadata first[\s\S]*?ordinal book questions/);
   assert.match(assistantLauncher, /restrictedStatuses\.has\(intentGate\.status\)/);
 });
 
