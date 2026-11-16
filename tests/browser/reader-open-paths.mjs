@@ -228,33 +228,39 @@ try {
       }
 
       let repeatedReopen = null;
-      if (repetition === 1 && bookId === 1) {
+      if (repetition === 1 && bookId === 3) {
         const repeatedSamples = [];
-        // Exercise the exact user-reported pattern in one live page/context:
-        // close and reopen the same book repeatedly without refreshing the app.
+        const repeatedParagraphSamples = [];
+        // The physical-device report identified book 3 as the failing case:
+        // reopen that exact book repeatedly in the same app session, without refresh.
         for (let cycle = 1; cycle <= 8; cycle += 1) {
           await page.evaluate(() => { window.__readerPerfStartedAt = performance.now(); });
-          const sameBook = page.locator('#books .libraryBook').nth(0);
+          const sameBook = page.locator('#books .libraryBook').nth(2);
           await sameBook.locator('button').click();
           await page.locator('#bookReader').waitFor({ state: 'visible', timeout: 30000 });
           const sample = await waitForReadablePage(page);
-          assert.equal(await page.locator('#bookReaderText').count(), 1, `${entryPoint.id}: cycle ${cycle} must mount exactly one Reader text surface`);
-          assert.ok(sample.pageTextLength > 0, `${entryPoint.id}: cycle ${cycle} must render readable content`);
+          assert.equal(await page.locator('#bookReaderText').count(), 1, `${entryPoint.id}: book 3 cycle ${cycle} must mount exactly one Reader text surface`);
+          assert.ok(sample.pageTextLength > 0, `${entryPoint.id}: book 3 cycle ${cycle} must render readable content`);
+          const paragraph = await waitForFirstBodyParagraph(page);
+          assert.ok(paragraph.paragraphLength >= 20, `${entryPoint.id}: book 3 cycle ${cycle} must reach a real body paragraph, not remain in the loading state`);
           repeatedSamples.push(sample.elapsedMs);
+          repeatedParagraphSamples.push(paragraph.elapsedMs);
           await page.locator('#bookReader').getByRole('button', { name: 'خروج از مطالعه' }).click();
           await page.locator('#books').waitFor({ state: 'visible' });
-          assert.equal(await page.locator('#bookReader').count(), 0, `${entryPoint.id}: cycle ${cycle} must fully unmount Reader`);
+          assert.equal(await page.locator('#bookReader').count(), 0, `${entryPoint.id}: book 3 cycle ${cycle} must fully unmount Reader`);
         }
-        const sorted = [...repeatedSamples].sort((a, b) => a - b);
+        const sorted = [...repeatedParagraphSamples].sort((a, b) => a - b);
         repeatedReopen = {
+          bookId: 3,
           cycles: repeatedSamples.length,
-          samplesMs: repeatedSamples,
-          p50Ms: sorted[Math.floor(sorted.length / 2)],
-          firstMs: repeatedSamples[0],
-          lastMs: repeatedSamples[repeatedSamples.length - 1],
+          firstReadableSamplesMs: repeatedSamples,
+          firstBodyParagraphSamplesMs: repeatedParagraphSamples,
+          firstBodyParagraphP50Ms: sorted[Math.floor(sorted.length / 2)],
+          firstBodyParagraphFirstMs: repeatedParagraphSamples[0],
+          firstBodyParagraphLastMs: repeatedParagraphSamples[repeatedParagraphSamples.length - 1],
         };
-        console.log(`Repeated same-book reopen stress (${entryPoint.id}, no app refresh): ${JSON.stringify(repeatedReopen)}`);
-        assert.equal(errors.length, 0, `${entryPoint.id}: repeated same-book open/close must not create browser errors: ${JSON.stringify(errors)}`);
+        console.log(`Repeated book 3 reopen stress (${entryPoint.id}, no app refresh): ${JSON.stringify(repeatedReopen)}`);
+        assert.equal(errors.length, 0, `${entryPoint.id}: repeated book 3 open/close must not create browser errors: ${JSON.stringify(errors)}`);
       }
 
       results.push({
