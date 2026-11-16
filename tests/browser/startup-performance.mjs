@@ -184,7 +184,7 @@ const startedAt = Date.now();
   assert.ok(splashVisual, 'A splash logo element must exist while startup is loading');
   assert.ok(['none', 'loadingLogoSafeEnter'].includes(splashVisual.animationName), 'The splash logo may use only the short non-blocking decorative animation');
   const animationEvidence = await page.evaluate(() => window.__path28SplashAnimation);
-  assert.equal(animationEvidence.firstAnimationName, 'loadingLogoSafeEnter', 'The React splash must actually start the approved decorative logo animation');
+  assert.equal(animationEvidence.firstAnimationName, 'loadingLogoSafeEnter', 'The initial splash must actually start the approved decorative logo animation');
   assert.equal(parseCssTimeMs(animationEvidence.firstAnimationDuration), 420, 'The decorative logo animation must remain 420ms');
   assert.equal(animationEvidence.firstAnimationOpacity, 1, 'The logo must remain fully visible when animation starts');
   assert.equal(splashVisual.opacity, 1, 'The splash logo must be visible immediately');
