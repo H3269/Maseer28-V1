@@ -74,8 +74,8 @@ test('startup waits for both actual content readiness and the completed radial r
   assert.match(app, /prefers-reduced-motion: reduce/);
   assert.match(app, /assets\/splash-logo\.webp/);
   assert.match(app, /fallbackAttempted/);
-  assert.match(css, /animation: loadingLogoBloom 950ms/);
-  assert.match(css, /animation: loadingProgressFill 950ms linear both/);
+  assert.match(css, /animation: loadingLogoBloom var\\(--path28-splash-duration, 950ms\\)/);
+  assert.match(css, /animation: loadingProgressFill var\\(--path28-splash-duration, 950ms\\) linear both/);
 });
 
 test('the splash thumbnail is generated from the original artwork with a strict byte budget', () => {
