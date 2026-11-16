@@ -42,6 +42,7 @@ async function measure(viewport, run) {
     window.__path28SplashAnimation = {
       firstAnimationName: null,
       firstAnimationDuration: null,
+      firstAnimationOpacity: null,
       firstClipPath: null,
       completedName: null,
       completedAt: null,
@@ -58,6 +59,7 @@ async function measure(viewport, run) {
       if (window.__path28SplashAnimation.firstAnimationName === null) {
         window.__path28SplashAnimation.firstAnimationName = event.animationName;
         window.__path28SplashAnimation.firstAnimationDuration = style.animationDuration;
+        window.__path28SplashAnimation.firstAnimationOpacity = Number(style.opacity);
         window.__path28SplashAnimation.firstClipPath = style.clipPath;
         window.__path28SplashAnimation.decodedAtAnimationStart = image.complete && image.naturalWidth > 0;
       }
@@ -181,6 +183,10 @@ const startedAt = Date.now();
   const splashVisual = await page.evaluate(() => window.__path28SplashObserved);
   assert.ok(splashVisual, 'A splash logo element must exist while startup is loading');
   assert.ok(['none', 'loadingLogoSafeEnter'].includes(splashVisual.animationName), 'The splash logo may use only the short non-blocking decorative animation');
+  const animationEvidence = await page.evaluate(() => window.__path28SplashAnimation);
+  assert.equal(animationEvidence.firstAnimationName, 'loadingLogoSafeEnter', 'The React splash must actually start the approved decorative logo animation');
+  assert.equal(parseCssTimeMs(animationEvidence.firstAnimationDuration), 420, 'The decorative logo animation must remain 420ms');
+  assert.equal(animationEvidence.firstAnimationOpacity, 1, 'The logo must remain fully visible when animation starts');
   assert.equal(splashVisual.opacity, 1, 'The splash logo must be visible immediately');
   assert.equal(splashVisual.clipPath, 'none', 'The splash logo must not be hidden behind a reveal mask');
   assert.ok(splashVisual.width >= 160 && splashVisual.height >= 160, 'The logo must retain its intended display size');
