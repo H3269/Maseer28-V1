@@ -125,9 +125,6 @@ select:focus,
 .loadingBrand h1 {
   color: var(--brand-deep) !important;
 }
-.loadingProgressSegment::before {
-  background: var(--brand-turquoise) !important;
-}
 
 
 /* ============================================================
@@ -630,13 +627,6 @@ input:focus, textarea:focus, select:focus, .smartSelectButton:focus-visible {
   padding: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
-}
-.appLoading .loadingProgressSegment {
-  background: #E4F8F6 !important;
-  border-color: #BFE7E2 !important;
-}
-.appLoading .loadingProgressSegment::before {
-  background: linear-gradient(90deg,#40E0D0,#4096C8) !important;
 }
 
 /* All core action controls, including buttons nested in old cards. */
