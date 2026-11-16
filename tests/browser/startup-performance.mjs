@@ -290,6 +290,22 @@ async function verifySplashReadinessOrders() {
     style.textContent = 'html body #root .appLoading .loadingBrand img{animation-duration:3000ms!important}html body #root .appLoading .loadingProgressFill{animation-duration:3000ms!important}';
     document.documentElement.appendChild(style);
   });
+  await readinessFirstContext.addInitScript(() => {
+    window.__path28GateProbe = { completedAt: null, appVisibleAt: null };
+    document.addEventListener('animationend', (event) => {
+      if (event.animationName === 'loadingLogoBloom') window.__path28GateProbe.completedAt = performance.now();
+    }, true);
+    const observer = new MutationObserver(() => {
+      const modal = document.querySelector('#copyrightModal');
+      if (!modal || window.__path28GateProbe.appVisibleAt !== null) return;
+      const style = getComputedStyle(modal);
+      const rect = modal.getBoundingClientRect();
+      if (style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0) {
+        window.__path28GateProbe.appVisibleAt = performance.now();
+      }
+    });
+    observer.observe(document, { childList: true, subtree: true, attributes: true });
+  });
   const readinessFirstPage = await readinessFirstContext.newPage();
   await readinessFirstPage.goto(baseURL, { waitUntil: 'domcontentloaded' });
   await readinessFirstPage.waitForFunction(() => {
@@ -304,7 +320,7 @@ async function verifySplashReadinessOrders() {
   assert.deepEqual(readinessFirstState, { contentReady: 'true', revealComplete: 'false', modalVisible: false },
     'When content is ready first, the app must remain covered until the reveal completes');
   await readinessFirstPage.locator('#copyrightModal').waitFor({ state: 'visible', timeout: 45000 });
-  const readinessFirstEvidence = await readinessFirstPage.evaluate(() => window.__path28SplashAnimation);
+  const readinessFirstEvidence = await readinessFirstPage.evaluate(() => window.__path28GateProbe);
   assert.ok(readinessFirstEvidence.completedAt <= readinessFirstEvidence.appVisibleAt,
     'The app must become visible only after the deliberately extended reveal finishes');
   await readinessFirstContext.close();
