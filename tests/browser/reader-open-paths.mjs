@@ -33,6 +33,25 @@ async function waitForReadablePage(page) {
     pageTextLength: String(document.querySelector('#bookReaderText')?.innerText || '').trim().length,
     pageCounter: document.querySelector('#readerPageCounter')?.innerText || '',
     pageRangeMax: Number(document.querySelector('#readerPageRange')?.max || 0),
+    coverImageReady: (() => {
+      const image = document.querySelector('#bookReaderText .readerCoverPage img, #bookReaderText .readerFrontispiecePage img');
+      return image ? image.complete && image.naturalWidth > 0 : null;
+    })(),
+    coverImageElapsedMs: (() => {
+      const image = document.querySelector('#bookReaderText .readerCoverPage img, #bookReaderText .readerFrontispiecePage img');
+      return image && image.complete && image.naturalWidth > 0
+        ? Number((performance.now() - window.__readerPerfStartedAt).toFixed(2))
+        : null;
+    })(),
+    bookContentResources: performance.getEntriesByType('resource')
+      .filter((entry) => /\/content\/books\/book\d+\.json(?:$|\?)/.test(entry.name))
+      .map((entry) => ({
+        url: entry.name,
+        requestStartMs: Number((entry.requestStart - window.__readerPerfStartedAt).toFixed(2)),
+        responseEndMs: Number((entry.responseEnd - window.__readerPerfStartedAt).toFixed(2)),
+        durationMs: Number(entry.duration.toFixed(2)),
+        transferBytes: entry.transferSize || 0,
+      })),
   }));
 }
 
@@ -69,21 +88,39 @@ try {
     { id: 'bottom-navigation-study-button', open: async (page) => page.locator('#bottomNav button[data-view="books"]').click() },
   ];
 
-  // Three independent browser contexts per entry point/book provide repeated cold samples;
-  // each context is reopened once to capture its paired warm sample.
+  const viewports = [
+    { id: 'mobile', width: 390, height: 844, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
+    { id: 'desktop', width: 1365, height: 900, deviceScaleFactor: 1, isMobile: false, hasTouch: false },
+  ];
+
+  // Three independent contexts per viewport, entry point and book provide repeated
+  // cold samples; each context is reopened once to capture its paired warm sample.
+  for (const viewport of viewports) {
   for (let repetition = 1; repetition <= 3; repetition += 1) {
     for (const entryPoint of entryPoints) {
     for (let bookId = 1; bookId <= 5; bookId += 1) {
-      const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+      const page = await browser.newPage({
+        viewport: { width: viewport.width, height: viewport.height },
+        deviceScaleFactor: viewport.deviceScaleFactor,
+        isMobile: viewport.isMobile,
+        hasTouch: viewport.hasTouch,
+      });
       const errors = [];
+      const failedRequests = [];
       const requestedBookContent = [];
+      const requestedImages = [];
       const expectedBookPath = `/content/books/book${bookId}.json`;
       page.on('request', (request) => {
         try {
           const pathname = new URL(request.url()).pathname;
           if (/\/content\/books\/book\d+\.json$/.test(pathname)) requestedBookContent.push(pathname);
+          if (request.resourceType() === 'image') requestedImages.push({ url: request.url(), pathname });
         } catch { /* ignore non-URL requests */ }
       });
+      page.on('requestfailed', (request) => failedRequests.push({
+        url: request.url(),
+        error: request.failure()?.errorText || 'request failed',
+      }));
       page.on('pageerror', (error) => errors.push(String(error)));
       page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
       await page.addInitScript((state) => {
@@ -104,7 +141,7 @@ try {
       const book = page.locator('#books .libraryBook').nth(bookId - 1);
       await book.waitFor({ state: 'visible' });
 
-      console.log(`START reader scenario: repetition=${repetition}, entryPoint=${entryPoint.id}, book=${bookId}, phase=cold`);
+      console.log(`START reader scenario: viewport=${viewport.id}, repetition=${repetition}, entryPoint=${entryPoint.id}, book=${bookId}, phase=cold`);
       await page.evaluate(() => { window.__readerPerfStartedAt = performance.now(); });
       await book.locator('button').click();
       let cold;
@@ -126,7 +163,7 @@ try {
       await page.locator('#bookReader').getByRole('button', { name: 'خروج از مطالعه' }).click();
       await page.locator('#books').waitFor({ state: 'visible' });
       const reopenedBook = page.locator('#books .libraryBook').nth(bookId - 1);
-      console.log(`START reader scenario: repetition=${repetition}, entryPoint=${entryPoint.id}, book=${bookId}, phase=warm`);
+      console.log(`START reader scenario: viewport=${viewport.id}, repetition=${repetition}, entryPoint=${entryPoint.id}, book=${bookId}, phase=warm`);
       await page.evaluate(() => { window.__readerPerfStartedAt = performance.now(); });
       await reopenedBook.locator('button').click();
       let warm;
@@ -150,7 +187,8 @@ try {
       assert.ok(warmFirstBodyParagraph.paragraphLength >= 20, `${entryPoint.id}, book ${bookId}: warm open must reach a real body paragraph`);
       assert.equal(requestedBookContent.length, 1, `${entryPoint.id}, book ${bookId}: exactly one book-content request is allowed across cold and warm opens; got ${JSON.stringify(requestedBookContent)}`);
       assert.ok(requestedBookContent[0].endsWith(expectedBookPath), `${entryPoint.id}, book ${bookId}: only the selected book may be fetched; got ${requestedBookContent[0]}`);
-      assert.deepEqual(errors, [], `${entryPoint.id}, book ${bookId}: no browser errors during cold/warm open`);
+      assert.deepEqual(errors, [], `${viewport.id}, ${entryPoint.id}, book ${bookId}: no browser errors during cold/warm open`);
+      assert.deepEqual(failedRequests, [], `${viewport.id}, ${entryPoint.id}, book ${bookId}: no failed network requests during cold/warm open`);
 
       if (repetition === 1 && bookId === 1) {
         await page.locator('#bookReader').getByRole('button', { name: 'خروج از مطالعه' }).click();
@@ -195,10 +233,26 @@ try {
         assert.equal(errors.length, 0, `${entryPoint.id}: repeated same-book open/close must not create browser errors: ${JSON.stringify(errors)}`);
       }
 
-      results.push({ repetition, entryPoint: entryPoint.id, bookId, cold, coldFirstBodyParagraph, warm, warmFirstBodyParagraph, repeatedReopen });
+      results.push({
+        viewport: viewport.id,
+        viewportSize: `${viewport.width}x${viewport.height}`,
+        repetition,
+        entryPoint: entryPoint.id,
+        bookId,
+        cold,
+        coldFirstBodyParagraph,
+        warm,
+        warmFirstBodyParagraph,
+        repeatedReopen,
+        requestedBookContent,
+        requestedImages,
+        failedRequests,
+        browserErrors: errors,
+      });
       await page.close();
     }
     }
+  }
   }
 
   const percentile = (values, p) => {
@@ -208,15 +262,46 @@ try {
   const coldSamples = results.map((item) => item.coldFirstBodyParagraph.elapsedMs);
   const warmSamples = results.map((item) => item.warmFirstBodyParagraph.elapsedMs);
   const summary = {
-    independentRepetitionsPerEntryPointAndBook: 3,
+    independentRepetitionsPerViewportEntryPointAndBook: 3,
+    viewportProfiles: viewports.map(({ id, width, height }) => ({ id, width, height })),
+    totalColdSamples: coldSamples.length,
+    totalWarmSamples: warmSamples.length,
+    perBookAndViewport: viewports.flatMap((viewport) => Array.from({ length: 5 }, (_, index) => {
+      const samples = results.filter((item) => item.viewport === viewport.id && item.bookId === index + 1);
+      const coldValues = samples.map((item) => item.coldFirstBodyParagraph.elapsedMs);
+      const warmValues = samples.map((item) => item.warmFirstBodyParagraph.elapsedMs);
+      return {
+        viewport: viewport.id,
+        bookId: index + 1,
+        coldFirstReadableP50Ms: percentile(samples.map((item) => item.cold.elapsedMs), 50),
+        coldFirstParagraphP50Ms: percentile(coldValues, 50),
+        warmFirstReadableP50Ms: percentile(samples.map((item) => item.warm.elapsedMs), 50),
+        warmFirstParagraphP50Ms: percentile(warmValues, 50),
+        coldCoverImageReadyP50Ms: percentile(samples.map((item) => item.cold.coverImageElapsedMs).filter(Number.isFinite), 50),
+        coldBookJsonRequest: samples[0]?.cold.bookContentResources || [],
+      };
+    })),
     coldBodyParagraphMs: { samples: coldSamples.length, p50: percentile(coldSamples, 50), p95: percentile(coldSamples, 95), min: Math.min(...coldSamples), max: Math.max(...coldSamples) },
     warmBodyParagraphMs: { samples: warmSamples.length, p50: percentile(warmSamples, 50), p95: percentile(warmSamples, 95), min: Math.min(...warmSamples), max: Math.max(...warmSamples) },
   };
-  console.log('PASS: dashboard-library and bottom-navigation study entry points each completed 3 independent cold/warm reader opens for all five canonical books.');
+  console.log('PASS: dashboard-library and bottom-navigation study entry points each completed 3 independent cold/warm reader opens for all five canonical books on mobile and desktop.');
   console.log('Both entry points are clicked independently. Timing includes click-to-first-readable-content and click-to-first-real-body-paragraph; measurements are headless Chromium, not physical Android results.');
   console.log('Repeated first-body-paragraph timing summary (headless Chromium):');
   console.log(JSON.stringify(summary, null, 2));
-  console.log(JSON.stringify(results, null, 2));
+  await (await import('node:fs/promises')).mkdir('reports/generated', { recursive: true });
+  await (await import('node:fs/promises')).writeFile(
+    'reports/generated/reader-open-performance.json',
+    JSON.stringify({
+      generatedAt: new Date().toISOString(),
+      baseURL,
+      note: 'Headless Chromium diagnostics; mobile/desktop emulation is not a substitute for physical-device measurements.',
+      summary,
+      results,
+    }, null, 2) + '\n',
+    'utf8',
+  );
+  console.log('Saved reports/generated/reader-open-performance.json');
+  console.log(JSON.stringify(summary, null, 2));
 } finally {
   await browser.close();
 }
