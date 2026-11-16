@@ -19,8 +19,11 @@ test('library, reader, and assistant modules stay out of the initial application
   assert.match(app, /const loadGlobalAssistantLauncher = \(\) => import\('\.\/features\/assistant\/GlobalAssistantLauncher\.jsx'\)/);
   assert.match(app, /const GlobalAssistantLauncher = lazy\(\(\) => import\('\.\/features\/assistant\/GlobalAssistantLauncher\.jsx'\)\)/);
   assert.match(app, /void loadLibraryPage\(\)/);
-  assert.match(app, /void loadGlobalAssistantLauncher\(\)/);
-  assert.match(app, /requestIdleCallback\(warmAssistant, \{ timeout: 1800 \}\)/);
+  assert.match(app, /loadGlobalAssistantLauncher\(\)\.then\(\(\) => \{/);
+  assert.match(app, /const selectedTopic = journey\.profileData\?\.problem/);
+  assert.match(app, /selectedTopic && !content\.categories\?\.\[selectedTopic\]/);
+  assert.match(app, /\{navVisible && assistantLauncherLoaded && <button/);
+  assert.doesNotMatch(app, /requestIdleCallback\(warmAssistant/);
   assert.doesNotMatch(app, /import GlobalAssistantLauncher from/);
   assert.match(app, /navVisible && assistantLauncherLoaded && <Suspense fallback=\{null\}><GlobalAssistantLauncher/);
   assert.match(app, /setAssistantLauncherLoaded\(true\)/);
@@ -135,7 +138,9 @@ test('library assistant acknowledges every send before asynchronous retrieval be
 test('library page/help questions avoid IndexedDB catalogue reads and book hydration', () => {
   assert.match(assistantLauncher, /initialLibraryPlan\.kind === 'none'[\s\S]*?initialLibraryPlan\.kind === 'clarify' && loadedLibraryBooks\.length > 0/);
   assert.match(assistantLauncher, /with an empty cache, load metadata first[\s\S]*?ordinal book questions/);
-  assert.match(assistantLauncher, /restrictedStatuses\.has\(intentGate\.status\)/);
+  assert.match(assistantLauncher, /selectedPreparedQuestion = activePromptGroups/);
+  assert.ok(assistantLauncher.indexOf('if (!selectedPreparedQuestion)') < assistantLauncher.indexOf('planLibraryBookLoad({ books: loadedLibraryBooks'));
+  assert.doesNotMatch(assistantLauncher, /routeAssistantTurn/);
 });
 
 test('library passage tokenization and document-frequency indexes are reused between questions', () => {
@@ -167,9 +172,11 @@ test('prepared daily questions are not blocked by asynchronous local-model statu
 test('all assistant pages stay on deterministic prepared guidance with neural chat runtime disabled', () => {
   assert.doesNotMatch(assistantLauncher, /localNeuralModelClient|requestLocalNeuralModel|isLocalNeuralModelInstalled|shouldUseLocalNeuralModel|buildLocalAssistantMessages|isLocalModelInstallCommand/);
   assert.doesNotMatch(assistantLauncher, /مدل زبانی عصبی محلی|بارگیری مدل محلی/);
-  assert.match(assistantLauncher, /screen === 'books' \|\| isTopicDailyPromptContext/);
-  assert.match(assistantLauncher, /LIBRARY_ASSISTANT_PROMPT_GROUPS/);
-  assert.match(assistantLauncher, /activePromptGroups\.flatMap\(\(group\) => group\.questions\)/);
+  assert.match(assistantLauncher, /screen === 'books'[\s\S]*?LIBRARY_ASSISTANT_PROMPT_GROUPS/);
+  assert.match(assistantLauncher, /dailyContext[\s\S]*?PAGE_ASSISTANT_PROMPT_GROUPS/);
+  assert.match(assistantLauncher, /activePromptGroups\.flatMap\(\(group\) => group\.questions \|\| \[\]\)/);
+  assert.doesNotMatch(assistantLauncher, /<textarea/);
+  assert.match(assistantLauncher, /if \(!selectedPreparedQuestion\)/);
   assert.match(assistantLauncher, /makePageAssistantTurn\(\{ screen, text: message/);
   assert.match(assistantLauncher, /answerLibraryBookTurn\(\{ books: booksForTurn, message/);
   assert.doesNotMatch(pkg.scripts.build, /copy-local-llm-runtime-assets/);
