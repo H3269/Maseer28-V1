@@ -218,6 +218,7 @@ const startedAt = Date.now();
   };
   assert.equal(result.logoDecoded, true, 'Splash logo must decode before the app becomes interactive');
   assert.equal(result.logoVisible, true, 'Splash logo must be visible while the startup gate is active');
+  if (result.splashLogoResources.some((item) => /logo\.png/i.test(item.url))) console.error('SPLASH LOGO DIAGNOSTICS', JSON.stringify({ imageEvents: result.imageEvents, splashLogoResources: result.splashLogoResources }, null, 2));
   assert.ok(!result.splashLogoResources.some((item) => /logo\.png/i.test(item.url)), 'The oversized PNG fallback must never be requested during successful startup');
   const optimizedLogo = result.splashLogoResources.find((item) => /splash-logo\.webp/i.test(item.url));
   assert.ok(optimizedLogo && optimizedLogo.transferBytes > 0 && optimizedLogo.transferBytes <= 40 * 1024, 'The startup logo must use the generated lightweight WebP asset');
