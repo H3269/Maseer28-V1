@@ -5587,13 +5587,9 @@ body:not(.bale-webview) .bottomNav button.active b {
 .guidePage .guideClosing { margin: 20px 0; padding: 13px 15px; border-radius: 13px; background: linear-gradient(145deg,#F4F3EA,#E8EEE6); border: 1px solid #DCE4D9; color: #31584D; }
 .appLoading { min-height: 100vh; min-height: 100svh; display:grid; place-items:center; padding:24px; background:radial-gradient(circle at 50% 42%,#F8F7F0 0%,#E9EEE6 72%,#DFE8E0 100%); }
 .loadingBrand { width:min(100%,360px); display:flex; flex-direction:column; align-items:center; text-align:center; color:#31584D; gap:13px; }
-.loadingBrand img { width:174px; height:174px; object-fit:contain; border-radius:50%; border:3px solid #B99A5B; padding:5px; background:#FFFDF7; box-shadow:0 7px 0 #D7C79F,0 15px 30px #294C3B20,inset 0 1px 0 #FFFFFF; animation:loadingLogoEnter 1.05s cubic-bezier(.2,.8,.2,1) both; }
-.loadingBrand h1,.loadingBrand p,.loadingPulse { opacity:0; transform:translateY(9px); animation:loadingTextReveal .55s ease-out .72s both; }
+.loadingBrand img { width:174px; height:174px; object-fit:contain; }
 .loadingBrand h1 { margin:5px 0 0; font-size:20px; color:#244A45; }
 .loadingBrand p { margin:0; color:#71817A; font-size:13px; }
-.loadingPulse { width:38px; height:4px; border-radius:10px; background:linear-gradient(90deg,#B99A5B 0 35%,#367D70 35% 70%,#B99A5B 70%); }
-@keyframes loadingLogoEnter { from{opacity:0;transform:scale(.42)} to{opacity:1;transform:scale(1)} }
-@keyframes loadingTextReveal { to{opacity:1;transform:translateY(0)} }
 .bottomNav button, body.bale-webview .bottomNav button, body:not(.bale-webview) .bottomNav button { background:linear-gradient(145deg,#FBFCF8,#E8EEE7)!important; border:1px solid #D6E0D5!important; box-shadow:0 3px 0 #C4D0C4,0 6px 12px #314A3D12,inset 0 1px 0 #FFFFFF!important; transform:translateY(0)!important; transition:transform .16s ease,box-shadow .16s ease,background .16s ease!important; }
 .bottomNav .navIcon { transition:transform .16s ease,background-color .16s ease,box-shadow .16s ease!important; }
 .bottomNav button.active, body.bale-webview .bottomNav button.active, body:not(.bale-webview) .bottomNav button.active { background:linear-gradient(145deg,#E5EEE5,#D5E4D8)!important; border-color:#B8CCBB!important; box-shadow:0 3px 0 #A9BDAE,0 7px 14px #244A451C,inset 0 1px 0 #FFFFFF!important; }
@@ -5601,7 +5597,7 @@ body:not(.bale-webview) .bottomNav button.active b {
 .bottomNav button:active, body.bale-webview .bottomNav button:active, body:not(.bale-webview) .bottomNav button:active { transform:translateY(2px)!important; box-shadow:0 1px 0 #C4D0C4,0 2px 5px #314A3D10,inset 0 1px 0 #FFFFFF!important; }
 .bottomNav button.active:active { box-shadow:0 1px 0 #A9BDAE,0 3px 7px #244A4515,inset 0 1px 0 #FFFFFF!important; }
 @media(hover:hover){.bottomNav button:not(:disabled):hover{transform:translateY(-1px)!important;filter:brightness(1.02)}}
-@media(prefers-reduced-motion:reduce){.loadingBrand img,.loadingPulse,.loadingBrand h1,.loadingBrand p{animation:none!important;opacity:1;transform:none}.bottomNav button,.bottomNav .navIcon{transition:none!important}}
+@media(prefers-reduced-motion:reduce){.bottomNav button,.bottomNav .navIcon{transition:none!important}}
 
 /* Restore visual balance to the dashboard without changing its content order. */
 .app:has(#dashboard) #dashboard {
@@ -5848,71 +5844,6 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   transform: scale(.82);
   animation: loadingLogoBloom .95s cubic-bezier(.2,.72,.2,1) both;
 }
-.appLoading .loadingBrand h1,
-.appLoading .loadingBrand p {
-  opacity: 0;
-  transform: translateY(10px);
-  animation: loadingTextReveal .42s ease-out .58s both;
-}
-.loadingProgress {
-  display: grid;
-  grid-template-columns: repeat(10, minmax(0, 1fr));
-  gap: 3px;
-  width: min(220px, 70vw);
-  height: 8px;
-  margin-top: 3px;
-  overflow: visible;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-  box-sizing: border-box;
-}
-.loadingProgressSegment {
-  position: relative;
-  display: block;
-  min-width: 0;
-  height: 8px;
-  overflow: hidden;
-  border: 1px solid #AAB9AE;
-  border-radius: 3px;
-  background: #DCE8DD !important;
-  box-sizing: border-box;
-}
-.loadingProgressSegment::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 0 auto;
-  width: var(--segment-progress, 0%);
-  border-radius: 2px;
-  background: #176B63 !important;
-  transition: width 90ms linear;
-}
-@keyframes loadingBloomReveal {
-  0% { opacity: 0; clip-path: ellipse(0% 0% at 50% 50%); }
-  100% { opacity: 1; clip-path: ellipse(75% 75% at 50% 50%); }
-}
-@keyframes loadingLogoBloom {
-  0% { opacity: 0; clip-path: circle(0% at 50% 50%); transform: scale(.82); }
-  68% { opacity: 1; clip-path: circle(75% at 50% 50%); transform: scale(1.035); }
-  100% { opacity: 1; clip-path: circle(75% at 50% 50%); transform: scale(1); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .appLoading .loadingBrand,
-  .appLoading .loadingBrand img,
-  .appLoading .loadingBrand h1,
-  .appLoading .loadingBrand p,
-  .loadingProgressSegment {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-    clip-path: none !important;
-    filter: none !important;
-  }
-  .loadingProgressSegment::before { transition: none !important; }
-}
-
-
 /* Maseer28: unify action-button icon alignment and spacing without changing
    compact navigation, scale choices, or reader-control geometry. */
 .app button.primary,
@@ -6025,64 +5956,6 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
 }
 
 
-/* Maseer28: clean, frameless loading mark with a slower center-out reveal. */
-.appLoading .loadingBrand {
-  opacity: 1 !important;
-  clip-path: none !important;
-  animation: none !important;
-}
-.appLoading .loadingBrand img {
-  display: block !important;
-  width: 174px !important;
-  height: 174px !important;
-  max-width: 70vw !important;
-  object-fit: contain !important;
-  border: 0 !important;
-  outline: 0 !important;
-  border-radius: 0 !important;
-  padding: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  /* clip-path, opacity, transform and animation are owned by the later
-     loadingLogoBloom rule; do not lock animated properties in this reset. */
-}
-/* The title shares the logo's exact progress-driven reveal.
-   Supporting status text and progress bar are visible from splash start. */
-.appLoading .loadingBrand h1 {
-  clip-path: none !important;
-  opacity: 1 !important;
-  transform: none !important;
-  animation: none !important;
-}
-.appLoading .loadingBrand p,
-.appLoading .loadingProgress {
-  opacity: 1 !important;
-  transform: none !important;
-  animation: none !important;
-}
-@keyframes loadingTextBloomReveal {
-  to { opacity: 1; transform: translateY(0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .appLoading .loadingBrand,
-  .appLoading .loadingBrand img,
-  .appLoading .loadingBrand h1,
-  .appLoading .loadingBrand p,
-  .appLoading .loadingProgress,
-  .appLoading .loadingProgressSegment {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-    clip-path: none !important;
-  }
-}
-
-
-/* Keep the splash logo visible; animated properties remain owned by loadingLogoBloom. */
-.appLoading .loadingBrand img {
-  visibility: visible !important;
-}
-
 /* The daily-entry actions use the standard primary/secondary button system. */
 .dailyEntryActions {
   display: flex;
@@ -6123,15 +5996,6 @@ html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell {
   scroll-padding-bottom: 16px;
 }
 
-
-/* Keep the splash title visible independently of route-content progress. */
-.appLoading .loadingBrand h1 {
-  clip-path: none !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: none !important;
-  animation: none !important;
-}
 
 /* Maseer28 · unified visual identity refresh (V1). Visual-only overrides; app behavior is unchanged. */
 /* Shared palette */
@@ -7396,62 +7260,6 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
   background: #f2e3c0;
   color: #654510;
   font-weight: 800;
-}
-
-
-/* Final splash override: restore the center-out bloom after legacy reset rules. */
-.appLoading .loadingBrand img {
-  /* These are animation start values, not locks: !important here prevents
-     CSS keyframes from ever revealing the logo beyond the closed circle. */
-  clip-path: circle(0% at 50% 50%);
-  opacity: 0;
-  visibility: visible !important;
-  transform: scale(.82);
-  transform-origin: center;
-  animation: loadingLogoBloom .95s cubic-bezier(.2,.72,.2,1) both !important;
-}
-@keyframes loadingLogoBloom {
-  0% { opacity: 0; clip-path: circle(0% at 50% 50%); transform: scale(.82); }
-  68% { opacity: 1; clip-path: circle(75% at 50% 50%); transform: scale(1.035); }
-  100% { opacity: 1; clip-path: circle(75% at 50% 50%); transform: scale(1); }
-}
-.appLoading .loadingBrand h1,
-.appLoading .loadingBrand p,
-.appLoading .loadingProgress {
-  opacity: 0 !important;
-  transform: translateY(9px) !important;
-  animation: loadingTextBloomReveal .30s ease-out .38s both !important;
-}
-@keyframes loadingTextBloomReveal {
-  to { opacity: 1; transform: translateY(0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .appLoading .loadingBrand img,
-  .appLoading .loadingBrand h1,
-  .appLoading .loadingBrand p,
-  .appLoading .loadingProgress {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-    clip-path: none !important;
-  }
-}
-
-
-/* Fast splash: keep the preloaded lightweight logo visible without locking animated properties. */
-.appLoading .loadingBrand img {
-  clip-path: none;
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: none;
-  animation: none !important;
-}
-.appLoading .loadingBrand h1,
-.appLoading .loadingBrand p,
-.appLoading .loadingProgress {
-  opacity: 1 !important;
-  transform: none !important;
-  animation: none !important;
 }
 
 
