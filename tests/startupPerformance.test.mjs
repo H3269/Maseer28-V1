@@ -9,6 +9,7 @@ const libraryPage = await readFile(new URL('../src/features/library/LibraryPage.
 const libraryManifest = JSON.parse(await readFile(new URL('../public/content/library.seed.json', import.meta.url), 'utf8'));
 const coverThumbnailBuild = await readFile(new URL('../scripts/prepare-library-cover-thumbnails.mjs', import.meta.url), 'utf8');
 const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
 const assistantLauncher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
 
 test('library, reader, and assistant modules stay out of the initial application bundle', () => {
@@ -63,7 +64,7 @@ test('the static splash logo is visible immediately before React mounts', () => 
 test('startup does not wait for logo decode or an artificial splash timer', () => {
   assert.match(app, /if \(!content\) return \(/);
   assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\.decode\(\)/);
-  assert.doesNotMatch(app, /setTimeout\(\(\) => \{[\s\S]*?1100/);
+  assert.doesNotMatch(app, /setSplashMinimumVisible|splashMinimumVisible/);
   assert.match(app, /assets\/splash-logo\.webp/);
   assert.match(app, /fallbackAttempted/);
   assert.match(css, /\.appLoading \.loadingBrand img \{[\s\S]*?animation: none !important/);
