@@ -242,6 +242,9 @@ test('opening a book preloads the reader module and reuses the prepared IndexedD
 test('the React splash uses the same radial reveal and progress animation as static HTML', () => {
   assert.match(css, /clip-path: circle\(0% at 50% 50%\);/);
   assert.doesNotMatch(css, /clip-path: circle\(0% at 50% 50%\) !important/);
+  const fastSplashRule = css.match(/\/\* Fast splash:[\s\S]*?\.appLoading \.loadingBrand img \{([\s\S]*?)\n\}/)?.[1] || '';
+  assert.ok(fastSplashRule, 'The legacy fast-splash override must remain present');
+  assert.doesNotMatch(fastSplashRule, /(?:clip-path|transform):[^;]*!important/);
   assert.match(css, /@keyframes loadingLogoBloom[\s\S]*?circle\(75% at 50% 50%\)/);
   assert.match(css, /@keyframes loadingProgressFill[\s\S]*?scaleX\(1\)/);
   assert.match(css, /prefers-reduced-motion: reduce/);
