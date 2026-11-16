@@ -21,6 +21,18 @@ import { getT11DailyAssistantPromptGroups } from './t11DailyAssistantPrompts.js'
 import { getT12DailyAssistantPromptGroups } from './t12DailyAssistantPrompts.js';
 import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS, DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
 
+const PAGE_ASSISTANT_PROMPT_GROUPS = Object.freeze([
+  Object.freeze({
+    label: 'راهنمای همین صفحه',
+    questions: Object.freeze([
+      Object.freeze({ label: 'این صفحه برای چیست؟', value: 'این صفحه برای چیست؟', kind: 'page_purpose' }),
+      Object.freeze({ label: 'اینجا چه کارهایی می‌توانم انجام بدهم؟', value: 'اینجا چه کارهایی می‌توانم انجام بدهم؟', kind: 'page_actions' }),
+      Object.freeze({ label: 'چطور به خانه برگردم؟', value: 'چطور به خانه برگردم؟', kind: 'page_navigation' }),
+      Object.freeze({ label: 'امکانات برنامه چیست؟', value: 'امکانات برنامه چیست؟', kind: 'app_features' }),
+    ]),
+  }),
+]);
+
 export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null, onRelationshipSafetyResponse = null, initialOpen = false, hideLauncher = false, externalLauncherRef = null, openRequestId = 0, onOpenChange = null }) {
   const [open, setOpen] = useState(initialOpen);
   const [messages, setMessages] = useState([]);
@@ -184,7 +196,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                           ? getT11DailyAssistantPromptGroups(dailyContext?.day)
                           : isT12DailyPromptContext
                             ? getT12DailyAssistantPromptGroups(dailyContext?.day)
-                            : [];
+                            : dailyContext
+                              ? []
+                              : PAGE_ASSISTANT_PROMPT_GROUPS;
   if (!visible || screen === 'bookReader') return null;
 
   function ensureLibraryBooksLoaded(message, conversationState) {
@@ -424,7 +438,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
             }}
           >
             <span className="badge">پرسش‌های پیشنهادی</span>
-            <h2 id="library-assistant-prompt-title">{screen === "books" ? "سؤال آماده دستیار کتابخانه" : `سؤال‌های آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : isGriefDailyPromptContext ? "غم و سوگ" : isGuiltDailyPromptContext ? "احساس گناه" : isEmotionalDependencyDailyPromptContext ? "وابستگی عاطفی" : isT10DailyPromptContext ? "بی‌خوابی و مشکلات خواب" : isT09DailyPromptContext ? "اهمال‌کاری" : isT11DailyPromptContext ? "عادت‌های تکراری" : isT12DailyPromptContext ? "مرزبندی و نه گفتن" : "خشم"}`}</h2>
+            <h2 id="library-assistant-prompt-title">{screen === "books" ? "سؤال آماده دستیار کتابخانه" : dailyContext ? `سؤال‌های آماده روز ${dailyContext.day}` : "سؤال‌های آماده این صفحه"}</h2>
             <p className="muted">برای انتخاب، روی سؤال موردنظرت بزن تا برای همین روز ارسال شود.</p>
             <div className="libraryAssistantPromptOptions">
               {activePromptGroups.map((group) => (
@@ -570,11 +584,11 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                     <button
                       ref={libraryPromptTriggerRef}
                       className="libraryAssistantPromptTrigger"
-                      data-testid={isAngerDailyPromptContext ? "anger-daily-prompt-trigger" : isAnxietyDailyPromptContext ? "anxiety-daily-prompt-trigger" : isFearDailyPromptContext ? "fear-daily-prompt-trigger" : isHatredDailyPromptContext ? "hatred-daily-prompt-trigger" : isJealousyDailyPromptContext ? "jealousy-daily-prompt-trigger" : isGriefDailyPromptContext ? "grief-daily-prompt-trigger" : isGuiltDailyPromptContext ? "guilt-daily-prompt-trigger" : isEmotionalDependencyDailyPromptContext ? "emotional-dependency-daily-prompt-trigger" : isT10DailyPromptContext ? "t10-daily-prompt-trigger" : isT09DailyPromptContext ? "t09-daily-prompt-trigger" : isT11DailyPromptContext ? "t11-daily-prompt-trigger" : isT12DailyPromptContext ? "t12-daily-prompt-trigger" : "library-assistant-prompt-trigger"}
+                      data-testid={isAngerDailyPromptContext ? "anger-daily-prompt-trigger" : isAnxietyDailyPromptContext ? "anxiety-daily-prompt-trigger" : isFearDailyPromptContext ? "fear-daily-prompt-trigger" : isHatredDailyPromptContext ? "hatred-daily-prompt-trigger" : isJealousyDailyPromptContext ? "jealousy-daily-prompt-trigger" : isGriefDailyPromptContext ? "grief-daily-prompt-trigger" : isGuiltDailyPromptContext ? "guilt-daily-prompt-trigger" : isEmotionalDependencyDailyPromptContext ? "emotional-dependency-daily-prompt-trigger" : isT10DailyPromptContext ? "t10-daily-prompt-trigger" : isT09DailyPromptContext ? "t09-daily-prompt-trigger" : isT11DailyPromptContext ? "t11-daily-prompt-trigger" : isT12DailyPromptContext ? "t12-daily-prompt-trigger" : screen === "books" ? "library-assistant-prompt-trigger" : "page-assistant-prompt-trigger"}
                       type="button"
                       aria-label={isTopicDailyPromptContext
                         ? `باز کردن سؤال‌های آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : isGriefDailyPromptContext ? "غم و سوگ" : isGuiltDailyPromptContext ? "احساس گناه" : isEmotionalDependencyDailyPromptContext ? "وابستگی عاطفی" : isT10DailyPromptContext ? "بی‌خوابی و مشکلات خواب" : isT09DailyPromptContext ? "اهمال‌کاری" : isT11DailyPromptContext ? "عادت‌های تکراری" : isT12DailyPromptContext ? "مرزبندی و نه گفتن" : "خشم"}`
-                        : "باز کردن سؤال‌های آماده دستیار کتابخانه"}
+                        : screen === "books" ? "باز کردن سؤال‌های آماده دستیار کتابخانه" : "باز کردن سؤال‌های آماده دستیار این صفحه"}
                       aria-haspopup="dialog"
                       aria-expanded={libraryPromptOpen}
                       aria-controls="library-assistant-prompt-dialog"
