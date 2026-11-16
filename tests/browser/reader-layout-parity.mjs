@@ -6,7 +6,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const baseURL = process.env.PATH28_BASE_URL || 'http://127.0.0.1:4173/Maseer28/';
 const assetNames = await readdir('dist/assets');
-const engineFile = assetNames.find((name) => /^readerEngine-[^/]+\\.js$/.test(name));
+const engineFile = assetNames.find((name) => name.startsWith('readerEngine-') && name.endsWith('.js'));
 assert.ok(engineFile, 'the production reader-engine chunk must exist');
 const browser = await chromium.launch({ headless: true });
 
