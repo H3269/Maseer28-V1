@@ -160,7 +160,7 @@ function MainApp() {
       if (!cancelled) setAssistantLauncherLoaded(false);
     });
     return () => { cancelled = true; };
-  }, [content, userProfile, hasCompletedOnboarding]);
+  }, [content, userProfile, hasCompletedOnboarding, journey.profileData?.problem]);
 
   useEffect(() => {
     let cancelled = false;
