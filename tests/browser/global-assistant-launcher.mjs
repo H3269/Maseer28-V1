@@ -90,12 +90,14 @@ try {
   assert.equal(await dialog.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
     'the local-model installation button must be removed from the entire assistant');
   assert.equal(await dialog.getByRole('textbox').count(), 0, 'the assistant must never expose a free-text input');
-  assert.equal(await dialog.getByRole('button', { name: 'ارسال' }).count(), 0, 'sending must be possible only after selecting a prepared question');
-  assert.match(await dialog.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/);
+  const pagePromptPicker = dialog.getByRole('button', { name: 'باز کردن سؤال‌های آماده دستیار این صفحه' });
+  assert.equal(await pagePromptPicker.count(), 1, 'the current page must expose a fixed question list');
   const firstDialogControl = closeButton;
   await firstDialogControl.focus();
+  await page.keyboard.press('Shift+Tab');
+  assert.equal(await pagePromptPicker.evaluate((element) => element === document.activeElement), true, 'focus must wrap to the prepared question picker');
   await page.keyboard.press('Tab');
-  assert.equal(await firstDialogControl.evaluate((element) => element === document.activeElement), true, 'focus remains contained when the close button is the only available control');
+  assert.equal(await firstDialogControl.evaluate((element) => element === document.activeElement), true, 'focus must remain contained in the dialog');
   assert.match(await dialog.innerText(), /دستیار راهنمای مسیر ۲۸/);
   const dialogBoxForLayout = await dialog.boundingBox();
   assert.ok(dialogBoxForLayout.width >= 500, 'assistant dialog should use a wider desktop layout');
@@ -105,6 +107,15 @@ try {
   assert.doesNotMatch(await dialog.innerText(), /پردازش این نسخه|می‌توانی بپرسی/);
   assert.equal(await dialog.getByRole('button', { name: 'متوجه شدم' }).count(), 0, 'the redundant bottom close action must be removed');
   assert.equal((await dialog.innerText()).includes('09123456789'), false, 'private profile data must not be exposed to the page assistant');
+  await pagePromptPicker.click();
+  const pagePromptDialog = page.locator('#library-assistant-prompt-dialog');
+  await pagePromptDialog.waitFor({ state: 'visible' });
+  await pagePromptDialog.locator('[data-prompt-option]').first().click();
+  const pageSendButton = dialog.getByRole('button', { name: 'ارسال' });
+  assert.equal(await pageSendButton.isEnabled(), true, 'only selecting a prepared question enables sending');
+  await pageSendButton.click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('صفحه آغاز برنامه است')));
+  assert.equal(await dialog.getByRole('textbox').count(), 0, 'prepared page guidance must not expose a typing field');
   await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await dialog.waitFor({ state: 'detached' });
   assert.equal(await launcher.getAttribute('aria-expanded'), 'false');
@@ -316,9 +327,13 @@ try {
   dialog = page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' });
   await dialog.waitFor({ state: 'visible' });
   assert.match(await dialog.innerText(), /دستیار راهنمای مسیر ۲۸/);
-  await dialog.getByRole('textbox').fill('این صفحه برای چیست؟');
+  assert.equal(await dialog.getByRole('textbox').count(), 0, 'support page must not expose free-text input');
+  await dialog.getByRole('button', { name: 'باز کردن سؤال‌های آماده دستیار این صفحه' }).click();
+  const supportPromptDialog = page.locator('#library-assistant-prompt-dialog');
+  await supportPromptDialog.waitFor({ state: 'visible' });
+  await supportPromptDialog.locator('[data-prompt-option]').first().click();
   await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('راه‌های ارتباط با مرکز')));
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('اطلاعات و راه‌های ارتباط با مرکز')));
   await page.keyboard.press('Escape');
   await dialog.waitFor({ state: 'detached' });
 
