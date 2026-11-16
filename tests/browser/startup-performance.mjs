@@ -55,7 +55,7 @@ async function measure(viewport, run) {
     document.addEventListener('animationstart', (event) => {
       const image = event.target;
       if (!(image instanceof HTMLImageElement) || !image.closest('#root .initialSplash, #root .appLoading')) return;
-      if (event.animationName !== 'initialLogoBloom' && event.animationName !== 'loadingLogoBloom' && event.animationName !== 'loadingLogoSafeEnter') return;
+      if (event.animationName !== 'loadingLogoBloom') return;
       const style = getComputedStyle(image);
       if (window.__path28SplashAnimation.firstAnimationName === null) {
         window.__path28SplashAnimation.firstAnimationName = event.animationName;
