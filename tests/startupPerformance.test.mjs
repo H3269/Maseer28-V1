@@ -22,10 +22,10 @@ test('library, reader, and assistant modules stay out of the initial application
   assert.match(app, /loadGlobalAssistantLauncher\(\)\.then\(\(\) => \{/);
   assert.match(app, /if \(!content \|\| !userProfile \|\| !hasCompletedOnboarding\)/);
   assert.match(app, /navVisible && assistantLauncherLoaded/);
-  assert.match(app, /\\{navVisible && assistantLauncherLoaded && <button/);
+  assert.match(app, /\{navVisible && assistantLauncherLoaded && <button/);
   assert.doesNotMatch(app, /requestIdleCallback\(warmAssistant/);
   assert.doesNotMatch(app, /import GlobalAssistantLauncher from/);
-  assert.match(app, /navVisible && assistantLauncherLoaded && <Suspense fallback=\\{null\\}><GlobalAssistantLauncher/);
+  assert.match(app, /navVisible && assistantLauncherLoaded && <Suspense fallback=\{null\}><GlobalAssistantLauncher/);
   assert.match(app, /setAssistantLauncherLoaded\(true\)/);
   assert.match(app, /setAssistantOpenRequest\(\(value\) => value \+ 1\)/);
   assert.match(app, /openRequestId=\{assistantOpenRequest\}/);
