@@ -50,8 +50,9 @@ async function waitForReadablePage(page) {
     coverImageResourceTiming: (() => {
       const image = document.querySelector('#bookReaderText .readerCoverPage img, #bookReaderText .readerFrontispiecePage img');
       const url = image ? (image.currentSrc || image.src) : '';
-      const entry = url ? performance.getEntriesByName(url).filter((item) => item.startTime >= window.__readerPerfStartedAt).at(-1) : null;
+      const entry = url ? performance.getEntriesByName(url).at(-1) : null;
       return entry ? {
+        preloadedBeforeOpen: entry.startTime < window.__readerPerfStartedAt,
         requestStartMs: Number((entry.requestStart - window.__readerPerfStartedAt).toFixed(2)),
         responseEndMs: Number((entry.responseEnd - window.__readerPerfStartedAt).toFixed(2)),
         durationMs: Number(entry.duration.toFixed(2)),
