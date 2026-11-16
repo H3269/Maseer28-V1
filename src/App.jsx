@@ -150,7 +150,9 @@ function MainApp() {
   // onboarding state are ready. Load its UI chunk immediately at that point,
   // then reveal the launcher only after the import has resolved.
   useEffect(() => {
-    if (!content || !userProfile || !hasCompletedOnboarding) return undefined;
+    const selectedTopic = journey.profileData?.problem;
+    if (!content || !userProfile || !hasCompletedOnboarding
+      || (selectedTopic && !content.categories?.[selectedTopic])) return undefined;
     let cancelled = false;
     loadGlobalAssistantLauncher().then(() => {
       if (!cancelled) setAssistantLauncherLoaded(true);
