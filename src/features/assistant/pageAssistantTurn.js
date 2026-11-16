@@ -45,6 +45,17 @@ function resolveRequestScopeReply(value) {
  */
 export function makePageAssistantTurn({ screen, text, conversationState = null, dailyContext = null, libraryContext = null } = {}) {
   const message = String(text ?? '').trim();
+  // This entry point is not a free-text assistant. Non-daily prepared questions
+  // are handled by their page-specific fixed catalogues before reaching here.
+  if (screen !== 'day') {
+    return Object.freeze({
+      status: 'prepared_question_required',
+      message: 'این دستیار فقط از فهرست سؤال‌های آماده همین بخش پاسخ می‌دهد.',
+      knowledge: Object.freeze([]),
+      page_context: screen || null,
+      conversationState: null,
+    });
+  }
   const inputProbe = routeAssistantTurn({ text: message });
   if ((screen !== 'day' && SAFETY_STATUSES.has(inputProbe.status))
     || inputProbe.status === 'invalid_input'
@@ -284,26 +295,15 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       });
     }
 
-    // The in-path assistant is a bounded local guidance surface. Do not apply
-    // the general daily-content or relationship safety gates to its prepared
-    // Q&A and structured day guidance; canonical topic/day identity remains
-    // required for prepared FAQs above.
-    const dayData = selectDailyExerciseGuidanceData({ guidanceData: dailyContext?.guidanceData, data: dailyContext?.data });
-    const dailyTurn = makeDailyExerciseGuidanceTurn({
-      message,
-      dayData,
-      problem: dailyContext?.problem,
-      day: dailyContext?.day,
-      conversationState: conversationState?.dailyState || {},
-    });
+    // Topics whose prepared catalogue is still being completed stay closed
+    // to arbitrary text. The four approved daily safety/assessment questions
+    // and their existing safety gates above remain unchanged.
     return Object.freeze({
-      status: 'daily_guidance_available',
-      message: visibleTopicName
-        ? cleanPreparedAssistantTopicText(dailyTurn.response, visibleTopicName)
-        : dailyTurn.response,
+      status: 'prepared_question_required',
+      message: 'برای این موضوع هنوز فهرست سؤال‌های آماده فعال نشده است. پس از تکمیل فهرست، راهنمای همان روز در دسترس قرار می‌گیرد.',
       knowledge: Object.freeze([]),
       page_context: 'day',
-      conversationState: Object.freeze({ dailyState: dailyTurn.nextState }),
+      conversationState: null,
     });
   }
   const pending = conversationState?.pendingScope;
