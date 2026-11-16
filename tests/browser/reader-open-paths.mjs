@@ -97,6 +97,52 @@ async function waitForFirstBodyParagraph(page) {
   throw new Error('Reader opened, but the first readable body paragraph was not found within 12 pages.');
 }
 
+async function collectReaderDiagnostics(page) {
+  return page.evaluate(() => {
+    const root = document.querySelector('#bookReader');
+    const article = document.querySelector('#bookReaderText');
+    const rect = (element) => {
+      if (!element) return null;
+      const box = element.getBoundingClientRect();
+      return {
+        x: Number(box.x.toFixed(1)), y: Number(box.y.toFixed(1)),
+        width: Number(box.width.toFixed(1)), height: Number(box.height.toFixed(1)),
+      };
+    };
+    const text = String(article?.innerText || '').replace(/\\s+/g, ' ').trim();
+    return {
+      url: location.href,
+      documentVisibility: document.visibilityState,
+      viewport: { width: innerWidth, height: innerHeight, devicePixelRatio },
+      readerVisible: Boolean(root?.getClientRects().length),
+      readerRoot: rect(root),
+      articleExists: Boolean(article),
+      articleVisible: Boolean(article?.getClientRects().length),
+      articleRect: rect(article),
+      articleChildCount: article?.children.length ?? null,
+      articleTextLength: text.length,
+      articleTextPreview: text.slice(0, 240),
+      loadingMessageVisible: [...(article?.querySelectorAll('.readerFixedLine') || [])]
+        .some((node) => /در حال بارگذاری کتاب/.test(node.innerText || '')),
+      bodyLineCount: article?.querySelectorAll('.readerFixedLine.body').length ?? null,
+      paragraphStartCount: article?.querySelectorAll('.readerFixedLine.body.paraStart').length ?? null,
+      imageStates: [...(article?.querySelectorAll('img') || [])].map((image) => ({
+        src: image.currentSrc || image.src,
+        complete: image.complete,
+        naturalWidth: image.naturalWidth,
+        naturalHeight: image.naturalHeight,
+      })),
+      pageCounter: document.querySelector('#readerPageCounter')?.innerText || '',
+      pageRangeMax: Number(document.querySelector('#readerPageRange')?.max || 0),
+      resources: performance.getEntriesByType('resource').slice(-20).map((entry) => ({
+        name: entry.name,
+        durationMs: Number(entry.duration.toFixed(1)),
+        transferBytes: entry.transferSize || 0,
+      })),
+    };
+  }).catch((error) => ({ diagnosticsError: String(error) }));
+}
+
 try {
   const results = [];
   const entryPoints = [
@@ -238,18 +284,23 @@ try {
           for (let cycle = 1; cycle <= 3; cycle += 1) {
             await page.evaluate(() => { window.__readerPerfStartedAt = performance.now(); });
             const selectedBook = page.locator('#books .libraryBook').nth(repeatedBookIndex);
-            await selectedBook.locator('button').click();
-            await page.locator('#bookReader').waitFor({ state: 'visible', timeout: 30000 });
-            const sample = await waitForReadablePage(page);
-            assert.equal(await page.locator('#bookReaderText').count(), 1, `${entryPoint.id}: book ${repeatedBookIndex + 1} cycle ${cycle} must mount exactly one Reader text surface`);
-            assert.ok(sample.pageTextLength > 0, `${entryPoint.id}: book ${repeatedBookIndex + 1} cycle ${cycle} must render readable content`);
-            const paragraph = await waitForFirstBodyParagraph(page);
-            assert.ok(paragraph.paragraphLength >= 20, `${entryPoint.id}: book ${repeatedBookIndex + 1} cycle ${cycle} must reach a real body paragraph, not remain in the loading state`);
-            repeatedSamples.push(sample.elapsedMs);
-            repeatedParagraphSamples.push(paragraph.elapsedMs);
-            await page.locator('#bookReader').getByRole('button', { name: 'خروج از مطالعه' }).click();
-            await page.locator('#books').waitFor({ state: 'visible' });
-            assert.equal(await page.locator('#bookReader').count(), 0, `${entryPoint.id}: book ${repeatedBookIndex + 1} cycle ${cycle} must fully unmount Reader`);
+            try {
+              await selectedBook.locator('button').click();
+              await page.locator('#bookReader').waitFor({ state: 'visible', timeout: 30000 });
+              const sample = await waitForReadablePage(page);
+              assert.equal(await page.locator('#bookReaderText').count(), 1, `${entryPoint.id}: book ${repeatedBookIndex + 1} cycle ${cycle} must mount exactly one Reader text surface`);
+              assert.ok(sample.pageTextLength > 0, `${entryPoint.id}: book ${repeatedBookIndex + 1} cycle ${cycle} must render readable content`);
+              const paragraph = await waitForFirstBodyParagraph(page);
+              assert.ok(paragraph.paragraphLength >= 20, `${entryPoint.id}: book ${repeatedBookIndex + 1} cycle ${cycle} must reach a real body paragraph, not remain in the loading state`);
+              repeatedSamples.push(sample.elapsedMs);
+              repeatedParagraphSamples.push(paragraph.elapsedMs);
+              await page.locator('#bookReader').getByRole('button', { name: 'خروج از مطالعه' }).click();
+              await page.locator('#books').waitFor({ state: 'visible' });
+              assert.equal(await page.locator('#bookReader').count(), 0, `${entryPoint.id}: book ${repeatedBookIndex + 1} cycle ${cycle} must fully unmount Reader`);
+            } catch (error) {
+              const diagnostics = await collectReaderDiagnostics(page);
+              throw new Error(`Repeated reopen failed (viewport=${viewport.id}, entryPoint=${entryPoint.id}, book=${repeatedBookIndex + 1}, cycle=${cycle}): ${error.message}; diagnostics=${JSON.stringify(diagnostics)}; browserErrors=${JSON.stringify(errors)}; failedRequests=${JSON.stringify(failedRequests)}`);
+            }
           }
           const sorted = [...repeatedParagraphSamples].sort((a, b) => a - b);
           const bookResult = {
