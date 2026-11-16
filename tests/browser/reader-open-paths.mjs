@@ -81,7 +81,7 @@ try {
       page.on('request', (request) => {
         try {
           const pathname = new URL(request.url()).pathname;
-          if (pathname.endsWith(expectedBookPath)) requestedBookContent.push(pathname);
+          if (/\/content\/books\/book\d+\.json$/.test(pathname)) requestedBookContent.push(pathname);
         } catch { /* ignore non-URL requests */ }
       });
       page.on('pageerror', (error) => errors.push(String(error)));
@@ -148,7 +148,8 @@ try {
       assert.equal(await page.locator('#bookReaderText').count(), 1, `${entryPoint.id}, book ${bookId}: reader text article must exist`);
       assert.ok(coldFirstBodyParagraph.paragraphLength >= 20, `${entryPoint.id}, book ${bookId}: cold open must reach a real body paragraph`);
       assert.ok(warmFirstBodyParagraph.paragraphLength >= 20, `${entryPoint.id}, book ${bookId}: warm open must reach a real body paragraph`);
-      assert.deepEqual(requestedBookContent, [`/Maseer28${expectedBookPath}`], `${entryPoint.id}, book ${bookId}: only the selected book content is fetched once across cold and warm opens`);
+      assert.equal(requestedBookContent.length, 1, `${entryPoint.id}, book ${bookId}: exactly one book-content request is allowed across cold and warm opens; got ${JSON.stringify(requestedBookContent)}`);
+      assert.ok(requestedBookContent[0].endsWith(expectedBookPath), `${entryPoint.id}, book ${bookId}: only the selected book may be fetched; got ${requestedBookContent[0]}`);
       assert.deepEqual(errors, [], `${entryPoint.id}, book ${bookId}: no browser errors during cold/warm open`);
       results.push({ repetition, entryPoint: entryPoint.id, bookId, cold, coldFirstBodyParagraph, warm, warmFirstBodyParagraph });
       await page.close();
