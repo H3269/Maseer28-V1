@@ -25,7 +25,11 @@ test('global assistant launcher is mounted across navigable screens, including s
   assert.ok(supportStart >= 0 && supportEnd > supportStart, 'support screen source must be identifiable');
   const supportUi = journeyUi.slice(supportStart, supportEnd);
 
-  assert.match(appUi, /const GlobalAssistantLauncher = lazy\(\(\) => import\(['"]\.\/features\/assistant\/GlobalAssistantLauncher\.jsx['"]\)\)/, 'assistant launcher must remain lazy-loaded to protect startup performance');
+  assert.match(appUi, /const GlobalAssistantLauncher = lazy\(\(\) => import\(['"]\.\/features\/assistant\/GlobalAssistantLauncher\.jsx['"]\)\)/, 'assistant launcher must remain lazy-loaded');
+  assert.match(appUi, /loadGlobalAssistantLauncher\(\)\.then\(\(\) => \{/);
+  assert.match(appUi, /setAssistantLauncherLoaded\(true\)/);
+  assert.match(appUi, /\{navVisible && assistantLauncherLoaded && <button/);
+  assert.doesNotMatch(appUi, /onPointerDown=\{\(\) => \{ void loadGlobalAssistantLauncher/);
   assert.match(appUi, /<GlobalAssistantLauncher/);
   assert.match(appUi, /dailyContext=\{screen === 'day'/);
   assert.match(appUi, /libraryContext=\{screen === 'books'/);
@@ -34,7 +38,10 @@ test('global assistant launcher is mounted across navigable screens, including s
   assert.match(appUi, /screen === 'bookReader' && readerState/);
   assert.match(appUi, /<Reader book=/, 'reader must remain rendered inside its lazy-loaded Suspense boundary');
   assert.doesNotMatch(launcherUi, /support:\s*'پشتیبانی'/, 'launcher must not reintroduce screen-context helper labels');
-  assert.match(launcherUi, /maxLength=\{dailyContext \? 2000 : 3000\}/, 'assistant composer must render without removed context state');
+  assert.doesNotMatch(launcherUi, /<textarea/);
+  assert.match(launcherUi, /activePromptGroups\.some/);
+  assert.match(launcherUi, /selectedDailyQuestion/);
+  assert.match(launcherUi, /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/);
   assert.doesNotMatch(launcherUi, /isDailyExercise/, 'assistant launcher must not reference removed daily-context state');
   assert.match(launcherUi, /className="globalAssistantLauncher"/);
   assert.match(launcherUi, /aria-label="باز کردن دستیار مسیر۲۸"/);
