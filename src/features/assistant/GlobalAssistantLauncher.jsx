@@ -289,9 +289,11 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       resizeComposerInput(messageInputRef.current);
       if (restrictedStatuses.has(intentGate.status)) {
         libraryLoadKind = null;
-      } else if (initialLibraryPlan.kind === 'none' || initialLibraryPlan.kind === 'clarify') {
-        // Page/help questions and requests that need clarification do not need an IndexedDB
-        // catalogue read or book-file hydration before the local answer can be shown.
+      } else if (initialLibraryPlan.kind === 'none'
+        || (initialLibraryPlan.kind === 'clarify' && loadedLibraryBooks.length > 0)) {
+        // Page/help questions avoid IndexedDB. A clarification is only final when
+        // a catalogue is already available; with an empty cache, load metadata first
+        // so ordinal book questions (for example "book five") can resolve correctly.
         libraryLoadKind = initialLibraryPlan.kind;
       } else {
         const loadResult = await (libraryBooksLoadRef.current || ensureLibraryBooksLoaded(message, conversationStateRef.current));
