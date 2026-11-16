@@ -111,6 +111,7 @@ function MainApp() {
   const runtimeRepository = useMemo(() => createRuntimeContentRepository({ baseUrl: import.meta.env.BASE_URL }), []);
   const [content, setContent] = useState(null);
   const [topicLoadState, setTopicLoadState] = useState({ key: '', status: 'idle', error: '' });
+  const [loadError, setLoadError] = useState('');
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [assistantLauncherLoaded, setAssistantLauncherLoaded] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
@@ -775,7 +776,7 @@ function navigate(next) {
     setCopyrightOpen(false);
   }
 
-  if (!content) return (
+  if (!content || loadError) return (
     <div className="app appLoading" role="status" aria-live="polite" aria-busy="true">
       <div className="loadingBrand">
         <img
@@ -797,7 +798,8 @@ function navigate(next) {
           }}
         />
         <h1>مسیر ۲۸ روزه بازسازی ذهن</h1>
-        <p>در حال آماده‌سازی مسیر تو…</p>
+        <p>{loadError ? 'آماده‌سازی برنامه کامل نشد.' : 'در حال آماده‌سازی مسیر تو…'}</p>
+        {loadError && <div className="loadingError" role="alert"><p>{loadError}</p><button className="primary" type="button" onClick={() => window.location.reload()}>تلاش دوباره</button></div>}
         <div className="loadingProgress" role="progressbar" aria-label="پیشرفت بارگذاری" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(loadingProgress)}>
           {Array.from({ length: 10 }, (_, index) => <span key={index} className="loadingProgressSegment" style={{ '--segment-progress': `${Math.max(0, Math.min(100, loadingProgress - index * 10))}%` }} />)}
         </div>
