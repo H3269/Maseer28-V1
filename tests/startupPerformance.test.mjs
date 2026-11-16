@@ -20,8 +20,8 @@ test('library, reader, and assistant modules stay out of the initial application
   assert.match(app, /const GlobalAssistantLauncher = lazy\(\(\) => import\('\.\/features\/assistant\/GlobalAssistantLauncher\.jsx'\)\)/);
   assert.match(app, /void loadLibraryPage\(\)/);
   assert.match(app, /loadGlobalAssistantLauncher\(\)\.then\(\(\) => \{/);
-  assert.match(app, /const selectedTopic = journey\.profileData\?\.problem/);
-  assert.match(app, /selectedTopic && !content\.categories\?\.\[selectedTopic\]/);
+  assert.match(app, /if \(!content \|\| !userProfile \|\| !hasCompletedOnboarding\)/);
+  assert.match(app, /assistantLauncherLoaded && \(!journey\.profileData\?\.problem \|\| Boolean\(content\?\.categories\?\.\[journey\.profileData\.problem\]\)\)/);
   assert.match(app, /\{navVisible && assistantLauncherLoaded && <button/);
   assert.doesNotMatch(app, /requestIdleCallback\(warmAssistant/);
   assert.doesNotMatch(app, /import GlobalAssistantLauncher from/);
