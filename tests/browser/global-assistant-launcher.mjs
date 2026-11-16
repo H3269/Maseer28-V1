@@ -377,6 +377,8 @@ try {
   await dialog.waitFor({ state: 'visible' });
   assert.equal(await dialog.getByRole('textbox').count(), 0, 'a cached model marker must not reveal free typing');
   assert.equal(await dialog.getByRole('button', { name: 'باز کردن سؤال‌های آماده دستیار کتابخانه' }).count(), 1, 'the prepared question list must remain available');
+  await dialog.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
+  await dialog.waitFor({ state: 'detached' });
 
   // Regression: opening a book after the assistant has been mounted must not
   // reopen the assistant when the reader unmounts and the library remounts.
