@@ -780,7 +780,7 @@ function navigate(next) {
   }
 
   if (!content || !splashAnimationComplete || loadError) return (
-    <div className="app appLoading" role="status" aria-live="polite" aria-busy="true">
+    <div className="app appLoading" role="status" aria-live="polite" aria-busy="true" data-content-ready={content ? 'true' : 'false'} data-reveal-complete={splashAnimationComplete ? 'true' : 'false'}>
       <div className="loadingBrand">
         <img
           src={`${import.meta.env.BASE_URL}assets/splash-logo.webp`}
