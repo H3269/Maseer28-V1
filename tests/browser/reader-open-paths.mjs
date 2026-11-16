@@ -109,7 +109,7 @@ async function collectReaderDiagnostics(page) {
         width: Number(box.width.toFixed(1)), height: Number(box.height.toFixed(1)),
       };
     };
-    const text = String(article?.innerText || '').replace(/\\s+/g, ' ').trim();
+    const text = String(article?.innerText || '').replace(/\s+/g, ' ').trim();
     return {
       url: location.href,
       documentVisibility: document.visibilityState,
