@@ -151,6 +151,20 @@ try {
       assert.equal(requestedBookContent.length, 1, `${entryPoint.id}, book ${bookId}: exactly one book-content request is allowed across cold and warm opens; got ${JSON.stringify(requestedBookContent)}`);
       assert.ok(requestedBookContent[0].endsWith(expectedBookPath), `${entryPoint.id}, book ${bookId}: only the selected book may be fetched; got ${requestedBookContent[0]}`);
       assert.deepEqual(errors, [], `${entryPoint.id}, book ${bookId}: no browser errors during cold/warm open`);
+
+      if (repetition === 1 && bookId === 1) {
+        await page.locator('#bookReader').getByRole('button', { name: 'خروج از مطالعه' }).click();
+        await page.locator('#books').waitFor({ state: 'visible' });
+        const nextBook = page.locator('#books .libraryBook').nth(1);
+        await nextBook.locator('button').click();
+        await page.locator('#bookReader').waitFor({ state: 'visible', timeout: 30000 });
+        const switchedBookParagraph = await firstBodyParagraph(page);
+        assert.ok(switchedBookParagraph.paragraphLength >= 20, `${entryPoint.id}: switching from the first book to the second after closing Reader must show real body content`);
+        assert.deepEqual(errors, [], `${entryPoint.id}: close-and-switch book flow must not raise browser errors`);
+        await page.locator('#bookReader').getByRole('button', { name: 'خروج از مطالعه' }).click();
+        await page.locator('#books').waitFor({ state: 'visible' });
+      }
+
       results.push({ repetition, entryPoint: entryPoint.id, bookId, cold, coldFirstBodyParagraph, warm, warmFirstBodyParagraph });
       await page.close();
     }
