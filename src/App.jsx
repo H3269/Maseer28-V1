@@ -115,8 +115,8 @@ function MainApp() {
   // Start the visual gate when React actually mounts the visible splash.
   // Document-start elapsed time can consume the animation before the user sees it
   // on slower WebViews or devices that delay the application bundle.
-  const [splashLogoRevealComplete, setSplashLogoRevealComplete] = useState(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
-  const [splashProgressComplete, setSplashProgressComplete] = useState(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+  const [splashLogoRevealComplete, setSplashLogoRevealComplete] = useState(false);
+  const [splashProgressComplete, setSplashProgressComplete] = useState(false);
   const [assistantLauncherLoaded, setAssistantLauncherLoaded] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [assistantOpenRequest, setAssistantOpenRequest] = useState(0);
@@ -145,12 +145,6 @@ function MainApp() {
   const libraryNeeded = screen === 'books' || screen === 'bookReader' || screen === 'dailyResult';
   const { books, loading: libraryLoading, error: libraryError, refresh: refreshLibrary } = useLibrary(libraryNeeded);
 
-  useEffect(() => {
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
-      setSplashLogoRevealComplete(true);
-      setSplashProgressComplete(true);
-    }
-  }, []);
 
   // Warm the assistant chunk only after the app is ready and the browser is idle.
   useEffect(() => {
