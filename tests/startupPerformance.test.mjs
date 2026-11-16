@@ -152,7 +152,7 @@ test('all five library covers load eagerly at high priority on library entry', (
 });
 
 test('the static splash does not launch a large fallback during the React root handoff', () => {
-  const staticLogo = html.match(/<img[^>]+splash-logo\\.webp[^>]*>/)?.[0] || '';
+  const staticLogo = html.match(/<img[^>]+splash-logo\.webp[^>]*>/)?.[0] || '';
   assert.ok(staticLogo, 'The initial HTML must contain the optimized splash logo');
   assert.doesNotMatch(staticLogo, /onerror=/i, 'The static splash must not trigger a fallback when React replaces the initial root');
 });
