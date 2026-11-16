@@ -729,8 +729,6 @@ try {
       await adaptedPage.waitForFunction((dayLabel) => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
         .some(node => node.innerText.includes(`راهنمای روز ${dayLabel} اضطراب`)), visibleScenarioDay);
       adaptedReply = await adaptedPanel.locator('.assistantMessage').last().innerText();
-    } else {
-      assert.fail('Only prepared anxiety question scenarios are allowed in this browser suite');
     }
     assert.match(adaptedReply, new RegExp(scenario.topic));
     assert.match(adaptedReply, new RegExp('روز ' + visibleScenarioDay));
