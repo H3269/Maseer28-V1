@@ -364,6 +364,13 @@ jobs:
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/reader-layout-parity.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/reader-open-paths.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/reader-open-recommendation.mjs
+      - name: Upload daily recommendation-to-Reader measurements
+        if: always() && hashFiles('reports/generated/reader-recommendation-performance.json') != ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: reader-recommendation-performance
+          path: reports/generated/reader-recommendation-performance.json
+          if-no-files-found: error
       - name: Upload five-book Reader open measurements
         if: always() && hashFiles('reports/generated/reader-open-performance.json') != ''
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
