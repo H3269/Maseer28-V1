@@ -10,28 +10,21 @@ test('model identity is pinned to an immutable revision', () => {
   assert.equal(LOCAL_MODEL_ID, 'onnx-community/Qwen3-0.6B-Instruct-ONNX');
   assert.match(LOCAL_MODEL_REVISION, /^[a-f0-9]{40}$/);
 });
-test('install command is explicit and normalized', () => {
-  assert.equal(isLocalModelInstallCommand(LOCAL_MODEL_INSTALL_COMMAND), true);
-  assert.equal(isLocalModelInstallCommand('نصب مدل محلی'), true);
-  assert.equal(isLocalModelInstallCommand('لطفاً مدل محلی را توضیح بده'), false);
+test('local model installation commands are disabled in prepared-question mode', () => {
+  assert.equal(isLocalModelInstallCommand(LOCAL_MODEL_INSTALL_COMMAND), false);
+  assert.equal(isLocalModelInstallCommand('نصب مدل محلی'), false);
 });
-test('daily and safety-gated turns never enter neural generation', () => {
-  const turn = { status: 'page_guidance_available', message: 'راهنمای صفحه' };
-  assert.equal(shouldUseLocalNeuralModel({ screen: 'day', turn }), false);
-  assert.equal(shouldUseLocalNeuralModel({ screen: 'dashboard', turn, intentStatus: 'urgent_human_support_required' }), false);
-  assert.equal(shouldUseLocalNeuralModel({ screen: 'dashboard', turn, intentStatus: 'personal_intake_required' }), false);
-  assert.equal(shouldUseLocalNeuralModel({ screen: 'dashboard', turn: { ...turn, status: 'clarification_required' } }), false);
+test('neural generation is disabled for every page and turn status', () => {
+  for (const screen of ['home', 'dashboard', 'day', 'books', 'support']) {
+    assert.equal(shouldUseLocalNeuralModel({
+      screen,
+      turn: { status: 'page_guidance_available', message: 'راهنمای صفحه' },
+      intentStatus: 'approved_knowledge_available',
+      isLibraryTurn: true,
+    }), false);
+  }
 });
-test('only approved page guidance and approved knowledge are eligible', () => {
-  assert.equal(shouldUseLocalNeuralModel({ screen: 'dashboard', turn: { status: 'page_guidance_available', message: 'راهنما' } }), true);
-  assert.equal(shouldUseLocalNeuralModel({ screen: 'dashboard', turn: { status: 'approved_knowledge_available', message: 'منبع' } }), true);
-  assert.equal(shouldUseLocalNeuralModel({ screen: 'dashboard', turn: { status: 'knowledge_unavailable', message: 'بدون شاهد' } }), false);
-});
-test('book generation requires retrieved source evidence and respects personal-intake gate', () => {
-  assert.equal(shouldUseLocalNeuralModel({ screen: 'books', isLibraryTurn: true, intentStatus: 'knowledge_unavailable', turn: { message: 'گزیده\nمنبع: فصل اول · صفحه ۱۲' } }), true);
-  assert.equal(shouldUseLocalNeuralModel({ screen: 'books', isLibraryTurn: true, intentStatus: 'personal_intake_required', turn: { message: 'منبع: صفحه ۱۲' } }), false);
-  assert.equal(shouldUseLocalNeuralModel({ screen: 'books', isLibraryTurn: true, turn: { message: 'پاسخ بدون منبع' } }), false);
-});
+
 test('model input contains only the current question and supplied local evidence', () => {
   const messages = buildLocalAssistantMessages({
     question: 'این مفهوم را ساده توضیح بده',
