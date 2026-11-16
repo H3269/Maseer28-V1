@@ -198,20 +198,23 @@ function shortHeadingCandidate(text, nextText, bookId) {
   return false;
 }
 
-function collectKnownHeadings(book) {
+function collectKnownHeadings(book, sourceRows = bookRows(book)) {
   const set = new Set();
   const firstChapter = Math.min(...(book.chapters || []).map((c) => Number(c.page)).filter((n) => Number.isFinite(n) && n > 0), Infinity);
   let inToc = false;
   let seenChapters = 0;
-  for (const row of bookRows(book)) {
+  for (const row of sourceRows) {
     if (row.source >= firstChapter) break;
     const blocks = row.blocks || [];
+    // Reuse the linear neighbour index instead of slicing and normalising the
+    // remaining block list for every TOC item (quadratic work on long pages).
+    const { blockTexts, nextTexts } = buildNeighbourTextIndex(blocks);
     for (let i = 0; i < blocks.length; i += 1) {
       const block = blocks[i];
       if (block?.type === 'table' || block?.type === 'separator') continue;
-      const t = norm(block?.text);
+      const t = blockTexts[i];
       if (!t) continue;
-      const nextText = blocks.slice(i + 1).map((x) => norm(x?.text)).find(Boolean) || '';
+      const nextText = nextTexts[i] || '';
       if (TOC_TITLE_RE.test(t)) { inToc = true; seenChapters = 0; continue; }
       if (!inToc) continue;
       if (isTocStop(t, nextText, seenChapters)) { inToc = false; continue; }
@@ -222,7 +225,6 @@ function collectKnownHeadings(book) {
   }
   return set;
 }
-
 function headingBlockIsNarrativeContinuation(text, previousText) {
   const t = norm(text);
   const prev = norm(previousText);
@@ -429,6 +431,23 @@ function nextMeaningfulBlock(blocks, start) {
   return null;
 }
 
+// Precompute the first meaningful block after each index in one reverse pass.
+// Keep the exact scan semantics: separators are ignored, tables are meaningful
+// even without text, and other blocks require non-empty normalized text.
+function buildNextMeaningfulBlockIndex(blocks) {
+  const nextBlocks = new Array(blocks.length).fill(null);
+  let nextMeaningful = null;
+  for (let i = blocks.length - 1; i >= 0; i -= 1) {
+    nextBlocks[i] = nextMeaningful;
+    const block = blocks[i];
+    if (block?.type === 'separator') continue;
+    if (block?.type === 'table' || norm(block?.text)) {
+      nextMeaningful = { block, index: i };
+    }
+  }
+  return nextBlocks;
+}
+
 function tocKind(text) {
   const t = norm(text);
   if (TOC_TITLE_RE.test(t)) return 'tocTitle';
@@ -481,7 +500,10 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
   const insertedChapters = new Set();
   const poem = POEMS[Number(bookId)] || null;
   let poemDone = false;
-  const knownHeadings = collectKnownHeadings(book);
+  // Build normalised source blocks once and share them with heading discovery
+  // and pagination. The previous flow rebuilt every row twice.
+  const sourceRows = bookRows(book);
+  const knownHeadings = collectKnownHeadings(book, sourceRows);
   const MIN_SPLIT_FRAGMENT = 3;
   const HEADING_FOLLOW_LINES = 3;
   let tocActive = false;
@@ -698,7 +720,6 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
     });
   }
 
-  const sourceRows = bookRows(book);
   let book1ExampleBodyActive = false;
   for (const row of sourceRows) {
     const source = Number(row.source) || 1;
@@ -709,6 +730,7 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
     // remaining/preceding block array for every block made book pagination
     // quadratic on long Word pages, especially on mobile devices.
     const { blockTexts, nextTexts, previousTexts } = buildNeighbourTextIndex(blocks);
+    const nextMeaningfulBlocks = buildNextMeaningfulBlockIndex(blocks);
     // Some Word pages contain the tail of the previous section before the next
     // section heading (notably book 3 pages 285 and 300). Insert the dedicated
     // opener exactly where that heading occurs instead of at the source-page edge.
@@ -776,8 +798,8 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
         }
       }
 
+      const upcoming = nextMeaningfulBlocks[i] || null;
       if (block?.type === 'separator' || isRuleText(text)) {
-        const upcoming = nextMeaningfulBlock(blocks, i + 1);
         if (pendingTableTitle && upcoming?.block?.type === 'table') continue;
         pushLine('•  •  •', 'separator', source, { paraStart: true, paraEnd: true });
         continue;
@@ -788,7 +810,6 @@ export function buildLegacyReaderLayout({ book, bookId, cover = '', width, fontP
         continue;
       }
 
-      const upcoming = nextMeaningfulBlock(blocks, i + 1);
       if (upcoming?.block?.type === 'table' && looksLikeTableCaption(text, block)) {
         pendingTableTitle = visibleText;
         continue;
