@@ -61,7 +61,7 @@ test('the static splash reveals the logo radially and fills its progress bar in 
   assert.ok(html.includes('@keyframes loadingProgressFill{to{transform:scaleX(1)}}'));
   assert.match(html, /aria-label="پیشرفت نمایش لوگو"/);
   assert.match(html, /PATH28_SPLASH_DURATION_MS__/);
-  assert.doesNotMatch(html, /@media\\s*\\(prefers-reduced-motion:\\s*reduce\\)/, 'The static splash must animate identically when reduced motion is enabled');
+  assert.doesNotMatch(html, /@media\s*\(prefers-reduced-motion:\s*reduce\)/, 'The static splash must animate identically when reduced motion is enabled');
   assert.match(html, /fetchpriority="high"/);
   assert.match(html, /width="174" height="174"/);
 });
