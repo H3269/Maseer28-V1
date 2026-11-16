@@ -47,7 +47,7 @@ test('canonical full-content and daily-overlay loading remain available as a com
 });
 
 test('the selected topic loads independently and the day screen waits for its verified content', () => {
-  assert.match(app, /if \(!content \|\| !splashAnimationComplete \|\| loadError\) return \(/);
+  assert.match(app, /if \(!content \|\| !splashLogoRevealComplete || !splashProgressComplete \|\| loadError\) return \(/);
   assert.match(app, /setTopicLoadState\(\{ key: problemKey, status: 'loading'/);
   assert.match(app, /activeDay \? <>[\s\S]*?topicLoadState\.status === 'loading'/);
   assert.match(app, /screen === 'report' && \(category \?/);
@@ -69,7 +69,7 @@ test('startup waits for both actual content readiness and the completed radial r
   assert.match(app, /if \(!content \|\| !splashAnimationComplete \|\| loadError\) return \(/);
   assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\.decode\(\)|setTimeout\(.*splash/i);
   assert.match(app, /onAnimationEnd=\{\(event\) => \{/);
-  assert.match(app, /event\.animationName === 'loadingLogoBloom'\) setSplashAnimationComplete\(true\)/);
+  assert.match(app, /event\.animationName === 'loadingLogoBloom'\) setSplashLogoRevealComplete\(true\)/);
   assert.match(app, /prefers-reduced-motion: reduce/);
   assert.match(app, /assets\/splash-logo\.webp/);
   assert.match(app, /fallbackAttempted/);
