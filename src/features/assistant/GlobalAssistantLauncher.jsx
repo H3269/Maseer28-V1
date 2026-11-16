@@ -171,7 +171,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const t12RelationshipGateBlocked = t12RelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
   const t12PrivacyNotice = isT12DailyPromptContext ? getInterpersonalPrivacyNotice(dailyContext?.data) : null;
   const activePromptGroups = screen === 'books'
-    ? LIBRARY_ASSISTANT_PROMPT_GROUPS
+    ? [...LIBRARY_ASSISTANT_PROMPT_GROUPS, ...PAGE_ASSISTANT_PROMPT_GROUPS]
     : isAngerDailyPromptContext
       ? getAngerDailyAssistantPromptGroups(dailyContext?.day)
       : isAnxietyDailyPromptContext
