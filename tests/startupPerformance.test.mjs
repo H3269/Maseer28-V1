@@ -74,7 +74,8 @@ test('startup waits for both actual content readiness and the completed radial r
   assert.match(app, /event\.animationName === 'loadingProgressFill'/);
   assert.doesNotMatch(app, /prefers-reduced-motion: reduce/);
   assert.match(app, /assets\/splash-logo\.webp/);
-  assert.match(app, /fallbackAttempted/);
+  assert.match(app, /event\.currentTarget\.hidden = true;[\s\S]*?setSplashLogoRevealComplete\(true\)/);
+  assert.doesNotMatch(app, /assets\/logo\.png|fallbackAttempted/);
   assert.doesNotMatch(app, /splashAnimationElapsedMs|splash-animation-delay/);
   assert.match(app, /Start the visual gate when React actually mounts the visible splash/);
   assert.match(css, /animation: loadingLogoBloom var\(--path28-splash-duration, 950ms\)/);
@@ -179,7 +180,8 @@ test('the initial splash preloads the generated lightweight WebP logo', async ()
 
 test('logo failure never blocks startup, while content failure keeps its retry path', () => {
   assert.match(app, /if \(!content \|\| !splashLogoRevealComplete || !splashProgressComplete \|\| loadError\) return \(/);
-  assert.match(app, /fallbackAttempted/);
+  assert.match(app, /event\.currentTarget\.hidden = true;[\s\S]*?setSplashLogoRevealComplete\(true\)/);
+  assert.doesNotMatch(app, /assets\/logo\.png|fallbackAttempted/);
   assert.match(app, /<div className="loadingError" role="alert">[\s\S]*?window\.location\.reload\(\)/);
   assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\.decode\(\)|setTimeout\(.*splash/i);
 });
