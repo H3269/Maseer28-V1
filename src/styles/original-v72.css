@@ -7453,3 +7453,20 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
   transform: none !important;
   animation: none !important;
 }
+
+
+/* Safe splash-logo motion: decorative only, never gates rendering or readiness. */
+.appLoading .loadingBrand img {
+  animation: loadingLogoSafeEnter 420ms cubic-bezier(.2,.72,.2,1) both !important;
+}
+@keyframes loadingLogoSafeEnter {
+  from { opacity: 1; transform: scale(.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .appLoading .loadingBrand img {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
