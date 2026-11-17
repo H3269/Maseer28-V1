@@ -27,6 +27,13 @@ const SAFETY_STATUSES = new Set([
   'safety_clarification_required',
 ]);
 
+const PAGE_PREPARED_QUESTIONS = new Set([
+  'این صفحه برای چیست؟',
+  'اینجا چه کارهایی می‌توانم انجام بدهم؟',
+  'چطور به خانه برگردم؟',
+  'امکانات برنامه چیست؟',
+]);
+
 
 
 /**
