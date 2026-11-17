@@ -36,7 +36,8 @@ test('T13 guide has exactly 28 days and 392 complete answers under the fixed 14-
   assert.equal(T13_DAILY_ASSISTANT_GUIDES.length, 28);
   for (const [index, guide] of T13_DAILY_ASSISTANT_GUIDES.entries()) {
     assert.equal(guide.day, index + 1); assert.equal(guide.topicId, 'T13'); assert.equal(guide.topic, 'تنهایی');
-    assert.equal(guide.questions.length, 14); assert.equal(guide.reviewStatus, 'pending_owner_review');
+    assert.equal(guide.questions.length, 14);
+    assert.equal(guide.reviewStatus, guide.day === 14 ? 'owner_approved' : 'pending_owner_review');
     for (const field of ['lightActionVersion','progressActionVersion','restActionVersion']) assert.ok(guide[field], 'missing '+field+' on day '+guide.day);
     assert.equal(guide.evidenceGrade, 'not_assessed'); assert.equal(guide.subtopicMappingStatus, 'proposed_not_registered');
     assert.deepEqual(guide.questions.map((q) => q.label), EXPECTED_QUESTIONS);
@@ -176,17 +177,18 @@ test('T13 launcher exposes only safe-day prompts and labels the topic correctly'
   assert.match(launcher, /isT13DailyPromptContext \? "تنهایی"/u);
 });
 
-test('T13 page assistant serves ordinary prepared days but does not bypass the day-14 safety block', () => {
+test('T13 day 14 is owner-approved and is not blocked by a specialist-review runtime gate', () => {
   const guide=T13_DAILY_ASSISTANT_GUIDES[0], content=dailyContent(guide);
   const legacyContent={...content}; delete legacyContent.topic_id;
   const result=makePageAssistantTurn({screen:'day',text:guide.questions[0].value,dailyContext:{day:1,problem:'تنهایی',data:legacyContent,guidanceData:legacyContent}});
   assert.equal(result.status,'daily_guidance_available'); assert.match(result.message,/راهنمای روز 1 تنهایی/u);
   const safetyGuide=T13_DAILY_ASSISTANT_GUIDES[13];
-  const safetyDay={...dailyContent(safetyGuide),review_status:'pending_expert_review',risk_level:'caution',subtopic_ids:['T13-S01']};
-  assert.equal(getDailySafetyMode(safetyDay),'blocked');
-  const blocked=makePageAssistantTurn({screen:'day',text:safetyGuide.questions[0].value,dailyContext:{day:14,problem:'تنهایی',data:safetyDay,guidanceData:safetyDay}});
-  assert.equal(blocked.status,'daily_guidance_unavailable'); assert.match(blocked.message,/بازبینی ایمنی تخصصی/u);
+  const safetyDay={...dailyContent(safetyGuide),review_status:'owner_approved',risk_level:'caution',subtopic_ids:['T13-S02','T13-S03']};
+  assert.equal(safetyGuide.reviewStatus,'owner_approved');
+  assert.equal(getDailySafetyMode(safetyDay),'caution');
+  const available=makePageAssistantTurn({screen:'day',text:safetyGuide.questions[0].value,dailyContext:{day:14,problem:'تنهایی',data:safetyDay,guidanceData:safetyDay}});
+  assert.equal(available.status,'daily_guidance_available'); assert.match(available.message,/راهنمای روز 14 تنهایی/u);
   const emergency=makePageAssistantTurn({screen:'day',text:'دیگه نمی‌کشم. همه‌چی تمومه.',dailyContext:{day:14,problem:'تنهایی',data:safetyDay,guidanceData:safetyDay}});
   assert.equal(emergency.status,'safety_clarification_required',
-    'blocked daily content must never suppress the independent emergency safety route');
+    'owner approval must not suppress the independent emergency safety route');
 });
