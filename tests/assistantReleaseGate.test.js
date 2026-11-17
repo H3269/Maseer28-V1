@@ -54,7 +54,8 @@ test('global assistant launcher is mounted across navigable screens, including s
   assert.doesNotMatch(supportUi, /AssessmentAssistant|حریم خصوصی|بازیابی فایل پشتیبان|دستیار آزمایشی/);
 });
 
-test('eligible page guides include shared page-purpose, action, navigation, and app-feature prompts', () => {
+test('eligible page guides include shared page-purpose, action, navigation, and app-feature prompts', async () => {
+  const launcherUi = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
   assert.match(launcherUi, /pageGroups \? \[\.\.\.pageGroups, \.\.\.PAGE_ASSISTANT_PROMPT_GROUPS\]/);
   assert.match(launcherUi, /screen === 'day' \? \[\] : \(/);
   assert.match(launcherUi, /if \(!visible \|\| screen === 'bookReader'\) return null/);
