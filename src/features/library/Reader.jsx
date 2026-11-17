@@ -329,21 +329,32 @@ export default function Reader({ book, onClose, initialVersion = null, initialSo
   }
   recordReaderDiagnostic('layout-effect-scheduled', { versionPresent: true, versionContentPresent: Boolean(version?.content) });
 
-  const frame = requestAnimationFrame(() => {
-    recordReaderDiagnostic('layout-animation-frame-fired');
+  let rebuildStarted = false;
+  let fallbackTimer = null;
+  const runRebuild = (trigger) => {
+    if (rebuildStarted) return;
+    rebuildStarted = true;
+    if (fallbackTimer !== null) window.clearTimeout(fallbackTimer);
+    recordReaderDiagnostic(trigger === 'animation-frame' ? 'layout-animation-frame-fired' : 'layout-timeout-fallback-fired');
     const anchor = preserveAnchorRef.current;
     preserveAnchorRef.current = null;
-
     rebuild(anchor);
-  });
+  };
+
+  const frame = requestAnimationFrame(() => runRebuild('animation-frame'));
+  // Some embedded/mobile WebViews can defer animation frames while the reader
+  // is being revealed. A timer fallback prevents the loading placeholder from
+  // depending exclusively on the next paint cycle.
+  fallbackTimer = window.setTimeout(() => runRebuild('timeout-fallback'), 180);
 
   return () => {
     recordReaderDiagnostic('layout-effect-cleanup-before-next-run', {
       versionPresent: Boolean(version),
       versionContentPresent: Boolean(version?.content),
-      framePending: true,
+      framePending: !rebuildStarted,
     });
     cancelAnimationFrame(frame);
+    if (fallbackTimer !== null) window.clearTimeout(fallbackTimer);
   };
 }, [version, settings.fontStep, rebuild]);
   useEffect(() => {
