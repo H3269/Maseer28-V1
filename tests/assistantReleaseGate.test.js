@@ -52,6 +52,11 @@ test('global assistant launcher is mounted across navigable screens, including s
   assert.match(launcherUi, /aria-label="باز کردن دستیار مسیر۲۸"/);
   assert.match(launcherUi, /onPointerDown=\{canMoveLauncher \? startLauncherDrag : undefined\}/);
   assert.match(launcherUi, /onPointerMove=\{canMoveLauncher \? moveLauncher : undefined\}/);
+  assert.match(launcherUi, /onTouchStart=\{canMoveLauncher \? startLauncherTouch : undefined\}/, 'mobile touch input must have a drag fallback');
+  assert.match(launcherUi, /onTouchMove=\{canMoveLauncher \? moveLauncherTouch : undefined\}/);
+  assert.match(launcherUi, /onTouchEnd=\{canMoveLauncher \? finishLauncherTouch : undefined\}/);
+  assert.match(launcherUi, /function beginLauncherDrag\(/);
+  assert.match(launcherUi, /function updateLauncherDrag\(/);
   assert.match(launcherUi, /path28-assistant-launcher-position-v1/);
   assert.match(launcherUi, /globalAssistantLauncherPositioned/);
   assert.match(launcherUi, /Math\.hypot\(deltaX, deltaY\) < 6/);

@@ -102,26 +102,38 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     return () => window.removeEventListener('resize', keepOnScreen);
   }, [canMoveLauncher, launcherPosition?.x, launcherPosition?.y]);
 
-  function startLauncherDrag(event) {
-    if (!canMoveLauncher || open || event.button !== 0) return;
+  function beginLauncherDrag(pointerId, clientX, clientY) {
+    if (!canMoveLauncher || open || launcherDragRef.current) return;
     const rect = launcherRef.current?.getBoundingClientRect();
     if (!rect) return;
     launcherDragRef.current = {
-      pointerId: event.pointerId,
-      startX: event.clientX,
-      startY: event.clientY,
+      pointerId,
+      startX: clientX,
+      startY: clientY,
       originX: rect.left,
       originY: rect.top,
       moved: false,
     };
-    event.currentTarget.setPointerCapture?.(event.pointerId);
   }
 
-  function moveLauncher(event) {
+  function startLauncherDrag(event) {
+    if (event.pointerType !== 'touch' && event.button !== 0) return;
+    beginLauncherDrag(event.pointerId, event.clientX, event.clientY);
+    if (launcherDragRef.current?.pointerId === event.pointerId) {
+      try { event.currentTarget.setPointerCapture?.(event.pointerId); } catch {}
+    }
+  }
+
+  function startLauncherTouch(event) {
+    const touch = event.changedTouches?.[0];
+    if (touch) beginLauncherDrag('touch', touch.clientX, touch.clientY);
+  }
+
+  function updateLauncherDrag(pointerId, clientX, clientY) {
     const drag = launcherDragRef.current;
-    if (!drag || drag.pointerId !== event.pointerId) return;
-    const deltaX = event.clientX - drag.startX;
-    const deltaY = event.clientY - drag.startY;
+    if (!drag || drag.pointerId !== pointerId) return;
+    const deltaX = clientX - drag.startX;
+    const deltaY = clientY - drag.startY;
     if (!drag.moved && Math.hypot(deltaX, deltaY) < 6) return;
     drag.moved = true;
     suppressLauncherClickRef.current = true;
@@ -133,14 +145,31 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     setLauncherPosition(drag.lastPosition);
   }
 
-  function finishLauncherDrag(event) {
+  function moveLauncher(event) {
+    updateLauncherDrag(event.pointerId, event.clientX, event.clientY);
+  }
+
+  function moveLauncherTouch(event) {
+    const touch = event.changedTouches?.[0];
+    if (touch) updateLauncherDrag('touch', touch.clientX, touch.clientY);
+  }
+
+  function persistLauncherDrag(pointerId) {
     const drag = launcherDragRef.current;
-    if (!drag || drag.pointerId !== event.pointerId) return;
+    if (!drag || drag.pointerId !== pointerId) return;
     launcherDragRef.current = null;
     if (drag.moved && drag.lastPosition) {
       setLauncherPosition(drag.lastPosition);
       try { window.localStorage.setItem('path28-assistant-launcher-position-v1', JSON.stringify(drag.lastPosition)); } catch {}
     }
+  }
+
+  function finishLauncherDrag(event) {
+    persistLauncherDrag(event.pointerId);
+  }
+
+  function finishLauncherTouch() {
+    persistLauncherDrag('touch');
   }
 
   useEffect(() => {
@@ -478,6 +507,11 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         onPointerMove={canMoveLauncher ? moveLauncher : undefined}
         onPointerUp={canMoveLauncher ? finishLauncherDrag : undefined}
         onPointerCancel={canMoveLauncher ? finishLauncherDrag : undefined}
+        onTouchStart={canMoveLauncher ? startLauncherTouch : undefined}
+        onTouchMove={canMoveLauncher ? moveLauncherTouch : undefined}
+        onTouchEnd={canMoveLauncher ? finishLauncherTouch : undefined}
+        onTouchCancel={canMoveLauncher ? finishLauncherTouch : undefined}
+        draggable={false}
         onClick={() => {
           if (suppressLauncherClickRef.current) {
             suppressLauncherClickRef.current = false;
