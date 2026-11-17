@@ -118,9 +118,6 @@ function MainApp() {
   const [splashLogoRevealComplete, setSplashLogoRevealComplete] = useState(false);
   const [splashProgressComplete, setSplashProgressComplete] = useState(false);
   const [assistantLauncherLoaded, setAssistantLauncherLoaded] = useState(false);
-  const [assistantOpen, setAssistantOpen] = useState(false);
-  const [assistantOpenRequest, setAssistantOpenRequest] = useState(0);
-  const assistantLauncherButtonRef = useRef(null);
   const [journey, setJourney] = useState(initial.state);
   const [userProfile, setUserProfileState] = useState(initial.user);
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(initial.onboardingComplete);
@@ -849,24 +846,7 @@ function navigate(next) {
         {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} onArchive={() => navigate('archive')} />}
         <VersionFooter navVisible={navVisible} />
       </div>
-      {assistantVisible && assistantLauncherLoaded && <button
-        ref={assistantLauncherButtonRef}
-        className="globalAssistantLauncher"
-        type="button"
-        onClick={() => {
-          setAssistantOpen(true);
-          setAssistantOpenRequest((value) => value + 1);
-        }}
-        aria-label="باز کردن دستیار مسیر۲۸"
-        aria-haspopup="dialog"
-        aria-expanded={assistantOpen}
-      ><AppIcon name="message" size={20} /><span>دستیار</span></button>}
       {assistantVisible && assistantLauncherLoaded && <Suspense fallback={null}><GlobalAssistantLauncher
-        hideLauncher
-        initialOpen={assistantOpen}
-        openRequestId={assistantOpenRequest}
-        onOpenChange={setAssistantOpen}
-        externalLauncherRef={assistantLauncherButtonRef}
         screen={screen}
         visible={assistantVisible}
         dailyContext={screen === 'day' && activeDay ? {
