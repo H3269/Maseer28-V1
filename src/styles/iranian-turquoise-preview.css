@@ -1805,3 +1805,151 @@ body .bookReaderFull.theme-night .readerProgressTrack span { background: linear-
 .app #day .safetyNote strong {
   color: #245A9A !important;
 }
+
+
+/* Dashboard: one unified personal-information panel, using the app's
+   existing lapis, turquoise and pale-blue visual identity. */
+.app #dashboard #profileSummary .profileOverviewCard {
+  position: relative !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  margin: 14px 0 18px !important;
+  padding: 16px 17px 13px !important;
+  background: linear-gradient(145deg,#FFFFFF 0%,#F3F8FC 58%,#EAF5F8 100%) !important;
+  border: 1px solid #C8DCE9 !important;
+  border-radius: 20px !important;
+  box-shadow: 0 9px 24px rgba(16,42,67,.075), inset 0 1px 0 rgba(255,255,255,.95) !important;
+  color: #173E62 !important;
+}
+.app #dashboard .profileOverviewCard::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 0 auto !important;
+  height: 4px !important;
+  background: linear-gradient(90deg,#245A9A 0%,#4096C8 55%,#40CFC4 100%) !important;
+}
+.app #dashboard .profileOverviewHeading {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin: 0 0 13px !important;
+  padding: 2px 1px 11px !important;
+  border-bottom: 1px solid #DCE8EF !important;
+}
+.app #dashboard .profileOverviewAccent {
+  display: block !important;
+  flex: 0 0 9px !important;
+  width: 9px !important;
+  height: 30px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(180deg,#40D6CC 0%,#4096C8 100%) !important;
+}
+.app #dashboard .profileOverviewHeading b {
+  display: block !important;
+  color: #173E62 !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+}
+.app #dashboard .profileOverviewHeading small {
+  display: block !important;
+  margin-top: 3px !important;
+  color: #668096 !important;
+  font-size: 11px !important;
+}
+.app #dashboard #profileSummary .profileOverviewCard .profile {
+  display: grid !important;
+  grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  gap: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.app #dashboard #profileSummary .profileOverviewCard .profileBox {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  min-width: 0 !important;
+  min-height: 58px !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 9px 10px !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.app #dashboard #profileSummary .profileOverviewCard .profileBox:nth-child(odd) {
+  border-inline-end: 1px solid #DCE8EF !important;
+}
+.app #dashboard #profileSummary .profileOverviewCard .profileBox:nth-child(n+3) {
+  border-top: 1px solid #DCE8EF !important;
+}
+.app #dashboard #profileSummary .profileOverviewCard .profileBox > span {
+  color: #668096 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+.app #dashboard #profileSummary .profileOverviewCard .profileBox > b {
+  display: block !important;
+  overflow-wrap: anywhere !important;
+  color: #173E62 !important;
+  font-size: 13px !important;
+  line-height: 1.65 !important;
+  font-weight: 800 !important;
+}
+.app #dashboard .profileOverviewCard .metric {
+  display: grid !important;
+  grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  gap: 0 !important;
+  margin: 12px 0 0 !important;
+  padding: 10px 0 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid #CFE0E9 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.app #dashboard .profileOverviewCard .metricBox {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 3px !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 5px 8px !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.app #dashboard .profileOverviewCard .metricBox + .metricBox {
+  border-inline-start: 1px solid #CFE0E9 !important;
+}
+.app #dashboard .profileOverviewCard .metricBox strong {
+  color: #245A9A !important;
+  font-size: 23px !important;
+  line-height: 1.2 !important;
+  font-weight: 900 !important;
+}
+.app #dashboard .profileOverviewCard .metricBox span {
+  color: #668096 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+}
+@media (max-width: 380px) {
+  .app #dashboard #profileSummary .profileOverviewCard {
+    padding: 14px 12px 11px !important;
+    border-radius: 17px !important;
+  }
+  .app #dashboard #profileSummary .profileOverviewCard .profileBox {
+    padding: 8px 7px !important;
+  }
+  .app #dashboard #profileSummary .profileOverviewCard .profileBox > b {
+    font-size: 12px !important;
+  }
+}
