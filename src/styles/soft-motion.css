@@ -33,6 +33,16 @@ body:not(.reader-mode) .app:not(.appLoading) .globalAssistantBackdrop {
 body:not(.reader-mode) .app:not(.appLoading) .globalAssistantDialog {
   animation: m28SoftFadeIn 190ms ease-out both;
 }
+
+/* Other app dialogs and notices enter softly; the reader itself remains outside .app. */
+body:not(.reader-mode) .app:not(.appLoading) .validationModal,
+body:not(.reader-mode) .app:not(.appLoading) .copyrightModal {
+  animation: m28SoftFadeIn 160ms ease-out both;
+}
+body:not(.reader-mode) .app:not(.appLoading) .validationCard,
+body:not(.reader-mode) .app:not(.appLoading) .copyrightCard {
+  animation: m28SoftPageEnter 190ms cubic-bezier(.2,.75,.25,1) both;
+}
 body:not(.reader-mode) .app:not(.appLoading) .assistantTranscript > .userMessage,
 body:not(.reader-mode) .app:not(.appLoading) .assistantTranscript > .assistantMessage {
   animation: m28SoftMessageEnter 180ms ease-out both;
@@ -44,8 +54,14 @@ body:not(.reader-mode) .app:not(.appLoading) .assistantTranscript > .assistantMe
   body:not(.reader-mode) .app:not(.appLoading) .card,
   body:not(.reader-mode) .app:not(.appLoading) .globalAssistantKnowledge,
   body:not(.reader-mode) .app:not(.appLoading) .libraryAssistantPromptCard,
+  body:not(.reader-mode) .app:not(.appLoading) .validationCard,
+  body:not(.reader-mode) .app:not(.appLoading) .copyrightCard,
   body:not(.reader-mode) .app:not(.appLoading) .globalAssistantBackdrop,
   body:not(.reader-mode) .app:not(.appLoading) .globalAssistantDialog,
+  body:not(.reader-mode) .app:not(.appLoading) .validationModal,
+  body:not(.reader-mode) .app:not(.appLoading) .copyrightModal,
+  body:not(.reader-mode) .app:not(.appLoading) .validationCard,
+  body:not(.reader-mode) .app:not(.appLoading) .copyrightCard,
   body:not(.reader-mode) .app:not(.appLoading) .assistantTranscript > .userMessage,
   body:not(.reader-mode) .app:not(.appLoading) .assistantTranscript > .assistantMessage {
     animation: none !important;
