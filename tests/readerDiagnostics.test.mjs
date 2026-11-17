@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
+  downloadReaderDiagnostics,
   isReaderDiagnosticsEnabled,
   recordReaderDiagnostic,
   startReaderDiagnostics,
@@ -107,6 +108,7 @@ test('downloaded Reader diagnostics redact resource query strings and omit profi
     const payload = JSON.parse(payloadText);
 
     assert.equal(payload.book.legacyId, 3);
+    assert.equal(payload.environment.userAgent, undefined);
     assert.deepEqual(payload.resources, [{
       path: '/Maseer28/content/books/book3.json',
       durationMs: 42.3,
