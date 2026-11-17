@@ -55,6 +55,91 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const endRef = useRef(null);
   const initialContextEffectRef = useRef(false);
   const openRequestRef = useRef(openRequestId);
+  const [launcherPosition, setLauncherPosition] = useState(null);
+  const launcherDragRef = useRef(null);
+  const suppressLauncherClickRef = useRef(false);
+  const canMoveLauncher = !['day', 'books', 'bookReader'].includes(screen);
+
+  useEffect(() => {
+    if (!canMoveLauncher) return;
+    try {
+      const saved = window.localStorage.getItem('path28-assistant-launcher-position-v1');
+      if (!saved) return;
+      const parsed = JSON.parse(saved);
+      if (Number.isFinite(parsed?.x) && Number.isFinite(parsed?.y)) {
+        setLauncherPosition({ x: parsed.x, y: parsed.y });
+      }
+    } catch {
+      // Position persistence is optional; the launcher remains usable without storage.
+    }
+  }, [canMoveLauncher]);
+
+  useEffect(() => {
+    if (!canMoveLauncher || !launcherPosition) return;
+    const button = launcherRef.current;
+    if (!button) return;
+    const maxX = Math.max(8, window.innerWidth - button.offsetWidth - 8);
+    const maxY = Math.max(8, window.innerHeight - button.offsetHeight - 8);
+    const clamped = {
+      x: Math.min(maxX, Math.max(8, launcherPosition.x)),
+      y: Math.min(maxY, Math.max(8, launcherPosition.y)),
+    };
+    if (clamped.x !== launcherPosition.x || clamped.y !== launcherPosition.y) {
+      setLauncherPosition(clamped);
+      try { window.localStorage.setItem('path28-assistant-launcher-position-v1', JSON.stringify(clamped)); } catch {}
+    }
+    const keepOnScreen = () => {
+      const currentButton = launcherRef.current;
+      if (!currentButton) return;
+      const next = {
+        x: Math.min(Math.max(8, window.innerWidth - currentButton.offsetWidth - 8), Math.max(8, clamped.x)),
+        y: Math.min(Math.max(8, window.innerHeight - currentButton.offsetHeight - 8), Math.max(8, clamped.y)),
+      };
+      setLauncherPosition(next);
+      try { window.localStorage.setItem('path28-assistant-launcher-position-v1', JSON.stringify(next)); } catch {}
+    };
+    window.addEventListener('resize', keepOnScreen);
+    return () => window.removeEventListener('resize', keepOnScreen);
+  }, [canMoveLauncher, launcherPosition?.x, launcherPosition?.y]);
+
+  function startLauncherDrag(event) {
+    if (!canMoveLauncher || open || event.button !== 0) return;
+    const rect = launcherRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    launcherDragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      originX: rect.left,
+      originY: rect.top,
+      moved: false,
+    };
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+  }
+
+  function moveLauncher(event) {
+    const drag = launcherDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const deltaX = event.clientX - drag.startX;
+    const deltaY = event.clientY - drag.startY;
+    if (!drag.moved && Math.hypot(deltaX, deltaY) < 6) return;
+    drag.moved = true;
+    suppressLauncherClickRef.current = true;
+    const button = launcherRef.current;
+    if (!button) return;
+    const x = Math.min(window.innerWidth - button.offsetWidth - 8, Math.max(8, drag.originX + deltaX));
+    const y = Math.min(window.innerHeight - button.offsetHeight - 8, Math.max(8, drag.originY + deltaY));
+    setLauncherPosition({ x: Math.max(8, x), y: Math.max(8, y) });
+  }
+
+  function finishLauncherDrag(event) {
+    const drag = launcherDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    launcherDragRef.current = null;
+    if (drag.moved && launcherPosition) {
+      try { window.localStorage.setItem('path28-assistant-launcher-position-v1', JSON.stringify(launcherPosition)); } catch {}
+    }
+  }
 
   useEffect(() => {
     if (!initialContextEffectRef.current) {
@@ -384,10 +469,22 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     <>
       {!hideLauncher && <button
         ref={launcherRef}
-        className="globalAssistantLauncher"
+        className={`globalAssistantLauncher${canMoveLauncher ? ' globalAssistantLauncherDraggable' : ''}`}
         type="button"
-        onClick={activate}
+        style={canMoveLauncher && launcherPosition ? { left: launcherPosition.x, top: launcherPosition.y, right: 'auto', bottom: 'auto' } : undefined}
+        onPointerDown={canMoveLauncher ? startLauncherDrag : undefined}
+        onPointerMove={canMoveLauncher ? moveLauncher : undefined}
+        onPointerUp={canMoveLauncher ? finishLauncherDrag : undefined}
+        onPointerCancel={canMoveLauncher ? finishLauncherDrag : undefined}
+        onClick={() => {
+          if (suppressLauncherClickRef.current) {
+            suppressLauncherClickRef.current = false;
+            return;
+          }
+          activate();
+        }}
         aria-label="باز کردن دستیار مسیر۲۸"
+        aria-description={canMoveLauncher ? 'برای جابه‌جایی، دکمه را بکشید؛ برای باز کردن، یک‌بار لمس کنید.' : undefined}
         aria-haspopup="dialog"
         aria-expanded={open}
       >
