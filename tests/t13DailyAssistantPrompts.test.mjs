@@ -47,6 +47,7 @@ test('T13 content overlay has 28 days and exactly matches assistant exercise/act
   const days = overlay.categories['تنهایی']?.days || []; assert.equal(days.length, 28);
   for (const guide of T13_DAILY_ASSISTANT_GUIDES) {
     const day = days.find((item) => item.day === guide.day); assert.ok(day, 'missing day ' + guide.day);
+    assert.equal(day.title, guide.title, 'title mismatch on day ' + guide.day);
     assert.equal(day.exercise, guide.exercise, 'exercise mismatch on day ' + guide.day);
     assert.equal(day.actionText, guide.action, 'action mismatch on day ' + guide.day);
   }
