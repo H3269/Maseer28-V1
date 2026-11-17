@@ -9,6 +9,7 @@ on:
       - 'src/features/library/**'
       - 'scripts/prepare-library-cover-thumbnails.mjs'
       - 'tests/startupPerformance.test.mjs'
+      - 'tests/libraryBookContentIntegrity.test.js'
       - 'tests/browser/reader-reopen-five-books.mjs'
       - 'package.json'
       - 'package-lock.json'
@@ -39,10 +40,8 @@ jobs:
           cache: npm
 
       - name: Install dependencies
+        id: install
         run: npm ci
-
-      - name: Dependency security audit
-        run: npm audit --audit-level=high
 
       - name: Run complete automated test suite
         run: npm test
@@ -78,3 +77,10 @@ jobs:
             public/assets/covers/book*.webp
             public/assets/covers/library/*.webp
           if-no-files-found: error
+
+      # Keep the security gate blocking, but run functional validation first so
+      # an advisory with no patched release cannot suppress reader regression tests.
+      - name: Dependency security audit
+        if: ${{ always() && !cancelled() && steps.install.outcome == 'success' }}
+        id: security-audit
+        run: npm audit --audit-level=high
