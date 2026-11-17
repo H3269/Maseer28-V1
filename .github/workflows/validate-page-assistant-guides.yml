@@ -1,0 +1,32 @@
+name: Validate page-specific assistant guides
+
+on:
+  pull_request:
+    paths:
+      - 'src/features/assistant/GlobalAssistantLauncher.jsx'
+      - 'src/features/assistant/pageAssistantTurn.js'
+      - 'src/features/assistant/pageAssistantPrompts.js'
+      - 'tests/pageAssistantPrompts.test.js'
+      - '.github/workflows/validate-page-assistant-guides.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  page-assistant-guides:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Test page-specific assistant guides and protected pages
+        run: node --test tests/pageAssistantPrompts.test.js tests/pageAssistantContext.test.js
+      - name: Build application
+        run: npm run build
