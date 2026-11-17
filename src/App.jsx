@@ -150,7 +150,7 @@ function MainApp() {
   // onboarding state are ready. Load its UI chunk immediately at that point,
   // then reveal the launcher only after the import has resolved.
   useEffect(() => {
-    if (!content || !userProfile || !hasCompletedOnboarding) return undefined;
+    if (!content) return undefined;
     let cancelled = false;
     loadGlobalAssistantLauncher().then(() => {
       if (!cancelled) setAssistantLauncherLoaded(true);
@@ -158,7 +158,7 @@ function MainApp() {
       if (!cancelled) setAssistantLauncherLoaded(false);
     });
     return () => { cancelled = true; };
-  }, [content, userProfile, hasCompletedOnboarding]);
+  }, [content]);
 
   useEffect(() => {
     let cancelled = false;
@@ -818,6 +818,8 @@ function navigate(next) {
   // Navigation becomes available only after the first profile and baseline
   // assessment are complete, then remains independent of the active journey.
   const navVisible = onboardingComplete;
+  // Keep the existing day/library behavior; expose page help during onboarding only.
+  const assistantVisible = navVisible || ['home', 'howWorks', 'about', 'profile', 'pathSetup', 'assessment'].includes(screen);
   const archiveEntries = journey.archive || [];
   const currentPathAlreadyArchived = Boolean(journey.pathId) && archiveEntries.some((item) => item.pathId === journey.pathId);
   const resultBookRec = journey.daily?.[resultDay || currentDay]?.bookRec || null;
@@ -847,7 +849,7 @@ function navigate(next) {
         {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} onArchive={() => navigate('archive')} />}
         <VersionFooter navVisible={navVisible} />
       </div>
-      {navVisible && assistantLauncherLoaded && <button
+      {assistantVisible && assistantLauncherLoaded && <button
         ref={assistantLauncherButtonRef}
         className="globalAssistantLauncher"
         type="button"
@@ -859,14 +861,14 @@ function navigate(next) {
         aria-haspopup="dialog"
         aria-expanded={assistantOpen}
       ><AppIcon name="message" size={20} /><span>دستیار</span></button>}
-      {navVisible && assistantLauncherLoaded && <Suspense fallback={null}><GlobalAssistantLauncher
+      {assistantVisible && assistantLauncherLoaded && <Suspense fallback={null}><GlobalAssistantLauncher
         hideLauncher
         initialOpen={assistantOpen}
         openRequestId={assistantOpenRequest}
         onOpenChange={setAssistantOpen}
         externalLauncherRef={assistantLauncherButtonRef}
         screen={screen}
-        visible={navVisible}
+        visible={assistantVisible}
         dailyContext={screen === 'day' && activeDay ? {
           day: currentDay,
           problem: journey.profileData?.problem || '',
