@@ -57,6 +57,24 @@ test('T13 content overlay has 28 days and exactly matches assistant exercise/act
   }
 });
 
+test('T13 titles remain distinct from all other topic titles under the shared 0.30 screen', async () => {
+  const overlay=JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json',import.meta.url),'utf8'));
+  const normalize=(value)=>String(value||'').normalize('NFKC').replace(/[يى]/g,'ی').replace(/ك/g,'ک')
+    .replace(/[\\u200c\\u200f\\u200e]/g,' ').replace(/[^\\p{L}\\p{N}\\s]/gu,' ').replace(/\\s+/g,' ').trim().toLowerCase();
+  const stop=new Set(['نسخه','سبک','تمرین','اقدام','فقط','یک','و','یا','را','از','به','در','که','اگر','برای','با','بدون','امروز','فعلا','کن','کنید','بنویس','بنویسی','بنویسید','ثبت','انتخاب','نام','ببر','مشخص','بررسی','انجام','بده','بگیر','دارد','هست','است','میشود','شود','تا','خودت','خود','او','این','آن','همان','هر','هیچ','همه']);
+  const tokens=(value)=>new Set(normalize(value).split(' ').filter((token)=>token.length>2&&!stop.has(token)));
+  const t13=overlay.categories['تنهایی'].days;
+  assert.equal(new Set(t13.map(day=>normalize(day.title))).size,28);
+  for(const [topic,category] of Object.entries(overlay.categories)) if(topic!=='تنهایی') {
+    for(const day of t13) for(const other of category.days||[]) {
+      const left=tokens(day.title),right=tokens(other.title),union=new Set([...left,...right]);
+      let intersection=0;for(const token of left)if(right.has(token))intersection+=1;
+      const similarity=union.size?intersection/union.size:0;
+      assert.ok(similarity<0.30,'T13 day '+day.day+' title overlaps '+topic+' day '+other.day+': '+similarity);
+    }
+  }
+});
+
 test('T13 exposes five prompt groups and exactly fourteen questions for every day', () => {
   for (let day = 1; day <= 28; day += 1) {
     const groups = getT13DailyAssistantPromptGroups(day); assert.equal(groups.length, 5);
