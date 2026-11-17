@@ -3,7 +3,6 @@ import SmartSelect from '../../shared/components/SmartSelect.jsx';
 import AppIcon from '../../shared/components/AppIcon.jsx';
 import { preserveDailyGuidanceSourceIdentity } from '../assistant/dailyGuidanceSourceIdentity.js';
 import { buttonLabel } from '../../shared/buttonLabel.jsx';
-import { getJourneyProgressCounts } from './progress.js';
 import { copyTextToClipboard, fa, formatDate, normalizeDigits } from '../../shared/utils.js';
 import { burdenScoreFromAnswers, evaluatePqhtEligibility, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
 import { exportArchivesZip, triggerBlobDownload } from './archiveExport.js';
@@ -183,11 +182,9 @@ export function AssessmentScreen({ initial, onSave, onValidation }) {
   return <section className="card assessmentCard" id="assessment"><span className="badge">روز صفر · ارزیابی اولیه</span><h2>نقطه شروع مسیر را ثبت کن</h2><p className="muted">این ۵ سؤال یک خودگزارش‌دهی اختصاصی برای ثبت وضعیت امروزت هستند. پاسخ درست یا غلطی وجود ندارد؛ وضعیتت را از ۰ تا ۴ انتخاب کن تا در پایان مسیر تغییر ادراک‌شده را مرور کنی. این پرسش‌ها ابزار تشخیص یا مقیاس روان‌سنجی اعتبارسنجی‌شده نیستند.</p><div className="assessmentIntro"><span>۰</span><div><b>اصلاً / بسیار کم</b><small>هرچه عدد به ۴ نزدیک‌تر شود، شدت یا میزان تجربه بیشتر است.</small></div><span>۴</span></div><AssessmentScale prefix="a" values={values} setValues={setValues} /><button className="primary heroAction" onClick={submit}>{buttonLabel('ثبت ارزیابی و شروع روز ۱')}</button></section>;
 }
 
-export function Dashboard({ journey, onCurrent, onBooks, onArchive, onSupport, onChannel }) {
+export function Dashboard({ onCurrent, onBooks, onArchive, onSupport, onChannel }) {
   return <section className="card" id="dashboard"><button className="primary heroAction" onClick={onCurrent}>{buttonLabel('ادامه مسیر امروز')}</button><div className="quickGrid"><button className="quickAction" onClick={onBooks}><span><AppIcon name="bookOpen" size={24} /></span><b>کتابخانه</b><small>مطالعه هدفمند</small></button><button className="quickAction" onClick={onArchive}><span><AppIcon name="archive" size={24} /></span><b>آرشیو</b><small>مسیرهای قبلی</small></button><button className="quickAction" onClick={onSupport}><span><AppIcon name="message" size={24} /></span><b>پشتیبانی</b><small>ارتباط با مرکز</small></button><button className="quickAction" onClick={onChannel}><span><AppIcon name="megaphone" size={24} /></span><b>کانال مرکز</b><small>محتوای تکمیلی</small></button></div><p className="muted dashboardNote">هر روز فقط یک مرحله اصلی داری؛ اگر تمرینی به‌دلیل ملاحظه ایمنی یا نیاز به بازبینی انسانی اجرا نشود، بدون امتیاز ثبت می‌شود.</p></section>;
 }
-
-function nextRequiredDayLocal(state) { for (let i = 1; i <= 28; i += 1) if (!(state.completed || []).includes(i)) return i; return 29; }
 const DAILY_EXERCISES = [
   'یک «نقشه کوتاه» بکش: موقعیت، فکر، احساس و واکنش را در چهار خانه جدا بنویس؛ فعلاً فقط مشاهده کن و چیزی را تغییر نده.',
   'دو ستون با عنوان «چیزی که می‌دانم» و «چیزی که حدس می‌زنم» بساز و یک نمونه از تجربه مرتبط با موضوع را در آن‌ها تفکیک کن.',
