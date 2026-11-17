@@ -29,7 +29,10 @@ test('global assistant launcher is mounted across navigable screens, including s
   assert.match(appUi, /const GlobalAssistantLauncher = lazy\(\(\) => import\(['"]\.\/features\/assistant\/GlobalAssistantLauncher\.jsx['"]\)\)/, 'assistant launcher must remain lazy-loaded');
   assert.match(appUi, /loadGlobalAssistantLauncher\(\)\.then\(\(\) => \{/);
   assert.match(appUi, /setAssistantLauncherLoaded\(true\)/);
-  assert.match(appUi, /\{navVisible && assistantLauncherLoaded && <button/);
+  assert.match(appUi, /const assistantVisible = navVisible \|\| \['home', 'howWorks', 'about', 'profile', 'pathSetup', 'assessment'\]\.includes\(screen\)/, 'onboarding pages must expose the page assistant before assessment is complete');
+  assert.match(appUi, /visible=\{assistantVisible\}/);
+  assert.match(appUi, /if \(!content\) return undefined;/, 'assistant chunk may load once core content is ready, before onboarding completes');
+  assert.match(appUi, /\{assistantVisible && assistantLauncherLoaded && <button/);
   assert.doesNotMatch(appUi, /onPointerDown=\{\(\) => \{ void loadGlobalAssistantLauncher/);
   assert.match(appUi, /<GlobalAssistantLauncher/);
   assert.match(appUi, /dailyContext=\{screen === 'day'/);
