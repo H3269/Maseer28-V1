@@ -2096,3 +2096,9 @@ body .bookReaderFull.theme-night .readerProgressTrack span { background: linear-
     transition: none !important;
   }
 }
+
+
+/* Five-item bottom navigation: the archive now lives beside the core sections. */
+.app .bottomNav {
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+}

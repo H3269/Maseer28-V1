@@ -84,7 +84,9 @@ try {
   );
   await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
   await page.locator('#dashboard').waitFor({ state: 'visible' });
-  await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
+  assert.equal(await page.locator('#bottomNav button').count(), 5, 'bottom navigation must expose five destinations');
+  assert.equal(await page.locator('#dashboard .quickAction').count(), 0, 'duplicate dashboard shortcuts must be removed');
+  await page.locator('#bottomNav button[data-view="archive"].click();
   await page.locator('#archiveList').waitFor({ state: 'visible' });
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: 'دریافت خروجی ZIP و PDF آرشیوها' }).click();
@@ -146,7 +148,7 @@ try {
   await emptyPage.locator('#copyrightModal').waitFor({ state: 'visible' });
   await emptyPage.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
   await emptyPage.locator('#dashboard').waitFor({ state: 'visible' });
-  await emptyPage.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
+  await emptyPage.locator('#bottomNav button[data-view="archive"].click();
   await emptyPage.locator('#archiveList').waitFor({ state: 'visible' });
   const emptyExportButton = emptyPage.getByRole('button', { name: 'دریافت خروجی ZIP و PDF آرشیوها' });
   assert.equal(await emptyExportButton.isVisible(), true, 'export control remains visible for an empty archive');

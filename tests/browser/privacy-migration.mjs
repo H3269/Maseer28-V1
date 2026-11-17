@@ -174,7 +174,7 @@ try {
     await page.locator('#copyrightModal').waitFor({ state: 'visible' });
     await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
     await page.locator('#dashboard').waitFor({ state: 'visible' });
-    await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
+    await page.locator('#bottomNav button[data-view="archive"].click();
     await page.locator('#archive').waitFor({ state: 'visible' });
     await page.getByText('بازیابی آرشیو لازم است').waitFor();
     assert.equal(await page.getByRole('button', { name: /شروع مسیر تازه/ }).isDisabled(), true);
@@ -233,7 +233,7 @@ try {
     await page.locator('#copyrightModal').waitFor({ state: 'visible' });
     await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
     await page.locator('#dashboard').waitFor({ state: 'visible' });
-    await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
+    await page.locator('#bottomNav button[data-view="archive"].click();
     await page.waitForFunction(() => JSON.parse(localStorage.getItem('maseer28_state') || '{}').lastView === 'archive');
     const firstArchive = page.locator('#archiveList .answerItem').first();
     await firstArchive.getByRole('button', { name: /حذف این آرشیو/ }).click();
@@ -257,7 +257,7 @@ try {
     await page.locator('#dashboard').waitFor({ state: 'visible' });
     const afterReload = await page.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state') || '{}').archive?.map((entry) => entry.pathId) || []);
     assert.deepEqual(afterReload, ['archive-keep-me'], 'only the retained archive should remain after reload');
-    await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
+    await page.locator('#bottomNav button[data-view="archive"].click();
     await page.locator('#archiveList').waitFor({ state: 'visible' });
     assert.equal(await page.locator('#archiveList .answerItem').count(), 1);
     await page.locator('#archiveList .answerItem').first().getByRole('button', { name: /مشاهده جزئیات مسیر/ }).click();
@@ -291,7 +291,7 @@ try {
     await page.locator('#copyrightModal').waitFor({ state: 'visible' });
     await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
     await page.locator('#dashboard').waitFor({ state: 'visible' });
-    await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
+    await page.locator('#bottomNav button[data-view="archive"].click();
     await page.locator('#archiveList').waitFor({ state: 'visible' });
     await page.getByRole('button', { name: /شروع مسیر تازه/ }).click();
     await page.getByRole('heading', { name: 'ظرفیت آرشیو تکمیل شده است' }).waitFor({ state: 'visible' });
@@ -331,7 +331,7 @@ try {
     await page.locator('#copyrightModal').waitFor({ state: 'visible' });
     await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
     await page.locator('#dashboard').waitFor({ state: 'visible' });
-    await page.locator('#dashboard .quickAction').filter({ hasText: 'آرشیو' }).click();
+    await page.locator('#bottomNav button[data-view="archive"].click();
     await page.locator('#archiveList').waitFor({ state: 'visible' });
     await page.locator('#archiveList .answerItem').first().getByRole('button', { name: /حذف این آرشیو/ }).click();
     await page.evaluate(() => {
@@ -381,6 +381,7 @@ try {
     }));
     await page.locator('#bottomNav button[data-view="support"]').click();
     await page.locator('#support').waitFor({ state: 'visible' });
+    assert.equal(await page.locator('#support a').filter({ hasText: 'ورود به کانال مرکز' }).count(), 1, 'center channel must be accessible from Support');
     const supportText = await page.locator('#support').innerText();
     assert.doesNotMatch(supportText, /حذف داده‌های محلی من|دریافت نسخه اطلاعات من|انتخاب فایل پشتیبان|بازیابی نسخه پشتیبان|دستیار آزمایشی|حریم خصوصی/u,
       'Support must not expose removed privacy, backup, restore, or standalone assistant UI');
