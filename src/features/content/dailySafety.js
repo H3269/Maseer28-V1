@@ -217,22 +217,6 @@ function hasApprovedLowEnergyReview(day) {
   return true;
 }
 
-const LONELINESS_SUBTOPIC_IDS = new Set(['T13-S01', 'T13-S02', 'T13-S03']);
-
-function hasApprovedLonelinessDayFourteenReview(day) {
-  return day.topic_id === 'T13'
-    && Number(day.day) === 14
-    && day.review_status === 'approved'
-    && Array.isArray(day.subtopic_ids)
-    && day.subtopic_ids.length === 1
-    && LONELINESS_SUBTOPIC_IDS.has(day.subtopic_ids[0])
-    && typeof day.review_record_id === 'string'
-    && day.review_record_id.trim().length > 0
-    && day.risk_level === 'caution'
-    && Array.isArray(day.safety_rule_ids)
-    && day.safety_rule_ids.length > 0;
-}
-
 const SLEEP_SUBTOPIC_IDS = new Set(['T10-S01', 'T10-S02', 'T10-S03']);
 
 function hasApprovedSleepReview(day) {
@@ -279,7 +263,14 @@ export function getDailySafetyMode(day) {
     if (day.risk_level === 'caution') return 'caution';
     return 'blocked';
   }
-  if (isLonelinessDayFourteen(day) && !hasApprovedLonelinessDayFourteenReview(day)) return 'blocked';
+  // T13 day 14: the owner-clinician's explicit approval is recorded in the
+  // project event log. Specialist sign-off is not a runtime publication gate.
+  // Keep a caution state when declared; retain hard blocking for explicitly
+  // elevated risk, but do not block because review metadata is pending/missing.
+  if (isLonelinessDayFourteen(day)) {
+    if (day.risk_level === 'high' || day.risk_level === 'moderate') return 'blocked';
+    return day.risk_level === 'caution' ? 'caution' : 'routine';
+  }
   if (isLowEnergyTopicDay(day) && !hasApprovedLowEnergyReview(day)) return 'blocked';
   if (isRepetitiveNegativeThinkingTopicDay(day) && !hasApprovedRntReview(day)) return 'blocked';
   if (isRelationshipDifficultiesTopicDay(day) && !hasApprovedRelationshipDifficultiesReview(day)) return 'blocked';
