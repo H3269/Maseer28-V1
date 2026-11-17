@@ -2,7 +2,6 @@ import React, { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useStat
 import AppIcon from './shared/components/AppIcon.jsx';
 import { legacySourceLabel } from './features/library/legacyLibraryMeta.js';
 import { ensureSeedBookContent, useLibrary } from './features/library/useLibrary.js';
-import { recordReaderDiagnostic, startReaderDiagnostics } from './features/library/readerDiagnostics.js';
 import {
   APP_CONFIG,
   COPYRIGHT_KEY,
@@ -58,13 +57,7 @@ import { fa } from './shared/utils.js';
 import VersionFooter from './shared/components/VersionFooter.jsx';
 const loadGlobalAssistantLauncher = () => import('./features/assistant/GlobalAssistantLauncher.jsx');
 const loadLibraryPage = () => import('./features/library/LibraryPage.jsx');
-const loadReader = () => {
-  const startedAt = performance.now();
-  return import('./features/library/Reader.jsx').then((module) => {
-    recordReaderDiagnostic('reader-chunk-loaded', { durationMs: performance.now() - startedAt });
-    return module;
-  });
-};
+const loadReader = () => import('./features/library/Reader.jsx');
 const GlobalAssistantLauncher = lazy(() => import('./features/assistant/GlobalAssistantLauncher.jsx'));
 const LibraryPage = lazy(loadLibraryPage);
 const Reader = lazy(loadReader);
@@ -626,35 +619,22 @@ function navigate(next) {
   }
 
   async function openBook(book, sourcePage = null, target = null) {
-    startReaderDiagnostics(book);
-    recordReaderDiagnostic('open-book-handler-entered', { bookId: Number(book?.legacyId) || null });
     setOpeningBook(true);
-    const preparationStartedAt = performance.now();
     try {
-      // Keep the established parallel preparation contract; diagnostics only
-      // observe its total duration and the resulting content shape.
+      // Start the reader chunk while the selected book is being prepared.
+      // The same dynamic import is cached by React.lazy, so Reader can mount
+      // without waiting for a second network round trip.
       const [{ book: readyBook, version }] = await Promise.all([
         ensureSeedBookContent(book),
         loadReader(),
       ]);
-      recordReaderDiagnostic('open-book-preparation-complete', {
-        durationMs: performance.now() - preparationStartedAt,
-        contentPageCount: Array.isArray(version?.content?.pages) ? version.content.pages.length : 0,
-        versionPresent: Boolean(version),
-        versionContentPresent: Boolean(version?.content),
-      });
       if (!version?.content) throw new Error('متن کتاب آماده نشد.');
       // The assistant is rendered outside the reader branch and would otherwise
       // reopen when that branch unmounts/remounts the launcher.
       setAssistantOpen(false);
       setReaderState({ book: readyBook, version, sourcePage, target });
-      recordReaderDiagnostic('reader-state-created');
       navigate('bookReader');
-      recordReaderDiagnostic('reader-screen-requested');
-    } catch (error) {
-      recordReaderDiagnostic('open-book-failed', {
-        errorName: String(error?.name || 'Error').slice(0, 40),
-      });
+    } catch {
       showValidation(['متن کتاب بارگذاری نشد. اتصال را بررسی کن و دوباره تلاش کن.'], 'خطا در کتابخانه');
     } finally {
       setOpeningBook(false);

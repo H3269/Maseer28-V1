@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { libraryRepository } from './libraryRepository.js';
 import { createVersionRecord, normalizeBookContent } from './bookUtils.js';
-import { recordReaderDiagnostic } from './readerDiagnostics.js';
 
 const SEED_REVISION_KEY = 'seed-content-revision-v89';
 const SEED_BOOK_FINGERPRINT_PREFIX = 'seed-book-fingerprint:';
@@ -93,25 +92,14 @@ async function seedLibrary(onCatalogReady = null) {
 
 export function ensureSeedBookContent(book) {
   if (!book?.id) return Promise.reject(new Error('مشخصات کتاب معتبر نیست.'));
-  const hydrationStartedAt = performance.now();
-  recordReaderDiagnostic('book-content-hydration-start', { bookId: Number(book?.legacyId) || null });
   const cacheKey = seedBookCacheKey(book);
   if (SEED_BOOK_CONTENT_CACHE.has(cacheKey)) {
     const cached = SEED_BOOK_CONTENT_CACHE.get(cacheKey);
     SEED_BOOK_CONTENT_CACHE.delete(cacheKey);
     SEED_BOOK_CONTENT_CACHE.set(cacheKey, cached);
-    recordReaderDiagnostic('book-content-memory-cache-hit', {
-      cacheHit: true,
-      cacheLayer: 'memory',
-      contentPageCount: Array.isArray(cached?.version?.content?.pages) ? cached.version.content.pages.length : 0,
-      durationMs: performance.now() - hydrationStartedAt,
-    });
     return Promise.resolve(cached);
   }
-  if (SEED_BOOK_CONTENT_IN_FLIGHT.has(cacheKey)) {
-    recordReaderDiagnostic('book-content-inflight-reuse', { cacheHit: true, cacheLayer: 'inflight' });
-    return SEED_BOOK_CONTENT_IN_FLIGHT.get(cacheKey);
-  }
+  if (SEED_BOOK_CONTENT_IN_FLIGHT.has(cacheKey)) return SEED_BOOK_CONTENT_IN_FLIGHT.get(cacheKey);
 
   const task = (async () => {
   const currentBook = await libraryRepository.getBook(book.id) || book;
@@ -119,29 +107,16 @@ export function ensureSeedBookContent(book) {
     const existingVersion = await libraryRepository.getVersion(currentBook.activeVersionId);
     const currentRevision = currentBook.manifestRevision || currentBook.seedRevision || 'legacy';
     if (existingVersion?.content && currentBook.seedRevision === currentRevision) {
-      recordReaderDiagnostic('book-content-indexeddb-cache-hit', {
-        cacheHit: true, cacheLayer: 'indexeddb',
-        contentPageCount: Array.isArray(existingVersion.content.pages) ? existingVersion.content.pages.length : 0,
-        durationMs: performance.now() - hydrationStartedAt,
-      });
       return { book: currentBook, version: existingVersion };
     }
     if (existingVersion?.content && !currentBook.seedFile) {
-      recordReaderDiagnostic('book-content-indexeddb-cache-hit', {
-        cacheHit: true, cacheLayer: 'indexeddb',
-        contentPageCount: Array.isArray(existingVersion.content.pages) ? existingVersion.content.pages.length : 0,
-        durationMs: performance.now() - hydrationStartedAt,
-      });
       return { book: currentBook, version: existingVersion };
     }
   }
   if (!currentBook.seedFile) throw new Error('فایل محتوای این کتاب در فهرست کتابخانه ثبت نشده است.');
 
   const revision = String(currentBook.manifestRevision || currentBook.seedRevision || 'legacy');
-  const fetchStartedAt = performance.now();
-  recordReaderDiagnostic('book-content-network-fetch-start');
   const rawContent = await fetchJson(currentBook.seedFile, revision);
-  recordReaderDiagnostic('book-content-network-fetch-complete', { durationMs: performance.now() - fetchStartedAt });
   const rawFingerprint = await sha256(JSON.stringify(rawContent));
   const fingerprintKey = `${SEED_BOOK_FINGERPRINT_PREFIX}${currentBook.id}`;
   const previousFingerprint = await libraryRepository.getSetting(fingerprintKey);
@@ -173,12 +148,6 @@ export function ensureSeedBookContent(book) {
   await libraryRepository.putBook(updatedBook);
   const version = await libraryRepository.getVersion(activeVersionId);
   if (!version?.content) throw new Error('متن کتاب پس از ذخیره‌سازی تأیید نشد.');
-  recordReaderDiagnostic('book-content-hydration-complete', {
-    cacheHit: false,
-    cacheLayer: 'network-and-indexeddb',
-    contentPageCount: Array.isArray(version.content.pages) ? version.content.pages.length : 0,
-    durationMs: performance.now() - hydrationStartedAt,
-  });
   return { book: updatedBook, version };
   })();
 
@@ -190,12 +159,6 @@ export function ensureSeedBookContent(book) {
       SEED_BOOK_CONTENT_CACHE.delete(SEED_BOOK_CONTENT_CACHE.keys().next().value);
     }
     return result;
-  }, (error) => {
-    recordReaderDiagnostic('book-content-hydration-failed', {
-      durationMs: performance.now() - hydrationStartedAt,
-      errorName: String(error?.name || 'Error').slice(0, 40),
-    });
-    throw error;
   }).finally(() => {
     if (SEED_BOOK_CONTENT_IN_FLIGHT.get(cacheKey) === task) {
       SEED_BOOK_CONTENT_IN_FLIGHT.delete(cacheKey);
