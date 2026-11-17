@@ -6920,6 +6920,7 @@ html body .app .globalAssistantLauncherDraggable {
   -webkit-user-select: none;
 }
 html body .app .globalAssistantLauncherDraggable:active { cursor: grabbing; }
+html body .app .globalAssistantLauncher.globalAssistantLauncherPositioned { bottom: auto !important; }
 
 /* Only the navigation bar surface becomes glass; button labels, icons and
    their existing active-state colors are intentionally left untouched. */
