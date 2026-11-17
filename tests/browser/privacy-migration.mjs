@@ -381,6 +381,7 @@ try {
     }));
     await page.locator('#bottomNav button[data-view="support"]').click();
     await page.locator('#support').waitFor({ state: 'visible' });
+    assert.equal(await page.locator('#support a').filter({ hasText: 'ورود به کانال مرکز' }).count(), 1, 'center channel must be accessible from Support');
     const supportText = await page.locator('#support').innerText();
     assert.doesNotMatch(supportText, /حذف داده‌های محلی من|دریافت نسخه اطلاعات من|انتخاب فایل پشتیبان|بازیابی نسخه پشتیبان|دستیار آزمایشی|حریم خصوصی/u,
       'Support must not expose removed privacy, backup, restore, or standalone assistant UI');
