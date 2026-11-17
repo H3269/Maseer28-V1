@@ -918,7 +918,8 @@ try {
   assert.equal(await t13SafetyReply.getByTestId('daily-assistant-safety-reminder').count(), 1,
     'T13 evaluation answer must show exactly one shared safety reminder card');
   assert.match(await t13SafetyReply.innerText(), /۰۹۱۹۰۸۸۹۰۶۲/);
-  assert.match(await t13SafetyReply.innerText(), /یادآوری اختصاصی ایمنی T13/);
+  assert.equal((await t13SafetyReply.innerText()).split('یادآوری اختصاصی ایمنی تنهایی').length - 1, 1,
+    'T13-specific safety reminder must appear exactly once after topic-label normalization');
   assert.deepEqual(t13Errors, [], 'T13 prepared assistant must not raise browser errors');
   await t13Page.close();
 
