@@ -27,8 +27,9 @@ const EXPECTED_QUESTIONS = [
 function dailyContent(guide) {
   return { id: 'تنهایی-' + String(guide.day).padStart(2, '0'), topic_id: 'T13', day: guide.day,
     title: guide.title, sourceExercise: guide.exercise, sourceActionText: guide.action,
-    exercise: guide.exercise, actionText: guide.action, lightExerciseText: guide.lightVersion,
-    progressVersion: guide.progressVersion, restExerciseText: guide.restVersion };
+    exercise: guide.exercise, actionText: guide.action, lightExerciseText: 'نسخه عمومی قدیمی',
+    progressVersion: 'نسخه عمومی پیشرفت', restExerciseText: 'نسخه عمومی استراحت', lightActionText: 'اقدام عمومی قدیمی',
+    progressActionText: 'پیشرفت عمومی قدیمی', restActionText: 'استراحت عمومی قدیمی' };
 }
 
 test('T13 guide has exactly 28 days and 392 complete answers under the fixed 14-question contract', () => {
@@ -70,6 +71,8 @@ test('all 392 T13 answers are day-bound, teacher-framed and append the shared re
   for (const guide of T13_DAILY_ASSISTANT_GUIDES) for (const question of guide.questions) {
     const answer = answerT13DailyPreparedQuestion({day:guide.day,message:question.value,dailyContent:dailyContent(guide)});
     assert.equal(typeof answer,'string','day '+guide.day+' '+question.kind);
+    if(question.kind==='light_version') for(const field of ['lightVersion','lightActionVersion','progressVersion','progressActionVersion','restVersion','restActionVersion']) assert.ok(answer.includes(guide[field]),'adaptive answer omitted '+field+' on day '+guide.day);
+    if(question.kind==='light_version') for(const stale of ['نسخه عمومی قدیمی','نسخه عمومی پیشرفت','نسخه عمومی استراحت','اقدام عمومی قدیمی','پیشرفت عمومی قدیمی','استراحت عمومی قدیمی']) assert.equal(answer.includes(stale),false,'legacy generic variant leaked into T13 answer');
     assert.match(answer,new RegExp('راهنمای روز '+guide.day+' تنهایی')); assert.match(answer,/بیاییم قدم‌به‌قدم پیش برویم/u);
     assert.match(answer,/هدف امروز:/u); assert.equal(answer.includes(String.fromCharCode(92)+'n'),false);
     const visible=formatAssistantMessageText(answer).flat().map(part=>part.text).join('\n'); assert.equal(visible.includes('**'),false);
