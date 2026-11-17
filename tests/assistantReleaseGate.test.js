@@ -153,10 +153,10 @@ test('assistant uses one chat surface with the composer send action inside and e
 test('assistant launcher and bottom navigation use glass surfaces without changing navigation icon markup', async () => {
   const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
   const journey = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
-  assert.match(css, /globalAssistantLauncher[\\s\\S]*?backdrop-filter:\\s*blur\\(15px\\)/);
-  assert.match(css, /appBottomDock \\.bottomNav[\\s\\S]*?backdrop-filter:\\s*blur\\(18px\\)/);
-  assert.match(journey, /<span className="navIcon"><NavIcon name="home" \\/><\\/span>/);
-  assert.match(journey, /<span className="navIcon"><NavIcon name="archive" \\/><\\/span>/);
+  assert.ok(css.includes('html body .app .globalAssistantLauncher {') && css.includes('backdrop-filter: blur(15px) saturate(155%);'));
+  assert.ok(css.includes('html body .app .appBottomDock .bottomNav {') && css.includes('backdrop-filter: blur(18px) saturate(165%);'));
+  assert.ok(journey.includes('<span className="navIcon"><NavIcon name="home" /></span>'));
+  assert.ok(journey.includes('<span className="navIcon"><NavIcon name="archive" /></span>'));
 });
 
 test('assistant chat styling distinguishes speaker bubbles and keeps composer integrated', async () => {
