@@ -112,8 +112,9 @@ export function ensureSeedBookContent(book) {
 
   const task = (async () => {
   const currentBook = await libraryRepository.getBook(book.id) || book;
+  let existingVersion = null;
   if (currentBook.activeVersionId) {
-    const existingVersion = await libraryRepository.getVersion(currentBook.activeVersionId);
+    existingVersion = await libraryRepository.getVersion(currentBook.activeVersionId);
     const currentRevision = currentBook.manifestRevision || currentBook.seedRevision || 'legacy';
     if (isUsableSeedVersion(existingVersion) && currentBook.seedRevision === currentRevision) {
       return { book: currentBook, version: existingVersion };
@@ -131,7 +132,7 @@ export function ensureSeedBookContent(book) {
   const previousFingerprint = await libraryRepository.getSetting(fingerprintKey);
   let activeVersionId = currentBook.activeVersionId;
 
-  if (previousFingerprint !== rawFingerprint || !activeVersionId) {
+  if (previousFingerprint !== rawFingerprint || !activeVersionId || !isUsableSeedVersion(existingVersion)) {
     const content = normalizeBookContent(rawContent, currentBook.title);
     if (!hasReadableBookContent(content)) throw new Error('فایل کتاب دریافت شد، اما متن قابل‌خواندن کافی در آن وجود ندارد.');
     const versionId = `seed-${currentBook.id}-${rawFingerprint.slice(0, 16)}`;
