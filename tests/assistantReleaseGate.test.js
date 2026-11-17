@@ -53,6 +53,7 @@ test('global assistant launcher is mounted across navigable screens, including s
   assert.match(launcherUi, /onPointerDown=\{canMoveLauncher \? startLauncherDrag : undefined\}/);
   assert.match(launcherUi, /onPointerMove=\{canMoveLauncher \? moveLauncher : undefined\}/);
   assert.match(launcherUi, /path28-assistant-launcher-position-v1/);
+  assert.match(launcherUi, /globalAssistantLauncherPositioned/);
   assert.match(launcherUi, /Math\.hypot\(deltaX, deltaY\) < 6/);
   assert.match(launcherUi, /drag\.lastPosition = \{ x: Math\.max\(8, x\), y: Math\.max\(8, y\) \}/);
   assert.match(launcherUi, /const canMoveLauncher = screen !== 'bookReader'/, 'dragging must be enabled on every screen where the launcher is rendered');
