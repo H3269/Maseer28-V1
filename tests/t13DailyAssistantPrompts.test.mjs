@@ -109,6 +109,14 @@ test('T13 prepared answers reject mismatched identity, content and free-text que
   assert.equal(answerT13DailyPreparedQuestion({day:1,message:'یک سؤال آزاد',dailyContent:content}),null);
 });
 
+test('T13 launcher exposes only safe-day prompts and labels the topic correctly', async () => {
+  const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
+  assert.match(launcher, /isT13DailyPromptContext/u);
+  assert.match(launcher, /getDailySafetyMode\(dailyContext\?\.data\) === 'blocked' \? \[\] : getT13DailyAssistantPromptGroups/u);
+  assert.match(launcher, /t13-daily-prompt-trigger/u);
+  assert.match(launcher, /isT13DailyPromptContext \? "تنهایی"/u);
+});
+
 test('T13 page assistant serves ordinary prepared days but does not bypass the day-14 safety block', () => {
   const guide=T13_DAILY_ASSISTANT_GUIDES[0], content=dailyContent(guide);
   const result=makePageAssistantTurn({screen:'day',text:guide.questions[0].value,dailyContext:{day:1,problem:'تنهایی',data:content,guidanceData:content}});
