@@ -58,7 +58,13 @@ import { fa } from './shared/utils.js';
 import VersionFooter from './shared/components/VersionFooter.jsx';
 const loadGlobalAssistantLauncher = () => import('./features/assistant/GlobalAssistantLauncher.jsx');
 const loadLibraryPage = () => import('./features/library/LibraryPage.jsx');
-const loadReader = () => import('./features/library/Reader.jsx');
+const loadReader = () => {
+  const startedAt = performance.now();
+  return import('./features/library/Reader.jsx').then((module) => {
+    recordReaderDiagnostic('reader-chunk-loaded', { durationMs: performance.now() - startedAt });
+    return module;
+  });
+};
 const GlobalAssistantLauncher = lazy(() => import('./features/assistant/GlobalAssistantLauncher.jsx'));
 const LibraryPage = lazy(loadLibraryPage);
 const Reader = lazy(loadReader);
