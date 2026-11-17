@@ -9,6 +9,7 @@ on:
       - 'src/App.jsx'
       - 'src/main.jsx'
       - 'src/styles/soft-motion.css'
+      - 'tests/softMotionIsolation.test.js'
       - 'tests/assistantReleaseGate.test.js'
       - 'tests/startupPerformance.test.mjs'
       - 'tests/pageAssistantPrompts.test.js'
