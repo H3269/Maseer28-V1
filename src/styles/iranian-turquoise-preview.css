@@ -1893,9 +1893,17 @@ body .bookReaderFull.theme-night .readerProgressTrack span { background: linear-
   font-size: 11px !important;
   font-weight: 600 !important;
 }
-/* Center only the displayed values for the client code and journey issue. */
+/* Center both labels and values in the client-code and journey-issue fields. */
+.app #dashboard #profileSummary .profileOverviewCard .profileBox:nth-child(2),
+.app #dashboard #profileSummary .profileOverviewCard .profileBox:nth-child(3) {
+  align-items: center !important;
+  text-align: center !important;
+}
+.app #dashboard #profileSummary .profileOverviewCard .profileBox:nth-child(2) > span,
 .app #dashboard #profileSummary .profileOverviewCard .profileBox:nth-child(2) > b,
+.app #dashboard #profileSummary .profileOverviewCard .profileBox:nth-child(3) > span,
 .app #dashboard #profileSummary .profileOverviewCard .profileBox:nth-child(3) > b {
+  width: 100% !important;
   text-align: center !important;
 }
 
