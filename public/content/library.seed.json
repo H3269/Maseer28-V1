@@ -1,5 +1,6 @@
 {
   "schema": 1,
+  "revision": "2026-11-18-book-content-integrity-v1",
   "books": [
     {
       "id": "book-1",
