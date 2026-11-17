@@ -3,6 +3,7 @@ import SmartSelect from '../../shared/components/SmartSelect.jsx';
 import AppIcon from '../../shared/components/AppIcon.jsx';
 import { preserveDailyGuidanceSourceIdentity } from '../assistant/dailyGuidanceSourceIdentity.js';
 import { buttonLabel } from '../../shared/buttonLabel.jsx';
+import { getJourneyProgressCounts } from './progress.js';
 import { copyTextToClipboard, fa, formatDate, normalizeDigits } from '../../shared/utils.js';
 import { burdenScoreFromAnswers, evaluatePqhtEligibility, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
 import { exportArchivesZip, triggerBlobDownload } from './archiveExport.js';
@@ -182,39 +183,10 @@ export function AssessmentScreen({ initial, onSave, onValidation }) {
   return <section className="card assessmentCard" id="assessment"><span className="badge">روز صفر · ارزیابی اولیه</span><h2>نقطه شروع مسیر را ثبت کن</h2><p className="muted">این ۵ سؤال یک خودگزارش‌دهی اختصاصی برای ثبت وضعیت امروزت هستند. پاسخ درست یا غلطی وجود ندارد؛ وضعیتت را از ۰ تا ۴ انتخاب کن تا در پایان مسیر تغییر ادراک‌شده را مرور کنی. این پرسش‌ها ابزار تشخیص یا مقیاس روان‌سنجی اعتبارسنجی‌شده نیستند.</p><div className="assessmentIntro"><span>۰</span><div><b>اصلاً / بسیار کم</b><small>هرچه عدد به ۴ نزدیک‌تر شود، شدت یا میزان تجربه بیشتر است.</small></div><span>۴</span></div><AssessmentScale prefix="a" values={values} setValues={setValues} /><button className="primary heroAction" onClick={submit}>{buttonLabel('ثبت ارزیابی و شروع روز ۱')}</button></section>;
 }
 
-export function Dashboard({ onCurrent, onBooks, onArchive, onSupport, onChannel }) {
-  return <section className="card" id="dashboard"><button className="primary heroAction" onClick={onCurrent}>{buttonLabel('ادامه مسیر امروز')}</button><div className="quickGrid"><button className="quickAction" onClick={onBooks}><span><AppIcon name="bookOpen" size={24} /></span><b>کتابخانه</b><small>مطالعه هدفمند</small></button><button className="quickAction" onClick={onArchive}><span><AppIcon name="archive" size={24} /></span><b>آرشیو</b><small>مسیرهای قبلی</small></button><button className="quickAction" onClick={onSupport}><span><AppIcon name="message" size={24} /></span><b>پشتیبانی</b><small>ارتباط با مرکز</small></button><button className="quickAction" onClick={onChannel}><span><AppIcon name="megaphone" size={24} /></span><b>کانال مرکز</b><small>محتوای تکمیلی</small></button></div><p className="muted dashboardNote">هر روز فقط یک مرحله اصلی داری؛ اگر تمرینی به‌دلیل ملاحظه ایمنی یا نیاز به بازبینی انسانی اجرا نشود، بدون امتیاز ثبت می‌شود.</p></section>;
+export function Dashboard({ journey, userProfile, onCurrent, onBooks, onArchive, onSupport, onChannel }) {
+  const p = journey.profileData || {}, u = userProfile || {}, progress = getJourneyProgressCounts(journey), pct = Math.round((progress.completedExercises / 28) * 100);
+  return <section className="card" id="dashboard"><div id="profileSummary"><section className="profileOverviewCard" aria-label="خلاصه اطلاعات شخصی و مسیر"><div className="profileOverviewHeading"><span className="profileOverviewAccent" aria-hidden="true" /><div><b>اطلاعات شما در این مسیر</b><small>خلاصه اطلاعات ثبت‌شده و روند همراهی شما</small></div></div><div className="profile"><div className="profileBox"><span>پروفایل</span><b>{u?.name || '-'}</b></div><div className="profileBox"><span>کد مراجع</span><b>{p.code || '-'}</b></div><div className="profileBox"><span>مسئله این مسیر</span><b>{p.problem || '-'}</b></div><div className="profileBox"><span>مدت درگیری</span><b>{fa(p.durationYears || 0)} سال و {fa(p.durationMonths || 0)} ماه</b></div></div><div className="metric"><div className="metricBox"><strong id="dashProgress">{fa(pct)}٪</strong><span>تمرین‌های انجام‌شده</span></div><div className="metricBox"><strong id="dashDays">{fa(progress.recordedDays)}/۲۸</strong><span>روز ثبت‌شده</span></div></div></section></div><button className="primary heroAction" onClick={onCurrent}>{buttonLabel('ادامه مسیر امروز')}</button><div className="quickGrid"><button className="quickAction" onClick={onBooks}><span><AppIcon name="bookOpen" size={24} /></span><b>کتابخانه</b><small>مطالعه هدفمند</small></button><button className="quickAction" onClick={onArchive}><span><AppIcon name="archive" size={24} /></span><b>آرشیو</b><small>مسیرهای قبلی</small></button><button className="quickAction" onClick={onSupport}><span><AppIcon name="message" size={24} /></span><b>پشتیبانی</b><small>ارتباط با مرکز</small></button><button className="quickAction" onClick={onChannel}><span><AppIcon name="megaphone" size={24} /></span><b>کانال مرکز</b><small>محتوای تکمیلی</small></button></div><p className="muted dashboardNote">هر روز فقط یک مرحله اصلی داری؛ اگر تمرینی به‌دلیل ملاحظه ایمنی یا نیاز به بازبینی انسانی اجرا نشود، بدون امتیاز ثبت می‌شود.</p></section>;
 }
-const DAILY_EXERCISES = [
-  'یک «نقشه کوتاه» بکش: موقعیت، فکر، احساس و واکنش را در چهار خانه جدا بنویس؛ فعلاً فقط مشاهده کن و چیزی را تغییر نده.',
-  'دو ستون با عنوان «چیزی که می‌دانم» و «چیزی که حدس می‌زنم» بساز و یک نمونه از تجربه مرتبط با موضوع را در آن‌ها تفکیک کن.',
-  'آخرین بارِ فعال‌شدن موضوع را به سه بخش تقسیم کن: درست قبل از آن، لحظه شروع، و چند دقیقه بعد؛ فقط واقعیت‌های قابل مشاهده را ثبت کن.',
-  'برای تجربه امروز سه واژه جدا انتخاب کن: یک فکر، یک احساس و یک حس بدنی؛ آن‌ها را با هم یکی نکن.',
-  'یک رفتار مرتبط را بررسی کن و برای آن فایده فوری، هزینه بعدی و یک راه جایگزین کم‌خطر بنویس.',
-  'یک هدف بسیار کوچک و قابل مشاهده تعریف کن؛ جمله را با «وقتی …، فقط … را انجام می‌دهم» کامل کن.',
-  'دو نمونه از موقعیت‌های مشابه را کنار هم بگذار و تفاوت‌های واقعی‌شان را پیدا کن؛ از نتیجه‌گیری کلی درباره خودت پرهیز کن.',
-  'مرور کوتاه انجام بده: سه چیزی که این هفته درباره الگو فهمیدی و یک پرسش که هنوز پاسخ ندارد بنویس.',
-  'پیش از واکنش، مکث کوتاهی کن و پنج چیز قابل مشاهده در محیط را نام ببر؛ فقط اگر موقعیت امن و قابل تحمل است.',
-  'یک باور یا پیش‌بینی را بنویس و برای آن یک شاهد موافق، یک شاهد مخالف و یک توضیح جایگزین منصفانه پیدا کن.',
-  'نقشه محرک‌ها را کامل کن: زمان، مکان، افراد، خستگی و اتفاق پیش از تجربه را بررسی کن و فقط یک عامل را مشخص کن.',
-  'یک جمله مهربانانه و واقع‌بینانه بنویس که اگر دوستت همین تجربه را داشت به او می‌گفتی؛ سپس آن را برای خودت بازنویسی کن.',
-  'از صفر تا ده میزان دشواری موقعیت را تخمین بزن و یک نسخه کم‌فشارتر انتخاب کن که دست‌کم دو درجه آسان‌تر باشد.',
-  'یک مرز یا درخواست روشن را در یک جمله تمرین کن؛ آن را کوتاه، محترمانه و بدون توضیح اضافه بنویس.',
-  'یک تجربه را از دید ناظر بی‌طرف توصیف کن؛ به‌جای «همیشه» و «هرگز»، از زمان و رفتار مشخص استفاده کن.',
-  'یک راهبرد قبلی را ارزیابی کن: چه چیزی کمک کرد، چه چیزی کمک نکرد و کدام بخش را می‌توانی ساده‌تر کنی؟',
-  'یک قدم عملی را به سه گام کوچک تقسیم کن و فقط گام اول را مشخص کن؛ لازم نیست همه گام‌ها را امروز انجام دهی.',
-  'برای یک موقعیت دشوار، برنامه «اگر… آنگاه…» بنویس و یک گزینه جایگزین برای زمانی که برنامه اول مناسب نبود اضافه کن.',
-  'یک نمونه از پیشرفت کوچک یا تلاش قابل‌قدردانی را ثبت کن؛ نتیجه کامل شرط ارزشمند بودن تلاش نیست.',
-  'یک گفت‌وگوی فرضی را روی کاغذ بنویس: حرفی که می‌خواهی بگویی، نیاز پشت آن و پاسخ محترمانه احتمالی.',
-  'به تجربه از زاویه نیازها نگاه کن: اکنون به امنیت، استراحت، ارتباط، وضوح یا حمایت نیاز داری؟ یک مورد را انتخاب کن.',
-  'یک چرخه تکراری را با پیکان رسم کن و فقط یک نقطه کوچک را علامت بزن که تغییرش واقع‌بینانه‌تر است.',
-  'برای موقعیت مشابه بعدی یک یادآور ساده طراحی کن؛ نشانه یادآور، جمله کوتاه و رفتار موردنظر را مشخص کن.',
-  'یک تمرین قبلی را با شرایط متفاوت اما امن مقایسه کن و بنویس چه چیزی باید ثابت بماند و چه چیزی قابل تغییر است.',
-  'از خودت بپرس «چه اطلاعاتی هنوز ندارم؟»؛ یک سؤال قابل بررسی بنویس و آن را از قضاوت درباره خودت جدا کن.',
-  'یک برنامه پشتیبان بنویس: اگر تمرین سخت شد، چه نسخه آسان‌تری انجام می‌دهی و از چه کسی یا کجا کمک می‌گیری؟',
-  'مرور پیشرفت انجام بده: یک الگوی شناخته‌شده، یک مهارت قابل استفاده و یک نشانه که می‌گوید باید سرعت را کمتر کنی ثبت کن.',
-  'برای ادامه مسیر یک برنامه کوچک و قابل تکرار بنویس؛ نشانه شروع، مدت کوتاه، معیار توقف و راه دریافت حمایت را مشخص کن.'
-];
 
 function fillProblem(text, problem) {
   return String(text).replaceAll('«موضوع»', `«${problem || 'موضوع انتخاب‌شده'}»`);
