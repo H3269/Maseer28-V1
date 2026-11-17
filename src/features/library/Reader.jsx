@@ -200,7 +200,9 @@ export default function Reader({ book, onClose, initialVersion = null, initialSo
 
   useEffect(() => {
     let alive = true;
-    setVersion(initialVersion || null); setLayout(null); setError(''); firstLayoutRef.current = true;
+    // A fresh Reader mount already starts with layout=null. Do not clear layout
+    // from this passive effect: the layout effect may have built it first.
+    setVersion(initialVersion || null); setError(''); firstLayoutRef.current = true;
     setSoundEnabled(loadBookSoundEnabled(book));
     if (flipCleanupRef.current) flipCleanupRef.current();
     if (initialVersion?.content) {
