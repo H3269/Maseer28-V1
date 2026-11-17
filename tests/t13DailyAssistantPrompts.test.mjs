@@ -57,6 +57,22 @@ test('T13 content overlay has 28 days and exactly matches assistant exercise/act
   }
 });
 
+
+test('T13 high-overlap candidates were sharpened into loneliness-specific tasks', async () => {
+  const overlay = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+  const days = overlay.categories['تنهایی'].days;
+  const day1 = days.find((day) => day.day === 1);
+  const day9 = days.find((day) => day.day === 9);
+  const day12 = days.find((day) => day.day === 12);
+  const day19 = days.find((day) => day.day === 19);
+  const day25 = days.find((day) => day.day === 25);
+  assert.match(day1.exercise, /فاصله میان ارتباط دلخواه و ارتباط در دسترس/u);
+  assert.match(day9.actionText, /شروع ساده و یک نقطه پایان طبیعی/u);
+  assert.match(day12.actionText, /فعالیت مشخص و کم‌فشار با زمان محدود/u);
+  assert.match(day19.exercise, /نیازی که پشت آن است، رفتار مشخصی که می‌خواهی/u);
+  assert.match(day25.actionText, /عامل تسهیل‌کننده را برای تکرار/u);
+});
+
 test('T13 titles remain distinct from all other topic titles under the shared 0.30 screen', async () => {
   const overlay=JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json',import.meta.url),'utf8'));
   const normalize=(value)=>String(value||'').normalize('NFKC').replace(/[يى]/g,'ی').replace(/ك/g,'ک')
