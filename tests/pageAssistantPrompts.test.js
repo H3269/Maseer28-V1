@@ -14,14 +14,17 @@ const expectedScreens = [
 
 test('every eligible non-library, non-daily page has its own prepared FAQ set', () => {
   assert.deepEqual([...PAGE_SPECIFIC_GUIDE_SCREENS], expectedScreens);
+  const allQuestionLabels = new Set();
   for (const screen of expectedScreens) {
     const groups = getPageSpecificPromptGroups(screen);
     assert.equal(groups.length, 1, screen);
-    assert.ok(groups[0].questions.length >= 4, screen);
+    assert.equal(groups[0].questions.length, 7, `${screen} should have a balanced seven-question guide`);
     const labels = groups[0].questions.map((item) => item.label);
     assert.equal(new Set(labels).size, labels.length, screen);
     for (const item of groups[0].questions) {
       assert.equal(item.value, item.label);
+      assert.equal(allQuestionLabels.has(item.label), false, `duplicate prepared question: ${item.label}`);
+      allQuestionLabels.add(item.label);
       const answer = answerPageSpecificQuestion({ screen, message: item.value });
       assert.ok(answer && answer.length >= 100, `${screen}: ${item.label}`);
       const turn = makePageAssistantTurn({ screen, text: item.value });
