@@ -54,7 +54,8 @@ test('global assistant launcher is mounted across navigable screens, including s
   assert.match(launcherUi, /onPointerMove=\{canMoveLauncher \? moveLauncher : undefined\}/);
   assert.match(launcherUi, /path28-assistant-launcher-position-v1/);
   assert.match(launcherUi, /Math\.hypot\(deltaX, deltaY\) < 6/);
-  assert.match(launcherUi, /!\['day', 'books', 'bookReader'\]\.includes\(screen\)/, 'daily exercise, library, and full-screen reader controls remain unchanged');
+  assert.match(launcherUi, /drag\.lastPosition = \{ x: Math\.max\(8, x\), y: Math\.max\(8, y\) \}/);
+  assert.match(launcherUi, /const canMoveLauncher = screen !== 'bookReader'/, 'dragging must be enabled on every screen where the launcher is rendered');
   assert.match(launcherUi, /if \(!visible \|\| screen === 'bookReader'\) return null/);
   assert.doesNotMatch(supportUi, /AssessmentAssistant|حریم خصوصی|بازیابی فایل پشتیبان|دستیار آزمایشی/);
 });
@@ -146,6 +147,15 @@ test('assistant uses one chat surface with the composer send action inside and e
   assert.match(assistantUi, /onClick=\{stop\}>پایان گفتگو/);
   assert.doesNotMatch(assistantUi, /پایان و پاک‌کردن گفتگو|بستن و پاک‌کردن گفتگو/);
   assert.match(assistantUi, /scrollIntoView/);
+});
+
+test('assistant launcher and bottom navigation use glass surfaces without changing navigation icon markup', async () => {
+  const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
+  const journey = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
+  assert.match(css, /globalAssistantLauncher[\\s\\S]*?backdrop-filter:\\s*blur\\(15px\\)/);
+  assert.match(css, /appBottomDock \\.bottomNav[\\s\\S]*?backdrop-filter:\\s*blur\\(18px\\)/);
+  assert.match(journey, /<span className="navIcon"><NavIcon name="home" \\/><\\/span>/);
+  assert.match(journey, /<span className="navIcon"><NavIcon name="archive" \\/><\\/span>/);
 });
 
 test('assistant chat styling distinguishes speaker bubbles and keeps composer integrated', async () => {
