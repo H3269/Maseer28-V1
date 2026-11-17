@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { formatAssistantMessageText } from './assistantMessageFormatting.js';
 import AppIcon from '../../shared/components/AppIcon.jsx';
 import { makePageAssistantTurn } from './pageAssistantTurn.js';
+import { getPageSpecificPromptGroups } from './pageAssistantPrompts.js';
 import { libraryRepository } from '../library/libraryRepository.js';
 import { ensureSeedBookContent } from '../library/useLibrary.js';
 import { answerLibraryBookTurn, planLibraryBookLoad } from './libraryBookAssistant.js';
@@ -23,17 +24,7 @@ import { getT13DailyAssistantPromptGroups } from './t13DailyAssistantPrompts.js'
 import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS, DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
 import { getDailySafetyMode } from '../content/dailySafety.js';
 
-const PAGE_ASSISTANT_PROMPT_GROUPS = Object.freeze([
-  Object.freeze({
-    label: 'راهنمای همین صفحه',
-    questions: Object.freeze([
-      Object.freeze({ label: 'این صفحه برای چیست؟', value: 'این صفحه برای چیست؟', kind: 'page_purpose' }),
-      Object.freeze({ label: 'اینجا چه کارهایی می‌توانم انجام بدهم؟', value: 'اینجا چه کارهایی می‌توانم انجام بدهم؟', kind: 'page_actions' }),
-      Object.freeze({ label: 'چطور به خانه برگردم؟', value: 'چطور به خانه برگردم؟', kind: 'page_navigation' }),
-      Object.freeze({ label: 'امکانات برنامه چیست؟', value: 'امکانات برنامه چیست؟', kind: 'app_features' }),
-    ]),
-  }),
-]);
+const PAGE_ASSISTANT_PROMPT_GROUPS = Object.freeze([]);
 
 export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null, onRelationshipSafetyResponse = null, initialOpen = false, hideLauncher = false, externalLauncherRef = null, openRequestId = 0, onOpenChange = null }) {
   const [open, setOpen] = useState(initialOpen);
@@ -204,7 +195,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                               ? (getDailySafetyMode(dailyContext?.data) === 'blocked' ? [] : getT13DailyAssistantPromptGroups(dailyContext?.day))
                               : dailyContext
                               ? []
-                              : PAGE_ASSISTANT_PROMPT_GROUPS;
+                              : (screen === 'day' ? [] : (getPageSpecificPromptGroups(screen) || PAGE_ASSISTANT_PROMPT_GROUPS));
   if (!visible || screen === 'bookReader') return null;
 
   function ensureLibraryBooksLoaded(message, conversationState) {
