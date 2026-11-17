@@ -34,7 +34,7 @@ function contextFor(topic) {
     relationshipSafetyConfirmed: true,
     data: {
       id: getCanonicalDailyRecordId(topic.name, 1),
-      topic_id: topic.id,
+      ...(topic.id !== 'T13' ? { topic_id: topic.id } : {}),
       day: 1,
       title: guide.title,
       exercise: guide.exercise,
@@ -78,7 +78,7 @@ test('all exact prepared FAQs across 28 days keep their own answers when their w
         relationshipSafetyConfirmed: true,
         data: {
           id: getCanonicalDailyRecordId(topic.name, guide.day),
-          topic_id: topic.id,
+          ...(topic.id !== 'T13' ? { topic_id: topic.id } : {}),
           day: guide.day,
           title: guide.title,
           exercise: guide.exercise,
