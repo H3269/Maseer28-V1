@@ -39,31 +39,39 @@ async function waitForReadablePage(page) {
 async function waitForFirstBodyParagraph(page) {
   let lastObserved = null;
   for (let attempt = 0; attempt < 12; attempt += 1) {
-    const paragraph = await page.evaluate(() => {
-      const article = document.querySelector('#bookReaderText');
-      const line = [...(article?.querySelectorAll('.readerFixedLine.body.paraStart') || [])]
-        .find((item) => String(item.innerText || '').replace(/\s+/g, ' ').trim().length >= 20);
-      return line ? String(line.innerText || '').replace(/\s+/g, ' ').trim() : '';
-    });
-    lastObserved = await page.evaluate(() => {
-      const article = document.querySelector('#bookReaderText');
-      return {
-        pageCounter: document.querySelector('#readerPageCounter')?.innerText || '',
-        articleText: String(article?.innerText || '').replace(/\\s+/g, ' ').trim().slice(0, 180),
-        lineSamples: [...(article?.querySelectorAll('.readerFixedLine') || [])].slice(0, 8).map((item) => ({ className: item.className, text: String(item.innerText || '').trim().slice(0, 70) })),
-        readerDiagnosticEvents: (window.__M28_READER_DIAGNOSTICS__?.events || []).map((event) => ({ stage: event.stage, elapsedMs: event.elapsedMs, details: event.details })),
-      };
-    });
-    if (paragraph) {
-      return page.evaluate((text) => ({
-        elapsedMs: Number((performance.now() - window.__readerPerfStartedAt).toFixed(2)),
-        paragraphLength: text.length,
-        pageCounter: document.querySelector('#readerPageCounter')?.innerText || '',
-      }), paragraph);
+    try {
+      await page.waitForFunction(() => {
+        const article = document.querySelector('#bookReaderText');
+        return [...(article?.querySelectorAll('.readerFixedLine.body.paraStart') || [])]
+          .some((item) => String(item.innerText || '').replace(/\\s+/g, ' ').trim().length >= 20);
+      }, null, { timeout: 2000 });
+      return page.evaluate(() => {
+        const article = document.querySelector('#bookReaderText');
+        const line = [...(article?.querySelectorAll('.readerFixedLine.body.paraStart') || [])]
+          .find((item) => String(item.innerText || '').replace(/\\s+/g, ' ').trim().length >= 20);
+        return {
+          elapsedMs: Number((performance.now() - window.__readerPerfStartedAt).toFixed(2)),
+          paragraphLength: String(line?.innerText || '').replace(/\\s+/g, ' ').trim().length,
+          pageCounter: document.querySelector('#readerPageCounter')?.innerText || '',
+        };
+      });
+    } catch {
+      lastObserved = await page.evaluate(() => {
+        const article = document.querySelector('#bookReaderText');
+        return {
+          pageCounter: document.querySelector('#readerPageCounter')?.innerText || '',
+          articleText: String(article?.innerText || '').replace(/\\s+/g, ' ').trim().slice(0, 180),
+          lineSamples: [...(article?.querySelectorAll('.readerFixedLine') || [])].slice(0, 8).map((item) => ({ className: item.className, text: String(item.innerText || '').trim().slice(0, 70) })),
+          readerDiagnosticEvents: (window.__M28_READER_DIAGNOSTICS__?.events || []).map((event) => ({ stage: event.stage, elapsedMs: event.elapsedMs, details: event.details })),
+        };
+      });
+    }
+
+    const next = page.locator('.readerNextArrow');
+    if (await next.isDisabled()) {
+      throw new Error(`Reader did not render a readable body paragraph; lastObserved=${JSON.stringify(lastObserved)}`);
     }
     const counter = await page.locator('#readerPageCounter').innerText();
-    const next = page.locator('.readerNextArrow');
-    if (await next.isDisabled()) break;
     await next.click();
     await page.waitForFunction((previous) => (
       String(document.querySelector('#readerPageCounter')?.innerText || '') !== previous
