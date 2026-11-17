@@ -13,7 +13,10 @@ test('soft motion stays isolated from protected app surfaces', async () => {
   assert.match(css, /:not\(\.appBottomDock\)/);
   assert.match(css, /:not\(\.globalAssistantLauncher\)/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
-  assert.match(css, /200ms/);
+  assert.match(css, /280ms/);
+  assert.match(css, /260ms/);
+  assert.match(css, /translate: 0 12px/);
+  assert.match(css, /translate: 0 8px/);
   assert.match(css, /\.assistantTranscript\s*>\s*\.userMessage/);
   assert.match(css, /\.assistantTranscript\s*>\s*\.assistantMessage/);
   assert.match(css, /\.validationModal/);
