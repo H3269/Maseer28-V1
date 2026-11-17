@@ -53,7 +53,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     ? LIBRARY_ASSISTANT_PROMPTS.some((question) => question.value === message) || PAGE_PREPARED_QUESTIONS.has(message)
     : screen === 'day'
       ? true
-      : Boolean(answerPageSpecificQuestion({ screen, message }));
+      : Boolean(answerPageSpecificQuestion({ screen, message }) || PAGE_PREPARED_QUESTIONS.has(message));
   if (!isAllowedPreparedPageQuestion) {
     return Object.freeze({
       status: 'prepared_question_required',
