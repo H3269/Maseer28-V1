@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 import { T13_DAILY_ASSISTANT_GUIDES, answerT13DailyPreparedQuestion, getT13DailyAssistantPromptGroups } from '../src/features/assistant/t13DailyAssistantPrompts.js';
+import { T12_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/t12DailyAssistantPrompts.js';
 import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN, DAILY_ASSISTANT_SAFETY_QUESTION_KINDS } from '../src/features/assistant/dailyAssistantSafetyReminder.js';
 import { formatAssistantMessageText } from '../src/features/assistant/assistantMessageFormatting.js';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
@@ -76,6 +77,27 @@ test('all 392 T13 answers are day-bound, teacher-framed and append the shared re
     checked++;
   }
   assert.equal(checked,392);
+});
+
+test('T13 answers are unique and do not copy any exact T12 prepared answer', () => {
+  const answers = T13_DAILY_ASSISTANT_GUIDES.flatMap((guide) => guide.questions.map((q) => q.answer));
+  const t12Answers = new Set(T12_DAILY_ASSISTANT_GUIDES.flatMap((guide) => guide.questions.map((q) => q.answer)));
+  assert.equal(answers.length, 392);
+  assert.equal(new Set(answers).size, 392, 'each T13 answer must be textually unique');
+  assert.ok(answers.every((answer) => !t12Answers.has(answer)), 'T13 answers must not copy T12 answers verbatim');
+});
+
+test('T13 exercises and actions have no exact cross-topic duplicate in the 952-day override set', async () => {
+  const overlay = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+  const all = Object.entries(overlay.categories).flatMap(([topic, category]) => (category.days || []).flatMap((day) => [
+    { topic, day: day.day, field: 'exercise', text: day.exercise },
+    { topic, day: day.day, field: 'actionText', text: day.actionText },
+  ]));
+  for (const day of overlay.categories['تنهایی'].days) for (const field of ['exercise', 'actionText']) {
+    const duplicates = all.filter((item) => item.text === day[field]
+      && !(item.topic === 'تنهایی' && item.day === day.day && item.field === field));
+    assert.deepEqual(duplicates, [], 'exact duplicate for T13 day ' + day.day + ' ' + field);
+  }
 });
 
 test('T13 prepared answers reject mismatched identity, content and free-text questions', () => {
