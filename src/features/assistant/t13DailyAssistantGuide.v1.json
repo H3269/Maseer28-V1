@@ -3953,5 +3953,6 @@
         }
       ]
     }
-  ]
+  ],
+  "contentStatus": "title, exercise and actionText align with reviewed redesign draft on all 28 days; topic reminder deduplicated; T12 semantic-title regression corrected"
 }
