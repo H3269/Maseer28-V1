@@ -189,7 +189,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
         assert.equal(Object.hasOwn(day, 'risk_level'), false);
       } else {
         Object.assign(day, {
-          topic_id: topicKey === 'اهمال‌کاری' ? 'T09' : topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : topicKey === 'نفرت' ? 'T04' : topicKey === 'حسادت' ? 'T05' : topicKey === 'غم و سوگ' ? 'T06' : topicKey === 'احساس گناه' ? 'T07' : 'T01',
+          topic_id: topicKey === 'اهمال‌کاری' ? 'T09' : topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : topicKey === 'نفرت' ? 'T04' : topicKey === 'حسادت' ? 'T05' : topicKey === 'غم و سوگ' ? 'T06' : topicKey === 'احساس گناه' ? 'T07' : topicKey === 'تنهایی' ? 'T13' : 'T01',
           day: dayNumber,
           review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
           risk_level: 'routine',
@@ -886,6 +886,42 @@ try {
   assert.match(t09ResistanceReply, /زمان حمایت انسانی/);
   assert.deepEqual(t09Errors, [], 'T09 prepared daily assistant must not raise browser errors');
   await t09Page.close();
+
+  const t13Page = await browser.newPage();
+  const t13Errors = [];
+  t13Page.on('pageerror', (error) => t13Errors.push(String(error)));
+  await openDay(t13Page, { problem: 'تنهایی' });
+  const t13Panel = t13Page.locator('.globalAssistantDialog');
+  await t13Panel.waitFor({ state: 'visible' });
+  const t13Trigger = t13Panel.getByTestId('t13-daily-prompt-trigger');
+  await t13Trigger.waitFor({ state: 'visible' });
+  assert.equal(await t13Panel.locator('#global-assistant-message').count(), 0,
+    'T13 must remain prepared-only and must not expose free-form typing');
+  await t13Trigger.click();
+  const t13Prompt = t13Page.locator('#library-assistant-prompt-dialog');
+  await t13Prompt.waitFor({ state: 'visible' });
+  assert.equal(await t13Prompt.locator('[data-prompt-option]').count(), 14,
+    'T13 day one must expose exactly fourteen fixed prepared questions');
+  await t13Prompt.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
+  await t13Panel.getByRole('button', { name: 'ارسال' }).click();
+  await t13Page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => node.innerText.includes('راهنمای روز ۱ تنهایی')));
+  await assertAssistantUsesVisibleDailySource(t13Page, t13Panel, 'تنهایی', 1, ['exercise']);
+  await t13Trigger.click();
+  const t13SafetyPrompt = t13Page.locator('#library-assistant-prompt-dialog');
+  await t13SafetyPrompt.waitFor({ state: 'visible' });
+  await t13SafetyPrompt.getByRole('button', { name: 'از کجا بفهمم درست انجامش داده‌ام؟' }).click();
+  await t13Panel.getByRole('button', { name: 'ارسال' }).click();
+  await t13Page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => Boolean(node.querySelector('[data-testid="daily-assistant-safety-reminder"]'))));
+  const t13SafetyReply = t13Panel.locator('.assistantMessage').last();
+  assert.equal(await t13SafetyReply.getByTestId('daily-assistant-safety-reminder').count(), 1,
+    'T13 evaluation answer must show exactly one shared safety reminder card');
+  assert.match(await t13SafetyReply.innerText(), /۰۹۱۹۰۸۸۹۰۶۲/);
+  assert.equal((await t13SafetyReply.innerText()).split('یادآوری اختصاصی ایمنی تنهایی').length - 1, 1,
+    'T13-specific safety reminder must appear exactly once after topic-label normalization');
+  assert.deepEqual(t13Errors, [], 'T13 prepared assistant must not raise browser errors');
+  await t13Page.close();
 
   process.stdout.write('PASS: Chromium daily assistant guidance, real legacy retrieval across three topics, four source-derived adaptation branches, follow-up context, input bounds, persistent safety handoff, local-only privacy, blocked-day denial, and assistant-only relationship gate (WV-BROWSER-ASSISTANT)\\n');
 } finally {

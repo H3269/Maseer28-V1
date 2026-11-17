@@ -259,31 +259,27 @@ test('legacy T32 low-energy content stays blocked until clinical subtype review'
   })), 'caution');
 });
 
-test('T13 day 14 behavior-reduction exercise stays blocked until subtype-specific safety review', async () => {
+test('T13 day 14 is available after owner approval without a subtype-review runtime gate', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const day = content.categories['تنهایی'].days.find((item) => item.day === 14);
   assert.ok(day);
   assert.equal(day.id, 'تنهایی-14');
-  assert.equal(getDailySafetyMode(day), 'blocked');
-  const skipped = createHumanReviewSkipRecord(day, new Date('2026-11-04T15:00:00.000Z'));
-  assert.equal(skipped.status, 'skipped_human_review');
-  assert.equal('score' in skipped, false);
+  assert.equal(getDailySafetyMode(day), 'routine',
+    'missing/pending specialist metadata must not block the owner-approved T13 day');
 
-  const reviewed = (extra = {}) => ({
+  const ownerApproved = (extra = {}) => ({
     id: 'T13-D14',
     topic_id: 'T13',
     day: 14,
     risk_level: 'caution',
-    review_status: 'approved',
-    review_record_id: 'review-t13-day-14',
-    subtopic_ids: ['T13-S01'],
-    safety_rule_ids: ['SR-T13-D14-SAFETY'],
+    review_status: 'owner_approved',
+    subtopic_ids: ['T13-S01', 'T13-S02'],
     ...extra,
   });
-  assert.equal(getDailySafetyMode(reviewed()), 'caution');
-  assert.equal(getDailySafetyMode(reviewed({ safety_rule_ids: [] })), 'blocked');
-  assert.equal(getDailySafetyMode(reviewed({ risk_level: 'routine' })), 'blocked');
-  assert.equal(getDailySafetyMode(reviewed({ subtopic_ids: ['T13-S01', 'T13-S02'] })), 'blocked');
+  assert.equal(getDailySafetyMode(ownerApproved()), 'caution');
+  assert.equal(getDailySafetyMode(ownerApproved({ risk_level: 'routine' })), 'routine');
+  assert.equal(getDailySafetyMode(ownerApproved({ risk_level: 'high' })), 'blocked');
+  assert.equal(getDailySafetyMode(ownerApproved({ risk_level: 'moderate' })), 'blocked');
 });
 
 test('T10 sleep content is available for owner preview while preserving risk and referral-specific safety gates', async () => {
