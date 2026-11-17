@@ -67,6 +67,7 @@ test('downloaded Reader diagnostics redact resource query strings and omit profi
       innerWidth: 390,
       innerHeight: 844,
       setTimeout(callback) { callback(); },
+      addEventListener() {},
     },
   });
   Object.defineProperty(globalThis, 'document', {
