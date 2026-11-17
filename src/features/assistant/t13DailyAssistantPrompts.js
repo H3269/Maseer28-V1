@@ -28,7 +28,7 @@ export function answerT13DailyPreparedQuestion({ day, message, dailyContent } = 
   const expectedId = `تنهایی-${String(dayNumber).padStart(2, '0')}`;
   if (!guide || dailyContent.id !== expectedId || Number(dailyContent.day) !== dayNumber
     || String(dailyContent.title || '').trim() !== guide.title
-    || dailyContent.topic_id !== 'T13'
+    || (dailyContent.topic_id != null && dailyContent.topic_id !== 'T13')
     || String(dailyContent.sourceExercise ?? dailyContent.exercise ?? '').trim() !== guide.exercise
     || String(dailyContent.sourceActionText ?? dailyContent.actionText ?? dailyContent.action ?? '').trim() !== guide.action) return null;
   const question = guide.questions.find((item) => item.value === String(message || '').trim());
