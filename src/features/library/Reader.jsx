@@ -337,7 +337,14 @@ export default function Reader({ book, onClose, initialVersion = null, initialSo
     rebuild(anchor);
   });
 
-  return () => cancelAnimationFrame(frame);
+  return () => {
+    recordReaderDiagnostic('layout-effect-cleanup-before-next-run', {
+      versionPresent: Boolean(version),
+      versionContentPresent: Boolean(version?.content),
+      framePending: true,
+    });
+    cancelAnimationFrame(frame);
+  };
 }, [version, settings.fontStep, rebuild]);
   useEffect(() => {
     const onResize = () => {
