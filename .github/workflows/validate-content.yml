@@ -332,6 +332,7 @@ jobs:
           tests/t12DailyAssistantGuide.test.js
           tests/t12PreparedAnswerDisplay.test.mjs
           tests/t13DailyAssistantPrompts.test.mjs
+          tests/dailyTextOverrides.test.mjs
           tests/dailyAssistantSafetyReminderT08T12.test.mjs
           tests/dailyAssistantCrossTopicContract.test.js
           tests/preparedOnlyCurrentTopics.test.js
