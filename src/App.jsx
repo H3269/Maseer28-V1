@@ -631,8 +631,9 @@ function navigate(next) {
       setAssistantOpen(false);
       setReaderState({ book: readyBook, version, sourcePage, target });
       navigate('bookReader');
-    } catch {
-      showValidation(['متن کتاب بارگذاری نشد. اتصال را بررسی کن و دوباره تلاش کن.'], 'خطا در کتابخانه');
+    } catch (error) {
+      console.error('Book content failed to load', error);
+      showValidation([error?.message || 'متن کتاب بارگذاری نشد. اتصال را بررسی کن و دوباره تلاش کن.'], 'خطا در کتابخانه');
     } finally {
       setOpeningBook(false);
     }
