@@ -9,7 +9,7 @@ const T13_SAFETY_REMINDER = [
   'یادآوری اختصاصی ایمنی T13',
   'برای کاهش تنهایی خودت را مجبور به تماس، افشای اطلاعات، حضور در گروه یا حفظ رابطه ناامن نکن. کیفیت و امنیت ارتباط مهم‌تر از تعداد تماس‌هاست.',
   'اگر تنهایی با ناامیدی شدید، افت جدی عملکرد یا فکر آسیب همراه است، خودیاری را کافی فرض نکن و از متخصص سلامت روان یا خدمات اضطراری محل زندگی کمک بگیر. در رابطه تهدیدآمیز یا کنترل‌گرانه، ایمنی و حمایت امن مقدم است.',
-].join('\\n\\n');
+].join('\n\n');
 
 function toT13DayNumber(value) {
   const day = Number(value);
@@ -42,10 +42,10 @@ export function answerT13DailyPreparedQuestion({ day, message, dailyContent } = 
   body = replaceExact(body, guide.restVersion, String(dailyContent.restExerciseText || guide.restVersion).trim());
 
   const heading = `راهنمای روز ${guide.day} تنهایی — ${guide.title}`;
-  const framedAnswer = addTeacherStyleFrame(`${heading}\\n\\n${body}`, { guide, question, topic: 'تنهایی' });
+  const framedAnswer = addTeacherStyleFrame(`${heading}\n\n${body}`, { guide, question, topic: 'تنهایی' });
   const safetyKinds = new Set(['loneliness_increased', 'talk_other', 'success', 'stop']);
   const answerWithTopicSafety = safetyKinds.has(question.kind)
-    ? framedAnswer.trimEnd() + '\\n\\n' + T13_SAFETY_REMINDER
+    ? framedAnswer.trimEnd() + '\n\n' + T13_SAFETY_REMINDER
     : framedAnswer;
   return appendDailyAssistantSafetyReminder(answerWithTopicSafety, question.kind);
 }
