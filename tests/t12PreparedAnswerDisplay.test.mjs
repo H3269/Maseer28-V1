@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { T12_DAILY_ASSISTANT_GUIDES, answerT12DailyPreparedQuestion } from '../src/features/assistant/t12DailyAssistantPrompts.js';
 import { formatAssistantMessageText } from '../src/features/assistant/assistantMessageFormatting.js';
+import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from '../src/features/assistant/dailyAssistantSafetyReminder.js';
 
 test('all 392 T12 prepared answers use the shared T01-T11 display frame', () => {
   let checked = 0;
