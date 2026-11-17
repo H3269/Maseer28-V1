@@ -29,7 +29,6 @@ export function startReaderDiagnostics(book) {
     startedAt: new Date().toISOString(),
     startedAtPerformanceMs: startedAt,
     book: {
-      id: String(book?.id || '').slice(0, 80),
       legacyId: Number(book?.legacyId) || null,
     },
     events: [],
@@ -71,6 +70,7 @@ export function recordReaderDiagnostic(stage, details = {}) {
 export function downloadReaderDiagnostics() {
   const report = getReport();
   if (!report || !isReaderDiagnosticsEnabled()) return false;
+  recordReaderDiagnostic('diagnostic-report-download-requested');
   const resources = performance.getEntriesByType('resource')
     .filter((entry) => /\/content\/books\/book\d+\.json(?:$|\?)/.test(entry.name))
     .slice(-10)
@@ -103,6 +103,5 @@ export function downloadReaderDiagnostics() {
   anchor.click();
   anchor.remove();
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-  recordReaderDiagnostic('diagnostic-report-downloaded');
   return true;
 }
