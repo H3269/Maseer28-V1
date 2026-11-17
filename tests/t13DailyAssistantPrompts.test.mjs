@@ -36,6 +36,7 @@ test('T13 guide has exactly 28 days and 392 complete answers under the fixed 14-
   for (const [index, guide] of T13_DAILY_ASSISTANT_GUIDES.entries()) {
     assert.equal(guide.day, index + 1); assert.equal(guide.topicId, 'T13'); assert.equal(guide.topic, 'تنهایی');
     assert.equal(guide.questions.length, 14); assert.equal(guide.reviewStatus, 'pending_owner_review');
+    for (const field of ['lightActionVersion','progressActionVersion','restActionVersion']) assert.ok(guide[field], 'missing '+field+' on day '+guide.day);
     assert.equal(guide.evidenceGrade, 'not_assessed'); assert.equal(guide.subtopicMappingStatus, 'proposed_not_registered');
     assert.deepEqual(guide.questions.map((q) => q.label), EXPECTED_QUESTIONS);
     assert.ok(guide.questions.every((q) => typeof q.answer === 'string' && q.answer.trim()));
@@ -48,6 +49,8 @@ test('T13 content overlay has 28 days and exactly matches assistant exercise/act
   for (const guide of T13_DAILY_ASSISTANT_GUIDES) {
     const day = days.find((item) => item.day === guide.day); assert.ok(day, 'missing day ' + guide.day);
     assert.equal(day.title, guide.title, 'title mismatch on day ' + guide.day);
+    assert.equal(day.intro, 'هدف امروز: ' + guide.objective + '\nمهارت امروز: ' + guide.skill);
+    assert.equal(day.closing, 'معیار موفقیت: ' + guide.successCriterion + '\nپرسش بازتاب: ' + guide.reflectionPrompt + '\nشرط توقف: ' + guide.stopCondition);
     assert.equal(day.exercise, guide.exercise, 'exercise mismatch on day ' + guide.day);
     assert.equal(day.actionText, guide.action, 'action mismatch on day ' + guide.day);
   }
@@ -86,6 +89,7 @@ test('T13 answers are unique and do not copy any exact T12 prepared answer', () 
   const t12Answers = new Set(T12_DAILY_ASSISTANT_GUIDES.flatMap((guide) => guide.questions.map((q) => q.answer)));
   assert.equal(answers.length, 392);
   assert.equal(new Set(answers).size, 392, 'each T13 answer must be textually unique');
+  for (const field of ['lightActionVersion','progressActionVersion','restActionVersion']) assert.equal(new Set(T13_DAILY_ASSISTANT_GUIDES.map(g => g[field])).size, 28, field+' must be unique by day');
   assert.ok(answers.every((answer) => !t12Answers.has(answer)), 'T13 answers must not copy T12 answers verbatim');
 });
 
