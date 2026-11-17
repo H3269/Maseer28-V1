@@ -37,12 +37,21 @@ async function waitForReadablePage(page) {
 }
 
 async function waitForFirstBodyParagraph(page) {
+  let lastObserved = null;
   for (let attempt = 0; attempt < 12; attempt += 1) {
     const paragraph = await page.evaluate(() => {
       const article = document.querySelector('#bookReaderText');
       const line = [...(article?.querySelectorAll('.readerFixedLine.body.paraStart') || [])]
         .find((item) => String(item.innerText || '').replace(/\s+/g, ' ').trim().length >= 20);
       return line ? String(line.innerText || '').replace(/\s+/g, ' ').trim() : '';
+    });
+    lastObserved = await page.evaluate(() => {
+      const article = document.querySelector('#bookReaderText');
+      return {
+        pageCounter: document.querySelector('#readerPageCounter')?.innerText || '',
+        articleText: String(article?.innerText || '').replace(/\\s+/g, ' ').trim().slice(0, 180),
+        lineSamples: [...(article?.querySelectorAll('.readerFixedLine') || [])].slice(0, 8).map((item) => ({ className: item.className, text: String(item.innerText || '').trim().slice(0, 70) })),
+      };
     });
     if (paragraph) {
       return page.evaluate((text) => ({
@@ -59,7 +68,7 @@ async function waitForFirstBodyParagraph(page) {
       String(document.querySelector('#readerPageCounter')?.innerText || '') !== previous
     ), counter, { timeout: 15000 });
   }
-  throw new Error('Reader opened, but the first readable body paragraph was not found within 12 pages.');
+  throw new Error(`Reader opened, but the first readable body paragraph was not found within 12 pages; lastObserved=${JSON.stringify(lastObserved)}`);
 }
 
 try {
