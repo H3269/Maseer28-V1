@@ -84,8 +84,9 @@ async function waitForFirstBodyParagraph(page) {
 
 try {
   const results = [];
+  // The current dashboard intentionally has no library quick-action button.
+  // Open the library through the real, user-visible bottom navigation entry.
   const entryPoints = [
-    { id: 'dashboard-library-button', open: async (page) => page.locator('#dashboard .quickAction').filter({ hasText: 'کتابخانه' }).click() },
     { id: 'bottom-navigation-study-button', open: async (page) => page.locator('#bottomNav button[data-view="books"]').click() },
   ];
 
@@ -234,8 +235,8 @@ try {
     coldBodyParagraphMs: { samples: coldSamples.length, p50: percentile(coldSamples, 50), p95: percentile(coldSamples, 95), min: Math.min(...coldSamples), max: Math.max(...coldSamples) },
     warmBodyParagraphMs: { samples: warmSamples.length, p50: percentile(warmSamples, 50), p95: percentile(warmSamples, 95), min: Math.min(...warmSamples), max: Math.max(...warmSamples) },
   };
-  console.log('PASS: dashboard-library and bottom-navigation study entry points each completed 3 independent cold/warm reader opens for all five canonical books.');
-  console.log('Both entry points are clicked independently. Timing includes click-to-first-readable-content and click-to-first-real-body-paragraph; measurements are headless Chromium, not physical Android results.');
+  console.log('PASS: bottom-navigation study entry point completed 3 independent cold/warm reader opens for all five canonical books.');
+  console.log('The current user-visible study entry point is clicked directly. Timing includes click-to-first-readable-content and click-to-first-real-body-paragraph; measurements are headless Chromium, not physical Android results.');
   console.log('Repeated first-body-paragraph timing summary (headless Chromium):');
   console.log(JSON.stringify(summary, null, 2));
   console.log(JSON.stringify(results, null, 2));
