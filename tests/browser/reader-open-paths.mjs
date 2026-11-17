@@ -51,6 +51,7 @@ async function waitForFirstBodyParagraph(page) {
         pageCounter: document.querySelector('#readerPageCounter')?.innerText || '',
         articleText: String(article?.innerText || '').replace(/\\s+/g, ' ').trim().slice(0, 180),
         lineSamples: [...(article?.querySelectorAll('.readerFixedLine') || [])].slice(0, 8).map((item) => ({ className: item.className, text: String(item.innerText || '').trim().slice(0, 70) })),
+        readerDiagnosticEvents: (window.__M28_READER_DIAGNOSTICS__?.events || []).map((event) => ({ stage: event.stage, elapsedMs: event.elapsedMs, details: event.details })),
       };
     });
     if (paragraph) {
