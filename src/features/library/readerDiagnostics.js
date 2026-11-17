@@ -85,7 +85,6 @@ export function downloadReaderDiagnostics() {
     ...report,
     completedAt: new Date().toISOString(),
     environment: {
-      userAgent: String(navigator.userAgent || '').slice(0, 180),
       viewportWidth: window.innerWidth,
       viewportHeight: window.innerHeight,
       devicePixelRatio: window.devicePixelRatio || 1,
