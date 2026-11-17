@@ -11,6 +11,7 @@ import { GRIEF_DAILY_ASSISTANT_GUIDES, getGriefDailyAssistantPromptGroups } from
 import { GUILT_DAILY_ASSISTANT_GUIDES, getGuiltDailyAssistantPromptGroups } from '../src/features/assistant/guiltDailyAssistantPrompts.js';
 import { EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES, getEmotionalDependencyDailyAssistantPromptGroups } from '../src/features/assistant/emotionalDependencyDailyAssistantPrompts.js';
 import { T09_DAILY_ASSISTANT_GUIDES, getT09DailyAssistantPromptGroups } from '../src/features/assistant/t09DailyAssistantPrompts.js';
+import { T13_DAILY_ASSISTANT_GUIDES, getT13DailyAssistantPromptGroups } from '../src/features/assistant/t13DailyAssistantPrompts.js';
 
 const topics = [
   { name: 'خشم', id: 'T01', guides: ANGER_DAILY_ASSISTANT_GUIDES, groups: getAngerDailyAssistantPromptGroups },
@@ -22,6 +23,7 @@ const topics = [
   { name: 'احساس گناه', id: 'T07', guides: GUILT_DAILY_ASSISTANT_GUIDES, groups: getGuiltDailyAssistantPromptGroups },
   { name: 'وابستگی عاطفی', id: 'T08', guides: EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES, groups: getEmotionalDependencyDailyAssistantPromptGroups },
   { name: 'اهمال‌کاری', id: 'T09', guides: T09_DAILY_ASSISTANT_GUIDES, groups: getT09DailyAssistantPromptGroups },
+  { name: 'تنهایی', id: 'T13', guides: T13_DAILY_ASSISTANT_GUIDES, groups: getT13DailyAssistantPromptGroups },
 ];
 
 function contextFor(topic) {
@@ -34,6 +36,7 @@ function contextFor(topic) {
       id: getCanonicalDailyRecordId(topic.name, 1),
       topic_id: topic.id,
       day: 1,
+      title: guide.title,
       exercise: guide.exercise,
       actionText: guide.action,
     },
@@ -68,6 +71,7 @@ test('all exact prepared FAQs across 28 days keep their own answers when their w
   let checked = 0;
   for (const topic of topics) {
     for (const guide of topic.guides) {
+      if (topic.id === 'T13' && guide.day === 14) continue;
       const dailyContext = {
         day: guide.day,
         problem: topic.name,
@@ -76,6 +80,7 @@ test('all exact prepared FAQs across 28 days keep their own answers when their w
           id: getCanonicalDailyRecordId(topic.name, guide.day),
           topic_id: topic.id,
           day: guide.day,
+          title: guide.title,
           exercise: guide.exercise,
           actionText: guide.action,
         },
@@ -94,6 +99,32 @@ test('all exact prepared FAQs across 28 days keep their own answers when their w
     }
   }
   assert.ok(checked >= 2700, `expected broad coverage of the 7 × 28 prepared FAQ sets; checked ${checked}`);
+});
+
+test('T13 day 14 stays unavailable until its subtype-specific safety review is approved', () => {
+  const guide = T13_DAILY_ASSISTANT_GUIDES[13];
+  const dailyContext = {
+    day: 14,
+    problem: 'تنهایی',
+    data: {
+      id: getCanonicalDailyRecordId('تنهایی', 14),
+      topic_id: 'T13',
+      day: 14,
+      title: guide.title,
+      exercise: guide.exercise,
+      actionText: guide.action,
+      review_status: 'pending_expert_review',
+      risk_level: 'caution',
+      subtopic_ids: ['T13-S01'],
+    },
+  };
+  const result = makePageAssistantTurn({
+    screen: 'day',
+    text: guide.questions[0].value,
+    dailyContext,
+  });
+  assert.equal(result.status, 'daily_guidance_unavailable');
+  assert.match(result.message, /بازبینی ایمنی تخصصی/u);
 });
 
 test('a pending safety exchange still preempts even an exact prepared FAQ', () => {
