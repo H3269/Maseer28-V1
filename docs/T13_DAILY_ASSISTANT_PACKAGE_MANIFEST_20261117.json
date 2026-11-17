@@ -11,7 +11,7 @@
   "questionsPerDay": 14,
   "expectedPreparedAnswers": 392,
   "contentSource": "public/content/daily-text-overrides.v1.json",
-  "contentStatus": "28/28 days present; exercise/action text exactly matches the reviewed redesign draft",
+  "contentStatus": "title, exercise and actionText align with the reviewed redesign draft on all 28 days",
   "assistantStatus": "28x14 prepared-answer catalog authored; owner review pending; evidence grade not assessed",
   "safetyStatus": "T13 day 14 remains blocked until subtype-specific safety review; assistant runtime must not bypass the block",
   "subtopicMappingStatus": "proposed only; no taxonomy approval claimed",
