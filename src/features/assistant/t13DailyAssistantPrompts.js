@@ -33,10 +33,13 @@ export function answerT13DailyPreparedQuestion({ day, message, dailyContent } = 
   body = replaceExact(body, guide.action, String(dailyContent.actionText || dailyContent.action || guide.action).trim());
 
   const heading = `راهنمای روز ${guide.day} تنهایی — ${guide.title}`;
-  const framedAnswer = addTeacherStyleFrame(`${heading}\n\n${body}`, { guide, question, topic: 'تنهایی' })
-    .replaceAll('یادآوری اختصاصی ایمنی موضوع مرتبط', 'یادآوری اختصاصی ایمنی T13');
+  const framedAnswer = addTeacherStyleFrame(`${heading}\\n\\n${body}`, { guide, question, topic: 'تنهایی' });
   const safetyKinds = new Set(['loneliness_increased', 'talk_other', 'success', 'stop']);
-  return appendDailyAssistantSafetyReminder(framedAnswer, question.kind);
+  const topicSafetyReminder = 'یادآوری اختصاصی ایمنی T13: احساس تنهایی به‌تنهایی نشانه نقص شخصی نیست. خودت را به تماس، افشای اطلاعات یا حضور در جمع مجبور نکن. اگر ارتباطی ناامن یا کنترل‌گرانه است، امنیت و دریافت حمایت امن را مقدم بدان.';
+  const answerWithTopicReminder = safetyKinds.has(question.kind)
+    ? framedAnswer.trimEnd() + '\\n\\n' + topicSafetyReminder
+    : framedAnswer;
+  return appendDailyAssistantSafetyReminder(answerWithTopicReminder, question.kind);
 }
 
 export function getT13DailyAssistantPromptGroups(day) {
