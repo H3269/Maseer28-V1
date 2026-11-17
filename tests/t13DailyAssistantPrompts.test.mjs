@@ -1,0 +1,98 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { readFile } from 'node:fs/promises';
+import { T13_DAILY_ASSISTANT_GUIDES, answerT13DailyPreparedQuestion, getT13DailyAssistantPromptGroups } from '../src/features/assistant/t13DailyAssistantPrompts.js';
+import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN, DAILY_ASSISTANT_SAFETY_QUESTION_KINDS } from '../src/features/assistant/dailyAssistantSafetyReminder.js';
+import { formatAssistantMessageText } from '../src/features/assistant/assistantMessageFormatting.js';
+import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
+import { getDailySafetyMode } from '../src/features/content/dailySafety.js';
+
+const EXPECTED_QUESTIONS = [
+  "منظور از تمرین امروز چیست؟",
+  "برای تمرین امروز یک مثال می‌زنی؟",
+  "منظور از اقدام اختصاصی امروز چیست؟",
+  "برای اقدام امروز یک مثال می‌زنی؟",
+  "اگر انجام کاملش برایم سخت بود چه کنم؟",
+  "از کجا بفهمم درست انجامش داده‌ام؟",
+  "چه زمانی باید تمرین امروز را متوقف کنم؟",
+  "اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟",
+  "تمرین و اقدام امروز چه تفاوتی دارند؟",
+  "اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟",
+  "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
+  "آیا لازم است حتماً با فرد دیگری صحبت کنم؟",
+  "می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟",
+  "این تمرین چقدر زمان می‌برد؟"
+];
+function dailyContent(guide) {
+  return { id: 'تنهایی-' + String(guide.day).padStart(2, '0'), topic_id: 'T13', day: guide.day,
+    title: guide.title, sourceExercise: guide.exercise, sourceActionText: guide.action,
+    exercise: guide.exercise, actionText: guide.action, lightExerciseText: guide.lightVersion,
+    progressVersion: guide.progressVersion, restExerciseText: guide.restVersion };
+}
+
+test('T13 guide has exactly 28 days and 392 complete answers under the fixed 14-question contract', () => {
+  assert.equal(T13_DAILY_ASSISTANT_GUIDES.length, 28);
+  for (const [index, guide] of T13_DAILY_ASSISTANT_GUIDES.entries()) {
+    assert.equal(guide.day, index + 1); assert.equal(guide.topicId, 'T13'); assert.equal(guide.topic, 'تنهایی');
+    assert.equal(guide.questions.length, 14); assert.equal(guide.reviewStatus, 'pending_owner_review');
+    assert.equal(guide.evidenceGrade, 'not_assessed'); assert.equal(guide.subtopicMappingStatus, 'proposed_not_registered');
+    assert.deepEqual(guide.questions.map((q) => q.label), EXPECTED_QUESTIONS);
+    assert.ok(guide.questions.every((q) => typeof q.answer === 'string' && q.answer.trim()));
+  }
+});
+
+test('T13 content overlay has 28 days and exactly matches assistant exercise/action source', async () => {
+  const overlay = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+  const days = overlay.categories['تنهایی']?.days || []; assert.equal(days.length, 28);
+  for (const guide of T13_DAILY_ASSISTANT_GUIDES) {
+    const day = days.find((item) => item.day === guide.day); assert.ok(day, 'missing day ' + guide.day);
+    assert.equal(day.exercise, guide.exercise, 'exercise mismatch on day ' + guide.day);
+    assert.equal(day.actionText, guide.action, 'action mismatch on day ' + guide.day);
+  }
+});
+
+test('T13 exposes five prompt groups and exactly fourteen questions for every day', () => {
+  for (let day = 1; day <= 28; day += 1) {
+    const groups = getT13DailyAssistantPromptGroups(day); assert.equal(groups.length, 5);
+    assert.deepEqual(groups.map((g) => g.label), ['فهم تمرین روز ' + day,'فهم اقدام اختصاصی روز ' + day,'تفاوت تمرین و اقدام','اجرا و موانع','ارزیابی و ایمنی']);
+    assert.equal(groups.flatMap((g) => g.questions).length, 14);
+  }
+  assert.deepEqual(getT13DailyAssistantPromptGroups(0), []); assert.deepEqual(getT13DailyAssistantPromptGroups(29), []);
+});
+
+test('all 392 T13 answers are day-bound, teacher-framed and append the shared reminder to exactly four safety answers', () => {
+  let checked = 0; const safetyKinds = new Set(['success','stop','loneliness_increased','talk_other']);
+  for (const guide of T13_DAILY_ASSISTANT_GUIDES) for (const question of guide.questions) {
+    const answer = answerT13DailyPreparedQuestion({day:guide.day,message:question.value,dailyContent:dailyContent(guide)});
+    assert.equal(typeof answer,'string','day '+guide.day+' '+question.kind);
+    assert.match(answer,new RegExp('راهنمای روز '+guide.day+' تنهایی')); assert.match(answer,/بیاییم قدم‌به‌قدم پیش برویم/u);
+    assert.match(answer,/هدف امروز:/u); assert.equal(answer.includes(String.fromCharCode(92)+'n'),false);
+    const visible=formatAssistantMessageText(answer).flat().map(part=>part.text).join('\n'); assert.equal(visible.includes('**'),false);
+    const expected=safetyKinds.has(question.kind); assert.equal(DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(question.kind),expected);
+    const count=answer.split(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN).length-1;
+    assert.equal(count,expected?1:0,'shared reminder count day '+guide.day+' '+question.kind);
+    assert.equal(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN),expected);
+    if(expected) assert.match(answer,/یادآوری اختصاصی ایمنی T13/u);
+    checked++;
+  }
+  assert.equal(checked,392);
+});
+
+test('T13 prepared answers reject mismatched identity, content and free-text questions', () => {
+  const guide=T13_DAILY_ASSISTANT_GUIDES[0], content=dailyContent(guide);
+  assert.equal(answerT13DailyPreparedQuestion({day:2,message:guide.questions[0].value,dailyContent:content}),null);
+  assert.equal(answerT13DailyPreparedQuestion({day:1,message:guide.questions[0].value,dailyContent:{...content,id:'تنهایی-02'}}),null);
+  assert.equal(answerT13DailyPreparedQuestion({day:1,message:guide.questions[0].value,dailyContent:{...content,topic_id:'T12'}}),null);
+  assert.equal(answerT13DailyPreparedQuestion({day:1,message:guide.questions[0].value,dailyContent:{...content,actionText:'اقدام ناسازگار'}}),null);
+  assert.equal(answerT13DailyPreparedQuestion({day:1,message:'یک سؤال آزاد',dailyContent:content}),null);
+});
+
+test('T13 page assistant serves ordinary prepared days but does not bypass the day-14 safety block', () => {
+  const guide=T13_DAILY_ASSISTANT_GUIDES[0], content=dailyContent(guide);
+  const result=makePageAssistantTurn({screen:'day',text:guide.questions[0].value,dailyContext:{day:1,problem:'تنهایی',data:content,guidanceData:content}});
+  assert.equal(result.status,'daily_guidance_available'); assert.match(result.message,/راهنمای روز 1 تنهایی/u);
+  const safetyDay={id:'تنهایی-14',topic_id:'T13',day:14,review_status:'pending_expert_review',risk_level:'caution',subtopic_ids:['T13-S01']};
+  assert.equal(getDailySafetyMode(safetyDay),'blocked');
+  const blocked=makePageAssistantTurn({screen:'day',text:T13_DAILY_ASSISTANT_GUIDES[13].questions[0].value,dailyContext:{day:14,problem:'تنهایی',data:safetyDay,guidanceData:safetyDay}});
+  assert.equal(blocked.status,'daily_guidance_unavailable'); assert.match(blocked.message,/بازبینی ایمنی تخصصی/u);
+});
