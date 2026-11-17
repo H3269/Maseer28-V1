@@ -156,7 +156,9 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
 
     const hasPendingSafetyExchange = ['pending', 'handoff'].includes(conversationState?.dailyState?.safetyStatus);
     const t13SafetyMode = preparedTopicId === 'T13' ? getDailySafetyMode(preparedSource) : null;
-    if (preparedTopicId === 'T13' && t13SafetyMode === 'blocked') {
+    const hasExactT13PreparedQuestion = preparedTopicId === 'T13'
+      && Boolean(answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }));
+    if (preparedTopicId === 'T13' && t13SafetyMode === 'blocked' && hasExactT13PreparedQuestion) {
       return Object.freeze({
         status: 'daily_guidance_unavailable',
         message: 'تمرین این روز تا زمان بازبینی ایمنی تخصصی در دسترس نیست؛ برای جلوگیری از راهنمایی ناایمن، پاسخ روزمحور ارائه نمی‌شود.',
