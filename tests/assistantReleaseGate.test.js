@@ -55,9 +55,9 @@ test('global assistant launcher is mounted across navigable screens, including s
 });
 
 test('eligible page guides include shared page-purpose, action, navigation, and app-feature prompts', () => {
-  assert.match(launcherUi, /pageGroups \\? \\[\\.\\.\\.pageGroups, \\.\\.\\.PAGE_ASSISTANT_PROMPT_GROUPS\\]/);
-  assert.match(launcherUi, /screen === 'day' \\? \\[\\] : \\(/);
-  assert.match(launcherUi, /if \\(!visible \\|\\| screen === 'bookReader'\\) return null/);
+  assert.match(launcherUi, /pageGroups \? \[\.\.\.pageGroups, \.\.\.PAGE_ASSISTANT_PROMPT_GROUPS\]/);
+  assert.match(launcherUi, /screen === 'day' \? \[\] : \(/);
+  assert.match(launcherUi, /if \(!visible \|\| screen === 'bookReader'\) return null/);
 });
 
 test('assistant runtime does not claim clinical validation or diagnostic capability', () => {
