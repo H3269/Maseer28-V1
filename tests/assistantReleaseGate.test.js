@@ -32,9 +32,12 @@ test('global assistant launcher is mounted across navigable screens, including s
   assert.match(appUi, /const assistantVisible = navVisible \|\| \['home', 'howWorks', 'about', 'profile', 'pathSetup', 'assessment'\]\.includes\(screen\)/, 'onboarding pages must expose the page assistant before assessment is complete');
   assert.match(appUi, /visible=\{assistantVisible\}/);
   assert.match(appUi, /if \(!content\) return undefined;/, 'assistant chunk may load once core content is ready, before onboarding completes');
-  assert.match(appUi, /\{assistantVisible && assistantLauncherLoaded && <button/);
+  assert.match(appUi, /\{assistantVisible && assistantLauncherLoaded && <Suspense fallback=\{null\}><GlobalAssistantLauncher/);
   assert.doesNotMatch(appUi, /onPointerDown=\{\(\) => \{ void loadGlobalAssistantLauncher/);
   assert.match(appUi, /<GlobalAssistantLauncher/);
+  assert.doesNotMatch(appUi, /className="globalAssistantLauncher"/, 'App must not render a second, non-draggable assistant button');
+  assert.doesNotMatch(appUi, /hideLauncher|externalLauncherRef|assistantLauncherButtonRef|assistantOpenRequest/);
+  assert.ok(appUi.indexOf('<GlobalAssistantLauncher') > appUi.indexOf('assistantVisible && assistantLauncherLoaded'), 'the visible draggable launcher must be owned by the assistant component');
   assert.match(appUi, /dailyContext=\{screen === 'day'/);
   assert.match(appUi, /libraryContext=\{screen === 'books'/);
   assert.doesNotMatch(appUi, /DailyExerciseAssistant/);
