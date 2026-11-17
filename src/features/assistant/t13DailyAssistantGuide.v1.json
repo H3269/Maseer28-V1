@@ -1880,7 +1880,7 @@
       "riskLevel": "not_assessed",
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
+      "reviewStatus": "owner_approved",
       "questions": [
         {
           "id": "q01",
@@ -1980,7 +1980,19 @@
           "kind": "duration",
           "answer": "برای تمرین روز 14 مدت استاندارد و آزموده‌شده‌ای ثبت نشده است؛ بنابراین زمان قطعی وعده نمی‌دهم. فقط به اندازه‌ای که راحت و امن است وقت بگذار، کار را خرد کن یا هر زمان خواستی متوقف شو."
         }
-      ]
+      ],
+      "ownerAttestation": {
+        "status": "approved_by_owner_attestation",
+        "reviewerName": "دکتر حسن عابدی",
+        "reviewerRole": "owner_clinician_and_center_owner",
+        "approvalDate": "2026-11-17",
+        "scope": [
+          "ایمنی محتوای روز ۱۴ T13",
+          "عدم نیاز به قفل نرم‌افزاری بر پایه تأییدیه تخصصی برای انتشار بسته",
+          "تأیید نام مرکز هیپنوتراپی شفا، شماره تماس ۰۹۱۹۰۸۸۹۰۶۲ و عبارت همراهی درج‌شده در یادآوری مشترک"
+        ],
+        "basis": "اعلام صریح مالک و مسئول تخصصی در گفتگو؛ این ثبت، گواهی مستقل بیرونی نیست."
+      }
     },
     {
       "day": 15,
