@@ -60,7 +60,7 @@ test('T13 content overlay has 28 days and exactly matches assistant exercise/act
 test('T13 titles remain distinct from all other topic titles under the shared 0.30 screen', async () => {
   const overlay=JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json',import.meta.url),'utf8'));
   const normalize=(value)=>String(value||'').normalize('NFKC').replace(/[يى]/g,'ی').replace(/ك/g,'ک')
-    .replace(/[\\u200c\\u200f\\u200e]/g,' ').replace(/[^\\p{L}\\p{N}\\s]/gu,' ').replace(/\\s+/g,' ').trim().toLowerCase();
+    .replace(/[\u200c\u200f\u200e]/g,' ').replace(/[^\p{L}\p{N}\s]/gu,' ').replace(/\s+/g,' ').trim().toLowerCase();
   const stop=new Set(['نسخه','سبک','تمرین','اقدام','فقط','یک','و','یا','را','از','به','در','که','اگر','برای','با','بدون','امروز','فعلا','کن','کنید','بنویس','بنویسی','بنویسید','ثبت','انتخاب','نام','ببر','مشخص','بررسی','انجام','بده','بگیر','دارد','هست','است','میشود','شود','تا','خودت','خود','او','این','آن','همان','هر','هیچ','همه']);
   const tokens=(value)=>new Set(normalize(value).split(' ').filter((token)=>token.length>2&&!stop.has(token)));
   const t13=overlay.categories['تنهایی'].days;
