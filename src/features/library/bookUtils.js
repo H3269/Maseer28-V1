@@ -18,6 +18,28 @@ export function normalizeBookContent(input, fallbackTitle = 'کتاب بدون �
   };
 }
 
+export function hasReadableBookContent(content, minimumCharacters = 20) {
+  if (!Array.isArray(content?.pages) || content.pages.length === 0) return false;
+  let readableCharacters = 0;
+  for (const page of content.pages) {
+    const parts = [
+      typeof page === 'string' ? page : page?.text,
+      ...(Array.isArray(page?.blocks) ? page.blocks.flatMap((block) => [
+        block?.text,
+        ...(Array.isArray(block?.rows) ? block.rows.flat() : []),
+      ]) : []),
+    ];
+    readableCharacters += parts
+      .filter((part) => typeof part === 'string')
+      .join(' ')
+      .replace(/\\s+/g, ' ')
+      .trim()
+      .length;
+    if (readableCharacters >= minimumCharacters) return true;
+  }
+  return false;
+}
+
 function normalizePage(page, number) {
   if (typeof page === 'string') return { page: number, text: page };
   if (!page || typeof page !== 'object') return { page: number, text: '' };
