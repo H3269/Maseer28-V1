@@ -103,7 +103,7 @@ try {
           medical: 'none', medicalNote: '', medication: 'no', medicationRisk: 'no',
         }));
       }, makeState());
-      await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+      await page.goto(`${baseURL}${baseURL.includes('?') ? '&' : '?'}readerDiagnostics=1`, { waitUntil: 'domcontentloaded' });
       await page.locator('#copyrightModal').waitFor({ state: 'visible' });
       await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
       await page.locator('#dashboard').waitFor({ state: 'visible' });
@@ -127,6 +127,7 @@ try {
           readerTextExists: Boolean(document.querySelector('#bookReaderText')),
           readerText: String(document.querySelector('#bookReaderText')?.innerText || '').slice(0, 300),
           pageCounter: document.querySelector('#readerPageCounter')?.innerText || '',
+          readerDiagnosticEvents: (window.__M28_READER_DIAGNOSTICS__?.events || []).map((event) => ({ stage: event.stage, elapsedMs: event.elapsedMs, details: event.details })),
         })).catch(() => ({}));
         throw new Error(`Cold reader open failed (${entryPoint.id}, book ${bookId}, repetition ${repetition}): ${error.message}; diagnostics=${JSON.stringify(diagnostics)}; browserErrors=${JSON.stringify(errors)}`);
       }
@@ -149,6 +150,7 @@ try {
           readerTextExists: Boolean(document.querySelector('#bookReaderText')),
           readerText: String(document.querySelector('#bookReaderText')?.innerText || '').slice(0, 300),
           pageCounter: document.querySelector('#readerPageCounter')?.innerText || '',
+          readerDiagnosticEvents: (window.__M28_READER_DIAGNOSTICS__?.events || []).map((event) => ({ stage: event.stage, elapsedMs: event.elapsedMs, details: event.details })),
         })).catch(() => ({}));
         throw new Error(`Warm reader open failed (${entryPoint.id}, book ${bookId}, repetition ${repetition}): ${error.message}; diagnostics=${JSON.stringify(diagnostics)}; browserErrors=${JSON.stringify(errors)}`);
       }
