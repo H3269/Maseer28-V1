@@ -54,6 +54,18 @@ async function assertReaderLayoutDiagnostics(page, scenario) {
   // the actual DOM commit, so requiring it here creates a timing-only false failure.
 }
 
+async function readerDiagnosticTimings(page) {
+  return page.evaluate(() => (window.__M28_READER_DIAGNOSTICS__?.events || []).map((event) => ({
+    stage: event.stage,
+    elapsedMs: event.elapsedMs,
+    durationMs: event.details?.durationMs ?? null,
+    cacheHit: event.details?.cacheHit ?? null,
+    cacheLayer: event.details?.cacheLayer ?? null,
+    contentPageCount: event.details?.contentPageCount ?? null,
+    layoutPageCount: event.details?.layoutPageCount ?? null,
+  })));
+}
+
 async function waitForFirstBodyParagraph(page) {
   let lastObserved = null;
   for (let attempt = 0; attempt < 12; attempt += 1) {
@@ -159,6 +171,7 @@ try {
         throw new Error(`Cold reader open failed (${entryPoint.id}, book ${bookId}, repetition ${repetition}): ${error.message}; diagnostics=${JSON.stringify(diagnostics)}; browserErrors=${JSON.stringify(errors)}`);
       }
       const coldFirstBodyParagraph = await waitForFirstBodyParagraph(page);
+      if (bookId === 3) console.log(`BOOK3 stage timings (${entryPoint.id}, cold): ${JSON.stringify(await readerDiagnosticTimings(page))}`);
       await assertReaderLayoutDiagnostics(page, `${entryPoint.id}, book ${bookId}, cold open`);
 
       await page.locator('#bookReader').getByRole('button', { name: 'خروج از مطالعه' }).click();
@@ -183,6 +196,7 @@ try {
         throw new Error(`Warm reader open failed (${entryPoint.id}, book ${bookId}, repetition ${repetition}): ${error.message}; diagnostics=${JSON.stringify(diagnostics)}; browserErrors=${JSON.stringify(errors)}`);
       }
       const warmFirstBodyParagraph = await waitForFirstBodyParagraph(page);
+      if (bookId === 3) console.log(`BOOK3 stage timings (${entryPoint.id}, warm): ${JSON.stringify(await readerDiagnosticTimings(page))}`);
       await assertReaderLayoutDiagnostics(page, `${entryPoint.id}, book ${bookId}, warm open`);
 
       assert.equal(await page.locator('#bookReaderText').count(), 1, `${entryPoint.id}, book ${bookId}: reader text article must exist`);
