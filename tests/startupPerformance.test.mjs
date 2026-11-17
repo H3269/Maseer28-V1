@@ -27,11 +27,9 @@ test('library, reader, and assistant modules stay out of the initial application
   assert.doesNotMatch(app, /import GlobalAssistantLauncher from/);
   assert.match(app, /assistantVisible && assistantLauncherLoaded && <Suspense fallback=\{null\}><GlobalAssistantLauncher/);
   assert.match(app, /setAssistantLauncherLoaded\(true\)/);
-  assert.match(app, /setAssistantOpenRequest\(\(value\) => value \+ 1\)/);
-  assert.match(app, /openRequestId=\{assistantOpenRequest\}/);
-  assert.match(app, /onOpenChange=\{setAssistantOpen\}/);
-  assert.match(app, /hideLauncher/);
-  assert.match(app, /initialOpen/);
+  assert.doesNotMatch(app, /hideLauncher|externalLauncherRef|assistantOpenRequest|assistantLauncherButtonRef/);
+  assert.match(assistantLauncher, /onPointerDown=\{canMoveLauncher \? startLauncherDrag : undefined\}/);
+  assert.match(assistantLauncher, /onTouchStart=\{canMoveLauncher \? startLauncherTouch : undefined\}/);
 });
 
 test('startup uses the compact runtime topic index instead of downloading all daily content', () => {
