@@ -129,9 +129,10 @@ test('T13 exercises and actions have no exact cross-topic duplicate in the 952-d
 
 test('T13 daily variants stay below the T12 cross-topic semantic overlap threshold', () => {
   const fields=['title','exercise','action','lightVersion','lightActionVersion','progressVersion','progressActionVersion','restVersion','restActionVersion'];
-  const normalize=(value)=>String(value||'').normalize('NFKC')
-    .replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[\\u200c\\u200f\\u200e]/g,' ')
-    .replace(/[^\\p{L}\\p{N}\\s]/gu,' ').replace(/\\s+/g,' ').trim().toLowerCase();
+  const normalize = value => String(value || '').normalize('NFKC')
+    .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
+    .replace(/[\\u200c\\u200f\\u200e]/g, ' ')
+    .replace(/[^\\p{L}\\p{N}\\s]/gu, ' ').replace(/\\s+/g, ' ').trim().toLowerCase();
   const stop=new Set(['نسخه','سبک','تمرین','اقدام','فقط','یک','و','یا','را','از','به','در','که','اگر','برای','با','بدون','امروز','فعلا','کن','کنید','بنویس','بنویسی','بنویسید','ثبت','انتخاب','نام','ببر','مشخص','بررسی','انجام','بده','بگیر','دارد','هست','است','میشود','شود','تا','خودت','خود','او','این','آن','همان','هر','هیچ','همه']);
   const tokens=(value)=>new Set(normalize(value).split(' ').filter((token)=>token.length>2&&!stop.has(token)));
   for(const guide of T13_DAILY_ASSISTANT_GUIDES) for(const other of T12_DAILY_ASSISTANT_GUIDES) for(const field of fields) {
