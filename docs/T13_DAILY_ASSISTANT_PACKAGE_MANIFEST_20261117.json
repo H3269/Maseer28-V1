@@ -12,8 +12,15 @@
   "expectedPreparedAnswers": 392,
   "contentSource": "public/content/daily-text-overrides.v1.json",
   "contentStatus": "title, intro, exercise, actionText and closing align with the redesign draft on all 28 days",
-  "assistantStatus": "392 day-specific answers with unique light/progress/rest action variants; owner review pending; evidence grade not assessed",
-  "safetyStatus": "T13 day 14 remains blocked until subtype-specific safety review; assistant runtime must not bypass the block",
+  "assistantStatus": "392 day-specific answers; owner review attested by the owner-clinician for T13 day 14; evidence grade remains not_assessed where no source-backed evidence is recorded",
+  "safetyStatus": "T13 day 14 owner-approved; no specialist-approval runtime publication gate; caution and emergency safety handling remain active",
   "subtopicMappingStatus": "proposed only; no taxonomy approval claimed",
-  "publicRelease": false
+  "publicRelease": false,
+  "ownerApproval": {
+    "reviewerName": "دکتر حسن عابدی",
+    "role": "owner_clinician_and_center_owner",
+    "date": "2026-11-17",
+    "scope": "T13 day 14 safety content and shared Shafa Center contact/continuity statement",
+    "basis": "Explicit owner attestation recorded in the project event log"
+  }
 }
