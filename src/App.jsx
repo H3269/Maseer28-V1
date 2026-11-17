@@ -823,7 +823,7 @@ function navigate(next) {
   const recommendationSource = resultBookRec ? legacySourceLabel(resultBookRec.bookId) : '';
 
   return (
-    <div className="app">
+    <div className="app" data-screen={screen}>
       <Header activeDay={headerDay} />
       {screen === 'home' && <Home onStart={start} onHow={() => navigate('howWorks')} onAbout={() => navigate('about')} />}
       {screen === 'howWorks' && <HowWorks onBack={() => navigate('home')} />}
