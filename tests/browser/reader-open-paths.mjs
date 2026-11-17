@@ -39,14 +39,12 @@ async function waitForReadablePage(page) {
   }));
 }
 
-async function readerDiagnosticEventCount(page) {
-  return page.evaluate(() => window.__M28_READER_DIAGNOSTICS__?.events?.length || 0);
-}
-
-async function assertReaderLayoutDiagnostics(page, scenario, eventStartIndex) {
-  const stages = await page.evaluate((startIndex) => (
-    (window.__M28_READER_DIAGNOSTICS__?.events || []).slice(startIndex).map((event) => event.stage)
-  ), eventStartIndex);
+async function assertReaderLayoutDiagnostics(page, scenario) {
+  // startReaderDiagnostics creates a fresh event list for every Reader mount.
+  // Inspect the current open's complete report; old event indexes are invalid.
+  const stages = await page.evaluate(() => (
+    (window.__M28_READER_DIAGNOSTICS__?.events || []).map((event) => event.stage)
+  ));
   const hasRebuildTrigger = stages.includes('layout-animation-frame-fired')
     || stages.includes('layout-timeout-fallback-fired');
   assert.ok(hasRebuildTrigger, `${scenario}: neither animation-frame nor timeout fallback triggered; events=${JSON.stringify(stages)}`);
@@ -142,7 +140,6 @@ try {
 
       console.log(`START reader scenario: repetition=${repetition}, entryPoint=${entryPoint.id}, book=${bookId}, phase=cold`);
       await page.evaluate(() => { window.__readerPerfStartedAt = performance.now(); });
-      const coldDiagnosticStart = await readerDiagnosticEventCount(page);
       await book.locator('button').click();
       let cold;
       try {
@@ -160,14 +157,13 @@ try {
         throw new Error(`Cold reader open failed (${entryPoint.id}, book ${bookId}, repetition ${repetition}): ${error.message}; diagnostics=${JSON.stringify(diagnostics)}; browserErrors=${JSON.stringify(errors)}`);
       }
       const coldFirstBodyParagraph = await waitForFirstBodyParagraph(page);
-      await assertReaderLayoutDiagnostics(page, `${entryPoint.id}, book ${bookId}, cold open`, coldDiagnosticStart);
+      await assertReaderLayoutDiagnostics(page, `${entryPoint.id}, book ${bookId}, cold open`);
 
       await page.locator('#bookReader').getByRole('button', { name: 'خروج از مطالعه' }).click();
       await page.locator('#books').waitFor({ state: 'visible' });
       const reopenedBook = page.locator('#books .libraryBook').nth(bookId - 1);
       console.log(`START reader scenario: repetition=${repetition}, entryPoint=${entryPoint.id}, book=${bookId}, phase=warm`);
       await page.evaluate(() => { window.__readerPerfStartedAt = performance.now(); });
-      const warmDiagnosticStart = await readerDiagnosticEventCount(page);
       await reopenedBook.locator('button').click();
       let warm;
       try {
@@ -185,7 +181,7 @@ try {
         throw new Error(`Warm reader open failed (${entryPoint.id}, book ${bookId}, repetition ${repetition}): ${error.message}; diagnostics=${JSON.stringify(diagnostics)}; browserErrors=${JSON.stringify(errors)}`);
       }
       const warmFirstBodyParagraph = await waitForFirstBodyParagraph(page);
-      await assertReaderLayoutDiagnostics(page, `${entryPoint.id}, book ${bookId}, warm open`, warmDiagnosticStart);
+      await assertReaderLayoutDiagnostics(page, `${entryPoint.id}, book ${bookId}, warm open`);
 
       assert.equal(await page.locator('#bookReaderText').count(), 1, `${entryPoint.id}, book ${bookId}: reader text article must exist`);
       assert.ok(coldFirstBodyParagraph.paragraphLength >= 20, `${entryPoint.id}, book ${bookId}: cold open must reach a real body paragraph`);
@@ -198,11 +194,10 @@ try {
         await page.locator('#bookReader').getByRole('button', { name: 'خروج از مطالعه' }).click();
         await page.locator('#books').waitFor({ state: 'visible' });
         const nextBook = page.locator('#books .libraryBook').nth(1);
-        const switchDiagnosticStart = await readerDiagnosticEventCount(page);
         await nextBook.locator('button').click();
         await page.locator('#bookReader').waitFor({ state: 'visible', timeout: 30000 });
         const switchedBookParagraph = await waitForFirstBodyParagraph(page);
-        await assertReaderLayoutDiagnostics(page, `${entryPoint.id}, switch to book 2`, switchDiagnosticStart);
+        await assertReaderLayoutDiagnostics(page, `${entryPoint.id}, switch to book 2`);
         assert.ok(switchedBookParagraph.paragraphLength >= 20, `${entryPoint.id}: switching from the first book to the second after closing Reader must show real body content`);
         assert.deepEqual(errors, [], `${entryPoint.id}: close-and-switch book flow must not raise browser errors`);
         await page.locator('#bookReader').getByRole('button', { name: 'خروج از مطالعه' }).click();
@@ -217,12 +212,11 @@ try {
         for (let cycle = 1; cycle <= 8; cycle += 1) {
           await page.evaluate(() => { window.__readerPerfStartedAt = performance.now(); });
           const sameBook = page.locator('#books .libraryBook').nth(bookId - 1);
-          const cycleDiagnosticStart = await readerDiagnosticEventCount(page);
           await sameBook.locator('button').click();
           await page.locator('#bookReader').waitFor({ state: 'visible', timeout: 30000 });
           const sample = await waitForReadablePage(page);
           const bodyParagraph = await waitForFirstBodyParagraph(page);
-          await assertReaderLayoutDiagnostics(page, `${entryPoint.id}, book ${bookId}, repeated cycle ${cycle}`, cycleDiagnosticStart);
+          await assertReaderLayoutDiagnostics(page, `${entryPoint.id}, book ${bookId}, repeated cycle ${cycle}`);
           assert.equal(await page.locator('#bookReaderText').count(), 1, `${entryPoint.id}: cycle ${cycle} must mount exactly one Reader text surface`);
           assert.ok(sample.pageTextLength > 0, `${entryPoint.id}: cycle ${cycle} must render readable content`);
           assert.ok(bodyParagraph.paragraphLength >= 20, `${entryPoint.id}: cycle ${cycle} must reach a real body paragraph, not only a loading placeholder`);
