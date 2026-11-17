@@ -9,6 +9,7 @@ on:
       - 'src/features/library/**'
       - 'scripts/prepare-library-cover-thumbnails.mjs'
       - 'tests/startupPerformance.test.mjs'
+      - 'tests/browser/reader-reopen-five-books.mjs'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/validate-library-performance.yml'
@@ -24,7 +25,7 @@ jobs:
   validate-library-performance:
     name: Build, test, and package five library covers
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 35
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -48,7 +49,26 @@ jobs:
 
       - name: Build production application and generate cover thumbnails
         run: |
-          PATH28_DEPLOY_BASE=/Maseer28/ npm run build
+          PATH28_DEPLOY_BASE=/Maseer28-V1/ npm run build
+
+      - name: Install isolated Chromium test runner
+        run: |
+          npm install --no-save --package-lock=false playwright
+          npx playwright install --with-deps chromium
+
+      - name: Verify repeated open and close for all five Reader books
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/m28-vite-preview.log 2>&1 &
+          PREVIEW_PID=$!
+          trap 'kill "$PREVIEW_PID" 2>/dev/null || true' EXIT
+          for attempt in {1..45}; do
+            if curl --fail --silent http://127.0.0.1:4173/Maseer28-V1/ > /dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:4173/Maseer28-V1/ > /dev/null
+          PATH28_BASE_URL=http://127.0.0.1:4173/Maseer28-V1/ node tests/browser/reader-reopen-five-books.mjs
 
       - name: Upload original and generated library covers for visual QA
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
