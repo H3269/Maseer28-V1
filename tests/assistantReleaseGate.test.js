@@ -54,6 +54,12 @@ test('global assistant launcher is mounted across navigable screens, including s
   assert.doesNotMatch(supportUi, /AssessmentAssistant|حریم خصوصی|بازیابی فایل پشتیبان|دستیار آزمایشی/);
 });
 
+test('eligible page guides include shared page-purpose, action, navigation, and app-feature prompts', () => {
+  assert.match(launcherUi, /pageGroups \\? \\[\\.\\.\\.pageGroups, \\.\\.\\.PAGE_ASSISTANT_PROMPT_GROUPS\\]/);
+  assert.match(launcherUi, /screen === 'day' \\? \\[\\] : \\(/);
+  assert.match(launcherUi, /if \\(!visible \\|\\| screen === 'bookReader'\\) return null/);
+});
+
 test('assistant runtime does not claim clinical validation or diagnostic capability', () => {
   assert.match(engine, /diagnostic_use:\s*false/);
   assert.match(engine, /validated_screening_tool:\s*false/);
