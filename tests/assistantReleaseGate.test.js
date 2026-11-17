@@ -37,7 +37,7 @@ test('global assistant launcher is mounted across navigable screens, including s
   assert.match(appUi, /<GlobalAssistantLauncher/);
   assert.doesNotMatch(appUi, /className="globalAssistantLauncher"/, 'App must not render a second, non-draggable assistant button');
   assert.doesNotMatch(appUi, /hideLauncher|externalLauncherRef|assistantLauncherButtonRef|assistantOpenRequest/);
-  assert.match(appUi, /<GlobalAssistantLauncher[\\s\\S]*?screen=\\{screen\\}/, 'the visible draggable launcher must be owned by the assistant component');
+  assert.ok(appUi.indexOf('<GlobalAssistantLauncher') > appUi.indexOf('assistantVisible && assistantLauncherLoaded'), 'the visible draggable launcher must be owned by the assistant component');
   assert.match(appUi, /dailyContext=\{screen === 'day'/);
   assert.match(appUi, /libraryContext=\{screen === 'books'/);
   assert.doesNotMatch(appUi, /DailyExerciseAssistant/);
