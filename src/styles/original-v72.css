@@ -6653,6 +6653,13 @@ body:not(.bale-webview) .bottomNav button.active:after {
   font-weight: 800;
 }
 .globalAssistantLauncher svg { width: 20px; height: 20px; flex: 0 0 20px; }
+.globalAssistantLauncherDraggable {
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.globalAssistantLauncherDraggable:active { cursor: grabbing; }
 .globalAssistantLauncher:focus-visible,
 .globalAssistantDialog button:focus-visible {
   outline: 3px solid #d6a84b;
