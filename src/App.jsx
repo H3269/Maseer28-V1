@@ -2,6 +2,7 @@ import React, { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useStat
 import AppIcon from './shared/components/AppIcon.jsx';
 import { legacySourceLabel } from './features/library/legacyLibraryMeta.js';
 import { ensureSeedBookContent, useLibrary } from './features/library/useLibrary.js';
+import { recordReaderDiagnostic, startReaderDiagnostics } from './features/library/readerDiagnostics.js';
 import {
   APP_CONFIG,
   COPYRIGHT_KEY,
@@ -619,22 +620,39 @@ function navigate(next) {
   }
 
   async function openBook(book, sourcePage = null, target = null) {
+    startReaderDiagnostics(book);
+    recordReaderDiagnostic('open-book-handler-entered', { bookId: Number(book?.legacyId) || null });
     setOpeningBook(true);
     try {
-      // Start the reader chunk while the selected book is being prepared.
-      // The same dynamic import is cached by React.lazy, so Reader can mount
-      // without waiting for a second network round trip.
-      const [{ book: readyBook, version }] = await Promise.all([
-        ensureSeedBookContent(book),
-        loadReader(),
-      ]);
+      // Measure content hydration and Reader chunk loading independently.
+      const contentTask = ensureSeedBookContent(book).then((result) => {
+        recordReaderDiagnostic('book-content-ready', {
+          contentPageCount: Array.isArray(result?.version?.content?.pages) ? result.version.content.pages.length : 0,
+          versionPresent: Boolean(result?.version),
+          versionContentPresent: Boolean(result?.version?.content),
+        });
+        return result;
+      });
+      const readerTask = loadReader().then((module) => {
+        recordReaderDiagnostic('reader-chunk-ready');
+        return module;
+      });
+      const [{ book: readyBook, version }] = await Promise.all([contentTask, readerTask]);
       if (!version?.content) throw new Error('متن کتاب آماده نشد.');
-      // The assistant is rendered outside the reader branch and would otherwise
-      // reopen when that branch unmounts/remounts the launcher.
+      recordReaderDiagnostic('open-book-data-ready', {
+        contentPageCount: Array.isArray(version.content.pages) ? version.content.pages.length : 0,
+        versionPresent: true,
+        versionContentPresent: true,
+      });
       setAssistantOpen(false);
       setReaderState({ book: readyBook, version, sourcePage, target });
+      recordReaderDiagnostic('reader-state-created');
       navigate('bookReader');
-    } catch {
+      recordReaderDiagnostic('reader-screen-requested');
+    } catch (error) {
+      recordReaderDiagnostic('open-book-failed', {
+        errorName: String(error?.name || 'Error').slice(0, 40),
+      });
       showValidation(['متن کتاب بارگذاری نشد. اتصال را بررسی کن و دوباره تلاش کن.'], 'خطا در کتابخانه');
     } finally {
       setOpeningBook(false);
