@@ -471,7 +471,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     <>
       {!hideLauncher && <button
         ref={launcherRef}
-        className={`globalAssistantLauncher${canMoveLauncher ? ' globalAssistantLauncherDraggable' : ''}`}
+        className={`globalAssistantLauncher${canMoveLauncher ? ' globalAssistantLauncherDraggable' : ''}${canMoveLauncher && launcherPosition ? ' globalAssistantLauncherPositioned' : ''}`}
         type="button"
         style={canMoveLauncher && launcherPosition ? { left: launcherPosition.x, top: launcherPosition.y, right: 'auto', bottom: 'auto' } : undefined}
         onPointerDown={canMoveLauncher ? startLauncherDrag : undefined}
