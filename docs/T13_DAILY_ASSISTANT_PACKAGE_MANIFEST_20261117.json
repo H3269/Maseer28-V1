@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "packageId": "T13-loneliness-v1",
+  "topicId": "T13",
+  "topic": "تنهایی",
+  "branch": "content/t13-loneliness-package-20261117",
+  "baseBranch": "main",
+  "sourceDraft": "docs/T13_LONELINESS_28DAY_REDESIGN_DRAFT_B2_BC_FA.md",
+  "sourceDraftSha": "39ed28aa6c13a84ed8d53f9668a4db0d04861cf8",
+  "expectedDays": 28,
+  "questionsPerDay": 14,
+  "expectedPreparedAnswers": 392,
+  "contentSource": "public/content/daily-text-overrides.v1.json",
+  "contentStatus": "28/28 days present; exercise/action text exactly matches the reviewed redesign draft",
+  "assistantStatus": "28x14 prepared-answer catalog authored; owner review pending; evidence grade not assessed",
+  "safetyStatus": "T13 day 14 remains blocked until subtype-specific safety review; assistant runtime must not bypass the block",
+  "subtopicMappingStatus": "proposed only; no taxonomy approval claimed",
+  "publicRelease": false
+}
