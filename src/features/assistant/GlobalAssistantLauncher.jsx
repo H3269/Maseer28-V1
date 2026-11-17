@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { formatAssistantMessageText } from './assistantMessageFormatting.js';
 import AppIcon from '../../shared/components/AppIcon.jsx';
 import { makePageAssistantTurn } from './pageAssistantTurn.js';
+import { getPageSpecificPromptGroups } from './pageAssistantPrompts.js';
 import { libraryRepository } from '../library/libraryRepository.js';
 import { ensureSeedBookContent } from '../library/useLibrary.js';
 import { answerLibraryBookTurn, planLibraryBookLoad } from './libraryBookAssistant.js';
@@ -204,7 +205,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                               ? (getDailySafetyMode(dailyContext?.data) === 'blocked' ? [] : getT13DailyAssistantPromptGroups(dailyContext?.day))
                               : dailyContext
                               ? []
-                              : PAGE_ASSISTANT_PROMPT_GROUPS;
+                              : (screen === 'day' ? [] : (getPageSpecificPromptGroups(screen) || PAGE_ASSISTANT_PROMPT_GROUPS));
   if (!visible || screen === 'bookReader') return null;
 
   function ensureLibraryBooksLoaded(message, conversationState) {

@@ -1,6 +1,7 @@
 import { routeAssistantTurn } from './assistantTurnEngine.js';
 import { cleanPreparedAssistantTopicText } from './teacherStylePreparedAnswer.js';
 import { answerPageAssistantQuestion, getPageAssistantContext } from './pageAssistantContext.js';
+import { answerPageSpecificQuestion } from './pageAssistantPrompts.js';
 import { makeDailyExerciseGuidanceTurn, selectDailyExerciseGuidanceData } from './dailyExerciseAssistantGuidance.js';
 import { getRelationshipSafetyGate } from '../journey/relationshipSafetyGate.js';
 import { answerAngerDailyPreparedQuestion } from './angerDailyAssistantPrompts.js';
@@ -33,6 +34,8 @@ const PAGE_PREPARED_QUESTIONS = new Set([
   'امکانات برنامه چیست؟',
 ]);
 
+
+
 /**
  * Routes only an explicitly selected prepared question.
  * Non-daily pages answer their fixed help catalogue directly; daily questions
@@ -50,7 +53,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     ? LIBRARY_ASSISTANT_PROMPTS.some((question) => question.value === message) || PAGE_PREPARED_QUESTIONS.has(message)
     : screen === 'day'
       ? true
-      : PAGE_PREPARED_QUESTIONS.has(message);
+      : Boolean(answerPageSpecificQuestion({ screen, message }));
   if (!isAllowedPreparedPageQuestion) {
     return Object.freeze({
       status: 'prepared_question_required',
@@ -64,7 +67,8 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
   // directly without invoking semantic intake, safety classification,
   // knowledge retrieval, or conversation-state machinery.
   if (screen !== 'day') {
-    const pageReply = answerPageAssistantQuestion({ screen, message, libraryContext });
+    const pageReply = answerPageSpecificQuestion({ screen, message })
+      || answerPageAssistantQuestion({ screen, message, libraryContext });
     const context = getPageAssistantContext(screen);
     return Object.freeze({
       status: pageReply ? 'page_guidance_available' : 'prepared_question_required',
