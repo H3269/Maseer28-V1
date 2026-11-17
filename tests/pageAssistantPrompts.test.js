@@ -67,6 +67,23 @@ test('page guide catalogues fail closed for unsupported screens and unsupported 
   assert.equal(unsupported.status, 'prepared_question_required');
 });
 
+test('shared page-help questions are answerable on every eligible page without crossing protected routes', () => {
+  for (const screen of expectedScreens) {
+    for (const question of [
+      'این صفحه برای چیست؟',
+      'اینجا چه کارهایی می‌توانم انجام بدهم؟',
+      'چطور به خانه برگردم؟',
+      'امکانات برنامه چیست؟',
+    ]) {
+      const result = makePageAssistantTurn({ screen, text: question });
+      assert.equal(result.status, 'page_guidance_available', `${screen}: ${question}`);
+      assert.ok(result.message.length >= 40, `${screen}: ${question}`);
+    }
+  }
+  assert.equal(makePageAssistantTurn({ screen: 'day', text: 'امکانات برنامه چیست؟' }).status, 'prepared_question_required');
+  assert.equal(makePageAssistantTurn({ screen: 'books', text: 'امکانات برنامه چیست؟' }).status, 'page_guidance_available');
+});
+
 test('daily exercise and library FAQ catalogues are not replaced by page-specific guides', () => {
   assert.equal(getPageSpecificPromptGroups('day'), null);
   assert.equal(getPageSpecificPromptGroups('books'), null);

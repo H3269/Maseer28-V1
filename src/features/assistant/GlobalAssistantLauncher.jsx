@@ -205,7 +205,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                               ? (getDailySafetyMode(dailyContext?.data) === 'blocked' ? [] : getT13DailyAssistantPromptGroups(dailyContext?.day))
                               : dailyContext
                               ? []
-                              : (screen === 'day' ? [] : (getPageSpecificPromptGroups(screen) || PAGE_ASSISTANT_PROMPT_GROUPS));
+                              : (screen === 'day' ? [] : (() => { const pageGroups = getPageSpecificPromptGroups(screen); return pageGroups ? [...pageGroups, ...PAGE_ASSISTANT_PROMPT_GROUPS] : PAGE_ASSISTANT_PROMPT_GROUPS; })());
   if (!visible || screen === 'bookReader') return null;
 
   function ensureLibraryBooksLoaded(message, conversationState) {
