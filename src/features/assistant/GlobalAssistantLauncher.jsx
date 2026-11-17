@@ -24,7 +24,17 @@ import { getT13DailyAssistantPromptGroups } from './t13DailyAssistantPrompts.js'
 import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS, DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
 import { getDailySafetyMode } from '../content/dailySafety.js';
 
-const PAGE_ASSISTANT_PROMPT_GROUPS = Object.freeze([]);
+const PAGE_ASSISTANT_PROMPT_GROUPS = Object.freeze([
+  Object.freeze({
+    label: 'راهنمای همین صفحه',
+    questions: Object.freeze([
+      Object.freeze({ label: 'این صفحه برای چیست؟', value: 'این صفحه برای چیست؟', kind: 'page_purpose' }),
+      Object.freeze({ label: 'اینجا چه کارهایی می‌توانم انجام بدهم؟', value: 'اینجا چه کارهایی می‌توانم انجام بدهم؟', kind: 'page_actions' }),
+      Object.freeze({ label: 'چطور به خانه برگردم؟', value: 'چطور به خانه برگردم؟', kind: 'page_navigation' }),
+      Object.freeze({ label: 'امکانات برنامه چیست؟', value: 'امکانات برنامه چیست؟', kind: 'app_features' }),
+    ]),
+  }),
+]);
 
 export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null, onRelationshipSafetyResponse = null, initialOpen = false, hideLauncher = false, externalLauncherRef = null, openRequestId = 0, onOpenChange = null }) {
   const [open, setOpen] = useState(initialOpen);
