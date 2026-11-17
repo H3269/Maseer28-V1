@@ -1,0 +1,53 @@
+/* Path 28 — restrained motion layer.
+   This file is intentionally additive: it does not redefine transforms on the
+   floating header or draggable assistant launcher, and never targets Reader. */
+
+@keyframes m28PageEnter {
+  from { opacity: 0; transform: translate3d(0, 7px, 0); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes m28SurfaceEnter {
+  from { opacity: 0; transform: translate3d(0, 5px, 0); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes m28DialogEnter {
+  from { opacity: 0; transform: translate3d(0, 8px, 0) scale(.99); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Screen roots are already direct children of .app. Keeping that structure
+   preserves legacy layout selectors such as .app > section.card. */
+.app:not(.appLoading):not([data-screen="books"]) > section.card {
+  animation: m28PageEnter 200ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+/* A small set of visible content surfaces; no blanket animation on every
+   descendant, input, control, or fixed-position element. */
+.app:not(.appLoading):not([data-screen="books"]) > section.card
+  :is(.profileOverviewCard, .introBox, .assessmentIntro, .feedback, .recommendation, .answerItem, .support, .dailyExerciseAssistant, .dailyAssistantContext, .safetyNote) {
+  animation: m28SurfaceEnter 180ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+/* Assistant dialog and newly-added chat bubbles only. The draggable launcher
+   is deliberately excluded so its position/drag transform remains untouched. */
+.app:not(.appLoading) .globalAssistantDialog {
+  animation: m28DialogEnter 200ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.app:not(.appLoading) .globalAssistantChat :is(.assistantMessage, .userMessage) {
+  animation: m28SurfaceEnter 180ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+/* The page shell stays light: no large blur, filters, continuous motion, or
+   will-change layers that would reserve GPU memory on lower-end phones. */
+@media (prefers-reduced-motion: reduce) {
+  .app:not(.appLoading):not([data-screen="books"]) > section.card,
+  .app:not(.appLoading):not([data-screen="books"]) > section.card
+    :is(.profileOverviewCard, .introBox, .assessmentIntro, .feedback, .recommendation, .answerItem, .support, .dailyExerciseAssistant, .dailyAssistantContext, .safetyNote),
+  .app:not(.appLoading) .globalAssistantDialog,
+  .app:not(.appLoading) .globalAssistantChat :is(.assistantMessage, .userMessage) {
+    animation: none !important;
+  }
+}
