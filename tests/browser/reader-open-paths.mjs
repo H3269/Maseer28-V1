@@ -152,7 +152,7 @@ try {
       assert.ok(requestedBookContent[0].endsWith(expectedBookPath), `${entryPoint.id}, book ${bookId}: only the selected book may be fetched; got ${requestedBookContent[0]}`);
       assert.deepEqual(errors, [], `${entryPoint.id}, book ${bookId}: no browser errors during cold/warm open`);
 
-      if (repetition === 1 && bookId === 1) {
+      if (repetition === 1) {
         await page.locator('#bookReader').getByRole('button', { name: 'خروج از مطالعه' }).click();
         await page.locator('#books').waitFor({ state: 'visible' });
         const nextBook = page.locator('#books .libraryBook').nth(1);
@@ -166,13 +166,13 @@ try {
       }
 
       let repeatedReopen = null;
-      if (repetition === 1 && bookId === 1) {
+      if (repetition === 1) {
         const repeatedSamples = [];
         // Exercise the exact user-reported pattern in one live page/context:
         // close and reopen the same book repeatedly without refreshing the app.
         for (let cycle = 1; cycle <= 8; cycle += 1) {
           await page.evaluate(() => { window.__readerPerfStartedAt = performance.now(); });
-          const sameBook = page.locator('#books .libraryBook').nth(0);
+          const sameBook = page.locator('#books .libraryBook').nth(bookId - 1);
           await sameBook.locator('button').click();
           await page.locator('#bookReader').waitFor({ state: 'visible', timeout: 30000 });
           const sample = await waitForReadablePage(page);
