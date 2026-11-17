@@ -210,7 +210,10 @@ export default function Reader({ book, onClose, initialVersion = null, initialSo
       contentPageCount: Array.isArray(initialVersion?.content?.pages) ? initialVersion.content.pages.length : 0,
       readerMounted: true,
     });
-    setVersion(initialVersion || null); setLayout(null); setError(''); firstLayoutRef.current = true;
+    // `layout` is already null on a fresh Reader mount. Resetting it from this
+    // passive effect can run after the first animation-frame rebuild and erase
+    // the layout that was just created, leaving the loading placeholder visible.
+    setVersion(initialVersion || null); setError(''); firstLayoutRef.current = true;
     setSoundEnabled(loadBookSoundEnabled(book));
     if (flipCleanupRef.current) flipCleanupRef.current();
     if (initialVersion?.content) {
