@@ -37,9 +37,6 @@ export function answerT13DailyPreparedQuestion({ day, message, dailyContent } = 
   let body = question.answer;
   body = replaceExact(body, guide.exercise, String(dailyContent.exercise || guide.exercise).trim());
   body = replaceExact(body, guide.action, String(dailyContent.actionText || dailyContent.action || guide.action).trim());
-  body = replaceExact(body, guide.lightVersion, String(dailyContent.lightExerciseText || guide.lightVersion).trim());
-  body = replaceExact(body, guide.progressVersion, String(dailyContent.progressVersion || guide.progressVersion).trim());
-  body = replaceExact(body, guide.restVersion, String(dailyContent.restExerciseText || guide.restVersion).trim());
 
   const heading = `راهنمای روز ${guide.day} تنهایی — ${guide.title}`;
   const framedAnswer = addTeacherStyleFrame(`${heading}\n\n${body}`, { guide, question, topic: 'تنهایی' });
