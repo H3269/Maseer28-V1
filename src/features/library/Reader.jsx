@@ -253,7 +253,10 @@ export default function Reader({ book, onClose, initialVersion = null, initialSo
       articleHeight: articleRef.current.clientHeight,
     });
     const metrics = calcMetrics(rootRef.current, articleRef.current, settings.fontStep, Boolean(target));
-    if (!metrics) return;
+    if (!metrics) {
+      recordReaderDiagnostic('layout-metrics-unavailable', { readerMounted: true });
+      return;
+    }
     const cacheKey = readerLayoutCacheKey(version, book, metrics);
     let nextLayout = READER_LAYOUT_CACHE.get(cacheKey);
     const cacheHit = Boolean(nextLayout);
