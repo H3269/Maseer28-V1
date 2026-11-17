@@ -24,7 +24,10 @@ async function waitForReadablePage(page) {
     if (!article || article.getClientRects().length === 0) return false;
     const loadedImage = [...article.querySelectorAll('img')].some((image) => image.complete && image.naturalWidth > 0);
     const text = String(article.innerText || '').replace(/\s+/g, ' ').trim();
-    const readableText = text.length > 0 && !text.includes('در حال بارگذاری کتاب');
+    const readableText = text.length > 0
+      && !text.includes('در حال بارگذاری کتاب')
+      && !text.includes('در انتظار بارگذاری متن کتاب')
+      && !text.includes('در انتظار بارگذاری');
     return loadedImage || readableText;
   }, null, { timeout: 45000 });
   return page.evaluate(() => ({
@@ -196,9 +199,11 @@ try {
           await sameBook.locator('button').click();
           await page.locator('#bookReader').waitFor({ state: 'visible', timeout: 30000 });
           const sample = await waitForReadablePage(page);
+          const bodyParagraph = await waitForFirstBodyParagraph(page);
           assert.equal(await page.locator('#bookReaderText').count(), 1, `${entryPoint.id}: cycle ${cycle} must mount exactly one Reader text surface`);
           assert.ok(sample.pageTextLength > 0, `${entryPoint.id}: cycle ${cycle} must render readable content`);
-          repeatedSamples.push(sample.elapsedMs);
+          assert.ok(bodyParagraph.paragraphLength >= 20, `${entryPoint.id}: cycle ${cycle} must reach a real body paragraph, not only a loading placeholder`);
+          repeatedSamples.push(bodyParagraph.elapsedMs);
           await page.locator('#bookReader').getByRole('button', { name: 'خروج از مطالعه' }).click();
           await page.locator('#books').waitFor({ state: 'visible' });
           assert.equal(await page.locator('#bookReader').count(), 0, `${entryPoint.id}: cycle ${cycle} must fully unmount Reader`);
