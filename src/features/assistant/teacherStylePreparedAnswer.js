@@ -1,4 +1,4 @@
-const INTERNAL_TOPIC_LABELS = Object.freeze({ T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت', T18: 'نفرت از خود' });
+const INTERNAL_TOPIC_LABELS = Object.freeze({ T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت', T13: 'تنهایی', T18: 'نفرت از خود' });
 
 export function cleanPreparedAssistantTopicText(value, topic) {
   let text = String(value || '')

@@ -15,8 +15,10 @@ import { answerT09DailyPreparedQuestion } from './t09DailyAssistantPrompts.js';
 import { answerT10DailyPreparedQuestion } from './t10DailyAssistantPrompts.js';
 import { answerT11DailyPreparedQuestion } from './t11DailyAssistantPrompts.js';
 import { answerT12DailyPreparedQuestion } from './t12DailyAssistantPrompts.js';
+import { answerT13DailyPreparedQuestion } from './t13DailyAssistantPrompts.js';
 import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
 import { getCanonicalDailyRecordId } from '../content/dailyContentSelector.js';
+import { getDailySafetyMode } from '../content/dailySafety.js';
 import { LIBRARY_ASSISTANT_PROMPTS } from './libraryAssistantPrompts.js';
 
 const SAFETY_STATUSES = new Set([
@@ -112,7 +114,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       }
       : preparedSource;
     const preparedTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem) || preparedSource?.topic_id || null;
-    const visibleTopicName = ({ T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت', T05: 'حسادت', T06: 'غم و سوگ', T07: 'احساس گناه', T08: 'وابستگی عاطفی', T09: 'اهمال‌کاری', T10: 'بی‌خوابی و مشکلات خواب', T11: 'عادت‌های تکراری', T12: 'مرزبندی و نه گفتن' })[preparedTopicId];
+    const visibleTopicName = ({ T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت', T05: 'حسادت', T06: 'غم و سوگ', T07: 'احساس گناه', T08: 'وابستگی عاطفی', T09: 'اهمال‌کاری', T10: 'بی‌خوابی و مشکلات خواب', T11: 'عادت‌های تکراری', T12: 'مرزبندی و نه گفتن', T13: 'تنهایی' })[preparedTopicId];
     const answerPreparedQuestion = preparedTopicId === 'T01'
       ? answerAngerDailyPreparedQuestion
       : preparedTopicId === 'T02'
@@ -137,8 +139,10 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
                           ? answerT11DailyPreparedQuestion
                           : preparedTopicId === 'T12'
                             ? answerT12DailyPreparedQuestion
-                            : null;
-    const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12'].includes(preparedTopicId)
+                            : preparedTopicId === 'T13'
+                              ? answerT13DailyPreparedQuestion
+                              : null;
+    const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12', 'T13'].includes(preparedTopicId)
       && Number.isInteger(preparedDay)
       && preparedDay >= 1
       && preparedDay <= 28
@@ -151,6 +155,17 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         || preparedSource.topic_id === preparedTopicId);
 
     const hasPendingSafetyExchange = ['pending', 'handoff'].includes(conversationState?.dailyState?.safetyStatus);
+    const t13SafetyMode = preparedTopicId === 'T13' ? getDailySafetyMode(preparedSource) : null;
+    const hasExactT13PreparedQuestion = preparedTopicId === 'T13'
+      && Boolean(answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }));
+    if (preparedTopicId === 'T13' && t13SafetyMode === 'blocked' && hasExactT13PreparedQuestion) {
+      return Object.freeze({
+        status: 'daily_guidance_unavailable',
+        message: 'تمرین این روز تا زمان بازبینی ایمنی تخصصی در دسترس نیست؛ برای جلوگیری از راهنمایی ناایمن، پاسخ روزمحور ارائه نمی‌شود.',
+        knowledge: Object.freeze([]),
+        conversationState: null,
+      });
+    }
     const hasExplicitSafetyHandoff = inputProbe.intake?.safety_handoff?.handoff_required === true;
     const hasExactJealousyPreparedQuestion = preparedTopicId === 'T05'
       && Boolean(answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }));
@@ -236,7 +251,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     // first-person safety disclosure. Broad lexical safety cues inside its
     // wording must not replace its prepared answer. A real explicit-risk
     // declaration and an already-pending safety exchange still take priority.
-    if (['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12'].includes(preparedTopicId)
+    if (['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12', 'T13'].includes(preparedTopicId)
       && hasCanonicalPreparedIdentity
       && !hasPendingSafetyExchange
       && !hasExplicitSafetyHandoff) {
@@ -258,7 +273,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
 
     // Explicit immediate-risk declarations and an active safety exchange
     // always take precedence over the prepared-question list.
-    if (['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12'].includes(preparedTopicId)
+    if (['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12', 'T13'].includes(preparedTopicId)
       && (SAFETY_STATUSES.has(inputProbe.status)
         || hasPendingSafetyExchange
         || hasExplicitSafetyHandoff)) {
@@ -283,7 +298,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       });
     }
 
-    if (['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12'].includes(preparedTopicId)) {
+    if (['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12', 'T13'].includes(preparedTopicId)) {
       if (!hasCanonicalPreparedIdentity) {
         return Object.freeze({
           status: 'daily_guidance_unavailable',
