@@ -33,6 +33,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Test page-specific assistant guides and protected pages
-        run: node --test tests/pageAssistantPrompts.test.js tests/pageAssistantContext.test.js tests/assistantReleaseGate.test.js tests/startupPerformance.test.mjs
+        run: node --test tests/pageAssistantPrompts.test.js tests/pageAssistantContext.test.js tests/assistantReleaseGate.test.js tests/startupPerformance.test.mjs tests/softMotionIsolation.test.js
       - name: Build application
         run: npm run build
