@@ -32,7 +32,7 @@ export function hasReadableBookContent(content, minimumCharacters = 20) {
     readableCharacters += parts
       .filter((part) => typeof part === 'string')
       .join(' ')
-      .replace(/\\s+/g, ' ')
+      .replace(/\s+/g, ' ')
       .trim()
       .length;
     if (readableCharacters >= minimumCharacters) return true;
