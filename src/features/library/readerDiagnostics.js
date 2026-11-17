@@ -2,7 +2,7 @@ const GLOBAL_KEY = '__M28_READER_DIAGNOSTICS__';
 const ENABLE_PARAM = 'readerDiagnostics';
 
 const SAFE_DETAIL_KEYS = new Set([
-  'phase', 'durationMs', 'contentPageCount', 'versionPresent',
+  'phase', 'durationMs', 'contentPageCount', 'cacheLayer', 'versionPresent',
   'versionContentPresent', 'cacheHit', 'layoutPageCount', 'layoutCurrentType',
   'rootWidth', 'rootHeight', 'articleWidth', 'articleHeight',
   'documentVisibility', 'viewportWidth', 'viewportHeight', 'devicePixelRatio',
