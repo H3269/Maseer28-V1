@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useSta
 import AppIcon from '../../shared/components/AppIcon.jsx';
 import { fa } from '../../shared/utils.js';
 import { libraryRepository } from './libraryRepository.js';
+import { downloadReaderDiagnostics, isReaderDiagnosticsEnabled, recordReaderDiagnostic } from './readerDiagnostics.js';
 import {
   READER_LINES_PER_PAGE,
   buildLegacyReaderLayout,
@@ -161,6 +162,7 @@ export default function Reader({ book, onClose, initialVersion = null, initialSo
   const [settings, setSettings] = useState(loadSettings);
   const [soundEnabled, setSoundEnabled] = useState(() => loadBookSoundEnabled(book));
   const [error, setError] = useState('');
+  const diagnosticsEnabled = isReaderDiagnosticsEnabled();
   const rootRef = useRef(null);
   const articleRef = useRef(null);
   const touchRef = useRef(null);
@@ -177,6 +179,7 @@ export default function Reader({ book, onClose, initialVersion = null, initialSo
   // Without this, closing during a page turn can leave work alive until its
   // fallback timeout and retain the decoded audio element across reader sessions.
   useEffect(() => () => {
+    recordReaderDiagnostic('reader-unmounted');
     if (flipCleanupRef.current) flipCleanupRef.current();
     if (flipCleanupTimerRef.current !== null) {
       window.clearTimeout(flipCleanupTimerRef.current);
@@ -200,25 +203,63 @@ export default function Reader({ book, onClose, initialVersion = null, initialSo
 
   useEffect(() => {
     let alive = true;
+    recordReaderDiagnostic('reader-mounted', {
+      bookId: Number(book?.legacyId) || null,
+      versionPresent: Boolean(initialVersion),
+      versionContentPresent: Boolean(initialVersion?.content),
+      contentPageCount: Array.isArray(initialVersion?.content?.pages) ? initialVersion.content.pages.length : 0,
+      readerMounted: true,
+    });
     setVersion(initialVersion || null); setLayout(null); setError(''); firstLayoutRef.current = true;
     setSoundEnabled(loadBookSoundEnabled(book));
     if (flipCleanupRef.current) flipCleanupRef.current();
     if (initialVersion?.content) {
+      recordReaderDiagnostic('reader-version-prop-ready', { versionContentPresent: true });
       return () => { alive = false; };
     }
+    recordReaderDiagnostic('reader-indexeddb-version-read-start', { versionPresent: false });
     libraryRepository.getVersion(book.activeVersionId).then((row) => {
       if (!row) throw new Error('نسخه فعال کتاب پیدا نشد.');
-      if (alive) setVersion(row);
-    }).catch((e) => { if (alive) setError(e?.message || 'متن کتاب بارگذاری نشد.'); });
+      if (alive) {
+        recordReaderDiagnostic('reader-indexeddb-version-read-ready', {
+          versionPresent: true,
+          versionContentPresent: Boolean(row?.content),
+          contentPageCount: Array.isArray(row?.content?.pages) ? row.content.pages.length : 0,
+        });
+        setVersion(row);
+      }
+    }).catch((e) => {
+      recordReaderDiagnostic('reader-indexeddb-version-read-failed', { errorName: String(e?.name || 'Error').slice(0, 40) });
+      if (alive) setError(e?.message || 'متن کتاب بارگذاری نشد.');
+    });
     return () => { alive = false; };
   }, [book, initialVersion]);
 
   const rebuild = useCallback((preserveAnchor = null) => {
-    if (!version?.content || !rootRef.current || !articleRef.current) return;
+    const rebuildStartedAt = performance.now();
+    if (!version?.content || !rootRef.current || !articleRef.current) {
+      recordReaderDiagnostic('layout-build-skipped', {
+        versionContentPresent: Boolean(version?.content),
+        readerMounted: Boolean(rootRef.current && articleRef.current),
+      });
+      return;
+    }
+    recordReaderDiagnostic('layout-build-start', {
+      versionContentPresent: true,
+      contentPageCount: Array.isArray(version.content.pages) ? version.content.pages.length : 0,
+      rootWidth: rootRef.current.clientWidth,
+      rootHeight: rootRef.current.clientHeight,
+      articleWidth: articleRef.current.clientWidth,
+      articleHeight: articleRef.current.clientHeight,
+    });
     const metrics = calcMetrics(rootRef.current, articleRef.current, settings.fontStep, Boolean(target));
-    if (!metrics) return;
+    if (!metrics) {
+      recordReaderDiagnostic('layout-metrics-unavailable', { readerMounted: true });
+      return;
+    }
     const cacheKey = readerLayoutCacheKey(version, book, metrics);
     let nextLayout = READER_LAYOUT_CACHE.get(cacheKey);
+    const cacheHit = Boolean(nextLayout);
     if (nextLayout) {
       // Refresh insertion order for a small least-recently-used cache.
       READER_LAYOUT_CACHE.delete(cacheKey);
@@ -239,6 +280,11 @@ export default function Reader({ book, onClose, initialVersion = null, initialSo
         READER_LAYOUT_CACHE.delete(READER_LAYOUT_CACHE.keys().next().value);
       }
     }
+    recordReaderDiagnostic('layout-build-finished', {
+      cacheHit,
+      durationMs: performance.now() - rebuildStartedAt,
+      layoutPageCount: Number(nextLayout?.pageCount) || 0,
+    });
     setLayout(nextLayout);
 
     let nextPage = 0;
@@ -274,9 +320,14 @@ export default function Reader({ book, onClose, initialVersion = null, initialSo
   }, [version, settings.fontStep, target, initialSourcePage, initialPage, book]);
 
   useLayoutEffect(() => {
-  if (!version) return undefined;
+  if (!version) {
+    recordReaderDiagnostic('layout-effect-waiting-for-version', { versionPresent: false });
+    return undefined;
+  }
+  recordReaderDiagnostic('layout-effect-scheduled', { versionPresent: true, versionContentPresent: Boolean(version?.content) });
 
   const frame = requestAnimationFrame(() => {
+    recordReaderDiagnostic('layout-animation-frame-fired');
     const anchor = preserveAnchorRef.current;
     preserveAnchorRef.current = null;
 
@@ -304,6 +355,27 @@ rebuild(preserveAnchorRef.current);
 
   const current = layout?.pages?.[pageIndex] || null;
   const chapter = useMemo(() => currentChapter(layout, pageIndex), [layout, pageIndex]);
+
+  useEffect(() => {
+    if (!layout) return undefined;
+    const frame = requestAnimationFrame(() => {
+      const root = rootRef.current;
+      const article = articleRef.current;
+      recordReaderDiagnostic('layout-rendered-in-dom', {
+        layoutPageCount: Number(layout.pageCount) || 0,
+        layoutCurrentType: String(current?.type || 'unknown'),
+        rootWidth: root?.clientWidth || 0,
+        rootHeight: root?.clientHeight || 0,
+        articleWidth: article?.clientWidth || 0,
+        articleHeight: article?.clientHeight || 0,
+        documentVisibility: document.visibilityState,
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+        devicePixelRatio: window.devicePixelRatio || 1,
+      });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [layout, current, pageIndex]);
 
   useEffect(() => {
     if (!layout || !current) return;
@@ -480,6 +552,7 @@ function getReaderAnchor(page) {
   }
 
   const handleClose = useCallback(() => {
+    recordReaderDiagnostic('reader-close-requested', { layoutPageCount: Number(layout?.pageCount) || 0 });
     if (layout && current) {
       const source = ['cover', 'frontispiece'].includes(current.type) ? 0 : Number(current.sourcePage) || 1;
       saveProgress(book, pageIndex, layout.pageCount, source, getReaderAnchor(current));
@@ -488,7 +561,7 @@ function getReaderAnchor(page) {
   }, [book, current, layout, onClose, pageIndex]);
 
   if (error) {
-    return <section id="bookReader" className="bookReaderFull"><div className="validationModal"><div className="validationCard"><span className="badge">خطا در کتابخانه</span><h2>خطا در کتابخانه</h2><ul><li>{error}</li></ul><button className="primary" onClick={handleClose}><AppIcon name="check" size={17} /> متوجه شدم</button></div></div></section>;
+    return <section id="bookReader" className="bookReaderFull"><div className="validationModal"><div className="validationCard"><span className="badge">خطا در کتابخانه</span><h2>خطا در کتابخانه</h2><ul><li>{error}</li></ul>{diagnosticsEnabled && <button className="secondary" type="button" onClick={downloadReaderDiagnostics}>ذخیره گزارش تشخیصی</button>}<button className="primary" onClick={handleClose}><AppIcon name="check" size={17} /> متوجه شدم</button></div></div></section>;
   }
 
   const total = layout?.pageCount || 1;
@@ -513,6 +586,7 @@ function getReaderAnchor(page) {
       <div className="readerTopbar">
         <button className="readerIcon" onClick={handleClose} aria-label="خروج از مطالعه"><AppIcon name="x" size={18} /></button>
         <div className="readerTitleWrap"><b id="bookReaderTitle">{title}</b><small id="bookReaderMeta">{layout ? meta : ''}</small></div>
+        {diagnosticsEnabled && <button className="readerIcon" type="button" onClick={downloadReaderDiagnostics} aria-label="ذخیره گزارش تشخیصی" title="ذخیره گزارش تشخیصی">گزارش</button>}
         <button className="readerIcon" onClick={() => setTocOpen((value) => !value)} aria-label="فهرست مطالب"><AppIcon name="list" size={18} /></button>
       </div>
       <div className="readerProgressTrack" aria-hidden="true"><span id="readerProgressBar" style={{ width: `${pct}%` }} /></div>
