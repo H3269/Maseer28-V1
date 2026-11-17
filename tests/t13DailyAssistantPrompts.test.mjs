@@ -106,6 +106,21 @@ test('T13 exercises and actions have no exact cross-topic duplicate in the 952-d
   }
 });
 
+test('T13 daily variants stay below the T12 cross-topic semantic overlap threshold', () => {
+  const fields=['title','exercise','action','lightVersion','lightActionVersion','progressVersion','progressActionVersion','restVersion','restActionVersion'];
+  const normalize=(value)=>String(value||'').normalize('NFKC')
+    .replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[\\u200c\\u200f\\u200e]/g,' ')
+    .replace(/[^\\p{L}\\p{N}\\s]/gu,' ').replace(/\\s+/g,' ').trim().toLowerCase();
+  const stop=new Set(['نسخه','سبک','تمرین','اقدام','فقط','یک','و','یا','را','از','به','در','که','اگر','برای','با','بدون','امروز','فعلا','کن','کنید','بنویس','بنویسی','بنویسید','ثبت','انتخاب','نام','ببر','مشخص','بررسی','انجام','بده','بگیر','دارد','هست','است','میشود','شود','تا','خودت','خود','او','این','آن','همان','هر','هیچ','همه']);
+  const tokens=(value)=>new Set(normalize(value).split(' ').filter((token)=>token.length>2&&!stop.has(token)));
+  for(const guide of T13_DAILY_ASSISTANT_GUIDES) for(const other of T12_DAILY_ASSISTANT_GUIDES) for(const field of fields) {
+    const left=tokens(guide[field]),right=tokens(other[field]),union=new Set([...left,...right]);
+    let intersection=0;for(const token of left)if(right.has(token))intersection+=1;
+    const similarity=union.size?intersection/union.size:0;
+    assert.ok(similarity<0.30,'T13 day '+guide.day+' '+field+' overlaps T12 day '+other.day+': '+similarity);
+  }
+});
+
 test('T13 prepared answers reject mismatched identity, content and free-text questions', () => {
   const guide=T13_DAILY_ASSISTANT_GUIDES[0], content=dailyContent(guide);
   assert.equal(answerT13DailyPreparedQuestion({day:2,message:guide.questions[0].value,dailyContent:content}),null);
