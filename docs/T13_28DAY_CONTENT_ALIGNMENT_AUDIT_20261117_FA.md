@@ -4,7 +4,7 @@
 **مبنای محتوایی:** `docs/T13_LONELINESS_28DAY_REDESIGN_DRAFT_B2_BC_FA.md`  
 **SHA پیش‌نویس:** `39ed28aa6c13a84ed8d53f9668a4db0d04861cf8`  
 **منبع اجرایی تمرین/اقدام:** `public/content/daily-text-overrides.v1.json`  
-**SHA فایل overlay در مبنای main:** `58b1ea8ecd81e8b57ad07ff567f894234309dcf5`
+**SHA فایل overlay در مبنای main:** `8e7dff78f75802a797f7fd2e3820fb8831b1a4a6`
 
 ## ۱. نتیجه ممیزی محتوای ۲۸روزه
 
