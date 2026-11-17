@@ -22,7 +22,7 @@ test('library, reader, and assistant modules stay out of the initial application
   assert.match(app, /loadGlobalAssistantLauncher\(\)\.then\(\(\) => \{/);
   assert.match(app, /if \(!content\) return undefined;/);
   assert.match(app, /assistantVisible && assistantLauncherLoaded/);
-  assert.match(app, /\{assistantVisible && assistantLauncherLoaded && <button/);
+  assert.match(app, /\{assistantVisible && assistantLauncherLoaded && <Suspense fallback=\{null\}><GlobalAssistantLauncher/);
   assert.doesNotMatch(app, /requestIdleCallback\(warmAssistant/);
   assert.doesNotMatch(app, /import GlobalAssistantLauncher from/);
   assert.match(app, /assistantVisible && assistantLauncherLoaded && <Suspense fallback=\{null\}><GlobalAssistantLauncher/);
