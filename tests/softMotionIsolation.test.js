@@ -16,6 +16,10 @@ test('soft motion stays isolated from protected app surfaces', async () => {
   assert.match(css, /200ms/);
   assert.match(css, /\.assistantTranscript\s*>\s*\.userMessage/);
   assert.match(css, /\.assistantTranscript\s*>\s*\.assistantMessage/);
+  assert.match(css, /\.validationModal/);
+  assert.match(css, /\.validationCard/);
+  assert.match(css, /\.copyrightModal/);
+  assert.match(css, /\.copyrightCard/);
 
   // New motion must not replace transforms used by floating controls or existing UI.
   assert.doesNotMatch(css, /(?:^|[;{}])\s*transform\s*:/m);
