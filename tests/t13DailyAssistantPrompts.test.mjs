@@ -68,7 +68,7 @@ test('T13 high-overlap candidates were sharpened into loneliness-specific tasks'
   const day25 = days.find((day) => day.day === 25);
   assert.match(day1.exercise, /فاصله میان ارتباط دلخواه و ارتباط در دسترس/u);
   assert.match(day9.actionText, /شروع ساده و یک نقطه پایان طبیعی/u);
-  assert.match(day12.actionText, /فعالیت مشخص و کم‌فشار با زمان محدود/u);
+  assert.match(day12.actionText, /فعالیتی مشخص و کم‌فشار با زمان محدود/u);
   assert.match(day19.exercise, /نیازی که پشت آن است، رفتار مشخصی که می‌خواهی/u);
   assert.match(day25.actionText, /عامل تسهیل‌کننده را برای تکرار/u);
 });
