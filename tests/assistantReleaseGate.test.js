@@ -48,8 +48,13 @@ test('global assistant launcher is mounted across navigable screens, including s
   assert.match(launcherUi, /selectedPreparedQuestion/);
   assert.match(launcherUi, /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/);
   assert.doesNotMatch(launcherUi, /isDailyExercise/, 'assistant launcher must not reference removed daily-context state');
-  assert.match(launcherUi, /className="globalAssistantLauncher"/);
+  assert.match(launcherUi, /className=\{\`globalAssistantLauncher/);
   assert.match(launcherUi, /aria-label="باز کردن دستیار مسیر۲۸"/);
+  assert.match(launcherUi, /onPointerDown=\{canMoveLauncher \? startLauncherDrag : undefined\}/);
+  assert.match(launcherUi, /onPointerMove=\{canMoveLauncher \? moveLauncher : undefined\}/);
+  assert.match(launcherUi, /path28-assistant-launcher-position-v1/);
+  assert.match(launcherUi, /Math\.hypot\(deltaX, deltaY\) < 6/);
+  assert.match(launcherUi, /!\['day', 'books', 'bookReader'\]\.includes\(screen\)/, 'daily exercise, library, and full-screen reader controls remain unchanged');
   assert.match(launcherUi, /if \(!visible \|\| screen === 'bookReader'\) return null/);
   assert.doesNotMatch(supportUi, /AssessmentAssistant|حریم خصوصی|بازیابی فایل پشتیبان|دستیار آزمایشی/);
 });
