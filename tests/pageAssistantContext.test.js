@@ -37,7 +37,7 @@ test('page context describes only fixed visible capabilities for each supported 
     ['support', 'راه‌های ارتباط'],
     ['final', 'ارزیابی خودگزارشی'],
     ['done', 'مشاهده گزارش'],
-    ['report', 'ابزار تشخیص'],
+    ['report', 'شاخص‌های خودگزارشی'],
     ['archive', 'حذف انتخابی'],
   ];
   for (const [screen, expected] of cases) {
