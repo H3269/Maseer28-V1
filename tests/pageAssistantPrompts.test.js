@@ -39,6 +39,14 @@ test('daily exercise and library FAQ catalogues are not replaced by page-specifi
   assert.equal(answerPageSpecificQuestion({ screen: 'books', message: 'هر سؤال' }), null);
 });
 
+test('existing library page guidance remains available and unchanged', () => {
+  const legacyQuestion = 'اینجا چه کارهایی می‌توانم انجام بدهم؟';
+  const result = makePageAssistantTurn({ screen: 'books', text: legacyQuestion });
+  assert.equal(result.status, 'page_guidance_available');
+  assert.match(result.message, /کتابخانه/);
+  assert.match(result.message, /بازکردن کتاب/);
+});
+
 test('questions from one page cannot be used as prepared questions on another page', () => {
   const homeQuestion = getPageSpecificPromptGroups('home')[0].questions[0].value;
   const result = makePageAssistantTurn({ screen: 'archive', text: homeQuestion });
