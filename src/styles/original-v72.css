@@ -6653,6 +6653,13 @@ body:not(.bale-webview) .bottomNav button.active:after {
   font-weight: 800;
 }
 .globalAssistantLauncher svg { width: 20px; height: 20px; flex: 0 0 20px; }
+.globalAssistantLauncherDraggable {
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.globalAssistantLauncherDraggable:active { cursor: grabbing; }
 .globalAssistantLauncher:focus-visible,
 .globalAssistantDialog button:focus-visible {
   outline: 3px solid #d6a84b;
@@ -6894,6 +6901,35 @@ html body .app:not(.appLoading) > section.card :is(button, input, textarea, sele
   .globalAssistantLauncher {
     bottom: calc(112px + env(safe-area-inset-bottom)) !important;
   }
+}
+
+
+/* Translucent glass treatment: preserve launcher label and all navigation icons. */
+html body .app .globalAssistantLauncher {
+  background: rgba(36, 92, 85, .48) !important;
+  border: 1px solid rgba(255, 255, 255, .62) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 24px rgba(20, 65, 59, .18), inset 0 1px 0 rgba(255, 255, 255, .28) !important;
+  -webkit-backdrop-filter: blur(15px) saturate(155%);
+  backdrop-filter: blur(15px) saturate(155%);
+}
+html body .app .globalAssistantLauncherDraggable {
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+html body .app .globalAssistantLauncherDraggable:active { cursor: grabbing; }
+html body .app .globalAssistantLauncher.globalAssistantLauncherPositioned { bottom: auto !important; }
+
+/* Only the navigation bar surface becomes glass; button labels, icons and
+   their existing active-state colors are intentionally left untouched. */
+html body .app .appBottomDock .bottomNav {
+  background: rgba(255, 255, 255, .58) !important;
+  border: 1px solid rgba(255, 255, 255, .78) !important;
+  box-shadow: 0 8px 28px rgba(30, 64, 110, .12), inset 0 1px 0 rgba(255, 255, 255, .7) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(165%);
+  backdrop-filter: blur(18px) saturate(165%);
 }
 
 /* V92: the library had legacy high-specificity padding rules that bypassed

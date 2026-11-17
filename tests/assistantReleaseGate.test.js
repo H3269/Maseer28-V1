@@ -48,8 +48,15 @@ test('global assistant launcher is mounted across navigable screens, including s
   assert.match(launcherUi, /selectedPreparedQuestion/);
   assert.match(launcherUi, /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/);
   assert.doesNotMatch(launcherUi, /isDailyExercise/, 'assistant launcher must not reference removed daily-context state');
-  assert.match(launcherUi, /className="globalAssistantLauncher"/);
+  assert.match(launcherUi, /className=\{\`globalAssistantLauncher/);
   assert.match(launcherUi, /aria-label="باز کردن دستیار مسیر۲۸"/);
+  assert.match(launcherUi, /onPointerDown=\{canMoveLauncher \? startLauncherDrag : undefined\}/);
+  assert.match(launcherUi, /onPointerMove=\{canMoveLauncher \? moveLauncher : undefined\}/);
+  assert.match(launcherUi, /path28-assistant-launcher-position-v1/);
+  assert.match(launcherUi, /globalAssistantLauncherPositioned/);
+  assert.match(launcherUi, /Math\.hypot\(deltaX, deltaY\) < 6/);
+  assert.match(launcherUi, /drag\.lastPosition = \{ x: Math\.max\(8, x\), y: Math\.max\(8, y\) \}/);
+  assert.match(launcherUi, /const canMoveLauncher = screen !== 'bookReader'/, 'dragging must be enabled on every screen where the launcher is rendered');
   assert.match(launcherUi, /if \(!visible \|\| screen === 'bookReader'\) return null/);
   assert.doesNotMatch(supportUi, /AssessmentAssistant|حریم خصوصی|بازیابی فایل پشتیبان|دستیار آزمایشی/);
 });
@@ -141,6 +148,15 @@ test('assistant uses one chat surface with the composer send action inside and e
   assert.match(assistantUi, /onClick=\{stop\}>پایان گفتگو/);
   assert.doesNotMatch(assistantUi, /پایان و پاک‌کردن گفتگو|بستن و پاک‌کردن گفتگو/);
   assert.match(assistantUi, /scrollIntoView/);
+});
+
+test('assistant launcher and bottom navigation use glass surfaces without changing navigation icon markup', async () => {
+  const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
+  const journey = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
+  assert.ok(css.includes('html body .app .globalAssistantLauncher {') && css.includes('backdrop-filter: blur(15px) saturate(155%);'));
+  assert.ok(css.includes('html body .app .appBottomDock .bottomNav {') && css.includes('backdrop-filter: blur(18px) saturate(165%);'));
+  assert.ok(journey.includes('<span className="navIcon"><NavIcon name="home" /></span>'));
+  assert.ok(journey.includes('<span className="navIcon"><NavIcon name="archive" /></span>'));
 });
 
 test('assistant chat styling distinguishes speaker bubbles and keeps composer integrated', async () => {
