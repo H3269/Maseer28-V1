@@ -7,6 +7,8 @@ on:
       - 'src/features/assistant/pageAssistantTurn.js'
       - 'src/features/assistant/pageAssistantPrompts.js'
       - 'src/App.jsx'
+      - 'src/main.jsx'
+      - 'src/styles/soft-motion.css'
       - 'tests/assistantReleaseGate.test.js'
       - 'tests/startupPerformance.test.mjs'
       - 'tests/pageAssistantPrompts.test.js'
