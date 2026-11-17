@@ -58,7 +58,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const [launcherPosition, setLauncherPosition] = useState(null);
   const launcherDragRef = useRef(null);
   const suppressLauncherClickRef = useRef(false);
-  const canMoveLauncher = !['day', 'books', 'bookReader'].includes(screen);
+  const canMoveLauncher = screen !== 'bookReader';
 
   useEffect(() => {
     if (!canMoveLauncher) return;
@@ -129,15 +129,17 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     if (!button) return;
     const x = Math.min(window.innerWidth - button.offsetWidth - 8, Math.max(8, drag.originX + deltaX));
     const y = Math.min(window.innerHeight - button.offsetHeight - 8, Math.max(8, drag.originY + deltaY));
-    setLauncherPosition({ x: Math.max(8, x), y: Math.max(8, y) });
+    drag.lastPosition = { x: Math.max(8, x), y: Math.max(8, y) };
+    setLauncherPosition(drag.lastPosition);
   }
 
   function finishLauncherDrag(event) {
     const drag = launcherDragRef.current;
     if (!drag || drag.pointerId !== event.pointerId) return;
     launcherDragRef.current = null;
-    if (drag.moved && launcherPosition) {
-      try { window.localStorage.setItem('path28-assistant-launcher-position-v1', JSON.stringify(launcherPosition)); } catch {}
+    if (drag.moved && drag.lastPosition) {
+      setLauncherPosition(drag.lastPosition);
+      try { window.localStorage.setItem('path28-assistant-launcher-position-v1', JSON.stringify(drag.lastPosition)); } catch {}
     }
   }
 
