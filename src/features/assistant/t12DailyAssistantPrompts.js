@@ -1,6 +1,7 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 import T12_GUIDE from './t12DailyAssistantGuide.v1.json' with { type: 'json' };
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
+import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 
 export const T12_DAILY_ASSISTANT_GUIDES = Object.freeze(T12_GUIDE.records.map(normalizeDailyAssistantGuide));
 
@@ -54,9 +55,10 @@ export function answerT12DailyPreparedQuestion({ day, message, dailyContent } = 
     topic: 'مرزبندی و نه گفتن',
   });
   const safetyKinds = new Set(['procrastination_increased', 'talk_other', 'success', 'stop']);
-  return safetyKinds.has(question.kind)
+  const answerWithTopicSafety = safetyKinds.has(question.kind)
     ? framedAnswer.trimEnd() + '\n\n' + T12_SAFETY_REMINDER
     : framedAnswer;
+  return appendDailyAssistantSafetyReminder(answerWithTopicSafety, question.kind);
 }
 
 export function getT12DailyAssistantPromptGroups(day) {
