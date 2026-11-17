@@ -623,27 +623,21 @@ function navigate(next) {
     startReaderDiagnostics(book);
     recordReaderDiagnostic('open-book-handler-entered', { bookId: Number(book?.legacyId) || null });
     setOpeningBook(true);
+    const preparationStartedAt = performance.now();
     try {
-      // Measure content hydration and Reader chunk loading independently.
-      const contentTask = ensureSeedBookContent(book).then((result) => {
-        recordReaderDiagnostic('book-content-ready', {
-          contentPageCount: Array.isArray(result?.version?.content?.pages) ? result.version.content.pages.length : 0,
-          versionPresent: Boolean(result?.version),
-          versionContentPresent: Boolean(result?.version?.content),
-        });
-        return result;
+      // Keep the established parallel preparation contract; diagnostics only
+      // observe its total duration and the resulting content shape.
+      const [{ book: readyBook, version }] = await Promise.all([
+        ensureSeedBookContent(book),
+        loadReader(),
+      ]);
+      recordReaderDiagnostic('open-book-preparation-complete', {
+        durationMs: performance.now() - preparationStartedAt,
+        contentPageCount: Array.isArray(version?.content?.pages) ? version.content.pages.length : 0,
+        versionPresent: Boolean(version),
+        versionContentPresent: Boolean(version?.content),
       });
-      const readerTask = loadReader().then((module) => {
-        recordReaderDiagnostic('reader-chunk-ready');
-        return module;
-      });
-      const [{ book: readyBook, version }] = await Promise.all([contentTask, readerTask]);
       if (!version?.content) throw new Error('متن کتاب آماده نشد.');
-      recordReaderDiagnostic('open-book-data-ready', {
-        contentPageCount: Array.isArray(version.content.pages) ? version.content.pages.length : 0,
-        versionPresent: true,
-        versionContentPresent: true,
-      });
       setAssistantOpen(false);
       setReaderState({ book: readyBook, version, sourcePage, target });
       recordReaderDiagnostic('reader-state-created');
