@@ -101,8 +101,9 @@ test('all exact prepared FAQs across 28 days keep their own answers when their w
   assert.ok(checked >= 2700, `expected broad coverage of the 7 × 28 prepared FAQ sets; checked ${checked}`);
 });
 
-test('T13 day 14 stays unavailable until its subtype-specific safety review is approved', () => {
+test('T13 day 14 remains available after owner approval without a specialist-review runtime gate', () => {
   const guide = T13_DAILY_ASSISTANT_GUIDES[13];
+  assert.equal(guide.reviewStatus, 'owner_approved');
   const dailyContext = {
     day: 14,
     problem: 'تنهایی',
@@ -113,9 +114,9 @@ test('T13 day 14 stays unavailable until its subtype-specific safety review is a
       title: guide.title,
       exercise: guide.exercise,
       actionText: guide.action,
-      review_status: 'pending_expert_review',
+      review_status: 'owner_approved',
       risk_level: 'caution',
-      subtopic_ids: ['T13-S01'],
+      subtopic_ids: ['T13-S02', 'T13-S03'],
     },
   };
   const result = makePageAssistantTurn({
@@ -123,8 +124,8 @@ test('T13 day 14 stays unavailable until its subtype-specific safety review is a
     text: guide.questions[0].value,
     dailyContext,
   });
-  assert.equal(result.status, 'daily_guidance_unavailable');
-  assert.match(result.message, /بازبینی ایمنی تخصصی/u);
+  assert.equal(result.status, 'daily_guidance_available');
+  assert.match(result.message, /راهنمای روز 14 تنهایی/u);
 });
 
 test('a pending safety exchange still preempts even an exact prepared FAQ', () => {
