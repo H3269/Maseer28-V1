@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { readFile } from 'node:fs/promises';
 import { hasReadableBookContent, normalizeBookContent } from '../src/features/library/bookUtils.js';
 
 test('rejects missing, empty, and structurally empty book content', () => {
@@ -29,4 +30,18 @@ test('accepts readable text stored in structured blocks and table rows', () => {
 test('rejects a cached book that has pages but no meaningful readable text', () => {
   const staleVersion = { content: { pages: [{ page: 1, text: '' }, { page: 2, blocks: [] }] } };
   assert.equal(hasReadableBookContent(staleVersion.content), false);
+});
+
+const useLibrarySource = await readFile(new URL('../src/features/library/useLibrary.js', import.meta.url), 'utf8');
+
+test('an invalid active IndexedDB version is rebuilt even when the seed fingerprint is unchanged', () => {
+  assert.match(
+    useLibrarySource,
+    /previousFingerprint !== rawFingerprint \|\| !activeVersionId \|\| !isUsableSeedVersion\(existingVersion\)/,
+  );
+});
+
+test('invalid in-memory content cache entries are discarded before returning a cached version', () => {
+  assert.match(useLibrarySource, /if \(isUsableSeedVersion\(cached\?\.version\)\)/);
+  assert.match(useLibrarySource, /SEED_BOOK_CONTENT_CACHE\.delete\(cacheKey\)/);
 });
