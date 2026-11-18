@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
+import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
 import { T14_DAILY_ASSISTANT_GUIDES,answerT14DailyPreparedQuestion,getT14DailyAssistantPromptGroups } from '../src/features/assistant/t14DailyAssistantPrompts.js';
 const expected=["منظور از تمرین امروز چیست؟","برای تمرین امروز یک مثال می‌زنی؟","منظور از اقدام اختصاصی امروز چیست؟","برای اقدام امروز یک مثال می‌زنی؟","اگر انجام کاملش برایم سخت بود چه کنم؟","از کجا بفهمم درست انجامش داده‌ام؟","چه زمانی باید تمرین امروز را متوقف کنم؟","اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟","تمرین و اقدام امروز چه تفاوتی دارند؟","اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟","اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟","آیا لازم است حتماً با فرد دیگری صحبت کنم؟","می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟","این تمرین چقدر زمان می‌برد؟"];
 const daily=g=>({id:'کمبود انگیزه-'+String(g.day).padStart(2,'0'),day:g.day,topic_id:'T14',title:g.title,sourceExercise:g.exercise,sourceActionText:g.action,exercise:g.exercise,actionText:g.action});
@@ -11,3 +12,5 @@ test('T14 answers require exact canonical identity and topic',()=>{const g=T14_D
 
 test('T14 safety-sensitive prepared answers append the shared safety reminder',async()=>{const {DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN}=await import('../src/features/assistant/dailyAssistantSafetyReminder.js');for(const g of T14_DAILY_ASSISTANT_GUIDES)for(const kind of ['success','stop','motivation_distress','talk_other']){const q=g.questions.find(x=>x.kind===kind),a=answerT14DailyPreparedQuestion({day:g.day,message:q.value,dailyContent:daily(g)});assert.ok(a.includes(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN),'missing shared reminder '+g.day+' '+kind);}});
 test('T14 answers are unique across all 392 prepared question slots',()=>{const answers=T14_DAILY_ASSISTANT_GUIDES.flatMap(g=>g.questions.map(q=>q.answer));assert.equal(answers.length,392);assert.equal(new Set(answers).size,392);});
+
+test('T14 is wired into the page assistant and serves the selected day answer',()=>{const g=T14_DAILY_ASSISTANT_GUIDES[0],data={...daily(g)};const result=makePageAssistantTurn({screen:'day',text:g.questions[0].value,dailyContext:{day:1,problem:'کمبود انگیزه',data,guidanceData:data}});assert.equal(result.status,'daily_guidance_available');assert.match(result.message,/راهنمای روز 1 کمبود انگیزه/u);});
