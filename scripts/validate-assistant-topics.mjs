@@ -11,7 +11,7 @@ const relationTypesRegistry = readJson('public/assistant/knowledge/relation-type
 const consentPolicy = readJson('public/assistant/privacy/consent-policy.v1.json');
 const safetyDataPolicy = readJson('public/assistant/privacy/safety-data-boundaries.v1.json');
 const assessmentProtocol = readJson('public/assistant/assessment/assessment-protocol.v1.json');
-const topicDefinitions = readJson('public/assistant/knowledge/topic-definitions-draft.v1.json');
+const topicDefinitions = readJson('public/assistant/knowledge/topic-definitions.v1.json');
 const evidenceSourcesRegistry = readJson('public/assistant/evidence/sources.v1.json');
 const errors = [];
 const expectedIds = Array.from({ length: 34 }, (_, index) => `T${String(index + 1).padStart(2, '0')}`);
