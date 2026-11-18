@@ -45,6 +45,15 @@ test('T13 guide has exactly 28 days and 392 complete answers under the fixed 14-
   }
 });
 
+test('T13 stop answers state the canonical daily stop condition once and without duplicated lead-ins', () => {
+  for (const guide of T13_DAILY_ASSISTANT_GUIDES) {
+    const answer = guide.questions.find((question) => question.id === 'q07').answer;
+    assert.ok(answer.startsWith('شرط توقف روز ' + guide.day + ': ' + guide.stopCondition));
+    assert.equal(answer.includes('متوقف کن اگر: اگر'), false);
+    assert.equal((answer.match(/شرط توقف روز /gu) || []).length, 1);
+  }
+});
+
 test('T13 content overlay has 28 days and exactly matches assistant exercise/action source', async () => {
   const overlay = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
   const days = overlay.categories['تنهایی']?.days || []; assert.equal(days.length, 28);
