@@ -1,7 +1,6 @@
 {
   "schema_version": "1.0.0",
   "package_id": "T10",
-  "status": "draft_pending_expert_review",
   "scope_note": "Daily claim mappings identify bounded day-specific factual context. Shared safety claims apply across all 28 daily units and are separately linked below. This is a preliminary traceability index, not a completed evidence-quality appraisal or clinical approval; all links remain pending qualified human review.",
   "source_registry": "public/assistant/evidence/sources.v1.json",
   "mappings": [
@@ -915,7 +914,6 @@
         27,
         28
       ],
-      "review_status": "pending_expert_review",
       "limitations": "Road-safety guidance, not a clinical sleep-disorder diagnostic source."
     },
     {
@@ -952,7 +950,6 @@
         27,
         28
       ],
-      "review_status": "pending_expert_review",
       "limitations": "Symptom education only; does not replace clinical evaluation."
     },
     {
@@ -989,7 +986,6 @@
         27,
         28
       ],
-      "review_status": "pending_expert_review",
       "limitations": "Patient education; does not provide individualized fitness-to-drive assessment."
     },
     {
@@ -1026,7 +1022,6 @@
         27,
         28
       ],
-      "review_status": "pending_expert_review",
       "limitations": "VA/DoD clinician guidance, not a self-screening tool. These conditions do not let the app determine treatment eligibility; they require qualified clinical assessment and individualized decisions."
     },
     {
@@ -1063,7 +1058,6 @@
         27,
         28
       ],
-      "review_status": "pending_expert_review",
       "limitations": "Adult chronic insomnia guideline; does not authorize unsupervised sleep restriction."
     }
   ]
