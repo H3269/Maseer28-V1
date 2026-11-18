@@ -97,7 +97,7 @@ for (const { topic, category } of topicRows) {
 
     // New or rewritten days opt into the versioned daily-unit contract.
     // Legacy days remain readable until their own reviewed migration.
-    if (day.topic_id !== undefined || day.review_status !== undefined) {
+    if (day.topic_id !== undefined) {
       const requiredV2 = [
         'topic_id', 'subtopic_ids', 'learning_objective', 'target_skill',
         'teaching_point', 'exercise_type', 'instructions', 'duration_minutes',
