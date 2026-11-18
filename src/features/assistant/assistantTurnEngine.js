@@ -1,7 +1,6 @@
 import knowledgeCatalog from '../../../public/assistant/knowledge/items.v1.json' with { type: 'json' };
-import approvalManifest from '../../../public/assistant/knowledge/approved-items.v1.json' with { type: 'json' };
 import { hasExplicitPersonalContext, routeSemanticIntake } from './intentContextRouter.js';
-import { retrieveApprovedKnowledge } from './knowledgeGateway.js';
+import { retrieveKnowledge } from './knowledgeGateway.js';
 
 function deepFreeze(value) {
   if (!value || typeof value !== 'object' || Object.isFrozen(value)) return value;
@@ -12,10 +11,9 @@ function deepFreeze(value) {
 
 /**
  * Local-only turn router. It does not generate clinical advice or compose new
- * factual claims; knowledge answers are limited to approved source excerpts.
+ * factual claims; knowledge answers are limited to source-linked catalog excerpts.
  */
-export function routeAssistantTurn({ text, knowledgeItems = (knowledgeCatalog.schema_version === '1.0.0' && typeof knowledgeCatalog.catalog_id === 'string' && knowledgeCatalog.catalog_id.trim().length > 0 && knowledgeCatalog.status === 'active' && Array.isArray(knowledgeCatalog.items) ? knowledgeCatalog.items : []), approvalManifest: suppliedApprovalManifest, requestScope = 'auto', requestId = 'assistant-turn' } = {}) {
-  const activeApprovalManifest = suppliedApprovalManifest ?? approvalManifest;
+export function routeAssistantTurn({ text, knowledgeItems = (knowledgeCatalog.schema_version === '1.0.0' && typeof knowledgeCatalog.catalog_id === 'string' && knowledgeCatalog.catalog_id.trim().length > 0 && Array.isArray(knowledgeCatalog.items) ? knowledgeCatalog.items : []), requestScope = 'auto', requestId = 'assistant-turn' } = {}) {
   const rawText = String(text ?? '').trim();
   if (!rawText) {
     return deepFreeze({ status: 'invalid_input', intake: null, message: 'برای شروع، یک پرسش یا توضیح کوتاه بنویس.', knowledge: [] });
@@ -55,20 +53,20 @@ export function routeAssistantTurn({ text, knowledgeItems = (knowledgeCatalog.sc
   }
 
   if (intake.intent.label === 'general_information' || (requestScope === 'general' && ['request_strategy', 'professional_help_decision'].includes(intake.intent.label))) {
-    const retrieval = retrieveApprovedKnowledge({ query: text, items: knowledgeItems, approvalManifest: activeApprovalManifest, limit: 3 });
+    const retrieval = retrieveKnowledge({ query: text, items: knowledgeItems, limit: 3 });
     if (retrieval.status !== 'results_found') {
       return deepFreeze({
         status: 'knowledge_unavailable',
         intake,
-        message: 'این یک درخواست اطلاعات عمومی است؛ برای این پرسش هنوز محتوای تأییدشده و قابل استناد در پایگاه دانش دستیار پیدا نشد. به‌جای حدس‌زدن، فعلاً پاسخ قطعی نمی‌دهم.',
+        message: 'این یک درخواست اطلاعات عمومی است؛ برای این پرسش هنوز محتوای منبع‌دار و مرتبط در پایگاه دانش دستیار پیدا نشد. به‌جای حدس‌زدن، فعلاً پاسخ قطعی نمی‌دهم.',
         knowledge: [],
         retrieval_status: retrieval.status,
       });
     }
     return deepFreeze({
-      status: 'approved_knowledge_available',
+      status: 'knowledge_available',
       intake,
-      message: 'گزیده‌های زیر از منابعی بازیابی شده‌اند که برای استفاده دستیار تأیید شده‌اند. این گزیده‌ها تشخیص یا توصیه درمانی نیستند.',
+      message: 'گزیده‌های زیر از منابع ثبت‌شده در پایگاه دانش بازیابی شده‌اند. این گزیده‌ها تشخیص یا توصیه درمانی نیستند.',
       knowledge: retrieval.results,
       retrieval_status: retrieval.status,
     });
