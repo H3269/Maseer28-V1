@@ -31,7 +31,6 @@ export function getDailyAssistantAccess({ day, problem, relationshipSafetyConfir
   // Legacy records have no v2 identity fields. Their exact category key and
   // zero-padded day ID are sufficient; never synthesize v2 metadata.
   const isUnmigratedLegacy = !Object.prototype.hasOwnProperty.call(day, 'topic_id')
-    && !Object.prototype.hasOwnProperty.call(day, 'review_status')
     && !Object.prototype.hasOwnProperty.call(day, 'risk_level');
   const hasVerifiedLegacyIdentity = isUnmigratedLegacy && hasCanonicalId;
   const hasVerifiedIdentity = hasV2Identity || hasVerifiedLegacyIdentity;
