@@ -216,6 +216,6 @@ test('T15 keeps external feedback optional and separates task confidence from di
 test('T15 prepared answer formatting has no duplicated rest-action label', () => {
   for (const guide of T15_DAILY_ASSISTANT_GUIDES) {
     const lightAnswer = guide.questions.find((item) => item.kind === 'light_version').answer;
-    assert.doesNotMatch(lightAnswer, /نسخه استراحت اقدام:\\s*نسخه استراحت اقدام:/);
+    assert.doesNotMatch(lightAnswer, /نسخه استراحت اقدام:\s*نسخه استراحت اقدام:/);
   }
 });
