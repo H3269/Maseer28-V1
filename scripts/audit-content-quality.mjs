@@ -61,8 +61,6 @@ const futureMetadataFields = [
   'stop_conditions',
   'source_ids',
   'evidence_grade',
-  'review_status',
-  'review_record_id',
 ];
 
 function normalizeText(value, topicName) {
@@ -208,8 +206,7 @@ const candidateSupportSeekingReviewQueue = topicRows.flatMap((row) => {
     topic_name: row.topic_name,
     day: dayNumber,
     content_id: day.id || null,
-    is_legacy_record: day.topic_id === undefined && day.review_status === undefined,
-    review_status: day.review_status ?? null,
+    is_legacy_record: day.topic_id === undefined,
     risk_level: day.risk_level ?? null,
     title: day.title || '',
     intro: day.intro || '',
@@ -227,10 +224,6 @@ const candidateSupportSeekingReviewQueue = topicRows.flatMap((row) => {
     subtopic_ids: day.subtopic_ids || [],
     control_context: day.control_context ?? null,
     evidence_grade: day.evidence_grade ?? null,
-    review_record_id: day.review_record_id ?? null,
-    reviewer_name: day.reviewer_name ?? null,
-    reviewer_role: day.reviewer_role ?? null,
-    reviewed_at: day.reviewed_at ?? null,
     light_exercise: day.lightExerciseText || '',
     light_action: day.lightActionText || '',
     progress_action: day.progressActionText || '',
@@ -246,7 +239,7 @@ const candidateSupportSeekingReviewQueue = topicRows.flatMap((row) => {
 const report = {
   report_schema_version: '1.0.0',
   audit_id: 'maseer28-daily-content-quality-audit',
-  status: 'static_content_audit_not_expert_or_clinical_validation',
+  status: 'static_content_audit',
   content_version: content.version || content.content_version || null,
   generated_at: new Date().toISOString(),
   expected: { topics: expectedTopics, days_per_topic: expectedDays, total_days: expectedTotalDays },
@@ -272,9 +265,7 @@ const report = {
   interpretation: [
     'Similarity is a review signal, not proof that an exercise is ineffective.',
     'Structural validity does not establish clinical validity, safety, efficacy, originality, or suitability.',
-    'Draft topic definitions and subtopics must not be presented as expert-approved knowledge.',
     'Candidate topic relations are not causal evidence and are not eligible for runtime use.',
-    'Future content metadata requirements are a design target; existing days are not silently upgraded to approved status.',
   ],
 };
 
@@ -297,14 +288,8 @@ for (const [cohort, fields] of Object.entries(crossTopicSimilarityByCohort)) {
     console.log(`- ${field}: ${stats.fully_shared_days_across_all_topics}/${expectedDays} روز کاملاً مشترک؛ بیشترین خوشه ${largest}/${cohortSize} موضوع.`);
   }
 }
-console.log('پوشش فراداده علمی/بازبینی (تعداد روزهای دارای مقدار، نه تأیید تخصصی):');
-for (const field of ['learning_objective', 'target_skill', 'subtopic_ids', 'mechanism', 'exercise_type', 'duration_minutes', 'source_ids', 'evidence_grade', 'review_status', 'review_record_id']) {
+console.log('پوشش فراداده علمی، منبع‌دهی و ایمنی:');
+for (const field of ['learning_objective', 'target_skill', 'subtopic_ids', 'mechanism', 'exercise_type', 'duration_minutes', 'source_ids', 'evidence_grade', 'risk_level', 'stop_conditions']) {
   console.log(`- ${field}: ${metadataCoverage[field] || 0}/${allDays.length}`);
 }
-const reviewStatusCounts = {};
-for (const day of allDays) {
-  const status = String(day.review_status || '(missing)');
-  reviewStatusCounts[status] = (reviewStatusCounts[status] || 0) + 1;
-}
-console.log(`توزیع وضعیت بازبینی: ${Object.entries(reviewStatusCounts).map(([status, count]) => `${status}=${count}`).join('؛ ') || '(none)'}`);
 console.log(`گزارش ماشین‌خوان: ${path.relative(root, outputPath)}`);
