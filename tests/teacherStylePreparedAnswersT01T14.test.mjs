@@ -75,6 +75,10 @@ test('T01-T14: all 5,488 prepared answers use the same clear teacher-style daily
         assert.ok(answer.includes('**بیاییم قدم‌به‌قدم پیش برویم.**'), topic.id + ' day ' + guide.day + ' ' + question.kind + ' missing teacher-style frame');
         assert.ok(answer.includes('**هدف امروز:** ' + guide.objective), topic.id + ' day ' + guide.day + ' ' + question.kind + ' missing exact daily objective');
         assert.ok(answer.includes('مهارت «' + (guide.skill || guide.mechanism || guide.objective) + '»'), topic.id + ' day ' + guide.day + ' ' + question.kind + ' missing daily skill');
+        const frameMarker = 'هدف این است که دستور امروز را بفهمی و تا جایی که امن و شدنی است اجرا کنی.';
+        const frameIndex = answer.indexOf(frameMarker);
+        assert.ok(frameIndex >= 0, topic.id + ' day ' + guide.day + ' ' + question.kind + ' missing the common response frame marker');
+        assert.ok(answer.slice(frameIndex + frameMarker.length).trim().length > 20, topic.id + ' day ' + guide.day + ' ' + question.kind + ' must contain substantive day-specific guidance after the shared frame');
         if (question.kind === 'exercise_example') {
           if (guide.exerciseExample) assert.ok(answer.includes(guide.exerciseExample), topic.id + ' day ' + guide.day + ' missing its own exercise example');
           else assert.ok(answer.includes(question.answer), topic.id + ' day ' + guide.day + ' missing its prepared exercise example');
