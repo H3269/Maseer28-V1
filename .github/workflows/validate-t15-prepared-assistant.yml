@@ -1,0 +1,89 @@
+name: Validate T15 prepared assistant in Chromium
+
+on:
+  pull_request:
+    paths:
+      - 'src/features/assistant/GlobalAssistantLauncher.jsx'
+      - 'src/features/assistant/t15DailyAssistantPrompts.js'
+      - 'src/features/assistant/t15DailyAssistantGuide.v1.json'
+      - 'src/features/assistant/dailyAssistantSafetyReminder.js'
+      - 'tests/t15DailyAssistantPrompts.test.mjs'
+      - 'src/features/assistant/pageAssistantTurn.js'
+      - 'tests/browser/t15-prepared-assistant.mjs'
+      - '.github/workflows/validate-t15-prepared-assistant.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: t15-prepared-assistant-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  production-dependency-security-gate:
+    name: Production dependency security gate
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+      - name: Install dependencies
+        env:
+          ONNXRUNTIME_NODE_INSTALL: skip
+        run: npm ci
+      - name: Audit production runtime dependencies (blocking)
+        run: npm audit --omit=dev --audit-level=high
+      - name: Full dependency audit (development tooling advisory)
+        continue-on-error: true
+        run: npm audit --audit-level=high
+
+  t15-prepared-assistant:
+    name: Verify visible T15 prepared questions and day answer
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+      - name: Install dependencies
+        env:
+          ONNXRUNTIME_NODE_INSTALL: skip
+        run: npm ci
+      - name: Build application
+        run: |
+          PATH28_DEPLOY_BASE=/Maseer28/ npm run prepare:production
+          npm run build
+      - name: Start production preview
+        id: preview
+        run: |
+          nohup npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/t15-vite.log 2>&1 &
+          echo $! > /tmp/t15-vite.pid
+          attempt=1
+          while [ "$attempt" -le 30 ]; do
+            if curl --silent --fail http://127.0.0.1:4173/Maseer28/ > /dev/null; then
+              echo "T15 production preview is ready."
+              exit 0
+            fi
+            sleep 1
+            attempt=$((attempt + 1))
+          done
+          cat /tmp/t15-vite.log
+          exit 1
+      - name: Verify T15 prepared questions and day-specific answer in Chromium
+        env:
+          PATH28_BASE_URL: http://127.0.0.1:4173/Maseer28/
+        run: |
+          PLAYWRIGHT_NODE_PATH="$(npx --yes --package=playwright@1.55.0 -c 'dirname "$(dirname "$(command -v playwright)")"')"
+          NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/t15-prepared-assistant.mjs
