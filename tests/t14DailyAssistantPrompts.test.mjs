@@ -32,7 +32,7 @@ test('T14 five audited days keep distinct goal-specific mechanisms and all 70 an
   const expected = {
     1: ['نقشه یک هدف مشخص', 'نقشه‌برداری هدف‌محور'],
     2: ['تفکیک علاقه و وضوح هدف', 'تمایز علاقه و وضوح'],
-    16: ['پیش‌نیازهای عملی یک هدف', 'بررسی پیش‌نیاز هدف'],
+    16: ['روشن‌کردن وابستگی اطلاعاتی هدف', 'شفاف‌سازی وابستگی'],
     19: ['استخراج الگوی اجرای مؤثر', 'تحلیل شرایط اجرای هدف'],
     25: ['حمایت هدف‌محور برای مانع باقی‌مانده', 'درخواست حمایت هدف‌محور'],
   };
@@ -55,6 +55,11 @@ test('T14 five audited days keep distinct goal-specific mechanisms and all 70 an
     assert.ok(guide.questions.find((item) => item.kind === 'stop').answer.includes(guide.stopCondition));
     assert.ok(guide.questions.find((item) => item.kind === 'talk_other').answer.includes(guide.title));
   }
+  const day16 = T14_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 16);
+  assert.match(day16.exercise, /یک پرسش یا وابستگی اطلاعاتی\/تصمیمی/u);
+  assert.match(day16.exercise, /هزینه، فاصله، حمل‌ونقل/u);
+  assert.match(day16.action, /درخواست محدود و امن/u);
+  assert.doesNotMatch(day16.exercise, /پیش‌نیازهای عملی|ابزار عمومی یا وضعیت جسمی/u);
   const day19 = T14_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 19);
   assert.match(day19.exercise, /نشانه یا آماده‌سازی/u);
   assert.match(day19.exercise, /رفتار مشخص/u);
