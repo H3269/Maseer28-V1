@@ -117,3 +117,16 @@ test('T14 stop answers do not repeat the conditional marker',()=>{
     assert.doesNotMatch(stop,/تمرین را متوقف کن اگر:\\s*اگر/u,'day '+guide.day+' stop answer');
   }
 });
+
+
+test('T14 q11 distress answers give one clear stop/referral instruction without redundant restatement',()=>{
+  const day19=T14_DAILY_ASSISTANT_GUIDES.find(item=>item.day===19).questions.find(item=>item.kind==='motivation_distress').answer;
+  const day25=T14_DAILY_ASSISTANT_GUIDES.find(item=>item.day===25).questions.find(item=>item.kind==='motivation_distress').answer;
+  const day28=T14_DAILY_ASSISTANT_GUIDES.find(item=>item.day===28).questions.find(item=>item.kind==='motivation_distress').answer;
+  assert.doesNotMatch(day19,/اگر مرور تجربه گذشته.{0,90}اگر مرور تجربه گذشته/u);
+  assert.equal((day25.match(/ارزیابی پزشک یا متخصص سلامت روان/g)||[]).length,1);
+  assert.equal((day28.match(/حمایت حرفه‌ای مناسب/g)||[]).length,1);
+  assert.match(day19,/لازم نیست علت پنهانی پیدا کنی/u);
+  assert.match(day25,/این تمرین ابزار تشخیص یا درمان نیست/u);
+  assert.match(day28,/استراحت یا تغییر هدف نیز انتخاب معتبر است/u);
+});
