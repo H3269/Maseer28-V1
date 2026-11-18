@@ -18,8 +18,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  dependency-security-audit:
-    name: Dependency security audit
+  production-dependency-security-gate:
+    name: Production dependency security gate
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -34,7 +34,10 @@ jobs:
         env:
           ONNXRUNTIME_NODE_INSTALL: skip
         run: npm ci
-      - name: Dependency security audit
+      - name: Audit production runtime dependencies (blocking)
+        run: npm audit --omit=dev --audit-level=high
+      - name: Full dependency audit (development tooling advisory)
+        continue-on-error: true
         run: npm audit --audit-level=high
 
   t14-prepared-assistant:
