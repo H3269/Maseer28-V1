@@ -40,7 +40,7 @@ test('exercise knowledge keeps independent safety requirements', () => {
 test('exercise content with an explicit elevated safety requirement is not served as routine knowledge', () => {
   const exercise = item({
     content_type: 'exercise',
-    safety: { level: 'human_review_required', stop_conditions: ['در صورت خطر توقف کن.'] },
+    safety: { level: 'urgent_support_required', stop_conditions: ['در صورت خطر توقف کن.'] },
   });
   assert.equal(retrieveKnowledge({ query: 'نگرانی', items: [exercise] }).status, 'knowledge_unavailable');
 });
