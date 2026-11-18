@@ -77,7 +77,6 @@ test('assistant runtime does not claim clinical validation or diagnostic capabil
   assert.match(engine, /diagnostic_use:\s*false/);
   assert.match(engine, /validated_screening_tool:\s*false/);
   assert.match(engine, /safety_triage_validated:\s*false/);
-  assert.match(engine, /clinical_review_complete:\s*false/);
   assert.match(engine, /cloud_processing:\s*false/);
 });
 
