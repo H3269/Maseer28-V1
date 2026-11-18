@@ -231,3 +231,9 @@ test('T15 day 12 light adaptation uses its own behavioral-evidence focus', () =>
   assert.match(T15_DAILY_ASSISTANT_GUIDES[11].lightVersion, /کنش قابل مشاهده/);
   assert.match(T15_DAILY_ASSISTANT_GUIDES[11].progressVersion, /درخواست بازخورد دوم لازم نیست/);
 });
+
+
+test('T15 day 17 light action stays distinct from support-seeking day 25', () => {
+  assert.match(T15_DAILY_ASSISTANT_GUIDES[16].lightActionVersion, /ابزار یا دسترسی/);
+  assert.doesNotMatch(T15_DAILY_ASSISTANT_GUIDES[16].lightActionVersion, /منبع کمک/);
+});
