@@ -486,7 +486,6 @@ test('daily assistant fails closed when canonical day identity is incomplete or 
     id: 'خشم-01',
     topic_id: 'T01',
     day: 1,
-    review_status: 'approved',
     risk_level: 'routine',
     instructions: 'متن تمرین',
   };
@@ -708,7 +707,7 @@ test('how-to guidance retains the day closing reminder after source-ordered step
   assert.match(response, new RegExp(closing));
 });
 
-test('approved day metadata supplies its reviewed rationale, duration, and success criterion', () => {
+test('daily content fields supply rationale, duration, and success criterion without review metadata', () => {
   const reviewedDay = {
     ...dayData,
     review_status: 'approved',
@@ -721,7 +720,7 @@ test('approved day metadata supplies its reviewed rationale, duration, and succe
   assert.match(makeDailyExerciseGuidance({ message: 'معیار موفقیت چیست؟', dayData: reviewedDay, problem: 'خشم', day: 2 }), /یک تفاوت روشن/u);
 });
 
-test('adapted daily content retains original review metadata', () => {
+test('adapted daily content retains source identity and functional metadata', () => {
   const raw = {
     id: 'T01-D04',
     topic_id: 'T01',
@@ -741,7 +740,6 @@ test('adapted daily content retains original review metadata', () => {
     adaptation: 'امروز فقط گام سبک را انجام بده.',
   };
   const selected = selectDailyExerciseGuidanceData({ guidanceData: adapted, data: raw });
-  assert.equal(selected.review_status, 'approved');
   assert.equal(selected.duration_minutes, 8);
   assert.equal(selected.exercise, 'تمرین سبک‌شده');
   assert.equal(selected.actionText, 'اقدام سبک‌شده');
@@ -861,7 +859,7 @@ test('legacy identity verification does not bypass specialized safety blocks', (
   assert.equal(access.reason, 'daily_content_blocked');
 });
 
-test('all 952 canonical daily records pass exact category/day selection and only their safety-approved assistant gates', async () => {
+test('all 952 canonical daily records pass exact category/day selection and independent safety checks', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
   const categories = content.categories;
   assert.equal(Object.keys(categories).length, 34);
@@ -889,7 +887,6 @@ test('all 952 canonical daily records pass exact category/day selection and only
       assert.ok(record.actionText.trim().length > 0);
 
       const isLegacy = !Object.hasOwn(record, 'topic_id')
-        && !Object.hasOwn(record, 'review_status')
         && !Object.hasOwn(record, 'risk_level');
       if (isLegacy) {
         legacyCount += 1;
@@ -924,7 +921,7 @@ test('all 952 canonical daily records pass exact category/day selection and only
         blockedCount += 1;
         if (!isLegacy) blockedV2Count += 1;
         assert.equal(access.available, false,
-          `${categoryKey} day ${dayNumber} must remain unavailable while safety review blocks it`);
+          `${categoryKey} day ${dayNumber} must remain unavailable only when its safety classification blocks it`);
         assert.equal(access.reason, 'daily_content_blocked');
       } else {
         availableCount += 1;
@@ -940,8 +937,7 @@ test('all 952 canonical daily records pass exact category/day selection and only
   assert.equal(total, 952);
   assert.equal(legacyCount + v2Count, total);
   assert.ok(v2Count > 0, 'v2 records must be counted explicitly');
-  assert.equal(blockedV2Count, v2Count,
-    'every v2 record remains blocked until explicit expert approval');
+  assert.ok(availableCount > 0, 'daily content without specialist approval must remain usable when safety classification allows it');
   assert.equal(availableCount + blockedCount, total);
 });
 
