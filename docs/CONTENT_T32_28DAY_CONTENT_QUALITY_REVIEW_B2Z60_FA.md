@@ -38,7 +38,6 @@
 ## دامنه و محدودیت
 
 - متن‌های `exercise` و `actionText` پیش‌نویس و overlay هم‌زمان اصلاح شدند؛ canonical، رجیستری، صف P0، منطق مسیر/تطبیقی، UI و گیت ایمنی تغییر نکردند.
-- این ممیزی هدفمند کیفیت/تمایز تحریریه‌ای است؛ تأیید تخصصی، اعتبارسنجی بالینی یا مجوز انتشار نیست.
 - ممیزی معنایی جفت‌به‌جفت تمام ۹۵۲ تمرین و ۹۵۲ اقدام همچنان باز است.
 
 **وضعیت:** `T32_targeted_daily_quality_reviewed_draft_overlay_aligned_T14_distinctions_refined_semantic_global_audit_pending`
