@@ -12,15 +12,15 @@
   "questionsPerDay": 14,
   "expectedPreparedAnswers": 392,
   "status": "draft_implemented_ci_pending",
-  "contentStatus": "28/28 exercise and action plus title, intro, closing and adaptation fields synchronized in overlay; cross-topic exact duplicate screen found none; semantic review pending",
-  "subtopicMappingStatus": "draft and pending expert review; T15-S03 assignments on days 4, 24, 25 require differential-routing review",
-  "assistantStatus": "28 day guides and 392 distinct prepared-answer strings drafted; runtime routing connected; semantic review and CI pending",
+  "contentStatus": "15-field 28-day source and 10 overlay fields synchronized; zero >=0.30 lexical overlaps across 8 core/adaptation fields in cross-topic and within-topic screen; specialist review pending",
+  "subtopicMappingStatus": "T15-S03 removed from intervention mapping on days 4/24; day 25 is support/referral gate; day 26 mapped provisionally to T15-S02",
+  "assistantStatus": "28 day guides and 392 unique prepared-answer strings; answer uniqueness and page routing structurally checked; CI rerun pending",
   "safetyStatus": "inherit global immediate-danger gate; add T15-specific non-blaming, anti-coercion, and cross-topic routing checks",
   "tests": {
-    "unit": "created_pending_CI",
-    "packageValidation": "pending_PR",
-    "chromium": "created_pending_CI",
-    "fullValidation": "pending_PR_label",
+    "unit": "package-scoped passed on prior SHA; latest semantic-screen test pending CI",
+    "packageValidation": "prior package-scoped pass; latest full 34-topic validation rerun pending",
+    "chromium": "passed on prior SHA; latest content-only rerun pending",
+    "fullValidation": "prior run exposed 2 cross-topic adaptation overlaps; both corrected; rerun pending",
     "ownerLiveTest": "not_started"
   },
   "ownerApproval": {
@@ -33,6 +33,8 @@
     "Do not claim expert approval or evidence grade without traceable review/source.",
     "Current T15 overlay contains only day/exercise/actionText. Canonical title, intro, closing and adaptation fields do not yet match the redesign draft.",
     "392 unique answer strings are a structural check, not proof of semantic uniqueness or specialist approval.",
-    "A brief accidental main-branch test-file write was immediately corrected by deleting both files; current main tree contains no T15 package files. See execution audit."
+    "A brief accidental main-branch test-file write was immediately corrected by deleting both files; current main tree contains no T15 package files. See execution audit.",
+    "T15 source now carries 15 structured fields per day, including 3 independent action adaptation variants.",
+    "Current lexical similarity gate reports zero >=0.30 overlaps for 8 text fields both cross-topic and within T15; this is a screening heuristic, not clinical approval."
   ]
 }
