@@ -9,7 +9,7 @@ const knowledge = [{
   content: 'اضطراب می‌تواند با نگرانی درباره آینده و موقعیت‌های نامطمئن همراه باشد. این متن آموزشی است و تشخیص محسوب نمی‌شود.',
   topic_ids: ['T02'],
   content_type: 'education',
-  source: { source_id: 'SRC-T02-001', title: 'منبع آموزشی تأییدشده', locator: 'approved/education/t02#intro' },
+  source: { source_id: 'SRC-T02-001', title: 'منبع آموزشی', locator: 'education/t02#intro' },
 }];
 
 test('safety gate runs before knowledge retrieval', () => {
@@ -113,7 +113,7 @@ test('first-person impact markers count as explicit personal context for strateg
 });
 
 
-test('runtime uses the repository knowledge catalog without an approval manifest', () => {
+test('runtime uses the source-linked repository knowledge catalog', () => {
   const result = routeAssistantTurn({ text: 'اضطراب چیست؟' });
   assert.equal(result.status, 'knowledge_unavailable');
   assert.equal(result.retrieval_status, 'knowledge_unavailable');
