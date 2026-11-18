@@ -84,7 +84,7 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
 
   switch (question.kind) {
     case 'exercise_meaning':
-      body += `\n\n${section('مهارت امروز', guide.skill)}\n${section('منطق آموزشی', guide.mechanism)}\n${section('معیار کافی‌بودن', guide.successCriterion)}\n${section('پرسش بازتاب', guide.reflectionQuestion)}`;
+      body += `\n\n${section('تمرین مشخص امروز', exercise)}\n${section('مهارت امروز', guide.skill)}\n${section('منطق آموزشی', guide.mechanism)}\n${section('معیار کافی‌بودن', guide.successCriterion)}\n${section('پرسش بازتاب', guide.reflectionQuestion)}`;
       break;
     case 'exercise_example':
       body += `\n\n${section('تمرین واقعی همین روز', exercise)}\n\nمثال فقط برای روشن‌شدن شیوه توصیف است؛ لازم نیست رفتاری را عمداً ایجاد، تکرار یا تحریک کنی.`;
@@ -108,7 +108,7 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
       body += `\n\nاگر نمونه‌ای به‌طور طبیعی در دسترس نیست، برای تکمیل برنامه موقعیت یا رفتار تازه نساز.\n${section('نسخه سبک یا جایگزین استراحت', restAction || lightExercise)}`;
       break;
     case 'exercise_action_difference':
-      body += `\n\n${section('مهارت مورد توجه', guide.skill)}\n${section('هدف آموزشی روز', guide.objective)}\n\nتوصیف یا مرور، تعهدی برای تغییر، سرکوب یا حذف رفتار ایجاد نمی‌کند.`;
+      body += `\n\n${section('تمرین مشخص امروز', exercise)}\n${section('اقدام اختصاصی امروز', actionWithoutDisplayPrefix)}\n${section('مهارت مورد توجه', guide.skill)}\n${section('هدف آموزشی روز', guide.objective)}\n\nتوصیف یا مرور، تعهدی برای تغییر، سرکوب یا حذف رفتار ایجاد نمی‌کند.`;
       break;
     case 'not_done':
       body += `\n\n${section('نسخه سبک در صورت تمایل', lightExercise)}\n${section('اگر امروز نیاز به استراحت داری', restAction)}\n\nروز ازدست‌رفته را جبران نکن و برای انجام تمرین به خودت فشار نیاور.`;
