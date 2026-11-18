@@ -3,7 +3,6 @@
   "package_id": "T10",
   "topic_id": "T10",
   "topic_name": "بی‌خوابی و مشکلات خواب",
-  "status": "draft_not_runtime_eligible",
   "mapping_note": "Daily subtopic IDs are proposed only; registry definitions and day-level mapping are pending qualified human review. Do not use as confirmed routing metadata.",
   "source_document": "docs/T10_SLEEP_DIFFICULTIES_28DAY_REDESIGN_DRAFT_B2_DB_FA.md",
   "daily_unit_contract": "v2",
@@ -16,7 +15,6 @@
         "T10-S02",
         "T10-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 1,
       "title": "نقشه مشکل خواب",
       "learning_objective": "تعیین نوع دشواری",
@@ -46,7 +44,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر مشکل با خفگی، وقفه تنفسی، خواب‌آلودگی خطرناک یا علامت جدید همراه است، به ثبت اکتفا نکن و ارزیابی پزشکی بگیر.",
       "contraindications": [
@@ -62,7 +59,6 @@
         "T10-S01",
         "T10-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 2,
       "title": "فرصت خواب در برابر ناتوانی در خواب",
       "learning_objective": "بررسی زمان در دسترس",
@@ -92,7 +88,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر فرصت خواب به‌علت شیفت، مراقبت یا ناامنی محیط محدود است، آن را بی‌خوابی یا ضعف اراده تلقی نکن؛ راهکار باید با محدودیت واقعی سازگار باشد.",
       "contraindications": [
@@ -108,7 +103,6 @@
         "T10-S01",
         "T10-S02"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 3,
       "title": "ثبت الگوی خواب بدون وسواس",
       "learning_objective": "مشاهده زمان‌ها",
@@ -138,7 +132,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر ثبت زمان‌ها به ساعت‌نگری یا اضطراب بیشتر تبدیل شد، فوراً ثبت را متوقف کن.",
       "contraindications": [
@@ -153,7 +146,6 @@
       "subtopic_ids": [
         "T10-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 4,
       "title": "نشانه‌های روزانه و خواب‌آلودگی",
       "learning_objective": "تمایز خستگی از خواب‌آلودگی",
@@ -182,7 +174,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "در خواب‌آلودگی هنگام رانندگی یا کار با ابزار، فعالیت را متوقف و گزینه ایمن انتخاب کن؛ کافئین جای خواب یا ارزیابی را نمی‌گیرد.",
       "contraindications": [
@@ -197,7 +188,6 @@
       "subtopic_ids": [
         "T10-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 5,
       "title": "محرک‌ها و عوامل زمینه‌ای",
       "learning_objective": "شناخت الگو بدون تشخیص علت",
@@ -227,7 +217,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "دارو، الکل، نیکوتین یا ماده وابستگی‌آور را ناگهانی قطع یا جابه‌جا نکن؛ درباره تغییر با متخصص مشورت کن.",
       "contraindications": [
@@ -242,7 +231,6 @@
       "subtopic_ids": [
         "T10-S01"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 6,
       "title": "نیاز و انتظار واقع‌بینانه",
       "learning_objective": "کاهش فشار عملکرد",
@@ -272,7 +260,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر انتظار عددی باعث محدودکردن عمدی خواب یا فشار شدید شد، آن را کنار بگذار؛ نیاز خواب فردی است.",
       "contraindications": [
@@ -287,7 +274,6 @@
       "subtopic_ids": [
         "T10-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 7,
       "title": "هدف رفتاری متناسب",
       "learning_objective": "انتخاب تغییر کوچک",
@@ -316,7 +302,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر هدف رفتاری به محرومیت از خواب یا اجبار به بیدارماندن تبدیل شد، اجرا نکن.",
       "contraindications": [
@@ -331,7 +316,6 @@
       "subtopic_ids": [
         "T10-S02"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 8,
       "title": "ثبات زمان برخاستن در حد امکان",
       "learning_objective": "تنظیم نشانه روزانه",
@@ -361,7 +345,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "زمان برخاستن را برای جبران خواب کوتاه نکن؛ در خواب‌آلودگی شدید ایمنی را مقدم بدان.",
       "contraindications": [
@@ -376,7 +359,6 @@
       "subtopic_ids": [
         "T10-S02"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 9,
       "title": "نور و فعالیت روزانه",
       "learning_objective": "توجه به نشانه‌های روز",
@@ -406,7 +388,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر نور یا فعالیت با بیماری چشم، دارو یا توصیه پزشکی تعارض دارد، آن را اجرا نکن و راهنمایی تخصصی بگیر.",
       "contraindications": [
@@ -421,7 +402,6 @@
       "subtopic_ids": [
         "T10-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 10,
       "title": "محیط خواب",
       "learning_objective": "کاهش مزاحمت قابل‌کنترل",
@@ -451,7 +431,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر تغییر محیطی ایمنی، دمای مناسب یا دسترسی ضروری را مختل می‌کند، آن را متوقف کن.",
       "contraindications": [
@@ -466,7 +445,6 @@
       "subtopic_ids": [
         "T10-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 11,
       "title": "آیین آرام‌سازی پیش از خواب",
       "learning_objective": "ساخت توالی کوتاه",
@@ -495,7 +473,6 @@
         "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر آرام‌سازی اضطراب را بیشتر می‌کند، آن را کنار بگذار؛ تمرین تنفسی اجباری یا حبس نفس انجام نده.",
       "contraindications": [
@@ -510,7 +487,6 @@
       "subtopic_ids": [
         "T10-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 12,
       "title": "کافئین و مواد اثرگذار",
       "learning_objective": "مشاهده زمان مصرف",
@@ -540,7 +516,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "در صورت وابستگی به الکل/نیکوتین یا مصرف داروی تجویزی، تغییر مصرف را بدون ارزیابی مناسب انجام نده.",
       "contraindications": [
@@ -555,7 +530,6 @@
       "subtopic_ids": [
         "T10-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 13,
       "title": "داروها و وضعیت جسمی",
       "learning_objective": "تشخیص مرز خودیاری",
@@ -585,7 +559,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "هیچ دارویی را شروع، قطع یا جابه‌جا نکن؛ علائم جدید یا شدید را با پزشک/داروساز در میان بگذار.",
       "contraindications": [
@@ -600,7 +573,6 @@
       "subtopic_ids": [
         "T10-S01"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 14,
       "title": "چرخه نگرانی درباره خواب",
       "learning_objective": "کاهش ساعت‌نگری و فشار",
@@ -629,7 +601,6 @@
         "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر کاهش ساعت‌نگری با پایش ضروری دارویی، ایمنی یا تعهد زمانی تداخل دارد، آن را اجرا نکن؛ برنامه را با متخصص هماهنگ کن.",
       "contraindications": [
@@ -644,7 +615,6 @@
       "subtopic_ids": [
         "T10-S01"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 15,
       "title": "بیداری طولانی در بستر",
       "learning_objective": "پاسخ آرام و ایمن",
@@ -673,7 +643,6 @@
         "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر خروج از بستر به‌علت خطر افتادن، ناتوانی حرکتی یا شرایط محیطی ناامن است، آن را انجام نده و جایگزین ایمن انتخاب کن.",
       "contraindications": [
@@ -688,7 +657,6 @@
       "subtopic_ids": [
         "T10-S02"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 16,
       "title": "چرت روزانه و زمان‌بندی",
       "learning_objective": "مشاهده اثر چرت",
@@ -718,7 +686,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر چرت برای ایمنی یا شرایط پزشکی لازم است، آن را صرفاً برای بهبود خواب شب حذف نکن.",
       "contraindications": [
@@ -733,7 +700,6 @@
       "subtopic_ids": [
         "T10-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 17,
       "title": "بازگشت پس از شب دشوار",
       "learning_objective": "جلوگیری از جبران افراطی",
@@ -762,7 +728,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "در خواب‌آلودگی رانندگی نکن و با مصرف خودسرانه دارو/الکل بیداری را جبران نکن؛ کمک یا جایگزین امن بگیر.",
       "contraindications": [
@@ -777,7 +742,6 @@
       "subtopic_ids": [
         "T10-S01"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 18,
       "title": "فکرهای نگران‌کننده",
       "learning_objective": "ثبت نگرانی و زمان رسیدگی",
@@ -806,7 +770,6 @@
         "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "نگرانی فوری، خطر واقعی یا علائم شدید را به زمان برنامه‌ریزی‌شده موکول نکن.",
       "contraindications": [
@@ -821,7 +784,6 @@
       "subtopic_ids": [
         "T10-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 19,
       "title": "تمرین یک تغییر کوچک",
       "learning_objective": "ارزیابی بدون چند تغییر هم‌زمان",
@@ -850,7 +812,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر تغییر باعث بدترشدن محسوس خواب یا عملکرد شد، آن را متوقف و با متخصص مشورت کن.",
       "contraindications": [
@@ -865,7 +826,6 @@
       "subtopic_ids": [
         "T10-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 20,
       "title": "ثبت روند و کارکرد روزانه",
       "learning_objective": "نگاه فراتر از ساعت خواب",
@@ -895,7 +855,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر ثبت به وسواس یا خودتشخیصی تبدیل شد، آن را کنار بگذار؛ ابزار پوشیدنی معیار تشخیص قطعی نیست.",
       "contraindications": [
@@ -910,7 +869,6 @@
       "subtopic_ids": [
         "T10-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 21,
       "title": "مانع بیرونی یا پزشکی",
       "learning_objective": "تشخیص نیاز به کمک",
@@ -940,7 +898,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "وقفه تنفسی، درد، مشکل دارویی یا خواب‌آلودگی شدید را به عادت رفتاری تقلیل نده؛ ارزیابی پزشکی لازم است.",
       "contraindications": [
@@ -955,7 +912,6 @@
       "subtopic_ids": [
         "T10-S01"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 22,
       "title": "نقشه شب دشوار",
       "learning_objective": "آماده‌سازی پاسخ کم‌فشار برای شبی که خواب دشوار می‌شود",
@@ -984,7 +940,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "از الکل یا داروی بدون تجویز برای خواب استفاده نکن؛ در خطر فوری یا علائم هشدار، برنامه را کنار بگذار و کمک بگیر.",
       "contraindications": [
@@ -999,7 +954,6 @@
       "subtopic_ids": [
         "T10-S02"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 23,
       "title": "نشانه گذار به زمان استراحت",
       "learning_objective": "انتخاب یک نشانه واقع‌بینانه برای گذار از فعالیت به استراحت",
@@ -1029,7 +983,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "ثبات نشانه نباید به اجبار، محرومیت از خواب یا نادیده‌گرفتن شیفت و مراقبت تبدیل شود.",
       "contraindications": [
@@ -1044,7 +997,6 @@
       "subtopic_ids": [
         "T10-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 24,
       "title": "حمایت و هماهنگی محیط",
       "learning_objective": "درخواست تغییر عملی",
@@ -1074,7 +1026,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر درخواست مستقیم خطر خشونت یا تلافی دارد، مطرح نکن؛ از منبع امن برای برنامه‌ریزی کمک بگیر.",
       "contraindications": [
@@ -1089,7 +1040,6 @@
       "subtopic_ids": [
         "T10-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 25,
       "title": "علائم هشدار و مراجعه",
       "learning_objective": "تشخیص حدود برنامه",
@@ -1120,7 +1070,6 @@
         "SRC-SLEEP-NIMH-BIPOLAR-SIGNS-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "وقفه تنفسی، خفگی شبانه، خواب‌آلودگی خطرناک، حملات خواب یا کاهش غیرمعمول نیاز به خواب همراه تغییر چشمگیر انرژی/فعالیت نیازمند ارزیابی پزشکی‌اند؛ رانندگی خواب‌آلود ممنوع است.",
       "contraindications": [
@@ -1135,7 +1084,6 @@
       "subtopic_ids": [
         "T10-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 26,
       "title": "اقدام همسو با سلامت و ایمنی",
       "learning_objective": "انتخاب رفتار پایدار",
@@ -1164,7 +1112,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر خواب‌آلودگی وجود دارد رانندگی یا کار خطرناک نکن؛ تمرین را برای اثبات توانایی ادامه نده.",
       "contraindications": [
@@ -1179,7 +1126,6 @@
       "subtopic_ids": [
         "T10-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 27,
       "title": "برنامه نگهداری و پیگیری",
       "learning_objective": "تعیین مسیر بعدی",
@@ -1209,7 +1155,6 @@
         "SRC-SLEEP-AASM-CBTI-2021-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "در صورت تداوم اختلال یا افت عملکرد، پیگیری حرفه‌ای را عقب نینداز؛ این برنامه جای درمان یا تشخیص نیست.",
       "contraindications": [
@@ -1224,7 +1169,6 @@
       "subtopic_ids": [
         "T10-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 28,
       "title": "مرور و تصمیم بعدی",
       "learning_objective": "جمع‌بندی بدون ادعای درمان",
@@ -1253,7 +1197,6 @@
         "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001"
       ],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DB_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر مرور باعث فشار یا خودتشخیصی شد، متوقف کن؛ نتیجه را درمان قطعی تلقی نکن.",
       "contraindications": [
