@@ -148,10 +148,6 @@ export function answerPageAssistantQuestion({ screen, message, libraryContext } 
 
   const topicRows = Array.isArray(topicRegistry.topics) ? topicRegistry.topics : [];
   const subtopicRows = Array.isArray(subtopicRegistry.subtopics) ? subtopicRegistry.subtopics : [];
-  const registryIsDraft = topicRegistry.registry_status !== 'active'
-    || subtopicRegistry.registry_status !== 'active'
-    || topicRows.some((topic) => topic.review_status !== 'approved');
-
   const asksSubtopics = /(?:زیر ?موضوع|زیرموضوع|زیر موضوع)/u.test(text)
     && /(?:چیست|چیستند|کدام|چه|فهرست|دار[یی]د|هست)/u.test(text);
   if (asksSubtopics) {
@@ -168,7 +164,7 @@ export function answerPageAssistantQuestion({ screen, message, libraryContext } 
         const reviewNote = registryIsDraft
           ? '\\n\\nوضعیت اعتبار: این فهرست پیش‌نویس است و زیرموضوع‌ها هنوز بازبینی تخصصی و تأیید نهایی نشده‌اند؛ نام‌ها را نباید تعریف یا تشخیص قطعی تلقی کرد.'
           : '';
-        return `زیرموضوع‌های ثبت‌شده برای «${matchedTopic.name}»:\\n${names.map((name, index) => (index + 1) + ') ' + name).join('\\n')}${reviewNote}`;
+        return `زیرموضوع‌های ثبت‌شده برای «${matchedTopic.name}»:\\n${names.map((name, index) => (index + 1) + ') ' + name).join('\\n')}`;
       }
     }
   }
@@ -181,7 +177,7 @@ export function answerPageAssistantQuestion({ screen, message, libraryContext } 
     const reviewNote = registryIsDraft
       ? '\\n\\nنکته مهم: این‌ها نام‌های ثبت‌شده در فهرست پیش‌نویس اپ هستند. رجیستری هنوز در وضعیت نیازمند بازبینی تخصصی است؛ بنابراین این فهرست به‌معنای تأیید علمی تعریف‌ها یا مناسب‌بودن هر موضوع برای همه افراد نیست.'
       : '';
-    return `فهرست موضوعات ثبت‌شده مسیر۲۸ (${names.length} مورد):\\n${names.map((name, index) => (index + 1) + ') ' + name).join('\\n')}${reviewNote}`;
+    return `فهرست موضوعات ثبت‌شده مسیر۲۸ (${names.length} مورد):\\n${names.map((name, index) => (index + 1) + ') ' + name).join('\\n')}`;
   }
 
   if (screen === 'books' && /(?:چه کتاب(?: هایی|‌هایی)|فهرست کتاب|لیست کتاب|کتاب(?: های|‌های) موجود|چه کتابی داریم)/u.test(text)) {
