@@ -81,7 +81,7 @@ test('assistant runtime does not claim clinical validation or diagnostic capabil
   assert.match(engine, /cloud_processing:\s*false/);
 });
 
-test('production publication does not depend on specialist approval metadata', () => {
+test('production publication does not depend on review metadata', () => {
   assert.doesNotMatch(publishWorkflow, /assert:production-content|Require expert approval/);
   assert.match(publishWorkflow, /npm run prepare:production/);
 });
