@@ -112,7 +112,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 5,
     "durationStatus": "provisional_estimate",
     "exerciseType": "behavior_specific_observation",
@@ -240,7 +239,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 5,
     "durationStatus": "provisional_estimate",
     "exerciseType": "fact_interpretation_separation",
@@ -368,7 +366,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 10,
     "durationStatus": "provisional_estimate",
     "exerciseType": "responsibility_appraisal",
@@ -497,7 +494,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 5,
     "durationStatus": "provisional_estimate",
     "exerciseType": "somatic_self_observation",
@@ -624,7 +620,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 5,
     "durationStatus": "provisional_estimate",
     "exerciseType": "cognitive_reframing",
@@ -752,7 +747,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 7,
     "durationStatus": "provisional_estimate",
     "exerciseType": "values_clarification",
@@ -879,7 +873,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 10,
     "durationStatus": "provisional_estimate",
     "exerciseType": "problem_solving",
@@ -1007,7 +1000,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 10,
     "durationStatus": "provisional_estimate",
     "exerciseType": "structured_cognitive_review",
@@ -1135,7 +1127,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 5,
     "durationStatus": "provisional_estimate",
     "exerciseType": "rumination_interruption",
@@ -1263,7 +1254,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 10,
     "durationStatus": "provisional_estimate",
     "exerciseType": "corrective_action_planning",
@@ -1391,7 +1381,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 5,
     "durationStatus": "provisional_estimate",
     "exerciseType": "self_punishment_monitoring",
@@ -1519,7 +1508,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 5,
     "durationStatus": "provisional_estimate",
     "exerciseType": "support_resource_selection",
@@ -1647,7 +1635,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 5,
     "durationStatus": "provisional_estimate",
     "exerciseType": "uncertainty_tolerance",
@@ -1774,7 +1761,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 10,
     "durationStatus": "provisional_estimate",
     "exerciseType": "rumination_cycle_mapping",
@@ -1902,7 +1888,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 10,
     "durationStatus": "provisional_estimate",
     "exerciseType": "apology_draft_review",
@@ -2031,7 +2016,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 7,
     "durationStatus": "provisional_estimate",
     "exerciseType": "contextual_barrier_analysis",
@@ -2158,7 +2142,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 10,
     "durationStatus": "provisional_estimate",
     "exerciseType": "relapse_pattern_review",
@@ -2286,7 +2269,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 7,
     "durationStatus": "provisional_estimate",
     "exerciseType": "perspective_taking",
@@ -2414,7 +2396,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 10,
     "durationStatus": "provisional_estimate",
     "exerciseType": "scenario_rehearsal",
@@ -2542,7 +2523,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 7,
     "durationStatus": "provisional_estimate",
     "exerciseType": "behavioral_change_tracking",
@@ -2670,7 +2650,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 10,
     "durationStatus": "provisional_estimate",
     "exerciseType": "problem_solving",
@@ -2797,11 +2776,10 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 15,
     "durationStatus": "provisional_estimate",
     "exerciseType": "safety_planning",
-    "riskLevel": "human_review_required",
+    "riskLevel": "urgent_support_required",
     "sourceIds": [
       "SRC-GUILT-CFT-2025-001",
       "SRC-GUILT-WANG-2026-001"
@@ -2925,7 +2903,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 10,
     "durationStatus": "provisional_estimate",
     "exerciseType": "habit_design",
@@ -3052,7 +3029,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 10,
     "durationStatus": "provisional_estimate",
     "exerciseType": "consent_based_decision",
@@ -3181,11 +3157,10 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 15,
     "durationStatus": "provisional_estimate",
     "exerciseType": "risk_assessment",
-    "riskLevel": "human_review_required",
+    "riskLevel": "urgent_support_required",
     "sourceIds": [
       "SRC-ANGER-WHO-IPV-2013-001",
       "SRC-GUILT-WANG-2026-001",
@@ -3310,7 +3285,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 10,
     "durationStatus": "provisional_estimate",
     "exerciseType": "values_based_action",
@@ -3439,7 +3413,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 10,
     "durationStatus": "provisional_estimate",
     "exerciseType": "relapse_prevention",
@@ -3567,7 +3540,6 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
         "kind": "duration"
       }
     ],
-    "subtopicStatus": "proposed_pending_expert_review",
     "durationMinutes": 15,
     "durationStatus": "provisional_estimate",
     "exerciseType": "maintenance_planning",
