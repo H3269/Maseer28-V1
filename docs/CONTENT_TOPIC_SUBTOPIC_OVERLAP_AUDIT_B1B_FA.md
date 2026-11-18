@@ -2,7 +2,7 @@
 
 **تاریخ:** 2026-11-06  
 **وضعیت:** بررسی ساختاری/مفهومی اولیه؛ همه موارد پیشنهادی نیازمند بررسی محتوای ۲۸ روز و بازبینی متخصص‌اند.  
-**منابع داخلی:** `topics.v1.json`, `subtopics.v1.json`, `topic-definitions-draft.v1.json`, `relations.v1.json` و داده canonical مسیر ۲۸.  
+**منابع داخلی:** `topics.v1.json`, `subtopics.v1.json`, `topic-definitions.v1.json`, `relations.v1.json` و داده canonical مسیر ۲۸.  
 **محدودیت:** هیچ موضوعی در این مرحله حذف، ادغام، اضافه یا بازتعریف اجرایی نشده است.
 
 ## 1. وضعیت رجیستری
