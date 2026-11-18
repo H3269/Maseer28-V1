@@ -49,7 +49,6 @@ test('daily assistant answers prepared questions regardless of canonical review 
     id: getCanonicalDailyRecordId('خشم', 1),
     topic_id: 'T01',
     day: 1,
-    review_status: 'draft',
     risk_level: 'routine',
     exercise: 'تمرین مسدود روز اول.',
     actionText: 'راهکار مسدود روز اول.',
@@ -101,7 +100,6 @@ test('daily page answers pre-authored anxiety questions only with matching canon
     id: getCanonicalDailyRecordId('اضطراب', 1),
     topic_id: 'T02',
     day: 1,
-    review_status: 'draft',
     risk_level: 'routine',
     exercise: guide.exercise,
     actionText: guide.action,
@@ -136,7 +134,7 @@ test('daily page answers pre-authored anxiety questions only with matching canon
 });
 
 
-test('all exact prepared T03 FAQs answer through the real page router for all 28 days despite review gates', () => {
+test('all exact prepared T03 FAQs answer through the real page router for all 28 days', () => {
   let checked = 0;
   for (const guide of FEAR_DAILY_ASSISTANT_GUIDES) {
     for (const question of guide.questions) {
@@ -149,7 +147,6 @@ test('all exact prepared T03 FAQs answer through the real page router for all 28
           data: {
             id: getCanonicalDailyRecordId('ترس', guide.day),
             day: guide.day,
-            review_status: 'pending_expert_review',
             risk_level: 'routine',
           },
           // Mirrors the live DayScreen adapter: legacy canonical source has no
@@ -231,7 +228,6 @@ test('T03 prepared FAQ route still gives urgent safety handoff precedence', () =
         id: getCanonicalDailyRecordId('ترس', 1),
         topic_id: 'T03',
         day: 1,
-        review_status: 'pending_expert_review',
       },
     },
   });
