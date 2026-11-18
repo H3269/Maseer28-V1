@@ -59,7 +59,7 @@ test('T14 five audited days keep distinct goal-specific mechanisms and all 70 an
   assert.match(day16.exercise, /یک پرسش یا وابستگی اطلاعاتی\/تصمیمی/u);
   assert.match(day16.exercise, /هزینه، فاصله، حمل‌ونقل/u);
   assert.match(day16.action, /درخواست محدود و امن/u);
-  assert.doesNotMatch(day16.exercise, /پیش‌نیازهای عملی|ابزار عمومی یا وضعیت جسمی/u);
+  assert.match(day16.exercise, /هزینه، فاصله، حمل‌ونقل، ساعت دسترسی، ابزار عمومی یا وضعیت جسمی و خواب را در این تمرین ارزیابی نکن/u);
   const day19 = T14_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 19);
   assert.match(day19.exercise, /نشانه یا آماده‌سازی/u);
   assert.match(day19.exercise, /رفتار مشخص/u);
