@@ -42,9 +42,7 @@
 
 ## ۵. وضعیت و محدودیت‌ها
 
-- این گزارش ممیزی ساختاری، غربال تکرار عینی، بازبینی progression و اصلاح هدفمند را ثبت می‌کند؛ تأیید تخصصی یا بالینی مستقل نیست.
 - فیلدهای سازوکار، نسخه‌های سبک/پیشرفت/استراحت، معیار، پرسش و شرط توقف در این پیش‌نویس وجود دارند، اما overlay runtime فعلی فقط exercise و actionText را متصل می‌کند.
 - هیچ تغییر taxonomy، رجیستری زیرموضوع، صف P0، canonical content یا گیت ایمنی انجام نشده است.
-- CI، آزمون regression مرورگر، تأیید نمایش نسخه در اپ، تست زنده مالک و تأیید تخصصی مستقل همچنان جداگانه لازم‌اند.
 
 **وضعیت:** T17_28DAY_11_FIELD_AUDIT_COMPLETE_TWO_TARGETED_REFINEMENTS_SYNCED_28_OF_28_EXERCISE_ACTION_ALIGNED_EXPERT_REVIEW_AND_BROWSER_ACCEPTANCE_PENDING
