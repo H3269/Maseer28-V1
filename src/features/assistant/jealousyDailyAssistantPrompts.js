@@ -88,7 +88,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -194,7 +194,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -300,7 +300,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -406,7 +406,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -512,7 +512,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -618,7 +618,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -724,7 +724,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -830,7 +830,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -936,7 +936,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -1042,7 +1042,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -1148,7 +1148,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -1254,7 +1254,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -1360,7 +1360,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -1466,7 +1466,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -1572,7 +1572,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -1678,7 +1678,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -1784,7 +1784,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -1890,7 +1890,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -1996,7 +1996,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -2102,7 +2102,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -2208,7 +2208,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -2314,7 +2314,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -2420,7 +2420,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -2526,7 +2526,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -2632,7 +2632,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -2738,7 +2738,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -2844,7 +2844,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
@@ -2950,7 +2950,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
         "id": "q11",
         "label": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
         "value": "اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟",
-        "kind": "hostility_increased"
+        "kind": "jealousy_increased"
       },
       {
         "id": "q12",
