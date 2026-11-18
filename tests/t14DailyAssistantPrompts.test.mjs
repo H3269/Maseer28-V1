@@ -109,3 +109,11 @@ test('T14 day-specific examples show real scenarios for days 8, 10, 13, 15, 21, 
     assert.equal(new Set(guide.questions.map(item=>item.answer)).size,14);
   }
 });
+
+
+test('T14 stop answers do not repeat the conditional marker',()=>{
+  for(const guide of T14_DAILY_ASSISTANT_GUIDES){
+    const stop=guide.questions.find(item=>item.kind==='stop')?.answer||'';
+    assert.doesNotMatch(stop,/تمرین را متوقف کن اگر:\\s*اگر/u,'day '+guide.day+' stop answer');
+  }
+});
