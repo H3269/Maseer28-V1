@@ -243,5 +243,4 @@ test('T14 is wired into the visible prepared-question launcher and remains prepa
   assert.match(launcher, /getT14DailyAssistantPromptGroups/u);
   assert.ok(launcher.includes('isT14DailyPromptContext ? "کمبود انگیزه"'));
   assert.match(launcher, /t14-daily-prompt-trigger/u);
-  assert.match(launcher, /isT14DailyPromptContext \\? "کمبود انگیزه"/u);
 });
