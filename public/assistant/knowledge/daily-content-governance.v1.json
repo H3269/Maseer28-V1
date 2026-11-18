@@ -6,7 +6,7 @@
     "current_content": "public/content/path-content.json",
     "topic_registry": "public/assistant/knowledge/topics.v1.json",
     "subtopic_registry": "public/assistant/knowledge/subtopics.v1.json",
-    "working_definitions": "public/assistant/knowledge/topic-definitions-draft.v1.json",
+    "working_definitions": "public/assistant/knowledge/topic-definitions.v1.json",
     "candidate_relations": "public/assistant/knowledge/relations.v1.json"
   },
   "domain_model": {
