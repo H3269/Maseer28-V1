@@ -40,7 +40,9 @@ async function waitForFirstBodyParagraph(page) {
   for (let attempt = 0; attempt < 12; attempt += 1) {
     const paragraph = await page.evaluate(() => {
       const article = document.querySelector('#bookReaderText');
-      const line = [...(article?.querySelectorAll('.readerFixedLine.body.paraStart') || [])]
+      // A restored page anchor may land mid-paragraph, where paraStart is intentionally absent.
+      // Readable body text is the user-visible requirement; paraStart is only a layout marker.
+      const line = [...(article?.querySelectorAll('.readerFixedLine.body') || [])]
         .find((item) => String(item.innerText || '').replace(/\s+/g, ' ').trim().length >= 20);
       return line ? String(line.innerText || '').replace(/\s+/g, ' ').trim() : '';
     });
