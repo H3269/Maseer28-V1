@@ -247,3 +247,24 @@ test('T13 day 28 action example demonstrates a concrete keep/remove decision',()
   assert.match(answer,/لازم نیست چند ارتباط تازه را هم‌زمان شروع کنی/u);
   assert.notEqual(answer.replace(/\s+/g,''),guide.action.replace(/\s+/g,''));
 });
+
+
+test('T13 q12 gives day-specific contact guidance aligned with each daily action', () => {
+  const answers = [];
+  for (const guide of T13_DAILY_ASSISTANT_GUIDES) {
+    const question = guide.questions.find((item) => item.kind === 'talk_other');
+    assert.ok(question?.answer, 'day ' + guide.day + ' must have a q12 answer');
+    const rendered = answerT13DailyPreparedQuestion({
+      day: guide.day,
+      message: question.value,
+      dailyContent: dailyContent(guide),
+    });
+    assert.ok(rendered.includes(question.answer), 'day ' + guide.day + ' must render its own q12 guidance');
+    assert.match(question.answer, /خیر/u);
+    assert.match(question.answer, /امن/u);
+    answers.push(question.answer);
+  }
+  assert.equal(new Set(answers).size, 28, 'all 28 q12 answers must be distinct');
+  assert.ok(new Set(answers.map((answer) => answer.slice(0, 75))).size >= 24,
+    'q12 must not reuse a generic daily preamble');
+});
