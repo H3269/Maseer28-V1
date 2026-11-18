@@ -130,3 +130,11 @@ test('T14 q11 distress answers give one clear stop/referral instruction without 
   assert.match(day25,/این تمرین ابزار تشخیص یا درمان نیست/u);
   assert.match(day28,/استراحت یا تغییر هدف نیز انتخاب معتبر است/u);
 });
+
+
+test('T14 day 17 distress guidance distinguishes severe distress from immediate emergency risk',()=>{
+  const answer=T14_DAILY_ASSISTANT_GUIDES.find(item=>item.day===17).questions.find(item=>item.kind==='motivation_distress').answer;
+  assert.match(answer,/با فرد امن یا متخصص واجد صلاحیت صحبت کن/u);
+  assert.match(answer,/اگر قصد یا برنامه فوری برای آسیب داری/u);
+  assert.match(answer,/خدمات اضطراری محل زندگی/u);
+});
