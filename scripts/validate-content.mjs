@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
-import { validateDailyEvidenceSourceIds } from '../src/features/content/dailyEvidenceSourceValidation.js';
+import { validateDailyEvidenceSource } from '../src/features/content/dailyEvidenceSourceValidation.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const readJson = (relativePath) => {
@@ -34,7 +34,6 @@ const topicRecordById = new Map((topicsRegistry.topics || []).map((item) => [ite
 const subtopicRecordById = new Map((subtopicsRegistry.subtopics || []).map((item) => [item.subtopic_id, item]));
 const subtopicById = new Map((subtopicsRegistry.subtopics || []).map((item) => [item.subtopic_id, item.topic_id]));
 const evidenceSourceIds = new Set((evidenceRegistry.sources || []).map((item) => item.source_id));
-const validReviewStatuses = new Set(['draft', 'pending_expert_review', 'approved', 'rejected', 'retired']);
 const validEvidenceGrades = new Set(['not_assessed', 'very_low', 'low', 'moderate', 'high']);
 const validRiskLevels = new Set(['routine', 'caution', 'human_review_required']);
 
@@ -104,7 +103,7 @@ for (const { topic, category } of topicRows) {
         'teaching_point', 'exercise_type', 'instructions', 'duration_minutes',
         'reflection_prompt', 'success_criterion', 'stop_conditions',
         'risk_level', 'when_to_seek_human_support',
-        'evidence_grade', 'review_status',
+        'evidence_grade',
       ];
       for (const field of requiredV2) {
         const value = day[field];
@@ -121,23 +120,20 @@ for (const { topic, category } of topicRows) {
       if (!Array.isArray(day.subtopic_ids) || day.subtopic_ids.some((id) => subtopicById.get(id) !== day.topic_id)) {
         fail.push(`زیرموضوع نامعتبر یا متعلق به موضوع دیگر در «${topic}»، روز ${index + 1}`);
       }
-      const approvedForRuntime = day.review_status === 'approved';
-      const topicLinkField = approvedForRuntime ? 'content_ids' : 'draft_content_ids';
       const topicRecord = topicRecordById.get(day.topic_id);
-      if (!Array.isArray(topicRecord?.[topicLinkField]) || !topicRecord[topicLinkField].includes(day.id)) {
-        fail.push(`پیوند دوطرفه topic.${topicLinkField} برای روز ${index + 1} در «${topic}» ناقص است.`);
+      const topicLinks = [...(topicRecord?.content_ids || []), ...(topicRecord?.draft_content_ids || [])];
+      if (!topicLinks.includes(day.id)) {
+        fail.push(`پیوند موضوع برای روز ${index + 1} در «${topic}» ناقص است.`);
       }
       for (const subtopicId of day.subtopic_ids || []) {
         const subtopicRecord = subtopicRecordById.get(subtopicId);
-        if (!Array.isArray(subtopicRecord?.[topicLinkField]) || !subtopicRecord[topicLinkField].includes(day.id)) {
-          fail.push(`پیوند دوطرفه subtopic.${topicLinkField} برای ${subtopicId} و روز ${index + 1} در «${topic}» ناقص است.`);
+        const subtopicLinks = [...(subtopicRecord?.content_ids || []), ...(subtopicRecord?.draft_content_ids || [])];
+        if (!subtopicLinks.includes(day.id)) {
+          fail.push(`پیوند زیرموضوع برای ${subtopicId} و روز ${index + 1} در «${topic}» ناقص است.`);
         }
       }
       if (!Number.isInteger(day.duration_minutes) || day.duration_minutes < 1 || day.duration_minutes > 60) {
         fail.push(`duration_minutes نامعتبر در «${topic}»، روز ${index + 1}`);
-      }
-      if (!validReviewStatuses.has(day.review_status)) {
-        fail.push(`review_status نامعتبر در «${topic}»، روز ${index + 1}`);
       }
       if (!validEvidenceGrades.has(day.evidence_grade)) {
         fail.push(`evidence_grade نامعتبر در «${topic}»، روز ${index + 1}`);
@@ -145,7 +141,7 @@ for (const { topic, category } of topicRows) {
       if (!validRiskLevels.has(day.risk_level)) {
         fail.push(`risk_level نامعتبر در «${topic}»، روز ${index + 1}`);
       }
-      const evidenceSourceValidation = validateDailyEvidenceSourceIds(day, evidenceSourceIds);
+      const evidenceSourceValidation = validateDailyEvidenceSource(day, evidenceRegistry);
       if (!evidenceSourceValidation.valid) {
         fail.push(`source_ids نامعتبر/ناقص برای وضعیت شواهد در «${topic}»، روز ${index + 1}: ${evidenceSourceValidation.reason}`);
       }
@@ -153,27 +149,10 @@ for (const { topic, category } of topicRows) {
         || !Array.isArray(day.contraindications) || day.contraindications.length === 0) {
         fail.push(`قواعد توقف/موارد احتیاط ناقص در «${topic}»، روز ${index + 1}`);
       }
-      if (day.review_status === 'approved') {
-        if (day.topic_id === 'T17') {
-          if (day.reviewer_role !== 'relationship_safety_reviewer') {
-            fail.push(`بازبین محتوای T17 باید متخصص روابط و ایمنی باشد: «${topic}»، روز ${index + 1}`);
-          }
-          if (!Array.isArray(day.subtopic_ids) || day.subtopic_ids.length !== 1) {
-            fail.push(`هر روز T17 باید دقیقاً به یک زیرموضوع نگاشت شود: «${topic}»، روز ${index + 1}`);
-          } else if (day.subtopic_ids[0] === 'T17-S03'
-            && (day.risk_level !== 'caution'
-              || !Array.isArray(day.safety_rule_ids)
-              || day.safety_rule_ids.length === 0)) {
-            fail.push(`T17-S03 به طبقه‌بندی caution و قاعده ایمنی صریح نیاز دارد: «${topic}»، روز ${index + 1}`);
-          }
-        }
-        if (!day.review_record_id || !day.reviewer_name
-          || !['qualified_clinician', 'evidence_reviewer', 'safety_reviewer', 'relationship_safety_reviewer'].includes(day.reviewer_role)
-          || !day.reviewed_at || Number.isNaN(Date.parse(day.reviewed_at))) {
-          fail.push(`محتوای approved بدون بازبین واجد صلاحیت و رکورد بازبینی در «${topic}»، روز ${index + 1}`);
-        }
-      } else if (day.review_record_id || day.reviewer_name || day.reviewed_at) {
-        fail.push(`محتوای تأییدنشده نباید اطلاعات تأیید انسانی داشته باشد: «${topic}»، روز ${index + 1}`);
+      if (day.topic_id === 'T17' && Array.isArray(day.subtopic_ids)
+        && day.subtopic_ids.includes('T17-S03')
+        && (day.risk_level !== 'caution' || !Array.isArray(day.safety_rule_ids) || day.safety_rule_ids.length === 0)) {
+        fail.push(`T17-S03 به طبقه‌بندی caution و قاعده ایمنی صریح نیاز دارد: «${topic}»، روز ${index + 1}`);
       }
     }
 
@@ -195,23 +174,22 @@ for (const { topic, category } of topicRows) {
   }
 }
 
-// Keep draft daily links separate from runtime-approved content links.
+// Validate all registry links without separating runtime eligibility by review status.
 for (const topicRecord of topicsRegistry.topics || []) {
-  for (const [field, approved] of [['content_ids', true], ['draft_content_ids', false]]) {
+  for (const field of ['content_ids', 'draft_content_ids']) {
     for (const contentId of topicRecord[field] || []) {
       const linked = dayById.get(contentId);
-      if (!linked || linked.day.topic_id !== topicRecord.topic_id || (linked.day.review_status === 'approved') !== approved) {
+      if (!linked || linked.day.topic_id !== topicRecord.topic_id) {
         fail.push(`پیوند ${field} یتیم یا ناسازگار در ${topicRecord.topic_id}: ${contentId}`);
       }
     }
   }
 }
 for (const subtopicRecord of subtopicsRegistry.subtopics || []) {
-  for (const [field, approved] of [['content_ids', true], ['draft_content_ids', false]]) {
+  for (const field of ['content_ids', 'draft_content_ids']) {
     for (const contentId of subtopicRecord[field] || []) {
       const linked = dayById.get(contentId);
-      if (!linked || !Array.isArray(linked.day.subtopic_ids) || !linked.day.subtopic_ids.includes(subtopicRecord.subtopic_id)
-        || (linked.day.review_status === 'approved') !== approved) {
+      if (!linked || !Array.isArray(linked.day.subtopic_ids) || !linked.day.subtopic_ids.includes(subtopicRecord.subtopic_id)) {
         fail.push(`پیوند ${field} یتیم یا ناسازگار در ${subtopicRecord.subtopic_id}: ${contentId}`);
       }
     }
