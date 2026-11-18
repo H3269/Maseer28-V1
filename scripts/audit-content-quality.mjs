@@ -22,7 +22,7 @@ const dailyTextOverlayStats = Object.entries(dailyTextOverrides.categories || {}
 }, { days: 0, exercise_replacements: 0, action_replacements: 0 });
 const topicsRegistry = readJson('public/assistant/knowledge/topics.v1.json');
 const subtopicsRegistry = readJson('public/assistant/knowledge/subtopics.v1.json');
-const definitionsRegistry = readJson('public/assistant/knowledge/topic-definitions-draft.v1.json');
+const definitionsRegistry = readJson('public/assistant/knowledge/topic-definitions.v1.json');
 
 const categories = Object.entries(content.categories || {});
 const topicNames = new Map((topicsRegistry.topics || []).map((topic) => [topic.topic_id, topic.name]));
