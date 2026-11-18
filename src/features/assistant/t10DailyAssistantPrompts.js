@@ -81,7 +81,7 @@ export function answerT10DailyPreparedQuestion({ day, message, dailyContent } = 
         `**شرط توقف امروز:** ${guide.stopCondition}`,
         `**نسخه استراحت:** ${restAction}`,
         '**حمایت انسانی:** اگر مشکل خواب پایدار است یا عملکرد روزانه را مختل می‌کند، آن را با پزشک یا متخصص خواب مطرح کن؛ این پاسخ جای ارزیابی تخصصی را نمی‌گیرد.',
-      ].filter(Boolean).join('\\n\\n');
+      ].filter(Boolean).join('\n\n');
       break;
     case 'procrastination_increased':
       body = [
