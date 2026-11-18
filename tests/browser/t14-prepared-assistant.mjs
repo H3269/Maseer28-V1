@@ -108,11 +108,23 @@ try {
 
   const before = await dialog.locator('.assistantMessage').count();
   await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction((previous) => {
-    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-    return replies.length > previous
-      && /راهنمای روز 1 کمبود انگیزه/.test(replies.at(-1)?.innerText || '');
-  }, before);
+  try {
+    await page.waitForFunction((previous) => {
+      const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+      return replies.length > previous
+        && /راهنمای روز 1 کمبود انگیزه/.test(replies.at(-1)?.innerText || '');
+    }, before);
+  } catch (error) {
+    console.error('T14_MESSAGES', JSON.stringify(await dialog.locator('.assistantMessage').allInnerTexts()));
+    console.error('T14_DIALOG', await dialog.innerText());
+    console.error('T14_COMPOSER', JSON.stringify(await dialog.locator('.assistantComposer').evaluate((element) => ({
+      dataset: { ...element.dataset },
+      text: element.innerText,
+      html: element.outerHTML,
+    }))));
+    console.error('T14_ERRORS', JSON.stringify(errors));
+    throw error;
+  }
 
   const reply = dialog.locator('.assistantMessage').last();
   const replyText = await reply.innerText();
