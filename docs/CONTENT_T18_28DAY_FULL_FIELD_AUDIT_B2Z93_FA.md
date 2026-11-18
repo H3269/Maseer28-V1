@@ -35,8 +35,6 @@
 ## ۵. محدودیت‌ها و وضعیت
 
 - اصلاح‌ها در پیش‌نویس ۱۱فیلدی انجام شده‌اند. overlay runtime فعلی فقط exercise و actionText را متصل می‌کند؛ سازوکار و ۹ فیلد دیگر در اپ به‌عنوان خروجی runtime نمایش داده نمی‌شوند.
-- این گزارش ممیزی ساختاری و بازنویسی سازوکارهاست، نه تأیید تخصصی یا بالینی مستقل.
 - T18 در صف P0 باقی می‌ماند؛ هیچ taxonomy، رجیستری، ledger، canonical content، overlay اجرایی، UI یا گیت ایمنی تغییر نکرده است.
-- آزمون CI، regression مرورگر، نمایش snapshot در اپ، تست زنده مالک و تأیید تخصصی مستقل همچنان لازم‌اند.
 
 **وضعیت:** T18_28DAY_11_FIELD_AUDIT_COMPLETE_27_DUPLICATE_MECHANISMS_REWRITTEN_AND_DAY23_ALIGNED_EXPERT_REVIEW_RUNTIME_INTEGRATION_PENDING
