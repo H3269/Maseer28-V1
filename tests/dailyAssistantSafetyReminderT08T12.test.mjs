@@ -47,7 +47,7 @@ const packages = [
   {
     id: 'T12', guides: T12_DAILY_ASSISTANT_GUIDES,
     answer: answerT12DailyPreparedQuestion,
-    safetyKinds: new Set(['procrastination_increased', 'talk_other', 'success', 'stop']),
+    safetyKinds: new Set(['boundary_distress', 'talk_other', 'success', 'stop']),
     content: (guide) => ({
       id: 'مرزبندی و نه گفتن-' + String(guide.day).padStart(2, '0'),
       day: guide.day, topic_id: 'T12', title: guide.title,
