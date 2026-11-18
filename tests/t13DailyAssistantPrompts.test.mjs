@@ -237,3 +237,13 @@ test('T13 day 1 examples demonstrate the requested fields without implying a req
   assert.doesNotMatch(actionExample,/پس از یک تماس کوتاه/u);
   assert.equal((day25.match(/پاسخ دیگران در اختیار تو نیست/g)||[]).length,1);
 });
+
+
+test('T13 day 28 action example demonstrates a concrete keep/remove decision',()=>{
+  const guide=T13_DAILY_ASSISTANT_GUIDES.find(item=>item.day===28);
+  const answer=guide.questions.find(item=>item.kind==='action_example').answer;
+  assert.match(answer,/تماس هفتگی با یک دوست امن/u);
+  assert.match(answer,/فعالیت گروهیِ پرهزینه/u);
+  assert.match(answer,/لازم نیست چند ارتباط تازه را هم‌زمان شروع کنی/u);
+  assert.notEqual(answer.replace(/\s+/g,''),guide.action.replace(/\s+/g,''));
+});
