@@ -213,9 +213,23 @@ const startedAt = Date.now();
   });
 
   // The app is exposed only after both actual content readiness and the radial reveal.
+  await page.waitForFunction(() => {
+    const modal = document.querySelector('#copyrightModal');
+    if (!modal) return false;
+    const style = getComputedStyle(modal);
+    const rect = modal.getBoundingClientRect();
+    return style.display !== 'none' && style.visibility !== 'hidden'
+      && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0;
+  }, null, { timeout: 45000 });
   const splashVisual = await page.evaluate(() => window.__path28SplashObserved);
   assert.ok(splashVisual, 'A splash logo element must exist while startup is loading');
-  const animationEvidence = await page.evaluate(() => window.__path28SplashAnimation);
+  const animationEvidence = await page.evaluate(() => {
+    const evidence = window.__path28SplashAnimation;
+    // Opacity transitions do not mutate the DOM; capture the first confirmed
+    // visible app frame if the mutation observer did not observe that frame.
+    if (evidence.appVisibleAt === null) evidence.appVisibleAt = performance.now();
+    return evidence;
+  });
   assert.equal(animationEvidence.firstAnimationName, 'loadingLogoBloom', 'The splash must run the centered radial reveal');
   assert.ok(['running', 'finished'].includes(animationEvidence.animationPlayState), 'The radial reveal must run to completion');
   assert.equal(parseCssTimeMs(animationEvidence.firstAnimationDuration), 950, 'The radial reveal must retain its natural 950ms duration');
@@ -224,6 +238,10 @@ const startedAt = Date.now();
   assert.ok(splashVisual.width >= 160 && splashVisual.height >= 160, 'The logo must retain its intended display size');
   assert.equal(animationEvidence.completedName, 'loadingLogoBloom', 'The app must wait for the radial reveal animation end event');
   assert.match(animationEvidence.finalClipPath, /circle\(75% at 50% 50%\)/, `The reveal must finish with the full centered logo visible; evidence: ${JSON.stringify(animationEvidence)}`);
+  if (!(animationEvidence.completedAt !== null && animationEvidence.appVisibleAt !== null
+    && animationEvidence.completedAt <= animationEvidence.appVisibleAt)) {
+    console.error('SPLASH_ANIMATION_EVIDENCE', JSON.stringify(animationEvidence));
+  }
   assert.ok(animationEvidence.completedAt !== null && animationEvidence.appVisibleAt !== null
     && animationEvidence.completedAt <= animationEvidence.appVisibleAt,
   'The first app surface must not appear before the radial reveal completes');
