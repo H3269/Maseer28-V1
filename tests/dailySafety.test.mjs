@@ -8,7 +8,7 @@ test('daily availability does not depend on review or specialist approval metada
   assert.equal(getDailySafetyMode({ risk_level: 'routine', review_status: 'draft' }), 'routine');
   assert.equal(getDailySafetyMode({ risk_level: 'caution', review_status: 'pending_expert_review' }), 'caution');
   assert.equal(getDailySafetyMode({ risk_level: 'routine', review_status: null }), 'routine');
-  assert.equal(getDailySafetyMode({ risk_level: 'human_review_required' }), 'blocked');
+  assert.equal(getDailySafetyMode({ risk_level: 'urgent_support_required' }), 'blocked');
   assert.equal(getDailySafetyMode({ risk_level: 'high' }), 'blocked');
   assert.equal(getDailySafetyMode({ risk_level: 'moderate' }), 'blocked');
   assert.equal(getDailySafetyMode({ risk_level: 'unknown' }), 'caution');
