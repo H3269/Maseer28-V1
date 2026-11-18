@@ -46,7 +46,7 @@ test('T14 five audited days keep distinct goal-specific mechanisms and all 70 an
     assert.equal(live.title, guide.title);
     assert.equal(live.exercise, guide.exercise);
     assert.equal(live.actionText, guide.action);
-    assert.equal(live.intro, 'هدف امروز: ' + guide.objective + '\\nمهارت امروز: ' + guide.skill);
+    assert.equal(live.intro, 'هدف امروز: ' + guide.objective + '\nمهارت امروز: ' + guide.skill);
     assert.ok(guide.questions.find((item) => item.kind === 'exercise_meaning').answer.includes(guide.exercise));
     assert.ok(guide.questions.find((item) => item.kind === 'action_meaning').answer.includes(guide.action));
     assert.ok(guide.questions.find((item) => item.kind === 'exercise_action_difference').answer.includes(guide.exercise));
