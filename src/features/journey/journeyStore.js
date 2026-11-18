@@ -114,7 +114,8 @@ export function sanitizeJourneyState(raw) {
       const n = Number(key);
       if (!Number.isInteger(n) || n < 1 || n > 28 || !value || typeof value !== 'object') continue;
       const rec = {};
-      if (['skipped_human_review', 'skipped_safety_gate'].includes(value.status)) rec.status = value.status;
+      if (value.status === 'skipped_human_review') rec.status = 'skipped_without_score';
+      else if (value.status === 'skipped_without_score' || value.status === 'skipped_safety_gate') rec.status = value.status;
       if (validScore(value.score)) rec.score = Number(normalizeDigits(value.score));
       if (['better', 'same', 'worse', 'hard'].includes(value.feedback)) rec.feedback = value.feedback;
       if (typeof value.feedbackText === 'string') rec.feedbackText = value.feedbackText.slice(0, 1000);
@@ -833,10 +834,9 @@ export function isDayUnlockedAt(state, day, trustedNowMs) {
   const previousDay = n - 1;
   if (!completed.includes(previousDay)) return false;
 
-  // A day withheld by a safety or human-review gate did not involve an
-  // intervention. Allow sequential continuation immediately after an honest
-  // non-scoring skip; the one-day cooldown still applies to performed days.
-  if (['skipped_human_review', 'skipped_safety_gate'].includes(state.daily?.[previousDay]?.status)) return true;
+  // A day skipped without performing an intervention does not start the
+  // cooldown; the one-day cooldown still applies to performed days.
+  if (['skipped_without_score', 'skipped_safety_gate'].includes(state.daily?.[previousDay]?.status)) return true;
 
   let previousCompletionMs = Date.parse(state.daily?.[previousDay]?.updatedAt || '');
 
