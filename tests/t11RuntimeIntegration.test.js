@@ -12,8 +12,7 @@ function contextFor(guide, overrides = {}) {
     id: getCanonicalDailyRecordId('عادت‌های تکراری', guide.day),
     topic_id: 'T11',
     day: guide.day,
-    review_status: 'pending_expert_review',
-    risk_level: 'human_review_required',
+    risk_level: 'urgent_support_required',
     exercise: guide.exercise,
     actionText: guide.action,
   };
