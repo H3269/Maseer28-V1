@@ -1,7 +1,7 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
-// T03 prepared-only daily assistant bank. Draft educational content; not expert-approved treatment.
+// T03 prepared-only daily assistant bank. Non-diagnostic educational guidance; safety limits remain active.
 const RAW_FEAR_DAILY_ASSISTANT_GUIDES = [
   {
     "day": 1,
