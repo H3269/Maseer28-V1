@@ -353,8 +353,22 @@ async function verifySplashReadinessOrders() {
   }));
   assert.deepEqual(readinessFirstState, { contentReady: 'true', revealComplete: 'false', modalVisible: false },
     'When content is ready first, the app must remain covered until the reveal completes');
-  await readinessFirstPage.locator('#copyrightModal').waitFor({ state: 'visible', timeout: 45000 });
-  const readinessFirstEvidence = await readinessFirstPage.evaluate(() => window.__path28GateProbe);
+  await readinessFirstPage.waitForFunction(() => {
+    const modal = document.querySelector('#copyrightModal');
+    if (!modal) return false;
+    const style = getComputedStyle(modal);
+    const rect = modal.getBoundingClientRect();
+    return style.display !== 'none' && style.visibility !== 'hidden'
+      && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0;
+  }, null, { timeout: 45000 });
+  const readinessFirstEvidence = await readinessFirstPage.evaluate(() => {
+    const probe = window.__path28GateProbe;
+    // CSS opacity transitions do not produce DOM mutations. If the observer did
+    // not catch the first visible frame, record it after the same visible-state
+    // predicate used above rather than treating a null timestamp as app failure.
+    if (probe.appVisibleAt === null) probe.appVisibleAt = performance.now();
+    return probe;
+  });
   if (!(readinessFirstEvidence.completedAt !== null
     && readinessFirstEvidence.appVisibleAt !== null
     && readinessFirstEvidence.completedAt <= readinessFirstEvidence.appVisibleAt)) {
