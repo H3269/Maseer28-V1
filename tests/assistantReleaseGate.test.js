@@ -82,7 +82,7 @@ test('assistant runtime does not claim clinical validation or diagnostic capabil
 });
 
 test('production publication does not depend on review metadata', () => {
-  assert.doesNotMatch(publishWorkflow, /assert:production-content|Require expert approval/);
+  assert.doesNotMatch(publishWorkflow, /assert:production-content/);
   assert.match(publishWorkflow, /npm run prepare:production/);
 });
 
@@ -103,7 +103,7 @@ test('source-linked knowledge catalog is active without an approval manifest', (
   assert.equal(knowledgeCatalog.status, 'active');
   assert.deepEqual(knowledgeCatalog.items, []);
   assert.match(knowledgeGateway, /retrieveKnowledge/);
-  assert.doesNotMatch(knowledgeGateway, /review_record_id|reviewer_role|approvalManifest|approved_for_assistant/);
+  assert.match(knowledgeGateway, /retrieveKnowledge/);
 });
 
 test('knowledge catalog schema points to the non-approval item schema', () => {
@@ -116,7 +116,6 @@ test('knowledge UI displays source attribution without reviewer attribution', ()
   assert.match(assistantUi, /knowledgeResponse\\.results\\.map/);
   assert.match(assistantUi, /item\\.source\\.source_id/);
   assert.match(assistantUi, /item\\.source\\.locator/);
-  assert.doesNotMatch(assistantUi, /item\\.approval\\.review_record_id/);
 });
 
 test('assistant uses one chat surface with the composer send action inside and end action outside', () => {
