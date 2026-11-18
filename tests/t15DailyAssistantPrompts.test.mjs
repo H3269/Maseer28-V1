@@ -115,13 +115,17 @@ test('T15 safety-sensitive answers append topic and shared safety reminders', ()
   }
 });
 
-test('T15 keeps global self-worth as differential routing rather than a T15 skill intervention', () => {
-  for (const day of [4, 24, 25]) {
+test('T15 keeps global self-worth as differential routing and support as a referral gate', () => {
+  for (const day of [4, 24]) {
     const guide = T15_DAILY_ASSISTANT_GUIDES[day - 1];
     assert.deepEqual(guide.subtopicIds, []);
     assert.equal(guide.subtopicMappingStatus, 'differential_routing_review_required');
   }
+  const supportDay = T15_DAILY_ASSISTANT_GUIDES[24];
+  assert.deepEqual(supportDay.subtopicIds, []);
+  assert.equal(supportDay.subtopicMappingStatus, 'support_routing_review_required');
   assert.deepEqual(T15_DAILY_ASSISTANT_GUIDES[11].subtopicIds, ['T15-S02']);
+  assert.deepEqual(T15_DAILY_ASSISTANT_GUIDES[25].subtopicIds, ['T15-S02']);
 });
 
 test('T15 prepared guide is served through the page assistant for every canonical day', () => {
@@ -134,6 +138,28 @@ test('T15 prepared guide is served through the page assistant for every canonica
     });
     assert.equal(result.status, 'daily_guidance_available', 'day ' + guide.day);
     assert.ok(result.message.includes('راهنمای روز ' + guide.day + ' اعتمادبه‌نفس پایین'));
+  }
+});
+
+
+test('T15 titles remain distinct from other topics under the shared 0.30 lexical screen', async () => {
+  const overlay = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+  const normalize = (value) => String(value || '').normalize('NFKC')
+    .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک').replace(/[\\u200c\\u200f\\u200e]/g, ' ')
+    .replace(/[^\\p{L}\\p{N}\\s]/gu, ' ').replace(/\\s+/g, ' ').trim().toLowerCase();
+  const stop = new Set(['نسخه','سبک','تمرین','اقدام','فقط','یک','و','یا','را','از','به','در','که','اگر','برای','با','بدون','امروز','فعلا','کن','کنید','بنویس','بنویسی','بنویسید','ثبت','انتخاب','نام','ببر','مشخص','بررسی','انجام','بده','بگیر','دارد','هست','است','میشود','شود','تا','خودت','خود','او','این','آن','همان','هر','هیچ','همه']);
+  const tokens = (value) => new Set(normalize(value).split(' ').filter((token) => token.length > 2 && !stop.has(token)));
+  const ours = overlay.categories['اعتمادبه‌نفس پایین'].days;
+  assert.equal(new Set(ours.map((day) => normalize(day.title))).size, 28);
+  for (const [topic, category] of Object.entries(overlay.categories)) {
+    if (topic === 'اعتمادبه‌نفس پایین') continue;
+    for (const day of ours) for (const other of category.days || []) {
+      const left = tokens(day.title), right = tokens(other.title), union = new Set([...left, ...right]);
+      let intersection = 0;
+      for (const token of left) if (right.has(token)) intersection += 1;
+      assert.ok(!union.size || intersection / union.size < 0.30,
+        'T15 title overlap: ' + day.day + ' ' + day.title + ' / ' + topic + ' ' + other.day + ' ' + other.title);
+    }
   }
 });
 
