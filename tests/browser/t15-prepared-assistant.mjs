@@ -128,7 +128,7 @@ try {
 
   const reply = dialog.locator('.assistantMessage').last();
   const replyText = await reply.innerText();
-  assert.match(replyText, /نقشه موقعیت‌ها/);
+  assert.match(replyText, /ردیابی موقعیت‌های تردید مهارتی/);
   assert.match(replyText, /خودمشاهده‌گری موقعیتی/);
   assert.equal(await dialog.getByTestId('t15-daily-prompt-trigger').count(), 1,
     'the T15 prepared-question trigger must remain available after answering');
