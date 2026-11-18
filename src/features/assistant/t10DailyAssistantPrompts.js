@@ -76,7 +76,11 @@ export function answerT10DailyPreparedQuestion({ day, message, dailyContent } = 
       body += `\n\n**بازگشت کوچک:** ${lightExercise}\n**اگر امروز نیاز به استراحت داری:** ${restAction}\n\nلازم نیست روزهای ازدست‌رفته را جبران کنی؛ از همین روز و با ظرفیت فعلی ادامه بده.`;
       break;
     case 'sleep_distress':
-      body = `اگر تمرین یا نگرانی درباره خواب فشار را بیشتر کرد، تمرین را متوقف کن؛ ادامه‌دادن معیار موفقیت نیست.\n\n**شرط توقف:** ${guide.stopCondition}\n**نسخه استراحت:** ${restAction}\n**حمایت انسانی:** ${guide.whenToSeekHumanSupport}\n\nاگر خواب‌آلودگی ایمنی رانندگی یا کار پرخطر را مختل می‌کند، آن فعالیت را متوقف کن. در خفگی، وقفه تنفسی یا علامت شدید تازه، ارزیابی پزشکی لازم است. دارو، مکمل، الکل یا مواد را برای خواب خودسرانه تغییر نده.`;
+      body = [
+        question.answer,
+        `**نسخه استراحت:** ${restAction}`,
+        `**حمایت انسانی:** ${guide.whenToSeekHumanSupport}`,
+      ].filter(Boolean).join('\\n\\n');
       break;
     case 'procrastination_increased':
       body = [
