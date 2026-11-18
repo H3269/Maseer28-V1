@@ -24,7 +24,7 @@ test('all 2,352 prepared answers across T01-T06 render without raw markdown or e
     { id: 'T06', guides: GRIEF_DAILY_ASSISTANT_GUIDES, answer: (guide, question) =>
       answerGriefDailyPreparedQuestion({ day: guide.day, message: question.value, dailyContent: { exercise: guide.exercise, actionText: guide.action } }) },
   ];
-  const safetyKinds = new Set(['anger_increased', 'anxiety_increased', 'fear_increased', 'hostility_increased', 'grief_increased', 'talk_other', 'success', 'stop']);
+  const safetyKinds = new Set(['anger_increased', 'anxiety_increased', 'fear_increased', 'hostility_increased', 'jealousy_increased', 'grief_increased', 'talk_other', 'success', 'stop']);
   let checked = 0;
   for (const topic of topics) {
     assert.equal(topic.guides.length, 28, topic.id);
