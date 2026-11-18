@@ -10,24 +10,10 @@ const knowledge = [{
   topic_ids: ['T02'],
   content_type: 'education',
   source: { source_id: 'SRC-T02-001', title: 'منبع آموزشی تأییدشده', locator: 'approved/education/t02#intro' },
-  approval: { status: 'approved_for_assistant', reviewer_role: 'evidence_reviewer', review_record_id: 'REV-SAMPLE-001', reviewed_at: '2026-10-20T10:00:00Z', version: '1.0.0' },
 }];
 
-const approvalManifest = {
-  schema_version: '1.0.0',
-  manifest_id: 'test-manifest',
-  status: 'active',
-  approved_items: [{
-    item_id: 'K-T02-001',
-    review_record_id: 'REV-SAMPLE-001',
-    reviewer_role: 'evidence_reviewer',
-    reviewed_at: '2026-10-20T10:00:00Z',
-    version: '1.0.0',
-  }],
-};
-
 test('safety gate runs before knowledge retrieval', () => {
-  const result = routeAssistantTurn({ text: 'امشب قصد دارم خودم را بکشم.', knowledgeItems: knowledge, approvalManifest });
+  const result = routeAssistantTurn({ text: 'امشب قصد دارم خودم را بکشم.', knowledgeItems: knowledge });
   assert.equal(result.status, 'urgent_human_support_required');
   assert.deepEqual(result.knowledge, []);
 });
@@ -74,14 +60,14 @@ test('ambiguous personal experience asks for clarification instead of returning 
   assert.deepEqual(result.knowledge, []);
 });
 
-test('general information can only return approved excerpts with source attribution', () => {
-  const result = routeAssistantTurn({ text: 'اضطراب چیست؟', knowledgeItems: knowledge, approvalManifest });
-  assert.equal(result.status, 'approved_knowledge_available');
+test('general information can return source-linked excerpts with source attribution', () => {
+  const result = routeAssistantTurn({ text: 'اضطراب چیست؟', knowledgeItems: knowledge });
+  assert.equal(result.status, 'knowledge_available');
   assert.equal(result.knowledge[0].source.source_id, 'SRC-T02-001');
-  assert.equal(result.knowledge[0].approval.reviewer_role, 'evidence_reviewer');
+  assert.equal(result.knowledge[0].source.source_id, 'SRC-T02-001');
 });
 
-test('general information with no approved material returns no fabricated answer', () => {
+test('general information with no source-linked material returns no fabricated answer', () => {
   const result = routeAssistantTurn({ text: 'اضطراب چیست؟', knowledgeItems: [] });
   assert.equal(result.status, 'knowledge_unavailable');
   assert.deepEqual(result.knowledge, []);
@@ -89,7 +75,7 @@ test('general information with no approved material returns no fabricated answer
 });
 
 test('clear personal experience stays in intake rather than jumping to recommendations', () => {
-  const result = routeAssistantTurn({ text: 'مدتی است اضطراب دارم و در کارم تمرکز ندارم.' , knowledgeItems: knowledge, approvalManifest });
+  const result = routeAssistantTurn({ text: 'مدتی است اضطراب دارم و در کارم تمرکز ندارم.' , knowledgeItems: knowledge });
   assert.equal(result.status, 'personal_intake_required');
   assert.deepEqual(result.knowledge, []);
 });
@@ -127,22 +113,22 @@ test('first-person impact markers count as explicit personal context for strateg
 });
 
 
-test('runtime defaults to the repository catalog and remains closed while the manifest is empty', () => {
+test('runtime uses the repository knowledge catalog without an approval manifest', () => {
   const result = routeAssistantTurn({ text: 'اضطراب چیست؟' });
   assert.equal(result.status, 'knowledge_unavailable');
-  assert.equal(result.retrieval_status, 'no_approved_content');
+  assert.equal(result.retrieval_status, 'knowledge_unavailable');
   assert.deepEqual(result.knowledge, []);
 });
 
 
-test('explicitly general strategy requests can retrieve approved source excerpts', () => {
+test('explicitly general strategy requests can retrieve source-linked excerpts', () => {
   const result = routeAssistantTurn({
     text: 'چه راهکاری برای اضطراب وجود دارد؟',
     requestScope: 'general',
     knowledgeItems: knowledge,
-    approvalManifest,
+    
   });
-  assert.equal(result.status, 'approved_knowledge_available');
+  assert.equal(result.status, 'knowledge_available');
   assert.equal(result.knowledge[0].source.source_id, 'SRC-T02-001');
 });
 
