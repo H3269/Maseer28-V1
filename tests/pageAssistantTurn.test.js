@@ -177,7 +177,7 @@ test('T03 prepared FAQs accept legacy category-derived identity but reject expli
     dailyContext: {
       day: 1,
       problem: 'ترس',
-      data: { id: getCanonicalDailyRecordId('اضطراب', 1), topic_id: 'T02', day: 1, review_status: 'pending_expert_review' },
+      data: { id: getCanonicalDailyRecordId('اضطراب', 1), topic_id: 'T02', day: 1 },
     },
   });
   assert.equal(wrongTopic.status, 'daily_guidance_unavailable');
@@ -188,7 +188,7 @@ test('T03 prepared FAQs accept legacy category-derived identity but reject expli
     dailyContext: {
       day: 1,
       problem: 'ترس',
-      data: { id: getCanonicalDailyRecordId('ترس', 1), day: 1, review_status: 'pending_expert_review' },
+      data: { id: getCanonicalDailyRecordId('ترس', 1), day: 1 },
       guidanceData: { id: getCanonicalDailyRecordId('ترس', 1), topic_id: null, day: 1 },
     },
   });
@@ -211,7 +211,7 @@ test('T03 prepared FAQs accept legacy category-derived identity but reject expli
     dailyContext: {
       day: 1,
       problem: 'ترس',
-      data: { id: getCanonicalDailyRecordId('ترس', 2), topic_id: 'T03', day: 2, review_status: 'pending_expert_review' },
+      data: { id: getCanonicalDailyRecordId('ترس', 2), topic_id: 'T03', day: 2 },
     },
   });
   assert.equal(wrongDay.status, 'daily_guidance_unavailable');
