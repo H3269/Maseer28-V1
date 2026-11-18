@@ -75,7 +75,7 @@ test('T14 day 12 post-action reinforcement and day 14 simultaneous pairing use c
   const day14=T14_DAILY_ASSISTANT_GUIDES.find(item=>item.day===14);
   const answer=(guide,kind)=>guide.questions.find(item=>item.kind===kind).answer;
   assert.match(answer(day12,'exercise_example'),/ده دقیقه از یک گزارش را مرتب کرده‌ای/u);
-  assert.match(answer(day12,'exercise_example'),/پس از آن/u);
+  assert.match(answer(day12,'exercise_example'),/بعدش چند دقیقه/u);
   assert.match(answer(day12,'action_example'),/اگر گام انجام نشد/u);
   assert.match(answer(day14,'exercise_example'),/هم‌زمان/u);
   assert.match(answer(day14,'exercise_example'),/موسیقی بی‌کلام/u);
