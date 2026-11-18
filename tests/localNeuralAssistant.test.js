@@ -20,7 +20,7 @@ test('neural generation is disabled for every page and turn status', () => {
     assert.equal(shouldUseLocalNeuralModel({
       screen,
       turn: { status: 'page_guidance_available', message: 'راهنمای صفحه' },
-      intentStatus: 'approved_knowledge_available',
+      intentStatus: 'knowledge_available',
       isLibraryTurn: true,
     }), false);
   }
