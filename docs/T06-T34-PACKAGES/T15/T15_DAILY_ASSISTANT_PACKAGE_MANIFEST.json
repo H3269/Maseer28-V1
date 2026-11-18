@@ -12,8 +12,8 @@
   "questionsPerDay": 14,
   "expectedPreparedAnswers": 392,
   "status": "in_progress_initial_audit",
-  "contentStatus": "existing 28-day redesign and exercise/action overlay reported aligned; pending current-head full-field and semantic revalidation",
-  "subtopicMappingStatus": "proposed; days 12 and 25 need decision; day 28 multi-axis review",
+  "contentStatus": "28/28 exercise and 28/28 action overlay texts match redesign draft; canonical titles/intros/closings and several adaptation fields remain legacy or absent and must be synchronized before owner test",
+  "subtopicMappingStatus": "draft and pending expert review; T15-S03 assignments on days 4, 24, 25 require differential-routing review",
   "assistantStatus": "0/28 runtime guides; 392 prepared answers to author and validate",
   "safetyStatus": "inherit global immediate-danger gate; add T15-specific non-blaming, anti-coercion, and cross-topic routing checks",
   "tests": {
@@ -21,7 +21,8 @@
     "packageValidation": "not_started",
     "chromium": "not_started",
     "fullValidation": "not_started",
-    "ownerLiveTest": "not_started"
+    "ownerLiveTest": "not_started",
+    "contentSync": "blocked_pending_full_field_overlay"
   },
   "ownerApproval": {
     "merge": false,
@@ -30,6 +31,7 @@
   "notes": [
     "Do not copy T14 answers; use its validated architecture and test sequence only.",
     "T15 is task/domain-specific self-efficacy, not global self-worth.",
-    "Do not claim expert approval or evidence grade without traceable review/source."
+    "Do not claim expert approval or evidence grade without traceable review/source.",
+    "Current T15 overlay contains only day/exercise/actionText. Canonical title, intro, closing and adaptation fields do not yet match the redesign draft."
   ]
 }
