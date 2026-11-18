@@ -85,14 +85,14 @@ test('T01-T14: all 5,488 prepared answers use the same clear teacher-style daily
         }
         if (question.kind === 'action_meaning') {
           const expectedAction = topic.id === 'T11'
-            ? guide.action.replace(/^برای مسئله «عادت‌های تکراری»،\\s*/u, '')
+            ? guide.action.replace(/^برای مسئله «عادت‌های تکراری»،\s*/u, '')
             : guide.action;
           assert.ok(answer.includes(cleanPreparedAssistantTopicText(expectedAction, topic.topic)), topic.id + ' day ' + guide.day + ' action meaning must state the exact daily action');
         }
         if (question.kind === 'exercise_action_difference') {
           assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.exercise, topic.topic)), topic.id + ' day ' + guide.day + ' comparison must state the daily exercise');
           const expectedAction = topic.id === 'T11'
-            ? guide.action.replace(/^برای مسئله «عادت‌های تکراری»،\\s*/u, '')
+            ? guide.action.replace(/^برای مسئله «عادت‌های تکراری»،\s*/u, '')
             : guide.action;
           assert.ok(answer.includes(cleanPreparedAssistantTopicText(expectedAction, topic.topic)), topic.id + ' day ' + guide.day + ' comparison must state the daily action');
         }
