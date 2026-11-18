@@ -1,4 +1,4 @@
-const SKIPPED_STATUSES = new Set(['skipped_human_review', 'skipped_safety_gate']);
+const SKIPPED_STATUSES = new Set(['skipped_without_score', 'skipped_safety_gate']);
 
 export function getJourneyProgressCounts(journey) {
   const days = Array.isArray(journey?.completed)
