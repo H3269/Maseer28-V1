@@ -7,22 +7,41 @@
   "data_classes": [
     {
       "id": "direct_identifiers",
-      "examples": ["name", "phone", "email", "government_or_account_identifier"],
+      "examples": [
+        "name",
+        "phone",
+        "email",
+        "government_or_account_identifier"
+      ],
       "handling": "Do not include in model prompts, retrieval queries, analytics, or routine logs. Use a random opaque case reference only when operationally required."
     },
     {
       "id": "health_and_psychological",
-      "examples": ["medical_notes", "medication_details", "assessment_answers", "free_text_reflections", "crisis_disclosures"],
+      "examples": [
+        "medical_notes",
+        "medication_details",
+        "assessment_answers",
+        "free_text_reflections",
+        "crisis_disclosures"
+      ],
       "handling": "Treat as highly sensitive. No external processing without separate explicit consent, necessity, minimization, processor disclosure, and an approved retention/deletion plan."
     },
     {
       "id": "journey_and_progress",
-      "examples": ["topic_choice", "daily_progress", "exercise_feedback", "path_history"],
+      "examples": [
+        "topic_choice",
+        "daily_progress",
+        "exercise_feedback",
+        "path_history"
+      ],
       "handling": "Treat as potentially sensitive because it may reveal health, relationships, or personal circumstances. Include only the minimum needed for the requested feature."
     },
     {
       "id": "public_product_content",
-      "examples": ["approved_public_course_content", "public_book_metadata"],
+      "examples": [
+        "approved_public_course_content",
+        "public_book_metadata"
+      ],
       "handling": "May be processed as public product data, subject to content approval and licensing."
     }
   ],
@@ -82,7 +101,6 @@
     "model_output_is_not_authority_for_diagnosis_or_emergency_triage": true
   },
   "crisis_safety": {
-    "status": "design_only_requires_specialist_validation",
     "must_not_claim_reliable_automated_detection": true,
     "levels": [
       {
@@ -103,7 +121,8 @@
     ],
     "location_specific_numbers_must_be_verified_not_guessed": true,
     "human_monitoring_must_not_be_implied_unless_staffed_and_operational": true,
-    "no_automated_diagnosis_or_medication_instruction": true
+    "no_automated_diagnosis_or_medication_instruction": true,
+    "handling": "Use conservative safety clarification and direct human-support handoff when risk is disclosed; do not claim reliable automated detection."
   },
   "release_gates": [
     "privacy_and_security_specialist_review",
