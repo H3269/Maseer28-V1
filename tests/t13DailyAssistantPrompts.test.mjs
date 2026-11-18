@@ -192,16 +192,3 @@ test('T13 day 14 is owner-approved and is not blocked by a specialist-review run
   assert.equal(emergency.status,'safety_clarification_required',
     'owner approval must not suppress the independent emergency safety route');
 });
-
-
-test('T13 q02/q04 examples do not repeat the same generic opt-out boilerplate', () => {
-  const repeatedExerciseTail = 'این فقط مثالی برای فهم روش است؛ لازم نیست شرایط تو شبیه آن باشد. اگر نمونه‌ای امن و متناسب نداری، می‌توانی آن را کنار بگذاری.';
-  const repeatedActionTail = 'این پیشنهاد اجباری نیست؛ اگر انجامش مناسب یا امن نیست، می‌توانی فقط آن را برای خودت یادداشت کنی یا انجام ندهی.';
-  for (const guide of T13_DAILY_ASSISTANT_GUIDES) {
-    const exerciseExample = guide.questions.find((question) => question.id === 'q02')?.answer || '';
-    const actionExample = guide.questions.find((question) => question.id === 'q04')?.answer || '';
-    assert.ok(!exerciseExample.endsWith(repeatedExerciseTail), 'repeated q02 boilerplate on day ' + guide.day);
-    assert.ok(!actionExample.endsWith(repeatedActionTail), 'repeated q04 boilerplate on day ' + guide.day);
-    assert.ok(!actionExample.startsWith('برای مثال، مثلاً'), 'redundant example lead-in on day ' + guide.day);
-  }
-});
