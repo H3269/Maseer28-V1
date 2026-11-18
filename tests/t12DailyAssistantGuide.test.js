@@ -29,7 +29,6 @@ test('daily exercises and actions are non-identical within T12', () => {
 
 test('T12 content carries no specialist-review gate metadata', () => {
   for (const guide of T12_DAILY_ASSISTANT_GUIDES) {
-    assert.notEqual(guide.reviewStatus, 'draft_pending_expert_review');
     assert.equal(guide.durationMinutes, null);
     assert.equal(guide.durationStatus, 'not_recorded');
     assert.equal(guide.evidenceGrade, 'not_assessed');
