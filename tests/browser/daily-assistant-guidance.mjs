@@ -189,7 +189,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
         assert.equal(Object.hasOwn(day, 'risk_level'), false);
       } else {
         Object.assign(day, {
-          topic_id: topicKey === 'اهمال‌کاری' ? 'T09' : topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : topicKey === 'نفرت' ? 'T04' : topicKey === 'حسادت' ? 'T05' : topicKey === 'غم و سوگ' ? 'T06' : topicKey === 'احساس گناه' ? 'T07' : topicKey === 'تنهایی' ? 'T13' : 'T01',
+          topic_id: topicKey === 'اهمال‌کاری' ? 'T09' : topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : topicKey === 'نفرت' ? 'T04' : topicKey === 'حسادت' ? 'T05' : topicKey === 'غم و سوگ' ? 'T06' : topicKey === 'احساس گناه' ? 'T07' : topicKey === 'تنهایی' ? 'T13' : topicKey === 'کمبود انگیزه' ? 'T14' : 'T01',
           day: dayNumber,
           review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
           risk_level: 'routine',
@@ -922,6 +922,29 @@ try {
     'T13-specific safety reminder must appear exactly once after topic-label normalization');
   assert.deepEqual(t13Errors, [], 'T13 prepared assistant must not raise browser errors');
   await t13Page.close();
+
+  const t14Page = await browser.newPage();
+  const t14Errors = [];
+  t14Page.on('pageerror', (error) => t14Errors.push(String(error)));
+  await openDay(t14Page, { problem: 'کمبود انگیزه' });
+  const t14Panel = t14Page.locator('.globalAssistantDialog');
+  await t14Panel.waitFor({ state: 'visible' });
+  const t14Trigger = t14Panel.getByTestId('t14-daily-prompt-trigger');
+  await t14Trigger.waitFor({ state: 'visible' });
+  assert.equal(await t14Panel.locator('#global-assistant-message').count(), 0,
+    'T14 must remain prepared-only and must not expose free-form typing');
+  await t14Trigger.click();
+  const t14Prompt = t14Page.locator('#library-assistant-prompt-dialog');
+  await t14Prompt.waitFor({ state: 'visible' });
+  assert.equal(await t14Prompt.locator('[data-prompt-option]').count(), 14,
+    'T14 day one must expose exactly fourteen fixed prepared questions');
+  await t14Prompt.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
+  await t14Panel.getByRole('button', { name: 'ارسال' }).click();
+  await t14Page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some(node => node.innerText.includes('راهنمای روز ۱ کمبود انگیزه')));
+  await assertAssistantUsesVisibleDailySource(t14Page, t14Panel, 'کمبود انگیزه', 1, ['exercise']);
+  assert.deepEqual(t14Errors, [], 'T14 prepared assistant must not raise browser errors');
+  await t14Page.close();
 
   process.stdout.write('PASS: Chromium daily assistant guidance, real legacy retrieval across three topics, four source-derived adaptation branches, follow-up context, input bounds, persistent safety handoff, local-only privacy, blocked-day denial, and assistant-only relationship gate (WV-BROWSER-ASSISTANT)\\n');
 } finally {
