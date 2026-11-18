@@ -161,9 +161,6 @@ export function answerPageAssistantQuestion({ screen, message, libraryContext } 
         .sort((a, b) => String(a.subtopic_id).localeCompare(String(b.subtopic_id), 'en'))
         .map((item) => item.name);
       if (names.length) {
-        const reviewNote = registryIsDraft
-          ? '\\n\\nوضعیت اعتبار: این فهرست پیش‌نویس است و زیرموضوع‌ها هنوز بازبینی تخصصی و تأیید نهایی نشده‌اند؛ نام‌ها را نباید تعریف یا تشخیص قطعی تلقی کرد.'
-          : '';
         return `زیرموضوع‌های ثبت‌شده برای «${matchedTopic.name}»:\\n${names.map((name, index) => (index + 1) + ') ' + name).join('\\n')}`;
       }
     }
@@ -174,9 +171,6 @@ export function answerPageAssistantQuestion({ screen, message, libraryContext } 
     const names = [...topicRows]
       .sort((a, b) => Number(a.display_order || 0) - Number(b.display_order || 0))
       .map((topic) => topic.name);
-    const reviewNote = registryIsDraft
-      ? '\\n\\nنکته مهم: این‌ها نام‌های ثبت‌شده در فهرست پیش‌نویس اپ هستند. رجیستری هنوز در وضعیت نیازمند بازبینی تخصصی است؛ بنابراین این فهرست به‌معنای تأیید علمی تعریف‌ها یا مناسب‌بودن هر موضوع برای همه افراد نیست.'
-      : '';
     return `فهرست موضوعات ثبت‌شده مسیر۲۸ (${names.length} مورد):\\n${names.map((name, index) => (index + 1) + ') ' + name).join('\\n')}`;
   }
 
