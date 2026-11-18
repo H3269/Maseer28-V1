@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "packageId": "T15-confidence-v1",
+  "topicId": "T15",
+  "topic": "اعتمادبه‌نفس پایین",
+  "branch": "content/t15-confidence-package-20261118",
+  "baseBranch": "main",
+  "baseCommit": "a544da157bd9a93a92362c31aa41a7d1194bebc7",
+  "sourceDraft": "docs/T15_LOW_SELF_CONFIDENCE_28DAY_REDESIGN_DRAFT_B2_BE_FA.md",
+  "contentSource": "public/content/daily-text-overrides.v1.json",
+  "expectedDays": 28,
+  "questionsPerDay": 14,
+  "expectedPreparedAnswers": 392,
+  "status": "in_progress_initial_audit",
+  "contentStatus": "existing 28-day redesign and exercise/action overlay reported aligned; pending current-head full-field and semantic revalidation",
+  "subtopicMappingStatus": "proposed; days 12 and 25 need decision; day 28 multi-axis review",
+  "assistantStatus": "0/28 runtime guides; 392 prepared answers to author and validate",
+  "safetyStatus": "inherit global immediate-danger gate; add T15-specific non-blaming, anti-coercion, and cross-topic routing checks",
+  "tests": {
+    "unit": "not_started",
+    "packageValidation": "not_started",
+    "chromium": "not_started",
+    "fullValidation": "not_started",
+    "ownerLiveTest": "not_started"
+  },
+  "ownerApproval": {
+    "merge": false,
+    "publicRelease": false
+  },
+  "notes": [
+    "Do not copy T14 answers; use its validated architecture and test sequence only.",
+    "T15 is task/domain-specific self-efficacy, not global self-worth.",
+    "Do not claim expert approval or evidence grade without traceable review/source."
+  ]
+}
