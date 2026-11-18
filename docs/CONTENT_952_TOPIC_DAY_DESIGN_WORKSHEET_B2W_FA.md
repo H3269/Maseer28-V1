@@ -14,7 +14,6 @@
 - `day_role_status=provisional_not_topic_validated`: نقش روز باید برای سازه همان موضوع ارزیابی شود.
 - `topic_specific_decision=pending_topic_level_decision`: تصمیم حفظ/جایگزینی/ادغام/تغییر توالی هنوز گرفته نشده است.
 - `subtopic_fit_review=pending_subtopic_fit_review`: ارتباط روز با زیرموضوع باید با شواهد بررسی شود.
-- `expert_review_status=pending_expert_review`: تأیید تخصصی انجام نشده است.
 - `semantic_duplicate_review=pending_semantic_review`: شباهت معنایی باید پس از نگارش طرح بررسی شود.
 - `safety_gate_review=pending_safety_review`: گیت ایمنی برای تمرین خاص هنوز ارزیابی نشده است.
 
@@ -33,6 +32,5 @@
 5. تمرین، راهکار و نسخه‌های جایگزین را طراحی کنید.
 6. معیار موفقیت، بازتاب، شرایط توقف، منع/احتیاط و منابع را ثبت کنید.
 7. تکرار عینی و معنایی را در همان موضوع و کل ۳۴ موضوع بازبینی کنید.
-8. وضعیت بازبینی تخصصی را مستقل ثبت کنید؛ draft را approved علامت نزنید.
 
 **محدودیت:** این کاربرگ نباید مستقیماً به اپ یا مسیر انتشار متصل شود. تا زمان تأیید، فقط سند طراحی است.
