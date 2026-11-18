@@ -2,6 +2,7 @@ name: Validate Path28 content
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, labeled]
     paths:
       - 'public/content/**'
       - 'public/assistant/**'
@@ -409,7 +410,7 @@ jobs:
 # Topic-package PRs are validated in isolation; the full 34-topic suite is reserved for integration.
   validate-topic-package:
     name: Validate only changed topic package tests
-    if: ${{ (github.event_name == 'push' && startsWith(github.ref_name, 'content/t')) || (github.event_name == 'pull_request' && startsWith(github.head_ref, 'content/t')) }}
+    if: ${{ (github.event_name == 'push' && startsWith(github.ref_name, 'content/t')) || (github.event_name == 'pull_request' && (startsWith(github.head_ref, 'content/t') || contains(github.event.pull_request.labels.*.name, 'topic-package-validation'))) }}
     runs-on: ubuntu-24.04
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
