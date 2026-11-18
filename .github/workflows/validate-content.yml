@@ -316,6 +316,7 @@ jobs:
           path: public/content/runtime-v1/
           if-no-files-found: error
       - name: Run focused T01-T14 assistant and safety unit tests
+        if: ${{ always() && steps.install.outcome == 'success' }}
         run: >-
           node --test
           tests/angerDailyAssistantPrompts.test.js
@@ -365,6 +366,7 @@ jobs:
           cat /tmp/path28-vite.log
           exit 1
       - name: Run focused Chromium safety and assistant regressions
+        if: ${{ always() && steps.preview.outcome == 'success' }}
         env:
           PATH28_BASE_URL: http://127.0.0.1:4173/Maseer28/
         run: |
@@ -376,6 +378,7 @@ jobs:
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/reader-open-paths.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/reader-open-recommendation.mjs
       - name: Capture startup performance diagnostics (mobile and desktop)
+        if: ${{ always() && steps.preview.outcome == 'success' }}
         env:
           PATH28_BASE_URL: http://127.0.0.1:4173/Maseer28/
         run: |
@@ -439,12 +442,17 @@ jobs:
           mapfile -t unit_tests < /tmp/topic-unit-tests.txt
           node --test "${unit_tests[@]}"
       - name: Build application
+        id: build
+        if: ${{ always() && steps.install.outcome == 'success' }}
         run: |
           PATH28_DEPLOY_BASE=/Maseer28/ npm run prepare:production
           npm run build
       - name: Verify preinstalled Chromium
+        if: ${{ always() && steps.install.outcome == 'success' }}
         run: npx --yes --package=playwright@1.55.0 playwright --version
       - name: Start production preview
+        id: preview
+        if: ${{ always() && steps.build.outcome == 'success' }}
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/path28-vite.log 2>&1 &
           echo $! > /tmp/path28-vite.pid
