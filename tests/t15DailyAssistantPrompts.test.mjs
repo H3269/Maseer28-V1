@@ -219,3 +219,9 @@ test('T15 prepared answer formatting has no duplicated rest-action label', () =>
     assert.doesNotMatch(lightAnswer, /نسخه استراحت اقدام:\s*نسخه استراحت اقدام:/);
   }
 });
+
+
+test('T15 feedback progress remains self-directed', () => {
+  assert.match(T15_DAILY_ASSISTANT_GUIDES[11].progressVersion, /درخواست بازخورد دوم لازم نیست/);
+  assert.match(T15_DAILY_ASSISTANT_GUIDES[14].progressVersion, /ثبت رفتار خودت به‌تنهایی کافی است/);
+});
