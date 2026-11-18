@@ -43,8 +43,8 @@ try {
             updatedAt: '2026-01-17T12:00:00.000Z',
           },
           27: {
-            status: 'skipped_human_review',
-            feedbackText: 'این تمرین به دلیل نیاز به بازبینی انسانی اجرا نشد؛ هیچ امتیازی ثبت نشده است.',
+            status: 'skipped_without_score',
+            feedbackText: 'این تمرین به دلیل نیاز به اجرای تمرین اجرا نشد؛ هیچ امتیازی ثبت نشده است.',
             exerciseId: 'T01-D27',
             updatedAt: '2026-01-27T12:00:00.000Z',
           },
