@@ -279,10 +279,6 @@ function exampleTemplateForMessage(message, dayData) {
   return blankResponseTemplate(source);
 }
 
-function hasApprovedDayMetadata(dayData) {
-  return dayData?.review_status === 'approved';
-}
-
 export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, conversationState } = {}) {
   const text = String(message || '').trim();
   let state = boundedState(conversationState);
@@ -398,20 +394,19 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
   const action = String(dayData?.actionText || dayData?.action || '').trim();
   const topic = String(problem || 'موضوع انتخاب‌شده').trim();
   const normalized = normalize(text);
-  const reviewed = hasApprovedDayMetadata(dayData);
 
   if (!exercise && !action) {
     return result('متن تمرین و راهکار این روز در دسترس نیست؛ نمی‌خواهم چیزی را حدس بزنم. از صفحه روز خارج نشو و بعداً دوباره تلاش کن.', state, text);
   }
 
   if (/(?:چرا|علت|دلیل)/u.test(normalized)) {
-    const rationale = reviewed && String(dayData?.teaching_point || dayData?.learning_objective || '').trim();
+    const rationale = String(dayData?.teaching_point || dayData?.learning_objective || '').trim();
     const intro = String(dayData?.intro || '').trim();
     const response = rationale
-      ? 'توضیح ثبت‌شده و بازبینی‌شده برای این روز:\n' + rationale
+      ? 'توضیح ثبت‌شده برای این روز:\n' + rationale
       : intro
-        ? 'در معرفی همین روز آمده است:\n' + intro + '\n\nاین متن، هدف کلی روز را بیان می‌کند؛ دلیل تخصصی یا درمانی جداگانه‌ای در داده قابل استفاده دستیار ثبت نشده است و من آن را حدس نمی‌زنم.'
-        : 'برای این روز توضیح تأییدشده‌ای درباره چرایی تمرین در داده قابل استفاده دستیار ثبت نشده است. نمی‌خواهم دلیل روان‌شناختی را حدس بزنم. اگر بگویی کدام جمله یا بخش برایت سؤال‌برانگیز است، می‌توانم ساختار و منظور صریح همان متن را روشن‌تر کنم.';
+        ? 'در معرفی همین روز آمده است:\n' + intro + '\n\nاین متن، هدف کلی روز را بیان می‌کند؛ توضیح جداگانه‌ای در داده این روز ثبت نشده است و من آن را حدس نمی‌زنم.'
+        : 'برای این روز توضیحی درباره چرایی تمرین در داده موجود ثبت نشده است. نمی‌خواهم دلیل روان‌شناختی را حدس بزنم. اگر بگویی کدام جمله یا بخش برایت سؤال‌برانگیز است، می‌توانم ساختار و منظور صریح همان متن را روشن‌تر کنم.';
     return result(response, { ...state, lastTopic: topic.slice(0, 100) }, text);
   }
 
@@ -420,26 +415,26 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
   }
 
   if (/(?:چقدر زمان|چند دقیقه|مدت زمان|مدتش چقدر)/u.test(normalized)) {
-    const duration = reviewed && Number.isInteger(dayData?.duration_minutes) ? dayData.duration_minutes : null;
+    const duration = Number.isInteger(dayData?.duration_minutes) ? dayData.duration_minutes : null;
     return result(duration
-      ? 'مدت ثبت‌شده و بازبینی‌شده برای این روز ' + String(duration).replace(/[0-9]/g, (digit) => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]) + ' دقیقه است. لازم نیست بیشتر از حد قابل‌تحمل ادامه بدهی.'
-      : 'برای این روز مدت زمان تأییدشده‌ای در داده قابل استفاده دستیار وجود ندارد؛ بنابراین عددی تعیین نمی‌کنم. فقط متن اصلی را در حدی که برایت قابل‌تحمل است بخوان و اگر درباره خود دستور ابهام داری همان بخش را بپرس.',
+      ? 'مدت ثبت‌شده برای این روز ' + String(duration).replace(/[0-9]/g, (digit) => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]) + ' دقیقه است. لازم نیست بیشتر از حد قابل‌تحمل ادامه بدهی.'
+      : 'برای این روز مدت زمانی در داده این روز ثبت نشده است؛ بنابراین عددی تعیین نمی‌کنم. فقط متن اصلی را در حدی که برایت قابل‌تحمل است بخوان و اگر درباره خود دستور ابهام داری همان بخش را بپرس.',
     state, text);
   }
 
   if (/(?:معیار|درست انجام|موفقیت)/u.test(normalized)) {
-    const criterion = reviewed ? String(dayData?.success_criterion || '').trim() : '';
+    const criterion = String(dayData?.success_criterion || '').trim();
     return result(criterion
-      ? 'معیار ثبت‌شده و بازبینی‌شده برای این روز:\n' + criterion
-      : 'برای این روز معیار موفقیتِ تأییدشده‌ای در داده قابل استفاده دستیار ثبت نشده است. از روی متن می‌توانیم فقط بررسی کنیم چه چیزی خواسته شده؛ اما معیار تازه‌ای از خودمان نمی‌سازیم.',
+      ? 'معیار ثبت‌شده برای این روز:\n' + criterion
+      : 'برای این روز معیار موفقیتی در داده این روز ثبت نشده است. از روی متن می‌توانیم فقط بررسی کنیم چه چیزی خواسته شده؛ اما معیار تازه‌ای از خودمان نمی‌سازیم.',
     state, text);
   }
 
   if (/(?:شرایط توقف|کی متوقف|چه وقت متوقف|توقف تمرین)/u.test(normalized)) {
-    const conditions = reviewed && Array.isArray(dayData?.stop_conditions) ? dayData.stop_conditions.filter(Boolean) : [];
+    const conditions = Array.isArray(dayData?.stop_conditions) ? dayData.stop_conditions.filter(Boolean) : [];
     const closing = String(dayData?.closing || '').trim();
     const response = conditions.length
-      ? 'شرایط توقف ثبت‌شده و بازبینی‌شده برای این روز:\n' + conditions.map((item, index) => (index + 1) + ') ' + item).join('\n') + (closing ? '\n\nیادآوری پایانی متن روز:\n' + closing : '')
+      ? 'شرایط توقف ثبت‌شده برای این روز:\n' + conditions.map((item, index) => (index + 1) + ') ' + item).join('\n') + (closing ? '\n\nیادآوری پایانی متن روز:\n' + closing : '')
       : closing
         ? 'یادآوری پایانی متن همین روز:\n' + closing
         : 'شرایط توقف اختصاصی برای این روز در داده موجود نیست. اگر همین حالا احساس خطر، فشار شدید یا ناایمنی داری، تمرین را ادامه نده و از حمایت انسانی مناسب کمک بگیر.';
