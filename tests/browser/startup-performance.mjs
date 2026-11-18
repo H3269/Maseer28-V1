@@ -95,8 +95,9 @@ async function measure(viewport, run) {
       }
     }, true);
     const recordAppVisibility = () => {
+      if (window.__path28SplashAnimation.appVisibleAt !== null) return;
       const modal = document.querySelector('#copyrightModal');
-      if (!modal || window.__path28SplashAnimation.appVisibleAt !== null) return;
+      if (!modal) return;
       const style = getComputedStyle(modal);
       const rect = modal.getBoundingClientRect();
       if (style.display !== 'none' && style.visibility !== 'hidden'
@@ -104,6 +105,14 @@ async function measure(viewport, run) {
         window.__path28SplashAnimation.appVisibleAt = performance.now();
       }
     };
+    // The app modal is inserted before its CSS fade-in becomes visible.
+    // Re-check every animation frame until its first visible frame is recorded.
+    const pollAppVisibility = () => {
+      if (window.__path28SplashAnimation.appVisibleAt !== null) return;
+      recordAppVisibility();
+      if (window.__path28SplashAnimation.appVisibleAt === null) requestAnimationFrame(pollAppVisibility);
+    };
+    requestAnimationFrame(pollAppVisibility);
     const inspectFrame = (image) => {
       if (!image.isConnected) return;
       const style = getComputedStyle(image);
