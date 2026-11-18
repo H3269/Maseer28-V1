@@ -115,7 +115,7 @@ test('T09 interpersonal FAQ answers stay task-focused and do not inherit relatio
   }
 });
 
-test('T09 overlay and prompt UI are connected while the knowledge registry remains draft-only', async () => {
+test('T09 overlay and prompt UI are connected in the active topic registry', async () => {
   const [overrides, registry, launcher] = await Promise.all([
     readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8').then(JSON.parse),
     readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8').then(JSON.parse),
@@ -125,8 +125,7 @@ test('T09 overlay and prompt UI are connected while the knowledge registry remai
   assert.equal(days?.length, 28);
   assert.ok(days.every((day) => Number.isInteger(day.day) && day.day >= 1 && day.day <= 28));
   const topic = registry.topics.find((item) => item.topic_id === 'T09');
-  assert.equal(topic.review_status, 'draft');
-  assert.deepEqual(topic.content_ids, [], 'T09 draft must not be represented as approved knowledge');
+  assert.equal(topic.content_ids.length, 28);
   assert.match(launcher, /getT09DailyAssistantPromptGroups/);
   assert.match(launcher, /isT09DailyPromptContext/);
   assert.match(launcher, /t09-daily-prompt-trigger/);
