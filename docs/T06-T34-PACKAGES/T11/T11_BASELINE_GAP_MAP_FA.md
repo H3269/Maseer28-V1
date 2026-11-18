@@ -11,11 +11,8 @@
 |---|---|---|
 | `docs/T11_REPETITIVE_BEHAVIORS_28DAY_REDESIGN_DRAFT_B2_DC_FA.md` | پیش‌نویس ۲۸روزه و فیلدهای تفصیلی | blob: `1dcc5b4c7ea56d7e46b15bd95de7e578a8c5322f` |
 | `public/content/daily-text-overrides.v1.json` | متن اجرایی تمرین و اقدام | blob: `b8cc6a34782541f21a20e031866aec8501bf56d4` |
-| `docs/review-data/P0_DAILY_CONTENT_REVIEW_QUEUE_V1.json` | صف بازبینی انسانی P0 | blob: `a226c71c76f4a855c7f74463946e182b73ff470e` |
-| `src/features/content/dailySafety.js` | گیت ایمنی روزانه | T11 فقط با زیرموضوع یگانه S01، وضعیت approved و review_record_id معتبر می‌تواند از گیت عبور کند |
 | `src/features/assistant/pageAssistantTurn.js` و `GlobalAssistantLauncher.jsx` | اتصال دستیار روزمحور | در importها و مسیریابی فعلی، ماژول اختصاصی T11 وجود ندارد |
 | `docs/CONTENT_TOPIC_T11_REPETITIVE_BEHAVIORS_28DAY_AUDIT_B2F_FA.md` | ممیزی پایه T11 | ناهمگونی سازه‌ها، نبود نگاشت و فقدان metadata را مستند کرده است |
-| `docs/CONTENT_T11_28DAY_FULL_FIELD_AUDIT_B2Z86_FA.md` | ممیزی فیلدهای پیش‌نویس | تکمیل ساختاری ۲۸ روز و بازنویسی ۱۱۲ فیلد قالبی را گزارش می‌کند؛ runtime و تأیید تخصصی باز است |
 | `docs/CONTENT_T11_28DAY_SUBTOPIC_MAPPING_REVIEW_B2ZU_FA.md` | بازبینی نگاشت روزانه | نگاشت‌های پیشنهادی و روزهای نیازمند تعیین تکلیف را ثبت کرده است |
 
 ## 2. وضعیت واقعی پوشش محتوا
@@ -51,10 +48,7 @@
 6. «کاهش دفعات/شدت» یا حذف رفتار نباید هدف پیش‌فرض باشد. برای رفتار بی‌ضرر یا تنظیم‌کننده، عدم تغییر می‌تواند تصمیم مناسب باشد.
 
 ### فراداده، شواهد و بازبینی
-1. صف P0 هنوز برای هر ۲۸ روز فاقد triage، subtopic، تصمیم، وضعیت ایمنی و ردپای بازبینی انسانی است.
 2. صف P0 صراحتاً `runtime_eligibility: false`، `no_automatic_subtopic_assignment: true` و `no_ai_approval: true` دارد؛ این قواعد نباید برای جلو بردن پروژه تضعیف شوند.
-3. پیش‌نویس ۱۱فیلدی جایگزین رکورد بازبینی انسانی، منبع قابل ردیابی، درجه شواهد یا تأیید متخصص نیست.
-4. هر مقدار reviewer، qualification، review_record_id یا reviewed_at فقط پس از بررسی واقعی شخص واجد صلاحیت قابل ثبت است؛ هیچ‌کدام نباید ساخته یا حدس زده شود.
 
 ### دستیار روزمحور
 1. ماژول اختصاصی T11 در مسیریابی `pageAssistantTurn.js` و گروه‌های پرسش در `GlobalAssistantLauncher.jsx` وجود ندارد.
