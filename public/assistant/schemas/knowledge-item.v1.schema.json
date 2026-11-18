@@ -26,7 +26,7 @@
     "safety": {
       "type": "object", "additionalProperties": false,
       "properties": {
-        "level": { "enum": ["routine", "caution", "human_review_required"] },
+        "level": { "enum": ["routine", "caution", "urgent_support_required"] },
         "stop_conditions": { "type": "array", "items": { "type": "string", "maxLength": 300 }, "maxItems": 10 }
       }
     }
