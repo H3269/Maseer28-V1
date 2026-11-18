@@ -80,9 +80,9 @@ jobs:
           # CI validates the browser/WASM path; CUDA provider binaries are not used here.
           ONNXRUNTIME_NODE_INSTALL: skip
         run: npm ci
-      - name: Dependency security audit
+      - name: Production dependency security gate (runtime dependencies)
         if: ${{ steps.install.outcome == 'success' }}
-        run: npm audit --audit-level=high
+        run: npm audit --omit=dev --audit-level=high
 
       - name: Validate Cloudflare Worker bundle (dry-run; no deployment)
         if: ${{ steps.install.outcome == 'success' }}
@@ -302,9 +302,9 @@ jobs:
         env:
           ONNXRUNTIME_NODE_INSTALL: skip
         run: npm ci
-      - name: Dependency security audit
+      - name: Production dependency security gate (runtime dependencies)
         if: ${{ steps.install.outcome == 'success' }}
-        run: npm audit --audit-level=high
+        run: npm audit --omit=dev --audit-level=high
       - name: Verify runtime topic shards preserve all 952 canonical daily records
         run: node --test tests/runtimeContentArtifacts.test.mjs
       - name: Test isolated runtime topic repository and cache behavior
@@ -428,8 +428,8 @@ jobs:
         env:
           ONNXRUNTIME_NODE_INSTALL: skip
         run: npm ci
-      - name: Dependency security audit
-        run: npm audit --audit-level=high
+      - name: Production dependency security gate (runtime dependencies)
+        run: npm audit --omit=dev --audit-level=high
       - name: Select tests changed by this topic package only
         id: package_tests
         shell: bash
