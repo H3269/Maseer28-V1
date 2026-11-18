@@ -22,7 +22,6 @@
 - `T10-S02`: زمان‌بندی و ریتم خواب
 - `T10-S03`: عوامل رفتاری، محیطی و نیازمند ارزیابی پزشکی
 
-وضعیت هر سه زیرموضوع draft / pending expert review است؛ تعریف عملیاتی، شواهد، پرسش ارزیابی، قواعد ایمنی و پیوند محتوایی ندارند. فهرست `content_ids` برای هر سه خالی است.
 
 **یافته قطعی:** هیچ‌یک از ۲۸ رکورد T10 دارای `topic_id` یا `subtopic_ids` نیست. در نتیجه هیچ روزی به هیچ‌یک از سه زیرموضوع متصل نشده است و نمی‌توان ادعا کرد مسیر روزانه، هر سه زیرموضوع را پوشش می‌دهد.
 
@@ -42,7 +41,6 @@
 - `learning_objective`, `target_skill`, `teaching_point`, `mechanism`, `exercise_type`
 - `duration_minutes`, `reflection_prompt`, `success_criterion`
 - `stop_conditions`, `contraindications`, `when_to_seek_human_support`
-- `source_ids`, `evidence_grade`, `review_status`, `review_record_id`
 
 بنابراین برای هیچ روزی هدف قابل سنجش، مهارت هدف، سازوکار، معیار موفقیت، شرایط توقف، منبع یا سابقه بازبینی روزانه ثبت نشده است. وضعیت بازبینی روزانه را نمی‌توان از وضعیت draft رجیستری موضوع استنتاج کرد.
 
@@ -86,4 +84,3 @@
 - آمادگی محتوای T10 برای ادعای «مسیر اختصاصی خواب» یا «CBT-I»: تأیید نمی‌شود.
 - هیچ تغییر در محتوای قابل نمایش، کد، رابط، ایمنی یا انتشار انجام نشده است.
 
-**وضعیت ممیزی:** `B2-E_completed_internal_audit_pending_expert_review_and_content_redesign`
