@@ -112,7 +112,7 @@ try {
     await page.waitForFunction((previous) => {
       const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
       return replies.length > previous
-        && /راهنمای روز 1 کمبود انگیزه/.test(replies.at(-1)?.innerText || '');
+        && /راهنمای روز (?:1|۱) کمبود انگیزه/.test(replies.at(-1)?.innerText || '');
     }, before);
   } catch (error) {
     console.error('T14_MESSAGES', JSON.stringify(await dialog.locator('.assistantMessage').allInnerTexts()));
