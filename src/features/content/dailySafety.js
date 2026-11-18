@@ -22,293 +22,82 @@ export function getControlContextForDay(day) {
   return expectedContext && day.control_context === expectedContext ? expectedContext : null;
 }
 
-function isFearTopicDay(day) {
-  if (!day || typeof day !== 'object') return false;
-  const id = String(day.id || '');
-  return day.topic_id === 'T03'
-    || /^ترس-[0-9]{1,2}$/u.test(id)
-    || /^T03-D[0-9]{1,2}$/i.test(id);
-}
-
-const FEAR_SUBTOPIC_IDS = new Set(['T03-S01', 'T03-S02', 'T03-S03']);
-
-function hasApprovedFearReview(day) {
-  const requiredText = [
-    'learning_objective', 'target_skill', 'teaching_point',
-    'exercise_type', 'instructions', 'reflection_prompt',
-    'success_criterion', 'when_to_seek_human_support',
-  ];
-  if (day.review_status !== 'approved'
-    || day.topic_id !== 'T03'
-    || !Array.isArray(day.subtopic_ids)
-    || day.subtopic_ids.length !== 1
-    || !FEAR_SUBTOPIC_IDS.has(day.subtopic_ids[0])
-    || !Number.isInteger(day.duration_minutes)
-    || day.duration_minutes < 1
-    || day.duration_minutes > 60
-    || !Array.isArray(day.stop_conditions)
-    || day.stop_conditions.length === 0
-    || !Array.isArray(day.contraindications)
-    || day.contraindications.length === 0
-    || !Array.isArray(day.source_ids)
-    || day.source_ids.length === 0
-    || !['not_assessed', 'very_low', 'low', 'moderate', 'high'].includes(day.evidence_grade)
-    || typeof day.review_record_id !== 'string'
-    || !day.review_record_id.trim()
-    || typeof day.reviewer_name !== 'string'
-    || !day.reviewer_name.trim()
-    || !['qualified_clinician', 'evidence_reviewer', 'safety_reviewer'].includes(day.reviewer_role)
-    || !day.reviewed_at
-    || !Number.isFinite(Date.parse(day.reviewed_at))
-    || requiredText.some((field) => typeof day[field] !== 'string' || !day[field].trim())) {
-    return false;
-  }
-
-  // Day 14's generic behavior-reduction instruction needs an explicit,
-  // reviewed safety rule and caution classification after redesign.
-  if (Number(day.day) === 14) {
-    return day.risk_level === 'caution'
-      && Array.isArray(day.safety_rule_ids)
-      && day.safety_rule_ids.length > 0;
-  }
-  return true;
-}
-
-function isRepetitiveBehaviorTopicDay(day) {
-  if (!day || typeof day !== 'object') return false;
-  const id = String(day.id || '');
-  const canonicalId = /^عادت‌های تکراری-(?:0[1-9]|1[0-9]|2[0-8])$/u.test(id)
-    || /^T11-D(?:0[1-9]|1[0-9]|2[0-8])$/i.test(id);
-  return canonicalId && (day.topic_id == null || day.topic_id === 'T11');
-}
-
-function isBoundaryTopicDay(day) {
+function topicIs(day, topicId, legacyPattern) {
   return Boolean(day && typeof day === 'object' && (
-    day.topic_id === 'T12'
-    || /^مرزبندی و نه گفتن-[0-9]{1,2}$/u.test(String(day.id || ''))
-    || /^T12-D[0-9]{1,2}$/i.test(String(day.id || ''))
+    day.topic_id === topicId || legacyPattern.test(String(day.id || ''))
   ));
 }
+const isFearTopicDay = (day) => topicIs(day, 'T03', /^(?:ترس-[0-9]{1,2}|T03-D[0-9]{1,2})$/iu);
+const isBoundaryTopicDay = (day) => topicIs(day, 'T12', /^(?:مرزبندی و نه گفتن-[0-9]{1,2}|T12-D[0-9]{1,2})$/u);
+const isSleepTopicDay = (day) => topicIs(day, 'T10', /^(?:بی‌خوابی و مشکلات خواب-[0-9]{1,2}|T10-D[0-9]{1,2})$/u);
+const isLonelinessDayFourteen = (day) => Boolean(day && typeof day === 'object' && (
+  (day.topic_id === 'T13' && Number(day.day) === 14)
+  || /^تنهایی-14$/u.test(String(day.id || ''))
+  || /^T13-D14$/i.test(String(day.id || ''))
+));
+const isLowEnergyTopicDay = (day) => topicIs(day, 'T32', /^(?:بی‌انگیزگی-[0-9]{1,2}|T32-D[0-9]{1,2})$/u);
+const isRepetitiveNegativeThinkingTopicDay = (day) => topicIs(day, 'T16', /^(?:افکار منفی و نشخوار فکری-[0-9]{1,2}|T16-D[0-9]{1,2})$/u);
+const isRelationshipDifficultiesTopicDay = (day) => topicIs(day, 'T17', /^(?:مشکلات رابطه-[0-9]{1,2}|T17-D[0-9]{1,2})$/u);
+const isRepetitiveBehaviorTopicDay = (day) => topicIs(day, 'T11', /^(?:عادت‌های تکراری-(?:0[1-9]|1[0-9]|2[0-8])|T11-D(?:0[1-9]|1[0-9]|2[0-8]))$/u);
 
-
-function isSleepTopicDay(day) {
-  return Boolean(day && typeof day === 'object' && (
-    day.topic_id === 'T10'
-    || /^بی‌خوابی و مشکلات خواب-[0-9]{1,2}$/u.test(String(day.id || ''))
-    || /^T10-D[0-9]{1,2}$/i.test(String(day.id || ''))
-  ));
-}
-
-function isLonelinessDayFourteen(day) {
-  return Boolean(day && typeof day === 'object' && (
-    (day.topic_id === 'T13' && Number(day.day) === 14)
-    || /^تنهایی-14$/u.test(String(day.id || ''))
-    || /^T13-D14$/i.test(String(day.id || ''))
-  ));
-}
-
-function isLowEnergyTopicDay(day) {
-  return Boolean(day && typeof day === 'object' && (
-    day.topic_id === 'T32'
-    || /^بی‌انگیزگی-[0-9]{1,2}$/u.test(String(day.id || ''))
-    || /^T32-D[0-9]{1,2}$/i.test(String(day.id || ''))
-  ));
-}
-
-function isRepetitiveNegativeThinkingTopicDay(day) {
-  return Boolean(day && typeof day === 'object' && (
-    day.topic_id === 'T16'
-    || /^افکار منفی و نشخوار فکری-[0-9]{1,2}$/u.test(String(day.id || ''))
-    || /^T16-D[0-9]{1,2}$/i.test(String(day.id || ''))
-  ));
-}
-
-function isRelationshipDifficultiesTopicDay(day) {
-  return Boolean(day && typeof day === 'object' && (
-    day.topic_id === 'T17'
-    || /^مشکلات رابطه-[0-9]{1,2}$/u.test(String(day.id || ''))
-    || /^T17-D[0-9]{1,2}$/i.test(String(day.id || ''))
-  ));
-}
-
-const RELATIONSHIP_DIFFICULTIES_SUBTOPIC_IDS = new Set(['T17-S01', 'T17-S02', 'T17-S03']);
-
-function hasApprovedRelationshipDifficultiesReview(day) {
-  const legacyIdMatch = /^مشکلات رابطه-([0-9]{1,2})$/u.exec(String(day.id || ''));
-  const canonicalIdMatch = /^T17-D([0-9]{1,2})$/i.exec(String(day.id || ''));
-  const idDay = Number(legacyIdMatch?.[1] || canonicalIdMatch?.[1]);
-  const dayNumber = Number(day.day);
-  const identityMatches = Number.isInteger(idDay)
-    && idDay >= 1
-    && idDay <= 28
-    && idDay === dayNumber;
-  const requiredText = [
-    'learning_objective', 'target_skill', 'teaching_point',
-    'exercise_type', 'instructions', 'reflection_prompt',
-    'success_criterion', 'when_to_seek_human_support',
-  ];
-  if (day.topic_id !== 'T17'
-    || !identityMatches
-    || !Number.isInteger(Number(day.day))
-    || Number(day.day) < 1
-    || Number(day.day) > 28
-    || day.review_status !== 'approved'
-    || !Array.isArray(day.subtopic_ids)
-    || day.subtopic_ids.length !== 1
-    || !RELATIONSHIP_DIFFICULTIES_SUBTOPIC_IDS.has(day.subtopic_ids[0])
-    || !Number.isInteger(day.duration_minutes)
-    || day.duration_minutes < 1
-    || day.duration_minutes > 60
-    || !Array.isArray(day.stop_conditions)
-    || day.stop_conditions.length === 0
-    || !Array.isArray(day.contraindications)
-    || day.contraindications.length === 0
-    || !Array.isArray(day.source_ids)
-    || day.source_ids.length === 0
-    || !['not_assessed', 'very_low', 'low', 'moderate', 'high'].includes(day.evidence_grade)
-    || typeof day.review_record_id !== 'string'
-    || !day.review_record_id.trim()
-    || typeof day.reviewer_name !== 'string'
-    || !day.reviewer_name.trim()
-    || day.reviewer_role !== 'relationship_safety_reviewer'
-    || !day.reviewed_at
-    || !Number.isFinite(Date.parse(day.reviewed_at))
-    || requiredText.some((field) => typeof day[field] !== 'string' || !day[field].trim())) {
-    return false;
-  }
-
-  if (day.subtopic_ids[0] === 'T17-S03') {
-    return day.risk_level === 'caution'
-      && Array.isArray(day.safety_rule_ids)
-      && day.safety_rule_ids.length > 0
-      && day.reviewer_role === 'relationship_safety_reviewer';
-  }
-  return true;
-}
-
-const RNT_SUBTOPIC_IDS = new Set(['T16-S01', 'T16-S02', 'T16-S03']);
-
-function hasApprovedRntReview(day) {
-  return day.review_status === 'approved'
-    && Array.isArray(day.subtopic_ids)
+function hasSubtopic(day, allowed) {
+  return Array.isArray(day?.subtopic_ids)
     && day.subtopic_ids.length === 1
-    && RNT_SUBTOPIC_IDS.has(day.subtopic_ids[0])
-    && typeof day.review_record_id === 'string'
-    && day.review_record_id.trim().length > 0
-    && Array.isArray(day.safety_rule_ids)
-    && day.safety_rule_ids.length > 0;
+    && allowed.has(day.subtopic_ids[0]);
 }
-
-const LOW_ENERGY_SUBTOPIC_IDS = new Set(['T32-S01', 'T32-S02', 'T32-S03']);
-
-function hasApprovedLowEnergyReview(day) {
-  if (day.review_status !== 'approved'
-    || !Array.isArray(day.subtopic_ids)
-    || day.subtopic_ids.length !== 1
-    || !LOW_ENERGY_SUBTOPIC_IDS.has(day.subtopic_ids[0])
-    || typeof day.review_record_id !== 'string'
-    || day.review_record_id.trim().length === 0) return false;
-
-  if (day.subtopic_ids[0] === 'T32-S03') {
-    return day.risk_level === 'caution'
-      && Array.isArray(day.safety_rule_ids)
-      && day.safety_rule_ids.length > 0;
-  }
-  return true;
+function hasSafetyRules(day) {
+  return Array.isArray(day?.safety_rule_ids) && day.safety_rule_ids.length > 0;
 }
-
-const SLEEP_SUBTOPIC_IDS = new Set(['T10-S01', 'T10-S02', 'T10-S03']);
-
-function hasApprovedSleepReview(day) {
-  if (day.review_status !== 'approved'
-    || !Array.isArray(day.subtopic_ids)
-    || day.subtopic_ids.length !== 1
-    || !SLEEP_SUBTOPIC_IDS.has(day.subtopic_ids[0])
-    || typeof day.review_record_id !== 'string'
-    || day.review_record_id.trim().length === 0) return false;
-
-  if (day.subtopic_ids[0] === 'T10-S03') {
-    return day.risk_level === 'caution'
-      && Array.isArray(day.safety_rule_ids)
-      && day.safety_rule_ids.length > 0;
-  }
-  return true;
+function riskMode(day) {
+  const level = day?.risk_level;
+  if (level === 'human_review_required' || level === 'high' || level === 'moderate') return 'blocked';
+  if (level === 'caution') return 'caution';
+  if (level === 'routine' || level === undefined || level === null || level === '') return 'routine';
+  return 'caution';
 }
 
 export function getDailySafetyMode(day) {
   if (!day || typeof day !== 'object') return 'routine';
-  // Main-branch owner live-test window for T11: allow the complete daily
-  // interaction to be exercised before the owner records review decisions.
-  // This is not an expert approval and must be removed before public release.
-  if (isRepetitiveBehaviorTopicDay(day)) return 'routine';
-  if (isFearTopicDay(day) && !hasApprovedFearReview(day)) return 'blocked';
-  // T12 owner live-test mode: no specialist-review approval gate is applied here.
-  // Preserve the content risk classification so S03 days display the caution notice.
+
+  if (isRepetitiveBehaviorTopicDay(day)) return riskMode(day);
+
+  if (isFearTopicDay(day)) {
+    if (Number(day.day) === 14 && (day.risk_level !== 'caution' || !hasSafetyRules(day))) return 'blocked';
+    return riskMode(day);
+  }
+
   if (isBoundaryTopicDay(day)) {
-    const subtopics = Array.isArray(day.subtopic_ids) ? day.subtopic_ids : [];
-    if (subtopics.includes('T12-S03')) return day.risk_level === 'caution' ? 'caution' : 'blocked';
-    return day.risk_level === 'routine' ? 'routine' : 'blocked';
-  }
-  // Temporary owner-review preview for T10: expert sign-off is deliberately
-  // performed after the owner can inspect the full package in the live app.
-  // Keep the risk classification gate active; unknown/missing risk stays blocked.
-  if (isSleepTopicDay(day)) {
-    const selectedSubtopics = Array.isArray(day.subtopic_ids) ? day.subtopic_ids : [];
-    if (selectedSubtopics.length === 1 && selectedSubtopics[0] === 'T10-S03') {
-      return day.risk_level === 'caution'
-        && Array.isArray(day.safety_rule_ids)
-        && day.safety_rule_ids.length > 0 ? 'caution' : 'blocked';
+    if (Array.isArray(day.subtopic_ids) && day.subtopic_ids.includes('T12-S03')) {
+      return day.risk_level === 'caution' ? 'caution' : 'blocked';
     }
-    if (day.risk_level === 'routine') return 'routine';
-    if (day.risk_level === 'caution') return 'caution';
-    return 'blocked';
-  }
-  // T13 day 14: the owner-clinician's explicit approval is recorded in the
-  // project event log. Specialist sign-off is not a runtime publication gate.
-  // Keep a caution state when declared; retain hard blocking for explicitly
-  // elevated risk, but do not block because review metadata is pending/missing.
-  if (isLonelinessDayFourteen(day)) {
-    if (day.risk_level === 'high' || day.risk_level === 'moderate') return 'blocked';
-    return day.risk_level === 'caution' ? 'caution' : 'routine';
-  }
-  if (isLowEnergyTopicDay(day) && !hasApprovedLowEnergyReview(day)) return 'blocked';
-  if (isRepetitiveNegativeThinkingTopicDay(day) && !hasApprovedRntReview(day)) return 'blocked';
-  if (isRelationshipDifficultiesTopicDay(day) && !hasApprovedRelationshipDifficultiesReview(day)) return 'blocked';
-  if (isControlTopicDay(day)) {
-    // "Control" conflates personal over-control with interpersonal coercive
-    // control. Release only after an approved day is assigned to exactly one
-    // explicit subtype; approval alone must not erase that distinction.
-    if (day.review_status !== 'approved' || !getControlContextForDay(day)) return 'blocked';
+    return riskMode(day);
   }
 
-  // Risk metadata is not an approval. Any v2 record must carry an explicit
-  // approved review state; missing, draft, or pending review fails closed.
-  const hasReviewStatus = Object.prototype.hasOwnProperty.call(day, 'review_status');
-  const hasRiskLevel = Object.prototype.hasOwnProperty.call(day, 'risk_level');
-  if (!isSleepTopicDay(day) && ((hasReviewStatus && day.review_status !== 'approved') || (hasRiskLevel && !hasReviewStatus))) {
+  if (isSleepTopicDay(day)) {
+    if (hasSubtopic(day, new Set(['T10-S03']))) {
+      return day.risk_level === 'caution' && hasSafetyRules(day) ? 'caution' : 'blocked';
+    }
+    return riskMode(day);
+  }
+
+  if (isLonelinessDayFourteen(day)) return riskMode(day);
+
+  if (isLowEnergyTopicDay(day) && hasSubtopic(day, new Set(['T32-S03']))) {
+    return day.risk_level === 'caution' && hasSafetyRules(day) ? 'caution' : 'blocked';
+  }
+
+  if (isRepetitiveNegativeThinkingTopicDay(day)
+    && (!hasSubtopic(day, new Set(['T16-S01', 'T16-S02', 'T16-S03'])) || !hasSafetyRules(day))) {
     return 'blocked';
   }
-  const level = day.risk_level;
-  if (level === null || level === undefined || level === '') {
-    // Legacy records have no v2 metadata. A partially migrated v2 record must
-    // fail closed rather than silently defaulting to routine.
-    return day.review_status || day.topic_id || Array.isArray(day.source_ids) ? 'blocked' : 'routine';
-  }
-  if (level === 'routine') return 'routine';
-  if (level === 'caution') return 'caution';
-  return 'blocked';
-}
 
-export function createHumanReviewSkipRecord(day, timestamp = new Date()) {
-  if (getDailySafetyMode(day) !== 'blocked') {
-    throw new Error('Only blocked or unapproved daily content can be skipped through this path.');
+  if (isRelationshipDifficultiesTopicDay(day)
+    && hasSubtopic(day, new Set(['T17-S03']))
+    && (day.risk_level !== 'caution' || !hasSafetyRules(day))) {
+    return 'blocked';
   }
-  const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
-  if (!Number.isFinite(date.getTime())) throw new Error('A valid skip timestamp is required.');
-  return {
-    status: 'skipped_human_review',
-    feedbackText: 'این تمرین به دلیل نیاز به بازبینی انسانی اجرا نشد. هیچ امتیازی ثبت نشده و این ثبت به معنی بهبود یا بدترشدن نیست.',
-    exerciseId: typeof day.id === 'string' ? day.id.slice(0, 200) : '',
-    updatedAt: date.toISOString(),
-  };
+
+  if (isControlTopicDay(day) && !getControlContextForDay(day)) return 'blocked';
+
+  return riskMode(day);
 }
