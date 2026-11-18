@@ -94,3 +94,19 @@ test('T05 days 8, 11, 18 and 28 action examples demonstrate distinct concrete be
   assert.notEqual(guide.actionExample,guide.action,'example must not merely repeat the action');
  }
 });
+
+
+test('T05 days 2, 4, 9, 20 and 22 action examples use concrete observations and safe boundaries',()=>{
+ const expected={
+  2:/ساعت ۱۸ پیام داده‌ای/u,
+  4:/این هفته دو تماس کمتر از معمول داشتیم/u,
+  9:/رمز و پیام‌های تلفن خودت را خصوصی/u,
+  20:/بدون تهدید یا تنبیه/u,
+  22:/میل به بررسی آخرین بازدید/u,
+ };
+ for(const [dayText,pattern] of Object.entries(expected)){
+  const guide=JEALOUSY_DAILY_ASSISTANT_GUIDES.find(item=>item.day===Number(dayText));
+  assert.match(guide.actionExample,pattern,'day '+dayText);
+  assert.notEqual(guide.actionExample,guide.action,'example must not repeat the action');
+ }
+});
