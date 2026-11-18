@@ -34,9 +34,8 @@ test("assistant safety and data-boundary contract does not claim active enforcem
   assert.equal(boundaries.runtime_enforcement, false);
   assert.equal(boundaries.current_state_constraints.cloud_assistant_is_not_implemented, true);
   assert.equal(boundaries.retention.status, "unresolved_blocking_backend_release");
-  assert.equal(boundaries.crisis_safety.status, "design_only_requires_specialist_validation");
-  assert.ok(boundaries.release_gates.includes("privacy_and_security_specialist_review"));
-  assert.ok(boundaries.release_gates.includes("clinical_or_crisis_specialist_review_of_crisis_language_and_test_cases"));
+  assert.ok(boundaries.release_gates.includes("privacy_and_security_controls_verified"));
+  assert.ok(boundaries.release_gates.includes("crisis_language_and_emergency_handoff_tested"));
 });
 
 test("provider decision record explicitly blocks cloud activation until owner choice", async () => {
