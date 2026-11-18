@@ -24,3 +24,39 @@ test('T14 daily titles remain distinct from other topics under the shared 0.30 l
 
 
 test('T14 exercise and action texts have no exact cross-topic duplicates in the 952-day override set',async()=>{const o=JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json',import.meta.url),'utf8'));for(const d of o.categories['کمبود انگیزه'].days)for(const field of ['exercise','actionText']){const dup=Object.entries(o.categories).flatMap(([topic,c])=>(c.days||[]).flatMap(x=>['exercise','actionText'].filter(f=>x[f]===d[field]&&!(topic==='کمبود انگیزه'&&x.day===d.day&&f===field)).map(f=>({topic,day:x.day,field:f}))));assert.deepEqual(dup,[],'duplicate T14 day '+d.day+' '+field);}});
+
+test('T14 five audited days keep distinct goal-specific mechanisms and all 70 answers synchronized', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const overlay = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+  const expected = {
+    1: ['نقشه یک هدف مشخص', 'نقشه‌برداری هدف‌محور'],
+    2: ['تفکیک علاقه و وضوح هدف', 'تمایز علاقه و وضوح'],
+    16: ['پیش‌نیازهای عملی یک هدف', 'بررسی پیش‌نیاز هدف'],
+    19: ['استخراج الگوی اجرای مؤثر', 'تحلیل شرایط اجرای هدف'],
+    25: ['حمایت هدف‌محور برای مانع باقی‌مانده', 'درخواست حمایت هدف‌محور'],
+  };
+  for (const [dayText, [title, skill]] of Object.entries(expected)) {
+    const day = Number(dayText);
+    const guide = T14_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
+    const live = overlay.categories['کمبود انگیزه'].days.find((item) => item.day === day);
+    assert.equal(guide.title, title);
+    assert.equal(guide.skill, skill);
+    assert.equal(guide.questions.length, 14);
+    assert.equal(new Set(guide.questions.map((item) => item.answer)).size, 14);
+    assert.equal(live.title, guide.title);
+    assert.equal(live.exercise, guide.exercise);
+    assert.equal(live.actionText, guide.action);
+    assert.equal(live.intro, 'هدف امروز: ' + guide.objective + '\\nمهارت امروز: ' + guide.skill);
+    assert.ok(guide.questions.find((item) => item.kind === 'exercise_meaning').answer.includes(guide.exercise));
+    assert.ok(guide.questions.find((item) => item.kind === 'action_meaning').answer.includes(guide.action));
+    assert.ok(guide.questions.find((item) => item.kind === 'exercise_action_difference').answer.includes(guide.exercise));
+    assert.ok(guide.questions.find((item) => item.kind === 'exercise_action_difference').answer.includes(guide.action));
+    assert.ok(guide.questions.find((item) => item.kind === 'stop').answer.includes(guide.stopCondition));
+    assert.ok(guide.questions.find((item) => item.kind === 'talk_other').answer.includes(guide.title));
+  }
+  const day19 = T14_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 19);
+  assert.match(day19.exercise, /نشانه یا آماده‌سازی/u);
+  assert.match(day19.exercise, /رفتار مشخص/u);
+  assert.match(day19.action, /قابل‌تکرار/u);
+  assert.doesNotMatch(day19.exercise, /ثبت موفقیت یا حال خوب/u);
+});
