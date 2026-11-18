@@ -12,8 +12,6 @@
     "test": "node --test",
     "validate:assistant-topics": "node scripts/validate-assistant-topics.mjs",
     "prepare:production": "node scripts/prepare-production-build.mjs",
-    "assert:production-content": "node scripts/assert-production-content-approved.mjs",
-    "validate:p0-review-queue": "node scripts/validate-p0-review-queue.mjs",
     "audit:library-assistant": "node scripts/audit-library-assistant-acceptance.mjs",
     "audit:content-mappings": "node scripts/audit-content-mappings.mjs",
     "generate:content-mapping-queue": "node scripts/generate-content-mapping-queue.mjs",
