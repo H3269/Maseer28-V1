@@ -237,3 +237,18 @@ test('T15 day 17 light action stays distinct from support-seeking day 25', () =>
   assert.match(T15_DAILY_ASSISTANT_GUIDES[16].lightActionVersion, /ابزار یا دسترسی/);
   assert.doesNotMatch(T15_DAILY_ASSISTANT_GUIDES[16].lightActionVersion, /منبع کمک/);
 });
+
+
+test('T15 prepared answers stay aligned with the final day source fields', () => {
+  const clean = (guide) => guide.exercise.startsWith(guide.title + ':')
+    ? guide.exercise.slice(guide.title.length + 1).trim()
+    : guide.exercise.startsWith('مرور:') ? guide.exercise.slice('مرور:'.length).trim() : guide.exercise;
+  for (const guide of T15_DAILY_ASSISTANT_GUIDES) {
+    assert.ok(guide.questions.find((item) => item.kind === 'exercise_meaning').answer.includes(clean(guide)));
+    assert.ok(guide.questions.find((item) => item.kind === 'action_meaning').answer.includes(guide.action));
+    assert.ok(guide.questions.find((item) => item.kind === 'duration').answer.includes(clean(guide)));
+    assert.match(guide.questions.find((item) => item.kind === 'can_change').answer, /هدف امروز/);
+  }
+  assert.doesNotMatch(T15_DAILY_ASSISTANT_GUIDES[27].questions.find((item) => item.kind === 'exercise_example').answer, /مسیر ۲۸ روزه را تصمیم ادامه/);
+  assert.match(T15_DAILY_ASSISTANT_GUIDES[21].questions.find((item) => item.kind === 'exercise_example').answer, /زمان یا انرژی محدودی/);
+});
