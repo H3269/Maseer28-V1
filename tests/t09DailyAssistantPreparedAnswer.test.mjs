@@ -35,3 +35,23 @@ test('T09 day 26 action example uses a distinct dependency scenario from the exe
   assert.match(answer,/بررسی ستون‌های ضروری/u);
   assert.notEqual(question.answer,guide.questions.find(item=>item.kind==='exercise_example').answer);
 });
+
+
+test('T09 q11 uses 28 distinct day-specific distress responses instead of one generic template', () => {
+  const answers = T09_DAILY_ASSISTANT_GUIDES.map((guide) => {
+    const question = guide.questions.find((item) => item.kind === 'procrastination_increased');
+    assert.ok(question?.answer, 'day ' + guide.day + ' must have a prepared q11 answer');
+    const rendered = answerT09DailyPreparedQuestion({
+      day: guide.day,
+      message: question.value,
+      dailyContent: dailyContent(guide),
+    });
+    assert.ok(rendered.includes(question.answer), 'day ' + guide.day + ' must render its own q11 answer');
+    assert.equal((rendered.match(/شرط توقف اصلی امروز:/gu) || []).length, 1, 'one primary stop condition on day ' + guide.day);
+    assert.equal((rendered.match(/زمان حمایت انسانی:/gu) || []).length, 1, 'one human-support threshold on day ' + guide.day);
+    return question.answer;
+  });
+  assert.equal(new Set(answers).size, 28, 'all 28 daily distress answers must be distinct');
+  assert.ok(new Set(answers.map((answer) => answer.slice(0, 70))).size >= 24,
+    'daily distress answers must not share a generic opening');
+});
