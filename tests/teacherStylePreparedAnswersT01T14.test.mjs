@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { cleanPreparedAssistantTopicText } from '../src/features/assistant/teacherStylePreparedAnswer.js';
 
 import { ANGER_DAILY_ASSISTANT_GUIDES, answerAngerDailyPreparedQuestion } from '../src/features/assistant/angerDailyAssistantPrompts.js';
 import { ANXIETY_DAILY_ASSISTANT_GUIDES, answerAnxietyDailyPreparedQuestion } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
@@ -80,12 +81,12 @@ test('T01-T14: all 5,488 prepared answers use the same clear teacher-style daily
         assert.ok(frameIndex >= 0, topic.id + ' day ' + guide.day + ' ' + question.kind + ' missing the common response frame marker');
         assert.ok(answer.slice(frameIndex + frameMarker.length).trim().length > 20, topic.id + ' day ' + guide.day + ' ' + question.kind + ' must contain substantive day-specific guidance after the shared frame');
         if (question.kind === 'exercise_example') {
-          if (guide.exerciseExample) assert.ok(answer.includes(guide.exerciseExample), topic.id + ' day ' + guide.day + ' missing its own exercise example');
-          else assert.ok(answer.includes(question.answer), topic.id + ' day ' + guide.day + ' missing its prepared exercise example');
+          if (guide.exerciseExample) assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.exerciseExample, topic.topic)), topic.id + ' day ' + guide.day + ' missing its own exercise example');
+          else assert.ok(answer.includes(cleanPreparedAssistantTopicText(question.answer, topic.topic)), topic.id + ' day ' + guide.day + ' missing its prepared exercise example');
         }
         if (question.kind === 'action_example') {
-          if (guide.actionExample) assert.ok(answer.includes(guide.actionExample), topic.id + ' day ' + guide.day + ' missing its own action example');
-          else assert.ok(answer.includes(question.answer), topic.id + ' day ' + guide.day + ' missing its prepared action example');
+          if (guide.actionExample) assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.actionExample, topic.topic)), topic.id + ' day ' + guide.day + ' missing its own action example');
+          else assert.ok(answer.includes(cleanPreparedAssistantTopicText(question.answer, topic.topic)), topic.id + ' day ' + guide.day + ' missing its prepared action example');
         }
         checked += 1;
       }
