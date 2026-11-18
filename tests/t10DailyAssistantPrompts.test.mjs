@@ -61,3 +61,20 @@ test('T10 day 1 safety answers do not repeat the same medical escalation in the 
   assert.equal((stopAnswer.match(/وقفه تنفسی/g)||[]).length,1);
   assert.match(distressAnswer,/دارو، مکمل، الکل یا مواد را .* خودسرانه تغییر نده/u);
 });
+
+
+test('T10 day-specific distress answers are used at runtime without repeating their stop condition',()=>{
+  for(const day of [4,17,21,25,26]){
+    const guide=T10_DAILY_ASSISTANT_GUIDES.find(item=>item.day===day);
+    const question=guide.questions.find(item=>item.kind==='sleep_distress');
+    const answer=answerT10DailyPreparedQuestion({
+      day,
+      message:question.value,
+      dailyContent:{id:'بی‌خوابی و مشکلات خواب-'+String(day).padStart(2,'0'),day,topic_id:'T10'},
+    });
+    assert.ok(answer.includes(question.answer),'day '+day+' must use the audited daily distress answer');
+    assert.ok(answer.includes('حمایت انسانی'),'day '+day+' must retain the human-support route');
+    assert.ok(!answer.includes('اگر خواب‌آلودگی ایمنی رانندگی یا کار پرخطر را مختل می‌کند، فعالیت را متوقف کن. در خفگی'),
+      'day '+day+' must not append the duplicated generic warning block');
+  }
+});
