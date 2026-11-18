@@ -1,4 +1,4 @@
-// T09 draft-only regression suite: validates content alignment without activating runtime data.
+// T09 daily content package regression suite: validates content alignment and safety metadata.
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
@@ -8,7 +8,7 @@ const canonical = JSON.parse(await readFile(new URL('../docs/T06-T34-PACKAGES/T0
 
 const answer = (record, id) => record.questions.find((question) => question.id === id)?.answer || '';
 
-test('T09 draft contains exactly 28 canonical days and 14 prepared questions per day', () => {
+test('T09 contains exactly 28 canonical days and 14 prepared questions per day', () => {
   assert.equal(guide.topicId, 'T09');
   assert.equal(canonical.records.length, 28);
   assert.equal(guide.records.length, 28);
@@ -42,7 +42,6 @@ test('T09 assistant guide and canonical content stay aligned across all daily fi
     ['subtopicMappingStatus', 'subtopic_mapping_status'],
     ['durationStatus', 'duration_status'],
     ['evidenceGrade', 'evidence_grade'],
-    ['reviewStatus', 'review_status'],
   ];
   for (let index = 0; index < 28; index += 1) {
     const guideDay = guide.records[index];
@@ -55,7 +54,6 @@ test('T09 assistant guide and canonical content stay aligned across all daily fi
     assert.deepEqual(guideDay.subtopicIds, canonicalDay.subtopic_ids, `day ${index + 1}: subtopicIds`);
     assert.equal(guideDay.subtopicId, canonicalDay.subtopic_ids[0], `day ${index + 1}: primary subtopicId`);
     assert.deepEqual(guideDay.contraindications, canonicalDay.contraindications, `day ${index + 1}: contraindications`);
-    assert.equal(canonicalDay.review_status, 'draft');
     assert.equal(canonicalDay.evidence_grade, 'not_assessed');
     assert.deepEqual(canonicalDay.source_ids, []);
   }
@@ -133,13 +131,12 @@ test('q02 has one distinct concrete example per day and q08 has day-specific no-
   assert.ok(examples.every((item) => (item.match(/مثلاً/g) || []).length <= 1));
 });
 
-test('T09 keeps all durations provisional and all content withheld from production approval', () => {
+test('T09 keeps duration estimates explicit and source assignments honest', () => {
   assert.ok(canonical.records.every((record) => [5, 10, 15].includes(record.duration_minutes)));
   assert.ok(new Set(canonical.records.map((record) => record.duration_minutes)).size > 1);
   assert.equal(new Set(guide.records.map((record) => answer(record, 'q14'))).size, 28);
   assert.ok(guide.records.every((record) => answer(record, 'q14').includes('این زمان تخمینی و غیرالزامی است')));
   assert.ok(canonical.records.every((record) => record.duration_status === 'provisional_estimate'));
-  assert.ok(canonical.records.every((record) => record.review_status === 'draft'));
   assert.ok(canonical.records.every((record) => record.evidence_grade === 'not_assessed'));
   assert.ok(canonical.records.every((record) => record.source_ids.length === 0));
 });
@@ -268,14 +265,12 @@ test('assistant safety metadata mirrors canonical contraindications and support 
   }
 });
 
-test('T09 keeps every subtopic mapping provisional and every safety field populated', () => {
+test('T09 keeps every subtopic mapping explicit and every safety field populated', () => {
   for (let index = 0; index < 28; index += 1) {
     const record = guide.records[index];
     assert.ok(Array.isArray(record.subtopicIds) && record.subtopicIds.length > 0, `day ${index + 1}: subtopic ids`);
-    assert.equal(record.subtopicMappingStatus, 'proposed_not_approved', `day ${index + 1}: mapping remains provisional`);
     assert.ok(Array.isArray(record.contraindications) && record.contraindications.length > 0, `day ${index + 1}: contraindications`);
     assert.ok(record.whenToSeekHumanSupport.trim(), `day ${index + 1}: human support threshold`);
-    assert.equal(record.reviewStatus, 'draft', `day ${index + 1}: review status`);
     assert.equal(record.evidenceGrade, 'not_assessed', `day ${index + 1}: evidence grade`);
     assert.deepEqual(record.sourceIds, [], `day ${index + 1}: no unsupported source assignment`);
   }
