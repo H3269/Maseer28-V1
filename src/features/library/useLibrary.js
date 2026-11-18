@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { libraryRepository } from './libraryRepository.js';
-import { createVersionRecord, normalizeBookContent } from './bookUtils.js';
+import { createVersionRecord, hasReadableBookContent, normalizeBookContent } from './bookUtils.js';
 
 const SEED_REVISION_KEY = 'seed-content-revision-v89';
 const SEED_BOOK_FINGERPRINT_PREFIX = 'seed-book-fingerprint:';
@@ -11,6 +11,10 @@ const BASE = import.meta.env.BASE_URL;
 const SEED_BOOK_CONTENT_CACHE = new Map();
 const SEED_BOOK_CONTENT_IN_FLIGHT = new Map();
 const SEED_BOOK_CONTENT_CACHE_LIMIT = 2;
+
+function isUsableSeedVersion(version) {
+  return Boolean(version?.content && hasReadableBookContent(version.content));
+}
 
 function seedBookCacheKey(book) {
   return [
@@ -95,21 +99,27 @@ export function ensureSeedBookContent(book) {
   const cacheKey = seedBookCacheKey(book);
   if (SEED_BOOK_CONTENT_CACHE.has(cacheKey)) {
     const cached = SEED_BOOK_CONTENT_CACHE.get(cacheKey);
+    if (isUsableSeedVersion(cached?.version)) {
+      SEED_BOOK_CONTENT_CACHE.delete(cacheKey);
+      SEED_BOOK_CONTENT_CACHE.set(cacheKey, cached);
+      return Promise.resolve(cached);
+    }
+    // A stale or partially-written in-memory record must never block recovery
+    // from the canonical seed JSON.
     SEED_BOOK_CONTENT_CACHE.delete(cacheKey);
-    SEED_BOOK_CONTENT_CACHE.set(cacheKey, cached);
-    return Promise.resolve(cached);
   }
   if (SEED_BOOK_CONTENT_IN_FLIGHT.has(cacheKey)) return SEED_BOOK_CONTENT_IN_FLIGHT.get(cacheKey);
 
   const task = (async () => {
   const currentBook = await libraryRepository.getBook(book.id) || book;
+  let existingVersion = null;
   if (currentBook.activeVersionId) {
-    const existingVersion = await libraryRepository.getVersion(currentBook.activeVersionId);
+    existingVersion = await libraryRepository.getVersion(currentBook.activeVersionId);
     const currentRevision = currentBook.manifestRevision || currentBook.seedRevision || 'legacy';
-    if (existingVersion?.content && currentBook.seedRevision === currentRevision) {
+    if (isUsableSeedVersion(existingVersion) && currentBook.seedRevision === currentRevision) {
       return { book: currentBook, version: existingVersion };
     }
-    if (existingVersion?.content && !currentBook.seedFile) {
+    if (isUsableSeedVersion(existingVersion) && !currentBook.seedFile) {
       return { book: currentBook, version: existingVersion };
     }
   }
@@ -122,8 +132,9 @@ export function ensureSeedBookContent(book) {
   const previousFingerprint = await libraryRepository.getSetting(fingerprintKey);
   let activeVersionId = currentBook.activeVersionId;
 
-  if (previousFingerprint !== rawFingerprint || !activeVersionId) {
+  if (previousFingerprint !== rawFingerprint || !activeVersionId || !isUsableSeedVersion(existingVersion)) {
     const content = normalizeBookContent(rawContent, currentBook.title);
+    if (!hasReadableBookContent(content)) throw new Error('فایل کتاب دریافت شد، اما متن قابل‌خواندن کافی در آن وجود ندارد.');
     const versionId = `seed-${currentBook.id}-${rawFingerprint.slice(0, 16)}`;
     const version = createVersionRecord({
       bookId: currentBook.id,
@@ -147,7 +158,7 @@ export function ensureSeedBookContent(book) {
   };
   await libraryRepository.putBook(updatedBook);
   const version = await libraryRepository.getVersion(activeVersionId);
-  if (!version?.content) throw new Error('متن کتاب پس از ذخیره‌سازی تأیید نشد.');
+  if (!isUsableSeedVersion(version)) throw new Error('متن کتاب پس از ذخیره‌سازی کامل و قابل‌خواندن تأیید نشد.');
   return { book: updatedBook, version };
   })();
 
