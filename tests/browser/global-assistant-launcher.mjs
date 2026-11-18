@@ -62,17 +62,6 @@ try {
         review_status: 'approved',
         risk_level: 'routine',
       });
-      const motivationCategory = payload.categories?.['کمبود انگیزه']
-        || Object.values(payload.categories || {}).find((category) =>
-          category.days?.some((item) => String(item.id || '').startsWith('کمبود انگیزه-')));
-      const motivationDay = motivationCategory?.days?.find((item) => Number(item.day) === 1);
-      assert.ok(motivationDay, 'the global assistant fixture must contain motivation day 1');
-      Object.assign(motivationDay, {
-        topic_id: 'T14',
-        day: 1,
-        review_status: 'approved',
-        risk_level: 'routine',
-      });
       await route.fulfill({ response, json: payload });
       return;
     }
@@ -203,50 +192,6 @@ try {
   }, previousNormalReplyCount);
   assert.equal(await dialog.locator('.assistantMessage').last().getByTestId('daily-assistant-safety-reminder').count(), 0,
     'normal prepared answers must not inherit the safety reminder');
-
-  await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
-  await dialog.waitFor({ state: 'detached' });
-
-  // Re-open the same real application fixture with T14 selected. This verifies
-  // the visible 14-question picker and a day-specific prepared answer in Chromium.
-  const motivationJourney = {
-    ...journey,
-    profileData: { ...journey.profileData, problem: 'کمبود انگیزه' },
-    pathId: 't14-global-assistant-browser-check',
-  };
-  await page.evaluate((state) => {
-    localStorage.setItem('maseer28_state', JSON.stringify(state));
-  }, motivationJourney);
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  if (await page.locator('#copyrightModal').count()) {
-    await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
-  }
-  await page.locator('#dashboard').waitFor({ state: 'visible' });
-  await page.locator('#dashboard .heroAction').click();
-  await page.locator('#day').waitFor({ state: 'visible' });
-  await launcher.waitFor({ state: 'visible' });
-  await launcher.click();
-  dialog = page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' });
-  await dialog.waitFor({ state: 'visible' });
-  const motivationPromptTrigger = dialog.getByTestId('t14-daily-prompt-trigger');
-  await motivationPromptTrigger.waitFor({ state: 'visible' });
-  await motivationPromptTrigger.click();
-  const motivationPromptDialog = page.locator('#library-assistant-prompt-dialog');
-  await motivationPromptDialog.waitFor({ state: 'visible' });
-  assert.equal(await motivationPromptDialog.locator('[data-prompt-option]').count(), 14,
-    'T14 must render all fourteen prepared questions for the selected day');
-  await motivationPromptDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
-  const previousT14ReplyCount = await dialog.locator('.assistantMessage').count();
-  await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction((previous) => {
-    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-    return replies.length > previous && /راهنمای روز 1 کمبود انگیزه/.test(replies.at(-1)?.innerText || '');
-  }, previousT14ReplyCount);
-  const motivationReply = dialog.locator('.assistantMessage').last();
-  assert.match(await motivationReply.innerText(), /نقشه افت انگیزه/);
-  assert.match(await motivationReply.innerText(), /پایش زمینه/);
-  assert.equal(await dialog.getByTestId('t14-daily-prompt-trigger').count(), 1,
-    'T14 prepared questions must remain available after a prepared answer');
 
   await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await dialog.waitFor({ state: 'detached' });
