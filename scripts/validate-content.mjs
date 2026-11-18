@@ -121,13 +121,13 @@ for (const { topic, category } of topicRows) {
         fail.push(`زیرموضوع نامعتبر یا متعلق به موضوع دیگر در «${topic}»، روز ${index + 1}`);
       }
       const topicRecord = topicRecordById.get(day.topic_id);
-      const topicLinks = [...(topicRecord?.content_ids || []), ...(topicRecord?.draft_content_ids || [])];
+      const topicLinks = [...(topicRecord?.content_ids || [])];
       if (!topicLinks.includes(day.id)) {
         fail.push(`پیوند موضوع برای روز ${index + 1} در «${topic}» ناقص است.`);
       }
       for (const subtopicId of day.subtopic_ids || []) {
         const subtopicRecord = subtopicRecordById.get(subtopicId);
-        const subtopicLinks = [...(subtopicRecord?.content_ids || []), ...(subtopicRecord?.draft_content_ids || [])];
+        const subtopicLinks = [...(subtopicRecord?.content_ids || [])];
         if (!subtopicLinks.includes(day.id)) {
           fail.push(`پیوند زیرموضوع برای ${subtopicId} و روز ${index + 1} در «${topic}» ناقص است.`);
         }
@@ -176,7 +176,7 @@ for (const { topic, category } of topicRows) {
 
 // Validate all registry links without separating runtime eligibility by review status.
 for (const topicRecord of topicsRegistry.topics || []) {
-  for (const field of ['content_ids', 'draft_content_ids']) {
+  for (const field of ['content_ids']) {
     for (const contentId of topicRecord[field] || []) {
       const linked = dayById.get(contentId);
       if (!linked || linked.day.topic_id !== topicRecord.topic_id) {
