@@ -26,14 +26,16 @@ test('T14 daily titles remain distinct from other topics under the shared 0.30 l
 test('T14 exercise and action texts have no exact cross-topic duplicates in the 952-day override set',async()=>{const o=JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json',import.meta.url),'utf8'));for(const d of o.categories['کمبود انگیزه'].days)for(const field of ['exercise','actionText']){const dup=Object.entries(o.categories).flatMap(([topic,c])=>(c.days||[]).flatMap(x=>['exercise','actionText'].filter(f=>x[f]===d[field]&&!(topic==='کمبود انگیزه'&&x.day===d.day&&f===field)).map(f=>({topic,day:x.day,field:f}))));assert.deepEqual(dup,[],'duplicate T14 day '+d.day+' '+field);}});
 
 test('T14 day 8 and day 23 retain motivation-specific boundaries',()=>{const day8=T14_DAILY_ASSISTANT_GUIDES[7],day23=T14_DAILY_ASSISTANT_GUIDES[22];assert.equal(day8.title,'آزمون تمایل پس از تماس کوتاه');assert.match(day8.exercise,/انتظار خود را در یک عبارت بنویس/u);assert.match(day8.exercise,/تجربه واقعی و تمایل فعلی به ادامه/u);assert.doesNotMatch(day8.exercise,/تکمیل کار یا ادامه‌دادن هدف این تمرین نیست/u);assert.equal(day23.title,'فهرست آماده گزینه‌های اجرایی');assert.match(day23.exercise,/سه گزینه کوتاه و متفاوت/u);assert.match(day23.mechanism,/منبع انگیزش یا ارزش شخصی را دوباره تحلیل نمی‌کند/u);});
-test('T14 five audited days keep distinct goal-specific mechanisms and all 70 answers synchronized', async () => {
+test('T14 seven audited days keep distinct goal-specific mechanisms and all 98 answers synchronized', async () => {
   const { readFile } = await import('node:fs/promises');
   const overlay = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
   const expected = {
     1: ['نقشه یک هدف مشخص', 'نقشه‌برداری هدف‌محور'],
     2: ['تفکیک علاقه و وضوح هدف', 'تمایز علاقه و وضوح'],
+    8: ['آزمون تمایل پس از تماس کوتاه', 'بررسی تمایل پس از تماس'],
     16: ['روشن‌کردن وابستگی اطلاعاتی هدف', 'شفاف‌سازی وابستگی'],
     19: ['استخراج الگوی اجرای مؤثر', 'تحلیل شرایط اجرای هدف'],
+    23: ['فهرست آماده گزینه‌های اجرایی', 'انتخاب گزینه اجرایی'],
     25: ['حمایت هدف‌محور برای مانع باقی‌مانده', 'درخواست حمایت هدف‌محور'],
   };
   for (const [dayText, [title, skill]] of Object.entries(expected)) {
