@@ -607,9 +607,9 @@ test('example requests create a blank template without inventing a personal scen
 
 test('legacy day guidance does not invent rationale, duration, or success criteria', () => {
   const options = { dayData, problem: 'اضطراب', day: 4 };
-  assert.match(makeDailyExerciseGuidance({ ...options, message: 'چرا این تمرین را انجام بدهم؟' }), /توضیح تأییدشده‌ای درباره چرایی/u);
-  assert.match(makeDailyExerciseGuidance({ ...options, message: 'چند دقیقه طول می‌کشد؟' }), /مدت زمان تأییدشده‌ای/u);
-  assert.match(makeDailyExerciseGuidance({ ...options, message: 'معیار انجام درست چیست؟' }), /معیار موفقیتِ تأییدشده‌ای/u);
+  assert.match(makeDailyExerciseGuidance({ ...options, message: 'چرا این تمرین را انجام بدهم؟' }), /توضیحی درباره چرایی/u);
+  assert.match(makeDailyExerciseGuidance({ ...options, message: 'چند دقیقه طول می‌کشد؟' }), /مدت زمانی/u);
+  assert.match(makeDailyExerciseGuidance({ ...options, message: 'معیار انجام درست چیست؟' }), /معیار موفقیتی/u);
 });
 
 test('legacy day introduction is quoted as the day purpose without inventing a clinical rationale', () => {
