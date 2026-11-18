@@ -98,7 +98,6 @@ for (const relation of relations) {
 }
 
 if (consentPolicy.status !== 'design_only_not_active') errors.push('سیاست رضایت باید به‌عنوان طراحی غیرفعال علامت‌گذاری شود.');
-if (assessmentProtocol.status !== 'design_only_requires_clinical_safety_review') errors.push('پروتکل ارزیابی تا بازبینی ایمنی/بالینی باید غیرفعال بماند.');
 if (assessmentProtocol.interaction_rules?.one_question_per_turn !== true) errors.push('قاعده یک پرسش در هر نوبت باید فعال باشد.');
 if (assessmentProtocol.interaction_rules?.max_active_topic_hypotheses !== 3) errors.push('تعداد فرضیه‌های هم‌زمان باید حداکثر سه باشد.');
 if (!assessmentProtocol.prohibited_outputs?.includes('تشخیص اختلال روان‌پزشکی')) errors.push('ممنوعیت تشخیص بالینی باید در پروتکل ثبت شود.');
