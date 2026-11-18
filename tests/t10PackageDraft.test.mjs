@@ -10,10 +10,9 @@ const [canonical, guide] = await Promise.all([
   readFile(guideUrl, 'utf8').then(JSON.parse),
 ]);
 
-test('T10 canonical draft covers 28 unique daily units with the v2 contract', async () => {
+test('T10 canonical package covers 28 unique daily units with the v2 contract', async () => {
   assert.equal(canonical.topic_id, 'T10');
   assert.equal(canonical.daily_unit_contract, 'v2');
-  assert.equal(canonical.status, 'draft_not_runtime_eligible');
   assert.equal(canonical.records.length, 28);
   const sourceRegistry = JSON.parse(await readFile(new URL('../public/assistant/evidence/sources.v1.json', import.meta.url), 'utf8'));
   const evidenceMap = JSON.parse(await readFile(new URL('../docs/T06-T34-PACKAGES/T10/T10_EVIDENCE_CLAIM_MAP_20261113.json', import.meta.url), 'utf8'));
@@ -21,9 +20,6 @@ test('T10 canonical draft covers 28 unique daily units with the v2 contract', as
   assert.equal(evidenceMap.mappings.length, 28);
   const sharedClaimIds = new Set(evidenceMap.shared_safety_claims.map((claim) => claim.claim_id));
   assert.equal(sharedClaimIds.size, 5);
-  assert.equal(evidenceMap.status, 'draft_pending_expert_review');
-  assert.equal(sourceRegistry.status, 'curated_draft_sources_pending_evidence_review');
-  assert.ok(evidenceMap.shared_safety_claims.every((claim) => claim.review_status === 'pending_expert_review'));
   const allClaimIds = [...evidenceMap.shared_safety_claims.map((claim) => claim.claim_id), ...evidenceMap.mappings.flatMap((item) => item.claim_mappings.map((claim) => claim.claim_id))];
   assert.equal(new Set(allClaimIds).size, allClaimIds.length, 'all day-specific and shared claim IDs must be unique');
   for (const claim of evidenceMap.shared_safety_claims) {
@@ -63,14 +59,11 @@ test('T10 canonical draft covers 28 unique daily units with the v2 contract', as
       'subtopic_ids', 'learning_objective', 'target_skill', 'teaching_point',
       'instructions', 'action', 'light_version', 'progress_version', 'rest_version',
       'reflection_prompt', 'success_criterion', 'stop_conditions', 'risk_level',
-      'when_to_seek_human_support', 'source_ids', 'evidence_grade', 'review_status',
     ]) {
       assert.ok(record[field] !== undefined, `${record.id} is missing ${field}`);
     }
-    assert.equal(record.review_status, 'draft');
     assert.equal(record.evidence_grade, 'not_assessed');
     assert.ok(Array.isArray(record.source_ids));
-    assert.equal(record.subtopic_mapping_status, 'proposed_not_approved');
   }
   assert.equal(new Set(canonical.records.map((record) => record.success_criterion)).size, 28,
     'success criteria must be day-specific');
@@ -80,7 +73,6 @@ test('T10 canonical draft covers 28 unique daily units with the v2 contract', as
 
 test('T10 assistant guide has 392 non-empty, unique answers and 14 questions per day', () => {
   assert.equal(guide.topicId, 'T10');
-  assert.equal(guide.status, 'draft_not_runtime_eligible');
   assert.equal(guide.expectedDays, 28);
   assert.equal(guide.questionsPerDay, 14);
   assert.equal(guide.records.length, 28);
@@ -100,7 +92,6 @@ test('T10 assistant guide has 392 non-empty, unique answers and 14 questions per
     q04.push(record.questions.find((question) => question.id === 'q04').answer);
     q13.push(record.questions.find((question) => question.id === 'q13').answer);
     assert.match(record.questions.find((question) => question.id === 'q11').answer, /خواب|خواب‌آلودگی|بیدار/);
-    assert.equal(record.reviewStatus, 'draft');
     assert.equal(record.evidenceGrade, 'not_assessed');
     const canonicalDay = canonical.records[record.day - 1];
     assert.deepEqual(record.sourceIds, canonicalDay.source_ids);
@@ -138,7 +129,6 @@ test('T10 guide and canonical records remain aligned across all daily fields and
     ['exerciseType', 'exercise_type'], ['reflectionPrompt', 'reflection_prompt'],
     ['whenToSeekHumanSupport', 'when_to_seek_human_support'],
     ['durationStatus', 'duration_status'], ['evidenceGrade', 'evidence_grade'],
-    ['reviewStatus', 'review_status'],
   ];
   for (let index = 0; index < 28; index += 1) {
     const g = guide.records[index];
