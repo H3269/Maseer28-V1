@@ -87,15 +87,11 @@ export function getDailySafetyMode(day) {
   }
 
   if (isRepetitiveNegativeThinkingTopicDay(day)
-    && (!hasSubtopic(day, new Set(['T16-S01', 'T16-S02', 'T16-S03'])) || !hasSafetyRules(day))) {
-    return 'blocked';
-  }
+    && hasSubtopic(day, new Set(['T16-S03'])) && !hasSafetyRules(day)) return 'blocked';
 
   if (isRelationshipDifficultiesTopicDay(day)
     && hasSubtopic(day, new Set(['T17-S03']))
-    && (day.risk_level !== 'caution' || !hasSafetyRules(day))) {
-    return 'blocked';
-  }
+    && (day.risk_level !== 'caution' || !hasSafetyRules(day))) return 'blocked';
 
   if (isControlTopicDay(day) && !getControlContextForDay(day)) return 'blocked';
 
