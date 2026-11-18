@@ -25,3 +25,13 @@ test('T09 q11 has no duplicate canonical stop condition and renders each support
     assert.equal((answer.split(guide.whenToSeekHumanSupport).length - 1), 1, 'support statement count on day ' + guide.day);
   }
 });
+
+
+test('T09 day 26 action example uses a distinct dependency scenario from the exercise example',()=>{
+  const guide=T09_DAILY_ASSISTANT_GUIDES.find(item=>item.day===26);
+  const question=guide.questions.find(item=>item.kind==='action_example');
+  const answer=answerT09DailyPreparedQuestion({day:26,message:question.value,dailyContent:dailyContent(guide)});
+  assert.match(answer,/منتظر دریافت فایل داده از همکارت هستی/u);
+  assert.match(answer,/بررسی ستون‌های ضروری/u);
+  assert.notEqual(question.answer,guide.questions.find(item=>item.kind==='exercise_example').answer);
+});
