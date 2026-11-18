@@ -110,7 +110,7 @@ test('T11 prompt groups retain the five shared UI groups and fixed 14-question c
 });
 
 
-test('T11 day 4 duration answer contains only the owner-review response, not editorial draft material', () => {
+test('T11 day 4 duration answer contains the current response, not editorial draft material', () => {
   const dayFour = T11_DAILY_ASSISTANT_GUIDES.find((guide) => guide.day === 4);
   const answer = dayFour?.questions.find((question) => question.id === 'q14')?.answer;
   assert.equal(answer, 'زمان استانداردی برای این تمرین ثبت نشده است. اگر پیش‌درآمدی به‌طور طبیعی و بدون وارسی روشن شد، همان مشاهده کوتاه کافی است؛ برای یافتن نشانه زمان بیشتری صرف نکن و هر زمان خواستی متوقف شو.');
