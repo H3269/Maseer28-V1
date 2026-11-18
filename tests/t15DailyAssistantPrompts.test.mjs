@@ -142,24 +142,42 @@ test('T15 prepared guide is served through the page assistant for every canonica
 });
 
 
-test('T15 titles remain distinct from other topics under the shared 0.30 lexical screen', async () => {
+test('T15 semantic text is distinct from all other topics and across its own 28 days', async () => {
   const overlay = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+  const days = overlay.categories['اعتمادبه‌نفس پایین'].days;
   const normalize = (value) => String(value || '').normalize('NFKC')
-    .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک').replace(/[\u200c\u200f\u200e]/g, ' ')
+    .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
+    .replace(/[\u200c\u200f\u200e]/g, ' ')
     .replace(/[^\p{L}\p{N}\s]/gu, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
   const stop = new Set(['نسخه','سبک','تمرین','اقدام','فقط','یک','و','یا','را','از','به','در','که','اگر','برای','با','بدون','امروز','فعلا','کن','کنید','بنویس','بنویسی','بنویسید','ثبت','انتخاب','نام','ببر','مشخص','بررسی','انجام','بده','بگیر','دارد','هست','است','میشود','شود','تا','خودت','خود','او','این','آن','همان','هر','هیچ','همه']);
   const tokens = (value) => new Set(normalize(value).split(' ').filter((token) => token.length > 2 && !stop.has(token)));
-  const ours = overlay.categories['اعتمادبه‌نفس پایین'].days;
-  assert.equal(new Set(ours.map((day) => normalize(day.title))).size, 28);
-  for (const [topic, category] of Object.entries(overlay.categories)) {
-    if (topic === 'اعتمادبه‌نفس پایین') continue;
-    for (const day of ours) for (const other of category.days || []) {
-      const left = tokens(day.title), right = tokens(other.title), union = new Set([...left, ...right]);
-      let intersection = 0;
-      for (const token of left) if (right.has(token)) intersection += 1;
-      assert.ok(!union.size || intersection / union.size < 0.30,
-        'T15 title overlap: ' + day.day + ' ' + day.title + ' / ' + topic + ' ' + other.day + ' ' + other.title);
+  const fields = ['title','exercise','actionText','lightExerciseText','lightActionText','progressActionText','restExerciseText','restActionText'];
+  for (const field of fields) {
+    for (const [topic, category] of Object.entries(overlay.categories)) {
+      if (topic === 'اعتمادبه‌نفس پایین') continue;
+      for (const other of category.days || []) for (const day of days) {
+        const left = tokens(day[field]), right = tokens(other[field]), union = new Set([...left, ...right]);
+        let intersection = 0;
+        for (const token of left) if (right.has(token)) intersection += 1;
+        const similarity = union.size ? intersection / union.size : 0;
+        assert.ok(similarity < 0.30,
+          'T15 day ' + day.day + ' ' + field + ' is too close to ' + topic + ' day ' + other.day + ': ' + similarity);
+      }
     }
+    for (let leftIndex = 0; leftIndex < days.length; leftIndex += 1) {
+      for (let rightIndex = leftIndex + 1; rightIndex < days.length; rightIndex += 1) {
+        const left = tokens(days[leftIndex][field]), right = tokens(days[rightIndex][field]);
+        const union = new Set([...left, ...right]);
+        let intersection = 0;
+        for (const token of left) if (right.has(token)) intersection += 1;
+        const similarity = union.size ? intersection / union.size : 0;
+        assert.ok(similarity < 0.30,
+          'T15 day ' + days[leftIndex].day + ' and day ' + days[rightIndex].day
+          + ' are too similar for ' + field + ': ' + similarity);
+      }
+    }
+    assert.equal(new Set(days.map((day) => normalize(day[field]))).size, 28,
+      'T15 ' + field + ' must be unique within the topic');
   }
 });
 
