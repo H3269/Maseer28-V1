@@ -10,12 +10,9 @@ const turnEngine = await readFile(new URL('../src/features/assistant/assistantTu
 const knowledgeGateway = await readFile(new URL('../src/features/assistant/knowledgeGateway.js', import.meta.url), 'utf8');
 const topicRegistry = JSON.parse(await readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'));
 const catalogSchema = JSON.parse(await readFile(new URL('../public/assistant/schemas/knowledge-catalog.v1.schema.json', import.meta.url), 'utf8'));
-const approvalManifestSchema = JSON.parse(await readFile(new URL('../public/assistant/schemas/knowledge-approval-manifest.v1.schema.json', import.meta.url), 'utf8'));
 const knowledgeCatalog = JSON.parse(await readFile(new URL('../public/assistant/knowledge/items.v1.json', import.meta.url), 'utf8'));
-const approvalManifest = JSON.parse(await readFile(new URL('../public/assistant/knowledge/approved-items.v1.json', import.meta.url), 'utf8'));
 const publishWorkflow = await readFile(new URL('../.github/workflows/publish-tested-version.yml', import.meta.url), 'utf8');
 const pagesDeployWorkflow = await readFile(new URL('../.github/workflows/deploy.yml', import.meta.url), 'utf8');
-const productionContentGate = await readFile(new URL('../scripts/assert-production-content-approved.mjs', import.meta.url), 'utf8');
 
 test('global assistant launcher is mounted across navigable screens, including support', async () => {
   const appUi = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
@@ -84,15 +81,9 @@ test('assistant runtime does not claim clinical validation or diagnostic capabil
   assert.match(engine, /cloud_processing:\s*false/);
 });
 
-test('production publication requires expert approval for every daily unit', () => {
-  assert.match(productionContentGate, /validateProductionContent/);
-  assert.match(publishWorkflow, /npm run assert:production-content/);
+test('production publication does not depend on specialist approval metadata', () => {
+  assert.doesNotMatch(publishWorkflow, /assert:production-content|Require expert approval/);
   assert.match(publishWorkflow, /npm run prepare:production/);
-});
-
-test('production publish workflow cannot enable the experimental assistant accidentally', () => {
-  assert.match(publishWorkflow, /github\.ref\s*==\s*'refs\/heads\/main'/);
-  assert.doesNotMatch(publishWorkflow, /VITE_ENABLE_EXPERIMENTAL_ASSISTANT\s*:\s*['"]true['"]/);
 });
 
 test('assistant conversation remains in-memory only in this prototype', () => {
@@ -108,45 +99,25 @@ test('new orchestration and retrieval modules remain local-only', () => {
 });
 
 
-test('repository contains no approved knowledge items before external review', () => {
-  assert.equal(approvalManifest.status, 'empty_pending_external_review');
-  assert.deepEqual(approvalManifest.approved_items, []);
-});
-
-
-test('draft topic registry cannot be treated as reviewed assistant knowledge', () => {
-  assert.equal(topicRegistry.topics.length, 34);
-  assert.ok(topicRegistry.topics.every((topic) => topic.review_status === 'draft'));
-  assert.ok(topicRegistry.topics.every((topic) => topic.content_ids.length === 0));
-  assert.ok(topicRegistry.topics.every((topic) => topic.evidence_ids.length === 0));
-});
-
-
-test('runtime knowledge catalog and approval manifest remain empty until human review', () => {
-  assert.equal(knowledgeCatalog.status, 'empty_pending_external_review');
+test('source-linked knowledge catalog is active without an approval manifest', () => {
+  assert.equal(knowledgeCatalog.status, 'active');
   assert.deepEqual(knowledgeCatalog.items, []);
-  assert.equal(approvalManifest.status, 'empty_pending_external_review');
-  assert.deepEqual(approvalManifest.approved_items, []);
+  assert.match(knowledgeGateway, /retrieveKnowledge/);
+  assert.doesNotMatch(knowledgeGateway, /review_record_id|reviewer_role|approvalManifest|approved_for_assistant/);
 });
 
-
-test('knowledge catalog and approval manifest schemas are versioned and closed', () => {
+test('knowledge catalog schema points to the non-approval item schema', () => {
   assert.equal(catalogSchema.$schema, 'https://json-schema.org/draft/2020-12/schema');
   assert.equal(catalogSchema.additionalProperties, false);
-  assert.equal(catalogSchema.properties.schema_version.const, '1.0.0');
-  assert.equal(approvalManifestSchema.additionalProperties, false);
-  assert.equal(approvalManifestSchema.properties.schema_version.const, '1.0.0');
-  assert.ok(catalogSchema.properties.items.items.$ref.endsWith('approved-knowledge-item.v1.schema.json'));
+  assert.ok(catalogSchema.properties.items.items.$ref.endsWith('knowledge-item.v1.schema.json'));
 });
 
-
-test('knowledge UI displays only returned excerpts with source and review attribution', () => {
-  assert.match(assistantUi, /knowledgeResponse\.results\.map/);
-  assert.match(assistantUi, /item\.source\.source_id/);
-  assert.match(assistantUi, /item\.source\.locator/);
-  assert.match(assistantUi, /item\.approval\.review_record_id/);
+test('knowledge UI displays source attribution without reviewer attribution', () => {
+  assert.match(assistantUi, /knowledgeResponse\\.results\\.map/);
+  assert.match(assistantUi, /item\\.source\\.source_id/);
+  assert.match(assistantUi, /item\\.source\\.locator/);
+  assert.doesNotMatch(assistantUi, /item\\.approval\\.review_record_id/);
 });
-
 
 test('assistant uses one chat surface with the composer send action inside and end action outside', () => {
   assert.match(assistantUi, /className="assistantChatShell"/);
