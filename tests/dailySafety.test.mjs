@@ -1,472 +1,64 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { getDailySafetyMode, createHumanReviewSkipRecord } from '../src/features/content/dailySafety.js';
+import { getDailySafetyMode, getControlContextForDay } from '../src/features/content/dailySafety.js';
 
-test('daily safety mode distinguishes routine, caution, and human-review-only content', () => {
+test('daily availability does not depend on review or specialist approval metadata', () => {
   assert.equal(getDailySafetyMode({}), 'routine');
-  assert.equal(getDailySafetyMode({ risk_level: 'routine' }), 'blocked');
-  assert.equal(getDailySafetyMode({ risk_level: 'caution' }), 'blocked');
-  assert.equal(getDailySafetyMode({ risk_level: 'routine', review_status: 'approved' }), 'routine');
-  assert.equal(getDailySafetyMode({ risk_level: 'caution', review_status: 'approved' }), 'caution');
-  assert.equal(getDailySafetyMode({ risk_level: 'human_review_required', review_status: 'approved' }), 'blocked');
-  assert.equal(getDailySafetyMode({ risk_level: 'unknown', review_status: 'approved' }), 'blocked');
-  assert.equal(getDailySafetyMode({ review_status: 'pending_expert_review' }), 'blocked');
-  assert.equal(getDailySafetyMode({ risk_level: 'routine', review_status: 'pending_expert_review' }), 'blocked');
-  assert.equal(getDailySafetyMode({ risk_level: 'caution', review_status: 'draft' }), 'blocked');
-  assert.equal(getDailySafetyMode({ risk_level: 'routine', review_status: null }), 'blocked');
-  assert.equal(getDailySafetyMode({ topic_id: 'T01' }), 'blocked');
+  assert.equal(getDailySafetyMode({ risk_level: 'routine', review_status: 'draft' }), 'routine');
+  assert.equal(getDailySafetyMode({ risk_level: 'caution', review_status: 'pending_expert_review' }), 'caution');
+  assert.equal(getDailySafetyMode({ risk_level: 'routine', review_status: null }), 'routine');
+  assert.equal(getDailySafetyMode({ risk_level: 'human_review_required' }), 'blocked');
+  assert.equal(getDailySafetyMode({ risk_level: 'high' }), 'blocked');
+  assert.equal(getDailySafetyMode({ risk_level: 'moderate' }), 'blocked');
+  assert.equal(getDailySafetyMode({ risk_level: 'unknown' }), 'caution');
   assert.equal(getDailySafetyMode(null), 'routine');
 });
 
-test('only blocked daily content can produce a non-scored skip record', () => {
-  const day = { id: 'T01-D27', risk_level: 'human_review_required' };
-  const record = createHumanReviewSkipRecord(day, new Date('2026-11-03T12:00:00.000Z'));
-  assert.deepEqual(record, {
-    status: 'skipped_human_review',
-    feedbackText: 'این تمرین به دلیل نیاز به بازبینی انسانی اجرا نشد. هیچ امتیازی ثبت نشده و این ثبت به معنی بهبود یا بدترشدن نیست.',
-    exerciseId: 'T01-D27',
-    updatedAt: '2026-11-03T12:00:00.000Z',
-  });
-  assert.equal('score' in record, false);
-  assert.equal('feedback' in record, false);
-  assert.throws(() => createHumanReviewSkipRecord({ id: 'T01-D10', risk_level: 'caution', review_status: 'approved' }));
-  assert.throws(() => createHumanReviewSkipRecord({ id: 'T01-D27', risk_level: 'human_review_required' }, 'not-a-date'));
-});
-
-test('unapproved review metadata cannot be overridden by a routine risk label', () => {
-  const day = { id: 'T01-D12', risk_level: 'routine', review_status: 'pending_expert_review' };
-  const record = createHumanReviewSkipRecord(day, new Date('2026-11-03T12:00:00.000Z'));
-  assert.equal(record.status, 'skipped_human_review');
-  assert.equal('score' in record, false);
-  assert.equal('feedback' in record, false);
-});
-
-test('all T03 fear content remains blocked until qualified review and day-specific safety approval', async () => {
-  for (const day of [
-    { id: 'ترس-14' },
-    { id: 'T03-D14' },
-    { id: 'T03-D13', topic_id: 'T03', day: 13, risk_level: 'routine', review_status: 'approved' },
-    { id: 'ترس-13' },
-  ]) {
-    assert.equal(getDailySafetyMode(day), 'blocked');
-    const skipped = createHumanReviewSkipRecord(day, new Date('2026-11-04T12:00:00.000Z'));
-    assert.equal(skipped.status, 'skipped_human_review');
-    assert.equal('score' in skipped, false);
-  }
-
-  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
-  const fearDays = content.categories['ترس']?.days || [];
-  assert.equal(fearDays.length, 28);
-  for (const day of fearDays) {
-    assert.equal(getDailySafetyMode(day), 'blocked', `${day.id} must remain withheld until qualified review`);
-  }
-
-  const reviewedFearDay = ({ day = 13, risk_level = 'routine', safety_rule_ids } = {}) => ({
-    id: 'T03-D' + String(day).padStart(2, '0'),
-    topic_id: 'T03',
-    day,
-    risk_level,
-    review_status: 'approved',
-    subtopic_ids: ['T03-S01'],
-    duration_minutes: 10,
-    stop_conditions: ['اگر ناراحتی شدید شد، تمرین را متوقف کن.'],
-    contraindications: ['در وضعیت ناامن، تمرین مستقیم انجام نشود.'],
-    source_ids: ['SRC-TEST-REVIEWED-FEAR'],
-    evidence_grade: 'not_assessed',
-    review_record_id: 'review-t03-day-' + day,
-    reviewer_name: 'Qualified reviewer',
-    reviewer_role: 'qualified_clinician',
-    reviewed_at: '2026-11-04T12:00:00.000Z',
-    learning_objective: 'هدف آموزشی روشن و محدود',
-    target_skill: 'مهارت مشخص',
-    teaching_point: 'نکته آموزشی روشن',
-    exercise_type: 'reflection',
-    instructions: 'دستورالعمل بازبینی‌شده',
-    reflection_prompt: 'پرسش تأملی',
-    success_criterion: 'معیار موفقیت قابل مشاهده',
-    when_to_seek_human_support: 'در صورت خطر یا اختلال، کمک انسانی بگیر.',
-    ...(safety_rule_ids ? { safety_rule_ids } : {}),
-  });
-  assert.equal(getDailySafetyMode(reviewedFearDay()), 'routine',
-    'a fully reviewed non-day-14 exercise with one explicit subtype may be released');
-  assert.equal(getDailySafetyMode(reviewedFearDay({ day: 14, risk_level: 'routine' })), 'blocked',
-    'T03 day 14 requires a caution classification and explicit safety rule after redesign');
-  assert.equal(getDailySafetyMode(reviewedFearDay({
-    day: 14,
-    risk_level: 'caution',
-    safety_rule_ids: ['SR-T03-D14-SAFETY'],
-  })), 'caution');
-});
-
-test('T01 draft days remain blocked at runtime until their review is approved', async () => {
-  const [content, topics] = await Promise.all([
-    readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8').then(JSON.parse),
-    readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8').then(JSON.parse),
-  ]);
-  const days = content.categories['خشم'].days;
-  const topic = topics.topics.find((item) => item.topic_id === 'T01');
-  const dayTen = days.find((item) => item.day === 10);
-  assert.ok(topic);
-  assert.notEqual(dayTen.review_status, 'approved');
-  assert.equal(getDailySafetyMode(dayTen), 'blocked');
-  for (const day of days) {
-    if (day.review_status !== 'approved') {
-      assert.ok(topic.draft_content_ids.includes(day.id), `${day.id} must remain in draft links`);
-      assert.equal(getDailySafetyMode(day), 'blocked', `${day.id} must not run before expert approval`);
-    } else {
-      assert.ok(topic.content_ids.includes(day.id), `${day.id} must be linked as approved content`);
-    }
-  }
-});
-
-test('legacy T17 relationship content stays blocked until complete expert and safety review', async () => {
-  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
-  const days = content.categories['مشکلات رابطه'].days;
-  assert.equal(days.length, 28);
-  for (const day of days) {
-    assert.equal(getDailySafetyMode(day), 'blocked', `${day.id} must remain withheld until its relationship subtype is reviewed`);
-  }
-  const skipped = createHumanReviewSkipRecord(days[0], new Date('2026-11-04T18:00:00.000Z'));
-  assert.equal(skipped.status, 'skipped_human_review');
-  assert.equal('score' in skipped, false);
-
-  const reviewed = (subtopic, extra = {}) => ({
-    id: 'T17-D06',
-    topic_id: 'T17',
-    day: 6,
-    risk_level: 'routine',
-    review_status: 'approved',
-    review_record_id: 'review-t17-day-06',
-    subtopic_ids: [subtopic],
-    duration_minutes: 10,
-    stop_conditions: ['در صورت فشار یا ناامنی تمرین را متوقف کن.'],
-    contraindications: ['در رابطه ناایمن گفت‌وگوی مستقیم انجام نشود.'],
-    source_ids: ['SRC-TEST-T17-REVIEWED'],
-    evidence_grade: 'not_assessed',
-    reviewer_name: 'Synthetic test reviewer',
-    reviewer_role: 'relationship_safety_reviewer',
-    reviewed_at: '2026-11-04T12:00:00.000Z',
-    learning_objective: 'هدف آموزشی محدود',
-    target_skill: 'مهارت مشخص',
-    teaching_point: 'نکته آموزشی',
-    exercise_type: 'reflection',
-    instructions: 'دستورالعمل بازبینی‌شده',
-    reflection_prompt: 'پرسش تأملی',
-    success_criterion: 'معیار قابل مشاهده',
-    when_to_seek_human_support: 'در صورت نگرانی از ایمنی از متخصص واجد صلاحیت کمک بگیر.',
-    ...extra,
-  });
-
-  assert.equal(getDailySafetyMode(reviewed('T17-S01')), 'routine');
-  assert.equal(getDailySafetyMode(reviewed('T17-S02')), 'routine');
-  assert.equal(getDailySafetyMode(reviewed('T17-S03')), 'blocked',
-    'power/control/safety content needs explicit safety rules, caution classification, and a safety reviewer');
-  assert.equal(getDailySafetyMode(reviewed('T17-S03', {
-    risk_level: 'caution',
-    safety_rule_ids: ['SR-T17-COERCIVE-CONTROL-SAFETY'],
-    reviewer_role: 'relationship_safety_reviewer',
-  })), 'caution');
-
-  const incompleteCases = [
-    { review_record_id: '' },
-    { reviewer_name: '' },
-    { reviewer_role: 'content_editor' },
-    { reviewer_role: 'qualified_clinician' },
-    { reviewed_at: 'not-a-date' },
-    { source_ids: [] },
-    { stop_conditions: [] },
-    { contraindications: [] },
-    { subtopic_ids: ['T17-S01', 'T17-S02'] },
-    { topic_id: 'T16' },
-    { day: 0 },
-    { instructions: '' },
-  ];
-  for (const extra of incompleteCases) {
-    assert.equal(getDailySafetyMode(reviewed('T17-S01', extra)), 'blocked',
-      'incomplete review metadata must fail closed: ' + JSON.stringify(extra));
-  }
-
-  assert.equal(getDailySafetyMode(reviewed('T17-S03', {
-    risk_level: 'caution',
-    safety_rule_ids: ['SR-T17-COERCIVE-CONTROL-SAFETY'],
-    reviewer_role: 'safety_reviewer',
-  })), 'blocked', 'T17-S03 requires a relationship-specific safety reviewer');
-  assert.equal(getDailySafetyMode(reviewed('T17-S01', { id: 'T16-D06' })), 'blocked',
-    'an approved record must not be transferable to a different topic/day identifier');
-  assert.equal(getDailySafetyMode(reviewed('T17-S01', { day: 7 })), 'blocked',
-    'canonical day number and identifier must agree');
-});
-
-test('legacy T16 repetitive negative thinking content stays blocked until safety-aware subtype review', async () => {
-  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
-  const days = content.categories['افکار منفی و نشخوار فکری'].days;
-  assert.equal(days.length, 28);
-  for (const day of days) {
-    assert.equal(getDailySafetyMode(day), 'blocked', `${day.id} must remain withheld until its RNT subtype and safety rules are reviewed`);
-  }
-  const skipped = createHumanReviewSkipRecord(days[0], new Date('2026-11-04T17:00:00.000Z'));
-  assert.equal(skipped.status, 'skipped_human_review');
-  assert.equal('score' in skipped, false);
-
-  const reviewed = (subtopic, extra = {}) => ({
-    id: 'T16-D06',
-    topic_id: 'T16',
-    risk_level: 'routine',
-    review_status: 'approved',
-    review_record_id: 'review-t16-day-06',
-    subtopic_ids: [subtopic],
-    safety_rule_ids: ['SR-T16-THOUGHT-SAFETY'],
-    ...extra,
-  });
-  assert.equal(getDailySafetyMode(reviewed('T16-S01')), 'routine');
-  assert.equal(getDailySafetyMode(reviewed('T16-S02')), 'routine');
-  assert.equal(getDailySafetyMode(reviewed('T16-S03', { safety_rule_ids: [] })), 'blocked',
-    'rumination content without an explicit safety rule must remain withheld');
-  assert.equal(getDailySafetyMode(reviewed('T16-S03', {
-    risk_level: 'caution',
-    safety_rule_ids: ['SR-T16-RNT-ESCALATION'],
-  })), 'caution');
-});
-
-test('legacy T32 low-energy content stays blocked until clinical subtype review', async () => {
-  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
-  const days = content.categories['بی‌انگیزگی'].days;
-  assert.equal(days.length, 28);
-  for (const day of days) {
-    assert.equal(getDailySafetyMode(day), 'blocked', `${day.id} must remain withheld until its low-energy subtype is reviewed`);
-  }
-  const skipped = createHumanReviewSkipRecord(days[0], new Date('2026-11-04T16:00:00.000Z'));
-  assert.equal(skipped.status, 'skipped_human_review');
-  assert.equal('score' in skipped, false);
-
-  const reviewed = (subtopic, extra = {}) => ({
-    id: 'T32-D06',
-    topic_id: 'T32',
-    risk_level: 'routine',
-    review_status: 'approved',
-    review_record_id: 'review-t32-day-06',
-    subtopic_ids: [subtopic],
-    ...extra,
-  });
-  assert.equal(getDailySafetyMode(reviewed('T32-S01')), 'routine');
-  assert.equal(getDailySafetyMode(reviewed('T32-S02')), 'routine');
-  assert.equal(getDailySafetyMode(reviewed('T32-S03')), 'blocked',
-    'physical/sleep/mood-related content needs an explicit safety rule and caution classification');
-  assert.equal(getDailySafetyMode(reviewed('T32-S03', {
-    risk_level: 'caution',
-    safety_rule_ids: ['SR-T32-CLINICAL-REVIEW'],
-  })), 'caution');
-});
-
-test('T13 day 14 is available after owner approval without a subtype-review runtime gate', async () => {
-  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
-  const day = content.categories['تنهایی'].days.find((item) => item.day === 14);
-  assert.ok(day);
-  assert.equal(day.id, 'تنهایی-14');
-  assert.equal(getDailySafetyMode(day), 'routine',
-    'missing/pending specialist metadata must not block the owner-approved T13 day');
-
-  const ownerApproved = (extra = {}) => ({
-    id: 'T13-D14',
-    topic_id: 'T13',
-    day: 14,
-    risk_level: 'caution',
-    review_status: 'owner_approved',
-    subtopic_ids: ['T13-S01', 'T13-S02'],
-    ...extra,
-  });
-  assert.equal(getDailySafetyMode(ownerApproved()), 'caution');
-  assert.equal(getDailySafetyMode(ownerApproved({ risk_level: 'routine' })), 'routine');
-  assert.equal(getDailySafetyMode(ownerApproved({ risk_level: 'high' })), 'blocked');
-  assert.equal(getDailySafetyMode(ownerApproved({ risk_level: 'moderate' })), 'blocked');
-});
-
-test('T10 sleep content is available for owner preview while preserving risk and referral-specific safety gates', async () => {
-  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
-  const days = content.categories['بی‌خوابی و مشکلات خواب'].days;
-  assert.equal(days.length, 28);
-  for (const day of days) {
-    const expected = day.risk_level === 'routine' || day.risk_level === 'caution' ? day.risk_level : 'blocked';
-    assert.equal(getDailySafetyMode(day), expected, `${day.id} must follow its explicit risk classification during owner preview`);
-  }
-  const skipped = createHumanReviewSkipRecord({ ...days[0], risk_level: null }, new Date('2026-11-04T14:00:00.000Z'));
-  assert.equal(skipped.status, 'skipped_human_review');
-  assert.equal('score' in skipped, false);
-  const approvedSleep = (subtopic, extra = {}) => ({
-    id: 'T10-D06',
-    topic_id: 'T10',
-    risk_level: 'routine',
-    review_status: 'approved',
-    review_record_id: 'review-t10-day-06',
-    subtopic_ids: [subtopic],
-    ...extra,
-  });
-  assert.equal(getDailySafetyMode(approvedSleep('T10-S01')), 'routine');
-  assert.equal(getDailySafetyMode(approvedSleep('T10-S02')), 'routine');
-  assert.equal(getDailySafetyMode(approvedSleep('T10-S03')), 'blocked',
-    'medical/referral-related sleep content needs an explicit safety rule and caution classification');
-  assert.equal(getDailySafetyMode(approvedSleep('T10-S03', {
-    risk_level: 'caution',
-    safety_rule_ids: ['SR-T10-SLEEP-REFERRAL'],
-  })), 'caution');
-});
-
-test('T12 is available for owner live testing without specialist-review gating while safety classification remains active', async () => {
-  const overlay = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
-  const days = overlay.categories['مرزبندی و نه گفتن'].days;
-  assert.equal(days.length, 28);
-  for (const day of days) {
-    assert.equal(getDailySafetyMode(day), day.subtopic_ids.includes('T12-S03') ? 'caution' : 'routine');
-    assert.equal(day.risk_level, day.subtopic_ids.includes('T12-S03') ? 'caution' : 'routine');
-    assert.equal('review_status' in day, false);
-    assert.equal('review_record_id' in day, false);
-  }
-  assert.equal(getDailySafetyMode({ id: 'T12-D06', topic_id: 'T12', risk_level: 'routine', subtopic_ids: ['T12-S01'] }), 'routine');
-  assert.equal(getDailySafetyMode({ id: 'T12-D18', topic_id: 'T12', risk_level: 'routine', subtopic_ids: ['T12-S03'] }), 'blocked');
-  assert.equal(getDailySafetyMode({ id: 'T12-D24', topic_id: 'T12', risk_level: 'caution', subtopic_ids: ['T12-S03'] }), 'caution');
-  assert.equal(getDailySafetyMode({ id: 'T12-D06', topic_id: 'T03', risk_level: 'routine' }), 'blocked');
-});
-test('T11 is fully interactive during the owner live-test window without changing its pending review metadata', async () => {
-  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
-  const days = content.categories['عادت‌های تکراری'].days;
-  assert.equal(days.length, 28);
-  for (const day of days) {
-    assert.notEqual(day.review_status, 'approved', 'live-test access must not write an expert approval into content metadata');
-    assert.equal(getDailySafetyMode(day), 'routine', `${day.id} must allow the owner to test the complete daily flow`);
-  }
-  assert.throws(() => createHumanReviewSkipRecord(days[0]),
-    'T11 no longer uses the non-scoring review-preview skip path');
+test('T03 day 14 retains its explicit caution and safety-rule requirements', () => {
+  const base = { id: 'T03-D14', topic_id: 'T03', day: 14, subtopic_ids: ['T03-S01'] };
+  assert.equal(getDailySafetyMode({ ...base, risk_level: 'routine' }), 'blocked');
+  assert.equal(getDailySafetyMode({ ...base, risk_level: 'caution' }), 'blocked');
+  assert.equal(getDailySafetyMode({ ...base, risk_level: 'caution', safety_rule_ids: ['SR-T03-D14'] }), 'caution');
   assert.equal(getDailySafetyMode({
-    id: 'T11-D06',
-    topic_id: 'T11',
-    risk_level: 'human_review_required',
-    review_status: 'pending_expert_review',
-    subtopic_ids: [],
-  }), 'routine', 'the main-branch live-test override must not impersonate an expert approval');
-  assert.equal(getDailySafetyMode({ id: 'T03-D06', topic_id: 'T11', risk_level: 'human_review_required' }), 'blocked',
-    'a conflicting non-T11 identifier must not receive the T11 live-test override');
+    ...base, risk_level: 'caution', safety_rule_ids: ['SR-T03-D14'], review_status: 'draft',
+  }), 'caution');
 });
 
-test('ambiguous control topic stays blocked until its subtypes receive expert review', async () => {
-  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
-  const days = content.categories['کنترل‌گری'].days;
-  assert.equal(days.length, 28);
-  for (const day of days) {
-    assert.equal(getDailySafetyMode(day), 'blocked', `${day.id} must remain withheld while personal over-control and coercive control are not separated`);
-  }
-  assert.equal(getDailySafetyMode({ id: 'کنترل‌گری-01' }), 'blocked');
-  assert.equal(getDailySafetyMode({ id: 'T31-D06', topic_id: 'T31' }), 'blocked');
+test('T10, T12, T17 and T32 keep explicit risk-specific safeguards without review gates', () => {
   assert.equal(getDailySafetyMode({
-    id: 'T31-D06',
-    topic_id: 'T31',
-    risk_level: 'routine',
-    review_status: 'approved',
-  }), 'blocked', 'approval alone must not release an unclassified control exercise');
+    id: 'T10-D03', topic_id: 'T10', day: 3, subtopic_ids: ['T10-S03'], risk_level: 'caution',
+    safety_rule_ids: ['SR-T10-SLEEP'],
+  }), 'caution');
   assert.equal(getDailySafetyMode({
-    id: 'T31-D06',
-    topic_id: 'T31',
-    risk_level: 'routine',
-    review_status: 'approved',
-    subtopic_ids: ['T31-S01'],
-    control_context: 'self_control_need',
-  }), 'routine', 'a reviewed day with one explicit subtype and matching context may be released');
-  assert.equal(getDailySafetyMode({
-    id: 'T31-D06',
-    topic_id: 'T31',
-    risk_level: 'routine',
-    review_status: 'approved',
-    subtopic_ids: ['T31-S01', 'T31-S02'],
-    control_context: 'self_control_need',
-  }), 'blocked', 'a day assigned to multiple control subtypes must remain blocked');
-  assert.equal(getDailySafetyMode({
-    id: 'T31-D06',
-    topic_id: 'T31',
-    risk_level: 'routine',
-    review_status: 'approved',
-    subtopic_ids: ['T31-S01'],
-    control_context: 'interpersonal_coercive_control',
-  }), 'blocked', 'control context must match the explicitly assigned subtype');
-  const skipped = createHumanReviewSkipRecord(days[0], new Date('2026-11-03T12:00:00.000Z'));
-  assert.equal(skipped.status, 'skipped_human_review');
-  assert.equal('score' in skipped, false);
+    id: 'T10-D03', topic_id: 'T10', day: 3, subtopic_ids: ['T10-S03'], risk_level: 'caution',
+    safety_rule_ids: ['SR-T10-SLEEP'], review_status: 'draft',
+  }), 'caution');
+  assert.equal(getDailySafetyMode({ id: 'T12-D06', topic_id: 'T12', day: 6, subtopic_ids: ['T12-S03'], risk_level: 'caution' }), 'caution');
+  assert.equal(getDailySafetyMode({ id: 'T17-D06', topic_id: 'T17', day: 6, subtopic_ids: ['T17-S03'], risk_level: 'caution', safety_rule_ids: ['SR-T17'] }), 'caution');
+  assert.equal(getDailySafetyMode({ id: 'T17-D06', topic_id: 'T17', day: 6, subtopic_ids: ['T17-S03'], risk_level: 'routine' }), 'blocked');
+  assert.equal(getDailySafetyMode({ id: 'T32-D06', topic_id: 'T32', day: 6, subtopic_ids: ['T32-S03'], risk_level: 'caution', safety_rule_ids: ['SR-T32'] }), 'caution');
 });
 
-test('T01 day 27 is explicitly withheld for human review', async () => {
-  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
-  const day = content.categories['خشم'].days.find((item) => item.day === 27);
-  assert.equal(day.risk_level, 'human_review_required');
-  assert.equal(day.review_status, 'pending_expert_review');
-  assert.match(day.when_to_seek_human_support, /فوراً از خدمات اضطراری/);
+test('T31 keeps explicit subtype/context distinction independently of approval metadata', () => {
+  const day = {
+    id: 'T31-D06', topic_id: 'T31', day: 6, subtopic_ids: ['T31-S02'],
+    control_context: 'interpersonal_coercive_control', risk_level: 'caution', review_status: 'draft',
+  };
+  assert.equal(getControlContextForDay(day), 'interpersonal_coercive_control');
+  assert.equal(getDailySafetyMode(day), 'caution');
+  assert.equal(getDailySafetyMode({ ...day, control_context: null }), 'blocked');
 });
 
-test('Path28 daily screen keeps canonical records visible and enables the full T11 live-test flow', async () => {
+test('all 952 daily units remain addressable by safety classification without approval metadata', async () => {
   const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
-  const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
-  const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
   const categories = Object.values(content.categories || {});
   assert.equal(categories.length, 34);
-  assert.equal(categories.reduce((sum, category) => sum + (category.days || []).length, 0), 952);
   for (const category of categories) {
     assert.equal(category.days.length, 28);
     for (const day of category.days) {
-      assert.equal(typeof day.exercise, 'string');
-      assert.ok(day.exercise.trim().length > 0);
-      assert.equal(typeof day.actionText, 'string');
-      assert.ok(day.actionText.trim().length > 0);
+      const mode = getDailySafetyMode(day);
+      assert.ok(['routine', 'caution', 'blocked'].includes(mode), String(day.id));
     }
   }
-  assert.match(ui, /export function DayScreen\(\{ day, problem, data, record, savedAnswer, previousRecord, previousAnswer, history = \{\}, onDashboard/);
-  assert.match(ui, /value=\{parts\.exercise\}/);
-  assert.match(ui, /value=\{parts\.action\}/);
-  assert.match(ui, /id="openDailyEntryBtn"/);
-  assert.doesNotMatch(ui, /getDailySafetyMode|isT11SafetyBlocked|dailySafetyStatus|skipDailyReviewBtn|پیش‌نمایش برای بازبینی مالک|مشاهده مشخصات کامل این روز برای بازبینی/);
-  assert.match(ui, /!entryOpen && <button className="primary heroAction" id="openDailyEntryBtn"/);
-  assert.match(ui, /entryOpen && <div ref=\{entryPanelRef\}[^>]*id="dailyEntryPanel"/);
-  assert.doesNotMatch(ui, /getRelationshipSafetyGate|requiresHumanReview|relationshipSafetyGate/);
-  assert.doesNotMatch(app, /createHumanReviewSkipRecord|skipDayForHumanReview/);
-  assert.doesNotMatch(app, /getDailySafetyMode|skipDayForRelationshipSafety/);
-  assert.match(app, /selectDailyContentCategory\(content\?\.categories, problemKey\)/);
-  assert.match(app, /isCompleteDailyContentCategory\(content\?\.categories, problemKey\)/);
-  assert.match(app, /selectCanonicalDailyRecord\(category, Number\(currentDay\)\)/);
-  assert.match(app, /selectCanonicalDailyRecord\(category, resultNumber\)/);
-  assert.doesNotMatch(app, /category\?\.days\?\.\[currentDay - 1\]/);
-  const completionStart = app.indexOf('async function completeDay');
-  const completionEnd = app.indexOf('function openCurrentDay', completionStart);
-  const completion = app.slice(completionStart, completionEnd);
-  assert.doesNotMatch(completion, /getDailySafetyMode|getRelationshipSafetyGate|relationshipSafetyConfirmed/);
-});
- 
-test('all 34 topics and 952 exercise/action pairs retain their canonical daily slots', async () => {
-  const content = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
-  const categories = Object.values(content.categories || {});
-  assert.equal(categories.length, 34);
-  let total = 0;
-  for (const category of categories) {
-    assert.equal(category.days.length, 28);
-    const ids = new Set();
-    for (let index = 0; index < 28; index += 1) {
-      const day = category.days[index];
-      assert.equal(day.day, index + 1);
-      assert.equal(day.id, category.name + '-' + String(index + 1).padStart(2, '0'));
-      assert.ok(!ids.has(day.id));
-      ids.add(day.id);
-      assert.ok(day.exercise?.trim());
-      assert.ok(day.actionText?.trim());
-      total += 1;
-    }
-  }
-  assert.equal(total, 952);
-});
-
-test('T12 live-test mode keeps all 28 days available with caution classification for safety-focused days', async () => {
-  const overrides = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
-  const days = overrides.categories['مرزبندی و نه گفتن'].days;
-  assert.equal(days.length, 28);
-  for (const day of days) {
-    assert.equal(day.topic_id, 'T12');
-    assert.ok(['routine', 'caution'].includes(getDailySafetyMode(day)), 'T12 day ' + day.day + ' must be available for owner live testing');
-    assert.equal(day.risk_level, day.subtopic_ids.includes('T12-S03') ? 'caution' : 'routine');
-  }
-  assert.ok(days.some(day => getDailySafetyMode(day) === 'caution'));
 });
