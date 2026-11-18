@@ -3,7 +3,7 @@
 **تاریخ:** 2026-11-06  
 **دامنه:** تعریف موضوع T01، سه زیرموضوع، نگاشت ۲۸ روز، هدف/مهارت ثبت‌شده، تمرین، اقدام روزانه، فیلد instructions و تناسب/ایمنی.  
 **وضعیت:** ممیزی محتوایی اولیه کامل برای T01؛ پیشنهاد اصلاح ثبت می‌شود اما هیچ متن اجرایی تغییر نمی‌کند.  
-**منبع داده:** `public/content/path-content.json` و رجیستری‌های `topics.v1.json`، `subtopics.v1.json` و `topic-definitions-draft.v1.json` در V1/main.
+**منبع داده:** `public/content/path-content.json` و رجیستری‌های `topics.v1.json`، `subtopics.v1.json` و `topic-definitions.v1.json` در V1/main.
 
 ## 1. نقطه شروع و مرز موضوع
 
