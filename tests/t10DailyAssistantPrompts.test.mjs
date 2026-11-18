@@ -63,9 +63,9 @@ test('T10 day 1 safety answers do not repeat the same medical escalation in the 
 });
 
 
-test('T10 day-specific distress answers are used at runtime without repeating their stop condition',()=>{
-  for(const day of [4,17,21,25,26]){
-    const guide=T10_DAILY_ASSISTANT_GUIDES.find(item=>item.day===day);
+test('T10 all 28 day-specific distress answers are used at runtime with a human-support route',()=>{
+  for(const guide of T10_DAILY_ASSISTANT_GUIDES){
+    const day=guide.day;
     const question=guide.questions.find(item=>item.kind==='sleep_distress');
     const answer=answerT10DailyPreparedQuestion({
       day,
@@ -74,6 +74,18 @@ test('T10 day-specific distress answers are used at runtime without repeating th
     });
     assert.ok(answer.includes(question.answer),'day '+day+' must use the audited daily distress answer');
     assert.ok(answer.includes('حمایت انسانی'),'day '+day+' must retain the human-support route');
+  }
+});
+
+test('T10 selected distress answers do not repeat the stop-condition warning',()=>{
+  for(const day of [4,17,21,25,26]){
+    const guide=T10_DAILY_ASSISTANT_GUIDES.find(item=>item.day===day);
+    const question=guide.questions.find(item=>item.kind==='sleep_distress');
+    const answer=answerT10DailyPreparedQuestion({
+      day,
+      message:question.value,
+      dailyContent:{id:'بی‌خوابی و مشکلات خواب-'+String(day).padStart(2,'0'),day,topic_id:'T10'},
+    });
     assert.ok(!answer.includes('اگر خواب‌آلودگی ایمنی رانندگی یا کار پرخطر را مختل می‌کند، فعالیت را متوقف کن. در خفگی'),
       'day '+day+' must not append the duplicated generic warning block');
   }
