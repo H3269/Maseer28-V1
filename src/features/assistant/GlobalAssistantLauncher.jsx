@@ -323,7 +323,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                             : isT13DailyPromptContext
                               ? (getDailySafetyMode(dailyContext?.data) === 'blocked' ? [] : getT13DailyAssistantPromptGroups(dailyContext?.day))
                               : isT14DailyPromptContext
-                                ? getT14DailyAssistantPromptGroups(dailyContext?.day)
+                                ? (getDailySafetyMode(dailyContext?.data) === 'blocked' ? [] : getT14DailyAssistantPromptGroups(dailyContext?.day))
                                 : dailyContext
                               ? []
                               : (screen === 'day' ? [] : (() => { const pageGroups = getPageSpecificPromptGroups(screen); return pageGroups ? [...pageGroups, ...PAGE_ASSISTANT_PROMPT_GROUPS] : PAGE_ASSISTANT_PROMPT_GROUPS; })());
