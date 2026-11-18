@@ -55,3 +55,22 @@ test('T09 q11 uses 28 distinct day-specific distress responses instead of one ge
   assert.ok(new Set(answers.map((answer) => answer.slice(0, 70))).size >= 24,
     'daily distress answers must not share a generic opening');
 });
+
+
+test('T09 q12 contact guidance is tailored to each daily action', () => {
+  const answers = T09_DAILY_ASSISTANT_GUIDES.map((guide) => {
+    const question = guide.questions.find((item) => item.kind === 'talk_other');
+    assert.ok(question?.answer, 'day ' + guide.day + ' must have a prepared q12 answer');
+    const rendered = answerT09DailyPreparedQuestion({
+      day: guide.day,
+      message: question.value,
+      dailyContent: dailyContent(guide),
+    });
+    assert.ok(rendered.includes(question.answer), 'day ' + guide.day + ' must render its own q12 guidance');
+    assert.match(question.answer, /خیر/u);
+    return question.answer;
+  });
+  assert.equal(new Set(answers).size, 28, 'all 28 q12 answers must be distinct');
+  assert.ok(new Set(answers.map((answer) => answer.slice(0, 75))).size >= 24,
+    'q12 must not reuse a generic daily preamble');
+});
