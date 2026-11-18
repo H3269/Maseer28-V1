@@ -23,3 +23,11 @@ test('T10 q11 renders the canonical stop condition only once on all 28 days', ()
     assert.equal((answer.split(guide.whenToSeekHumanSupport).length - 1), 1, 'support statement count on day ' + guide.day);
   }
 });
+
+test('T10 day 28 review label and light answer remain sleep-specific', () => {
+  const guide = T10_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 28);
+  assert.equal(guide.title, 'مرور مسیر خواب و گام بعدی');
+  assert.equal(guide.lightVersion, 'یک نکته از الگوی خواب و یک گام پیگیری متناسب را یادداشت کن.');
+  assert.equal(guide.questions.find((item) => item.kind === 'light_version').answer, guide.lightVersion);
+  assert.doesNotMatch(guide.lightVersion, /فقط یک یادگیری و یک گام بعدی بنویس/);
+});
