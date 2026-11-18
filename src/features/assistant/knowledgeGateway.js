@@ -39,7 +39,7 @@ function isValidKnowledgeItem(item) {
     && typeof item.source.title === 'string' && item.source.title.trim() && item.source.title.length <= 240
     && typeof item.source.locator === 'string' && item.source.locator.trim() && item.source.locator.length <= 500
     && validExerciseSafety
-    && item.safety?.level !== 'human_review_required'
+    && item.safety?.level !== 'urgent_support_required'
   );
 }
 
