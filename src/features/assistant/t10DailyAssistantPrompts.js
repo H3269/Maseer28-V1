@@ -64,7 +64,7 @@ export function answerT10DailyPreparedQuestion({ day, message, dailyContent } = 
       body += `\n\n**پرسش بازبینی:** ${guide.reflectionPrompt || 'چه چیزی درباره مانع امروز روشن‌تر شد؟'}\n\nموفقیت به معنی شروع یا تکمیل اجباری کار نیست؛ معیار همان مهارت مشخص‌شده برای امروز است.`;
       break;
     case 'stop':
-      body += `\n\n**نسخه استراحت:** ${restAction}\n**محدودیت کاربرد:** ${(guide.contraindications || []).join(' ')}\n**زمان دریافت حمایت انسانی:** ${guide.whenToSeekHumanSupport}`;
+      body += `\n\n**نسخه استراحت:** ${restAction}\n**محدودیت کاربرد:** ${(guide.contraindications || []).join(' ')}\n**حمایت انسانی:** اگر مشکل خواب پایدار است یا عملکرد روزانه را مختل می‌کند، آن را با پزشک یا متخصص خواب مطرح کن؛ این تمرین جای ارزیابی تخصصی را نمی‌گیرد.`;
       break;
     case 'no_event':
       body += `\n\nاگر نمونه واقعی وجود ندارد، برای تکمیل برنامه مسئله مصنوعی نساز. می‌توانی نبود نمونه را ثبت کنی یا امروز استراحت کنی.\n**نسخه سبک:** ${lightExercise}`;
@@ -78,8 +78,9 @@ export function answerT10DailyPreparedQuestion({ day, message, dailyContent } = 
     case 'sleep_distress':
       body = [
         question.answer,
+        `**شرط توقف امروز:** ${guide.stopCondition}`,
         `**نسخه استراحت:** ${restAction}`,
-        `**حمایت انسانی:** ${guide.whenToSeekHumanSupport}`,
+        '**حمایت انسانی:** اگر مشکل خواب پایدار است یا عملکرد روزانه را مختل می‌کند، آن را با پزشک یا متخصص خواب مطرح کن؛ این پاسخ جای ارزیابی تخصصی را نمی‌گیرد.',
       ].filter(Boolean).join('\\n\\n');
       break;
     case 'procrastination_increased':
