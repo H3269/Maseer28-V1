@@ -197,3 +197,25 @@ test('T15 exercise and action texts have no exact cross-topic duplicates in the 
     }
   }
 });
+
+
+test('T15 keeps external feedback optional and separates task confidence from disclosure or environmental barriers', () => {
+  const feedback = T15_DAILY_ASSISTANT_GUIDES[11];
+  assert.match(feedback.exercise, /درخواست بازخورد لازم نیست/);
+  assert.match(feedback.successCriterion, /دریافت بازخورد شرط موفقیت نیست/);
+  assert.match(feedback.questions.find((item) => item.kind === 'talk_other').answer, /گفت‌وگو یا دریافت بازخورد در روز 12 لازم نیست/);
+  const participation = T15_DAILY_ASSISTANT_GUIDES[14];
+  assert.equal(participation.title, 'به‌کارگیری مهارت در مشارکت کوچک');
+  const environment = T15_DAILY_ASSISTANT_GUIDES[16];
+  assert.equal(environment.subtopicIds.length, 0);
+  assert.match(environment.objective, /شرط محیطی/);
+  assert.doesNotMatch(environment.exercise + environment.action, /خودافشایی|به اشتراک بگذارید|به اشتراک بگذار/);
+  assert.match(environment.questions.find((item) => item.kind === 'talk_other').answer, /لازم نیست چیزی شخصی را به اشتراک بگذاری/);
+});
+
+test('T15 prepared answer formatting has no duplicated rest-action label', () => {
+  for (const guide of T15_DAILY_ASSISTANT_GUIDES) {
+    const lightAnswer = guide.questions.find((item) => item.kind === 'light_version').answer;
+    assert.doesNotMatch(lightAnswer, /نسخه استراحت اقدام:\\s*نسخه استراحت اقدام:/);
+  }
+});
