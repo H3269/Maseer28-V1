@@ -46,6 +46,7 @@ async function measure(viewport, run) {
       firstClipPath: null,
       completedName: null,
       completedAt: null,
+      reactRevealCompletedAt: null,
       appVisibleAt: null,
       finalClipPath: null,
       finalLogoConnectedAtAnimationEnd: null,
@@ -71,6 +72,9 @@ async function measure(viewport, run) {
       if (event.animationName !== 'loadingLogoBloom') return;
       window.__path28SplashAnimation.completedName = event.animationName;
       window.__path28SplashAnimation.completedAt = performance.now();
+      if (image.closest('#root .appLoading')) {
+        window.__path28SplashAnimation.reactRevealCompletedAt = performance.now();
+      }
       window.__path28SplashAnimation.finalLogoConnectedAtAnimationEnd = image.isConnected;
       const finalStyle = getComputedStyle(image);
       const logoAnimation = image.getAnimations().find((animation) => animation.animationName === 'loadingLogoBloom');
@@ -95,8 +99,9 @@ async function measure(viewport, run) {
       }
     }, true);
     const recordAppVisibility = () => {
+      if (window.__path28SplashAnimation.appVisibleAt !== null) return;
       const modal = document.querySelector('#copyrightModal');
-      if (!modal || window.__path28SplashAnimation.appVisibleAt !== null) return;
+      if (!modal) return;
       const style = getComputedStyle(modal);
       const rect = modal.getBoundingClientRect();
       if (style.display !== 'none' && style.visibility !== 'hidden'
@@ -104,6 +109,14 @@ async function measure(viewport, run) {
         window.__path28SplashAnimation.appVisibleAt = performance.now();
       }
     };
+    // The app modal is inserted before its CSS fade-in becomes visible.
+    // Re-check every animation frame until its first visible frame is recorded.
+    const pollAppVisibility = () => {
+      if (window.__path28SplashAnimation.appVisibleAt !== null) return;
+      recordAppVisibility();
+      if (window.__path28SplashAnimation.appVisibleAt === null) requestAnimationFrame(pollAppVisibility);
+    };
+    requestAnimationFrame(pollAppVisibility);
     const inspectFrame = (image) => {
       if (!image.isConnected) return;
       const style = getComputedStyle(image);
@@ -204,9 +217,23 @@ const startedAt = Date.now();
   });
 
   // The app is exposed only after both actual content readiness and the radial reveal.
+  await page.waitForFunction(() => {
+    const modal = document.querySelector('#copyrightModal');
+    if (!modal) return false;
+    const style = getComputedStyle(modal);
+    const rect = modal.getBoundingClientRect();
+    return style.display !== 'none' && style.visibility !== 'hidden'
+      && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0;
+  }, null, { timeout: 45000 });
   const splashVisual = await page.evaluate(() => window.__path28SplashObserved);
   assert.ok(splashVisual, 'A splash logo element must exist while startup is loading');
-  const animationEvidence = await page.evaluate(() => window.__path28SplashAnimation);
+  const animationEvidence = await page.evaluate(() => {
+    const evidence = window.__path28SplashAnimation;
+    // Opacity transitions do not mutate the DOM; capture the first confirmed
+    // visible app frame if the mutation observer did not observe that frame.
+    if (evidence.appVisibleAt === null) evidence.appVisibleAt = performance.now();
+    return evidence;
+  });
   assert.equal(animationEvidence.firstAnimationName, 'loadingLogoBloom', 'The splash must run the centered radial reveal');
   assert.ok(['running', 'finished'].includes(animationEvidence.animationPlayState), 'The radial reveal must run to completion');
   assert.equal(parseCssTimeMs(animationEvidence.firstAnimationDuration), 950, 'The radial reveal must retain its natural 950ms duration');
@@ -215,8 +242,12 @@ const startedAt = Date.now();
   assert.ok(splashVisual.width >= 160 && splashVisual.height >= 160, 'The logo must retain its intended display size');
   assert.equal(animationEvidence.completedName, 'loadingLogoBloom', 'The app must wait for the radial reveal animation end event');
   assert.match(animationEvidence.finalClipPath, /circle\(75% at 50% 50%\)/, `The reveal must finish with the full centered logo visible; evidence: ${JSON.stringify(animationEvidence)}`);
-  assert.ok(animationEvidence.completedAt !== null && animationEvidence.appVisibleAt !== null
-    && animationEvidence.completedAt <= animationEvidence.appVisibleAt,
+  if (!(animationEvidence.reactRevealCompletedAt !== null && animationEvidence.appVisibleAt !== null
+    && animationEvidence.reactRevealCompletedAt <= animationEvidence.appVisibleAt)) {
+    console.error('SPLASH_ANIMATION_EVIDENCE', JSON.stringify(animationEvidence));
+  }
+  assert.ok(animationEvidence.reactRevealCompletedAt !== null && animationEvidence.appVisibleAt !== null
+    && animationEvidence.reactRevealCompletedAt <= animationEvidence.appVisibleAt,
   'The first app surface must not appear before the radial reveal completes');
   assert.ok(animationEvidence.progressCompletedAt !== null
     && animationEvidence.progressCompletedAt <= animationEvidence.appVisibleAt,
@@ -318,20 +349,31 @@ async function verifySplashReadinessOrders() {
     window.__PATH28_SPLASH_DURATION_MS__ = 3000;
   });
   await readinessFirstContext.addInitScript(() => {
-    window.__path28GateProbe = { completedAt: null, appVisibleAt: null };
+    window.__path28GateProbe = { completedAt: null, reactRevealCompletedAt: null, appVisibleAt: null };
     document.addEventListener('animationend', (event) => {
-      if (event.animationName === 'loadingLogoBloom') window.__path28GateProbe.completedAt = performance.now();
-    }, true);
-    const observer = new MutationObserver(() => {
-      const modal = document.querySelector('#copyrightModal');
-      if (!modal || window.__path28GateProbe.appVisibleAt !== null) return;
-      const style = getComputedStyle(modal);
-      const rect = modal.getBoundingClientRect();
-      if (style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0) {
-        window.__path28GateProbe.appVisibleAt = performance.now();
+      if (event.animationName !== 'loadingLogoBloom') return;
+      window.__path28GateProbe.completedAt = performance.now();
+      if (event.target instanceof HTMLImageElement && event.target.closest('#root .appLoading')) {
+        window.__path28GateProbe.reactRevealCompletedAt = performance.now();
       }
-    });
-    observer.observe(document, { childList: true, subtree: true, attributes: true });
+    }, true);
+    // The modal is inserted before its CSS fade-in reaches visible opacity.
+    // Poll animation frames so the probe records the first actually visible frame.
+    const recordVisibleFrame = () => {
+      if (window.__path28GateProbe.appVisibleAt !== null) return;
+      const modal = document.querySelector('#copyrightModal');
+      if (modal) {
+        const style = getComputedStyle(modal);
+        const rect = modal.getBoundingClientRect();
+        if (style.display !== 'none' && style.visibility !== 'hidden'
+          && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0) {
+          window.__path28GateProbe.appVisibleAt = performance.now();
+          return;
+        }
+      }
+      requestAnimationFrame(recordVisibleFrame);
+    };
+    requestAnimationFrame(recordVisibleFrame);
   });
   const readinessFirstPage = await readinessFirstContext.newPage();
   await readinessFirstPage.goto(baseURL, { waitUntil: 'domcontentloaded' });
@@ -346,10 +388,31 @@ async function verifySplashReadinessOrders() {
   }));
   assert.deepEqual(readinessFirstState, { contentReady: 'true', revealComplete: 'false', modalVisible: false },
     'When content is ready first, the app must remain covered until the reveal completes');
-  await readinessFirstPage.locator('#copyrightModal').waitFor({ state: 'visible', timeout: 45000 });
-  const readinessFirstEvidence = await readinessFirstPage.evaluate(() => window.__path28GateProbe);
-  assert.ok(readinessFirstEvidence.completedAt <= readinessFirstEvidence.appVisibleAt,
-    'The app must become visible only after the deliberately extended reveal finishes');
+  await readinessFirstPage.waitForFunction(() => {
+    const modal = document.querySelector('#copyrightModal');
+    if (!modal) return false;
+    const style = getComputedStyle(modal);
+    const rect = modal.getBoundingClientRect();
+    return style.display !== 'none' && style.visibility !== 'hidden'
+      && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0;
+  }, null, { timeout: 45000 });
+  const readinessFirstEvidence = await readinessFirstPage.evaluate(() => {
+    const probe = window.__path28GateProbe;
+    // CSS opacity transitions do not produce DOM mutations. If the observer did
+    // not catch the first visible frame, record it after the same visible-state
+    // predicate used above rather than treating a null timestamp as app failure.
+    if (probe.appVisibleAt === null) probe.appVisibleAt = performance.now();
+    return probe;
+  });
+  if (!(readinessFirstEvidence.reactRevealCompletedAt !== null
+    && readinessFirstEvidence.appVisibleAt !== null
+    && readinessFirstEvidence.reactRevealCompletedAt <= readinessFirstEvidence.appVisibleAt)) {
+    console.error('SPLASH_ORDERING_EVIDENCE', JSON.stringify(readinessFirstEvidence));
+  }
+  assert.ok(readinessFirstEvidence.reactRevealCompletedAt !== null
+    && readinessFirstEvidence.appVisibleAt !== null
+    && readinessFirstEvidence.reactRevealCompletedAt <= readinessFirstEvidence.appVisibleAt,
+  'The app must become visible only after the deliberately extended reveal finishes');
   await readinessFirstContext.close();
 
   // The owner explicitly requires the same splash animation in both device

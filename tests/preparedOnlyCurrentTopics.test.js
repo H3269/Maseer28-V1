@@ -12,6 +12,7 @@ import { GUILT_DAILY_ASSISTANT_GUIDES, getGuiltDailyAssistantPromptGroups } from
 import { EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES, getEmotionalDependencyDailyAssistantPromptGroups } from '../src/features/assistant/emotionalDependencyDailyAssistantPrompts.js';
 import { T09_DAILY_ASSISTANT_GUIDES, getT09DailyAssistantPromptGroups } from '../src/features/assistant/t09DailyAssistantPrompts.js';
 import { T13_DAILY_ASSISTANT_GUIDES, getT13DailyAssistantPromptGroups } from '../src/features/assistant/t13DailyAssistantPrompts.js';
+import { T14_DAILY_ASSISTANT_GUIDES, getT14DailyAssistantPromptGroups } from '../src/features/assistant/t14DailyAssistantPrompts.js';
 
 const topics = [
   { name: 'خشم', id: 'T01', guides: ANGER_DAILY_ASSISTANT_GUIDES, groups: getAngerDailyAssistantPromptGroups },
@@ -24,6 +25,7 @@ const topics = [
   { name: 'وابستگی عاطفی', id: 'T08', guides: EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES, groups: getEmotionalDependencyDailyAssistantPromptGroups },
   { name: 'اهمال‌کاری', id: 'T09', guides: T09_DAILY_ASSISTANT_GUIDES, groups: getT09DailyAssistantPromptGroups },
   { name: 'تنهایی', id: 'T13', guides: T13_DAILY_ASSISTANT_GUIDES, groups: getT13DailyAssistantPromptGroups },
+  { name: 'کمبود انگیزه', id: 'T14', guides: T14_DAILY_ASSISTANT_GUIDES, groups: getT14DailyAssistantPromptGroups },
 ];
 
 function contextFor(topic) {
@@ -98,7 +100,7 @@ test('all exact prepared FAQs across 28 days keep their own answers when their w
       }
     }
   }
-  assert.ok(checked >= 2700, `expected broad coverage of the 7 × 28 prepared FAQ sets; checked ${checked}`);
+  assert.ok(checked >= 3000, `expected broad coverage including T14's 28 × 14 prepared FAQ set; checked ${checked}`);
 });
 
 test('T13 day 14 remains available after owner approval without a specialist-review runtime gate', () => {
@@ -232,4 +234,13 @@ test('a clear no-immediate-danger answer safely returns each topic to prepared g
     assert.equal(prepared.status, 'daily_guidance_available', topic.name);
     assert.match(prepared.message, /راهنمای روز/);
   }
+});
+
+
+test('T14 is wired into the visible prepared-question launcher and remains prepared-only', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
+  assert.match(launcher, /getT14DailyAssistantPromptGroups/u);
+  assert.ok(launcher.includes('isT14DailyPromptContext ? "کمبود انگیزه"'));
+  assert.match(launcher, /t14-daily-prompt-trigger/u);
 });

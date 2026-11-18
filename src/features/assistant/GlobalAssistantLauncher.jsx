@@ -21,6 +21,7 @@ import { getT10DailyAssistantPromptGroups } from './t10DailyAssistantPrompts.js'
 import { getT11DailyAssistantPromptGroups } from './t11DailyAssistantPrompts.js';
 import { getT12DailyAssistantPromptGroups } from './t12DailyAssistantPrompts.js';
 import { getT13DailyAssistantPromptGroups } from './t13DailyAssistantPrompts.js';
+import { getT14DailyAssistantPromptGroups } from './t14DailyAssistantPrompts.js';
 import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS, DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
 import { getDailySafetyMode } from '../content/dailySafety.js';
 
@@ -243,8 +244,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const dailyRecordTopicId = dailyContext?.data?.topic_id || dailyContext?.data?.topicId || null;
   const hasConflictingDailyTopic = Boolean(
     (dailyProblemTopicId && dailyRecordTopicId && dailyProblemTopicId !== dailyRecordTopicId)
-    || (dailyProblemTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12'].includes(dailyProblemTopicId) && dailyRecordTopicId)
-    || (dailyRecordTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12'].includes(dailyRecordTopicId) && dailyProblemTopicId),
+    || (dailyProblemTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12', 'T13', 'T14'].includes(dailyProblemTopicId) && dailyRecordTopicId)
+    || (dailyRecordTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12', 'T13', 'T14'].includes(dailyRecordTopicId) && dailyProblemTopicId),
   );
   const isAngerDailyPromptContext = Boolean(dailyContext)
     && !hasConflictingDailyTopic
@@ -275,7 +276,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     && (dailyProblemTopicId === 'T12' || dailyRecordTopicId === 'T12' || dailyProblemText === 'مرزبندی و نه گفتن');
   const isT13DailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
     && (dailyProblemTopicId === 'T13' || dailyRecordTopicId === 'T13' || dailyProblemText === 'تنهایی');
-  const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext || isJealousyDailyPromptContext || isGriefDailyPromptContext || isGuiltDailyPromptContext || isEmotionalDependencyDailyPromptContext || isT09DailyPromptContext || isT10DailyPromptContext || isT11DailyPromptContext || isT12DailyPromptContext || isT13DailyPromptContext;
+  const isT14DailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T14' || dailyRecordTopicId === 'T14' || dailyProblemText === 'کمبود انگیزه');
+  const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext || isJealousyDailyPromptContext || isGriefDailyPromptContext || isGuiltDailyPromptContext || isEmotionalDependencyDailyPromptContext || isT09DailyPromptContext || isT10DailyPromptContext || isT11DailyPromptContext || isT12DailyPromptContext || isT13DailyPromptContext || isT14DailyPromptContext;
   const isPreparedOnlyDailyPromptContext = isTopicDailyPromptContext;
   const jealousyRelationshipGate = isJealousyDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
   const jealousyRelationshipGatePending = Boolean(jealousyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
@@ -319,7 +322,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                             ? getT12DailyAssistantPromptGroups(dailyContext?.day)
                             : isT13DailyPromptContext
                               ? (getDailySafetyMode(dailyContext?.data) === 'blocked' ? [] : getT13DailyAssistantPromptGroups(dailyContext?.day))
-                              : dailyContext
+                              : isT14DailyPromptContext
+                                ? (getDailySafetyMode(dailyContext?.data) === 'blocked' ? [] : getT14DailyAssistantPromptGroups(dailyContext?.day))
+                                : dailyContext
                               ? []
                               : (screen === 'day' ? [] : (() => { const pageGroups = getPageSpecificPromptGroups(screen); return pageGroups ? [...pageGroups, ...PAGE_ASSISTANT_PROMPT_GROUPS] : PAGE_ASSISTANT_PROMPT_GROUPS; })());
   if (!visible || screen === 'bookReader') return null;
@@ -578,7 +583,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
             }}
           >
             <span className="badge">پرسش‌های پیشنهادی</span>
-            <h2 id="library-assistant-prompt-title">{screen === "books" ? "سؤال آماده دستیار کتابخانه" : dailyContext ? `سؤال‌های آماده روز ${dailyContext.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : isGriefDailyPromptContext ? "غم و سوگ" : isGuiltDailyPromptContext ? "احساس گناه" : isEmotionalDependencyDailyPromptContext ? "وابستگی عاطفی" : isT10DailyPromptContext ? "بی‌خوابی و مشکلات خواب" : isT09DailyPromptContext ? "اهمال‌کاری" : isT11DailyPromptContext ? "عادت‌های تکراری" : isT12DailyPromptContext ? "مرزبندی و نه گفتن" : isT13DailyPromptContext ? "تنهایی" : "خشم"}` : "سؤال‌های آماده این صفحه"}</h2>
+            <h2 id="library-assistant-prompt-title">{screen === "books" ? "سؤال آماده دستیار کتابخانه" : dailyContext ? `سؤال‌های آماده روز ${dailyContext.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : isGriefDailyPromptContext ? "غم و سوگ" : isGuiltDailyPromptContext ? "احساس گناه" : isEmotionalDependencyDailyPromptContext ? "وابستگی عاطفی" : isT10DailyPromptContext ? "بی‌خوابی و مشکلات خواب" : isT09DailyPromptContext ? "اهمال‌کاری" : isT11DailyPromptContext ? "عادت‌های تکراری" : isT12DailyPromptContext ? "مرزبندی و نه گفتن" : isT14DailyPromptContext ? "کمبود انگیزه" : isT13DailyPromptContext ? "تنهایی" : "خشم"}` : "سؤال‌های آماده این صفحه"}</h2>
             <p className="muted">برای انتخاب، روی سؤال آماده موردنظرت بزن تا پاسخ مربوط به همین بخش نمایش داده شود.</p>
             <div className="libraryAssistantPromptOptions">
               {activePromptGroups.map((group) => (
@@ -724,10 +729,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                     <button
                       ref={libraryPromptTriggerRef}
                       className="libraryAssistantPromptTrigger"
-                      data-testid={isAngerDailyPromptContext ? "anger-daily-prompt-trigger" : isAnxietyDailyPromptContext ? "anxiety-daily-prompt-trigger" : isFearDailyPromptContext ? "fear-daily-prompt-trigger" : isHatredDailyPromptContext ? "hatred-daily-prompt-trigger" : isJealousyDailyPromptContext ? "jealousy-daily-prompt-trigger" : isGriefDailyPromptContext ? "grief-daily-prompt-trigger" : isGuiltDailyPromptContext ? "guilt-daily-prompt-trigger" : isEmotionalDependencyDailyPromptContext ? "emotional-dependency-daily-prompt-trigger" : isT10DailyPromptContext ? "t10-daily-prompt-trigger" : isT09DailyPromptContext ? "t09-daily-prompt-trigger" : isT11DailyPromptContext ? "t11-daily-prompt-trigger" : isT12DailyPromptContext ? "t12-daily-prompt-trigger" : isT13DailyPromptContext ? "t13-daily-prompt-trigger" : screen === "books" ? "library-assistant-prompt-trigger" : "page-assistant-prompt-trigger"}
+                      data-testid={isAngerDailyPromptContext ? "anger-daily-prompt-trigger" : isAnxietyDailyPromptContext ? "anxiety-daily-prompt-trigger" : isFearDailyPromptContext ? "fear-daily-prompt-trigger" : isHatredDailyPromptContext ? "hatred-daily-prompt-trigger" : isJealousyDailyPromptContext ? "jealousy-daily-prompt-trigger" : isGriefDailyPromptContext ? "grief-daily-prompt-trigger" : isGuiltDailyPromptContext ? "guilt-daily-prompt-trigger" : isEmotionalDependencyDailyPromptContext ? "emotional-dependency-daily-prompt-trigger" : isT10DailyPromptContext ? "t10-daily-prompt-trigger" : isT09DailyPromptContext ? "t09-daily-prompt-trigger" : isT11DailyPromptContext ? "t11-daily-prompt-trigger" : isT12DailyPromptContext ? "t12-daily-prompt-trigger" : isT14DailyPromptContext ? "t14-daily-prompt-trigger" : isT13DailyPromptContext ? "t13-daily-prompt-trigger" : screen === "books" ? "library-assistant-prompt-trigger" : "page-assistant-prompt-trigger"}
                       type="button"
                       aria-label={isTopicDailyPromptContext
-                        ? `باز کردن سؤال‌های آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : isGriefDailyPromptContext ? "غم و سوگ" : isGuiltDailyPromptContext ? "احساس گناه" : isEmotionalDependencyDailyPromptContext ? "وابستگی عاطفی" : isT10DailyPromptContext ? "بی‌خوابی و مشکلات خواب" : isT09DailyPromptContext ? "اهمال‌کاری" : isT11DailyPromptContext ? "عادت‌های تکراری" : isT12DailyPromptContext ? "مرزبندی و نه گفتن" : isT13DailyPromptContext ? "تنهایی" : "خشم"}`
+                        ? `باز کردن سؤال‌های آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : isGriefDailyPromptContext ? "غم و سوگ" : isGuiltDailyPromptContext ? "احساس گناه" : isEmotionalDependencyDailyPromptContext ? "وابستگی عاطفی" : isT10DailyPromptContext ? "بی‌خوابی و مشکلات خواب" : isT09DailyPromptContext ? "اهمال‌کاری" : isT11DailyPromptContext ? "عادت‌های تکراری" : isT12DailyPromptContext ? "مرزبندی و نه گفتن" : isT14DailyPromptContext ? "کمبود انگیزه" : isT13DailyPromptContext ? "تنهایی" : "خشم"}`
                         : screen === "books" ? "باز کردن سؤال‌های آماده دستیار کتابخانه" : "باز کردن سؤال‌های آماده دستیار این صفحه"}
                       aria-haspopup="dialog"
                       aria-expanded={libraryPromptOpen}

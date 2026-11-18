@@ -54,9 +54,9 @@ try {
     if (url.pathname.endsWith('/content/path-content.json')) {
       const response = await route.fetch();
       const payload = await response.json();
-      const day = payload.categories?.['خشم']?.days?.find((item) => Number(item.day) === 1);
-      assert.ok(day, 'the global assistant fixture must contain anger day 1');
-      Object.assign(day, {
+      const angerDay = payload.categories?.['خشم']?.days?.find((item) => Number(item.day) === 1);
+      assert.ok(angerDay, 'the global assistant fixture must contain anger day 1');
+      Object.assign(angerDay, {
         topic_id: 'T01',
         day: 1,
         review_status: 'approved',
@@ -114,7 +114,7 @@ try {
   const pageSendButton = dialog.getByRole('button', { name: 'ارسال' });
   assert.equal(await pageSendButton.isEnabled(), true, 'only selecting a prepared question enables sending');
   await pageSendButton.click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('نمای کلی مسیر ۲۸ روزه است')));
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('این کارت خلاصه‌ای از اطلاعات مسیر فعال تو را نشان می‌دهد')));
   assert.equal(await dialog.getByRole('textbox').count(), 0, 'prepared page guidance must not expose a typing field');
   await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await dialog.waitFor({ state: 'detached' });
@@ -333,7 +333,8 @@ try {
   await supportPromptDialog.waitFor({ state: 'visible' });
   await supportPromptDialog.locator('[data-prompt-option]').first().click();
   await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('اطلاعات و راه‌های ارتباط با مرکز')));
+  // Assert the actual prepared answer, not the page-purpose summary from the context catalogue.
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('بخش پشتیبانی محل شروع مناسبی است')));
   await page.keyboard.press('Escape');
   await dialog.waitFor({ state: 'detached' });
 

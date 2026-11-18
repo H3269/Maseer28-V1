@@ -189,7 +189,7 @@ function MainApp() {
               if (attempt >= 2 || error instanceof SyntaxError) throw error;
             }
           }
-          const overrides = await fetch(`${import.meta.env.BASE_URL}content/daily-text-overrides.v1.json?v=20261112-t06`, { cache: 'default', priority: 'low' })
+          const overrides = await fetch(`${import.meta.env.BASE_URL}content/daily-text-overrides.v1.json?v=20261118-t14`, { cache: 'default', priority: 'low' })
             .then((response) => response.ok ? response.json() : null)
             .catch(() => null);
           if (cancelled) return;
