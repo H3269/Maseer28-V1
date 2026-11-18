@@ -3,8 +3,6 @@
   "package_id": "T09",
   "topic_id": "T09",
   "topic_name": "اهمال‌کاری",
-  "status": "draft_not_runtime_eligible",
-  "mapping_note": "Subtopic IDs are proposed mappings from B2-DA/B2-ZS and have not been approved; do not use as confirmed routing metadata.",
   "source_document": "docs/T09_PROCRASTINATION_28DAY_REDESIGN_DRAFT_B2_DA_FA.md",
   "daily_unit_contract": "v2",
   "records": [
@@ -14,7 +12,6 @@
       "subtopic_ids": [
         "T09-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 1,
       "title": "نقشه یک کار عقب‌افتاده",
       "learning_objective": "تعریف مسئله مشخص",
@@ -37,7 +34,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر تعریف کار به شرم شدید یا خودتحقیری تبدیل شد، متوقف شو؛ ارزش شخصی با تکمیل این وظیفه سنجیده نمی‌شود.",
       "contraindications": [
@@ -50,7 +46,6 @@
       "subtopic_ids": [
         "T09-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 2,
       "title": "تأخیر در برابر اولویت‌گذاری",
       "learning_objective": "تشخیص دلیل معتبر تعویق",
@@ -73,7 +68,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر تعویق ناشی از خطر واقعی، آزار یا شرایط ناامن است، خودت را به شروع وادار نکن؛ ابتدا حفاظت را بررسی کن.",
       "contraindications": [
@@ -86,7 +80,6 @@
       "subtopic_ids": [
         "T09-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 3,
       "title": "زنجیره تعویق",
       "learning_objective": "شناخت لحظه انحراف",
@@ -109,7 +102,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر خردکردن کار، یک وظیفه پزشکی/حقوقی/ایمنی حساس را ساده‌سازی خطرناک می‌کند، از فرد واجد صلاحیت راهنمایی بگیر.",
       "contraindications": [
@@ -122,7 +114,6 @@
       "subtopic_ids": [
         "T09-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 4,
       "title": "نشانه‌های بدن و انرژی",
       "learning_objective": "تطبیق کار با ظرفیت",
@@ -145,7 +136,6 @@
       "when_to_seek_human_support": "اگر خستگی، درد، مشکل خواب، فشار کاری یا محدودیت منابع پایدار است و عملکرد یا سلامت را مختل می‌کند، به‌جای فشار بیشتر برای شروع، از منبع انسانی/تخصصی مناسب کمک بگیر.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر تخمین زمان به فشار و اضافه‌کاری اجباری منجر شد، آن را بازبینی کن؛ استراحت و محدودیت واقعی را نادیده نگیر.",
       "contraindications": [
@@ -158,7 +148,6 @@
       "subtopic_ids": [
         "T09-S01"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 5,
       "title": "مانع غالب شروع",
       "learning_objective": "تشخیص اصطکاک",
@@ -181,7 +170,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر شروع کوتاه اضطراب یا آشفتگی شدید ایجاد کرد، متوقف شو؛ ادامه‌دادن معیار موفقیت نیست.",
       "contraindications": [
@@ -194,7 +182,6 @@
       "subtopic_ids": [
         "T09-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 6,
       "title": "نیاز پشت تعویق",
       "learning_objective": "تشخیص کارکرد کوتاه‌مدت",
@@ -217,7 +204,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر بررسی نیاز یا کارکرد تعویق به آشفتگی شدید یا نتیجه‌گیری قطعی درباره علت منجر شد، تمرین را متوقف کن؛ لازم نیست علت پنهانی پیدا کنی.",
       "contraindications": [
@@ -230,7 +216,6 @@
       "subtopic_ids": [
         "T09-S01"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 7,
       "title": "هدف رفتاری واقع‌بینانه",
       "learning_objective": "تعریف پیشرفت قابل مشاهده",
@@ -253,7 +238,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر هدف به تعهد غیرواقعی، وابستگی به نتیجه خارج از کنترل یا سرزنش خود تبدیل شد، آن را کوچک‌تر یا بازنویسی کن؛ هدف باید رفتاری و قابل کنترل بماند.",
       "contraindications": [
@@ -266,7 +250,6 @@
       "subtopic_ids": [
         "T09-S01"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 8,
       "title": "تعریف نخستین حرکت",
       "learning_objective": "شکستن ابهام",
@@ -289,7 +272,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر کوچک‌کردن کار باعث حذف مرحله الزامی، بررسی تخصصی یا کنترل ایمنی می‌شود، آن را ساده‌سازی نکن و ترتیب لازم را حفظ کن.",
       "contraindications": [
@@ -302,7 +284,6 @@
       "subtopic_ids": [
         "T09-S01"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 9,
       "title": "برنامه اگر ـ آنگاه برای شروع",
       "learning_objective": "پیوند نشانه به عمل",
@@ -325,7 +306,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر موضوع فوری یا دارای پیامد ایمنی است، برای اجرای برنامه زمان‌بندی آن را به تعویق نینداز.",
       "contraindications": [
@@ -338,7 +318,6 @@
       "subtopic_ids": [
         "T09-S01"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 10,
       "title": "شروع کوتاه و محدود",
       "learning_objective": "عبور از آستانه شروع",
@@ -361,7 +340,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "تایمر جایگزین دستور ایمنی یا کیفیت در کار حساس نیست؛ اگر توقف در پایان بازه خطر می‌سازد، از روش دیگری استفاده کن.",
       "contraindications": [
@@ -374,7 +352,6 @@
       "subtopic_ids": [
         "T09-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 11,
       "title": "مرز ظرفیت و توقف",
       "learning_objective": "پیشگیری از برنامه افراطی",
@@ -397,7 +374,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر اولویت‌بندی نیازهای جسمی، مراقبت یا تعهد ضروری را حذف می‌کند، برنامه را بازنگری کن.",
       "contraindications": [
@@ -410,7 +386,6 @@
       "subtopic_ids": [
         "T09-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 12,
       "title": "درخواست کمک یا روشن‌سازی",
       "learning_objective": "رفع وابستگی به حدس",
@@ -433,7 +408,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر ارزیابی با تحقیر، تهدید یا سوءاستفاده همراه است، خودت را در معرض آن قرار نده.",
       "contraindications": [
@@ -446,7 +420,6 @@
       "subtopic_ids": [
         "T09-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 13,
       "title": "ابهام و اطلاعات ناکافی",
       "learning_objective": "روشن‌کردن تعریف انجام کار",
@@ -469,7 +442,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر معیار رسمی کیفیت یا پیامد خطا روشن نیست و کار حساس است، پیش از اقدام یا تحویل از مرجع واجد صلاحیت سؤال کن؛ حدس نزن و بازبینی لازم را دور نزن.",
       "contraindications": [
@@ -482,7 +454,6 @@
       "subtopic_ids": [
         "T09-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 14,
       "title": "چرخه تعویق و پاداش فوری",
       "learning_objective": "شناسایی تقویت کوتاه‌مدت",
@@ -505,7 +476,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "redesigned_after_semantic_audit_2026-11-13_no_new_clinical_claims",
       "stop_condition_text": "اگر تمرین به محدودکردن استراحت لازم، نظارت اجباری یا شرم‌زایی منجر شد، آن را متوقف کن و تغییر را کنار بگذار.",
       "contraindications": [
@@ -518,7 +488,6 @@
       "subtopic_ids": [
         "T09-S02"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 15,
       "title": "تعهد محدود و قابل مذاکره",
       "learning_objective": "تنظیم انتظار",
@@ -541,7 +510,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر زمان یا خروجی پیشنهادی با منابع و اختیار واقعی سازگار نیست، آن را قول قطعی نکن؛ دامنه یا موعد را بازنگری و مذاکره کن.",
       "contraindications": [
@@ -554,7 +522,6 @@
       "subtopic_ids": [
         "T09-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 16,
       "title": "تنظیم محیط",
       "learning_objective": "کاهش اصطکاک و حواس‌پرتی",
@@ -577,7 +544,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر تغییر محیط دسترسی ضروری، ارتباط ایمن یا مسئولیت مهم را مختل می‌کند، آن را انجام نده؛ فقط گزینه کم‌هزینه و برگشت‌پذیر را نگه دار.",
       "contraindications": [
@@ -590,7 +556,6 @@
       "subtopic_ids": [
         "T09-S02"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 17,
       "title": "بازگشت پس از وقفه",
       "learning_objective": "شکستن تفکر همه یا هیچ",
@@ -613,7 +578,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر تعویق طولانی با اختلال پایدار عملکرد یا آشفتگی شدید همراه است، ارزیابی تخصصی را جایگزین خودسرزنشی کن.",
       "contraindications": [
@@ -626,7 +590,6 @@
       "subtopic_ids": [
         "T09-S02"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 18,
       "title": "بستن چرخه و تحویل کار",
       "learning_objective": "تعیین حرکت پایانی مجاز",
@@ -649,7 +612,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر تحویل بدون بازبینی تخصصی، مجوز یا کنترل ایمنی خطرساز است، آن را انجام نده و مسیر تأیید لازم را حفظ کن.",
       "contraindications": [
@@ -662,7 +624,6 @@
       "subtopic_ids": [
         "T09-S01"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 19,
       "title": "آزمون یک راهبرد در کار کم‌پیامد",
       "learning_objective": "سنجش تناسب یک راهبرد",
@@ -685,7 +646,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "redesigned_after_semantic_audit_2026-11-13_no_new_clinical_claims",
       "stop_condition_text": "اگر حتی آن کار کم‌پیامد پیامد مهم، خطر یا فشار غیرقابل قبول دارد، آزمون را متوقف کن و آن را به‌عنوان تمرین انتخاب نکن.",
       "contraindications": [
@@ -698,7 +658,6 @@
       "subtopic_ids": [
         "T09-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 20,
       "title": "ثبت روند بدون بهره‌وری‌پرستی",
       "learning_objective": "مشاهده شروع و تکمیل",
@@ -721,7 +680,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "revised_after_semantic_audit_2026-11-13_no_new_clinical_claims",
       "stop_condition_text": "اگر ثبت زمان یا عملکرد باعث شرم، وسواس یا فشار بیشتر شد، ثبت را متوقف کن؛ این داده‌ها امتیاز یا تشخیص نیستند.",
       "contraindications": [
@@ -734,7 +692,6 @@
       "subtopic_ids": [
         "T09-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 21,
       "title": "حل مانع ساختاری",
       "learning_objective": "تشخیص محدودیت بیرونی",
@@ -757,7 +714,6 @@
       "when_to_seek_human_support": "اگر خستگی، درد، مشکل خواب، فشار کاری یا محدودیت منابع پایدار است و عملکرد یا سلامت را مختل می‌کند، به‌جای فشار بیشتر برای شروع، از منبع انسانی/تخصصی مناسب کمک بگیر.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر مانع ساختاری یا کمبود منابع است، آن را ضعف شخصی تلقی نکن و برای حمایت عملی اقدام کن.",
       "contraindications": [
@@ -770,7 +726,6 @@
       "subtopic_ids": [
         "T09-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 22,
       "title": "نقشه روز دشوار",
       "learning_objective": "برنامه انعطاف‌پذیر برای ظرفیت پایین",
@@ -793,7 +748,6 @@
       "when_to_seek_human_support": "اگر خستگی، درد، مشکل خواب، فشار کاری یا محدودیت منابع پایدار است و عملکرد یا سلامت را مختل می‌کند، به‌جای فشار بیشتر برای شروع، از منبع انسانی/تخصصی مناسب کمک بگیر.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر کار پیامد پزشکی، حقوقی یا مالی جدی دارد، گام بعدی را بدون راهنمایی واجد صلاحیت تعیین نکن.",
       "contraindications": [
@@ -806,7 +760,6 @@
       "subtopic_ids": [
         "T09-S01"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 23,
       "title": "عادت کوچک شروع",
       "learning_objective": "تثبیت نشانه و حرکت",
@@ -829,7 +782,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر اتصال عادت به رفتار اجباری یا فرساینده تبدیل شد، آن را متوقف و برنامه را سبک‌تر کن.",
       "contraindications": [
@@ -842,7 +794,6 @@
       "subtopic_ids": [
         "T09-S02"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 24,
       "title": "هماهنگی و واگذاری",
       "learning_objective": "روشن‌کردن مسئولیت‌ها",
@@ -865,7 +816,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "revised_after_semantic_audit_2026-11-13_no_new_clinical_claims",
       "stop_condition_text": "اگر انتقال مسئولیت بدون توافق، اختیار یا صلاحیت می‌تواند ایمنی یا تعهد مهمی را مختل کند، واگذاری را متوقف کن و مسیر مسئول یا کمک مناسب را روشن کن.",
       "contraindications": [
@@ -878,7 +828,6 @@
       "subtopic_ids": [
         "T09-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 25,
       "title": "انتخاب اولویت و هزینه فرصت",
       "learning_objective": "مقایسه اولویت و هزینه فرصت",
@@ -901,7 +850,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر مقایسه دو کار باعث نادیده‌گرفتن موعد واقعی یا مسئولیت ضروری شد، اولویت را با توجه به پیامد و منابع دوباره تنظیم کن.",
       "contraindications": [
@@ -914,7 +862,6 @@
       "subtopic_ids": [
         "T09-S02"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 26,
       "title": "نقطه کنترل در کار چندمرحله‌ای",
       "learning_objective": "تقسیم پروژه به نقاط تحویل",
@@ -937,7 +884,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "revised_after_semantic_audit_2026-11-13_no_new_clinical_claims",
       "stop_condition_text": "اگر برنامه‌ریزی جزئیات باعث آشفتگی یا فشار شدید شد، متوقف شو و فقط یک وابستگی ضروری را نگه دار.",
       "contraindications": [
@@ -950,7 +896,6 @@
       "subtopic_ids": [
         "T09-S02"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 27,
       "title": "برنامه نگهداری و بازگشت",
       "learning_objective": "پیشگیری از چرخه دوباره",
@@ -973,7 +918,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر برنامه نگهداری باعث اضافه‌کاری یا جبران افراطی شد، آن را کاهش بده و ظرفیت را مقدم بدان.",
       "contraindications": [
@@ -986,7 +930,6 @@
       "subtopic_ids": [
         "T09-S03"
       ],
-      "subtopic_mapping_status": "proposed_not_approved",
       "day": 28,
       "title": "مرور و انتخاب گام بعدی",
       "learning_objective": "جمع‌بندی بدون برچسب شخصیتی",
@@ -1009,7 +952,6 @@
       "when_to_seek_human_support": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "source_ids": [],
       "evidence_grade": "not_assessed",
-      "review_status": "draft",
       "provenance": "transcribed_from_B2_DA_existing_draft_no_new_clinical_claims",
       "stop_condition_text": "اگر مرور پایانی به شرم یا ناامیدی شدید منجر شد، متوقف شو و از حمایت مناسب استفاده کن.",
       "contraindications": [
