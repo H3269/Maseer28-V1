@@ -150,3 +150,14 @@ test('daily turn routes anxiety prepared answers only for matching source topic 
   assert.match(dayMismatch.response, /شناسه روزِ محتوای دریافتی/);
   assert.doesNotMatch(dayMismatch.response, /راهنمای روز 1 اضطراب/);
 });
+
+
+test('T02 days 17, 19 and 24 examples show concrete situations rather than repeating the action',()=>{
+  const get=(day,kind)=>ANXIETY_DAILY_ASSISTANT_GUIDES.find(item=>item.day===day).questions.find(item=>item.kind===kind).answer;
+  assert.match(get(17,'action_example'),/پیش‌بینی من از بازکردن یک‌باره چیست/u);
+  assert.match(get(17,'action_example'),/معیار توقف/u);
+  assert.match(get(19,'action_example'),/عنوان و دو نکته اصلی/u);
+  assert.match(get(19,'action_example'),/فرم پزشکی، سند حقوقی/u);
+  assert.match(get(24,'exercise_example'),/یک منبع حرفه‌ای را برای ارزیابی/u);
+  assert.match(get(24,'exercise_example'),/فرد امن را برای شنیده‌شدن/u);
+});
