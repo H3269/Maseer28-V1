@@ -90,3 +90,16 @@ test('T10 selected distress answers do not repeat the stop-condition warning',()
       'day '+day+' must not append the duplicated generic warning block');
   }
 });
+
+
+test('T10 day 1 stop answer retains its exact canonical medical stop condition',()=>{
+  const guide=T10_DAILY_ASSISTANT_GUIDES[0];
+  const question=guide.questions.find(item=>item.kind==='stop');
+  const answer=answerT10DailyPreparedQuestion({
+    day:1,message:question.value,
+    dailyContent:{id:'بی‌خوابی و مشکلات خواب-01',day:1,topic_id:'T10'},
+  });
+  assert.ok(answer.includes(guide.stopCondition));
+  assert.match(answer,/خواب‌آلودگی رانندگی یا کار پرخطر را ناایمن می‌کند/u);
+  assert.match(answer,/محدودسازی خواب یا درمان ساختارمند بی‌خوابی را بدون راهنمایی متخصص اجرا نکن/u);
+});
