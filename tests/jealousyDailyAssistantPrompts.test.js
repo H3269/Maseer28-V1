@@ -79,3 +79,18 @@ test('T05 example answers display the concrete exercise/action example from the 
   assert.ok(actionAnswer.includes('چطور از مثال استفاده کنی'),'action example teaching frame missing for day '+g.day);
  }
 });
+
+
+test('T05 days 8, 11, 18 and 28 action examples demonstrate distinct concrete behaviors',()=>{
+ const expected={
+  8:/قرارمان این است که در صورت تغییر برنامه به هم اطلاع بدهیم/u,
+  11:/پایان ساعت کاری/u,
+  18:/متن اتهامی را در پیش‌نویس نگه می‌داری و ارسال نمی‌کنی/u,
+  28:/دو بار تغییر برنامه بدون اطلاع/u,
+ };
+ for(const [day,pattern] of Object.entries(expected)){
+  const guide=JEALOUSY_DAILY_ASSISTANT_GUIDES.find(item=>item.day===Number(day));
+  assert.match(guide.actionExample,pattern,'day '+day);
+  assert.notEqual(guide.actionExample,guide.action,'example must not merely repeat the action');
+ }
+});
