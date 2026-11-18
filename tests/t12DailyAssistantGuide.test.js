@@ -257,3 +257,14 @@ test('T12 semantic text stays distinct from other topic overlays', async () => {
     assert.equal(new Set(days.map(day => normalize(day[field]))).size, 28, 'T12 ' + field + ' must be unique within the topic');
   }
 });
+
+test('T12 has a distinct day-specific mechanism for every boundary skill', () => {
+  assert.equal(T12_DAILY_ASSISTANT_GUIDES.length, 28);
+  const mechanisms = T12_DAILY_ASSISTANT_GUIDES.map((guide) => guide.mechanism);
+  assert.ok(mechanisms.every((value) => typeof value === 'string' && value.trim()));
+  assert.equal(new Set(mechanisms).size, 28);
+  for (const guide of T12_DAILY_ASSISTANT_GUIDES) {
+    assert.notEqual(guide.mechanism.trim(), guide.skill.trim());
+    assert.ok(guide.mechanism.length >= 45, `mechanism too generic on day ${guide.day}`);
+  }
+});
