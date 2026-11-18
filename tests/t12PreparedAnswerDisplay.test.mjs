@@ -54,3 +54,24 @@ test('all 392 T12 prepared answers use the shared T01-T11 display frame', () => 
   }
   assert.equal(checked, 392);
 });
+
+
+test('T12 day 21 action example demonstrates checking a support service before disclosure',()=>{
+  const guide=T12_DAILY_ASSISTANT_GUIDES.find(item=>item.day===21);
+  const question=guide.questions.find(item=>item.kind==='action_example');
+  const answer=answerT12DailyPreparedQuestion({
+    day:21,
+    message:question.value,
+    dailyContent:{
+      id:'مرزبندی و نه گفتن-21',topic_id:'T12',day:21,
+      title:guide.title,sourceExercise:guide.exercise,sourceActionText:guide.action,
+      exercise:guide.exercise,actionText:guide.action,
+      lightExerciseText:guide.lightVersion,lightActionText:guide.lightActionVersion,
+      progressActionText:guide.progressActionVersion,restExerciseText:guide.restVersion,
+      restActionText:guide.restActionVersion,
+    },
+  });
+  assert.match(answer,/از منبع عمومی آن بررسی کن/u);
+  assert.match(answer,/محرمانگی، حق انتخاب و نبود اجبار/u);
+  assert.match(answer,/اطلاعات حساس نده/u);
+});
