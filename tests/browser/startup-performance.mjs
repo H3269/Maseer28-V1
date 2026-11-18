@@ -46,6 +46,7 @@ async function measure(viewport, run) {
       firstClipPath: null,
       completedName: null,
       completedAt: null,
+      reactRevealCompletedAt: null,
       appVisibleAt: null,
       finalClipPath: null,
       finalLogoConnectedAtAnimationEnd: null,
@@ -71,6 +72,9 @@ async function measure(viewport, run) {
       if (event.animationName !== 'loadingLogoBloom') return;
       window.__path28SplashAnimation.completedName = event.animationName;
       window.__path28SplashAnimation.completedAt = performance.now();
+      if (image.closest('#root .appLoading')) {
+        window.__path28SplashAnimation.reactRevealCompletedAt = performance.now();
+      }
       window.__path28SplashAnimation.finalLogoConnectedAtAnimationEnd = image.isConnected;
       const finalStyle = getComputedStyle(image);
       const logoAnimation = image.getAnimations().find((animation) => animation.animationName === 'loadingLogoBloom');
@@ -238,12 +242,12 @@ const startedAt = Date.now();
   assert.ok(splashVisual.width >= 160 && splashVisual.height >= 160, 'The logo must retain its intended display size');
   assert.equal(animationEvidence.completedName, 'loadingLogoBloom', 'The app must wait for the radial reveal animation end event');
   assert.match(animationEvidence.finalClipPath, /circle\(75% at 50% 50%\)/, `The reveal must finish with the full centered logo visible; evidence: ${JSON.stringify(animationEvidence)}`);
-  if (!(animationEvidence.completedAt !== null && animationEvidence.appVisibleAt !== null
-    && animationEvidence.completedAt <= animationEvidence.appVisibleAt)) {
+  if (!(animationEvidence.reactRevealCompletedAt !== null && animationEvidence.appVisibleAt !== null
+    && animationEvidence.reactRevealCompletedAt <= animationEvidence.appVisibleAt)) {
     console.error('SPLASH_ANIMATION_EVIDENCE', JSON.stringify(animationEvidence));
   }
-  assert.ok(animationEvidence.completedAt !== null && animationEvidence.appVisibleAt !== null
-    && animationEvidence.completedAt <= animationEvidence.appVisibleAt,
+  assert.ok(animationEvidence.reactRevealCompletedAt !== null && animationEvidence.appVisibleAt !== null
+    && animationEvidence.reactRevealCompletedAt <= animationEvidence.appVisibleAt,
   'The first app surface must not appear before the radial reveal completes');
   assert.ok(animationEvidence.progressCompletedAt !== null
     && animationEvidence.progressCompletedAt <= animationEvidence.appVisibleAt,
@@ -345,9 +349,13 @@ async function verifySplashReadinessOrders() {
     window.__PATH28_SPLASH_DURATION_MS__ = 3000;
   });
   await readinessFirstContext.addInitScript(() => {
-    window.__path28GateProbe = { completedAt: null, appVisibleAt: null };
+    window.__path28GateProbe = { completedAt: null, reactRevealCompletedAt: null, appVisibleAt: null };
     document.addEventListener('animationend', (event) => {
-      if (event.animationName === 'loadingLogoBloom') window.__path28GateProbe.completedAt = performance.now();
+      if (event.animationName !== 'loadingLogoBloom') return;
+      window.__path28GateProbe.completedAt = performance.now();
+      if (event.target instanceof HTMLImageElement && event.target.closest('#root .appLoading')) {
+        window.__path28GateProbe.reactRevealCompletedAt = performance.now();
+      }
     }, true);
     // The modal is inserted before its CSS fade-in reaches visible opacity.
     // Poll animation frames so the probe records the first actually visible frame.
@@ -396,14 +404,14 @@ async function verifySplashReadinessOrders() {
     if (probe.appVisibleAt === null) probe.appVisibleAt = performance.now();
     return probe;
   });
-  if (!(readinessFirstEvidence.completedAt !== null
+  if (!(readinessFirstEvidence.reactRevealCompletedAt !== null
     && readinessFirstEvidence.appVisibleAt !== null
-    && readinessFirstEvidence.completedAt <= readinessFirstEvidence.appVisibleAt)) {
+    && readinessFirstEvidence.reactRevealCompletedAt <= readinessFirstEvidence.appVisibleAt)) {
     console.error('SPLASH_ORDERING_EVIDENCE', JSON.stringify(readinessFirstEvidence));
   }
-  assert.ok(readinessFirstEvidence.completedAt !== null
+  assert.ok(readinessFirstEvidence.reactRevealCompletedAt !== null
     && readinessFirstEvidence.appVisibleAt !== null
-    && readinessFirstEvidence.completedAt <= readinessFirstEvidence.appVisibleAt,
+    && readinessFirstEvidence.reactRevealCompletedAt <= readinessFirstEvidence.appVisibleAt,
   'The app must become visible only after the deliberately extended reveal finishes');
   await readinessFirstContext.close();
 
