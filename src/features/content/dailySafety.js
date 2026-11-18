@@ -50,7 +50,7 @@ function hasSafetyRules(day) {
 }
 function riskMode(day) {
   const level = day?.risk_level;
-  if (level === 'human_review_required' || level === 'high' || level === 'moderate') return 'blocked';
+  if (level === 'urgent_support_required' || level === 'high' || level === 'moderate') return 'blocked';
   if (level === 'caution') return 'caution';
   if (level === 'routine' || level === undefined || level === null || level === '') return 'routine';
   return 'caution';
