@@ -10,7 +10,7 @@
   "expectedPreparedAnswers": 392,
   "questionPolicy": "۱۴ پرسش ثابت مشترک در پنج گروه؛ پاسخ‌ها به هدف، مهارت، تمرین، اقدام، نسخه‌های سبک/پیشرفت/استراحت و شرط توقف همان روز متصل‌اند. پرسش‌ها تشخیصی نیستند و پاسخ آزاد برای این بسته فعال نمی‌شود.",
   "sourceDraft": "docs/T15_LOW_SELF_CONFIDENCE_28DAY_REDESIGN_DRAFT_B2_BE_FA.md",
-  "sourceDraftSha": "292295f3fe6fbce949a72a2289111e2b034a2bd2",
+  "sourceDraftSha": "ed43e6c8f011ddc0fd55acad36114ea8360f60f5",
   "contentOverride": "public/content/daily-text-overrides.v1.json",
   "records": [
     {
