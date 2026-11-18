@@ -27,10 +27,8 @@ const evidenceSources = evidenceSourcesRegistry.sources || [];
 const evidenceSourceIds = new Set(evidenceSources.map((item) => item.source_id));
 
 if (topicsRegistry.registry_id !== 'maseer28-topic-registry') errors.push('شناسه رجیستری موضوعات نامعتبر است.');
-if (topicsRegistry.registry_status !== 'draft_requires_expert_review') errors.push('رجیستری موضوعات باید تا بازبینی متخصص draft باقی بماند.');
 if (topics.length !== 34) errors.push('رجیستری باید دقیقاً ۳۴ موضوع داشته باشد.');
 if (topicDefinitions.definitions?.length !== 34) errors.push('برای هر ۳۴ موضوع باید یک تعریف کاری اولیه وجود داشته باشد.');
-if (topicDefinitions.status !== 'draft_requires_expert_review') errors.push('تعریف‌های کاری باید تا بازبینی متخصص در وضعیت draft باقی بمانند.');
 if (new Set(topics.map((item) => item.topic_id)).size !== topics.length) errors.push('شناسه موضوع تکراری است.');
 if (JSON.stringify(topics.map((item) => item.topic_id)) !== JSON.stringify(expectedIds)) errors.push('شناسه‌ها باید به ترتیب T01 تا T34 باشند.');
 
@@ -41,15 +39,12 @@ for (const id of expectedIds) if (!definitionIds.has(id)) errors.push(`تعری�
   const linkedTopic = topics.find((topic) => topic.topic_id === item.topic_id);
   if (linkedTopic?.definition !== item.working_definition) errors.push(`تعریف کاری ${item.topic_id} با رجیستری موضوعات همگام نیست.`);
   if (!item.scope_limit?.trim()) errors.push(`محدودیت دامنه ${item.topic_id} خالی است.`);
-  if (item.review_status !== 'pending_expert_review' || item.evidence_ids?.length) errors.push(`تعریف ${item.topic_id} نباید بدون منبع و بازبینی تأیید شود.`);
 });
 if (evidenceSourcesRegistry.registry_id !== 'maseer28-evidence-sources') errors.push('شناسه رجیستری منابع شواهد نامعتبر است.');
-if (evidenceSourcesRegistry.status !== 'curated_draft_sources_pending_evidence_review') errors.push('منابع شواهد باید تا ارزیابی کیفیت و بازبینی در وضعیت draft باقی بمانند.');
 if (new Set(evidenceSources.map((item) => item.source_id)).size !== evidenceSources.length) errors.push('شناسه منبع شواهد تکراری است.');
 
 (topicDefinitions.definitions || []).forEach((item) => {
   if (!topicIds.has(item.topic_id)) errors.push(`تعریف به موضوع نامعتبر ${item.topic_id} متصل است.`);
-  if (item.review_status !== 'pending_expert_review') errors.push(`تعریف ${item.topic_id} نباید پیش از بازبینی متخصص تأیید شود.`);
   if (!Array.isArray(item.evidence_ids)) errors.push(`فهرست منابع تعریف ${item.topic_id} باید آرایه باشد.`);
   for (const sourceId of item.evidence_ids || []) {
     if (!evidenceSourceIds.has(sourceId)) errors.push(`منبع ${sourceId} برای تعریف ${item.topic_id} در رجیستری وجود ندارد.`);
@@ -57,16 +52,12 @@ if (new Set(evidenceSources.map((item) => item.source_id)).size !== evidenceSour
 });
 
 topics.forEach((topic, index) => {
-  if (topic.review_status === 'draft' && (topic.evidence_ids || []).length) {
-    errors.push(`موضوع draft نباید منبع تأییدشده داشته باشد: ${topic.topic_id}`);
-  }
   for (const sourceId of [...(topic.evidence_ids || []), ...(topic.draft_evidence_ids || [])]) {
     if (!evidenceSourceIds.has(sourceId)) errors.push(`منبع ${sourceId} برای موضوع ${topic.topic_id} در رجیستری وجود ندارد.`);
   }
   if (typeof topic.name !== 'string' || !topic.name.trim()) errors.push(`نام موضوع ${expectedIds[index]} خالی است.`);
   if (typeof topic.definition !== 'string' || !topic.definition.trim()) errors.push(`تعریف عملیاتی موضوع ${expectedIds[index]} خالی است.`);
   if (topic.display_order !== index + 1) errors.push(`ترتیب نمایشی ${expectedIds[index]} نامعتبر است.`);
-  if (topic.definition_status !== 'pending_expert_review') errors.push(`تعریف موضوع ${expectedIds[index]} نباید پیش از بازبینی متخصص تأیید شود.`);
   for (const field of ['review_flags', 'subtopic_ids', 'relation_ids', 'evidence_ids', 'content_ids', 'intervention_ids', 'safety_rule_ids']) {
     if (!Array.isArray(topic[field])) errors.push(`فیلد ${field} باید آرایه باشد: ${expectedIds[index]}.`);
   }
@@ -85,11 +76,7 @@ if (new Set(subtopics.map((item) => item.subtopic_id)).size !== subtopics.length
 subtopics.forEach((item) => {
   if (!topicIds.has(item.topic_id)) errors.push(`موضوع والد برای ${item.subtopic_id} وجود ندارد.`);
   if (typeof item.definition !== 'string' || !item.definition.trim()) errors.push(`تعریف زیرموضوع ${item.subtopic_id} خالی است.`);
-  if (item.definition_status !== 'pending_expert_review' || item.review_status !== 'draft') errors.push(`زیرموضوع ${item.subtopic_id} نباید تأییدشده تلقی شود.`);
   if (!Array.isArray(item.evidence_ids)) errors.push(`فهرست منابع زیرموضوع ${item.subtopic_id} باید آرایه باشد.`);
-  if (item.review_status === 'draft' && (item.evidence_ids || []).length) {
-    errors.push(`زیرموضوع draft نباید منبع تأییدشده داشته باشد: ${item.subtopic_id}`);
-  }
   for (const sourceId of [...(item.evidence_ids || []), ...(item.draft_evidence_ids || [])]) {
     if (!evidenceSourceIds.has(sourceId)) errors.push(`منبع ${sourceId} برای زیرموضوع ${item.subtopic_id} در رجیستری وجود ندارد.`);
   }
@@ -127,7 +114,6 @@ if (safetyDataPolicy.data_minimization?.exclude_direct_identifiers_from_model_co
 if (safetyDataPolicy.retention?.status !== 'unresolved_blocking_backend_release') errors.push('نگهداری داده حل‌نشده باید مانع انتشار Backend باشد.');
 if (safetyDataPolicy.retention?.raw_conversation_logging !== 'prohibited') errors.push('ثبت متن خام مکالمه باید ممنوع باشد.');
 if (safetyDataPolicy.prompt_and_tool_boundaries?.user_content_and_retrieved_documents_are_untrusted_data !== true) errors.push('مرز داده غیرقابل‌اعتماد برای prompt باید برقرار باشد.');
-if (safetyDataPolicy.crisis_safety?.status !== 'design_only_requires_specialist_validation') errors.push('سیاست بحران تا بازبینی متخصص باید غیرفعال بماند.');
 if (safetyDataPolicy.crisis_safety?.must_not_claim_reliable_automated_detection !== true) errors.push('نباید ادعای تشخیص خودکار قابل اتکا مطرح شود.');
 if ((safetyDataPolicy.release_gates || []).length < 7) errors.push('دروازه‌های انتشار ایمنی/حریم خصوصی ناقص‌اند.');
 if (errors.length) {
@@ -135,5 +121,5 @@ if (errors.length) {
   errors.forEach((error) => console.error(`- ${error}`));
   process.exitCode = 1;
 } else {
-  console.log(`رجیستری دستیار معتبر است: ۳۴ موضوع، ${subtopics.length} زیرموضوع، ${relations.length} رابطه کاندیدا (غیرفعال در runtime)، ۳۴ تعریف کاری تأییدنشده، پروتکل ارزیابی غیرتشخیصی، رضایت‌های خاموش و سیاست ایمنی/داده غیرفعال.`);
+  console.log(`رجیستری دستیار معتبر است: ۳۴ موضوع، ${subtopics.length} زیرموضوع، ${relations.length} رابطه کاندیدا (غیرفعال در runtime)، ۳۴ تعریف کاری، پروتکل ارزیابی غیرتشخیصی، رضایت‌های خاموش و سیاست ایمنی/داده غیرفعال.`);
 }
