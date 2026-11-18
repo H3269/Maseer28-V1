@@ -29,7 +29,7 @@ test('a non-scoring safety or human-review skip can advance immediately, but a p
     const base = {
       startedAt: '2026-11-14T08:00:00.000Z',
       completed: [1],
-      daily: { 1: { updatedAt: '2026-11-14T09:00:00.000Z', status: 'skipped_human_review' } },
+      daily: { 1: { updatedAt: '2026-11-14T09:00:00.000Z', status: 'skipped_without_score' } },
     };
     assert.equal(isDayUnlockedAt(base, 2, now), true, 'human-review skip does not impose a 24-hour wait');
 
@@ -952,8 +952,8 @@ test('journey state preserves human-review and safety-gate skips without inventi
     completed: [1, 2],
     daily: {
       1: {
-        status: 'skipped_human_review',
-        feedbackText: 'تمرین به دلیل نیاز به بازبینی انسانی اجرا نشد.',
+        status: 'skipped_without_score',
+        feedbackText: 'تمرین به دلیل نیاز به اجرای تمرین اجرا نشد.',
         exerciseId: 'T01-D27',
         updatedAt: '2026-11-03T12:00:00.000Z',
       },
@@ -966,7 +966,7 @@ test('journey state preserves human-review and safety-gate skips without inventi
     },
   });
   assert.deepEqual(state.completed, [1, 2]);
-  assert.equal(state.daily[1].status, 'skipped_human_review');
+  assert.equal(state.daily[1].status, 'skipped_without_score');
   assert.equal(state.daily[2].status, 'skipped_safety_gate');
   assert.equal(state.daily[1].score, undefined);
   assert.equal(state.daily[2].score, undefined);
