@@ -35,7 +35,7 @@ const subtopicRecordById = new Map((subtopicsRegistry.subtopics || []).map((item
 const subtopicById = new Map((subtopicsRegistry.subtopics || []).map((item) => [item.subtopic_id, item.topic_id]));
 const evidenceSourceIds = new Set((evidenceRegistry.sources || []).map((item) => item.source_id));
 const validEvidenceGrades = new Set(['not_assessed', 'very_low', 'low', 'moderate', 'high']);
-const validRiskLevels = new Set(['routine', 'caution', 'human_review_required']);
+const validRiskLevels = new Set(['routine', 'caution', 'urgent_support_required']);
 
 
 if (categories.length !== expectedCategoryCount) {
