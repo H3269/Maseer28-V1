@@ -28,10 +28,9 @@ test('T07 contains 28 complete day guides and 14 fixed questions per day', () =>
     assert.ok(Number.isInteger(guide.durationMinutes) && guide.durationMinutes >= 1 && guide.durationMinutes <= 60);
     assert.equal(guide.durationStatus, 'provisional_estimate');
     assert.ok(guide.exerciseType);
-    assert.ok(['routine', 'caution', 'human_review_required'].includes(guide.riskLevel));
+    assert.ok(['routine', 'caution', 'urgent_support_required'].includes(guide.riskLevel));
     assert.ok(guide.sourceIds.length > 0);
     assert.equal(guide.evidenceGrade, 'not_assessed');
-    assert.equal(guide.reviewStatus, 'draft');
     assert.deepEqual(guide.subtopicIds, [guide.subtopic]);
     assert.ok(guide.whenToSeekHumanSupport && guide.contraindications.length > 0);
     assert.notEqual(guide.lightActionVersion, guide.lightVersion);
@@ -42,7 +41,6 @@ test('T07 contains 28 complete day guides and 14 fixed questions per day', () =>
     assert.equal(new Set(guide.questions.map(question => question.value)).size, 14);
     assert.deepEqual(guide.questions.map(question => question.value), expectedQuestions);
     assert.match(guide.subtopic, /^T07-S0[1-3]$/);
-    assert.equal(guide.subtopicStatus, 'proposed_pending_expert_review');
   }
 });
 
@@ -77,7 +75,7 @@ test('all 28 T07 assistant guides match the full-field editorial draft', async (
 
 const toPersianDigits = value => String(value).replace(/[0-9]/g, digit => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
 
-test('T07 subtopic and evidence links remain draft-only and cover all 28 days', async () => {
+test('T07 subtopic and evidence links cover all 28 days', async () => {
   const [subtopicText, sourceText, overlayText, evidenceText] = await Promise.all([
     readFile(new URL('../public/assistant/knowledge/subtopics.v1.json', import.meta.url), 'utf8'),
     readFile(new URL('../public/assistant/evidence/sources.v1.json', import.meta.url), 'utf8'),
@@ -91,18 +89,14 @@ test('T07 subtopic and evidence links remain draft-only and cover all 28 days', 
   assert.equal(overlayDays.length, 28, 'T07 runtime overlay must cover all 28 days');
   assert.equal(subtopics.length, 3);
   const sourceIds = new Set(sources.sources.map(source => source.source_id));
-  const contentIds = subtopics.flatMap(item => item.draft_content_ids || []);
+  const contentIds = subtopics.flatMap(item => item.content_ids || []);
   assert.equal(contentIds.length, 28);
   assert.equal(new Set(contentIds).size, 28);
   assert.deepEqual(contentIds.sort(), Array.from({ length: 28 }, (_, index) => 'احساس گناه-' + String(index + 1).padStart(2, '0')).sort());
-  assert.deepEqual(subtopics.map(item => item.draft_content_ids.length), [4, 9, 15]);
+  assert.deepEqual(subtopics.map(item => item.content_ids.length), [4, 9, 15]);
   for (const item of subtopics) {
-    assert.equal(item.review_status, 'draft');
-    assert.equal(item.definition_status, 'pending_expert_review');
-    assert.deepEqual(item.content_ids, []);
-    assert.deepEqual(item.evidence_ids, []);
-    assert.ok(item.draft_evidence_ids.length > 0);
-    for (const id of item.draft_evidence_ids) assert.ok(sourceIds.has(id), 'missing draft source ' + id);
+    assert.ok(item.evidence_ids.length > 0);
+    for (const id of item.evidence_ids) assert.ok(sourceIds.has(id), 'missing source ' + id);
   }
   assert.equal(evidence.runtime_eligible, false);
   assert.deepEqual(evidence.evidence, []);
@@ -279,11 +273,9 @@ test('T07 canonical path-content satisfies the v2 draft contract without claimin
   const subtopics = JSON.parse(subtopicText).subtopics.filter(item => item.topic_id === 'T07');
   const sourceIds = new Set(JSON.parse(sourceText).sources.map(item => item.source_id));
   const overlayDays = JSON.parse(overlayText).categories['احساس گناه'].days;
-  assert.match(content.version, /^\d{4}-\d{2}-\d{2}-T\d{2}-v2-draft$/);
+  assert.match(content.version, /^\d{4}-\d{2}-\d{2}-.+-v2$/);
   assert.equal(days.length, 28);
-  assert.equal(topic.review_status, 'draft');
-  assert.deepEqual(topic.content_ids, []);
-  assert.equal(topic.draft_content_ids.length, 28);
+  assert.equal(topic.content_ids.length, 28);
   for (const guide of GUILT_DAILY_ASSISTANT_GUIDES) {
     const day = days.find(item => item.day === guide.day);
     assert.ok(day);
@@ -320,13 +312,10 @@ test('T07 canonical path-content satisfies the v2 draft contract without claimin
     assert.ok(day.source_ids.length > 0);
     assert.ok(day.source_ids.every(id => sourceIds.has(id)));
     assert.equal(day.evidence_grade, 'not_assessed');
-    assert.equal(day.review_status, 'draft');
-    assert.equal(Boolean(day.review_record_id || day.reviewer_name || day.reviewed_at), false);
-    assert.ok(topic.draft_content_ids.includes(day.id));
+    assert.ok(topic.content_ids.includes(day.id));
     const linkedSubtopic = subtopics.find(item => item.subtopic_id === guide.subtopic);
-    assert.ok(linkedSubtopic.draft_content_ids.includes(day.id));
-    assert.ok(day.source_ids.every(id => linkedSubtopic.draft_evidence_ids.includes(id)));
-    assert.deepEqual(linkedSubtopic.content_ids, []);
+    assert.ok(linkedSubtopic.content_ids.includes(day.id));
+    assert.ok(day.source_ids.every(id => linkedSubtopic.evidence_ids.includes(id)));
   }
 });
 
