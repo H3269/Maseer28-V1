@@ -8,7 +8,7 @@ function replaceExact(source,original,replacement){if(!original||!replacement||o
 export function answerT14DailyPreparedQuestion({day,message,dailyContent}={}){
  const dayNumber=toT14DayNumber(day);if(!dayNumber||!dailyContent||typeof dailyContent!=='object')return null;
  const guide=T14_DAILY_ASSISTANT_GUIDES.find(item=>item.day===dayNumber),expectedId=`کمبود انگیزه-${String(dayNumber).padStart(2,'0')}`;
- if(!guide||dailyContent.id!==expectedId||Number(dailyContent.day)!==dayNumber||(dailyContent.topic_id!=null&&dailyContent.topic_id!=='T14')||String(dailyContent.title||'').trim()!==guide.title||String(dailyContent.exercise??'').trim()!==guide.exercise||String(dailyContent.actionText??dailyContent.action??'').trim()!==guide.action)return null;
+ if(!guide||dailyContent.id!==expectedId||Number(dailyContent.day)!==dayNumber||(dailyContent.topic_id!=null&&dailyContent.topic_id!=='T14')||String(dailyContent.title||'').trim()!==guide.title||String(dailyContent.sourceExercise??dailyContent.exercise??'').trim()!==guide.exercise||String(dailyContent.sourceActionText??dailyContent.actionText??dailyContent.action??'').trim()!==guide.action)return null;
  const question=guide.questions.find(item=>item.value===String(message||'').trim());if(!question||!question.answer?.trim())return null;
  let body=question.answer;body=replaceExact(body,guide.exercise,String(dailyContent.exercise||guide.exercise).trim());body=replaceExact(body,guide.action,String(dailyContent.actionText||dailyContent.action||guide.action).trim());
  const heading=`راهنمای روز ${guide.day} کمبود انگیزه — ${guide.title}`,framed=addTeacherStyleFrame(`${heading}\n\n${body}`,{guide,question,topic:'کمبود انگیزه'});
