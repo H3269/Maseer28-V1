@@ -28,7 +28,7 @@
 منابع ساختاری:
 - `public/assistant/knowledge/topics.v1.json`
 - `public/assistant/knowledge/subtopics.v1.json`
-- `public/assistant/knowledge/topic-definitions-draft.v1.json`
+- `public/assistant/knowledge/topic-definitions.v1.json`
 - `public/assistant/knowledge/relations.v1.json`
 - `public/content/path-content.json`
 - `public/content/library.seed.json`
