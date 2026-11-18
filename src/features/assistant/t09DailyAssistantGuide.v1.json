@@ -131,9 +131,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر تعریف کار به شرم شدید یا خودتحقیری تبدیل شد، متوقف شو؛ ارزش شخصی با تکمیل این وظیفه سنجیده نمی‌شود."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S03"
       ],
@@ -266,9 +264,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر تعویق ناشی از خطر واقعی، آزار یا شرایط ناامن است، خودت را به شروع وادار نکن؛ ابتدا حفاظت را بررسی کن."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S03"
       ],
@@ -401,9 +397,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر خردکردن کار، یک وظیفه پزشکی/حقوقی/ایمنی حساس را ساده‌سازی خطرناک می‌کند، از فرد واجد صلاحیت راهنمایی بگیر."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S03"
       ],
@@ -536,9 +530,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر تخمین زمان به فشار و اضافه‌کاری اجباری منجر شد، آن را بازبینی کن؛ استراحت و محدودیت واقعی را نادیده نگیر."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S03"
       ],
@@ -671,9 +663,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر شروع کوتاه اضطراب یا آشفتگی شدید ایجاد کرد، متوقف شو؛ ادامه‌دادن معیار موفقیت نیست."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S01"
       ],
@@ -806,9 +796,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر بررسی نیاز یا کارکرد تعویق به آشفتگی شدید یا نتیجه‌گیری قطعی درباره علت منجر شد، تمرین را متوقف کن؛ لازم نیست علت پنهانی پیدا کنی."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S03"
       ],
@@ -941,9 +929,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر هدف به تعهد غیرواقعی، وابستگی به نتیجه خارج از کنترل یا سرزنش خود تبدیل شد، آن را کوچک‌تر یا بازنویسی کن؛ هدف باید رفتاری و قابل کنترل بماند."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S01"
       ],
@@ -1076,9 +1062,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر کوچک‌کردن کار باعث حذف مرحله الزامی، بررسی تخصصی یا کنترل ایمنی می‌شود، آن را ساده‌سازی نکن و ترتیب لازم را حفظ کن."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S01"
       ],
@@ -1211,9 +1195,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر موضوع فوری یا دارای پیامد ایمنی است، برای اجرای برنامه زمان‌بندی آن را به تعویق نینداز."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S01"
       ],
@@ -1346,9 +1328,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "تایمر جایگزین دستور ایمنی یا کیفیت در کار حساس نیست؛ اگر توقف در پایان بازه خطر می‌سازد، از روش دیگری استفاده کن."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S01"
       ],
@@ -1481,9 +1461,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر اولویت‌بندی نیازهای جسمی، مراقبت یا تعهد ضروری را حذف می‌کند، برنامه را بازنگری کن."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S03"
       ],
@@ -1616,9 +1594,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر ارزیابی با تحقیر، تهدید یا سوءاستفاده همراه است، خودت را در معرض آن قرار نده."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S03"
       ],
@@ -1751,9 +1727,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر معیار رسمی کیفیت یا پیامد خطا روشن نیست و کار حساس است، پیش از اقدام یا تحویل از مرجع واجد صلاحیت سؤال کن؛ حدس نزن و بازبینی لازم را دور نزن."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S03"
       ],
@@ -1886,9 +1860,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر تمرین به محدودکردن استراحت لازم، نظارت اجباری یا شرم‌زایی منجر شد، آن را متوقف کن و تغییر را کنار بگذار."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S03"
       ],
@@ -2021,9 +1993,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر زمان یا خروجی پیشنهادی با منابع و اختیار واقعی سازگار نیست، آن را قول قطعی نکن؛ دامنه یا موعد را بازنگری و مذاکره کن."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S02"
       ],
@@ -2156,9 +2126,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر تغییر محیط دسترسی ضروری، ارتباط ایمن یا مسئولیت مهم را مختل می‌کند، آن را انجام نده؛ فقط گزینه کم‌هزینه و برگشت‌پذیر را نگه دار."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S03"
       ],
@@ -2291,9 +2259,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر تعویق طولانی با اختلال پایدار عملکرد یا آشفتگی شدید همراه است، ارزیابی تخصصی را جایگزین خودسرزنشی کن."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S02"
       ],
@@ -2426,9 +2392,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر تحویل بدون بازبینی تخصصی، مجوز یا کنترل ایمنی خطرساز است، آن را انجام نده و مسیر تأیید لازم را حفظ کن."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S02"
       ],
@@ -2561,9 +2525,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر حتی آن کار کم‌پیامد پیامد مهم، خطر یا فشار غیرقابل قبول دارد، آزمون را متوقف کن و آن را به‌عنوان تمرین انتخاب نکن."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S01"
       ],
@@ -2696,9 +2658,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر ثبت زمان یا عملکرد باعث شرم، وسواس یا فشار بیشتر شد، ثبت را متوقف کن؛ این داده‌ها امتیاز یا تشخیص نیستند."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S03"
       ],
@@ -2831,9 +2791,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر مانع ساختاری یا کمبود منابع است، آن را ضعف شخصی تلقی نکن و برای حمایت عملی اقدام کن."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S03"
       ],
@@ -2966,9 +2924,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر کار پیامد پزشکی، حقوقی یا مالی جدی دارد، گام بعدی را بدون راهنمایی واجد صلاحیت تعیین نکن."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S03"
       ],
@@ -3101,9 +3057,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر اتصال عادت به رفتار اجباری یا فرساینده تبدیل شد، آن را متوقف و برنامه را سبک‌تر کن."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S01"
       ],
@@ -3236,9 +3190,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر انتقال مسئولیت بدون توافق، اختیار یا صلاحیت می‌تواند ایمنی یا تعهد مهمی را مختل کند، واگذاری را متوقف کن و مسیر مسئول یا کمک مناسب را روشن کن."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S02"
       ],
@@ -3370,9 +3322,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر مقایسه دو کار باعث نادیده‌گرفتن موعد واقعی یا مسئولیت ضروری شد، اولویت را با توجه به پیامد و منابع دوباره تنظیم کن."
-      ],
+      "stopConditions": [],
       "mechanism": "انتخاب یک اولویت به معنی پذیرفتن هزینه فرصت است؛ مقایسه اهمیت، فوریت، پیامد و منابع به تصمیم آگاهانه درباره سایر کارها کمک می‌کند.",
       "subtopicIds": [
         "T09-S03"
@@ -3641,9 +3591,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر برنامه نگهداری باعث اضافه‌کاری یا جبران افراطی شد، آن را کاهش بده و ظرفیت را مقدم بدان."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S02"
       ],
@@ -3776,9 +3724,7 @@
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
       "reviewStatus": "owner_approved_for_limited_runtime",
-      "stopConditions": [
-        "اگر مرور پایانی به شرم یا ناامیدی شدید منجر شد، متوقف شو و از حمایت مناسب استفاده کن."
-      ],
+      "stopConditions": [],
       "subtopicIds": [
         "T09-S03"
       ],
