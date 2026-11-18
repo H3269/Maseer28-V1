@@ -128,8 +128,8 @@ try {
 
   const reply = dialog.locator('.assistantMessage').last();
   const replyText = await reply.innerText();
-  assert.match(replyText, /نقشه افت انگیزه/);
-  assert.match(replyText, /پایش زمینه/);
+  assert.match(replyText, /نقشه یک هدف مشخص/);
+  assert.match(replyText, /نقشه‌برداری هدف‌محور/);
   assert.equal(await dialog.getByTestId('t14-daily-prompt-trigger').count(), 1,
     'the T14 prepared-question trigger must remain available after answering');
   assert.deepEqual(errors, [], 'the T14 browser flow must not emit page or console errors');
