@@ -322,16 +322,23 @@ async function verifySplashReadinessOrders() {
     document.addEventListener('animationend', (event) => {
       if (event.animationName === 'loadingLogoBloom') window.__path28GateProbe.completedAt = performance.now();
     }, true);
-    const observer = new MutationObserver(() => {
+    // The modal is inserted before its CSS fade-in reaches visible opacity.
+    // Poll animation frames so the probe records the first actually visible frame.
+    const recordVisibleFrame = () => {
+      if (window.__path28GateProbe.appVisibleAt !== null) return;
       const modal = document.querySelector('#copyrightModal');
-      if (!modal || window.__path28GateProbe.appVisibleAt !== null) return;
-      const style = getComputedStyle(modal);
-      const rect = modal.getBoundingClientRect();
-      if (style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0) {
-        window.__path28GateProbe.appVisibleAt = performance.now();
+      if (modal) {
+        const style = getComputedStyle(modal);
+        const rect = modal.getBoundingClientRect();
+        if (style.display !== 'none' && style.visibility !== 'hidden'
+          && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0) {
+          window.__path28GateProbe.appVisibleAt = performance.now();
+          return;
+        }
       }
-    });
-    observer.observe(document, { childList: true, subtree: true, attributes: true });
+      requestAnimationFrame(recordVisibleFrame);
+    };
+    requestAnimationFrame(recordVisibleFrame);
   });
   const readinessFirstPage = await readinessFirstContext.newPage();
   await readinessFirstPage.goto(baseURL, { waitUntil: 'domcontentloaded' });
