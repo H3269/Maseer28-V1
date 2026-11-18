@@ -2023,27 +2023,22 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "اگر توصیف رفتار باعث شرم شدید یا افشای اطلاعات خصوصی می‌شود، متوقف شو؛ هدف تشخیص‌گذاری نیست."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 2,
@@ -2073,7 +2068,7 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-BFRB-GREENBERG-2018-001",
             "SRC-T11-FISAK-TTM-META-2026-001",
@@ -2081,14 +2076,12 @@
             "SRC-T11-STEIN-LOCHNER-BFRB-2026-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-BFRB-GREENBERG-2018-001",
             "SRC-T11-FISAK-TTM-META-2026-001",
@@ -2096,14 +2089,11 @@
             "SRC-T11-STEIN-LOCHNER-BFRB-2026-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "اگر رفتار درد، زخم، عفونت یا اختلال عملکرد ایجاد می‌کند، به مشاهده عمومی اکتفا نکن و ارزیابی مناسب بگیر."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 3,
@@ -2133,31 +2123,26 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-WOOD-RUNGER-2016-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-WOOD-RUNGER-2016-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "اطلاعات هویتی دیگران را ثبت نکن؛ اگر زمینه شامل خطر یا آزار است، ایمنی را مقدم بدان."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 4,
@@ -2187,27 +2172,22 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "اگر توجه به پیش‌درآمد به وارسی مداوم یا تشدید تنش تبدیل شد، تمرین را قطع کن."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 5,
@@ -2237,31 +2217,26 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-WOOD-RUNGER-2016-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-WOOD-RUNGER-2016-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "تغییر نشانه نباید دسترسی ضروری یا رفتار تنظیم‌کننده بی‌ضرر را حذف کند؛ در تردید، تغییر را انجام نده."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 6,
@@ -2291,7 +2266,7 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-BFRB-GREENBERG-2018-001",
             "SRC-T11-FISAK-TTM-META-2026-001",
@@ -2301,14 +2276,12 @@
             "SRC-T11-IPS-OCD-2025-UPDATE-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-BFRB-GREENBERG-2018-001",
             "SRC-T11-FISAK-TTM-META-2026-001",
@@ -2318,14 +2291,11 @@
             "SRC-T11-IPS-OCD-2025-UPDATE-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "اگر رفتار برای خنثی‌کردن ترس یا فکر مزاحم انجام می‌شود، خودسرانه مواجهه یا جلوگیری از پاسخ اجرا نکن."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 7,
@@ -2355,7 +2325,7 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-AAN-TICS-2019-001",
             "SRC-T11-CDC-CBIT-2026-001",
@@ -2363,14 +2333,12 @@
             "SRC-T11-NICE-CG142-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-AAN-TICS-2019-001",
             "SRC-T11-CDC-CBIT-2026-001",
@@ -2378,14 +2346,11 @@
             "SRC-T11-NICE-CG142-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "تیک یا استیمینگ بی‌ضرر را برای انطباق اجتماعی سرکوب نکن؛ درد یا آسیب نیازمند بررسی است."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 8,
@@ -2415,31 +2380,26 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-WOOD-RUNGER-2016-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-WOOD-RUNGER-2016-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "اگر تغییر محیط نیاز حسی، تمرکز یا ایمنی را مختل می‌کند، آن را متوقف کن."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 9,
@@ -2469,31 +2429,26 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-WOOD-RUNGER-2016-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-WOOD-RUNGER-2016-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "اگر جایگزین نیاز حسی/هیجانی را نادیده می‌گیرد یا فشار می‌سازد، اجرا نکن."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 10,
@@ -2523,7 +2478,7 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-BFRB-GREENBERG-2018-001",
             "SRC-T11-FISAK-TTM-META-2026-001",
@@ -2533,14 +2488,12 @@
             "SRC-T11-IPS-OCD-2025-UPDATE-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-BFRB-GREENBERG-2018-001",
             "SRC-T11-FISAK-TTM-META-2026-001",
@@ -2550,14 +2503,11 @@
             "SRC-T11-IPS-OCD-2025-UPDATE-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "در رفتار آسیب‌زای بدنی، زخم یا خونریزی، تمرین عمومی را متوقف و ارزیابی پزشکی/متخصص آگاه به BFRB را پیگیری کن."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 11,
@@ -2587,7 +2537,7 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-AAN-TICS-2019-001",
             "SRC-T11-CDC-CBIT-2026-001",
@@ -2595,14 +2545,12 @@
             "SRC-T11-NICE-CG142-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-AAN-TICS-2019-001",
             "SRC-T11-CDC-CBIT-2026-001",
@@ -2610,14 +2558,11 @@
             "SRC-T11-NICE-CG142-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "ERP یا جلوگیری از پاسخ را بدون ارزیابی و آموزش تخصصی اجرا نکن؛ اگر اضطراب یا اختلال شدید است کمک حرفه‌ای بگیر."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 12,
@@ -2647,7 +2592,7 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-AAN-TICS-2019-001",
             "SRC-T11-CDC-CBIT-2026-001",
@@ -2655,14 +2600,12 @@
             "SRC-T11-NICE-CG142-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-AAN-TICS-2019-001",
             "SRC-T11-CDC-CBIT-2026-001",
@@ -2670,14 +2613,11 @@
             "SRC-T11-NICE-CG142-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "برای تیک یا استیمینگ بی‌ضرر سرکوب خودسرانه نکن؛ شروع ناگهانی، درد یا افت عملکرد نیازمند ارزیابی است."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 13,
@@ -2707,7 +2647,7 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-BFRB-GREENBERG-2018-001",
             "SRC-T11-FISAK-TTM-META-2026-001",
@@ -2717,14 +2657,12 @@
             "SRC-T11-IPS-OCD-2025-UPDATE-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-BFRB-GREENBERG-2018-001",
             "SRC-T11-FISAK-TTM-META-2026-001",
@@ -2734,14 +2672,11 @@
             "SRC-T11-IPS-OCD-2025-UPDATE-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "اگر جمع‌آوری اطلاعات به جست‌وجوی بی‌پایان یا خودتشخیصی تبدیل شد، متوقف کن و پرسش را به متخصص بسپار."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 14,
@@ -2771,33 +2706,28 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-NICE-CG31-001",
             "SRC-T11-IPS-OCD-2025-UPDATE-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-NICE-CG31-001",
             "SRC-T11-IPS-OCD-2025-UPDATE-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "اگر فرد تمایل به تغییر ندارد و رفتار بی‌ضرر است، هدف حذف را تحمیل نکن."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 15,
@@ -2827,31 +2757,26 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-WOOD-RUNGER-2016-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-WOOD-RUNGER-2016-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "برنامه اگرـآنگاه را برای رفتار اجباری، تیک یا استیمینگ به دستور توقف تبدیل نکن."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 16,
@@ -2881,33 +2806,28 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-NICE-CG31-001",
             "SRC-T11-IPS-OCD-2025-UPDATE-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-NICE-CG31-001",
             "SRC-T11-IPS-OCD-2025-UPDATE-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "محرک حسی یا ابزار ضروری را بدون رضایت فرد حذف نکن؛ تغییر محیط باید قابل بازگشت و ایمن باشد."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 17,
@@ -2937,7 +2857,7 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-AAN-TICS-2019-001",
             "SRC-T11-CDC-CBIT-2026-001",
@@ -2945,14 +2865,12 @@
             "SRC-T11-NICE-CG142-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-AAN-TICS-2019-001",
             "SRC-T11-CDC-CBIT-2026-001",
@@ -2960,14 +2878,11 @@
             "SRC-T11-NICE-CG142-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "اگر بازگشت با آسیب یا خطر همراه است، خودتنبیهی نکن و از حمایت انسانی/تخصصی کمک بگیر."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 18,
@@ -2997,31 +2912,26 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-WOOD-RUNGER-2016-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-WOOD-RUNGER-2016-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "ظاهر متفاوت به‌تنهایی اختلال نیست؛ اگر درد، آسیب یا افت عملکرد وجود دارد، ارزیابی مناسب لازم است."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 19,
@@ -3051,31 +2961,26 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-WOOD-RUNGER-2016-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-WOOD-RUNGER-2016-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "اگر تمرین ناراحتی، میل اجباری یا آسیب را افزایش داد، فوراً متوقف کن."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 20,
@@ -3105,7 +3010,7 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-BFRB-GREENBERG-2018-001",
             "SRC-T11-FISAK-TTM-META-2026-001",
@@ -3115,14 +3020,12 @@
             "SRC-T11-IPS-OCD-2025-UPDATE-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-BFRB-GREENBERG-2018-001",
             "SRC-T11-FISAK-TTM-META-2026-001",
@@ -3132,14 +3035,11 @@
             "SRC-T11-IPS-OCD-2025-UPDATE-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "اگر ثبت باعث شرم، اضطراب یا پایش افراطی شد، آن را کنار بگذار."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 21,
@@ -3169,31 +3069,26 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-WOOD-RUNGER-2016-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-WOOD-RUNGER-2016-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "اگر مانع پزشکی، عصبی، حسی یا محیطی است، آن را به ضعف اراده نسبت نده و مسیر ارزیابی مناسب را انتخاب کن."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 22,
@@ -3223,31 +3118,26 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-WOOD-RUNGER-2016-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-WOOD-RUNGER-2016-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "در خطر فوری یا آسیب جسمی، تمرین را کنار بگذار و از خدمات پزشکی/اضطراری محلی کمک بگیر."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 23,
@@ -3277,7 +3167,7 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-WOOD-RUNGER-2016-001",
             "SRC-T11-BFRB-GREENBERG-2018-001",
@@ -3286,14 +3176,12 @@
             "SRC-T11-STEIN-LOCHNER-BFRB-2026-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-WOOD-RUNGER-2016-001",
             "SRC-T11-BFRB-GREENBERG-2018-001",
@@ -3302,14 +3190,11 @@
             "SRC-T11-STEIN-LOCHNER-BFRB-2026-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "یادآور یا تغییر محیط را برای تیک، استیمینگ یا رفتار آسیب‌زا بدون ارزیابی تخصصی به‌کار نبر."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 24,
@@ -3339,7 +3224,7 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-BFRB-GREENBERG-2018-001",
             "SRC-T11-FISAK-TTM-META-2026-001",
@@ -3351,14 +3236,12 @@
             "SRC-T11-CDC-CBIT-2026-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-BFRB-GREENBERG-2018-001",
             "SRC-T11-FISAK-TTM-META-2026-001",
@@ -3370,14 +3253,11 @@
             "SRC-T11-CDC-CBIT-2026-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "اپ جایگزین ارزیابی و درمان اختصاصی BFRB، OCD یا تیک نیست؛ در اختلال یا آسیب پایدار کمک واجد صلاحیت بگیر."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 25,
@@ -3407,7 +3287,7 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-AAN-TICS-2019-001",
             "SRC-T11-CDC-CBIT-2026-001",
@@ -3417,14 +3297,12 @@
             "SRC-T11-IPS-OCD-2025-UPDATE-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-AAN-TICS-2019-001",
             "SRC-T11-CDC-CBIT-2026-001",
@@ -3434,14 +3312,11 @@
             "SRC-T11-IPS-OCD-2025-UPDATE-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "در زخم، خونریزی، عفونت، درد یا افت شدید عملکرد، تمرین را متوقف و ارزیابی پزشکی را پیگیری کن."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 26,
@@ -3471,35 +3346,30 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-WOOD-RUNGER-2016-001",
             "SRC-T11-NAS-STIMMING-001",
             "SRC-T11-NICE-CG142-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-WOOD-RUNGER-2016-001",
             "SRC-T11-NAS-STIMMING-001",
             "SRC-T11-NICE-CG142-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "اقدام را به پنهان‌کردن رفتار بی‌ضرر یا شبیه‌شدن به دیگران تبدیل نکن؛ ترجیح و خودمختاری فرد مقدم است."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 27,
@@ -3529,7 +3399,7 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [
             "SRC-T11-AAN-TICS-2019-001",
             "SRC-T11-CDC-CBIT-2026-001",
@@ -3537,14 +3407,12 @@
             "SRC-T11-NICE-CG142-001"
           ],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [
             "SRC-T11-AAN-TICS-2019-001",
             "SRC-T11-CDC-CBIT-2026-001",
@@ -3552,14 +3420,11 @@
             "SRC-T11-NICE-CG142-001"
           ],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "اگر برنامه نگهداری به پایش اجباری یا سرکوب رفتار بی‌ضرر تبدیل شد، آن را متوقف و بازنگری کن."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         },
         {
           "day": 28,
@@ -3589,27 +3454,22 @@
           "durationMinutes": null,
           "durationStatus": "not_recorded",
           "exerciseType": "non_diagnostic_daily_guidance",
-          "riskLevel": "pending_owner_review",
+          "riskLevel": "routine",
           "sourceIds": [],
           "evidenceGrade": "not_assessed",
-          "reviewStatus": "pending_owner_review",
           "subtopicId": null,
           "subtopicIds": [],
-          "subtopicMappingStatus": "pending_owner_review",
           "duration_minutes": null,
           "duration_status": "not_recorded",
           "exercise_type": "non_diagnostic_daily_guidance",
-          "risk_level": "pending_owner_review",
+          "risk_level": "routine",
           "source_ids": [],
           "evidence_grade": "not_assessed",
-          "review_status": "pending_owner_review",
           "subtopic_ids": [],
-          "subtopic_mapping_status": "pending_owner_review",
           "stop_conditions": [
             "اگر نتیجه‌گیری به خودتشخیصی یا سرزنش منجر شد، متوقف کن؛ مسیر بعدی را با متخصص مناسب تعیین کن."
           ],
-          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر.",
-          "review_record_id": null
+          "when_to_seek_human_support": "در صورت درد، زخم، خونریزی، عفونت، آسیب جسمی، تغییر ناگهانی/واضح یا اختلال قابل‌توجه در زندگی، تمرین عمومی را متوقف کن و ارزیابی انسانی متناسب بگیر؛ در خطر فوری از خدمات اورژانسی محل زندگی کمک بگیر."
         }
       ]
     },
