@@ -6,6 +6,7 @@ on:
       - 'src/features/assistant/GlobalAssistantLauncher.jsx'
       - 'src/features/assistant/t15DailyAssistantPrompts.js'
       - 'src/features/assistant/t15DailyAssistantGuide.v1.json'
+      - 'public/content/daily-text-overrides.v1.json'
       - 'src/features/assistant/dailyAssistantSafetyReminder.js'
       - 'tests/t15DailyAssistantPrompts.test.mjs'
       - 'src/features/assistant/pageAssistantTurn.js'
