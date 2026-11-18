@@ -124,7 +124,7 @@ test('T14: examples remain concrete and day-specific; duplicate wording is rejec
   for (const day of [1, 2, 25]) {
     const guide = topic.guides.find((item) => item.day === day);
     const stop = guide.questions.find((item) => item.kind === 'stop')?.answer || '';
-    assert.ok(!/تمرین را متوقف کن اگر\\s+اگر/u.test(stop), 'T14 day ' + day + ' stop guidance must not repeat "اگر"');
+    assert.ok(!stop.includes('تمرین را متوقف کن اگر اگر'), 'T14 day ' + day + ' stop guidance must not repeat "اگر"');
   }
   const day1Talk = topic.guides.find((item) => item.day === 1).questions.find((item) => item.kind === 'talk_other').answer;
   const day2Talk = topic.guides.find((item) => item.day === 2).questions.find((item) => item.kind === 'talk_other').answer;
