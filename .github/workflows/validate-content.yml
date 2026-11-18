@@ -318,7 +318,7 @@ jobs:
           name: runtime-topic-shards-validation
           path: public/content/runtime-v1/
           if-no-files-found: error
-      - name: Run focused T01-T14 assistant and safety unit tests
+      - name: Run focused T01-T15 assistant and safety unit tests
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: >-
           node --test
