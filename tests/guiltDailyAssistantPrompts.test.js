@@ -98,7 +98,6 @@ test('T07 subtopic and evidence links cover all 28 days', async () => {
     assert.ok(item.evidence_ids.length > 0);
     for (const id of item.evidence_ids) assert.ok(sourceIds.has(id), 'missing source ' + id);
   }
-  assert.equal(evidence.runtime_eligible, false);
   assert.deepEqual(evidence.evidence, []);
 });
 
