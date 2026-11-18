@@ -68,3 +68,22 @@ test('T14 seven audited days keep distinct goal-specific mechanisms and all 98 a
   assert.match(day19.action, /قابل‌تکرار/u);
   assert.doesNotMatch(day19.exercise, /ثبت موفقیت یا حال خوب/u);
 });
+
+
+test('T14 day 12 post-action reinforcement and day 14 simultaneous pairing use concrete distinct examples',()=>{
+  const day12=T14_DAILY_ASSISTANT_GUIDES.find(item=>item.day===12);
+  const day14=T14_DAILY_ASSISTANT_GUIDES.find(item=>item.day===14);
+  const answer=(guide,kind)=>guide.questions.find(item=>item.kind===kind).answer;
+  assert.match(answer(day12,'exercise_example'),/ده دقیقه از یک گزارش را مرتب کرده‌ای/u);
+  assert.match(answer(day12,'exercise_example'),/پس از آن/u);
+  assert.match(answer(day12,'action_example'),/اگر گام انجام نشد/u);
+  assert.match(answer(day14,'exercise_example'),/هم‌زمان/u);
+  assert.match(answer(day14,'exercise_example'),/موسیقی بی‌کلام/u);
+  assert.match(answer(day14,'action_example'),/اگر تمرکزت کم شد، موسیقی را خاموش کن/u);
+  assert.doesNotMatch(answer(day14,'action_example'),/پس از انجام کار.*پاداش/u);
+  for(const guide of [day12,day14]){
+    assert.equal(new Set(guide.questions.map(item=>item.answer)).size,14);
+    assert.ok(guide.questions.find(item=>item.kind==='exercise_meaning').answer.includes(guide.exercise));
+    assert.ok(guide.questions.find(item=>item.kind==='action_meaning').answer.includes(guide.action));
+  }
+});
