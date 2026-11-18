@@ -1,7 +1,7 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
-// Daily prepared guidance for the T02 anxiety path. Content is grounded in the reviewed 28-day draft and active runtime overrides.
+// Daily prepared guidance for the T02 anxiety path. Content is grounded in the 28-day content package and active runtime overrides.
 const RAW_ANXIETY_DAILY_ASSISTANT_GUIDES = [
   {
     "day": 1,
