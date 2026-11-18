@@ -110,3 +110,24 @@ test('T01-T14: all 5,488 prepared answers use the same clear teacher-style daily
   }
   assert.equal(checked, 5488);
 });
+
+
+test('T14: examples remain concrete and day-specific; duplicate wording is rejected', () => {
+  const topic = topics.find((item) => item.id === 'T14');
+  assert.ok(topic, 'T14 topic must be registered');
+  for (const guide of topic.guides) {
+    const exerciseExample = guide.questions.find((item) => item.kind === 'exercise_example')?.answer || '';
+    const actionExample = guide.questions.find((item) => item.kind === 'action_example')?.answer || '';
+    assert.ok(!exerciseExample.startsWith('برای مثال فرض کن در موقعیتی مرتبط با هدف امروز قرار گرفته‌ای.'), 'T14 day ' + guide.day + ' must not use a generic exercise-example preamble');
+    assert.ok(!actionExample.startsWith('برای نمونه، اگر در یک کار روزمره با مانع مشابهی روبه‌رو شدی، اقدام را فقط در حدی اجرا کن که با شرایط واقعی تو سازگار باشد:'), 'T14 day ' + guide.day + ' must not use a generic action-example preamble');
+  }
+  for (const day of [1, 2, 25]) {
+    const guide = topic.guides.find((item) => item.day === day);
+    const stop = guide.questions.find((item) => item.kind === 'stop')?.answer || '';
+    assert.ok(!/تمرین را متوقف کن اگر\\s+اگر/u.test(stop), 'T14 day ' + day + ' stop guidance must not repeat "اگر"');
+  }
+  const day1Talk = topic.guides.find((item) => item.day === 1).questions.find((item) => item.kind === 'talk_other').answer;
+  const day2Talk = topic.guides.find((item) => item.day === 2).questions.find((item) => item.kind === 'talk_other').answer;
+  assert.ok(!day1Talk.includes('گفت‌وگو شرط تمرین نیست.'), 'T14 day 1 talk guidance must not repeat the no-conversation rule');
+  assert.ok(!day2Talk.includes('صحبت با دیگری لازم نیست.'), 'T14 day 2 talk guidance must not repeat the no-conversation rule');
+});
