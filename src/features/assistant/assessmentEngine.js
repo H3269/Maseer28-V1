@@ -294,7 +294,7 @@ export function submitAssessmentAnswer(session, answer) {
     next.semantic_intake = routedTurn.intake;
     next.safety_context_flag = ['safety_clarification_required', 'urgent_human_support_required'].includes(routedTurn.status);
 
-    if (routedTurn.status === 'approved_knowledge_available') {
+    if (routedTurn.status === 'knowledge_available') {
       next.status = 'information_answer_available';
       next.current_question = null;
       next.knowledge_response = {
@@ -313,7 +313,7 @@ export function submitAssessmentAnswer(session, answer) {
       next.current_question = null;
       next.next_step = {
         content_available: false,
-        reason: 'مسیر پاسخ‌گویی دانشی و بازیابی محتوای تأییدشده هنوز در runtime فعال نیست.',
+        reason: 'مسیر پاسخ‌گویی دانشی و بازیابی محتوای منبع‌دار هنوز در runtime فعال نیست.',
         message: routedTurn.message,
       };
       return next;
@@ -349,7 +349,7 @@ export function submitAssessmentAnswer(session, answer) {
         requestScope: 'general',
         requestId: 'assessment-general-scope',
       });
-      if (routedGeneral.status === 'approved_knowledge_available') {
+      if (routedGeneral.status === 'knowledge_available') {
         next.status = 'information_answer_available';
         next.current_question = null;
         next.knowledge_response = { message: routedGeneral.message, results: routedGeneral.knowledge };
@@ -376,8 +376,8 @@ export function submitAssessmentAnswer(session, answer) {
       next.current_question = null;
       next.next_step = {
         content_available: false,
-        reason: 'پرسش عمومی یا راهکار کلی به محتوای تأییدشده نیاز دارد که هنوز در پایگاه دانش موجود نیست.',
-        message: routedGeneral.message || 'تا وقتی محتوای تأییدشده و منبع‌دار متصل نشده، پاسخ یا تمرین حدسی ارائه نمی‌کنم.',
+        reason: 'پرسش عمومی یا راهکار کلی به محتوای منبع‌دار نیاز دارد که هنوز در پایگاه دانش موجود نیست.',
+        message: routedGeneral.message || 'تا وقتی محتوای منبع‌دار متصل نشده، پاسخ یا تمرین حدسی ارائه نمی‌کنم.',
       };
       return next;
     }
@@ -482,8 +482,8 @@ export function submitAssessmentAnswer(session, answer) {
       next.current_question = null;
       next.next_step = {
         content_available: false,
-        reason: 'هیچ تمرین یا مداخله‌ای تا تأیید علمی و تخصصی به این موتور متصل نشده است.',
-        recommendation: 'ابتدا خلاصه را با یک متخصص یا خودت دقیق‌تر کن؛ در صورت تداوم رنج یا اختلال عملکرد، ارزیابی متخصص سلامت روان مناسب است.',
+        reason: 'هیچ هنوز تمرین یا مداخله منبع‌دار و متناسب به این موتور متصل نشده است.',
+        recommendation: 'ابتدا خلاصه را دقیق‌تر کن؛ در صورت تداوم رنج یا اختلال عملکرد، ارزیابی متخصص سلامت روان می‌تواند مناسب باشد.',
       };
     } else if ((next.summary_revision_count ?? 0) < 2) {
       next.summary_revision_count = (next.summary_revision_count ?? 0) + 1;
@@ -539,7 +539,7 @@ export function submitAssessmentAnswer(session, answer) {
       next.current_question = null;
       next.next_step = {
         content_available: false,
-        reason: 'موضوع اولویت‌دار را خود کاربر صریحاً مشخص کرده است؛ محتوای تمرین تأییدشده هنوز متصل نیست.',
+        reason: 'موضوع اولویت‌دار را خود کاربر صریحاً مشخص کرده است؛ محتوای تمرین منبع‌دار هنوز متصل نیست.',
         recommendation: 'اولویت فقط بر اساس انتخاب صریح کاربر ثبت شده و به معنی تشخیص یا تأیید علمی نیست.',
       };
       return next;
@@ -618,7 +618,6 @@ export const assessmentEngineMetadata = Object.freeze({
   validated_screening_tool: false,
   cloud_processing: false,
   safety_triage_validated: false,
-  clinical_review_complete: false,
   uses_unreviewed_relation_graph: false,
   auto_recommends_interventions: false,
 });
