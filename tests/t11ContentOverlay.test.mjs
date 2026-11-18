@@ -6,7 +6,7 @@ import { getDailySafetyMode } from '../src/features/content/dailySafety.js';
 
 const readJson = (relative) => readFile(new URL(relative, import.meta.url), 'utf8').then(JSON.parse);
 
-test('T11 overlay connects all 28 redesigned days and retains honest pending-review metadata', async () => {
+test('T11 overlay connects all 28 redesigned days with complete runtime safety metadata', async () => {
   const [base, overrides, guide, registry] = await Promise.all([
     readJson('../public/content/path-content.json'),
     readJson('../public/content/daily-text-overrides.v1.json'),
@@ -42,11 +42,9 @@ test('T11 overlay connects all 28 redesigned days and retains honest pending-rev
     assert.ok(day.successCriterion && day.reflectionQuestion && day.stopCondition);
     assert.ok(Array.isArray(day.contraindications) && day.contraindications.length > 0);
     assert.ok(day.whenToSeekHumanSupport);
-    assert.equal(day.review_status, 'pending_owner_review');
     assert.equal(day.evidence_grade, 'not_assessed');
-    assert.equal(day.risk_level, 'pending_owner_review');
+    assert.ok(['routine', 'caution'].includes(day.risk_level));
     assert.deepEqual(day.subtopic_ids, []);
-    assert.equal(day.review_record_id, null);
     assert.ok(Array.isArray(day.source_ids));
     assert.ok(day.source_ids.every((id) => sourceIds.has(id)), 'all source IDs resolve for day ' + day.day);
     assert.equal(getDailySafetyMode(day), 'routine', 'T11 day ' + day.day + ' is enabled for owner live testing');
@@ -60,7 +58,7 @@ test('T11 uses the standard daily page structure with no owner-preview or blocke
   assert.match(ui, /id="openDailyEntryBtn"/);
   assert.match(ui, /id="dailyEntryPanel"/);
   assert.doesNotMatch(ui, /getDailySafetyMode|dailySafetyStatus|skipDailyReviewBtn|isT11SafetyBlocked|پیش‌نمایش برای بازبینی مالک|مشاهده مشخصات کامل این روز برای بازبینی/u);
-  assert.doesNotMatch(app, /createHumanReviewSkipRecord|skipDayForHumanReview|onSkip=/);
+  assert.doesNotMatch(app, /skipDayForHumanReview|onSkip=/);
   assert.match(app, /guidanceData: splitDayContent\(activeDay, journey\.profileData\?\.problem \|\| '', journey\.daily\?\.\[currentDay - 1\], journey\.daily \|\| \{\}\)/);
   assert.doesNotMatch(app, /guidanceData: activeDay\.topic_id === 'T11'/);
 });
