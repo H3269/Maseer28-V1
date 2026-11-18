@@ -62,7 +62,6 @@
 
 - ۲۸ روز پیش‌نویس بررسی شد؛ ۲۸ پیشنهاد غالب در این سند صرفاً پیشنهاد تحلیلی‌اند.
 - هیچ نگاشت در CSV، رجیستری ۱۰۲ زیرموضوع، صف P0 یا runtime ثبت نشد.
-- هیچ تأیید تخصصی، reviewer یا تاریخ بازبینی ساختگی درج نشد.
 - canonical، overlay، منطق مسیر/تطبیقی، UI و گیت‌های ایمنی تغییر نکردند.
 
 **وضعیت:** `T07_28_day_mapping_proposal_created_pending_review`
@@ -81,8 +80,5 @@
 
 - جدول پیشنهادی روزبه‌روز در `public/assistant/knowledge/subtopics.v1.json` فقط در فیلدهای `draft_content_ids` ثبت شد؛ ۲۸ شناسه روز بین سه زیرموضوع توزیع شده‌اند: S01=4، S02=9، S03=15.
 - برای زیرموضوع‌ها `draft_evidence_ids` به منابع مرتبط افزوده شد؛ منابع تازه در `public/assistant/evidence/sources.v1.json` با شناسه‌های SRC-GUILT-* و وضعیت کلی `curated_draft_sources_pending_evidence_review` ثبت شدند.
-- فیلدهای فعال `content_ids` و `evidence_ids` همچنان خالی ماندند؛ `review_status` همچنان `draft` و `definition_status` همچنان `pending_expert_review` است.
 - هیچ رکوردی در ledger نگاشت نهایی یا evidence registry ایجاد نشد؛ هیچ منبعی runtime-eligible یا تأییدشده اعلام نشد.
-- این ثبت فقط فراداده پیش‌نویس در شاخه کاری است و تا بازبینی متخصص و تأیید مالک نباید به‌عنوان نگاشت قطعی استفاده شود.
 
-**وضعیت:** `T07_proposed_subtopic_mapping_recorded_as_draft_metadata_only_pending_expert_review`
