@@ -39,6 +39,8 @@ test('T10 sleep-distress answer preserves stop conditions and safety guidance', 
   assert.ok(answer.includes(guide.stopCondition));
   assert.ok(answer.includes('خواب‌آلودگی'));
   assert.ok(answer.includes('ارزیابی پزشکی'));
+  assert.equal(answer.includes(String.fromCharCode(92) + 'n'), false, 'answer must contain real line breaks, not literal escape text');
+  assert.equal((answer.split(guide.stopCondition).length - 1), 1, 'daily stop condition must appear exactly once');
 });
 
 test('T10 rejects unknown questions and invalid days instead of improvising', () => {
