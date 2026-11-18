@@ -82,7 +82,7 @@ export function answerT09DailyPreparedQuestion({ day, message, dailyContent } = 
         '۲. مانع را از میان ابهام کار، بزرگی گام، ظرفیت جسمی/ذهنی، نگرانی از نتیجه و محدودیت بیرونی مشخص کن؛ علت را حدس قطعی نزن.',
         `۳. اگر امن و متناسب است، فقط بخش کوچک و غیرحساس تمرین را نگه دار: ${exercise}`,
         `۴. اگر ادامه مناسب نیست، نسخه استراحت را انتخاب کن: ${restAction}`,
-        `**شرط توقف اصلی امروز:** ${guide.stopCondition}\n**شرط‌های توقف تکمیلی:** ${(guide.stopConditions || []).join(' ')}`,
+        `**شرط توقف اصلی امروز:** ${guide.stopCondition}\n**شرط‌های توقف تکمیلی:** ${(guide.stopConditions || []).filter((item) => item !== guide.stopCondition).join(' ')}`,
         `**محدودیت کاربرد:** ${(guide.contraindications || []).join(' ')}`,
         `**زمان حمایت انسانی:** ${guide.whenToSeekHumanSupport}`
       ].join('\n\n');
@@ -97,10 +97,10 @@ export function answerT09DailyPreparedQuestion({ day, message, dailyContent } = 
       ].join('\n\n');
       break;
     case 'can_change':
-      body += `\n\n**نسخه سبک:** ${lightExercise}\n**چه چیزی باید حفظ شود؟** هدف روز یعنی ${guide.objective}. اگر تغییر تمرین آن را به تکلیف سنگین‌تر یا ناامن تبدیل می‌کند، تغییر مناسب نیست؛ می‌توانی توقف کنی.`;
+      body += `\n\n**تمرین دقیق امروز:** ${exercise}\n**اقدام اختصاصی امروز:** ${action}\n**نسخه سبک:** ${lightExercise}\n**چه چیزی باید حفظ شود؟** هدف روز یعنی ${guide.objective}. اگر تغییر تمرین آن را به تکلیف سنگین‌تر یا ناامن تبدیل می‌کند، تغییر مناسب نیست؛ می‌توانی توقف کنی.`;
       break;
     case 'duration':
-      body += `\n\nاین زمان فقط برآورد اولیه برای خود تمرین است، نه زمان انجام کار اصلی؛ استاندارد یا اعتبارسنجی‌شده نیست و می‌توانی زودتر تمام کنی یا استراحت کنی.\n**تمرین امروز:** ${exercise}`;
+      body += `\n\nاین زمان فقط برآورد اولیه برای خود تمرین است، نه زمان انجام کار اصلی؛ استاندارد یا اعتبارسنجی‌شده نیست و می‌توانی زودتر تمام کنی یا استراحت کنی.\n**تمرین امروز:** ${exercise}\n**اقدام اختصاصی امروز:** ${action}`;
       break;
     default:
       return null;

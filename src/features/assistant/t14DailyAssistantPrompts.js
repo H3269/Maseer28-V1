@@ -13,7 +13,8 @@ export function answerT14DailyPreparedQuestion({day,message,dailyContent}={}){
  let body=question.answer;body=replaceExact(body,guide.exercise,String(dailyContent.exercise||guide.exercise).trim());body=replaceExact(body,guide.action,String(dailyContent.actionText||dailyContent.action||guide.action).trim());
  const heading=`راهنمای روز ${guide.day} کمبود انگیزه — ${guide.title}`,framed=addTeacherStyleFrame(`${heading}\n\n${body}`,{guide,question,topic:'کمبود انگیزه'});
  const safetyKinds=new Set(['success','stop','motivation_distress','talk_other']),reminder='یادآوری اختصاصی ایمنی T14: کمبود انگیزه به‌تنهایی نشانه تنبلی یا ضعف اخلاقی نیست. خستگی، بیماری، فشار، کمبود منابع و شرایط محیطی را به نقص اراده نسبت نده؛ اقدام اجباری نیست و استراحت یا حمایت انسانی انتخاب معتبر است.';
- return appendDailyAssistantSafetyReminder(safetyKinds.has(question.kind)?framed.trimEnd()+'\n\n'+reminder:framed,question.kind);
+ const answerWithAction=question.kind==='talk_other'?framed.trimEnd()+'\n\n**اقدام اختصاصی امروز:** '+String(dailyContent.actionText||dailyContent.action||guide.action).trim()+'\nگفت‌وگو یا تماس فقط در صورت نیاز واقعی، امنیت و اختیار تو مطرح است؛ برای تکمیل اقدام مجبور به افشا یا مواجهه نشو.':question.kind==='can_change'?framed.trimEnd()+'\n\n**تمرین دقیق امروز:** '+String(dailyContent.exercise||guide.exercise).trim()+'\n**اقدام اختصاصی امروز:** '+String(dailyContent.actionText||dailyContent.action||guide.action).trim():question.kind==='duration'?framed.trimEnd()+'\n\n**اقدام اختصاصی امروز:** '+String(dailyContent.actionText||dailyContent.action||guide.action).trim():framed;
+ return appendDailyAssistantSafetyReminder(safetyKinds.has(question.kind)?answerWithAction.trimEnd()+'\n\n'+reminder:answerWithAction,question.kind);
 }
 export function getT14DailyAssistantPromptGroups(day){
  const dayNumber=toT14DayNumber(day),guide=T14_DAILY_ASSISTANT_GUIDES.find(item=>item.day===dayNumber);if(!guide)return [];

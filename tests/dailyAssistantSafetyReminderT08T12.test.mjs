@@ -88,3 +88,12 @@ test('T08-T12 append the exact shared safety reminder once to exactly four answe
     }
   }
 });
+
+
+test('T08 talk answers retain the exact day action beside the support and consent guidance',()=>{const topic=packages.find(x=>x.id==='T08');for(const guide of topic.guides){const q=guide.questions.find(x=>x.kind==='talk_other');const answer=topic.answer({day:guide.day,message:q.value,dailyContent:topic.content(guide)});assert.ok(answer.includes(guide.action),'day '+guide.day+' action');}});
+
+test('T08-T12 adaptation answers name the exact day exercise and action',()=>{for(const topic of packages){for(const guide of topic.guides){const q=guide.questions.find(x=>x.kind==='can_change');const answer=topic.answer({day:guide.day,message:q.value,dailyContent:topic.content(guide)});assert.ok(answer.includes(guide.exercise),topic.id+' day '+guide.day+' exercise');const expectedAction=topic.id==='T11'?guide.action.replace(/^برای مسئله «عادت‌های تکراری»،\s*/u,''):guide.action;assert.ok(answer.includes(expectedAction),topic.id+' day '+guide.day+' action');}}});
+
+test('T08-T12 talk answers retain the exact daily action',()=>{for(const topic of packages){for(const guide of topic.guides){const q=guide.questions.find(x=>x.kind==='talk_other');const answer=topic.answer({day:guide.day,message:q.value,dailyContent:topic.content(guide)});const expectedAction=topic.id==='T11'?guide.action.replace(/^برای مسئله «عادت‌های تکراری»،\s*/u,''):guide.action;assert.ok(answer.includes(expectedAction),topic.id+' day '+guide.day);}}});
+
+test('T08-T12 duration answers name the exact day exercise and action',()=>{for(const topic of packages){for(const guide of topic.guides){const q=guide.questions.find(x=>x.kind==='duration');const answer=topic.answer({day:guide.day,message:q.value,dailyContent:topic.content(guide)});assert.ok(answer.includes(guide.exercise),topic.id+' day '+guide.day+' exercise');const expectedAction=topic.id==='T11'?guide.action.replace(/^برای مسئله «عادت‌های تکراری»،\s*/u,''):guide.action;assert.ok(answer.includes(expectedAction),topic.id+' day '+guide.day+' action');}}});

@@ -117,3 +117,63 @@ test('T11 day 4 duration answer contains only the owner-review response, not edi
   assert.equal(answer, 'زمان استانداردی برای این تمرین ثبت نشده است. اگر پیش‌درآمدی به‌طور طبیعی و بدون وارسی روشن شد، همان مشاهده کوتاه کافی است؛ برای یافتن نشانه زمان بیشتری صرف نکن و هر زمان خواستی متوقف شو.');
   assert.doesNotMatch(answer, /یادداشت|پیش.?نویس|روزهای? [۵-۹]|تیتر داخلی/);
 });
+
+
+
+
+test('T11 q01/q02 and q09 quote the exact day exercise; q03/q04 and q09 quote the exact day action', () => {
+  for (const guide of T11_DAILY_ASSISTANT_GUIDES) {
+    const visibleAction = guide.action.replace(/^برای مسئله «عادت‌های تکراری»،\s*/u, '');
+    for (const id of ['q01', 'q02', 'q03', 'q04', 'q09']) {
+      const question = guide.questions.find((item) => item.id === id);
+      const result = makePageAssistantTurn({
+        screen: 'day',
+        text: question.value,
+        dailyContext: contextFor(guide),
+      });
+      assert.equal(result.status, 'daily_guidance_available', 'day ' + guide.day + ' ' + id);
+      if (['q01', 'q02', 'q09'].includes(id)) {
+        assert.ok(result.message.includes(guide.exercise), 'day ' + guide.day + ' ' + id + ' must show the exact exercise');
+      }
+      if (['q03', 'q04', 'q09'].includes(id)) {
+        assert.ok(result.message.includes(visibleAction), 'day ' + guide.day + ' ' + id + ' must show the exact action');
+      }
+    }
+  }
+});
+
+
+
+
+test('T11 q12 answers explain that conversation is optional and name the exact daily action', () => {
+  for (const guide of T11_DAILY_ASSISTANT_GUIDES) {
+    const question = guide.questions.find((item) => item.id === 'q12');
+    const result = makePageAssistantTurn({
+      screen: 'day',
+      text: question.value,
+      dailyContext: contextFor(guide),
+    });
+    const visibleAction = guide.action.replace(/^برای مسئله «عادت‌های تکراری»،\s*/u, '');
+    assert.ok(result.message.includes('گفت‌وگو یا افشای جزئیات رفتار شرط انجام هیچ تمرینی نیست.'));
+    assert.ok(result.message.includes(visibleAction), 'day ' + guide.day + ' must connect support guidance to the action');
+  }
+});
+
+
+
+
+test('T11 q13 adaptation answers retain the exact exercise, action and safety boundary', () => {
+  for (const guide of T11_DAILY_ASSISTANT_GUIDES) {
+    const question = guide.questions.find((item) => item.id === 'q13');
+    const result = makePageAssistantTurn({
+      screen: 'day',
+      text: question.value,
+      dailyContext: contextFor(guide),
+    });
+    const visibleAction = guide.action.replace(/^برای مسئله «عادت‌های تکراری»،\s*/u, '');
+    assert.ok(result.message.includes(guide.exercise), 'day ' + guide.day + ' exercise');
+    assert.ok(result.message.includes(visibleAction), 'day ' + guide.day + ' action');
+    assert.ok(result.message.includes(guide.objective), 'day ' + guide.day + ' objective');
+    assert.ok(result.message.includes(guide.stopCondition), 'day ' + guide.day + ' stop condition');
+  }
+});

@@ -55,3 +55,12 @@ test('T01-T07 append the shared safety reminder to exactly the four safety/evalu
     }
   }
 });
+
+
+test('T07 talk answers retain the exact day action beside the consent and support boundary',()=>{const topic=packages.find(x=>x.id==='T07');for(const guide of topic.guides){const q=guide.questions.find(x=>x.kind==='talk_other');const answer=topic.answer({day:guide.day,message:q.value,dailyContent:{exercise:guide.exercise,actionText:guide.action}});assert.ok(answer.includes(guide.action),'day '+guide.day+' action');}});
+
+test('T01-T07 adaptation answers name the exact day exercise and action',()=>{for(const topic of packages){for(const guide of topic.guides){const q=guide.questions.find(x=>x.kind==='can_change');const answer=topic.answer({day:guide.day,message:q.value,dailyContent:{exercise:guide.exercise,actionText:guide.action}});assert.ok(answer.includes(guide.exercise),topic.id+' day '+guide.day+' exercise');assert.ok(answer.includes(guide.action),topic.id+' day '+guide.day+' action');}}});
+
+test('T01-T07 talk answers retain the exact daily action',()=>{for(const topic of packages){for(const guide of topic.guides){const q=guide.questions.find(x=>x.kind==='talk_other');const answer=topic.answer({day:guide.day,message:q.value,dailyContent:{exercise:guide.exercise,actionText:guide.action}});assert.ok(answer.includes(guide.action),topic.id+' day '+guide.day);}}});
+
+test('T01-T07 duration answers name the exact day exercise and action',()=>{for(const topic of packages){for(const guide of topic.guides){const q=guide.questions.find(x=>x.kind==='duration');const answer=topic.answer({day:guide.day,message:q.value,dailyContent:{exercise:guide.exercise,actionText:guide.action}});assert.ok(answer.includes(guide.exercise),topic.id+' day '+guide.day+' exercise');assert.ok(answer.includes(guide.action),topic.id+' day '+guide.day+' action');}}});

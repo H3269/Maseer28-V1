@@ -8,6 +8,7 @@ import {
   getT09DailyAssistantPromptGroups,
 } from '../src/features/assistant/t09DailyAssistantPrompts.js';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
+import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from '../src/features/assistant/dailyAssistantSafetyReminder.js';
 
 function contextFor(guide, overrides = {}) {
   return {
@@ -171,4 +172,51 @@ test('T09 answer helper refuses mismatched canonical topic/day identities', () =
     message: question.value,
     dailyContent: { id: getCanonicalDailyRecordId('اهمال‌کاری', 1), day: 1, topic_id: 'T09' },
   }), null);
+});
+
+
+test('T09 day 1 q11 has no duplicated stop/support clauses and preserves the shared safety reminder at the end of all four safety answers', () => {
+  const guide = T09_DAILY_ASSISTANT_GUIDES[0];
+  const resistance = guide.questions.find((question) => question.id === 'q11').answer;
+  assert.equal((resistance.match(/اگر تعریف کار به شرم شدید یا خودتحقیری تبدیل شد/gu) || []).length, 1);
+  assert.equal((resistance.match(/ارزیابی و حمایت انسانی متناسب را در نظر بگیر/gu) || []).length, 1);
+
+  for (const dayGuide of T09_DAILY_ASSISTANT_GUIDES) {
+    for (const id of ['q06', 'q07', 'q11', 'q12']) {
+      const question = dayGuide.questions.find((item) => item.id === id);
+      const answer = answerT09DailyPreparedQuestion({
+        day: dayGuide.day,
+        message: question.value,
+        dailyContent: { id: getCanonicalDailyRecordId('اهمال‌کاری', dayGuide.day), day: dayGuide.day, topic_id: 'T09' },
+      });
+      assert.ok(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN), `day ${dayGuide.day} ${id}: reminder remains at the end`);
+      assert.equal(answer.split(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN).length - 1, 1, `day ${dayGuide.day} ${id}: reminder appears once`);
+    }
+  }
+});
+
+
+test('T09 runtime resistance answers do not repeat the same stop condition or support recommendation', () => {
+  for (const guide of T09_DAILY_ASSISTANT_GUIDES) {
+    const question = guide.questions.find((item) => item.kind === 'procrastination_increased');
+    const answer = answerT09DailyPreparedQuestion({ day: guide.day, message: question.value, dailyContent: contextFor(guide).data });
+    assert.equal(answer.split(guide.stopCondition).length - 1, 1, 'day ' + guide.day + ' stop condition');
+    assert.equal(answer.split(guide.whenToSeekHumanSupport).length - 1, 1, 'day ' + guide.day + ' human support');
+    for (const extra of guide.stopConditions || []) {
+      if (extra !== guide.stopCondition) assert.ok(answer.includes(extra), 'day ' + guide.day + ' unique supplemental stop condition');
+    }
+  }
+});
+
+
+
+
+test('T09 source q11 drafts do not duplicate identical stop conditions or support referrals', async () => {
+  const source = JSON.parse(await readFile(new URL('../src/features/assistant/t09DailyAssistantGuide.v1.json', import.meta.url), 'utf8'));
+  for (const day of [6, 14, 19, 20, 24, 28]) {
+    const guide = source.records.find((item) => item.day === day);
+    const answer = guide.questions.find((item) => item.id === 'q11').answer;
+    assert.equal(answer.split(guide.stopCondition).length - 1, 1, 'day ' + day + ' stop condition');
+    assert.equal(answer.split(guide.whenToSeekHumanSupport).length - 1, 1, 'day ' + day + ' human support');
+  }
 });

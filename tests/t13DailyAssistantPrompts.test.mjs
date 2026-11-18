@@ -192,3 +192,44 @@ test('T13 day 14 is owner-approved and is not blocked by a specialist-review run
   assert.equal(emergency.status,'safety_clarification_required',
     'owner approval must not suppress the independent emergency safety route');
 });
+
+
+test('T13 day 1 and day 28 safety answers avoid duplicated stop and escalation wording', () => {
+  const day1 = T13_DAILY_ASSISTANT_GUIDES.find((guide) => guide.day === 1);
+  const day28 = T13_DAILY_ASSISTANT_GUIDES.find((guide) => guide.day === 28);
+  const stop1 = day1.questions.find((question) => question.id === 'q07').answer;
+  const distress28 = day28.questions.find((question) => question.id === 'q11').answer;
+  assert.doesNotMatch(stop1, /متوقف کن اگر: اگر/u);
+  assert.equal((distress28.match(/اگر تنهایی با ناامیدی شدید/gu) || []).length, 1);
+  assert.match(distress28, /در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر/u);
+});
+
+
+test('T13 all 28 stop answers have a single grammatical stop-condition lead-in', () => {
+  for (const guide of T13_DAILY_ASSISTANT_GUIDES) {
+    const answer = guide.questions.find((question) => question.id === 'q07').answer;
+    assert.doesNotMatch(answer, /متوقف کن اگر:\s*اگر|متوقف کن اگر اگر/u, 'day ' + guide.day);
+  }
+});
+
+
+test('T13 all 28 stop answers use direct, day-specific and non-contradictory safety instructions', () => {
+  for (const guide of T13_DAILY_ASSISTANT_GUIDES) {
+    const answer = guide.questions.find((question) => question.id === 'q07').answer;
+    assert.doesNotMatch(answer, /متوقف کن اگر:|اگر:\s/u, 'day ' + guide.day);
+    assert.ok(answer.length > 80, 'day ' + guide.day + ' must retain a substantive stop instruction');
+    assert.match(answer, /فشار روانی|خطر|ناامن|ناایمن|حمایت/u, 'day ' + guide.day + ' safety boundary');
+  }
+});
+
+
+test('T13 selected distress answers avoid repeating the stop instruction',()=>{for(const day of [1,2,6]){const answer=T13_DAILY_ASSISTANT_GUIDES.find(g=>g.day===day).questions.find(q=>q.id==='q11').answer;assert.doesNotMatch(answer,/تمرین را متوقف کن[\s\S]{0,100}تمرین را متوقف کن/u,'day '+day);assert.match(answer,/حمایت انسانی و حرفه‌ای/u,'day '+day);}});
+
+
+test('T13 all 28 stop answers retain the canonical day-specific stop condition',()=>{for(const guide of T13_DAILY_ASSISTANT_GUIDES){const answer=guide.questions.find(q=>q.id==='q07').answer;assert.ok(answer.includes(guide.stopCondition),'day '+guide.day);}});
+
+
+test('T13 no-event, talk and duration answers explicitly use the current day content',()=>{for(const guide of T13_DAILY_ASSISTANT_GUIDES){const daily=dailyContent(guide);const ask=id=>guide.questions.find(q=>q.id===id);const noEvent=answerT13DailyPreparedQuestion({day:guide.day,message:ask('q08').value,dailyContent:daily});const talk=answerT13DailyPreparedQuestion({day:guide.day,message:ask('q12').value,dailyContent:daily});const duration=answerT13DailyPreparedQuestion({day:guide.day,message:ask('q14').value,dailyContent:daily});assert.ok(noEvent.includes(guide.restVersion),'day '+guide.day+' rest version');assert.ok(noEvent.includes(guide.action),'day '+guide.day+' action');assert.ok(talk.includes(guide.action),'day '+guide.day+' talk/action');assert.ok(duration.includes(guide.exercise),'day '+guide.day+' exercise');assert.ok(duration.includes(guide.action),'day '+guide.day+' action');assert.ok(duration.includes(guide.successCriterion),'day '+guide.day+' success criterion');}});
+
+
+test('T13 adaptation answers name the exact exercise and action for all 28 days',()=>{for(const guide of T13_DAILY_ASSISTANT_GUIDES){const q=guide.questions.find(x=>x.id==='q13');const answer=answerT13DailyPreparedQuestion({day:guide.day,message:q.value,dailyContent:dailyContent(guide)});assert.ok(answer.includes(guide.exercise),'day '+guide.day+' exercise');assert.ok(answer.includes(guide.action),'day '+guide.day+' action');}});

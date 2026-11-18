@@ -3,6 +3,7 @@ import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
 import { T14_DAILY_ASSISTANT_GUIDES,answerT14DailyPreparedQuestion,getT14DailyAssistantPromptGroups } from '../src/features/assistant/t14DailyAssistantPrompts.js';
+import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from '../src/features/assistant/dailyAssistantSafetyReminder.js';
 const expected=["منظور از تمرین امروز چیست؟","برای تمرین امروز یک مثال می‌زنی؟","منظور از اقدام اختصاصی امروز چیست؟","برای اقدام امروز یک مثال می‌زنی؟","اگر انجام کاملش برایم سخت بود چه کنم؟","از کجا بفهمم درست انجامش داده‌ام؟","چه زمانی باید تمرین امروز را متوقف کنم؟","اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟","تمرین و اقدام امروز چه تفاوتی دارند؟","اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟","اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟","آیا لازم است حتماً با فرد دیگری صحبت کنم؟","می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟","این تمرین چقدر زمان می‌برد؟"];
 const daily=g=>({id:'کمبود انگیزه-'+String(g.day).padStart(2,'0'),day:g.day,topic_id:'T14',title:g.title,sourceExercise:g.exercise,sourceActionText:g.action,exercise:g.exercise,actionText:g.action});
 test('T14 contains 28 days and 392 complete prepared answers',()=>{assert.equal(T14_DAILY_ASSISTANT_GUIDES.length,28);for(const [i,g] of T14_DAILY_ASSISTANT_GUIDES.entries()){assert.equal(g.day,i+1);assert.equal(g.topicId,'T14');assert.equal(g.questions.length,14);assert.deepEqual(g.questions.map(q=>q.label),expected);assert.ok(g.questions.every(q=>q.answer?.trim()));assert.equal(new Set(g.questions.map(q=>q.answer)).size,14,'answers should be unique within day '+g.day);assert.equal(g.evidenceGrade,'not_assessed');assert.equal(g.subtopicMappingStatus,'proposed_not_registered');}});
@@ -12,7 +13,7 @@ test('T14 day 10 flexible scheduling remains distinct from fixed start cues',()=
 test('T14 day 13 and day 21 retain distinct motivation skills after cross-topic review',()=>{const day13=T14_DAILY_ASSISTANT_GUIDES[12],day21=T14_DAILY_ASSISTANT_GUIDES[20];assert.equal(day13.title,'تنظیم سطح چالش با مهارت فعلی');assert.match(day13.objective,/مهارت و منابع فعلی/u);assert.match(day13.exercise,/مهارتی که اکنون داری/u);assert.doesNotMatch(day13.exercise,/معیار کافی|کیفیتِ کافی/u);assert.equal(day21.title,'بازگرداندن حق انتخاب در اجرای هدف');assert.match(day21.objective,/حس اختیار/u);assert.match(day21.exercise,/ترتیب گام‌ها، زمان مناسب، محیط، ابزار/u);assert.doesNotMatch(day21.exercise,/وقفه|اگر-آنگاه/u);});
 test('T14 answers require exact canonical identity and topic',()=>{const g=T14_DAILY_ASSISTANT_GUIDES[0],q=g.questions[0];assert.ok(answerT14DailyPreparedQuestion({day:1,message:q.value,dailyContent:daily(g)}));assert.equal(answerT14DailyPreparedQuestion({day:1,message:q.value,dailyContent:{...daily(g),id:'کمبود انگیزه-02'}}),null);assert.equal(answerT14DailyPreparedQuestion({day:1,message:q.value,dailyContent:{...daily(g),topic_id:'T32'}}),null);assert.equal(answerT14DailyPreparedQuestion({day:1,message:'سؤال خارج از کاتالوگ',dailyContent:daily(g)}),null);});
 
-test('T14 safety-sensitive prepared answers append the shared safety reminder',async()=>{const {DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN}=await import('../src/features/assistant/dailyAssistantSafetyReminder.js');for(const g of T14_DAILY_ASSISTANT_GUIDES)for(const kind of ['success','stop','motivation_distress','talk_other']){const q=g.questions.find(x=>x.kind===kind),a=answerT14DailyPreparedQuestion({day:g.day,message:q.value,dailyContent:daily(g)});assert.ok(a.includes(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN),'missing shared reminder '+g.day+' '+kind);}});
+test('T14 safety-sensitive prepared answers append the shared safety reminder',async()=>{const {DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN}=await import('../src/features/assistant/dailyAssistantSafetyReminder.js');for(const g of T14_DAILY_ASSISTANT_GUIDES)for(const kind of ['success','stop','motivation_distress','talk_other']){const q=g.questions.find(x=>x.kind===kind),a=answerT14DailyPreparedQuestion({day:g.day,message:q.value,dailyContent:daily(g)});assert.equal(a.split(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN).length-1,1,'shared reminder must appear once '+g.day+' '+kind);assert.ok(a.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN),'shared reminder must be last '+g.day+' '+kind);}});
 test('T14 answers are unique across all 392 prepared question slots',()=>{const answers=T14_DAILY_ASSISTANT_GUIDES.flatMap(g=>g.questions.map(q=>q.answer));assert.equal(answers.length,392);assert.equal(new Set(answers).size,392);});
 
 test('T14 is wired into the page assistant and serves the selected day answer',()=>{const g=T14_DAILY_ASSISTANT_GUIDES[0],data={...daily(g)};const result=makePageAssistantTurn({screen:'day',text:g.questions[0].value,dailyContext:{day:1,problem:'کمبود انگیزه',data,guidanceData:data}});assert.equal(result.status,'daily_guidance_available');assert.match(result.message,/راهنمای روز 1 کمبود انگیزه/u);});
@@ -68,3 +69,47 @@ test('T14 seven audited days keep distinct goal-specific mechanisms and all 98 a
   assert.match(day19.action, /قابل‌تکرار/u);
   assert.doesNotMatch(day19.exercise, /ثبت موفقیت یا حال خوب/u);
 });
+
+
+test('T14 day 1 and day 28 prepared answers have clean stop, support and punctuation wording', () => {
+  const day1 = T14_DAILY_ASSISTANT_GUIDES.find((guide) => guide.day === 1);
+  const day28 = T14_DAILY_ASSISTANT_GUIDES.find((guide) => guide.day === 28);
+  const stop1 = day1.questions.find((question) => question.id === 'q07').answer;
+  const talk1 = day1.questions.find((question) => question.id === 'q12').answer;
+  const stop28 = day28.questions.find((question) => question.id === 'q07').answer;
+  const change28 = day28.questions.find((question) => question.id === 'q13').answer;
+  assert.doesNotMatch(stop1, /اگر اگر/u);
+  assert.equal((talk1.match(/گفت‌وگو با فرد دیگر شرط انجام تمرین نیست/gu) || []).length, 1);
+  assert.doesNotMatch(stop28, /متوقف کن اگر: اگر/u);
+  assert.match(change28, /جمع‌بندی و انتخاب گام بعدی\. نسخه سبک:/u);
+});
+
+
+test('T14 all 28 stop answers have a single grammatical stop-condition lead-in', () => {
+  for (const guide of T14_DAILY_ASSISTANT_GUIDES) {
+    const answer = guide.questions.find((question) => question.id === 'q07').answer;
+    assert.doesNotMatch(answer, /متوقف کن اگر:\s*اگر|متوقف کن اگر اگر|اگر:/u, 'day ' + guide.day);
+  }
+});
+
+
+test('T14 selected stop answers do not repeat the same stop instruction within one sentence', () => {
+  for (const day of [2, 6, 19, 22, 27]) {
+    const answer = T14_DAILY_ASSISTANT_GUIDES.find((guide) => guide.day === day).questions.find((question) => question.id === 'q07').answer;
+    assert.doesNotMatch(answer, /متوقف کن[^.]{0,70}متوقف کن/u, 'day ' + day);
+  }
+});
+
+
+test('T14 selected distress answers avoid duplicated stop and professional referral instructions',()=>{const day19=T14_DAILY_ASSISTANT_GUIDES.find(g=>g.day===19).questions.find(q=>q.id==='q11').answer;const day25=T14_DAILY_ASSISTANT_GUIDES.find(g=>g.day===25).questions.find(q=>q.id==='q11').answer;assert.doesNotMatch(day19,/مرور گذشته[\s\S]{0,120}مرور گذشته/u);assert.equal((day25.match(/ارزیابی حرفه‌ای/g)||[]).length,1);});
+
+
+test('T14 all 28 stop answers retain the canonical day-specific stop condition',()=>{for(const guide of T14_DAILY_ASSISTANT_GUIDES){const answer=guide.questions.find(q=>q.id==='q07').answer;assert.ok(answer.includes(guide.stopCondition),'day '+guide.day);}});
+
+
+test('T14 talk answers name the exact action for all 28 days',()=>{for(const guide of T14_DAILY_ASSISTANT_GUIDES){const q=guide.questions.find(x=>x.id==='q12');const answer=answerT14DailyPreparedQuestion({day:guide.day,message:q.value,dailyContent:daily(guide)});assert.ok(answer.includes(guide.action),'day '+guide.day+' action');assert.ok(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN),'day '+guide.day+' shared safety reminder remains last');}});
+
+
+test('T14 adaptation answers name the exact exercise and action for all 28 days',()=>{for(const guide of T14_DAILY_ASSISTANT_GUIDES){const q=guide.questions.find(x=>x.id==='q13');const answer=answerT14DailyPreparedQuestion({day:guide.day,message:q.value,dailyContent:daily(guide)});assert.ok(answer.includes(guide.exercise),'day '+guide.day+' exercise');assert.ok(answer.includes(guide.action),'day '+guide.day+' action');}});
+
+test('T14 duration answers name the exact daily exercise and action for all 28 days',()=>{for(const guide of T14_DAILY_ASSISTANT_GUIDES){const q=guide.questions.find(x=>x.id==='q14');const answer=answerT14DailyPreparedQuestion({day:guide.day,message:q.value,dailyContent:daily(guide)});assert.ok(answer.includes(guide.exercise),'day '+guide.day+' exercise');assert.ok(answer.includes(guide.action),'day '+guide.day+' action');}});

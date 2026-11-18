@@ -257,3 +257,9 @@ test('T12 semantic text stays distinct from other topic overlays', async () => {
     assert.equal(new Set(days.map(day => normalize(day[field]))).size, 28, 'T12 ' + field + ' must be unique within the topic');
   }
 });
+
+
+test('T12 day 3 distress answer does not repeat the stop instruction',()=>{const q=T12_DAILY_ASSISTANT_GUIDES.find(g=>g.day===3).questions.find(q=>q.id==='q11');assert.doesNotMatch(q.answer,/تمرین را متوقف کن[\s\S]{0,80}تمرین را متوقف کن/u);assert.match(q.answer,/تهدید یا اجبار جاری/u);});
+
+
+test('T12 no-event answer names the exact day rest version and action',()=>{for(const guide of T12_DAILY_ASSISTANT_GUIDES){const q=guide.questions.find(x=>x.id==='q08');const answer=answerT12DailyPreparedQuestion({day:guide.day,message:q.value,dailyContent:{id:'مرزبندی و نه گفتن-'+String(guide.day).padStart(2,'0'),day:guide.day,topic_id:'T12',title:guide.title,sourceExercise:guide.exercise,sourceActionText:guide.action,exercise:guide.exercise,actionText:guide.action}});assert.ok(answer.includes(guide.restVersion),'day '+guide.day+' rest');assert.ok(answer.includes(guide.action),'day '+guide.day+' action');}});

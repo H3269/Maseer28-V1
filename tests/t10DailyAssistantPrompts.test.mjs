@@ -46,3 +46,30 @@ test('T10 rejects unknown questions and invalid days instead of improvising', ()
   assert.equal(answerT10DailyPreparedQuestion({ day: 1, message: 'سؤال خارج از فهرست', dailyContent }), null);
   assert.deepEqual(getT10DailyAssistantPromptGroups(29), []);
 });
+
+
+test('T10 all 28 sleep-distress answers include each day-specific stop and support guidance once', () => {
+  for (const guide of T10_DAILY_ASSISTANT_GUIDES) {
+    const question = guide.questions.find((item) => item.kind === 'sleep_distress');
+    const answer = answerT10DailyPreparedQuestion({
+      day: guide.day,
+      message: question.value,
+      dailyContent: { id: 'بی‌خوابی و مشکلات خواب-' + String(guide.day).padStart(2, '0'), day: guide.day, topic_id: 'T10' },
+    });
+    assert.equal(answer.split(guide.stopCondition).length - 1, 1, 'day ' + guide.day + ' stop condition');
+    assert.equal(answer.split(guide.whenToSeekHumanSupport).length - 1, 1, 'day ' + guide.day + ' support guidance');
+    assert.doesNotMatch(answer, /اگر تمرین یا نگرانی درباره خواب فشار را بیشتر کرد، تمرین را متوقف کن/u);
+  }
+});
+
+
+
+
+test('T10 all 28 q11 source answers present one stop, rest and human-support instruction each', () => {
+  for (const guide of T10_DAILY_ASSISTANT_GUIDES) {
+    const answer = guide.questions.find((item) => item.id === 'q11').answer;
+    assert.equal(answer.split(guide.stopCondition).length - 1, 1, 'day ' + guide.day + ' stop');
+    assert.equal(answer.split(guide.restVersion).length - 1, 1, 'day ' + guide.day + ' rest');
+    assert.equal(answer.split(guide.whenToSeekHumanSupport).length - 1, 1, 'day ' + guide.day + ' support');
+  }
+});

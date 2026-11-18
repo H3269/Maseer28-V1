@@ -84,16 +84,16 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
 
   switch (question.kind) {
     case 'exercise_meaning':
-      body += `\n\n${section('مهارت امروز', guide.skill)}\n${section('منطق آموزشی', guide.mechanism)}\n${section('معیار کافی‌بودن', guide.successCriterion)}\n${section('پرسش بازتاب', guide.reflectionQuestion)}`;
+      body += `\n\n${section('تمرین دقیق امروز', exercise)}\n${section('مهارت امروز', guide.skill)}\n${section('منطق آموزشی', guide.mechanism)}\n${section('معیار کافی‌بودن', guide.successCriterion)}\n${section('پرسش بازتاب', guide.reflectionQuestion)}`;
       break;
     case 'exercise_example':
-      body += `\n\n${section('تمرین واقعی همین روز', exercise)}\n\nمثال فقط برای روشن‌شدن شیوه توصیف است؛ لازم نیست رفتاری را عمداً ایجاد، تکرار یا تحریک کنی.`;
+      body += `\n\n${section('تمرین دقیق همین روز', exercise)}\n\nمثال فقط برای روشن‌شدن شیوه توصیف است؛ لازم نیست رفتاری را عمداً ایجاد، تکرار یا تحریک کنی.`;
       break;
     case 'action_meaning':
-      body += `\n\n${section('اقدام اختصاصی امروز', actionWithoutDisplayPrefix)}\n${section('مهارت امروز', guide.skill)}\n${section('معیار کافی‌بودن', guide.successCriterion)}`;
+      body += `\n\n${section('اقدام دقیق امروز', actionWithoutDisplayPrefix)}\n${section('مهارت امروز', guide.skill)}\n${section('معیار کافی‌بودن', guide.successCriterion)}`;
       break;
     case 'action_example':
-      body += `\n\n${section('متن اقدام اختصاصی همین روز', actionWithoutDisplayPrefix)}\n\nمثال، نسخه اجباری نیست و نباید به وارسی یا ثبت جزئیات حساس تبدیل شود.`;
+      body += `\n\n${section('اقدام دقیق همین روز', actionWithoutDisplayPrefix)}\n\nمثال، نسخه اجباری نیست و نباید به وارسی یا ثبت جزئیات حساس تبدیل شود.`;
       break;
     case 'light_version':
       body += `\n\n${section('نسخه سبک تمرین', lightExercise)}\n${lightAction !== lightExercise ? section('نسخه سبک اقدام', lightAction) : ''}\n${section('نسخه استراحت', restAction)}\n${section('نسخه پیشرفت، فقط در صورت آمادگی', progressAction)}\n\nاستراحت یا کنارگذاشتن تمرین نیز انتخاب معتبر است.`;
@@ -108,7 +108,7 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
       body += `\n\nاگر نمونه‌ای به‌طور طبیعی در دسترس نیست، برای تکمیل برنامه موقعیت یا رفتار تازه نساز.\n${section('نسخه سبک یا جایگزین استراحت', restAction || lightExercise)}`;
       break;
     case 'exercise_action_difference':
-      body += `\n\n${section('مهارت مورد توجه', guide.skill)}\n${section('هدف آموزشی روز', guide.objective)}\n\nتوصیف یا مرور، تعهدی برای تغییر، سرکوب یا حذف رفتار ایجاد نمی‌کند.`;
+      body += `\n\n${section('تمرین امروز', exercise)}\n${section('اقدام اختصاصی امروز', actionWithoutDisplayPrefix)}\n${section('مهارت مورد توجه', guide.skill)}\n${section('هدف آموزشی روز', guide.objective)}\n\nتوصیف یا مرور، تعهدی برای تغییر، سرکوب یا حذف رفتار ایجاد نمی‌کند.`;
       break;
     case 'not_done':
       body += `\n\n${section('نسخه سبک در صورت تمایل', lightExercise)}\n${section('اگر امروز نیاز به استراحت داری', restAction)}\n\nروز ازدست‌رفته را جبران نکن و برای انجام تمرین به خودت فشار نیاور.`;
@@ -123,13 +123,13 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
       ].filter(Boolean).join('\n\n');
       break;
     case 'talk_other':
-      body += `\n\nگفت‌وگو یا افشای جزئیات رفتار شرط انجام هیچ تمرینی نیست.\n${section('در صورت نیاز به حمایت انسانی', guide.whenToSeekHumanSupport)}`;
+      body += `\n\nگفت‌وگو یا افشای جزئیات رفتار شرط انجام هیچ تمرینی نیست.\n${section('اقدام اختصاصی امروز', actionWithoutDisplayPrefix)}\n${section('در صورت نیاز به حمایت انسانی', guide.whenToSeekHumanSupport)}`;
       break;
     case 'can_change':
-      body += `\n\n${section('هدف آموزشی که نباید از آن فراتر رفت', guide.objective)}\n${section('شرط توقف', guide.stopCondition)}\n\nتغییر روش نباید به پایش اجباری، خودتشخیصی یا تلاش برای سرکوب رفتار تبدیل شود.`;
+      body += `\n\n${section('تمرین دقیق امروز', exercise)}\n${section('اقدام اختصاصی امروز', actionWithoutDisplayPrefix)}\n${section('هدف آموزشی که نباید از آن فراتر رفت', guide.objective)}\n${section('شرط توقف', guide.stopCondition)}\n\nتغییر روش نباید به پایش اجباری، خودتشخیصی یا تلاش برای سرکوب رفتار تبدیل شود.`;
       break;
     case 'duration':
-      body += `\n\nزمان استاندارد ثبت‌شده: ${guide.durationMinutes == null ? 'وجود ندارد؛ مدت قطعی یا اعتبارسنجی‌شده‌ای ادعا نمی‌شود.' : `${guide.durationMinutes} دقیقه`}\n\n${section('تمرین ثبت‌شده', exercise)}\nهر زمان خواستی می‌توانی متوقف شوی.`;
+      body += `\n\nزمان استاندارد ثبت‌شده: ${guide.durationMinutes == null ? 'وجود ندارد؛ مدت قطعی یا اعتبارسنجی‌شده‌ای ادعا نمی‌شود.' : `${guide.durationMinutes} دقیقه`}\n\n${section('تمرین ثبت‌شده', exercise)}\n${section('اقدام اختصاصی امروز', actionWithoutDisplayPrefix)}\nهر زمان خواستی می‌توانی متوقف شوی.`;
       break;
     default:
       return null;

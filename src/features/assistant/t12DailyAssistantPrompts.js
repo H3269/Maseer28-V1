@@ -47,6 +47,15 @@ export function answerT12DailyPreparedQuestion({ day, message, dailyContent } = 
   body = replaceExact(body, guide.lightActionVersion, String(dailyContent.lightActionText || guide.lightActionVersion || '').trim());
   body = replaceExact(body, guide.progressActionVersion, String(dailyContent.progressActionText || guide.progressActionVersion || '').trim());
   body = replaceExact(body, guide.restActionVersion, String(dailyContent.restActionText || guide.restActionVersion || '').trim());
+  if (question.kind === 'no_event') {
+    body += `\n\n**نسخه استراحت امروز:** ${guide.restVersion}\n**اقدام اختصاصی امروز، فقط در صورت امنیت:** ${String(dailyContent.actionText || dailyContent.action || guide.action).trim()}`;
+  }
+  if (question.kind === 'can_change') {
+    body += `\n\n**تمرین دقیق امروز:** ${String(dailyContent.exercise || guide.exercise).trim()}\n**اقدام اختصاصی امروز:** ${String(dailyContent.actionText || dailyContent.action || guide.action).trim()}`;
+  }
+  if (question.kind === 'duration') {
+    body += `\n\n**تمرین دقیق امروز:** ${String(dailyContent.exercise || guide.exercise).trim()}\n**اقدام اختصاصی امروز:** ${String(dailyContent.actionText || dailyContent.action || guide.action).trim()}`;
+  }
 
   const heading = `راهنمای روز ${guide.day} مرزبندی و نه گفتن — ${guide.title}`;
   const framedAnswer = addTeacherStyleFrame(`${heading}\n\n${body}`, {

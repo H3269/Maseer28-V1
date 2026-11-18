@@ -31,6 +31,18 @@ export function answerT13DailyPreparedQuestion({ day, message, dailyContent } = 
   let body = question.answer;
   body = replaceExact(body, guide.exercise, String(dailyContent.exercise || guide.exercise).trim());
   body = replaceExact(body, guide.action, String(dailyContent.actionText || dailyContent.action || guide.action).trim());
+  if (question.kind === 'no_event') {
+    body += `\n\n**نسخه استراحت همین روز:** ${guide.restVersion}\n**اقدام اختصاصی امروز، فقط در صورت تمایل و امنیت:** ${String(dailyContent.actionText || dailyContent.action || guide.action).trim()}`;
+  }
+  if (question.kind === 'talk_other') {
+    body += `\n\n**اقدام اختصاصی امروز:** ${String(dailyContent.actionText || dailyContent.action || guide.action).trim()}\nگفت‌وگو یا تماس با فرد دیگر برای انجام این اقدام الزامی نیست؛ آن را فقط در محدوده اختیار و امنیت خودت انجام بده.`;
+  }
+  if (question.kind === 'duration') {
+    body += `\n\n**تمرین دقیق امروز:** ${String(dailyContent.exercise || guide.exercise).trim()}\n**اقدام مرتبط امروز:** ${String(dailyContent.actionText || dailyContent.action || guide.action).trim()}\n**معیار پایان:** ${guide.successCriterion}`;
+  }
+  if (question.kind === 'can_change') {
+    body += `\n\n**تمرین دقیق امروز:** ${String(dailyContent.exercise || guide.exercise).trim()}\n**اقدام اختصاصی امروز:** ${String(dailyContent.actionText || dailyContent.action || guide.action).trim()}`;
+  }
 
   const heading = `راهنمای روز ${guide.day} تنهایی — ${guide.title}`;
   const framedAnswer = addTeacherStyleFrame(`${heading}\n\n${body}`, { guide, question, topic: 'تنهایی' });
