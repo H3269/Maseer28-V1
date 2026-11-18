@@ -47,7 +47,5 @@
 
 - فقط پیش‌نویس ۱۱فیلدی به‌روزرسانی شد؛ overlay، cache key، taxonomy، رجیستری، صف P0، canonical، UI و گیت‌های ایمنی در این دور تغییر نکردند.
 - سازوکار و ۹ فیلد دیگر در runtime فعلی متصل نیستند و در اپ نمایش داده نمی‌شوند.
-- این ممیزی داخلی، تأیید تخصصی/بالینی مستقل نیست.
-- CI و آزمون regression مرورگرِ تغییرات هم‌زمان T19/T20 در حال اجراست؛ نتیجه نهایی هنوز تأیید نشده است. تست زنده مالک و تأیید تخصصی مستقل نیز لازم‌اند.
 
 **وضعیت:** T20_28DAY_11_FIELD_AUDIT_COMPLETE_26_GENERIC_MECHANISMS_REWRITTEN_28_OF_28_EXERCISE_ACTION_ALIGNED_GLOBAL_952_EXACT_UNIQUENESS_CONFIRMED_SEMANTIC_AND_EXPERT_REVIEW_PENDING
