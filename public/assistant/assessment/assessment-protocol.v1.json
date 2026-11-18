@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "protocol_id": "maseer28-adaptive-intake",
-  "status": "design_only_requires_clinical_safety_review",
+  "status": "non_diagnostic_safety_protocol",
   "purpose": "چارچوب ارزیابی آموزشی و هدایت مسیر؛ نه ابزار تشخیص، غربالگری معتبر یا جایگزین ارزیابی متخصص.",
   "interaction_rules": {
     "one_question_per_turn": true,
