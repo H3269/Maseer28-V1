@@ -84,8 +84,8 @@ function makePdf(archive, index) {
     write(`روز ${fa(day)}`, { bold: true, size: 30, color: '#176b63', gap: 3 });
     if (daily?.status === 'skipped_safety_gate') {
       write('این تمرین به دلیل ملاحظه ایمنی اجرا نشد؛ هیچ امتیازی ثبت نشده است.', { size: 25, gap: 3 });
-    } else if (daily?.status === 'skipped_human_review') {
-      write('این تمرین به دلیل نیاز به بازبینی انسانی اجرا نشد؛ هیچ امتیازی ثبت نشده است.', { size: 25, gap: 3 });
+    } else if (daily?.status === 'skipped_without_score' || daily?.status === 'skipped_human_review') {
+      write('این تمرین اجرا نشد؛ هیچ امتیازی ثبت نشده است.', { size: 25, gap: 3 });
     } else {
       write(`پاسخ ثبت‌شده: ${archive.answers?.[day] || '—'}`, { size: 25, gap: 3 });
       write(`شدت درگیری: ${daily?.score ?? '—'} از ۱۰    بازخورد: ${daily?.feedbackText || daily?.feedback || '—'}`, { size: 22, color: '#586a66', gap: 20 });
