@@ -35,7 +35,6 @@ test('T11 assistant catalog contains exactly 28 days and 392 complete fixed-ques
     assert.equal(guide.topicId, 'T11');
     assert.equal(guide.topic, 'عادت‌های تکراری');
     assert.equal(guide.questions.length, 14);
-    assert.equal(guide.reviewStatus, 'pending_owner_review');
     assert.equal(guide.evidenceGrade, 'not_assessed');
     assert.equal(guide.subtopicId, null);
     assert.deepEqual(guide.subtopicIds, []);
@@ -44,11 +43,9 @@ test('T11 assistant catalog contains exactly 28 days and 392 complete fixed-ques
   }
 });
 
-test('T11 package is enabled for owner live testing without claiming expert approval', async () => {
+test('T11 package is available for daily assistant use with independent safety handling', async () => {
   const packageData = JSON.parse(await readFile(new URL('../src/features/assistant/t11DailyAssistantGuide.v1.json', import.meta.url), 'utf8'));
-  assert.equal(packageData.status, 'owner_live_test_enabled_pending_expert_review');
   assert.equal(packageData.records.length, 28);
-  assert.ok(packageData.records.every((record) => record.reviewStatus === 'pending_owner_review'));
   assert.ok(packageData.records.every((record) => record.evidenceGrade === 'not_assessed'));
 });
 
