@@ -206,7 +206,7 @@ test('T13 day 14 is owner-approved and is not blocked by a specialist-review run
 test('T13 exercise and action examples keep distinct day-specific safety and choice endings', () => {
   const q02 = T13_DAILY_ASSISTANT_GUIDES.map((guide) => guide.questions.find((question) => question.id === 'q02').answer);
   const q04 = T13_DAILY_ASSISTANT_GUIDES.map((guide) => guide.questions.find((question) => question.id === 'q04').answer);
-  const finalSentence = (answer) => answer.split(/(?<=[.!؟])\\s+/u).at(-1);
+  const finalSentence = (answer) => answer.split(/(?<=[.!؟])\s+/u).at(-1);
   assert.equal(new Set(q02.map(finalSentence)).size, 28, 'each exercise example needs a distinct contextual safety note');
   assert.equal(new Set(q04.map(finalSentence)).size, 28, 'each action example needs a distinct contextual choice note');
   assert.ok(q02.every((answer) => !answer.includes('این فقط مثالی برای فهم روش است؛ لازم نیست شرایط تو شبیه آن باشد. اگر نمونه‌ای امن و متناسب نداری، می‌توانی آن را کنار بگذاری.')));
