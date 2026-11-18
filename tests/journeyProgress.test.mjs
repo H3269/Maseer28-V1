@@ -9,7 +9,7 @@ test('recorded safety skips advance the path but do not count as completed exerc
       1: { score: 4, feedback: 'same' },
       2: { status: 'skipped_safety_gate' },
       3: { score: 6, feedback: 'better' },
-      4: { status: 'skipped_human_review' },
+      4: { status: 'skipped_without_score' },
       5: { score: 5, feedback: 'same' },
     },
   });
