@@ -384,6 +384,13 @@ jobs:
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/reader-layout-parity.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/reader-open-paths.mjs
           NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/reader-open-recommendation.mjs
+      - name: Run dedicated T14 prepared-question Chromium regression
+        if: ${{ always() && steps.preview.outcome == 'success' }}
+        env:
+          PATH28_BASE_URL: http://127.0.0.1:4173/Maseer28/
+        run: |
+          PLAYWRIGHT_NODE_PATH="$(npx --yes --package=playwright@1.55.0 -c 'dirname "$(dirname "$(command -v playwright)")"')"
+          NODE_PATH="$PLAYWRIGHT_NODE_PATH" node tests/browser/t14-prepared-assistant.mjs
       - name: Capture startup performance diagnostics (mobile and desktop)
         if: ${{ always() && steps.preview.outcome == 'success' }}
         env:
