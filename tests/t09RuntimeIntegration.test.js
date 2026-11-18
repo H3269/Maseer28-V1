@@ -101,7 +101,8 @@ test('explicit immediate-risk disclosures keep precedence over prepared T09 answ
   assert.equal(urgent.status, 'urgent_human_support_required');
 });
 
-test('T09 interpersonal FAQ answers stay task-focused and do not inherit relationship-dependency copy', () => {
+test('T09 interpersonal FAQ answers use each day-specific contact guidance without relationship-dependency copy', () => {
+  const answers = [];
   for (const guide of T09_DAILY_ASSISTANT_GUIDES) {
     const question = guide.questions.find((item) => item.kind === 'talk_other');
     const answer = answerT09DailyPreparedQuestion({
@@ -109,10 +110,12 @@ test('T09 interpersonal FAQ answers stay task-focused and do not inherit relatio
       message: question.value,
       dailyContent: { id: getCanonicalDailyRecordId('اهمال‌کاری', guide.day), day: guide.day, topic_id: 'T09' },
     });
-    assert.ok(answer.includes('گفت‌وگو شرط انجام تمرین نیست'), `day ${guide.day}`);
-    assert.ok(answer.includes('اطلاعات، اجازه، دسترسی، هماهنگی یا تقسیم مسئولیتی'), `day ${guide.day}`);
+    assert.ok(answer.includes(question.answer), `day ${guide.day}: daily q12 answer must be rendered`);
+    assert.match(question.answer, /خیر/u, `day ${guide.day}: no forced conversation`);
     assert.doesNotMatch(answer, /وابستگی را فقط ثبت کن/u, `day ${guide.day}: no T08 copy`);
+    answers.push(question.answer);
   }
+  assert.equal(new Set(answers).size, 28);
 });
 
 test('T09 overlay and prompt UI are connected while the knowledge registry remains draft-only', async () => {
@@ -149,7 +152,8 @@ test('T09 answers are fully contextual, use visible daily content, and keep resi
   assert.ok(actionAnswer.includes('اقدام نمایان و مخصوص آزمون'));
   assert.ok(exerciseAnswer.includes('هدف امروز') && exerciseAnswer.includes(guide.objective));
   assert.ok(exerciseAnswer.includes('منطق آموزشی امروز') && exerciseAnswer.includes(guide.mechanism));
-  assert.ok(resistanceAnswer.includes('افزایش مقاومت به‌تنهایی نشانه تنبلی'));
+  assert.ok(resistanceAnswer.includes(resistanceQuestion.answer));
+  assert.ok(resistanceAnswer.includes(guide.stopCondition));
   assert.notEqual(resistanceAnswer, stopAnswer);
   assert.ok(resistanceAnswer.includes(guide.whenToSeekHumanSupport));
   assert.ok(lightAnswer.includes('نسخه سبک اقدام'));
