@@ -54,7 +54,7 @@ export function answerT12DailyPreparedQuestion({ day, message, dailyContent } = 
     question,
     topic: 'مرزبندی و نه گفتن',
   });
-  const safetyKinds = new Set(['procrastination_increased', 'talk_other', 'success', 'stop']);
+  const safetyKinds = new Set(['boundary_distress', 'talk_other', 'success', 'stop']);
   const answerWithTopicSafety = safetyKinds.has(question.kind)
     ? framedAnswer.trimEnd() + '\n\n' + T12_SAFETY_REMINDER
     : framedAnswer;
@@ -70,6 +70,6 @@ export function getT12DailyAssistantPromptGroups(day) {
     { label: 'فهم اقدام اختصاصی روز ' + guide.day, questions: guide.questions.filter((item) => ['action_meaning', 'action_example'].includes(item.kind)) },
     { label: 'تفاوت تمرین و اقدام', questions: guide.questions.filter((item) => item.kind === 'exercise_action_difference') },
     { label: 'اجرا و موانع', questions: guide.questions.filter((item) => ['light_version', 'no_event', 'not_done', 'can_change', 'duration'].includes(item.kind)) },
-    { label: 'ارزیابی و ایمنی', questions: guide.questions.filter((item) => ['success', 'stop', 'procrastination_increased', 'talk_other'].includes(item.kind)) },
+    { label: 'ارزیابی و ایمنی', questions: guide.questions.filter((item) => ['success', 'stop', 'boundary_distress', 'talk_other'].includes(item.kind)) },
   ];
 }
