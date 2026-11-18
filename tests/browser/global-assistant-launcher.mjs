@@ -333,7 +333,7 @@ try {
   await supportPromptDialog.waitFor({ state: 'visible' });
   await supportPromptDialog.locator('[data-prompt-option]').first().click();
   await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('اطلاعات و راه‌های ارتباط با مرکز')));
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('بخش پشتیبانی محل شروع مناسبی است')));
   await page.keyboard.press('Escape');
   await dialog.waitFor({ state: 'detached' });
 
