@@ -11,16 +11,16 @@
   "expectedDays": 28,
   "questionsPerDay": 14,
   "expectedPreparedAnswers": 392,
-  "status": "draft_implemented_ci_pending",
-  "contentStatus": "15-field 28-day source and 10 overlay fields synchronized; zero >=0.30 lexical overlaps across 8 core/adaptation fields in cross-topic and within-topic screen; specialist review pending",
-  "subtopicMappingStatus": "T15-S03 removed from intervention mapping on days 4/24; day 25 is support/referral gate; day 26 mapped provisionally to T15-S02",
-  "assistantStatus": "28 day guides and 392 unique prepared-answer strings; answer uniqueness and page routing structurally checked; CI rerun pending",
-  "safetyStatus": "inherit global immediate-danger gate; add T15-specific non-blaming, anti-coercion, and cross-topic routing checks",
+  "status": "targeted_content_revision_latest_ci_pending",
+  "contentStatus": "28-day T15 source revised; 10 overlay fields synchronized across all days; 392 prepared answers structurally unique; 8-field lexical screen rerun required after day-12/15/17 corrections; specialist review pending",
+  "subtopicMappingStatus": "draft_pending_expert_review; days 4/24 differential routing, day 25 support/referral gate, day 17 environmental performance conditions without subtopic assignment; day 26 provisional T15-S02",
+  "assistantStatus": "28 day guides and 392 prepared answers; prepared-only; exact canonical matching; revised day 12 optional feedback, day 15 task participation, day 17 environmental conditions",
+  "safetyStatus": "global immediate-danger gate plus T15 non-blaming, anti-coercion, optional-feedback, privacy, environmental-barrier and cross-topic routing checks",
   "tests": {
-    "unit": "package-scoped passed on prior SHA; latest semantic-screen test pending CI",
-    "packageValidation": "prior package-scoped pass; latest full 34-topic validation rerun pending",
-    "chromium": "passed on prior SHA; latest content-only rerun pending",
-    "fullValidation": "prior run exposed 2 cross-topic adaptation overlaps; both corrected; rerun pending",
+    "unit": "previous full pass; latest rerun pending after targeted semantic corrections",
+    "packageValidation": "previous pass on SHA a4966474e07572cd110e5daaf3adc9f292051de5; latest rerun pending",
+    "chromium": "previous T15 Chromium pass on SHA a4966474e07572cd110e5daaf3adc9f292051de5; latest rerun pending",
+    "fullValidation": "previous 34-topic/952-day full validation pass on SHA a4966474e07572cd110e5daaf3adc9f292051de5; latest rerun pending",
     "ownerLiveTest": "not_started"
   },
   "ownerApproval": {
@@ -31,10 +31,15 @@
     "Do not copy T14 answers; use its validated architecture and test sequence only.",
     "T15 is task/domain-specific self-efficacy, not global self-worth.",
     "Do not claim expert approval or evidence grade without traceable review/source.",
-    "Current T15 overlay contains only day/exercise/actionText. Canonical title, intro, closing and adaptation fields do not yet match the redesign draft.",
+    "The T15 overlay synchronizes title, intro, exercise, action, light/progress/rest variants and closing across all 28 days.",
     "392 unique answer strings are a structural check, not proof of semantic uniqueness or specialist approval.",
     "A brief accidental main-branch test-file write was immediately corrected by deleting both files; current main tree contains no T15 package files. See execution audit.",
-    "T15 source now carries 15 structured fields per day, including 3 independent action adaptation variants.",
-    "Current lexical similarity gate reports zero >=0.30 overlaps for 8 text fields both cross-topic and within T15; this is a screening heuristic, not clinical approval."
+    "Day 12 feedback from another person is optional; self-observed behavioral evidence is sufficient.",
+    "Day 15 title now reflects skill use in a small participation task; external participation remains conditional on safety and willingness.",
+    "Day 17 is now focused on environmental conditions and resources for skill performance, not self-disclosure; subtopic assignment remains pending expert review.",
+    "A day-12 light-exercise lexical overlap with T14 day 11 was detected at 0.333 and corrected; latest 8-field cross-topic screen rerun is pending.",
+    "Previous T15 Chromium and 34-topic/952-day full validation passed on SHA a4966474e07572cd110e5daaf3adc9f292051de5; results must not be attributed to later corrected SHA until rerun passes.",
+    "The static 34-topic quality report is not expert or clinical validation; T15 metadata coverage in the current corpus audit is 0/28 for the future metadata fields.",
+    "Production runtime dependency audit passed; full npm audit reports four High development-toolchain findings that remain advisory under the current workflow."
   ]
 }
