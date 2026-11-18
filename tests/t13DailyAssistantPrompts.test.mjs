@@ -201,3 +201,25 @@ test('T13 day 14 is owner-approved and is not blocked by a specialist-review run
   assert.equal(emergency.status,'safety_clarification_required',
     'owner approval must not suppress the independent emergency safety route');
 });
+
+
+test('T13 exercise and action examples keep distinct day-specific safety and choice endings', () => {
+  const q02 = T13_DAILY_ASSISTANT_GUIDES.map((guide) => guide.questions.find((question) => question.id === 'q02').answer);
+  const q04 = T13_DAILY_ASSISTANT_GUIDES.map((guide) => guide.questions.find((question) => question.id === 'q04').answer);
+  const finalSentence = (answer) => answer.split(/(?<=[.!؟])\\s+/u).at(-1);
+  assert.equal(new Set(q02.map(finalSentence)).size, 28, 'each exercise example needs a distinct contextual safety note');
+  assert.equal(new Set(q04.map(finalSentence)).size, 28, 'each action example needs a distinct contextual choice note');
+  assert.ok(q02.every((answer) => !answer.includes('این فقط مثالی برای فهم روش است؛ لازم نیست شرایط تو شبیه آن باشد. اگر نمونه‌ای امن و متناسب نداری، می‌توانی آن را کنار بگذاری.')));
+  assert.ok(q04.every((answer) => !answer.includes('این پیشنهاد اجباری نیست؛ اگر انجامش مناسب یا امن نیست، می‌توانی فقط آن را برای خودت یادداشت کنی یا انجام ندهی.')));
+  assert.match(T13_DAILY_ASSISTANT_GUIDES[0].questions.find((question) => question.id === 'q04').answer, /^برای مثال، پس از/u);
+  assert.match(T13_DAILY_ASSISTANT_GUIDES[13].questions.find((question) => question.id === 'q02').answer, /^برای نمونه، زمان/u);
+  assert.match(T13_DAILY_ASSISTANT_GUIDES[23].questions.find((question) => question.id === 'q02').answer, /^برای نمونه، وجود/u);
+});
+
+test('T13 day 28 q11 states the severe-distress threshold once while retaining urgent and confidential support routes', () => {
+  const answer = T13_DAILY_ASSISTANT_GUIDES[27].questions.find((question) => question.id === 'q11').answer;
+  assert.equal((answer.match(/اگر تنهایی با ناامیدی شدید/gu) || []).length, 1);
+  assert.match(answer, /در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر/u);
+  assert.match(answer, /رابطه تهدیدآمیز یا کنترل‌گرانه/u);
+  assert.match(answer, /حمایت محرمانه/u);
+});
