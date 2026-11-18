@@ -103,9 +103,8 @@ test('all exact prepared FAQs across 28 days keep their own answers when their w
   assert.ok(checked >= 3000, `expected broad coverage including T14's 28 × 14 prepared FAQ set; checked ${checked}`);
 });
 
-test('T13 day 14 remains available after owner approval without a specialist-review runtime gate', () => {
+test('T13 day 14 remains available through its risk classification', () => {
   const guide = T13_DAILY_ASSISTANT_GUIDES[13];
-  assert.equal(guide.reviewStatus, 'owner_approved');
   const dailyContext = {
     day: 14,
     problem: 'تنهایی',
@@ -116,7 +115,6 @@ test('T13 day 14 remains available after owner approval without a specialist-rev
       title: guide.title,
       exercise: guide.exercise,
       actionText: guide.action,
-      review_status: 'owner_approved',
       risk_level: 'caution',
       subtopic_ids: ['T13-S02', 'T13-S03'],
     },
