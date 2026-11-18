@@ -298,10 +298,12 @@ jobs:
         with:
           node-version: 22
       - name: Install dependencies
+        id: install
         env:
           ONNXRUNTIME_NODE_INSTALL: skip
         run: npm ci
       - name: Dependency security audit
+        if: ${{ steps.install.outcome == 'success' }}
         run: npm audit --audit-level=high
       - name: Verify runtime topic shards preserve all 952 canonical daily records
         run: node --test tests/runtimeContentArtifacts.test.mjs
@@ -344,12 +346,17 @@ jobs:
           tests/startupPerformance.test.mjs
           tests/readerLayoutEquivalence.test.mjs
       - name: Build application
+        id: build
+        if: ${{ always() && steps.install.outcome == 'success' }}
         run: |
           PATH28_DEPLOY_BASE=/Maseer28/ npm run prepare:production
           npm run build
       - name: Verify preinstalled Chromium
+        if: ${{ always() && steps.install.outcome == 'success' }}
         run: npx --yes --package=playwright@1.55.0 playwright --version
       - name: Start production preview
+        id: preview
+        if: ${{ always() && steps.build.outcome == 'success' }}
         run: |
           nohup npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/path28-vite.log 2>&1 &
           echo $! > /tmp/path28-vite.pid
