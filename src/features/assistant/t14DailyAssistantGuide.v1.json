@@ -9,7 +9,7 @@
   "questionsPerDay": 14,
   "questionPolicy": "۱۴ پرسش ثابت مشترک؛ پاسخ‌ها به هدف، تمرین، اقدام، نسخه‌های سبک/پیشرفت/استراحت و شرط توقف همان روز متصل‌اند. پرسش‌ها تشخیصی نیستند و پاسخ آزاد برای این بسته فعال نمی‌شود.",
   "sourceDraft": "docs/T14_LOW_MOTIVATION_28DAY_REDESIGN_DRAFT_B2_BD_FA.md",
-  "sourceDraftSha": "ab05d6c6c9ddf3c9557e57e81e8e071c1f3821bc",
+  "sourceDraftSha": "ee1d5b65b3ad348d27af306ed75cead975e50549",
   "contentOverride": "public/content/daily-text-overrides.v1.json",
   "records": [
     {
