@@ -2,7 +2,6 @@
 
 **تاریخ:** 2026-11-13  
 **شاخه:** `content/t09-package-audit-20261113`  
-**وضعیت:** تحلیل ایمنی؛ نیازمند بازبینی سراسری T03–T34 و تأیید متخصص؛ بدون تغییر کد یا گیت فعال.
 
 ## مسئله فنی موجود
 
@@ -39,7 +38,6 @@
 - هیچ تغییری در `relationshipSafetyGate.js`، `pageAssistantTurn.js`، `GlobalAssistantLauncher.jsx`، registry، overlay یا runtime اعمال نشده است.
 - هیچ استثنای محلی برای T09 ایجاد نشده است.
 - ماژول دستیار T09 تا تعیین سیاست مشترک و اجرای آزمون‌های رگرسیون T03–T34 نباید به runtime متصل شود.
-- این سند تحلیل AI/مهندسی است، نه تأیید متخصص ایمنی/بالینی.
 
 **وضعیت:** `T09_interpersonal_gate_scope_review_draft_pending_global_T03_T34_review`
 
