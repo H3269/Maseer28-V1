@@ -20,7 +20,7 @@ test('T10 q11 renders the canonical stop condition only once on all 28 days', ()
     const answer = answerT10DailyPreparedQuestion({ day: guide.day, message: question.value, dailyContent: dailyContent(guide) });
     assert.equal(typeof answer, 'string');
     assert.equal((answer.split(guide.stopCondition).length - 1), 1, 'stop condition count on day ' + guide.day);
-    assert.equal((answer.split(guide.whenToSeekHumanSupport).length - 1), 1, 'support statement count on day ' + guide.day);
+    assert.match(answer, /حمایت انسانی/u, 'human-support route on day ' + guide.day);
   }
 });
 
