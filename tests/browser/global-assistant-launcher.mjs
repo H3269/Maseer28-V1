@@ -333,6 +333,7 @@ try {
   await supportPromptDialog.waitFor({ state: 'visible' });
   await supportPromptDialog.locator('[data-prompt-option]').first().click();
   await dialog.getByRole('button', { name: 'ارسال' }).click();
+  // Assert the actual prepared answer, not the page-purpose summary from the context catalogue.
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('بخش پشتیبانی محل شروع مناسبی است')));
   await page.keyboard.press('Escape');
   await dialog.waitFor({ state: 'detached' });
