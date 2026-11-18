@@ -153,7 +153,10 @@ test('daily turn routes anxiety prepared answers only for matching source topic 
 
 
 test('T02 days 17, 19 and 24 examples show concrete situations rather than repeating the action',()=>{
-  const get=(day,kind)=>ANXIETY_DAILY_ASSISTANT_GUIDES.find(item=>item.day===day).questions.find(item=>item.kind===kind).answer;
+  const get=(day,kind)=>{
+    const guide=ANXIETY_DAILY_ASSISTANT_GUIDES.find(item=>item.day===day);
+    return kind==='action_example'?guide.actionExample:guide.exerciseExample;
+  };
   assert.match(get(17,'action_example'),/پیش‌بینی من از بازکردن یک‌باره چیست/u);
   assert.match(get(17,'action_example'),/معیار توقف/u);
   assert.match(get(19,'action_example'),/عنوان و دو نکته اصلی/u);
