@@ -26,6 +26,5 @@
 
 ## تصمیم
 
-متن‌های فعلی از نظر تطبیق و یکتایی عینی قابل حفظ‌اند. T18 در صف P0 باقی است؛ این گزارش هیچ ledger انسانی یا تأیید تخصصی ایجاد نمی‌کند.
 
 **وضعیت:** `T18_28day_content_reviewed_retained_overlay_matches_draft_p0_ledger_unchanged`
