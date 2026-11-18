@@ -211,7 +211,7 @@ test('T13 exercise and action examples keep distinct day-specific safety and cho
   assert.equal(new Set(q04.map(finalSentence)).size, 28, 'each action example needs a distinct contextual choice note');
   assert.ok(q02.every((answer) => !answer.includes('این فقط مثالی برای فهم روش است؛ لازم نیست شرایط تو شبیه آن باشد. اگر نمونه‌ای امن و متناسب نداری، می‌توانی آن را کنار بگذاری.')));
   assert.ok(q04.every((answer) => !answer.includes('این پیشنهاد اجباری نیست؛ اگر انجامش مناسب یا امن نیست، می‌توانی فقط آن را برای خودت یادداشت کنی یا انجام ندهی.')));
-  assert.match(T13_DAILY_ASSISTANT_GUIDES[0].questions.find((question) => question.id === 'q04').answer, /^برای مثال، پس از/u);
+  assert.match(T13_DAILY_ASSISTANT_GUIDES[0].questions.find((question) => question.id === 'q04').answer, /^برای مثال، وقتی/u);
   assert.match(T13_DAILY_ASSISTANT_GUIDES[13].questions.find((question) => question.id === 'q02').answer, /^برای نمونه، زمان/u);
   assert.match(T13_DAILY_ASSISTANT_GUIDES[23].questions.find((question) => question.id === 'q02').answer, /^برای نمونه، وجود/u);
 });
@@ -222,4 +222,18 @@ test('T13 day 28 q11 states the severe-distress threshold once while retaining u
   assert.match(answer, /در خطر فوری با خدمات اضطراری محل زندگی تماس بگیر/u);
   assert.match(answer, /رابطه تهدیدآمیز یا کنترل‌گرانه/u);
   assert.match(answer, /حمایت محرمانه/u);
+});
+
+
+test('T13 day 1 examples demonstrate the requested fields without implying a required call, and day 25 avoids repeated guidance',()=>{
+  const day1=T13_DAILY_ASSISTANT_GUIDES.find(item=>item.day===1);
+  const exerciseExample=day1.questions.find(item=>item.kind==='exercise_example').answer;
+  const actionExample=day1.questions.find(item=>item.kind==='action_example').answer;
+  const day25=T13_DAILY_ASSISTANT_GUIDES.find(item=>item.day===25).questions.find(item=>item.kind==='action_example').answer;
+  assert.match(exerciseExample,/نوع ارتباط دلخواه/u);
+  assert.match(exerciseExample,/ارتباط واقعاً در دسترس/u);
+  assert.match(exerciseExample,/احساس دلتنگی/u);
+  assert.match(actionExample,/عصرهای پس از کار/u);
+  assert.doesNotMatch(actionExample,/پس از یک تماس کوتاه/u);
+  assert.equal((day25.match(/پاسخ دیگران در اختیار تو نیست/g)||[]).length,1);
 });
