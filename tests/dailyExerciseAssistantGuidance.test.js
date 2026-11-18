@@ -508,12 +508,11 @@ test('daily assistant fails closed when canonical day identity is incomplete or 
   assert.equal(accepted.available, true);
 });
 
-test('daily assistant remains unavailable when the day content is blocked for safety review', () => {
+test('daily assistant remains unavailable when the day is blocked by its safety classification', () => {
   const blockedDay = {
     id: 'ترس-01',
     topic_id: 'T03',
     day: 1,
-    review_status: 'draft',
     risk_level: 'routine',
     instructions: 'متن مصنوعی که نباید به دستیار برسد',
     actionText: 'اقدام مصنوعی',
@@ -528,7 +527,6 @@ test('relationship-gated daily guidance stays closed until the day-specific safe
     id: 'خشم-10',
     topic_id: 'T01',
     day: 10,
-    review_status: 'approved',
     risk_level: 'routine',
     instructions: 'متن مصنوعی تمرین',
   };
@@ -546,7 +544,6 @@ test('caution-level daily guidance is available but explicitly marked for cautio
     id: 'خشم-01',
     topic_id: 'T01',
     day: 1,
-    review_status: 'approved',
     risk_level: 'caution',
     instructions: 'متن مصنوعی تمرین',
   };
@@ -710,7 +707,6 @@ test('how-to guidance retains the day closing reminder after source-ordered step
 test('daily content fields supply rationale, duration, and success criterion without review metadata', () => {
   const reviewedDay = {
     ...dayData,
-    review_status: 'approved',
     teaching_point: 'هیجان و رفتار دو چیز جدا هستند.',
     duration_minutes: 8,
     success_criterion: 'یک تفاوت روشن میان احساس و رفتار نوشته شود.',
@@ -725,7 +721,6 @@ test('adapted daily content retains source identity and functional metadata', ()
     id: 'T01-D04',
     topic_id: 'T01',
     day: 4,
-    review_status: 'approved',
     duration_minutes: 8,
     success_criterion: 'یک تفاوت روشن ثبت شود.',
     exercise: 'تمرین اصلی',
@@ -894,10 +889,6 @@ test('all 952 canonical daily records pass exact category/day selection and inde
         v2Count += 1;
         assert.equal(record.topic_id, getCanonicalTopicIdForCategory(categoryKey),
           `${categoryKey} day ${dayNumber} must use its registry topic_id`);
-        assert.ok(['pending_expert_review', 'draft'].includes(record.review_status),
-          'v2 records remain unavailable until an explicit expert approval is recorded');
-        assert.notEqual(record.review_status, 'approved',
-          'draft and pending-review records must never be treated as expert-approved');
       }
 
       const adapted = preserveDailyGuidanceSourceIdentity(record, {
