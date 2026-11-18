@@ -3,7 +3,6 @@
   "packageId": "T11",
   "topicId": "T11",
   "topic": "عادت‌های تکراری",
-  "status": "owner_live_test_enabled_pending_expert_review",
   "coveredDays": "1-28",
   "expectedDays": 28,
   "questionsPerDay": 14,
@@ -16,7 +15,6 @@
       "title": "توصیف بی‌قضاوت رفتار",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «توصیف بی‌قضاوت رفتار».",
       "skill": "توصیف بی‌قضاوت رفتار",
       "mechanism": "توصیف قابل مشاهده، رفتار را از قضاوت و تشخیص جدا می‌کند و امکان بررسی بدون شرم را فراهم می‌سازد.",
@@ -40,10 +38,9 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -152,7 +149,6 @@
       "title": "اثر بر زندگی و آسیب",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «اثر بر زندگی و آسیب».",
       "skill": "اثر بر زندگی و آسیب",
       "mechanism": "اثر بر بدن، زمان و عملکرد نشان می‌دهد آیا تغییر لازم است؛ متفاوت‌بودن رفتار به‌تنهایی نشانه مشکل نیست.",
@@ -176,7 +172,7 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-BFRB-GREENBERG-2018-001",
         "SRC-T11-FISAK-TTM-META-2026-001",
@@ -184,7 +180,6 @@
         "SRC-T11-STEIN-LOCHNER-BFRB-2026-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -293,7 +288,6 @@
       "title": "زمینه و زمان وقوع",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «زمینه و زمان وقوع».",
       "skill": "زمینه و زمان وقوع",
       "mechanism": "شناخت زمان و محیط وقوع، زمینه رفتار را آشکار می‌کند و از نسبت‌دادن آن به یک علت واحد جلوگیری می‌کند.",
@@ -317,12 +311,11 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-WOOD-RUNGER-2016-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -431,7 +424,6 @@
       "title": "آگاهی از پیش‌درآمد",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «آگاهی از پیش‌درآمد».",
       "skill": "آگاهی از پیش‌درآمد",
       "mechanism": "توجه اختیاری به پیش‌درآمد می‌تواند الگوی طبیعی را روشن کند؛ وارسی مداوم یا تلاش برای سرکوب لازم نیست.",
@@ -455,10 +447,9 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -567,7 +558,6 @@
       "title": "نقشه عادت زمینه‌وابسته",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «نقشه عادت زمینه‌وابسته».",
       "skill": "نقشه عادت زمینه‌وابسته",
       "mechanism": "زنجیره نشانه، رفتار و پیامد، کارکرد یک عادت ساده را مشخص می‌کند و نقطه‌ای برای تغییر محیط نشان می‌دهد.",
@@ -591,12 +581,11 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-WOOD-RUNGER-2016-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -705,7 +694,6 @@
       "title": "تفکیک میل، تنش و اجبار",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «تفکیک میل، تنش و اجبار».",
       "skill": "تفکیک میل، تنش و اجبار",
       "mechanism": "تفکیک میل، تنش و فکر مزاحم، مسیرهای عادتی، بدنی و آیینی را از هم جدا می‌کند؛ این توصیف تشخیص بالینی نیست.",
@@ -729,7 +717,7 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-BFRB-GREENBERG-2018-001",
         "SRC-T11-FISAK-TTM-META-2026-001",
@@ -739,7 +727,6 @@
         "SRC-T11-IPS-OCD-2025-UPDATE-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -848,7 +835,6 @@
       "title": "تفکیک حرکت تکراری و کارکرد آن",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «تفکیک حرکت تکراری و کارکرد آن».",
       "skill": "تفکیک حرکت تکراری و کارکرد آن",
       "mechanism": "بررسی کارکرد حسی، هیجانی یا حرکتی مانع یکی‌گرفتن استیمینگ، تیک و عادت می‌شود و نیازهای تنظیمی را محترم می‌شمارد.",
@@ -872,7 +858,7 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-AAN-TICS-2019-001",
         "SRC-T11-CDC-CBIT-2026-001",
@@ -880,7 +866,6 @@
         "SRC-T11-NICE-CG142-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -989,7 +974,6 @@
       "title": "تغییر نشانه محیطی",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «تغییر نشانه محیطی».",
       "skill": "تغییر نشانه محیطی",
       "mechanism": "تغییر نشانه محیطی فقط برای عادت ساده و بی‌ضرر مناسب است؛ محرک تنظیم‌کننده یا دسترسی ضروری نباید بی‌دلیل حذف شود.",
@@ -1013,12 +997,11 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-WOOD-RUNGER-2016-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -1127,7 +1110,6 @@
       "title": "جایگزین متناسب با عادت ساده",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «جایگزین متناسب با عادت ساده».",
       "skill": "جایگزین متناسب با عادت ساده",
       "mechanism": "جایگزین انتخابی زمانی مفید است که همان نیاز یا کارکرد را حفظ کند و به سرکوب اجباری رفتار تبدیل نشود.",
@@ -1151,12 +1133,11 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-WOOD-RUNGER-2016-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -1265,7 +1246,6 @@
       "title": "شناسایی الگوی BFRB بدون سرکوب",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «شناسایی الگوی BFRB بدون سرکوب».",
       "skill": "شناسایی الگوی BFRB بدون سرکوب",
       "mechanism": "ثبت زمینه و پیامد رفتار بدنی تکراری، اطلاعات لازم برای ارزیابی BFRB را فراهم می‌کند؛ خودداری اجباری می‌تواند فشار را بیشتر کند.",
@@ -1289,7 +1269,7 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-BFRB-GREENBERG-2018-001",
         "SRC-T11-FISAK-TTM-META-2026-001",
@@ -1299,7 +1279,6 @@
         "SRC-T11-IPS-OCD-2025-UPDATE-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -1408,7 +1387,6 @@
       "title": "تمایز آیین و عادت",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «تمایز آیین و عادت».",
       "skill": "تمایز آیین و عادت",
       "mechanism": "بررسی هدف خنثی‌سازی فکر یا ترس، احتمال آیین وسواسی را از عادت خودکار جدا می‌کند؛ تشخیص و ERP به ارزیابی تخصصی نیاز دارند.",
@@ -1432,7 +1410,7 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-AAN-TICS-2019-001",
         "SRC-T11-CDC-CBIT-2026-001",
@@ -1440,7 +1418,6 @@
         "SRC-T11-NICE-CG142-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -1549,7 +1526,6 @@
       "title": "تیک، استیمینگ و حرکت تکراری",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «تیک، استیمینگ و حرکت تکراری».",
       "skill": "تیک، استیمینگ و حرکت تکراری",
       "mechanism": "توصیف ناگهانی‌بودن، کارکرد و اثر حرکت، تمایز تیک و استیمینگ را برای ارزیابی روشن‌تر می‌کند؛ سرکوب بی‌ضرر هدف نیست.",
@@ -1573,7 +1549,7 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-AAN-TICS-2019-001",
         "SRC-T11-CDC-CBIT-2026-001",
@@ -1581,7 +1557,6 @@
         "SRC-T11-NICE-CG142-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -1690,7 +1665,6 @@
       "title": "اطلاعات ناکافی و پرسش مناسب",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «اطلاعات ناکافی و پرسش مناسب».",
       "skill": "همه — اطلاعات ناکافی و پرسش مناسب",
       "mechanism": "ثبت محرک، پیش‌درآمد، رفتار و پیامد، اطلاعات مفید برای متخصص می‌سازد بدون اینکه فرد مجبور به خودتشخیصی شود.",
@@ -1714,7 +1688,7 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-BFRB-GREENBERG-2018-001",
         "SRC-T11-FISAK-TTM-META-2026-001",
@@ -1724,7 +1698,6 @@
         "SRC-T11-IPS-OCD-2025-UPDATE-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -1833,7 +1806,6 @@
       "title": "تصمیم درباره هدف تغییر",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «تصمیم درباره هدف تغییر».",
       "skill": "همه — تصمیم درباره هدف تغییر",
       "mechanism": "تصمیم درباره تغییر باید بر آسیب، رنج، اختلال و ترجیح خود فرد استوار باشد؛ رفتار بی‌ضرر الزاماً هدف حذف نیست.",
@@ -1857,13 +1829,12 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-NICE-CG31-001",
         "SRC-T11-IPS-OCD-2025-UPDATE-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -1972,7 +1943,6 @@
       "title": "برنامه اگر ـ آنگاه برای عادت ساده",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «برنامه اگر ـ آنگاه برای عادت ساده».",
       "skill": "برنامه اگر ـ آنگاه برای عادت ساده",
       "mechanism": "برنامه اگرـآنگاه فقط برای عادت ساده و بی‌خطر، نشانه را به انتخاب جایگزین پیوند می‌دهد؛ برای اجبار یا تیک نسخه درمانی نیست.",
@@ -1996,12 +1966,11 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-WOOD-RUNGER-2016-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -2110,7 +2079,6 @@
       "title": "بازطراحی محیط بر اساس کارکرد",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «بازطراحی محیط بر اساس کارکرد».",
       "skill": "بازطراحی محیط بر اساس کارکرد",
       "mechanism": "تغییر محیط وقتی مناسب است که مانع غیرضروری را کم کند و نیاز حسی، دسترسی و اختیار فرد را حفظ کند.",
@@ -2134,13 +2102,12 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-NICE-CG31-001",
         "SRC-T11-IPS-OCD-2025-UPDATE-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -2249,7 +2216,6 @@
       "title": "بازگشت بدون سرزنش",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «بازگشت بدون سرزنش».",
       "skill": "همه — بازگشت بدون سرزنش",
       "mechanism": "بازگشت رفتار اطلاعاتی درباره زمینه یا کارکرد می‌دهد؛ لغزش به‌تنهایی شکست یا بی‌ارادگی را ثابت نمی‌کند.",
@@ -2273,7 +2239,7 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-AAN-TICS-2019-001",
         "SRC-T11-CDC-CBIT-2026-001",
@@ -2281,7 +2247,6 @@
         "SRC-T11-NICE-CG142-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -2390,7 +2355,6 @@
       "title": "اثر بر کیفیت زندگی",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «اثر بر کیفیت زندگی».",
       "skill": "همه — اثر بر کیفیت زندگی",
       "mechanism": "اثر بر کیفیت زندگی، معیار تصمیم را از ظاهر رفتار به سلامت، زمان، مشارکت و ترجیح فرد منتقل می‌کند.",
@@ -2414,12 +2378,11 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-WOOD-RUNGER-2016-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -2528,7 +2491,6 @@
       "title": "تمرین عادت در موقعیت کم‌تنش",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «تمرین عادت در موقعیت کم‌تنش».",
       "skill": "تمرین عادت در موقعیت کم‌تنش",
       "mechanism": "تمرین کم‌تنش برای عادت ساده، انتخاب را در موقعیتی قابل توقف می‌آزماید؛ رفتارهای بالینی یا آسیب‌زا به تمرین عمومی تقلیل نمی‌یابند.",
@@ -2552,12 +2514,11 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-WOOD-RUNGER-2016-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -2666,7 +2627,6 @@
       "title": "ثبت اختیاری و متناسب",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «ثبت اختیاری و متناسب».",
       "skill": "همه — ثبت اختیاری و متناسب",
       "mechanism": "ثبت اختیاری و محدود می‌تواند الگو را روشن کند؛ شمارش دائمی ممکن است شرم یا پایش افراطی ایجاد کند.",
@@ -2690,7 +2650,7 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-BFRB-GREENBERG-2018-001",
         "SRC-T11-FISAK-TTM-META-2026-001",
@@ -2700,7 +2660,6 @@
         "SRC-T11-IPS-OCD-2025-UPDATE-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -2809,7 +2768,6 @@
       "title": "مانع و نیاز پشتیبان",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «مانع و نیاز پشتیبان».",
       "skill": "همه — مانع و نیاز پشتیبان",
       "mechanism": "شناخت مانع محیطی، جسمی، حسی یا درمانی نوع حمایت را مشخص می‌کند و مشکل را به اراده فرد نسبت نمی‌دهد.",
@@ -2833,12 +2791,11 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-WOOD-RUNGER-2016-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -2947,7 +2904,6 @@
       "title": "نقشه روز دشوار",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «نقشه روز دشوار».",
       "skill": "همه — نقشه روز دشوار",
       "mechanism": "برنامه روز دشوار، گزینه کاهش آسیب و منبع حمایت را آماده می‌کند تا تنبیه یا سرکوب جای پاسخ ایمن را نگیرد.",
@@ -2971,12 +2927,11 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-WOOD-RUNGER-2016-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -3085,7 +3040,6 @@
       "title": "تثبیت عادت جایگزین انتخابی",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «تثبیت عادت جایگزین انتخابی».",
       "skill": "تثبیت عادت جایگزین انتخابی",
       "mechanism": "یادآور کم‌فشار فقط برای عادت ساده و انتخاب‌شده مناسب است؛ تیک و استیمینگ نباید با نشانه‌های توقف اجباری مدیریت شوند.",
@@ -3109,7 +3063,7 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-WOOD-RUNGER-2016-001",
         "SRC-T11-BFRB-GREENBERG-2018-001",
@@ -3118,7 +3072,6 @@
         "SRC-T11-STEIN-LOCHNER-BFRB-2026-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -3227,7 +3180,6 @@
       "title": "هماهنگی با حمایت تخصصی",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «هماهنگی با حمایت تخصصی».",
       "skill": "هماهنگی با حمایت تخصصی",
       "mechanism": "اطلاعات زمینه و پیامد به انتخاب متخصص مناسب کمک می‌کند؛ اپ نباید جایگزین ارزیابی یا درمان اختصاصی شود.",
@@ -3251,7 +3203,7 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-BFRB-GREENBERG-2018-001",
         "SRC-T11-FISAK-TTM-META-2026-001",
@@ -3263,7 +3215,6 @@
         "SRC-T11-CDC-CBIT-2026-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -3372,7 +3323,6 @@
       "title": "ایمنی و معیار توقف",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «ایمنی و معیار توقف».",
       "skill": "همه — ایمنی و معیار توقف",
       "mechanism": "وجود زخم، درد، عفونت یا افت عملکرد، اولویت را از تمرین عمومی به توقف و ارزیابی ایمنی منتقل می‌کند.",
@@ -3396,7 +3346,7 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-AAN-TICS-2019-001",
         "SRC-T11-CDC-CBIT-2026-001",
@@ -3406,7 +3356,6 @@
         "SRC-T11-IPS-OCD-2025-UPDATE-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -3515,7 +3464,6 @@
       "title": "انتخاب همسو با ارزش و خودمختاری",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «انتخاب همسو با ارزش و خودمختاری».",
       "skill": "همه — انتخاب همسو با ارزش و خودمختاری",
       "mechanism": "رفتار انتخابی باید با ارزش و خودمختاری فرد هماهنگ باشد، نه با فشار برای شبیه‌شدن یا پنهان‌کردن تفاوت.",
@@ -3539,14 +3487,13 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-WOOD-RUNGER-2016-001",
         "SRC-T11-NAS-STIMMING-001",
         "SRC-T11-NICE-CG142-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -3655,7 +3602,6 @@
       "title": "برنامه نگهداری متناسب با مسیر",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «برنامه نگهداری متناسب با مسیر».",
       "skill": "همه — برنامه نگهداری متناسب با مسیر",
       "mechanism": "برنامه نگهداری بر اساس نوع رفتار متفاوت است؛ عادت ساده، اجبار، BFRB و تیک به مسیرهای یکسان نیاز ندارند.",
@@ -3679,7 +3625,7 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [
         "SRC-T11-AAN-TICS-2019-001",
         "SRC-T11-CDC-CBIT-2026-001",
@@ -3687,7 +3633,6 @@
         "SRC-T11-NICE-CG142-001"
       ],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
@@ -3796,7 +3741,6 @@
       "title": "مرور و تصمیم بعدی",
       "subtopicId": null,
       "subtopicIds": [],
-      "subtopicMappingStatus": "pending_owner_review",
       "objective": "شناخت و پاسخ متناسب به محور «مرور و تصمیم بعدی».",
       "skill": "همه — مرور و تصمیم بعدی",
       "mechanism": "مرور نوع، کارکرد، آسیب، ترجیح و اطلاعات نامعلوم، گام بعدی را مشخص می‌کند بدون اینکه نتیجه تشخیصی تولید شود.",
@@ -3820,10 +3764,9 @@
       "durationMinutes": null,
       "durationStatus": "not_recorded",
       "exerciseType": "non_diagnostic_daily_guidance",
-      "riskLevel": "pending_owner_review",
+      "riskLevel": "routine",
       "sourceIds": [],
       "evidenceGrade": "not_assessed",
-      "reviewStatus": "pending_owner_review",
       "questions": [
         {
           "id": "q01",
