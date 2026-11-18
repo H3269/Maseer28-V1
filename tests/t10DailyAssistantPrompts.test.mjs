@@ -46,3 +46,18 @@ test('T10 rejects unknown questions and invalid days instead of improvising', ()
   assert.equal(answerT10DailyPreparedQuestion({ day: 1, message: 'سؤال خارج از فهرست', dailyContent }), null);
   assert.deepEqual(getT10DailyAssistantPromptGroups(29), []);
 });
+
+
+test('T10 day 1 safety answers do not repeat the same medical escalation in the prepared runtime output',()=>{
+  const guide=T10_DAILY_ASSISTANT_GUIDES[0];
+  const distress=guide.questions.find(item=>item.kind==='sleep_distress');
+  const stop=guide.questions.find(item=>item.kind==='stop');
+  const dailyContent={id:'بی‌خوابی و مشکلات خواب-01',day:1,topic_id:'T10'};
+  const distressAnswer=answerT10DailyPreparedQuestion({day:1,message:distress.value,dailyContent});
+  const stopAnswer=answerT10DailyPreparedQuestion({day:1,message:stop.value,dailyContent});
+  assert.ok(distressAnswer.includes(distress.answer));
+  assert.equal((distressAnswer.match(/وقفه تنفسی/g)||[]).length,1);
+  assert.equal((distressAnswer.match(/ارزیابی پزشکی/g)||[]).length,1);
+  assert.equal((stopAnswer.match(/وقفه تنفسی/g)||[]).length,1);
+  assert.match(distressAnswer,/دارو، مکمل، الکل یا مواد را .* خودسرانه تغییر نده/u);
+});
