@@ -65,8 +65,12 @@ async function waitForFirstBodyParagraph(page) {
 try {
   const results = [];
   const entryPoints = [
-    { id: 'dashboard-library-button', open: async (page) => page.locator('#dashboard .quickAction').filter({ hasText: 'کتابخانه' }).click() },
-    { id: 'bottom-navigation-study-button', open: async (page) => page.locator('#bottomNav button[data-view="books"]').click() },
+    { id: 'dashboard-bottom-navigation-study-button', open: async (page) => page.locator('#bottomNav button[data-view="books"]').click() },
+    { id: 'day-bottom-navigation-study-button', open: async (page) => {
+      await page.locator('#dashboard .heroAction').click();
+      await page.locator('#day').waitFor({ state: 'visible' });
+      await page.locator('#bottomNav button[data-view="books"]').click();
+    } },
   ];
 
   // Three independent browser contexts per entry point/book provide repeated cold samples;
