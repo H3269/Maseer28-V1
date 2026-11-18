@@ -33,4 +33,3 @@
 - این پیش‌نویس مواجهه درمانی یا پروتکل درمان ترس نیست.
 - هیچ فایل اجرایی، رجیستری، کد، UI یا گیت ایمنی تغییر نکرده است.
 
-**وضعیت:** `B2-AH_T03_structural_and_semantic_screen_completed_pending_expert_review`
