@@ -80,6 +80,22 @@ test('T01-T14: all 5,488 prepared answers use the same clear teacher-style daily
         const frameIndex = answer.indexOf(frameMarker);
         assert.ok(frameIndex >= 0, topic.id + ' day ' + guide.day + ' ' + question.kind + ' missing the common response frame marker');
         assert.ok(answer.slice(frameIndex + frameMarker.length).trim().length > 20, topic.id + ' day ' + guide.day + ' ' + question.kind + ' must contain substantive day-specific guidance after the shared frame');
+        if (question.kind === 'exercise_meaning') {
+          assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.exercise, topic.topic)), topic.id + ' day ' + guide.day + ' exercise meaning must state the exact daily exercise');
+        }
+        if (question.kind === 'action_meaning') {
+          const expectedAction = topic.id === 'T11'
+            ? guide.action.replace(/^برای مسئله «عادت‌های تکراری»،\\s*/u, '')
+            : guide.action;
+          assert.ok(answer.includes(cleanPreparedAssistantTopicText(expectedAction, topic.topic)), topic.id + ' day ' + guide.day + ' action meaning must state the exact daily action');
+        }
+        if (question.kind === 'exercise_action_difference') {
+          assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.exercise, topic.topic)), topic.id + ' day ' + guide.day + ' comparison must state the daily exercise');
+          const expectedAction = topic.id === 'T11'
+            ? guide.action.replace(/^برای مسئله «عادت‌های تکراری»،\\s*/u, '')
+            : guide.action;
+          assert.ok(answer.includes(cleanPreparedAssistantTopicText(expectedAction, topic.topic)), topic.id + ' day ' + guide.day + ' comparison must state the daily action');
+        }
         if (question.kind === 'exercise_example') {
           if (guide.exerciseExample) assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.exerciseExample, topic.topic)), topic.id + ' day ' + guide.day + ' missing its own exercise example');
           else assert.ok(answer.includes(cleanPreparedAssistantTopicText(question.answer, topic.topic)), topic.id + ' day ' + guide.day + ' missing its prepared exercise example');
