@@ -66,3 +66,16 @@ test('T05 direct relationship communication questions fail closed until the user
  const urgent=makePageAssistantTurn({...base,text:'قصد دارم همین الآن به خودم آسیب بزنم یا به شخص دیگری آسیب بزنم و به کمک فوری نیاز دارم.'});
  assert.equal(urgent.status,'urgent_human_support_required');
 });
+
+test('T05 example answers display the concrete exercise/action example from the selected day',()=>{
+ for(const g of JEALOUSY_DAILY_ASSISTANT_GUIDES){
+  const exerciseQuestion=g.questions.find(q=>q.kind==='exercise_example');
+  const actionQuestion=g.questions.find(q=>q.kind==='action_example');
+  const exerciseAnswer=answerJealousyDailyPreparedQuestion({day:g.day,message:exerciseQuestion.value,dailyContent:{exercise:g.exercise,actionText:g.action}});
+  const actionAnswer=answerJealousyDailyPreparedQuestion({day:g.day,message:actionQuestion.value,dailyContent:{exercise:g.exercise,actionText:g.action}});
+  assert.ok(exerciseAnswer.includes(g.exerciseExample),'exercise example missing for day '+g.day);
+  assert.ok(actionAnswer.includes(g.actionExample),'action example missing for day '+g.day);
+  assert.ok(exerciseAnswer.includes('چطور از مثال استفاده کنی'),'exercise example teaching frame missing for day '+g.day);
+  assert.ok(actionAnswer.includes('چطور از مثال استفاده کنی'),'action example teaching frame missing for day '+g.day);
+ }
+});
