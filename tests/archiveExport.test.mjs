@@ -183,13 +183,13 @@ test('archive PDFs preserve distinct non-scored skip reasons', async () => {
       answers: {},
       daily: {
         17: { status: 'skipped_safety_gate' },
-        27: { status: 'skipped_human_review' },
+        27: { status: 'skipped_without_score' },
       },
     }]);
     assert.equal(blob.type, 'application/zip');
     const rendered = drawnText.join(' ');
     assert.match(rendered, /به دلیل ملاحظه ایمنی اجرا نشد؛ هیچ امتیازی ثبت نشده است/);
-    assert.match(rendered, /به دلیل نیاز به بازبینی انسانی اجرا نشد؛ هیچ امتیازی ثبت نشده است/);
+    assert.match(rendered, /به دلیل نیاز به اجرای تمرین اجرا نشد؛ هیچ امتیازی ثبت نشده است/);
     assert.doesNotMatch(rendered, /پاسخ ثبت‌شده|شدت درگیری/);
   } finally {
     if (originalDocument === undefined) delete globalThis.document;
