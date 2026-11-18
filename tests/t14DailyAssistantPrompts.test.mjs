@@ -87,3 +87,25 @@ test('T14 day 12 post-action reinforcement and day 14 simultaneous pairing use c
     assert.ok(guide.questions.find(item=>item.kind==='action_meaning').answer.includes(guide.action));
   }
 });
+
+
+test('T14 day-specific examples show real scenarios for days 8, 10, 13, 15, 21, 22, 23 and 24',()=>{
+  const expected={
+    8:[['exercise_example',/دوره آموزشی/u],['action_example',/پرسش مشخصی برای روشن‌کردنش/u]],
+    10:[['action_example',/پنجشنبه پیش از ظهر/u]],
+    13:[['exercise_example',/ارائه پنج‌اسلایدی/u],['action_example',/یک نمودار نمونه/u]],
+    15:[['exercise_example',/بازنویسی یک پاراگراف/u],['action_example',/تایمر ۲۰ دقیقه‌ای/u]],
+    21:[['exercise_example',/گزارش ماهانه/u],['action_example',/داده‌های آماده را مرتب کن/u]],
+    22:[['exercise_example',/دو صفحه ضروری/u],['action_example',/بدهی فردا اضافه نکن/u]],
+    23:[['exercise_example',/پنج پرسش ضروری/u],['action_example',/جزوه را دانلود/u]],
+    24:[['exercise_example',/هزینه رفت‌وآمد/u],['action_example',/تصمیم برگشت‌ناپذیر/u]],
+  };
+  for(const [dayText,checks] of Object.entries(expected)){
+    const guide=T14_DAILY_ASSISTANT_GUIDES.find(item=>item.day===Number(dayText));
+    for(const [kind,pattern] of checks){
+      const answer=guide.questions.find(item=>item.kind===kind).answer;
+      assert.match(answer,pattern,'day '+dayText+' '+kind);
+    }
+    assert.equal(new Set(guide.questions.map(item=>item.answer)).size,14);
+  }
+});
