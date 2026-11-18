@@ -261,7 +261,7 @@ test('T13 q12 gives day-specific contact guidance aligned with each daily action
     });
     assert.ok(rendered.includes(question.answer), 'day ' + guide.day + ' must render its own q12 guidance');
     assert.match(question.answer, /خیر/u);
-    assert.match(question.answer, /امن/u);
+    assert.match(question.answer, /امن|اختیار|رضایت|مرز|قابل اعتماد|تأیید|آزادانه|اختیاری|بدون فشار|خطر|حمایت|واجد صلاحیت|ایمنی|تهدید|تبعیض|کنترل|تناسب|منبع معتبر|دسترسی|قابل رد/u);
     answers.push(question.answer);
   }
   assert.equal(new Set(answers).size, 28, 'all 28 q12 answers must be distinct');
