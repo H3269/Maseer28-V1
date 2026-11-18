@@ -77,11 +77,9 @@ export function answerT09DailyPreparedQuestion({ day, message, dailyContent } = 
       break;
     case 'procrastination_increased':
       body = [
-        '**اگر فشار یا مقاومت هنگام شروع/ادامه بیشتر شد**',
-        '۱. مکث کن؛ افزایش مقاومت به‌تنهایی نشانه تنبلی، بی‌ارادگی یا شکست نیست.',
-        '۲. مانع را از میان ابهام کار، بزرگی گام، ظرفیت جسمی/ذهنی، نگرانی از نتیجه و محدودیت بیرونی مشخص کن؛ علت را حدس قطعی نزن.',
-        `۳. اگر امن و متناسب است، فقط بخش کوچک و غیرحساس تمرین را نگه دار: ${exercise}`,
-        `۴. اگر ادامه مناسب نیست، نسخه استراحت را انتخاب کن: ${restAction}`,
+        question.answer,
+        `**تمرین امروز، فقط در حد امن و متناسب:** ${exercise}`,
+        `**اگر ادامه مناسب نیست:** ${restAction}`,
         `**شرط توقف اصلی امروز:** ${guide.stopCondition}\n**شرط‌های توقف تکمیلی:** ${(guide.stopConditions || []).join(' ')}`,
         `**محدودیت کاربرد:** ${(guide.contraindications || []).join(' ')}`,
         `**زمان حمایت انسانی:** ${guide.whenToSeekHumanSupport}`
