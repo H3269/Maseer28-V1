@@ -141,7 +141,7 @@ export function isRelationshipSafetyConfirmed(day, response) {
 
 export function createRelationshipSafetySkipRecord(day, timestamp = new Date()) {
   if (!getRelationshipSafetyGate(day) || getDailySafetyMode(day) === 'blocked') {
-    throw new Error('Only an approved or legacy routine gated interpersonal exercise can use this safety skip.');
+    throw new Error('Only a daily exercise with an active relationship safety gate can use this safety skip.');
   }
   const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
   if (!Number.isFinite(date.getTime())) throw new Error('A valid skip timestamp is required.');
