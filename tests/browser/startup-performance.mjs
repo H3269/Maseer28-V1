@@ -348,8 +348,15 @@ async function verifySplashReadinessOrders() {
     'When content is ready first, the app must remain covered until the reveal completes');
   await readinessFirstPage.locator('#copyrightModal').waitFor({ state: 'visible', timeout: 45000 });
   const readinessFirstEvidence = await readinessFirstPage.evaluate(() => window.__path28GateProbe);
-  assert.ok(readinessFirstEvidence.completedAt <= readinessFirstEvidence.appVisibleAt,
-    'The app must become visible only after the deliberately extended reveal finishes');
+  if (!(readinessFirstEvidence.completedAt !== null
+    && readinessFirstEvidence.appVisibleAt !== null
+    && readinessFirstEvidence.completedAt <= readinessFirstEvidence.appVisibleAt)) {
+    console.error('SPLASH_ORDERING_EVIDENCE', JSON.stringify(readinessFirstEvidence));
+  }
+  assert.ok(readinessFirstEvidence.completedAt !== null
+    && readinessFirstEvidence.appVisibleAt !== null
+    && readinessFirstEvidence.completedAt <= readinessFirstEvidence.appVisibleAt,
+  'The app must become visible only after the deliberately extended reveal finishes');
   await readinessFirstContext.close();
 
   // The owner explicitly requires the same splash animation in both device
