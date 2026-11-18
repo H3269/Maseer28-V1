@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "policy_id": "maseer28-daily-learning-content-governance",
-  "status": "draft_design_target_not_runtime_approval",
+  "status": "active_content_and_safety_contract",
   "applies_to": {
     "current_content": "public/content/path-content.json",
     "topic_registry": "public/assistant/knowledge/topics.v1.json",
@@ -50,8 +50,7 @@
       "success_criterion",
       "stop_conditions",
       "source_ids",
-      "evidence_grade",
-      "review_status"
+      "evidence_grade"
     ],
     "safety_fields": {
       "required": [
@@ -62,7 +61,7 @@
       "allowed_risk_levels": [
         "routine",
         "caution",
-        "human_review_required"
+        "urgent_support_required"
       ],
       "exercise_must_not_be_presented_as_treatment_without_evidence_and_review": true
     },
@@ -76,20 +75,6 @@
         "high"
       ],
       "evidence_grade_high_requires_direct_relevant_evidence_and_bias_review": true
-    },
-    "review_status_values": [
-      "draft",
-      "pending_expert_review",
-      "approved",
-      "rejected",
-      "retired"
-    ],
-    "approval_policy": {
-      "default_status": "draft",
-      "no_automatic_approval_by_ai": true,
-      "require_named_qualified_human_reviewer": true,
-      "require_review_record_and_timestamp": true,
-      "approved_content_only_runtime_eligible": true
     }
   },
   "rewrite_policy": {
@@ -109,8 +94,7 @@
     "subtopic_linkage_coverage",
     "learning_objective_coverage",
     "source_and_evidence_coverage",
-    "safety_and_stop_condition_coverage",
-    "human_review_coverage"
+    "safety_and_stop_condition_coverage"
   ],
-  "release_rule": "This policy is a draft governance target. It does not approve existing content or activate any content for clinical decision-making."
+  "release_rule": "Content availability is determined by structural integrity, source traceability, topic/day identity and explicit safety classification. Specialist approval status is not a runtime or publication gate."
 }
