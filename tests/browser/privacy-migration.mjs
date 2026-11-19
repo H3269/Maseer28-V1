@@ -220,8 +220,8 @@ try {
       profileData: { problem: 'خشم', durationYears: 1, durationMonths: 2, goal: 'هدف فعال' },
       pathId: 'active-path-preserved', lastView: 'dashboard',
       archive: [
-        { pathId: 'archive-delete-me', profileData: { problem: 'stress' }, answers: { 1: 'ARCHIVE-DELETE-ME' }, completed: [1], assessmentData: { score: 4 }, final: { score: 3 } },
-        { pathId: 'archive-keep-me', profileData: { problem: 'sleep' }, answers: { 1: 'ARCHIVE-KEEP-ME' }, completed: [1], assessmentData: { score: 6 }, final: { score: 5 } },
+        { pathId: 'archive-delete-me', profileData: { problem: 'استرس' }, answers: { 1: 'ARCHIVE-DELETE-ME' }, completed: [1], assessmentData: { score: 4 }, final: { score: 3 } },
+        { pathId: 'archive-keep-me', profileData: { problem: 'بی‌خوابی و مشکلات خواب' }, answers: { 1: 'ARCHIVE-KEEP-ME' }, completed: [1], assessmentData: { score: 6 }, final: { score: 5 } },
       ],
     };
     const profile = {
@@ -276,7 +276,7 @@ try {
       final: { score: 5, f1: 'ACTIVE-FINAL-REPORT', f2: '', f3: '', f4: '' },
       archive: Array.from({ length: 20 }, (_, index) => ({
         pathId: `retained-${index + 1}`,
-        profileData: { problem: 'stress' },
+        profileData: { problem: 'استرس' },
         answers: { 1: `RETAINED-ANSWER-${index + 1}` },
         completed: [1],
         final: { score: 4, f1: `RETAINED-REPORT-${index + 1}` },
@@ -322,7 +322,7 @@ try {
   {
     const state = {
       ...legacyJourney(),
-      archive: [{ pathId: 'archive-write-failure', profileData: { problem: 'stress' }, answers: { 1: 'KEEP-ON-FAILURE' }, completed: [1], final: { score: 4 } }],
+      archive: [{ pathId: 'archive-write-failure', profileData: { problem: 'استرس' }, answers: { 1: 'KEEP-ON-FAILURE' }, completed: [1], final: { score: 4 } }],
     };
     const page = await openScenario('normal', state, {
       name: 'کاربر خطای حذف', age: 33, gender: 'زن', phone: '09123456789',
