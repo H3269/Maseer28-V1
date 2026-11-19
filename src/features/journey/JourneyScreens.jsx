@@ -506,7 +506,13 @@ export function Archive({ journey, content, onLoadTopic, onDeleteArchive, onBack
   const selectedArchive = selected == null ? null : list[selected];
   function confirmDelete(index) {
     const removed = onDeleteArchive?.(index);
-    if (removed === false) return;
+    if (removed === false) {
+      // A failed persistence/read-back must leave the same archive selected
+      // for an explicit retry. Reassert the candidate after the parent reports
+      // the failure instead of relying on the pre-click state surviving it.
+      setDeleteCandidate(index);
+      return;
+    }
     setSelected(null);
     setDeleteCandidate(null);
   }
