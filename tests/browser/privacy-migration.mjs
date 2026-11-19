@@ -352,27 +352,9 @@ try {
     await page.locator('#archiveList .answerItem').first().getByRole('button', { name: 'بله، حذف شود' }).click();
     await page.getByRole('heading', { name: 'حذف آرشیو تأیید نشد' }).waitFor({ state: 'visible' });
     assert.equal(await page.locator('#archiveList .answerItem').count(), 1);
-    const retryConfirmation = page.locator('[aria-label="تأیید حذف آرشیو 1"]');
-    // The error modal and the archive retry state are separate React updates:
-    // wait for the retry group itself instead of sampling the DOM immediately
-    // after the unrelated validation heading becomes visible.
-    try {
-      await retryConfirmation.waitFor({ state: 'visible', timeout: 5000 });
-    } catch (error) {
-      const diagnostic = await page.evaluate(() => ({
-        archiveMounted: Boolean(document.querySelector('#archive')),
-        archiveListClass: document.querySelector('#archiveList')?.className ?? null,
-        archiveListText: document.querySelector('#archiveList')?.innerText ?? null,
-        archiveGroups: [...document.querySelectorAll('[aria-label^="تأیید حذف آرشیو"]')].map((node) => ({
-          label: node.getAttribute('aria-label'),
-          text: node.innerText,
-          className: node.className,
-        })),
-        validationText: [...document.querySelectorAll('[role="dialog"], [role="alertdialog"]')].map((node) => node.innerText),
-        screen: document.querySelector('#archive')?.closest('.app')?.getAttribute('data-screen') ?? null,
-      }));
-      throw new Error(`E8 retry confirmation missing after failed persistence: ${JSON.stringify(diagnostic)}; original=${error.message}`);
-    }
+    // The UI localizes the archive index with Persian digits via fa().
+    const retryConfirmation = page.locator('[aria-label="تأیید حذف آرشیو ۱"]');
+    await retryConfirmation.waitFor({ state: 'visible', timeout: 5000 });
     assert.equal(await retryConfirmation.count(), 1, 'confirmation must remain open after failed deletion');
     const persisted = await page.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state') || '{}'));
     assert.equal(persisted.archive[0].pathId, 'archive-write-failure');
