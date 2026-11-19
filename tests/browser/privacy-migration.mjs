@@ -134,7 +134,7 @@ try {
   // E3: malformed legacy archive data must block cleanup of both legacy profile copies.
   {
     const malformedArchiveState = {
-      schema: 7, started: true, profile: true, assessment: true, completed: [1],
+      schema: 7, started: true, profile: true, assessment: true, assessmentData: { score: 4 }, completed: [1],
       answers: { 1: 'KEEP-ANSWER' }, daily: { 1: { score: 4 } },
       profileData: {
         name: 'هویت مسیر قدیمی', age: 35, gender: 'زن', phone: '09123456789',
