@@ -203,7 +203,7 @@ test('T11 uses the standard daily entry UI without owner-preview boxes or blocke
   assert.match(ui, /id="openDailyEntryBtn"/);
   assert.match(ui, /id="dailyEntryPanel"/);
   assert.doesNotMatch(ui, /getDailySafetyMode|isT11SafetyBlocked|dailySafetyStatus|skipDailyReviewBtn|پیش‌نمایش برای بازبینی مالک|مشاهده مشخصات کامل این روز برای بازبینی/u);
-  assert.match(safety, /if \(isRepetitiveBehaviorTopicDay\(day\)\) return 'routine'/);
+  assert.match(safety, /if \(isRepetitiveBehaviorTopicDay\(day\)\) return riskMode\(day\)/);
   assert.match(launcher, /getT11DailyAssistantPromptGroups\(dailyContext\?\.day\)/);
   assert.doesNotMatch(launcher, /!isT11DailyPromptContext\s*&&\s*Boolean\(selectedPreparedQuestion/);
 });
