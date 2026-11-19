@@ -8,8 +8,8 @@ import {
   toPersianDigits,
 } from '../src/shared/releaseMetadata.js';
 
-test('uses package version for the first published release', () => {
-  assert.equal(nextReleaseVersion('1.0.0', null), '1.0.0');
+test('increments the package base patch for the first published release when no prior metadata exists', () => {
+  assert.equal(nextReleaseVersion('1.2.2', null), '1.2.3');
 });
 
 test('increments patch version for each later publication', () => {
@@ -32,13 +32,13 @@ test('rejects malformed version and timestamp values', () => {
 
 test('creates production metadata with a normalized UTC timestamp', () => {
   const metadata = createReleaseMetadata({
-    packageVersion: '1.0.0',
+    packageVersion: '1.2.2',
     previousMetadata: null,
     publishedAt: '2026-11-07T12:44:47Z',
     sourceCommit: 'abc123',
   });
   assert.deepEqual(metadata, {
-    version: '1.0.0',
+    version: '1.2.3',
     publishedAt: '2026-11-07T12:44:47.000Z',
     channel: 'production',
     sourceCommit: 'abc123',
