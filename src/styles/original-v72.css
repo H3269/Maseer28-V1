@@ -6905,13 +6905,15 @@ html body .app:not(.appLoading) > section.card :is(button, input, textarea, sele
   scroll-margin-bottom: 18px;
 }
 
-/* Keep the global assistant launcher clear of the combined navigation + release dock. */
+/* Keep the global assistant launcher clear of the measured navigation + release dock.
+   The dock includes both the five-item navigation and the two-line release footer;
+   144px leaves a consistent touch-safe gap at 390x844 and compact 320x568 viewports. */
 .globalAssistantLauncher {
-  bottom: calc(112px + env(safe-area-inset-bottom)) !important;
+  bottom: calc(144px + env(safe-area-inset-bottom)) !important;
 }
 @media (max-width: 380px) {
   .globalAssistantLauncher {
-    bottom: calc(112px + env(safe-area-inset-bottom)) !important;
+    bottom: calc(144px + env(safe-area-inset-bottom)) !important;
   }
 }
 
