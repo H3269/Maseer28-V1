@@ -62,12 +62,15 @@ const GlobalAssistantLauncher = lazy(() => import('./features/assistant/GlobalAs
 const LibraryPage = lazy(loadLibraryPage);
 const Reader = lazy(loadReader);
 
-function isPathSetupComplete(state) {
+function isPathSetupComplete(state, topics = null) {
   const data = state?.profileData;
   const years = Number(data?.durationYears);
   const months = Number(data?.durationMonths);
+  const knownTopic = !Array.isArray(topics)
+    || topics.some((topic) => topic?.key === data?.problem);
   return Boolean(
     state?.profile
+    && knownTopic
     && typeof data?.problem === 'string'
     && data.problem.trim()
     && typeof data?.goal === 'string'
@@ -203,6 +206,17 @@ function MainApp() {
   }, [runtimeRepository]);
 
   useEffect(() => {
+    // The lightweight runtime index is the canonical source of valid topic
+    // keys. A non-empty but unknown legacy topic must never unlock the
+    // dashboard or assessment merely because the other setup fields exist.
+    if (!Array.isArray(content?.topics) || !userProfile || !journey.started) return;
+    if (isPathSetupComplete(journey, content.topics)
+      || screen === 'pathSetup' || screen === 'profile') return;
+    setProfileEditing(false);
+    setScreen('pathSetup');
+  }, [content, journey, userProfile, screen]);
+
+  useEffect(() => {
     saveJourneyState({ ...journey, lastView: screen });
   }, [journey, screen]);
 
@@ -297,7 +311,7 @@ function navigate(next) {
     const nextState = { ...journey, started: true, pathId: journey.pathId || createPathId() };
     const nextScreen = !userProfile
       ? 'profile'
-      : !isPathSetupComplete(nextState)
+      : !isPathSetupComplete(nextState, content?.topics)
         ? 'pathSetup'
         : !nextState.assessment
           ? 'assessment'
@@ -365,7 +379,7 @@ function navigate(next) {
       pathId: journey.pathId || createPathId(),
       lastView: 'assessment',
     };
-    if (!isPathSetupComplete(nextJourney)) {
+    if (!isPathSetupComplete(nextJourney, content?.topics)) {
       return showValidation(['موضوع مسیر', 'مدت درگیری', 'نتیجه ارزشمند مورد انتظار'], 'اطلاعات مسیر هنوز کامل نشده است');
     }
     // Persist the completed path setup before allowing the baseline assessment.
@@ -379,7 +393,7 @@ function navigate(next) {
   }
 
   async function saveAssessment(answers) {
-    if (!isPathSetupComplete(journey)) {
+    if (!isPathSetupComplete(journey, content?.topics)) {
       navigate('pathSetup');
       return showValidation(['ابتدا موضوع مسیر را انتخاب و ثبت کن.'], 'مرحله انتخاب موضوع هنوز معتبر نیست');
     }
