@@ -130,7 +130,7 @@ export default function AssessmentAssistant() {
           ? summary.candidate_topics.map((item) => topicNames.get(item.topic_id) || item.topic_id).join('، ')
           : 'با واژه‌های فعلی موضوع مشخصی قابل پیشنهاد نیست؛ این به معنی رد هیچ موضوعی نیست.'}</p>
         <ul>{summary.limitations.map((item) => <li key={item}>{item}</li>)}</ul>
-        <p className="muted">هیچ تمرین یا درمانی به‌صورت خودکار پیشنهاد نمی‌شود؛ محتوای مناسب هنوز نیازمند تأیید علمی و تخصصی است.</p>
+        <p className="muted">هیچ تمرین یا درمانی به‌صورت خودکار تجویز نمی‌شود. این خلاصه تشخیص یا توصیه درمانی نیست؛ برای تصمیم درمانی از متخصص واجد صلاحیت کمک بگیر.</p>
       </div>}
     </>}
   </section>;
