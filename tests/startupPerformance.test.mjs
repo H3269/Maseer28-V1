@@ -57,7 +57,7 @@ test('the selected topic loads independently and the day screen waits for its ve
 });
 
 test('the initial HTML does not render a duplicate splash before the single React splash', () => {
-  assert.match(html, /<div id="root"><\\/div>/);
+  assert.ok(html.includes('<div id="root"></div>'));
   assert.doesNotMatch(html, /initialSplash|loadingLogoBloom|loadingProgressFill/);
   assert.match(html, /PATH28_SPLASH_DURATION_MS__/);
   assert.match(html, /assets\\/splash-logo\\.webp/);
