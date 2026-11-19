@@ -57,6 +57,8 @@ test('all 952 daily units remain addressable by safety classification without ap
   for (const category of categories) {
     assert.equal(category.days.length, 28);
     for (const day of category.days) {
+      assert.equal(Object.hasOwn(day, 'review_status'), false, `${day.id} must not carry a specialist-review runtime gate`);
+      assert.equal(Object.hasOwn(day, 'review_record_id'), false, `${day.id} must not carry a reviewer-record runtime dependency`);
       const mode = getDailySafetyMode(day);
       assert.ok(['routine', 'caution', 'blocked'].includes(mode), String(day.id));
     }
