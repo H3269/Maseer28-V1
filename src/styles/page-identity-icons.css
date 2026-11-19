@@ -1,6 +1,5 @@
 /* Page identity icons — match the existing library mark without changing page behavior. */
 .app > section.card#home::before,
-.app > section.card#dashboard::before,
 .app > section.card#profile::before,
 .app > section.card#archive::before,
 .app > section.card#support::before {
@@ -18,8 +17,7 @@
   background-size: 24px 24px;
   box-shadow: 0 3px 10px rgba(36, 90, 154, .07);
 }
-.app > section.card#home::before,
-.app > section.card#dashboard::before {
+.app > section.card#home::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23245A9A' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 10 9-7 9 7'/%3E%3Cpath d='M5 9.5V21h14V9.5M9 21v-7h6v7'/%3E%3C/svg%3E");
 }
 .app > section.card#profile::before {
@@ -34,14 +32,12 @@
 
 /* Match the library header emblem position: same corner, inset and alignment. */
 .app > section.card#home,
-.app > section.card#dashboard,
 .app > section.card#profile,
 .app > section.card#archive,
 .app > section.card#support {
   position: relative;
 }
 .app > section.card#home::before,
-.app > section.card#dashboard::before,
 .app > section.card#profile::before,
 .app > section.card#archive::before,
 .app > section.card#support::before {
@@ -49,4 +45,23 @@
   top: 20px;
   left: 16px;
   margin: 0;
+}
+
+/* The dashboard home mark belongs inside the personal-information panel. */
+.app #dashboard .profileOverviewMark {
+  display: flex;
+  flex: 0 0 46px;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  box-sizing: border-box;
+  border: 1px solid #D3E8EF;
+  border-radius: 14px;
+  background: #EAF1FA;
+  color: #245A9A;
+  box-shadow: 0 3px 10px rgba(36, 90, 154, .07);
+}
+.app #dashboard .profileOverviewHeading .profileOverviewMark svg {
+  display: block;
 }
