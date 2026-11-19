@@ -55,7 +55,7 @@ async function measure(viewport, run) {
     };
     document.addEventListener('animationstart', (event) => {
       const image = event.target;
-      if (!(image instanceof HTMLImageElement) || !image.closest('#root .initialSplash, #root .appLoading')) return;
+      if (!(image instanceof HTMLImageElement) || !image.closest('#root .appLoading')) return;
       if (event.animationName !== 'loadingLogoBloom') return;
       const style = getComputedStyle(image);
       if (window.__path28SplashAnimation.firstAnimationName === null) {
@@ -68,7 +68,7 @@ async function measure(viewport, run) {
     }, true);
     document.addEventListener('animationend', (event) => {
       const image = event.target;
-      if (!(image instanceof HTMLImageElement) || !image.closest('#root .initialSplash, #root .appLoading')) return;
+      if (!(image instanceof HTMLImageElement) || !image.closest('#root .appLoading')) return;
       if (event.animationName !== 'loadingLogoBloom') return;
       window.__path28SplashAnimation.completedName = event.animationName;
       window.__path28SplashAnimation.completedAt = performance.now();
@@ -153,7 +153,7 @@ async function measure(viewport, run) {
       if (!(image instanceof HTMLImageElement) || watchedImages.has(image)) return;
       watchedImages.add(image);
       // Animation events are also captured at document level so a fast
-      // static-to-React splash hand-off cannot lose the first animation frame.
+      // single React splash observation cannot lose the first animation frame.
       // Do not await image.decode(): the splash can be replaced while that
       // promise settles. Poll the live element from its first observed frame.
       if (image.complete && image.naturalWidth > 0) {
@@ -165,7 +165,7 @@ async function measure(viewport, run) {
     const inspectNode = (node) => {
       if (!(node instanceof Element)) return;
       watchImage(node);
-      node.querySelectorAll?.('#root .initialSplash img, #root .appLoading img').forEach(watchImage);
+      node.querySelectorAll?.('#root .appLoading img').forEach(watchImage);
     };
     const observer = new MutationObserver((records) => {
       // Inspect added nodes from the mutation records as well as the live
@@ -174,13 +174,13 @@ async function measure(viewport, run) {
         for (const node of record.addedNodes) inspectNode(node);
       }
       document.querySelectorAll(
-        '#root .initialSplash img, #root .appLoading img'
+        '#root .appLoading img'
       ).forEach(watchImage);
       recordAppVisibility();
     });
     observer.observe(document, { childList: true, subtree: true });
     document.querySelectorAll(
-      '#root .initialSplash img, #root .appLoading img'
+      '#root .appLoading img'
     ).forEach(watchImage);
   });
 
@@ -193,9 +193,8 @@ async function measure(viewport, run) {
 const startedAt = Date.now();
   await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
 
-  // The static HTML splash can finish before DOMContentLoaded on a fast
-  // device. Capture animation events from document start instead of waiting
-  // for a transient splash node to remain mounted after navigation.
+  // Capture the single React splash animation from document start so a brief
+  // startup transition cannot be missed on fast devices.
   await page.locator('#copyrightModal').waitFor({ state: 'visible', timeout: 45000 });
   const logoReadiness = await page.evaluate(() => {
     const observed = window.__path28SplashObserved;
@@ -204,7 +203,7 @@ const startedAt = Date.now();
       logoNaturalWidth: observed.naturalWidth,
       logoVisible: observed.width > 0 && observed.height > 0,
     };
-    const image = document.querySelector('#root .initialSplash img, #root .appLoading img');
+    const image = document.querySelector('#root .appLoading img');
     if (!image) return { logoDecoded: false, logoNaturalWidth: 0, logoVisible: false };
     const style = getComputedStyle(image);
     const rect = image.getBoundingClientRect();
@@ -297,8 +296,8 @@ const startedAt = Date.now();
 async function verifySplashReadinessOrders() {
   const viewport = { width: 390, height: 844 };
 
-  // Simulate a slow application bundle: the static HTML animation may finish
-  // before React mounts, but the visible React splash must start a fresh reveal.
+  // Simulate a slow application bundle: the single React splash must still
+  // start its reveal when React mounts, rather than showing an earlier logo.
   const delayedBundleContext = await browser.newContext({ viewport, reducedMotion: 'no-preference' });
   const delayedBundlePage = await delayedBundleContext.newPage();
   await delayedBundlePage.route('**/*.js', async (route) => {
@@ -312,7 +311,7 @@ async function verifySplashReadinessOrders() {
     return { playState: animation?.playState || 'missing', currentTime: Number(animation?.currentTime ?? -1) };
   });
   assert.equal(delayedMountAnimation.playState, 'running',
-    'The React splash must start its logo reveal when it becomes visible, even after a delayed bundle');
+    'The single React splash must start its logo reveal when it becomes visible, even after a delayed bundle');
   assert.ok(delayedMountAnimation.currentTime >= 0 && delayedMountAnimation.currentTime < 500,
     'The React splash animation must not be consumed before it is visible; observed ' + JSON.stringify(delayedMountAnimation));
   await delayedBundleContext.close();
