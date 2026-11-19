@@ -1,0 +1,115 @@
+name: Validate main branch before release
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: path28-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Content, assistant, regression tests and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Create evidence directory
+        run: mkdir -p .validation-evidence
+
+      - name: Install locked dependencies
+        id: install
+        shell: bash
+        run: |
+          set -o pipefail
+          npm ci 2>&1 | tee .validation-evidence/npm-ci.log
+
+      - name: Validate all daily content and evidence references
+        id: content
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run validate:content 2>&1 | tee .validation-evidence/content-validation.log
+
+      - name: Validate 34-topic assistant registry and safety boundaries
+        id: topics
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run validate:assistant-topics 2>&1 | tee .validation-evidence/assistant-topic-validation.log
+
+      - name: Run complete Node regression suite
+        id: tests
+        shell: bash
+        run: |
+          set -o pipefail
+          npm test 2>&1 | tee .validation-evidence/node-test.log
+
+      - name: Build test application
+        id: build
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run build -- --base=/Maseer28-V1/ 2>&1 | tee .validation-evidence/test-build.log
+
+      - name: Write commit-bound validation report
+        if: always()
+        env:
+          INSTALL_OUTCOME: ${{ steps.install.outcome }}
+          CONTENT_OUTCOME: ${{ steps.content.outcome }}
+          TOPICS_OUTCOME: ${{ steps.topics.outcome }}
+          TESTS_OUTCOME: ${{ steps.tests.outcome }}
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          COMMIT_SHA: ${{ github.sha }}
+          BRANCH_NAME: ${{ github.ref_name }}
+          EVENT_NAME: ${{ github.event_name }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          SERVER_URL: ${{ github.server_url }}
+          REPOSITORY: ${{ github.repository }}
+        shell: bash
+        run: |
+          {
+            echo "# Path28 validation report"
+            echo
+            echo "- Repository: ${REPOSITORY}"
+            echo "- Branch/ref: ${BRANCH_NAME}"
+            echo "- Commit SHA: ${COMMIT_SHA}"
+            echo "- Event: ${EVENT_NAME}"
+            echo "- Workflow run: [${RUN_ID}](${SERVER_URL}/${REPOSITORY}/actions/runs/${RUN_ID}) (attempt ${RUN_ATTEMPT})"
+            echo "- npm ci: ${INSTALL_OUTCOME:-not-run}"
+            echo "- Daily content validation: ${CONTENT_OUTCOME:-not-run}"
+            echo "- 34-topic and assistant safety validation: ${TOPICS_OUTCOME:-not-run}"
+            echo "- Node regression suite: ${TESTS_OUTCOME:-not-run}"
+            echo "- Test build: ${BUILD_OUTCOME:-not-run}"
+            echo
+            echo "A successful report requires every step above to have outcome=success."
+            echo "This report is tied to the exact commit SHA shown above."
+          } > .validation-evidence/validation-report.md
+          cat .validation-evidence/validation-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload logs and commit-bound report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: path28-validation-evidence-${{ github.sha }}
+          path: .validation-evidence/
+          if-no-files-found: error
+          retention-days: 90
