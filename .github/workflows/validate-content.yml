@@ -28,46 +28,46 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Create evidence directory
-        run: mkdir -p .validation-evidence
+        run: mkdir -p validation-evidence
 
       - name: Install locked dependencies
         id: install
         shell: bash
         run: |
           set -o pipefail
-          npm ci 2>&1 | tee .validation-evidence/npm-ci.log
+          npm ci 2>&1 | tee validation-evidence/npm-ci.log
 
       - name: Validate all daily content and evidence references
         id: content
         shell: bash
         run: |
           set -o pipefail
-          npm run validate:content 2>&1 | tee .validation-evidence/content-validation.log
+          npm run validate:content 2>&1 | tee validation-evidence/content-validation.log
 
       - name: Validate 34-topic assistant registry and safety boundaries
         id: topics
         shell: bash
         run: |
           set -o pipefail
-          npm run validate:assistant-topics 2>&1 | tee .validation-evidence/assistant-topic-validation.log
+          npm run validate:assistant-topics 2>&1 | tee validation-evidence/assistant-topic-validation.log
 
       - name: Run complete Node regression suite
         id: tests
         shell: bash
         run: |
           set -o pipefail
-          npm test 2>&1 | tee .validation-evidence/node-test.log
+          npm test 2>&1 | tee validation-evidence/node-test.log
 
       - name: Build test application
         id: build
         shell: bash
         run: |
           set -o pipefail
-          npm run build -- --base=/Maseer28-V1/ 2>&1 | tee .validation-evidence/test-build.log
+          npm run build -- --base=/Maseer28-V1/ 2>&1 | tee validation-evidence/test-build.log
 
       - name: Write commit-bound validation report
         if: always()
@@ -102,14 +102,14 @@ jobs:
             echo
             echo "A successful report requires every step above to have outcome=success."
             echo "This report is tied to the exact commit SHA shown above."
-          } > .validation-evidence/validation-report.md
-          cat .validation-evidence/validation-report.md >> "$GITHUB_STEP_SUMMARY"
+          } > validation-evidence/validation-report.md
+          cat validation-evidence/validation-report.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload logs and commit-bound report
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: path28-validation-evidence-${{ github.sha }}
-          path: .validation-evidence/
+          path: validation-evidence/
           if-no-files-found: error
           retention-days: 90
