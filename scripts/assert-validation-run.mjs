@@ -6,7 +6,7 @@ export function getLatestValidationRun(runs, expectedSha) {
   const matching = runs.filter((run) =>
     run.head_sha === expectedSha
     && run.head_branch === 'main'
-    && (run.event === 'push' || run.event === 'workflow_dispatch')
+    && run.event === 'push'
   );
 
   if (!matching.length) return null;
