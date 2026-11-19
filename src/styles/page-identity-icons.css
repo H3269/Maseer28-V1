@@ -51,6 +51,7 @@
 .app #dashboard .profileOverviewMark {
   display: flex;
   flex: 0 0 46px;
+  margin-inline-start: auto;
   align-items: center;
   justify-content: center;
   width: 46px;
