@@ -87,7 +87,7 @@ try {
   await recoveryPage.locator('#copyrightModal').waitFor({ state: 'visible' });
   await recoveryPage.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
   await recoveryPage.locator('#dashboard').waitFor({ state: 'visible', timeout: 15000 });
-  await recoveryPage.locator('#bottomNav button[data-view="archive"].click();
+  await recoveryPage.locator('#bottomNav button[data-view="archive"]').click();
   await recoveryPage.locator('#archive').getByRole('alert').waitFor({ state: 'visible' });
   const quarantined = await recoveryPage.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state')));
   assert.deepEqual(quarantined.archive, [], 'malformed archive must not enter normal archive rendering');
