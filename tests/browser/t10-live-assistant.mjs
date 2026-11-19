@@ -113,7 +113,7 @@ async function verifyDay(browser, dayNumber) {
   const exercise = normalize(await readDailyText(page, '#dayExercise'));
   const action = normalize(await readDailyText(page, '#dayAction'));
   assert.ok(exercise.includes(normalize(source.exercise)), `T10 day ${dayNumber} exercise must match its daily override`);
-  assert.ok(action.includes(normalize(source.actionText)), `T10 day ${dayNumber} action must match its daily override`);
+  assert.ok(action.includes(normalize(source.actionText)), `T10 day ${dayNumber} action mismatch; expected: ${source.actionText}; actual rendered: ${await readDailyText(page, '#dayAction')}; normalized expected: ${normalize(source.actionText)}; normalized actual: ${action}`);
   if (dayNumber === 1) {
     await page.locator('.globalAssistantLauncher').click();
     await page.locator('.globalAssistantDialog').waitFor({ state: 'visible' });
