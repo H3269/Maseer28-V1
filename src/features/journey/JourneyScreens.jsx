@@ -488,7 +488,6 @@ function ReportBlock({ title, id, text }) { return <><h3>{title}</h3><div classN
 export function Archive({ journey, content, onLoadTopic, onDeleteArchive, onBack, onNew }) {
   const [selected, setSelected] = useState(null);
   const [deleteCandidate, setDeleteCandidate] = useState(null);
-  const [pendingDelete, setPendingDelete] = useState(null);
   const [exportBusy, setExportBusy] = useState(false);
   const [exportMessage, setExportMessage] = useState('');
   async function handleExportArchives() {
@@ -505,26 +504,14 @@ export function Archive({ journey, content, onLoadTopic, onDeleteArchive, onBack
   }
   const list = journey.archive || [];
   const selectedArchive = selected == null ? null : list[selected];
-  useEffect(() => {
-    if (pendingDelete == null) return;
-    const index = pendingDelete;
-    setPendingDelete(null);
+  function confirmDelete(index) {
+    // Run the synchronous storage transaction from the confirmation action.
+    // Keep the existing confirmation mounted when persistence fails so the
+    // user can retry or cancel without losing the selected archive context.
     const removed = onDeleteArchive?.(index);
-    if (removed === false) {
-      // Keep the confirmation mounted before and after the parent reports a
-      // persistence failure. The failed attempt must never dismiss the retry UI.
-      setDeleteCandidate(index);
-      return;
-    }
+    if (removed === false) return;
     setSelected(null);
     setDeleteCandidate(null);
-  }, [pendingDelete, onDeleteArchive]);
-
-  function confirmDelete(index) {
-    // Commit the visible retry state first; perform the storage transaction
-    // after React has rendered it, so parent error updates cannot race it away.
-    setDeleteCandidate(index);
-    setPendingDelete(index);
   }
   return <section className="card" id="archive"><div className="dashboardHero archiveHero"><div><span className="badge">آرشیو مسیرها</span><h2>مسیرهای قبلی</h2></div></div><p className="muted">هر بار که مسیر تازه‌ای شروع شود، پرونده مسیر قبلی اینجا نگهداری می‌شود. حداکثر ۲۰ مسیر نگهداری می‌شود؛ برای ساخت فضای تازه باید آرشیوهای مشخص را خودت انتخاب و جداگانه حذف کنی. هیچ آرشیوی خودکار پاک نمی‌شود.</p>
     {journey.archiveRecoveryRequired !== undefined && journey.archiveRecoveryRequired !== null && <div className="feedback" role="alert"><b>بازیابی آرشیو لازم است</b><p>ساختار یک آرشیو قدیمی قابل‌خواندن نیست. داده خام آن برای جلوگیری از حذف حفظ شده است؛ از بخش پشتیبانی نسخه پشتیبان JSON بگیر و تا بررسی/بازیابی، مسیر تازه نساز.</p></div>}
