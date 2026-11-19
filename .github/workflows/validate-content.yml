@@ -81,7 +81,22 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          npx playwright install --with-deps chromium 2>&1 | tee validation-evidence/chromium-install.log
+          # GitHub-hosted runner package mirrors can intermittently fail while
+          # Playwright installs optional system packages. Retry the complete
+          # install; preserve every attempt in the validation evidence.
+          for attempt in 1 2 3; do
+            echo "Chromium/dependency installation attempt ${attempt}/3"
+            if npx playwright install --with-deps chromium 2>&1 | tee -a validation-evidence/chromium-install.log; then
+              exit 0
+            fi
+            if [ "${attempt}" -lt 3 ]; then
+              echo "Installation failed; refreshing apt metadata before retry."
+              sudo apt-get update 2>&1 | tee -a validation-evidence/chromium-install.log || true
+              sleep $((attempt * 10))
+            fi
+          done
+          echo "Chromium/system dependency installation failed after 3 attempts."
+          exit 1
 
       - name: Start local test build
         id: preview
