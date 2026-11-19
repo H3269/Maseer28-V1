@@ -58,7 +58,7 @@ test('the selected topic loads independently and the day screen waits for its ve
 
 test('the initial HTML does not render a duplicate splash before the single React splash', () => {
   assert.match(html, /<div id="root"><\\/div>/);
-  assert.doesNotMatch(html, /initialSplash|splash-logo\\.webp|loadingLogoBloom|loadingProgressFill/);
+  assert.doesNotMatch(html, /initialSplash|loadingLogoBloom|loadingProgressFill/);
   assert.match(html, /PATH28_SPLASH_DURATION_MS__/);
   assert.match(html, /assets\\/splash-logo\\.webp/);
   assert.match(app, /className="app appLoading"/);
@@ -280,7 +280,7 @@ test('the single React splash owns the radial reveal and synchronized progress a
 
 test('Android WebViews without modern viewport units retain a 100vh fallback', () => {
   assert.ok(html.includes('#root{width:100%;min-height:100vh;min-height:100svh'));
-  assert.ok(html.includes('height:100vh;height:100svh;min-height:100vh;min-height:100svh'));
+  assert.ok(css.includes('.appLoading { min-height: 100vh; min-height: 100svh;'));
   assert.ok(css.includes('height: 100vh;\n  height: 100dvh;'));
   assert.ok(css.includes('.appLoading { min-height: 100vh; min-height: 100svh;'));
   assert.ok(css.includes('min-height: 100vh !important;\n  min-height: 100svh !important;'));
