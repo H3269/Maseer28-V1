@@ -5,16 +5,16 @@
 .app > section.card#support::before {
   content: "";
   display: block;
-  width: 46px;
-  height: 46px;
+  width: 54px;
+  height: 54px;
   margin: 0 0 12px auto;
   box-sizing: border-box;
   border: 1px solid #D3E8EF;
-  border-radius: 14px;
-  background-color: #EAF1FA;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #E4F8F6, #EAF1FA);
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 24px 24px;
+  background-size: 25px 25px;
   box-shadow: 0 3px 10px rgba(36, 90, 154, .07);
 }
 .app > section.card#home::before {
@@ -50,16 +50,16 @@
 /* The dashboard home mark belongs inside the personal-information panel. */
 .app #dashboard .profileOverviewMark {
   display: flex;
-  flex: 0 0 46px;
+  flex: 0 0 54px;
   margin-inline-start: auto;
   align-items: center;
   justify-content: center;
-  width: 46px;
-  height: 46px;
+  width: 54px;
+  height: 54px;
   box-sizing: border-box;
   border: 1px solid #D3E8EF;
-  border-radius: 14px;
-  background: #EAF1FA;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #E4F8F6, #EAF1FA);
   color: #245A9A;
   box-shadow: 0 3px 10px rgba(36, 90, 154, .07);
 }
