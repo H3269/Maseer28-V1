@@ -118,7 +118,7 @@ test('T08 success criteria are day-specific and match canonical metadata', async
   assert.equal(new Set(criteria).size, 28, 'all 28 criteria must be distinct');
 });
 
-test('T08 canonical content, adaptive runtime fields and draft taxonomy stay aligned', async () => {
+test('T08 canonical content, adaptive runtime fields and active topic mapping stay aligned', async () => {
   const [pathContent, overrides, topics, subtopics] = await Promise.all([
     readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8').then(JSON.parse),
     readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8').then(JSON.parse),
@@ -132,17 +132,17 @@ test('T08 canonical content, adaptive runtime fields and draft taxonomy stay ali
   const fields = ['exercise', 'actionText', 'lightExerciseText', 'lightActionText', 'progressActionText', 'restExerciseText', 'restActionText'];
   assert.equal(canonical.length, 28);
   assert.equal(runtime.length, 28);
-  assert.equal(topic.draft_content_ids.length, 28);
-  assert.deepEqual(topic.content_ids, [], 'draft content must not become runtime-approved content');
+  assert.equal(topic.content_ids.length, 28);
+  assert.equal(Object.hasOwn(topic, 'draft_content_ids'), false);
   assert.equal(mappedSubtopics.length, 3);
-  assert.equal(mappedSubtopics.reduce((n, item) => n + item.draft_content_ids.length, 0), 28);
+  assert.equal(mappedSubtopics.reduce((n, item) => n + item.content_ids.length, 0), 28);
   for (let index = 0; index < 28; index += 1) {
     const day = canonical[index];
     const guide = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES[index];
     assert.equal(day.topic_id, 'T08');
-    assert.equal(day.review_status, 'draft');
-    assert.equal(getDailySafetyMode(day), 'blocked',
-      'unreviewed T08 day ' + (index + 1) + ' must remain withheld from runtime completion');
+    assert.equal(Object.hasOwn(day, 'review_status'), false);
+    assert.notEqual(getDailySafetyMode(day), 'blocked',
+      'T08 availability must follow explicit safety classification, not review metadata');
     assert.equal(day.evidence_grade, 'not_assessed');
     assert.deepEqual(day.source_ids, []);
     assert.equal(day.metadata_version, 2);
