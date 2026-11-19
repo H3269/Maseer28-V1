@@ -30,7 +30,8 @@ const journey = {
 };
 
 try {
-  const page = await browser.newPage();
+  const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+  const page = await context.newPage();
   const errors = [];
   page.on('pageerror', (error) => errors.push(String(error)));
   page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
