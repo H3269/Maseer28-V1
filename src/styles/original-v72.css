@@ -6819,6 +6819,18 @@ body:not(.bale-webview) .bottomNav button.active:after {
   pointer-events: none;
 }
 
+.appBottomDock .releaseFooter {
+  flex-direction: column;
+  gap: 2px;
+  white-space: normal;
+}
+
+.appBottomDock .releaseFooterOwner {
+  display: block;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
 .appBottomDock .releaseFooterDivider {
   color: #9aaca5;
 }
