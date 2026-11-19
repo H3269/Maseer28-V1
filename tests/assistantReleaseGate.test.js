@@ -114,10 +114,10 @@ test('knowledge catalog schema points to the non-approval item schema', () => {
 });
 
 test('knowledge UI displays source attribution without reviewer attribution', () => {
-  assert.match(assistantUi, /knowledgeResponse\\.results\\.map/);
-  assert.match(assistantUi, /item\\.source\\.source_id/);
-  assert.match(assistantUi, /item\\.source\\.locator/);
-  assert.doesNotMatch(assistantUi, /item\\.approval|reviewer_role|review_record_id/);
+  assert.match(assistantUi, /knowledgeResponse\.results\.map/);
+  assert.match(assistantUi, /item\.source\.source_id/);
+  assert.match(assistantUi, /item\.source\.locator/);
+  assert.doesNotMatch(assistantUi, /item\.approval|reviewer_role|review_record_id/);
 });
 
 test('assistant uses one chat surface with the composer send action inside and end action outside', () => {
