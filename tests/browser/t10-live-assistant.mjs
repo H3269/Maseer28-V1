@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
+import { buildRuntimeContentArtifacts } from '../../scripts/generate-runtime-content-shards.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
@@ -9,6 +10,7 @@ const topic = 'بی‌خوابی و مشکلات خواب';
 const canonical = JSON.parse(await readFile(new URL('../../public/content/path-content.json', import.meta.url), 'utf8'));
 const overrides = JSON.parse(await readFile(new URL('../../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
 const t10Draft = JSON.parse(await readFile(new URL('../../docs/T06-T34-PACKAGES/T10/T10_CANONICAL_CONTENT_DRAFT_V2_20261113.json', import.meta.url), 'utf8'));
+const topicsRegistry = JSON.parse(await readFile(new URL('../../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'));
 const canonicalDays = canonical.categories?.[topic]?.days || [];
 const overrideDays = overrides.categories?.[topic]?.days || [];
 assert.equal(canonicalDays.length, 28, 'T10 canonical path fixture must contain 28 days');
@@ -23,6 +25,15 @@ for (const draftDay of t10Draft.records) {
   target.exercise = draftDay.instructions;
   target.actionText = draftDay.action;
 }
+
+// The application now loads the generated sharded runtime format. Build the same
+// artifacts in memory and intercept those exact production URLs in this browser test.
+const runtimeArtifacts = buildRuntimeContentArtifacts({ content: canonical, overrides, topicsRegistry });
+const runtimeT10Topic = runtimeArtifacts.index.topics.find(item => item.key === topic);
+assert.ok(runtimeT10Topic, 'T10 must exist in the generated runtime index');
+const runtimeT10Base = runtimeArtifacts.topicFiles.get(runtimeT10Topic.basePath);
+const runtimeT10Override = runtimeArtifacts.overrideFiles.get(runtimeT10Topic.overridePath);
+assert.ok(runtimeT10Base && runtimeT10Override, 'T10 runtime shards must be generated');
 
 function normalize(value) {
   return String(value || '').normalize('NFKC')
@@ -47,6 +58,7 @@ async function readDailyText(page, selector) {
 async function verifyDay(browser, dayNumber) {
   const page = await browser.newPage();
   const errors = [];
+  const runtimeRequests = new Set();
   page.on('pageerror', error => errors.push(String(error)));
   const journey = {
     schema: 7, started: true, profile: true, assessment: true,
@@ -73,22 +85,19 @@ async function verifyDay(browser, dayNumber) {
 
   await page.route('**/*', async route => {
     const url = new URL(route.request().url());
-    if (url.pathname.endsWith('/content/daily-text-overrides.v1.json')) {
-      await route.fulfill({ status: 200, contentType: 'application/json; charset=utf-8', body: JSON.stringify(overrides) });
+    if (url.pathname.endsWith('/content/runtime-v1/index.json')) {
+      runtimeRequests.add('index');
+      await route.fulfill({ status: 200, contentType: 'application/json; charset=utf-8', body: JSON.stringify(runtimeArtifacts.index) });
       return;
     }
-    if (url.pathname.endsWith('/content/path-content.json')) {
-      const payload = structuredClone(canonical);
-      const day = payload.categories?.[topic]?.days?.find(item => Number(item.day) === dayNumber);
-      assert.ok(day, `T10 day ${dayNumber} must exist in the canonical fixture`);
-      const auditedDay = t10Draft.records.find(item => Number(item.day) === dayNumber);
-      assert.ok(auditedDay, `T10 draft day ${dayNumber} must exist`);
-      Object.assign(day, {
-        topic_id: 'T10', day: dayNumber,
-        review_status: auditedDay.review_status,
-        risk_level: auditedDay.risk_level,
-      });
-      await route.fulfill({ status: 200, contentType: 'application/json; charset=utf-8', body: JSON.stringify(payload) });
+    if (url.pathname.endsWith(`/content/runtime-v1/${runtimeT10Topic.basePath}`)) {
+      runtimeRequests.add('base');
+      await route.fulfill({ status: 200, contentType: 'application/json; charset=utf-8', body: JSON.stringify(runtimeT10Base) });
+      return;
+    }
+    if (url.pathname.endsWith(`/content/runtime-v1/${runtimeT10Topic.overridePath}`)) {
+      runtimeRequests.add('override');
+      await route.fulfill({ status: 200, contentType: 'application/json; charset=utf-8', body: JSON.stringify(runtimeT10Override) });
       return;
     }
     if (url.searchParams.has('_m28_time')) {
@@ -104,6 +113,8 @@ async function verifyDay(browser, dayNumber) {
   await page.locator('#dashboard').waitFor({ state: 'visible' });
   await page.locator('#dashboard .heroAction').click();
   await page.locator('#day').waitFor({ state: 'visible' });
+  assert.deepEqual([...runtimeRequests].sort(), ['base', 'index', 'override'],
+    'T10 browser test must exercise the production runtime index and both T10 shards');
 
   const badge = normalize(await page.locator('#dayBadge').innerText());
   assert.ok(badge.includes(normalize(topic)), 'daily screen must identify T10');
