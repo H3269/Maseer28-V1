@@ -10,9 +10,11 @@ on:
 permissions:
   contents: read
 
+# Keep validation runs isolated per commit. A later push must never cancel
+# the exact commit whose evidence is required by the publication gate.
 concurrency:
-  group: path28-validation-${{ github.ref }}
-  cancel-in-progress: true
+  group: path28-validation-${{ github.sha }}
+  cancel-in-progress: false
 
 jobs:
   validate:

@@ -14,7 +14,7 @@ on:
         default: "false"
 
 permissions:
-  actions: read
+  actions: write
   contents: read
 
 concurrency:
@@ -49,11 +49,55 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          gh api \
-            -H "Accept: application/vnd.github+json" \
-            "repos/${GITHUB_REPOSITORY}/actions/workflows/validate-content.yml/runs?head_sha=${GITHUB_SHA}&branch=main&event=push&per_page=100" \
-            > /tmp/path28-validation-runs.json
-          node test-source/scripts/assert-validation-run.mjs /tmp/path28-validation-runs.json
+          validation_dispatched=0
+          for attempt in $(seq 1 36); do
+            current_main_sha="$(gh api "repos/${GITHUB_REPOSITORY}/commits/main" --jq .sha)"
+            if [ "${current_main_sha}" != "${GITHUB_SHA}" ]; then
+              echo "Publication stopped: main moved from ${GITHUB_SHA} to ${current_main_sha} during validation."
+              exit 1
+            fi
+
+            gh api -H "Accept: application/vnd.github+json" \
+              "repos/${GITHUB_REPOSITORY}/actions/workflows/validate-content.yml/runs?head_sha=${GITHUB_SHA}&branch=main&per_page=100" \
+              > /tmp/path28-validation-runs.json
+
+            matching_run="$(jq -c --arg sha "${GITHUB_SHA}" '
+              [.workflow_runs[]
+                | select(.head_sha == $sha
+                  and .head_branch == "main"
+                  and (.event == "push" or .event == "workflow_dispatch"))]
+              | sort_by(.created_at, .run_attempt)
+              | last // empty
+            ' /tmp/path28-validation-runs.json)"
+
+            if [ -z "${matching_run}" ]; then
+              if [ "${validation_dispatched}" -eq 0 ]; then
+                echo "No validation run exists for this exact commit; starting a commit-bound validation."
+                gh api --method POST \
+                  "repos/${GITHUB_REPOSITORY}/actions/workflows/validate-content.yml/dispatches" \
+                  -f ref=main
+                validation_dispatched=1
+              fi
+            else
+              status="$(printf '%s' "${matching_run}" | jq -r '.status')"
+              conclusion="$(printf '%s' "${matching_run}" | jq -r '.conclusion // empty')"
+              run_id="$(printf '%s' "${matching_run}" | jq -r '.id')"
+
+              if [ "${status}" = "completed" ]; then
+                if [ "${conclusion}" != "success" ]; then
+                  echo "Publication stopped: validation run ${run_id} for ${GITHUB_SHA} concluded: ${conclusion}."
+                  exit 1
+                fi
+                node test-source/scripts/assert-validation-run.mjs /tmp/path28-validation-runs.json
+                exit 0
+              fi
+              echo "Waiting for validation run ${run_id} (status=${status})."
+            fi
+            sleep 10
+          done
+
+          echo "Publication stopped: no successful validation completed for exact commit ${GITHUB_SHA} within 6 minutes."
+          exit 1
 
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
