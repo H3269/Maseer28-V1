@@ -74,10 +74,29 @@ jobs:
         shell: bash
         run: |
           mkdir -p dist/test-fixtures
-          git show b9f2de1898c5e023e35840b0c86883546a7204d4:src/features/library/readerEngine.js \
-            | sed 's/import.meta.env.BASE_URL/"\\/Maseer28-V1\\/"/g' \
-            > dist/test-fixtures/readerEngine-baseline.js
+          node --input-type=module <<'NODE'
+          import { execFileSync } from 'node:child_process';
+          import { writeFileSync } from 'node:fs';
+
+          const baselineCommit = 'b9f2de1898c5e023e35840b0c86883546a7204d4';
+          const source = execFileSync('git', [
+            'show',
+            `${baselineCommit}:src/features/library/readerEngine.js`,
+          ], { encoding: 'utf8' });
+          const baseline = source.replaceAll(
+            'import.meta.env.BASE_URL',
+            JSON.stringify('/Maseer28-V1/'),
+          );
+          if (baseline.includes('import.meta.env')) {
+            throw new Error('Reader baseline contains an unresolved Vite environment reference.');
+          }
+          if (!baseline.includes('export function buildLegacyReaderLayout')) {
+            throw new Error('Historical reader baseline does not expose the expected layout function.');
+          }
+          writeFileSync('dist/test-fixtures/readerEngine-baseline.js', baseline, 'utf8');
+          NODE
           test -s dist/test-fixtures/readerEngine-baseline.js
+          node --check dist/test-fixtures/readerEngine-baseline.js
 
       - name: Install pinned Playwright browser runner
         id: playwright
@@ -116,7 +135,11 @@ jobs:
           echo $! > validation-evidence/preview-server.pid
           for attempt in $(seq 1 40); do
             if curl --fail --silent http://127.0.0.1:4173/Maseer28-V1/ > /dev/null; then
-              echo "Test build is serving the expected base path."
+              if ! curl --fail --silent http://127.0.0.1:4173/Maseer28-V1/test-fixtures/readerEngine-baseline.js > /dev/null; then
+                echo "Reader parity baseline fixture is not reachable through the preview server."
+                exit 1
+              fi
+              echo "Test build and reader parity baseline fixture are serving at the expected base path."
               exit 0
             fi
             sleep 2
