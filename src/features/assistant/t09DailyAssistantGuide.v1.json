@@ -3,7 +3,6 @@
   "packageId": "T09",
   "topicId": "T09",
   "topic": "اهمال‌کاری",
-  "status": "owner_approved_for_limited_runtime",
   "coveredDays": "1-28",
   "expectedDays": 28,
   "questionsPerDay": 14,
@@ -3789,11 +3788,5 @@
       "whenToSeekHumanSupport": "اگر دشواری تعویق پایدار و مختل‌کننده است، یا با آشفتگی شدید، مشکل سلامت، یا مانع ساختاری خارج از اختیار همراه است، ارزیابی و حمایت انسانی متناسب را در نظر بگیر؛ این تمرین تشخیص یا درمان نیست.",
       "reflectionPrompt": "آیا اکنون می‌توانی تعویق را دقیق‌تر توضیح دهی و گام متناسب‌تری انتخاب کنی؟"
     }
-  ],
-  "ownerApproval": {
-    "approver": "دکتر حسن عابدی",
-    "role": "project_owner_final_specialist",
-    "approvedAt": "2026-11-13",
-    "scope": "T09 daily prepared FAQ answers only; no clinical efficacy claim"
-  }
+  ]
 }
