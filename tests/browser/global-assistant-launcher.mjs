@@ -339,25 +339,54 @@ try {
   await page.keyboard.press('Escape');
   await dialog.waitFor({ state: 'detached' });
 
+  // Run each mobile viewport in its own browser context. Resizing a live
+  // Chromium window can fail when the runner reports it as maximized/fullscreen;
+  // a fresh context gives the page the exact emulated viewport from first paint.
   for (const viewport of [{ width: 390, height: 844 }, { width: 320, height: 568 }]) {
-    await page.setViewportSize(viewport);
-    const launcherBox = await launcher.boundingBox();
-    const navigationBox = await page.locator('.bottomNav').boundingBox();
-    assert.ok(launcherBox && navigationBox, 'launcher and bottom navigation must remain measurable on mobile');
-    assert.ok(
-      launcherBox.y + launcherBox.height <= navigationBox.y,
-      `launcher must not overlap bottom navigation at ${viewport.width}x${viewport.height}`,
-    );
+    const mobileContext = await browser.newContext({ viewport });
+    const mobilePage = await mobileContext.newPage();
+    try {
+      await mobilePage.addInitScript((state) => {
+        localStorage.setItem('maseer28_onboarding_complete_v1', '1');
+        localStorage.setItem('maseer28_state', JSON.stringify(state));
+        localStorage.setItem('maseer28_user_profile_v2', JSON.stringify({
+          version: 2,
+          name: 'کاربر مصنوعی آزمون',
+          age: 35,
+          gender: 'ترجیح می‌دهم نگویم',
+          phone: '09123456789',
+          medical: 'none',
+          medicalNote: '',
+          medication: 'no',
+          medicationRisk: 'no',
+        }));
+      }, journey);
+      await mobilePage.goto(baseURL, { waitUntil: 'domcontentloaded' });
+      await mobilePage.locator('#copyrightModal').waitFor({ state: 'visible' });
+      await mobilePage.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
+      await mobilePage.locator('#dashboard').waitFor({ state: 'visible' });
+      const mobileLauncher = mobilePage.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' });
+      await mobileLauncher.waitFor({ state: 'visible' });
+      const launcherBox = await mobileLauncher.boundingBox();
+      const navigationBox = await mobilePage.locator('.bottomNav').boundingBox();
+      assert.ok(launcherBox && navigationBox, 'launcher and bottom navigation must remain measurable on mobile');
+      assert.ok(
+        launcherBox.y + launcherBox.height <= navigationBox.y,
+        `launcher must not overlap bottom navigation at ${viewport.width}x${viewport.height}`,
+      );
 
-    await launcher.click();
-    dialog = page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' });
-    await dialog.waitFor({ state: 'visible' });
-    const dialogBox = await dialog.boundingBox();
-    assert.ok(dialogBox, 'mobile dialog must have a visible layout box');
-    assert.ok(dialogBox.x >= 0 && dialogBox.x + dialogBox.width <= viewport.width, 'mobile dialog must fit horizontally');
-    assert.ok(dialogBox.y >= 0 && dialogBox.y + dialogBox.height <= viewport.height, 'mobile dialog must fit vertically');
-    await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
-    await dialog.waitFor({ state: 'detached' });
+      await mobileLauncher.click();
+      const mobileDialog = mobilePage.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' });
+      await mobileDialog.waitFor({ state: 'visible' });
+      const dialogBox = await mobileDialog.boundingBox();
+      assert.ok(dialogBox, 'mobile dialog must have a visible layout box');
+      assert.ok(dialogBox.x >= 0 && dialogBox.x + dialogBox.width <= viewport.width, 'mobile dialog must fit horizontally');
+      assert.ok(dialogBox.y >= 0 && dialogBox.y + dialogBox.height <= viewport.height, 'mobile dialog must fit vertically');
+      await mobileDialog.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
+      await mobileDialog.waitFor({ state: 'detached' });
+    } finally {
+      await mobileContext.close();
+    }
   }
 
   assert.deepEqual(errors, [], 'global assistant navigation must not raise uncaught page errors');
