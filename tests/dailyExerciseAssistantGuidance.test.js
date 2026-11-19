@@ -513,7 +513,7 @@ test('daily assistant remains unavailable when the day is blocked by its safety 
     id: 'ترس-01',
     topic_id: 'T03',
     day: 1,
-    risk_level: 'routine',
+    risk_level: 'urgent_support_required',
     instructions: 'متن مصنوعی که نباید به دستیار برسد',
     actionText: 'اقدام مصنوعی',
   };
@@ -621,7 +621,7 @@ test('legacy day introduction is quoted as the day purpose without inventing a c
   });
   assert.match(response, /در معرفی همین روز آمده است/u);
   assert.match(response, /هدف شناخت تجربه اضطراب/u);
-  assert.match(response, /دلیل تخصصی یا درمانی جداگانه/u);
+  assert.match(response, /توضیح جداگانه‌ای در داده این روز ثبت نشده است/u);
 });
 
 
@@ -844,8 +844,8 @@ test('legacy daily assistant access requires exact selected topic and zero-padde
 
 test('legacy identity verification does not bypass specialized safety blocks', () => {
   const legacyFearDay = {
-    id: 'ترس-01',
-    day: 1,
+    id: 'ترس-14',
+    day: 14,
     exercise: 'متن تمرین legacy',
     actionText: 'راهکار legacy',
   };
