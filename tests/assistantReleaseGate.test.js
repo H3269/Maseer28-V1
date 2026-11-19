@@ -185,3 +185,37 @@ test('GitHub Pages tracks main as a test app without production-release gates', 
   assert.match(journeyStore, /TEST_MODE:\s*true/);
   assert.match(journeyStore, /TIME_LOCK_ENABLED:\s*false/);
 });
+
+
+test('free-form assessment assistant stays disconnected; all three hosts use the prepared-question launcher', async () => {
+  const appUi = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
+  const launcherUi = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
+  const mainEntry = await readFile(new URL('../src/main.jsx', import.meta.url), 'utf8');
+  const productionPrep = await readFile(new URL('../scripts/prepare-production-build.mjs', import.meta.url), 'utf8');
+
+  // The free-form assessment component and its engine remain in the repository,
+  // but must never be imported or mounted by the current main-branch app.
+  assert.doesNotMatch(appUi, /AssessmentAssistant|assessmentEngine/);
+  assert.doesNotMatch(journeyUi, /AssessmentAssistant|assessmentEngine/);
+  assert.doesNotMatch(appUi, /DailyExerciseAssistant/);
+  assert.doesNotMatch(launcherUi, /<textarea|<input|contentEditable/);
+
+  // The only active assistant composer is a picker of pre-authored questions.
+  assert.match(launcherUi, /find\(\(question\) => question\.value === message\)/);
+  assert.match(launcherUi, /if \(!selectedPreparedQuestion\)/);
+  assert.match(launcherUi, /این دستیار فقط از فهرست سؤال‌های آماده همین بخش پاسخ می‌دهد/);
+
+  // Test and production builds share the same assistant UI. Production prep may
+  // change journey timing/base-path flags, never assistant visibility or mode.
+  assert.match(pagesDeployWorkflow, /npm run build -- --base=\/Maseer28-V1\//);
+  assert.match(publishWorkflow, /npm run prepare:production/);
+  assert.match(publishWorkflow, /npm run build/);
+  assert.doesNotMatch(productionPrep, /VITE_ENABLE_EXPERIMENTAL_ASSISTANT|assistantVisible|AssessmentAssistant/);
+  assert.doesNotMatch(appUi, /VITE_ENABLE_EXPERIMENTAL_ASSISTANT/);
+
+  // Bale's User-Agent branch is presentation-only; it must not select another
+  // assistant component or enable a free-text conversation mode.
+  assert.match(mainEntry, /\/bale\/i\.test\(navigator\.userAgent/);
+  assert.match(mainEntry, /classList\.add\('bale-webview'\)/);
+  assert.doesNotMatch(mainEntry, /AssessmentAssistant|GlobalAssistantLauncher|VITE_ENABLE_EXPERIMENTAL_ASSISTANT/);
+});
