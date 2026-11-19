@@ -189,7 +189,7 @@ test('archive PDFs preserve distinct non-scored skip reasons', async () => {
     assert.equal(blob.type, 'application/zip');
     const rendered = drawnText.join(' ');
     assert.match(rendered, /به دلیل ملاحظه ایمنی اجرا نشد؛ هیچ امتیازی ثبت نشده است/);
-    assert.match(rendered, /به دلیل نیاز به اجرای تمرین اجرا نشد؛ هیچ امتیازی ثبت نشده است/);
+    assert.match(rendered, /این تمرین اجرا نشد؛ هیچ امتیازی ثبت نشده است/);
     assert.doesNotMatch(rendered, /پاسخ ثبت‌شده|شدت درگیری/);
   } finally {
     if (originalDocument === undefined) delete globalThis.document;
