@@ -24,6 +24,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
@@ -68,6 +69,15 @@ jobs:
         run: |
           set -o pipefail
           npm run build -- --base=/Maseer28-V1/ 2>&1 | tee validation-evidence/test-build.log
+
+      - name: Prepare canonical pre-optimization reader baseline for parity test
+        shell: bash
+        run: |
+          mkdir -p dist/test-fixtures
+          git show b9f2de1898c5e023e35840b0c86883546a7204d4:src/features/library/readerEngine.js \
+            | sed 's/import.meta.env.BASE_URL/"\\/Maseer28-V1\\/"/g' \
+            > dist/test-fixtures/readerEngine-baseline.js
+          test -s dist/test-fixtures/readerEngine-baseline.js
 
       - name: Install pinned Playwright browser runner
         id: playwright
