@@ -115,7 +115,7 @@ test('T09 interpersonal FAQ answers stay task-focused and do not inherit relatio
   }
 });
 
-test('T09 overlay and prompt UI are connected in the active topic registry', async () => {
+test('T09 overlay and prompt UI remain wired without mislabeling legacy records as v2 registry content', async () => {
   const [overrides, registry, launcher] = await Promise.all([
     readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8').then(JSON.parse),
     readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8').then(JSON.parse),
@@ -125,7 +125,7 @@ test('T09 overlay and prompt UI are connected in the active topic registry', asy
   assert.equal(days?.length, 28);
   assert.ok(days.every((day) => Number.isInteger(day.day) && day.day >= 1 && day.day <= 28));
   const topic = registry.topics.find((item) => item.topic_id === 'T09');
-  assert.equal(topic.content_ids.length, 28);
+  assert.deepEqual(topic.content_ids, [], 'legacy T09 records without the v2 topic_id contract must not be linked as v2 registry content');
   assert.match(launcher, /getT09DailyAssistantPromptGroups/);
   assert.match(launcher, /isT09DailyPromptContext/);
   assert.match(launcher, /t09-daily-prompt-trigger/);
