@@ -352,7 +352,12 @@ try {
     await page.locator('#archiveList .answerItem').first().getByRole('button', { name: 'بله، حذف شود' }).click();
     await page.getByRole('heading', { name: 'حذف آرشیو تأیید نشد' }).waitFor({ state: 'visible' });
     assert.equal(await page.locator('#archiveList .answerItem').count(), 1);
-    assert.equal(await page.locator('[aria-label="تأیید حذف آرشیو 1"]').count(), 1, 'confirmation must remain open after failed deletion');
+    const retryConfirmation = page.locator('[aria-label="تأیید حذف آرشیو 1"]');
+    // The error modal and the archive retry state are separate React updates:
+    // wait for the retry group itself instead of sampling the DOM immediately
+    // after the unrelated validation heading becomes visible.
+    await retryConfirmation.waitFor({ state: 'visible', timeout: 5000 });
+    assert.equal(await retryConfirmation.count(), 1, 'confirmation must remain open after failed deletion');
     const persisted = await page.evaluate(() => JSON.parse(localStorage.getItem('maseer28_state') || '{}'));
     assert.equal(persisted.archive[0].pathId, 'archive-write-failure');
     assert.equal(persisted.archive[0].answers[1], 'KEEP-ON-FAILURE');
