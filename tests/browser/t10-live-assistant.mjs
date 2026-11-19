@@ -26,6 +26,7 @@ for (const draftDay of t10Draft.records) {
   target.actionText = draftDay.action;
 }
 
+// Regression guard: keep this fixture aligned with the app's current sharded runtime URLs.
 // The application now loads the generated sharded runtime format. Build the same
 // artifacts in memory and intercept those exact production URLs in this browser test.
 const runtimeArtifacts = buildRuntimeContentArtifacts({ content: canonical, overrides, topicsRegistry });
