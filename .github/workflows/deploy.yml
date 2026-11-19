@@ -38,7 +38,7 @@ jobs:
 
       # Deliberately build with the repository's test defaults:
       # TEST_MODE=true and TIME_LOCK_ENABLED=false.
-      # Do not run prepare:production or the expert-approved production-content gate here.
+      # Keep this workflow test-only: do not run production preparation or release-only gates here.
       - name: Build test app
         run: npm run build -- --base=/Maseer28-V1/
 
