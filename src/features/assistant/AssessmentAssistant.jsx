@@ -117,7 +117,6 @@ export default function AssessmentAssistant() {
             <b>{item.title}</b>
             <p>{item.excerpt}</p>
             <small>منبع: {item.source.title} | شناسه منبع: {item.source.source_id} | محل ارجاع: {item.source.locator}</small>
-            <small>بازبینی: {item.approval.reviewer_role} | شناسه بازبینی: {item.approval.review_record_id} | نسخه: {item.approval.version}</small>
           </li>)}
         </ol>
       </div>}
