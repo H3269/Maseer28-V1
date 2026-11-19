@@ -82,6 +82,8 @@ test('assistant runtime does not claim clinical validation or diagnostic capabil
 
 test('production publication does not depend on review metadata', () => {
   assert.doesNotMatch(publishWorkflow, /assert:production-content/);
+  assert.doesNotMatch(publishWorkflow, /expert approval|specialist approval|reviewer approval/i);
+  assert.match(publishWorkflow, /validate-content\.yml/);
   assert.match(publishWorkflow, /npm run prepare:production/);
 });
 
@@ -115,6 +117,7 @@ test('knowledge UI displays source attribution without reviewer attribution', ()
   assert.match(assistantUi, /knowledgeResponse\\.results\\.map/);
   assert.match(assistantUi, /item\\.source\\.source_id/);
   assert.match(assistantUi, /item\\.source\\.locator/);
+  assert.doesNotMatch(assistantUi, /item\\.approval|reviewer_role|review_record_id/);
 });
 
 test('assistant uses one chat surface with the composer send action inside and end action outside', () => {
