@@ -56,18 +56,14 @@ test('the selected topic loads independently and the day screen waits for its ve
   assert.match(app, /onLoadTopic=\{loadTopicForScreen\}/);
 });
 
-test('the static splash reveals the logo radially and fills its progress bar in sync', () => {
-  assert.match(html, /assets\/splash-logo\.webp/);
-  assert.match(html, /animation:loadingLogoBloom var\(--path28-splash-duration,950ms\)/);
-  assert.ok(html.includes('@keyframes loadingLogoBloom{from{opacity:1;clip-path:circle(0% at 50% 50%);transform:scale(.96)}to{opacity:1;clip-path:circle(75% at 50% 50%);transform:scale(1)}}'));
-  assert.ok(html.includes('@keyframes loadingProgressFill{to{transform:scaleX(1)}}'));
-  assert.match(html, /aria-label="پیشرفت نمایش لوگو"/);
+test('the initial HTML does not render a duplicate splash before the single React splash', () => {
+  assert.match(html, /<div id="root"><\\/div>/);
+  assert.doesNotMatch(html, /initialSplash|splash-logo\\.webp|loadingLogoBloom|loadingProgressFill/);
   assert.match(html, /PATH28_SPLASH_DURATION_MS__/);
-  assert.doesNotMatch(html, /@media\s*\(prefers-reduced-motion:\s*reduce\)/, 'The static splash must animate identically when reduced motion is enabled');
-  assert.match(html, /fetchpriority="high"/);
-  assert.match(html, /width="174" height="174"/);
+  assert.match(html, /assets\\/splash-logo\\.webp/);
+  assert.match(app, /className="app appLoading"/);
+  assert.match(app, /assets\\/splash-logo\\.webp/);
 });
-
 test('startup waits for both actual content readiness and the completed radial reveal', () => {
   assert.match(app, /if \(!content \|\| !splashLogoRevealComplete \|\| !splashProgressComplete \|\| loadError\) return \(/);
   assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\.decode\(\)|setTimeout\(.*splash/i);
@@ -193,12 +189,11 @@ test('all five library covers load eagerly at high priority on library entry', (
   assert.match(libraryPage, /books\.map\(\(book\)/);
 });
 
-test('the static splash does not launch a large fallback during the React root handoff', () => {
-  const staticLogo = html.match(/<img[^>]+splash-logo\.webp[^>]*>/)?.[0] || '';
-  assert.ok(staticLogo, 'The initial HTML must contain the optimized splash logo');
-  assert.doesNotMatch(staticLogo, /onerror=/i, 'The static splash must not trigger a fallback when React replaces the initial root');
+test('the app has exactly one splash logo source and no static-to-React duplicate handoff', () => {
+  assert.doesNotMatch(html, /<img[^>]+splash-logo\\.webp/i);
+  assert.equal((app.match(/assets\\/splash-logo\\.webp/g) || []).length, 1);
+  assert.match(app, /onError=\\{\\(event\\) => \\{/);
 });
-
 test('the initial splash preloads the generated lightweight WebP logo', async () => {
   assert.match(html, /assets\/splash-logo\.webp/);
   assert.match(app, /assets\/splash-logo\.webp/);
@@ -270,7 +265,7 @@ test('opening a book preloads the reader module and reuses the prepared IndexedD
   assert.match(reader, /if \(initialVersion\?\.content\)/);
 });
 
-test('the React splash uses the same radial reveal and progress animation as static HTML', () => {
+test('the single React splash owns the radial reveal and synchronized progress animation', () => {
   assert.match(css, /clip-path: circle\(0% at 50% 50%\);/);
   assert.doesNotMatch(css, /clip-path: circle\(0% at 50% 50%\) !important/);
   assert.doesNotMatch(css, /Fast splash|loadingLogoEnter|loadingTextReveal|loadingPulse|loadingProgressSegment|loadingBloomReveal/, 'Legacy splash rules must be removed');
