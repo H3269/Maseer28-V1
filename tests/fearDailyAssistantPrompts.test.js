@@ -70,7 +70,8 @@ test('T03 router requires canonical topic identity, keeps safety preemption, and
 test('T03 assigns one canonical, topic-owned subtopic to every day with a non-overlapping T03/T21 boundary',async()=>{
  const source=await readFile(new URL('../src/features/assistant/fearDailyAssistantPrompts.js',import.meta.url),'utf8');
  const registry=JSON.parse(await readFile(new URL('../public/assistant/knowledge/subtopics.v1.json',import.meta.url),'utf8'));
- assert.match(source,/Non-diagnostic educational guidance; safety limits remain active/);\n assert.doesNotMatch(source,/expert-approved|approval|reviewer/);
+ assert.match(source,/Non-diagnostic educational guidance; safety limits remain active/);
+ assert.doesNotMatch(source,/expert-approved|approval|reviewer/);
  assert.equal(FEAR_DAILY_ASSISTANT_GUIDES.length,28);
  const allowed=new Set(['T03-S01','T03-S02','T03-S03']);
  assert.ok(FEAR_DAILY_ASSISTANT_GUIDES.every(x=>allowed.has(x.subtopic)), 'every T03 day must have exactly one canonical T03 subtopic');
