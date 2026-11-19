@@ -509,13 +509,7 @@ export function Archive({ journey, content, onLoadTopic, onDeleteArchive, onBack
     // Keep the existing confirmation mounted when persistence fails so the
     // user can retry or cancel without losing the selected archive context.
     const removed = onDeleteArchive?.(index);
-    if (removed === false) {
-      // Reassert the retry target after the parent reports a persistence error.
-      // This makes the confirmation state explicit across the validation-modal
-      // update and guarantees the user can retry or cancel the same archive.
-      setDeleteCandidate(index);
-      return;
-    }
+    if (removed === false) return;
     setSelected(null);
     setDeleteCandidate(null);
   }
