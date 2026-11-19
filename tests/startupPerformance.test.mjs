@@ -60,9 +60,9 @@ test('the initial HTML does not render a duplicate splash before the single Reac
   assert.ok(html.includes('<div id="root"></div>'));
   assert.doesNotMatch(html, /initialSplash|loadingLogoBloom|loadingProgressFill/);
   assert.match(html, /PATH28_SPLASH_DURATION_MS__/);
-  assert.match(html, /assets\\/splash-logo\\.webp/);
+  assert.ok(html.includes('assets/splash-logo.webp'));
   assert.match(app, /className="app appLoading"/);
-  assert.match(app, /assets\\/splash-logo\\.webp/);
+  assert.ok(app.includes('assets/splash-logo.webp'));
 });
 test('startup waits for both actual content readiness and the completed radial reveal', () => {
   assert.match(app, /if \(!content \|\| !splashLogoRevealComplete \|\| !splashProgressComplete \|\| loadError\) return \(/);
@@ -190,9 +190,9 @@ test('all five library covers load eagerly at high priority on library entry', (
 });
 
 test('the app has exactly one splash logo source and no static-to-React duplicate handoff', () => {
-  assert.doesNotMatch(html, /<img[^>]+splash-logo\\.webp/i);
-  assert.equal((app.match(/assets\\/splash-logo\\.webp/g) || []).length, 1);
-  assert.match(app, /onError=\\{\\(event\\) => \\{/);
+  assert.doesNotMatch(html, /<img/i);
+  assert.equal(app.split('assets/splash-logo.webp').length - 1, 1);
+  assert.ok(app.includes('onError={(event) => {'));
 });
 test('the initial splash preloads the generated lightweight WebP logo', async () => {
   assert.match(html, /assets\/splash-logo\.webp/);
