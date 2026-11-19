@@ -37,7 +37,11 @@ async function waitForReadablePage(page) {
 }
 
 async function waitForFirstBodyParagraph(page) {
-  for (let attempt = 0; attempt < 12; attempt += 1) {
+  // Book 1 has a long front matter and contents section. Do not assume its
+  // first body paragraph must appear in the first 12 physical reader pages.
+  const totalPages = Number(await page.locator('#readerPageRange').getAttribute('max') || 1);
+  const scanLimit = Math.min(totalPages, 32);
+  for (let attempt = 0; attempt < scanLimit; attempt += 1) {
     const paragraph = await page.evaluate(() => {
       const article = document.querySelector('#bookReaderText');
       const line = [...(article?.querySelectorAll('.readerFixedLine.body.paraStart') || [])]
@@ -59,7 +63,16 @@ async function waitForFirstBodyParagraph(page) {
       String(document.querySelector('#readerPageCounter')?.innerText || '') !== previous
     ), counter, { timeout: 15000 });
   }
-  throw new Error('Reader opened, but the first readable body paragraph was not found within 12 pages.');
+  const diagnostics = await page.evaluate(() => ({
+    pageCounter: document.querySelector('#readerPageCounter')?.innerText || '',
+    pageRangeMax: Number(document.querySelector('#readerPageRange')?.max || 0),
+    visibleBodyLines: [...(document.querySelectorAll('#bookReaderText .readerFixedLine.body') || [])]
+      .map((line) => String(line.innerText || '').replace(/\\s+/g, ' ').trim())
+      .filter(Boolean).slice(0, 5),
+    visibleLineClasses: [...(document.querySelectorAll('#bookReaderText .readerFixedLine') || [])]
+      .slice(0, 8).map((line) => line.className),
+  }));
+  throw new Error(`Reader opened, but no first readable body paragraph was found within ${scanLimit} scanned pages (total=${totalPages}). diagnostics=${JSON.stringify(diagnostics)}`);
 }
 
 try {
