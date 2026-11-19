@@ -33,9 +33,12 @@ export default function VersionFooter({ navVisible = false }) {
 
   return (
     <aside className={`releaseFooter${navVisible ? ' with-nav' : ' without-nav'}`} dir="rtl" aria-label="اطلاعات نسخه برنامه">
-      {isPreview
-        ? <span>نسخه آزمایشی {version}</span>
-        : <><span>نسخه {version}</span><span className="releaseFooterDivider" aria-hidden="true">|</span><span>آخرین انتشار: {date}</span></>}
+      <div className="releaseFooterVersion">
+        {isPreview
+          ? <span>نسخه آزمایشی {version}</span>
+          : <><span>نسخه {version}</span><span className="releaseFooterDivider" aria-hidden="true">|</span><span>آخرین انتشار: {date}</span></>}
+      </div>
+      <span className="releaseFooterOwner">صاحب امتیاز: مرکز هیپنوتراپی شفا</span>
     </aside>
   );
 }
