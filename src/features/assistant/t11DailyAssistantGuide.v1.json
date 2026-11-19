@@ -6,7 +6,7 @@
   "coveredDays": "1-28",
   "expectedDays": 28,
   "questionsPerDay": 14,
-  "questionPolicy": "q01-q14 use the exact shared T01-T10 question labels, positions, groups and answer framing; T11 answers remain topic/day-specific. Owner live testing is enabled; this file does not approve subtopic mappings or clinical use.",
+  "questionPolicy": "q01-q14 use the exact shared T01-T10 question labels, positions, groups and answer framing; T11 answers remain topic/day-specific.",
   "records": [
     {
       "day": 1,
@@ -3639,7 +3639,7 @@
           "label": "منظور از تمرین امروز چیست؟",
           "value": "منظور از تمرین امروز چیست؟",
           "kind": "exercise_meaning",
-          "answer": "امروز فقط مرور می‌کنی که گام هفته بعد باید با مسیرِ از قبل روشن‌شده و بازبینی‌شده متناسب باشد: برای S01 ممکن است نشانه و گزینه اختیاری مطرح باشد؛ برای S02 حمایت و پیگیری متخصص واجد صلاحیت؛ برای S03 ایمنی، سازگاری محیط یا ارزیابی مناسب. اگر مسیر روشن یا تأیید نشده، آن را حدس نزن و «نیازمند بررسی انسانی» را انتخاب کن."
+          "answer": "امروز فقط مرور می‌کنی که گام هفته بعد با شرایط واقعی تو متناسب باشد: برای S01 ممکن است نشانه و گزینه اختیاری مطرح باشد؛ برای S02 حمایت و پیگیری متخصص واجد صلاحیت؛ برای S03 ایمنی، سازگاری محیط یا ارزیابی مناسب. اگر مسیر روشن نیست، آن را حدس نزن؛ می‌توانی توقف کنی یا از حمایت انسانی مناسب کمک بگیری."
         },
         {
           "id": "q02",
