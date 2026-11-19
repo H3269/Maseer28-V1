@@ -261,8 +261,12 @@ try {
     await page.locator('#archiveList').waitFor({ state: 'visible' });
     assert.equal(await page.locator('#archiveList .answerItem').count(), 1);
     await page.locator('#archiveList .answerItem').first().getByRole('button', { name: /مشاهده جزئیات مسیر/ }).click();
-    assert.match(await page.locator('#archiveDetail').innerText(), /ARCHIVE-KEEP-ME/);
-    assert.doesNotMatch(await page.locator('#archiveDetail').innerText(), /ARCHIVE-DELETE-ME/);
+    // Archive topic content is loaded on demand. Wait for the selected archive's
+    // answer to render before asserting; the initial loading placeholder is valid.
+    await page.waitForFunction(() => document.querySelector('#archiveDetail')?.innerText.includes('ARCHIVE-KEEP-ME'), null, { timeout: 15000 });
+    const archiveDetailText = await page.locator('#archiveDetail').innerText();
+    assert.match(archiveDetailText, /ARCHIVE-KEEP-ME/);
+    assert.doesNotMatch(archiveDetailText, /ARCHIVE-DELETE-ME/);
     await page.close();
   }
 
