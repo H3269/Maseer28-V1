@@ -31,3 +31,22 @@
 .app > section.card#support::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23245A9A' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 11.5a7.5 7.5 0 0 1-7.5 7.5H8l-5 2v-6.5A7.5 7.5 0 1 1 21 11.5Z'/%3E%3Cpath d='M8 11h8M8 14.5h5'/%3E%3C/svg%3E");
 }
+
+/* Match the library header emblem position: same corner, inset and alignment. */
+.app > section.card#home,
+.app > section.card#dashboard,
+.app > section.card#profile,
+.app > section.card#archive,
+.app > section.card#support {
+  position: relative;
+}
+.app > section.card#home::before,
+.app > section.card#dashboard::before,
+.app > section.card#profile::before,
+.app > section.card#archive::before,
+.app > section.card#support::before {
+  position: absolute;
+  top: 20px;
+  left: 16px;
+  margin: 0;
+}
