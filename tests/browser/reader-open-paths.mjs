@@ -39,6 +39,13 @@ async function waitForReadablePage(page) {
 async function waitForFirstBodyParagraph(page) {
   // Book 1 has a long front matter and contents section. Do not assume its
   // first body paragraph must appear in the first 12 physical reader pages.
+  // The Reader can show its cover/title before pagination metadata is ready.
+  // Wait for the real page count instead of accidentally treating the initial
+  // placeholder max=1 as the complete book length.
+  await page.waitForFunction(() => {
+    const range = document.querySelector('#readerPageRange');
+    return Number(range?.max || 0) > 1;
+  }, null, { timeout: 15000 });
   const totalPages = Number(await page.locator('#readerPageRange').getAttribute('max') || 1);
   const scanLimit = Math.min(totalPages, 32);
   for (let attempt = 0; attempt < scanLimit; attempt += 1) {
