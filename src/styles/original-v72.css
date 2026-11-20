@@ -4652,7 +4652,7 @@ body.bale-webview .bottomNav {
   inset-block-end: 6px !important;
   width: min(calc(100% - 24px), 640px) !important;
   padding: 5px !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
   box-sizing: border-box !important;
 }
 
