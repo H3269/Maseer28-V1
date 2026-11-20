@@ -49,9 +49,9 @@ export function answerT12DailyPreparedQuestion({ day, message, dailyContent } = 
   body = replaceExact(body, guide.restActionVersion, String(dailyContent.restActionText || guide.restActionVersion || '').trim());
 
   if (question.kind === 'exercise_meaning') {
-    body += `\\n\\n**منطق آموزشی امروز:** ${guide.mechanism}\\n**معیار پایان:** ${guide.successCriterion}`;
+    body += `\n\n**منطق آموزشی امروز:** ${guide.mechanism}\n**معیار پایان:** ${guide.successCriterion}`;
   } else if (question.kind === 'action_meaning') {
-    body += `\\n\\n**چرایی اقدام اختصاصی:** ${guide.mechanism}\\n**معیار کافی‌بودن:** ${guide.successCriterion}`;
+    body += `\n\n**چرایی اقدام اختصاصی:** ${guide.mechanism}\n**معیار کافی‌بودن:** ${guide.successCriterion}`;
   }
 
   const heading = `راهنمای روز ${guide.day} مرزبندی و نه گفتن — ${guide.title}`;
