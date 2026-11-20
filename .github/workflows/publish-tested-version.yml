@@ -136,7 +136,7 @@ jobs:
           # without overloading the GitHub-hosted runner.
           mkdir -p /tmp/path28-browser-logs
           browser_test_status=0
-          if ! printf '%s\\0' tests/browser/*.mjs | xargs -0 -P 3 -I '{}' bash -c '
+          if printf '%s\0' tests/browser/*.mjs | xargs -0 -P 3 -I '{}' bash -c '
             script="$1"
             log_file="/tmp/path28-browser-logs/$(basename "$script").log"
             {
@@ -144,6 +144,8 @@ jobs:
               node "$script"
             } > "$log_file" 2>&1
           ' _ '{}'; then
+            browser_test_status=0
+          else
             browser_test_status=$?
           fi
 
