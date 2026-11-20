@@ -28,7 +28,7 @@ test('release browser checks use headless-only Chromium and bounded parallel exe
   assert.match(publishWorkflow, /playwright install-deps chromium/);
   assert.match(publishWorkflow, /playwright install --only-shell chromium/);
   assert.match(publishWorkflow, /xargs -0 -P 3/);
-  assert.match(publishWorkflow, /browser_test_status=\\$\\?/);
-  assert.match(publishWorkflow, /exit "\\$browser_test_status"/);
-  assert.match(publishWorkflow, /cat "\\$log_file"/);
+  assert.match(publishWorkflow, /browser_test_status=\$\?/);
+  assert.match(publishWorkflow, /exit "\$browser_test_status"/);
+  assert.match(publishWorkflow, /cat "\$log_file"/);
 });
