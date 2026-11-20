@@ -2974,7 +2974,12 @@ const RAW_ANGER_DAILY_ASSISTANT_GUIDES = [
   }
 ];
 
-export const ANGER_DAILY_ASSISTANT_GUIDES = Object.freeze(RAW_ANGER_DAILY_ASSISTANT_GUIDES.map(normalizeDailyAssistantGuide));
+export const ANGER_DAILY_ASSISTANT_GUIDES = Object.freeze(RAW_ANGER_DAILY_ASSISTANT_GUIDES.map((source) => normalizeDailyAssistantGuide({
+  ...source,
+  lightActionVersion: source.lightActionVersion || `اگر اجرای اقدام «${source.title}» دشوار است، فقط بخش امن و در اختیار خودت را در یک یادداشت خصوصی مشخص کن؛ لازم نیست آن را در تعامل واقعی اجرا کنی.`,
+  progressActionVersion: source.progressActionVersion || `اگر اقدام «${source.title}» را پیش‌تر در شرایط امن انجام داده‌ای، فقط یک نشانه قابل مشاهده از انتخاب خودت ثبت کن؛ برای نشان‌دادن پیشرفت، شدت یا دامنه تعامل را بیشتر نکن.`,
+  restActionVersion: source.restActionVersion || `اگر برای اقدام «${source.title}» امروز موقعیت امن یا آمادگی نداری، اجرا را به تعویق بینداز؛ برای آزمودنش موقعیتی نساز و هیچ گفت‌وگویی را به خودت یا دیگری تحمیل نکن.`,
+})));
 
 function toAngerDayNumber(value) {
   const normalized = String(value ?? '').replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)));
@@ -3255,8 +3260,17 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   // Prefer the individually authored response for each day/question pair.
   // The legacy switch remains only as a defensive fallback for future schema changes.
   const preparedAnswer = ANGER_DAILY_PREPARED_ANSWERS[day]?.[question.id];
-  const answer = preparedAnswer || answerAngerDailyPreparedQuestionRaw(args);
-  if (!answer) return null;
+  const baseAnswer = preparedAnswer || answerAngerDailyPreparedQuestionRaw(args);
+  if (!baseAnswer) return null;
+
+  const actionAdaptation = {
+    light_version: guide.lightActionVersion,
+    no_event: guide.restActionVersion,
+    can_change: guide.progressActionVersion,
+  }[question.kind];
+  const answer = actionAdaptation
+    ? baseAnswer + '\\n\\n**اگر پرسشت درباره اقدام اختصاصی است:**\\n' + actionAdaptation
+    : baseAnswer;
 
   return appendDailyAssistantSafetyReminder(
     addTeacherStyleFrame(answer, { guide, question, topic: 'خشم' }),
