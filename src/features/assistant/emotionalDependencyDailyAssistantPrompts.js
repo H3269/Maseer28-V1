@@ -5,7 +5,7 @@ import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyRemind
 const RAW_EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
   {
     "day": 1,
-    "title": "نقشه اتکای عاطفی",
+    "title": "نقشه حوزه‌های اتکای عاطفی",
     "topicId": "T08",
     "topic": "وابستگی عاطفی",
     "subtopic": "T08-S03",
@@ -595,7 +595,7 @@ const RAW_EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 6,
-    "title": "نیاز پشت پیوند",
+    "title": "تفکیک نیاز عاطفی از شخص خاص",
     "topicId": "T08",
     "topic": "وابستگی عاطفی",
     "subtopic": "T08-S01",
@@ -1657,7 +1657,7 @@ const RAW_EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 15,
-    "title": "درخواست حمایت روشن و متقابل",
+    "title": "درخواست حمایت محدود با حفظ حق انتخاب",
     "topicId": "T08",
     "topic": "وابستگی عاطفی",
     "subtopic": "T08-S03",
@@ -2129,7 +2129,7 @@ const RAW_EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 19,
-    "title": "تمرین مستقل در موقعیت کم‌تنش",
+    "title": "گام مستقل در انتخاب روزمره",
     "topicId": "T08",
     "topic": "وابستگی عاطفی",
     "subtopic": "T08-S02",
@@ -3191,7 +3191,7 @@ const RAW_EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 28,
-    "title": "مرور و گام بعدی",
+    "title": "مرور حوزه‌های اتکا و حمایت متقابل",
     "topicId": "T08",
     "topic": "وابستگی عاطفی",
     "subtopic": "T08-S03",
