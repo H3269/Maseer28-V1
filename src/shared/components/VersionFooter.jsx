@@ -38,7 +38,7 @@ export default function VersionFooter({ navVisible = false }) {
           ? <span>نسخه آزمایشی {version}</span>
           : <><span>نسخه {version}</span><span className="releaseFooterDivider" aria-hidden="true">|</span><span>آخرین انتشار: {date}</span></>}
       </div>
-      <span className="releaseFooterOwner">صاحب امتیاز: مرکز هیپنوتراپی شفا</span>
+      <span className="releaseFooterOwner">کلیه حقوق مادی و معنوی این اثر متعلق به مرکز هیپنوتراپی شفا است.</span>
     </aside>
   );
 }
