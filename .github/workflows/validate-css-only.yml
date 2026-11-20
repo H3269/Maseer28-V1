@@ -66,7 +66,7 @@ jobs:
           const changed = execFileSync('git', [
             'diff', '--name-only', `${base}...${head}`,
           ], { encoding: 'utf8' })
-            .split(/\\r?\\n/)
+            .split(/\r?\n/)
             .filter(Boolean)
             .filter((file) => file.endsWith('.css'));
 
