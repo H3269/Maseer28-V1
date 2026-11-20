@@ -535,7 +535,7 @@ const RAW_FEAR_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 6,
-    "title": "آستانه نیاز به حفاظت",
+    "title": "نشانه‌های توقف و فاصله‌گیری ایمن",
     "topicId": "T03",
     "topic": "ترس",
     "subtopic": "T03-S03",
@@ -2549,7 +2549,7 @@ const RAW_FEAR_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 25,
-    "title": "نقشه شخصی تهدید و پاسخ ایمن",
+    "title": "نقشه نشانه‌های تهدید و گزینه حفاظت",
     "topicId": "T03",
     "topic": "ترس",
     "subtopic": "T03-S03",
@@ -2867,7 +2867,7 @@ const RAW_FEAR_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 28,
-    "title": "جمع‌بندی مسیر ترس و انتخاب گام بعدی",
+    "title": "جمع‌بندی نشانه‌های ترس و برنامه حفاظت",
     "topicId": "T03",
     "topic": "ترس",
     "subtopic": "T03-S02",
