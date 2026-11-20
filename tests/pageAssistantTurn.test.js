@@ -39,7 +39,7 @@ test('daily page answers a prepared question with the selected topic and day', (
   assert.match(result.message, /خشم/);
   assert.match(result.message, /روز 1/);
   assert.match(result.message, /راهنمای روز 1 خشم/);
-  assert.match(result.message, /بیاییم قدم‌به‌قدم پیش برویم/);
+  assert.ok(result.message.includes(ANGER_DAILY_ASSISTANT_GUIDES[0].title));
   assert.match(result.message, /تمرین امروز/);
   assert.equal(result.conversationState, null);
 });
