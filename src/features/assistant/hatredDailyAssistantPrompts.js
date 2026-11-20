@@ -853,7 +853,7 @@ const RAW_HATRED_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 9,
-    "title": "نیاز نقض‌شده و حفاظت از خود",
+    "title": "بازشناسی نیاز آسیب‌دیده در تعارض خصمانه",
     "topicId": "T04",
     "topic": "نفرت",
     "subtopic": "T04-S01",
@@ -1171,7 +1171,7 @@ const RAW_HATRED_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 12,
-    "title": "مسئولیت و اختیار",
+    "title": "تفکیک سهم مسئولیت در تعارض",
     "topicId": "T04",
     "topic": "نفرت",
     "subtopic": "T04-S01",
@@ -1701,7 +1701,7 @@ const RAW_HATRED_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 17,
-    "title": "گفت‌وگوی امن یا عدم گفت‌وگو",
+    "title": "تصمیم درباره تماس یا فاصله از فرد مورد اختلاف",
     "topicId": "T04",
     "topic": "نفرت",
     "subtopic": "T04-S01",
@@ -2125,7 +2125,7 @@ const RAW_HATRED_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 21,
-    "title": "حمایت",
+    "title": "دریافت حمایت بدون تقویت خصومت",
     "topicId": "T04",
     "topic": "نفرت",
     "subtopic": "T04-S03",
