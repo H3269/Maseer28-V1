@@ -32,7 +32,12 @@ test('all 392 T12 prepared answers use the shared T01-T11 display frame', () => 
       assert.ok(answer.startsWith('راهنمای روز ' + guide.day + ' مرزبندی و نه گفتن — ' + guide.title),
         'day heading must match T01-T11 daily answer convention');
       assert.ok(answer.includes(guide.title), 'day ' + guide.day + ' answer must retain its topic-specific title');
-      if (question.kind === 'exercise_meaning') assert.ok(answer.includes(guide.objective), 'exercise explanation must retain the daily objective');
+      assert.ok(guide.mechanism && guide.mechanism.trim(), 'day ' + guide.day + ' must have a topic-specific teaching rationale');
+      if (question.kind === 'exercise_meaning') {
+        assert.ok(answer.includes(guide.objective), 'exercise explanation must retain the daily objective');
+        assert.ok(answer.includes(guide.mechanism), 'exercise explanation must show the day-specific teaching rationale');
+      }
+      if (question.kind === 'action_meaning') assert.ok(answer.includes(guide.mechanism), 'action explanation must show the day-specific rationale');
       assert.equal(answer.includes(String.fromCharCode(92) + 'n'), false, 'answer must contain real line breaks, not escaped newline tokens');
       const visible = formatAssistantMessageText(answer).flat().map((part) => part.text).join('\n');
       assert.equal(visible.includes('**'), false, 'raw Markdown markers must not reach visible text');
