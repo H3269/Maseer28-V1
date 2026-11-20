@@ -642,7 +642,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 7,
-    "title": "نیاز پشت حسادت",
+    "title": "نیاز رابطه‌ای در تجربه حسادت",
     "topicId": "T05",
     "topic": "حسادت",
     "subtopic": "T05-S01",
@@ -1808,7 +1808,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 18,
-    "title": "مکث پیش از واکنش",
+    "title": "مهار میل به اتهام و وارسی پیش از پیام",
     "topicId": "T05",
     "topic": "حسادت",
     "subtopic": "T05-S03",
