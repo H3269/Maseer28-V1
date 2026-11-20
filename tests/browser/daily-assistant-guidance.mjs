@@ -655,7 +655,7 @@ try {
     assert.match(await reply.innerText(), /یادآوری مهم درباره ایمنی شما/);
     assert.match(await reply.innerText(), /به یاد داشته باشید: سلامت و امنیت شما از انجام هر تمرینی مهم‌تر است/);
     const shafaLine = reply.locator('.dailyAssistantSafetyReminderShafa');
-    assert.equal(await shafaLine.innerText(), 'مرکز هیپنوتراپی شفا با شماره تماس ۰۹۱۹۰۸۸۹۰۶۲ همیشه در کل مسیر همراه شماست');
+    assert.equal(await shafaLine.innerText(), 'شماره ۰۹۱۹۰۸۸۹۰۶۲ فقط برای نوبت‌دهی و پشتیبانی مرکز است و جایگزین خدمات اورژانسی یا کمک فوری تخصصی نیست.');
     assert.ok(Number(await shafaLine.evaluate(element => getComputedStyle(element).fontWeight)) >= 700,
       'the Shafa contact line must be visibly bold');
   }
