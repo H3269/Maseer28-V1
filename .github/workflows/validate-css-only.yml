@@ -64,14 +64,15 @@ jobs:
           }
 
           const changed = execFileSync('git', [
-            'diff', '--name-only', `${base}...${head}`,
+            'diff', '--name-only', '--diff-filter=ACMRT', `${base}...${head}`,
           ], { encoding: 'utf8' })
             .split(/\r?\n/)
             .filter(Boolean)
             .filter((file) => file.endsWith('.css'));
 
           if (changed.length === 0) {
-            throw new Error('The CSS validation workflow was triggered without a changed CSS file.');
+            console.log('Only CSS deletions were detected; there are no remaining CSS files to parse.');
+            process.exit(0);
           }
 
           for (const file of changed) {
