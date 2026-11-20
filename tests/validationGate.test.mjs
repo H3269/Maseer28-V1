@@ -8,13 +8,13 @@ const publishWorkflow = await fs.readFile(
 );
 
 test('Telegram publication validates the exact checked-out source without a separate workflow dependency', () => {
-  assert.doesNotMatch(publishWorkflow, /validate-content\\.yml|assert-validation-run\\.mjs/);
+  assert.doesNotMatch(publishWorkflow, /validate-content\.yml|assert-validation-run\.mjs/);
   assert.match(publishWorkflow, /ref: \$\{\{ github\.ref \}\}/);
   assert.match(publishWorkflow, /npm run validate:content/);
   assert.match(publishWorkflow, /npm run validate:assistant-topics/);
   assert.match(publishWorkflow, /npm test/);
   assert.match(publishWorkflow, /npm run build -- --base=\/Maseer28-V1\//);
-  assert.match(publishWorkflow, /tests\\/browser\\/\\*\\.mjs/);
+  assert.match(publishWorkflow, /tests\/browser\/\*\.mjs/);
 });
 
 test('release validation happens before the Telegram destination secret is used', () => {
