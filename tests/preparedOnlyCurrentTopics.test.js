@@ -125,9 +125,9 @@ test('T01-T14 daily titles, exercises, actions, and examples are complete and no
       assert.ok(String(exerciseExample || '').trim(), topic.id + ' day ' + guide.day + ' missing exercise example');
       assert.ok(String(actionExample || '').trim(), topic.id + ' day ' + guide.day + ' missing action example');
       assert.equal(guide.questions.length, 14, topic.id + ' day ' + guide.day + ' must retain 14 prepared questions');
-      titles.push(topic.id + ':' + guide.title);
-      exercises.push(topic.id + ':' + guide.exercise);
-      actions.push(topic.id + ':' + guide.action);
+      titles.push(guide.title);
+      exercises.push(guide.exercise);
+      actions.push(guide.action);
     }
   }
   for (const [name, values] of [['titles', titles], ['exercises', exercises], ['actions', actions]]) {
