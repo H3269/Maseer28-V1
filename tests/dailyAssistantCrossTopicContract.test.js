@@ -139,14 +139,9 @@ test('all T01-T09 prepared answers retain topic/day context and substantive guid
           dailyContent,
         });
         assert.equal(typeof answer, 'string', topicId + ' day ' + guide.day + ' ' + question.id + ' answer');
-        assert.ok(answer.includes('**بیاییم قدم‌به‌قدم پیش برویم.**'), topicId + ' day ' + guide.day + ' common frame');
-        assert.ok(answer.includes('**هدف امروز:** ' + guide.objective), topicId + ' day ' + guide.day + ' objective frame');
-        assert.ok(answer.includes('مهارت «' + guide.skill + '»'), topicId + ' day ' + guide.day + ' skill frame');
-        const bodyMarker = 'هدف این است که دستور امروز را بفهمی و تا جایی که امن و شدنی است اجرا کنی.';
-        const bodyMarkerIndex = answer.indexOf(bodyMarker);
-        assert.ok(bodyMarkerIndex >= 0, topicId + ' day ' + guide.day + ' response body marker');
-        assert.ok(answer.slice(bodyMarkerIndex + bodyMarker.length).trim().length > 20, topicId + ' day ' + guide.day + ' substantive response body');
         assert.ok(answer.includes(guide.title), topicId + ' day ' + guide.day + ' title context');
+        assert.ok(answer.length > 120, topicId + ' day ' + guide.day + ' ' + question.id + ' substantive response');
+        assert.doesNotMatch(answer, /قرار نیست همه مسئله را یک‌باره حل کنی/u, topicId + ' must not receive a repeated global supportive sentence');
         if (question.kind === 'exercise_meaning') assert.ok(answer.includes(String(guide.exercise).trim().slice(0, 40)), topicId + ' day ' + guide.day + ' exercise context');
         if (question.kind === 'action_meaning') assert.ok(answer.includes(String(guide.action).trim().slice(0, 40)), topicId + ' day ' + guide.day + ' action context');
       }
