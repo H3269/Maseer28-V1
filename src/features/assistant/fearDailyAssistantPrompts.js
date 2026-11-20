@@ -1807,7 +1807,7 @@ const RAW_FEAR_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 18,
-    "title": "بررسی پیش‌بینی درباره تهدید",
+    "title": "مرز دانسته و پیش‌بینی خطر",
     "topicId": "T03",
     "topic": "ترس",
     "subtopic": "T03-S02",
