@@ -14,7 +14,6 @@ on:
         default: "false"
 
 permissions:
-  actions: write
   contents: read
 
 concurrency:
@@ -43,55 +42,6 @@ jobs:
           path: test-source
           persist-credentials: false
 
-      - name: Require successful validation for this exact commit
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          for attempt in $(seq 1 36); do
-            current_main_sha="$(gh api "repos/${GITHUB_REPOSITORY}/commits/main" --jq .sha)"
-            if [ "${current_main_sha}" != "${GITHUB_SHA}" ]; then
-              echo "Publication stopped: main moved from ${GITHUB_SHA} to ${current_main_sha} during validation."
-              exit 1
-            fi
-
-            gh api -H "Accept: application/vnd.github+json" \
-              "repos/${GITHUB_REPOSITORY}/actions/workflows/validate-content.yml/runs?head_sha=${GITHUB_SHA}&branch=main&per_page=100" \
-              > /tmp/path28-validation-runs.json
-
-            matching_run="$(jq -c --arg sha "${GITHUB_SHA}" '
-              [.workflow_runs[]
-                | select(.head_sha == $sha
-                  and .head_branch == "main"
-                  and .event == "push")]
-              | sort_by(.created_at, .run_attempt)
-              | last // empty
-            ' /tmp/path28-validation-runs.json)"
-
-            if [ -z "${matching_run}" ]; then
-              echo "Waiting for the automatic push validation for exact commit ${GITHUB_SHA} to appear."
-            else
-              status="$(printf '%s' "${matching_run}" | jq -r '.status')"
-              conclusion="$(printf '%s' "${matching_run}" | jq -r '.conclusion // empty')"
-              run_id="$(printf '%s' "${matching_run}" | jq -r '.id')"
-
-              if [ "${status}" = "completed" ]; then
-                if [ "${conclusion}" != "success" ]; then
-                  echo "Publication stopped: validation run ${run_id} for ${GITHUB_SHA} concluded: ${conclusion}."
-                  exit 1
-                fi
-                node test-source/scripts/assert-validation-run.mjs /tmp/path28-validation-runs.json
-                exit 0
-              fi
-              echo "Waiting for validation run ${run_id} (status=${status})."
-            fi
-            sleep 10
-          done
-
-          echo "Publication stopped: no successful validation completed for exact commit ${GITHUB_SHA} within 6 minutes."
-          exit 1
-
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
@@ -99,15 +49,75 @@ jobs:
           cache: npm
           cache-dependency-path: test-source/package-lock.json
 
+      # Validate the checked-out main commit directly. Publication has no
+      # dependency on a separate validation workflow or its workflow filename.
+      - name: Install dependencies and validate release source
+        working-directory: test-source
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+          npm run validate:content
+          npm run validate:assistant-topics
+          npm test
+
+      - name: Build test version for browser regression
+        working-directory: test-source
+        run: npm run build -- --base=/Maseer28-V1/
+
+      - name: Install pinned Playwright browser runner
+        working-directory: test-source
+        run: npm install --no-save --package-lock=false playwright@1.65.1
+
+      - name: Install Chromium and system dependencies
+        working-directory: test-source
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            echo "Chromium installation attempt ${attempt}/3"
+            if npx playwright install --with-deps chromium; then
+              exit 0
+            fi
+            if [ "${attempt}" -lt 3 ]; then
+              sudo apt-get update || true
+              sleep $((attempt * 10))
+            fi
+          done
+          echo "Chromium/system dependency installation failed after 3 attempts."
+          exit 1
+
+      - name: Run browser regression against the test build
+        working-directory: test-source
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/path28-preview.log 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 40); do
+            if curl --fail --silent http://127.0.0.1:4173/Maseer28-V1/ > /dev/null; then
+              break
+            fi
+            if [ "${attempt}" -eq 40 ]; then
+              cat /tmp/path28-preview.log
+              exit 1
+            fi
+            sleep 2
+          done
+          export PATH28_BASE_URL=http://127.0.0.1:4173/Maseer28-V1/
+          for script in tests/browser/*.mjs; do
+            echo "Running ${script}"
+            node "${script}"
+          done
+
       - name: Prepare production-only copy
         working-directory: test-source
         run: npm run prepare:production
 
-      - name: Install dependencies and build
+      - name: Build production version
         working-directory: test-source
-        run: |
-          npm ci
-          npm run build
+        run: npm run build
 
       - name: Checkout Telegram repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
