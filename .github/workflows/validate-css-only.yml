@@ -1,0 +1,84 @@
+name: Focused CSS validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/*.css'
+  pull_request:
+    branches: [main]
+    paths:
+      - '**/*.css'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: path28-css-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  validate-css:
+    name: Parse changed CSS files only
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Parse only changed CSS files
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PUSH_BEFORE: ${{ github.event.before }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PUSH_HEAD_SHA: ${{ github.sha }}
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { execFileSync } from 'node:child_process';
+          import { readFileSync } from 'node:fs';
+          import postcss from 'postcss';
+
+          const base = process.env.EVENT_NAME === 'pull_request'
+            ? process.env.PR_BASE_SHA
+            : process.env.PUSH_BEFORE;
+          const head = process.env.EVENT_NAME === 'pull_request'
+            ? process.env.PR_HEAD_SHA
+            : process.env.PUSH_HEAD_SHA;
+
+          if (!base || !head || /^0+$/.test(base)) {
+            throw new Error('Cannot determine the exact CSS change range; refusing to skip validation.');
+          }
+
+          const changed = execFileSync('git', [
+            'diff', '--name-only', `${base}...${head}`,
+          ], { encoding: 'utf8' })
+            .split(/\\r?\\n/)
+            .filter(Boolean)
+            .filter((file) => file.endsWith('.css'));
+
+          if (changed.length === 0) {
+            throw new Error('The CSS validation workflow was triggered without a changed CSS file.');
+          }
+
+          for (const file of changed) {
+            const source = readFileSync(file, 'utf8');
+            postcss.parse(source, { from: file });
+            console.log(`Valid CSS: ${file}`);
+          }
+
+          console.log(`Successfully parsed ${changed.length} changed CSS file(s).`);
+          NODE
