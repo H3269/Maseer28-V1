@@ -3,8 +3,14 @@ name: Validate main branch before release
 on:
   push:
     branches: [main]
+    # CSS-only changes use the focused CSS validation workflow below.
+    # Any mixed CSS + non-CSS change still runs the complete validation suite.
+    paths-ignore:
+      - '**/*.css'
   pull_request:
     branches: [main]
+    paths-ignore:
+      - '**/*.css'
   workflow_dispatch:
 
 permissions:
