@@ -1534,7 +1534,7 @@ const RAW_GRIEF_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 15,
-    "title": "گفت‌وگوی حمایتی",
+    "title": "درخواست همراهی متناسب با نیاز سوگ",
     "topicId": "T06",
     "topic": "غم و سوگ",
     "subtopic": "T06-S03",
