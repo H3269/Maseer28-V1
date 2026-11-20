@@ -1,6 +1,7 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
+import { ANGER_DAILY_PREPARED_ANSWERS } from './angerDailyPreparedAnswers.js';
 // Daily prepared guidance for the T01 anger path. Content is grounded in the reviewed 28-day draft.
 const RAW_ANGER_DAILY_ASSISTANT_GUIDES = [
   {
@@ -3245,10 +3246,20 @@ function answerAngerDailyPreparedQuestionRaw({ day, message } = {}) {
 }
 
 export function answerAngerDailyPreparedQuestion(args = {}) {
-  const answer = answerAngerDailyPreparedQuestionRaw(args);
-  if (!answer) return null;
   const day = toAngerDayNumber(args.day);
   const guide = ANGER_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
-  const question = guide?.questions.find((item) => item.value === String(args.message || '').trim());
-  return appendDailyAssistantSafetyReminder(addTeacherStyleFrame(answer, { guide, question, topic: 'خشم' }), question?.kind);
+  if (!guide) return null;
+  const question = guide.questions.find((item) => item.value === String(args.message || '').trim());
+  if (!question) return null;
+
+  // Prefer the individually authored response for each day/question pair.
+  // The legacy switch remains only as a defensive fallback for future schema changes.
+  const preparedAnswer = ANGER_DAILY_PREPARED_ANSWERS[day]?.[question.id];
+  const answer = preparedAnswer || answerAngerDailyPreparedQuestionRaw(args);
+  if (!answer) return null;
+
+  return appendDailyAssistantSafetyReminder(
+    addTeacherStyleFrame(answer, { guide, question, topic: 'خشم' }),
+    question.kind,
+  );
 }
