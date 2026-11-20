@@ -121,7 +121,7 @@ test('T01 and T02 assistant guides retain the full skill/mechanism and three exe
   }
 });
 
-test('all T01-T09 prepared answers share the same structural heading and day objective/skill frame', () => {
+test('all T01-T09 prepared answers retain topic/day context and substantive guidance without a repeated global frame', () => {
   for (const [topicId, guides, , answerPrepared] of topics) {
     assert.equal(typeof answerPrepared, 'function', topicId + ' answer handler');
     for (const guide of guides) {
