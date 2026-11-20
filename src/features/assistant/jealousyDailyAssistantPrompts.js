@@ -960,7 +960,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 10,
-    "title": "درخواست روشن",
+    "title": "درخواست اطمینان بدون وارسی",
     "topicId": "T05",
     "topic": "حسادت",
     "subtopic": "T05-S01",
@@ -2656,7 +2656,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 26,
-    "title": "اقدام ارزش‌محور",
+    "title": "اعتمادسازی بدون وارسی و کنترل",
     "topicId": "T05",
     "topic": "حسادت",
     "subtopic": "T05-S03",
@@ -2762,7 +2762,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 27,
-    "title": "برنامه نگهداری",
+    "title": "برنامه مکث در چرخه حسادت و وارسی",
     "topicId": "T05",
     "topic": "حسادت",
     "subtopic": "T05-S03",
@@ -2868,7 +2868,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 28,
-    "title": "مرور",
+    "title": "جمع‌بندی نیاز، اعتماد و مرز در حسادت",
     "topicId": "T05",
     "topic": "حسادت",
     "subtopic": "T05-S01",
