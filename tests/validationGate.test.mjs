@@ -9,7 +9,7 @@ const publishWorkflow = await fs.readFile(
 
 test('Telegram publication validates the exact checked-out source without a separate workflow dependency', () => {
   assert.doesNotMatch(publishWorkflow, /validate-content\.yml|assert-validation-run\.mjs/);
-  assert.match(publishWorkflow, /ref: \$\{\{ github\.ref \}\}/);
+  assert.match(publishWorkflow, /ref: \$\{\{ github\.sha \}\}/);
   assert.match(publishWorkflow, /npm run validate:content/);
   assert.match(publishWorkflow, /npm run validate:assistant-topics/);
   assert.match(publishWorkflow, /npm test/);
