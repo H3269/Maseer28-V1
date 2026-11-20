@@ -2102,3 +2102,116 @@ body .bookReaderFull.theme-night .readerProgressTrack span { background: linear-
 .app .bottomNav {
   grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
 }
+
+
+/* ============================================================
+   M28 SPLASH — "Dawn of Awareness"
+   Visual-only treatment for the React loading screen.
+   Preserve the existing logo reveal and progress/readiness logic.
+   ============================================================ */
+.appLoading {
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(64,224,208,.20) 0%, rgba(64,224,208,0) 31%),
+    radial-gradient(ellipse at 50% 42%, rgba(64,150,200,.13) 0%, rgba(64,150,200,0) 53%),
+    linear-gradient(145deg, #EAF1FA 0%, #F9FCFF 48%, #F0FBFA 100%) !important;
+}
+
+.appLoading .loadingBrand {
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: visible !important;
+  color: #102A43 !important;
+}
+
+.appLoading .loadingBrand::before {
+  content: "" !important;
+  position: absolute !important;
+  z-index: 0 !important;
+  top: -31px !important;
+  left: 50% !important;
+  width: 252px !important;
+  height: 252px !important;
+  border-radius: 50% !important;
+  transform: translateX(-50%) !important;
+  background:
+    radial-gradient(circle, rgba(255,255,255,.98) 0%, rgba(228,248,246,.88) 28%, rgba(64,224,208,.22) 52%, rgba(36,90,154,.08) 70%, transparent 73%) !important;
+  filter: blur(3px) !important;
+  pointer-events: none !important;
+  animation: m28SplashHalo 7s ease-in-out infinite alternate !important;
+}
+
+.appLoading .loadingBrand::after {
+  content: "" !important;
+  position: absolute !important;
+  z-index: 0 !important;
+  top: -13px !important;
+  left: 50% !important;
+  width: 218px !important;
+  height: 218px !important;
+  box-sizing: border-box !important;
+  border: 1px solid rgba(64,150,200,.25) !important;
+  border-radius: 50% !important;
+  transform: translateX(-50%) rotate(0deg) !important;
+  background:
+    radial-gradient(circle at 13% 27%, rgba(215,185,109,.9) 0 1.5px, transparent 2.8px),
+    radial-gradient(circle at 83% 21%, rgba(215,185,109,.72) 0 1px, transparent 2.5px),
+    radial-gradient(circle at 91% 72%, rgba(64,224,208,.9) 0 1.5px, transparent 2.8px),
+    radial-gradient(circle at 18% 82%, rgba(64,150,200,.72) 0 1px, transparent 2.5px),
+    transparent !important;
+  box-shadow:
+    0 0 0 12px rgba(64,224,208,.045),
+    0 0 0 27px rgba(36,90,154,.035),
+    inset 0 0 24px rgba(64,224,208,.07) !important;
+  pointer-events: none !important;
+  animation: m28SplashOrbit 32s linear infinite !important;
+}
+
+.appLoading .loadingBrand img,
+.appLoading .loadingBrand h1,
+.appLoading .loadingBrand p,
+.appLoading .loadingBrand .loadingProgress,
+.appLoading .loadingBrand .loadingError {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.appLoading .loadingBrand img {
+  filter: drop-shadow(0 8px 16px rgba(16,42,67,.16))
+          drop-shadow(0 0 13px rgba(64,224,208,.22)) !important;
+}
+
+.appLoading .loadingBrand h1 {
+  color: #173E62 !important;
+  text-shadow: 0 2px 12px rgba(255,255,255,.78) !important;
+}
+
+.appLoading .loadingBrand p {
+  color: #5B7187 !important;
+}
+
+.appLoading .loadingProgress {
+  border-color: rgba(64,150,200,.30) !important;
+  background: rgba(255,255,255,.78) !important;
+  box-shadow: 0 3px 12px rgba(36,90,154,.08), inset 0 1px 2px rgba(16,42,67,.05) !important;
+}
+
+.appLoading .loadingProgressFill {
+  background: linear-gradient(90deg, #245A9A 0%, #4096C8 48%, #40E0D0 82%, #D7B96D 100%) !important;
+}
+
+@keyframes m28SplashHalo {
+  from { opacity: .72; filter: blur(3px); }
+  to { opacity: 1; filter: blur(7px); }
+}
+
+@keyframes m28SplashOrbit {
+  from { transform: translateX(-50%) rotate(0deg); }
+  to { transform: translateX(-50%) rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .appLoading .loadingBrand::before,
+  .appLoading .loadingBrand::after {
+    animation: none !important;
+  }
+}
