@@ -9,6 +9,7 @@ export const DAILY_ASSISTANT_SAFETY_QUESTION_KINDS = new Set([
   'grief_increased',
   'dependency_increased',
   'procrastination_increased',
+  'boundary_distress',
   'sleep_distress',
   'motivation_distress',
   't11_distress',
