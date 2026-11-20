@@ -1,0 +1,12 @@
+name = "maseer28-replay-marker-integration"
+main = "./replayMarkerWorker.js"
+compatibility_date = "2026-11-04"
+workers_dev = false
+
+[[durable_objects.bindings]]
+name = "REPLAY_MARKERS"
+class_name = "ReplayMarkerTestDO"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ReplayMarkerTestDO"]

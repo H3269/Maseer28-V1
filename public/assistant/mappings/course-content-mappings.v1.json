@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0.0",
+  "mapping_set_id": "maseer28-course-content-mappings-v1",
+  "status": "draft_review_queue_only",
+  "runtime_eligible": false,
+  "source": {
+    "content_registry": "public/content/path-content.json",
+    "topic_registry": "public/assistant/knowledge/topics.v1.json",
+    "subtopic_registry": "public/assistant/knowledge/subtopics.v1.json"
+  },
+  "policy": "Parent topic is assigned only by exact category-name match. Subtopic assignments require human review.",
+  "mappings": []
+}

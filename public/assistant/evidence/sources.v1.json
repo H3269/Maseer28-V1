@@ -1,0 +1,945 @@
+{
+  "schema_version": "1.0.0",
+  "registry_id": "maseer28-evidence-sources",
+  "access_date": "2026-11-14",
+  "sources": [
+    {
+      "source_id": "SRC-ANGER-NHS-001",
+      "title": "Get help with anger",
+      "publisher": "National Health Service (NHS)",
+      "source_type": "public_health_guidance",
+      "publication_date": null,
+      "url": "https://www.nhs.uk/mental-health/feelings-symptoms-behaviours/feelings-and-symptoms/anger/",
+      "relevant_claims": [
+        "Anger can include physical, cognitive, and behavioral signs.",
+        "Early recognition, pausing, calming breathing, mindfulness, and CBT-informed self-help may help some people.",
+        "People who cannot cope, whose self-help is not working, or who act abusively or violently should seek professional help."
+      ],
+      "limitations": "Public-facing guidance; not an individualized treatment protocol or proof that every listed technique is suitable for every person."
+    },
+    {
+      "source_id": "SRC-ANGER-APS-001",
+      "title": "Managing your anger — Treatment",
+      "publisher": "Australian Psychological Society",
+      "source_type": "professional_body_guidance",
+      "publication_date": null,
+      "url": "https://psychology.org.au/for-the-public/psychology-topics/managing-your-anger/why-manage-anger",
+      "relevant_claims": [
+        "CBT, relaxation-skills training, and life-skills training are common approaches to problem anger.",
+        "Cognitive reappraisal, problem-solving, and communication-skills training may support calmer responses and conflict resolution."
+      ],
+      "limitations": "Public information page; individual intervention selection and treatment require qualified assessment."
+    },
+    {
+      "source_id": "SRC-ANGER-APA-001",
+      "title": "Strategies for controlling your anger: Keeping anger in check",
+      "publisher": "American Psychological Association",
+      "source_type": "professional_body_guidance",
+      "publication_date": "2011-10-01",
+      "url": "https://www.apa.org/topics/anger/strategies-controlling",
+      "relevant_claims": [
+        "Recognizing early warning signs and triggers can help prevent escalation.",
+        "Cognitive restructuring, slow breathing, relaxation imagery, and communication skills are practical anger-management strategies.",
+        "A planned pause can be followed by returning to a conversation when calmer."
+      ],
+      "limitations": "General public education; not a substitute for clinical assessment or violence-risk intervention."
+    },
+    {
+      "source_id": "SRC-ANGER-ABCT-001",
+      "title": "Anger",
+      "publisher": "Association for Behavioral and Cognitive Therapies",
+      "source_type": "professional_association_fact_sheet",
+      "publication_date": null,
+      "url": "https://www.abct.org/fact-sheets/anger/",
+      "relevant_claims": [
+        "Anger is a common emotion and is distinct from aggressive or violent behavior.",
+        "CBT-oriented anger treatment may include self-monitoring, time-out, relaxation, cognitive change, and problem-solving skills.",
+        "Frequent, intense, or enduring anger and behavior that risks harm warrant professional assessment."
+      ],
+      "limitations": "Fact sheet describes therapy approaches; the app must not present its self-help exercises as clinician-delivered treatment."
+    },
+    {
+      "source_id": "SRC-ANGER-KJAERVIK-2024-001",
+      "title": "A meta-analytic review of anger management activities that increase or decrease arousal: What fuels or douses rage?",
+      "authors": [
+        "Sophie L. Kjærvik",
+        "Brad J. Bushman"
+      ],
+      "publisher": "Clinical Psychology Review",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2024-04",
+      "epub_date": "2024-03-11",
+      "doi": "10.1016/j.cpr.2024.102414",
+      "pmid": "38518585",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38518585/",
+      "relevant_claims": [
+        "The meta-analysis included 154 studies, 184 independent samples, and 10,189 participants.",
+        "Arousal-decreasing activities reduced anger and aggression in the pooled analysis.",
+        "Arousal-increasing activities were ineffective overall; findings do not support venting as an anger-management strategy."
+      ],
+      "limitations": "The pooled findings do not establish that a particular exercise is appropriate for every individual or clinical presentation; intervention fit and safety still require judgment."
+    },
+    {
+      "source_id": "SRC-ANXIETY-NHS-001",
+      "title": "Anxiety, fear or panic",
+      "publisher": "National Health Service (NHS)",
+      "source_type": "public_health_guidance",
+      "publication_date": null,
+      "url": "https://www.nhs.uk/mental-health/feelings-symptoms-behaviours/feelings-and-symptoms/anxiety-fear-panic/",
+      "relevant_claims": [
+        "Anxiety may affect physical sensations, thoughts, emotions and behaviour.",
+        "Small goals, calming breathing, social support and gradual re-engagement may help some people.",
+        "People should not self-diagnose; professional help is appropriate when coping is difficult or self-help is not helping."
+      ],
+      "limitations": "Public-facing guidance; symptom examples are not diagnostic criteria, and physical symptoms must not automatically be attributed to anxiety."
+    },
+    {
+      "source_id": "SRC-ANXIETY-NICE-CG113-001",
+      "title": "Generalised anxiety disorder and panic disorder in adults: management — Recommendations",
+      "publisher": "National Institute for Health and Care Excellence (NICE)",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2011-01-26",
+      "url": "https://www.nice.org.uk/guidance/cg113/chapter/Recommendations",
+      "relevant_claims": [
+        "Care should use a stepped-care approach and consider distress, functioning, comorbidity and individual circumstances.",
+        "For diagnosed GAD not improved by education and active monitoring, CBT-based self-help may be offered as a low-intensity option.",
+        "Self-help materials should be worked through systematically and are not equivalent to high-intensity clinician-delivered CBT."
+      ],
+      "limitations": "Guideline scope is adults with GAD or panic disorder in the UK; it does not validate this app's 28-day course or replace assessment and treatment planning."
+    },
+    {
+      "source_id": "SRC-ANXIETY-APA-001",
+      "title": "How psychologists help with anxiety disorders",
+      "publisher": "American Psychological Association",
+      "source_type": "professional_body_guidance",
+      "publication_date": "2023-11-30",
+      "url": "https://www.apa.org/topics/anxiety/disorders",
+      "relevant_claims": [
+        "Anxiety may interfere with work, school, relationships and everyday functioning.",
+        "CBT commonly combines understanding thought patterns with behavioural strategies.",
+        "Avoidance can reinforce anxiety; approaching feared situations should be planned collaboratively and not forced before a person has adequate skills."
+      ],
+      "limitations": "Public educational material; it describes professional treatment principles and does not authorize unsupervised exposure or diagnosis by an app."
+    },
+    {
+      "source_id": "SRC-ANXIETY-APA-UNCERTAINTY-001",
+      "title": "10 tips for dealing with the stress of uncertainty",
+      "publisher": "American Psychological Association",
+      "source_type": "professional_body_guidance",
+      "publication_date": "2026-01-06",
+      "url": "https://www.apa.org/topics/stress/uncertainty",
+      "relevant_claims": [
+        "Greater difficulty tolerating uncertainty may be associated with more anxiety and lower resilience.",
+        "Focusing on controllable actions, maintaining routines and seeking trusted support may help people respond to uncertainty."
+      ],
+      "limitations": "General stress education, not a treatment protocol or evidence that uncertainty tolerance can be changed by a fixed sequence of app exercises."
+    },
+    {
+      "source_id": "SRC-ANXIETY-CBT-GUIDELINE-001",
+      "title": "Clinical Practice Guidelines for Cognitive-Behavioral Therapies in Anxiety Disorders and Obsessive-Compulsive and Related Disorders",
+      "publisher": "Indian Journal of Psychiatry",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2020-01-01",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7001348/",
+      "relevant_claims": [
+        "CBT approaches may include cognitive restructuring, self-monitoring, problem-solving and behavioural strategies.",
+        "Graded exposure and reducing excessive reassurance-seeking or over-preparation may be components of structured treatment.",
+        "Breathing retraining, relaxation or mindfulness may be adjunctive strategies rather than universal requirements."
+      ],
+      "limitations": "Guideline context and local clinical standards matter; it is not a substitute for an individualized formulation, clinician competence or supervision."
+    },
+    {
+      "source_id": "SRC-ANGER-WHO-IPV-2013-001",
+      "title": "Responding to intimate partner violence and sexual violence against women: WHO clinical and policy guidelines",
+      "publisher": "World Health Organization",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2013-06-16",
+      "url": "https://www.who.int/publications/i/item/9789241548595",
+      "relevant_claims": [
+        "When violence is disclosed, first-line support should be non-judgmental, avoid pressuring disclosure, respect autonomy, and help connect the person to safety and support resources.",
+        "Safety and privacy should be prioritized when responding to intimate partner violence or sexual violence."
+      ],
+      "limitations": "The guideline addresses health-sector responses for women subjected to intimate partner violence or sexual violence. It does not validate this app's self-check, automated risk assessment, or a 28-day anger course, and must not be generalized as a clinical protocol for all users or genders. The app uses it only as a conservative safety and referral reference."
+    },
+    {
+      "source_id": "SRC-ANGER-POP-2025-001",
+      "title": "Anger and emotion regulation strategies: a meta-analysis",
+      "authors": [
+        "Gabriela Viorela Pop",
+        "Diana-Mirela Nechita",
+        "Andrei C. Miu",
+        "Aurora Szentágotai-Tătar"
+      ],
+      "publisher": "Scientific Reports",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2025-02-26",
+      "doi": "10.1038/s41598-025-91646-0",
+      "url": "https://www.nature.com/articles/s41598-025-91646-0",
+      "relevant_claims": [
+        "The meta-analysis included 81 studies and 115 effect sizes examining anger and emotion-regulation strategies.",
+        "Anger was positively associated with avoidance, rumination, and suppression, and negatively associated with acceptance and cognitive reappraisal.",
+        "The analyses reported substantial heterogeneity and moderators including anger type, clinical status, culture, study quality, and sample composition."
+      ],
+      "limitations": "The findings concern associations between anger and habitual regulation strategies, not the efficacy of a specific intervention or app exercise. Most included studies were cross-sectional (93.82%), and study quality was mostly poor (56 poor, 23 fair, 2 good); causal direction and intervention efficacy cannot be inferred. Large heterogeneity limits simple generalization."
+    },
+    {
+      "source_id": "SRC-ANGER-ODEAN-2025-001",
+      "title": "The associations and effects of mindfulness on anger and aggression: A meta-analytic review",
+      "authors": [
+        "Siobhan M. O'Dean",
+        "Elizabeth Summerell",
+        "Eddie Harmon-Jones",
+        "J. David Creswell",
+        "Thomas F. Denson"
+      ],
+      "publisher": "Clinical Psychology Review",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2025-06",
+      "epub_date": "2025-04-06",
+      "doi": "10.1016/j.cpr.2025.102584",
+      "pmid": "40222147",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40222147/",
+      "relevant_claims": [
+        "The review synthesized 118 correlational and experimental studies of mindfulness, anger, and aggression.",
+        "In experimental studies, mindfulness-based interventions were associated with lower anger and aggression relative to control groups (reported effects d = -0.48 and d = -0.61).",
+        "Effects were larger when studies used passive rather than active control groups; the authors call for more rigorous controls."
+      ],
+      "limitations": "The pooled findings do not establish that a brief standalone prompt in this app is equivalent to a structured mindfulness-based intervention. Differences in intervention dose, populations, and control conditions matter; the larger effects against passive controls require cautious interpretation."
+    },
+    {
+      "source_id": "SRC-ANGER-SMITH-2026-001",
+      "title": "Emotion Regulation and Aggression: A Systematic Review and Meta-Analysis",
+      "authors": [
+        "Kimberley Smith",
+        "Andrew Jones",
+        "Natasha Daly",
+        "Helena Widdrington",
+        "Carlo Garofalo",
+        "Steven M. Gillespie"
+      ],
+      "publisher": "Aggressive Behavior",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2026-01",
+      "epub_date": "2025-12-22",
+      "doi": "10.1002/ab.70055",
+      "pmid": "41424362",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41424362/",
+      "relevant_claims": [
+        "The review included 137 articles and 171 studies, with a combined sample of 252,605 participants.",
+        "Emotion-regulation difficulties and maladaptive regulation strategies showed small-to-moderate associations with aggression.",
+        "The association between adaptive strategies and lower aggression was small and became non-significant after a publication-bias correction; heterogeneity was high."
+      ],
+      "limitations": "These are primarily associations, not proof that changing a specific strategy will prevent aggression. High heterogeneity and smaller associations for intimate-partner targets require caution; the findings do not validate individual risk prediction or a 28-day self-help program."
+    },
+    {
+      "source_id": "SRC-IPV-RASMUSSEN-2026-001",
+      "title": "Intimate Partner Violence and Suicide Risk among Women Presenting to Emergency Departments: A Systematic Review, Meta-Analysis, and Narrative Synthesis",
+      "authors": [
+        "Victoria Rasmussen",
+        "Zachary Steel",
+        "Patricia Cullen",
+        "Lauren McGillivray",
+        "Nancy Briggs",
+        "Michelle Torok"
+      ],
+      "publisher": "Trauma, Violence, & Abuse",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2026-10-17",
+      "doi": "10.1177/15248380261480165",
+      "pmid": "42891520",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42891520/",
+      "relevant_claims": [
+        "The review included 20 emergency-department studies involving 7,498 women.",
+        "Intimate-partner violence was associated with increased suicide-attempt risk in this emergency-department population.",
+        "The authors reported high between-study heterogeneity and high risk of bias in half of the included studies."
+      ],
+      "limitations": "The sample is women presenting to emergency departments, not a general-population sample. Overall certainty was rated low; heterogeneity exceeded 75% across models and half of studies had high risk of bias. The final search covered evidence through 30 August 2025. The findings cannot predict an individual's risk, should not be generalized to all genders or settings, and support contextualized human assessment rather than automated risk scoring."
+    },
+    {
+      "source_id": "SRC-ER-SACCARO-2024-001",
+      "title": "Interventions targeting emotion regulation: A systematic umbrella review",
+      "authors": [
+        "Luigi F. Saccaro",
+        "Alexis Giff",
+        "Maurilio Menduni De Rossi",
+        "Camille Piguet"
+      ],
+      "publisher": "Journal of Psychiatric Research",
+      "source_type": "systematic_umbrella_review",
+      "publication_date": "2024-06",
+      "epub_date": "2024-04-18",
+      "doi": "10.1016/j.jpsychires.2024.04.025",
+      "pmid": "38677089",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38677089/",
+      "relevant_claims": [
+        "The umbrella review synthesized 21 systematic reviews, including 11 meta-analyses, on psychotherapeutic interventions targeting emotion dysregulation.",
+        "CBT and DBT showed evidence of reducing emotion dysregulation across adult transdiagnostic psychiatric populations and healthy participants."
+      ],
+      "limitations": "The review reported moderate overall risk of bias. It does not validate this 28-day course, any specific daily prompt, or a stand-alone app as CBT or DBT; evidence in children and adolescents was sparse."
+    },
+    {
+      "source_id": "SRC-ANGER-MINDFULNESS-ER-2026-001",
+      "title": "The effects of mindfulness-based interventions on emotion regulation/dysregulation in people with mental health conditions: A systematic review and meta-analysis",
+      "authors": [
+        "Thomas Easdale-Cheele",
+        "George Nash",
+        "Veronika Filobokova",
+        "Chloe Westbury",
+        "Alessio Bellato"
+      ],
+      "publisher": "JCPP Advances",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2026-09",
+      "doi": "10.1002/jcv2.70103",
+      "url": "https://doi.org/10.1002/jcv2.70103",
+      "relevant_claims": [
+        "The review identified 19 randomized trials, with 16 studies and 988 participants included in meta-analyses of mindfulness-based interventions for diagnosed mental health conditions.",
+        "Pooled findings favored mindfulness-based interventions for cognitive reappraisal and overall emotion dysregulation; effects on expressive suppression were not statistically significant."
+      ],
+      "limitations": "The trials evaluated structured mindfulness-based interventions in diagnosed clinical populations, not a brief standalone app prompt or an anger-specific 28-day program. Study quality moderated some outcomes, and evidence for younger populations was limited.",
+      "epub_date": "2026-02-12"
+    },
+    {
+      "source_id": "SRC-DMHI-SAFETY-TAHER-2023-001",
+      "title": "The Safety of Digital Mental Health Interventions: Systematic Review and Recommendations",
+      "authors": [
+        "Rayan Taher",
+        "Che-Wei Hsu",
+        "Chloe Hampshire",
+        "Carolina Fialho",
+        "Clare Heaysman",
+        "Daniel Stahl",
+        "Sukhi Shergill",
+        "Jenny Yiend"
+      ],
+      "publisher": "JMIR Mental Health",
+      "source_type": "systematic_review_digital_health_safety",
+      "publication_date": "2023-10-09",
+      "doi": "10.2196/47433",
+      "pmid": "37812471",
+      "pmcid": "PMC10594135",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37812471/",
+      "relevant_claims": [
+        "The review included 23 studies of digital mental health intervention safety in adults.",
+        "Eight of 23 studies did not collect safety data; symptom deterioration was the main reported treatment-related adverse event.",
+        "The authors called for standardized adverse-event classification, consistent safety measurement, and evidence-based risk mitigation in research and post-market use."
+      ],
+      "limitations": "The review covered English-language adult clinical digital mental health interventions and does not supply a validated risk algorithm for this app. Safety processes must be adapted, tested, and monitored for the actual service and user population."
+    },
+    {
+      "source_id": "SRC-DMHI-NSQDMH-2026-001",
+      "title": "National Safety and Quality Digital Mental Health Standards",
+      "publisher": "Australian Commission on Safety and Quality in Health Care",
+      "source_type": "digital_mental_health_quality_standard",
+      "publication_date": "2026-04-29",
+      "url": "https://www.safetyandquality.gov.au/national-standards/digital-mental-health-standards",
+      "relevant_claims": [
+        "The standards describe governance and operational processes for safe, high-quality digital mental health services.",
+        "Related action guides cover information security, privacy, partnering with service users, incident management and open disclosure, and healthcare rights."
+      ],
+      "limitations": "This is an Australian service-quality standard and a useful governance benchmark, not automatic certification or legal compliance for this project in other jurisdictions. Applicability must be assessed against the actual operating model and local law."
+    },
+    {
+      "source_id": "SRC-RELATIONSHIP-WHO-RESPECT-2025-001",
+      "title": "RESPECT women: preventing violence against women, 2nd ed.",
+      "publisher": "World Health Organization",
+      "source_type": "global_public_health_guideline",
+      "publication_date": "2025-11-19",
+      "url": "https://www.who.int/westernpacific/publications/i/item/9789240117020",
+      "relevant_claims": [
+        "The second edition updates the RESPECT framework with evidence including humanitarian settings.",
+        "The framework organizes prevention strategies around relationship skills, women's empowerment, services, poverty reduction, safe environments, prevention of child and adolescent abuse, and transforming attitudes, beliefs, and norms."
+      ],
+      "limitations": "Population-level prevention framework focused on violence against women and girls; not an individual clinical risk-assessment tool, safety-plan template, perpetrator treatment protocol, or validation of this app's relationship self-check or communication exercises. Do not generalize its population scope to all genders or use it as a substitute for local specialist services."
+    },
+    {
+      "source_id": "SRC-RELATIONSHIP-NHSE-SAFETY-2026-001",
+      "title": "Mental health personalised care framework: the modern care programme approach — Annex A: safety assessment, formulation and management planning",
+      "publisher": "NHS England",
+      "source_type": "clinical_safety_guidance",
+      "publication_date": "2026-07-17",
+      "url": "https://www.england.nhs.uk/long-read/mental-health-personalised-care-framework-the-modern-care-programme-approach-annex-a-safety-assessment-formulation-and-management-planning/",
+      "relevant_claims": [
+        "Safety formulation should consider harm to self, to others, from others, and iatrogenic harm together.",
+        "Safety assessment and planning should be dynamic, collaborative, trauma-informed, attentive to safeguarding and coercion, and revisited when circumstances or incidents change.",
+        "Clear communication, continuity, and involvement of the person and chosen support network are important enablers of relational safety."
+      ],
+      "limitations": "Guidance for mental health services in England; not a validated screening instrument or automated decision rule. It does not establish that this app's single self-report question can assess or guarantee safety, and its legal/service arrangements cannot be assumed to apply in other jurisdictions."
+    },
+    {
+      "source_id": "SRC-VIOLENCE-PSYCHOSOCIAL-LANCET-2026-001",
+      "title": "Non-specialist delivered psychosocial care after war and interpersonal violence: a systematic review and meta-analysis",
+      "publisher": "The Lancet Psychiatry",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2026-07",
+      "doi": "10.1016/S2215-0366(26)00123-9",
+      "url": "https://doi.org/10.1016/S2215-0366(26)00123-9",
+      "relevant_claims": [
+        "The review included 45 studies and 9,431 adults exposed to war-related or interpersonal violence.",
+        "Compared with control conditions, non-specialist-delivered psychosocial interventions showed pooled benefits for anxiety, depression, post-traumatic stress symptoms, and functional impairment."
+      ],
+      "limitations": "Although pooled overall effects favored non-specialist-delivered care, subgroup analyses found no statistically significant depression or anxiety improvement among interpersonal-violence survivors, and no significant effects across outcomes for veterans. Heterogeneity for the main outcomes was high (I² 77–84%), and 98% of included studies had some risk of bias. The review concerns structured psychosocial interventions delivered by non-specialists to violence-exposed adults; it does not validate unguided self-help, an anger-management sequence, this app, or an automated risk/referral algorithm. Intervention type, supervision, population, and local service pathways matter; pooled effects should not be presented as guaranteed individual outcomes.",
+      "authors": [
+        "Anushka R. Patel",
+        "Ginger Ramirez",
+        "Luanna Fernandes",
+        "Aman Bariya-Sousa",
+        "Erin McGuinness",
+        "Sarah Taha",
+        "Bijayalaxmi Biswal",
+        "Astha Awasthi",
+        "Daryll Wilson",
+        "Kelly E. Dixon",
+        "Davide Papola",
+        "Anna Zettelmeyer",
+        "Vikram H. Patel",
+        "Abhijit Nadkarni"
+      ],
+      "pmid": "42309105"
+    },
+    {
+      "source_id": "SRC-WHO-PSYCH-SELFHELP-2026-001",
+      "title": "Psychological self-help interventions: delivering self-help for individuals, featuring Step-by-Step and Doing What Matters in Times of Stress",
+      "publisher": "World Health Organization",
+      "source_type": "global_implementation_manual",
+      "publication_date": "2026-06-01",
+      "url": "https://www.who.int/publications/i/item/9789240120785",
+      "relevant_claims": [
+        "The WHO manual provides implementation guidance for individually delivered guided and unguided psychological self-help, including digital, print, and video delivery.",
+        "The manual describes the specific WHO interventions Step-by-Step and Doing What Matters in Times of Stress, which WHO reports have demonstrated effectiveness in multiple randomized controlled trials."
+      ],
+      "limitations": "The evidence and implementation guidance concern structured WHO interventions, especially Step-by-Step and Doing What Matters in Times of Stress. They do not demonstrate the effectiveness of this app, its anger-management content, its 28-day sequence, or any isolated daily prompt, and do not constitute WHO endorsement of this product. Adaptation requires attention to intervention fidelity, cultural and service context, monitoring, and appropriate human-support and referral pathways."
+    },
+    {
+      "source_id": "SRC-ER-REENTS-2026-001",
+      "title": "Efficacy of emotion regulation strategy implementation in and across mental disorders: A systematic review and meta-analysis",
+      "authors": [
+        "Mareike F. Reents",
+        "Philipp A. Schroeder",
+        "I. Wolz",
+        "M. M. van den Hoek Ostende",
+        "M. Dolderer",
+        "M. Farshad",
+        "J. Svaldi"
+      ],
+      "publisher": "Clinical Psychology Review",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2026-04",
+      "epub_date": "2026-02-25",
+      "doi": "10.1016/j.cpr.2026.102718",
+      "pmid": "41797239",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41797239/",
+      "relevant_claims": [
+        "The preregistered review identified 109 studies; 71 studies with 566 effect sizes entered the multilevel meta-analysis.",
+        "In controlled mood-induction tasks, instructed emotion-regulation strategies had a small effect on experiential outcomes (d = -0.37) and a very small effect on physiological outcomes (d = -0.09).",
+        "No significant pooled effect was found for behavioral outcomes; cognitive-change strategies had larger effects on experiential outcomes than response-modulation or attentional-deployment strategies."
+      ],
+      "limitations": "The evidence concerns instructed strategy use in controlled mood-induction/laboratory tasks, not durable treatment effects or real-world aggression prevention. No significant behavioral effect was found, and the authors note a shortage of behavioral outcomes and risk of bias from non-validated measures. It does not validate this app, its 28-day sequence, or a brief standalone prompt; it must not be cited as proof of behavioral change."
+    },
+    {
+      "source_id": "SRC-AGGRESSION-AWMF-2026-001",
+      "title": "Verhinderung von Zwang – Prävention und Therapie aggressiven Verhaltens bei Erwachsenen",
+      "publisher": "Arbeitsgemeinschaft der Wissenschaftlichen Medizinischen Fachgesellschaften (AWMF)",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2026-06-25",
+      "url": "https://www.awmf.org/aktuelles/awmf-aktuell/verhinderung-von-zwang-praevention-und-therapie-aggressiven-verhaltens-bei-erwachsenen-1",
+      "relevant_claims": [
+        "The 2026 version 3.0 guideline addresses prevention and treatment of aggressive behavior in adults in clinical and community psychiatric settings.",
+        "It aims to reduce or avoid coercive measures and emphasizes interventions that are as brief and minimally restrictive as possible while avoiding psychological and physical trauma."
+      ],
+      "limitations": "German-language clinical practice guidance for professional services and adult clinical populations. It is not a self-help protocol, individual risk-prediction tool, or validation of this app. Its recommendations require qualified clinical interpretation and cannot be transferred to an unguided 28-day program."
+    },
+    {
+      "source_id": "SRC-ER-IMPAIRMENT-SLOAN-2026-001",
+      "title": "Emotion regulation impairment across psychiatric disorders: a systematic review and meta-analysis",
+      "authors": [
+        "Matthew E. Sloan",
+        "Jordan Stellern",
+        "Ke Bin Xiao",
+        "Alisa Germeyer",
+        "Kevin Gill",
+        "Viyaleta Laputsina",
+        "Benoit H. Mulsant",
+        "Anthony Ngoy",
+        "Martin Nguyen",
+        "Victor M. Tang",
+        "Marcos Sanches",
+        "Joshua L. Gowin"
+      ],
+      "publisher": "Translational Psychiatry",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2026-05-29",
+      "doi": "10.1038/s41398-026-04119-x",
+      "pmid": "42215453",
+      "pmcid": "PMC13424126",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13424126/",
+      "relevant_claims": [
+        "The review included 188 studies and 563 case-control comparisons across 15 diagnoses, with 11,201 cases and 9,609 controls.",
+        "DERS case-control differences were significant in all 12 diagnoses with sufficient data, with effect sizes ranging from 0.94 to 2.55.",
+        "ERQ cognitive reappraisal was lower in all disorders except panic disorder; expressive suppression was higher in all disorders except ADHD and OCD."
+      ],
+      "limitations": "This is a case-control meta-analysis of measured emotion-regulation differences, not an intervention meta-analysis and not evidence that a specific skill, prompt, or app changes behavior. The database search ended in September 2023 despite publication in 2026; the included sample was 66% female and the number of comparisons varied substantially by diagnosis and measure. Results are not uniform across measures or diagnoses and do not justify applying one identical intervention to all topics."
+    },
+    {
+      "source_id": "SRC-GUILT-EICKELS-2025-001",
+      "title": "The parent–child relationship and child shame and guilt: A meta-analytic systematic review",
+      "publisher": "Child Development",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2025-01-16",
+      "doi": "10.1111/cdev.14212",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12023818/",
+      "relevant_claims": [
+        "Six meta-analyses across 65 samples and 19,144 participants examined associations between parent–child relationship characteristics and child shame/guilt.",
+        "The review distinguishes adaptive guilt, maladaptive guilt, and shame as related but non-identical constructs."
+      ],
+      "limitations": "The review focuses on children and adolescents; findings should not be directly generalized to all adults or treated as validation of a 28-day self-help pathway.",
+      "authors": [
+        "Rahel L. van Eickels",
+        "Magdalena Siegel",
+        "Alice J. Juhasz",
+        "Martina Zemp"
+      ],
+      "epub_date": "2025-01-16",
+      "pmid": "39821595",
+      "volume": "96",
+      "issue": "3",
+      "pages": "907-929"
+    },
+    {
+      "source_id": "SRC-GUILT-WANG-2026-001",
+      "title": "Moral emotions in mental health: regulation and mediation",
+      "publisher": "Frontiers in Psychology",
+      "source_type": "narrative_review",
+      "publication_date": "2026-01-21",
+      "doi": "10.3389/fpsyg.2025.1718674",
+      "pmid": "41646899",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12867822/",
+      "relevant_claims": [
+        "The review discusses adaptive pathways such as behavior-focused appraisal and repair alongside maladaptive pathways such as rumination, avoidance, and self-punishment."
+      ],
+      "limitations": "This is a narrative/minireview, not a meta-analysis of intervention effectiveness or a clinical practice guideline; it supports conceptual framing only.",
+      "authors": [
+        "Angela Lu Wang"
+      ],
+      "epub_date": "2026-01-21",
+      "volume": "16",
+      "article_number": "1718674"
+    },
+    {
+      "source_id": "SRC-GUILT-VISMAYA-2024-001",
+      "title": "Psychological interventions to promote self-forgiveness: a systematic review",
+      "publisher": "BMC Psychology",
+      "source_type": "systematic_review",
+      "publication_date": "2024-05-09",
+      "doi": "10.1186/s40359-024-01671-3",
+      "pmid": "38725052",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38725052/",
+      "relevant_claims": [
+        "The systematic review examines psychological interventions that aim to promote self-forgiveness."
+      ],
+      "limitations": "Self-forgiveness must not be conflated with denial of harm, removal of responsibility, or demanding forgiveness from an affected person; the review does not validate the T07 daily sequence.",
+      "authors": [
+        "A. Vismaya",
+        "Aswathy Gopi",
+        "John Romate",
+        "Eslavath Rajkumar"
+      ],
+      "volume": "12",
+      "issue": "1",
+      "article_number": "258"
+    },
+    {
+      "source_id": "SRC-GUILT-MOTTERSHEAD-2024-001",
+      "title": "A mixed-methods systematic review of offence-related shame and/or guilt in violent offenders",
+      "publisher": "Aggression and Violent Behavior",
+      "source_type": "mixed_methods_systematic_review",
+      "publication_date": "2024-09",
+      "doi": "10.1016/j.avb.2024.101989",
+      "url": "https://www.sciencedirect.com/science/article/pii/S135917892400079X",
+      "relevant_claims": [
+        "The review examines offence-related shame and guilt in the specific population of violent offenders and discusses distinctions relevant to adaptive guilt and maladaptive shame."
+      ],
+      "limitations": "The population is highly specific; findings cannot be generalized to all users or all guilt experiences.",
+      "authors": [
+        "Trixie Mottershead",
+        "Alys Griffiths",
+        "Rajan Nathan",
+        "Jon Cole"
+      ],
+      "volume": "78",
+      "article_number": "101989"
+    },
+    {
+      "source_id": "SRC-GUILT-CFT-2025-001",
+      "title": "The Effectiveness of Compassion Focused Therapy for the Three Flows of Compassion, Self-Criticism, and Shame in Clinical Populations: A Systematic Review",
+      "publisher": "Behavioral Sciences",
+      "source_type": "systematic_review",
+      "publication_date": "2025-07-29",
+      "doi": "10.3390/bs15081031",
+      "pmid": "40867388",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12382812/",
+      "relevant_claims": [
+        "The review includes 21 studies and 450 clinical participants and reports improvements in self-compassion and reductions in self-criticism; evidence for internal shame and long-term follow-up is more limited."
+      ],
+      "limitations": "The review concerns compassion-focused therapy in clinical populations, not a general guilt curriculum or proof of effectiveness for the T07 exercises.",
+      "authors": [
+        "Naomi Brown",
+        "Katie Ashcroft"
+      ],
+      "volume": "15",
+      "issue": "8",
+      "article_number": "1031"
+    },
+    {
+      "source_id": "SRC-SLEEP-AASM-CBTI-2021-001",
+      "title": "Behavioral and psychological treatments for chronic insomnia disorder in adults: AASM clinical practice guideline",
+      "publisher": "American Academy of Sleep Medicine",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2021-02-01",
+      "doi": "10.5664/jcsm.8986",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7853203/",
+      "relevant_claims": [
+        "For adults with chronic insomnia disorder, multicomponent CBT-I is strongly recommended by the guideline.",
+        "Stimulus control, sleep restriction therapy, and relaxation therapy as single components receive conditional recommendations.",
+        "Sleep hygiene alone is not recommended as a single-component treatment for chronic insomnia disorder.",
+        "Sleep restriction components may be contraindicated or require caution in high-risk occupations and people predisposed to mania/hypomania or with poorly controlled seizure disorders."
+      ],
+      "limitations": "Guideline is for adults with chronic insomnia disorder and clinician-delivered treatment decisions. It does not validate this app's 28-day course, any single app exercise, or unsupervised sleep restriction. Recommendations require clinical judgment and patient context."
+    },
+    {
+      "source_id": "SRC-SLEEP-VADOD-INSOMNIA-OSA-2025-001",
+      "title": "VA/DoD Clinical Practice Guideline for the Management of Chronic Insomnia Disorder and Obstructive Sleep Apnea (2025)",
+      "publisher": "U.S. Department of Veterans Affairs / Department of Defense",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2025-01-01",
+      "url": "https://www.healthquality.va.gov/guidelines/CD/insomnia/I-OSA-CPG_2025-Guideline_final_20250915.pdf",
+      "relevant_claims": [
+        "CBT-I and brief behavioral therapy for insomnia are clinician-directed options for chronic insomnia disorder.",
+        "Evaluation for other sleep disorders, daytime sleepiness, respiratory impairment, substance use history, and medication interactions is relevant before pharmacotherapy.",
+        "The guideline includes separate screening and management pathways for obstructive sleep apnea.",
+        "Conditions requiring adaptation or delay of CBT-I/BBT-I include medically unstable status, active alcohol or drug use disorder, excessive daytime sleepiness, nighttime fall risk or inability to transfer in/out of bed, active exposure-based PTSD treatment, uncontrolled seizure disorder, bipolar disorder, current acute mental health symptoms, and pregnancy/postpartum insomnia."
+      ],
+      "limitations": "Professional clinical practice guideline for clinician decision-making, not a self-screening tool or app treatment protocol. The app must not diagnose or independently determine suitability for CBT-I, BBT-I, sleep restriction, or medication."
+    },
+    {
+      "source_id": "SRC-SLEEP-NHLBI-INSOMNIA-DIAGNOSIS-001",
+      "title": "Insomnia — Diagnosis",
+      "publisher": "National Heart, Lung, and Blood Institute (NIH)",
+      "source_type": "public_health_guidance",
+      "publication_date": "2022-03-24",
+      "url": "https://www.nhlbi.nih.gov/health/insomnia/diagnosis",
+      "relevant_claims": [
+        "Clinical evaluation considers frequency and duration of sleep difficulty, daytime effects, work and non-work schedules, medications, caffeine, nicotine, alcohol, health conditions, and possible other sleep disorders.",
+        "A sleep diary for a limited period may help a healthcare provider understand sleep patterns and daytime sleepiness.",
+        "Sleep studies and other tests may be used when other sleep disorders or medical conditions are suspected."
+      ],
+      "limitations": "Patient education about clinical evaluation; symptom patterns are not diagnostic criteria for the app. Sleep diary suggestions do not justify obsessive tracking or self-diagnosis."
+    },
+    {
+      "source_id": "SRC-SLEEP-NHLBI-OSA-SYMPTOMS-001",
+      "title": "Sleep Apnea — Symptoms",
+      "publisher": "National Heart, Lung, and Blood Institute (NIH)",
+      "source_type": "public_health_guidance",
+      "publication_date": "2025-01-09",
+      "url": "https://www.nhlbi.nih.gov/health/sleep-apnea/symptoms",
+      "relevant_claims": [
+        "Sleep apnea symptoms can include breathing that starts and stops, loud snoring, gasping for air, daytime sleepiness, and tiredness.",
+        "People may not notice nighttime symptoms themselves; a bed partner may observe them.",
+        "People with symptoms should discuss them with a healthcare provider; a sleep study may be needed."
+      ],
+      "limitations": "Symptom education only; these signs do not establish a diagnosis and do not replace clinical evaluation."
+    },
+    {
+      "source_id": "SRC-SLEEP-NHLBI-OSA-DIAGNOSIS-001",
+      "title": "Sleep Apnea — Diagnosis",
+      "publisher": "National Heart, Lung, and Blood Institute (NIH)",
+      "source_type": "public_health_guidance",
+      "publication_date": null,
+      "url": "https://www.nhlbi.nih.gov/health/sleep-apnea/diagnosis",
+      "relevant_claims": [
+        "A healthcare provider evaluates symptoms, risk factors, and medical history when sleep apnea is suspected.",
+        "A sleep study can help diagnose the type and severity of sleep apnea.",
+        "A sleep diary may help a provider review sleep duration, quality, and daytime sleepiness."
+      ],
+      "limitations": "Patient education; the app must not diagnose sleep apnea or decide which test a person needs."
+    },
+    {
+      "source_id": "SRC-SLEEP-CDC-ABOUT-SLEEP-2024-001",
+      "title": "About Sleep",
+      "publisher": "Centers for Disease Control and Prevention (CDC)",
+      "source_type": "public_health_guidance",
+      "publication_date": "2024-05-15",
+      "url": "https://www.cdc.gov/sleep/about/index.html",
+      "relevant_claims": [
+        "Sleep needs vary with age.",
+        "General sleep-supportive habits can include a consistent schedule, a quiet and comfortable sleep environment, and attention to caffeine and alcohol timing.",
+        "People with ongoing sleep problems should discuss them with a healthcare provider."
+      ],
+      "limitations": "General public-health education. Age, health, shift work, caregiving, environment, and individual circumstances matter; these suggestions are not an insomnia treatment protocol."
+    },
+    {
+      "source_id": "SRC-SLEEP-NIOSH-LIGHT-CIRCADIAN-001",
+      "title": "Effects of Light on Circadian Rhythms",
+      "publisher": "National Institute for Occupational Safety and Health (CDC)",
+      "source_type": "public_health_guidance",
+      "publication_date": null,
+      "url": "https://www.cdc.gov/niosh/work-hour-training-for-nurses/longhours/mod2/19.html",
+      "relevant_claims": [
+        "Light exposure at different times can influence circadian timing and alertness.",
+        "The effect of light depends on timing relative to a person's usual sleep and wake schedule; shift work requires context-specific consideration."
+      ],
+      "limitations": "Educational material with examples for shift-work contexts. Do not translate into a universal light prescription; eye conditions, photosensitizing medicines, and individual schedules require caution."
+    },
+    {
+      "source_id": "SRC-SLEEP-NIOSH-CAFFEINE-SHIFTWORK-001",
+      "title": "Sleep Aids and Stimulants — Caffeine",
+      "publisher": "National Institute for Occupational Safety and Health (CDC)",
+      "source_type": "public_health_guidance",
+      "publication_date": null,
+      "url": "https://www.cdc.gov/niosh/work-hour-training-for-nurses/longhours/mod6/11.html",
+      "relevant_claims": [
+        "Caffeine is a stimulant that can increase alertness and may also interfere with sleep depending on timing and individual sensitivity.",
+        "Shift workers may have different alertness and sleep timing constraints."
+      ],
+      "limitations": "Training material for shift workers; timing and effects vary. Do not advise abrupt cessation or use caffeine as a substitute for sleep or safety."
+    },
+    {
+      "source_id": "SRC-SLEEP-NHLBI-INSOMNIA-OVERVIEW-001",
+      "title": "Insomnia — What Is Insomnia?",
+      "publisher": "National Heart, Lung, and Blood Institute (NIH)",
+      "source_type": "public_health_guidance",
+      "publication_date": "2022-03-24",
+      "url": "https://www.nhlbi.nih.gov/health/insomnia",
+      "relevant_claims": [
+        "Insomnia can involve difficulty falling asleep, staying asleep, or getting good-quality sleep despite having time and an appropriate environment to sleep.",
+        "Persistent insomnia can interfere with daily activities; diagnosis belongs to a healthcare provider."
+      ],
+      "limitations": "Public-facing educational page; symptom descriptions are not diagnostic criteria for the app and cannot establish insomnia from a single complaint."
+    },
+    {
+      "source_id": "SRC-SLEEP-NHLBI-SLEEPINESS-SAFETY-001",
+      "title": "Sleep Deprivation and Deficiency — Diagnosis and Treatment",
+      "publisher": "National Heart, Lung, and Blood Institute (NIH)",
+      "source_type": "public_health_guidance",
+      "publication_date": null,
+      "url": "https://www.nhlbi.nih.gov/health/sleep-deprivation/diagnosis-treatment",
+      "relevant_claims": [
+        "Clinical evaluation may ask how often a person dozes off or has trouble staying awake during routine tasks, especially driving.",
+        "A sleep diary may record sleep timing, naps, alertness, and daytime sleepiness for discussion with a healthcare provider."
+      ],
+      "limitations": "Patient education; it does not provide an individualized fitness-to-drive assessment. When sleepy, the app should advise stopping hazardous activity rather than trying to overcome sleepiness."
+    },
+    {
+      "source_id": "SRC-SLEEP-NHTSA-DROWSY-DRIVING-2026-001",
+      "title": "Drowsy Driving: Avoid Falling Asleep Behind the Wheel",
+      "publisher": "National Highway Traffic Safety Administration (NHTSA)",
+      "source_type": "public_safety_guidance",
+      "publication_date": null,
+      "url": "https://www.nhtsa.gov/risky-driving/drowsy-driving",
+      "relevant_claims": [
+        "Drowsy driving can impair safe driving; sleepiness and medication effects can increase risk.",
+        "Caffeine or energy drinks alone may not reliably prevent dangerous sleepiness or microsleeps.",
+        "If a person becomes sleepy while driving, they should stop in a safe place rather than trying to force themselves to stay awake."
+      ],
+      "limitations": "Road-safety guidance, not a clinical sleep-disorder diagnostic source. T10 uses it only for the safety boundary: do not drive while dangerously sleepy; do not prescribe caffeine as a substitute for sleep."
+    },
+    {
+      "source_id": "SRC-SLEEP-NIMH-BIPOLAR-SIGNS-001",
+      "title": "Bipolar Disorder",
+      "publisher": "National Institute of Mental Health (NIH)",
+      "source_type": "public_health_guidance",
+      "url": "https://www.nimh.nih.gov/health/publications/bipolar-disorder",
+      "relevant_claims": [
+        "Symptoms of a manic episode can include decreased need for sleep together with unusually elevated or irritable mood, increased energy or activity, racing thoughts, or other marked changes.",
+        "A sleep change alone does not establish bipolar disorder; symptoms must be considered in a broader clinical assessment."
+      ],
+      "limitations": "Public health information about bipolar disorder, not a screening or diagnostic tool. Decreased sleep alone does not establish mania or bipolar disorder; the app must not diagnose and should direct concerns to qualified clinical assessment."
+    },
+    {
+      "source_id": "SRC-T11-WOOD-RUNGER-2016-001",
+      "title": "Psychology of Habit",
+      "authors": [
+        "Wendy Wood",
+        "Dennis Rünger"
+      ],
+      "publisher": "Annual Review of Psychology",
+      "source_type": "peer_reviewed_review",
+      "publication_date": "2016-01",
+      "doi": "10.1146/annurev-psych-122414-033417",
+      "pmid": "26361052",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/26361052/",
+      "relevant_claims": [
+        "Habitual responses can be associated with recurring contextual cues and repeated responses in stable contexts.",
+        "People may incorrectly infer that frequent habitual behavior was fully intentional; observed repetition alone does not establish motive."
+      ],
+      "limitations": "Narrative scholarly review of habit science; it does not validate the T11 28-day program or justify applying habit-change techniques to OCD, BFRBs, tics, or harmless self-regulatory stimming."
+    },
+    {
+      "source_id": "SRC-T11-NICE-CG31-001",
+      "title": "Obsessive-compulsive disorder and body dysmorphic disorder: treatment — Recommendations",
+      "publisher": "National Institute for Health and Care Excellence (NICE)",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2005-11-29",
+      "url": "https://www.nice.org.uk/guidance/cg31/chapter/Recommendations",
+      "relevant_claims": [
+        "OCD recognition and assessment should consider distress and interference with daily activities.",
+        "CBT including ERP is a structured psychological treatment delivered by appropriately trained professionals; treatment intensity and support depend on impairment and clinical assessment."
+      ],
+      "limitations": "UK clinical guideline published in 2005; it is not an app self-help protocol and does not authorize unsupervised exposure or response prevention. Check current local clinical guidance before clinical use."
+    },
+    {
+      "source_id": "SRC-T11-AAN-TICS-2019-001",
+      "title": "Practice guideline recommendations summary: Treatment of tics in people with Tourette syndrome and chronic tic disorders",
+      "publisher": "American Academy of Neurology",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2019-05-07",
+      "doi": "10.1212/WNL.0000000000007466",
+      "url": "https://www.neurology.org/doi/10.1212/WNL.0000000000007466",
+      "relevant_claims": [
+        "For people with tics who have access to CBIT, clinicians should offer CBIT as an initial treatment option.",
+        "Treatment selection for tic disorders belongs in clinical care; guideline recommendations concern clinician-delivered treatment options."
+      ],
+      "limitations": "Clinical guideline for diagnosed tic disorders; it does not support self-diagnosis or an app prescribing CBIT or tic suppression. It does not imply that every tic requires treatment."
+    },
+    {
+      "source_id": "SRC-T11-BFRB-GREENBERG-2018-001",
+      "title": "Assessment and treatment of trichotillomania (hair pulling disorder) and excoriation (skin picking) disorder",
+      "authors": [
+        "Erin E. Greenberg",
+        "Carolyn I. Phillips"
+      ],
+      "publisher": "PubMed / Clinical review",
+      "source_type": "peer_reviewed_clinical_review",
+      "publication_date": "2018-11",
+      "pmid": "30446196",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/30446196/",
+      "relevant_claims": [
+        "BFRB presentations require assessment of severity, comorbidities, and behavioral style.",
+        "The review discusses HRT and stimulus control as behavioral treatments within treatment planning."
+      ],
+      "limitations": "Clinical review of specific BFRB disorders; it is not a lay self-help instruction set. The T11 app must not prescribe HRT, competing responses, stimulus-control restrictions, or treatment without appropriate assessment."
+    },
+    {
+      "source_id": "SRC-T11-NAS-STIMMING-001",
+      "title": "Autism and neurodiversity",
+      "publisher": "National Autistic Society",
+      "source_type": "autism_organization_public_guidance",
+      "publication_date": null,
+      "url": "https://www.autism.org.uk/advice-and-guidance/identity/autism-and-neurodiversity",
+      "relevant_claims": [
+        "Stimming may serve purposes such as regulation, calm, or expressing joy and is often harmless.",
+        "Support should address causes of distress and avoid treating harmless stimming as something that must be eliminated; when a behavior causes harm, support should prioritize safety and individual needs."
+      ],
+      "limitations": "Public guidance from an autism organization, not an individualized clinical assessment. It should not be used to infer autism or diagnose the function of an individual's repetitive behavior."
+    },
+    {
+      "source_id": "SRC-T11-FISAK-TTM-META-2026-001",
+      "title": "The efficacy of psychotherapeutic and pharmacological interventions for trichotillomania: A review and meta-analysis",
+      "publisher": "Journal of Psychiatric Research",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2026",
+      "pmid": "41812482",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41812482/",
+      "relevant_claims": [
+        "A review of 29 trials for standard meta-analysis and 30 for network meta-analysis found replicated support for behavioral therapy with habit reversal and ACT-enhanced habit reversal for trichotillomania.",
+        "Interventions involving habit reversal were generally superior to interventions without habit reversal in the reviewed trichotillomania trials."
+      ],
+      "limitations": "Findings are specific to trichotillomania and clinician-designed behavioral treatments; they do not validate general self-help for all repetitive behaviors or authorize the app to prescribe HRT/ACT-HRT."
+    },
+    {
+      "source_id": "SRC-T11-BARBER-DIGITAL-BFRB-2026-001",
+      "title": "Effectiveness of digitally-delivered interventions for trichotillomania and skin picking disorder: A systematic review and meta-analysis",
+      "authors": [
+        "Kathryn E. Barber",
+        "Isabella F. Cram",
+        "Elyse C. Smith",
+        "Douglas W. Woods",
+        "Han Joo Lee"
+      ],
+      "publisher": "Journal of Psychiatric Research",
+      "source_type": "systematic_review_meta_analysis",
+      "publication_date": "2026-05",
+      "doi": "10.1016/j.jpsychires.2026.02.020",
+      "pmid": "41713175",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41713175/",
+      "relevant_claims": [
+        "A systematic review and meta-analysis included 14 studies and 5,468 participants examining digitally delivered interventions for trichotillomania and excoriation disorder.",
+        "Randomized controlled trial comparisons showed a medium pooled effect favoring digital interventions, while the authors note heterogeneity and variability in study design."
+      ],
+      "limitations": "Evidence concerns digital interventions grounded in CBT/behavioral therapy for two specific BFRB disorders; it does not validate this app's generic T11 course or prove that unguided content is safe/effective."
+    },
+    {
+      "source_id": "SRC-T11-STEIN-LOCHNER-BFRB-2026-001",
+      "title": "Body-Focused Repetitive Behavior Disorders: From Competing Paradigms Toward Iterative Integration",
+      "authors": [
+        "Dan J. Stein",
+        "Christine Lochner"
+      ],
+      "publisher": "Annual Review of Clinical Psychology",
+      "source_type": "peer_reviewed_review",
+      "publication_date": "2026-05",
+      "doi": "10.1146/annurev-clinpsy-081423-015659",
+      "pmid": "42097987",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42097987/",
+      "relevant_claims": [
+        "BFRBs have been understood through multiple conceptual frameworks, including behavioral, psychopharmacological, neuroscience, advocacy, and global mental health perspectives.",
+        "A pluralistic and iterative approach is preferable to reducing BFRBs to a single explanatory paradigm."
+      ],
+      "limitations": "Conceptual review, not an individualized treatment guideline; it supports caution about one-size-fits-all framing rather than any specific app intervention."
+    },
+    {
+      "source_id": "SRC-T11-IPS-OCD-2025-UPDATE-001",
+      "title": "Clinical practice guidelines for obsessive-compulsive disorder: 2025 update",
+      "authors": [
+        "Shyam Sundar Arumugham",
+        "Janardhanan C. Narayanaswamy",
+        "Srinivas Balachander",
+        "Eesha Sharma",
+        "T. S. Jaisoorya",
+        "Sai Chaitanya Reddy",
+        "Aleem M. Siddiqui",
+        "Avinash Desouza",
+        "Parag S. Shah",
+        "Y. C. Janardhan Reddy"
+      ],
+      "publisher": "Indian Journal of Psychiatry",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2026-01-27",
+      "doi": "10.4103/indianjpsychiatry_1259_25",
+      "pmid": "41694048",
+      "pmcid": "PMC12900050",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12900050/",
+      "relevant_claims": [
+        "The 2025 update provides an evidence-based framework for OCD assessment and management across age groups and comorbidities.",
+        "CBT is a first-line psychological treatment option; clinical treatment decisions depend on assessment and severity."
+      ],
+      "limitations": "Guideline issued by the Indian Psychiatric Society and published in 2026; it is not an app self-help protocol and does not authorize unsupervised ERP or response prevention."
+    },
+    {
+      "source_id": "SRC-T11-CDC-CBIT-2026-001",
+      "title": "Behavioral Treatment for Tics That Works",
+      "publisher": "Centers for Disease Control and Prevention",
+      "source_type": "public_health_guidance",
+      "publication_date": "2026-03-27",
+      "url": "https://www.cdc.gov/tourette-syndrome/articles/behavioral-treatment-for-tics-that-works.html",
+      "relevant_claims": [
+        "CBIT is a behavioral therapy that can help people with tics and tic disorders manage tics.",
+        "CBIT is a structured treatment option for tic disorders, not a generic instruction to suppress repetitive movement."
+      ],
+      "limitations": "Public health information about a specific treatment; it does not support self-diagnosis or app-delivered CBIT without appropriate clinical care."
+    },
+    {
+      "source_id": "SRC-T11-NICE-CG142-001",
+      "title": "Autism spectrum disorder in adults: diagnosis and management — Recommendations",
+      "publisher": "National Institute for Health and Care Excellence (NICE)",
+      "source_type": "clinical_practice_guideline",
+      "publication_date": "2012-06-27",
+      "url": "https://www.nice.org.uk/guidance/cg142/chapter/recommendations",
+      "relevant_claims": [
+        "Assessment of behavior that challenges in autistic adults should include functional analysis of triggers and maintaining factors, including physical disorders, social and physical environment, sensory factors, coexisting mental disorders, communication, and routine changes.",
+        "Intervention choices should account for function, quality of life, environmental factors, individual preferences, and capabilities."
+      ],
+      "limitations": "Guideline scope is autistic adults in the UK and behavior that challenges; it must not be used to diagnose autism or to infer that harmless stimming requires intervention."
+    }
+  ]
+}

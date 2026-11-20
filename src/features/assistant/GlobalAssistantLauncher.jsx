@@ -1,0 +1,760 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { formatAssistantMessageText } from './assistantMessageFormatting.js';
+import AppIcon from '../../shared/components/AppIcon.jsx';
+import { makePageAssistantTurn } from './pageAssistantTurn.js';
+import { getPageSpecificPromptGroups } from './pageAssistantPrompts.js';
+import { libraryRepository } from '../library/libraryRepository.js';
+import { ensureSeedBookContent } from '../library/useLibrary.js';
+import { answerLibraryBookTurn, planLibraryBookLoad } from './libraryBookAssistant.js';
+import { LIBRARY_ASSISTANT_PROMPT_GROUPS } from './libraryAssistantPrompts.js';
+import { getCanonicalTopicIdForCategory, getInterpersonalPrivacyNotice, getRelationshipSafetyGate } from '../journey/relationshipSafetyGate.js';
+import { getAngerDailyAssistantPromptGroups } from './angerDailyAssistantPrompts.js';
+import { getAnxietyDailyAssistantPromptGroups } from './anxietyDailyAssistantPrompts.js';
+import { getFearDailyAssistantPromptGroups } from './fearDailyAssistantPrompts.js';
+import { getHatredDailyAssistantPromptGroups } from './hatredDailyAssistantPrompts.js';
+import { getJealousyDailyAssistantPromptGroups } from './jealousyDailyAssistantPrompts.js';
+import { getGriefDailyAssistantPromptGroups } from './griefDailyAssistantPrompts.js';
+import { getGuiltDailyAssistantPromptGroups } from './guiltDailyAssistantPrompts.js';
+import { getEmotionalDependencyDailyAssistantPromptGroups } from './emotionalDependencyDailyAssistantPrompts.js';
+import { getT09DailyAssistantPromptGroups } from './t09DailyAssistantPrompts.js';
+import { getT10DailyAssistantPromptGroups } from './t10DailyAssistantPrompts.js';
+import { getT11DailyAssistantPromptGroups } from './t11DailyAssistantPrompts.js';
+import { getT12DailyAssistantPromptGroups } from './t12DailyAssistantPrompts.js';
+import { getT13DailyAssistantPromptGroups } from './t13DailyAssistantPrompts.js';
+import { getT14DailyAssistantPromptGroups } from './t14DailyAssistantPrompts.js';
+import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS, DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
+import { getDailySafetyMode } from '../content/dailySafety.js';
+
+const PAGE_ASSISTANT_PROMPT_GROUPS = Object.freeze([
+  Object.freeze({
+    label: 'راهنمای همین صفحه',
+    questions: Object.freeze([
+      Object.freeze({ label: 'این صفحه برای چیست؟', value: 'این صفحه برای چیست؟', kind: 'page_purpose' }),
+      Object.freeze({ label: 'اینجا چه کارهایی می‌توانم انجام بدهم؟', value: 'اینجا چه کارهایی می‌توانم انجام بدهم؟', kind: 'page_actions' }),
+      Object.freeze({ label: 'چطور به خانه برگردم؟', value: 'چطور به خانه برگردم؟', kind: 'page_navigation' }),
+      Object.freeze({ label: 'امکانات برنامه چیست؟', value: 'امکانات برنامه چیست؟', kind: 'app_features' }),
+    ]),
+  }),
+]);
+
+export default function GlobalAssistantLauncher({ screen, visible = false, dailyContext = null, libraryContext = null, onRelationshipSafetyResponse = null, initialOpen = false, hideLauncher = false, externalLauncherRef = null, openRequestId = 0, onOpenChange = null }) {
+  const [open, setOpen] = useState(initialOpen);
+  const [messages, setMessages] = useState([]);
+  const [draft, setDraft] = useState('');
+  const [libraryPromptOpen, setLibraryPromptOpen] = useState(false);
+  const libraryPromptTriggerRef = useRef(null);
+  const libraryPromptDialogRef = useRef(null);
+  const [error, setError] = useState('');
+  const [sending, setSending] = useState(false);
+  const turnSequenceRef = useRef(0);
+  const [loadedLibraryBooks, setLoadedLibraryBooks] = useState([]);
+  const libraryBooksLoadRef = useRef(null);
+  const conversationStateRef = useRef(null);
+  const launcherRef = useRef(null);
+  const closeButtonRef = useRef(null);
+  const dialogRef = useRef(null);
+  const endRef = useRef(null);
+  const initialContextEffectRef = useRef(false);
+  const openRequestRef = useRef(openRequestId);
+  const [launcherPosition, setLauncherPosition] = useState(null);
+  const launcherDragRef = useRef(null);
+  const suppressLauncherClickRef = useRef(false);
+  const canMoveLauncher = screen !== 'bookReader';
+
+  useEffect(() => {
+    if (!canMoveLauncher) return;
+    try {
+      const saved = window.localStorage.getItem('path28-assistant-launcher-position-v1');
+      if (!saved) return;
+      const parsed = JSON.parse(saved);
+      if (Number.isFinite(parsed?.x) && Number.isFinite(parsed?.y)) {
+        setLauncherPosition({ x: parsed.x, y: parsed.y });
+      }
+    } catch {
+      // Position persistence is optional; the launcher remains usable without storage.
+    }
+  }, [canMoveLauncher]);
+
+  useEffect(() => {
+    if (!canMoveLauncher || !launcherPosition) return;
+    const button = launcherRef.current;
+    if (!button) return;
+    const maxX = Math.max(8, window.innerWidth - button.offsetWidth - 8);
+    const maxY = Math.max(8, window.innerHeight - button.offsetHeight - 8);
+    const clamped = {
+      x: Math.min(maxX, Math.max(8, launcherPosition.x)),
+      y: Math.min(maxY, Math.max(8, launcherPosition.y)),
+    };
+    if (clamped.x !== launcherPosition.x || clamped.y !== launcherPosition.y) {
+      setLauncherPosition(clamped);
+      try { window.localStorage.setItem('path28-assistant-launcher-position-v1', JSON.stringify(clamped)); } catch {}
+    }
+    const keepOnScreen = () => {
+      const currentButton = launcherRef.current;
+      if (!currentButton) return;
+      const next = {
+        x: Math.min(Math.max(8, window.innerWidth - currentButton.offsetWidth - 8), Math.max(8, clamped.x)),
+        y: Math.min(Math.max(8, window.innerHeight - currentButton.offsetHeight - 8), Math.max(8, clamped.y)),
+      };
+      setLauncherPosition(next);
+      try { window.localStorage.setItem('path28-assistant-launcher-position-v1', JSON.stringify(next)); } catch {}
+    };
+    window.addEventListener('resize', keepOnScreen);
+    return () => window.removeEventListener('resize', keepOnScreen);
+  }, [canMoveLauncher, launcherPosition?.x, launcherPosition?.y]);
+
+  function beginLauncherDrag(pointerId, clientX, clientY) {
+    if (!canMoveLauncher || open || launcherDragRef.current) return;
+    const rect = launcherRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    launcherDragRef.current = {
+      pointerId,
+      startX: clientX,
+      startY: clientY,
+      originX: rect.left,
+      originY: rect.top,
+      moved: false,
+    };
+  }
+
+  function startLauncherDrag(event) {
+    if (event.pointerType !== 'touch' && event.button !== 0) return;
+    beginLauncherDrag(event.pointerId, event.clientX, event.clientY);
+    if (launcherDragRef.current?.pointerId === event.pointerId) {
+      try { event.currentTarget.setPointerCapture?.(event.pointerId); } catch {}
+    }
+  }
+
+  function startLauncherTouch(event) {
+    const touch = event.changedTouches?.[0];
+    if (touch) beginLauncherDrag('touch', touch.clientX, touch.clientY);
+  }
+
+  function updateLauncherDrag(pointerId, clientX, clientY) {
+    const drag = launcherDragRef.current;
+    if (!drag || drag.pointerId !== pointerId) return;
+    const deltaX = clientX - drag.startX;
+    const deltaY = clientY - drag.startY;
+    if (!drag.moved && Math.hypot(deltaX, deltaY) < 6) return;
+    drag.moved = true;
+    suppressLauncherClickRef.current = true;
+    const button = launcherRef.current;
+    if (!button) return;
+    const x = Math.min(window.innerWidth - button.offsetWidth - 8, Math.max(8, drag.originX + deltaX));
+    const y = Math.min(window.innerHeight - button.offsetHeight - 8, Math.max(8, drag.originY + deltaY));
+    drag.lastPosition = { x: Math.max(8, x), y: Math.max(8, y) };
+    setLauncherPosition(drag.lastPosition);
+  }
+
+  function moveLauncher(event) {
+    updateLauncherDrag(event.pointerId, event.clientX, event.clientY);
+  }
+
+  function moveLauncherTouch(event) {
+    const touch = event.changedTouches?.[0];
+    if (touch) updateLauncherDrag('touch', touch.clientX, touch.clientY);
+  }
+
+  function persistLauncherDrag(pointerId) {
+    const drag = launcherDragRef.current;
+    if (!drag || drag.pointerId !== pointerId) return;
+    launcherDragRef.current = null;
+    if (drag.moved && drag.lastPosition) {
+      setLauncherPosition(drag.lastPosition);
+      try { window.localStorage.setItem('path28-assistant-launcher-position-v1', JSON.stringify(drag.lastPosition)); } catch {}
+    }
+  }
+
+  function finishLauncherDrag(event) {
+    persistLauncherDrag(event.pointerId);
+  }
+
+  function finishLauncherTouch() {
+    persistLauncherDrag('touch');
+  }
+
+  useEffect(() => {
+    if (!initialContextEffectRef.current) {
+      initialContextEffectRef.current = true;
+      return;
+    }
+    setMessages([]);
+    setDraft('');
+    setError('');
+    setSending(false);
+    conversationStateRef.current = null;
+    setOpen(false);
+    onOpenChange?.(false);
+    setLibraryPromptOpen(false);
+  }, [screen, dailyContext?.day, dailyContext?.problem, onOpenChange]);
+
+  useEffect(() => {
+    if (openRequestRef.current === openRequestId) return;
+    openRequestRef.current = openRequestId;
+    setOpen(true);
+    onOpenChange?.(true);
+  }, [openRequestId, onOpenChange]);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    closeButtonRef.current?.focus();
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') {
+        if (document.getElementById('library-assistant-prompt-dialog')) return;
+        event.preventDefault();
+        closeAssistant();
+      }
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => {
+      window.removeEventListener('keydown', closeOnEscape);
+      (externalLauncherRef?.current || launcherRef.current)?.focus();
+    };
+  }, [open]);
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'end' });
+  }, [messages]);
+
+  useEffect(() => {
+    if (!libraryPromptOpen) return undefined;
+    libraryPromptDialogRef.current?.querySelector('[data-prompt-option]')?.focus();
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setLibraryPromptOpen(false);
+      }
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => {
+      window.removeEventListener('keydown', closeOnEscape);
+      libraryPromptTriggerRef.current?.focus();
+    };
+  }, [libraryPromptOpen]);
+
+  useEffect(() => {
+    if (screen !== 'books') {
+      setLoadedLibraryBooks([]);
+      libraryBooksLoadRef.current = null;
+    }
+  }, [screen]);
+
+  const dailyProblemText = String(dailyContext?.problem || '').trim();
+  const dailyProblemTopicId = getCanonicalTopicIdForCategory(dailyProblemText);
+  const dailyRecordTopicId = dailyContext?.data?.topic_id || dailyContext?.data?.topicId || null;
+  const hasConflictingDailyTopic = Boolean(
+    (dailyProblemTopicId && dailyRecordTopicId && dailyProblemTopicId !== dailyRecordTopicId)
+    || (dailyProblemTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12', 'T13', 'T14'].includes(dailyProblemTopicId) && dailyRecordTopicId)
+    || (dailyRecordTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12', 'T13', 'T14'].includes(dailyRecordTopicId) && dailyProblemTopicId),
+  );
+  const isAngerDailyPromptContext = Boolean(dailyContext)
+    && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T01' || dailyRecordTopicId === 'T01' || dailyProblemText.includes('خشم'));
+  const isAnxietyDailyPromptContext = Boolean(dailyContext)
+    && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T02' || dailyRecordTopicId === 'T02' || dailyProblemText.includes('اضطراب'));
+  const isFearDailyPromptContext = Boolean(dailyContext)
+    && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T03' || dailyRecordTopicId === 'T03' || dailyProblemText === 'ترس');
+  const isHatredDailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T04' || dailyRecordTopicId === 'T04' || dailyProblemText === 'نفرت');
+  const isJealousyDailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T05' || dailyRecordTopicId === 'T05' || dailyProblemText === 'حسادت');
+  const isGriefDailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T06' || dailyRecordTopicId === 'T06' || dailyProblemText === 'غم و سوگ' || dailyProblemText === 'سوگ و فقدان');
+  const isGuiltDailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T07' || dailyRecordTopicId === 'T07' || dailyProblemText === 'احساس گناه');
+  const isEmotionalDependencyDailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T08' || dailyRecordTopicId === 'T08' || dailyProblemText === 'وابستگی عاطفی');
+  const isT09DailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T09' || dailyRecordTopicId === 'T09' || dailyProblemText === 'اهمال‌کاری' || dailyProblemText === 'اهمال کاری');
+  const isT10DailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T10' || dailyRecordTopicId === 'T10' || dailyProblemText === 'بی‌خوابی و مشکلات خواب');
+  const isT11DailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T11' || dailyRecordTopicId === 'T11' || dailyProblemText === 'عادت‌های تکراری');
+  const isT12DailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T12' || dailyRecordTopicId === 'T12' || dailyProblemText === 'مرزبندی و نه گفتن');
+  const isT13DailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T13' || dailyRecordTopicId === 'T13' || dailyProblemText === 'تنهایی');
+  const isT14DailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
+    && (dailyProblemTopicId === 'T14' || dailyRecordTopicId === 'T14' || dailyProblemText === 'کمبود انگیزه');
+  const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext || isJealousyDailyPromptContext || isGriefDailyPromptContext || isGuiltDailyPromptContext || isEmotionalDependencyDailyPromptContext || isT09DailyPromptContext || isT10DailyPromptContext || isT11DailyPromptContext || isT12DailyPromptContext || isT13DailyPromptContext || isT14DailyPromptContext;
+  const isPreparedOnlyDailyPromptContext = isTopicDailyPromptContext;
+  const jealousyRelationshipGate = isJealousyDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
+  const jealousyRelationshipGatePending = Boolean(jealousyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
+  const jealousyRelationshipGateBlocked = jealousyRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
+  const griefRelationshipGate = isGriefDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
+  const griefRelationshipGatePending = Boolean(griefRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
+  const griefRelationshipGateBlocked = griefRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
+  const emotionalDependencyRelationshipGate = isEmotionalDependencyDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
+  const emotionalDependencyRelationshipGatePending = Boolean(emotionalDependencyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
+  const emotionalDependencyRelationshipGateBlocked = emotionalDependencyRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
+  const emotionalDependencyPrivacyNotice = isEmotionalDependencyDailyPromptContext ? getInterpersonalPrivacyNotice(dailyContext?.data) : null;
+  const t12RelationshipGate = isT12DailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
+  const t12RelationshipGatePending = Boolean(t12RelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
+  const t12RelationshipGateBlocked = t12RelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
+  const t12PrivacyNotice = isT12DailyPromptContext ? getInterpersonalPrivacyNotice(dailyContext?.data) : null;
+  const activePromptGroups = screen === 'books'
+    ? [...LIBRARY_ASSISTANT_PROMPT_GROUPS, ...PAGE_ASSISTANT_PROMPT_GROUPS]
+    : isAngerDailyPromptContext
+      ? getAngerDailyAssistantPromptGroups(dailyContext?.day)
+      : isAnxietyDailyPromptContext
+        ? getAnxietyDailyAssistantPromptGroups(dailyContext?.day)
+        : isFearDailyPromptContext
+          ? getFearDailyAssistantPromptGroups(dailyContext?.day)
+          : isHatredDailyPromptContext
+            ? getHatredDailyAssistantPromptGroups(dailyContext?.day)
+            : isJealousyDailyPromptContext
+              ? getJealousyDailyAssistantPromptGroups(dailyContext?.day)
+              : isGriefDailyPromptContext
+                ? getGriefDailyAssistantPromptGroups(dailyContext?.day)
+                : isGuiltDailyPromptContext
+                  ? getGuiltDailyAssistantPromptGroups(dailyContext?.day)
+                  : isEmotionalDependencyDailyPromptContext
+                    ? getEmotionalDependencyDailyAssistantPromptGroups(dailyContext?.day)
+                    : isT09DailyPromptContext
+                      ? getT09DailyAssistantPromptGroups(dailyContext?.day)
+                      : isT10DailyPromptContext
+                        ? getT10DailyAssistantPromptGroups(dailyContext?.day)
+                        : isT11DailyPromptContext
+                          ? getT11DailyAssistantPromptGroups(dailyContext?.day)
+                          : isT12DailyPromptContext
+                            ? getT12DailyAssistantPromptGroups(dailyContext?.day)
+                            : isT13DailyPromptContext
+                              ? (getDailySafetyMode(dailyContext?.data) === 'blocked' ? [] : getT13DailyAssistantPromptGroups(dailyContext?.day))
+                              : isT14DailyPromptContext
+                                ? (getDailySafetyMode(dailyContext?.data) === 'blocked' ? [] : getT14DailyAssistantPromptGroups(dailyContext?.day))
+                                : dailyContext
+                              ? []
+                              : (screen === 'day' ? [] : (() => { const pageGroups = getPageSpecificPromptGroups(screen); return pageGroups ? [...pageGroups, ...PAGE_ASSISTANT_PROMPT_GROUPS] : PAGE_ASSISTANT_PROMPT_GROUPS; })());
+  if (!visible || screen === 'bookReader') return null;
+
+  function ensureLibraryBooksLoaded(message, conversationState) {
+    if (libraryBooksLoadRef.current) return libraryBooksLoadRef.current;
+    const loadTask = (async () => {
+      try {
+        let rows = await libraryRepository.listBooks();
+        const expectedCatalogueSize = libraryContext?.titles?.length || 0;
+        if (libraryContext?.loadBooks && (rows.length === 0 || (expectedCatalogueSize > 0 && rows.length < expectedCatalogueSize))) {
+          await libraryContext.loadBooks();
+          rows = await libraryRepository.listBooks();
+        }
+        const plan = planLibraryBookLoad({ books: rows, message, conversationState });
+        if (plan.kind === 'none' || plan.kind === 'clarify') {
+          setLoadedLibraryBooks([]);
+          return plan;
+        }
+
+        const cachedByLegacyId = new Map(loadedLibraryBooks.map((book) => [Number(book.legacyId), book]));
+        const booksToHydrate = plan.books.filter((book) => !cachedByLegacyId.has(Number(book.legacyId)));
+        const hydrated = await Promise.all(booksToHydrate.map(async (book) => {
+          try {
+            const { book: readyBook, version } = await ensureSeedBookContent(book);
+            return version?.content ? { title: readyBook.title, legacyId: readyBook.legacyId, content: version.content } : null;
+          } catch (error) {
+            console.error('Library assistant book hydration failed', book.id, error);
+            return null;
+          }
+        }));
+        const hydratedByLegacyId = new Map([
+          ...cachedByLegacyId.entries(),
+          ...hydrated.filter(Boolean).map((book) => [Number(book.legacyId), book]),
+        ]);
+        const availableBooks = plan.books
+          .map((book) => hydratedByLegacyId.get(Number(book.legacyId)))
+          .filter(Boolean);
+        setLoadedLibraryBooks(availableBooks);
+        return { ...plan, books: availableBooks };
+      } catch (error) {
+        console.error('Library assistant catalogue loading failed', error);
+        setLoadedLibraryBooks([]);
+        return { kind: 'error', books: [] };
+      }
+    })();
+    libraryBooksLoadRef.current = loadTask;
+    loadTask.finally(() => {
+      if (libraryBooksLoadRef.current === loadTask) libraryBooksLoadRef.current = null;
+    });
+    return loadTask;
+  }
+
+  function closeAssistant() {
+    setOpen(false);
+    onOpenChange?.(false);
+  }
+
+  function activate() {
+    setOpen(true);
+    onOpenChange?.(true);
+  }
+
+  async function send(event, overrideMessage = null) {
+    event.preventDefault();
+    const message = String(overrideMessage ?? draft).trim();
+    if (!message || sending) return;
+    const selectedPreparedQuestion = activePromptGroups
+      .flatMap((group) => group.questions || [])
+      .find((question) => question.value === message);
+    if (!selectedPreparedQuestion) {
+      setError('این دستیار فقط از فهرست سؤال‌های آماده همین بخش پاسخ می‌دهد.');
+      setDraft('');
+      return;
+    }
+    const initialLibraryPlan = screen === 'books'
+      ? planLibraryBookLoad({ books: loadedLibraryBooks, message, conversationState: conversationStateRef.current })
+      : null;
+    let booksForTurn = loadedLibraryBooks;
+    let libraryLoadKind = null;
+    let pendingLibraryTurn = null;
+    if (screen === 'books') {
+      const pendingId = ++turnSequenceRef.current;
+      pendingLibraryTurn = { turnId: pendingId, responseId: `assistant-${pendingId}` };
+      setError('');
+      setSending(true);
+      setMessages((current) => [...current,
+        { id: `user-${pendingId}`, role: 'user', text: message, knowledge: [] },
+        { id: pendingLibraryTurn.responseId, role: 'assistant', text: 'در حال بررسی پرسش…', knowledge: [] },
+      ]);
+      setDraft('');
+      if (initialLibraryPlan.kind === 'none'
+        || (initialLibraryPlan.kind === 'clarify' && loadedLibraryBooks.length > 0)) {
+        // Page/help questions avoid IndexedDB. A clarification is only final when
+        // a catalogue is already available; with an empty cache, load metadata first
+        // so ordinal book questions (for example "book five") can resolve correctly.
+        libraryLoadKind = initialLibraryPlan.kind;
+      } else {
+        const loadResult = await (libraryBooksLoadRef.current || ensureLibraryBooksLoaded(message, conversationStateRef.current));
+        booksForTurn = loadResult?.books || [];
+        libraryLoadKind = loadResult?.kind || 'error';
+      }
+    }
+    const isDailySafetyQuestion = Boolean(
+      isPreparedOnlyDailyPromptContext
+      && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(selectedPreparedQuestion.kind),
+    );
+    setError('');
+    setSending(true);
+    const turnId = pendingLibraryTurn?.turnId ?? ++turnSequenceRef.current;
+    const responseId = pendingLibraryTurn?.responseId || `assistant-${turnId}`;
+    const updateAssistantMessage = (text, knowledge = [], dailySafetyReminder = false) => {
+      setMessages((current) => current.map((item) => item.id === responseId ? { ...item, text, knowledge, dailySafetyReminder } : item));
+    };
+    if (pendingLibraryTurn) {
+      updateAssistantMessage('در حال بررسی پرسش…');
+    } else {
+      setMessages((current) => [...current,
+        { id: `user-${turnId}`, role: 'user', text: message, knowledge: [] },
+        { id: responseId, role: 'assistant', text: 'در حال بررسی پرسش...', knowledge: [] },
+      ]);
+      setDraft('');
+    }
+    try {
+      let turn;
+      let isLibraryTurn = false;
+      if (screen === 'books' && libraryLoadKind === 'clarify') {
+        turn = { message: 'برای اینکه متن اشتباهی را بررسی نکنم، نام یکی از کتاب‌ها یا شماره جلد را مشخص کن. پنج کتاب موجود در کتابخانه را می‌توانم بررسی کنم.', knowledge: [], conversationState: null };
+      } else if (screen === 'books' && libraryLoadKind === 'error') {
+        turn = { message: 'متن کتاب در این لحظه آماده نشد. دوباره تلاش کن؛ پاسخ حدسی ارائه نمی‌کنم.', knowledge: [], conversationState: null };
+      } else if (screen === 'books' && (libraryLoadKind === 'single' || libraryLoadKind === 'all') && !booksForTurn.length) {
+        turn = { message: 'متن کتاب در این لحظه بارگذاری نشد. دوباره تلاش کن.', knowledge: [], conversationState: null };
+      } else if (screen === 'books' && booksForTurn.length) {
+        const libraryTurn = answerLibraryBookTurn({ books: booksForTurn, message, conversationState: conversationStateRef.current });
+        if (libraryTurn) {
+          turn = { ...libraryTurn, knowledge: [] };
+          isLibraryTurn = true;
+        } else {
+          turn = makePageAssistantTurn({ screen, text: message, conversationState: conversationStateRef.current, dailyContext, libraryContext });
+        }
+      } else if (screen === 'books') {
+        turn = makePageAssistantTurn({ screen, text: message, conversationState: conversationStateRef.current, dailyContext, libraryContext });
+      } else {
+        turn = makePageAssistantTurn({ screen, text: message, conversationState: conversationStateRef.current, dailyContext, libraryContext });
+      }
+
+      conversationStateRef.current = turn.conversationState || null;
+      const finalMessage = turn.message || 'برای این پرسش پاسخ قابل اتکایی در دسترس نیست.';
+      updateAssistantMessage(finalMessage, turn.knowledge || [], isDailySafetyQuestion);
+    } catch {
+      updateAssistantMessage('پاسخ آماده نشد. دوباره تلاش کن.');
+    } finally {
+      setSending(false);
+    }
+  }
+
+  function containDialogTab(event) {
+    if (event.key !== 'Tab') return;
+    const focusable = dialogRef.current?.querySelectorAll(
+      'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    if (!focusable?.length) {
+      event.preventDefault();
+      return;
+    }
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  return (
+    <>
+      {!hideLauncher && <button
+        ref={launcherRef}
+        className={`globalAssistantLauncher${canMoveLauncher ? ' globalAssistantLauncherDraggable' : ''}${canMoveLauncher && launcherPosition ? ' globalAssistantLauncherPositioned' : ''}`}
+        type="button"
+        style={canMoveLauncher && launcherPosition ? { left: launcherPosition.x, top: launcherPosition.y, right: 'auto', bottom: 'auto' } : undefined}
+        onPointerDown={canMoveLauncher ? startLauncherDrag : undefined}
+        onPointerMove={canMoveLauncher ? moveLauncher : undefined}
+        onPointerUp={canMoveLauncher ? finishLauncherDrag : undefined}
+        onPointerCancel={canMoveLauncher ? finishLauncherDrag : undefined}
+        onTouchStart={canMoveLauncher ? startLauncherTouch : undefined}
+        onTouchMove={canMoveLauncher ? moveLauncherTouch : undefined}
+        onTouchEnd={canMoveLauncher ? finishLauncherTouch : undefined}
+        onTouchCancel={canMoveLauncher ? finishLauncherTouch : undefined}
+        draggable={false}
+        onClick={() => {
+          if (suppressLauncherClickRef.current) {
+            suppressLauncherClickRef.current = false;
+            return;
+          }
+          activate();
+        }}
+        aria-label="باز کردن دستیار مسیر۲۸"
+        aria-description={canMoveLauncher ? 'برای جابه‌جایی، دکمه را بکشید؛ برای باز کردن، یک‌بار لمس کنید.' : undefined}
+        aria-haspopup="dialog"
+        aria-expanded={open}
+      >
+        <AppIcon name="message" size={20} />
+        <span>دستیار</span>
+      </button>}
+      {open && (
+        <div className="globalAssistantBackdrop">
+          <section
+            ref={dialogRef}
+            className="globalAssistantDialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="global-assistant-title"
+            onKeyDown={containDialogTab}
+          >
+            <div className="globalAssistantDialogTop">
+              <h2 id="global-assistant-title">دستیار راهنمای مسیر ۲۸</h2>
+              <button ref={closeButtonRef} type="button" className="iconButton" onClick={closeAssistant} aria-label="بستن پنجره دستیار">
+                <AppIcon name="x" size={18} />
+              </button>
+            </div>
+      {open && libraryPromptOpen && (
+        <div
+          className="validationModal libraryAssistantPromptModal"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) setLibraryPromptOpen(false);
+          }}
+        >
+          <section
+            ref={libraryPromptDialogRef}
+            id="library-assistant-prompt-dialog"
+            className="validationCard libraryAssistantPromptCard"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="library-assistant-prompt-title"
+            onKeyDown={(event) => {
+              if (event.key !== 'Tab') return;
+              const options = libraryPromptDialogRef.current?.querySelectorAll('[data-prompt-option]');
+              if (!options?.length) {
+                event.preventDefault();
+                event.stopPropagation();
+                return;
+              }
+              const first = options[0];
+              const last = options[options.length - 1];
+              if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+              } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+              }
+              event.stopPropagation();
+            }}
+          >
+            <span className="badge">پرسش‌های پیشنهادی</span>
+            <h2 id="library-assistant-prompt-title">{screen === "books" ? "سؤال آماده دستیار کتابخانه" : dailyContext ? `سؤال‌های آماده روز ${dailyContext.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : isGriefDailyPromptContext ? "غم و سوگ" : isGuiltDailyPromptContext ? "احساس گناه" : isEmotionalDependencyDailyPromptContext ? "وابستگی عاطفی" : isT10DailyPromptContext ? "بی‌خوابی و مشکلات خواب" : isT09DailyPromptContext ? "اهمال‌کاری" : isT11DailyPromptContext ? "عادت‌های تکراری" : isT12DailyPromptContext ? "مرزبندی و نه گفتن" : isT14DailyPromptContext ? "کمبود انگیزه" : isT13DailyPromptContext ? "تنهایی" : "خشم"}` : "سؤال‌های آماده این صفحه"}</h2>
+            <p className="muted">برای انتخاب، روی سؤال آماده موردنظرت بزن تا پاسخ مربوط به همین بخش نمایش داده شود.</p>
+            <div className="libraryAssistantPromptOptions">
+              {activePromptGroups.map((group) => (
+                <section className="libraryAssistantPromptGroup" key={group.label}>
+                  <h3>{group.label}</h3>
+                  {group.questions.map((question) => (
+                    <button
+                      key={question.value}
+                      type="button"
+                      data-prompt-option
+                      onClick={() => {
+                        setDraft(question.value);
+                        setLibraryPromptOpen(false);
+                      }}
+                    >
+                      {question.label}
+                    </button>
+                  ))}
+                </section>
+              ))}
+            </div>
+          </section>
+        </div>
+      )}
+            <div className="assistantChatShell globalAssistantChat" dir="rtl" aria-label="گفت‌وگوی دستیار در صفحه جاری">
+              {jealousyRelationshipGatePending && jealousyRelationshipGate && (
+                <section className="dailyAssistantSafetyActions" role="group" aria-label="بررسی ایمنی گفت‌وگوی رابطه‌ای" data-testid="jealousy-relationship-safety-gate">
+                  <p role="alert">{jealousyRelationshipGateBlocked ? jealousyRelationshipGate.blockedMessage : jealousyRelationshipGate.question}</p>
+                  {!jealousyRelationshipGateBlocked && (
+                    <>
+                      <p className="safetyNote">{jealousyRelationshipGate.disclaimer}</p>
+                      <button type="button" data-testid="jealousy-relationship-safety-safe" disabled={sending}
+                        onClick={() => onRelationshipSafetyResponse?.('safe')}>بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.</button>
+                      <button type="button" data-testid="jealousy-relationship-safety-unsafe" disabled={sending}
+                        onClick={() => onRelationshipSafetyResponse?.('unsafe')}>نه، مطمئن نیستم یا یکی از ما تحت فشار است.</button>
+                    </>
+                  )}
+                </section>
+              )}
+              {emotionalDependencyPrivacyNotice && (
+                <section className="dailyAssistantSafetyActions" role="note" aria-label="یادآوری حریم خصوصی" data-testid="emotional-dependency-privacy-notice">
+                  <p>{emotionalDependencyPrivacyNotice}</p>
+                </section>
+              )}
+              {t12PrivacyNotice && (
+                <section className="dailyAssistantSafetyActions" role="note" aria-label="یادآوری حریم خصوصی" data-testid="t12-privacy-notice">
+                  <p>{t12PrivacyNotice}</p>
+                </section>
+              )}
+              {t12RelationshipGatePending && t12RelationshipGate && (
+                <section className="dailyAssistantSafetyActions" role="group" aria-label="بررسی ایمنی مرزبندی و نه گفتن" data-testid="t12-relationship-safety-gate">
+                  <p role="alert">{t12RelationshipGateBlocked ? t12RelationshipGate.blockedMessage : t12RelationshipGate.question}</p>
+                  {!t12RelationshipGateBlocked && (
+                    <>
+                      <p className="safetyNote">{t12RelationshipGate.disclaimer}</p>
+                      <button type="button" data-testid="t12-relationship-safety-safe" disabled={sending}
+                        onClick={() => onRelationshipSafetyResponse?.('safe')}>بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.</button>
+                      <button type="button" data-testid="t12-relationship-safety-unsafe" disabled={sending}
+                        onClick={() => onRelationshipSafetyResponse?.('unsafe')}>نه، مطمئن نیستم یا یکی از ما تحت فشار است.</button>
+                    </>
+                  )}
+                </section>
+              )}
+              {emotionalDependencyRelationshipGatePending && emotionalDependencyRelationshipGate && (
+                <section className="dailyAssistantSafetyActions" role="group" aria-label="بررسی ایمنی گفت‌وگوی رابطه‌ای" data-testid="emotional-dependency-relationship-safety-gate">
+                  <p role="alert">{emotionalDependencyRelationshipGateBlocked ? emotionalDependencyRelationshipGate.blockedMessage : emotionalDependencyRelationshipGate.question}</p>
+                  {!emotionalDependencyRelationshipGateBlocked && (
+                    <>
+                      <p className="safetyNote">{emotionalDependencyRelationshipGate.disclaimer}</p>
+                      <button type="button" data-testid="emotional-dependency-relationship-safety-safe" disabled={sending}
+                        onClick={() => onRelationshipSafetyResponse?.('safe')}>بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.</button>
+                      <button type="button" data-testid="emotional-dependency-relationship-safety-unsafe" disabled={sending}
+                        onClick={() => onRelationshipSafetyResponse?.('unsafe')}>نه، مطمئن نیستم یا یکی از ما تحت فشار است.</button>
+                    </>
+                  )}
+                </section>
+              )}
+              {griefRelationshipGatePending && griefRelationshipGate && (
+                <section className="dailyAssistantSafetyActions" role="group" aria-label="بررسی ایمنی درخواست حمایت" data-testid="grief-relationship-safety-gate">
+                  <p role="alert">{griefRelationshipGateBlocked ? griefRelationshipGate.blockedMessage : griefRelationshipGate.question}</p>
+                  {!griefRelationshipGateBlocked && (
+                    <>
+                      <p className="safetyNote">{griefRelationshipGate.disclaimer}</p>
+                      <button type="button" data-testid="grief-relationship-safety-safe" disabled={sending}
+                        onClick={() => onRelationshipSafetyResponse?.('safe')}>بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.</button>
+                      <button type="button" data-testid="grief-relationship-safety-unsafe" disabled={sending}
+                        onClick={() => onRelationshipSafetyResponse?.('unsafe')}>نه، مطمئن نیستم یا یکی از ما تحت فشار است.</button>
+                    </>
+                  )}
+                </section>
+              )}
+
+              <div className="assistantTranscript" dir="rtl" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
+                {messages.map((item, index) => (
+                  <div className={item.role === 'user' ? 'userMessage' : 'assistantMessage'} key={item.id || index}>
+                    <b className="globalAssistantSpeakerIcon" aria-label={item.role === 'user' ? 'شما' : 'دستیار مسیر۲۸'}>
+                      {item.role === 'user' ? (
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                          <circle cx="12" cy="12" r="9" />
+                        </svg>
+                      ) : (
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                          <path fillRule="evenodd" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 3.1a6.9 6.9 0 1 1 0 13.8 6.9 6.9 0 0 1 0-13.8Z" />
+                          <path d="M10.65 1.5h2.7v21h-2.7zM1.5 10.65h21v2.7h-21z" />
+                        </svg>
+                      )}
+                    </b>
+                    <p>{formatAssistantMessageText(
+                      item.dailySafetyReminder && item.text.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN)
+                        ? item.text.slice(0, -DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN.length).trimEnd()
+                        : item.text,
+                    ).map((line, lineIndex) => (
+                      <React.Fragment key={lineIndex}>
+                        {lineIndex > 0 ? <br /> : null}
+                        {line.map((part, partIndex) => part.type === 'strong'
+                          ? <strong key={partIndex}>{part.text}</strong>
+                          : <React.Fragment key={partIndex}>{part.text}</React.Fragment>)}
+                      </React.Fragment>
+                    ))}</p>
+                    {item.dailySafetyReminder && (
+                      <aside className="dailyAssistantSafetyReminder" role="note" data-testid="daily-assistant-safety-reminder">
+                        <h3>یادآوری مهم درباره ایمنی شما</h3>
+                        <p>در طول انجام تمرین‌ امروز، به احساسات و وضعیت روانی خود توجه کنید. اگر احساس کردید فشار روانی شما بیشتر شده، حالتان رو به وخامت است یا ادامه تمرین برایتان آزاردهنده شده، تمرین را متوقف کنید و به خودتان فرصت آرام‌شدن بدهید.</p>
+                        <p>در چنین شرایطی، می‌توانید از یک فرد مورد اعتماد یا متخصص سلامت روان کمک بگیرید. اگر احتمال آسیب به خودتان یا فرد دیگری وجود دارد، موضوع را جدی بگیرید و از خدمات اورژانسی محل زندگی خود کمک فوری دریافت کنید.</p>
+                        <p className="dailyAssistantSafetyReminderShafa">مرکز هیپنوتراپی شفا با شماره تماس ۰۹۱۹۰۸۸۹۰۶۲ همیشه در کل مسیر همراه شماست</p>
+                        <p>به یاد داشته باشید: سلامت و امنیت شما از انجام هر تمرینی مهم‌تر است.</p>
+                      </aside>
+                    )}
+                    {(item.knowledge || []).map((entry) => (
+                      <div className="globalAssistantKnowledge" key={entry.item_id}>
+                        <b>{entry.title}</b>
+                        <p>{entry.excerpt}</p>
+                        <small>منبع: {entry.source?.title || 'منبع تأییدشده'} · {entry.source?.locator || ''}</small>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+                <div ref={endRef} />
+              </div>
+              <form className="assistantComposer libraryAssistantGuidedComposer" dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} data-jealousy-daily-prompt={String(isJealousyDailyPromptContext)} data-grief-daily-prompt={String(isGriefDailyPromptContext)} data-guilt-daily-prompt={String(isGuiltDailyPromptContext)} data-t10-daily-prompt={String(isT10DailyPromptContext)} data-t12-daily-prompt={String(isT12DailyPromptContext)} onSubmit={send}>
+                {activePromptGroups.some((group) => Array.isArray(group.questions) && group.questions.length > 0) ? (
+                  <div className="libraryAssistantPromptRow">
+                    <button
+                      ref={libraryPromptTriggerRef}
+                      className="libraryAssistantPromptTrigger"
+                      data-testid={isAngerDailyPromptContext ? "anger-daily-prompt-trigger" : isAnxietyDailyPromptContext ? "anxiety-daily-prompt-trigger" : isFearDailyPromptContext ? "fear-daily-prompt-trigger" : isHatredDailyPromptContext ? "hatred-daily-prompt-trigger" : isJealousyDailyPromptContext ? "jealousy-daily-prompt-trigger" : isGriefDailyPromptContext ? "grief-daily-prompt-trigger" : isGuiltDailyPromptContext ? "guilt-daily-prompt-trigger" : isEmotionalDependencyDailyPromptContext ? "emotional-dependency-daily-prompt-trigger" : isT10DailyPromptContext ? "t10-daily-prompt-trigger" : isT09DailyPromptContext ? "t09-daily-prompt-trigger" : isT11DailyPromptContext ? "t11-daily-prompt-trigger" : isT12DailyPromptContext ? "t12-daily-prompt-trigger" : isT14DailyPromptContext ? "t14-daily-prompt-trigger" : isT13DailyPromptContext ? "t13-daily-prompt-trigger" : screen === "books" ? "library-assistant-prompt-trigger" : "page-assistant-prompt-trigger"}
+                      type="button"
+                      aria-label={isTopicDailyPromptContext
+                        ? `باز کردن سؤال‌های آماده روز ${dailyContext?.day} ${isHatredDailyPromptContext ? "نفرت" : isFearDailyPromptContext ? "ترس" : isAnxietyDailyPromptContext ? "اضطراب" : isJealousyDailyPromptContext ? "حسادت" : isGriefDailyPromptContext ? "غم و سوگ" : isGuiltDailyPromptContext ? "احساس گناه" : isEmotionalDependencyDailyPromptContext ? "وابستگی عاطفی" : isT10DailyPromptContext ? "بی‌خوابی و مشکلات خواب" : isT09DailyPromptContext ? "اهمال‌کاری" : isT11DailyPromptContext ? "عادت‌های تکراری" : isT12DailyPromptContext ? "مرزبندی و نه گفتن" : isT14DailyPromptContext ? "کمبود انگیزه" : isT13DailyPromptContext ? "تنهایی" : "خشم"}`
+                        : screen === "books" ? "باز کردن سؤال‌های آماده دستیار کتابخانه" : "باز کردن سؤال‌های آماده دستیار این صفحه"}
+                      aria-haspopup="dialog"
+                      aria-expanded={libraryPromptOpen}
+                      aria-controls="library-assistant-prompt-dialog"
+                      disabled={sending || jealousyRelationshipGatePending || griefRelationshipGatePending || emotionalDependencyRelationshipGatePending || t12RelationshipGatePending}
+                      onClick={() => setLibraryPromptOpen(true)}
+                    >
+                      {draft.trim() || 'انتخاب از میان سؤال‌های پیشنهادی'}
+                    </button>
+                    <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال سؤال انتخاب‌شده" disabled={!draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
+                  </div>
+                ) : (
+                  <p className="muted assistantPreparedQuestionsUnavailable" role="status">
+                    هنوز سؤال آماده‌ای برای این بخش ثبت نشده است. پس از تکمیل فهرست سؤال‌های آماده، این دستیار فعال می‌شود.
+                  </p>
+                )}
+                {error && <p className="contactHelp assistantComposerError" role="alert">{error}</p>}
+              </form>
+            </div>
+          </section>
+        </div>
+      )}
+    </>
+  );
+}

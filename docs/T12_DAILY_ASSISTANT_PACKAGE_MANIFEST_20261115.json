@@ -1,0 +1,69 @@
+{
+  "packageId": "T12-boundaries-daily-assistant-v1",
+  "topicId": "T12",
+  "topic": "مرزبندی و نه گفتن",
+  "branch": "main",
+  "status": "ready_for_owner_live_test",
+  "files": [
+    "content/drafts/t12-boundaries-28day-redesign.v1.json",
+    "public/content/daily-text-overrides.v1.json",
+    "src/features/content/dailyTextOverrides.js",
+    "src/features/content/dailySafety.js",
+    "src/features/assistant/t12DailyAssistantGuide.v1.json",
+    "src/features/assistant/t12DailyAssistantPrompts.js",
+    "src/features/assistant/dailyExerciseAssistantGuidance.js",
+    "src/features/assistant/pageAssistantTurn.js",
+    "tests/t12DailyAssistantGuide.test.js",
+    "tests/t12ContentDraft.test.js",
+    "tests/dailySafety.test.mjs",
+    "docs/T12_DAILY_ASSISTANT_392_ANSWER_DRAFT_AUDIT_20261115_FA.md",
+    "src/features/assistant/GlobalAssistantLauncher.jsx",
+    "tests/browser/t12-boundaries-package.mjs",
+    "src/features/journey/relationshipSafetyGate.js",
+    "tests/relationshipSafetyGate.test.mjs",
+    "src/features/assistant/dailyAssistantAccess.js",
+    "src/features/assistant/DailyExerciseAssistant.jsx"
+  ],
+  "metrics": {
+    "days": 28,
+    "questionsPerDay": 14,
+    "answers": 392,
+    "uniqueAnswerStrings": 392,
+    "uniqueExercises": 28,
+    "uniqueActions": 28,
+    "uniqueLightActions": 28,
+    "uniqueProgressActions": 28,
+    "uniqueRestActions": 28,
+    "crossTopicExactExerciseActionDuplicates": 0,
+    "semanticSimilarityThreshold": 0.3,
+    "withinTopicSemanticPairsAboveThreshold": 0,
+    "crossTopicSemanticPairsAboveThreshold": 0,
+    "undefinedPreparedAnswers": 0,
+    "safetyConfirmationDays": [
+      6,
+      11,
+      15,
+      18,
+      20,
+      21,
+      23,
+      24,
+      27,
+      28
+    ]
+  },
+  "approvals": {
+    "ownerLiveTest": "ready_for_owner_action",
+    "finalTechnicalAndSpecialistApproval": "owner_to_complete_after_live_test"
+  },
+  "limitations": [
+    "Duration values were not supplied in the source and are not invented.",
+    "The source combines skill and mechanism in one field; no unsupported mechanism decomposition was fabricated.",
+    "The 28-day content is ready for owner live testing; final technical and specialist approval is intentionally left to the owner."
+  ],
+  "runtimeIntegration": "connected_to_daily_text_overrides_daily_exercise_assistant_page_assistant_and_relationship_safety_gate",
+  "developmentBranch": "content/t12-package-20261115",
+  "integratedCommit": "79fcf8bf25a70710b7efbc84b8512599bb9c0e70",
+  "testAppUrl": "https://h3269.github.io/Maseer28-V1/",
+  "testAppMode": "github_pages_test_app"
+}

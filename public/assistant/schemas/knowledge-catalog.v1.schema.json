@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maseer28.example/schemas/knowledge-catalog.v1.schema.json",
+  "title": "Maseer28 Assistant Knowledge Catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "catalog_id",
+    "status",
+    "items"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "catalog_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "status": {
+      "const": "active"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "./knowledge-item.v1.schema.json"
+      }
+    }
+  }
+}

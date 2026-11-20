@@ -1,0 +1,216 @@
+name: Publish tested Path28 version to Telegram and verify Pages deployment
+
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "پس از اطمینان از نسخه تست، PUBLISH را انتخاب کن"
+        required: true
+        type: choice
+        options:
+          - "false"
+          - "publish"
+        default: "false"
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: publish-path28-telegram
+  cancel-in-progress: false
+
+jobs:
+  build-and-publish:
+    if: ${{ inputs.publish == 'publish' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    steps:
+      - name: Refuse publication from non-main refs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = "refs/heads/main"
+          test -n "${GITHUB_SHA}"
+          echo "Publishing only the exact main commit: ${GITHUB_SHA}"
+
+      - name: Checkout tested version
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.ref }}
+          path: test-source
+          persist-credentials: false
+
+      - name: Require successful validation for this exact commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 36); do
+            current_main_sha="$(gh api "repos/${GITHUB_REPOSITORY}/commits/main" --jq .sha)"
+            if [ "${current_main_sha}" != "${GITHUB_SHA}" ]; then
+              echo "Publication stopped: main moved from ${GITHUB_SHA} to ${current_main_sha} during validation."
+              exit 1
+            fi
+
+            gh api -H "Accept: application/vnd.github+json" \
+              "repos/${GITHUB_REPOSITORY}/actions/workflows/validate-content.yml/runs?head_sha=${GITHUB_SHA}&branch=main&per_page=100" \
+              > /tmp/path28-validation-runs.json
+
+            matching_run="$(jq -c --arg sha "${GITHUB_SHA}" '
+              [.workflow_runs[]
+                | select(.head_sha == $sha
+                  and .head_branch == "main"
+                  and .event == "push")]
+              | sort_by(.created_at, .run_attempt)
+              | last // empty
+            ' /tmp/path28-validation-runs.json)"
+
+            if [ -z "${matching_run}" ]; then
+              echo "Waiting for the automatic push validation for exact commit ${GITHUB_SHA} to appear."
+            else
+              status="$(printf '%s' "${matching_run}" | jq -r '.status')"
+              conclusion="$(printf '%s' "${matching_run}" | jq -r '.conclusion // empty')"
+              run_id="$(printf '%s' "${matching_run}" | jq -r '.id')"
+
+              if [ "${status}" = "completed" ]; then
+                if [ "${conclusion}" != "success" ]; then
+                  echo "Publication stopped: validation run ${run_id} for ${GITHUB_SHA} concluded: ${conclusion}."
+                  exit 1
+                fi
+                node test-source/scripts/assert-validation-run.mjs /tmp/path28-validation-runs.json
+                exit 0
+              fi
+              echo "Waiting for validation run ${run_id} (status=${status})."
+            fi
+            sleep 10
+          done
+
+          echo "Publication stopped: no successful validation completed for exact commit ${GITHUB_SHA} within 6 minutes."
+          exit 1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: test-source/package-lock.json
+
+      - name: Prepare production-only copy
+        working-directory: test-source
+        run: npm run prepare:production
+
+      - name: Install dependencies and build
+        working-directory: test-source
+        run: |
+          npm ci
+          npm run build
+
+      - name: Checkout Telegram repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: H3269/Maseer28
+          ref: main
+          token: ${{ secrets.TELEGRAM_REPO_TOKEN }}
+          persist-credentials: true
+          path: telegram-site
+
+      - name: Prepare version and publication date
+        shell: bash
+        run: |
+          set -euo pipefail
+          node test-source/scripts/write-release-metadata.mjs \
+            test-source/package.json \
+            telegram-site/version.json \
+            test-source/dist/version.json
+
+      - name: Verify build output allowlist
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          dist = Path("test-source/dist")
+          allowed = {"assets", "content", "assistant", "index.html", "manifest.webmanifest", "Label.png", "version.json"}
+          required = {"assets", "content", "assistant", "index.html", "manifest.webmanifest", "Label.png", "version.json"}
+          if not dist.is_dir():
+              raise SystemExit("Build output directory is missing.")
+          actual = {item.name for item in dist.iterdir()}
+          unexpected = actual - allowed
+          missing = required - actual
+          if unexpected:
+              raise SystemExit(f"Unexpected build output entries: {sorted(unexpected)}")
+          if missing:
+              raise SystemExit(f"Required build output entries missing: {sorted(missing)}")
+          for name in ("assets", "content", "assistant"):
+              if not (dist / name).is_dir():
+                  raise SystemExit(f"Expected build directory missing: {name}")
+          for name in ("index.html", "manifest.webmanifest", "Label.png", "version.json"):
+              if not (dist / name).is_file() or (dist / name).stat().st_size == 0:
+                  raise SystemExit(f"Required build file missing or empty: {name}")
+          PY
+
+      - name: Publish only application-owned paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          for directory in assets content assistant; do
+            mkdir -p "telegram-site/$directory"
+            rsync -a --delete "test-source/dist/$directory/" "telegram-site/$directory/"
+          done
+          install -m 0644 test-source/dist/index.html telegram-site/index.html
+          install -m 0644 test-source/dist/manifest.webmanifest telegram-site/manifest.webmanifest
+          install -m 0644 test-source/dist/Label.png telegram-site/Label.png
+          install -m 0644 test-source/dist/version.json telegram-site/version.json
+          test -s telegram-site/index.html
+          test -s telegram-site/.github/workflows/deploy.yml
+          test -s telegram-site/production/README-FA.md
+          test -s telegram-site/README-FA.md
+
+      - name: Commit and push Telegram version
+        id: publish
+        working-directory: telegram-site
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- index.html manifest.webmanifest Label.png assets content assistant version.json
+          if git diff --cached --quiet; then
+            echo "Release metadata did not produce a change; refusing to report a publication."
+            exit 1
+          fi
+          git commit -m "Publish Path28 version with daily lock enabled"
+          git push origin HEAD:main
+          echo "published_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for the exact GitHub Pages deployment
+        env:
+          PUBLISHED_SHA: ${{ steps.publish.outputs.published_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/H3269/Maseer28/actions/workflows/deploy.yml/runs?branch=main&per_page=30"
+          for attempt in $(seq 1 60); do
+            response="$(curl --fail --silent --show-error --retry 2 "$api")"
+            matching_run="$(printf '%s' "$response" | jq -c --arg sha "$PUBLISHED_SHA" '[.workflow_runs[] | select(.head_sha == $sha)] | sort_by(.run_number) | last // empty')"
+            if [ -n "$matching_run" ]; then
+              status="$(printf '%s' "$matching_run" | jq -r '.status')"
+              conclusion="$(printf '%s' "$matching_run" | jq -r '.conclusion // empty')"
+              if [ "$status" = "completed" ]; then
+                if [ "$conclusion" != "success" ]; then
+                  echo "GitHub Pages deployment for $PUBLISHED_SHA ended with: $conclusion"
+                  exit 1
+                fi
+                echo "GitHub Pages deployment succeeded for $PUBLISHED_SHA"
+                exit 0
+              fi
+            fi
+            sleep 10
+          done
+          echo "Timed out waiting for GitHub Pages deployment for $PUBLISHED_SHA"
+          exit 1
