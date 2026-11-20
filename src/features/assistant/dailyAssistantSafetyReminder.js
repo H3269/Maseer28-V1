@@ -5,6 +5,7 @@ export const DAILY_ASSISTANT_SAFETY_QUESTION_KINDS = new Set([
   'anxiety_increased',
   'fear_increased',
   'hostility_increased',
+  'jealousy_increased',
   'grief_increased',
   'dependency_increased',
   'procrastination_increased',
