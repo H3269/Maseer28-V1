@@ -114,6 +114,8 @@ test('T01-T14 daily titles, exercises, actions, and examples are complete and no
   const titles = [];
   const exercises = [];
   const actions = [];
+  const exerciseExamples = [];
+  const actionExamples = [];
   for (const topic of topics) {
     assert.equal(topic.guides.length, 28, topic.id + ' must contain 28 days');
     for (const guide of topic.guides) {
@@ -124,13 +126,15 @@ test('T01-T14 daily titles, exercises, actions, and examples are complete and no
       const actionExample = guide.actionExample || guide.questions?.find(question => question.id === 'q04')?.answer;
       assert.ok(String(exerciseExample || '').trim(), topic.id + ' day ' + guide.day + ' missing exercise example');
       assert.ok(String(actionExample || '').trim(), topic.id + ' day ' + guide.day + ' missing action example');
+      exerciseExamples.push(exerciseExample);
+      actionExamples.push(actionExample);
       assert.equal(guide.questions.length, 14, topic.id + ' day ' + guide.day + ' must retain 14 prepared questions');
       titles.push(guide.title);
       exercises.push(guide.exercise);
       actions.push(guide.action);
     }
   }
-  for (const [name, values] of [['titles', titles], ['exercises', exercises], ['actions', actions]]) {
+  for (const [name, values] of [['titles', titles], ['exercises', exercises], ['actions', actions], ['exercise examples', exerciseExamples], ['action examples', actionExamples]]) {
     assert.equal(new Set(values).size, 14 * 28, name + ' must not repeat across T01-T14');
   }
 });
