@@ -2173,10 +2173,10 @@ body:has(#root > .appLoading),
   text-shadow: 0 1px 2px rgba(255,255,255,.75) !important;
 }
 .appLoading .loadingProgress {
-  border-color: rgba(36,90,154,.18) !important;
-  background: rgba(255,255,255,.82) !important;
+  border-color: rgba(255,255,255,.95) !important;
+  background: #FFFFFF !important;
   box-shadow: 0 3px 12px rgba(36,90,154,.07), inset 0 1px 2px rgba(16,42,67,.04) !important;
 }
 .appLoading .loadingProgressFill {
-  background: linear-gradient(90deg, #245A9A 0%, #4096C8 48%, #40CFC4 82%, #D7B96D 100%) !important;
+  background: #40E0D0 !important;
 }
