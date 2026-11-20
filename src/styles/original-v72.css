@@ -7348,3 +7348,11 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 @keyframes loadingProgressFill { to { transform: scaleX(1); } }
 /* The splash deliberately keeps its coordinated logo and progress animations
    even when the device requests reduced motion. Other app motion remains reduced. */
+
+
+/* Bale-only: attach the combined release footer and bottom navigation to the
+   physical bottom edge. Other WebViews and browser layouts remain unchanged. */
+html.bale-webview body .appBottomDock,
+body.bale-webview .appBottomDock {
+  bottom: 0 !important;
+}
