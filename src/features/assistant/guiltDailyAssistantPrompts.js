@@ -767,7 +767,7 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 7,
-    "title": "هدف اصلاحی واقع‌بینانه",
+    "title": "جبران متناسب با مسئولیت واقعی",
     "topicId": "T07",
     "topic": "احساس گناه",
     "objective": "انتخاب مسئولیت قابل‌کنترل",
@@ -1529,7 +1529,7 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 13,
-    "title": "اطلاعات ناکافی و ابهام",
+    "title": "تفکیک خاطره، حدس و ابهام",
     "topicId": "T07",
     "topic": "احساس گناه",
     "objective": "خودداری از نتیجه‌گیری شتاب‌زده",
@@ -2797,7 +2797,7 @@ const RAW_GUILT_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 23,
-    "title": "عادت پاسخگویی کوچک",
+    "title": "روال پیشگیری از تکرار خطای مشخص",
     "topicId": "T07",
     "topic": "احساس گناه",
     "objective": "پیشگیری از تکرار",
