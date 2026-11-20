@@ -76,6 +76,7 @@ for (const topic of topics) {
 
 
 test('all exact prepared FAQs across 28 days keep their own answers when their wording contains broad safety cues', () => {
+  assert.equal(topics.length, 14, 'the shared prepared-only contract covers T01 through T14');
   let checked = 0;
   for (const topic of topics) {
     for (const guide of topic.guides) {
@@ -106,7 +107,32 @@ test('all exact prepared FAQs across 28 days keep their own answers when their w
       }
     }
   }
-  assert.ok(checked >= 3000, `expected broad coverage including T14's 28 × 14 prepared FAQ set; checked ${checked}`);
+  assert.equal(checked, 14 * 28 * 14 - 14, 'every prepared question is checked; only the separately risk-gated T13 day 14 is excluded');
+});
+
+test('T01-T14 daily titles, exercises, actions, and examples are complete and not exact duplicates', () => {
+  const titles = [];
+  const exercises = [];
+  const actions = [];
+  for (const topic of topics) {
+    assert.equal(topic.guides.length, 28, topic.id + ' must contain 28 days');
+    for (const guide of topic.guides) {
+      for (const field of ['title', 'objective', 'skill', 'mechanism', 'exercise', 'action', 'lightVersion', 'successCriterion', 'stopCondition']) {
+        assert.ok(String(guide[field] || '').trim(), topic.id + ' day ' + guide.day + ' missing ' + field);
+      }
+      const exerciseExample = guide.exerciseExample || guide.questions?.find(question => question.id === 'q02')?.answer;
+      const actionExample = guide.actionExample || guide.questions?.find(question => question.id === 'q04')?.answer;
+      assert.ok(String(exerciseExample || '').trim(), topic.id + ' day ' + guide.day + ' missing exercise example');
+      assert.ok(String(actionExample || '').trim(), topic.id + ' day ' + guide.day + ' missing action example');
+      assert.equal(guide.questions.length, 14, topic.id + ' day ' + guide.day + ' must retain 14 prepared questions');
+      titles.push(topic.id + ':' + guide.title);
+      exercises.push(topic.id + ':' + guide.exercise);
+      actions.push(topic.id + ':' + guide.action);
+    }
+  }
+  for (const [name, values] of [['titles', titles], ['exercises', exercises], ['actions', actions]]) {
+    assert.equal(new Set(values).size, 14 * 28, name + ' must not repeat across T01-T14');
+  }
 });
 
 test('T13 day 14 remains available through its risk classification', () => {
