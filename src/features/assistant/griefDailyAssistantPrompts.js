@@ -1425,7 +1425,7 @@ const RAW_GRIEF_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 14,
-    "title": "مسئولیت، اختیار و احساس تقصیر",
+    "title": "بازنگری اختیار و احساس تقصیر در سوگ",
     "topicId": "T06",
     "topic": "غم و سوگ",
     "subtopic": "T06-S01",
