@@ -2105,81 +2105,52 @@ body .bookReaderFull.theme-night .readerProgressTrack span { background: linear-
 
 
 /* ============================================================
-   M28 SPLASH — "Dawn of Awareness"
-   Visual-only treatment for the React loading screen.
-   Preserve the existing logo reveal and progress/readiness logic.
+   M28 SPLASH — full-viewport lapis and turquoise background
+   Background-only correction. The logo, its markup, and loading
+   behavior are intentionally left unchanged.
    ============================================================ */
-/* Full-viewport canvas: lapis edges, turquoise atmosphere, and a soft
-   luminous center behind the unchanged logo and loading copy. */
 html:has(#root > .appLoading),
 body:has(#root > .appLoading),
 #root:has(> .appLoading) {
+  background-color: #102A43 !important;
   background:
-    radial-gradient(ellipse at 50% 43%, rgba(239,255,252,.98) 0%, rgba(220,250,246,.94) 18%, rgba(64,224,208,.50) 39%, rgba(64,224,208,0) 66%),
-    radial-gradient(ellipse at 12% 8%, rgba(64,150,200,.38) 0%, rgba(64,150,200,0) 43%),
-    linear-gradient(135deg, #102A43 0%, #173E68 30%, #245A9A 62%, #147E8B 84%, #20B8AD 100%) !important;
+    radial-gradient(ellipse at 50% 42%,
+      rgba(83, 205, 195, .88) 0%,
+      rgba(48, 161, 177, .76) 34%,
+      rgba(36, 90, 154, 0) 72%),
+    radial-gradient(ellipse at 8% 10%,
+      rgba(64, 150, 200, .46) 0%,
+      rgba(64, 150, 200, 0) 46%),
+    linear-gradient(135deg,
+      #102A43 0%,
+      #173E68 28%,
+      #245A9A 58%,
+      #087E8B 82%,
+      #20B8AD 100%) !important;
 }
 .appLoading {
   box-sizing: border-box !important;
   width: 100% !important;
   min-height: 100vh !important;
   min-height: 100svh !important;
+  background-color: #102A43 !important;
   background:
-    radial-gradient(ellipse at 50% 43%, rgba(239,255,252,.98) 0%, rgba(220,250,246,.94) 18%, rgba(64,224,208,.50) 39%, rgba(64,224,208,0) 66%),
-    radial-gradient(ellipse at 12% 8%, rgba(64,150,200,.38) 0%, rgba(64,150,200,0) 43%),
-    linear-gradient(135deg, #102A43 0%, #173E68 30%, #245A9A 62%, #147E8B 84%, #20B8AD 100%) !important;
+    radial-gradient(ellipse at 50% 42%,
+      rgba(83, 205, 195, .88) 0%,
+      rgba(48, 161, 177, .76) 34%,
+      rgba(36, 90, 154, 0) 72%),
+    radial-gradient(ellipse at 8% 10%,
+      rgba(64, 150, 200, .46) 0%,
+      rgba(64, 150, 200, 0) 46%),
+    linear-gradient(135deg,
+      #102A43 0%,
+      #173E68 28%,
+      #245A9A 58%,
+      #087E8B 82%,
+      #20B8AD 100%) !important;
 }
 
-.appLoading .loadingBrand {
-  position: relative !important;
-  isolation: isolate !important;
-  overflow: visible !important;
-  color: #102A43 !important;
-}
-
-.appLoading .loadingBrand::before {
-  content: "" !important;
-  position: absolute !important;
-  z-index: 0 !important;
-  top: -31px !important;
-  left: 50% !important;
-  width: 252px !important;
-  height: 252px !important;
-  border-radius: 50% !important;
-  transform: translateX(-50%) !important;
-  background:
-    radial-gradient(circle, rgba(255,255,255,.98) 0%, rgba(228,248,246,.88) 28%, rgba(64,224,208,.22) 52%, rgba(36,90,154,.08) 70%, transparent 73%) !important;
-  filter: blur(3px) !important;
-  pointer-events: none !important;
-  animation: m28SplashHalo 7s ease-in-out infinite alternate !important;
-}
-
-.appLoading .loadingBrand::after {
-  content: "" !important;
-  position: absolute !important;
-  z-index: 0 !important;
-  top: -13px !important;
-  left: 50% !important;
-  width: 218px !important;
-  height: 218px !important;
-  box-sizing: border-box !important;
-  border: 1px solid rgba(64,150,200,.25) !important;
-  border-radius: 50% !important;
-  transform: translateX(-50%) rotate(0deg) !important;
-  background:
-    radial-gradient(circle at 13% 27%, rgba(215,185,109,.9) 0 1.5px, transparent 2.8px),
-    radial-gradient(circle at 83% 21%, rgba(215,185,109,.72) 0 1px, transparent 2.5px),
-    radial-gradient(circle at 91% 72%, rgba(64,224,208,.9) 0 1.5px, transparent 2.8px),
-    radial-gradient(circle at 18% 82%, rgba(64,150,200,.72) 0 1px, transparent 2.5px),
-    transparent !important;
-  box-shadow:
-    0 0 0 12px rgba(64,224,208,.045),
-    0 0 0 27px rgba(36,90,154,.035),
-    inset 0 0 24px rgba(64,224,208,.07) !important;
-  pointer-events: none !important;
-  animation: m28SplashOrbit 32s linear infinite !important;
-}
-
+/* Keep existing loading copy and progress styling; no logo selectors changed. */
 .appLoading .loadingBrand img,
 .appLoading .loadingBrand h1,
 .appLoading .loadingBrand p,
@@ -2211,21 +2182,4 @@ body:has(#root > .appLoading),
 
 .appLoading .loadingProgressFill {
   background: linear-gradient(90deg, #245A9A 0%, #4096C8 48%, #40E0D0 82%, #D7B96D 100%) !important;
-}
-
-@keyframes m28SplashHalo {
-  from { opacity: .72; filter: blur(3px); }
-  to { opacity: 1; filter: blur(7px); }
-}
-
-@keyframes m28SplashOrbit {
-  from { transform: translateX(-50%) rotate(0deg); }
-  to { transform: translateX(-50%) rotate(360deg); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .appLoading .loadingBrand::before,
-  .appLoading .loadingBrand::after {
-    animation: none !important;
-  }
 }
