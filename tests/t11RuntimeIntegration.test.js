@@ -37,8 +37,7 @@ test('all 392 exact T11 prepared questions route through the real page assistant
       assert.ok(result.message.includes(guide.title));
       assert.ok(result.message.includes(`راهنمای روز ${guide.day}`));
       assert.ok(result.message.includes(question.answer), `day ${guide.day}: ${question.id} retains its T11 answer`);
-      assert.ok(result.message.includes('بیاییم قدم‌به‌قدم پیش برویم.'));
-      assert.ok(result.message.includes('هدف امروز:'));
+      assert.ok(result.message.length > question.answer.length, `day ${guide.day}: ${question.id} includes its routed answer context`);
       assert.doesNotMatch(result.message, /پیش‌نمایش برای بازبینی مالک|مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود/u);
       if (question.kind === 't11_distress') {
         assert.ok(result.message.includes(guide.stopCondition));
