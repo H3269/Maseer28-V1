@@ -42,7 +42,7 @@ test('all 2,352 prepared answers across T01-T06 render without raw markdown or e
         assert.equal(visibleText.includes(String.fromCharCode(92) + 'n'), false, topic.id + ' escaped newline');
         assert.ok(lines.length > 1, topic.id + ' must preserve paragraph/line breaks');
         if (shouldShowSafetyReminder) {
-          assert.match(visibleText, /مرکز هیپنوتراپی شفا با شماره تماس ۰۹۱۹۰۸۸۹۰۶۲ همیشه در کل مسیر همراه شماست/);
+          assert.match(visibleText, /شماره ۰۹۱۹۰۸۸۹۰۶۲ فقط برای نوبت‌دهی و پشتیبانی مرکز است و جایگزین خدمات اورژانسی یا کمک فوری تخصصی نیست./);
           assert.doesNotMatch(visibleText, /گفت‌وگوی آزاد/);
         } else {
           assert.doesNotMatch(visibleText, /یادآوری مهم درباره ایمنی شما|مرکز هیپنوتراپی شفا با شماره تماس ۰۹۱۹۰۸۸۹۰۶۲/);
