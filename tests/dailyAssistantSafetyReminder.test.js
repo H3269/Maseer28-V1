@@ -14,7 +14,7 @@ const safetyKindsByTopic = {
   T02: new Set(['anxiety_increased', 'talk_other', 'success', 'stop']),
   T03: new Set(['fear_increased', 'talk_other', 'success', 'stop']),
   T04: new Set(['hostility_increased', 'talk_other', 'success', 'stop']),
-  T05: new Set(['hostility_increased', 'talk_other', 'success', 'stop']),
+  T05: new Set(['jealousy_increased', 'talk_other', 'success', 'stop']),
   T06: new Set(['grief_increased', 'talk_other', 'success', 'stop']),
   T07: new Set(['guilt_increased', 'talk_other', 'success', 'stop']),
 };
