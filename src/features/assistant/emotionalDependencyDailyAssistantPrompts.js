@@ -359,7 +359,7 @@ const RAW_EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 4,
-    "title": "نشانه‌های بدنی نیاز به اطمینان",
+    "title": "نشانه‌های انتظار پاسخ",
     "topicId": "T08",
     "topic": "وابستگی عاطفی",
     "subtopic": "T08-S01",
@@ -1539,7 +1539,7 @@ const RAW_EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 14,
-    "title": "چرخه اطمینان‌خواهی",
+    "title": "چرخه آرامش کوتاه‌مدت در وابستگی",
     "topicId": "T08",
     "topic": "وابستگی عاطفی",
     "subtopic": "T08-S01",
