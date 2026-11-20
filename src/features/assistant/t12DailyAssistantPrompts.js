@@ -54,7 +54,7 @@ export function answerT12DailyPreparedQuestion({ day, message, dailyContent } = 
     question,
     topic: 'مرزبندی و نه گفتن',
   });
-  const safetyKinds = new Set(['procrastination_increased', 'talk_other', 'success', 'stop']);
+  const safetyKinds = new Set(['boundary_distress', 'talk_other', 'success', 'stop']);
   const answerWithTopicSafety = safetyKinds.has(question.kind)
     ? framedAnswer.trimEnd() + '\n\n' + T12_SAFETY_REMINDER
     : framedAnswer;
