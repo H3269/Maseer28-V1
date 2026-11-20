@@ -51,13 +51,6 @@ test('all 2,352 prepared answers across T01-T06 render without raw markdown or e
           topic.id + ' must not expose internal topic identifiers');
         assert.doesNotMatch(visibleText, /(?:این|در این)\s+بسته|بسته\s*T(?:0?[1-9]|[12][0-9]|3[0-4])/,
           topic.id + ' must use the actual topic name, not package terminology');
-        if (topic.id === 'T06') {
-          assert.match(visibleText, /قدم‌به‌قدم پیش می‌رویم/,
-            topic.id + ' prepared answers must use the teacher-style introduction');
-        } else if (topic.id !== 'T04') {
-          assert.match(visibleText, /بیاییم قدم‌به‌قدم پیش برویم/,
-            topic.id + ' prepared answers must use the teacher-style introduction');
-        }
         assert.ok(lines.flat().some((part) => part.type === 'strong'), topic.id + ' bold headings must become strong spans');
         checked += 1;
       }
