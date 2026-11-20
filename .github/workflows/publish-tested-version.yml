@@ -99,23 +99,16 @@ jobs:
         working-directory: test-source
         run: npm install --no-save --package-lock=false playwright@1.65.1
 
-      - name: Install Chromium and system dependencies
+      - name: Install Chromium headless shell and system dependencies
         working-directory: test-source
         shell: bash
         run: |
           set -euo pipefail
-          for attempt in 1 2 3; do
-            echo "Chromium installation attempt ${attempt}/3"
-            if npx playwright install --with-deps chromium; then
-              exit 0
-            fi
-            if [ "${attempt}" -lt 3 ]; then
-              sudo apt-get update || true
-              sleep $((attempt * 10))
-            fi
-          done
-          echo "Chromium/system dependency installation failed after 3 attempts."
-          exit 1
+          # Every release browser test launches Chromium in headless mode.
+          # Install only the matching headless shell, not the unused full Chrome
+          # and FFmpeg downloads.
+          npx playwright install-deps chromium
+          npx playwright install --only-shell chromium
 
       - name: Run browser regression against the test build
         working-directory: test-source
@@ -136,10 +129,36 @@ jobs:
             sleep 2
           done
           export PATH28_BASE_URL=http://127.0.0.1:4173/Maseer28-V1/
+
+          # Browser checks are independent: each script creates its own browser
+          # and isolated contexts, and all use the same immutable preview build.
+          # Run at most three scripts concurrently to shorten wall-clock time
+          # without overloading the GitHub-hosted runner.
+          mkdir -p /tmp/path28-browser-logs
+          browser_test_status=0
+          if ! printf '%s\\0' tests/browser/*.mjs | xargs -0 -P 3 -I '{}' bash -c '
+            script="$1"
+            log_file="/tmp/path28-browser-logs/$(basename "$script").log"
+            {
+              echo "Running $script"
+              node "$script"
+            } > "$log_file" 2>&1
+          ' _ '{}'; then
+            browser_test_status=$?
+          fi
+
+          # Print every log even when a test fails, then fail the release gate.
           for script in tests/browser/*.mjs; do
-            echo "Running ${script}"
-            node "${script}"
+            log_file="/tmp/path28-browser-logs/$(basename "$script").log"
+            echo "===== $script ====="
+            if [ -f "$log_file" ]; then
+              cat "$log_file"
+            else
+              echo "No log was produced for $script."
+              browser_test_status=1
+            fi
           done
+          exit "$browser_test_status"
 
       - name: Prepare production-only copy
         working-directory: test-source
