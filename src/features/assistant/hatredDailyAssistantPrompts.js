@@ -2655,7 +2655,7 @@ const RAW_HATRED_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 26,
-    "title": "اقدام ارزش‌محور",
+    "title": "رفتار همسو با ارزش بدون تشدید خصومت",
     "topicId": "T04",
     "topic": "نفرت",
     "subtopic": "T04-S03",
@@ -2761,7 +2761,7 @@ const RAW_HATRED_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 27,
-    "title": "برنامه نگهداری",
+    "title": "برنامه پیشگیری از تشدید خصومت",
     "topicId": "T04",
     "topic": "نفرت",
     "subtopic": "T04-S03",
@@ -2867,7 +2867,7 @@ const RAW_HATRED_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 28,
-    "title": "مرور",
+    "title": "جمع‌بندی شواهد و مرزهای ایمن در نفرت",
     "topicId": "T04",
     "topic": "نفرت",
     "subtopic": "T04-S03",
