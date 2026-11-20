@@ -83,7 +83,11 @@ test('assistant runtime does not claim clinical validation or diagnostic capabil
 test('production publication does not depend on review metadata', () => {
   assert.doesNotMatch(publishWorkflow, /assert:production-content/);
   assert.doesNotMatch(publishWorkflow, /expert approval|specialist approval|reviewer approval/i);
-  assert.match(publishWorkflow, /validate-content\.yml/);
+  assert.doesNotMatch(publishWorkflow, /validate-content\\.yml|assert-validation-run\\.mjs/);
+  for (const command of ['npm run validate:content', 'npm run validate:assistant-topics', 'npm test', 'npm run build -- --base=/Maseer28-V1/']) {
+    assert.ok(publishWorkflow.includes(command), `release workflow must run its own ${command} gate`);
+  }
+  assert.match(publishWorkflow, /tests\\/browser\\/\\*\\.mjs/);
   assert.match(publishWorkflow, /npm run prepare:production/);
 });
 
