@@ -2842,7 +2842,7 @@ const RAW_GRIEF_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 27,
-    "title": "برنامه نگهداری",
+    "title": "برنامه حمایت در روزهای دشوار سوگ",
     "topicId": "T06",
     "topic": "غم و سوگ",
     "subtopic": "T06-S03",
@@ -2951,7 +2951,7 @@ const RAW_GRIEF_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 28,
-    "title": "مرور",
+    "title": "جمع‌بندی سوگ و حمایت بعدی",
     "topicId": "T06",
     "topic": "غم و سوگ",
     "subtopic": "T06-S01|T06-S02|T06-S03",
