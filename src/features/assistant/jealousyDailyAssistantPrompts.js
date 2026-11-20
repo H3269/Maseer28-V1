@@ -324,7 +324,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 4,
-    "title": "پیش‌بینی تهدید رابطه",
+    "title": "ترس از تغییر در رابطه",
     "topicId": "T05",
     "topic": "حسادت",
     "subtopic": "T05-S01",
@@ -748,7 +748,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 8,
-    "title": "رفتار اطمینان‌خواهی",
+    "title": "تفکیک مشاهده از تفسیر در حسادت",
     "topicId": "T05",
     "topic": "حسادت",
     "subtopic": "T05-S03",
@@ -1596,7 +1596,7 @@ const RAW_JEALOUSY_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 16,
-    "title": "گفت‌وگوی امن",
+    "title": "گفت‌وگوی داوطلبانه درباره توافق رابطه",
     "topicId": "T05",
     "topic": "حسادت",
     "subtopic": "T05-S01",
