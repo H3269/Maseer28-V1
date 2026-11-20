@@ -2105,13 +2105,14 @@ body .bookReaderFull.theme-night .readerProgressTrack span { background: linear-
 
 
 /* ============================================================
-   M28 SPLASH — signature diagonal lapis / turquoise ribbons
-   Splash only. Preserve the real logo, markup, and loading flow.
+   M28 SPLASH — soft, flowing diagonal waves
+   Splash only. Keep the selected lapis/turquoise palette, but
+   lift the overall brightness and preserve the original logo.
    ============================================================ */
 html:has(#root > .appLoading),
 body:has(#root > .appLoading),
 #root:has(> .appLoading) {
-  background: #082747 !important;
+  background: #F2F8FB !important;
 }
 .appLoading {
   box-sizing: border-box !important;
@@ -2121,12 +2122,10 @@ body:has(#root > .appLoading),
   overflow: hidden !important;
   position: relative !important;
   isolation: isolate;
-  background-color: #082747 !important;
+  background-color: #F2F8FB !important;
   background-image:
-    radial-gradient(ellipse at 51% 47%, rgba(16, 72, 112, .78) 0%, rgba(8, 39, 71, 0) 54%),
-    linear-gradient(146deg, transparent 0 8%, rgba(20, 93, 143, .78) 8.2% 13%, rgba(38, 190, 197, .82) 13.2% 15.5%, rgba(7, 48, 91, .72) 15.7% 22%, transparent 22.2% 100%),
-    linear-gradient(326deg, transparent 0 9%, rgba(8, 63, 105, .94) 9.2% 16%, rgba(21, 151, 170, .82) 16.2% 19%, rgba(31, 185, 190, .76) 19.2% 21%, rgba(8, 47, 86, .86) 21.2% 29%, transparent 29.2% 100%),
-    linear-gradient(135deg, #071F42 0%, #103E70 42%, #075B78 72%, #06294C 100%) !important;
+    radial-gradient(ellipse at 52% 44%, rgba(255,255,255,.98) 0%, rgba(255,255,255,0) 58%),
+    linear-gradient(135deg, #F8FCFD 0%, #EAF6F7 48%, #EAF1FA 100%) !important;
   background-repeat: no-repeat !important;
   background-size: 100% 100% !important;
   background-attachment: scroll !important;
@@ -2135,23 +2134,24 @@ body:has(#root > .appLoading),
 .appLoading::after {
   content: "";
   position: absolute;
-  inset: -12% -24%;
+  inset: -12% -10%;
   z-index: 0;
   pointer-events: none;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
 }
 .appLoading::before {
-  background:
-    linear-gradient(146deg, transparent 0 30%, rgba(64, 224, 208, .18) 30.1% 30.35%, transparent 30.5% 100%),
-    linear-gradient(146deg, transparent 0 33%, rgba(215, 185, 109, .78) 33.05% 33.18%, transparent 33.28% 100%),
-    linear-gradient(326deg, transparent 0 34%, rgba(64, 224, 208, .24) 34.1% 34.4%, transparent 34.55% 100%);
+  opacity: .72;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 900' preserveAspectRatio='xMidYMid slice'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0' y1='1' x2='1' y2='0'%3E%3Cstop stop-color='%23245A9A' stop-opacity='.04'/%3E%3Cstop offset='.52' stop-color='%234096C8' stop-opacity='.19'/%3E%3Cstop offset='1' stop-color='%2340CFC4' stop-opacity='.15'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M-180 790 C90 650 170 480 390 430 S700 440 850 275 S1080 90 1390 -20' fill='none' stroke='url(%23a)' stroke-width='190' stroke-linecap='round'/%3E%3Cpath d='M-170 835 C100 695 180 525 400 475 S710 485 860 320 S1090 135 1400 25' fill='none' stroke='%2340CFC4' stroke-opacity='.13' stroke-width='3'/%3E%3Cpath d='M-120 590 C130 485 240 335 440 305 S730 350 900 185 S1110 20 1320 -70' fill='none' stroke='%23245A9A' stroke-opacity='.09' stroke-width='72' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 .appLoading::after {
-  background:
-    linear-gradient(146deg, transparent 0 5%, rgba(64, 150, 200, .14) 5.1% 5.4%, transparent 5.55% 100%),
-    linear-gradient(326deg, transparent 0 64%, rgba(215, 185, 109, .62) 64.05% 64.16%, transparent 64.28% 100%);
+  opacity: .56;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 900' preserveAspectRatio='xMidYMid slice'%3E%3Cdefs%3E%3ClinearGradient id='b' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%2340CFC4' stop-opacity='.02'/%3E%3Cstop offset='.55' stop-color='%234096C8' stop-opacity='.13'/%3E%3Cstop offset='1' stop-color='%23245A9A' stop-opacity='.07'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M-160 180 C100 310 250 115 450 190 S760 455 930 345 S1120 190 1380 300' fill='none' stroke='url(%23b)' stroke-width='118' stroke-linecap='round'/%3E%3Cpath d='M-150 205 C110 335 260 140 460 215 S770 480 940 370 S1130 215 1390 325' fill='none' stroke='%23D7B96D' stroke-opacity='.20' stroke-width='2'/%3E%3Cpath d='M-100 980 C180 790 300 680 510 690 S800 800 980 650 S1160 510 1350 550' fill='none' stroke='%2340CFC4' stroke-opacity='.12' stroke-width='48' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 
-/* Keep existing loading copy and progress styling; no logo selectors changed. */
+/* Keep the original loading content and logo; only adjust contrast
+   for the intentionally much lighter background. */
 .appLoading .loadingBrand img,
 .appLoading .loadingBrand h1,
 .appLoading .loadingBrand p,
@@ -2160,28 +2160,23 @@ body:has(#root > .appLoading),
   position: relative !important;
   z-index: 1 !important;
 }
-
 .appLoading .loadingBrand img {
-  filter: drop-shadow(0 8px 16px rgba(16,42,67,.16))
-          drop-shadow(0 0 13px rgba(64,224,208,.22)) !important;
+  filter: drop-shadow(0 7px 15px rgba(16,42,67,.12))
+          drop-shadow(0 0 10px rgba(64,207,196,.14)) !important;
 }
-
 .appLoading .loadingBrand h1 {
-  color: #F7FCFF !important;
-  text-shadow: 0 2px 8px rgba(3, 24, 48, .68), 0 0 18px rgba(64, 224, 208, .20) !important;
+  color: #173E62 !important;
+  text-shadow: 0 1px 2px rgba(255,255,255,.75) !important;
 }
-
 .appLoading .loadingBrand p {
-  color: #DFF9F7 !important;
-  text-shadow: 0 1px 5px rgba(3, 24, 48, .72) !important;
+  color: #476B84 !important;
+  text-shadow: 0 1px 2px rgba(255,255,255,.75) !important;
 }
-
 .appLoading .loadingProgress {
-  border-color: rgba(64,150,200,.30) !important;
-  background: rgba(255,255,255,.78) !important;
-  box-shadow: 0 3px 12px rgba(36,90,154,.08), inset 0 1px 2px rgba(16,42,67,.05) !important;
+  border-color: rgba(36,90,154,.18) !important;
+  background: rgba(255,255,255,.82) !important;
+  box-shadow: 0 3px 12px rgba(36,90,154,.07), inset 0 1px 2px rgba(16,42,67,.04) !important;
 }
-
 .appLoading .loadingProgressFill {
-  background: linear-gradient(90deg, #245A9A 0%, #4096C8 48%, #40E0D0 82%, #D7B96D 100%) !important;
+  background: linear-gradient(90deg, #245A9A 0%, #4096C8 48%, #40CFC4 82%, #D7B96D 100%) !important;
 }
