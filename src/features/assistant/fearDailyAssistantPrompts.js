@@ -641,7 +641,7 @@ const RAW_FEAR_DAILY_ASSISTANT_GUIDES = [
   },
   {
     "day": 7,
-    "title": "مرور هفته اول",
+    "title": "مرور نشانه‌ها و پاسخ‌های هفته اول ترس",
     "topicId": "T03",
     "topic": "ترس",
     "subtopic": "T03-S03",
