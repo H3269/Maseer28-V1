@@ -36,7 +36,7 @@ test('all 392 T12 prepared answers use the shared T01-T11 display frame', () => 
       assert.equal(answer.includes(String.fromCharCode(92) + 'n'), false, 'answer must contain real line breaks, not escaped newline tokens');
       const visible = formatAssistantMessageText(answer).flat().map((part) => part.text).join('\n');
       assert.equal(visible.includes('**'), false, 'raw Markdown markers must not reach visible text');
-      assert.ok(visible.includes('هدف امروز:'), 'formatted answer must retain the shared objective');
+      assert.ok(visible.includes(guide.title), 'formatted answer must retain the topic/day title');
       const requiresReminder = ['boundary_distress', 'talk_other', 'success', 'stop'].includes(question.kind);
       assert.equal(answer.includes('یادآوری اختصاصی ایمنی و حریم خصوصی T12'), requiresReminder,
         'T12 safety-sensitive answers must use the topic-specific safety reminder');
