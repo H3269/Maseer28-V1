@@ -11,6 +11,9 @@ import { GRIEF_DAILY_ASSISTANT_GUIDES, getGriefDailyAssistantPromptGroups } from
 import { GUILT_DAILY_ASSISTANT_GUIDES, getGuiltDailyAssistantPromptGroups } from '../src/features/assistant/guiltDailyAssistantPrompts.js';
 import { EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES, getEmotionalDependencyDailyAssistantPromptGroups } from '../src/features/assistant/emotionalDependencyDailyAssistantPrompts.js';
 import { T09_DAILY_ASSISTANT_GUIDES, getT09DailyAssistantPromptGroups } from '../src/features/assistant/t09DailyAssistantPrompts.js';
+import { T10_DAILY_ASSISTANT_GUIDES, getT10DailyAssistantPromptGroups } from '../src/features/assistant/t10DailyAssistantPrompts.js';
+import { T11_DAILY_ASSISTANT_GUIDES, getT11DailyAssistantPromptGroups } from '../src/features/assistant/t11DailyAssistantPrompts.js';
+import { T12_DAILY_ASSISTANT_GUIDES, getT12DailyAssistantPromptGroups } from '../src/features/assistant/t12DailyAssistantPrompts.js';
 import { T13_DAILY_ASSISTANT_GUIDES, getT13DailyAssistantPromptGroups } from '../src/features/assistant/t13DailyAssistantPrompts.js';
 import { T14_DAILY_ASSISTANT_GUIDES, getT14DailyAssistantPromptGroups } from '../src/features/assistant/t14DailyAssistantPrompts.js';
 
@@ -24,6 +27,9 @@ const topics = [
   { name: 'احساس گناه', id: 'T07', guides: GUILT_DAILY_ASSISTANT_GUIDES, groups: getGuiltDailyAssistantPromptGroups },
   { name: 'وابستگی عاطفی', id: 'T08', guides: EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES, groups: getEmotionalDependencyDailyAssistantPromptGroups },
   { name: 'اهمال‌کاری', id: 'T09', guides: T09_DAILY_ASSISTANT_GUIDES, groups: getT09DailyAssistantPromptGroups },
+  { name: 'بی‌خوابی و مشکلات خواب', id: 'T10', guides: T10_DAILY_ASSISTANT_GUIDES, groups: getT10DailyAssistantPromptGroups },
+  { name: 'عادت‌های تکراری', id: 'T11', guides: T11_DAILY_ASSISTANT_GUIDES, groups: getT11DailyAssistantPromptGroups },
+  { name: 'مرزبندی و نه گفتن', id: 'T12', guides: T12_DAILY_ASSISTANT_GUIDES, groups: getT12DailyAssistantPromptGroups },
   { name: 'تنهایی', id: 'T13', guides: T13_DAILY_ASSISTANT_GUIDES, groups: getT13DailyAssistantPromptGroups },
   { name: 'کمبود انگیزه', id: 'T14', guides: T14_DAILY_ASSISTANT_GUIDES, groups: getT14DailyAssistantPromptGroups },
 ];
