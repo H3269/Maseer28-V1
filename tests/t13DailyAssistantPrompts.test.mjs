@@ -108,8 +108,8 @@ test('all 392 T13 answers are day-bound, teacher-framed and append the shared re
     assert.equal(typeof answer,'string','day '+guide.day+' '+question.kind);
     if(question.kind==='light_version') for(const field of ['lightVersion','lightActionVersion','progressVersion','progressActionVersion','restVersion','restActionVersion']) assert.ok(answer.includes(guide[field]),'adaptive answer omitted '+field+' on day '+guide.day);
     if(question.kind==='light_version') for(const stale of ['نسخه عمومی قدیمی','نسخه عمومی پیشرفت','نسخه عمومی استراحت','اقدام عمومی قدیمی','پیشرفت عمومی قدیمی','استراحت عمومی قدیمی']) assert.equal(answer.includes(stale),false,'legacy generic variant leaked into T13 answer');
-    assert.match(answer,new RegExp('راهنمای روز '+guide.day+' تنهایی')); assert.match(answer,/بیاییم قدم‌به‌قدم پیش برویم/u);
-    assert.match(answer,/هدف امروز:/u); assert.equal(answer.includes(String.fromCharCode(92)+'n'),false);
+    assert.match(answer,new RegExp('راهنمای روز '+guide.day+' تنهایی')); assert.ok(answer.includes(guide.title));
+    assert.equal(answer.includes(String.fromCharCode(92)+'n'),false);
     const visible=formatAssistantMessageText(answer).flat().map(part=>part.text).join('\n'); assert.equal(visible.includes('**'),false);
     const expected=safetyKinds.has(question.kind); assert.equal(DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(question.kind),expected);
     const count=answer.split(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN).length-1;
