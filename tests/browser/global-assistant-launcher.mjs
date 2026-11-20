@@ -178,7 +178,7 @@ try {
   const safetyReply = dialog.locator('.assistantMessage').last();
   assert.equal(await safetyReply.getByTestId('daily-assistant-safety-reminder').count(), 1);
   assert.equal(await safetyReply.locator('.dailyAssistantSafetyReminderShafa').innerText(),
-    'مرکز هیپنوتراپی شفا با شماره تماس ۰۹۱۹۰۸۸۹۰۶۲ همیشه در کل مسیر همراه شماست');
+    'شماره ۰۹۱۹۰۸۸۹۰۶۲ فقط برای نوبت‌دهی و پشتیبانی مرکز است و جایگزین خدمات اورژانسی یا کمک فوری تخصصی نیست.');
   assert.ok(Number(await safetyReply.locator('.dailyAssistantSafetyReminderShafa')
     .evaluate(element => getComputedStyle(element).fontWeight)) >= 700);
   await dialog.getByTestId('anger-daily-prompt-trigger').click();
