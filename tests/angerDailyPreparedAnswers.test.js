@@ -99,7 +99,7 @@ test('T01 prepared answers contain no repeated non-safety sentence of 35+ normal
     for (const question of guide.questions) {
       const answer = answerAngerDailyPreparedQuestion({ day: guide.day, message: question.value })
         .replace(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN, '')
-        .replace(/^.*راهنمای روز \d+ خشم[^\n]*$/gmu, '');
+        .replace(/^.*راهنمای روز \d+ خشم[^\n]*$/gmu, '')
         .replace(/^\*\*پاسخ پرسش [^\n]*$/gmu, '');
       const sentences = answer.split(/[.!؟?؛\n]+/).map(normalizeSentence).filter((item) => item.length >= 35);
       for (const sentence of sentences) {
