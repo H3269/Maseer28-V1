@@ -22,9 +22,10 @@ test('topics outside T01-T14 are not changed by this approval gate', () => {
 });
 
 test('runtime daily page and prepared assistant both enforce the owner gate, including legacy topic identity', async () => {
-  const [ui, assistant, gate] = await Promise.all([
+  const [ui, assistant, launcher, gate] = await Promise.all([
     readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/features/assistant/pageAssistantTurn.js', import.meta.url), 'utf8'),
+    readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/features/content/ownerDailyContentApproval.js', import.meta.url), 'utf8'),
   ]);
   assert.match(ui, /data\.topic_id \|\| getCanonicalTopicIdForCategory\(problem\)/);
@@ -32,5 +33,7 @@ test('runtime daily page and prepared assistant both enforce the owner gate, inc
   assert.match(ui, /ownerApprovalPending/);
   assert.match(assistant, /isOwnerApprovedDailyRecord\(\{ topicId: preparedTopicId, recordId: preparedSource\?\.id \}\)/);
   assert.match(assistant, /محتوای این روز هنوز به تأیید مستقیم دکتر عابدی نرسیده است/);
+  assert.match(launcher, /const dailyOwnerApprovalPending = Boolean\(dailyContext && dailyOwnerApprovalRequired && !dailyOwnerApproved\)/);
+  assert.match(launcher, /const activePromptGroups = dailyOwnerApprovalPending \? \[\] : screen === 'books'/);
   assert.match(gate, /const OWNER_APPROVED_DAILY_RECORD_IDS = new Set\(\[\s*\/\/ Add canonical IDs/);
 });
