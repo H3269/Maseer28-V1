@@ -85,19 +85,19 @@ test('all T01-T14 runtime answers include the exact day-specific exercise and ac
       const exerciseQuestion = guide.questions.find(question => question.kind === 'exercise_example');
       const actionQuestion = guide.questions.find(question => question.kind === 'action_example');
       assert.ok(exerciseQuestion, topicId + ' day ' + guide.day + ' exercise example question');
-      assert.ok(actionQuestion, topicId + ' day ' + guide.day + ' action example question);
+      assert.ok(actionQuestion, topicId + ' day ' + guide.day + ' action example question');
 
       const expectedExerciseExample = String(guide.exerciseExample || exerciseQuestion.answer || '').trim();
       const expectedActionExample = String(guide.actionExample || actionQuestion.answer || '').trim();
       assert.ok(expectedExerciseExample, topicId + ' day ' + guide.day + ' authored exercise example');
-      assert.ok(expectedActionExample, topicId + ' day ' + guide.day + ' authored action example);
+      assert.ok(expectedActionExample, topicId + ' day ' + guide.day + ' authored action example');
 
       const exerciseAnswer = answerPrepared({ day: guide.day, message: exerciseQuestion.value, dailyContent });
       const actionAnswer = answerPrepared({ day: guide.day, message: actionQuestion.value, dailyContent });
       assert.equal(typeof exerciseAnswer, 'string', topicId + ' day ' + guide.day + ' exercise example runtime answer');
       assert.equal(typeof actionAnswer, 'string', topicId + ' day ' + guide.day + ' action example runtime answer');
       assert.ok(exerciseAnswer.includes(expectedExerciseExample), topicId + ' day ' + guide.day + ' runtime must include its exact exercise example');
-      assert.ok(actionAnswer.includes(expectedActionExample), topicId + ' day ' + guide.day + ' runtime must include its exact action example);
+      assert.ok(actionAnswer.includes(expectedActionExample), topicId + ' day ' + guide.day + ' runtime must include its exact action example');
       assert.ok(exerciseAnswer.includes(guide.title), topicId + ' day ' + guide.day + ' exercise answer title');
       assert.ok(actionAnswer.includes(guide.title), topicId + ' day ' + guide.day + ' action answer title');
       checked += 2;
