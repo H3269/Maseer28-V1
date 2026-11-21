@@ -290,6 +290,26 @@ test('a clear no-immediate-danger answer safely returns each topic to prepared g
 });
 
 
+test('T13 and T14 examples preserve distinct day-specific learning tasks', () => {
+  const t13 = topics.find(topic => topic.id === 'T13');
+  const answer = (day, id) => t13.guides.find(guide => guide.day === day).questions.find(question => question.id === id).answer;
+
+  assert.match(answer(22, 'q04'), /به‌عنوان مشاهده‌گر حاضر شوی/u);
+  assert.match(answer(22, 'q04'), /بدون ثبت‌نام یا تعهد/u);
+  assert.match(answer(26, 'q02'), /سه گزینه از پیش آماده/u);
+  assert.match(answer(26, 'q02'), /یک سرگرمی فردی در خانه/u);
+  assert.match(answer(26, 'q02'), /یک منبع حمایتی قابل‌دسترس/u);
+  assert.doesNotMatch(answer(26, 'q02'), /برنامه ارتباطی هفتگی/u);
+
+  const t14 = topics.find(topic => topic.id === 'T14');
+  const day1ActionExample = t14.guides.find(guide => guide.day === 1).questions.find(question => question.id === 'q04').answer;
+  const day2ActionExample = t14.guides.find(guide => guide.day === 2).questions.find(question => question.id === 'q04').answer;
+  assert.match(day1ActionExample, /بخش تحویل پروژه مبهم است/u);
+  assert.match(day2ActionExample, /یک پرسش دقیق بنویس/u);
+  assert.match(day2ActionExample, /نخستین خروجی قابل بررسی چیست/u);
+  assert.notEqual(day1ActionExample, day2ActionExample);
+});
+
 test('T14 is wired into the visible prepared-question launcher and remains prepared-only', async () => {
   const { readFile } = await import('node:fs/promises');
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
