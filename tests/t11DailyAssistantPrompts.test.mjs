@@ -174,7 +174,8 @@ test('T11 page assistant routes every exact day-specific question and rejects mi
         },
       },
     });
-    assert.equal(result.status, 'daily_guidance_available', 'T11 day ' + guide.day);
+    assert.equal(result.status, 'daily_guidance_unavailable', 'T11 day ' + guide.day + ' remains blocked pending owner approval');
+    assert.match(result.message, /تأیید مستقیم دکتر عابدی/u);
     assert.match(result.message, new RegExp('راهنمای روز ' + guide.day));
     const wrongDay = makePageAssistantTurn({
       screen: 'day',
