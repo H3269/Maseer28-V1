@@ -112,7 +112,7 @@ test('page assistant routes T12 day-guide answers while preserving the interpers
   const data = { id: 'مرزبندی و نه گفتن-01', topic_id: 'T12', day: 1, title: guide.title, exercise: guide.exercise, actionText: guide.action };
   const answer = makePageAssistantTurn({ screen: 'day', text: guide.questions[0].value, dailyContext: { day: 1, problem: 'مرزبندی و نه گفتن', data } });
   assert.equal(answer.status, 'daily_guidance_available');
-  assert.doesNotMatch(answer.message, new RegExp(guide.title));
+  assert.match(answer.message, new RegExp(guide.title), 'the answer must identify the matching daily guide');
   const visibleExercise = 'نسخه تطبیقی تمرین روز اول';
   const visibleAction = 'نسخه تطبیقی اقدام روز اول';
   const adaptedAnswer = makePageAssistantTurn({
