@@ -1,4 +1,5 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { expandDailyAssistantQuestionAnswer } from './dailyAssistantQuestionDetail.js';
 import T14_GUIDE from './t14DailyAssistantGuide.v1.json' with { type: 'json' };
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
@@ -11,7 +12,7 @@ export function answerT14DailyPreparedQuestion({day,message,dailyContent}={}){
  if(!guide||dailyContent.id!==expectedId||Number(dailyContent.day)!==dayNumber||(dailyContent.topic_id!=null&&dailyContent.topic_id!=='T14')||String(dailyContent.title||'').trim()!==guide.title||String(dailyContent.sourceExercise??dailyContent.exercise??'').trim()!==guide.exercise||String(dailyContent.sourceActionText??dailyContent.actionText??dailyContent.action??'').trim()!==guide.action)return null;
  const question=guide.questions.find(item=>item.value===String(message||'').trim());if(!question||!question.answer?.trim())return null;
  let body=question.answer;body=replaceExact(body,guide.exercise,String(dailyContent.exercise||guide.exercise).trim());body=replaceExact(body,guide.action,String(dailyContent.actionText||dailyContent.action||guide.action).trim());
- const heading=`راهنمای روز ${guide.day} کمبود انگیزه — ${guide.title}`,framed=addTeacherStyleFrame(`${heading}\n\n${body}`,{guide,question,topic:'کمبود انگیزه'});
+ body=expandDailyAssistantQuestionAnswer(body,{guide,question,topic:'کمبود انگیزه'});const heading=`راهنمای روز ${guide.day} کمبود انگیزه — ${guide.title}`,framed=addTeacherStyleFrame(`${heading}\n\n${body}`,{guide,question,topic:'کمبود انگیزه'});
  const safetyKinds=new Set(['success','stop','motivation_distress','talk_other']),reminder='یادآوری اختصاصی ایمنی درباره کمبود انگیزه: کمبود انگیزه به‌تنهایی نشانه تنبلی یا ضعف اخلاقی نیست. خستگی، بیماری، فشار، کمبود منابع و شرایط محیطی را به نقص اراده نسبت نده؛ اقدام اجباری نیست و استراحت یا حمایت انسانی انتخاب معتبر است.';
  return appendDailyAssistantSafetyReminder(safetyKinds.has(question.kind)?framed.trimEnd()+'\n\n'+reminder:framed,question.kind);
 }
