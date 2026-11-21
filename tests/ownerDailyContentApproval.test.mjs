@@ -28,7 +28,7 @@ test('runtime daily page and prepared assistant both enforce the owner gate, inc
     readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/features/content/ownerDailyContentApproval.js', import.meta.url), 'utf8'),
   ]);
-  assert.match(ui, /data\.topic_id \|\| getCanonicalTopicIdForCategory\(problem\)/);
+  assert.match(ui, /getCanonicalTopicIdForCategory\(problem\) \|\| data\.topic_id/);
   assert.match(ui, /if \(ownerApprovalRequired && !isOwnerApprovedDailyRecord/);
   assert.match(ui, /ownerApprovalPending/);
   assert.match(assistant, /isOwnerApprovedDailyRecord\(\{ topicId: preparedTopicId, recordId: preparedSource\?\.id \}\)/);
