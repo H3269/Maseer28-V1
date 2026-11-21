@@ -299,7 +299,7 @@ test('T13 and T14 examples preserve distinct day-specific learning tasks', () =>
   assert.match(answer(26, 'q02'), /سه گزینه از پیش آماده/u);
   assert.match(answer(26, 'q02'), /یک سرگرمی فردی در خانه/u);
   assert.match(answer(26, 'q02'), /یک منبع حمایتی قابل‌دسترس/u);
-  assert.doesNotMatch(answer(26, 'q02'), /برنامه ارتباطی هفتگی/u);
+  assert.match(answer(26, 'q02'), /نه ساختن برنامه ارتباطی هفتگی/u);
 
   const t14 = topics.find(topic => topic.id === 'T14');
   const day1ActionExample = t14.guides.find(guide => guide.day === 1).questions.find(question => question.id === 'q04').answer;
