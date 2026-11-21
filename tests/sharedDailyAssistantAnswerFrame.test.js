@@ -34,6 +34,8 @@ test('anger and anxiety answers use the same outer headings and order for all 28
         assert.equal(lines[3], '**توضیح و راهنمای امروز**');
         assert.ok(lines.slice(4).join('\n\n').trim().length > 20);
         assert.equal(answer.includes('**پاسخ به پرسش**'), true);
+        const structuralHeadings = answer.match(/^\\*\\*[^*]+\\*\\*$/gmu) || [];
+        assert.equal(structuralHeadings.length, 4, topic.name + ' day ' + guide.day + ' ' + question.id + ' shared heading count');
         checked += 1;
       }
     }
