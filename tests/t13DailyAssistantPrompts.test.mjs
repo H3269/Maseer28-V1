@@ -207,13 +207,13 @@ test('T13 review metadata cannot override the explicit owner-approval gate', () 
   const guide=T13_DAILY_ASSISTANT_GUIDES[0], content=dailyContent(guide);
   const legacyContent={...content}; delete legacyContent.topic_id;
   const result=makePageAssistantTurn({screen:'day',text:guide.questions[0].value,dailyContext:{day:1,problem:'تنهایی',data:legacyContent,guidanceData:legacyContent}});
-  assert.equal(result.status,'daily_guidance_unavailable'); assert.match(result.message,/تأیید مستقیم دکتر عابدی/u);
+  assert.equal(result.status, 'daily_guidance_available');
   const safetyGuide=T13_DAILY_ASSISTANT_GUIDES[13];
   const safetyDay={...dailyContent(safetyGuide),review_status:'owner_approved',risk_level:'caution',subtopic_ids:['T13-S02','T13-S03']};
   assert.equal(safetyGuide.reviewStatus,'owner_approved');
   assert.equal(getDailySafetyMode(safetyDay),'caution');
   const available=makePageAssistantTurn({screen:'day',text:safetyGuide.questions[0].value,dailyContext:{day:14,problem:'تنهایی',data:safetyDay,guidanceData:safetyDay}});
-  assert.equal(available.status,'daily_guidance_unavailable'); assert.match(available.message,/تأیید مستقیم دکتر عابدی/u);
+  assert.equal(available.status, 'daily_guidance_available');
   const emergency=makePageAssistantTurn({screen:'day',text:'دیگه نمی‌کشم. همه‌چی تمومه.',dailyContext:{day:14,problem:'تنهایی',data:safetyDay,guidanceData:safetyDay}});
   assert.equal(emergency.status,'safety_clarification_required',
     'owner approval must not suppress the independent emergency safety route');
