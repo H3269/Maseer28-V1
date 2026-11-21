@@ -332,7 +332,8 @@ export function DayScreen({ day, problem, data, record, savedAnswer, previousRec
   }, [entryOpen]);
 
   if (!data) return null;
-  const resolvedTopicId = data.topic_id || getCanonicalTopicIdForCategory(problem);
+  // The selected category is authoritative. A stale or conflicting record topic_id must never bypass the T01-T14 owner gate.
+  const resolvedTopicId = getCanonicalTopicIdForCategory(problem) || data.topic_id;
   const ownerApprovalRequired = requiresOwnerApproval(resolvedTopicId);
   if (ownerApprovalRequired && !isOwnerApprovedDailyRecord({ topicId: resolvedTopicId, recordId: data.id })) {
     return <section className="card dayCard" id="day" aria-live="polite">
