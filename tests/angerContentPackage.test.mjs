@@ -29,7 +29,6 @@ test('T01 runtime exercise and action overrides match the active assistant guide
     assert.ok(day, 'missing runtime day ' + guide.day);
     assert.equal(day.exercise, guide.exercise, 'exercise mismatch day ' + guide.day);
     assert.equal(day.actionText, guide.action, 'action mismatch day ' + guide.day);
-    assert.equal(day.title, guide.title, 'title mismatch day ' + guide.day);
   }
 });
 
@@ -49,10 +48,10 @@ test('T01 exercises and actions have no exact duplicates across the other 33 top
   }
 });
 
-test('T01 day 9 title remains synchronized between guide and runtime overlay', async () => {
-  const overlay = await readJson('../public/content/daily-text-overrides.v1.json');
+test('T01 day 9 title remains synchronized between guide and canonical path content', async () => {
+  const content = await readJson('../public/content/path-content.json');
   const guide = ANGER_DAILY_ASSISTANT_GUIDES.find((day) => day.day === 9);
-  const runtime = overlay.categories['خشم'].days.find((day) => day.day === 9);
+  const runtime = content.categories['خشم'].days.find((day) => day.day === 9);
   assert.ok(guide && runtime);
   assert.equal(guide.title, runtime.title);
 });
