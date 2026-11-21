@@ -16,7 +16,7 @@ const headingLabels = (answer) => {
   const start = answer.indexOf(frame);
   if (start < 0) return [];
   return answer.slice(start + frame.length).split('\n')
-    .map((line) => line.match(/^\s*\*\*([^*\n]+)\*\*:?\\s*/u)?.[1]?.trim())
+    .map((line) => line.match(/^\s*\*\*([^*\n]+)\*\*:?\s*/u)?.[1]?.trim())
     .filter(Boolean)
     .filter((heading) => !/شماره|۰۹۱|091/u.test(heading));
 };
