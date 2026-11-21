@@ -1,4 +1,5 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { expandDailyAssistantQuestionAnswer } from './dailyAssistantQuestionDetail.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 
@@ -3017,6 +3018,7 @@ export function answerJealousyDailyPreparedQuestion(args={}){
  const answer=answerRaw(args);if(!answer)return null;
  const guide=JEALOUSY_DAILY_ASSISTANT_GUIDES.find(x=>x.day===toJealousyDayNumber(args.day));
  const question=guide?.questions.find(x=>x.value===String(args.message||'').trim());
- const framed=addTeacherStyleFrame(answer,{guide,question,topic:'حسادت'});
+ const detailedAnswer=expandDailyAssistantQuestionAnswer(answer,{guide,question,topic:'حسادت'});
+ const framed=addTeacherStyleFrame(detailedAnswer,{guide,question,topic:'حسادت'});
  return appendDailyAssistantSafetyReminder(framed,question?.kind);
 }
