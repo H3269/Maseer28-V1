@@ -3274,11 +3274,13 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   const supplementalGuidance = [];
   const plainSteps = ANGER_DAILY_PLAIN_LANGUAGE_STEPS[day] || {};
   if (question.kind === 'exercise_meaning') {
+    if (guide.objective && !answer.includes(guide.objective)) supplementalGuidance.push(`**هدف امروز:** ${guide.objective}`);
     if (guide.exercise && !answer.includes(guide.exercise)) supplementalGuidance.push(`**متن تمرین اختصاصی امروز:** ${guide.exercise}`);
     if (plainSteps.exercise && !answer.includes(plainSteps.exercise)) supplementalGuidance.push(`**گام‌های ساده اجرا:** ${plainSteps.exercise}`);
     if (!answer.includes('قدم‌به‌قدم انجامش بده')) supplementalGuidance.push(`برای روز ${day} این کار را قدم‌به‌قدم انجامش بده: ${guide.title}؛ هر بخش را جدا ثبت کن و برای کامل‌کردن آن عجله نکن.`);
   }
   if (question.kind === 'action_meaning') {
+    if (guide.objective && !answer.includes(guide.objective)) supplementalGuidance.push(`**هدف امروز:** ${guide.objective}`);
     if (guide.action && !answer.includes(guide.action)) supplementalGuidance.push(`**اقدام اختصاصی امروز:** ${guide.action}`);
     if (plainSteps.action && !answer.includes(plainSteps.action)) supplementalGuidance.push(`**گام‌های ساده اقدام:** ${plainSteps.action}`);
   }
