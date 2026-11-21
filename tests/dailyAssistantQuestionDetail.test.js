@@ -1,3 +1,4 @@
+import { cleanPreparedAssistantTopicText } from '../src/features/assistant/teacherStylePreparedAnswer.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { ANXIETY_DAILY_ASSISTANT_GUIDES, answerAnxietyDailyPreparedQuestion } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
@@ -58,7 +59,7 @@ test('T02-T14 all 364 day records return expanded, day-specific teaching answers
         assert.ok(question, topicId + ' day ' + guide.day + ' missing ' + kind);
         const answer = answerPrepared({ day: guide.day, message: question.value, dailyContent });
         assert.equal(typeof answer, 'string', topicId + ' day ' + guide.day + ' ' + kind + ' must return an answer');
-        assert.ok(answer.includes(guide.title), topicId + ' day ' + guide.day + ' must preserve exact daily title');
+        assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.title)), topicId + ' day ' + guide.day + ' must preserve exact daily title');
         for (const label of requiredLabels) {
           assert.ok(answer.includes(label), topicId + ' day ' + guide.day + ' ' + kind + ' missing detail section: ' + label);
         }
