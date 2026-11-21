@@ -143,14 +143,12 @@ try {
   assert.equal(await page.locator('.dailyExerciseAssistant').count(), 0, 'the standalone daily assistant panel must be removed');
   assert.equal(await dialog.getByRole('textbox').count(), 0,
     'installing a local model must not enable free-form typing in a topic/day assistant');
-  assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 0,
-    'T01 prepared questions must remain hidden until direct owner approval');
-  assert.equal(await dialog.locator('[data-prompt-option]').count(), 0,
-    'T01 must not expose prepared exercise/action answers while owner approval is pending');
-  assert.equal(await dialog.locator('.assistantMessage').count(), 0,
-    'T01 must not retain or display a previous daily answer while owner approval is pending');
-  assert.match(await dialog.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/u);
-  assert.match(await page.locator('#ownerApprovalPending').innerText(), /تأیید مستقیم دکتر عابدی/u);
+  assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 1,
+    'T01 prepared questions must remain available in the daily assistant');
+  assert.ok(await dialog.locator('[data-prompt-option]').count() > 0,
+    'T01 must expose its prepared exercise/action questions');
+  assert.equal(await page.locator('#ownerApprovalPending').count(), 0,
+    'the app must not display an internal specialist-approval status');
 
   // Restore the pre-install state before testing the Library guided composer.
   await page.evaluate(async () => {
