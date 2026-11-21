@@ -15,7 +15,7 @@ const appendOnce = (parts, answer, label, value) => {
   parts.push(section(label, content));
 };
 export function expandDailyAssistantQuestionAnswer(answer, { guide, question } = {}) {
-  const original = text(answer);
+  let original = text(answer);
   if (!original || !guide || !question) return answer;
   const additions = [];
   const exercise = text(guide.exercise);
@@ -48,6 +48,7 @@ export function expandDailyAssistantQuestionAnswer(answer, { guide, question } =
       additions.push('**روش اجرای روشن:** ابتدا فقط موقعیت یا موضوعی را انتخاب کن که خود متن تمرین اجازه می‌دهد؛ سپس همان موارد خواسته‌شده را ثبت کن. لازم نیست جزئیات اضافه، نتیجه‌گیری یا اقدام بیرونی به تمرین بیفزایی.');
       break;
     case 'exercise_example':
+      if (!/^(?:\\*\\*[^\\n]*(?:نمونه|مثال)|نمونه|مثال|فرض کن|مثلاً)/u.test(original)) original = `**نمونه اختصاصی تمرین روز ${guide.day}:** ${original}`;
       appendOnce(additions, original, 'تمرین دقیق همین روز', exercise);
       if (exerciseExample) appendOnce(additions, original, 'نمونه اختصاصی تمرین همین روز', exerciseExample);
       additions.push('**چطور از مثال استفاده کنی؟** مثال فقط برای فهم قالب و سطح جزئیات است؛ آن را با تجربه خودت تطبیق بده، نه اینکه عیناً به‌عنوان تجربه شخصی ثبت کنی. اگر نمونه‌ای طبیعی و کم‌فشار نداری، چیزی نساز و نبود نمونه را بپذیر.');
@@ -62,6 +63,7 @@ export function expandDailyAssistantQuestionAnswer(answer, { guide, question } =
       appendOnce(additions, original, 'معیار کافی‌بودن', criterion);
       break;
     case 'action_example':
+      if (!/^(?:\\*\\*[^\\n]*(?:نمونه|مثال)|نمونه|مثال|فرض کن|مثلاً)/u.test(original)) original = `**نمونه اختصاصی اقدام روز ${guide.day}:** ${original}`;
       appendOnce(additions, original, 'اقدام اختصاصی دقیق همین روز', action);
       if (actionExample) appendOnce(additions, original, 'نمونه اختصاصی اقدام همین روز', actionExample);
       additions.push('**چطور مثال را با شرایط خودت تطبیق بدهی؟** فقط بخش امن، داوطلبانه و در اختیار خودت را نگه دار. مثال نسخه اجباری نیست و اگر شرایط تو متفاوت است، آن را اجرا نکن؛ می‌توانی اقدام را کوچک‌تر کنی یا کنار بگذاری.');
