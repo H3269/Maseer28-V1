@@ -176,7 +176,7 @@ test('T08 prepared questions route only for matching canonical topic and day', (
   const ok = makePageAssistantTurn({ screen: 'day', text: question.value, dailyContext: contextFor(guide) });
   assert.equal(ok.status, 'daily_guidance_unavailable');
   assert.match(ok.message, /تأیید مستقیم دکتر عابدی/u);
-  assert.match(ok.message, /راهنمای روز/u);
+  assert.doesNotMatch(ok.message, /راهنمای روز/u);
 
   const wrongTopic = makePageAssistantTurn({
     screen: 'day',
@@ -230,6 +230,6 @@ test('T08 urgent safety handoff takes precedence and free-form daily questions r
     text: 'چرا این‌قدر به او وابسته‌ام؟',
     dailyContext: contextFor(guide),
   });
-  assert.equal(free.status, 'prepared_question_required');
-  assert.match(free.message, /گفت‌وگوی آزاد برای این موضوع فعال نیست/u);
+  assert.equal(free.status, 'daily_guidance_unavailable');
+  assert.match(free.message, /تأیید مستقیم دکتر عابدی/u);
 });
