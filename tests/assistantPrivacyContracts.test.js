@@ -38,13 +38,11 @@ test("assistant safety and data-boundary contract does not claim active enforcem
   assert.ok(boundaries.release_gates.includes("crisis_language_and_emergency_handoff_tested"));
 });
 
-test("provider decision record explicitly blocks cloud activation until owner choice", async () => {
-  const memo = await readFile(
-    new URL("../docs/ASSISTANT_PROVIDER_PRIVACY_DECISION_FA.md", import.meta.url),
-    "utf8",
-  );
-  assert.match(memo, /تصمیم ارائه‌دهنده هنوز گرفته نشده است/);
-  assert.match(memo, /پردازش inference در شبکه جهانی Cloudflare/);
-  assert.match(memo, /OpenAI API/);
-  assert.match(memo, /هیچ درخواست کاربر به هیچ مدل ابری ارسال نمی‌شود/);
+test("current privacy contract blocks cloud processing until explicit owner and user consent gates are complete", () => {
+  assert.equal(boundaries.current_state_constraints.cloud_assistant_is_not_implemented, true);
+  assert.equal(consent.status, "design_only_not_active");
+  assert.equal(consent.default_consent.ai_cloud_processing, false);
+  assert.equal(consent.default_consent.sensitive_health_data_processing, false);
+  assert.ok(boundaries.release_gates.includes("privacy_and_security_controls_verified"));
+  assert.ok(boundaries.release_gates.includes("crisis_language_and_emergency_handoff_tested"));
 });
