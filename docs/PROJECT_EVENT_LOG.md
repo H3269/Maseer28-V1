@@ -30,3 +30,6 @@
 - **Finding:** the daily page previously preferred `data.topic_id` over the selected category when resolving the topic for the owner-approval gate. A stale or conflicting record topic identifier could therefore misclassify a T01–T14 page and potentially bypass the gate.
 - **Correction:** the selected category is now authoritative; the record's `topic_id` is only a fallback for contexts where the category cannot be resolved. The regression assertion now checks this precedence.
 - **Verification:** source and test assertions were updated on `main`. The test suite and browser build have not yet been executed, so this is a code-level correction, not a verified runtime pass.
+
+- **Additional hardening:** the global assistant now hides any existing transcript immediately when the selected T01–T14 record is pending approval, then clears the transcript, draft, error, and conversation state. This closes a stale-message path where a previously approved/other-day answer could remain visible after switching to an unapproved day.
+- **Verification:** a regression assertion was added for the immediate transcript render guard and state clearing. Runtime tests remain unexecuted in this environment.
