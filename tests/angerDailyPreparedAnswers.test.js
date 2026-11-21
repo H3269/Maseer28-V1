@@ -38,7 +38,7 @@ test('T01 contains 28 days and 392 individually authored prepared answers', () =
 
       const answer = answerAngerDailyPreparedQuestion({ day: guide.day, message: question.value });
       assert.equal(typeof answer, 'string', `runtime answer missing for ${guide.day}:${question.id}`);
-      assert.ok(answer.includes(prepared), `runtime did not use prepared answer for ${guide.day}:${question.id}`);
+      assert.ok(answer.includes(prepared.replace(/\\bq\\d{2}\\b/gi, 'پرسش')), `runtime did not use the Persian-normalized prepared answer for ${guide.day}:${question.id}`);
 
       const shouldHaveSafety = SAFETY_KINDS.has(question.kind);
       const reminderCount = answer.split(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN).length - 1;
