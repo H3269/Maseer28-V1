@@ -1,3 +1,4 @@
+import { cleanPreparedAssistantTopicText } from '../src/features/assistant/teacherStylePreparedAnswer.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
@@ -34,7 +35,7 @@ test('all 392 exact T11 prepared questions route through the real page assistant
         dailyContext: contextFor(guide),
       });
       assert.equal(result.status, 'daily_guidance_available');
-      assert.match(result.message, new RegExp(guide.title), 'the answer must identify the matching daily guide');
+      assert.match(result.message, new RegExp(cleanPreparedAssistantTopicText(guide.title)), 'the answer must identify the matching daily guide');
       assert.equal(result.message.includes(question.answer), true, 'the exact prepared answer must be present in the response');
       if (question.kind === 't11_distress') {
         assert.equal(result.message.includes(guide.stopCondition), true, 'the distress answer must include the authored stop condition');
