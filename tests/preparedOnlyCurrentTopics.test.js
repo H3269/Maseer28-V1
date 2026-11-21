@@ -60,10 +60,8 @@ for (const topic of topics) {
       text: question,
       dailyContext: contextFor(topic),
     });
-    {
-      assert.equal(prepared.status, 'daily_guidance_available');
-      assert.match(prepared.message, /راهنمای روز/);
-    }
+    assert.equal(prepared.status, 'daily_guidance_available');
+    assert.match(prepared.message, /راهنمای روز/);
 
     const freeform = makePageAssistantTurn({
       screen: 'day',
