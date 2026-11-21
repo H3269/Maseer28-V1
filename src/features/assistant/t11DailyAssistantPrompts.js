@@ -135,6 +135,7 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
       return null;
   }
 
+    body = expandDailyAssistantQuestionAnswer(body, { guide, question, topic: 'عادت‌های تکراری' });
   const answer = `${buildT11Heading(guide)}\n\n${body}`;
   return appendDailyAssistantSafetyReminder(
     addTeacherStyleFrame(answer, { guide, question, topic: 'عادت‌های تکراری' }),
