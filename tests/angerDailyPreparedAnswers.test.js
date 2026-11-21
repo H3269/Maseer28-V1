@@ -70,6 +70,10 @@ test('T01 contains 28 days and 392 individually authored prepared answers', () =
 
 test('T01 prepared answers contain no repeated non-safety sentence of 35+ normalized characters', () => {
   const occurrences = new Map();
+  // This repeated line is a fixed safety caveat: the light action does not have to be enacted in a real interaction.
+  const approvedSafetyExceptions = new Set([
+    normalizeSentence('لازم نیست آن را در تعامل واقعی اجرا کنی'),
+  ]);
   for (const guide of ANGER_DAILY_ASSISTANT_GUIDES) {
     for (const question of guide.questions) {
       const answer = answerAngerDailyPreparedQuestion({ day: guide.day, message: question.value })
@@ -77,6 +81,7 @@ test('T01 prepared answers contain no repeated non-safety sentence of 35+ normal
         .replace(/^راهنمای روز \d+ خشم — [^\n]+\n?/u, '');
       const sentences = answer.split(/[.!؟?؛\n]+/).map(normalizeSentence).filter((item) => item.length >= 35);
       for (const sentence of sentences) {
+        if (approvedSafetyExceptions.has(sentence)) continue;
         if (!occurrences.has(sentence)) occurrences.set(sentence, []);
         occurrences.get(sentence).push(`${guide.day}:${question.id}`);
       }
