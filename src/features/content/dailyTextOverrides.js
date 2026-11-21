@@ -95,6 +95,14 @@ export function mergeDailyTextOverrides(content, overrides) {
         const runtimeMetadata = Object.fromEntries(metadataFields
           .filter((field) => Object.prototype.hasOwnProperty.call(replacement, field))
           .map((field) => [field, replacement[field]]));
+        if (isT07Record || isT08Record) {
+          if (!Object.hasOwn(runtimeMetadata, 'instructions') && typeof replacement.exercise === 'string') {
+            runtimeMetadata.instructions = replacement.exercise;
+          }
+          if (!Object.hasOwn(runtimeMetadata, 'action') && typeof replacement.actionText === 'string') {
+            runtimeMetadata.action = replacement.actionText;
+          }
+        }
         return { ...day, ...textOverrides, ...runtimeMetadata };
       }),
     };
