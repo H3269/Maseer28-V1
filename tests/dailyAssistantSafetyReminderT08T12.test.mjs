@@ -81,7 +81,7 @@ test('T08-T12 append the exact shared safety reminder once to exactly four answe
         assert.equal(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN), expected,
           topic.id + ' day ' + guide.day + ' ' + question.kind + ' shared reminder placement');
         if (topic.id === 'T12' && expected) {
-          assert.match(answer, /یادآوری اختصاصی ایمنی و حریم خصوصی T12/u,
+          assert.match(answer, /یادآوری اختصاصی ایمنی و حریم خصوصی درباره مرزبندی/u,
             'T12 must retain its additional privacy-specific guidance');
         }
       }
