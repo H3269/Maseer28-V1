@@ -220,8 +220,8 @@ test('T01 q10 is day-bound and avoids blaming or shaming the user', () => {
   assert.ok(guide.questions.some(question => question.id === 'q10'));
 });
 
-test('q11 safety answers remain day- and topic-specific without requiring a retired shared response frame', () => {
-  for (const [topicId, guides, , answerPrepared] of topics.slice(1)) {
+test('T01-T14 q11 safety answers remain day- and topic-specific and include the shared safety footer', () => {
+  for (const [topicId, guides, , answerPrepared] of allTopicContracts) {
     for (const guide of guides) {
       const question = guide.questions[10];
       const dailyContent = topicId === 'T09' ? {
