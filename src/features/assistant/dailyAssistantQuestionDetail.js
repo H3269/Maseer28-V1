@@ -11,8 +11,12 @@ const section = (label, value) => {
 };
 const appendOnce = (parts, answer, label, value) => {
   const content = text(value);
-  if (!content || answer.includes(content)) return;
-  parts.push(section(label, content));
+  if (!content) return;
+  const heading = `**${label}:**`;
+  if (answer.includes(heading)) return;
+  parts.push(answer.includes(content)
+    ? `${heading} توضیح این مورد در متن بالا آمده است؛ همان توضیح، مبنای اجرای امروز است.`
+    : section(label, content));
 };
 export function expandDailyAssistantQuestionAnswer(answer, { guide, question } = {}) {
   let original = text(answer);
