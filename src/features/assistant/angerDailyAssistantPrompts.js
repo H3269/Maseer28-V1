@@ -3280,13 +3280,18 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     if (!answer.includes('قدم‌به‌قدم انجامش بده')) supplementalGuidance.push(`برای روز ${day} این کار را قدم‌به‌قدم انجامش بده: ${guide.title}؛ هر بخش را جدا ثبت کن و برای کامل‌کردن آن عجله نکن.`);
   }
   if (question.kind === 'action_meaning') {
-    if (guide.objective && !answer.includes(guide.objective)) supplementalGuidance.push(`**هدف امروز:** ${guide.objective}`);
     if (guide.action && !answer.includes(guide.action)) supplementalGuidance.push(`**اقدام اختصاصی امروز:** ${guide.action}`);
     if (plainSteps.action && !answer.includes(plainSteps.action)) supplementalGuidance.push(`**گام‌های ساده اقدام:** ${plainSteps.action}`);
   }
+  if (question.kind === 'exercise_example' && guide.exerciseExample && !answer.includes(guide.exerciseExample)) {
+    supplementalGuidance.push(`**نمونه اختصاصی تمرین روز ${day}:** ${guide.exerciseExample}`);
+  }
+  if (question.kind === 'action_example' && guide.actionExample && !answer.includes(guide.actionExample)) {
+    supplementalGuidance.push(`**نمونه اختصاصی اقدام روز ${day}:** ${guide.actionExample}`);
+  }
   if (question.kind === 'exercise_action_difference') {
-    if (guide.exercise && !answer.includes(guide.exercise)) supplementalGuidance.push(`**تمرین امروز:** ${guide.exercise}`);
-    if (guide.action && !answer.includes(guide.action)) supplementalGuidance.push(`**اقدام امروز:** ${guide.action}`);
+    answer = answer.replace('اگر رفتار واقعی با میل فرق داشت هر دو را ثبت کن',
+      `در روز ${day}، میل به واکنش را از رفتاری که واقعاً انجام دادی یا انجام ندادی جدا ثبت کن؛ عنوان راهنما «${guide.title}» است.`);
   }
   if (question.kind === 'light_version') {
     if (!answer.includes('خودت را مجبور نکن')) supplementalGuidance.push(`خودت را مجبور نکن بیشتر از توان امروزت پیش بروی؛ نسخه سبک همین روز این است: ${guide.lightVersion}`);
