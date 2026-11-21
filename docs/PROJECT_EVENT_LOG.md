@@ -63,3 +63,19 @@
 - **Cross-check:** T07 and T08 positive answer assertions are in their guide/helper integrity sections; their live-router sections assert owner-gate blocking, while explicit urgent-risk handoff and relationship-safety checks remain separate. T12 relationship-safety confirmation is still evaluated before the owner-content gate; passing that safety check does not approve or reveal the daily guide.
 - **Approval state:** the T01–T14 owner allowlist remains empty. No content approval was recorded.
 - **Verification limit:** these are source-level test corrections only. The Node test suite, production build, and browser runtime have still not been executed in this environment. Do not treat the repository as test-passing or ready for user browser handoff until those checks run.
+
+
+## 2026-11-21 — correction: remove the internal specialist-approval gate
+
+- **Owner clarification:** Dr. Abedi is the specialist and the approval authority. The application must not require a separate system flag, allowlist entry, review metadata field, or automated specialist approval before showing T01–T14 content. The app must not display an internal “awaiting specialist approval” state or hide content for that reason.
+- **Correction applied on `main`:**
+  - `e0dc3c4` — removed the daily-screen return that replaced T01–T14 exercise/action content with an approval notice.
+  - `0583086` — removed the owner-allowlist condition from prepared daily assistant answers.
+  - `399f3a2` — restored the global assistant's prepared-question groups and transcript rendering without the approval-pending suppression/clearing behavior.
+  - `6896fad` — deleted the now-obsolete `ownerDailyContentApproval.js` gate module.
+  - `49557dc` — replaced gate-enforcement unit tests with regression checks that the runtime has no specialist-approval gate.
+  - `7612cba` — changed the daily browser safety test to expect normal daily content, interaction controls, and prepared assistant questions rather than an approval notice.
+  - `084c560` — restored T01 global-assistant browser expectations.
+- **Important:** these are source changes only. Node tests, production build, and browser tests have not yet been run. Other legacy test files still contain assertions and descriptions based on the incorrect gate and must be migrated before the suite can be considered consistent.
+- **Correct product behavior:** T01–T14 content and their prepared assistant answers are available through the normal app flow, subject to the existing canonical day/topic validation and genuine safety checks. No generic “specialist approval” mechanism or message belongs in the user-facing app.
+- **Publication:** no Telegram/Bale publication was performed.
