@@ -101,8 +101,8 @@ test('all T01-T14 runtime answers include the exact day-specific exercise and ac
       assert.equal(typeof actionAnswer, 'string', topicId + ' day ' + guide.day + ' action example runtime answer');
       assert.ok(exerciseAnswer.includes(expectedExerciseExample), topicId + ' day ' + guide.day + ' runtime must include its exact exercise example');
       assert.ok(actionAnswer.includes(expectedActionExample), topicId + ' day ' + guide.day + ' runtime must include its exact action example');
-      assert.ok(exerciseAnswer.includes(guide.title), topicId + ' day ' + guide.day + ' exercise answer title');
-      assert.ok(actionAnswer.includes(guide.title), topicId + ' day ' + guide.day + ' action answer title');
+      assert.ok(exerciseAnswer.includes(cleanPreparedAssistantTopicText(guide.title)), topicId + ' day ' + guide.day + ' exercise answer title');
+      assert.ok(actionAnswer.includes(cleanPreparedAssistantTopicText(guide.title)), topicId + ' day ' + guide.day + ' action answer title');
       checked += 2;
     }
   }
@@ -250,7 +250,7 @@ test('T02-T09 prepared answers retain topic/day context and substantive guidance
           dailyContent,
         });
         assert.equal(typeof answer, 'string', topicId + ' day ' + guide.day + ' ' + question.id + ' answer');
-        assert.ok(answer.includes(guide.title), topicId + ' day ' + guide.day + ' title context');
+        assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.title)), topicId + ' day ' + guide.day + ' title context');
         assert.ok(answer.trim().length > 20, topicId + ' day ' + guide.day + ' ' + question.id + ' non-empty response');
         assert.doesNotMatch(answer, /قرار نیست همه مسئله را یک‌باره حل کنی/u, topicId + ' must not receive a repeated global supportive sentence');
         if (question.kind === 'exercise_meaning') assert.ok(answer.includes(String(guide.exercise).trim().slice(0, 40)), topicId + ' day ' + guide.day + ' exercise context');
@@ -306,7 +306,7 @@ test('T01-T14 q11 safety answers remain day- and topic-specific and include the 
       } : undefined;
       const answer = answerPrepared({ day: guide.day, message: question.value, dailyContent });
       assert.equal(typeof answer, 'string', topicId + ' day ' + guide.day + ' q11 answer');
-      assert.ok(answer.includes(guide.title), topicId + ' day ' + guide.day + ' q11 title context');
+      assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.title)), topicId + ' day ' + guide.day + ' q11 title context');
       assert.ok(answer.length > 150, topicId + ' day ' + guide.day + ' q11 substantive safety guidance');
       assert.ok(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN), topicId + ' day ' + guide.day + ' q11 shared safety footer');
       assert.doesNotMatch(answer, /هدف این است که دستور امروز را بفهمی و تا جایی که امن و شدنی است اجرا کنی/u,
@@ -328,7 +328,7 @@ test('all T01-T09 prepared answers contain substantial day-specific guidance wit
       for (const question of guide.questions) {
         const answer = answerPrepared({ day: guide.day, message: question.value, dailyContent });
         assert.equal(typeof answer, 'string', topicId + ' day ' + guide.day + ' ' + question.id);
-        assert.ok(answer.includes(guide.title), topicId + ' day ' + guide.day + ' title context');
+        assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.title)), topicId + ' day ' + guide.day + ' title context');
         assert.ok(answer.trim().length > 100, topicId + ' day ' + guide.day + ' ' + question.id + ' substantial guidance');
         assert.doesNotMatch(answer, /هدف این است که دستور امروز را بفهمی و تا جایی که امن و شدنی است اجرا کنی/u,
           topicId + ' must not receive a retired repeated global sentence');
