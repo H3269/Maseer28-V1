@@ -45,32 +45,23 @@ test('T07 contains 28 complete day guides and 14 fixed questions per day', () =>
   }
 });
 
-test('all 28 T07 assistant guides match the full-field editorial draft', async () => {
-  const draft = await readFile(new URL('../docs/T07_GUILT_28DAY_REDESIGN_DRAFT_B2_CY_FA.md', import.meta.url), 'utf8');
-  const sections = draft.split(/(?=^### روز \d+ — )/m).filter(section => /^### روز \d+ — /m.test(section));
-  assert.equal(sections.length, 28);
-  const fields = {
-    objective: 'هدف',
-    skill: 'مهارت',
-    mechanism: 'سازوکار',
-    exercise: 'تمرین',
-    action: 'اقدام',
-    lightVersion: 'نسخه سبک',
-    progressVersion: 'نسخه پیشرفت',
-    restVersion: 'نسخه استراحت',
-    successCriterion: 'معیار موفقیت',
-    reflectionQuestion: 'پرسش بازتاب',
-    stopCondition: 'شرط توقف/احتیاط',
-  };
+test('T07 assistant guides remain synchronized with the active runtime overlay', async () => {
+  const overlay = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+  const days = overlay.categories['احساس گناه']?.days || [];
+  assert.equal(days.length, 28);
   for (const guide of GUILT_DAILY_ASSISTANT_GUIDES) {
-    const section = sections.find(item => new RegExp('^### روز ' + guide.day + ' — ', 'm').test(item));
-    assert.ok(section, 'missing T07 draft section for day ' + guide.day);
-    assert.ok(section.startsWith('### روز ' + guide.day + ' — ' + guide.title), 'draft title mismatch on day ' + guide.day);
-    for (const [field, label] of Object.entries(fields)) {
-      assert.ok(section.includes('- **' + label + ':** ' + guide[field]),
-        'draft/runtime mismatch for ' + field + ' on day ' + guide.day);
-    }
-    assert.ok(section.includes('- **زیرموضوع پیشنهادی:** ' + guide.subtopic));
+    const day = days.find((item) => item.day === guide.day);
+    assert.ok(day, 'missing T07 runtime overlay day ' + guide.day);
+    assert.equal(day.title, guide.title);
+    assert.equal(day.intro, `هدف: ${guide.objective}\n\nمهارت: ${guide.skill}\n\nچرایی تمرین: ${guide.mechanism}`);
+    assert.equal(day.closing, `معیار موفقیت: ${guide.successCriterion}\nپرسش بازتاب: ${guide.reflectionQuestion}\nشرط توقف: ${guide.stopCondition}`);
+    assert.equal(day.exercise, guide.exercise);
+    assert.equal(day.actionText, guide.action);
+    assert.equal(day.lightExerciseText, 'نسخه سبک تمرین: ' + guide.lightVersion);
+    assert.equal(day.lightActionText, guide.lightActionVersion);
+    assert.equal(day.progressActionText, guide.progressActionVersion);
+    assert.equal(day.restExerciseText, guide.restVersion);
+    assert.equal(day.restActionText, guide.restActionVersion);
   }
 });
 
