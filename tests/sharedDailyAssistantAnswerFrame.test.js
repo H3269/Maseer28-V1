@@ -16,7 +16,7 @@ const headingLabels = (answer) => {
   const start = answer.indexOf(frame);
   if (start < 0) return [];
   return answer.slice(start + frame.length).split('\n')
-    .map((line) => line.match(/^\\s*\\*\\*([^*\\n]+)\\*\\*:?\\s*/u)?.[1]?.trim())
+    .map((line) => line.match(/^\s*\*\*([^*\n]+)\*\*:?\\s*/u)?.[1]?.trim())
     .filter(Boolean)
     .filter((heading) => !/شماره|۰۹۱|091/u.test(heading));
 };
@@ -105,7 +105,7 @@ test('anxiety examples and safety guidance remain specific to anxiety after head
 
 test('already-present anxiety exercise text is not repeated as a placeholder heading', () => {
   const exercise = 'یک تمرین اختصاصی برای بررسی نگرانی روزانه.';
-  const answer = '**منظور از تمرین امروز چیست؟**\\n' + exercise;
+  const answer = '**منظور از تمرین امروز چیست؟**\n' + exercise;
   const expanded = expandDailyAssistantQuestionAnswer(answer, {
     guide: { day: 1, exercise },
     question: { kind: 'exercise_meaning' },
@@ -121,14 +121,14 @@ test('semantic heading alignment replaces a matching anxiety legacy label withou
     'تمرین اختصاصی اضطراب برای روز جاری.',
     '**معیار کافی‌بودن تمرین**',
     'معیار اختصاصی اضطراب.',
-  ].join('\\n\\n');
+  ].join('\n\n');
   const angerBody = [
     '**تمرین امروز**',
     'متن مرجع خشم.',
     '**معیار موفقیت**',
     'معیار مرجع خشم.',
-  ].join('\\n\\n');
-  const aligned = alignDailyAssistantAnswerHeadings(frame + '\\n\\n' + anxietyBody, frame + '\\n\\n' + angerBody, {
+  ].join('\n\n');
+  const aligned = alignDailyAssistantAnswerHeadings(frame + '\n\n' + anxietyBody, frame + '\n\n' + angerBody, {
     guide: { day: 1 },
     question: { kind: 'exercise_meaning' },
   });
@@ -136,15 +136,15 @@ test('semantic heading alignment replaces a matching anxiety legacy label withou
   assert.match(aligned, /معیار اختصاصی اضطراب/);
   assert.doesNotMatch(aligned, /متن دقیق تمرین امروز —/);
   assert.doesNotMatch(aligned, /معیار کافی‌بودن تمرین —/);
-  assert.match(aligned, /\\*\\*تمرین امروز\\*\\*/);
-  assert.match(aligned, /\\*\\*معیار موفقیت\\*\\*/);
+  assert.match(aligned, /\*\*تمرین امروز\*\*/);
+  assert.match(aligned, /\*\*معیار موفقیت\*\*/);
 });
 
 test('unmatched anxiety legacy section labels and their authored content remain preserved', () => {
   const frame = '**توضیح و راهنمای امروز**';
   const aligned = alignDailyAssistantAnswerHeadings(
-    frame + '\\n\\n**یادداشت اختصاصی اضطراب**\\nمحتوای ویژه اضطراب.',
-    frame + '\\n\\n**تمرین امروز**\\nمتن مرجع.',
+    frame + '\n\n**یادداشت اختصاصی اضطراب**\nمحتوای ویژه اضطراب.',
+    frame + '\n\n**تمرین امروز**\nمتن مرجع.',
     { guide: { day: 1 }, question: { kind: 'exercise_meaning' } },
   );
   assert.match(aligned, /یادداشت اختصاصی اضطراب — محتوای ویژه اضطراب/);
