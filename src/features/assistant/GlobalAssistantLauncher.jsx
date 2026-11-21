@@ -285,6 +285,16 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const dailyOwnerApprovalRequired = requiresOwnerApproval(dailyContextTopicId);
   const dailyOwnerApproved = isOwnerApprovedDailyRecord({ topicId: dailyContextTopicId, recordId: dailyContext?.data?.id });
   const dailyOwnerApprovalPending = Boolean(dailyContext && dailyOwnerApprovalRequired && !dailyOwnerApproved);
+  // Never retain a prior day's assistant output when the selected T01-T14
+  // record is pending owner approval. The render guard below hides it
+  // immediately; this effect also clears the underlying transcript/state.
+  useEffect(() => {
+    if (!dailyOwnerApprovalPending) return;
+    setMessages([]);
+    setDraft('');
+    setError('');
+    conversationStateRef.current = null;
+  }, [dailyOwnerApprovalPending, dailyContext?.problem, dailyContext?.data?.id]);
   const jealousyRelationshipGate = isJealousyDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
   const jealousyRelationshipGatePending = Boolean(jealousyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
   const jealousyRelationshipGateBlocked = jealousyRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
@@ -682,7 +692,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
               )}
 
               <div className="assistantTranscript" dir="rtl" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
-                {messages.map((item, index) => (
+                {(dailyOwnerApprovalPending ? [] : messages).map((item, index) => (
                   <div className={item.role === 'user' ? 'userMessage' : 'assistantMessage'} key={item.id || index}>
                     <b className="globalAssistantSpeakerIcon" aria-label={item.role === 'user' ? 'شما' : 'دستیار مسیر۲۸'}>
                       {item.role === 'user' ? (
