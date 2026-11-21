@@ -3,11 +3,11 @@
   "packageId": "T10",
   "topicId": "T10",
   "topic": "بی‌خوابی و مشکلات خواب",
-  "status": "draft_not_runtime_eligible",
+  "status": "ready_for_owner_live_test",
   "coveredDays": "1-28",
   "expectedDays": 28,
   "questionsPerDay": 14,
-  "questionPolicy": "q01-q10 and q12-q14 retain the established shared question frame; q11 is sleep-specific. All answer bodies are draft and require semantic, clinical and source review.",
+  "questionPolicy": "q01-q10 and q12-q14 retain the established shared question frame; q11 is sleep-specific. The prepared answers are available for owner/specialist live review by Dr Abedi. Evidence grades remain not_assessed and duration estimates remain provisional; availability does not claim independent clinical validation.",
   "records": [
     {
       "day": 1,
