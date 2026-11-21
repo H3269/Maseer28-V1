@@ -1,3 +1,5 @@
+import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
+
 /**
  * Shared response framing for the anger/anxiety pilot and later topic rollout.
  * Destination prose is assigned by semantic section type, not paragraph count.
@@ -90,8 +92,13 @@ export function alignDailyAssistantAnswerHeadings(answer, referenceAnswer, { gui
   const ai = answer.indexOf(FRAME);
   const ri = referenceAnswer.indexOf(FRAME);
   if (ai < 0 || ri < 0) return answer;
-  const ref = parseSections(referenceAnswer.slice(ri + FRAME.length));
-  const src = parseSections(answer.slice(ai + FRAME.length));
+  const referenceRaw = referenceAnswer.slice(ri + FRAME.length).trim();
+  const destinationRaw = answer.slice(ai + FRAME.length).trim();
+  const referenceBody = referenceRaw.replace(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN, '').trim();
+  const destinationBody = destinationRaw.replace(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN, '').trim();
+  const destinationHasSafetyFooter = destinationRaw.includes(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN);
+  const ref = parseSections(referenceBody);
+  const src = parseSections(destinationBody);
   if (!ref.sections.length) return answer;
 
   const slots = ref.sections.map((x) => ({ label: x.label, key: x.key, content: [] }));
@@ -121,5 +128,6 @@ export function alignDailyAssistantAnswerHeadings(answer, referenceAnswer, { gui
   }
 
   const output = slots.map((slot) => '**' + slot.label + '**' + (slot.content.length ? '\n' + slot.content.join('\n\n') : ''));
-  return answer.slice(0, ai + FRAME.length) + '\n\n' + output.join('\n\n');
+  return answer.slice(0, ai + FRAME.length) + '\n\n' + output.join('\n\n')
+    + (destinationHasSafetyFooter ? '\n\n' + DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN : '');
 }
