@@ -30,6 +30,23 @@ export function applySharedDailyAssistantAnswerFrame(answer, { day, topic, guide
  * answer. The anxiety prose is retained in order and divided across the
  * reference sections; no anger exercise or clinical text is copied.
  */
+function authoredHeadingMatches(value) {
+  const matches = [];
+  const pattern = /(?:^|\n\s*\n)\s*\*\*([^*\n]+)\*\*/gu;
+  for (const match of value.matchAll(pattern)) {
+    const heading = match[1].trim();
+    // A bold phone-number notice is safety content, not a section heading.
+    if (/شماره|۰۹۱|091/u.test(heading)) continue;
+    matches.push({ index: match.index + match[0].lastIndexOf('**'), label: heading, token: '**' + match[1] + '**' });
+  }
+  return matches;
+}
+
+/**
+ * Rebuilds only the anxiety answer's section labels from the matching anger
+ * answer. Anxiety prose and safety details are retained in their original
+ * order and divided across the reference sections.
+ */
 export function alignDailyAssistantAnswerHeadings(answer, referenceAnswer) {
   if (typeof answer !== 'string' || typeof referenceAnswer !== 'string') return answer;
   const frameHeading = '**توضیح و راهنمای امروز**';
@@ -38,11 +55,15 @@ export function alignDailyAssistantAnswerHeadings(answer, referenceAnswer) {
   if (answerFrameIndex < 0 || referenceFrameIndex < 0) return answer;
 
   const referenceBody = referenceAnswer.slice(referenceFrameIndex + frameHeading.length);
-  const referenceHeadings = [...referenceBody.matchAll(/\*\*([^*\n]+)\*\*/gu)].map((match) => match[1].trim());
+  const referenceHeadings = authoredHeadingMatches(referenceBody).map((match) => match.label);
   if (!referenceHeadings.length) return answer;
 
   const body = answer.slice(answerFrameIndex + frameHeading.length).trim();
-  const prose = body.replace(/\*\*([^*\n]+)\*\*/gu, '').trim();
+  const headingMatches = authoredHeadingMatches(body);
+  let prose = body;
+  for (const match of headingMatches.reverse()) {
+    prose = prose.slice(0, match.index) + prose.slice(match.index + match.token.length);
+  }
   const paragraphs = prose.split(/\n\s*\n/gu).map((part) => part.trim()).filter(Boolean);
   const alignedSections = referenceHeadings.map((heading, index) => {
     const start = Math.floor(index * paragraphs.length / referenceHeadings.length);
