@@ -8,7 +8,6 @@ import { copyTextToClipboard, fa, formatDate, normalizeDigits } from '../../shar
 import { burdenScoreFromAnswers, evaluatePqhtEligibility, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
 import { exportArchivesZip, triggerBlobDownload } from './archiveExport.js';
 import { selectCanonicalDailyRecord, selectDailyContentCategory } from '../content/dailyContentSelector.js';
-import { isOwnerApprovedDailyRecord, requiresOwnerApproval } from '../content/ownerDailyContentApproval.js';
 import { getCanonicalTopicIdForCategory } from './relationshipSafetyGate.js';
 
 export const SCALE_QUESTIONS = [
@@ -332,16 +331,6 @@ export function DayScreen({ day, problem, data, record, savedAnswer, previousRec
   }, [entryOpen]);
 
   if (!data) return null;
-  // The selected category is authoritative. A stale or conflicting record topic_id must never bypass the T01-T14 owner gate.
-  const resolvedTopicId = getCanonicalTopicIdForCategory(problem) || data.topic_id;
-  const ownerApprovalRequired = requiresOwnerApproval(resolvedTopicId);
-  if (ownerApprovalRequired && !isOwnerApprovedDailyRecord({ topicId: resolvedTopicId, recordId: data.id })) {
-    return <section className="card dayCard" id="day" aria-live="polite">
-      <div className="dayTopline"><span className="badge" id="dayBadge">روز {fa(day)} از ۲۸ · {problem}</span></div>
-      <h2 id="dayTitle">این محتوای روز هنوز منتشر نشده است</h2>
-      <p className="muted" id="ownerApprovalPending">تمرین، اقدام اختصاصی، مثال‌ها و راهنمای دستیار این روز تا زمان تأیید مستقیم دکتر عابدی در اپ نمایش داده نمی‌شوند.</p>
-    </section>;
-  }
   const bubblePos = Math.min(96, Math.max(4, (10 - Number(score)) * 10));
   const guidanceLines = structuredText(guidance);
 
