@@ -44,3 +44,11 @@
 - Updated suites include page router, prepared-only contract, anger FAQ safety bypass, jealousy, T09, T11, T12, grief, guilt, emotional dependency, T13, and T14.
 - **Important verification limit:** changes were committed to `main`, but no local test runner is available through the GitHub connector. The latest commit has not produced a visible Actions run or CI status yet; these tests are not claimed to pass.
 - **Next:** finish auditing remaining router and rendering paths, inspect test diffs for accidental expectation changes, then run full tests/build in an available runner before presenting a live-browser candidate. No owner approval entries have been added; no public release was performed.
+
+## 2026-11-21 — legacy router test migration (continued)
+
+- Updated runtime-router expectations in `pageAssistantTurn.test.js`, `preparedOnlyCurrentTopics.test.js`, `angerPreparedFaqSafetyBypass.test.js`, `jealousyDailyAssistantPrompts.test.js`, `t09RuntimeIntegration.test.js`, `t11RuntimeIntegration.test.js`, `t12DailyAssistantGuide.test.js`, `guiltDailyAssistantPrompts.test.js`, and `emotionalDependencyDailyAssistantPrompts.test.js`.
+- These changes separate content-integrity checks (which continue to validate the complete prepared guides) from live-router display checks (which must not expose T01–T14 content without exact owner approval).
+- Urgent safety handoff and relationship-safety checks remain independently tested; they must not be disabled by the content-approval gate.
+- The T01–T14 owner allowlist remains empty. No approval was recorded on behalf of Dr. Abedi.
+- **Important verification limitation:** GitHub Actions execution and local Node test execution have not been confirmed. The updated tests are authored but not yet demonstrated passing. The app is not yet ready for the user's live browser test handoff.
