@@ -109,6 +109,7 @@ test('already-present anxiety exercise text is not repeated as a placeholder hea
   const expanded = expandDailyAssistantQuestionAnswer(answer, {
     guide: { day: 1, exercise },
     question: { kind: 'exercise_meaning' },
+    omitDuplicateContentPlaceholder: true,
   });
   assert.equal(expanded.includes('توضیح این مورد در متن بالا آمده است'), false);
   assert.equal(expanded.split(exercise).length - 1, 1);
