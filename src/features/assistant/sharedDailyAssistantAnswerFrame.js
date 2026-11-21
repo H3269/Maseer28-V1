@@ -11,12 +11,16 @@ export function applySharedDailyAssistantAnswerFrame(answer, { day, topic, guide
     || firstLine.includes(String(guide.title || ''))
     ? answer.slice(firstLineBreak < 0 ? answer.length : firstLineBreak).trim()
     : answer.trim();
+  const normalizedBody = body
+    .replace(/^\\s*\\*\\*(?!شماره ۰۹۱۹۰۸۸۹۰۶۲)[^*\\n]+\\*\\*\\s*$/gmu, '')
+    .replace(/\\n{3,}/gu, '\\n\\n')
+    .trim();
 
   return [
     `**راهنمای روز ${day} ${topic} — ${guide.title}**`,
     '**پاسخ به پرسش**',
     question.label || question.value,
     '**توضیح و راهنمای امروز**',
-    body,
+    normalizedBody,
   ].filter(Boolean).join('\n\n');
 }
