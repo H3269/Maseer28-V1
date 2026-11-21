@@ -46,7 +46,7 @@ test('T05 retains urgent safety precedence and rejects unprepared free-form ques
  const urgent=makePageAssistantTurn({screen:'day',text:'امشب قصد دارم خودم را بکشم.',dailyContext:{day:1,problem:'حسادت',data:{id:getCanonicalDailyRecordId('حسادت',1),topic_id:'T05',day:1}}});
  assert.equal(urgent.status,'urgent_human_support_required');
  const free=makePageAssistantTurn({screen:'day',text:'چرا حسادت می‌کنم؟',dailyContext:{day:1,problem:'حسادت',data:{id:getCanonicalDailyRecordId('حسادت',1),topic_id:'T05',day:1}}});
- assert.equal(free.status, 'daily_guidance_available');
+ assert.equal(free.status, 'prepared_question_required');
  assert.match(free.message,/گفت‌وگوی آزاد برای این موضوع فعال نیست/);
 });
 
