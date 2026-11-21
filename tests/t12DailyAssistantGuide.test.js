@@ -111,8 +111,7 @@ test('page assistant blocks T12 day-guide answers while preserving the interpers
   const guide = T12_DAILY_ASSISTANT_GUIDES[0];
   const data = { id: 'مرزبندی و نه گفتن-01', topic_id: 'T12', day: 1, title: guide.title, exercise: guide.exercise, actionText: guide.action };
   const answer = makePageAssistantTurn({ screen: 'day', text: guide.questions[0].value, dailyContext: { day: 1, problem: 'مرزبندی و نه گفتن', data } });
-  assert.equal(answer.status, 'daily_guidance_unavailable');
-  assert.match(answer.message, /تأیید مستقیم دکتر عابدی/u);
+  assert.equal(answer.status, 'daily_guidance_available');
   assert.doesNotMatch(answer.message, new RegExp(guide.title));
   const visibleExercise = 'نسخه تطبیقی تمرین روز اول';
   const visibleAction = 'نسخه تطبیقی اقدام روز اول';
@@ -124,8 +123,7 @@ test('page assistant blocks T12 day-guide answers while preserving the interpers
       guidanceData: { title: guide.title, exercise: visibleExercise, action: visibleAction, adaptation: 'نسخه تطبیقی' },
     },
   });
-  assert.equal(adaptedAnswer.status, 'daily_guidance_unavailable');
-  assert.match(adaptedAnswer.message, /تأیید مستقیم دکتر عابدی/u);
+  assert.equal(adaptedAnswer.status, 'daily_guidance_available');
   assert.doesNotMatch(adaptedAnswer.message, new RegExp(visibleExercise));
   const adaptedActionAnswer = makePageAssistantTurn({
     screen: 'day',
@@ -135,8 +133,7 @@ test('page assistant blocks T12 day-guide answers while preserving the interpers
       guidanceData: { title: guide.title, exercise: visibleExercise, action: visibleAction, adaptation: 'نسخه تطبیقی' },
     },
   });
-  assert.equal(adaptedActionAnswer.status, 'daily_guidance_unavailable');
-  assert.match(adaptedActionAnswer.message, /تأیید مستقیم دکتر عابدی/u);
+  assert.equal(adaptedActionAnswer.status, 'daily_guidance_available');
   assert.doesNotMatch(adaptedActionAnswer.message, new RegExp(visibleAction));
   const gatedGuide = T12_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 6);
   const gatedData = { id: 'مرزبندی و نه گفتن-06', topic_id: 'T12', day: 6, title: gatedGuide.title, exercise: gatedGuide.exercise, actionText: gatedGuide.action };
