@@ -14,9 +14,7 @@ const appendOnce = (parts, answer, label, value) => {
   if (!content || answer.includes(content)) return;
   parts.push(section(label, content));
 };
-const siblingAnswer = (guide, kind) => text(guide?.questions?.find((item) => item.kind === kind)?.answer);
-
-export function expandDailyAssistantQuestionAnswer(answer, { guide, question, topic } = {}) {
+export function expandDailyAssistantQuestionAnswer(answer, { guide, question } = {}) {
   const original = text(answer);
   if (!original || !guide || !question) return answer;
   const additions = [];
@@ -127,6 +125,6 @@ export function expandDailyAssistantQuestionAnswer(answer, { guide, question, to
       return answer;
   }
 
-  const detail = additions.filter(Boolean).join('\\n\\n');
-  return detail ? `${original}\\n\\n${detail}` : original;
+  const detail = additions.filter(Boolean).join('\n\n');
+  return detail ? `${original}\n\n${detail}` : original;
 }
