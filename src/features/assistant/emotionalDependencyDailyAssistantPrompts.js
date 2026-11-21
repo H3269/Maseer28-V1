@@ -1,4 +1,5 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { expandDailyAssistantQuestionAnswer } from './dailyAssistantQuestionDetail.js';
 import { addTeacherStyleFrame, cleanPreparedAssistantTopicText } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 
@@ -3476,8 +3477,9 @@ export function answerEmotionalDependencyDailyPreparedQuestion(args = {}) {
   if (!answer) return null;
   const guide = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES.find((item) => item.day === toDayNumber(args.day));
   const question = guide?.questions.find((item) => item.value === String(args.message || '').trim());
+  const detailedAnswer = expandDailyAssistantQuestionAnswer(answer, { guide, question, topic: 'وابستگی عاطفی' });
   return appendDailyAssistantSafetyReminder(
-    addTeacherStyleFrame(answer, { guide, question, topic: 'وابستگی عاطفی' }),
+    addTeacherStyleFrame(detailedAnswer, { guide, question, topic: 'وابستگی عاطفی' }),
     question?.kind,
   );
 }
