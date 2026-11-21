@@ -43,7 +43,7 @@ test('T09 daily answers remain anchored to their own exercise, action, examples 
     assert.ok(answer(record, 'q10').includes(record.lightVersion) && answer(record, 'q10').includes(record.restVersion), 'day ' + record.day + ': q10 recovery');
     assert.ok(answer(record, 'q11').includes(record.stopCondition) && answer(record, 'q11').includes(record.whenToSeekHumanSupport), 'day ' + record.day + ': q11 safety');
     assert.match(answer(record, 'q14'), /[۰-۹0-9]+\s*(?:دقیقه|دقیقهٔ)/u, 'day ' + record.day + ': q14 duration');
-    assert.ok(answer(record, 'q14').includes('تخمینی') || answer(record, 'q14').includes('غیرالزامی'), 'day ' + record.day + ': q14 estimate scope');
+    assert.ok(answer(record, 'q14').includes('برآورد اولیه') && answer(record, 'q14').includes('الزام نیست'), 'day ' + record.day + ': q14 estimate scope');
     allAnswers.push(...record.questions.map((question) => question.answer));
   }
   assert.equal(allAnswers.length, 392);
