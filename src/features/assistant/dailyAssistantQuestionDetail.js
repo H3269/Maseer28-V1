@@ -41,7 +41,7 @@ export function expandDailyAssistantQuestionAnswer(answer, { guide, question } =
     case 'exercise_meaning':
       appendOnce(additions, original, 'هدف تمرین امروز', objective);
       appendOnce(additions, original, 'مهارت مورد تمرین', skill);
-      appendOnce(additions, original, 'چرا این تمرین انتخاب شده است؟', mechanism);
+      appendOnce(additions, original, 'منطق آموزشی امروز', mechanism);
       appendOnce(additions, original, 'متن دقیق تمرین امروز', exercise);
       appendOnce(additions, original, 'معیار کافی‌بودن تمرین', criterion);
       appendOnce(additions, original, 'پرسش برای بازبینی', reflection);
