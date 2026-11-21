@@ -23,3 +23,10 @@
 3. Audit every T01–T14 day (392 daily records) for exercise/action/example completeness, topic fit, evidence, safety, and conceptual duplication. Keep audit findings separate from owner approval.
 4. Only after Dr. Abedi explicitly approves an exact daily record, add that record ID to the owner allowlist. Never infer approval from metadata or test results.
 5. Continue the broader 34-topic × 28-day review and retain owner-controlled release and publication gates.
+
+
+## 2026-11-21 — owner-gate identity hardening
+
+- **Finding:** the daily page previously preferred `data.topic_id` over the selected category when resolving the topic for the owner-approval gate. A stale or conflicting record topic identifier could therefore misclassify a T01–T14 page and potentially bypass the gate.
+- **Correction:** the selected category is now authoritative; the record's `topic_id` is only a fallback for contexts where the category cannot be resolved. The regression assertion now checks this precedence.
+- **Verification:** source and test assertions were updated on `main`. The test suite and browser build have not yet been executed, so this is a code-level correction, not a verified runtime pass.
