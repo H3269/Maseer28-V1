@@ -466,3 +466,81 @@ test('assistant visible text normalizes known Latin identifiers and clinical acr
   assert.equal(cleanPreparedAssistantTopicText('پرسش q06 درباره T01'), 'پرسش پرسش درباره خشم');
   assert.equal(cleanPreparedAssistantTopicText('نشانه PGD و PTSD'), 'نشانه اختلال سوگ طولانی‌مدت و اختلال استرس پس از سانحه');
 });
+
+
+const PERSIAN_VISIBLE_GUIDE_FIELDS = new Set([
+  'topic', 'title', 'objective', 'skill', 'mechanism', 'exercise', 'action',
+  'lightVersion', 'lightActionVersion', 'progressVersion', 'progressActionVersion',
+  'restVersion', 'restActionVersion', 'successCriterion', 'reflectionQuestion',
+  'reflectionPrompt', 'stopCondition', 'stopConditions', 'contraindications',
+  'whenToSeekHumanSupport', 'exerciseExample', 'actionExample',
+  'label', 'value', 'answer', 'questions',
+]);
+
+function collectPersianVisibleStrings(value, key = '', output = []) {
+  if (typeof value === 'string' && PERSIAN_VISIBLE_GUIDE_FIELDS.has(key) && key !== 'questions') output.push(value);
+  else if (Array.isArray(value)) value.forEach(item => collectPersianVisibleStrings(item, key, output));
+  else if (value && typeof value === 'object') {
+    for (const [childKey, childValue] of Object.entries(value)) {
+      if (PERSIAN_VISIBLE_GUIDE_FIELDS.has(childKey)) collectPersianVisibleStrings(childValue, childKey, output);
+    }
+  }
+  return output;
+}
+
+test('Persian-only runtime output: all 14 questions × 28 days × 14 topics contain no Latin leakage', () => {
+  const contentNames = {
+    T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت',
+    T05: 'حسادت', T06: 'غم و سوگ', T07: 'احساس گناه', T08: 'وابستگی عاطفی',
+    T09: 'اهمال‌کاری', T10: 'بی‌خوابی و مشکلات خواب', T11: 'عادت‌های تکراری',
+    T12: 'مرزبندی و نه گفتن', T13: 'تنهایی', T14: 'کمبود انگیزه',
+  };
+  const latin = /\p{Script=Latin}/u;
+  let checkedDays = 0;
+  let checkedAnswers = 0;
+  const findings = [];
+
+  for (const [topicId, guides, getGroups, answerPrepared] of allTopicContracts) {
+    assert.equal(guides.length, 28, topicId + ' must cover all 28 days');
+    for (const guide of guides) {
+      const visibleSource = collectPersianVisibleStrings(guide);
+      const groups = getGroups(guide.day);
+      for (const group of groups) {
+        visibleSource.push(group.label);
+        for (const question of group.questions) visibleSource.push(question.label, question.value);
+      }
+      for (const value of visibleSource) {
+        if (latin.test(value)) findings.push(topicId + ' day ' + guide.day + ' source: ' + value.slice(0, 160));
+      }
+
+      const name = contentNames[topicId];
+      const dailyContent = {
+        id: name + '-' + String(guide.day).padStart(2, '0'),
+        topic_id: topicId,
+        day: guide.day,
+        title: guide.title,
+        exercise: guide.exercise,
+        actionText: guide.action,
+        sourceExercise: guide.exercise,
+        sourceActionText: guide.action,
+      };
+      for (const question of guide.questions) {
+        const answer = answerPrepared({ day: guide.day, message: question.value, dailyContent });
+        if (typeof answer !== 'string' || !answer.trim()) {
+          findings.push(topicId + ' day ' + guide.day + ' missing answer for ' + question.value);
+          continue;
+        }
+        checkedAnswers += 1;
+        if (latin.test(answer)) {
+          const match = answer.match(/.{0,45}\p{Script=Latin}.{0,45}/u);
+          findings.push(topicId + ' day ' + guide.day + ' runtime: ' + (match?.[0] || 'Latin character'));
+        }
+      }
+      checkedDays += 1;
+    }
+  }
+
+  assert.equal(checkedDays, 392, 'all 392 topic/day guides must be inspected');
+  assert.equal(checkedAnswers, 14 * 28 * 14, 'all 5,488 prepared question answers must be inspected');
+  assert.deepEqual(findings, [], 'assistant-visible text must be Persian and free of Latin identifiers or code');
+});
