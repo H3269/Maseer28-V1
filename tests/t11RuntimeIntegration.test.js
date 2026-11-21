@@ -41,8 +41,8 @@ test('all 392 exact T11 prepared questions route through the real page assistant
         assert.equal(result.message.includes(guide.whenToSeekHumanSupport), true, 'the distress answer must include the human-support guidance');
       }
       if (question.kind === 'exercise_meaning') {
-        assert.equal(result.message.includes(guide.mechanism), false);
-        assert.equal(result.message.includes(guide.successCriterion), false);
+        assert.equal(result.message.includes(guide.mechanism), true, 'the exercise-meaning answer must include its educational mechanism');
+        assert.equal(result.message.includes(guide.successCriterion), true, 'the exercise-meaning answer must include its completion criterion');
       }
       assert.doesNotMatch(result.message, /پیش‌نمایش برای بازبینی مالک|مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود/u);
       // The live router returns the matching prepared answer; content integrity
