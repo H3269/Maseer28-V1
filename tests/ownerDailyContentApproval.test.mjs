@@ -2,14 +2,23 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { isOwnerApprovedDailyRecord, requiresOwnerApproval } from '../src/features/content/ownerDailyContentApproval.js';
+import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
 
-const TOPICS = Array.from({ length: 14 }, (_, index) => 'T' + String(index + 1).padStart(2, '0'));
+const TOPICS = [
+  ['T01', 'خشم'], ['T02', 'اضطراب'], ['T03', 'ترس'], ['T04', 'نفرت'],
+  ['T05', 'حسادت'], ['T06', 'غم و سوگ'], ['T07', 'احساس گناه'], ['T08', 'وابستگی عاطفی'],
+  ['T09', 'اهمال‌کاری'], ['T10', 'بی‌خوابی و مشکلات خواب'], ['T11', 'عادت‌های تکراری'],
+  ['T12', 'مرزبندی و نه گفتن'], ['T13', 'تنهایی'], ['T14', 'کمبود انگیزه'],
+];
 
 test('T01-T14 remain hidden unless the exact daily record is explicitly owner-approved', () => {
-  for (const topicId of TOPICS) {
+  for (const [topicId, category] of TOPICS) {
     assert.equal(requiresOwnerApproval(topicId), true, topicId + ' must require owner approval');
-    assert.equal(isOwnerApprovedDailyRecord({ topicId, recordId: topicId + '-D01' }), false,
-      topicId + ' must fail closed with the default empty approval allowlist');
+    for (let day = 1; day <= 28; day += 1) {
+      const recordId = getCanonicalDailyRecordId(category, day);
+      assert.equal(isOwnerApprovedDailyRecord({ topicId, recordId }), false,
+        topicId + ' day ' + day + ' must fail closed with the default empty approval allowlist');
+    }
     assert.equal(isOwnerApprovedDailyRecord({ topicId, recordId: null }), false);
   }
 });
