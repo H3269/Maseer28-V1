@@ -315,3 +315,18 @@ test('T05 day 23 and T09 day 26 examples demonstrate distinct, concrete next act
   assert.match(actionExample, /تاریخ پیگیری/u);
 });
 
+test('T09 day 27 and T11 day 18 titles remain distinct and synchronized with visible daily content', async () => {
+  const t09Day17 = T09_DAILY_ASSISTANT_GUIDES.find(guide => guide.day === 17);
+  const t09Day27 = T09_DAILY_ASSISTANT_GUIDES.find(guide => guide.day === 27);
+  const t11Day2 = T11_DAILY_ASSISTANT_GUIDES.find(guide => guide.day === 2);
+  const t11Day18 = T11_DAILY_ASSISTANT_GUIDES.find(guide => guide.day === 18);
+  assert.notEqual(t09Day17.title, t09Day27.title);
+  assert.match(t09Day27.title, /پیشگیری از چرخه/u);
+  assert.notEqual(t11Day2.title, t11Day18.title);
+  assert.match(t11Day18.title, /حوزه‌های روزمره/u);
+
+  const overlay = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+  assert.equal(overlay.categories['اهمال‌کاری'].days.find(day => day.day === 27).title, t09Day27.title);
+  assert.equal(overlay.categories['عادت‌های تکراری'].days.find(day => day.day === 18).title, t11Day18.title);
+});
+
