@@ -1,4 +1,5 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { expandDailyAssistantQuestionAnswer } from './dailyAssistantQuestionDetail.js';
 import T09_GUIDE from './t09DailyAssistantGuide.v1.json' with { type: 'json' };
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
@@ -106,6 +107,7 @@ export function answerT09DailyPreparedQuestion({ day, message, dailyContent } = 
       return null;
   }
 
+  body = expandDailyAssistantQuestionAnswer(body, { guide, question, topic: 'اهمال‌کاری' });
   const fullAnswer = `${buildT09Heading(guide)}\n\n${body}`;
   return appendDailyAssistantSafetyReminder(addTeacherStyleFrame(fullAnswer, { guide, question, topic: 'اهمال‌کاری' }), question.kind);
 }
