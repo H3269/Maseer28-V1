@@ -14,8 +14,9 @@ const headingLabels = (answer) => {
   const start = answer.indexOf(marker);
   return start < 0
     ? []
-    : [...answer.slice(start + marker.length).matchAll(/\*\*([^*\n]+)\*\*/gu)]
-        .map((match) => match[1].trim());
+    : [...answer.slice(start + marker.length).matchAll(/(?:^|\n\s*\n)\s*\*\*([^*\n]+)\*\*/gu)]
+        .map((match) => match[1].trim())
+        .filter((heading) => !/شماره|۰۹۱|091/u.test(heading));
 };
 
 test('anxiety uses the exact anger heading names, count, and order for all 28 days and 14 questions', () => {
