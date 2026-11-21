@@ -134,7 +134,7 @@ test('page assistant routes T12 day-guide answers while preserving the interpers
     },
   });
   assert.equal(adaptedActionAnswer.status, 'daily_guidance_available');
-  assert.doesNotMatch(adaptedActionAnswer.message, new RegExp(visibleAction));
+  assert.ok(adaptedActionAnswer.message.includes(visibleAction), 'the answer must use the visible adaptive action text');
   const gatedGuide = T12_DAILY_ASSISTANT_GUIDES.find((item) => item.day === 6);
   const gatedData = { id: 'مرزبندی و نه گفتن-06', topic_id: 'T12', day: 6, title: gatedGuide.title, exercise: gatedGuide.exercise, actionText: gatedGuide.action };
   const gated = makePageAssistantTurn({ screen: 'day', text: gatedGuide.questions[0].value, dailyContext: { day: 6, problem: 'مرزبندی و نه گفتن', data: gatedData } });
