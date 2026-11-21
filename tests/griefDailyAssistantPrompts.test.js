@@ -210,40 +210,18 @@ test('T06 day 12 prepares for a grief wave rather than a generic crisis or stres
   assert.ok(!guide.action.includes('برنامه روز دشوار'));
 });
 
-test('the 28-day T06 design draft stays synchronized with runtime guidance', async () => {
-  const draft = await readFile(new URL('../docs/T06_GRIEF_AND_LOSS_28DAY_REDESIGN_DRAFT_B2_CX_FA.md', import.meta.url), 'utf8');
-  const sections = [...draft.matchAll(/^### روز (\d+) — (.+)$/gm)].map((match, index, all) => ({
-    day: Number(match[1]),
-    title: match[2],
-    start: match.index,
-    end: index + 1 < all.length ? all[index + 1].index : draft.indexOf('\n## وضعیت ممیزی', match.index),
-  }));
-  assert.equal(sections.length, 28);
-  const fields = {
-    objective: 'هدف',
-    skill: 'مهارت',
-    mechanism: 'سازوکار',
-    exercise: 'تمرین',
-    action: 'اقدام',
-    lightVersion: 'نسخه سبک تمرین',
-    progressVersion: 'نسخه پیشرفت تمرین',
-    restVersion: 'نسخه استراحت تمرین',
-    successCriterion: 'معیار موفقیت',
-    reflectionQuestion: 'پرسش بازتاب',
-    lightActionVersion: 'نسخه سبک اقدام',
-    progressActionVersion: 'نسخه پیشرفت اقدام',
-    restActionVersion: 'نسخه استراحت اقدام',
-    stopCondition: 'شرط توقف/احتیاط',
-  };
+test('T06 runtime overlay stays synchronized with all 28 assistant guides', async () => {
+  const overlay = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+  const days = overlay.categories['غم و سوگ']?.days || [];
+  assert.equal(days.length, 28);
   for (const guide of GRIEF_DAILY_ASSISTANT_GUIDES) {
-    const section = sections.find((item) => item.day === guide.day);
-    assert.ok(section, 'missing draft section for T06 day ' + guide.day);
-    assert.equal(section.title, guide.title, 'draft title mismatch on T06 day ' + guide.day);
-    const body = draft.slice(section.start, section.end);
-    for (const [field, label] of Object.entries(fields)) {
-      assert.ok(body.includes('- **' + label + ':** ' + guide[field]),
-        'draft/runtime mismatch for ' + field + ' on T06 day ' + guide.day);
-    }
+    const day = days.find((item) => item.day === guide.day);
+    assert.ok(day, 'missing runtime overlay day ' + guide.day);
+    assert.equal(day.title, guide.title, 'title mismatch day ' + guide.day);
+    assert.equal(day.exercise, guide.exercise, 'exercise mismatch day ' + guide.day);
+    assert.equal(day.actionText, guide.action, 'action mismatch day ' + guide.day);
+    assert.equal(day.intro, `هدف: ${guide.objective}\n\nمهارت: ${guide.skill}\n\nچرایی تمرین: ${guide.mechanism}`, 'intro mismatch day ' + guide.day);
+    assert.equal(day.closing, `معیار موفقیت: ${guide.successCriterion}\n\nپرسش بازتاب: ${guide.reflectionQuestion}\n\nشرط توقف/احتیاط: ${guide.stopCondition}`, 'closing mismatch day ' + guide.day);
   }
 });
 
