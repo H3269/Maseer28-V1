@@ -42,7 +42,9 @@ test('T13 guide has exactly 28 days and 392 complete answers under the fixed 14-
     assert.equal(guide.evidenceGrade, 'not_assessed'); assert.equal(guide.subtopicMappingStatus, 'proposed_not_registered');
     assert.deepEqual(guide.questions.map((q) => q.label), EXPECTED_QUESTIONS);
     assert.ok(guide.questions.every((q) => typeof q.answer === 'string' && q.answer.trim()));
-    assert.doesNotMatch(guide.questions.find((q) => q.kind === 'stop').answer, /متوقف کن اگر:\s*اگر/u, 'stop answer must not repeat the conditional opener on day ' + guide.day);
+    const stopAnswer = guide.questions.find((q) => q.kind === 'stop').answer;
+    assert.match(stopAnswer, new RegExp('^محدودیت ایمنی روز ' + guide.day + ':'), 'stop answer must present the day-specific safety limit without a false conditional wrapper on day ' + guide.day);
+    assert.doesNotMatch(stopAnswer, /متوقف کن اگر:\s*اگر/u, 'stop answer must not repeat the conditional opener on day ' + guide.day);
   }
 });
 
