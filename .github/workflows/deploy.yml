@@ -86,7 +86,7 @@ jobs:
           export PATH28_BASE_URL=http://127.0.0.1:4173/Maseer28-V1/
           mkdir -p /tmp/path28-browser-logs
           browser_test_status=0
-          if printf '%s\\0' tests/browser/*.mjs | xargs -0 -P 3 -I '{}' bash -c '
+          if printf '%s\0' tests/browser/*.mjs | xargs -0 -P 3 -I '{}' bash -c '
             script="$1"
             log_file="/tmp/path28-browser-logs/$(basename "$script").log"
             {
