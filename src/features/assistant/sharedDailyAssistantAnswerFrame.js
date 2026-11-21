@@ -57,13 +57,15 @@ export function alignDailyAssistantAnswerHeadings(answer, referenceAnswer) {
   const referenceHeadings = authoredHeadingMatches(referenceAnswer)
     .slice(3)
     .map((match) => match.label);
-  if (!referenceHeadings.length) return answer;
 
   const body = answer.slice(answerFrameIndex + frameHeading.length).trim();
   const headingMatches = authoredHeadingMatches(body);
   let prose = body;
   for (const match of headingMatches.reverse()) {
     prose = prose.slice(0, match.index) + match.label + prose.slice(match.index + match.token.length);
+  }
+  if (!referenceHeadings.length) {
+    return answer.slice(0, answerFrameIndex + frameHeading.length) + '\n\n' + prose;
   }
   const paragraphs = prose.split(/\n\s*\n/gu).map((part) => part.trim()).filter(Boolean);
   const alignedSections = referenceHeadings.map((heading, index) => {
