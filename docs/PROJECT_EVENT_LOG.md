@@ -122,3 +122,13 @@
 - Commits: `585d9cb` (normalizer), `87e0ea1` (regression test).
 - The push-triggered test deployment workflow is responsible for running the full Node suite, content validators, content-quality audit, production build, and Chromium browser regression suite. This log does not claim those checks passed until their run result is confirmed.
 - No Telegram/Bale production publication was triggered.
+
+## 2026-11-21 — repair the failing daily-assistant browser regression
+
+- **Observed CI result:** the latest push completed all Node tests, content validation, assistant-topic validation, content-quality audit, and the test build successfully. The Chromium browser job failed in `tests/browser/daily-assistant-guidance.mjs` at line 673.
+- **Root cause in the test:** after sending the ordinary “exercise vs action” prepared question, the browser test waited for one exact Persian sentence. This coupled the interaction test to a particular copy string and caused a timeout when the response wording differed, even though the expected behavior is that a new assistant reply is rendered.
+- **Correction committed on `main`:** `5c532aa` — the browser test now waits for a new assistant reply, then separately verifies the ordinary response contains the exercise/action concepts and does not inherit the safety reminder. The functional assertion remains; only the brittle exact-phrase wait was removed.
+- **Verification:** the correction has been committed but its new workflow run has not yet been observed. Do not treat the browser suite or Pages deployment as passing until the new run completes successfully.
+- **Other browser coverage in the failed run:** the daily safety gate, T05, T08, T10 (both live assistant and sleep package), T12, T14, global assistant, privacy migration, reader parity, export, and startup-performance scripts reported success. The daily-assistant-guidance script was the reported failure.
+- **Release status:** no Pages deployment completed for the failed run; no Telegram/Bale production publication was triggered.
+
