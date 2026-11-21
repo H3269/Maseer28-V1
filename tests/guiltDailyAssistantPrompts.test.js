@@ -327,7 +327,7 @@ test('T07 prepared answers require exact canonical topic/day identity and preser
   };
   const ok = makePageAssistantTurn(base);
   assert.equal(ok.status, 'daily_guidance_available');
-  assert.doesNotMatch(ok.message, /راهنمای روز/);
+  assert.match(ok.message, /راهنمای روز ۱ احساس گناه/u, 'the matching prepared answer identifies its day and topic');
   const wrongTopic = makePageAssistantTurn({
     ...base,
     dailyContext: { ...base.dailyContext, data: { ...data, topic_id: 'T06' } },
