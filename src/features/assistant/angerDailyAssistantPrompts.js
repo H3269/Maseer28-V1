@@ -3306,6 +3306,10 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   if (question.kind === 'no_event' && !answer.includes('نمونه کم‌فشار قبلی')) {
     supplementalGuidance.push(`اگر مرور گذشته برایت امن و مناسب است، یک نمونه کم‌فشار قبلی را انتخاب کن؛ در غیر این صورت نبود نمونه را ثبت کن و از نسخه سبک استفاده کن: ${guide.lightVersion}`);
   }
+  if (question.kind === 'talk_other') {
+    answer = answer.replace('برچسب شخصیت و توهین را حذف کن و اگر بیان اعتراض امن نیست آن را اجرا نکن',
+      'اگر بیان اعتراض امن نیست، از گفت‌وگوی مستقیم صرف‌نظر کن و فقط شرایط را برای خودت ثبت کن؛ نیازی به برچسب‌زدن به هیچ‌کس نیست');
+  }
   if (question.kind === 'talk_other' && !/لازم نیست[^.\n]*با فرد دیگری صحبت کنی/u.test(answer)) {
     supplementalGuidance.push(`لازم نیست برای انجام تمرین امروز با فرد دیگری صحبت کنی؛ اقدام روز فقط در صورت امنیت و رضایت آزادانه هر دو نفر مطرح است: ${guide.action}`);
   }
