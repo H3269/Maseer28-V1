@@ -1,79 +1,125 @@
 /**
- * Adds one shared response structure to the T01 anger and T02 anxiety
- * prepared answers while preserving topic/day-specific guidance.
+ * Shared response framing for the anger/anxiety pilot and later topic rollout.
+ * Destination prose is assigned by semantic section type, not paragraph count.
  */
 export function applySharedDailyAssistantAnswerFrame(answer, { day, topic, guide, question } = {}) {
   if (typeof answer !== 'string' || !answer.trim() || !guide || !question || !topic) return answer;
-
-  const firstLineBreak = answer.indexOf('\n');
-  const firstLine = firstLineBreak < 0 ? answer : answer.slice(0, firstLineBreak);
-  const body = /(?:راهنمای روز|روز\s*\d+).*(?:خشم|اضطراب)/u.test(firstLine)
-    || firstLine.includes(String(guide.title || ''))
-    ? answer.slice(firstLineBreak < 0 ? answer.length : firstLineBreak).trim()
+  const firstBreak = answer.indexOf('\n');
+  const firstLine = firstBreak < 0 ? answer : answer.slice(0, firstBreak);
+  const body = /(?:راهنمای روز|روز\s*\d+).*(?:خشم|اضطراب)/u.test(firstLine) || firstLine.includes(String(guide.title || ''))
+    ? answer.slice(firstBreak < 0 ? answer.length : firstBreak).trim()
     : answer.trim();
-  // Preserve authored headings inside the answer; they carry topic/day-specific guidance.
-  const normalizedBody = body
-    .replace(/\n{3,}/gu, '\n\n')
-    .trim();
-
   return [
     '**راهنمای روز ' + day + ' ' + topic + ' — ' + guide.title + '**',
     '**پاسخ به پرسش**',
     question.label || question.value,
     '**توضیح و راهنمای امروز**',
-    normalizedBody,
+    body.replace(/\n{3,}/gu, '\n\n'),
   ].filter(Boolean).join('\n\n');
 }
 
-/**
- * Rebuilds only the anxiety answer's section labels from the matching anger
- * answer. The anxiety prose is retained in order and divided across the
- * reference sections; no anger exercise or clinical text is copied.
- */
-function authoredHeadingMatches(value) {
-  const matches = [];
-  const pattern = /\*\*([^*\n]+)\*\*/gu;
-  for (const match of value.matchAll(pattern)) {
-    const heading = match[1].trim();
-    // A bold phone-number notice is safety content, not a section heading.
-    if (/شماره|۰۹۱|091/u.test(heading)) continue;
-    matches.push({ index: match.index, label: heading, token: '**' + match[1] + '**' });
+const FRAME = '**توضیح و راهنمای امروز**';
+
+function sectionKey(label) {
+  const s = String(label || '').replace(/[:：؟?،؛.!؟]/gu, '').replace(/[\u200c\s]+/gu, ' ').trim().toLocaleLowerCase('fa');
+  if (/توقف|ایمنی|خطر|آسیب|کمک فوری/u.test(s)) return 'safety';
+  if (/مدت|زمان/u.test(s)) return 'duration';
+  if (/تفاوت|فرق/u.test(s)) return 'difference';
+  if (/نبود.*نمونه|نمونه.*پیش|اگر امروز.*نمونه/u.test(s)) return 'no_event';
+  if (/فراموش|انجام.*نشد|انجام.*نداد/u.test(s)) return 'not_done';
+  if (/صحبت|گفت.?وگو|فرد دیگر/u.test(s)) return 'talk';
+  if (/تغییر|سازگار/u.test(s)) return 'adapt';
+  if (/نسخه سبک|سبک/u.test(s)) return 'light';
+  if (/پیشرفت/u.test(s)) return 'progress';
+  if (/استراحت|مکث/u.test(s)) return 'rest';
+  if (/مثال|نمونه|فرضی/u.test(s)) return 'example';
+  if (/قدم|گام|مرحله|روش اجرا|چطور/u.test(s)) return 'steps';
+  if (/مهارت/u.test(s)) return 'skill';
+  if (/منطق|سازوکار|چرایی/u.test(s)) return 'mechanism';
+  if (/معیار|موفقیت|نکته/u.test(s)) return 'criterion';
+  if (/پرسش|بازبینی|تأمل/u.test(s)) return 'reflection';
+  if (/هدف|چرا/u.test(s)) return 'objective';
+  if (/اقدام/u.test(s)) return 'action';
+  if (/تمرین/u.test(s)) return 'exercise';
+  if (/راهنما|توضیح/u.test(s)) return 'overview';
+  return 'other:' + s;
+}
+
+function parseSections(text) {
+  const result = [];
+  let current = null;
+  const preface = [];
+  for (const line of String(text || '').split('\n')) {
+    const match = line.match(/^\s*\*\*([^*\n]+)\*\*:?\s*(.*)$/u);
+    if (match) {
+      current = { label: match[1].trim().replace(/[:：]$/u, ''), body: [] };
+      if (match[2].trim()) current.body.push(match[2].trim());
+      result.push(current);
+    } else if (current) current.body.push(line);
+    else preface.push(line);
   }
-  return matches;
+  return {
+    preface: preface.join('\n').trim(),
+    sections: result.map((x) => ({ label: x.label, key: sectionKey(x.label), content: x.body.join('\n').trim() })),
+  };
+}
+
+function fallbackKey(question) {
+  const kind = question && question.kind || '';
+  if (kind.includes('example')) return 'example';
+  if (kind.includes('action')) return 'action';
+  if (kind.includes('exercise')) return 'exercise';
+  if (kind === 'success') return 'criterion';
+  if (kind === 'stop' || kind === 'anxiety_increased' || kind === 'anger_increased') return 'safety';
+  if (kind === 'duration') return 'duration';
+  if (kind === 'talk_other') return 'talk';
+  if (kind === 'can_change') return 'adapt';
+  if (kind === 'light_version') return 'light';
+  if (kind === 'no_event') return 'no_event';
+  if (kind === 'not_done') return 'not_done';
+  if (kind === 'exercise_action_difference') return 'difference';
+  return 'overview';
 }
 
 /**
- * Rebuilds only the anxiety answer's section labels from the matching anger
- * answer. Anxiety prose and safety details are retained in their original
- * order and divided across the reference sections.
+ * Rebuild destination headings from the reference. Matching sections are
+ * assigned by semantic key. Unmatched legacy labels are retained in prose.
  */
-export function alignDailyAssistantAnswerHeadings(answer, referenceAnswer) {
+export function alignDailyAssistantAnswerHeadings(answer, referenceAnswer, { guide, question } = {}) {
   if (typeof answer !== 'string' || typeof referenceAnswer !== 'string') return answer;
-  const frameHeading = '**توضیح و راهنمای امروز**';
-  const answerFrameIndex = answer.indexOf(frameHeading);
-  const referenceFrameIndex = referenceAnswer.indexOf(frameHeading);
-  if (answerFrameIndex < 0 || referenceFrameIndex < 0) return answer;
+  const ai = answer.indexOf(FRAME);
+  const ri = referenceAnswer.indexOf(FRAME);
+  if (ai < 0 || ri < 0) return answer;
+  const ref = parseSections(referenceAnswer.slice(ri + FRAME.length));
+  const src = parseSections(answer.slice(ai + FRAME.length));
+  if (!ref.sections.length) return answer;
 
-  const referenceHeadings = authoredHeadingMatches(referenceAnswer)
-    .slice(3)
-    .map((match) => match.label);
-
-  const body = answer.slice(answerFrameIndex + frameHeading.length).trim();
-  const headingMatches = authoredHeadingMatches(body);
-  let prose = body;
-  for (const match of headingMatches.reverse()) {
-    prose = prose.slice(0, match.index) + match.label + prose.slice(match.index + match.token.length);
-  }
-  if (!referenceHeadings.length) {
-    return answer.slice(0, answerFrameIndex + frameHeading.length) + '\n\n' + prose;
-  }
-  const paragraphs = prose.split(/\n\s*\n/gu).map((part) => part.trim()).filter(Boolean);
-  const alignedSections = referenceHeadings.map((heading, index) => {
-    const start = Math.floor(index * paragraphs.length / referenceHeadings.length);
-    const end = Math.floor((index + 1) * paragraphs.length / referenceHeadings.length);
-    const content = paragraphs.slice(start, end).join('\n\n');
-    return '**' + heading + '**' + (content ? '\n' + content : '');
+  const slots = ref.sections.map((x) => ({ label: x.label, key: x.key, content: [] }));
+  const byKey = new Map();
+  slots.forEach((slot, index) => {
+    const indexes = byKey.get(slot.key) || [];
+    indexes.push(index);
+    byKey.set(slot.key, indexes);
   });
+  if (src.preface) (slots.find((x) => x.key === 'overview') || slots[0]).content.push(src.preface);
 
-  return answer.slice(0, answerFrameIndex + frameHeading.length) + '\n\n' + alignedSections.join('\n\n');
+  const seen = new Map();
+  for (const section of src.sections) {
+    if (!section.content) continue;
+    const candidates = byKey.get(section.key);
+    let index;
+    if (candidates && candidates.length) {
+      const count = seen.get(section.key) || 0;
+      index = candidates[Math.min(count, candidates.length - 1)];
+      seen.set(section.key, count + 1);
+    } else {
+      const fallback = byKey.get(fallbackKey(question));
+      index = fallback && fallback.length ? fallback[0] : 0;
+      section.content = section.label + ' — ' + section.content;
+    }
+    slots[index].content.push(section.content);
+  }
+
+  const output = slots.map((slot) => '**' + slot.label + '**' + (slot.content.length ? '\n' + slot.content.join('\n\n') : ''));
+  return answer.slice(0, ai + FRAME.length) + '\n\n' + output.join('\n\n');
 }
