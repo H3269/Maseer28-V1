@@ -84,7 +84,7 @@ try {
   const topics = Object.keys(content.categories);
   assert.equal(topics.length, 34);
 
-  async function assertDailyContentVisible(topic, day) {
+  async function assertDailyContentVisible(topic, day, expectPreparedAssistant = true) {
     const { page, errors } = await openDay(topic, day);
     const card = page.locator('#day');
     assert.equal(await card.locator('#ownerApprovalPending').count(), 0,
@@ -99,15 +99,24 @@ try {
     await launcher.click();
     const dialog = page.locator('.globalAssistantDialog');
     await dialog.waitFor({ state: 'visible' });
-    assert.ok(await dialog.locator('[data-prompt-option]').count() > 0,
-      topic + ' day ' + day + ' must expose its prepared assistant questions');
-    assert.doesNotMatch(await dialog.innerText(), /تأیید مستقیم دکتر عابدی|هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/u);
+    if (expectPreparedAssistant) {
+      assert.ok(await dialog.locator('[data-prompt-option]').count() > 0,
+        topic + ' day ' + day + ' must expose its prepared assistant questions');
+      assert.doesNotMatch(await dialog.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/u);
+    } else {
+      assert.equal(await dialog.locator('[data-prompt-option]').count(), 0,
+        topic + ' day ' + day + ' must not claim a prepared question catalogue that does not exist');
+      assert.match(await dialog.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/u);
+    }
+    assert.doesNotMatch(await dialog.innerText(), /تأیید مستقیم دکتر عابدی/u);
     assert.deepEqual(errors, [], topic + ' day ' + day + ' must not raise browser errors');
     await page.close();
   }
 
   for (const topic of topics) {
-    await assertDailyContentVisible(topic, 1);
+    const topicId = content.categories[topic]?.days?.[0]?.topic_id || '';
+    const hasPreparedCatalogue = /^T(?:0[1-9]|1[0-4])$/u.test(topicId);
+    await assertDailyContentVisible(topic, 1, hasPreparedCatalogue);
     const { page, errors } = await openDay(topic, 1);
     const card = page.locator('#day');
     assert.equal(await card.locator('#dayExercise').count(), 1, topic + ' day 1 must display its exercise');
@@ -133,7 +142,7 @@ try {
     await assertDailyContentVisible('خشم', day);
   }
 
-  process.stdout.write('PASS: daily content and prepared assistant are visible without an internal approval gate; daily interactions remain available.\\n');
+  process.stdout.write('PASS: all 34 topics render daily content; prepared assistant catalogues appear only where implemented, with no specialist-approval gate.\\n');
 } finally {
   await browser.close();
 }
