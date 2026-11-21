@@ -43,7 +43,7 @@ test('all 392 T12 prepared answers use the shared T01-T11 display frame', () => 
       assert.equal(visible.includes('**'), false, 'raw Markdown markers must not reach visible text');
       assert.ok(visible.includes(guide.title), 'formatted answer must retain the topic/day title');
       const requiresReminder = ['boundary_distress', 'talk_other', 'success', 'stop'].includes(question.kind);
-      assert.equal(answer.includes('یادآوری اختصاصی ایمنی و حریم خصوصی T12'), requiresReminder,
+      assert.equal(answer.includes('یادآوری اختصاصی ایمنی و حریم خصوصی درباره مرزبندی'), requiresReminder,
         'T12 safety-sensitive answers must use the topic-specific safety reminder');
       const sharedReminderCount = answer.split(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN).length - 1;
       assert.equal(sharedReminderCount, requiresReminder ? 1 : 0,
