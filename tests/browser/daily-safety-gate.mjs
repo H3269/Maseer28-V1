@@ -84,111 +84,64 @@ try {
   const topics = Object.keys(content.categories);
   assert.equal(topics.length, 34);
 
+  const isOwnerGatedTopic = (topic) => /^T(?:0[1-9]|1[0-4])$/u.test(String(content.categories[topic]?.days?.[0]?.topic_id || ''));
+
+  async function assertOwnerGate(topic, day) {
+    const { page, errors } = await openDay(topic, day);
+    const card = page.locator('#day');
+    assert.equal(await card.locator('#ownerApprovalPending').count(), 1,
+      topic + ' day ' + day + ' must show the owner-approval notice');
+    assert.match(await card.innerText(), /تأیید مستقیم دکتر عابدی/u);
+    for (const selector of ['#dayExercise', '#dayAction', '#dayClosing', '#openDailyEntryBtn', '#dailyEntryPanel']) {
+      assert.equal(await card.locator(selector).count(), 0,
+        topic + ' day ' + day + ' must not expose ' + selector);
+    }
+    const launcher = page.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' });
+    await launcher.click();
+    const dialog = page.locator('.globalAssistantDialog');
+    await dialog.waitFor({ state: 'visible' });
+    assert.equal(await dialog.locator('[data-prompt-option]').count(), 0,
+      topic + ' day ' + day + ' must not expose prepared assistant questions');
+    assert.equal(await dialog.locator('.assistantMessage').count(), 0,
+      topic + ' day ' + day + ' must not expose a prepared answer or stale transcript');
+    assert.match(await dialog.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/u);
+    assert.deepEqual(errors, [], topic + ' day ' + day + ' must not raise browser errors');
+    await page.close();
+  }
+
   for (const topic of topics) {
-    let { page, errors } = await openDay(topic, 1);
+    if (isOwnerGatedTopic(topic)) {
+      await assertOwnerGate(topic, 1);
+      continue;
+    }
+    const { page, errors } = await openDay(topic, 1);
     const card = page.locator('#day');
     assert.equal(await card.locator('#dayExercise').count(), 1, topic + ' day 1 must display its exercise');
     assert.equal(await card.locator('#dayAction').count(), 1, topic + ' day 1 must display its dedicated action');
-    if (topic === 'عادت‌های تکراری') {
-      for (let day = 1; day <= 28; day += 1) {
-        if (day > 1) {
-          await page.close();
-          const reopened = await openDay(topic, day);
-          page = reopened.page;
-          errors.push(...reopened.errors);
-        }
-        const dayCard = page.locator('#day');
-        const badgeText = await page.locator('#dayBadge').innerText();
-        assert.match(badgeText, new RegExp('روز ' + toPersianDigits(day) + ' از ۲۸', 'u'));
-        const expected = content.categories[topic].days.find((item) => item.day === day);
-        assert.ok(expected, 'T11 canonical day ' + day + ' exists');
-        const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
-        const visibleAction = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayAction'));
-        assert.equal(visibleExercise, normalizeVisibleDailyText(expected.exercise), 'T11 day ' + day + ' exact exercise renders');
-        assert.ok(visibleAction.endsWith(normalizeVisibleDailyText(expected.actionText)), 'T11 day ' + day + ' exact action renders');
-        assert.equal(await dayCard.locator('#dailySafetyStatus').count(), 0,
-          'T11 must not show an owner-review or approval-block notice');
-        assert.equal(await dayCard.locator('#skipDailyReviewBtn').count(), 0,
-          'T11 must not use the non-scoring preview skip flow');
-        assert.equal(await dayCard.locator('#openDailyEntryBtn').count(), 1,
-          'T11 must expose the same daily result-entry action as T01-T10');
-        assert.doesNotMatch(await dayCard.innerText(), /پیش‌نمایش برای بازبینی مالک|مشاهده مشخصات کامل این روز برای بازبینی/u);
-
-        await dayCard.locator('#openDailyEntryBtn').click();
-        await dayCard.locator('#dailyEntryPanel').waitFor({ state: 'visible' });
-        assert.equal(await dayCard.locator('#dayScore').count(), 1, 'T11 day ' + day + ' exposes score input');
-        assert.equal(await dayCard.locator('#dayFeedbackChoice').count(), 1, 'T11 day ' + day + ' exposes feedback input');
-        assert.equal(await dayCard.locator('#answer').count(), 1, 'T11 day ' + day + ' exposes response input');
-
-        const scoreInput = dayCard.locator('#dayScore');
-        await scoreInput.evaluate((el) => {
-          const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
-          setter.call(el, '4');
-          el.dispatchEvent(new Event('input', { bubbles: true }));
-          el.dispatchEvent(new Event('change', { bubbles: true }));
-        });
-        await page.waitForFunction(() => document.querySelector('#dayScore')?.getAttribute('data-touched') === '1');
-        assert.equal(await scoreInput.getAttribute('data-touched'), '1',
-          'T11 score slider must register a changed controlled value');
-        assert.equal(await scoreInput.inputValue(), '4');
-        await dayCard.locator('.smartSelectButton').click();
-        await dayCard.locator('.smartSelectOption').filter({ hasText: 'تقریباً مثل قبل' }).click();
-        assert.equal(await dayCard.locator('#dayFeedbackChoice').inputValue(), 'same');
-        await dayCard.locator('#answer').fill('امروز تمرین روز ' + toPersianDigits(day) + ' را انجام دادم و نتیجه را ثبت کردم.');
-        await dayCard.getByRole('button', { name: /ثبت امروز و دریافت نتیجه/u }).click();
-        await page.locator('#dailyResult').waitFor({ state: 'visible' });
-        assert.equal(await page.locator('#resultScore').count(), 1,
-          'T11 day ' + day + ' must complete and render the normal result screen');
-
-        if (day < 28) {
-          const nextLabel = new RegExp('رفتن به روز ' + toPersianDigits(day + 1), 'u');
-          assert.equal(await page.getByRole('button', { name: nextLabel }).count(), 1,
-            'T11 day ' + day + ' must expose the normal next-day action');
-          // Production CI preserves the normal one-day pacing rule; the
-          // owner-facing GitHub Pages test build disables that clock lock.
-          // Here we verify the next-day CTA and open each day with an old
-          // completed-day fixture so every canonical day can be submitted.
-        } else {
-          assert.equal(await page.getByRole('button', { name: /رفتن به ارزیابی نهایی/u }).count(), 1,
-            'T11 day 28 must expose the normal final-assessment action');
-        }
-        assert.deepEqual(errors, [], 'T11 day ' + day + ' must not raise browser errors');
-      }
-      await page.close();
-      continue;
-    }
     assert.equal(await card.locator('#openDailyEntryBtn').count(), 1, topic + ' day 1 must expose the original daily interaction');
-    const text = await card.innerText();
     const expected = content.categories[topic].days.find((item) => item.day === 1);
     const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
     const visibleAction = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayAction'));
     assert.equal(visibleExercise, normalizeVisibleDailyText(expected.exercise), topic + ' day 1 must render its exact overlay exercise');
     assert.ok(visibleAction.endsWith(normalizeVisibleDailyText(expected.actionText)), topic + ' day 1 must render its exact overlay action after the topic context prefix');
-    assert.doesNotMatch(text, /این تمرین در نسخه فعلی قابل اجرا نیست|نیازمند بازبینی انسانی|آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه/);
+    assert.doesNotMatch(await card.innerText(), /این تمرین در نسخه فعلی قابل اجرا نیست|نیازمند بازبینی انسانی|آیا در این رابطه یا تعامل، هر دو نفر می‌توانند آزادانه/);
     await card.locator('#openDailyEntryBtn').click();
     await card.locator('#dailyEntryPanel').waitFor({ state: 'visible' });
     assert.deepEqual(errors, [], topic + ' must not raise browser errors');
     await page.close();
   }
 
-  for (const day of [10, 11]) {
-    const { page, errors } = await openDay('خشم', day);
-    const card = page.locator('#day');
-    assert.equal(await card.locator('#dayExercise').count(), 1);
-    assert.equal(await card.locator('#dayAction').count(), 1);
-    assert.equal(await card.locator('#openDailyEntryBtn').count(), 1);
-    const expected = content.categories['خشم'].days.find((item) => item.day === day);
-    const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
-    const visibleAction = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayAction'));
-    assert.equal(visibleExercise, normalizeVisibleDailyText(expected.exercise), 'anger day ' + day + ' must render its exact overlay exercise');
-    assert.ok(visibleAction.endsWith(normalizeVisibleDailyText(expected.actionText)), 'anger day ' + day + ' must render its exact overlay action after the topic context prefix');
-    await card.locator('#openDailyEntryBtn').click();
-    await card.locator('#dailyEntryPanel').waitFor({ state: 'visible' });
-    assert.deepEqual(errors, []);
-    await page.close();
+  // Exercise the same owner gate against every canonical day of T11, not only day one.
+  for (let day = 1; day <= 28; day += 1) {
+    await assertOwnerGate('عادت‌های تکراری', day);
   }
 
-  process.stdout.write('PASS: all 34 topics render their daily exercise and action directly; anger days 10 and 11 remain interactive.\\n');
+  // A selected day change must not bypass the owner gate for other T01 records.
+  for (const day of [10, 11]) {
+    await assertOwnerGate('خشم', day);
+  }
+
+  process.stdout.write('PASS: T01-T14 remain hidden pending direct owner approval; T15-T34 retain their daily interaction.\\n');
 } finally {
   await browser.close();
 }
