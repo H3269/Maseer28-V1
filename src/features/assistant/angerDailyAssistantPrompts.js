@@ -3323,6 +3323,10 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   if (question.kind === 'not_done' && guide.lightVersion && !answer.includes(guide.lightVersion)) {
     supplementalGuidance.push(`**بازگشت کوچک، فقط در صورت تمایل:** ${guide.lightVersion}`);
   }
+  if (question.kind === 'not_done') {
+    if (!answer.includes('خودت را سرزنش نکن')) supplementalGuidance.push(`برای روز ${day} خودت را سرزنش نکن؛ ${guide.objective}`);
+    if (answer.length < 350) supplementalGuidance.push(`**نقطه شروع بدون جبران:** ${guide.lightVersion}\n**اگر امروز نیاز به مکث داری:** ${guide.restVersion}\n**هدف روز ${day}:** ${guide.objective}`);
+  }
   if (question.kind === 'anger_increased') {
     supplementalGuidance.push('اگر فشار یا میل به واکنش آسیب‌زا بیشتر شده، تمرین را متوقف کن و در صورت امکان فاصله امن ایجاد کن. اگر احتمال آسیب فوری به خودت یا فرد دیگری وجود دارد، از خدمات اضطراری محل زندگی کمک فوری بگیر.');
   }
