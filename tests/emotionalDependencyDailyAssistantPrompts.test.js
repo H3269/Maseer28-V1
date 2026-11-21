@@ -9,6 +9,7 @@ import {
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
 import { getDailySafetyMode } from '../src/features/content/dailySafety.js';
+import { mergeDailyTextOverrides } from '../src/features/content/dailyTextOverrides.js';
 
 function contextFor(guide, overrides = {}) {
   const data = {
@@ -125,7 +126,7 @@ test('T08 canonical content, adaptive runtime fields and active topic mapping st
     readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8').then(JSON.parse),
     readFile(new URL('../public/assistant/knowledge/subtopics.v1.json', import.meta.url), 'utf8').then(JSON.parse),
   ]);
-  const canonical = pathContent.categories['وابستگی عاطفی'].days;
+  const canonical = mergeDailyTextOverrides(pathContent, overrides).categories['وابستگی عاطفی'].days;
   const runtime = overrides.categories['وابستگی عاطفی'].days;
   const topic = topics.topics.find((item) => item.topic_id === 'T08');
   const mappedSubtopics = subtopics.subtopics.filter((item) => item.topic_id === 'T08');
