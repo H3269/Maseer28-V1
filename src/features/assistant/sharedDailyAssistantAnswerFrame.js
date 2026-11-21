@@ -115,17 +115,20 @@ export function alignDailyAssistantAnswerHeadings(answer, referenceAnswer, { gui
     if (!section.content) continue;
     const candidates = byKey.get(section.key);
     let index;
+    let contentToPreserve = section.content;
     if (candidates && candidates.length) {
       const count = seen.get(section.key) || 0;
       index = candidates[Math.min(count, candidates.length - 1)];
       seen.set(section.key, count + 1);
+      // A semantically matched legacy heading is replaced by the canonical
+      // destination heading. Keep its anxiety-specific body, not its old label.
     } else {
       const fallback = byKey.get(fallbackKey(question));
       index = fallback && fallback.length ? fallback[0] : 0;
-      section.content = section.label + ' — ' + section.content;
+      // Unmatched legacy headings carry information: retain the label once.
+      contentToPreserve = section.label + ' — ' + section.content;
     }
-    const preservedContent = section.label === slots[index].label ? section.content : section.label + ' — ' + section.content;
-    slots[index].content.push(preservedContent);
+    slots[index].content.push(contentToPreserve);
   }
 
   const output = slots.map((slot) => '**' + slot.label + '**' + (slot.content.length ? '\n' + slot.content.join('\n\n') : ''));
