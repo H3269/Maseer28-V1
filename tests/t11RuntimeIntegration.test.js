@@ -37,8 +37,8 @@ test('all 392 exact T11 prepared questions route through the real page assistant
       assert.match(result.message, new RegExp(guide.title), 'the answer must identify the matching daily guide');
       assert.equal(result.message.includes(question.answer), true, 'the exact prepared answer must be present in the response');
       if (question.kind === 't11_distress') {
-        assert.equal(result.message.includes(guide.stopCondition), false);
-        assert.equal(result.message.includes(guide.whenToSeekHumanSupport), false);
+        assert.equal(result.message.includes(guide.stopCondition), true, 'the distress answer must include the authored stop condition');
+        assert.equal(result.message.includes(guide.whenToSeekHumanSupport), true, 'the distress answer must include the human-support guidance');
       }
       if (question.kind === 'exercise_meaning') {
         assert.equal(result.message.includes(guide.mechanism), false);
