@@ -116,7 +116,7 @@ test('all 392 T13 answers are day-bound, teacher-framed and append the shared re
     const count=answer.split(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN).length-1;
     assert.equal(count,expected?1:0,'shared reminder count day '+guide.day+' '+question.kind);
     assert.equal(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN),expected);
-    const topicReminderCount=answer.split('یادآوری اختصاصی ایمنی T13').length-1;
+    const topicReminderCount=answer.split('یادآوری اختصاصی ایمنی درباره تنهایی').length-1;
     assert.equal(topicReminderCount,expected?1:0,'topic reminder count day '+guide.day+' '+question.kind);
     checked++;
   }
