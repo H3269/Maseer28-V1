@@ -46,7 +46,7 @@ export function answerT13DailyPreparedQuestion({ day, message, dailyContent } = 
   const heading = `راهنمای روز ${guide.day} تنهایی — ${guide.title}`;
   const framedAnswer = addTeacherStyleFrame(`${heading}\n\n${body}`, { guide, question, topic: 'تنهایی' });
   const safetyKinds = new Set(['loneliness_increased', 'talk_other', 'success', 'stop']);
-  const topicSafetyReminder = 'یادآوری اختصاصی ایمنی T13: احساس تنهایی به‌تنهایی نشانه نقص شخصی نیست. خودت را به تماس، افشای اطلاعات یا حضور در جمع مجبور نکن. اگر ارتباطی ناامن یا کنترل‌گرانه است، امنیت و دریافت حمایت امن را مقدم بدان.';
+  const topicSafetyReminder = 'یادآوری اختصاصی ایمنی درباره تنهایی: احساس تنهایی به‌تنهایی نشانه نقص شخصی نیست. خودت را به تماس، افشای اطلاعات یا حضور در جمع مجبور نکن. اگر ارتباطی ناامن یا کنترل‌گرانه است، امنیت و دریافت حمایت امن را مقدم بدان.';
   const answerWithTopicReminder = safetyKinds.has(question.kind)
     ? framedAnswer.trimEnd() + '\n\n' + topicSafetyReminder
     : framedAnswer;
