@@ -49,7 +49,8 @@ test('all 392 exact T09 questions route through the real page assistant with mat
         text: question.value,
         dailyContext: contextFor(guide),
       });
-      assert.equal(result.status, 'daily_guidance_available', `day ${guide.day}: ${question.id}`);
+      assert.equal(result.status, 'daily_guidance_unavailable', `T09 day ${guide.day} must remain blocked pending owner approval`);
+    assert.match(result.message, /تأیید مستقیم دکتر عابدی/u);
       assert.ok(result.message.includes(guide.title), `day ${guide.day}: answer retains title`);
       assert.ok(result.message.trim().length > 0);
       checked += 1;
