@@ -174,12 +174,23 @@ test('T02-T09 prepared answers retain topic/day context and substantive guidance
   for (const [topicId, guides, , answerPrepared] of topics.slice(1)) {
     assert.equal(typeof answerPrepared, 'function', topicId + ' answer handler');
     for (const guide of guides) {
-      const dailyContent = topicId === 'T09' ? {
-        id: 'اهمال‌کاری-' + String(guide.day).padStart(2, '0'),
-        topic_id: 'T09',
+      const topicContentIds = {
+        T09: 'اهمال‌کاری',
+        T10: 'بی‌خوابی و مشکلات خواب',
+        T11: 'عادت‌های تکراری',
+        T12: 'مرزبندی و نه گفتن',
+        T13: 'تنهایی',
+        T14: 'کمبود انگیزه',
+      };
+      const dailyContent = topicContentIds[topicId] ? {
+        id: topicContentIds[topicId] + '-' + String(guide.day).padStart(2, '0'),
+        topic_id: topicId,
         day: guide.day,
+        title: guide.title,
         exercise: guide.exercise,
         actionText: guide.action,
+        sourceExercise: guide.exercise,
+        sourceActionText: guide.action,
       } : undefined;
       for (const question of guide.questions) {
         const answer = answerPrepared({
