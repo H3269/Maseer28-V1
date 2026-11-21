@@ -76,9 +76,10 @@ async function openDay(problem, day) {
 }
 
 try {
-  const [baseContent, overrides] = await Promise.all([
+  const [baseContent, overrides, topicsRegistry] = await Promise.all([
     readFile(new URL('../../public/content/path-content.json', import.meta.url), 'utf8').then(JSON.parse),
     readFile(new URL('../../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8').then(JSON.parse),
+    readFile(new URL('../../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8').then(JSON.parse),
   ]);
   const content = mergeDailyTextOverrides(baseContent, overrides);
   const topics = Object.keys(content.categories);
@@ -120,7 +121,7 @@ try {
   }
 
   for (const topic of topics) {
-    const topicId = content.categories[topic]?.days?.[0]?.topic_id || '';
+    const topicId = topicsRegistry.topics.find((item) => item.name === topic)?.topic_id || '';
     const hasPreparedCatalogue = /^T(?:0[1-9]|1[0-4])$/u.test(topicId);
     await assertDailyContentVisible(topic, 1, hasPreparedCatalogue);
     const { page, errors } = await openDay(topic, 1);
