@@ -3277,7 +3277,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     if (guide.objective && !answer.includes(guide.objective)) supplementalGuidance.push(`**هدف امروز:** ${guide.objective}`);
     if (guide.exercise && !answer.includes(guide.exercise)) supplementalGuidance.push(`**تمرین امروز:** ${guide.exercise}`);
     if (plainSteps.exercise && !answer.includes(plainSteps.exercise)) supplementalGuidance.push(`**گام‌های ساده اجرا:** ${plainSteps.exercise}`);
-    if (!answer.includes('قدم‌به‌قدم انجامش بده')) supplementalGuidance.push(`برای روز ${day} این کار را قدم‌به‌قدم انجامش بده: ${guide.title}؛ هر بخش را جدا ثبت کن و برای کامل‌کردن آن عجله نکن.`);
+    if (!answer.includes('قدم‌به‌قدم انجامش بده')) supplementalGuidance.push(`برای روز ${day} این کار را قدم‌به‌قدم انجامش بده: ${guide.title}، هر بخش را جدا ثبت کن و برای کامل‌کردن آن عجله نکن.`);
   }
   if (question.kind === 'action_meaning') {
     if (guide.action && !answer.includes(guide.action)) supplementalGuidance.push(`**اقدام اختصاصی امروز:** ${guide.action}`);
@@ -3292,6 +3292,9 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   if (question.kind === 'exercise_action_difference') {
     answer = answer.replace('اگر رفتار واقعی با میل فرق داشت هر دو را ثبت کن',
       `در روز ${day}، میل به واکنش را از رفتاری که واقعاً انجام دادی یا انجام ندادی جدا ثبت کن؛ عنوان راهنما «${guide.title}» است.`);
+    if (answer.length < 350) supplementalGuidance.push(
+      `**تفاوت عملی روز ${day}:** تمرین، هدف «${guide.objective}» را بررسی می‌کند، در حالی که اقدام یک رفتار قابل مشاهده در ادامه آن است و اگر هنوز برای اقدام آماده نیستی، انجام تمرین به‌تنهایی هم کافی است.`
+    );
   }
   if (question.kind === 'light_version') {
     if (!answer.includes('خودت را مجبور نکن')) supplementalGuidance.push(`خودت را مجبور نکن بیشتر از توان امروزت پیش بروی؛ نسخه سبک همین روز این است: ${guide.lightVersion}`);
