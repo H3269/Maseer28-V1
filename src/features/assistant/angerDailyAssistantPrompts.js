@@ -3276,7 +3276,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   if (question.kind === 'exercise_meaning') {
     if (guide.exercise && !answer.includes(guide.exercise)) supplementalGuidance.push(`**متن تمرین اختصاصی امروز:** ${guide.exercise}`);
     if (plainSteps.exercise && !answer.includes(plainSteps.exercise)) supplementalGuidance.push(`**گام‌های ساده اجرا:** ${plainSteps.exercise}`);
-    if (!answer.includes('قدم‌به‌قدم انجامش بده')) supplementalGuidance.push('این کار را قدم‌به‌قدم انجامش بده؛ هر بخش را جدا ثبت کن و برای کامل‌کردن آن عجله نکن.');
+    if (!answer.includes('قدم‌به‌قدم انجامش بده')) supplementalGuidance.push(`برای روز ${day} این کار را قدم‌به‌قدم انجامش بده: ${guide.title}؛ هر بخش را جدا ثبت کن و برای کامل‌کردن آن عجله نکن.`);
   }
   if (question.kind === 'action_meaning') {
     if (guide.action && !answer.includes(guide.action)) supplementalGuidance.push(`**اقدام اختصاصی امروز:** ${guide.action}`);
