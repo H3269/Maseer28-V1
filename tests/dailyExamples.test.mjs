@@ -49,3 +49,21 @@ test('daily assistant asks which section needs an example when exercise and acti
   });
   assert.match(result.response, /تمرین یا راهکار اختصاصی/u);
 });
+
+test('T02 has a distinct, visible hypothetical example for each of its 28 exercises and actions', async () => {
+  const [base, overrides] = await Promise.all([
+    readJson('../public/content/path-content.json'),
+    readJson('../public/content/daily-text-overrides.v1.json'),
+  ]);
+  const merged = mergeDailyTextOverrides(base, overrides);
+  const days = merged.categories['اضطراب'].days;
+  assert.equal(days.length, 28);
+  for (const day of days) {
+    assert.ok(day.exerciseExample?.trim(), 'T02 day ' + day.day + ' exercise example');
+    assert.ok(day.actionExample?.trim(), 'T02 day ' + day.day + ' action example');
+    assert.match(day.exerciseExample, /^نمونه فرضی/u);
+    assert.match(day.actionExample, /^نمونه فرضی/u);
+  }
+  assert.equal(new Set(days.map(day => day.exerciseExample)).size, 28);
+  assert.equal(new Set(days.map(day => day.actionExample)).size, 28);
+});
