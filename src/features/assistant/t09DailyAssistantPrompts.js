@@ -106,6 +106,7 @@ export function answerT09DailyPreparedQuestion({ day, message, dailyContent } = 
       return null;
   }
 
+    body = expandDailyAssistantQuestionAnswer(body, { guide, question, topic: 'اهمال‌کاری' });
   const fullAnswer = `${buildT09Heading(guide)}\n\n${body}`;
   return appendDailyAssistantSafetyReminder(addTeacherStyleFrame(fullAnswer, { guide, question, topic: 'اهمال‌کاری' }), question.kind);
 }
