@@ -22,6 +22,8 @@ export function cleanPreparedAssistantTopicText(value, topic) {
     .replace(/\bT([12][0-9]|3[0-4]|0?[1-9])(?:-[A-Z]\d{2})?\b/g, (_, digits) => INTERNAL_TOPIC_LABELS['T' + digits.padStart(2, '0')] || 'موضوع مرتبط')
     .replace(/\bq\d{2}\b/gi, 'پرسش')
     .replace(/BFRB/gi, 'رفتارهای تکراری متمرکز بر بدن')
+    .replace(/\\bPGD\\b/gi, 'اختلال سوگ طولانی‌مدت')
+    .replace(/\\bPTSD\\b/gi, 'اختلال استرس پس از سانحه')
     .replace(/این بسته/g, 'این موضوع')
     .replace(/در این بسته/g, 'در این موضوع')
     .replace(/بسته فعلی/g, 'موضوع فعلی');
