@@ -46,14 +46,8 @@ test('all 392 exact T11 prepared questions route through the real page assistant
         assert.equal(result.message.includes(guide.successCriterion), false);
       }
       assert.doesNotMatch(result.message, /پیش‌نمایش برای بازبینی مالک|مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود/u);
-      if (question.kind === 't11_distress') {
-        assert.ok(result.message.includes(guide.stopCondition));
-        assert.ok(result.message.includes(guide.whenToSeekHumanSupport));
-      }
-      if (question.kind === 'exercise_meaning') {
-        assert.ok(result.message.includes(guide.mechanism));
-        assert.ok(result.message.includes(guide.successCriterion));
-      }
+      // The live router must not disclose prepared guide content while the
+      // owner allowlist is empty. Content integrity is covered by the guide tests.
       checked += 1;
     }
   }
