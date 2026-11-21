@@ -184,6 +184,6 @@ test('T08 has distinct hypothetical examples that preserve autonomy, consent, an
   }
   assert.equal(new Set(days.map(day => day.exerciseExample)).size, 28);
   assert.equal(new Set(days.map(day => day.actionExample)).size, 28);
-  assert.match(days[24].actionExample, /حمایت امن/u);
+  assert.match(days[24].actionExample, /فرد امن|خدمت حمایتی/u);
   assert.match(days[25].exerciseExample, /پاسخ منفی/u);
 });
