@@ -110,6 +110,7 @@ export function answerT10DailyPreparedQuestion({ day, message, dailyContent } = 
       return null;
   }
 
+    body = expandDailyAssistantQuestionAnswer(body, { guide, question, topic: 'بی‌خوابی و مشکلات خواب' });
   const fullAnswer = `${buildT10Heading(guide)}\n\n${body}`;
   return appendDailyAssistantSafetyReminder(addTeacherStyleFrame(fullAnswer, { guide, question, topic: 'بی‌خوابی و مشکلات خواب' }), question.kind);
 }
