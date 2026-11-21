@@ -9,10 +9,15 @@ import {
   answerAnxietyDailyPreparedQuestion,
 } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
 
-const headingLabels = (answer) => [...answer.matchAll(/\*\*([^*\n]+)\*\*/gu)]
-  .slice(3)
-  .map((match) => match[1].trim())
-  .filter((heading) => !/شماره|۰۹۱|091/u.test(heading));
+const headingLabels = (answer) => {
+  const frame = '**توضیح و راهنمای امروز**';
+  const start = answer.indexOf(frame);
+  if (start < 0) return [];
+  return answer.slice(start + frame.length).split('\n')
+    .map((line) => line.match(/^\s*\*\*([^*\n]+)\*\*:?\s*$/u)?.[1]?.trim())
+    .filter(Boolean)
+    .filter((heading) => !/شماره|۰۹۱|091/u.test(heading));
+};
 
 test('anxiety uses the exact anger heading names, count, and order for all 28 days and 14 questions', () => {
   assert.equal(ANGER_DAILY_ASSISTANT_GUIDES.length, 28);
@@ -53,6 +58,32 @@ test('anxiety uses the exact anger heading names, count, and order for all 28 da
     }
   }
   assert.equal(checked, 28 * 14);
+});
+
+test('semantic alignment preserves all authored anxiety teaching fields for each day', () => {
+  for (const guide of ANXIETY_DAILY_ASSISTANT_GUIDES) {
+    const q01 = guide.questions.find((question) => question.kind === 'exercise_meaning');
+    const q03 = guide.questions.find((question) => question.kind === 'action_meaning');
+    const q05 = guide.questions.find((question) => question.kind === 'light_version');
+    const q06 = guide.questions.find((question) => question.kind === 'success');
+    const q07 = guide.questions.find((question) => question.kind === 'stop');
+    const exerciseAnswer = answerAnxietyDailyPreparedQuestion({ day: guide.day, message: q01.value });
+    const actionAnswer = answerAnxietyDailyPreparedQuestion({ day: guide.day, message: q03.value });
+    const lightAnswer = answerAnxietyDailyPreparedQuestion({ day: guide.day, message: q05.value });
+    const successAnswer = answerAnxietyDailyPreparedQuestion({ day: guide.day, message: q06.value });
+    const stopAnswer = answerAnxietyDailyPreparedQuestion({ day: guide.day, message: q07.value });
+    for (const field of ['objective', 'skill', 'mechanism', 'exercise', 'successCriterion', 'reflectionQuestion']) {
+      assert.ok(exerciseAnswer.includes(guide[field]), 'anxiety ' + field + ' preserved day ' + guide.day);
+    }
+    for (const field of ['objective', 'skill', 'mechanism', 'action', 'successCriterion']) {
+      assert.ok(actionAnswer.includes(guide[field]), 'anxiety action ' + field + ' preserved day ' + guide.day);
+    }
+    for (const field of ['lightVersion', 'progressVersion', 'restVersion', 'stopCondition']) {
+      if (guide[field]) assert.ok(lightAnswer.includes(guide[field]), 'anxiety ' + field + ' preserved day ' + guide.day);
+    }
+    assert.ok(successAnswer.includes(guide.successCriterion), 'anxiety success criterion preserved day ' + guide.day);
+    assert.ok(stopAnswer.includes(guide.stopCondition), 'anxiety stop condition preserved day ' + guide.day);
+  }
 });
 
 test('anxiety examples and safety guidance remain specific to anxiety after heading alignment', () => {
