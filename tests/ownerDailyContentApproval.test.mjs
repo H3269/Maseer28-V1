@@ -22,15 +22,22 @@ test('topics outside T01-T14 are not changed by this approval gate', () => {
 });
 
 test('runtime daily page and prepared assistant both enforce the owner gate, including legacy topic identity', async () => {
-  const [ui, assistant, launcher, gate] = await Promise.all([
+  const [ui, assistant, launcher, gate, app] = await Promise.all([
     readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/features/assistant/pageAssistantTurn.js', import.meta.url), 'utf8'),
     readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/features/content/ownerDailyContentApproval.js', import.meta.url), 'utf8'),
+    readFile(new URL('../src/App.jsx', import.meta.url), 'utf8'),
   ]);
   assert.match(ui, /getCanonicalTopicIdForCategory\(problem\) \|\| data\.topic_id/);
   assert.match(ui, /if \(ownerApprovalRequired && !isOwnerApprovedDailyRecord/);
   assert.match(ui, /ownerApprovalPending/);
+  const ownerGateIndex = ui.indexOf('if (ownerApprovalRequired && !isOwnerApprovedDailyRecord');
+  const dailyTitleIndex = ui.indexOf('<h2 id="dayTitle">{parts.title}</h2>');
+  assert.ok(ownerGateIndex >= 0 && dailyTitleIndex > ownerGateIndex,
+    'the owner gate must return before any daily title, exercise, action, or example is rendered');
+  assert.doesNotMatch(app, /DailyExerciseAssistant/,
+    'the legacy daily assistant component must not be mounted as an alternate path');
   assert.match(assistant, /isOwnerApprovedDailyRecord\(\{ topicId: preparedTopicId, recordId: preparedSource\?\.id \}\)/);
   assert.match(assistant, /محتوای این روز هنوز به تأیید مستقیم دکتر عابدی نرسیده است/);
   assert.match(launcher, /const dailyOwnerApprovalPending = Boolean\(dailyContext && dailyOwnerApprovalRequired && !dailyOwnerApproved\)/);
