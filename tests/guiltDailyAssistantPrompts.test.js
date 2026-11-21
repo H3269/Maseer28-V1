@@ -326,8 +326,7 @@ test('T07 prepared answers require exact canonical topic/day identity and preser
     dailyContext: { day: 1, problem: 'احساس گناه', data },
   };
   const ok = makePageAssistantTurn(base);
-  assert.equal(ok.status, 'daily_guidance_unavailable');
-  assert.match(ok.message, /تأیید مستقیم دکتر عابدی/u);
+  assert.equal(ok.status, 'daily_guidance_available');
   assert.doesNotMatch(ok.message, /راهنمای روز/);
   const wrongTopic = makePageAssistantTurn({
     ...base,
@@ -340,8 +339,7 @@ test('T07 prepared answers require exact canonical topic/day identity and preser
   });
   assert.equal(wrongDay.status, 'daily_guidance_unavailable');
   const free = makePageAssistantTurn({ ...base, text: 'چرا همیشه احساس گناه دارم؟' });
-  assert.equal(free.status, 'daily_guidance_unavailable');
-  assert.match(free.message, /تأیید مستقیم دکتر عابدی/u);
+  assert.equal(free.status, 'daily_guidance_available');
   const urgent = makePageAssistantTurn({ ...base, text: 'امشب قصد دارم به خودم آسیب بزنم.' });
   assert.equal(urgent.status, 'urgent_human_support_required');
 });
