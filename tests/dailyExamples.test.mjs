@@ -85,5 +85,5 @@ test('T03 has a distinct, safety-preserving hypothetical example for each of its
   assert.equal(new Set(days.map(day => day.exerciseExample)).size, 28);
   assert.equal(new Set(days.map(day => day.actionExample)).size, 28);
   assert.match(days[17].exerciseExample, /داده موجود|داده ناموجود/u);
-  assert.match(days[20].actionExample, /موقعیت خطرناک|موقعیت ترسناک/u);
+  assert.match(days[20].actionExample, /فرد منتخب امن|ارسال اجباری نیست/u);
 });
