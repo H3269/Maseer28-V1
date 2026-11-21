@@ -510,7 +510,8 @@ test('Persian-only runtime output: all 14 questions × 28 days × 14 topics cont
         for (const question of group.questions) visibleSource.push(question.label, question.value);
       }
       for (const value of visibleSource) {
-        if (latin.test(value)) findings.push(topicId + ' day ' + guide.day + ' source: ' + value.slice(0, 160));
+        const normalized = cleanPreparedAssistantTopicText(value, contentNames[topicId]);
+        if (latin.test(normalized)) findings.push(topicId + ' day ' + guide.day + ' source: ' + normalized.slice(0, 160));
       }
 
       const name = contentNames[topicId];
