@@ -16,6 +16,20 @@ const T11_RUNTIME_METADATA_FIELDS = Object.freeze([
 ]);
 
 
+const T07_RUNTIME_METADATA_FIELDS = Object.freeze([
+  'topic_id', 'objective', 'skill', 'mechanism', 'learning_objective', 'target_skill', 'teaching_point',
+  'exercise_type', 'duration_minutes', 'duration_status', 'risk_level', 'evidence_grade',
+  'source_ids', 'subtopic_ids', 'success_criterion', 'reflection_prompt', 'stop_condition_text',
+  'stop_conditions', 'contraindications', 'when_to_seek_human_support',
+]);
+
+const T08_RUNTIME_METADATA_FIELDS = Object.freeze([
+  'topic_id', 'objective', 'skill', 'mechanism', 'learning_objective', 'target_skill', 'teaching_point',
+  'exercise_type', 'duration_minutes', 'duration_status', 'risk_level', 'evidence_grade',
+  'source_ids', 'subtopic_ids', 'success_criterion', 'reflection_prompt', 'stop_condition_text',
+  'stop_conditions', 'contraindications', 'when_to_seek_human_support',
+]);
+
 const T12_RUNTIME_METADATA_FIELDS = Object.freeze([
   'topic_id', 'objective', 'skill', 'subtopic_ids', 'risk_level',
   'successCriterion', 'reflectionQuestion', 'stopCondition', 'stopConditions',
@@ -66,7 +80,18 @@ export function mergeDailyTextOverrides(content, overrides) {
           && (day?.topic_id === 'T12'
             || /^مرزبندی و نه گفتن-[0-9]{1,2}$/u.test(String(day?.id || ''))
             || /^T12-D[0-9]{1,2}$/i.test(String(day?.id || '')));
-        const metadataFields = isT11Record ? T11_RUNTIME_METADATA_FIELDS : isT12Record ? T12_RUNTIME_METADATA_FIELDS : [];
+        const isT07Record = categoryKey === 'احساس گناه'
+          && (day?.topic_id === 'T07'
+            || /^احساس گناه-[0-9]{1,2}$/u.test(String(day?.id || ''))
+            || /^T07-D[0-9]{1,2}$/i.test(String(day?.id || '')));
+        const isT08Record = categoryKey === 'وابستگی عاطفی'
+          && (day?.topic_id === 'T08'
+            || /^وابستگی عاطفی-[0-9]{1,2}$/u.test(String(day?.id || ''))
+            || /^T08-D[0-9]{1,2}$/i.test(String(day?.id || '')));
+        const metadataFields = isT11Record ? T11_RUNTIME_METADATA_FIELDS
+          : isT12Record ? T12_RUNTIME_METADATA_FIELDS
+            : isT07Record ? T07_RUNTIME_METADATA_FIELDS
+              : isT08Record ? T08_RUNTIME_METADATA_FIELDS : [];
         const runtimeMetadata = Object.fromEntries(metadataFields
           .filter((field) => Object.prototype.hasOwnProperty.call(replacement, field))
           .map((field) => [field, replacement[field]]));
