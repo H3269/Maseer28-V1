@@ -45,8 +45,8 @@ test('all 392 exact T11 prepared questions route through the real page assistant
         assert.equal(result.message.includes(guide.successCriterion), false);
       }
       assert.doesNotMatch(result.message, /پیش‌نمایش برای بازبینی مالک|مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود/u);
-      // The live router must not disclose prepared guide content while the
-      // owner allowlist is empty. Content integrity is covered by the guide tests.
+      // The live router returns the matching prepared answer; content integrity
+      // and topic/day identity are independently covered by the guide tests.
       checked += 1;
     }
   }
@@ -80,7 +80,8 @@ test('T11 assistant refuses mismatched day/topic and all free-form prompts', () 
     text: 'چرا نمی‌توانم این رفتار را کنترل کنم؟',
     dailyContext: contextFor(guide),
   });
-  assert.equal(freeForm.status, 'daily_guidance_available');
+  assert.equal(freeForm.status, 'prepared_question_required');
+  assert.match(freeForm.message, /گفت‌وگوی آزاد برای این موضوع فعال نیست/);
 });
 
 test('explicit safety disclosures preempt T11 prepared questions', () => {
