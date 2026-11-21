@@ -203,7 +203,7 @@ test('T13 launcher exposes only safe-day prompts and labels the topic correctly'
   assert.match(launcher, /isT13DailyPromptContext \? "تنهایی"/u);
 });
 
-test('T13 day 14 is owner-approved and is not blocked by a specialist-review runtime gate', () => {
+test('T13 review metadata cannot override the explicit owner-approval gate', () => {
   const guide=T13_DAILY_ASSISTANT_GUIDES[0], content=dailyContent(guide);
   const legacyContent={...content}; delete legacyContent.topic_id;
   const result=makePageAssistantTurn({screen:'day',text:guide.questions[0].value,dailyContext:{day:1,problem:'تنهایی',data:legacyContent,guidanceData:legacyContent}});
