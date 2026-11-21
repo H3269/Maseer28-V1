@@ -144,6 +144,6 @@ test('T06 has distinct hypothetical examples that do not impose a grief timeline
   }
   assert.equal(new Set(days.map(day => day.exerciseExample)).size, 28);
   assert.equal(new Set(days.map(day => day.actionExample)).size, 28);
-  assert.match(days[17].exerciseExample, /لازم نیست آن را بسازی/u);
+  assert.match(days[17].actionExample, /اگر میلی ندارم|کنار می‌گذارم/u);
   assert.match(days[23].exerciseExample, /مجبور/u);
 });
