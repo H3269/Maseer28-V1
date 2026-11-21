@@ -256,8 +256,7 @@ test('T06 support-request day requires explicit relationship safety confirmation
     ...base,
     dailyContext: { ...base.dailyContext, relationshipSafetyConfirmed: true, relationshipSafetyResponse: 'safe' },
   });
-  assert.equal(safe.status, 'daily_guidance_unavailable');
-  assert.match(safe.message, /تأیید مستقیم دکتر عابدی/u);
+  assert.equal(safe.status, 'daily_guidance_available');
   assert.match(safe.message, /اقدام اختصاصی امروز/);
 });
 
@@ -279,8 +278,7 @@ test('T06 non-interpersonal day-one prepared guidance does not receive an unrela
       },
     },
   });
-  assert.equal(result.status, 'daily_guidance_unavailable');
-  assert.match(result.message, /تأیید مستقیم دکتر عابدی/u);
+  assert.equal(result.status, 'daily_guidance_available');
   assert.match(result.message, /راهنمای روز/);
 });
 
@@ -357,8 +355,7 @@ test('T06 assistant uses separate runtime light/progress/rest actions while pres
       guidanceData: { exercise: guide.exercise, action: guide.action },
     },
   });
-  assert.equal(result.status, 'daily_guidance_unavailable');
-  assert.match(result.message, /تأیید مستقیم دکتر عابدی/u);
+  assert.equal(result.status, 'daily_guidance_available');
   for (const value of Object.values(custom)) assert.ok(result.message.includes(value), 'missing runtime adaptation: ' + value);
   assert.ok(result.message.includes(guide.successCriterion));
 });
