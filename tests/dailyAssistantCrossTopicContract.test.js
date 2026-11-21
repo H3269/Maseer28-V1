@@ -406,12 +406,11 @@ function collectVisibleAssistantStrings(value, key = '', inheritedVisible = fals
 
 test('T01-T14 assistant-visible daily guides and prepared answers contain no leaked Latin identifiers', () => {
   const contentNames = {
-    T09: 'اهمال‌کاری',
-    T10: 'بی‌خوابی و مشکلات خواب',
-    T11: 'عادت‌های تکراری',
-    T12: 'مرزبندی و نه گفتن',
-    T13: 'تنهایی',
-    T14: 'کمبود انگیزه',
+    T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت',
+    T05: 'حسادت', T06: 'غم و سوگ', T07: 'احساس گناه', T08: 'وابستگی عاطفی',
+    T09: 'اهمال‌کاری', T10: 'بی‌خوابی و مشکلات خواب',
+    T11: 'عادت‌های تکراری', T12: 'مرزبندی و نه گفتن',
+    T13: 'تنهایی', T14: 'کمبود انگیزه',
   };
   const latin = /\p{Script=Latin}/u;
   const findings = [];
@@ -461,3 +460,9 @@ test('T01-T14 assistant-visible daily guides and prepared answers contain no lea
   assert.deepEqual(findings, [], 'no Latin letters, internal IDs, code fragments, or placeholders may leak into visible assistant copy');
 });
 
+
+
+test('assistant visible text normalizes known Latin identifiers and clinical acronyms', () => {
+  assert.equal(cleanPreparedAssistantTopicText('پرسش q06 درباره T01'), 'پرسش پرسش درباره خشم');
+  assert.equal(cleanPreparedAssistantTopicText('نشانه PGD و PTSD'), 'نشانه اختلال سوگ طولانی‌مدت و اختلال استرس پس از سانحه');
+});
