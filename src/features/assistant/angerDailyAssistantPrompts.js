@@ -3310,7 +3310,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     answer = answer.replace('اگر رفتار واقعی با میل فرق داشت هر دو را ثبت کن',
       `در روز ${day}، میل به واکنش را از رفتاری که واقعاً انجام دادی یا انجام ندادی جدا ثبت کن؛ عنوان راهنما «${guide.title}» است.`);
     if (answer.length < 350) supplementalGuidance.push(
-      `**تفاوت عملی روز ${day}:** تمرین «${guide.title}» به این هدف می‌پردازد: ${guide.objective}؛ اقدام امروز نیز یک گام جداگانه و اختیاری در همان موضوع است و فقط در شرایط امن اجرا می‌شود.`
+      `**تفاوت عملی روز ${day}:** تمرین «${guide.title}» به این هدف می‌پردازد: ${guide.objective}؛ اقدام امروز نیز در چارچوب عنوان «${guide.title}» یک گام جداگانه و اختیاری است.`
     );
   }
   if (question.kind === 'light_version') {
