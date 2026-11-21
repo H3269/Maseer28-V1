@@ -35,3 +35,12 @@
 - **Verification:** a regression assertion was added for the immediate transcript render guard and state clearing. Runtime tests remain unexecuted in this environment.
 
 - **Expanded test-debt inventory:** repository code search found additional legacy router tests still expecting `daily_guidance_available` for unapproved T01–T14 records, including `pageAssistantTurn.test.js`, `angerPreparedFaqSafetyBypass.test.js`, `preparedOnlyCurrentTopics.test.js`, `jealousyDailyAssistantPrompts.test.js`, `t09RuntimeIntegration.test.js`, `t10`/`t11`/`t12`/`t13`/`t14` assistant tests, grief, guilt, and emotional-dependency suites. These are not yet migrated to the owner-approval contract. Their content-level guide validation should remain, but live-router expectations must assert blocked output until an exact owner approval exists.
+
+
+## 2026-11-21 — migrate legacy live-router expectations
+
+- Updated the live `makePageAssistantTurn` integration expectations in the legacy T01–T14 suites to assert `daily_guidance_unavailable` and the explicit Dr. Abedi approval notice while the exact-record allowlist remains empty.
+- Kept guide-content/unit checks (28-day completeness, 14-question structures, unique answers, topic/day identity, examples, and safety wording) intact where they validate source content independently of live release permission.
+- Updated suites include page router, prepared-only contract, anger FAQ safety bypass, jealousy, T09, T11, T12, grief, guilt, emotional dependency, T13, and T14.
+- **Important verification limit:** changes were committed to `main`, but no local test runner is available through the GitHub connector. The latest commit has not produced a visible Actions run or CI status yet; these tests are not claimed to pass.
+- **Next:** finish auditing remaining router and rendering paths, inspect test diffs for accidental expectation changes, then run full tests/build in an available runner before presenting a live-browser candidate. No owner approval entries have been added; no public release was performed.
