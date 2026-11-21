@@ -31,6 +31,17 @@ export function answerT13DailyPreparedQuestion({ day, message, dailyContent } = 
   let body = question.answer;
   body = replaceExact(body, guide.exercise, String(dailyContent.exercise || guide.exercise).trim());
   body = replaceExact(body, guide.action, String(dailyContent.actionText || dailyContent.action || guide.action).trim());
+  if (question.kind === 'light_version') {
+    body = [
+      `**نسخه سبک تمرین:** ${guide.lightVersion}`,
+      `**نسخه سبک اقدام:** ${guide.lightActionVersion}`,
+      `**نسخه پیشرفت تمرین، فقط در صورت آمادگی:** ${guide.progressVersion}`,
+      `**نسخه پیشرفت اقدام، فقط در صورت آمادگی و امنیت:** ${guide.progressActionVersion}`,
+      `**نسخه استراحت تمرین:** ${guide.restVersion}`,
+      `**نسخه استراحت اقدام:** ${guide.restActionVersion}`,
+      'اگر نسخه سبک هم فشار ایجاد می‌کند، استراحت یا توقف انتخاب معتبر است.',
+    ].join('\\n\\n');
+  }
 
   const heading = `راهنمای روز ${guide.day} تنهایی — ${guide.title}`;
   const framedAnswer = addTeacherStyleFrame(`${heading}\n\n${body}`, { guide, question, topic: 'تنهایی' });
