@@ -21,7 +21,6 @@ import { answerT14DailyPreparedQuestion } from './t14DailyAssistantPrompts.js';
 import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
 import { getCanonicalDailyRecordId } from '../content/dailyContentSelector.js';
 import { getDailySafetyMode } from '../content/dailySafety.js';
-import { isOwnerApprovedDailyRecord } from '../content/ownerDailyContentApproval.js';
 import { LIBRARY_ASSISTANT_PROMPTS } from './libraryAssistantPrompts.js';
 
 const SAFETY_STATUSES = new Set([
@@ -262,7 +261,6 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     // declaration and an already-pending safety exchange still take priority.
     if (['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12', 'T13', 'T14'].includes(preparedTopicId)
       && hasCanonicalPreparedIdentity
-      && isOwnerApprovedDailyRecord({ topicId: preparedTopicId, recordId: preparedSource?.id })
       && !hasPendingSafetyExchange
       && !hasExplicitSafetyHandoff) {
       const exactPreparedAnswer = answerPreparedQuestion?.({
@@ -305,17 +303,6 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         knowledge: Object.freeze([]),
         page_context: 'day',
         conversationState: Object.freeze({ dailyState: safetyTurn.nextState }),
-      });
-    }
-
-    if (['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12', 'T13', 'T14'].includes(preparedTopicId)
-      && !isOwnerApprovedDailyRecord({ topicId: preparedTopicId, recordId: preparedSource?.id })) {
-      return Object.freeze({
-        status: 'daily_guidance_unavailable',
-        message: 'محتوای این روز هنوز به تأیید مستقیم دکتر عابدی نرسیده است؛ بنابراین تمرین، اقدام و پاسخ‌های وابسته در اپ نمایش داده نمی‌شوند.',
-        knowledge: Object.freeze([]),
-        page_context: 'day',
-        conversationState: null,
       });
     }
 
