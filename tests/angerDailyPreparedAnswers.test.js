@@ -70,6 +70,10 @@ test('T01 contains 28 days and 392 individually authored prepared answers', () =
 
 test('T01 prepared answers contain no repeated non-safety sentence of 35+ normalized characters', () => {
   const occurrences = new Map();
+  // This single repeated sentence is an intentional safety caveat: do not enact an example when it is unsafe or unlike the user's circumstances.
+  const approvedSafetyExceptions = new Set([
+    normalizeSentence('اگر شرایط زندگی تو شبیه این نمونه نیست یا گفتن و انجام‌دادن آن امن نیست، این نمونه را اجرا نکن'),
+  ]);
 
   for (const guide of ANGER_DAILY_ASSISTANT_GUIDES) {
     for (const question of guide.questions) {
@@ -78,6 +82,7 @@ test('T01 prepared answers contain no repeated non-safety sentence of 35+ normal
         .replace(/^راهنمای روز \d+ خشم — [^\n]+\n?/u, '');
       const sentences = answer.split(/[.!؟?؛\n]+/).map(normalizeSentence).filter((item) => item.length >= 35);
       for (const sentence of sentences) {
+        if (approvedSafetyExceptions.has(sentence)) continue;
         if (!occurrences.has(sentence)) occurrences.set(sentence, []);
         occurrences.get(sentence).push(`${guide.day}:${question.id}`);
       }
