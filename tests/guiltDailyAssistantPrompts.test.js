@@ -8,6 +8,7 @@ import {
 } from '../src/features/assistant/guiltDailyAssistantPrompts.js';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
+import { mergeDailyTextOverrides } from '../src/features/content/dailyTextOverrides.js';
 
 test('T07 contains 28 complete day guides and 14 fixed questions per day', () => {
   assert.equal(GUILT_DAILY_ASSISTANT_GUIDES.length, 28);
@@ -266,7 +267,7 @@ test('T07 canonical path-content satisfies the v2 draft contract without claimin
     readFile(new URL('../public/assistant/evidence/sources.v1.json', import.meta.url), 'utf8'),
     readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'),
   ]);
-  const content = JSON.parse(contentText);
+  const content = mergeDailyTextOverrides(JSON.parse(contentText), JSON.parse(overlayText));
   const days = content.categories['احساس گناه'].days;
   const topic = JSON.parse(topicText).topics.find(item => item.topic_id === 'T07');
   const subtopics = JSON.parse(subtopicText).subtopics.filter(item => item.topic_id === 'T07');
