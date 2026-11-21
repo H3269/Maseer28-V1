@@ -356,11 +356,11 @@ export function DayScreen({ day, problem, data, record, savedAnswer, previousRec
     </div>}
     <div className="dailyStep">
       <span className="stepNumber">۱</span>
-      <div className="exercise"><b>تمرین امروز</b><DailyText id="dayExercise" label="تمرین امروز" value={parts.exercise} />{data.exerciseExample && <div className="dailyExample" style={{ marginTop: 9, padding: '9px 11px', borderRadius: 10, background: 'rgba(255,255,255,.72)', border: '1px dashed rgba(100,120,110,.35)' }}><b>نمونه فرضی برای فهم تمرین</b><DailyText id="dayExerciseExample" label="نمونه تمرین" value={data.exerciseExample} /></div>}</div>
+      <div className="exercise"><b>تمرین امروز</b><DailyText id="dayExercise" label="تمرین امروز" value={parts.exercise} /></div>
     </div>
     <div className="dailyStep">
       <span className="stepNumber">۲</span>
-      <div className="action"><b>اقدام اختصاصی امروز</b><DailyText id="dayAction" label="اقدام اختصاصی امروز" value={parts.action} />{data.actionExample && <div className="dailyExample" style={{ marginTop: 9, padding: '9px 11px', borderRadius: 10, background: 'rgba(255,255,255,.72)', border: '1px dashed rgba(100,120,110,.35)' }}><b>نمونه فرضی برای فهم اقدام</b><DailyText id="dayActionExample" label="نمونه اقدام" value={data.actionExample} /></div>}</div>
+      <div className="action"><b>اقدام اختصاصی امروز</b><DailyText id="dayAction" label="اقدام اختصاصی امروز" value={parts.action} /></div>
     </div>
     <div className="safetyNote"><span><AppIcon name="info" size={18} /></span><p className="muted" id="dayClosing">{fa(data.closing || '')}</p></div>
     {!entryOpen && <button className="primary heroAction" id="openDailyEntryBtn" onClick={() => setEntryOpen(true)}>انجام دادم؛ ثبت نتیجه امروز</button>}
