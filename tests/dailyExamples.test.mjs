@@ -87,3 +87,23 @@ test('T03 has a distinct, safety-preserving hypothetical example for each of its
   assert.match(days[17].exerciseExample, /داده موجود|داده ناموجود/u);
   assert.match(days[20].actionExample, /فرد منتخب امن|ارسال اجباری نیست/u);
 });
+
+test('T04 has distinct hypothetical examples that separate feeling from harmful behavior', async () => {
+  const [base, overrides] = await Promise.all([
+    readJson('../public/content/path-content.json'),
+    readJson('../public/content/daily-text-overrides.v1.json'),
+  ]);
+  const merged = mergeDailyTextOverrides(base, overrides);
+  const days = merged.categories['نفرت'].days;
+  assert.equal(days.length, 28);
+  for (const day of days) {
+    assert.ok(day.exerciseExample?.trim(), 'T04 day ' + day.day + ' exercise example');
+    assert.ok(day.actionExample?.trim(), 'T04 day ' + day.day + ' action example');
+    assert.match(day.exerciseExample, /^نمونه فرضی/u);
+    assert.match(day.actionExample, /^نمونه فرضی/u);
+  }
+  assert.equal(new Set(days.map(day => day.exerciseExample)).size, 28);
+  assert.equal(new Set(days.map(day => day.actionExample)).size, 28);
+  assert.match(days[9].actionExample, /تمرین را متوقف/u);
+  assert.match(days[21].actionExample, /فاصله/u);
+});
