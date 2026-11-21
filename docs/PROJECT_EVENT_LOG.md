@@ -52,3 +52,5 @@
 - Urgent safety handoff and relationship-safety checks remain independently tested; they must not be disabled by the content-approval gate.
 - The T01–T14 owner allowlist remains empty. No approval was recorded on behalf of Dr. Abedi.
 - **Important verification limitation:** GitHub Actions execution and local Node test execution have not been confirmed. The updated tests are authored but not yet demonstrated passing. The app is not yet ready for the user's live browser test handoff.
+
+- **Test-source repair:** during review, a malformed T11 non-disclosure assertion introduced by an automated text edit was detected and corrected. T11 router tests now explicitly assert that the blocked response does not contain the prepared answer, stop condition, human-support guidance, or other guide content. This source correction is committed; it has not yet been executed by Node.
