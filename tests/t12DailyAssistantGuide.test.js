@@ -124,7 +124,7 @@ test('page assistant routes T12 day-guide answers while preserving the interpers
     },
   });
   assert.equal(adaptedAnswer.status, 'daily_guidance_available');
-  assert.doesNotMatch(adaptedAnswer.message, new RegExp(visibleExercise));
+  assert.ok(adaptedAnswer.message.includes(visibleExercise), 'the answer must use the visible adaptive exercise text');
   const adaptedActionAnswer = makePageAssistantTurn({
     screen: 'day',
     text: guide.questions[2].value,
