@@ -3268,9 +3268,9 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     no_event: guide.restActionVersion,
     can_change: guide.progressActionVersion,
   }[question.kind];
-  let answer = actionAdaptation
-    ? baseAnswer + '\n\n- ' + actionAdaptation
-    : baseAnswer;
+  // Add the action-specific variant after contextual edits so exact source wording
+  // remains intact for auditability and the user can identify the canonical version.
+  let answer = baseAnswer;
   const supplementalGuidance = [];
   if (question.kind === 'no_event') {
     answer = answer
@@ -3372,6 +3372,9 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     supplementalGuidance.push('مدت زمان مشخصی ثبت نشده است؛ بنابراین زمان قطعی یا عدد استانداردی برای این تمرین اعلام نمی‌کنم.');
   }
   if (supplementalGuidance.length) answer += '\n\n' + supplementalGuidance.join('\n\n');
+  if (actionAdaptation && !answer.includes(actionAdaptation)) {
+    answer += '\n\n- ' + actionAdaptation;
+  }
   const dayHeading = `راهنمای روز ${guide.day} خشم — ${guide.title}`;
   let contextualAnswer = answer.includes(dayHeading) ? answer : `${dayHeading}\n\n${answer}`;
   if (!/\*\*[^*]+\*\*/u.test(contextualAnswer)) contextualAnswer = `**پاسخ ${question.id} — ${guide.title}**\n\n${contextualAnswer}`;
