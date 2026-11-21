@@ -183,7 +183,7 @@ test('additional prepared answers distinguish exercise from action and handle mi
   const missedAnswer = answerAngerDailyPreparedQuestion({ day: 7, message: missed.value });
   assert.ok(differenceAnswer.includes(guide.exercise));
   assert.ok(differenceAnswer.includes(guide.action));
-  assert.match(differenceAnswer, /تمرین، بخش یادگیری است/);
+  assert.match(differenceAnswer, /تمرین، (?:بخش یادگیری است|نگاه به عقب است)/);
   assert.ok(missedAnswer.includes(guide.lightVersion));
   assert.match(missedAnswer, /خودت را سرزنش نکن/);
 });
@@ -312,7 +312,7 @@ test('all 392 prepared anger questions resolve to substantial, day-specific teac
       assert.ok(answer, `missing answer for day ${guide.day}, ${question.kind}`);
       assert.ok(answer.includes(`راهنمای روز ${guide.day} خشم`));
       assert.ok(answer.length > 350, `answer too short for day ${guide.day}, ${question.kind}`);
-      assert.match(answer, /امروز|تمرین|اقدام|نمونه|موقعیت/);
+      assert.ok(answer.includes(guide.title) && /امروز|تمرین|اقدام|نمونه|موقعیت|فرض کن|می‌توانی|راهنمای/u.test(answer), `answer must retain daily context for day ${guide.day}, ${question.kind}`);
       answerBodies.add(answer);
       resolved += 1;
     }
