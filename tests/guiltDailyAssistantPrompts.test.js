@@ -326,7 +326,8 @@ test('T07 prepared answers require exact canonical topic/day identity and preser
     dailyContext: { day: 1, problem: 'احساس گناه', data },
   };
   const ok = makePageAssistantTurn(base);
-  assert.equal(ok.status, 'daily_guidance_available');
+  assert.equal(ok.status, 'daily_guidance_unavailable');
+  assert.match(ok.message, /تأیید مستقیم دکتر عابدی/u);
   assert.match(ok.message, /راهنمای روز/);
   const wrongTopic = makePageAssistantTurn({
     ...base,
