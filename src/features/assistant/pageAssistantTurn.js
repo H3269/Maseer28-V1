@@ -168,7 +168,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     if (preparedTopicId === 'T13' && t13SafetyMode === 'blocked' && hasExactT13PreparedQuestion) {
       return Object.freeze({
         status: 'daily_guidance_unavailable',
-        message: 'تمرین این روز تا زمان بازبینی ایمنی تخصصی در دسترس نیست؛ برای جلوگیری از راهنمایی ناایمن، پاسخ روزمحور ارائه نمی‌شود.',
+        message: 'به‌دلیل سطح خطر ثبت‌شده برای این روز، ارائه پاسخ تمرینی در این وضعیت ایمن نیست. اگر خطر فوری وجود دارد، از کمک انسانی و خدمات اورژانسی محل زندگی استفاده کن.',
         knowledge: Object.freeze([]),
         conversationState: null,
       });
