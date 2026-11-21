@@ -1,3 +1,4 @@
+import { cleanPreparedAssistantTopicText } from '../src/features/assistant/teacherStylePreparedAnswer.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
@@ -80,7 +81,7 @@ test('all 392 T06 prepared questions return substantive and meaningfully varied 
           assert.ok(answer.includes(guide.successCriterion) && answer.includes(guide.reflectionQuestion) && answer.includes(guide.exercise) && answer.includes(guide.action));
           break;
         case 'stop':
-          assert.ok(answer.includes(guide.stopCondition) && answer.includes('خدمات اضطراری') && answer.includes(guide.exercise) && answer.includes(guide.action));
+          assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.stopCondition)) && answer.includes('خدمات اضطراری') && answer.includes(guide.exercise) && answer.includes(guide.action));
           break;
         case 'no_event':
           assert.ok(answer.includes(guide.lightVersion) && answer.includes(guide.lightActionVersion) && answer.includes('جبران') && answer.includes(guide.exercise) && answer.includes(guide.action));
@@ -92,7 +93,7 @@ test('all 392 T06 prepared questions return substantive and meaningfully varied 
           assert.ok(answer.includes(guide.exercise) && answer.includes(guide.action));
           break;
         case 'grief_increased':
-          assert.ok(answer.includes(guide.stopCondition) && answer.includes('خدمات اضطراری') && answer.includes(guide.exercise) && answer.includes(guide.action));
+          assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.stopCondition)) && answer.includes('خدمات اضطراری') && answer.includes(guide.exercise) && answer.includes(guide.action));
           break;
         case 'talk_other':
           assert.ok(answer.includes('فرد امن') && answer.includes('مجبور') && answer.includes(guide.action));
