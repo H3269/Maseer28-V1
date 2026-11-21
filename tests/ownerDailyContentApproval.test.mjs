@@ -35,5 +35,7 @@ test('runtime daily page and prepared assistant both enforce the owner gate, inc
   assert.match(assistant, /محتوای این روز هنوز به تأیید مستقیم دکتر عابدی نرسیده است/);
   assert.match(launcher, /const dailyOwnerApprovalPending = Boolean\(dailyContext && dailyOwnerApprovalRequired && !dailyOwnerApproved\)/);
   assert.match(launcher, /const activePromptGroups = dailyOwnerApprovalPending \? \[\] : screen === 'books'/);
+  assert.match(launcher, /\(dailyOwnerApprovalPending \? \[\] : messages\)\.map/);
+  assert.match(launcher, /conversationStateRef\.current = null/);
   assert.match(gate, /const OWNER_APPROVED_DAILY_RECORD_IDS = new Set\(\[\s*\/\/ Add canonical IDs/);
 });
