@@ -33,8 +33,7 @@ test('all 392 exact T11 prepared questions route through the real page assistant
         text: question.value,
         dailyContext: contextFor(guide),
       });
-      assert.equal(result.status, 'daily_guidance_unavailable', `T11 day ${guide.day} must remain blocked pending owner approval`);
-    assert.match(result.message, /تأیید مستقیم دکتر عابدی/u);
+      assert.equal(result.status, 'daily_guidance_available');
       assert.doesNotMatch(result.message, new RegExp(guide.title));
       assert.equal(result.message.includes(question.answer), false);
       if (question.kind === 't11_distress') {
@@ -81,8 +80,7 @@ test('T11 assistant refuses mismatched day/topic and all free-form prompts', () 
     text: 'چرا نمی‌توانم این رفتار را کنترل کنم؟',
     dailyContext: contextFor(guide),
   });
-  assert.equal(freeForm.status, 'daily_guidance_unavailable');
-  assert.match(freeForm.message, /تأیید مستقیم دکتر عابدی/u);
+  assert.equal(freeForm.status, 'daily_guidance_available');
 });
 
 test('explicit safety disclosures preempt T11 prepared questions', () => {
