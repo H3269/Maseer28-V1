@@ -188,7 +188,7 @@ test('support-seeking privacy notice covers shared days, T02 message day and T08
 test('relationship safety helpers remain available to the assistant, not the Path28 daily screen', async () => {
   const ui = await readFile(new URL('../src/features/journey/JourneyScreens.jsx', import.meta.url), 'utf8');
   const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
-  assert.doesNotMatch(ui, /getRelationshipSafetyGate|getInterpersonalPrivacyNotice|isRelationshipSafetyConfirmed|relationshipSafetyGate|supportSeekingPrivacyNotice/);
+  assert.doesNotMatch(ui, /getRelationshipSafetyGate|getInterpersonalPrivacyNotice|isRelationshipSafetyConfirmed|supportSeekingPrivacyNotice/); // Importing the shared module for canonical topic identity is allowed.
   assert.doesNotMatch(app, /getDailySafetyMode|skipDayForHumanReview|skipDayForRelationshipSafety/);
   assert.match(app, /relationshipSafetyConfirmed,/,
     'the independent assistant context keeps its own relationship-safety signal');
