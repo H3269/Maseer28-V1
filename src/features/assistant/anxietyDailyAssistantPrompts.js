@@ -3102,7 +3102,7 @@ export function answerAnxietyDailyPreparedQuestion(args = {}) {
   const day = toAnxietyDayNumber(args.day);
   const guide = ANXIETY_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
   const question = guide?.questions.find((item) => item.value === String(args.message || '').trim());
-  const detailedAnswer = expandDailyAssistantQuestionAnswer(answer, { guide, question, topic: 'اضطراب' });
+  const detailedAnswer = expandDailyAssistantQuestionAnswer(answer, { guide, question, topic: 'اضطراب', omitDuplicateContentPlaceholder: true });
   const safeAnswer = appendDailyAssistantSafetyReminder(
     addTeacherStyleFrame(detailedAnswer, { guide, question, topic: 'اضطراب' }),
     question?.kind,
