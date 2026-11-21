@@ -35,9 +35,10 @@ test('all 392 exact T11 prepared questions route through the real page assistant
       });
       assert.equal(result.status, 'daily_guidance_unavailable', `T11 day ${guide.day} must remain blocked pending owner approval`);
     assert.match(result.message, /تأیید مستقیم دکتر عابدی/u);
-      assert.ok(result.message.includes(guide.title));
+      assert.doesNotMatch(result.message, new RegExp(guide.title));
+      assert.doesNotMatch(result.message, new RegExp(question.answer.replace(/[.*+?^${}()|[\]\\]/g, '\\      assert.ok(result.message.includes(guide.title));
       assert.ok(result.message.includes(`راهنمای روز ${guide.day}`));
-      assert.ok(result.message.includes(question.answer), `day ${guide.day}: ${question.id} retains its T11 answer`);
+      assert.ok(result.message.includes(question.answer), `day ${guide.day}: ${question.id} retains its T11 answer`);')));
       assert.doesNotMatch(result.message, /پیش‌نمایش برای بازبینی مالک|مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود/u);
       if (question.kind === 't11_distress') {
         assert.ok(result.message.includes(guide.stopCondition));
@@ -80,7 +81,8 @@ test('T11 assistant refuses mismatched day/topic and all free-form prompts', () 
     text: 'چرا نمی‌توانم این رفتار را کنترل کنم؟',
     dailyContext: contextFor(guide),
   });
-  assert.equal(freeForm.status, 'prepared_question_required');
+  assert.equal(freeForm.status, 'daily_guidance_unavailable');
+  assert.match(freeForm.message, /تأیید مستقیم دکتر عابدی/u);
 });
 
 test('explicit safety disclosures preempt T11 prepared questions', () => {
