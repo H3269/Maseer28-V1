@@ -18,14 +18,14 @@ const T11_RUNTIME_METADATA_FIELDS = Object.freeze([
 
 const T07_RUNTIME_METADATA_FIELDS = Object.freeze([
   'topic_id', 'objective', 'skill', 'mechanism', 'learning_objective', 'target_skill', 'teaching_point',
-  'exercise_type', 'duration_minutes', 'duration_status', 'risk_level', 'evidence_grade', 'instructions',
+  'exercise_type', 'duration_minutes', 'duration_status', 'risk_level', 'evidence_grade', 'instructions', 'instructions',
   'source_ids', 'subtopic_ids', 'success_criterion', 'reflection_prompt', 'stop_condition_text',
   'stop_conditions', 'contraindications', 'when_to_seek_human_support',
 ]);
 
 const T08_RUNTIME_METADATA_FIELDS = Object.freeze([
   'topic_id', 'objective', 'skill', 'mechanism', 'learning_objective', 'target_skill', 'teaching_point',
-  'exercise_type', 'duration_minutes', 'duration_status', 'risk_level', 'evidence_grade',
+  'exercise_type', 'duration_minutes', 'duration_status', 'risk_level', 'evidence_grade', 'instructions',
   'source_ids', 'subtopic_ids', 'success_criterion', 'reflection_prompt', 'stop_condition_text',
   'stop_conditions', 'contraindications', 'when_to_seek_human_support',
 ]);
