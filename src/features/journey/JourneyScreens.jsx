@@ -9,6 +9,7 @@ import { burdenScoreFromAnswers, evaluatePqhtEligibility, getTrustedNowMs, safeT
 import { exportArchivesZip, triggerBlobDownload } from './archiveExport.js';
 import { selectCanonicalDailyRecord, selectDailyContentCategory } from '../content/dailyContentSelector.js';
 import { isOwnerApprovedDailyRecord, requiresOwnerApproval } from '../content/ownerDailyContentApproval.js';
+import { getCanonicalTopicIdForCategory } from './relationshipSafetyGate.js';
 
 export const SCALE_QUESTIONS = [
   'این مشکل در حال حاضر چقدر شدت دارد؟',
@@ -331,8 +332,9 @@ export function DayScreen({ day, problem, data, record, savedAnswer, previousRec
   }, [entryOpen]);
 
   if (!data) return null;
-  const ownerApprovalRequired = requiresOwnerApproval(data.topic_id);
-  if (ownerApprovalRequired && !isOwnerApprovedDailyRecord({ topicId: data.topic_id, recordId: data.id })) {
+  const resolvedTopicId = data.topic_id || getCanonicalTopicIdForCategory(problem);
+  const ownerApprovalRequired = requiresOwnerApproval(resolvedTopicId);
+  if (ownerApprovalRequired && !isOwnerApprovedDailyRecord({ topicId: resolvedTopicId, recordId: data.id })) {
     return <section className="card dayCard" id="day" aria-live="polite">
       <div className="dayTopline"><span className="badge" id="dayBadge">روز {fa(day)} از ۲۸ · {problem}</span></div>
       <h2 id="dayTitle">این محتوای روز هنوز منتشر نشده است</h2>
