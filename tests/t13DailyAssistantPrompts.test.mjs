@@ -214,6 +214,11 @@ test('T13 specialist-review metadata does not gate content; independent safety r
   assert.equal(getDailySafetyMode(safetyDay),'caution');
   const available=makePageAssistantTurn({screen:'day',text:safetyGuide.questions[0].value,dailyContext:{day:14,problem:'تنهایی',data:safetyDay,guidanceData:safetyDay}});
   assert.equal(available.status, 'daily_guidance_available');
+  const highRiskDay={...safetyDay,risk_level:'high',review_status:'owner_approved'};
+  const safetyBlocked=makePageAssistantTurn({screen:'day',text:safetyGuide.questions[0].value,dailyContext:{day:14,problem:'تنهایی',data:highRiskDay,guidanceData:highRiskDay}});
+  assert.equal(safetyBlocked.status,'daily_guidance_unavailable');
+  assert.match(safetyBlocked.message,/سطح خطر ثبت‌شده/);
+  assert.doesNotMatch(safetyBlocked.message,/تأیید|متخصص|بازبینی/u);
   const emergency=makePageAssistantTurn({screen:'day',text:'دیگه نمی‌کشم. همه‌چی تمومه.',dailyContext:{day:14,problem:'تنهایی',data:safetyDay,guidanceData:safetyDay}});
   assert.equal(emergency.status,'safety_clarification_required',
     'the independent emergency safety route must remain active');
