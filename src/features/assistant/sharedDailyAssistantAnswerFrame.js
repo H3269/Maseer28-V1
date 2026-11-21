@@ -37,7 +37,7 @@ function authoredHeadingMatches(value) {
     const heading = match[1].trim();
     // A bold phone-number notice is safety content, not a section heading.
     if (/شماره|۰۹۱|091/u.test(heading)) continue;
-    matches.push({ index: match.index + match[0].lastIndexOf('**'), label: heading, token: '**' + match[1] + '**' });
+    matches.push({ index: match.index + match[0].indexOf('**'), label: heading, token: '**' + match[1] + '**' });
   }
   return matches;
 }
