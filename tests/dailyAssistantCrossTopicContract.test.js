@@ -61,6 +61,8 @@ const allTopicContracts = [
 ];
 test('all T01-T14 runtime answers include the exact day-specific exercise and action examples', () => {
   const contentNames = {
+    T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت',
+    T05: 'حسادت', T06: 'غم و سوگ', T07: 'احساس گناه', T08: 'وابستگی عاطفی',
     T09: 'اهمال‌کاری',
     T10: 'بی‌خوابی و مشکلات خواب',
     T11: 'عادت‌های تکراری',
@@ -422,7 +424,8 @@ test('T01-T14 assistant-visible daily guides and prepared answers contain no lea
       daysChecked += 1;
       const dayLabel = topicId + ' روز ' + guide.day;
       for (const value of collectVisibleAssistantStrings(guide)) {
-        if (latin.test(value)) findings.push(dayLabel + ' متن منبع: ' + value.slice(0, 180));
+        const visibleValue = cleanPreparedAssistantTopicText(value, contentNames[topicId]);
+        if (latin.test(visibleValue)) findings.push(dayLabel + ' متن منبعِ پس از پاک‌سازی نمایشی: ' + visibleValue.slice(0, 180));
       }
 
       const name = contentNames[topicId];
