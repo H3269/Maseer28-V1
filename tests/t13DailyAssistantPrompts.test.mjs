@@ -44,6 +44,8 @@ test('T13 guide has exactly 28 days and 392 complete answers under the fixed 14-
     assert.ok(guide.questions.every((q) => typeof q.answer === 'string' && q.answer.trim()));
     const stopAnswer = guide.questions.find((q) => q.kind === 'stop').answer;
     assert.match(stopAnswer, new RegExp('^محدودیت ایمنی روز ' + guide.day + ':'), 'stop answer must present the day-specific safety limit without a false conditional wrapper on day ' + guide.day);
+    assert.ok(stopAnswer.includes(guide.stopCondition), 'stop answer must preserve the exact day-specific stop condition on day ' + guide.day);
+    assert.doesNotMatch(stopAnswer, /^محدودیت ایمنی روز \d+::/u, 'stop heading must contain exactly one colon on day ' + guide.day);
     assert.doesNotMatch(stopAnswer, /متوقف کن اگر:\s*اگر/u, 'stop answer must not repeat the conditional opener on day ' + guide.day);
   }
 });
@@ -75,6 +77,20 @@ test('T13 high-overlap candidates were sharpened into loneliness-specific tasks'
   assert.match(day12.actionText, /فعالیتی مشخص و کم‌فشار با زمان محدود/u);
   assert.match(day19.exercise, /نیازی که پشت آن است، رفتار مشخصی که می‌خواهی/u);
   assert.match(day25.actionText, /عامل تسهیل‌کننده را برای تکرار/u);
+});
+
+test('T13 day 24 verifies a source before use instead of repeating day 14 activity-access checks', async () => {
+  const overlay = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+  const days = overlay.categories['تنهایی'].days;
+  const day14 = days.find((day) => day.day === 14);
+  const day24 = days.find((day) => day.day === 24);
+  const guide24 = T13_DAILY_ASSISTANT_GUIDES.find((guide) => guide.day === 24);
+  assert.match(day14.actionText, /زمان|شرایط حضور|پرسیدن شرایط/u);
+  assert.match(day24.actionText, /رسمی‌بودن منبع|شرایط محرمانگی/u);
+  assert.doesNotMatch(day24.actionText, /هزینه و دسترس‌پذیری/u);
+  assert.equal(day24.actionText, guide24.action);
+  assert.match(guide24.questions.find((question) => question.kind === 'action_meaning').answer, /رسمی‌بودن منبع/u);
+  assert.match(guide24.questions.find((question) => question.kind === 'action_example').answer, /اطلاعات شخصی نفرست/u);
 });
 
 test('T13 titles remain distinct from all other topic titles under the shared 0.30 screen', async () => {
