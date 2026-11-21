@@ -124,7 +124,8 @@ export function alignDailyAssistantAnswerHeadings(answer, referenceAnswer, { gui
       index = fallback && fallback.length ? fallback[0] : 0;
       section.content = section.label + ' — ' + section.content;
     }
-    slots[index].content.push(section.content);
+    const preservedContent = section.label === slots[index].label ? section.content : section.label + ' — ' + section.content;
+    slots[index].content.push(preservedContent);
   }
 
   const output = slots.map((slot) => '**' + slot.label + '**' + (slot.content.length ? '\n' + slot.content.join('\n\n') : ''));
