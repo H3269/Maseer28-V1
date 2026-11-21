@@ -3297,8 +3297,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     );
   }
   if (question.kind === 'light_version') {
-    answer = answer.replace('لازم نیست آن را در تعامل واقعی اجرا کنی', `برای روز ${day}، اگر اجرای واقعی مناسب نیست، نسخه سبک را روی کاغذ یا در ذهن مرور کن`);
-    if (!answer.includes('خودت را مجبور نکن')) supplementalGuidance.push(`خودت را مجبور نکن بیشتر از توان امروزت پیش بروی؛ نسخه سبک همین روز این است: ${guide.lightVersion}`);
+    if (!answer.includes('خودت را مجبور نکن')) supplementalGuidance.push(`برای روز ${day}، خودت را مجبور نکن بیشتر از توان امروزت پیش بروی؛ نسخه سبک همین روز این است: ${guide.lightVersion}`);
     if (!answer.includes('شکست محسوب نمی‌شود')) supplementalGuidance.push(`انتخاب نسخه سبک برای روز ${day} شکست محسوب نمی‌شود؛ ${guide.lightVersion}`);
   }
   if (question.kind === 'stop' && !answer.includes('فاصله امن ایجاد کن')) {
