@@ -3272,6 +3272,35 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     ? baseAnswer + '\n\n- ' + actionAdaptation
     : baseAnswer;
   const supplementalGuidance = [];
+  const plainSteps = ANGER_DAILY_PLAIN_LANGUAGE_STEPS[day] || {};
+  if (question.kind === 'exercise_meaning') {
+    if (guide.exercise && !answer.includes(guide.exercise)) supplementalGuidance.push(`**متن تمرین اختصاصی امروز:** ${guide.exercise}`);
+    if (plainSteps.exercise && !answer.includes(plainSteps.exercise)) supplementalGuidance.push(`**گام‌های ساده اجرا:** ${plainSteps.exercise}`);
+    if (!answer.includes('قدم‌به‌قدم انجامش بده')) supplementalGuidance.push('این کار را قدم‌به‌قدم انجامش بده؛ هر بخش را جدا ثبت کن و برای کامل‌کردن آن عجله نکن.');
+  }
+  if (question.kind === 'action_meaning') {
+    if (guide.action && !answer.includes(guide.action)) supplementalGuidance.push(`**اقدام اختصاصی امروز:** ${guide.action}`);
+    if (plainSteps.action && !answer.includes(plainSteps.action)) supplementalGuidance.push(`**گام‌های ساده اقدام:** ${plainSteps.action}`);
+  }
+  if (question.kind === 'exercise_action_difference') {
+    if (guide.exercise && !answer.includes(guide.exercise)) supplementalGuidance.push(`**تمرین امروز:** ${guide.exercise}`);
+    if (guide.action && !answer.includes(guide.action)) supplementalGuidance.push(`**اقدام امروز:** ${guide.action}`);
+  }
+  if (question.kind === 'light_version' && !answer.includes('خودت را مجبور نکن')) {
+    supplementalGuidance.push(`خودت را مجبور نکن بیشتر از توان امروزت پیش بروی؛ نسخه سبک همین روز این است: ${guide.lightVersion}`);
+  }
+  if (question.kind === 'stop' && !answer.includes('فاصله امن ایجاد کن')) {
+    supplementalGuidance.push(`اگر احتمال آسیب وجود دارد، فاصله امن ایجاد کن و از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر. شرط اختصاصی توقف امروز: ${guide.stopCondition}`);
+  }
+  if (question.kind === 'no_event' && !answer.includes('نمونه کم‌فشار قبلی')) {
+    supplementalGuidance.push(`اگر مرور گذشته برایت امن و مناسب است، یک نمونه کم‌فشار قبلی را انتخاب کن؛ در غیر این صورت نبود نمونه را ثبت کن و از نسخه سبک استفاده کن: ${guide.lightVersion}`);
+  }
+  if (question.kind === 'talk_other' && !/لازم نیست[^.\n]*با فرد دیگری صحبت کنی/u.test(answer)) {
+    supplementalGuidance.push(`لازم نیست برای انجام تمرین امروز با فرد دیگری صحبت کنی؛ اقدام روز فقط در صورت امنیت و رضایت آزادانه هر دو نفر مطرح است: ${guide.action}`);
+  }
+  if (question.kind === 'anger_increased' && guide.stopCondition && !answer.includes(guide.stopCondition)) {
+    supplementalGuidance.push(`**شرط توقف اختصاصی امروز:** ${guide.stopCondition}`);
+  }
   if (question.kind === 'action_example'
     && !/اگر شرایط زندگی تو شبیه این نمونه نیست|اگر گفتن یا انجام‌دادن آن امن نیست/u.test(answer)) {
     supplementalGuidance.push('اگر شرایط زندگی تو شبیه این نمونه نیست یا گفتن و انجام‌دادن آن امن نیست، این نمونه را اجرا نکن؛ فقط گزینه امن و متناسب با شرایط خودت را انتخاب کن.');
