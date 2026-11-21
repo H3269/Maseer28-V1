@@ -1,4 +1,5 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { expandDailyAssistantQuestionAnswer } from './dailyAssistantQuestionDetail.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 import { getGriefDaySpecificAnswerGuidance } from './griefDailyAssistantDaySpecificGuidance.js';
@@ -3242,6 +3243,7 @@ export function answerGriefDailyPreparedQuestion(args = {}) {
   if (!answer) return null;
   const guide = GRIEF_DAILY_ASSISTANT_GUIDES.find(x => x.day === toGriefDayNumber(args.day));
   const question = guide?.questions.find(x => x.value === String(args.message || '').trim());
-  const framed = addTeacherStyleFrame(answer, { guide, question, topic: 'غم و سوگ' });
+  const detailedAnswer = expandDailyAssistantQuestionAnswer(answer, { guide, question, topic: 'غم و سوگ' });
+  const framed = addTeacherStyleFrame(detailedAnswer, { guide, question, topic: 'غم و سوگ' });
   return appendDailyAssistantSafetyReminder(framed, question?.kind);
 }
