@@ -107,7 +107,7 @@ test('T12 prepared daily answers are routed from the exercise assistant and reje
   assert.match(mismatch.response, /شناسه موضوع/);
 });
 
-test('page assistant blocks T12 day-guide answers while preserving the interpersonal safety check', () => {
+test('page assistant routes T12 day-guide answers while preserving the interpersonal safety check', () => {
   const guide = T12_DAILY_ASSISTANT_GUIDES[0];
   const data = { id: 'مرزبندی و نه گفتن-01', topic_id: 'T12', day: 1, title: guide.title, exercise: guide.exercise, actionText: guide.action };
   const answer = makePageAssistantTurn({ screen: 'day', text: guide.questions[0].value, dailyContext: { day: 1, problem: 'مرزبندی و نه گفتن', data } });
