@@ -11,8 +11,8 @@ export function applySharedDailyAssistantAnswerFrame(answer, { day, topic, guide
     || firstLine.includes(String(guide.title || ''))
     ? answer.slice(firstLineBreak < 0 ? answer.length : firstLineBreak).trim()
     : answer.trim();
+  // Preserve authored headings inside the answer; they carry topic/day-specific guidance.
   const normalizedBody = body
-    .replace(/^\s*\*\*(?!شماره ۰۹۱۹۰۸۸۹۰۶۲)[^*\n]+\*\*\s*$/gmu, '')
     .replace(/\n{3,}/gu, '\n\n')
     .trim();
 
