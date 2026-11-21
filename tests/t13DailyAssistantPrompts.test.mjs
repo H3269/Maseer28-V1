@@ -42,7 +42,7 @@ test('T13 guide has exactly 28 days and 392 complete answers under the fixed 14-
     assert.equal(guide.evidenceGrade, 'not_assessed'); assert.equal(guide.subtopicMappingStatus, 'proposed_not_registered');
     assert.deepEqual(guide.questions.map((q) => q.label), EXPECTED_QUESTIONS);
     assert.ok(guide.questions.every((q) => typeof q.answer === 'string' && q.answer.trim()));
-    assert.doesNotMatch(guide.questions.find((q) => q.kind === 'stop').answer, /متوقف کن اگر:\\s*اگر/u, 'stop answer must not repeat the conditional opener on day ' + guide.day);
+    assert.doesNotMatch(guide.questions.find((q) => q.kind === 'stop').answer, /متوقف کن اگر:\s*اگر/u, 'stop answer must not repeat the conditional opener on day ' + guide.day);
   }
 });
 
@@ -150,7 +150,7 @@ test('T13 daily variants stay below the T12 cross-topic semantic overlap thresho
   const normalize = value => String(value || '').normalize('NFKC')
     .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
     .replace(/[\\u200c\\u200f\\u200e]/g, ' ')
-    .replace(/[^\\p{L}\\p{N}\\s]/gu, ' ').replace(/\\s+/g, ' ').trim().toLowerCase();
+    .replace(/[^\\p{L}\\p{N}\s]/gu, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
   const stop=new Set(['نسخه','سبک','تمرین','اقدام','فقط','یک','و','یا','را','از','به','در','که','اگر','برای','با','بدون','امروز','فعلا','کن','کنید','بنویس','بنویسی','بنویسید','ثبت','انتخاب','نام','ببر','مشخص','بررسی','انجام','بده','بگیر','دارد','هست','است','میشود','شود','تا','خودت','خود','او','این','آن','همان','هر','هیچ','همه']);
   const tokens=(value)=>new Set(normalize(value).split(' ').filter((token)=>token.length>2&&!stop.has(token)));
   for(const guide of T13_DAILY_ASSISTANT_GUIDES) for(const other of T12_DAILY_ASSISTANT_GUIDES) for(const field of fields) {
