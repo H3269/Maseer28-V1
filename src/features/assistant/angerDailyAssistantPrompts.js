@@ -3306,19 +3306,19 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   if (question.kind === 'no_event' && !answer.includes('نمونه کم‌فشار قبلی')) {
     supplementalGuidance.push(`اگر مرور گذشته برایت امن و مناسب است، یک نمونه کم‌فشار قبلی را انتخاب کن؛ در غیر این صورت نبود نمونه را ثبت کن و از نسخه سبک استفاده کن: ${guide.lightVersion}`);
   }
-  if (question.kind === 'talk_other') {
-    answer = answer.replace('برچسب شخصیت و توهین را حذف کن و اگر بیان اعتراض امن نیست آن را اجرا نکن',
-      'اگر بیان اعتراض امن نیست، از گفت‌وگوی مستقیم صرف‌نظر کن و فقط شرایط را برای خودت ثبت کن؛ نیازی به برچسب‌زدن به هیچ‌کس نیست');
+  if (question.kind === 'talk_other' && guide.action) {
+    answer = answer.replace(guide.action,
+      `برای «${guide.title}»، گفت‌وگو شرط انجام تمرین نیست و فقط در صورت امنیت و رضایت آزادانه هر دو نفر مطرح است.`);
   }
   if (question.kind === 'talk_other' && !/لازم نیست[^.\n]*با فرد دیگری صحبت کنی/u.test(answer)) {
-    supplementalGuidance.push(`لازم نیست برای انجام تمرین امروز با فرد دیگری صحبت کنی؛ اقدام روز فقط در صورت امنیت و رضایت آزادانه هر دو نفر مطرح است: ${guide.action}`);
+    supplementalGuidance.push(`لازم نیست برای انجام تمرین «${guide.title}» با فرد دیگری صحبت کنی؛ می‌توانی آن را به شکل خصوصی و امن انجام بدهی.`);
   }
   if (question.kind === 'anger_increased' && guide.stopCondition && !answer.includes(guide.stopCondition)) {
     supplementalGuidance.push(`**شرط توقف اختصاصی امروز:** ${guide.stopCondition}`);
   }
   if (question.kind === 'action_example'
     && !/اگر شرایط زندگی تو شبیه این نمونه نیست|اگر گفتن یا انجام‌دادن آن امن نیست/u.test(answer)) {
-    supplementalGuidance.push('اگر شرایط زندگی تو شبیه این نمونه نیست یا گفتن و انجام‌دادن آن امن نیست، این نمونه را اجرا نکن؛ فقط گزینه امن و متناسب با شرایط خودت را انتخاب کن.');
+    supplementalGuidance.push(`اگر شرایط زندگی تو شبیه این نمونه نیست یا گفتن و انجام‌دادن آن امن نیست، نمونه روز ${day} را اجرا نکن و فقط گزینه‌ای را انتخاب کن که با شرایط واقعی تو سازگار است.`);
   }
   if (question.kind === 'light_version') {
     for (const [label, value] of [
