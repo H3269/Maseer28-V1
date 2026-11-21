@@ -3271,9 +3271,11 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   const answer = actionAdaptation
     ? baseAnswer + '\n\n- ' + actionAdaptation
     : baseAnswer;
+  const dayHeading = `راهنمای روز ${guide.day} خشم — ${guide.title}`;
+  const contextualAnswer = answer.includes(dayHeading) ? answer : `${dayHeading}\n\n${answer}`;
 
   return appendDailyAssistantSafetyReminder(
-    addTeacherStyleFrame(answer, { guide, question, topic: 'خشم' }),
+    addTeacherStyleFrame(contextualAnswer, { guide, question, topic: 'خشم' }),
     question.kind,
   );
 }
