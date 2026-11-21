@@ -111,7 +111,8 @@ test('page assistant answers the T12 day guide and preserves the interpersonal s
   const guide = T12_DAILY_ASSISTANT_GUIDES[0];
   const data = { id: 'مرزبندی و نه گفتن-01', topic_id: 'T12', day: 1, title: guide.title, exercise: guide.exercise, actionText: guide.action };
   const answer = makePageAssistantTurn({ screen: 'day', text: guide.questions[0].value, dailyContext: { day: 1, problem: 'مرزبندی و نه گفتن', data } });
-  assert.equal(answer.status, 'daily_guidance_available');
+  assert.equal(answer.status, 'daily_guidance_unavailable');
+  assert.match(answer.message, /تأیید مستقیم دکتر عابدی/u);
   assert.ok(answer.message.includes(guide.title));
   const visibleExercise = 'نسخه تطبیقی تمرین روز اول';
   const visibleAction = 'نسخه تطبیقی اقدام روز اول';
@@ -123,7 +124,8 @@ test('page assistant answers the T12 day guide and preserves the interpersonal s
       guidanceData: { title: guide.title, exercise: visibleExercise, action: visibleAction, adaptation: 'نسخه تطبیقی' },
     },
   });
-  assert.equal(adaptedAnswer.status, 'daily_guidance_available');
+  assert.equal(adaptedAnswer.status, 'daily_guidance_unavailable');
+  assert.match(adaptedAnswer.message, /تأیید مستقیم دکتر عابدی/u);
   assert.ok(adaptedAnswer.message.includes(visibleExercise));
   const adaptedActionAnswer = makePageAssistantTurn({
     screen: 'day',
