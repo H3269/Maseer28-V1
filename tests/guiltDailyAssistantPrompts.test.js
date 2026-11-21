@@ -54,7 +54,7 @@ test('T07 assistant guides remain synchronized with the active runtime overlay',
     assert.ok(day, 'missing T07 runtime overlay day ' + guide.day);
     assert.equal(day.title, guide.title);
     assert.equal(day.intro, `هدف: ${guide.objective}\n\nمهارت: ${guide.skill}\n\nچرایی تمرین: ${guide.mechanism}`);
-    assert.equal(day.closing, `معیار موفقیت: ${guide.successCriterion}\nپرسش بازتاب: ${guide.reflectionQuestion}\nشرط توقف: ${guide.stopCondition}`);
+    assert.equal(day.closing, `معیار موفقیت: ${guide.successCriterion}\n\nپرسش بازتاب: ${guide.reflectionQuestion}\n\nشرط توقف/احتیاط: ${guide.stopCondition}`);
     assert.equal(day.exercise, guide.exercise);
     assert.equal(day.actionText, guide.action);
     assert.equal(day.lightExerciseText, 'نسخه سبک تمرین: ' + guide.lightVersion);
