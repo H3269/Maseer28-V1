@@ -113,3 +113,12 @@
 - Execution status: this audit and the source edits have been committed to main, but the Node/browser workflow has not yet been observed to complete. Do not treat the regression test or the test deployment as passing until GitHub Actions reports success.
 - No Telegram/Bale production publication was triggered.
 
+
+## 2026-11-21 — prepared-answer normalization regression hardening
+
+- Centralized the Persian normalization rules in `teacherStylePreparedAnswer.js` to remove duplicate replacement passes and make the visible wording deterministic.
+- Added Persian replacements for remaining known T11 internal/clinical terms, including the subtopic markers and the English form of stimming.
+- Added a focused Node regression test proving that known internal identifiers and abbreviations do not leak into prepared assistant output, and that ordinary Persian answers are not rewritten into a shared template.
+- Commits: `585d9cb` (normalizer), `87e0ea1` (regression test).
+- The push-triggered test deployment workflow is responsible for running the full Node suite, content validators, content-quality audit, production build, and Chromium browser regression suite. This log does not claim those checks passed until their run result is confirmed.
+- No Telegram/Bale production publication was triggered.
