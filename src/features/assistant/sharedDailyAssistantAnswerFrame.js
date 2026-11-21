@@ -54,7 +54,7 @@ function parseSections(text) {
   for (const line of String(text || '').split('\n')) {
     const match = line.match(/^\s*\*\*([^*\n]+)\*\*:?\s*(.*)$/u);
     if (match) {
-      current = { label: match[1].trim().replace(/[:：]$/u, ''), body: [] };
+      current = { label: match[1].trim(), body: [] };
       if (match[2].trim()) current.body.push(match[2].trim());
       result.push(current);
     } else if (current) current.body.push(line);
