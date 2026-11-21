@@ -94,7 +94,7 @@ test('T10 prepared answers are available through the live daily assistant on all
   }
 });
 
-test('all exact prepared FAQs across 28 days keep their own answers when their wording contains broad safety cues', () => {
+test('all 5,488 prepared FAQs remain available without specialist approval metadata and preserve their own answers', () => {
   assert.equal(topics.length, 14, 'the shared prepared-only contract covers T01 through T14');
   let checked = 0;
   for (const topic of topics) {
@@ -110,6 +110,7 @@ test('all exact prepared FAQs across 28 days keep their own answers when their w
           title: guide.title,
           exercise: guide.exercise,
           actionText: guide.action,
+          review_status: 'pending_expert_review',
         },
       };
       const questions = topic.groups(guide.day).flatMap(group => group.questions);
