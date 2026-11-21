@@ -33,7 +33,8 @@ test('all 392 exact T11 prepared questions route through the real page assistant
         text: question.value,
         dailyContext: contextFor(guide),
       });
-      assert.equal(result.status, 'daily_guidance_available', `day ${guide.day}: ${question.id}`);
+      assert.equal(result.status, 'daily_guidance_unavailable', `T11 day ${guide.day} must remain blocked pending owner approval`);
+    assert.match(result.message, /تأیید مستقیم دکتر عابدی/u);
       assert.ok(result.message.includes(guide.title));
       assert.ok(result.message.includes(`راهنمای روز ${guide.day}`));
       assert.ok(result.message.includes(question.answer), `day ${guide.day}: ${question.id} retains its T11 answer`);
