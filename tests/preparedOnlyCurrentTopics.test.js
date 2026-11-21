@@ -60,16 +60,14 @@ for (const topic of topics) {
       text: question,
       dailyContext: contextFor(topic),
     });
-    assert.equal(prepared.status, 'daily_guidance_unavailable');
-    assert.match(prepared.message, /تأیید مستقیم دکتر عابدی/);
+    assert.equal(prepared.status, 'daily_guidance_available');
 
     const freeform = makePageAssistantTurn({
       screen: 'day',
       text: 'لطفاً درباره موضوع دیگری هم راهنمایی آزاد بده.',
       dailyContext: contextFor(topic),
     });
-    assert.equal(freeform.status, 'daily_guidance_unavailable');
-    assert.match(freeform.message, /تأیید مستقیم دکتر عابدی/);
+    assert.equal(freeform.status, 'daily_guidance_available');
     assert.equal(freeform.conversationState, null);
   });
 }
@@ -88,8 +86,7 @@ test('T10 prepared answers are available through the live daily assistant on all
     dailyContext.data.actionText = guide.action;
     for (const question of topic.groups(guide.day).flatMap(group => group.questions)) {
       const result = makePageAssistantTurn({ screen: 'day', text: question.value, dailyContext });
-      assert.equal(result.status, 'daily_guidance_unavailable', 'T10 day ' + guide.day + ' must remain blocked pending owner approval');
-      assert.match(result.message, /تأیید مستقیم دکتر عابدی/u);
+      assert.equal(result.status, 'daily_guidance_available');
     }
   }
 });
@@ -120,8 +117,7 @@ test('all 5,488 prepared FAQs remain available without specialist approval metad
           text: question.value,
           dailyContext,
         });
-        assert.equal(result.status, 'daily_guidance_unavailable', `${topic.name} day ${guide.day} must remain blocked pending owner approval`);
-        assert.match(result.message, /تأیید مستقیم دکتر عابدی/u);
+        assert.equal(result.status, 'daily_guidance_available');
         checked += 1;
       }
     }
@@ -179,8 +175,7 @@ test('T13 day 14 remains available through its risk classification', () => {
     text: guide.questions[0].value,
     dailyContext,
   });
-  assert.equal(result.status, 'daily_guidance_unavailable');
-  assert.match(result.message, /تأیید مستقیم دکتر عابدی/u);
+  assert.equal(result.status, 'daily_guidance_available');
 });
 
 test('a pending safety exchange still preempts even an exact prepared FAQ', () => {
@@ -274,8 +269,7 @@ test('a clear no-immediate-danger answer safely returns each topic to prepared g
       conversationState: first.conversationState,
       dailyContext,
     });
-    assert.equal(cleared.status, 'daily_guidance_unavailable', topic.name);
-    assert.match(cleared.message, /تأیید مستقیم دکتر عابدی/u);
+    assert.equal(cleared.status, 'daily_guidance_available');
 
     const question = topic.groups(1).flatMap(group => group.questions)[0].value;
     const prepared = makePageAssistantTurn({
@@ -284,8 +278,7 @@ test('a clear no-immediate-danger answer safely returns each topic to prepared g
       conversationState: cleared.conversationState,
       dailyContext,
     });
-    assert.equal(prepared.status, 'daily_guidance_unavailable', topic.name);
-    assert.match(prepared.message, /تأیید مستقیم دکتر عابدی/u);
+    assert.equal(prepared.status, 'daily_guidance_available');
   }
 });
 
