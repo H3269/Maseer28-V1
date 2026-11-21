@@ -289,8 +289,13 @@ test('a clear no-immediate-danger answer safely returns each topic to prepared g
       conversationState: cleared.conversationState,
       dailyContext,
     });
-    assert.equal(prepared.status, 'daily_guidance_available', topic.name);
-    assert.match(prepared.message, /راهنمای روز/);
+    if (topic.id === 'T10') {
+      assert.equal(prepared.status, 'daily_guidance_unavailable', topic.name);
+      assert.match(prepared.message, /پیش‌نویس/u);
+    } else {
+      assert.equal(prepared.status, 'daily_guidance_available', topic.name);
+      assert.match(prepared.message, /راهنمای روز/);
+    }
   }
 });
 
