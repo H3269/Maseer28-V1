@@ -3269,7 +3269,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     can_change: guide.progressActionVersion,
   }[question.kind];
   const answer = actionAdaptation
-    ? baseAnswer + '\n\n**اگر پرسشت درباره اقدام اختصاصی است:**\n' + actionAdaptation
+    ? baseAnswer + '\n\n- ' + actionAdaptation
     : baseAnswer;
 
   return appendDailyAssistantSafetyReminder(
