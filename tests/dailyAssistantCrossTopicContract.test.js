@@ -413,7 +413,7 @@ test('T01-T14 assistant-visible daily guides and prepared answers contain no lea
     T13: 'تنهایی',
     T14: 'کمبود انگیزه',
   };
-  const latin = /\\p{Script=Latin}/u;
+  const latin = /\p{Script=Latin}/u;
   const findings = [];
   let daysChecked = 0;
   let runtimeAnswersChecked = 0;
@@ -449,7 +449,7 @@ test('T01-T14 assistant-visible daily guides and prepared answers contain no lea
           const answer = answerPrepared({ day: guide.day, message: question.value, dailyContent });
           if (typeof answer === 'string' && answer.trim()) {
             runtimeAnswersChecked += 1;
-            if (latin.test(answer)) findings.push(dayLabel + ' پاسخ آماده ' + question.id + ': ' + answer.match(/[^\\n]*\\p{Script=Latin}[^\\n]*/u)?.[0]?.slice(0, 220));
+            if (latin.test(answer)) findings.push(dayLabel + ' پاسخ آماده ' + question.id + ': ' + answer.match(/[^\\n]*\p{Script=Latin}[^\\n]*/u)?.[0]?.slice(0, 220));
           }
         }
       }
