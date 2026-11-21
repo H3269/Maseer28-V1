@@ -3272,6 +3272,23 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     ? baseAnswer + '\n\n- ' + actionAdaptation
     : baseAnswer;
   const supplementalGuidance = [];
+  if (question.kind === 'no_event') {
+    answer = answer
+      .replace('برای آزمودنش موقعیتی نساز و هیچ گفت‌وگویی را به خودت یا دیگری تحمیل نکن', `برای آزمودن تمرین روز ${day} موقعیتی نساز و هیچ گفت‌وگویی را به خودت یا دیگری تحمیل نکن`)
+      .replace('برای انجام تمرین عمداً خودت را وارد بحث یا موقعیت خشم‌آور نکن', `در روز ${day} برای انجام تمرین عمداً وارد بحث یا موقعیت خشم‌آور نشو`)
+      .replace('نبود نمونه واقعی را همان‌طور که هست ثبت کن', `اگر در روز ${day} نمونه واقعی پیدا نکردی، نبود آن را همان‌طور که هست ثبت کن`)
+      .replace('اگر مرور گذشته برایت امن و مناسب است، یک نمونه کم‌فشار قبلی را انتخاب کن', `اگر مرور گذشته برای «${guide.title}» در روز ${day} امن و مناسب است، یک نمونه کم‌فشار قبلی را انتخاب کن`);
+  }
+  if (question.kind === 'anger_increased' || question.kind === 'stop') {
+    answer = answer
+      .replace('از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر', `در روز ${day} از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر`)
+      .replace('اگر احتمال آسیب فوری به خودت یا فرد دیگری وجود دارد، از خدمات اضطراری محل زندگی کمک فوری بگیر', `اگر در روز ${day} احتمال آسیب فوری به خودت یا فرد دیگری وجود دارد، از خدمات اضطراری محل زندگی کمک فوری بگیر`);
+  }
+  if (question.kind === 'talk_other') {
+    answer = answer
+      .replace('می‌توانی آن را به شکل خصوصی و امن انجام بدهی', `می‌توانی تمرین «${guide.title}» را به شکل خصوصی و امن انجام بدهی`)
+      .replace('اگر گفت‌وگو امن یا اختیاری نیست، لازم نیست آن را انجام بدهی', `اگر گفت‌وگو درباره «${guide.title}» امن یا اختیاری نیست، لازم نیست آن را انجام بدهی`);
+  }
   const plainSteps = ANGER_DAILY_PLAIN_LANGUAGE_STEPS[day] || {};
   if (question.kind === 'exercise_meaning') {
     if (guide.objective && !answer.includes(guide.objective)) supplementalGuidance.push(`**هدف امروز:** ${guide.objective}`);
@@ -3304,7 +3321,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     supplementalGuidance.push(`اگر در روز ${day} احتمال آسیب وجود دارد، فاصله امن ایجاد کن، از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر و محدودیت اختصاصی این روز را رعایت کن: ${guide.stopCondition}.`);
   }
   if (question.kind === 'no_event' && !answer.includes('نمونه کم‌فشار قبلی')) {
-    supplementalGuidance.push(`اگر مرور گذشته برایت امن و مناسب است، یک نمونه کم‌فشار قبلی را انتخاب کن؛ در غیر این صورت نبود نمونه را ثبت کن و از نسخه سبک استفاده کن: ${guide.lightVersion}`);
+    supplementalGuidance.push(`اگر مرور گذشته برای «${guide.title}» در روز ${day} امن و مناسب است، یک نمونه کم‌فشار قبلی را انتخاب کن؛ در غیر این صورت نبود نمونه را ثبت کن و از نسخه سبک استفاده کن: ${guide.lightVersion}`);
   }
   if (question.kind === 'talk_other' && guide.action) {
     answer = answer.replace(guide.action,
