@@ -29,7 +29,7 @@ test('T10 guide remains explicitly draft-only and covers 28 days with 392 prepar
     assert.ok(record.stopConditions.every((condition) => answer(record, 'q07').includes(condition)));
     assert.ok(answer(record, 'q11').includes(record.stopCondition));
     assert.ok(answer(record, 'q11').includes('خواب') || answer(record, 'q11').includes('خواب‌آلودگی') || answer(record, 'q11').includes('بیدار'));
-    assert.match(answer(record, 'q14'), /[۰-۹0-9]+\\s*(?:دقیقه|دقیقهٔ)/u);
+    assert.match(answer(record, 'q14'), /[۰-۹0-9]+\s*(?:دقیقه|دقیقهٔ)/u);
     assert.ok(answer(record, 'q14').includes('تخمینی') || answer(record, 'q14').includes('غیرالزامی'));
     allAnswers.push(...record.questions.map((question) => question.answer));
   }
