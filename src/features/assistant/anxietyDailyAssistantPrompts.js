@@ -1,5 +1,7 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 import { applySharedDailyAssistantAnswerFrame } from './sharedDailyAssistantAnswerFrame.js';
+import { alignDailyAssistantAnswerHeadings } from './sharedDailyAssistantAnswerFrame.js';
+import { ANGER_DAILY_ASSISTANT_GUIDES, answerAngerDailyPreparedQuestion } from './angerDailyAssistantPrompts.js';
 import { expandDailyAssistantQuestionAnswer } from './dailyAssistantQuestionDetail.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
@@ -3105,10 +3107,20 @@ export function answerAnxietyDailyPreparedQuestion(args = {}) {
     addTeacherStyleFrame(detailedAnswer, { guide, question, topic: 'اضطراب' }),
     question?.kind,
   );
-  return applySharedDailyAssistantAnswerFrame(safeAnswer, {
+  const framedAnswer = applySharedDailyAssistantAnswerFrame(safeAnswer, {
     day,
     topic: 'اضطراب',
     guide,
     question,
   });
+  const angerGuide = ANGER_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
+  const angerQuestion = angerGuide?.questions.find((item) => item.id === question?.id);
+  const referenceAnswer = angerGuide && angerQuestion
+    ? answerAngerDailyPreparedQuestion({
+        day,
+        message: angerQuestion.value,
+        dailyContent: { exercise: angerGuide.exercise, actionText: angerGuide.action },
+      })
+    : null;
+  return alignDailyAssistantAnswerHeadings(framedAnswer, referenceAnswer);
 }
