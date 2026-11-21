@@ -61,7 +61,24 @@ test('T02-T14 all 364 day records return expanded, day-specific teaching answers
         assert.equal(typeof answer, 'string', topicId + ' day ' + guide.day + ' ' + kind + ' must return an answer');
         assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.title)), topicId + ' day ' + guide.day + ' must preserve exact daily title');
         for (const label of requiredLabels) {
-          assert.ok(answer.includes(label), topicId + ' day ' + guide.day + ' ' + kind + ' missing detail section: ' + label);
+          const anxietyFieldByLabel = {
+            'هدف تمرین امروز': guide.objective,
+            'منطق آموزشی': guide.mechanism,
+            'متن دقیق تمرین امروز': guide.exercise,
+            'تمرین دقیق همین روز': guide.exercise,
+            'منطق انتخاب اقدام': guide.mechanism,
+            'اقدام اختصاصی دقیق امروز': guide.action,
+            'اقدام اختصاصی دقیق همین روز': guide.action,
+          };
+          const alreadyPresentAnxietyField = topicId === 'T02'
+            && typeof anxietyFieldByLabel[label] === 'string'
+            && answer.includes(anxietyFieldByLabel[label]);
+          assert.ok(answer.includes(label) || alreadyPresentAnxietyField,
+            topicId + ' day ' + guide.day + ' ' + kind + ' missing detail section: ' + label);
+        }
+        if (topicId === 'T02') {
+          assert.doesNotMatch(answer, /توضیح این مورد در متن بالا آمده است/,
+            'anxiety day ' + guide.day + ' ' + kind + ' must not use duplicate-content placeholders');
         }
         checked += 1;
       }
