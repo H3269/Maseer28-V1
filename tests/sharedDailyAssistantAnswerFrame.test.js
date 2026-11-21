@@ -8,6 +8,8 @@ import {
   ANXIETY_DAILY_ASSISTANT_GUIDES,
   answerAnxietyDailyPreparedQuestion,
 } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
+import { expandDailyAssistantQuestionAnswer } from '../src/features/assistant/dailyAssistantQuestionDetail.js';
+import { alignDailyAssistantAnswerHeadings } from '../src/features/assistant/sharedDailyAssistantAnswerFrame.js';
 
 const headingLabels = (answer) => {
   const frame = '**توضیح و راهنمای امروز**';
@@ -98,4 +100,52 @@ test('anxiety examples and safety guidance remain specific to anxiety after head
     assert.ok(actionAnswer.includes(guide.actionExample), 'anxiety action example day ' + guide.day);
     assert.ok(safetyAnswer.includes(guide.stopCondition), 'anxiety stop condition day ' + guide.day);
   }
+});
+
+
+test('already-present anxiety exercise text is not repeated as a placeholder heading', () => {
+  const exercise = 'یک تمرین اختصاصی برای بررسی نگرانی روزانه.';
+  const answer = '**منظور از تمرین امروز چیست؟**\\n' + exercise;
+  const expanded = expandDailyAssistantQuestionAnswer(answer, {
+    guide: { day: 1, exercise },
+    question: { kind: 'exercise_meaning' },
+  });
+  assert.equal(expanded.includes('توضیح این مورد در متن بالا آمده است'), false);
+  assert.equal(expanded.split(exercise).length - 1, 1);
+});
+
+test('semantic heading alignment replaces a matching anxiety legacy label without repeating it in prose', () => {
+  const frame = '**توضیح و راهنمای امروز**';
+  const anxietyBody = [
+    '**متن دقیق تمرین امروز**',
+    'تمرین اختصاصی اضطراب برای روز جاری.',
+    '**معیار کافی‌بودن تمرین**',
+    'معیار اختصاصی اضطراب.',
+  ].join('\\n\\n');
+  const angerBody = [
+    '**تمرین امروز**',
+    'متن مرجع خشم.',
+    '**معیار موفقیت**',
+    'معیار مرجع خشم.',
+  ].join('\\n\\n');
+  const aligned = alignDailyAssistantAnswerHeadings(frame + '\\n\\n' + anxietyBody, frame + '\\n\\n' + angerBody, {
+    guide: { day: 1 },
+    question: { kind: 'exercise_meaning' },
+  });
+  assert.match(aligned, /تمرین اختصاصی اضطراب برای روز جاری/);
+  assert.match(aligned, /معیار اختصاصی اضطراب/);
+  assert.doesNotMatch(aligned, /متن دقیق تمرین امروز —/);
+  assert.doesNotMatch(aligned, /معیار کافی‌بودن تمرین —/);
+  assert.match(aligned, /\\*\\*تمرین امروز\\*\\*/);
+  assert.match(aligned, /\\*\\*معیار موفقیت\\*\\*/);
+});
+
+test('unmatched anxiety legacy section labels and their authored content remain preserved', () => {
+  const frame = '**توضیح و راهنمای امروز**';
+  const aligned = alignDailyAssistantAnswerHeadings(
+    frame + '\\n\\n**یادداشت اختصاصی اضطراب**\\nمحتوای ویژه اضطراب.',
+    frame + '\\n\\n**تمرین امروز**\\nمتن مرجع.',
+    { guide: { day: 1 }, question: { kind: 'exercise_meaning' } },
+  );
+  assert.match(aligned, /یادداشت اختصاصی اضطراب — محتوای ویژه اضطراب/);
 });
