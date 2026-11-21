@@ -3344,7 +3344,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   }
   if (question.kind === 'talk_other'
     && !/آزادانه رضایت داشته باشند/u.test(answer)) {
-    supplementalGuidance.push('گفت‌وگو فقط وقتی مطرح است که هر دو نفر آزادانه رضایت داشته باشند؛ اگر گفت‌وگو امن یا اختیاری نیست، لازم نیست آن را انجام بدهی.');
+    supplementalGuidance.push(`گفت‌وگو درباره «${guide.title}» فقط وقتی مطرح است که هر دو نفر آزادانه رضایت داشته باشند؛ اگر گفت‌وگو امن یا اختیاری نیست، لازم نیست آن را انجام بدهی.`);
   }
 
   if (question.kind === 'no_event'
