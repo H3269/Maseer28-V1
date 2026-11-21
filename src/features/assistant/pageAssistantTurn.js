@@ -13,7 +13,7 @@ import { answerGriefDailyPreparedQuestion } from './griefDailyAssistantPrompts.j
 import { answerGuiltDailyPreparedQuestion } from './guiltDailyAssistantPrompts.js';
 import { answerEmotionalDependencyDailyPreparedQuestion } from './emotionalDependencyDailyAssistantPrompts.js';
 import { answerT09DailyPreparedQuestion } from './t09DailyAssistantPrompts.js';
-import { answerT10DailyPreparedQuestion } from './t10DailyAssistantPrompts.js';
+import { answerT10DailyPreparedQuestion, T10_DAILY_ASSISTANT_RUNTIME_ELIGIBLE } from './t10DailyAssistantPrompts.js';
 import { answerT11DailyPreparedQuestion } from './t11DailyAssistantPrompts.js';
 import { answerT12DailyPreparedQuestion } from './t12DailyAssistantPrompts.js';
 import { answerT13DailyPreparedQuestion } from './t13DailyAssistantPrompts.js';
@@ -250,6 +250,16 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
           : griefRelationshipGate.question + '\n\n' + griefRelationshipGate.disclaimer,
         knowledge: Object.freeze([]),
         page_context: 'day',
+        conversationState: null,
+      });
+    }
+
+    if (preparedTopicId === 'T10' && !T10_DAILY_ASSISTANT_RUNTIME_ELIGIBLE
+      && hasCanonicalPreparedIdentity && !hasPendingSafetyExchange && !hasExplicitSafetyHandoff) {
+      return Object.freeze({
+        status: 'daily_guidance_unavailable',
+        message: 'راهنمای این موضوع هنوز در وضعیت پیش‌نویس و خارج از نسخه قابل‌استفاده است؛ تا تکمیل بازبینی علمی و ایمنی، پاسخ روزمحور آن فعال نمی‌شود.',
+        knowledge: Object.freeze([]),
         conversationState: null,
       });
     }
