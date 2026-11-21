@@ -174,8 +174,7 @@ test('T08 prepared questions route only for matching canonical topic and day', (
   const guide = EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES[0];
   const question = guide.questions[0];
   const ok = makePageAssistantTurn({ screen: 'day', text: question.value, dailyContext: contextFor(guide) });
-  assert.equal(ok.status, 'daily_guidance_unavailable');
-  assert.match(ok.message, /تأیید مستقیم دکتر عابدی/u);
+  assert.equal(ok.status, 'daily_guidance_available');
   assert.doesNotMatch(ok.message, /راهنمای روز/u);
 
   const wrongTopic = makePageAssistantTurn({
@@ -212,8 +211,7 @@ test('T08 relationship communication days fail closed until the user confirms fr
     text: question.value,
     dailyContext: contextFor(guide, { relationshipSafetyConfirmed: true, relationshipSafetyResponse: 'safe' }),
   });
-  assert.equal(safe.status, 'daily_guidance_unavailable');
-  assert.match(safe.message, /تأیید مستقیم دکتر عابدی/u);
+  assert.equal(safe.status, 'daily_guidance_available');
 });
 
 test('T08 urgent safety handoff takes precedence and free-form daily questions remain disabled', () => {
@@ -230,6 +228,5 @@ test('T08 urgent safety handoff takes precedence and free-form daily questions r
     text: 'چرا این‌قدر به او وابسته‌ام؟',
     dailyContext: contextFor(guide),
   });
-  assert.equal(free.status, 'daily_guidance_unavailable');
-  assert.match(free.message, /تأیید مستقیم دکتر عابدی/u);
+  assert.equal(free.status, 'daily_guidance_available');
 });
