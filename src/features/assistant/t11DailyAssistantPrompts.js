@@ -1,6 +1,7 @@
 import GUIDE from './t11DailyAssistantGuide.v1.json' with { type: 'json' };
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { expandDailyAssistantQuestionAnswer } from './dailyAssistantQuestionDetail.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 
 const QUESTION_GROUPS = Object.freeze([
@@ -135,6 +136,7 @@ export function answerT11DailyPreparedQuestion({ day, message, dailyContent } = 
       return null;
   }
 
+  body = expandDailyAssistantQuestionAnswer(body, { guide, question, topic: 'عادت‌های تکراری' });
   const answer = `${buildT11Heading(guide)}\n\n${body}`;
   return appendDailyAssistantSafetyReminder(
     addTeacherStyleFrame(answer, { guide, question, topic: 'عادت‌های تکراری' }),
