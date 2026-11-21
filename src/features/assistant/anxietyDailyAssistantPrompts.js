@@ -1,4 +1,5 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { expandDailyAssistantQuestionAnswer } from './dailyAssistantQuestionDetail.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 // Daily prepared guidance for the T02 anxiety path. Content is grounded in the 28-day content package and active runtime overrides.
@@ -3098,5 +3099,6 @@ export function answerAnxietyDailyPreparedQuestion(args = {}) {
   const day = toAnxietyDayNumber(args.day);
   const guide = ANXIETY_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
   const question = guide?.questions.find((item) => item.value === String(args.message || '').trim());
-  return appendDailyAssistantSafetyReminder(addTeacherStyleFrame(answer, { guide, question, topic: 'اضطراب' }), question?.kind);
+  const detailedAnswer = expandDailyAssistantQuestionAnswer(answer, { guide, question, topic: 'اضطراب' });
+  return appendDailyAssistantSafetyReminder(addTeacherStyleFrame(detailedAnswer, { guide, question, topic: 'اضطراب' }), question?.kind);
 }
