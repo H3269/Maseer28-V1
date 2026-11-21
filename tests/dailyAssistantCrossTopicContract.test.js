@@ -54,7 +54,7 @@ const allTopicContracts = [
   ...topics,
   ['T10', T10_DAILY_ASSISTANT_GUIDES, getT10DailyAssistantPromptGroups, answerT10DailyPreparedQuestion],
   ['T11', T11_DAILY_ASSISTANT_GUIDES, getT11DailyAssistantPromptGroups, answerT11DailyPreparedQuestion],
-  ['T12', T12_DAILY_ASSISTANT_GUIDES, getT12DailyAssistantPromptGroups, answerT12DailyAssistantPreparedQuestion],
+  ['T12', T12_DAILY_ASSISTANT_GUIDES, getT12DailyAssistantPromptGroups, answerT12DailyPreparedQuestion],
   ['T13', T13_DAILY_ASSISTANT_GUIDES, getT13DailyAssistantPromptGroups, answerT13DailyPreparedQuestion],
   ['T14', T14_DAILY_ASSISTANT_GUIDES, getT14DailyAssistantPromptGroups, answerT14DailyPreparedQuestion],
 ];
