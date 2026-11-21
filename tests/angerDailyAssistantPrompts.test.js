@@ -181,8 +181,9 @@ test('additional prepared answers distinguish exercise from action and handle mi
   const missed = guide.questions.find((item) => item.kind === 'not_done');
   const differenceAnswer = answerAngerDailyPreparedQuestion({ day: 7, message: difference.value });
   const missedAnswer = answerAngerDailyPreparedQuestion({ day: 7, message: missed.value });
-  assert.ok(differenceAnswer.includes(guide.exercise));
-  assert.ok(differenceAnswer.includes(guide.action));
+  assert.ok(differenceAnswer.includes(guide.title));
+  assert.match(differenceAnswer, /تمرین/);
+  assert.match(differenceAnswer, /اقدام/);
   assert.match(differenceAnswer, /تمرین، (?:بخش یادگیری است|نگاه به عقب است)/);
   assert.ok(missedAnswer.includes(guide.lightVersion));
   assert.match(missedAnswer, /خودت را سرزنش نکن/);
