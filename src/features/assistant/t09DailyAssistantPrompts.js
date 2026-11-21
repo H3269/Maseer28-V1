@@ -46,7 +46,7 @@ export function answerT09DailyPreparedQuestion({ day, message, dailyContent } = 
 
   switch (question.kind) {
     case 'exercise_meaning':
-      body += `\n\n**منطق آموزشی امروز:** ${guide.mechanism}\n\n**معیار پایان:** ${guide.successCriterion}\n**برای بازبینی:** ${guide.reflectionPrompt || 'آیا کار به‌اندازه کافی مشخص شده است؟'}`;
+      body += `\n\n**هدف امروز:** ${guide.objective}\n**منطق آموزشی امروز:** ${guide.mechanism}\n\n**معیار پایان:** ${guide.successCriterion}\n**برای بازبینی:** ${guide.reflectionPrompt || 'آیا کار به‌اندازه کافی مشخص شده است؟'}`;
       break;
     case 'exercise_example':
       body += `\n\n**تمرین واقعی همین روز:** ${exercise}\n\nمثال فقط برای روشن‌شدن روش است؛ لازم نیست تجربه‌ات شبیه آن باشد یا موقعیتی تازه بسازی.`;
