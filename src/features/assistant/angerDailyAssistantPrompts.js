@@ -3288,6 +3288,17 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   if (question.kind === 'stop' && guide.stopCondition && !answer.includes(guide.stopCondition)) {
     supplementalGuidance.push(`**شرط توقف اختصاصی امروز:** ${guide.stopCondition}`);
   }
+  if (question.kind === 'not_done' && guide.lightVersion && !answer.includes(guide.lightVersion)) {
+    supplementalGuidance.push(`**بازگشت کوچک، فقط در صورت تمایل:** ${guide.lightVersion}`);
+  }
+  if (question.kind === 'anger_increased') {
+    supplementalGuidance.push('اگر فشار یا میل به واکنش آسیب‌زا بیشتر شده، تمرین را متوقف کن و در صورت امکان فاصله امن ایجاد کن. اگر احتمال آسیب فوری به خودت یا فرد دیگری وجود دارد، از خدمات اضطراری محل زندگی کمک فوری بگیر.');
+  }
+  if (question.kind === 'talk_other'
+    && !/آزادانه رضایت داشته باشند/u.test(answer)) {
+    supplementalGuidance.push('گفت‌وگو فقط وقتی مطرح است که هر دو نفر آزادانه رضایت داشته باشند؛ اگر گفت‌وگو امن یا اختیاری نیست، لازم نیست آن را انجام بدهی.');
+  }
+
   if (question.kind === 'no_event'
     && !/عمداً خودت را وارد بحث یا موقعیت خشم‌آور/u.test(answer)) {
     supplementalGuidance.push('برای انجام تمرین، عمداً خودت را وارد بحث یا موقعیت خشم‌آور نکن؛ نبود نمونه واقعی را همان‌طور که هست ثبت کن.');
