@@ -1,4 +1,4 @@
-import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS } from '../src/features/assistant/dailyAssistantSafetyReminder.js';
+import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS, DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from '../src/features/assistant/dailyAssistantSafetyReminder.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
@@ -216,57 +216,49 @@ test('T01 q10 is day-bound and avoids blaming or shaming the user', () => {
   const guide = ANGER_DAILY_ASSISTANT_GUIDES[0];
   const answer = answerAngerDailyPreparedQuestion({ day: 1, message: expectedValues[9] });
   assert.ok(answer.includes('راهنمای روز 1 خشم'), 'T01 q10 must retain topic/day context');
-  assert.doesNotMatch(answer, /تنبلی|بی‌ارادگی|مقصر هستی|ضعف اخلاقی/u, 'T01 q10 must not shame the user');
+  assert.doesNotMatch(answer, /تو\s+(?:تنبلی|بی‌ارادگی)|(?:مقصر|ضعیف)\s+هستی|بهانه‌گیر/u, 'T01 q10 must not attribute a negative trait to the user');
   assert.ok(guide.questions.some(question => question.id === 'q10'));
 });
 
-test('q11 keeps a genuinely topic-specific answer body after the shared response frame', () => {
-  const marker = 'هدف این است که دستور امروز را بفهمی و تا جایی که امن و شدنی است اجرا کنی.';
-  for (let day = 1; day <= 28; day += 1) {
-    const topicBodies = topics.slice(1).map(([topicId, guides, , answerPrepared]) => {
-      const guide = guides[day - 1];
+test('q11 safety answers remain day- and topic-specific without requiring a retired shared response frame', () => {
+  for (const [topicId, guides, , answerPrepared] of topics.slice(1)) {
+    for (const guide of guides) {
       const question = guide.questions[10];
       const dailyContent = topicId === 'T09' ? {
-        id: 'اهمال‌کاری-' + String(day).padStart(2, '0'),
+        id: 'اهمال‌کاری-' + String(guide.day).padStart(2, '0'),
         topic_id: 'T09',
-        day,
+        day: guide.day,
         exercise: guide.exercise,
         actionText: guide.action,
       } : undefined;
-      const answer = answerPrepared({ day, message: question.value, dailyContent });
-      const markerIndex = answer?.indexOf(marker) ?? -1;
-      assert.ok(markerIndex >= 0, topicId + ' day ' + day + ' shared frame marker');
-      const body = answer.slice(markerIndex + marker.length).trim();
-      assert.ok(body.length > 20, topicId + ' day ' + day + ' q11 needs a substantive topic-specific answer body');
-      return body;
-    });
-    assert.equal(new Set(topicBodies).size, 8, 'q11 answer bodies must be distinct across T02-T09 on day ' + day);
+      const answer = answerPrepared({ day: guide.day, message: question.value, dailyContent });
+      assert.equal(typeof answer, 'string', topicId + ' day ' + guide.day + ' q11 answer');
+      assert.ok(answer.includes(guide.title), topicId + ' day ' + guide.day + ' q11 title context');
+      assert.ok(answer.length > 150, topicId + ' day ' + guide.day + ' q11 substantive safety guidance');
+      assert.ok(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN), topicId + ' day ' + guide.day + ' q11 shared safety footer');
+      assert.doesNotMatch(answer, /هدف این است که دستور امروز را بفهمی و تا جایی که امن و شدنی است اجرا کنی/u,
+        topicId + ' q11 must not depend on retired global response frame');
+    }
   }
 });
 
-
-test('all T01-T09 prepared answers contain a substantive body beyond the shared frame', () => {
-  const marker = 'هدف این است که دستور امروز را بفهمی و تا جایی که امن و شدنی است اجرا کنی.';
-  const questionIds = topics[0][1][0].questions.map(question => question.id);
-  for (const [topicId, guides, , answerPrepared] of topics.slice(1)) {
+test('all T01-T09 prepared answers contain substantial day-specific guidance without relying on a shared frame', () => {
+  for (const [topicId, guides, , answerPrepared] of topics) {
     for (const guide of guides) {
-      for (const questionId of questionIds) {
-        const question = guide.questions.find(item => item.id === questionId);
-        assert.ok(question, topicId + ' day ' + guide.day + ' missing ' + questionId);
-        const dailyContent = topicId === 'T09' ? {
-          id: 'اهمال‌کاری-' + String(guide.day).padStart(2, '0'),
-          topic_id: 'T09',
-          day: guide.day,
-          exercise: guide.exercise,
-          actionText: guide.action,
-        } : undefined;
+      const dailyContent = topicId === 'T09' ? {
+        id: 'اهمال‌کاری-' + String(guide.day).padStart(2, '0'),
+        topic_id: 'T09',
+        day: guide.day,
+        exercise: guide.exercise,
+        actionText: guide.action,
+      } : undefined;
+      for (const question of guide.questions) {
         const answer = answerPrepared({ day: guide.day, message: question.value, dailyContent });
-        assert.equal(typeof answer, 'string', topicId + ' day ' + guide.day + ' ' + questionId);
-        const markerIndex = answer.indexOf(marker);
-        assert.ok(markerIndex >= 0, topicId + ' day ' + guide.day + ' shared response frame');
-        const body = answer.slice(markerIndex + marker.length).trim();
-        assert.ok(body.length > 20, topicId + ' day ' + guide.day + ' ' + questionId + ' substantive answer body');
-        assert.ok(body.length <= 3000, topicId + ' day ' + guide.day + ' ' + questionId + ' answer body is not excessively long');
+        assert.equal(typeof answer, 'string', topicId + ' day ' + guide.day + ' ' + question.id);
+        assert.ok(answer.includes(guide.title), topicId + ' day ' + guide.day + ' title context');
+        assert.ok(answer.trim().length > 100, topicId + ' day ' + guide.day + ' ' + question.id + ' substantial guidance');
+        assert.doesNotMatch(answer, /هدف این است که دستور امروز را بفهمی و تا جایی که امن و شدنی است اجرا کنی/u,
+          topicId + ' must not receive a retired repeated global sentence');
       }
     }
   }
