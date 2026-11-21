@@ -67,7 +67,8 @@ for (const topic of topics) {
       text: 'لطفاً درباره موضوع دیگری هم راهنمایی آزاد بده.',
       dailyContext: contextFor(topic),
     });
-    assert.equal(freeform.status, 'daily_guidance_available');
+    assert.equal(freeform.status, 'prepared_question_required');
+    assert.match(freeform.message, /گفت‌وگوی آزاد برای این موضوع فعال نیست/);
     assert.equal(freeform.conversationState, null);
   });
 }
