@@ -339,7 +339,8 @@ test('T07 prepared answers require exact canonical topic/day identity and preser
   });
   assert.equal(wrongDay.status, 'daily_guidance_unavailable');
   const free = makePageAssistantTurn({ ...base, text: 'چرا همیشه احساس گناه دارم؟' });
-  assert.equal(free.status, 'daily_guidance_available');
+  assert.equal(free.status, 'prepared_question_required');
+  assert.match(free.message, /گفت‌وگوی آزاد برای این موضوع فعال نیست/);
   const urgent = makePageAssistantTurn({ ...base, text: 'امشب قصد دارم به خودم آسیب بزنم.' });
   assert.equal(urgent.status, 'urgent_human_support_required');
 });
