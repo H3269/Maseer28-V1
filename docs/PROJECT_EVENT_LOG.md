@@ -99,3 +99,17 @@
 
 - **Browser-suite correction:** the 34-topic daily visibility test now distinguishes the 14 topics that actually have prepared assistant catalogues (T01–T14) from T15–T34, which should show daily exercise/action content but must not falsely claim to have prepared questions. This avoids turning the removal of the specialist gate into an incorrect expectation that all 34 assistant catalogues already exist. Commit: `a97151a`.
 - **Additional source wording correction:** the T13 risk-based block now explains that the recorded risk level makes the response unsafe in that state; it no longer says the user must wait for specialist review. Regression test added for high-risk classification with review metadata present. Commits: `5ee26fc`, `4e69cbe`.
+
+## 2026-11-21 — Persian-only audit of T01–T14 assistant output
+
+- Completed a source-level review of all 14 daily assistant catalogues and their 28-day guide/question structures (392 topic/day records). The review distinguishes user-visible text from internal topic IDs, question IDs, field names, and code identifiers; internal identifiers are not to be displayed.
+- Corrected user-visible Latin leakage found in the prepared content:
+  - T09: replaced internal topic references in three visible explanations with Persian descriptions.
+  - T10: expanded the repeated PTSD acronym in all 28 safety notes to its Persian clinical name.
+  - T11: replaced BFRB, HRT, ComB, ERP, CBIT, OCD, masking, and internal subtopic codes with Persian descriptions across the visible guide and answer text.
+  - T14: replaced 19 visible self-references to the internal topic code with the Persian topic name.
+  - T06: replaced PGD and PTSD acronyms in the visible stop-condition text with Persian clinical names.
+- Added a regression test to inspect visible guide fields, all prompt-group labels/questions, and every available prepared runtime answer for T01–T14 across all 392 day records. Any Latin-script character in that output now fails the test.
+- Execution status: this audit and the source edits have been committed to main, but the Node/browser workflow has not yet been observed to complete. Do not treat the regression test or the test deployment as passing until GitHub Actions reports success.
+- No Telegram/Bale production publication was triggered.
+
