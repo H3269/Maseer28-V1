@@ -1,4 +1,5 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { expandDailyAssistantQuestionAnswer } from './dailyAssistantQuestionDetail.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 
@@ -3691,6 +3692,7 @@ export function answerGuiltDailyPreparedQuestion(args = {}) {
   if (!answer) return null;
   const guide = GUILT_DAILY_ASSISTANT_GUIDES.find(item => item.day === toGuiltDayNumber(args.day));
   const question = guide?.questions.find(item => item.value === String(args.message || '').trim());
-  const framed = addTeacherStyleFrame(answer, { guide, question, topic: 'احساس گناه' });
+  const detailedAnswer = expandDailyAssistantQuestionAnswer(answer, { guide, question, topic: 'احساس گناه' });
+  const framed = addTeacherStyleFrame(detailedAnswer, { guide, question, topic: 'احساس گناه' });
   return appendDailyAssistantSafetyReminder(framed, question?.kind);
 }
