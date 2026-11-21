@@ -6,7 +6,7 @@ import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyRemind
 export const T12_DAILY_ASSISTANT_GUIDES = Object.freeze(T12_GUIDE.records.map(normalizeDailyAssistantGuide));
 
 const T12_SAFETY_REMINDER = [
-  'یادآوری اختصاصی ایمنی و حریم خصوصی T12',
+  'یادآوری اختصاصی ایمنی و حریم خصوصی درباره مرزبندی',
   'اگر تهدید، خشونت، کنترل اجباری، نظارت یا ترس از تلافی وجود دارد، گفت‌وگوی مستقیم یا اعلام مرز را انجام نده؛ اولویت با فاصله و حمایت امن است.',
   'اگر احتمال بررسی دستگاه، مرورگر یا حساب پیام‌رسان وجود دارد، جزئیات حساس یا برنامه خروج را در آن ذخیره یا ارسال نکن. در خطر فوری، از خدمات اضطراری محل زندگی کمک بگیر.',
 ].join('\n\n');
