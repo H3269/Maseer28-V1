@@ -235,12 +235,23 @@ test('T01-T14 q11 safety answers remain day- and topic-specific and include the 
   for (const [topicId, guides, , answerPrepared] of allTopicContracts) {
     for (const guide of guides) {
       const question = guide.questions[10];
-      const dailyContent = topicId === 'T09' ? {
-        id: 'اهمال‌کاری-' + String(guide.day).padStart(2, '0'),
-        topic_id: 'T09',
+      const topicContentIds = {
+        T09: 'اهمال‌کاری',
+        T10: 'بی‌خوابی و مشکلات خواب',
+        T11: 'عادت‌های تکراری',
+        T12: 'مرزبندی و نه گفتن',
+        T13: 'تنهایی',
+        T14: 'کمبود انگیزه',
+      };
+      const dailyContent = topicContentIds[topicId] ? {
+        id: topicContentIds[topicId] + '-' + String(guide.day).padStart(2, '0'),
+        topic_id: topicId,
         day: guide.day,
+        title: guide.title,
         exercise: guide.exercise,
         actionText: guide.action,
+        sourceExercise: guide.exercise,
+        sourceActionText: guide.action,
       } : undefined;
       const answer = answerPrepared({ day: guide.day, message: question.value, dailyContent });
       assert.equal(typeof answer, 'string', topicId + ' day ' + guide.day + ' q11 answer');
