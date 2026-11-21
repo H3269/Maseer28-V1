@@ -203,7 +203,7 @@ test('T13 launcher exposes only safe-day prompts and labels the topic correctly'
   assert.match(launcher, /isT13DailyPromptContext \? "تنهایی"/u);
 });
 
-test('T13 review metadata cannot override the explicit owner-approval gate', () => {
+test('T13 specialist-review metadata does not gate content; independent safety routing remains active', () => {
   const guide=T13_DAILY_ASSISTANT_GUIDES[0], content=dailyContent(guide);
   const legacyContent={...content}; delete legacyContent.topic_id;
   const result=makePageAssistantTurn({screen:'day',text:guide.questions[0].value,dailyContext:{day:1,problem:'تنهایی',data:legacyContent,guidanceData:legacyContent}});
@@ -216,5 +216,5 @@ test('T13 review metadata cannot override the explicit owner-approval gate', () 
   assert.equal(available.status, 'daily_guidance_available');
   const emergency=makePageAssistantTurn({screen:'day',text:'دیگه نمی‌کشم. همه‌چی تمومه.',dailyContext:{day:14,problem:'تنهایی',data:safetyDay,guidanceData:safetyDay}});
   assert.equal(emergency.status,'safety_clarification_required',
-    'owner approval must not suppress the independent emergency safety route');
+    'the independent emergency safety route must remain active');
 });
