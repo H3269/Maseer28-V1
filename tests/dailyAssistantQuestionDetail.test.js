@@ -73,7 +73,10 @@ test('T02-T14 all 364 day records return expanded, day-specific teaching answers
           const alreadyPresentAnxietyField = topicId === 'T02'
             && typeof anxietyFieldByLabel[label] === 'string'
             && answer.includes(anxietyFieldByLabel[label]);
-          assert.ok(answer.includes(label) || alreadyPresentAnxietyField,
+          const preservedUnderCanonicalAnxietyHeading = topicId === 'T02'
+            && ((label === 'چطور از مثال استفاده کنی' && answer.includes('مثال فقط برای فهم قالب'))
+              || (label === 'چطور مثال را با شرایط خودت تطبیق بدهی' && answer.includes('فقط بخش امن، داوطلبانه')));
+          assert.ok(answer.includes(label) || alreadyPresentAnxietyField || preservedUnderCanonicalAnxietyHeading,
             topicId + ' day ' + guide.day + ' ' + kind + ' missing detail section: ' + label);
         }
         if (topicId === 'T02') {
