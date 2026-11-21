@@ -54,3 +54,12 @@
 - **Important verification limitation:** GitHub Actions execution and local Node test execution have not been confirmed. The updated tests are authored but not yet demonstrated passing. The app is not yet ready for the user's live browser test handoff.
 
 - **Test-source repair:** during review, a malformed T11 non-disclosure assertion introduced by an automated text edit was detected and corrected. T11 router tests now explicitly assert that the blocked response does not contain the prepared answer, stop condition, human-support guidance, or other guide content. This source correction is committed; it has not yet been executed by Node.
+
+
+## 2026-11-21 — audit of migrated T01–T14 router tests
+
+- **T11 contradiction found and corrected:** the live-router test simultaneously asserted that prepared stop/support/mechanism text was absent and present in the same blocked response. Removed the contradictory positive assertions from the router test. The separate T11 guide/content tests remain responsible for proving those authored fields and answers exist; the live router test checks non-disclosure while owner approval is pending. Independent urgent-risk routing remains explicitly tested.
+- **Clarified test intent:** renamed T12, T13, and T14 integration-test descriptions so they no longer claim that the live page assistant serves an unapproved guide or that generic review metadata constitutes owner approval.
+- **Cross-check:** T07 and T08 positive answer assertions are in their guide/helper integrity sections; their live-router sections assert owner-gate blocking, while explicit urgent-risk handoff and relationship-safety checks remain separate. T12 relationship-safety confirmation is still evaluated before the owner-content gate; passing that safety check does not approve or reveal the daily guide.
+- **Approval state:** the T01–T14 owner allowlist remains empty. No content approval was recorded.
+- **Verification limit:** these are source-level test corrections only. The Node test suite, production build, and browser runtime have still not been executed in this environment. Do not treat the repository as test-passing or ready for user browser handoff until those checks run.
