@@ -55,6 +55,61 @@ jobs:
       - name: Build test app
         run: npm run build -- --base=/Maseer28-V1/
 
+      # Run the complete Chromium browser regression suite against the same test build.
+      - name: Install pinned Playwright browser runner
+        run: npm install --no-save --package-lock=false playwright@1.65.1
+
+      - name: Install Chromium headless shell and system dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx playwright install-deps chromium
+          npx playwright install --only-shell chromium
+
+      - name: Run browser regression against the test build
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/path28-preview.log 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 40); do
+            if curl --fail --silent http://127.0.0.1:4173/Maseer28-V1/ > /dev/null; then
+              break
+            fi
+            if [ "${attempt}" -eq 40 ]; then
+              cat /tmp/path28-preview.log
+              exit 1
+            fi
+            sleep 2
+          done
+          export PATH28_BASE_URL=http://127.0.0.1:4173/Maseer28-V1/
+          mkdir -p /tmp/path28-browser-logs
+          browser_test_status=0
+          if printf '%s\\0' tests/browser/*.mjs | xargs -0 -P 3 -I '{}' bash -c '
+            script="$1"
+            log_file="/tmp/path28-browser-logs/$(basename "$script").log"
+            {
+              echo "Running $script"
+              node "$script"
+            } > "$log_file" 2>&1
+          ' _ '{}'; then
+            browser_test_status=0
+          else
+            browser_test_status=$?
+          fi
+          for script in tests/browser/*.mjs; do
+            log_file="/tmp/path28-browser-logs/$(basename "$script").log"
+            echo "===== $script ====="
+            if [ -f "$log_file" ]; then
+              cat "$log_file"
+            else
+              echo "No log was produced for $script."
+              browser_test_status=1
+            fi
+          done
+          exit "$browser_test_status"
+
       - name: Configure Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d
 
