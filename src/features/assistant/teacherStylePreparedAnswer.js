@@ -16,33 +16,38 @@ const INTERNAL_TOPIC_LABELS = Object.freeze({
   T18: 'نفرت از خود',
 });
 
+const INTERNAL_TERM_REPLACEMENTS = Object.freeze([
+  [/\bq\d{2}\b/gi, 'پرسش'],
+  [/\bBFRB\b/gi, 'رفتارهای تکراری متمرکز بر بدن'],
+  [/\bERP\b/gi, 'مواجهه و جلوگیری از پاسخ'],
+  [/\bOCD\b/gi, 'اختلال وسواس فکری‌عملی'],
+  [/\bHRT\b/gi, 'آموزش وارونه‌سازی عادت'],
+  [/\bComB\b/gi, 'مدل جامع رفتاری'],
+  [/\bCBIT\b/gi, 'مداخله جامع رفتاری برای تیک'],
+  [/\bmasking\b/gi, 'پنهان‌سازی حرکت یا صدا'],
+  [/\bPGD\b/gi, 'اختلال سوگ طولانی‌مدت'],
+  [/\bPTSD\b/gi, 'اختلال استرس پس از سانحه'],
+  [/\btic\b/gi, 'تیک'],
+  [/\bstimming\b/gi, 'خودتحریکی تکراری'],
+  [/\bS01\b/gi, 'عادت ساده و بی‌ضرر'],
+  [/\bS02\b/gi, 'رفتار همراه اجبار یا رفتار تکراری متمرکز بر بدن'],
+  [/\bS03\b/gi, 'تیک یا خودتحریکی تکراری'],
+]);
+
 export function cleanPreparedAssistantTopicText(value, topic) {
   let text = String(value || '')
     .replace(/«?بسته(?:‌ی| ی)?\s*T([12][0-9]|3[0-4]|0?[1-9])(?:-[A-Z]\d{2})?»?/g, (_, digits) => 'موضوع ' + (INTERNAL_TOPIC_LABELS['T' + digits.padStart(2, '0')] || 'مرتبط'))
-    .replace(/\bT([12][0-9]|3[0-4]|0?[1-9])(?:-[A-Z]\d{2})?\b/g, (_, digits) => INTERNAL_TOPIC_LABELS['T' + digits.padStart(2, '0')] || 'موضوع مرتبط')
-    .replace(/\bq\d{2}\b/gi, 'پرسش')
-    .replace(/BFRB/gi, 'رفتارهای تکراری متمرکز بر بدن')
-    .replace(/\bERP\b/gi, 'مواجهه و جلوگیری از پاسخ')
-    .replace(/\bOCD\b/gi, 'اختلال وسواس فکری‌عملی')
-    .replace(/\bHRT\b/gi, 'آموزش وارون‌سازی عادت')
-    .replace(/\bComB\b/gi, 'مدل جامع رفتاری')
-    .replace(/\bCBIT\b/gi, 'مداخله جامع رفتاری برای تیک')
-    .replace(/\bmasking\b/gi, 'پنهان‌سازی رفتار')
-.replace(/\bPGD\b/gi, 'اختلال سوگ طولانی‌مدت')
-.replace(/\bPTSD\b/gi, 'اختلال استرس پس از سانحه')
-    .replace(/\bOCD\b/gi, 'اختلال وسواس فکری‌عملی')
-    .replace(/\bERP\b/gi, 'مواجهه و جلوگیری از پاسخ')
-    .replace(/\bHRT\b/gi, 'آموزش وارونه‌سازی عادت')
-    .replace(/\bComB\b/gi, 'مدل جامع رفتاری')
-    .replace(/\bCBIT\b/gi, 'مداخله رفتاری جامع برای تیک')
-    .replace(/\bmasking\b/gi, 'پنهان‌سازی حرکت یا صدا')
-    .replace(/\btic\b/gi, 'تیک')
-    .replace(/\bS01\b/gi, 'عادت ساده و بی‌ضرر')
-    .replace(/\bS02\b/gi, 'رفتار همراه اجبار یا رفتار تکراری متمرکز بر بدن')
-    .replace(/\bS03\b/gi, 'تیک یا استیمینگ')
+    .replace(/\bT([12][0-9]|3[0-4]|0?[1-9])(?:-[A-Z]\d{2})?\b/g, (_, digits) => INTERNAL_TOPIC_LABELS['T' + digits.padStart(2, '0')] || 'موضوع مرتبط');
+
+  for (const [pattern, replacement] of INTERNAL_TERM_REPLACEMENTS) {
+    text = text.replace(pattern, replacement);
+  }
+
+  text = text
     .replace(/این بسته/g, 'این موضوع')
     .replace(/در این بسته/g, 'در این موضوع')
     .replace(/بسته فعلی/g, 'موضوع فعلی');
+
   if (topic) text = text.replace(/نام موضوع/g, topic);
   return text;
 }
