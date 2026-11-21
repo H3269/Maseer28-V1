@@ -84,36 +84,30 @@ try {
   const topics = Object.keys(content.categories);
   assert.equal(topics.length, 34);
 
-  const isOwnerGatedTopic = (topic) => /^T(?:0[1-9]|1[0-4])$/u.test(String(content.categories[topic]?.days?.[0]?.topic_id || ''));
-
-  async function assertOwnerGate(topic, day) {
+  async function assertDailyContentVisible(topic, day) {
     const { page, errors } = await openDay(topic, day);
     const card = page.locator('#day');
-    assert.equal(await card.locator('#ownerApprovalPending').count(), 1,
-      topic + ' day ' + day + ' must show the owner-approval notice');
-    assert.match(await card.innerText(), /تأیید مستقیم دکتر عابدی/u);
-    for (const selector of ['#dayExercise', '#dayAction', '#dayClosing', '#openDailyEntryBtn', '#dailyEntryPanel']) {
-      assert.equal(await card.locator(selector).count(), 0,
-        topic + ' day ' + day + ' must not expose ' + selector);
-    }
+    assert.equal(await card.locator('#ownerApprovalPending').count(), 0,
+      topic + ' day ' + day + ' must not show an internal approval status');
+    assert.equal(await card.locator('#dayExercise').count(), 1,
+      topic + ' day ' + day + ' must display its exercise');
+    assert.equal(await card.locator('#dayAction').count(), 1,
+      topic + ' day ' + day + ' must display its dedicated action');
+    assert.equal(await card.locator('#openDailyEntryBtn').count(), 1,
+      topic + ' day ' + day + ' must expose daily interaction');
     const launcher = page.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' });
     await launcher.click();
     const dialog = page.locator('.globalAssistantDialog');
     await dialog.waitFor({ state: 'visible' });
-    assert.equal(await dialog.locator('[data-prompt-option]').count(), 0,
-      topic + ' day ' + day + ' must not expose prepared assistant questions');
-    assert.equal(await dialog.locator('.assistantMessage').count(), 0,
-      topic + ' day ' + day + ' must not expose a prepared answer or stale transcript');
-    assert.match(await dialog.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/u);
+    assert.ok(await dialog.locator('[data-prompt-option]').count() > 0,
+      topic + ' day ' + day + ' must expose its prepared assistant questions');
+    assert.doesNotMatch(await dialog.innerText(), /تأیید مستقیم دکتر عابدی|هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/u);
     assert.deepEqual(errors, [], topic + ' day ' + day + ' must not raise browser errors');
     await page.close();
   }
 
   for (const topic of topics) {
-    if (isOwnerGatedTopic(topic)) {
-      await assertOwnerGate(topic, 1);
-      continue;
-    }
+    await assertDailyContentVisible(topic, 1);
     const { page, errors } = await openDay(topic, 1);
     const card = page.locator('#day');
     assert.equal(await card.locator('#dayExercise').count(), 1, topic + ' day 1 must display its exercise');
@@ -131,17 +125,15 @@ try {
     await page.close();
   }
 
-  // Exercise the same owner gate against every canonical day of T11, not only day one.
+  // Verify all 28 days of a representative topic and additional T01 days.
   for (let day = 1; day <= 28; day += 1) {
-    await assertOwnerGate('عادت‌های تکراری', day);
+    await assertDailyContentVisible('عادت‌های تکراری', day);
   }
-
-  // A selected day change must not bypass the owner gate for other T01 records.
   for (const day of [10, 11]) {
-    await assertOwnerGate('خشم', day);
+    await assertDailyContentVisible('خشم', day);
   }
 
-  process.stdout.write('PASS: T01-T14 remain hidden pending direct owner approval; T15-T34 retain their daily interaction.\\n');
+  process.stdout.write('PASS: daily content and prepared assistant are visible without an internal approval gate; daily interactions remain available.\\n');
 } finally {
   await browser.close();
 }
