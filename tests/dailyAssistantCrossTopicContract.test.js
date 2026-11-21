@@ -11,6 +11,11 @@ import { GRIEF_DAILY_ASSISTANT_GUIDES, answerGriefDailyPreparedQuestion, getGrie
 import { GUILT_DAILY_ASSISTANT_GUIDES, answerGuiltDailyPreparedQuestion, getGuiltDailyAssistantPromptGroups } from '../src/features/assistant/guiltDailyAssistantPrompts.js';
 import { EMOTIONAL_DEPENDENCY_DAILY_ASSISTANT_GUIDES, answerEmotionalDependencyDailyPreparedQuestion, getEmotionalDependencyDailyAssistantPromptGroups } from '../src/features/assistant/emotionalDependencyDailyAssistantPrompts.js';
 import { T09_DAILY_ASSISTANT_GUIDES, answerT09DailyPreparedQuestion, getT09DailyAssistantPromptGroups } from '../src/features/assistant/t09DailyAssistantPrompts.js';
+import { T10_DAILY_ASSISTANT_GUIDES, answerT10DailyPreparedQuestion, getT10DailyAssistantPromptGroups } from '../src/features/assistant/t10DailyAssistantPrompts.js';
+import { T11_DAILY_ASSISTANT_GUIDES, answerT11DailyPreparedQuestion, getT11DailyAssistantPromptGroups } from '../src/features/assistant/t11DailyAssistantPrompts.js';
+import { T12_DAILY_ASSISTANT_GUIDES, answerT12DailyPreparedQuestion, getT12DailyAssistantPromptGroups } from '../src/features/assistant/t12DailyAssistantPrompts.js';
+import { T13_DAILY_ASSISTANT_GUIDES, answerT13DailyPreparedQuestion, getT13DailyAssistantPromptGroups } from '../src/features/assistant/t13DailyAssistantPrompts.js';
+import { T14_DAILY_ASSISTANT_GUIDES, answerT14DailyPreparedQuestion, getT14DailyAssistantPromptGroups } from '../src/features/assistant/t14DailyAssistantPrompts.js';
 
 const topics = [
   ['T01', ANGER_DAILY_ASSISTANT_GUIDES, getAngerDailyAssistantPromptGroups, answerAngerDailyPreparedQuestion],
@@ -43,6 +48,47 @@ const expectedValues = [
 const expectedKinds = ['exercise_meaning', 'exercise_example', 'action_meaning', 'action_example', 'light_version', 'success', 'stop', 'no_event', 'exercise_action_difference', 'not_done', null, 'talk_other', 'can_change', 'duration'];
 const expectedGuideKeys = Object.keys(ANGER_DAILY_ASSISTANT_GUIDES[0]);
 const expectedQuestionKeys = Object.keys(ANGER_DAILY_ASSISTANT_GUIDES[0].questions[0]);
+
+
+const allTopicContracts = [
+  ...topics,
+  ['T10', T10_DAILY_ASSISTANT_GUIDES, getT10DailyAssistantPromptGroups, answerT10DailyPreparedQuestion],
+  ['T11', T11_DAILY_ASSISTANT_GUIDES, getT11DailyAssistantPromptGroups, answerT11DailyPreparedQuestion],
+  ['T12', T12_DAILY_ASSISTANT_GUIDES, getT12DailyAssistantPromptGroups, answerT12DailyAssistantPreparedQuestion],
+  ['T13', T13_DAILY_ASSISTANT_GUIDES, getT13DailyAssistantPromptGroups, answerT13DailyPreparedQuestion],
+  ['T14', T14_DAILY_ASSISTANT_GUIDES, getT14DailyAssistantPromptGroups, answerT14DailyPreparedQuestion],
+];
+const topicSafetyKinds = {
+  T01: 'anger_increased', T02: 'anxiety_increased', T03: 'fear_increased',
+  T04: 'hostility_increased', T05: 'jealousy_increased', T06: 'grief_increased',
+  T07: 'guilt_increased', T08: 'dependency_increased', T09: 'procrastination_increased',
+  T10: 'sleep_distress', T11: 't11_distress', T12: 'boundary_distress',
+  T13: 'loneliness_increased', T14: 'motivation_distress',
+};
+
+test('T01-T14 share the same 28-day, 14-question contract and four safety/evaluation questions', () => {
+  for (const [topicId, guides, getGroups, answerPrepared] of allTopicContracts) {
+    assert.equal(guides.length, 28, topicId + ' must contain 28 days');
+    assert.equal(typeof answerPrepared, 'function', topicId + ' prepared answer handler');
+    for (const guide of guides) {
+      assert.equal(guide.questions.length, 14, topicId + ' day ' + guide.day + ' question count');
+      assert.deepEqual(guide.questions.map(q => q.id), expectedIds, topicId + ' day ' + guide.day + ' question IDs');
+      assert.deepEqual(guide.questions.map(q => q.value), expectedValues, topicId + ' day ' + guide.day + ' question wording');
+      assert.deepEqual(guide.questions.map(q => q.label), expectedValues, topicId + ' day ' + guide.day + ' question labels');
+      assert.ok(guide.questions.every(q => typeof q.answer === 'string' && q.answer.trim()), topicId + ' day ' + guide.day + ' every answer must exist');
+      const safetyQuestions = guide.questions.filter(q => DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(q.kind));
+      assert.equal(safetyQuestions.length, 4, topicId + ' day ' + guide.day + ' exactly four safety/evaluation questions');
+      assert.deepEqual(new Set(safetyQuestions.map(q => q.kind)), new Set([topicSafetyKinds[topicId], 'talk_other', 'success', 'stop']), topicId + ' day ' + guide.day + ' safety question kinds');
+      assert.ok(DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(guide.questions[10].kind), topicId + ' day ' + guide.day + ' q11 must be in shared safety gate');
+      const groups = getGroups(guide.day);
+      assert.equal(groups.length, 5, topicId + ' day ' + guide.day + ' group count');
+      assert.deepEqual(groups.map(group => group.questions.length), [2, 2, 1, 5, 4], topicId + ' day ' + guide.day + ' group distribution');
+      assert.deepEqual(groups.flatMap(group => group.questions).map(q => q.id).sort(), expectedIds.slice().sort(), topicId + ' day ' + guide.day + ' group coverage');
+    }
+    assert.deepEqual(getGroups(0), [], topicId + ' invalid day lower bound');
+    assert.deepEqual(getGroups(29), [], topicId + ' invalid day upper bound');
+  }
+});
 
 test('T01-T09 share the exact same 14 prepared question IDs, wording, and order on all 28 days', () => {
   for (const [topicId, guides] of topics) {
