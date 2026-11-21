@@ -27,12 +27,12 @@ test('anger and anxiety answers use the same outer headings and order for all 28
           dailyContent: { exercise: guide.exercise, actionText: guide.action },
         });
         assert.equal(typeof answer, 'string', topic.name + ' day ' + guide.day + ' ' + question.id);
-        const lines = answer.split('\\n\\n');
+        const lines = answer.split('\n\n');
         assert.equal(lines[0], `**راهنمای روز ${guide.day} ${topic.name} — ${guide.title}**`);
         assert.equal(lines[1], '**پاسخ به پرسش**');
         assert.equal(lines[2], question.label);
         assert.equal(lines[3], '**توضیح و راهنمای امروز**');
-        assert.ok(lines.slice(4).join('\\n\\n').trim().length > 20);
+        assert.ok(lines.slice(4).join('\n\n').trim().length > 20);
         assert.equal(answer.includes('**پاسخ به پرسش**'), true);
         checked += 1;
       }
