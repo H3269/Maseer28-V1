@@ -24,6 +24,7 @@ import { getT13DailyAssistantPromptGroups } from './t13DailyAssistantPrompts.js'
 import { getT14DailyAssistantPromptGroups } from './t14DailyAssistantPrompts.js';
 import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS, DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
 import { getDailySafetyMode } from '../content/dailySafety.js';
+import { isOwnerApprovedDailyRecord, requiresOwnerApproval } from '../content/ownerDailyContentApproval.js';
 
 const PAGE_ASSISTANT_PROMPT_GROUPS = Object.freeze([
   Object.freeze({
@@ -280,6 +281,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     && (dailyProblemTopicId === 'T14' || dailyRecordTopicId === 'T14' || dailyProblemText === 'کمبود انگیزه');
   const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext || isJealousyDailyPromptContext || isGriefDailyPromptContext || isGuiltDailyPromptContext || isEmotionalDependencyDailyPromptContext || isT09DailyPromptContext || isT10DailyPromptContext || isT11DailyPromptContext || isT12DailyPromptContext || isT13DailyPromptContext || isT14DailyPromptContext;
   const isPreparedOnlyDailyPromptContext = isTopicDailyPromptContext;
+  const dailyContextTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem) || dailyContext?.data?.topic_id || null;
+  const dailyOwnerApprovalRequired = requiresOwnerApproval(dailyContextTopicId);
+  const dailyOwnerApproved = isOwnerApprovedDailyRecord({ topicId: dailyContextTopicId, recordId: dailyContext?.data?.id });
+  const dailyOwnerApprovalPending = Boolean(dailyContext && dailyOwnerApprovalRequired && !dailyOwnerApproved);
   const jealousyRelationshipGate = isJealousyDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
   const jealousyRelationshipGatePending = Boolean(jealousyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
   const jealousyRelationshipGateBlocked = jealousyRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
@@ -294,7 +299,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const t12RelationshipGatePending = Boolean(t12RelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
   const t12RelationshipGateBlocked = t12RelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
   const t12PrivacyNotice = isT12DailyPromptContext ? getInterpersonalPrivacyNotice(dailyContext?.data) : null;
-  const activePromptGroups = screen === 'books'
+  const activePromptGroups = dailyOwnerApprovalPending ? [] : screen === 'books'
     ? [...LIBRARY_ASSISTANT_PROMPT_GROUPS, ...PAGE_ASSISTANT_PROMPT_GROUPS]
     : isAngerDailyPromptContext
       ? getAngerDailyAssistantPromptGroups(dailyContext?.day)
