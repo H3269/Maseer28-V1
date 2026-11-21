@@ -36,9 +36,15 @@ test('all 392 exact T11 prepared questions route through the real page assistant
       assert.equal(result.status, 'daily_guidance_unavailable', `T11 day ${guide.day} must remain blocked pending owner approval`);
     assert.match(result.message, /تأیید مستقیم دکتر عابدی/u);
       assert.doesNotMatch(result.message, new RegExp(guide.title));
-      assert.doesNotMatch(result.message, new RegExp(question.answer.replace(/[.*+?^${}()|[\]\\]/g, '\\      assert.ok(result.message.includes(guide.title));
-      assert.ok(result.message.includes(`راهنمای روز ${guide.day}`));
-      assert.ok(result.message.includes(question.answer), `day ${guide.day}: ${question.id} retains its T11 answer`);')));
+      assert.equal(result.message.includes(question.answer), false);
+      if (question.kind === 't11_distress') {
+        assert.equal(result.message.includes(guide.stopCondition), false);
+        assert.equal(result.message.includes(guide.whenToSeekHumanSupport), false);
+      }
+      if (question.kind === 'exercise_meaning') {
+        assert.equal(result.message.includes(guide.mechanism), false);
+        assert.equal(result.message.includes(guide.successCriterion), false);
+      }
       assert.doesNotMatch(result.message, /پیش‌نمایش برای بازبینی مالک|مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود/u);
       if (question.kind === 't11_distress') {
         assert.ok(result.message.includes(guide.stopCondition));
