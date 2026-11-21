@@ -9,9 +9,11 @@
   - `df4b86a` — hid the T01–T14 daily page content until explicit owner approval.
   - `d0717c0` — extended the page gate to legacy records by resolving topic identity from the selected category when `topic_id` is absent.
   - `aa9c711` — added automated unit coverage for the default-deny approval rule and the UI/assistant enforcement points.
+  - `14d4ed5` — hid T01–T14 prepared-question groups in the global assistant while the exact daily record is not owner-approved.
+  - `cedeec4` — extended the gate test to cover prepared-question visibility.
 - **Approval semantics:** review metadata, evidence metadata, safety classification, passing tests, or a generic specialist-review flag do not grant approval. Approval is per exact canonical daily record and must be explicitly added by the owner after review.
 - **Current approval state:** zero T01–T14 daily records approved. This is intentional and fail-closed.
-- **Verification status:** code and tests were committed, but the full Node test suite, production build, and browser checks have not yet been run in this environment. The repository's existing tests that expect T01–T14 assistant answers or daily content to be visible are now known to require updating to the new approval policy. Do not report the suite as passing until those tests are updated and executed.
+- **Verification status:** code and tests were committed, but the full Node test suite, production build, and browser checks have not yet been run in this environment. The repository's existing tests that expect T01–T14 assistant answers or daily content to be visible are now known to require updating to the new approval policy. The global assistant's prepared-question picker is also hidden for pending T01–T14 records. Do not report the suite as passing until those tests are updated and executed.
 - **Not done:** no specialist approval was recorded; no daily content was marked approved; no Telegram/Bale publish action was run.
 
 ## Next execution steps
