@@ -285,3 +285,22 @@ test('all T01-T09 prepared answers contain substantial day-specific guidance wit
     }
   }
 });
+
+test('audited examples distinguish exercise understanding from the next action in T01, T05, and T11', () => {
+  const angerDay22 = ANGER_DAILY_ASSISTANT_GUIDES.find(guide => guide.day === 22);
+  assert.match(angerDay22.exerciseExample, /تقسیم هزینه‌ها/u);
+  assert.doesNotMatch(angerDay22.exerciseExample, /پیش از مذاکره بررسی می‌کنی/u);
+
+  const jealousyDay28 = JEALOUSY_DAILY_ASSISTANT_GUIDES.find(guide => guide.day === 28);
+  assert.match(jealousyDay28.exerciseExample, /پاسخ با تأخیر رسید/u);
+  assert.match(jealousyDay28.actionExample, /نیازم هماهنگی روشن است/u);
+  assert.notEqual(jealousyDay28.exerciseExample, jealousyDay28.actionExample);
+
+  const t11Day12 = T11_DAILY_ASSISTANT_GUIDES.find(guide => guide.day === 12);
+  const t11Day18 = T11_DAILY_ASSISTANT_GUIDES.find(guide => guide.day === 18);
+  const day12Example = t11Day12.questions.find(question => question.kind === 'exercise_example').answer;
+  const day18Example = t11Day18.questions.find(question => question.kind === 'exercise_example').answer;
+  assert.match(day18Example, /زخم، درد یا قطع مکرر کارهای روزانه/u);
+  assert.notEqual(day12Example, day18Example);
+});
+
