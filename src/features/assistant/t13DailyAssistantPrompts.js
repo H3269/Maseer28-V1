@@ -1,4 +1,5 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { expandDailyAssistantQuestionAnswer } from './dailyAssistantQuestionDetail.js';
 import T13_GUIDE from './t13DailyAssistantGuide.v1.json' with { type: 'json' };
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
@@ -43,6 +44,7 @@ export function answerT13DailyPreparedQuestion({ day, message, dailyContent } = 
     ].join('\n\n');
   }
 
+  body = expandDailyAssistantQuestionAnswer(body, { guide, question, topic: 'تنهایی' });
   const heading = `راهنمای روز ${guide.day} تنهایی — ${guide.title}`;
   const framedAnswer = addTeacherStyleFrame(`${heading}\n\n${body}`, { guide, question, topic: 'تنهایی' });
   const safetyKinds = new Set(['loneliness_increased', 'talk_other', 'success', 'stop']);

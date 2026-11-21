@@ -1,4 +1,5 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { expandDailyAssistantQuestionAnswer } from './dailyAssistantQuestionDetail.js';
 import T10_GUIDE from './t10DailyAssistantGuide.v1.json' with { type: 'json' };
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
@@ -110,6 +111,7 @@ export function answerT10DailyPreparedQuestion({ day, message, dailyContent } = 
       return null;
   }
 
+  body = expandDailyAssistantQuestionAnswer(body, { guide, question, topic: 'بی‌خوابی و مشکلات خواب' });
   const fullAnswer = `${buildT10Heading(guide)}\n\n${body}`;
   return appendDailyAssistantSafetyReminder(addTeacherStyleFrame(fullAnswer, { guide, question, topic: 'بی‌خوابی و مشکلات خواب' }), question.kind);
 }

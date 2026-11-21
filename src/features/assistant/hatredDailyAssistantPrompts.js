@@ -1,4 +1,5 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { expandDailyAssistantQuestionAnswer } from './dailyAssistantQuestionDetail.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 // Prepared-only daily guidance for T04. Self-hatred is classified and referred to T18; no self-hatred intervention is delivered here.
@@ -3016,6 +3017,7 @@ export function answerHatredDailyPreparedQuestion(args = {}) {
   const day = toHatredDayNumber(args.day);
   const guide = HATRED_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
   const question = guide?.questions.find((item) => item.value === String(args.message || '').trim());
-  const framed = addTeacherStyleFrame(answer, { guide, question, topic: 'نفرت' });
+  const detailedAnswer = expandDailyAssistantQuestionAnswer(answer, { guide, question, topic: 'نفرت' });
+  const framed = addTeacherStyleFrame(detailedAnswer, { guide, question, topic: 'نفرت' });
   return appendDailyAssistantSafetyReminder(framed, question?.kind);
 }

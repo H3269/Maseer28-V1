@@ -1,4 +1,5 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { expandDailyAssistantQuestionAnswer } from './dailyAssistantQuestionDetail.js';
 import T12_GUIDE from './t12DailyAssistantGuide.v1.json' with { type: 'json' };
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
@@ -54,6 +55,7 @@ export function answerT12DailyPreparedQuestion({ day, message, dailyContent } = 
     body += `\n\n**چرایی اقدام اختصاصی:** ${guide.mechanism}\n**معیار کافی‌بودن:** ${guide.successCriterion}`;
   }
 
+  body = expandDailyAssistantQuestionAnswer(body, { guide, question, topic: 'مرزبندی و نه گفتن' });
   const heading = `راهنمای روز ${guide.day} مرزبندی و نه گفتن — ${guide.title}`;
   const framedAnswer = addTeacherStyleFrame(`${heading}\n\n${body}`, {
     guide,
