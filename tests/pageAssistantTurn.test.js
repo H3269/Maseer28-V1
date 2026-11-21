@@ -35,12 +35,8 @@ test('daily page answers a prepared question with the selected topic and day', (
     text: ANGER_DAILY_ASSISTANT_GUIDES[0].questions[0].value,
     dailyContext: { day: 1, problem: 'خشم', data: dayData, relationshipSafetyConfirmed: true },
   });
-  assert.equal(result.status, 'daily_guidance_available');
-  assert.match(result.message, /خشم/);
-  assert.match(result.message, /روز 1/);
-  assert.match(result.message, /راهنمای روز 1 خشم/);
-  assert.ok(result.message.includes(ANGER_DAILY_ASSISTANT_GUIDES[0].title));
-  assert.match(result.message, /تمرین امروز/);
+  assert.equal(result.status, 'daily_guidance_unavailable');
+  assert.match(result.message, /تأیید مستقیم دکتر عابدی/);
   assert.equal(result.conversationState, null);
 });
 
@@ -58,8 +54,8 @@ test('daily assistant answers prepared questions regardless of canonical review 
     text: ANGER_DAILY_ASSISTANT_GUIDES[0].questions[0].value,
     dailyContext: { day: 1, problem: 'خشم', data: dayData, relationshipSafetyConfirmed: true },
   });
-  assert.equal(result.status, 'daily_guidance_available');
-  assert.match(result.message, /راهنمای روز 1 خشم/);
+  assert.equal(result.status, 'daily_guidance_unavailable');
+  assert.match(result.message, /تأیید مستقیم دکتر عابدی/);
   assert.doesNotMatch(result.message, /تمرین مسدود روز اول|راهکار مسدود روز اول/);
 });
 
@@ -109,10 +105,8 @@ test('daily page answers pre-authored anxiety questions only with matching canon
     text: question.value,
     dailyContext: { day: 1, problem: 'اضطراب', data: dayData },
   });
-  assert.equal(result.status, 'daily_guidance_available');
-  assert.match(result.message, /راهنمای روز 1 اضطراب/);
-  assert.ok(result.message.includes(guide.exercise));
-  assert.ok(result.message.includes(guide.action));
+  assert.equal(result.status, 'daily_guidance_unavailable');
+  assert.match(result.message, /تأیید مستقیم دکتر عابدی/);
 
   const wrongTopic = makePageAssistantTurn({
     screen: 'day',
@@ -159,9 +153,8 @@ test('all exact prepared T03 FAQs answer through the real page router for all 28
           relationshipSafetyConfirmed: false,
         },
       });
-      assert.equal(result.status, 'daily_guidance_available', `T03 prepared FAQ must answer on day ${guide.day}: ${question.id}`);
-      assert.match(result.message, new RegExp('راهنمای روز'));
-      assert.doesNotMatch(result.message, /نیاز به بازبینی ایمنی|بررسی ایمنی همین روز/u);
+      assert.equal(result.status, 'daily_guidance_unavailable', `T03 day ${guide.day} must remain blocked pending owner approval`);
+      assert.match(result.message, /تأیید مستقیم دکتر عابدی/);
       checked += 1;
     }
   }
@@ -192,7 +185,8 @@ test('T03 prepared FAQs accept legacy category-derived identity but reject expli
       guidanceData: { id: getCanonicalDailyRecordId('ترس', 1), topic_id: null, day: 1 },
     },
   });
-  assert.equal(legacyTopicMissing.status, 'daily_guidance_available');
+  assert.equal(legacyTopicMissing.status, 'daily_guidance_unavailable');
+  assert.match(legacyTopicMissing.message, /تأیید مستقیم دکتر عابدی/);
 
   const explicitTopicConflict = makePageAssistantTurn({
     screen: 'day',
@@ -277,8 +271,8 @@ test('all 392 prepared T04 questions answer through the real page router for can
  for(const guide of HATRED_DAILY_ASSISTANT_GUIDES){
   for(const question of guide.questions){
    const result=makePageAssistantTurn({screen:'day',text:question.value,dailyContext:{day:guide.day,problem:'نفرت',data:{id:getCanonicalDailyRecordId('نفرت',guide.day),topic_id:'T04',day:guide.day,review_status:'pending_expert_review'},guidanceData:{id:getCanonicalDailyRecordId('نفرت',guide.day),topic_id:'T04',day:guide.day}}});
-   assert.equal(result.status,'daily_guidance_available',`T04 day ${guide.day} question ${question.id}`);
-   assert.match(result.message,/راهنمای روز/);checked++;
+   assert.equal(result.status,'daily_guidance_unavailable',`T04 day ${guide.day} remains blocked pending owner approval`);
+   assert.match(result.message,/تأیید مستقیم دکتر عابدی/);checked++;
   }
  }
  assert.equal(checked,392);
@@ -287,7 +281,8 @@ test('all 392 prepared T04 questions answer through the real page router for can
 test('T04 prepared assistant accepts legacy missing topic_id but rejects topic and day conflicts',()=>{
  const q=HATRED_DAILY_ASSISTANT_GUIDES[0].questions[0];
  const legacy=makePageAssistantTurn({screen:'day',text:q.value,dailyContext:{day:1,problem:'نفرت',data:{id:getCanonicalDailyRecordId('نفرت',1),day:1},guidanceData:{id:getCanonicalDailyRecordId('نفرت',1),topic_id:null,day:1}}});
- assert.equal(legacy.status,'daily_guidance_available');
+ assert.equal(legacy.status,'daily_guidance_unavailable');
+ assert.match(legacy.message,/تأیید مستقیم دکتر عابدی/);
  const wrongTopic=makePageAssistantTurn({screen:'day',text:q.value,dailyContext:{day:1,problem:'نفرت',data:{id:getCanonicalDailyRecordId('نفرت',1),topic_id:'T18',day:1}}});
  assert.equal(wrongTopic.status,'daily_guidance_unavailable');
  const wrongDay=makePageAssistantTurn({screen:'day',text:q.value,dailyContext:{day:1,problem:'نفرت',data:{id:getCanonicalDailyRecordId('نفرت',2),topic_id:'T04',day:2}}});
