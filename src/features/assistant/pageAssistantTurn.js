@@ -255,7 +255,10 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     }
 
     if (preparedTopicId === 'T10' && !T10_DAILY_ASSISTANT_RUNTIME_ELIGIBLE
-      && hasCanonicalPreparedIdentity && !hasPendingSafetyExchange && !hasExplicitSafetyHandoff) {
+      && hasCanonicalPreparedIdentity
+      && Boolean(answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }))
+      && !hasPendingSafetyExchange && !hasExplicitSafetyHandoff
+      && !SAFETY_STATUSES.has(inputProbe.status)) {
       return Object.freeze({
         status: 'daily_guidance_unavailable',
         message: 'راهنمای این موضوع هنوز در وضعیت پیش‌نویس و خارج از نسخه قابل‌استفاده است؛ تا تکمیل بازبینی علمی و ایمنی، پاسخ روزمحور آن فعال نمی‌شود.',
