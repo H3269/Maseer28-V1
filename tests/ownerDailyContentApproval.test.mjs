@@ -9,7 +9,7 @@ test('daily content and assistant for T01-T14 have no specialist-approval releas
     readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8'),
   ]);
   for (const source of [ui, assistant, launcher]) {
-    assert.doesNotMatch(source, /ownerDailyContentApproval|isOwnerApprovedDailyRecord|requiresOwnerApproval|dailyOwnerApprovalPending|ownerApprovalPending|تأیید مستقیم دکتر عابدی/u);
+    assert.doesNotMatch(source, /ownerDailyContentApproval|isOwnerApprovedDailyRecord|requiresOwnerApproval|dailyOwnerApprovalPending|ownerApprovalPending|تأیید مستقیم دکتر عابدی|بازبینی ایمنی تخصصی|pending_owner_review|pending_expert_review/u);
   }
   assert.match(assistant, /daily_guidance_available/u);
   assert.match(ui, /id="dayExercise"/u);
