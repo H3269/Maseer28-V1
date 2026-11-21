@@ -143,59 +143,14 @@ try {
   assert.equal(await page.locator('.dailyExerciseAssistant').count(), 0, 'the standalone daily assistant panel must be removed');
   assert.equal(await dialog.getByRole('textbox').count(), 0,
     'installing a local model must not enable free-form typing in a topic/day assistant');
-  const angerPromptTrigger = dialog.getByTestId('anger-daily-prompt-trigger');
-  await angerPromptTrigger.waitFor({ state: 'visible' });
-  await angerPromptTrigger.click();
-  const angerPromptDialog = page.locator('#library-assistant-prompt-dialog');
-  await angerPromptDialog.waitFor({ state: 'visible' });
-  await angerPromptDialog.locator('[data-prompt-option]').first().click();
-  await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => /راهنمای روز ۱ خشم/.test(node.innerText)));
-  const dailyReply = dialog.locator('.assistantMessage').last();
-  assert.match(await dailyReply.innerText(), /خشم/);
-  assert.match(await dailyReply.innerText(), /روز ۱/);
-  assert.match(await dailyReply.innerText(), /راهنمای روز ۱ خشم/);
-  assert.equal(await dialog.locator('.assistantComposer').getAttribute('data-anger-daily-prompt'), 'true',
-    'the active anger day context must expose its prepared-question picker');
-  assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 1,
-    'the prepared-question picker must remain available after successful local-model installation');
-
-  // Prepared safety FAQ answers render one highlighted reminder card; no nested controls remain.
-  assert.equal(await dialog.getByTestId('daily-assistant-human-help').count(), 0);
-  assert.equal(await dialog.getByTestId('daily-assistant-urgent-help').count(), 0);
-  assert.equal(await dialog.getByTestId('daily-assistant-return-to-daily').count(), 0);
-  await dialog.getByTestId('anger-daily-prompt-trigger').click();
-  const safetyPromptDialog = page.locator('#library-assistant-prompt-dialog');
-  await safetyPromptDialog.waitFor({ state: 'visible' });
-  await safetyPromptDialog.getByRole('button', { name: 'از کجا بفهمم درست انجامش داده‌ام؟' }).click();
-  const previousSafetyReplyCount = await dialog.locator('.assistantMessage').count();
-  await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction((previous) => {
-    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-    return replies.length > previous && Boolean(replies.at(-1)?.querySelector('[data-testid="daily-assistant-safety-reminder"]'));
-  }, previousSafetyReplyCount);
-  const safetyReply = dialog.locator('.assistantMessage').last();
-  assert.equal(await safetyReply.getByTestId('daily-assistant-safety-reminder').count(), 1);
-  assert.equal(await safetyReply.locator('.dailyAssistantSafetyReminderShafa').innerText(),
-    'شماره ۰۹۱۹۰۸۸۹۰۶۲ فقط برای نوبت‌دهی و پشتیبانی مرکز است و جایگزین خدمات اورژانسی یا کمک فوری تخصصی نیست.');
-  assert.ok(Number(await safetyReply.locator('.dailyAssistantSafetyReminderShafa')
-    .evaluate(element => getComputedStyle(element).fontWeight)) >= 700);
-  await dialog.getByTestId('anger-daily-prompt-trigger').click();
-  const normalQuestionDialog = page.locator('#library-assistant-prompt-dialog');
-  await normalQuestionDialog.waitFor({ state: 'visible' });
-  await normalQuestionDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
-  const previousNormalReplyCount = await dialog.locator('.assistantMessage').count();
-  await dialog.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction((previous) => {
-    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-    return replies.length > previous && /بیا تمرین امروز را ساده و روشن باز کنیم/.test(replies.at(-1)?.innerText || '');
-  }, previousNormalReplyCount);
-  assert.equal(await dialog.locator('.assistantMessage').last().getByTestId('daily-assistant-safety-reminder').count(), 0,
-    'normal prepared answers must not inherit the safety reminder');
-
-  await page.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
-  await dialog.waitFor({ state: 'detached' });
+  assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 0,
+    'T01 prepared questions must remain hidden until direct owner approval');
+  assert.equal(await dialog.locator('[data-prompt-option]').count(), 0,
+    'T01 must not expose prepared exercise/action answers while owner approval is pending');
+  assert.equal(await dialog.locator('.assistantMessage').count(), 0,
+    'T01 must not retain or display a previous daily answer while owner approval is pending');
+  assert.match(await dialog.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/u);
+  assert.match(await page.locator('#ownerApprovalPending').innerText(), /تأیید مستقیم دکتر عابدی/u);
 
   // Restore the pre-install state before testing the Library guided composer.
   await page.evaluate(async () => {
