@@ -1,6 +1,6 @@
 /**
- * Adds one shared outer response structure to the T01 anger and T02 anxiety
- * prepared answers. The authored, topic/day-specific answer body is preserved.
+ * Adds one shared response structure to the T01 anger and T02 anxiety
+ * prepared answers while preserving topic/day-specific guidance.
  */
 export function applySharedDailyAssistantAnswerFrame(answer, { day, topic, guide, question } = {}) {
   if (typeof answer !== 'string' || !answer.trim() || !guide || !question || !topic) return answer;
@@ -17,7 +17,7 @@ export function applySharedDailyAssistantAnswerFrame(answer, { day, topic, guide
     .trim();
 
   return [
-    \`**راهنمای روز \${day} \${topic} — \${guide.title}**\`,
+    '**راهنمای روز ' + day + ' ' + topic + ' — ' + guide.title + '**',
     '**پاسخ به پرسش**',
     question.label || question.value,
     '**توضیح و راهنمای امروز**',
