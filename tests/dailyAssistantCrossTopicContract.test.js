@@ -304,3 +304,14 @@ test('audited examples distinguish exercise understanding from the next action i
   assert.notEqual(day12Example, day18Example);
 });
 
+test('T05 day 23 and T09 day 26 examples demonstrate distinct, concrete next actions', () => {
+  const jealousyDay23 = JEALOUSY_DAILY_ASSISTANT_GUIDES.find(guide => guide.day === 23);
+  assert.match(jealousyDay23.actionExample, /کلاس نقاشی/u);
+  assert.match(jealousyDay23.actionExample, /برای اثبات چیزی/u);
+
+  const procrastinationDay26 = T09_DAILY_ASSISTANT_GUIDES.find(guide => guide.day === 26);
+  const actionExample = procrastinationDay26.questions.find(question => question.kind === 'action_example').answer;
+  assert.match(actionExample, /پیام کوتاه برای مسئول پروژه/u);
+  assert.match(actionExample, /تاریخ پیگیری/u);
+});
+
