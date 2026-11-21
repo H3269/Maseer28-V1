@@ -3268,11 +3268,36 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     no_event: guide.restActionVersion,
     can_change: guide.progressActionVersion,
   }[question.kind];
-  const answer = actionAdaptation
+  let answer = actionAdaptation
     ? baseAnswer + '\n\n- ' + actionAdaptation
     : baseAnswer;
-  const dayHeading = `راهنمای روز ${guide.day} خشم — ${guide.title}`;
-  const contextualAnswer = answer.includes(dayHeading) ? answer : `${dayHeading}\n\n${answer}`;
+  const supplementalGuidance = [];
+  if (question.kind === 'action_example'
+    && !/اگر شرایط زندگی تو شبیه این نمونه نیست|اگر گفتن یا انجام‌دادن آن امن نیست/u.test(answer)) {
+    supplementalGuidance.push('اگر شرایط زندگی تو شبیه این نمونه نیست یا گفتن و انجام‌دادن آن امن نیست، این نمونه را اجرا نکن؛ فقط گزینه امن و متناسب با شرایط خودت را انتخاب کن.');
+  }
+  if (question.kind === 'light_version') {
+    for (const [label, value] of [
+      ['نسخه سبک تمرین', guide.lightVersion],
+      ['نسخه پیشرفت تمرین، فقط در صورت آمادگی', guide.progressVersion],
+      ['نسخه استراحت تمرین', guide.restVersion],
+    ]) {
+      if (value && !answer.includes(value)) supplementalGuidance.push(\`**\${label}:** \${value}\`);
+    }
+  }
+  if (question.kind === 'stop' && guide.stopCondition && !answer.includes(guide.stopCondition)) {
+    supplementalGuidance.push(\`**شرط توقف اختصاصی امروز:** \${guide.stopCondition}\`);
+  }
+  if (question.kind === 'no_event'
+    && !/عمداً خودت را وارد بحث یا موقعیت خشم‌آور/u.test(answer)) {
+    supplementalGuidance.push('برای انجام تمرین، عمداً خودت را وارد بحث یا موقعیت خشم‌آور نکن؛ نبود نمونه واقعی را همان‌طور که هست ثبت کن.');
+  }
+  if (question.kind === 'duration' && !/مدت زمان مشخصی ثبت نشده/u.test(answer)) {
+    supplementalGuidance.push('مدت زمان مشخصی ثبت نشده است؛ بنابراین زمان قطعی یا عدد استانداردی برای این تمرین اعلام نمی‌کنم.');
+  }
+  if (supplementalGuidance.length) answer += '\n\n' + supplementalGuidance.join('\n\n');
+  const dayHeading = \`راهنمای روز \${guide.day} خشم — \${guide.title}\`;
+  const contextualAnswer = answer.includes(dayHeading) ? answer : \`\${dayHeading}\n\n\${answer}\`;
 
   return appendDailyAssistantSafetyReminder(
     addTeacherStyleFrame(contextualAnswer, { guide, question, topic: 'خشم' }),
