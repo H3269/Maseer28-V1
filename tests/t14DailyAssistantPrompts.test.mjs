@@ -68,3 +68,27 @@ test('T14 seven audited days keep distinct goal-specific mechanisms and all 98 a
   assert.match(day19.action, /قابل‌تکرار/u);
   assert.doesNotMatch(day19.exercise, /ثبت موفقیت یا حال خوب/u);
 });
+
+test('T14 audited example answers use concrete scenarios instead of restating the exercise or action',()=>{
+ const markers={
+  6:{action_example:'کاربرد شغلی'},
+  8:{exercise_example:'گزارش کاری',action_example:'ترتیب بخش بعدی'},
+  12:{exercise_example:'پوشه کاری',action_example:'پنج دقیقه موسیقی'},
+  13:{exercise_example:'صفحه‌گسترده',action_example:'فرمول جمع'},
+  14:{exercise_example:'میز کار',action_example:'موسیقی را خاموش کن'},
+  15:{exercise_example:'۱۵ دقیقه',action_example:'زمان اضافه'},
+  21:{exercise_example:'گزارشی را تا موعد',action_example:'جدول داده‌ها'},
+  22:{exercise_example:'قرار ثابت',action_example:'صفحه نخست'},
+  23:{exercise_example:'زبان تازه',action_example:'فایل درس'},
+  24:{exercise_example:'دوره‌ای را دنبال می‌کنی',action_example:'تاریخی مشخص'},
+ };
+ for(const [day,expected] of Object.entries(markers)){
+  const guide=T14_DAILY_ASSISTANT_GUIDES.find(item=>item.day===Number(day));
+  for(const [kind,marker] of Object.entries(expected)){
+   const answer=guide.questions.find(q=>q.kind===kind)?.answer||'';
+   assert.ok(answer.includes(marker),'T14 day '+day+' '+kind+' must include a concrete scenario marker');
+   assert.notEqual(answer,kind==='exercise_example'?guide.exercise:guide.action,'example must not simply equal the source instruction');
+  }
+ }
+});
+
