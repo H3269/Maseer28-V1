@@ -1,7 +1,7 @@
 const RUNTIME_TEXT_FIELDS = Object.freeze([
   'title', 'intro', 'exercise', 'actionText', 'closing',
   'lightExerciseText', 'lightActionText', 'progressActionText',
-  'restExerciseText', 'restActionText',
+  'restExerciseText', 'restActionText', 'exerciseExample', 'actionExample',
 ]);
 
 const T11_RUNTIME_METADATA_FIELDS = Object.freeze([

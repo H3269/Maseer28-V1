@@ -273,6 +273,11 @@ function exampleTemplateForMessage(message, dayData) {
   if (asksAction && asksExercise) {
     return 'منظورت مثال برای کدام بخش است: متن تمرین یا راهکار اختصاصی؟ نمی‌خواهم مثال یک بخش را به بخش دیگر نسبت بدهم.';
   }
+  const example = asksAction ? dayData?.actionExample : dayData?.exerciseExample;
+  if (typeof example === 'string' && example.trim()) {
+    return 'نمونه فرضی و صرفاً برای فهم ساختار (نه تجربه واقعی کاربر):\\n' + example.trim()
+      + '\\n\\nاین نمونه را عیناً به خودت نسبت نده؛ موقعیت و پاسخ واقعی خودت را جایگزین کن.';
+  }
   const source = asksAction
     ? (dayData?.actionText || dayData?.action || '')
     : (dayData?.exercise || dayData?.instructions || '');
