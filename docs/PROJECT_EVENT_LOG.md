@@ -1,0 +1,23 @@
+# Project Event Log — Masir 28 Content Expansion
+
+## 2026-11-21 — T01–T14 owner-approval release gate
+
+- **Scope:** prevent any T01–T14 daily exercise, dedicated action, examples, or prepared assistant answer from being treated as approved or shown to users before explicit approval by the app owner, Dr. Abedi.
+- **Changes committed on `main`:**
+  - `f6b254f` — introduced a fail-closed owner approval allowlist. It is intentionally empty; no T01–T14 day is approved by default.
+  - `c86e1ff` — blocked prepared daily assistant answers for T01–T14 unless the exact canonical daily record is on the owner allowlist.
+  - `df4b86a` — hid the T01–T14 daily page content until explicit owner approval.
+  - `d0717c0` — extended the page gate to legacy records by resolving topic identity from the selected category when `topic_id` is absent.
+  - `aa9c711` — added automated unit coverage for the default-deny approval rule and the UI/assistant enforcement points.
+- **Approval semantics:** review metadata, evidence metadata, safety classification, passing tests, or a generic specialist-review flag do not grant approval. Approval is per exact canonical daily record and must be explicitly added by the owner after review.
+- **Current approval state:** zero T01–T14 daily records approved. This is intentional and fail-closed.
+- **Verification status:** code and tests were committed, but the full Node test suite, production build, and browser checks have not yet been run in this environment. The repository's existing tests that expect T01–T14 assistant answers or daily content to be visible are now known to require updating to the new approval policy. Do not report the suite as passing until those tests are updated and executed.
+- **Not done:** no specialist approval was recorded; no daily content was marked approved; no Telegram/Bale publish action was run.
+
+## Next execution steps
+
+1. Update legacy unit and browser tests so T01–T14 are expected to remain hidden/unavailable while the allowlist is empty; preserve positive visibility tests for topics outside T01–T14.
+2. Run the full test suite, content validation, assistant-topic validation, content-quality audit, and production build; fix all regressions.
+3. Audit every T01–T14 day (392 daily records) for exercise/action/example completeness, topic fit, evidence, safety, and conceptual duplication. Keep audit findings separate from owner approval.
+4. Only after Dr. Abedi explicitly approves an exact daily record, add that record ID to the owner allowlist. Never infer approval from metadata or test results.
+5. Continue the broader 34-topic × 28-day review and retain owner-controlled release and publication gates.
