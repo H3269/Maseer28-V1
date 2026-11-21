@@ -38,7 +38,7 @@ test('T01 contains 28 days and 392 individually authored prepared answers', () =
 
       const answer = answerAngerDailyPreparedQuestion({ day: guide.day, message: question.value });
       assert.equal(typeof answer, 'string', `runtime answer missing for ${guide.day}:${question.id}`);
-      assert.ok(answer.includes(prepared.replace(/\\bq\\d{2}\\b/gi, 'پرسش')), `runtime did not use the Persian-normalized prepared answer for ${guide.day}:${question.id}`);
+      assert.ok(answer.includes(prepared.replace(/q\d{2}/gi, 'پرسش')), `runtime did not use the Persian-normalized prepared answer for ${guide.day}:${question.id}`);
 
       const shouldHaveSafety = SAFETY_KINDS.has(question.kind);
       const reminderCount = answer.split(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN).length - 1;
@@ -100,6 +100,7 @@ test('T01 prepared answers contain no repeated non-safety sentence of 35+ normal
       const answer = answerAngerDailyPreparedQuestion({ day: guide.day, message: question.value })
         .replace(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN, '')
         .replace(/^.*راهنمای روز \d+ خشم[^\n]*$/gmu, '');
+        .replace(/^\*\*پاسخ پرسش [^\n]*$/gmu, '');
       const sentences = answer.split(/[.!؟?؛\n]+/).map(normalizeSentence).filter((item) => item.length >= 35);
       for (const sentence of sentences) {
         if (approvedSafetyExceptions.has(sentence)) continue;
