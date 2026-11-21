@@ -32,12 +32,12 @@ export function applySharedDailyAssistantAnswerFrame(answer, { day, topic, guide
  */
 function authoredHeadingMatches(value) {
   const matches = [];
-  const pattern = /(?:^|\n\s*\n)\s*\*\*([^*\n]+)\*\*/gu;
+  const pattern = /\*\*([^*\n]+)\*\*/gu;
   for (const match of value.matchAll(pattern)) {
     const heading = match[1].trim();
     // A bold phone-number notice is safety content, not a section heading.
     if (/شماره|۰۹۱|091/u.test(heading)) continue;
-    matches.push({ index: match.index + match[0].indexOf('**'), label: heading, token: '**' + match[1] + '**' });
+    matches.push({ index: match.index, label: heading, token: '**' + match[1] + '**' });
   }
   return matches;
 }
@@ -62,7 +62,7 @@ export function alignDailyAssistantAnswerHeadings(answer, referenceAnswer) {
   const headingMatches = authoredHeadingMatches(body);
   let prose = body;
   for (const match of headingMatches.reverse()) {
-    prose = prose.slice(0, match.index) + prose.slice(match.index + match.token.length);
+    prose = prose.slice(0, match.index) + match.label + prose.slice(match.index + match.token.length);
   }
   const paragraphs = prose.split(/\n\s*\n/gu).map((part) => part.trim()).filter(Boolean);
   const alignedSections = referenceHeadings.map((heading, index) => {
