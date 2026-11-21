@@ -7,9 +7,9 @@ const sources = JSON.parse(await readFile(new URL('../public/assistant/evidence/
 const sourceIds = new Set(sources.sources.map((source) => source.source_id));
 const answer = (record, id) => record.questions.find((question) => question.id === id)?.answer || '';
 
-test('T10 guide remains explicitly draft-only and covers 28 days with 392 prepared answers', () => {
+test('T10 guide is available for owner live review and covers 28 days with 392 prepared answers', () => {
   assert.equal(guide.topicId, 'T10');
-  assert.equal(guide.status, 'draft_not_runtime_eligible');
+  assert.equal(guide.status, 'ready_for_owner_live_test');
   assert.equal(guide.expectedDays, 28);
   assert.equal(guide.questionsPerDay, 14);
   assert.equal(guide.records.length, 28);
@@ -39,7 +39,8 @@ test('T10 guide remains explicitly draft-only and covers 28 days with 392 prepar
 });
 
 test('T10 guide makes no unsupported claim of clinical or expert approval', () => {
-  assert.match(guide.questionPolicy, /draft|require semantic|clinical|source review/i);
+  assert.match(guide.questionPolicy, /Dr Abedi/u);
+  assert.match(guide.questionPolicy, /not_assessed/u);
   assert.ok(guide.records.every((record) => record.evidenceGrade === 'not_assessed'));
   assert.ok(guide.records.every((record) => record.sourceIds.every((id) => sourceIds.has(id))));
 });
