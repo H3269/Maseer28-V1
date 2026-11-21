@@ -3301,7 +3301,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     if (!answer.includes('شکست محسوب نمی‌شود')) supplementalGuidance.push(`انتخاب نسخه سبک برای روز ${day} شکست محسوب نمی‌شود؛ ${guide.lightVersion}`);
   }
   if (question.kind === 'stop' && !answer.includes('فاصله امن ایجاد کن')) {
-    supplementalGuidance.push(`اگر احتمال آسیب وجود دارد، فاصله امن ایجاد کن و از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر. شرط اختصاصی توقف امروز: ${guide.stopCondition}`);
+    supplementalGuidance.push(`اگر در روز ${day} احتمال آسیب وجود دارد، فاصله امن ایجاد کن، از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر و محدودیت اختصاصی این روز را رعایت کن: ${guide.stopCondition}.`);
   }
   if (question.kind === 'no_event' && !answer.includes('نمونه کم‌فشار قبلی')) {
     supplementalGuidance.push(`اگر مرور گذشته برایت امن و مناسب است، یک نمونه کم‌فشار قبلی را انتخاب کن؛ در غیر این صورت نبود نمونه را ثبت کن و از نسخه سبک استفاده کن: ${guide.lightVersion}`);
@@ -3314,7 +3314,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     supplementalGuidance.push(`لازم نیست برای انجام تمرین «${guide.title}» با فرد دیگری صحبت کنی؛ می‌توانی آن را به شکل خصوصی و امن انجام بدهی.`);
   }
   if (question.kind === 'anger_increased' && guide.stopCondition && !answer.includes(guide.stopCondition)) {
-    supplementalGuidance.push(`**شرط توقف اختصاصی امروز:** ${guide.stopCondition}`);
+    supplementalGuidance.push(`**محدودیت ایمنی روز ${day}:** ${guide.stopCondition}`);
   }
   if (question.kind === 'action_example'
     && !/اگر شرایط زندگی تو شبیه این نمونه نیست|اگر گفتن یا انجام‌دادن آن امن نیست/u.test(answer)) {
@@ -3340,7 +3340,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     if (answer.length < 350) supplementalGuidance.push(`**نقطه شروع بدون جبران:** ${guide.lightVersion}\n**اگر امروز نیاز به مکث داری:** ${guide.restVersion}\n**هدف روز ${day}:** ${guide.objective}`);
   }
   if (question.kind === 'anger_increased') {
-    supplementalGuidance.push('اگر فشار یا میل به واکنش آسیب‌زا بیشتر شده، تمرین را متوقف کن و در صورت امکان فاصله امن ایجاد کن. اگر احتمال آسیب فوری به خودت یا فرد دیگری وجود دارد، از خدمات اضطراری محل زندگی کمک فوری بگیر.');
+    supplementalGuidance.push(`اگر در روز ${day} فشار یا میل به واکنش آسیب‌زا بیشتر شده، تمرین را متوقف کن، در صورت امکان فاصله امن ایجاد کن و با توجه به شرط توقف اختصاصی «${guide.stopCondition}» از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر؛ اگر احتمال آسیب فوری به خودت یا فرد دیگری وجود دارد، از خدمات اضطراری محل زندگی کمک فوری بگیر.`);
   }
   if (question.kind === 'talk_other'
     && !/آزادانه رضایت داشته باشند/u.test(answer)) {
