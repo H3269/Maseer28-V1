@@ -1,4 +1,5 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { applySharedDailyAssistantAnswerFrame } from './sharedDailyAssistantAnswerFrame.js';
 import { expandDailyAssistantQuestionAnswer } from './dailyAssistantQuestionDetail.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
@@ -3100,5 +3101,14 @@ export function answerAnxietyDailyPreparedQuestion(args = {}) {
   const guide = ANXIETY_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
   const question = guide?.questions.find((item) => item.value === String(args.message || '').trim());
   const detailedAnswer = expandDailyAssistantQuestionAnswer(answer, { guide, question, topic: 'اضطراب' });
-  return appendDailyAssistantSafetyReminder(addTeacherStyleFrame(detailedAnswer, { guide, question, topic: 'اضطراب' }), question?.kind);
+  const safeAnswer = appendDailyAssistantSafetyReminder(
+    addTeacherStyleFrame(detailedAnswer, { guide, question, topic: 'اضطراب' }),
+    question?.kind,
+  );
+  return applySharedDailyAssistantAnswerFrame(safeAnswer, {
+    day,
+    topic: 'اضطراب',
+    guide,
+    question,
+  });
 }
