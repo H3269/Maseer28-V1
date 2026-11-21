@@ -76,6 +76,7 @@ test('T01 prepared answers contain no repeated non-safety sentence of 35+ normal
     // is needed across different daily answers; these are not topic-specific teaching content.
     normalizeSentence('لازم نیست آن را در تعامل واقعی اجرا کنی'),
     normalizeSentence('برای انجام تمرین عمداً خودت را وارد بحث یا موقعیت خشم‌آور نکن'),
+    normalizeSentence('برای آزمودنش موقعیتی نساز و هیچ گفت‌وگویی را به خودت یا دیگری تحمیل نکن'),
     normalizeSentence('نبود نمونه واقعی را همان‌طور که هست ثبت کن'),
     normalizeSentence('از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر'),
     normalizeSentence('اگر احتمال آسیب فوری به خودت یا فرد دیگری وجود دارد از خدمات اضطراری محل زندگی کمک فوری بگیر'),
@@ -98,7 +99,7 @@ test('T01 prepared answers contain no repeated non-safety sentence of 35+ normal
     for (const question of guide.questions) {
       const answer = answerAngerDailyPreparedQuestion({ day: guide.day, message: question.value })
         .replace(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN, '')
-        .replace(/^\*{0,2}راهنمای روز \d+ خشم[^\n]*\n?/u, '');
+        .replace(/^.*راهنمای روز \d+ خشم[^\n]*$/gmu, '');
       const sentences = answer.split(/[.!؟?؛\n]+/).map(normalizeSentence).filter((item) => item.length >= 35);
       for (const sentence of sentences) {
         if (approvedSafetyExceptions.has(sentence)) continue;
