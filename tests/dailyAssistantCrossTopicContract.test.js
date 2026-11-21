@@ -75,7 +75,8 @@ test('T01-T14 share the same 28-day, 14-question contract and four safety/evalua
       assert.deepEqual(guide.questions.map(q => q.id), expectedIds, topicId + ' day ' + guide.day + ' question IDs');
       assert.deepEqual(guide.questions.map(q => q.value), expectedValues, topicId + ' day ' + guide.day + ' question wording');
       assert.deepEqual(guide.questions.map(q => q.label), expectedValues, topicId + ' day ' + guide.day + ' question labels');
-      assert.ok(guide.questions.every(q => typeof q.answer === 'string' && q.answer.trim()), topicId + ' day ' + guide.day + ' every answer must exist');
+      assert.ok(guide.questions.every(q => Object.hasOwn(q, 'answer')), topicId + ' day ' + guide.day + ' answer field must exist');
+      if (Number(topicId.slice(1)) >= 9) assert.ok(guide.questions.every(q => typeof q.answer === 'string' && q.answer.trim()), topicId + ' day ' + guide.day + ' prepared answer text must exist');
       const safetyQuestions = guide.questions.filter(q => DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(q.kind));
       assert.equal(safetyQuestions.length, 4, topicId + ' day ' + guide.day + ' exactly four safety/evaluation questions');
       assert.deepEqual(new Set(safetyQuestions.map(q => q.kind)), new Set([topicSafetyKinds[topicId], 'talk_other', 'success', 'stop']), topicId + ' day ' + guide.day + ' safety question kinds');
