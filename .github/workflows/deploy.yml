@@ -36,6 +36,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Run content, assistant-contract, and regression checks before publishing the test app.
+      - name: Run automated tests
+        run: npm test
+
+      - name: Validate content data
+        run: npm run validate:content
+
+      - name: Validate assistant topic registry
+        run: npm run validate:assistant-topics
+
+      - name: Audit content quality
+        run: npm run audit:content-quality
+
       # Deliberately build with the repository's test defaults:
       # TEST_MODE=true and TIME_LOCK_ENABLED=false.
       # Keep this workflow test-only: do not run production preparation or release-only gates here.
