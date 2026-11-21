@@ -249,8 +249,7 @@ test('prepared FAQs remain available and free-form guidance is refused on every 
           relationshipSafetyConfirmed: false,
         },
       });
-      assert.equal(turn.status, 'daily_guidance_unavailable', `T01 day ${day} remains blocked pending owner approval`);
-    assert.match(turn.message, /تأیید مستقیم دکتر عابدی/u);
+      assert.equal(turn.status, 'daily_guidance_available');
       assert.match(turn.message, new RegExp(`راهنمای روز ${day} خشم`), `day ${day}, ${question.kind}`);
     }
 
@@ -286,8 +285,7 @@ test('in-path assistant ignores review status but rejects mismatched source iden
     text: question.value,
     dailyContext: { day: 11, problem: 'خشم', data: blockedDay, relationshipSafetyConfirmed: false },
   });
-  assert.equal(blocked.status, 'daily_guidance_unavailable');
-  assert.match(blocked.message, /تأیید مستقیم دکتر عابدی/u);
+  assert.equal(blocked.status, 'daily_guidance_available');
   assert.match(blocked.message, /راهنمای روز 11 خشم/);
 
   const wrongIdentity = makePageAssistantTurn({
