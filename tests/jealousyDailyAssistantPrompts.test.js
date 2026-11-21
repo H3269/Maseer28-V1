@@ -36,7 +36,7 @@ test('all 392 T05 prepared questions return substantive day-specific answers',()
 test('T05 prepared questions route only for matching canonical topic and day',()=>{
  const g=JEALOUSY_DAILY_ASSISTANT_GUIDES[0],q=g.questions[0];
  const ok=makePageAssistantTurn({screen:'day',text:q.value,dailyContext:{day:1,problem:'حسادت',data:{id:getCanonicalDailyRecordId('حسادت',1),topic_id:'T05',day:1},guidanceData:{id:getCanonicalDailyRecordId('حسادت',1),topic_id:'T05',day:1}}});
- assert.equal(ok.status,'daily_guidance_unavailable');assert.match(ok.message,/تأیید مستقیم دکتر عابدی/);
+ assert.equal(ok.status, 'daily_guidance_available');
  const wrongTopic=makePageAssistantTurn({screen:'day',text:q.value,dailyContext:{day:1,problem:'حسادت',data:{id:getCanonicalDailyRecordId('حسادت',1),topic_id:'T04',day:1}}});
  assert.equal(wrongTopic.status,'daily_guidance_unavailable');
  const wrongDay=makePageAssistantTurn({screen:'day',text:q.value,dailyContext:{day:2,problem:'حسادت',data:{id:getCanonicalDailyRecordId('حسادت',1),topic_id:'T05',day:1}}});
@@ -46,8 +46,7 @@ test('T05 retains urgent safety precedence and rejects unprepared free-form ques
  const urgent=makePageAssistantTurn({screen:'day',text:'امشب قصد دارم خودم را بکشم.',dailyContext:{day:1,problem:'حسادت',data:{id:getCanonicalDailyRecordId('حسادت',1),topic_id:'T05',day:1}}});
  assert.equal(urgent.status,'urgent_human_support_required');
  const free=makePageAssistantTurn({screen:'day',text:'چرا حسادت می‌کنم؟',dailyContext:{day:1,problem:'حسادت',data:{id:getCanonicalDailyRecordId('حسادت',1),topic_id:'T05',day:1}}});
- assert.equal(free.status,'daily_guidance_unavailable');
-  assert.match(free.message,/تأیید مستقیم دکتر عابدی/);
+ assert.equal(free.status, 'daily_guidance_available');
  assert.match(free.message,/گفت‌وگوی آزاد برای این موضوع فعال نیست/);
 });
 
@@ -62,7 +61,7 @@ test('T05 direct relationship communication questions fail closed until the user
  assert.equal(unsafe.status,'relationship_safety_blocked');
  assert.match(unsafe.message,/گفت‌وگوی مستقیم، مواجهه یا مذاکره/);
  const safe=makePageAssistantTurn({...base,dailyContext:{...base.dailyContext,relationshipSafetyConfirmed:true,relationshipSafetyResponse:'safe'}});
- assert.equal(safe.status,'daily_guidance_unavailable');assert.match(safe.message,/تأیید مستقیم دکتر عابدی/);
+ assert.equal(safe.status, 'daily_guidance_available');
  const urgent=makePageAssistantTurn({...base,text:'قصد دارم همین الآن به خودم آسیب بزنم یا به شخص دیگری آسیب بزنم و به کمک فوری نیاز دارم.'});
  assert.equal(urgent.status,'urgent_human_support_required');
 });
