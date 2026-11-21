@@ -167,3 +167,23 @@ test('T07 has distinct hypothetical examples that separate responsibility from s
   assert.match(days[10].exerciseExample, /مجازات/u);
   assert.match(days[23].actionExample, /حق فاصله/u);
 });
+
+test('T08 has distinct hypothetical examples that preserve autonomy, consent, and safe support', async () => {
+  const [base, overrides] = await Promise.all([
+    readJson('../public/content/path-content.json'),
+    readJson('../public/content/daily-text-overrides.v1.json'),
+  ]);
+  const merged = mergeDailyTextOverrides(base, overrides);
+  const days = merged.categories['وابستگی عاطفی'].days;
+  assert.equal(days.length, 28);
+  for (const day of days) {
+    assert.ok(day.exerciseExample?.trim(), 'T08 day ' + day.day + ' exercise example');
+    assert.ok(day.actionExample?.trim(), 'T08 day ' + day.day + ' action example');
+    assert.match(day.exerciseExample, /^نمونه فرضی/u);
+    assert.match(day.actionExample, /^نمونه فرضی/u);
+  }
+  assert.equal(new Set(days.map(day => day.exerciseExample)).size, 28);
+  assert.equal(new Set(days.map(day => day.actionExample)).size, 28);
+  assert.match(days[24].actionExample, /حمایت امن/u);
+  assert.match(days[25].exerciseExample, /پاسخ منفی/u);
+});
