@@ -83,3 +83,15 @@
 
 - **Follow-up test migration:** restored normal prepared-answer expectations in `pageAssistantTurn.test.js`, `t11RuntimeIntegration.test.js`, `t09RuntimeIntegration.test.js`, `t12DailyAssistantGuide.test.js`, `t14DailyAssistantPrompts.test.mjs`, `preparedOnlyCurrentTopics.test.js`, `angerDailyAssistantPrompts.test.js`, `angerPreparedFaqSafetyBypass.test.js`, `griefDailyAssistantPrompts.test.js`, `jealousyDailyAssistantPrompts.test.js`, `t13DailyAssistantPrompts.test.mjs`, `emotionalDependencyDailyAssistantPrompts.test.js`, `guiltDailyAssistantPrompts.test.js`, and `t11DailyAssistantPrompts.test.mjs`. Identity-mismatch checks remain separate and should continue to reject mismatched topic/day records.
 - **Verification still pending:** these test edits have not been executed. More legacy browser/runtime assertions may remain; the full test suite and browser suite must run before the branch is considered ready for live user testing.
+
+
+## 2026-11-21 — follow-up: distinguish content availability from safety restrictions
+
+- Corrected the remaining prepared-question regression tests so T01–T14 exact day-specific questions expect normal answers, while unrelated free-form questions continue to return `prepared_question_required`.
+- Preserved independent rejection for mismatched canonical topic/day identity, relationship-safety confirmation/blocking, and urgent-risk handoff.
+- Corrected the T13 high-risk response copy: it now explains the recorded risk level and does not imply that specialist approval or a specialist review is pending.
+- Added a T13 regression case proving that a high-risk safety classification can still block an unsafe answer for safety reasons, independently of review metadata.
+- Updated the T12 integration test title to describe the restored answer route and its separate interpersonal-safety check.
+- Static repository review found no remaining runtime references to the deleted owner-approval module or the owner-approval functions in the daily page, page assistant, or global assistant launcher. The obsolete owner-approval test filename remains for historical continuity, but its assertions now enforce absence of the gate.
+- The test-only GitHub Pages workflow runs `npm test`, content validation, assistant-topic validation, content-quality audit, and a test build on pushes to `main`. The production Telegram/Bale workflow is separately manual and requires the explicit `publish` input. No production publish was triggered.
+- **Execution status:** no Node tests, content validators, build, or Playwright browser scripts have been executed in this environment. A local clone attempt could not reach GitHub because network name resolution is unavailable. The available commit-status lookup returned no status entries; the workflow-run connector only exposes PR-triggered runs, so it cannot confirm the push-triggered Pages run. Do not treat this code review as a passing test result or as a ready-for-user-live-test release.
