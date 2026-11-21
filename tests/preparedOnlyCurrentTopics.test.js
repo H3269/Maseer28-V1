@@ -60,8 +60,13 @@ for (const topic of topics) {
       text: question,
       dailyContext: contextFor(topic),
     });
-    assert.equal(prepared.status, 'daily_guidance_available');
-    assert.match(prepared.message, /راهنمای روز/);
+    if (topic.id === 'T10') {
+      assert.equal(prepared.status, 'daily_guidance_unavailable');
+      assert.match(prepared.message, /پیش‌نویس/u);
+    } else {
+      assert.equal(prepared.status, 'daily_guidance_available');
+      assert.match(prepared.message, /راهنمای روز/);
+    }
 
     const freeform = makePageAssistantTurn({
       screen: 'day',
@@ -75,12 +80,31 @@ for (const topic of topics) {
 }
 
 
+test('T10 draft-only package is not exposed through the live daily assistant on any day', () => {
+  const topic = topics.find(item => item.id === 'T10');
+  assert.ok(topic);
+  for (const guide of topic.guides) {
+    const dailyContext = contextFor(topic);
+    dailyContext.day = guide.day;
+    dailyContext.data.id = getCanonicalDailyRecordId(topic.name, guide.day);
+    dailyContext.data.day = guide.day;
+    dailyContext.data.title = guide.title;
+    dailyContext.data.exercise = guide.exercise;
+    dailyContext.data.actionText = guide.action;
+    for (const question of topic.groups(guide.day).flatMap(group => group.questions)) {
+      const result = makePageAssistantTurn({ screen: 'day', text: question.value, dailyContext });
+      assert.equal(result.status, 'daily_guidance_unavailable', 'T10 day ' + guide.day + ' must remain draft-only');
+      assert.match(result.message, /پیش‌نویس/u);
+    }
+  }
+});
+
 test('all exact prepared FAQs across 28 days keep their own answers when their wording contains broad safety cues', () => {
   assert.equal(topics.length, 14, 'the shared prepared-only contract covers T01 through T14');
   let checked = 0;
   for (const topic of topics) {
     for (const guide of topic.guides) {
-      if (topic.id === 'T13' && guide.day === 14) continue;
+      if (topic.id === 'T10' || (topic.id === 'T13' && guide.day === 14)) continue;
       const dailyContext = {
         day: guide.day,
         problem: topic.name,
@@ -107,7 +131,7 @@ test('all exact prepared FAQs across 28 days keep their own answers when their w
       }
     }
   }
-  assert.equal(checked, 14 * 28 * 14 - 14, 'every prepared question is checked; only the separately risk-gated T13 day 14 is excluded');
+  assert.equal(checked, 14 * 28 * 14 - 14 - 392, 'every runtime-eligible prepared question is checked; draft-only T10 and separately risk-gated T13 day 14 are excluded');
 });
 
 test('T01-T14 daily titles, exercises, actions, and examples are complete and not exact duplicates', () => {
