@@ -158,6 +158,10 @@ try {
   assert.equal(await page.locator('#ownerApprovalPending').count(), 0,
     'the app must not display an internal specialist-approval status');
 
+  // Close the global assistant before navigating; its backdrop correctly blocks the page beneath it.
+  await closeButton.click();
+  await dialog.waitFor({ state: 'detached' });
+
   // Restore the pre-install state before testing the Library guided composer.
   await page.evaluate(async () => {
     const cache = await caches.open('maseer28-local-model-state-v1');
