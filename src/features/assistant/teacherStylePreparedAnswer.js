@@ -1,4 +1,20 @@
-const INTERNAL_TOPIC_LABELS = Object.freeze({ T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت', T13: 'تنهایی', T18: 'نفرت از خود' });
+const INTERNAL_TOPIC_LABELS = Object.freeze({
+  T01: 'خشم',
+  T02: 'اضطراب',
+  T03: 'ترس',
+  T04: 'نفرت',
+  T05: 'حسادت',
+  T06: 'غم و سوگ',
+  T07: 'احساس گناه',
+  T08: 'وابستگی عاطفی',
+  T09: 'اهمال‌کاری',
+  T10: 'بی‌خوابی و مشکلات خواب',
+  T11: 'عادت‌های تکراری',
+  T12: 'مرزبندی و نه گفتن',
+  T13: 'تنهایی',
+  T14: 'کمبود انگیزه',
+  T18: 'نفرت از خود',
+});
 
 export function cleanPreparedAssistantTopicText(value, topic) {
   let text = String(value || '')
