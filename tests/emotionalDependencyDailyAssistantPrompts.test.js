@@ -228,5 +228,6 @@ test('T08 urgent safety handoff takes precedence and free-form daily questions r
     text: 'چرا این‌قدر به او وابسته‌ام؟',
     dailyContext: contextFor(guide),
   });
-  assert.equal(free.status, 'daily_guidance_available');
+  assert.equal(free.status, 'prepared_question_required');
+  assert.match(free.message, /گفت‌وگوی آزاد برای این موضوع فعال نیست/);
 });
