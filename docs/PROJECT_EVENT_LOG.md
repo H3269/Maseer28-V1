@@ -132,3 +132,11 @@
 - **Other browser coverage in the failed run:** the daily safety gate, T05, T08, T10 (both live assistant and sleep package), T12, T14, global assistant, privacy migration, reader parity, export, and startup-performance scripts reported success. The daily-assistant-guidance script was the reported failure.
 - **Release status:** no Pages deployment completed for the failed run; no Telegram/Bale production publication was triggered.
 
+## 2026-11-21 — second browser regression diagnosis (T13 safety reminder)
+
+- **Observed run:** workflow run `44922645860` completed with failure after all automated Node tests, content validation, topic registry validation, content-quality audit, and build succeeded. The browser regression script failed at line 924.
+- **Actual assertion mismatch:** the T13 prepared-answer implementation and its unit test use the canonical topic reminder heading `یادآوری اختصاصی ایمنی درباره تنهایی`; the browser test searched for `یادآوری اختصاصی ایمنی تنهایی` (omitting `درباره`). The answer includes the topic reminder; the browser assertion was inconsistent with the source and unit-test contract.
+- **Correction committed on `main`:** `97782bf` — align the browser assertion with the canonical reminder heading. The safety reminder content and its rendering are not weakened or removed.
+- **Verification:** awaiting the workflow run for this correction. Do not claim browser success or Pages deployment until the run completes successfully.
+- **Release:** no Telegram/Bale production publication.
+
