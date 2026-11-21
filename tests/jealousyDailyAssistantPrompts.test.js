@@ -46,7 +46,8 @@ test('T05 retains urgent safety precedence and rejects unprepared free-form ques
  const urgent=makePageAssistantTurn({screen:'day',text:'امشب قصد دارم خودم را بکشم.',dailyContext:{day:1,problem:'حسادت',data:{id:getCanonicalDailyRecordId('حسادت',1),topic_id:'T05',day:1}}});
  assert.equal(urgent.status,'urgent_human_support_required');
  const free=makePageAssistantTurn({screen:'day',text:'چرا حسادت می‌کنم؟',dailyContext:{day:1,problem:'حسادت',data:{id:getCanonicalDailyRecordId('حسادت',1),topic_id:'T05',day:1}}});
- assert.equal(free.status,'prepared_question_required');
+ assert.equal(free.status,'daily_guidance_unavailable');
+  assert.match(free.message,/تأیید مستقیم دکتر عابدی/);
  assert.match(free.message,/گفت‌وگوی آزاد برای این موضوع فعال نیست/);
 });
 
@@ -62,7 +63,7 @@ test('T05 direct relationship communication questions fail closed until the user
  assert.match(unsafe.message,/گفت‌وگوی مستقیم، مواجهه یا مذاکره/);
  const safe=makePageAssistantTurn({...base,dailyContext:{...base.dailyContext,relationshipSafetyConfirmed:true,relationshipSafetyResponse:'safe'}});
  assert.equal(safe.status,'daily_guidance_unavailable');assert.match(safe.message,/تأیید مستقیم دکتر عابدی/);
- assert.match(safe.message,/اقدام اختصاصی امروز/);
+ assert.match(safe.message,/تأیید مستقیم دکتر عابدی/);
  const urgent=makePageAssistantTurn({...base,text:'قصد دارم همین الآن به خودم آسیب بزنم یا به شخص دیگری آسیب بزنم و به کمک فوری نیاز دارم.'});
  assert.equal(urgent.status,'urgent_human_support_required');
 });
