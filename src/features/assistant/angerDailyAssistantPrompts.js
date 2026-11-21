@@ -3288,8 +3288,9 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     if (guide.exercise && !answer.includes(guide.exercise)) supplementalGuidance.push(`**تمرین امروز:** ${guide.exercise}`);
     if (guide.action && !answer.includes(guide.action)) supplementalGuidance.push(`**اقدام امروز:** ${guide.action}`);
   }
-  if (question.kind === 'light_version' && !answer.includes('خودت را مجبور نکن')) {
-    supplementalGuidance.push(`خودت را مجبور نکن بیشتر از توان امروزت پیش بروی؛ نسخه سبک همین روز این است: ${guide.lightVersion}`);
+  if (question.kind === 'light_version') {
+    if (!answer.includes('خودت را مجبور نکن')) supplementalGuidance.push(`خودت را مجبور نکن بیشتر از توان امروزت پیش بروی؛ نسخه سبک همین روز این است: ${guide.lightVersion}`);
+    if (!answer.includes('شکست محسوب نمی‌شود')) supplementalGuidance.push(`انتخاب نسخه سبک برای روز ${day} شکست محسوب نمی‌شود؛ ${guide.lightVersion}`);
   }
   if (question.kind === 'stop' && !answer.includes('فاصله امن ایجاد کن')) {
     supplementalGuidance.push(`اگر احتمال آسیب وجود دارد، فاصله امن ایجاد کن و از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر. شرط اختصاصی توقف امروز: ${guide.stopCondition}`);
@@ -3339,7 +3340,8 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   }
   if (supplementalGuidance.length) answer += '\n\n' + supplementalGuidance.join('\n\n');
   const dayHeading = `راهنمای روز ${guide.day} خشم — ${guide.title}`;
-  const contextualAnswer = answer.includes(dayHeading) ? answer : `${dayHeading}\n\n${answer}`;
+  let contextualAnswer = answer.includes(dayHeading) ? answer : `${dayHeading}\n\n${answer}`;
+  if (!/\*\*[^*]+\*\*/u.test(contextualAnswer)) contextualAnswer = `**پاسخ ${question.id} — ${guide.title}**\n\n${contextualAnswer}`;
 
   return appendDailyAssistantSafetyReminder(
     addTeacherStyleFrame(contextualAnswer, { guide, question, topic: 'خشم' }),
