@@ -99,7 +99,6 @@ test('all exact prepared FAQs across 28 days keep their own answers when their w
   let checked = 0;
   for (const topic of topics) {
     for (const guide of topic.guides) {
-      if (topic.id === 'T13' && guide.day === 14) continue;
       const dailyContext = {
         day: guide.day,
         problem: topic.name,
@@ -126,7 +125,7 @@ test('all exact prepared FAQs across 28 days keep their own answers when their w
       }
     }
   }
-  assert.equal(checked, 14 * 28 * 14 - 14, 'every prepared question is checked except the separately risk-gated T13 day 14');
+  assert.equal(checked, 14 * 28 * 14, 'every prepared question in all 14 topics and 28 days is checked');
 });
 
 test('T01-T14 daily titles, exercises, actions, and examples are complete and not exact duplicates', () => {
@@ -284,13 +283,8 @@ test('a clear no-immediate-danger answer safely returns each topic to prepared g
       conversationState: cleared.conversationState,
       dailyContext,
     });
-    if (topic.id === 'T10') {
-      assert.equal(prepared.status, 'daily_guidance_unavailable', topic.name);
-      assert.match(prepared.message, /پیش‌نویس/u);
-    } else {
-      assert.equal(prepared.status, 'daily_guidance_available', topic.name);
-      assert.match(prepared.message, /راهنمای روز/);
-    }
+    assert.equal(prepared.status, 'daily_guidance_available', topic.name);
+    assert.match(prepared.message, /راهنمای روز/);
   }
 });
 
