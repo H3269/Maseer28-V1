@@ -35,7 +35,7 @@ test('all 392 exact T11 prepared questions route through the real page assistant
       });
       assert.equal(result.status, 'daily_guidance_available');
       assert.match(result.message, new RegExp(guide.title), 'the answer must identify the matching daily guide');
-      assert.equal(result.message.includes(question.answer), false);
+      assert.equal(result.message.includes(question.answer), true, 'the exact prepared answer must be present in the response');
       if (question.kind === 't11_distress') {
         assert.equal(result.message.includes(guide.stopCondition), false);
         assert.equal(result.message.includes(guide.whenToSeekHumanSupport), false);
