@@ -1,6 +1,7 @@
 import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS, DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from '../src/features/assistant/dailyAssistantSafetyReminder.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { cleanPreparedAssistantTopicText } from '../src/features/assistant/teacherStylePreparedAnswer.js';
 import { readFile } from 'node:fs/promises';
 import { ANGER_DAILY_ASSISTANT_GUIDES, answerAngerDailyPreparedQuestion, getAngerDailyAssistantPromptGroups } from '../src/features/assistant/angerDailyAssistantPrompts.js';
 import { ANXIETY_DAILY_ASSISTANT_GUIDES, answerAnxietyDailyPreparedQuestion, getAnxietyDailyAssistantPromptGroups } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
@@ -87,8 +88,8 @@ test('all T01-T14 runtime answers include the exact day-specific exercise and ac
       assert.ok(exerciseQuestion, topicId + ' day ' + guide.day + ' exercise example question');
       assert.ok(actionQuestion, topicId + ' day ' + guide.day + ' action example question');
 
-      const expectedExerciseExample = String(guide.exerciseExample || exerciseQuestion.answer || '').trim();
-      const expectedActionExample = String(guide.actionExample || actionQuestion.answer || '').trim();
+      const expectedExerciseExample = cleanPreparedAssistantTopicText(String(guide.exerciseExample || exerciseQuestion.answer || '').trim());
+      const expectedActionExample = cleanPreparedAssistantTopicText(String(guide.actionExample || actionQuestion.answer || '').trim());
       assert.ok(expectedExerciseExample, topicId + ' day ' + guide.day + ' authored exercise example');
       assert.ok(expectedActionExample, topicId + ' day ' + guide.day + ' authored action example');
 
