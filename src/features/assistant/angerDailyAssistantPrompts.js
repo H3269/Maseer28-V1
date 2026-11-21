@@ -1,4 +1,5 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { applySharedDailyAssistantAnswerFrame } from './sharedDailyAssistantAnswerFrame.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 import { ANGER_DAILY_PREPARED_ANSWERS } from './angerDailyPreparedAnswers.js';
@@ -3379,8 +3380,14 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   let contextualAnswer = answer.includes(dayHeading) ? answer : `${dayHeading}\n\n${answer}`;
   if (!/\*\*[^*]+\*\*/u.test(contextualAnswer)) contextualAnswer = `**پاسخ ${question.id} — ${guide.title}**\n\n${contextualAnswer}`;
 
-  return appendDailyAssistantSafetyReminder(
+  const safeAnswer = appendDailyAssistantSafetyReminder(
     addTeacherStyleFrame(contextualAnswer, { guide, question, topic: 'خشم' }),
     question.kind,
   );
+  return applySharedDailyAssistantAnswerFrame(safeAnswer, {
+    day,
+    topic: 'خشم',
+    guide,
+    question,
+  });
 }
