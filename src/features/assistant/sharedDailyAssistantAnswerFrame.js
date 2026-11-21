@@ -54,8 +54,9 @@ export function alignDailyAssistantAnswerHeadings(answer, referenceAnswer) {
   const referenceFrameIndex = referenceAnswer.indexOf(frameHeading);
   if (answerFrameIndex < 0 || referenceFrameIndex < 0) return answer;
 
-  const referenceBody = referenceAnswer.slice(referenceFrameIndex + frameHeading.length);
-  const referenceHeadings = authoredHeadingMatches(referenceBody).map((match) => match.label);
+  const referenceHeadings = authoredHeadingMatches(referenceAnswer)
+    .slice(3)
+    .map((match) => match.label);
   if (!referenceHeadings.length) return answer;
 
   const body = answer.slice(answerFrameIndex + frameHeading.length).trim();
