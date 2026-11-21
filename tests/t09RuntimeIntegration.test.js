@@ -51,7 +51,7 @@ test('all 392 exact T09 questions route through the real page assistant with mat
       });
       assert.equal(result.status, 'daily_guidance_unavailable', `T09 day ${guide.day} must remain blocked pending owner approval`);
     assert.match(result.message, /تأیید مستقیم دکتر عابدی/u);
-      assert.ok(result.message.includes(guide.title), `day ${guide.day}: answer retains title`);
+      assert.doesNotMatch(result.message, new RegExp(guide.title));
       assert.ok(result.message.trim().length > 0);
       checked += 1;
     }
@@ -88,8 +88,8 @@ test('T09 rejects wrong topic, wrong day, and free-form questions', () => {
     text: 'چرا همیشه کارهایم را عقب می‌اندازم؟',
     dailyContext: contextFor(guide),
   });
-  assert.equal(freeForm.status, 'prepared_question_required');
-  assert.match(freeForm.message, /گفت‌وگوی آزاد برای این موضوع فعال نیست/u);
+  assert.equal(freeForm.status, 'daily_guidance_unavailable');
+  assert.match(freeForm.message, /تأیید مستقیم دکتر عابدی/u);
 });
 
 test('explicit immediate-risk disclosures keep precedence over prepared T09 answers', () => {
