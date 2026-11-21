@@ -40,7 +40,7 @@ export function answerT13DailyPreparedQuestion({ day, message, dailyContent } = 
       `**نسخه استراحت تمرین:** ${guide.restVersion}`,
       `**نسخه استراحت اقدام:** ${guide.restActionVersion}`,
       'اگر نسخه سبک هم فشار ایجاد می‌کند، استراحت یا توقف انتخاب معتبر است.',
-    ].join('\\n\\n');
+    ].join('\n\n');
   }
 
   const heading = `راهنمای روز ${guide.day} تنهایی — ${guide.title}`;
