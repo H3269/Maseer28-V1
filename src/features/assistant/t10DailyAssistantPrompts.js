@@ -5,7 +5,6 @@ import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 
 export const T10_DAILY_ASSISTANT_GUIDES = Object.freeze(T10_GUIDE.records.map(normalizeDailyAssistantGuide));
-export const T10_DAILY_ASSISTANT_RUNTIME_ELIGIBLE = T10_GUIDE.status !== 'draft_not_runtime_eligible';
 
 function toT10DayNumber(value) {
   const day = Number(value);
