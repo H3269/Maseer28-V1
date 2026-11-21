@@ -379,3 +379,82 @@ test('T09 day 27 and T11 day 18 titles remain distinct and synchronized with vis
   assert.equal(overlay.categories['عادت‌های تکراری'].days.find(day => day.day === 18).title, t11Day18.title);
 });
 
+const visibleAssistantTextKeys = new Set([
+  'topic', 'title', 'objective', 'skill', 'mechanism', 'exercise', 'action',
+  'lightVersion', 'lightActionVersion', 'progressVersion', 'progressActionVersion',
+  'restVersion', 'restActionVersion', 'successCriterion', 'reflectionPrompt',
+  'reflectionQuestion', 'stopCondition', 'exerciseExample', 'actionExample',
+  'label', 'value', 'answer', 'text', 'heading', 'body', 'whenToSeekHumanSupport',
+  'contraindications', 'safetyNote', 'riskNote',
+]);
+
+function collectVisibleAssistantStrings(value, key = '', inheritedVisible = false, output = []) {
+  const visible = inheritedVisible || visibleAssistantTextKeys.has(key);
+  if (Array.isArray(value)) {
+    for (const item of value) collectVisibleAssistantStrings(item, key, visible, output);
+  } else if (value && typeof value === 'object') {
+    for (const [childKey, childValue] of Object.entries(value)) {
+      collectVisibleAssistantStrings(childValue, childKey, visible, output);
+    }
+  } else if (typeof value === 'string' && visible && value.trim()) {
+    output.push(value);
+  }
+  return output;
+}
+
+test('T01-T14 assistant-visible daily guides and prepared answers contain no leaked Latin identifiers', () => {
+  const contentNames = {
+    T09: 'اهمال‌کاری',
+    T10: 'بی‌خوابی و مشکلات خواب',
+    T11: 'عادت‌های تکراری',
+    T12: 'مرزبندی و نه گفتن',
+    T13: 'تنهایی',
+    T14: 'کمبود انگیزه',
+  };
+  const latin = /\\p{Script=Latin}/u;
+  const findings = [];
+  let daysChecked = 0;
+  let runtimeAnswersChecked = 0;
+
+  for (const [topicId, guides, getGroups, answerPrepared] of allTopicContracts) {
+    assert.equal(guides.length, 28, topicId + ' must cover all 28 days');
+    for (const guide of guides) {
+      daysChecked += 1;
+      const dayLabel = topicId + ' روز ' + guide.day;
+      for (const value of collectVisibleAssistantStrings(guide)) {
+        if (latin.test(value)) findings.push(dayLabel + ' متن منبع: ' + value.slice(0, 180));
+      }
+
+      const name = contentNames[topicId];
+      const dailyContent = name ? {
+        id: name + '-' + String(guide.day).padStart(2, '0'),
+        topic_id: topicId,
+        day: guide.day,
+        title: guide.title,
+        exercise: guide.exercise,
+        actionText: guide.action,
+        sourceExercise: guide.exercise,
+        sourceActionText: guide.action,
+      } : undefined;
+
+      for (const group of getGroups(guide.day)) {
+        if (latin.test(group.label)) findings.push(dayLabel + ' عنوان گروه: ' + group.label);
+        for (const question of group.questions) {
+          for (const [field, value] of [['عنوان پرسش', question.label], ['متن پرسش', question.value]]) {
+            if (typeof value === 'string' && latin.test(value)) findings.push(dayLabel + ' ' + field + ': ' + value);
+          }
+          const answer = answerPrepared({ day: guide.day, message: question.value, dailyContent });
+          if (typeof answer === 'string' && answer.trim()) {
+            runtimeAnswersChecked += 1;
+            if (latin.test(answer)) findings.push(dayLabel + ' پاسخ آماده ' + question.id + ': ' + answer.match(/[^\\n]*\\p{Script=Latin}[^\\n]*/u)?.[0]?.slice(0, 220));
+          }
+        }
+      }
+    }
+  }
+
+  assert.equal(daysChecked, 14 * 28, 'all 392 topic/day records must be audited');
+  assert.ok(runtimeAnswersChecked > 0, 'the audit must inspect actual prepared runtime answers');
+  assert.deepEqual(findings, [], 'no Latin letters, internal IDs, code fragments, or placeholders may leak into visible assistant copy');
+});
+
