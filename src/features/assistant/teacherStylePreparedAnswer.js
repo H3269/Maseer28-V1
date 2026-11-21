@@ -20,7 +20,7 @@ export function cleanPreparedAssistantTopicText(value, topic) {
   let text = String(value || '')
     .replace(/«?بسته(?:‌ی| ی)?\s*T([12][0-9]|3[0-4]|0?[1-9])(?:-[A-Z]\d{2})?»?/g, (_, digits) => 'موضوع ' + (INTERNAL_TOPIC_LABELS['T' + digits.padStart(2, '0')] || 'مرتبط'))
     .replace(/\bT([12][0-9]|3[0-4]|0?[1-9])(?:-[A-Z]\d{2})?\b/g, (_, digits) => INTERNAL_TOPIC_LABELS['T' + digits.padStart(2, '0')] || 'موضوع مرتبط')
-    .replace(/\\bq\\d{2}\\b/gi, 'پرسش')
+    .replace(/\bq\d{2}\b/gi, 'پرسش')
     .replace(/این بسته/g, 'این موضوع')
     .replace(/در این بسته/g, 'در این موضوع')
     .replace(/بسته فعلی/g, 'موضوع فعلی');
