@@ -625,7 +625,8 @@ try {
   assert.match(assistantReply, /نکته یادگیری/);
   assert.match(assistantReply, /انجام تمرین/);
   assert.match(assistantReply, /هدف امروز:/);
-  assert.match(assistantReply, /گام‌های ساده اجرا:/);\n  assert.match(assistantReply, /یک موقعیت کم‌فشار را انتخاب کن/);
+  assert.match(assistantReply, /گام‌های ساده اجرا:/);
+  assert.match(assistantReply, /یک موقعیت کم‌فشار را انتخاب کن/);
   assert.match(assistantReply, /تفکیک رویداد، احساس و رفتار/);
   assert.equal(await panel.getByTestId('daily-assistant-safety-reminder').count(), 0,
     'ordinary exercise questions must not show the safety reminder card');
