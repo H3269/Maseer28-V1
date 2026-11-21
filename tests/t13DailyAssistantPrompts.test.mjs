@@ -86,10 +86,13 @@ test('T13 day 24 verifies a source before use instead of repeating day 14 activi
   const day24 = days.find((day) => day.day === 24);
   const guide24 = T13_DAILY_ASSISTANT_GUIDES.find((guide) => guide.day === 24);
   assert.match(day14.exercise, /فعالیت گروهی کم‌هزینه|فعالیت گروهی/u);
+  const guide14 = T13_DAILY_ASSISTANT_GUIDES.find((guide) => guide.day === 14);
+  assert.match(guide14.questions.find((question) => question.kind === 'exercise_example').answer, /باغبانی|گروه داوطلبانه/u);
+  assert.doesNotMatch(guide14.questions.find((question) => question.kind === 'exercise_example').answer, /هزینه|زمان و هزینه/u);
   assert.match(day24.exercise, /نیاز اجتماعی یا حمایتی مشخص/u);
   assert.doesNotMatch(day24.exercise, /فعالیت گروهی|علاقه/u);
   assert.match(guide24.questions.find((question) => question.kind === 'exercise_example').answer, /حمایت در سوگ|راهنمایی اجتماعی/u);
-  assert.match(day14.actionText, /زمان|شرایط حضور|پرسیدن شرایط/u);
+  assert.match(day14.actionText, /قالب فعالیت|امکان مشارکت/u);
   assert.match(day24.actionText, /رسمی‌بودن منبع|شرایط محرمانگی/u);
   assert.doesNotMatch(day24.actionText, /هزینه و دسترس‌پذیری/u);
   assert.equal(day24.actionText, guide24.action);
