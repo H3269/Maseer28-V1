@@ -1,4 +1,5 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { expandDailyAssistantQuestionAnswer } from './dailyAssistantQuestionDetail.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 // T03 prepared-only daily assistant bank. Non-diagnostic educational guidance; safety limits remain active.
@@ -3085,5 +3086,6 @@ export function answerFearDailyPreparedQuestion(args = {}) {
   const day = toFearDayNumber(args.day);
   const guide = FEAR_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
   const question = guide?.questions.find((item) => item.value === String(args.message || '').trim());
-  return appendDailyAssistantSafetyReminder(addTeacherStyleFrame(answer, { guide, question, topic: 'ترس' }), question?.kind);
+  const detailedAnswer = expandDailyAssistantQuestionAnswer(answer, { guide, question, topic: 'ترس' });
+  return appendDailyAssistantSafetyReminder(addTeacherStyleFrame(detailedAnswer, { guide, question, topic: 'ترس' }), question?.kind);
 }
