@@ -25,6 +25,7 @@ jobs:
       - name: Checkout main
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Setup Node
@@ -54,6 +55,35 @@ jobs:
       # Keep this workflow test-only: do not run production preparation or release-only gates here.
       - name: Build test app
         run: npm run build -- --base=/Maseer28-V1/
+
+      - name: Prepare canonical reader parity baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist/test-fixtures
+          node --input-type=module <<'NODE'
+          import { execFileSync } from 'node:child_process';
+          import { writeFileSync } from 'node:fs';
+
+          const baselineCommit = 'b9f2de1898c5e023e35840b0c86883546a7204d4';
+          const source = execFileSync('git', [
+            'show',
+            `${baselineCommit}:src/features/library/readerEngine.js`,
+          ], { encoding: 'utf8' });
+          const baseline = source.replaceAll(
+            'import.meta.env.BASE_URL',
+            JSON.stringify('/Maseer28-V1/'),
+          );
+          if (baseline.includes('import.meta.env')) {
+            throw new Error('Reader baseline contains an unresolved Vite environment reference.');
+          }
+          if (!baseline.includes('export function buildLegacyReaderLayout')) {
+            throw new Error('Historical reader baseline does not expose the expected layout function.');
+          }
+          writeFileSync('dist/test-fixtures/readerEngine-baseline.js', baseline, 'utf8');
+          NODE
+          test -s dist/test-fixtures/readerEngine-baseline.js
+          node --check dist/test-fixtures/readerEngine-baseline.js
 
       # Run the complete Chromium browser regression suite against the same test build.
       - name: Install pinned Playwright browser runner

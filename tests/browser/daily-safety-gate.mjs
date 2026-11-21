@@ -99,12 +99,18 @@ try {
     await launcher.click();
     const dialog = page.locator('.globalAssistantDialog');
     await dialog.waitFor({ state: 'visible' });
+    const preparedTrigger = dialog.locator('button[data-testid$="-daily-prompt-trigger"]');
     if (expectPreparedAssistant) {
-      assert.ok(await dialog.locator('[data-prompt-option]').count() > 0,
+      assert.equal(await preparedTrigger.count(), 1,
+        topic + ' day ' + day + ' must expose its prepared-question launcher');
+      await preparedTrigger.click();
+      const promptDialog = page.locator('#library-assistant-prompt-dialog');
+      await promptDialog.waitFor({ state: 'visible' });
+      assert.ok(await promptDialog.locator('[data-prompt-option]').count() > 0,
         topic + ' day ' + day + ' must expose its prepared assistant questions');
       assert.doesNotMatch(await dialog.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/u);
     } else {
-      assert.equal(await dialog.locator('[data-prompt-option]').count(), 0,
+      assert.equal(await preparedTrigger.count(), 0,
         topic + ' day ' + day + ' must not claim a prepared question catalogue that does not exist');
       assert.match(await dialog.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/u);
     }

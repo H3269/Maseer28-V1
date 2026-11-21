@@ -110,7 +110,7 @@ try {
   await dayOnePage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
     .some((node) => node.innerText.includes('راهنمای روز ۱ وابستگی عاطفی')));
   const dayOneReply = await dayOnePanel.locator('.assistantMessage').last().innerText();
-  assert.match(dayOneReply, /نقشه اتکای عاطفی/);
+  assert.match(dayOneReply, /نقشه حوزه‌های اتکای عاطفی/);
   const normalizedReply = dayOneReply.normalize('NFKC').replace(/[يى]/g, 'ی').replace(/ك/g, 'ک').replace(/\s+/g, ' ');
   const normalizedExercise = overrides.categories['وابستگی عاطفی'].days[0].exercise.normalize('NFKC').replace(/[يى]/g, 'ی').replace(/ك/g, 'ک').replace(/\s+/g, ' ');
   assert.ok(normalizedReply.includes(normalizedExercise),

@@ -9,20 +9,20 @@ const baseURL = process.env.PATH28_BASE_URL || 'http://127.0.0.1:4173';
 const topic = 'بی‌خوابی و مشکلات خواب';
 const canonical = JSON.parse(await readFile(new URL('../../public/content/path-content.json', import.meta.url), 'utf8'));
 const overrides = JSON.parse(await readFile(new URL('../../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
-const t10Draft = JSON.parse(await readFile(new URL('../../docs/T06-T34-PACKAGES/T10/T10_CANONICAL_CONTENT_DRAFT_V2_20261113.json', import.meta.url), 'utf8'));
+const t10Guide = JSON.parse(await readFile(new URL('../../src/features/assistant/t10DailyAssistantGuide.v1.json', import.meta.url), 'utf8'));
 const topicsRegistry = JSON.parse(await readFile(new URL('../../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'));
 const canonicalDays = canonical.categories?.[topic]?.days || [];
 const overrideDays = overrides.categories?.[topic]?.days || [];
 assert.equal(canonicalDays.length, 28, 'T10 canonical path fixture must contain 28 days');
 assert.equal(overrideDays.length, 28, 'T10 override fixture must contain 28 days');
-assert.equal(t10Draft.records.length, 28, 'T10 live-review fixture must contain 28 days');
+assert.equal(t10Guide.records.length, 28, 'T10 live-review fixture must contain 28 days');
 
-// Feed the browser smoke test from the newly audited draft, not stale runtime copy.
+// Feed the browser smoke test from the authored T10 assistant guide, not stale runtime copy.
 // This remains a fixture-level rendering test; it does not claim production integration.
-for (const draftDay of t10Draft.records) {
+for (const draftDay of t10Guide.records) {
   const target = overrideDays.find(item => Number(item.day) === Number(draftDay.day));
   assert.ok(target, `T10 day ${draftDay.day} must exist in the override fixture`);
-  target.exercise = draftDay.instructions;
+  target.exercise = draftDay.exercise;
   target.actionText = draftDay.action;
 }
 

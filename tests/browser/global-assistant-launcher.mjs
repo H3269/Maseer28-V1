@@ -143,10 +143,18 @@ try {
   assert.equal(await page.locator('.dailyExerciseAssistant').count(), 0, 'the standalone daily assistant panel must be removed');
   assert.equal(await dialog.getByRole('textbox').count(), 0,
     'installing a local model must not enable free-form typing in a topic/day assistant');
-  assert.equal(await dialog.getByTestId('anger-daily-prompt-trigger').count(), 1,
+  const angerPromptTrigger = dialog.getByTestId('anger-daily-prompt-trigger');
+  assert.equal(await angerPromptTrigger.count(), 1,
     'T01 prepared questions must remain available in the daily assistant');
-  assert.ok(await dialog.locator('[data-prompt-option]').count() > 0,
-    'T01 must expose its prepared exercise/action questions');
+  await angerPromptTrigger.click();
+  const angerPromptDialog = page.locator('#library-assistant-prompt-dialog');
+  await angerPromptDialog.waitFor({ state: 'visible' });
+  assert.ok(await angerPromptDialog.locator('[data-prompt-option]').count() > 0,
+    'T01 must expose its prepared exercise/action questions after opening the question picker');
+  await angerPromptDialog.locator('[data-prompt-option]').first().click();
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
+    .some((node) => node.innerText.includes('راهنمای روز ۱ خشم')));
   assert.equal(await page.locator('#ownerApprovalPending').count(), 0,
     'the app must not display an internal specialist-approval status');
 
