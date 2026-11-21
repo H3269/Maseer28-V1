@@ -3282,11 +3282,11 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
       ['نسخه پیشرفت تمرین، فقط در صورت آمادگی', guide.progressVersion],
       ['نسخه استراحت تمرین', guide.restVersion],
     ]) {
-      if (value && !answer.includes(value)) supplementalGuidance.push(\`**\${label}:** \${value}\`);
+      if (value && !answer.includes(value)) supplementalGuidance.push(`**${label}:** ${value}`);
     }
   }
   if (question.kind === 'stop' && guide.stopCondition && !answer.includes(guide.stopCondition)) {
-    supplementalGuidance.push(\`**شرط توقف اختصاصی امروز:** \${guide.stopCondition}\`);
+    supplementalGuidance.push(`**شرط توقف اختصاصی امروز:** ${guide.stopCondition}`);
   }
   if (question.kind === 'no_event'
     && !/عمداً خودت را وارد بحث یا موقعیت خشم‌آور/u.test(answer)) {
@@ -3296,8 +3296,8 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     supplementalGuidance.push('مدت زمان مشخصی ثبت نشده است؛ بنابراین زمان قطعی یا عدد استانداردی برای این تمرین اعلام نمی‌کنم.');
   }
   if (supplementalGuidance.length) answer += '\n\n' + supplementalGuidance.join('\n\n');
-  const dayHeading = \`راهنمای روز \${guide.day} خشم — \${guide.title}\`;
-  const contextualAnswer = answer.includes(dayHeading) ? answer : \`\${dayHeading}\n\n\${answer}\`;
+  const dayHeading = `راهنمای روز ${guide.day} خشم — ${guide.title}`;
+  const contextualAnswer = answer.includes(dayHeading) ? answer : `${dayHeading}\n\n${answer}`;
 
   return appendDailyAssistantSafetyReminder(
     addTeacherStyleFrame(contextualAnswer, { guide, question, topic: 'خشم' }),
