@@ -14,9 +14,10 @@ const appendOnce = (parts, answer, label, value) => {
   if (!content) return;
   const heading = `**${label}:**`;
   if (answer.includes(heading)) return;
-  parts.push(answer.includes(content)
-    ? `${heading} توضیح این مورد در متن بالا آمده است؛ همان توضیح، مبنای اجرای امروز است.`
-    : section(label, content));
+  // The prepared answer may already contain this exact authored field.
+  // Do not repeat it under a second heading or emit a placeholder sentence.
+  if (answer.includes(content)) return;
+  parts.push(section(label, content));
 };
 export function expandDailyAssistantQuestionAnswer(answer, { guide, question } = {}) {
   let original = text(answer);
