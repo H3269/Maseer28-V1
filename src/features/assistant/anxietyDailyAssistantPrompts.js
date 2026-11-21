@@ -3122,5 +3122,5 @@ export function answerAnxietyDailyPreparedQuestion(args = {}) {
         dailyContent: { exercise: angerGuide.exercise, actionText: angerGuide.action },
       })
     : null;
-  return alignDailyAssistantAnswerHeadings(framedAnswer, referenceAnswer);
+  return alignDailyAssistantAnswerHeadings(framedAnswer, referenceAnswer, { guide, question });
 }
