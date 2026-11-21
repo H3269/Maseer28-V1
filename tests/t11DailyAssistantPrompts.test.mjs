@@ -1,3 +1,4 @@
+import { cleanPreparedAssistantTopicText } from '../src/features/assistant/teacherStylePreparedAnswer.js';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
@@ -113,7 +114,7 @@ test('T11 q11 uses its own distress response and appends the exact shared safety
   assert.ok(answer.includes(guide.questions[10].answer));
   assert.match(answer, /شرط توقف امروز/u);
   assert.match(answer, /حمایت انسانی مناسب/u);
-  assert.ok(answer.includes('راهنمای روز 2') && answer.includes(guide.title));
+  assert.ok(answer.includes('راهنمای روز 2') && answer.includes(cleanPreparedAssistantTopicText(guide.title)));
   assert.doesNotMatch(answer, /پیش‌نمایش برای بازبینی مالک|مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود/u);
   assert.ok(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN));
   assert.match(answer, /۰۹۱۹۰۸۸۹۰۶۲|هیپنوتراپی شفا/u);
