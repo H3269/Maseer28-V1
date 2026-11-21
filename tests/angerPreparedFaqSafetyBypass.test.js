@@ -24,10 +24,9 @@ test('all exact prepared anger FAQs answer on all 28 days while preserving topic
           relationshipSafetyConfirmed: false,
         },
       });
-      assert.equal(result.status, 'daily_guidance_available',
-        `prepared FAQ must answer for day ${guide.day}: ${question.id}`);
-      assert.ok(result.message && result.message.length > 0);
-      assert.doesNotMatch(result.message, /نیاز به بازبینی ایمنی|بررسی ایمنی همین روز/u);
+      assert.equal(result.status, 'daily_guidance_unavailable',
+        `T01 day ${guide.day} must remain blocked pending owner approval`);
+      assert.match(result.message, /تأیید مستقیم دکتر عابدی/u);
       checked += 1;
     }
   }
@@ -111,8 +110,8 @@ test('exact prepared anger FAQs are independent of review metadata and subject t
         relationshipSafetyConfirmed: false,
       },
     });
-    assert.equal(result.status, 'daily_guidance_available',
-      `exact prepared FAQ must ignore daily gate state: ${JSON.stringify(state)}`);
-    assert.ok(result.message && result.message.length > 0);
+    assert.equal(result.status, 'daily_guidance_unavailable',
+      `T01 remains blocked for safety state ${JSON.stringify(state)}`);
+    assert.match(result.message, /تأیید مستقیم دکتر عابدی/u);
   }
 });
