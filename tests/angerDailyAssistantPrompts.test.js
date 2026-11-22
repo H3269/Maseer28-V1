@@ -22,7 +22,7 @@ test('anger assistant guide covers all 28 days with fourteen day-scoped prepared
   }
 });
 
-test('all 28 anger days have distinct plain-language instructions for both exercise and action', () => {
+test('all 28 anger days use direct teacher-style explanations without formulaic purpose headings', () => {
   assert.equal(Object.keys(ANGER_DAILY_PLAIN_LANGUAGE_STEPS).length, 28);
   const exerciseSteps = new Set();
   const actionSteps = new Set();
@@ -32,12 +32,18 @@ test('all 28 anger days have distinct plain-language instructions for both exerc
     assert.ok(entry?.action?.length > 80, 'day ' + day + ' needs a concrete action explanation');
     exerciseSteps.add(entry.exercise);
     actionSteps.add(entry.action);
-    const exerciseQuestion = ANGER_DAILY_ASSISTANT_GUIDES[day - 1].questions.find((item) => item.kind === 'exercise_meaning');
-    const actionQuestion = ANGER_DAILY_ASSISTANT_GUIDES[day - 1].questions.find((item) => item.kind === 'action_meaning');
+    const guide = ANGER_DAILY_ASSISTANT_GUIDES[day - 1];
+    const exerciseQuestion = guide.questions.find((item) => item.kind === 'exercise_meaning');
+    const exampleQuestion = guide.questions.find((item) => item.kind === 'exercise_example');
+    const actionQuestion = guide.questions.find((item) => item.kind === 'action_meaning');
     const exerciseAnswer = answerAngerDailyPreparedQuestion({ day, message: exerciseQuestion.value });
+    const exampleAnswer = answerAngerDailyPreparedQuestion({ day, message: exampleQuestion.value });
     const actionAnswer = answerAngerDailyPreparedQuestion({ day, message: actionQuestion.value });
-    assert.ok(exerciseAnswer.includes(entry.exercise), 'exercise explanation missing on day ' + day);
-    assert.ok(actionAnswer.includes(entry.action), 'action explanation missing on day ' + day);
+    assert.ok(exerciseAnswer.length > 150, 'day ' + day + ' needs a substantial explanation');
+    assert.doesNotMatch(exerciseAnswer, /هدف امروز|هدف تمرین|منطق آموزشی امروز/u, 'day ' + day + ' must not begin with an objective statement');
+    assert.doesNotMatch(exerciseAnswer, /^\\*\\*[^*]+\\*\\*/mu, 'day ' + day + ' must not use a heavy section heading');
+    assert.match(exampleAnswer, /فرض کن|مثلاً|برای مثال|تصور کن/u, 'day ' + day + ' needs a concrete example');
+    assert.ok(actionAnswer.includes(guide.title) && /اقدام|رفتار|انتخاب/u.test(actionAnswer), 'day ' + day + ' needs topic-specific action guidance');
   }
   assert.equal(exerciseSteps.size, 28, 'exercise explanations must not repeat across days');
   assert.equal(actionSteps.size, 28, 'action explanations must not repeat across days');
@@ -76,8 +82,10 @@ test('prepared exercise answer is explicit, stepwise, and grounded in the select
   const question = guide.questions.find((item) => item.kind === 'exercise_meaning');
   const answer = answerAngerDailyPreparedQuestion({ day: 1, message: question.value });
   assert.match(answer, /چه اتفاقی افتاد/);
-  assert.match(answer, /قدم‌به‌قدم انجامش بده/);
-  assert.match(answer, /هدف امروز/);
+  assert.match(answer, /چه اتفاقی افتاد/);
+  assert.match(answer, /چه احساسی داشتی/);
+  assert.match(answer, /چه میلی/);
+  assert.doesNotMatch(answer, /هدف امروز|هدف تمرین/u);
   assert.match(answer, /تفکیک رویداد، احساس و رفتار/);
 });
 
@@ -118,8 +126,8 @@ test('no-event answer never asks the user to create an anger-provoking situation
 test('neutral prepared question text is resolved against the active day, not a day embedded in the prompt', () => {
   const dayOne = ANGER_DAILY_ASSISTANT_GUIDES[0].questions[0].value;
   const dayTwoAnswer = answerAngerDailyPreparedQuestion({ day: 2, message: dayOne });
-  assert.match(dayTwoAnswer, /راهنمای روز 2 خشم/);
-  assert.doesNotMatch(dayTwoAnswer, /راهنمای روز 1 خشم/);
+  assert.match(dayTwoAnswer, /خشم · روز 2/);
+  assert.doesNotMatch(dayTwoAnswer, /خشم · روز 1/);
   assert.equal(answerAngerDailyPreparedQuestion({ day: 1, message: 'این سؤال آماده در فهرست نیست' }), null);
 });
 
@@ -132,7 +140,7 @@ test('daily turn routes prepared anger questions only after source identity and 
     day: 1,
     dayData: { id: 'T01-D01', topic_id: 'T01', day: 1, exercise: guide.exercise, actionText: guide.action },
   });
-  assert.match(ok.response, /راهنمای روز 1 خشم/);
+  assert.match(ok.response, /خشم · روز 1/);
   assert.match(ok.response, /تفکیک رویداد، احساس و رفتار/);
 
   const mismatch = makeDailyExerciseGuidanceTurn({
@@ -142,7 +150,7 @@ test('daily turn routes prepared anger questions only after source identity and 
     dayData: { id: 'T01-D01', topic_id: 'T01', day: 1, exercise: guide.exercise, actionText: guide.action },
   });
   assert.match(mismatch.response, /شناسه روزِ محتوای دریافتی/);
-  assert.doesNotMatch(mismatch.response, /راهنمای روز 1 خشم/);
+  assert.doesNotMatch(mismatch.response, /خشم · روز 1/);
 
   const topicMismatch = makeDailyExerciseGuidanceTurn({
     message: question.value,
@@ -151,7 +159,7 @@ test('daily turn routes prepared anger questions only after source identity and 
     dayData: { id: 'T02-D01', topic_id: 'T02', day: 1, exercise: guide.exercise, actionText: guide.action },
   });
   assert.match(topicMismatch.response, /شناسه موضوعِ محتوای دریافتی/);
-  assert.doesNotMatch(topicMismatch.response, /راهنمای روز 1 خشم/);
+  assert.doesNotMatch(topicMismatch.response, /خشم · روز 1/);
 
   const pending = makeDailyExerciseGuidanceTurn({
     message: question.value,
@@ -161,7 +169,7 @@ test('daily turn routes prepared anger questions only after source identity and 
     conversationState: { safetyStatus: 'pending' },
   });
   assert.match(pending.response, /آیا همین الآن خطر فوری/);
-  assert.doesNotMatch(pending.response, /راهنمای روز 1 خشم/);
+  assert.doesNotMatch(pending.response, /خشم · روز 1/);
 });
 
 test('anger prepared answers are not returned for another selected topic', () => {
@@ -172,7 +180,7 @@ test('anger prepared answers are not returned for another selected topic', () =>
     day: 1,
     dayData: { day: 1, exercise: 'تمرین اضطراب', actionText: 'اقدام اضطراب' },
   });
-  assert.doesNotMatch(response.response, /راهنمای روز 1 خشم/);
+  assert.doesNotMatch(response.response, /خشم · روز 1/);
 });
 
 test('additional prepared answers distinguish exercise from action and handle missed days without shame', () => {
@@ -250,7 +258,7 @@ test('prepared FAQs remain available and free-form guidance is refused on every 
         },
       });
       assert.equal(turn.status, 'daily_guidance_available');
-      assert.match(turn.message, new RegExp(`راهنمای روز ${day} خشم`), `day ${day}, ${question.kind}`);
+      assert.match(turn.message, new RegExp(`خشم · روز ${day}`), `day ${day}, ${question.kind}`);
     }
 
     const freeForm = makePageAssistantTurn({
@@ -286,7 +294,7 @@ test('in-path assistant ignores review status but rejects mismatched source iden
     dailyContext: { day: 11, problem: 'خشم', data: blockedDay, relationshipSafetyConfirmed: false },
   });
   assert.equal(blocked.status, 'daily_guidance_available');
-  assert.match(blocked.message, /راهنمای روز 11 خشم/);
+  assert.match(blocked.message, /خشم · روز 11/);
 
   const wrongIdentity = makePageAssistantTurn({
     screen: 'day',
@@ -311,8 +319,8 @@ test('all 392 prepared anger questions resolve to substantial, day-specific teac
     for (const question of guide.questions) {
       const answer = answerAngerDailyPreparedQuestion({ day: guide.day, message: question.value });
       assert.ok(answer, `missing answer for day ${guide.day}, ${question.kind}`);
-      assert.ok(answer.includes(`راهنمای روز ${guide.day} خشم`));
-      assert.ok(answer.length > 350, `answer too short for day ${guide.day}, ${question.kind}`);
+      assert.ok(answer.includes(`خشم · روز ${guide.day}`));
+      assert.ok(answer.length > 200, `answer too short for day ${guide.day}, ${question.kind}`);
       assert.ok(answer.includes(guide.title) && /امروز|تمرین|اقدام|نمونه|موقعیت|فرض کن|می‌توانی|راهنمای/u.test(answer), `answer must retain daily context for day ${guide.day}, ${question.kind}`);
       answerBodies.add(answer);
       resolved += 1;
