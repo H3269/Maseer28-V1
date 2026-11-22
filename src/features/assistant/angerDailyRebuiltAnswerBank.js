@@ -130,4 +130,5 @@ export function buildAngerDailyRebuiltAnswer({ guide, question } = {}) {
     body,
     `**جمع‌بندی امروز**\nدر روز ${guide.day} قرار نیست با خشم بجنگی؛ قرار است مهارت «${guide.title}» را در حدی که امن و شدنی است تمرین کنی.`,
   ].join('\n\n');
+  return appendDailyAssistantSafetyReminder(rendered, question.kind);
 }
