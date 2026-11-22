@@ -45,8 +45,9 @@ test('daily assistant answers prepared questions regardless of canonical review 
     topic_id: 'T01',
     day: 1,
     risk_level: 'routine',
-    exercise: 'تمرین مسدود روز اول.',
-    actionText: 'راهکار مسدود روز اول.',
+    review_status: 'pending_expert_review',
+    exercise: ANGER_DAILY_ASSISTANT_GUIDES[0].exercise,
+    actionText: ANGER_DAILY_ASSISTANT_GUIDES[0].action,
   };
   const result = makePageAssistantTurn({
     screen: 'day',
