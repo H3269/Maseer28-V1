@@ -13,6 +13,8 @@ import {
   ANGER_DAILY_PLAIN_LANGUAGE_STEPS,
 } from '../src/features/assistant/angerDailyAssistantPrompts.js';
 import { buildAngerDailyRebuiltAnswer } from '../src/features/assistant/angerDailyRebuiltAnswerBank.js';
+import { buildPreparedDailyAssistantAnswer } from '../src/features/assistant/preparedDailyAssistantAnswer.js';
+import { answerAngerDailyPreparedQuestion } from '../src/features/assistant/angerDailyAssistantPrompts.js';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
 import { getDailySafetyMode } from '../src/features/content/dailySafety.js';
 
@@ -246,5 +248,67 @@ test('runtime assistant entry points no longer import T02-T14 answer banks or pr
   for (const path of paths) {
     const source = await readFile(new URL(path, import.meta.url), 'utf8');
     assert.doesNotMatch(source, /(?:anxiety|fear|hatred|jealousy|grief|guilt|emotionalDependency|t09|t10|t11|t12|t13|t14)DailyAssistant(?:Prompts|Guides)/u, path);
+  }
+});
+
+
+test('one prepared-answer entry point routes T01-T14 while preserving the shared renderer', async () => {
+  const angerGuide = ANGER_DAILY_ASSISTANT_GUIDES[0];
+  const angerContent = {
+    id: 'خشم-01',
+    topic_id: 'T01',
+    day: 1,
+    title: angerGuide.title,
+    exercise: angerGuide.exercise,
+    actionText: angerGuide.action,
+    exerciseExample: angerGuide.exerciseExample,
+    actionExample: angerGuide.actionExample,
+    lightExerciseText: angerGuide.lightVersion,
+    lightActionText: angerGuide.lightActionVersion,
+    progressActionText: angerGuide.progressActionVersion,
+    restActionText: angerGuide.restActionVersion,
+  };
+  for (const question of getSharedDailyAssistantPromptGroups(1, 'T01').flatMap((group) => group.questions)) {
+    assert.equal(
+      buildPreparedDailyAssistantAnswer({
+        topicId: 'T01',
+        topicName: 'خشم',
+        day: 1,
+        message: question.value,
+        dailyContent: angerContent,
+      }),
+      answerAngerDailyPreparedQuestion({ day: 1, message: question.value, dailyContent: angerContent }),
+      'T01 central entry point preserves approved answer ' + question.kind,
+    );
+  }
+
+  const anxietyContent = {
+    id: 'اضطراب-01',
+    topic_id: 'T02',
+    day: 1,
+    title: 'ثبت نشانه‌های اضطراب',
+    exercise: 'یک موقعیت روزمره را انتخاب کن و نشانه‌های بدنی و فکری اضطراب را جداگانه ثبت کن.',
+    actionText: 'در یک موقعیت کم‌فشار، پیش از واکنش یک مکث کوتاه انجام بده.',
+    exerciseExample: 'پیش از یک تماس معمولی، ضربان قلب و فکر نگران‌کننده را جداگانه یادداشت کن.',
+    actionExample: 'پیش از پاسخ دادن به یک پیام، سه نفس آرام بکش.',
+  };
+  for (const question of getSharedDailyAssistantPromptGroups(1, 'T02').flatMap((group) => group.questions)) {
+    assert.equal(
+      buildPreparedDailyAssistantAnswer({
+        topicId: 'T02',
+        topicName: 'اضطراب',
+        day: 1,
+        message: question.value,
+        dailyContent: anxietyContent,
+      }),
+      buildSharedDailyAssistantAnswerFromDailyContent({
+        topicId: 'T02',
+        topicName: 'اضطراب',
+        day: 1,
+        message: question.value,
+        dailyContent: anxietyContent,
+      }),
+      'T02 central entry point uses the same shared renderer ' + question.kind,
+    );
   }
 });
