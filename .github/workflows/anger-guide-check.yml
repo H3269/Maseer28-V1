@@ -11,6 +11,8 @@ on:
       - "src/features/assistant/anxietyDailyAssistantPrompts.js"
       - "tests/angerDailyAssistantPrompts.test.js"
       - "tests/angerDailyPreparedAnswers.test.js"
+      - "tests/anxietyDailyAssistantPrompts.test.js"
+      - "tests/sharedDailyAssistantAnswerFrame.test.js"
       - "tests/dailyAssistantCrossTopicContract.test.js"
       - "tests/dailyAssistantSafetyReminder.test.js"
       - "tests/assistantMessageFormatting.test.js"
@@ -38,5 +40,7 @@ jobs:
           tests/dailyAssistantSafetyReminder.test.js
           tests/assistantMessageFormatting.test.js
           tests/angerContentPackage.test.mjs
+          tests/anxietyDailyAssistantPrompts.test.js
+          tests/sharedDailyAssistantAnswerFrame.test.js
       - name: Verify production bundle
         run: npm run build
