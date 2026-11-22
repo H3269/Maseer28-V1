@@ -6,6 +6,7 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - ".github/workflows/anger-guide-check.yml"
       - "src/features/assistant/angerDailyAssistantPrompts.js"
       - "src/features/assistant/angerDailyRebuiltAnswerBank.js"
       - "src/features/assistant/sharedDailyAssistantEngine.js"
