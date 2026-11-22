@@ -118,7 +118,6 @@ test('the T01 approved answer-bank entry point delegates to the same shared buil
 
 test('T02-T14 produce fourteen day-bound answers from canonical content for all 28 days', async () => {
   const merged = await loadMergedContent();
-  const migratedCatalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
   let checked = 0;
   for (const [topicId, topicName] of TOPICS) {
     const days = merged.categories[topicName]?.days || [];
@@ -353,6 +352,7 @@ test('one prepared-answer entry point routes T01-T14 while preserving the shared
 
 test('runtime examples survive adapted visible wording and stay bound to the canonical topic/day for T02-T14', async () => {
   const merged = await loadMergedContent();
+  const migratedCatalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
   let checked = 0;
   for (const [topicId, topicName] of TOPICS) {
     const days = merged.categories[topicName]?.days || [];
