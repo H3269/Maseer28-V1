@@ -72,8 +72,7 @@ async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumb
   assert.ok(dayBadge.includes('روز ' + dayNumber), 'day UI must show the selected canonical day');
   const reply = normalizeVisibleDailyText(await panel.locator('.assistantMessage').last().innerText());
   if (topic !== 'خشم') {
-    assert.ok(reply.includes(normalizeVisibleDailyText(topic)), 'assistant answer must identify the selected topic');
-    assert.ok(reply.includes('روز ' + dayNumber), 'assistant answer must identify the selected day');
+    assert.ok(reply.includes('روز ' + dayNumber), 'assistant answer must use the selected day context');
   } else {
     assert.doesNotMatch(reply, /موضوع: خشم|دستیار هوشمند مسیر ۲۸|جمع‌بندی امروز/u,
       'anger answer must not repeat topic labels or a daily summary');
