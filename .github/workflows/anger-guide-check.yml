@@ -8,8 +8,14 @@ on:
     paths:
       - "src/features/assistant/angerDailyAssistantPrompts.js"
       - "src/features/assistant/angerDailyRebuiltAnswerBank.js"
+      - "src/features/assistant/sharedDailyAssistantEngine.js"
+      - "src/features/assistant/pageAssistantTurn.js"
+      - "src/features/assistant/dailyExerciseAssistantGuidance.js"
+      - "src/features/assistant/GlobalAssistantLauncher.jsx"
       - "src/features/assistant/anxietyDailyAssistantPrompts.js"
       - "tests/angerDailyAssistantPrompts.test.js"
+      - "tests/sharedDailyAssistantEngine.test.js"
+      - "tests/pageAssistantTurn.test.js"
       - "tests/angerDailyPreparedAnswers.test.js"
       - "tests/anxietyDailyAssistantPrompts.test.js"
       - "tests/sharedDailyAssistantAnswerFrame.test.js"
@@ -31,7 +37,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Run focused anger assistant and integration tests
+      - name: Run complete automated test suite
+        run: npm test
+      - name: Run focused assistant regression tests
         run: >-
           node --test
           tests/angerDailyAssistantPrompts.test.js
