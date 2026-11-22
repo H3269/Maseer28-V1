@@ -27,7 +27,7 @@ function answerBody({ guide, question, plainSteps = {} }) {
   switch (question.kind) {
     case 'exercise_meaning':
       return paragraph(
-        `در روز ${day}، تمرین تو بر مهارت «${guide.title}» متمرکز است. به‌جای اینکه فقط درباره خشم فکر کنی، این مهارت را در یک نمونه روشن بررسی می‌کنی. این بررسی کمک می‌کند ${objective.charAt(0).toLocaleLowerCase('fa') + objective.slice(1)}`,
+        `در روز ${day}، تمرین تو بر مهارت «${guide.title}» متمرکز است. به‌جای اینکه فقط درباره خشم فکر کنی، این مهارت را در یک نمونه روشن بررسی می‌کنی. هدف این روز این است: ${objective}`,
         skill && `مهارتی که امروز تقویتش می‌کنی این است: ${skill}`,
         mechanism,
         `برای انجامش این مسیر را قدم‌به‌قدم برو: ${exercise}`,
