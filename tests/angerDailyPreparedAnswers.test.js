@@ -24,10 +24,9 @@ test('rebuilt anger assistant provides 392 complete day-and-question-specific an
       const answer = answerAngerDailyPreparedQuestion({ day: guide.day, message: question.value });
       assert.equal(typeof answer, 'string', 'missing answer ' + guide.day + ':' + question.id);
       assert.ok(answer.length > 250, 'answer too thin ' + guide.day + ':' + question.id);
-      assert.ok(answer.includes('دستیار هوشمند مسیر ۲۸'));
-      assert.ok(answer.includes('موضوع: خشم | روز ' + guide.day));
-      assert.ok(answer.includes(question.label));
-      assert.ok(answer.includes('جمع‌بندی امروز'));
+      assert.doesNotMatch(answer, /دستیار هوشمند مسیر ۲۸|موضوع: خشم \\| روز|توضیح و راهنمای امروز|جمع‌بندی امروز|یادآوری مهم درباره ایمنی شما|۰۹۱۹۰۸۸۹۰۶۲/u,
+        'T01 answer must contain only the answer body, without repeated framing or the separate reminder card');
+      assert.ok(!answer.includes(question.label), 'assistant must not repeat the selected user question');
       assert.ok(answer.includes(guide.title), 'answer not tied to daily theme ' + guide.day + ':' + question.id);
       answers.add(answer);
       count++;
