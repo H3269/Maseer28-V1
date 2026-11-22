@@ -93,7 +93,7 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       return Object.freeze({ status: 'input_too_long', message: 'پیام بیش از حد طولانی است؛ لطفاً آن را کوتاه‌تر کن.', knowledge: Object.freeze([]), conversationState: null });
     }
 
-    // Current topic assistants answer only exact, pre-authored day-specific FAQs.
+    // Daily assistants answer only the shared fourteen-question catalogue.
     // Validate canonical topic/day identity before answering; safety routing
     // remains available and takes precedence over every prepared question.
     const preparedDay = Number(dailyContext?.day);
@@ -145,10 +145,12 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         || preparedSource.topic_id === preparedTopicId);
 
     const hasPendingSafetyExchange = ['pending', 'handoff'].includes(conversationState?.dailyState?.safetyStatus);
-    const t13SafetyMode = preparedTopicId === 'T13' ? getDailySafetyMode(preparedSource) : null;
-    const hasExactT13PreparedQuestion = preparedTopicId === 'T13'
+    const blockedTopicSafetyMode = ['T13', 'T14'].includes(preparedTopicId) ? getDailySafetyMode(preparedSource) : null;
+    const hasExactBlockedTopicPreparedQuestion = ['T13', 'T14'].includes(preparedTopicId)
       && Boolean(answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }));
-    if (preparedTopicId === 'T13' && t13SafetyMode === 'blocked' && hasExactT13PreparedQuestion) {
+    if (['T13', 'T14'].includes(preparedTopicId)
+      && blockedTopicSafetyMode === 'blocked'
+      && hasExactBlockedTopicPreparedQuestion) {
       return Object.freeze({
         status: 'daily_guidance_unavailable',
         message: 'به‌دلیل سطح خطر ثبت‌شده برای این روز، ارائه پاسخ تمرینی در این وضعیت ایمن نیست. اگر خطر فوری وجود دارد، از کمک انسانی و خدمات اورژانسی محل زندگی استفاده کن.',
