@@ -43,7 +43,7 @@ test('startup uses the compact runtime topic index instead of downloading all da
 
 test('canonical full-content and daily-overlay loading remain available as a compatibility fallback', () => {
   assert.ok(app.includes('content/path-content.json?v=${PATH_CONTENT_CACHE_VERSION}'));
-  assert.ok(app.includes('content/path-content.json?v=${PATH_CONTENT_CACHE_VERSION}'));
+  assert.match(app, /PATH_CONTENT_CACHE_VERSION = '20261119-path-content-v2'/);
   assert.ok(app.includes("cache: attempt === 0 ? 'no-cache' : 'reload'"));
   assert.ok(app.includes('content/daily-text-overrides.v1.json?v=${DAILY_TEXT_OVERRIDES_CACHE_VERSION}'));
   assert.match(app, /mergeDailyTextOverrides\(data, overrides\)/);
