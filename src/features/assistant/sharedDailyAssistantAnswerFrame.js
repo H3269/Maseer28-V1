@@ -8,7 +8,9 @@ export function applySharedDailyAssistantAnswerFrame(answer, { day, topic, guide
   if (typeof answer !== 'string' || !answer.trim() || !guide || !question || !topic) return answer;
   const firstBreak = answer.indexOf('\n');
   const firstLine = firstBreak < 0 ? answer : answer.slice(0, firstBreak);
-  let body = /(?:راهنمای روز|روز\s*\d+).*(?:خشم|اضطراب)/u.test(firstLine) || firstLine.includes(String(guide.title || ''))
+  const hasDayHeading = /(?:راهنمای روز|روز\s*\d+).*(?:خشم|اضطراب)/u.test(firstLine);
+  const hasLegacyTitleHeading = style !== 'sample3' && firstLine.includes(String(guide.title || ''));
+  let body = hasDayHeading || hasLegacyTitleHeading
     ? answer.slice(firstBreak < 0 ? answer.length : firstBreak).trim()
     : answer.trim();
 
