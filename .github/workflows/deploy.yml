@@ -94,7 +94,7 @@ jobs:
           set -euo pipefail
           mode=full
           selected=()
-          before="${GITHUB_EVENT_BEFORE:-}"
+          before="${{ github.event.before }}"
           if [[ "${GITHUB_EVENT_NAME}" == "push" && "$before" =~ ^[0-9a-f]{40}$ && "$before" != "0000000000000000000000000000000000000000" ]]; then
             mapfile -t changed < <(git diff --name-only "$before" "$GITHUB_SHA")
             source_changed=false
@@ -132,9 +132,10 @@ jobs:
       # Test-only pushes run changed browser specs; application/source changes run all specs.
       - name: Install pinned Playwright browser runner
         if: steps.browser_scope.outputs.run_browser == 'true'
-      - name: Install pinned Playwright browser runner\n        run: npm install --no-save --package-lock=false playwright@1.65.1
+        run: npm install --no-save --package-lock=false playwright@1.65.1
 
       - name: Install Chromium headless shell and system dependencies
+        if: steps.browser_scope.outputs.run_browser == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -142,6 +143,7 @@ jobs:
           npx playwright install --only-shell chromium
 
       - name: Run browser regression against the test build
+        if: steps.browser_scope.outputs.run_browser == 'true'
         shell: bash
         run: |
           set -euo pipefail
