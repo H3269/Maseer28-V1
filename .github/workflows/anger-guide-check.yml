@@ -56,7 +56,7 @@ jobs:
           preview_pid=$!
           trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
           for attempt in $(seq 1 40); do
-            if curl --fail --silent http://127.0.0.1:4173/ > /dev/null; then
+            if curl --fail --silent http://127.0.0.1:4173/Maseer28-V1/ > /dev/null; then
               break
             fi
             if [ "${attempt}" -eq 40 ]; then
@@ -65,5 +65,5 @@ jobs:
             fi
             sleep 2
           done
-          export PATH28_BASE_URL=http://127.0.0.1:4173/
+          export PATH28_BASE_URL=http://127.0.0.1:4173/Maseer28-V1/
           node tests/browser/daily-assistant-guidance.mjs
