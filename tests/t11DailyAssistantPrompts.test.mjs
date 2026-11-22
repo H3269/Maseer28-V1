@@ -117,7 +117,8 @@ test('T11 q11 uses its own distress response and appends the exact shared safety
   assert.ok(answer.includes('راهنمای روز 2') && answer.includes(cleanPreparedAssistantTopicText(guide.title)));
   assert.doesNotMatch(answer, /پیش‌نمایش برای بازبینی مالک|مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود/u);
   assert.ok(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN));
-  assert.match(answer, /۰۹۱۹۰۸۸۹۰۶۲|هیپنوتراپی شفا/u);
+  assert.match(answer, /از خدمات اورژانسی محل زندگی خود کمک فوری دریافت کنید/u);
+  assert.doesNotMatch(answer, /۰۹۱۹۰۸۸۹۰۶۲/u);
 });
 
 
