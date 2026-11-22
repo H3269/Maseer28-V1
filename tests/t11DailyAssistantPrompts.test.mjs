@@ -207,7 +207,7 @@ test('T11 uses the standard daily entry UI without owner-preview boxes or blocke
   assert.doesNotMatch(launcher, /!isT11DailyPromptContext\s*&&\s*Boolean\(selectedPreparedQuestion/);
 });
 
-test('T11 assistant UI uses the correct topic label and displays the shared safety reminder', async () => {
+test('T11 assistant UI uses the shared prompt catalogue and keeps safety routing independent', async () => {
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
   assert.doesNotMatch(launcher, /!isT11DailyPromptContext\s*&&\s*Boolean\(selectedPreparedQuestion/);
   assert.match(launcher, /getSharedDailyAssistantPromptGroups/);
