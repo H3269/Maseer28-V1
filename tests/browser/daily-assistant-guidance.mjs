@@ -627,6 +627,7 @@ try {
   assert.match(assistantReply, /هدف امروز:/);
   assert.match(assistantReply, /گام‌های ساده اجرا:/);
   assert.match(assistantReply, /یک موقعیت کم‌فشار را انتخاب کن/);
+  // Match the canonical four-part distinction, not the obsolete wording from an earlier draft.
   assert.match(assistantReply, /چهار چیز را از هم جدا کنی/);
   assert.match(assistantReply, /اتفاقی که واقعاً افتاد/);
   assert.match(assistantReply, /احساسی که تجربه کردی/);
