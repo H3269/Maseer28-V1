@@ -7283,16 +7283,16 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 .globalAssistantChat .dailyAssistantSafetyReminder {
   margin: 14px 0 4px;
   padding: 14px 16px;
-  border: 1px solid color-mix(in srgb, var(--gold, #c9a75d) 55%, var(--border, #d9e0e8));
+  border: 1px solid #c9a75d;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--accent2, #e6f1ee) 76%, var(--surface, #fff));
-  color: var(--text, #243b3c);
+  background: #e6f1ee;
+  color: #243b3c;
   line-height: 1.85;
   font-size: 13px;
 }
 .globalAssistantChat .dailyAssistantSafetyReminder h3 {
   margin: 0 0 8px;
-  color: var(--primary, #28555b);
+  color: #28555b;
   font-size: 14px;
   font-weight: 800;
 }
