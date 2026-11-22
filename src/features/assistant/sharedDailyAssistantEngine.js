@@ -345,6 +345,7 @@ export function buildSharedDailyAssistantAnswerFromDailyContent({
   day,
   message,
   dailyContent,
+  plainSteps = {},
 } = {}) {
   const dayNumber = toDayNumber(day);
   if (!dayNumber || !Object.hasOwn(DISTRESS_KIND_BY_TOPIC, topicId) || !topicName
@@ -362,7 +363,7 @@ export function buildSharedDailyAssistantAnswerFromDailyContent({
   if (!question) return null;
   const guide = makeGuideFromDailyContent({ topicId, topicName, day: dayNumber, dailyContent });
   if (!guide) return null;
-  return buildSharedDailyAssistantAnswer({ guide, question });
+  return buildSharedDailyAssistantAnswer({ guide, question, plainSteps });
 }
 
 export const SHARED_DAILY_ASSISTANT_TOPIC_NAMES = TOPIC_NAMES;
