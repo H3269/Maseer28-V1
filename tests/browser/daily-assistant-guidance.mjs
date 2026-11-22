@@ -328,9 +328,11 @@ try {
     throw new Error('T02 browser answer did not settle; replies=' + JSON.stringify(visibleReplies) + '; pageErrors=' + JSON.stringify(anxietyErrors) + '; cause=' + error.message);
   });
   const anxietyReply = anxietyGuidedPanel.locator('.assistantMessage').last();
-  assert.match(await anxietyReply.innerText(), /راهنمای روز (?:1|۱) اضطراب/u);
-  assert.ok(await anxietyReply.locator('strong').count() > 0, 'T02 assistant headings must render as bold text');
   const anxietyVisibleText = await anxietyReply.innerText();
+  assert.match(anxietyVisibleText, /برنامه روز (?:1|۱)/u,
+    'T02 must use the shared day-scoped answer frame rather than the retired topic-specific heading');
+  assert.match(anxietyVisibleText, /تمرین امروز چنین است|اقدام اختصاصی امروز این است/u,
+    'T02 answer must explain the current day exercise/action using the shared response structure');
   assert.equal(anxietyVisibleText.includes('**'), false, 'T02 must not expose raw markdown markers');
   assert.equal(anxietyVisibleText.includes(String.fromCharCode(92) + 'n'), false, 'T02 must not expose escaped newline tokens');
   assert.ok(anxietyVisibleText.includes('\n'), 'T02 paragraphs must display on separate lines');
