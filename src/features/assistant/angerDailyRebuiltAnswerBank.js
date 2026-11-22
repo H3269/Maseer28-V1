@@ -1,3 +1,5 @@
+import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
+
 /**
  * Rebuilt T01 anger guide responses.
  * Each answer is composed from the current day's own exercise, action,
@@ -120,7 +122,7 @@ export function buildAngerDailyRebuiltAnswer({ guide, question } = {}) {
   if (!guide || guide.topicId !== 'T01' || !question) return null;
   const body = answerBody({ guide, question });
   if (!body) return null;
-  return [
+  const rendered = [
     '**دستیار هوشمند مسیر ۲۸**',
     `موضوع: خشم | روز ${guide.day}`,
     `**${clean(question.label || question.value)}**`,
