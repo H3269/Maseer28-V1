@@ -1,4 +1,4 @@
-import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';\nimport { buildAngerDailyRebuiltAnswer } from './angerDailyRebuiltAnswerBank.js';
 import { applySharedDailyAssistantAnswerFrame } from './sharedDailyAssistantAnswerFrame.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
@@ -3256,9 +3256,6 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   const canonicalGuide = ANGER_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
   if (!canonicalGuide) return null;
 
-  // Runtime-adapted content is trusted only when its topic and day match the
-  // active anger record. The daily handler performs the full source-identity
-  // check; this local guard also protects direct callers of this function.
   const dailyContent = args.dailyContent && typeof args.dailyContent === 'object'
     ? args.dailyContent
     : null;
@@ -3281,162 +3278,5 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     : canonicalGuide;
   const question = guide.questions.find((item) => item.value === String(args.message || '').trim());
   if (!question) return null;
-
-  // Prefer the individually authored response for each day/question pair.
-  // The legacy switch remains only as a defensive fallback for future schema changes.
-  const preparedAnswer = ANGER_DAILY_PREPARED_ANSWERS[day]?.[question.id];
-  let baseAnswer = preparedAnswer || answerAngerDailyPreparedQuestionRaw(args);
-  if (!baseAnswer) return null;
-
-  // Replace canonical exercise/action wording inside the authored answer with
-  // the verified runtime wording, so a personalized day never receives stale
-  // instructions from the static guide.
-  if (hasMatchingDailyContent) {
-    if (canonicalGuide.exercise && guide.exercise !== canonicalGuide.exercise) {
-      baseAnswer = baseAnswer.split(canonicalGuide.exercise).join(guide.exercise);
-    }
-    if (canonicalGuide.action && guide.action !== canonicalGuide.action) {
-      baseAnswer = baseAnswer.split(canonicalGuide.action).join(guide.action);
-    }
-    for (const [source, replacement] of [
-      [canonicalGuide.title, guide.title],
-      [canonicalGuide.exerciseExample, guide.exerciseExample],
-      [canonicalGuide.actionExample, guide.actionExample],
-      [canonicalGuide.lightVersion, guide.lightVersion],
-      [canonicalGuide.lightActionVersion, guide.lightActionVersion],
-      [canonicalGuide.progressActionVersion, guide.progressActionVersion],
-      [canonicalGuide.restActionVersion, guide.restActionVersion],
-    ]) {
-      if (source && replacement && source !== replacement) {
-        baseAnswer = baseAnswer.split(source).join(replacement);
-      }
-    }
-  }
-
-  const actionAdaptation = {
-    light_version: guide.lightActionVersion,
-    no_event: guide.restActionVersion,
-    can_change: guide.progressActionVersion,
-  }[question.kind];
-  // Add the action-specific variant after contextual edits so exact source wording
-  // remains intact for auditability and the user can identify the canonical version.
-  let answer = baseAnswer;
-  const supplementalGuidance = [];
-  if (question.kind === 'no_event') {
-    answer = answer
-      .replace('برای آزمودنش موقعیتی نساز و هیچ گفت‌وگویی را به خودت یا دیگری تحمیل نکن', `برای آزمودن تمرین روز ${day} موقعیتی نساز و هیچ گفت‌وگویی را به خودت یا دیگری تحمیل نکن`)
-      .replace('برای انجام تمرین عمداً خودت را وارد بحث یا موقعیت خشم‌آور نکن', `در روز ${day} برای انجام تمرین عمداً وارد بحث یا موقعیت خشم‌آور نشو`)
-      .replace('نبود نمونه واقعی را همان‌طور که هست ثبت کن', `اگر در روز ${day} نمونه واقعی پیدا نکردی، نبود آن را همان‌طور که هست ثبت کن`)
-      .replace('اگر مرور گذشته برایت امن و مناسب است، یک نمونه کم‌فشار قبلی را انتخاب کن', `اگر مرور گذشته برای «${guide.title}» در روز ${day} امن و مناسب است، یک نمونه کم‌فشار قبلی را انتخاب کن`);
-  }
-  if (question.kind === 'anger_increased' || question.kind === 'stop') {
-    answer = answer
-      .replace('از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر', `در روز ${day} از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر`)
-      .replace('اگر احتمال آسیب فوری به خودت یا فرد دیگری وجود دارد، از خدمات اضطراری محل زندگی کمک فوری بگیر', `اگر در روز ${day} احتمال آسیب فوری به خودت یا فرد دیگری وجود دارد، از خدمات اضطراری محل زندگی کمک فوری بگیر`);
-  }
-  if (question.kind === 'talk_other') {
-    answer = answer
-      .replace('می‌توانی آن را به شکل خصوصی و امن انجام بدهی', `می‌توانی تمرین «${guide.title}» را به شکل خصوصی و امن انجام بدهی`)
-      .replace('اگر گفت‌وگو امن یا اختیاری نیست، لازم نیست آن را انجام بدهی', `اگر گفت‌وگو درباره «${guide.title}» امن یا اختیاری نیست، لازم نیست آن را انجام بدهی`);
-  }
-  const plainSteps = ANGER_DAILY_PLAIN_LANGUAGE_STEPS[day] || {};
-  if (question.kind === 'exercise_meaning') {
-    if (guide.objective && !answer.includes(guide.objective)) supplementalGuidance.push(`**هدف امروز:** ${guide.objective}`);
-    if (guide.exercise && !answer.includes(guide.exercise)) supplementalGuidance.push(`**تمرین امروز:** ${guide.exercise}`);
-    if (plainSteps.exercise && !answer.includes(plainSteps.exercise)) supplementalGuidance.push(`**گام‌های ساده اجرا:** ${plainSteps.exercise}`);
-    if (!answer.includes('قدم‌به‌قدم انجامش بده')) supplementalGuidance.push(`برای روز ${day} این کار را قدم‌به‌قدم انجامش بده: ${guide.title}، هر بخش را جدا ثبت کن و برای کامل‌کردن آن عجله نکن.`);
-  }
-  if (question.kind === 'action_meaning') {
-    if (guide.action && !answer.includes(guide.action)) supplementalGuidance.push(`**اقدام اختصاصی امروز:** ${guide.action}`);
-    if (plainSteps.action && !answer.includes(plainSteps.action)) supplementalGuidance.push(`**گام‌های ساده اقدام:** ${plainSteps.action}`);
-  }
-  if (question.kind === 'exercise_example' && guide.exerciseExample && !answer.includes(guide.exerciseExample)) {
-    supplementalGuidance.push(`**نمونه اختصاصی تمرین روز ${day}:** ${guide.exerciseExample}`);
-  }
-  if (question.kind === 'action_example' && guide.actionExample && !answer.includes(guide.actionExample)) {
-    supplementalGuidance.push(`**نمونه اختصاصی اقدام روز ${day}:** ${guide.actionExample}`);
-  }
-  if (question.kind === 'exercise_action_difference') {
-    answer = answer.replace('اگر رفتار واقعی با میل فرق داشت هر دو را ثبت کن',
-      `در روز ${day}، میل به واکنش را از رفتاری که واقعاً انجام دادی یا انجام ندادی جدا ثبت کن؛ عنوان راهنما «${guide.title}» است.`);
-    if (answer.length < 350) supplementalGuidance.push(
-      `**تفاوت عملی روز ${day}:** تمرین «${guide.title}» به این هدف می‌پردازد: ${guide.objective}؛ اقدام امروز نیز در چارچوب عنوان «${guide.title}» یک گام جداگانه و اختیاری است.`
-    );
-  }
-  if (question.kind === 'light_version') {
-    if (!answer.includes('خودت را مجبور نکن')) supplementalGuidance.push(`برای روز ${day}، خودت را مجبور نکن بیشتر از توان امروزت پیش بروی؛ نسخه سبک همین روز این است: ${guide.lightVersion}`);
-    if (!answer.includes('شکست محسوب نمی‌شود')) supplementalGuidance.push(`انتخاب نسخه سبک برای روز ${day} شکست محسوب نمی‌شود؛ ${guide.lightVersion}`);
-  }
-  if (question.kind === 'stop' && !answer.includes('فاصله امن ایجاد کن')) {
-    supplementalGuidance.push(`اگر در روز ${day} احتمال آسیب وجود دارد، فاصله امن ایجاد کن، از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر و محدودیت اختصاصی این روز را رعایت کن: ${guide.stopCondition}.`);
-  }
-  if (question.kind === 'no_event' && !answer.includes('نمونه کم‌فشار قبلی')) {
-    supplementalGuidance.push(`اگر مرور گذشته برای «${guide.title}» در روز ${day} امن و مناسب است، یک نمونه کم‌فشار قبلی را انتخاب کن؛ در غیر این صورت نبود نمونه را ثبت کن و از نسخه سبک استفاده کن: ${guide.lightVersion}`);
-  }
-  if (question.kind === 'talk_other' && guide.action) {
-    answer = answer.replace(guide.action,
-      `برای «${guide.title}»، گفت‌وگو شرط انجام تمرین نیست و فقط در صورت امنیت و رضایت آزادانه هر دو نفر مطرح است.`);
-  }
-  if (question.kind === 'talk_other' && !/لازم نیست[^.\n]*با فرد دیگری صحبت کنی/u.test(answer)) {
-    supplementalGuidance.push(`لازم نیست برای انجام تمرین «${guide.title}» با فرد دیگری صحبت کنی؛ می‌توانی آن را به شکل خصوصی و امن انجام بدهی.`);
-  }
-  if (question.kind === 'anger_increased' && guide.stopCondition && !answer.includes(guide.stopCondition)) {
-    supplementalGuidance.push(`**محدودیت ایمنی روز ${day}:** ${guide.stopCondition}`);
-  }
-  if (question.kind === 'action_example'
-    && !/اگر شرایط زندگی تو شبیه این نمونه نیست|اگر گفتن یا انجام‌دادن آن امن نیست/u.test(answer)) {
-    supplementalGuidance.push(`اگر شرایط زندگی تو شبیه این نمونه نیست یا گفتن و انجام‌دادن آن امن نیست، نمونه روز ${day} را اجرا نکن و فقط گزینه‌ای را انتخاب کن که با شرایط واقعی تو سازگار است.`);
-  }
-  if (question.kind === 'light_version') {
-    for (const [label, value] of [
-      ['نسخه سبک تمرین', guide.lightVersion],
-      ['نسخه پیشرفت تمرین، فقط در صورت آمادگی', guide.progressVersion],
-      ['نسخه استراحت تمرین', guide.restVersion],
-    ]) {
-      if (value && !answer.includes(value)) supplementalGuidance.push(`**${label}:** ${value}`);
-    }
-  }
-  if (question.kind === 'stop' && guide.stopCondition && !answer.includes(guide.stopCondition)) {
-    supplementalGuidance.push(`**شرط توقف اختصاصی امروز:** ${guide.stopCondition}`);
-  }
-  if (question.kind === 'not_done' && guide.lightVersion && !answer.includes(guide.lightVersion)) {
-    supplementalGuidance.push(`**بازگشت کوچک، فقط در صورت تمایل:** ${guide.lightVersion}`);
-  }
-  if (question.kind === 'not_done') {
-    if (!answer.includes('خودت را سرزنش نکن')) supplementalGuidance.push(`برای روز ${day} خودت را سرزنش نکن؛ ${guide.objective}`);
-    if (answer.length < 350) supplementalGuidance.push(`**نقطه شروع بدون جبران:** ${guide.lightVersion}\n**اگر امروز نیاز به مکث داری:** ${guide.restVersion}\n**هدف روز ${day}:** ${guide.objective}`);
-  }
-  if (question.kind === 'anger_increased') {
-    supplementalGuidance.push(`اگر در روز ${day} فشار یا میل به واکنش آسیب‌زا بیشتر شده، تمرین را متوقف کن، در صورت امکان فاصله امن ایجاد کن و با توجه به شرط توقف اختصاصی «${guide.stopCondition}» از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر؛ اگر احتمال آسیب فوری به خودت یا فرد دیگری وجود دارد، از خدمات اضطراری محل زندگی کمک فوری بگیر.`);
-  }
-  if (question.kind === 'talk_other'
-    && !/آزادانه رضایت داشته باشند/u.test(answer)) {
-    supplementalGuidance.push(`گفت‌وگو درباره «${guide.title}» فقط وقتی مطرح است که هر دو نفر آزادانه رضایت داشته باشند؛ اگر گفت‌وگو امن یا اختیاری نیست، لازم نیست آن را انجام بدهی.`);
-  }
-
-  if (question.kind === 'no_event'
-    && !/عمداً خودت را وارد بحث یا موقعیت خشم‌آور/u.test(answer)) {
-    supplementalGuidance.push('برای انجام تمرین، عمداً خودت را وارد بحث یا موقعیت خشم‌آور نکن؛ نبود نمونه واقعی را همان‌طور که هست ثبت کن.');
-  }
-  if (question.kind === 'duration' && !/مدت زمان مشخصی ثبت نشده/u.test(answer)) {
-    supplementalGuidance.push('مدت زمان مشخصی ثبت نشده است؛ بنابراین زمان قطعی یا عدد استانداردی برای این تمرین اعلام نمی‌کنم.');
-  }
-  if (supplementalGuidance.length) answer += '\n\n' + supplementalGuidance.join('\n\n');
-  if (actionAdaptation && !answer.includes(actionAdaptation)) {
-    answer += '\n\n- ' + actionAdaptation;
-  }
-  const dayHeading = `راهنمای روز ${guide.day} خشم — ${guide.title}`;
-  let contextualAnswer = answer.includes(dayHeading) ? answer : `${dayHeading}\n\n${answer}`;
-  if (!/\*\*[^*]+\*\*/u.test(contextualAnswer)) contextualAnswer = `**پاسخ ${question.id} — ${guide.title}**\n\n${contextualAnswer}`;
-
-  const safeAnswer = appendDailyAssistantSafetyReminder(
-    addTeacherStyleFrame(contextualAnswer, { guide, question, topic: 'خشم' }),
-    question.kind,
-  );
-  return applySharedDailyAssistantAnswerFrame(safeAnswer, {
-    day,
-    topic: 'خشم',
-    guide,
-    question,
-  });
+  return buildAngerDailyRebuiltAnswer({ guide, question });
 }
