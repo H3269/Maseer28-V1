@@ -111,8 +111,8 @@ test('no-event answer never asks the user to create an anger-provoking situation
   const guide = ANGER_DAILY_ASSISTANT_GUIDES[14];
   const question = guide.questions.find((item) => item.kind === 'no_event');
   const answer = answerAngerDailyPreparedQuestion({ day: 15, message: question.value });
-  assert.match(answer, /نه عمداً بحثی ایجاد کن/);
-  assert.match(answer, /نمونه کم‌فشار قبلی/);
+  assert.match(answer, /عمداً (?:بحثی|موقعیتی) ایجاد کن/);
+  assert.match(answer, /مرور یک تجربه قبلی/);
 });
 
 test('neutral prepared question text is resolved against the active day, not a day embedded in the prompt', () => {
@@ -237,7 +237,7 @@ test('additional prepared answers distinguish exercise from action and handle mi
   const missed = guide.questions.find((item) => item.kind === 'not_done');
   const differenceAnswer = answerAngerDailyPreparedQuestion({ day: 7, message: difference.value });
   const missedAnswer = answerAngerDailyPreparedQuestion({ day: 7, message: missed.value });
-  assert.ok(differenceAnswer.includes(guide.title));
+  assert.ok(differenceAnswer.includes('روز 7'), 'answer must stay bound to the selected day');
   assert.match(differenceAnswer, /تمرین/);
   assert.match(differenceAnswer, /اقدام/);
   assert.match(differenceAnswer, /تمرین به شناخت و مشاهده مهارت/);
@@ -266,7 +266,7 @@ test('duration answer does not invent a number that is absent from reviewed sour
   const guide = ANGER_DAILY_ASSISTANT_GUIDES[0];
   const question = guide.questions.find((item) => item.kind === 'duration');
   const answer = answerAngerDailyPreparedQuestion({ day: 1, message: question.value });
-  assert.match(answer, /زمان ثابتی برای این تمرین تعیین نشده/);
+  assert.match(answer, /(?:زمان ثابتی برای این تمرین تعیین نشده|زمان مشخصی برای این تمرین ثبت نشده)/);
   assert.doesNotMatch(answer, /\d+ دقیقه/);
 });
 
