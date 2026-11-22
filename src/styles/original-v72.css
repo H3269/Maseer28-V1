@@ -7307,6 +7307,14 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 }
 
 
+
+/* Assistant icon accent: inherits the app's turquoise accent and keeps the
+   same compact 1em footprint as the user's icon. */
+.globalAssistantChat .assistantMessage > .globalAssistantSpeakerIcon {
+  color: var(--accent, #36bfa4) !important;
+  filter: drop-shadow(0 0 2px color-mix(in srgb, var(--accent, #36bfa4) 32%, transparent));
+}
+
 /* Coordinated splash reveal: the app gate waits for this animation AND real content readiness. */
 .appLoading .loadingBrand img {
   /* Keep animated properties out of the !important cascade so keyframes can reveal the full logo. */
