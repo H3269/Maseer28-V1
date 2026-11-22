@@ -1,5 +1,3 @@
-import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
-
 /**
  * Rebuilt T01 anger guide responses.
  * Each answer is composed from the current day's own exercise, action,
@@ -133,14 +131,7 @@ export function buildAngerDailyRebuiltAnswer({ guide, question, plainSteps } = {
   if (!guide || guide.topicId !== 'T01' || !question) return null;
   const body = answerBody({ guide, question, plainSteps });
   if (!body) return null;
-  const rendered = [
-    '**دستیار هوشمند مسیر ۲۸**',
-    `موضوع: خشم | روز ${guide.day}`,
-    `**${clean(question.label || question.value)}**`,
-    '**توضیح و راهنمای امروز**',
-    '---',
-    body,
-    `**جمع‌بندی امروز**\nامروز در مسیر «${guide.title}» روی این موضوع کار کردی: ${clean(guide.objective)} این یادگیری را با خودت نگه دار؛ لازم نیست خشم را کاملاً از بین ببری یا برای پیشرفت وارد موقعیت دشوار شوی.`,
-  ].join('\n\n');
-  return appendDailyAssistantSafetyReminder(rendered, question.kind);
+  // The transcript already displays the user's question and the assistant icon.
+  // Keep this message limited to the answer body; do not repeat labels or daily summaries.
+  return body;
 }
