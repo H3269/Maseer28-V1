@@ -150,7 +150,23 @@ test('daily turn routes prepared anger questions only after source identity and 
     },
   });
   assert.match(adapted.response, new RegExp(adaptedExercise));
-  assert.doesNotMatch(adapted.response, new RegExp(guide.exercise.replace(/[.*+?^${}()|[\]\\]/g, '\\  assert.match(ok.response, /تفکیک رویداد، احساس و رفتار/);
+  assert.equal(adapted.response.includes(guide.exercise), false);
+
+  const actionQuestion = guide.questions.find((item) => item.kind === 'action_meaning');
+  const adaptedActionAnswer = makeDailyExerciseGuidanceTurn({
+    message: actionQuestion.value,
+    problem: 'خشم',
+    day: 1,
+    dayData: {
+      id: 'T01-D01',
+      topic_id: 'T01',
+      day: 1,
+      exercise: adaptedExercise,
+      actionText: adaptedAction,
+    },
+  });
+  assert.match(adaptedActionAnswer.response, new RegExp(adaptedAction));
+  assert.equal(adaptedActionAnswer.response.includes(guide.action), false);
 
   const mismatch = makeDailyExerciseGuidanceTurn({')));
 
