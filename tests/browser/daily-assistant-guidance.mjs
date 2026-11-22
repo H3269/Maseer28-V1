@@ -268,7 +268,7 @@ try {
   await guidedPanel.getByRole('button', { name: 'ارسال' }).click();
   await guidedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
   const angerReply = guidedPanel.locator('.assistantMessage').last();
-  assert.match(await angerReply.innerText(), /راهنمای روز ۱ خشم/);
+  assert.match(await angerReply.innerText(), /موضوع: خشم \\| روز 1/);
   assert.ok(await angerReply.locator('strong').count() > 0, 'T01 assistant headings must render as bold text, not raw markdown');
   const angerVisibleText = await angerReply.innerText();
   assert.equal(angerVisibleText.includes('**'), false, 'T01 must not expose raw markdown markers');
@@ -617,22 +617,22 @@ try {
   await dayPrompt.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
   await panel.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => /راهنمای روز ۱ خشم/.test(node.innerText)));
+    .some(node => /موضوع: خشم \\| روز 1/.test(node.innerText)));
   let assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /خشم/);
   assert.match(assistantReply, /روز ۱/);
-  assert.match(assistantReply, /راهنمای امروز/);
-  assert.match(assistantReply, /نکته یادگیری/);
-  assert.match(assistantReply, /انجام تمرین/);
+  assert.match(assistantReply, /توضیح و راهنمای امروز/);
+  assert.match(assistantReply, /جمع‌بندی امروز/);
+  assert.match(assistantReply, /تمرین/);
   assert.match(assistantReply, /هدف امروز:/);
-  assert.match(assistantReply, /گام‌های ساده اجرا:/);
+  assert.match(assistantReply, /قدم‌به‌قدم/);
   assert.match(assistantReply, /یک موقعیت کم‌فشار را انتخاب کن/);
   // Match the canonical four-part distinction, not the obsolete wording from an earlier draft.
-  assert.match(assistantReply, /چهار چیز را از هم جدا کنی/);
-  assert.match(assistantReply, /اتفاقی که واقعاً افتاد/);
-  assert.match(assistantReply, /احساسی که تجربه کردی/);
-  assert.match(assistantReply, /میلی که برای واکنش داشتی/);
-  assert.match(assistantReply, /رفتاری که در عمل انجام دادی/);
+  assert.match(assistantReply, /چهار مورد را جدا بنویس/);
+  assert.match(assistantReply, /چه اتفاقی افتاد/);
+  assert.match(assistantReply, /چه احساسی داشتی/);
+  assert.match(assistantReply, /چه میلی به ذهنت رسید/);
+  assert.match(assistantReply, /در عمل چه کردی یا نکردی/);
   assert.equal(await panel.getByTestId('daily-assistant-safety-reminder').count(), 0,
     'ordinary exercise questions must not show the safety reminder card');
   const angerDayBadge = normalizeVisibleDailyText(await page.locator('#dayBadge').innerText());
