@@ -140,7 +140,7 @@ export function buildAngerDailyRebuiltAnswer({ guide, question, plainSteps } = {
     '**توضیح و راهنمای امروز**',
     '---',
     body,
-    `**جمع‌بندی امروز**\nدر روز ${guide.day} قرار نیست با خشم بجنگی؛ قرار است مهارت «${guide.title}» را در حدی که امن و شدنی است تمرین کنی.`,
+    `**جمع‌بندی امروز**\nامروز در مسیر «${guide.title}» روی این موضوع کار کردی: ${clean(guide.objective)} این یادگیری را با خودت نگه دار؛ لازم نیست خشم را کاملاً از بین ببری یا برای پیشرفت وارد موقعیت دشوار شوی.`,
   ].join('\n\n');
   return appendDailyAssistantSafetyReminder(rendered, question.kind);
 }
