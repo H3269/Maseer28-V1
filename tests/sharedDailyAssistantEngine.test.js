@@ -187,6 +187,33 @@ test('T11-T14 authored examples are migrated into the shared renderer for all 28
   }
 });
 
+test('reviewStatus metadata never gates the fourteen prepared answers in live test mode', async () => {
+  const merged = await loadMergedContent();
+  const topicId = 'T02';
+  const topicName = 'اضطراب';
+  const canonical = merged.categories[topicName].days[0];
+  const questions = getSharedDailyAssistantPromptGroups(1, topicId).flatMap((group) => group.questions);
+  for (const reviewStatus of ['not_recorded', 'pending', 'approved']) {
+    const dailyContent = { ...canonical, reviewStatus };
+    for (const question of questions) {
+      const result = makePageAssistantTurn({
+        screen: 'day',
+        text: question.value,
+        dailyContext: {
+          day: 1,
+          problem: topicName,
+          data: dailyContent,
+          relationshipSafetyConfirmed: true,
+        },
+      });
+      assert.equal(result.status, 'daily_guidance_available',
+        'reviewStatus=' + reviewStatus + ' must not gate ' + question.id);
+      assert.ok(result.message.trim().length > 0,
+        'reviewStatus=' + reviewStatus + ' must return a complete answer for ' + question.id);
+    }
+  }
+});
+
 test('generic base fallback text is not mislabeled as topic-specific for T04, T05, T09, T10, and T13', async () => {
   const merged = await loadMergedContent();
   for (const [topicId, topicName] of TOPICS.filter(([id]) => ['T04', 'T05', 'T09', 'T10', 'T13'].includes(id))) {
