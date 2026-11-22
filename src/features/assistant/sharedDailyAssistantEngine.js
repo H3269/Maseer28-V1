@@ -271,6 +271,28 @@ function answerBody({ guide, question, plainSteps = {} }) {
         rest ? 'اگر موقعیت مناسبی وجود نداشته یا شرایط امن نبوده، فعلاً این گزینه را انتخاب کن: ' + rest : '',
         'وقتی آماده بودی، به مسیر عادی برگرد. هدف، یادگیری تدریجی است نه انجام بی‌وقفه و اجباری همه تمرین‌ها.',
       );
+    case 'anger_increased':
+    case 'anxiety_increased':
+    case 'fear_increased':
+    case 'hostility_increased':
+    case 'jealousy_increased':
+    case 'grief_increased':
+    case 'guilt_increased':
+    case 'dependency_increased':
+    case 'procrastination_increased':
+    case 'sleep_distress':
+    case 't11_distress':
+    case 'boundary_distress':
+    case 'loneliness_increased':
+    case 'motivation_distress':
+    case 'distress_increased':
+      return paragraph(
+        'اگر در جریان تمرین، فشار یا ناراحتی‌ات بیشتر شد، همان لحظه مکث کن و تمرین را کنار بگذار. برای یادگیری مهارت امروز لازم نیست ناراحتی را تحمل کنی.',
+        stop ? 'محدودیت ویژه روز ' + day + ' این است: ' + stop : 'اگر ادامه تمرین فشار را بیشتر می‌کند یا احساس ناایمنی ایجاد شده، آن را متوقف کن و به فعالیت عادی و محیط امن برگرد.',
+        humanSupport,
+        'اگر امن است از موقعیت تنش‌زا فاصله بگیر، نوشتن یا گفت‌وگو را کنار بگذار و به یک کار خنثی و آرام برگرد. اگر احتمال آسیب به خودت یا دیگری وجود دارد، تنها نمان و فوراً از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر.',
+        'بعداً فقط در صورت احساس امنیت و آمادگی تصمیم بگیر که تمرین را به شکل سبک‌تر ادامه بدهی یا فعلاً کنار بگذاری.',
+      );
     case 'talk_other':
       return paragraph(
         'برای انجام تمرین روز ' + day + '، گفت‌وگو با فرد دیگری الزامی نیست. بخش اصلی را می‌توانی به‌تنهایی و در فضای خصوصی انجام بدهی: ' + exercise,
@@ -302,6 +324,8 @@ function answerBody({ guide, question, plainSteps = {} }) {
 
 export function buildSharedDailyAssistantAnswer({ guide, question, plainSteps } = {}) {
   if (!guide || !Object.hasOwn(DISTRESS_KIND_BY_TOPIC, guide.topicId) || !question) return null;
+  const expectedQuestion = getSharedDailyAssistantQuestion(guide.topicId, question.value);
+  if (!expectedQuestion || expectedQuestion.kind !== question.kind) return null;
   const body = answerBody({ guide, question, plainSteps });
   if (!body) return null;
   // The transcript already displays the user's question and the assistant icon.
