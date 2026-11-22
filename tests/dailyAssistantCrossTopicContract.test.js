@@ -251,7 +251,11 @@ test('T02-T09 prepared answers retain topic/day context and substantive guidance
         });
         assert.equal(typeof answer, 'string', topicId + ' day ' + guide.day + ' ' + question.id + ' answer');
         if (topicId !== 'T01') {
+          if (topicId !== 'T01') {
           assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.title)), topicId + ' day ' + guide.day + ' title context');
+        } else {
+          assert.doesNotMatch(answer, /دستیار هوشمند مسیر ۲۸|موضوع: خشم|جمع‌بندی امروز|توضیح و راهنمای امروز/u);
+        }
         } else {
           assert.doesNotMatch(answer, /دستیار هوشمند مسیر ۲۸|موضوع: خشم|جمع‌بندی امروز|توضیح و راهنمای امروز/u);
         }
