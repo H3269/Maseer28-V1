@@ -654,7 +654,7 @@ try {
   assert.match(assistantReply, /روز (?:1|۱)/);
   assert.doesNotMatch(assistantReply, /دستیار هوشمند مسیر ۲۸|موضوع: خشم|توضیح و راهنمای امروز|جمع‌بندی امروز|۰۹۱۹۰۸۸۹۰۶۲/u);
   assert.match(assistantReply, /تمرین/);
-  assert.match(assistantReply, /هدف امروز روشن است/);
+  assert.match(assistantReply, /تمرین را به‌ترتیب پیش ببر/);
   assert.match(assistantReply, /قدم‌به‌قدم/);
   assert.match(assistantReply, /یک موقعیت کم‌فشار را انتخاب کن/);
   // Match the canonical four-part distinction, not the obsolete wording from an earlier draft.
