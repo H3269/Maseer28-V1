@@ -20,12 +20,18 @@ function answerBody({ guide, question, plainSteps = {} }) {
   const stop = clean(guide.stopCondition, 'اگر فشار روانی یا احتمال آسیب بیشتر شد، تمرین را متوقف کن.');
   const rest = clean(guide.restVersion, 'امروز تمرین را کنار بگذار و در زمان مناسب‌تری به آن برگرد.');
   const progress = clean(guide.progressVersion, 'اگر این مهارت را قبلاً در شرایط امن به کار برده‌ای، فقط همان پیشرفت را ثبت کن؛ موقعیت دشوارتر نساز.');
-  const objective = clean(guide.objective);\n  const skill = clean(guide.skill);\n  const mechanism = clean(guide.mechanism);\n  const reflection = clean(guide.reflectionQuestion);\n  const humanSupport = clean(guide.whenToSeekHumanSupport);
+  const objective = clean(guide.objective);
+  const skill = clean(guide.skill);
+  const mechanism = clean(guide.mechanism);
+  const reflection = clean(guide.reflectionQuestion);
+  const humanSupport = clean(guide.whenToSeekHumanSupport);
 
   switch (question.kind) {
     case 'exercise_meaning':
       return paragraph(
-        `آره عزیزم. در روز ${day} قرار نیست فقط درباره خشم فکر کنی؛ می‌خواهیم مهارت «${guide.title}» را در یک نمونه روشن تمرین کنی. این کار کمک می‌کند ${objective.charAt(0).toLocaleLowerCase('fa') + objective.slice(1)}`,\n        skill && `مهارتی که امروز تقویتش می‌کنی این است: ${skill}`,\n        mechanism,
+        `آره عزیزم. در روز ${day} قرار نیست فقط درباره خشم فکر کنی؛ می‌خواهیم مهارت «${guide.title}» را در یک نمونه روشن تمرین کنی. این کار کمک می‌کند ${objective.charAt(0).toLocaleLowerCase('fa') + objective.slice(1)}`,
+        skill && `مهارتی که امروز تقویتش می‌کنی این است: ${skill}`,
+        mechanism,
         `برای انجامش این مسیر را قدم‌به‌قدم برو: ${exercise}`,
         clean(plainSteps.exercise),
         'هدف امروز روشن است: تمرین را قدم‌به‌قدم انجام بده و همان بخش‌هایی را ثبت کن که خود متن تمرین خواسته است. تعداد نمونه‌ها را همان‌طور که خود متن تمرین خواسته نگه دار؛ لازم نیست نوشته‌ات طولانی یا بی‌نقص باشد. مهم این است که چیزی را که واقعاً مشاهده کرده‌ای از حدس، قضاوت یا چیزی که هنوز نمی‌دانی جدا نگه داری.'
@@ -39,7 +45,8 @@ function answerBody({ guide, question, plainSteps = {} }) {
       );
     case 'action_meaning':
       return paragraph(
-        `اقدام اختصاصی امروز، یک قدم رفتاری کوچک در کنار تمرین نوشتاری است. در روز ${day} قرار است مهارت «${guide.title}» را به این شکل وارد انتخاب‌های روزمره‌ات کنی:`,\n        skill && `این اقدام به تمرین مهارت «${skill}» کمک می‌کند؛ نه اینکه مجبور باشی احساس خشم را پنهان کنی.`,
+        `اقدام اختصاصی امروز، یک قدم رفتاری کوچک در کنار تمرین نوشتاری است. در روز ${day} قرار است مهارت «${guide.title}» را به این شکل وارد انتخاب‌های روزمره‌ات کنی:`,
+        skill && `این اقدام به تمرین مهارت «${skill}» کمک می‌کند؛ نه اینکه مجبور باشی احساس خشم را پنهان کنی.`,
         action,
         clean(plainSteps.action),
         'تمرین به تو فرصت می‌دهد موضوع را بررسی کنی؛ اقدام یعنی اگر موقعیت مناسب و امنی پیش آمد، یک رفتار مشخص را انتخاب کنی. انجام اقدام اجباری نیست و قرار نیست برای انجامش موقعیت بسازی.'
@@ -61,7 +68,8 @@ function answerBody({ guide, question, plainSteps = {} }) {
     case 'success':
       return paragraph(
         `برای فهمیدن اینکه تمرین روز ${day} را درست انجام داده‌ای، دنبال نتیجه خارق‌العاده یا ازبین‌رفتن خشم نگرد. معیار امروز این است: ${success}`,
-        `به زبان ساده، اگر توانستی بخش اصلی تمرین «${guide.title}» را در یک نمونه تشخیص بدهی یا ثبت کنی، به اندازه لازم پیش رفته‌ای. لازم نیست احساس خشم کاملاً کم شود یا رفتار دیگران تغییر کند.`,\n        reflection && `برای مرور کوتاه از خودت بپرس: ${reflection}`,
+        `به زبان ساده، اگر توانستی بخش اصلی تمرین «${guide.title}» را در یک نمونه تشخیص بدهی یا ثبت کنی، به اندازه لازم پیش رفته‌ای. لازم نیست احساس خشم کاملاً کم شود یا رفتار دیگران تغییر کند.`,
+        reflection && `برای مرور کوتاه از خودت بپرس: ${reflection}`,
         'اگر بخشی مبهم مانده، همان قسمت را دوباره با یک مثال ساده بررسی کن؛ خودت را بابت کامل‌نبودن سرزنش نکن.'
       );
     case 'stop':
