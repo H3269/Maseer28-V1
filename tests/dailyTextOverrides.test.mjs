@@ -131,7 +131,9 @@ test('T03 fear overrides all ten runtime text fields uniquely across all 28 days
 
 test('T03 daily override fetch uses a fresh cache key', async () => {
  const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
- assert.match(app, /daily-text-overrides\.v1\.json\?v=20261118-t14/);
+ assert.match(app, /daily-text-overrides\\.v1\\.json\\?v=\\$\\{DAILY_TEXT_OVERRIDES_CACHE_VERSION\\}/);
+ assert.match(app, /DAILY_TEXT_OVERRIDES_CACHE_VERSION = '20261121-daily-assistant-examples'/);
+ assert.match(app, /cache: 'no-cache', priority: 'low'/);
 });
 
 
