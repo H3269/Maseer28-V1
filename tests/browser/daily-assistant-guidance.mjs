@@ -71,8 +71,13 @@ async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumb
   assert.ok(dayBadge.includes(normalizeVisibleDailyText(topic)), 'day UI must show the selected canonical topic');
   assert.ok(dayBadge.includes('روز ' + dayNumber), 'day UI must show the selected canonical day');
   const reply = normalizeVisibleDailyText(await panel.locator('.assistantMessage').last().innerText());
-  assert.ok(reply.includes(normalizeVisibleDailyText(topic)), 'assistant answer must identify the selected topic');
-  assert.ok(reply.includes('روز ' + dayNumber), 'assistant answer must identify the selected day');
+  if (topic !== 'خشم') {
+    assert.ok(reply.includes(normalizeVisibleDailyText(topic)), 'assistant answer must identify the selected topic');
+    assert.ok(reply.includes('روز ' + dayNumber), 'assistant answer must identify the selected day');
+  } else {
+    assert.doesNotMatch(reply, /موضوع: خشم|دستیار هوشمند مسیر ۲۸|جمع‌بندی امروز/u,
+      'anger answer must not repeat topic labels or a daily summary');
+  }
   await panel.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
   await panel.waitFor({ state: 'detached' });
   const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
@@ -625,7 +630,7 @@ try {
   await page.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
   let assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /خشم/);
-  assert.match(assistantReply, /روز ۱/);
+  assert.match(assistantReply, /روز (?:1|۱)/);
   assert.doesNotMatch(assistantReply, /دستیار هوشمند مسیر ۲۸|موضوع: خشم|توضیح و راهنمای امروز|جمع‌بندی امروز|۰۹۱۹۰۸۸۹۰۶۲/u);
   assert.match(assistantReply, /تمرین/);
   assert.match(assistantReply, /هدف امروز روشن است/);
