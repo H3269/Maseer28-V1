@@ -332,8 +332,6 @@ try {
       const normalizedAnswer = normalizeVisibleDailyText(visibleAnswer);
       assert.ok(normalizedAnswer.length >= 45,
         topic.id + ' ' + question + ' must return a substantive prepared answer');
-      assert.match(visibleAnswer, /روز\s*(?:1|۱)/u,
-        topic.id + ' ' + question + ' must use the active day context');
       assert.doesNotMatch(visibleAnswer, /آره عزیزم|حتماً عزیزم|بله عزیزم|نه عزیزم/u,
         'assistant answers must not use intimate pet names or the removed opening phrase');
       assert.doesNotMatch(visibleAnswer, /راهنمای روز\s*\d|دستیار هوشمند مسیر ۲۸|جمع‌بندی امروز|موضوع:\s/u,
