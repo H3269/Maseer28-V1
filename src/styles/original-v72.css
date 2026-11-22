@@ -7280,28 +7280,30 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 .globalAssistantChat .dailyAssistantReturnButton::after { content: none !important; display: none !important; }
 
 
-.globalAssistantChat .dailyAssistantSafetyReminder {
-  margin: 14px 0 4px;
-  padding: 14px 16px;
-  border: 1px solid #c9a75d;
-  border-radius: 12px;
-  background: #e6f1ee;
-  color: #243b3c;
-  line-height: 1.85;
-  font-size: 13px;
+.globalAssistantDialog .assistantChatShell.globalAssistantChat .assistantTranscript .assistantMessage > .dailyAssistantSafetyReminder {
+  display: block !important;
+  margin: 14px 0 4px !important;
+  padding: 14px 16px !important;
+  border: 1px solid #c9a75d !important;
+  border-radius: 12px !important;
+  background-color: #e6f1ee !important;
+  color: #243b3c !important;
+  line-height: 1.85 !important;
+  font-size: 13px !important;
 }
-.globalAssistantChat .dailyAssistantSafetyReminder h3 {
-  margin: 0 0 8px;
-  color: #28555b;
-  font-size: 14px;
-  font-weight: 800;
+.globalAssistantDialog .assistantChatShell.globalAssistantChat .assistantTranscript .assistantMessage > .dailyAssistantSafetyReminder h3 {
+  margin: 0 0 8px !important;
+  color: #28555b !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
 }
-.globalAssistantChat .dailyAssistantSafetyReminder p {
-  margin: 0 0 8px;
+.globalAssistantDialog .assistantChatShell.globalAssistantChat .assistantTranscript .assistantMessage > .dailyAssistantSafetyReminder p {
+  margin: 0 0 8px !important;
+  color: #243b3c !important;
 }
-.globalAssistantChat .dailyAssistantSafetyReminder p:last-child {
-  margin-bottom: 0;
-  font-weight: 700;
+.globalAssistantDialog .assistantChatShell.globalAssistantChat .assistantTranscript .assistantMessage > .dailyAssistantSafetyReminder p:last-child {
+  margin-bottom: 0 !important;
+  font-weight: 700 !important;
 }
 
 
