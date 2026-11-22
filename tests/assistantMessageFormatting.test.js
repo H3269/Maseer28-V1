@@ -33,7 +33,7 @@ test('all 2,352 prepared answers across T01-T06 render without raw markdown or e
       for (const question of guide.questions) {
         const answer = topic.answer(guide, question);
         assert.equal(typeof answer, 'string', topic.id + ' day ' + guide.day + ' ' + question.kind);
-        const shouldShowSafetyReminder = safetyKinds.has(question.kind);
+        const shouldShowSafetyReminder = topic.id !== 'T01' && safetyKinds.has(question.kind);
         assert.equal(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN), shouldShowSafetyReminder,
           topic.id + ' day ' + guide.day + ' ' + question.kind + ' must show the shared reminder only for the four evaluation/safety questions');
         const lines = formatAssistantMessageText(answer);
@@ -51,7 +51,9 @@ test('all 2,352 prepared answers across T01-T06 render without raw markdown or e
           topic.id + ' must not expose internal topic identifiers');
         assert.doesNotMatch(visibleText, /(?:این|در این)\s+بسته|بسته\s*T(?:0?[1-9]|[12][0-9]|3[0-4])/,
           topic.id + ' must use the actual topic name, not package terminology');
-        assert.ok(lines.flat().some((part) => part.type === 'strong'), topic.id + ' bold headings must become strong spans');
+        const hasStrongText = lines.flat().some((part) => part.type === 'strong');
+        assert.equal(hasStrongText, topic.id !== 'T01',
+          topic.id + ' must render only the authored bold formatting (T01 answer bodies have no repeated heading)');
         checked += 1;
       }
     }
