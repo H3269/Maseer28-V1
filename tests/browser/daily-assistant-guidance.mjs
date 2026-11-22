@@ -267,13 +267,19 @@ try {
   await promptDialog.locator('[data-prompt-option]').first().click();
   await guidedPanel.getByRole('button', { name: 'ارسال' }).click();
   await guidedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
+  const angerUserQuestion = guidedPanel.locator('.userMessage').last();
   const angerReply = guidedPanel.locator('.assistantMessage').last();
-  assert.match(await angerReply.innerText(), /موضوع: خشم \| روز (?:1|۱)/);
-  assert.ok(await angerReply.locator('strong').count() > 0, 'T01 assistant headings must render as bold text, not raw markdown');
+  assert.match(await angerUserQuestion.innerText(), /منظور از تمرین امروز چیست/u,
+    'the selected question must appear in the user message above the assistant answer');
   const angerVisibleText = await angerReply.innerText();
+  assert.match(angerVisibleText, /آره عزیزم/u, 'assistant bubble must start with the answer, not another question');
+  assert.doesNotMatch(angerVisibleText, /دستیار هوشمند مسیر ۲۸|موضوع: خشم|منظور از تمرین امروز چیست|توضیح و راهنمای امروز|جمع‌بندی امروز|۰۹۱۹۰۸۸۹۰۶۲/u,
+    'T01 assistant bubble must not repeat the question, generic labels, daily summary, or phone reminder');
+  assert.equal(await angerReply.locator('[data-testid="daily-assistant-safety-reminder"]').count(), 0,
+    'T01 must not render the separate shared safety reminder card');
   assert.equal(angerVisibleText.includes('**'), false, 'T01 must not expose raw markdown markers');
   assert.equal(angerVisibleText.includes(String.fromCharCode(92) + 'n'), false, 'T01 must not expose escaped newline tokens');
-  assert.ok(angerVisibleText.includes('\n'), 'T01 paragraphs must display on separate lines');
+  assert.ok(angerVisibleText.includes('\n'), 'T01 answer paragraphs must display on separate lines');
   await guidedPage.close();
 
   // T02 anxiety must expose the same day-scoped prepared guidance structure.
