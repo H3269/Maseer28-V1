@@ -9,7 +9,7 @@ import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyRemind
 const clean = (value, fallback = '') => String(value || fallback).trim();
 const paragraph = (...parts) => parts.filter(Boolean).join('\n\n');
 
-function answerBody({ guide, question }) {
+function answerBody({ guide, question, plainSteps = {} }) {
   const day = guide.day;
   const exercise = clean(guide.exercise);
   const action = clean(guide.action);
@@ -26,7 +26,8 @@ function answerBody({ guide, question }) {
     case 'exercise_meaning':
       return paragraph(
         `آره عزیزم. در روز ${day} قرار نیست فقط درباره خشم فکر کنی؛ می‌خواهیم مهارت «${guide.title}» را در یک نمونه روشن تمرین کنی. این کار کمک می‌کند ${objective.charAt(0).toLocaleLowerCase('fa') + objective.slice(1)}`,
-        `برای انجامش این مسیر را برو: ${exercise}`,
+        `برای انجامش این مسیر را قدم‌به‌قدم برو: ${exercise}`,
+        clean(plainSteps.exercise),
         'هدف امروز روشن است: تمرین را قدم‌به‌قدم انجام بده و همان بخش‌هایی را ثبت کن که خود متن تمرین خواسته است. تعداد نمونه‌ها را همان‌طور که خود متن تمرین خواسته نگه دار؛ لازم نیست نوشته‌ات طولانی یا بی‌نقص باشد. مهم این است که چیزی را که واقعاً مشاهده کرده‌ای از حدس، قضاوت یا چیزی که هنوز نمی‌دانی جدا نگه داری.'
       );
     case 'exercise_example':
@@ -40,11 +41,12 @@ function answerBody({ guide, question }) {
       return paragraph(
         `اقدام اختصاصی امروز، یک قدم رفتاری کوچک در کنار تمرین نوشتاری است. در روز ${day} قرار است مهارت «${guide.title}» را به این شکل وارد انتخاب‌های روزمره‌ات کنی:`,
         action,
+        clean(plainSteps.action),
         'تمرین به تو فرصت می‌دهد موضوع را بررسی کنی؛ اقدام یعنی اگر موقعیت مناسب و امنی پیش آمد، یک رفتار مشخص را انتخاب کنی. انجام اقدام اجباری نیست و قرار نیست برای انجامش موقعیت بسازی.'
       );
     case 'action_example':
       return paragraph(
-        `بله عزیزم؛ یک نمونه فرضی از اقدام روز ${day} این است:`,
+        `بله عزیزم؛ یک نمونه فرضی از اقدام روز ${day} این است. این نمونه فقط برای روشن‌شدن اقدام امروز است:`,
         actionExample,
         `در مثال، به‌جای واکنش عجولانه، روی همان مهارت امروز یعنی «${guide.title}» تکیه می‌کنی. اگر شرایط تو متفاوت است، اصل اقدام را نگه دار و شکل امن و متناسب با شرایط خودت را انتخاب کن.`,
         'اگر شرایط زندگی تو شبیه این نمونه نیست یا گفتن یا انجام‌دادن آن امن نیست، آن را اجرا نکن؛ اقدام امروز فقط در موقعیت امن و با رضایت آزادانه مطرح است. اگر احتمال خطر هست، فاصله امن ایجاد کن و کمک بگیر.'
@@ -118,9 +120,9 @@ function answerBody({ guide, question }) {
   }
 }
 
-export function buildAngerDailyRebuiltAnswer({ guide, question } = {}) {
+export function buildAngerDailyRebuiltAnswer({ guide, question, plainSteps } = {}) {
   if (!guide || guide.topicId !== 'T01' || !question) return null;
-  const body = answerBody({ guide, question });
+  const body = answerBody({ guide, question, plainSteps });
   if (!body) return null;
   const rendered = [
     '**دستیار هوشمند مسیر ۲۸**',
