@@ -1,11 +1,21 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { readFile } from 'node:fs/promises';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
-import { FEAR_DAILY_ASSISTANT_GUIDES, answerFearDailyPreparedQuestion, getFearDailyAssistantPromptGroups } from '../src/features/assistant/fearDailyAssistantPrompts.js';
+import { mergeDailyTextOverrides } from '../src/features/content/dailyTextOverrides.js';
+import { buildSharedDailyAssistantAnswerFromDailyContent, getSharedDailyAssistantPromptGroups } from '../src/features/assistant/sharedDailyAssistantEngine.js';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
-import { ANXIETY_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
 import { ANGER_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/angerDailyAssistantPrompts.js';
-import { HATRED_DAILY_ASSISTANT_GUIDES, getHatredDailyAssistantPromptGroups } from '../src/features/assistant/hatredDailyAssistantPrompts.js';
+
+const mergedDailyContentPromise = Promise.all([
+  readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8').then(JSON.parse),
+  readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8').then(JSON.parse),
+]).then(([base, overrides]) => mergeDailyTextOverrides(base, overrides));
+
+async function loadTopicDays(topicName) {
+  const merged = await mergedDailyContentPromise;
+  return merged.categories[topicName].days;
+}
 
 test('page-specific UI guidance is selected for the current screen', () => {
   const result = makePageAssistantTurn({
@@ -88,23 +98,18 @@ test('onboarding screen IDs resolve to their own grounded assistant guidance', (
   assert.match(result.message, /روند استفاده از مسیر ۲۸ روزه/);
 });
 
-test('daily page answers pre-authored anxiety questions only with matching canonical topic and day identity', () => {
-  const guide = ANXIETY_DAILY_ASSISTANT_GUIDES[0];
-  const question = guide.questions.find((item) => item.kind === 'exercise_action_difference');
-  const dayData = {
-    id: getCanonicalDailyRecordId('اضطراب', 1),
-    topic_id: 'T02',
-    day: 1,
-    risk_level: 'routine',
-    exercise: guide.exercise,
-    actionText: guide.action,
-  };
+test('T02 prepared questions use canonical daily content and reject topic/day identity conflicts', async () => {
+  const question = getSharedDailyAssistantPromptGroups(1, 'T02').flatMap((group) => group.questions)
+    .find((item) => item.kind === 'exercise_action_difference');
+  const dayData = (await loadTopicDays('اضطراب'))[0];
   const result = makePageAssistantTurn({
     screen: 'day',
     text: question.value,
     dailyContext: { day: 1, problem: 'اضطراب', data: dayData },
   });
   assert.equal(result.status, 'daily_guidance_available');
+  assert.ok(result.message.includes(dayData.exercise));
+  assert.ok(result.message.includes(dayData.actionText));
 
   const wrongTopic = makePageAssistantTurn({
     screen: 'day',
@@ -125,49 +130,41 @@ test('daily page answers pre-authored anxiety questions only with matching canon
   assert.equal(wrongDay.status, 'daily_guidance_unavailable');
 });
 
-
-test('all exact prepared T03 FAQs answer through the real page router for all 28 days', () => {
+test('all exact prepared T03 questions answer through the real page router for all 28 days', async () => {
+  const sourceDays = await loadTopicDays('ترس');
   let checked = 0;
-  for (const guide of FEAR_DAILY_ASSISTANT_GUIDES) {
-    for (const question of guide.questions) {
+  for (let day = 1; day <= 28; day += 1) {
+    const record = sourceDays.find((item) => item.day === day);
+    for (const question of getSharedDailyAssistantPromptGroups(day, 'T03').flatMap((group) => group.questions)) {
       const result = makePageAssistantTurn({
         screen: 'day',
         text: question.value,
         dailyContext: {
-          day: guide.day,
+          day,
           problem: 'ترس',
-          data: {
-            id: getCanonicalDailyRecordId('ترس', guide.day),
-            day: guide.day,
-            risk_level: 'routine',
-          },
-          // Mirrors the live DayScreen adapter: legacy canonical source has no
-          // topic_id, while splitDayContent preserves the absent identity as null.
-          guidanceData: {
-            id: getCanonicalDailyRecordId('ترس', guide.day),
-            topic_id: null,
-            day: guide.day,
-          },
+          data: record,
+          guidanceData: { id: record.id, topic_id: null, day: record.day },
           relationshipSafetyConfirmed: false,
         },
       });
-      assert.equal(result.status, 'daily_guidance_available');
+      assert.equal(result.status, 'daily_guidance_available', 'day ' + day + ' ' + question.kind);
+      assert.ok(result.message.length > 0);
       checked += 1;
     }
   }
-  assert.equal(FEAR_DAILY_ASSISTANT_GUIDES.length, 28);
   assert.equal(checked, 392);
 });
 
-test('T03 prepared FAQs accept legacy category-derived identity but reject explicit topic/day conflicts', () => {
-  const question = FEAR_DAILY_ASSISTANT_GUIDES[0].questions[0];
+test('T03 prepared FAQs accept canonical category-derived identity but reject topic/day conflicts', async () => {
+  const record = (await loadTopicDays('ترس'))[0];
+  const question = getSharedDailyAssistantPromptGroups(1, 'T03')[0].questions[0];
   const wrongTopic = makePageAssistantTurn({
     screen: 'day',
     text: question.value,
     dailyContext: {
       day: 1,
       problem: 'ترس',
-      data: { id: getCanonicalDailyRecordId('اضطراب', 1), topic_id: 'T02', day: 1 },
+      data: { ...record, id: getCanonicalDailyRecordId('اضطراب', 1), topic_id: 'T02' },
     },
   });
   assert.equal(wrongTopic.status, 'daily_guidance_unavailable');
@@ -178,8 +175,8 @@ test('T03 prepared FAQs accept legacy category-derived identity but reject expli
     dailyContext: {
       day: 1,
       problem: 'ترس',
-      data: { id: getCanonicalDailyRecordId('ترس', 1), day: 1 },
-      guidanceData: { id: getCanonicalDailyRecordId('ترس', 1), topic_id: null, day: 1 },
+      data: record,
+      guidanceData: { id: record.id, topic_id: null, day: 1 },
     },
   });
   assert.equal(legacyTopicMissing.status, 'daily_guidance_available');
@@ -190,7 +187,7 @@ test('T03 prepared FAQs accept legacy category-derived identity but reject expli
     dailyContext: {
       day: 1,
       problem: 'ترس',
-      data: { id: getCanonicalDailyRecordId('ترس', 1), topic_id: 'T02', day: 1 },
+      data: { ...record, topic_id: 'T02' },
     },
   });
   assert.equal(explicitTopicConflict.status, 'daily_guidance_unavailable');
@@ -201,7 +198,7 @@ test('T03 prepared FAQs accept legacy category-derived identity but reject expli
     dailyContext: {
       day: 1,
       problem: 'ترس',
-      data: { id: getCanonicalDailyRecordId('ترس', 2), topic_id: 'T03', day: 2 },
+      data: { ...record, id: getCanonicalDailyRecordId('ترس', 2), day: 2 },
     },
   });
   assert.equal(wrongDay.status, 'daily_guidance_unavailable');
@@ -226,12 +223,12 @@ test('T03 prepared FAQ route still gives urgent safety handoff precedence', () =
 });
 
 
-test('T03 prepared question groups match the five-section presentation used by T01 and T02', () => {
+test('T03 prompt groups use the same five-section ordering as the T01 reference', () => {
   for (let day = 1; day <= 28; day += 1) {
-    const groups = getFearDailyAssistantPromptGroups(day);
-    assert.equal(groups.length, 5, `day ${day}`);
+    const groups = getSharedDailyAssistantPromptGroups(day, 'T03');
+    assert.equal(groups.length, 5, 'day ' + day);
     assert.deepEqual(groups.map((group) => group.questions.length), [2, 2, 1, 5, 4]);
-    assert.equal(groups.reduce((count, group) => count + group.questions.length, 0), 14);
+    assert.equal(groups.flatMap((group) => group.questions).length, 14);
     assert.deepEqual(groups.map((group) => group.label), [
       'فهم تمرین روز ' + day,
       'فهم اقدام اختصاصی روز ' + day,
@@ -240,47 +237,82 @@ test('T03 prepared question groups match the five-section presentation used by T
       'ارزیابی و ایمنی',
     ]);
   }
-  assert.deepEqual(getFearDailyAssistantPromptGroups(29), []);
+  assert.deepEqual(getSharedDailyAssistantPromptGroups(29, 'T03'), []);
 });
 
-test('T03 prepared answers follow the shared answer hierarchy and remain specific to the selected day', () => {
-  const guide = FEAR_DAILY_ASSISTANT_GUIDES[0];
-  const exercise = answerFearDailyPreparedQuestion({ day: 1, message: guide.questions.find((item) => item.kind === 'exercise_meaning').value });
-  const example = answerFearDailyPreparedQuestion({ day: 1, message: guide.questions.find((item) => item.kind === 'exercise_example').value });
-  const action = answerFearDailyPreparedQuestion({ day: 1, message: guide.questions.find((item) => item.kind === 'action_meaning').value });
-  assert.match(exercise, /راهنمای روز ۱ ترس/);
-  assert.match(exercise, /چرا این تمرین انتخاب شده/);
-  assert.match(exercise, /مهارت مورد توجه/);
-  assert.match(exercise, /نکته امروز/);
-  assert.match(example, /یک مثال فرضی از تمرین امروز/);
-  assert.match(example, /ارتباط مثال با تمرین/);
-  assert.match(action, /اقدام اختصاصی امروز چیست/);
-  assert.match(action, /چطور اجرا کنی/);
-  assert.ok(exercise.includes(guide.exercise));
-  assert.ok(action.includes(guide.action));
-  assert.equal(answerFearDailyPreparedQuestion({ day: 1, message: 'سؤال خارج از فهرست' }), null);
+test('T03 prepared answers use the shared T01 response structure and canonical day content', async () => {
+  const dailyContent = (await loadTopicDays('ترس'))[0];
+  const questions = getSharedDailyAssistantPromptGroups(1, 'T03').flatMap((group) => group.questions);
+  const exerciseQuestion = questions.find((item) => item.kind === 'exercise_meaning');
+  const exampleQuestion = questions.find((item) => item.kind === 'exercise_example');
+  const actionQuestion = questions.find((item) => item.kind === 'action_meaning');
+  const exercise = buildSharedDailyAssistantAnswerFromDailyContent({
+    topicId: 'T03', topicName: 'ترس', day: 1, message: exerciseQuestion.value, dailyContent,
+  });
+  const example = buildSharedDailyAssistantAnswerFromDailyContent({
+    topicId: 'T03', topicName: 'ترس', day: 1, message: exampleQuestion.value, dailyContent,
+  });
+  const action = buildSharedDailyAssistantAnswerFromDailyContent({
+    topicId: 'T03', topicName: 'ترس', day: 1, message: actionQuestion.value, dailyContent,
+  });
+  assert.match(exercise, /در روز 1/);
+  assert.ok(exercise.includes(dailyContent.exercise));
+  assert.ok(example.includes(dailyContent.exerciseExample));
+  assert.ok(action.includes(dailyContent.actionText));
+  assert.equal(buildSharedDailyAssistantAnswerFromDailyContent({
+    topicId: 'T03', topicName: 'ترس', day: 1, message: 'سؤال خارج از فهرست', dailyContent,
+  }), null);
 });
 
-
-test('all 392 prepared T04 questions answer through the real page router for canonical day identity',()=>{
- let checked=0;
- for(const guide of HATRED_DAILY_ASSISTANT_GUIDES){
-  for(const question of guide.questions){
-   const result=makePageAssistantTurn({screen:'day',text:question.value,dailyContext:{day:guide.day,problem:'نفرت',data:{id:getCanonicalDailyRecordId('نفرت',guide.day),topic_id:'T04',day:guide.day,review_status:'pending_expert_review'},guidanceData:{id:getCanonicalDailyRecordId('نفرت',guide.day),topic_id:'T04',day:guide.day}}});
-   assert.equal(result.status, 'daily_guidance_available');checked++;
+test('all exact prepared T04 questions answer through the real page router for canonical day identity', async () => {
+  const sourceDays = await loadTopicDays('نفرت');
+  let checked = 0;
+  for (let day = 1; day <= 28; day += 1) {
+    const record = sourceDays.find((item) => item.day === day);
+    for (const question of getSharedDailyAssistantPromptGroups(day, 'T04').flatMap((group) => group.questions)) {
+      const result = makePageAssistantTurn({
+        screen: 'day',
+        text: question.value,
+        dailyContext: {
+          day,
+          problem: 'نفرت',
+          data: record,
+          guidanceData: { id: record.id, topic_id: null, day: record.day },
+        },
+      });
+      assert.equal(result.status, 'daily_guidance_available', 'day ' + day + ' ' + question.kind);
+      checked += 1;
+    }
   }
- }
- assert.equal(checked,392);
+  assert.equal(checked, 392);
 });
 
-test('T04 prepared assistant accepts legacy missing topic_id but rejects topic and day conflicts',()=>{
- const q=HATRED_DAILY_ASSISTANT_GUIDES[0].questions[0];
- const legacy=makePageAssistantTurn({screen:'day',text:q.value,dailyContext:{day:1,problem:'نفرت',data:{id:getCanonicalDailyRecordId('نفرت',1),day:1},guidanceData:{id:getCanonicalDailyRecordId('نفرت',1),topic_id:null,day:1}}});
- assert.equal(legacy.status, 'daily_guidance_available');
- const wrongTopic=makePageAssistantTurn({screen:'day',text:q.value,dailyContext:{day:1,problem:'نفرت',data:{id:getCanonicalDailyRecordId('نفرت',1),topic_id:'T18',day:1}}});
- assert.equal(wrongTopic.status,'daily_guidance_unavailable');
- const wrongDay=makePageAssistantTurn({screen:'day',text:q.value,dailyContext:{day:1,problem:'نفرت',data:{id:getCanonicalDailyRecordId('نفرت',2),topic_id:'T04',day:2}}});
- assert.equal(wrongDay.status,'daily_guidance_unavailable');
+test('T04 prepared assistant accepts canonical identity without topic_id and rejects conflicts', async () => {
+  const record = (await loadTopicDays('نفرت'))[0];
+  const question = getSharedDailyAssistantPromptGroups(1, 'T04')[0].questions[0];
+  const legacy = makePageAssistantTurn({
+    screen: 'day',
+    text: question.value,
+    dailyContext: {
+      day: 1,
+      problem: 'نفرت',
+      data: record,
+      guidanceData: { id: record.id, topic_id: null, day: record.day },
+    },
+  });
+  assert.equal(legacy.status, 'daily_guidance_available');
+  const wrongTopic = makePageAssistantTurn({
+    screen: 'day',
+    text: question.value,
+    dailyContext: { day: 1, problem: 'نفرت', data: { ...record, topic_id: 'T18' } },
+  });
+  assert.equal(wrongTopic.status, 'daily_guidance_unavailable');
+  const wrongDay = makePageAssistantTurn({
+    screen: 'day',
+    text: question.value,
+    dailyContext: { day: 1, problem: 'نفرت', data: { ...record, id: getCanonicalDailyRecordId('نفرت', 2), day: 2 } },
+  });
+  assert.equal(wrongDay.status, 'daily_guidance_unavailable');
 });
 
 test('T04 urgent safety status preempts prepared Q&A and free-form daily guidance is disabled',()=>{
@@ -291,12 +323,18 @@ test('T04 urgent safety status preempts prepared Q&A and free-form daily guidanc
  assert.match(free.message,/گفت‌وگوی آزاد برای این موضوع فعال نیست/);
 });
 
-test('T04 prompt groups use the same five-section ordering as T01-T03',()=>{
- for(let day=1;day<=28;day++){
-  const groups=getHatredDailyAssistantPromptGroups(day);
-  assert.deepEqual(groups.map(g=>g.questions.length),[2,2,1,5,4]);
-  assert.deepEqual(groups.map(g=>g.label),['فهم تمرین روز '+day,'فهم اقدام اختصاصی روز '+day,'تفاوت تمرین و اقدام','اجرا و موانع','ارزیابی و ایمنی']);
- }
+test('T04 prompt groups use the same five-section ordering as the T01 reference', () => {
+  for (let day = 1; day <= 28; day += 1) {
+    const groups = getSharedDailyAssistantPromptGroups(day, 'T04');
+    assert.deepEqual(groups.map((group) => group.questions.length), [2, 2, 1, 5, 4]);
+    assert.deepEqual(groups.map((group) => group.label), [
+      'فهم تمرین روز ' + day,
+      'فهم اقدام اختصاصی روز ' + day,
+      'تفاوت تمرین و اقدام',
+      'اجرا و موانع',
+      'ارزیابی و ایمنی',
+    ]);
+  }
 });
 
 test('non-prepared page text is rejected at the routing boundary', () => {
