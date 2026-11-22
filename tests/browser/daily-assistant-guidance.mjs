@@ -670,7 +670,7 @@ try {
     'the prepared answer must correspond to the currently displayed anger day');
   await assertAssistantUsesVisibleDailySource(page, panel, 'خشم', 1, ['exercise']);
 
-  // The four anger safety/evaluation answers retain their own guidance but omit only the separate shared reminder card.
+  // The four anger safety/evaluation answers retain their own guidance and restore the shared outer safety card without its nested contact box.
   for (const safetyQuestion of [
     'اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟',
     'آیا لازم است حتماً با فرد دیگری صحبت کنم؟',
@@ -689,10 +689,30 @@ try {
         && !replies.at(-1).innerText.includes('در حال بررسی پرسش');
     }, previousReplyCount, { timeout: 15000 });
     const reply = panel.locator('.assistantMessage').last();
-    assert.equal(await reply.getByTestId('daily-assistant-safety-reminder').count(), 0,
-      'anger safety/evaluation answers must omit only the separate reminder card');
-    assert.doesNotMatch(await reply.innerText(), /یادآوری مهم درباره ایمنی شما|۰۹۱۹۰۸۸۹۰۶۲/u,
-      'the reminder card title and contact number must not appear in T01 answer text');
+    const safetyCard = reply.getByTestId('daily-assistant-safety-reminder');
+    assert.equal(await safetyCard.count(), 1,
+      'anger safety/evaluation answers must restore exactly one shared outer safety card');
+    assert.match(await reply.innerText(), /یادآوری مهم درباره ایمنی شما/u);
+    assert.doesNotMatch(await reply.innerText(), /۰۹۱۹۰۸۸۹۰۶۲/u,
+      'the restored safety card must not contain the nested contact-number box');
+    assert.equal(await safetyCard.locator('.dailyAssistantSafetyReminderShafa').count(), 0);
+    const safetyCardColors = await safetyCard.evaluate((node) => {
+      const card = getComputedStyle(node);
+      const heading = getComputedStyle(node.querySelector('h3'));
+      const message = getComputedStyle(node.closest('.assistantMessage'));
+      return {
+        background: card.backgroundColor,
+        border: card.borderTopColor,
+        heading: heading.color,
+        messageBackground: message.backgroundColor,
+      };
+    });
+    assert.notEqual(safetyCardColors.background, 'rgba(0, 0, 0, 0)',
+      'the main safety card must have a visible coordinated background');
+    assert.notEqual(safetyCardColors.background, safetyCardColors.messageBackground,
+      'the safety card must remain visually distinct from the main assistant message');
+    assert.notEqual(safetyCardColors.border, 'rgba(0, 0, 0, 0)',
+      'the main safety card must retain a visible border');
   }
 
   // Returning to a normal prepared question must not leak the reminder state.
