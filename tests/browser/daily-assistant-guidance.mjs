@@ -818,8 +818,8 @@ try {
   const gatedReply = await gatedPanel.locator('.assistantMessage').last().innerText();
   assert.match(gatedReply, /خشم/);
   assert.match(gatedReply, /روز ۱۰/);
-  assert.match(gatedReply, /برنامه خروج امن از تعامل/);
-  assert.match(gatedReply, /چه نشانه‌ای به تو می‌گوید مکث لازم است/);
+  assert.match(gatedReply, /برنامه از پیش‌تعیین‌شده برای مکث و خروج/);
+  assert.match(gatedReply, /چه نشانه‌ای می‌گوید باید مکث کنی|یک نشانه مشخص را انتخاب کن که به تو می‌گوید باید مکث کنی/);
   assert.match(gatedReply, /بدون تهدید فاصله بگیری/);
   assert.doesNotMatch(gatedReply, /بررسی ایمنی همین روز/);
 
