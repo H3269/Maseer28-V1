@@ -27,6 +27,7 @@ on:
       - "tests/browser/daily-assistant-guidance.mjs"
       - "tests/browser/t01-safety-card.mjs"
       - "tests/browser/t05-jealousy-package.mjs"
+      - "tests/browser/emotional-dependency-assistant.mjs"
       - "tests/browser/t10-live-assistant.mjs"
       - "tests/browser/t14-prepared-assistant.mjs"
       - "public/content/daily-text-overrides.v1.json"
@@ -85,5 +86,6 @@ jobs:
           node tests/browser/daily-assistant-guidance.mjs
           node tests/browser/t01-safety-card.mjs
           node tests/browser/t05-jealousy-package.mjs
+          node tests/browser/emotional-dependency-assistant.mjs
           node tests/browser/t10-live-assistant.mjs
           node tests/browser/t14-prepared-assistant.mjs
