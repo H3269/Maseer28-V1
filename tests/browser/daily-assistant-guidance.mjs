@@ -617,7 +617,7 @@ try {
   await dayPrompt.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
   await panel.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => /موضوع: خشم \\| روز 1/.test(node.innerText)));
+    .some(node => /موضوع: خشم \\| روز (?:1|۱)/.test(node.innerText)));
   let assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /خشم/);
   assert.match(assistantReply, /روز ۱/);
