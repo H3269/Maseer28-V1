@@ -53,7 +53,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const launcherRef = useRef(null);
   const closeButtonRef = useRef(null);
   const dialogRef = useRef(null);
-  const endRef = useRef(null);
+  const latestAssistantRef = useRef(null);
   const initialContextEffectRef = useRef(false);
   const openRequestRef = useRef(openRequestId);
   const [launcherPosition, setLauncherPosition] = useState(null);
@@ -213,8 +213,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   }, [open]);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'end' });
-  }, [messages]);
+    if (!open || !messages.length) return;
+    // Keep the beginning of the newest assistant turn (including its icon) in view.
+    latestAssistantRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+  }, [messages, open]);
 
   useEffect(() => {
     if (!libraryPromptOpen) return undefined;
@@ -679,7 +681,12 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
 
               <div className="assistantTranscript" dir="rtl" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
                 {messages.map((item, index) => (
-                  <div className={item.role === 'user' ? 'userMessage' : 'assistantMessage'} key={item.id || index}>
+                  <div
+                    className={item.role === 'user' ? 'userMessage' : 'assistantMessage'}
+                    key={item.id || index}
+                    ref={item.role === 'assistant' && index === messages.length - 1 ? latestAssistantRef : null}
+                    data-testid={item.role === 'assistant' && index === messages.length - 1 ? 'latest-assistant-message' : undefined}
+                  >
                     <b className="globalAssistantSpeakerIcon" aria-label={item.role === 'user' ? 'شما' : 'دستیار مسیر۲۸'}>
                       {item.role === 'user' ? (
                         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -722,7 +729,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                     ))}
                   </div>
                 ))}
-                <div ref={endRef} />
               </div>
               <form className="assistantComposer libraryAssistantGuidedComposer" dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} data-jealousy-daily-prompt={String(isJealousyDailyPromptContext)} data-grief-daily-prompt={String(isGriefDailyPromptContext)} data-guilt-daily-prompt={String(isGuiltDailyPromptContext)} data-t10-daily-prompt={String(isT10DailyPromptContext)} data-t12-daily-prompt={String(isT12DailyPromptContext)} onSubmit={send}>
                 {activePromptGroups.some((group) => Array.isArray(group.questions) && group.questions.length > 0) ? (
