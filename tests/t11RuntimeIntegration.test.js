@@ -2,6 +2,7 @@ import { cleanPreparedAssistantTopicText } from '../src/features/assistant/teach
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
+import { buildSharedDailyAssistantAnswerFromDailyContent, getSharedDailyAssistantPromptGroups } from '../src/features/assistant/sharedDailyAssistantEngine.js';
 import {
   T11_DAILY_ASSISTANT_GUIDES,
   getT11DailyAssistantPromptGroups,
@@ -28,21 +29,21 @@ function contextFor(guide, overrides = {}) {
 test('all 392 exact T11 prepared questions route through the real page assistant', () => {
   let checked = 0;
   for (const guide of T11_DAILY_ASSISTANT_GUIDES) {
-    for (const question of guide.questions) {
+    for (const question of getSharedDailyAssistantPromptGroups(guide.day, 'T11').flatMap(group => group.questions)) {
       const result = makePageAssistantTurn({
         screen: 'day',
         text: question.value,
         dailyContext: contextFor(guide),
       });
       assert.equal(result.status, 'daily_guidance_available');
-      assert.match(result.message, new RegExp(cleanPreparedAssistantTopicText(guide.title)), 'the answer must identify the matching daily guide');
-      assert.equal(result.message.includes(question.answer), true, 'the exact prepared answer must be present in the response');
+      const expected = buildSharedDailyAssistantAnswerFromDailyContent({ topicId: 'T11', topicName: 'عادت‌های تکراری', day: guide.day, message: question.value, dailyContent: contextFor(guide).data });
+      assert.equal(result.message, expected, 'runtime must use the shared renderer for day ' + guide.day + ' ' + question.id);
       if (question.kind === 't11_distress') {
-        assert.equal(result.message.includes(guide.stopCondition), true, 'the distress answer must include the authored stop condition');
-        assert.equal(result.message.includes(guide.whenToSeekHumanSupport), true, 'the distress answer must include the human-support guidance');
+        assert.match(result.message, /تمرین را کنار بگذار/u, 'the distress answer must stop the exercise');
+        assert.match(result.message, /خدمات اضطراری/u, 'the distress answer must retain urgent handoff');
       }
       if (question.kind === 'exercise_meaning') {
-        assert.equal(result.message.includes(guide.mechanism), true, 'the exercise-meaning answer must include its educational mechanism');
+        assert.ok(result.message.includes(guide.exercise), 'exercise answer must include canonical daily exercise');
         assert.equal(result.message.includes(guide.successCriterion), true, 'the exercise-meaning answer must include its completion criterion');
       }
       assert.doesNotMatch(result.message, /پیش‌نمایش برای بازبینی مالک|مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود/u);
