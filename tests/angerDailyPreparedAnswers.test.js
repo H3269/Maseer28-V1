@@ -24,7 +24,7 @@ test('rebuilt anger assistant provides 392 complete day-and-question-specific an
       const answer = answerAngerDailyPreparedQuestion({ day: guide.day, message: question.value });
       assert.equal(typeof answer, 'string', 'missing answer ' + guide.day + ':' + question.id);
       assert.ok(answer.length > 250, 'answer too thin ' + guide.day + ':' + question.id);
-      assert.doesNotMatch(answer, /دستیار هوشمند مسیر ۲۸|موضوع: خشم|توضیح و راهنمای امروز|جمع‌بندی امروز|یادآوری مهم درباره ایمنی شما|۰۹۱۹۰۸۸۹۰۶۲/u,
+      assert.doesNotMatch(answer, /آره عزیزم|حتماً عزیزم|بله عزیزم|نه عزیزم|دستیار هوشمند مسیر ۲۸|موضوع: خشم|توضیح و راهنمای امروز|جمع‌بندی امروز|یادآوری مهم درباره ایمنی شما|۰۹۱۹۰۸۸۹۰۶۲/u,
         'T01 answer must contain only the answer body, without repeated framing or the separate reminder card');
       assert.ok(!answer.includes(question.label), 'assistant must not repeat the selected user question');
       assert.ok(answer.trim().length > 0, 'answer body must not be empty ' + guide.day + ':' + question.id);
@@ -53,7 +53,7 @@ test('each question type explains the corresponding day-specific exercise, actio
     assert.ok(byKind.exercise_action_difference.includes(guide.action));
     assert.ok(byKind.anger_increased.includes(guide.stopCondition));
     assert.ok(byKind.can_change.includes(guide.objective));
-    assert.match(byKind.talk_other, /لازم نیست.*با فرد دیگری صحبت کنی/u);
+    assert.match(byKind.talk_other, /گفت‌وگو با فرد دیگری الزامی نیست/u);
     assert.match(byKind.duration, /زمان استاندارد یا عدد مشخصی.*تعیین نشده/u);
   }
 });
