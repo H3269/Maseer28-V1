@@ -49,7 +49,9 @@ const QUESTION_DEFINITIONS = Object.freeze([
   { id: 'q14', label: 'این تمرین چقدر زمان می‌برد؟', value: 'این تمرین چقدر زمان می‌برد؟', kind: 'duration' },
 ]);
 
-const DISTRESS_KINDS = new Set(Object.values(DISTRESS_KIND_BY_TOPIC));
+// These five topics still inherit generic light/rest text from the base package.
+// Do not present those shared fallback strings as topic-specific guidance.
+const TOPICS_WITH_UNSCOPED_FALLBACKS = new Set(['T04', 'T05', 'T09', 'T10', 'T13']);
 
 const clean = (value, fallback = '') => String(value ?? fallback).trim();
 const paragraph = (...parts) => parts.filter((part) => typeof part === 'string' && part.trim()).join('\n\n');
@@ -114,11 +116,12 @@ function makeGuideFromDailyContent({ topicId, topicName, day, dailyContent } = {
   if (!exercise || !action) return null;
 
   const stopConditions = listText(dailyContent?.stop_conditions || dailyContent?.stopConditions);
-  const lightExercise = clean(dailyContent?.lightExerciseText || dailyContent?.lightVersion);
-  const lightAction = clean(dailyContent?.lightActionText || dailyContent?.lightActionVersion);
-  const progressAction = clean(dailyContent?.progressActionText || dailyContent?.progressVersion);
-  const restExercise = clean(dailyContent?.restExerciseText || dailyContent?.restVersion);
-  const restAction = clean(dailyContent?.restActionText || dailyContent?.restActionVersion);
+  const hasTopicScopedFallbacks = !TOPICS_WITH_UNSCOPED_FALLBACKS.has(topicId);
+  const lightExercise = clean(dailyContent?.lightVersion || (hasTopicScopedFallbacks ? dailyContent?.lightExerciseText : ''));
+  const lightAction = clean(dailyContent?.lightActionVersion || (hasTopicScopedFallbacks ? dailyContent?.lightActionText : ''));
+  const progressAction = clean(dailyContent?.progressVersion || (hasTopicScopedFallbacks ? dailyContent?.progressActionText : ''));
+  const restExercise = clean(dailyContent?.restVersion || (hasTopicScopedFallbacks ? dailyContent?.restExerciseText : ''));
+  const restAction = clean(dailyContent?.restActionVersion || (hasTopicScopedFallbacks ? dailyContent?.restActionText : ''));
 
   return {
     day,
@@ -183,7 +186,9 @@ function answerBody({ guide, question, plainSteps = {} }) {
       return paragraph(
         objective
           ? 'در روز ' + day + '، تمرین تو بر مهارت «' + guide.title + '» متمرکز است. به‌جای اینکه فقط درباره ' + topic + ' فکر کنی، این مهارت را در یک نمونه روشن بررسی می‌کنی. هدف این روز این است: ' + objective
-          : 'در روز ' + day + '، تمرین تو بر مهارت «' + guide.title + '» متمرکز است. متن تمرین مشخص می‌کند امروز چه چیزی را بررسی یا ثبت کنی.',
+          : skill
+            ? 'در روز ' + day + '، تمرین تو بر مهارت «' + skill + '» متمرکز است. متن تمرین مشخص می‌کند امروز چه چیزی را بررسی یا ثبت کنی.'
+            : 'در روز ' + day + '، تمرین مربوط به «' + topic + '» بر اساس دستور ثبت‌شده پیش می‌رود؛ لازم نیست هدف یا معنای دیگری به آن نسبت بدهی.',
         skill && 'مهارتی که امروز تقویتش می‌کنی این است: ' + skill,
         mechanism,
         'برای انجامش این مسیر را قدم‌به‌قدم برو: ' + exercise,
@@ -207,7 +212,7 @@ function answerBody({ guide, question, plainSteps = {} }) {
         );
     case 'action_meaning':
       return paragraph(
-        'اقدام اختصاصی امروز، آموخته تمرین را به یک رفتار کوچک و عملی پیوند می‌دهد. در روز ' + day + ' می‌توانی مهارت «' + guide.title + '» را به این شکل در انتخاب‌های روزمره به کار بگیری:',
+        'اقدام اختصاصی امروز، آموخته تمرین را به یک رفتار کوچک و عملی پیوند می‌دهد. در روز ' + day + ' اقدام ثبت‌شده برای موضوع «' + topic + '» این است:',
         skill && 'این اقدام به تقویت مهارت «' + skill + '» کمک می‌کند؛ قرار نیست نتیجه فوری یا تغییر رفتار دیگران را تضمین کند.',
         action,
         clean(plainSteps.action),
@@ -218,7 +223,7 @@ function answerBody({ guide, question, plainSteps = {} }) {
         ? paragraph(
           'یک نمونه فرضی از اقدام روز ' + day + ' را ببین. هدف این مثال فقط روشن‌کردن شیوه انجام اقدام امروز است:',
           actionExample,
-          'در مثال، به‌جای واکنش عجولانه، روی همان مهارت امروز یعنی «' + guide.title + '» تکیه می‌کنی. اگر شرایط تو متفاوت است، اصل اقدام را نگه دار و شکل امن و متناسب با شرایط خودت را انتخاب کن.',
+          'در مثال، اقدام امروز به شکلی مشخص و قابل مشاهده اجرا می‌شود. اگر شرایط تو متفاوت است، اصل اقدام را نگه دار و شکل امن و متناسب با شرایط خودت را انتخاب کن.',
           'اگر شرایط زندگی تو شبیه این نمونه نیست یا گفتن یا انجام‌دادن آن امن نیست، آن را اجرا نکن؛ اقدام امروز فقط در موقعیت امن و با رضایت آزادانه مطرح است.',
         )
         : paragraph(
@@ -236,7 +241,7 @@ function answerBody({ guide, question, plainSteps = {} }) {
     case 'success':
       return paragraph(
         success
-          ? 'برای سنجش تمرین روز ' + day + '، به‌جای انتظار برای تغییر بزرگ یا ازبین‌رفتن ' + topic + '، این معیار روشن را بررسی کن: ' + success
+          ? 'برای سنجش تمرین روز ' + day + '، به‌جای انتظار برای تغییر بزرگ یا برطرف‌شدن کامل مسئله، این معیار روشن را بررسی کن: ' + success
           : 'در محتوای روز ' + day + ' معیار موفقیت جداگانه‌ای ثبت نشده است؛ بنابراین نمی‌خواهم معیار تازه‌ای بسازم. خروجی مشخصی را که خود تمرین خواسته ثبت کن: ' + exercise,
         success
           ? 'به زبان ساده، اگر توانستی بخش اصلی تمرین «' + guide.title + '» را در یک نمونه تشخیص بدهی یا ثبت کنی، به اندازه لازم پیش رفته‌ای. لازم نیست احساس یا شرایط مربوط به موضوع کاملاً تغییر کند.'
@@ -250,7 +255,7 @@ function answerBody({ guide, question, plainSteps = {} }) {
         stop ? 'برای روز ' + day + ' به این محدودیت توجه کن: ' + stop : 'در داده این روز شرط توقف اختصاصی جداگانه‌ای ثبت نشده است؛ اگر فشار روانی بیشتر شد، احساس ناایمنی ایجاد شد یا ادامه تمرین آزاردهنده بود، آن را متوقف کن.',
         contraindications.length ? 'مواردی که نباید با این تمرین انجام دهی: ' + contraindications.join(' ') : '',
         humanSupport,
-        'اگر احساس می‌کنی ممکن است به خودت، فرد دیگری یا اموال آسیب برسد، فاصله امن ایجاد کن؛ از موقعیت دور شو، ابزار یا وسیله خطرناک را کنار بگذار و از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک فوری بخواه. در وضعیت خطر، تمرین نوشتاری را ادامه نده.',
+        'اگر احساس می‌کنی ممکن است به خودت یا فرد دیگری آسیب فوری برسد، فاصله امن ایجاد کن؛ از موقعیت دور شو، ابزار یا وسیله خطرناک را کنار بگذار و از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک فوری بخواه. در وضعیت خطر، تمرین نوشتاری را ادامه نده.',
       );
     case 'no_event':
       return paragraph(
@@ -262,7 +267,7 @@ function answerBody({ guide, question, plainSteps = {} }) {
       return paragraph(
         'در برنامه روز ' + day + '، تمرین و اقدام دو بخش مرتبط با کارکردهای جداگانه‌اند. تمرین امروز چنین است: ' + exercise,
         'اقدام اختصاصی امروز این است: ' + action,
-        'تمرین به شناخت و مشاهده مهارت «' + guide.title + '» کمک می‌کند؛ اقدام، انتخاب رفتاری کوچک در یک موقعیت واقعی و امن است. بنابراین ممکن است تمرین را انجام بدهی، اما در همان روز فرصتی مناسب برای اقدام پیدا نشود. این موضوع طبیعی است و نیازی به ساختن موقعیت ندارد.',
+        'تمرین به مشاهده و بررسی موضوع کمک می‌کند؛ اقدام، انتخاب رفتاری کوچک در یک موقعیت واقعی و امن است. بنابراین ممکن است تمرین را انجام بدهی، اما در همان روز فرصتی مناسب برای اقدام پیدا نشود. این موضوع طبیعی است و نیازی به ساختن موقعیت ندارد.',
       );
     case 'not_done':
       return paragraph(
@@ -290,7 +295,7 @@ function answerBody({ guide, question, plainSteps = {} }) {
         'اگر در جریان تمرین، فشار یا ناراحتی‌ات بیشتر شد، همان لحظه مکث کن و تمرین را کنار بگذار. برای یادگیری مهارت امروز لازم نیست ناراحتی را تحمل کنی.',
         stop ? 'محدودیت ویژه روز ' + day + ' این است: ' + stop : 'اگر ادامه تمرین فشار را بیشتر می‌کند یا احساس ناایمنی ایجاد شده، آن را متوقف کن و به فعالیت عادی و محیط امن برگرد.',
         humanSupport,
-        'اگر امن است از موقعیت تنش‌زا فاصله بگیر، نوشتن یا گفت‌وگو را کنار بگذار و به یک کار خنثی و آرام برگرد. اگر احتمال آسیب به خودت یا دیگری وجود دارد، تنها نمان و فوراً از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر.',
+        'اگر امن است از موقعیت یا فعالیتی که فشار را بیشتر کرده فاصله بگیر، نوشتن یا گفت‌وگو را کنار بگذار و به یک کار خنثی و آرام برگرد. اگر احتمال آسیب به خودت یا دیگری وجود دارد، تنها نمان و فوراً از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر.',
         'بعداً فقط در صورت احساس امنیت و آمادگی تصمیم بگیر که تمرین را به شکل سبک‌تر ادامه بدهی یا فعلاً کنار بگذاری.',
       );
     case 'talk_other':
@@ -301,7 +306,7 @@ function answerBody({ guide, question, plainSteps = {} }) {
       );
     case 'can_change':
       return paragraph(
-        'بله؛ شیوه اجرای تمرین روز ' + day + ' می‌تواند با شرایط تو هماهنگ شود، به شرط آنکه هدف اصلی یعنی تمرین مهارت «' + guide.title + '» حفظ شود.',
+        'بله؛ شیوه اجرای تمرین روز ' + day + ' می‌تواند با شرایط تو هماهنگ شود، به شرط آنکه دستور اصلی تمرین و محدودیت‌های ایمنی حفظ شود.',
         light ? 'نسخه کوتاه‌تر و ساده‌ترش این است: ' + light : 'اگر انجام کامل تمرین دشوار است، آن را متوقف کن یا به زمان مناسب‌تری موکول کن؛ نسخه تازه‌ای را بدون بررسی هدف تمرین نساز.',
         objective && 'هدف اصلی این روز این است: ' + objective,
         'هیچ تغییری نباید تو را مجبور کند وارد موقعیت ناامن شوی، با کسی روبه‌رو شوی یا چیزی را که نمی‌خواهی افشا کنی.',
