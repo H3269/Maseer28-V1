@@ -7359,25 +7359,3 @@ body.bale-webview .appBottomDock {
   bottom: 0 !important;
 }
 
-
-/* Assistant identity: same compact 1em footprint as the user's icon, with a
-   turquoise sparkle and a restrained breathing glow that respects reduced motion. */
-.globalAssistantChat .assistantMessage > .globalAssistantSpeakerIcon {
-  color: var(--accent, #36bfa4) !important;
-  filter: drop-shadow(0 0 2px color-mix(in srgb, var(--accent, #36bfa4) 32%, transparent));
-  animation: m28AssistantIconBreath 3.2s ease-in-out infinite;
-}
-.globalAssistantChat .assistantMessage > .globalAssistantSpeakerIcon[data-assistant-state="thinking"] {
-  animation-duration: 1.15s;
-  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent, #36bfa4) 55%, transparent));
-}
-@keyframes m28AssistantIconBreath {
-  0%, 100% { opacity: .82; scale: 1; }
-  50% { opacity: 1; scale: 1.07; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .globalAssistantChat .assistantMessage > .globalAssistantSpeakerIcon {
-    animation: none !important;
-    filter: none;
-  }
-}
