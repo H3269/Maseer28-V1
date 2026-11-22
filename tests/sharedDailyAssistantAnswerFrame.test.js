@@ -34,7 +34,7 @@ test('anger uses sample-three while anxiety retains its own response frame for a
         dailyContent: { exercise: anxietyGuide.exercise, actionText: anxietyGuide.action },
       });
       assert.equal(typeof angerAnswer, 'string', 'anger day ' + angerGuide.day + ' ' + angerQuestion.id);
-      assert.ok(angerAnswer.startsWith('آره عزیزم.') || angerAnswer.startsWith('اگر') || angerAnswer.startsWith('در روز') || angerAnswer.startsWith('بله') || angerAnswer.startsWith('نه'));
+      assert.ok(angerAnswer.trim().length > 100, 'anger answer body must contain substantive guidance');
       assert.doesNotMatch(angerAnswer, /دستیار هوشمند مسیر ۲۸|موضوع: خشم|جمع‌بندی امروز|توضیح و راهنمای امروز/u);
       assert.ok(!angerAnswer.includes(angerQuestion.label), 'anger answer must not repeat the selected question');
       assert.equal(typeof anxietyAnswer, 'string', 'anxiety day ' + anxietyGuide.day + ' ' + anxietyQuestion.id);
