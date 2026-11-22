@@ -26,6 +26,9 @@ on:
       - "tests/assistantMessageFormatting.test.js"
       - "tests/browser/daily-assistant-guidance.mjs"
       - "tests/browser/t01-safety-card.mjs"
+      - "tests/browser/t05-jealousy-package.mjs"
+      - "tests/browser/t10-live-assistant.mjs"
+      - "tests/browser/t14-prepared-assistant.mjs"
       - "public/content/daily-text-overrides.v1.json"
       - "package.json"
       - "package-lock.json"
@@ -81,3 +84,6 @@ jobs:
           export PATH28_BASE_URL=http://127.0.0.1:4173/Maseer28-V1/
           node tests/browser/daily-assistant-guidance.mjs
           node tests/browser/t01-safety-card.mjs
+          node tests/browser/t05-jealousy-package.mjs
+          node tests/browser/t10-live-assistant.mjs
+          node tests/browser/t14-prepared-assistant.mjs

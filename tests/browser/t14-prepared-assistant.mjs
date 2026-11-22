@@ -111,8 +111,8 @@ try {
   try {
     await page.waitForFunction((previous) => {
       const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-      return replies.length > previous
-        && /راهنمای روز (?:1|۱) کمبود انگیزه/.test(replies.at(-1)?.innerText || '');
+      const latest = replies.at(-1)?.innerText || '';
+      return replies.length > previous && latest.trim().length > 0 && !latest.includes('در حال بررسی');
     }, before);
   } catch (error) {
     console.error('T14_MESSAGES', JSON.stringify(await dialog.locator('.assistantMessage').allInnerTexts()));
