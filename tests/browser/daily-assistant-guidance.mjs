@@ -280,7 +280,10 @@ try {
   assert.match(await angerUserQuestion.innerText(), /منظور از تمرین امروز چیست/u,
     'the selected question must appear in the user message above the assistant answer');
   const angerVisibleText = await angerReply.innerText();
-  assert.match(angerVisibleText, /آره عزیزم/u, 'assistant bubble must start with the answer, not another question');
+  assert.doesNotMatch(angerVisibleText, /آره عزیزم|حتماً عزیزم|بله عزیزم|نه عزیزم/u,
+    'assistant answer must not use intimate pet names or the removed opening phrase');
+  assert.match(angerVisibleText, /در روز 1|در روز ۱/u,
+    'assistant answer must begin with a natural, day-specific explanation');
   assert.doesNotMatch(angerVisibleText, /دستیار هوشمند مسیر ۲۸|موضوع: خشم|منظور از تمرین امروز چیست|توضیح و راهنمای امروز|جمع‌بندی امروز|۰۹۱۹۰۸۸۹۰۶۲/u,
     'T01 assistant bubble must not repeat the question, generic labels, daily summary, or phone reminder');
   assert.equal(await angerReply.locator('[data-testid="daily-assistant-safety-reminder"]').count(), 0,
@@ -288,6 +291,18 @@ try {
   assert.equal(angerVisibleText.includes('**'), false, 'T01 must not expose raw markdown markers');
   assert.equal(angerVisibleText.includes(String.fromCharCode(92) + 'n'), false, 'T01 must not expose escaped newline tokens');
   assert.ok(angerVisibleText.includes('\n'), 'T01 answer paragraphs must display on separate lines');
+  await guidedPage.waitForFunction(() => {
+    const transcript = document.querySelector('.globalAssistantDialog .assistantTranscript');
+    const icon = document.querySelector('.globalAssistantDialog [data-testid="latest-assistant-message"] .globalAssistantSpeakerIcon');
+    if (!transcript || !icon) return false;
+    const transcriptTop = transcript.getBoundingClientRect().top;
+    const iconTop = icon.getBoundingClientRect().top;
+    return iconTop >= transcriptTop - 2 && iconTop < transcriptTop + 48;
+  }, null, { timeout: 5000 });
+  const answerAnchor = await guidedPanel.getByTestId('latest-assistant-message').locator('.globalAssistantSpeakerIcon').boundingBox();
+  const transcriptBox = await guidedPanel.locator('.assistantTranscript').boundingBox();
+  assert.ok(answerAnchor && transcriptBox && answerAnchor.y < transcriptBox.y + 48,
+    'the transcript must scroll to the newest assistant icon, not leave the answer above the visible area');
   await guidedPage.close();
 
   // T02 anxiety must expose the same day-scoped prepared guidance structure.
