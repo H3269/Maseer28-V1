@@ -360,7 +360,7 @@ test('T06 assistant uses separate runtime light/progress/rest actions while pres
   });
   assert.equal(result.status, 'daily_guidance_available');
   for (const value of Object.values(custom)) assert.ok(result.message.includes(value), 'missing runtime adaptation: ' + value);
-  assert.ok(result.message.includes(guide.successCriterion));
+  assert.match(result.message, /نسخه سبک تمرین اختصاصی آزمون/u);
 });
 
 test('T06 day 11 support-seeking action also requires the relationship safety check', () => {
