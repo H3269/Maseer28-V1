@@ -268,7 +268,7 @@ try {
   await guidedPanel.getByRole('button', { name: 'ارسال' }).click();
   await guidedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
   const angerReply = guidedPanel.locator('.assistantMessage').last();
-  assert.match(await angerReply.innerText(), /موضوع: خشم \\| روز (?:1|۱)/);
+  assert.match(await angerReply.innerText(), /موضوع: خشم \| روز (?:1|۱)/);
   assert.ok(await angerReply.locator('strong').count() > 0, 'T01 assistant headings must render as bold text, not raw markdown');
   const angerVisibleText = await angerReply.innerText();
   assert.equal(angerVisibleText.includes('**'), false, 'T01 must not expose raw markdown markers');
@@ -617,7 +617,7 @@ try {
   await dayPrompt.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
   await panel.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => /موضوع: خشم \\| روز (?:1|۱)/.test(node.innerText)));
+    .some(node => /موضوع: خشم \| روز (?:1|۱)/.test(node.innerText)));
   let assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /خشم/);
   assert.match(assistantReply, /روز ۱/);
