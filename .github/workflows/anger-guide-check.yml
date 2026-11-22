@@ -10,6 +10,7 @@ on:
       - "src/features/assistant/angerDailyAssistantPrompts.js"
       - "src/features/assistant/angerDailyRebuiltAnswerBank.js"
       - "src/features/assistant/sharedDailyAssistantEngine.js"
+      - "src/features/assistant/preparedDailyAssistantAnswer.js"
       - "src/features/assistant/pageAssistantTurn.js"
       - "src/features/assistant/dailyExerciseAssistantGuidance.js"
       - "src/features/assistant/GlobalAssistantLauncher.jsx"
