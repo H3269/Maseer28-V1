@@ -118,8 +118,8 @@ test('no-event answer never asks the user to create an anger-provoking situation
 test('neutral prepared question text is resolved against the active day, not a day embedded in the prompt', () => {
   const dayOne = ANGER_DAILY_ASSISTANT_GUIDES[0].questions[0].value;
   const dayTwoAnswer = answerAngerDailyPreparedQuestion({ day: 2, message: dayOne });
-  assert.ok(dayTwoAnswer.includes('موضوع: خشم | روز 2'));
-  assert.doesNotMatch(dayTwoAnswer, /موضوع: خشم \\| روز 1/);
+  assert.ok(dayTwoAnswer.includes('در روز 2'));
+  assert.doesNotMatch(dayTwoAnswer, /موضوع: خشم|راهنمای روز 1/u);
   assert.equal(answerAngerDailyPreparedQuestion({ day: 1, message: 'این سؤال آماده در فهرست نیست' }), null);
 });
 
@@ -305,7 +305,8 @@ test('prepared FAQs remain available and free-form guidance is refused on every 
         },
       });
       assert.equal(turn.status, 'daily_guidance_available');
-      assert.ok(turn.message.includes(`موضوع: خشم | روز ${day}`), `day ${day}, ${question.kind}`);
+      assert.ok(turn.message.length > 200, `day ${day}, ${question.kind} must return a substantive answer body`);
+      assert.doesNotMatch(turn.message, /دستیار هوشمند مسیر ۲۸|جمع‌بندی امروز|توضیح و راهنمای امروز/u);
     }
 
     const freeForm = makePageAssistantTurn({
@@ -366,9 +367,12 @@ test('all 392 prepared anger questions resolve to substantial, day-specific teac
     for (const question of guide.questions) {
       const answer = answerAngerDailyPreparedQuestion({ day: guide.day, message: question.value });
       assert.ok(answer, `missing answer for day ${guide.day}, ${question.kind}`);
-      assert.ok(answer.includes(`موضوع: خشم | روز ${guide.day}`));
-      assert.ok(answer.length > 350, `answer too short for day ${guide.day}, ${question.kind}`);
-      assert.ok(answer.includes(guide.title) && /امروز|تمرین|اقدام|نمونه|موقعیت|فرض کن|می‌توانی|راهنمای/u.test(answer), `answer must retain daily context for day ${guide.day}, ${question.kind}`);
+      assert.ok(answer.length > 200, `answer too short for day ${guide.day}, ${question.kind}`);
+      const dailyAnchors = [guide.title, guide.objective, guide.exercise, guide.action, guide.exerciseExample,
+        guide.actionExample, guide.lightVersion, guide.successCriterion, guide.stopCondition].filter(Boolean);
+      assert.ok(dailyAnchors.some(anchor => answer.includes(anchor)),
+        `answer must retain a day-specific anchor for day ${guide.day}, ${question.kind}`);
+      assert.doesNotMatch(answer, /دستیار هوشمند مسیر ۲۸|موضوع: خشم|جمع‌بندی امروز|توضیح و راهنمای امروز/u);
       answerBodies.add(answer);
       resolved += 1;
     }
