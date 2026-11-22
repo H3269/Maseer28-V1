@@ -11,17 +11,7 @@ import {
 import { expandDailyAssistantQuestionAnswer } from '../src/features/assistant/dailyAssistantQuestionDetail.js';
 import { alignDailyAssistantAnswerHeadings } from '../src/features/assistant/sharedDailyAssistantAnswerFrame.js';
 
-const headingLabels = (answer) => {
-  const frame = '**توضیح و راهنمای امروز**';
-  const start = answer.indexOf(frame);
-  if (start < 0) return [];
-  return answer.slice(start + frame.length).split('\n')
-    .map((line) => line.match(/^\s*\*\*([^*\n]+)\*\*:?\s*/u)?.[1]?.trim())
-    .filter(Boolean)
-    .filter((heading) => !/شماره|۰۹۱|091/u.test(heading));
-};
-
-test('anxiety uses the exact anger heading names, count, and order for all 28 days and 14 questions', () => {
+test('anger uses sample-three while anxiety retains its own response frame for all 28 days and 14 questions', () => {
   assert.equal(ANGER_DAILY_ASSISTANT_GUIDES.length, 28);
   assert.equal(ANXIETY_DAILY_ASSISTANT_GUIDES.length, 28);
   let checked = 0;
@@ -29,7 +19,7 @@ test('anxiety uses the exact anger heading names, count, and order for all 28 da
     const angerGuide = ANGER_DAILY_ASSISTANT_GUIDES.find((item) => item.day === anxietyGuide.day);
     assert.ok(angerGuide, 'anger day ' + anxietyGuide.day);
     assert.equal(anxietyGuide.questions.length, 14, 'anxiety day ' + anxietyGuide.day);
-    assert.equal(angerGuide.questions.length, 14, 'anger day ' + angerGuide.day);
+    assert.equal(angerGuide.questions.length, 14, 'anger day ' + anxietyGuide.day);
     for (const anxietyQuestion of anxietyGuide.questions) {
       const angerQuestion = angerGuide.questions.find((item) => item.id === anxietyQuestion.id);
       assert.ok(angerQuestion, 'matching anger question ' + anxietyQuestion.id);
@@ -44,23 +34,24 @@ test('anxiety uses the exact anger heading names, count, and order for all 28 da
         dailyContent: { exercise: anxietyGuide.exercise, actionText: anxietyGuide.action },
       });
       assert.equal(typeof angerAnswer, 'string', 'anger day ' + angerGuide.day + ' ' + angerQuestion.id);
+      assert.ok(angerAnswer.startsWith('**دستیار هوشمند مسیر ۲۸**'));
+      assert.ok(angerAnswer.includes('موضوع: خشم | روز ' + angerGuide.day));
+      assert.ok(angerAnswer.includes(angerQuestion.label));
       assert.equal(typeof anxietyAnswer, 'string', 'anxiety day ' + anxietyGuide.day + ' ' + anxietyQuestion.id);
-      const canonicalAngerHeadings = headingLabels(angerAnswer);
-      // Some anger answers are intentionally plain prose and define no section headings.
-      // In those cases there is no heading set to align against; anxiety content is
-      // still checked below for preservation and duplicate-free output.
-      if (canonicalAngerHeadings.length) {
-        assert.deepEqual(
-          headingLabels(anxietyAnswer),
-          canonicalAngerHeadings,
-          'heading mismatch on day ' + anxietyGuide.day + ' ' + anxietyQuestion.id,
-        );
-      }
+      assert.ok(anxietyAnswer.startsWith('**راهنمای روز ' + anxietyGuide.day + ' اضطراب'));
+      assert.ok(anxietyAnswer.includes('**توضیح و راهنمای امروز**'));
+      assert.doesNotMatch(anxietyAnswer, /دستیار هوشمند مسیر ۲۸/);
       if (anxietyQuestion.kind === 'exercise_meaning') {
         assert.ok(anxietyAnswer.includes(anxietyGuide.exercise), 'anxiety exercise preserved day ' + anxietyGuide.day);
       }
       if (anxietyQuestion.kind === 'action_meaning') {
         assert.ok(anxietyAnswer.includes(anxietyGuide.action), 'anxiety action preserved day ' + anxietyGuide.day);
+      }
+      if (anxietyQuestion.kind === 'exercise_example') {
+        assert.ok(anxietyAnswer.includes(anxietyGuide.exerciseExample), 'anxiety example preserved day ' + anxietyGuide.day);
+      }
+      if (anxietyQuestion.kind === 'action_example') {
+        assert.ok(anxietyAnswer.includes(anxietyGuide.actionExample), 'anxiety action example preserved day ' + anxietyGuide.day);
       }
       checked += 1;
     }

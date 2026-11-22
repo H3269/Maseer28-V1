@@ -76,7 +76,7 @@ test('anxiety guide exercise and action text match all 28 runtime overrides exac
 test('exercise example is explicitly hypothetical and does not claim the user experienced it', () => {
   const guide = ANXIETY_DAILY_ASSISTANT_GUIDES[0];
   const answer = answerAnxietyDailyPreparedQuestion({ day: 1, message: guide.questions.find((item) => item.kind === 'exercise_example').value });
-  assert.match(answer, /نمونه فرضی/);
+  assert.match(answer, /(?:نمونه|مثال) فرضی/);
   assert.match(answer, /تجربه واقعی تو را فرض نمی‌کند/);
   assert.ok(answer.includes(guide.exerciseExample));
 });

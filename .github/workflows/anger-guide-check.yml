@@ -2,14 +2,17 @@ name: Anger guide rebuilt assistant checks
 
 on:
   push:
-    branches: [rebuild/anger-guide-28-days]
+    branches: [rebuild/anger-guide-28-days, fix/anger-sample-three-isolation]
   pull_request:
     branches: [main]
     paths:
       - "src/features/assistant/angerDailyAssistantPrompts.js"
       - "src/features/assistant/angerDailyRebuiltAnswerBank.js"
+      - "src/features/assistant/anxietyDailyAssistantPrompts.js"
       - "tests/angerDailyAssistantPrompts.test.js"
       - "tests/angerDailyPreparedAnswers.test.js"
+      - "tests/anxietyDailyAssistantPrompts.test.js"
+      - "tests/sharedDailyAssistantAnswerFrame.test.js"
       - "tests/dailyAssistantCrossTopicContract.test.js"
       - "tests/dailyAssistantSafetyReminder.test.js"
       - "tests/assistantMessageFormatting.test.js"
@@ -37,5 +40,7 @@ jobs:
           tests/dailyAssistantSafetyReminder.test.js
           tests/assistantMessageFormatting.test.js
           tests/angerContentPackage.test.mjs
+          tests/anxietyDailyAssistantPrompts.test.js
+          tests/sharedDailyAssistantAnswerFrame.test.js
       - name: Verify production bundle
         run: npm run build

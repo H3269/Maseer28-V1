@@ -1,7 +1,5 @@
 import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
 import { applySharedDailyAssistantAnswerFrame } from './sharedDailyAssistantAnswerFrame.js';
-import { alignDailyAssistantAnswerHeadings } from './sharedDailyAssistantAnswerFrame.js';
-import { ANGER_DAILY_ASSISTANT_GUIDES, answerAngerDailyPreparedQuestion } from './angerDailyAssistantPrompts.js';
 import { expandDailyAssistantQuestionAnswer } from './dailyAssistantQuestionDetail.js';
 import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
 import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
@@ -3113,14 +3111,7 @@ export function answerAnxietyDailyPreparedQuestion(args = {}) {
     guide,
     question,
   });
-  const angerGuide = ANGER_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
-  const angerQuestion = angerGuide?.questions.find((item) => item.id === question?.id);
-  const referenceAnswer = angerGuide && angerQuestion
-    ? answerAngerDailyPreparedQuestion({
-        day,
-        message: angerQuestion.value,
-        dailyContent: { exercise: angerGuide.exercise, actionText: angerGuide.action },
-      })
-    : null;
-  return alignDailyAssistantAnswerHeadings(framedAnswer, referenceAnswer, { guide, question });
+  // T01 now uses the independently approved sample-three layout. Keep T02
+  // on its own shared daily frame instead of borrowing T01's headings.
+  return framedAnswer;
 }
