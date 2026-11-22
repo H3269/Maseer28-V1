@@ -17,6 +17,7 @@ import { buildPreparedDailyAssistantAnswer } from '../src/features/assistant/pre
 import { answerAngerDailyPreparedQuestion } from '../src/features/assistant/angerDailyAssistantPrompts.js';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
 import { getDailySafetyMode } from '../src/features/content/dailySafety.js';
+import { cleanPreparedAssistantTopicText } from '../src/features/assistant/teacherStylePreparedAnswer.js';
 
 const TOPICS = Object.freeze([
   ['T02', 'اضطراب'],
@@ -387,9 +388,10 @@ test('runtime examples survive adapted visible wording and stay bound to the can
         });
         assert.equal(result.status, 'daily_guidance_available',
           topicId + ' day ' + day + ' ' + kind + ' must pass the real runtime router');
-        assert.ok(result.message.includes(record[field]),
-          topicId + ' day ' + day + ' ' + kind + ' must render its canonical example. Expected: '
-            + record[field] + ' | Actual: ' + result.message + ' | Status: ' + result.status);
+        const visibleExample = cleanPreparedAssistantTopicText(record[field], topicName);
+        assert.ok(result.message.includes(visibleExample),
+          topicId + ' day ' + day + ' ' + kind + ' must render its canonical example after normal display cleanup. Expected: '
+            + visibleExample + ' | Actual: ' + result.message + ' | Status: ' + result.status);
         assert.doesNotMatch(result.message, /مثال فرضی جداگانه‌ای در محتوای ثبت‌شده وجود ندارد/u,
           topicId + ' day ' + day + ' ' + kind + ' must not fall back');
         checked += 1;
