@@ -201,7 +201,7 @@ test('T13 launcher exposes only safe-day prompts and labels the topic correctly'
   assert.match(launcher, /getSharedDailyAssistantPromptGroups/u);
   assert.match(launcher, /activeDailyTopicId === 'T13'/u);
   assert.match(launcher, /getSharedDailyAssistantPromptGroups/u);
-  assert.match(launcher, /T13: 'تنهایی'/u);
+  assert.match(launcher, /isT13DailyPromptContext/u);
 });
 
 test('T13 specialist-review metadata does not gate content; independent safety routing remains active', () => {
