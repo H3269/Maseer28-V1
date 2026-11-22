@@ -8,6 +8,7 @@ on:
     paths:
       - "src/features/assistant/angerDailyAssistantPrompts.js"
       - "src/features/assistant/angerDailyRebuiltAnswerBank.js"
+      - "src/features/assistant/anxietyDailyAssistantPrompts.js"
       - "tests/angerDailyAssistantPrompts.test.js"
       - "tests/angerDailyPreparedAnswers.test.js"
       - "tests/dailyAssistantCrossTopicContract.test.js"
