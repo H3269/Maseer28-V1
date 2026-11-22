@@ -452,7 +452,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       const finalMessage = turn.message || 'برای این پرسش پاسخ قابل اتکایی در دسترس نیست.';
       const isDailySafetyQuestion = Boolean(
         isPreparedOnlyDailyPromptContext
-        && !isAngerDailyPromptContext
         && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(selectedPreparedQuestion.kind),
       );
       updateAssistantMessage(finalMessage, turn.knowledge || [], isDailySafetyQuestion);
