@@ -316,9 +316,19 @@ try {
   await anxietyPromptDialog.waitFor({ state: 'visible' });
   assert.match(await anxietyPromptDialog.innerText(), /سؤال‌های آماده روز ۱ اضطراب/);
   await anxietyPromptDialog.getByRole('button', { name: 'تمرین و اقدام امروز چه تفاوتی دارند؟' }).click();
+  const anxietyErrors = [];
+  anxietyGuidedPage.on('pageerror', (error) => anxietyErrors.push(String(error)));
+  const previousAnxietyReplyCount = await anxietyGuidedPanel.locator('.assistantMessage').count();
   await anxietyGuidedPanel.getByRole('button', { name: 'ارسال' }).click();
-  await anxietyGuidedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /راهنمای روز ۱ اضطراب/.test(node.innerText)));
+  await anxietyGuidedPage.waitForFunction((previous) => {
+    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+    return replies.length > previous && !replies.at(-1).innerText.includes('در حال بررسی پرسش');
+  }, previousAnxietyReplyCount, { timeout: 15000 }).catch(async (error) => {
+    const visibleReplies = await anxietyGuidedPanel.locator('.assistantMessage').allInnerTexts();
+    throw new Error('T02 browser answer did not settle; replies=' + JSON.stringify(visibleReplies) + '; pageErrors=' + JSON.stringify(anxietyErrors) + '; cause=' + error.message);
+  });
   const anxietyReply = anxietyGuidedPanel.locator('.assistantMessage').last();
+  assert.match(await anxietyReply.innerText(), /راهنمای روز (?:1|۱) اضطراب/u);
   assert.ok(await anxietyReply.locator('strong').count() > 0, 'T02 assistant headings must render as bold text');
   const anxietyVisibleText = await anxietyReply.innerText();
   assert.equal(anxietyVisibleText.includes('**'), false, 'T02 must not expose raw markdown markers');
