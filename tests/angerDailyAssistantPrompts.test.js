@@ -78,7 +78,7 @@ test('prepared exercise answer is explicit, stepwise, and grounded in the select
   assert.match(answer, /چه اتفاقی افتاد/);
   assert.match(answer, /قدم‌به‌قدم برو/);
   assert.match(answer, /تمرین را به‌ترتیب پیش ببر/);
-  assert.match(answer, /تفکیک رویداد، احساس و رفتار/);
+  assert.match(answer, /جداکردن رویداد، احساس، میل و رفتار/);
 });
 
 test('prepared action example stays distinct from the exercise and preserves safety boundaries', () => {
@@ -133,7 +133,7 @@ test('daily turn routes prepared anger questions only after source identity and 
     dayData: { id: 'T01-D01', topic_id: 'T01', day: 1, exercise: guide.exercise, actionText: guide.action },
   });
   assert.ok(ok.response.includes('در روز 1'));
-  assert.match(ok.response, /تفکیک رویداد، احساس و رفتار/);
+  assert.match(ok.response, /جداکردن رویداد، احساس، میل و رفتار/);
   assert.doesNotMatch(ok.response, /دستیار هوشمند مسیر ۲۸|موضوع: خشم|جمع‌بندی امروز/u);
 
   const adaptedTitle = 'عنوان متناسب‌شده روز اول';
