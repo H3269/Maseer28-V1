@@ -50,7 +50,7 @@ test('all 392 exact T09 questions route through the real page assistant with mat
         dailyContext: contextFor(guide),
       });
       assert.equal(result.status, 'daily_guidance_available');
-      assert.match(result.message, new RegExp(guide.title), 'the answer must identify the matching daily guide');
+      assert.match(result.message, new RegExp('روز ' + guide.day), 'the answer must identify the matching daily day');
       assert.ok(result.message.trim().length > 0);
       checked += 1;
     }
