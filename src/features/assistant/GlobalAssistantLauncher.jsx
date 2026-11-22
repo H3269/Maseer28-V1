@@ -430,6 +430,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     }
     const isDailySafetyQuestion = Boolean(
       isPreparedOnlyDailyPromptContext
+      && !isAngerDailyPromptContext
       && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(selectedPreparedQuestion.kind),
     );
     setError('');
