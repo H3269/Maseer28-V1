@@ -627,7 +627,10 @@ try {
   await dayPrompt.waitFor({ state: 'visible' });
   await dayPrompt.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
   await panel.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
+  await page.waitForFunction(() => {
+    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+    return replies.length >= 1 && !replies.at(-1).innerText.includes('در حال بررسی پرسش');
+  }, null, { timeout: 15000 });
   let assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /خشم/);
   assert.match(assistantReply, /روز (?:1|۱)/);
@@ -664,8 +667,9 @@ try {
     await panel.getByRole('button', { name: 'ارسال' }).click();
     await page.waitForFunction((previous) => {
       const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-      return replies.length > previous;
-    }, previousReplyCount, { timeout: 8000 });
+      return replies.length > previous
+        && !replies.at(-1).innerText.includes('در حال بررسی پرسش');
+    }, previousReplyCount, { timeout: 15000 });
     const reply = panel.locator('.assistantMessage').last();
     assert.equal(await reply.getByTestId('daily-assistant-safety-reminder').count(), 0,
       'anger safety/evaluation answers must omit only the separate reminder card');
