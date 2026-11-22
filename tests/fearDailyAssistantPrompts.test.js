@@ -64,7 +64,7 @@ test('T03 router requires canonical topic identity, keeps safety preemption, and
  const mismatch=makeDailyExerciseGuidanceTurn({message:q,dayData:{...data,topic_id:'T02'},problem:'ترس',day:1});
  assert.match(mismatch.response,/شناسه موضوع/);
  const outside=makeDailyExerciseGuidanceTurn({message:'یک پرسش آزاد',dayData:data,problem:'ترس',day:1});
- assert.match(outside.response,/در فهرست راهنمای آماده موضوع ترس نیست/);
+ assert.match(outside.response,/بگو پرسشت درباره کدام بخش است/);
  const safety=makeDailyExerciseGuidanceTurn({message:'امشب قصد دارم خودم را بکشم',dayData:data,problem:'ترس',day:1});
  assert.match(safety.response,/خطر فوری/);
 });
