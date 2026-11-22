@@ -52,7 +52,7 @@ test('one shared prompt catalogue exposes the same fourteen questions and five g
       assert.equal(new Set(questions.map((question) => question.value)).size, 14);
       assert.equal(questions.find((question) => question.id === 'q11')?.kind, SHARED_DAILY_ASSISTANT_DISTRESS_KINDS[topicId]);
       assert.equal(questions[0].value, 'منظور از تمرین امروز چیست؟');
-      assert.equal(questions[13].value, 'این تمرین چقدر زمان می‌برد؟');
+      assert.equal(questions.find((question) => question.id === 'q14')?.value, 'این تمرین چقدر زمان می‌برد؟');
     }
   }
   assert.deepEqual(getSharedDailyAssistantPromptGroups(29, 'T02'), []);
