@@ -3262,23 +3262,14 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   let answer = preparedAnswer || answerAngerDailyPreparedQuestionRaw(args);
   if (!answer) return null;
 
-  const addIfMissing = (value, lead = '') => {
+  const appendIfMissing = (value, lead) => {
     const content = String(value || '').trim();
     if (content && !answer.includes(content)) answer += '\n\n' + lead + content;
   };
 
-  if (question.kind === 'exercise_example' && guide.exerciseExample
-    && !/(?:فرض کن|مثلاً|برای مثال|تصور کن)/u.test(answer.slice(0, 100))) {
-    answer = 'فرض کن یک موقعیت معمولی و کم‌تنش پیش آمده است. ' + answer;
-  }
-  if (question.kind === 'action_example' && guide.actionExample
-    && !/(?:فرض کن|مثلاً|برای مثال|تصور کن)/u.test(answer.slice(0, 100))) {
-    answer = 'فرض کن موقعیتی پیش آمده که می‌توانی اقدام امروز را در آن به کار ببری. ' + answer;
-  }
-
   if (question.kind === 'light_version') {
-    addIfMissing(guide.lightVersion, 'برای امروز می‌توانی از این نسخه کوتاه‌تر شروع کنی: ');
-    addIfMissing(guide.lightActionVersion, 'اگر بخش عملی هم برایت مناسب و امن بود، این شکل ساده‌تر را در نظر بگیر: ');
+    appendIfMissing(guide.lightVersion, 'اگر انجام کامل تمرین سخت است، می‌توانی از این بخش کوچک‌تر شروع کنی: ');
+    appendIfMissing(guide.lightActionVersion, 'اگر انجام بخش عملی هم برایت امن و شدنی است، این شکل ساده‌تر را در نظر بگیر: ');
   }
   if (question.kind === 'no_event') {
     if (!/عمداً خودت را وارد بحث یا موقعیت خشم‌آور/u.test(answer)) {
@@ -3287,22 +3278,22 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     if (!/نمونه کم‌فشار قبلی/u.test(answer)) {
       answer += '\n\nاگر مرور گذشته برایت امن و مناسب است، می‌توانی یک نمونه کم‌فشار قبلی را انتخاب کنی؛ در غیر این صورت تمرین را به زمان دیگری موکول کن.';
     }
-    addIfMissing(guide.restActionVersion, 'اگر امروز به مکث نیاز داری، ');
+    appendIfMissing(guide.restActionVersion, 'اگر امروز به مکث نیاز داری، ');
   }
   if (question.kind === 'can_change') {
-    addIfMissing(guide.progressActionVersion, 'اگر آمادگی و شرایط امن داشتی، ');
+    appendIfMissing(guide.progressActionVersion, 'اگر آمادگی و شرایط امن داشتی، ');
   }
   if (question.kind === 'not_done') {
-    addIfMissing(guide.lightVersion, 'اگر خواستی دوباره شروع کنی، ');
+    appendIfMissing(guide.lightVersion, 'اگر خواستی دوباره شروع کنی، ');
     if (!/خودت را سرزنش نکن/u.test(answer)) {
       answer += '\n\nانجام‌ندادن این تمرین به معنی بی‌ارادگی یا شکست نیست؛ خودت را سرزنش نکن.';
     }
   }
   if (question.kind === 'success') {
-    addIfMissing(guide.successCriterion, 'نشانه‌ای که می‌توانی دنبالش بگردی این است: ');
+    appendIfMissing(guide.successCriterion, 'نشانه‌ای که می‌توانی دنبالش بگردی این است: ');
   }
   if (question.kind === 'stop' || question.kind === 'anger_increased') {
-    addIfMissing(guide.stopCondition, 'برای همین روز این نکته را هم جدی بگیر: ');
+    appendIfMissing(guide.stopCondition, 'برای همین روز این نکته را هم جدی بگیر: ');
     if (!/فاصله امن/u.test(answer)) {
       answer += '\n\nاگر احتمال آسیب فوری وجود دارد، از موقعیت فاصله امن بگیر و از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک فوری بخواه.';
     }
@@ -3318,7 +3309,6 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   if (question.kind === 'duration' && !/مدت زمان مشخصی ثبت نشده/u.test(answer)) {
     answer += '\n\nمدت زمان مشخصی ثبت نشده است؛ بنابراین عددی حدس نمی‌زنم. به‌اندازه‌ای وقت بگذار که بخش اصلی تمرین روشن شود و اگر خسته یا ناراحت شدی مکث کن.';
   }
-
   if (question.kind === 'action_example'
     && !/اگر شرایط زندگی تو شبیه این نمونه نیست|اگر گفتن یا انجام‌دادن آن امن نیست/u.test(answer)) {
     answer += '\n\nاگر شرایط زندگی تو شبیه این نمونه نیست یا گفتن و انجام‌دادن آن امن نیست، آن را اجرا نکن؛ فقط بخش امن و در اختیار خودت را نگه دار.';
