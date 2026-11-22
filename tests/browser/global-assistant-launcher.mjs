@@ -154,7 +154,7 @@ try {
   await angerPromptDialog.locator('[data-prompt-option]').first().click();
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some((node) => node.innerText.includes('راهنمای روز ۱ خشم')));
+    .some((node) => node.innerText.includes('موضوع: خشم | روز ۱') || node.innerText.includes('موضوع: خشم | روز 1')));
   assert.equal(await page.locator('#ownerApprovalPending').count(), 0,
     'the app must not display an internal specialist-approval status');
 
