@@ -39,7 +39,7 @@ test('all fourteen topics share one fixed 14-question catalogue and five groups 
       assert.equal(questions.find((question) => question.id === 'q11')?.kind, SHARED_DAILY_ASSISTANT_DISTRESS_KINDS[topicId]);
       assert.ok(DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(questions[10].kind));
       assert.equal(questions[0].value, 'منظور از تمرین امروز چیست؟');
-      assert.equal(questions[13].value, 'این تمرین چقدر زمان می‌برد؟');
+      assert.equal(questions.find((question) => question.id === 'q14')?.value, 'این تمرین چقدر زمان می‌برد؟');
     }
   }
   assert.deepEqual(getSharedDailyAssistantPromptGroups(0, 'T01'), []);
