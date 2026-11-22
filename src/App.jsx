@@ -55,6 +55,8 @@ import { createRuntimeContentRepository } from './features/content/runtimeConten
 import { mergeDailyTextOverrides } from './features/content/dailyTextOverrides.js';
 import { fa } from './shared/utils.js';
 import VersionFooter from './shared/components/VersionFooter.jsx';
+const PATH_CONTENT_CACHE_VERSION = '20261119-path-content-v2';
+const DAILY_TEXT_OVERRIDES_CACHE_VERSION = '20261121-daily-assistant-examples';
 const loadGlobalAssistantLauncher = () => import('./features/assistant/GlobalAssistantLauncher.jsx');
 const loadLibraryPage = () => import('./features/library/LibraryPage.jsx');
 const loadReader = () => import('./features/library/Reader.jsx');
@@ -174,11 +176,11 @@ function MainApp() {
         // Compatibility fallback: if the generated runtime index is unavailable,
         // retain the canonical full-content path rather than blocking the app.
         try {
-          const pathUrl = `${import.meta.env.BASE_URL}content/path-content.json?v=20261023-fast-open`;
+          const pathUrl = `${import.meta.env.BASE_URL}content/path-content.json?v=${PATH_CONTENT_CACHE_VERSION}`;
           let data = null;
           for (let attempt = 0; attempt <= 2; attempt += 1) {
             try {
-              const response = await fetch(pathUrl, { cache: attempt === 0 ? 'default' : 'reload', priority: 'high' });
+              const response = await fetch(pathUrl, { cache: attempt === 0 ? 'no-cache' : 'reload', priority: 'high' });
               if (!response.ok) {
                 if (response.status >= 500 && attempt < 2) continue;
                 throw new Error(response.status === 404
@@ -192,7 +194,7 @@ function MainApp() {
               if (attempt >= 2 || error instanceof SyntaxError) throw error;
             }
           }
-          const overrides = await fetch(`${import.meta.env.BASE_URL}content/daily-text-overrides.v1.json?v=20261118-t14`, { cache: 'default', priority: 'low' })
+          const overrides = await fetch(`${import.meta.env.BASE_URL}content/daily-text-overrides.v1.json?v=${DAILY_TEXT_OVERRIDES_CACHE_VERSION}`, { cache: 'no-cache', priority: 'low' })
             .then((response) => response.ok ? response.json() : null)
             .catch(() => null);
           if (cancelled) return;
