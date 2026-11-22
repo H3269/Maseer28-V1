@@ -309,6 +309,6 @@ test('T14 is wired into the visible prepared-question launcher and remains prepa
   const { readFile } = await import('node:fs/promises');
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
   assert.match(launcher, /getSharedDailyAssistantPromptGroups/u);
-  assert.ok(launcher.includes('isT14DailyPromptContext ? "کمبود انگیزه"') || launcher.includes('activeDailyTopicId'));
+  assert.match(launcher, /T14: 'کمبود انگیزه'/u);
   assert.match(launcher, /t14-daily-prompt-trigger/u);
 });
