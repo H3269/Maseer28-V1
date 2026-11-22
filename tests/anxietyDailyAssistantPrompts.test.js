@@ -120,7 +120,7 @@ test('prepared question is scoped to the active anxiety day and refuses unknown 
   assert.equal(answerAnxietyDailyPreparedQuestion({ day: 1, message: 'سؤال خارج از فهرست' }), null);
 });
 
-test('daily turn routes anxiety prepared answers only for matching source topic and day', () => {
+test('daily turn routes anxiety prepared answers through the shared engine only for matching source topic and day', () => {
   const guide = ANXIETY_DAILY_ASSISTANT_GUIDES[0];
   const question = guide.questions.find((item) => item.kind === 'exercise_meaning');
   const ok = makeDailyExerciseGuidanceTurn({
@@ -129,8 +129,9 @@ test('daily turn routes anxiety prepared answers only for matching source topic 
     day: 1,
     dayData: { id: 'T02-D01', topic_id: 'T02', day: 1, exercise: guide.exercise, actionText: guide.action },
   });
-  assert.match(ok.response, /راهنمای روز 1 اضطراب/);
-  assert.match(ok.response, /نقشه تجربه اضطراب/);
+  assert.match(ok.response, /در روز 1/);
+  assert.ok(ok.response.includes(guide.exercise));
+  assert.doesNotMatch(ok.response, /راهنمای روز 1 اضطراب/);
 
   const topicMismatch = makeDailyExerciseGuidanceTurn({
     message: question.value,
@@ -139,7 +140,7 @@ test('daily turn routes anxiety prepared answers only for matching source topic 
     dayData: { id: 'T01-D01', topic_id: 'T01', day: 1, exercise: guide.exercise, actionText: guide.action },
   });
   assert.match(topicMismatch.response, /شناسه موضوعِ محتوای دریافتی/);
-  assert.doesNotMatch(topicMismatch.response, /راهنمای روز 1 اضطراب/);
+  assert.doesNotMatch(topicMismatch.response, /در روز 1، تمرین/);
 
   const dayMismatch = makeDailyExerciseGuidanceTurn({
     message: question.value,
@@ -148,5 +149,5 @@ test('daily turn routes anxiety prepared answers only for matching source topic 
     dayData: { id: 'T02-D01', topic_id: 'T02', day: 1, exercise: guide.exercise, actionText: guide.action },
   });
   assert.match(dayMismatch.response, /شناسه روزِ محتوای دریافتی/);
-  assert.doesNotMatch(dayMismatch.response, /راهنمای روز 1 اضطراب/);
+  assert.doesNotMatch(dayMismatch.response, /در روز 1، تمرین/);
 });
