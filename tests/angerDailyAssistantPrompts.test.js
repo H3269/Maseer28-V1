@@ -135,20 +135,28 @@ test('daily turn routes prepared anger questions only after source identity and 
   assert.match(ok.response, /راهنمای روز 1 خشم/);
   assert.match(ok.response, /تفکیک رویداد، احساس و رفتار/);
 
+  const adaptedTitle = 'عنوان متناسب‌شده روز اول';
   const adaptedExercise = 'نسخه متناسب‌شده تمرین روز اول که با هویت معتبر همین روز دریافت شده است.';
   const adaptedAction = 'نسخه متناسب‌شده اقدام روز اول که با هویت معتبر همین روز دریافت شده است.';
+  const adaptedExerciseExample = 'نمونه تازه و متناسب‌شده برای تمرین روز اول.';
+  const adaptedActionExample = 'نمونه تازه و متناسب‌شده برای اقدام روز اول.';
+  const adaptedDayData = {
+    id: 'T01-D01',
+    topic_id: 'T01',
+    day: 1,
+    title: adaptedTitle,
+    exercise: adaptedExercise,
+    actionText: adaptedAction,
+    exerciseExample: adaptedExerciseExample,
+    actionExample: adaptedActionExample,
+  };
   const adapted = makeDailyExerciseGuidanceTurn({
     message: question.value,
     problem: 'خشم',
     day: 1,
-    dayData: {
-      id: 'T01-D01',
-      topic_id: 'T01',
-      day: 1,
-      exercise: adaptedExercise,
-      actionText: adaptedAction,
-    },
+    dayData: adaptedDayData,
   });
+  assert.match(adapted.response, new RegExp(adaptedTitle));
   assert.match(adapted.response, new RegExp(adaptedExercise));
   assert.equal(adapted.response.includes(guide.exercise), false);
 
@@ -157,16 +165,30 @@ test('daily turn routes prepared anger questions only after source identity and 
     message: actionQuestion.value,
     problem: 'خشم',
     day: 1,
-    dayData: {
-      id: 'T01-D01',
-      topic_id: 'T01',
-      day: 1,
-      exercise: adaptedExercise,
-      actionText: adaptedAction,
-    },
+    dayData: adaptedDayData,
   });
   assert.match(adaptedActionAnswer.response, new RegExp(adaptedAction));
   assert.equal(adaptedActionAnswer.response.includes(guide.action), false);
+
+  const exerciseExampleQuestion = guide.questions.find((item) => item.kind === 'exercise_example');
+  const adaptedExerciseExampleAnswer = makeDailyExerciseGuidanceTurn({
+    message: exerciseExampleQuestion.value,
+    problem: 'خشم',
+    day: 1,
+    dayData: adaptedDayData,
+  });
+  assert.match(adaptedExerciseExampleAnswer.response, new RegExp(adaptedExerciseExample));
+  assert.equal(adaptedExerciseExampleAnswer.response.includes(guide.exerciseExample), false);
+
+  const actionExampleQuestion = guide.questions.find((item) => item.kind === 'action_example');
+  const adaptedActionExampleAnswer = makeDailyExerciseGuidanceTurn({
+    message: actionExampleQuestion.value,
+    problem: 'خشم',
+    day: 1,
+    dayData: adaptedDayData,
+  });
+  assert.match(adaptedActionExampleAnswer.response, new RegExp(adaptedActionExample));
+  assert.equal(adaptedActionExampleAnswer.response.includes(guide.actionExample), false);
 
   const mismatch = makeDailyExerciseGuidanceTurn({')));
 
