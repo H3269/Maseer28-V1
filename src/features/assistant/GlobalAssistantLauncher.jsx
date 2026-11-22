@@ -23,7 +23,7 @@ import { getCanonicalTopicIdForCategory, getInterpersonalPrivacyNotice, getRelat
 
 
 import { getSharedDailyAssistantPromptGroups } from './sharedDailyAssistantEngine.js';
-import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS, DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
+import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
 import { getDailySafetyMode } from '../content/dailySafety.js';
 
 const PAGE_ASSISTANT_PROMPT_GROUPS = Object.freeze([
@@ -409,11 +409,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         libraryLoadKind = loadResult?.kind || 'error';
       }
     }
-    const isDailySafetyQuestion = Boolean(
-      isPreparedOnlyDailyPromptContext
-      && !isAngerDailyPromptContext
-      && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(selectedPreparedQuestion.kind),
-    );
     setError('');
     setSending(true);
     const turnId = pendingLibraryTurn?.turnId ?? ++turnSequenceRef.current;
@@ -455,7 +450,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
 
       conversationStateRef.current = turn.conversationState || null;
       const finalMessage = turn.message || 'برای این پرسش پاسخ قابل اتکایی در دسترس نیست.';
-      updateAssistantMessage(finalMessage, turn.knowledge || [], isDailySafetyQuestion);
+      updateAssistantMessage(finalMessage, turn.knowledge || []);
     } catch {
       updateAssistantMessage('پاسخ آماده نشد. دوباره تلاش کن.');
     } finally {
