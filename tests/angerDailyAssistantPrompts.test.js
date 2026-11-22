@@ -190,9 +190,7 @@ test('daily turn routes prepared anger questions only after source identity and 
   assert.match(adaptedActionExampleAnswer.response, new RegExp(adaptedActionExample));
   assert.equal(adaptedActionExampleAnswer.response.includes(guide.actionExample), false);
 
-  const mismatch = makeDailyExerciseGuidanceTurn({')));
-
-  const mismatch = makeDailyExerciseGuidanceTurn({
+    const mismatch = makeDailyExerciseGuidanceTurn({
     message: question.value,
     problem: 'خشم',
     day: 2,
