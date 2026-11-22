@@ -3275,5 +3275,5 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     : canonicalGuide;
   const question = guide.questions.find((item) => item.value === String(args.message || '').trim());
   if (!question) return null;
-  return buildAngerDailyRebuiltAnswer({ guide, question });
+  return buildAngerDailyRebuiltAnswer({ guide, question, plainSteps: ANGER_DAILY_PLAIN_LANGUAGE_STEPS[day] || {} });
 }
