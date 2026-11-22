@@ -271,7 +271,10 @@ try {
   await promptDialog.waitFor({ state: 'visible' });
   await promptDialog.locator('[data-prompt-option]').first().click();
   await guidedPanel.getByRole('button', { name: 'ارسال' }).click();
-  await guidedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
+  await guidedPage.waitForFunction(() => {
+    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+    return replies.length >= 1 && !replies.at(-1).innerText.includes('در حال بررسی پرسش');
+  }, null, { timeout: 15000 });
   const angerUserQuestion = guidedPanel.locator('.userMessage').last();
   const angerReply = guidedPanel.locator('.assistantMessage').last();
   assert.match(await angerUserQuestion.innerText(), /منظور از تمرین امروز چیست/u,
