@@ -61,7 +61,7 @@ jobs:
         run: |
           npx playwright install-deps chromium
           npx playwright install --only-shell chromium
-      - name: Run daily assistant browser regression
+      - name: Run shared multi-topic daily assistant browser regression
         shell: bash
         run: |
           set -euo pipefail
@@ -79,4 +79,5 @@ jobs:
             sleep 2
           done
           export PATH28_BASE_URL=http://127.0.0.1:4173/Maseer28-V1/
+          node tests/browser/daily-assistant-guidance.mjs
           node tests/browser/t01-safety-card.mjs
