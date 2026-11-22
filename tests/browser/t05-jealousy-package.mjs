@@ -181,9 +181,10 @@ try {
       return Boolean(reply && !reply.innerText.includes('در حال بررسی'));
     });
     const jealousyExerciseExample = await jealousyPanel.locator('.assistantMessage').last().innerText();
-    assert.match(jealousyExerciseExample, /مثال فرضی جداگانه‌ای در محتوای ثبت‌شده وجود ندارد/);
-    assert.match(jealousyExerciseExample, /متن دقیق تمرین روز ۱ این است/);
-    assert.match(jealousyExerciseExample, /یک موقعیت را ثبت کن/);
+    const jealousyDayOne = dailyTextOverrides.categories?.['حسادت']?.days?.find(item => Number(item.day) === 1);
+    assert.ok(jealousyDayOne?.exerciseExample, 'T05 day 1 canonical override must provide its approved exercise example');
+    assert.ok(jealousyExerciseExample.includes(jealousyDayOne.exerciseExample),
+      'T05 shared answer must use the active day canonical exercise example');
     assert.equal(jealousyExerciseExample.includes('**'), false, 'T05 must not expose raw markdown markers');
     assert.equal(jealousyExerciseExample.includes(String.fromCharCode(92) + 'n'), false, 'T05 must not expose escaped newline tokens');
     assert.ok(jealousyExerciseExample.includes('\n'), 'T05 paragraphs must display on separate lines');
@@ -201,8 +202,9 @@ try {
       return Boolean(reply && !reply.innerText.includes('در حال بررسی'));
     });
     const jealousyActionExample = await jealousyPanel.locator('.assistantMessage').last().innerText();
-    assert.match(jealousyActionExample, /مثال فرضی جداگانه‌ای در محتوای ثبت‌شده وجود ندارد/);
-    assert.match(jealousyActionExample, /متن دقیق اقدام اختصاصی روز ۱ این است/);
+    assert.ok(jealousyDayOne?.actionExample, 'T05 day 1 canonical override must provide its approved action example');
+    assert.ok(jealousyActionExample.includes(jealousyDayOne.actionExample),
+      'T05 shared answer must use the active day canonical action example');
     assert.notEqual(jealousyExerciseExample, jealousyActionExample,
       'T05 exercise and action examples must teach different tasks, not repeat the same text');
     assert.deepEqual(jealousyErrors, [], 'T05 prepared-only browser flow must not raise page errors');
