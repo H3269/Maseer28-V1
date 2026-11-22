@@ -2,7 +2,7 @@ name: Anger guide rebuilt assistant checks
 
 on:
   push:
-    branches: [rebuild/anger-guide-28-days, fix/anger-sample-three-isolation]
+    branches: [rebuild/anger-guide-28-days, fix/anger-sample-three-isolation, fix/anger-browser-template-selectors]
   pull_request:
     branches: [main]
     paths:
@@ -17,6 +17,7 @@ on:
       - "tests/dailyAssistantSafetyReminder.test.js"
       - "tests/assistantMessageFormatting.test.js"
       - "tests/browser/daily-assistant-guidance.mjs"
+      - "tests/browser/global-assistant-launcher.mjs"
       - "public/content/daily-text-overrides.v1.json"
       - "package.json"
       - "package-lock.json"
@@ -44,3 +45,24 @@ jobs:
           tests/sharedDailyAssistantAnswerFrame.test.js
       - name: Verify production bundle
         run: npm run build
+      - name: Install pinned browser runner
+        run: npm install --no-save --package-lock=false playwright@1.65.1
+      - name: Install Chromium
+        run: |
+          npx playwright install-deps chromium
+          npx playwright install --only-shell chromium
+      - name: Run focused anger browser regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/anger-preview.log 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 40); do
+            if curl --fail --silent http://127.0.0.1:4173/ > /dev/null; then break; fi
+            if [ "$attempt" -eq 40 ]; then cat /tmp/anger-preview.log; exit 1; fi
+            sleep 2
+          done
+          export PATH28_BASE_URL=http://127.0.0.1:4173/
+          node tests/browser/daily-assistant-guidance.mjs
+          node tests/browser/global-assistant-launcher.mjs
