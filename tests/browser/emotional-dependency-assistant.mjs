@@ -141,8 +141,8 @@ try {
     .some((node) => node.innerText.includes('روز 6')));
   const daySixReply = await gatedPanel.locator('.assistantMessage').last().innerText();
   const daySixSource = overrides.categories['وابستگی عاطفی'].days.find((item) => Number(item.day) === 6);
-  const normalizedDaySixReply = daySixReply.normalize('NFKC').replace(/[يى]/g, 'ی').replace(/ك/g, 'ک').replace(/\\s+/g, ' ');
-  const normalizedDaySixExercise = daySixSource.exercise.normalize('NFKC').replace(/[يى]/g, 'ی').replace(/ك/g, 'ک').replace(/\\s+/g, ' ');
+  const normalizedDaySixReply = daySixReply.normalize('NFKC').replace(/[يى]/g, 'ی').replace(/ك/g, 'ک').replace(/\s+/g, ' ');
+  const normalizedDaySixExercise = daySixSource.exercise.normalize('NFKC').replace(/[يى]/g, 'ی').replace(/ك/g, 'ک').replace(/\s+/g, ' ');
   assert.ok(normalizedDaySixReply.includes(normalizedDaySixExercise),
     'T08 day 6 assistant must use the same exercise text shown by the daily content source after the safety gate is answered');
   await gatedPage.close();
