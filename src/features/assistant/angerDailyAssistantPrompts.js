@@ -1,8 +1,5 @@
-import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';\nimport { buildAngerDailyRebuiltAnswer } from './angerDailyRebuiltAnswerBank.js';
-import { applySharedDailyAssistantAnswerFrame } from './sharedDailyAssistantAnswerFrame.js';
-import { addTeacherStyleFrame } from './teacherStylePreparedAnswer.js';
-import { appendDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
-import { ANGER_DAILY_PREPARED_ANSWERS } from './angerDailyPreparedAnswers.js';
+import { normalizeDailyAssistantGuide } from './dailyAssistantGuideContract.js';
+import { buildAngerDailyRebuiltAnswer } from './angerDailyRebuiltAnswerBank.js';
 // Daily prepared guidance for the T01 anger path. Content is grounded in the reviewed 28-day draft.
 const RAW_ANGER_DAILY_ASSISTANT_GUIDES = [
   {
