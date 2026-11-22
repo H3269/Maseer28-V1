@@ -3253,16 +3253,45 @@ function answerAngerDailyPreparedQuestionRaw({ day, message } = {}) {
 
 export function answerAngerDailyPreparedQuestion(args = {}) {
   const day = toAngerDayNumber(args.day);
-  const guide = ANGER_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
-  if (!guide) return null;
+  const canonicalGuide = ANGER_DAILY_ASSISTANT_GUIDES.find((item) => item.day === day);
+  if (!canonicalGuide) return null;
+
+  // Runtime-adapted content is trusted only when its topic and day match the
+  // active anger record. The daily handler performs the full source-identity
+  // check; this local guard also protects direct callers of this function.
+  const dailyContent = args.dailyContent && typeof args.dailyContent === 'object'
+    ? args.dailyContent
+    : null;
+  const dailyTopicId = String(dailyContent?.topic_id || dailyContent?.topicId || '').trim();
+  const dailyDay = toAngerDayNumber(dailyContent?.day);
+  const hasMatchingDailyContent = dailyTopicId === 'T01' && dailyDay === day;
+  const guide = hasMatchingDailyContent
+    ? {
+      ...canonicalGuide,
+      exercise: String(dailyContent.exercise || dailyContent.instructions || '').trim() || canonicalGuide.exercise,
+      action: String(dailyContent.actionText || dailyContent.action || '').trim() || canonicalGuide.action,
+    }
+    : canonicalGuide;
   const question = guide.questions.find((item) => item.value === String(args.message || '').trim());
   if (!question) return null;
 
   // Prefer the individually authored response for each day/question pair.
   // The legacy switch remains only as a defensive fallback for future schema changes.
   const preparedAnswer = ANGER_DAILY_PREPARED_ANSWERS[day]?.[question.id];
-  const baseAnswer = preparedAnswer || answerAngerDailyPreparedQuestionRaw(args);
+  let baseAnswer = preparedAnswer || answerAngerDailyPreparedQuestionRaw(args);
   if (!baseAnswer) return null;
+
+  // Replace canonical exercise/action wording inside the authored answer with
+  // the verified runtime wording, so a personalized day never receives stale
+  // instructions from the static guide.
+  if (hasMatchingDailyContent) {
+    if (canonicalGuide.exercise && guide.exercise !== canonicalGuide.exercise) {
+      baseAnswer = baseAnswer.split(canonicalGuide.exercise).join(guide.exercise);
+    }
+    if (canonicalGuide.action && guide.action !== canonicalGuide.action) {
+      baseAnswer = baseAnswer.split(canonicalGuide.action).join(guide.action);
+    }
+  }
 
   const actionAdaptation = {
     light_version: guide.lightActionVersion,
