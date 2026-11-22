@@ -3120,6 +3120,7 @@ export function answerAnxietyDailyPreparedQuestion(args = {}) {
         day,
         message: angerQuestion.value,
         dailyContent: { exercise: angerGuide.exercise, actionText: angerGuide.action },
+        frameStyle: 'standard',
       })
     : null;
   return alignDailyAssistantAnswerHeadings(framedAnswer, referenceAnswer, { guide, question });
