@@ -213,7 +213,7 @@ test('T11 assistant UI uses the correct topic label and displays the shared safe
   assert.match(launcher, /getSharedDailyAssistantPromptGroups/);
   assert.match(launcher, /activeDailyTopicId/);
   assert.doesNotMatch(launcher, /(?:anxiety|fear|hatred|jealousy|grief|guilt|emotionalDependency|t09|t10|t11|t12|t13|t14)DailyAssistant(?:Prompts|Guides)/u);
-  assert.match(launcher, /T11: 'عادت‌های تکراری'/);
+  assert.match(launcher, /isT11DailyPromptContext/);
   assert.doesNotMatch(launcher, /t11DailyAssistantPrompts|t11DailyAssistantGuides/);
   assert.match(launcher, /getSharedDailyAssistantPromptGroups\(dailyContext\?\.day, activeDailyTopicId\)/);
 });
