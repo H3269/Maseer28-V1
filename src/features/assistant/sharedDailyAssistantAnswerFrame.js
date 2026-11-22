@@ -4,13 +4,22 @@ import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafety
  * Shared response framing for the anger/anxiety pilot and later topic rollout.
  * Destination prose is assigned by semantic section type, not paragraph count.
  */
-export function applySharedDailyAssistantAnswerFrame(answer, { day, topic, guide, question } = {}) {
+export function applySharedDailyAssistantAnswerFrame(answer, { day, topic, guide, question, style = 'standard' } = {}) {
   if (typeof answer !== 'string' || !answer.trim() || !guide || !question || !topic) return answer;
   const firstBreak = answer.indexOf('\n');
   const firstLine = firstBreak < 0 ? answer : answer.slice(0, firstBreak);
-  const body = /(?:راهنمای روز|روز\s*\d+).*(?:خشم|اضطراب)/u.test(firstLine) || firstLine.includes(String(guide.title || ''))
+  let body = /(?:راهنمای روز|روز\s*\d+).*(?:خشم|اضطراب)/u.test(firstLine) || firstLine.includes(String(guide.title || ''))
     ? answer.slice(firstBreak < 0 ? answer.length : firstBreak).trim()
     : answer.trim();
+
+  if (style === 'sample3') {
+    body = body.replace(/^\*\*پاسخ q\d{2}[^*]*\*\*\s*\n*/u, '').trim();
+    return [
+      '**' + topic + ' · روز ' + day + ' | ' + guide.title + '**',
+      body.replace(/\n{3,}/gu, '\n\n'),
+    ].filter(Boolean).join('\n\n');
+  }
+
   return [
     '**راهنمای روز ' + day + ' ' + topic + ' — ' + guide.title + '**',
     '**پاسخ به پرسش**',
@@ -19,7 +28,6 @@ export function applySharedDailyAssistantAnswerFrame(answer, { day, topic, guide
     body.replace(/\n{3,}/gu, '\n\n'),
   ].filter(Boolean).join('\n\n');
 }
-
 const FRAME = '**توضیح و راهنمای امروز**';
 
 function sectionKey(label) {
