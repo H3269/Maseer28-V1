@@ -3294,8 +3294,11 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   }
   if (question.kind === 'stop' || question.kind === 'anger_increased') {
     appendIfMissing(guide.stopCondition, 'برای همین روز این نکته را هم جدی بگیر: ');
-    if (!/فاصله امن/u.test(answer)) {
-      answer += '\n\nاگر احتمال آسیب فوری وجود دارد، از موقعیت فاصله امن بگیر و از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک فوری بخواه.';
+    if (!/فاصله امن ایجاد کن|فاصله امن بگیر|از موقعیت خطر فاصله/u.test(answer)) {
+      answer += '\n\nاگر احتمال آسیب فوری وجود دارد، فاصله امن ایجاد کن و از موقعیت خطر فاصله بگیر.';
+    }
+    if (!/خدمات اضطراری|اورژانس/u.test(answer)) {
+      answer += '\n\nاگر احتمال آسیب فوری به خودت یا فرد دیگری وجود دارد، از خدمات اضطراری محل زندگی کمک فوری بخواه.';
     }
   }
   if (question.kind === 'talk_other') {
@@ -3323,6 +3326,6 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     topic: 'خشم',
     guide,
     question,
-    style: 'sample3',
+    style: args.frameStyle === 'standard' ? 'standard' : 'sample3',
   });
 }
