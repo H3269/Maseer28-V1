@@ -108,7 +108,7 @@ try {
   await prompt.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
   await dayOnePanel.getByRole('button', { name: 'ارسال' }).click();
   await dayOnePage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some((node) => node.innerText.includes('راهنمای روز ۱ وابستگی عاطفی')));
+    .some((node) => node.innerText.includes('روز 1')));
   const dayOneReply = await dayOnePanel.locator('.assistantMessage').last().innerText();
   assert.match(dayOneReply, /نقشه حوزه‌های اتکای عاطفی/);
   const normalizedReply = dayOneReply.normalize('NFKC').replace(/[يى]/g, 'ی').replace(/ك/g, 'ک').replace(/\s+/g, ' ');
@@ -138,7 +138,13 @@ try {
   await gatedPrompt.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
   await gatedPanel.getByRole('button', { name: 'ارسال' }).click();
   await gatedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some((node) => node.innerText.includes('راهنمای روز ۶ وابستگی عاطفی')));
+    .some((node) => node.innerText.includes('روز 6')));
+  const daySixReply = await gatedPanel.locator('.assistantMessage').last().innerText();
+  const daySixSource = overrides.categories['وابستگی عاطفی'].days.find((item) => Number(item.day) === 6);
+  const normalizedDaySixReply = daySixReply.normalize('NFKC').replace(/[يى]/g, 'ی').replace(/ك/g, 'ک').replace(/\\s+/g, ' ');
+  const normalizedDaySixExercise = daySixSource.exercise.normalize('NFKC').replace(/[يى]/g, 'ی').replace(/ك/g, 'ک').replace(/\\s+/g, ' ');
+  assert.ok(normalizedDaySixReply.includes(normalizedDaySixExercise),
+    'T08 day 6 assistant must use the same exercise text shown by the daily content source after the safety gate is answered');
   await gatedPage.close();
 
   const privacyPage = await browser.newPage();
