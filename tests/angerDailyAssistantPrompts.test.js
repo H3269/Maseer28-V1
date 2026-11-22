@@ -227,7 +227,7 @@ test('anger prepared answers are not returned for another selected topic', () =>
     day: 1,
     dayData: { day: 1, exercise: 'تمرین اضطراب', actionText: 'اقدام اضطراب' },
   });
-  assert.doesNotMatch(response.response, /موضوع: خشم \\| روز 1/);
+  assert.doesNotMatch(response.response, /موضوع: خشم \| روز 1/);
 });
 
 test('additional prepared answers distinguish exercise from action and handle missed days without shame', () => {
