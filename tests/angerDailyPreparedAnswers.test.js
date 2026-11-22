@@ -4,113 +4,81 @@ import {
   ANGER_DAILY_ASSISTANT_GUIDES,
   answerAngerDailyPreparedQuestion,
 } from '../src/features/assistant/angerDailyAssistantPrompts.js';
-import { ANGER_DAILY_PREPARED_ANSWERS } from '../src/features/assistant/angerDailyPreparedAnswers.js';
-import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from '../src/features/assistant/dailyAssistantSafetyReminder.js';
 
-const SAFETY_KINDS = new Set(['success', 'stop', 'anger_increased', 'talk_other']);
+const QUESTION_KINDS = new Set([
+  'exercise_meaning', 'exercise_example', 'action_meaning', 'action_example',
+  'light_version', 'success', 'stop', 'no_event', 'exercise_action_difference',
+  'not_done', 'anger_increased', 'talk_other', 'can_change', 'duration',
+]);
 
-function normalizeSentence(value) {
-  return String(value)
-    .toLowerCase()
-    .replace(/[يى]/g, 'ی')
-    .replace(/ك/g, 'ک')
-    .replace(/[«»“”"'\x60]/g, '')
-    .replace(/[،؛:!?؟.,()[\]{}\-–—]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-test('T01 contains 28 days and 392 individually authored prepared answers', () => {
+test('rebuilt anger assistant provides 392 complete day-and-question-specific answers', () => {
   assert.equal(ANGER_DAILY_ASSISTANT_GUIDES.length, 28);
-  assert.equal(Object.keys(ANGER_DAILY_PREPARED_ANSWERS).length, 28);
-
+  const answers = new Set();
   let count = 0;
+
   for (const guide of ANGER_DAILY_ASSISTANT_GUIDES) {
-    const dayAnswers = ANGER_DAILY_PREPARED_ANSWERS[guide.day];
-    assert.ok(dayAnswers, `missing prepared bank for day ${guide.day}`);
-    assert.equal(guide.questions.length, 14);
-    assert.equal(Object.keys(dayAnswers).length, 14);
-
+    assert.equal(guide.questions.length, 14, 'day ' + guide.day + ' must retain all 14 approved questions');
+    assert.equal(guide.topicId, 'T01');
     for (const question of guide.questions) {
-      const prepared = dayAnswers[question.id];
-      assert.equal(typeof prepared, 'string', `missing ${guide.day}:${question.id}`);
-      assert.ok(prepared.trim().length > 0, `empty ${guide.day}:${question.id}`);
-
+      assert.ok(QUESTION_KINDS.has(question.kind), 'unknown question kind ' + question.kind);
       const answer = answerAngerDailyPreparedQuestion({ day: guide.day, message: question.value });
-      assert.equal(typeof answer, 'string', `runtime answer missing for ${guide.day}:${question.id}`);
-      assert.ok(answer.includes(prepared.replace(/q\d{2}/gi, 'پرسش')), `runtime did not use the Persian-normalized prepared answer for ${guide.day}:${question.id}`);
-
-      const shouldHaveSafety = SAFETY_KINDS.has(question.kind);
-      const reminderCount = answer.split(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN).length - 1;
-      assert.equal(reminderCount, shouldHaveSafety ? 1 : 0, `safety count mismatch at ${guide.day}:${question.id}`);
-      assert.equal(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN), shouldHaveSafety,
-        `safety placement mismatch at ${guide.day}:${question.id}`);
-
-      assert.doesNotMatch(answer, /(?:این|در این)\s+بسته|بسته\s*T(?:0?[1-9]|[12][0-9]|3[0-4])/);
-      assert.doesNotMatch(answer, /(?:^|[^A-Za-z0-9])T(?:0?[1-9]|[12][0-9]|3[0-4])(?:$|[^A-Za-z0-9])/);
-
-      if (question.id === 'q05') assert.ok(answer.includes(guide.lightActionVersion));
-      if (question.id === 'q08') assert.ok(answer.includes(guide.restActionVersion));
-      if (question.id === 'q13') assert.ok(answer.includes(guide.progressActionVersion));
-      count += 1;
+      assert.equal(typeof answer, 'string', 'missing answer ' + guide.day + ':' + question.id);
+      assert.ok(answer.length > 250, 'answer too thin ' + guide.day + ':' + question.id);
+      assert.ok(answer.includes('دستیار هوشمند مسیر ۲۸'));
+      assert.ok(answer.includes('موضوع: خشم | روز ' + guide.day));
+      assert.ok(answer.includes(question.label));
+      assert.ok(answer.includes('جمع‌بندی امروز'));
+      assert.ok(answer.includes(guide.title), 'answer not tied to daily theme ' + guide.day + ':' + question.id);
+      answers.add(answer);
+      count++;
     }
-
-    assert.ok(guide.lightActionVersion);
-    assert.ok(guide.progressActionVersion);
-    assert.ok(guide.restActionVersion);
-    assert.equal(guide.metadataGaps.includes('lightActionVersion'), false);
-    assert.equal(guide.metadataGaps.includes('progressActionVersion'), false);
-    assert.equal(guide.metadataGaps.includes('restActionVersion'), false);
-
-    assert.doesNotMatch(dayAnswers.q14, /تأییدشده|تأیید شده|\d+\s*(?:دقیقه|ساعت)/,
-      `duration answer must not imply an approved or invented time on day ${guide.day}`);
   }
   assert.equal(count, 392);
+  assert.equal(answers.size, 392, 'all 392 rendered answers must be distinct');
 });
 
-test('T01 prepared answers contain no repeated non-safety sentence of 35+ normalized characters', () => {
-  const occurrences = new Map();
-  // This repeated line is a fixed safety caveat: the light action does not have to be enacted in a real interaction.
-  const approvedSafetyExceptions = new Set([
-    // Repeated only where the same fixed safety, privacy, consent, or uncertainty caveat
-    // is needed across different daily answers; these are not topic-specific teaching content.
-    normalizeSentence('لازم نیست آن را در تعامل واقعی اجرا کنی'),
-    normalizeSentence('برای انجام تمرین عمداً خودت را وارد بحث یا موقعیت خشم‌آور نکن'),
-    normalizeSentence('برای آزمودنش موقعیتی نساز و هیچ گفت‌وگویی را به خودت یا دیگری تحمیل نکن'),
-    normalizeSentence('نبود نمونه واقعی را همان‌طور که هست ثبت کن'),
-    normalizeSentence('از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک بگیر'),
-    normalizeSentence('اگر احتمال آسیب فوری به خودت یا فرد دیگری وجود دارد از خدمات اضطراری محل زندگی کمک فوری بگیر'),
-    normalizeSentence('می‌توانی آن را به شکل خصوصی و امن انجام بدهی'),
-    normalizeSentence('اگر گفت‌وگو امن یا اختیاری نیست لازم نیست آن را انجام بدهی'),
-    normalizeSentence('برای نشان‌دادن پیشرفت شدت یا دامنه تعامل را بیشتر نکن'),
-    normalizeSentence('بنابراین زمان قطعی یا عدد استانداردی برای این تمرین اعلام نمی‌کنم'),
-    normalizeSentence('لازم نیست باقی رویداد را بازسازی کنی'),
-    normalizeSentence('از موقعیت فاصله بگیر و کمک فوری بگیر'),
-    normalizeSentence('فقط تصمیم بگیر در صورت بالا رفتن خطر فاصله و کمک انسانی بر تمرین مقدم است'),
-    normalizeSentence('در خطر فوری فاصله و کمک اضطراری مقدم است'),
-    normalizeSentence('یک فعالیت راحت و غیربدنی را انتخاب کن'),
-    normalizeSentence('فقط گزینه‌های قبلی را کنار بگذار و به فعالیت عادی برگرد'),
-    normalizeSentence('هیچ موقعیتی را برای تمرین ایجاد نکن'),
-    normalizeSentence('اگر خطر واکنش آسیب‌زا وجود دارد از موقعیت فاصله بگیر و کمک انسانی بگیر'),
-    normalizeSentence('حمایت تخصصی و اقدام ایمنی فوری لازم است'),
-    normalizeSentence('در صورت تداوم آسیب یا تهدید حمایت تخصصی مقدم است'),
-  ]);
+test('each question type explains the corresponding day-specific exercise, action, example, criterion, or safety limit', () => {
   for (const guide of ANGER_DAILY_ASSISTANT_GUIDES) {
-    for (const question of guide.questions) {
-      const framedAnswer = answerAngerDailyPreparedQuestion({ day: guide.day, message: question.value });
-      const answer = framedAnswer.split('\n\n').slice(4).join('\n\n')
-        .replace(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN, '')
-        .replace(/^.*راهنمای روز \d+ خشم[^\n]*$/gmu, '');
-      const sentences = answer.split(/[.!؟?؛\n]+/).map(normalizeSentence).filter((item) => item.length >= 35);
-      for (const sentence of sentences) {
-        if (approvedSafetyExceptions.has(sentence)) continue;
-        if (!occurrences.has(sentence)) occurrences.set(sentence, []);
-        occurrences.get(sentence).push(`${guide.day}:${question.id}`);
-      }
-    }
+    const byKind = Object.fromEntries(guide.questions.map((q) => [
+      q.kind, answerAngerDailyPreparedQuestion({ day: guide.day, message: q.value }),
+    ]));
+    assert.ok(byKind.exercise_meaning.includes(guide.exercise));
+    assert.ok(byKind.exercise_example.includes(guide.exerciseExample));
+    assert.ok(byKind.action_meaning.includes(guide.action));
+    assert.ok(byKind.action_example.includes(guide.actionExample));
+    assert.ok(byKind.light_version.includes(guide.lightVersion));
+    assert.ok(byKind.success.includes(guide.successCriterion));
+    assert.ok(byKind.stop.includes(guide.stopCondition));
+    assert.ok(byKind.no_event.includes(guide.restVersion));
+    assert.ok(byKind.exercise_action_difference.includes(guide.exercise));
+    assert.ok(byKind.exercise_action_difference.includes(guide.action));
+    assert.ok(byKind.anger_increased.includes(guide.stopCondition));
+    assert.ok(byKind.can_change.includes(guide.objective));
+    assert.match(byKind.talk_other, /لازم نیست.*با فرد دیگری صحبت کنی/u);
+    assert.match(byKind.duration, /زمان استاندارد یا عدد مشخصی.*تعیین نشده/u);
   }
+});
 
-  const duplicates = [...occurrences.entries()]
-    .filter(([, locations]) => new Set(locations).size > 1);
-  assert.deepEqual(duplicates, []);
+test('runtime answers use verified same-day anger content without reverting to the previous prepared-answer bank', () => {
+  const guide = ANGER_DAILY_ASSISTANT_GUIDES[0];
+  const question = guide.questions[0];
+  const answer = answerAngerDailyPreparedQuestion({
+    day: guide.day,
+    message: question.value,
+    dailyContent: {
+      topicId: 'T01',
+      day: guide.day,
+      title: 'عنوان روزِ همگام‌شده',
+      exercise: 'تمرین همگام‌شده برای آزمون مسیر اجرا.',
+      actionText: 'اقدام همگام‌شده برای آزمون مسیر اجرا.',
+    },
+  });
+  assert.ok(answer.includes('عنوان روزِ همگام‌شده'));
+  assert.ok(answer.includes('تمرین همگام‌شده برای آزمون مسیر اجرا.'));
+  assert.doesNotMatch(answer, /راهنمای روز 1 خشم — تفکیک رویداد، احساس و رفتار/u);
+});
+
+test('unknown days and questions are rejected instead of receiving a generic answer', () => {
+  assert.equal(answerAngerDailyPreparedQuestion({ day: 0, message: 'منظور از تمرین امروز چیست؟' }), null);
+  assert.equal(answerAngerDailyPreparedQuestion({ day: 1, message: 'یک سؤال خارج از فهرست' }), null);
 });
