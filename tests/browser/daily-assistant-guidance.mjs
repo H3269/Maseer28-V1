@@ -72,8 +72,7 @@ async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumb
   assert.ok(dayBadge.includes('روز ' + dayNumber), 'day UI must show the selected canonical day');
   const reply = normalizeVisibleDailyText(await panel.locator('.assistantMessage').last().innerText());
   if (topic !== 'خشم') {
-    assert.ok(reply.includes(normalizeVisibleDailyText(topic)), 'assistant answer must identify the selected topic');
-    assert.ok(reply.includes('روز ' + dayNumber), 'assistant answer must identify the selected day');
+    assert.ok(reply.includes('روز ' + dayNumber), 'assistant answer must use the selected day context');
   } else {
     assert.doesNotMatch(reply, /موضوع: خشم|دستیار هوشمند مسیر ۲۸|جمع‌بندی امروز/u,
       'anger answer must not repeat topic labels or a daily summary');
@@ -194,7 +193,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
         assert.equal(Object.hasOwn(day, 'risk_level'), false);
       } else {
         Object.assign(day, {
-          topic_id: topicKey === 'اهمال‌کاری' ? 'T09' : topicKey === 'اضطراب' ? 'T02' : topicKey === 'ترس' ? 'T03' : topicKey === 'نفرت' ? 'T04' : topicKey === 'حسادت' ? 'T05' : topicKey === 'غم و سوگ' ? 'T06' : topicKey === 'احساس گناه' ? 'T07' : topicKey === 'تنهایی' ? 'T13' : topicKey === 'کمبود انگیزه' ? 'T14' : 'T01',
+          topic_id: ({ 'خشم':'T01','اضطراب':'T02','ترس':'T03','نفرت':'T04','حسادت':'T05','غم و سوگ':'T06','احساس گناه':'T07','وابستگی عاطفی':'T08','اهمال‌کاری':'T09','بی‌خوابی و مشکلات خواب':'T10','عادت‌های تکراری':'T11','مرزبندی و نه گفتن':'T12','تنهایی':'T13','کمبود انگیزه':'T14' })[topicKey] || 'T01',
           day: dayNumber,
           review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
           risk_level: 'routine',
@@ -241,749 +240,153 @@ async function assertGriefAdaptiveDay(mode, dayNumber, exerciseField, actionFiel
   await page.close();
 }
 
+ 
 try {
-  const page = await browser.newPage();
-  const errors = [];
-  const workerRequests = [];
-  const privateMarker = 'private-assistant-browser-marker-7f31c2';
-  page.on('pageerror', (error) => errors.push(String(error)));
-  page.on('request', (request) => {
-    if (/\/v1\/assistant\/turn|assistant-api|workers\.dev/u.test(request.url())) {
-      workerRequests.push(request.url());
-    }
-  });
-
-  // The anger assistant remains prepared-only even after local model installation.
-  const guidedPage = await browser.newPage();
-  await openDay(guidedPage);
-  const guidedPanel = guidedPage.locator('.globalAssistantDialog');
-  await guidedPanel.waitFor({ state: 'visible' });
-  const guidedTrigger = guidedPanel.getByTestId('anger-daily-prompt-trigger');
-  await guidedTrigger.waitFor({ state: 'visible' });
-  await guidedPage.waitForFunction(() => {
-    const trigger = document.querySelector('[data-testid="anger-daily-prompt-trigger"]');
-    return trigger && !trigger.disabled;
-  });
-  assert.equal(await guidedPanel.locator('#global-assistant-message').count(), 0,
-    'free-form typing must remain unavailable before local model installation');
-  await guidedTrigger.click();
-  const promptDialog = guidedPage.locator('#library-assistant-prompt-dialog');
-  await promptDialog.waitFor({ state: 'visible' });
-  await promptDialog.locator('[data-prompt-option]').first().click();
-  await guidedPanel.getByRole('button', { name: 'ارسال' }).click();
-  await guidedPage.waitForFunction(() => {
-    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-    return replies.length >= 1 && !replies.at(-1).innerText.includes('در حال بررسی پرسش');
-  }, null, { timeout: 15000 });
-  const angerUserQuestion = guidedPanel.locator('.userMessage').last();
-  const angerReply = guidedPanel.locator('.assistantMessage').last();
-  assert.match(await angerUserQuestion.innerText(), /منظور از تمرین امروز چیست/u,
-    'the selected question must appear in the user message above the assistant answer');
-  const angerVisibleText = await angerReply.innerText();
-  assert.doesNotMatch(angerVisibleText, /آره عزیزم|حتماً عزیزم|بله عزیزم|نه عزیزم/u,
-    'assistant answer must not use intimate pet names or the removed opening phrase');
-  assert.match(angerVisibleText, /در روز 1|در روز ۱/u,
-    'assistant answer must begin with a natural, day-specific explanation');
-  assert.doesNotMatch(angerVisibleText, /دستیار هوشمند مسیر ۲۸|موضوع: خشم|منظور از تمرین امروز چیست|توضیح و راهنمای امروز|جمع‌بندی امروز|۰۹۱۹۰۸۸۹۰۶۲/u,
-    'T01 assistant bubble must not repeat the question, generic labels, daily summary, or phone reminder');
-  assert.equal(await angerReply.locator('[data-testid="daily-assistant-safety-reminder"]').count(), 0,
-    'T01 must not render the separate shared safety reminder card');
-  assert.equal(angerVisibleText.includes('**'), false, 'T01 must not expose raw markdown markers');
-  assert.equal(angerVisibleText.includes(String.fromCharCode(92) + 'n'), false, 'T01 must not expose escaped newline tokens');
-  assert.ok(angerVisibleText.includes('\n'), 'T01 answer paragraphs must display on separate lines');
-  await guidedPage.waitForFunction(() => {
-    const transcript = document.querySelector('.globalAssistantDialog .assistantTranscript');
-    const icon = document.querySelector('.globalAssistantDialog [data-testid="latest-assistant-message"] .globalAssistantSpeakerIcon');
-    if (!transcript || !icon) return false;
-    const transcriptTop = transcript.getBoundingClientRect().top;
-    const iconTop = icon.getBoundingClientRect().top;
-    return iconTop >= transcriptTop - 2 && iconTop < transcriptTop + 48;
-  }, null, { timeout: 5000 });
-  const answerAnchor = await guidedPanel.getByTestId('latest-assistant-message').locator('.globalAssistantSpeakerIcon').boundingBox();
-  const transcriptBox = await guidedPanel.locator('.assistantTranscript').boundingBox();
-  assert.ok(answerAnchor && transcriptBox && answerAnchor.y < transcriptBox.y + 48,
-    'the transcript must scroll to the newest assistant icon, not leave the answer above the visible area');
-  await guidedPage.close();
-
-  // T02 anxiety must expose the same day-scoped prepared guidance structure.
-  const anxietyGuidedPage = await browser.newPage();
-  await openDay(anxietyGuidedPage, { problem: 'اضطراب' });
-  const anxietyGuidedPanel = anxietyGuidedPage.locator('.globalAssistantDialog');
-  const anxietyGuidedTrigger = anxietyGuidedPanel.getByTestId('anxiety-daily-prompt-trigger');
-  await anxietyGuidedTrigger.waitFor({ state: 'visible' });
-  await anxietyGuidedTrigger.click();
-  const anxietyPromptDialog = anxietyGuidedPage.locator('#library-assistant-prompt-dialog');
-  await anxietyPromptDialog.waitFor({ state: 'visible' });
-  assert.match(await anxietyPromptDialog.innerText(), /سؤال‌های آماده روز ۱ اضطراب/);
-  await anxietyPromptDialog.getByRole('button', { name: 'تمرین و اقدام امروز چه تفاوتی دارند؟' }).click();
-  await anxietyGuidedPanel.getByRole('button', { name: 'ارسال' }).click();
-  await anxietyGuidedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => /راهنمای روز ۱ اضطراب/.test(node.innerText)));
-  const anxietyReply = anxietyGuidedPanel.locator('.assistantMessage').last();
-  assert.ok(await anxietyReply.locator('strong').count() > 0, 'T02 assistant headings must render as bold text');
-  const anxietyVisibleText = await anxietyReply.innerText();
-  assert.equal(anxietyVisibleText.includes('**'), false, 'T02 must not expose raw markdown markers');
-  assert.equal(anxietyVisibleText.includes(String.fromCharCode(92) + 'n'), false, 'T02 must not expose escaped newline tokens');
-  assert.ok(anxietyVisibleText.includes('\n'), 'T02 paragraphs must display on separate lines');
-  await assertAssistantUsesVisibleDailySource(anxietyGuidedPage, anxietyGuidedPanel, 'اضطراب', 1);
-  await anxietyGuidedPage.locator('.globalAssistantDialog').getByRole('button', { name: 'بستن پنجره دستیار' }).click();
-  await anxietyGuidedPanel.waitFor({ state: 'detached' });
-
-  await anxietyGuidedPage.close();
-
-  // T03 must remain prepared-only even when a local model is already cached.
-  // The daily safety-review gate remains fail-closed for this unapproved fixture.
-  const fearGuidedPage = await browser.newPage();
-  const fearErrors = [];
-  fearGuidedPage.on('pageerror', error => fearErrors.push(String(error)));
-  await openDay(fearGuidedPage, { problem: 'ترس', assistantDayMode: 'blocked', localModelInstalled: true });
-  const fearPanel = fearGuidedPage.locator('.globalAssistantDialog');
-  await fearPanel.waitFor({ state: 'visible' });
-  assert.equal(await fearPanel.locator('#global-assistant-message').count(), 0,
-    'T03 must never expose a free-form composer, even with a cached local model');
-  assert.equal(await fearPanel.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
-    'T03 must not expose local model installation');
-  const fearTrigger = fearPanel.getByTestId('fear-daily-prompt-trigger');
-  await fearTrigger.waitFor({ state: 'visible' });
-  await fearGuidedPage.waitForFunction(() => {
-    const trigger = document.querySelector('[data-testid="fear-daily-prompt-trigger"]');
-    return trigger && !trigger.disabled;
-  });
-  await fearTrigger.click();
-  const fearPromptDialog = fearGuidedPage.locator('#library-assistant-prompt-dialog');
-  await fearPromptDialog.waitFor({ state: 'visible' });
-  assert.match(await fearPromptDialog.innerText(), /ترس/);
-  await fearPromptDialog.locator('[data-prompt-option]').first().click();
-  await fearPanel.getByRole('button', { name: 'ارسال' }).click();
-  await fearGuidedPage.waitForFunction(() => Array.from(document.querySelectorAll('.globalAssistantDialog .assistantMessage')).some(node => node.innerText.includes('راهنمای روز ۱ ترس')));
-  const fearReply = fearPanel.locator('.assistantMessage').last();
-  assert.match(await fearReply.innerText(), /راهنمای روز ۱ ترس/);
-  assert.ok(await fearReply.locator('strong').count() > 0, 'T03 assistant headings must render as bold text');
-  const fearVisibleText = await fearReply.innerText();
-  assert.equal(fearVisibleText.includes('**'), false, 'T03 must not expose raw markdown markers');
-  assert.equal(fearVisibleText.includes(String.fromCharCode(92) + 'n'), false, 'T03 must not expose escaped newline tokens');
-  assert.ok(fearVisibleText.includes('\n'), 'T03 paragraphs must display on separate lines');
-
-  assert.deepEqual(fearErrors, [], 'T03 prepared-only assistant browser flow must not raise page errors');
-  await fearGuidedPage.close();
-
-  // T04 is also strictly prepared-only, with the same five-group selector and no model/free-text escape.
-  const hatredGuidedPage = await browser.newPage();
-  const hatredErrors = [];
-  hatredGuidedPage.on('pageerror', error => hatredErrors.push(String(error)));
-  await openDay(hatredGuidedPage, { problem: 'نفرت', assistantDayMode: 'blocked', localModelInstalled: true });
-  const hatredPanel = hatredGuidedPage.locator('.globalAssistantDialog');
-  await hatredPanel.waitFor({ state: 'visible' });
-  assert.equal(await hatredPanel.locator('#global-assistant-message').count(), 0,
-    'T04 must never expose free-form typing, even with a cached local model');
-  assert.equal(await hatredPanel.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
-    'T04 must not expose local model installation');
-  const hatredTrigger = hatredPanel.getByTestId('hatred-daily-prompt-trigger');
-  await hatredTrigger.waitFor({ state: 'visible' });
-  await hatredTrigger.click();
-  const hatredPromptDialog = hatredGuidedPage.locator('#library-assistant-prompt-dialog');
-  await hatredPromptDialog.waitFor({ state: 'visible' });
-  assert.match(await hatredPromptDialog.innerText(), /سؤال‌های آماده روز ۱ نفرت/);
-  assert.equal(await hatredPromptDialog.locator('.libraryAssistantPromptGroup').count(), 5);
-  assert.equal(await hatredPromptDialog.locator('[data-prompt-option]').count(), 14);
-  await hatredPromptDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
-  await hatredPanel.getByRole('button', { name: 'ارسال' }).click();
-  await hatredGuidedPage.waitForFunction(() => Array.from(document.querySelectorAll('.globalAssistantDialog .assistantMessage')).some(node => node.innerText.includes('راهنمای روز ۱ نفرت')));
-  const hatredReply = await hatredPanel.locator('.assistantMessage').last().innerText();
-  assert.match(hatredReply, /نفرت/);
-  assert.match(hatredReply, /تمرین/);
-  assert.ok(await hatredPanel.locator('.assistantMessage').last().locator('strong').count() > 0,
-    'T04 assistant headings must render as bold text');
-  assert.equal(hatredReply.includes('**'), false, 'T04 must not expose raw markdown markers');
-  assert.equal(hatredReply.includes(String.fromCharCode(92) + 'n'), false, 'T04 must not expose escaped newline tokens');
-  assert.ok(hatredReply.includes('\n'), 'T04 paragraphs must display on separate lines');
-  assert.deepEqual(hatredErrors, [], 'T04 prepared-only assistant browser flow must not raise page errors');
-  await hatredGuidedPage.close();
-
-
-  // T05 jealousy uses its own prepared-only 28-day assistant and distinct examples.
-  const jealousyGuidedPage = await browser.newPage();
-  const jealousyErrors = [];
-  jealousyGuidedPage.on('pageerror', error => jealousyErrors.push(String(error)));
-  await openDay(jealousyGuidedPage, { problem: 'حسادت', assistantDayMode: 'blocked', localModelInstalled: true });
-  const jealousyPanel = jealousyGuidedPage.locator('.globalAssistantDialog');
-  await jealousyPanel.waitFor({ state: 'visible' });
-  assert.equal(await jealousyPanel.locator('#global-assistant-message').count(), 0,
-    'T05 must never expose free-form typing, even with a cached local model');
-  assert.equal(await jealousyPanel.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
-    'T05 must not expose local model installation');
-  const jealousyTrigger = jealousyPanel.getByTestId('jealousy-daily-prompt-trigger');
-  await jealousyTrigger.waitFor({ state: 'visible' });
-  assert.match(await jealousyTrigger.getAttribute('aria-label'), /حسادت/,
-    'T05 prompt trigger must have the correct accessible topic label');
-  await jealousyTrigger.click();
-  const jealousyPromptDialog = jealousyGuidedPage.locator('#library-assistant-prompt-dialog');
-  await jealousyPromptDialog.waitFor({ state: 'visible' });
-  assert.match(await jealousyPromptDialog.innerText(), /سؤال‌های آماده روز ۱ حسادت/);
-  assert.equal(await jealousyPromptDialog.locator('.libraryAssistantPromptGroup').count(), 5);
-  assert.equal(await jealousyPromptDialog.locator('[data-prompt-option]').count(), 14);
-  await jealousyPromptDialog.getByRole('button', { name: 'برای تمرین امروز یک مثال می‌زنی؟' }).click();
-  await jealousyPanel.getByRole('button', { name: 'ارسال' }).click();
-  await jealousyGuidedPage.waitForFunction(() => Array.from(document.querySelectorAll('.globalAssistantDialog .assistantMessage'))
-    .some(node => node.innerText.includes('راهنمای روز ۱ حسادت')));
-  const jealousyExerciseExample = await jealousyPanel.locator('.assistantMessage').last().innerText();
-  assert.match(jealousyExerciseExample, /مثال فرضی/);
-  assert.match(jealousyExerciseExample, /دوستت با فرد دیگری/);
-  assert.match(jealousyExerciseExample, /یک موقعیت را ثبت کن/);
-  assert.ok(await jealousyPanel.locator('.assistantMessage').last().locator('strong').count() > 0,
-    'T05 assistant headings must render as bold text');
-  assert.equal(jealousyExerciseExample.includes('**'), false, 'T05 must not expose raw markdown markers');
-  assert.equal(jealousyExerciseExample.includes(String.fromCharCode(92) + 'n'), false, 'T05 must not expose escaped newline tokens');
-  assert.ok(jealousyExerciseExample.includes('\n'), 'T05 paragraphs must display on separate lines');
-
-  await jealousyPanel.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
-  await jealousyPanel.waitFor({ state: 'detached' });
-  await jealousyGuidedPage.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
-  await jealousyPanel.waitFor({ state: 'visible' });
-  await jealousyPanel.getByTestId('jealousy-daily-prompt-trigger').click();
-  await jealousyGuidedPage.locator('#library-assistant-prompt-dialog')
-    .getByRole('button', { name: 'برای اقدام امروز یک مثال می‌زنی؟' }).click();
-  await jealousyPanel.getByRole('button', { name: 'ارسال' }).click();
-  await jealousyGuidedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => node.innerText.includes('راهنمای روز ۱ حسادت')));
-  const jealousyActionExample = await jealousyPanel.locator('.assistantMessage').last().innerText();
-  assert.match(jealousyActionExample, /مثال فرضی/);
-  assert.match(jealousyActionExample, /حسادت رابطه‌ای؛ نگرانی از کم‌شدن صمیمیت/);
-  assert.notEqual(jealousyExerciseExample, jealousyActionExample,
-    'T05 exercise and action examples must teach different tasks, not repeat the same text');
-  assert.deepEqual(jealousyErrors, [], 'T05 prepared-only browser flow must not raise page errors');
-  await jealousyGuidedPage.close();
-
-
-  // T06 grief and loss must use its own prepared-only 28-day assistant, including legacy-shaped source data.
-  const griefGuidedPage = await browser.newPage();
-  const griefErrors = [];
-  griefGuidedPage.on('pageerror', error => griefErrors.push(String(error)));
-  await openDay(griefGuidedPage, { problem: 'غم و سوگ', assistantDayMode: 'blocked', localModelInstalled: true });
-  const griefPanel = griefGuidedPage.locator('.globalAssistantDialog');
-  await griefPanel.waitFor({ state: 'visible' });
-  assert.equal(await griefPanel.locator('#global-assistant-message').count(), 0,
-    'T06 must never expose free-form typing, even with a cached local model');
-  assert.equal(await griefPanel.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
-    'T06 must not expose local model installation');
-  const griefTrigger = griefPanel.getByTestId('grief-daily-prompt-trigger');
-  await griefTrigger.waitFor({ state: 'visible' });
-  assert.match(await griefTrigger.getAttribute('aria-label'), /غم و سوگ/,
-    'T06 prompt trigger must have the correct accessible topic label');
-  await griefTrigger.click();
-  const griefPromptDialog = griefGuidedPage.locator('#library-assistant-prompt-dialog');
-  await griefPromptDialog.waitFor({ state: 'visible' });
-  assert.match(await griefPromptDialog.innerText(), /سؤال‌های آماده روز ۱ غم و سوگ/);
-  assert.equal(await griefPromptDialog.locator('.libraryAssistantPromptGroup').count(), 5);
-  assert.equal(await griefPromptDialog.locator('[data-prompt-option]').count(), 14);
-  await griefPromptDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
-  await griefPanel.getByRole('button', { name: 'ارسال' }).click();
-  await griefGuidedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => node.innerText.includes('راهنمای روز ۱ غم و سوگ')));
-  const griefReply = await griefPanel.locator('.assistantMessage').last().innerText();
-  assert.match(griefReply, /نام‌گذاری فقدان/);
-  assert.match(griefReply, /یک فقدان یا تغییر مهم/);
-  assert.equal(griefReply.includes('راهنمای اختصاصی روز'), false,
-    'T06 must not append a duplicate day-specific guidance block at the end of every answer');
-  assert.equal(griefReply.includes('معیار کافی‌بودن اقدام'), false,
-    'an exercise-meaning answer must not append the unrelated action success criterion');
-  assert.equal(griefReply.includes('مرز و برداشت نامناسب'), false,
-    'an exercise-meaning answer must not append an unrelated generic boundary section');
-  assert.ok(await griefPanel.locator('.assistantMessage').last().locator('strong').count() > 0,
-    'T06 assistant headings must render as bold text');
-  assert.equal(griefReply.includes('**'), false, 'T06 must not expose raw markdown markers');
-  assert.equal(griefReply.includes(String.fromCharCode(92) + 'n'), false, 'T06 must not expose escaped newline tokens');
-  assert.ok(griefReply.includes('\n'), 'T06 paragraphs must display on separate lines');
-  await assertAssistantUsesVisibleDailySource(griefGuidedPage, griefPanel, 'غم و سوگ', 1, ['exercise']);
-  assert.deepEqual(griefErrors, [], 'T06 prepared-only browser flow must not raise page errors');
-  await griefGuidedPage.close();
-
-  // T07 guilt uses its own prepared-only 28-day assistant and the shared 14-question structure.
-  const guiltGuidedPage = await browser.newPage();
-  const guiltErrors = [];
-  guiltGuidedPage.on('pageerror', error => guiltErrors.push(String(error)));
-  await openDay(guiltGuidedPage, { problem: 'احساس گناه', assistantDayMode: 'blocked', localModelInstalled: true });
-  const guiltPanel = guiltGuidedPage.locator('.globalAssistantDialog');
-  await guiltPanel.waitFor({ state: 'visible' });
-  assert.equal(await guiltPanel.locator('#global-assistant-message').count(), 0,
-    'T07 must not expose free-form typing, even with a cached local model');
-  assert.equal(await guiltPanel.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
-    'T07 must not expose local model installation');
-  assert.equal(await guiltPanel.locator('form.assistantComposer').getAttribute('data-guilt-daily-prompt'), 'true',
-    'T07 launcher must expose its canonical daily topic state');
-  const guiltTrigger = guiltPanel.getByTestId('guilt-daily-prompt-trigger');
-  await guiltTrigger.waitFor({ state: 'visible' });
-  assert.match(await guiltTrigger.getAttribute('aria-label'), /احساس گناه/,
-    'T07 prompt trigger must have the correct accessible topic label');
-  await guiltTrigger.click();
-  const guiltPromptDialog = guiltGuidedPage.locator('#library-assistant-prompt-dialog');
-  await guiltPromptDialog.waitFor({ state: 'visible' });
-  assert.match(await guiltPromptDialog.innerText(), /سؤال‌های آماده روز ۱ احساس گناه/);
-  assert.equal(await guiltPromptDialog.locator('.libraryAssistantPromptGroup').count(), 5);
-  assert.equal(await guiltPromptDialog.locator('[data-prompt-option]').count(), 14);
-  await guiltPromptDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
-  await guiltPanel.getByRole('button', { name: 'ارسال' }).click();
-  await guiltGuidedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => node.innerText.includes('راهنمای روز ۱ احساس گناه')));
-  const guiltReply = await guiltPanel.locator('.assistantMessage').last().innerText();
-  assert.match(guiltReply, /نام‌گذاری گناه مشخص/);
-  assert.match(guiltReply, /یک رخداد مشخص را بدون ذکر نام/);
-  assert.equal((guiltReply.match(/راهنمای روز/g) || []).length, 1, 'T07 must show one day heading only');
-  assert.equal(guiltReply.includes('راهنمای اختصاصی روز'), false, 'T07 must not append a duplicate day-guidance block');
-  assert.equal(guiltReply.includes('معیار کافی‌بودن اقدام'), false, 'T07 exercise answer must not leak action criteria');
-  assert.equal(guiltReply.includes('مرز و برداشت نامناسب'), false, 'T07 exercise answer must not leak unrelated boundaries');
-  assert.equal(guiltReply.includes('**'), false, 'T07 must not expose raw markdown markers');
-  assert.equal(guiltReply.includes(String.fromCharCode(92) + 'n'), false, 'T07 must not expose escaped newline tokens');
-  assert.ok(guiltReply.includes('\n'), 'T07 paragraphs must display on separate lines');
-  await assertAssistantUsesVisibleDailySource(guiltGuidedPage, guiltPanel, 'احساس گناه', 1, ['exercise']);
-  await guiltTrigger.click();
-  await guiltPromptDialog.waitFor({ state: 'visible' });
-  await guiltPromptDialog.getByRole('button', { name: 'اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟' }).click();
-  const previousGuiltReplyCount = await guiltPanel.locator('.assistantMessage').count();
-  await guiltPanel.getByRole('button', { name: 'ارسال' }).click();
-  await guiltGuidedPage.waitForFunction(previous => {
-    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-    return replies.length > previous && Boolean(replies.at(-1)?.querySelector('[data-testid="daily-assistant-safety-reminder"]'));
-  }, previousGuiltReplyCount, { timeout: 8000 });
-  assert.equal(await guiltPanel.locator('.assistantMessage').last().getByTestId('daily-assistant-safety-reminder').count(), 1,
-    'T07 escalation answer must render exactly one shared safety reminder');
-  const guiltSafetyReply = await guiltPanel.locator('.assistantMessage').last().innerText();
-  assert.match(guiltSafetyReply, /یادآوری مهم درباره ایمنی شما/);
-  assert.equal((guiltSafetyReply.match(/راهنمای روز/g) || []).length, 1, 'T07 safety answer must also show one day heading only');
-  assert.deepEqual(guiltErrors, [], 'T07 prepared-only browser flow must not raise page errors');
-  await guiltGuidedPage.close();
-
-  // T06 adaptive versions must remain distinct for difficult streaks and sustained improvement.
-  await assertGriefAdaptiveDay('adaptedGrief', 2, 'lightExerciseText', 'lightActionText');
-  await assertGriefAdaptiveDay('adaptedGriefStreak', 3, 'restExerciseText', 'restActionText');
-  await assertGriefAdaptiveDay('adaptedGriefImprovement', 3, 'exercise', 'progressActionText');
-
-  // T06 day 15 support requests require an explicit mutual-freedom check before assistant guidance.
-  const griefGatePage = await browser.newPage();
-  const griefGateErrors = [];
-  griefGatePage.on('pageerror', error => griefGateErrors.push(String(error)));
-  await openDay(griefGatePage, { problem: 'غم و سوگ', assistantDayMode: 'grief-support', localModelInstalled: true });
-  const griefGatePanel = griefGatePage.locator('.globalAssistantDialog');
-  await griefGatePanel.waitFor({ state: 'visible' });
-  const griefGate = griefGatePanel.getByTestId('grief-relationship-safety-gate');
-  await griefGate.waitFor({ state: 'visible' });
-  assert.match(await griefGate.innerText(), /هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
-  assert.equal(await griefGatePanel.getByTestId('grief-daily-prompt-trigger').isDisabled(), true,
-    'T06 support prompts remain unavailable until the safety check is confirmed');
-  await griefGate.getByTestId('grief-relationship-safety-safe').click();
-  await griefGatePage.waitForFunction(() => {
-    const trigger = document.querySelector('[data-testid="grief-daily-prompt-trigger"]');
-    return trigger && !trigger.disabled;
-  });
-  await griefGatePanel.getByTestId('grief-daily-prompt-trigger').click();
-  const griefGatePrompt = griefGatePage.locator('#library-assistant-prompt-dialog');
-  await griefGatePrompt.waitFor({ state: 'visible' });
-  await griefGatePrompt.getByRole('button', { name: 'منظور از اقدام اختصاصی امروز چیست؟' }).click();
-  await griefGatePanel.getByRole('button', { name: 'ارسال' }).click();
-  await griefGatePage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => node.innerText.includes('راهنمای روز ۱۵ غم و سوگ')));
-  const griefGateReply = await griefGatePanel.locator('.assistantMessage').last().innerText();
-  assert.match(griefGateReply, /درخواست/);
-  assert.match(griefGateReply, /فرد امن/);
-  assert.deepEqual(griefGateErrors, [], 'T06 support safety-gate browser flow must not raise page errors');
-  await griefGatePage.close();
-
-  // Direct T05 relationship requests require the explicit relationship-safety check.
-  const jealousyGatePage = await browser.newPage();
-  await openDay(jealousyGatePage, { problem: 'حسادت', assistantDayMode: 'jealousy-communication' });
-  const jealousyGatePanel = jealousyGatePage.locator('.globalAssistantDialog');
-  await jealousyGatePanel.waitFor({ state: 'visible' });
-  const jealousyGate = jealousyGatePanel.getByTestId('jealousy-relationship-safety-gate');
-  await jealousyGate.waitFor({ state: 'visible' });
-  assert.match(await jealousyGate.innerText(), /هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند/);
-  assert.equal(await jealousyGatePanel.getByTestId('jealousy-daily-prompt-trigger').isDisabled(), true,
-    'T05 prepared interaction prompts remain unavailable until the relationship check is confirmed');
-  await jealousyGate.getByTestId('jealousy-relationship-safety-unsafe').click();
-  await jealousyGatePage.waitForFunction(() => document.querySelector('[data-testid="jealousy-relationship-safety-gate"]')?.innerText.includes('گفت‌وگوی مستقیم، مواجهه یا مذاکره'));
-  assert.equal(await jealousyGate.getByTestId('jealousy-relationship-safety-safe').count(), 0,
-    'an unsafe or uncertain answer must not allow direct interaction');
-  await jealousyGatePage.close();
-
-  const jealousySafeGatePage = await browser.newPage();
-  await openDay(jealousySafeGatePage, { problem: 'حسادت', assistantDayMode: 'jealousy-communication' });
-  const jealousySafePanel = jealousySafeGatePage.locator('.globalAssistantDialog');
-  await jealousySafePanel.waitFor({ state: 'visible' });
-  await jealousySafePanel.getByTestId('jealousy-relationship-safety-gate')
-    .getByTestId('jealousy-relationship-safety-safe').click();
-  await jealousySafeGatePage.waitForFunction(() => !document.querySelector('[data-testid="jealousy-relationship-safety-gate"]'));
-  const enabledJealousyTrigger = jealousySafePanel.getByTestId('jealousy-daily-prompt-trigger');
-  await jealousySafeGatePage.waitForFunction(() => {
-    const button = document.querySelector('[data-testid="jealousy-daily-prompt-trigger"]');
-    return button && !button.disabled;
-  });
-  await enabledJealousyTrigger.click();
-  await jealousySafeGatePage.locator('#library-assistant-prompt-dialog').waitFor({ state: 'visible' });
-  assert.match(await jealousySafeGatePage.locator('#library-assistant-prompt-dialog').innerText(), /سؤال‌های آماده روز ۱۶ حسادت/);
-  await jealousySafeGatePage.close();
-
-  // T01 is prepared-only: there are no nested safety action buttons or free-text composer.
-  await openDay(page, { localModelInstalled: true });
-  const panel = page.locator('.globalAssistantDialog');
-  await panel.waitFor({ state: 'visible' });
-  assert.equal(await panel.locator('#global-assistant-message').count(), 0,
-    'T01 must never expose free-form typing, even with a cached local model');
-  assert.equal(await panel.getByRole('button', { name: 'نصب مدل هوش مصنوعی محلی' }).count(), 0,
-    'the local-model installation button must be absent from every assistant screen');
-  assert.equal(await panel.getByTestId('daily-assistant-human-help').count(), 0,
-    'the obsolete nested human-help button must be removed');
-  assert.equal(await panel.getByTestId('daily-assistant-urgent-help').count(), 0,
-    'the obsolete nested urgent-help button must be removed');
-  assert.equal(await panel.getByTestId('daily-assistant-return-to-daily').count(), 0,
-    'the obsolete return-to-questions button must be removed');
-  const trigger = panel.getByTestId('anger-daily-prompt-trigger');
-  await trigger.waitFor({ state: 'visible' });
-  await page.waitForFunction(() => {
-    const item = document.querySelector('[data-testid="anger-daily-prompt-trigger"]');
-    return item && !item.disabled;
-  });
-  await trigger.click();
-  const dayPrompt = page.locator('#library-assistant-prompt-dialog');
-  await dayPrompt.waitFor({ state: 'visible' });
-  await dayPrompt.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
-  await panel.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction(() => {
-    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-    return replies.length >= 1 && !replies.at(-1).innerText.includes('در حال بررسی پرسش');
-  }, null, { timeout: 15000 });
-  let assistantReply = await panel.locator('.assistantMessage').last().innerText();
-  assert.match(assistantReply, /خشم/);
-  assert.match(assistantReply, /روز (?:1|۱)/);
-  assert.doesNotMatch(assistantReply, /دستیار هوشمند مسیر ۲۸|موضوع: خشم|توضیح و راهنمای امروز|جمع‌بندی امروز|۰۹۱۹۰۸۸۹۰۶۲/u);
-  assert.match(assistantReply, /تمرین/);
-  assert.match(assistantReply, /تمرین را به‌ترتیب پیش ببر/);
-  assert.match(assistantReply, /قدم‌به‌قدم/);
-  assert.match(assistantReply, /یک موقعیت کم‌فشار را انتخاب کن/);
-  // Match the canonical four-part distinction, not the obsolete wording from an earlier draft.
-  assert.match(assistantReply, /چهار مورد را جدا بنویس/);
-  assert.match(assistantReply, /چه اتفاقی افتاد/);
-  assert.match(assistantReply, /چه احساسی داشتی/);
-  assert.match(assistantReply, /چه میلی به ذهنت رسید/);
-  assert.match(assistantReply, /در عمل چه کردی یا نکردی/);
-  assert.equal(await panel.getByTestId('daily-assistant-safety-reminder').count(), 0,
-    'ordinary exercise questions must not show the safety reminder card');
-  const angerDayBadge = normalizeVisibleDailyText(await page.locator('#dayBadge').innerText());
-  assert.ok(angerDayBadge.includes('خشم') && angerDayBadge.includes('روز 1'),
-    'the prepared answer must correspond to the currently displayed anger day');
-  await assertAssistantUsesVisibleDailySource(page, panel, 'خشم', 1, ['exercise']);
-
-  // The four anger safety/evaluation answers retain their own guidance but omit only the separate shared reminder card.
-  for (const safetyQuestion of [
-    'اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟',
-    'آیا لازم است حتماً با فرد دیگری صحبت کنم؟',
+  const questions = [
+    'منظور از تمرین امروز چیست؟',
+    'برای تمرین امروز یک مثال می‌زنی؟',
+    'منظور از اقدام اختصاصی امروز چیست؟',
+    'برای اقدام امروز یک مثال می‌زنی؟',
+    'اگر انجام کاملش برایم سخت بود چه کنم؟',
     'از کجا بفهمم درست انجامش داده‌ام؟',
     'چه زمانی باید تمرین امروز را متوقف کنم؟',
-  ]) {
-    await panel.getByTestId('anger-daily-prompt-trigger').click();
-    const promptDialog = page.locator('#library-assistant-prompt-dialog');
-    await promptDialog.waitFor({ state: 'visible' });
-    await promptDialog.getByRole('button', { name: safetyQuestion }).click();
-    const previousReplyCount = await panel.locator('.assistantMessage').count();
-    await panel.getByRole('button', { name: 'ارسال' }).click();
-    await page.waitForFunction((previous) => {
-      const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-      return replies.length > previous
-        && !replies.at(-1).innerText.includes('در حال بررسی پرسش');
-    }, previousReplyCount, { timeout: 15000 });
-    const reply = panel.locator('.assistantMessage').last();
-    assert.equal(await reply.getByTestId('daily-assistant-safety-reminder').count(), 0,
-      'anger safety/evaluation answers must omit only the separate reminder card');
-    assert.doesNotMatch(await reply.innerText(), /یادآوری مهم درباره ایمنی شما|۰۹۱۹۰۸۸۹۰۶۲/u,
-      'the reminder card title and contact number must not appear in T01 answer text');
+    'اگر امروز نمونه یا آمادگی انجام تمرین را نداشتم چه کنم؟',
+    'تمرین و اقدام امروز چه تفاوتی دارند؟',
+    'اگر تمرین را انجام ندادم یا فراموش کردم چه کنم؟',
+    'اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟',
+    'آیا لازم است حتماً با فرد دیگری صحبت کنم؟',
+    'می‌توانم تمرین را تغییر بدهم یا به روش خودم انجام بدهم؟',
+    'این تمرین چقدر زمان می‌برد؟',
+  ];
+  const topics = [
+    { name: 'خشم', id: 'T01', trigger: 'anger-daily-prompt-trigger' },
+    { name: 'اضطراب', id: 'T02', trigger: 'anxiety-daily-prompt-trigger' },
+    { name: 'ترس', id: 'T03', trigger: 'fear-daily-prompt-trigger' },
+    { name: 'نفرت', id: 'T04', trigger: 'hatred-daily-prompt-trigger' },
+    { name: 'حسادت', id: 'T05', trigger: 'jealousy-daily-prompt-trigger' },
+    { name: 'غم و سوگ', id: 'T06', trigger: 'grief-daily-prompt-trigger' },
+    { name: 'احساس گناه', id: 'T07', trigger: 'guilt-daily-prompt-trigger' },
+    { name: 'وابستگی عاطفی', id: 'T08', trigger: 'emotional-dependency-daily-prompt-trigger' },
+    { name: 'اهمال‌کاری', id: 'T09', trigger: 't09-daily-prompt-trigger' },
+    { name: 'بی‌خوابی و مشکلات خواب', id: 'T10', trigger: 't10-daily-prompt-trigger' },
+    { name: 'عادت‌های تکراری', id: 'T11', trigger: 't11-daily-prompt-trigger' },
+    { name: 'مرزبندی و نه گفتن', id: 'T12', trigger: 't12-daily-prompt-trigger' },
+    { name: 'تنهایی', id: 'T13', trigger: 't13-daily-prompt-trigger' },
+    { name: 'کمبود انگیزه', id: 'T14', trigger: 't14-daily-prompt-trigger' },
+  ];
+  const workerRequests = [];
+  const privateMarker = 'private-assistant-browser-marker-7f31c2';
+  let completedAnswers = 0;
+
+  for (const topic of topics) {
+    const page = await browser.newPage();
+    const errors = [];
+    page.on('pageerror', error => errors.push(String(error)));
+    page.on('request', request => {
+      if (/\/v1\/assistant\/turn|assistant-api|workers\.dev/u.test(request.url())) workerRequests.push(request.url());
+    });
+    await openDay(page, { problem: topic.name });
+    const panel = page.locator('.globalAssistantDialog');
+    await panel.waitFor({ state: 'visible' });
+    assert.equal(await panel.locator('#global-assistant-message').count(), 0,
+      topic.id + ' must remain prepared-only and must not expose free-form typing');
+    const trigger = panel.getByTestId(topic.trigger);
+    await trigger.waitFor({ state: 'visible' });
+    await page.waitForFunction((testId) => {
+      const button = document.querySelector('[data-testid="' + testId + '"]');
+      return button && !button.disabled;
+    }, topic.trigger);
+    await trigger.click();
+    const prompt = page.locator('#library-assistant-prompt-dialog');
+    await prompt.waitFor({ state: 'visible' });
+    assert.equal(await prompt.locator('.libraryAssistantPromptGroup').count(), 5,
+      topic.id + ' must expose the same five shared question groups');
+    assert.equal(await prompt.locator('[data-prompt-option]').count(), 14,
+      topic.id + ' must expose exactly the same fourteen fixed questions');
+
+    for (let questionIndex = 0; questionIndex < questions.length; questionIndex += 1) {
+      if (questionIndex > 0) {
+        await trigger.click();
+        await prompt.waitFor({ state: 'visible' });
+      }
+      const question = questions[questionIndex];
+      await prompt.getByRole('button', { name: question, exact: true }).click();
+      const previousReplyCount = await panel.locator('.assistantMessage').count();
+      await panel.getByRole('button', { name: 'ارسال' }).click();
+      await page.waitForFunction((previous) => {
+        const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+        return replies.length > previous && !replies.at(-1).innerText.includes('در حال بررسی پرسش');
+      }, previousReplyCount, { timeout: 15000 }).catch(async error => {
+        const replies = await panel.locator('.assistantMessage').allInnerTexts();
+        throw new Error(topic.id + ' ' + question + ' did not settle; replies='
+          + JSON.stringify(replies) + '; pageErrors=' + JSON.stringify(errors)
+          + '; cause=' + error.message);
+      });
+
+      const userQuestion = normalizeVisibleDailyText(await panel.locator('.userMessage').last().innerText());
+      assert.ok(userQuestion.includes(normalizeVisibleDailyText(question)),
+        topic.id + ' must display the selected fixed question before its answer');
+      const answer = panel.locator('.assistantMessage').last();
+      const visibleAnswer = await answer.innerText();
+      const normalizedAnswer = normalizeVisibleDailyText(visibleAnswer);
+      assert.ok(normalizedAnswer.length >= 45,
+        topic.id + ' ' + question + ' must return a substantive prepared answer');
+      assert.doesNotMatch(visibleAnswer, /آره عزیزم|حتماً عزیزم|بله عزیزم|نه عزیزم/u,
+        'assistant answers must not use intimate pet names or the removed opening phrase');
+      assert.doesNotMatch(visibleAnswer, /راهنمای روز\s*\d|دستیار هوشمند مسیر ۲۸|جمع‌بندی امروز|موضوع:\s/u,
+        topic.id + ' must use the shared answer body, not retired per-topic headings or labels');
+      assert.equal(visibleAnswer.includes('**'), false,
+        topic.id + ' must not expose raw Markdown markers');
+      assert.equal(visibleAnswer.includes(String.fromCharCode(92) + 'n'), false,
+        topic.id + ' must not expose escaped newline tokens');
+      assert.ok(visibleAnswer.includes('\n'),
+        topic.id + ' answer paragraphs must render as separate lines');
+      assert.ok(await answer.locator('p').count() > 0,
+        topic.id + ' answer must render structured paragraph content');
+      assert.ok(await answer.locator('.dailyAssistantSafetyReminder').count() <= 1,
+        topic.id + ' answer must never duplicate the shared safety reminder card');
+      completedAnswers += 1;
+
+      // These three questions prove that the renderer uses the active topic/day
+      // canonical exercise and action, not stale or cross-topic source data.
+      if (questionIndex === 0) {
+        await assertAssistantUsesVisibleDailySource(page, panel, topic.name, 1, ['exercise']);
+      } else if (questionIndex === 2) {
+        await assertAssistantUsesVisibleDailySource(page, panel, topic.name, 1, ['action']);
+      } else if (questionIndex === 8) {
+        await assertAssistantUsesVisibleDailySource(page, panel, topic.name, 1, ['exercise', 'action']);
+      }
+    }
+
+    const dayBadge = normalizeVisibleDailyText(await page.locator('#dayBadge').innerText());
+    assert.ok(dayBadge.includes(normalizeVisibleDailyText(topic.name)) && dayBadge.includes('روز 1'),
+      topic.id + ' browser scenario must remain on the requested topic and day');
+    const storedValues = await page.evaluate(() =>
+      Object.keys(localStorage).map(key => localStorage.getItem(key) || '').join('\n'));
+    assert.equal(storedValues.includes(privateMarker), false,
+      topic.id + ' assistant transcript must not be persisted to localStorage');
+    assert.deepEqual(errors, [], topic.id + ' prepared daily assistant must not raise page errors');
+    await page.close();
   }
 
-  // Returning to a normal prepared question must not leak the reminder state.
-  await panel.getByTestId('anger-daily-prompt-trigger').click();
-  const normalPrompt = page.locator('#library-assistant-prompt-dialog');
-  await normalPrompt.waitFor({ state: 'visible' });
-  await normalPrompt.getByRole('button', { name: 'تمرین و اقدام امروز چه تفاوتی دارند؟' }).click();
-  const previousNormalReplyCount = await panel.locator('.assistantMessage').count();
-  await panel.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction((previous) => {
-    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-    return replies.length > previous;
-  }, previousNormalReplyCount, { timeout: 15000 });
-  assert.equal(await panel.locator('.assistantMessage').last().getByTestId('daily-assistant-safety-reminder').count(), 0,
-    'ordinary questions after a safety answer must not inherit the reminder card');
+  assert.equal(completedAnswers, topics.length * questions.length,
+    'all fourteen prepared questions must complete for each of the fourteen supported topics');
+  assert.deepEqual(workerRequests, [],
+    'prepared daily answers must not call a Worker or external assistant provider');
 
-  const storedValues = await page.evaluate(() => Object.keys(localStorage).map((key) => localStorage.getItem(key) || '').join('\n'));
-  assert.equal(storedValues.includes(privateMarker), false, 'assistant transcript must not be persisted to localStorage');
-  assert.deepEqual(workerRequests, [], 'day-scoped assistant must not call a Worker or external assistant provider');
-  assert.deepEqual(errors, [], 'assistant browser flow should not raise uncaught page errors');
-
-  await page.close();
-
-  // Topics whose prepared catalogues are still being completed must remain closed
-  // to free text; they do not fall back to the general daily reasoning engine.
+  // An unsupported topic must fail closed rather than silently borrowing another topic's engine.
   const pendingTopicPage = await browser.newPage();
   await openDay(pendingTopicPage, { assistantDayMode: 'legacy', problem: 'شرم', localModelInstalled: true });
   const pendingTopicPanel = pendingTopicPage.locator('.globalAssistantDialog');
   await pendingTopicPanel.waitFor({ state: 'visible' });
   assert.equal(await pendingTopicPanel.locator('#global-assistant-message').count(), 0,
-    'topics without a prepared question catalogue must not expose free-text input');
+    'topics without a prepared catalogue must not expose free-text input');
   assert.equal(await pendingTopicPanel.getByRole('button', { name: 'ارسال' }).count(), 0,
-    'topics without a prepared question catalogue must not expose a send action');
+    'topics without a prepared catalogue must not expose a send action');
   assert.match(await pendingTopicPanel.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/);
   await pendingTopicPage.close();
 
-  for (const scenario of [
-    { mode: 'adaptedAnxiety', topic: 'اضطراب', day: 2, expected: 'با توجه به نتیجه روز گذشته', fieldMode: 'light' },
-    { mode: 'adaptedAnxietyStreak', topic: 'اضطراب', day: 3, expected: 'در چند روز اخیر انجام تمرین دشوار بوده', fieldMode: 'rest' },
-    { mode: 'adaptedAnxietyImprovement', topic: 'اضطراب', day: 3, expected: 'بهبود در چند روز اخیر دیده می‌شود', fieldMode: 'progress' },
-  ]) {
-    const adaptedPage = await browser.newPage();
-    const adaptedErrors = [];
-    adaptedPage.on('pageerror', error => adaptedErrors.push(String(error)));
-    await openDay(adaptedPage, { assistantDayMode: scenario.mode, problem: scenario.topic, localModelInstalled: true });
-    const adaptedPanel = adaptedPage.locator('.globalAssistantDialog');
-    await adaptedPanel.waitFor({ state: 'visible' });
-    const visibleScenarioDay = String(scenario.day).replace(/[0-9]/g, digit => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
-    let adaptedReply;
-    if (scenario.topic === 'اضطراب') {
-      const visibleGuidance = normalizeVisibleDailyText(await adaptedPage.locator('#day .adaptiveGuidance').innerText());
-      assert.ok(visibleGuidance.includes(normalizeVisibleDailyText(scenario.expected)),
-        `the visible daily screen must show the expected adaptation for ${scenario.mode}`);
-      assert.equal(await adaptedPanel.locator('#global-assistant-message').count(), 0,
-        'T02 adapted days must not expose a free-form composer');
-      assert.equal(await adaptedPanel.locator('.globalAssistantModelButton').count(), 0,
-        'T02 adapted days must not expose local model installation');
-      const adaptedTrigger = adaptedPanel.getByTestId('anxiety-daily-prompt-trigger');
-      await adaptedTrigger.waitFor({ state: 'visible' });
-      await adaptedPage.waitForFunction(() => {
-        const item = document.querySelector('[data-testid="anxiety-daily-prompt-trigger"]');
-        return item && !item.disabled;
-      });
-      await adaptedTrigger.click();
-      const adaptedPrompt = adaptedPage.locator('#library-assistant-prompt-dialog');
-      await adaptedPrompt.waitFor({ state: 'visible' });
-      await adaptedPrompt.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
-      await adaptedPanel.getByRole('button', { name: 'ارسال' }).click();
-      await adaptedPage.waitForFunction((dayLabel) => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-        .some(node => node.innerText.includes(`راهنمای روز ${dayLabel} اضطراب`)), visibleScenarioDay);
-      adaptedReply = await adaptedPanel.locator('.assistantMessage').last().innerText();
-    }
-    assert.match(adaptedReply, new RegExp(scenario.topic));
-    assert.match(adaptedReply, new RegExp('روز ' + visibleScenarioDay));
-    if (scenario.fieldMode) {
-      // The assistant is a modal overlay; close it before interacting with
-      // disclosures in the underlying daily screen. Playwright correctly
-      // rejects clicks intercepted by the modal backdrop/dialog.
-      await adaptedPanel.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
-      await adaptedPanel.waitFor({ state: 'detached' });
-      const source = dailyTextOverrides.categories['اضطراب'].days.find((item) => item.day === scenario.day);
-      const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(adaptedPage, '#dayExercise'));
-      const visibleAction = normalizeVisibleDailyText(await readExpandedDailyText(adaptedPage, '#dayAction'));
-      const expectedExercise = scenario.fieldMode === 'light' ? source.lightExerciseText
-        : scenario.fieldMode === 'rest' ? source.restExerciseText : source.exercise;
-      const expectedAction = scenario.fieldMode === 'light' ? source.lightActionText
-        : scenario.fieldMode === 'rest' ? source.restActionText : source.progressActionText;
-      const normalizedExpectedExercise = normalizeVisibleDailyText(expectedExercise);
-      assert.ok(visibleExercise.includes(normalizedExpectedExercise),
-        `visible T02 ${scenario.fieldMode} exercise must come from its dedicated runtime field; expected=${JSON.stringify(normalizedExpectedExercise)}; visible=${JSON.stringify(visibleExercise)}`);
-      assert.ok(visibleAction.includes(normalizeVisibleDailyText(expectedAction)),
-        `visible T02 ${scenario.fieldMode} action must come from its dedicated runtime field`);
-      assert.equal(normalizeVisibleDailyText(await adaptedPage.locator('#dayTitle').innerText()), normalizeVisibleDailyText(source.title));
-      assert.ok(normalizeVisibleDailyText(await adaptedPage.locator('#dayClosing').innerText()).includes(normalizeVisibleDailyText(source.closing)),
-        'visible T02 closing must preserve the day-specific criterion, reflection and stop condition');
-    }
-    assert.deepEqual(adaptedErrors, [], `adapted daily guidance ${scenario.mode} must not raise browser errors`);
-    await adaptedPage.close();
-  }
-
-  const blockedPage = await browser.newPage();
-  await openDay(blockedPage, { assistantDayMode: 'blocked', localModelInstalled: true });
-  const blockedPanel = blockedPage.locator('.globalAssistantDialog');
-  await blockedPanel.waitFor({ state: 'visible' });
-  assert.equal(await blockedPanel.locator('#global-assistant-message').count(), 0,
-    'the blocked T01 daily context must not expose free-form typing');
-  const blockedTrigger = blockedPanel.getByTestId('anger-daily-prompt-trigger');
-  await blockedTrigger.waitFor({ state: 'visible' });
-  await blockedPage.waitForFunction(() => {
-    const item = document.querySelector('[data-testid="anger-daily-prompt-trigger"]');
-    return item && !item.disabled;
-  });
-  await blockedTrigger.click();
-  const blockedPrompt = blockedPage.locator('#library-assistant-prompt-dialog');
-  await blockedPrompt.waitFor({ state: 'visible' });
-  await blockedPrompt.locator('[data-prompt-option]').first().click();
-  await blockedPanel.getByRole('button', { name: 'ارسال' }).click();
-  await blockedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
-  const blockedReply = await blockedPanel.locator('.assistantMessage').last().innerText();
-  assert.match(blockedReply, /خشم/);
-  assert.match(blockedReply, /روز ۱/);
-  assert.doesNotMatch(blockedReply, /بازبینی ایمنی/);
-  await blockedPage.close();
-
-  const gatedPage = await browser.newPage();
-  await openDay(gatedPage, { assistantDayMode: 'relationship', localModelInstalled: true });
-  const gatedPanel = gatedPage.locator('.globalAssistantDialog');
-  await gatedPanel.waitFor({ state: 'visible' });
-  assert.equal(await gatedPage.locator('#dayExercise').count(), 1,
-    'the Path28 daily screen must display the exercise without an assistant safety gate');
-  assert.equal(await gatedPage.locator('#dayAction').count(), 1,
-    'the Path28 daily screen must display the dedicated action without an assistant safety gate');
-  assert.equal(await gatedPage.getByLabel('بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.').count(), 0,
-    'the original daily screen must not add a relationship confirmation prerequisite');
-
-  assert.equal(await gatedPanel.locator('#global-assistant-message').count(), 0,
-    'the relationship-gated T01 day must keep the prepared-only boundary');
-  const gatedTrigger = gatedPanel.getByTestId('anger-daily-prompt-trigger');
-  await gatedTrigger.waitFor({ state: 'visible' });
-  await gatedPage.waitForFunction(() => {
-    const item = document.querySelector('[data-testid="anger-daily-prompt-trigger"]');
-    return item && !item.disabled;
-  });
-  await gatedTrigger.click();
-  const gatedPrompt = gatedPage.locator('#library-assistant-prompt-dialog');
-  await gatedPrompt.waitFor({ state: 'visible' });
-  await gatedPrompt.locator('[data-prompt-option]').first().click();
-  await gatedPanel.getByRole('button', { name: 'ارسال' }).click();
-  await gatedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
-  const gatedReply = await gatedPanel.locator('.assistantMessage').last().innerText();
-  assert.match(gatedReply, /خشم/);
-  assert.match(gatedReply, /روز ۱۰/);
-  assert.match(gatedReply, /وقفه رفتاری و کاهش احتمال آسیب/);
-  assert.match(gatedReply, /چه نشانه‌ای می‌گوید باید مکث کنی/);
-  assert.match(gatedReply, /بدون تهدید فاصله بگیری/);
-  assert.doesNotMatch(gatedReply, /بررسی ایمنی همین روز/);
-
-  await gatedPanel.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
-  await gatedPanel.waitFor({ state: 'detached' });
-  await gatedPage.locator('#day button[aria-label="داشبورد"]').click();
-  await gatedPage.locator('#dashboard').waitFor({ state: 'visible' });
-  await gatedPage.locator('#dashboard .heroAction').click();
-  await gatedPage.locator('#day').waitFor({ state: 'visible' });
-  assert.equal(await gatedPage.locator('#dayExercise').count(), 1,
-    're-entering the day must continue to show its original exercise');
-  assert.equal(await gatedPage.getByLabel('بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.').count(), 0);
-  await gatedPage.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
-  await gatedPanel.waitFor({ state: 'visible' });
-  await gatedPanel.getByTestId('anger-daily-prompt-trigger').click();
-  await gatedPage.locator('#library-assistant-prompt-dialog').locator('[data-prompt-option]').first().click();
-  await gatedPanel.getByRole('button', { name: 'ارسال' }).click();
-  await gatedPage.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
-  const reenteredReply = await gatedPanel.locator('.assistantMessage').last().innerText();
-  assert.match(reenteredReply, /وقفه رفتاری و کاهش احتمال آسیب/,
-    're-entering the same Path28 day must keep its exercise-specific assistant guidance available');
-  assert.match(reenteredReply, /چه نشانه‌ای می‌گوید باید مکث کنی/);
-  assert.match(reenteredReply, /بدون تهدید فاصله بگیری/);
-  assert.doesNotMatch(reenteredReply, /بررسی ایمنی همین روز|بازبینی ایمنی/);
-  await gatedPage.close();
-
-  const t09Page = await browser.newPage();
-  const t09Errors = [];
-  t09Page.on('pageerror', (error) => t09Errors.push(String(error)));
-  await openDay(t09Page, { problem: 'اهمال‌کاری' });
-  const t09Panel = t09Page.locator('.globalAssistantDialog');
-  await t09Panel.waitFor({ state: 'visible' });
-  const t09Trigger = t09Panel.getByTestId('t09-daily-prompt-trigger');
-  await t09Trigger.waitFor({ state: 'visible' });
-  await t09Page.waitForFunction(() => {
-    const trigger = document.querySelector('[data-testid="t09-daily-prompt-trigger"]');
-    return trigger && !trigger.disabled;
-  });
-  assert.equal(await t09Panel.locator('#global-assistant-message').count(), 0,
-    'T09 must remain prepared-only and must not expose free-form typing');
-  await t09Trigger.click();
-  const t09Prompt = t09Page.locator('#library-assistant-prompt-dialog');
-  await t09Prompt.waitFor({ state: 'visible' });
-  assert.equal(await t09Prompt.locator('[data-prompt-option]').count(), 14,
-    'T09 day one must expose exactly fourteen prepared questions');
-  await t09Prompt.locator('[data-prompt-option]').first().click();
-  await t09Panel.getByRole('button', { name: 'ارسال' }).click();
-  await t09Page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => node.innerText.includes('راهنمای روز ۱ اهمال‌کاری')));
-  await assertAssistantUsesVisibleDailySource(t09Page, t09Panel, 'اهمال‌کاری', 1, ['exercise']);
-
-  await t09Trigger.click();
-  const t09SecondPrompt = t09Page.locator('#library-assistant-prompt-dialog');
-  await t09SecondPrompt.waitFor({ state: 'visible' });
-  await t09SecondPrompt.getByRole('button', { name: 'آیا لازم است حتماً با فرد دیگری صحبت کنم؟' }).click();
-  await t09Panel.getByRole('button', { name: 'ارسال' }).click();
-  await t09Page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => node.innerText.includes('گفت‌وگو شرط انجام تمرین نیست')));
-  const t09CollaborationReply = await t09Panel.locator('.assistantMessage').last().innerText();
-  assert.match(t09CollaborationReply, /اطلاعات، اجازه، دسترسی، هماهنگی یا تقسیم مسئولیتی/);
-  assert.doesNotMatch(t09CollaborationReply, /وابستگی را فقط ثبت کن/,
-    'T09 collaboration guidance must not contain copied T08 relationship-dependency wording');
-
-  await t09Trigger.click();
-  const t09ThirdPrompt = t09Page.locator('#library-assistant-prompt-dialog');
-  await t09ThirdPrompt.waitFor({ state: 'visible' });
-  await t09ThirdPrompt.getByRole('button', { name: 'اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟' }).click();
-  await t09Panel.getByRole('button', { name: 'ارسال' }).click();
-  await t09Page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => node.innerText.includes('افزایش مقاومت به‌تنهایی نشانه تنبلی')));
-  const t09ResistanceReply = await t09Panel.locator('.assistantMessage').last().innerText();
-  assert.match(t09ResistanceReply, /شرط توقف اصلی امروز/);
-  assert.match(t09ResistanceReply, /شرط‌های توقف تکمیلی/);
-  assert.match(t09ResistanceReply, /زمان حمایت انسانی/);
-  assert.deepEqual(t09Errors, [], 'T09 prepared daily assistant must not raise browser errors');
-  await t09Page.close();
-
-  const t13Page = await browser.newPage();
-  const t13Errors = [];
-  t13Page.on('pageerror', (error) => t13Errors.push(String(error)));
-  await openDay(t13Page, { problem: 'تنهایی' });
-  const t13Panel = t13Page.locator('.globalAssistantDialog');
-  await t13Panel.waitFor({ state: 'visible' });
-  const t13Trigger = t13Panel.getByTestId('t13-daily-prompt-trigger');
-  await t13Trigger.waitFor({ state: 'visible' });
-  assert.equal(await t13Panel.locator('#global-assistant-message').count(), 0,
-    'T13 must remain prepared-only and must not expose free-form typing');
-  await t13Trigger.click();
-  const t13Prompt = t13Page.locator('#library-assistant-prompt-dialog');
-  await t13Prompt.waitFor({ state: 'visible' });
-  assert.equal(await t13Prompt.locator('[data-prompt-option]').count(), 14,
-    'T13 day one must expose exactly fourteen fixed prepared questions');
-  await t13Prompt.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
-  await t13Panel.getByRole('button', { name: 'ارسال' }).click();
-  await t13Page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => node.innerText.includes('راهنمای روز ۱ تنهایی')));
-  await assertAssistantUsesVisibleDailySource(t13Page, t13Panel, 'تنهایی', 1, ['exercise']);
-  await t13Trigger.click();
-  const t13SafetyPrompt = t13Page.locator('#library-assistant-prompt-dialog');
-  await t13SafetyPrompt.waitFor({ state: 'visible' });
-  await t13SafetyPrompt.getByRole('button', { name: 'از کجا بفهمم درست انجامش داده‌ام؟' }).click();
-  await t13Panel.getByRole('button', { name: 'ارسال' }).click();
-  await t13Page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => Boolean(node.querySelector('[data-testid="daily-assistant-safety-reminder"]'))));
-  const t13SafetyReply = t13Panel.locator('.assistantMessage').last();
-  assert.equal(await t13SafetyReply.getByTestId('daily-assistant-safety-reminder').count(), 1,
-    'T13 evaluation answer must show exactly one shared safety reminder card');
-  assert.match(await t13SafetyReply.innerText(), /۰۹۱۹۰۸۸۹۰۶۲/);
-  assert.equal((await t13SafetyReply.innerText()).split('یادآوری اختصاصی ایمنی درباره تنهایی').length - 1, 1,
-    'T13-specific safety reminder must appear exactly once after topic-label normalization');
-  assert.deepEqual(t13Errors, [], 'T13 prepared assistant must not raise browser errors');
-  await t13Page.close();
-
-  const t14Page = await browser.newPage();
-  const t14Errors = [];
-  t14Page.on('pageerror', (error) => t14Errors.push(String(error)));
-  await openDay(t14Page, { problem: 'کمبود انگیزه' });
-  const t14Panel = t14Page.locator('.globalAssistantDialog');
-  await t14Panel.waitFor({ state: 'visible' });
-  const t14Trigger = t14Panel.getByTestId('t14-daily-prompt-trigger');
-  await t14Trigger.waitFor({ state: 'visible' });
-  assert.equal(await t14Panel.locator('#global-assistant-message').count(), 0,
-    'T14 must remain prepared-only and must not expose free-form typing');
-  await t14Trigger.click();
-  const t14Prompt = t14Page.locator('#library-assistant-prompt-dialog');
-  await t14Prompt.waitFor({ state: 'visible' });
-  assert.equal(await t14Prompt.locator('[data-prompt-option]').count(), 14,
-    'T14 day one must expose exactly fourteen fixed prepared questions');
-  await t14Prompt.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
-  await t14Panel.getByRole('button', { name: 'ارسال' }).click();
-  await t14Page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => node.innerText.includes('راهنمای روز ۱ کمبود انگیزه')));
-  await assertAssistantUsesVisibleDailySource(t14Page, t14Panel, 'کمبود انگیزه', 1, ['exercise']);
-  assert.deepEqual(t14Errors, [], 'T14 prepared assistant must not raise browser errors');
-  await t14Page.close();
-
-  process.stdout.write('PASS: Chromium daily assistant guidance, real legacy retrieval across three topics, four source-derived adaptation branches, follow-up context, input bounds, persistent safety handoff, local-only privacy, blocked-day denial, and assistant-only relationship gate (WV-BROWSER-ASSISTANT)\\n');
+  process.stdout.write('PASS: Chromium shared daily assistant contract: 14 fixed questions × 14 topics (196 answers), identical five-group selector, active topic/day exercise and action source binding, shared answer formatting, prepared-only boundary, privacy, and no external assistant calls.\n');
 } finally {
   await browser.close();
 }

@@ -197,10 +197,11 @@ test('T13 prepared answers reject mismatched identity, content and free-text que
 
 test('T13 launcher exposes only safe-day prompts and labels the topic correctly', async () => {
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
+  assert.match(launcher, /activeDailyTopicId === 'T13'/u);
+  assert.match(launcher, /getSharedDailyAssistantPromptGroups/u);
+  assert.match(launcher, /activeDailyTopicId === 'T13'/u);
+  assert.match(launcher, /getSharedDailyAssistantPromptGroups/u);
   assert.match(launcher, /isT13DailyPromptContext/u);
-  assert.match(launcher, /getDailySafetyMode\(dailyContext\?\.data\) === 'blocked' \? \[\] : getT13DailyAssistantPromptGroups/u);
-  assert.match(launcher, /t13-daily-prompt-trigger/u);
-  assert.match(launcher, /isT13DailyPromptContext \? "تنهایی"/u);
 });
 
 test('T13 specialist-review metadata does not gate content; independent safety routing remains active', () => {

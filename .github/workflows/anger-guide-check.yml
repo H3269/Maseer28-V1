@@ -2,14 +2,22 @@ name: Anger guide rebuilt assistant checks
 
 on:
   push:
-    branches: [rebuild/anger-guide-28-days, fix/anger-sample-three-isolation]
+    branches: [rebuild/anger-guide-28-days, fix/anger-sample-three-isolation, refactor/shared-daily-assistant-engine-t02-t14]
   pull_request:
     branches: [main]
     paths:
+      - ".github/workflows/anger-guide-check.yml"
       - "src/features/assistant/angerDailyAssistantPrompts.js"
       - "src/features/assistant/angerDailyRebuiltAnswerBank.js"
+      - "src/features/assistant/sharedDailyAssistantEngine.js"
+      - "src/features/assistant/preparedDailyAssistantAnswer.js"
+      - "src/features/assistant/pageAssistantTurn.js"
+      - "src/features/assistant/dailyExerciseAssistantGuidance.js"
+      - "src/features/assistant/GlobalAssistantLauncher.jsx"
       - "src/features/assistant/anxietyDailyAssistantPrompts.js"
       - "tests/angerDailyAssistantPrompts.test.js"
+      - "tests/sharedDailyAssistantEngine.test.js"
+      - "tests/pageAssistantTurn.test.js"
       - "tests/angerDailyPreparedAnswers.test.js"
       - "tests/anxietyDailyAssistantPrompts.test.js"
       - "tests/sharedDailyAssistantAnswerFrame.test.js"
@@ -17,6 +25,7 @@ on:
       - "tests/dailyAssistantSafetyReminder.test.js"
       - "tests/assistantMessageFormatting.test.js"
       - "tests/browser/daily-assistant-guidance.mjs"
+      - "tests/browser/t01-safety-card.mjs"
       - "public/content/daily-text-overrides.v1.json"
       - "package.json"
       - "package-lock.json"
@@ -31,7 +40,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Run focused anger assistant and integration tests
+      - name: Run complete automated test suite
+        run: npm test
+      - name: Run focused assistant regression tests
         run: >-
           node --test
           tests/angerDailyAssistantPrompts.test.js
@@ -44,3 +55,29 @@ jobs:
           tests/sharedDailyAssistantAnswerFrame.test.js
       - name: Verify production bundle
         run: npm run build
+      - name: Install pinned Playwright browser runner
+        run: npm install --no-save --package-lock=false playwright@1.65.1
+      - name: Install Chromium headless shell and system dependencies
+        run: |
+          npx playwright install-deps chromium
+          npx playwright install --only-shell chromium
+      - name: Run shared multi-topic daily assistant browser regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/path28-preview.log 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 40); do
+            if curl --fail --silent http://127.0.0.1:4173/Maseer28-V1/ > /dev/null; then
+              break
+            fi
+            if [ "${attempt}" -eq 40 ]; then
+              cat /tmp/path28-preview.log
+              exit 1
+            fi
+            sleep 2
+          done
+          export PATH28_BASE_URL=http://127.0.0.1:4173/Maseer28-V1/
+          node tests/browser/daily-assistant-guidance.mjs
+          node tests/browser/t01-safety-card.mjs

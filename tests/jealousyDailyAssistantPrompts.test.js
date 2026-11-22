@@ -35,7 +35,7 @@ test('all 392 T05 prepared questions return substantive day-specific answers',()
 });
 test('T05 prepared questions route only for matching canonical topic and day',()=>{
  const g=JEALOUSY_DAILY_ASSISTANT_GUIDES[0],q=g.questions[0];
- const ok=makePageAssistantTurn({screen:'day',text:q.value,dailyContext:{day:1,problem:'حسادت',data:{id:getCanonicalDailyRecordId('حسادت',1),topic_id:'T05',day:1},guidanceData:{id:getCanonicalDailyRecordId('حسادت',1),topic_id:'T05',day:1}}});
+ const ok=makePageAssistantTurn({screen:'day',text:q.value,dailyContext:{day:1,problem:'حسادت',data:{id:getCanonicalDailyRecordId('حسادت',1),topic_id:'T05',day:1,exercise:g.exercise,actionText:g.action},guidanceData:{id:getCanonicalDailyRecordId('حسادت',1),topic_id:'T05',day:1,exercise:g.exercise,action:g.action}}});
  assert.equal(ok.status, 'daily_guidance_available');
  const wrongTopic=makePageAssistantTurn({screen:'day',text:q.value,dailyContext:{day:1,problem:'حسادت',data:{id:getCanonicalDailyRecordId('حسادت',1),topic_id:'T04',day:1}}});
  assert.equal(wrongTopic.status,'daily_guidance_unavailable');

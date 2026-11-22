@@ -8,20 +8,21 @@ import { ensureSeedBookContent } from '../library/useLibrary.js';
 import { answerLibraryBookTurn, planLibraryBookLoad } from './libraryBookAssistant.js';
 import { LIBRARY_ASSISTANT_PROMPT_GROUPS } from './libraryAssistantPrompts.js';
 import { getCanonicalTopicIdForCategory, getInterpersonalPrivacyNotice, getRelationshipSafetyGate } from '../journey/relationshipSafetyGate.js';
-import { getAngerDailyAssistantPromptGroups } from './angerDailyAssistantPrompts.js';
-import { getAnxietyDailyAssistantPromptGroups } from './anxietyDailyAssistantPrompts.js';
-import { getFearDailyAssistantPromptGroups } from './fearDailyAssistantPrompts.js';
-import { getHatredDailyAssistantPromptGroups } from './hatredDailyAssistantPrompts.js';
-import { getJealousyDailyAssistantPromptGroups } from './jealousyDailyAssistantPrompts.js';
-import { getGriefDailyAssistantPromptGroups } from './griefDailyAssistantPrompts.js';
-import { getGuiltDailyAssistantPromptGroups } from './guiltDailyAssistantPrompts.js';
-import { getEmotionalDependencyDailyAssistantPromptGroups } from './emotionalDependencyDailyAssistantPrompts.js';
-import { getT09DailyAssistantPromptGroups } from './t09DailyAssistantPrompts.js';
-import { getT10DailyAssistantPromptGroups } from './t10DailyAssistantPrompts.js';
-import { getT11DailyAssistantPromptGroups } from './t11DailyAssistantPrompts.js';
-import { getT12DailyAssistantPromptGroups } from './t12DailyAssistantPrompts.js';
-import { getT13DailyAssistantPromptGroups } from './t13DailyAssistantPrompts.js';
-import { getT14DailyAssistantPromptGroups } from './t14DailyAssistantPrompts.js';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { getSharedDailyAssistantPromptGroups } from './sharedDailyAssistantEngine.js';
 import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS, DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
 import { getDailySafetyMode } from '../content/dailySafety.js';
 
@@ -296,39 +297,17 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const t12RelationshipGatePending = Boolean(t12RelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
   const t12RelationshipGateBlocked = t12RelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
   const t12PrivacyNotice = isT12DailyPromptContext ? getInterpersonalPrivacyNotice(dailyContext?.data) : null;
+  const activeDailyTopicId = dailyProblemTopicId || dailyRecordTopicId;
   const activePromptGroups = screen === 'books'
     ? [...LIBRARY_ASSISTANT_PROMPT_GROUPS, ...PAGE_ASSISTANT_PROMPT_GROUPS]
-    : isAngerDailyPromptContext
-      ? getAngerDailyAssistantPromptGroups(dailyContext?.day)
-      : isAnxietyDailyPromptContext
-        ? getAnxietyDailyAssistantPromptGroups(dailyContext?.day)
-        : isFearDailyPromptContext
-          ? getFearDailyAssistantPromptGroups(dailyContext?.day)
-          : isHatredDailyPromptContext
-            ? getHatredDailyAssistantPromptGroups(dailyContext?.day)
-            : isJealousyDailyPromptContext
-              ? getJealousyDailyAssistantPromptGroups(dailyContext?.day)
-              : isGriefDailyPromptContext
-                ? getGriefDailyAssistantPromptGroups(dailyContext?.day)
-                : isGuiltDailyPromptContext
-                  ? getGuiltDailyAssistantPromptGroups(dailyContext?.day)
-                  : isEmotionalDependencyDailyPromptContext
-                    ? getEmotionalDependencyDailyAssistantPromptGroups(dailyContext?.day)
-                    : isT09DailyPromptContext
-                      ? getT09DailyAssistantPromptGroups(dailyContext?.day)
-                      : isT10DailyPromptContext
-                        ? getT10DailyAssistantPromptGroups(dailyContext?.day)
-                        : isT11DailyPromptContext
-                          ? getT11DailyAssistantPromptGroups(dailyContext?.day)
-                          : isT12DailyPromptContext
-                            ? getT12DailyAssistantPromptGroups(dailyContext?.day)
-                            : isT13DailyPromptContext
-                              ? (getDailySafetyMode(dailyContext?.data) === 'blocked' ? [] : getT13DailyAssistantPromptGroups(dailyContext?.day))
-                              : isT14DailyPromptContext
-                                ? (getDailySafetyMode(dailyContext?.data) === 'blocked' ? [] : getT14DailyAssistantPromptGroups(dailyContext?.day))
-                                : dailyContext
-                              ? []
-                              : (screen === 'day' ? [] : (() => { const pageGroups = getPageSpecificPromptGroups(screen); return pageGroups ? [...pageGroups, ...PAGE_ASSISTANT_PROMPT_GROUPS] : PAGE_ASSISTANT_PROMPT_GROUPS; })());
+    : isTopicDailyPromptContext
+      ? ((activeDailyTopicId === 'T13' || activeDailyTopicId === 'T14')
+        && getDailySafetyMode(dailyContext?.data) === 'blocked'
+        ? []
+        : getSharedDailyAssistantPromptGroups(dailyContext?.day, activeDailyTopicId))
+      : dailyContext
+        ? []
+        : (screen === 'day' ? [] : (() => { const pageGroups = getPageSpecificPromptGroups(screen); return pageGroups ? [...pageGroups, ...PAGE_ASSISTANT_PROMPT_GROUPS] : PAGE_ASSISTANT_PROMPT_GROUPS; })());
   if (!visible || screen === 'bookReader') return null;
 
   function ensureLibraryBooksLoaded(message, conversationState) {
@@ -430,11 +409,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         libraryLoadKind = loadResult?.kind || 'error';
       }
     }
-    const isDailySafetyQuestion = Boolean(
-      isPreparedOnlyDailyPromptContext
-      && !isAngerDailyPromptContext
-      && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(selectedPreparedQuestion.kind),
-    );
     setError('');
     setSending(true);
     const turnId = pendingLibraryTurn?.turnId ?? ++turnSequenceRef.current;
@@ -476,6 +450,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
 
       conversationStateRef.current = turn.conversationState || null;
       const finalMessage = turn.message || 'برای این پرسش پاسخ قابل اتکایی در دسترس نیست.';
+      const isDailySafetyQuestion = Boolean(
+        isPreparedOnlyDailyPromptContext
+        && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(selectedPreparedQuestion.kind),
+      );
       updateAssistantMessage(finalMessage, turn.knowledge || [], isDailySafetyQuestion);
     } catch {
       updateAssistantMessage('پاسخ آماده نشد. دوباره تلاش کن.');
@@ -716,7 +694,6 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                         <h3>یادآوری مهم درباره ایمنی شما</h3>
                         <p>در طول انجام تمرین‌ امروز، به احساسات و وضعیت روانی خود توجه کنید. اگر احساس کردید فشار روانی شما بیشتر شده، حالتان رو به وخامت است یا ادامه تمرین برایتان آزاردهنده شده، تمرین را متوقف کنید و به خودتان فرصت آرام‌شدن بدهید.</p>
                         <p>در چنین شرایطی، می‌توانید از یک فرد مورد اعتماد یا متخصص سلامت روان کمک بگیرید. اگر احتمال آسیب به خودتان یا فرد دیگری وجود دارد، موضوع را جدی بگیرید و از خدمات اورژانسی محل زندگی خود کمک فوری دریافت کنید.</p>
-                        <p className="dailyAssistantSafetyReminderShafa">شماره ۰۹۱۹۰۸۸۹۰۶۲ فقط برای نوبت‌دهی و پشتیبانی مرکز است و جایگزین خدمات اورژانسی یا کمک فوری تخصصی نیست.</p>
                         <p>به یاد داشته باشید: سلامت و امنیت شما از انجام هر تمرینی مهم‌تر است.</p>
                       </aside>
                     )}

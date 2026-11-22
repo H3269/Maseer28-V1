@@ -175,7 +175,7 @@ test('T08 prepared questions route only for matching canonical topic and day', (
   const question = guide.questions[0];
   const ok = makePageAssistantTurn({ screen: 'day', text: question.value, dailyContext: contextFor(guide) });
   assert.equal(ok.status, 'daily_guidance_available');
-  assert.match(ok.message, /راهنمای روز/u, 'the matching prepared answer includes its daily guide heading');
+  assert.match(ok.message, /در روز 1/u, 'the matching prepared answer stays bound to the selected day');
 
   const wrongTopic = makePageAssistantTurn({
     screen: 'day',

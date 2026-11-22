@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
+import { getSharedDailyAssistantPromptGroups } from '../src/features/assistant/sharedDailyAssistantEngine.js';
 import { ANGER_DAILY_ASSISTANT_GUIDES, getAngerDailyAssistantPromptGroups } from '../src/features/assistant/angerDailyAssistantPrompts.js';
 import { ANXIETY_DAILY_ASSISTANT_GUIDES, getAnxietyDailyAssistantPromptGroups } from '../src/features/assistant/anxietyDailyAssistantPrompts.js';
 import { FEAR_DAILY_ASSISTANT_GUIDES, getFearDailyAssistantPromptGroups } from '../src/features/assistant/fearDailyAssistantPrompts.js';
@@ -85,7 +86,7 @@ test('T10 prepared answers are available through the live daily assistant on all
     dailyContext.data.title = guide.title;
     dailyContext.data.exercise = guide.exercise;
     dailyContext.data.actionText = guide.action;
-    for (const question of topic.groups(guide.day).flatMap(group => group.questions)) {
+    for (const question of getSharedDailyAssistantPromptGroups(guide.day, topic.id).flatMap(group => group.questions)) {
       const result = makePageAssistantTurn({ screen: 'day', text: question.value, dailyContext });
       assert.equal(result.status, 'daily_guidance_available');
     }
@@ -111,7 +112,7 @@ test('all 5,488 prepared FAQs remain available without specialist approval metad
           review_status: 'pending_expert_review',
         },
       };
-      const questions = topic.groups(guide.day).flatMap(group => group.questions);
+      const questions = getSharedDailyAssistantPromptGroups(guide.day, topic.id).flatMap(group => group.questions);
       for (const question of questions) {
         const result = makePageAssistantTurn({
           screen: 'day',
@@ -307,7 +308,7 @@ test('T13 and T14 examples preserve distinct day-specific learning tasks', () =>
 test('T14 is wired into the visible prepared-question launcher and remains prepared-only', async () => {
   const { readFile } = await import('node:fs/promises');
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
-  assert.match(launcher, /getT14DailyAssistantPromptGroups/u);
-  assert.ok(launcher.includes('isT14DailyPromptContext ? "کمبود انگیزه"'));
-  assert.match(launcher, /t14-daily-prompt-trigger/u);
+  assert.match(launcher, /getSharedDailyAssistantPromptGroups/u);
+  assert.match(launcher, /isT14DailyPromptContext/u);
+  assert.match(launcher, /activeDailyTopicId/u);
 });

@@ -102,7 +102,7 @@ test('T12 prepared daily answers are routed from the exercise assistant and reje
   const valid = makeDailyExerciseGuidanceTurn({ message: guide.questions[0].value, dayData: day, problem: 'مرزبندی و نه گفتن', day: 1 });
   assert.ok(valid.response.includes(guide.title));
   const outside = makeDailyExerciseGuidanceTurn({ message: 'یک پرسش آزاد خارج از راهنمای آماده', dayData: day, problem: 'مرزبندی و نه گفتن', day: 1 });
-  assert.match(outside.response, /فهرست راهنمای آماده همین روز/);
+  assert.match(outside.response, /بگو پرسشت درباره کدام بخش است/);
   const mismatch = makeDailyExerciseGuidanceTurn({ message: guide.questions[0].value, dayData: { ...day, topic_id: 'T11' }, problem: 'مرزبندی و نه گفتن', day: 1 });
   assert.match(mismatch.response, /شناسه موضوع/);
 });
@@ -112,7 +112,7 @@ test('page assistant routes T12 day-guide answers while preserving the interpers
   const data = { id: 'مرزبندی و نه گفتن-01', topic_id: 'T12', day: 1, title: guide.title, exercise: guide.exercise, actionText: guide.action };
   const answer = makePageAssistantTurn({ screen: 'day', text: guide.questions[0].value, dailyContext: { day: 1, problem: 'مرزبندی و نه گفتن', data } });
   assert.equal(answer.status, 'daily_guidance_available');
-  assert.match(answer.message, new RegExp(guide.title), 'the answer must identify the matching daily guide');
+  assert.match(answer.message, /در روز 1/u, 'the answer must identify the selected day');
   const visibleExercise = 'نسخه تطبیقی تمرین روز اول';
   const visibleAction = 'نسخه تطبیقی اقدام روز اول';
   const adaptedAnswer = makePageAssistantTurn({

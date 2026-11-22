@@ -1,9 +1,11 @@
 import { routeSemanticIntake } from './intentContextRouter.js';
 import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
-import { answerAngerDailyPreparedQuestion } from './angerDailyAssistantPrompts.js';
-import { answerAnxietyDailyPreparedQuestion } from './anxietyDailyAssistantPrompts.js';
-import { answerFearDailyPreparedQuestion } from './fearDailyAssistantPrompts.js';
-import { answerT12DailyPreparedQuestion } from './t12DailyAssistantPrompts.js';
+import { buildPreparedDailyAssistantAnswer } from './preparedDailyAssistantAnswer.js';
+import { getSharedDailyAssistantQuestion, SHARED_DAILY_ASSISTANT_TOPIC_NAMES } from './sharedDailyAssistantEngine.js';
+
+
+
+
 
 const SAFETY_QUESTION = 'آیا همین الآن خطر فوری، قصد یا برنامه عملی برای آسیب به خودت یا شخص دیگری وجود دارد؟ اگر پاسخ روشن نیست، بگو مطمئن نیستی.';
 const SAFETY_HANDOFF = 'راهنمایی تمرین را متوقف می‌کنم. من نمی‌توانم به‌جای تو با اورژانس یا فرد دیگری تماس بگیرم. اگر احتمال خطر فوری وجود دارد یا مطمئن نیستی، همین الآن با خدمات اورژانسی محل زندگی یا یک فرد امن و قابل اعتماد تماس بگیر و تنها نمان. این گفت‌وگو جای کمک فوری انسانی را نمی‌گیرد.';
@@ -335,33 +337,21 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
 
   const canonicalTopicId = getCanonicalTopicIdForCategory(problem);
   const sourceTopicId = String(dayData?.topic_id || dayData?.topicId || '').trim();
-  if (['T01', 'T02'].includes(canonicalTopicId) && sourceTopicId && sourceTopicId !== canonicalTopicId) {
-    const topicLabel = canonicalTopicId === 'T01' ? 'خشم' : 'اضطراب';
-    return result('شناسه موضوعِ محتوای دریافتی با موضوع ' + topicLabel + ' یکسان نیست؛ برای جلوگیری از پاسخ بر پایه محتوای موضوع دیگر، فعلاً راهنمایی آماده را ارائه نمی‌کنم.', state, text);
+  if (/^T(?:0[1-9]|1[0-4])$/u.test(String(canonicalTopicId || '')) && sourceTopicId && sourceTopicId !== canonicalTopicId) {
+    return result('شناسه موضوعِ محتوای دریافتی با موضوع انتخاب‌شده یکسان نیست؛ برای جلوگیری از پاسخ بر پایه محتوای موضوع دیگر، فعلاً راهنمایی آماده را ارائه نمی‌کنم.', state, text);
   }
 
-  if (canonicalTopicId === 'T01') {
-    const preparedAnswer = answerAngerDailyPreparedQuestion({ day, message: text, dailyContent: dayData });
+  const preparedQuestion = getSharedDailyAssistantQuestion(canonicalTopicId, text);
+  if (preparedQuestion) {
+    const preparedAnswer = buildPreparedDailyAssistantAnswer({
+      topicId: canonicalTopicId,
+      topicName: SHARED_DAILY_ASSISTANT_TOPIC_NAMES[canonicalTopicId] || currentTopic,
+      day,
+      message: text,
+      dailyContent: dayData,
+    });
     if (preparedAnswer) return result(preparedAnswer, { ...state, lastTopic: currentTopic }, text);
-  }
-
-  if (canonicalTopicId === 'T02') {
-    const preparedAnswer = answerAnxietyDailyPreparedQuestion({ day, message: text });
-    if (preparedAnswer) return result(preparedAnswer, { ...state, lastTopic: currentTopic }, text);
-  }
-
-  if (canonicalTopicId === 'T12') {
-    if (sourceTopicId !== 'T12') return result('شناسه موضوع محتوای روز با موضوع مرزبندی و نه گفتن یکسان نیست؛ برای جلوگیری از پاسخ اشتباه، راهنمای آماده ارائه نمی‌شود.', state, text);
-    const preparedAnswer = answerT12DailyPreparedQuestion({ day, message: text, dailyContent: dayData });
-    if (preparedAnswer) return result(preparedAnswer, { ...state, lastTopic: currentTopic }, text);
-    return result('این پرسش در فهرست راهنمای آماده همین روز مرزبندی و نه گفتن نیست. لطفاً پرسش خود را درباره تمرین یا اقدام امروز دقیق‌تر مطرح کن.', { ...state, lastTopic: currentTopic }, text);
-  }
-
-  if (canonicalTopicId === 'T03') {
-    if (sourceTopicId !== 'T03') return result('شناسه موضوع محتوای روز با موضوع ترس تطبیق ندارد؛ برای جلوگیری از راهنمایی اشتباه، پاسخ آماده ارائه نمی‌شود.', state, text);
-    const preparedAnswer = answerFearDailyPreparedQuestion({ day, message: text, dailyContent: dayData });
-    if (preparedAnswer) return result(preparedAnswer, { ...state, lastTopic: currentTopic }, text);
-    return result('این پرسش در فهرست راهنمای آماده موضوع ترس نیست. لطفاً یکی از پرسش‌های آماده همین روز را انتخاب کن.', { ...state, lastTopic: currentTopic }, text);
+    return result('شناسه موضوع یا روزِ محتوای دریافتی معتبر نیست، یا داده لازم برای پاسخ این روز در دسترس نیست؛ برای جلوگیری از راهنمایی حدسی، فعلاً پاسخ آماده ارائه نمی‌شود.', state, text);
   }
 
   const followUp = followUpResponse(text, state, dayData);

@@ -50,7 +50,7 @@ test('all 392 exact T09 questions route through the real page assistant with mat
         dailyContext: contextFor(guide),
       });
       assert.equal(result.status, 'daily_guidance_available');
-      assert.match(result.message, new RegExp(guide.title), 'the answer must identify the matching daily guide');
+      assert.match(result.message, new RegExp('روز ' + guide.day), 'the answer must identify the matching daily day');
       assert.ok(result.message.trim().length > 0);
       checked += 1;
     }
@@ -126,9 +126,9 @@ test('T09 overlay and prompt UI remain wired without mislabeling legacy records 
   assert.ok(days.every((day) => Number.isInteger(day.day) && day.day >= 1 && day.day <= 28));
   const topic = registry.topics.find((item) => item.topic_id === 'T09');
   assert.deepEqual(topic.content_ids, [], 'legacy T09 records without the v2 topic_id contract must not be linked as v2 registry content');
-  assert.match(launcher, /getT09DailyAssistantPromptGroups/);
-  assert.match(launcher, /isT09DailyPromptContext/);
-  assert.match(launcher, /t09-daily-prompt-trigger/);
+  assert.match(launcher, /getSharedDailyAssistantPromptGroups/);
+  assert.match(launcher, /isTopicDailyPromptContext/);
+  assert.match(launcher, /activeDailyTopicId/);
 });
 
 test('T09 answers are fully contextual, use visible daily content, and keep resistance distinct from stop guidance', () => {
