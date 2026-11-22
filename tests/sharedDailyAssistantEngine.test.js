@@ -157,25 +157,33 @@ test('T02-T14 produce fourteen day-bound answers from canonical content for all 
   assert.equal(checked, 13 * 28 * 14);
 });
 
-test('missing examples are disclosed instead of being invented for T11-T14', async () => {
+test('T11-T14 authored examples are migrated into the shared renderer for all 28 canonical days', async () => {
   const merged = await loadMergedContent();
+  const catalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
   for (const [topicId, topicName] of TOPICS.filter(([id]) => ['T11', 'T12', 'T13', 'T14'].includes(id))) {
-    const day = merged.categories[topicName].days[0];
-    const questions = getSharedDailyAssistantPromptGroups(1, topicId).flatMap((group) => group.questions);
-    const exerciseQuestion = questions.find((question) => question.kind === 'exercise_example');
-    const actionQuestion = questions.find((question) => question.kind === 'action_example');
-    assert.equal(day.exerciseExample, undefined, topicId + ' exercise example must not be sourced from legacy assistant code');
-    assert.equal(day.actionExample, undefined, topicId + ' action example must not be sourced from legacy assistant code');
-    const exerciseAnswer = buildSharedDailyAssistantAnswerFromDailyContent({
-      topicId, topicName, day: 1, message: exerciseQuestion.value, dailyContent: day,
-    });
-    const actionAnswer = buildSharedDailyAssistantAnswerFromDailyContent({
-      topicId, topicName, day: 1, message: actionQuestion.value, dailyContent: day,
-    });
-    assert.match(exerciseAnswer, /مثال فرضی جداگانه‌ای در محتوای ثبت‌شده وجود ندارد/u);
-    assert.match(actionAnswer, /مثال فرضی جداگانه‌ای در محتوای ثبت‌شده وجود ندارد/u);
-    assert.ok(exerciseAnswer.includes(day.exercise));
-    assert.ok(actionAnswer.includes(day.actionText));
+    const days = merged.categories[topicName].days;
+    const records = catalog.records.filter((record) => record.topicId === topicId);
+    assert.equal(records.length, 28, topicId + ' migrated example count');
+    assert.equal(new Set(records.map((record) => record.exerciseExample)).size, 28, topicId + ' exercise examples must be distinct');
+    assert.equal(new Set(records.map((record) => record.actionExample)).size, 28, topicId + ' action examples must be distinct');
+    for (const record of records) {
+      const day = days.find((item) => Number(item.day) === record.day);
+      assert.ok(day, topicId + ' day ' + record.day + ' canonical source');
+      assert.equal(record.exerciseSource, day.exercise, topicId + ' day ' + record.day + ' exercise source identity');
+      assert.equal(record.actionSource, day.actionText, topicId + ' day ' + record.day + ' action source identity');
+      const questions = getSharedDailyAssistantPromptGroups(record.day, topicId).flatMap((group) => group.questions);
+      const exerciseQuestion = questions.find((question) => question.kind === 'exercise_example');
+      const actionQuestion = questions.find((question) => question.kind === 'action_example');
+      const exerciseAnswer = buildSharedDailyAssistantAnswerFromDailyContent({
+        topicId, topicName, day: record.day, message: exerciseQuestion.value, dailyContent: day,
+      });
+      const actionAnswer = buildSharedDailyAssistantAnswerFromDailyContent({
+        topicId, topicName, day: record.day, message: actionQuestion.value, dailyContent: day,
+      });
+      assert.ok(exerciseAnswer.includes(record.exerciseExample), topicId + ' day ' + record.day + ' exercise example is rendered');
+      assert.ok(actionAnswer.includes(record.actionExample), topicId + ' day ' + record.day + ' action example is rendered');
+      assert.doesNotMatch(exerciseAnswer + actionAnswer, /مثال فرضی جداگانه‌ای در محتوای ثبت‌شده وجود ندارد/u);
+    }
   }
 });
 

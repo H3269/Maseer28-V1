@@ -1,3 +1,5 @@
+import SHARED_DAILY_ASSISTANT_EXAMPLES from './sharedDailyAssistantExamples.v1.json' with { type: 'json' };
+
 const TOPIC_NAMES = Object.freeze({
   T01: 'خشم',
   T02: 'اضطراب',
@@ -108,6 +110,22 @@ function listText(value) {
   return single ? [single] : [];
 }
 
+const MIGRATED_EXAMPLES_BY_DAY = new Map(
+  (Array.isArray(SHARED_DAILY_ASSISTANT_EXAMPLES.records) ? SHARED_DAILY_ASSISTANT_EXAMPLES.records : [])
+    .map((record) => [record.topicId + ':' + record.day, record]),
+);
+
+function getMigratedDailyExamples(topicId, day, dailyContent) {
+  const record = MIGRATED_EXAMPLES_BY_DAY.get(topicId + ':' + day);
+  if (!record) return null;
+  // Examples are tied to the exact source exercise/action so an old example
+  // can never silently attach to edited or adapted instructions.
+  const exercise = clean(dailyContent?.exercise || dailyContent?.instructions);
+  const action = clean(dailyContent?.actionText || dailyContent?.action);
+  if (record.exerciseSource !== exercise || record.actionSource !== action) return null;
+  return record;
+}
+
 function makeGuideFromDailyContent({ topicId, topicName, day, dailyContent } = {}) {
   const intro = clean(dailyContent?.intro);
   const closing = clean(dailyContent?.closing);
@@ -115,6 +133,7 @@ function makeGuideFromDailyContent({ topicId, topicName, day, dailyContent } = {
   const action = clean(dailyContent?.actionText || dailyContent?.action);
   if (!exercise || !action) return null;
 
+  const migratedExamples = getMigratedDailyExamples(topicId, day, dailyContent);
   const stopConditions = listText(dailyContent?.stop_conditions || dailyContent?.stopConditions);
   const hasTopicScopedFallbacks = !TOPICS_WITH_UNSCOPED_FALLBACKS.has(topicId);
   const lightExercise = clean(dailyContent?.lightVersion || (hasTopicScopedFallbacks ? dailyContent?.lightExerciseText : ''));
@@ -136,8 +155,8 @@ function makeGuideFromDailyContent({ topicId, topicName, day, dailyContent } = {
       || extractLabeledLine(intro, ['چرایی تمرین', 'سازوکار', 'مکانیسم']),
     exercise,
     action,
-    exerciseExample: cleanExample(dailyContent?.exerciseExample),
-    actionExample: cleanExample(dailyContent?.actionExample),
+    exerciseExample: cleanExample(dailyContent?.exerciseExample || migratedExamples?.exerciseExample),
+    actionExample: cleanExample(dailyContent?.actionExample || migratedExamples?.actionExample),
     lightVersion: clean(dailyContent?.lightVersion) || paragraph(
       lightExercise && 'نسخه سبک تمرین: ' + lightExercise,
       lightAction && 'نسخه سبک اقدام: ' + lightAction,

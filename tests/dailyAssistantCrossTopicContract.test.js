@@ -81,11 +81,15 @@ test('the shared renderer produces grounded day-specific answers for all 5,488 t
         assert.ok(answer.trim().length > 0);
         if (question.kind === 'exercise_meaning') assert.ok(answer.includes(dailyContent.exercise));
         if (question.kind === 'action_meaning') assert.ok(answer.includes(dailyContent.actionText));
-        if (question.kind === 'exercise_example' && !dailyContent.exerciseExample) {
-          assert.match(answer, /مثال فرضی جداگانه‌ای در محتوای ثبت‌شده وجود ندارد/u);
+        if (question.kind === 'exercise_example') {
+          assert.doesNotMatch(answer, /مثال فرضی جداگانه‌ای در محتوای ثبت‌شده وجود ندارد/u,
+            topicId + ' day ' + day + ' must provide a usable exercise example');
+          assert.ok(answer.length > 120, topicId + ' day ' + day + ' exercise example must be substantive');
         }
-        if (question.kind === 'action_example' && !dailyContent.actionExample) {
-          assert.match(answer, /مثال فرضی جداگانه‌ای در محتوای ثبت‌شده وجود ندارد/u);
+        if (question.kind === 'action_example') {
+          assert.doesNotMatch(answer, /مثال فرضی جداگانه‌ای در محتوای ثبت‌شده وجود ندارد/u,
+            topicId + ' day ' + day + ' must provide a usable action example');
+          assert.ok(answer.length > 120, topicId + ' day ' + day + ' action example must be substantive');
         }
         if (question.kind === SHARED_DAILY_ASSISTANT_DISTRESS_KINDS[topicId]) {
           assert.match(answer, /تمرین را کنار بگذار/u);
