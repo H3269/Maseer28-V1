@@ -2,7 +2,7 @@ name: Anger guide rebuilt assistant checks
 
 on:
   push:
-    branches: [rebuild/anger-guide-28-days]
+    branches: [rebuild/anger-guide-28-days, fix/anger-sample-three-isolation]
   pull_request:
     branches: [main]
     paths:
