@@ -106,9 +106,12 @@ try {
   const prompt = dayOnePage.locator('#library-assistant-prompt-dialog');
   await prompt.waitFor({ state: 'visible' });
   await prompt.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
+  const dayOnePreviousReplyCount = await dayOnePanel.locator('.assistantMessage').count();
   await dayOnePanel.getByRole('button', { name: 'ارسال' }).click();
-  await dayOnePage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some((node) => node.innerText.includes('روز 1')));
+  await dayOnePage.waitForFunction((previous) => {
+    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+    return replies.length > previous && !replies.at(-1).innerText.includes('در حال بررسی پرسش');
+  }, dayOnePreviousReplyCount, { timeout: 15000 });
   const dayOneReply = await dayOnePanel.locator('.assistantMessage').last().innerText();
   assert.match(dayOneReply, /نقشه حوزه‌های اتکای عاطفی/);
   const normalizedReply = dayOneReply.normalize('NFKC').replace(/[يى]/g, 'ی').replace(/ك/g, 'ک').replace(/\s+/g, ' ');
@@ -136,9 +139,12 @@ try {
   const gatedPrompt = gatedPage.locator('#library-assistant-prompt-dialog');
   await gatedPrompt.waitFor({ state: 'visible' });
   await gatedPrompt.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
+  const daySixPreviousReplyCount = await gatedPanel.locator('.assistantMessage').count();
   await gatedPanel.getByRole('button', { name: 'ارسال' }).click();
-  await gatedPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some((node) => node.innerText.includes('روز 6')));
+  await gatedPage.waitForFunction((previous) => {
+    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+    return replies.length > previous && !replies.at(-1).innerText.includes('در حال بررسی پرسش');
+  }, daySixPreviousReplyCount, { timeout: 15000 });
   const daySixReply = await gatedPanel.locator('.assistantMessage').last().innerText();
   const daySixSource = overrides.categories['وابستگی عاطفی'].days.find((item) => Number(item.day) === 6);
   const normalizedDaySixReply = daySixReply.normalize('NFKC').replace(/[يى]/g, 'ی').replace(/ك/g, 'ک').replace(/\s+/g, ' ');
