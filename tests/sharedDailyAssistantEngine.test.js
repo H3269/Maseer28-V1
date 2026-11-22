@@ -347,3 +347,53 @@ test('one prepared-answer entry point routes T01-T14 while preserving the shared
     );
   }
 });
+
+
+test('runtime examples survive adapted visible wording and stay bound to the canonical topic/day for T02-T14', async () => {
+  const merged = await loadMergedContent();
+  let checked = 0;
+  for (const [topicId, topicName] of TOPICS) {
+    const days = merged.categories[topicName]?.days || [];
+    assert.equal(days.length, 28, topicId + ' canonical days');
+    for (let day = 1; day <= 28; day += 1) {
+      const record = days.find((item) => Number(item.day) === day);
+      assert.ok(record, topicId + ' day ' + day);
+      if (['T13', 'T14'].includes(topicId) && getDailySafetyMode(record) === 'blocked') continue;
+      for (const [kind, field] of [
+        ['exercise_example', 'exerciseExample'],
+        ['action_example', 'actionExample'],
+      ]) {
+        const question = getSharedDailyAssistantPromptGroups(day, topicId)
+          .flatMap((group) => group.questions)
+          .find((item) => item.kind === kind);
+        assert.ok(question, topicId + ' day ' + day + ' ' + kind);
+        assert.ok(record[field]?.trim(), topicId + ' day ' + day + ' must have a source example');
+        const result = makePageAssistantTurn({
+          screen: 'day',
+          text: question.value,
+          dailyContext: {
+            day,
+            problem: topicName,
+            data: record,
+            guidanceData: {
+              id: record.id,
+              topic_id: record.topic_id ?? null,
+              day: record.day,
+              exercise: record.exercise + ' [متن سازگارشده برای نمایش]',
+              action: record.actionText + ' [متن سازگارشده برای نمایش]',
+            },
+            relationshipSafetyConfirmed: true,
+          },
+        });
+        assert.equal(result.status, 'daily_guidance_available',
+          topicId + ' day ' + day + ' ' + kind + ' must pass the real runtime router');
+        assert.ok(result.message.includes(record[field]),
+          topicId + ' day ' + day + ' ' + kind + ' must render its canonical example');
+        assert.doesNotMatch(result.message, /مثال فرضی جداگانه‌ای در محتوای ثبت‌شده وجود ندارد/u,
+          topicId + ' day ' + day + ' ' + kind + ' must not fall back');
+        checked += 1;
+      }
+    }
+  }
+  assert.ok(checked >= 700, 'expected broad runtime coverage across all 14 topics and 28 days; checked=' + checked);
+});
