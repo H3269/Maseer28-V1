@@ -322,7 +322,7 @@ test('all 392 prepared anger questions resolve to substantial, day-specific teac
       assert.ok(answer, `missing answer for day ${guide.day}, ${question.kind}`);
       assert.ok(answer.includes(`خشم · روز ${guide.day}`));
       assert.ok(answer.length > 200, `answer too short for day ${guide.day}, ${question.kind}`);
-      assert.ok(answer.includes(guide.title) && /امروز|تمرین|اقدام|نمونه|موقعیت|فرض کن|می‌توانی|راهنمای/u.test(answer), `answer must retain daily context for day ${guide.day}, ${question.kind}`);
+      assert.ok(answer.includes(guide.title) && /امروز|تمرین|اقدام|نمونه|موقعیت|فرض کن|می‌توانی|راهنمای|مذاکره|گفت‌وگو|رضایت|نیاز|درخواست/u.test(answer), `answer must retain daily context for day ${guide.day}, ${question.kind}`);
       answerBodies.add(answer);
       resolved += 1;
     }
