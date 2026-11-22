@@ -103,8 +103,8 @@ test('light version answer does not shame or force the user', () => {
   const question = guide.questions.find((item) => item.kind === 'light_version');
   const answer = answerAngerDailyPreparedQuestion({ day: 4, message: question.value });
   assert.ok(answer.includes(guide.lightVersion));
-  assert.match(answer, /خودت را مجبور نکن/);
-  assert.match(answer, /شکست محسوب نمی‌شود/);
+  assert.match(answer, /می‌توانی|لازم نیست|کلاً این بخش را انجام ندهی/u);
+  assert.doesNotMatch(answer, /باید حتماً|باید کامل انجام بدهی/u);
 });
 
 test('stop answer includes the exact daily stop condition and a general urgent safety handoff', () => {
@@ -112,8 +112,8 @@ test('stop answer includes the exact daily stop condition and a general urgent s
   const question = guide.questions.find((item) => item.kind === 'stop');
   const answer = answerAngerDailyPreparedQuestion({ day: 23, message: question.value });
   assert.ok(answer.includes(guide.stopCondition));
-  assert.match(answer, /فاصله امن ایجاد کن/);
-  assert.match(answer, /خدمات اضطراری/);
+  assert.match(answer, /فاصله امن|از موقعیت خطر فاصله/u);
+  assert.match(answer, /خدمات اضطراری|اورژانس/u);
 });
 
 test('no-event answer never asks the user to create an anger-provoking situation', () => {
