@@ -83,3 +83,23 @@ body:not(.reader-mode) .app:not(.appLoading) .assistantTranscript > .assistantMe
     animation-name: m28SoftPageEnterOpacity;
   }
 }
+
+/* A restrained living presence for the assistant speaker. Faster only while
+   the final assistant turn is genuinely being generated. */
+@keyframes m28AssistantIconBreath {
+  0%, 100% { opacity: .82; scale: 1; }
+  50% { opacity: 1; scale: 1.07; }
+}
+.globalAssistantChat .assistantMessage > .globalAssistantSpeakerIcon {
+  animation: m28AssistantIconBreath 3.2s ease-in-out infinite;
+}
+.globalAssistantChat .assistantMessage > .globalAssistantSpeakerIcon[data-assistant-state="thinking"] {
+  animation-duration: 1.15s;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent, #36bfa4) 55%, transparent));
+}
+@media (prefers-reduced-motion: reduce) {
+  .globalAssistantChat .assistantMessage > .globalAssistantSpeakerIcon {
+    animation: none !important;
+    filter: none;
+  }
+}
