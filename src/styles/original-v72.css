@@ -7283,16 +7283,16 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 .globalAssistantChat .dailyAssistantSafetyReminder {
   margin: 14px 0 4px;
   padding: 14px 16px;
-  border: 1px solid #e3c77f;
+  border: 1px solid color-mix(in srgb, var(--gold, #c9a75d) 55%, var(--border, #d9e0e8));
   border-radius: 12px;
-  background: #fff8e9;
-  color: #49391e;
+  background: color-mix(in srgb, var(--accent2, #e6f1ee) 76%, var(--surface, #fff));
+  color: var(--text, #243b3c);
   line-height: 1.85;
   font-size: 13px;
 }
 .globalAssistantChat .dailyAssistantSafetyReminder h3 {
   margin: 0 0 8px;
-  color: #76541a;
+  color: var(--primary, #28555b);
   font-size: 14px;
   font-weight: 800;
 }
@@ -7302,14 +7302,6 @@ body.bale-webview .app:not(.appLoading):has(#books.libraryShell) #books.libraryS
 .globalAssistantChat .dailyAssistantSafetyReminder p:last-child {
   margin-bottom: 0;
   font-weight: 700;
-}
-.globalAssistantChat .dailyAssistantSafetyReminder .dailyAssistantSafetyReminderShafa {
-  margin: 10px 0;
-  padding: 9px 10px;
-  border-radius: 8px;
-  background: #f2e3c0;
-  color: #654510;
-  font-weight: 800;
 }
 
 
