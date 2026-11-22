@@ -388,7 +388,7 @@ test('runtime examples survive adapted visible wording and stay bound to the can
         });
         assert.equal(result.status, 'daily_guidance_available',
           topicId + ' day ' + day + ' ' + kind + ' must pass the real runtime router');
-        const normalizedExample = record[field].replace(/^(?:نمونه فرضی:\\s*){2,}/u, 'نمونه فرضی: ');
+        const normalizedExample = record[field].replace(/^(?:نمونه فرضی:\s*){2,}/u, 'نمونه فرضی: ');
         const visibleExample = cleanPreparedAssistantTopicText(normalizedExample, topicName);
         assert.ok(result.message.includes(visibleExample),
           topicId + ' day ' + day + ' ' + kind + ' must render its canonical example after normal display cleanup. Expected: '
