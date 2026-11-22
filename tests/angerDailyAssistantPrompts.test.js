@@ -76,7 +76,7 @@ test('prepared exercise answer is explicit, stepwise, and grounded in the select
   const question = guide.questions.find((item) => item.kind === 'exercise_meaning');
   const answer = answerAngerDailyPreparedQuestion({ day: 1, message: question.value });
   assert.match(answer, /چه اتفاقی افتاد/);
-  assert.match(answer, /قدم‌به‌قدم انجامش بده/);
+  assert.match(answer, /قدم‌به‌قدم انجام بده/);
   assert.match(answer, /هدف امروز/);
   assert.match(answer, /تفکیک رویداد، احساس و رفتار/);
 });
