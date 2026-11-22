@@ -76,8 +76,8 @@ test('prepared exercise answer is explicit, stepwise, and grounded in the select
   const question = guide.questions.find((item) => item.kind === 'exercise_meaning');
   const answer = answerAngerDailyPreparedQuestion({ day: 1, message: question.value });
   assert.match(answer, /چه اتفاقی افتاد/);
-  assert.match(answer, /قدم‌به‌قدم انجام بده/);
-  assert.match(answer, /هدف امروز/);
+  assert.match(answer, /قدم‌به‌قدم برو/);
+  assert.match(answer, /تمرین را به‌ترتیب پیش ببر/);
   assert.match(answer, /تفکیک رویداد، احساس و رفتار/);
 });
 
@@ -94,8 +94,8 @@ test('light version answer does not shame or force the user', () => {
   const question = guide.questions.find((item) => item.kind === 'light_version');
   const answer = answerAngerDailyPreparedQuestion({ day: 4, message: question.value });
   assert.ok(answer.includes(guide.lightVersion));
-  assert.match(answer, /خودت را مجبور نکن/);
-  assert.match(answer, /شکست محسوب نمی‌شود/);
+  assert.match(answer, /آن را به خودت تحمیل نکن/);
+  assert.match(answer, /به معنی شکست نیست/);
 });
 
 test('stop answer includes the exact daily stop condition and a general urgent safety handoff', () => {
@@ -111,7 +111,7 @@ test('no-event answer never asks the user to create an anger-provoking situation
   const guide = ANGER_DAILY_ASSISTANT_GUIDES[14];
   const question = guide.questions.find((item) => item.kind === 'no_event');
   const answer = answerAngerDailyPreparedQuestion({ day: 15, message: question.value });
-  assert.match(answer, /عمداً خودت را وارد بحث یا موقعیت خشم‌آور/);
+  assert.match(answer, /عمداً بحثی ایجاد نکن/);
   assert.match(answer, /نمونه کم‌فشار قبلی/);
 });
 
@@ -240,7 +240,7 @@ test('additional prepared answers distinguish exercise from action and handle mi
   assert.ok(differenceAnswer.includes(guide.title));
   assert.match(differenceAnswer, /تمرین/);
   assert.match(differenceAnswer, /اقدام/);
-  assert.match(differenceAnswer, /تمرین، (?:بخش یادگیری است|نگاه به عقب است)/);
+  assert.match(differenceAnswer, /تمرین به شناخت و مشاهده مهارت/);
   assert.ok(missedAnswer.includes(guide.lightVersion));
   assert.match(missedAnswer, /خودت را سرزنش نکن/);
 });
@@ -258,7 +258,7 @@ test('talking to another person is never presented as mandatory', () => {
   const guide = ANGER_DAILY_ASSISTANT_GUIDES[10];
   const question = guide.questions.find((item) => item.kind === 'talk_other');
   const answer = answerAngerDailyPreparedQuestion({ day: 11, message: question.value });
-  assert.match(answer, /لازم نیست.*با فرد دیگری صحبت کنی/);
+  assert.match(answer, /گفت‌وگو با فرد دیگری الزامی نیست/);
   assert.match(answer, /آزادانه رضایت داشته باشند/);
 });
 
@@ -266,7 +266,7 @@ test('duration answer does not invent a number that is absent from reviewed sour
   const guide = ANGER_DAILY_ASSISTANT_GUIDES[0];
   const question = guide.questions.find((item) => item.kind === 'duration');
   const answer = answerAngerDailyPreparedQuestion({ day: 1, message: question.value });
-  assert.match(answer, /مدت زمان مشخصی ثبت نشده/);
+  assert.match(answer, /زمان ثابتی برای این تمرین تعیین نشده/);
   assert.doesNotMatch(answer, /\d+ دقیقه/);
 });
 
@@ -276,7 +276,7 @@ test('exercise explanation preserves the source-requested number of examples for
   const question = guide.questions.find((item) => item.kind === 'exercise_meaning');
   const answer = answerAngerDailyPreparedQuestion({ day: 3, message: question.value });
   assert.match(answer, /دو تجربه کم‌فشار/);
-  assert.match(answer, /تعداد نمونه‌ها.*خود متن تمرین خواسته/);
+  assert.match(answer, /تعداد نمونه‌ها را هم بیشتر یا کمتر نکن/);
   assert.doesNotMatch(answer, /فقط یک نمونه کم‌فشار و امن انتخاب کن/);
 });
 
