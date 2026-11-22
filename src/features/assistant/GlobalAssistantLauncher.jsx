@@ -665,15 +665,20 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                     ref={item.role === 'assistant' && index === messages.length - 1 ? latestAssistantRef : null}
                     data-testid={item.role === 'assistant' && index === messages.length - 1 ? 'latest-assistant-message' : undefined}
                   >
-                    <b className="globalAssistantSpeakerIcon" aria-label={item.role === 'user' ? 'شما' : 'دستیار مسیر۲۸'}>
+                    <b
+                      className="globalAssistantSpeakerIcon"
+                      aria-label={item.role === 'user' ? 'شما' : 'دستیار مسیر۲۸'}
+                      data-assistant-state={item.role === 'assistant' && sending && index === messages.length - 1 ? 'thinking' : 'idle'}
+                    >
                       {item.role === 'user' ? (
                         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                           <circle cx="12" cy="12" r="9" />
                         </svg>
                       ) : (
                         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                          <path fillRule="evenodd" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 3.1a6.9 6.9 0 1 1 0 13.8 6.9 6.9 0 0 1 0-13.8Z" />
-                          <path d="M10.65 1.5h2.7v21h-2.7zM1.5 10.65h21v2.7h-21z" />
+                          <path d="M12 2.8 14.25 9.75 21.2 12l-6.95 2.25L12 21.2l-2.25-6.95L2.8 12l6.95-2.25L12 2.8Z" />
+                          <path d="m19 2 .7 2.3L22 5l-2.3.7L19 8l-.7-2.3L16 5l2.3-.7L19 2Z" />
+                          <circle cx="5" cy="19" r="1" />
                         </svg>
                       )}
                     </b>
