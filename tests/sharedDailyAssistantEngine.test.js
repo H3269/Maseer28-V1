@@ -388,7 +388,8 @@ test('runtime examples survive adapted visible wording and stay bound to the can
         assert.equal(result.status, 'daily_guidance_available',
           topicId + ' day ' + day + ' ' + kind + ' must pass the real runtime router');
         assert.ok(result.message.includes(record[field]),
-          topicId + ' day ' + day + ' ' + kind + ' must render its canonical example');
+          topicId + ' day ' + day + ' ' + kind + ' must render its canonical example. Expected: '
+            + record[field] + ' | Actual: ' + result.message + ' | Status: ' + result.status);
         assert.doesNotMatch(result.message, /مثال فرضی جداگانه‌ای در محتوای ثبت‌شده وجود ندارد/u,
           topicId + ' day ' + day + ' ' + kind + ' must not fall back');
         checked += 1;
