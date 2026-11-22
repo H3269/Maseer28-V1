@@ -135,6 +135,25 @@ test('daily turn routes prepared anger questions only after source identity and 
   assert.match(ok.response, /راهنمای روز 1 خشم/);
   assert.match(ok.response, /تفکیک رویداد، احساس و رفتار/);
 
+  const adaptedExercise = 'نسخه متناسب‌شده تمرین روز اول که با هویت معتبر همین روز دریافت شده است.';
+  const adaptedAction = 'نسخه متناسب‌شده اقدام روز اول که با هویت معتبر همین روز دریافت شده است.';
+  const adapted = makeDailyExerciseGuidanceTurn({
+    message: question.value,
+    problem: 'خشم',
+    day: 1,
+    dayData: {
+      id: 'T01-D01',
+      topic_id: 'T01',
+      day: 1,
+      exercise: adaptedExercise,
+      actionText: adaptedAction,
+    },
+  });
+  assert.match(adapted.response, new RegExp(adaptedExercise));
+  assert.doesNotMatch(adapted.response, new RegExp(guide.exercise.replace(/[.*+?^${}()|[\]\\]/g, '\\  assert.match(ok.response, /تفکیک رویداد، احساس و رفتار/);
+
+  const mismatch = makeDailyExerciseGuidanceTurn({')));
+
   const mismatch = makeDailyExerciseGuidanceTurn({
     message: question.value,
     problem: 'خشم',
