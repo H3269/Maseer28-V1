@@ -59,55 +59,7 @@ const allTopicContracts = [
   ['T13', T13_DAILY_ASSISTANT_GUIDES, getT13DailyAssistantPromptGroups, answerT13DailyPreparedQuestion],
   ['T14', T14_DAILY_ASSISTANT_GUIDES, getT14DailyAssistantPromptGroups, answerT14DailyPreparedQuestion],
 ];
-test('all T01-T14 runtime answers include the exact day-specific exercise and action examples', () => {
-  const contentNames = {
-    T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت',
-    T05: 'حسادت', T06: 'غم و سوگ', T07: 'احساس گناه', T08: 'وابستگی عاطفی',
-    T09: 'اهمال‌کاری',
-    T10: 'بی‌خوابی و مشکلات خواب',
-    T11: 'عادت‌های تکراری',
-    T12: 'مرزبندی و نه گفتن',
-    T13: 'تنهایی',
-    T14: 'کمبود انگیزه',
-  };
-
-  let checked = 0;
-  for (const [topicId, guides, , answerPrepared] of allTopicContracts) {
-    for (const guide of guides) {
-      const name = contentNames[topicId];
-      const dailyContent = name ? {
-        id: name + '-' + String(guide.day).padStart(2, '0'),
-        topic_id: topicId,
-        day: guide.day,
-        title: guide.title,
-        exercise: guide.exercise,
-        actionText: guide.action,
-        sourceExercise: guide.exercise,
-        sourceActionText: guide.action,
-      } : undefined;
-      const exerciseQuestion = guide.questions.find(question => question.kind === 'exercise_example');
-      const actionQuestion = guide.questions.find(question => question.kind === 'action_example');
-      assert.ok(exerciseQuestion, topicId + ' day ' + guide.day + ' exercise example question');
-      assert.ok(actionQuestion, topicId + ' day ' + guide.day + ' action example question');
-
-      const expectedExerciseExample = cleanPreparedAssistantTopicText(String(guide.exerciseExample || exerciseQuestion.answer || '').trim());
-      const expectedActionExample = cleanPreparedAssistantTopicText(String(guide.actionExample || actionQuestion.answer || '').trim());
-      assert.ok(expectedExerciseExample, topicId + ' day ' + guide.day + ' authored exercise example');
-      assert.ok(expectedActionExample, topicId + ' day ' + guide.day + ' authored action example');
-
-      const exerciseAnswer = answerPrepared({ day: guide.day, message: exerciseQuestion.value, dailyContent });
-      const actionAnswer = answerPrepared({ day: guide.day, message: actionQuestion.value, dailyContent });
-      assert.equal(typeof exerciseAnswer, 'string', topicId + ' day ' + guide.day + ' exercise example runtime answer');
-      assert.equal(typeof actionAnswer, 'string', topicId + ' day ' + guide.day + ' action example runtime answer');
-      assert.ok(exerciseAnswer.includes(expectedExerciseExample), topicId + ' day ' + guide.day + ' runtime must include its exact exercise example');
-      assert.ok(actionAnswer.includes(expectedActionExample), topicId + ' day ' + guide.day + ' runtime must include its exact action example');
-      assert.ok(exerciseAnswer.includes(cleanPreparedAssistantTopicText(guide.title)), topicId + ' day ' + guide.day + ' exercise answer title');
-      assert.ok(actionAnswer.includes(cleanPreparedAssistantTopicText(guide.title)), topicId + ' day ' + guide.day + ' action answer title');
-      checked += 2;
-    }
-  }
-  assert.equal(checked, 14 * 28 * 2, 'all 784 example answers must be checked');
-});
+// Canonical runtime coverage for all topics lives in sharedDailyAssistantEngine.test.js.
 
 const topicSafetyKinds = {
   T01: 'anger_increased', T02: 'anxiety_increased', T03: 'fear_increased',
