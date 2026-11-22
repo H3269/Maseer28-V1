@@ -3272,6 +3272,9 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     appendIfMissing(guide.lightActionVersion, 'اگر انجام بخش عملی هم برایت امن و شدنی است، این شکل ساده‌تر را در نظر بگیر: ');
   }
   if (question.kind === 'no_event') {
+    answer = answer
+      .replace('نبود نمونه واقعی را همان‌طور که هست بپذیر', 'نبود نمونه واقعی برای «' + guide.title + '» را همان‌طور که هست بپذیر')
+      .replace('در غیر این صورت تمرین را به زمان دیگری موکول کن', 'اگر برای «' + guide.title + '» نمونه‌ای نداری، تمرین را به زمان دیگری موکول کن');
     if (!/عمداً خودت را وارد بحث یا موقعیت خشم‌آور/u.test(answer)) {
       answer += '\n\nبرای انجام تمرین عمداً خودت را وارد بحث یا موقعیت خشم‌آور نکن؛ نبود نمونه واقعی را همان‌طور که هست بپذیر.';
     }
@@ -3284,6 +3287,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     appendIfMissing(guide.progressActionVersion, 'اگر آمادگی و شرایط امن داشتی، ');
   }
   if (question.kind === 'not_done') {
+    answer = answer.replace('لازم نیست برای جبران به خودت فشار بیاوری', 'برای «' + guide.title + '» لازم نیست برای جبران به خودت فشار بیاوری');
     appendIfMissing(guide.lightVersion, 'اگر خواستی دوباره شروع کنی، ');
     if (!/خودت را سرزنش نکن/u.test(answer)) {
       answer += '\n\nاگر تمرین «' + guide.title + '» امروز انجام نشد، خودت را سرزنش نکن؛ لازم نیست برای جبران به خودت فشار بیاوری.';
@@ -3293,7 +3297,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     appendIfMissing(guide.successCriterion, 'نشانه‌ای که می‌توانی دنبالش بگردی این است: ');
   }
   if (question.kind === 'stop' || question.kind === 'anger_increased') {
-    appendIfMissing(guide.stopCondition, 'برای همین روز این نکته را هم جدی بگیر: ');
+    appendIfMissing(guide.stopCondition, '');
     if (!/فاصله امن ایجاد کن|فاصله امن بگیر|از موقعیت خطر فاصله/u.test(answer)) {
       answer += '\n\nاگر هنگام «' + guide.title + '» احتمال آسیب فوری وجود دارد، فاصله امن ایجاد کن و از موقعیت خطر فاصله بگیر.';
     }
