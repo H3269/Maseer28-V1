@@ -95,7 +95,7 @@ test('prepared action example stays distinct from the exercise and preserves saf
   const question = guide.questions.find((item) => item.kind === 'action_example');
   const answer = answerAngerDailyPreparedQuestion({ day: 10, message: question.value });
   assert.match(answer, /رفتار خروج خودت|فضای امن|مکث|اقدام امروز/);
-  assert.match(answer, /اگر شرایط زندگی تو شبیه این نمونه نیست|اگر گفتن یا انجام‌دادن آن امن نیست/);
+  assert.match(answer, /اگر شرایط واقعی تو با نمونه|اگر گفتن و انجام‌دادن آن امن نیست/);
 });
 
 test('light version answer does not shame or force the user', () => {
