@@ -132,8 +132,9 @@ test('daily turn routes prepared anger questions only after source identity and 
     day: 1,
     dayData: { id: 'T01-D01', topic_id: 'T01', day: 1, exercise: guide.exercise, actionText: guide.action },
   });
-  assert.ok(ok.response.includes('موضوع: خشم | روز 1'));
+  assert.ok(ok.response.includes('در روز 1'));
   assert.match(ok.response, /تفکیک رویداد، احساس و رفتار/);
+  assert.doesNotMatch(ok.response, /دستیار هوشمند مسیر ۲۸|موضوع: خشم|جمع‌بندی امروز/u);
 
   const adaptedTitle = 'عنوان متناسب‌شده روز اول';
   const adaptedExercise = 'نسخه متناسب‌شده تمرین روز اول که با هویت معتبر همین روز دریافت شده است.';
@@ -342,7 +343,8 @@ test('in-path assistant ignores review status but rejects mismatched source iden
     dailyContext: { day: 11, problem: 'خشم', data: blockedDay, relationshipSafetyConfirmed: false },
   });
   assert.equal(blocked.status, 'daily_guidance_available');
-  assert.ok(blocked.message.includes('موضوع: خشم | روز 11'));
+  assert.ok(blocked.message.includes('در روز 11'));
+  assert.doesNotMatch(blocked.message, /دستیار هوشمند مسیر ۲۸|موضوع: خشم|جمع‌بندی امروز/u);
 
   const wrongIdentity = makePageAssistantTurn({
     screen: 'day',
