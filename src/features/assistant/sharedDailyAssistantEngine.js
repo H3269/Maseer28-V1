@@ -120,8 +120,12 @@ function getMigratedDailyExamples(topicId, day, dailyContent) {
   if (!record) return null;
   // Examples are tied to the exact source exercise/action so an old example
   // can never silently attach to edited or adapted instructions.
-  const exercise = clean(dailyContent?.exercise || dailyContent?.instructions);
-  const action = clean(dailyContent?.actionText || dailyContent?.action);
+  // The page router may pass adapted, user-visible wording to the answer
+  // engine. Example provenance must be checked against the untouched
+  // canonical source carried alongside that wording, not against the
+  // adapted text; otherwise every legitimate adaptation drops its example.
+  const exercise = clean(dailyContent?.sourceExercise || dailyContent?.exercise || dailyContent?.instructions);
+  const action = clean(dailyContent?.sourceActionText || dailyContent?.actionText || dailyContent?.action);
   if (record.exerciseSource !== exercise || record.actionSource !== action) return null;
   return record;
 }
