@@ -94,8 +94,8 @@ test('light version answer does not shame or force the user', () => {
   const question = guide.questions.find((item) => item.kind === 'light_version');
   const answer = answerAngerDailyPreparedQuestion({ day: 4, message: question.value });
   assert.ok(answer.includes(guide.lightVersion));
-  assert.match(answer, /آن را به خودت تحمیل نکن/);
-  assert.match(answer, /به معنی شکست نیست/);
+  assert.match(answer, /خودت را تحت فشار نگذار/);
+  assert.match(answer, /نشانه شکست نیست/);
 });
 
 test('stop answer includes the exact daily stop condition and a general urgent safety handoff', () => {
@@ -111,7 +111,7 @@ test('no-event answer never asks the user to create an anger-provoking situation
   const guide = ANGER_DAILY_ASSISTANT_GUIDES[14];
   const question = guide.questions.find((item) => item.kind === 'no_event');
   const answer = answerAngerDailyPreparedQuestion({ day: 15, message: question.value });
-  assert.match(answer, /عمداً بحثی ایجاد نکن/);
+  assert.match(answer, /نه عمداً بحثی ایجاد کن/);
   assert.match(answer, /نمونه کم‌فشار قبلی/);
 });
 
@@ -250,7 +250,7 @@ test('prepared answer for increased anger prioritizes stopping and immediate saf
   const question = guide.questions.find((item) => item.kind === 'anger_increased');
   const answer = answerAngerDailyPreparedQuestion({ day: 27, message: question.value });
   assert.ok(answer.includes(guide.stopCondition));
-  assert.match(answer, /تمرین را متوقف کن/);
+  assert.match(answer, /تمرین را کنار بگذار/);
   assert.match(answer, /خدمات اضطراری/);
 });
 
