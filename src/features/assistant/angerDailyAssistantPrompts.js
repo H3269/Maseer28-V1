@@ -3321,7 +3321,26 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     addTeacherStyleFrame(answer, { guide, question, topic: 'خشم' }),
     question.kind,
   );
-  return applySharedDailyAssistantAnswerFrame(safeAnswer, {
+  const legacyReferenceHeadings = {
+    exercise_meaning: 'تمرین امروز',
+    exercise_example: 'نمونه فرضی',
+    action_meaning: 'اقدام امروز',
+    action_example: 'نمونه اقدام',
+    light_version: 'نسخه سبک',
+    success: 'معیار موفقیت',
+    stop: 'شرط توقف',
+    no_event: 'نبود نمونه',
+    exercise_action_difference: 'تفاوت تمرین و اقدام',
+    not_done: 'اگر تمرین انجام نشد',
+    anger_increased: 'اگر خشم بیشتر شد',
+    talk_other: 'گفت‌وگو با فرد دیگر',
+    can_change: 'سازگارکردن تمرین',
+    duration: 'مدت زمان',
+  };
+  const referenceAnswer = args.frameStyle === 'standard' && legacyReferenceHeadings[question.kind]
+    ? '**' + legacyReferenceHeadings[question.kind] + '**\\n\\n' + safeAnswer
+    : safeAnswer;
+  return applySharedDailyAssistantAnswerFrame(referenceAnswer, {
     day,
     topic: 'خشم',
     guide,
