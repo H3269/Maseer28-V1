@@ -277,7 +277,7 @@ test('T03-T05 q12 answers retain the topic-specific daily action', () => {
 test('T01 q10 is day-bound and avoids blaming or shaming the user', () => {
   const guide = ANGER_DAILY_ASSISTANT_GUIDES[0];
   const answer = answerAngerDailyPreparedQuestion({ day: 1, message: expectedValues[9] });
-  assert.ok(answer.includes('راهنمای روز 1 خشم'), 'T01 q10 must retain topic/day context');
+  assert.ok(answer.includes('خشم · روز 1'), 'T01 q10 must retain topic/day context');
   assert.doesNotMatch(answer, /تو\s+(?:تنبلی|بی‌ارادگی)|(?:مقصر|ضعیف)\s+هستی|بهانه‌گیر/u, 'T01 q10 must not attribute a negative trait to the user');
   assert.ok(guide.questions.some(question => question.id === 'q10'));
 });
