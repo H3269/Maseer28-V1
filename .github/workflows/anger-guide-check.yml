@@ -1,0 +1,41 @@
+name: Anger guide rebuilt assistant checks
+
+on:
+  push:
+    branches: [rebuild/anger-guide-28-days]
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/features/assistant/angerDailyAssistantPrompts.js"
+      - "src/features/assistant/angerDailyRebuiltAnswerBank.js"
+      - "tests/angerDailyAssistantPrompts.test.js"
+      - "tests/angerDailyPreparedAnswers.test.js"
+      - "tests/dailyAssistantCrossTopicContract.test.js"
+      - "tests/dailyAssistantSafetyReminder.test.js"
+      - "tests/assistantMessageFormatting.test.js"
+      - "tests/browser/daily-assistant-guidance.mjs"
+      - "public/content/daily-text-overrides.v1.json"
+      - "package.json"
+      - "package-lock.json"
+
+jobs:
+  anger-guide:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Run focused anger assistant and integration tests
+        run: >-
+          node --test
+          tests/angerDailyAssistantPrompts.test.js
+          tests/angerDailyPreparedAnswers.test.js
+          tests/dailyAssistantCrossTopicContract.test.js
+          tests/dailyAssistantSafetyReminder.test.js
+          tests/assistantMessageFormatting.test.js
+          tests/angerContentPackage.test.mjs
+      - name: Verify production bundle
+        run: npm run build
