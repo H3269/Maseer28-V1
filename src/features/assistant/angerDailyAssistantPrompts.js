@@ -3264,7 +3264,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
 
   const addIfMissing = (value, lead = '') => {
     const content = String(value || '').trim();
-    if (content && !answer.includes(content)) answer += '\\n\\n' + lead + content;
+    if (content && !answer.includes(content)) answer += '\n\n' + lead + content;
   };
 
   if (question.kind === 'exercise_example' && guide.exerciseExample
@@ -3282,10 +3282,10 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   }
   if (question.kind === 'no_event') {
     if (!/عمداً خودت را وارد بحث یا موقعیت خشم‌آور/u.test(answer)) {
-      answer += '\\n\\nبرای انجام تمرین عمداً خودت را وارد بحث یا موقعیت خشم‌آور نکن؛ نبود نمونه واقعی را همان‌طور که هست بپذیر.';
+      answer += '\n\nبرای انجام تمرین عمداً خودت را وارد بحث یا موقعیت خشم‌آور نکن؛ نبود نمونه واقعی را همان‌طور که هست بپذیر.';
     }
     if (!/نمونه کم‌فشار قبلی/u.test(answer)) {
-      answer += '\\n\\nاگر مرور گذشته برایت امن و مناسب است، می‌توانی یک نمونه کم‌فشار قبلی را انتخاب کنی؛ در غیر این صورت تمرین را به زمان دیگری موکول کن.';
+      answer += '\n\nاگر مرور گذشته برایت امن و مناسب است، می‌توانی یک نمونه کم‌فشار قبلی را انتخاب کنی؛ در غیر این صورت تمرین را به زمان دیگری موکول کن.';
     }
     addIfMissing(guide.restActionVersion, 'اگر امروز به مکث نیاز داری، ');
   }
@@ -3295,7 +3295,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   if (question.kind === 'not_done') {
     addIfMissing(guide.lightVersion, 'اگر خواستی دوباره شروع کنی، ');
     if (!/خودت را سرزنش نکن/u.test(answer)) {
-      answer += '\\n\\nانجام‌ندادن این تمرین به معنی بی‌ارادگی یا شکست نیست؛ خودت را سرزنش نکن.';
+      answer += '\n\nانجام‌ندادن این تمرین به معنی بی‌ارادگی یا شکست نیست؛ خودت را سرزنش نکن.';
     }
   }
   if (question.kind === 'success') {
@@ -3304,24 +3304,24 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   if (question.kind === 'stop' || question.kind === 'anger_increased') {
     addIfMissing(guide.stopCondition, 'برای همین روز این نکته را هم جدی بگیر: ');
     if (!/فاصله امن/u.test(answer)) {
-      answer += '\\n\\nاگر احتمال آسیب فوری وجود دارد، از موقعیت فاصله امن بگیر و از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک فوری بخواه.';
+      answer += '\n\nاگر احتمال آسیب فوری وجود دارد، از موقعیت فاصله امن بگیر و از فرد قابل اعتماد یا خدمات اضطراری محل زندگی کمک فوری بخواه.';
     }
   }
   if (question.kind === 'talk_other') {
-    if (!/لازم نیست[^.\\n]*با فرد دیگری صحبت کنی/u.test(answer)) {
+    if (!/لازم نیست[^.\n]*با فرد دیگری صحبت کنی/u.test(answer)) {
       answer = 'نه، لازم نیست برای انجام این تمرین با فرد دیگری صحبت کنی. ' + answer;
     }
     if (!/آزادانه رضایت داشته باشند/u.test(answer)) {
-      answer += '\\n\\nگفت‌وگوی مستقیم فقط وقتی مطرح است که هر دو نفر آزادانه رضایت داشته باشند و بتوانند بدون ترس مخالفت کنند یا آن را متوقف کنند.';
+      answer += '\n\nگفت‌وگوی مستقیم فقط وقتی مطرح است که هر دو نفر آزادانه رضایت داشته باشند و بتوانند بدون ترس مخالفت کنند یا آن را متوقف کنند.';
     }
   }
   if (question.kind === 'duration' && !/مدت زمان مشخصی ثبت نشده/u.test(answer)) {
-    answer += '\\n\\nمدت زمان مشخصی ثبت نشده است؛ بنابراین عددی حدس نمی‌زنم. به‌اندازه‌ای وقت بگذار که بخش اصلی تمرین روشن شود و اگر خسته یا ناراحت شدی مکث کن.';
+    answer += '\n\nمدت زمان مشخصی ثبت نشده است؛ بنابراین عددی حدس نمی‌زنم. به‌اندازه‌ای وقت بگذار که بخش اصلی تمرین روشن شود و اگر خسته یا ناراحت شدی مکث کن.';
   }
 
   if (question.kind === 'action_example'
     && !/اگر شرایط زندگی تو شبیه این نمونه نیست|اگر گفتن یا انجام‌دادن آن امن نیست/u.test(answer)) {
-    answer += '\\n\\nاگر شرایط زندگی تو شبیه این نمونه نیست یا گفتن و انجام‌دادن آن امن نیست، آن را اجرا نکن؛ فقط بخش امن و در اختیار خودت را نگه دار.';
+    answer += '\n\nاگر شرایط زندگی تو شبیه این نمونه نیست یا گفتن و انجام‌دادن آن امن نیست، آن را اجرا نکن؛ فقط بخش امن و در اختیار خودت را نگه دار.';
   }
 
   const safeAnswer = appendDailyAssistantSafetyReminder(
