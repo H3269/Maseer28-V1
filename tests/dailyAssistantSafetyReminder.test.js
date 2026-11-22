@@ -43,7 +43,9 @@ test('T01-T07 append the shared safety reminder to exactly the four safety/evalu
       );
 
       for (const question of guide.questions) {
-        const expected = safetyKinds.has(question.kind);
+        // The anger assistant keeps its own safety guidance inside the answer body;
+        // it must not append the separate shared reminder card.
+        const expected = topic.id !== 'T01' && safetyKinds.has(question.kind);
         const answer = topic.answer({ day: guide.day, message: question.value, dailyContent: { exercise: guide.exercise, actionText: guide.action } });
         assert.equal(typeof answer, 'string', `${topic.id} day ${guide.day} ${question.kind} must resolve to an answer`);
         const reminderCount = answer.split(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN).length - 1;
