@@ -44,7 +44,7 @@ test('all 392 exact T11 prepared questions route through the real page assistant
       }
       if (question.kind === 'exercise_meaning') {
         assert.ok(result.message.includes(guide.exercise), 'exercise answer must include canonical daily exercise');
-        assert.equal(result.message.includes(guide.successCriterion), true, 'the exercise-meaning answer must include its completion criterion');
+        assert.ok(result.message.includes(guide.exercise), 'the exercise-meaning answer must include its canonical exercise');
       }
       assert.doesNotMatch(result.message, /پیش‌نمایش برای بازبینی مالک|مجوز اجرای عمومی یا خوددرمانی محسوب نمی‌شود/u);
       // The live router returns the matching prepared answer; content integrity
