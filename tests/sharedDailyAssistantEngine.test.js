@@ -78,13 +78,32 @@ test('the T01 approved answer-bank entry point delegates to the same shared buil
           id: 'خشم-' + String(guide.day).padStart(2, '0'),
           topic_id: 'T01',
           day: guide.day,
+          title: guide.title,
+          objective: guide.objective,
+          skill: guide.skill,
+          mechanism: guide.mechanism,
           exercise: guide.exercise,
           actionText: guide.action,
+          exerciseExample: guide.exerciseExample,
+          actionExample: guide.actionExample,
+          lightVersion: guide.lightVersion,
+          lightActionVersion: guide.lightActionVersion,
+          progressVersion: guide.progressVersion,
+          progressActionText: guide.progressActionVersion,
+          restVersion: guide.restVersion,
+          restActionText: guide.restActionVersion,
+          successCriterion: guide.successCriterion,
+          stopCondition: guide.stopCondition,
+          reflectionQuestion: guide.reflectionQuestion,
+          whenToSeekHumanSupport: guide.whenToSeekHumanSupport,
+          durationMinutes: guide.durationMinutes,
         },
+        plainSteps: ANGER_DAILY_PLAIN_LANGUAGE_STEPS[guide.day] || {},
       });
       assert.equal(typeof shared, 'string', 'T01 day ' + guide.day + ' ' + question.kind);
       assert.ok(shared.length > 0);
-      // The old T01 entry point and the new shared entry point must use one renderer.
+      // The approved T01 content and plain-language steps must render through the same engine.
+      assert.equal(direct, shared, 'T01 shared renderer parity day ' + guide.day + ' ' + question.kind);
       assert.equal(buildAngerDailyRebuiltAnswer({
         guide,
         question,
