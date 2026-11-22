@@ -622,13 +622,11 @@ try {
   await dayPrompt.waitFor({ state: 'visible' });
   await dayPrompt.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
   await panel.getByRole('button', { name: 'ارسال' }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => /موضوع: خشم \| روز (?:1|۱)/.test(node.innerText)));
+  await page.waitForFunction(() => document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= 1);
   let assistantReply = await panel.locator('.assistantMessage').last().innerText();
   assert.match(assistantReply, /خشم/);
   assert.match(assistantReply, /روز ۱/);
-  assert.match(assistantReply, /توضیح و راهنمای امروز/);
-  assert.match(assistantReply, /جمع‌بندی امروز/);
+  assert.doesNotMatch(assistantReply, /دستیار هوشمند مسیر ۲۸|موضوع: خشم|توضیح و راهنمای امروز|جمع‌بندی امروز|۰۹۱۹۰۸۸۹۰۶۲/u);
   assert.match(assistantReply, /تمرین/);
   assert.match(assistantReply, /هدف امروز روشن است/);
   assert.match(assistantReply, /قدم‌به‌قدم/);
@@ -646,7 +644,7 @@ try {
     'the prepared answer must correspond to the currently displayed anger day');
   await assertAssistantUsesVisibleDailySource(page, panel, 'خشم', 1, ['exercise']);
 
-  // Each of the four questions in the evaluation/safety group gets the same footer.
+  // The four anger safety/evaluation answers retain their own guidance but omit only the separate shared reminder card.
   for (const safetyQuestion of [
     'اگر هنگام تمرین فشار یا ناراحتی‌ام بیشتر شد چه کنم؟',
     'آیا لازم است حتماً با فرد دیگری صحبت کنم؟',
@@ -661,17 +659,13 @@ try {
     await panel.getByRole('button', { name: 'ارسال' }).click();
     await page.waitForFunction((previous) => {
       const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-      return replies.length > previous && Boolean(replies.at(-1)?.querySelector('[data-testid="daily-assistant-safety-reminder"]'));
+      return replies.length > previous;
     }, previousReplyCount, { timeout: 8000 });
     const reply = panel.locator('.assistantMessage').last();
-    assert.equal(await reply.getByTestId('daily-assistant-safety-reminder').count(), 1,
-      'each evaluation/safety answer must contain exactly one reminder card');
-    assert.match(await reply.innerText(), /یادآوری مهم درباره ایمنی شما/);
-    assert.match(await reply.innerText(), /به یاد داشته باشید: سلامت و امنیت شما از انجام هر تمرینی مهم‌تر است/);
-    const shafaLine = reply.locator('.dailyAssistantSafetyReminderShafa');
-    assert.equal(await shafaLine.innerText(), 'شماره ۰۹۱۹۰۸۸۹۰۶۲ فقط برای نوبت‌دهی و پشتیبانی مرکز است و جایگزین خدمات اورژانسی یا کمک فوری تخصصی نیست.');
-    assert.ok(Number(await shafaLine.evaluate(element => getComputedStyle(element).fontWeight)) >= 700,
-      'the Shafa contact line must be visibly bold');
+    assert.equal(await reply.getByTestId('daily-assistant-safety-reminder').count(), 0,
+      'anger safety/evaluation answers must omit only the separate reminder card');
+    assert.doesNotMatch(await reply.innerText(), /یادآوری مهم درباره ایمنی شما|۰۹۱۹۰۸۸۹۰۶۲/u,
+      'the reminder card title and contact number must not appear in T01 answer text');
   }
 
   // Returning to a normal prepared question must not leak the reminder state.
