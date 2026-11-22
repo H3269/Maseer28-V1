@@ -7,6 +7,8 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/anger-guide-check.yml"
+      - "src/App.jsx"
+      - "tests/dailyAssistantExamplesCache.test.mjs"
       - "src/features/assistant/angerDailyAssistantPrompts.js"
       - "src/features/assistant/angerDailyRebuiltAnswerBank.js"
       - "src/features/assistant/sharedDailyAssistantEngine.js"
