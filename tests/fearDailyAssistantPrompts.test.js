@@ -59,7 +59,8 @@ test('T03 router requires canonical topic identity, keeps safety preemption, and
  const data={topic_id:'T03',day:1,exercise:'تمرین روز اول ترس',actionText:'اقدام روز اول ترس'};
  const q=FEAR_DAILY_ASSISTANT_GUIDES[0].questions[0].value;
  const good=makeDailyExerciseGuidanceTurn({message:q,dayData:data,problem:'ترس',day:1});
- assert.match(good.response,/در روز 1/);\n assert.ok(good.response.includes(data.exercise));
+ assert.match(good.response,/در روز 1/);
+ assert.ok(good.response.includes(data.exercise));
  const mismatch=makeDailyExerciseGuidanceTurn({message:q,dayData:{...data,topic_id:'T02'},problem:'ترس',day:1});
  assert.match(mismatch.response,/شناسه موضوع/);
  const outside=makeDailyExerciseGuidanceTurn({message:'یک پرسش آزاد',dayData:data,problem:'ترس',day:1});
