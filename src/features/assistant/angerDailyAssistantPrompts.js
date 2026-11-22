@@ -3268,8 +3268,15 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   const guide = hasMatchingDailyContent
     ? {
       ...canonicalGuide,
+      title: String(dailyContent.title || '').trim() || canonicalGuide.title,
       exercise: String(dailyContent.exercise || dailyContent.instructions || '').trim() || canonicalGuide.exercise,
       action: String(dailyContent.actionText || dailyContent.action || '').trim() || canonicalGuide.action,
+      exerciseExample: String(dailyContent.exerciseExample || '').trim() || canonicalGuide.exerciseExample,
+      actionExample: String(dailyContent.actionExample || '').trim() || canonicalGuide.actionExample,
+      lightVersion: String(dailyContent.lightExerciseText || '').trim() || canonicalGuide.lightVersion,
+      lightActionVersion: String(dailyContent.lightActionText || '').trim() || canonicalGuide.lightActionVersion,
+      progressActionVersion: String(dailyContent.progressActionText || '').trim() || canonicalGuide.progressActionVersion,
+      restActionVersion: String(dailyContent.restActionText || '').trim() || canonicalGuide.restActionVersion,
     }
     : canonicalGuide;
   const question = guide.questions.find((item) => item.value === String(args.message || '').trim());
@@ -3290,6 +3297,19 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     }
     if (canonicalGuide.action && guide.action !== canonicalGuide.action) {
       baseAnswer = baseAnswer.split(canonicalGuide.action).join(guide.action);
+    }
+    for (const [source, replacement] of [
+      [canonicalGuide.title, guide.title],
+      [canonicalGuide.exerciseExample, guide.exerciseExample],
+      [canonicalGuide.actionExample, guide.actionExample],
+      [canonicalGuide.lightVersion, guide.lightVersion],
+      [canonicalGuide.lightActionVersion, guide.lightActionVersion],
+      [canonicalGuide.progressActionVersion, guide.progressActionVersion],
+      [canonicalGuide.restActionVersion, guide.restActionVersion],
+    ]) {
+      if (source && replacement && source !== replacement) {
+        baseAnswer = baseAnswer.split(source).join(replacement);
+      }
     }
   }
 
