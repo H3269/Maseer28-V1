@@ -250,7 +250,11 @@ test('T02-T09 prepared answers retain topic/day context and substantive guidance
           dailyContent,
         });
         assert.equal(typeof answer, 'string', topicId + ' day ' + guide.day + ' ' + question.id + ' answer');
-        assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.title)), topicId + ' day ' + guide.day + ' title context');
+        if (topicId !== 'T01') {
+          assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.title)), topicId + ' day ' + guide.day + ' title context');
+        } else {
+          assert.doesNotMatch(answer, /دستیار هوشمند مسیر ۲۸|موضوع: خشم|جمع‌بندی امروز|توضیح و راهنمای امروز/u);
+        }
         assert.ok(answer.trim().length > 20, topicId + ' day ' + guide.day + ' ' + question.id + ' non-empty response');
         assert.doesNotMatch(answer, /قرار نیست همه مسئله را یک‌باره حل کنی/u, topicId + ' must not receive a repeated global supportive sentence');
         if (question.kind === 'exercise_meaning') assert.ok(answer.includes(String(guide.exercise).trim().slice(0, 40)), topicId + ' day ' + guide.day + ' exercise context');
@@ -277,7 +281,8 @@ test('T03-T05 q12 answers retain the topic-specific daily action', () => {
 test('T01 q10 is day-bound and avoids blaming or shaming the user', () => {
   const guide = ANGER_DAILY_ASSISTANT_GUIDES[0];
   const answer = answerAngerDailyPreparedQuestion({ day: 1, message: expectedValues[9] });
-  assert.ok(answer.includes('موضوع: خشم | روز 1'), 'T01 q10 must retain topic/day context');
+  assert.ok(answer.includes('روز 1'), 'T01 q10 must remain bound to the selected day');
+  assert.doesNotMatch(answer, /موضوع: خشم|دستیار هوشمند مسیر ۲۸|جمع‌بندی امروز/u);
   assert.doesNotMatch(answer, /تو\s+(?:تنبلی|بی‌ارادگی)|(?:مقصر|ضعیف)\s+هستی|بهانه‌گیر/u, 'T01 q10 must not attribute a negative trait to the user');
   assert.ok(guide.questions.some(question => question.id === 'q10'));
 });
@@ -306,9 +311,14 @@ test('T01-T14 q11 safety answers remain day- and topic-specific and include the 
       } : undefined;
       const answer = answerPrepared({ day: guide.day, message: question.value, dailyContent });
       assert.equal(typeof answer, 'string', topicId + ' day ' + guide.day + ' q11 answer');
-      assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.title)), topicId + ' day ' + guide.day + ' q11 title context');
+      if (topicId === 'T01') {
+        assert.ok(answer.includes(guide.stopCondition), 'T01 day ' + guide.day + ' q11 must retain its day-specific stop guidance');
+        assert.doesNotMatch(answer, /یادآوری مهم درباره ایمنی شما|۰۹۱۹۰۸۸۹۰۶۲/u);
+      } else {
+        assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.title)), topicId + ' day ' + guide.day + ' q11 title context');
+        assert.ok(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN), topicId + ' day ' + guide.day + ' q11 shared safety footer');
+      }
       assert.ok(answer.length > 150, topicId + ' day ' + guide.day + ' q11 substantive safety guidance');
-      assert.ok(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN), topicId + ' day ' + guide.day + ' q11 shared safety footer');
       assert.doesNotMatch(answer, /هدف این است که دستور امروز را بفهمی و تا جایی که امن و شدنی است اجرا کنی/u,
         topicId + ' q11 must not depend on retired global response frame');
     }
