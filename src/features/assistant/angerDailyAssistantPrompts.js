@@ -3276,7 +3276,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
       answer += '\n\nبرای انجام تمرین عمداً خودت را وارد بحث یا موقعیت خشم‌آور نکن؛ نبود نمونه واقعی را همان‌طور که هست بپذیر.';
     }
     if (!/نمونه کم‌فشار قبلی/u.test(answer)) {
-      answer += '\n\nاگر مرور گذشته برایت امن و مناسب است، می‌توانی یک نمونه کم‌فشار قبلی را انتخاب کنی؛ در غیر این صورت تمرین را به زمان دیگری موکول کن.';
+      answer += '\n\nاگر مرور گذشته برای «' + guide.title + '» امن و مناسب است، می‌توانی یک نمونه کم‌فشار قبلی را انتخاب کنی؛ در غیر این صورت تمرین را به زمان دیگری موکول کن.';
     }
     appendIfMissing(guide.restActionVersion, 'اگر امروز به مکث نیاز داری، ');
   }
@@ -3286,7 +3286,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   if (question.kind === 'not_done') {
     appendIfMissing(guide.lightVersion, 'اگر خواستی دوباره شروع کنی، ');
     if (!/خودت را سرزنش نکن/u.test(answer)) {
-      answer += '\n\nانجام‌ندادن این تمرین به معنی بی‌ارادگی یا شکست نیست؛ خودت را سرزنش نکن.';
+      answer += '\n\nاگر تمرین «' + guide.title + '» امروز انجام نشد، خودت را سرزنش نکن؛ لازم نیست برای جبران به خودت فشار بیاوری.';
     }
   }
   if (question.kind === 'success') {
@@ -3295,10 +3295,10 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   if (question.kind === 'stop' || question.kind === 'anger_increased') {
     appendIfMissing(guide.stopCondition, 'برای همین روز این نکته را هم جدی بگیر: ');
     if (!/فاصله امن ایجاد کن|فاصله امن بگیر|از موقعیت خطر فاصله/u.test(answer)) {
-      answer += '\n\nاگر احتمال آسیب فوری وجود دارد، فاصله امن ایجاد کن و از موقعیت خطر فاصله بگیر.';
+      answer += '\n\nاگر هنگام «' + guide.title + '» احتمال آسیب فوری وجود دارد، فاصله امن ایجاد کن و از موقعیت خطر فاصله بگیر.';
     }
     if (!/خدمات اضطراری|اورژانس/u.test(answer)) {
-      answer += '\n\nاگر احتمال آسیب فوری به خودت یا فرد دیگری وجود دارد، از خدمات اضطراری محل زندگی کمک فوری بخواه.';
+      answer += '\n\nاگر هنگام «' + guide.title + '» احتمال آسیب فوری به خودت یا فرد دیگری وجود دارد، از خدمات اضطراری محل زندگی کمک فوری بخواه.';
     }
   }
   if (question.kind === 'talk_other') {
@@ -3306,7 +3306,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
       answer = 'نه، لازم نیست برای انجام این تمرین با فرد دیگری صحبت کنی. ' + answer;
     }
     if (!/آزادانه رضایت داشته باشند/u.test(answer)) {
-      answer += '\n\nگفت‌وگوی مستقیم فقط وقتی مطرح است که هر دو نفر آزادانه رضایت داشته باشند و بتوانند بدون ترس مخالفت کنند یا آن را متوقف کنند.';
+      answer += '\n\nگفت‌وگو درباره «' + guide.title + '» فقط وقتی مطرح است که هر دو نفر آزادانه رضایت داشته باشند و بتوانند بدون ترس مخالفت کنند یا آن را متوقف کنند.';
     }
   }
   if (question.kind === 'duration' && !/مدت زمان مشخصی ثبت نشده/u.test(answer)) {
@@ -3314,7 +3314,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
   }
   if (question.kind === 'action_example'
     && !/اگر شرایط زندگی تو شبیه این نمونه نیست|اگر گفتن یا انجام‌دادن آن امن نیست/u.test(answer)) {
-    answer += '\n\nاگر شرایط زندگی تو شبیه این نمونه نیست یا گفتن و انجام‌دادن آن امن نیست، آن را اجرا نکن؛ فقط بخش امن و در اختیار خودت را نگه دار.';
+    answer += '\n\nاگر شرایط واقعی تو با نمونه «' + guide.title + '» فرق دارد یا گفتن و انجام‌دادن آن امن نیست، آن را اجرا نکن؛ فقط بخش امن و در اختیار خودت را نگه دار.';
   }
 
   const safeAnswer = appendDailyAssistantSafetyReminder(
