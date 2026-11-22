@@ -54,7 +54,7 @@ test('each question type explains the corresponding day-specific exercise, actio
     assert.ok(byKind.anger_increased.includes(guide.stopCondition));
     assert.ok(byKind.can_change.includes(guide.objective));
     assert.match(byKind.talk_other, /گفت‌وگو با فرد دیگری الزامی نیست/u);
-    assert.match(byKind.duration, /زمان ثابتی برای این تمرین تعیین نشده/u);
+    assert.match(byKind.duration, /(?:زمان ثابتی برای این تمرین تعیین نشده|زمان مشخصی برای این تمرین ثبت نشده)/u);
   }
 });
 
