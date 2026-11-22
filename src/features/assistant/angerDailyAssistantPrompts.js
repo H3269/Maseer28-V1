@@ -3338,7 +3338,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     duration: 'مدت زمان',
   };
   const referenceAnswer = args.frameStyle === 'standard' && legacyReferenceHeadings[question.kind]
-    ? '**' + legacyReferenceHeadings[question.kind] + '**\\n\\n' + safeAnswer
+    ? '**' + legacyReferenceHeadings[question.kind] + '**\n\n' + safeAnswer
     : safeAnswer;
   return applySharedDailyAssistantAnswerFrame(referenceAnswer, {
     day,
