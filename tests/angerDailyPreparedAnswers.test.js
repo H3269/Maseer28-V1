@@ -85,6 +85,9 @@ test('T01 prepared answers contain no repeated non-safety sentence of 35+ normal
     normalizeSentence('برای نشان‌دادن پیشرفت شدت یا دامنه تعامل را بیشتر نکن'),
     normalizeSentence('بنابراین زمان قطعی یا عدد استانداردی برای این تمرین اعلام نمی‌کنم'),
     normalizeSentence('لازم نیست باقی رویداد را بازسازی کنی'),
+    normalizeSentence('فقط بخش امن و در اختیار خودت را نگه دار'),
+    normalizeSentence('نبود نمونه واقعی را همان‌طور که هست بپذیر'),
+    normalizeSentence('در غیر این صورت تمرین را به زمان دیگری موکول کن'),
     normalizeSentence('از موقعیت فاصله بگیر و کمک فوری بگیر'),
     normalizeSentence('فقط تصمیم بگیر در صورت بالا رفتن خطر فاصله و کمک انسانی بر تمرین مقدم است'),
     normalizeSentence('در خطر فوری فاصله و کمک اضطراری مقدم است'),
@@ -96,6 +99,7 @@ test('T01 prepared answers contain no repeated non-safety sentence of 35+ normal
     normalizeSentence('در صورت تداوم آسیب یا تهدید حمایت تخصصی مقدم است'),
   ]);
   for (const guide of ANGER_DAILY_ASSISTANT_GUIDES) {
+    if (guide.stopCondition) approvedSafetyExceptions.add(normalizeSentence(guide.stopCondition));
     for (const question of guide.questions) {
       const framedAnswer = answerAngerDailyPreparedQuestion({ day: guide.day, message: question.value });
       const answer = framedAnswer.split('\n\n').slice(1).join('\n\n')
