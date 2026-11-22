@@ -841,7 +841,7 @@ try {
   const reenteredReply = await gatedPanel.locator('.assistantMessage').last().innerText();
   assert.match(reenteredReply, /برنامه خروج امن از تعامل/,
     're-entering the same Path28 day must keep its exercise-specific assistant guidance available');
-  assert.match(reenteredReply, /چه نشانه‌ای به تو می‌گوید مکث لازم است/);
+  assert.match(reenteredReply, /چه نشانه‌ای می‌گوید باید مکث کنی|یک نشانه مشخص را انتخاب کن که به تو می‌گوید باید مکث کنی/);
   assert.match(reenteredReply, /بدون تهدید فاصله بگیری/);
   assert.doesNotMatch(reenteredReply, /بررسی ایمنی همین روز|بازبینی ایمنی/);
   await gatedPage.close();
