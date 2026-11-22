@@ -128,7 +128,7 @@ test('T09 overlay and prompt UI remain wired without mislabeling legacy records 
   assert.deepEqual(topic.content_ids, [], 'legacy T09 records without the v2 topic_id contract must not be linked as v2 registry content');
   assert.match(launcher, /getSharedDailyAssistantPromptGroups/);
   assert.match(launcher, /isTopicDailyPromptContext/);
-  assert.match(launcher, /t09-daily-prompt-trigger/);
+  assert.match(launcher, /activeDailyTopicId/);
 });
 
 test('T09 answers are fully contextual, use visible daily content, and keep resistance distinct from stop guidance', () => {
