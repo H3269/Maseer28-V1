@@ -13,6 +13,8 @@ import {
   ANGER_DAILY_PLAIN_LANGUAGE_STEPS,
 } from '../src/features/assistant/angerDailyAssistantPrompts.js';
 import { buildAngerDailyRebuiltAnswer } from '../src/features/assistant/angerDailyRebuiltAnswerBank.js';
+import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
+import { getDailySafetyMode } from '../src/features/content/dailySafety.js';
 
 const TOPICS = Object.freeze([
   ['T02', 'اضطراب'],
@@ -153,6 +155,42 @@ test('missing examples are disclosed instead of being invented for T11-T14', asy
     assert.match(actionAnswer, /مثال فرضی جداگانه‌ای در محتوای ثبت‌شده وجود ندارد/u);
     assert.ok(exerciseAnswer.includes(day.exercise));
     assert.ok(actionAnswer.includes(day.actionText));
+  }
+});
+
+test('generic base fallback text is not mislabeled as topic-specific for T04, T05, T09, T10, and T13', async () => {
+  const merged = await loadMergedContent();
+  for (const [topicId, topicName] of TOPICS.filter(([id]) => ['T04', 'T05', 'T09', 'T10', 'T13'].includes(id))) {
+    const day = merged.categories[topicName].days[0];
+    const questions = getSharedDailyAssistantPromptGroups(1, topicId).flatMap((group) => group.questions);
+    const lightQuestion = questions.find((question) => question.kind === 'light_version');
+    const lightAnswer = buildSharedDailyAssistantAnswerFromDailyContent({
+      topicId, topicName, day: 1, message: lightQuestion.value, dailyContent: day,
+    });
+    assert.match(lightAnswer, /نسخه سبک جداگانه‌ای در محتوای ثبت‌شده وجود ندارد/u, topicId);
+    if (day.lightExerciseText) assert.ok(!lightAnswer.includes(day.lightExerciseText), topicId + ' generic light exercise must not be presented as specific');
+    if (day.lightActionText) assert.ok(!lightAnswer.includes(day.lightActionText), topicId + ' generic light action must not be presented as specific');
+  }
+});
+
+test('T02-T14 route through the same prepared-answer engine using the selected canonical day', async () => {
+  const merged = await loadMergedContent();
+  for (const [topicId, topicName] of TOPICS) {
+    const dailyContent = merged.categories[topicName].days[0];
+    if (['T13', 'T14'].includes(topicId) && getDailySafetyMode(dailyContent) === 'blocked') continue;
+    const question = getSharedDailyAssistantPromptGroups(1, topicId)[0].questions[0];
+    const result = makePageAssistantTurn({
+      screen: 'day',
+      text: question.value,
+      dailyContext: {
+        day: 1,
+        problem: topicName,
+        data: dailyContent,
+        relationshipSafetyConfirmed: true,
+      },
+    });
+    assert.equal(result.status, 'daily_guidance_available', topicId);
+    assert.ok(result.message.includes(dailyContent.exercise), topicId);
   }
 });
 
