@@ -186,7 +186,7 @@ function answerBody({ guide, question, plainSteps = {} }) {
     case 'exercise_meaning':
       return paragraph(
         objective
-          ? 'در روز ' + day + '، تمرین تو بر ' + (specificSkill ? 'مهارت «' + specificSkill + '»' : 'موضوع «' + topic + '»') + ' متمرکز است. به‌جای نتیجه‌گیری کلی، دستور همان روز را بررسی می‌کنی. هدف این روز این است: ' + objective
+          ? 'در روز ' + day + '، تمرین با عنوان «' + (guide.title || specificSkill || topic) + '» بر ' + (specificSkill ? 'مهارت «' + specificSkill + '»' : 'موضوع «' + topic + '»') + ' متمرکز است. به‌جای نتیجه‌گیری کلی، دستور همان روز را بررسی می‌کنی. هدف این روز این است: ' + objective
           : specificSkill
             ? 'در روز ' + day + '، تمرین تو بر مهارت «' + specificSkill + '» متمرکز است. متن تمرین مشخص می‌کند امروز چه چیزی را بررسی یا ثبت کنی.'
             : 'در روز ' + day + '، تمرین مربوط به «' + topic + '» بر اساس دستور ثبت‌شده پیش می‌رود؛ لازم نیست هدف یا معنای دیگری به آن نسبت بدهی.',
