@@ -85,9 +85,54 @@ jobs:
           test -s dist/test-fixtures/readerEngine-baseline.js
           node --check dist/test-fixtures/readerEngine-baseline.js
 
-      # Run the complete Chromium browser regression suite against the same test build.
+      # Select browser coverage from changed paths. Source/build changes keep the full suite;
+      # test-only changes run only changed browser specs (unit tests still run above).
+      - name: Select browser regression scope
+        id: browser_scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          mode=full
+          selected=()
+          before="${GITHUB_EVENT_BEFORE:-}"
+          if [[ "${GITHUB_EVENT_NAME}" == "push" && "$before" =~ ^[0-9a-f]{40}$ && "$before" != "0000000000000000000000000000000000000000" ]]; then
+            mapfile -t changed < <(git diff --name-only "$before" "$GITHUB_SHA")
+            source_changed=false
+            for file in "${changed[@]}"; do
+              case "$file" in
+                tests/*|.github/workflows/deploy.yml) ;;
+                *) source_changed=true ;;
+              esac
+            done
+            if [[ "$source_changed" == false ]]; then
+              mode=focused
+              for file in "${changed[@]}"; do
+                [[ "$file" == tests/browser/*.mjs ]] && selected+=("$file")
+              done
+            fi
+          fi
+          if [[ "$mode" == full ]]; then
+            echo "run_browser=true" >> "$GITHUB_OUTPUT"
+            echo "mode=full" >> "$GITHUB_OUTPUT"
+          elif [[ "${#selected[@]}" -gt 0 ]]; then
+            echo "run_browser=true" >> "$GITHUB_OUTPUT"
+            echo "mode=focused" >> "$GITHUB_OUTPUT"
+            {
+              echo "scripts<<EOF"
+              printf '%s\n' "${selected[@]}"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+          else
+            echo "run_browser=false" >> "$GITHUB_OUTPUT"
+            echo "mode=skip" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Browser regression mode: $mode"
+          printf 'Selected: %s\n' "${selected[@]:-none}"
+
+      # Test-only pushes run changed browser specs; application/source changes run all specs.
       - name: Install pinned Playwright browser runner
-        run: npm install --no-save --package-lock=false playwright@1.65.1
+        if: steps.browser_scope.outputs.run_browser == 'true'
+      - name: Install pinned Playwright browser runner\n        run: npm install --no-save --package-lock=false playwright@1.65.1
 
       - name: Install Chromium headless shell and system dependencies
         shell: bash
@@ -116,19 +161,22 @@ jobs:
           export PATH28_BASE_URL=http://127.0.0.1:4173/Maseer28-V1/
           mkdir -p /tmp/path28-browser-logs
           browser_test_status=0
-          if printf '%s\0' tests/browser/*.mjs | xargs -0 -P 3 -I '{}' bash -c '
+          if [[ "${{ steps.browser_scope.outputs.mode }}" == "full" ]]; then
+            mapfile -t browser_scripts < <(printf '%s\n' tests/browser/*.mjs)
+          else
+            mapfile -t browser_scripts <<'EOF'
+${{ steps.browser_scope.outputs.scripts }}
+EOF
+          fi
+          printf '%s\0' "${browser_scripts[@]}" | xargs -0 -P 3 -I '{}' bash -c '
             script="$1"
             log_file="/tmp/path28-browser-logs/$(basename "$script").log"
             {
               echo "Running $script"
               node "$script"
             } > "$log_file" 2>&1
-          ' _ '{}'; then
-            browser_test_status=0
-          else
-            browser_test_status=$?
-          fi
-          for script in tests/browser/*.mjs; do
+          ' _ '{}' || browser_test_status=$?
+          for script in "${browser_scripts[@]}"; do
             log_file="/tmp/path28-browser-logs/$(basename "$script").log"
             echo "===== $script ====="
             if [ -f "$log_file" ]; then
