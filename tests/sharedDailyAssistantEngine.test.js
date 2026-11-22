@@ -118,6 +118,7 @@ test('the T01 approved answer-bank entry point delegates to the same shared buil
 
 test('T02-T14 produce fourteen day-bound answers from canonical content for all 28 days', async () => {
   const merged = await loadMergedContent();
+  const migratedCatalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
   let checked = 0;
   for (const [topicId, topicName] of TOPICS) {
     const days = merged.categories[topicName]?.days || [];
@@ -368,7 +369,9 @@ test('runtime examples survive adapted visible wording and stay bound to the can
           .flatMap((group) => group.questions)
           .find((item) => item.kind === kind);
         assert.ok(question, topicId + ' day ' + day + ' ' + kind);
-        assert.ok(record[field]?.trim(), topicId + ' day ' + day + ' must have a source example');
+        const migratedRecord = migratedCatalog.records.find((item) => item.topicId === topicId && item.day === day);
+        const sourceExample = record[field] || migratedRecord?.[field];
+        assert.ok(sourceExample?.trim(), topicId + ' day ' + day + ' must have a source example');
         const result = makePageAssistantTurn({
           screen: 'day',
           text: question.value,
@@ -388,7 +391,7 @@ test('runtime examples survive adapted visible wording and stay bound to the can
         });
         assert.equal(result.status, 'daily_guidance_available',
           topicId + ' day ' + day + ' ' + kind + ' must pass the real runtime router');
-        const normalizedExample = record[field].replace(/^(?:نمونه فرضی:\s*){2,}/u, 'نمونه فرضی: ');
+        const normalizedExample = sourceExample.replace(/^(?:نمونه فرضی:\s*){2,}/u, 'نمونه فرضی: ');
         const visibleExample = cleanPreparedAssistantTopicText(normalizedExample, topicName);
         assert.ok(result.message.includes(visibleExample),
           topicId + ' day ' + day + ' ' + kind + ' must render its canonical example after normal display cleanup. Expected: '
