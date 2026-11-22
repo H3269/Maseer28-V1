@@ -112,7 +112,7 @@ test('all 5,488 prepared FAQs remain available without specialist approval metad
           review_status: 'pending_expert_review',
         },
       };
-      const questions = topic.groups(guide.day).flatMap(group => group.questions);
+      const questions = getSharedDailyAssistantPromptGroups(guide.day, topic.id).flatMap(group => group.questions);
       for (const question of questions) {
         const result = makePageAssistantTurn({
           screen: 'day',
@@ -310,5 +310,5 @@ test('T14 is wired into the visible prepared-question launcher and remains prepa
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
   assert.match(launcher, /getSharedDailyAssistantPromptGroups/u);
   assert.match(launcher, /T14: 'کمبود انگیزه'/u);
-  assert.match(launcher, /t14-daily-prompt-trigger/u);
+  assert.match(launcher, /activeDailyTopicId/u);
 });
