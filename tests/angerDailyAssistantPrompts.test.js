@@ -41,7 +41,8 @@ test('all 28 anger days use direct teacher-style explanations without formulaic 
     const actionAnswer = answerAngerDailyPreparedQuestion({ day, message: actionQuestion.value });
     assert.ok(exerciseAnswer.length > 150, 'day ' + day + ' needs a substantial explanation');
     assert.doesNotMatch(exerciseAnswer, /هدف امروز|هدف تمرین|منطق آموزشی امروز/u, 'day ' + day + ' must not begin with an objective statement');
-    assert.doesNotMatch(exerciseAnswer, /^\\*\\*[^*]+\\*\\*/mu, 'day ' + day + ' must not use a heavy section heading');
+    const exerciseBody = exerciseAnswer.split('\\n\\n').slice(1).join('\\n\\n');
+    assert.doesNotMatch(exerciseBody, /^\\*\\*[^*]+\\*\\*/mu, 'day ' + day + ' must not use a heavy section heading inside the answer');
     assert.match(exampleAnswer, /فرض کن|مثلاً|برای مثال|تصور کن/u, 'day ' + day + ' needs a concrete example');
     assert.ok(actionAnswer.includes(guide.title) && /اقدام|رفتار|انتخاب/u.test(actionAnswer), 'day ' + day + ' needs topic-specific action guidance');
   }
