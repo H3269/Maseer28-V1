@@ -341,7 +341,7 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
   }
 
   if (canonicalTopicId === 'T01') {
-    const preparedAnswer = answerAngerDailyPreparedQuestion({ day, message: text });
+    const preparedAnswer = answerAngerDailyPreparedQuestion({ day, message: text, dailyContent: dayData });
     if (preparedAnswer) return result(preparedAnswer, { ...state, lastTopic: currentTopic }, text);
   }
 
