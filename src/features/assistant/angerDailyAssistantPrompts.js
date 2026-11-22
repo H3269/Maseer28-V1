@@ -3290,7 +3290,7 @@ export function answerAngerDailyPreparedQuestion(args = {}) {
     answer = answer.replace('لازم نیست برای جبران به خودت فشار بیاوری', 'برای «' + guide.title + '» لازم نیست برای جبران به خودت فشار بیاوری');
     appendIfMissing(guide.lightVersion, 'اگر خواستی دوباره شروع کنی، ');
     if (!/خودت را سرزنش نکن/u.test(answer)) {
-      answer += '\n\nاگر تمرین «' + guide.title + '» امروز انجام نشد، خودت را سرزنش نکن؛ لازم نیست برای جبران به خودت فشار بیاوری.';
+      answer += '\n\nاگر تمرین «' + guide.title + '» امروز انجام نشد، خودت را سرزنش نکن و برای جبران به خودت فشار نیاور.';
     }
   }
   if (question.kind === 'success') {
