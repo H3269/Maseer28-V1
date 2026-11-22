@@ -954,7 +954,10 @@ try {
   const t13SafetyReply = t13Panel.locator('.assistantMessage').last();
   assert.equal(await t13SafetyReply.getByTestId('daily-assistant-safety-reminder').count(), 1,
     'T13 evaluation answer must show exactly one shared safety reminder card');
-  assert.match(await t13SafetyReply.innerText(), /۰۹۱۹۰۸۸۹۰۶۲/);
+  assert.match(await t13SafetyReply.innerText(), /یادآوری مهم درباره ایمنی شما/);
+  assert.doesNotMatch(await t13SafetyReply.innerText(), /۰۹۱۹۰۸۸۹۰۶۲/);
+  assert.equal(await t13SafetyReply.locator('.dailyAssistantSafetyReminderShafa').count(), 0,
+    'T13 safety reminder must keep its main card but omit the nested contact-number box');
   assert.equal((await t13SafetyReply.innerText()).split('یادآوری اختصاصی ایمنی درباره تنهایی').length - 1, 1,
     'T13-specific safety reminder must appear exactly once after topic-label normalization');
   assert.deepEqual(t13Errors, [], 'T13 prepared assistant must not raise browser errors');
