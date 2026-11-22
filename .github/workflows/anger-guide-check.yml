@@ -39,3 +39,31 @@ jobs:
           tests/angerContentPackage.test.mjs
       - name: Verify production bundle
         run: npm run build
+
+      - name: Install pinned Playwright browser runner
+        run: npm install --no-save --package-lock=false playwright@1.65.1
+
+      - name: Install Chromium headless shell and system dependencies
+        run: |
+          npx playwright install-deps chromium
+          npx playwright install --only-shell chromium
+
+      - name: Run anger daily assistant browser regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/path28-preview.log 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 40); do
+            if curl --fail --silent http://127.0.0.1:4173/ > /dev/null; then
+              break
+            fi
+            if [ "${attempt}" -eq 40 ]; then
+              cat /tmp/path28-preview.log
+              exit 1
+            fi
+            sleep 2
+          done
+          export PATH28_BASE_URL=http://127.0.0.1:4173/
+          node tests/browser/daily-assistant-guidance.mjs
