@@ -111,7 +111,7 @@ test('no-event answer never asks the user to create an anger-provoking situation
   const guide = ANGER_DAILY_ASSISTANT_GUIDES[14];
   const question = guide.questions.find((item) => item.kind === 'no_event');
   const answer = answerAngerDailyPreparedQuestion({ day: 15, message: question.value });
-  assert.match(answer, /عمداً (?:بحثی|موقعیتی) ایجاد کن/);
+  assert.match(answer, /عمداً موقعیتی ایجاد نکن/);
   assert.match(answer, /مرور یک تجربه قبلی/);
 });
 
@@ -266,7 +266,7 @@ test('duration answer does not invent a number that is absent from reviewed sour
   const guide = ANGER_DAILY_ASSISTANT_GUIDES[0];
   const question = guide.questions.find((item) => item.kind === 'duration');
   const answer = answerAngerDailyPreparedQuestion({ day: 1, message: question.value });
-  assert.match(answer, /(?:زمان ثابتی برای این تمرین تعیین نشده|زمان مشخصی برای این تمرین ثبت نشده)/);
+  assert.match(answer, /در محتوای روز 1 زمان مشخصی برای این تمرین ثبت نشده/);
   assert.doesNotMatch(answer, /\d+ دقیقه/);
 });
 
