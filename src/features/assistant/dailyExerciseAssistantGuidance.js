@@ -1,7 +1,7 @@
 import { routeSemanticIntake } from './intentContextRouter.js';
 import { getCanonicalTopicIdForCategory } from '../journey/relationshipSafetyGate.js';
-import { answerAngerDailyPreparedQuestion } from './angerDailyAssistantPrompts.js';
-import { buildSharedDailyAssistantAnswerFromDailyContent, getSharedDailyAssistantQuestion, SHARED_DAILY_ASSISTANT_TOPIC_NAMES } from './sharedDailyAssistantEngine.js';
+import { buildPreparedDailyAssistantAnswer } from './preparedDailyAssistantAnswer.js';
+import { getSharedDailyAssistantQuestion, SHARED_DAILY_ASSISTANT_TOPIC_NAMES } from './sharedDailyAssistantEngine.js';
 
 
 
@@ -343,15 +343,13 @@ export function makeDailyExerciseGuidanceTurn({ message, dayData, problem, day, 
 
   const preparedQuestion = getSharedDailyAssistantQuestion(canonicalTopicId, text);
   if (preparedQuestion) {
-    const preparedAnswer = canonicalTopicId === 'T01'
-      ? answerAngerDailyPreparedQuestion({ day, message: text, dailyContent: dayData })
-      : buildSharedDailyAssistantAnswerFromDailyContent({
-        topicId: canonicalTopicId,
-        topicName: SHARED_DAILY_ASSISTANT_TOPIC_NAMES[canonicalTopicId] || currentTopic,
-        day,
-        message: text,
-        dailyContent: dayData,
-      });
+    const preparedAnswer = buildPreparedDailyAssistantAnswer({
+      topicId: canonicalTopicId,
+      topicName: SHARED_DAILY_ASSISTANT_TOPIC_NAMES[canonicalTopicId] || currentTopic,
+      day,
+      message: text,
+      dailyContent: dayData,
+    });
     if (preparedAnswer) return result(preparedAnswer, { ...state, lastTopic: currentTopic }, text);
     return result('شناسه موضوع یا روزِ محتوای دریافتی معتبر نیست، یا داده لازم برای پاسخ این روز در دسترس نیست؛ برای جلوگیری از راهنمایی حدسی، فعلاً پاسخ آماده ارائه نمی‌شود.', state, text);
   }
