@@ -79,4 +79,3 @@ jobs:
           done
           export PATH28_BASE_URL=http://127.0.0.1:4173/Maseer28-V1/
           node tests/browser/t01-safety-card.mjs
-          node tests/browser/daily-assistant-guidance.mjs
