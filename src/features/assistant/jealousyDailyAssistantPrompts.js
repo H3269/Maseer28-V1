@@ -3001,7 +3001,7 @@ function answerRaw({day,message,dailyContent}={}){
  case'action_meaning':body='**اقدام اختصاصی امروز چیست؟**\n'+a+'\n\n**چرا این اقدام پیشنهاد شده؟**\n'+g.mechanism+'\n\n**چطور اجرا کنی؟**\n۱. بخش در اختیار خودت را مشخص کن.\n۲. فقط گام کوچک و امن را انتخاب کن.\n۳. به تلفن، حساب، موقعیت یا ارتباطات دیگری دسترسی نخواه؛ اگر گفت‌وگو ناامن است انجامش نده.\n\n**معیار پایان:** '+g.successCriterion;break;
  case'action_example':body=example(true);break;
  case'light_version':body='**نسخه سبک امروز**\n'+g.lightVersion+'\n\nفقط همین بخش کوچک کافی است؛ اگر آن هم فشار زیادی ایجاد می‌کند، توقف کن.\n\n**چرا نسخه سبک هم ارزشمند است؟** این نسخه کمک می‌کند ارتباطت با هدف روز حفظ شود، بدون اینکه خودت را بیش از توانت تحت فشار بگذاری. یک گام کوچک و روشن می‌تواند برای مشاهده و یادگیری کافی باشد. لازم نیست برای جبران، مراحل دیگری را اضافه کنی یا نتیجه‌ای فوری به دست بیاوری.\n\n**نسخه پیشرفت، فقط در صورت تناسب:** '+g.progressVersion+'\n**معیار پایان:** '+g.successCriterion;break;
- case'success':body='**معیار موفقیت امروز**\n'+g.successCriterion+'\n\nموفقیت به معنی ازبین‌رفتن حسادت، تغییر رفتار شریک یا حل قطعی رابطه نیست. بررسی کن آیا مهارت امروز را در حد اختیار خودت به کار بردی.\n\n**برای مرور:** '+g.reflectionQuestion+'\nاین تمرین آزمون تشخیصی یا نمره روان‌شناختی نیست.';break;
+ case'success':body='**معیار موفقیت امروز**\n'+(dailyContent?.successCriterion||dailyContent?.success_criterion||g.successCriterion)+'\n\nموفقیت به معنی ازبین‌رفتن حسادت، تغییر رفتار شریک یا حل قطعی رابطه نیست. بررسی کن آیا مهارت امروز را در حد اختیار خودت به کار بردی.\n\n**برای مرور:** '+(dailyContent?.reflectionQuestion||dailyContent?.reflectionPrompt||g.reflectionQuestion)+'\nاین تمرین آزمون تشخیصی یا نمره روان‌شناختی نیست.';break;
  case'stop':body='**شرط توقف امروز**\n'+g.stopCondition+'\n\nاگر فشار شدید، میل به وارسی/تعقیب/تهدید یا احساس ناامنی بیشتر شد، تمرین را متوقف کن. برای تکمیل تمرین وارد مواجهه مستقیم نشو. در خطر فوری، فاصله امن و کمک انسانی فوری مقدم است.';break;
  case'no_event':body='**اگر امروز موقعیتی پیش نیامد**\nنبودن موقعیت به معنی عقب‌ماندن یا شکست در تمرین نیست؛ قرار نیست برای کامل‌کردن برنامه، حسادت را عمداً تحریک کنی، از کسی سؤال آزمایشی بپرسی یا رفتار او را زیر نظر بگیری. هدف امروز فقط شناخت محرک در صورت وقوع طبیعی آن است.\n\n**چه کار می‌توانی انجام بدهی؟**\n۱. اگر نمونه‌ای از امروز به‌طور طبیعی و بدون آشفتگی یادت هست، فقط واقعیت قابل مشاهده و زمینه آن را ثبت کن؛ مثلاً زمان و اتفاقی که واقعاً رخ داده است.\n۲. اگر نمونه‌ای نداری، از یک موقعیت قبلیِ کم‌فشار استفاده کن و روشن بنویس که این فقط یادآوری است، نه اتفاق امروز.\n۳. مشاهده را از برداشت جدا نگه دار: «پاسخ دیر رسید» مشاهده است؛ «حتماً قصد بی‌اعتنایی داشت» حدس درباره نیت است.\n۴. اگر مرور گذشته ذهنت را درگیر یا ناراحت می‌کند، آن را کنار بگذار و فقط نسخه سبک را انجام بده: '+g.lightVersion+'\n\n**معیار کافی‌بودن امروز:** اگر یک محرک و زمینه امن برای ثبت داری، همان کافی است؛ اگر نداری، انجام‌ندادن این بخش کاملاً قابل قبول است. روز بعد از همان برنامه روز جاری ادامه بده و چیزی را جبران نکن. تمرین نباید به وارسی، کنترل یا مواجهه ناامن تبدیل شود.';break;
  case'exercise_action_difference':body='**تمرین امروز**\n'+e+'\n\nتمرین کمک می‌کند تجربه یا الگو را بهتر مشاهده کنی.\n\n**اقدام اختصاصی امروز**\n'+a+'\n\nاقدام یک گام عملی در محدوده اختیار خودت است و به امنیت شرایط بستگی دارد.\n\nتمرین یعنی «چه چیزی را بررسی می‌کنم؟»؛ اقدام یعنی «در صورت امن‌بودن، چه کار کوچکی از دستم برمی‌آید؟» مثال و دستورشان یکی نیست.';break;
@@ -3018,7 +3018,17 @@ export function answerJealousyDailyPreparedQuestion(args={}){
  const answer=answerRaw(args);if(!answer)return null;
  const guide=JEALOUSY_DAILY_ASSISTANT_GUIDES.find(x=>x.day===toJealousyDayNumber(args.day));
  const question=guide?.questions.find(x=>x.value===String(args.message||'').trim());
- const detailedAnswer=expandDailyAssistantQuestionAnswer(answer,{guide,question,topic:'حسادت'});
+ const dailyContent = args.dailyContent && typeof args.dailyContent === 'object' ? args.dailyContent : {};
+ const guideForExpansion = {
+  ...guide,
+  exercise: String(dailyContent.exercise || dailyContent.instructions || guide.exercise || '').trim(),
+  action: String(dailyContent.actionText || dailyContent.action || guide.action || '').trim(),
+  exerciseExample: String(dailyContent.exerciseExample || guide.exerciseExample || '').trim(),
+  actionExample: String(dailyContent.actionExample || guide.actionExample || '').trim(),
+  successCriterion: String(dailyContent.successCriterion || dailyContent.success_criterion || guide.successCriterion || '').trim(),
+  reflectionQuestion: String(dailyContent.reflectionQuestion || dailyContent.reflectionPrompt || guide.reflectionQuestion || '').trim(),
+ };
+ const detailedAnswer=expandDailyAssistantQuestionAnswer(answer,{guide:guideForExpansion,question,topic:'حسادت'});
  const framed=addTeacherStyleFrame(detailedAnswer,{guide,question,topic:'حسادت'});
  return appendDailyAssistantSafetyReminder(framed,question?.kind);
 }
