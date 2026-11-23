@@ -160,7 +160,7 @@ test('library assistant hydrates only the requested book unless the question nee
 
 test('prepared daily questions are not blocked by asynchronous local-model status checks', () => {
   assert.doesNotMatch(assistantLauncher, /localModelStatusChecked/);
-  assert.match(assistantLauncher, /disabled=\{sending \|\| jealousyRelationshipGatePending/);
+  assert.match(assistantLauncher, /disabled=\{sending \|\| dailySafetyBlocked \|\| dailyRelationshipSafetyGatePending/);
   assert.match(assistantLauncher, /disabled=\{!draft\.trim\(\) \|\| sending\}/);
 });
 
