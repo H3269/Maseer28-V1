@@ -334,7 +334,10 @@ try {
       await panel.getByRole('button', { name: 'ارسال' }).click();
       await page.waitForFunction((previous) => {
         const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-        return replies.length > previous && !replies.at(-1).innerText.includes('در حال بررسی پرسش');
+        const latestReply = replies.at(-1);
+        return replies.length > previous
+          && !latestReply.innerText.includes('در حال بررسی پرسش')
+          && !latestReply.querySelector('.assistantTypingCursor');
       }, previousReplyCount, { timeout: 15000 }).catch(async error => {
         const replies = await panel.locator('.assistantMessage').allInnerTexts();
         throw new Error(topic.id + ' ' + question + ' did not settle; replies='
