@@ -466,15 +466,14 @@ try {
   await sharedGate.waitFor({ state: 'visible' });
   assert.match(await sharedGate.innerText(), /هر دو نفر می‌توانند آزادانه/u);
   const fearTrigger = sharedGatePanel.getByTestId('fear-daily-prompt-trigger');
-  await fearTrigger.click();
-  const sharedPrompt = sharedGatePage.locator('#library-assistant-prompt-dialog');
-  await sharedPrompt.waitFor({ state: 'visible' });
-  assert.equal(await sharedPrompt.locator('[data-prompt-option]:not(:disabled)').count(), 0,
-    'T03 day 6 prepared questions must stay disabled while the shared safety gate is pending');
-  await sharedGatePage.keyboard.press('Escape');
+  assert.equal(await fearTrigger.isDisabled(), true,
+    'T03 day 6 prompt catalogue must stay closed while the shared safety gate is pending');
   await sharedGate.getByTestId('daily-topic-relationship-safety-safe').click();
   await sharedGate.waitFor({ state: 'detached' });
+  assert.equal(await fearTrigger.isDisabled(), false,
+    'T03 day 6 prompt catalogue opens only after explicit safe confirmation');
   await fearTrigger.click();
+  const sharedPrompt = sharedGatePage.locator('#library-assistant-prompt-dialog');
   await sharedPrompt.waitFor({ state: 'visible' });
   assert.equal(await sharedPrompt.locator('[data-prompt-option]:not(:disabled)').count(), 14,
     'T03 day 6 prepared questions become available only after explicit safe confirmation');
