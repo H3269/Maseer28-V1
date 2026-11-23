@@ -17,6 +17,17 @@ on:
       - "src/features/assistant/pageAssistantTurn.js"
       - "src/features/assistant/dailyExerciseAssistantGuidance.js"
       - "src/features/assistant/GlobalAssistantLauncher.jsx"
+      - "src/features/content/dailyTextOverrides.js"
+      - "src/features/content/dailySafety.js"
+      - "src/features/content/runtimeContentRepository.js"
+      - "tests/dailyTextOverrides.test.mjs"
+      - "tests/dailySafety.test.mjs"
+      - "scripts/generate-runtime-content-shards.mjs"
+      - "scripts/validate-content.mjs"
+      - "scripts/validate-assistant-topics.mjs"
+      - "public/content/path-content.json"
+      - "public/assistant/knowledge/topics.v1.json"
+      - "public/assistant/knowledge/subtopics.v1.json"
       - "src/features/assistant/anxietyDailyAssistantPrompts.js"
       - "src/features/assistant/dailyAssistantSafetyReminder.js"
       - "tests/angerDailyAssistantPrompts.test.js"
@@ -52,6 +63,8 @@ jobs:
       - run: npm ci
       - name: Run complete automated test suite
         run: npm test
+      - name: Validate all daily content and assistant topic contracts
+        run: npm run validate:content && npm run validate:assistant-topics
       - name: Run focused assistant regression tests
         run: >-
           node --test
