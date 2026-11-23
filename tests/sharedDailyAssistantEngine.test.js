@@ -218,6 +218,53 @@ test('T15-T34 route all 7,840 fixed question slots through the real daily assist
   assert.equal(available + safelyBlocked, 20 * 28 * 14, 'all 7,840 T15-T34 question slots must be checked');
 });
 
+test('T15-T34 render 560 source-matched, day-specific exercise and action examples', async () => {
+  const merged = await loadMergedContent();
+  const catalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
+  const topicRecords = catalog.records.filter((record) => Number(record.topicId.slice(1)) >= 15);
+  assert.equal(topicRecords.length, 20 * 28, 'T15-T34 must have one example record per topic/day');
+  assert.equal(new Set(topicRecords.map((record) => record.exerciseExample)).size, 20 * 28,
+    'T15-T34 exercise examples must not repeat across topics or days');
+  assert.equal(new Set(topicRecords.map((record) => record.actionExample)).size, 20 * 28,
+    'T15-T34 action examples must not repeat across topics or days');
+
+  for (const [topicId, topicName] of TOPICS.filter(([id]) => Number(id.slice(1)) >= 15)) {
+    const days = merged.categories[topicName]?.days || [];
+    const records = topicRecords.filter((record) => record.topicId === topicId);
+    assert.equal(days.length, 28, topicId + ' canonical day count');
+    assert.equal(records.length, 28, topicId + ' example record count');
+    assert.equal(new Set(records.map((record) => record.exerciseExample)).size, 28,
+      topicId + ' exercise examples must be distinct');
+    assert.equal(new Set(records.map((record) => record.actionExample)).size, 28,
+      topicId + ' action examples must be distinct');
+
+    for (const record of records) {
+      const day = days.find((item) => Number(item.day) === record.day);
+      assert.ok(day, topicId + ' day ' + record.day + ' canonical source');
+      assert.equal(record.exerciseSource, day.exercise,
+        topicId + ' day ' + record.day + ' exercise source identity');
+      assert.equal(record.actionSource, day.actionText,
+        topicId + ' day ' + record.day + ' action source identity');
+
+      const questions = getSharedDailyAssistantPromptGroups(record.day, topicId)
+        .flatMap((group) => group.questions);
+      const exerciseQuestion = questions.find((question) => question.kind === 'exercise_example');
+      const actionQuestion = questions.find((question) => question.kind === 'action_example');
+      const sourceOnlyDay = { ...day, exerciseExample: '', actionExample: '' };
+      const exerciseAnswer = buildSharedDailyAssistantAnswerFromDailyContent({
+        topicId, topicName, day: record.day, message: exerciseQuestion.value, dailyContent: sourceOnlyDay,
+      });
+      const actionAnswer = buildSharedDailyAssistantAnswerFromDailyContent({
+        topicId, topicName, day: record.day, message: actionQuestion.value, dailyContent: sourceOnlyDay,
+      });
+      assert.ok(exerciseAnswer.includes(record.exerciseExample),
+        topicId + ' day ' + record.day + ' exercise example must render from the shared catalogue');
+      assert.ok(actionAnswer.includes(record.actionExample),
+        topicId + ' day ' + record.day + ' action example must render from the shared catalogue');
+    }
+  }
+});
+
 test('T11-T18 authored examples are migrated into the shared renderer for all 28 canonical days', async () => {
   const merged = await loadMergedContent();
   const catalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
