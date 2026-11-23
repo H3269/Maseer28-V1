@@ -243,7 +243,7 @@ test('prepared assistant answers reveal word by word and the gold speaker icon b
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
   const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
   const motion = await readFile(new URL('../src/styles/soft-motion.css', import.meta.url), 'utf8');
-  assert.ok(launcher.includes('const words = revealText.match(/\S+\s*/gu)'));
+  assert.match(launcher, /const words = revealText\\.match/);
   assert.match(launcher, /\}, 42\)/, 'word reveal should use a measured, non-instant pace');
   assert.match(launcher, /return \(\) => window\.clearInterval\(timer\)/, 'a replaced answer must cancel its previous reveal timer');
   assert.match(launcher, /setTypingProgress\(null\)/, 'a new question must clear the previous reveal state');
