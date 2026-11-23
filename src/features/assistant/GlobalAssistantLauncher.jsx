@@ -747,7 +747,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
               </div>
               <form className="assistantComposer libraryAssistantGuidedComposer" dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} data-jealousy-daily-prompt={String(isJealousyDailyPromptContext)} data-grief-daily-prompt={String(isGriefDailyPromptContext)} data-guilt-daily-prompt={String(isGuiltDailyPromptContext)} data-t10-daily-prompt={String(isT10DailyPromptContext)} data-t12-daily-prompt={String(isT12DailyPromptContext)} onSubmit={send}>
-                {activePromptGroups.some((group) => Array.isArray(group.questions) && group.questions.length > 0) || extendedDailySafetyBlocked ? (
+                {activePromptGroups.some((group) => Array.isArray(group.questions) && group.questions.length > 0) || (dailySafetyBlocked && isExtendedDailyPromptContext) ? (
                   <div className="libraryAssistantPromptRow">
                     <button
                       ref={libraryPromptTriggerRef}
@@ -760,7 +760,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       aria-haspopup="dialog"
                       aria-expanded={libraryPromptOpen}
                       aria-controls="library-assistant-prompt-dialog"
-                      disabled={sending || jealousyRelationshipGatePending || griefRelationshipGatePending || emotionalDependencyRelationshipGatePending || t12RelationshipGatePending}
+                      disabled={sending || dailyRelationshipSafetyGatePending}
                       onClick={() => setLibraryPromptOpen(true)}
                     >
                       {draft.trim() || 'انتخاب از میان سؤال‌های پیشنهادی'}
