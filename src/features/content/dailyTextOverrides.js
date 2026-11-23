@@ -37,6 +37,13 @@ const T12_RUNTIME_METADATA_FIELDS = Object.freeze([
   'success_criterion', 'reflection_prompt', 'exercise_type',
 ]);
 
+// Safety metadata is part of the canonical daily record contract for every
+// topic, not only the legacy topic-specific metadata migrations below.
+const SAFETY_RUNTIME_METADATA_FIELDS = Object.freeze([
+  'risk_level', 'safety_rule_ids', 'stop_conditions', 'contraindications',
+  'when_to_seek_human_support', 'subtopic_ids', 'control_context',
+]);
+
 export function mergeDailyTextOverrides(content, overrides) {
   if (!content || typeof content !== 'object' || !overrides || typeof overrides !== 'object') {
     return content;
@@ -95,6 +102,9 @@ export function mergeDailyTextOverrides(content, overrides) {
         const runtimeMetadata = Object.fromEntries(metadataFields
           .filter((field) => Object.prototype.hasOwnProperty.call(replacement, field))
           .map((field) => [field, replacement[field]]));
+        const safetyMetadata = Object.fromEntries(SAFETY_RUNTIME_METADATA_FIELDS
+          .filter((field) => Object.prototype.hasOwnProperty.call(replacement, field))
+          .map((field) => [field, replacement[field]]));
         if (isT07Record || isT08Record) {
           if (!Object.hasOwn(runtimeMetadata, 'instructions') && typeof replacement.exercise === 'string') {
             runtimeMetadata.instructions = replacement.exercise;
@@ -103,7 +113,7 @@ export function mergeDailyTextOverrides(content, overrides) {
             runtimeMetadata.action = replacement.actionText;
           }
         }
-        return { ...day, ...textOverrides, ...runtimeMetadata };
+        return { ...day, ...textOverrides, ...safetyMetadata, ...runtimeMetadata };
       }),
     };
   }
