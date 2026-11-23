@@ -245,7 +245,9 @@ test('prepared assistant answers reveal word by word and the gold speaker icon b
   const motion = await readFile(new URL('../src/styles/soft-motion.css', import.meta.url), 'utf8');
   assert.ok(launcher.includes('const words = revealText.match('));
   assert.match(launcher, /\}, 42\)/, 'word reveal should use a measured, non-instant pace');
-  assert.match(launcher, /return \(\) => window\.clearInterval\(timer\)/, 'a replaced answer must cancel its previous reveal timer');
+  assert.match(launcher, /return \(\) => \{\s*window\.clearInterval\(timer\);/, 'a replaced answer must cancel its previous reveal timer and detach its motion listener');
+  assert.match(launcher, /prefers-reduced-motion: reduce/, 'reduced-motion preference must skip or finish the reveal immediately');
+  assert.match(launcher, /visibleText \+= words\[visibleCount\]/, 'the reveal should append one token at a time without rebuilding the entire prefix');
   assert.match(launcher, /setTypingProgress\(null\)/, 'a new question must clear the previous reveal state');
   assert.match(launcher, /typingProgress\?\.id === item\.id && typingProgress\.active \? 'typing' : 'idle'/);
   assert.match(css, /color: #C49A42 !important/);
