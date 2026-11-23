@@ -9,23 +9,21 @@ const section = (label, value) => {
   const content = text(value);
   return content ? `**${label}:** ${content}` : '';
 };
-const appendOnce = (parts, answer, label, value, omitDuplicateContentPlaceholder = false) => {
+const appendOnce = (parts, answer, label, value) => {
   const content = text(value);
   if (!content) return;
   const heading = `**${label}:**`;
-  if (answer.includes(heading)) return;
-  if (answer.includes(content)) {
-    if (omitDuplicateContentPlaceholder) return;
-    parts.push(`${heading} توضیح این مورد در متن بالا آمده است؛ همان توضیح، مبنای اجرای امروز است.`);
-    return;
-  }
+  // The answer body may already contain this exact authored field under a
+  // different heading. In that case it is already present and must not be
+  // replaced with a placeholder that hides the actual criterion or guidance.
+  if (answer.includes(heading) || answer.includes(content)) return;
   parts.push(section(label, content));
 };
-export function expandDailyAssistantQuestionAnswer(answer, { guide, question, omitDuplicateContentPlaceholder = false } = {}) {
+export function expandDailyAssistantQuestionAnswer(answer, { guide, question } = {}) {
   let original = text(answer);
   if (!original || !guide || !question) return answer;
   const additions = [];
-  const append = (parts, sourceAnswer, label, value) => appendOnce(parts, sourceAnswer, label, value, omitDuplicateContentPlaceholder);
+  const append = (parts, sourceAnswer, label, value) => appendOnce(parts, sourceAnswer, label, value);
   const exercise = text(guide.exercise);
   const action = text(guide.action);
   const objective = text(guide.objective);
