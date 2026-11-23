@@ -230,7 +230,11 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       setTypingProgress(null);
       return undefined;
     }
-    const words = latestAssistantMessage.text.match(/\\S+\\s*/gu) || [latestAssistantMessage.text];
+    const revealText = latestAssistantMessage.dailySafetyReminder
+      && latestAssistantMessage.text.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN)
+      ? latestAssistantMessage.text.slice(0, -DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN.length).trimEnd()
+      : latestAssistantMessage.text;
+    const words = revealText.match(/\S+\s*/gu) || [revealText];
     let visibleCount = 0;
     setTypingProgress({ id: latestAssistantMessage.id, text: '', active: words.length > 0 });
     const timer = window.setInterval(() => {
@@ -774,11 +778,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                         </svg>
                       )}
                     </b>
-                    <p>{formatAssistantMessageText(
-                      item.dailySafetyReminder && visibleMessageText.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN)
-                        ? visibleMessageText.slice(0, -DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN.length).trimEnd()
-                        : visibleMessageText,
-                    ).map((line, lineIndex) => (
+                    <p>{formatAssistantMessageText(visibleMessageText).map((line, lineIndex) => (
                       <React.Fragment key={lineIndex}>
                         {lineIndex > 0 ? <br /> : null}
                         {line.map((part, partIndex) => part.type === 'strong'
@@ -786,7 +786,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                           : <React.Fragment key={partIndex}>{part.text}</React.Fragment>)}
                       </React.Fragment>
                     ))}</p>
-                    {item.dailySafetyReminder && (
+                    {item.dailySafetyReminder && (!typingProgress || typingProgress.id !== item.id || !typingProgress.active) && (
                       <aside className="dailyAssistantSafetyReminder" role="note" data-testid="daily-assistant-safety-reminder">
                         <h3>یادآوری مهم درباره ایمنی شما</h3>
                         <p>در طول انجام تمرین‌ امروز، به احساسات و وضعیت روانی خود توجه کنید. اگر احساس کردید فشار روانی شما بیشتر شده، حالتان رو به وخامت است یا ادامه تمرین برایتان آزاردهنده شده، تمرین را متوقف کنید و به خودتان فرصت آرام‌شدن بدهید.</p>
