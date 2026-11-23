@@ -361,7 +361,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const activePromptGroups = screen === 'books'
     ? [...LIBRARY_ASSISTANT_PROMPT_GROUPS, ...PAGE_ASSISTANT_PROMPT_GROUPS]
     : isTopicDailyPromptContext
-      ? (dailySafetyBlocked ? [] : getSharedDailyAssistantPromptGroups(dailyContext?.day, activeDailyTopicId))
+      ? ((dailySafetyBlocked && ['T13', 'T14'].includes(activeDailyTopicId)) ? [] : getSharedDailyAssistantPromptGroups(dailyContext?.day, activeDailyTopicId))
       : dailyContext
         ? []
         : (screen === 'day' ? [] : (() => { const pageGroups = getPageSpecificPromptGroups(screen); return pageGroups ? [...pageGroups, ...PAGE_ASSISTANT_PROMPT_GROUPS] : PAGE_ASSISTANT_PROMPT_GROUPS; })());
