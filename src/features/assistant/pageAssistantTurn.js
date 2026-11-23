@@ -97,15 +97,20 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     // remains available and takes precedence over every prepared question.
     const preparedDay = Number(dailyContext?.day);
     const preparedSource = dailyContext?.data;
+    const preparedTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem) || preparedSource?.topic_id || null;
     // Prepared FAQ answers must quote the exact transformed daily content shown
     // in DayScreen (including adaptation and display normalization), while
     // canonical identity validation continues to use the untouched source.
+    // Some legacy canonical records omit topic_id; once their category and
+    // canonical record identity are validated below, carry the resolved topic
+    // into the prepared content so topic-specific adapters (notably T01) use
+    // the visible day text instead of silently falling back to stale guide text.
     const preparedVisibleContent = dailyContext?.guidanceData
       ? {
         ...preparedSource,
         ...dailyContext.guidanceData,
         id: preparedSource?.id,
-        topic_id: preparedSource?.topic_id,
+        topic_id: preparedTopicId,
         day: preparedSource?.day,
         title: dailyContext.guidanceData.title || preparedSource?.title,
         sourceExercise: preparedSource?.exercise || preparedSource?.instructions,
@@ -119,7 +124,6 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         restActionText: preparedSource?.restActionText || dailyContext.guidanceData.restActionText,
       }
       : preparedSource;
-    const preparedTopicId = getCanonicalTopicIdForCategory(dailyContext?.problem) || preparedSource?.topic_id || null;
     const visibleTopicName = ({ T01: 'خشم', T02: 'اضطراب', T03: 'ترس', T04: 'نفرت', T05: 'حسادت', T06: 'غم و سوگ', T07: 'احساس گناه', T08: 'وابستگی عاطفی', T09: 'اهمال‌کاری', T10: 'بی‌خوابی و مشکلات خواب', T11: 'عادت‌های تکراری', T12: 'مرزبندی و نه گفتن', T13: 'تنهایی', T14: 'کمبود انگیزه', T15: 'اعتمادبه‌نفس پایین', T16: 'افکار منفی و نشخوار فکری', T17: 'مشکلات رابطه', T18: 'نفرت از خود', T19: 'خودسرزنشی', T20: 'کمال‌گرایی', T21: 'اجتناب', T22: 'استرس', T23: 'احساس بی‌ارزشی', T24: 'مشکل در کنترل هیجان', T25: 'رنجش و کینه', T26: 'شرم', T27: 'ترس از قضاوت', T28: 'ترس از شکست', T29: 'ترس از طرد شدن', T30: 'شک و تردید', T31: 'کنترل‌گری', T32: 'بی‌انگیزگی', T33: 'خودانتقادی', T34: 'مشکل دیگر' })[preparedTopicId];
     const answerPreparedQuestion = ({ day, message, dailyContent }) => buildPreparedDailyAssistantAnswer({
       topicId: preparedTopicId,
