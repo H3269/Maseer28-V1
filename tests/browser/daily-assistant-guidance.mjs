@@ -87,7 +87,7 @@ async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumb
     assert.ok(source, `unsupported daily source type: ${label}`);
     assert.ok(source.length > 20, `visible ${label} source must be substantial`);
     assert.ok(reply.includes(source),
-      `assistant response must preserve the exact visible daily ${label} text for ${topic}, day ${dayNumber}`);
+      `assistant response must preserve the exact visible daily ${label} text for ${topic}, day ${dayNumber}; source=${JSON.stringify(source)}; reply=${JSON.stringify(reply)}`);
   }
   await page.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
   await panel.waitFor({ state: 'visible' });
