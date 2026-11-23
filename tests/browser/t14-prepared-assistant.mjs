@@ -3,7 +3,7 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
-const baseURL = process.env.PATH28_BASE_URL || 'http://127.0.0.1:4173/Maseer28/';
+const baseURL = process.env.PATH28_BASE_URL || 'http://127.0.0.1:4173/Maseer28-V1/';
 const browser = await chromium.launch({ headless: true });
 
 const journey = {
@@ -216,7 +216,7 @@ try {
     const icon = reply?.querySelector('.globalAssistantSpeakerIcon');
     return icon?.getAttribute('data-assistant-state') === 'idle';
   }, null, { timeout: 20000 });
-  assert.match(await dialog.locator('.userMessage').last().innerText(), /برای اقدام امروز یک مثال می‌زنی/u,
+  assert.match(await dialog.locator('.userMessage').last().innerText(), /منظور از اقدام اختصاصی امروز چیست/u,
     'the latest user turn must contain only the newly selected question');
   assert.doesNotMatch(await dialog.locator('.assistantMessage').last().innerText(), /در حال بررسی پرسش/u,
     'the latest answer must not remain stuck on the pending placeholder');
@@ -242,7 +242,7 @@ try {
     'navigation during typing must not leak the previous daily conversation into another screen');
 
   assert.deepEqual(errors, [], 'the T14 browser flow must not emit page or console errors');
-  console.log('PASS: Chromium displayed all 14 T14 prepared questions, revealed each answer word by word, and stopped the gold icon after each answer.');
+  console.log('PASS: T14 all 14 answers reveal progressively; reduced motion, rapid question replacement, cancellation, gold-icon completion, and screen-navigation reset are covered.');
 } finally {
   await browser.close();
 }
