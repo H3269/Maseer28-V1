@@ -93,7 +93,7 @@ test('T10 prepared answers are available through the live daily assistant on all
   }
 });
 
-test('all 5,488 prepared FAQs remain available without specialist approval metadata and preserve their own answers', () => {
+test('all 5,488 prepared FAQs remain available on safety-eligible days without specialist approval metadata', () => {
   assert.equal(topics.length, 14, 'the shared prepared-only contract covers T01 through T14');
   let checked = 0;
   for (const topic of topics) {
@@ -109,6 +109,8 @@ test('all 5,488 prepared FAQs remain available without specialist approval metad
           title: guide.title,
           exercise: guide.exercise,
           actionText: guide.action,
+          risk_level: topic.id === 'T03' && guide.day === 14 ? 'caution' : 'routine',
+          ...(topic.id === 'T03' && guide.day === 14 ? { safety_rule_ids: ['SR-T03-D14'] } : {}),
           review_status: 'pending_expert_review',
         },
       };
