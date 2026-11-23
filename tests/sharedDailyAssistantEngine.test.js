@@ -655,3 +655,98 @@ test('T15 T20 and T26 flagged examples retain distinct daily learning targets', 
   assert.ok(t26Day7.actionExample.includes('این موضوع برای من خصوصی است'));
   assert.notEqual(t26Day7.actionExample, t26Day22.actionExample);
 });
+
+
+test('T15-T34 fixed answers q05-q14 remain anchored to their own daily source fields', async () => {
+  const merged = await loadMergedContent();
+  for (const [topicId, topicName] of TOPICS.filter(([id]) => Number(id.slice(1)) >= 15)) {
+    const days = merged.categories[topicName]?.days || [];
+    for (let day = 1; day <= 28; day += 1) {
+      const dailyContent = days.find((item) => Number(item.day) === day);
+      assert.ok(dailyContent, topicId + ' day ' + day + ' source');
+      const questions = getSharedDailyAssistantPromptGroups(day, topicId)
+        .flatMap((group) => group.questions);
+      const answerFor = (id) => {
+        const question = questions.find((item) => item.id === id);
+        assert.ok(question, topicId + ' day ' + day + ' ' + id + ' question');
+        const answer = buildSharedDailyAssistantAnswerFromDailyContent({
+          topicId, topicName, day, message: question.value, dailyContent,
+        });
+        assert.ok(typeof answer === 'string' && answer.trim(), topicId + ' day ' + day + ' ' + id + ' answer');
+        return answer;
+      };
+
+      const lightAnswer = answerFor('q05');
+      for (const field of ['lightVersion', 'lightExerciseText', 'lightActionVersion', 'lightActionText']) {
+        if (typeof dailyContent[field] === 'string' && dailyContent[field].trim()) {
+          assert.ok(lightAnswer.includes(dailyContent[field].trim()),
+            topicId + ' day ' + day + ' q05 must use ' + field);
+        }
+      }
+
+      const successAnswer = answerFor('q06');
+      const successCriterion = dailyContent.success_criterion || dailyContent.successCriterion;
+      if (typeof successCriterion === 'string' && successCriterion.trim()) {
+        assert.ok(successAnswer.includes(successCriterion.trim()), topicId + ' day ' + day + ' q06 criterion');
+      } else {
+        assert.match(successAnswer, /معیار موفقیت جداگانه‌ای ثبت نشده/u,
+          topicId + ' day ' + day + ' q06 must not invent a criterion');
+      }
+
+      const stopAnswer = answerFor('q07');
+      const stopConditions = dailyContent.stop_conditions || dailyContent.stopConditions;
+      if (Array.isArray(stopConditions) && stopConditions.length) {
+        for (const condition of stopConditions.filter((item) => typeof item === 'string' && item.trim())) {
+          assert.ok(stopAnswer.includes(condition.trim()), topicId + ' day ' + day + ' q07 stop condition');
+        }
+      } else if (typeof (dailyContent.stopCondition || dailyContent.stop_condition_text) === 'string'
+        && (dailyContent.stopCondition || dailyContent.stop_condition_text).trim()) {
+        assert.ok(stopAnswer.includes((dailyContent.stopCondition || dailyContent.stop_condition_text).trim()),
+          topicId + ' day ' + day + ' q07 stop text');
+      }
+
+      const noEventAnswer = answerFor('q08');
+      for (const field of ['restVersion', 'restExerciseText', 'restActionVersion', 'restActionText']) {
+        if (typeof dailyContent[field] === 'string' && dailyContent[field].trim()) {
+          assert.ok(noEventAnswer.includes(dailyContent[field].trim()),
+            topicId + ' day ' + day + ' q08 must use ' + field);
+        }
+      }
+
+      const differenceAnswer = answerFor('q09');
+      assert.ok(differenceAnswer.includes(dailyContent.exercise), topicId + ' day ' + day + ' q09 exercise source');
+      assert.ok(differenceAnswer.includes(dailyContent.actionText), topicId + ' day ' + day + ' q09 action source');
+
+      const notDoneAnswer = answerFor('q10');
+      for (const field of ['lightVersion', 'restVersion']) {
+        if (typeof dailyContent[field] === 'string' && dailyContent[field].trim()) {
+          assert.ok(notDoneAnswer.includes(dailyContent[field].trim()),
+            topicId + ' day ' + day + ' q10 must use ' + field);
+        }
+      }
+
+      const distressAnswer = answerFor('q11');
+      assert.match(distressAnswer, /تمرین را کنار بگذار/u, topicId + ' day ' + day + ' q11 stop safeguard');
+      assert.match(distressAnswer, /خدمات اضطراری/u, topicId + ' day ' + day + ' q11 urgent support');
+
+      const talkAnswer = answerFor('q12');
+      assert.ok(talkAnswer.includes(dailyContent.exercise), topicId + ' day ' + day + ' q12 must refer to the actual exercise');
+
+      const adaptAnswer = answerFor('q13');
+      const objective = dailyContent.learning_objective || dailyContent.objective;
+      if (typeof objective === 'string' && objective.trim()) {
+        assert.ok(adaptAnswer.includes(objective.trim()), topicId + ' day ' + day + ' q13 must preserve the daily objective');
+      }
+
+      const durationAnswer = answerFor('q14');
+      const duration = dailyContent.duration_minutes ?? dailyContent.durationMinutes;
+      if (Number.isFinite(Number(duration)) && Number(duration) > 0) {
+        assert.ok(durationAnswer.includes(String(Number(duration))),
+          topicId + ' day ' + day + ' q14 must use the recorded duration');
+      } else {
+        assert.match(durationAnswer, /زمان مشخصی برای این تمرین ثبت نشده/u,
+          topicId + ' day ' + day + ' q14 must not invent a duration');
+      }
+    }
+  }
+});
