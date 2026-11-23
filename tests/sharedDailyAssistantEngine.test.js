@@ -632,3 +632,26 @@ test('T32 day 15 recovery action and T33 day 16 specific feedback action remain 
   assert.ok(t33Day16.actionExample.includes('پاسخ مربوط به همان تیتر'));
   assert.notEqual(t33Day14.actionExample, t33Day16.actionExample);
 });
+
+
+test('T15 T20 and T26 flagged examples retain distinct daily learning targets', async () => {
+  const catalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
+  const t15Day10 = catalog.records.find((item) => item.topicId === 'T15' && item.day === 10);
+  const t15Day20 = catalog.records.find((item) => item.topicId === 'T15' && item.day === 20);
+  const t20Day19 = catalog.records.find((item) => item.topicId === 'T20' && item.day === 19);
+  const t20Day22 = catalog.records.find((item) => item.topicId === 'T20' && item.day === 22);
+  const t26Day7 = catalog.records.find((item) => item.topicId === 'T26' && item.day === 7);
+  const t26Day22 = catalog.records.find((item) => item.topicId === 'T26' && item.day === 22);
+  assert.ok(t15Day10.exerciseExample.includes('پیش از جلسه'));
+  assert.ok(t15Day10.actionExample.includes('پرسش را مطرح کرده است'));
+  assert.ok(t15Day20.exerciseExample.includes('۴ از ۱۰'));
+  assert.notEqual(t15Day10.exerciseExample, t15Day20.exerciseExample);
+  assert.ok(t20Day22.exerciseExample.includes('مرتب‌کردن میز'));
+  assert.ok(t20Day22.actionExample.includes('پنج دقیقه'));
+  assert.ok(t20Day19.exerciseExample.includes('گزارش کم‌خطر'));
+  assert.notEqual(t20Day19.exerciseExample, t20Day22.exerciseExample);
+  assert.ok(t26Day22.actionExample.includes('راه برگشت مستقل'));
+  assert.ok(t26Day22.actionExample.includes('دیدار را پایان می‌دهد'));
+  assert.ok(t26Day7.actionExample.includes('این موضوع برای من خصوصی است'));
+  assert.notEqual(t26Day7.actionExample, t26Day22.actionExample);
+});
