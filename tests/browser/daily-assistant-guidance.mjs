@@ -164,19 +164,23 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
   }
 
   let t03RuntimeShardServed = false;
+  let t03RuntimeOverrideServed = false;
   await page.route('**/*', async (route) => {
     const url = new URL(route.request().url());
-    // The app now loads per-topic runtime shards, not path-content.json.
-    // Inject safety fixtures at the exact production data boundary so this
-    // browser scenario exercises the record consumed by activeDay/assistant.
+    // The app consumes generated runtime shards, not path-content.json.
+    // Inject this fixture into the real T03 override shard so the test covers
+    // both runtime loading and the shared safety-metadata merge contract.
     if (url.pathname.endsWith('/content/runtime-v1/topics/T03.json')) {
       t03RuntimeShardServed = true;
-      const payload = structuredClone(canonicalPathContent.categories['ترس']);
+      await route.continue();
+      return;
+    }
+    if (url.pathname.endsWith('/content/runtime-v1/overrides/T03.json')) {
+      t03RuntimeOverrideServed = true;
+      const payload = structuredClone(dailyTextOverrides.categories['ترس']);
       const safetyDay = payload.days?.find((item) => Number(item.day) === 14);
-      assert.ok(safetyDay, 'the T03 runtime shard must contain day 14');
+      assert.ok(safetyDay, 'the T03 runtime override shard must contain day 14');
       Object.assign(safetyDay, {
-        topic_id: 'T03',
-        day: 14,
         risk_level: assistantDayMode === 'fear-caution' ? 'caution' : 'high',
         safety_rule_ids: ['SR-T03-D14'],
         when_to_seek_human_support: 'اگر فشار ادامه یافت، از متخصص سلامت روان یا فرد مورد اعتماد کمک بگیر.',
@@ -248,7 +252,9 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
   await page.locator('#day').waitFor({ state: 'visible' });
   if (topicKey === 'ترس' && ['fear-blocked', 'fear-caution'].includes(assistantDayMode)) {
     assert.equal(t03RuntimeShardServed, true,
-      'T03 safety browser scenarios must exercise the runtime topic shard consumed by the app');
+      'T03 safety browser scenarios must load the production runtime topic shard');
+    assert.equal(t03RuntimeOverrideServed, true,
+      'T03 safety browser scenarios must load the production runtime override shard');
   }
   await page.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
   await page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' }).waitFor({ state: 'visible' });
