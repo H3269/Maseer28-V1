@@ -259,7 +259,7 @@ test('talking to another person is never presented as mandatory', () => {
   const question = guide.questions.find((item) => item.kind === 'talk_other');
   const answer = answerAngerDailyPreparedQuestion({ day: 11, message: question.value });
   assert.match(answer, /گفت‌وگو با فرد دیگری الزامی نیست، مگر اینکه متن خود تمرین صریحاً تعامل را بخواهد/);
-  assert.match(answer, /آزادانه رضایت داشته باشند/);
+  assert.match(answer, /رضایت آزادانه/);
 });
 
 test('duration answer does not invent a number that is absent from reviewed source content', () => {
