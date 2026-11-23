@@ -365,7 +365,7 @@ try {
       assert.ok(await answer.locator('.dailyAssistantSafetyReminder').count() <= 1,
         topic.id + ' answer must never duplicate the shared safety reminder card');
       if (questionIndex === 5) {
-        assert.match(visibleAnswer, /برای بررسی|برای سنجش|معیار ثبت‌شده/u,
+        assert.match(visibleAnswer, /برای بررسی|برای سنجش|برای اینکه بدانی درست انجامش داده‌ای|معیار ثبت‌شده/u,
           topic.id + ' q06 must tell the user how to evaluate the exact daily work');
         assert.doesNotMatch(visibleAnswer, /خروجی مشخصی را که خود تمرین خواسته ثبت کن/u,
           topic.id + ' q06 must not use the vague generic fallback');
