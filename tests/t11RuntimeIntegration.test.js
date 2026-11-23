@@ -21,6 +21,7 @@ function contextFor(guide, overrides = {}) {
   return {
     day: guide.day,
     problem: 'عادت‌های تکراری',
+    relationshipSafetyConfirmed: true,
     data,
     ...overrides,
   };
