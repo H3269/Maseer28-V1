@@ -218,6 +218,54 @@ test('T15-T34 route all 7,840 fixed question slots through the real daily assist
   assert.equal(available + safelyBlocked, 20 * 28 * 14, 'all 7,840 T15-T34 question slots must be checked');
 });
 
+test('T15-T34 safety and assessment answers are bound to the exact topic, day, exercise and action', async () => {
+  const merged = await loadMergedContent();
+  const targetIds = new Set(['q06', 'q07', 'q11', 'q12']);
+  let checked = 0;
+  const distressFocus = new Set();
+  for (const [topicId, topicName] of TOPICS.filter(([id]) => Number(id.slice(1)) >= 15)) {
+    const days = merged.categories[topicName]?.days || [];
+    assert.equal(days.length, 28, topicId + ' day coverage');
+    for (let day = 1; day <= 28; day += 1) {
+      const daily = days.find((item) => Number(item.day) === day);
+      const questions = getSharedDailyAssistantPromptGroups(day, topicId)
+        .flatMap((group) => group.questions)
+        .filter((question) => targetIds.has(question.id));
+      assert.equal(questions.length, 4, topicId + ' day ' + day + ' four safety/assessment questions');
+      for (const question of questions) {
+        const answer = buildSharedDailyAssistantAnswerFromDailyContent({
+          topicId, topicName, day, message: question.value, dailyContent: daily,
+        });
+        assert.ok(answer.includes(topicName), topicId + ' day ' + day + ' ' + question.id + ' names the exact topic');
+        assert.ok(answer.includes(String(day)), topicId + ' day ' + day + ' ' + question.id + ' names the exact day');
+        if (question.id === 'q06') {
+          assert.ok(answer.includes(daily.exercise),
+            topicId + ' day ' + day + ' assessment must use the exact daily exercise');
+        }
+        if (question.id === 'q07' || question.id === 'q11') {
+          assert.ok(answer.includes(daily.exercise),
+            topicId + ' day ' + day + ' safety guidance must reference the exact daily exercise');
+        }
+        if (question.id === 'q11') {
+          assert.match(answer, /خدمات اضطراری/u);
+          const focus = answer.match(/نشانه‌هایی که در این موضوع باید جدی بگیری: (.*)/u)?.[1] || '';
+          assert.ok(focus, topicId + ' day ' + day + ' must name its safety focus');
+          distressFocus.add(focus);
+        }
+        if (question.id === 'q12') {
+          assert.ok(answer.includes(daily.exercise),
+            topicId + ' day ' + day + ' interpersonal guidance must preserve the exact daily exercise');
+          assert.ok(answer.includes(daily.actionText),
+            topicId + ' day ' + day + ' interpersonal guidance must use the exact daily action');
+        }
+        checked += 1;
+      }
+    }
+  }
+  assert.equal(checked, 20 * 28 * 4);
+  assert.equal(distressFocus.size, 20, 'each of the 20 extended topics must retain its distinct safety focus');
+});
+
 test('T15-T34 render 560 source-matched, day-specific exercise and action examples', async () => {
   const merged = await loadMergedContent();
   const catalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
@@ -702,6 +750,8 @@ test('T15-T34 fixed answers q05-q14 remain anchored to their own daily source fi
       }
 
       const stopAnswer = answerFor('q07');
+      assert.doesNotMatch(stopAnswer, /موضوع:\s/u,
+        topicId + ' day ' + day + ' q07 must not reintroduce a retired topic heading');
       const stopConditions = dailyContent.stop_conditions || dailyContent.stopConditions;
       if (Array.isArray(stopConditions) && stopConditions.length) {
         for (const condition of stopConditions.filter((item) => typeof item === 'string' && item.trim())) {
