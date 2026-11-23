@@ -305,7 +305,19 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const extendedRelationshipGatePending = Boolean(extendedRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
   const extendedRelationshipGateBlocked = extendedRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
   const extendedPrivacyNotice = isExtendedDailyPromptContext ? getInterpersonalPrivacyNotice(dailyContext?.data) : null;
-  const dailySafetyBlocked = Boolean(isTopicDailyPromptContext && getDailySafetyMode(dailyContext?.data) === 'blocked');
+  const dailySafetyMode = isTopicDailyPromptContext ? getDailySafetyMode(dailyContext?.data) : 'routine';
+  const dailySafetyBlocked = dailySafetyMode === 'blocked';
+  const dailySafetyCaution = dailySafetyMode === 'caution';
+  const dailySafetyStopConditions = Array.isArray(dailyContext?.data?.stop_conditions)
+    ? dailyContext.data.stop_conditions.filter((item) => typeof item === 'string' && item.trim())
+    : Array.isArray(dailyContext?.data?.stopConditions)
+      ? dailyContext.data.stopConditions.filter((item) => typeof item === 'string' && item.trim())
+      : [];
+  const dailySafetyHumanSupport = String(
+    dailyContext?.data?.when_to_seek_human_support
+      || dailyContext?.data?.whenToSeekHumanSupport
+      || '',
+  ).trim();
   const activeDailyTopicId = dailyProblemTopicId || dailyRecordTopicId;
   const activePromptGroups = screen === 'books'
     ? [...LIBRARY_ASSISTANT_PROMPT_GROUPS, ...PAGE_ASSISTANT_PROMPT_GROUPS]
@@ -670,6 +682,15 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       <button type="button" data-testid="grief-relationship-safety-unsafe" disabled={sending}
                         onClick={() => onRelationshipSafetyResponse?.('unsafe')}>نه، مطمئن نیستم یا یکی از ما تحت فشار است.</button>
                     </>
+                  )}
+                </section>
+              )}
+              {dailySafetyCaution && (
+                <section className="dailyAssistantSafetyActions" role="note" aria-label="احتیاط ایمنی راهنمای روز" data-testid="daily-assistant-safety-caution">
+                  <b>این روز نیازمند احتیاط است</b>
+                  <p>{dailySafetyHumanSupport || 'فقط در موقعیتی امن و قابل‌تحمل پیش برو و اگر فشار یا خطر بیشتر شد، تمرین را متوقف کن و از حمایت انسانی مناسب کمک بگیر.'}</p>
+                  {dailySafetyStopConditions.length > 0 && (
+                    <ul>{dailySafetyStopConditions.map((item, index) => <li key={`daily-safety-stop-${index}`}>{item}</li>)}</ul>
                   )}
                 </section>
               )}
