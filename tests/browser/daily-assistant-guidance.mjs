@@ -16,6 +16,7 @@ assert.deepEqual(
   'the production preview daily text override asset must match the checked-in browser fixture',
 );
 const browser = await chromium.launch({ headless: true });
+const testContext = await browser.newContext({ reducedMotion: 'reduce' });
 
 const journey = {
   schema: 7,
@@ -72,8 +73,7 @@ async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumb
   assert.ok(dayBadge.includes('روز ' + dayNumber), 'day UI must show the selected canonical day');
   const speakerIcon = panel.locator('.assistantMessage').last().locator('.globalAssistantSpeakerIcon');
   const speakerIconHandle = await speakerIcon.elementHandle();
-  await page.waitForFunction((icon) => icon?.getAttribute('data-assistant-state') === 'typing', speakerIconHandle, { timeout: 10000 });
-  await page.waitForFunction((icon) => icon?.getAttribute('data-assistant-state') === 'idle', speakerIconHandle, { timeout: 20000 });
+  await page.waitForFunction((icon) => icon?.getAttribute('data-assistant-state') === 'idle', speakerIconHandle, { timeout: 10000 });
   const reply = normalizeVisibleDailyText(await panel.locator('.assistantMessage').last().innerText());
   if (topic !== 'خشم') {
     assert.ok(reply.includes('روز ' + dayNumber), 'assistant answer must use the selected day context');
@@ -265,7 +265,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
 }
 
 async function assertGriefAdaptiveDay(mode, dayNumber, exerciseField, actionField) {
-  const page = await browser.newPage();
+  const page = await testContext.newPage();
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
   await openDay(page, { problem: 'غم و سوگ', assistantDayMode: mode });
@@ -343,7 +343,7 @@ try {
   let completedAnswers = 0;
 
   for (const topic of topics) {
-    const page = await browser.newPage();
+    const page = await testContext.newPage();
     const errors = [];
     page.on('pageerror', error => errors.push(String(error)));
     page.on('request', request => {
@@ -373,6 +373,7 @@ try {
         await trigger.click();
         await prompt.waitFor({ state: 'visible' });
       }
+      await page.emulateMedia({ reducedMotion: questionIndex === 0 ? 'no-preference' : 'reduce' });
       const question = questions[questionIndex];
       await prompt.getByRole('button', { name: question, exact: true }).click();
       const previousReplyCount = await panel.locator('.assistantMessage').count();
@@ -386,6 +387,35 @@ try {
           + JSON.stringify(replies) + '; pageErrors=' + JSON.stringify(errors)
           + '; cause=' + error.message);
       });
+
+      if (questionIndex === 0) {
+        await page.waitForFunction(() =>
+          document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon')
+            ?.getAttribute('data-assistant-state') === 'typing',
+        null, { timeout: 10000 });
+        const initialPartial = await panel.locator('.assistantMessage').last().locator('p').innerText();
+        await page.waitForFunction((previousLength) => {
+          const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child p');
+          const icon = document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon');
+          return icon?.getAttribute('data-assistant-state') === 'typing'
+            && (reply?.innerText.length || 0) > previousLength;
+        }, initialPartial.length, { timeout: 10000 });
+        const intermediatePartial = await panel.locator('.assistantMessage').last().locator('p').innerText();
+        await page.waitForFunction(() =>
+          document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon')
+            ?.getAttribute('data-assistant-state') === 'idle',
+        null, { timeout: 20000 });
+        const completeAnswer = await panel.locator('.assistantMessage').last().locator('p').innerText();
+        assert.ok(intermediatePartial.length > initialPartial.length,
+          topic.id + ' first prepared answer must visibly reveal additional words over time');
+        assert.ok(intermediatePartial.length < completeAnswer.length,
+          topic.id + ' first prepared answer must remain incomplete during the typing phase');
+      } else {
+        await page.waitForFunction(() =>
+          document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon')
+            ?.getAttribute('data-assistant-state') === 'idle',
+        null, { timeout: 10000 });
+      }
 
       const userQuestion = normalizeVisibleDailyText(await panel.locator('.userMessage').last().innerText());
       assert.ok(userQuestion.includes(normalizeVisibleDailyText(question)),
@@ -466,7 +496,7 @@ try {
 
   // T31 keeps its catalogue visible, but every choice remains disabled until
   // its three-way control context has been explicitly reviewed.
-  const controlSafetyPage = await browser.newPage();
+  const controlSafetyPage = await testContext.newPage();
   await openDay(controlSafetyPage, { problem: 'کنترل‌گری' });
   const controlPanel = controlSafetyPage.locator('.globalAssistantDialog');
   await controlPanel.waitFor({ state: 'visible' });
@@ -487,7 +517,7 @@ try {
 
   // T03 day 14 has an explicit safety-rule requirement. The catalogue remains
   // visible, but the UI must lock every choice when the source record is blocked.
-  const fearSafetyPage = await browser.newPage();
+  const fearSafetyPage = await testContext.newPage();
   await openDay(fearSafetyPage, { problem: 'ترس', assistantDayMode: 'fear-blocked' });
   const fearPanel = fearSafetyPage.locator('.globalAssistantDialog');
   await fearPanel.waitFor({ state: 'visible' });
@@ -504,7 +534,7 @@ try {
     'T03 day 14 must display the daily safety block notice');
   await fearSafetyPage.close();
 
-  const fearCautionPage = await browser.newPage();
+  const fearCautionPage = await testContext.newPage();
   await openDay(fearCautionPage, { problem: 'ترس', assistantDayMode: 'fear-caution' });
   const cautionPanel = fearCautionPage.locator('.globalAssistantDialog');
   await cautionPanel.waitFor({ state: 'visible' });
@@ -524,5 +554,6 @@ try {
 
   process.stdout.write('PASS: Chromium shared daily assistant contract: 14 fixed questions × 33 non-blocked topics (462 answers), safety reminders on all four safety/evaluation question kinds, blocked-day locks, caution notices and stop conditions, identical five-group selector, active topic/day exercise and action source binding, shared answer formatting, prepared-only boundary, privacy, and no external assistant calls.\n');
 } finally {
+  await testContext.close();
   await browser.close();
 }
