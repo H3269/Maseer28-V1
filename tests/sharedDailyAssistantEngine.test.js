@@ -192,6 +192,14 @@ test('T15-T34 route all fourteen prepared questions through the live daily assis
     assert.equal(result.status, 'daily_guidance_available', topicId + ' live route');
     assert.ok(result.message.includes(day.exercise), topicId + ' answer uses the exact daily exercise');
     assert.ok(result.message.trim().length > 0, topicId + ' answer is not empty');
+
+    const gatedDay = merged.categories[topicName].days.find((item) => Number(item.day) === 6);
+    const gated = makePageAssistantTurn({
+      screen: 'day',
+      text: question.value,
+      dailyContext: { day: 6, problem: topicName, data: gatedDay },
+    });
+    assert.equal(gated.status, 'relationship_safety_confirmation_required', topicId + ' safety gate');
   }
 });
 
