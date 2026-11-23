@@ -406,7 +406,7 @@ try {
       const safetyReminderCount = await answer.locator('.dailyAssistantSafetyReminder').count();
       assert.ok(safetyReminderCount <= 1,
         topic.id + ' answer must never duplicate the shared safety reminder card');
-      assert.equal(safetyReminderCount, topic.id !== 'T01' && [5, 6, 10, 11].includes(questionIndex) ? 1 : 0,
+      assert.equal(safetyReminderCount, [5, 6, 10, 11].includes(questionIndex) ? 1 : 0,
         topic.id + ' ' + question + ' must show the reminder exactly when its question kind is safety/evaluation-scoped');
       if (questionIndex === 5) {
         assert.match(visibleAnswer, /برای بررسی|برای سنجش|برای اینکه بدانی درست انجامش داده‌ای|معیار ثبت‌شده/u,
