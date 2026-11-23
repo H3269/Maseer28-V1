@@ -178,6 +178,49 @@ test('T02-T34 produce fourteen day-bound answers from canonical content for all 
   assert.equal(checked, 33 * 28 * 14);
 });
 
+test('T15-T34 safety and assessment answers are bound to each exact topic/day content', async () => {
+  const merged = await loadMergedContent();
+  const targetIds = new Set(['q06', 'q07', 'q11', 'q12']);
+  let checked = 0;
+  const q11Focus = new Set();
+  for (const [topicId, topicName] of TOPICS.filter(([id]) => Number(id.slice(1)) >= 15)) {
+    const days = merged.categories[topicName]?.days || [];
+    assert.equal(days.length, 28, topicId + ' day coverage');
+    for (let day = 1; day <= 28; day += 1) {
+      const daily = days.find((item) => Number(item.day) === day);
+      const questions = getSharedDailyAssistantPromptGroups(day, topicId).flatMap((group) => group.questions)
+        .filter((question) => targetIds.has(question.id));
+      assert.equal(questions.length, 4, topicId + ' day ' + day + ' four safety/assessment questions');
+      for (const question of questions) {
+        const answer = buildSharedDailyAssistantAnswerFromDailyContent({
+          topicId, topicName, day, message: question.value, dailyContent: daily,
+        });
+        assert.ok(answer.includes(topicName), topicId + ' day ' + day + ' ' + question.id + ' names the exact topic');
+        assert.ok(answer.includes(String(day)), topicId + ' day ' + day + ' ' + question.id + ' names the exact day');
+        if (question.id === 'q06') {
+          assert.ok(answer.includes(daily.title) || answer.includes(daily.exercise),
+            topicId + ' day ' + day + ' assessment must use its daily task');
+        }
+        if (question.id === 'q07' || question.id === 'q11') {
+          assert.ok(answer.includes(daily.exercise),
+            topicId + ' day ' + day + ' safety guidance must reference its daily exercise');
+        }
+        if (question.id === 'q11') {
+          assert.match(answer, /خدمات اضطراری/u);
+          q11Focus.add(answer.match(/نشانه‌هایی که در این موضوع باید جدی بگیری: ([^\n]+)/u)?.[1] || '');
+        }
+        if (question.id === 'q12') {
+          assert.ok(answer.includes(daily.actionText),
+            topicId + ' day ' + day + ' interpersonal guidance must use its daily action');
+        }
+        checked += 1;
+      }
+    }
+  }
+  assert.equal(checked, 20 * 28 * 4);
+  assert.ok(q11Focus.size >= 20, 'the distress response must distinguish the 20 topic-specific safety lenses');
+});
+
 test('T15-T34 route all fourteen prepared questions through the live daily assistant', async () => {
   const merged = await loadMergedContent();
   for (const [topicId, topicName] of TOPICS.filter(([id]) => Number(id.slice(1)) >= 15)) {
