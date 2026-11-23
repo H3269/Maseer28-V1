@@ -369,9 +369,16 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       }
       const preparedAnswer = answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent });
       if (preparedAnswer) {
+        const preparedQuestion = getSharedDailyAssistantQuestion(preparedTopicId, message);
+        const cleanedAnswer = cleanPreparedAssistantTopicText(preparedAnswer, visibleTopicName);
+        const sourceFaithfulAnswer = preserveVisibleDailySources(
+          cleanedAnswer,
+          preparedQuestion?.kind,
+          preparedVisibleContent,
+        );
         return Object.freeze({
           status: 'daily_guidance_available',
-          message: cleanPreparedAssistantTopicText(preparedAnswer, visibleTopicName),
+          message: sourceFaithfulAnswer,
           knowledge: Object.freeze([]),
           page_context: 'day',
           conversationState: null,
