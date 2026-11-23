@@ -364,6 +364,23 @@ try {
         topic.id + ' answer must render structured paragraph content');
       assert.ok(await answer.locator('.dailyAssistantSafetyReminder').count() <= 1,
         topic.id + ' answer must never duplicate the shared safety reminder card');
+      if (questionIndex === 5) {
+        assert.match(visibleAnswer, /برای بررسی|برای سنجش|معیار ثبت‌شده/u,
+          topic.id + ' q06 must tell the user how to evaluate the exact daily work');
+        assert.doesNotMatch(visibleAnswer, /خروجی مشخصی را که خود تمرین خواسته ثبت کن/u,
+          topic.id + ' q06 must not use the vague generic fallback');
+        const dailySource = canonicalPathContent.categories?.[topic.name]?.days?.find((item) => Number(item.day) === 1);
+        assert.ok(dailySource?.exercise, topic.id + ' day 1 q06 source exercise must exist');
+        assert.ok(normalizedAnswer.includes(normalizeVisibleDailyText(dailySource.exercise)),
+          topic.id + ' day 1 q06 must refer to the exact visible exercise');
+        if (topic.id === 'T34') {
+          assert.match(visibleAnswer, /سه نشانه|سه قدم|۱\)/u,
+            'T34 day 1 q06 must give concrete observable checks, not merely ask the user to record an output');
+          assert.match(visibleAnswer, /برچسب|توصیف/u,
+            'T34 day 1 q06 must explain how to check the description task');
+        }
+      }
+
       completedAnswers += 1;
 
       // These three questions prove that the renderer uses the active topic/day
