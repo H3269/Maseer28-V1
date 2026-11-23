@@ -218,7 +218,7 @@ test('T15-T34 route all 7,840 fixed question slots through the real daily assist
   assert.equal(available + safelyBlocked, 20 * 28 * 14, 'all 7,840 T15-T34 question slots must be checked');
 });
 
-test('T11-T14 authored examples are migrated into the shared renderer for all 28 canonical days', async () => {
+test('T11-T18 authored examples are migrated into the shared renderer for all 28 canonical days', async () => {
   const merged = await loadMergedContent();
   const catalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
   for (const [topicId, topicName] of TOPICS.filter(([id]) => ['T11', 'T12', 'T13', 'T14'].includes(id))) {
@@ -414,7 +414,7 @@ test('runtime examples survive adapted visible wording and stay bound to the can
   const merged = await loadMergedContent();
   const migratedCatalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
   let checked = 0;
-  for (const [topicId, topicName] of TOPICS.filter(([id]) => Number(id.slice(1)) <= 14)) {
+  for (const [topicId, topicName] of TOPICS.filter(([id]) => Number(id.slice(1)) <= 18)) {
     const days = merged.categories[topicName]?.days || [];
     assert.equal(days.length, 28, topicId + ' canonical days');
     for (let day = 1; day <= 28; day += 1) {
