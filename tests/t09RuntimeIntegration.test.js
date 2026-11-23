@@ -13,6 +13,7 @@ function contextFor(guide, overrides = {}) {
   return {
     day: guide.day,
     problem: 'اهمال‌کاری',
+    relationshipSafetyConfirmed: true,
     data: {
       id: getCanonicalDailyRecordId('اهمال‌کاری', guide.day),
       topic_id: 'T09',
