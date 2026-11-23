@@ -856,3 +856,48 @@ test('T15-T34 shared explanations do not invent universal exercise rules or over
     }
   }
 });
+
+test('all 13,328 daily answers give a clear next step and keep their exact topic/day context', async () => {
+  const merged = await loadMergedContent();
+  let checked = 0;
+  const allTopics = [['T01', 'خشم'], ...TOPICS];
+  for (const [topicId, topicName] of allTopics) {
+    const days = topicId === 'T01' ? ANGER_DAILY_ASSISTANT_GUIDES : (merged.categories[topicName]?.days || []);
+    assert.equal(days.length, 28, topicId + ' must have 28 daily guides');
+    for (let day = 1; day <= 28; day += 1) {
+      const daily = days.find((item) => Number(item.day) === day);
+      const questions = getSharedDailyAssistantPromptGroups(day, topicId).flatMap((group) => group.questions);
+      assert.equal(questions.length, 14, topicId + ' day ' + day + ' must expose 14 questions');
+      for (const question of questions) {
+        const answer = topicId === 'T01'
+          ? answerAngerDailyPreparedQuestion({ day, message: question.value, dailyContent: daily })
+          : buildSharedDailyAssistantAnswerFromDailyContent({
+            topicId, topicName, day, message: question.value, dailyContent: daily,
+          });
+        assert.ok(typeof answer === 'string' && answer.trim().length > 80,
+          topicId + ' day ' + day + ' ' + question.id + ' must give a substantive answer');
+        assert.ok(answer.includes(String(day)), topicId + ' day ' + day + ' ' + question.id + ' must keep day context');
+        if (question.id === 'q01') assert.ok(answer.includes(daily.exercise), topicId + ' day ' + day + ' q01 exact exercise');
+        if (question.id === 'q03') assert.ok(answer.includes(daily.action || daily.actionText), topicId + ' day ' + day + ' q03 exact action');
+        if (question.id === 'q06') {
+          assert.match(answer, /برای بررسی|برای اینکه بدانی درست انجامش داده‌ای/u,
+            topicId + ' day ' + day + ' q06 must explain how to check the work');
+          assert.ok(answer.includes(daily.exercise), topicId + ' day ' + day + ' q06 exact exercise source');
+          assert.doesNotMatch(answer, /خروجی مشخصی را که خود تمرین خواسته ثبت کن/u,
+            topicId + ' day ' + day + ' q06 must not stop at the vague fallback');
+        }
+        if (question.id === 'q09') {
+          assert.ok(answer.includes(daily.exercise), topicId + ' day ' + day + ' q09 exercise');
+          assert.ok(answer.includes(daily.action || daily.actionText), topicId + ' day ' + day + ' q09 action');
+        }
+        if (question.id === 'q11') {
+          assert.match(answer, /تمرین را کنار بگذار/u);
+          assert.match(answer, /خدمات اضطراری/u);
+        }
+        checked += 1;
+      }
+    }
+  }
+  assert.equal(checked, 34 * 28 * 14);
+});
+
