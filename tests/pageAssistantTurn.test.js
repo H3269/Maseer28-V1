@@ -5,6 +5,8 @@ import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTu
 import { mergeDailyTextOverrides } from '../src/features/content/dailyTextOverrides.js';
 import { buildSharedDailyAssistantAnswerFromDailyContent, getSharedDailyAssistantPromptGroups } from '../src/features/assistant/sharedDailyAssistantEngine.js';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
+import { getDailySafetyMode } from '../src/features/content/dailySafety.js';
+import { getRelationshipSafetyGate } from '../src/features/journey/relationshipSafetyGate.js';
 import { ANGER_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/angerDailyAssistantPrompts.js';
 
 const mergedDailyContentPromise = Promise.all([
@@ -516,4 +518,54 @@ test('T05 q06 uses the exact canonical exercise and an observable review method 
     assert.ok(result.message.includes(dailyContent.exercise), 'T05 day ' + day + ' must quote the exact canonical exercise');
     assert.doesNotMatch(result.message, /توضیح این مورد در متن بالا آمده است/u, 'T05 day ' + day + ' must not contain duplicate placeholders');
   }
+});
+
+
+test('every registered topic/day relationship gate blocks prepared answers until explicit safe confirmation', async () => {
+  const merged = await mergedDailyContentPromise;
+  const topicEntries = [
+    ['T01', 'خشم'], ['T02', 'اضطراب'], ['T03', 'ترس'], ['T04', 'نفرت'],
+    ['T05', 'حسادت'], ['T06', 'غم و سوگ'], ['T07', 'احساس گناه'], ['T08', 'وابستگی عاطفی'],
+    ['T09', 'اهمال‌کاری'], ['T10', 'بی‌خوابی و مشکلات خواب'], ['T11', 'عادت‌های تکراری'],
+    ['T12', 'مرزبندی و نه گفتن'], ['T13', 'تنهایی'], ['T14', 'کمبود انگیزه'],
+    ['T15', 'اعتمادبه‌نفس پایین'], ['T16', 'افکار منفی و نشخوار فکری'], ['T17', 'مشکلات رابطه'],
+    ['T18', 'نفرت از خود'], ['T19', 'خودسرزنشی'], ['T20', 'کمال‌گرایی'], ['T21', 'اجتناب'],
+    ['T22', 'استرس'], ['T23', 'احساس بی‌ارزشی'], ['T24', 'مشکل در کنترل هیجان'],
+    ['T25', 'رنجش و کینه'], ['T26', 'شرم'], ['T27', 'ترس از قضاوت'], ['T28', 'ترس از شکست'],
+    ['T29', 'ترس از طرد شدن'], ['T30', 'شک و تردید'], ['T31', 'کنترل‌گری'], ['T32', 'بی‌انگیزگی'],
+    ['T33', 'خودانتقادی'], ['T34', 'مشکل دیگر'],
+  ];
+  let checked = 0;
+  for (const [topicId, topicName] of topicEntries) {
+    const days = merged.categories[topicName]?.days || [];
+    assert.equal(days.length, 28, topicId + ' canonical day count');
+    for (const dailyContent of days) {
+      const gate = getRelationshipSafetyGate(dailyContent);
+      if (!gate || getDailySafetyMode(dailyContent) === 'blocked') continue;
+      const day = Number(dailyContent.day);
+      const question = getSharedDailyAssistantPromptGroups(day, topicId).flatMap((group) => group.questions)
+        .find((item) => item.kind === 'exercise_meaning');
+      const base = {
+        screen: 'day',
+        text: question.value,
+        dailyContext: { day, problem: topicName, data: dailyContent, relationshipSafetyConfirmed: false },
+      };
+      const pending = makePageAssistantTurn(base);
+      assert.equal(pending.status, 'relationship_safety_confirmation_required', topicId + ' day ' + day);
+      assert.equal(pending.message, gate.question + '\n\n' + gate.disclaimer, topicId + ' day ' + day);
+      const unsafe = makePageAssistantTurn({
+        ...base,
+        dailyContext: { ...base.dailyContext, relationshipSafetyResponse: 'unsafe' },
+      });
+      assert.equal(unsafe.status, 'relationship_safety_blocked', topicId + ' day ' + day);
+      assert.equal(unsafe.message, gate.blockedMessage, topicId + ' day ' + day);
+      const safe = makePageAssistantTurn({
+        ...base,
+        dailyContext: { ...base.dailyContext, relationshipSafetyConfirmed: true, relationshipSafetyResponse: 'safe' },
+      });
+      assert.equal(safe.status, 'daily_guidance_available', topicId + ' day ' + day);
+      checked += 1;
+    }
+  }
+  assert.ok(checked > 100, 'the full registered relationship-gate matrix must be exercised');
 });
