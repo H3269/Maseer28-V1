@@ -244,6 +244,7 @@ test('prepared assistant answers reveal word by word and the gold speaker icon b
   const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
   const motion = await readFile(new URL('../src/styles/soft-motion.css', import.meta.url), 'utf8');
   assert.ok(launcher.includes('const words = revealText.match('));
+  assert.ok(launcher.includes(String.raw`revealText.match(/\S+\s*/gu)`), 'word tokenizer must match actual whitespace-delimited words');
   assert.match(launcher, /\}, 42\)/, 'word reveal should use a measured, non-instant pace');
   assert.match(launcher, /return \(\) => \{\s*window\.clearInterval\(timer\);/, 'a replaced answer must cancel its previous reveal timer and detach its motion listener');
   assert.match(launcher, /prefers-reduced-motion: reduce/, 'reduced-motion preference must skip or finish the reveal immediately');
