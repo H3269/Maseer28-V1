@@ -23,11 +23,47 @@ import { buildPreparedDailyAssistantAnswer } from './preparedDailyAssistantAnswe
 import { getCanonicalDailyRecordId } from '../content/dailyContentSelector.js';
 import { getDailySafetyMode } from '../content/dailySafety.js';
 import { LIBRARY_ASSISTANT_PROMPTS } from './libraryAssistantPrompts.js';
+import { getSharedDailyAssistantQuestion } from './sharedDailyAssistantEngine.js';
 
 const SAFETY_STATUSES = new Set([
   'urgent_human_support_required',
   'safety_clarification_required',
 ]);
+
+
+function normalizeVisibleDailySourceText(value) {
+  return String(value ?? '').normalize('NFKC')
+    .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
+    .replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
+    .replace(/[\\u064B-\\u065F\\u0670]/g, '')
+    .replace(/[\\u200c\\u200f\\u200e]/g, ' ')
+    .replace(/[^\\p{L}\\p{N}\\s]/gu, ' ')
+    .replace(/\\s+/g, ' ').trim().toLowerCase();
+}
+
+function preserveVisibleDailySources(answer, questionKind, dailyContent) {
+  const requiredSources = [];
+  if (['exercise_meaning', 'exercise_action_difference'].includes(questionKind)) {
+    requiredSources.push(['متن دقیق تمرین امروز', dailyContent?.exercise || dailyContent?.instructions]);
+  }
+  if (['action_meaning', 'exercise_action_difference'].includes(questionKind)) {
+    requiredSources.push(['متن دقیق اقدام اختصاصی امروز', dailyContent?.actionText || dailyContent?.action]);
+  }
+
+  let result = String(answer || '');
+  let normalizedResult = normalizeVisibleDailySourceText(result);
+  for (const [label, rawSource] of requiredSources) {
+    const source = String(rawSource || '').trim();
+    const normalizedSource = normalizeVisibleDailySourceText(source);
+    if (!normalizedSource || normalizedResult.includes(normalizedSource)) continue;
+    // Keep the UI's adapted daily text authoritative even if a topic adapter
+    // falls back to its static guide. This is a display-only source safeguard;
+    // it does not change routing, identity validation, or safety decisions.
+    result += (result ? '\\n\\n' : '') + label + ': ' + source;
+    normalizedResult = normalizeVisibleDailySourceText(result);
+  }
+  return result;
+}
 
 const PAGE_PREPARED_QUESTIONS = new Set([
   'این صفحه برای چیست؟',
@@ -278,9 +314,16 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         dailyContent: preparedVisibleContent,
       });
       if (exactPreparedAnswer) {
+        const preparedQuestion = getSharedDailyAssistantQuestion(preparedTopicId, message);
+        const cleanedAnswer = cleanPreparedAssistantTopicText(exactPreparedAnswer, visibleTopicName);
+        const sourceFaithfulAnswer = preserveVisibleDailySources(
+          cleanedAnswer,
+          preparedQuestion?.kind,
+          preparedVisibleContent,
+        );
         return Object.freeze({
           status: 'daily_guidance_available',
-          message: cleanPreparedAssistantTopicText(exactPreparedAnswer, visibleTopicName),
+          message: sourceFaithfulAnswer,
           knowledge: Object.freeze([]),
           page_context: 'day',
           conversationState: null,
