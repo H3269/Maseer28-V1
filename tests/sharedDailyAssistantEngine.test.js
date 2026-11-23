@@ -33,6 +33,26 @@ const TOPICS = Object.freeze([
   ['T12', 'مرزبندی و نه گفتن'],
   ['T13', 'تنهایی'],
   ['T14', 'کمبود انگیزه'],
+  ['T15', 'اعتمادبه‌نفس پایین'],
+  ['T16', 'افکار منفی و نشخوار فکری'],
+  ['T17', 'مشکلات رابطه'],
+  ['T18', 'نفرت از خود'],
+  ['T19', 'خودسرزنشی'],
+  ['T20', 'کمال‌گرایی'],
+  ['T21', 'اجتناب'],
+  ['T22', 'استرس'],
+  ['T23', 'احساس بی‌ارزشی'],
+  ['T24', 'مشکل در کنترل هیجان'],
+  ['T25', 'رنجش و کینه'],
+  ['T26', 'شرم'],
+  ['T27', 'ترس از قضاوت'],
+  ['T28', 'ترس از شکست'],
+  ['T29', 'ترس از طرد شدن'],
+  ['T30', 'شک و تردید'],
+  ['T31', 'کنترل‌گری'],
+  ['T32', 'بی‌انگیزگی'],
+  ['T33', 'خودانتقادی'],
+  ['T34', 'مشکل دیگر'],
 ]);
 
 const mergedContentPromise = Promise.all([
@@ -44,7 +64,7 @@ async function loadMergedContent() {
   return mergedContentPromise;
 }
 
-test('one shared prompt catalogue exposes the same fourteen questions and five groups for T01-T14', () => {
+test('one shared prompt catalogue exposes the same fourteen questions and five groups for T01-T34', () => {
   for (const topicId of ['T01', ...TOPICS.map(([id]) => id)]) {
     for (let day = 1; day <= 28; day += 1) {
       const groups = getSharedDailyAssistantPromptGroups(day, topicId);
@@ -59,7 +79,7 @@ test('one shared prompt catalogue exposes the same fourteen questions and five g
     }
   }
   assert.deepEqual(getSharedDailyAssistantPromptGroups(29, 'T02'), []);
-  assert.deepEqual(getSharedDailyAssistantPromptGroups(1, 'T15'), []);
+  assert.deepEqual(getSharedDailyAssistantPromptGroups(1, 'T35'), []);
 });
 
 test('the T01 approved answer-bank entry point delegates to the same shared builder', () => {
@@ -116,7 +136,7 @@ test('the T01 approved answer-bank entry point delegates to the same shared buil
   }
 });
 
-test('T02-T14 produce fourteen day-bound answers from canonical content for all 28 days', async () => {
+test('T02-T34 produce fourteen day-bound answers from canonical content for all 28 days', async () => {
   const merged = await loadMergedContent();
   let checked = 0;
   for (const [topicId, topicName] of TOPICS) {
@@ -155,7 +175,7 @@ test('T02-T14 produce fourteen day-bound answers from canonical content for all 
       }
     }
   }
-  assert.equal(checked, 13 * 28 * 14);
+  assert.equal(checked, 33 * 28 * 14);
 });
 
 test('T11-T14 authored examples are migrated into the shared renderer for all 28 canonical days', async () => {
