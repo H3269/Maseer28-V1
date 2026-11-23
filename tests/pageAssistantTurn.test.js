@@ -114,6 +114,39 @@ test('T01 example answers stay anchored to the visible daily exercise and action
   assert.ok(!actionExample.message.includes('اقدام مرجع قدیمی'));
 });
 
+test('shared-topic example answers include the exact daily exercise and action', () => {
+  const visibleExercise = 'تمرین نمایشی اضطراب برای شناسایی نشانه‌های بدنی و فکرهای همراه.';
+  const visibleAction = 'اقدام نمایشی اضطراب برای مکث کوتاه و بررسی شواهد پیش از واکنش.';
+  const dailyContext = {
+    day: 1,
+    problem: 'اضطراب',
+    data: {
+      id: getCanonicalDailyRecordId('اضطراب', 1),
+      topic_id: 'T02',
+      day: 1,
+      exercise: visibleExercise,
+      actionText: visibleAction,
+    },
+    relationshipSafetyConfirmed: true,
+  };
+
+  const exerciseExample = makePageAssistantTurn({
+    screen: 'day',
+    text: 'برای تمرین امروز یک مثال می‌زنی؟',
+    dailyContext,
+  });
+  assert.equal(exerciseExample.status, 'daily_guidance_available');
+  assert.ok(exerciseExample.message.includes(visibleExercise));
+
+  const actionExample = makePageAssistantTurn({
+    screen: 'day',
+    text: 'برای اقدام امروز یک مثال می‌زنی؟',
+    dailyContext,
+  });
+  assert.equal(actionExample.status, 'daily_guidance_available');
+  assert.ok(actionExample.message.includes(visibleAction));
+});
+
 test('daily assistant answers prepared questions regardless of canonical review status', () => {
   const dayData = {
     id: getCanonicalDailyRecordId('خشم', 1),
