@@ -455,3 +455,40 @@ test('daily topics without a prepared catalogue do not fall back to general text
   assert.equal(result.status, 'prepared_question_required');
   assert.equal(result.conversationState, null);
 });
+
+
+test('T05 success answer explains an observable check and preserves the active visible exercise', () => {
+  const canonicalExercise = 'تمرین مرجع روز حسادت برای ثبت محرک، احساس و برداشت بدون قضاوت.';
+  const visibleExercise = 'تمرین نمایشی تطبیق‌یافته روز حسادت برای تفکیک واقعیت از حدس.';
+  const visibleAction = 'اقدام نمایشی روز حسادت برای انتخاب یک گام امن و در اختیار خود.';
+  const question = getSharedDailyAssistantPromptGroups(1, 'T05').flatMap((group) => group.questions)
+    .find((item) => item.kind === 'success');
+  const result = makePageAssistantTurn({
+    screen: 'day',
+    text: question.value,
+    dailyContext: {
+      day: 1,
+      problem: 'حسادت',
+      data: {
+        id: getCanonicalDailyRecordId('حسادت', 1),
+        topic_id: 'T05',
+        day: 1,
+        exercise: canonicalExercise,
+        actionText: 'اقدام مرجع روز حسادت.',
+      },
+      guidanceData: {
+        id: getCanonicalDailyRecordId('حسادت', 1),
+        topic_id: 'T05',
+        day: 1,
+        exercise: visibleExercise,
+        action: visibleAction,
+      },
+      relationshipSafetyConfirmed: true,
+    },
+  });
+  assert.equal(result.status, 'daily_guidance_available');
+  assert.ok(result.message.includes('برای بررسی'));
+  assert.ok(result.message.includes(visibleExercise));
+  assert.ok(!result.message.includes(canonicalExercise));
+  assert.doesNotMatch(result.message, /توضیح این مورد در متن بالا آمده است/u);
+});
