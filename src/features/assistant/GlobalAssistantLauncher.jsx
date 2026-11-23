@@ -299,6 +299,11 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const t12RelationshipGatePending = Boolean(t12RelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
   const t12RelationshipGateBlocked = t12RelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
   const t12PrivacyNotice = isT12DailyPromptContext ? getInterpersonalPrivacyNotice(dailyContext?.data) : null;
+  const t15ToT34Context = /^T(?:1[5-9]|2[0-9]|3[0-4])$/u.test(activeDailyTopicId || '');
+  const t15ToT34RelationshipGate = t15ToT34Context ? getRelationshipSafetyGate(dailyContext?.data) : null;
+  const t15ToT34RelationshipGatePending = Boolean(t15ToT34RelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
+  const t15ToT34RelationshipGateBlocked = t15ToT34RelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
+  const t15ToT34PrivacyNotice = t15ToT34Context ? getInterpersonalPrivacyNotice(dailyContext?.data) : null;
   const activePromptGroups = screen === 'books'
     ? [...LIBRARY_ASSISTANT_PROMPT_GROUPS, ...PAGE_ASSISTANT_PROMPT_GROUPS]
     : isTopicDailyPromptContext
@@ -651,6 +656,26 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       <button type="button" data-testid="grief-relationship-safety-safe" disabled={sending}
                         onClick={() => onRelationshipSafetyResponse?.('safe')}>بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.</button>
                       <button type="button" data-testid="grief-relationship-safety-unsafe" disabled={sending}
+                        onClick={() => onRelationshipSafetyResponse?.('unsafe')}>نه، مطمئن نیستم یا یکی از ما تحت فشار است.</button>
+                    </>
+                  )}
+                </section>
+              )}
+
+              {t15ToT34PrivacyNotice && (
+                <section className="dailyAssistantSafetyActions" role="note" aria-label="یادآوری حریم خصوصی" data-testid="t15-t34-privacy-notice">
+                  <p>{t15ToT34PrivacyNotice}</p>
+                </section>
+              )}
+              {t15ToT34RelationshipGatePending && t15ToT34RelationshipGate && (
+                <section className="dailyAssistantSafetyActions" role="group" aria-label="بررسی ایمنی تعامل" data-testid="t15-t34-relationship-safety-gate">
+                  <p role="alert">{t15ToT34RelationshipGateBlocked ? t15ToT34RelationshipGate.blockedMessage : t15ToT34RelationshipGate.question}</p>
+                  {!t15ToT34RelationshipGateBlocked && (
+                    <>
+                      <p className="safetyNote">{t15ToT34RelationshipGate.disclaimer}</p>
+                      <button type="button" data-testid="t15-t34-relationship-safety-safe" disabled={sending}
+                        onClick={() => onRelationshipSafetyResponse?.('safe')}>بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.</button>
+                      <button type="button" data-testid="t15-t34-relationship-safety-unsafe" disabled={sending}
                         onClick={() => onRelationshipSafetyResponse?.('unsafe')}>نه، مطمئن نیستم یا یکی از ما تحت فشار است.</button>
                     </>
                   )}
