@@ -163,12 +163,14 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
     });
   }
 
+  let t03RuntimeShardServed = false;
   await page.route('**/*', async (route) => {
     const url = new URL(route.request().url());
     // The app now loads per-topic runtime shards, not path-content.json.
     // Inject safety fixtures at the exact production data boundary so this
     // browser scenario exercises the record consumed by activeDay/assistant.
     if (url.pathname.endsWith('/content/runtime-v1/topics/T03.json')) {
+      t03RuntimeShardServed = true;
       const payload = structuredClone(canonicalPathContent.categories['ترس']);
       const safetyDay = payload.days?.find((item) => Number(item.day) === 14);
       assert.ok(safetyDay, 'the T03 runtime shard must contain day 14');
@@ -239,6 +241,10 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
   });
 
   await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+  if (topicKey === 'ترس' && ['fear-blocked', 'fear-caution'].includes(assistantDayMode)) {
+    assert.equal(t03RuntimeShardServed, true,
+      'T03 safety browser scenarios must exercise the runtime topic shard consumed by the app');
+  }
   await page.locator('#copyrightModal').waitFor({ state: 'visible' });
   await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
   await page.locator('#dashboard').waitFor({ state: 'visible' });
