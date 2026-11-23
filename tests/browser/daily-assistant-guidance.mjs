@@ -301,6 +301,7 @@ try {
     const page = await browser.newPage();
     const errors = [];
     page.on('pageerror', error => errors.push(String(error)));
+    page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
     page.on('request', request => {
       if (/\/v1\/assistant\/turn|assistant-api|workers\.dev/u.test(request.url())) workerRequests.push(request.url());
     });
@@ -362,7 +363,7 @@ try {
       const visibleAnswer = await answer.innerText();
       const normalizedAnswer = normalizeVisibleDailyText(visibleAnswer);
       assert.ok(normalizedAnswer.length >= 45,
-        topic.id + ' ' + question + ' must return a substantive prepared answer');
+        topic.id + ' ' + question + ' must return a substantive prepared answer; answer=' + JSON.stringify(visibleAnswer) + '; errors=' + JSON.stringify(errors));
       assert.doesNotMatch(visibleAnswer, /آره عزیزم|حتماً عزیزم|بله عزیزم|نه عزیزم/u,
         'assistant answers must not use intimate pet names or the removed opening phrase');
       assert.doesNotMatch(visibleAnswer, /راهنمای روز\s*\d|دستیار هوشمند مسیر ۲۸|جمع‌بندی امروز|موضوع:\s/u,
