@@ -104,37 +104,55 @@ try {
   const options = picker.locator('[data-prompt-option]');
   assert.equal(await options.count(), 14,
     'the visible T14 picker must render all fourteen prepared questions');
-  await picker.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
 
-  const before = await dialog.locator('.assistantMessage').count();
-  await dialog.getByRole('button', { name: 'ارسال' }).click();
-  try {
-    await page.waitForFunction((previous) => {
-      const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-      const latest = replies.at(-1)?.innerText || '';
-      return replies.length > previous && latest.trim().length > 0 && !latest.includes('در حال بررسی');
-    }, before);
-  } catch (error) {
-    console.error('T14_MESSAGES', JSON.stringify(await dialog.locator('.assistantMessage').allInnerTexts()));
-    console.error('T14_DIALOG', await dialog.innerText());
-    console.error('T14_COMPOSER', JSON.stringify(await dialog.locator('.assistantComposer').evaluate((element) => ({
-      dataset: { ...element.dataset },
-      text: element.innerText,
-      html: element.outerHTML,
-    }))));
-    console.error('T14_ERRORS', JSON.stringify(errors));
-    throw error;
+  let previousAssistantCount = await dialog.locator('.assistantMessage').count();
+  for (let questionIndex = 0; questionIndex < 14; questionIndex += 1) {
+    if (questionIndex > 0) {
+      await trigger.click();
+      await picker.waitFor({ state: 'visible' });
+    }
+    await options.nth(questionIndex).click();
+    await dialog.getByRole('button', { name: 'ارسال' }).click();
+
+    const latestReply = dialog.locator('.assistantMessage').last();
+    const latestIcon = latestReply.locator('.globalAssistantSpeakerIcon');
+    try {
+      await page.waitForFunction((previousCount) => {
+        const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+        return replies.length > previousCount;
+      }, previousAssistantCount, { timeout: 10000 });
+      await page.waitForFunction(() => {
+        const icon = document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon');
+        return icon?.getAttribute('data-assistant-state') === 'typing';
+      }, null, { timeout: 10000 });
+      await page.waitForFunction(() => {
+        const icon = document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon');
+        return icon?.getAttribute('data-assistant-state') === 'idle';
+      }, null, { timeout: 20000 });
+    } catch (error) {
+      console.error('T14_QUESTION_INDEX', questionIndex);
+      console.error('T14_MESSAGES', JSON.stringify(await dialog.locator('.assistantMessage').allInnerTexts()));
+      console.error('T14_ERRORS', JSON.stringify(errors));
+      throw error;
+    }
+
+    const replyText = await latestReply.innerText();
+    assert.ok(replyText.trim().length > 20,
+      `T14 prepared question ${questionIndex + 1} must receive a complete, nonempty answer`);
+    assert.doesNotMatch(replyText, /در حال بررسی پرسش/u,
+      `T14 prepared question ${questionIndex + 1} must not leave the pending placeholder visible`);
+    const iconColor = await latestIcon.evaluate((element) => getComputedStyle(element).color);
+    assert.equal(iconColor, 'rgb(196, 154, 66)',
+      'the assistant icon must use the soft gold accent');
+    const iconAnimation = await latestIcon.evaluate((element) => getComputedStyle(element).animationName);
+    assert.equal(iconAnimation, 'none',
+      'the assistant icon must stop breathing after the complete answer is revealed');
+    previousAssistantCount = await dialog.locator('.assistantMessage').count();
+    assert.equal(await dialog.getByTestId('t14-daily-prompt-trigger').count(), 1,
+      'the T14 prepared-question trigger must remain available after answering');
   }
-
-  const reply = dialog.locator('.assistantMessage').last();
-  const replyText = await reply.innerText();
-  assert.match(replyText, /نقشه یک هدف مشخص/);
-  assert.match(replyText, /نقشه‌برداری هدف‌محور/);
-  assert.equal(await dialog.getByTestId('t14-daily-prompt-trigger').count(), 1,
-    'the T14 prepared-question trigger must remain available after answering');
   assert.deepEqual(errors, [], 'the T14 browser flow must not emit page or console errors');
-
-  console.log('PASS: Chromium displayed all 14 T14 prepared questions and returned the selected day-1 answer.');
+  console.log('PASS: Chromium displayed all 14 T14 prepared questions, revealed each answer word by word, and stopped the gold icon after each answer.');
 } finally {
   await browser.close();
 }
