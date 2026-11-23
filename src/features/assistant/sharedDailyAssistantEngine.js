@@ -15,6 +15,26 @@ const TOPIC_NAMES = Object.freeze({
   T12: 'مرزبندی و نه گفتن',
   T13: 'تنهایی',
   T14: 'کمبود انگیزه',
+  T15: 'اعتمادبه‌نفس پایین',
+  T16: 'افکار منفی و نشخوار فکری',
+  T17: 'مشکلات رابطه',
+  T18: 'نفرت از خود',
+  T19: 'خودسرزنشی',
+  T20: 'کمال‌گرایی',
+  T21: 'اجتناب',
+  T22: 'استرس',
+  T23: 'احساس بی‌ارزشی',
+  T24: 'مشکل در کنترل هیجان',
+  T25: 'رنجش و کینه',
+  T26: 'شرم',
+  T27: 'ترس از قضاوت',
+  T28: 'ترس از شکست',
+  T29: 'ترس از طرد شدن',
+  T30: 'شک و تردید',
+  T31: 'کنترل‌گری',
+  T32: 'بی‌انگیزگی',
+  T33: 'خودانتقادی',
+  T34: 'مشکل دیگر',
 });
 
 const DISTRESS_KIND_BY_TOPIC = Object.freeze({
@@ -32,6 +52,26 @@ const DISTRESS_KIND_BY_TOPIC = Object.freeze({
   T12: 'boundary_distress',
   T13: 'loneliness_increased',
   T14: 'motivation_distress',
+  T15: 'confidence_distress',
+  T16: 'rumination_distress',
+  T17: 'relationship_distress',
+  T18: 'self_hatred_distress',
+  T19: 'self_blame_distress',
+  T20: 'perfectionism_distress',
+  T21: 'avoidance_distress',
+  T22: 'stress_distress',
+  T23: 'worthlessness_distress',
+  T24: 'emotion_regulation_distress',
+  T25: 'resentment_distress',
+  T26: 'shame_distress',
+  T27: 'judgment_fear_distress',
+  T28: 'failure_fear_distress',
+  T29: 'rejection_fear_distress',
+  T30: 'doubt_distress',
+  T31: 'control_distress',
+  T32: 'demotivation_distress',
+  T33: 'self_criticism_distress',
+  T34: 'other_topic_distress',
 });
 
 const QUESTION_DEFINITIONS = Object.freeze([
@@ -314,6 +354,26 @@ function answerBody({ guide, question, plainSteps = {} }) {
     case 'boundary_distress':
     case 'loneliness_increased':
     case 'motivation_distress':
+    case 'confidence_distress':
+    case 'rumination_distress':
+    case 'relationship_distress':
+    case 'self_hatred_distress':
+    case 'self_blame_distress':
+    case 'perfectionism_distress':
+    case 'avoidance_distress':
+    case 'stress_distress':
+    case 'worthlessness_distress':
+    case 'emotion_regulation_distress':
+    case 'resentment_distress':
+    case 'shame_distress':
+    case 'judgment_fear_distress':
+    case 'failure_fear_distress':
+    case 'rejection_fear_distress':
+    case 'doubt_distress':
+    case 'control_distress':
+    case 'demotivation_distress':
+    case 'self_criticism_distress':
+    case 'other_topic_distress':
     case 'distress_increased':
       return paragraph(
         'برای تمرین روز ' + day + ' در موضوع «' + topic + '»، اگر فشار یا ناراحتی‌ات بیشتر شد، همان لحظه مکث کن و تمرین را کنار بگذار. برای یادگیری مهارت امروز لازم نیست ناراحتی را تحمل کنی.',
