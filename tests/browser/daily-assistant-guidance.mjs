@@ -336,8 +336,7 @@ try {
         const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
         const latestReply = replies.at(-1);
         return replies.length > previous
-          && !latestReply.innerText.includes('در حال بررسی پرسش')
-          && !latestReply.querySelector('.assistantTypingCursor');
+          && !latestReply.innerText.includes('در حال بررسی پرسش');
       }, previousReplyCount, { timeout: 15000 }).catch(async error => {
         const replies = await panel.locator('.assistantMessage').allInnerTexts();
         throw new Error(topic.id + ' ' + question + ' did not settle; replies='
@@ -349,6 +348,14 @@ try {
       assert.ok(userQuestion.includes(normalizeVisibleDailyText(question)),
         topic.id + ' must display the selected fixed question before its answer');
       const answer = panel.locator('.assistantMessage').last();
+      // The reply can appear just before the typewriter effect's React effect runs.
+      // If its fast-reveal control appears, use it so assertions inspect the full reply
+      // without adding a fixed sleep to every browser scenario.
+      const showFull = answer.getByRole('button', { name: 'نمایش کامل پاسخ' });
+      await showFull.waitFor({ state: 'visible', timeout: 1200 }).then(
+        () => showFull.click(),
+        () => undefined,
+      );
       const visibleAnswer = await answer.innerText();
       const normalizedAnswer = normalizeVisibleDailyText(visibleAnswer);
       assert.ok(normalizedAnswer.length >= 45,
