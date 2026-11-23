@@ -500,7 +500,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(selectedPreparedQuestion.kind),
       );
       updateAssistantMessage(finalMessage, turn.knowledge || [], isDailySafetyQuestion);
-    } catch {
+    } catch (error) {
+      console.error('Assistant turn failed', error);
       updateAssistantMessage('پاسخ آماده نشد. دوباره تلاش کن.');
     } finally {
       setSending(false);
