@@ -142,10 +142,12 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         || preparedSource.topic_id === preparedTopicId);
 
     const hasPendingSafetyExchange = ['pending', 'handoff'].includes(conversationState?.dailyState?.safetyStatus);
-    const blockedTopicSafetyMode = preparedTopicId ? getDailySafetyMode(preparedSource) : null;
-    const hasExactBlockedTopicPreparedQuestion = Boolean(preparedTopicId
+    const isExtendedTopic = /^T(?:1[5-9]|2[0-9]|3[0-4])$/u.test(preparedTopicId || '');
+    const usesExplicitDailySafetyBlock = ['T13', 'T14'].includes(preparedTopicId) || isExtendedTopic;
+    const blockedTopicSafetyMode = usesExplicitDailySafetyBlock ? getDailySafetyMode(preparedSource) : null;
+    const hasExactBlockedTopicPreparedQuestion = Boolean(usesExplicitDailySafetyBlock
       && answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }));
-    if (preparedTopicId
+    if (usesExplicitDailySafetyBlock
       && blockedTopicSafetyMode === 'blocked'
       && hasExactBlockedTopicPreparedQuestion) {
       return Object.freeze({
@@ -236,8 +238,8 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       });
     }
 
-    const sharedRelationshipGate = getRelationshipSafetyGate(preparedSource);
-    const hasExactSharedRelationshipPreparedQuestion = Boolean(preparedTopicId
+    const sharedRelationshipGate = isExtendedTopic ? getRelationshipSafetyGate(preparedSource) : null;
+    const hasExactSharedRelationshipPreparedQuestion = Boolean(isExtendedTopic
       && answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }));
     if (sharedRelationshipGate
       && hasExactSharedRelationshipPreparedQuestion
