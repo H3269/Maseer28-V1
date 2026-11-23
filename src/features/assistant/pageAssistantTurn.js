@@ -35,10 +35,10 @@ function normalizeVisibleDailySourceText(value) {
   return String(value ?? '').normalize('NFKC')
     .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
     .replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
-    .replace(/[\\u064B-\\u065F\\u0670]/g, '')
-    .replace(/[\\u200c\\u200f\\u200e]/g, ' ')
-    .replace(/[^\\p{L}\\p{N}\\s]/gu, ' ')
-    .replace(/\\s+/g, ' ').trim().toLowerCase();
+    .replace(/[\u064B-\u065F\u0670]/g, '')
+    .replace(/[\u200c\u200f\u200e]/g, ' ')
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+    .replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
 function preserveVisibleDailySources(answer, questionKind, dailyContent) {
@@ -59,7 +59,7 @@ function preserveVisibleDailySources(answer, questionKind, dailyContent) {
     // Keep the UI's adapted daily text authoritative even if a topic adapter
     // falls back to its static guide. This is a display-only source safeguard;
     // it does not change routing, identity validation, or safety decisions.
-    result += (result ? '\\n\\n' : '') + label + ': ' + source;
+    result += (result ? '\n\n' : '') + label + ': ' + source;
     normalizedResult = normalizeVisibleDailySourceText(result);
   }
   return result;
