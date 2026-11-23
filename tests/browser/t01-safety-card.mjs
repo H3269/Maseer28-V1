@@ -133,19 +133,30 @@ try {
       const card = getComputedStyle(node);
       const headingNode = node.querySelector('h1, h2, h3, h4, h5, h6, [role="heading"]');
       const messageNode = node.closest('.assistantMessage');
+      const headingStyle = headingNode ? window.getComputedStyle(headingNode) : null;
+      const headingRect = headingNode?.getBoundingClientRect();
       return {
         background: card.backgroundColor,
         border: card.borderTopColor,
-        heading: headingNode ? getComputedStyle(headingNode).color : null,
         headingText: headingNode?.textContent?.trim() || '',
-        messageBackground: messageNode ? getComputedStyle(messageNode).backgroundColor : null,
+        headingDisplay: headingStyle?.display || '',
+        headingVisibility: headingStyle?.visibility || '',
+        headingOpacity: headingStyle?.opacity || '',
+        headingWidth: headingRect?.width || 0,
+        headingHeight: headingRect?.height || 0,
+        headingHasLayout: Boolean(headingNode?.getClientRects().length),
+        messageBackground: messageNode ? window.getComputedStyle(messageNode).backgroundColor : null,
       };
     });
     assert.notEqual(colors.background, 'rgba(0, 0, 0, 0)', 'the main safety card must have a visible background');
     assert.notEqual(colors.background, colors.messageBackground, 'the safety card must be distinct from the assistant message but coordinated with its palette');
     assert.notEqual(colors.border, 'rgba(0, 0, 0, 0)', 'the main safety card must retain a visible border');
     assert.ok(colors.headingText.length > 0, 'the safety card must contain a semantic heading');
-    assert.ok(colors.heading && colors.heading !== 'rgba(0, 0, 0, 0)', 'the safety heading must remain visible');
+    assert.notEqual(colors.headingDisplay, 'none', 'the safety heading must participate in layout');
+    assert.equal(colors.headingVisibility, 'visible', 'the safety heading must not be hidden');
+    assert.ok(Number(colors.headingOpacity) > 0, 'the safety heading must not be transparent');
+    assert.ok(colors.headingHasLayout && colors.headingWidth > 0 && colors.headingHeight > 0,
+      'the safety heading must occupy visible layout space');
   }
 
   assert.deepEqual(pageErrors, [], 'T01 safety-card browser flow must not raise page errors');
