@@ -240,7 +240,7 @@ test('additional prepared answers distinguish exercise from action and handle mi
   assert.ok(differenceAnswer.includes('روز 7'), 'answer must stay bound to the selected day');
   assert.match(differenceAnswer, /تمرین/);
   assert.match(differenceAnswer, /اقدام/);
-  assert.match(differenceAnswer, /تمرین به شناخت و مشاهده مهارت/);
+  assert.match(differenceAnswer, /تمرین، کاری است که متن امروز برای یادگیری یا تمرین مشخص کرده/);
   assert.ok(missedAnswer.includes(guide.lightVersion));
   assert.match(missedAnswer, /خودت را سرزنش نکن/);
 });
@@ -258,8 +258,8 @@ test('talking to another person is never presented as mandatory', () => {
   const guide = ANGER_DAILY_ASSISTANT_GUIDES[10];
   const question = guide.questions.find((item) => item.kind === 'talk_other');
   const answer = answerAngerDailyPreparedQuestion({ day: 11, message: question.value });
-  assert.match(answer, /گفت‌وگو با فرد دیگری الزامی نیست/);
-  assert.match(answer, /آزادانه رضایت داشته باشند/);
+  assert.match(answer, /گفت‌وگو با فرد دیگری الزامی نیست، مگر اینکه متن خود تمرین صریحاً تعامل را بخواهد/);
+  assert.match(answer, /رضایت آزادانه/);
 });
 
 test('duration answer does not invent a number that is absent from reviewed source content', () => {
@@ -276,7 +276,7 @@ test('exercise explanation preserves the source-requested number of examples for
   const question = guide.questions.find((item) => item.kind === 'exercise_meaning');
   const answer = answerAngerDailyPreparedQuestion({ day: 3, message: question.value });
   assert.match(answer, /دو تجربه کم‌فشار/);
-  assert.match(answer, /تعداد نمونه‌ها را هم بیشتر یا کمتر نکن/);
+  assert.match(answer, /اگر تعداد، زمان یا قالب مشخصی تعیین شده، همان را رعایت کن/);
   assert.doesNotMatch(answer, /فقط یک نمونه کم‌فشار و امن انتخاب کن/);
 });
 

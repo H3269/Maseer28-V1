@@ -218,6 +218,53 @@ test('T15-T34 route all 7,840 fixed question slots through the real daily assist
   assert.equal(available + safelyBlocked, 20 * 28 * 14, 'all 7,840 T15-T34 question slots must be checked');
 });
 
+test('T15-T34 render 560 source-matched, day-specific exercise and action examples', async () => {
+  const merged = await loadMergedContent();
+  const catalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
+  const topicRecords = catalog.records.filter((record) => Number(record.topicId.slice(1)) >= 15);
+  assert.equal(topicRecords.length, 20 * 28, 'T15-T34 must have one example record per topic/day');
+  assert.equal(new Set(topicRecords.map((record) => record.exerciseExample)).size, 20 * 28,
+    'T15-T34 exercise examples must not repeat across topics or days');
+  assert.equal(new Set(topicRecords.map((record) => record.actionExample)).size, 20 * 28,
+    'T15-T34 action examples must not repeat across topics or days');
+
+  for (const [topicId, topicName] of TOPICS.filter(([id]) => Number(id.slice(1)) >= 15)) {
+    const days = merged.categories[topicName]?.days || [];
+    const records = topicRecords.filter((record) => record.topicId === topicId);
+    assert.equal(days.length, 28, topicId + ' canonical day count');
+    assert.equal(records.length, 28, topicId + ' example record count');
+    assert.equal(new Set(records.map((record) => record.exerciseExample)).size, 28,
+      topicId + ' exercise examples must be distinct');
+    assert.equal(new Set(records.map((record) => record.actionExample)).size, 28,
+      topicId + ' action examples must be distinct');
+
+    for (const record of records) {
+      const day = days.find((item) => Number(item.day) === record.day);
+      assert.ok(day, topicId + ' day ' + record.day + ' canonical source');
+      assert.equal(record.exerciseSource, day.exercise,
+        topicId + ' day ' + record.day + ' exercise source identity');
+      assert.equal(record.actionSource, day.actionText,
+        topicId + ' day ' + record.day + ' action source identity');
+
+      const questions = getSharedDailyAssistantPromptGroups(record.day, topicId)
+        .flatMap((group) => group.questions);
+      const exerciseQuestion = questions.find((question) => question.kind === 'exercise_example');
+      const actionQuestion = questions.find((question) => question.kind === 'action_example');
+      const sourceOnlyDay = { ...day, exerciseExample: '', actionExample: '' };
+      const exerciseAnswer = buildSharedDailyAssistantAnswerFromDailyContent({
+        topicId, topicName, day: record.day, message: exerciseQuestion.value, dailyContent: sourceOnlyDay,
+      });
+      const actionAnswer = buildSharedDailyAssistantAnswerFromDailyContent({
+        topicId, topicName, day: record.day, message: actionQuestion.value, dailyContent: sourceOnlyDay,
+      });
+      assert.ok(exerciseAnswer.includes(record.exerciseExample),
+        topicId + ' day ' + record.day + ' exercise example must render from the shared catalogue');
+      assert.ok(actionAnswer.includes(record.actionExample),
+        topicId + ' day ' + record.day + ' action example must render from the shared catalogue');
+    }
+  }
+});
+
 test('T11-T18 authored examples are migrated into the shared renderer for all 28 canonical days', async () => {
   const merged = await loadMergedContent();
   const catalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
@@ -463,4 +510,299 @@ test('runtime examples survive adapted visible wording and stay bound to the can
     }
   }
   assert.ok(checked >= 650, 'expected broad runtime coverage across all 14 topics and 28 days; checked=' + checked);
+});
+
+test('T15-T34 render canonical migrated exercise and action examples through the real runtime router', async () => {
+  const merged = await loadMergedContent();
+  const migratedCatalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
+  let checked = 0;
+  let safelyBlocked = 0;
+  for (const [topicId, topicName] of TOPICS.filter(([id]) => Number(id.slice(1)) >= 15)) {
+    const days = merged.categories[topicName]?.days || [];
+    assert.equal(days.length, 28, topicId + ' canonical days');
+    const topicRecords = migratedCatalog.records.filter((item) => item.topicId === topicId);
+    assert.equal(topicRecords.length, 28, topicId + ' migrated examples for every day');
+    assert.equal(new Set(topicRecords.map((item) => item.exerciseExample)).size, 28,
+      topicId + ' exercise examples must be distinct across days');
+    assert.equal(new Set(topicRecords.map((item) => item.actionExample)).size, 28,
+      topicId + ' action examples must be distinct across days');
+    for (let day = 1; day <= 28; day += 1) {
+      const dailyContent = days.find((item) => Number(item.day) === day);
+      assert.ok(dailyContent?.exercise && dailyContent?.actionText, topicId + ' day ' + day + ' source content');
+      const migratedRecord = topicRecords.find((item) => item.day === day);
+      assert.ok(migratedRecord, topicId + ' day ' + day + ' catalog record');
+      assert.equal(migratedRecord.exerciseSource, dailyContent.exercise,
+        topicId + ' day ' + day + ' exercise source provenance');
+      assert.equal(migratedRecord.actionSource, dailyContent.actionText,
+        topicId + ' day ' + day + ' action source provenance');
+      if (getDailySafetyMode(dailyContent) === 'blocked') {
+        safelyBlocked += 2;
+        continue;
+      }
+      for (const [kind, field] of [
+        ['exercise_example', 'exerciseExample'],
+        ['action_example', 'actionExample'],
+      ]) {
+        const question = getSharedDailyAssistantPromptGroups(day, topicId)
+          .flatMap((group) => group.questions)
+          .find((item) => item.kind === kind);
+        assert.ok(question, topicId + ' day ' + day + ' ' + kind);
+        const sourceExample = migratedRecord[field];
+        assert.ok(sourceExample?.trim(), topicId + ' day ' + day + ' must have a canonical source example');
+        const result = makePageAssistantTurn({
+          screen: 'day',
+          text: question.value,
+          dailyContext: {
+            day,
+            problem: topicName,
+            data: dailyContent,
+            guidanceData: {
+              id: dailyContent.id,
+              topic_id: dailyContent.topic_id ?? null,
+              day: dailyContent.day,
+              exercise: dailyContent.exercise + ' [متن سازگارشده برای نمایش]',
+              action: dailyContent.actionText + ' [متن سازگارشده برای نمایش]',
+            },
+            relationshipSafetyConfirmed: true,
+          },
+        });
+        assert.equal(result.status, 'daily_guidance_available',
+          topicId + ' day ' + day + ' ' + kind + ' must pass the real runtime router');
+        const normalizedExample = sourceExample.replace(/^(?:نمونه فرضی:\\s*){2,}/u, 'نمونه فرضی: ');
+        const visibleExample = cleanPreparedAssistantTopicText(normalizedExample, topicName);
+        assert.ok(result.message.includes(visibleExample),
+          topicId + ' day ' + day + ' ' + kind + ' must render its canonical example after display cleanup');
+        assert.doesNotMatch(result.message, /مثال فرضی جداگانه‌ای در محتوای ثبت‌شده وجود ندارد/u,
+          topicId + ' day ' + day + ' ' + kind + ' must not fall back');
+        checked += 1;
+      }
+    }
+  }
+  assert.equal(checked + safelyBlocked, 20 * 28 * 2,
+    'all T15-T34 exercise/action example slots must be either rendered or safety-blocked');
+});
+
+
+test('near-identical exercise/action pairs preserve separate planning and implementation roles', async () => {
+  const catalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
+  const expected = [
+    ['T16', 9, 'هنوز تمرین را اجرا نمی‌کند', 'زمان‌سنج ده‌دقیقه‌ای'],
+    ['T20', 24, 'فهرست سه‌موردی', 'بازبینی سلیقه‌ای چهارم اضافه نمی‌کند'],
+    ['T19', 14, 'یک نشانه آغاز تعیین می‌کند', 'در تقویم گوشی یک یادآور'],
+    ['T20', 7, 'معیار موفقیت را مشخص می‌کند', '۲۰ دقیقه برای نوشتن پیش‌نویس'],
+    ['T20', 12, 'سه عبارت مطلق', 'در گزارش فعلی عبارت'],
+    ['T15', 27, 'هنوز زمان اجرا را تعیین نمی‌کند', 'در تقویم ثبت می‌کند'],
+    ['T18', 15, 'هنوز دعوت را ارسال نمی‌کند', 'به خواهر مورد اعتمادش پیام می‌دهد'],
+  ];
+  for (const [topicId, day, exerciseMarker, actionMarker] of expected) {
+    const record = catalog.records.find((item) => item.topicId === topicId && item.day === day);
+    assert.ok(record, topicId + ' day ' + day + ' catalog record');
+    assert.ok(record.exerciseExample.includes(exerciseMarker),
+      topicId + ' day ' + day + ' exercise must retain its planning/definition role');
+    assert.ok(record.actionExample.includes(actionMarker),
+      topicId + ' day ' + day + ' action must describe a distinct implementation step');
+    assert.notEqual(record.exerciseExample, record.actionExample,
+      topicId + ' day ' + day + ' exercise and action examples must not be identical');
+  }
+});
+
+
+test('T18 day 22 immediate safety response and day 28 warning-level review remain distinct', async () => {
+  const catalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
+  const day22 = catalog.records.find((item) => item.topicId === 'T18' && item.day === 22);
+  const day28 = catalog.records.find((item) => item.topicId === 'T18' && item.day === 28);
+  assert.ok(day22.exerciseExample.includes('نیاز فوری'));
+  assert.ok(day28.exerciseExample.includes('دو سطح را در کارت شخصی جدا می‌کند'));
+  assert.ok(day28.exerciseExample.includes('هشدار زودهنگام'));
+  assert.notEqual(day22.exerciseExample, day28.exerciseExample);
+});
+
+
+test('T32 day 15 recovery action and T33 day 16 specific feedback action remain distinct', async () => {
+  const catalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
+  const t32Day8 = catalog.records.find((item) => item.topicId === 'T32' && item.day === 8);
+  const t32Day15 = catalog.records.find((item) => item.topicId === 'T32' && item.day === 15);
+  const t33Day14 = catalog.records.find((item) => item.topicId === 'T33' && item.day === 14);
+  const t33Day16 = catalog.records.find((item) => item.topicId === 'T33' && item.day === 16);
+  assert.ok(t32Day15.actionExample.includes('خستگی چشم'));
+  assert.ok(t32Day15.actionExample.includes('به نقطه‌ای دور نگاه می‌کند'));
+  assert.doesNotMatch(t32Day15.actionExample, /وعده غذایی/u);
+  assert.notEqual(t32Day8.actionExample, t32Day15.actionExample);
+  assert.ok(t33Day16.actionExample.includes('کدام‌یک از این دو تیتر بهتر است'));
+  assert.ok(t33Day16.actionExample.includes('پاسخ مربوط به همان تیتر'));
+  assert.notEqual(t33Day14.actionExample, t33Day16.actionExample);
+});
+
+
+test('T15 T20 and T26 flagged examples retain distinct daily learning targets', async () => {
+  const catalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
+  const t15Day10 = catalog.records.find((item) => item.topicId === 'T15' && item.day === 10);
+  const t15Day20 = catalog.records.find((item) => item.topicId === 'T15' && item.day === 20);
+  const t20Day19 = catalog.records.find((item) => item.topicId === 'T20' && item.day === 19);
+  const t20Day22 = catalog.records.find((item) => item.topicId === 'T20' && item.day === 22);
+  const t26Day7 = catalog.records.find((item) => item.topicId === 'T26' && item.day === 7);
+  const t26Day22 = catalog.records.find((item) => item.topicId === 'T26' && item.day === 22);
+  assert.ok(t15Day10.exerciseExample.includes('پیش از جلسه'));
+  assert.ok(t15Day10.actionExample.includes('پرسش را مطرح کرده است'));
+  assert.ok(t15Day20.exerciseExample.includes('۴ از ۱۰'));
+  assert.notEqual(t15Day10.exerciseExample, t15Day20.exerciseExample);
+  assert.ok(t20Day22.exerciseExample.includes('مرتب‌کردن میز'));
+  assert.ok(t20Day22.actionExample.includes('پنج دقیقه'));
+  assert.ok(t20Day19.exerciseExample.includes('گزارش کم‌خطر'));
+  assert.notEqual(t20Day19.exerciseExample, t20Day22.exerciseExample);
+  assert.ok(t26Day22.actionExample.includes('راه برگشت مستقل'));
+  assert.ok(t26Day22.actionExample.includes('دیدار را پایان می‌دهد'));
+  assert.ok(t26Day7.actionExample.includes('این موضوع برای من خصوصی است'));
+  assert.notEqual(t26Day7.actionExample, t26Day22.actionExample);
+});
+
+
+test('T15-T34 fixed answers q05-q14 remain anchored to their own daily source fields', async () => {
+  const merged = await loadMergedContent();
+  for (const [topicId, topicName] of TOPICS.filter(([id]) => Number(id.slice(1)) >= 15)) {
+    const days = merged.categories[topicName]?.days || [];
+    for (let day = 1; day <= 28; day += 1) {
+      const dailyContent = days.find((item) => Number(item.day) === day);
+      assert.ok(dailyContent, topicId + ' day ' + day + ' source');
+      const questions = getSharedDailyAssistantPromptGroups(day, topicId)
+        .flatMap((group) => group.questions);
+      const answerFor = (id) => {
+        const question = questions.find((item) => item.id === id);
+        assert.ok(question, topicId + ' day ' + day + ' ' + id + ' question');
+        const answer = buildSharedDailyAssistantAnswerFromDailyContent({
+          topicId, topicName, day, message: question.value, dailyContent,
+        });
+        assert.ok(typeof answer === 'string' && answer.trim(), topicId + ' day ' + day + ' ' + id + ' answer');
+        return answer;
+      };
+
+      const lightAnswer = answerFor('q05');
+      if (typeof dailyContent.lightVersion === 'string' && dailyContent.lightVersion.trim()) {
+        assert.ok(lightAnswer.includes(dailyContent.lightVersion.trim()), topicId + ' day ' + day + ' q05 lightVersion');
+      } else {
+        for (const field of ['lightExerciseText', 'lightActionVersion', 'lightActionText']) {
+          if (typeof dailyContent[field] === 'string' && dailyContent[field].trim()) {
+            assert.ok(lightAnswer.includes(dailyContent[field].trim()),
+              topicId + ' day ' + day + ' q05 must use ' + field);
+          }
+        }
+      }
+
+      const successAnswer = answerFor('q06');
+      const closingCriterionLine = String(dailyContent.closing || '').split(/\r?\n/u)
+        .map((line) => line.trim())
+        .find((line) => /^(?:معیار موفقیت|معیار امروز)\s*[:：]/u.test(line));
+      const successCriterion = dailyContent.success_criterion || dailyContent.successCriterion
+        || (closingCriterionLine ? closingCriterionLine.replace(/^(?:معیار موفقیت|معیار امروز)\s*[:：]\s*/u, '') : '');
+      if (typeof successCriterion === 'string' && successCriterion.trim()) {
+        assert.ok(successAnswer.includes(successCriterion.trim()), topicId + ' day ' + day + ' q06 criterion');
+      } else {
+        assert.match(successAnswer, /معیار موفقیت جداگانه‌ای ثبت نشده/u,
+          topicId + ' day ' + day + ' q06 must not invent a criterion');
+      }
+
+      const stopAnswer = answerFor('q07');
+      const stopConditions = dailyContent.stop_conditions || dailyContent.stopConditions;
+      if (Array.isArray(stopConditions) && stopConditions.length) {
+        for (const condition of stopConditions.filter((item) => typeof item === 'string' && item.trim())) {
+          assert.ok(stopAnswer.includes(condition.trim()), topicId + ' day ' + day + ' q07 stop condition');
+        }
+      } else if (typeof (dailyContent.stopCondition || dailyContent.stop_condition_text) === 'string'
+        && (dailyContent.stopCondition || dailyContent.stop_condition_text).trim()) {
+        assert.ok(stopAnswer.includes((dailyContent.stopCondition || dailyContent.stop_condition_text).trim()),
+          topicId + ' day ' + day + ' q07 stop text');
+      }
+
+      const noEventAnswer = answerFor('q08');
+      if (typeof dailyContent.restVersion === 'string' && dailyContent.restVersion.trim()) {
+        assert.ok(noEventAnswer.includes(dailyContent.restVersion.trim()), topicId + ' day ' + day + ' q08 restVersion');
+      } else {
+        for (const field of ['restExerciseText', 'restActionVersion', 'restActionText']) {
+          if (typeof dailyContent[field] === 'string' && dailyContent[field].trim()) {
+            assert.ok(noEventAnswer.includes(dailyContent[field].trim()),
+              topicId + ' day ' + day + ' q08 must use ' + field);
+          }
+        }
+      }
+
+      const differenceAnswer = answerFor('q09');
+      assert.ok(differenceAnswer.includes(dailyContent.exercise), topicId + ' day ' + day + ' q09 exercise source');
+      assert.ok(differenceAnswer.includes(dailyContent.actionText), topicId + ' day ' + day + ' q09 action source');
+
+      const notDoneAnswer = answerFor('q10');
+      for (const field of ['lightVersion', 'restVersion']) {
+        if (typeof dailyContent[field] === 'string' && dailyContent[field].trim()) {
+          assert.ok(notDoneAnswer.includes(dailyContent[field].trim()),
+            topicId + ' day ' + day + ' q10 must use ' + field);
+        }
+      }
+
+      const distressAnswer = answerFor('q11');
+      assert.match(distressAnswer, /تمرین را کنار بگذار/u, topicId + ' day ' + day + ' q11 stop safeguard');
+      assert.match(distressAnswer, /خدمات اضطراری/u, topicId + ' day ' + day + ' q11 urgent support');
+
+      const talkAnswer = answerFor('q12');
+      assert.ok(talkAnswer.includes(dailyContent.exercise), topicId + ' day ' + day + ' q12 must refer to the actual exercise');
+
+      const adaptAnswer = answerFor('q13');
+      const objective = dailyContent.learning_objective || dailyContent.objective;
+      if (typeof objective === 'string' && objective.trim()) {
+        assert.ok(adaptAnswer.includes(objective.trim()), topicId + ' day ' + day + ' q13 must preserve the daily objective');
+      }
+
+      const durationAnswer = answerFor('q14');
+      const duration = dailyContent.duration_minutes ?? dailyContent.durationMinutes;
+      if (Number.isFinite(Number(duration)) && Number(duration) > 0) {
+        assert.ok(durationAnswer.includes(String(Number(duration))),
+          topicId + ' day ' + day + ' q14 must use the recorded duration');
+      } else {
+        assert.match(durationAnswer, /زمان مشخصی برای این تمرین ثبت نشده/u,
+          topicId + ' day ' + day + ' q14 must not invent a duration');
+      }
+    }
+  }
+});
+
+
+test('T15-T34 shared explanations do not invent universal exercise rules or override source success criteria', async () => {
+  const merged = await loadMergedContent();
+  for (const [topicId, topicName] of TOPICS.filter(([id]) => Number(id.slice(1)) >= 15)) {
+    const days = merged.categories[topicName]?.days || [];
+    for (let day = 1; day <= 28; day += 1) {
+      const dailyContent = days.find((item) => Number(item.day) === day);
+      const questions = getSharedDailyAssistantPromptGroups(day, topicId).flatMap((group) => group.questions);
+      const answerFor = (id) => {
+        const question = questions.find((item) => item.id === id);
+        return buildSharedDailyAssistantAnswerFromDailyContent({
+          topicId, topicName, day, message: question.value, dailyContent,
+        });
+      };
+
+      const exerciseMeaning = answerFor('q01');
+      assert.match(exerciseMeaning, /اگر تعداد، زمان یا قالب مشخصی تعیین شده/u, topicId + ' day ' + day + ' q01 conditional instructions');
+      assert.doesNotMatch(exerciseMeaning, /تعداد نمونه‌ها را هم بیشتر یا کمتر نکن/u,
+        topicId + ' day ' + day + ' q01 must not invent a universal count');
+
+      const successAnswer = answerFor('q06');
+      const criterion = dailyContent.success_criterion || dailyContent.successCriterion;
+      if (typeof criterion === 'string' && criterion.trim()) {
+        assert.match(successAnswer, /همان معیار ثبت‌شده را مبنا قرار بده/u,
+          topicId + ' day ' + day + ' q06 must defer to the recorded criterion');
+      }
+      assert.doesNotMatch(successAnswer, /اگر توانستی بخش اصلی/u,
+        topicId + ' day ' + day + ' q06 must not add a competing success test');
+
+      const differenceAnswer = answerFor('q09');
+      assert.match(differenceAnswer, /تمرین، کاری است که متن امروز برای یادگیری یا تمرین مشخص کرده/u,
+        topicId + ' day ' + day + ' q09 must describe exercise by its source role');
+      assert.doesNotMatch(differenceAnswer, /شناخت و مشاهده مهارت/u,
+        topicId + ' day ' + day + ' q09 must not reduce every exercise to observation');
+
+      const talkAnswer = answerFor('q12');
+      assert.match(talkAnswer, /اگر دستور امروز نوشتن، مرور یا مشاهده شخصی است/u,
+        topicId + ' day ' + day + ' q12 must preserve solo exercise cases');
+      assert.match(talkAnswer, /اگر متن امروز صریحاً تعامل با فرد دیگری می‌خواهد/u,
+        topicId + ' day ' + day + ' q12 must preserve genuinely interpersonal exercise cases');
+    }
+  }
 });
