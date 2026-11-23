@@ -70,6 +70,10 @@ async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumb
   const dayBadge = normalizeVisibleDailyText(await page.locator('#dayBadge').innerText());
   assert.ok(dayBadge.includes(normalizeVisibleDailyText(topic)), 'day UI must show the selected canonical topic');
   assert.ok(dayBadge.includes('روز ' + dayNumber), 'day UI must show the selected canonical day');
+  const speakerIcon = panel.locator('.assistantMessage').last().locator('.globalAssistantSpeakerIcon');
+  const speakerIconHandle = await speakerIcon.elementHandle();
+  await page.waitForFunction((icon) => icon?.getAttribute('data-assistant-state') === 'typing', speakerIconHandle, { timeout: 10000 });
+  await page.waitForFunction((icon) => icon?.getAttribute('data-assistant-state') === 'idle', speakerIconHandle, { timeout: 20000 });
   const reply = normalizeVisibleDailyText(await panel.locator('.assistantMessage').last().innerText());
   if (topic !== 'خشم') {
     assert.ok(reply.includes('روز ' + dayNumber), 'assistant answer must use the selected day context');
