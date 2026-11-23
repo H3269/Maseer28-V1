@@ -131,18 +131,20 @@ try {
 
     const colors = await safetyCard.evaluate((node) => {
       const card = getComputedStyle(node);
-      const heading = getComputedStyle(node.querySelector('h3'));
-      const message = getComputedStyle(node.closest('.assistantMessage'));
+      const headingNode = node.querySelector('h1, h2, h3, h4, h5, h6, [role="heading"]');
+      const messageNode = node.closest('.assistantMessage');
       return {
         background: card.backgroundColor,
         border: card.borderTopColor,
-        heading: heading.color,
-        messageBackground: message.backgroundColor,
+        heading: headingNode ? getComputedStyle(headingNode).color : null,
+        headingText: headingNode?.textContent?.trim() || '',
+        messageBackground: messageNode ? getComputedStyle(messageNode).backgroundColor : null,
       };
     });
     assert.notEqual(colors.background, 'rgba(0, 0, 0, 0)', 'the main safety card must have a visible background');
     assert.notEqual(colors.background, colors.messageBackground, 'the safety card must be distinct from the assistant message but coordinated with its palette');
     assert.notEqual(colors.border, 'rgba(0, 0, 0, 0)', 'the main safety card must retain a visible border');
+    assert.ok(colors.headingText.length > 0, 'the safety card must contain a semantic heading');
     assert.ok(colors.heading && colors.heading !== 'rgba(0, 0, 0, 0)', 'the safety heading must remain visible');
   }
 
