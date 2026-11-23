@@ -47,6 +47,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const libraryPromptDialogRef = useRef(null);
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
+  const [typingState, setTypingState] = useState(null);
   const turnSequenceRef = useRef(0);
   const [loadedLibraryBooks, setLoadedLibraryBooks] = useState([]);
   const libraryBooksLoadRef = useRef(null);
@@ -218,6 +219,30 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     // Keep the beginning of the newest assistant turn (including its icon) in view.
     latestAssistantRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
   }, [messages, open]);
+
+  useEffect(() => {
+    if (sending || !messages.length) return undefined;
+    const latest = messages[messages.length - 1];
+    if (latest?.role !== 'assistant' || !latest.text || latest.text.startsWith('در حال بررسی')) return undefined;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      setTypingState(null);
+      return undefined;
+    }
+    let visibleChars = 0;
+    const total = latest.text.length;
+    const step = Math.max(2, Math.ceil(total / 110));
+    setTypingState({ id: latest.id, visibleChars: 0 });
+    const timer = window.setInterval(() => {
+      visibleChars = Math.min(total, visibleChars + step);
+      if (visibleChars >= total) {
+        window.clearInterval(timer);
+        setTypingState(null);
+      } else {
+        setTypingState({ id: latest.id, visibleChars });
+      }
+    }, 24);
+    return () => window.clearInterval(timer);
+  }, [messages, sending]);
 
   useEffect(() => {
     if (!libraryPromptOpen) return undefined;
@@ -721,7 +746,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                     <p>{formatAssistantMessageText(
                       item.dailySafetyReminder && item.text.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN)
                         ? item.text.slice(0, -DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN.length).trimEnd()
-                        : item.text,
+                        : (typingState?.id === item.id ? item.text.slice(0, typingState.visibleChars) : item.text),
                     ).map((line, lineIndex) => (
                       <React.Fragment key={lineIndex}>
                         {lineIndex > 0 ? <br /> : null}
@@ -729,7 +754,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                           ? <strong key={partIndex}>{part.text}</strong>
                           : <React.Fragment key={partIndex}>{part.text}</React.Fragment>)}
                       </React.Fragment>
-                    ))}</p>
+                    ))}{typingState?.id === item.id && <span className="assistantTypingCursor" aria-hidden="true" />}</p>
+                    {typingState?.id === item.id && <button type="button" className="assistantShowFullResponse" onClick={() => setTypingState(null)}>نمایش کامل پاسخ</button>}
                     {item.dailySafetyReminder && (
                       <aside className="dailyAssistantSafetyReminder" role="note" data-testid="daily-assistant-safety-reminder">
                         <h3>یادآوری مهم درباره ایمنی شما</h3>
