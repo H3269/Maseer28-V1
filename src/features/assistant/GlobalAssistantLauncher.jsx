@@ -234,20 +234,36 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       && latestAssistantMessage.text.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN)
       ? latestAssistantMessage.text.slice(0, -DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN.length).trimEnd()
       : latestAssistantMessage.text;
-    const words = revealText.match(/\S+\s*/gu) || [revealText];
+    const words = revealText.match(/\\S+\\s*/gu) || [revealText];
+    const responseId = latestAssistantMessage.id;
+    const reducedMotionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    if (reducedMotionQuery?.matches) {
+      setTypingProgress({ id: responseId, text: revealText, active: false });
+      return undefined;
+    }
+
     let visibleCount = 0;
-    setTypingProgress({ id: latestAssistantMessage.id, text: '', active: words.length > 0 });
+    let visibleText = '';
+    setTypingProgress({ id: responseId, text: '', active: words.length > 0 });
     const timer = window.setInterval(() => {
+      visibleText += words[visibleCount] || '';
       visibleCount += 1;
       const active = visibleCount < words.length;
-      setTypingProgress({
-        id: latestAssistantMessage.id,
-        text: words.slice(0, visibleCount).join(''),
-        active,
-      });
+      setTypingProgress({ id: responseId, text: visibleText, active });
       if (!active) window.clearInterval(timer);
     }, 42);
-    return () => window.clearInterval(timer);
+    const finishForReducedMotion = (event) => {
+      if (!event.matches) return;
+      window.clearInterval(timer);
+      setTypingProgress({ id: responseId, text: revealText, active: false });
+    };
+    reducedMotionQuery?.addEventListener?.('change', finishForReducedMotion);
+    reducedMotionQuery?.addListener?.(finishForReducedMotion);
+    return () => {
+      window.clearInterval(timer);
+      reducedMotionQuery?.removeEventListener?.('change', finishForReducedMotion);
+      reducedMotionQuery?.removeListener?.(finishForReducedMotion);
+    };
   }, [messages, sending]);
 
   useEffect(() => {
