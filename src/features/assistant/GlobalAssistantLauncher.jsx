@@ -22,7 +22,7 @@ import { getCanonicalTopicIdForCategory, getInterpersonalPrivacyNotice, getRelat
 
 
 
-import { getSharedDailyAssistantPromptGroups } from './sharedDailyAssistantEngine.js';
+import { getSharedDailyAssistantPromptGroups, SHARED_DAILY_ASSISTANT_TOPIC_NAMES } from './sharedDailyAssistantEngine.js';
 import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS, DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
 import { getDailySafetyMode } from '../content/dailySafety.js';
 
@@ -250,6 +250,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     || (dailyProblemTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12', 'T13', 'T14'].includes(dailyProblemTopicId) && dailyRecordTopicId)
     || (dailyRecordTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12', 'T13', 'T14'].includes(dailyRecordTopicId) && dailyProblemTopicId),
   );
+  const activeDailyTopicId = dailyProblemTopicId || dailyRecordTopicId || getCanonicalTopicIdForCategory(dailyProblemText);
   const isAngerDailyPromptContext = Boolean(dailyContext)
     && !hasConflictingDailyTopic
     && (dailyProblemTopicId === 'T01' || dailyRecordTopicId === 'T01' || dailyProblemText.includes('خشم'));
@@ -281,7 +282,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     && (dailyProblemTopicId === 'T13' || dailyRecordTopicId === 'T13' || dailyProblemText === 'تنهایی');
   const isT14DailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
     && (dailyProblemTopicId === 'T14' || dailyRecordTopicId === 'T14' || dailyProblemText === 'کمبود انگیزه');
-  const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext || isJealousyDailyPromptContext || isGriefDailyPromptContext || isGuiltDailyPromptContext || isEmotionalDependencyDailyPromptContext || isT09DailyPromptContext || isT10DailyPromptContext || isT11DailyPromptContext || isT12DailyPromptContext || isT13DailyPromptContext || isT14DailyPromptContext;
+  const isTopicDailyPromptContext = Boolean(dailyContext) && !hasConflictingDailyTopic
+    && Object.hasOwn(SHARED_DAILY_ASSISTANT_TOPIC_NAMES, activeDailyTopicId);
   const isPreparedOnlyDailyPromptContext = isTopicDailyPromptContext;
   const jealousyRelationshipGate = isJealousyDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
   const jealousyRelationshipGatePending = Boolean(jealousyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
@@ -297,12 +299,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const t12RelationshipGatePending = Boolean(t12RelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
   const t12RelationshipGateBlocked = t12RelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
   const t12PrivacyNotice = isT12DailyPromptContext ? getInterpersonalPrivacyNotice(dailyContext?.data) : null;
-  const activeDailyTopicId = dailyProblemTopicId || dailyRecordTopicId;
   const activePromptGroups = screen === 'books'
     ? [...LIBRARY_ASSISTANT_PROMPT_GROUPS, ...PAGE_ASSISTANT_PROMPT_GROUPS]
     : isTopicDailyPromptContext
-      ? ((activeDailyTopicId === 'T13' || activeDailyTopicId === 'T14')
-        && getDailySafetyMode(dailyContext?.data) === 'blocked'
+      ? (getDailySafetyMode(dailyContext?.data) === 'blocked'
         ? []
         : getSharedDailyAssistantPromptGroups(dailyContext?.day, activeDailyTopicId))
       : dailyContext
