@@ -202,7 +202,8 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     // A gate must protect the prepared answer path, not only selected topic adapters.
     const relationshipSafetyGate = getRelationshipSafetyGate(preparedSource);
     const hasExactRelationshipPreparedQuestion = Boolean(
-      relationshipSafetyGate
+      hasCanonicalPreparedIdentity
+      && relationshipSafetyGate
       && answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }),
     );
     if (relationshipSafetyGate
