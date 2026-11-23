@@ -364,6 +364,29 @@ try {
         topic.id + ' answer must render structured paragraph content');
       assert.ok(await answer.locator('.dailyAssistantSafetyReminder').count() <= 1,
         topic.id + ' answer must never duplicate the shared safety reminder card');
+      if (questionIndex === 5) {
+        assert.match(visibleAnswer, /برای بررسی|برای سنجش|برای اینکه بدانی درست انجامش داده‌ای|معیار ثبت‌شده/u,
+          topic.id + ' q06 must tell the user how to evaluate the exact daily work');
+        assert.doesNotMatch(visibleAnswer, /خروجی مشخصی را که خود تمرین خواسته ثبت کن/u,
+          topic.id + ' q06 must not use the vague generic fallback');
+        // Compare against the actual text shown in the daily screen after all
+        // topic/day overrides and display adaptations, not the unmerged base file.
+        await panel.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
+        await panel.waitFor({ state: 'detached' });
+        const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
+        assert.ok(visibleExercise, topic.id + ' day 1 q06 visible exercise must exist');
+        assert.ok(normalizedAnswer.includes(visibleExercise),
+          topic.id + ' day 1 q06 must refer to the exact visible exercise');
+        await page.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
+        await panel.waitFor({ state: 'visible' });
+        if (topic.id === 'T34') {
+          assert.match(visibleAnswer, /سه نشانه|سه قدم|۱\)/u,
+            'T34 day 1 q06 must give concrete observable checks, not merely ask the user to record an output');
+          assert.match(visibleAnswer, /برچسب|توصیف/u,
+            'T34 day 1 q06 must explain how to check the description task');
+        }
+      }
+
       completedAnswers += 1;
 
       // These three questions prove that the renderer uses the active topic/day
