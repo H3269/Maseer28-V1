@@ -18,8 +18,8 @@ assert.deepEqual(
 const normalizeAssistantText = (value) => String(value || '').normalize('NFKC')
   .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
   .replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
-  .replace(/[^\\p{L}\\p{N}\\s]/gu, ' ')
-  .replace(/\\s+/g, ' ').trim().toLowerCase();
+  .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+  .replace(/\s+/g, ' ').trim().toLowerCase();
 const browser = await chromium.launch({ headless: true });
 
 const journey = {
