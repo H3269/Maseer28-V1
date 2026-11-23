@@ -30,9 +30,8 @@ test('all four safety/evaluation questions receive exactly one reminder for T01-
           assert.equal(question.kind, distressKind, topicId + ' day ' + day + ' q11 kind');
         }
         const shouldShowReminder = shouldShowDailyAssistantSafetyReminder(topicId, question.kind);
-        assert.equal(shouldShowReminder, topicId !== 'T01',
-          topicId + ' day ' + day + ' ' + questionId + ' topic-aware reminder policy');
-        if (topicId === 'T01') continue;
+        assert.equal(shouldShowReminder, true,
+          topicId + ' day ' + day + ' ' + questionId + ' must retain its single safety reminder card');
         const answer = appendDailyAssistantSafetyReminder('پاسخ ایمنی اختصاصی', question.kind);
         assert.equal(answer.split(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN).length - 1, 1,
           topicId + ' day ' + day + ' ' + questionId + ' must append exactly one safety reminder');
