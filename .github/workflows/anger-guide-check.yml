@@ -27,6 +27,7 @@ on:
       - "tests/dailyAssistantCrossTopicContract.test.js"
       - "tests/dailyAssistantSafetyReminder.test.js"
       - "tests/assistantSafetyReminderCoverage.test.js"
+      - "tests/dailyAssistantSafetyRouting.test.js"
       - "tests/assistantMessageFormatting.test.js"
       - "tests/browser/daily-assistant-guidance.mjs"
       - "tests/browser/t01-safety-card.mjs"
@@ -58,6 +59,7 @@ jobs:
           tests/dailyAssistantCrossTopicContract.test.js
           tests/dailyAssistantSafetyReminder.test.js
           tests/assistantSafetyReminderCoverage.test.js
+          tests/dailyAssistantSafetyRouting.test.js
           tests/assistantMessageFormatting.test.js
           tests/angerContentPackage.test.mjs
           tests/anxietyDailyAssistantPrompts.test.js
