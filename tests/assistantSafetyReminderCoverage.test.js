@@ -4,6 +4,7 @@ import {
   appendDailyAssistantSafetyReminder,
   DAILY_ASSISTANT_SAFETY_QUESTION_KINDS,
   DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN,
+  shouldShowDailyAssistantSafetyReminder,
 } from '../src/features/assistant/dailyAssistantSafetyReminder.js';
 import {
   getSharedDailyAssistantPromptGroups,
@@ -28,6 +29,10 @@ test('all four safety/evaluation questions receive exactly one reminder for T01-
         if (questionId === 'q11') {
           assert.equal(question.kind, distressKind, topicId + ' day ' + day + ' q11 kind');
         }
+        const shouldShowReminder = shouldShowDailyAssistantSafetyReminder(topicId, question.kind);
+        assert.equal(shouldShowReminder, topicId !== 'T01',
+          topicId + ' day ' + day + ' ' + questionId + ' topic-aware reminder policy');
+        if (topicId === 'T01') continue;
         const answer = appendDailyAssistantSafetyReminder('پاسخ ایمنی اختصاصی', question.kind);
         assert.equal(answer.split(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN).length - 1, 1,
           topicId + ' day ' + day + ' ' + questionId + ' must append exactly one safety reminder');
@@ -44,4 +49,8 @@ test('ordinary prepared questions do not receive the distress-only reminder by a
     .find((question) => question.id === 'q01');
   const answer = appendDailyAssistantSafetyReminder('پاسخ عادی', ordinaryQuestion.kind);
   assert.equal(answer, 'پاسخ عادی');
+  for (const topicId of TOPIC_IDS) {
+    assert.equal(shouldShowDailyAssistantSafetyReminder(topicId, ordinaryQuestion.kind), false,
+      topicId + ' q01 must never show the safety reminder card');
+  }
 });
