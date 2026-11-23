@@ -198,11 +198,15 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       });
     }
     const hasExplicitSafetyHandoff = inputProbe.intake?.safety_handoff?.handoff_required === true;
-    const hasExactJealousyPreparedQuestion = preparedTopicId === 'T05'
-      && Boolean(answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }));
-    const jealousyRelationshipGate = preparedTopicId === 'T05' ? getRelationshipSafetyGate(preparedSource) : null;
-    if (jealousyRelationshipGate
-      && hasExactJealousyPreparedQuestion
+    // Apply the same registered relationship-safety gate to every topic/day.
+    // A gate must protect the prepared answer path, not only selected topic adapters.
+    const relationshipSafetyGate = getRelationshipSafetyGate(preparedSource);
+    const hasExactRelationshipPreparedQuestion = Boolean(
+      relationshipSafetyGate
+      && answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }),
+    );
+    if (relationshipSafetyGate
+      && hasExactRelationshipPreparedQuestion
       && !hasPendingSafetyExchange
       && !hasExplicitSafetyHandoff
       && dailyContext?.relationshipSafetyConfirmed !== true) {
@@ -211,94 +215,13 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
           ? 'relationship_safety_blocked'
           : 'relationship_safety_confirmation_required',
         message: dailyContext?.relationshipSafetyResponse === 'unsafe'
-          ? jealousyRelationshipGate.blockedMessage
-          : jealousyRelationshipGate.question + '\n\n' + jealousyRelationshipGate.disclaimer,
+          ? relationshipSafetyGate.blockedMessage
+          : relationshipSafetyGate.question + '\n\n' + relationshipSafetyGate.disclaimer,
         knowledge: Object.freeze([]),
         page_context: 'day',
         conversationState: null,
       });
     }
-
-    const hasExactGriefPreparedQuestion = preparedTopicId === 'T06'
-      && Boolean(answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }));
-    const griefRelationshipGate = preparedTopicId === 'T06' ? getRelationshipSafetyGate(preparedSource) : null;
-    const emotionalDependencyRelationshipGate = preparedTopicId === 'T08' ? getRelationshipSafetyGate(preparedSource) : null;
-    const t12RelationshipGate = preparedTopicId === 'T12' ? getRelationshipSafetyGate(preparedSource) : null;
-    if (t12RelationshipGate
-      && Boolean(answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }))
-      && !hasPendingSafetyExchange
-      && !hasExplicitSafetyHandoff
-      && dailyContext?.relationshipSafetyConfirmed !== true) {
-      return Object.freeze({
-        status: dailyContext?.relationshipSafetyResponse === 'unsafe'
-          ? 'relationship_safety_blocked'
-          : 'relationship_safety_confirmation_required',
-        message: dailyContext?.relationshipSafetyResponse === 'unsafe'
-          ? t12RelationshipGate.blockedMessage
-          : t12RelationshipGate.question + '\n\n' + t12RelationshipGate.disclaimer,
-        knowledge: Object.freeze([]),
-        page_context: 'day',
-        conversationState: null,
-      });
-    }
-
-    if (emotionalDependencyRelationshipGate
-      && preparedTopicId === 'T08'
-      && Boolean(answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }))
-      && !hasPendingSafetyExchange
-      && !hasExplicitSafetyHandoff
-      && dailyContext?.relationshipSafetyConfirmed !== true) {
-      return Object.freeze({
-        status: dailyContext?.relationshipSafetyResponse === 'unsafe'
-          ? 'relationship_safety_blocked'
-          : 'relationship_safety_confirmation_required',
-        message: dailyContext?.relationshipSafetyResponse === 'unsafe'
-          ? emotionalDependencyRelationshipGate.blockedMessage
-          : emotionalDependencyRelationshipGate.question + '\n\n' + emotionalDependencyRelationshipGate.disclaimer,
-        knowledge: Object.freeze([]),
-        page_context: 'day',
-        conversationState: null,
-      });
-    }
-    if (griefRelationshipGate
-      && hasExactGriefPreparedQuestion
-      && !hasPendingSafetyExchange
-      && !hasExplicitSafetyHandoff
-      && dailyContext?.relationshipSafetyConfirmed !== true) {
-      return Object.freeze({
-        status: dailyContext?.relationshipSafetyResponse === 'unsafe'
-          ? 'relationship_safety_blocked'
-          : 'relationship_safety_confirmation_required',
-        message: dailyContext?.relationshipSafetyResponse === 'unsafe'
-          ? griefRelationshipGate.blockedMessage
-          : griefRelationshipGate.question + '\n\n' + griefRelationshipGate.disclaimer,
-        knowledge: Object.freeze([]),
-        page_context: 'day',
-        conversationState: null,
-      });
-    }
-
-    const sharedRelationshipGate = isExtendedTopic ? getRelationshipSafetyGate(preparedSource) : null;
-    const hasExactSharedRelationshipPreparedQuestion = Boolean(isExtendedTopic
-      && answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }));
-    if (sharedRelationshipGate
-      && hasExactSharedRelationshipPreparedQuestion
-      && !hasPendingSafetyExchange
-      && !hasExplicitSafetyHandoff
-      && dailyContext?.relationshipSafetyConfirmed !== true) {
-      return Object.freeze({
-        status: dailyContext?.relationshipSafetyResponse === 'unsafe'
-          ? 'relationship_safety_blocked'
-          : 'relationship_safety_confirmation_required',
-        message: dailyContext?.relationshipSafetyResponse === 'unsafe'
-          ? sharedRelationshipGate.blockedMessage
-          : sharedRelationshipGate.question + '\n\n' + sharedRelationshipGate.disclaimer,
-        knowledge: Object.freeze([]),
-        page_context: 'day',
-        conversationState: null,
-      });
-    }
-
 
     // An exact, pre-authored FAQ is a question selected by the user, not a
     // first-person safety disclosure. Broad lexical safety cues inside its
