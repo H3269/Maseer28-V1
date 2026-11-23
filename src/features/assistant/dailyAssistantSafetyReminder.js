@@ -46,6 +46,6 @@ export function appendDailyAssistantSafetyReminder(answer, questionKind) {
 }
 
 export function shouldShowDailyAssistantSafetyReminder(topicId, questionKind) {
-  const isSharedReminderTopic = /^T(?:0[2-9]|[12][0-9]|3[0-4])$/u.test(String(topicId || ''));
-  return isSharedReminderTopic && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(questionKind);
+  const isKnownDailyTopic = /^T(?:0[1-9]|[12][0-9]|3[0-4])$/u.test(String(topicId || ''));
+  return isKnownDailyTopic && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(questionKind);
 }
