@@ -86,6 +86,7 @@ try {
   assert.equal(topics.length, 34);
 
   async function assertDailyContentVisible(topic, day, expectPreparedAssistant = true) {
+    const topicId = topicsRegistry.topics.find((item) => item.name === topic)?.topic_id || '';
     const { page, errors } = await openDay(topic, day);
     const card = page.locator('#day');
     assert.equal(await card.locator('#ownerApprovalPending').count(), 0,
