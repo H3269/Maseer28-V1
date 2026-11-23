@@ -237,3 +237,18 @@ test('assistant speaker icon stays compact, uses a distinct turquoise sparkle, a
   assert.match(motion, /data-assistant-state="thinking"/);
   assert.match(motion, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?animation: none !important/);
 });
+
+
+test('prepared assistant answers reveal word by word and the gold speaker icon breathes only until reveal completes', async () => {
+  const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
+  const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
+  const motion = await readFile(new URL('../src/styles/soft-motion.css', import.meta.url), 'utf8');
+  assert.match(launcher, /const words = latestAssistantMessage\.text\.match\(\/\\\\S\+\\\\s\*\/gu\)/);
+  assert.match(launcher, /\}, 42\)/, 'word reveal should use a measured, non-instant pace');
+  assert.match(launcher, /return \(\) => window\.clearInterval\(timer\)/, 'a replaced answer must cancel its previous reveal timer');
+  assert.match(launcher, /setTypingProgress\(null\)/, 'a new question must clear the previous reveal state');
+  assert.match(launcher, /typingProgress\?\.id === item\.id && typingProgress\.active \? 'typing' : 'idle'/);
+  assert.match(css, /color: #C49A42 !important/);
+  assert.match(motion, /data-assistant-state="typing"/);
+  assert.match(motion, /data-assistant-state="idle"[\s\S]*?animation: none/);
+});
