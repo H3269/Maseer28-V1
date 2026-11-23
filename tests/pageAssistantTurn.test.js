@@ -5,6 +5,7 @@ import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTu
 import { mergeDailyTextOverrides } from '../src/features/content/dailyTextOverrides.js';
 import { buildSharedDailyAssistantAnswerFromDailyContent, getSharedDailyAssistantPromptGroups } from '../src/features/assistant/sharedDailyAssistantEngine.js';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
+import { getDailySafetyMode } from '../src/features/content/dailySafety.js';
 import { ANGER_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/angerDailyAssistantPrompts.js';
 
 const mergedDailyContentPromise = Promise.all([
@@ -130,9 +131,10 @@ test('T02 prepared questions use canonical daily content and reject topic/day id
   assert.equal(wrongDay.status, 'daily_guidance_unavailable');
 });
 
-test('all exact prepared T03 questions answer through the real page router for all 28 days', async () => {
+test('all exact prepared T03 questions follow the real page router safety classification for all 28 days', async () => {
   const sourceDays = await loadTopicDays('ترس');
   let checked = 0;
+  const blockedDays = new Set();
   for (let day = 1; day <= 28; day += 1) {
     const record = sourceDays.find((item) => item.day === day);
     for (const question of getSharedDailyAssistantPromptGroups(day, 'T03').flatMap((group) => group.questions)) {
@@ -147,11 +149,18 @@ test('all exact prepared T03 questions answer through the real page router for a
           relationshipSafetyConfirmed: false,
         },
       });
-      assert.equal(result.status, 'daily_guidance_available', 'day ' + day + ' ' + question.kind);
-      assert.ok(result.message.length > 0);
+      if (getDailySafetyMode(record) === 'blocked') {
+        blockedDays.add(day);
+        assert.equal(result.status, 'daily_guidance_unavailable', 'blocked day ' + day + ' ' + question.kind);
+        assert.match(result.message, /سطح خطر ثبت‌شده/u);
+      } else {
+        assert.equal(result.status, 'daily_guidance_available', 'day ' + day + ' ' + question.kind);
+        assert.ok(result.message.length > 0);
+      }
       checked += 1;
     }
   }
+  assert.deepEqual([...blockedDays], [14], 'T03 day 14 remains unavailable until its explicit caution metadata is complete');
   assert.equal(checked, 392);
 });
 
