@@ -224,13 +224,15 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     if (sending || !messages.length) return undefined;
     const latest = messages[messages.length - 1];
     if (latest?.role !== 'assistant' || !latest.text || latest.text.startsWith('در حال بررسی')) return undefined;
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
       setTypingState(null);
       return undefined;
     }
     let visibleChars = 0;
     const total = latest.text.length;
-    const step = Math.max(2, Math.ceil(total / 110));
+    // Keep the visual reveal brief (at most about 900ms), independent of answer generation.
+    const steps = Math.min(50, Math.max(1, Math.ceil(total / 3)));
+    const step = Math.max(1, Math.ceil(total / steps));
     setTypingState({ id: latest.id, visibleChars: 0 });
     const timer = window.setInterval(() => {
       visibleChars = Math.min(total, visibleChars + step);
@@ -240,7 +242,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       } else {
         setTypingState({ id: latest.id, visibleChars });
       }
-    }, 24);
+    }, 18);
     return () => window.clearInterval(timer);
   }, [messages, sending]);
 
