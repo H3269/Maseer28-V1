@@ -43,7 +43,7 @@ function normalizeVisibleDailySourceText(value) {
 
 function preserveVisibleDailySources(answer, questionKind, dailyContent) {
   const requiredSources = [];
-  if (['exercise_meaning', 'exercise_example', 'exercise_action_difference'].includes(questionKind)) {
+  if (['exercise_meaning', 'exercise_example', 'exercise_action_difference', 'success'].includes(questionKind)) {
     requiredSources.push(['متن دقیق تمرین امروز', dailyContent?.exercise || dailyContent?.instructions]);
   }
   if (['action_meaning', 'action_example', 'exercise_action_difference'].includes(questionKind)) {
