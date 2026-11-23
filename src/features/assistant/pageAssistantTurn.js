@@ -237,6 +237,27 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
     }
 
 
+    const t15ToT34RelationshipGate = /^T(?:1[5-9]|2[0-9]|3[0-4])$/u.test(preparedTopicId)
+      ? getRelationshipSafetyGate(preparedSource)
+      : null;
+    if (t15ToT34RelationshipGate
+      && Boolean(answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }))
+      && !hasPendingSafetyExchange
+      && !hasExplicitSafetyHandoff
+      && dailyContext?.relationshipSafetyConfirmed !== true) {
+      return Object.freeze({
+        status: dailyContext?.relationshipSafetyResponse === 'unsafe'
+          ? 'relationship_safety_blocked'
+          : 'relationship_safety_confirmation_required',
+        message: dailyContext?.relationshipSafetyResponse === 'unsafe'
+          ? t15ToT34RelationshipGate.blockedMessage
+          : t15ToT34RelationshipGate.question + '\\n\\n' + t15ToT34RelationshipGate.disclaimer,
+        knowledge: Object.freeze([]),
+        page_context: 'day',
+        conversationState: null,
+      });
+    }
+
     // An exact, pre-authored FAQ is a question selected by the user, not a
     // first-person safety disclosure. Broad lexical safety cues inside its
     // wording must not replace its prepared answer. A real explicit-risk
