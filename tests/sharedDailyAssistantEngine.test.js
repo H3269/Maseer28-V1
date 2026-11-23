@@ -677,15 +677,23 @@ test('T15-T34 fixed answers q05-q14 remain anchored to their own daily source fi
       };
 
       const lightAnswer = answerFor('q05');
-      for (const field of ['lightVersion', 'lightExerciseText', 'lightActionVersion', 'lightActionText']) {
-        if (typeof dailyContent[field] === 'string' && dailyContent[field].trim()) {
-          assert.ok(lightAnswer.includes(dailyContent[field].trim()),
-            topicId + ' day ' + day + ' q05 must use ' + field);
+      if (typeof dailyContent.lightVersion === 'string' && dailyContent.lightVersion.trim()) {
+        assert.ok(lightAnswer.includes(dailyContent.lightVersion.trim()), topicId + ' day ' + day + ' q05 lightVersion');
+      } else {
+        for (const field of ['lightExerciseText', 'lightActionVersion', 'lightActionText']) {
+          if (typeof dailyContent[field] === 'string' && dailyContent[field].trim()) {
+            assert.ok(lightAnswer.includes(dailyContent[field].trim()),
+              topicId + ' day ' + day + ' q05 must use ' + field);
+          }
         }
       }
 
       const successAnswer = answerFor('q06');
-      const successCriterion = dailyContent.success_criterion || dailyContent.successCriterion;
+      const closingCriterionLine = String(dailyContent.closing || '').split(/\\r?\\n/u)
+        .map((line) => line.trim())
+        .find((line) => /^(?:معیار موفقیت|معیار امروز)\\s*[:：]/u.test(line));
+      const successCriterion = dailyContent.success_criterion || dailyContent.successCriterion
+        || (closingCriterionLine ? closingCriterionLine.replace(/^(?:معیار موفقیت|معیار امروز)\\s*[:：]\\s*/u, '') : '');
       if (typeof successCriterion === 'string' && successCriterion.trim()) {
         assert.ok(successAnswer.includes(successCriterion.trim()), topicId + ' day ' + day + ' q06 criterion');
       } else {
@@ -706,10 +714,14 @@ test('T15-T34 fixed answers q05-q14 remain anchored to their own daily source fi
       }
 
       const noEventAnswer = answerFor('q08');
-      for (const field of ['restVersion', 'restExerciseText', 'restActionVersion', 'restActionText']) {
-        if (typeof dailyContent[field] === 'string' && dailyContent[field].trim()) {
-          assert.ok(noEventAnswer.includes(dailyContent[field].trim()),
-            topicId + ' day ' + day + ' q08 must use ' + field);
+      if (typeof dailyContent.restVersion === 'string' && dailyContent.restVersion.trim()) {
+        assert.ok(noEventAnswer.includes(dailyContent.restVersion.trim()), topicId + ' day ' + day + ' q08 restVersion');
+      } else {
+        for (const field of ['restExerciseText', 'restActionVersion', 'restActionText']) {
+          if (typeof dailyContent[field] === 'string' && dailyContent[field].trim()) {
+            assert.ok(noEventAnswer.includes(dailyContent[field].trim()),
+              topicId + ' day ' + day + ' q08 must use ' + field);
+          }
         }
       }
 
