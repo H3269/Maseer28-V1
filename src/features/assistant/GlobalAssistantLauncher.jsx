@@ -247,8 +247,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const dailyRecordTopicId = dailyContext?.data?.topic_id || dailyContext?.data?.topicId || null;
   const hasConflictingDailyTopic = Boolean(
     (dailyProblemTopicId && dailyRecordTopicId && dailyProblemTopicId !== dailyRecordTopicId)
-    || (dailyProblemTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12', 'T13', 'T14'].includes(dailyProblemTopicId) && dailyRecordTopicId)
-    || (dailyRecordTopicId && !['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12', 'T13', 'T14'].includes(dailyRecordTopicId) && dailyProblemTopicId),
+    || (dailyProblemTopicId && !Object.keys(SHARED_DAILY_ASSISTANT_TOPIC_NAMES).includes(dailyProblemTopicId) && dailyRecordTopicId)
+    || (dailyRecordTopicId && !Object.keys(SHARED_DAILY_ASSISTANT_TOPIC_NAMES).includes(dailyRecordTopicId) && dailyProblemTopicId),
   );
   const activeDailyTopicId = dailyProblemTopicId || dailyRecordTopicId || getCanonicalTopicIdForCategory(dailyProblemText);
   const isAngerDailyPromptContext = Boolean(dailyContext)
