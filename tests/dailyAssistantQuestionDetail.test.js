@@ -112,3 +112,32 @@ test('expanded examples remain explicitly illustrative and do not force exposure
     }
   }
 });
+
+
+test('all T02-T14 success answers retain real criteria without duplicate-content placeholders', () => {
+  for (const [topicId, topic, guides, answerPrepared] of topics) {
+    assert.equal(guides.length, 28, topicId + ' must expose all 28 days');
+    for (const guide of guides) {
+      const question = guide.questions.find((item) => item.kind === 'success');
+      assert.ok(question, topicId + ' day ' + guide.day + ' must define the success question');
+      const dailyContent = Number(topicId.slice(1)) >= 9 ? {
+        id: topic + '-' + String(guide.day).padStart(2, '0'),
+        topic_id: topicId,
+        day: guide.day,
+        title: guide.title,
+        exercise: guide.exercise,
+        actionText: guide.action,
+        sourceExercise: guide.exercise,
+        sourceActionText: guide.action,
+      } : undefined;
+      const answer = answerPrepared({ day: guide.day, message: question.value, dailyContent });
+      assert.equal(typeof answer, 'string', topicId + ' day ' + guide.day + ' success answer must exist');
+      assert.doesNotMatch(answer, /توضیح این مورد در متن بالا آمده است/u,
+        topicId + ' day ' + guide.day + ' must not replace an already-present criterion with a placeholder');
+      if (guide.successCriterion) {
+        assert.ok(answer.includes(guide.successCriterion),
+          topicId + ' day ' + guide.day + ' must preserve the authored success criterion');
+      }
+    }
+  }
+});
