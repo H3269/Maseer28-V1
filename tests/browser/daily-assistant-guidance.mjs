@@ -193,7 +193,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
         assert.equal(Object.hasOwn(day, 'risk_level'), false);
       } else {
         Object.assign(day, {
-          topic_id: ({ 'خشم':'T01','اضطراب':'T02','ترس':'T03','نفرت':'T04','حسادت':'T05','غم و سوگ':'T06','احساس گناه':'T07','وابستگی عاطفی':'T08','اهمال‌کاری':'T09','بی‌خوابی و مشکلات خواب':'T10','عادت‌های تکراری':'T11','مرزبندی و نه گفتن':'T12','تنهایی':'T13','کمبود انگیزه':'T14' })[topicKey] || 'T01',
+          topic_id: ({ 'خشم':'T01','اضطراب':'T02','ترس':'T03','نفرت':'T04','حسادت':'T05','غم و سوگ':'T06','احساس گناه':'T07','وابستگی عاطفی':'T08','اهمال‌کاری':'T09','بی‌خوابی و مشکلات خواب':'T10','عادت‌های تکراری':'T11','مرزبندی و نه گفتن':'T12','تنهایی':'T13','کمبود انگیزه':'T14','اعتمادبه‌نفس پایین':'T15','افکار منفی و نشخوار فکری':'T16','مشکلات رابطه':'T17','نفرت از خود':'T18','خودسرزنشی':'T19','کمال‌گرایی':'T20','اجتناب':'T21','استرس':'T22','احساس بی‌ارزشی':'T23','مشکل در کنترل هیجان':'T24','رنجش و کینه':'T25','شرم':'T26','ترس از قضاوت':'T27','ترس از شکست':'T28','ترس از طرد شدن':'T29','شک و تردید':'T30','کنترل‌گری':'T31','بی‌انگیزگی':'T32','خودانتقادی':'T33','مشکل دیگر':'T34' })[topicKey] || 'T01',
           day: dayNumber,
           review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
           risk_level: 'routine',
@@ -273,6 +273,25 @@ try {
     { name: 'مرزبندی و نه گفتن', id: 'T12', trigger: 't12-daily-prompt-trigger' },
     { name: 'تنهایی', id: 'T13', trigger: 't13-daily-prompt-trigger' },
     { name: 'کمبود انگیزه', id: 'T14', trigger: 't14-daily-prompt-trigger' },
+    { name: 'اعتمادبه‌نفس پایین', id: 'T15', trigger: 'extended-daily-prompt-trigger' },
+    { name: 'افکار منفی و نشخوار فکری', id: 'T16', trigger: 'extended-daily-prompt-trigger' },
+    { name: 'مشکلات رابطه', id: 'T17', trigger: 'extended-daily-prompt-trigger' },
+    { name: 'نفرت از خود', id: 'T18', trigger: 'extended-daily-prompt-trigger' },
+    { name: 'خودسرزنشی', id: 'T19', trigger: 'extended-daily-prompt-trigger' },
+    { name: 'کمال‌گرایی', id: 'T20', trigger: 'extended-daily-prompt-trigger' },
+    { name: 'اجتناب', id: 'T21', trigger: 'extended-daily-prompt-trigger' },
+    { name: 'استرس', id: 'T22', trigger: 'extended-daily-prompt-trigger' },
+    { name: 'احساس بی‌ارزشی', id: 'T23', trigger: 'extended-daily-prompt-trigger' },
+    { name: 'مشکل در کنترل هیجان', id: 'T24', trigger: 'extended-daily-prompt-trigger' },
+    { name: 'رنجش و کینه', id: 'T25', trigger: 'extended-daily-prompt-trigger' },
+    { name: 'شرم', id: 'T26', trigger: 'extended-daily-prompt-trigger' },
+    { name: 'ترس از قضاوت', id: 'T27', trigger: 'extended-daily-prompt-trigger' },
+    { name: 'ترس از شکست', id: 'T28', trigger: 'extended-daily-prompt-trigger' },
+    { name: 'ترس از طرد شدن', id: 'T29', trigger: 'extended-daily-prompt-trigger' },
+    { name: 'شک و تردید', id: 'T30', trigger: 'extended-daily-prompt-trigger' },
+    { name: 'بی‌انگیزگی', id: 'T32', trigger: 'extended-daily-prompt-trigger' },
+    { name: 'خودانتقادی', id: 'T33', trigger: 'extended-daily-prompt-trigger' },
+    { name: 'مشکل دیگر', id: 'T34', trigger: 'extended-daily-prompt-trigger' },
   ];
   const workerRequests = [];
   const privateMarker = 'private-assistant-browser-marker-7f31c2';
@@ -370,23 +389,25 @@ try {
   }
 
   assert.equal(completedAnswers, topics.length * questions.length,
-    'all fourteen prepared questions must complete for each of the fourteen supported topics');
+    'all fourteen prepared questions must complete for each of the thirty-three non-blocked topics in this browser pass');
   assert.deepEqual(workerRequests, [],
     'prepared daily answers must not call a Worker or external assistant provider');
 
-  // An unsupported topic must fail closed rather than silently borrowing another topic's engine.
-  const pendingTopicPage = await browser.newPage();
-  await openDay(pendingTopicPage, { assistantDayMode: 'legacy', problem: 'شرم', localModelInstalled: true });
-  const pendingTopicPanel = pendingTopicPage.locator('.globalAssistantDialog');
-  await pendingTopicPanel.waitFor({ state: 'visible' });
-  assert.equal(await pendingTopicPanel.locator('#global-assistant-message').count(), 0,
-    'topics without a prepared catalogue must not expose free-text input');
-  assert.equal(await pendingTopicPanel.getByRole('button', { name: 'ارسال' }).count(), 0,
-    'topics without a prepared catalogue must not expose a send action');
-  assert.match(await pendingTopicPanel.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/);
-  await pendingTopicPage.close();
+  // T31 remains blocked until its three-way control context is explicitly reviewed.
+  const controlSafetyPage = await browser.newPage();
+  await openDay(controlSafetyPage, { problem: 'کنترل‌گری' });
+  const controlPanel = controlSafetyPage.locator('.globalAssistantDialog');
+  await controlPanel.waitFor({ state: 'visible' });
+  const controlTrigger = controlPanel.getByTestId('extended-daily-prompt-trigger');
+  await controlTrigger.waitFor({ state: 'visible' });
+  assert.equal(await controlTrigger.isDisabled(), true,
+    'T31 must not expose prepared answers while its control context is unclassified');
+  assert.equal(await controlPanel.locator('[data-prompt-option]').count(), 0,
+    'T31 must not expose any prepared question while safety classification is unresolved');
+  assert.match(await controlPanel.innerText(), /ملاحظه ایمنی ثبت‌شده|نیاز به بازبینی ایمنی/u);
+  await controlSafetyPage.close();
 
-  process.stdout.write('PASS: Chromium shared daily assistant contract: 14 fixed questions × 14 topics (196 answers), identical five-group selector, active topic/day exercise and action source binding, shared answer formatting, prepared-only boundary, privacy, and no external assistant calls.\n');
+  process.stdout.write('PASS: Chromium shared daily assistant contract: 14 fixed questions × 33 non-blocked topics (462 answers), identical five-group selector, active topic/day exercise and action source binding, shared answer formatting, prepared-only boundary, privacy, and no external assistant calls.\n');
 } finally {
   await browser.close();
 }
