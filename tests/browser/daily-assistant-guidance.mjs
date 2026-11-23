@@ -95,12 +95,14 @@ async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumb
 
 async function openDay(page, { assistantDayMode = 'routine', problem = null, localModelInstalled = false } = {}) {
   const isLegacyMode = assistantDayMode === 'legacy' || assistantDayMode.startsWith('adaptedLegacy');
-  const dayNumber = assistantDayMode === 'jealousy-communication'
-    ? 16
-    : assistantDayMode === 'grief-support'
-      ? 15
-      : assistantDayMode === 'relationship'
-        ? 10
+  const dayNumber = assistantDayMode === 'fear-blocked'
+    ? 14
+    : assistantDayMode === 'jealousy-communication'
+      ? 16
+      : assistantDayMode === 'grief-support'
+        ? 15
+        : assistantDayMode === 'relationship'
+          ? 10
     : ['adaptedLegacyStreak', 'adaptedLegacyImprovement', 'adaptedAnxietyStreak', 'adaptedAnxietyImprovement', 'adaptedGriefStreak', 'adaptedGriefImprovement'].includes(assistantDayMode)
       ? 3
       : ['adaptedLegacy', 'adaptedLegacySame', 'adaptedAnxiety', 'adaptedGrief'].includes(assistantDayMode)
@@ -362,8 +364,11 @@ try {
         topic.id + ' answer paragraphs must render as separate lines');
       assert.ok(await answer.locator('p').count() > 0,
         topic.id + ' answer must render structured paragraph content');
-      assert.ok(await answer.locator('.dailyAssistantSafetyReminder').count() <= 1,
+      const safetyReminderCount = await answer.locator('.dailyAssistantSafetyReminder').count();
+      assert.ok(safetyReminderCount <= 1,
         topic.id + ' answer must never duplicate the shared safety reminder card');
+      assert.equal(safetyReminderCount, [5, 6, 10, 11].includes(questionIndex) ? 1 : 0,
+        topic.id + ' ' + question + ' must show the reminder exactly when its question kind is safety/evaluation-scoped');
       if (questionIndex === 5) {
         assert.match(visibleAnswer, /برای بررسی|برای سنجش|برای اینکه بدانی درست انجامش داده‌ای|معیار ثبت‌شده/u,
           topic.id + ' q06 must tell the user how to evaluate the exact daily work');
@@ -437,7 +442,26 @@ try {
   assert.match(await controlPanel.innerText(), /ملاحظه ایمنی ثبت‌شده|نیاز به بازبینی ایمنی/u);
   await controlSafetyPage.close();
 
-  process.stdout.write('PASS: Chromium shared daily assistant contract: 14 fixed questions × 33 non-blocked topics (462 answers), identical five-group selector, active topic/day exercise and action source binding, shared answer formatting, prepared-only boundary, privacy, and no external assistant calls.\n');
+  // T03 day 14 has an explicit safety-rule requirement. The catalogue remains
+  // visible, but the UI must lock every choice when the source record is blocked.
+  const fearSafetyPage = await browser.newPage();
+  await openDay(fearSafetyPage, { problem: 'ترس', assistantDayMode: 'fear-blocked' });
+  const fearPanel = fearSafetyPage.locator('.globalAssistantDialog');
+  await fearPanel.waitFor({ state: 'visible' });
+  const fearTrigger = fearPanel.getByTestId('fear-daily-prompt-trigger');
+  await fearTrigger.waitFor({ state: 'visible' });
+  await fearTrigger.click();
+  const fearPrompt = fearSafetyPage.locator('#library-assistant-prompt-dialog');
+  await fearPrompt.waitFor({ state: 'visible' });
+  assert.equal(await fearPrompt.locator('[data-prompt-option]').count(), 14,
+    'T03 day 14 must retain its prepared catalogue while safety-blocked');
+  assert.equal(await fearPrompt.locator('[data-prompt-option]:not(:disabled)').count(), 0,
+    'T03 day 14 must disable every prepared question while safety-blocked');
+  assert.equal(await fearPanel.locator('[data-testid="daily-assistant-safety-blocked"]').count(), 1,
+    'T03 day 14 must display the daily safety block notice');
+  await fearSafetyPage.close();
+
+  process.stdout.write('PASS: Chromium shared daily assistant contract: 14 fixed questions × 33 non-blocked topics (462 answers), safety reminders on all four safety/evaluation question kinds, blocked-day question locks, identical five-group selector, active topic/day exercise and action source binding, shared answer formatting, prepared-only boundary, privacy, and no external assistant calls.\n');
 } finally {
   await browser.close();
 }
