@@ -313,7 +313,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       ? (isExtendedDailyPromptContext
         ? getSharedDailyAssistantPromptGroups(dailyContext?.day, activeDailyTopicId)
         : (((activeDailyTopicId === 'T13' || activeDailyTopicId === 'T14')
-          && getDailySafetyMode(dailyContext?.data) === 'blocked')
+          && dailySafetyBlocked)
           ? []
           : getSharedDailyAssistantPromptGroups(dailyContext?.day, activeDailyTopicId)))
       : dailyContext
