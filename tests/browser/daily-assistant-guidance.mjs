@@ -369,15 +369,16 @@ try {
           topic.id + ' q06 must tell the user how to evaluate the exact daily work');
         assert.doesNotMatch(visibleAnswer, /خروجی مشخصی را که خود تمرین خواسته ثبت کن/u,
           topic.id + ' q06 must not use the vague generic fallback');
-        const dailySource = canonicalPathContent.categories?.[topic.name]?.days?.find((item) => Number(item.day) === 1);
-        assert.ok(dailySource?.exercise, topic.id + ' day 1 q06 source exercise must exist');
-        // T01's day text is adapted through the legacy guide adapter and its
-        // browser-visible override is verified separately by q01. All shared
-        // T02-T34 q06 replies must include the exact canonical day exercise.
-        if (topic.id !== 'T01') {
-          assert.ok(normalizedAnswer.includes(normalizeVisibleDailyText(dailySource.exercise)),
-            topic.id + ' day 1 q06 must refer to the exact visible exercise');
-        }
+        // Compare against the actual text shown in the daily screen after all
+        // topic/day overrides and display adaptations, not the unmerged base file.
+        await panel.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
+        await panel.waitFor({ state: 'detached' });
+        const visibleExercise = normalizeVisibleDailyText(await readExpandedDailyText(page, '#dayExercise'));
+        assert.ok(visibleExercise, topic.id + ' day 1 q06 visible exercise must exist');
+        assert.ok(normalizedAnswer.includes(visibleExercise),
+          topic.id + ' day 1 q06 must refer to the exact visible exercise');
+        await page.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
+        await panel.waitFor({ state: 'visible' });
         if (topic.id === 'T34') {
           assert.match(visibleAnswer, /سه نشانه|سه قدم|۱\)/u,
             'T34 day 1 q06 must give concrete observable checks, not merely ask the user to record an output');
