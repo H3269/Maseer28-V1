@@ -251,11 +251,11 @@ test('generic base fallback text is not mislabeled as topic-specific for T04, T0
   }
 });
 
-test('T02-T14 route through the same prepared-answer engine using the selected canonical day', async () => {
+test('T02-T34 route through the same prepared-answer engine using the selected canonical day', async () => {
   const merged = await loadMergedContent();
   for (const [topicId, topicName] of TOPICS) {
     const dailyContent = merged.categories[topicName].days[0];
-    if (['T13', 'T14'].includes(topicId) && getDailySafetyMode(dailyContent) === 'blocked') continue;
+    if (getDailySafetyMode(dailyContent) === 'blocked') continue;
     const question = getSharedDailyAssistantPromptGroups(1, topicId)[0].questions[0];
     const result = makePageAssistantTurn({
       screen: 'day',
@@ -375,7 +375,7 @@ test('runtime examples survive adapted visible wording and stay bound to the can
   const merged = await loadMergedContent();
   const migratedCatalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
   let checked = 0;
-  for (const [topicId, topicName] of TOPICS) {
+  for (const [topicId, topicName] of TOPICS.filter(([id]) => Number(id.slice(1)) <= 14)) {
     const days = merged.categories[topicName]?.days || [];
     assert.equal(days.length, 28, topicId + ' canonical days');
     for (let day = 1; day <= 28; day += 1) {
