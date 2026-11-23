@@ -178,6 +178,23 @@ test('T02-T34 produce fourteen day-bound answers from canonical content for all 
   assert.equal(checked, 33 * 28 * 14);
 });
 
+test('T15-T34 route all fourteen prepared questions through the live daily assistant', async () => {
+  const merged = await loadMergedContent();
+  for (const [topicId, topicName] of TOPICS.filter(([id]) => Number(id.slice(1)) >= 15)) {
+    const day = merged.categories[topicName]?.days?.[0];
+    assert.ok(day, topicId + ' canonical day one');
+    const question = getSharedDailyAssistantPromptGroups(1, topicId).flatMap((group) => group.questions)[0];
+    const result = makePageAssistantTurn({
+      screen: 'day',
+      text: question.value,
+      dailyContext: { day: 1, problem: topicName, data: day },
+    });
+    assert.equal(result.status, 'daily_guidance_available', topicId + ' live route');
+    assert.ok(result.message.includes(day.exercise), topicId + ' answer uses the exact daily exercise');
+    assert.ok(result.message.trim().length > 0, topicId + ' answer is not empty');
+  }
+});
+
 test('T11-T14 authored examples are migrated into the shared renderer for all 28 canonical days', async () => {
   const merged = await loadMergedContent();
   const catalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
