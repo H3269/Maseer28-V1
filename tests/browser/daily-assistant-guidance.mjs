@@ -353,7 +353,9 @@ try {
       // without adding a fixed sleep to every browser scenario.
       const showFull = answer.getByRole('button', { name: 'نمایش کامل پاسخ' });
       await showFull.waitFor({ state: 'visible', timeout: 1200 }).then(
-        () => showFull.click(),
+        // The control moves as the answer grows; dispatch its real click handler
+        // without Playwright's layout-stability gate, which can time out mid-animation.
+        () => showFull.dispatchEvent('click'),
         () => undefined,
       );
       const visibleAnswer = await answer.innerText();
