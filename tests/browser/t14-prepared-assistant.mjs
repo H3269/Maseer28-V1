@@ -196,7 +196,8 @@ try {
     const icon = reply?.querySelector('.globalAssistantSpeakerIcon');
     return icon?.getAttribute('data-assistant-state') === 'typing' && (reply?.querySelector('p')?.innerText.length || 0) > 0;
   }, null, { timeout: 10000 });
-  const interruptedAnswer = dialog.locator('.assistantMessage').last();
+  const interruptedAnswerIndex = (await dialog.locator('.assistantMessage').count()) - 1;
+  const interruptedAnswer = dialog.locator('.assistantMessage').nth(interruptedAnswerIndex);
   const partialBeforeSwitch = await interruptedAnswer.locator('p').innerText();
   await trigger.click();
   await picker.waitFor({ state: 'visible' });
