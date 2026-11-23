@@ -767,7 +767,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                     </button>
                     <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال سؤال انتخاب‌شده" disabled={!draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
                   </div>
-                ) : (
+                ) : dailySafetyBlocked ? null : (
                   <p className="muted assistantPreparedQuestionsUnavailable" role="status">
                     هنوز سؤال آماده‌ای برای این بخش ثبت نشده است. پس از تکمیل فهرست سؤال‌های آماده، این دستیار فعال می‌شود.
                   </p>
