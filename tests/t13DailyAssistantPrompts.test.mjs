@@ -199,7 +199,7 @@ test('T13 launcher exposes only safe-day prompts and labels the topic correctly'
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
   assert.match(launcher, /Object\.hasOwn\(SHARED_DAILY_ASSISTANT_TOPIC_NAMES, activeDailyTopicId\)/u);
   assert.match(launcher, /getSharedDailyAssistantPromptGroups/u);
-  assert.match(launcher, /activeDailyTopicId === 'T13'/u);
+  assert.match(launcher, /dailyProblemTopicId === 'T13'/u);
   assert.match(launcher, /getSharedDailyAssistantPromptGroups/u);
   assert.match(launcher, /isT13DailyPromptContext/u);
 });
