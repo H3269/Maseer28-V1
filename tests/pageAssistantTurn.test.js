@@ -571,3 +571,53 @@ test('every registered topic/day relationship gate blocks prepared answers until
   }
   assert.ok(checked > 100, 'the full registered relationship-gate matrix must be exercised');
 });
+
+
+test('prepared answer rejects mismatched visible guidance identity instead of mixing another day or topic', () => {
+  const canonical = {
+    id: getCanonicalDailyRecordId('خشم', 1),
+    topic_id: 'T01',
+    day: 1,
+    exercise: 'تمرین معتبر روز اول خشم.',
+    actionText: 'اقدام معتبر روز اول خشم.',
+  };
+  const wrongDay = makePageAssistantTurn({
+    screen: 'day',
+    text: ANGER_DAILY_ASSISTANT_GUIDES[0].questions[0].value,
+    dailyContext: {
+      day: 1,
+      problem: 'خشم',
+      data: canonical,
+      relationshipSafetyConfirmed: true,
+      guidanceData: {
+        id: getCanonicalDailyRecordId('خشم', 2),
+        topic_id: 'T01',
+        day: 2,
+        exercise: 'متن اشتباه روز دوم.',
+        action: 'اقدام اشتباه روز دوم.',
+      },
+    },
+  });
+  assert.equal(wrongDay.status, 'daily_guidance_unavailable');
+  assert.doesNotMatch(wrongDay.message, /متن اشتباه روز دوم|اقدام اشتباه روز دوم/u);
+
+  const wrongTopic = makePageAssistantTurn({
+    screen: 'day',
+    text: ANGER_DAILY_ASSISTANT_GUIDES[0].questions[0].value,
+    dailyContext: {
+      day: 1,
+      problem: 'خشم',
+      data: canonical,
+      relationshipSafetyConfirmed: true,
+      guidanceData: {
+        id: canonical.id,
+        topic_id: 'T02',
+        day: 1,
+        exercise: 'متن اشتباه موضوع دوم.',
+        action: 'اقدام اشتباه موضوع دوم.',
+      },
+    },
+  });
+  assert.equal(wrongTopic.status, 'daily_guidance_unavailable');
+  assert.doesNotMatch(wrongTopic.message, /متن اشتباه موضوع دوم|اقدام اشتباه موضوع دوم/u);
+});
