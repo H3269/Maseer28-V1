@@ -356,7 +356,7 @@ try {
       await showFull.waitFor({ state: 'visible', timeout: 2500 }).then(
         // The control moves as the answer grows; dispatch its real click handler
         // without Playwright's layout-stability gate, which can time out mid-animation.
-        () => showFull.dispatchEvent('click'),
+        () => showFull.evaluate((button) => button.click()),
         () => undefined,
       );
       await answer.locator('.assistantTypingCursor').waitFor({ state: 'detached', timeout: 2500 });
