@@ -101,6 +101,8 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
       ? 15
       : assistantDayMode === 'relationship'
         ? 10
+        : assistantDayMode === 'shared-relationship-gate'
+          ? 6
     : ['adaptedLegacyStreak', 'adaptedLegacyImprovement', 'adaptedAnxietyStreak', 'adaptedAnxietyImprovement', 'adaptedGriefStreak', 'adaptedGriefImprovement'].includes(assistantDayMode)
       ? 3
       : ['adaptedLegacy', 'adaptedLegacySame', 'adaptedAnxiety', 'adaptedGrief'].includes(assistantDayMode)
@@ -451,6 +453,32 @@ try {
   assert.doesNotMatch(await controlPanel.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/u);
   assert.match(await controlPanel.innerText(), /ملاحظه ایمنی ثبت‌شده|نیاز به بازبینی ایمنی/u);
   await controlSafetyPage.close();
+
+
+
+  // A topic outside the old special-case list must still receive the shared
+  // relationship gate, and its prepared questions stay disabled until safe confirmation.
+  const sharedGatePage = await browser.newPage();
+  await openDay(sharedGatePage, { problem: 'ترس', assistantDayMode: 'shared-relationship-gate' });
+  const sharedGatePanel = sharedGatePage.locator('.globalAssistantDialog');
+  await sharedGatePanel.waitFor({ state: 'visible' });
+  const sharedGate = sharedGatePanel.getByTestId('daily-topic-relationship-safety-gate');
+  await sharedGate.waitFor({ state: 'visible' });
+  assert.match(await sharedGate.innerText(), /هر دو نفر می‌توانند آزادانه/u);
+  const fearTrigger = sharedGatePanel.getByTestId('fear-daily-prompt-trigger');
+  await fearTrigger.click();
+  const sharedPrompt = sharedGatePage.locator('#library-assistant-prompt-dialog');
+  await sharedPrompt.waitFor({ state: 'visible' });
+  assert.equal(await sharedPrompt.locator('[data-prompt-option]:not(:disabled)').count(), 0,
+    'T03 day 6 prepared questions must stay disabled while the shared safety gate is pending');
+  await sharedGatePage.keyboard.press('Escape');
+  await sharedGate.getByTestId('daily-topic-relationship-safety-safe').click();
+  await sharedGate.waitFor({ state: 'detached' });
+  await fearTrigger.click();
+  await sharedPrompt.waitFor({ state: 'visible' });
+  assert.equal(await sharedPrompt.locator('[data-prompt-option]:not(:disabled)').count(), 14,
+    'T03 day 6 prepared questions become available only after explicit safe confirmation');
+  await sharedGatePage.close();
 
   process.stdout.write('PASS: Chromium shared daily assistant contract: 14 fixed questions × 33 non-blocked topics (462 answers), identical five-group selector, active topic/day exercise and action source binding, shared answer formatting, prepared-only boundary, privacy, and no external assistant calls.\n');
 } finally {
