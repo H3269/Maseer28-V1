@@ -291,7 +291,6 @@ try {
     { name: 'ترس از شکست', id: 'T28', trigger: 'extended-daily-prompt-trigger' },
     { name: 'ترس از طرد شدن', id: 'T29', trigger: 'extended-daily-prompt-trigger' },
     { name: 'شک و تردید', id: 'T30', trigger: 'extended-daily-prompt-trigger' },
-    { name: 'کنترل‌گری', id: 'T31', trigger: 'extended-daily-prompt-trigger' },
     { name: 'بی‌انگیزگی', id: 'T32', trigger: 'extended-daily-prompt-trigger' },
     { name: 'خودانتقادی', id: 'T33', trigger: 'extended-daily-prompt-trigger' },
     { name: 'مشکل دیگر', id: 'T34', trigger: 'extended-daily-prompt-trigger' },
