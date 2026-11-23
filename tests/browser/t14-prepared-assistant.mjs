@@ -183,6 +183,30 @@ try {
   assert.equal(await reducedMotionReply.locator('.globalAssistantSpeakerIcon').evaluate((element) => getComputedStyle(element).animationName),
     'none', 'reduced-motion mode must keep the gold icon still');
 
+  // Switching the operating-system preference to reduced motion mid-answer
+  // must stop the active timer and reveal the complete answer immediately.
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await trigger.click();
+  await picker.waitFor({ state: 'visible' });
+  await options.nth(4).click();
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => {
+    const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child');
+    const icon = reply?.querySelector('.globalAssistantSpeakerIcon');
+    return icon?.getAttribute('data-assistant-state') === 'typing'
+      && (reply?.querySelector('p')?.innerText.length || 0) > 0;
+  }, null, { timeout: 10000 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.waitForFunction(() => {
+    const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child');
+    const icon = reply?.querySelector('.globalAssistantSpeakerIcon');
+    return reply && icon?.getAttribute('data-assistant-state') === 'idle'
+      && (reply.querySelector('p')?.innerText.length || 0) > 45;
+  }, null, { timeout: 10000 });
+  assert.equal(await dialog.locator('.assistantMessage').last()
+    .locator('.globalAssistantSpeakerIcon').evaluate((element) => getComputedStyle(element).animationName),
+  'none', 'switching to reduced motion during typing must stop the gold icon animation');
+
   // Starting another question during an active reveal must cancel the old timer
   // and keep the two answers isolated.
   await page.emulateMedia({ reducedMotion: 'no-preference' });
