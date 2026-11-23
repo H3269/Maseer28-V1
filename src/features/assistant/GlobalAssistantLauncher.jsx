@@ -234,7 +234,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       && latestAssistantMessage.text.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN)
       ? latestAssistantMessage.text.slice(0, -DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN.length).trimEnd()
       : latestAssistantMessage.text;
-    const words = revealText.match(/\\S+\\s*/gu) || [revealText];
+    const words = revealText.match(/\S+\s*/gu) || [revealText];
     const responseId = latestAssistantMessage.id;
     const reducedMotionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
     if (reducedMotionQuery?.matches) {
