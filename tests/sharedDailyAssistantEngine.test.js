@@ -179,6 +179,45 @@ test('T02-T34 produce fourteen day-bound answers from canonical content for all 
   assert.equal(checked, 33 * 28 * 14);
 });
 
+test('T15-T34 route all 7,840 fixed question slots through the real daily assistant with safety gates intact', async () => {
+  const merged = await loadMergedContent();
+  let available = 0;
+  let safelyBlocked = 0;
+  for (const [topicId, topicName] of TOPICS.filter(([id]) => Number(id.slice(1)) >= 15)) {
+    const days = merged.categories[topicName]?.days || [];
+    assert.equal(days.length, 28, topicId + ' must retain all 28 canonical days');
+    for (let day = 1; day <= 28; day += 1) {
+      const dailyContent = days.find((item) => Number(item.day) === day);
+      assert.ok(dailyContent?.exercise && dailyContent?.actionText, topicId + ' day ' + day + ' source content');
+      const questions = getSharedDailyAssistantPromptGroups(day, topicId).flatMap((group) => group.questions);
+      assert.equal(questions.length, 14, topicId + ' day ' + day + ' must expose fourteen fixed questions');
+      for (const question of questions) {
+        const result = makePageAssistantTurn({
+          screen: 'day',
+          text: question.value,
+          dailyContext: {
+            day,
+            problem: topicName,
+            data: dailyContent,
+            relationshipSafetyConfirmed: true,
+          },
+        });
+        if (getDailySafetyMode(dailyContent) === 'blocked') {
+          assert.equal(result.status, 'daily_guidance_unavailable',
+            topicId + ' day ' + day + ' blocked day must not expose prepared guidance');
+          safelyBlocked += 1;
+        } else {
+          assert.equal(result.status, 'daily_guidance_available',
+            topicId + ' day ' + day + ' ' + question.kind);
+          assert.ok(result.message.trim().length > 0, topicId + ' day ' + day + ' ' + question.kind + ' answer text');
+          available += 1;
+        }
+      }
+    }
+  }
+  assert.equal(available + safelyBlocked, 20 * 28 * 14, 'all 7,840 T15-T34 question slots must be checked');
+});
+
 test('T11-T14 authored examples are migrated into the shared renderer for all 28 canonical days', async () => {
   const merged = await loadMergedContent();
   const catalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
