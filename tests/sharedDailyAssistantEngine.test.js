@@ -581,3 +581,27 @@ test('T15-T34 render canonical migrated exercise and action examples through the
   assert.equal(checked + safelyBlocked, 20 * 28 * 2,
     'all T15-T34 exercise/action example slots must be either rendered or safety-blocked');
 });
+
+
+test('near-identical exercise/action pairs preserve separate planning and implementation roles', async () => {
+  const catalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
+  const expected = [
+    ['T16', 9, 'هنوز تمرین را اجرا نمی‌کند', 'زمان‌سنج ده‌دقیقه‌ای'],
+    ['T20', 24, 'فهرست سه‌موردی', 'بازبینی سلیقه‌ای چهارم اضافه نمی‌کند'],
+    ['T19', 14, 'یک نشانه آغاز تعیین می‌کند', 'در تقویم گوشی یک یادآور'],
+    ['T20', 7, 'معیار موفقیت را مشخص می‌کند', '۲۰ دقیقه برای نوشتن پیش‌نویس'],
+    ['T20', 12, 'سه عبارت مطلق', 'در گزارش فعلی عبارت'],
+    ['T15', 27, 'هنوز زمان اجرا را تعیین نمی‌کند', 'در تقویم ثبت می‌کند'],
+    ['T18', 15, 'هنوز دعوت را ارسال نمی‌کند', 'به خواهر مورد اعتمادش پیام می‌دهد'],
+  ];
+  for (const [topicId, day, exerciseMarker, actionMarker] of expected) {
+    const record = catalog.records.find((item) => item.topicId === topicId && item.day === day);
+    assert.ok(record, topicId + ' day ' + day + ' catalog record');
+    assert.ok(record.exerciseExample.includes(exerciseMarker),
+      topicId + ' day ' + day + ' exercise must retain its planning/definition role');
+    assert.ok(record.actionExample.includes(actionMarker),
+      topicId + ' day ' + day + ' action must describe a distinct implementation step');
+    assert.notEqual(record.exerciseExample, record.actionExample,
+      topicId + ' day ' + day + ' exercise and action examples must not be identical');
+  }
+});
