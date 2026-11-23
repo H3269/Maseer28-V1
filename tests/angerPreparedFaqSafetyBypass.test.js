@@ -21,7 +21,7 @@ test('all exact prepared anger FAQs answer on all 28 days while preserving topic
             day: guide.day,
                         risk_level: 'routine',
           },
-          relationshipSafetyConfirmed: false,
+          relationshipSafetyConfirmed: true,
         },
       });
       assert.equal(result.status, 'daily_guidance_available');
