@@ -464,7 +464,7 @@ function answerBody({ guide, question, plainSteps = {} }) {
       const minutes = Number(guide.durationMinutes);
       const durationText = Number.isFinite(minutes) && minutes > 0
         ? 'برای روز ' + day + ' زمان پیشنهادی ثبت‌شده ' + minutes + ' دقیقه است؛ این عدد برآورد برنامه‌ریزی است، نه آزمون سرعت و نه الزام درمانی.'
-        : 'برای تمرین روز ' + day + ' زمان دقیقی ثبت نشده است؛ بنابراین دقیقه مشخصی حدس نمی‌زنیم.';
+        : 'برای تمرین روز ' + day + ' زمان مشخصی برای این تمرین ثبت نشده است؛ بنابراین دقیقه مشخصی حدس نمی‌زنیم.';
       return paragraph(
         durationText,
         'کار را با خواندن دستور شروع کن و تا وقتی ادامه بده که خروجی اصلی خواسته‌شده آماده شده باشد: ' + exercise,
