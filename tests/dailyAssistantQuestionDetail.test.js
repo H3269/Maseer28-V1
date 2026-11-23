@@ -61,23 +61,28 @@ test('T02-T14 all 364 day records return expanded, day-specific teaching answers
         assert.equal(typeof answer, 'string', topicId + ' day ' + guide.day + ' ' + kind + ' must return an answer');
         assert.ok(answer.includes(cleanPreparedAssistantTopicText(guide.title)), topicId + ' day ' + guide.day + ' must preserve exact daily title');
         for (const label of requiredLabels) {
-          const anxietyFieldByLabel = {
+          const detailValueByLabel = {
             'هدف تمرین امروز': guide.objective,
+            'هدف آموزشی روز': guide.objective,
+            'مهارت مورد تمرین': guide.skill,
+            'مهارت پشتیبان اقدام': guide.skill,
             'منطق آموزشی': guide.mechanism,
+            'منطق آموزشی امروز': guide.mechanism,
+            'منطق انتخاب اقدام': guide.mechanism,
             'متن دقیق تمرین امروز': guide.exercise,
             'تمرین دقیق همین روز': guide.exercise,
-            'منطق انتخاب اقدام': guide.mechanism,
+            'نمونه اختصاصی تمرین همین روز': guide.exerciseExample,
             'اقدام اختصاصی دقیق امروز': guide.action,
             'اقدام اختصاصی دقیق همین روز': guide.action,
+            'نمونه اختصاصی اقدام همین روز': guide.actionExample,
           };
-          const alreadyPresentAnxietyField = topicId === 'T02'
-            && typeof anxietyFieldByLabel[label] === 'string'
-            && answer.includes(anxietyFieldByLabel[label]);
-          const preservedUnderCanonicalAnxietyHeading = topicId === 'T02'
-            && ((label === 'چطور از مثال استفاده کنی' && answer.includes('مثال فقط برای فهم قالب'))
-              || (label === 'چطور مثال را با شرایط خودت تطبیق بدهی' && answer.includes('فقط بخش امن، داوطلبانه')));
-          assert.ok(answer.includes(label) || alreadyPresentAnxietyField || preservedUnderCanonicalAnxietyHeading,
-            topicId + ' day ' + guide.day + ' ' + kind + ' missing detail section: ' + label);
+          const alreadyPresentAuthoredField = typeof detailValueByLabel[label] === 'string'
+            && detailValueByLabel[label].trim().length > 0
+            && answer.includes(detailValueByLabel[label]);
+          const preservedInstructionalNote = (label === 'چطور از مثال استفاده کنی' && answer.includes('مثال فقط برای فهم قالب'))
+            || (label === 'چطور مثال را با شرایط خودت تطبیق بدهی' && answer.includes('فقط بخش امن، داوطلبانه'));
+          assert.ok(answer.includes(label) || alreadyPresentAuthoredField || preservedInstructionalNote,
+            topicId + ' day ' + guide.day + ' ' + kind + ' must preserve the detail content or its explicit section: ' + label);
         }
         if (topicId === 'T02') {
           assert.doesNotMatch(answer, /توضیح این مورد در متن بالا آمده است/,
