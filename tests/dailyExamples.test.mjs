@@ -24,6 +24,47 @@ test('T01 has a distinct, visible hypothetical example for each of its 28 exerci
   assert.equal(new Set(days.map(day => day.actionExample)).size, 28);
 });
 
+test('T15-T18 have 28 source-bound, distinct hypothetical exercise and action examples each', async () => {
+  const [base, overrides, catalog] = await Promise.all([
+    readJson('../public/content/path-content.json'),
+    readJson('../public/content/daily-text-overrides.v1.json'),
+    readJson('../src/features/assistant/sharedDailyAssistantExamples.v1.json'),
+  ]);
+  const merged = mergeDailyTextOverrides(base, overrides);
+  const topics = [
+    ['T15', 'اعتمادبه‌نفس پایین'],
+    ['T16', 'افکار منفی و نشخوار فکری'],
+    ['T17', 'مشکلات رابطه'],
+    ['T18', 'نفرت از خود'],
+  ];
+  const allExamples = [];
+  for (const [topicId, topicName] of topics) {
+    const days = merged.categories[topicName].days;
+    const records = catalog.records.filter((record) => record.topicId === topicId);
+    assert.equal(days.length, 28, topicId + ' canonical days');
+    assert.equal(records.length, 28, topicId + ' example records');
+    for (const day of days) {
+      const record = records.find((item) => item.day === day.day);
+      assert.ok(record, topicId + ' day ' + day.day + ' record');
+      assert.equal(record.exerciseSource, day.exercise, topicId + ' day ' + day.day + ' exercise provenance');
+      assert.equal(record.actionSource, day.actionText, topicId + ' day ' + day.day + ' action provenance');
+      assert.match(record.exerciseExample, /^نمونه فرضی/u);
+      assert.match(record.actionExample, /^نمونه فرضی/u);
+      assert.notEqual(record.exerciseExample, day.exercise);
+      assert.notEqual(record.actionExample, day.actionText);
+      allExamples.push(record.exerciseExample, record.actionExample);
+    }
+    assert.equal(new Set(records.map((record) => record.exerciseExample)).size, 28, topicId + ' distinct exercise examples');
+    assert.equal(new Set(records.map((record) => record.actionExample)).size, 28, topicId + ' distinct action examples');
+  }
+  assert.equal(new Set(allExamples).size, 224, 'T15-T18 examples must not repeat exactly across topics or days');
+  const relationshipRisk = catalog.records.find((record) => record.topicId === 'T17' && record.day === 25);
+  assert.match(relationshipRisk.exerciseExample, /تهدید|کنترل اجباری|ترس از تلافی/u);
+  assert.match(relationshipRisk.actionExample, /محرمانه|خطر را بیشتر/u);
+  const selfSafety = catalog.records.find((record) => record.topicId === 'T18' && record.day === 22);
+  assert.match(selfSafety.actionExample, /فکر آسیب به خود|خدمات اضطراری/u);
+});
+
 test('daily assistant returns the matching hypothetical example, not a fabricated personal story', () => {
   const dayData = {
     topic_id: 'T04',
