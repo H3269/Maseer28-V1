@@ -193,7 +193,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
         assert.equal(Object.hasOwn(day, 'risk_level'), false);
       } else {
         Object.assign(day, {
-          topic_id: ({ 'خشم':'T01','اضطراب':'T02','ترس':'T03','نفرت':'T04','حسادت':'T05','غم و سوگ':'T06','احساس گناه':'T07','وابستگی عاطفی':'T08','اهمال‌کاری':'T09','بی‌خوابی و مشکلات خواب':'T10','عادت‌های تکراری':'T11','مرزبندی و نه گفتن':'T12','تنهایی':'T13','کمبود انگیزه':'T14' })[topicKey] || 'T01',
+          topic_id: ({"خشم":"T01","اضطراب":"T02","ترس":"T03","نفرت":"T04","حسادت":"T05","غم و سوگ":"T06","احساس گناه":"T07","وابستگی عاطفی":"T08","اهمال‌کاری":"T09","بی‌خوابی و مشکلات خواب":"T10","عادت‌های تکراری":"T11","مرزبندی و نه گفتن":"T12","تنهایی":"T13","کمبود انگیزه":"T14","اعتمادبه‌نفس پایین":"T15","افکار منفی و نشخوار فکری":"T16","مشکلات رابطه":"T17","نفرت از خود":"T18","خودسرزنشی":"T19","کمال‌گرایی":"T20","اجتناب":"T21","استرس":"T22","احساس بی‌ارزشی":"T23","مشکل در کنترل هیجان":"T24","رنجش و کینه":"T25","شرم":"T26","ترس از قضاوت":"T27","ترس از شکست":"T28","ترس از طرد شدن":"T29","شک و تردید":"T30","کنترل‌گری":"T31","بی‌انگیزگی":"T32","خودانتقادی":"T33","مشکل دیگر":"T34"})[topicKey] || 'T01',
           day: dayNumber,
           review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
           risk_level: 'routine',
@@ -273,6 +273,26 @@ try {
     { name: 'مرزبندی و نه گفتن', id: 'T12', trigger: 't12-daily-prompt-trigger' },
     { name: 'تنهایی', id: 'T13', trigger: 't13-daily-prompt-trigger' },
     { name: 'کمبود انگیزه', id: 'T14', trigger: 't14-daily-prompt-trigger' },
+    { name: 'اعتمادبه‌نفس پایین', id: 'T15', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'افکار منفی و نشخوار فکری', id: 'T16', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'مشکلات رابطه', id: 'T17', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'نفرت از خود', id: 'T18', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'خودسرزنشی', id: 'T19', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'کمال‌گرایی', id: 'T20', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'اجتناب', id: 'T21', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'استرس', id: 'T22', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'احساس بی‌ارزشی', id: 'T23', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'مشکل در کنترل هیجان', id: 'T24', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'رنجش و کینه', id: 'T25', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'شرم', id: 'T26', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'ترس از قضاوت', id: 'T27', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'ترس از شکست', id: 'T28', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'ترس از طرد شدن', id: 'T29', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'شک و تردید', id: 'T30', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'کنترل‌گری', id: 'T31', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'بی‌انگیزگی', id: 'T32', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'خودانتقادی', id: 'T33', trigger: 'daily-assistant-prompt-trigger' },
+    { name: 'مشکل دیگر', id: 'T34', trigger: 'daily-assistant-prompt-trigger' },
   ];
   const workerRequests = [];
   const privateMarker = 'private-assistant-browser-marker-7f31c2';
@@ -370,13 +390,13 @@ try {
   }
 
   assert.equal(completedAnswers, topics.length * questions.length,
-    'all fourteen prepared questions must complete for each of the fourteen supported topics');
+    'all fourteen prepared questions must complete for each of the thirty-four supported topics');
   assert.deepEqual(workerRequests, [],
     'prepared daily answers must not call a Worker or external assistant provider');
 
   // An unsupported topic must fail closed rather than silently borrowing another topic's engine.
   const pendingTopicPage = await browser.newPage();
-  await openDay(pendingTopicPage, { assistantDayMode: 'legacy', problem: 'شرم', localModelInstalled: true });
+  await openDay(pendingTopicPage, { assistantDayMode: 'legacy', problem: 'موضوع آزمایشی نامعتبر', localModelInstalled: true });
   const pendingTopicPanel = pendingTopicPage.locator('.globalAssistantDialog');
   await pendingTopicPanel.waitFor({ state: 'visible' });
   assert.equal(await pendingTopicPanel.locator('#global-assistant-message').count(), 0,
@@ -386,7 +406,7 @@ try {
   assert.match(await pendingTopicPanel.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/);
   await pendingTopicPage.close();
 
-  process.stdout.write('PASS: Chromium shared daily assistant contract: 14 fixed questions × 14 topics (196 answers), identical five-group selector, active topic/day exercise and action source binding, shared answer formatting, prepared-only boundary, privacy, and no external assistant calls.\n');
+  process.stdout.write('PASS: Chromium shared daily assistant contract: 14 fixed questions × 34 topics (476 answers), identical five-group selector, active topic/day exercise and action source binding, shared answer formatting, prepared-only boundary, privacy, and no external assistant calls.\n');
 } finally {
   await browser.close();
 }
