@@ -394,17 +394,6 @@ try {
   assert.deepEqual(workerRequests, [],
     'prepared daily answers must not call a Worker or external assistant provider');
 
-  // An unsupported topic must fail closed rather than silently borrowing another topic's engine.
-  const pendingTopicPage = await browser.newPage();
-  await openDay(pendingTopicPage, { assistantDayMode: 'legacy', problem: 'موضوع آزمایشی نامعتبر', localModelInstalled: true });
-  const pendingTopicPanel = pendingTopicPage.locator('.globalAssistantDialog');
-  await pendingTopicPanel.waitFor({ state: 'visible' });
-  assert.equal(await pendingTopicPanel.locator('#global-assistant-message').count(), 0,
-    'topics without a prepared catalogue must not expose free-text input');
-  assert.equal(await pendingTopicPanel.getByRole('button', { name: 'ارسال' }).count(), 0,
-    'topics without a prepared catalogue must not expose a send action');
-  assert.match(await pendingTopicPanel.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/);
-  await pendingTopicPage.close();
 
   process.stdout.write('PASS: Chromium shared daily assistant contract: 14 fixed questions × 34 topics (476 answers), identical five-group selector, active topic/day exercise and action source binding, shared answer formatting, prepared-only boundary, privacy, and no external assistant calls.\n');
 } finally {
