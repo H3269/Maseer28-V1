@@ -302,7 +302,7 @@ test('prepared FAQs remain available and free-form guidance is refused on every 
           day,
           problem: 'خشم',
           data: dayData,
-          relationshipSafetyConfirmed: false,
+          relationshipSafetyConfirmed: true,
         },
       });
       assert.equal(turn.status, 'daily_guidance_available');
@@ -317,7 +317,7 @@ test('prepared FAQs remain available and free-form guidance is refused on every 
         day,
         problem: 'خشم',
         data: dayData,
-        relationshipSafetyConfirmed: false,
+        relationshipSafetyConfirmed: true,
       },
     });
     assert.equal(freeForm.status, 'prepared_question_required', `day ${day} free-form`);
