@@ -257,12 +257,18 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       window.clearInterval(timer);
       setTypingProgress({ id: responseId, text: revealText, active: false });
     };
-    reducedMotionQuery?.addEventListener?.('change', finishForReducedMotion);
-    reducedMotionQuery?.addListener?.(finishForReducedMotion);
+    if (reducedMotionQuery?.addEventListener) {
+      reducedMotionQuery.addEventListener('change', finishForReducedMotion);
+    } else {
+      reducedMotionQuery?.addListener?.(finishForReducedMotion);
+    }
     return () => {
       window.clearInterval(timer);
-      reducedMotionQuery?.removeEventListener?.('change', finishForReducedMotion);
-      reducedMotionQuery?.removeListener?.(finishForReducedMotion);
+      if (reducedMotionQuery?.removeEventListener) {
+        reducedMotionQuery.removeEventListener('change', finishForReducedMotion);
+      } else {
+        reducedMotionQuery?.removeListener?.(finishForReducedMotion);
+      }
     };
   }, [messages, sending]);
 
