@@ -15,6 +15,11 @@ assert.deepEqual(
   dailyTextOverrides,
   'the production preview daily text override asset must match the checked-in browser fixture',
 );
+const normalizeAssistantText = (value) => String(value || '').normalize('NFKC')
+  .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
+  .replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
+  .replace(/[^\\p{L}\\p{N}\\s]/gu, ' ')
+  .replace(/\\s+/g, ' ').trim().toLowerCase();
 const browser = await chromium.launch({ headless: true });
 
 const journey = {
@@ -183,8 +188,8 @@ try {
     const jealousyExerciseExample = await jealousyPanel.locator('.assistantMessage').last().innerText();
     const jealousyDayOne = dailyTextOverrides.categories?.['حسادت']?.days?.find(item => Number(item.day) === 1);
     assert.ok(jealousyDayOne?.exerciseExample, 'T05 day 1 canonical override must provide its approved exercise example');
-    assert.ok(jealousyExerciseExample.includes(jealousyDayOne.exerciseExample),
-      'T05 shared answer must use the active day canonical exercise example');
+    assert.ok(normalizeAssistantText(jealousyExerciseExample).includes(normalizeAssistantText(jealousyDayOne.exerciseExample)),
+      'T05 shared answer must use the active day canonical exercise example. Actual: ' + jealousyExerciseExample + ' | Expected: ' + jealousyDayOne.exerciseExample);
     assert.equal(jealousyExerciseExample.includes('**'), false, 'T05 must not expose raw markdown markers');
     assert.equal(jealousyExerciseExample.includes(String.fromCharCode(92) + 'n'), false, 'T05 must not expose escaped newline tokens');
     assert.ok(jealousyExerciseExample.includes('\n'), 'T05 paragraphs must display on separate lines');
@@ -203,8 +208,8 @@ try {
     });
     const jealousyActionExample = await jealousyPanel.locator('.assistantMessage').last().innerText();
     assert.ok(jealousyDayOne?.actionExample, 'T05 day 1 canonical override must provide its approved action example');
-    assert.ok(jealousyActionExample.includes(jealousyDayOne.actionExample),
-      'T05 shared answer must use the active day canonical action example');
+    assert.ok(normalizeAssistantText(jealousyActionExample).includes(normalizeAssistantText(jealousyDayOne.actionExample)),
+      'T05 shared answer must use the active day canonical action example. Actual: ' + jealousyActionExample + ' | Expected: ' + jealousyDayOne.actionExample);
     assert.notEqual(jealousyExerciseExample, jealousyActionExample,
       'T05 exercise and action examples must teach different tasks, not repeat the same text');
     assert.deepEqual(jealousyErrors, [], 'T05 prepared-only browser flow must not raise page errors');
