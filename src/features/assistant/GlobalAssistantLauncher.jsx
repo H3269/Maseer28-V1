@@ -23,7 +23,7 @@ import { getCanonicalTopicIdForCategory, getInterpersonalPrivacyNotice, getRelat
 
 
 import { getSharedDailyAssistantPromptGroups } from './sharedDailyAssistantEngine.js';
-import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS, DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
+import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN, shouldShowDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 import { getDailySafetyMode } from '../content/dailySafety.js';
 
 const PAGE_ASSISTANT_PROMPT_GROUPS = Object.freeze([
@@ -475,7 +475,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       const finalMessage = turn.message || 'برای این پرسش پاسخ قابل اتکایی در دسترس نیست.';
       const isDailySafetyQuestion = Boolean(
         isPreparedOnlyDailyPromptContext
-        && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(selectedPreparedQuestion.kind),
+        && shouldShowDailyAssistantSafetyReminder(activeDailyTopicId, selectedPreparedQuestion.kind),
       );
       updateAssistantMessage(finalMessage, turn.knowledge || [], isDailySafetyQuestion);
     } catch {
