@@ -95,7 +95,7 @@ async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumb
 
 async function openDay(page, { assistantDayMode = 'routine', problem = null, localModelInstalled = false } = {}) {
   const isLegacyMode = assistantDayMode === 'legacy' || assistantDayMode.startsWith('adaptedLegacy');
-  const dayNumber = assistantDayMode === 'fear-blocked'
+  const dayNumber = ['fear-blocked', 'fear-caution'].includes(assistantDayMode)
     ? 14
     : assistantDayMode === 'jealousy-communication'
       ? 16
@@ -198,7 +198,12 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
           topic_id: ({ 'خشم':'T01','اضطراب':'T02','ترس':'T03','نفرت':'T04','حسادت':'T05','غم و سوگ':'T06','احساس گناه':'T07','وابستگی عاطفی':'T08','اهمال‌کاری':'T09','بی‌خوابی و مشکلات خواب':'T10','عادت‌های تکراری':'T11','مرزبندی و نه گفتن':'T12','تنهایی':'T13','کمبود انگیزه':'T14','اعتمادبه‌نفس پایین':'T15','افکار منفی و نشخوار فکری':'T16','مشکلات رابطه':'T17','نفرت از خود':'T18','خودسرزنشی':'T19','کمال‌گرایی':'T20','اجتناب':'T21','استرس':'T22','احساس بی‌ارزشی':'T23','مشکل در کنترل هیجان':'T24','رنجش و کینه':'T25','شرم':'T26','ترس از قضاوت':'T27','ترس از شکست':'T28','ترس از طرد شدن':'T29','شک و تردید':'T30','کنترل‌گری':'T31','بی‌انگیزگی':'T32','خودانتقادی':'T33','مشکل دیگر':'T34' })[topicKey] || 'T01',
           day: dayNumber,
           review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
-          risk_level: 'routine',
+          risk_level: assistantDayMode === 'fear-caution' ? 'caution' : 'routine',
+          ...(assistantDayMode === 'fear-caution' ? {
+            safety_rule_ids: ['SR-T03-D14'],
+            when_to_seek_human_support: 'اگر فشار ادامه یافت، از متخصص سلامت روان یا فرد مورد اعتماد کمک بگیر.',
+            stop_conditions: ['اگر تمرین باعث افزایش محسوس ترس یا احساس ناایمنی شد، آن را متوقف کن.'],
+          } : {}),
         });
       }
       await route.fulfill({ status: 200, contentType: 'application/json; charset=utf-8', body: JSON.stringify(payload) });
@@ -461,7 +466,25 @@ try {
     'T03 day 14 must display the daily safety block notice');
   await fearSafetyPage.close();
 
-  process.stdout.write('PASS: Chromium shared daily assistant contract: 14 fixed questions × 33 non-blocked topics (462 answers), safety reminders on all four safety/evaluation question kinds, blocked-day question locks, identical five-group selector, active topic/day exercise and action source binding, shared answer formatting, prepared-only boundary, privacy, and no external assistant calls.\n');
+  const fearCautionPage = await browser.newPage();
+  await openDay(fearCautionPage, { problem: 'ترس', assistantDayMode: 'fear-caution' });
+  const cautionPanel = fearCautionPage.locator('.globalAssistantDialog');
+  await cautionPanel.waitFor({ state: 'visible' });
+  const cautionNotice = cautionPanel.getByTestId('daily-assistant-safety-caution');
+  await cautionNotice.waitFor({ state: 'visible' });
+  assert.ok((await cautionNotice.innerText()).includes('اگر فشار ادامه یافت، از متخصص سلامت روان یا فرد مورد اعتماد کمک بگیر.'));
+  assert.ok((await cautionNotice.innerText()).includes('اگر تمرین باعث افزایش محسوس ترس یا احساس ناایمنی شد، آن را متوقف کن.'));
+  assert.equal(await cautionPanel.getByTestId('daily-assistant-safety-blocked').count(), 0,
+    'a correctly classified caution day must not be mislabeled as blocked');
+  const cautionTrigger = cautionPanel.getByTestId('fear-daily-prompt-trigger');
+  await cautionTrigger.click();
+  const cautionPrompt = fearCautionPage.locator('#library-assistant-prompt-dialog');
+  await cautionPrompt.waitFor({ state: 'visible' });
+  assert.equal(await cautionPrompt.locator('[data-prompt-option]:not(:disabled)').count(), 14,
+    'a caution day keeps all prepared questions available');
+  await fearCautionPage.close();
+
+  process.stdout.write('PASS: Chromium shared daily assistant contract: 14 fixed questions × 33 non-blocked topics (462 answers), safety reminders on all four safety/evaluation question kinds, blocked-day locks, caution notices and stop conditions, identical five-group selector, active topic/day exercise and action source binding, shared answer formatting, prepared-only boundary, privacy, and no external assistant calls.\n');
 } finally {
   await browser.close();
 }
