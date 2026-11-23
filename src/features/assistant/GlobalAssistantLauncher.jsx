@@ -453,6 +453,13 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     const responseId = pendingLibraryTurn?.responseId || `assistant-${turnId}`;
     const updateAssistantMessage = (text, knowledge = [], dailySafetyReminder = false) => {
       setMessages((current) => current.map((item) => item.id === responseId ? { ...item, text, knowledge, dailySafetyReminder } : item));
+      // Start the reveal state in the same update as the final answer. This
+      // prevents a one-render flash of the full text and makes the reveal
+      // control available as soon as the completed response reaches the UI.
+      if (text && !text.startsWith('در حال بررسی')) {
+        const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+        setTypingState(reducedMotion ? null : { id: responseId, visibleChars: 0 });
+      }
     };
     if (pendingLibraryTurn) {
       updateAssistantMessage('در حال بررسی پرسش…');
