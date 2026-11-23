@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { readFile } from 'node:fs/promises';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
 import { getDailySafetyMode } from '../src/features/content/dailySafety.js';
+import { mergeDailyTextOverrides } from '../src/features/content/dailyTextOverrides.js';
+import { getSharedDailyAssistantPromptGroups } from '../src/features/assistant/sharedDailyAssistantEngine.js';
+import { getCanonicalTopicIdForCategory } from '../src/features/journey/relationshipSafetyGate.js';
 
 const QUESTION = 'منظور از تمرین امروز چیست؟';
 
@@ -85,4 +89,54 @@ test('a caution day with its required safety metadata remains available when no 
   });
   assert.equal(result.status, 'daily_guidance_available');
   assert.ok(result.message.includes(data.exercise));
+});
+
+
+test('the real runtime router enforces the safety classification of all 952 daily records', async () => {
+  const [base, overrides] = await Promise.all([
+    readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8').then(JSON.parse),
+    readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8').then(JSON.parse),
+  ]);
+  const merged = mergeDailyTextOverrides(base, overrides);
+  let checked = 0;
+  let blocked = 0;
+  let available = 0;
+
+  for (const [topicName, category] of Object.entries(merged.categories)) {
+    const topicId = getCanonicalTopicIdForCategory(topicName);
+    assert.ok(topicId, topicName + ' must resolve to a canonical topic ID');
+    assert.equal(category.days.length, 28, topicName + ' must retain all 28 daily records');
+
+    for (let day = 1; day <= 28; day += 1) {
+      const record = category.days.find((item) => Number(item.day) === day);
+      assert.ok(record, topicName + ' day ' + day + ' must exist');
+      const question = getSharedDailyAssistantPromptGroups(day, topicId)
+        .flatMap((group) => group.questions)
+        .find((item) => item.id === 'q01');
+      assert.ok(question, topicName + ' day ' + day + ' must have the first prepared question');
+
+      const result = makePageAssistantTurn({
+        screen: 'day',
+        text: question.value,
+        dailyContext: {
+          day,
+          problem: topicName,
+          data: record,
+          relationshipSafetyConfirmed: true,
+        },
+      });
+      const expectedStatus = getDailySafetyMode(record) === 'blocked'
+        ? 'daily_guidance_unavailable'
+        : 'daily_guidance_available';
+      assert.equal(result.status, expectedStatus,
+        topicName + ' day ' + day + ' runtime status must match its authoritative safety mode');
+      if (expectedStatus === 'daily_guidance_unavailable') blocked += 1;
+      else available += 1;
+      checked += 1;
+    }
+  }
+
+  assert.equal(checked, 952);
+  assert.ok(blocked > 0, 'the fixture must include safety-blocked days');
+  assert.ok(available > 0, 'the fixture must include safety-eligible days');
 });
