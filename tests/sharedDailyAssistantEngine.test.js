@@ -616,3 +616,19 @@ test('T18 day 22 immediate safety response and day 28 warning-level review remai
   assert.ok(day28.exerciseExample.includes('هشدار زودهنگام'));
   assert.notEqual(day22.exerciseExample, day28.exerciseExample);
 });
+
+
+test('T32 day 15 recovery action and T33 day 16 specific feedback action remain distinct', async () => {
+  const catalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
+  const t32Day8 = catalog.records.find((item) => item.topicId === 'T32' && item.day === 8);
+  const t32Day15 = catalog.records.find((item) => item.topicId === 'T32' && item.day === 15);
+  const t33Day14 = catalog.records.find((item) => item.topicId === 'T33' && item.day === 14);
+  const t33Day16 = catalog.records.find((item) => item.topicId === 'T33' && item.day === 16);
+  assert.ok(t32Day15.actionExample.includes('خستگی چشم'));
+  assert.ok(t32Day15.actionExample.includes('به نقطه‌ای دور نگاه می‌کند'));
+  assert.doesNotMatch(t32Day15.actionExample, /وعده غذایی/u);
+  assert.notEqual(t32Day8.actionExample, t32Day15.actionExample);
+  assert.ok(t33Day16.actionExample.includes('کدام‌یک از این دو تیتر بهتر است'));
+  assert.ok(t33Day16.actionExample.includes('پاسخ مربوط به همان تیتر'));
+  assert.notEqual(t33Day14.actionExample, t33Day16.actionExample);
+});
