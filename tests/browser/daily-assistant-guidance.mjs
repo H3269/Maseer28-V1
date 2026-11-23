@@ -393,17 +393,24 @@ try {
   assert.deepEqual(workerRequests, [],
     'prepared daily answers must not call a Worker or external assistant provider');
 
-  // T31 remains blocked until its three-way control context is explicitly reviewed.
+  // T31 keeps its catalogue visible, but every choice remains disabled until
+  // its three-way control context has been explicitly reviewed.
   const controlSafetyPage = await browser.newPage();
   await openDay(controlSafetyPage, { problem: 'کنترل‌گری' });
   const controlPanel = controlSafetyPage.locator('.globalAssistantDialog');
   await controlPanel.waitFor({ state: 'visible' });
   const controlTrigger = controlPanel.getByTestId('extended-daily-prompt-trigger');
   await controlTrigger.waitFor({ state: 'visible' });
-  assert.equal(await controlTrigger.isDisabled(), true,
-    'T31 must not expose prepared answers while its control context is unclassified');
-  assert.equal(await controlPanel.locator('[data-prompt-option]').count(), 0,
-    'T31 must not expose any prepared question while safety classification is unresolved');
+  assert.equal(await controlTrigger.isDisabled(), false,
+    'T31 must allow opening the prepared-question catalogue while its answers remain safety-locked');
+  await controlTrigger.click();
+  const controlPrompt = controlSafetyPage.locator('#library-assistant-prompt-dialog');
+  await controlPrompt.waitFor({ state: 'visible' });
+  assert.equal(await controlPrompt.locator('[data-prompt-option]').count(), 14,
+    'T31 must show all fourteen prepared questions while its control context is unclassified');
+  assert.equal(await controlPrompt.locator('[data-prompt-option]:not(:disabled)').count(), 0,
+    'T31 must keep every prepared question disabled until its control context is reviewed');
+  assert.doesNotMatch(await controlPanel.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/u);
   assert.match(await controlPanel.innerText(), /ملاحظه ایمنی ثبت‌شده|نیاز به بازبینی ایمنی/u);
   await controlSafetyPage.close();
 
