@@ -48,6 +48,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
   const [typingState, setTypingState] = useState(null);
+  const typingTimerRef = useRef(null);
   const turnSequenceRef = useRef(0);
   const [loadedLibraryBooks, setLoadedLibraryBooks] = useState([]);
   const libraryBooksLoadRef = useRef(null);
@@ -228,6 +229,10 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       setTypingState(null);
       return undefined;
     }
+    if (typingTimerRef.current !== null) {
+      window.clearInterval(typingTimerRef.current);
+      typingTimerRef.current = null;
+    }
     let visibleChars = 0;
     const total = latest.text.length;
     // Keep the visual reveal brief (at most about 900ms), independent of answer generation.
@@ -238,12 +243,17 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       visibleChars = Math.min(total, visibleChars + step);
       if (visibleChars >= total) {
         window.clearInterval(timer);
+        if (typingTimerRef.current === timer) typingTimerRef.current = null;
         setTypingState(null);
       } else {
         setTypingState({ id: latest.id, visibleChars });
       }
     }, 18);
-    return () => window.clearInterval(timer);
+    typingTimerRef.current = timer;
+    return () => {
+      window.clearInterval(timer);
+      if (typingTimerRef.current === timer) typingTimerRef.current = null;
+    };
   }, [messages, sending]);
 
   useEffect(() => {
@@ -768,7 +778,13 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                           : <React.Fragment key={partIndex}>{part.text}</React.Fragment>)}
                       </React.Fragment>
                     ))}{typingState?.id === item.id && <span className="assistantTypingCursor" aria-hidden="true" />}</p>
-                    {typingState?.id === item.id && <button type="button" className="assistantShowFullResponse" onClick={() => setTypingState(null)}>نمایش کامل پاسخ</button>}
+                    {typingState?.id === item.id && <button type="button" className="assistantShowFullResponse" onClick={() => {
+                      if (typingTimerRef.current !== null) {
+                        window.clearInterval(typingTimerRef.current);
+                        typingTimerRef.current = null;
+                      }
+                      setTypingState(null);
+                    }}>نمایش کامل پاسخ</button>}
                     {item.dailySafetyReminder && (
                       <aside className="dailyAssistantSafetyReminder" role="note" data-testid="daily-assistant-safety-reminder">
                         <h3>یادآوری مهم درباره ایمنی شما</h3>
