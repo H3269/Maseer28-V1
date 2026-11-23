@@ -605,3 +605,14 @@ test('near-identical exercise/action pairs preserve separate planning and implem
       topicId + ' day ' + day + ' exercise and action examples must not be identical');
   }
 });
+
+
+test('T18 day 22 immediate safety response and day 28 warning-level review remain distinct', async () => {
+  const catalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
+  const day22 = catalog.records.find((item) => item.topicId === 'T18' && item.day === 22);
+  const day28 = catalog.records.find((item) => item.topicId === 'T18' && item.day === 28);
+  assert.ok(day22.exerciseExample.includes('نیاز فوری'));
+  assert.ok(day28.exerciseExample.includes('دو سطح را در کارت شخصی جدا می‌کند'));
+  assert.ok(day28.exerciseExample.includes('هشدار زودهنگام'));
+  assert.notEqual(day22.exerciseExample, day28.exerciseExample);
+});
