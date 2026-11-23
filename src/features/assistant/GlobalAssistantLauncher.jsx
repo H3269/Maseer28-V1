@@ -305,7 +305,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const extendedRelationshipGatePending = Boolean(extendedRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
   const extendedRelationshipGateBlocked = extendedRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
   const extendedPrivacyNotice = isExtendedDailyPromptContext ? getInterpersonalPrivacyNotice(dailyContext?.data) : null;
-  const extendedDailySafetyBlocked = isExtendedDailyPromptContext && getDailySafetyMode(dailyContext?.data) === 'blocked';
+  const dailySafetyBlocked = Boolean(isTopicDailyPromptContext && dailySafetyBlocked);
   const activeDailyTopicId = dailyProblemTopicId || dailyRecordTopicId;
   const activePromptGroups = screen === 'books'
     ? [...LIBRARY_ASSISTANT_PROMPT_GROUPS, ...PAGE_ASSISTANT_PROMPT_GROUPS]
@@ -586,7 +586,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       key={question.value}
                       type="button"
                       data-prompt-option
-                      disabled={sending || (isExtendedDailyPromptContext && (extendedDailySafetyBlocked || extendedRelationshipGatePending))}
+                      disabled={sending || dailySafetyBlocked || (isExtendedDailyPromptContext && extendedRelationshipGatePending)}
                       onClick={() => {
                         setDraft(question.value);
                         setLibraryPromptOpen(false);
@@ -673,8 +673,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                   )}
                 </section>
               )}
-              {extendedDailySafetyBlocked && (
-                <section className="dailyAssistantSafetyActions" role="note" aria-label="محدودیت ایمنی راهنمای روز" data-testid="extended-topic-daily-safety-blocked">
+              {dailySafetyBlocked && (
+                <section className="dailyAssistantSafetyActions" role="note" aria-label="محدودیت ایمنی راهنمای روز" data-testid={isExtendedDailyPromptContext ? "extended-topic-daily-safety-blocked" : "daily-assistant-safety-blocked"}>
                   <p role="alert">این روز به‌دلیل ملاحظه ایمنی ثبت‌شده، پاسخ تمرینی آماده را نمایش نمی‌دهد. این محدودیت را دور نزن.</p>
                 </section>
               )}
