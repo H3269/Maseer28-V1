@@ -2993,7 +2993,7 @@ function answerRaw({day,message,dailyContent}={}){
  const g=JEALOUSY_DAILY_ASSISTANT_GUIDES.find(x=>x.day===toJealousyDayNumber(day));if(!g)return null;
  const q=g.questions.find(x=>x.value===String(message||'').trim());if(!q)return null;
  const e=String(dailyContent?.exercise||g.exercise).trim(),a=String(dailyContent?.actionText||dailyContent?.action||g.action).trim(),h=intro(g);
- const example=(isAction)=>{const body=isAction?g.actionExample:g.exerciseExample,inst=isAction?a:e;return '**مثال فرضی**\n'+body+'\n\n**چطور اجرا کنی؟**\n۱. نمونه را با دستور امروز مقایسه کن.\n۲. فقط بخش در اختیار خودت را انجام بده؛ لازم نیست موقعیت تازه بسازی یا با کسی روبه‌رو شوی.\n۳. نتیجه را کوتاه ثبت کن و اگر ناامن یا آشفته‌کننده شد متوقف کن.\n\n**ارتباط با دستور امروز**\n'+inst+'\n\n**معیار پایان:** '+g.successCriterion;};
+ const example=(isAction)=>{const body=isAction?(dailyContent?.actionExample||g.actionExample):(dailyContent?.exerciseExample||g.exerciseExample),inst=isAction?a:e;return '**مثال فرضی**\n'+body+'\n\n**چطور اجرا کنی؟**\n۱. نمونه را با دستور امروز مقایسه کن.\n۲. فقط بخش در اختیار خودت را انجام بده؛ لازم نیست موقعیت تازه بسازی یا با کسی روبه‌رو شوی.\n۳. نتیجه را کوتاه ثبت کن و اگر ناامن یا آشفته‌کننده شد متوقف کن.\n\n**ارتباط با دستور امروز**\n'+inst+'\n\n**معیار پایان:** '+g.successCriterion;};
  let body='';
  switch(q.kind){
  case'exercise_meaning':body='**معنی ساده تمرین**\n'+e+'\n\n**چرا این تمرین انتخاب شده؟**\n'+g.mechanism+'\n\n**چطور انجامش بدهی؟**\n۱. یک نمونه کم‌فشار انتخاب کن؛ اگر نمونه‌ای نداری چیزی نساز.\n۲. دستور را روی همان نمونه اجرا کن.\n۳. نتیجه را کوتاه ثبت کن.\n\n**مهارت امروز:** '+g.skill+'\n**معیار پایان:** '+g.successCriterion;break;
