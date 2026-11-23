@@ -244,7 +244,7 @@ test('all exact prepared T03 questions answer through the real page router for a
           problem: 'ترس',
           data: record,
           guidanceData: { id: record.id, topic_id: null, day: record.day },
-          relationshipSafetyConfirmed: false,
+          relationshipSafetyConfirmed: true,
         },
       });
       assert.equal(result.status, 'daily_guidance_available', 'day ' + day + ' ' + question.kind);
@@ -378,6 +378,7 @@ test('all exact prepared T04 questions answer through the real page router for c
           problem: 'نفرت',
           data: record,
           guidanceData: { id: record.id, topic_id: null, day: record.day },
+          relationshipSafetyConfirmed: true,
         },
       });
       assert.equal(result.status, 'daily_guidance_available', 'day ' + day + ' ' + question.kind);
