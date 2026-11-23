@@ -248,7 +248,7 @@ test('T15-T34 safety and assessment answers are bound to the exact topic, day, e
         }
         if (question.id === 'q11') {
           assert.match(answer, /خدمات اضطراری/u);
-          const focus = answer.match(/نشانه‌هایی که در این موضوع باید جدی بگیری: ([^\\n]+)/u)?.[1] || '';
+          const focus = answer.match(/نشانه‌هایی که در این موضوع باید جدی بگیری: (.*)/u)?.[1] || '';
           assert.ok(focus, topicId + ' day ' + day + ' must name its safety focus');
           distressFocus.add(focus);
         }
