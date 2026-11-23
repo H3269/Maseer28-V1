@@ -167,6 +167,7 @@ test('T11 page assistant routes every exact day-specific question and rejects mi
         day: guide.day,
         problem: 'عادت‌های تکراری',
         data: dailyContent,
+        relationshipSafetyConfirmed: true,
         guidanceData: {
           id: dailyContent.id,
           topic_id: 'T11',
