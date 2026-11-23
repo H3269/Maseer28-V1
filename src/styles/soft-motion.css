@@ -103,3 +103,34 @@ body:not(.reader-mode) .app:not(.appLoading) .assistantTranscript > .assistantMe
     filter: none;
   }
 }
+
+/* Assistant replies are revealed progressively without delaying answer generation. */
+.globalAssistantChat .assistantTypingCursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.05em;
+  margin-inline-start: 3px;
+  vertical-align: -0.16em;
+  border-radius: 2px;
+  background: currentColor;
+  animation: assistantTypingBlink 820ms steps(2, start) infinite;
+}
+.globalAssistantChat .assistantShowFullResponse {
+  display: inline-flex;
+  align-items: center;
+  margin-block-start: 8px;
+  padding: 4px 9px;
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-secondary, #526174);
+  font: inherit;
+  font-size: .78rem;
+  cursor: pointer;
+}
+@keyframes assistantTypingBlink {
+  to { visibility: hidden; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .globalAssistantChat .assistantTypingCursor { animation: none; }
+}
