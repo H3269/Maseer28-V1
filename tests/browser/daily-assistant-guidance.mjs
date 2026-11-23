@@ -358,6 +358,7 @@ try {
         () => showFull.dispatchEvent('click'),
         () => undefined,
       );
+      await answer.locator('.assistantTypingCursor').waitFor({ state: 'detached', timeout: 2500 });
       const visibleAnswer = await answer.innerText();
       const normalizedAnswer = normalizeVisibleDailyText(visibleAnswer);
       assert.ok(normalizedAnswer.length >= 45,
