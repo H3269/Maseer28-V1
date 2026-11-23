@@ -86,6 +86,7 @@ try {
   assert.equal(topics.length, 34);
 
   async function assertDailyContentVisible(topic, day, expectPreparedAssistant = true) {
+    const topicId = topicsRegistry.topics.find((item) => item.name === topic)?.topic_id || '';
     const { page, errors } = await openDay(topic, day);
     const card = page.locator('#day');
     assert.equal(await card.locator('#ownerApprovalPending').count(), 0,
@@ -107,8 +108,12 @@ try {
       await preparedTrigger.click();
       const promptDialog = page.locator('#library-assistant-prompt-dialog');
       await promptDialog.waitFor({ state: 'visible' });
-      assert.ok(await promptDialog.locator('[data-prompt-option]').count() > 0,
-        topic + ' day ' + day + ' must expose its prepared assistant questions');
+      assert.equal(await promptDialog.locator('[data-prompt-option]').count(), 14,
+        topic + ' day ' + day + ' must expose all 14 prepared assistant questions');
+      if (topicId === 'T31') {
+        assert.equal(await promptDialog.locator('[data-prompt-option]:not(:disabled)').count(), 0,
+          topic + ' day ' + day + ' must keep questions disabled while its safety classification is incomplete');
+      }
       assert.doesNotMatch(await dialog.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/u);
     } else {
       assert.equal(await preparedTrigger.count(), 0,
@@ -122,7 +127,7 @@ try {
 
   for (const topic of topics) {
     const topicId = topicsRegistry.topics.find((item) => item.name === topic)?.topic_id || '';
-    const hasPreparedCatalogue = /^T(?:0[1-9]|1[0-4])$/u.test(topicId);
+    const hasPreparedCatalogue = /^T(?:0[1-9]|1[0-9]|2[0-9]|3[0-4])$/u.test(topicId);
     await assertDailyContentVisible(topic, 1, hasPreparedCatalogue);
     const { page, errors } = await openDay(topic, 1);
     const card = page.locator('#day');

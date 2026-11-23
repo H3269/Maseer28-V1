@@ -310,11 +310,12 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const activePromptGroups = screen === 'books'
     ? [...LIBRARY_ASSISTANT_PROMPT_GROUPS, ...PAGE_ASSISTANT_PROMPT_GROUPS]
     : isTopicDailyPromptContext
-      ? (((activeDailyTopicId === 'T13' || activeDailyTopicId === 'T14' || isExtendedDailyPromptContext)
-        && getDailySafetyMode(dailyContext?.data) === 'blocked')
-        || (isExtendedDailyPromptContext && extendedRelationshipGatePending)
-        ? []
-        : getSharedDailyAssistantPromptGroups(dailyContext?.day, activeDailyTopicId))
+      ? (isExtendedDailyPromptContext
+        ? getSharedDailyAssistantPromptGroups(dailyContext?.day, activeDailyTopicId)
+        : (((activeDailyTopicId === 'T13' || activeDailyTopicId === 'T14')
+          && getDailySafetyMode(dailyContext?.data) === 'blocked')
+          ? []
+          : getSharedDailyAssistantPromptGroups(dailyContext?.day, activeDailyTopicId)))
       : dailyContext
         ? []
         : (screen === 'day' ? [] : (() => { const pageGroups = getPageSpecificPromptGroups(screen); return pageGroups ? [...pageGroups, ...PAGE_ASSISTANT_PROMPT_GROUPS] : PAGE_ASSISTANT_PROMPT_GROUPS; })());
@@ -585,6 +586,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       key={question.value}
                       type="button"
                       data-prompt-option
+                      disabled={sending || (isExtendedDailyPromptContext && (extendedDailySafetyBlocked || extendedRelationshipGatePending))}
                       onClick={() => {
                         setDraft(question.value);
                         setLibraryPromptOpen(false);
@@ -760,7 +762,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       aria-haspopup="dialog"
                       aria-expanded={libraryPromptOpen}
                       aria-controls="library-assistant-prompt-dialog"
-                      disabled={sending || jealousyRelationshipGatePending || griefRelationshipGatePending || emotionalDependencyRelationshipGatePending || t12RelationshipGatePending || extendedRelationshipGatePending || extendedDailySafetyBlocked}
+                      disabled={sending || jealousyRelationshipGatePending || griefRelationshipGatePending || emotionalDependencyRelationshipGatePending || t12RelationshipGatePending}
                       onClick={() => setLibraryPromptOpen(true)}
                     >
                       {draft.trim() || 'انتخاب از میان سؤال‌های پیشنهادی'}
