@@ -15,6 +15,7 @@ on:
       - "src/features/assistant/preparedDailyAssistantAnswer.js"
       - "src/features/assistant/pageAssistantTurn.js"
       - "src/features/assistant/dailyExerciseAssistantGuidance.js"
+      - "src/features/assistant/dailyAssistantQuestionDetail.js"
       - "src/features/assistant/GlobalAssistantLauncher.jsx"
       - "src/features/assistant/anxietyDailyAssistantPrompts.js"
       - "tests/angerDailyAssistantPrompts.test.js"
@@ -25,6 +26,7 @@ on:
       - "tests/sharedDailyAssistantAnswerFrame.test.js"
       - "tests/dailyAssistantCrossTopicContract.test.js"
       - "tests/dailyAssistantSafetyReminder.test.js"
+      - "tests/dailyAssistantQuestionDetail.test.js"
       - "tests/assistantMessageFormatting.test.js"
       - "tests/browser/daily-assistant-guidance.mjs"
       - "tests/browser/t01-safety-card.mjs"
@@ -55,6 +57,7 @@ jobs:
           tests/angerDailyPreparedAnswers.test.js
           tests/dailyAssistantCrossTopicContract.test.js
           tests/dailyAssistantSafetyReminder.test.js
+          tests/dailyAssistantQuestionDetail.test.js
           tests/assistantMessageFormatting.test.js
           tests/angerContentPackage.test.mjs
           tests/anxietyDailyAssistantPrompts.test.js
