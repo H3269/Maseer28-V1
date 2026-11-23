@@ -305,7 +305,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const extendedRelationshipGatePending = Boolean(extendedRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
   const extendedRelationshipGateBlocked = extendedRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
   const extendedPrivacyNotice = isExtendedDailyPromptContext ? getInterpersonalPrivacyNotice(dailyContext?.data) : null;
-  const dailySafetyBlocked = Boolean(isTopicDailyPromptContext && dailySafetyBlocked);
+  const dailySafetyBlocked = Boolean(isTopicDailyPromptContext && getDailySafetyMode(dailyContext?.data) === 'blocked');
   const activeDailyTopicId = dailyProblemTopicId || dailyRecordTopicId;
   const activePromptGroups = screen === 'books'
     ? [...LIBRARY_ASSISTANT_PROMPT_GROUPS, ...PAGE_ASSISTANT_PROMPT_GROUPS]
