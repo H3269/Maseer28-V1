@@ -23,7 +23,7 @@ import { getCanonicalTopicIdForCategory, getInterpersonalPrivacyNotice, getRelat
 
 
 import { getSharedDailyAssistantPromptGroups } from './sharedDailyAssistantEngine.js';
-import { DAILY_ASSISTANT_SAFETY_QUESTION_KINDS, DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN } from './dailyAssistantSafetyReminder.js';
+import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN, shouldShowDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 import { getDailySafetyMode } from '../content/dailySafety.js';
 
 const PAGE_ASSISTANT_PROMPT_GROUPS = Object.freeze([
@@ -305,7 +305,19 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const extendedRelationshipGatePending = Boolean(extendedRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
   const extendedRelationshipGateBlocked = extendedRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
   const extendedPrivacyNotice = isExtendedDailyPromptContext ? getInterpersonalPrivacyNotice(dailyContext?.data) : null;
-  const extendedDailySafetyBlocked = isExtendedDailyPromptContext && getDailySafetyMode(dailyContext?.data) === 'blocked';
+  const dailySafetyMode = isTopicDailyPromptContext ? getDailySafetyMode(dailyContext?.data) : 'routine';
+  const dailySafetyBlocked = dailySafetyMode === 'blocked';
+  const dailySafetyCaution = dailySafetyMode === 'caution';
+  const dailySafetyStopConditions = Array.isArray(dailyContext?.data?.stop_conditions)
+    ? dailyContext.data.stop_conditions.filter((item) => typeof item === 'string' && item.trim())
+    : Array.isArray(dailyContext?.data?.stopConditions)
+      ? dailyContext.data.stopConditions.filter((item) => typeof item === 'string' && item.trim())
+      : [];
+  const dailySafetyHumanSupport = String(
+    dailyContext?.data?.when_to_seek_human_support
+      || dailyContext?.data?.whenToSeekHumanSupport
+      || '',
+  ).trim();
   const activeDailyTopicId = dailyProblemTopicId || dailyRecordTopicId;
   const activePromptGroups = screen === 'books'
     ? [...LIBRARY_ASSISTANT_PROMPT_GROUPS, ...PAGE_ASSISTANT_PROMPT_GROUPS]
@@ -313,7 +325,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       ? (isExtendedDailyPromptContext
         ? getSharedDailyAssistantPromptGroups(dailyContext?.day, activeDailyTopicId)
         : (((activeDailyTopicId === 'T13' || activeDailyTopicId === 'T14')
-          && getDailySafetyMode(dailyContext?.data) === 'blocked')
+          && dailySafetyBlocked)
           ? []
           : getSharedDailyAssistantPromptGroups(dailyContext?.day, activeDailyTopicId)))
       : dailyContext
@@ -463,7 +475,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       const finalMessage = turn.message || 'برای این پرسش پاسخ قابل اتکایی در دسترس نیست.';
       const isDailySafetyQuestion = Boolean(
         isPreparedOnlyDailyPromptContext
-        && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(selectedPreparedQuestion.kind),
+        && shouldShowDailyAssistantSafetyReminder(activeDailyTopicId, selectedPreparedQuestion.kind),
       );
       updateAssistantMessage(finalMessage, turn.knowledge || [], isDailySafetyQuestion);
     } catch {
@@ -586,7 +598,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       key={question.value}
                       type="button"
                       data-prompt-option
-                      disabled={sending || (isExtendedDailyPromptContext && (extendedDailySafetyBlocked || extendedRelationshipGatePending))}
+                      disabled={sending || dailySafetyBlocked || (isExtendedDailyPromptContext && extendedRelationshipGatePending)}
                       onClick={() => {
                         setDraft(question.value);
                         setLibraryPromptOpen(false);
@@ -673,8 +685,17 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                   )}
                 </section>
               )}
-              {extendedDailySafetyBlocked && (
-                <section className="dailyAssistantSafetyActions" role="note" aria-label="محدودیت ایمنی راهنمای روز" data-testid="extended-topic-daily-safety-blocked">
+              {dailySafetyCaution && (
+                <section className="dailyAssistantSafetyActions" role="note" aria-label="احتیاط ایمنی راهنمای روز" data-testid="daily-assistant-safety-caution">
+                  <b>این روز نیازمند احتیاط است</b>
+                  <p>{dailySafetyHumanSupport || 'فقط در موقعیتی امن و قابل‌تحمل پیش برو و اگر فشار یا خطر بیشتر شد، تمرین را متوقف کن و از حمایت انسانی مناسب کمک بگیر.'}</p>
+                  {dailySafetyStopConditions.length > 0 && (
+                    <ul>{dailySafetyStopConditions.map((item, index) => <li key={`daily-safety-stop-${index}`}>{item}</li>)}</ul>
+                  )}
+                </section>
+              )}
+              {dailySafetyBlocked && (
+                <section className="dailyAssistantSafetyActions" role="note" aria-label="محدودیت ایمنی راهنمای روز" data-testid={isExtendedDailyPromptContext ? "extended-topic-daily-safety-blocked" : "daily-assistant-safety-blocked"}>
                   <p role="alert">این روز به‌دلیل ملاحظه ایمنی ثبت‌شده، پاسخ تمرینی آماده را نمایش نمی‌دهد. این محدودیت را دور نزن.</p>
                 </section>
               )}
@@ -749,7 +770,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 ))}
               </div>
               <form className="assistantComposer libraryAssistantGuidedComposer" dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} data-jealousy-daily-prompt={String(isJealousyDailyPromptContext)} data-grief-daily-prompt={String(isGriefDailyPromptContext)} data-guilt-daily-prompt={String(isGuiltDailyPromptContext)} data-t10-daily-prompt={String(isT10DailyPromptContext)} data-t12-daily-prompt={String(isT12DailyPromptContext)} onSubmit={send}>
-                {activePromptGroups.some((group) => Array.isArray(group.questions) && group.questions.length > 0) || extendedDailySafetyBlocked ? (
+                {activePromptGroups.some((group) => Array.isArray(group.questions) && group.questions.length > 0) ? (
                   <div className="libraryAssistantPromptRow">
                     <button
                       ref={libraryPromptTriggerRef}

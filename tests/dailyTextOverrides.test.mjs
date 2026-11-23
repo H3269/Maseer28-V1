@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { mergeDailyTextOverrides } from '../src/features/content/dailyTextOverrides.js';
+import { getDailySafetyMode } from '../src/features/content/dailySafety.js';
 
 const readJson = async (path) => JSON.parse(await readFile(new URL(path, import.meta.url), 'utf8'));
 
@@ -170,4 +171,51 @@ test('T06 grief overrides all ten runtime text fields uniquely across all 28 day
       assert.equal(duplicate, undefined, field + ' T06 day ' + (index + 1) + ' must not exactly duplicate another topic/day');
     }
   }
+});
+
+
+test('safety metadata overlays survive runtime merging for every topic, including T03', () => {
+  const base = {
+    categories: {
+      'ترس': {
+        name: 'ترس',
+        days: [{
+          id: 'ترس-14',
+          day: 14,
+          topic_id: 'T03',
+          risk_level: 'routine',
+          exercise: 'تمرین پایه',
+        }],
+      },
+    },
+  };
+  const overrides = {
+    categories: {
+      'ترس': {
+        days: [{
+          day: 14,
+          risk_level: 'caution',
+          safety_rule_ids: ['SR-T03-D14'],
+          subtopic_ids: ['T03-S01'],
+          stop_conditions: ['با افزایش احساس ناایمنی تمرین را متوقف کن.'],
+          contraindications: ['در موقعیت خطر جاری تمرین را انجام نده.'],
+          when_to_seek_human_support: 'از متخصص یا فرد امن کمک بگیر.',
+          control_context: 'self_control_need',
+        }],
+      },
+    },
+  };
+
+  const merged = mergeDailyTextOverrides(base, overrides);
+  const day = merged.categories['ترس'].days[0];
+  assert.equal(day.id, 'ترس-14', 'overlay must never replace canonical record identity');
+  assert.equal(day.topic_id, 'T03', 'overlay must never replace canonical topic identity');
+  assert.equal(day.risk_level, 'caution');
+  assert.deepEqual(day.safety_rule_ids, ['SR-T03-D14']);
+  assert.deepEqual(day.subtopic_ids, ['T03-S01']);
+  assert.deepEqual(day.stop_conditions, ['با افزایش احساس ناایمنی تمرین را متوقف کن.']);
+  assert.deepEqual(day.contraindications, ['در موقعیت خطر جاری تمرین را انجام نده.']);
+  assert.equal(day.when_to_seek_human_support, 'از متخصص یا فرد امن کمک بگیر.');
+  assert.equal(day.control_context, 'self_control_need');
+  assert.equal(getDailySafetyMode(day), 'caution');
 });

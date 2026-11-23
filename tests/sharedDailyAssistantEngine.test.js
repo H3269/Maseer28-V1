@@ -515,7 +515,7 @@ test('runtime examples survive adapted visible wording and stay bound to the can
     for (let day = 1; day <= 28; day += 1) {
       const record = days.find((item) => Number(item.day) === day);
       assert.ok(record, topicId + ' day ' + day);
-      if (['T13', 'T14'].includes(topicId) && getDailySafetyMode(record) === 'blocked') continue;
+      if (getDailySafetyMode(record) === 'blocked') continue;
       for (const [kind, field] of [
         ['exercise_example', 'exerciseExample'],
         ['action_example', 'actionExample'],

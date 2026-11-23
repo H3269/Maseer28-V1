@@ -7,6 +7,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/anger-guide-check.yml"
+      - "CHANGES-FA.md"
       - "src/App.jsx"
       - "tests/dailyAssistantExamplesCache.test.mjs"
       - "src/features/assistant/angerDailyAssistantPrompts.js"
@@ -16,7 +17,19 @@ on:
       - "src/features/assistant/pageAssistantTurn.js"
       - "src/features/assistant/dailyExerciseAssistantGuidance.js"
       - "src/features/assistant/GlobalAssistantLauncher.jsx"
+      - "src/features/content/dailyTextOverrides.js"
+      - "src/features/content/dailySafety.js"
+      - "src/features/content/runtimeContentRepository.js"
+      - "tests/dailyTextOverrides.test.mjs"
+      - "tests/dailySafety.test.mjs"
+      - "scripts/generate-runtime-content-shards.mjs"
+      - "scripts/validate-content.mjs"
+      - "scripts/validate-assistant-topics.mjs"
+      - "public/content/path-content.json"
+      - "public/assistant/knowledge/topics.v1.json"
+      - "public/assistant/knowledge/subtopics.v1.json"
       - "src/features/assistant/anxietyDailyAssistantPrompts.js"
+      - "src/features/assistant/dailyAssistantSafetyReminder.js"
       - "tests/angerDailyAssistantPrompts.test.js"
       - "tests/sharedDailyAssistantEngine.test.js"
       - "tests/pageAssistantTurn.test.js"
@@ -25,8 +38,11 @@ on:
       - "tests/sharedDailyAssistantAnswerFrame.test.js"
       - "tests/dailyAssistantCrossTopicContract.test.js"
       - "tests/dailyAssistantSafetyReminder.test.js"
+      - "tests/assistantSafetyReminderCoverage.test.js"
+      - "tests/dailyAssistantSafetyRouting.test.js"
       - "tests/assistantMessageFormatting.test.js"
       - "tests/browser/daily-assistant-guidance.mjs"
+      - "tests/browser/daily-safety-gate.mjs"
       - "tests/browser/t01-safety-card.mjs"
       - "tests/browser/t05-jealousy-package.mjs"
       - "tests/browser/emotional-dependency-assistant.mjs"
@@ -48,6 +64,8 @@ jobs:
       - run: npm ci
       - name: Run complete automated test suite
         run: npm test
+      - name: Validate all daily content and assistant topic contracts
+        run: npm run validate:content && npm run validate:assistant-topics
       - name: Run focused assistant regression tests
         run: >-
           node --test
@@ -55,6 +73,8 @@ jobs:
           tests/angerDailyPreparedAnswers.test.js
           tests/dailyAssistantCrossTopicContract.test.js
           tests/dailyAssistantSafetyReminder.test.js
+          tests/assistantSafetyReminderCoverage.test.js
+          tests/dailyAssistantSafetyRouting.test.js
           tests/assistantMessageFormatting.test.js
           tests/angerContentPackage.test.mjs
           tests/anxietyDailyAssistantPrompts.test.js
@@ -78,7 +98,7 @@ jobs:
             if curl --fail --silent http://127.0.0.1:4173/Maseer28-V1/ > /dev/null; then
               break
             fi
-            if [ "${attempt}" -eq 40 ]; then
+            if [ "$attempt" -eq 40 ]; then
               cat /tmp/path28-preview.log
               exit 1
             fi
@@ -86,6 +106,7 @@ jobs:
           done
           export PATH28_BASE_URL=http://127.0.0.1:4173/Maseer28-V1/
           node tests/browser/daily-assistant-guidance.mjs
+          node tests/browser/daily-safety-gate.mjs
           node tests/browser/t01-safety-card.mjs
           node tests/browser/t05-jealousy-package.mjs
           node tests/browser/emotional-dependency-assistant.mjs

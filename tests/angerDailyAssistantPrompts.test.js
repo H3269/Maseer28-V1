@@ -325,7 +325,7 @@ test('prepared FAQs remain available and free-form guidance is refused on every 
   }
 });
 
-test('in-path assistant ignores review status but rejects mismatched source identity', () => {
+test('in-path assistant ignores review metadata but enforces risk classification and source identity', () => {
   const guide = ANGER_DAILY_ASSISTANT_GUIDES[10];
   const question = guide.questions[0];
   const blockedDay = {
@@ -342,9 +342,22 @@ test('in-path assistant ignores review status but rejects mismatched source iden
     text: question.value,
     dailyContext: { day: 11, problem: 'خشم', data: blockedDay, relationshipSafetyConfirmed: false },
   });
-  assert.equal(blocked.status, 'daily_guidance_available');
-  assert.ok(blocked.message.includes('در روز 11'));
-  assert.doesNotMatch(blocked.message, /دستیار هوشمند مسیر ۲۸|موضوع: خشم|جمع‌بندی امروز/u);
+  assert.equal(blocked.status, 'daily_guidance_unavailable');
+  assert.match(blocked.message, /سطح خطر ثبت‌شده/u);
+
+  const reviewStatusAloneDoesNotBlock = makePageAssistantTurn({
+    screen: 'day',
+    text: question.value,
+    dailyContext: {
+      day: 11,
+      problem: 'خشم',
+      data: { ...blockedDay, risk_level: 'routine' },
+      relationshipSafetyConfirmed: false,
+    },
+  });
+  assert.equal(reviewStatusAloneDoesNotBlock.status, 'daily_guidance_available');
+  assert.ok(reviewStatusAloneDoesNotBlock.message.includes('در روز 11'));
+  assert.doesNotMatch(reviewStatusAloneDoesNotBlock.message, /دستیار هوشمند مسیر ۲۸|موضوع: خشم|جمع‌بندی امروز/u);
 
   const wrongIdentity = makePageAssistantTurn({
     screen: 'day',
