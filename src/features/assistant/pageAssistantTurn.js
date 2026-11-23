@@ -143,13 +143,14 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
 
     const hasPendingSafetyExchange = ['pending', 'handoff'].includes(conversationState?.dailyState?.safetyStatus);
     const isExtendedTopic = /^T(?:1[5-9]|2[0-9]|3[0-4])$/u.test(preparedTopicId || '');
-    const usesExplicitDailySafetyBlock = ['T13', 'T14'].includes(preparedTopicId) || isExtendedTopic;
-    const blockedTopicSafetyMode = usesExplicitDailySafetyBlock ? getDailySafetyMode(preparedSource) : null;
-    const hasExactBlockedTopicPreparedQuestion = Boolean(usesExplicitDailySafetyBlock
-      && answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }));
-    if (usesExplicitDailySafetyBlock
-      && blockedTopicSafetyMode === 'blocked'
-      && hasExactBlockedTopicPreparedQuestion) {
+    // Safety classification is a property of the daily record, not of a topic
+    // range. Apply the same block to every prepared topic so legacy topics cannot
+    // bypass risk_level and topic-specific safety rules.
+    const blockedTopicSafetyMode = getDailySafetyMode(preparedSource);
+    const hasExactBlockedTopicPreparedQuestion = Boolean(
+      answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }),
+    );
+    if (blockedTopicSafetyMode === 'blocked' && hasExactBlockedTopicPreparedQuestion) {
       return Object.freeze({
         status: 'daily_guidance_unavailable',
         message: 'به‌دلیل سطح خطر ثبت‌شده برای این روز، ارائه پاسخ تمرینی در این وضعیت ایمن نیست. اگر خطر فوری وجود دارد، از کمک انسانی و خدمات اورژانسی محل زندگی استفاده کن.',
