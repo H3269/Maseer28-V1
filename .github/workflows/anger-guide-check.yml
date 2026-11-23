@@ -17,6 +17,7 @@ on:
       - "src/features/assistant/dailyExerciseAssistantGuidance.js"
       - "src/features/assistant/GlobalAssistantLauncher.jsx"
       - "src/features/assistant/anxietyDailyAssistantPrompts.js"
+      - "src/features/assistant/dailyAssistantSafetyReminder.js"
       - "tests/angerDailyAssistantPrompts.test.js"
       - "tests/sharedDailyAssistantEngine.test.js"
       - "tests/pageAssistantTurn.test.js"
@@ -25,6 +26,7 @@ on:
       - "tests/sharedDailyAssistantAnswerFrame.test.js"
       - "tests/dailyAssistantCrossTopicContract.test.js"
       - "tests/dailyAssistantSafetyReminder.test.js"
+      - "tests/assistantSafetyReminderCoverage.test.js"
       - "tests/assistantMessageFormatting.test.js"
       - "tests/browser/daily-assistant-guidance.mjs"
       - "tests/browser/t01-safety-card.mjs"
@@ -55,6 +57,7 @@ jobs:
           tests/angerDailyPreparedAnswers.test.js
           tests/dailyAssistantCrossTopicContract.test.js
           tests/dailyAssistantSafetyReminder.test.js
+          tests/assistantSafetyReminderCoverage.test.js
           tests/assistantMessageFormatting.test.js
           tests/angerContentPackage.test.mjs
           tests/anxietyDailyAssistantPrompts.test.js
@@ -78,7 +81,7 @@ jobs:
             if curl --fail --silent http://127.0.0.1:4173/Maseer28-V1/ > /dev/null; then
               break
             fi
-            if [ "${attempt}" -eq 40 ]; then
+            if [ "\${attempt}" -eq 40 ]; then
               cat /tmp/path28-preview.log
               exit 1
             fi
