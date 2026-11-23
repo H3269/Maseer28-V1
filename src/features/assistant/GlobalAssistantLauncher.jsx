@@ -744,9 +744,12 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       )}
                     </b>
                     <p>{formatAssistantMessageText(
-                      item.dailySafetyReminder && item.text.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN)
-                        ? item.text.slice(0, -DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN.length).trimEnd()
-                        : (typingState?.id === item.id ? item.text.slice(0, typingState.visibleChars) : item.text),
+                      (() => {
+                        const visibleText = typingState?.id === item.id ? item.text.slice(0, typingState.visibleChars) : item.text;
+                        return item.dailySafetyReminder && visibleText.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN)
+                          ? visibleText.slice(0, -DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN.length).trimEnd()
+                          : visibleText;
+                      })(),
                     ).map((line, lineIndex) => (
                       <React.Fragment key={lineIndex}>
                         {lineIndex > 0 ? <br /> : null}
