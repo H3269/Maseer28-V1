@@ -492,3 +492,28 @@ test('T05 success answer explains an observable check and preserves the active v
   assert.ok(!result.message.includes(canonicalExercise));
   assert.doesNotMatch(result.message, /توضیح این مورد در متن بالا آمده است/u);
 });
+
+
+test('T05 q06 uses the exact canonical exercise and an observable review method on all 28 days', async () => {
+  const days = await loadTopicDays('حسادت');
+  assert.equal(days.length, 28);
+  for (let day = 1; day <= 28; day += 1) {
+    const dailyContent = days.find((item) => Number(item.day) === day);
+    const question = getSharedDailyAssistantPromptGroups(day, 'T05').flatMap((group) => group.questions)
+      .find((item) => item.kind === 'success');
+    const result = makePageAssistantTurn({
+      screen: 'day',
+      text: question.value,
+      dailyContext: {
+        day,
+        problem: 'حسادت',
+        data: dailyContent,
+        relationshipSafetyConfirmed: true,
+      },
+    });
+    assert.equal(result.status, 'daily_guidance_available', 'T05 day ' + day);
+    assert.match(result.message, /برای بررسی/u, 'T05 day ' + day + ' must explain how to evaluate the exercise');
+    assert.ok(result.message.includes(dailyContent.exercise), 'T05 day ' + day + ' must quote the exact canonical exercise');
+    assert.doesNotMatch(result.message, /توضیح این مورد در متن بالا آمده است/u, 'T05 day ' + day + ' must not contain duplicate placeholders');
+  }
+});
