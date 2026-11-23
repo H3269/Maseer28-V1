@@ -113,8 +113,14 @@ try {
     await panel.getByRole('button', { name: 'ارسال' }).click();
     await page.waitForFunction((previous) => {
       const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-      return replies.length > previous && !replies.at(-1).innerText.includes('در حال بررسی پرسش');
-    }, previousCount, { timeout: 15000 });
+      const latest = replies.at(-1);
+      if (!latest || replies.length <= previous) return false;
+      const speaker = latest.querySelector('[data-assistant-state]');
+      const safetyCard = latest.querySelector('[data-testid="daily-assistant-safety-reminder"]');
+      return speaker?.getAttribute('data-assistant-state') === 'idle'
+        && Boolean(safetyCard)
+        && !latest.innerText.includes('در حال بررسی پرسش');
+    }, previousCount, { timeout: 30000 });
 
     const reply = panel.locator('.assistantMessage').last();
     const safetyCard = reply.getByTestId('daily-assistant-safety-reminder');
