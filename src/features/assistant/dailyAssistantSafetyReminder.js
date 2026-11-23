@@ -44,3 +44,8 @@ export function appendDailyAssistantSafetyReminder(answer, questionKind) {
   if (typeof answer !== 'string' || !answer.trim() || !DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(questionKind)) return answer;
   return answer.trimEnd() + '\n\n' + DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN;
 }
+
+export function shouldShowDailyAssistantSafetyReminder(topicId, questionKind) {
+  const isSharedReminderTopic = /^T(?:0[2-9]|[12][0-9]|3[0-4])$/u.test(String(topicId || ''));
+  return isSharedReminderTopic && DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(questionKind);
+}
