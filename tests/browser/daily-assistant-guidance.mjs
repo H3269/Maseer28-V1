@@ -312,7 +312,6 @@ try {
       topic.id + ' must remain prepared-only and must not expose free-form typing');
     const trigger = panel.getByTestId(topic.trigger);
     if (topic.id.startsWith('T1') && Number(topic.id.slice(1)) >= 15 || topic.id.startsWith('T2') || topic.id.startsWith('T3')) {
-      console.log('[daily-assistant-topic-debug]', JSON.stringify({ topic, dayBadge: await page.locator('#dayBadge').innerText().catch(() => ''), composer: await panel.locator('.assistantComposer').getAttribute('outerHTML').catch(() => ''), triggerCount: await panel.getByTestId(topic.trigger).count(), dialogText: (await panel.innerText()).slice(0, 1200) }));
     }
     await trigger.waitFor({ state: 'visible' });
     await page.waitForFunction((testId) => {
