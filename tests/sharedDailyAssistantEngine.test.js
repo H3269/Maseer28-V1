@@ -253,6 +253,8 @@ test('T15-T34 safety and assessment answers are bound to the exact topic, day, e
           distressFocus.add(focus);
         }
         if (question.id === 'q12') {
+          assert.ok(answer.includes(daily.exercise),
+            topicId + ' day ' + day + ' interpersonal guidance must preserve the exact daily exercise');
           assert.ok(answer.includes(daily.actionText),
             topicId + ' day ' + day + ' interpersonal guidance must use the exact daily action');
         }
