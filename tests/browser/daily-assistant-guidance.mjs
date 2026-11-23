@@ -241,15 +241,15 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
   });
 
   await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
-  if (topicKey === 'ترس' && ['fear-blocked', 'fear-caution'].includes(assistantDayMode)) {
-    assert.equal(t03RuntimeShardServed, true,
-      'T03 safety browser scenarios must exercise the runtime topic shard consumed by the app');
-  }
   await page.locator('#copyrightModal').waitFor({ state: 'visible' });
   await page.locator('#copyrightModal').getByRole('button', { name: /متوجه شدم و ورود به مسیر را ادامه می‌دهم/ }).click();
   await page.locator('#dashboard').waitFor({ state: 'visible' });
   await page.locator('#dashboard .heroAction').click();
   await page.locator('#day').waitFor({ state: 'visible' });
+  if (topicKey === 'ترس' && ['fear-blocked', 'fear-caution'].includes(assistantDayMode)) {
+    assert.equal(t03RuntimeShardServed, true,
+      'T03 safety browser scenarios must exercise the runtime topic shard consumed by the app');
+  }
   await page.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
   await page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' }).waitFor({ state: 'visible' });
 }
