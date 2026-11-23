@@ -200,6 +200,8 @@ test('T13 launcher exposes only safe-day prompts and labels the topic correctly'
   assert.match(launcher, /activeDailyTopicIdForContext/u);
   assert.match(launcher, /dailySafetyBlocked/u);
   assert.match(launcher, /daily-topic-daily-safety-blocked/u);
+  assert.match(launcher, /dailySafetyBlocked \? null :/u,
+    'blocked T13 days must not claim that their prepared-question catalogue is missing');
   assert.match(launcher, /getSharedDailyAssistantPromptGroups/u);
   assert.match(launcher, /isT13DailyPromptContext/u);
 });
