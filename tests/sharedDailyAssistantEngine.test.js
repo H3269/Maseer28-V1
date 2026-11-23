@@ -689,11 +689,11 @@ test('T15-T34 fixed answers q05-q14 remain anchored to their own daily source fi
       }
 
       const successAnswer = answerFor('q06');
-      const closingCriterionLine = String(dailyContent.closing || '').split(/\\r?\\n/u)
+      const closingCriterionLine = String(dailyContent.closing || '').split(/\r?\n/u)
         .map((line) => line.trim())
-        .find((line) => /^(?:معیار موفقیت|معیار امروز)\\s*[:：]/u.test(line));
+        .find((line) => /^(?:معیار موفقیت|معیار امروز)\s*[:：]/u.test(line));
       const successCriterion = dailyContent.success_criterion || dailyContent.successCriterion
-        || (closingCriterionLine ? closingCriterionLine.replace(/^(?:معیار موفقیت|معیار امروز)\\s*[:：]\\s*/u, '') : '');
+        || (closingCriterionLine ? closingCriterionLine.replace(/^(?:معیار موفقیت|معیار امروز)\s*[:：]\s*/u, '') : '');
       if (typeof successCriterion === 'string' && successCriterion.trim()) {
         assert.ok(successAnswer.includes(successCriterion.trim()), topicId + ' day ' + day + ' q06 criterion');
       } else {
