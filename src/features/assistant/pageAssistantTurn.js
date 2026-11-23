@@ -142,10 +142,10 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         || preparedSource.topic_id === preparedTopicId);
 
     const hasPendingSafetyExchange = ['pending', 'handoff'].includes(conversationState?.dailyState?.safetyStatus);
-    const blockedTopicSafetyMode = ['T13', 'T14'].includes(preparedTopicId) ? getDailySafetyMode(preparedSource) : null;
-    const hasExactBlockedTopicPreparedQuestion = ['T13', 'T14'].includes(preparedTopicId)
-      && Boolean(answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }));
-    if (['T13', 'T14'].includes(preparedTopicId)
+    const blockedTopicSafetyMode = preparedTopicId ? getDailySafetyMode(preparedSource) : null;
+    const hasExactBlockedTopicPreparedQuestion = Boolean(preparedTopicId
+      && answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }));
+    if (preparedTopicId
       && blockedTopicSafetyMode === 'blocked'
       && hasExactBlockedTopicPreparedQuestion) {
       return Object.freeze({
@@ -230,6 +230,27 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
         message: dailyContext?.relationshipSafetyResponse === 'unsafe'
           ? griefRelationshipGate.blockedMessage
           : griefRelationshipGate.question + '\n\n' + griefRelationshipGate.disclaimer,
+        knowledge: Object.freeze([]),
+        page_context: 'day',
+        conversationState: null,
+      });
+    }
+
+    const sharedRelationshipGate = getRelationshipSafetyGate(preparedSource);
+    const hasExactSharedRelationshipPreparedQuestion = Boolean(preparedTopicId
+      && answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }));
+    if (sharedRelationshipGate
+      && hasExactSharedRelationshipPreparedQuestion
+      && !hasPendingSafetyExchange
+      && !hasExplicitSafetyHandoff
+      && dailyContext?.relationshipSafetyConfirmed !== true) {
+      return Object.freeze({
+        status: dailyContext?.relationshipSafetyResponse === 'unsafe'
+          ? 'relationship_safety_blocked'
+          : 'relationship_safety_confirmation_required',
+        message: dailyContext?.relationshipSafetyResponse === 'unsafe'
+          ? sharedRelationshipGate.blockedMessage
+          : sharedRelationshipGate.question + '\n\n' + sharedRelationshipGate.disclaimer,
         knowledge: Object.freeze([]),
         page_context: 'day',
         conversationState: null,
