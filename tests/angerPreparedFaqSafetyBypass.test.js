@@ -3,6 +3,7 @@ import test from 'node:test';
 import { makePageAssistantTurn } from '../src/features/assistant/pageAssistantTurn.js';
 import { ANGER_DAILY_ASSISTANT_GUIDES } from '../src/features/assistant/angerDailyAssistantPrompts.js';
 import { getCanonicalDailyRecordId } from '../src/features/content/dailyContentSelector.js';
+import { getDailySafetyMode } from '../src/features/content/dailySafety.js';
 
 test('all exact prepared anger FAQs answer on all 28 days while preserving topic/day and relationship safety checks', () => {
   let checked = 0;
@@ -93,21 +94,25 @@ test('exact prepared anger FAQs are independent of review metadata and subject t
     { risk_level: 'routine' },
   ];
   for (const state of states) {
+    const data = {
+      id: getCanonicalDailyRecordId('خشم', 1),
+      topic_id: 'T01',
+      day: 1,
+      ...state,
+    };
     const result = makePageAssistantTurn({
       screen: 'day',
       text: question.value,
       dailyContext: {
         day: 1,
         problem: 'خشم',
-        data: {
-          id: getCanonicalDailyRecordId('خشم', 1),
-          topic_id: 'T01',
-          day: 1,
-          ...state,
-        },
+        data,
         relationshipSafetyConfirmed: false,
       },
     });
-    assert.equal(result.status, 'daily_guidance_available');
+    const expectedStatus = getDailySafetyMode(data) === 'blocked'
+      ? 'daily_guidance_unavailable'
+      : 'daily_guidance_available';
+    assert.equal(result.status, expectedStatus, 'risk level ' + String(state.risk_level || 'unspecified'));
   }
 });
