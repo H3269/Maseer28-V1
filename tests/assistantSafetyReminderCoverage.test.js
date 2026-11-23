@@ -12,22 +12,28 @@ import {
 
 const TOPIC_IDS = Array.from({ length: 34 }, (_, index) => 'T' + String(index + 1).padStart(2, '0'));
 
-test('every T01-T34 daily q11 distress answer receives exactly one shared safety reminder', () => {
+test('all four safety/evaluation questions receive exactly one reminder for T01-T34 on all 28 days', () => {
+  const requiredQuestionIds = ['q06', 'q07', 'q11', 'q12'];
   for (const topicId of TOPIC_IDS) {
     const distressKind = SHARED_DAILY_ASSISTANT_DISTRESS_KINDS[topicId];
     assert.ok(distressKind, topicId + ' must define a dedicated distress kind');
-    assert.ok(DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(distressKind),
-      topicId + ' q11 distress kind must be included in the shared safety reminder contract');
 
     for (let day = 1; day <= 28; day += 1) {
       const questions = getSharedDailyAssistantPromptGroups(day, topicId).flatMap((group) => group.questions);
-      const distressQuestion = questions.find((question) => question.id === 'q11');
-      assert.equal(distressQuestion?.kind, distressKind, topicId + ' day ' + day + ' q11 kind');
-      const answer = appendDailyAssistantSafetyReminder('پاسخ ایمنی اختصاصی', distressQuestion.kind);
-      assert.equal(answer.split(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN).length - 1, 1,
-        topicId + ' day ' + day + ' must append exactly one safety reminder');
-      assert.ok(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN),
-        topicId + ' day ' + day + ' reminder must remain at the end of the answer');
+      for (const questionId of requiredQuestionIds) {
+        const question = questions.find((item) => item.id === questionId);
+        assert.ok(question, topicId + ' day ' + day + ' must include ' + questionId);
+        assert.ok(DAILY_ASSISTANT_SAFETY_QUESTION_KINDS.has(question.kind),
+          topicId + ' day ' + day + ' ' + questionId + ' must be in the shared safety reminder contract');
+        if (questionId === 'q11') {
+          assert.equal(question.kind, distressKind, topicId + ' day ' + day + ' q11 kind');
+        }
+        const answer = appendDailyAssistantSafetyReminder('پاسخ ایمنی اختصاصی', question.kind);
+        assert.equal(answer.split(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN).length - 1, 1,
+          topicId + ' day ' + day + ' ' + questionId + ' must append exactly one safety reminder');
+        assert.ok(answer.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN),
+          topicId + ' day ' + day + ' ' + questionId + ' reminder must remain at the end of the answer');
+      }
     }
   }
 });
