@@ -117,3 +117,27 @@ test('runtime entry points do not import retired T02-T14 assistant banks', async
     );
   }
 });
+
+
+test('T01-T14 success answers provide an observable review method tied to the exact daily exercise', async () => {
+  const merged = await mergedContentPromise;
+  let checked = 0;
+  for (const [topicId, topicName] of TOPICS) {
+    const days = merged.categories[topicName]?.days || [];
+    assert.equal(days.length, 28, topicId + ' day coverage');
+    for (let day = 1; day <= 28; day += 1) {
+      const dailyContent = days.find((item) => Number(item.day) === day);
+      const question = getSharedDailyAssistantPromptGroups(day, topicId).flatMap((group) => group.questions)
+        .find((item) => item.kind === 'success');
+      const answer = buildSharedDailyAssistantAnswerFromDailyContent({
+        topicId, topicName, day, message: question.value, dailyContent,
+      });
+      assert.equal(typeof answer, 'string', topicId + ' day ' + day + ' q06 answer');
+      assert.ok(answer.includes(dailyContent.exercise), topicId + ' day ' + day + ' q06 must cite exact exercise');
+      assert.match(answer, /برای بررسی/u, topicId + ' day ' + day + ' q06 must explain an observable check');
+      assert.doesNotMatch(answer, /توضیح این مورد در متن بالا آمده است/u, topicId + ' day ' + day + ' q06 must not use placeholders');
+      checked += 1;
+    }
+  }
+  assert.equal(checked, 14 * 28);
+});
