@@ -464,3 +464,73 @@ test('runtime examples survive adapted visible wording and stay bound to the can
   }
   assert.ok(checked >= 650, 'expected broad runtime coverage across all 14 topics and 28 days; checked=' + checked);
 });
+
+test('T15-T34 render canonical migrated exercise and action examples through the real runtime router', async () => {
+  const merged = await loadMergedContent();
+  const migratedCatalog = (await import('../src/features/assistant/sharedDailyAssistantExamples.v1.json', { with: { type: 'json' } })).default;
+  let checked = 0;
+  let safelyBlocked = 0;
+  for (const [topicId, topicName] of TOPICS.filter(([id]) => Number(id.slice(1)) >= 15)) {
+    const days = merged.categories[topicName]?.days || [];
+    assert.equal(days.length, 28, topicId + ' canonical days');
+    const topicRecords = migratedCatalog.records.filter((item) => item.topicId === topicId);
+    assert.equal(topicRecords.length, 28, topicId + ' migrated examples for every day');
+    assert.equal(new Set(topicRecords.map((item) => item.exerciseExample)).size, 28,
+      topicId + ' exercise examples must be distinct across days');
+    assert.equal(new Set(topicRecords.map((item) => item.actionExample)).size, 28,
+      topicId + ' action examples must be distinct across days');
+    for (let day = 1; day <= 28; day += 1) {
+      const dailyContent = days.find((item) => Number(item.day) === day);
+      assert.ok(dailyContent?.exercise && dailyContent?.actionText, topicId + ' day ' + day + ' source content');
+      const migratedRecord = topicRecords.find((item) => item.day === day);
+      assert.ok(migratedRecord, topicId + ' day ' + day + ' catalog record');
+      assert.equal(migratedRecord.exerciseSource, dailyContent.exercise,
+        topicId + ' day ' + day + ' exercise source provenance');
+      assert.equal(migratedRecord.actionSource, dailyContent.actionText,
+        topicId + ' day ' + day + ' action source provenance');
+      if (getDailySafetyMode(dailyContent) === 'blocked') {
+        safelyBlocked += 2;
+        continue;
+      }
+      for (const [kind, field] of [
+        ['exercise_example', 'exerciseExample'],
+        ['action_example', 'actionExample'],
+      ]) {
+        const question = getSharedDailyAssistantPromptGroups(day, topicId)
+          .flatMap((group) => group.questions)
+          .find((item) => item.kind === kind);
+        assert.ok(question, topicId + ' day ' + day + ' ' + kind);
+        const sourceExample = migratedRecord[field];
+        assert.ok(sourceExample?.trim(), topicId + ' day ' + day + ' must have a canonical source example');
+        const result = makePageAssistantTurn({
+          screen: 'day',
+          text: question.value,
+          dailyContext: {
+            day,
+            problem: topicName,
+            data: dailyContent,
+            guidanceData: {
+              id: dailyContent.id,
+              topic_id: dailyContent.topic_id ?? null,
+              day: dailyContent.day,
+              exercise: dailyContent.exercise + ' [متن سازگارشده برای نمایش]',
+              action: dailyContent.actionText + ' [متن سازگارشده برای نمایش]',
+            },
+            relationshipSafetyConfirmed: true,
+          },
+        });
+        assert.equal(result.status, 'daily_guidance_available',
+          topicId + ' day ' + day + ' ' + kind + ' must pass the real runtime router');
+        const normalizedExample = sourceExample.replace(/^(?:نمونه فرضی:\\s*){2,}/u, 'نمونه فرضی: ');
+        const visibleExample = cleanPreparedAssistantTopicText(normalizedExample, topicName);
+        assert.ok(result.message.includes(visibleExample),
+          topicId + ' day ' + day + ' ' + kind + ' must render its canonical example after display cleanup');
+        assert.doesNotMatch(result.message, /مثال فرضی جداگانه‌ای در محتوای ثبت‌شده وجود ندارد/u,
+          topicId + ' day ' + day + ' ' + kind + ' must not fall back');
+        checked += 1;
+      }
+    }
+  }
+  assert.equal(checked + safelyBlocked, 20 * 28 * 2,
+    'all T15-T34 exercise/action example slots must be either rendered or safety-blocked');
+});
