@@ -47,6 +47,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const libraryPromptDialogRef = useRef(null);
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
+  const [typingProgress, setTypingProgress] = useState(null);
   const turnSequenceRef = useRef(0);
   const [loadedLibraryBooks, setLoadedLibraryBooks] = useState([]);
   const libraryBooksLoadRef = useRef(null);
@@ -180,6 +181,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       return;
     }
     setMessages([]);
+    setTypingProgress(null);
     setDraft('');
     setError('');
     setSending(false);
@@ -218,6 +220,35 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     // Keep the beginning of the newest assistant turn (including its icon) in view.
     latestAssistantRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
   }, [messages, open]);
+
+  useEffect(() => {
+    if (sending) return undefined;
+    const latestAssistantMessage = [...messages].reverse().find((item) =>
+      item.role === 'assistant' && item.text && !/^در حال بررسی پرسش[.…]*$/u.test(item.text),
+    );
+    if (!latestAssistantMessage) {
+      setTypingProgress(null);
+      return undefined;
+    }
+    const revealText = latestAssistantMessage.dailySafetyReminder
+      && latestAssistantMessage.text.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN)
+      ? latestAssistantMessage.text.slice(0, -DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN.length).trimEnd()
+      : latestAssistantMessage.text;
+    const words = revealText.match(/\S+\s*/gu) || [revealText];
+    let visibleCount = 0;
+    setTypingProgress({ id: latestAssistantMessage.id, text: '', active: words.length > 0 });
+    const timer = window.setInterval(() => {
+      visibleCount += 1;
+      const active = visibleCount < words.length;
+      setTypingProgress({
+        id: latestAssistantMessage.id,
+        text: words.slice(0, visibleCount).join(''),
+        active,
+      });
+      if (!active) window.clearInterval(timer);
+    }, 42);
+    return () => window.clearInterval(timer);
+  }, [messages, sending]);
 
   useEffect(() => {
     if (!libraryPromptOpen) return undefined;
@@ -404,6 +435,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       setDraft('');
       return;
     }
+    // Finish any previous reveal before starting a new, isolated assistant turn.
+    setTypingProgress(null);
     const initialLibraryPlan = screen === 'books'
       ? planLibraryBookLoad({ books: loadedLibraryBooks, message, conversationState: conversationStateRef.current })
       : null;
@@ -715,7 +748,11 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
               )}
 
               <div className="assistantTranscript" dir="rtl" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
-                {messages.map((item, index) => (
+                {messages.map((item, index) => {
+                  const visibleMessageText = item.role === 'assistant' && typingProgress?.id === item.id
+                    ? typingProgress.text
+                    : item.text;
+                  return (
                   <div
                     className={item.role === 'user' ? 'userMessage' : 'assistantMessage'}
                     key={item.id || index}
@@ -725,7 +762,9 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                     <b
                       className="globalAssistantSpeakerIcon"
                       aria-label={item.role === 'user' ? 'شما' : 'دستیار مسیر۲۸'}
-                      data-assistant-state={item.role === 'assistant' && sending && index === messages.length - 1 ? 'thinking' : 'idle'}
+                      data-assistant-state={item.role === 'assistant' && index === messages.length - 1
+                        ? (sending ? 'thinking' : typingProgress?.id === item.id && typingProgress.active ? 'typing' : 'idle')
+                        : 'idle'}
                     >
                       {item.role === 'user' ? (
                         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -739,11 +778,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                         </svg>
                       )}
                     </b>
-                    <p>{formatAssistantMessageText(
-                      item.dailySafetyReminder && item.text.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN)
-                        ? item.text.slice(0, -DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN.length).trimEnd()
-                        : item.text,
-                    ).map((line, lineIndex) => (
+                    <p>{formatAssistantMessageText(visibleMessageText).map((line, lineIndex) => (
                       <React.Fragment key={lineIndex}>
                         {lineIndex > 0 ? <br /> : null}
                         {line.map((part, partIndex) => part.type === 'strong'
@@ -751,7 +786,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                           : <React.Fragment key={partIndex}>{part.text}</React.Fragment>)}
                       </React.Fragment>
                     ))}</p>
-                    {item.dailySafetyReminder && (
+                    {item.dailySafetyReminder && (!typingProgress || typingProgress.id !== item.id || !typingProgress.active) && (
                       <aside className="dailyAssistantSafetyReminder" role="note" data-testid="daily-assistant-safety-reminder">
                         <h3>یادآوری مهم درباره ایمنی شما</h3>
                         <p>در طول انجام تمرین‌ امروز، به احساسات و وضعیت روانی خود توجه کنید. اگر احساس کردید فشار روانی شما بیشتر شده، حالتان رو به وخامت است یا ادامه تمرین برایتان آزاردهنده شده، تمرین را متوقف کنید و به خودتان فرصت آرام‌شدن بدهید.</p>
@@ -767,7 +802,8 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       </div>
                     ))}
                   </div>
-                ))}
+                  );
+                })}
               </div>
               <form className="assistantComposer libraryAssistantGuidedComposer" dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} data-jealousy-daily-prompt={String(isJealousyDailyPromptContext)} data-grief-daily-prompt={String(isGriefDailyPromptContext)} data-guilt-daily-prompt={String(isGuiltDailyPromptContext)} data-t10-daily-prompt={String(isT10DailyPromptContext)} data-t12-daily-prompt={String(isT12DailyPromptContext)} onSubmit={send}>
                 {activePromptGroups.some((group) => Array.isArray(group.questions) && group.questions.length > 0) ? (
