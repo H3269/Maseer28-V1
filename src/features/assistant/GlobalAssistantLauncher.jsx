@@ -324,35 +324,44 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     && /^T(?:1[5-9]|2[0-9]|3[0-4])$/u.test(activeDailyTopicIdForContext || '');
   const isTopicDailyPromptContext = isAngerDailyPromptContext || isAnxietyDailyPromptContext || isFearDailyPromptContext || isHatredDailyPromptContext || isJealousyDailyPromptContext || isGriefDailyPromptContext || isGuiltDailyPromptContext || isEmotionalDependencyDailyPromptContext || isT09DailyPromptContext || isT10DailyPromptContext || isT11DailyPromptContext || isT12DailyPromptContext || isT13DailyPromptContext || isT14DailyPromptContext || isExtendedDailyPromptContext;
   const isPreparedOnlyDailyPromptContext = isTopicDailyPromptContext;
-  const jealousyRelationshipGate = isJealousyDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
-  const jealousyRelationshipGatePending = Boolean(jealousyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
-  const jealousyRelationshipGateBlocked = jealousyRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
-  const griefRelationshipGate = isGriefDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
-  const griefRelationshipGatePending = Boolean(griefRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
-  const griefRelationshipGateBlocked = griefRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
-  const emotionalDependencyRelationshipGate = isEmotionalDependencyDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
-  const emotionalDependencyRelationshipGatePending = Boolean(emotionalDependencyRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
-  const emotionalDependencyRelationshipGateBlocked = emotionalDependencyRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
-  const emotionalDependencyPrivacyNotice = isEmotionalDependencyDailyPromptContext ? getInterpersonalPrivacyNotice(dailyContext?.data) : null;
-  const t12RelationshipGate = isT12DailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
-  const t12RelationshipGatePending = Boolean(t12RelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
-  const t12RelationshipGateBlocked = t12RelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
-  const t12PrivacyNotice = isT12DailyPromptContext ? getInterpersonalPrivacyNotice(dailyContext?.data) : null;
-  const extendedRelationshipGate = isExtendedDailyPromptContext ? getRelationshipSafetyGate(dailyContext?.data) : null;
-  const extendedRelationshipGatePending = Boolean(extendedRelationshipGate && dailyContext?.relationshipSafetyConfirmed !== true);
-  const extendedRelationshipGateBlocked = extendedRelationshipGatePending && dailyContext?.relationshipSafetyResponse === 'unsafe';
-  const extendedPrivacyNotice = isExtendedDailyPromptContext ? getInterpersonalPrivacyNotice(dailyContext?.data) : null;
-  const extendedDailySafetyBlocked = isExtendedDailyPromptContext && getDailySafetyMode(dailyContext?.data) === 'blocked';
+  const dailySafetyBlocked = Boolean(
+    isTopicDailyPromptContext
+    && (['T13', 'T14'].includes(activeDailyTopicIdForContext) || isExtendedDailyPromptContext)
+    && getDailySafetyMode(dailyContext?.data) === 'blocked',
+  );
+  const dailyRelationshipSafetyGate = isTopicDailyPromptContext && !dailySafetyBlocked
+    ? getRelationshipSafetyGate(dailyContext?.data)
+    : null;
+  const dailyRelationshipSafetyGatePending = Boolean(
+    dailyRelationshipSafetyGate && dailyContext?.relationshipSafetyConfirmed !== true,
+  );
+  const dailyRelationshipSafetyGateBlocked = dailyRelationshipSafetyGatePending
+    && dailyContext?.relationshipSafetyResponse === 'unsafe';
+  const dailyPrivacyNotice = isTopicDailyPromptContext
+    ? getInterpersonalPrivacyNotice(dailyContext?.data)
+    : null;
+  const relationshipSafetyTestPrefix = ({
+    T05: 'jealousy-relationship-safety',
+    T06: 'grief-relationship-safety',
+    T08: 'emotional-dependency-relationship-safety',
+    T12: 't12-relationship-safety',
+  })[activeDailyTopicIdForContext] || (isExtendedDailyPromptContext
+    ? 'extended-topic-relationship-safety'
+    : 'daily-topic-relationship-safety');
+  const privacyNoticeTestId = ({
+    T08: 'emotional-dependency-privacy-notice',
+    T12: 't12-privacy-notice',
+  })[activeDailyTopicIdForContext] || (isExtendedDailyPromptContext
+    ? 'extended-topic-privacy-notice'
+    : 'daily-topic-privacy-notice');
+  const dailySafetyBlockedTestId = isExtendedDailyPromptContext
+    ? 'extended-topic-daily-safety-blocked'
+    : 'daily-topic-daily-safety-blocked';
   const activeDailyTopicId = dailyProblemTopicId || dailyRecordTopicId;
   const activePromptGroups = screen === 'books'
     ? [...LIBRARY_ASSISTANT_PROMPT_GROUPS, ...PAGE_ASSISTANT_PROMPT_GROUPS]
     : isTopicDailyPromptContext
-      ? (isExtendedDailyPromptContext
-        ? getSharedDailyAssistantPromptGroups(dailyContext?.day, activeDailyTopicId)
-        : (((activeDailyTopicId === 'T13' || activeDailyTopicId === 'T14')
-          && getDailySafetyMode(dailyContext?.data) === 'blocked')
-          ? []
-          : getSharedDailyAssistantPromptGroups(dailyContext?.day, activeDailyTopicId)))
+      ? (dailySafetyBlocked ? [] : getSharedDailyAssistantPromptGroups(dailyContext?.day, activeDailyTopicId))
       : dailyContext
         ? []
         : (screen === 'day' ? [] : (() => { const pageGroups = getPageSpecificPromptGroups(screen); return pageGroups ? [...pageGroups, ...PAGE_ASSISTANT_PROMPT_GROUPS] : PAGE_ASSISTANT_PROMPT_GROUPS; })());
@@ -631,7 +640,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       key={question.value}
                       type="button"
                       data-prompt-option
-                      disabled={sending || (isExtendedDailyPromptContext && (extendedDailySafetyBlocked || extendedRelationshipGatePending))}
+                      disabled={sending || dailySafetyBlocked || dailyRelationshipSafetyGatePending}
                       onClick={() => {
                         setDraft(question.value);
                         setLibraryPromptOpen(false);
@@ -647,91 +656,25 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
         </div>
       )}
             <div className="assistantChatShell globalAssistantChat" dir="rtl" aria-label="گفت‌وگوی دستیار در صفحه جاری">
-              {jealousyRelationshipGatePending && jealousyRelationshipGate && (
-                <section className="dailyAssistantSafetyActions" role="group" aria-label="بررسی ایمنی گفت‌وگوی رابطه‌ای" data-testid="jealousy-relationship-safety-gate">
-                  <p role="alert">{jealousyRelationshipGateBlocked ? jealousyRelationshipGate.blockedMessage : jealousyRelationshipGate.question}</p>
-                  {!jealousyRelationshipGateBlocked && (
-                    <>
-                      <p className="safetyNote">{jealousyRelationshipGate.disclaimer}</p>
-                      <button type="button" data-testid="jealousy-relationship-safety-safe" disabled={sending}
-                        onClick={() => onRelationshipSafetyResponse?.('safe')}>بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.</button>
-                      <button type="button" data-testid="jealousy-relationship-safety-unsafe" disabled={sending}
-                        onClick={() => onRelationshipSafetyResponse?.('unsafe')}>نه، مطمئن نیستم یا یکی از ما تحت فشار است.</button>
-                    </>
-                  )}
+              {dailyPrivacyNotice && (
+                <section className="dailyAssistantSafetyActions" role="note" aria-label="یادآوری حریم خصوصی موضوع انتخاب‌شده" data-testid={privacyNoticeTestId}>
+                  <p>{dailyPrivacyNotice}</p>
                 </section>
               )}
-              {emotionalDependencyPrivacyNotice && (
-                <section className="dailyAssistantSafetyActions" role="note" aria-label="یادآوری حریم خصوصی" data-testid="emotional-dependency-privacy-notice">
-                  <p>{emotionalDependencyPrivacyNotice}</p>
-                </section>
-              )}
-              {t12PrivacyNotice && (
-                <section className="dailyAssistantSafetyActions" role="note" aria-label="یادآوری حریم خصوصی" data-testid="t12-privacy-notice">
-                  <p>{t12PrivacyNotice}</p>
-                </section>
-              )}
-              {extendedPrivacyNotice && (
-                <section className="dailyAssistantSafetyActions" role="note" aria-label="یادآوری حریم خصوصی موضوع انتخاب‌شده" data-testid="extended-topic-privacy-notice">
-                  <p>{extendedPrivacyNotice}</p>
-                </section>
-              )}
-              {t12RelationshipGatePending && t12RelationshipGate && (
-                <section className="dailyAssistantSafetyActions" role="group" aria-label="بررسی ایمنی مرزبندی و نه گفتن" data-testid="t12-relationship-safety-gate">
-                  <p role="alert">{t12RelationshipGateBlocked ? t12RelationshipGate.blockedMessage : t12RelationshipGate.question}</p>
-                  {!t12RelationshipGateBlocked && (
-                    <>
-                      <p className="safetyNote">{t12RelationshipGate.disclaimer}</p>
-                      <button type="button" data-testid="t12-relationship-safety-safe" disabled={sending}
-                        onClick={() => onRelationshipSafetyResponse?.('safe')}>بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.</button>
-                      <button type="button" data-testid="t12-relationship-safety-unsafe" disabled={sending}
-                        onClick={() => onRelationshipSafetyResponse?.('unsafe')}>نه، مطمئن نیستم یا یکی از ما تحت فشار است.</button>
-                    </>
-                  )}
-                </section>
-              )}
-              {emotionalDependencyRelationshipGatePending && emotionalDependencyRelationshipGate && (
-                <section className="dailyAssistantSafetyActions" role="group" aria-label="بررسی ایمنی گفت‌وگوی رابطه‌ای" data-testid="emotional-dependency-relationship-safety-gate">
-                  <p role="alert">{emotionalDependencyRelationshipGateBlocked ? emotionalDependencyRelationshipGate.blockedMessage : emotionalDependencyRelationshipGate.question}</p>
-                  {!emotionalDependencyRelationshipGateBlocked && (
-                    <>
-                      <p className="safetyNote">{emotionalDependencyRelationshipGate.disclaimer}</p>
-                      <button type="button" data-testid="emotional-dependency-relationship-safety-safe" disabled={sending}
-                        onClick={() => onRelationshipSafetyResponse?.('safe')}>بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.</button>
-                      <button type="button" data-testid="emotional-dependency-relationship-safety-unsafe" disabled={sending}
-                        onClick={() => onRelationshipSafetyResponse?.('unsafe')}>نه، مطمئن نیستم یا یکی از ما تحت فشار است.</button>
-                    </>
-                  )}
-                </section>
-              )}
-              {griefRelationshipGatePending && griefRelationshipGate && (
-                <section className="dailyAssistantSafetyActions" role="group" aria-label="بررسی ایمنی درخواست حمایت" data-testid="grief-relationship-safety-gate">
-                  <p role="alert">{griefRelationshipGateBlocked ? griefRelationshipGate.blockedMessage : griefRelationshipGate.question}</p>
-                  {!griefRelationshipGateBlocked && (
-                    <>
-                      <p className="safetyNote">{griefRelationshipGate.disclaimer}</p>
-                      <button type="button" data-testid="grief-relationship-safety-safe" disabled={sending}
-                        onClick={() => onRelationshipSafetyResponse?.('safe')}>بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.</button>
-                      <button type="button" data-testid="grief-relationship-safety-unsafe" disabled={sending}
-                        onClick={() => onRelationshipSafetyResponse?.('unsafe')}>نه، مطمئن نیستم یا یکی از ما تحت فشار است.</button>
-                    </>
-                  )}
-                </section>
-              )}
-              {extendedDailySafetyBlocked && (
-                <section className="dailyAssistantSafetyActions" role="note" aria-label="محدودیت ایمنی راهنمای روز" data-testid="extended-topic-daily-safety-blocked">
+              {dailySafetyBlocked && (
+                <section className="dailyAssistantSafetyActions" role="note" aria-label="محدودیت ایمنی راهنمای روز" data-testid={dailySafetyBlockedTestId}>
                   <p role="alert">این روز به‌دلیل ملاحظه ایمنی ثبت‌شده، پاسخ تمرینی آماده را نمایش نمی‌دهد. این محدودیت را دور نزن.</p>
                 </section>
               )}
-              {extendedRelationshipGatePending && extendedRelationshipGate && (
-                <section className="dailyAssistantSafetyActions" role="group" aria-label="بررسی ایمنی تعامل روز" data-testid="extended-topic-relationship-safety-gate">
-                  <p role="alert">{extendedRelationshipGateBlocked ? extendedRelationshipGate.blockedMessage : extendedRelationshipGate.question}</p>
-                  {!extendedRelationshipGateBlocked && (
+              {dailyRelationshipSafetyGatePending && dailyRelationshipSafetyGate && (
+                <section className="dailyAssistantSafetyActions" role="group" aria-label="بررسی ایمنی تعامل روز" data-testid={relationshipSafetyTestPrefix + '-gate'}>
+                  <p role="alert">{dailyRelationshipSafetyGateBlocked ? dailyRelationshipSafetyGate.blockedMessage : dailyRelationshipSafetyGate.question}</p>
+                  {!dailyRelationshipSafetyGateBlocked && (
                     <>
-                      <p className="safetyNote">{extendedRelationshipGate.disclaimer}</p>
-                      <button type="button" data-testid="extended-topic-relationship-safety-safe" disabled={sending}
+                      <p className="safetyNote">{dailyRelationshipSafetyGate.disclaimer}</p>
+                      <button type="button" data-testid={relationshipSafetyTestPrefix + '-safe'} disabled={sending}
                         onClick={() => onRelationshipSafetyResponse?.('safe')}>بله؛ هر دو نفر می‌توانند آزادانه گفت‌وگو را رد یا متوقف کنند.</button>
-                      <button type="button" data-testid="extended-topic-relationship-safety-unsafe" disabled={sending}
+                      <button type="button" data-testid={relationshipSafetyTestPrefix + '-unsafe'} disabled={sending}
                         onClick={() => onRelationshipSafetyResponse?.('unsafe')}>نه، مطمئن نیستم یا یکی از ما تحت فشار است.</button>
                     </>
                   )}
