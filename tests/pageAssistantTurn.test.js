@@ -49,6 +49,36 @@ test('daily page answers a prepared question with the selected topic and day', (
   assert.equal(result.conversationState, null);
 });
 
+test('T01 prepared answers use visible adapted text when the canonical record omits topic_id', () => {
+  const guide = ANGER_DAILY_ASSISTANT_GUIDES[0];
+  const canonicalExercise = 'متن مرجع تمرین خشم برای آزمون هویت روز.';
+  const visibleExercise = 'متن نمایشیِ تطبیق‌یافته برای تمرین خشم در روز انتخاب‌شده.';
+  const visibleAction = 'اقدام نمایشیِ تطبیق‌یافته برای همان روز.';
+  const result = makePageAssistantTurn({
+    screen: 'day',
+    text: guide.questions[0].value,
+    dailyContext: {
+      day: 1,
+      problem: 'خشم',
+      data: {
+        id: getCanonicalDailyRecordId('خشم', 1),
+        day: 1,
+        exercise: canonicalExercise,
+        actionText: 'اقدام مرجع روز.',
+      },
+      guidanceData: {
+        exercise: visibleExercise,
+        action: visibleAction,
+      },
+    },
+  });
+  assert.equal(result.status, 'daily_guidance_available');
+  assert.ok(result.message.includes(visibleExercise),
+    'T01 answer must quote the exact visible adapted exercise');
+  assert.ok(!result.message.includes(canonicalExercise),
+    'T01 answer must not silently fall back to stale canonical exercise wording');
+});
+
 test('daily assistant answers prepared questions regardless of canonical review status', () => {
   const dayData = {
     id: getCanonicalDailyRecordId('خشم', 1),
