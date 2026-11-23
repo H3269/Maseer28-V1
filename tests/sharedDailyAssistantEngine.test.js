@@ -762,3 +762,47 @@ test('T15-T34 fixed answers q05-q14 remain anchored to their own daily source fi
     }
   }
 });
+
+
+test('T15-T34 shared explanations do not invent universal exercise rules or override source success criteria', async () => {
+  const merged = await loadMergedContent();
+  for (const [topicId, topicName] of TOPICS.filter(([id]) => Number(id.slice(1)) >= 15)) {
+    const days = merged.categories[topicName]?.days || [];
+    for (let day = 1; day <= 28; day += 1) {
+      const dailyContent = days.find((item) => Number(item.day) === day);
+      const questions = getSharedDailyAssistantPromptGroups(day, topicId).flatMap((group) => group.questions);
+      const answerFor = (id) => {
+        const question = questions.find((item) => item.id === id);
+        return buildSharedDailyAssistantAnswerFromDailyContent({
+          topicId, topicName, day, message: question.value, dailyContent,
+        });
+      };
+
+      const exerciseMeaning = answerFor('q01');
+      assert.match(exerciseMeaning, /اگر تعداد، زمان یا قالب مشخصی تعیین شده/u, topicId + ' day ' + day + ' q01 conditional instructions');
+      assert.doesNotMatch(exerciseMeaning, /تعداد نمونه‌ها را هم بیشتر یا کمتر نکن/u,
+        topicId + ' day ' + day + ' q01 must not invent a universal count');
+
+      const successAnswer = answerFor('q06');
+      const criterion = dailyContent.success_criterion || dailyContent.successCriterion;
+      if (typeof criterion === 'string' && criterion.trim()) {
+        assert.match(successAnswer, /همان معیار ثبت‌شده را مبنا قرار بده/u,
+          topicId + ' day ' + day + ' q06 must defer to the recorded criterion');
+      }
+      assert.doesNotMatch(successAnswer, /اگر توانستی بخش اصلی/u,
+        topicId + ' day ' + day + ' q06 must not add a competing success test');
+
+      const differenceAnswer = answerFor('q09');
+      assert.match(differenceAnswer, /تمرین، کاری است که متن امروز برای یادگیری یا تمرین مشخص کرده/u,
+        topicId + ' day ' + day + ' q09 must describe exercise by its source role');
+      assert.doesNotMatch(differenceAnswer, /شناخت و مشاهده مهارت/u,
+        topicId + ' day ' + day + ' q09 must not reduce every exercise to observation');
+
+      const talkAnswer = answerFor('q12');
+      assert.match(talkAnswer, /اگر دستور امروز نوشتن، مرور یا مشاهده شخصی است/u,
+        topicId + ' day ' + day + ' q12 must preserve solo exercise cases');
+      assert.match(talkAnswer, /اگر متن امروز صریحاً تعامل با فرد دیگری می‌خواهد/u,
+        topicId + ' day ' + day + ' q12 must preserve genuinely interpersonal exercise cases');
+    }
+  }
+});
