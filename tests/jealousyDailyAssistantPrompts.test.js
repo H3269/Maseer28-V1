@@ -42,6 +42,23 @@ test('T05 prepared questions route only for matching canonical topic and day',()
  const wrongDay=makePageAssistantTurn({screen:'day',text:q.value,dailyContext:{day:2,problem:'حسادت',data:{id:getCanonicalDailyRecordId('حسادت',1),topic_id:'T05',day:1}}});
  assert.equal(wrongDay.status,'daily_guidance_unavailable');
 });
+test('T05 shared route uses the active day canonical exercise and action examples',()=>{
+ const g=JEALOUSY_DAILY_ASSISTANT_GUIDES[0];
+ const exerciseExample='نمونه فرضی تأییدشده تمرین روز یک: نگرانی را فقط نام‌گذاری کن.';
+ const actionExample='نمونه فرضی تأییدشده اقدام روز یک: موضوع را روی کاغذ ثبت کن.';
+ const dailyContent={id:getCanonicalDailyRecordId('حسادت',1),topic_id:'T05',day:1,exercise:g.exercise,actionText:g.action,exerciseExample,actionExample};
+ const guidanceData={...dailyContent,action:g.action};
+ const exercise=makePageAssistantTurn({screen:'day',text:g.questions.find(q=>q.kind==='exercise_example').value,dailyContext:{day:1,problem:'حسادت',data:dailyContent,guidanceData}});
+ assert.equal(exercise.status,'daily_guidance_available');
+ assert.ok(exercise.message.includes(exerciseExample),'T05 exercise answer must use the active day canonical example');
+ assert.ok(exercise.message.includes(g.exercise),'T05 exercise answer must retain the active day exercise instruction');
+ const action=makePageAssistantTurn({screen:'day',text:g.questions.find(q=>q.kind==='action_example').value,dailyContext:{day:1,problem:'حسادت',data:dailyContent,guidanceData}});
+ assert.equal(action.status,'daily_guidance_available');
+ assert.ok(action.message.includes(actionExample),'T05 action answer must use the active day canonical example');
+ assert.ok(action.message.includes(g.action),'T05 action answer must retain the active day action instruction');
+ assert.notEqual(exerciseExample,actionExample,'T05 exercise and action examples must remain distinct');
+});
+
 test('T05 retains urgent safety precedence and rejects unprepared free-form questions',()=>{
  const urgent=makePageAssistantTurn({screen:'day',text:'امشب قصد دارم خودم را بکشم.',dailyContext:{day:1,problem:'حسادت',data:{id:getCanonicalDailyRecordId('حسادت',1),topic_id:'T05',day:1}}});
  assert.equal(urgent.status,'urgent_human_support_required');
