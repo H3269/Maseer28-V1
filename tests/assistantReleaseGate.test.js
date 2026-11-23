@@ -225,7 +225,7 @@ test('free-form assessment assistant stays disconnected; all three hosts use the
 });
 
 
-test('assistant speaker icon stays compact, uses a distinct turquoise sparkle, and reflects actual thinking state', async () => {
+test('assistant speaker icon stays compact, uses a soft gold sparkle, and reflects active response state', async () => {
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
   const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
   const motion = await readFile(new URL('../src/styles/soft-motion.css', import.meta.url), 'utf8');
