@@ -165,6 +165,28 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
 
   await page.route('**/*', async (route) => {
     const url = new URL(route.request().url());
+    // The app now loads per-topic runtime shards, not path-content.json.
+    // Inject safety fixtures at the exact production data boundary so this
+    // browser scenario exercises the record consumed by activeDay/assistant.
+    if (url.pathname.endsWith('/content/runtime-v1/topics/T03.json')) {
+      const payload = structuredClone(canonicalPathContent.categories['ترس']);
+      const safetyDay = payload.days?.find((item) => Number(item.day) === 14);
+      assert.ok(safetyDay, 'the T03 runtime shard must contain day 14');
+      Object.assign(safetyDay, {
+        topic_id: 'T03',
+        day: 14,
+        risk_level: assistantDayMode === 'fear-caution' ? 'caution' : 'high',
+        safety_rule_ids: ['SR-T03-D14'],
+        when_to_seek_human_support: 'اگر فشار ادامه یافت، از متخصص سلامت روان یا فرد مورد اعتماد کمک بگیر.',
+        stop_conditions: ['اگر تمرین باعث افزایش محسوس ترس یا احساس ناایمنی شد، آن را متوقف کن.'],
+      });
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json; charset=utf-8',
+        body: JSON.stringify(payload),
+      });
+      return;
+    }
     if (url.pathname.endsWith('/content/daily-text-overrides.v1.json')) {
       const overrideDay = dailyTextOverrides.categories?.[topicKey]?.days?.find((item) => Number(item.day) === dayNumber);
       if (assistantDayMode.startsWith('adaptedAnxiety') || assistantDayMode.startsWith('adaptedLegacy')) {
