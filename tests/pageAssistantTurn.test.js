@@ -79,6 +79,41 @@ test('T01 prepared answers use visible adapted text when the canonical record om
     'T01 answer must not silently fall back to stale canonical exercise wording');
 });
 
+test('T01 example answers stay anchored to the visible daily exercise and action', () => {
+  const visibleExercise = 'تمرین نمایشی روز برای تفکیک رویداد، احساس، میل و رفتار واقعی.';
+  const visibleAction = 'اقدام نمایشی روز برای بیان امن اعتراض به یک رفتار مشخص.';
+  const guide = ANGER_DAILY_ASSISTANT_GUIDES[0];
+  const dailyContext = {
+    day: 1,
+    problem: 'خشم',
+    data: {
+      id: getCanonicalDailyRecordId('خشم', 1),
+      day: 1,
+      exercise: 'تمرین مرجع قدیمی که نباید نمایش داده شود.',
+      actionText: 'اقدام مرجع قدیمی که نباید نمایش داده شود.',
+    },
+    guidanceData: { exercise: visibleExercise, action: visibleAction },
+  };
+
+  const exerciseExample = makePageAssistantTurn({
+    screen: 'day',
+    text: guide.questions[1].value,
+    dailyContext,
+  });
+  assert.equal(exerciseExample.status, 'daily_guidance_available');
+  assert.ok(exerciseExample.message.includes(visibleExercise));
+  assert.ok(!exerciseExample.message.includes('تمرین مرجع قدیمی'));
+
+  const actionExample = makePageAssistantTurn({
+    screen: 'day',
+    text: guide.questions[3].value,
+    dailyContext,
+  });
+  assert.equal(actionExample.status, 'daily_guidance_available');
+  assert.ok(actionExample.message.includes(visibleAction));
+  assert.ok(!actionExample.message.includes('اقدام مرجع قدیمی'));
+});
+
 test('daily assistant answers prepared questions regardless of canonical review status', () => {
   const dayData = {
     id: getCanonicalDailyRecordId('خشم', 1),
