@@ -493,6 +493,7 @@ test('T05 success answer explains an observable check and preserves the active v
   assert.ok(result.message.includes('برای بررسی'));
   assert.ok(result.message.includes(visibleExercise));
   assert.ok(!result.message.includes(canonicalExercise));
+  assert.ok(!result.message.includes(ANGER_DAILY_ASSISTANT_GUIDES[0].exercise), 'T05 q06 must not append stale guide exercise beside the visible adapted exercise');
   assert.doesNotMatch(result.message, /توضیح این مورد در متن بالا آمده است/u);
 });
 
