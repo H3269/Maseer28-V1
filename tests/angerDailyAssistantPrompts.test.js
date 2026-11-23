@@ -340,7 +340,7 @@ test('in-path assistant ignores review status but rejects mismatched source iden
   const blocked = makePageAssistantTurn({
     screen: 'day',
     text: question.value,
-    dailyContext: { day: 11, problem: 'خشم', data: blockedDay, relationshipSafetyConfirmed: false },
+    dailyContext: { day: 11, problem: 'خشم', data: blockedDay, relationshipSafetyConfirmed: true },
   });
   assert.equal(blocked.status, 'daily_guidance_available');
   assert.ok(blocked.message.includes('در روز 11'));
