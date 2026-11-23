@@ -169,6 +169,14 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       dailyContent,
     });
 
+    const guidanceSourceIdentityMismatch = Boolean(
+      dailyContext?.guidanceData
+      && (
+        (dailyContext.guidanceData.id && dailyContext.guidanceData.id !== preparedSource?.id)
+        || (dailyContext.guidanceData.day != null && Number(dailyContext.guidanceData.day) !== preparedDay)
+        || (dailyContext.guidanceData.topic_id && dailyContext.guidanceData.topic_id !== preparedTopicId)
+      ),
+    );
     const hasCanonicalPreparedIdentity = ['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10', 'T11', 'T12', 'T13', 'T14', 'T15', 'T16', 'T17', 'T18', 'T19', 'T20', 'T21', 'T22', 'T23', 'T24', 'T25', 'T26', 'T27', 'T28', 'T29', 'T30', 'T31', 'T32', 'T33', 'T34'].includes(preparedTopicId)
       && Number.isInteger(preparedDay)
       && preparedDay >= 1
@@ -179,7 +187,8 @@ export function makePageAssistantTurn({ screen, text, conversationState = null, 
       && Number(preparedSource.day) === preparedDay
       && (!Object.prototype.hasOwnProperty.call(preparedSource, 'topic_id')
         || preparedSource.topic_id == null
-        || preparedSource.topic_id === preparedTopicId);
+        || preparedSource.topic_id === preparedTopicId)
+      && !guidanceSourceIdentityMismatch;
 
     const hasPendingSafetyExchange = ['pending', 'handoff'].includes(conversationState?.dailyState?.safetyStatus);
     const isExtendedTopic = /^T(?:1[5-9]|2[0-9]|3[0-4])$/u.test(preparedTopicId || '');
