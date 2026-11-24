@@ -258,7 +258,8 @@ test('prepared assistant answers reveal word by word and the gold speaker icon b
   assert.match(typewriter, /resetTypingProgress: \(\) => setTypingProgress\(null\)/, 'the hook must expose a controlled reset for new turns and context changes');
   assert.match(transcript, /typingProgress\?\.id === item\.id && typingProgress\.active \? 'typing' : 'idle'/);
   assert.match(transcript, /item\.dailySafetyReminder && !isLatestAssistantTyping && \(/, 'safety reminders must appear only after the latest answer reveal completes');
-  assert.match(transcript, /revealNotInitialized/, 'a new answer must not flash in full before its reveal state is initialized');  assert.match(css, /color: #C49A42 !important/);
+  assert.match(transcript, /revealNotInitialized/, 'a new answer must not flash in full before its reveal state is initialized');
+  assert.match(css, /color: #C49A42 !important/);
   assert.match(motion, /data-assistant-state="typing"/);
   assert.match(motion, /data-assistant-state="idle"[\s\S]*?animation: none/);
 });
