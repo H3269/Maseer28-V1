@@ -539,9 +539,11 @@ try {
   assert.equal(await controlPrompt.locator('[data-prompt-option]:not(:disabled)').count(), 14,
     'T31 must keep all prepared questions available when only control-context metadata is incomplete');
   assert.match(await controlPanel.innerText(), /این روز نیازمند احتیاط است/u);
-  for (const question of questions) {
-    await controlTrigger.click();
-    await controlPrompt.waitFor({ state: 'visible' });
+  for (const [questionIndex, question] of questions.entries()) {
+    if (questionIndex > 0) {
+      await controlTrigger.click();
+      await controlPrompt.waitFor({ state: 'visible' });
+    }
     await controlPrompt.getByRole('button', { name: question, exact: true }).click();
     await controlPanel.getByRole('button', { name: 'ارسال' }).click();
     await controlSafetyPage.waitForFunction(() => {
