@@ -784,7 +784,7 @@ input:focus, textarea:focus, select:focus, .smartSelectButton:focus-visible {
 .app .daydot { background: #EDF2F7 !important; color: #52677D !important; border: 1px solid #DCE4EC !important; }
 .app .daydot.current { background: #EAF1FA !important; color: #173E62 !important; outline: 2px solid #245A9A !important; }
 .app .daydot.done { background: #DDF3F0 !important; color: #155B69 !important; border-color: #BCE5DF !important; }
-.app .severityValue { background: #102A43 !important; color: #FFFFFF !important; border: 1px solid #4096C8 !important; }
+/* Severity value colors are controlled by the live score state in JourneyScreens.jsx. */
 .app .severityThumb, .app .severityRange::-webkit-slider-thumb { border-color: #245A9A !important; }
 .app .severityRange:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px rgba(64,224,208,.30) !important; }
 .app .dailyLockCountdownValue { color: #245A9A !important; }
