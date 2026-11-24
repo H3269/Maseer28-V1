@@ -173,6 +173,27 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
     // The app consumes generated runtime shards, not path-content.json.
     // Inject this fixture into the real T03 override shard so the test covers
     // both runtime loading and the shared safety-metadata merge contract.
+    if (url.pathname.endsWith('/content/runtime-v1/overrides/T31.json')) {
+      const payload = structuredClone(dailyTextOverrides.categories['کنترل‌گری']);
+      const safetyDay = payload.days?.find((item) => Number(item.day) === dayNumber);
+      assert.ok(safetyDay, 'the T31 runtime override shard must contain the selected day');
+      if (assistantDayMode === 'control-restricted') {
+        Object.assign(safetyDay, {
+          risk_level: 'moderate',
+          subtopic_ids: ['T31-S03'],
+          control_context: 'relationship_power_safety',
+        });
+      } else {
+        delete safetyDay.subtopic_ids;
+        delete safetyDay.control_context;
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json; charset=utf-8',
+        body: JSON.stringify(payload),
+      });
+      return;
+    }
     if (url.pathname.endsWith('/content/runtime-v1/topics/T03.json')) {
       t03RuntimeShardServed = true;
       await route.continue();
@@ -553,8 +574,12 @@ try {
   }, { timeout: 12000 });
   const restrictedAnswer = await restrictedControlPanel.locator('.assistantMessage').last().innerText();
   assert.match(restrictedAnswer, /سطح خطر ثبت‌شده بالاتر از حالت عادی/u);
-  assert.doesNotMatch(restrictedAnswer, /تمرین روز اول/u,
+  const restrictedSource = dailyTextOverrides.categories['کنترل‌گری'].days.find((item) => Number(item.day) === 1);
+  assert.ok(restrictedSource);
+  assert.equal(restrictedAnswer.includes(restrictedSource.exercise), false,
     'elevated-risk T31 answer must not expose the original exercise as an instruction');
+  assert.equal(restrictedAnswer.includes(restrictedSource.actionText), false,
+    'elevated-risk T31 answer must not expose the original action as an instruction');
   assert.match(restrictedAnswer, /جایگزین کم‌خطر فعلی/u);
   await restrictedControlPage.close();
 
