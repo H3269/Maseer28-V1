@@ -152,7 +152,10 @@ test('T31 exposes 392 day-grounded prepared answers; only urgent records are blo
   assert.equal(metadataCoverage.rest_option, 28, 'all T31 days must retain a rest or low-demand alternative');
   assert.equal(metadataCoverage.complete_context, 28, 'all T31 days must map to exactly one validated control context');
   assert.ok(t31TopicRegistry, 'T31 must exist in the topic registry');
+  assert.equal(t31SubtopicRegistry.size, 3, 'T31 must retain its three distinct safety contexts');
+  assert.match(t31TopicRegistry.review_flags.join(' '), /سه زیرموضوع مجزا/u);
   assert.equal(t31TopicRegistry.safety_rule_ids.length, 28, 'T31 topic registry must link all 28 daily safety rules');
+  assert.equal(new Set(t31TopicRegistry.safety_rule_ids).size, 28, 'T31 daily safety rule identifiers must be unique');
   for (const day of t31Days) {
     const ruleId = day.safety_rule_ids[0];
     const subtopic = t31SubtopicRegistry.get(day.subtopic_ids[0]);
