@@ -247,7 +247,7 @@ test('prepared assistant answers reveal word by word and the gold speaker icon b
   assert.match(launcher, /useAssistantTypewriter\(messages, sending\)/, 'the launcher must delegate reveal lifecycle to its dedicated hook');
   assert.match(launcher, /resetTypingProgress\(\)/, 'conversation boundaries must reset the isolated reveal state');
   assert.ok(typewriter.includes('const words = revealText.match('));
-  assert.ok(typewriter.includes(String.raw`revealText.match(/\\S+\\s*/gu)`), 'word tokenizer must match actual whitespace-delimited words');
+  assert.ok(typewriter.includes(String.raw`revealText.match(/\S+\s*/gu)`), 'word tokenizer must match actual whitespace-delimited words');
   assert.match(typewriter, /\}, 42\)/, 'word reveal should use a measured, non-instant pace');
   assert.match(typewriter, /return \(\) => \{\s*window\.clearInterval\(timer\);/, 'a replaced answer must cancel its previous reveal timer and detach its motion listener');
   assert.match(typewriter, /prefers-reduced-motion: reduce/, 'reduced-motion preference must skip or finish the reveal immediately');
