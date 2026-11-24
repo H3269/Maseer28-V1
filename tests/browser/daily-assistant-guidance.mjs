@@ -402,7 +402,8 @@ try {
         await trigger.click();
         await prompt.waitFor({ state: 'visible' });
       }
-      await page.emulateMedia({ reducedMotion: questionIndex === 0 ? 'no-preference' : 'reduce' });
+      const shouldAnimate = questionIndex === 0 || (topic.id === 'T31' && questionIndex === 5);
+      await page.emulateMedia({ reducedMotion: shouldAnimate ? 'no-preference' : 'reduce' });
       const question = questions[questionIndex];
       await prompt.getByRole('button', { name: question, exact: true }).click();
       const previousReplyCount = await panel.locator('.assistantMessage').count();
@@ -441,15 +442,24 @@ try {
           topic.id + ' first prepared answer must remain incomplete during the typing phase');
       } else {
         if ([5, 6, 10, 11].includes(questionIndex)) {
-          await page.waitForFunction(() =>
-            document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon')
-              ?.getAttribute('data-assistant-state') === 'typing',
-          null, { timeout: 10000 });
-          assert.equal(
-            await panel.locator('.assistantMessage').last().locator('.dailyAssistantSafetyReminder').count(),
-            0,
-            topic.id + ' safety reminder must stay hidden while the answer is being typed',
-          );
+          const safetyReminder = panel.locator('.assistantMessage').last().locator('.dailyAssistantSafetyReminder');
+          if (topic.id === 'T31' && questionIndex === 5) {
+            await page.waitForFunction(() =>
+              document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon')
+                ?.getAttribute('data-assistant-state') === 'typing',
+            null, { timeout: 10000 });
+            assert.equal(await safetyReminder.count(), 0,
+              topic.id + ' safety reminder must stay hidden while the animated answer is being typed');
+          } else {
+            assert.equal(
+              await panel.locator('.assistantMessage').last().locator('.globalAssistantSpeakerIcon')
+                .getAttribute('data-assistant-state'),
+              'idle',
+              topic.id + ' reduced-motion answer must complete without entering a typing phase',
+            );
+            assert.equal(await safetyReminder.count(), 1,
+              topic.id + ' reduced-motion safety answer must show its reminder after immediate completion');
+          }
         }
         await page.waitForFunction(() =>
           document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon')
