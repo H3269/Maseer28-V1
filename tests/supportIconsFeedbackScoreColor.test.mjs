@@ -25,3 +25,9 @@ test('score color interpolates across every point of the five-stop track gradien
     '[10, [201, 78, 74]]',
   ]) assert.ok(source.includes(stop), `Missing gradient stop: ${stop}`);
 });
+
+
+test('preview stylesheet does not override the live severity value color', async () => {
+  const stylesheet = await readFile(new URL('../src/styles/iranian-turquoise-preview.css', import.meta.url), 'utf8');
+  assert.doesNotMatch(stylesheet, /\.app\s+\.severityValue\s*\{[^}]*!important/s);
+});
