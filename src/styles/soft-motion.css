@@ -87,13 +87,13 @@ body:not(.reader-mode) .app:not(.appLoading) .assistantTranscript > .assistantMe
 /* The assistant icon breathes only while the current response is being prepared
    or revealed, then becomes completely still when the text is complete. */
 @keyframes m28AssistantIconBreath {
-  0%, 100% { opacity: .82; scale: 1; }
-  50% { opacity: 1; scale: 1.07; }
+  0%, 100% { opacity: .68; scale: 1; }
+  50% { opacity: 1; scale: 1.18; }
 }
 .globalAssistantChat .assistantMessage > .globalAssistantSpeakerIcon[data-assistant-state="thinking"],
 .globalAssistantChat .assistantMessage > .globalAssistantSpeakerIcon[data-assistant-state="typing"] {
-  animation: m28AssistantIconBreath 1.35s ease-in-out infinite;
-  filter: drop-shadow(0 0 4px rgba(196, 154, 66, .38));
+  animation: m28AssistantIconBreath 1.2s ease-in-out infinite;
+  filter: drop-shadow(0 0 6px rgba(196, 154, 66, .62));
 }
 .globalAssistantChat .assistantMessage > .globalAssistantSpeakerIcon[data-assistant-state="idle"] {
   animation: none;
