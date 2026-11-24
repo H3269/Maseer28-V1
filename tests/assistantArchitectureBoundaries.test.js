@@ -25,6 +25,8 @@ test('launcher delegates transcript rendering and typewriter lifecycle', async (
   assert.match(launcher, /useAssistantTypewriter\(messages, sending\)/);
   assert.match(launcher, /<AssistantTranscript messages=\{messages\} sending=\{sending\}/);
   assert.match(launcher, /latestUserMessageRef\.current\?\.scrollIntoView\?\.\(\{ behavior: 'smooth', block: 'start' \}\)/);
+  assert.match(launcher, /\[latestUserMessageId, latestAssistantMessageId, latestAssistantTyping, open\]/);
+  assert.doesNotMatch(launcher, /\}, \[messages, open\]\);/);
   assert.match(transcript, /latestUserMessageIndex/);
   assert.match(transcript, /data-testid=\{item\.role === 'user' && index === latestUserMessageIndex \? 'latest-user-question'/);
   assert.match(transcript, /function AssistantTranscript\(\{ messages, sending, typingProgress, latestUserMessageRef \}\)/);
