@@ -180,7 +180,7 @@ try {
       && icon?.getAttribute('data-assistant-state') === 'idle';
   }, null, { timeout: 10000 });
   const reducedMotionReply = dialog.locator('.assistantMessage').last();
-  assert.ok((await reducedMotionReply.locator('p').innerText()).trim().length > 45,
+  assert.ok((await reducedMotionReply.locator('p').first().innerText()).trim().length > 45,
     'reduced-motion mode must display the complete answer immediately');
   assert.equal(await reducedMotionReply.locator('.globalAssistantSpeakerIcon').evaluate((element) => getComputedStyle(element).animationName),
     'none', 'reduced-motion mode must keep the gold icon still');
@@ -224,7 +224,7 @@ try {
   }, null, { timeout: 10000 });
   const interruptedAnswerIndex = (await dialog.locator('.assistantMessage').count()) - 1;
   const interruptedAnswer = dialog.locator('.assistantMessage').nth(interruptedAnswerIndex);
-  const partialBeforeSwitch = await interruptedAnswer.locator('p').innerText();
+  const partialBeforeSwitch = await interruptedAnswer.locator('p').first().innerText();
   await trigger.click();
   await picker.waitFor({ state: 'visible' });
   await options.nth(2).click();
@@ -232,9 +232,9 @@ try {
   await page.waitForFunction((minimumCount) =>
     document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= minimumCount,
   beforeInterruptedTurn + 2, { timeout: 10000 });
-  const frozenAfterSwitch = await interruptedAnswer.locator('p').innerText();
+  const frozenAfterSwitch = await interruptedAnswer.locator('p').first().innerText();
   await page.waitForTimeout(160);
-  assert.equal(await interruptedAnswer.locator('p').innerText(), frozenAfterSwitch,
+  assert.equal(await interruptedAnswer.locator('p').first().innerText(), frozenAfterSwitch,
     'the cancelled answer must stop changing after the next question starts');
   assert.ok(frozenAfterSwitch.length >= partialBeforeSwitch.length,
     'the prior answer must remain readable when its reveal is cancelled');
