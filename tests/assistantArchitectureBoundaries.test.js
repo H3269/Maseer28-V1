@@ -24,7 +24,7 @@ test('launcher delegates transcript rendering and typewriter lifecycle', async (
   assert.match(launcher, /assistantTranscriptRef\.current/);
   assert.match(launcher, /viewport\.scrollTop = Math\.max\(0, targetTop\)/);
   assert.match(launcher, /useLayoutEffect\(\(\) => \{/);
-  assert.match(launcher, /\[latestUserMessageId, open\]/);
+  assert.match(launcher, /\[latestUserMessageId, latestAssistantTyping, open\]/);
   assert.match(transcript, /ref=\{assistantTranscriptRef\}/);
   assert.doesNotMatch(launcher, /\}, \[messages, open\]\);/);
   assert.match(transcript, /latestUserMessageIndex/);
