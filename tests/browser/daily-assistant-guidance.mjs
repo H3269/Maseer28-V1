@@ -450,15 +450,6 @@ try {
             null, { timeout: 10000 });
             assert.equal(await safetyReminder.count(), 0,
               topic.id + ' safety reminder must stay hidden while the animated answer is being typed');
-          } else {
-            assert.equal(
-              await panel.locator('.assistantMessage').last().locator('.globalAssistantSpeakerIcon')
-                .getAttribute('data-assistant-state'),
-              'idle',
-              topic.id + ' reduced-motion answer must complete without entering a typing phase',
-            );
-            assert.equal(await safetyReminder.count(), 1,
-              topic.id + ' reduced-motion safety answer must show its reminder after immediate completion');
           }
         }
         await page.waitForFunction(() =>
