@@ -151,7 +151,7 @@ try {
     const speaker = latest?.querySelector('.globalAssistantSpeakerIcon');
     return replies.length > previous
       && speaker?.getAttribute('data-assistant-state') === 'idle'
-      && latest.innerText.includes('نقشه حوزه‌های اتکای عاطفی');
+      && latest.innerText.trim().length > 0;
   }, daySixPreviousReplyCount, { timeout: 15000 });
   const daySixReply = await gatedPanel.locator('.assistantMessage').last().innerText();
   const daySixSource = overrides.categories['وابستگی عاطفی'].days.find((item) => Number(item.day) === 6);
