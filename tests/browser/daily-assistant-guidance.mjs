@@ -619,7 +619,7 @@ try {
       && !reply.innerText.includes('در حال بررسی پرسش'));
   }, { timeout: 12000 });
   const restrictedAnswer = await restrictedControlPanel.locator('.assistantMessage').last().innerText();
-  assert.match(restrictedAnswer, /سطح خطر ثبت‌شده بالاتر از حالت عادی/u);
+  assert.match(restrictedAnswer, /سطح خطر ثبت‌شده(?: برای این روز)? بالاتر از حالت عادی/u);
   const restrictedSource = dailyTextOverrides.categories['کنترل‌گری'].days.find((item) => Number(item.day) === 1);
   assert.ok(restrictedSource);
   assert.equal(restrictedAnswer.includes(restrictedSource.exercise), false,
