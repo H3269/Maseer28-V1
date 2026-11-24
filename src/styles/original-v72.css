@@ -7457,3 +7457,11 @@ html body .app .globalAssistantDialog .globalAssistantChat .assistantMessage > b
   .globalAssistantChat .assistantWelcomeSteps { gap: 6px; }
   .globalAssistantChat .assistantWelcomeStep { font-size: 11px; }
 }
+
+/* M28 feedback score bubble: this stylesheet is imported by main.jsx.
+   Override the legacy gradient so the bubble follows the selected score color. */
+.app #day .severityValue {
+  background: var(--severity-value-background, #edf1f3) !important;
+  color: var(--severity-value-foreground, #52616a) !important;
+  background-image: none !important;
+}
