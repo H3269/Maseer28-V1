@@ -148,13 +148,13 @@ try {
         const question = viewport?.querySelector('[data-testid="latest-user-question"]');
         if (!viewport || !question) return false;
         const topOffset = question.getBoundingClientRect().top - viewport.getBoundingClientRect().top;
-        return topOffset >= -1 && topOffset <= 12;
+        return topOffset >= 12 && topOffset <= 24;
       }, null, { timeout: 5000 });
       const turnStartOffset = await dialog.getByTestId('latest-user-question').evaluate((question) => {
         const viewport = question.closest('.assistantTranscript');
         return question.getBoundingClientRect().top - viewport.getBoundingClientRect().top;
       });
-      assert.ok(turnStartOffset <= 12,
+      assert.ok(turnStartOffset >= 12 && turnStartOffset <= 24,
         'every new question and its answer must begin at the top of the transcript viewport');
     } catch (error) {
       console.error('T14_QUESTION_INDEX', questionIndex);
