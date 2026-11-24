@@ -637,7 +637,14 @@ try {
     'elevated-risk T31 answer must not expose the original exercise as an instruction');
   assert.equal(restrictedAnswer.includes(restrictedSource.actionText), false,
     'elevated-risk T31 answer must not expose the original action as an instruction');
-  assert.match(restrictedAnswer, /جایگزین کم‌خطر فعلی/u);
+  const restrictedRest = restrictedSource.restExerciseText || restrictedSource.restVersion || restrictedSource.lightExerciseText;
+  if (restrictedRest) {
+    assert.ok(restrictedAnswer.includes(restrictedRest),
+      'elevated-risk T31 answer must use the exact approved rest alternative recorded for the selected day');
+  } else {
+    assert.match(restrictedAnswer, /جایگزین کم‌خطر فعلی/u,
+      'when no approved rest alternative exists, the assistant must provide the bounded private fallback');
+  }
   await restrictedControlPage.close();
 
   // T03 day 14 has an explicit safety-rule requirement. The catalogue remains
