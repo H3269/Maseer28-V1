@@ -15,11 +15,6 @@ assert.deepEqual(
   dailyTextOverrides,
   'the production preview daily text override asset must match the checked-in browser fixture',
 );
-const normalizeAssistantText = (value) => String(value || '').normalize('NFKC')
-  .replace(/[يى]/g, 'ی').replace(/ك/g, 'ک')
-  .replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
-  .replace(/[^\p{L}\p{N}\s]/gu, ' ')
-  .replace(/\s+/g, ' ').trim().toLowerCase();
 const browser = await chromium.launch({ headless: true });
 
 const journey = {
@@ -180,19 +175,38 @@ try {
     assert.equal(await jealousyPromptDialog.locator('.libraryAssistantPromptGroup').count(), 5);
     assert.equal(await jealousyPromptDialog.locator('[data-prompt-option]').count(), 14);
     await jealousyPromptDialog.getByRole('button', { name: 'برای تمرین امروز یک مثال می‌زنی؟' }).click();
-    await jealousyPanel.getByRole('button', { name: 'ارسال' }).click();
-    await jealousyGuidedPage.waitForFunction(() => {
-      const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-of-type');
-      return Boolean(reply && !reply.innerText.includes('در حال بررسی'));
-    });
-    const jealousyExerciseExample = await jealousyPanel.locator('.assistantMessage').last().innerText();
     const jealousyDayOne = dailyTextOverrides.categories?.['حسادت']?.days?.find(item => Number(item.day) === 1);
+    await jealousyPanel.getByRole('button', { name: 'ارسال' }).click();
+    await jealousyGuidedPage.waitForFunction((expectedText) => {
+      const reply = document.querySelector('[data-testid="latest-assistant-message"]');
+      const speaker = reply?.querySelector('[data-assistant-state]');
+      return Boolean(
+        reply
+        && speaker?.getAttribute('data-assistant-state') === 'idle'
+        && reply.textContent.includes(expectedText),
+      );
+    }, jealousyDayOne?.exerciseExample);
+    const jealousyExerciseExample = await jealousyPanel.locator('.assistantMessage').last().textContent();
     assert.ok(jealousyDayOne?.exerciseExample, 'T05 day 1 canonical override must provide its approved exercise example');
-    assert.ok(normalizeAssistantText(jealousyExerciseExample).includes(normalizeAssistantText(jealousyDayOne.exerciseExample)),
-      'T05 shared answer must use the active day canonical exercise example. Actual: ' + jealousyExerciseExample + ' | Expected: ' + jealousyDayOne.exerciseExample);
+    // Compare the DOM text source, not innerText: innerText is layout-dependent
+    // and can inject line breaks or bidi formatting around Persian text.
+    const normalizeRenderedWhitespace = value => String(value || '')
+      .normalize('NFKC')
+      .replace(/[\u200B-\u200F\u202A-\u202E\u2060-\u206F\uFEFF]/gu, '')
+      .replace(/\s+/gu, ' ')
+      .trim();
+    const renderedExerciseExample = normalizeRenderedWhitespace(jealousyExerciseExample);
+    const canonicalExerciseExample = normalizeRenderedWhitespace(jealousyDayOne.exerciseExample);
+    assert.ok(renderedExerciseExample.includes(canonicalExerciseExample),
+      'T05 shared answer must use the active day canonical exercise example; expected: ' + canonicalExerciseExample + '; rendered: ' + renderedExerciseExample);
     assert.equal(jealousyExerciseExample.includes('**'), false, 'T05 must not expose raw markdown markers');
     assert.equal(jealousyExerciseExample.includes(String.fromCharCode(92) + 'n'), false, 'T05 must not expose escaped newline tokens');
-    assert.ok(jealousyExerciseExample.includes('\n'), 'T05 paragraphs must display on separate lines');
+    const canonicalExerciseLines = String(jealousyDayOne.exerciseExample)
+      .split(String.fromCharCode(92) + 'n').join('\n').replace(/\r\n?/gu, '\n').split('\n');
+    const expectedExerciseLineBreaks = canonicalExerciseLines.length - 1;
+    const renderedExerciseLineBreaks = await jealousyPanel.locator('.assistantMessage').last().locator('p br').count();
+    assert.ok(renderedExerciseLineBreaks >= expectedExerciseLineBreaks,
+      'T05 assistant paragraph must retain at least the canonical exercise example line breaks');
   
     await jealousyPanel.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
     await jealousyPanel.waitFor({ state: 'detached' });
@@ -202,14 +216,19 @@ try {
     await jealousyGuidedPage.locator('#library-assistant-prompt-dialog')
       .getByRole('button', { name: 'برای اقدام امروز یک مثال می‌زنی؟' }).click();
     await jealousyPanel.getByRole('button', { name: 'ارسال' }).click();
-    await jealousyGuidedPage.waitForFunction(() => {
-      const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-of-type');
-      return Boolean(reply && !reply.innerText.includes('در حال بررسی'));
-    });
-    const jealousyActionExample = await jealousyPanel.locator('.assistantMessage').last().innerText();
+    await jealousyGuidedPage.waitForFunction((expectedText) => {
+      const reply = document.querySelector('[data-testid="latest-assistant-message"]');
+      const speaker = reply?.querySelector('[data-assistant-state]');
+      return Boolean(
+        reply
+        && speaker?.getAttribute('data-assistant-state') === 'idle'
+        && reply.textContent.includes(expectedText),
+      );
+    }, jealousyDayOne?.actionExample);
+    const jealousyActionExample = await jealousyPanel.locator('.assistantMessage').last().textContent();
     assert.ok(jealousyDayOne?.actionExample, 'T05 day 1 canonical override must provide its approved action example');
-    assert.ok(normalizeAssistantText(jealousyActionExample).includes(normalizeAssistantText(jealousyDayOne.actionExample)),
-      'T05 shared answer must use the active day canonical action example. Actual: ' + jealousyActionExample + ' | Expected: ' + jealousyDayOne.actionExample);
+    assert.ok(jealousyActionExample.includes(jealousyDayOne.actionExample),
+      'T05 shared answer must use the active day canonical action example');
     assert.notEqual(jealousyExerciseExample, jealousyActionExample,
       'T05 exercise and action examples must teach different tasks, not repeat the same text');
     assert.deepEqual(jealousyErrors, [], 'T05 prepared-only browser flow must not raise page errors');
