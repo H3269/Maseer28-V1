@@ -13,7 +13,7 @@ test('support actions use the shared icon-divider-label structure', () => {
 });
 
 test('daily completion action uses the same shared structure', () => {
-  assert.match(screens, /id="openDailyEntryBtn"[^>]*className="primary heroAction m28IconAction"/);
+  assert.match(screens, /className="primary heroAction m28IconAction"[^>]*id="openDailyEntryBtn"/);
   assert.match(screens, /m28ActionText">انجام دادم؛ ثبت نتیجه امروز/);
 });
 
