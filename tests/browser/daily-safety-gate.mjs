@@ -110,9 +110,11 @@ try {
       await promptDialog.waitFor({ state: 'visible' });
       assert.equal(await promptDialog.locator('[data-prompt-option]').count(), 14,
         topic + ' day ' + day + ' must expose all 14 prepared assistant questions');
-      if (topicId === 'T31') {
-        assert.equal(await promptDialog.locator('[data-prompt-option]:not(:disabled)').count(), 0,
-          topic + ' day ' + day + ' must keep questions disabled while its safety classification is incomplete');
+      if (topicId === 'T31' && day === 1) {
+        assert.equal(await promptDialog.locator('[data-prompt-option]:not(:disabled)').count(), 14,
+          'T31 day 1 is a classified self-control exercise; its prepared questions must remain available');
+        assert.equal(await dialog.locator('[data-testid="extended-topic-relationship-safety-gate"]').count(), 0,
+          'T31 day 1 must not inherit an unrelated interpersonal confirmation gate');
       }
       assert.doesNotMatch(await dialog.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/u);
     } else {
@@ -143,6 +145,26 @@ try {
     await card.locator('#openDailyEntryBtn').click();
     await card.locator('#dailyEntryPanel').waitFor({ state: 'visible' });
     assert.deepEqual(errors, [], topic + ' must not raise browser errors');
+    await page.close();
+  }
+
+  // T31 day 11 is the single direct-interaction day requiring relationship confirmation.
+  // The prepared questions remain selectable so the assistant can explain the boundary;
+  // it must not expose the direct action until the user explicitly confirms safety.
+  {
+    const { page, errors } = await openDay('کنترل‌گری', 11);
+    await page.getByRole('button', { name: 'باز کردن دستیار مسیر۲۸' }).click();
+    const dialog = page.locator('.globalAssistantDialog');
+    await dialog.waitFor({ state: 'visible' });
+    assert.equal(await dialog.locator('[data-testid="extended-topic-relationship-safety-gate"]').count(), 1,
+      'T31 day 11 must show its specific relationship-safety confirmation gate');
+    await dialog.locator('button[data-testid="extended-daily-prompt-trigger"]').click();
+    const promptDialog = page.locator('#library-assistant-prompt-dialog');
+    await promptDialog.waitFor({ state: 'visible' });
+    assert.equal(await promptDialog.locator('[data-prompt-option]').count(), 14);
+    assert.equal(await promptDialog.locator('[data-prompt-option]:not(:disabled)').count(), 14,
+      'T31 day 11 questions may be selected to explain safety limits; direct actions remain gated in the answer engine');
+    assert.deepEqual(errors, [], 'T31 day 11 must not raise browser errors');
     await page.close();
   }
 
