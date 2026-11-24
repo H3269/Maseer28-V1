@@ -128,10 +128,16 @@ export function getRelationshipSafetyGate(day) {
   const t12SafetySubtopicRequiresGate = topicIds.includes('T12')
     && Array.isArray(day?.subtopic_ids)
     && day.subtopic_ids.includes('T12-S03');
-  const requiresGate = t12SafetySubtopicRequiresGate || topicIds.some((topicId) => {
+  const t31RequiresSpecificActionGate = topicIds.includes('T31')
+    && day?.relationship_safety_action_requires_confirmation === true;
+  const otherTopicRequiresGate = topicIds.some((topicId) => {
+    if (topicId === 'T31') return false;
     const gatedDays = GATED_DAYS_BY_TOPIC.get(topicId);
     return gatedDays && dayNumbers.some((number) => gatedDays.has(number));
   });
+  const requiresGate = t12SafetySubtopicRequiresGate
+    || t31RequiresSpecificActionGate
+    || otherTopicRequiresGate;
   return requiresGate ? RELATIONSHIP_COMMUNICATION_GATE : null;
 }
 
