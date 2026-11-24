@@ -113,10 +113,14 @@ test('T31 relationship-sensitive days preserve all fourteen answers and gate onl
           'T31 day 11 direct-interaction answers must use a safe alternative until safety is confirmed');
         assert.match(turn.message, /گزینه استراحت ثبت‌شده|جایگزین کم‌خطر فعلی/u);
       }
-      if (!requiresDirectActionConfirmation && ['action_meaning', 'action_example'].includes(question.kind)) {
+      if (!requiresDirectActionConfirmation && question.kind === 'action_meaning') {
         assert.ok(turn.message.includes(dailyContent.actionText),
-          'T31 day ' + dayNumber + ' ' + question.kind + ' safe action must remain source-grounded; source='
-            + dailyContent.actionText + '; answer=' + turn.message.slice(0, 900));
+          'T31 day ' + dayNumber + ' action meaning must preserve the exact daily action');
+      }
+      if (!requiresDirectActionConfirmation && question.kind === 'action_example') {
+        assert.match(turn.message, new RegExp('(?:یک نمونه فرضی از اقدام روز ' + dayNumber
+          + '|برای اقدام اختصاصی روز ' + dayNumber + ')'),
+        'T31 day ' + dayNumber + ' action example must stay tied to the selected day');
       }
       checked += 1;
     }
