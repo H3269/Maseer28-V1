@@ -7393,3 +7393,30 @@ html body .app .globalAssistantDialog .globalAssistantChat .assistantMessage > b
   fill: #C49A42 !important;
   stroke: #C49A42 !important;
 }
+
+
+/* Shared icon + divider + label treatment for support and daily actions. */
+.app .m28IconAction {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+}
+.app .m28IconAction > .m28ActionIcon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 2px 10px;
+  margin-inline-end: 10px;
+  border-inline-end: 1px solid currentColor;
+  opacity: .88;
+}
+.app .m28IconAction > .m28ActionText {
+  display: inline-block;
+  line-height: 1.45;
+}
+.app > section.card#support .m28IconAction,
+.app > section.card#day .m28IconAction {
+  min-height: 48px;
+}
