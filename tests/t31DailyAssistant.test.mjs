@@ -93,6 +93,13 @@ test('T31 exposes 392 day-grounded prepared answers; only urgent records are blo
   }
 
   assert.equal(answerCount, (28 - urgentDayCount) * 14, 'every non-urgent T31 day must expose all fourteen prepared answers');
+  assert.equal(metadataCoverage.risk_level, 28, 'all T31 days must carry an explicit risk level');
+  assert.equal(metadataCoverage.safety_rule_ids, 28, 'all T31 days must link an explicit safety rule');
+  assert.equal(metadataCoverage.stop_conditions, 28, 'all T31 days must define stop conditions');
+  assert.equal(metadataCoverage.contraindications, 28, 'all T31 days must define contraindications');
+  assert.equal(metadataCoverage.human_support, 28, 'all T31 days must define when to seek human support');
+  assert.equal(metadataCoverage.rest_option, 28, 'all T31 days must retain a rest or low-demand alternative');
+  assert.equal(metadataCoverage.complete_context, 28, 'all T31 days must map to exactly one validated control context');
   process.stdout.write('T31 safety metadata coverage: ' + JSON.stringify(metadataCoverage) + '; generated answers: ' + answerCount + '\\n');
   process.stdout.write('T31 DAILY CONTENT AUDIT: ' + JSON.stringify(t31Days.map((day) => ({
     day: day.day,
