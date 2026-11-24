@@ -553,7 +553,7 @@ try {
         && !reply.innerText.includes('در حال بررسی پرسش'));
     }, { timeout: 12000 });
     const answer = await controlPanel.locator('.assistantMessage').last().innerText();
-    assert.ok(answer.includes('روز 1'), 'T31 prepared answer must remain grounded in its selected day: ' + question);
+    assert.ok(normalizeVisibleDailyText(answer).includes('روز 1'), 'T31 prepared answer must remain grounded in its selected day: ' + question);
     assert.ok(answer.length > 80, 'T31 must return substantive guidance for every prepared question: ' + question);
   }
   await controlSafetyPage.close();
