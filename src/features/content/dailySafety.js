@@ -62,6 +62,7 @@ function riskMode(day) {
 function controlRiskMode(day) {
   const level = day?.risk_level;
   if (level === 'urgent_support_required') return 'blocked';
+  if (!getControlContextForDay(day)) return 'caution';
   if (level === 'high' || level === 'moderate' || level === 'caution') return 'caution';
   if (level === 'routine' || level === undefined || level === null || level === '') return 'routine';
   return 'caution';
