@@ -91,7 +91,7 @@ async function openAngerDay(page) {
 
 const browser = await chromium.launch({ headless: true });
 try {
-  const page = await browser.newPage();
+  const page = await browser.newPage({ reducedMotion: 'reduce' });
   const pageErrors = [];
   page.on('pageerror', (error) => pageErrors.push(String(error)));
   const panel = await openAngerDay(page);
