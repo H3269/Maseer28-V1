@@ -102,8 +102,8 @@ try {
   if (await exerciseDisclosure.count()) await exerciseDisclosure.click();
   const normalizeVisibleText = (value) => String(value || '')
     .normalize('NFKC')
-    .replace(/[\\u200B-\\u200F\\u202A-\\u202E\\u2060-\\u206F\\uFEFF]/gu, '')
-    .replace(/\\s+/gu, ' ')
+    .replace(/[\u200B-\u200F\u202A-\u202E\u2060-\u206F\uFEFF]/gu, '')
+    .replace(/\s+/gu, ' ')
     .trim();
   const normalizedAnswer = normalizeVisibleText(answer);
   const visibleExerciseParts = (await firstPage.locator('#dayExercise p').allTextContents())
