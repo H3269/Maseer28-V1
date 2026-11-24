@@ -115,7 +115,8 @@ test('T31 relationship-sensitive days preserve all fourteen answers and gate onl
       }
       if (!requiresDirectActionConfirmation && ['action_meaning', 'action_example'].includes(question.kind)) {
         assert.ok(turn.message.includes(dailyContent.actionText),
-          'T31 day ' + dayNumber + ' safe actions must remain source-grounded rather than being over-restricted');
+          'T31 day ' + dayNumber + ' ' + question.kind + ' safe action must remain source-grounded; source='
+            + dailyContent.actionText + '; answer=' + turn.message.slice(0, 900));
       }
       checked += 1;
     }
