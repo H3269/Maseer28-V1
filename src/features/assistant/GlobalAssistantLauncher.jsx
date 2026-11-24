@@ -605,7 +605,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                       key={question.value}
                       type="button"
                       data-prompt-option
-                      disabled={sending || dailySafetyBlocked || (isExtendedDailyPromptContext && extendedRelationshipGatePending)}
+                      disabled={sending || dailySafetyBlocked || (isExtendedDailyPromptContext && activeDailyTopicId !== 'T31' && extendedRelationshipGatePending)}
                       onClick={() => {
                         setDraft(question.value);
                         setLibraryPromptOpen(false);
