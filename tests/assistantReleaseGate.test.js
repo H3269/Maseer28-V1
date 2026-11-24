@@ -256,7 +256,7 @@ test('prepared assistant answers reveal word by word and the gold speaker icon b
   assert.match(typewriter, /prefers-reduced-motion: reduce/, 'reduced-motion preference must skip or finish the reveal immediately');
   assert.match(typewriter, /visibleText \+= words\[visibleCount\]/, 'the reveal should append one token at a time without rebuilding the entire prefix');
   assert.match(typewriter, /resetTypingProgress: \(\) => setTypingProgress\(null\)/, 'the hook must expose a controlled reset for new turns and context changes');
-  assert.match(transcript, /isLatestAssistantTyping \\? 'typing' : 'idle'/);
+  assert.match(transcript, /isLatestAssistantTyping \? 'typing' : 'idle'/);
   assert.match(transcript, /item\.dailySafetyReminder && !isLatestAssistantTyping && \(/, 'safety reminders must appear only after the latest answer reveal completes');
   assert.match(transcript, /revealNotInitialized/, 'a new answer must not flash in full before its reveal state is initialized');
   assert.match(css, /color: #C49A42 !important/);
