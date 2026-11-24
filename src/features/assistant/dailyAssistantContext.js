@@ -57,7 +57,10 @@ export function resolveDailyAssistantContext(dailyContext = null) {
       restActionText: source.restActionText || guidance.restActionText,
     };
   } else if (visibleContent && guidance && !guidanceMatchesSource) {
-    visibleContent = null;
+    // Ignore stale/mismatched adaptation, but retain the verified canonical
+    // record. Returning null here caused T01 to fall back to its old answer
+    // bank while the day screen still showed canonical content.
+    visibleContent = { ...source };
   }
 
   return Object.freeze({
