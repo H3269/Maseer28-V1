@@ -27,11 +27,8 @@ export function makeDailyAssistantTurn({ message, dailyContext, conversationStat
     const hasSupportedPreparedTopic = resolvedDailyContext.supportedTopic;
 
     const answerPreparedQuestion = ({ day, message, dailyContent }) => {
-      const t31RelationshipGate = preparedTopicId === 'T31'
-        ? getRelationshipSafetyGate(dailyContent)
-        : null;
       const t31RelationshipSafetyRestriction = Boolean(
-        t31RelationshipGate
+        preparedTopicId === 'T31'
         && dailyContent?.relationship_safety_action_requires_confirmation === true
         && (
           dailyContext?.relationshipSafetyResponse === 'unsafe'
