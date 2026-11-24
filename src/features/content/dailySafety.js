@@ -56,6 +56,17 @@ function riskMode(day) {
   return 'caution';
 }
 
+// T31 is not a blanket-danger topic. Only an explicitly urgent record blocks
+// the prepared guide; elevated or incomplete context switches the answer into
+// a conservative, non-coercive mode instead of removing all daily support.
+function controlRiskMode(day) {
+  const level = day?.risk_level;
+  if (level === 'urgent_support_required') return 'blocked';
+  if (level === 'high' || level === 'moderate' || level === 'caution') return 'caution';
+  if (level === 'routine' || level === undefined || level === null || level === '') return 'routine';
+  return 'caution';
+}
+
 export function getDailySafetyMode(day) {
   if (!day || typeof day !== 'object') return 'routine';
 
@@ -93,7 +104,7 @@ export function getDailySafetyMode(day) {
     && hasSubtopic(day, new Set(['T17-S03']))
     && (day.risk_level !== 'caution' || !hasSafetyRules(day))) return 'blocked';
 
-  if (isControlTopicDay(day) && !getControlContextForDay(day)) return 'blocked';
+  if (isControlTopicDay(day)) return controlRiskMode(day);
 
   return riskMode(day);
 }
