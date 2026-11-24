@@ -267,6 +267,29 @@ function DailyText({ id, label, value }) {
   return <div id={id} className="dailyText"><p className="dailyTextPreview">{preview}</p>{rest.length > 0 && <details className="dailyTextDisclosure"><summary>نمایش ادامه و مراحل ({fa(rest.length)} بخش)</summary><div className="dailyTextFull">{rest.map((line, index) => <p key={index}>{line}</p>)}</div></details>}</div>;
 }
 
+export function severityColorForScore(value) {
+  const score = Math.min(10, Math.max(0, Number(value) || 0));
+  const stops = [
+    [0, [79, 159, 109]],
+    [2.5, [135, 185, 109]],
+    [5, [225, 198, 87]],
+    [7.5, [223, 150, 80]],
+    [10, [201, 78, 74]],
+  ];
+  const upperIndex = stops.findIndex(([position]) => position >= score);
+  const upper = stops[upperIndex < 0 ? stops.length - 1 : upperIndex];
+  const lower = stops[Math.max(0, (upperIndex < 0 ? stops.length : upperIndex) - 1)];
+  const ratio = upper[0] === lower[0] ? 0 : (score - lower[0]) / (upper[0] - lower[0]);
+  const rgb = lower[1].map((channel, index) => Math.round(channel + (upper[1][index] - channel) * ratio));
+  return `#${rgb.map((channel) => channel.toString(16).padStart(2, '0')).join('')}`;
+}
+
+export function severityValueTextColor(background) {
+  const channels = background.match(/[0-9a-f]{2}/gi)?.map((channel) => parseInt(channel, 16)) || [0, 0, 0];
+  const luminance = (0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2]);
+  return luminance > 150 ? '#263b38' : '#ffffff';
+}
+
 export function severityText(n) { return n <= 2 ? '۰ تا ۲ = بسیار کم یا تقریباً بدون درگیری' : n <= 4 ? '۳ تا ۴ = خفیف' : n <= 6 ? '۵ تا ۶ = متوسط' : n <= 8 ? '۷ تا ۸ = زیاد' : '۹ تا ۱۰ = بسیار شدید و درگیرکننده'; }
 
 export function adaptiveGuidance(previousRecord, previousAnswer, problem, history = {}) {
@@ -368,7 +391,7 @@ export function DayScreen({ day, problem, data, record, savedAnswer, previousRec
       <div className="entryHeader"><span className="stepNumber">۳</span><div><b>ثبت نتیجه</b><small>کمتر از یک دقیقه</small></div></div>
       <label>شدت یا میزان درگیری امروز</label>
       <div className="severityWrap">
-        <div className="severityValue" id="severityValue" style={{ left: `${bubblePos}%` }}>{touched ? `${fa(score)} از ۱۰` : 'انتخاب نشده'}</div>
+        <div className="severityValue" id="severityValue" data-touched={touched ? '1' : '0'} style={{ left: `${bubblePos}%`, backgroundColor: touched ? severityColorForScore(score) : '#edf1f3', color: touched ? severityValueTextColor(severityColorForScore(score)) : '#5f6d75', border: touched ? '1px solid #00000020' : '1px solid #cbd5da', boxShadow: touched ? '0 3px 9px #263b3826' : '0 2px 6px #263b3812' }}>{touched ? `${fa(score)} از ۱۰` : 'انتخاب نشده'}</div>
         <div className="severityThumb" id="severityThumb" />
         <input aria-label="شدت درگیری" className="severityRange" id="dayScore" max="10" min="0" step="1" type="range" value={score} data-touched={touched ? '1' : '0'} onChange={(e) => { setScore(Number(e.target.value)); setTouched(true); }} />
       </div>
@@ -432,7 +455,7 @@ export function Support({ content, onBack }) {
   function sendSms() { const body = 'سلام، برای نوبت‌دهی و دریافت راهنمایی پیام می‌دهم.'; try { if (window.Android && typeof window.Android.openSms === 'function') { window.Android.openSms(number, body); setHelp('برنامه پیامک باز شد.'); return; } if (window.webkit?.messageHandlers?.openSms) { window.webkit.messageHandlers.openSms.postMessage({ number, body }); setHelp('برنامه پیامک باز شد.'); return; } const ua = navigator.userAgent || '', sep = /iPhone|iPad|iPod/i.test(ua) ? '&' : '?', a = document.createElement('a'); a.href = `sms:${number}${sep}body=${encodeURIComponent(body)}`; a.style.display = 'none'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => setHelp('اگر پیامک باز نشد، «کپی شماره» را بزنید. در WebView اپ باید scheme پیامک به سیستم تحویل داده شود.'), 900); } catch { copySupportNumber(); } }
   return <section className="card" id="support">
     <span className="badge">پشتیبانی مرکز</span><h2>نیاز به راهنمایی داری؟</h2><p className="muted">اگر برای نوبت‌دهی یا ارتباط با مرکز نیاز به راهنمایی داری، می‌توانی از راه‌های زیر استفاده کنی.</p>
-    <div className="support"><h3><AppIcon name="phone" size={18} /> نوبت‌دهی پیامکی</h3><p className="muted">شماره مرکز: <b>۰۹۱۹۰۸۸۹۰۶۲</b></p><div className="contactActions"><button className="sms m28IconAction" onClick={sendSms}><span className="m28ActionIcon"><AppIcon name="message" size={17} /></span><span className="m28ActionText">باز کردن پیامک</span></button><button className="copyAction m28IconAction" onClick={copySupportNumber}><span className="m28ActionIcon"><AppIcon name="copy" size={17} /></span><span className="m28ActionText">کپی شماره</span></button></div><p className="contactHelp" id="smsHelp" role="status" aria-live="polite">{help}</p>{copyFailed && <input aria-label="شماره مرکز برای کپی دستی" readOnly value={number} onFocus={(event) => event.currentTarget.select()} onClick={(event) => event.currentTarget.select()} />}<hr/><h3><AppIcon name="message" size={18} /> نوبت‌دهی تلگرامی</h3><p className="muted">پشتیبانی و نوبت‌دهی تلگرامی مرکز</p><a className="telegram m28IconAction" href={content.supportUrl || content.bookSupportUrl || 'https://t.me/Hypnotherapy_admin'} rel="noopener" target="_blank"><span className="m28ActionIcon"><AppIcon name="message" size={17} /></span><span className="m28ActionText">ورود به پشتیبانی تلگرام</span></a><hr/><h3><AppIcon name="megaphone" size={18} /> کانال مرکز</h3><p className="muted">مطالب و محتوای تکمیلی مرکز</p>{content.channelUrl ? <a className="telegram m28IconAction" href={content.channelUrl} rel="noopener" target="_blank"><span className="m28ActionIcon"><AppIcon name="megaphone" size={17} /></span><span className="m28ActionText">ورود به کانال مرکز</span></a> : <p className="muted">نشانی کانال در دسترس نیست.</p>}</div>
+    <div className="support"><h3><AppIcon name="phone" size={18} /> نوبت‌دهی پیامکی</h3><p className="muted">شماره مرکز: <b>۰۹۱۹۰۸۸۹۰۶۲</b></p><div className="contactActions"><button className="sms m28IconAction" onClick={sendSms}><span className="m28ActionIcon"><AppIcon name="message" size={17} /></span><span className="m28ActionText">باز کردن پیامک</span></button><button className="copyAction m28IconAction" onClick={copySupportNumber}><span className="m28ActionIcon"><AppIcon name="copy" size={17} /></span><span className="m28ActionText">کپی شماره</span></button></div><p className="contactHelp" id="smsHelp" role="status" aria-live="polite">{help}</p>{copyFailed && <input aria-label="شماره مرکز برای کپی دستی" readOnly value={number} onFocus={(event) => event.currentTarget.select()} onClick={(event) => event.currentTarget.select()} />}<hr/><h3><AppIcon name="message" size={18} /> نوبت‌دهی تلگرامی</h3><p className="muted">پشتیبانی و نوبت‌دهی تلگرامی مرکز</p><a className="telegram m28IconAction" href={content.supportUrl || content.bookSupportUrl || 'https://t.me/Hypnotherapy_admin'} rel="noopener" target="_blank"><span className="m28ActionIcon"><AppIcon name="headset" size={17} /></span><span className="m28ActionText">ورود به پشتیبانی تلگرام</span></a><hr/><h3><AppIcon name="megaphone" size={18} /> کانال مرکز</h3><p className="muted">مطالب و محتوای تکمیلی مرکز</p>{content.channelUrl ? <a className="telegram m28IconAction" href={content.channelUrl} rel="noopener" target="_blank"><span className="m28ActionIcon"><AppIcon name="megaphone" size={17} /></span><span className="m28ActionText">ورود به کانال مرکز</span></a> : <p className="muted">نشانی کانال در دسترس نیست.</p>}</div>
     <button className="secondary" onClick={onBack}>{buttonLabel('بازگشت')}</button>
   </section>;
 }
