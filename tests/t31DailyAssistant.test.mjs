@@ -66,6 +66,8 @@ test('T31 elevated-risk records return safe alternatives without exposing unsafe
     assert.ok(answer.includes('گزینه استراحت ثبت‌شده'));
     assert.ok(answer.includes('مسئول اصلاح رفتار او نیستی'));
     assert.ok(answer.includes('مطالبه نکن'));
+    assert.ok(answer.includes('شرط توقف ثبت‌شده'));
+    assert.ok(answer.includes('زمان دریافت حمایت انسانی'));
     assert.equal(answer.includes('UNSAFE_SOURCE_EXERCISE_SENTINEL'), false);
     assert.equal(answer.includes('UNSAFE_SOURCE_ACTION_SENTINEL'), false);
   }
