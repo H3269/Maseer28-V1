@@ -84,7 +84,13 @@ test('T31 exposes 392 day-grounded prepared answers; only urgent records are blo
       for (const answer of answers) {
         assert.doesNotMatch(answer, new RegExp(String(day.exercise || day.instructions || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
           'elevated-risk T31 answers must not reproduce the original exercise as an instruction');
-        assert.match(answer, /جایگزین کم‌خطر فعلی/u);
+        assert.match(answer, /گزینه استراحت ثبت‌شده|جایگزین کم‌خطر فعلی/u);
+      }
+      if (day.control_context === 'relationship_power_safety') {
+        assert.ok(answers.every((answer) => answer.includes('مسئول اصلاح رفتار او نیستی')),
+          'relationship-safety alternatives must protect people affected by coercive control');
+        assert.ok(answers.every((answer) => answer.includes('مطالبه نکن')),
+          'relationship-safety alternatives must not burden the affected person with reassurance');
       }
     } else if (!getControlContextForDay(day)) {
       assert.ok(answers.every((answer) => answer.includes('یادداشت صحت محتوا')),
