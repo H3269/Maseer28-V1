@@ -7,6 +7,7 @@ const { chromium } = require('playwright');
 const baseURL = process.env.PATH28_BASE_URL || 'http://127.0.0.1:4173';
 const canonicalPathContent = JSON.parse(await readFile(new URL('../../public/content/path-content.json', import.meta.url), 'utf8'));
 const dailyTextOverrides = JSON.parse(await readFile(new URL('../../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+const controlRestrictedRestExercise = 'امروز فقط مکث کن و بررسی کن آیا به استراحت یا حمایت نیاز داری؛ اجرای تمرین لازم نیست.';
 const previewBaseURL = baseURL.endsWith('/') ? baseURL : `${baseURL}/`;
 const servedOverrideResponse = await fetch(new URL('content/daily-text-overrides.v1.json', previewBaseURL));
 assert.equal(servedOverrideResponse.status, 200, 'the production preview must serve the daily text override asset');
@@ -184,6 +185,10 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
           risk_level: 'moderate',
           subtopic_ids: ['T31-S03'],
           control_context: 'relationship_power_safety',
+          // Make the approved rest path explicit in this runtime fixture. The
+          // canonical topic shard also carries rest guidance, so asserting
+          // against the unmerged daily-text-overrides fixture was incorrect.
+          restExerciseText: controlRestrictedRestExercise,
         });
       } else {
         delete safetyDay.subtopic_ids;
@@ -638,14 +643,9 @@ try {
     'elevated-risk T31 answer must not expose the original exercise as an instruction');
   assert.equal(restrictedAnswer.includes(restrictedSource.actionText), false,
     'elevated-risk T31 answer must not expose the original action as an instruction');
-  const restrictedRest = restrictedSource.restExerciseText || restrictedSource.restVersion || restrictedSource.lightExerciseText;
-  if (restrictedRest) {
-    assert.ok(restrictedAnswer.includes(restrictedRest),
-      'elevated-risk T31 answer must use the exact approved rest alternative recorded for the selected day');
-  } else {
-    assert.match(restrictedAnswer, /جایگزین کم‌خطر فعلی/u,
-      'when no approved rest alternative exists, the assistant must provide the bounded private fallback');
-  }
+  assert.ok(restrictedAnswer.includes('گزینه استراحت ثبت‌شده همین روز:'));
+  assert.ok(restrictedAnswer.includes('نسخه استراحت تمرین: ' + controlRestrictedRestExercise),
+    'elevated-risk T31 answer must use the exact approved rest alternative from the merged runtime fixture');
   await restrictedControlPage.close();
 
   // T03 day 14 has an explicit safety-rule requirement. The catalogue remains
