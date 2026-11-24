@@ -55,5 +55,6 @@ test('daily content provenance and safety presentation do not depend on animatio
   assert.match(context, /actionExample: source\.actionExample/);
   assert.match(context, /guidanceMatchesSource/);
   assert.match(transcript, /item\.dailySafetyReminder && !isLatestAssistantTyping && \(/);
-  assert.match(transcript, /revealNotInitialized/);  assert.doesNotMatch(transcript, /dailySafetyReminder && \(!typingProgress/);
+  assert.match(transcript, /revealNotInitialized/);
+  assert.doesNotMatch(transcript, /dailySafetyReminder && \(!typingProgress/);
 });
