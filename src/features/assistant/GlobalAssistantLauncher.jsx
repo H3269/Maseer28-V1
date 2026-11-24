@@ -23,7 +23,7 @@ import { getCanonicalTopicIdForCategory, getInterpersonalPrivacyNotice, getRelat
 
 
 import { getSharedDailyAssistantPromptGroups } from './sharedDailyAssistantEngine.js';
-import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN, shouldShowDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
+import { shouldShowDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 import { getDailySafetyMode } from '../content/dailySafety.js';
 import { useAssistantTypewriter } from './useAssistantTypewriter.js';
 
@@ -760,7 +760,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                           : <React.Fragment key={partIndex}>{part.text}</React.Fragment>)}
                       </React.Fragment>
                     ))}</p>
-                    {item.dailySafetyReminder && (!typingProgress || typingProgress.id !== item.id || !typingProgress.active) && (
+                    {item.dailySafetyReminder && (
                       <aside className="dailyAssistantSafetyReminder" role="note" data-testid="daily-assistant-safety-reminder">
                         <h3>یادآوری مهم درباره ایمنی شما</h3>
                         <p>در طول انجام تمرین‌ امروز، به احساسات و وضعیت روانی خود توجه کنید. اگر احساس کردید فشار روانی شما بیشتر شده، حالتان رو به وخامت است یا ادامه تمرین برایتان آزاردهنده شده، تمرین را متوقف کنید و به خودتان فرصت آرام‌شدن بدهید.</p>
