@@ -241,16 +241,21 @@ test('assistant speaker icon stays compact, uses a soft gold sparkle, and reflec
 
 test('prepared assistant answers reveal word by word and the gold speaker icon breathes only until reveal completes', async () => {
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
+  const typewriter = await readFile(new URL('../src/features/assistant/useAssistantTypewriter.js', import.meta.url), 'utf8');
   const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
   const motion = await readFile(new URL('../src/styles/soft-motion.css', import.meta.url), 'utf8');
-  assert.ok(launcher.includes('const words = revealText.match('));
-  assert.ok(launcher.includes(String.raw`revealText.match(/\S+\s*/gu)`), 'word tokenizer must match actual whitespace-delimited words');
-  assert.match(launcher, /\}, 42\)/, 'word reveal should use a measured, non-instant pace');
-  assert.match(launcher, /return \(\) => \{\s*window\.clearInterval\(timer\);/, 'a replaced answer must cancel its previous reveal timer and detach its motion listener');
-  assert.match(launcher, /prefers-reduced-motion: reduce/, 'reduced-motion preference must skip or finish the reveal immediately');
-  assert.match(launcher, /visibleText \+= words\[visibleCount\]/, 'the reveal should append one token at a time without rebuilding the entire prefix');
-  assert.match(launcher, /setTypingProgress\(null\)/, 'a new question must clear the previous reveal state');
+  assert.match(launcher, /useAssistantTypewriter\(messages, sending\)/, 'the launcher must delegate reveal lifecycle to its dedicated hook');
+  assert.match(launcher, /resetTypingProgress\(\)/, 'conversation boundaries must reset the isolated reveal state');
+  assert.ok(typewriter.includes('const words = revealText.match('));
+  assert.ok(typewriter.includes(String.raw`revealText.match(/\\S+\\s*/gu)`), 'word tokenizer must match actual whitespace-delimited words');
+  assert.match(typewriter, /\}, 42\)/, 'word reveal should use a measured, non-instant pace');
+  assert.match(typewriter, /return \(\) => \{\s*window\.clearInterval\(timer\);/, 'a replaced answer must cancel its previous reveal timer and detach its motion listener');
+  assert.match(typewriter, /prefers-reduced-motion: reduce/, 'reduced-motion preference must skip or finish the reveal immediately');
+  assert.match(typewriter, /visibleText \+= words\[visibleCount\]/, 'the reveal should append one token at a time without rebuilding the entire prefix');
+  assert.match(typewriter, /resetTypingProgress: \(\) => setTypingProgress\(null\)/, 'the hook must expose a controlled reset for new turns and context changes');
   assert.match(launcher, /typingProgress\?\.id === item\.id && typingProgress\.active \? 'typing' : 'idle'/);
+  assert.match(launcher, /item\.dailySafetyReminder && \(/, 'safety reminders must render independently of reveal completion');
+  assert.doesNotMatch(launcher, /dailySafetyReminder && \(!typingProgress/, 'safety visibility must not depend on animation state');
   assert.match(css, /color: #C49A42 !important/);
   assert.match(motion, /data-assistant-state="typing"/);
   assert.match(motion, /data-assistant-state="idle"[\s\S]*?animation: none/);
