@@ -158,9 +158,16 @@ try {
         border: card.borderTopColor,
         headingText: headingNode?.textContent?.trim() || '',
         headingDisplay: headingStyle?.getPropertyValue('display') || '',
-        headingVisible: headingNode?.checkVisibility
-          ? headingNode.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })
-          : Boolean(headingRect?.width && headingRect?.height && headingNode?.getClientRects().length),
+        headingVisible: (() => {
+          if (!headingNode) return false;
+          let effectiveOpacity = 1;
+          for (let current = headingNode; current && current instanceof Element; current = current.parentElement) {
+            const style = window.getComputedStyle(current);
+            if (style.display === 'none' || style.visibility === 'hidden' || style.visibility === 'collapse') return false;
+            effectiveOpacity *= Number.parseFloat(style.opacity || '1');
+          }
+          return effectiveOpacity > 0.01 && Boolean(headingRect?.width && headingRect?.height && headingNode.getClientRects().length);
+        })(),
         headingWidth: headingRect?.width || 0,
         headingHeight: headingRect?.height || 0,
         headingHasLayout: Boolean(headingNode?.getClientRects().length),
