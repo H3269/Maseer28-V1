@@ -228,11 +228,11 @@ test('free-form assessment assistant stays disconnected; all three hosts use the
 
 
 test('assistant speaker icon stays compact, uses a soft gold sparkle, and reflects active response state', async () => {
-  const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
+  const transcript = await readFile(new URL('../src/features/assistant/AssistantTranscript.jsx', import.meta.url), 'utf8');
   const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
   const motion = await readFile(new URL('../src/styles/soft-motion.css', import.meta.url), 'utf8');
-  assert.match(launcher, /data-assistant-state=\{item\.role === 'assistant' && index === messages\.length - 1/);
-  assert.match(launcher, /M12 2\.8 14\.25 9\.75 21\.2 12/);
+  assert.match(transcript, /data-assistant-state=\{item\.role === 'assistant' && index === messages\.length - 1/);
+  assert.match(transcript, /M12 2\.8 14\.25 9\.75 21\.2 12/);
   assert.match(css, /color: #C49A42 !important/);
   assert.match(css, /\.globalAssistantChat \.globalAssistantSpeakerIcon svg \{[^}]*width: 1em;[^}]*height: 1em;/);
   assert.match(motion, /@keyframes m28AssistantIconBreath/);
