@@ -58,6 +58,7 @@ on:
       - "tests/browser/emotional-dependency-assistant.mjs"
       - "tests/browser/t10-live-assistant.mjs"
       - "tests/browser/t12-boundaries-package.mjs"
+      - "tests/browser/global-assistant-launcher.mjs"
       - "tests/browser/t14-prepared-assistant.mjs"
       - "public/content/daily-text-overrides.v1.json"
       - "package.json"
@@ -139,4 +140,5 @@ jobs:
           node tests/browser/emotional-dependency-assistant.mjs
           node tests/browser/t10-live-assistant.mjs
           node tests/browser/t12-boundaries-package.mjs
+          node tests/browser/global-assistant-launcher.mjs
           node tests/browser/t14-prepared-assistant.mjs
