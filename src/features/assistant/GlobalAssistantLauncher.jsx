@@ -742,9 +742,27 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 </section>
               )}
 
+              {messages.length === 0 && activePromptGroups.some((group) => Array.isArray(group.questions) && group.questions.length > 0) && (
+                <section className="assistantWelcomeGuide" dir="rtl" aria-label="راهنمای شروع گفت‌وگو">
+                  <p className="assistantWelcomeIntro">درود! من دستیار راهنما هستم. سؤال پیشنهادی موردنظرت را انتخاب کن تا پاسخ و راهنمایی متناسب با همان موضوع را دریافت کنی.</p>
+                </section>
+              )}
               <AssistantTranscript messages={messages} sending={sending} typingProgress={typingProgress} latestUserMessageRef={latestUserMessageRef} assistantTranscriptRef={assistantTranscriptRef} />
               <form className="assistantComposer libraryAssistantGuidedComposer" dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} data-jealousy-daily-prompt={String(isJealousyDailyPromptContext)} data-grief-daily-prompt={String(isGriefDailyPromptContext)} data-guilt-daily-prompt={String(isGuiltDailyPromptContext)} data-t10-daily-prompt={String(isT10DailyPromptContext)} data-t12-daily-prompt={String(isT12DailyPromptContext)} onSubmit={send}>
                 {activePromptGroups.some((group) => Array.isArray(group.questions) && group.questions.length > 0) ? (
+                  <>
+                  {messages.length === 0 && (
+                    <div className="assistantWelcomeSteps" aria-label="مراحل استفاده از دستیار">
+                      <div className="assistantWelcomeStep assistantWelcomeStepPrompt">
+                        <p>ابتدا سؤال موردنظرت را از فهرست سؤال‌های پیشنهادی انتخاب کن.</p>
+                        <span aria-hidden="true">👇</span>
+                      </div>
+                      <div className="assistantWelcomeStep assistantWelcomeStepSend">
+                        <p>پس از انتخاب سؤال، دکمه ارسال را بزن.</p>
+                        <span aria-hidden="true">👇</span>
+                      </div>
+                    </div>
+                  )}
                   <div className="libraryAssistantPromptRow">
                     <button
                       ref={libraryPromptTriggerRef}
@@ -764,6 +782,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                     </button>
                     <button className="primary assistantSendButton" type="submit" aria-label="ارسال" title="ارسال سؤال انتخاب‌شده" disabled={!draft.trim() || sending} aria-busy={sending}><AppIcon name="arrowUp" size={19} /></button>
                   </div>
+                  </>
                 ) : (
                   <p className="muted assistantPreparedQuestionsUnavailable" role="status">
                     هنوز سؤال آماده‌ای برای این بخش ثبت نشده است. پس از تکمیل فهرست سؤال‌های آماده، این دستیار فعال می‌شود.

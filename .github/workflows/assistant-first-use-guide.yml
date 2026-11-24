@@ -1,0 +1,30 @@
+name: Fast assistant first-use guide checks
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/features/assistant/GlobalAssistantLauncher.jsx"
+      - "src/styles/original-v72.css"
+      - "tests/assistantFirstUseGuide.test.mjs"
+      - ".github/workflows/assistant-first-use-guide.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  assistant-first-use-guide:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run focused first-use guide checks
+        run: node --test tests/assistantFirstUseGuide.test.mjs
+      - name: Verify production bundle
+        run: npm run build
