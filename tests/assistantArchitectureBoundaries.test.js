@@ -32,6 +32,19 @@ test('launcher delegates transcript rendering and typewriter lifecycle', async (
   assert.match(typewriter, /resetTypingProgress/);
 });
 
+
+test('T31 keeps its daily catalogue available while restricting only unsafe interpersonal actions', async () => {
+  const [dailyTurn, launcher, engine] = await Promise.all([
+    read('../src/features/assistant/dailyAssistantTurn.js'),
+    read('../src/features/assistant/GlobalAssistantLauncher.jsx'),
+    read('../src/features/assistant/sharedDailyAssistantEngine.js'),
+  ]);
+  assert.match(dailyTurn, /preparedTopicId !== 'T31'/);
+  assert.match(dailyTurn, /relationship_safety_gate_restriction/);
+  assert.match(launcher, /activeDailyTopicId !== 'T31' && extendedRelationshipGatePending/);
+  assert.match(engine, /relationshipSafetyGateRestriction && relationshipActionQuestion/);
+});
+
 test('daily content provenance and safety presentation do not depend on animation', async () => {
   const [context, transcript] = await Promise.all([
     read('../src/features/assistant/dailyAssistantContext.js'),
