@@ -126,6 +126,23 @@ test('T31 relationship-safety gates preserve all fourteen answers on gated days'
   assert.equal(confirmedSafe.status, 'daily_guidance_available');
   assert.ok(confirmedSafe.message.includes(day11.actionText),
     'after affirmative safety confirmation, the source-grounded action may be explained with its safety boundaries');
+
+  const talkQuestion = getSharedDailyAssistantPromptGroups(11, TOPIC_ID)
+    .flatMap((group) => group.questions).find((question) => question.kind === 'talk_other');
+  const unsafeResponse = makeDailyAssistantTurn({
+    message: talkQuestion.value,
+    dailyContext: {
+      problem: TOPIC_NAME, day: 11, data: day11,
+      relationshipSafetyConfirmed: false, relationshipSafetyResponse: 'unsafe',
+    },
+    conversationState: null,
+    inputProbe: { status: 'normal', intake: {} },
+  });
+  assert.equal(unsafeResponse.status, 'daily_guidance_available',
+    'an unsafe relationship response must not suppress the whole T31 guide');
+  assert.match(unsafeResponse.message, /ایمنی تعامل مستقیم/u);
+  assert.equal(unsafeResponse.message.includes(day11.actionText), false,
+    'an unsafe relationship response must never expose a direct-interaction action');
 });
 
 test('T31 exposes 392 day-grounded prepared answers; only urgent records are blocked', () => {
