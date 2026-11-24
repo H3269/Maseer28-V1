@@ -11,6 +11,9 @@ on:
       - "tests/assistantFirstUseGuide.test.mjs"
       - "tests/supportIconsFeedbackScoreColor.test.mjs"
       - ".github/workflows/action-button-ui.yml"
+      - ".github/workflows/deploy.yml"
+      - "tests/browser/feedback-score-bubble.mjs"
+      - "tests/browser/reader-open-recommendation.mjs"
 
 permissions:
   contents: read
@@ -29,5 +32,7 @@ jobs:
         run: npm ci
       - name: Run focused UI consistency checks
         run: node --test tests/actionButtonVisualConsistency.test.mjs tests/assistantFirstUseGuide.test.mjs tests/supportIconsFeedbackScoreColor.test.mjs
+      - name: Verify focused browser test scripts parse
+        run: node --check tests/browser/feedback-score-bubble.mjs && node --check tests/browser/reader-open-recommendation.mjs
       - name: Verify production bundle
         run: npm run build
