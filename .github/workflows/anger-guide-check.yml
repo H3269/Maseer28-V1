@@ -2,6 +2,7 @@ name: Anger guide rebuilt assistant checks
 
 on:
   push:
+    # PR 237 is validated by pull_request synchronize; avoid duplicate push + PR runs for the same commit.
     branches: [rebuild/anger-guide-28-days, fix/anger-sample-three-isolation, refactor/shared-daily-assistant-engine-t02-t14]
   pull_request:
     branches: [main]
@@ -17,6 +18,15 @@ on:
       - "src/features/assistant/pageAssistantTurn.js"
       - "src/features/assistant/dailyExerciseAssistantGuidance.js"
       - "src/features/assistant/GlobalAssistantLauncher.jsx"
+      - "src/features/assistant/AssistantTranscript.jsx"
+      - "src/features/assistant/dailyAssistantContext.js"
+      - "src/features/assistant/dailyAssistantTurn.js"
+      - "src/features/assistant/useAssistantTypewriter.js"
+      - "tests/assistantReleaseGate.test.js"
+      - "tests/assistantArchitectureBoundaries.test.js"
+      - "tests/dailyAssistantContext.test.js"
+      - "tests/t31DailyAssistant.test.mjs"
+      - "tests/ownerDailyContentApproval.test.mjs"
       - "src/features/content/dailyTextOverrides.js"
       - "src/features/content/dailySafety.js"
       - "src/features/content/runtimeContentRepository.js"
@@ -61,7 +71,22 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      - name: Install dependencies with bounded network retries
+        shell: bash
+        run: |
+          for attempt in 1 2 3; do
+            if npm ci; then
+              exit 0
+            else
+              status=$?
+            fi
+            log_file="$(ls -t "$HOME"/.npm/_logs/*-debug-0.log 2>/dev/null | head -n 1 || true)"
+            if [ "$attempt" -eq 3 ] || [ -z "$log_file" ] || ! grep -Eqi 'ETIMEDOUT|ENETUNREACH|ECONNRESET|EAI_AGAIN|ECONNREFUSED' "$log_file"; then
+              exit "$status"
+            fi
+            echo "Transient dependency download failure; retrying npm ci (attempt $((attempt + 1))/3)."
+            sleep $((attempt * 10))
+          done
       - name: Run complete automated test suite
         run: npm test
       - name: Validate all daily content and assistant topic contracts
@@ -79,6 +104,7 @@ jobs:
           tests/angerContentPackage.test.mjs
           tests/anxietyDailyAssistantPrompts.test.js
           tests/sharedDailyAssistantAnswerFrame.test.js
+          tests/t31DailyAssistant.test.mjs
       - name: Verify production bundle
         run: npm run build
       - name: Install pinned Playwright browser runner

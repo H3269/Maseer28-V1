@@ -7,6 +7,7 @@ const { chromium } = require('playwright');
 const baseURL = process.env.PATH28_BASE_URL || 'http://127.0.0.1:4173';
 const canonicalPathContent = JSON.parse(await readFile(new URL('../../public/content/path-content.json', import.meta.url), 'utf8'));
 const dailyTextOverrides = JSON.parse(await readFile(new URL('../../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
+const controlRestrictedRestExercise = 'امروز فقط مکث کن و بررسی کن آیا به استراحت یا حمایت نیاز داری؛ اجرای تمرین لازم نیست.';
 const previewBaseURL = baseURL.endsWith('/') ? baseURL : `${baseURL}/`;
 const servedOverrideResponse = await fetch(new URL('content/daily-text-overrides.v1.json', previewBaseURL));
 assert.equal(servedOverrideResponse.status, 200, 'the production preview must serve the daily text override asset');
@@ -72,8 +73,7 @@ async function assertAssistantUsesVisibleDailySource(page, panel, topic, dayNumb
   assert.ok(dayBadge.includes('روز ' + dayNumber), 'day UI must show the selected canonical day');
   const speakerIcon = panel.locator('.assistantMessage').last().locator('.globalAssistantSpeakerIcon');
   const speakerIconHandle = await speakerIcon.elementHandle();
-  await page.waitForFunction((icon) => icon?.getAttribute('data-assistant-state') === 'typing', speakerIconHandle, { timeout: 10000 });
-  await page.waitForFunction((icon) => icon?.getAttribute('data-assistant-state') === 'idle', speakerIconHandle, { timeout: 20000 });
+  await page.waitForFunction((icon) => icon?.getAttribute('data-assistant-state') === 'idle', speakerIconHandle, { timeout: 10000 });
   const reply = normalizeVisibleDailyText(await panel.locator('.assistantMessage').last().innerText());
   if (topic !== 'خشم') {
     assert.ok(reply.includes('روز ' + dayNumber), 'assistant answer must use the selected day context');
@@ -107,6 +107,8 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
         ? 15
         : assistantDayMode === 'relationship'
           ? 10
+          : assistantDayMode === 'control-gate'
+            ? 11
     : ['adaptedLegacyStreak', 'adaptedLegacyImprovement', 'adaptedAnxietyStreak', 'adaptedAnxietyImprovement', 'adaptedGriefStreak', 'adaptedGriefImprovement'].includes(assistantDayMode)
       ? 3
       : ['adaptedLegacy', 'adaptedLegacySame', 'adaptedAnxiety', 'adaptedGrief'].includes(assistantDayMode)
@@ -174,6 +176,31 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
     // The app consumes generated runtime shards, not path-content.json.
     // Inject this fixture into the real T03 override shard so the test covers
     // both runtime loading and the shared safety-metadata merge contract.
+    if (url.pathname.endsWith('/content/runtime-v1/overrides/T31.json')) {
+      const payload = structuredClone(dailyTextOverrides.categories['کنترل‌گری']);
+      const safetyDay = payload.days?.find((item) => Number(item.day) === dayNumber);
+      assert.ok(safetyDay, 'the T31 runtime override shard must contain the selected day');
+      if (assistantDayMode === 'control-restricted') {
+        Object.assign(safetyDay, {
+          risk_level: 'moderate',
+          subtopic_ids: ['T31-S03'],
+          control_context: 'relationship_power_safety',
+          // Make the approved rest path explicit in this runtime fixture. The
+          // canonical topic shard also carries rest guidance, so asserting
+          // against the unmerged daily-text-overrides fixture was incorrect.
+          restExerciseText: controlRestrictedRestExercise,
+        });
+      } else {
+        delete safetyDay.subtopic_ids;
+        delete safetyDay.control_context;
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json; charset=utf-8',
+        body: JSON.stringify(payload),
+      });
+      return;
+    }
     if (url.pathname.endsWith('/content/runtime-v1/topics/T03.json')) {
       t03RuntimeShardServed = true;
       await route.continue();
@@ -230,11 +257,18 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
           topic_id: ({ 'خشم':'T01','اضطراب':'T02','ترس':'T03','نفرت':'T04','حسادت':'T05','غم و سوگ':'T06','احساس گناه':'T07','وابستگی عاطفی':'T08','اهمال‌کاری':'T09','بی‌خوابی و مشکلات خواب':'T10','عادت‌های تکراری':'T11','مرزبندی و نه گفتن':'T12','تنهایی':'T13','کمبود انگیزه':'T14','اعتمادبه‌نفس پایین':'T15','افکار منفی و نشخوار فکری':'T16','مشکلات رابطه':'T17','نفرت از خود':'T18','خودسرزنشی':'T19','کمال‌گرایی':'T20','اجتناب':'T21','استرس':'T22','احساس بی‌ارزشی':'T23','مشکل در کنترل هیجان':'T24','رنجش و کینه':'T25','شرم':'T26','ترس از قضاوت':'T27','ترس از شکست':'T28','ترس از طرد شدن':'T29','شک و تردید':'T30','کنترل‌گری':'T31','بی‌انگیزگی':'T32','خودانتقادی':'T33','مشکل دیگر':'T34' })[topicKey] || 'T01',
           day: dayNumber,
           review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
-          risk_level: assistantDayMode === 'fear-caution' ? 'caution' : 'routine',
+          risk_level: assistantDayMode === 'fear-caution' ? 'caution'
+            : assistantDayMode === 'control-restricted' ? 'moderate' : 'routine',
           ...(assistantDayMode === 'fear-caution' ? {
             safety_rule_ids: ['SR-T03-D14'],
             when_to_seek_human_support: 'اگر فشار ادامه یافت، از متخصص سلامت روان یا فرد مورد اعتماد کمک بگیر.',
             stop_conditions: ['اگر تمرین باعث افزایش محسوس ترس یا احساس ناایمنی شد، آن را متوقف کن.'],
+          } : {}),
+          ...(assistantDayMode === 'control-restricted' ? {
+            subtopic_ids: ['T31-S02'],
+            control_context: 'interpersonal_coercive_control',
+            contraindications: ['در وضعیت تهدید یا احتمال تلافی، اقدام مستقیم بین‌فردی انجام نده.'],
+            stop_conditions: ['در صورت تهدید، اجبار یا افزایش خطر، تمرین را متوقف کن.'],
           } : {}),
         });
       }
@@ -265,7 +299,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
 }
 
 async function assertGriefAdaptiveDay(mode, dayNumber, exerciseField, actionField) {
-  const page = await browser.newPage();
+  const page = await browser.newPage({ reducedMotion: 'reduce' });
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
   await openDay(page, { problem: 'غم و سوگ', assistantDayMode: mode });
@@ -343,7 +377,7 @@ try {
   let completedAnswers = 0;
 
   for (const topic of topics) {
-    const page = await browser.newPage();
+    const page = await browser.newPage({ reducedMotion: 'reduce' });
     const errors = [];
     page.on('pageerror', error => errors.push(String(error)));
     page.on('request', request => {
@@ -373,6 +407,8 @@ try {
         await trigger.click();
         await prompt.waitFor({ state: 'visible' });
       }
+      const shouldAnimate = questionIndex === 0 || (topic.id === 'T31' && questionIndex === 5);
+      await page.emulateMedia({ reducedMotion: shouldAnimate ? 'no-preference' : 'reduce' });
       const question = questions[questionIndex];
       await prompt.getByRole('button', { name: question, exact: true }).click();
       const previousReplyCount = await panel.locator('.assistantMessage').count();
@@ -386,6 +422,46 @@ try {
           + JSON.stringify(replies) + '; pageErrors=' + JSON.stringify(errors)
           + '; cause=' + error.message);
       });
+
+      if (questionIndex === 0) {
+        await page.waitForFunction(() =>
+          document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon')
+            ?.getAttribute('data-assistant-state') === 'typing',
+        null, { timeout: 10000 });
+        const initialPartial = await panel.locator('.assistantMessage').last().locator('p').first().innerText();
+        await page.waitForFunction((previousLength) => {
+          const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child p');
+          const icon = document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon');
+          return icon?.getAttribute('data-assistant-state') === 'typing'
+            && (reply?.innerText.length || 0) > previousLength;
+        }, initialPartial.length, { timeout: 10000 });
+        const intermediatePartial = await panel.locator('.assistantMessage').last().locator('p').first().innerText();
+        await page.waitForFunction(() =>
+          document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon')
+            ?.getAttribute('data-assistant-state') === 'idle',
+        null, { timeout: 20000 });
+        const completeAnswer = await panel.locator('.assistantMessage').last().locator('p').first().innerText();
+        assert.ok(intermediatePartial.length > initialPartial.length,
+          topic.id + ' first prepared answer must visibly reveal additional words over time');
+        assert.ok(intermediatePartial.length < completeAnswer.length,
+          topic.id + ' first prepared answer must remain incomplete during the typing phase');
+      } else {
+        if ([5, 6, 10, 11].includes(questionIndex)) {
+          const safetyReminder = panel.locator('.assistantMessage').last().locator('.dailyAssistantSafetyReminder');
+          if (topic.id === 'T31' && questionIndex === 5) {
+            await page.waitForFunction(() =>
+              document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon')
+                ?.getAttribute('data-assistant-state') === 'typing',
+            null, { timeout: 10000 });
+            assert.equal(await safetyReminder.count(), 0,
+              topic.id + ' safety reminder must stay hidden while the animated answer is being typed');
+          }
+        }
+        await page.waitForFunction(() =>
+          document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon')
+            ?.getAttribute('data-assistant-state') === 'idle',
+        null, { timeout: 20000 });
+      }
 
       const userQuestion = normalizeVisibleDailyText(await panel.locator('.userMessage').last().innerText());
       assert.ok(userQuestion.includes(normalizeVisibleDailyText(question)),
@@ -464,30 +540,117 @@ try {
   assert.deepEqual(workerRequests, [],
     'prepared daily answers must not call a Worker or external assistant provider');
 
-  // T31 keeps its catalogue visible, but every choice remains disabled until
-  // its three-way control context has been explicitly reviewed.
-  const controlSafetyPage = await browser.newPage();
+  // T31 keeps all fourteen daily questions available even when its context
+  // metadata needs review. Missing context produces a conservative safety note,
+  // not a blanket lock that suppresses the whole guide.
+  const controlSafetyPage = await browser.newPage({ reducedMotion: 'reduce' });
   await openDay(controlSafetyPage, { problem: 'کنترل‌گری' });
   const controlPanel = controlSafetyPage.locator('.globalAssistantDialog');
   await controlPanel.waitFor({ state: 'visible' });
   const controlTrigger = controlPanel.getByTestId('extended-daily-prompt-trigger');
   await controlTrigger.waitFor({ state: 'visible' });
-  assert.equal(await controlTrigger.isDisabled(), false,
-    'T31 must allow opening the prepared-question catalogue while its answers remain safety-locked');
+  assert.equal(await controlTrigger.isDisabled(), false);
   await controlTrigger.click();
   const controlPrompt = controlSafetyPage.locator('#library-assistant-prompt-dialog');
   await controlPrompt.waitFor({ state: 'visible' });
   assert.equal(await controlPrompt.locator('[data-prompt-option]').count(), 14,
-    'T31 must show all fourteen prepared questions while its control context is unclassified');
-  assert.equal(await controlPrompt.locator('[data-prompt-option]:not(:disabled)').count(), 0,
-    'T31 must keep every prepared question disabled until its control context is reviewed');
-  assert.doesNotMatch(await controlPanel.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/u);
-  assert.match(await controlPanel.innerText(), /ملاحظه ایمنی ثبت‌شده|نیاز به بازبینی ایمنی/u);
+    'T31 must expose all fourteen prepared questions');
+  assert.equal(await controlPrompt.locator('[data-prompt-option]:not(:disabled)').count(), 14,
+    'T31 must keep all prepared questions available when only control-context metadata is incomplete');
+  assert.match(await controlPanel.innerText(), /این روز نیازمند احتیاط است/u);
+  for (const [questionIndex, question] of questions.entries()) {
+    if (questionIndex > 0) {
+      await controlTrigger.click();
+      await controlPrompt.waitFor({ state: 'visible' });
+    }
+    await controlPrompt.getByRole('button', { name: question, exact: true }).click();
+    await controlPanel.getByRole('button', { name: 'ارسال' }).click();
+    await controlSafetyPage.waitForFunction(() => {
+      const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child');
+      return Boolean(reply && reply.querySelector('[data-assistant-state]')?.getAttribute('data-assistant-state') === 'idle'
+        && (reply.querySelector('p')?.innerText.length || 0) > 35
+        && !reply.innerText.includes('در حال بررسی پرسش'));
+    }, { timeout: 12000 });
+    const answer = await controlPanel.locator('.assistantMessage').last().innerText();
+    assert.ok(normalizeVisibleDailyText(answer).includes('روز 1'), 'T31 prepared answer must remain grounded in its selected day: ' + question);
+    assert.ok(answer.length > 80, 'T31 must return substantive guidance for every prepared question: ' + question);
+  }
   await controlSafetyPage.close();
+
+  // On T31's relationship-gated days, the safety notice remains visible but
+  // must not disable the full catalogue. Direct-action questions get a safe
+  // alternative until the interaction is confirmed safe.
+  const gatedControlPage = await browser.newPage({ reducedMotion: 'reduce' });
+  await openDay(gatedControlPage, { problem: 'کنترل‌گری', assistantDayMode: 'control-gate' });
+  const gatedControlPanel = gatedControlPage.locator('.globalAssistantDialog');
+  await gatedControlPanel.waitFor({ state: 'visible' });
+  const gatedControlNotice = gatedControlPanel.getByTestId('extended-topic-relationship-safety-gate');
+  await gatedControlNotice.waitFor({ state: 'visible' });
+  const gatedControlTrigger = gatedControlPanel.getByTestId('extended-daily-prompt-trigger');
+  await gatedControlTrigger.click();
+  const gatedControlPrompt = gatedControlPage.locator('#library-assistant-prompt-dialog');
+  await gatedControlPrompt.waitFor({ state: 'visible' });
+  assert.equal(await gatedControlPrompt.locator('[data-prompt-option]').count(), 14);
+  assert.equal(await gatedControlPrompt.locator('[data-prompt-option]:not(:disabled)').count(), 14,
+    'T31 day 11 must keep all fourteen prepared questions available while interaction safety is unconfirmed');
+  await gatedControlPrompt.getByRole('button', { name: questions[0], exact: true }).click();
+  await gatedControlPanel.getByRole('button', { name: 'ارسال' }).click();
+  await gatedControlPage.waitForFunction(() => {
+    const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child');
+    return Boolean(reply && reply.querySelector('[data-assistant-state]')?.getAttribute('data-assistant-state') === 'idle'
+      && !reply.innerText.includes('در حال بررسی پرسش'));
+  }, { timeout: 12000 });
+  const gatedInfoAnswer = await gatedControlPanel.locator('.assistantMessage').last().innerText();
+  assert.match(gatedInfoAnswer, /ایمنی تعامل مستقیم/u);
+  await gatedControlTrigger.click();
+  await gatedControlPrompt.waitFor({ state: 'visible' });
+  await gatedControlPrompt.getByRole('button', { name: questions[2], exact: true }).click();
+  await gatedControlPanel.getByRole('button', { name: 'ارسال' }).click();
+  await gatedControlPage.waitForFunction(() => {
+    const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child');
+    return Boolean(reply && reply.querySelector('[data-assistant-state]')?.getAttribute('data-assistant-state') === 'idle'
+      && !reply.innerText.includes('در حال بررسی پرسش'));
+  }, { timeout: 12000 });
+  const gatedActionAnswer = await gatedControlPanel.locator('.assistantMessage').last().innerText();
+  const gatedSource = dailyTextOverrides.categories['کنترل‌گری'].days.find((item) => Number(item.day) === 11);
+  assert.ok(gatedSource);
+  assert.equal(gatedActionAnswer.includes(gatedSource.actionText), false,
+    'T31 day 11 must not present an interpersonal action before safety is confirmed');
+  assert.match(gatedActionAnswer, /گزینه استراحت ثبت‌شده|جایگزین کم‌خطر فعلی/u);
+  await gatedControlPage.close();
+
+  // Elevated T31 risk does not suppress the guide; it switches to a safer
+  // alternative and must not expose the potentially unsafe original exercise.
+  const restrictedControlPage = await browser.newPage({ reducedMotion: 'reduce' });
+  await openDay(restrictedControlPage, { problem: 'کنترل‌گری', assistantDayMode: 'control-restricted' });
+  const restrictedControlPanel = restrictedControlPage.locator('.globalAssistantDialog');
+  await restrictedControlPanel.waitFor({ state: 'visible' });
+  await restrictedControlPanel.getByTestId('extended-daily-prompt-trigger').click();
+  const restrictedPrompt = restrictedControlPage.locator('#library-assistant-prompt-dialog');
+  await restrictedPrompt.waitFor({ state: 'visible' });
+  await restrictedPrompt.getByRole('button', { name: questions[0], exact: true }).click();
+  await restrictedControlPanel.getByRole('button', { name: 'ارسال' }).click();
+  await restrictedControlPage.waitForFunction(() => {
+    const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child');
+    return Boolean(reply && reply.querySelector('[data-assistant-state]')?.getAttribute('data-assistant-state') === 'idle'
+      && !reply.innerText.includes('در حال بررسی پرسش'));
+  }, { timeout: 12000 });
+  const restrictedAnswer = await restrictedControlPanel.locator('.assistantMessage').last().innerText();
+  assert.match(restrictedAnswer, /سطح خطر ثبت‌شده(?: برای این روز)? بالاتر از حالت عادی/u);
+  const restrictedSource = dailyTextOverrides.categories['کنترل‌گری'].days.find((item) => Number(item.day) === 1);
+  assert.ok(restrictedSource);
+  assert.equal(restrictedAnswer.includes(restrictedSource.exercise), false,
+    'elevated-risk T31 answer must not expose the original exercise as an instruction');
+  assert.equal(restrictedAnswer.includes(restrictedSource.actionText), false,
+    'elevated-risk T31 answer must not expose the original action as an instruction');
+  assert.ok(restrictedAnswer.includes('گزینه استراحت ثبت‌شده همین روز:'));
+  assert.ok(restrictedAnswer.includes('نسخه استراحت تمرین: ' + controlRestrictedRestExercise),
+    'elevated-risk T31 answer must use the exact approved rest alternative from the merged runtime fixture');
+  await restrictedControlPage.close();
 
   // T03 day 14 has an explicit safety-rule requirement. The catalogue remains
   // visible, but the UI must lock every choice when the source record is blocked.
-  const fearSafetyPage = await browser.newPage();
+  const fearSafetyPage = await browser.newPage({ reducedMotion: 'reduce' });
   await openDay(fearSafetyPage, { problem: 'ترس', assistantDayMode: 'fear-blocked' });
   const fearPanel = fearSafetyPage.locator('.globalAssistantDialog');
   await fearPanel.waitFor({ state: 'visible' });
@@ -504,7 +667,7 @@ try {
     'T03 day 14 must display the daily safety block notice');
   await fearSafetyPage.close();
 
-  const fearCautionPage = await browser.newPage();
+  const fearCautionPage = await browser.newPage({ reducedMotion: 'reduce' });
   await openDay(fearCautionPage, { problem: 'ترس', assistantDayMode: 'fear-caution' });
   const cautionPanel = fearCautionPage.locator('.globalAssistantDialog');
   await cautionPanel.waitFor({ state: 'visible' });

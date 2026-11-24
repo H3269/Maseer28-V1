@@ -110,7 +110,11 @@ try {
   await dayOnePanel.getByRole('button', { name: 'ارسال' }).click();
   await dayOnePage.waitForFunction((previous) => {
     const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-    return replies.length > previous && !replies.at(-1).innerText.includes('در حال بررسی پرسش');
+    const latest = replies.at(-1);
+    const speaker = latest?.querySelector('.globalAssistantSpeakerIcon');
+    return replies.length > previous
+      && speaker?.getAttribute('data-assistant-state') === 'idle'
+      && latest.innerText.includes('نقشه حوزه‌های اتکای عاطفی');
   }, dayOnePreviousReplyCount, { timeout: 15000 });
   const dayOneReply = await dayOnePanel.locator('.assistantMessage').last().innerText();
   assert.match(dayOneReply, /نقشه حوزه‌های اتکای عاطفی/);
@@ -143,7 +147,11 @@ try {
   await gatedPanel.getByRole('button', { name: 'ارسال' }).click();
   await gatedPage.waitForFunction((previous) => {
     const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-    return replies.length > previous && !replies.at(-1).innerText.includes('در حال بررسی پرسش');
+    const latest = replies.at(-1);
+    const speaker = latest?.querySelector('.globalAssistantSpeakerIcon');
+    return replies.length > previous
+      && speaker?.getAttribute('data-assistant-state') === 'idle'
+      && latest.innerText.trim().length > 0;
   }, daySixPreviousReplyCount, { timeout: 15000 });
   const daySixReply = await gatedPanel.locator('.assistantMessage').last().innerText();
   const daySixSource = overrides.categories['وابستگی عاطفی'].days.find((item) => Number(item.day) === 6);

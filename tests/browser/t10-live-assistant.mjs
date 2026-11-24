@@ -143,9 +143,13 @@ async function verifyDay(browser, dayNumber) {
     const assistantReply = page.locator('.assistantMessage p').last();
     await assistantReply.waitFor({ state: 'visible', timeout: 10000 });
     await page.waitForFunction(() => {
-      const reply = document.querySelector('.assistantMessage:last-of-type p');
-      return Boolean(reply && !reply.innerText.includes('در حال بررسی پرسش'));
-    }, { timeout: 10000 }).catch(() => {});
+      const dialog = document.querySelector('.globalAssistantDialog');
+      const reply = dialog?.querySelector('.assistantMessage:last-child');
+      const speaker = reply?.querySelector('.globalAssistantSpeakerIcon');
+      return Boolean(reply && speaker?.getAttribute('data-assistant-state') === 'idle'
+        && reply.querySelector('p')?.innerText.trim()
+        && !reply.innerText.includes('در حال بررسی پرسش'));
+    }, null, { timeout: 20000 });
     const replyText = await assistantReply.innerText();
     assert.ok(normalize(replyText).includes(normalize(source.exercise)),
       `T10 prepared assistant must explain the exact active-day exercise; actual reply: ${replyText}`);

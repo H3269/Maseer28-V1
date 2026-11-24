@@ -751,7 +751,7 @@ test('T15-T34 fixed answers q05-q14 remain anchored to their own daily source fi
 
       const stopAnswer = answerFor('q07');
       assert.doesNotMatch(stopAnswer, /موضوع:\s/u,
-        topicId + ' day ' + day + ' q07 must not reintroduce a retired topic heading');
+        topicId + ' day ' + day + ' q07 must not reintroduce a retired topic heading: ' + stopAnswer);
       const stopConditions = dailyContent.stop_conditions || dailyContent.stopConditions;
       if (Array.isArray(stopConditions) && stopConditions.length) {
         for (const condition of stopConditions.filter((item) => typeof item === 'string' && item.trim())) {

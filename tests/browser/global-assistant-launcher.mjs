@@ -236,7 +236,11 @@ try {
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   await page.waitForFunction((count) => {
     const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-    return replies.length > count && !/در حال بررسی پرسش/u.test(replies.at(-1)?.innerText || '');
+    const latest = replies.at(-1);
+    const speaker = latest?.querySelector('.globalAssistantSpeakerIcon');
+    return replies.length > count
+      && speaker?.getAttribute('data-assistant-state') === 'idle'
+      && /هنر شناخت و دگرگونی احساسات/u.test(latest?.innerText || '');
   }, previousReplyCount);
   const libraryFollowUp = dialog.locator('.assistantMessage').last();
   assert.match(await libraryFollowUp.innerText(), /هنر شناخت و دگرگونی احساسات/u);

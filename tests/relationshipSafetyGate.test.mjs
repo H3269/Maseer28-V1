@@ -14,11 +14,19 @@ test('relationship safety gate preserves the current shared date map across T03-
   const sharedTopics = registry.topics.filter((topic) => Number(topic.topic_id.slice(1)) >= 3);
   assert.equal(sharedTopics.length, 32);
   for (const topic of sharedTopics) {
-    const gatedDays = topic.topic_id === 'T06' ? [11, 15] : [6, 11, 15, 24];
+    const gatedDays = topic.topic_id === 'T06' ? [11, 15] : topic.topic_id === 'T31' ? [11] : [6, 11, 15, 24];
     for (const day of gatedDays) {
       const canonicalId = topic.topic_id + '-D' + String(day).padStart(2, '0');
-      assert.ok(getRelationshipSafetyGate({ id: canonicalId, topic_id: topic.topic_id, day }),
+      const daySpecificGate = topic.topic_id === 'T31' ? { relationship_safety_action_requires_confirmation: true } : {};
+      assert.ok(getRelationshipSafetyGate({ id: canonicalId, topic_id: topic.topic_id, day, ...daySpecificGate }),
         topic.topic_id + ' day ' + day + ' must gate the shared interpersonal prompt');
+    }
+    if (topic.topic_id === 'T31') {
+      for (const day of [6, 15, 24]) {
+        const canonicalId = topic.topic_id + '-D' + String(day).padStart(2, '0');
+        assert.equal(getRelationshipSafetyGate({ id: canonicalId, topic_id: topic.topic_id, day }), null,
+          'T31 day ' + day + ' must not inherit an unrelated direct-interaction gate');
+      }
     }
     if (topic.topic_id === 'T06') {
       for (const day of [6, 24]) {
@@ -41,12 +49,13 @@ test('legacy and canonical identifiers preserve shared-topic gates and fail clos
   const registry = JSON.parse(await readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'));
   const sharedTopics = registry.topics.filter((topic) => Number(topic.topic_id.slice(1)) >= 3);
   for (const topic of sharedTopics) {
-    const gatedDays = topic.topic_id === 'T06' ? [11, 15] : [6, 11, 15, 24];
+    const gatedDays = topic.topic_id === 'T06' ? [11, 15] : topic.topic_id === 'T31' ? [11] : [6, 11, 15, 24];
     for (const day of gatedDays) {
       const legacyId = topic.name + '-' + day;
       const canonicalId = topic.topic_id + '-D' + String(day).padStart(2, '0');
-      assert.ok(getRelationshipSafetyGate({ id: legacyId }), legacyId + ' must remain gated');
-      assert.ok(getRelationshipSafetyGate({ id: canonicalId }), canonicalId + ' must remain gated');
+      const daySpecificGate = topic.topic_id === 'T31' ? { relationship_safety_action_requires_confirmation: true } : {};
+      assert.ok(getRelationshipSafetyGate({ id: legacyId, ...daySpecificGate }), legacyId + ' must remain gated');
+      assert.ok(getRelationshipSafetyGate({ id: canonicalId, topic_id: topic.topic_id, day, ...daySpecificGate }), canonicalId + ' must remain gated');
     }
     if (topic.topic_id === 'T06') {
       assert.equal(getRelationshipSafetyGate({ id: topic.name + '-6', day: 6 }), null);

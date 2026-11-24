@@ -91,7 +91,7 @@ async function openAngerDay(page) {
 
 const browser = await chromium.launch({ headless: true });
 try {
-  const page = await browser.newPage();
+  const page = await browser.newPage({ reducedMotion: 'reduce' });
   const pageErrors = [];
   page.on('pageerror', (error) => pageErrors.push(String(error)));
   const panel = await openAngerDay(page);
@@ -113,8 +113,14 @@ try {
     await panel.getByRole('button', { name: 'ارسال' }).click();
     await page.waitForFunction((previous) => {
       const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
-      return replies.length > previous && !replies.at(-1).innerText.includes('در حال بررسی پرسش');
-    }, previousCount, { timeout: 15000 });
+      const latest = replies.at(-1);
+      if (!latest || replies.length <= previous) return false;
+      const speaker = latest.querySelector('[data-assistant-state]');
+      const safetyCard = latest.querySelector('[data-testid="daily-assistant-safety-reminder"]');
+      return speaker?.getAttribute('data-assistant-state') === 'idle'
+        && Boolean(safetyCard)
+        && !latest.innerText.includes('در حال بررسی پرسش');
+    }, previousCount, { timeout: 30000 });
 
     const reply = panel.locator('.assistantMessage').last();
     const safetyCard = reply.getByTestId('daily-assistant-safety-reminder');
@@ -123,21 +129,63 @@ try {
     assert.doesNotMatch(await safetyCard.innerText(), /۰۹۱۹۰۸۸۹۰۶۲/u, 'the contact-number box must not appear inside the safety card');
     assert.equal(await safetyCard.locator('.dailyAssistantSafetyReminderShafa').count(), 0);
 
+    // Use a live locator rather than an ElementHandle captured across React
+    // updates. The card is mounted only after the answer finishes typing; the
+    // semantic heading must have a real layout box and be visible to Playwright.
+    const safetyHeading = safetyCard.getByRole('heading', { name: 'یادآوری مهم درباره ایمنی شما' });
+    await safetyHeading.waitFor({ state: 'visible', timeout: 5000 });
+    // React can replace the message subtree during the final typing-state
+    // transition. Poll the current DOM node until its layout is stable rather
+    // than taking a one-shot boundingBox snapshot immediately after visibility.
+    await page.waitForFunction(() => {
+      const heading = document.querySelector(
+        '.globalAssistantDialog .assistantMessage:last-child [data-testid="daily-assistant-safety-reminder"] h3',
+      );
+      if (!heading) return false;
+      const rect = heading.getBoundingClientRect();
+      const style = window.getComputedStyle(heading);
+      return style.display !== 'none'
+        && style.visibility !== 'hidden'
+        && rect.width > 0
+        && rect.height > 0
+        && heading.getClientRects().length > 0;
+    }, { timeout: 5000 });
+
     const colors = await safetyCard.evaluate((node) => {
       const card = getComputedStyle(node);
-      const heading = getComputedStyle(node.querySelector('h3'));
-      const message = getComputedStyle(node.closest('.assistantMessage'));
+      const headingNode = node.querySelector('h1, h2, h3, h4, h5, h6, [role="heading"]');
+      const messageNode = node.closest('.assistantMessage');
+      const headingStyle = headingNode ? window.getComputedStyle(headingNode) : null;
+      const headingRect = headingNode?.getBoundingClientRect();
       return {
         background: card.backgroundColor,
         border: card.borderTopColor,
-        heading: heading.color,
-        messageBackground: message.backgroundColor,
+        headingText: headingNode?.textContent?.trim() || '',
+        headingDisplay: headingStyle?.getPropertyValue('display') || '',
+        headingVisible: (() => {
+          if (!headingNode) return false;
+          let effectiveOpacity = 1;
+          for (let current = headingNode; current && current instanceof Element; current = current.parentElement) {
+            const style = window.getComputedStyle(current);
+            if (style.display === 'none' || style.visibility === 'hidden' || style.visibility === 'collapse') return false;
+            effectiveOpacity *= Number.parseFloat(style.opacity || '1');
+          }
+          return effectiveOpacity > 0.01 && Boolean(headingRect?.width && headingRect?.height && headingNode.getClientRects().length);
+        })(),
+        headingWidth: headingRect?.width || 0,
+        headingHeight: headingRect?.height || 0,
+        headingHasLayout: Boolean(headingNode?.getClientRects().length),
+        messageBackground: messageNode ? window.getComputedStyle(messageNode).backgroundColor : null,
       };
     });
     assert.notEqual(colors.background, 'rgba(0, 0, 0, 0)', 'the main safety card must have a visible background');
     assert.notEqual(colors.background, colors.messageBackground, 'the safety card must be distinct from the assistant message but coordinated with its palette');
     assert.notEqual(colors.border, 'rgba(0, 0, 0, 0)', 'the main safety card must retain a visible border');
-    assert.ok(colors.heading && colors.heading !== 'rgba(0, 0, 0, 0)', 'the safety heading must remain visible');
+    assert.ok(colors.headingText.length > 0, 'the safety card must contain a semantic heading');
+    assert.notEqual(colors.headingDisplay, 'none', 'the safety heading must participate in layout');
+    assert.ok(colors.headingVisible, 'the safety heading must pass the browser visibility check');
+    assert.ok(colors.headingHasLayout && colors.headingWidth > 0 && colors.headingHeight > 0,
+      'the safety heading must occupy visible layout space');
   }
 
   assert.deepEqual(pageErrors, [], 'T01 safety-card browser flow must not raise page errors');

@@ -42,6 +42,7 @@ const T12_RUNTIME_METADATA_FIELDS = Object.freeze([
 const SAFETY_RUNTIME_METADATA_FIELDS = Object.freeze([
   'risk_level', 'safety_rule_ids', 'stop_conditions', 'contraindications',
   'when_to_seek_human_support', 'subtopic_ids', 'control_context',
+  'relationship_safety_action_requires_confirmation',
 ]);
 
 export function mergeDailyTextOverrides(content, overrides) {

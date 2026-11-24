@@ -165,9 +165,11 @@ test('global digit localization is installed at the app root without changing ed
 
 test('global assistant conversation is one right-to-left transcript', async () => {
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
+  const transcript = await readFile(new URL('../src/features/assistant/AssistantTranscript.jsx', import.meta.url), 'utf8');
   const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
   assert.equal((launcher.match(/className="assistantChatShell globalAssistantChat"/g) || []).length, 1);
-  assert.match(launcher, /className="assistantTranscript" dir="rtl"/);
+  assert.match(launcher, /<AssistantTranscript messages=\{messages\}/);
+  assert.match(transcript, /className="assistantTranscript" dir="rtl"/);
   // Every page uses the fixed question picker; no typing field remains.
   assert.match(launcher, /className="assistantComposer libraryAssistantGuidedComposer"/);
   assert.match(launcher, /<form[^>]*dir="rtl"[^>]*onSubmit=\{send\}/);
@@ -226,11 +228,11 @@ test('free-form assessment assistant stays disconnected; all three hosts use the
 
 
 test('assistant speaker icon stays compact, uses a soft gold sparkle, and reflects active response state', async () => {
-  const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
+  const transcript = await readFile(new URL('../src/features/assistant/AssistantTranscript.jsx', import.meta.url), 'utf8');
   const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
   const motion = await readFile(new URL('../src/styles/soft-motion.css', import.meta.url), 'utf8');
-  assert.match(launcher, /data-assistant-state=\{item\.role === 'assistant' && index === messages\.length - 1/);
-  assert.match(launcher, /M12 2\.8 14\.25 9\.75 21\.2 12/);
+  assert.match(transcript, /data-assistant-state=\{item\.role === 'assistant' && index === messages\.length - 1/);
+  assert.match(transcript, /M12 2\.8 14\.25 9\.75 21\.2 12/);
   assert.match(css, /color: #C49A42 !important/);
   assert.match(css, /\.globalAssistantChat \.globalAssistantSpeakerIcon svg \{[^}]*width: 1em;[^}]*height: 1em;/);
   assert.match(motion, /@keyframes m28AssistantIconBreath/);
@@ -241,13 +243,22 @@ test('assistant speaker icon stays compact, uses a soft gold sparkle, and reflec
 
 test('prepared assistant answers reveal word by word and the gold speaker icon breathes only until reveal completes', async () => {
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
+  const typewriter = await readFile(new URL('../src/features/assistant/useAssistantTypewriter.js', import.meta.url), 'utf8');
+  const transcript = await readFile(new URL('../src/features/assistant/AssistantTranscript.jsx', import.meta.url), 'utf8');
   const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
   const motion = await readFile(new URL('../src/styles/soft-motion.css', import.meta.url), 'utf8');
-  assert.ok(launcher.includes('const words = revealText.match('));
-  assert.match(launcher, /\}, 42\)/, 'word reveal should use a measured, non-instant pace');
-  assert.match(launcher, /return \(\) => window\.clearInterval\(timer\)/, 'a replaced answer must cancel its previous reveal timer');
-  assert.match(launcher, /setTypingProgress\(null\)/, 'a new question must clear the previous reveal state');
-  assert.match(launcher, /typingProgress\?\.id === item\.id && typingProgress\.active \? 'typing' : 'idle'/);
+  assert.match(launcher, /useAssistantTypewriter\(messages, sending\)/, 'the launcher must delegate reveal lifecycle to its dedicated hook');
+  assert.match(launcher, /resetTypingProgress\(\)/, 'conversation boundaries must reset the isolated reveal state');
+  assert.ok(typewriter.includes('const words = revealText.match('));
+  assert.ok(typewriter.includes(String.raw`revealText.match(/\S+\s*/gu)`), 'word tokenizer must match actual whitespace-delimited words');
+  assert.match(typewriter, /\}, 42\)/, 'word reveal should use a measured, non-instant pace');
+  assert.match(typewriter, /return \(\) => \{\s*window\.clearInterval\(timer\);/, 'a replaced answer must cancel its previous reveal timer and detach its motion listener');
+  assert.match(typewriter, /prefers-reduced-motion: reduce/, 'reduced-motion preference must skip or finish the reveal immediately');
+  assert.match(typewriter, /visibleText \+= words\[visibleCount\]/, 'the reveal should append one token at a time without rebuilding the entire prefix');
+  assert.match(typewriter, /resetTypingProgress: \(\) => setTypingProgress\(null\)/, 'the hook must expose a controlled reset for new turns and context changes');
+  assert.match(transcript, /isLatestAssistantTyping \? 'typing' : 'idle'/);
+  assert.match(transcript, /item\.dailySafetyReminder && !isLatestAssistantTyping && \(/, 'safety reminders must appear only after the latest answer reveal completes');
+  assert.match(transcript, /revealNotInitialized/, 'a new answer must not flash in full before its reveal state is initialized');
   assert.match(css, /color: #C49A42 !important/);
   assert.match(motion, /data-assistant-state="typing"/);
   assert.match(motion, /data-assistant-state="idle"[\s\S]*?animation: none/);

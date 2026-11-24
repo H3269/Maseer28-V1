@@ -3,7 +3,7 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
-const baseURL = process.env.PATH28_BASE_URL || 'http://127.0.0.1:4173/Maseer28/';
+const baseURL = process.env.PATH28_BASE_URL || 'http://127.0.0.1:4173/Maseer28-V1/';
 const browser = await chromium.launch({ headless: true });
 
 const journey = {
@@ -116,6 +116,8 @@ try {
 
     const latestReply = dialog.locator('.assistantMessage').last();
     const latestIcon = latestReply.locator('.globalAssistantSpeakerIcon');
+    let initialPartial = '';
+    let intermediatePartial = '';
     try {
       await page.waitForFunction((previousCount) => {
         const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
@@ -125,6 +127,14 @@ try {
         const icon = document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon');
         return icon?.getAttribute('data-assistant-state') === 'typing';
       }, null, { timeout: 10000 });
+      initialPartial = await latestReply.locator('p').first().innerText();
+      await page.waitForFunction((previousLength) => {
+        const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child p');
+        const icon = document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon');
+        return icon?.getAttribute('data-assistant-state') === 'typing'
+          && (reply?.innerText.length || 0) > previousLength;
+      }, initialPartial.length, { timeout: 10000 });
+      intermediatePartial = await latestReply.locator('p').first().innerText();
       await page.waitForFunction(() => {
         const icon = document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon');
         return icon?.getAttribute('data-assistant-state') === 'idle';
@@ -137,6 +147,11 @@ try {
     }
 
     const replyText = await latestReply.innerText();
+    const completePrimaryParagraph = await latestReply.locator('p').first().innerText();
+    assert.ok(intermediatePartial.length > initialPartial.length,
+      `T14 prepared question ${questionIndex + 1} must reveal additional words progressively`);
+    assert.ok(intermediatePartial.length < completePrimaryParagraph.length,
+      `T14 prepared question ${questionIndex + 1} must not display its complete body before the reveal finishes`);
     assert.ok(replyText.trim().length > 20,
       `T14 prepared question ${questionIndex + 1} must receive a complete, nonempty answer`);
     assert.doesNotMatch(replyText, /در حال بررسی پرسش/u,
@@ -151,8 +166,110 @@ try {
     assert.equal(await dialog.getByTestId('t14-daily-prompt-trigger').count(), 1,
       'the T14 prepared-question trigger must remain available after answering');
   }
+
+  // Reduced-motion users receive the complete answer without a word animation.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await trigger.click();
+  await picker.waitFor({ state: 'visible' });
+  await options.nth(0).click();
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => {
+    const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child');
+    const icon = reply?.querySelector('.globalAssistantSpeakerIcon');
+    return reply && !reply.innerText.includes('در حال بررسی پرسش')
+      && icon?.getAttribute('data-assistant-state') === 'idle';
+  }, null, { timeout: 10000 });
+  const reducedMotionReply = dialog.locator('.assistantMessage').last();
+  assert.ok((await reducedMotionReply.locator('p').first().innerText()).trim().length > 45,
+    'reduced-motion mode must display the complete answer immediately');
+  assert.equal(await reducedMotionReply.locator('.globalAssistantSpeakerIcon').evaluate((element) => getComputedStyle(element).animationName),
+    'none', 'reduced-motion mode must keep the gold icon still');
+
+  // Switching the operating-system preference to reduced motion mid-answer
+  // must stop the active timer and reveal the complete answer immediately.
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await trigger.click();
+  await picker.waitFor({ state: 'visible' });
+  await options.nth(4).click();
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => {
+    const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child');
+    const icon = reply?.querySelector('.globalAssistantSpeakerIcon');
+    return icon?.getAttribute('data-assistant-state') === 'typing'
+      && (reply?.querySelector('p')?.innerText.length || 0) > 0;
+  }, null, { timeout: 10000 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.waitForFunction(() => {
+    const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child');
+    const icon = reply?.querySelector('.globalAssistantSpeakerIcon');
+    return reply && icon?.getAttribute('data-assistant-state') === 'idle'
+      && (reply.querySelector('p')?.innerText.length || 0) > 45;
+  }, null, { timeout: 10000 });
+  assert.equal(await dialog.locator('.assistantMessage').last()
+    .locator('.globalAssistantSpeakerIcon').evaluate((element) => getComputedStyle(element).animationName),
+  'none', 'switching to reduced motion during typing must stop the gold icon animation');
+
+  // Starting another question during an active reveal must cancel the old timer
+  // and keep the two answers isolated.
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await trigger.click();
+  await picker.waitFor({ state: 'visible' });
+  await options.nth(1).click();
+  const beforeInterruptedTurn = await dialog.locator('.assistantMessage').count();
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => {
+    const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child');
+    const icon = reply?.querySelector('.globalAssistantSpeakerIcon');
+    return icon?.getAttribute('data-assistant-state') === 'typing' && (reply?.querySelector('p')?.innerText.length || 0) > 0;
+  }, null, { timeout: 10000 });
+  const interruptedAnswerIndex = (await dialog.locator('.assistantMessage').count()) - 1;
+  const interruptedAnswer = dialog.locator('.assistantMessage').nth(interruptedAnswerIndex);
+  const partialBeforeSwitch = await interruptedAnswer.locator('p').first().innerText();
+  await trigger.click();
+  await picker.waitFor({ state: 'visible' });
+  await options.nth(2).click();
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction((minimumCount) =>
+    document.querySelectorAll('.globalAssistantDialog .assistantMessage').length >= minimumCount,
+  beforeInterruptedTurn + 2, { timeout: 10000 });
+  const frozenAfterSwitch = await interruptedAnswer.locator('p').first().innerText();
+  await page.waitForTimeout(160);
+  assert.equal(await interruptedAnswer.locator('p').first().innerText(), frozenAfterSwitch,
+    'the cancelled answer must stop changing after the next question starts');
+  assert.ok(frozenAfterSwitch.length >= partialBeforeSwitch.length,
+    'the prior answer must remain readable when its reveal is cancelled');
+  await page.waitForFunction(() => {
+    const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child');
+    const icon = reply?.querySelector('.globalAssistantSpeakerIcon');
+    return icon?.getAttribute('data-assistant-state') === 'idle';
+  }, null, { timeout: 20000 });
+  assert.match(await dialog.locator('.userMessage').last().innerText(), /منظور از اقدام اختصاصی امروز چیست/u,
+    'the latest user turn must contain only the newly selected question');
+  assert.doesNotMatch(await dialog.locator('.assistantMessage').last().innerText(), /در حال بررسی پرسش/u,
+    'the latest answer must not remain stuck on the pending placeholder');
+
+  // Changing screens while a response is typing must clear the old conversation.
+  await trigger.click();
+  await picker.waitFor({ state: 'visible' });
+  await options.nth(3).click();
+  await dialog.getByRole('button', { name: 'ارسال' }).click();
+  await page.waitForFunction(() => {
+    const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child');
+    const icon = reply?.querySelector('.globalAssistantSpeakerIcon');
+    return icon?.getAttribute('data-assistant-state') === 'typing' && (reply?.querySelector('p')?.innerText.length || 0) > 0;
+  }, null, { timeout: 10000 });
+  await dialog.getByRole('button', { name: 'بستن پنجره دستیار' }).click();
+  await dialog.waitFor({ state: 'detached' });
+  await page.getByRole('button', { name: 'خانه', exact: true }).click();
+  await page.locator('#dashboard').waitFor({ state: 'visible' });
+  await launcher.click();
+  const homeDialog = page.getByRole('dialog', { name: 'دستیار راهنمای مسیر ۲۸' });
+  await homeDialog.waitFor({ state: 'visible' });
+  assert.equal(await homeDialog.locator('.assistantMessage').count(), 0,
+    'navigation during typing must not leak the previous daily conversation into another screen');
+
   assert.deepEqual(errors, [], 'the T14 browser flow must not emit page or console errors');
-  console.log('PASS: Chromium displayed all 14 T14 prepared questions, revealed each answer word by word, and stopped the gold icon after each answer.');
+  console.log('PASS: T14 all 14 answers reveal progressively; reduced motion, rapid question replacement, cancellation, gold-icon completion, and screen-navigation reset are covered.');
 } finally {
   await browser.close();
 }

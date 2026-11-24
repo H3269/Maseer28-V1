@@ -1317,7 +1317,15 @@
       "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
-      "safety_rule_ids": []
+      "safety_rule_ids": [
+        "SR-T31-D01",
+        "SR-T31-D02",
+        "SR-T31-D06",
+        "SR-T31-D10",
+        "SR-T31-D16",
+        "SR-T31-D21",
+        "SR-T31-D22"
+      ]
     },
     {
       "subtopic_id": "T31-S02",
@@ -1329,7 +1337,22 @@
       "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
-      "safety_rule_ids": []
+      "safety_rule_ids": [
+        "SR-T31-D03",
+        "SR-T31-D04",
+        "SR-T31-D05",
+        "SR-T31-D07",
+        "SR-T31-D08",
+        "SR-T31-D09",
+        "SR-T31-D11",
+        "SR-T31-D12",
+        "SR-T31-D14",
+        "SR-T31-D15",
+        "SR-T31-D17",
+        "SR-T31-D19",
+        "SR-T31-D20",
+        "SR-T31-D26"
+      ]
     },
     {
       "subtopic_id": "T31-S03",
@@ -1341,7 +1364,15 @@
       "evidence_ids": [],
       "assessment_question_ids": [],
       "content_ids": [],
-      "safety_rule_ids": []
+      "safety_rule_ids": [
+        "SR-T31-D13",
+        "SR-T31-D18",
+        "SR-T31-D23",
+        "SR-T31-D24",
+        "SR-T31-D25",
+        "SR-T31-D27",
+        "SR-T31-D28"
+      ]
     },
     {
       "subtopic_id": "T32-S01",
