@@ -210,7 +210,13 @@ try {
   await promptDialog.getByRole('button', { name: 'خلاصه کتاب پنجم را بگو.' }).click();
   await dialog.getByRole('button', { name: 'ارسال' }).click();
   try {
-    await page.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')].some((node) => node.innerText.includes('خلاصه راهنمای محتوایی')));
+    await page.waitForFunction(() => {
+      const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+      const latest = replies.at(-1);
+      const speaker = latest?.querySelector('[data-assistant-state]');
+      return latest?.innerText.includes('خلاصه راهنمای محتوایی')
+        && speaker?.getAttribute('data-assistant-state') === 'idle';
+    }, { timeout: 20000 });
   } catch (error) {
     console.error('LIBRARY_ASSISTANT_MESSAGES', JSON.stringify(await dialog.locator('.assistantMessage').allInnerTexts()));
     console.error('LIBRARY_ASSISTANT_DIALOG', await dialog.innerText());
