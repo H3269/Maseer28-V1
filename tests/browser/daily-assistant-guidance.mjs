@@ -108,7 +108,7 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
           ? 10
           : assistantDayMode === 'control-gate'
             ? 11
-    : ['adaptedLegacyStreak, 'adaptedLegacyImprovement', 'adaptedAnxietyStreak', 'adaptedAnxietyImprovement', 'adaptedGriefStreak', 'adaptedGriefImprovement'].includes(assistantDayMode)
+    : ['adaptedLegacyStreak', 'adaptedLegacyImprovement', 'adaptedAnxietyStreak', 'adaptedAnxietyImprovement', 'adaptedGriefStreak', 'adaptedGriefImprovement'].includes(assistantDayMode)
       ? 3
       : ['adaptedLegacy', 'adaptedLegacySame', 'adaptedAnxiety', 'adaptedGrief'].includes(assistantDayMode)
         ? 2
