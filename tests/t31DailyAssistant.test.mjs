@@ -65,7 +65,8 @@ test('T31 elevated-risk records return safe alternatives without exposing unsafe
 });
 
 test('T31 exposes 392 day-grounded prepared answers; only urgent records are blocked', () => {
-  let answerCount = 0;\n  let urgentDayCount = 0;
+  let answerCount = 0;
+  let urgentDayCount = 0;
   const metadataCoverage = {
     risk_level: 0,
     safety_rule_ids: 0,
