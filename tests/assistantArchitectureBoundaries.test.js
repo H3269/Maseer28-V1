@@ -1,9 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-
 const read = (path) => readFile(new URL(path, import.meta.url), 'utf8');
-
 test('daily domain orchestration is isolated from generic page routing', async () => {
   const [pageRouter, dailyTurn] = await Promise.all([
     read('../src/features/assistant/pageAssistantTurn.js'),
@@ -15,7 +13,6 @@ test('daily domain orchestration is isolated from generic page routing', async (
   assert.match(dailyTurn, /daily_guidance_available/);
   assert.match(dailyTurn, /SAFETY_STATUSES\.has\(inputProbe\.status\)/);
 });
-
 test('launcher delegates transcript rendering and typewriter lifecycle', async () => {
   const [launcher, transcript, typewriter] = await Promise.all([
     read('../src/features/assistant/GlobalAssistantLauncher.jsx'),
@@ -38,8 +35,6 @@ test('launcher delegates transcript rendering and typewriter lifecycle', async (
   assert.match(typewriter, /window\.clearInterval\(timer\)/);
   assert.match(typewriter, /resetTypingProgress/);
 });
-
-
 test('T31 keeps its daily catalogue available while restricting only unsafe interpersonal actions', async () => {
   const [dailyTurn, launcher, engine] = await Promise.all([
     read('../src/features/assistant/dailyAssistantTurn.js'),
@@ -51,7 +46,6 @@ test('T31 keeps its daily catalogue available while restricting only unsafe inte
   assert.match(launcher, /activeDailyTopicId !== 'T31' && extendedRelationshipGatePending/);
   assert.match(engine, /relationshipSafetyGateRestriction && relationshipActionQuestion/);
 });
-
 test('daily content provenance and safety presentation do not depend on animation', async () => {
   const [context, transcript] = await Promise.all([
     read('../src/features/assistant/dailyAssistantContext.js'),
