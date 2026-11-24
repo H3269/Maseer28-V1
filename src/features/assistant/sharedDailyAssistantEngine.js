@@ -526,8 +526,13 @@ function buildControlRestrictedAnswer(guide, question) {
     : guide.controlContext === 'interpersonal_coercive_control'
       ? 'اگر رفتار کنترل‌گرانه انجام می‌دهی، وارسی، محدودسازی، تهدید و فشار را متوقف کن و از حمایت مستقل برای تغییر رفتار کمک بگیر. اگر تحت کنترل دیگری هستی، برای تغییر رفتار او مسئول نیستی.'
       : 'تمرکز را فقط بر انتخاب‌ها و رفتارهای خودت نگه دار؛ برای رسیدن به اطمینان، خودت یا فرد دیگری را تحت فشار نگذار.';
+  const dayFocus = paragraph(
+    guide.title && 'عنوان محتوای همین روز: ' + guide.title,
+    guide.objective && 'هدف ثبت‌شده همین روز: ' + guide.objective,
+  );
   const base = paragraph(
     'در روز ' + day + ' از موضوع «' + guide.topic + '»، سطح خطر ثبت‌شده بالاتر از حالت عادی است. برای اینکه راهنمایی روزانه قطع نشود اما رفتار پرخطر هم پیشنهاد نشود، فعلاً بخش اجراییِ تمرین یا اقدام را که شامل کنترل، محدودسازی، مواجهه یا تعامل پرفشار با فرد دیگری است انجام نده.',
+    dayFocus,
     roleSpecific,
     stop && 'شرط توقف ثبت‌شده برای همین روز: ' + stop,
     support && 'زمان دریافت حمایت انسانی: ' + support,
@@ -538,7 +543,7 @@ function buildControlRestrictedAnswer(guide, question) {
   switch (question.kind) {
     case 'exercise_meaning':
     case 'exercise_example':
-      return paragraph(base, 'عنوان و هدف روز: ' + clean(guide.title, 'تمرین روزانه') + (guide.objective ? '؛ هدف ثبت‌شده: ' + guide.objective : ''), privateAlternative, 'این پاسخ به معنی تأیید اجرای تمرین اصلی در شرایط پرخطر نیست.');
+      return paragraph(base, privateAlternative, 'این پاسخ به معنی تأیید اجرای تمرین اصلی در شرایط پرخطر نیست.');
     case 'action_meaning':
     case 'action_example':
       return paragraph(base, 'اقدام بین‌فردی را در این وضعیت اجرا نکن و برای انجام آن موقعیت نساز. فعلاً فقط انتخابی را بررسی کن که در اختیار خودت است و به آزادی یا امنیت فرد دیگری دست نمی‌زند.', privateAlternative);
