@@ -129,6 +129,15 @@ try {
     assert.doesNotMatch(await safetyCard.innerText(), /۰۹۱۹۰۸۸۹۰۶۲/u, 'the contact-number box must not appear inside the safety card');
     assert.equal(await safetyCard.locator('.dailyAssistantSafetyReminderShafa').count(), 0);
 
+    // Assistant transcript rows have an intentional 230ms entrance fade.
+    // Wait for that visual transition to finish before asserting final visibility;
+    // otherwise this check races the animation and reports a temporarily hidden heading.
+    const safetyCardHandle = await safetyCard.elementHandle();
+    await page.waitForFunction((card) => {
+      const heading = card?.querySelector('h1, h2, h3, h4, h5, h6, [role="heading"]');
+      return Boolean(heading?.checkVisibility?.({ checkOpacity: true, checkVisibilityCSS: true }));
+    }, safetyCardHandle, { timeout: 3000 });
+
     const colors = await safetyCard.evaluate((node) => {
       const card = getComputedStyle(node);
       const headingNode = node.querySelector('h1, h2, h3, h4, h5, h6, [role="heading"]');
