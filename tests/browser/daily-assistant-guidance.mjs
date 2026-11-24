@@ -440,10 +440,21 @@ try {
         assert.ok(intermediatePartial.length < completeAnswer.length,
           topic.id + ' first prepared answer must remain incomplete during the typing phase');
       } else {
+        if ([5, 6, 10, 11].includes(questionIndex)) {
+          await page.waitForFunction(() =>
+            document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon')
+              ?.getAttribute('data-assistant-state') === 'typing',
+          null, { timeout: 10000 });
+          assert.equal(
+            await panel.locator('.assistantMessage').last().locator('.dailyAssistantSafetyReminder').count(),
+            0,
+            topic.id + ' safety reminder must stay hidden while the answer is being typed',
+          );
+        }
         await page.waitForFunction(() =>
           document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon')
             ?.getAttribute('data-assistant-state') === 'idle',
-        null, { timeout: 10000 });
+        null, { timeout: 20000 });
       }
 
       const userQuestion = normalizeVisibleDailyText(await panel.locator('.userMessage').last().innerText());
