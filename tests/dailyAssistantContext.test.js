@@ -42,7 +42,7 @@ test('daily assistant context keeps canonical examples while applying visible ad
   assert.equal(resolved.visibleContent.risk_level, 'routine');
 });
 
-test('daily assistant context rejects guidance copied from a different day record', () => {
+test('daily assistant context ignores mismatched adaptation and retains the verified canonical day', () => {
   const source = {
     id: 'حسادت-01', topic_id: 'T05', day: 1,
     exercise: 'تمرین روز اول', actionText: 'اقدام روز اول',
@@ -56,5 +56,9 @@ test('daily assistant context rejects guidance copied from a different day recor
   });
 
   assert.equal(resolved.canonicalIdentity, true);
-  assert.equal(resolved.visibleContent, null);
+  assert.equal(resolved.visibleContent.id, source.id);
+  assert.equal(resolved.visibleContent.day, source.day);
+  assert.equal(resolved.visibleContent.exercise, source.exercise);
+  assert.equal(resolved.visibleContent.actionText, source.actionText);
+  assert.equal(resolved.visibleContent.exerciseExample, source.exerciseExample);
 });
