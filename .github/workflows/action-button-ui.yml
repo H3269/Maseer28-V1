@@ -1,0 +1,30 @@
+name: Fast action button UI regression
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/features/journey/JourneyScreens.jsx"
+      - "src/styles/original-v72.css"
+      - "tests/actionButtonVisualConsistency.test.mjs"
+      - ".github/workflows/action-button-ui.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  action-button-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run focused button consistency checks
+        run: node --test tests/actionButtonVisualConsistency.test.mjs
+      - name: Verify production bundle
+        run: npm run build
