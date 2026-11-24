@@ -547,7 +547,7 @@ function buildControlRestrictedAnswer(guide, question) {
   }
 }
 
-function buildSharedDailyAssistantAnswer({ guide, question, plainSteps } = {}) {
+export function buildSharedDailyAssistantAnswer({ guide, question, plainSteps } = {}) {
   if (!guide || !Object.hasOwn(DISTRESS_KIND_BY_TOPIC, guide.topicId) || !question) return null;
   const expectedQuestion = getSharedDailyAssistantQuestion(guide.topicId, question.value);
   if (!expectedQuestion || expectedQuestion.kind !== question.kind) return null;
