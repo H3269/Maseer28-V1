@@ -94,4 +94,13 @@ test('T31 exposes 392 day-grounded prepared answers; only urgent records are blo
 
   assert.equal(answerCount, (28 - urgentDayCount) * 14, 'every non-urgent T31 day must expose all fourteen prepared answers');
   process.stdout.write('T31 safety metadata coverage: ' + JSON.stringify(metadataCoverage) + '; generated answers: ' + answerCount + '\\n');
+  process.stdout.write('T31 DAILY CONTENT AUDIT: ' + JSON.stringify(t31Days.map((day) => ({
+    day: day.day,
+    id: day.id,
+    title: day.title,
+    exercise: day.exercise || day.instructions || '',
+    action: day.actionText || day.action || '',
+    rest: day.restExerciseText || day.restVersion || '',
+    restAction: day.restActionText || day.restActionVersion || '',
+  }))) + '\\n');
 });
