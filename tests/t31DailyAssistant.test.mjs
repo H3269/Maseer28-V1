@@ -30,6 +30,40 @@ test('T31 has 28 canonical daily records with usable exercise/action source cont
   }
 });
 
+
+test('T31 elevated-risk records return safe alternatives without exposing unsafe source instructions', () => {
+  const dailyContent = {
+    id: 'کنترل‌گری-25',
+    topic_id: 'T31',
+    day: 25,
+    title: 'انتخاب امن · روز 25',
+    exercise: 'UNSAFE_SOURCE_EXERCISE_SENTINEL',
+    actionText: 'UNSAFE_SOURCE_ACTION_SENTINEL',
+    restVersion: 'امروز فقط استراحت کن و وارد تعامل نشو.',
+    risk_level: 'moderate',
+    subtopic_ids: ['T31-S03'],
+    control_context: 'relationship_power_safety',
+    safety_rule_ids: ['SR-T31-D25'],
+    stop_conditions: ['در صورت تهدید یا احتمال تلافی، تعامل را متوقف کن.'],
+    contraindications: ['مواجهه مستقیم در وضعیت ناامن ممنوع است.'],
+    when_to_seek_human_support: 'در صورت تهدید یا خشونت، از حمایت مستقل و امن کمک بگیر.',
+  };
+  assert.equal(getDailySafetyMode(dailyContent), 'caution');
+  const questions = getSharedDailyAssistantPromptGroups(25, TOPIC_ID).flatMap((group) => group.questions);
+  const answers = questions.map((question) => buildSharedDailyAssistantAnswerFromDailyContent({
+    topicId: TOPIC_ID, topicName: TOPIC_NAME, day: 25, message: question.value, dailyContent,
+  }));
+  assert.equal(answers.length, 14);
+  for (const answer of answers) {
+    assert.ok(typeof answer === 'string' && answer.length > 80);
+    assert.ok(answer.includes('گزینه استراحت ثبت‌شده'));
+    assert.ok(answer.includes('مسئول اصلاح رفتار او نیستی'));
+    assert.ok(answer.includes('مطالبه نکن'));
+    assert.equal(answer.includes('UNSAFE_SOURCE_EXERCISE_SENTINEL'), false);
+    assert.equal(answer.includes('UNSAFE_SOURCE_ACTION_SENTINEL'), false);
+  }
+});
+
 test('T31 exposes 392 day-grounded prepared answers; only urgent records are blocked', () => {
   let answerCount = 0;\n  let urgentDayCount = 0;
   const metadataCoverage = {
