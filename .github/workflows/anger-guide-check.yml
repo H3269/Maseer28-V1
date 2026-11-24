@@ -2,7 +2,7 @@ name: Anger guide rebuilt assistant checks
 
 on:
   push:
-    branches: [rebuild/anger-guide-28-days, fix/anger-sample-three-isolation, refactor/shared-daily-assistant-engine-t02-t14]
+    branches: [rebuild/anger-guide-28-days, fix/anger-sample-three-isolation, refactor/shared-daily-assistant-engine-t02-t14, fix/typewriter-browser-races-and-motion]
   pull_request:
     branches: [main]
     paths:
