@@ -127,14 +127,14 @@ try {
         const icon = document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon');
         return icon?.getAttribute('data-assistant-state') === 'typing';
       }, null, { timeout: 10000 });
-      initialPartial = await latestReply.locator('p').innerText();
+      initialPartial = await latestReply.locator('p').first().innerText();
       await page.waitForFunction((previousLength) => {
         const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child p');
         const icon = document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon');
         return icon?.getAttribute('data-assistant-state') === 'typing'
           && (reply?.innerText.length || 0) > previousLength;
       }, initialPartial.length, { timeout: 10000 });
-      intermediatePartial = await latestReply.locator('p').innerText();
+      intermediatePartial = await latestReply.locator('p').first().innerText();
       await page.waitForFunction(() => {
         const icon = document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon');
         return icon?.getAttribute('data-assistant-state') === 'idle';
@@ -147,10 +147,10 @@ try {
     }
 
     const replyText = await latestReply.innerText();
-    const completeBodyText = await latestReply.locator('p').innerText();
+    const completePrimaryParagraph = await latestReply.locator('p').first().innerText();
     assert.ok(intermediatePartial.length > initialPartial.length,
       `T14 prepared question ${questionIndex + 1} must reveal additional words progressively`);
-    assert.ok(intermediatePartial.length < completeBodyText.length,
+    assert.ok(intermediatePartial.length < completePrimaryParagraph.length,
       `T14 prepared question ${questionIndex + 1} must not display its complete body before the reveal finishes`);
     assert.ok(replyText.trim().length > 20,
       `T14 prepared question ${questionIndex + 1} must receive a complete, nonempty answer`);
