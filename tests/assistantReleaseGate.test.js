@@ -256,7 +256,7 @@ test('prepared assistant answers reveal word by word and the gold speaker icon b
   assert.match(typewriter, /prefers-reduced-motion: reduce/, 'reduced-motion preference must skip or finish the reveal immediately');
   assert.match(typewriter, /visibleText \+= words\[visibleCount\]/, 'the reveal should append one token at a time without rebuilding the entire prefix');
   assert.match(typewriter, /resetTypingProgress: \(\) => setTypingProgress\(null\)/, 'the hook must expose a controlled reset for new turns and context changes');
-  assert.match(launcher, /typingProgress\?\.id === item\.id && typingProgress\.active \? 'typing' : 'idle'/);
+  assert.match(transcript, /typingProgress\?\.id === item\.id && typingProgress\.active \? 'typing' : 'idle'/);
   assert.match(transcript, /item\.dailySafetyReminder && \(/, 'safety reminders must render independently of reveal completion');
   assert.doesNotMatch(transcript, /dailySafetyReminder && \(!typingProgress/, 'safety visibility must not depend on animation state');
   assert.match(css, /color: #C49A42 !important/);
