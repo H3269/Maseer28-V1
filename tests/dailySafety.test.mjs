@@ -47,7 +47,11 @@ test('T31 keeps explicit subtype/context distinction independently of approval m
   };
   assert.equal(getControlContextForDay(day), 'interpersonal_coercive_control');
   assert.equal(getDailySafetyMode(day), 'caution');
-  assert.equal(getDailySafetyMode({ ...day, control_context: null }), 'blocked');
+  assert.equal(getDailySafetyMode({ ...day, control_context: null }), 'caution');
+  assert.equal(getDailySafetyMode({ ...day, subtopic_ids: ['T31-S03'], control_context: 'interpersonal_coercive_control' }), 'caution');
+  assert.equal(getDailySafetyMode({ ...day, risk_level: 'high' }), 'caution');
+  assert.equal(getDailySafetyMode({ ...day, risk_level: 'moderate' }), 'caution');
+  assert.equal(getDailySafetyMode({ ...day, risk_level: 'urgent_support_required' }), 'blocked');
 });
 
 test('all 952 daily units remain addressable by safety classification without approval metadata', async () => {
