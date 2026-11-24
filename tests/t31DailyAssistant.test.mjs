@@ -99,7 +99,8 @@ test('T31 relationship-safety gates preserve all fourteen answers on gated days'
       assert.equal(turn.status, 'daily_guidance_available',
         'T31 day ' + dayNumber + ' ' + question.id + ' must not be suppressed by the relationship gate');
       assert.ok(turn.message.length > 80, 'T31 day ' + dayNumber + ' ' + question.id + ' must return substantive guidance');
-      const requiresDirectActionConfirmation = dayNumber === 11;
+      const requiresDirectActionConfirmation = dailyContent.relationship_safety_action_requires_confirmation === true;
+      assert.equal(requiresDirectActionConfirmation, dayNumber === 11);
       if (requiresDirectActionConfirmation) {
         assert.match(turn.message, /ایمنی تعامل مستقیم/u,
           'T31 day 11 must explain the pending interaction-safety boundary');
@@ -163,6 +164,7 @@ test('T31 exposes 392 day-grounded prepared answers; only urgent records are blo
     human_support: 0,
     rest_option: 0,
     complete_context: 0,
+    direct_action_gate: 0,
   };
 
   for (const day of t31Days) {
@@ -178,6 +180,7 @@ test('T31 exposes 392 day-grounded prepared answers; only urgent records are blo
     if (String(day.when_to_seek_human_support || day.whenToSeekHumanSupport || '').trim()) metadataCoverage.human_support += 1;
     if (String(day.restExerciseText || day.restVersion || day.lightExerciseText || '').trim()) metadataCoverage.rest_option += 1;
     if (getControlContextForDay(day)) metadataCoverage.complete_context += 1;
+    if (day.relationship_safety_action_requires_confirmation === true) metadataCoverage.direct_action_gate += 1;
 
     if (mode === 'blocked') {
       assert.equal(day.risk_level, 'urgent_support_required',
@@ -229,6 +232,9 @@ test('T31 exposes 392 day-grounded prepared answers; only urgent records are blo
   assert.equal(metadataCoverage.human_support, 28, 'all T31 days must define when to seek human support');
   assert.equal(metadataCoverage.rest_option, 28, 'all T31 days must retain a rest or low-demand alternative');
   assert.equal(metadataCoverage.complete_context, 28, 'all T31 days must map to exactly one validated control context');
+  assert.equal(metadataCoverage.direct_action_gate, 1, 'only T31 day 11 may require confirmation before a direct interpersonal action');
+  assert.equal(t31Days.find((day) => Number(day.day) === 11).relationship_safety_action_requires_confirmation, true);
+  assert.ok(t31Days.filter((day) => Number(day.day) !== 11).every((day) => day.relationship_safety_action_requires_confirmation !== true));
   assert.ok(t31TopicRegistry, 'T31 must exist in the topic registry');
   assert.equal(t31SubtopicRegistry.size, 3, 'T31 must retain its three distinct safety contexts');
   assert.match(t31TopicRegistry.review_flags.join(' '), /سه زیرموضوع مجزا/u);
