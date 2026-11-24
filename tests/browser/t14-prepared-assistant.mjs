@@ -127,6 +127,10 @@ try {
         const icon = document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon');
         return icon?.getAttribute('data-assistant-state') === 'typing';
       }, null, { timeout: 10000 });
+      assert.equal(await latestIcon.evaluate((element) => getComputedStyle(element).color), 'rgb(196, 154, 66)',
+        'the active assistant icon must be visibly gold while the answer is being revealed');
+      assert.equal(await latestIcon.evaluate((element) => getComputedStyle(element).animationName), 'm28AssistantIconBreath',
+        'the assistant icon must breathe during answer reveal');
       initialPartial = await latestReply.locator('p').first().innerText();
       await page.waitForFunction((previousLength) => {
         const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child p');
@@ -144,8 +148,14 @@ try {
         const question = viewport?.querySelector('[data-testid="latest-user-question"]');
         if (!viewport || !question) return false;
         const topOffset = question.getBoundingClientRect().top - viewport.getBoundingClientRect().top;
-        return topOffset >= -1 && topOffset < 36;
+        return topOffset >= 12 && topOffset <= 24;
       }, null, { timeout: 5000 });
+      const turnStartOffset = await dialog.getByTestId('latest-user-question').evaluate((question) => {
+        const viewport = question.closest('.assistantTranscript');
+        return question.getBoundingClientRect().top - viewport.getBoundingClientRect().top;
+      });
+      assert.ok(turnStartOffset >= 12 && turnStartOffset <= 24,
+        'every new question and its answer must begin at the top of the transcript viewport');
     } catch (error) {
       console.error('T14_QUESTION_INDEX', questionIndex);
       console.error('T14_MESSAGES', JSON.stringify(await dialog.locator('.assistantMessage').allInnerTexts()));

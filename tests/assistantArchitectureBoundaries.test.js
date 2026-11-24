@@ -24,12 +24,14 @@ test('launcher delegates transcript rendering and typewriter lifecycle', async (
   ]);
   assert.match(launcher, /useAssistantTypewriter\(messages, sending\)/);
   assert.match(launcher, /<AssistantTranscript messages=\{messages\} sending=\{sending\}/);
-  assert.match(launcher, /latestUserMessageRef\.current\?\.scrollIntoView\?\.\(\{ behavior: 'smooth', block: 'start' \}\)/);
-  assert.match(launcher, /\[latestUserMessageId, latestAssistantMessageId, latestAssistantTyping, open\]/);
+  assert.match(launcher, /assistantTranscriptRef\.current/);
+  assert.match(launcher, /viewport\.scrollTo\(\{ top: Math\.max\(0, targetTop\), behavior: 'auto' \}\)/);
+  assert.match(launcher, /\[latestUserMessageId, latestAssistantTyping, open\]/);
+  assert.match(transcript, /ref=\{assistantTranscriptRef\}/);
   assert.doesNotMatch(launcher, /\}, \[messages, open\]\);/);
   assert.match(transcript, /latestUserMessageIndex/);
   assert.match(transcript, /data-testid=\{item\.role === 'user' && index === latestUserMessageIndex \? 'latest-user-question'/);
-  assert.match(transcript, /function AssistantTranscript\(\{ messages, sending, typingProgress, latestUserMessageRef \}\)/);
+  assert.match(transcript, /function AssistantTranscript\(\{ messages, sending, typingProgress, latestUserMessageRef, assistantTranscriptRef \}\)/);
   assert.doesNotMatch(launcher, /const words = revealText\.match\(/);
   assert.doesNotMatch(launcher, /className="assistantTranscript"/);
   assert.match(transcript, /className="assistantTranscript"/);

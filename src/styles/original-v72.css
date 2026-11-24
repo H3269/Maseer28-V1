@@ -7359,3 +7359,14 @@ body.bale-webview .appBottomDock {
   bottom: 0 !important;
 }
 
+
+
+/* Assistant gold accent: keep the mark visibly aligned with the app's gold palette. */
+html body .app .globalAssistantChat .assistantMessage > .globalAssistantSpeakerIcon {
+  color: #C49A42 !important;
+  filter: drop-shadow(0 0 3px rgba(196, 154, 66, .42));
+}
+html body .app .globalAssistantChat .assistantMessage > .globalAssistantSpeakerIcon svg {
+  fill: currentColor !important;
+  stroke: currentColor;
+}
