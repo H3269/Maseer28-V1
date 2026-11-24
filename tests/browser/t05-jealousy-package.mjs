@@ -175,6 +175,7 @@ try {
     assert.equal(await jealousyPromptDialog.locator('.libraryAssistantPromptGroup').count(), 5);
     assert.equal(await jealousyPromptDialog.locator('[data-prompt-option]').count(), 14);
     await jealousyPromptDialog.getByRole('button', { name: 'برای تمرین امروز یک مثال می‌زنی؟' }).click();
+    const jealousyDayOne = dailyTextOverrides.categories?.['حسادت']?.days?.find(item => Number(item.day) === 1);
     await jealousyPanel.getByRole('button', { name: 'ارسال' }).click();
     await jealousyGuidedPage.waitForFunction((expectedText) => {
       const reply = document.querySelector('[data-testid="latest-assistant-message"]');
@@ -186,7 +187,6 @@ try {
       );
     }, jealousyDayOne?.exerciseExample);
     const jealousyExerciseExample = await jealousyPanel.locator('.assistantMessage').last().textContent();
-    const jealousyDayOne = dailyTextOverrides.categories?.['حسادت']?.days?.find(item => Number(item.day) === 1);
     assert.ok(jealousyDayOne?.exerciseExample, 'T05 day 1 canonical override must provide its approved exercise example');
     // Compare the DOM text source, not innerText: innerText is layout-dependent
     // and can inject line breaks or bidi formatting around Persian text.
@@ -220,7 +220,7 @@ try {
         && reply.textContent.includes(expectedText),
       );
     }, jealousyDayOne?.actionExample);
-    const jealousyActionExample = await jealousyPanel.locator('.assistantMessage').last().innerText();
+    const jealousyActionExample = await jealousyPanel.locator('.assistantMessage').last().textContent();
     assert.ok(jealousyDayOne?.actionExample, 'T05 day 1 canonical override must provide its approved action example');
     assert.ok(jealousyActionExample.includes(jealousyDayOne.actionExample),
       'T05 shared answer must use the active day canonical action example');
