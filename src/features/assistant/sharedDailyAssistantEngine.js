@@ -579,9 +579,13 @@ export function buildSharedDailyAssistantAnswer({ guide, question, plainSteps } 
   if (!guide || !Object.hasOwn(DISTRESS_KIND_BY_TOPIC, guide.topicId) || !question) return null;
   const expectedQuestion = getSharedDailyAssistantQuestion(guide.topicId, question.value);
   if (!expectedQuestion || expectedQuestion.kind !== question.kind) return null;
-  const relationshipActionQuestion = ['exercise_meaning', 'exercise_example', 'action_meaning', 'action_example', 'light_version', 'talk_other', 'can_change'].includes(question.kind);
+  // Elevated risk in a T31 record must not erase safe, self-directed guidance.
+  // Restrict the source action only when the record is specifically about
+  // coercive interpersonal power, or when its direct action is explicitly gated.
+  const relationshipActionQuestion = ['action_meaning', 'action_example'].includes(question.kind);
+  const coerciveControlContext = ['relationship_power_safety', 'interpersonal_coercive_control'].includes(guide.controlContext);
   if (guide.topicId === 'T31' && (
-    ['high', 'moderate'].includes(guide.riskLevel)
+    (['high', 'moderate'].includes(guide.riskLevel) && coerciveControlContext)
     || (guide.relationshipSafetyGateRestriction && relationshipActionQuestion)
   )) {
     return buildControlRestrictedAnswer(guide, question);
