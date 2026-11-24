@@ -134,9 +134,22 @@ try {
     // semantic heading must have a real layout box and be visible to Playwright.
     const safetyHeading = safetyCard.getByRole('heading', { name: 'یادآوری مهم درباره ایمنی شما' });
     await safetyHeading.waitFor({ state: 'visible', timeout: 5000 });
-    const headingBox = await safetyHeading.boundingBox();
-    assert.ok(headingBox && headingBox.width > 0 && headingBox.height > 0,
-      'the safety heading must occupy a visible layout box');
+    // React can replace the message subtree during the final typing-state
+    // transition. Poll the current DOM node until its layout is stable rather
+    // than taking a one-shot boundingBox snapshot immediately after visibility.
+    await page.waitForFunction(() => {
+      const heading = document.querySelector(
+        '.globalAssistantDialog .assistantMessage:last-child [data-testid="daily-assistant-safety-reminder"] h3',
+      );
+      if (!heading) return false;
+      const rect = heading.getBoundingClientRect();
+      const style = window.getComputedStyle(heading);
+      return style.display !== 'none'
+        && style.visibility !== 'hidden'
+        && rect.width > 0
+        && rect.height > 0
+        && heading.getClientRects().length > 0;
+    }, { timeout: 5000 });
 
     const colors = await safetyCard.evaluate((node) => {
       const card = getComputedStyle(node);
