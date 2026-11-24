@@ -183,7 +183,7 @@ try {
     const jealousyExerciseExample = await jealousyPanel.locator('.assistantMessage').last().innerText();
     const jealousyDayOne = dailyTextOverrides.categories?.['حسادت']?.days?.find(item => Number(item.day) === 1);
     assert.ok(jealousyDayOne?.exerciseExample, 'T05 day 1 canonical override must provide its approved exercise example');
-    const normalizeRenderedWhitespace = value => String(value || '').normalize('NFKC').replace(/\\s+/gu, ' ').trim();
+    const normalizeRenderedWhitespace = value => String(value || '').normalize('NFKC').replace(/\s+/gu, ' ').trim();
     assert.ok(normalizeRenderedWhitespace(jealousyExerciseExample).includes(normalizeRenderedWhitespace(jealousyDayOne.exerciseExample)),
       'T05 shared answer must use the active day canonical exercise example; layout line wrapping must not change the content comparison');
     assert.equal(jealousyExerciseExample.includes('**'), false, 'T05 must not expose raw markdown markers');
