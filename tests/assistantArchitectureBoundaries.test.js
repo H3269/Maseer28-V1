@@ -23,7 +23,8 @@ test('launcher delegates transcript rendering and typewriter lifecycle', async (
     read('../src/features/assistant/useAssistantTypewriter.js'),
   ]);
   assert.match(launcher, /useAssistantTypewriter\(messages, sending\)/);
-  assert.match(launcher, /<AssistantTranscript messages=\{messages\}/);
+  assert.match(launcher, /<AssistantTranscript messages=\{messages\} sending=\{sending\}/);
+  assert.match(transcript, /function AssistantTranscript\(\{ messages, sending, typingProgress, latestAssistantRef \}\)/);
   assert.doesNotMatch(launcher, /const words = revealText\.match\(/);
   assert.doesNotMatch(launcher, /className="assistantTranscript"/);
   assert.match(transcript, /className="assistantTranscript"/);
