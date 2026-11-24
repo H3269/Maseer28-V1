@@ -13,6 +13,10 @@ const TOPIC_NAME = 'کنترل‌گری';
 const canonicalContent = JSON.parse(await readFile(new URL('../public/content/path-content.json', import.meta.url), 'utf8'));
 const overrides = JSON.parse(await readFile(new URL('../public/content/daily-text-overrides.v1.json', import.meta.url), 'utf8'));
 const mergedContent = mergeDailyTextOverrides(canonicalContent, overrides);
+const topicRegistry = JSON.parse(await readFile(new URL('../public/assistant/knowledge/topics.v1.json', import.meta.url), 'utf8'));
+const subtopicRegistry = JSON.parse(await readFile(new URL('../public/assistant/knowledge/subtopics.v1.json', import.meta.url), 'utf8'));
+const t31TopicRegistry = topicRegistry.topics.find((topic) => topic.topic_id === TOPIC_ID);
+const t31SubtopicRegistry = new Map(subtopicRegistry.subtopics.filter((item) => item.topic_id === TOPIC_ID).map((item) => [item.subtopic_id, item]));
 const categoryEntry = Object.entries(mergedContent.categories || {}).find(([name, category]) =>
   name === TOPIC_NAME || category.days?.some((day) => day.topic_id === TOPIC_ID || /^کنترل‌گری-[0-9]{1,2}$/u.test(String(day.id || ''))),
 );
@@ -21,6 +25,9 @@ const t31Days = categoryEntry[1].days;
 
 test('T31 has 28 canonical daily records with usable exercise/action source content', () => {
   assert.equal(t31Days.length, 28);
+  assert.equal(new Set(t31Days.map((day) => day.title)).size, 28, 'T31 must have 28 distinct daily titles');
+  assert.equal(new Set(t31Days.map((day) => day.exercise)).size, 28, 'T31 must have 28 distinct daily exercises');
+  assert.equal(new Set(t31Days.map((day) => day.actionText)).size, 28, 'T31 must have 28 distinct daily actions');
   for (const [index, day] of t31Days.entries()) {
     assert.equal(Number(day.day), index + 1, 'T31 day sequence must be complete and ordered');
     assert.ok(typeof day.id === 'string' && day.id.trim(), 'T31 day ' + (index + 1) + ' must have a stable source id');
@@ -141,6 +148,14 @@ test('T31 exposes 392 day-grounded prepared answers; only urgent records are blo
   assert.equal(metadataCoverage.human_support, 28, 'all T31 days must define when to seek human support');
   assert.equal(metadataCoverage.rest_option, 28, 'all T31 days must retain a rest or low-demand alternative');
   assert.equal(metadataCoverage.complete_context, 28, 'all T31 days must map to exactly one validated control context');
+  assert.ok(t31TopicRegistry, 'T31 must exist in the topic registry');
+  assert.equal(t31TopicRegistry.safety_rule_ids.length, 28, 'T31 topic registry must link all 28 daily safety rules');
+  for (const day of t31Days) {
+    const ruleId = day.safety_rule_ids[0];
+    const subtopic = t31SubtopicRegistry.get(day.subtopic_ids[0]);
+    assert.ok(t31TopicRegistry.safety_rule_ids.includes(ruleId), 'T31 day ' + day.day + ' safety rule must be linked to its topic');
+    assert.ok(subtopic?.safety_rule_ids.includes(ruleId), 'T31 day ' + day.day + ' safety rule must be linked to its exact subtopic');
+  }
   process.stdout.write('T31 safety metadata coverage: ' + JSON.stringify(metadataCoverage) + '; generated answers: ' + answerCount + '\\n');
   process.stdout.write('T31 DAILY CONTENT AUDIT: ' + JSON.stringify(t31Days.map((day) => ({
     day: day.day,
