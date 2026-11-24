@@ -9,6 +9,7 @@ on:
       - "src/styles/original-v72.css"
       - "tests/actionButtonVisualConsistency.test.mjs"
       - "tests/assistantFirstUseGuide.test.mjs"
+      - "tests/supportIconsFeedbackScoreColor.test.mjs"
       - ".github/workflows/action-button-ui.yml"
 
 permissions:
@@ -27,6 +28,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run focused UI consistency checks
-        run: node --test tests/actionButtonVisualConsistency.test.mjs tests/assistantFirstUseGuide.test.mjs
+        run: node --test tests/actionButtonVisualConsistency.test.mjs tests/assistantFirstUseGuide.test.mjs tests/supportIconsFeedbackScoreColor.test.mjs
       - name: Verify production bundle
         run: npm run build
