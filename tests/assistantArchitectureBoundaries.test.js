@@ -24,7 +24,10 @@ test('launcher delegates transcript rendering and typewriter lifecycle', async (
   ]);
   assert.match(launcher, /useAssistantTypewriter\(messages, sending\)/);
   assert.match(launcher, /<AssistantTranscript messages=\{messages\} sending=\{sending\}/);
-  assert.match(transcript, /function AssistantTranscript\(\{ messages, sending, typingProgress, latestAssistantRef \}\)/);
+  assert.match(launcher, /latestUserMessageRef\.current\?\.scrollIntoView\?\.\(\{ behavior: 'smooth', block: 'start' \}\)/);
+  assert.match(transcript, /latestUserMessageIndex/);
+  assert.match(transcript, /data-testid=\{item\.role === 'user' && index === latestUserMessageIndex \? 'latest-user-question'/);
+  assert.match(transcript, /function AssistantTranscript\(\{ messages, sending, typingProgress, latestUserMessageRef \}\)/);
   assert.doesNotMatch(launcher, /const words = revealText\.match\(/);
   assert.doesNotMatch(launcher, /className="assistantTranscript"/);
   assert.match(transcript, /className="assistantTranscript"/);
