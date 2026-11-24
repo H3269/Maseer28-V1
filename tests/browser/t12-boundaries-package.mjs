@@ -87,11 +87,31 @@ try {
   assert.equal(await promptDialog.locator('.libraryAssistantPromptGroup').count(), 5);
   assert.equal(await promptDialog.locator('[data-prompt-option]').count(), 14);
   await promptDialog.getByRole('button', { name: 'منظور از تمرین امروز چیست؟' }).click();
+  const previousAssistantCount = await firstPanel.locator('.assistantMessage').count();
   await firstPanel.getByRole('button', { name: 'ارسال' }).click();
-  await firstPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
-    .some(node => node.innerText.includes('تشخیص یک حد شخصی')));
-  const answer = await firstPanel.locator('.assistantMessage').last().innerText();
-  assert.ok(answer.includes(firstDay.exercise));
+  await firstPage.waitForFunction((previousCount) => {
+    const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
+    const latest = replies.at(-1);
+    const speaker = latest?.querySelector('[data-assistant-state]');
+    return replies.length > previousCount
+      && speaker?.getAttribute('data-assistant-state') === 'idle'
+      && latest?.textContent?.includes('تشخیص یک حد شخصی');
+  }, previousAssistantCount, { timeout: 20000 });
+  const answer = await firstPanel.locator('.assistantMessage').last().textContent();
+  const exerciseDisclosure = firstPage.locator('#dayExercise details summary');
+  if (await exerciseDisclosure.count()) await exerciseDisclosure.click();
+  const normalizeVisibleText = (value) => String(value || '')
+    .normalize('NFKC')
+    .replace(/[\u200B-\u200F\u202A-\u202E\u2060-\u206F\uFEFF]/gu, '')
+    .replace(/\s+/gu, ' ')
+    .trim();
+  const normalizedAnswer = normalizeVisibleText(answer);
+  const visibleExerciseParts = (await firstPage.locator('#dayExercise p').allTextContents())
+    .map(normalizeVisibleText).filter(Boolean);
+  assert.ok(visibleExerciseParts.length > 0, 'the visible T12 exercise must contain readable text');
+  for (const part of visibleExerciseParts) {
+    assert.ok(normalizedAnswer.includes(part), 'completed prepared answer must include each visible exercise section: ' + part);
+  }
   assert.equal(answer.includes('**'), false);
   assert.deepEqual(pageErrors, []);
   await firstPage.close();
