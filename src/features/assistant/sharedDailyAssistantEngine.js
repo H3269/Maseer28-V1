@@ -482,7 +482,7 @@ function answerBody({ guide, question, plainSteps = {} }) {
   }
 }
 
-export function controlSafetyFrame(guide) {
+export function controlSafetyFrame(guide, { includeStopConditions = true } = {}) {
   if (guide.topicId !== 'T31') return '';
   const expectedContextBySubtopic = {
     'T31-S01': 'self_control_need',
@@ -493,6 +493,8 @@ export function controlSafetyFrame(guide) {
     expectedContextBySubtopic[guide.controlSubtopicId]
     && expectedContextBySubtopic[guide.controlSubtopicId] === guide.controlContext,
   );
+  const stopConditions = Array.isArray(guide.stopConditions)
+    ? guide.stopConditions.map((item) => clean(item)).filter(Boolean) : [];
   return paragraph(
     contextIsValid
       ? 'زمینه ثبت‌شده این روز: ' + ({
@@ -504,6 +506,9 @@ export function controlSafetyFrame(guide) {
     'مرز ایمنی: این راهنما مجوز محدودکردن، تهدیدکردن، ردیابی، وارسی تلفن یا ارتباطات، آزمودن، تحت فشار گذاشتن یا تصمیم‌گرفتن به‌جای فرد دیگری نیست. هر اقدام بین‌فردی فقط با رضایت آزادانه و امکان واقعی مخالفت یا توقف قابل بررسی است.',
     guide.contraindications?.length
       ? 'موارد منع ثبت‌شده برای همین روز را جدی بگیر: ' + guide.contraindications.join(' ')
+      : '',
+    includeStopConditions && stopConditions.length
+      ? 'شرایط توقف ثبت‌شده برای روز ' + guide.day + ': ' + stopConditions.join(' ')
       : '',
     guide.whenToSeekHumanSupport
       ? 'زمان مراجعه به حمایت انسانی طبق محتوای همین روز: ' + guide.whenToSeekHumanSupport
@@ -521,7 +526,12 @@ function buildControlRestrictedAnswer(guide, question) {
     : guide.controlContext === 'interpersonal_coercive_control'
       ? 'اگر رفتار کنترل‌گرانه انجام می‌دهی، وارسی، محدودسازی، تهدید و فشار را متوقف کن و از حمایت مستقل برای تغییر رفتار کمک بگیر. اگر تحت کنترل دیگری هستی، برای تغییر رفتار او مسئول نیستی.'
       : 'تمرکز را فقط بر انتخاب‌ها و رفتارهای خودت نگه دار؛ برای رسیدن به اطمینان، خودت یا فرد دیگری را تحت فشار نگذار.';
-  const base = 'در روز ' + day + ' از موضوع «' + guide.topic + '»، سطح خطر ثبت‌شده بالاتر از حالت عادی است. برای اینکه راهنمایی روزانه قطع نشود اما رفتار پرخطر هم پیشنهاد نشود، فعلاً بخش اجراییِ تمرین یا اقدام را که شامل کنترل، محدودسازی، مواجهه یا تعامل پرفشار با فرد دیگری است انجام نده. ' + roleSpecific;
+  const base = paragraph(
+    'در روز ' + day + ' از موضوع «' + guide.topic + '»، سطح خطر ثبت‌شده بالاتر از حالت عادی است. برای اینکه راهنمایی روزانه قطع نشود اما رفتار پرخطر هم پیشنهاد نشود، فعلاً بخش اجراییِ تمرین یا اقدام را که شامل کنترل، محدودسازی، مواجهه یا تعامل پرفشار با فرد دیگری است انجام نده.',
+    roleSpecific,
+    stop && 'شرط توقف ثبت‌شده برای همین روز: ' + stop,
+    support && 'زمان دریافت حمایت انسانی: ' + support,
+  );
   const privateAlternative = rest
     ? 'گزینه استراحت ثبت‌شده همین روز: ' + rest
     : 'جایگزین کم‌خطر فعلی: بدون تماس، وارسی یا دخالت در رفتار هیچ‌کس، فقط در صورت آرامش و تمایل خودت یک یادداشت خصوصی درباره موقعیت، احساس، نیاز و انتخاب خودت بنویس؛ اگر همین کار هم فشار را بیشتر می‌کند، استراحت کن.';
@@ -542,9 +552,9 @@ function buildControlRestrictedAnswer(guide, question) {
       return paragraph(base, 'در این روز، موفقیت به معنی کنترل نتیجه یا رفتار فرد دیگری نیست. فقط می‌توانی میزان رعایت مرزها، انتخاب‌های خودت و حفظ امنیت را بررسی کنی؛ نبود تغییر فوری در دیگران شکست تو نیست.', privateAlternative);
     case 'stop':
     case 'control_distress':
-      return paragraph(base, 'اگر ترس، تهدید، اجبار، احتمال تلافی، افزایش تنش یا احساس ناامنی وجود دارد، تمرین و اقدام بین‌فردی را متوقف کن. وارد مواجهه مستقیم یا میانجی‌گری مشترک نشو.', stop, support, privateAlternative);
+      return paragraph(base, 'اگر ترس، تهدید، اجبار، احتمال تلافی، افزایش تنش یا احساس ناامنی وجود دارد، تمرین و اقدام بین‌فردی را متوقف کن. وارد مواجهه مستقیم یا میانجی‌گری مشترک نشو.', privateAlternative);
     case 'talk_other':
-      return paragraph(base, 'در این وضعیت لازم نیست با فرد دیگری صحبت کنی. اگر احتمال تهدید، اجبار یا تلافی وجود دارد، گفت‌وگوی مستقیم را به خودت تحمیل نکن و حمایت مستقل و امن را در اولویت بگذار.', support, privateAlternative);
+      return paragraph(base, 'در این وضعیت لازم نیست با فرد دیگری صحبت کنی. اگر احتمال تهدید، اجبار یا تلافی وجود دارد، گفت‌وگوی مستقیم را به خودت تحمیل نکن و حمایت مستقل و امن را در اولویت بگذار.', privateAlternative);
     case 'duration':
       return paragraph(base, 'زمانی برای اجرای بخش پرخطر تعیین نکن؛ در این وضعیت اولویت با توقف یا استراحت است، نه تکمیل تمرین.', privateAlternative);
     default:
@@ -563,7 +573,9 @@ export function buildSharedDailyAssistantAnswer({ guide, question, plainSteps } 
   if (!body) return null;
   // The transcript already displays the user's question and the assistant icon.
   // Keep this message limited to the answer body; do not repeat labels or daily summaries.
-  const safetyFrame = controlSafetyFrame(guide);
+  const safetyFrame = controlSafetyFrame(guide, {
+    includeStopConditions: !['stop', 'control_distress'].includes(question.kind),
+  });
   return safetyFrame ? paragraph(safetyFrame, body) : body;
 }
 
