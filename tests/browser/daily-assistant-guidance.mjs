@@ -428,19 +428,19 @@ try {
           document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon')
             ?.getAttribute('data-assistant-state') === 'typing',
         null, { timeout: 10000 });
-        const initialPartial = await panel.locator('.assistantMessage').last().locator('p').innerText();
+        const initialPartial = await panel.locator('.assistantMessage').last().locator('p').first().innerText();
         await page.waitForFunction((previousLength) => {
           const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child p');
           const icon = document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon');
           return icon?.getAttribute('data-assistant-state') === 'typing'
             && (reply?.innerText.length || 0) > previousLength;
         }, initialPartial.length, { timeout: 10000 });
-        const intermediatePartial = await panel.locator('.assistantMessage').last().locator('p').innerText();
+        const intermediatePartial = await panel.locator('.assistantMessage').last().locator('p').first().innerText();
         await page.waitForFunction(() =>
           document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon')
             ?.getAttribute('data-assistant-state') === 'idle',
         null, { timeout: 20000 });
-        const completeAnswer = await panel.locator('.assistantMessage').last().locator('p').innerText();
+        const completeAnswer = await panel.locator('.assistantMessage').last().locator('p').first().innerText();
         assert.ok(intermediatePartial.length > initialPartial.length,
           topic.id + ' first prepared answer must visibly reveal additional words over time');
         assert.ok(intermediatePartial.length < completeAnswer.length,
