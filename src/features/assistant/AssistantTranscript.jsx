@@ -9,9 +9,14 @@ export default function AssistantTranscript({ messages, sending, typingProgress,
   return (
 <div className="assistantTranscript" dir="rtl" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
                 {messages.map((item, index) => {
+                  const isLatestAssistant = item.role === 'assistant' && index === messages.length - 1;
+                  const revealNotInitialized = isLatestAssistant && !sending && typingProgress?.id !== item.id;
+                  const isLatestAssistantTyping = isLatestAssistant && (
+                    sending || revealNotInitialized || (typingProgress?.id === item.id && typingProgress.active)
+                  );
                   const visibleMessageText = item.role === 'assistant' && typingProgress?.id === item.id
                     ? typingProgress.text
-                    : item.text;
+                    : revealNotInitialized ? '' : item.text;
                   return (
                   <div
                     className={item.role === 'user' ? 'userMessage' : 'assistantMessage'}
@@ -46,7 +51,7 @@ export default function AssistantTranscript({ messages, sending, typingProgress,
                           : <React.Fragment key={partIndex}>{part.text}</React.Fragment>)}
                       </React.Fragment>
                     ))}</p>
-                    {item.dailySafetyReminder && (
+                    {item.dailySafetyReminder && !isLatestAssistantTyping && (
                       <aside className="dailyAssistantSafetyReminder" role="note" data-testid="daily-assistant-safety-reminder">
                         <h3>یادآوری مهم درباره ایمنی شما</h3>
                         <p>در طول انجام تمرین‌ امروز، به احساسات و وضعیت روانی خود توجه کنید. اگر احساس کردید فشار روانی شما بیشتر شده، حالتان رو به وخامت است یا ادامه تمرین برایتان آزاردهنده شده، تمرین را متوقف کنید و به خودتان فرصت آرام‌شدن بدهید.</p>
