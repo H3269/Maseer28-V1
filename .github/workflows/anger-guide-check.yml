@@ -22,6 +22,7 @@ on:
       - "src/features/assistant/dailyAssistantTurn.js"
       - "src/features/assistant/useAssistantTypewriter.js"
       - "tests/assistantReleaseGate.test.js"
+      - "tests/assistantArchitectureBoundaries.test.js"
       - "tests/dailyAssistantContext.test.js"
       - "tests/ownerDailyContentApproval.test.mjs"
       - "src/features/content/dailyTextOverrides.js"
