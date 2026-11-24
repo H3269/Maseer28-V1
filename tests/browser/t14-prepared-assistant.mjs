@@ -116,6 +116,8 @@ try {
 
     const latestReply = dialog.locator('.assistantMessage').last();
     const latestIcon = latestReply.locator('.globalAssistantSpeakerIcon');
+    let initialPartial = '';
+    let intermediatePartial = '';
     try {
       await page.waitForFunction((previousCount) => {
         const replies = [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')];
@@ -125,14 +127,14 @@ try {
         const icon = document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon');
         return icon?.getAttribute('data-assistant-state') === 'typing';
       }, null, { timeout: 10000 });
-      const initialPartial = await latestReply.locator('p').innerText();
+      initialPartial = await latestReply.locator('p').innerText();
       await page.waitForFunction((previousLength) => {
         const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child p');
         const icon = document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon');
         return icon?.getAttribute('data-assistant-state') === 'typing'
           && (reply?.innerText.length || 0) > previousLength;
       }, initialPartial.length, { timeout: 10000 });
-      const intermediatePartial = await latestReply.locator('p').innerText();
+      intermediatePartial = await latestReply.locator('p').innerText();
       await page.waitForFunction(() => {
         const icon = document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon');
         return icon?.getAttribute('data-assistant-state') === 'idle';
