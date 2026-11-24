@@ -57,6 +57,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const closeButtonRef = useRef(null);
   const dialogRef = useRef(null);
   const latestUserMessageRef = useRef(null);
+  const assistantTranscriptRef = useRef(null);
   const initialContextEffectRef = useRef(false);
   const openRequestRef = useRef(openRequestId);
   const [launcherPosition, setLauncherPosition] = useState(null);
@@ -230,9 +231,17 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
 
   useEffect(() => {
     if (!open || !latestUserMessageId) return;
-    // Scroll only when a turn starts or its typing state changes, never on every revealed character.
-    latestUserMessageRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
-  }, [latestUserMessageId, latestAssistantMessageId, latestAssistantTyping, open]);
+    const viewport = assistantTranscriptRef.current;
+    const question = latestUserMessageRef.current;
+    if (!viewport || !question) return;
+    // Move the transcript's own scroll position. scrollIntoView can scroll an
+    // outer dialog/page instead of this nested viewport in mobile WebViews.
+    const viewportTop = viewport.getBoundingClientRect().top;
+    const questionTop = question.getBoundingClientRect().top;
+    const topPadding = Number.parseFloat(window.getComputedStyle(viewport).paddingTop) || 0;
+    const targetTop = viewport.scrollTop + questionTop - viewportTop - topPadding;
+    viewport.scrollTo({ top: Math.max(0, targetTop), behavior: 'auto' });
+  }, [latestUserMessageId, open]);
 
 
 
@@ -733,7 +742,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
                 </section>
               )}
 
-              <AssistantTranscript messages={messages} sending={sending} typingProgress={typingProgress} latestUserMessageRef={latestUserMessageRef} />
+              <AssistantTranscript messages={messages} sending={sending} typingProgress={typingProgress} latestUserMessageRef={latestUserMessageRef} assistantTranscriptRef={assistantTranscriptRef} />
               <form className="assistantComposer libraryAssistantGuidedComposer" dir="rtl" data-anger-daily-prompt={String(isAngerDailyPromptContext)} data-anxiety-daily-prompt={String(isAnxietyDailyPromptContext)} data-fear-daily-prompt={String(isFearDailyPromptContext)} data-hatred-daily-prompt={String(isHatredDailyPromptContext)} data-jealousy-daily-prompt={String(isJealousyDailyPromptContext)} data-grief-daily-prompt={String(isGriefDailyPromptContext)} data-guilt-daily-prompt={String(isGuiltDailyPromptContext)} data-t10-daily-prompt={String(isT10DailyPromptContext)} data-t12-daily-prompt={String(isT12DailyPromptContext)} onSubmit={send}>
                 {activePromptGroups.some((group) => Array.isArray(group.questions) && group.questions.length > 0) ? (
                   <div className="libraryAssistantPromptRow">
