@@ -579,7 +579,7 @@ export function buildSharedDailyAssistantAnswer({ guide, question, plainSteps } 
   if (!guide || !Object.hasOwn(DISTRESS_KIND_BY_TOPIC, guide.topicId) || !question) return null;
   const expectedQuestion = getSharedDailyAssistantQuestion(guide.topicId, question.value);
   if (!expectedQuestion || expectedQuestion.kind !== question.kind) return null;
-  const relationshipActionQuestion = ['action_meaning', 'action_example', 'talk_other', 'can_change'].includes(question.kind);
+  const relationshipActionQuestion = ['exercise_meaning', 'exercise_example', 'action_meaning', 'action_example', 'light_version', 'talk_other', 'can_change'].includes(question.kind);
   if (guide.topicId === 'T31' && (
     ['high', 'moderate'].includes(guide.riskLevel)
     || (guide.relationshipSafetyGateRestriction && relationshipActionQuestion)
