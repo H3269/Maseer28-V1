@@ -114,6 +114,22 @@ try {
     await options.nth(questionIndex).click();
     await dialog.getByRole('button', { name: 'ارسال' }).click();
 
+    // The new question must be anchored at the transcript top immediately
+    // after submit, not after the assistant response finishes typing.
+    await page.waitForFunction(() => {
+      const viewport = document.querySelector('.globalAssistantDialog .assistantTranscript');
+      const question = viewport?.querySelector('[data-testid="latest-user-question"]');
+      if (!viewport || !question) return false;
+      const topOffset = question.getBoundingClientRect().top - viewport.getBoundingClientRect().top;
+      return topOffset >= 12 && topOffset <= 24;
+    }, null, { timeout: 3000 });
+    const immediateTurnOffset = await dialog.getByTestId('latest-user-question').evaluate((question) => {
+      const viewport = question.closest('.assistantTranscript');
+      return question.getBoundingClientRect().top - viewport.getBoundingClientRect().top;
+    });
+    assert.ok(immediateTurnOffset >= 12 && immediateTurnOffset <= 24,
+      'each newly submitted question must jump to the transcript top immediately');
+
     const latestReply = dialog.locator('.assistantMessage').last();
     const latestIcon = latestReply.locator('.globalAssistantSpeakerIcon');
     let initialPartial = '';

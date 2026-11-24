@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import AppIcon from '../../shared/components/AppIcon.jsx';
 import { makePageAssistantTurn } from './pageAssistantTurn.js';
 import { getPageSpecificPromptGroups } from './pageAssistantPrompts.js';
@@ -229,18 +229,18 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     && typingProgress.active
   ));
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!open || !latestUserMessageId) return;
     const viewport = assistantTranscriptRef.current;
     const question = latestUserMessageRef.current;
     if (!viewport || !question) return;
-    // Move the transcript's own scroll position. scrollIntoView can scroll an
-    // outer dialog/page instead of this nested viewport in mobile WebViews.
+    // Anchor synchronously after React commits the newly sent question, before
+    // the browser paints or the assistant starts revealing its answer.
     const viewportTop = viewport.getBoundingClientRect().top;
     const questionTop = question.getBoundingClientRect().top;
     const topPadding = Number.parseFloat(window.getComputedStyle(viewport).paddingTop) || 0;
     const targetTop = viewport.scrollTop + questionTop - viewportTop - topPadding;
-    viewport.scrollTo({ top: Math.max(0, targetTop), behavior: 'auto' });
+    viewport.scrollTop = Math.max(0, targetTop);
   }, [latestUserMessageId, latestAssistantTyping, open]);
 
 

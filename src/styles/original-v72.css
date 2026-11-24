@@ -7370,3 +7370,26 @@ html body .app .globalAssistantChat .assistantMessage > .globalAssistantSpeakerI
   fill: currentColor !important;
   stroke: currentColor;
 }
+
+
+/* Keep enough scroll runway for every newly submitted turn to reach the top
+   immediately, even when the new question/placeholder is shorter than the viewport. */
+.globalAssistantDialog .globalAssistantChat .assistantTranscript::after {
+  content: "";
+  display: block;
+  flex: 0 0 100%;
+  min-height: 100%;
+  pointer-events: none;
+}
+
+/* The assistant sparkle itself is gold; do not rely on inherited SVG fill. */
+html body .app .globalAssistantDialog .globalAssistantChat .assistantMessage > b.globalAssistantSpeakerIcon {
+  color: #C49A42 !important;
+  filter: drop-shadow(0 0 2px rgba(196, 154, 66, .28));
+}
+html body .app .globalAssistantDialog .globalAssistantChat .assistantMessage > b.globalAssistantSpeakerIcon svg,
+html body .app .globalAssistantDialog .globalAssistantChat .assistantMessage > b.globalAssistantSpeakerIcon svg path,
+html body .app .globalAssistantDialog .globalAssistantChat .assistantMessage > b.globalAssistantSpeakerIcon svg circle {
+  fill: #C49A42 !important;
+  stroke: #C49A42 !important;
+}
