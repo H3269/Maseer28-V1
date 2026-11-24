@@ -129,14 +129,23 @@ try {
     assert.doesNotMatch(await safetyCard.innerText(), /۰۹۱۹۰۸۸۹۰۶۲/u, 'the contact-number box must not appear inside the safety card');
     assert.equal(await safetyCard.locator('.dailyAssistantSafetyReminderShafa').count(), 0);
 
-    // Assistant transcript rows have an intentional 230ms entrance fade.
-    // Wait for that visual transition to finish before asserting final visibility;
-    // otherwise this check races the animation and reports a temporarily hidden heading.
+    // Wait until the heading and every ancestor have finished entering. Chromium's
+    // checkVisibility({checkOpacity:true}) can remain false during the transcript
+    // animation even after the heading has layout; inspect the actual rendered
+    // CSS visibility/opacity chain and layout instead of relying on that shortcut.
     const safetyCardHandle = await safetyCard.elementHandle();
     await page.waitForFunction((card) => {
       const heading = card?.querySelector('h1, h2, h3, h4, h5, h6, [role="heading"]');
-      return Boolean(heading?.checkVisibility?.({ checkOpacity: true, checkVisibilityCSS: true }));
-    }, safetyCardHandle, { timeout: 3000 });
+      if (!heading) return false;
+      let effectiveOpacity = 1;
+      for (let node = heading; node && node instanceof Element; node = node.parentElement) {
+        const style = getComputedStyle(node);
+        if (style.display === 'none' || style.visibility === 'hidden' || style.visibility === 'collapse') return false;
+        effectiveOpacity *= Number.parseFloat(style.opacity || '1');
+      }
+      const rect = heading.getBoundingClientRect();
+      return effectiveOpacity > 0.01 && rect.width > 0 && rect.height > 0 && heading.getClientRects().length > 0;
+    }, safetyCardHandle, { timeout: 5000 });
 
     const colors = await safetyCard.evaluate((node) => {
       const card = getComputedStyle(node);
