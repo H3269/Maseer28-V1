@@ -48,7 +48,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const libraryPromptDialogRef = useRef(null);
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
-  const typingProgress = useAssistantTypewriter(messages, sending);
+  const { typingProgress, resetTypingProgress } = useAssistantTypewriter(messages, sending);
   const turnSequenceRef = useRef(0);
   const [loadedLibraryBooks, setLoadedLibraryBooks] = useState([]);
   const libraryBooksLoadRef = useRef(null);
@@ -182,7 +182,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       return;
     }
     setMessages([]);
-    setTypingProgress(null);
+    resetTypingProgress();
     setDraft('');
     setError('');
     setSending(false);
@@ -410,7 +410,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
       return;
     }
     // Finish any previous reveal before starting a new, isolated assistant turn.
-    setTypingProgress(null);
+    resetTypingProgress();
     const initialLibraryPlan = screen === 'books'
       ? planLibraryBookLoad({ books: loadedLibraryBooks, message, conversationState: conversationStateRef.current })
       : null;
