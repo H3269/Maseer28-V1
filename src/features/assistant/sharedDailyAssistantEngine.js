@@ -226,6 +226,7 @@ function makeGuideFromDailyContent({ topicId, topicName, day, dailyContent } = {
     controlContext: clean(dailyContent?.control_context),
     controlSubtopicId: Array.isArray(dailyContent?.subtopic_ids) && dailyContent.subtopic_ids.length === 1
       ? clean(dailyContent.subtopic_ids[0]) : '',
+    relationshipSafetyGateRestriction: dailyContent?.relationship_safety_gate_restriction === true,
   };
 }
 
@@ -510,6 +511,9 @@ export function controlSafetyFrame(guide, { includeStopConditions = true } = {})
     includeStopConditions && stopConditions.length
       ? 'شرایط توقف ثبت‌شده برای روز ' + guide.day + ': ' + stopConditions.join(' ')
       : '',
+    guide.relationshipSafetyGateRestriction
+      ? 'ایمنی تعامل مستقیم برای این روز هنوز تأیید نشده یا ناامن اعلام شده است؛ بخش‌های نیازمند تماس یا گفت‌وگوی مستقیم را انجام نده و از گزینه استراحت یا راهکار خصوصی استفاده کن.'
+      : '',
     guide.whenToSeekHumanSupport
       ? 'زمان مراجعه به حمایت انسانی طبق محتوای همین روز: ' + guide.whenToSeekHumanSupport
       : '',
@@ -530,8 +534,12 @@ function buildControlRestrictedAnswer(guide, question) {
     guide.title && 'عنوان محتوای همین روز: ' + guide.title,
     guide.objective && 'هدف ثبت‌شده همین روز: ' + guide.objective,
   );
+  const elevatedRisk = ['high', 'moderate'].includes(guide.riskLevel);
+  const restrictionReason = elevatedRisk
+    ? 'سطح خطر ثبت‌شده برای این روز بالاتر از حالت عادی است؛ برای اینکه راهنمایی روزانه قطع نشود اما رفتار پرخطر پیشنهاد نشود، بخش اجراییِ تمرین یا اقدام را که شامل کنترل، محدودسازی، مواجهه یا تعامل پرفشار با فرد دیگری است انجام نده.'
+    : 'ایمنی تعامل مستقیم برای این روز هنوز تأیید نشده یا ناامن اعلام شده است؛ بخش نیازمند تماس، گفت‌وگو یا اقدام بین‌فردی را انجام نده و از گزینه استراحت یا راهکار خصوصی استفاده کن.';
   const base = paragraph(
-    'در روز ' + day + ' از موضوع «' + guide.topic + '»، سطح خطر ثبت‌شده بالاتر از حالت عادی است. برای اینکه راهنمایی روزانه قطع نشود اما رفتار پرخطر هم پیشنهاد نشود، فعلاً بخش اجراییِ تمرین یا اقدام را که شامل کنترل، محدودسازی، مواجهه یا تعامل پرفشار با فرد دیگری است انجام نده.',
+    'در روز ' + day + ' از موضوع «' + guide.topic + '»، ' + restrictionReason,
     dayFocus,
     roleSpecific,
     stop && 'شرط توقف ثبت‌شده برای همین روز: ' + stop,
@@ -571,7 +579,11 @@ export function buildSharedDailyAssistantAnswer({ guide, question, plainSteps } 
   if (!guide || !Object.hasOwn(DISTRESS_KIND_BY_TOPIC, guide.topicId) || !question) return null;
   const expectedQuestion = getSharedDailyAssistantQuestion(guide.topicId, question.value);
   if (!expectedQuestion || expectedQuestion.kind !== question.kind) return null;
-  if (guide.topicId === 'T31' && ['high', 'moderate'].includes(guide.riskLevel)) {
+  const relationshipActionQuestion = ['action_meaning', 'action_example', 'talk_other', 'can_change'].includes(question.kind);
+  if (guide.topicId === 'T31' && (
+    ['high', 'moderate'].includes(guide.riskLevel)
+    || (guide.relationshipSafetyGateRestriction && relationshipActionQuestion)
+  )) {
     return buildControlRestrictedAnswer(guide, question);
   }
   const body = answerBody({ guide, question, plainSteps });
