@@ -222,6 +222,10 @@ function makeGuideFromDailyContent({ topicId, topicName, day, dailyContent } = {
     whenToSeekHumanSupport: clean(dailyContent?.when_to_seek_human_support || dailyContent?.whenToSeekHumanSupport),
     durationMinutes: dailyContent?.duration_minutes ?? dailyContent?.durationMinutes ?? null,
     durationStatus: clean(dailyContent?.duration_status || dailyContent?.durationStatus),
+    riskLevel: clean(dailyContent?.risk_level),
+    controlContext: clean(dailyContent?.control_context),
+    controlSubtopicId: Array.isArray(dailyContent?.subtopic_ids) && dailyContent.subtopic_ids.length === 1
+      ? clean(dailyContent.subtopic_ids[0]) : '',
   };
 }
 
@@ -478,15 +482,84 @@ function answerBody({ guide, question, plainSteps = {} }) {
   }
 }
 
-export function buildSharedDailyAssistantAnswer({ guide, question, plainSteps } = {}) {
+export function controlSafetyFrame(guide) {
+  if (guide.topicId !== 'T31') return '';
+  const expectedContextBySubtopic = {
+    'T31-S01': 'self_control_need',
+    'T31-S02': 'interpersonal_coercive_control',
+    'T31-S03': 'relationship_power_safety',
+  };
+  const contextIsValid = Boolean(
+    expectedContextBySubtopic[guide.controlSubtopicId]
+    && expectedContextBySubtopic[guide.controlSubtopicId] === guide.controlContext,
+  );
+  return paragraph(
+    contextIsValid
+      ? 'زمینه ثبت‌شده این روز: ' + ({
+        self_control_need: 'نیاز به کنترل امور شخصی',
+        interpersonal_coercive_control: 'رفتار کنترل‌گرانه بین‌فردی',
+        relationship_power_safety: 'ایمنی و قدرت در رابطه',
+      }[guide.controlContext]) + '. این دسته‌بندی برای فهم تمرین است و تشخیص قطعی درباره تو یا فرد دیگری نیست.'
+      : 'یادداشت صحت محتوا: زمینه اختصاصی کنترل‌گری برای این روز کامل یا سازگار ثبت نشده است؛ بنابراین از روی این پاسخ درباره نوع مسئله نتیجه‌گیری نکن.',
+    'مرز ایمنی این موضوع: این راهنما مجوز محدودکردن، تهدیدکردن، ردیابی، وارسی تلفن یا ارتباطات، آزمودن، تحت فشار گذاشتن یا تصمیم‌گرفتن به‌جای فرد دیگری نیست. هر اقدام بین‌فردی فقط با رضایت آزادانه و امکان واقعی مخالفت یا توقف قابل بررسی است.',
+    guide.contraindications?.length
+      ? 'موارد منع ثبت‌شده برای همین روز را جدی بگیر: ' + guide.contraindications.join(' ')
+      : '',
+    guide.whenToSeekHumanSupport
+      ? 'زمان مراجعه به حمایت انسانی طبق محتوای همین روز: ' + guide.whenToSeekHumanSupport
+      : '',
+  );
+}
+
+function buildControlRestrictedAnswer(guide, question) {
+  const day = guide.day;
+  const rest = clean(guide.restVersion);
+  const stop = clean(guide.stopCondition);
+  const support = clean(guide.whenToSeekHumanSupport);
+  const base = 'در روز ' + day + ' از موضوع «' + guide.topic + '»، سطح خطر ثبت‌شده بالاتر از حالت عادی است. برای اینکه راهنمایی روزانه قطع نشود اما رفتار پرخطر هم پیشنهاد نشود، فعلاً بخش اجراییِ تمرین یا اقدام را که شامل کنترل، محدودسازی، مواجهه یا تعامل پرفشار با فرد دیگری است انجام نده.';
+  const privateAlternative = rest
+    ? 'گزینه استراحت ثبت‌شده همین روز: ' + rest
+    : 'جایگزین کم‌خطر فعلی: بدون تماس، وارسی یا دخالت در رفتار هیچ‌کس، فقط در صورت آرامش و تمایل خودت یک یادداشت خصوصی درباره موقعیت، احساس، نیاز و انتخاب خودت بنویس؛ اگر همین کار هم فشار را بیشتر می‌کند، استراحت کن.';
+  switch (question.kind) {
+    case 'exercise_meaning':
+    case 'exercise_example':
+      return paragraph(base, 'عنوان و هدف روز: ' + clean(guide.title, 'تمرین روزانه') + (guide.objective ? '؛ هدف ثبت‌شده: ' + guide.objective : ''), privateAlternative, 'این پاسخ به معنی تأیید اجرای تمرین اصلی در شرایط پرخطر نیست.');
+    case 'action_meaning':
+    case 'action_example':
+      return paragraph(base, 'اقدام بین‌فردی را در این وضعیت اجرا نکن و برای انجام آن موقعیت نساز. فعلاً فقط انتخابی را بررسی کن که در اختیار خودت است و به آزادی یا امنیت فرد دیگری دست نمی‌زند.', privateAlternative);
+    case 'light_version':
+    case 'no_event':
+    case 'not_done':
+    case 'can_change':
+      return paragraph(base, privateAlternative, 'لازم نیست تمرین را جبران کنی یا چند روز را با هم انجام بدهی. هر تغییری باید کم‌خطر باشد و اختیار دیگران را محدود نکند.');
+    case 'success':
+    case 'exercise_action_difference':
+      return paragraph(base, 'در این روز، موفقیت به معنی کنترل نتیجه یا رفتار فرد دیگری نیست. فقط می‌توانی میزان رعایت مرزها، انتخاب‌های خودت و حفظ امنیت را بررسی کنی؛ نبود تغییر فوری در دیگران شکست تو نیست.', privateAlternative);
+    case 'stop':
+    case 'control_distress':
+      return paragraph(base, 'اگر ترس، تهدید، اجبار، احتمال تلافی، افزایش تنش یا احساس ناامنی وجود دارد، تمرین و اقدام بین‌فردی را متوقف کن. وارد مواجهه مستقیم یا میانجی‌گری مشترک نشو.', stop, support, privateAlternative);
+    case 'talk_other':
+      return paragraph(base, 'در این وضعیت لازم نیست با فرد دیگری صحبت کنی. اگر احتمال تهدید، اجبار یا تلافی وجود دارد، گفت‌وگوی مستقیم را به خودت تحمیل نکن و حمایت مستقل و امن را در اولویت بگذار.', support, privateAlternative);
+    case 'duration':
+      return paragraph(base, 'زمانی برای اجرای بخش پرخطر تعیین نکن؛ در این وضعیت اولویت با توقف یا استراحت است، نه تکمیل تمرین.', privateAlternative);
+    default:
+      return paragraph(base, privateAlternative);
+  }
+}
+
+function buildSharedDailyAssistantAnswer({ guide, question, plainSteps } = {}) {
   if (!guide || !Object.hasOwn(DISTRESS_KIND_BY_TOPIC, guide.topicId) || !question) return null;
   const expectedQuestion = getSharedDailyAssistantQuestion(guide.topicId, question.value);
   if (!expectedQuestion || expectedQuestion.kind !== question.kind) return null;
+  if (guide.topicId === 'T31' && ['high', 'moderate'].includes(guide.riskLevel)) {
+    return buildControlRestrictedAnswer(guide, question);
+  }
   const body = answerBody({ guide, question, plainSteps });
   if (!body) return null;
   // The transcript already displays the user's question and the assistant icon.
   // Keep this message limited to the answer body; do not repeat labels or daily summaries.
-  return body;
+  const safetyFrame = controlSafetyFrame(guide);
+  return safetyFrame ? paragraph(safetyFrame, body) : body;
 }
 
 export function buildSharedDailyAssistantAnswerFromDailyContent({
