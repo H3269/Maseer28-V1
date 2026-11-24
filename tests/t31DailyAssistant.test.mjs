@@ -31,7 +31,7 @@ test('T31 has 28 canonical daily records with usable exercise/action source cont
 });
 
 test('T31 exposes 392 day-grounded prepared answers; only urgent records are blocked', () => {
-  let answerCount = 0;
+  let answerCount = 0;\n  let urgentDayCount = 0;
   const metadataCoverage = {
     risk_level: 0,
     safety_rule_ids: 0,
@@ -92,6 +92,6 @@ test('T31 exposes 392 day-grounded prepared answers; only urgent records are blo
     }
   }
 
-  assert.ok(answerCount >= 14, 'non-urgent T31 days must expose prepared answers');
+  assert.equal(answerCount, (28 - urgentDayCount) * 14, 'every non-urgent T31 day must expose all fourteen prepared answers');
   process.stdout.write('T31 safety metadata coverage: ' + JSON.stringify(metadataCoverage) + '; generated answers: ' + answerCount + '\\n');
 });
