@@ -106,7 +106,9 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
         ? 15
         : assistantDayMode === 'relationship'
           ? 10
-    : ['adaptedLegacyStreak', 'adaptedLegacyImprovement', 'adaptedAnxietyStreak', 'adaptedAnxietyImprovement', 'adaptedGriefStreak', 'adaptedGriefImprovement'].includes(assistantDayMode)
+          : assistantDayMode === 'control-gate'
+            ? 11
+    : ['adaptedLegacyStreak, 'adaptedLegacyImprovement', 'adaptedAnxietyStreak', 'adaptedAnxietyImprovement', 'adaptedGriefStreak', 'adaptedGriefImprovement'].includes(assistantDayMode)
       ? 3
       : ['adaptedLegacy', 'adaptedLegacySame', 'adaptedAnxiety', 'adaptedGrief'].includes(assistantDayMode)
         ? 2
@@ -557,6 +559,48 @@ try {
     assert.ok(answer.length > 80, 'T31 must return substantive guidance for every prepared question: ' + question);
   }
   await controlSafetyPage.close();
+
+  // On T31's relationship-gated days, the safety notice remains visible but
+  // must not disable the full catalogue. Direct-action questions get a safe
+  // alternative until the interaction is confirmed safe.
+  const gatedControlPage = await browser.newPage({ reducedMotion: 'reduce' });
+  await openDay(gatedControlPage, { problem: 'کنترل‌گری', assistantDayMode: 'control-gate' });
+  const gatedControlPanel = gatedControlPage.locator('.globalAssistantDialog');
+  await gatedControlPanel.waitFor({ state: 'visible' });
+  const gatedControlNotice = gatedControlPanel.getByTestId('extended-topic-relationship-safety-gate');
+  await gatedControlNotice.waitFor({ state: 'visible' });
+  const gatedControlTrigger = gatedControlPanel.getByTestId('extended-daily-prompt-trigger');
+  await gatedControlTrigger.click();
+  const gatedControlPrompt = gatedControlPage.locator('#library-assistant-prompt-dialog');
+  await gatedControlPrompt.waitFor({ state: 'visible' });
+  assert.equal(await gatedControlPrompt.locator('[data-prompt-option]').count(), 14);
+  assert.equal(await gatedControlPrompt.locator('[data-prompt-option]:not(:disabled)').count(), 14,
+    'T31 day 11 must keep all fourteen prepared questions available while interaction safety is unconfirmed');
+  await gatedControlPrompt.getByRole('button', { name: questions[0], exact: true }).click();
+  await gatedControlPanel.getByRole('button', { name: 'ارسال' }).click();
+  await gatedControlPage.waitForFunction(() => {
+    const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child');
+    return Boolean(reply && reply.querySelector('[data-assistant-state]')?.getAttribute('data-assistant-state') === 'idle'
+      && !reply.innerText.includes('در حال بررسی پرسش'));
+  }, { timeout: 12000 });
+  const gatedInfoAnswer = await gatedControlPanel.locator('.assistantMessage').last().innerText();
+  assert.match(gatedInfoAnswer, /ایمنی تعامل مستقیم/u);
+  await gatedControlTrigger.click();
+  await gatedControlPrompt.waitFor({ state: 'visible' });
+  await gatedControlPrompt.getByRole('button', { name: questions[2], exact: true }).click();
+  await gatedControlPanel.getByRole('button', { name: 'ارسال' }).click();
+  await gatedControlPage.waitForFunction(() => {
+    const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child');
+    return Boolean(reply && reply.querySelector('[data-assistant-state]')?.getAttribute('data-assistant-state') === 'idle'
+      && !reply.innerText.includes('در حال بررسی پرسش'));
+  }, { timeout: 12000 });
+  const gatedActionAnswer = await gatedControlPanel.locator('.assistantMessage').last().innerText();
+  const gatedSource = dailyTextOverrides.categories['کنترل‌گری'].days.find((item) => Number(item.day) === 11);
+  assert.ok(gatedSource);
+  assert.equal(gatedActionAnswer.includes(gatedSource.actionText), false,
+    'T31 day 11 must not present an interpersonal action before safety is confirmed');
+  assert.match(gatedActionAnswer, /گزینه استراحت ثبت‌شده|جایگزین کم‌خطر فعلی/u);
+  await gatedControlPage.close();
 
   // Elevated T31 risk does not suppress the guide; it switches to a safer
   // alternative and must not expose the potentially unsafe original exercise.
