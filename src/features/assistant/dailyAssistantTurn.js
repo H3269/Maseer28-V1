@@ -26,13 +26,25 @@ export function makeDailyAssistantTurn({ message, dailyContext, conversationStat
     const visibleTopicName = resolvedDailyContext.topicName;
     const hasSupportedPreparedTopic = resolvedDailyContext.supportedTopic;
 
-    const answerPreparedQuestion = ({ day, message, dailyContent }) => buildPreparedDailyAssistantAnswer({
-      topicId: preparedTopicId,
-      topicName: visibleTopicName,
-      day,
-      message,
-      dailyContent,
-    });
+    const answerPreparedQuestion = ({ day, message, dailyContent }) => {
+      const t31RelationshipGate = preparedTopicId === 'T31'
+        ? getRelationshipSafetyGate(dailyContent)
+        : null;
+      const t31RelationshipSafetyRestriction = Boolean(t31RelationshipGate && (
+        dailyContext?.relationshipSafetyResponse === 'unsafe'
+        || (dailyContext?.relationshipSafetyConfirmed !== true
+          && dailyContext?.relationshipSafetyResponse !== 'safe')
+      ));
+      return buildPreparedDailyAssistantAnswer({
+        topicId: preparedTopicId,
+        topicName: visibleTopicName,
+        day,
+        message,
+        dailyContent: t31RelationshipSafetyRestriction
+          ? { ...dailyContent, relationship_safety_gate_restriction: true }
+          : dailyContent,
+      });
+    };
 
     const hasCanonicalPreparedIdentity = resolvedDailyContext.canonicalIdentity;
 
@@ -134,7 +146,9 @@ export function makeDailyAssistantTurn({ message, dailyContext, conversationStat
       });
     }
 
-    const sharedRelationshipGate = isExtendedTopic ? getRelationshipSafetyGate(preparedSource) : null;
+    const sharedRelationshipGate = isExtendedTopic && preparedTopicId !== 'T31'
+      ? getRelationshipSafetyGate(preparedSource)
+      : null;
     const hasExactSharedRelationshipPreparedQuestion = Boolean(isExtendedTopic
       && answerPreparedQuestion?.({ day: preparedDay, message, dailyContent: preparedVisibleContent }));
     if (sharedRelationshipGate
