@@ -5,7 +5,9 @@ import { formatAssistantMessageText } from './assistantMessageFormatting.js';
  * Pure transcript renderer. It receives already-produced messages and reveal
  * state; it does not own sending, safety routing, or timer lifecycle.
  */
-export default function AssistantTranscript({ messages, sending, typingProgress, latestAssistantRef }) {
+export default function AssistantTranscript({ messages, sending, typingProgress, latestUserMessageRef }) {
+  const latestUserMessageIndex = messages.reduce((latestIndex, item, index) =>
+    item.role === 'user' ? index : latestIndex, -1);
   return (
 <div className="assistantTranscript" dir="rtl" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
                 {messages.map((item, index) => {
@@ -21,8 +23,8 @@ export default function AssistantTranscript({ messages, sending, typingProgress,
                   <div
                     className={item.role === 'user' ? 'userMessage' : 'assistantMessage'}
                     key={item.id || index}
-                    ref={item.role === 'assistant' && index === messages.length - 1 ? latestAssistantRef : null}
-                    data-testid={item.role === 'assistant' && index === messages.length - 1 ? 'latest-assistant-message' : undefined}
+                    ref={item.role === 'user' && index === latestUserMessageIndex ? latestUserMessageRef : null}
+                    data-testid={item.role === 'user' && index === latestUserMessageIndex ? 'latest-user-question' : item.role === 'assistant' && index === messages.length - 1 ? 'latest-assistant-message' : undefined}
                   >
                     <b
                       className="globalAssistantSpeakerIcon"

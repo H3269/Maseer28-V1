@@ -139,6 +139,13 @@ try {
         const icon = document.querySelector('.globalAssistantDialog .assistantMessage:last-child .globalAssistantSpeakerIcon');
         return icon?.getAttribute('data-assistant-state') === 'idle';
       }, null, { timeout: 20000 });
+      await page.waitForFunction(() => {
+        const viewport = document.querySelector('.globalAssistantDialog .assistantTranscript');
+        const question = viewport?.querySelector('[data-testid="latest-user-question"]');
+        if (!viewport || !question) return false;
+        const topOffset = question.getBoundingClientRect().top - viewport.getBoundingClientRect().top;
+        return topOffset >= -1 && topOffset < 36;
+      }, null, { timeout: 5000 });
     } catch (error) {
       console.error('T14_QUESTION_INDEX', questionIndex);
       console.error('T14_MESSAGES', JSON.stringify(await dialog.locator('.assistantMessage').allInnerTexts()));
