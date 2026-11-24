@@ -216,11 +216,23 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     };
   }, [open]);
 
+  const latestUserMessageId = messages.reduce((latestId, item) =>
+    item.role === 'user' ? item.id : latestId, null);
+  const latestAssistantMessage = messages[messages.length - 1];
+  const latestAssistantMessageId = latestAssistantMessage?.role === 'assistant'
+    ? latestAssistantMessage.id
+    : null;
+  const latestAssistantTyping = Boolean(sending || (
+    latestAssistantMessageId
+    && typingProgress?.id === latestAssistantMessageId
+    && typingProgress.active
+  ));
+
   useEffect(() => {
-    if (!open || !messages.length) return;
-    // Anchor each new turn by its question so the question and its answer stay together in view.
+    if (!open || !latestUserMessageId) return;
+    // Scroll only when a turn starts or its typing state changes, never on every revealed character.
     latestUserMessageRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
-  }, [messages, open]);
+  }, [latestUserMessageId, latestAssistantMessageId, latestAssistantTyping, open]);
 
 
 
