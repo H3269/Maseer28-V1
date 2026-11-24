@@ -517,7 +517,7 @@ try {
     'T31 must expose all fourteen prepared questions');
   assert.equal(await controlPrompt.locator('[data-prompt-option]:not(:disabled)').count(), 14,
     'T31 must keep all prepared questions available when only control-context metadata is incomplete');
-  assert.match(await controlPanel.innerText(), /ملاحظه ایمنی ثبت‌شده|ملاحظه ایمنی/u);
+  assert.match(await controlPanel.innerText(), /این روز نیازمند احتیاط است/u);
   for (const question of questions) {
     await controlTrigger.click();
     await controlPrompt.waitFor({ state: 'visible' });
