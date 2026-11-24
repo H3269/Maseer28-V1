@@ -30,11 +30,15 @@ export function makeDailyAssistantTurn({ message, dailyContext, conversationStat
       const t31RelationshipGate = preparedTopicId === 'T31'
         ? getRelationshipSafetyGate(dailyContent)
         : null;
-      const t31RelationshipSafetyRestriction = Boolean(t31RelationshipGate && (
-        dailyContext?.relationshipSafetyResponse === 'unsafe'
-        || (dailyContext?.relationshipSafetyConfirmed !== true
-          && dailyContext?.relationshipSafetyResponse !== 'safe')
-      ));
+      const t31RelationshipSafetyRestriction = Boolean(
+        t31RelationshipGate
+        && dailyContent?.relationship_safety_action_requires_confirmation === true
+        && (
+          dailyContext?.relationshipSafetyResponse === 'unsafe'
+          || (dailyContext?.relationshipSafetyConfirmed !== true
+            && dailyContext?.relationshipSafetyResponse !== 'safe')
+        )
+      );
       return buildPreparedDailyAssistantAnswer({
         topicId: preparedTopicId,
         topicName: visibleTopicName,
