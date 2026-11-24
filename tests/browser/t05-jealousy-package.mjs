@@ -180,12 +180,20 @@ try {
       const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-of-type');
       return Boolean(reply && !reply.innerText.includes('در حال بررسی'));
     });
-    const jealousyExerciseExample = await jealousyPanel.locator('.assistantMessage').last().innerText();
+    const jealousyExerciseExample = await jealousyPanel.locator('.assistantMessage').last().textContent();
     const jealousyDayOne = dailyTextOverrides.categories?.['حسادت']?.days?.find(item => Number(item.day) === 1);
     assert.ok(jealousyDayOne?.exerciseExample, 'T05 day 1 canonical override must provide its approved exercise example');
-    const normalizeRenderedWhitespace = value => String(value || '').normalize('NFKC').replace(/\s+/gu, ' ').trim();
-    assert.ok(normalizeRenderedWhitespace(jealousyExerciseExample).includes(normalizeRenderedWhitespace(jealousyDayOne.exerciseExample)),
-      'T05 shared answer must use the active day canonical exercise example; layout line wrapping must not change the content comparison');
+    // Compare the DOM text source, not innerText: innerText is layout-dependent
+    // and can inject line breaks or bidi formatting around Persian text.
+    const normalizeRenderedWhitespace = value => String(value || '')
+      .normalize('NFKC')
+      .replace(/[\u200B-\u200F\u202A-\u202E\u2060-\u206F\uFEFF]/gu, '')
+      .replace(/\s+/gu, ' ')
+      .trim();
+    const renderedExerciseExample = normalizeRenderedWhitespace(jealousyExerciseExample);
+    const canonicalExerciseExample = normalizeRenderedWhitespace(jealousyDayOne.exerciseExample);
+    assert.ok(renderedExerciseExample.includes(canonicalExerciseExample),
+      'T05 shared answer must use the active day canonical exercise example; expected: ' + canonicalExerciseExample + '; rendered: ' + renderedExerciseExample);
     assert.equal(jealousyExerciseExample.includes('**'), false, 'T05 must not expose raw markdown markers');
     assert.equal(jealousyExerciseExample.includes(String.fromCharCode(92) + 'n'), false, 'T05 must not expose escaped newline tokens');
     assert.ok(jealousyExerciseExample.includes('\n'), 'T05 paragraphs must display on separate lines');
