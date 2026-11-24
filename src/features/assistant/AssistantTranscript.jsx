@@ -5,7 +5,7 @@ import { formatAssistantMessageText } from './assistantMessageFormatting.js';
  * Pure transcript renderer. It receives already-produced messages and reveal
  * state; it does not own sending, safety routing, or timer lifecycle.
  */
-export default function AssistantTranscript({ messages, typingProgress, latestAssistantRef }) {
+export default function AssistantTranscript({ messages, sending, typingProgress, latestAssistantRef }) {
   return (
 <div className="assistantTranscript" dir="rtl" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
                 {messages.map((item, index) => {
