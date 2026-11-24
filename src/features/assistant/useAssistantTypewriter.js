@@ -60,5 +60,5 @@ export function useAssistantTypewriter(messages, sending) {
     };
   }, [messages, sending]);
 
-  return typingProgress;
+  return { typingProgress, resetTypingProgress: () => setTypingProgress(null) };
 }
