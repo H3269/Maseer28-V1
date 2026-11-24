@@ -165,9 +165,11 @@ test('global digit localization is installed at the app root without changing ed
 
 test('global assistant conversation is one right-to-left transcript', async () => {
   const launcher = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
+  const transcript = await readFile(new URL('../src/features/assistant/AssistantTranscript.jsx', import.meta.url), 'utf8');
   const css = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
   assert.equal((launcher.match(/className="assistantChatShell globalAssistantChat"/g) || []).length, 1);
-  assert.match(launcher, /className="assistantTranscript" dir="rtl"/);
+  assert.match(launcher, /<AssistantTranscript messages=\{messages\}/);
+  assert.match(transcript, /className="assistantTranscript" dir="rtl"/);
   // Every page uses the fixed question picker; no typing field remains.
   assert.match(launcher, /className="assistantComposer libraryAssistantGuidedComposer"/);
   assert.match(launcher, /<form[^>]*dir="rtl"[^>]*onSubmit=\{send\}/);
