@@ -91,7 +91,14 @@ try {
   await firstPage.waitForFunction(() => [...document.querySelectorAll('.globalAssistantDialog .assistantMessage')]
     .some(node => node.innerText.includes('تشخیص یک حد شخصی')));
   const answer = await firstPanel.locator('.assistantMessage').last().innerText();
-  assert.ok(answer.includes(firstDay.exercise));
+  const exerciseDisclosure = firstPage.locator('#dayExercise details summary');
+  if (await exerciseDisclosure.count()) await exerciseDisclosure.click();
+  const visibleExerciseParts = (await firstPage.locator('#dayExercise p').allTextContents())
+    .map((part) => part.trim()).filter(Boolean);
+  assert.ok(visibleExerciseParts.length > 0, 'the visible T12 exercise must contain readable text');
+  for (const part of visibleExerciseParts) {
+    assert.ok(answer.includes(part), 'prepared answer must include each visible exercise section: ' + part);
+  }
   assert.equal(answer.includes('**'), false);
   assert.deepEqual(pageErrors, []);
   await firstPage.close();
