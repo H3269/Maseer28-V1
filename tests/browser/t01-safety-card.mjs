@@ -129,23 +129,14 @@ try {
     assert.doesNotMatch(await safetyCard.innerText(), /۰۹۱۹۰۸۸۹۰۶۲/u, 'the contact-number box must not appear inside the safety card');
     assert.equal(await safetyCard.locator('.dailyAssistantSafetyReminderShafa').count(), 0);
 
-    // Wait until the heading and every ancestor have finished entering. Chromium's
-    // checkVisibility({checkOpacity:true}) can remain false during the transcript
-    // animation even after the heading has layout; inspect the actual rendered
-    // CSS visibility/opacity chain and layout instead of relying on that shortcut.
-    const safetyCardHandle = await safetyCard.elementHandle();
-    await page.waitForFunction((card) => {
-      const heading = card?.querySelector('h1, h2, h3, h4, h5, h6, [role="heading"]');
-      if (!heading) return false;
-      let effectiveOpacity = 1;
-      for (let node = heading; node && node instanceof Element; node = node.parentElement) {
-        const style = getComputedStyle(node);
-        if (style.display === 'none' || style.visibility === 'hidden' || style.visibility === 'collapse') return false;
-        effectiveOpacity *= Number.parseFloat(style.opacity || '1');
-      }
-      const rect = heading.getBoundingClientRect();
-      return effectiveOpacity > 0.01 && rect.width > 0 && rect.height > 0 && heading.getClientRects().length > 0;
-    }, safetyCardHandle, { timeout: 5000 });
+    // Use a live locator rather than an ElementHandle captured across React
+    // updates. The card is mounted only after the answer finishes typing; the
+    // semantic heading must have a real layout box and be visible to Playwright.
+    const safetyHeading = safetyCard.getByRole('heading', { name: 'یادآوری مهم درباره ایمنی شما' });
+    await safetyHeading.waitFor({ state: 'visible', timeout: 5000 });
+    const headingBox = await safetyHeading.boundingBox();
+    assert.ok(headingBox && headingBox.width > 0 && headingBox.height > 0,
+      'the safety heading must occupy a visible layout box');
 
     const colors = await safetyCard.evaluate((node) => {
       const card = getComputedStyle(node);
