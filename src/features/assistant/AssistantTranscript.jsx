@@ -5,11 +5,11 @@ import { formatAssistantMessageText } from './assistantMessageFormatting.js';
  * Pure transcript renderer. It receives already-produced messages and reveal
  * state; it does not own sending, safety routing, or timer lifecycle.
  */
-export default function AssistantTranscript({ messages, sending, typingProgress, latestUserMessageRef }) {
+export default function AssistantTranscript({ messages, sending, typingProgress, latestUserMessageRef, assistantTranscriptRef }) {
   const latestUserMessageIndex = messages.reduce((latestIndex, item, index) =>
     item.role === 'user' ? index : latestIndex, -1);
   return (
-<div className="assistantTranscript" dir="rtl" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
+<div ref={assistantTranscriptRef} className="assistantTranscript" dir="rtl" aria-live="polite" aria-label="پیام‌های گفت‌وگو">
                 {messages.map((item, index) => {
                   const isLatestAssistant = item.role === 'assistant' && index === messages.length - 1;
                   const revealNotInitialized = isLatestAssistant && !sending && typingProgress?.id !== item.id;
