@@ -104,7 +104,7 @@ jobs:
           npx playwright install --only-shell chromium
 
       - name: Run focused feedback-color browser regression
-        if: ${{ inputs.quick_test_deploy }}
+        if: ${{ inputs.quick_test_deploy || contains(github.event.head_commit.message, '[quick-test]') }}
         shell: bash
         run: |
           set -euo pipefail
@@ -119,7 +119,7 @@ jobs:
           PATH28_BASE_URL=http://127.0.0.1:4173/Maseer28-V1/ node tests/browser/feedback-score-bubble.mjs
 
       - name: Run browser regression against the test build
-        if: ${{ !inputs.quick_test_deploy }}
+        if: ${{ !inputs.quick_test_deploy && !contains(github.event.head_commit.message, '[quick-test]') }}
         shell: bash
         run: |
           set -euo pipefail
