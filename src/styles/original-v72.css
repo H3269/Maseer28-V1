@@ -7420,3 +7420,40 @@ html body .app .globalAssistantDialog .globalAssistantChat .assistantMessage > b
 .app > section.card#day .m28IconAction {
   min-height: 48px;
 }
+
+
+/* First-use guide: pointing hands are aligned to the prompt picker and send control. */
+.globalAssistantChat .assistantWelcomeGuide {
+  flex: 0 0 auto; margin: 8px 12px 4px; padding: 14px 16px;
+  border: 1px solid color-mix(in srgb, var(--accent, #79aaa1) 48%, var(--border, #d9e0e8));
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--accent2, #e6f1ee) 72%, var(--surface, #fff));
+  text-align: right;
+}
+.globalAssistantChat .assistantWelcomeIntro {
+  margin: 0; color: var(--text, #243b3c); font-size: 14px;
+  line-height: 1.9; font-weight: 650;
+}
+.globalAssistantChat .assistantWelcomeSteps {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 10px; margin: 0 0 8px;
+}
+.globalAssistantChat .assistantWelcomeStep {
+  display: flex; flex-direction: column; gap: 2px; min-width: 0;
+  color: var(--text-secondary, #526174); font-size: 12px; line-height: 1.7;
+}
+.globalAssistantChat .assistantWelcomeStep p { margin: 0; }
+.globalAssistantChat .assistantWelcomeStep > span {
+  color: #c49a42; font-size: 23px; line-height: 1;
+  filter: drop-shadow(0 1px 1px rgba(196,154,66,.22));
+}
+.globalAssistantChat .assistantWelcomeStepPrompt {
+  flex: 1 1 auto; align-items: flex-start; text-align: right;
+}
+.globalAssistantChat .assistantWelcomeStepSend {
+  flex: 0 0 auto; max-width: 48%; align-items: flex-end; text-align: left;
+}
+@media (max-width: 380px) {
+  .globalAssistantChat .assistantWelcomeSteps { gap: 6px; }
+  .globalAssistantChat .assistantWelcomeStep { font-size: 11px; }
+}
