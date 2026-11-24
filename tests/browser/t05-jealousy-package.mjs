@@ -201,7 +201,9 @@ try {
       'T05 shared answer must use the active day canonical exercise example; expected: ' + canonicalExerciseExample + '; rendered: ' + renderedExerciseExample);
     assert.equal(jealousyExerciseExample.includes('**'), false, 'T05 must not expose raw markdown markers');
     assert.equal(jealousyExerciseExample.includes(String.fromCharCode(92) + 'n'), false, 'T05 must not expose escaped newline tokens');
-    const expectedExerciseLineBreaks = (String(jealousyDayOne.exerciseExample).replace(/\\\\n/gu, '\\n').match(/\\n/gu) || []).length;
+    const canonicalExerciseLines = String(jealousyDayOne.exerciseExample)
+      .split(String.fromCharCode(92) + 'n').join('\n').replace(/\r\n?/gu, '\n').split('\n');
+    const expectedExerciseLineBreaks = canonicalExerciseLines.length - 1;
     const renderedExerciseLineBreaks = await jealousyPanel.locator('.assistantMessage').last().locator('p br').count();
     assert.equal(renderedExerciseLineBreaks, expectedExerciseLineBreaks,
       'T05 paragraphs must render one explicit line break for each canonical newline');
