@@ -241,7 +241,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     const topPadding = Number.parseFloat(window.getComputedStyle(viewport).paddingTop) || 0;
     const targetTop = viewport.scrollTop + questionTop - viewportTop - topPadding;
     viewport.scrollTo({ top: Math.max(0, targetTop), behavior: 'auto' });
-  }, [latestUserMessageId, open]);
+  }, [latestUserMessageId, latestAssistantTyping, open]);
 
 
 
