@@ -11,8 +11,8 @@ test('support and channel actions use distinct icons matching their purpose', ()
 
 test('severity value stays muted before selection and follows the slider gradient after selection', () => {
   assert.ok(source.includes("data-touched={touched ? '1' : '0'}"));
-  assert.ok(source.includes("backgroundColor: touched ? severityColorForScore(score) : '#edf1f3'"));
-  assert.ok(source.includes("color: touched ? severityValueTextColor(severityColorForScore(score)) : '#5f6d75'"));
+  assert.ok(source.includes("'--severity-value-background': touched ? severityColorForScore(score) : '#edf1f3'"));
+  assert.ok(source.includes("'--severity-value-foreground': touched ? severityValueTextColor(severityColorForScore(score)) : '#52616a'"));
   assert.ok(source.includes('setScore(Number(e.target.value)); setTouched(true);'));
 });
 
@@ -30,4 +30,10 @@ test('score color interpolates across every point of the five-stop track gradien
 test('preview stylesheet does not override the live severity value color', async () => {
   const stylesheet = await readFile(new URL('../src/styles/iranian-turquoise-preview.css', import.meta.url), 'utf8');
   assert.doesNotMatch(stylesheet, /\.app\s+\.severityValue\s*\{[^}]*!important/s);
+});
+
+
+test('legacy teal gradient cannot cover the live score bubble background or text color', async () => {
+  const stylesheet = await readFile(new URL('../src/styles/legacy.css', import.meta.url), 'utf8');
+  assert.match(stylesheet, /\.app #day \.severityValue\s*\{[^}]*background:\s*var\(--severity-value-background, #edf1f3\) !important;[^}]*color:\s*var\(--severity-value-foreground, #52616a\) !important;[^}]*background-image:\s*none !important;/s);
 });
