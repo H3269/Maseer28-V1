@@ -176,10 +176,15 @@ try {
     assert.equal(await jealousyPromptDialog.locator('[data-prompt-option]').count(), 14);
     await jealousyPromptDialog.getByRole('button', { name: 'برای تمرین امروز یک مثال می‌زنی؟' }).click();
     await jealousyPanel.getByRole('button', { name: 'ارسال' }).click();
-    await jealousyGuidedPage.waitForFunction(() => {
-      const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-of-type');
-      return Boolean(reply && !reply.innerText.includes('در حال بررسی'));
-    });
+    await jealousyGuidedPage.waitForFunction((expectedText) => {
+      const reply = document.querySelector('[data-testid="latest-assistant-message"]');
+      const speaker = reply?.querySelector('[data-assistant-state]');
+      return Boolean(
+        reply
+        && speaker?.getAttribute('data-assistant-state') === 'idle'
+        && reply.textContent.includes(expectedText),
+      );
+    }, jealousyDayOne?.exerciseExample);
     const jealousyExerciseExample = await jealousyPanel.locator('.assistantMessage').last().textContent();
     const jealousyDayOne = dailyTextOverrides.categories?.['حسادت']?.days?.find(item => Number(item.day) === 1);
     assert.ok(jealousyDayOne?.exerciseExample, 'T05 day 1 canonical override must provide its approved exercise example');
@@ -206,10 +211,15 @@ try {
     await jealousyGuidedPage.locator('#library-assistant-prompt-dialog')
       .getByRole('button', { name: 'برای اقدام امروز یک مثال می‌زنی؟' }).click();
     await jealousyPanel.getByRole('button', { name: 'ارسال' }).click();
-    await jealousyGuidedPage.waitForFunction(() => {
-      const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-of-type');
-      return Boolean(reply && !reply.innerText.includes('در حال بررسی'));
-    });
+    await jealousyGuidedPage.waitForFunction((expectedText) => {
+      const reply = document.querySelector('[data-testid="latest-assistant-message"]');
+      const speaker = reply?.querySelector('[data-assistant-state]');
+      return Boolean(
+        reply
+        && speaker?.getAttribute('data-assistant-state') === 'idle'
+        && reply.textContent.includes(expectedText),
+      );
+    }, jealousyDayOne?.actionExample);
     const jealousyActionExample = await jealousyPanel.locator('.assistantMessage').last().innerText();
     assert.ok(jealousyDayOne?.actionExample, 'T05 day 1 canonical override must provide its approved action example');
     assert.ok(jealousyActionExample.includes(jealousyDayOne.actionExample),
