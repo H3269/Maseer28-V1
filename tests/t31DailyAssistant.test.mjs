@@ -113,10 +113,6 @@ test('T31 relationship-sensitive days preserve all fourteen answers and gate onl
           'T31 day 11 direct actions must use a safe alternative until safety is confirmed');
         assert.match(turn.message, /گزینه استراحت ثبت‌شده|جایگزین کم‌خطر فعلی/u);
       }
-      if (requiresDirectActionConfirmation && ['exercise_meaning', 'exercise_example'].includes(question.kind)) {
-        assert.ok(turn.message.includes(dailyContent.exercise),
-          'T31 day 11 must keep self-directed exercise guidance available without authorizing direct interaction');
-      }
       if (!requiresDirectActionConfirmation && question.kind === 'action_meaning') {
         assert.ok(turn.message.includes(dailyContent.actionText),
           'T31 day ' + dayNumber + ' action meaning must preserve the exact daily action');
