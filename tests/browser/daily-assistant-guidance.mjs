@@ -229,11 +229,18 @@ async function openDay(page, { assistantDayMode = 'routine', problem = null, loc
           topic_id: ({ 'خشم':'T01','اضطراب':'T02','ترس':'T03','نفرت':'T04','حسادت':'T05','غم و سوگ':'T06','احساس گناه':'T07','وابستگی عاطفی':'T08','اهمال‌کاری':'T09','بی‌خوابی و مشکلات خواب':'T10','عادت‌های تکراری':'T11','مرزبندی و نه گفتن':'T12','تنهایی':'T13','کمبود انگیزه':'T14','اعتمادبه‌نفس پایین':'T15','افکار منفی و نشخوار فکری':'T16','مشکلات رابطه':'T17','نفرت از خود':'T18','خودسرزنشی':'T19','کمال‌گرایی':'T20','اجتناب':'T21','استرس':'T22','احساس بی‌ارزشی':'T23','مشکل در کنترل هیجان':'T24','رنجش و کینه':'T25','شرم':'T26','ترس از قضاوت':'T27','ترس از شکست':'T28','ترس از طرد شدن':'T29','شک و تردید':'T30','کنترل‌گری':'T31','بی‌انگیزگی':'T32','خودانتقادی':'T33','مشکل دیگر':'T34' })[topicKey] || 'T01',
           day: dayNumber,
           review_status: assistantDayMode === 'blocked' ? 'draft' : 'approved',
-          risk_level: assistantDayMode === 'fear-caution' ? 'caution' : 'routine',
+          risk_level: assistantDayMode === 'fear-caution' ? 'caution'
+            : assistantDayMode === 'control-restricted' ? 'moderate' : 'routine',
           ...(assistantDayMode === 'fear-caution' ? {
             safety_rule_ids: ['SR-T03-D14'],
             when_to_seek_human_support: 'اگر فشار ادامه یافت، از متخصص سلامت روان یا فرد مورد اعتماد کمک بگیر.',
             stop_conditions: ['اگر تمرین باعث افزایش محسوس ترس یا احساس ناایمنی شد، آن را متوقف کن.'],
+          } : {}),
+          ...(assistantDayMode === 'control-restricted' ? {
+            subtopic_ids: ['T31-S02'],
+            control_context: 'interpersonal_coercive_control',
+            contraindications: ['در وضعیت تهدید یا احتمال تلافی، اقدام مستقیم بین‌فردی انجام نده.'],
+            stop_conditions: ['در صورت تهدید، اجبار یا افزایش خطر، تمرین را متوقف کن.'],
           } : {}),
         });
       }
@@ -493,26 +500,63 @@ try {
   assert.deepEqual(workerRequests, [],
     'prepared daily answers must not call a Worker or external assistant provider');
 
-  // T31 keeps its catalogue visible, but every choice remains disabled until
-  // its three-way control context has been explicitly reviewed.
+  // T31 keeps all fourteen daily questions available even when its context
+  // metadata needs review. Missing context produces a conservative safety note,
+  // not a blanket lock that suppresses the whole guide.
   const controlSafetyPage = await browser.newPage({ reducedMotion: 'reduce' });
   await openDay(controlSafetyPage, { problem: 'کنترل‌گری' });
   const controlPanel = controlSafetyPage.locator('.globalAssistantDialog');
   await controlPanel.waitFor({ state: 'visible' });
   const controlTrigger = controlPanel.getByTestId('extended-daily-prompt-trigger');
   await controlTrigger.waitFor({ state: 'visible' });
-  assert.equal(await controlTrigger.isDisabled(), false,
-    'T31 must allow opening the prepared-question catalogue while its answers remain safety-locked');
+  assert.equal(await controlTrigger.isDisabled(), false);
   await controlTrigger.click();
   const controlPrompt = controlSafetyPage.locator('#library-assistant-prompt-dialog');
   await controlPrompt.waitFor({ state: 'visible' });
   assert.equal(await controlPrompt.locator('[data-prompt-option]').count(), 14,
-    'T31 must show all fourteen prepared questions while its control context is unclassified');
-  assert.equal(await controlPrompt.locator('[data-prompt-option]:not(:disabled)').count(), 0,
-    'T31 must keep every prepared question disabled until its control context is reviewed');
-  assert.doesNotMatch(await controlPanel.innerText(), /هنوز سؤال آماده‌ای برای این بخش ثبت نشده است/u);
-  assert.match(await controlPanel.innerText(), /ملاحظه ایمنی ثبت‌شده|نیاز به بازبینی ایمنی/u);
+    'T31 must expose all fourteen prepared questions');
+  assert.equal(await controlPrompt.locator('[data-prompt-option]:not(:disabled)').count(), 14,
+    'T31 must keep all prepared questions available when only control-context metadata is incomplete');
+  assert.match(await controlPanel.innerText(), /ملاحظه ایمنی ثبت‌شده|ملاحظه ایمنی/u);
+  for (const question of questions) {
+    await controlTrigger.click();
+    await controlPrompt.waitFor({ state: 'visible' });
+    await controlPrompt.getByRole('button', { name: question, exact: true }).click();
+    await controlPanel.getByRole('button', { name: 'ارسال' }).click();
+    await controlSafetyPage.waitForFunction(() => {
+      const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child');
+      return Boolean(reply && reply.querySelector('[data-assistant-state]')?.getAttribute('data-assistant-state') === 'idle'
+        && (reply.querySelector('p')?.innerText.length || 0) > 35
+        && !reply.innerText.includes('در حال بررسی پرسش'));
+    }, { timeout: 12000 });
+    const answer = await controlPanel.locator('.assistantMessage').last().innerText();
+    assert.ok(answer.includes('روز 1'), 'T31 prepared answer must remain grounded in its selected day: ' + question);
+    assert.ok(answer.length > 80, 'T31 must return substantive guidance for every prepared question: ' + question);
+  }
   await controlSafetyPage.close();
+
+  // Elevated T31 risk does not suppress the guide; it switches to a safer
+  // alternative and must not expose the potentially unsafe original exercise.
+  const restrictedControlPage = await browser.newPage({ reducedMotion: 'reduce' });
+  await openDay(restrictedControlPage, { problem: 'کنترل‌گری', assistantDayMode: 'control-restricted' });
+  const restrictedControlPanel = restrictedControlPage.locator('.globalAssistantDialog');
+  await restrictedControlPanel.waitFor({ state: 'visible' });
+  await restrictedControlPanel.getByTestId('extended-daily-prompt-trigger').click();
+  const restrictedPrompt = restrictedControlPage.locator('#library-assistant-prompt-dialog');
+  await restrictedPrompt.waitFor({ state: 'visible' });
+  await restrictedPrompt.getByRole('button', { name: questions[0], exact: true }).click();
+  await restrictedControlPanel.getByRole('button', { name: 'ارسال' }).click();
+  await restrictedControlPage.waitForFunction(() => {
+    const reply = document.querySelector('.globalAssistantDialog .assistantMessage:last-child');
+    return Boolean(reply && reply.querySelector('[data-assistant-state]')?.getAttribute('data-assistant-state') === 'idle'
+      && !reply.innerText.includes('در حال بررسی پرسش'));
+  }, { timeout: 12000 });
+  const restrictedAnswer = await restrictedControlPanel.locator('.assistantMessage').last().innerText();
+  assert.match(restrictedAnswer, /سطح خطر ثبت‌شده بالاتر از حالت عادی/u);
+  assert.doesNotMatch(restrictedAnswer, /تمرین روز اول/u,
+    'elevated-risk T31 answer must not expose the original exercise as an instruction');
+  assert.match(restrictedAnswer, /جایگزین کم‌خطر فعلی/u);
+  await restrictedControlPage.close();
 
   // T03 day 14 has an explicit safety-rule requirement. The catalogue remains
   // visible, but the UI must lock every choice when the source record is blocked.
