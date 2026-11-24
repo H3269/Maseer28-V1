@@ -8,6 +8,7 @@ import {
   getSharedDailyAssistantPromptGroups,
 } from '../src/features/assistant/sharedDailyAssistantEngine.js';
 import { makeDailyAssistantTurn } from '../src/features/assistant/dailyAssistantTurn.js';
+import { getRelationshipSafetyGate } from '../src/features/journey/relationshipSafetyGate.js';
 
 const TOPIC_ID = 'T31';
 const TOPIC_NAME = 'کنترل‌گری';
@@ -76,12 +77,14 @@ test('T31 elevated-risk records return safe alternatives without exposing unsafe
 });
 
 
-test('T31 relationship-safety gates preserve all fourteen answers on gated days', () => {
+test('T31 relationship-sensitive days preserve all fourteen answers and gate only the flagged direct action', () => {
   const gatedDays = [6, 11, 15, 24];
   let checked = 0;
   for (const dayNumber of gatedDays) {
     const dailyContent = t31Days.find((day) => Number(day.day) === dayNumber);
-    assert.ok(dailyContent, 'T31 gated day ' + dayNumber + ' must exist');
+    assert.ok(dailyContent, 'T31 relationship-sensitive day ' + dayNumber + ' must exist');
+    assert.equal(Boolean(getRelationshipSafetyGate(dailyContent)), dayNumber === 11,
+      'only T31 day 11 requires relationship confirmation before a direct interaction');
     const questions = getSharedDailyAssistantPromptGroups(dayNumber, TOPIC_ID).flatMap((group) => group.questions);
     assert.equal(questions.length, 14);
     for (const question of questions) {
