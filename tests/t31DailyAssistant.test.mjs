@@ -7,6 +7,7 @@ import {
   buildSharedDailyAssistantAnswerFromDailyContent,
   getSharedDailyAssistantPromptGroups,
 } from '../src/features/assistant/sharedDailyAssistantEngine.js';
+import { makeDailyAssistantTurn } from '../src/features/assistant/dailyAssistantTurn.js';
 
 const TOPIC_ID = 'T31';
 const TOPIC_NAME = 'کنترل‌گری';
@@ -72,6 +73,59 @@ test('T31 elevated-risk records return safe alternatives without exposing unsafe
     assert.equal(answer.includes('UNSAFE_SOURCE_EXERCISE_SENTINEL'), false);
     assert.equal(answer.includes('UNSAFE_SOURCE_ACTION_SENTINEL'), false);
   }
+});
+
+
+test('T31 relationship-safety gates preserve all fourteen answers on gated days', () => {
+  const gatedDays = [6, 11, 15, 24];
+  let checked = 0;
+  for (const dayNumber of gatedDays) {
+    const dailyContent = t31Days.find((day) => Number(day.day) === dayNumber);
+    assert.ok(dailyContent, 'T31 gated day ' + dayNumber + ' must exist');
+    const questions = getSharedDailyAssistantPromptGroups(dayNumber, TOPIC_ID).flatMap((group) => group.questions);
+    assert.equal(questions.length, 14);
+    for (const question of questions) {
+      const turn = makeDailyAssistantTurn({
+        message: question.value,
+        dailyContext: {
+          problem: TOPIC_NAME,
+          day: dayNumber,
+          data: dailyContent,
+          relationshipSafetyConfirmed: false,
+        },
+        conversationState: null,
+        inputProbe: { status: 'normal', intake: {} },
+      });
+      assert.equal(turn.status, 'daily_guidance_available',
+        'T31 day ' + dayNumber + ' ' + question.id + ' must not be suppressed by the relationship gate');
+      assert.ok(turn.message.length > 80, 'T31 day ' + dayNumber + ' ' + question.id + ' must return substantive guidance');
+      assert.match(turn.message, /ایمنی تعامل مستقیم/u,
+        'T31 day ' + dayNumber + ' answers must explain the pending interaction-safety boundary');
+      if (['action_meaning', 'action_example', 'talk_other', 'can_change'].includes(question.kind)) {
+        assert.equal(turn.message.includes(dailyContent.actionText), false,
+          'T31 day ' + dayNumber + ' direct-interaction answers must use a safe alternative until safety is confirmed');
+        assert.match(turn.message, /گزینه استراحت ثبت‌شده|جایگزین کم‌خطر فعلی/u);
+      }
+      checked += 1;
+    }
+  }
+  assert.equal(checked, 56, 'four gated T31 days must retain all 56 prepared answers');
+
+  const day11 = t31Days.find((day) => Number(day.day) === 11);
+  const actionQuestion = getSharedDailyAssistantPromptGroups(11, TOPIC_ID)
+    .flatMap((group) => group.questions).find((question) => question.kind === 'action_meaning');
+  const confirmedSafe = makeDailyAssistantTurn({
+    message: actionQuestion.value,
+    dailyContext: {
+      problem: TOPIC_NAME, day: 11, data: day11,
+      relationshipSafetyConfirmed: true, relationshipSafetyResponse: 'safe',
+    },
+    conversationState: null,
+    inputProbe: { status: 'normal', intake: {} },
+  });
+  assert.equal(confirmedSafe.status, 'daily_guidance_available');
+  assert.ok(confirmedSafe.message.includes(day11.actionText),
+    'after affirmative safety confirmation, the source-grounded action may be explained with its safety boundaries');
 });
 
 test('T31 exposes 392 day-grounded prepared answers; only urgent records are blocked', () => {
