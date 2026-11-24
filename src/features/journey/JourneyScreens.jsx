@@ -391,7 +391,7 @@ export function DayScreen({ day, problem, data, record, savedAnswer, previousRec
       <div className="entryHeader"><span className="stepNumber">۳</span><div><b>ثبت نتیجه</b><small>کمتر از یک دقیقه</small></div></div>
       <label>شدت یا میزان درگیری امروز</label>
       <div className="severityWrap">
-        <div className="severityValue" id="severityValue" data-touched={touched ? '1' : '0'} style={{ left: `${bubblePos}%`, backgroundColor: touched ? severityColorForScore(score) : '#edf1f3', color: touched ? severityValueTextColor(severityColorForScore(score)) : '#5f6d75', border: touched ? '1px solid #00000020' : '1px solid #cbd5da', boxShadow: touched ? '0 3px 9px #263b3826' : '0 2px 6px #263b3812' }}>{touched ? `${fa(score)} از ۱۰` : 'انتخاب نشده'}</div>
+        <div className="severityValue" id="severityValue" data-touched={touched ? '1' : '0'} style={{ left: `${bubblePos}%`, '--severity-value-background': touched ? severityColorForScore(score) : '#edf1f3', '--severity-value-foreground': touched ? severityValueTextColor(severityColorForScore(score)) : '#52616a', backgroundColor: touched ? severityColorForScore(score) : '#edf1f3', color: touched ? severityValueTextColor(severityColorForScore(score)) : '#52616a', border: touched ? '1px solid #00000020' : '1px solid #cbd5da', boxShadow: touched ? '0 3px 9px #263b3826' : '0 2px 6px #263b3812' }}>{touched ? `${fa(score)} از ۱۰` : 'انتخاب نشده'}</div>
         <div className="severityThumb" id="severityThumb" />
         <input aria-label="شدت درگیری" className="severityRange" id="dayScore" max="10" min="0" step="1" type="range" value={score} data-touched={touched ? '1' : '0'} onChange={(e) => { setScore(Number(e.target.value)); setTouched(true); }} />
       </div>
