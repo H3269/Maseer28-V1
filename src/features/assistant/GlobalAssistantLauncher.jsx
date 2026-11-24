@@ -25,6 +25,7 @@ import { getCanonicalTopicIdForCategory, getInterpersonalPrivacyNotice, getRelat
 import { getSharedDailyAssistantPromptGroups } from './sharedDailyAssistantEngine.js';
 import { DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN, shouldShowDailyAssistantSafetyReminder } from './dailyAssistantSafetyReminder.js';
 import { getDailySafetyMode } from '../content/dailySafety.js';
+import { useAssistantTypewriter } from './useAssistantTypewriter.js';
 
 const PAGE_ASSISTANT_PROMPT_GROUPS = Object.freeze([
   Object.freeze({
@@ -47,7 +48,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
   const libraryPromptDialogRef = useRef(null);
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
-  const [typingProgress, setTypingProgress] = useState(null);
+  const typingProgress = useAssistantTypewriter(messages, sending);
   const turnSequenceRef = useRef(0);
   const [loadedLibraryBooks, setLoadedLibraryBooks] = useState([]);
   const libraryBooksLoadRef = useRef(null);
@@ -221,56 +222,7 @@ export default function GlobalAssistantLauncher({ screen, visible = false, daily
     latestAssistantRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
   }, [messages, open]);
 
-  useEffect(() => {
-    if (sending) return undefined;
-    const latestAssistantMessage = [...messages].reverse().find((item) =>
-      item.role === 'assistant' && item.text && !/^در حال بررسی پرسش[.…]*$/u.test(item.text),
-    );
-    if (!latestAssistantMessage) {
-      setTypingProgress(null);
-      return undefined;
-    }
-    const revealText = latestAssistantMessage.dailySafetyReminder
-      && latestAssistantMessage.text.endsWith(DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN)
-      ? latestAssistantMessage.text.slice(0, -DAILY_ASSISTANT_SAFETY_REMINDER_MARKDOWN.length).trimEnd()
-      : latestAssistantMessage.text;
-    const words = revealText.match(/\S+\s*/gu) || [revealText];
-    const responseId = latestAssistantMessage.id;
-    const reducedMotionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
-    if (reducedMotionQuery?.matches) {
-      setTypingProgress({ id: responseId, text: revealText, active: false });
-      return undefined;
-    }
 
-    let visibleCount = 0;
-    let visibleText = '';
-    setTypingProgress({ id: responseId, text: '', active: words.length > 0 });
-    const timer = window.setInterval(() => {
-      visibleText += words[visibleCount] || '';
-      visibleCount += 1;
-      const active = visibleCount < words.length;
-      setTypingProgress({ id: responseId, text: visibleText, active });
-      if (!active) window.clearInterval(timer);
-    }, 42);
-    const finishForReducedMotion = (event) => {
-      if (!event.matches) return;
-      window.clearInterval(timer);
-      setTypingProgress({ id: responseId, text: revealText, active: false });
-    };
-    if (reducedMotionQuery?.addEventListener) {
-      reducedMotionQuery.addEventListener('change', finishForReducedMotion);
-    } else {
-      reducedMotionQuery?.addListener?.(finishForReducedMotion);
-    }
-    return () => {
-      window.clearInterval(timer);
-      if (reducedMotionQuery?.removeEventListener) {
-        reducedMotionQuery.removeEventListener('change', finishForReducedMotion);
-      } else {
-        reducedMotionQuery?.removeListener?.(finishForReducedMotion);
-      }
-    };
-  }, [messages, sending]);
 
   useEffect(() => {
     if (!libraryPromptOpen) return undefined;
