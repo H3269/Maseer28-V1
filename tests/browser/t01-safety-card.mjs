@@ -139,9 +139,10 @@ try {
         background: card.backgroundColor,
         border: card.borderTopColor,
         headingText: headingNode?.textContent?.trim() || '',
-        headingDisplay: headingStyle?.display || '',
-        headingVisibility: headingStyle?.visibility || '',
-        headingOpacity: headingStyle?.opacity || '',
+        headingDisplay: headingStyle?.getPropertyValue('display') || '',
+        headingVisible: headingNode?.checkVisibility
+          ? headingNode.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })
+          : Boolean(headingRect?.width && headingRect?.height && headingNode?.getClientRects().length),
         headingWidth: headingRect?.width || 0,
         headingHeight: headingRect?.height || 0,
         headingHasLayout: Boolean(headingNode?.getClientRects().length),
@@ -153,8 +154,7 @@ try {
     assert.notEqual(colors.border, 'rgba(0, 0, 0, 0)', 'the main safety card must retain a visible border');
     assert.ok(colors.headingText.length > 0, 'the safety card must contain a semantic heading');
     assert.notEqual(colors.headingDisplay, 'none', 'the safety heading must participate in layout');
-    assert.equal(colors.headingVisibility, 'visible', 'the safety heading must not be hidden');
-    assert.ok(Number(colors.headingOpacity) > 0, 'the safety heading must not be transparent');
+    assert.ok(colors.headingVisible, 'the safety heading must pass the browser visibility check');
     assert.ok(colors.headingHasLayout && colors.headingWidth > 0 && colors.headingHeight > 0,
       'the safety heading must occupy visible layout space');
   }
