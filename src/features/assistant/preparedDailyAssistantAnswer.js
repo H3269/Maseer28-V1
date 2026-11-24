@@ -1,5 +1,4 @@
 import { answerAngerDailyPreparedQuestion } from './angerDailyAssistantPrompts.js';
-import { answerT12DailyPreparedQuestion } from './t12DailyAssistantPrompts.js';
 import { buildSharedDailyAssistantAnswerFromDailyContent } from './sharedDailyAssistantEngine.js';
 
 /**
@@ -16,10 +15,6 @@ export function buildPreparedDailyAssistantAnswer({
 } = {}) {
   if (topicId === 'T01') {
     return answerAngerDailyPreparedQuestion({ day, message, dailyContent });
-  }
-
-  if (topicId === 'T12') {
-    return answerT12DailyPreparedQuestion({ day, message, dailyContent });
   }
 
   return buildSharedDailyAssistantAnswerFromDailyContent({
