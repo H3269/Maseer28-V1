@@ -99,12 +99,19 @@ test('T31 relationship-safety gates preserve all fourteen answers on gated days'
       assert.equal(turn.status, 'daily_guidance_available',
         'T31 day ' + dayNumber + ' ' + question.id + ' must not be suppressed by the relationship gate');
       assert.ok(turn.message.length > 80, 'T31 day ' + dayNumber + ' ' + question.id + ' must return substantive guidance');
-      assert.match(turn.message, /ایمنی تعامل مستقیم/u,
-        'T31 day ' + dayNumber + ' answers must explain the pending interaction-safety boundary');
-      if (['action_meaning', 'action_example', 'talk_other', 'can_change'].includes(question.kind)) {
+      const requiresDirectActionConfirmation = dayNumber === 11;
+      if (requiresDirectActionConfirmation) {
+        assert.match(turn.message, /ایمنی تعامل مستقیم/u,
+          'T31 day 11 must explain the pending interaction-safety boundary');
+      }
+      if (requiresDirectActionConfirmation && ['action_meaning', 'action_example', 'talk_other', 'can_change'].includes(question.kind)) {
         assert.equal(turn.message.includes(dailyContent.actionText), false,
-          'T31 day ' + dayNumber + ' direct-interaction answers must use a safe alternative until safety is confirmed');
+          'T31 day 11 direct-interaction answers must use a safe alternative until safety is confirmed');
         assert.match(turn.message, /گزینه استراحت ثبت‌شده|جایگزین کم‌خطر فعلی/u);
+      }
+      if (!requiresDirectActionConfirmation && ['action_meaning', 'action_example'].includes(question.kind)) {
+        assert.ok(turn.message.includes(dailyContent.actionText),
+          'T31 day ' + dayNumber + ' safe actions must remain source-grounded rather than being over-restricted');
       }
       checked += 1;
     }
