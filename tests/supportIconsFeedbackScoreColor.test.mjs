@@ -33,7 +33,9 @@ test('preview stylesheet does not override the live severity value color', async
 });
 
 
-test('legacy teal gradient cannot cover the live score bubble background or text color', async () => {
-  const stylesheet = await readFile(new URL('../src/styles/legacy.css', import.meta.url), 'utf8');
+test('live score bubble override is in the stylesheet actually imported by the app', async () => {
+  const appEntry = await readFile(new URL('../src/main.jsx', import.meta.url), 'utf8');
+  const stylesheet = await readFile(new URL('../src/styles/original-v72.css', import.meta.url), 'utf8');
+  assert.ok(appEntry.includes("import './styles/original-v72.css'"));
   assert.match(stylesheet, /\.app #day \.severityValue\s*\{[^}]*background:\s*var\(--severity-value-background, #edf1f3\) !important;[^}]*color:\s*var\(--severity-value-foreground, #52616a\) !important;[^}]*background-image:\s*none !important;/s);
 });
