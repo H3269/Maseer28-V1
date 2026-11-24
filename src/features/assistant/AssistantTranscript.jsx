@@ -28,7 +28,7 @@ export default function AssistantTranscript({ messages, sending, typingProgress,
                       className="globalAssistantSpeakerIcon"
                       aria-label={item.role === 'user' ? 'شما' : 'دستیار مسیر۲۸'}
                       data-assistant-state={item.role === 'assistant' && index === messages.length - 1
-                        ? (sending ? 'thinking' : typingProgress?.id === item.id && typingProgress.active ? 'typing' : 'idle')
+                        ? (sending ? 'thinking' : isLatestAssistantTyping ? 'typing' : 'idle')
                         : 'idle'}
                     >
                       {item.role === 'user' ? (
