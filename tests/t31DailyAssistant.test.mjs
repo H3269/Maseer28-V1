@@ -64,6 +64,7 @@ test('T31 elevated-risk records return safe alternatives without exposing unsafe
   for (const answer of answers) {
     assert.ok(typeof answer === 'string' && answer.length > 80);
     assert.ok(answer.includes('گزینه استراحت ثبت‌شده'));
+    assert.ok(answer.includes('عنوان محتوای همین روز: انتخاب امن · روز 25'));
     assert.ok(answer.includes('مسئول اصلاح رفتار او نیستی'));
     assert.ok(answer.includes('مطالبه نکن'));
     assert.ok(answer.includes('شرط توقف ثبت‌شده'));
