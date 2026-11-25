@@ -263,7 +263,10 @@ jobs:
           # that exact SHA; never retry it with this repository's token because
           # that token is not authorized to rerun workflows in the destination.
           for attempt in $(seq 1 60); do
-            response="$(curl --fail --silent --show-error --retry 2 "$runs_api")"
+            if ! response="$(curl --fail --silent --show-error --retry 2 "$runs_api")"; then
+              echo "::warning::Telegram commit $PUBLISHED_SHA was pushed, but GitHub Actions could not be queried for the Pages run. Check the destination repository Actions tab."
+              exit 0
+            fi
             matching_run="$(printf '%s' "$response" | jq -c --arg sha "$PUBLISHED_SHA" '[.workflow_runs[] | select(.head_sha == $sha)] | sort_by(.run_number) | last // empty')"
             if [ -n "$matching_run" ]; then
               run_id="$(printf '%s' "$matching_run" | jq -r '.id')"
@@ -278,9 +281,12 @@ jobs:
           fi
 
           for poll in $(seq 1 60); do
-            run="$(curl --fail --silent --show-error --retry 2 \
+            if ! run="$(curl --fail --silent --show-error --retry 2 \
               -H "Accept: application/vnd.github+json" \
-              "$api/actions/runs/$run_id")"
+              "$api/actions/runs/$run_id")"; then
+              echo "::warning::Telegram publication succeeded for $PUBLISHED_SHA, but GitHub Actions could not return the status of Pages run $run_id. Check the destination repository Actions tab."
+              exit 0
+            fi
             status="$(printf '%s' "$run" | jq -r '.status')"
             conclusion="$(printf '%s' "$run" | jq -r '.conclusion // empty')"
 
