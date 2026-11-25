@@ -67,7 +67,7 @@ async function waitForFirstBodyParagraph(page) {
 
 try {
   const repetitions = [];
-  for (let repetition = 1; repetition <= 2; repetition += 1) {
+  for (let repetition = 1; repetition <= 3; repetition += 1) {
   console.log(`START recommendation route repetition=${repetition}`);
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
   const errors = [];
