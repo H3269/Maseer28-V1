@@ -270,6 +270,7 @@ test('v1 keeps every generative assistant runtime fail-closed while prepared que
   const localClient = await readFile(new URL('../src/features/assistant/localNeuralModelClient.js', import.meta.url), 'utf8');
   const worker = await readFile(new URL('../workers/assistant-api/src/index.js', import.meta.url), 'utf8');
   const workerConfig = await readFile(new URL('../workers/assistant-api/wrangler.toml', import.meta.url), 'utf8');
+  const launcherUi = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
 
   assert.match(localModel, /export function shouldUseLocalNeuralModel\(\)\s*\{\s*return false;/);
   assert.match(localModel, /export function isLocalModelInstallCommand\(\)\s*\{\s*return false;/);
