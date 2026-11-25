@@ -50,6 +50,6 @@ test('support and channel link icons inherit each action foreground instead of a
   assert.ok(rule.includes('stroke: currentColor !important'));
   assert.ok(rule.includes('width: 17px !important'));
   assert.ok(rule.includes('height: 17px !important'));
-  assert.doesNotMatch(rule, /color:\\s*#(?:FFFFFF|245A9A)/i);
-  assert.ok(stylesheet.includes('.app svg {\\n  color: #245A9A;'));
+  assert.doesNotMatch(rule, /color:\s*#(?:FFFFFF|245A9A)/i);
+  assert.ok(stylesheet.includes('.app svg {\n  color: #245A9A;'));
 });
