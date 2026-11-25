@@ -2180,3 +2180,18 @@ body:has(#root > .appLoading),
 .appLoading .loadingProgressFill {
   background: #40E0D0 !important;
 }
+
+/* Support links: the preview theme sets a fixed lapis color on every SVG.
+   These two links also have a lapis background, so their semantic icons must
+   explicitly inherit the white action foreground to remain visible. */
+.app > section.card#support .support a.telegram.m28IconAction > .m28ActionIcon > svg {
+  display: block !important;
+  flex: 0 0 17px !important;
+  width: 17px !important;
+  height: 17px !important;
+  color: #FFFFFF !important;
+  stroke: currentColor !important;
+  fill: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
