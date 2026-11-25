@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-import { sanitizeJourneyState, validPathDuration } from '../src/features/journey/journeyStore.js';
+import { cloneForArchive, sanitizeJourneyState, validPathDuration } from '../src/features/journey/journeyStore.js';
 
 test('path duration requires an explicit year and month selection', () => {
   assert.equal(validPathDuration('', ''), false);
@@ -65,4 +65,24 @@ test('an empty selector stays missing instead of being normalized to zero', () =
   assert.equal(state.profileData.durationConfirmed, false);
   assert.equal(state.profileData.durationYears, undefined);
   assert.equal(state.profileData.durationMonths, undefined);
+});
+
+test('archive display snapshots keep their established path-only data shape', () => {
+  const archived = cloneForArchive({
+    pathId: 'duration-check',
+    profileData: {
+      problem: 'خشم',
+      durationYears: '0',
+      durationMonths: '0',
+      durationConfirmed: true,
+      goal: 'هدف',
+    },
+    completed: [],
+    answers: {},
+    daily: {},
+    final: null,
+  });
+  assert.deepEqual(Object.keys(archived.profileData).sort(), [
+    'durationMonths', 'durationYears', 'goal', 'problem',
+  ]);
 });
