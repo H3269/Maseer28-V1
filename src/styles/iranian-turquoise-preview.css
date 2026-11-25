@@ -2195,3 +2195,195 @@ body:has(#root > .appLoading),
   opacity: 1 !important;
   visibility: visible !important;
 }
+
+
+/* Reader theme parity: keep every reader control and the table of contents
+   in the same visual mode as the reading page. These rules are deliberately
+   scoped to the standalone reader and do not affect the rest of the app. */
+body #bookReader {
+  transition: background-color .18s ease, color .18s ease;
+}
+
+/* Normal / default reading mode. */
+body #bookReader:not(.theme-sepia):not(.theme-night) {
+  --reader-paper: #fffdf9;
+  --reader-ink: #263735;
+  --reader-muted: #66736f;
+  --reader-chrome: #ffffff;
+  --reader-control: #edf4fb;
+  --reader-control-ink: #245a9a;
+  --reader-control-border: #d1e2ef;
+  --reader-panel: #ffffff;
+  --reader-panel-item: #f5f9fd;
+  --reader-panel-ink: #173e62;
+  --reader-panel-border: #dce8f0;
+  background: #f5f8fc !important;
+  color: #102a43 !important;
+}
+
+/* Day / warm paper mode. */
+body #bookReader.theme-sepia {
+  --reader-paper: #f8f0dc;
+  --reader-ink: #3c342b;
+  --reader-muted: #837768;
+  --reader-chrome: #f4ead5;
+  --reader-control: #eadfc9;
+  --reader-control-ink: #594936;
+  --reader-control-border: #d8c8aa;
+  --reader-panel: #f8f0dc;
+  --reader-panel-item: #f1e6cf;
+  --reader-panel-ink: #493b2b;
+  --reader-panel-border: #d8c8aa;
+  background: #e8dfcd !important;
+  color: #3c342b !important;
+}
+
+/* Night mode. */
+body #bookReader.theme-night {
+  --reader-paper: #1d2728;
+  --reader-ink: #e6ece9;
+  --reader-muted: #a7b4b0;
+  --reader-chrome: #182b40;
+  --reader-control: #263f58;
+  --reader-control-ink: #e6eef6;
+  --reader-control-border: #3e5d79;
+  --reader-panel: #182b40;
+  --reader-panel-item: #20384f;
+  --reader-panel-ink: #e6eef6;
+  --reader-panel-border: #344b62;
+  background: #101e2d !important;
+  color: #e6eef6 !important;
+}
+
+/* Shared reader chrome: top bar, tools and bottom navigation. */
+body #bookReader .readerTopbar,
+body #bookReader .readerTools,
+body #bookReader .readerBottombar {
+  background: var(--reader-chrome) !important;
+  border-color: var(--reader-panel-border) !important;
+  color: var(--reader-ink) !important;
+}
+body #bookReader .readerTitleWrap,
+body #bookReader .readerTitleWrap b,
+body #bookReader .readerChapterLabel,
+body #bookReader .readerPageCounter,
+body #bookReader .readerTitleWrap small {
+  color: var(--reader-ink) !important;
+}
+body #bookReader .readerTitleWrap small { opacity: .78; }
+body #bookReader .readerIcon,
+body #bookReader .readerTools button,
+body #bookReader .readerPageArrow,
+body #bookReader .readerBottomIcon,
+body #bookReader .readerPageCounter,
+body #bookReader .readerChapterLabel,
+body #bookReader .bookTocClose {
+  background: var(--reader-control) !important;
+  color: var(--reader-control-ink) !important;
+  border: 1px solid var(--reader-control-border) !important;
+  box-shadow: none !important;
+}
+body #bookReader button:disabled {
+  opacity: .42;
+  cursor: not-allowed;
+}
+body #bookReader .readerProgressTrack {
+  background: var(--reader-panel-border) !important;
+}
+body #bookReader .readerProgressTrack span {
+  background: linear-gradient(90deg, #40e0d0, #4096c8) !important;
+}
+body #bookReader .readerPageRange {
+  accent-color: var(--reader-control-ink);
+}
+body #bookReader .readerPageRange::-webkit-slider-runnable-track {
+  background: var(--reader-panel-border) !important;
+}
+body #bookReader .readerPageRange::-moz-range-track {
+  background: var(--reader-panel-border) !important;
+}
+body #bookReader .readerPageRange::-webkit-slider-thumb,
+body #bookReader .readerPageRange::-moz-range-thumb {
+  background: var(--reader-control-ink) !important;
+  border: 2px solid var(--reader-control-border) !important;
+}
+
+/* Reading page and its non-text elements follow the selected paper palette. */
+body #bookReader .bookPage {
+  background: var(--reader-paper) !important;
+  color: var(--reader-ink) !important;
+  border-color: var(--reader-panel-border) !important;
+}
+body #bookReader .readerFixedLine,
+body #bookReader .chapterEyebrow,
+body #bookReader .chapterTitle,
+body #bookReader .readerTablePage {
+  color: var(--reader-ink) !important;
+}
+body #bookReader .readerTablePage table,
+body #bookReader .readerTablePage th,
+body #bookReader .readerTablePage td {
+  color: var(--reader-ink) !important;
+  border-color: var(--reader-panel-border) !important;
+}
+body #bookReader .readerTablePage th {
+  background: var(--reader-control) !important;
+}
+body #bookReader .readerTablePage td {
+  background: var(--reader-panel) !important;
+}
+body #bookReader .readerSwipeCue {
+  color: var(--reader-control-ink) !important;
+}
+
+/* Suggested-reading banner and expanded explanation. */
+body #bookReader .readerTarget {
+  background: var(--reader-control) !important;
+  border-color: var(--reader-control-border) !important;
+  color: var(--reader-ink) !important;
+}
+body #bookReader .readerTarget *,
+body #bookReader .readerTargetReason {
+  color: var(--reader-ink) !important;
+}
+
+/* Table of contents, including heading, rows, page labels and close button. */
+body #bookReader .bookTocPanel {
+  background: var(--reader-panel) !important;
+  color: var(--reader-panel-ink) !important;
+  border: 1px solid var(--reader-panel-border) !important;
+  box-shadow: 0 18px 45px rgba(0,0,0,.22) !important;
+}
+body #bookReader .bookTocPanel h3,
+body #bookReader .bookTocPanel p,
+body #bookReader .bookTocPanel .muted {
+  color: var(--reader-panel-ink) !important;
+}
+body #bookReader .bookTocEntry {
+  background: var(--reader-panel-item) !important;
+  color: var(--reader-panel-ink) !important;
+  border: 1px solid var(--reader-panel-border) !important;
+}
+body #bookReader .bookTocEntry b,
+body #bookReader .bookTocEntry span {
+  color: var(--reader-panel-ink) !important;
+}
+body #bookReader .bookTocEntry:hover,
+body #bookReader .bookTocEntry:focus-visible {
+  background: var(--reader-control) !important;
+  border-color: var(--reader-control-border) !important;
+}
+body #bookReader .bookTocClose {
+  width: 100%;
+  margin-top: 12px;
+}
+
+/* Keep the existing sound on/off distinction while adapting both states. */
+body #bookReader .readerSoundButton.soundOn {
+  background: var(--reader-control) !important;
+  color: var(--reader-control-ink) !important;
+  border-color: var(--reader-control-border) !important;
+}
+body #bookReader .readerSoundButton.soundOff {
+  opacity: .72;
+}
