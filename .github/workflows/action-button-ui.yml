@@ -6,7 +6,7 @@ on:
     paths:
       - "src/features/journey/JourneyScreens.jsx"
       - "src/features/assistant/GlobalAssistantLauncher.jsx"
-      - "src/styles/original-v72.css"
+      - "src/styles/original-v72.css"\n      - "src/styles/iranian-turquoise-preview.css"
       - "tests/actionButtonVisualConsistency.test.mjs"
       - "tests/assistantFirstUseGuide.test.mjs"
       - "tests/supportIconsFeedbackScoreColor.test.mjs"
