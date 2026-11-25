@@ -5,7 +5,7 @@ import { preserveDailyGuidanceSourceIdentity } from '../assistant/dailyGuidanceS
 import { buttonLabel } from '../../shared/buttonLabel.jsx';
 import { getJourneyProgressCounts } from './progress.js';
 import { copyTextToClipboard, fa, formatDate, normalizeDigits } from '../../shared/utils.js';
-import { burdenScoreFromAnswers, evaluatePqhtEligibility, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
+import { burdenScoreFromAnswers, evaluatePqhtEligibility, getTrustedNowMs, safeText, validDailyAnswer, validName, validPathDuration, validPersianText, validPhone } from './journeyStore.js';
 import { exportArchivesZip, triggerBlobDownload } from './archiveExport.js';
 import { selectCanonicalDailyRecord, selectDailyContentCategory } from '../content/dailyContentSelector.js';
 import { getCanonicalTopicIdForCategory } from './relationshipSafetyGate.js';
@@ -142,19 +142,24 @@ export function ProfileScreen({ initial, editing, onSave, onCancel, onValidation
 }
 
 export function PathSetupScreen({ initial, problems, onSave, onEditProfile, onValidation }) {
-  const [form, setForm] = useState({ problem: '', durationYears: 0, durationMonths: 0, goal: '' });
-  useEffect(() => setForm({ problem: initial?.problem || '', durationYears: initial?.durationYears ?? 0, durationMonths: initial?.durationMonths ?? 0, goal: initial?.goal || '' }), [initial]);
+  const [form, setForm] = useState({ problem: '', durationYears: '', durationMonths: '', goal: '' });
+  useEffect(() => setForm({
+    problem: initial?.problem || '',
+    durationYears: initial?.durationConfirmed === true ? String(initial.durationYears) : '',
+    durationMonths: initial?.durationConfirmed === true ? String(initial.durationMonths) : '',
+    goal: initial?.goal || '',
+  }), [initial]);
   const set = (key, value) => setForm((current) => ({ ...current, [key]: value }));
   function submit() {
     const missing = [];
     if (!form.problem) missing.push('مهم‌ترین مسئله');
     if (!safeText(form.goal, 1000)) missing.push('نتیجه ارزشمند مورد انتظار');
-    if (Number(form.durationYears) < 0 || Number(form.durationMonths) < 0 || Number(form.durationMonths) > 11) missing.push('مدت درگیری');
+    if (!validPathDuration(form.durationYears, form.durationMonths)) missing.push('مدت درگیری (انتخاب سال و ماه)');
     if (missing.length) return onValidation(missing, 'اطلاعات مسیر هنوز کامل نشده است');
-    onSave({ problem: form.problem, durationYears: Number(form.durationYears), durationMonths: Number(form.durationMonths), goal: form.goal.trim() });
+    onSave({ problem: form.problem, durationYears: form.durationYears, durationMonths: form.durationMonths, durationConfirmed: true, goal: form.goal.trim() });
   }
-  const years = Array.from({ length: 31 }, (_, i) => ({ value: String(i), label: i === 0 ? 'کمتر از یک سال' : `${fa(i)} سال` }));
-  const months = Array.from({ length: 12 }, (_, i) => ({ value: String(i), label: i === 0 ? 'بدون ماه اضافه' : `${fa(i)} ماه` }));
+  const years = [{ value: '', label: 'انتخاب کنید' }, ...Array.from({ length: 31 }, (_, i) => ({ value: String(i), label: i === 0 ? 'کمتر از یک سال' : `${fa(i)} سال` }))];
+  const months = [{ value: '', label: 'انتخاب کنید' }, ...Array.from({ length: 12 }, (_, i) => ({ value: String(i), label: i === 0 ? 'بدون ماه اضافه' : `${fa(i)} ماه` }))];
   return <section className="card" id="pathSetup"><span className="badge">مسیر جدید · مرحله دوم</span><h2>موضوع این مسیر</h2><p className="muted">پروفایل تو ثابت می‌ماند؛ برای هر مسئله می‌توانی یک مسیر ۲۸ روزه مستقل بسازی.</p><div className="sectionHint"><span>۲</span><div><b>انتخاب مسئله</b><small>این اطلاعات فقط به مسیر فعلی تعلق دارد و در آرشیو همان مسیر ذخیره می‌شود.</small></div></div><label>مهم‌ترین مسئله‌ای که می‌خواهی روی آن کار کنی</label><SmartSelect id="pProblem" value={form.problem} onChange={(v) => set('problem', v)} options={[{ value: '', label: 'انتخاب کنید' }, ...problems.map((p) => ({ value: p, label: p }))]} /><div className="durationGrid"><div><label>مدت درگیری · سال</label><SmartSelect id="pDurationYears" value={String(form.durationYears)} onChange={(v) => set('durationYears', v)} options={years} /></div><div><label>مدت درگیری · ماه</label><SmartSelect id="pDurationMonths" value={String(form.durationMonths)} onChange={(v) => set('durationMonths', v)} options={months} /></div></div><label>از این مسیر چه نتیجه‌ای برای خودت ارزشمند می‌دانی؟</label><textarea className="small" id="pGoal" maxLength={1000} placeholder="در پایان این مسیر دوست دارم..." value={form.goal} onChange={(e) => set('goal', e.target.value)} /><button className="primary" onClick={submit}>{buttonLabel('ادامه به ارزیابی اولیه')}</button><button className="secondary" onClick={onEditProfile}><AppIcon name="edit" size={17} /> مشاهده یا ویرایش پروفایل</button></section>;
 }
 
