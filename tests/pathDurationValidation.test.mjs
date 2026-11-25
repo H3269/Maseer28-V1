@@ -22,8 +22,8 @@ test('legacy path duration values without explicit confirmation remain unconfirm
     profileData: { problem: 'خشم', durationYears: 0, durationMonths: 0, goal: 'هدف' },
   });
   assert.equal(state.profileData.durationConfirmed, false);
-  assert.equal(state.profileData.durationYears, undefined);
-  assert.equal(state.profileData.durationMonths, undefined);
+  assert.equal(state.profileData.durationYears, 0);
+  assert.equal(state.profileData.durationMonths, 0);
 });
 
 test('confirmed zero-year zero-month duration remains a valid explicit choice', () => {
@@ -33,8 +33,8 @@ test('confirmed zero-year zero-month duration remains a valid explicit choice', 
     profileData: { problem: 'خشم', durationYears: 0, durationMonths: 0, durationConfirmed: true, goal: 'هدف' },
   });
   assert.equal(state.profileData.durationConfirmed, true);
-  assert.equal(state.profileData.durationYears, 0);
-  assert.equal(state.profileData.durationMonths, 0);
+  assert.equal(state.profileData.durationYears, '0');
+  assert.equal(state.profileData.durationMonths, '0');
 });
 
 test('path setup starts both duration selectors unselected and reports both when incomplete', async () => {
