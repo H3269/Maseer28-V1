@@ -67,8 +67,6 @@ const Reader = lazy(loadReader);
 
 function isPathSetupComplete(state, topics = null) {
   const data = state?.profileData;
-  const years = Number(data?.durationYears);
-  const months = Number(data?.durationMonths);
   const knownTopic = !Array.isArray(topics)
     || topics.some((topic) => topic?.key === data?.problem);
   return Boolean(
