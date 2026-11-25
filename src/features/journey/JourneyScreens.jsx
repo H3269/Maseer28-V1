@@ -5,7 +5,7 @@ import { preserveDailyGuidanceSourceIdentity } from '../assistant/dailyGuidanceS
 import { buttonLabel } from '../../shared/buttonLabel.jsx';
 import { getJourneyProgressCounts } from './progress.js';
 import { copyTextToClipboard, fa, formatDate, normalizeDigits } from '../../shared/utils.js';
-import { burdenScoreFromAnswers, evaluatePqhtEligibility, getTrustedNowMs, safeText, validDailyAnswer, validName, validPersianText, validPhone } from './journeyStore.js';
+import { burdenScoreFromAnswers, evaluatePqhtEligibility, getTrustedNowMs, safeText, validDailyAnswer, validName, validPathDuration, validPersianText, validPhone } from './journeyStore.js';
 import { exportArchivesZip, triggerBlobDownload } from './archiveExport.js';
 import { selectCanonicalDailyRecord, selectDailyContentCategory } from '../content/dailyContentSelector.js';
 import { getCanonicalTopicIdForCategory } from './relationshipSafetyGate.js';
