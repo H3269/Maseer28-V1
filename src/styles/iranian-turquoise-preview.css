@@ -2180,3 +2180,18 @@ body:has(#root > .appLoading),
 .appLoading .loadingProgressFill {
   background: #40E0D0 !important;
 }
+
+/* Support and channel icons follow the foreground color of their own
+   action surface. This keeps primary/secondary variants and future palette
+   changes in sync without hard-coding white, lapis, or a legacy brand color. */
+.app > section.card#support .support a.telegram.m28IconAction > .m28ActionIcon > svg {
+  display: block !important;
+  flex: 0 0 17px !important;
+  width: 17px !important;
+  height: 17px !important;
+  color: inherit !important;
+  stroke: currentColor !important;
+  fill: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
