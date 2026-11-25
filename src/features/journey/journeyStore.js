@@ -159,7 +159,10 @@ export function sanitizeJourneyState(raw) {
         medicationRisk: ['no', 'yes', 'unknown'].includes(p.medicationRisk) ? p.medicationRisk : '',
       }),
       problem: String(p.problem || '').slice(0, 200),
-      ...(p.durationConfirmed === true && validPathDuration(p.durationYears, p.durationMonths)
+      ...((
+        p.durationConfirmed === true
+        || (typeof p.durationYears === 'string' && typeof p.durationMonths === 'string')
+      ) && validPathDuration(p.durationYears, p.durationMonths)
         ? { durationYears: years, durationMonths: months, durationConfirmed: true }
         : { durationConfirmed: false }),
       goal: String(p.goal || '').slice(0, 1000),
