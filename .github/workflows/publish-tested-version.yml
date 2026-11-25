@@ -1,4 +1,4 @@
-name: Publish tested Path28 version to Telegram and verify Pages deployment
+name: Publish tested Path28 version to Telegram
 
 
 on:
