@@ -26,7 +26,7 @@ jobs:
     timeout-minutes: 40
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment_retry_1.outputs.page_url || steps.deployment_retry_2.outputs.page_url }}
     steps:
       - name: Checkout main
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -172,9 +172,37 @@ jobs:
           path: ./dist
           name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
 
+      # GitHub's Pages artifact metadata API can briefly fail immediately after upload.
+      # Retry deployment against the same verified artifact before failing the workflow.
       - name: Deploy test app
         id: deployment
+        continue-on-error: true
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346
         with:
-          timeout: 1800000
+          timeout: 600000
+          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Wait before first deployment retry
+        if: ${{ steps.deployment.outcome == 'failure' }}
+        run: sleep 15
+
+      - name: Retry test app deployment
+        id: deployment_retry_1
+        if: ${{ steps.deployment.outcome == 'failure' }}
+        continue-on-error: true
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346
+        with:
+          timeout: 600000
+          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Wait before second deployment retry
+        if: ${{ steps.deployment_retry_1.outcome == 'failure' }}
+        run: sleep 30
+
+      - name: Retry test app deployment (final attempt)
+        id: deployment_retry_2
+        if: ${{ steps.deployment_retry_1.outcome == 'failure' }}
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346
+        with:
+          timeout: 600000
           artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
