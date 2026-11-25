@@ -156,7 +156,7 @@ export function PathSetupScreen({ initial, problems, onSave, onEditProfile, onVa
     if (!safeText(form.goal, 1000)) missing.push('نتیجه ارزشمند مورد انتظار');
     if (!validPathDuration(form.durationYears, form.durationMonths)) missing.push('مدت درگیری (انتخاب سال و ماه)');
     if (missing.length) return onValidation(missing, 'اطلاعات مسیر هنوز کامل نشده است');
-    onSave({ problem: form.problem, durationYears: Number(form.durationYears), durationMonths: Number(form.durationMonths), durationConfirmed: true, goal: form.goal.trim() });
+    onSave({ problem: form.problem, durationYears: form.durationYears, durationMonths: form.durationMonths, durationConfirmed: true, goal: form.goal.trim() });
   }
   const years = [{ value: '', label: 'انتخاب کنید' }, ...Array.from({ length: 31 }, (_, i) => ({ value: String(i), label: i === 0 ? 'کمتر از یک سال' : `${fa(i)} سال` }))];
   const months = [{ value: '', label: 'انتخاب کنید' }, ...Array.from({ length: 12 }, (_, i) => ({ value: String(i), label: i === 0 ? 'بدون ماه اضافه' : `${fa(i)} ماه` }))];
