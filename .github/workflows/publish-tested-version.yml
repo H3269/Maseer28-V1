@@ -249,29 +249,75 @@ jobs:
           git push origin HEAD:main
           echo "published_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Wait for the exact GitHub Pages deployment
+      - name: Wait for and recover the exact GitHub Pages deployment
         env:
           PUBLISHED_SHA: ${{ steps.publish.outputs.published_sha }}
+          TELEGRAM_REPO_TOKEN: ${{ secrets.TELEGRAM_REPO_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
-          api="https://api.github.com/repos/H3269/Maseer28/actions/workflows/deploy.yml/runs?branch=main&per_page=30"
+          api="https://api.github.com/repos/H3269/Maseer28"
+          runs_api="$api/actions/workflows/deploy.yml/runs?branch=main&per_page=30"
+          run_id=""
+
+          # Locate the Pages run created by the exact commit pushed above.
           for attempt in $(seq 1 60); do
-            response="$(curl --fail --silent --show-error --retry 2 "$api")"
+            response="$(curl --fail --silent --show-error --retry 2 "$runs_api")"
             matching_run="$(printf '%s' "$response" | jq -c --arg sha "$PUBLISHED_SHA" '[.workflow_runs[] | select(.head_sha == $sha)] | sort_by(.run_number) | last // empty')"
             if [ -n "$matching_run" ]; then
-              status="$(printf '%s' "$matching_run" | jq -r '.status')"
-              conclusion="$(printf '%s' "$matching_run" | jq -r '.conclusion // empty')"
-              if [ "$status" = "completed" ]; then
-                if [ "$conclusion" != "success" ]; then
-                  echo "GitHub Pages deployment for $PUBLISHED_SHA ended with: $conclusion"
-                  exit 1
-                fi
-                echo "GitHub Pages deployment succeeded for $PUBLISHED_SHA"
-                exit 0
-              fi
+              run_id="$(printf '%s' "$matching_run" | jq -r '.id')"
+              break
             fi
             sleep 10
           done
-          echo "Timed out waiting for GitHub Pages deployment for $PUBLISHED_SHA"
+
+          if [ -z "$run_id" ]; then
+            echo "Timed out locating the Pages deployment for $PUBLISHED_SHA"
+            exit 1
+          fi
+
+          # A transient Pages artifact-metadata failure must not turn a
+          # successfully published Telegram commit into a permanently failed
+          # release. Retry the same destination workflow, without pushing a
+          # second commit or changing the published files.
+          for deployment_attempt in 1 2 3; do
+            echo "Checking Pages deployment attempt $deployment_attempt for $PUBLISHED_SHA"
+            completed=false
+            for poll in $(seq 1 60); do
+              run="$(curl --fail --silent --show-error --retry 2 \
+                -H "Authorization: Bearer $TELEGRAM_REPO_TOKEN" \
+                -H "Accept: application/vnd.github+json" \
+                "$api/actions/runs/$run_id")"
+              status="$(printf '%s' "$run" | jq -r '.status')"
+              conclusion="$(printf '%s' "$run" | jq -r '.conclusion // empty')"
+
+              if [ "$status" = "completed" ]; then
+                completed=true
+                if [ "$conclusion" = "success" ]; then
+                  echo "GitHub Pages deployment succeeded for $PUBLISHED_SHA"
+                  exit 0
+                fi
+                echo "Pages deployment attempt $deployment_attempt ended with: $conclusion"
+                break
+              fi
+              sleep 10
+            done
+
+            if [ "$completed" != "true" ]; then
+              echo "Timed out waiting for Pages deployment attempt $deployment_attempt"
+              exit 1
+            fi
+
+            if [ "$deployment_attempt" -lt 3 ]; then
+              echo "Requesting a rerun of the same Pages workflow run ($run_id)."
+              curl --fail --silent --show-error --retry 2 \
+                -X POST \
+                -H "Authorization: Bearer $TELEGRAM_REPO_TOKEN" \
+                -H "Accept: application/vnd.github+json" \
+                "$api/actions/runs/$run_id/rerun" > /dev/null
+              sleep $((deployment_attempt * 15))
+            fi
+          done
+
+          echo "GitHub Pages deployment failed after 3 attempts for $PUBLISHED_SHA"
           exit 1
