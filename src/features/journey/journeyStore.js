@@ -50,6 +50,15 @@ export function validScore(value) {
   return Number.isInteger(n) && n >= 0 && n <= 10;
 }
 
+export function validPathDuration(years, months) {
+  const yearsText = normalizeDigits(String(years ?? '')).trim();
+  const monthsText = normalizeDigits(String(months ?? '')).trim();
+  if (!/^\\d+$/.test(yearsText) || !/^\\d+$/.test(monthsText)) return false;
+  const yearValue = Number(yearsText), monthValue = Number(monthsText);
+  return Number.isInteger(yearValue) && yearValue >= 0 && yearValue <= 100
+    && Number.isInteger(monthValue) && monthValue >= 0 && monthValue <= 11;
+}
+
 export function safeText(value, max = 3000) {
   const text = String(value ?? '').trim();
   return text.length > 0 && text.length <= max && !/[<>]/.test(text);
@@ -150,8 +159,9 @@ export function sanitizeJourneyState(raw) {
         medicationRisk: ['no', 'yes', 'unknown'].includes(p.medicationRisk) ? p.medicationRisk : '',
       }),
       problem: String(p.problem || '').slice(0, 200),
-      durationYears: Number.isInteger(years) && years >= 0 && years <= 100 ? years : 0,
-      durationMonths: Number.isInteger(months) && months >= 0 && months <= 11 ? months : 0,
+      durationYears: p.durationConfirmed === true && Number.isInteger(years) && years >= 0 && years <= 100 ? years : '',
+      durationMonths: p.durationConfirmed === true && Number.isInteger(months) && months >= 0 && months <= 11 ? months : '',
+      durationConfirmed: p.durationConfirmed === true && validPathDuration(p.durationYears, p.durationMonths),
       goal: String(p.goal || '').slice(0, 1000),
       code: String(p.code || '').slice(0, 50),
     };
@@ -868,6 +878,7 @@ export function cloneForArchive(state) {
     problem: typeof profile.problem === 'string' ? profile.problem.slice(0, 200) : '',
     durationYears: Number.isInteger(Number(profile.durationYears)) ? Number(profile.durationYears) : 0,
     durationMonths: Number.isInteger(Number(profile.durationMonths)) ? Number(profile.durationMonths) : 0,
+    durationConfirmed: profile.durationConfirmed === true && validPathDuration(profile.durationYears, profile.durationMonths),
     goal: typeof profile.goal === 'string' ? profile.goal.slice(0, 1000) : '',
   };
   return JSON.parse(JSON.stringify({
