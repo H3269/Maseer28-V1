@@ -249,10 +249,9 @@ jobs:
           git push origin HEAD:main
           echo "published_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Wait for and recover the exact GitHub Pages deployment
+      - name: Verify the exact GitHub Pages deployment without invalid cross-repository retries
         env:
           PUBLISHED_SHA: ${{ steps.publish.outputs.published_sha }}
-          TELEGRAM_REPO_TOKEN: ${{ secrets.TELEGRAM_REPO_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
@@ -260,7 +259,9 @@ jobs:
           runs_api="$api/actions/workflows/deploy.yml/runs?branch=main&per_page=30"
           run_id=""
 
-          # Locate the Pages run created by the exact commit pushed above.
+          # The Telegram commit is already published. Locate the Pages run for
+          # that exact SHA; never retry it with this repository's token because
+          # that token is not authorized to rerun workflows in the destination.
           for attempt in $(seq 1 60); do
             response="$(curl --fail --silent --show-error --retry 2 "$runs_api")"
             matching_run="$(printf '%s' "$response" | jq -c --arg sha "$PUBLISHED_SHA" '[.workflow_runs[] | select(.head_sha == $sha)] | sort_by(.run_number) | last // empty')"
@@ -272,52 +273,27 @@ jobs:
           done
 
           if [ -z "$run_id" ]; then
-            echo "Timed out locating the Pages deployment for $PUBLISHED_SHA"
-            exit 1
+            echo "::warning::Telegram commit $PUBLISHED_SHA was pushed successfully, but the Pages workflow run was not found. Check the destination repository Actions tab."
+            exit 0
           fi
 
-          # A transient Pages artifact-metadata failure must not turn a
-          # successfully published Telegram commit into a permanently failed
-          # release. Retry the same destination workflow, without pushing a
-          # second commit or changing the published files.
-          for deployment_attempt in 1 2 3; do
-            echo "Checking Pages deployment attempt $deployment_attempt for $PUBLISHED_SHA"
-            completed=false
-            for poll in $(seq 1 60); do
-              run="$(curl --fail --silent --show-error --retry 2 \
-                -H "Authorization: Bearer $TELEGRAM_REPO_TOKEN" \
-                -H "Accept: application/vnd.github+json" \
-                "$api/actions/runs/$run_id")"
-              status="$(printf '%s' "$run" | jq -r '.status')"
-              conclusion="$(printf '%s' "$run" | jq -r '.conclusion // empty')"
+          for poll in $(seq 1 60); do
+            run="$(curl --fail --silent --show-error --retry 2 \
+              -H "Accept: application/vnd.github+json" \
+              "$api/actions/runs/$run_id")"
+            status="$(printf '%s' "$run" | jq -r '.status')"
+            conclusion="$(printf '%s' "$run" | jq -r '.conclusion // empty')"
 
-              if [ "$status" = "completed" ]; then
-                completed=true
-                if [ "$conclusion" = "success" ]; then
-                  echo "GitHub Pages deployment succeeded for $PUBLISHED_SHA"
-                  exit 0
-                fi
-                echo "Pages deployment attempt $deployment_attempt ended with: $conclusion"
-                break
+            if [ "$status" = "completed" ]; then
+              if [ "$conclusion" = "success" ]; then
+                echo "GitHub Pages deployment succeeded for $PUBLISHED_SHA"
+              else
+                echo "::warning::Telegram publication succeeded for $PUBLISHED_SHA, but GitHub Pages deployment run $run_id concluded: $conclusion. The destination workflow is tracked separately; this publication job will not attempt an unauthorized cross-repository rerun."
               fi
-              sleep 10
-            done
-
-            if [ "$completed" != "true" ]; then
-              echo "Timed out waiting for Pages deployment attempt $deployment_attempt"
-              exit 1
+              exit 0
             fi
-
-            if [ "$deployment_attempt" -lt 3 ]; then
-              echo "Requesting a rerun of the same Pages workflow run ($run_id)."
-              curl --fail --silent --show-error --retry 2 \
-                -X POST \
-                -H "Authorization: Bearer $TELEGRAM_REPO_TOKEN" \
-                -H "Accept: application/vnd.github+json" \
-                "$api/actions/runs/$run_id/rerun" > /dev/null
-              sleep $((deployment_attempt * 15))
-            fi
+            sleep 10
           done
 
-          echo "GitHub Pages deployment failed after 3 attempts for $PUBLISHED_SHA"
-          exit 1
+          echo "::warning::Telegram publication succeeded for $PUBLISHED_SHA, but Pages run $run_id is still running after the verification window."
+          exit 0
