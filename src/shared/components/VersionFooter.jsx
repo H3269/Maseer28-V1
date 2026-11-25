@@ -5,7 +5,7 @@ import {
   toPersianDigits,
 } from '../releaseMetadata.js';
 
-export default function VersionFooter({ navVisible = false }) {
+export default function VersionFooter() {
   const [metadata, setMetadata] = useState(null);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function VersionFooter({ navVisible = false }) {
   const date = isPreview ? '' : formatPublishedAtFa(metadata.publishedAt);
 
   return (
-    <aside className={`releaseFooter${navVisible ? ' with-nav' : ' without-nav'}`} dir="rtl" aria-label="اطلاعات نسخه برنامه">
+    <aside className="releaseFooter" dir="rtl" aria-label="اطلاعات نسخه برنامه">
       <div
         className="releaseFooterVersion"
         style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '24px', width: '100%' }}
