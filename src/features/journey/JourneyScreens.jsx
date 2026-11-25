@@ -142,16 +142,21 @@ export function ProfileScreen({ initial, editing, onSave, onCancel, onValidation
 }
 
 export function PathSetupScreen({ initial, problems, onSave, onEditProfile, onValidation }) {
-  const [form, setForm] = useState({ problem: '', durationYears: 0, durationMonths: 0, goal: '' });
-  useEffect(() => setForm({ problem: initial?.problem || '', durationYears: initial?.durationYears ?? 0, durationMonths: initial?.durationMonths ?? 0, goal: initial?.goal || '' }), [initial]);
+  const [form, setForm] = useState({ problem: '', durationYears: '', durationMonths: '', goal: '' });
+  useEffect(() => setForm({
+    problem: initial?.problem || '',
+    durationYears: initial?.durationConfirmed === true ? String(initial.durationYears) : '',
+    durationMonths: initial?.durationConfirmed === true ? String(initial.durationMonths) : '',
+    goal: initial?.goal || '',
+  }), [initial]);
   const set = (key, value) => setForm((current) => ({ ...current, [key]: value }));
   function submit() {
     const missing = [];
     if (!form.problem) missing.push('مهم‌ترین مسئله');
     if (!safeText(form.goal, 1000)) missing.push('نتیجه ارزشمند مورد انتظار');
-    if (Number(form.durationYears) < 0 || Number(form.durationMonths) < 0 || Number(form.durationMonths) > 11) missing.push('مدت درگیری');
+    if (!validPathDuration(form.durationYears, form.durationMonths)) missing.push('مدت درگیری (انتخاب سال و ماه)');
     if (missing.length) return onValidation(missing, 'اطلاعات مسیر هنوز کامل نشده است');
-    onSave({ problem: form.problem, durationYears: Number(form.durationYears), durationMonths: Number(form.durationMonths), goal: form.goal.trim() });
+    onSave({ problem: form.problem, durationYears: Number(form.durationYears), durationMonths: Number(form.durationMonths), durationConfirmed: true, goal: form.goal.trim() });
   }
   const years = Array.from({ length: 31 }, (_, i) => ({ value: String(i), label: i === 0 ? 'کمتر از یک سال' : `${fa(i)} سال` }));
   const months = Array.from({ length: 12 }, (_, i) => ({ value: String(i), label: i === 0 ? 'بدون ماه اضافه' : `${fa(i)} ماه` }));
