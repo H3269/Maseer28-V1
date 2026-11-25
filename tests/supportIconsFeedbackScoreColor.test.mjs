@@ -42,10 +42,13 @@ test('live score bubble override is in the stylesheet actually imported by the a
 
 test('support and channel link icons override the preview theme lapis SVG color on lapis buttons', async () => {
   const stylesheet = await readFile(new URL('../src/styles/iranian-turquoise-preview.css', import.meta.url), 'utf8');
-  const rule = stylesheet.match(/\\.app > section\\.card#support \\.support a\\.telegram\\.m28IconAction > \\.m28ActionIcon > svg\\s*\\{([^}]*)\\}/s)?.[1] || '';
-  assert.match(rule, /color:\\s*#FFFFFF !important/);
-  assert.match(rule, /stroke:\\s*currentColor !important/);
-  assert.match(rule, /width:\\s*17px !important/);
-  assert.match(rule, /height:\\s*17px !important/);
-  assert.match(stylesheet, /\\.app svg\\s*\\{\\s*color:\\s*#245A9A;\\s*\\}/);
+  const selector = '.app > section.card#support .support a.telegram.m28IconAction > .m28ActionIcon > svg';
+  const start = stylesheet.indexOf(selector);
+  const end = stylesheet.indexOf('}', start);
+  const rule = start >= 0 && end > start ? stylesheet.slice(start, end) : '';
+  assert.ok(rule.includes('color: #FFFFFF !important'));
+  assert.ok(rule.includes('stroke: currentColor !important'));
+  assert.ok(rule.includes('width: 17px !important'));
+  assert.ok(rule.includes('height: 17px !important'));
+  assert.ok(stylesheet.includes('.app svg {\\n  color: #245A9A;'));
 });
