@@ -26,7 +26,6 @@ import {
   saveJourneyState,
   saveOnboardingComplete,
   saveUserProfile,
-  validPathDuration,
 } from './features/journey/journeyStore.js';
 import {
   Archive,
@@ -67,6 +66,8 @@ const Reader = lazy(loadReader);
 
 function isPathSetupComplete(state, topics = null) {
   const data = state?.profileData;
+  const years = Number(data?.durationYears);
+  const months = Number(data?.durationMonths);
   const knownTopic = !Array.isArray(topics)
     || topics.some((topic) => topic?.key === data?.problem);
   return Boolean(
@@ -76,8 +77,8 @@ function isPathSetupComplete(state, topics = null) {
     && data.problem.trim()
     && typeof data?.goal === 'string'
     && data.goal.trim()
-    && data?.durationConfirmed === true
-    && validPathDuration(data?.durationYears, data?.durationMonths)
+    && Number.isInteger(years) && years >= 0 && years <= 100
+    && Number.isInteger(months) && months >= 0 && months <= 11
   );
 }
 
@@ -352,8 +353,7 @@ function navigate(next) {
           profileData: {
             problem: currentPath.problem || '',
             durationYears: currentPath.durationYears || 0,
-            durationMonths: currentPath.durationMonths ?? '',
-            durationConfirmed: currentPath.durationConfirmed === true,
+            durationMonths: currentPath.durationMonths || 0,
             goal: currentPath.goal || '',
             code: currentPath.code || createClientCode(),
           },
@@ -373,9 +373,8 @@ function navigate(next) {
       profile: true,
       profileData: {
         problem: path.problem || '',
-        durationYears: path.durationYears,
-        durationMonths: path.durationMonths,
-        durationConfirmed: path.durationConfirmed === true,
+        durationYears: path.durationYears || 0,
+        durationMonths: path.durationMonths || 0,
         goal: path.goal || '',
         code: journey.profileData?.code || createClientCode(),
       },
