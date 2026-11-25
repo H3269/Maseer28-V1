@@ -165,8 +165,8 @@ export function sanitizeJourneyState(raw) {
       ) && validPathDuration(p.durationYears, p.durationMonths)
         ? { durationYears: String(years), durationMonths: String(months), durationConfirmed: true }
         : {
-          ...(Number.isInteger(years) && years >= 0 && years <= 100 ? { durationYears: years } : {}),
-          ...(Number.isInteger(months) && months >= 0 && months <= 11 ? { durationMonths: months } : {}),
+          ...(p.durationYears !== undefined && p.durationYears !== null && String(p.durationYears).trim() !== '' && Number.isInteger(years) && years >= 0 && years <= 100 ? { durationYears: years } : {}),
+          ...(p.durationMonths !== undefined && p.durationMonths !== null && String(p.durationMonths).trim() !== '' && Number.isInteger(months) && months >= 0 && months <= 11 ? { durationMonths: months } : {}),
           durationConfirmed: false,
         }),
       goal: String(p.goal || '').slice(0, 1000),
