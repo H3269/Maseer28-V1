@@ -52,8 +52,8 @@ test('selected string values are recognized as an explicit choice at the save bo
     profileData: { problem: 'خشم', durationYears: '0', durationMonths: '0', goal: 'هدف' },
   });
   assert.equal(state.profileData.durationConfirmed, true);
-  assert.equal(state.profileData.durationYears, 0);
-  assert.equal(state.profileData.durationMonths, 0);
+  assert.equal(state.profileData.durationYears, '0');
+  assert.equal(state.profileData.durationMonths, '0');
 });
 
 test('an empty selector stays missing instead of being normalized to zero', () => {
