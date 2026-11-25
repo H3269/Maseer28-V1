@@ -7465,3 +7465,38 @@ html body .app .globalAssistantDialog .globalAssistantChat .assistantMessage > b
   color: var(--severity-value-foreground, #52616a) !important;
   background-image: none !important;
 }
+
+
+/* V93 — release information is part of the page flow, not a colored dock card.
+   The fixed bottom navigation remains a separate translucent glass surface. */
+html body .app > .releaseFooter {
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  margin: 24px auto 8px !important;
+  padding: 0 8px 4px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 3px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #718096 !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  font-size: 10px !important;
+  line-height: 1.6 !important;
+  text-align: center !important;
+  white-space: normal !important;
+  pointer-events: none !important;
+}
+html body .app > .releaseFooter .releaseFooterVersion,
+html body .app > .releaseFooter .releaseFooterOwner {
+  color: #718096 !important;
+  font-size: 10px !important;
+  line-height: 1.6 !important;
+}
