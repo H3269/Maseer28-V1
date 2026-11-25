@@ -55,3 +55,14 @@ test('selected string values are recognized as an explicit choice at the save bo
   assert.equal(state.profileData.durationYears, 0);
   assert.equal(state.profileData.durationMonths, 0);
 });
+
+test('an empty selector stays missing instead of being normalized to zero', () => {
+  const state = sanitizeJourneyState({
+    schema: 7,
+    profile: true,
+    profileData: { problem: 'خشم', durationYears: '', durationMonths: '', goal: 'هدف' },
+  });
+  assert.equal(state.profileData.durationConfirmed, false);
+  assert.equal(state.profileData.durationYears, undefined);
+  assert.equal(state.profileData.durationMonths, undefined);
+});
