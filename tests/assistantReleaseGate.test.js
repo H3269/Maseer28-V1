@@ -263,3 +263,21 @@ test('prepared assistant answers reveal word by word and the gold speaker icon b
   assert.match(motion, /data-assistant-state="typing"/);
   assert.match(motion, /data-assistant-state="idle"[\s\S]*?animation: none/);
 });
+
+
+test('v1 keeps every generative assistant runtime fail-closed while prepared questions remain active', async () => {
+  const localModel = await readFile(new URL('../src/features/assistant/localNeuralAssistant.js', import.meta.url), 'utf8');
+  const localClient = await readFile(new URL('../src/features/assistant/localNeuralModelClient.js', import.meta.url), 'utf8');
+  const worker = await readFile(new URL('../workers/assistant-api/src/index.js', import.meta.url), 'utf8');
+  const workerConfig = await readFile(new URL('../workers/assistant-api/wrangler.toml', import.meta.url), 'utf8');
+  const launcherUi = await readFile(new URL('../src/features/assistant/GlobalAssistantLauncher.jsx', import.meta.url), 'utf8');
+
+  assert.match(localModel, /export function shouldUseLocalNeuralModel\(\)\s*\{\s*return false;/);
+  assert.match(localModel, /export function isLocalModelInstallCommand\(\)\s*\{\s*return false;/);
+  assert.match(localClient, /export async function requestLocalNeuralModel\(\)\s*\{\s*throw disabledError\(\);/);
+  assert.match(worker, /assistantEnabled:\s*false/);
+  assert.match(worker, /providerConfigured:\s*false/);
+  assert.match(worker, /assistant_not_configured/);
+  assert.match(workerConfig, /^workers_dev\s*=\s*false$/m);
+  assert.match(launcherUi, /این دستیار فقط از فهرست سؤال‌های آماده همین بخش پاسخ می‌دهد/);
+});
