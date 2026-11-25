@@ -26,6 +26,7 @@ import {
   saveJourneyState,
   saveOnboardingComplete,
   saveUserProfile,
+  validPathDuration,
 } from './features/journey/journeyStore.js';
 import {
   Archive,
@@ -77,8 +78,8 @@ function isPathSetupComplete(state, topics = null) {
     && data.problem.trim()
     && typeof data?.goal === 'string'
     && data.goal.trim()
-    && Number.isInteger(years) && years >= 0 && years <= 100
-    && Number.isInteger(months) && months >= 0 && months <= 11
+    && data?.durationConfirmed === true
+    && validPathDuration(data?.durationYears, data?.durationMonths)
   );
 }
 
@@ -353,7 +354,8 @@ function navigate(next) {
           profileData: {
             problem: currentPath.problem || '',
             durationYears: currentPath.durationYears || 0,
-            durationMonths: currentPath.durationMonths || 0,
+            durationMonths: currentPath.durationMonths ?? '',
+            durationConfirmed: currentPath.durationConfirmed === true,
             goal: currentPath.goal || '',
             code: currentPath.code || createClientCode(),
           },
@@ -373,8 +375,9 @@ function navigate(next) {
       profile: true,
       profileData: {
         problem: path.problem || '',
-        durationYears: path.durationYears || 0,
-        durationMonths: path.durationMonths || 0,
+        durationYears: path.durationYears,
+        durationMonths: path.durationMonths,
+        durationConfirmed: path.durationConfirmed === true,
         goal: path.goal || '',
         code: journey.profileData?.code || createClientCode(),
       },
