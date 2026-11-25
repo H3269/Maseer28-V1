@@ -53,7 +53,7 @@ export function validScore(value) {
 export function validPathDuration(years, months) {
   const yearsText = normalizeDigits(String(years ?? '')).trim();
   const monthsText = normalizeDigits(String(months ?? '')).trim();
-  if (!/^\\d+$/.test(yearsText) || !/^\\d+$/.test(monthsText)) return false;
+  if (!/^\d+$/.test(yearsText) || !/^\d+$/.test(monthsText)) return false;
   const yearValue = Number(yearsText), monthValue = Number(monthsText);
   return Number.isInteger(yearValue) && yearValue >= 0 && yearValue <= 100
     && Number.isInteger(monthValue) && monthValue >= 0 && monthValue <= 11;
