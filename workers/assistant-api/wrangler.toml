@@ -1,7 +1,8 @@
 name = "still-firefly-9435maseer28-archive"
 main = "src/index.js"
 compatibility_date = "2026-11-04"
-workers_dev = true
+workers_dev = false
+# This Worker is future-version infrastructure only. Do not expose a workers.dev URL in v1.
 
 # Workers Builds must use `wrangler versions upload` from the Dashboard deploy command.
 # Never replace it with `wrangler deploy` or `wrangler versions deploy` without explicit owner approval.
