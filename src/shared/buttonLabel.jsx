@@ -13,6 +13,8 @@ const BUTTON_ICONS = [
 export function buttonLabel(text) {
   const value = String(text ?? '').trim();
   if (!value) return value;
+  const isBackAction = ['بازگشت', 'بازگشت به داشبورد', 'بازگشت به فهرست آرشیوها', 'بازگشت بدون تغییر', 'فعلاً نمی‌خوانم', 'فعلا نمی‌خوانم', 'بازمی‌گردم'].some((label) => value.includes(label));
+  if (isBackAction) return <><AppIcon name="chevronLeft" size={17} className="buttonIcon" />{' '}بازگشت</>;
   const hit = BUTTON_ICONS.find(([needle]) => value.includes(needle));
   return hit ? <><AppIcon name={hit[1]} size={17} className="buttonIcon" />{' '}{value}</> : value;
 }
