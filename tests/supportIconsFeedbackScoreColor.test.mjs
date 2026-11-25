@@ -50,5 +50,5 @@ test('support and channel link icons override the preview theme lapis SVG color 
   assert.ok(rule.includes('stroke: currentColor !important'));
   assert.ok(rule.includes('width: 17px !important'));
   assert.ok(rule.includes('height: 17px !important'));
-  assert.ok(stylesheet.includes('.app svg {\\n  color: #245A9A;'));
+  assert.ok(stylesheet.includes('.app svg {\n  color: #245A9A;'));
 });
