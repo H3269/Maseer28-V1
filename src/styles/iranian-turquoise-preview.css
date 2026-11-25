@@ -2453,3 +2453,22 @@ body #bookReader .bookTocEntry > span {
   color: var(--reader-control-ink) !important;
   border: 1px solid var(--reader-control-border) !important;
 }
+
+
+/* Keep the final profile select above the fixed bottom navigation. */
+.app #profile .smartSelect:has(#pMedicationRisk) {
+  position: relative;
+  z-index: 120;
+}
+.app #profile .smartSelect:has(#pMedicationRisk) .smartSelectMenu {
+  top: auto;
+  bottom: calc(100% + 7px);
+  z-index: 121;
+}
+
+/* Client reference codes are identifiers, not localized Persian prose. */
+.app #dashboard #profileSummary .profileBox b[dir="ltr"] {
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: left;
+}
