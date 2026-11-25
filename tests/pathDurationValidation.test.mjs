@@ -44,3 +44,14 @@ test('path setup starts both duration selectors unselected and reports both when
   assert.match(source, /value: '', label: 'انتخاب کنید'/);
   assert.match(source, /مدت درگیری \(انتخاب سال و ماه\)/);
 });
+
+test('selected string values are recognized as an explicit choice at the save boundary', () => {
+  const state = sanitizeJourneyState({
+    schema: 7,
+    profile: true,
+    profileData: { problem: 'خشم', durationYears: '0', durationMonths: '0', goal: 'هدف' },
+  });
+  assert.equal(state.profileData.durationConfirmed, true);
+  assert.equal(state.profileData.durationYears, 0);
+  assert.equal(state.profileData.durationMonths, 0);
+});
