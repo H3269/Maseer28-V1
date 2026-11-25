@@ -2395,3 +2395,61 @@ body #bookReader.theme-night .bookTocPanel .bookTocEntry > span {
   color: var(--reader-control-ink) !important;
   border: 1px solid var(--reader-control-border) !important;
 }
+
+
+/* Reader control contrast hardening — all three themes.
+   Explicitly color every label, glyph and SVG path inside reader controls
+   and TOC entries so inherited/legacy icon rules cannot hide them. */
+body #bookReader .readerIcon,
+body #bookReader .readerTools button,
+body #bookReader .readerPageArrow,
+body #bookReader .readerBottomIcon,
+body #bookReader .readerPageCounter,
+body #bookReader .bookTocClose,
+body #bookReader .bookTocEntry {
+  color: var(--reader-control-ink) !important;
+}
+body #bookReader .readerIcon *,
+body #bookReader .readerTools button *,
+body #bookReader .readerPageArrow *,
+body #bookReader .readerBottomIcon *,
+body #bookReader .readerPageCounter *,
+body #bookReader .bookTocClose *,
+body #bookReader .bookTocEntry * {
+  color: inherit !important;
+}
+body #bookReader .readerIcon svg,
+body #bookReader .readerTools button svg,
+body #bookReader .readerPageArrow svg,
+body #bookReader .readerBottomIcon svg,
+body #bookReader .readerPageCounter svg,
+body #bookReader .bookTocClose svg,
+body #bookReader .bookTocEntry svg {
+  color: var(--reader-control-ink) !important;
+  stroke: currentColor !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+body #bookReader .readerIcon svg *,
+body #bookReader .readerTools button svg *,
+body #bookReader .readerPageArrow svg *,
+body #bookReader .readerBottomIcon svg *,
+body #bookReader .readerPageCounter svg *,
+body #bookReader .bookTocClose svg *,
+body #bookReader .bookTocEntry svg * {
+  stroke: currentColor !important;
+}
+body #bookReader .readerTools button,
+body #bookReader .readerIcon,
+body #bookReader .readerPageArrow,
+body #bookReader .readerBottomIcon,
+body #bookReader .readerPageCounter,
+body #bookReader .bookTocClose,
+body #bookReader .bookTocEntry {
+  opacity: 1;
+}
+body #bookReader .bookTocEntry > span {
+  background: var(--reader-control) !important;
+  color: var(--reader-control-ink) !important;
+  border: 1px solid var(--reader-control-border) !important;
+}
