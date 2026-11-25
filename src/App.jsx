@@ -858,9 +858,9 @@ function navigate(next) {
       {screen === 'done' && <Done journey={journey} onReport={() => navigate('report')} onBooks={() => openBooks('done')} onSupport={() => openSupport('done')} onArchive={() => navigate('archive')} onNew={startNewPathFromArchive} />}
       {screen === 'report' && (category ? <Report journey={journey} userProfile={userProfile} content={content} onBooks={() => openBooks('report')} onSupport={() => openSupport('report')} onDashboard={() => navigate('dashboard')} onArchive={() => navigate('archive')} onNew={startNewPathFromArchive} /> : <section className="card" role="status"><h2>در حال آماده‌سازی گزارش</h2><p>{topicLoadState.error || 'عنوان روزهای مسیر در حال دریافت است…'}</p></section>)}
       {screen === 'archive' && <Archive journey={journey} content={content} onLoadTopic={loadTopicForScreen} onDeleteArchive={deleteSingleArchive} onBack={() => navigate('dashboard')} onNew={startNewPathFromArchive} />}
+      <VersionFooter />
       <div className="appBottomDock" aria-label="پایین صفحه برنامه">
         {navVisible && <BottomNav screen={screen} onHome={() => navigate('dashboard')} onProfile={() => openProfileEditor(screen)} onBooks={() => openBooks(screen)} onSupport={() => openSupport(screen)} onArchive={() => navigate('archive')} />}
-        <VersionFooter navVisible={navVisible} />
       </div>
       {assistantVisible && assistantLauncherLoaded && <Suspense fallback={null}><GlobalAssistantLauncher
         screen={screen}
