@@ -885,7 +885,6 @@ export function cloneForArchive(state) {
     problem: typeof profile.problem === 'string' ? profile.problem.slice(0, 200) : '',
     durationYears: Number.isInteger(Number(profile.durationYears)) ? Number(profile.durationYears) : 0,
     durationMonths: Number.isInteger(Number(profile.durationMonths)) ? Number(profile.durationMonths) : 0,
-    durationConfirmed: profile.durationConfirmed === true && validPathDuration(profile.durationYears, profile.durationMonths),
     goal: typeof profile.goal === 'string' ? profile.goal.slice(0, 1000) : '',
   };
   return JSON.parse(JSON.stringify({
