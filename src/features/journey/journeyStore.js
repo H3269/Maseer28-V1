@@ -159,9 +159,9 @@ export function sanitizeJourneyState(raw) {
         medicationRisk: ['no', 'yes', 'unknown'].includes(p.medicationRisk) ? p.medicationRisk : '',
       }),
       problem: String(p.problem || '').slice(0, 200),
-      durationYears: p.durationConfirmed === true && Number.isInteger(years) && years >= 0 && years <= 100 ? years : '',
-      durationMonths: p.durationConfirmed === true && Number.isInteger(months) && months >= 0 && months <= 11 ? months : '',
-      durationConfirmed: p.durationConfirmed === true && validPathDuration(p.durationYears, p.durationMonths),
+      ...(p.durationConfirmed === true && validPathDuration(p.durationYears, p.durationMonths)
+        ? { durationYears: years, durationMonths: months, durationConfirmed: true }
+        : { durationConfirmed: false }),
       goal: String(p.goal || '').slice(0, 1000),
       code: String(p.code || '').slice(0, 50),
     };
