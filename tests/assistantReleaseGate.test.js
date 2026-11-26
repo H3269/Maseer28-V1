@@ -12,7 +12,7 @@ const topicRegistry = JSON.parse(await readFile(new URL('../public/assistant/kno
 const catalogSchema = JSON.parse(await readFile(new URL('../public/assistant/schemas/knowledge-catalog.v1.schema.json', import.meta.url), 'utf8'));
 const knowledgeCatalog = JSON.parse(await readFile(new URL('../public/assistant/knowledge/items.v1.json', import.meta.url), 'utf8'));
 const publishWorkflow = await readFile(new URL('../.github/workflows/publish-tested-version.yml', import.meta.url), 'utf8');
-const pagesDeployWorkflow = await readFile(new URL('../.github/workflows/deploy.yml', import.meta.url), 'utf8');
+
 
 test('global assistant launcher is mounted across navigable screens, including support', async () => {
   const appUi = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
@@ -181,13 +181,16 @@ test('global assistant conversation is one right-to-left transcript', async () =
   assert.match(css, /\.globalAssistantChat \.assistantMessage,\s*\.globalAssistantChat \.userMessage\s*\{[^}]*background:\s*transparent !important;[^}]*box-shadow:\s*none !important;/);
 });
 
-test('GitHub Pages tracks main as a test app without production-release gates', async () => {
+test('V1 keeps the test-deployment workflow absent and retains a manual-only Telegram release', async () => {
   const journeyStore = await readFile(new URL('../src/features/journey/journeyStore.js', import.meta.url), 'utf8');
-  assert.match(pagesDeployWorkflow, /on:\s+push:\s+branches:\s+\[main\]/);
-  assert.match(pagesDeployWorkflow, /workflow_dispatch:/); // Manual trigger is permitted for the test-only Pages app.
-  assert.doesNotMatch(pagesDeployWorkflow, /confirm_public_release/);
-  assert.doesNotMatch(pagesDeployWorkflow, /run:\s*npm run (?:prepare:production|assert:production-content)/);
-  assert.ok(pagesDeployWorkflow.includes('npm run build -- --base=/Maseer28-V1/'));
+  await assert.rejects(
+    readFile(new URL('../.github/workflows/deploy.yml', import.meta.url), 'utf8'),
+    { code: 'ENOENT' },
+    'the separate V1 test-deployment workflow must remain absent',
+  );
+  assert.match(publishWorkflow, /on:\s+workflow_dispatch:/);
+  assert.doesNotMatch(publishWorkflow, /^\s+push:/m, 'Telegram publication must never run automatically on push');
+  assert.match(publishWorkflow, /npm run build -- --base=\/Maseer28-V1\//);
   assert.match(journeyStore, /TEST_MODE:\s*true/);
   assert.match(journeyStore, /TIME_LOCK_ENABLED:\s*false/);
 });
@@ -213,7 +216,7 @@ test('free-form assessment assistant stays disconnected; all three hosts use the
 
   // Test and production builds share the same assistant UI. Production prep may
   // change journey timing/base-path flags, never assistant visibility or mode.
-  assert.match(pagesDeployWorkflow, /npm run build -- --base=\/Maseer28-V1\//);
+  assert.match(publishWorkflow, /npm run build -- --base=\/Maseer28-V1\//);
   assert.match(publishWorkflow, /npm run prepare:production/);
   assert.match(publishWorkflow, /npm run build/);
   assert.doesNotMatch(productionPrep, /VITE_ENABLE_EXPERIMENTAL_ASSISTANT|assistantVisible|AssessmentAssistant/);
