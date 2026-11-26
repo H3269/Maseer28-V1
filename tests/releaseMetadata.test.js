@@ -21,8 +21,8 @@ test('respects a newer package version without an extra patch bump', () => {
   assert.equal(nextReleaseVersion('1.2.0', '1.0.9'), '1.2.0');
 });
 
-test('uses the explicit 1.2.26 release after the last user-confirmed 1.2.25 version', () => {
-  assert.equal(nextReleaseVersion('1.2.26', '1.2.15'), '1.2.26');
+test('increments the actual last published version 1.2.15 to 1.2.16', () => {
+  assert.equal(nextReleaseVersion('1.2.16', '1.2.15'), '1.2.16');
 });
 
 test('rejects malformed version and timestamp values', () => {
