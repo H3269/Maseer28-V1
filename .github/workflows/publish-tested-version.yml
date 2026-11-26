@@ -26,13 +26,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
-      - name: Refuse publication from non-main refs
+      - name: Refuse runs from non-main refs
         shell: bash
         run: |
           set -euo pipefail
           test "${GITHUB_REF}" = "refs/heads/main"
           test -n "${GITHUB_SHA}"
-          echo "Publishing only the exact main commit: ${GITHUB_SHA}"
+          echo "Validating the exact main commit: ${GITHUB_SHA}"
 
       - name: Checkout tested version
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
