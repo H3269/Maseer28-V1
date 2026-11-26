@@ -253,43 +253,45 @@ jobs:
               throw new Error('Destination Pages workflow does not match the expected deploy step; refusing to overwrite it.');
             }
 
-            const resilientDeploy = `      - name: Wait for GitHub Pages artifact visibility
-                  # GitHub's Pages artifact listing can lag behind a successful upload.
-                  run: sleep 60
-
-                - name: Deploy
-                  id: deployment
-                  uses: actions/deploy-pages@v4
-                  continue-on-error: true
-
-                - name: Wait before deployment retry 1
-                  if: steps.deployment.outcome == 'failure'
-                  run: sleep 15
-
-                - name: Deploy retry 1
-                  id: deployment_retry_1
-                  if: steps.deployment.outcome == 'failure'
-                  uses: actions/deploy-pages@v4
-                  continue-on-error: true
-
-                - name: Wait before deployment retry 2
-                  if: steps.deployment_retry_1.outcome == 'failure'
-                  run: sleep 30
-
-                - name: Deploy retry 2
-                  id: deployment_retry_2
-                  if: steps.deployment_retry_1.outcome == 'failure'
-                  uses: actions/deploy-pages@v4
-                  continue-on-error: true
-
-                - name: Wait before deployment retry 3
-                  if: steps.deployment_retry_2.outcome == 'failure'
-                  run: sleep 60
-
-                - name: Deploy retry 3
-                  id: deployment_retry_3
-                  if: steps.deployment_retry_2.outcome == 'failure'
-                  uses: actions/deploy-pages@v4`;
+            const resilientDeploy = [
+              '      - name: Wait for GitHub Pages artifact visibility',
+              "        # GitHub's Pages artifact listing can lag behind a successful upload.",
+              '        run: sleep 60',
+              '',
+              '      - name: Deploy',
+              '        id: deployment',
+              '        uses: actions/deploy-pages@v4',
+              '        continue-on-error: true',
+              '',
+              '      - name: Wait before deployment retry 1',
+              "        if: steps.deployment.outcome == 'failure'",
+              '        run: sleep 15',
+              '',
+              '      - name: Deploy retry 1',
+              '        id: deployment_retry_1',
+              "        if: steps.deployment.outcome == 'failure'",
+              '        uses: actions/deploy-pages@v4',
+              '        continue-on-error: true',
+              '',
+              '      - name: Wait before deployment retry 2',
+              "        if: steps.deployment_retry_1.outcome == 'failure'",
+              '        run: sleep 30',
+              '',
+              '      - name: Deploy retry 2',
+              '        id: deployment_retry_2',
+              "        if: steps.deployment_retry_1.outcome == 'failure'",
+              '        uses: actions/deploy-pages@v4',
+              '        continue-on-error: true',
+              '',
+              '      - name: Wait before deployment retry 3',
+              "        if: steps.deployment_retry_2.outcome == 'failure'",
+              '        run: sleep 60',
+              '',
+              '      - name: Deploy retry 3',
+              '        id: deployment_retry_3',
+              "        if: steps.deployment_retry_2.outcome == 'failure'",
+              '        uses: actions/deploy-pages@v4',
+            ].join('\\n');
 
             workflow = workflow.replace(deployMarker, resilientDeploy);
           } else if (
