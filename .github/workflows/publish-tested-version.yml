@@ -335,7 +335,17 @@ jobs:
           fi
           git commit -m "Publish Path28 version with daily lock enabled"
           git push origin HEAD:main
-          echo "published_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+          # Confirm the destination main branch points to the exact commit
+          # that this job pushed; do not report success on a local-only commit.
+          expected_sha="$(git rev-parse HEAD)"
+          remote_sha="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          if [ -z "$remote_sha" ] || [ "$remote_sha" != "$expected_sha" ]; then
+            echo "Telegram main verification failed: expected $expected_sha, found ${remote_sha:-empty}."
+            exit 1
+          fi
+
+          echo "published_sha=$expected_sha" >> "$GITHUB_OUTPUT"
 
       - name: Confirm Telegram publication
         env:
