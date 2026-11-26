@@ -7657,3 +7657,10 @@ body:not(.bale-webview) .appBottomDock > .releaseFooter .releaseFooterDate {
   white-space: nowrap !important;
   margin: 0 !important;
 }
+
+/* Release footer: widen only the gap between the version number and publication date. */
+html body .appBottomDock > .releaseFooter .releaseFooterVersion,
+html.bale-webview body .appBottomDock > .releaseFooter .releaseFooterVersion,
+body.bale-webview .appBottomDock > .releaseFooter .releaseFooterVersion {
+  column-gap: 48px !important;
+}
