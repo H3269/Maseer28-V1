@@ -191,6 +191,14 @@ jobs:
               raise SystemExit("Telegram repository Pages deployment workflow is missing.")
 
           content = workflow.read_text(encoding="utf-8")
+          if "  actions: read\\n" not in content:
+              if "  contents: read\\n  pages: write\\n" not in content:
+                  raise SystemExit("Unexpected deploy.yml permissions; refusing an unsafe automatic edit.")
+              content = content.replace(
+                  "  contents: read\\n  pages: write\\n",
+                  "  contents: read\\n  actions: read\\n  pages: write\\n",
+                  1,
+              )
           old_upload = """      - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
@@ -206,11 +214,32 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
           """
-          new_deploy = """      - name: Deploy
+          new_deploy = """      - name: Wait for Pages artifact to become available
+        id: wait-pages-artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 24); do
+            artifact_name="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/artifacts" --jq '.artifacts | map(select(.expired == false and (.name | startswith("github-pages-" + env.RUN_ID + "-")))) | sort_by(.created_at) | last | .name // empty')"
+            if [ -n "$artifact_name" ]; then
+              echo "artifact_name=$artifact_name" >> "$GITHUB_OUTPUT"
+              echo "Found Pages artifact: $artifact_name"
+              exit 0
+            fi
+            echo "Pages artifact is not indexed yet (attempt $attempt/24); waiting 5 seconds."
+            sleep 5
+          done
+          echo "No Pages artifact for this workflow run became available."
+          exit 1
+
+      - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+          artifact_name: ${{ steps.wait-pages-artifact.outputs.artifact_name }}
           """
 
           if new_upload.strip() in content and new_deploy.strip() in content:
