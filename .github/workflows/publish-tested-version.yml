@@ -208,7 +208,7 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: .
-          name: github-pages-${{ '
+          name: github-pages-__GH_EXPR_RUN_ID__-__GH_EXPR_RUN_ATTEMPT__
           """
           old_deploy = """      - name: Deploy
         id: deployment
@@ -217,8 +217,8 @@ jobs:
           new_deploy = """      - name: Wait for Pages artifact to become available
         id: wait-pages-artifact
         env:
-          GH_TOKEN: ${{ '
-          RUN_ID: ${{ '
+          GH_TOKEN: __GH_EXPR_GITHUB_TOKEN__
+          RUN_ID: __GH_EXPR_RUN_ID__
         shell: bash
         run: |
           set -euo pipefail
@@ -239,8 +239,11 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          artifact_name: ${{ '
+          artifact_name: __GH_EXPR_WAIT_OUTPUT__
           """
+
+          new_upload = new_upload.replace("__GH_EXPR_RUN_ID__", "$" + "{{ github.run_id }}").replace("__GH_EXPR_RUN_ATTEMPT__", "$" + "{{ github.run_attempt }}")
+          new_deploy = new_deploy.replace("__GH_EXPR_GITHUB_TOKEN__", "$" + "{{ github.token }}").replace("__GH_EXPR_RUN_ID__", "$" + "{{ github.run_id }}").replace("__GH_EXPR_WAIT_OUTPUT__", "$" + "{{ steps.wait-pages-artifact.outputs.artifact_name }}")
 
           if new_upload.strip() in content and new_deploy.strip() in content:
               print("Pages artifact naming is already retry-safe.")
