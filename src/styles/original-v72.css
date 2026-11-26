@@ -7619,6 +7619,15 @@ body.bale-webview .appBottomDock > .releaseFooter .releaseFooterVersion {
   flex-wrap: wrap !important;
   align-items: center !important;
   justify-content: center !important;
-  column-gap: 18px !important;
+  column-gap: 32px !important;
   row-gap: 2px !important;
+}
+
+
+/* Final Bale library correction: :has(#books.libraryShell) has higher
+   specificity than the generic app padding rule, so explicitly give the
+   library screen the same 120px scroll clearance as every other Bale page. */
+html.bale-webview body .app:not(.appLoading):has(#books.libraryShell),
+body.bale-webview .app:not(.appLoading):has(#books.libraryShell) {
+  padding-bottom: 120px !important;
 }
