@@ -7631,3 +7631,29 @@ html.bale-webview body .app:not(.appLoading):has(#books.libraryShell),
 body.bale-webview .app:not(.appLoading):has(#books.libraryShell) {
   padding-bottom: 120px !important;
 }
+
+
+/* Telegram WebView: force version and publication date to remain distinct
+   horizontal items. Do not rely on inherited flex gap alone: older footer
+   rules may turn the wrapper/spans into block elements. */
+html:not(.bale-webview) body .appBottomDock > .releaseFooter .releaseFooterVersion,
+body:not(.bale-webview) .appBottomDock > .releaseFooter .releaseFooterVersion {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+  direction: rtl !important;
+  column-gap: 32px !important;
+  width: 100% !important;
+}
+
+html:not(.bale-webview) body .appBottomDock > .releaseFooter .releaseFooterVersionNumber,
+html:not(.bale-webview) body .appBottomDock > .releaseFooter .releaseFooterDate,
+body:not(.bale-webview) .appBottomDock > .releaseFooter .releaseFooterVersionNumber,
+body:not(.bale-webview) .appBottomDock > .releaseFooter .releaseFooterDate {
+  display: inline-block !important;
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+  margin: 0 !important;
+}
