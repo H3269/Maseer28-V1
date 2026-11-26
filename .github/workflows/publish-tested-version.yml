@@ -191,12 +191,12 @@ jobs:
               raise SystemExit("Telegram repository Pages deployment workflow is missing.")
 
           content = workflow.read_text(encoding="utf-8")
-          if "  actions: read\\n" not in content:
-              if "  contents: read\\n  pages: write\\n" not in content:
+          if "  actions: read\n" not in content:
+              if "  contents: read\n  pages: write\n" not in content:
                   raise SystemExit("Unexpected deploy.yml permissions; refusing an unsafe automatic edit.")
               content = content.replace(
-                  "  contents: read\\n  pages: write\\n",
-                  "  contents: read\\n  actions: read\\n  pages: write\\n",
+                  "  contents: read\n  pages: write\n",
+                  "  contents: read\n  actions: read\n  pages: write\n",
                   1,
               )
           old_upload = """      - name: Upload artifact
