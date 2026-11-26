@@ -21,8 +21,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build-and-publish:
-    if: ${{ inputs.publish == 'publish' && github.ref == 'refs/heads/main' }}
+  validate-and-test:
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -169,6 +169,47 @@ jobs:
       - name: Build production version
         working-directory: test-source
         run: npm run build
+      - name: Upload tested production build
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: path28-tested-production-build
+          path: test-source/dist/
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Record successful preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Preflight passed for exact source commit: ${GITHUB_SHA}"
+          {
+            echo "## Path28 preflight passed"
+            echo
+            echo "- Source repository: H3269/Maseer28-V1"
+            echo "- Source branch: main"
+            echo "- Tested commit: ${GITHUB_SHA}"
+            echo "- Production build saved as a short-lived artifact."
+            echo "- No files were sent to the Telegram repository by this job."
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  publish:
+    needs: validate-and-test
+    if: ${{ needs.validate-and-test.result == 'success' && inputs.publish == 'publish' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact tested source commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          path: test-source
+          persist-credentials: false
+
+      - name: Download tested production build
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: path28-tested-production-build
+          path: test-source/dist
 
       - name: Checkout Telegram repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -270,3 +311,4 @@ jobs:
             echo "- Published commit: $PUBLISHED_SHA"
             echo "- The destination Pages workflow receives the artifact-indexing wait and deploy-only retries authored in this V1 workflow."
           } >> "$GITHUB_STEP_SUMMARY"
+
