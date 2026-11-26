@@ -1,7 +1,7 @@
 name: Publish tested Path28 version to Telegram
 
 
-"on":
+on:
   workflow_dispatch:
     inputs:
       publish:
@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   build-and-publish:
-    if: ${{ inputs.publish == 'publish' && github.ref == 'refs/heads/main' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish == 'publish' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
