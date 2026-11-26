@@ -25,7 +25,6 @@ jobs:
     if: ${{ inputs.publish == 'publish' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
-    environment: production
     steps:
       - name: Refuse publication from non-main refs
         shell: bash
@@ -215,7 +214,7 @@ jobs:
                   raise SystemExit(f"Required build file missing or empty: {name}")
           PY
 
-      - name: Prepare Telegram app and resilient Pages deployment
+      - name: Prepare Telegram app files
         shell: bash
         run: |
           set -euo pipefail
@@ -228,81 +227,7 @@ jobs:
           install -m 0644 test-source/dist/Label.png telegram-site/Label.png
           install -m 0644 test-source/dist/version.json telegram-site/version.json
           test -s telegram-site/index.html
-          test -s telegram-site/.github/workflows/deploy.yml
-          test -s telegram-site/production/README-FA.md
-          test -s telegram-site/README-FA.md
-
-          # Keep the Pages deployment fix authored in V1 main and apply it
-          # automatically as part of each tested publication. The artifact is
-          # uploaded once; only deploy-pages is retried after indexing delays.
-          node --input-type=module <<'NODE'
-          import { readFileSync, writeFileSync } from 'node:fs';
-
-          const path = 'telegram-site/.github/workflows/deploy.yml';
-          let workflow = readFileSync(path, 'utf8');
-          const uploadMarker = '      - name: Upload artifact';
-          const deployMarker = '      - name: Deploy\n        id: deployment\n        uses: actions/deploy-pages@v4';
-          const retryMarker = '      - name: Wait for GitHub Pages artifact visibility';
-
-          if (!workflow.includes(uploadMarker) || !workflow.includes('actions/upload-pages-artifact@v4')) {
-            throw new Error('Destination Pages workflow does not contain the expected artifact upload step; refusing to overwrite it.');
-          }
-
-          if (!workflow.includes(retryMarker)) {
-            if (!workflow.includes(deployMarker)) {
-              throw new Error('Destination Pages workflow does not match the expected deploy step; refusing to overwrite it.');
-            }
-
-            const resilientDeploy = [
-              '      - name: Wait for GitHub Pages artifact visibility',
-              "        # GitHub's Pages artifact listing can lag behind a successful upload.",
-              '        run: sleep 60',
-              '',
-              '      - name: Deploy',
-              '        id: deployment',
-              '        uses: actions/deploy-pages@v4',
-              '        continue-on-error: true',
-              '',
-              '      - name: Wait before deployment retry 1',
-              "        if: steps.deployment.outcome == 'failure'",
-              '        run: sleep 15',
-              '',
-              '      - name: Deploy retry 1',
-              '        id: deployment_retry_1',
-              "        if: steps.deployment.outcome == 'failure'",
-              '        uses: actions/deploy-pages@v4',
-              '        continue-on-error: true',
-              '',
-              '      - name: Wait before deployment retry 2',
-              "        if: steps.deployment_retry_1.outcome == 'failure'",
-              '        run: sleep 30',
-              '',
-              '      - name: Deploy retry 2',
-              '        id: deployment_retry_2',
-              "        if: steps.deployment_retry_1.outcome == 'failure'",
-              '        uses: actions/deploy-pages@v4',
-              '        continue-on-error: true',
-              '',
-              '      - name: Wait before deployment retry 3',
-              "        if: steps.deployment_retry_2.outcome == 'failure'",
-              '        run: sleep 60',
-              '',
-              '      - name: Deploy retry 3',
-              '        id: deployment_retry_3',
-              "        if: steps.deployment_retry_2.outcome == 'failure'",
-              '        uses: actions/deploy-pages@v4',
-            ].join('\n');
-
-            workflow = workflow.replace(deployMarker, resilientDeploy);
-          } else if (
-            !workflow.includes('id: deployment_retry_3') ||
-            !workflow.includes('run: sleep 60')
-          ) {
-            throw new Error('A partial Pages retry configuration was found; refusing to overwrite it.');
-          }
-
-          writeFileSync(path, workflow, 'utf8');
-          NODE
+          test -s telegram-site/version.json
 
       - name: Commit and push Telegram version
         id: publish
@@ -312,7 +237,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- index.html manifest.webmanifest Label.png assets content assistant version.json .github/workflows/deploy.yml
+          git add -- index.html manifest.webmanifest Label.png assets content assistant version.json
           if git diff --cached --quiet; then
             echo "Release metadata did not produce a change; refusing to report a publication."
             exit 1
