@@ -7539,3 +7539,30 @@ html body .app .appBottomDock > .releaseFooter .releaseFooterOwner {
   font-size: 9px !important;
   line-height: 1.35 !important;
 }
+
+
+/* Bale-only: remove the safe-area tail below the combined navigation/release dock.
+   In Bale's WebView the visible viewport already ends above the device system area;
+   applying safe-area padding here lifts both the navigation and release text.
+   Keep Telegram and ordinary browser positioning untouched. */
+html.bale-webview body .appBottomDock,
+body.bale-webview .appBottomDock {
+  bottom: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  gap: 0 !important;
+}
+
+html.bale-webview body .appBottomDock > .releaseFooter,
+body.bale-webview .appBottomDock > .releaseFooter {
+  margin: 0 !important;
+  padding: 0 8px 0 !important;
+  gap: 0 !important;
+}
+
+html.bale-webview body .appBottomDock > .releaseFooter .releaseFooterVersion,
+html.bale-webview body .appBottomDock > .releaseFooter .releaseFooterOwner,
+body.bale-webview .appBottomDock > .releaseFooter .releaseFooterVersion,
+body.bale-webview .appBottomDock > .releaseFooter .releaseFooterOwner {
+  line-height: 1.25 !important;
+}
