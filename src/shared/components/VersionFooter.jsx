@@ -35,7 +35,7 @@ export default function VersionFooter() {
     <aside className="releaseFooter" dir="rtl" aria-label="اطلاعات نسخه برنامه">
       <div
         className="releaseFooterVersion"
-        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '24px', width: '100%' }}
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '18px', width: '100%' }}
       >
         {isPreview
           ? <span>نسخه آزمایشی {version}</span>
