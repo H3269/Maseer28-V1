@@ -7596,3 +7596,29 @@ html.bale-webview body .app:not(.appLoading),
 body.bale-webview .app:not(.appLoading) {
   padding-bottom: 104px !important;
 }
+
+/* Bale final spacing refinement: leave a visible breathing gap above the dock,
+   and keep the library card's lower inset identical to other primary cards. */
+html.bale-webview body .app:not(.appLoading),
+body.bale-webview .app:not(.appLoading) {
+  padding-bottom: 120px !important;
+}
+
+html.bale-webview body .app > section.card,
+body.bale-webview .app > section.card,
+html.bale-webview body .app:has(#books.libraryShell) #books.libraryShell,
+body.bale-webview .app:has(#books.libraryShell) #books.libraryShell {
+  padding-bottom: 16px !important;
+}
+
+/* The version and date are separate flex items; never let the date's first
+   digit visually merge into the semantic version in Bale's WebView. */
+html.bale-webview body .appBottomDock > .releaseFooter .releaseFooterVersion,
+body.bale-webview .appBottomDock > .releaseFooter .releaseFooterVersion {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+  column-gap: 18px !important;
+  row-gap: 2px !important;
+}
