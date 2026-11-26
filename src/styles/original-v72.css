@@ -7547,10 +7547,9 @@ html body .app .appBottomDock > .releaseFooter .releaseFooterOwner {
    Keep Telegram and ordinary browser positioning untouched. */
 html.bale-webview body .appBottomDock,
 body.bale-webview .appBottomDock {
-  /* Bale reserves the Android system-bar inset inside its WebView viewport.
-     Offset the dock by that same inset so the nav and release note sit at the
-     physical lower edge; when no inset is reported this safely resolves to 0. */
-  bottom: calc(-1 * env(safe-area-inset-bottom, 0px)) !important;
+  /* Move the dock only a few pixels lower in Bale. A full safe-area offset
+     pushed the release note outside the visible viewport. */
+  bottom: -4px !important;
   margin: 0 !important;
   padding: 0 !important;
   gap: 0 !important;
@@ -7559,7 +7558,9 @@ body.bale-webview .appBottomDock {
 html.bale-webview body .appBottomDock > .releaseFooter,
 body.bale-webview .appBottomDock > .releaseFooter {
   margin: 0 !important;
-  padding: 0 8px 0 !important;
+  /* Keep the final text line clear of the viewport edge while the dock
+     itself is shifted down slightly. */
+  padding: 0 8px 4px !important;
   gap: 0 !important;
 }
 
