@@ -223,7 +223,7 @@ jobs:
         run: |
           set -euo pipefail
           for attempt in $(seq 1 24); do
-            artifact_name="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/artifacts" --jq '.artifacts | map(select(.expired == false and (.name | startswith("github-pages-" + env.RUN_ID + "-")))) | sort_by(.created_at) | last | .name // empty')"
+            artifact_name="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/artifacts" | jq -r --arg prefix "github-pages-${RUN_ID}-" '.artifacts | map(select(.expired == false and (.name | startswith($prefix)))) | sort_by(.created_at) | last | .name // empty')"
             if [ -n "$artifact_name" ]; then
               echo "artifact_name=$artifact_name" >> "$GITHUB_OUTPUT"
               echo "Found Pages artifact: $artifact_name"
