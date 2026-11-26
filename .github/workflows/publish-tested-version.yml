@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   build-and-publish:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish == 'publish' && github.ref == 'refs/heads/main' }}
+    if: ${{ inputs.publish == 'publish' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -178,97 +178,6 @@ jobs:
           persist-credentials: true
           path: telegram-site
 
-      - name: Fix destination Pages artifact naming
-        working-directory: telegram-site
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          from pathlib import Path
-
-          workflow = Path(".github/workflows/deploy.yml")
-          if not workflow.is_file():
-              raise SystemExit("Telegram repository Pages deployment workflow is missing.")
-
-          content = workflow.read_text(encoding="utf-8")
-          if "  actions: read\n" not in content:
-              if "  contents: read\n  pages: write\n" not in content:
-                  raise SystemExit("Unexpected deploy.yml permissions; refusing an unsafe automatic edit.")
-              content = content.replace(
-                  "  contents: read\n  pages: write\n",
-                  "  contents: read\n  actions: read\n  pages: write\n",
-                  1,
-              )
-          old_upload = """      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: .
-          """
-          new_upload = """      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: .
-          name: github-pages-__GH_EXPR_RUN_ID__-__GH_EXPR_RUN_ATTEMPT__
-          """
-          old_deploy = """      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
-          """
-          new_deploy = """      - name: Wait for Pages artifact to become available
-        id: wait-pages-artifact
-        env:
-          GH_TOKEN: __GH_EXPR_GITHUB_TOKEN__
-          RUN_ID: __GH_EXPR_RUN_ID__
-          RUN_ATTEMPT: __GH_EXPR_RUN_ATTEMPT__
-        shell: bash
-        run: |
-          set -euo pipefail
-          for attempt in $(seq 1 24); do
-            artifact_name="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/artifacts" | jq -r --arg expected "github-pages-${RUN_ID}-${RUN_ATTEMPT}" '.artifacts | map(select(.expired == false and .name == $expected)) | first | .name // empty')"
-            if [ -n "$artifact_name" ]; then
-              echo "artifact_name=$artifact_name" >> "$GITHUB_OUTPUT"
-              echo "Found Pages artifact for this attempt: $artifact_name"
-              exit 0
-            fi
-            echo "Pages artifact is not indexed yet (attempt $attempt/24); waiting 5 seconds."
-            sleep 5
-          done
-
-          # A deploy-only retry does not rerun the upload step. Reuse the newest
-          # non-expired artifact from an earlier attempt of this same run only
-          # after waiting for the current attempt's artifact.
-          if [ "$RUN_ATTEMPT" -gt 1 ]; then
-            artifact_name="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/artifacts" | jq -r --arg prefix "github-pages-${RUN_ID}-" --arg current "github-pages-${RUN_ID}-${RUN_ATTEMPT}" '.artifacts | map(select(.expired == false and (.name | startswith($prefix)) and .name != $current)) | sort_by(.created_at) | last | .name // empty')"
-            if [ -n "$artifact_name" ]; then
-              echo "artifact_name=$artifact_name" >> "$GITHUB_OUTPUT"
-              echo "Reusing prior-attempt Pages artifact: $artifact_name"
-              exit 0
-            fi
-          fi
-
-          echo "No Pages artifact for this workflow run became available."
-          exit 1
-
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
-        with:
-          artifact_name: __GH_EXPR_WAIT_OUTPUT__
-          """
-
-          new_upload = new_upload.replace("__GH_EXPR_RUN_ID__", "$" + "{{ github.run_id }}").replace("__GH_EXPR_RUN_ATTEMPT__", "$" + "{{ github.run_attempt }}")
-          new_deploy = new_deploy.replace("__GH_EXPR_GITHUB_TOKEN__", "$" + "{{ github.token }}").replace("__GH_EXPR_RUN_ID__", "$" + "{{ github.run_id }}").replace("__GH_EXPR_RUN_ATTEMPT__", "$" + "{{ github.run_attempt }}").replace("__GH_EXPR_WAIT_OUTPUT__", "$" + "{{ steps.wait-pages-artifact.outputs.artifact_name }}")
-
-          if new_upload.strip() in content and new_deploy.strip() in content:
-              print("Pages artifact naming is already retry-safe.")
-          else:
-              if old_upload.strip() not in content or old_deploy.strip() not in content:
-                  raise SystemExit("Unexpected deploy.yml structure; refusing an unsafe automatic edit.")
-              content = content.replace(old_upload.strip(), new_upload.strip(), 1)
-              content = content.replace(old_deploy.strip(), new_deploy.strip(), 1)
-              workflow.write_text(content, encoding="utf-8")
-          PY
-
       - name: Prepare version and publication date
         shell: bash
         run: |
@@ -328,7 +237,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- index.html manifest.webmanifest Label.png assets content assistant version.json .github/workflows/deploy.yml
+          git add -- index.html manifest.webmanifest Label.png assets content assistant version.json
           if git diff --cached --quiet; then
             echo "Release metadata did not produce a change; refusing to report a publication."
             exit 1
@@ -336,15 +245,12 @@ jobs:
           git commit -m "Publish Path28 version with daily lock enabled"
           git push origin HEAD:main
 
-          # Confirm the destination main branch points to the exact commit
-          # that this job pushed; do not report success on a local-only commit.
           expected_sha="$(git rev-parse HEAD)"
           remote_sha="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
           if [ -z "$remote_sha" ] || [ "$remote_sha" != "$expected_sha" ]; then
             echo "Telegram main verification failed: expected $expected_sha, found ${remote_sha:-empty}."
             exit 1
           fi
-
           echo "published_sha=$expected_sha" >> "$GITHUB_OUTPUT"
 
       - name: Confirm Telegram publication
