@@ -21,6 +21,10 @@ test('respects a newer package version without an extra patch bump', () => {
   assert.equal(nextReleaseVersion('1.2.0', '1.0.9'), '1.2.0');
 });
 
+test('uses the explicit 1.2.26 release after the last user-confirmed 1.2.25 version', () => {
+  assert.equal(nextReleaseVersion('1.2.26', '1.2.15'), '1.2.26');
+});
+
 test('rejects malformed version and timestamp values', () => {
   assert.throws(() => nextReleaseVersion('v1.0', null), /semver/);
   assert.throws(() => createReleaseMetadata({
