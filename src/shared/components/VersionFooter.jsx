@@ -39,7 +39,7 @@ export default function VersionFooter() {
       >
         {isPreview
           ? <span>نسخه آزمایشی {version}</span>
-          : <><span>نسخه {version}</span><span>{date}</span></>}
+          : <><span className="releaseFooterVersionNumber">نسخه {version}</span><span className="releaseFooterDate">{date}</span></>}
       </div>
       <span className="releaseFooterOwner">کلیه حقوق مادی و معنوی این اثر متعلق به مرکز هیپنوتراپی شفا است.</span>
     </aside>
