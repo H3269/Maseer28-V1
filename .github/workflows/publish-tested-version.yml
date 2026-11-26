@@ -291,7 +291,7 @@ jobs:
               '        id: deployment_retry_3',
               "        if: steps.deployment_retry_2.outcome == 'failure'",
               '        uses: actions/deploy-pages@v4',
-            ].join('\\n');
+            ].join('\n');
 
             workflow = workflow.replace(deployMarker, resilientDeploy);
           } else if (
