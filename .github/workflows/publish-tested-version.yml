@@ -209,7 +209,7 @@ jobs:
           new_deploy = """      - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
-                with:
+        with:
           artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
           """
 
