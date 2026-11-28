@@ -190,6 +190,9 @@ function MainApp() {
         // Offline hydration is optional until the worker is active.
       });
     };
+    // Ask the browser to retain this app's offline cache when supported.
+    // This is a best-effort request; the browser may still enforce its own quota.
+    try { navigator.storage?.persist?.().catch(() => {}); } catch { /* optional API */ }
     navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`, { scope: import.meta.env.BASE_URL }).then(() => {
       requestOfflinePrefetch();
     }).catch(() => {
