@@ -92,7 +92,7 @@ async function performOfflinePrefetch() {
 
     await storePublicResponse(cache, indexUrl.href, indexResponse);
     await storePublicResponse(cache, manifestUrl.href, manifestResponse);
-    await storePublicResponse(cache, assetManifestUrl.href, assetManifestResponse);
+    await storePublicResponse(await caches.open(SHELL_CACHE), assetManifestUrl.href, assetManifestResponse);
 
     const topicPaths = [];
     for (const topic of index.topics) {
