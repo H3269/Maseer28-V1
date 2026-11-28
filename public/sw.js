@@ -43,8 +43,7 @@ async function cachePublicUrl(relativePath, cacheName = CONTENT_CACHE) {
   const url = new URL(relativePath, APP_SCOPE);
   if (!isInsideApp(url)) return false;
   const cache = await caches.open(cacheName);
-  const request = new Request(url.href);
-  if (await cache.match(request, { ignoreSearch: true })) return true;
+  const request = new Request(url.href, { cache: 'reload' });
   try {
     const response = await fetchWithTimeout(request);
     return storePublicResponse(cache, request, response);
@@ -53,33 +52,38 @@ async function cachePublicUrl(relativePath, cacheName = CONTENT_CACHE) {
 
 async function prefetchOfflineContent() {
   const cache = await caches.open(CONTENT_CACHE);
-  const marker = await cache.match(new URL(PREFETCH_KEY, APP_SCOPE).href);
-  if (marker) return;
   try {
     const indexUrl = new URL('content/runtime-v1/index.json', APP_SCOPE);
-    const indexResponse = await fetchWithTimeout(new Request(indexUrl.href));
+    const indexResponse = await fetchWithTimeout(new Request(indexUrl.href, { cache: 'reload' }));
     if (!indexResponse.ok) return;
-    await storePublicResponse(cache, indexUrl.href, indexResponse);
     const index = await indexResponse.clone().json();
-    const paths = [];
-    if (Array.isArray(index?.topics) && index.topics.length === 34) {
-      for (const topic of index.topics) {
-        if (/^topics\/T\d{2}\.json$/.test(topic?.basePath || '')) paths.push('content/runtime-v1/' + topic.basePath);
-        if (/^overrides\/T\d{2}\.json$/.test(topic?.overridePath || '')) paths.push('content/runtime-v1/' + topic.overridePath);
-      }
-    }
+    if (!Array.isArray(index?.topics) || index.topics.length !== 34) return;
+
     const manifestUrl = new URL('content/library.seed.json', APP_SCOPE);
-    const manifestResponse = await fetchWithTimeout(new Request(manifestUrl.href));
-    if (manifestResponse.ok) {
-      await storePublicResponse(cache, manifestUrl.href, manifestResponse);
-      const manifest = await manifestResponse.clone().json();
-      for (const book of (Array.isArray(manifest?.books) ? manifest.books : [])) {
-        if (/^content\/books\/[a-zA-Z0-9_-]+\.json$/.test(book?.file || '')) paths.push(book.file);
-        for (const cover of [book?.cover, book?.libraryCover]) {
-          if (typeof cover === 'string' && /^assets\/[a-zA-Z0-9_./-]+\.(webp|png|jpg|jpeg)$/i.test(cover)) paths.push(cover);
-        }
+    const manifestResponse = await fetchWithTimeout(new Request(manifestUrl.href, { cache: 'reload' }));
+    if (!manifestResponse.ok) return;
+    const manifest = await manifestResponse.clone().json();
+
+    const previousMarker = await cache.match(new URL(PREFETCH_KEY, APP_SCOPE).href);
+    const previousState = previousMarker ? await previousMarker.json().catch(() => null) : null;
+    if (previousState?.contentVersion === index.content_version
+      && previousState?.libraryRevision === manifest.revision) return;
+
+    await storePublicResponse(cache, indexUrl.href, indexResponse);
+    await storePublicResponse(cache, manifestUrl.href, manifestResponse);
+
+    const paths = [];
+    for (const topic of index.topics) {
+      if (/^topics\/T\d{2}\.json$/.test(topic?.basePath || '')) paths.push('content/runtime-v1/' + topic.basePath);
+      if (/^overrides\/T\d{2}\.json$/.test(topic?.overridePath || '')) paths.push('content/runtime-v1/' + topic.overridePath);
+    }
+    for (const book of (Array.isArray(manifest?.books) ? manifest.books : [])) {
+      if (/^content\/books\/[a-zA-Z0-9_-]+\.json$/.test(book?.file || '')) paths.push(book.file);
+      for (const cover of [book?.cover, book?.libraryCover]) {
+        if (typeof cover === 'string' && /^assets\/[a-zA-Z0-9_./-]+\.(webp|png|jpg|jpeg)$/i.test(cover)) paths.push(cover);
       }
     }
+
     // A bounded worker pool avoids flooding constrained mobile connections.
     let cursor = 0;
     let failedFiles = 0;
@@ -95,7 +99,11 @@ async function prefetchOfflineContent() {
     // A later online visit can retry the incomplete prefetch.
     if (failedFiles === 0 && paths.length >= 73) {
       await cache.put(new URL(PREFETCH_KEY, APP_SCOPE).href, new Response(JSON.stringify({
-        completedAt: new Date().toISOString(), contentVersion: index.content_version,\n        libraryRevision: manifest.revision, expectedTopicFiles: 68, requestedFiles: paths.length,
+        completedAt: new Date().toISOString(),
+        contentVersion: index.content_version,
+        libraryRevision: manifest.revision,
+        expectedTopicFiles: 68,
+        requestedFiles: paths.length,
       }), { headers: { 'Content-Type': 'application/json' } }));
     }
   } catch {
