@@ -50,7 +50,7 @@ async function cachePublicUrl(relativePath, cacheName = CONTENT_CACHE) {
   } catch { return false; }
 }
 
-async function prefetchOfflineContent() {
+async function performOfflinePrefetch() {
   const cache = await caches.open(CONTENT_CACHE);
   try {
     const indexUrl = new URL('content/runtime-v1/index.json', APP_SCOPE);
@@ -113,6 +113,17 @@ async function prefetchOfflineContent() {
   } catch {
     // Prefetch is best-effort; a failed optional download must not break online use.
   }
+}
+
+let offlinePrefetchInFlight = null;
+
+function prefetchOfflineContent() {
+  if (!offlinePrefetchInFlight) {
+    offlinePrefetchInFlight = performOfflinePrefetch().finally(() => {
+      offlinePrefetchInFlight = null;
+    });
+  }
+  return offlinePrefetchInFlight;
 }
 
 async function networkFirst(request, cacheName) {
