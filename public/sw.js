@@ -65,6 +65,7 @@ self.addEventListener('install', (event) => {
     const response = await fetchWithTimeout(new Request(shellUrl, { cache: 'reload' }), 8000);
     if (!response.ok) throw new Error('App shell could not be cached.');
     await storePublicResponse(cache, shellUrl, response);
+    await storePublicResponse(cache, APP_SCOPE.href, response);
     const html = await response.clone().text();
     const assetPaths = [...html.matchAll(/(?:src|href)=["']([^"']+\.(?:js|css)(?:\?[^"']*)?)["']/g)]
       .map((match) => match[1]);
