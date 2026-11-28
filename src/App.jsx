@@ -156,28 +156,28 @@ function MainApp() {
   useEffect(() => {
     if (!content) return undefined;
     let cancelled = false;
-    loadGlobalAssistantLauncher().then(() => {
-      if (!cancelled) setAssistantLauncherLoaded(true);
-    }).catch(() => {
-      if (!cancelled) setAssistantLauncherLoaded(false);
-    });
-
-    // Warm library and reader chunks after the service worker is active so
-    // navigation and reading remain available after the device goes offline.
-    const warmLibraryAndReader = async () => {
+    const warmLazyScreens = async () => {
       try {
         if ('serviceWorker' in navigator) {
           await Promise.race([
             navigator.serviceWorker.ready,
-            new Promise((resolve) => setTimeout(resolve, 2500)),
+            new Promise((resolve) => setTimeout(resolve, 3000)),
           ]);
         }
       } catch {
         // The app remains usable online if service-worker readiness is unavailable.
       }
+      if (cancelled) return;
+      // Preserve the established assistant loading lifecycle, but start it
+      // after worker activation when possible so its chunk is cached too.
+      loadGlobalAssistantLauncher().then(() => {
+        if (!cancelled) setAssistantLauncherLoaded(true);
+      }).catch(() => {
+        if (!cancelled) setAssistantLauncherLoaded(false);
+      });
       await Promise.allSettled([loadLibraryPage(), loadReader()]);
     };
-    warmLibraryAndReader();
+    warmLazyScreens();
     return () => { cancelled = true; };
   }, [content]);
 
