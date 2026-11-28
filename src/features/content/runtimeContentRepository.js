@@ -55,10 +55,18 @@ export function createRuntimeContentRepository({
     let lastError;
     for (let attempt = 0; attempt <= retries; attempt += 1) {
       try {
-        const response = await fetchImpl(joinBaseUrl(baseUrl, relativePath), {
-          cache: attempt === 0 ? 'default' : 'reload',
-          priority: relativePath === 'index.json' ? 'high' : 'low',
-        });
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000);
+        let response;
+        try {
+          response = await fetchImpl(joinBaseUrl(baseUrl, relativePath), {
+            cache: attempt === 0 ? 'default' : 'reload',
+            priority: relativePath === 'index.json' ? 'high' : 'low',
+            signal: controller.signal,
+          });
+        } finally {
+          clearTimeout(timeout);
+        }
         if (!response?.ok) {
           const status = Number(response?.status || 0);
           if (status >= 500 && attempt < retries) continue;
