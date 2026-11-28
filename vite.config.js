@@ -18,6 +18,8 @@ function offlineAssetManifest() {
       }
       files.add('content/runtime-v1/index.json');
       files.add('content/library.seed.json');
+      files.add('manifest.webmanifest');
+      files.add('Label.png');
       for (const topic of index.topics || []) {
         if (topic.basePath) files.add('content/runtime-v1/' + topic.basePath);
         if (topic.overridePath) files.add('content/runtime-v1/' + topic.overridePath);
