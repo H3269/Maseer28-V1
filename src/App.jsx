@@ -160,7 +160,12 @@ function MainApp() {
     // already-visited app shell does not lose navigation targets offline.
     const warmLazyScreens = async () => {
       try {
-        if ('serviceWorker' in navigator) await navigator.serviceWorker.ready;
+        if ('serviceWorker' in navigator) {
+          await Promise.race([
+            navigator.serviceWorker.ready,
+            new Promise((resolve) => setTimeout(resolve, 2500)),
+          ]);
+        }
       } catch {
         // The app remains usable online if service-worker readiness is unavailable.
       }
