@@ -15,6 +15,9 @@ test('Telegram publication validates the exact checked-out source without a sepa
   assert.match(publishWorkflow, /npm test/);
   assert.match(publishWorkflow, /npm run build -- --base=\/Maseer28-V1\//);
   assert.match(publishWorkflow, /tests\/browser\/\*\.mjs/);
+  assert.match(publishWorkflow, /\"sw\.js\"/);
+  assert.match(publishWorkflow, /dist\/sw\.js telegram-site\/sw\.js/);
+  assert.match(publishWorkflow, /version\.json sw\.js/);
 });
 
 test('release validation happens before the Telegram destination secret is used', () => {
