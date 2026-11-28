@@ -181,17 +181,18 @@ test('global assistant conversation is one right-to-left transcript', async () =
   assert.match(css, /\.globalAssistantChat \.assistantMessage,\s*\.globalAssistantChat \.userMessage\s*\{[^}]*background:\s*transparent !important;[^}]*box-shadow:\s*none !important;/);
 });
 
-test('V1 keeps the test-deployment workflow absent and retains a manual-only Telegram release', async () => {
+test('V1 test deployment is main-only, test-mode, and separate from manual Telegram release', async () => {
   const journeyStore = await readFile(new URL('../src/features/journey/journeyStore.js', import.meta.url), 'utf8');
-  await assert.rejects(
-    readFile(new URL('../.github/workflows/deploy.yml', import.meta.url), 'utf8'),
-    { code: 'ENOENT' },
-    'the separate V1 test-deployment workflow must remain absent',
-  );
+  const testDeployWorkflow = await readFile(new URL('../.github/workflows/deploy.yml', import.meta.url), 'utf8');
+  assert.match(testDeployWorkflow, /on:\s+push:\s+branches: \[main\]/, 'the browser preview deploys automatically only from main');
+  assert.doesNotMatch(testDeployWorkflow, /^\s+pull_request:/m, 'pull requests must not deploy the public test preview');
+  assert.match(testDeployWorkflow, /run: npm test/, 'tests must pass before the preview is built');
+  assert.match(testDeployWorkflow, /npm run build -- --base=\/Maseer28-V1\//, 'the preview uses the repository Pages base path');
+  assert.match(testDeployWorkflow, /TEST_MODE=true|test defaults|TEST_MODE:\\s*true/i, 'the deployment remains a test build');
+  assert.doesNotMatch(testDeployWorkflow, /prepare-production-build|telegram-site|TELEGRAM_BOT_TOKEN|publish-tested-version/, 'the preview workflow must not prepare or publish a production Telegram build');
   assert.match(publishWorkflow, /on:\s+pull_request:\s+branches: \[main\][\s\S]*?workflow_dispatch:/, 'pull requests may validate but cannot publish');
   assert.match(publishWorkflow, /github\.event_name == 'workflow_dispatch'[\s\S]*?inputs\.publish == 'publish'[\s\S]*?github\.ref == 'refs\/heads\/main'/, 'Telegram publishing remains manual and main-only');
   assert.doesNotMatch(publishWorkflow, /^\s+push:/m, 'Telegram publication must never run automatically on push');
-  assert.match(publishWorkflow, /npm run build -- --base=\/Maseer28-V1\//);
   assert.match(journeyStore, /TEST_MODE:\s*true/);
   assert.match(journeyStore, /TIME_LOCK_ENABLED:\s*false/);
 });
