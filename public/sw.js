@@ -44,7 +44,7 @@ async function cachePublicUrl(relativePath, cacheName = CONTENT_CACHE) {
   const url = new URL(relativePath, APP_SCOPE);
   if (!isInsideApp(url)) return false;
   const cache = await caches.open(cacheName);
-  const request = new Request(url.href, { credentials: 'same-origin' });
+  const request = new Request(url.href);
   if (await cache.match(request, { ignoreSearch: true })) return true;
   try {
     const response = await fetchWithTimeout(request);
