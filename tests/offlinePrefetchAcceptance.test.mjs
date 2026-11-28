@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const serviceWorker = await readFile(new URL('../public/sw.js', import.meta.url), 'utf8');
 const repository = await readFile(new URL('../src/features/content/runtimeContentRepository.js', import.meta.url), 'utf8');
+const viteConfig = await readFile(new URL('../vite.config.js', import.meta.url), 'utf8');
 const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
 
 test('offline hydration targets all 34 topic base files and overlays', () => {
@@ -25,6 +26,15 @@ test('offline hydration targets all 34 topic base files and overlays', () => {
   assert.ok(serviceWorker.includes("if (!response.ok || !isExpectedPublicResponse(request, response))"));
   assert.ok(serviceWorker.includes("paths.push('content/runtime-v1/' + topic.basePath)"));
   assert.ok(serviceWorker.includes("paths.push('content/runtime-v1/' + topic.overridePath)"));
+});
+
+test('production build emits a manifest for eager and lazy chunks plus app content', () => {
+  assert.ok(viteConfig.includes('function offlineAssetManifest()'));
+  assert.ok(viteConfig.includes('generateBundle(_options, bundle)'));
+  assert.ok(viteConfig.includes("item.type === 'chunk' || item.type === 'asset'"));
+  assert.ok(viteConfig.includes("fileName: 'offline-assets.json'"));
+  assert.ok(viteConfig.includes('topic.overridePath'));
+  assert.ok(viteConfig.includes('book.libraryCover'));
 });
 
 test('offline hydration includes published book texts and public covers', () => {
