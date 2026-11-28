@@ -15,10 +15,10 @@ function isInsideApp(url) {
 function cacheKind(url, request) {
   if (!isInsideApp(url)) return null;
   const relative = url.pathname.slice(APP_SCOPE.pathname.length);
-  if (/^(api|auth|account|profile|user-data)(\\/|$)/i.test(relative)) return null;
-  if (/^assets\\//i.test(relative)) return 'shell';
-  if (/^(content|assistant)\\//i.test(relative)) return 'content';
-  if (/^(index\\.html|manifest\\.webmanifest|version\\.json|Label\\.png)$/.test(relative)
+  if (/^(api|auth|account|profile|user-data)(\/|$)/i.test(relative)) return null;
+  if (/^assets\//i.test(relative)) return 'shell';
+  if (/^(content|assistant)\//i.test(relative)) return 'content';
+  if (/^(index\.html|manifest\.webmanifest|version\.json|Label\.png)$/.test(relative)
     || request.mode === 'navigate') return 'shell';
   return null;
 }
@@ -40,7 +40,7 @@ async function fetchWithTimeout(request, timeoutMs = 6500) {
 
 async function cachePublicUrl(relativePath, cacheName = CONTENT_CACHE) {
   if (typeof relativePath !== 'string' || relativePath.startsWith('/')
-    || relativePath.includes('..') || /^(api|auth|account|profile|user-data)(\\/|$)/i.test(relativePath)) return false;
+    || relativePath.includes('..') || /^(api|auth|account|profile|user-data)(\/|$)/i.test(relativePath)) return false;
   const url = new URL(relativePath, APP_SCOPE);
   if (!isInsideApp(url)) return false;
   const cache = await caches.open(cacheName);
@@ -65,8 +65,8 @@ async function prefetchOfflineContent() {
     const paths = [];
     if (Array.isArray(index?.topics) && index.topics.length === 34) {
       for (const topic of index.topics) {
-        if (/^topics\\/T\\d{2}\\.json$/.test(topic?.basePath || '')) paths.push('content/runtime-v1/' + topic.basePath);
-        if (/^overrides\\/T\\d{2}\\.json$/.test(topic?.overridePath || '')) paths.push('content/runtime-v1/' + topic.overridePath);
+        if (/^topics\/T\d{2}\.json$/.test(topic?.basePath || '')) paths.push('content/runtime-v1/' + topic.basePath);
+        if (/^overrides\/T\d{2}\.json$/.test(topic?.overridePath || '')) paths.push('content/runtime-v1/' + topic.overridePath);
       }
     }
     const manifestUrl = new URL('content/library.seed.json', APP_SCOPE);
@@ -75,9 +75,9 @@ async function prefetchOfflineContent() {
       await storePublicResponse(cache, manifestUrl.href, manifestResponse);
       const manifest = await manifestResponse.clone().json();
       for (const book of (Array.isArray(manifest?.books) ? manifest.books : [])) {
-        if (/^content\\/books\\/[a-zA-Z0-9_-]+\\.json$/.test(book?.file || '')) paths.push(book.file);
+        if (/^content\/books\/[a-zA-Z0-9_-]+\.json$/.test(book?.file || '')) paths.push(book.file);
         for (const cover of [book?.cover, book?.libraryCover]) {
-          if (typeof cover === 'string' && /^assets\\/[a-zA-Z0-9_./-]+\\.(webp|png|jpg|jpeg)$/i.test(cover)) paths.push(cover);
+          if (typeof cover === 'string' && /^assets\/[a-zA-Z0-9_./-]+\.(webp|png|jpg|jpeg)$/i.test(cover)) paths.push(cover);
         }
       }
     }
@@ -135,7 +135,7 @@ self.addEventListener('install', (event) => {
     await storePublicResponse(cache, shellUrl, response);
     await storePublicResponse(cache, APP_SCOPE.href, response);
     const html = await response.clone().text();
-    const assetPaths = [...html.matchAll(/(?:src|href)=["']([^"']+\\.(?:js|css)(?:\\?[^"']*)?)["']/g)]
+    const assetPaths = [...html.matchAll(/(?:src|href)=["']([^"']+\.(?:js|css)(?:\?[^"']*)?)["']/g)]
       .map((match) => match[1]);
     await Promise.all(assetPaths.map(async (assetPath) => {
       try {
@@ -169,7 +169,7 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   const kind = cacheKind(url, request);
   if (!kind) return;
-  if (kind === 'shell' && /^assets\\//i.test(url.pathname.slice(APP_SCOPE.pathname.length))) {
+  if (kind === 'shell' && /^assets\//i.test(url.pathname.slice(APP_SCOPE.pathname.length))) {
     event.respondWith(cacheFirst(request, SHELL_CACHE));
     return;
   }
