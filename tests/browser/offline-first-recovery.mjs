@@ -104,7 +104,8 @@ try {
   assert.equal(offlineState.appVisible, true);
   const offlineAssetFailures = await page.evaluate(async () => {
     const cache = await caches.open('path28-public-content-v2');
-    const response = await cache.match(new URL('offline-assets.json', location.href).href);
+    const shell = await caches.open('path28-public-shell-v2');
+    const response = await shell.match(new URL('offline-assets.json', location.href).href);
     const manifest = response ? await response.json() : null;
     const failures = [];
     for (const relative of manifest?.files || []) {
