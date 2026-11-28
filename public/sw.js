@@ -154,7 +154,7 @@ async function performOfflinePrefetch() {
     // browser may evict entries or reject writes under storage pressure.
     const missingAfterWrite = [];
     for (const path of requiredPaths) {
-      const targetCache = path.startsWith('assets/') ? await caches.open(SHELL_CACHE) : cache;
+      const targetCache = await caches.open(cacheNameForOfflinePath(path));
       if (!await targetCache.match(new URL(path, APP_SCOPE).href)) missingAfterWrite.push(path);
     }
     if (failedFiles === 0 && missingAfterWrite.length === 0
