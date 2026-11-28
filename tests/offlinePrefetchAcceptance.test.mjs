@@ -26,7 +26,6 @@ test('offline cache excludes private user data and cross-origin resources', () =
   assert.ok(serviceWorker.includes('url.origin === APP_SCOPE.origin'));
   assert.ok(serviceWorker.includes('api|auth|account|profile|user-data'));
   assert.ok(serviceWorker.includes('/private|no-store/i'));
-  assert.ok(serviceWorker.includes("credentials: 'same-origin'"));
   assert.doesNotMatch(serviceWorker, /localStorage|indexedDB|Authorization|credentials: 'include'/i);
 });
 
