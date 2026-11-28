@@ -108,6 +108,13 @@ async function networkFirst(request, cacheName) {
   const cache = await caches.open(cacheName);
   try {
     const response = await fetchWithTimeout(request);
+    if (!response.ok) {
+      // Filtering gateways may return 403/451/5xx instead of a network error.
+      // Prefer the last verified app-owned copy in those cases as well.
+      const cached = await cache.match(request, { ignoreSearch: true });
+      if (cached) return cached;
+      return response;
+    }
     await storePublicResponse(cache, request, response);
     const url = new URL(request.url);
     const relative = url.pathname.slice(APP_SCOPE.pathname.length);
