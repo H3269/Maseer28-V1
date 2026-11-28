@@ -95,7 +95,7 @@ async function prefetchOfflineContent() {
     // A later online visit can retry the incomplete prefetch.
     if (failedFiles === 0 && paths.length >= 73) {
       await cache.put(new URL(PREFETCH_KEY, APP_SCOPE).href, new Response(JSON.stringify({
-        completedAt: new Date().toISOString(), expectedTopicFiles: 68, requestedFiles: paths.length,
+        completedAt: new Date().toISOString(), contentVersion: index.content_version,\n        libraryRevision: manifest.revision, expectedTopicFiles: 68, requestedFiles: paths.length,
       }), { headers: { 'Content-Type': 'application/json' } }));
     }
   } catch {
