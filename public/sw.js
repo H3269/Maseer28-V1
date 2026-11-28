@@ -1,7 +1,6 @@
 /* Path28 public-resource offline cache.
- * Only same-origin, app-owned static resources are cached. User records,
- * localStorage, IndexedDB, API/auth endpoints and cross-origin requests are
- * deliberately outside this service worker's cache boundary.
+ * Only same-origin, app-owned public resources are cached. Private records,
+ * authenticated endpoints and cross-origin requests remain outside this cache.
  */
 const SHELL_CACHE = 'path28-public-shell-v2';
 const CONTENT_CACHE = 'path28-public-content-v2';
