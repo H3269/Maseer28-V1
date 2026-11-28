@@ -183,10 +183,20 @@ function MainApp() {
 
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return undefined;
-    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`, { scope: import.meta.env.BASE_URL }).catch(() => {
+    const requestOfflinePrefetch = () => {
+      navigator.serviceWorker.ready.then((registration) => {
+        registration.active?.postMessage({ type: 'PATH28_PREFETCH_OFFLINE' });
+      }).catch(() => {
+        // Offline hydration is optional until the worker is active.
+      });
+    };
+    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`, { scope: import.meta.env.BASE_URL }).then(() => {
+      requestOfflinePrefetch();
+    }).catch(() => {
       // Service-worker failure must never prevent normal online startup.
     });
-    return undefined;
+    window.addEventListener('online', requestOfflinePrefetch);
+    return () => window.removeEventListener('online', requestOfflinePrefetch);
   }, []);
 
   useEffect(() => {
