@@ -9,7 +9,7 @@ const repository = await readFile(new URL('../src/features/content/runtimeConten
 const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
 
 test('offline hydration targets all 34 topic base files and overlays', () => {
-  assert.ok(serviceWorker.includes('Array.isArray(index?.topics) && index.topics.length === 34'));
+  assert.ok(serviceWorker.includes('!Array.isArray(index?.topics) || index.topics.length !== 34'));
   assert.ok(serviceWorker.includes("topic?.basePath || ''"));
   assert.ok(serviceWorker.includes("topic?.overridePath || ''"));
   assert.ok(serviceWorker.includes('expectedTopicFiles: 68'));
