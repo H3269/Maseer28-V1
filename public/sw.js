@@ -18,7 +18,7 @@ function cacheKind(url, request) {
   if (/^(api|auth|account|profile|user-data)(\/|$)/i.test(relative)) return null;
   if (/^assets\//i.test(relative)) return 'shell';
   if (/^(content|assistant)\//i.test(relative)) return 'content';
-  if (/^(index\.html|manifest\.webmanifest|version\.json|Label\.png|offline-assets\.json)$/.test(relative).test(relative)
+  if (/^(index\.html|manifest\.webmanifest|version\.json|Label\.png|offline-assets\.json)$/.test(relative)
     || request.mode === 'navigate') return 'shell';
   return null;
 }
