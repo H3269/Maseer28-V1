@@ -55,7 +55,11 @@ async function readDailyText(page, selector) {
 }
 
 async function verifyDay(browser, dayNumber) {
-  const page = await browser.newPage();
+  // This test verifies the app's direct runtime-shard fetch contract. Keep
+  // service workers disabled here so Playwright can observe/intercept each
+  // network request; the dedicated offline-first test covers the worker.
+  const context = await browser.newContext({ serviceWorkers: 'block' });
+  const page = await context.newPage();
   const errors = [];
   const runtimeRequests = new Set();
   page.on('pageerror', error => errors.push(String(error)));
@@ -128,7 +132,7 @@ async function verifyDay(browser, dayNumber) {
   assert.ok(action.includes(normalize(source.actionText)),
     `T10 day ${dayNumber} action mismatch; expected: ${source.actionText}; actual: ${await readDailyText(page, '#dayAction')}`);
   assert.deepEqual(errors, [], `T10 day ${dayNumber} must render without browser errors`);
-  await page.close();
+  await context.close();
 }
 
 const browser = await chromium.launch({ headless: true });
