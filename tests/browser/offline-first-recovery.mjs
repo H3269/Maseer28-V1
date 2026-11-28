@@ -56,18 +56,25 @@ try {
     const bookFiles = (manifest?.books || []).map((book) => book.file);
     const bookCacheCount = (await Promise.all(bookFiles.map((path) =>
       cache.match(new URL(path, scope).href)))).filter(Boolean).length;
+    const coverFiles = (manifest?.books || []).flatMap((book) =>
+      [book.cover, book.libraryCover].filter((path) => typeof path === 'string'));
+    const coverCacheCount = (await Promise.all(coverFiles.map((path) =>
+      shell.match(new URL(path, scope).href)))).filter(Boolean).length;
     const shellResponse = await shell.match(new URL('index.html', scope).href);
     return {
       topicCount: index?.topics?.length || 0,
       topicCacheCount,
       bookCount: bookFiles.length,
       bookCacheCount,
+      coverCount: coverFiles.length,
+      coverCacheCount,
       shellCached: Boolean(shellResponse),
     };
   });
   assert.equal(offlineCacheAudit.topicCount, 34, 'All 34 topic definitions must be present in the offline index');
   assert.equal(offlineCacheAudit.topicCacheCount, 68, 'All 34 topic files and 34 exercise overlays must be cached');
   assert.equal(offlineCacheAudit.bookCacheCount, offlineCacheAudit.bookCount, 'Every published book text must be cached');
+  assert.equal(offlineCacheAudit.coverCacheCount, offlineCacheAudit.coverCount, 'Every published book cover must be cached');
   assert.equal(offlineCacheAudit.shellCached, true, 'The app shell must be cached before offline mode');
 
   await context.setOffline(true);
