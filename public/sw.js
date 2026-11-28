@@ -67,7 +67,13 @@ async function cachePublicUrl(relativePath, cacheName = CONTENT_CACHE) {
   } catch { return false; }
 }
 
+async function notifyOfflineStatus(status) {
+  const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+  for (const client of clients) client.postMessage({ type: 'PATH28_OFFLINE_STATUS', status });
+}
+
 async function performOfflinePrefetch() {
+  await notifyOfflineStatus('downloading');
   const cache = await caches.open(CONTENT_CACHE);
   try {
     const indexUrl = new URL('content/runtime-v1/index.json', APP_SCOPE);
@@ -125,7 +131,7 @@ async function performOfflinePrefetch() {
         const targetCache = path.startsWith('assets/') ? await caches.open(SHELL_CACHE) : cache;
         if (!await targetCache.match(new URL(path, APP_SCOPE).href)) { allPresent = false; break; }
       }
-      if (allPresent) return;
+      if (allPresent) { await notifyOfflineStatus('ready'); return; }
     }
     // A bounded worker pool avoids flooding constrained mobile connections.
     let cursor = 0;
@@ -158,8 +164,12 @@ async function performOfflinePrefetch() {
         expectedTopicFiles: 68,
         requestedFiles: requiredPaths.length,
       }), { headers: { 'Content-Type': 'application/json' } }));
+      await notifyOfflineStatus('ready');
+    } else {
+      await notifyOfflineStatus('pending');
     }
   } catch {
+    await notifyOfflineStatus('pending');
     // Prefetch is best-effort; a failed optional download must not break online use.
   }
 }
@@ -244,6 +254,18 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('message', (event) => {
   if (event.data?.type === 'PATH28_PREFETCH_OFFLINE') {
     event.waitUntil(prefetchOfflineContent());
+    return;
+  }
+  if (event.data?.type === 'PATH28_GET_OFFLINE_STATUS') {
+    event.waitUntil((async () => {
+      const cache = await caches.open(CONTENT_CACHE);
+      const marker = await cache.match(new URL(PREFETCH_KEY, APP_SCOPE).href);
+      const state = marker ? await marker.json().catch(() => null) : null;
+      event.source?.postMessage({
+        type: 'PATH28_OFFLINE_STATUS',
+        status: state?.schema === 2 ? 'ready' : 'pending',
+      });
+    })());
   }
 });
 
