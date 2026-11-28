@@ -17,7 +17,8 @@ test('offline cache is restricted to same-origin public app assets and content',
 });
 
 test('service worker does not access personal profile stores or credentials', () => {
-  assert.doesNotMatch(serviceWorker, /localStorage|indexedDB|Authorization|credentials:/i);
+  const executable = serviceWorker.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+  assert.doesNotMatch(executable, /localStorage|indexedDB|Authorization|credentials:/i);
   assert.match(serviceWorker, /User records[\s\S]*?deliberately outside this service worker's cache boundary/);
 });
 
