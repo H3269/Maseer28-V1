@@ -26,8 +26,8 @@ test('offline hydration targets all 34 topic base files and overlays', () => {
   assert.ok(serviceWorker.includes('offlinePrefetchInFlight = performOfflinePrefetch().finally'));
   assert.ok(serviceWorker.includes('function isExpectedPublicResponse(request, response)'));
   assert.ok(serviceWorker.includes("if (!response.ok || !isExpectedPublicResponse(request, response))"));
-  assert.ok(serviceWorker.includes("paths.push('content/runtime-v1/' + topic.basePath)"));
-  assert.ok(serviceWorker.includes("paths.push('content/runtime-v1/' + topic.overridePath)"));
+  assert.ok(serviceWorker.includes("topicPaths.push('content/runtime-v1/' + topic.basePath)"));
+  assert.ok(serviceWorker.includes("topicPaths.push('content/runtime-v1/' + topic.overridePath)"));
 });
 
 test('production build emits a manifest for eager and lazy chunks plus app content', () => {
