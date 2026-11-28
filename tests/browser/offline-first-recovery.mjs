@@ -107,14 +107,20 @@ try {
     const shell = await caches.open('path28-public-shell-v2');
     const response = await shell.match(new URL('offline-assets.json', location.href).href);
     const manifest = response ? await response.json() : null;
+    const files = manifest?.files || [];
     const failures = [];
-    for (const relative of manifest?.files || []) {
-      try {
-        const result = await fetch(new URL(relative, location.href));
-        if (!result.ok) failures.push(relative);
-      } catch { failures.push(relative); }
+    // Keep requests bounded while avoiding a slow one-by-one offline audit.
+    for (let offset = 0; offset < files.length; offset += 8) {
+      const batch = files.slice(offset, offset + 8);
+      const results = await Promise.all(batch.map(async (relative) => {
+        try {
+          const response = await fetch(new URL(relative, location.href));
+          return response.ok ? null : relative;
+        } catch { return relative; }
+      }));
+      failures.push(...results.filter(Boolean));
     }
-    return { total: manifest?.files?.length || 0, failures };
+    return { total: files.length, failures };
   });
   assert.ok(offlineAssetFailures.total > 0, 'Offline manifest must enumerate resources');
   assert.deepEqual(offlineAssetFailures.failures, [], 'Every enumerated app resource must remain fetchable offline');
