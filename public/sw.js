@@ -113,6 +113,19 @@ async function performOfflinePrefetch() {
     // Include every generated runtime shard, book and public cover in addition
     // to every emitted JS/CSS/chunk/asset from the production build.
     const requiredPaths = [...new Set(paths)];
+    const previousMarker = await cache.match(new URL(PREFETCH_KEY, APP_SCOPE).href);
+    const previousState = previousMarker ? await previousMarker.json().catch(() => null) : null;
+    if (previousState?.schema === 2
+      && previousState?.contentVersion === index.content_version
+      && previousState?.libraryRevision === manifest.revision
+      && previousState?.assetManifestVersion === assetManifest.version) {
+      let allPresent = true;
+      for (const path of requiredPaths) {
+        const targetCache = path.startsWith('assets/') ? await caches.open(SHELL_CACHE) : cache;
+        if (!await targetCache.match(new URL(path, APP_SCOPE).href)) { allPresent = false; break; }
+      }
+      if (allPresent) return;
+    }
     // A bounded worker pool avoids flooding constrained mobile connections.
     let cursor = 0;
     let failedFiles = 0;
