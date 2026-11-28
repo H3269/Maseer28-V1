@@ -9,7 +9,12 @@ const browser = await chromium.launch({ headless: true });
 try {
   // Warm the app and its public content cache, then prove a same-WebView
   // offline reload can restore the shell and runtime topic index.
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    // Match the startup-performance suite: hosted runners may default to reduced motion,
+    // which can suppress the splash completion events required before the app mounts.
+    reducedMotion: 'no-preference',
+  });
   const page = await context.newPage();
   const swResponses = [];
   page.on('response', (response) => {
@@ -128,7 +133,11 @@ try {
 
   // Independently verify that the retry control repeats the startup fetch
   // pipeline in the same page after a simulated transient network failure.
-  const retryContext = await browser.newContext({ serviceWorkers: 'block', viewport: { width: 390, height: 844 } });
+  const retryContext = await browser.newContext({
+    serviceWorkers: 'block',
+    viewport: { width: 390, height: 844 },
+    reducedMotion: 'no-preference',
+  });
   const retryPage = await retryContext.newPage();
   let blockContent = true;
   await retryPage.route('**/content/**', async (route) => {
