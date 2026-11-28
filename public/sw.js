@@ -94,13 +94,14 @@ async function performOfflinePrefetch() {
     await storePublicResponse(cache, manifestUrl.href, manifestResponse);
     await storePublicResponse(cache, assetManifestUrl.href, assetManifestResponse);
 
-    const paths = [...new Set(assetManifest.files)];
+    const topicPaths = [];
     for (const topic of index.topics) {
-      if (/^topics\/T\d{2}\.json$/.test(topic?.basePath || '')) paths.push('content/runtime-v1/' + topic.basePath);
-      if (/^overrides\/T\d{2}\.json$/.test(topic?.overridePath || '')) paths.push('content/runtime-v1/' + topic.overridePath);
+      if (/^topics\/T\d{2}\.json$/.test(topic?.basePath || '')) topicPaths.push('content/runtime-v1/' + topic.basePath);
+      if (/^overrides\/T\d{2}\.json$/.test(topic?.overridePath || '')) topicPaths.push('content/runtime-v1/' + topic.overridePath);
     }
     // Every topic must contribute exactly one canonical file and one overlay.
-    if (paths.length !== 68) return;
+    if (topicPaths.length !== 68) return;
+    const paths = [...new Set([...assetManifest.files, ...topicPaths])];
     const books = Array.isArray(manifest?.books) ? manifest.books : [];
     if (books.length !== 5) return;
     for (const book of books) {
