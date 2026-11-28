@@ -16,7 +16,7 @@ test('offline hydration targets all 34 topic base files and overlays', () => {
   assert.ok(serviceWorker.includes('expectedTopicFiles: 68'));
   assert.ok(serviceWorker.includes('if (topicPaths.length !== 68) return;'));
   assert.ok(serviceWorker.includes('OFFLINE_ASSET_MANIFEST'));
-  assert.ok(serviceWorker.includes('offline-assets\\\\.json'));
+  assert.ok(serviceWorker.includes('offline-assets\\.json'));
   assert.ok(serviceWorker.includes('await caches.open(SHELL_CACHE), assetManifestUrl.href'));
   assert.ok(serviceWorker.includes('assetManifest.files'));
   assert.ok(serviceWorker.includes('missingAfterWrite.length === 0'));
