@@ -51,7 +51,7 @@ try {
     const assetManifest = assetManifestResponse ? await assetManifestResponse.json() : null;
     const assetManifestFiles = assetManifest?.files || [];
     const assetManifestCachedCount = (await Promise.all(assetManifestFiles.map(async (path) => {
-      const target = path.startsWith('assets/') ? shell : cache;
+      const target = /^(content|assistant)\\//.test(path) ? cache : shell;
       return Boolean(await target.match(new URL(path, scope).href));
     }))).filter(Boolean).length;
     const topicFiles = (index?.topics || []).flatMap((topic) => [
