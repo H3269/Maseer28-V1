@@ -83,16 +83,22 @@ async function prefetchOfflineContent() {
     }
     // A bounded worker pool avoids flooding constrained mobile connections.
     let cursor = 0;
+    let failedFiles = 0;
     const workers = Array.from({ length: 3 }, async () => {
       while (cursor < paths.length) {
         const current = paths[cursor++];
-        await cachePublicUrl(current, current.startsWith('assets/') ? SHELL_CACHE : CONTENT_CACHE);
+        const stored = await cachePublicUrl(current, current.startsWith('assets/') ? SHELL_CACHE : CONTENT_CACHE);
+        if (!stored) failedFiles += 1;
       }
     });
     await Promise.all(workers);
-    await cache.put(new URL(PREFETCH_KEY, APP_SCOPE).href, new Response(JSON.stringify({
-      completedAt: new Date().toISOString(), expectedTopicFiles: 68, requestedFiles: paths.length,
-    }), { headers: { 'Content-Type': 'application/json' } }));
+    // Do not mark the device offline-ready if even one required public file failed.
+    // A later online visit can retry the incomplete prefetch.
+    if (failedFiles === 0 && paths.length >= 73) {
+      await cache.put(new URL(PREFETCH_KEY, APP_SCOPE).href, new Response(JSON.stringify({
+        completedAt: new Date().toISOString(), expectedTopicFiles: 68, requestedFiles: paths.length,
+      }), { headers: { 'Content-Type': 'application/json' } }));
+    }
   } catch {
     // Prefetch is best-effort; a failed optional download must not break online use.
   }
