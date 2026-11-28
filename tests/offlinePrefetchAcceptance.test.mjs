@@ -48,5 +48,5 @@ test('lazy first-party screens are warmed without blocking online startup indefi
   assert.ok(app.includes('loadLibraryPage()'));
   assert.ok(app.includes('loadReader()'));
   assert.ok(app.includes('Promise.race'));
-  assert.ok(app.includes('setTimeout(resolve, 2500)'));
+  assert.ok(app.includes('setTimeout(resolve, 3000)'));
 });
