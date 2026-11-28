@@ -118,6 +118,7 @@ function MainApp() {
   const [content, setContent] = useState(null);
   const [topicLoadState, setTopicLoadState] = useState({ key: '', status: 'idle', error: '' });
   const [loadError, setLoadError] = useState('');
+  const [startupAttempt, setStartupAttempt] = useState(0);
   // Start the visual gate when React actually mounts the visible splash.
   // Document-start elapsed time can consume the animation before the user sees it
   // on slower WebViews or devices that delay the application bundle.
@@ -164,7 +165,16 @@ function MainApp() {
   }, [content]);
 
   useEffect(() => {
+    if (!('serviceWorker' in navigator)) return undefined;
+    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`, { scope: import.meta.env.BASE_URL }).catch(() => {
+      // Service-worker failure must never prevent normal online startup.
+    });
+    return undefined;
+  }, []);
+
+  useEffect(() => {
     let cancelled = false;
+    setLoadError('');
 
     // Startup downloads only the compact topic index. The selected topic is
     // fetched separately after the profile/path is known.
@@ -206,7 +216,7 @@ function MainApp() {
       });
 
     return () => { cancelled = true; };
-  }, [runtimeRepository]);
+  }, [runtimeRepository, startupAttempt]);
 
   useEffect(() => {
     // The lightweight runtime index is the canonical source of valid topic
@@ -265,6 +275,26 @@ function MainApp() {
     } : previous);
     return loadedCategory;
   }, [runtimeRepository]);
+
+  // Treat the online event as a retry signal only; the content request itself
+  // must succeed before the app is considered recovered.
+  useEffect(() => {
+    const retryAfterReconnect = () => {
+      if (!content || loadError) {
+        setLoadError('');
+        setStartupAttempt((attempt) => attempt + 1);
+        return;
+      }
+      if (problemKey && !content.categories?.[problemKey]) {
+        setTopicLoadState({ key: problemKey, status: 'loading', error: '' });
+        loadTopicForScreen(problemKey)
+          .then(() => setTopicLoadState({ key: problemKey, status: 'loaded', error: '' }))
+          .catch((error) => setTopicLoadState({ key: problemKey, status: 'error', error: error?.message || 'بارگذاری محتوای موضوع انجام نشد.' }));
+      }
+    };
+    window.addEventListener('online', retryAfterReconnect);
+    return () => window.removeEventListener('online', retryAfterReconnect);
+  }, [content, loadError, problemKey, loadTopicForScreen]);
 
   useEffect(() => {
     if (!content || !problemKey || content.categories?.[problemKey]) return undefined;
@@ -812,7 +842,7 @@ function navigate(next) {
         />
         <h1>مسیر ۲۸ روزه بازسازی ذهن</h1>
         <p>{loadError ? 'آماده‌سازی برنامه کامل نشد.' : 'در حال آماده‌سازی مسیر تو…'}</p>
-        {loadError && <div className="loadingError" role="alert"><p>{loadError}</p><button className="primary" type="button" onClick={() => window.location.reload()}>تلاش دوباره</button></div>}
+        {loadError && <div className="loadingError" role="alert"><p>{loadError}</p><button className="primary" type="button" onClick={() => { setLoadError(''); setStartupAttempt((attempt) => attempt + 1); }}>بررسی اتصال و تلاش دوباره</button></div>}
         <div className="loadingProgress" role="progressbar" aria-label="پیشرفت نمایش لوگو" aria-valuemin="0" aria-valuemax="100" aria-valuenow={splashProgressComplete ? 100 : 0}>
           <span className="loadingProgressFill" onAnimationEnd={(event) => {
             if (event.animationName === 'loadingProgressFill') setSplashProgressComplete(true);

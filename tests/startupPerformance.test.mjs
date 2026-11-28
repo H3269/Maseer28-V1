@@ -208,7 +208,9 @@ test('logo failure never blocks startup, while content failure keeps its retry p
   assert.match(app, /if \(!content \|\| !splashLogoRevealComplete || !splashProgressComplete \|\| loadError\) return \(/);
   assert.match(app, /event\.currentTarget\.hidden = true;[\s\S]*?setSplashLogoRevealComplete\(true\)/);
   assert.doesNotMatch(app, /assets\/logo\.png|fallbackAttempted/);
-  assert.match(app, /<div className="loadingError" role="alert">[\s\S]*?window\.location\.reload\(\)/);
+  assert.match(app, /<div className="loadingError" role="alert">[\s\S]*?بررسی اتصال و تلاش دوباره/);
+  assert.match(app, /setStartupAttempt\(\(attempt\) => attempt \+ 1\)/);
+  assert.doesNotMatch(app, /window\.location\.reload\(\)/);
   assert.doesNotMatch(app, /splashLogoReady|splashMinimumVisible|image\.decode\(\)|setTimeout\(.*splash/i);
 });
 
