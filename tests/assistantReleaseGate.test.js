@@ -188,7 +188,8 @@ test('V1 keeps the test-deployment workflow absent and retains a manual-only Tel
     { code: 'ENOENT' },
     'the separate V1 test-deployment workflow must remain absent',
   );
-  assert.match(publishWorkflow, /on:\s+workflow_dispatch:/);
+  assert.match(publishWorkflow, /on:\s+pull_request:\s+branches: \[main\][\s\S]*?workflow_dispatch:/, 'pull requests may validate but cannot publish');
+  assert.match(publishWorkflow, /github\.event_name == 'workflow_dispatch'[\s\S]*?inputs\.publish == 'publish'[\s\S]*?github\.ref == 'refs\/heads\/main'/, 'Telegram publishing remains manual and main-only');
   assert.doesNotMatch(publishWorkflow, /^\s+push:/m, 'Telegram publication must never run automatically on push');
   assert.match(publishWorkflow, /npm run build -- --base=\/Maseer28-V1\//);
   assert.match(journeyStore, /TEST_MODE:\s*true/);
