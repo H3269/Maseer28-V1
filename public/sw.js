@@ -45,7 +45,7 @@ async function cachePublicUrl(relativePath, cacheName = CONTENT_CACHE) {
   const cache = await caches.open(cacheName);
   const request = new Request(url.href, { cache: 'reload' });
   try {
-    const response = await fetchWithTimeout(request);
+    const response = await fetchWithTimeout(request, 25000);
     return storePublicResponse(cache, request, response);
   } catch { return false; }
 }
