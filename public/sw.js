@@ -22,8 +22,24 @@ function cacheKind(url, request) {
   return null;
 }
 
+function isExpectedPublicResponse(request, response) {
+  let url;
+  try { url = new URL(request instanceof Request ? request.url : String(request)); }
+  catch { return false; }
+  const pathname = url.pathname;
+  const contentType = response.headers.get('content-type') || '';
+  if (/\.json$/i.test(pathname)) return /(?:application|text)\/[^;]*json/i.test(contentType);
+  if (/\.webmanifest$/i.test(pathname)) return /manifest\+json|application\/json/i.test(contentType);
+  if (/\.html?$/i.test(pathname) || pathname === APP_SCOPE.pathname
+    || (request instanceof Request && request.mode === 'navigate')) return /text\/html/i.test(contentType);
+  if (/\.m?js$/i.test(pathname)) return /(?:java|ecma)script/i.test(contentType);
+  if (/\.css$/i.test(pathname)) return /text\/css/i.test(contentType);
+  if (/\.(png|webp|jpe?g|svg|gif|ico)$/i.test(pathname)) return /image\//i.test(contentType);
+  return true;
+}
+
 async function storePublicResponse(cache, request, response) {
-  if (!response || !response.ok || response.type !== 'basic') return false;
+  if (!response || !response.ok || response.type !== 'basic' || !isExpectedPublicResponse(request, response)) return false;
   const control = response.headers.get('cache-control') || '';
   if (/private|no-store/i.test(control) || response.headers.has('set-cookie')) return false;
   try { await cache.put(request, response.clone()); return true; }
@@ -130,8 +146,8 @@ async function networkFirst(request, cacheName) {
   const cache = await caches.open(cacheName);
   try {
     const response = await fetchWithTimeout(request);
-    if (!response.ok) {
-      // Filtering gateways may return 403/451/5xx instead of a network error.
+    if (!response.ok || !isExpectedPublicResponse(request, response)) {
+      // Filtering gateways may return 403/451/5xx or a synthetic HTML block page instead of the expected asset.
       // Prefer the last verified app-owned copy in those cases as well.
       const cached = await cache.match(request, { ignoreSearch: true });
       if (cached) return cached;
