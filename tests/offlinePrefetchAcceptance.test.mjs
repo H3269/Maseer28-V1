@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
 const serviceWorker = await readFile(new URL('../public/sw.js', import.meta.url), 'utf8');
 const repository = await readFile(new URL('../src/features/content/runtimeContentRepository.js', import.meta.url), 'utf8');
@@ -49,4 +51,8 @@ test('lazy first-party screens are warmed without blocking online startup indefi
   assert.ok(app.includes('loadReader()'));
   assert.ok(app.includes('Promise.race'));
   assert.ok(app.includes('setTimeout(resolve, 3000)'));
+});
+
+test('service worker source parses as valid JavaScript', () => {
+  execFileSync(process.execPath, ['--check', fileURLToPath(new URL('../public/sw.js', import.meta.url))]);
 });
