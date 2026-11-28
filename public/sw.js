@@ -5,7 +5,12 @@
 const SHELL_CACHE = 'path28-public-shell-v2';
 const CONTENT_CACHE = 'path28-public-content-v2';
 const APP_SCOPE = new URL(self.registration.scope);
-const PREFETCH_KEY = 'path28-offline-prefetch-v1';
+const PREFETCH_KEY = 'path28-offline-prefetch-v2';
+const OFFLINE_ASSET_MANIFEST = 'offline-assets.json';
+
+function cacheNameForOfflinePath(relativePath) {
+  return /^(content|assistant)\//.test(relativePath) ? CONTENT_CACHE : SHELL_CACHE;
+}
 
 function isInsideApp(url) {
   return url.origin === APP_SCOPE.origin && url.pathname.startsWith(APP_SCOPE.pathname);
@@ -17,7 +22,7 @@ function cacheKind(url, request) {
   if (/^(api|auth|account|profile|user-data)(\/|$)/i.test(relative)) return null;
   if (/^assets\//i.test(relative)) return 'shell';
   if (/^(content|assistant)\//i.test(relative)) return 'content';
-  if (/^(index\.html|manifest\.webmanifest|version\.json|Label\.png)$/.test(relative)
+  if (/^(index\.html|manifest\.webmanifest|version\.json|Label\.png|offline-assets\.json)$/.test(relative)
     || request.mode === 'navigate') return 'shell';
   return null;
 }
@@ -66,37 +71,49 @@ async function cachePublicUrl(relativePath, cacheName = CONTENT_CACHE) {
   } catch { return false; }
 }
 
+async function notifyOfflineStatus(status) {
+  const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+  for (const client of clients) client.postMessage({ type: 'PATH28_OFFLINE_STATUS', status });
+}
+
 async function performOfflinePrefetch() {
+  await notifyOfflineStatus('downloading');
   const cache = await caches.open(CONTENT_CACHE);
   try {
     const indexUrl = new URL('content/runtime-v1/index.json', APP_SCOPE);
     const indexResponse = await fetchWithTimeout(new Request(indexUrl.href, { cache: 'reload' }));
-    if (!indexResponse.ok) return;
+    if (!indexResponse.ok) { await notifyOfflineStatus('pending'); return; }
     const index = await indexResponse.clone().json();
-    if (!Array.isArray(index?.topics) || index.topics.length !== 34) return;
+    if (!Array.isArray(index?.topics) || index.topics.length !== 34) { await notifyOfflineStatus('pending'); return; }
 
     const manifestUrl = new URL('content/library.seed.json', APP_SCOPE);
     const manifestResponse = await fetchWithTimeout(new Request(manifestUrl.href, { cache: 'reload' }));
-    if (!manifestResponse.ok) return;
+    if (!manifestResponse.ok) { await notifyOfflineStatus('pending'); return; }
     const manifest = await manifestResponse.clone().json();
 
-    const previousMarker = await cache.match(new URL(PREFETCH_KEY, APP_SCOPE).href);
-    const previousState = previousMarker ? await previousMarker.json().catch(() => null) : null;
-    if (previousState?.contentVersion === index.content_version
-      && previousState?.libraryRevision === manifest.revision) return;
+    const assetManifestUrl = new URL(OFFLINE_ASSET_MANIFEST, APP_SCOPE);
+    const assetManifestResponse = await fetchWithTimeout(new Request(assetManifestUrl.href, { cache: 'reload' }));
+    if (!assetManifestResponse.ok) { await notifyOfflineStatus('pending'); return; }
+    const assetManifest = await assetManifestResponse.clone().json();
+    if (assetManifest?.schema !== 1 || !Array.isArray(assetManifest?.files)
+      || assetManifest.files.length < 1
+      || assetManifest.files.some((path) => typeof path !== 'string' || !path
+        || path.startsWith('/') || path.includes('..'))) { await notifyOfflineStatus('pending'); return; }
 
     await storePublicResponse(cache, indexUrl.href, indexResponse);
     await storePublicResponse(cache, manifestUrl.href, manifestResponse);
+    await storePublicResponse(await caches.open(SHELL_CACHE), assetManifestUrl.href, assetManifestResponse);
 
-    const paths = [];
+    const topicPaths = [];
     for (const topic of index.topics) {
-      if (/^topics\/T\d{2}\.json$/.test(topic?.basePath || '')) paths.push('content/runtime-v1/' + topic.basePath);
-      if (/^overrides\/T\d{2}\.json$/.test(topic?.overridePath || '')) paths.push('content/runtime-v1/' + topic.overridePath);
+      if (/^topics\/T\d{2}\.json$/.test(topic?.basePath || '')) topicPaths.push('content/runtime-v1/' + topic.basePath);
+      if (/^overrides\/T\d{2}\.json$/.test(topic?.overridePath || '')) topicPaths.push('content/runtime-v1/' + topic.overridePath);
     }
     // Every topic must contribute exactly one canonical file and one overlay.
-    if (paths.length !== 68) return;
+    if (topicPaths.length !== 68) { await notifyOfflineStatus('pending'); return; }
+    const paths = [...new Set([...assetManifest.files, ...topicPaths])];
     const books = Array.isArray(manifest?.books) ? manifest.books : [];
-    if (books.length !== 5) return;
+    if (books.length !== 5) { await notifyOfflineStatus('pending'); return; }
     for (const book of books) {
       if (/^content\/books\/[a-zA-Z0-9_-]+\.json$/.test(book?.file || '')) paths.push(book.file);
       for (const cover of [book?.cover, book?.libraryCover]) {
@@ -104,29 +121,59 @@ async function performOfflinePrefetch() {
       }
     }
 
+    // Include every generated runtime shard, book and public cover in addition
+    // to every emitted JS/CSS/chunk/asset from the production build.
+    const requiredPaths = [...new Set(paths)];
+    const previousMarker = await cache.match(new URL(PREFETCH_KEY, APP_SCOPE).href);
+    const previousState = previousMarker ? await previousMarker.json().catch(() => null) : null;
+    if (previousState?.schema === 2
+      && previousState?.contentVersion === index.content_version
+      && previousState?.libraryRevision === manifest.revision
+      && previousState?.assetManifestVersion === assetManifest.version) {
+      let allPresent = true;
+      for (const path of requiredPaths) {
+        const targetCache = await caches.open(cacheNameForOfflinePath(path));
+        if (!await targetCache.match(new URL(path, APP_SCOPE).href)) { allPresent = false; break; }
+      }
+      if (allPresent) { await notifyOfflineStatus('ready'); return; }
+    }
     // A bounded worker pool avoids flooding constrained mobile connections.
     let cursor = 0;
     let failedFiles = 0;
     const workers = Array.from({ length: 3 }, async () => {
       while (cursor < paths.length) {
         const current = paths[cursor++];
-        const stored = await cachePublicUrl(current, current.startsWith('assets/') ? SHELL_CACHE : CONTENT_CACHE);
+        const stored = await cachePublicUrl(current, cacheNameForOfflinePath(current));
         if (!stored) failedFiles += 1;
       }
     });
     await Promise.all(workers);
     // Do not mark the device offline-ready if even one required public file failed.
     // A later online visit can retry the incomplete prefetch.
-    if (failedFiles === 0 && paths.length >= 73) {
+    // Verify the cache read-back, not just successful network responses. The
+    // browser may evict entries or reject writes under storage pressure.
+    const missingAfterWrite = [];
+    for (const path of requiredPaths) {
+      const targetCache = await caches.open(cacheNameForOfflinePath(path));
+      if (!await targetCache.match(new URL(path, APP_SCOPE).href)) missingAfterWrite.push(path);
+    }
+    if (failedFiles === 0 && missingAfterWrite.length === 0
+      && requiredPaths.length >= 73) {
       await cache.put(new URL(PREFETCH_KEY, APP_SCOPE).href, new Response(JSON.stringify({
+        schema: 2,
         completedAt: new Date().toISOString(),
         contentVersion: index.content_version,
         libraryRevision: manifest.revision,
+        assetManifestVersion: assetManifest.version,
         expectedTopicFiles: 68,
-        requestedFiles: paths.length,
+        requestedFiles: requiredPaths.length,
       }), { headers: { 'Content-Type': 'application/json' } }));
+      await notifyOfflineStatus('ready');
+    } else {
+      await notifyOfflineStatus('pending');
     }
   } catch {
+    await notifyOfflineStatus('pending');
     // Prefetch is best-effort; a failed optional download must not break online use.
   }
 }
@@ -144,6 +191,12 @@ function prefetchOfflineContent() {
 
 async function networkFirst(request, cacheName) {
   const cache = await caches.open(cacheName);
+  // Avoid a needless network timeout on known-offline launches. The cached
+  // copy is the intended source of truth until connectivity returns.
+  if (self.navigator.onLine === false) {
+    const cached = await cache.match(request, { ignoreSearch: true });
+    if (cached) return cached;
+  }
   try {
     const response = await fetchWithTimeout(request);
     if (!response.ok || !isExpectedPublicResponse(request, response)) {
@@ -211,6 +264,18 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('message', (event) => {
   if (event.data?.type === 'PATH28_PREFETCH_OFFLINE') {
     event.waitUntil(prefetchOfflineContent());
+    return;
+  }
+  if (event.data?.type === 'PATH28_GET_OFFLINE_STATUS') {
+    event.waitUntil((async () => {
+      const cache = await caches.open(CONTENT_CACHE);
+      const marker = await cache.match(new URL(PREFETCH_KEY, APP_SCOPE).href);
+      const state = marker ? await marker.json().catch(() => null) : null;
+      event.source?.postMessage({
+        type: 'PATH28_OFFLINE_STATUS',
+        status: state?.schema === 2 ? 'ready' : 'pending',
+      });
+    })());
   }
 });
 

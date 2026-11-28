@@ -9,7 +9,12 @@ const browser = await chromium.launch({ headless: true });
 try {
   // Warm the app and its public content cache, then prove a same-WebView
   // offline reload can restore the shell and runtime topic index.
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    // Match the startup-performance suite: hosted runners may default to reduced motion,
+    // which can suppress the splash completion events required before the app mounts.
+    reducedMotion: 'no-preference',
+  });
   const page = await context.newPage();
   const swResponses = [];
   page.on('response', (response) => {
@@ -30,7 +35,7 @@ try {
   await page.waitForFunction(async () => {
     const scope = new URL('./', location.href).href;
     const cache = await caches.open('path28-public-content-v2');
-    const markerUrl = new URL('path28-offline-prefetch-v1', scope).href;
+    const markerUrl = new URL('path28-offline-prefetch-v2', scope).href;
     const markerResponse = await cache.match(markerUrl);
     if (!markerResponse) return false;
     const marker = await markerResponse.json();
@@ -47,6 +52,13 @@ try {
     };
     const index = await getJson('content/runtime-v1/index.json');
     const manifest = await getJson('content/library.seed.json');
+    const assetManifestResponse = await shell.match(new URL('offline-assets.json', scope).href);
+    const assetManifest = assetManifestResponse ? await assetManifestResponse.json() : null;
+    const assetManifestFiles = assetManifest?.files || [];
+    const assetManifestCachedCount = (await Promise.all(assetManifestFiles.map(async (path) => {
+      const target = /^(content|assistant)\//.test(path) ? cache : shell;
+      return Boolean(await target.match(new URL(path, scope).href));
+    }))).filter(Boolean).length;
     const topicFiles = (index?.topics || []).flatMap((topic) => [
       'content/runtime-v1/' + topic.basePath,
       'content/runtime-v1/' + topic.overridePath,
@@ -69,6 +81,9 @@ try {
       coverCount: coverFiles.length,
       coverCacheCount,
       shellCached: Boolean(shellResponse),
+      assetManifestCount: assetManifestFiles.length,
+      assetManifestCachedCount,
+      assetManifestCached: Boolean(assetManifestResponse),
     };
   });
   assert.equal(offlineCacheAudit.topicCount, 34, 'All 34 topic definitions must be present in the offline index');
@@ -76,6 +91,10 @@ try {
   assert.equal(offlineCacheAudit.bookCacheCount, offlineCacheAudit.bookCount, 'Every published book text must be cached');
   assert.equal(offlineCacheAudit.coverCacheCount, offlineCacheAudit.coverCount, 'Every published book cover must be cached');
   assert.equal(offlineCacheAudit.shellCached, true, 'The app shell must be cached before offline mode');
+  assert.equal(offlineCacheAudit.assetManifestCached, true, 'The generated manifest for all eager and lazy build assets must be cached');
+  assert.ok(offlineCacheAudit.assetManifestCount > 0, 'The generated asset manifest must enumerate production resources');
+  assert.equal(offlineCacheAudit.assetManifestCachedCount, offlineCacheAudit.assetManifestCount,
+    'Every generated eager/lazy JS, CSS, font, image and content asset must be present in Cache Storage');
 
   await context.setOffline(true);
   await page.reload({ waitUntil: 'domcontentloaded' });
@@ -88,11 +107,37 @@ try {
   }));
   assert.equal(offlineState.controlled, true);
   assert.equal(offlineState.appVisible, true);
+  const offlineAssetFailures = await page.evaluate(async () => {
+    const cache = await caches.open('path28-public-content-v2');
+    const shell = await caches.open('path28-public-shell-v2');
+    const response = await shell.match(new URL('offline-assets.json', location.href).href);
+    const manifest = response ? await response.json() : null;
+    const files = manifest?.files || [];
+    const failures = [];
+    // Keep requests bounded while avoiding a slow one-by-one offline audit.
+    for (let offset = 0; offset < files.length; offset += 8) {
+      const batch = files.slice(offset, offset + 8);
+      const results = await Promise.all(batch.map(async (relative) => {
+        try {
+          const response = await fetch(new URL(relative, location.href));
+          return response.ok ? null : relative;
+        } catch { return relative; }
+      }));
+      failures.push(...results.filter(Boolean));
+    }
+    return { total: files.length, failures };
+  });
+  assert.ok(offlineAssetFailures.total > 0, 'Offline manifest must enumerate resources');
+  assert.deepEqual(offlineAssetFailures.failures, [], 'Every enumerated app resource must remain fetchable offline');
   await context.close();
 
   // Independently verify that the retry control repeats the startup fetch
   // pipeline in the same page after a simulated transient network failure.
-  const retryContext = await browser.newContext({ serviceWorkers: 'block', viewport: { width: 390, height: 844 } });
+  const retryContext = await browser.newContext({
+    serviceWorkers: 'block',
+    viewport: { width: 390, height: 844 },
+    reducedMotion: 'no-preference',
+  });
   const retryPage = await retryContext.newPage();
   let blockContent = true;
   await retryPage.route('**/content/**', async (route) => {

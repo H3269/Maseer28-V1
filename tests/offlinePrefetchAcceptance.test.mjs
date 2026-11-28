@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const serviceWorker = await readFile(new URL('../public/sw.js', import.meta.url), 'utf8');
 const repository = await readFile(new URL('../src/features/content/runtimeContentRepository.js', import.meta.url), 'utf8');
+const viteConfig = await readFile(new URL('../vite.config.js', import.meta.url), 'utf8');
 const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
 
 test('offline hydration targets all 34 topic base files and overlays', () => {
@@ -13,14 +14,32 @@ test('offline hydration targets all 34 topic base files and overlays', () => {
   assert.ok(serviceWorker.includes("topic?.basePath || ''"));
   assert.ok(serviceWorker.includes("topic?.overridePath || ''"));
   assert.ok(serviceWorker.includes('expectedTopicFiles: 68'));
-  assert.ok(serviceWorker.includes('if (paths.length !== 68) return;'));
-  assert.ok(serviceWorker.includes('if (books.length !== 5) return;'));
+  assert.ok(serviceWorker.includes('if (topicPaths.length !== 68) { await notifyOfflineStatus(\'pending\'); return; }'));
+  assert.ok(serviceWorker.includes('OFFLINE_ASSET_MANIFEST'));
+  assert.ok(serviceWorker.includes('offline-assets\\.json'));
+  assert.ok(serviceWorker.includes('await caches.open(SHELL_CACHE), assetManifestUrl.href'));
+  assert.ok(serviceWorker.includes('assetManifest.files'));
+  assert.ok(serviceWorker.includes('missingAfterWrite.length === 0'));
+  assert.ok(serviceWorker.includes('const targetCache = await caches.open(cacheNameForOfflinePath(path));'));
+  assert.ok(serviceWorker.includes('previousState?.schema === 2'));
+  assert.ok(serviceWorker.includes('if (self.navigator.onLine === false)'));
+  assert.ok(serviceWorker.includes('const cached = await cache.match(request, { ignoreSearch: true });'));
+  assert.ok(serviceWorker.includes('if (books.length !== 5) { await notifyOfflineStatus(\'pending\'); return; }'));
   assert.ok(serviceWorker.includes('let offlinePrefetchInFlight = null;'));
   assert.ok(serviceWorker.includes('offlinePrefetchInFlight = performOfflinePrefetch().finally'));
   assert.ok(serviceWorker.includes('function isExpectedPublicResponse(request, response)'));
   assert.ok(serviceWorker.includes("if (!response.ok || !isExpectedPublicResponse(request, response))"));
-  assert.ok(serviceWorker.includes("paths.push('content/runtime-v1/' + topic.basePath)"));
-  assert.ok(serviceWorker.includes("paths.push('content/runtime-v1/' + topic.overridePath)"));
+  assert.ok(serviceWorker.includes("topicPaths.push('content/runtime-v1/' + topic.basePath)"));
+  assert.ok(serviceWorker.includes("topicPaths.push('content/runtime-v1/' + topic.overridePath)"));
+});
+
+test('production build emits a manifest for eager and lazy chunks plus app content', () => {
+  assert.ok(viteConfig.includes('function offlineAssetManifest()'));
+  assert.ok(viteConfig.includes('generateBundle(_options, bundle)'));
+  assert.ok(viteConfig.includes("item.type === 'chunk' || item.type === 'asset'"));
+  assert.ok(viteConfig.includes("fileName: 'offline-assets.json'"));
+  assert.ok(viteConfig.includes('topic.overridePath'));
+  assert.ok(viteConfig.includes('book.libraryCover'));
 });
 
 test('offline hydration includes published book texts and public covers', () => {
@@ -38,7 +57,8 @@ test('offline cache excludes private user data and cross-origin resources', () =
 });
 
 test('incomplete prefetch is not marked ready and can be retried', () => {
-  assert.ok(serviceWorker.includes('if (failedFiles === 0 && paths.length >= 73)'));
+  assert.ok(serviceWorker.includes('if (failedFiles === 0 && missingAfterWrite.length === 0'));
+  assert.ok(serviceWorker.includes('requiredPaths.length >= 73'));
   assert.ok(serviceWorker.includes('A later online visit can retry the incomplete prefetch.'));
   assert.ok(serviceWorker.includes('prefetchOfflineContent().catch(() => {})'));
 });
