@@ -15,6 +15,8 @@ test('offline hydration targets all 34 topic base files and overlays', () => {
   assert.ok(serviceWorker.includes('expectedTopicFiles: 68'));
   assert.ok(serviceWorker.includes('if (paths.length !== 68) return;'));
   assert.ok(serviceWorker.includes('if (books.length !== 5) return;'));
+  assert.ok(serviceWorker.includes('let offlinePrefetchInFlight = null;'));
+  assert.ok(serviceWorker.includes('offlinePrefetchInFlight = performOfflinePrefetch().finally'));
   assert.ok(serviceWorker.includes("paths.push('content/runtime-v1/' + topic.basePath)"));
   assert.ok(serviceWorker.includes("paths.push('content/runtime-v1/' + topic.overridePath)"));
 });
