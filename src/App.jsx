@@ -156,20 +156,47 @@ function MainApp() {
   useEffect(() => {
     if (!content) return undefined;
     let cancelled = false;
-    loadGlobalAssistantLauncher().then(() => {
-      if (!cancelled) setAssistantLauncherLoaded(true);
-    }).catch(() => {
-      if (!cancelled) setAssistantLauncherLoaded(false);
-    });
+    const warmLazyScreens = async () => {
+      try {
+        if ('serviceWorker' in navigator) {
+          await Promise.race([
+            navigator.serviceWorker.ready,
+            new Promise((resolve) => setTimeout(resolve, 3000)),
+          ]);
+        }
+      } catch {
+        // The app remains usable online if service-worker readiness is unavailable.
+      }
+      if (cancelled) return;
+      // Preserve the established assistant loading lifecycle, but start it
+      // after worker activation when possible so its chunk is cached too.
+      loadGlobalAssistantLauncher().then(() => {
+        if (!cancelled) setAssistantLauncherLoaded(true);
+      }).catch(() => {
+        if (!cancelled) setAssistantLauncherLoaded(false);
+      });
+      await Promise.allSettled([loadLibraryPage(), loadReader()]);
+    };
+    warmLazyScreens();
     return () => { cancelled = true; };
   }, [content]);
 
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return undefined;
-    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`, { scope: import.meta.env.BASE_URL }).catch(() => {
+    const requestOfflinePrefetch = () => {
+      navigator.serviceWorker.ready.then((registration) => {
+        registration.active?.postMessage({ type: 'PATH28_PREFETCH_OFFLINE' });
+      }).catch(() => {
+        // Offline hydration is optional until the worker is active.
+      });
+    };
+    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`, { scope: import.meta.env.BASE_URL }).then(() => {
+      requestOfflinePrefetch();
+    }).catch(() => {
       // Service-worker failure must never prevent normal online startup.
     });
-    return undefined;
+    window.addEventListener('online', requestOfflinePrefetch);
+    return () => window.removeEventListener('online', requestOfflinePrefetch);
   }, []);
 
   useEffect(() => {
