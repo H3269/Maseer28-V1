@@ -125,6 +125,7 @@ function MainApp() {
   const [splashLogoRevealComplete, setSplashLogoRevealComplete] = useState(false);
   const [splashProgressComplete, setSplashProgressComplete] = useState(false);
   const [assistantLauncherLoaded, setAssistantLauncherLoaded] = useState(false);
+  const [offlineStatus, setOfflineStatus] = useState('checking');
   const [journey, setJourney] = useState(initial.state);
   const [userProfile, setUserProfileState] = useState(initial.user);
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(initial.onboardingComplete);
@@ -183,12 +184,23 @@ function MainApp() {
 
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return undefined;
+    const handleOfflineStatus = (event) => {
+      if (event.data?.type === 'PATH28_OFFLINE_STATUS'
+        && ['ready', 'downloading', 'pending'].includes(event.data.status)) {
+        setOfflineStatus(event.data.status);
+      }
+    };
+    navigator.serviceWorker.addEventListener('message', handleOfflineStatus);
+    const requestOfflineStatus = () => {
+      navigator.serviceWorker.ready.then((registration) => {
+        registration.active?.postMessage({ type: 'PATH28_GET_OFFLINE_STATUS' });
+      }).catch(() => setOfflineStatus('pending'));
+    };
     const requestOfflinePrefetch = () => {
+      setOfflineStatus('downloading');
       navigator.serviceWorker.ready.then((registration) => {
         registration.active?.postMessage({ type: 'PATH28_PREFETCH_OFFLINE' });
-      }).catch(() => {
-        // Offline hydration is optional until the worker is active.
-      });
+      }).catch(() => setOfflineStatus('pending'));
     };
     // Ask the browser to retain this app's offline cache when supported.
     // This is a best-effort request; the browser may still enforce its own quota.
@@ -198,8 +210,12 @@ function MainApp() {
     }).catch(() => {
       // Service-worker failure must never prevent normal online startup.
     });
+    requestOfflineStatus();
     window.addEventListener('online', requestOfflinePrefetch);
-    return () => window.removeEventListener('online', requestOfflinePrefetch);
+    return () => {
+      window.removeEventListener('online', requestOfflinePrefetch);
+      navigator.serviceWorker.removeEventListener('message', handleOfflineStatus);
+    };
   }, []);
 
   useEffect(() => {
@@ -902,6 +918,9 @@ function navigate(next) {
   return (
     <div className="app">
       <Header activeDay={headerDay} />
+      <div role="status" aria-live="polite" style={{ textAlign: 'center', fontSize: '12px', padding: '4px 8px', color: offlineStatus === 'ready' ? '#176b43' : 'var(--muted, #666)' }}>
+        {offlineStatus === 'ready' ? 'نسخه آفلاین آماده استفاده است.' : offlineStatus === 'downloading' ? 'در حال ذخیره بخش‌های برنامه برای استفاده آفلاین…' : 'آمادگی آفلاین هنوز تأیید نشده است.'}
+      </div>
       {screen === 'home' && <Home onStart={start} onHow={() => navigate('howWorks')} onAbout={() => navigate('about')} />}
       {screen === 'howWorks' && <HowWorks onBack={() => navigate('home')} />}
       {screen === 'about' && <AboutProgram onBack={() => navigate('home')} />}
