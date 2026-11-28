@@ -191,6 +191,12 @@ function prefetchOfflineContent() {
 
 async function networkFirst(request, cacheName) {
   const cache = await caches.open(cacheName);
+  // Avoid a needless network timeout on known-offline launches. The cached
+  // copy is the intended source of truth until connectivity returns.
+  if (self.navigator.onLine === false) {
+    const cached = await cache.match(request, { ignoreSearch: true });
+    if (cached) return cached;
+  }
   try {
     const response = await fetchWithTimeout(request);
     if (!response.ok || !isExpectedPublicResponse(request, response)) {
