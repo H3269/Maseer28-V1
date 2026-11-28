@@ -24,6 +24,52 @@ try {
   await page.locator('#copyrightModal').waitFor({ state: 'visible', timeout: 45000 });
   assert.equal(await page.evaluate(() => Boolean(navigator.serviceWorker.controller)), true,
     'The app should be controlled by its registered service worker after the warm reload');
+
+  // Do not call the device offline-ready until every public topic shard,
+  // exercise overlay, and published book text has been cached and verified.
+  await page.waitForFunction(async () => {
+    const scope = new URL('./', location.href).href;
+    const cache = await caches.open('path28-public-content-v2');
+    const markerUrl = new URL('path28-offline-prefetch-v1', scope).href;
+    const markerResponse = await cache.match(markerUrl);
+    if (!markerResponse) return false;
+    const marker = await markerResponse.json();
+    return marker.expectedTopicFiles === 68 && marker.requestedFiles >= 73;
+  }, null, { timeout: 120000 });
+
+  const offlineCacheAudit = await page.evaluate(async () => {
+    const scope = new URL('./', location.href).href;
+    const cache = await caches.open('path28-public-content-v2');
+    const shell = await caches.open('path28-public-shell-v2');
+    const getJson = async (relative) => {
+      const response = await cache.match(new URL(relative, scope).href);
+      return response ? response.json() : null;
+    };
+    const index = await getJson('content/runtime-v1/index.json');
+    const manifest = await getJson('content/library.seed.json');
+    const topicFiles = (index?.topics || []).flatMap((topic) => [
+      'content/runtime-v1/' + topic.basePath,
+      'content/runtime-v1/' + topic.overridePath,
+    ]);
+    const topicCacheCount = (await Promise.all(topicFiles.map((path) =>
+      cache.match(new URL(path, scope).href)))).filter(Boolean).length;
+    const bookFiles = (manifest?.books || []).map((book) => book.file);
+    const bookCacheCount = (await Promise.all(bookFiles.map((path) =>
+      cache.match(new URL(path, scope).href)))).filter(Boolean).length;
+    const shellResponse = await shell.match(new URL('index.html', scope).href);
+    return {
+      topicCount: index?.topics?.length || 0,
+      topicCacheCount,
+      bookCount: bookFiles.length,
+      bookCacheCount,
+      shellCached: Boolean(shellResponse),
+    };
+  });
+  assert.equal(offlineCacheAudit.topicCount, 34, 'All 34 topic definitions must be present in the offline index');
+  assert.equal(offlineCacheAudit.topicCacheCount, 68, 'All 34 topic files and 34 exercise overlays must be cached');
+  assert.equal(offlineCacheAudit.bookCacheCount, offlineCacheAudit.bookCount, 'Every published book text must be cached');
+  assert.equal(offlineCacheAudit.shellCached, true, 'The app shell must be cached before offline mode');
+
   await context.setOffline(true);
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.locator('#copyrightModal').waitFor({ state: 'visible', timeout: 45000 });
