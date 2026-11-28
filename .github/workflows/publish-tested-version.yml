@@ -2,6 +2,8 @@ name: Publish tested Path28 version to Telegram
 
 
 on:
+  pull_request:
+    branches: [main]
   workflow_dispatch:
     inputs:
       publish:
@@ -22,17 +24,21 @@ concurrency:
 
 jobs:
   validate-and-test:
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
-      - name: Refuse runs from non-main refs
+      - name: Validate source ref
         shell: bash
         run: |
           set -euo pipefail
-          test "${GITHUB_REF}" = "refs/heads/main"
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            test "${GITHUB_REF}" = "refs/heads/main"
+          else
+            test "${GITHUB_EVENT_NAME}" = "pull_request"
+          fi
           test -n "${GITHUB_SHA}"
-          echo "Validating the exact main commit: ${GITHUB_SHA}"
+          echo "Validating the exact source commit: ${GITHUB_SHA}"
 
       - name: Checkout tested version
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
