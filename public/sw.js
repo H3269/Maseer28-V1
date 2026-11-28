@@ -9,7 +9,7 @@ const PREFETCH_KEY = 'path28-offline-prefetch-v2';
 const OFFLINE_ASSET_MANIFEST = 'offline-assets.json';
 
 function cacheNameForOfflinePath(relativePath) {
-  return /^(content|assistant)\\//.test(relativePath) ? CONTENT_CACHE : SHELL_CACHE;
+  return /^(content|assistant)\//.test(relativePath) ? CONTENT_CACHE : SHELL_CACHE;
 }
 
 function isInsideApp(url) {
