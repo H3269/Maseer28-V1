@@ -30,7 +30,7 @@ try {
   await page.waitForFunction(async () => {
     const scope = new URL('./', location.href).href;
     const cache = await caches.open('path28-public-content-v2');
-    const markerUrl = new URL('path28-offline-prefetch-v1', scope).href;
+    const markerUrl = new URL('path28-offline-prefetch-v2', scope).href;
     const markerResponse = await cache.match(markerUrl);
     if (!markerResponse) return false;
     const marker = await markerResponse.json();
@@ -47,6 +47,10 @@ try {
     };
     const index = await getJson('content/runtime-v1/index.json');
     const manifest = await getJson('content/library.seed.json');
+    const assetManifestResponse = await cache.match(new URL('offline-assets.json', scope).href);
+    const assetManifest = assetManifestResponse ? await assetManifestResponse.json() : null;
+    const emittedAssetCacheCount = (assetManifest?.files || []).filter((path) => path.startsWith('assets/'))
+      .filter(async (path) => Boolean(await shell.match(new URL(path, scope).href))).length;
     const topicFiles = (index?.topics || []).flatMap((topic) => [
       'content/runtime-v1/' + topic.basePath,
       'content/runtime-v1/' + topic.overridePath,
@@ -69,6 +73,8 @@ try {
       coverCount: coverFiles.length,
       coverCacheCount,
       shellCached: Boolean(shellResponse),
+      assetManifestCount: assetManifest?.files?.length || 0,
+      assetManifestCached: Boolean(assetManifestResponse),
     };
   });
   assert.equal(offlineCacheAudit.topicCount, 34, 'All 34 topic definitions must be present in the offline index');
@@ -76,6 +82,8 @@ try {
   assert.equal(offlineCacheAudit.bookCacheCount, offlineCacheAudit.bookCount, 'Every published book text must be cached');
   assert.equal(offlineCacheAudit.coverCacheCount, offlineCacheAudit.coverCount, 'Every published book cover must be cached');
   assert.equal(offlineCacheAudit.shellCached, true, 'The app shell must be cached before offline mode');
+  assert.equal(offlineCacheAudit.assetManifestCached, true, 'The generated manifest for all eager and lazy build assets must be cached');
+  assert.ok(offlineCacheAudit.assetManifestCount > 0, 'The generated asset manifest must enumerate production resources');
 
   await context.setOffline(true);
   await page.reload({ waitUntil: 'domcontentloaded' });
