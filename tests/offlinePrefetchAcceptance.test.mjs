@@ -21,6 +21,8 @@ test('offline hydration targets all 34 topic base files and overlays', () => {
   assert.ok(serviceWorker.includes('assetManifest.files'));
   assert.ok(serviceWorker.includes('missingAfterWrite.length === 0'));
   assert.ok(serviceWorker.includes('previousState?.schema === 2'));
+  assert.ok(serviceWorker.includes('if (self.navigator.onLine === false)'));
+  assert.ok(serviceWorker.includes('const cached = await cache.match(request, { ignoreSearch: true });'));
   assert.ok(serviceWorker.includes('if (books.length !== 5) return;'));
   assert.ok(serviceWorker.includes('let offlinePrefetchInFlight = null;'));
   assert.ok(serviceWorker.includes('offlinePrefetchInFlight = performOfflinePrefetch().finally'));
