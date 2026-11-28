@@ -8,6 +8,10 @@ const APP_SCOPE = new URL(self.registration.scope);
 const PREFETCH_KEY = 'path28-offline-prefetch-v2';
 const OFFLINE_ASSET_MANIFEST = 'offline-assets.json';
 
+function cacheNameForOfflinePath(relativePath) {
+  return /^(content|assistant)\\//.test(relativePath) ? CONTENT_CACHE : SHELL_CACHE;
+}
+
 function isInsideApp(url) {
   return url.origin === APP_SCOPE.origin && url.pathname.startsWith(APP_SCOPE.pathname);
 }
@@ -128,7 +132,7 @@ async function performOfflinePrefetch() {
       && previousState?.assetManifestVersion === assetManifest.version) {
       let allPresent = true;
       for (const path of requiredPaths) {
-        const targetCache = path.startsWith('assets/') ? await caches.open(SHELL_CACHE) : cache;
+        const targetCache = await caches.open(cacheNameForOfflinePath(path));
         if (!await targetCache.match(new URL(path, APP_SCOPE).href)) { allPresent = false; break; }
       }
       if (allPresent) { await notifyOfflineStatus('ready'); return; }
@@ -139,7 +143,7 @@ async function performOfflinePrefetch() {
     const workers = Array.from({ length: 3 }, async () => {
       while (cursor < paths.length) {
         const current = paths[cursor++];
-        const stored = await cachePublicUrl(current, current.startsWith('assets/') ? SHELL_CACHE : CONTENT_CACHE);
+        const stored = await cachePublicUrl(current, cacheNameForOfflinePath(current));
         if (!stored) failedFiles += 1;
       }
     });
