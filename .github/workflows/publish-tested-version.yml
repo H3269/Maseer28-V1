@@ -243,7 +243,7 @@ jobs:
           from pathlib import Path
 
           dist = Path("test-source/dist")
-          allowed = {"assets", "content", "assistant", "index.html", "manifest.webmanifest", "Label.png", "version.json", "sw.js"}
+          allowed = {"assets", "content", "assistant", "index.html", "manifest.webmanifest", "Label.png", "version.json", "sw.js", "offline-assets.json"}
           required = {"assets", "content", "assistant", "index.html", "manifest.webmanifest", "Label.png", "version.json", "sw.js"}
           if not dist.is_dir():
               raise SystemExit("Build output directory is missing.")
@@ -257,7 +257,7 @@ jobs:
           for name in ("assets", "content", "assistant"):
               if not (dist / name).is_dir():
                   raise SystemExit(f"Expected build directory missing: {name}")
-          for name in ("index.html", "manifest.webmanifest", "Label.png", "version.json", "sw.js"):
+          for name in ("index.html", "manifest.webmanifest", "Label.png", "version.json", "sw.js", "offline-assets.json"):
               if not (dist / name).is_file() or (dist / name).stat().st_size == 0:
                   raise SystemExit(f"Required build file missing or empty: {name}")
           PY
@@ -275,6 +275,7 @@ jobs:
           install -m 0644 test-source/dist/Label.png telegram-site/Label.png
           install -m 0644 test-source/dist/version.json telegram-site/version.json
           install -m 0644 test-source/dist/sw.js telegram-site/sw.js
+          install -m 0644 test-source/dist/offline-assets.json telegram-site/offline-assets.json
           test -s telegram-site/index.html
           test -s telegram-site/version.json
 
@@ -286,7 +287,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- index.html manifest.webmanifest Label.png assets content assistant version.json sw.js
+          git add -- index.html manifest.webmanifest Label.png assets content assistant version.json sw.js offline-assets.json
           if git diff --cached --quiet; then
             echo "Release metadata did not produce a change; refusing to report a publication."
             exit 1
