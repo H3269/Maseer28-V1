@@ -78,23 +78,23 @@ async function performOfflinePrefetch() {
   try {
     const indexUrl = new URL('content/runtime-v1/index.json', APP_SCOPE);
     const indexResponse = await fetchWithTimeout(new Request(indexUrl.href, { cache: 'reload' }));
-    if (!indexResponse.ok) return;
+    if (!indexResponse.ok) { await notifyOfflineStatus('pending'); return; }
     const index = await indexResponse.clone().json();
-    if (!Array.isArray(index?.topics) || index.topics.length !== 34) return;
+    if (!Array.isArray(index?.topics) || index.topics.length !== 34) { await notifyOfflineStatus('pending'); return; }
 
     const manifestUrl = new URL('content/library.seed.json', APP_SCOPE);
     const manifestResponse = await fetchWithTimeout(new Request(manifestUrl.href, { cache: 'reload' }));
-    if (!manifestResponse.ok) return;
+    if (!manifestResponse.ok) { await notifyOfflineStatus('pending'); return; }
     const manifest = await manifestResponse.clone().json();
 
     const assetManifestUrl = new URL(OFFLINE_ASSET_MANIFEST, APP_SCOPE);
     const assetManifestResponse = await fetchWithTimeout(new Request(assetManifestUrl.href, { cache: 'reload' }));
-    if (!assetManifestResponse.ok) return;
+    if (!assetManifestResponse.ok) { await notifyOfflineStatus('pending'); return; }
     const assetManifest = await assetManifestResponse.clone().json();
     if (assetManifest?.schema !== 1 || !Array.isArray(assetManifest?.files)
       || assetManifest.files.length < 1
       || assetManifest.files.some((path) => typeof path !== 'string' || !path
-        || path.startsWith('/') || path.includes('..'))) return;
+        || path.startsWith('/') || path.includes('..'))) { await notifyOfflineStatus('pending'); return; }
 
     await storePublicResponse(cache, indexUrl.href, indexResponse);
     await storePublicResponse(cache, manifestUrl.href, manifestResponse);
@@ -106,10 +106,10 @@ async function performOfflinePrefetch() {
       if (/^overrides\/T\d{2}\.json$/.test(topic?.overridePath || '')) topicPaths.push('content/runtime-v1/' + topic.overridePath);
     }
     // Every topic must contribute exactly one canonical file and one overlay.
-    if (topicPaths.length !== 68) return;
+    if (topicPaths.length !== 68) { await notifyOfflineStatus('pending'); return; }
     const paths = [...new Set([...assetManifest.files, ...topicPaths])];
     const books = Array.isArray(manifest?.books) ? manifest.books : [];
-    if (books.length !== 5) return;
+    if (books.length !== 5) { await notifyOfflineStatus('pending'); return; }
     for (const book of books) {
       if (/^content\/books\/[a-zA-Z0-9_-]+\.json$/.test(book?.file || '')) paths.push(book.file);
       for (const cover of [book?.cover, book?.libraryCover]) {
