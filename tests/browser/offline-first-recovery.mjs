@@ -102,6 +102,21 @@ try {
   }));
   assert.equal(offlineState.controlled, true);
   assert.equal(offlineState.appVisible, true);
+  const offlineAssetFailures = await page.evaluate(async () => {
+    const cache = await caches.open('path28-public-content-v2');
+    const response = await cache.match(new URL('offline-assets.json', location.href).href);
+    const manifest = response ? await response.json() : null;
+    const failures = [];
+    for (const relative of manifest?.files || []) {
+      try {
+        const result = await fetch(new URL(relative, location.href));
+        if (!result.ok) failures.push(relative);
+      } catch { failures.push(relative); }
+    }
+    return { total: manifest?.files?.length || 0, failures };
+  });
+  assert.ok(offlineAssetFailures.total > 0, 'Offline manifest must enumerate resources');
+  assert.deepEqual(offlineAssetFailures.failures, [], 'Every enumerated app resource must remain fetchable offline');
   await context.close();
 
   // Independently verify that the retry control repeats the startup fetch
