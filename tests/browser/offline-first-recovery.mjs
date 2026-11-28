@@ -47,7 +47,7 @@ try {
     };
     const index = await getJson('content/runtime-v1/index.json');
     const manifest = await getJson('content/library.seed.json');
-    const assetManifestResponse = await cache.match(new URL('offline-assets.json', scope).href);
+    const assetManifestResponse = await shell.match(new URL('offline-assets.json', scope).href);
     const assetManifest = assetManifestResponse ? await assetManifestResponse.json() : null;
     const assetManifestFiles = assetManifest?.files || [];
     const assetManifestCachedCount = (await Promise.all(assetManifestFiles.map(async (path) => {
