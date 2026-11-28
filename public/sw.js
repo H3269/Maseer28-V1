@@ -77,7 +77,11 @@ async function prefetchOfflineContent() {
       if (/^topics\/T\d{2}\.json$/.test(topic?.basePath || '')) paths.push('content/runtime-v1/' + topic.basePath);
       if (/^overrides\/T\d{2}\.json$/.test(topic?.overridePath || '')) paths.push('content/runtime-v1/' + topic.overridePath);
     }
-    for (const book of (Array.isArray(manifest?.books) ? manifest.books : [])) {
+    // Every topic must contribute exactly one canonical file and one overlay.
+    if (paths.length !== 68) return;
+    const books = Array.isArray(manifest?.books) ? manifest.books : [];
+    if (books.length !== 5) return;
+    for (const book of books) {
       if (/^content\/books\/[a-zA-Z0-9_-]+\.json$/.test(book?.file || '')) paths.push(book.file);
       for (const cover of [book?.cover, book?.libraryCover]) {
         if (typeof cover === 'string' && /^assets\/[a-zA-Z0-9_./-]+\.(webp|png|jpg|jpeg)$/i.test(cover)) paths.push(cover);
