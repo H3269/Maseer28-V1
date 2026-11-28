@@ -156,9 +156,15 @@ function MainApp() {
   useEffect(() => {
     if (!content) return undefined;
     let cancelled = false;
-    // Warm every lazily-loaded first-party screen while online so the
-    // already-visited app shell does not lose navigation targets offline.
-    const warmLazyScreens = async () => {
+    loadGlobalAssistantLauncher().then(() => {
+      if (!cancelled) setAssistantLauncherLoaded(true);
+    }).catch(() => {
+      if (!cancelled) setAssistantLauncherLoaded(false);
+    });
+
+    // Warm library and reader chunks after the service worker is active so
+    // navigation and reading remain available after the device goes offline.
+    const warmLibraryAndReader = async () => {
       try {
         if ('serviceWorker' in navigator) {
           await Promise.race([
@@ -169,15 +175,9 @@ function MainApp() {
       } catch {
         // The app remains usable online if service-worker readiness is unavailable.
       }
-      const results = await Promise.allSettled([
-        loadGlobalAssistantLauncher(),
-        loadLibraryPage(),
-        loadReader(),
-      ]);
-      if (!cancelled && results[0].status === 'fulfilled') setAssistantLauncherLoaded(true);
-      if (!cancelled && results[0].status === 'rejected') setAssistantLauncherLoaded(false);
+      await Promise.allSettled([loadLibraryPage(), loadReader()]);
     };
-    warmLazyScreens();
+    warmLibraryAndReader();
     return () => { cancelled = true; };
   }, [content]);
 
