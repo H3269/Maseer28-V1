@@ -49,8 +49,11 @@ try {
     const manifest = await getJson('content/library.seed.json');
     const assetManifestResponse = await cache.match(new URL('offline-assets.json', scope).href);
     const assetManifest = assetManifestResponse ? await assetManifestResponse.json() : null;
-    const emittedAssetCacheCount = (assetManifest?.files || []).filter((path) => path.startsWith('assets/'))
-      .filter(async (path) => Boolean(await shell.match(new URL(path, scope).href))).length;
+    const assetManifestFiles = assetManifest?.files || [];
+    const assetManifestCachedCount = (await Promise.all(assetManifestFiles.map(async (path) => {
+      const target = path.startsWith('assets/') ? shell : cache;
+      return Boolean(await target.match(new URL(path, scope).href));
+    }))).filter(Boolean).length;
     const topicFiles = (index?.topics || []).flatMap((topic) => [
       'content/runtime-v1/' + topic.basePath,
       'content/runtime-v1/' + topic.overridePath,
@@ -73,7 +76,8 @@ try {
       coverCount: coverFiles.length,
       coverCacheCount,
       shellCached: Boolean(shellResponse),
-      assetManifestCount: assetManifest?.files?.length || 0,
+      assetManifestCount: assetManifestFiles.length,
+      assetManifestCachedCount,
       assetManifestCached: Boolean(assetManifestResponse),
     };
   });
@@ -84,6 +88,8 @@ try {
   assert.equal(offlineCacheAudit.shellCached, true, 'The app shell must be cached before offline mode');
   assert.equal(offlineCacheAudit.assetManifestCached, true, 'The generated manifest for all eager and lazy build assets must be cached');
   assert.ok(offlineCacheAudit.assetManifestCount > 0, 'The generated asset manifest must enumerate production resources');
+  assert.equal(offlineCacheAudit.assetManifestCachedCount, offlineCacheAudit.assetManifestCount,
+    'Every generated eager/lazy JS, CSS, font, image and content asset must be present in Cache Storage');
 
   await context.setOffline(true);
   await page.reload({ waitUntil: 'domcontentloaded' });
