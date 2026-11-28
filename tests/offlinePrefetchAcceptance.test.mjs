@@ -13,7 +13,11 @@ test('offline hydration targets all 34 topic base files and overlays', () => {
   assert.ok(serviceWorker.includes("topic?.basePath || ''"));
   assert.ok(serviceWorker.includes("topic?.overridePath || ''"));
   assert.ok(serviceWorker.includes('expectedTopicFiles: 68'));
-  assert.ok(serviceWorker.includes('if (paths.length !== 68) return;'));
+  assert.ok(serviceWorker.includes('if (topicPaths.length !== 68) return;'));
+  assert.ok(serviceWorker.includes('OFFLINE_ASSET_MANIFEST'));
+  assert.ok(serviceWorker.includes('assetManifest.files'));
+  assert.ok(serviceWorker.includes('missingAfterWrite.length === 0'));
+  assert.ok(serviceWorker.includes('previousState?.schema === 2'));
   assert.ok(serviceWorker.includes('if (books.length !== 5) return;'));
   assert.ok(serviceWorker.includes('let offlinePrefetchInFlight = null;'));
   assert.ok(serviceWorker.includes('offlinePrefetchInFlight = performOfflinePrefetch().finally'));
@@ -38,7 +42,8 @@ test('offline cache excludes private user data and cross-origin resources', () =
 });
 
 test('incomplete prefetch is not marked ready and can be retried', () => {
-  assert.ok(serviceWorker.includes('if (failedFiles === 0 && paths.length >= 73)'));
+  assert.ok(serviceWorker.includes('if (failedFiles === 0 && missingAfterWrite.length === 0'));
+  assert.ok(serviceWorker.includes('requiredPaths.length >= 73'));
   assert.ok(serviceWorker.includes('A later online visit can retry the incomplete prefetch.'));
   assert.ok(serviceWorker.includes('prefetchOfflineContent().catch(() => {})'));
 });
