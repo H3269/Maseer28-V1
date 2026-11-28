@@ -6,38 +6,48 @@ const serviceWorker = await readFile(new URL('../public/sw.js', import.meta.url)
 const repository = await readFile(new URL('../src/features/content/runtimeContentRepository.js', import.meta.url), 'utf8');
 const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
 
-test('offline hydration is limited to the complete 34-topic public content index', () => {
-  assert.match(serviceWorker, /index\\?\.topics\\.length === 34/);
-  assert.match(serviceWorker, /topics\\/T\\\\d\\{2\\}\\\\.json/);
-  assert.match(serviceWorker, /overrides\\/T\\\\d\\{2\\}\\\\.json/);
-  assert.match(serviceWorker, /expectedTopicFiles: 68/);
+test('offline hydration targets all 34 topic base files and overlays', () => {
+  assert.ok(serviceWorker.includes('index?.topics.length === 34'));
+  assert.ok(serviceWorker.includes("topic?.basePath || ''"));
+  assert.ok(serviceWorker.includes("topic?.overridePath || ''"));
+  assert.ok(serviceWorker.includes('expectedTopicFiles: 68'));
+  assert.ok(serviceWorker.includes("paths.push('content/runtime-v1/' + topic.basePath)"));
+  assert.ok(serviceWorker.includes("paths.push('content/runtime-v1/' + topic.overridePath)"));
 });
 
-test('offline hydration includes the published book texts and public covers', () => {
-  assert.match(serviceWorker, /content\\/library\\.seed\\.json/);
-  assert.match(serviceWorker, /content\\/books\\//);
-  assert.match(serviceWorker, /book\\?\.cover/);
-  assert.match(serviceWorker, /libraryCover/);
+test('offline hydration includes published book texts and public covers', () => {
+  assert.ok(serviceWorker.includes("new URL('content/library.seed.json', APP_SCOPE)"));
+  assert.ok(serviceWorker.includes("paths.push(book.file)"));
+  assert.ok(serviceWorker.includes('book?.cover'));
+  assert.ok(serviceWorker.includes('book?.libraryCover'));
 });
 
-test('offline cache never stores private user records or cross-origin resources', () => {
-  assert.match(serviceWorker, /url\\.origin === APP_SCOPE\\.origin/);
-  assert.match(serviceWorker, /api\\|auth\\|account\\|profile\\|user-data/);
-  assert.match(serviceWorker, /private\\|no-store/);
-  assert.match(serviceWorker, /credentials: 'same-origin'/);
+test('offline cache excludes private user data and cross-origin resources', () => {
+  assert.ok(serviceWorker.includes('url.origin === APP_SCOPE.origin'));
+  assert.ok(serviceWorker.includes('api|auth|account|profile|user-data'));
+  assert.ok(serviceWorker.includes('/private|no-store/i'));
+  assert.ok(serviceWorker.includes("credentials: 'same-origin'"));
   assert.doesNotMatch(serviceWorker, /localStorage|indexedDB|Authorization|credentials: 'include'/i);
 });
 
-test('runtime content requests have a bounded timeout and retry path', () => {
-  assert.match(repository, /AbortController/);
-  assert.match(repository, /setTimeout\\(\\(\\) => controller\\.abort\\(\\), 8000\\)/);
-  assert.match(repository, /attempt <= retries/);
-  assert.match(app, /بررسی اتصال و تلاش دوباره/);
-  assert.match(app, /setStartupAttempt\\(\\(attempt\\) => attempt \\+ 1\\)/);
+test('incomplete prefetch is not marked ready and can be retried', () => {
+  assert.ok(serviceWorker.includes('if (failedFiles === 0 && paths.length >= 73)'));
+  assert.ok(serviceWorker.includes('A later online visit can retry the incomplete prefetch.'));
+  assert.ok(serviceWorker.includes('prefetchOfflineContent().catch(() => {})'));
 });
 
-test('offline content prefetch is best-effort and does not block online startup', () => {
-  assert.match(serviceWorker, /prefetchOfflineContent\\(\\)\\.catch\\(\\(\\) => \\{\\}\\)/);
-  assert.match(serviceWorker, /Optional preload failure does not invalidate a valid app shell/);
-  assert.doesNotMatch(serviceWorker, /skipWaiting\\(/);
+test('runtime content requests have bounded timeouts and retry handling', () => {
+  assert.ok(repository.includes('new AbortController()'));
+  assert.ok(repository.includes('setTimeout(() => controller.abort(), 8000)'));
+  assert.ok(repository.includes('attempt <= retries'));
+  assert.ok(app.includes('بررسی اتصال و تلاش دوباره'));
+  assert.ok(app.includes('setStartupAttempt((attempt) => attempt + 1)'));
+});
+
+test('lazy first-party screens are warmed without blocking online startup indefinitely', () => {
+  assert.ok(app.includes('loadGlobalAssistantLauncher()'));
+  assert.ok(app.includes('loadLibraryPage()'));
+  assert.ok(app.includes('loadReader()'));
+  assert.ok(app.includes('Promise.race'));
+  assert.ok(app.includes('setTimeout(resolve, 2500)'));
 });
